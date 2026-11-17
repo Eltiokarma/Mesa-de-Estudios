@@ -33,13 +33,27 @@ const TIPOS_PREGUNTA = ['idea-principal', 'inferencia', 'compatibilidad', 'incom
   // Unidades de la rutina verbal B (7 nov 2026): tipología, resumen, discontinuos, contexto.
   'tipo-de-texto', 'estructura', 'resumen', 'titulo', 'dato', 'contexto',
   // Rutina verbal A/B (8 nov 2026): antónimo contextual y las preguntas de los pares de textos A/B.
-  'antonimo', 'controversia', 'postura', 'coincidencia', 'discrepancia', 'dialogo', 'sintesis'];
+  'antonimo', 'controversia', 'postura', 'coincidencia', 'discrepancia', 'dialogo', 'sintesis',
+  // Etapa 2 (17 nov 2026, docs/etapa2/decisiones.md): tema central, con el previo medida.
+  'tema-central'];
 // Estas solo van en un par de textos A/B (con "autores").
 const TIPOS_AB = ['controversia', 'postura', 'coincidencia', 'discrepancia', 'dialogo', 'sintesis'];
 const ATRIBUCIONES = Lectura.ATRIBUCIONES.map(c => c.id);
 // En estas preguntas, el previo marcar-oracion pide la oración que resume (las de rol principal).
 const TIPOS_MARCAR = ['idea-principal', 'resumen', 'titulo'];
 const IDIOMAS = ['en'];
+// El previo medida (¿la frase es muy amplia, justa o muy estrecha como tema?) es para preguntas que piden una frase.
+const TIPOS_MEDIDA = ['tema-central', 'titulo'];
+const MEDIDAS = Lectura.MEDIDAS.map(c => c.id);
+// Aceptar como justa una frase muy estrecha es tomar una parte por el todo: un detalle o dato (RV1), una parte (RV3)
+// o el marco del comienzo (RV64). Aceptar como justa una muy amplia es RV2.
+const JUSTA_SI_ESTRECHA = ['RV1', 'RV3', 'RV64'];
+// "idea" (opcional) dice a qué idea de la teoría de su unidad sirve la pregunta (contenido/teoria/<curso>/<unidad>.js).
+const IDEAS = {};
+for (const f of fs.readdirSync(path.join(raiz, 'contenido/teoria/razonamiento-verbal')).filter(f => f.endsWith('.js'))) {
+  const d = require(path.join(raiz, 'contenido/teoria/razonamiento-verbal', f));
+  if (d && d.unidad) IDEAS[d.unidad] = new Set((d.ideas || []).map(i => i && i.id));
+}
 // Largo mínimo: un discontinuo cuenta también las palabras de sus figuras; uno en inglés es más corto (examen de San Marcos).
 const MINIMO = t => t.tipo_texto === 'discontinuo' ? 120 : t.idioma === 'en' ? 100 : 150;
 const CLASES = ['lo-dice', 'se-deduce', 'no-se-sabe', 'lo-contradice'];
@@ -109,6 +123,19 @@ function validarPrevio(q, t, donde) {
       assert.equal(p.codigos.ambos, 'RV60', `${donde}: dar como de los dos lo que dice uno es RV60`);
     }
     if (p.aceptada === 'ambos') for (const k of ['A', 'B']) assert.equal(p.codigos[k], 'RV61', `${donde}: no ver la coincidencia es RV61`);
+  } else if (p.tipo === 'medida') {
+    assert.ok(TIPOS_MEDIDA.includes(q.tipo), `${donde}: el previo medida es para ${TIPOS_MEDIDA.join(', ')}`);
+    assert.ok(p.sonda && MEDIDAS.includes(p.aceptada), `${donde}: medida necesita "sonda" y una "aceptada" válida`);
+    revisar(p.codigos, MEDIDAS.filter(c => c !== p.aceptada));
+    // Ninguna respuesta del previo medida queda sin código: llamar «muy amplia» a una frase que no lo es es RV2, y
+    // «muy estrecha», RV1 (coordinación, 17 nov 2026).
+    for (const [o, c] of Object.entries(p.codigos)) assert.ok(c !== null, `${donde}: el previo medida no lleva códigos null ("${o}")`);
+    if (p.aceptada !== 'amplia') assert.equal(p.codigos.amplia, 'RV2', `${donde}: «muy amplia» ante una frase que no lo es es RV2`);
+    if (p.aceptada !== 'estrecha') assert.equal(p.codigos.estrecha, 'RV1', `${donde}: «muy estrecha» ante una frase que no lo es es RV1`);
+    if (p.aceptada === 'amplia') assert.equal(p.codigos.justa, 'RV2', `${donde}: tomar como justa una frase muy amplia es RV2`);
+    if (p.aceptada === 'estrecha') assert.ok(JUSTA_SI_ESTRECHA.includes(p.codigos.justa), `${donde}: tomar como justa una frase muy estrecha es ${JUSTA_SI_ESTRECHA.join(', ')}`);
+    // La sonda no es una alternativa copiada: si lo fuera, el previo adelantaría la pregunta.
+    assert.ok(!q.alternativas.some(a => a.t.replace(/\.$/, '').toLowerCase() === p.sonda.replace(/\.$/, '').toLowerCase()), `${donde}: la sonda de medida repite una alternativa`);
   } else if (p.tipo === 'proposito') {
     assert.ok(PROPOSITOS.includes(p.aceptada), `${donde}: propósito "${p.aceptada}" no válido`);
     revisar(p.codigos, PROPOSITOS.filter(c => c !== p.aceptada));
@@ -194,6 +221,7 @@ for (const { archivo, t } of TEXTOS) {
       assert.ok(!idsP.has(q.id), `${donde}: id de pregunta repetido`); idsP.add(q.id);
       assert.ok(TIPOS_PREGUNTA.includes(q.tipo), `${donde}: tipo "${q.tipo}" no válido`);
       assert.ok(UNIDADES.has(q.unidad), `${donde}: la unidad ${q.unidad} no existe en el catálogo (regla 6)`);
+      if (q.idea !== undefined) assert.ok(IDEAS[q.unidad] && IDEAS[q.unidad].has(q.idea), `${donde}: "${q.idea}" no es una idea de la teoría de ${q.unidad}`);
       // Preguntas en inglés (como en el examen de San Marcos): solo en un texto en inglés; las explicaciones siguen en español.
       assert.ok(q.idioma === undefined || (IDIOMAS.includes(q.idioma) && q.idioma === t.idioma), `${donde}: "idioma" de la pregunta solo vale en un texto en ese idioma`);
       assert.ok(q.enunciado, `${donde}: falta el enunciado`);

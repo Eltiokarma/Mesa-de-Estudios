@@ -1,0 +1,1432 @@
+{
+  "titulo": "Tema central, idea principal y título: lectura para lápiz y papel",
+  "indicacion": "Lee cada texto con calma y resuelve en tu hoja, sin la app. Haz lo que te pide «Antes de mirar las alternativas» tapando las alternativas con una hoja: así ves qué pensabas tú y no lo que te sugieren. Las oraciones llevan número para que puedas citarlas al revisar.",
+  "origen": "Generado por herramientas/papel-lectura.js desde el banco; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "t175",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Boletín de la cooperativa cafetalera, para sus socios» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Boletín de la cooperativa cafetalera, para sus socios",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Los árboles que dan sombra en un cafetal protegen a la planta de café y también a la tierra donde crece."
+            },
+            {
+              "n": 2,
+              "t": "Bajo su copa, las hojas del cafeto no se queman con el sol fuerte del mediodía."
+            },
+            {
+              "n": 3,
+              "t": "Cuando llueve con fuerza, las ramas frenan las gotas antes de que golpeen el suelo."
+            },
+            {
+              "n": 4,
+              "t": "Las raíces de esos árboles sujetan la tierra de las laderas, y así la lluvia no se la lleva cerro abajo."
+            },
+            {
+              "n": 5,
+              "t": "Además, las hojas que caen se pudren poco a poco y abonan el suelo sin que el productor gaste en abono."
+            }
+          ],
+          [
+            {
+              "n": 6,
+              "t": "Don Elmer, socio de la cooperativa en Villa Rica, plantó pacaes entre sus cafetos hace seis años."
+            },
+            {
+              "n": 7,
+              "t": "Desde entonces, en las lluvias de febrero ya no se le desmorona el borde de la chacra, y sus plantas soportan mejor los días de calor."
+            },
+            {
+              "n": 8,
+              "t": "Por eso, este año la cooperativa repartirá plantones de pacae a los socios que los pidan en la oficina."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «Las raíces que sujetan la tierra de las laderas» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Cuál es el tema central del boletín?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los árboles de sombra como la única manera de salvar todos los cafetales"
+            },
+            {
+              "letra": "B",
+              "t": "Las hojas que caen y abonan el suelo del cafetal"
+            },
+            {
+              "letra": "C",
+              "t": "La agricultura en la selva central del Perú"
+            },
+            {
+              "letra": "D",
+              "t": "Los pacaes que plantó don Elmer entre sus cafetos"
+            },
+            {
+              "letra": "E",
+              "t": "Lo que ganan el cafeto y la tierra con los árboles de sombra"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del boletín?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Las raíces de los árboles sujetan la tierra de las laderas cuando llueve."
+            },
+            {
+              "letra": "B",
+              "t": "Los árboles de sombra cuidan a la vez la planta de café y el suelo del cafetal."
+            },
+            {
+              "letra": "C",
+              "t": "Todas las plantas necesitan sol, agua y un buen suelo para crecer."
+            },
+            {
+              "letra": "D",
+              "t": "Los árboles de sombra en los cafetales de la cooperativa de Villa Rica y sus socios."
+            },
+            {
+              "letra": "E",
+              "t": "Los árboles de sombra hacen que el café de Villa Rica se venda a mejor precio."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué papel cumplen las oraciones 6 y 7 en el boletín?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Dan un caso que muestra lo que afirma la oración 1."
+            },
+            {
+              "letra": "B",
+              "t": "Presentan una opinión que el boletín discute después."
+            },
+            {
+              "letra": "C",
+              "t": "Cuentan algo aparte, que podría quitarse sin que el boletín pierda nada."
+            },
+            {
+              "letra": "D",
+              "t": "Dicen la idea principal del boletín, porque cuentan lo que pasó en una chacra."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: E · 2: B · 3: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy estrecha. Cubre solo la oración 4, una de las ventajas. Deja fuera la sombra sobre las hojas, la lluvia, el abono y el caso de don Elmer.",
+        "Pregunta 1. Clave E. Cubre todo el boletín: la oración 1 lo anuncia, de la 2 a la 5 se dice qué gana la planta y qué gana el suelo, y el caso de don Elmer lo muestra.",
+        "Pregunta 2. Antes de las alternativas: la oración 1. La oración 1 dice lo que todo el boletín explica: los árboles de sombra protegen al cafeto y a la tierra. Las demás dan las razones, un caso y lo que hará la cooperativa.",
+        "Pregunta 2. Clave B. Es lo que dice la oración 1, y las demás le dan sus razones (de la 2 a la 5) y un caso (la 6 y la 7).",
+        "Pregunta 3. Clave A. Don Elmer plantó árboles de sombra y su chacra ya no se desmorona: es un ejemplo de la idea de la oración 1."
+      ]
+    },
+    {
+      "id": "t177",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Artículo de la revista escolar, para las familias» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Artículo de la revista escolar, para las familias",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En muchas casas se cree que leerles en voz alta a los niños solo sirve antes de que aprendan a leer."
+            },
+            {
+              "n": 2,
+              "t": "Por eso, cuando entran a primaria, los padres dejan de hacerlo y les piden que lean solos."
+            },
+            {
+              "n": 3,
+              "t": "Sin embargo, un niño de segundo grado entiende al oír muchas más palabras de las que puede leer por su cuenta."
+            },
+            {
+              "n": 4,
+              "t": "Por eso, escuchar leer a un adulto o a un hermano mayor sigue ayudando a los niños aunque ya sepan leer."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Al oír un cuento, aprenden palabras nuevas y siguen historias más largas que las de sus libros."
+            },
+            {
+              "n": 6,
+              "t": "Además, se acostumbran a preguntar cuando no entienden algo."
+            },
+            {
+              "n": 7,
+              "t": "En nuestro colegio, los alumnos de quinto de secundaria leen cada viernes a los de segundo de primaria, y los más chicos piden que la hora no se acabe."
+            },
+            {
+              "n": 8,
+              "t": "La revista invita a hacer lo mismo en casa, aunque sea diez minutos antes de dormir."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «Lo que se cree en las casas sobre leer en voz alta» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Cuál es el tema central del artículo?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La hora de lectura de los viernes con los alumnos de quinto"
+            },
+            {
+              "letra": "B",
+              "t": "La creencia de que leer en voz alta solo sirve antes de que el niño aprenda a leer"
+            },
+            {
+              "letra": "C",
+              "t": "La lectura en voz alta para los niños que ya saben leer"
+            },
+            {
+              "letra": "D",
+              "t": "Los libros que conviene comprar para leer en casa"
+            },
+            {
+              "letra": "E",
+              "t": "La educación de los niños en el Perú"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del artículo?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Leer en voz alta mejora las notas de los niños en los cursos."
+            },
+            {
+              "letra": "B",
+              "t": "Los niños que escuchan cuentos se acostumbran a preguntar."
+            },
+            {
+              "letra": "C",
+              "t": "La lectura en voz alta en las casas y en el colegio."
+            },
+            {
+              "letra": "D",
+              "t": "Leerles en voz alta a los niños solo sirve antes de que aprendan a leer solos."
+            },
+            {
+              "letra": "E",
+              "t": "Leerles en voz alta sigue ayudando a los niños, aunque ya sepan leer solos."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En el artículo, ¿qué papel cumple la oración 1?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "No sostiene nada y podría quitarse sin que cambie el artículo."
+            },
+            {
+              "letra": "B",
+              "t": "Presenta una creencia que el artículo corrige después."
+            },
+            {
+              "letra": "C",
+              "t": "Dice la idea principal del artículo, que va al comienzo."
+            },
+            {
+              "letra": "D",
+              "t": "Da un ejemplo de lo que afirma la oración 4."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: E · 3: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy estrecha. Cubre solo la oración 1 y la 2, que el artículo corrige. Deja fuera lo principal: que leer en voz alta sigue ayudando.",
+        "Pregunta 1. Clave C. Cubre todo el artículo: lo que se cree, por qué no es así, qué ganan los niños, el caso del colegio y la invitación a hacerlo en casa.",
+        "Pregunta 2. Antes de las alternativas: la oración 4. La oración 4 dice lo que el artículo defiende: leer en voz alta sigue ayudando aunque el niño ya lea. La 1 y la 2 son lo que se corrige; las demás lo sostienen.",
+        "Pregunta 2. Clave E. Es la oración 4; la 3 la prepara, y de la 5 a la 7 dicen qué ganan los niños y lo muestran.",
+        "Pregunta 3. Clave B. La oración 3 empieza con «Sin embargo» y la 4 dice lo contrario de la 1: leer en voz alta sirve también después."
+      ]
+    },
+    {
+      "id": "t184",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Reportaje del diario regional de Piura» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Reportaje del diario regional de Piura",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cada sábado, Milagros, alumna de cuarto de secundaria de un colegio de Sullana, recorre su cuadra con un cuaderno y una linterna."
+            },
+            {
+              "n": 2,
+              "t": "Toca puertas y pide permiso para mirar los baldes, las llantas viejas y los floreros de los patios."
+            },
+            {
+              "n": 3,
+              "t": "Busca agua quieta, porque ahí pone sus huevos el zancudo que transmite el dengue."
+            },
+            {
+              "n": 4,
+              "t": "Si encuentra larvas, enseña a la familia a vaciar el recipiente, a escobillarlo y a taparlo."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Como ella, cuarenta alumnos forman las brigadas escolares que el centro de salud creó este año, y ya están ayudando a frenar el dengue desde los barrios."
+            },
+            {
+              "n": 6,
+              "t": "Los brigadistas recibieron dos talleres y llevan un chaleco amarillo con el nombre del centro de salud, para que los vecinos los reconozcan y les abran la puerta."
+            },
+            {
+              "n": 7,
+              "t": "Según el centro de salud, en las cuadras visitadas ya se encuentran menos recipientes con larvas que en enero."
+            },
+            {
+              "n": 8,
+              "t": "La directora del colegio quiere que el próximo año se sumen también los alumnos de tercero."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «Milagros, alumna de cuarto de secundaria» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Cuál es el tema central del reportaje?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Milagros y su recorrido de cada sábado por su cuadra de Sullana"
+            },
+            {
+              "letra": "B",
+              "t": "El chaleco amarillo que llevan los brigadistas del colegio"
+            },
+            {
+              "letra": "C",
+              "t": "Las brigadas de alumnos que combaten el dengue en sus barrios"
+            },
+            {
+              "letra": "D",
+              "t": "La salud pública en la costa norte del Perú"
+            },
+            {
+              "letra": "E",
+              "t": "Los medicamentos que se usan para curar el dengue en los hospitales"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del reportaje?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Si hay larvas, se vacía el recipiente, se escobilla y se tapa."
+            },
+            {
+              "letra": "B",
+              "t": "Milagros recorre su cuadra cada sábado con un cuaderno y una linterna."
+            },
+            {
+              "letra": "C",
+              "t": "Las brigadas escolares y el zancudo del dengue en Sullana."
+            },
+            {
+              "letra": "D",
+              "t": "Gracias a las brigadas escolares del centro de salud, en los barrios de Sullana ya no queda ningún caso de dengue."
+            },
+            {
+              "letra": "E",
+              "t": "Alumnos como Milagros ayudan a frenar el dengue en sus barrios como brigadistas."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En el reportaje, ¿qué papel cumplen las oraciones 1 a 4?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Dan la opinión de la periodista sobre el dengue."
+            },
+            {
+              "letra": "B",
+              "t": "Dicen la idea principal, porque abren el reportaje."
+            },
+            {
+              "letra": "C",
+              "t": "Sobran, porque hablan de una sola alumna y no del tema."
+            },
+            {
+              "letra": "D",
+              "t": "Presentan un caso que luego se explica como parte de algo más amplio."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: E · 3: D.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy estrecha. Milagros abre el reportaje, pero es un caso. La frase deja fuera las brigadas, que son el tema.",
+        "Pregunta 1. Clave C. Cubre todo el reportaje: el caso de Milagros, qué hacen las brigadas, cómo se formaron y qué se ha logrado.",
+        "Pregunta 2. Antes de las alternativas: la oración 5. La oración 5 junta todo: Milagros es parte de las brigadas que el centro de salud creó, y esas brigadas ya ayudan a frenar el dengue. Las de antes son el caso; las de después, cómo funcionan y qué lograron.",
+        "Pregunta 2. Clave E. Es la oración 5: las cuatro primeras son el caso de Milagros, y las de después dicen cómo funcionan las brigadas y qué han logrado.",
+        "Pregunta 3. Clave D. Cuentan lo que hace Milagros, y la oración 5 dice que, como ella, hay cuarenta alumnos en las brigadas."
+      ]
+    },
+    {
+      "id": "t176",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Informe del municipio escolar de un colegio de Iquitos» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Informe del municipio escolar de un colegio de Iquitos",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En Iquitos hace calor todo el año, y en el recreo muchos alumnos compraban agua en botellas de plástico."
+            },
+            {
+              "n": 2,
+              "t": "Esas botellas terminaban en los tachos del patio o en la quebrada que pasa detrás del colegio."
+            },
+            {
+              "n": 3,
+              "t": "En abril, el municipio escolar consiguió dos bebederos con agua tratada."
+            },
+            {
+              "n": 4,
+              "t": "Desde entonces, cada alumno llena ahí su propio tomatodo."
+            },
+            {
+              "n": 5,
+              "t": "El gráfico muestra cuántas botellas se botaron en el colegio en una semana de marzo y en una de mayo."
+            },
+            {
+              "n": 6,
+              "t": "Con los bebederos, el colegio bota cada semana muchas menos botellas de plástico que antes."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "barras",
+            "despues": 1,
+            "titulo": "Botellas de plástico botadas en el colegio en una semana",
+            "unidad": "botellas",
+            "barras": [
+              {
+                "etiqueta": "Marzo, sin bebederos",
+                "valor": 420
+              },
+              {
+                "etiqueta": "Mayo, con bebederos",
+                "valor": 90
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. El colegio no es real."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «Las botellas que se botaban en la quebrada» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "el precio del agua embotellada en las bodegas de Iquitos."
+            },
+            {
+              "letra": "B",
+              "t": "los bebederos del colegio y cuántas botellas menos se botan."
+            },
+            {
+              "letra": "C",
+              "t": "el cuidado del ambiente en la Amazonía."
+            },
+            {
+              "letra": "D",
+              "t": "las 420 botellas que se botaron en una semana de marzo."
+            },
+            {
+              "letra": "E",
+              "t": "el calor de Iquitos, que hacía que muchos alumnos compraran agua en el recreo."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del informe?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En Iquitos hace calor todo el año y en el recreo se compraba agua embotellada."
+            },
+            {
+              "letra": "B",
+              "t": "Los bebederos de agua tratada y las botellas de plástico que se botan en el colegio."
+            },
+            {
+              "letra": "C",
+              "t": "Cada alumno llena su propio tomatodo en uno de los bebederos."
+            },
+            {
+              "letra": "D",
+              "t": "Los bebederos acabaron con toda la basura del colegio."
+            },
+            {
+              "letra": "E",
+              "t": "Gracias a los bebederos, el colegio bota muchas menos botellas de plástico."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué título le queda mejor al informe?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Noventa botellas en mayo"
+            },
+            {
+              "letra": "B",
+              "t": "Menos botellas con los bebederos"
+            },
+            {
+              "letra": "C",
+              "t": "El calor del recreo en Iquitos"
+            },
+            {
+              "letra": "D",
+              "t": "El agua en la selva"
+            },
+            {
+              "letra": "E",
+              "t": "Un colegio sin ninguna botella de plástico"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: E · 3: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy estrecha. Cubre solo el problema de la oración 2. Deja fuera los bebederos, el cambio y el gráfico.",
+        "Pregunta 1. Clave B. Cubre el texto (los bebederos y lo que cambió) y también el gráfico, que compara las botellas antes y después.",
+        "Pregunta 2. Antes de las alternativas: la oración 6. La oración 6 junta todo el informe: con los bebederos se botan muchas menos botellas. Las demás cuentan el problema, la solución y cómo se midió.",
+        "Pregunta 2. Clave E. Es lo que dice la oración 6, y el gráfico lo muestra: de 420 botellas en una semana se pasó a 90.",
+        "Pregunta 3. Clave B. Tiene la medida del informe: nombra los bebederos y lo que lograron, que es lo que muestra el gráfico."
+      ]
+    },
+    {
+      "id": "t179",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Carta de una vecina al diario de Piura» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Carta de una vecina al diario de Piura",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "La municipalidad haría mejor en poner árboles y bancas en el parque de mi barrio que en gastar en una pileta nueva."
+            },
+            {
+              "n": 2,
+              "t": "En Piura, el sol del mediodía quema casi todo el año, y hoy el parque no tiene ni una sombra."
+            },
+            {
+              "n": 3,
+              "t": "Por eso, a esa hora está vacío, aunque es el único espacio verde del barrio."
+            },
+            {
+              "n": 4,
+              "t": "Los adultos mayores que caminan por las mañanas no tienen dónde sentarse a descansar, y las familias con niños se van pronto, porque los juegos de metal se calientan tanto que queman las manos."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Es cierto que una pileta se ve bonita y atrae a visitantes los fines de semana."
+            },
+            {
+              "n": 6,
+              "t": "Pero gasta agua todos los días y no le da sombra a nadie."
+            },
+            {
+              "n": 7,
+              "t": "Con lo que costaría, se podrían sembrar algarrobos, que aguantan bien el calor y la falta de lluvia, y poner bancas en todo el parque."
+            },
+            {
+              "n": 8,
+              "t": "Ojalá el alcalde escuche a los vecinos antes de decidir, porque un parque se hace para usarlo y no solo para mirarlo."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice lo que defiende el autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis de la autora de la carta?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los árboles, las bancas y la pileta del parque del barrio."
+            },
+            {
+              "letra": "B",
+              "t": "Los adultos mayores no tienen dónde sentarse en el parque."
+            },
+            {
+              "letra": "C",
+              "t": "Una pileta nueva haría más bonito el parque y atraería visitantes."
+            },
+            {
+              "letra": "D",
+              "t": "Al parque le hacen más falta árboles y bancas que una pileta nueva."
+            },
+            {
+              "letra": "E",
+              "t": "La municipalidad debe cerrar todas las piletas de la ciudad para ahorrar agua."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «El sol del mediodía en Piura» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Cuál es el tema central de la carta?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La pileta nueva que atraería a muchos visitantes al parque los fines de semana"
+            },
+            {
+              "letra": "B",
+              "t": "Cuánto dinero gasta la municipalidad en sus obras cada año"
+            },
+            {
+              "letra": "C",
+              "t": "Qué le conviene más al parque del barrio, sombra y bancas o una pileta"
+            },
+            {
+              "letra": "D",
+              "t": "El sol fuerte de Piura al mediodía"
+            },
+            {
+              "letra": "E",
+              "t": "Los espacios verdes en las ciudades del Perú"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "En la carta, ¿qué papel cumple la oración 5?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Da un ejemplo de cómo usan hoy el parque los vecinos y los visitantes del barrio."
+            },
+            {
+              "letra": "B",
+              "t": "Dice lo que la autora defiende, que se construya la pileta."
+            },
+            {
+              "letra": "C",
+              "t": "Reconoce una ventaja de la pileta, que la autora responde en la oración 6."
+            },
+            {
+              "letra": "D",
+              "t": "Sobra, porque no tiene que ver con lo que pide la carta."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: C · 3: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 1. La oración 1 dice lo que la autora defiende: árboles y bancas antes que una pileta. Las demás son sus razones, una ventaja de la pileta que ella responde y un deseo final.",
+        "Pregunta 1. Clave D. Es lo que dice la oración 1; las demás dan las razones y responden a la ventaja de la pileta.",
+        "Pregunta 2. Antes de las alternativas: Muy estrecha. Cubre solo la oración 2 y la 3: es una razón de la autora. Deja fuera lo que pide y la pileta.",
+        "Pregunta 2. Clave C. Cubre toda la carta: la tesis, las razones y la ventaja de la pileta que la autora discute.",
+        "Pregunta 3. Clave C. Empieza con «Es cierto que» y la 6 con «Pero»: la autora acepta algo de la otra postura para contestarlo."
+      ]
+    },
+    {
+      "id": "t178",
+      "nivel": "intermedio",
+      "enunciado": "Lee el texto «Folleto de la municipalidad para los vendedores del mercado» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Folleto de la municipalidad para los vendedores del mercado",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Cada día, los puestos de frutas y verduras del mercado dejan cáscaras, hojas y frutas malogradas."
+            },
+            {
+              "n": 2,
+              "t": "Hasta el año pasado, todo eso iba al botadero junto con el resto de la basura."
+            },
+            {
+              "n": 3,
+              "t": "Desde enero, la municipalidad recoge esos restos aparte y los convierte en abono para los parques de la ciudad."
+            },
+            {
+              "n": 4,
+              "t": "Los vendedores los dejan en tachos verdes, que el camión pasa a recoger a las seis de la tarde."
+            },
+            {
+              "n": 5,
+              "t": "En una planta a las afueras, los restos se amontonan y se voltean cada semana hasta volverse tierra negra."
+            },
+            {
+              "n": 6,
+              "t": "La tabla muestra cuánto se recogió en tres meses y cuánto abono salió."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "tabla",
+            "despues": 1,
+            "titulo": "Restos del mercado y abono producido, primer trimestre",
+            "columnas": [
+              "Mes",
+              "Restos recogidos (kg)",
+              "Abono producido (kg)"
+            ],
+            "filas": [
+              {
+                "celdas": [
+                  "Enero",
+                  "8000",
+                  "2400"
+                ]
+              },
+              {
+                "celdas": [
+                  "Febrero",
+                  "9000",
+                  "2700"
+                ]
+              },
+              {
+                "celdas": [
+                  "Marzo",
+                  "9500",
+                  "2850"
+                ]
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. La ciudad y el mercado no se nombran."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «La basura de las ciudades del Perú» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "El folleto y su tabla dan cuenta, principalmente, de",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "los 9500 kilos de restos que se recogieron en marzo."
+            },
+            {
+              "letra": "B",
+              "t": "la limpieza de las ciudades."
+            },
+            {
+              "letra": "C",
+              "t": "los restos del mercado que ahora se vuelven abono para los parques."
+            },
+            {
+              "letra": "D",
+              "t": "las multas a los vendedores que no separan sus restos en los tachos verdes."
+            },
+            {
+              "letra": "E",
+              "t": "lo que dejan cada día los puestos de frutas y verduras."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del folleto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los restos del mercado y el abono de los parques de la ciudad."
+            },
+            {
+              "letra": "B",
+              "t": "Los vendedores dejan sus restos en tachos verdes cada tarde."
+            },
+            {
+              "letra": "C",
+              "t": "Ya no llega nada del mercado al botadero de la ciudad."
+            },
+            {
+              "letra": "D",
+              "t": "Desde enero, los restos del mercado se recogen aparte y se vuelven abono."
+            },
+            {
+              "letra": "E",
+              "t": "Hasta el año pasado, los restos del mercado iban al botadero con el resto de la basura."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué título le queda mejor al folleto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Tachos verdes a las seis de la tarde"
+            },
+            {
+              "letra": "B",
+              "t": "Basura en las ciudades del sur"
+            },
+            {
+              "letra": "C",
+              "t": "El botadero de antes"
+            },
+            {
+              "letra": "D",
+              "t": "Abono a la venta para los vecinos"
+            },
+            {
+              "letra": "E",
+              "t": "Del mercado al parque"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: D · 3: E.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy amplia. Le serviría a muchos textos: el folleto trata solo de los restos de un mercado y del abono que se hace con ellos.",
+        "Pregunta 1. Clave C. Cubre el folleto (qué se recoge, cómo y para qué) y la tabla, que mide los restos y el abono.",
+        "Pregunta 2. Antes de las alternativas: la oración 3. La oración 3 dice lo nuevo, que el resto explica: los restos se recogen aparte y se vuelven abono.",
+        "Pregunta 2. Clave D. Es la oración 3: las de antes cuentan el problema y las de después, cómo se hace; la tabla lo mide.",
+        "Pregunta 3. Clave E. Dice en pocas palabras el camino que el folleto explica: los restos salen del mercado y terminan como abono en los parques."
+      ]
+    },
+    {
+      "id": "t181",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Columna de un profesor en la revista de su colegio» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Columna de un profesor en la revista de su colegio",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En muchos colegios, el curso de Educación para el Trabajo enseña computación, carpintería o costura."
+            },
+            {
+              "n": 2,
+              "t": "Casi ninguno enseña a cocinar, aunque todos los alumnos comen todos los días y, tarde o temprano, tendrán que preparar su propia comida."
+            },
+            {
+              "n": 3,
+              "t": "Algunos dirán que cocinar se aprende en casa y que el colegio tiene cosas más importantes que hacer."
+            },
+            {
+              "n": 4,
+              "t": "Sin embargo, aprender a cocinar en el colegio debería ser parte de la formación de todo estudiante."
+            }
+          ],
+          [
+            {
+              "n": 5,
+              "t": "Quien sabe preparar sus comidas gasta menos que quien compra comida hecha, algo que pesa cuando un joven se va a estudiar a otra ciudad."
+            },
+            {
+              "n": 6,
+              "t": "Además, elige mejor lo que come, porque sabe qué lleva cada plato y cuánta sal o azúcar le pone."
+            },
+            {
+              "n": 7,
+              "t": "Y no todos los chicos tienen en casa a alguien con tiempo para enseñarles: muchos padres trabajan hasta la noche."
+            },
+            {
+              "n": 8,
+              "t": "Para empezar, bastaría una cocina sencilla, unas ollas y una hora a la semana, y los mismos alumnos podrían traer los ingredientes por turnos."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice lo que defiende el autor. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la tesis del autor?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "El colegio debería enseñar a cocinar a todos sus estudiantes."
+            },
+            {
+              "letra": "B",
+              "t": "La cocina y los cursos de Educación para el Trabajo en los colegios."
+            },
+            {
+              "letra": "C",
+              "t": "Educación para el Trabajo enseña computación, carpintería o costura."
+            },
+            {
+              "letra": "D",
+              "t": "Quien prepara sus comidas gasta menos que quien compra comida hecha."
+            },
+            {
+              "letra": "E",
+              "t": "Cocinar se aprende en casa y el colegio tiene cosas más importantes que hacer."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «La alimentación de los estudiantes» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Cuál es el tema central del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los cursos que hoy enseña Educación para el Trabajo en muchos colegios"
+            },
+            {
+              "letra": "B",
+              "t": "Las comidas que venden los quioscos de los colegios"
+            },
+            {
+              "letra": "C",
+              "t": "Si el colegio debería enseñar a cocinar"
+            },
+            {
+              "letra": "D",
+              "t": "La educación secundaria en el Perú"
+            },
+            {
+              "letra": "E",
+              "t": "La cocina sencilla que haría falta para empezar en el colegio"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué papel cumplen las oraciones 5, 6 y 7?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Dan las razones de lo que defiende la oración 4."
+            },
+            {
+              "letra": "B",
+              "t": "Cuentan algo aparte, que se podría quitar sin que el texto cambie."
+            },
+            {
+              "letra": "C",
+              "t": "Cada una dice, por su cuenta, la idea principal del texto."
+            },
+            {
+              "letra": "D",
+              "t": "Responden a la opinión de la oración 3 dándole la razón."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: A · 2: C · 3: A.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: la oración 4. La oración 4 dice lo que el autor defiende. La 3 es la opinión contraria, que el «Sin embargo» rechaza; de la 5 a la 7 son las razones.",
+        "Pregunta 1. Clave A. Es la oración 4, que empieza con «Sin embargo» para responder a la 3; de la 5 a la 7 dan las razones.",
+        "Pregunta 2. Antes de las alternativas: Muy amplia. Le serviría a un texto sobre el desayuno escolar o los quioscos: este discute algo preciso, si el colegio debería enseñar a cocinar.",
+        "Pregunta 2. Clave C. Cubre todo: lo que falta, la opinión contraria, la tesis y sus razones.",
+        "Pregunta 3. Clave A. Cada una responde a «¿por qué?»: el ahorro, comer mejor y que no todos aprenden en casa."
+      ]
+    },
+    {
+      "id": "t185",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Página de la revista escolar de un colegio de Huancayo» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Página de la revista escolar de un colegio de Huancayo",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En marzo, el municipio escolar preguntó a los 400 alumnos cómo llegan cada mañana al colegio."
+            },
+            {
+              "n": 2,
+              "t": "El gráfico muestra lo que respondieron."
+            },
+            {
+              "n": 3,
+              "t": "Más de la mitad llega caminando, y todos ellos cruzan la avenida que pasa frente a la puerta."
+            },
+            {
+              "n": 4,
+              "t": "Esa avenida no tiene semáforo ni paso de cebra, y las combis pasan rápido a la hora de entrada."
+            },
+            {
+              "n": 5,
+              "t": "Por eso, como más de la mitad cruza esa avenida a pie, el municipio escolar pide a la municipalidad un cruce peatonal señalizado frente al colegio."
+            },
+            {
+              "n": 6,
+              "t": "La carta irá firmada por los delegados de cada sección y por la directora."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "barras",
+            "despues": 1,
+            "titulo": "¿Cómo llegas al colegio? Respuestas de 400 alumnos",
+            "unidad": "alumnos",
+            "barras": [
+              {
+                "etiqueta": "A pie",
+                "valor": 220
+              },
+              {
+                "etiqueta": "En combi",
+                "valor": 120
+              },
+              {
+                "etiqueta": "En mototaxi",
+                "valor": 40
+              },
+              {
+                "etiqueta": "En bicicleta",
+                "valor": 20
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. El colegio no es real."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «La encuesta de marzo sobre cómo llegan los 400 alumnos» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "las formas en que los 400 alumnos llegan cada mañana al colegio."
+            },
+            {
+              "letra": "B",
+              "t": "el cruce seguro que se pide para los muchos alumnos que llegan a pie."
+            },
+            {
+              "letra": "C",
+              "t": "las multas a las combis que pasan rápido frente a los colegios."
+            },
+            {
+              "letra": "D",
+              "t": "los 220 alumnos que llegan caminando al colegio."
+            },
+            {
+              "letra": "E",
+              "t": "el tránsito en las ciudades del Perú."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Los alumnos, la avenida y el cruce peatonal frente al colegio."
+            },
+            {
+              "letra": "B",
+              "t": "La avenida que pasa frente al colegio no tiene semáforo, y las combis pasan rápido a la hora de entrada."
+            },
+            {
+              "letra": "C",
+              "t": "El municipio escolar preguntó a los alumnos cómo llegan al colegio."
+            },
+            {
+              "letra": "D",
+              "t": "Como más de la mitad llega a pie por la avenida, los alumnos piden un cruce señalizado."
+            },
+            {
+              "letra": "E",
+              "t": "Todos los alumnos del colegio cruzan la avenida a pie cada mañana."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «El pedido de un cruce peatonal para los alumnos que llegan caminando» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Qué título le queda mejor al texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La encuesta de marzo"
+            },
+            {
+              "letra": "B",
+              "t": "Veinte alumnos en bicicleta"
+            },
+            {
+              "letra": "C",
+              "t": "Un cruce seguro para los que llegan a pie"
+            },
+            {
+              "letra": "D",
+              "t": "Las calles y los colegios de las ciudades del Perú"
+            },
+            {
+              "letra": "E",
+              "t": "Combis más lentas en toda la ciudad"
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: B · 2: D · 3: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy estrecha. Cubre la oración 1 y el gráfico, pero deja fuera el peligro de la avenida y el pedido del cruce, que es adonde va el texto.",
+        "Pregunta 1. Clave B. Cubre el texto y el gráfico: la encuesta muestra que más de la mitad llega a pie, y por eso se pide el cruce.",
+        "Pregunta 2. Antes de las alternativas: la oración 5. La oración 5 dice la idea completa: el pedido del cruce y su motivo, los muchos que cruzan a pie. La encuesta, el gráfico y el peligro de la avenida lo sostienen.",
+        "Pregunta 2. Clave D. Es la oración 5, con su razón de la oración 3 y del gráfico: 220 de 400 llegan a pie.",
+        "Pregunta 3. Antes de las alternativas: Justa. Cubre la encuesta y el gráfico (los que llegan caminando), el peligro de la avenida y el pedido, y no le serviría a otro texto.",
+        "Pregunta 3. Clave C. Tiene la medida del texto: lo que se pide y para quiénes, que es lo que el gráfico justifica."
+      ]
+    },
+    {
+      "id": "t188",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Boletín de la junta vecinal de un barrio de Arequipa» y responde las 3 preguntas.",
+      "texto": {
+        "titulo": "Boletín de la junta vecinal de un barrio de Arequipa",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "En nuestro barrio, el agua empezó a alcanzar para todos cuando cada casa tuvo su propio medidor."
+            },
+            {
+              "n": 2,
+              "t": "Antes, todas las familias pagaban lo mismo, gastaran poco o mucho."
+            },
+            {
+              "n": 3,
+              "t": "Algunas dejaban el caño abierto para regar la calle o lavaban el carro con manguera."
+            },
+            {
+              "n": 4,
+              "t": "Con el medidor, cada familia paga según lo que usa, y se fija más en las fugas y en los caños que gotean."
+            },
+            {
+              "n": 5,
+              "t": "La tabla muestra cuánta agua usó en promedio cada casa al día, antes y después de los medidores."
+            },
+            {
+              "n": 6,
+              "t": "Así, con el mismo pozo, ahora hay agua en las casas de la parte alta, que antes se quedaban secas en las tardes."
+            }
+          ]
+        ],
+        "figuras": [
+          {
+            "tipo": "tabla",
+            "despues": 1,
+            "titulo": "Agua usada por casa al día, en promedio",
+            "columnas": [
+              "Momento",
+              "Litros por casa"
+            ],
+            "filas": [
+              {
+                "celdas": [
+                  "Antes de los medidores",
+                  "650"
+                ]
+              },
+              {
+                "celdas": [
+                  "Después de los medidores",
+                  "420"
+                ]
+              }
+            ],
+            "nota": "Datos inventados para el ejercicio. El barrio no es real."
+          }
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «El agua en Arequipa» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "El texto y la tabla dan cuenta, principalmente, de",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "las obras que hará la empresa de agua para traer más agua al barrio desde otro pozo."
+            },
+            {
+              "letra": "B",
+              "t": "el agua potable en las ciudades del sur del Perú."
+            },
+            {
+              "letra": "C",
+              "t": "lo que pagaban las familias antes de tener medidor."
+            },
+            {
+              "letra": "D",
+              "t": "los medidores y el agua que ahora alcanza para todo el barrio."
+            },
+            {
+              "letra": "E",
+              "t": "los 420 litros que usa cada casa al día."
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Antes, algunas familias dejaban el caño abierto para regar la calle o lavaban el carro con manguera."
+            },
+            {
+              "letra": "B",
+              "t": "Los medidores de agua de un barrio de Arequipa."
+            },
+            {
+              "letra": "C",
+              "t": "Con el medidor, cada familia paga según el agua que usa."
+            },
+            {
+              "letra": "D",
+              "t": "Con un medidor en cada casa, se gasta menos agua y ahora alcanza también para la parte alta."
+            },
+            {
+              "letra": "E",
+              "t": "Los medidores acabaron con todas las fugas de agua del barrio."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué papel cumple la oración 4 en el texto?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Cuenta un problema que el barrio todavía no resuelve."
+            },
+            {
+              "letra": "B",
+              "t": "Explica por qué, con el medidor, las familias gastan menos agua."
+            },
+            {
+              "letra": "C",
+              "t": "Es la idea principal del texto, porque explica el cambio."
+            },
+            {
+              "letra": "D",
+              "t": "Sobra, porque repite lo que ya dice la tabla."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: D · 2: D · 3: B.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy amplia. Le serviría a un texto sobre el río Chili o las lluvias: este trata de lo que cambió en un barrio con los medidores.",
+        "Pregunta 1. Clave D. Cubre el texto (por qué los medidores cambiaron el gasto y qué se logró) y la tabla, que mide el gasto antes y después.",
+        "Pregunta 2. Antes de las alternativas: la oración 1 o la oración 6. La oración 1 dice qué cambió y la 6 lo completa: con el mismo pozo, el agua llega ahora a la parte alta. También vale «Ninguna la dice completa», porque la idea entera está repartida en las dos.",
+        "Pregunta 2. Clave D. Junta la oración 1 y la 6, y la tabla lo muestra: de 650 litros por casa al día se pasó a 420.",
+        "Pregunta 3. Clave B. Responde a «¿por qué?»: pagar según lo que se usa hace que cada familia cuide el agua."
+      ]
+    },
+    {
+      "id": "t189",
+      "nivel": "avanzado (tipo UNI)",
+      "enunciado": "Lee el texto «Panel para visitantes en un circuito de lomas de Lima» y responde las 4 preguntas.",
+      "texto": {
+        "titulo": "Panel para visitantes en un circuito de lomas de Lima",
+        "parrafos": [
+          [
+            {
+              "n": 1,
+              "t": "Entre junio y octubre, la neblina del mar se queda pegada a los cerros de la costa de Lima."
+            },
+            {
+              "n": 2,
+              "t": "Sus gotitas mojan la tierra y las piedras día tras día, aunque casi no llueva."
+            },
+            {
+              "n": 3,
+              "t": "Gracias a esa humedad, cerros que pasan el verano pelados se cubren de plantas y flores: son las lomas, un ecosistema que vive del agua de la neblina."
+            }
+          ],
+          [
+            {
+              "n": 4,
+              "t": "En ellas crece la flor de amancaes, que antes los limeños subían a buscar para una fiesta de junio, con música y comida en el campo."
+            },
+            {
+              "n": 5,
+              "t": "También llegan aves, caracoles y zorros que buscan comida y sombra entre las plantas."
+            },
+            {
+              "n": 6,
+              "t": "Pero cuando la ciudad construye casas o abre caminos sobre los cerros, la loma pierde el suelo donde brotan sus semillas."
+            },
+            {
+              "n": 7,
+              "t": "Por eso, las lomas necesitan cuidado: una parte de ellas es hoy un área protegida, y este circuito pide a los visitantes no salir del sendero ni llevarse plantas o flores."
+            }
+          ]
+        ]
+      },
+      "preguntas": [
+        {
+          "n": 1,
+          "previo": "Antes de mirar las alternativas: si esta frase fuera el tema central, ¿qué medida tendría? «La flor de amancaes» Elige: «Muy amplia (le serviría a otro texto)», «Justa (cubre todo el texto, y solo este)», «Muy estrecha (deja fuera una parte)».",
+          "enunciado": "¿Cuál es el tema central del panel?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "La neblina del mar en los cerros de Lima"
+            },
+            {
+              "letra": "B",
+              "t": "La naturaleza y los paisajes de toda la costa del Perú"
+            },
+            {
+              "letra": "C",
+              "t": "Las lomas, que reverdecen con la neblina, y su cuidado"
+            },
+            {
+              "letra": "D",
+              "t": "Las casas que se construyen sobre los cerros"
+            },
+            {
+              "letra": "E",
+              "t": "La flor de amancaes y su fiesta de junio"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "previo": "Antes de mirar las alternativas, escribe el número de la oración que dice la idea principal de todo el texto. Si ninguna lo dice completo, escribe «ninguna».",
+          "enunciado": "¿Cuál es la idea principal del panel?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "En las lomas viven aves, caracoles y zorros."
+            },
+            {
+              "letra": "B",
+              "t": "La neblina hace reverdecer las lomas, y como la ciudad las amenaza, hay que cuidarlas."
+            },
+            {
+              "letra": "C",
+              "t": "Las lomas de Lima y la neblina del invierno."
+            },
+            {
+              "letra": "D",
+              "t": "Entre junio y octubre, la neblina del mar se queda pegada a los cerros de la costa de Lima."
+            },
+            {
+              "letra": "E",
+              "t": "Construir sobre los cerros hace que la loma pierda su suelo."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "enunciado": "¿Qué título le queda mejor al panel?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Flores de neblina que hay que cuidar"
+            },
+            {
+              "letra": "B",
+              "t": "La fiesta de los amancaes"
+            },
+            {
+              "letra": "C",
+              "t": "El clima de la costa de Lima en invierno"
+            },
+            {
+              "letra": "D",
+              "t": "Cómo sembrar flores en los cerros"
+            },
+            {
+              "letra": "E",
+              "t": "La neblina de junio"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "enunciado": "¿Qué papel cumplen las oraciones 1 y 2 respecto de la oración 3?",
+          "alternativas": [
+            {
+              "letra": "A",
+              "t": "Dan ejemplos de los animales que viven en las lomas."
+            },
+            {
+              "letra": "B",
+              "t": "Dicen la idea principal, porque abren el panel."
+            },
+            {
+              "letra": "C",
+              "t": "Explican de dónde sale la humedad que forma las lomas."
+            },
+            {
+              "letra": "D",
+              "t": "Sobran, porque hablan del clima y no de las lomas."
+            }
+          ]
+        }
+      ],
+      "respuesta": "Clave: 1: C · 2: B · 3: A · 4: C.",
+      "pasos": [
+        "Pregunta 1. Antes de las alternativas: Muy estrecha. Cubre solo la oración 4. Deja fuera la neblina, las lomas mismas y lo que las amenaza.",
+        "Pregunta 1. Clave C. Cubre todo el panel: de dónde sale el agua, qué son las lomas, qué vive en ellas y qué las amenaza.",
+        "Pregunta 2. Antes de las alternativas: la oración 3 o la oración 7. La oración 3 dice qué son las lomas y de qué viven, y la 7, que necesitan cuidado; la idea entera junta las dos. También vale «Ninguna la dice completa», porque está repartida.",
+        "Pregunta 2. Clave B. Junta la oración 3 (qué son las lomas y de qué viven) con la 7 (necesitan cuidado), y la 6 dice por qué: la ciudad les quita el suelo.",
+        "Pregunta 3. Clave A. Tiene la medida del panel: las lomas que florecen con la neblina (oración 3) y su cuidado (oración 7).",
+        "Pregunta 4. Clave C. La neblina se pega a los cerros y moja la tierra: por eso la oración 3 empieza con «Gracias a esa humedad»."
+      ]
+    }
+  ]
+}

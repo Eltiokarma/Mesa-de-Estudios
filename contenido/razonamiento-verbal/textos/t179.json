@@ -1,0 +1,219 @@
+{
+  "id": "t179",
+  "version": 1,
+  "titulo": "Carta de una vecina al diario de Piura",
+  "tema": "Ciudad · sombra y bancas o una pileta en el parque (parque inventado)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "La municipalidad haría mejor en poner árboles y bancas en el parque de mi barrio que en gastar en una pileta nueva."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "En Piura, el sol del mediodía quema casi todo el año, y hoy el parque no tiene ni una sombra."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Por eso, a esa hora está vacío, aunque es el único espacio verde del barrio."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Los adultos mayores que caminan por las mañanas no tienen dónde sentarse a descansar, y las familias con niños se van pronto, porque los juegos de metal se calientan tanto que queman las manos."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "contraste",
+        "t": "Es cierto que una pileta se ve bonita y atrae a visitantes los fines de semana."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Pero gasta agua todos los días y no le da sombra a nadie."
+      },
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Con lo que costaría, se podrían sembrar algarrobos, que aguantan bien el calor y la falta de lluvia, y poner bancas en todo el parque."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Ojalá el alcalde escuche a los vecinos antes de decidir, porque un parque se hace para usarlo y no solo para mirarlo."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice lo que defiende el autor.",
+        "aceptadas": [
+          "o1"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o5": "RV42"
+        },
+        "explicacion": "La oración 1 dice lo que la autora defiende: árboles y bancas antes que una pileta. Las demás son sus razones, una ventaja de la pileta que ella responde y un deseo final.",
+        "explicaciones": {
+          "o2": "Es una razón: el sol fuerte y la falta de sombra.",
+          "o3": "Es una consecuencia de esa razón: el parque vacío al mediodía.",
+          "o4": "Es otra razón: hoy el parque no les sirve a los adultos mayores ni a las familias con niños.",
+          "o5": "Reconoce una ventaja de la pileta, pero la autora no la defiende: la responde en la oración 6.",
+          "o6": "Responde a la oración 5: es una razón contra la pileta.",
+          "o7": "Es una propuesta concreta que sale de la tesis.",
+          "o8": "Es un deseo final, con una razón general; no dice qué conviene poner en el parque en vez de la pileta.",
+          "ninguna": "La oración 1 sí la dice completa: qué conviene y frente a qué."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis de la autora de la carta?",
+      "alternativas": [
+        {
+          "t": "Al parque le hacen más falta árboles y bancas que una pileta nueva.",
+          "correcta": true,
+          "evidencia": [
+            "o1"
+          ],
+          "explicacion": "Es lo que dice la oración 1; las demás dan las razones y responden a la ventaja de la pileta."
+        },
+        {
+          "t": "Una pileta nueva haría más bonito el parque y atraería visitantes.",
+          "codigo": "RV42",
+          "origen": "o5",
+          "explicacion": "Leíste bien la oración 5, pero ahí la autora reconoce una ventaja para responderla en la 6: no es lo que defiende."
+        },
+        {
+          "t": "Los adultos mayores no tienen dónde sentarse en el parque.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es una de las razones de la tesis."
+        },
+        {
+          "t": "Los árboles, las bancas y la pileta del parque del barrio.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien de qué trata la carta, pero una tesis afirma algo."
+        },
+        {
+          "t": "La municipalidad debe cerrar todas las piletas de la ciudad para ahorrar agua.",
+          "codigo": "RV66",
+          "explicacion": "Habla de piletas y de agua, pero la autora no pide cerrar ninguna: agrega algo que la carta no dice."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El sol del mediodía en Piura",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV1",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 2 y la 3: es una razón de la autora. Deja fuera lo que pide y la pileta.",
+        "explicaciones": {
+          "justa": "Es verdad que la carta habla del sol, pero como razón: el tema es qué le conviene al parque.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque deja fuera casi toda la carta."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central de la carta?",
+      "alternativas": [
+        {
+          "t": "Qué le conviene más al parque del barrio, sombra y bancas o una pileta",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o5",
+            "o6"
+          ],
+          "explicacion": "Cubre toda la carta: la tesis, las razones y la ventaja de la pileta que la autora discute."
+        },
+        {
+          "t": "Los espacios verdes en las ciudades del Perú",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto de parques."
+        },
+        {
+          "t": "El sol fuerte de Piura al mediodía",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Sí está en la oración 2, pero es una razón: deja fuera lo que la autora pide."
+        },
+        {
+          "t": "La pileta nueva que atraería a muchos visitantes al parque los fines de semana",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Es una parte de la carta, la de la oración 5: deja fuera los árboles y las bancas."
+        },
+        {
+          "t": "Cuánto dinero gasta la municipalidad en sus obras cada año",
+          "codigo": "RV66",
+          "explicacion": "Tiene que ver con lo que costaría la pileta, pero la carta no habla de los gastos de la municipalidad: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "En la carta, ¿qué papel cumple la oración 5?",
+      "alternativas": [
+        {
+          "t": "Reconoce una ventaja de la pileta, que la autora responde en la oración 6.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o6"
+          ],
+          "explicacion": "Empieza con «Es cierto que» y la 6 con «Pero»: la autora acepta algo de la otra postura para contestarlo."
+        },
+        {
+          "t": "Dice lo que la autora defiende, que se construya la pileta.",
+          "codigo": "RV33",
+          "origen": "o5",
+          "explicacion": "Leíste bien que la oración 5 habla bien de la pileta, pero la autora lo reconoce para responderlo: ella no pide la pileta."
+        },
+        {
+          "t": "Sobra, porque no tiene que ver con lo que pide la carta.",
+          "codigo": "RV30",
+          "origen": "o5",
+          "explicacion": "Es verdad que no es una razón a favor de los árboles, pero sí tiene que ver: sin ella, la oración 6 no responde a nada."
+        },
+        {
+          "t": "Da un ejemplo de cómo usan hoy el parque los vecinos y los visitantes del barrio.",
+          "codigo": "RV42",
+          "origen": "o5",
+          "explicacion": "Es verdad que habla de visitantes, pero no cuenta cómo se usa hoy el parque: habla de una pileta que no existe."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

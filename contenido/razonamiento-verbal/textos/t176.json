@@ -1,0 +1,230 @@
+{
+  "id": "t176",
+  "version": 1,
+  "titulo": "Informe del municipio escolar de un colegio de Iquitos",
+  "tema": "Selva · bebederos y botellas de plástico en un colegio (datos inventados)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En Iquitos hace calor todo el año, y en el recreo muchos alumnos compraban agua en botellas de plástico."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Esas botellas terminaban en los tachos del patio o en la quebrada que pasa detrás del colegio."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "En abril, el municipio escolar consiguió dos bebederos con agua tratada."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Desde entonces, cada alumno llena ahí su propio tomatodo."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "El gráfico muestra cuántas botellas se botaron en el colegio en una semana de marzo y en una de mayo."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Con los bebederos, el colegio bota cada semana muchas menos botellas de plástico que antes."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "barras",
+      "despues": 1,
+      "titulo": "Botellas de plástico botadas en el colegio en una semana",
+      "unidad": "botellas",
+      "barras": [
+        {
+          "id": "f1a",
+          "etiqueta": "Marzo, sin bebederos",
+          "valor": 420
+        },
+        {
+          "id": "f1b",
+          "etiqueta": "Mayo, con bebederos",
+          "valor": 90
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El colegio no es real."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Las botellas que se botaban en la quebrada",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV3",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo el problema de la oración 2. Deja fuera los bebederos, el cambio y el gráfico.",
+        "explicaciones": {
+          "justa": "Es una parte verdadera del informe, el problema del comienzo, pero deja fuera la solución y el gráfico que la mide.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera los bebederos."
+        }
+      },
+      "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+      "alternativas": [
+        {
+          "t": "los bebederos del colegio y cuántas botellas menos se botan.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Cubre el texto (los bebederos y lo que cambió) y también el gráfico, que compara las botellas antes y después."
+        },
+        {
+          "t": "el calor de Iquitos, que hacía que muchos alumnos compraran agua en el recreo.",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la oración 1, pero es el marco con que empieza el informe: deja fuera los bebederos y el gráfico."
+        },
+        {
+          "t": "el cuidado del ambiente en la Amazonía.",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a un texto sobre la tala o los ríos: el informe trata de un colegio y sus botellas."
+        },
+        {
+          "t": "las 420 botellas que se botaron en una semana de marzo.",
+          "codigo": "RV1",
+          "origen": "f1a",
+          "explicacion": "Leíste bien el gráfico, pero es una barra: deja fuera los bebederos y la barra de mayo."
+        },
+        {
+          "t": "el precio del agua embotellada en las bodegas de Iquitos.",
+          "codigo": "RV66",
+          "explicacion": "Habla del agua embotellada, pero el informe no dice nada de precios: agrega un asunto que ni el texto ni el gráfico tratan."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o6"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 6 junta todo el informe: con los bebederos se botan muchas menos botellas. Las demás cuentan el problema, la solución y cómo se midió.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la situación de Iquitos: es el marco, no lo que el informe afirma.",
+          "o2": "Cuenta adónde iban las botellas: es parte del problema.",
+          "o3": "Dice qué se consiguió, pero no qué cambió con eso.",
+          "o4": "Es un detalle de cómo se usan los bebederos.",
+          "o5": "Presenta el gráfico: dice qué compara, no lo que muestra.",
+          "ninguna": "La oración 6 sí la dice completa: los bebederos y la baja de las botellas."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del informe?",
+      "alternativas": [
+        {
+          "t": "Gracias a los bebederos, el colegio bota muchas menos botellas de plástico.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Es lo que dice la oración 6, y el gráfico lo muestra: de 420 botellas en una semana se pasó a 90."
+        },
+        {
+          "t": "En Iquitos hace calor todo el año y en el recreo se compraba agua embotellada.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la primera oración, pero solo presenta la situación: el informe trata de lo que cambió con los bebederos."
+        },
+        {
+          "t": "Los bebederos de agua tratada y las botellas de plástico que se botan en el colegio.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien de qué trata el informe, pero no afirma nada: no dice qué pasó con las botellas."
+        },
+        {
+          "t": "Cada alumno llena su propio tomatodo en uno de los bebederos.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí está en la oración 4, pero es un detalle de cómo se usan los bebederos."
+        },
+        {
+          "t": "Los bebederos acabaron con toda la basura del colegio.",
+          "codigo": "RV11",
+          "explicacion": "Habla de lo que lograron los bebederos, pero el gráfico muestra que aún se botan 90 botellas, y el informe no habla de toda la basura."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "enunciado": "¿Qué título le queda mejor al informe?",
+      "alternativas": [
+        {
+          "t": "Menos botellas con los bebederos",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Tiene la medida del informe: nombra los bebederos y lo que lograron, que es lo que muestra el gráfico."
+        },
+        {
+          "t": "El agua en la selva",
+          "codigo": "RV2",
+          "explicacion": "Tiene que ver con el informe, pero le serviría a un texto sobre los ríos o la lluvia."
+        },
+        {
+          "t": "Noventa botellas en mayo",
+          "codigo": "RV1",
+          "origen": "f1b",
+          "explicacion": "Leíste bien la barra de mayo, pero es un dato: deja fuera los bebederos y el antes."
+        },
+        {
+          "t": "El calor del recreo en Iquitos",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Es el marco de la oración 1, con que empieza el informe; el informe trata de los bebederos."
+        },
+        {
+          "t": "Un colegio sin ninguna botella de plástico",
+          "codigo": "RV11",
+          "explicacion": "Habla de las botellas, pero «sin ninguna» dice más que el gráfico, que todavía marca 90."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

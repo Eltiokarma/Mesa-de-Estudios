@@ -433,6 +433,37 @@ test('par A/B: validar avisa de autores mal puestos y de un atribuir sin par', (
   assert.ok(L.validar(sinSonda).some(e => /atribuir necesita "sonda"/.test(e)));
 });
 
+// ---------- Tema central: el previo medida (etapa 2, 17 nov 2026) ----------
+const TEMA = {
+  id: 'ttema', version: 1, titulo: 'Aviso de muestra', tipo_texto: 'expositivo',
+  parrafos: [[{ id: 'o1', rol: 'principal', t: 'El desayuno se servirá a las 7:15.' }, { id: 'o2', rol: 'detalle', t: 'Habrá tolerancia.' }]],
+  preguntas: [{
+    id: 'p1', tipo: 'tema-central', unidad: 'razonamiento-verbal.tema-e-idea-principal', enunciado: '¿Cuál es el tema central?',
+    previo: { tipo: 'medida', pide: '¿Qué medida tiene esta frase?', sonda: 'La vida escolar', aceptada: 'amplia',
+      codigos: { justa: 'RV2', estrecha: null }, explicacion: 'Le serviría a otro aviso.', explicaciones: { justa: 'Cubre todo, pero también otros avisos.', estrecha: 'No deja nada fuera.' } },
+    alternativas: [{ t: 'El nuevo horario del desayuno', correcta: true, evidencia: ['o1', 'o2'], explicacion: 'Sí.' }, { t: 'La tolerancia', codigo: 'RV1', origen: 'o2', explicacion: 'Es un detalle.' }],
+  }],
+};
+
+test('tema central: el previo medida se califica con su tabla y valida sus campos', () => {
+  const p = TEMA.preguntas[0].previo;
+  assert.deepEqual(L.opcionesPrevio(p, TEMA), ['amplia', 'justa', 'estrecha']);
+  assert.deepEqual(L.calificarPrevio(p, 'amplia', TEMA), { correcta: true, error: null, opcion: 'amplia' });
+  assert.deepEqual(L.calificarPrevio(p, 'justa', TEMA), { correcta: false, error: 'RV2', opcion: 'justa' });
+  assert.deepEqual(L.calificarPrevio(p, 'estrecha', TEMA), { correcta: false, error: null, opcion: 'estrecha' });
+  assert.throws(() => L.calificarPrevio(p, 'mediana', TEMA));
+  assert.equal(L.etiquetaPrevio(p, 'justa', TEMA), 'Justa');
+  assert.deepEqual(L.validar(TEMA, { codigos: CODIGOS, unidades: UNIDADES }), []);
+  const c = L.correccionPrevio(p, L.calificarPrevio(p, 'justa', TEMA), TEMA, FRASES);
+  assert.equal(c.porQue, 'Cubre todo, pero también otros avisos.');
+  assert.equal(c.aceptada, 'Muy amplia');
+  assert.deepEqual(c.idea, []);
+  const sinSonda = { ...TEMA, preguntas: [{ ...TEMA.preguntas[0], previo: { ...p, sonda: '' } }] };
+  assert.ok(L.validar(sinSonda).some(e => /medida necesita "sonda"/.test(e)));
+  const sinCodigo = { ...TEMA, preguntas: [{ ...TEMA.preguntas[0], previo: { ...p, codigos: { justa: 'RV2' } } }] };
+  assert.ok(L.validar(sinCodigo).some(e => /falta el código de la respuesta "estrecha"/.test(e)));
+});
+
 // ---------- «No sé» en las pruebas de entrada y salida ----------
 test('«No sé» en la prueba de lectura: ni acierto ni código, 0 en las respuestas', () => {
   const M = require('./medicion.js');

@@ -44,6 +44,13 @@
     { id: 'ambos', t: 'Los dos autores' },
     { id: 'ninguno', t: 'Ninguno de los dos' },
   ];
+  // Tema central y título (etapa 2, 17 nov 2026, docs/etapa2/decisiones.md): ¿qué medida tiene esta frase como tema?
+  // La descripción es el criterio de la idea 1 de la teoría (el dato que se aplica, no la respuesta).
+  const MEDIDAS = [
+    { id: 'amplia', t: 'Muy amplia', d: 'le serviría a otro texto' },
+    { id: 'justa', t: 'Justa', d: 'cubre todo el texto, y solo este' },
+    { id: 'estrecha', t: 'Muy estrecha', d: 'deja fuera una parte' },
+  ];
   // Analogías: {a} y {b} se reemplazan por las palabras de la pareja base. Las que tienen dirección van en pares.
   const ANALOGIAS = [
     { id: 'a-produce-b', t: 'De {a} se obtiene {b}', inversa: 'b-produce-a' }, // material: de la vaca se obtiene leche; «causa» es causa y efecto (el virus no «se obtiene» fiebre)
@@ -60,7 +67,7 @@
     { id: 'contrarios', t: 'Son contrarios' },
   ];
   const CONCLUSION = /^\s*(así|por eso|por ello|por esas?\b|por lo tanto|en conclusión|en suma|en resumen)/i;
-  const TIPOS_PREVIO = ['marcar-oracion', 'clasificar', 'relacion', 'relacion-analogia', 'proposito', 'ordenar', 'atribuir'];
+  const TIPOS_PREVIO = ['marcar-oracion', 'clasificar', 'relacion', 'relacion-analogia', 'proposito', 'ordenar', 'atribuir', 'medida'];
   const ROL_CODIGO = { detalle: 'RV1', ejemplo: 'RV1', cita: 'RV1', general: 'RV2', apoyo: 'RV3', contraste: 'RV3' };
   const NOMBRE_EJERCICIO = { analogia: 'Analogía', 'termino-excluido': 'Término excluido', 'oracion-incompleta': 'Oración incompleta',
     conector: 'Conectores', 'plan-de-redaccion': 'Plan de redacción', eliminacion: 'Eliminación de oraciones' };
@@ -197,6 +204,7 @@
       case 'relacion': return RELACIONES.map(c => c.id);
       case 'proposito': return PROPOSITOS.map(c => c.id);
       case 'atribuir': return ATRIBUCIONES.map(c => c.id);
+      case 'medida': return MEDIDAS.map(c => c.id);
       case 'relacion-analogia': return ANALOGIAS.map(c => c.id);
       default: return [];
     }
@@ -240,7 +248,7 @@
       if (opcion === previo.aceptada) return { correcta: true, error: null, opcion };
       return { correcta: false, error: a.inversa === previo.aceptada ? 'RV16' : 'RV17', opcion };
     }
-    if (t === 'clasificar' || t === 'relacion' || t === 'proposito' || t === 'atribuir') {
+    if (t === 'clasificar' || t === 'relacion' || t === 'proposito' || t === 'atribuir' || t === 'medida') {
       const aceptada = t === 'clasificar' ? previo.clase : previo.aceptada;
       if (!opcionesPrevio(previo, item).includes(opcion)) throw new Error(`Respuesta "${opcion}" no válida para ${t}`);
       if (opcion === aceptada) return { correcta: true, error: null, opcion };
@@ -311,6 +319,7 @@
       case 'relacion': return (RELACIONES.find(c => c.id === opcion) || {}).t || opcion;
       case 'proposito': return (PROPOSITOS.find(c => c.id === opcion) || {}).t || opcion;
       case 'atribuir': return (ATRIBUCIONES.find(c => c.id === opcion) || {}).t || opcion;
+      case 'medida': return (MEDIDAS.find(c => c.id === opcion) || {}).t || opcion;
       case 'relacion-analogia': return textoAnalogia(opcion, it && it.cuerpo && it.cuerpo.base);
       case 'ordenar': return (Array.isArray(opcion) ? opcion : String(opcion).split('-')).join(' – ');
       default: return String(opcion);
@@ -464,6 +473,7 @@
       }
       if (p.tipo === 'clasificar' && !p.sonda) mal(`${d}: clasificar necesita "sonda"`);
       if (p.tipo === 'atribuir' && !p.sonda) mal(`${d}: atribuir necesita "sonda"`);
+      if (p.tipo === 'medida' && !p.sonda) mal(`${d}: medida necesita "sonda" (la frase que se mide)`);
       if (p.tipo === 'atribuir' && !autores(it).length) mal(`${d}: atribuir solo va en un par de textos A/B (con "autores")`);
       if (p.tipo === 'relacion-analogia' && !(it.cuerpo && Array.isArray(it.cuerpo.base) && it.cuerpo.base.length === 2)) mal(`${d}: la analogía necesita cuerpo.base con dos palabras`);
       const acept = respuestaAceptada(p);
@@ -483,7 +493,7 @@
     return errores;
   }
 
-  return { LETRAS, noSe, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, ATRIBUCIONES, autores, autorDe, TIPOS_PREVIO, NOMBRE_EJERCICIO,
+  return { LETRAS, noSe, CLASES, RELACIONES, PROPOSITOS, ANALOGIAS, ATRIBUCIONES, MEDIDAS, autores, autorDe, TIPOS_PREVIO, NOMBRE_EJERCICIO,
     TIPOS_FIGURA, figuras, elementos, referencias, etiquetaRef, citas,
     normalizar, oraciones, numero, problema, problemaTexto, codigoOracion, opcionesPrevio, calificarPrevio,
     preparar, calificar, respaldo, pintura, etiquetaPrevio, textoAnalogia, correccionPrevio, FRASE_NO_APLICA, avisos, formaPrueba, lista, siguiente, ev, validar };

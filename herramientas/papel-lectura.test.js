@@ -67,3 +67,11 @@ test('papel: barajar con la semilla fija no deja la clave siempre en la misma le
   for (const l of letras) cuenta[l] = (cuenta[l] || 0) + 1;
   assert.ok(Math.max(...Object.values(cuenta)) / letras.length < 0.4, JSON.stringify(cuenta));
 });
+
+test('el previo medida va en el papel con la frase y las tres medidas', () => {
+  const P = require('./papel-lectura.js');
+  const c = P.consigna({ tipo: 'medida', pide: 'Antes de ver las alternativas: ¿qué medida tendría?', sonda: 'La vida escolar' }, {});
+  assert.match(c, /^Antes de mirar las alternativas/);
+  assert.ok(c.includes('«La vida escolar»'));
+  for (const m of ['Muy amplia', 'Justa', 'Muy estrecha']) assert.ok(c.includes(m), m);
+});

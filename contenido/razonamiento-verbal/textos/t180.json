@@ -1,0 +1,244 @@
+{
+  "id": "t180",
+  "version": 1,
+  "titulo": "Hoja de simulacro · Texto 3",
+  "tema": "Salud · avisos en quechua y vacunación infantil (distrito inventado)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En un distrito de Ayacucho, la mayoría de las familias habla quechua en casa."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Hasta hace dos años, los avisos del centro de salud se daban solo en castellano, por altoparlante."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Muchas madres no se enteraban de las fechas de vacunación de sus hijos."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Entonces, el centro de salud empezó a dar sus avisos también en quechua, por la radio comunal."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "El gráfico compara cuántos niños se vacunaron en la campaña de mayo, antes y después del cambio."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Dar los avisos en la lengua de las familias hizo que muchos más niños llegaran a vacunarse."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "barras",
+      "despues": 1,
+      "titulo": "Niños vacunados en la campaña de mayo",
+      "unidad": "niños",
+      "barras": [
+        {
+          "id": "f1a",
+          "etiqueta": "2023, avisos solo en castellano",
+          "valor": 140
+        },
+        {
+          "id": "f1b",
+          "etiqueta": "2025, avisos también en quechua",
+          "valor": 310
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El distrito no es real."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Las vacunas de los niños",
+        "aceptada": "amplia",
+        "codigos": {
+          "justa": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Le serviría a cualquier texto de vacunas: este trata de cómo cambió la vacunación cuando los avisos se dieron en quechua.",
+        "explicaciones": {
+          "justa": "Es verdad que el texto habla de vacunas, pero esa frase también le serviría a un folleto sobre otra vacuna o a un texto de otro lugar.",
+          "estrecha": "Viste bien que la frase no tiene la medida justa, pero no deja nada fuera: falla al revés, porque abarca mucho más que este texto."
+        }
+      },
+      "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+      "alternativas": [
+        {
+          "t": "los avisos de salud en quechua y cuántos niños más se vacunan.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Cubre el texto (por qué y cómo cambiaron los avisos) y el gráfico, que compara los vacunados antes y después."
+        },
+        {
+          "t": "las familias de un distrito de Ayacucho que hablan quechua en su casa.",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la oración 1, pero es el marco con que empieza el texto: deja fuera los avisos y el gráfico."
+        },
+        {
+          "t": "la salud de los niños en el Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto de salud infantil."
+        },
+        {
+          "t": "los 310 niños que se vacunaron en mayo de 2025.",
+          "codigo": "RV1",
+          "origen": "f1b",
+          "explicacion": "Leíste bien el gráfico, pero es una barra: deja fuera el texto y la barra de 2023."
+        },
+        {
+          "t": "el quechua como la única lengua que entienden las madres del distrito.",
+          "codigo": "RV11",
+          "explicacion": "Habla del quechua, pero el texto dice «la mayoría» y no «única»: agrega algo que el texto no afirma."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o6"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 6 junta todo: los avisos en quechua hicieron que se vacunaran muchos más niños. Las demás cuentan el problema, el cambio y cómo se midió.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el lugar y la lengua: es el marco.",
+          "o2": "Cuenta cómo eran los avisos antes.",
+          "o3": "Es el problema que el texto resuelve después.",
+          "o4": "Dice qué cambió, pero no qué se logró con eso.",
+          "o5": "Presenta el gráfico.",
+          "ninguna": "La oración 6 sí la dice completa: el cambio y su efecto."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Al dar los avisos en quechua, muchos más niños llegaron a vacunarse.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Es lo que dice la oración 6, y el gráfico lo muestra: de 140 niños vacunados se pasó a 310."
+        },
+        {
+          "t": "En un distrito de Ayacucho, la mayoría de las familias habla quechua en su casa.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la primera oración, pero solo presenta el lugar: no dice qué pasó con los avisos."
+        },
+        {
+          "t": "Muchas madres no se enteraban de cuándo había vacunación.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Sí está en la oración 3, pero es el problema: deja fuera lo que cambió."
+        },
+        {
+          "t": "Los avisos del centro de salud y la radio comunal del distrito.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        },
+        {
+          "t": "La radio comunal debería transmitir todos sus programas en quechua.",
+          "codigo": "RV66",
+          "explicacion": "Habla de la radio y del quechua, pero el texto no propone nada sobre los programas: solo cuenta lo que pasó con los avisos."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El cambio de lengua en los avisos de vacunación y lo que se logró",
+        "aceptada": "justa",
+        "codigos": {
+          "amplia": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Cubre el texto entero (el problema, el cambio y su efecto) y el gráfico, y no le serviría a otro texto: tiene la medida justa.",
+        "explicaciones": {
+          "amplia": "Es verdad que la frase es larga, pero no le serviría a otro texto: habla de estos avisos y de esta campaña.",
+          "estrecha": "Es verdad que no nombra a Ayacucho, pero el lugar es el marco: la frase no deja fuera ninguna parte del texto ni del gráfico."
+        }
+      },
+      "enunciado": "¿Qué título le queda mejor al texto?",
+      "alternativas": [
+        {
+          "t": "Avisos en quechua, más niños vacunados",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Tiene la medida del texto y del gráfico: el cambio de lengua y lo que se logró."
+        },
+        {
+          "t": "La salud en los Andes",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a muchos textos."
+        },
+        {
+          "t": "Ciento cuarenta niños en 2023",
+          "codigo": "RV1",
+          "origen": "f1a",
+          "explicacion": "Leíste bien la primera barra, pero es un dato: deja fuera el cambio."
+        },
+        {
+          "t": "Un distrito de Ayacucho que habla quechua en casa",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Es el marco de la oración 1: deja fuera los avisos y la vacunación."
+        },
+        {
+          "t": "Una radio para aprender quechua",
+          "codigo": "RV66",
+          "explicacion": "Habla de la radio y del quechua, pero el texto no trata de enseñar la lengua: agrega un asunto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

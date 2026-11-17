@@ -134,7 +134,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["lectura-verbal"],
+      "plantillas": ["tema-idea-principal", "lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

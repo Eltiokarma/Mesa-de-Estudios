@@ -204,6 +204,7 @@ async function vista(ctx, id, unidad) {
           relacion: L().RELACIONES.map(c => [c.id, c.t, c.d]),
           proposito: L().PROPOSITOS.map(c => [c.id, c.t, '']),
           atribuir: L().ATRIBUCIONES.map(c => [c.id, c.t, '']),
+          medida: L().MEDIDAS.map(c => [c.id, c.t, c.d]),
           'relacion-analogia': L().ANALOGIAS.map(c => [c.id, L().textoAnalogia(c.id, (it.cuerpo || {}).base), '']),
         }[p.tipo];
         cuerpo = (p.sonda ? `<blockquote class="sonda">${esc(p.sonda)}</blockquote>` : '')

@@ -76,6 +76,7 @@ function consigna(p, it) {
     case 'clasificar': return `${pide} «${p.sonda}» Elige: ${ops(Lectura.CLASES.map(c => c.t))}.`;
     case 'proposito': return `${pide} Elige: ${ops(Lectura.PROPOSITOS.map(c => c.t))}.`;
     case 'atribuir': return `${pide} «${p.sonda}» Elige: ${ops(Lectura.ATRIBUCIONES.map(c => c.t))}.`;
+    case 'medida': return `${pide} «${p.sonda}» Elige: ${ops(Lectura.MEDIDAS.map(c => `${c.t} (${c.d})`))}.`;
     case 'relacion': return `${pide} Elige: ${ops(Lectura.RELACIONES.map(c => `${c.t} (${c.d})`))}.`;
     case 'relacion-analogia': return `${pide} Escríbela con tus palabras, por ejemplo «${Lectura.textoAnalogia('a-usa-b', (it.cuerpo || {}).base)}».`;
     default: return pide;

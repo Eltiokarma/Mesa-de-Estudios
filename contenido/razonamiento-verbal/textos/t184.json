@@ -1,0 +1,223 @@
+{
+  "id": "t184",
+  "version": 1,
+  "titulo": "Reportaje del diario regional de Piura",
+  "tema": "Salud · brigadas escolares contra el dengue (colegio y brigadas inventados)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Cada sábado, Milagros, alumna de cuarto de secundaria de un colegio de Sullana, recorre su cuadra con un cuaderno y una linterna."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Toca puertas y pide permiso para mirar los baldes, las llantas viejas y los floreros de los patios."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Busca agua quieta, porque ahí pone sus huevos el zancudo que transmite el dengue."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Si encuentra larvas, enseña a la familia a vaciar el recipiente, a escobillarlo y a taparlo."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Como ella, cuarenta alumnos forman las brigadas escolares que el centro de salud creó este año, y ya están ayudando a frenar el dengue desde los barrios."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "Los brigadistas recibieron dos talleres y llevan un chaleco amarillo con el nombre del centro de salud, para que los vecinos los reconozcan y les abran la puerta."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Según el centro de salud, en las cuadras visitadas ya se encuentran menos recipientes con larvas que en enero."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "La directora del colegio quiere que el próximo año se sumen también los alumnos de tercero."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Milagros, alumna de cuarto de secundaria",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV64",
+          "amplia": "RV2"
+        },
+        "explicacion": "Milagros abre el reportaje, pero es un caso. La frase deja fuera las brigadas, que son el tema.",
+        "explicaciones": {
+          "justa": "Es verdad que el reportaje empieza y gira un rato en torno a Milagros, pero la oración 5 dice que ella es una de cuarenta: el tema son las brigadas.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y nombra a una sola alumna."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central del reportaje?",
+      "alternativas": [
+        {
+          "t": "Las brigadas de alumnos que combaten el dengue en sus barrios",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o5",
+            "o7"
+          ],
+          "explicacion": "Cubre todo el reportaje: el caso de Milagros, qué hacen las brigadas, cómo se formaron y qué se ha logrado."
+        },
+        {
+          "t": "Milagros y su recorrido de cada sábado por su cuadra de Sullana",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Sí lo cuenta la oración 1, pero Milagros es un caso: el reportaje trata de todas las brigadas."
+        },
+        {
+          "t": "La salud pública en la costa norte del Perú",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a un texto sobre hospitales o vacunas."
+        },
+        {
+          "t": "El chaleco amarillo que llevan los brigadistas del colegio",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Sí está en la oración 6, pero es un detalle."
+        },
+        {
+          "t": "Los medicamentos que se usan para curar el dengue en los hospitales",
+          "codigo": "RV66",
+          "explicacion": "Tiene que ver con el dengue, pero el reportaje no habla de curarlo: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o5"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 5 junta todo: Milagros es parte de las brigadas que el centro de salud creó, y esas brigadas ya ayudan a frenar el dengue. Las de antes son el caso; las de después, cómo funcionan y qué lograron.",
+        "explicaciones": {
+          "o1": "La primera oración presenta a Milagros: es el caso con que se abre el reportaje.",
+          "o2": "Cuenta lo que hace Milagros en cada casa.",
+          "o3": "Explica por qué busca agua quieta: es una razón.",
+          "o4": "Es un paso de lo que hace una brigadista.",
+          "o6": "Es un detalle: los talleres y el chaleco.",
+          "o7": "Da la prueba de lo que se ha logrado, pero no dice quiénes lo logran ni cómo.",
+          "o8": "Es un detalle sobre el próximo año.",
+          "ninguna": "La oración 5 sí la dice completa: quiénes son, quién los formó y qué están logrando."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del reportaje?",
+      "alternativas": [
+        {
+          "t": "Alumnos como Milagros ayudan a frenar el dengue en sus barrios como brigadistas.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7"
+          ],
+          "explicacion": "Es la oración 5: las cuatro primeras son el caso de Milagros, y las de después dicen cómo funcionan las brigadas y qué han logrado."
+        },
+        {
+          "t": "Milagros recorre su cuadra cada sábado con un cuaderno y una linterna.",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Repite bien la primera oración, pero es la persona con que abre el reportaje: un caso de algo más amplio."
+        },
+        {
+          "t": "Si hay larvas, se vacía el recipiente, se escobilla y se tapa.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es un paso de lo que hacen los brigadistas."
+        },
+        {
+          "t": "Las brigadas escolares y el zancudo del dengue en Sullana.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        },
+        {
+          "t": "Gracias a las brigadas escolares del centro de salud, en los barrios de Sullana ya no queda ningún caso de dengue.",
+          "codigo": "RV11",
+          "explicacion": "Habla de lo que logran las brigadas, pero el reportaje solo dice que hay menos recipientes con larvas: «ningún caso» dice mucho más."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "En el reportaje, ¿qué papel cumplen las oraciones 1 a 4?",
+      "alternativas": [
+        {
+          "t": "Presentan un caso que luego se explica como parte de algo más amplio.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o5"
+          ],
+          "explicacion": "Cuentan lo que hace Milagros, y la oración 5 dice que, como ella, hay cuarenta alumnos en las brigadas."
+        },
+        {
+          "t": "Dicen la idea principal, porque abren el reportaje.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Es verdad que abren el reportaje, pero cuentan un caso: la idea que lo explica llega en la oración 5."
+        },
+        {
+          "t": "Dan la opinión de la periodista sobre el dengue.",
+          "codigo": "RV42",
+          "origen": "o3",
+          "explicacion": "Es verdad que la oración 3 explica algo del dengue, pero nadie opina: cuentan lo que hace una alumna."
+        },
+        {
+          "t": "Sobran, porque hablan de una sola alumna y no del tema.",
+          "codigo": "RV30",
+          "origen": "o1",
+          "explicacion": "Es verdad que hablan de una sola alumna, pero su caso muestra qué hace una brigada: sí sostiene el tema."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [
+    {
+      "afirmacion": "El zancudo Aedes aegypti, que transmite el dengue, pone sus huevos en recipientes con agua quieta; vaciar, escobillar y tapar los recipientes ayuda a prevenirlo.",
+      "fuente": "Ministerio de Salud del Perú, «Dengue: medidas de prevención» (gob.pe)."
+    }
+  ],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

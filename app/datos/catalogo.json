@@ -6410,6 +6410,7 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
+      "tema-idea-principal",
       "lectura-verbal"
      ],
      "teoria": {
@@ -9814,6 +9815,42 @@
     "/plantillas/tablas-graficos/index.html",
     "/plantillas/tablas-graficos/motor.js",
     "/plantillas/tablas-graficos/papel.json"
+   ]
+  },
+  "tema-idea-principal": {
+   "id": "tema-idea-principal",
+   "titulo": "Tema central, idea principal y título",
+   "formato": "lectura",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.tema-e-idea-principal"
+   ],
+   "url": "#/lectura/tema-idea-principal",
+   "banco": "/contenido/razonamiento-verbal/indice-tema-idea-principal.json",
+   "papel": "/plantillas/tema-idea-principal/papel.json",
+   "entrada": null,
+   "salida": null,
+   "archivos": [
+    "/contenido/razonamiento-verbal/indice-tema-idea-principal.json",
+    "/contenido/razonamiento-verbal/codigos.json",
+    "/contenido/razonamiento-verbal/frases.json",
+    "/contenido/razonamiento-verbal/textos/t187.json",
+    "/contenido/razonamiento-verbal/textos/t175.json",
+    "/contenido/razonamiento-verbal/textos/t177.json",
+    "/contenido/razonamiento-verbal/textos/t184.json",
+    "/contenido/razonamiento-verbal/textos/t176.json",
+    "/contenido/razonamiento-verbal/textos/t179.json",
+    "/contenido/razonamiento-verbal/textos/t178.json",
+    "/contenido/razonamiento-verbal/textos/t183.json",
+    "/contenido/razonamiento-verbal/textos/t180.json",
+    "/contenido/razonamiento-verbal/textos/t186.json",
+    "/contenido/razonamiento-verbal/textos/t182.json",
+    "/contenido/razonamiento-verbal/textos/t181.json",
+    "/contenido/razonamiento-verbal/textos/t185.json",
+    "/contenido/razonamiento-verbal/textos/t188.json",
+    "/contenido/razonamiento-verbal/textos/t189.json",
+    "/plantillas/tema-idea-principal/papel.json"
    ]
   },
   "termodinamica": {

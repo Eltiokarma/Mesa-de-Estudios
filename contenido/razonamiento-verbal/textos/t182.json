@@ -1,0 +1,253 @@
+{
+  "id": "t182",
+  "version": 1,
+  "titulo": "Nota del boletín vecinal de un barrio del Cusco",
+  "tema": "Ciudad · aceite usado que se vuelve combustible (barrio inventado)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "En nuestro barrio, los restaurantes ya no echan su aceite usado al desagüe: lo juntan en bidones para que se convierta en combustible."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "El aceite que se echa por el lavadero se pega en las tuberías y las va tapando."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Además, cuando llega al río, forma una capa sobre el agua."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Una vez por semana, una empresa recoge los bidones y paga un poco por cada litro."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "En su planta, el aceite se limpia y se transforma en biodiésel, un combustible para motores."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "La tabla muestra cuánto aceite se juntó en el barrio en los primeros meses."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "tabla",
+      "despues": 1,
+      "titulo": "Aceite usado juntado por los restaurantes del barrio",
+      "columnas": [
+        "Mes",
+        "Restaurantes que participan",
+        "Litros"
+      ],
+      "filas": [
+        {
+          "id": "f1a",
+          "celdas": [
+            "Abril",
+            "12",
+            "300"
+          ]
+        },
+        {
+          "id": "f1b",
+          "celdas": [
+            "Mayo",
+            "18",
+            "450"
+          ]
+        },
+        {
+          "id": "f1c",
+          "celdas": [
+            "Junio",
+            "25",
+            "640"
+          ]
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El barrio no es real."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El biodiésel que sale del aceite usado",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV1",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 5. Deja fuera lo principal: que los restaurantes juntan el aceite en vez de echarlo al desagüe, y la tabla.",
+        "explicaciones": {
+          "justa": "Es verdad que el texto explica qué es el biodiésel, pero es un paso: el tema es lo que hacen los restaurantes con su aceite.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera casi todo."
+        }
+      },
+      "enunciado": "El texto y la tabla dan cuenta, principalmente, de",
+      "alternativas": [
+        {
+          "t": "el aceite que juntan los restaurantes para volverlo combustible.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o5",
+            "f1"
+          ],
+          "explicacion": "Cubre el texto (qué hacen los restaurantes, por qué y qué pasa con el aceite) y la tabla, que mide cuánto se junta."
+        },
+        {
+          "t": "la contaminación de los ríos del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto de ríos contaminados."
+        },
+        {
+          "t": "los 640 litros de aceite que se juntaron en junio.",
+          "codigo": "RV1",
+          "origen": "f1c",
+          "explicacion": "Leíste bien la tabla, pero es una celda: deja fuera el texto y los otros meses."
+        },
+        {
+          "t": "las tuberías del barrio que se van tapando con el aceite que se echa por el lavadero.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es una parte verdadera, la de la oración 2, pero es una razón: deja fuera lo que hacen los restaurantes."
+        },
+        {
+          "t": "la comida frita que se vende en los restaurantes del Cusco.",
+          "codigo": "RV66",
+          "explicacion": "Tiene que ver con el aceite, pero el texto no habla de qué comidas se venden: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o1"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 1 dice lo que todo el texto explica: el aceite ya no va al desagüe, se junta y se vuelve combustible. Las demás dicen por qué y cómo.",
+        "explicaciones": {
+          "o2": "Es una razón: las tuberías que se tapan.",
+          "o3": "Es otra razón: lo que pasa en el río.",
+          "o4": "Es un detalle del recojo.",
+          "o5": "Dice qué pasa con el aceite en la planta: un paso.",
+          "o6": "Presenta la tabla.",
+          "ninguna": "La oración 1 sí la dice completa: qué dejaron de hacer los restaurantes y qué hacen ahora."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "El aceite de los restaurantes del barrio ya no se pierde en el desagüe, sino que se vuelve combustible.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "f1"
+          ],
+          "explicacion": "Es la oración 1; la 2 y la 3 dicen por qué conviene, la 4 y la 5 cómo se hace, y la tabla cuánto se junta."
+        },
+        {
+          "t": "El aceite que se echa por el lavadero tapa las tuberías y, cuando llega al río, forma una capa sobre el agua.",
+          "codigo": "RV3",
+          "origen": "o3",
+          "explicacion": "Es verdad que junta la oración 2 y la 3, pero son las razones: deja fuera lo que hacen los restaurantes."
+        },
+        {
+          "t": "Una empresa recoge los bidones cada semana y paga por cada litro.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es un detalle del recojo."
+        },
+        {
+          "t": "El aceite usado de los restaurantes de un barrio del Cusco.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        },
+        {
+          "t": "En el Cusco ya ningún restaurante echa aceite al desagüe.",
+          "codigo": "RV11",
+          "explicacion": "Habla de lo que cambió, pero el texto habla de un barrio, no de toda la ciudad: «ningún» dice más que el texto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumplen las oraciones 2 y 3 respecto de la oración 1?",
+      "alternativas": [
+        {
+          "t": "Explican por qué conviene no echar el aceite al desagüe.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2",
+            "o3"
+          ],
+          "explicacion": "Responden a «¿por qué?»: el aceite tapa las tuberías y forma una capa sobre el río."
+        },
+        {
+          "t": "Cuentan cómo se convierte el aceite en combustible.",
+          "codigo": "RV42",
+          "origen": "o2",
+          "explicacion": "Es verdad que hablan del aceite, pero de lo que hace en el desagüe: cómo se vuelve combustible lo cuenta la oración 5."
+        },
+        {
+          "t": "Dicen la idea principal del texto.",
+          "codigo": "RV1",
+          "origen": "o2",
+          "explicacion": "Es verdad que son importantes, pero son razones: la idea principal está en la oración 1."
+        },
+        {
+          "t": "No tienen que ver con el texto y se podrían quitar.",
+          "codigo": "RV30",
+          "origen": "o3",
+          "explicacion": "Es verdad que la oración 1 se entiende sin ellas, pero son las razones del cambio: sí lo sostienen."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [
+    {
+      "afirmacion": "El aceite de cocina echado al desagüe se acumula en las tuberías y contribuye a taparlas.",
+      "fuente": "SEDAPAL, campañas sobre el aceite usado y el alcantarillado."
+    },
+    {
+      "afirmacion": "El aceite de cocina usado puede convertirse en biodiésel.",
+      "fuente": "Ministerio del Ambiente del Perú; literatura técnica sobre biodiésel a partir de aceites usados."
+    }
+  ],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

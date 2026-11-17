@@ -1,0 +1,267 @@
+{
+  "id": "t189",
+  "version": 1,
+  "titulo": "Panel para visitantes en un circuito de lomas de Lima",
+  "tema": "Costa · las lomas y la neblina",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Entre junio y octubre, la neblina del mar se queda pegada a los cerros de la costa de Lima."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Sus gotitas mojan la tierra y las piedras día tras día, aunque casi no llueva."
+      },
+      {
+        "id": "o3",
+        "rol": "principal",
+        "t": "Gracias a esa humedad, cerros que pasan el verano pelados se cubren de plantas y flores: son las lomas, un ecosistema que vive del agua de la neblina."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "En ellas crece la flor de amancaes, que antes los limeños subían a buscar para una fiesta de junio, con música y comida en el campo."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "También llegan aves, caracoles y zorros que buscan comida y sombra entre las plantas."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Pero cuando la ciudad construye casas o abre caminos sobre los cerros, la loma pierde el suelo donde brotan sus semillas."
+      },
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, las lomas necesitan cuidado: una parte de ellas es hoy un área protegida, y este circuito pide a los visitantes no salir del sendero ni llevarse plantas o flores."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "La flor de amancaes",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV1",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 4. Deja fuera la neblina, las lomas mismas y lo que las amenaza.",
+        "explicaciones": {
+          "justa": "Es verdad que el panel habla de esa flor, pero como un ejemplo de lo que crece en las lomas.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera la neblina y las lomas."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central del panel?",
+      "alternativas": [
+        {
+          "t": "Las lomas, que reverdecen con la neblina, y su cuidado",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Cubre todo el panel: de dónde sale el agua, qué son las lomas, qué vive en ellas y qué las amenaza."
+        },
+        {
+          "t": "La neblina del mar en los cerros de Lima",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Sí está en la oración 1, pero es el marco: el panel la presenta para explicar las lomas."
+        },
+        {
+          "t": "La naturaleza y los paisajes de toda la costa del Perú",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a un texto sobre playas o desiertos."
+        },
+        {
+          "t": "La flor de amancaes y su fiesta de junio",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí está en la oración 4, pero es un detalle de lo que crece en las lomas."
+        },
+        {
+          "t": "Las casas que se construyen sobre los cerros",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Es una parte verdadera, la de la oración 6, pero deja fuera qué son las lomas."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o3",
+          "o7"
+        ],
+        "ninguna": "correcta",
+        "explicacion": "La oración 3 dice qué son las lomas y de qué viven, y la 7, que necesitan cuidado; la idea entera junta las dos. También vale «Ninguna la dice completa», porque está repartida.",
+        "explicaciones": {
+          "o1": "La primera oración presenta la neblina: es el marco.",
+          "o2": "Explica qué hace la neblina: prepara la idea.",
+          "o4": "Es un detalle: una flor que crece en las lomas.",
+          "o5": "Es otro detalle: los animales.",
+          "o6": "Dice qué amenaza a las lomas: es la razón por la que hay que cuidarlas, no la idea."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del panel?",
+      "alternativas": [
+        {
+          "t": "La neblina hace reverdecer las lomas, y como la ciudad las amenaza, hay que cuidarlas.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Junta la oración 3 (qué son las lomas y de qué viven) con la 7 (necesitan cuidado), y la 6 dice por qué: la ciudad les quita el suelo."
+        },
+        {
+          "t": "Entre junio y octubre, la neblina del mar se queda pegada a los cerros de la costa de Lima.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Repite bien la primera oración, pero es el punto de partida: no dice qué pasa con los cerros."
+        },
+        {
+          "t": "En las lomas viven aves, caracoles y zorros.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Sí lo dice la oración 5, pero es un detalle."
+        },
+        {
+          "t": "Construir sobre los cerros hace que la loma pierda su suelo.",
+          "codigo": "RV3",
+          "origen": "o6",
+          "explicacion": "Sí lo dice la oración 6, pero es la amenaza: deja fuera qué son las lomas."
+        },
+        {
+          "t": "Las lomas de Lima y la neblina del invierno.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "enunciado": "¿Qué título le queda mejor al panel?",
+      "alternativas": [
+        {
+          "t": "Flores de neblina que hay que cuidar",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o7"
+          ],
+          "explicacion": "Tiene la medida del panel: las lomas que florecen con la neblina (oración 3) y su cuidado (oración 7)."
+        },
+        {
+          "t": "La fiesta de los amancaes",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Está en la oración 4, pero es un detalle."
+        },
+        {
+          "t": "El clima de la costa de Lima en invierno",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a un texto sobre la garúa o el calor del verano."
+        },
+        {
+          "t": "La neblina de junio",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Es el marco de la oración 1: deja fuera las lomas."
+        },
+        {
+          "t": "Cómo sembrar flores en los cerros",
+          "codigo": "RV66",
+          "explicacion": "Habla de flores y cerros, pero el panel no enseña a sembrar: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumplen las oraciones 1 y 2 respecto de la oración 3?",
+      "alternativas": [
+        {
+          "t": "Explican de dónde sale la humedad que forma las lomas.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2",
+            "o3"
+          ],
+          "explicacion": "La neblina se pega a los cerros y moja la tierra: por eso la oración 3 empieza con «Gracias a esa humedad»."
+        },
+        {
+          "t": "Dicen la idea principal, porque abren el panel.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Es verdad que abren el panel, pero preparan la idea: la oración 3 dice qué son las lomas."
+        },
+        {
+          "t": "Dan ejemplos de los animales que viven en las lomas.",
+          "codigo": "RV42",
+          "origen": "o2",
+          "explicacion": "Es verdad que hablan de lo que pasa en los cerros, pero de la neblina: los animales están en la oración 5."
+        },
+        {
+          "t": "Sobran, porque hablan del clima y no de las lomas.",
+          "codigo": "RV30",
+          "origen": "o1",
+          "explicacion": "Es verdad que hablan de la neblina, pero sin ella no habría lomas: sí sostienen la oración 3."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [
+    {
+      "afirmacion": "Las lomas costeras reverdecen en invierno con la humedad de la neblina, sin casi lluvia.",
+      "fuente": "SERNANP y Ministerio del Ambiente del Perú, información sobre los ecosistemas de lomas costeras."
+    },
+    {
+      "afirmacion": "La flor de amancaes (Ismene amancaes) crece en las lomas de Lima y daba nombre a la fiesta de Amancaes de junio.",
+      "fuente": "Ministerio de Cultura del Perú; Municipalidad de Lima, información sobre la fiesta de Amancaes."
+    },
+    {
+      "afirmacion": "En 2019 se creó el Área de Conservación Regional Sistema de Lomas de Lima.",
+      "fuente": "Decreto Supremo 011-2019-MINAM."
+    }
+  ],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

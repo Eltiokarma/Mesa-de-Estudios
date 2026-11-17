@@ -1,0 +1,234 @@
+{
+  "id": "t187",
+  "version": 1,
+  "titulo": "Folleto del centro de salud para las familias de Chorrillos",
+  "tema": "Salud · el sol en los días nublados de Lima",
+  "grado": 5,
+  "dificultad": 1,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "contraste",
+        "t": "Muchas familias de Lima creen que en los días nublados no hace falta cuidarse del sol."
+      },
+      {
+        "id": "o2",
+        "rol": "apoyo",
+        "t": "Sin embargo, buena parte de los rayos del sol que queman la piel atraviesa las nubes delgadas del invierno limeño."
+      },
+      {
+        "id": "o3",
+        "rol": "ejemplo",
+        "t": "Por eso, alguien que pasa la mañana en la playa en un día gris puede volver a casa con la nariz y los hombros rojos, aunque no haya sentido calor."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Los niños se queman más rápido que los adultos, porque su piel es más delgada."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Una gorra con visera, un polo de manga larga y el bloqueador reducen mucho el daño, y conviene usarlos aunque no se vea el sol."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "También ayuda buscar sombra entre las once de la mañana y las tres de la tarde, cuando los rayos son más fuertes, aunque el cielo esté gris."
+      },
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, también en los días nublados conviene proteger la piel del sol, sobre todo la de los niños."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 7 dice lo que el folleto quiere que hagan las familias, y su «Por eso» la une con todo lo anterior.",
+        "explicaciones": {
+          "o1": "Es la creencia que el folleto corrige: el «Sin embargo» de la oración 2 la da vuelta.",
+          "o2": "Es la razón: los rayos atraviesan las nubes.",
+          "o3": "Es un ejemplo de esa razón: la playa en un día gris.",
+          "o4": "Explica por qué hay que cuidar más a los niños.",
+          "o5": "Dice cómo cuidarse, pero no por qué ni cuándo.",
+          "o6": "Es otro consejo, el de la sombra.",
+          "ninguna": "La oración 7 sí la dice completa: qué conviene, cuándo y a quién cuidar más."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del folleto?",
+      "alternativas": [
+        {
+          "t": "Aun con el cielo nublado, conviene cuidar la piel del sol, sobre todo la de los niños.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Es la oración 7; la 2 dice por qué, la 3 y la 4 lo muestran y la 5 y la 6 dicen cómo."
+        },
+        {
+          "t": "En los días nublados de Lima no hace falta cuidarse del sol.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Repite bien la primera oración, pero esa es la creencia que el folleto corrige con su «Sin embargo»."
+        },
+        {
+          "t": "Una gorra, un polo de manga larga y el bloqueador reducen el daño del sol.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Sí lo dice la oración 5, pero es una manera de cuidarse: la idea principal es por qué y cuándo."
+        },
+        {
+          "t": "Los rayos del sol, las nubes y la piel de los niños de Lima.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        },
+        {
+          "t": "El bloqueador debe ponerse otra vez cada dos horas y también después de bañarse en el mar.",
+          "codigo": "RV8",
+          "explicacion": "Es un consejo que se oye mucho, pero el folleto no lo dice: la idea principal sale de lo que se leyó."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Lo que creen las familias de Lima sobre el sol",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV64",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 1, la creencia que el folleto corrige. Deja fuera lo principal: por qué y cómo cuidarse.",
+        "explicaciones": {
+          "justa": "Es verdad que el folleto empieza con esa creencia, pero la presenta para corregirla: el tema es el cuidado de la piel.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera casi todo el folleto."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central del folleto?",
+      "alternativas": [
+        {
+          "t": "El cuidado de la piel frente al sol en los días nublados",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o7"
+          ],
+          "explicacion": "Cubre todo: la creencia, por qué es un error, el caso de la playa, los niños y cómo cuidarse."
+        },
+        {
+          "t": "La creencia de que el día nublado no quema",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Sí está en la oración 1, pero es lo que el folleto corrige: el folleto trata del cuidado."
+        },
+        {
+          "t": "La salud de la piel",
+          "codigo": "RV2",
+          "explicacion": "Tiene que ver con el folleto, pero le serviría a un texto sobre heridas o granos."
+        },
+        {
+          "t": "La piel delgada de los niños",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí está en la oración 4, pero es una parte: deja fuera a los adultos y los días nublados."
+        },
+        {
+          "t": "Las enfermedades de la piel que causa el agua de mar",
+          "codigo": "RV66",
+          "explicacion": "Habla de la playa y de la piel, pero el folleto no trata del agua de mar: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Por qué y cómo cuidar la piel del sol cuando está nublado",
+        "aceptada": "justa",
+        "codigos": {
+          "amplia": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Cubre todo el folleto: la creencia que corrige, por qué los días grises también queman y cómo cuidarse. No le serviría a otro texto.",
+        "explicaciones": {
+          "amplia": "Es verdad que se habla mucho del sol y la piel, pero esta frase dice «cuando está nublado»: es la de este folleto.",
+          "estrecha": "Es verdad que no nombra a los niños, pero ellos entran en «cuidar la piel»: la frase no deja fuera ninguna parte."
+        }
+      },
+      "enunciado": "¿Qué título le queda mejor al folleto?",
+      "alternativas": [
+        {
+          "t": "Cielo gris, piel cuidada",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Junta lo que el folleto pide: cuidar la piel también cuando el cielo está gris."
+        },
+        {
+          "t": "Lo que se cree en Lima",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Es la oración 1, la creencia con que empieza el folleto: deja fuera el cuidado."
+        },
+        {
+          "t": "Una gorra con visera",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Está en la oración 5, pero es un detalle."
+        },
+        {
+          "t": "El sol y la salud",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a muchos textos, también a uno sobre la vitamina D."
+        },
+        {
+          "t": "Bloqueador, siempre y para todo",
+          "codigo": "RV11",
+          "explicacion": "Habla del bloqueador, pero «siempre y para todo» dice más que el folleto."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [
+    {
+      "afirmacion": "Una gran parte de la radiación ultravioleta atraviesa las nubes delgadas.",
+      "fuente": "Organización Mundial de la Salud, «Radiación ultravioleta (UV)», preguntas frecuentes (who.int)."
+    },
+    {
+      "afirmacion": "La radiación UV es más intensa entre media mañana y media tarde, y la piel de los niños es más sensible.",
+      "fuente": "OMS, «Índice UV solar mundial: guía práctica» (2003); SENAMHI, índice UV."
+    }
+  ],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

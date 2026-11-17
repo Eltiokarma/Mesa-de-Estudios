@@ -1,0 +1,223 @@
+{
+  "id": "t183",
+  "version": 1,
+  "titulo": "Relato del periódico mural de un colegio de Moquegua",
+  "tema": "Relato · aprender con el abuelo",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "narrativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "Andrés quería una bicicleta nueva para ir al colegio, igual a la que tenía su vecino."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Su abuelo, en cambio, sacó del corral una bicicleta vieja, con la cadena oxidada, el asiento roto y las llantas bajas."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "—Si la arreglamos juntos, es tuya —le dijo."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Andrés aceptó de mala gana, porque quería ir a jugar fútbol, y pasó tres tardes con las manos negras de grasa."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Aprendió a cambiar una cámara, a ajustar los frenos y a limpiar la cadena con kerosene."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "El sábado, la bicicleta rodó sin ruidos por la calle, y el abuelo la miró pasar desde la puerta."
+      }
+    ],
+    [
+      {
+        "id": "o7",
+        "rol": "detalle",
+        "t": "Un mes después, al vecino se le pinchó una llanta camino al colegio, y se quedó parado en la esquina sin saber qué hacer."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Andrés se la cambió en diez minutos, con las herramientas del abuelo."
+      },
+      {
+        "id": "o9",
+        "rol": "principal",
+        "t": "Esa tarde entendió que, junto con la bicicleta, su abuelo le había dado algo que no se compra en ninguna tienda."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor dice lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "correcta",
+        "explicacion": "La oración 9 dice lo que el relato muestra, aunque sin nombrarlo: lo aprendido con el abuelo. También vale «Ninguna la dice completa», porque ese «algo» no se dice con todas sus palabras.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el deseo de Andrés: es el comienzo del relato.",
+          "o2": "Cuenta lo que hizo el abuelo: es un hecho.",
+          "o3": "Es lo que dice el abuelo: prepara lo que viene.",
+          "o4": "Cuenta el trabajo de Andrés: un hecho.",
+          "o5": "Dice qué aprendió, pero no qué significó para él.",
+          "o6": "Cuenta el resultado del arreglo: la bicicleta rueda.",
+          "o7": "Presenta el problema del vecino.",
+          "o8": "Muestra lo aprendido, pero no dice qué entendió Andrés."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del relato?",
+      "alternativas": [
+        {
+          "t": "Arreglando la bicicleta con su abuelo, Andrés ganó un saber que no se compra.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8",
+            "o9"
+          ],
+          "explicacion": "La oración 9 lo dice sin nombrarlo, y la 5 y la 8 muestran qué es: lo que Andrés aprendió y pudo usar."
+        },
+        {
+          "t": "Andrés quería una bicicleta nueva para ir al colegio, igual a la que tenía su vecino.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Repite bien la primera oración, pero es el deseo del comienzo: el relato muestra cómo cambia."
+        },
+        {
+          "t": "Andrés aprendió a cambiar una cámara y a ajustar los frenos.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Sí lo dice la oración 5, pero es una parte: deja fuera lo que eso significó para él."
+        },
+        {
+          "t": "Andrés, su abuelo y una bicicleta vieja.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien a quiénes y de qué trata el relato, pero no dice nada de lo que pasa."
+        },
+        {
+          "t": "Las bicicletas viejas son más seguras que las nuevas.",
+          "codigo": "RV66",
+          "explicacion": "Habla de la bicicleta vieja, pero el relato no compara cuál es más segura: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "La llanta pinchada del vecino",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV1",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 7 y la 8, un episodio del final. Deja fuera el arreglo con el abuelo y lo que Andrés entendió.",
+        "explicaciones": {
+          "justa": "Es verdad que ese episodio es importante, porque muestra lo aprendido, pero es una parte del relato, no todo.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro relato: falla al revés, porque se queda corta y deja fuera casi todo."
+        }
+      },
+      "enunciado": "¿Qué título le queda mejor al relato?",
+      "alternativas": [
+        {
+          "t": "Lo que el abuelo le dio a Andrés",
+          "correcta": true,
+          "evidencia": [
+            "o9"
+          ],
+          "explicacion": "Tiene la medida del relato: apunta a lo que Andrés recibió, que es lo que la oración 9 deja ver."
+        },
+        {
+          "t": "Diez minutos para cambiar una llanta",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Sí pasa en la oración 8, pero es un detalle del final."
+        },
+        {
+          "t": "Abuelos y nietos",
+          "codigo": "RV2",
+          "explicacion": "Tiene que ver con el relato, pero le serviría a cualquier historia de una familia."
+        },
+        {
+          "t": "Tres tardes con las manos negras",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Es una parte del relato, la de la oración 4: deja fuera lo que Andrés entendió."
+        },
+        {
+          "t": "La tienda de bicicletas del barrio",
+          "codigo": "RV66",
+          "explicacion": "Habla de bicicletas, pero el relato no trata de ninguna tienda: solo la nombra la oración 9."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumplen las oraciones 7 y 8 en el relato?",
+      "alternativas": [
+        {
+          "t": "Muestran que lo aprendido con el abuelo le sirvió a Andrés.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o7",
+            "o8",
+            "o9"
+          ],
+          "explicacion": "Andrés usa lo que aprendió en la oración 5 para ayudar al vecino, y eso lo lleva a entender lo de la oración 9."
+        },
+        {
+          "t": "Cuentan un problema nuevo que el relato deja sin resolver.",
+          "codigo": "RV42",
+          "origen": "o7",
+          "explicacion": "Es verdad que la oración 7 trae un problema, pero la 8 lo resuelve: es la prueba de lo aprendido."
+        },
+        {
+          "t": "Dicen, con todas sus palabras, la enseñanza del relato.",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Es verdad que llevan a la enseñanza, pero cuentan hechos: lo que Andrés entiende está en la oración 9."
+        },
+        {
+          "t": "Sobran, porque el relato ya terminó cuando la bicicleta rodó en la oración 6.",
+          "codigo": "RV30",
+          "origen": "o7",
+          "explicacion": "Es verdad que el arreglo termina en la oración 6, pero sin la 7 y la 8 Andrés no tendría nada que entender: sí sostienen el final."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

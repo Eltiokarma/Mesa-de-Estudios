@@ -1,0 +1,227 @@
+{
+  "id": "t175",
+  "version": 1,
+  "titulo": "Boletín de la cooperativa cafetalera, para sus socios",
+  "tema": "Selva central · café bajo sombra (cooperativa inventada)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "expositivo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "Los árboles que dan sombra en un cafetal protegen a la planta de café y también a la tierra donde crece."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Bajo su copa, las hojas del cafeto no se queman con el sol fuerte del mediodía."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Cuando llueve con fuerza, las ramas frenan las gotas antes de que golpeen el suelo."
+      },
+      {
+        "id": "o4",
+        "rol": "detalle",
+        "t": "Las raíces de esos árboles sujetan la tierra de las laderas, y así la lluvia no se la lleva cerro abajo."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "Además, las hojas que caen se pudren poco a poco y abonan el suelo sin que el productor gaste en abono."
+      }
+    ],
+    [
+      {
+        "id": "o6",
+        "rol": "ejemplo",
+        "t": "Don Elmer, socio de la cooperativa en Villa Rica, plantó pacaes entre sus cafetos hace seis años."
+      },
+      {
+        "id": "o7",
+        "rol": "ejemplo",
+        "t": "Desde entonces, en las lluvias de febrero ya no se le desmorona el borde de la chacra, y sus plantas soportan mejor los días de calor."
+      },
+      {
+        "id": "o8",
+        "rol": "apoyo",
+        "t": "Por eso, este año la cooperativa repartirá plantones de pacae a los socios que los pidan en la oficina."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Las raíces que sujetan la tierra de las laderas",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV1",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 4, una de las ventajas. Deja fuera la sombra sobre las hojas, la lluvia, el abono y el caso de don Elmer.",
+        "explicaciones": {
+          "justa": "Es verdad que las raíces son parte del boletín, pero son una de sus razones: el tema son todas las ventajas de la sombra.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y nombra una sola ventaja."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central del boletín?",
+      "alternativas": [
+        {
+          "t": "Lo que ganan el cafeto y la tierra con los árboles de sombra",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o2",
+            "o3",
+            "o4",
+            "o5"
+          ],
+          "explicacion": "Cubre todo el boletín: la oración 1 lo anuncia, de la 2 a la 5 se dice qué gana la planta y qué gana el suelo, y el caso de don Elmer lo muestra."
+        },
+        {
+          "t": "La agricultura en la selva central del Perú",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a un texto sobre el plátano o el cacao: el boletín trata de los árboles de sombra del cafetal."
+        },
+        {
+          "t": "Los pacaes que plantó don Elmer entre sus cafetos",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Sí está en la oración 6, pero es un ejemplo: deja fuera lo que el boletín explica de la sombra en general."
+        },
+        {
+          "t": "Las hojas que caen y abonan el suelo del cafetal",
+          "codigo": "RV3",
+          "origen": "o5",
+          "explicacion": "Es una de las ventajas, la de la oración 5, pero deja fuera la sombra, la lluvia y las raíces."
+        },
+        {
+          "t": "Los árboles de sombra como la única manera de salvar todos los cafetales",
+          "codigo": "RV11",
+          "explicacion": "Habla de los árboles de sombra, pero el boletín no dice «única» ni «todos»: eso agrega algo que el texto no afirma."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o1"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 1 dice lo que todo el boletín explica: los árboles de sombra protegen al cafeto y a la tierra. Las demás dan las razones, un caso y lo que hará la cooperativa.",
+        "explicaciones": {
+          "o2": "Es verdad, pero es una de las razones: la de la sombra sobre las hojas.",
+          "o3": "Es una razón más, la de la lluvia que golpea el suelo.",
+          "o4": "Es una de las razones, la de las raíces que sujetan la tierra.",
+          "o5": "Es otra ventaja, la del abono; la idea principal junta todas.",
+          "o6": "Presenta un caso, el de don Elmer: sirve para mostrar lo que dice la oración 1.",
+          "o7": "Cuenta lo que le pasó a don Elmer: es parte del ejemplo.",
+          "o8": "Dice lo que hará la cooperativa por lo que explica el boletín, pero no es lo que el boletín explica.",
+          "ninguna": "La oración 1 sí la dice completa: la planta y la tierra, que son las dos partes que el boletín desarrolla."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del boletín?",
+      "alternativas": [
+        {
+          "t": "Los árboles de sombra cuidan a la vez la planta de café y el suelo del cafetal.",
+          "correcta": true,
+          "evidencia": [
+            "o1"
+          ],
+          "explicacion": "Es lo que dice la oración 1, y las demás le dan sus razones (de la 2 a la 5) y un caso (la 6 y la 7)."
+        },
+        {
+          "t": "Los árboles de sombra en los cafetales de la cooperativa de Villa Rica y sus socios.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto del boletín, pero no afirma nada de él: no dice qué hacen esos árboles."
+        },
+        {
+          "t": "Las raíces de los árboles sujetan la tierra de las laderas cuando llueve.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es una de las razones: la idea principal las junta todas."
+        },
+        {
+          "t": "Los árboles de sombra hacen que el café de Villa Rica se venda a mejor precio.",
+          "codigo": "RV66",
+          "explicacion": "Habla de los árboles de sombra, pero el boletín no dice nada del precio: agrega un asunto que el texto no trata."
+        },
+        {
+          "t": "Todas las plantas necesitan sol, agua y un buen suelo para crecer.",
+          "codigo": "RV2",
+          "explicacion": "Tiene que ver con el cultivo, pero le serviría a cualquier texto de plantas: el boletín afirma algo de los árboles de sombra."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumplen las oraciones 6 y 7 en el boletín?",
+      "alternativas": [
+        {
+          "t": "Dan un caso que muestra lo que afirma la oración 1.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Don Elmer plantó árboles de sombra y su chacra ya no se desmorona: es un ejemplo de la idea de la oración 1."
+        },
+        {
+          "t": "Dicen la idea principal del boletín, porque cuentan lo que pasó en una chacra.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Leíste bien lo que le pasó a don Elmer, pero es un ejemplo de la idea, no la idea."
+        },
+        {
+          "t": "Cuentan algo aparte, que podría quitarse sin que el boletín pierda nada.",
+          "codigo": "RV30",
+          "origen": "o6",
+          "explicacion": "Es cierto que se podría entender el boletín sin el caso, pero el caso lo sostiene: muestra que la sombra funciona en una chacra real."
+        },
+        {
+          "t": "Presentan una opinión que el boletín discute después.",
+          "codigo": "RV42",
+          "origen": "o6",
+          "explicacion": "Es verdad que hablan de una persona, pero no dan una opinión ni el boletín discute nada: cuentan un ejemplo."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [
+    {
+      "afirmacion": "Los árboles de sombra en el cafetal bajan la temperatura de las hojas del cafeto, reducen la erosión del suelo y aportan materia orgánica con la hojarasca.",
+      "fuente": "FAO, sistemas agroforestales con café; CATIE (Costa Rica), publicaciones sobre café bajo sombra."
+    },
+    {
+      "afirmacion": "El pacae (Inga feuillei) se usa como árbol de sombra en cafetales del Perú.",
+      "fuente": "Ministerio de Desarrollo Agrario y Riego del Perú, guías de manejo del café en la selva central."
+    }
+  ],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

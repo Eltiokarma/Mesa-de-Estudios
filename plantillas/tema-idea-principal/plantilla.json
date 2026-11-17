@@ -1,0 +1,13 @@
+{
+  "id": "tema-idea-principal",
+  "titulo": "Tema central, idea principal y título",
+  "formato": "lectura",
+  "unidades": [
+    "razonamiento-verbal.tema-e-idea-principal"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "banco": "../../contenido/razonamiento-verbal/indice-tema-idea-principal.json",
+  "pruebas": "../../contenido/razonamiento-verbal/banco.test.js",
+  "papel": "papel.json"
+}

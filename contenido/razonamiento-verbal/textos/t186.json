@@ -1,0 +1,214 @@
+{
+  "id": "t186",
+  "version": 1,
+  "titulo": "Carta de un estudiante al municipio escolar de su colegio de Tarapoto",
+  "tema": "Escuela · repartir el patio en el recreo (colegio inventado)",
+  "grado": 5,
+  "dificultad": 2,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En nuestro colegio, el patio es el único lugar donde se puede jugar en el recreo."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Desde hace años, los de quinto lo ocupan casi entero con su partido de fútbol, y la pelota pasa zumbando entre los que caminan."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Los más chicos se quedan en los pasillos, mirando, y las chicas que quieren jugar vóley no tienen dónde armar la red desde que empezó el año."
+      }
+    ],
+    [
+      {
+        "id": "o4",
+        "rol": "contraste",
+        "t": "Algunos dicen que siempre ha sido así y que los de quinto se lo ganaron por ser los mayores."
+      },
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Pero el patio es de todos los alumnos, no de un grado, y cada uno tiene el mismo derecho a usarlo."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "En otros colegios de la ciudad ya se reparte por días, y nadie se ha quedado sin jugar, ni siquiera los de quinto."
+      },
+      {
+        "id": "o7",
+        "rol": "principal",
+        "t": "Por eso, el municipio escolar debería repartir el patio por turnos, para que cada grado lo use al menos un día a la semana."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice lo que defiende el autor.",
+        "aceptadas": [
+          "o7"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o4": "RV33"
+        },
+        "explicacion": "La oración 7 dice lo que el autor pide; el «Por eso» la une con las razones de la 5 y la 6. La 4 es la opinión contraria.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el patio: es el punto de partida.",
+          "o2": "Cuenta el problema: los de quinto ocupan el patio.",
+          "o3": "Sigue con el problema: los que se quedan sin jugar.",
+          "o4": "Es lo que dicen «algunos», no el autor: él lo responde con «Pero».",
+          "o5": "Es una razón: el patio es de todos.",
+          "o6": "Es otra razón: en otros colegios funciona.",
+          "ninguna": "La oración 7 sí la dice completa: qué se pide, a quién y para qué."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor de la carta?",
+      "alternativas": [
+        {
+          "t": "El patio debería repartirse por turnos para que todos los grados lo usen.",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Es la oración 7, que empieza con «Por eso»: la 5 y la 6 son sus razones y la 4 es la opinión contraria."
+        },
+        {
+          "t": "Los de quinto se ganaron el patio por ser los mayores del colegio.",
+          "codigo": "RV33",
+          "origen": "o4",
+          "explicacion": "Leíste bien la oración 4, pero es lo que dicen «algunos»: el autor la responde con «Pero»."
+        },
+        {
+          "t": "El patio es el único lugar del colegio donde se puede jugar en el recreo.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la primera oración, pero es el punto de partida: no es lo que el autor pide."
+        },
+        {
+          "t": "Las chicas que quieren jugar vóley no tienen dónde armar la red.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Sí lo dice la oración 3, pero es una parte del problema."
+        },
+        {
+          "t": "El colegio debería prohibir el fútbol en el recreo.",
+          "codigo": "RV66",
+          "explicacion": "Habla del fútbol y del recreo, pero el autor no pide prohibir nada: pide turnos."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El recreo en los colegios",
+        "aceptada": "amplia",
+        "codigos": {
+          "justa": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Le serviría a un texto sobre la comida del recreo o su horario: esta carta trata de cómo repartir el patio.",
+        "explicaciones": {
+          "justa": "Es verdad que la carta habla del recreo, pero esa frase también le serviría a muchos otros textos.",
+          "estrecha": "Viste bien que la frase no tiene la medida justa, pero no deja fuera ninguna parte de la carta: falla al revés, porque abarca mucho más."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central de la carta?",
+      "alternativas": [
+        {
+          "t": "Cómo debería repartirse el patio en el recreo",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4",
+            "o7"
+          ],
+          "explicacion": "Cubre toda la carta: el problema, la opinión contraria, las razones y la propuesta de turnos."
+        },
+        {
+          "t": "La vida escolar de los alumnos de secundaria",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto del colegio."
+        },
+        {
+          "t": "El partido de fútbol de los alumnos de quinto en el patio",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es una parte verdadera, la de la oración 2, pero deja fuera a los demás grados y la propuesta."
+        },
+        {
+          "t": "Los turnos por días que usan otros colegios de la ciudad",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Sí está en la oración 6, pero es una razón: la carta habla de su propio colegio."
+        },
+        {
+          "t": "Los castigos para quienes no respeten los turnos del patio",
+          "codigo": "RV66",
+          "explicacion": "Tiene que ver con los turnos, pero la carta no habla de castigos: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumple la oración 6 en la carta?",
+      "alternativas": [
+        {
+          "t": "Da una razón que apoya la propuesta de la oración 7.",
+          "correcta": true,
+          "evidencia": [
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Muestra que repartir el patio ya funciona en otros colegios: responde a «¿por qué hacerlo?»."
+        },
+        {
+          "t": "Muestra que el autor quiere que el patio siga como está.",
+          "codigo": "RV33",
+          "origen": "o6",
+          "explicacion": "Es verdad que habla de cómo se usa el patio, pero en otros colegios, y para defender el cambio, no para dejarlo igual."
+        },
+        {
+          "t": "Es la tesis de la carta, porque cuenta lo que ya pasa en otros colegios.",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Leíste bien lo que pasa en otros colegios, pero es un dato que sostiene la tesis de la oración 7."
+        },
+        {
+          "t": "No tiene que ver con el patio del colegio, así que sobra.",
+          "codigo": "RV30",
+          "origen": "o6",
+          "explicacion": "Es verdad que habla de otros colegios, pero sirve de prueba de que los turnos funcionan: no sobra."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

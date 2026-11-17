@@ -1,0 +1,233 @@
+{
+  "id": "t188",
+  "version": 1,
+  "titulo": "Boletín de la junta vecinal de un barrio de Arequipa",
+  "tema": "Ciudad · medidores de agua en un barrio (datos inventados)",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "principal",
+        "t": "En nuestro barrio, el agua empezó a alcanzar para todos cuando cada casa tuvo su propio medidor."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Antes, todas las familias pagaban lo mismo, gastaran poco o mucho."
+      },
+      {
+        "id": "o3",
+        "rol": "detalle",
+        "t": "Algunas dejaban el caño abierto para regar la calle o lavaban el carro con manguera."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Con el medidor, cada familia paga según lo que usa, y se fija más en las fugas y en los caños que gotean."
+      },
+      {
+        "id": "o5",
+        "rol": "detalle",
+        "t": "La tabla muestra cuánta agua usó en promedio cada casa al día, antes y después de los medidores."
+      },
+      {
+        "id": "o6",
+        "rol": "principal",
+        "t": "Así, con el mismo pozo, ahora hay agua en las casas de la parte alta, que antes se quedaban secas en las tardes."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "tabla",
+      "despues": 1,
+      "titulo": "Agua usada por casa al día, en promedio",
+      "columnas": [
+        "Momento",
+        "Litros por casa"
+      ],
+      "filas": [
+        {
+          "id": "f1a",
+          "celdas": [
+            "Antes de los medidores",
+            "650"
+          ]
+        },
+        {
+          "id": "f1b",
+          "celdas": [
+            "Después de los medidores",
+            "420"
+          ]
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El barrio no es real."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El agua en Arequipa",
+        "aceptada": "amplia",
+        "codigos": {
+          "justa": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Le serviría a un texto sobre el río Chili o las lluvias: este trata de lo que cambió en un barrio con los medidores.",
+        "explicaciones": {
+          "justa": "Es verdad que el texto habla del agua en un barrio de Arequipa, pero esa frase le serviría a muchos otros textos.",
+          "estrecha": "Viste bien que la frase no tiene la medida justa, pero no deja fuera ninguna parte del texto: falla al revés, porque abarca mucho más."
+        }
+      },
+      "enunciado": "El texto y la tabla dan cuenta, principalmente, de",
+      "alternativas": [
+        {
+          "t": "los medidores y el agua que ahora alcanza para todo el barrio.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o4",
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Cubre el texto (por qué los medidores cambiaron el gasto y qué se logró) y la tabla, que mide el gasto antes y después."
+        },
+        {
+          "t": "lo que pagaban las familias antes de tener medidor.",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es una parte verdadera, la de la oración 2, pero es el antes: deja fuera el cambio y la tabla."
+        },
+        {
+          "t": "los 420 litros que usa cada casa al día.",
+          "codigo": "RV1",
+          "origen": "f1b",
+          "explicacion": "Leíste bien la tabla, pero es una celda: deja fuera el antes y el texto."
+        },
+        {
+          "t": "el agua potable en las ciudades del sur del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto sobre el agua en el sur."
+        },
+        {
+          "t": "las obras que hará la empresa de agua para traer más agua al barrio desde otro pozo.",
+          "codigo": "RV66",
+          "explicacion": "Habla del agua del barrio, pero el texto dice que el pozo es el mismo: agrega un asunto que no trata."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o1",
+          "o6"
+        ],
+        "ninguna": "correcta",
+        "explicacion": "La oración 1 dice qué cambió y la 6 lo completa: con el mismo pozo, el agua llega ahora a la parte alta. También vale «Ninguna la dice completa», porque la idea entera está repartida en las dos.",
+        "explicaciones": {
+          "o2": "Cuenta cómo se pagaba antes.",
+          "o3": "Es un detalle del antes: el agua que se gastaba de más.",
+          "o4": "Explica por qué se gasta menos, pero no qué se logró.",
+          "o5": "Presenta la tabla."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Con un medidor en cada casa, se gasta menos agua y ahora alcanza también para la parte alta.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o6",
+            "f1"
+          ],
+          "explicacion": "Junta la oración 1 y la 6, y la tabla lo muestra: de 650 litros por casa al día se pasó a 420."
+        },
+        {
+          "t": "Antes, algunas familias dejaban el caño abierto para regar la calle o lavaban el carro con manguera.",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Sí lo dice la oración 3, pero es un detalle del antes."
+        },
+        {
+          "t": "Con el medidor, cada familia paga según el agua que usa.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es la razón del cambio: deja fuera lo que se logró."
+        },
+        {
+          "t": "Los medidores de agua de un barrio de Arequipa.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        },
+        {
+          "t": "Los medidores acabaron con todas las fugas de agua del barrio.",
+          "codigo": "RV11",
+          "explicacion": "Habla de las fugas, pero el texto dice que las familias se fijan más en ellas, no que se acabaron."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumple la oración 4 en el texto?",
+      "alternativas": [
+        {
+          "t": "Explica por qué, con el medidor, las familias gastan menos agua.",
+          "correcta": true,
+          "evidencia": [
+            "o1",
+            "o4"
+          ],
+          "explicacion": "Responde a «¿por qué?»: pagar según lo que se usa hace que cada familia cuide el agua."
+        },
+        {
+          "t": "Es la idea principal del texto, porque explica el cambio.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Es verdad que explica el cambio, pero es su razón: la idea está en la oración 1 y la 6."
+        },
+        {
+          "t": "Cuenta un problema que el barrio todavía no resuelve.",
+          "codigo": "RV42",
+          "origen": "o4",
+          "explicacion": "Es verdad que habla de fugas, pero no como un problema sin resolver: dice que ahora las familias se fijan en ellas."
+        },
+        {
+          "t": "Sobra, porque repite lo que ya dice la tabla.",
+          "codigo": "RV30",
+          "origen": "o4",
+          "explicacion": "Es verdad que la tabla muestra que se gasta menos, pero no dice por qué: eso lo trae la oración 4."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

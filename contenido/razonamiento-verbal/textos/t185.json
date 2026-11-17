@@ -1,0 +1,256 @@
+{
+  "id": "t185",
+  "version": 1,
+  "titulo": "Página de la revista escolar de un colegio de Huancayo",
+  "tema": "Ciudad · encuesta de cómo llegan los alumnos y pedido de un cruce (datos inventados)",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "discontinuo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En marzo, el municipio escolar preguntó a los 400 alumnos cómo llegan cada mañana al colegio."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "El gráfico muestra lo que respondieron."
+      },
+      {
+        "id": "o3",
+        "rol": "apoyo",
+        "t": "Más de la mitad llega caminando, y todos ellos cruzan la avenida que pasa frente a la puerta."
+      },
+      {
+        "id": "o4",
+        "rol": "apoyo",
+        "t": "Esa avenida no tiene semáforo ni paso de cebra, y las combis pasan rápido a la hora de entrada."
+      },
+      {
+        "id": "o5",
+        "rol": "principal",
+        "t": "Por eso, como más de la mitad cruza esa avenida a pie, el municipio escolar pide a la municipalidad un cruce peatonal señalizado frente al colegio."
+      },
+      {
+        "id": "o6",
+        "rol": "detalle",
+        "t": "La carta irá firmada por los delegados de cada sección y por la directora."
+      }
+    ]
+  ],
+  "figuras": [
+    {
+      "id": "f1",
+      "tipo": "barras",
+      "despues": 1,
+      "titulo": "¿Cómo llegas al colegio? Respuestas de 400 alumnos",
+      "unidad": "alumnos",
+      "barras": [
+        {
+          "id": "f1a",
+          "etiqueta": "A pie",
+          "valor": 220
+        },
+        {
+          "id": "f1b",
+          "etiqueta": "En combi",
+          "valor": 120
+        },
+        {
+          "id": "f1c",
+          "etiqueta": "En mototaxi",
+          "valor": 40
+        },
+        {
+          "id": "f1d",
+          "etiqueta": "En bicicleta",
+          "valor": 20
+        }
+      ],
+      "nota": "Datos inventados para el ejercicio. El colegio no es real."
+    }
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "La encuesta de marzo sobre cómo llegan los 400 alumnos",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV3",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre la oración 1 y el gráfico, pero deja fuera el peligro de la avenida y el pedido del cruce, que es adonde va el texto.",
+        "explicaciones": {
+          "justa": "Es verdad que la encuesta abre el texto y da el gráfico, pero el texto no termina ahí: la usa para pedir algo.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera el pedido."
+        }
+      },
+      "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+      "alternativas": [
+        {
+          "t": "el cruce seguro que se pide para los muchos alumnos que llegan a pie.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4",
+            "o5",
+            "f1a"
+          ],
+          "explicacion": "Cubre el texto y el gráfico: la encuesta muestra que más de la mitad llega a pie, y por eso se pide el cruce."
+        },
+        {
+          "t": "las formas en que los 400 alumnos llegan cada mañana al colegio.",
+          "codigo": "RV3",
+          "origen": "f1",
+          "explicacion": "Leíste bien todo el gráfico, pero la encuesta es una parte: deja fuera el peligro de la avenida y el pedido."
+        },
+        {
+          "t": "el tránsito en las ciudades del Perú.",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto de calles y carros."
+        },
+        {
+          "t": "los 220 alumnos que llegan caminando al colegio.",
+          "codigo": "RV1",
+          "origen": "f1a",
+          "explicacion": "Leíste bien la barra más larga, pero es un dato: deja fuera el pedido."
+        },
+        {
+          "t": "las multas a las combis que pasan rápido frente a los colegios.",
+          "codigo": "RV66",
+          "explicacion": "Habla de las combis, pero el texto no menciona multas: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice la idea principal de todo el texto.",
+        "aceptadas": [
+          "o5"
+        ],
+        "ninguna": "RV3",
+        "explicacion": "La oración 5 dice la idea completa: el pedido del cruce y su motivo, los muchos que cruzan a pie. La encuesta, el gráfico y el peligro de la avenida lo sostienen.",
+        "explicaciones": {
+          "o1": "La primera oración cuenta cómo empezó: la encuesta.",
+          "o2": "Presenta el gráfico.",
+          "o3": "Es una razón: muchos llegan a pie y cruzan la avenida.",
+          "o4": "Es otra razón: el peligro de la avenida.",
+          "o6": "Es un detalle de la carta.",
+          "ninguna": "La oración 5 sí la dice completa: qué se pide, a quién, dónde y por qué."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del texto?",
+      "alternativas": [
+        {
+          "t": "Como más de la mitad llega a pie por la avenida, los alumnos piden un cruce señalizado.",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o5",
+            "f1a"
+          ],
+          "explicacion": "Es la oración 5, con su razón de la oración 3 y del gráfico: 220 de 400 llegan a pie."
+        },
+        {
+          "t": "El municipio escolar preguntó a los alumnos cómo llegan al colegio.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la primera oración, pero es cómo empezó todo: no dice para qué sirvió la encuesta."
+        },
+        {
+          "t": "La avenida que pasa frente al colegio no tiene semáforo, y las combis pasan rápido a la hora de entrada.",
+          "codigo": "RV3",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es el peligro: deja fuera lo que se pide."
+        },
+        {
+          "t": "Los alumnos, la avenida y el cruce peatonal frente al colegio.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero no afirma nada de él."
+        },
+        {
+          "t": "Todos los alumnos del colegio cruzan la avenida a pie cada mañana.",
+          "codigo": "RV11",
+          "explicacion": "Habla de los que cruzan, pero el gráfico muestra que muchos llegan en combi, en mototaxi o en bicicleta: «todos» dice más que el texto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El pedido de un cruce peatonal para los alumnos que llegan caminando",
+        "aceptada": "justa",
+        "codigos": {
+          "amplia": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Cubre la encuesta y el gráfico (los que llegan caminando), el peligro de la avenida y el pedido, y no le serviría a otro texto.",
+        "explicaciones": {
+          "amplia": "Es verdad que hay muchos pedidos de cruces, pero la frase habla de estos alumnos: no le serviría a otro texto.",
+          "estrecha": "Es verdad que no nombra la encuesta, pero la incluye: los que llegan caminando son los que muestra el gráfico."
+        }
+      },
+      "enunciado": "¿Qué título le queda mejor al texto?",
+      "alternativas": [
+        {
+          "t": "Un cruce seguro para los que llegan a pie",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "f1a"
+          ],
+          "explicacion": "Tiene la medida del texto: lo que se pide y para quiénes, que es lo que el gráfico justifica."
+        },
+        {
+          "t": "Veinte alumnos en bicicleta",
+          "codigo": "RV1",
+          "origen": "f1d",
+          "explicacion": "Leíste bien la barra de la bicicleta, pero es un dato: deja fuera el pedido."
+        },
+        {
+          "t": "Las calles y los colegios de las ciudades del Perú",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a muchos textos."
+        },
+        {
+          "t": "La encuesta de marzo",
+          "codigo": "RV3",
+          "origen": "o1",
+          "explicacion": "Es la oración 1, una parte: deja fuera el peligro y el pedido."
+        },
+        {
+          "t": "Combis más lentas en toda la ciudad",
+          "codigo": "RV66",
+          "explicacion": "Habla de las combis, pero el texto pide un cruce frente al colegio, no nada para toda la ciudad."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}

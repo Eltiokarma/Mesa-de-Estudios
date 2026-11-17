@@ -1,0 +1,221 @@
+{
+  "id": "t181",
+  "version": 1,
+  "titulo": "Columna de un profesor en la revista de su colegio",
+  "tema": "Educación · aprender a cocinar en el colegio",
+  "grado": 5,
+  "dificultad": 3,
+  "tipo_texto": "argumentativo",
+  "parrafos": [
+    [
+      {
+        "id": "o1",
+        "rol": "detalle",
+        "t": "En muchos colegios, el curso de Educación para el Trabajo enseña computación, carpintería o costura."
+      },
+      {
+        "id": "o2",
+        "rol": "detalle",
+        "t": "Casi ninguno enseña a cocinar, aunque todos los alumnos comen todos los días y, tarde o temprano, tendrán que preparar su propia comida."
+      },
+      {
+        "id": "o3",
+        "rol": "contraste",
+        "t": "Algunos dirán que cocinar se aprende en casa y que el colegio tiene cosas más importantes que hacer."
+      },
+      {
+        "id": "o4",
+        "rol": "principal",
+        "t": "Sin embargo, aprender a cocinar en el colegio debería ser parte de la formación de todo estudiante."
+      }
+    ],
+    [
+      {
+        "id": "o5",
+        "rol": "apoyo",
+        "t": "Quien sabe preparar sus comidas gasta menos que quien compra comida hecha, algo que pesa cuando un joven se va a estudiar a otra ciudad."
+      },
+      {
+        "id": "o6",
+        "rol": "apoyo",
+        "t": "Además, elige mejor lo que come, porque sabe qué lleva cada plato y cuánta sal o azúcar le pone."
+      },
+      {
+        "id": "o7",
+        "rol": "apoyo",
+        "t": "Y no todos los chicos tienen en casa a alguien con tiempo para enseñarles: muchos padres trabajan hasta la noche."
+      },
+      {
+        "id": "o8",
+        "rol": "detalle",
+        "t": "Para empezar, bastaría una cocina sencilla, unas ollas y una hora a la semana, y los mismos alumnos podrían traer los ingredientes por turnos."
+      }
+    ]
+  ],
+  "preguntas": [
+    {
+      "id": "p1",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice lo que defiende el autor.",
+        "aceptadas": [
+          "o4"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o3": "RV33"
+        },
+        "explicacion": "La oración 4 dice lo que el autor defiende. La 3 es la opinión contraria, que el «Sin embargo» rechaza; de la 5 a la 7 son las razones.",
+        "explicaciones": {
+          "o1": "La primera oración cuenta qué enseña hoy el curso: es el punto de partida.",
+          "o2": "Señala lo que falta, pero todavía no dice qué propone el autor.",
+          "o3": "Es lo que dicen «algunos», no el autor: él la responde en la oración 4.",
+          "o5": "Es una razón: el ahorro.",
+          "o6": "Es otra razón: comer mejor.",
+          "o7": "Es otra razón: no todos aprenden en casa.",
+          "o8": "Dice cómo empezar: sale de la tesis, pero no es la tesis.",
+          "ninguna": "La oración 4 sí la dice completa: qué debería hacer el colegio y para quién."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis del autor?",
+      "alternativas": [
+        {
+          "t": "El colegio debería enseñar a cocinar a todos sus estudiantes.",
+          "correcta": true,
+          "evidencia": [
+            "o4"
+          ],
+          "explicacion": "Es la oración 4, que empieza con «Sin embargo» para responder a la 3; de la 5 a la 7 dan las razones."
+        },
+        {
+          "t": "Cocinar se aprende en casa y el colegio tiene cosas más importantes que hacer.",
+          "codigo": "RV33",
+          "origen": "o3",
+          "explicacion": "Leíste bien la oración 3, pero es lo que dicen «algunos»: el autor la presenta para responderla."
+        },
+        {
+          "t": "Educación para el Trabajo enseña computación, carpintería o costura.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Sí lo dice la primera oración, pero es el punto de partida: no es lo que el autor defiende."
+        },
+        {
+          "t": "Quien prepara sus comidas gasta menos que quien compra comida hecha.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Sí lo dice la oración 5, pero es una de las razones de la tesis."
+        },
+        {
+          "t": "La cocina y los cursos de Educación para el Trabajo en los colegios.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien el asunto, pero una tesis afirma algo de él."
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "La alimentación de los estudiantes",
+        "aceptada": "amplia",
+        "codigos": {
+          "justa": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Le serviría a un texto sobre el desayuno escolar o los quioscos: este discute algo preciso, si el colegio debería enseñar a cocinar.",
+        "explicaciones": {
+          "justa": "Es verdad que el texto habla de lo que comen los jóvenes, pero esa frase le serviría también a otros textos.",
+          "estrecha": "Viste bien que la frase no tiene la medida justa, pero no deja ninguna parte fuera: falla al revés, porque abarca demasiado."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central del texto?",
+      "alternativas": [
+        {
+          "t": "Si el colegio debería enseñar a cocinar",
+          "correcta": true,
+          "evidencia": [
+            "o3",
+            "o4"
+          ],
+          "explicacion": "Cubre todo: lo que falta, la opinión contraria, la tesis y sus razones."
+        },
+        {
+          "t": "La educación secundaria en el Perú",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto sobre el colegio."
+        },
+        {
+          "t": "La cocina sencilla que haría falta para empezar en el colegio",
+          "codigo": "RV1",
+          "origen": "o8",
+          "explicacion": "Sí está en la oración 8, pero es un detalle: deja fuera la discusión."
+        },
+        {
+          "t": "Los cursos que hoy enseña Educación para el Trabajo en muchos colegios",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Es la oración 1, el punto de partida: deja fuera lo que el autor propone."
+        },
+        {
+          "t": "Las comidas que venden los quioscos de los colegios",
+          "codigo": "RV66",
+          "explicacion": "Tiene que ver con comer en el colegio, pero el texto no habla de los quioscos: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "tipo": "estructura",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "jerarquia",
+      "enunciado": "¿Qué papel cumplen las oraciones 5, 6 y 7?",
+      "alternativas": [
+        {
+          "t": "Dan las razones de lo que defiende la oración 4.",
+          "correcta": true,
+          "evidencia": [
+            "o4",
+            "o5",
+            "o6",
+            "o7"
+          ],
+          "explicacion": "Cada una responde a «¿por qué?»: el ahorro, comer mejor y que no todos aprenden en casa."
+        },
+        {
+          "t": "Responden a la opinión de la oración 3 dándole la razón.",
+          "codigo": "RV42",
+          "origen": "o5",
+          "explicacion": "Es verdad que responden a la oración 3, pero para rechazarla: sostienen la tesis contraria."
+        },
+        {
+          "t": "Cada una dice, por su cuenta, la idea principal del texto.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Es verdad que son importantes, pero cada una es una razón: la idea que juntan está en la oración 4."
+        },
+        {
+          "t": "Cuentan algo aparte, que se podría quitar sin que el texto cambie.",
+          "codigo": "RV30",
+          "origen": "o6",
+          "explicacion": "Es verdad que la tesis se entiende sin ellas, pero sin razones la columna no convence: sí la sostienen."
+        }
+      ]
+    }
+  ],
+  "origen": "propio",
+  "fecha": "2026-11-17",
+  "hechos": [],
+  "revision": {
+    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "fecha": "2026-11-17",
+    "veredicto": "aprobado",
+    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+  }
+}
