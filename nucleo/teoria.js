@@ -445,6 +445,12 @@
             if (!e.titulo) mal(de, 'sin título'); else tope(de, 'titulo', e.titulo);
             if (!e.enunciado) mal(de, 'sin enunciado'); else { tope(de, 'enunciado', e.enunciado); ecuacion(de, Array.isArray(e.enunciado) ? e.enunciado : [e.enunciado]); }
             datos(de, e.enunciado, e.datos, true);
+            // Alternativas de un ejemplo tipo examen (opcional): van en su propia línea, bajo el enunciado, con las letras
+            // A a E que pone el lector (Gerson, mesa del 17 nov: no pegadas al enunciado).
+            if (e.alternativas !== undefined) {
+              if (!Array.isArray(e.alternativas) || e.alternativas.length < 2 || e.alternativas.length > 5) mal(de, 'alternativas: de 2 a 5 (A a E)');
+              else e.alternativas.forEach((a, i) => { if (!a || !plano(a).trim()) mal(de, `alternativa ${'ABCDE'[i]} vacía`); else { tope(de, 'opcion', a); ecuacion(de, Array.isArray(a) ? a : [a]); } });
+            }
             // Un dato real (el volumen del Titicaca, la lluvia de Juliaca) lleva su fuente (Gerson, 16 nov).
             if (e.fuente !== undefined && (typeof e.fuente !== 'string' || e.fuente.length < 8 || e.fuente.length > 140)) mal(de, 'fuente: texto de 8 a 140 caracteres');
             if (e.figura) dibujaCon(`${de} figura`, e.figura, e.figura.pieza);

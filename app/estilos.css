@@ -1228,6 +1228,8 @@ body.con-lupa{overflow:hidden}
 .te-ej-cab h4{margin:0;font-size:17px}
 .te-ej-n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--c-i) 18%,var(--card));color:var(--c-i);font-weight:800;font-size:14px}
 .te-ej-enun{margin:0;font-size:16px;font-weight:600;line-height:1.5}
+/* Alternativas de un ejemplo tipo examen: en su propia línea, bajo el enunciado (Gerson, mesa del 17 nov). */
+.te-ej-alt{list-style:none;margin:6px 0 0;padding:0;font-size:16px;line-height:1.5}.te-ej-alt li{margin:2px 0}.te-ej-alt b{margin-right:4px}
 /* Datos y fórmulas del ejercicio (contrato, punto 13): recuadro aparte, una por línea, con el color de cada variable. */
 .te-datos{margin:10px 0 4px;padding:8px 12px;border:1.5px dashed var(--line);border-radius:12px;background:color-mix(in srgb,var(--card) 70%,var(--bg))}
 .te-datos-et{margin:0 0 2px;font-size:13px;font-weight:800;letter-spacing:.02em;color:var(--muted)}
@@ -1242,6 +1244,6 @@ body.con-lupa{overflow:hidden}
 @media (min-width:900px){
   .te-ej{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:6px 24px;align-items:start}
   .te-ej>.te-ej-cab{grid-column:1/-1}
-  .te-ej>.te-ej-enun,.te-ej>.te-datos,.te-ej>.te-ej-sol,.te-ej>.te-ej-resp,.te-ej>.te-ej-fuente{grid-column:1}
+  .te-ej>.te-ej-enun,.te-ej>.te-ej-alt,.te-ej>.te-datos,.te-ej>.te-ej-sol,.te-ej>.te-ej-resp,.te-ej>.te-ej-fuente{grid-column:1}
   .te-ej>.te-ej-fig{grid-column:2;grid-row:2/span 3}
 }

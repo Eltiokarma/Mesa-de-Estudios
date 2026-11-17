@@ -371,6 +371,9 @@ con 5 ejemplos por nivel en cada idea.
     una línea con forma de fórmula.
   - **`fuente`**: un dato real del mundo (Titicaca, lluvia de Juliaca) es real y dice de dónde sale («ILEC, World Lake
     Database»). Se muestra en letra chica bajo la respuesta.
+  - **`alternativas`** (opcional, de 2 a 5 textos): las alternativas de un ejemplo tipo examen. El lector las pone en su
+    propia línea, bajo el enunciado, con las letras A a E (Gerson, mesa del 17 nov: no pegadas al enunciado). Cada una
+    tiene el tope de una opción (14 palabras). La letra de la respuesta va en negrita.
   - El validador exige 5 por nivel, topes (título 6 palabras, enunciado 40, cada línea 30, respuesta 14), dibujos puros y nada de NaN.
 - La pestaña «Ejemplos» aparece entre «Ideas» y «Glosario» cuando alguna idea los trae. Arriba se elige la idea; debajo
   van los tres niveles. Cada tarjeta: enunciado, dibujo, «Resuelto» (todo a la vista, sin pasos que se revelan) y la

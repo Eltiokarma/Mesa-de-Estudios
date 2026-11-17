@@ -883,7 +883,7 @@
         if (e.figura) { try { const P = Kit.piezas[e.figura.pieza]; fig = P ? P.dibujar(e.figura.datos, e.figura.estado || {}) : ''; } catch (err) { fig = ''; } }
         return `<article class="card te-ej" data-nivel="${e.nivel}">
           <div class="te-ej-cab"><span class="te-ej-n" aria-hidden="true">${k + 1}</span><h4>${esc(e.titulo)}</h4></div>
-          <p class="te-ej-enun">${E.html(e.enunciado)}</p>${datosHTML(E, e.datos)}
+          <p class="te-ej-enun">${E.html(e.enunciado)}</p>${Array.isArray(e.alternativas) ? `<ol class="te-ej-alt" aria-label="Alternativas">${e.alternativas.map((a, i) => `<li><b>${'ABCDE'[i]})</b> ${E.html(a)}</li>`).join('')}</ol>` : ''}${datosHTML(E, e.datos)}
           ${fig ? `<div class="te-ej-fig"><div class="te-figcaja"><figure class="kit-figura te-fig">${fig}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar el dibujo del ejemplo ${k + 1}">${ICONO_LUPA}</button></div></div></div>` : ''}
           <div class="te-ej-sol"><p class="te-ej-et">Resuelto</p>${e.solucion.map(x => `<p>${E.html(x.texto)}</p>${x.ecuacion ? `<p class="te-ec">${E.html(x.ecuacion)}</p>` : ''}`).join('')}</div>
