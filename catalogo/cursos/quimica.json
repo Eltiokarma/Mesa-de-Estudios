@@ -21,7 +21,8 @@
         "Propiedades físicas y químicas",
         "Fenómenos físicos, químicos y nucleares",
         "Calor sensible y latente",
-        "Equivalencia masa-energía"
+        "Equivalencia masa-energía",
+        "Vida media"
       ],
       "universidades": {
         "uni": {
@@ -40,7 +41,7 @@
       "requiere": [
         "fisica.magnitudes-y-vectores"
       ],
-      "plantillas": ["materia-energia", "sustancias-mezclas", "densidad-propiedades", "cambios-materia", "calor-sensible-latente", "masa-energia", "quimica-conceptos", "conversiones-quimica", "configuracion-ubicacion"],
+      "plantillas": ["materia-energia", "sustancias-mezclas", "densidad-propiedades", "cambios-materia", "calor-sensible-latente", "masa-energia", "vida-media", "quimica-conceptos", "conversiones-quimica"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {

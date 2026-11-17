@@ -1,0 +1,17 @@
+{
+  "id": "vida-media",
+  "titulo": "La mitad cada cierto tiempo",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia"
+  ],
+  "temas": [
+    "Vida media"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

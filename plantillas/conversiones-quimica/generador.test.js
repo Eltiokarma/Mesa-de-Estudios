@@ -132,19 +132,24 @@ for (const p of papel.problemas) test(`papel ${p.id}: la respuesta coincide con 
   }
 });
 
-// Por unidad (decisión de Gerson, 17 nov 2026): en Materia y energía no sale el calor latente molar; la vida media sí.
-// Las otras unidades, y la llamada sin unidad, dan el mismo problema que antes con la misma semilla.
-test('por unidad: Materia y energía sin calor latente molar; las otras unidades como antes', () => {
-  const vistos = new Set();
+// Por unidad (decisión de Gerson, 17 nov 2026, y mesa de revisión): en Materia y energía solo variaciones de temperatura
+// y densidad con masa y volumen; ni calor latente molar, ni vida media (plantilla vida-media), ni lecturas punto a punto,
+// ni longitudes en Å. Las otras unidades, y la llamada sin unidad, dan el mismo problema que antes con la misma semilla.
+test('por unidad: Materia y energía solo con variaciones y densidad; las otras unidades como antes', () => {
+  const vistos = new Set(), subs = new Set();
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' });
-    vistos.add(p._datos.tipo);
-    assert.notEqual(p._datos.tipo, 'latente', `semilla ${s}: sale calor latente en Materia y energía`);
+    vistos.add(p._datos.tipo); if (p._datos.tipo === 'densidad') subs.add(p._datos.sub);
+    assert.ok(['delta', 'densidad'].includes(p._datos.tipo), `semilla ${s}: sale ${p._datos.tipo} en Materia y energía`);
+    assert.notEqual(p._datos.sub, 'longitud', `semilla ${s}: longitudes en Å en Materia y energía`);
+    const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+    assert.ok(!/Å|\bnm\b|\bpm\b|\+ 273/.test(plano([p.enunciado, p.pregunta, p.datos, p.solucion])), `semilla ${s}: ${plano(p.pregunta)}`);
     for (const u of ['quimica.liquidos-y-solidos', 'quimica.estructura-atomica', undefined])
       assert.deepEqual(gen.generar(s, { unidad: u }), gen.generar(s), `semilla ${s}: cambió el problema de ${u}`);
   }
-  for (const t of ['delta', 'lectura', 'densidad', 'vida']) assert.ok(vistos.has(t), `no sale ${t} en Materia y energía`);
-  assert.deepEqual(gen.tiposPorUnidad['quimica.materia-y-energia'], ['delta', 'lectura', 'densidad', 'vida']);
+  assert.deepEqual([...vistos].sort(), ['delta', 'densidad']);
+  assert.deepEqual([...subs].sort(), ['masa', 'volumen']);
+  assert.deepEqual(gen.tiposPorUnidad['quimica.materia-y-energia'], ['delta', 'densidad']);
 });
 
 // Recuadro «Datos» de la vida media y de las variaciones (docs/plan-calidad.md, contrato, punto 13), y explicaciones
@@ -152,7 +157,7 @@ test('por unidad: Materia y energía sin calor latente molar; las otras unidades
 test('vida media y variaciones: datos en lista, con la fórmula y sin la respuesta; explicaciones que empiezan por «Bien»', () => {
   const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
   for (let s = 0; s < 400; s++) {
-    const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' }), d = p._datos;
+    const p = gen.generar(s), d = p._datos;   // sin unidad: salen la vida media (de las otras unidades) y las variaciones
     if (d.tipo !== 'vida' && d.tipo !== 'delta') continue;
     assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
     for (const l of p.datos) assert.ok(palabras(l) <= 22 && !/\d\.\d|^Dato:/.test(l), `semilla ${s}: «${l}»`);

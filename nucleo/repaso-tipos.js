@@ -24,7 +24,9 @@
     'cinematica-medias': { vt: F + 'movimiento-rectilineo', ecuacion: F + 'movimiento-rectilineo', idavuelta: F + 'movimiento-rectilineo', media: F + 'movimiento-rectilineo',
       xy: F + 'movimiento-parabolico-y-circular', latitud: F + 'movimiento-parabolico-y-circular' },
     'clasificar-reacciones': todo(Q + 'reacciones-y-balance', ['aguaDura', 'redoxSet', 'aLaVez', 'rol', 'vf', 'calor', 'tipoEnergia', 'tipo', 'relacionar', 'dismutacion']),
-    'configuracion-ubicacion': { 'vida-media': Q + 'materia-y-energia', ubicar: Q + 'tabla-periodica', familia: Q + 'tabla-periodica',
+    // 'vida-media' ya no va a Materia y energía (17 nov: esa unidad tiene su plantilla vida-media y salió de esta ficha);
+    // queda sin fila, fuera del repaso, como lo dudoso.
+    'configuracion-ubicacion': { ubicar: Q + 'tabla-periodica', familia: Q + 'tabla-periodica',
       ...todo(Q + 'estructura-atomica', ['anomala', 'cuanticos', 'cation', 'atomo-ion', 'desapareados', 'particulas', 'anion', 'contar']) },
     'conversiones-quimica': todo(Q + 'materia-y-energia', ['latente', 'densidad', 'vida', 'delta', 'lectura']),
     'dinamica-fuerzas': { resorte: F + 'dinamica', motriz: F + 'dinamica', peralte: F + 'dinamica', tabla: F + 'dinamica', plataforma: F + 'dinamica',

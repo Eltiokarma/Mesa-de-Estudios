@@ -28,7 +28,7 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
   const TOPES = { termino: 4, def: 20, ejemplo: 20, simple: 14 };
-  const MAX = 24;
+  const MAX = 30;
   const palabras = s => String(s || '').trim().split(/\s+/).filter(Boolean).length;
   // Clave de un término: minúsculas y sin tildes («Aceleración» y «aceleracion» son el mismo).
   const clave = s => String(s || '').normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/\s+/g, ' ').trim();

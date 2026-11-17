@@ -1,0 +1,88 @@
+{
+  "titulo": "La mitad cada cierto tiempo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una planta que irradia alimentos tiene 64 g de cobalto-60. ¿Cuántos gramos quedan después de 2 vidas medias? Datos: Vida media: tiempo en que se desintegra la mitad de lo que hay. Tras n vidas medias queda m = m_0 / 2ⁿ, con m_0 lo que había al inicio. Alternativas: A) 8 g   B) 32 g   C) 48 g   D) 16 g",
+      "respuesta": "D) 16 g",
+      "pasos": [
+        "En cada vida media se desintegra la mitad de lo que queda.",
+        "m = 64 / 2² = 64 / 4 = 16 g."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una planta que irradia alimentos tiene 80 g de cobalto-60. ¿Cuántos gramos quedarán dentro de 21,2 años? Datos: Tras n vidas medias queda m = m_0 / 2ⁿ, con m_0 lo que había al inicio. n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Vida media del cobalto-60: unos 5,3 años. Alternativas: A) 40 g   B) 10 g   C) 5 g   D) 2,5 g   E) 75 g",
+      "respuesta": "C) 5 g",
+      "pasos": [
+        "n = 21,2 ÷ 5,3 = 4 vidas medias.",
+        "m = 80 / 2⁴ = 80 / 16 = 5 g."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El fósforo-32 se usa en algunos tratamientos médicos. ¿Cuánto tiempo pasa hasta que de una dosis quede el 25 %? Datos: Fracción que queda tras n vidas medias: 1/2ⁿ. n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Vida media del fósforo-32: unos 14 días. Alternativas: A) 42 días   B) 21 días   C) 56 días   D) 14 días   E) 28 días",
+      "respuesta": "E) 28 días",
+      "pasos": [
+        "el 25 % = 1/4 = 1/2²: 2 vidas medias.",
+        "t = 2 × 14 = 28 días."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El tecnecio-99m se usa para tomar imágenes en hospitales. ¿Qué fracción de una dosis se desintegra en 24 horas? Datos: n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Fracción que queda tras n vidas medias: 1/2ⁿ. Lo desintegrado es lo que falta: lo que había menos lo que queda. Vida media del tecnecio-99m: unas 6 horas. Alternativas: A) 31/32   B) 15/16   C) 1/2   D) 1/16   E) 7/8",
+      "respuesta": "B) 15/16",
+      "pasos": [
+        "n = 24 ÷ 6 = 4: queda 1/2⁴ = 1/16.",
+        "Se desintegra lo que falta: 1 − 1/16 = 15/16."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una fuente de cesio-137 pasa de 8 g a 2 g en 60 años. ¿Cuál es su vida media? Datos: Vida media: tiempo en que se desintegra la mitad de lo que hay. n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Alternativas: A) 15 años   B) 60 años   C) 20 años   D) 120 años   E) 30 años",
+      "respuesta": "E) 30 años",
+      "pasos": [
+        "8 → 4 → 2 g: 2 vidas medias.",
+        "vida media = 60 ÷ 2 = 30 años."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El tecnecio-99m se usa para tomar imágenes en hospitales. ¿Cuánto tiempo pasa hasta que de una dosis quede 1/16? Datos: Fracción que queda tras n vidas medias: 1/2ⁿ. n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Vida media del tecnecio-99m: unas 6 horas. Alternativas: A) 11,25 horas   B) 24 horas   C) 96 horas   D) 30 horas   E) 18 horas",
+      "respuesta": "B) 24 horas",
+      "pasos": [
+        "1/16 = 1/16 = 1/2⁴: 4 vidas medias.",
+        "t = 4 × 6 = 24 horas."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "A un paciente le aplican fósforo-32, que se usa en algunos tratamientos médicos. ¿Qué fracción de la dosis queda ocho semanas después? Datos: n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Fracción que queda tras n vidas medias: 1/2ⁿ. Vida media del fósforo-32: unos 14 días. 1 semana = 7 días. Alternativas: A) 1/8   B) 1/16   C) 15/16   D) 7/8   E) 1/256",
+      "respuesta": "B) 1/16",
+      "pasos": [
+        "Todo en la misma unidad: 8 semanas = 56 días.",
+        "n = 56 ÷ 14 = 4; queda 1/2⁴ = 1/16."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una fuente de estroncio-90 pasa de 40 g a 10 g en 58 años. ¿Cuántos gramos quedarán a los 116 años de empezar? Datos: Vida media: tiempo en que se desintegra la mitad de lo que hay. Tras n vidas medias queda m = m_0 / 2ⁿ, con m_0 lo que había al inicio. n = t ÷ vida media: cuántas vidas medias caben en el tiempo t. Alternativas: A) 5 g   B) 2,5 g   C) 10 g   D) 1,25 g   E) 37,5 g",
+      "respuesta": "B) 2,5 g",
+      "pasos": [
+        "De 40 g a 10 g hay 2 mitades: vida media = 58 ÷ 2 = 29 años.",
+        "n = 116 ÷ 29 = 4.",
+        "m = 40 / 2⁴ = 40 / 16 = 2,5 g."
+      ]
+    }
+  ]
+}

@@ -225,11 +225,11 @@
   const TIPOS = ['ubicar', 'ubicar', 'ubicar', 'familia', 'familia', 'cation', 'cation', 'cation', 'anion',
     'desapareados', 'desapareados', 'anomala', 'anomala', 'cuanticos', 'cuanticos', 'contar', 'particulas', 'particulas',
     'atomo-ion', 'vida-media', 'vida-media', 'vida-media'];
-  // Qué tipos sirve a cada unidad del catálogo (decisión de Gerson, 17 nov 2026): en Materia y energía no sale la
-  // configuración electrónica, solo la vida media. generar(semilla, { unidad }) elige entre los tipos de esa unidad; sin
-  // unidad, o con una que no está aquí, entre todos y con el mismo azar de antes (las otras unidades y casos.json no
-  // cambian). Modelo: plantillas/velocidad-relativa/.
-  const TIPOS_POR_UNIDAD = { 'quimica.materia-y-energia': ['vida-media'] };
+  // Qué tipos sirve a cada unidad del catálogo (modelo: plantillas/velocidad-relativa/). Hasta el 17 nov, Materia y
+  // energía tomaba de aquí solo la vida media; desde la mesa de revisión (17 nov) tiene su plantilla propia
+  // (plantillas/vida-media/, la de su idea 6) y salió de las unidades de esta ficha. Las otras unidades, o sin unidad,
+  // eligen entre todos los tipos con el mismo azar de antes (casos.json no cambia).
+  const TIPOS_POR_UNIDAD = {};
   function generar(semilla, opciones) {
     const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
     const permitidos = TIPOS_POR_UNIDAD[unidad];

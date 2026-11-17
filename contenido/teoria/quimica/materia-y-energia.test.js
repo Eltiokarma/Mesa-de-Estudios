@@ -150,7 +150,7 @@ const idea = id => def.ideas.find(i => i.id === id);
 const txt = x => Ecuacion.texto(Array.isArray(x) ? x : [x]);
 
 test('el orden de las ideas es el aprobado (decisiones, 17 nov) y la unidad declara calidad 2', () => {
-  assert.deepEqual(def.ideas.map(i => i.id), ['sustancia-mezcla', 'propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia']);
+  assert.deepEqual(def.ideas.map(i => i.id), ['sustancia-mezcla', 'propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia', 'vida-media']);
   assert.equal(def.calidad, 2);
 });
 
@@ -165,11 +165,13 @@ test('las misiones las cumple solo el caso buscado, nunca al abrir', () => {
   const m5 = idea('masa-energia').juega.mision.logrado, c = idea('masa-energia').juega.controles[0];
   const logran = Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, i) => Math.round((c.min + i * c.paso) * 10) / 10).filter(mg => m5({ mg }));
   assert.deepEqual(logran, [5.2], 'solo la menor masa que llega a 1000 balones');
+  const j6 = idea('vida-media').juega, c6 = j6.controles[0];
+  assert.deepEqual(Teoria.grilla([c6]).filter(v => j6.mision.logrado(v)).map(v => v.t), [5730], 'solo cuando quedan 8 de 16: una vida media');
   for (const i of def.ideas) assert.equal(i.juega.mision.logrado(Teoria.inicio(i.juega)), false, i.id);
 });
 
 test('«Así se resuelve» no repite el caso de «Ahora tú» con la misma semilla (ideas 2 a 5)', () => {
-  for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia']) {
+  for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia', 'vida-media']) {
     let iguales = 0;
     for (let s = 0; s < 60; s++) {
       const a = idea(id).ahoraTu.generar(s), r = idea(id).resuelve.generar(s);
@@ -181,10 +183,12 @@ test('«Así se resuelve» no repite el caso de «Ahora tú» con la misma semil
 
 // La respuesta lleva el color de su magnitud (molde §3; corrección del 17 nov: «la misma magnitud con el mismo color de
 // un ejemplo a otro»): ya no siempre violeta. Lo que se pide no está en la figura.
+// Un subíndice con sus dos partes de color es una sola ficha: t₁/₂ es «t_1/2» (la vida media) y no la t del tiempo.
 const fichas = x => (x === null || x === undefined || typeof x !== 'object' ? [] : Array.isArray(x) ? x.flatMap(fichas)
-  : 'v' in x ? [x] : Object.values(x).flatMap(fichas));
-test('ejemplos: la respuesta lleva color y ninguna figura la muestra (ideas 2 a 5)', () => {
-  for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia']) for (const [k, e] of idea(id).ejemplos.entries()) {
+  : 'v' in x ? [x] : Array.isArray(x.sub) && x.sub.every(p => p && typeof p === 'object' && 'v' in p) ? [{ v: x.sub[0].v, t: `${x.sub[0].t}_${x.sub[1].t}` }]
+    : Object.values(x).flatMap(fichas));
+test('ejemplos: la respuesta lleva color y ninguna figura la muestra (ideas 2 a 6)', () => {
+  for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia', 'vida-media']) for (const [k, e] of idea(id).ejemplos.entries()) {
     assert.ok(fichas(e.respuesta).length, `${id} ejemplo ${k + 1}: respuesta con el color de su magnitud`);
     const fig = JSON.stringify(e.figura || {});
     for (const x of fichas(e.respuesta)) assert.ok(!fig.includes(`"${x.t}"`) && !fig.includes(` ${x.t}"`), `${id} ejemplo ${k + 1}: la figura muestra «${x.t}»`);
@@ -198,6 +202,8 @@ test('Predice no delata la respuesta en su figura: lo pedido va con «?», en ti
   assert.ok(!/0 °C/.test(dib('calor-sensible-latente')) && /"termometro":"\?"/.test(dib('calor-sensible-latente')));
   assert.match(dib('masa-energia'), /"inclina":"duda"/);
   assert.match(dib('fisico-quimico-nuclear'), /"vacia":true/);
+  assert.match(dib('vida-media'), /"vacia":true/);
+  assert.ok(!/11 460 años después","lupa":\{"foco":0.1,"capas"/.test(dib('vida-media')), 'la lupa de la segunda vida media no se ve antes de responder');
   for (const id of ['propiedades', 'calor-sensible-latente', 'masa-energia']) assert.ok(!/"color":"f"|"colorT":"f"/.test(dib(id)), id);
 });
 
@@ -207,11 +213,16 @@ test('un dibujo de variables (quim-cocina) no usa la paleta de elementos', () =>
   for (const d of vars) assert.ok(!/var\(--el-/.test(Kit.piezas['quim-cocina'].dibujar(d.datos, d.estado)), d.donde);
 });
 
-test('lo nuclear de la idea de cambios es solo el carbono-14; la unidad no trae radiactividad ni vida media', () => {
+test('lo nuclear de la idea de cambios es solo el carbono-14; la vida media y lo radiactivo, solo en la idea 6', () => {
   const t3 = Glosario.texto({ ideas: [idea('fisico-quimico-nuclear')] });
   assert.ok(!/uranio|radio-|alfa|beta|protón|neutrón|electrón/i.test(t3), 'idea 3: nuclear sin otros ejemplos ni partículas subatómicas');
   assert.ok(/carbono-14/.test(t3));
-  assert.ok(!/vida media|semivida|radiactiv/i.test(Glosario.texto(def)), 'sin radiactividad ni vida media');
+  assert.ok(!/vida media|semivida|radiactiv|desintegr/i.test(Glosario.texto({ ideas: def.ideas.slice(0, 5) })), 'ideas 1 a 5 sin radiactividad ni vida media');
+  // Idea 6 (Gerson, 17 nov): los átomos se cuentan, no se desarman; sin «isótopo» (el glosario del curso lo define con
+  // neutrones, en estructura atómica).
+  const t6 = Glosario.texto({ ideas: [idea('vida-media')] });
+  assert.ok(!/protón|protones|neutrón|neutrones|electrón|electrones|alfa|beta|isótopo/i.test(t6), 'idea 6 sin partículas subatómicas ni «isótopo»');
+  assert.match(t6, /unos 5730 años/);
   assert.ok(!/por confirmar/i.test(Glosario.texto(def)));
   assert.match(Glosario.texto(def), /unos 87 °C/);
 });
@@ -310,17 +321,19 @@ test('la sal disuelta va como iones sueltos; en el cristal y sin disolver, como 
 // una se clasifica por su letra o por su unidad.
 function clase(t) {
   const s = String(t).trim();
-  const letra = { m: 'masa', 'Δm': 'masa', V: 'volumen', 'ρ': 'densidad', Q: 'calor', 'cₑ': 'por gramo', L: 'por gramo', T: 'temperatura', 'ΔT': 'temperatura', E: 'energía', c: 'luz' }[s];
+  if (s === 't_1/2') return 'vida media';
+  if (/_/.test(s)) return clase(s.split('_')[0]);
+  const letra = { m: 'masa', 'Δm': 'masa', V: 'volumen', 'ρ': 'densidad', Q: 'calor', 'cₑ': 'por gramo', L: 'por gramo', T: 'temperatura', 'ΔT': 'temperatura', E: 'energía', c: 'luz', t: 'tiempo', n: 'vidas medias' }[s];
   if (letra) return letra;
   if (/ en cada /.test(s)) return null;
   const u = (s.match(/\d\s*([^\d\s][^\s]*)$/) || [])[1];
   return { '°C': 'temperatura', K: 'temperatura', '°F': 'temperatura', g: 'masa', kg: 'masa', mg: 'masa', mL: 'volumen', 'cm³': 'volumen',
     'g/cm³': 'densidad', 'g/mL': 'densidad', cal: 'calor', kcal: 'calor', 'cal/g': 'por gramo', 'cal/(g·°C)': 'por gramo' }[u] || null;
 }
-test('un color por magnitud en toda la unidad (ideas 2 a 5)', () => {
+test('un color por magnitud en toda la unidad (ideas 2 a 6)', () => {
   const visto = {};
   const anota = (donde, x) => { for (const f of fichas(x)) { const k = clase(f.t); if (!k) continue; (visto[k] = visto[k] || new Map()).set(f.v, `${donde}: «${f.t}»`); } };
-  for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia']) {
+  for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia', 'vida-media']) {
     const i = idea(id);
     i.ejemplos.forEach((e, k) => anota(`${id} ejemplo ${k + 1}`, [e.enunciado, e.datos, e.solucion, e.respuesta]));
     i.mira.pasos.forEach((p, k) => anota(`${id} mira ${k + 1}`, [p.texto, p.ecuacion]));
@@ -337,6 +350,10 @@ test('un color por magnitud en toda la unidad (ideas 2 a 5)', () => {
   for (const [k, m] of Object.entries(visto)) assert.equal(m.size, 1, `${k} con ${m.size} colores: ${[...m.values()].join(' | ')}`);
   assert.equal([...visto.calor.keys()][0], 'c-f'); assert.equal([...visto.temperatura.keys()][0], 'c-d');
   assert.notEqual([...visto.temperatura.keys()][0], [...visto['por gramo'].keys()][0], 'ΔT y L no comparten color');
+  // Idea 6: la masa sigue en naranja; t, t₁/₂ y n tienen cada uno su color, distinto del de la masa y entre sí.
+  assert.equal([...visto.masa.keys()][0], 'c-o');
+  const t6 = ['tiempo', 'vida media', 'vidas medias'].map(k => { assert.ok(visto[k], `no se vio ${k}`); return [...visto[k].keys()][0]; });
+  assert.equal(new Set([...t6, 'c-o']).size, 4, `t, t₁/₂, n y m con colores distintos: ${t6.join(', ')}`);
 });
 
 test('los dibujos de variables pintan Q, T y ρ con su color (juego, eje, termómetro y Mira)', () => {
@@ -402,4 +419,40 @@ test('ejemplos de la idea 5: el cuadrado de c a la vista donde se usa (o dado en
 
 test('«Ahora tú» de los cambios no repite el gas que arde de Mira', () => {
   for (let s = 0; s < 60; s++) assert.ok(!/gas natural|hornilla/.test(txt(idea('fisico-quimico-nuclear').ahoraTu.generar(s).pregunta)), `semilla ${s}`);
+});
+
+// ---------- Idea 6: vida media (17 nov) ----------
+// Cálculo independiente (escrito aquí, sin el motor): tras n = t/T vidas medias queda m0 · (1/2)ⁿ.
+test('idea 6: el motor de la vida media cuadra con el cálculo independiente, y el juego cuenta los átomos con él', () => {
+  const Motor = require('../../../plantillas/materia-energia/motor.js');
+  for (const [m0, T, t] of [[80, 30, 90], [40, 5.3, 15.9], [16, 5730, 11460], [100, 6, 18], [64, 30, 150]]) {
+    let q = m0; for (let k = 0; k < Math.round(t / T); k++) q /= 2;
+    const d = Motor.desintegracion({ m0, tMedia: T, t });
+    assert.ok(Math.abs(d.queda - q) < 1e-9 && Math.abs(d.desintegrado - (m0 - q)) < 1e-9, `${m0}, ${T}, ${t}: ${d.queda} contra ${q}`);
+  }
+  const j = idea('vida-media').juega;
+  const cuenta = v => { const l = j.dibujo(v).datos.recipientes[1].lupa.capas[0].particulas; return [l.find(p => p.e === 'C').n, l.find(p => p.e === 'N').n]; };
+  assert.deepEqual(cuenta({ t: 0 }), [16, 0]);
+  assert.deepEqual(cuenta({ t: 5730 }), [8, 8]);
+  const p = idea('vida-media').predice.revelar.datos.recipientes[2].lupa.capas[0].particulas;
+  assert.equal(p.find(x => x.e === 'C').n, 4, 'en dos vidas medias quedan 4 de 16 (no 0)');
+  // El juego no llega a la segunda vida media: es la predicción.
+  assert.ok(j.controles[0].max <= 5730);
+});
+
+test('idea 6: la predicción tiene a «se acaba» entre sus opciones y su correcta es 4', () => {
+  const o = idea('vida-media').predice.opciones;
+  assert.match(o.find(x => x.correcta).texto, /^4/);
+  assert.ok(o.some(x => /^0/.test(x.texto) && x.error === 'AQ-vm-lineal'));
+  for (const x of o.filter(y => !y.correcta)) assert.ok(/(bien|cierto)\./.test(x.siFuera.split('Pero')[0]), `«${x.siFuera}» empieza por lo que el alumno hizo bien`);
+});
+
+test('idea 6: cada «Ahora tú» trae la vida media o la manera de hallarla, y la fórmula, sin la respuesta en los datos', () => {
+  const i = idea('vida-media');
+  for (let s = 0; s < 60; s++) {
+    const a = i.ahoraTu.generar(s), ds = a.datos.map(txt).join(' | '), cor = txt(a.opciones.find(o => o.correcta).texto);
+    assert.ok(/Vida media del|Vida media: tiempo/.test(ds), `semilla ${s}: falta la vida media o su definición`);
+    if (!a.dibujo) assert.ok(/2n|n = t/.test(ds), `semilla ${s}: falta la fórmula`);   // con la curva se lee la vida media: basta su definición
+    assert.ok(!ds.includes(cor), `semilla ${s}: los datos traen la respuesta ${cor}`);
+  }
 });

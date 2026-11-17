@@ -32,9 +32,11 @@
  *            o kg: masa ya está en g) } → kJ; sub 'inversa' { Q (kJ) } → mL de agua vaporizada.
  *   vida     sub 'queda' { m0, tMedia, t } → masa que queda; sub 'deducir' { m0, T1, a, T2 } (en T1 queda m0/2^a;
  *            se pide lo que queda en T2) → masa; sub 'tiempo' { tMedia, n } (queda 1/2^n) → tiempo.
- * Por unidad (decisión de Gerson, 17 nov 2026): generar(semilla, { unidad }) en quimica.materia-y-energia elige entre
- * delta, lectura, densidad y vida (sin el calor latente molar); en las otras unidades, o sin unidad, entre todos, como
- * antes (TIPOS_POR_UNIDAD, modelo plantillas/velocidad-relativa/). Vida media y variaciones traen `datos` en lista.
+ * Por unidad (decisión de Gerson, 17 nov 2026, y mesa de revisión): generar(semilla, { unidad }) en
+ * quimica.materia-y-energia elige entre delta y densidad de masa y volumen (sin calor latente molar, sin vida media, que
+ * tiene su plantilla vida-media, sin lecturas punto a punto ni longitudes atómicas); en las otras unidades, o sin unidad,
+ * entre todos, como antes (TIPOS_POR_UNIDAD y SUBTIPOS_POR_UNIDAD, modelo plantillas/velocidad-relativa/). Vida media y
+ * variaciones traen `datos` en lista.
  * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los AQ-* y las trampas de unidades QU1 a QU3 (docs/investigacion/unidades-ideas-erroneas.md) son hipótesis nuestras (los de vida
  * media, AQ-vm-*, comparten id con configuracion-ubicacion). Rangos creíbles: cada objeto y cada lugar tiene su rango de
  * temperatura, y el dato se genera dentro de él; en lectura no salen kelvin negativos entre las alternativas.
@@ -93,11 +95,17 @@
   // ---------- Armado ----------
   const TIPOS = ['delta', 'delta', 'lectura', 'densidad', 'densidad', 'latente', 'latente', 'vida', 'vida'];
   // Qué tipos sirve a cada unidad del catálogo (decisión de Gerson, 17 nov 2026): en Materia y energía no sale el calor
-  // latente molar (kJ/mol, de Líquidos y sólidos); la vida media se queda. generar(semilla, { unidad }) elige solo entre
-  // los tipos de esa unidad; sin unidad, o con una que no está aquí, entre todos y con el mismo azar de antes (las otras
-  // unidades y casos.json no cambian). Modelo: plantillas/velocidad-relativa/.
+  // latente molar (kJ/mol, de Líquidos y sólidos). Desde la mesa de revisión (17 nov) tampoco la vida media (tiene su
+  // plantilla, plantillas/vida-media/, la de la idea 6), ni las lecturas de temperatura punto a punto (K = °C + 273: van en
+  // física; aquí solo variaciones), ni las longitudes en Å, nm o pm (densidad «longitud», de estructura atómica).
+  // generar(semilla, { unidad }) elige solo entre los tipos (y subtipos) de esa unidad; sin unidad, o con una que no está
+  // aquí, entre todos y con el mismo azar de antes (las otras unidades y casos.json no cambian). Modelo:
+  // plantillas/velocidad-relativa/.
   const TIPOS_POR_UNIDAD = {
-    'quimica.materia-y-energia': ['delta', 'lectura', 'densidad', 'vida'],
+    'quimica.materia-y-energia': ['delta', 'densidad'],
+  };
+  const SUBTIPOS_POR_UNIDAD = {
+    'quimica.materia-y-energia': { densidad: ['volumen', 'volumen', 'masa'] },
   };
   function generar(semilla, opciones) {
     const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
@@ -105,7 +113,7 @@
     const rng = Azar.crear(ID + '|' + semilla);
     const tipo = rng.elegir(permitidos ? TIPOS.filter(t => permitidos.includes(t)) : TIPOS);
     for (let intento = 0; intento < 3000; intento++) {
-      const pr = ({ delta: tDelta, lectura: tLectura, densidad: tDensidad, latente: tLatente, vida: tVida })[tipo](rng, semilla);
+      const pr = ({ delta: tDelta, lectura: tLectura, densidad: tDensidad, latente: tLatente, vida: tVida })[tipo](rng, semilla, unidad);
       if (pr && pr.alternativas.length >= 4) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
@@ -274,8 +282,8 @@
   ];
   const NOMBRE_V = { cm3: 'cm³', L: 'L', m3: 'm³' };
   const textoCient = u => x => cient(x) + ' ' + u;
-  function tDensidad(rng, semilla) {
-    const sub = rng.elegir(['volumen', 'volumen', 'masa', 'longitud', 'longitud']);
+  function tDensidad(rng, semilla, unidadCatalogo) {
+    const sub = rng.elegir(((SUBTIPOS_POR_UNIDAD[unidadCatalogo] || {}).densidad) || ['volumen', 'volumen', 'masa', 'longitud', 'longitud']);
     if (sub === 'longitud') return tLongitud(rng, semilla);
     const met = rng.elegir(METALES);
     const cm3 = rng.elegir([50, 80, 125, 200, 250, 400, 500, 800, 1000, 1500, 2000, 2500, 4000, 5000]);
@@ -490,6 +498,6 @@
     return cerrar(rng, semilla, { correcta, errores, unidad: 'mg', decimales: 2, variables, enunciado, pregunta, solucion, datos: DATOS_VIDA, _datos: { tipo: 'vida', sub, m0, tMedia: iso.t, t } });
   }
 
-  return { id: ID, titulo: 'Termómetros, lingotes e isótopos que se desintegran', generar, tiposPorUnidad: TIPOS_POR_UNIDAD, cient,
+  return { id: ID, titulo: 'Termómetros, lingotes e isótopos que se desintegran', generar, tiposPorUnidad: TIPOS_POR_UNIDAD, subtiposPorUnidad: SUBTIPOS_POR_UNIDAD, cient,
     convertir, variacion, volumenDeMetal, masaDeMetal, longitud, calorLatente, masaPorCalor, vidaMedia, tiempoPara, METALES, ISOTOPOS };
 });

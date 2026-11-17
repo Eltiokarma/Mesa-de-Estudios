@@ -16,12 +16,14 @@
  *
  * Etapa 2 (17 nov 2026, docs/etapa2/propuesta-quimica.md y decisiones.md): cinco ideas, sustancia-mezcla,
  * propiedades (nueva), fisico-quimico-nuclear, calor-sensible-latente y masa-energia, todas contra el contrato «se
- * entiende sin profesor» (misión, leyenda, datos, 15 ejemplos por idea): la unidad declara calidad: 2.
+ * entiende sin profesor» (misión, leyenda, datos, 15 ejemplos por idea): la unidad declara calidad: 2. Después, la
+ * mesa de revisión (decisiones.md, «Cambios posteriores») devolvió la vida media: idea 6, vida-media, con el hueso de
+ * carbono-14 de la idea 3 (lupa de átomos, quim-vasos) y su curva de masa (quim-cocina).
  * Un dibujo es de partículas o de variables, nunca de los dos. Partículas (ideas 1 y 3, piezas quim-vasos y
  * quim-particulas): la paleta de elementos (nucleo/elementos.js, var(--el-*)) con su relleno (O lleno, H hueco, Na con
  * punto o con su signo de ion). Variables (ideas 2, 4 y 5, pieza quim-cocina): colores por papel del molde §5b, naranja el
  * primer dato, turquesa el segundo o el factor, violeta lo que se pide, verde un tercer dato: m, V y ρ; m, ΔT o L, cₑ y Q;
- * Δm, c², E y la energía de un balón. Letras: cₑ es el calor específico porque c es la rapidez de la luz; T es la
+ * Δm, c², E y la energía de un balón; en la idea 6, m y m₀ naranja (masa), t turquesa, t₁/₂ violeta y n carmín. Letras: cₑ es el calor específico porque c es la rapidez de la luz; T es la
  * temperatura (en física también es el período o la dimensión tiempo: es la notación de los libros).
  * Fuentes (no van al alumno): OpenStax Chemistry 2e §1.2 y §10.3; IUPAC; NIST (c = 299 792 458 m/s, aquí 3 × 10⁸).
  */
@@ -1123,7 +1125,7 @@
   // (N–Fe no se distinguen; Elementos.CERCANOS). Sin ecuaciones balanceadas: en «Mira» se cuentan los átomos en la lupa
   // (el balance es de quimica.reacciones-y-balance). Lo nuclear, un solo ejemplo: el carbono-14 de un hueso que pasa a
   // nitrógeno-14, sin partículas subatómicas (decisiones, 17 nov); la lupa del hueso muestra solo sus átomos de C-14 y no
-  // dice cuánto tarda (la vida media salió de la unidad).
+  // dice cuánto tarda (eso es la idea 6, vida-media).
   // Cambia: el proceso · Permanece: antes a la izquierda, después a la derecha, con la misma lupa · Progresa: de cambiar
   // de estado a formar sustancias nuevas y, al final, a cambiar de elemento · Se reserva: las gotitas de la botella fría
   // (la predicción) y que los átomos de cada elemento se conservan (Mira) · Debe verse: si después hay las mismas
@@ -2023,7 +2025,7 @@
 
   // ---------- Idea 5: poca masa, muchísima energía (E = Δm · c²) ----------
   // Rehecha el 17 nov contra el contrato (docs/etapa2/propuesta-quimica.md, idea 5, con docs/etapa2/decisiones.md: solo
-  // E = Δm · c²; la radiactividad y la vida media salieron de la unidad). Primera pantalla: una balanza con un granito
+  // E = Δm · c²; la radiactividad y la vida media van aparte, en la idea 6). Primera pantalla: una balanza con un granito
   // de unos miligramos y una fila de balones de gas con la misma energía (quim-cocina, objetos de prueba). Un dibujo de
   // variables: Δm naranja (c-o), c² turquesa (c-i), E violeta (c-f), la energía de un balón verde (c-d, tercer dato) y el
   // número de balones en carmín (c-h: esta unidad no tiene ángulos, y el número no puede compartir el violeta de E en un
@@ -2470,6 +2472,453 @@
   energia.regla.ecuacion = potencias(energia.regla.ecuacion);
   for (const m of ['resuelve', 'ahoraTu']) { const g = energia[m].generar; energia[m].generar = s => potCaso(g(s)); }
 
+  // ---------- Idea 6: la mitad cada cierto tiempo (vida media) ----------
+  // Pedido de Gerson en la mesa de revisión (17 nov, docs/etapa2/decisiones.md, «Cambios posteriores»): la vida media
+  // vuelve a la unidad como idea propia, con el hueso de C-14 que la idea 3 ya mostró. Sin partículas subatómicas: los
+  // átomos de carbono-14 se cuentan en la lupa, no se desarman (ni protones ni neutrones, ni alfa ni beta; tampoco la
+  // palabra «isótopo», que el glosario del curso define con neutrones en estructura atómica).
+  // Primera pantalla: el hueso de una llama en un museo (quim-vasos, objeto de prueba), con su lupa de 16 átomos de C-14.
+  // Cambia: los años que pasan · Permanece: el hueso al morir, a la izquierda, con sus 16 átomos · Progresa: los átomos de
+  // C-14 que pasan a N-14 · Se reserva: la segunda vida media (es la predicción: el juego llega solo hasta 5730 años) ·
+  // Debe verse: en una vida media se va la mitad, y después la mitad de lo que queda.
+  // Un dibujo es de partículas o de variables, nunca de los dos: el hueso y su lupa van con la paleta de elementos (C y N,
+  // un par que sí se distingue: Elementos.VISTAS), y la curva de masa de los ejemplos y de «Ahora tú» va en quim-cocina con
+  // los colores de variable. Colores (un color por magnitud en toda la unidad): la masa y lo que queda o se desintegró de
+  // la sustancia radiactiva (m, m₀, átomos, fracción o porcentaje), naranja, como la masa de las ideas 2 a 5; el tiempo que
+  // pasa (t), turquesa; la vida media (t₁/₂), violeta; las vidas medias que caben (n), carmín, como las cuentas de la
+  // idea 5. Letras: t₁/₂ es la de los libros de academia; n no choca con nada en la unidad.
+  // Vidas medias de libro, con «unos» y sin fuente (molde §4): carbono-14 unos 5730 años (el valor de los libros y los
+  // exámenes; NUBASE2020 da 5700 ± 30), cobalto-60 unos 5,3 años, cesio-137 unos 30, estroncio-90 unos 29, yodo-131 unos
+  // 8 días, fósforo-32 unos 14 días y tecnecio-99m unas 6 horas. Masas creíbles (contrato, punto 10): en gramos solo las
+  // fuentes grandes que existen (cobalto de una planta que irradia alimentos, cesio de un equipo de radioterapia,
+  // estroncio de un generador de faro); lo de hospital y el carbono-14 de un hueso van en fracción o porcentaje.
+  // La cuenta la hace el motor de la escena materia-energia (MotorMateria.desintegracion y atomosQueQuedan; regla 1).
+  // Códigos (hipótesis, docs/investigacion/cinetica-ideas-erroneas.md, «Vida media»; los AQ-vm-* son los de
+  // conversiones-quimica y de la plantilla vida-media): AQ-vm-lineal (se pierde lo mismo cada vida media: en dos se acaba),
+  // AQ-vm-divide-entre-2n, AQ-vm-desintegrada (lo que se fue por lo que queda), AQ-vm-tiempo-como-una-vida,
+  // AQ-vm-una-vida-de-menos y de-mas, AQ-vm-multiplica-fraccion, AQ-vm-divide-vida-media, AQ-vm-sin-convertir (un día como
+  // una vida media de horas), AQ-vm-lee-tiempo-sin-mitad, AQ-vm-lee-otra-marca (leer en la curva otro punto que la mitad)
+  // y las nuevas QM-VM-SE-DETIENE (lo que queda ya no cambia) y QM-VM-CUENTA-DOBLE (dividir lo que queda entre 2ⁿ).
+  const VM_C14 = 5730, N_HUESO = 16;
+  // 5730, no «5 730»; 11 460 con un espacio que no parte la línea (un título partía «Tras 11 / 460 años»).
+  const ent6 = x => f(Math.round(x * 100) / 100, 2).replace(/^(−?\d)\s(\d{3})(?=,|$)/, '$1$2').replace(/(\d)\s(\d{3})/g, '$1\u00a0$2');
+  const v6m = t => vO(t), v6t = t => vI(t), v6v = t => dR(t), v6n = t => vH(t);
+  const mS = v6m('m'), m0S = { sub: [v6m('m'), v6m('0')] }, nS = v6n('n'), tS = v6t('t'), thS = { sub: [v6v('t'), v6v('1/2')] };
+  const pot2 = n => ({ sup: ['2', n] });
+  // Fracciones de potencias de 2 (1/8, 15/16) y porcentajes (87,5 %).
+  const fr6 = x => { for (let d = 1; d <= 4096; d *= 2) if (Math.abs(x * d - Math.round(x * d)) < 1e-9) return d === 1 ? String(Math.round(x)) : `${Math.round(x * d)}/${d}`; return f(x, 3); };
+  const pc6 = x => `${f(Math.round(x * 1e4) / 100, 2)} %`;
+  const des6 = (m0, tMedia, t) => Motor.desintegracion({ m0, tMedia, t });
+  const quedan6 = t => Motor.atomosQueQuedan(N_HUESO, t, VM_C14);
+  // El hueso con su lupa: k átomos de C-14 y el resto ya de N-14 (las mismas celdas: los que cambian se ven en su sitio).
+  const hueso6 = (titulo, k, desde) => ({ tipo: 'hueso', titulo, lupa: Object.assign(L3(0.1, [{ particulas: [{ e: 'C', n: k }, { e: 'N', n: N_HUESO - k }] }]), desde ? { desde } : {}) });
+  const huesos6 = (rs, sep) => mesa3(rs, { separacion: sep || (rs.length === 3 ? 16 : 18) });
+  // El tiempo del juego, en años enteros (el control animado pasa por valores intermedios).
+  const ano6 = t => Math.round(t);
+  const juego6 = v => huesos6([hueso6('Al morir', N_HUESO), hueso6(ano6(v.t) === 0 ? 'Recién muerta' : `${ent6(ano6(v.t))} años después`, quedan6(ano6(v.t)))]);
+  const lectura6 = v => [v6t(`${ent6(ano6(v.t))} años`), ': quedan ', v6m(`${quedan6(ano6(v.t))} de 16`), ' átomos de carbono-14.'];
+  // Datos (contrato, punto 13): la definición y las fórmulas generales, nunca la cuenta hecha.
+  const DEF_VM6 = 'Vida media: tiempo en que se desintegra la mitad de lo que hay';
+  const DEF_M6 = ['Tras ', nS, ' vidas medias queda ', mS, ' = ', { frac: [m0S, pot2(nS)] }, ', con ', m0S, ' lo que había al inicio'];
+  const DEF_N6 = [nS, ' = ', { frac: [tS, thS] }, ', con ', thS, ' la vida media: vidas medias que caben en el tiempo ', tS];
+  const DEF_F6 = ['Fracción que queda tras ', nS, ' vidas medias: 1/', pot2(nS)];
+  const DEF_D6 = 'Lo desintegrado es lo que falta: lo que había menos lo que queda';
+  const vida6 = (nombre, txt) => [`Vida media del ${nombre}: `, thS, ' = ', v6v(txt)];
+  // Fuentes con masa creíble (en gramos) y sustancias de hospital (en fracción o porcentaje).
+  const GRANDES6 = [
+    { nombre: 'cobalto-60', vm: 5.3, txt: 'unos 5,3 años', donde: 'Una planta que irradia alimentos tiene', masas: [20, 40, 64, 80] },
+    { nombre: 'cesio-137', vm: 30, txt: 'unos 30 años', donde: 'Un equipo antiguo de radioterapia guarda', masas: [4, 8, 12, 16] },
+    { nombre: 'estroncio-90', vm: 29, txt: 'unos 29 años', donde: 'El generador eléctrico de un faro antiguo tiene', masas: [40, 80, 120, 160] },
+  ];
+  const HOSPITAL6 = [
+    { nombre: 'yodo-131', vm: 8, u: 'días', txt: 'unos 8 días', uso: 'se usa para tratar la tiroides' },
+    { nombre: 'tecnecio-99m', vm: 6, u: 'horas', txt: 'unas 6 horas', uso: 'se usa para tomar imágenes en hospitales' },
+    { nombre: 'fósforo-32', vm: 14, u: 'días', txt: 'unos 14 días', uso: 'se usa en algunos tratamientos médicos' },
+  ];
+  const g6 = x => `${ent6(x)} g`;
+  const anos6 = x => `${ent6(x)} años`;
+  // Un caso de cada tipo; «Así se resuelve» toma otro (otro = true): otra fuente y, en los tipos con dos variantes, la otra.
+  function caso6(s, otro) {
+    const tipo = s % 5, r = azar(s + (otro ? 900 : 0)), alterna = (Math.floor(s / 5) + (otro ? 1 : 0)) % 2 === 0;
+    if (tipo === 0) {   // masa que queda
+      const x = GRANDES6[idx(s, GRANDES6.length, otro)], m0 = r.de(x.masas), n = r.de([2, 3]), t = Math.round(n * x.vm * 100) / 100, d = des6(m0, x.vm, t);
+      return { tipo, x, m0, n, t, d, datos: [DEF_M6, DEF_N6, vida6(x.nombre, x.txt)],
+        pregunta: [`${x.donde} `, v6m(`${m0} g`), ` de ${x.nombre}. ¿Cuántos gramos quedarán dentro de `, v6t(anos6(t)), '?'],
+        opciones: opciones(d.queda, [
+          { id: 'n2', valor: d.errores.entre2n, error: 'AQ-vm-divide-entre-2n', siFuera: `Contaste ${n} vidas medias, bien. Pero cada una divide entre 2 lo que queda: entre 2${SUP[n]}, no entre 2 × ${n}.` },
+          { id: 'des', valor: d.desintegrado, error: 'AQ-vm-desintegrada', siFuera: 'Hiciste bien las mitades. Pero ese número es lo que se desintegró; piden lo que queda.' },
+          { id: 'una', valor: d.errores.unaSola, error: 'AQ-vm-tiempo-como-una-vida', siFuera: `Dividiste entre 2, bien. Pero en ${anos6(t)} caben ${n} vidas medias, no una.` },
+          { id: 'lin', valor: d.errores.lineal, error: 'AQ-vm-lineal', siFuera: 'Se va perdiendo, bien. Pero cada vida media se va la mitad de lo que queda: nunca se acaba.' },
+          { id: 'menos', valor: m0 / 2 ** (n - 1), error: 'AQ-vm-una-vida-de-menos', siFuera: `Dividiste entre 2 cada vida media, bien. Pero en ${anos6(t)} caben ${n}, no ${n - 1}.` },
+          { id: 'mas', valor: m0 / 2 ** (n + 1), error: 'AQ-vm-una-vida-de-mas', siFuera: `Dividiste entre 2 cada vida media, bien. Pero en ${anos6(t)} caben ${n}, no ${n + 1}.` },
+        ], g6) };
+    }
+    if (tipo === 1) {   // tiempo que pasó
+      if (alterna) {
+        const n = r.de([2, 3]), t = n * VM_C14, q = 2 ** -n, txt = r.de([0, 1]) ? `la ${n === 2 ? 'cuarta' : 'octava'} parte` : `el ${pc6(q).replace(' %', '')} %`;
+        return { tipo, c14: true, n, t, q, datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
+          pregunta: ['Un hueso hallado en una cueva de los Andes conserva ', v6m(txt), ' del carbono-14 que tenía al morir el animal. ¿Hace cuántos años murió?'],
+          opciones: opciones(t, [
+            { id: 'pot', valor: 2 ** n * VM_C14, error: 'AQ-vm-multiplica-fraccion', siFuera: `Usaste la vida media, bien. Pero ${2 ** n} es 2${SUP[n]}: son ${n} vidas medias, no ${2 ** n}.` },
+            { id: 'menos', valor: (n - 1) * VM_C14, error: 'AQ-vm-una-vida-de-menos', siFuera: `Multiplicaste por la vida media, bien. Pero para quedar 1/${2 ** n} hacen falta ${n} mitades.` },
+            { id: 'mas', valor: (n + 1) * VM_C14, error: 'AQ-vm-una-vida-de-mas', siFuera: `Multiplicaste por la vida media, bien. Pero contaste una mitad de más: 1/${2 ** n} son ${n}.` },
+          ], anos6) };
+      }
+      const x = HOSPITAL6[idx(s, HOSPITAL6.length, otro)], n = r.de([3, 4]), t = n * x.vm;
+      return { tipo, c14: false, x, n, t, datos: [DEF_F6, DEF_N6, vida6(x.nombre, x.txt)],
+        pregunta: [`El ${x.nombre} ${x.uso}. ¿Cuánto tiempo pasa hasta que de una dosis quede `, v6m(`1/${2 ** n}`), '?'],
+        opciones: opciones(t, [
+          { id: 'pot', valor: 2 ** n * x.vm, error: 'AQ-vm-multiplica-fraccion', siFuera: `Usaste la vida media, bien. Pero ${2 ** n} es 2${SUP[n]}: son ${n} vidas medias.` },
+          { id: 'menos', valor: (n - 1) * x.vm, error: 'AQ-vm-una-vida-de-menos', siFuera: `Multiplicaste por la vida media, bien. Pero para llegar a 1/${2 ** n} hacen falta ${n} mitades.` },
+          { id: 'div', valor: x.vm / 2 ** n, error: 'AQ-vm-divide-vida-media', siFuera: 'Usaste la fracción, bien. Pero mientras menos queda, más tiempo pasó: se multiplica la vida media.' },
+        ], v => `${ent6(v)} ${x.u}`) };
+    }
+    if (tipo === 2) {   // porcentaje que se desintegra
+      const x = HOSPITAL6[idx(s, HOSPITAL6.length, otro)], n = r.de([2, 3, 4]), t = n * x.vm, d = des6(100, x.vm, t);
+      return { tipo, x, n, t, d, datos: [DEF_N6, DEF_F6, DEF_D6, vida6(x.nombre, x.txt)],
+        pregunta: [`El ${x.nombre} ${x.uso}. ¿Qué porcentaje de una dosis se desintegra en `, v6t(`${t} ${x.u}`), '?'],
+        opciones: opciones(d.desintegrado, [
+          { id: 'queda', valor: d.queda, error: 'AQ-vm-desintegrada', siFuera: `Hiciste bien las ${n} mitades. Pero ese es el porcentaje que queda; piden el que se desintegra.` },
+          ...(n === 2 ? [{ id: 'lin', valor: 100, error: 'AQ-vm-lineal', siFuera: 'Se desintegra más con el tiempo, bien. Pero cada vida media se va la mitad de lo que queda.' }] : []),
+          { id: 'una', valor: 50, error: 'AQ-vm-tiempo-como-una-vida', siFuera: `La mitad en una vida media, bien. Pero en ${t} ${x.u} caben ${n} vidas medias.` },
+          { id: 'menos', valor: 100 * (1 - 2 ** -(n - 1)), error: 'AQ-vm-una-vida-de-menos', siFuera: `Calculaste lo desintegrado, bien. Pero en ${t} ${x.u} caben ${n} vidas medias, no ${n - 1}.` },
+        ], v => pc6(v / 100)) };
+    }
+    if (tipo === 3) {   // hallar la vida media: de dos masas o leída en la curva
+      const x = GRANDES6[idx(s, 2, otro)], m0 = x.nombre === 'cesio-137' ? 16 : 48, n = 2, t = Math.round(n * x.vm * 100) / 100;
+      const vm6 = v => `${ent6(v)} años`;
+      if (alterna) return { tipo, curva: true, x, m0, n, t, datos: [DEF_VM6],
+        dibujo: curva6(x, m0),
+        pregunta: [`La gráfica muestra cómo baja la masa de ${x.nombre} de una fuente. ¿Cuál es su vida media?`],
+        opciones: opciones(x.vm, [
+          { id: 'cuarto', valor: 2 * x.vm, error: 'AQ-vm-lee-otra-marca', siFuera: `Leíste bien el eje del tiempo. Pero a ${vm6(2 * x.vm)} queda la cuarta parte, no la mitad.` },
+          { id: 'medio', valor: x.vm / 2, error: 'AQ-vm-lee-otra-marca', siFuera: `Buscaste en el eje del tiempo, bien. Pero a ${vm6(x.vm / 2)} todavía no se va la mitad.` },
+          { id: 'fin', valor: 4 * x.vm, error: 'AQ-vm-lineal', siFuera: 'La curva baja, bien. Pero la vida media no es cuando casi se acaba: es cuando queda la mitad.' },
+        ], vm6) };
+      return { tipo, curva: false, x, m0, n, t, datos: [DEF_VM6, DEF_N6],
+        pregunta: [`Una fuente de ${x.nombre} pasa de `, v6m(`${m0} g`), ' a ', v6m(`${m0 / 4} g`), ' en ', v6t(anos6(t)), '. ¿Cuál es su vida media?'],
+        opciones: opciones(x.vm, [
+          { id: 'todo', valor: t, error: 'AQ-vm-tiempo-como-una-vida', siFuera: `Usaste el tiempo, bien. Pero en ${anos6(t)} no queda la mitad sino la cuarta parte: son 2 vidas medias.` },
+          { id: 'cuatro', valor: t / 4, error: 'AQ-vm-divide-entre-2n', siFuera: 'Viste que queda la cuarta parte, bien. Pero 1/4 son 2 mitades: el tiempo se divide entre 2.' },
+          { id: 'doble', valor: 2 * t, error: 'AQ-vm-multiplica-fraccion', siFuera: 'Contaste 2 mitades, bien. Pero esas 2 vidas medias caben en el tiempo dado: se divide, no se multiplica.' },
+        ], vm6) };
+    }
+    if (alterna) {   // examen: unidades mezcladas (horas y días, días y semanas)
+      const x = otro ? HOSPITAL6[2] : HOSPITAL6[1], n = x.u === 'horas' ? 4 : 3, eq = x.u === 'horas' ? '1 día = 24 h' : '1 semana = 7 días';
+      const cuando = x.u === 'horas' ? 'un día después' : 'seis semanas después', q = 2 ** -n;
+      return { tipo, mezcla: true, x, n, eq, q, datos: [DEF_N6, DEF_F6, vida6(x.nombre, x.txt), eq],
+        pregunta: [`A un paciente le aplican ${x.nombre}, que ${x.uso}. ¿Qué fracción de la dosis queda `, v6t(cuando), '?'],
+        opciones: opciones(q, [
+          { id: 'sin', valor: x.u === 'horas' ? 0.5 : 2 ** -6, error: 'AQ-vm-sin-convertir', siFuera: `Dividiste entre 2, bien. Pero el tiempo y la vida media van en la misma unidad: ${eq}.` },
+          { id: 'des', valor: 1 - q, error: 'AQ-vm-desintegrada', siFuera: 'Contaste bien las vidas medias. Pero esa fracción es la que se desintegró; piden la que queda.' },
+          { id: 'menos', valor: 2 * q, error: 'AQ-vm-una-vida-de-menos', siFuera: `Pasaste a la misma unidad, bien. Pero caben ${n} vidas medias, no ${n - 1}.` },
+        ], fr6) };
+    }
+    // examen: la vida media sale de los datos y después se usa (como lo pregunta San Marcos)
+    const x = otro ? GRANDES6[0] : GRANDES6[1], m0 = x.nombre === 'cesio-137' ? 64 : 80, t1 = Math.round(2 * x.vm * 100) / 100, t2 = Math.round(5 * x.vm * 100) / 100, d = des6(m0, x.vm, t2);
+    return { tipo, mezcla: false, x, m0, t1, t2, d, datos: [DEF_VM6, DEF_M6, DEF_N6],
+      pregunta: [`Una fuente de ${x.nombre} pasa de `, v6m(`${m0} g`), ' a ', v6m(`${m0 / 4} g`), ' en ', v6t(anos6(t1)), '. ¿Cuántos gramos quedarán a los ', v6t(anos6(t2)), ' de empezar?'],
+      opciones: opciones(d.queda, [
+        { id: 'sinmitad', valor: m0 / 2 ** (t2 / t1), error: 'AQ-vm-lee-tiempo-sin-mitad', siFuera: `Dividiste entre 2 por tramo, bien. Pero en ${anos6(t1)} no se fue la mitad: pasaron 2 vidas medias.` },
+        { id: 'des', valor: d.desintegrado, error: 'AQ-vm-desintegrada', siFuera: 'Hallaste bien la vida media. Pero ese número es lo que se desintegró; piden lo que queda.' },
+        { id: 'menos', valor: m0 / 2 ** 4, error: 'AQ-vm-una-vida-de-menos', siFuera: `La vida media está bien. Pero en ${anos6(t2)} caben 5, no 4.` },
+      ], g6) };
+  }
+  // La curva de masa de una fuente: lo que se pide (la vida media) no va rotulado; el eje del tiempo marca cada vida media.
+  function curva6(x, m0) {
+    const xmax = 4.5 * x.vm, pts = Array.from({ length: 46 }, (_, i) => [xmax * i / 45, m0 * 2 ** -(4.5 * i / 45)]);
+    return coc([{ tipo: 'curva', titulo: `Masa de ${x.nombre}`, puntos: pts, xmax, ymin: 0, ymax: m0 * 1.1, xMarcas: [0, 1, 2, 3].map(k => Math.round(k * x.vm * 100) / 100),
+      yMarcas: [0, m0 / 4, m0 / 2, m0], x: 't (años)', y: 'm (g)', colorX: 'i', colorY: 'o' }],
+    { alt: `Curva de la masa de ${x.nombre} de una fuente: empieza en ${m0} g y baja cada vez más despacio; el eje del tiempo va de 0 a ${ent6(xmax)} años.` });
+  }
+
+  // Ejemplos resueltos de la idea 6: 5 por nivel. N1, un paso (una mitad, contar vidas medias, la fracción, lo
+  // desintegrado, la lupa del hueso); N2, dos pasos (masa con n, edad de un hueso, porcentaje desintegrado, hallar la vida
+  // media, leerla en la curva); N3, de examen (un perezoso gigante en porcentaje, la fracción desintegrada, horas y días,
+  // la vida media que sale de los datos y se usa, cuánto falta). Lo pedido no va en la figura.
+  // Cuentas revisadas aparte (17 nov, script fuera del repo, cuentas-vida-media.py en el scratchpad de la sesión, con
+  // fracciones exactas, que no usa este archivo ni el motor): 12/2 = 6; 24/8 = 3; (1/2)³ = 1/8; 16 − 4 = 12; 16 → 8 → 4 son 2; 15,9/5,3 = 3, 40/8 = 5; 1/4 = (1/2)²,
+  // 2 · 5730 = 11 460; 18/6 = 3, 100 − 12,5 = 87,5; 48 → 24 → 12 son 2, 10,6/2 = 5,3; la curva de 16 g pasa por 8 g a
+  // los 30 años; 6,25 % = 1/16 = (1/2)⁴, 4 · 5730 = 22 920; 32/8 = 4, 1 − 1/16 = 15/16; 24/6 = 4, 1/16 = 6,25 %;
+  // 64 → 16 en 60 años son 2 vidas medias de 30, 150/30 = 5, 64/32 = 2; de 1/4 a 1/16 son 2 mitades más, 11 460 años.
+  const EJEMPLOS_VIDA = [
+    { nivel: 1, titulo: 'Una sola vida media',
+      enunciado: ['Un equipo antiguo de radioterapia guarda ', v6m('12 g'), ' de cesio-137. ¿Cuántos gramos quedan después de una vida media?'],
+      datos: [DEF_VM6],
+      solucion: [{ texto: ['En una vida media se desintegra la mitad de lo que hay.'], ecuacion: [v6m('12'), ' ÷ 2 = ', v6m('6 g')] }],
+      respuesta: [v6m('6 g')] },
+    { nivel: 1, titulo: 'Contar vidas medias',
+      enunciado: ['El yodo-131 se usa para tratar la tiroides. ¿Cuántas vidas medias pasan en ', v6t('24 días'), '?'],
+      datos: [DEF_N6, vida6('yodo-131', 'unos 8 días')],
+      solucion: [{ texto: ['Se ve cuántas veces cabe la vida media en el tiempo.'], ecuacion: [nS, ' = ', { frac: [v6t('24'), v6v('8')] }, ' = ', v6n('3')] }],
+      respuesta: [v6n('3 vidas medias')] },
+    { nivel: 1, titulo: 'La fracción que queda',
+      enunciado: '¿Qué fracción del carbono-14 que tenía al morir conserva un hueso después de 3 vidas medias?',
+      datos: [DEF_VM6],
+      solucion: [{ texto: ['Cada vida media deja la mitad de lo que había.'], ecuacion: ['1 → 1/2 → 1/4 → ', v6m('1/8')] }],
+      respuesta: [v6m('1/8')] },
+    { nivel: 1, titulo: 'Lo que se desintegró',
+      enunciado: ['Una fuente tenía ', v6m('16 g'), ' de cesio-137 y hoy le quedan ', v6m('4 g'), '. ¿Cuántos gramos se desintegraron?'],
+      datos: [DEF_D6],
+      solucion: [{ texto: ['Lo desintegrado es lo que falta.'], ecuacion: [v6m('16'), ' − ', v6m('4'), ' = ', v6m('12 g')] }],
+      respuesta: [v6m('12 g')] },
+    { nivel: 1, titulo: 'El hueso del museo',
+      enunciado: 'La lupa muestra los átomos de carbono-14 de un hueso al morir el animal y hoy. ¿Cuántas vidas medias pasaron?',
+      datos: [DEF_VM6],
+      figura: Object.assign({ pieza: 'quim-vasos' }, huesos6([hueso6('Al morir', 16), hueso6('Hoy', 4)])),
+      solucion: [{ texto: ['Al morir había 16 bolitas grises; hoy hay 4. Cada vida media deja la mitad.'], ecuacion: [v6m('16'), ' → ', v6m('8'), ' → ', v6m('4'), ': ', v6n('2'), ' mitades'] }],
+      respuesta: [v6n('2 vidas medias')] },
+    { nivel: 2, titulo: 'El cobalto que irradia',
+      enunciado: ['Una planta que irradia alimentos tiene ', v6m('40 g'), ' de cobalto-60. ¿Cuántos gramos quedarán dentro de ', v6t('15,9 años'), '?'],
+      datos: [DEF_M6, DEF_N6, vida6('cobalto-60', 'unos 5,3 años')],
+      solucion: [
+        { texto: ['Primero, cuántas vidas medias caben.'], ecuacion: [nS, ' = ', { frac: [v6t('15,9'), v6v('5,3')] }, ' = ', v6n('3')] },
+        { texto: ['Después, se divide entre 2 tres veces.'], ecuacion: [mS, ' = ', { frac: [v6m('40'), pot2(v6n('3'))] }, ' = ', { frac: [v6m('40'), '8'] }, ' = ', v6m('5 g')] },
+      ],
+      respuesta: [v6m('5 g')] },
+    { nivel: 2, titulo: 'La edad de un hueso',
+      enunciado: ['Un hueso hallado en una cueva de los Andes conserva ', v6m('la cuarta parte'), ' del carbono-14 que tenía al morir el animal. ¿Hace cuántos años murió?'],
+      datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
+      solucion: [
+        { texto: ['La cuarta parte es la mitad de la mitad.'], ecuacion: [v6m('1/4'), ' = 1/', pot2(v6n('2')), ': ', v6n('2'), ' vidas medias'] },
+        { texto: ['El tiempo es n veces la vida media.'], ecuacion: [tS, ' = ', v6n('2'), ' · ', v6v('5730'), ' = ', v6t('11 460 años')] },
+      ],
+      respuesta: [v6t('Unos 11 460 años')] },
+    { nivel: 2, titulo: 'El porcentaje que se va',
+      enunciado: ['El tecnecio-99m se usa para tomar imágenes en hospitales. ¿Qué porcentaje de una dosis se desintegra en ', v6t('18 horas'), '?'],
+      datos: [DEF_N6, DEF_F6, DEF_D6, vida6('tecnecio-99m', 'unas 6 horas')],
+      solucion: [
+        { texto: ['Caben 3 vidas medias, así que queda 1/8.'], ecuacion: [nS, ' = ', { frac: [v6t('18'), v6v('6')] }, ' = ', v6n('3'), ';  1/', pot2(v6n('3')), ' = ', v6m('1/8'), ' = ', v6m('12,5 %')] },
+        { texto: ['Lo que se desintegra es lo que falta.'], ecuacion: ['100 % − ', v6m('12,5 %'), ' = ', v6m('87,5 %')] },
+      ],
+      respuesta: [v6m('87,5 %')] },
+    { nivel: 2, titulo: 'Hallar la vida media',
+      enunciado: ['Una fuente de cobalto-60 pasa de ', v6m('48 g'), ' a ', v6m('12 g'), ' en ', v6t('10,6 años'), '. ¿Cuál es su vida media?'],
+      datos: [DEF_VM6, DEF_N6],
+      solucion: [
+        { texto: ['Se cuentan las mitades.'], ecuacion: [v6m('48'), ' → ', v6m('24'), ' → ', v6m('12'), ': ', v6n('2'), ' vidas medias'] },
+        { texto: ['Esas dos vidas medias caben en el tiempo dado.'], ecuacion: [thS, ' = ', { frac: [v6t('10,6'), v6n('2')] }, ' = ', v6v('5,3 años')] },
+      ],
+      respuesta: [v6v('5,3 años')] },
+    { nivel: 2, titulo: 'Leer la curva',
+      enunciado: 'La gráfica muestra cómo baja la masa de cesio-137 de una fuente sellada. ¿Cuál es su vida media?',
+      datos: [DEF_VM6],
+      figura: Object.assign({ pieza: 'quim-cocina' }, curva6(GRANDES6[1], 16)),
+      solucion: [
+        { texto: ['Al inicio hay 16 g; la mitad son 8 g.'], ecuacion: [v6m('16 g'), ' ÷ 2 = ', v6m('8 g')] },
+        { texto: ['La curva pasa por 8 g en la marca de 30 años: esa es la vida media. Comprobación: a los 60 años quedan 4 g.'] },
+      ],
+      respuesta: [v6v('30 años')] },
+    { nivel: 3, titulo: 'Un perezoso gigante',
+      enunciado: ['Un hueso de perezoso gigante conserva el ', v6m('6,25 %'), ' del carbono-14 que tenía al morir. ¿Hace cuántos años murió?'],
+      datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
+      figura: Object.assign({ pieza: 'quim-vasos' }, huesos6([hueso6('Al morir', 16), hueso6('Hoy', 1)])),
+      solucion: [
+        { texto: ['El porcentaje como fracción de potencia de 2.'], ecuacion: [v6m('6,25 %'), ' = ', v6m('1/16'), ' = 1/', pot2(v6n('4')), ': ', v6n('4'), ' vidas medias'] },
+        { texto: ['El tiempo.'], ecuacion: [tS, ' = ', v6n('4'), ' · ', v6v('5730'), ' = ', v6t('22 920 años')] },
+        { texto: ['Error típico: 100 ÷ 6,25 = 16 y tomar 16 vidas medias. Son 4, porque 16 = 2⁴.'] },
+      ],
+      respuesta: [v6t('Unos 22 920 años')] },
+    { nivel: 3, titulo: 'La dosis de yodo',
+      enunciado: ['El yodo-131 se usa para tratar la tiroides. ¿Qué fracción de una dosis se desintegra en ', v6t('32 días'), '?'],
+      datos: [DEF_N6, DEF_F6, DEF_D6, vida6('yodo-131', 'unos 8 días')],
+      solucion: [
+        { texto: ['Cuántas vidas medias caben y qué fracción queda.'], ecuacion: [nS, ' = ', { frac: [v6t('32'), v6v('8')] }, ' = ', v6n('4'), ';  queda 1/', pot2(v6n('4')), ' = ', v6m('1/16')] },
+        { texto: ['Lo desintegrado es lo que falta.'], ecuacion: ['1 − ', v6m('1/16'), ' = ', v6m('15/16')] },
+        { texto: ['Error típico: responder 1/16, que es lo que queda, no lo que se desintegró.'] },
+      ],
+      respuesta: [v6m('15/16')] },
+    { nivel: 3, titulo: 'De un día al otro',
+      enunciado: ['A un paciente le aplican tecnecio-99m a las 8 de la mañana. ¿Qué porcentaje de la dosis queda ', v6t('a las 8 del día siguiente'), '?'],
+      datos: [DEF_N6, DEF_F6, vida6('tecnecio-99m', 'unas 6 horas'), '1 día = 24 h'],
+      solucion: [
+        { texto: ['El tiempo y la vida media, los dos en horas.'], ecuacion: [tS, ' = ', v6t('24 h'), ';  ', nS, ' = ', { frac: [v6t('24'), v6v('6')] }, ' = ', v6n('4')] },
+        { texto: ['Lo que queda.'], ecuacion: ['1/', pot2(v6n('4')), ' = ', v6m('1/16'), ' = ', v6m('6,25 %')] },
+        { texto: ['Error típico: tomar el día como una vida media y responder 50 %.'] },
+      ],
+      respuesta: [v6m('6,25 %')] },
+    { nivel: 3, titulo: 'La vida media escondida',
+      enunciado: ['Una fuente de cesio-137 pasa de ', v6m('64 g'), ' a ', v6m('16 g'), ' en ', v6t('60 años'), '. ¿Cuántos gramos quedarán a los ', v6t('150 años'), ' de empezar?'],
+      datos: [DEF_VM6, DEF_M6, DEF_N6],
+      solucion: [
+        { texto: ['De 64 g a 16 g hay 2 mitades: caben 2 vidas medias en 60 años.'], ecuacion: [thS, ' = ', { frac: [v6t('60'), v6n('2')] }, ' = ', v6v('30 años')] },
+        { texto: ['En 150 años caben 5.'], ecuacion: [nS, ' = ', { frac: [v6t('150'), v6v('30')] }, ' = ', v6n('5'), ';  ', mS, ' = ', { frac: [v6m('64'), pot2(v6n('5'))] }, ' = ', v6m('2 g')] },
+        { texto: ['Error típico: 150 ÷ 60 = 2,5 tramos, como si en 60 años se fuera la mitad.'] },
+      ],
+      respuesta: [v6m('2 g')] },
+    { nivel: 3, titulo: 'Cuánto falta todavía',
+      enunciado: ['Un hueso conserva hoy ', v6m('la cuarta parte'), ' de su carbono-14. ¿Cuántos años más deben pasar para que conserve ', v6m('la dieciseisava parte'), '?'],
+      datos: [DEF_F6, DEF_N6, vida6('carbono-14', 'unos 5730 años')],
+      solucion: [
+        { texto: ['Cada vida media divide entre 2 lo que queda.'], ecuacion: [v6m('1/4'), ' → ', v6m('1/8'), ' → ', v6m('1/16'), ': ', v6n('2'), ' vidas medias más'] },
+        { texto: ['El tiempo que falta.'], ecuacion: [tS, ' = ', v6n('2'), ' · ', v6v('5730'), ' = ', v6t('11 460 años')] },
+        { texto: ['Error típico: 16 ÷ 4 = 4 y tomar 4 vidas medias. De 1/4 a 1/16 solo hay 2 mitades.'] },
+      ],
+      respuesta: [v6t('11 460 años'), ' más'] },
+  ];
+
+  const vida = {
+    id: 'vida-media',
+    titulo: 'La mitad cada cierto tiempo',
+    pregunta: '¿Cuánto queda de una sustancia radiactiva cuando pasa el tiempo?',
+    temas: ['Vida media'],
+    pieza: 'quim-vasos',
+    actividad: 'Dejar pasar los años sobre un hueso y contar su carbono-14 en la lupa.',
+    aprendizaje: 'En cada vida media se desintegra la mitad de lo que queda: tras n vidas medias queda m₀/2ⁿ, y en dos no se acaba.',
+    ejemplos: EJEMPLOS_VIDA,
+    // Lee: el hueso y su carbono-14 (lo nuclear de la idea 3), qué es desintegrarse y qué mirar. No dice cuánto tarda la
+    // mitad (es la misión) ni qué pasa en la segunda vida media (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'El reloj del hueso', texto: 'Los seres vivos tienen un poco de carbono-14 en el cuerpo y lo reponen al comer. Cuando un animal muere, ya no lo repone: sus átomos de carbono-14 pasan, de a pocos, a nitrógeno-14. Es el cambio nuclear de la idea 3.',
+          pieza: 'quim-vasos', dibujo: huesos6([hueso6('Hueso de llama', N_HUESO)], 18) },
+        { titulo: 'Desintegrarse', texto: 'Que un átomo cambie solo de elemento se llama desintegración, y una sustancia con átomos así es radiactiva. Nadie sabe qué átomo cambiará primero, pero con muchos átomos el ritmo siempre es el mismo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la lupa muestra 16 átomos de carbono-14 del hueso: a la izquierda, al morir la llama; a la derecha, años después. Mueve el tiempo y cuenta cuántas bolitas grises quedan.' },
+      ],
+    },
+    juega: {
+      pieza: 'quim-vasos',
+      consigna: 'Un museo guarda el hueso de una llama de una tumba antigua. Al morir el animal, su carbono-14 empezó a pasar a nitrógeno-14.',
+      mision: {
+        texto: 'Deja en el hueso la mitad de su carbono-14: 8 de 16 átomos.',
+        // Lo comprueba el motor (MotorMateria.atomosQueQuedan) con la vida media del carbono-14, unos 5730 años.
+        logrado: v => quedan6(ano6(v.t)) === N_HUESO / 2,
+        bien: 'Listo: unos 5730 años. Ese tiempo es la vida media del carbono-14.',
+      },
+      voz: 'Cuenta las bolitas grises de la derecha.',
+      leyenda: [
+        { s: 'C', t: 'carbono-14: bolita gris llena' },
+        { s: 'N', t: 'nitrógeno-14: bolita azul llena' },
+        { s: v6t('años'), t: 'tiempo desde que murió la llama' },
+        { s: v6m('de 16'), t: 'átomos de carbono-14 que quedan' },
+        { s: '→', t: 'del hueso al morir al de después' },
+        { s: 'lupa', t: 'modelo: 16 átomos de carbono-14 del hueso' },
+      ],
+      controles: [{ id: 't', etiqueta: 'Años desde que murió la llama, t', color: 'c-i', min: 0, max: VM_C14, paso: VM_C14 / 10, inicio: 0, unidad: 'años', decimales: 0, auto: { velocidad: VM_C14 / 10, modo: 'rebota' } }],
+      dibujo: v => juego6(v),
+      lectura: v => lectura6(v),
+      minimo: 3,
+    },
+    predice: {
+      pregunta: 'Tras unos 5730 años, al hueso le quedan 8 de sus 16 átomos de carbono-14. Si pasan otros 5730 años, ¿cuántos átomos de carbono-14 le quedarán?',
+      datos: ['Al morir la llama: 16 átomos de carbono-14 en la lupa', 'Vida media del carbono-14: unos 5730 años'],
+      voz: 'Mira cuántas bolitas grises tiene la lupa del medio.',
+      pieza: 'quim-vasos',
+      opciones: [
+        { id: 'c', texto: '4: se va la mitad de los 8', correcta: true },
+        { id: 'acaba', texto: '0: se van los otros 8', error: 'AQ-vm-lineal', siFuera: 'Sigue bajando, bien. Pero cada 5730 años se va la mitad de lo que queda, no lo mismo que antes.' },
+        { id: 'dos', texto: '2: los 8 se dividen entre 4', error: 'QM-VM-CUENTA-DOBLE', siFuera: 'Dividir otra vez es la idea, bien. Pero en 5730 años pasa una sola vida media: 8 ÷ 2.' },
+        { id: 'ocho', texto: '8: lo que queda ya no cambia', error: 'QM-VM-SE-DETIENE', siFuera: 'Lo que queda es carbono-14, cierto. Pero se sigue desintegrando al mismo ritmo: otra mitad se va.' },
+      ],
+      dibujo: huesos6([hueso6('Al morir', N_HUESO), hueso6('5730 años después', 8), { tipo: 'hueso', titulo: '11 460 años después', lupa: { vacia: true, foco: 0.1 } }]),
+      revelar: huesos6([hueso6('Al morir', N_HUESO), hueso6('5730 años después', 8), hueso6('11 460 años después', quedan6(2 * VM_C14))]),
+      coincide: 'Coincide: quedan 4, la mitad de 8. Cada vida media se lleva la mitad de lo que queda.',
+      noCoincide: 'Quedan 4, la mitad de los 8: cada vida media se lleva la mitad de lo que queda, no lo mismo.',
+    },
+    mira: {
+      pieza: 'quim-vasos',
+      datos: huesos6([hueso6('Tras 5730 años', 8, 1), hueso6('Tras 11 460 años', 4, 2), hueso6('Tras 17 190 años', 2, 3)]).datos,
+      voz: 'Sigamos el hueso tres vidas medias.',
+      pasos: [
+        { estado: { corte: 1 }, texto: 'Tras una vida media, unos 5730 años, quedan 8 de los 16 átomos.', ecuacion: [v6m('16'), ' ÷ 2 = ', v6m('8')] },
+        { estado: { corte: 2 }, texto: 'Tras otra vida media se va la mitad de los 8: quedan 4.', ecuacion: [v6m('8'), ' ÷ 2 = ', v6m('4'), ', la cuarta parte de 16'] },
+        { estado: { corte: 3 }, texto: 'Tras la tercera quedan 2: un octavo. Cada vida media divide entre 2.', ecuacion: [v6m('16'), ' ÷ 2 ÷ 2 ÷ 2 = ', { frac: [v6m('16'), pot2(v6n('3'))] }, ' = ', v6m('2')] },
+        { estado: { corte: 3 }, texto: 'La masa de carbono-14 baja igual: entre 2 en cada vida media.', ecuacion: [mS, ' = ', { frac: [m0S, pot2(nS)] }] },
+        { estado: { corte: 3 }, texto: 'n son las vidas medias que caben en el tiempo t.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ' = ', { frac: [v6t('17 190'), v6v('5730')] }, ' = ', v6n('3')] },
+        { estado: { corte: 3 }, texto: 'Lo desintegrado es lo que falta: 14 de los 16 ya son nitrógeno-14.', ecuacion: [v6m('16'), ' − ', v6m('2'), ' = ', v6m('14'), ', o sea ', v6m('7/8')] },
+      ],
+    },
+    regla: {
+      texto: 'En cada vida media se desintegra la mitad de lo que queda. Tras n vidas medias queda lo inicial dividido entre 2ⁿ, y nunca se acaba de golpe.',
+      ecuacion: [{ llave: [mS], nota: 'lo que queda', color: 'c-o' }, ' = ', { frac: [m0S, pot2(nS)] }, '   ·   ', { llave: [nS], nota: 'vidas medias', color: 'c-h' }, ' = ', { frac: [tS, thS] }],
+      condicion: 't y la vida media, en la misma unidad. Lo desintegrado es m₀ − m; la fracción que queda, 1/2ⁿ.',
+      voz: 'Cada vida media parte en dos lo que queda.',
+    },
+    // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso6(s, true)).
+    resuelve: {
+      pieza: 'quim-cocina',
+      generar(s) {
+        const c = caso6(s, true), base = { enunciado: c.pregunta, datos: c.datos };
+        if (c.tipo === 0) return Object.assign(base, {
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa ', mS, ' que queda dentro de ', v6t(anos6(c.t)), '.'] },
+            { tipo: 'regla', texto: 'Primero cuántas vidas medias caben; después, dividir entre 2 una vez por cada una.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  ', mS, ' = ', { frac: [m0S, pot2(nS)] }] },
+            { tipo: 'cuentas', texto: 'Cuento y divido.', ecuacion: [nS, ' = ', { frac: [v6t(ent6(c.t)), v6v(ent6(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  ', mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n(String(c.n)))] }, ' = ', v6m(g6(c.d.queda))] },
+            { tipo: 'sentido', texto: `Comprobación: de mitad en mitad, ${[...Array(c.n + 1).keys()].map(k => ent6(c.m0 / 2 ** k)).join(' → ')} g.` },
+          ],
+          respuesta: [v6m(g6(c.d.queda))] });
+        if (c.tipo === 1) {
+          const vm = c.c14 ? VM_C14 : c.x.vm, u = c.c14 ? 'años' : c.x.u;
+          return Object.assign(base, {
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el tiempo ', tS, ' que pasó.'] },
+              { tipo: 'datos', texto: 'Lo que queda, como fracción con una potencia de 2.', ecuacion: [v6m(`1/${2 ** c.n}`), ' = 1/', pot2(v6n(String(c.n))), ': ', v6n(String(c.n)), ' vidas medias'] },
+              { tipo: 'regla', texto: 'El tiempo es n veces la vida media.', ecuacion: [tS, ' = ', nS, ' · ', thS] },
+              { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [tS, ' = ', v6n(String(c.n)), ' · ', v6v(ent6(vm)), ' = ', v6t(`${ent6(c.t)} ${u}`)] },
+              { tipo: 'sentido', texto: 'Comprobación: menos queda, más tiempo pasó; con 1/2 sería una sola vida media.' },
+            ],
+            respuesta: [v6t(`${c.c14 ? 'Unos ' : ''}${ent6(c.t)} ${u}`)] });
+        }
+        if (c.tipo === 2) return Object.assign(base, {
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el porcentaje que se desintegra, no el que queda.' },
+            { tipo: 'regla', texto: 'Cuántas vidas medias caben, qué fracción queda y lo que falta para el 100 %.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  queda 1/', pot2(nS)] },
+            { tipo: 'cuentas', texto: 'Cuento, calculo lo que queda y resto.', ecuacion: [nS, ' = ', { frac: [v6t(String(c.t)), v6v(String(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  queda ', v6m(pc6(c.d.fraccionQueda)), ';  100 % − ', v6m(pc6(c.d.fraccionQueda)), ' = ', v6m(pc6(c.d.fraccionDesintegrada))] },
+            { tipo: 'sentido', texto: 'Comprobación: lo que queda más lo desintegrado da 100 %.' },
+          ],
+          respuesta: [v6m(pc6(c.d.fraccionDesintegrada))] });
+        if (c.tipo === 3) return Object.assign(base, c.curva ? { dibujo: c.dibujo } : {}, {
+          pasos: c.curva ? [
+            { tipo: 'pide', texto: ['Piden la vida media ', thS, ': cuándo queda la mitad.'] },
+            { tipo: 'regla', texto: 'La vida media es el tiempo en que la masa baja a la mitad de la inicial.' },
+            { tipo: 'cuentas', texto: `Al inicio hay ${c.m0} g; la mitad son ${c.m0 / 2} g, y la curva pasa por ahí en la primera marca del tiempo.`, ecuacion: [v6m(`${c.m0} g`), ' ÷ 2 = ', v6m(`${c.m0 / 2} g`), ' → ', thS, ' = ', v6v(anos6(c.x.vm))] },
+            { tipo: 'sentido', texto: `Comprobación: en la marca siguiente quedan ${c.m0 / 4} g, la mitad de la mitad.` },
+          ] : [
+            { tipo: 'pide', texto: ['Piden la vida media ', thS, '.'] },
+            { tipo: 'datos', texto: 'Se cuentan las mitades entre las dos masas.', ecuacion: [v6m(String(c.m0)), ' → ', v6m(String(c.m0 / 2)), ' → ', v6m(String(c.m0 / 4)), ': ', v6n('2'), ' vidas medias'] },
+            { tipo: 'regla', texto: 'Esas vidas medias caben en el tiempo dado.', ecuacion: [thS, ' = ', { frac: [tS, nS] }] },
+            { tipo: 'cuentas', texto: 'Divido.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] },
+            { tipo: 'sentido', texto: 'Comprobación: dos vidas medias de ese largo dejan la cuarta parte.' },
+          ],
+          respuesta: [v6v(anos6(c.x.vm))] });
+        if (c.mezcla) return Object.assign(base, {
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fracción de la dosis que queda.' },
+            { tipo: 'datos', texto: `El tiempo, en la misma unidad que la vida media: ${c.eq}.`, ecuacion: [tS, ' = ', v6t(`${c.n * c.x.vm} ${c.x.u}`)] },
+            { tipo: 'regla', texto: 'Cuántas vidas medias caben y qué fracción queda.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  queda 1/', pot2(nS)] },
+            { tipo: 'cuentas', texto: 'Cuento y escribo la fracción.', ecuacion: [nS, ' = ', { frac: [v6t(String(c.n * c.x.vm)), v6v(String(c.x.vm))] }, ' = ', v6n(String(c.n)), ';  1/', pot2(v6n(String(c.n))), ' = ', v6m(fr6(c.q))] },
+            { tipo: 'sentido', texto: `Comprobación: ${c.n} vidas medias de ${c.x.vm} ${c.x.u} suman ${c.n * c.x.vm} ${c.x.u}, el tiempo dado.` },
+          ],
+          respuesta: [v6m(fr6(c.q))] });
+        return Object.assign(base, {
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa ', mS, ` que queda a los ${anos6(c.t2)}.`] },
+            { tipo: 'datos', texto: 'De la primera masa a la segunda hay 2 mitades: 2 vidas medias.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t1)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] },
+            { tipo: 'regla', texto: 'Con la vida media, n y la masa que queda.', ecuacion: [nS, ' = ', { frac: [tS, thS] }, ';  ', mS, ' = ', { frac: [m0S, pot2(nS)] }] },
+            { tipo: 'cuentas', texto: 'Cuento y divido.', ecuacion: [nS, ' = ', { frac: [v6t(ent6(c.t2)), v6v(ent6(c.x.vm))] }, ' = ', v6n('5'), ';  ', mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n('5'))] }, ' = ', v6m(g6(c.d.queda))] },
+            { tipo: 'sentido', texto: 'Comprobación: en el tiempo dado no se fue la mitad, sino tres cuartos; por eso no se divide por tramos.' },
+          ],
+          respuesta: [v6m(g6(c.d.queda))] });
+      },
+    },
+    ahoraTu: {
+      pieza: 'quim-cocina',
+      voz: 'Cuenta cuántas veces se parte en dos.',
+      generar(s) {
+        const c = caso6(s, false);
+        let solucion;
+        if (c.tipo === 0) solucion = { texto: `Caben ${c.n} vidas medias: se divide ${c.n} veces entre 2.`, ecuacion: [mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n(String(c.n)))] }, ' = ', v6m(g6(c.d.queda))] };
+        else if (c.tipo === 1) solucion = { texto: `1/${2 ** c.n} son ${c.n} mitades: ${c.n} vidas medias.`, ecuacion: [tS, ' = ', v6n(String(c.n)), ' · ', v6v(ent6(c.c14 ? VM_C14 : c.x.vm)), ' = ', v6t(`${ent6(c.t)} ${c.c14 ? 'años' : c.x.u}`)] };
+        else if (c.tipo === 2) solucion = { texto: `Caben ${c.n} vidas medias: queda ${pc6(c.d.fraccionQueda)}, y se desintegra lo demás.`, ecuacion: [v6m(pc6(c.d.fraccionDesintegrada))] };
+        else if (c.tipo === 3) solucion = c.curva ? { texto: `La mitad de ${c.m0} g son ${c.m0 / 2} g: la curva pasa por ahí en esa marca.`, ecuacion: [thS, ' = ', v6v(anos6(c.x.vm))] }
+          : { texto: 'Hay 2 mitades entre las masas: el tiempo entre 2.', ecuacion: [thS, ' = ', { frac: [v6t(ent6(c.t)), v6n('2')] }, ' = ', v6v(anos6(c.x.vm))] };
+        else if (c.mezcla) solucion = { texto: `Todo en ${c.x.u}: caben ${c.n} vidas medias.`, ecuacion: ['1/', pot2(v6n(String(c.n))), ' = ', v6m(fr6(c.q))] };
+        else solucion = { texto: 'La vida media sale de las 2 mitades; después caben 5.', ecuacion: [mS, ' = ', { frac: [v6m(String(c.m0)), pot2(v6n('5'))] }, ' = ', v6m(g6(c.d.queda))] };
+        return { pregunta: c.pregunta, datos: c.datos, dibujo: c.dibujo, opciones: c.opciones, solucion };
+      },
+    },
+  };
+
   // ---------- Laboratorio ----------
   // Mesa 1: 10 g de hielo desde la temperatura que se elija, al nivel del mar, hasta pasar los 100 °C: aparece la meseta
   // de hervir junto a la de fundir. En calorías, con valores de libro: hielo y vapor 0,5 cal/(g·°C), agua 1; fusión 80 y
@@ -2550,8 +2999,12 @@
       { termino: 'componente', formas: ['componente', 'componentes'], def: 'Cada sustancia distinta de un sistema o de una mezcla.',
         ejemplos: ['Agua con azúcar: dos componentes, el agua y el azúcar.', 'Agua con aceite y arena: tres componentes.',
           'El agua destilada: un solo componente.'], ver: ['fase', 'mezcla'] },
+      // Vuelven «especie» y «energía» (Gerson, 17 nov: el tope del glosario sube a 30 términos).
+      { termino: 'especie', formas: ['especie', 'especies', 'clase de partícula', 'clases de partícula'], def: 'Cada tipo distinto de partícula que hay en una muestra: las partículas de un mismo tipo son iguales entre sí.',
+        ejemplos: ['Agua con azúcar: dos especies, las moléculas de agua y las de azúcar.', 'El agua destilada: una sola especie, la molécula de agua.',
+          'El aire seco: varias especies, como las moléculas de nitrógeno y las de oxígeno.'], ver: ['sustancia', 'mezcla'] },
       // Idea 3 (17 nov): los tres cambios, con su `simple`; lo nuclear con el carbono-14 del hueso, el Sol (idea 5) y el
-      // reactor, sin radiactividad ni vida media (decisiones, 17 nov).
+      // reactor, sin radiactividad ni vida media (las estrena la idea 6).
       { termino: 'cambio físico', formas: ['cambio físico', 'cambios físicos'],
         def: 'Transformación en la que las partículas siguen siendo las mismas: cambian de orden, de lugar o de estado.',
         simple: 'Algo cambia de forma o de estado, pero sigue siendo lo mismo.',
@@ -2573,6 +3026,9 @@
         ver: ['cambio físico', 'fase'] },
       // Idea 4 (17 nov): en calorías, con cₑ para el calor específico (la c es la de la luz, idea 5). El `simple` del
       // calor latente no dice qué hace el termómetro (es la predicción).
+      { termino: 'energía', simbolo: 'E', def: 'Lo que permite calentar, mover o transformar algo. Se mide en joules (J) o en calorías (cal).',
+        ejemplos: ['La hornilla le da energía al agua de la olla y la calienta.', 'Al quemarse, el gas de un balón libera energía como calor y luz.',
+          'Al caminar, una persona gasta energía; al comer, la recupera.'], ver: ['calor sensible', 'calor latente'] },
       { termino: 'calor sensible', def: 'Calor que sube o baja la temperatura de un cuerpo sin cambiarle el estado.',
         simple: 'El calor que entibia o calienta algo sin fundirlo ni hervirlo.',
         ejemplos: ['Calentar 500 g de agua de 20 °C a 30 °C: 5000 cal.', 'Entibiar el agua del mate antes de que hierva.', 'Calentar una olla de aluminio vacía.'],
@@ -2602,6 +3058,19 @@
         simple: 'Núcleos chicos que se juntan en uno más grande, como en el Sol.',
         ejemplos: ['En el Sol, cuatro núcleos de hidrógeno forman uno de helio.', 'La luz y el calor del Sol salen de la fusión.',
           'Un kilogramo de hidrógeno fusionado da unos 6,4 × 10¹⁴ J.'], ver: ['defecto de masa'] },
+      // Idea 6 (17 nov): la vida media (local: en cinética química, la vida media de una reacción tiene su propia
+      // definición) y la desintegración, con su `simple` («radiactiva» lo dice la tarjeta 2 de «Lee») (ninguno dice qué queda tras dos vidas medias: es
+      // la predicción).
+      { termino: 'vida media', formas: ['vida media', 'vidas medias'], simbolo: 't₁/₂', medida: 'años, días u h', local: true,
+        def: 'Tiempo en que se desintegra la mitad de los átomos radiactivos que tiene una muestra.',
+        simple: 'El tiempo que tarda una muestra en quedarse con la mitad.',
+        ejemplos: ['Carbono-14: unos 5730 años.', 'Yodo-131, que se usa en hospitales: unos 8 días.', 'Cobalto-60, que se usa para irradiar alimentos: unos 5,3 años.'],
+        ver: ['desintegración'] },
+      { termino: 'desintegración', formas: ['desintegración', 'desintegraciones', 'se desintegra', 'se desintegran', 'desintegrarse', 'desintegrado', 'desintegrada', 'desintegra', 'desintegran'],
+        def: 'Cambio nuclear en que un átomo inestable pasa, por sí solo, a ser de otro elemento.',
+        simple: 'Cuando un átomo cambia solo y se vuelve de otro elemento.',
+        ejemplos: ['El carbono-14 de un hueso se desintegra y deja nitrógeno-14.', 'El yodo-131 de un tratamiento casi se acaba en unas semanas.',
+          'El uranio de una roca se desintegra muy despacio: tarda miles de millones de años.'], ver: ['cambio nuclear', 'vida media'] },
       // Idea 2 (17 nov): densidad, intensiva, extensiva y propiedad física, con su `simple` (ninguno nombra la
       // temperatura de ebullición, que es la predicción de la idea).
       { termino: 'densidad', simbolo: 'ρ', medida: 'g/cm³', def: 'Masa de cada unidad de volumen de un material: su masa entre su volumen, ρ = m/V.',
@@ -2689,6 +3158,6 @@
       'hielo-a-vapor': ['calor-sensible-latente'],
       'gramo-carbon': ['masa-energia'],
     },
-    ideas: [sustancia, propiedades, cambios, calor, energia],
+    ideas: [sustancia, propiedades, cambios, calor, energia, vida],
   };
 });

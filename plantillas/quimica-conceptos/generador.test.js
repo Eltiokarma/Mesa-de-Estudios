@@ -324,3 +324,22 @@ test('pourbaix: los errores de lectura (pH ↔ pOH y signo de E) dan lo que dice
     }
   }
 });
+
+// Materia y energía (17 nov 2026): con su unidad, solo sus temas (ramas y sustancias); las otras unidades no cambian.
+test('por unidad: en Materia y energía solo salen sus temas, y sin unidad todo sigue igual', () => {
+  const u = 'quimica.materia-y-energia', propios = new Set(gen.TEMAS.filter(t => t.unidad === u).map(t => t.id));
+  assert.ok(propios.size >= 2);
+  const vistos = new Set();
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: u });
+    assert.ok(propios.has(p._datos.tema), `semilla ${s}: tema ${p._datos.tema} no es de ${u}`);
+    for (const id of p._datos.ids || []) assert.equal(gen.BANCO.find(b => b.id === id).unidad, u, `semilla ${s}: ${id}`);
+    assert.ok(p.alternativas.length >= 4);
+    vistos.add(p._datos.tema);
+  }
+  assert.deepEqual([...vistos].sort(), [...propios].sort(), 'salen todos sus temas');
+  for (const s of [0, 1, 7, 'entrada-1']) {
+    assert.deepEqual(gen.generar(s, { unidad: 'quimica.enlace-quimico' }), gen.generar(s), 'otra unidad: el mismo problema de antes');
+    assert.deepEqual(gen.generar(s, 'quimica.soluciones'), gen.generar(s));
+  }
+});

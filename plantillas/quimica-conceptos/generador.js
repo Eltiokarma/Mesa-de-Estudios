@@ -997,7 +997,14 @@
     });
   }
 
-  function generar(semilla) {
+  // Unidades que ya pasaron por el contrato (docs/plan-calidad.md) y piden solo sus propios temas (17 nov 2026: en Materia
+  // y energía salían V/F de otras unidades). generar(semilla, { unidad }) con una de estas unidades elige solo entre sus
+  // temas y conjuntos, sin Pourbaix; con cualquier otra unidad, o sin unidad, todo sigue igual que antes (mismas semillas,
+  // mismos problemas). Modelo: TIPOS_POR_UNIDAD de plantillas/velocidad-relativa/.
+  const SOLO_SUS_TEMAS = new Set(['quimica.materia-y-energia']);
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    if (SOLO_SUS_TEMAS.has(unidad)) return generarDe(semilla, unidad);
     const rng = Azar.crear('quimica-conceptos|' + semilla);
     // Los diagramas de Pourbaix salen con un azar aparte (7 % de los problemas): el resto no cambia de semilla.
     const aparte = Azar.crear('quimica-conceptos|pourbaix|' + semilla);
@@ -1020,6 +1027,19 @@
       }
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
+  }
+
+  // Los problemas de una sola unidad: su bolsa (sus temas y sus conjuntos para relacionar) y los tipos que esa bolsa permite.
+  function generarDe(semilla, unidad) {
+    const rng = Azar.crear(`quimica-conceptos|${unidad}|${semilla}`);
+    const bolsa = { temas: TEMAS.filter(t => t.unidad === unidad), pares: PARES.filter(c => c.unidad === unidad) };
+    const tipos = ['vf', 'vf', 'vf', 'vf', 'incorrecta', 'incorrecta', 'correcta', 'correcta', ...(bolsa.pares.length ? ['relacionar', 'relacionar'] : [])];
+    const tipo = rng.elegir(tipos);
+    for (let intento = 0; intento < 500; intento++) {
+      const pr = tipo === 'vf' ? secuencia(rng, bolsa) : tipo === 'relacionar' ? relacionar(rng, bolsa) : unaSola(rng, tipo, bolsa);
+      if (pr && pr.alternativas.length >= 4) { pr.id = `quimica-conceptos#${semilla}`; return pr; }
+    }
+    throw new Error(`No se pudo generar un problema de ${unidad} con 4 alternativas distintas`);
   }
 
   // Convenciones de academia que la respuesta sigue (nucleo/convencion.js): se muestran en grande bajo la solución.
@@ -1322,5 +1342,5 @@
   }
   function pourbaix(rng) { return rng.sig() < 0.5 ? pourbaixEspecie(rng) : pourbaixVF(rng); }
 
-  return { id: 'quimica-conceptos', generar, BANCO, TEMAS: TEMAS.map(({ props, ...t }) => ({ ...t, ids: props.map(p => p.id) })), PARES, ERRORES, POURBAIX: { DIAGRAMAS, especieEn, codigos: POURBAIX_CODIGOS } };
+  return { id: 'quimica-conceptos', generar, soloSusTemas: [...SOLO_SUS_TEMAS], BANCO, TEMAS: TEMAS.map(({ props, ...t }) => ({ ...t, ids: props.map(p => p.id) })), PARES, ERRORES, POURBAIX: { DIAGRAMAS, especieEn, codigos: POURBAIX_CODIGOS } };
 });

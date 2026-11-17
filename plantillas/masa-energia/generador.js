@@ -3,7 +3,7 @@
  * contenido/teoria/quimica/materia-y-energia.js, idea «masa-energia»). Formato "predicciones" (docs/arquitectura.md).
  * Funciona en el navegador (window.Generadores['masa-energia']) y en Node (require). No usa ningún motor de escena:
  * E = Δm · c² con c = 3 × 10⁸ m/s (valor de academia; NIST: 299 792 458 m/s), la masa en kg y la energía en J.
- * Solo E = Δm · c² (decisión de Gerson, 17 nov 2026: la vida media se practica aparte, en conversiones-quimica).
+ * Solo E = Δm · c² (decisión de Gerson, 17 nov 2026: la vida media se practica aparte, en plantillas/vida-media/).
  *
  * Tipos (nivel 1: un paso; 2: dos pasos; 3: de examen):
  *   energia    (1) desaparecen unos mg o g: ¿cuánta energía sale?

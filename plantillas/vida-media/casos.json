@@ -1,0 +1,277 @@
+{
+  "plantilla": "vida-media",
+  "nota": "queda: m0 (g) y n vidas medias → g. masa: m0 (g), t (años) y la vida media de la fuente → g. tiempo: la fracción 1/2ⁿ que queda → n · vida media (años, días u horas). desintegrado: t y la vida media → % o fracción que se desintegró (1 − 1/2ⁿ). vida: m0 → m0/2ⁿ en t → t/n. unidades: t en días o semanas, vida media en horas o días → fracción que queda. deducir: m0 → m0/4 en t1 (2 vidas medias) → lo que queda en t2. Vidas medias: cobalto-60 5,3 años, cesio-137 30, estroncio-90 29, carbono-14 5730, yodo-131 8 días, tecnecio-99m 6 horas, fósforo-32 14 días.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo: scratchpad/verif/vida.py), que no usa el generador ni el núcleo: toma solo las entradas (_datos), escribe otra vez su propia tabla de vidas medias y de equivalencias de tiempo, comprueba que el tiempo dé un número entero de vidas medias, calcula con fracciones exactas y escribe el texto de la correcta con coma decimal y espacio de miles. Los 19 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "vida",
+        "nivel": 2,
+        "fuente": "cesio",
+        "m0": 8,
+        "n": 2,
+        "t": 60
+      },
+      "esperado": {
+        "respuesta": 30.0,
+        "texto": "30 años"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "vida",
+        "nivel": 2,
+        "fuente": "cobalto",
+        "m0": 64,
+        "n": 3,
+        "t": 15.9
+      },
+      "esperado": {
+        "respuesta": 5.3,
+        "texto": "5,3 años"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "unidades",
+        "nivel": 3,
+        "sustancia": "fosforo",
+        "t": 8,
+        "unidadT": "semanas"
+      },
+      "esperado": {
+        "respuesta": 0.0625,
+        "texto": "1/16"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "fuente": "estroncio",
+        "m0": 80,
+        "t": 87
+      },
+      "esperado": {
+        "respuesta": 10.0,
+        "texto": "10 g"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "unidades",
+        "nivel": 3,
+        "sustancia": "tecnecio",
+        "t": 1,
+        "unidadT": "día"
+      },
+      "esperado": {
+        "respuesta": 0.0625,
+        "texto": "1/16"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "fuente": "estroncio",
+        "m0": 120,
+        "t": 116
+      },
+      "esperado": {
+        "respuesta": 7.5,
+        "texto": "7,5 g"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "tiempo",
+        "nivel": 2,
+        "sustancia": "yodo",
+        "n": 2,
+        "como": "porcentaje"
+      },
+      "esperado": {
+        "respuesta": 16.0,
+        "texto": "16 días"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "queda",
+        "nivel": 1,
+        "fuente": "cesio",
+        "m0": 4,
+        "n": 2
+      },
+      "esperado": {
+        "respuesta": 1.0,
+        "texto": "1 g"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "desintegrado",
+        "nivel": 2,
+        "sustancia": "yodo",
+        "t": 24,
+        "como": "fraccion"
+      },
+      "esperado": {
+        "respuesta": 0.875,
+        "texto": "7/8"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "queda",
+        "nivel": 1,
+        "fuente": "estroncio",
+        "m0": 80,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 10.0,
+        "texto": "10 g"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "tiempo",
+        "nivel": 2,
+        "sustancia": "fosforo",
+        "n": 4,
+        "como": "porcentaje"
+      },
+      "esperado": {
+        "respuesta": 56.0,
+        "texto": "56 días"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "vida",
+        "nivel": 2,
+        "fuente": "cobalto",
+        "m0": 64,
+        "n": 3,
+        "t": 15.9
+      },
+      "esperado": {
+        "respuesta": 5.3,
+        "texto": "5,3 años"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "unidades",
+        "nivel": 3,
+        "sustancia": "tecnecio",
+        "t": 1,
+        "unidadT": "día"
+      },
+      "esperado": {
+        "respuesta": 0.0625,
+        "texto": "1/16"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "fuente": "cesio",
+        "m0": 16,
+        "t": 120
+      },
+      "esperado": {
+        "respuesta": 1.0,
+        "texto": "1 g"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "unidades",
+        "nivel": 3,
+        "sustancia": "tecnecio",
+        "t": 1,
+        "unidadT": "día"
+      },
+      "esperado": {
+        "respuesta": 0.0625,
+        "texto": "1/16"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "desintegrado",
+        "nivel": 2,
+        "sustancia": "tecnecio",
+        "t": 24,
+        "como": "fraccion"
+      },
+      "esperado": {
+        "respuesta": 0.9375,
+        "texto": "15/16"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "queda",
+        "nivel": 1,
+        "fuente": "cobalto",
+        "m0": 64,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 8.0,
+        "texto": "8 g"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "tiempo",
+        "nivel": 2,
+        "sustancia": "tecnecio",
+        "n": 2,
+        "como": "porcentaje"
+      },
+      "esperado": {
+        "respuesta": 12.0,
+        "texto": "12 horas"
+      }
+    },
+    {
+      "semilla": "papel-8",
+      "entrada": {
+        "tipo": "deducir",
+        "nivel": 3,
+        "fuente": "estroncio",
+        "m0": 40,
+        "t1": 58,
+        "t2": 116
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "texto": "2,5 g"
+      }
+    }
+  ]
+}

@@ -1068,7 +1068,8 @@
       "Propiedades físicas y químicas",
       "Fenómenos físicos, químicos y nucleares",
       "Calor sensible y latente",
-      "Equivalencia masa-energía"
+      "Equivalencia masa-energía",
+      "Vida media"
      ],
      "universidades": {
       "uni": {
@@ -1094,9 +1095,9 @@
       "cambios-materia",
       "calor-sensible-latente",
       "masa-energia",
+      "vida-media",
       "quimica-conceptos",
-      "conversiones-quimica",
-      "configuracion-ubicacion"
+      "conversiones-quimica"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/materia-y-energia.js",
@@ -1107,8 +1108,8 @@
        "/nucleo/kit/piezas/quim-vasos.js",
        "/nucleo/kit/piezas/quim-cocina.js"
       ],
-      "ideas": 5,
-      "terminos": 42
+      "ideas": 6,
+      "terminos": 46
      }
     },
     {
@@ -1160,7 +1161,7 @@
        "/nucleo/kit/piezas/quim-orbital-3d.js"
       ],
       "ideas": 5,
-      "terminos": 30
+      "terminos": 32
      }
     },
     {
@@ -1205,7 +1206,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -1254,7 +1255,7 @@
        "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 5,
-      "terminos": 40
+      "terminos": 41
      }
     },
     {
@@ -1299,7 +1300,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -1390,7 +1391,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -1483,7 +1484,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -1614,7 +1615,7 @@
        "/nucleo/kit/piezas/quim-particulas.js"
       ],
       "ideas": 5,
-      "terminos": 36
+      "terminos": 37
      }
     },
     {
@@ -1656,7 +1657,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -1700,7 +1701,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -1746,7 +1747,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 38
+      "terminos": 39
      }
     },
     {
@@ -1891,7 +1892,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -1937,7 +1938,7 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 4,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -1985,7 +1986,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 45
+      "terminos": 46
      }
     }
    ]
@@ -7399,8 +7400,7 @@
    "version": "0.1.0",
    "unidades": [
     "quimica.tabla-periodica",
-    "quimica.estructura-atomica",
-    "quimica.materia-y-energia"
+    "quimica.estructura-atomica"
    ],
    "url": "#/practica/configuracion-ubicacion",
    "papel": "/plantillas/configuracion-ubicacion/papel.json",
@@ -10503,6 +10503,22 @@
    "archivos": [
     "/plantillas/velocidad-relativa/generador.js",
     "/plantillas/velocidad-relativa/papel.json"
+   ]
+  },
+  "vida-media": {
+   "id": "vida-media",
+   "titulo": "La mitad cada cierto tiempo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/vida-media",
+   "papel": "/plantillas/vida-media/papel.json",
+   "archivos": [
+    "/plantillas/vida-media/generador.js",
+    "/plantillas/vida-media/papel.json"
    ]
   },
   "vistas-cubitos": {

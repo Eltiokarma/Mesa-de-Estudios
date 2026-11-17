@@ -25,6 +25,7 @@
  *     imantación, evaporación) según la propiedad que difiere, también con el método equivocado. MEZCLAS trae las de la escena.
  *   - energia(m, unidad), masaDeEnergia(E), defectoMasa(antes, despues) y balanzaNuclear(E): E = mc² con c = 3 × 10⁸ m/s.
  *     En balanzaNuclear todo va en gramos (baja y cada error), salvo bajaKg.
+ *   - desintegracion({ m0, tMedia, t }) y atomosQueQuedan(N0, t, tMedia): la vida media (m = m0 / 2ⁿ, n = t / tMedia).
  *   - propiedad(nombre) y clasificarPropiedades(lista): intensivas o extensivas, físicas o químicas, y si una sola
  *     partícula las tiene (AT1/MA11). Convención de academia: las propiedades químicas (combustibilidad, oxidabilidad…)
  *     se cuentan también como intensivas, porque no dependen de cuánta sustancia hay.
@@ -356,6 +357,22 @@
     return { masaAntes: num(sum(antes)), masaDespues: num(sum(despues)), dmU, dmKg, E: dmKg * C * C, MeV: dmU * MEV_U,
       errores: { conservaMasa: 0, masaTotal: num(sum(antes)) * U_KG * C * C } };
   }
+  // Vida media (17 nov, idea 6 de la teoría de Materia y energía): en cada vida media se desintegra la mitad de lo que
+  // queda, así que tras n = t / tMedia vidas medias queda m0 / 2ⁿ. t y tMedia en la misma unidad; m0 en cualquier unidad
+  // de masa (o una cantidad de átomos). errores: lo que da cada error típico (hipótesis, docs/investigacion/
+  // cinetica-ideas-erroneas.md, «Vida media»): perder lo mismo en cada vida media (lineal; 0 si ya no queda), dividir
+  // entre 2·n o entre n, tomar todo el tiempo como una sola vida media y dar lo desintegrado por lo que queda.
+  function desintegracion({ m0, tMedia, t }) {
+    const n = t / tMedia, fraccionQueda = 2 ** -n, queda = m0 * fraccionQueda;
+    return { n, queda, desintegrado: m0 - queda, fraccionQueda, fraccionDesintegrada: 1 - fraccionQueda,
+      errores: { lineal: Math.max(0, m0 * (1 - n / 2)), entre2n: n > 0 ? m0 / (2 * n) : m0, entreN: n > 0 ? m0 / n : m0,
+        unaSola: m0 / 2, desintegradoComoQueda: m0 - queda } };
+  }
+  // Cuántos átomos de una lupa siguen sin desintegrarse tras un tiempo t: un átomo cuenta como desintegrado cuando, en
+  // promedio, ya se desintegró uno entero (N0 menos la parte entera de lo desintegrado). Así quedan exactamente N0/2 al
+  // cumplirse una vida media y no antes. Con pocos átomos la lupa es un modelo, no una medida: cada átomo se desintegra
+  // al azar.
+  function atomosQueQuedan(N0, t, tMedia) { return N0 - Math.floor(N0 * (1 - 2 ** (-t / tMedia)) + 1e-9); }
   // La balanza de un reactor (si se pudiera pesar todo junto, cerrado): baja en E/c².
   function balanzaNuclear(E) {
     const m = masaDeEnergia(E);
@@ -452,6 +469,6 @@
 
   return { MASAS, NOMBRES, C, KWH, U_KG, MEV_U, FENOMENOS, MEZCLAS, METODOS, PROPIEDADES, MATERIALES, CAJAS, VASO,
     atomos, carga, especie, clasificarCaja, contarSistema, cuentaAtomos, cambio, fenomeno, burbujas, evaporar, quemarMetal,
-    separar, metodoPara, energia, masaDeEnergia, defectoMasa, balanzaNuclear, propiedad, clasificarPropiedades, particula,
+    separar, metodoPara, energia, masaDeEnergia, defectoMasa, balanzaNuclear, desintegracion, atomosQueQuedan, propiedad, clasificarPropiedades, particula,
     hervir, material, suma };
 });
