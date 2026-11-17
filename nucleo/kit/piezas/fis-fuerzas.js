@@ -31,6 +31,10 @@
  *   cuadras:    { tramos: [{ dir: 'E'|'N'|'O'|'S', n: 3, color, rotulo, valor }], rejilla: true,
  *                 resultante: { rotulo: 'R', valor: '500 m' }, inicio: 'Paradero', fin: 'Casa', plaza: [i, j] }
  * }
+ * Notación (17 nov, auditoría de Vectores): el rótulo puede traer la flecha de vector («A⃗»); con valor («A = 50 N»)
+ * el valor es el módulo y la flecha se quita. «A_x» se dibuja con la x como subíndice (<tspan>); «ₓ» y «ᵧ» (una gamma)
+ * pasan a esa forma. Si dos flechas terminan en el mismo punto (cola con punta), la de después se acorta 14 px en su
+ * punta para que no se enciman, y el rótulo de un ángulo se aleja de las flechas que salen de su vértice.
  * estado = {} (sin pasos). Función pura de (datos, estado): sin ids, sin azar, sin reloj. Alto fijo (240).
  */
 (function (root, fabrica) {
@@ -266,7 +270,28 @@
   // ---------- Geometría ----------
   const punto = (en, P, s) => (typeof en === 'string' ? (P[en] || [0, 0]).slice() : Array.isArray(en) ? aPx(en, s) : [0, 0]);
   const desdePx = (desde, P) => (typeof desde === 'string' ? (P[desde] || [0, 0]) : Array.isArray(desde) ? desde : [0, 0]);
-  const textoFlecha = f => (f.rotulo ? (f.valor !== undefined && f.valor !== '' ? `${f.rotulo} = ${f.valor}` : f.rotulo) : '');
+  const sinFlecha = t => String(t).replace(/\u20D7/g, '');
+  // Si el valor es el vector mismo («40î − 30ĵ»), la flecha se queda.
+  const textoFlecha = f => (f.rotulo ? (f.valor !== undefined && f.valor !== '' ? `${/[îĵ]|k̂/.test(String(f.valor)) ? f.rotulo : sinFlecha(f.rotulo)} = ${f.valor}` : f.rotulo) : '');
+  // Subíndices de verdad en los <text>: «A_x» → A con la x más chica y más abajo; lo que sigue vuelve a la línea base.
+  const SUB = /([A-Za-zÁÉÍÓÚáéíóúθτ\u20D7)])_([A-Za-z0-9]{1,3})/g;
+  function conSubindices(svg) {
+    return svg.replace(/(<text\b[^>]*>)([^<]*)(<\/text>)/g, (m, a, t, c) => {
+      const t2 = t.replace(/ₓ/g, '_x').replace(/ᵧ/g, '_y');
+      if (!SUB.test(t2)) return m;
+      SUB.lastIndex = 0;
+      let out = '', k = 0, abajo = false;
+      t2.replace(SUB, (mm, l, sb, i) => {
+        const antes = t2.slice(k, i) + l;
+        out += abajo ? `<tspan dy="-.252em">${antes}</tspan>` : antes;
+        out += `<tspan font-size="72%" dy=".35em">${sb}</tspan>`;
+        abajo = true; k = i + mm.length; return mm;
+      });
+      const resto = t2.slice(k);
+      if (resto) out += `<tspan dy="-.252em">${resto}</tspan>`;
+      return a + out + c;
+    });
+  }
   const caja = (x, y, texto, ancla, tam = TAM) => {
     const w = T.ancho(texto, tam, 700), x0 = ancla === 'middle' ? x - w / 2 : ancla === 'end' ? x - w : x;
     return { x0, x1: x0 + w, y0: y - 12, y1: y + 4, x, y, texto, ancla };
@@ -302,7 +327,12 @@
       const mid = a.de + barrido / 2;
       let bx = null;
       if (a.texto) {
-        const w = T.ancho(a.texto, 14, 700), ux = cosG(mid), uy = -senG(mid);
+        // El rótulo va sobre el arco, en la dirección más lejos de las flechas que salen del vértice (no las pisa).
+        const sal = fl.filter(x => Math.hypot(x.p0[0] - c[0], x.p0[1] - c[1]) < 2 && Math.hypot(x.p1[0] - x.p0[0], x.p1[1] - x.p0[1]) > 1)
+          .map(x => Math.atan2(-(x.p1[1] - x.p0[1]), x.p1[0] - x.p0[0]) * 180 / Math.PI);
+        const lejos = t => Math.min(180, ...sal.map(u => Math.abs(((t - u) % 360 + 540) % 360 - 180)));
+        const mejor = [0.5, 0.3, 0.7, 0.2, 0.8].map(k => a.de + barrido * k).reduce((m0, t) => (lejos(t) > lejos(m0) + 8 ? t : m0), mid);
+        const w = T.ancho(a.texto, 14, 700), ux = cosG(mejor), uy = -senG(mejor);
         const R = r + 8 + Math.abs(ux) * w / 2 + Math.abs(uy) * 8;
         bx = caja(c[0] + ux * R, c[1] + uy * R + 5, a.texto, 'middle', 14);
         cajas.push(bx);
@@ -415,12 +445,16 @@
       if (a.f.resultante || b.f.resultante || d.objeto !== 'cuadras') continue;
       if (Math.hypot(a.p1[0] - b.p0[0], a.p1[1] - b.p0[1]) > 1) s += T.linea(a.p1[0], a.p1[1], b.p0[0], b.p0[1], { grosor: 1.5, discontinua: true, opacidad: 0.6 });
     }
-    for (const x of g.fl) {
-      if (Math.hypot(x.p1[0] - x.p0[0], x.p1[1] - x.p0[1]) < 1) continue;
-      let a = T.flecha(x.p0[0], x.p0[1], x.p1[0], x.p1[1], { color: x.f.color, grosor: 3 });
+    g.fl.forEach((x, i) => {
+      const L = Math.hypot(x.p1[0] - x.p0[0], x.p1[1] - x.p0[1]);
+      if (L < 1) return;
+      // Dos flechas que terminan en el mismo punto: la de después acorta su punta 14 px (las puntas no se enciman).
+      const junta = g.fl.slice(0, i).some(y => Math.hypot(y.p1[0] - x.p1[0], y.p1[1] - x.p1[1]) < 2 && Math.hypot(y.p1[0] - y.p0[0], y.p1[1] - y.p0[1]) >= 1);
+      const k = junta && L > 40 ? (L - 14) / L : 1;
+      let a = T.flecha(x.p0[0], x.p0[1], x.p0[0] + (x.p1[0] - x.p0[0]) * k, x.p0[1] + (x.p1[1] - x.p0[1]) * k, { color: x.f.color, grosor: 3 });
       if (x.f.discontinua) a = a.replace('stroke-linecap="round"/>', 'stroke-linecap="round" stroke-dasharray="6 5"/>').replace('<path ', '<path fill-opacity="0.6" ');
       s += `<g class="kit-vector">${a}</g>`;
-    }
+    });
     for (const q of g.fuera) {
       const [x, y] = q.c, c = T.color(q.q.color || 'd');
       const marca = q.q.sentido === 'entra'
@@ -437,12 +471,12 @@
     // El norte, arriba a la derecha (en su franja reservada): una flecha que apunta hacia arriba.
     if (d.norte) s += `<g class="kit-norte">${T.rotulo(W - 17, 24, 'N', { ancla: 'middle', tam: 14, peso: 800 })}${T.flecha(W - 17, 58, W - 17, 30, { grosor: 2 })}</g>`;
     for (const r of g.rot) if (r) s += rotulo(r, r.color);
-    return T.svg(W, H, s, { alt: alt(datos) });
+    return conSubindices(T.svg(W, H, s, { alt: alt(datos) }));
   }
 
   function alt(d = {}) {
     const O = OBJETOS[d.objeto] || OBJETOS.nudo, F = O.forma(Object.assign({ flechas: [] }, d));
-    const fl = (F.flechas || d.flechas || []).filter(f => f.rotulo).map(f => `${f.rotulo}${f.valor ? ` de ${f.valor}` : ''}${Number.isFinite(f.ang) ? ` a ${Kit.formatear(f.ang, 0)}°` : ''}`);
+    const fl = (F.flechas || d.flechas || []).filter(f => f.rotulo).map(f => `${sinFlecha(f.rotulo).replace(/_/g, ' ').replace(/ₓ/g, ' x').replace(/ᵧ/g, ' y')}${f.valor ? ` de ${f.valor}` : ''}${Number.isFinite(f.ang) ? ` a ${Kit.formatear(f.ang, 0)}°` : ''}`);
     return `Dibujo de ${O.nombre(d)}${fl.length ? `, con flechas a escala: ${fl.join(', ')}` : ''}.`;
   }
 

@@ -127,3 +127,34 @@ test('sin NaN ni colores fijos, alto fijo, puro y con texto alternativo', () => 
   assert.ok(!/NaN/.test(P.dibujar({ objeto: 'nada' })));
   assert.ok(!/NaN/.test(P.dibujar({})));
 });
+
+// Notación (17 nov, auditoría de Vectores): flecha de vector solo en el nombre, subíndices de verdad.
+test('el rótulo «A⃗» pierde la flecha cuando lleva su valor (el valor es el módulo)', () => {
+  const s = P.dibujar({ objeto: 'nudo', flechas: [{ ang: 0, mod: 5, color: 'o', rotulo: 'A⃗', valor: '5 N' }, { ang: 90, mod: 3, color: 'i', rotulo: 'B⃗' }] });
+  assert.match(s, />A = 5 N</);
+  assert.ok(!/A⃗ = /.test(s), 'un módulo no lleva flecha');
+  assert.match(s, />B⃗</, 'sin valor, el nombre del vector conserva su flecha');
+});
+
+test('«A_x», «Aₓ» y «Aᵧ» se dibujan con un <tspan> de subíndice, iguales para x e y', () => {
+  const s = P.dibujar({ objeto: 'caja', flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A⃗' }, { ang: 0, mod: 40, color: 'o', rotulo: 'A_x', valor: '?', discontinua: true }, { de: [40, 0], ang: 90, mod: 30, color: 'o', rotulo: 'Aᵧ', discontinua: true }] });
+  assert.ok(!/ᵧ|ₓ|_[xy]/.test(s), 'no queda ni gamma ni guion bajo');
+  assert.match(s, /A<tspan font-size="72%" dy=".35em">x<\/tspan><tspan dy="-.252em"> = \?<\/tspan>/);
+  assert.match(s, /A<tspan font-size="72%" dy=".35em">y<\/tspan>/);
+});
+
+test('cola con punta: si dos flechas terminan en el mismo punto, la de después acorta su punta y no se enciman', () => {
+  const d = { objeto: 'bote', orillas: true, flechas: [{ ang: 90, mod: 4, color: 'o', rotulo: 'A⃗' }, { de: [0, 4], ang: 0, mod: 3, color: 'i', rotulo: 'B⃗' }, { a: [3, 4], color: 'd', rotulo: 'R⃗', valor: '?' }] };
+  const s = P.dibujar(d), g = P.geometria(d);
+  const punta = c => [...s.matchAll(new RegExp(`<path d="M([\\d.-]+) ([\\d.-]+)L[^"]*Z" fill="var\\(--c-${c}\\)"`, 'g'))].map(m => [+m[1], +m[2]])[0];
+  const pb = punta('i'), pr = punta('d');
+  assert.ok(Math.hypot(pb[0] - g.fl[1].p1[0], pb[1] - g.fl[1].p1[1]) < 0.05, 'B termina en su punto');
+  assert.ok(Math.abs(Math.hypot(pr[0] - pb[0], pr[1] - pb[1]) - 14) < 0.1, 'la punta de R queda 14 px antes');
+});
+
+test('el rótulo de un ángulo no cae sobre una flecha que sale de su vértice (dos toros: R va por la bisectriz)', () => {
+  const d = { objeto: 'nudo', largo: 190, flechas: [{ ang: 30, mod: 400, color: 'o', rotulo: 'A⃗' }, { ang: -30, mod: 400, color: 'i', rotulo: 'B⃗' }, { ang: 0, mod: 693, color: 'd', rotulo: 'R⃗', valor: '?', cuerda: false, discontinua: true }], angulos: [{ de: -30, a: 30, texto: '60°', radio: 30 }] };
+  const g = P.geometria(d), b = g.ang[0].bx, r = g.fl[2];
+  const yR = r.p0[1];   // R es horizontal: su línea va a la altura del nudo
+  assert.ok(b.y1 < yR - 2 || b.y0 > yR + 2, `«60°» pisa la línea de R (${b.y0}..${b.y1} contra ${yR})`);
+});

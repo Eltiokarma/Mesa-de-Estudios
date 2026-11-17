@@ -32,6 +32,11 @@
  *   marca: null | número,                      // el largo que marca el alumno sobre la regla
  *   fantasma: null | { marca, rotulo, texto }  // el error con nombre, discontinuo
  * }
+ * Notación (17 nov, auditoría de Vectores): el rótulo de una flecha puede traer la flecha de vector («A⃗», U+20D7);
+ * cuando la pieza escribe su valor («A = 6»), el valor es el módulo y la flecha se quita. «A_x» en cualquier rótulo
+ * se dibuja con la x como subíndice (un <tspan> más chico y más abajo); «ₓ» y «ᵧ» (una gamma, no una y) se pasan a
+ * esa forma, para que x e y se vean iguales. Si la resultante termina donde termina otra flecha (cola con punta), su
+ * punta se corre 14 px hacia atrás para que las dos puntas no se enciman (la regla mide el largo verdadero).
  * El dibujo es una función pura de (datos, estado): sin ids, sin azar, sin reloj. Alto fijo para unos datos.
  */
 (function (root, fabrica) {
@@ -83,6 +88,29 @@
   const dec = d => (d.regla && Number.isInteger(d.regla.decimales) ? d.regla.decimales : 1);
   const lectura = (d, m) => `${Kit.formatear(m, dec(d))}${d.unidad ? ' ' + d.unidad : ''}`;
   const largo = v => Math.hypot(v.a[0] - v.de[0], v.a[1] - v.de[1]);
+  // Con valor, el rótulo dice el módulo: «A = 6», sin la flecha de vector que el nombre solo sí lleva («A⃗»).
+  const sinFlecha = t => String(t).replace(/\u20D7/g, '');
+  // Si el valor es el vector mismo («8î − 6ĵ»), la flecha se queda: «R⃗ = 8î − 6ĵ».
+  const conValor = (rot, val) => `${/[îĵ]|k̂/.test(String(val)) ? rot : sinFlecha(rot)} = ${val}`;
+  // Subíndices de verdad en los <text> del SVG: «A_x» → A con la x más chica y más abajo; lo que sigue vuelve a la línea.
+  const SUB = /([A-Za-zÁÉÍÓÚáéíóúθτ\u20D7)])_([A-Za-z0-9]{1,3})/g;
+  function conSubindices(svg) {
+    return svg.replace(/(<text\b[^>]*>)([^<]*)(<\/text>)/g, (m, a, t, c) => {
+      const t2 = t.replace(/ₓ/g, '_x').replace(/ᵧ/g, '_y');
+      if (!SUB.test(t2)) return m;
+      SUB.lastIndex = 0;
+      let out = '', k = 0, abajo = false;
+      t2.replace(SUB, (mm, l, sb, i) => {
+        const antes = t2.slice(k, i) + l;
+        out += abajo ? `<tspan dy="-.252em">${antes}</tspan>` : antes;
+        out += `<tspan font-size="72%" dy=".35em">${sb}</tspan>`;
+        abajo = true; k = i + mm.length; return mm;
+      });
+      const resto = t2.slice(k);
+      if (resto) out += `<tspan dy="-.252em">${resto}</tspan>`;
+      return a + out + c;
+    });
+  }
 
   function controles(d) {
     const g = geometria(d);
@@ -216,7 +244,7 @@
       const largo = Math.hypot(x2 - x1, y2 - y1);
       let a = largo < 40 ? flechaCorta(x1, y1, x2, y2, f.color) : T.flecha(x1, y1, x2, y2, { color: f.color, grosor });
       if (f.discontinua) a = a.replace('stroke-linecap="round"/>', 'stroke-linecap="round" stroke-dasharray="6 5"/>').replace(/<path /, '<path fill-opacity="0.6" ');
-      const texto = f.valor !== undefined && p >= (f.valorPaso || 0) ? `${f.rotulo} = ${f.valor}` : f.rotulo;
+      const texto = f.valor !== undefined && p >= (f.valorPaso || 0) ? conValor(f.rotulo, f.valor) : f.rotulo;
       s += `<g class="kit-aparece${nuevo(f)}">${a}${texto ? rotuloFlecha(g, x1, y1, x2, y2, texto, { color: f.color, lado: f.lado, en: f.rotuloEn, lejos: f.lejos ? [g.X(f.lejos[0]), g.Y(f.lejos[1])] : null }) : ''}</g>`;
     }
     for (const q of d.fuera || []) if (ve(q)) {
@@ -237,10 +265,13 @@
     const res = d.resultante;
     if (res && (final || (res.paso !== undefined && res.paso <= p))) {
       const x1 = g.X(res.de[0]), y1 = g.Y(res.de[1]), x2 = g.X(res.a[0]), y2 = g.Y(res.a[1]);
-      const texto = final && res.valor !== undefined ? `${res.rotulo} = ${res.valor}` : res.rotulo;
+      const texto = final && res.valor !== undefined ? conValor(res.rotulo, res.valor) : res.rotulo;
       const cl = final ? ' kit-nuevo' : nuevo(res);
       if (Math.hypot(x2 - x1, y2 - y1) >= 1) {
-        s += `<g class="kit-aparece${cl}">${T.flecha(x1, y1, x2, y2, { color: res.color, grosor: T.GROSOR.variable })}${rotuloFlecha(g, x1, y1, x2, y2, texto, { color: res.color, lado: res.lado, lejos: res.lejos ? [g.X(res.lejos[0]), g.Y(res.lejos[1])] : null })}</g>`;
+        // Cola con punta: si otra flecha visible termina en el mismo punto, la punta de R va 14 px antes (no se enciman).
+        const Lr = Math.hypot(x2 - x1, y2 - y1), junta = (d.flechas || []).some(f => ve(f) && Math.hypot(g.X(f.a[0]) - x2, g.Y(f.a[1]) - y2) < 2);
+        const k = junta && Lr > 40 ? (Lr - 14) / Lr : 1, xp = x1 + (x2 - x1) * k, yp = y1 + (y2 - y1) * k;
+        s += `<g class="kit-aparece${cl}">${T.flecha(x1, y1, xp, yp, { color: res.color, grosor: T.GROSOR.variable })}${rotuloFlecha(g, x1, y1, x2, y2, texto, { color: res.color, lado: res.lado, lejos: res.lejos ? [g.X(res.lejos[0]), g.Y(res.lejos[1])] : null })}</g>`;
       } else {
         s += `<g class="kit-aparece${cl}"><circle cx="${T.n(x1)}" cy="${T.n(y1)}" r="5" fill="${T.color(res.color)}"/>${T.rotulo(x1 + 10, y1 - 10, texto, { color: res.color, peso: 700 })}</g>`;
       }
@@ -264,16 +295,17 @@
       s += `<g class="kit-fantasma"><rect x="${T.n((W - w) / 2)}" y="${T.n(g.fantasmaY - 17)}" width="${T.n(w)}" height="26" rx="6" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/>`
         + `${T.rotulo(W / 2, g.fantasmaY + 1, t, { ancla: 'middle' })}</g>`;
     }
-    return T.svg(W, g.alto, s, { alt: alt(d) });
+    return conSubindices(T.svg(W, g.alto, s, { alt: alt(d) }));
   }
 
   function alt(d) {
-    const fl = (d.flechas || []).filter(f => !f.discontinua && f.rotulo).map(f => (f.valor !== undefined ? `${f.rotulo} de ${f.valor}` : f.rotulo));
+    const leer = t => sinFlecha(t).replace(/_/g, ' ').replace(/ₓ/g, ' x').replace(/ᵧ/g, ' y');
+    const fl = (d.flechas || []).filter(f => !f.discontinua && f.rotulo).map(f => (f.valor !== undefined ? `${leer(f.rotulo)} de ${f.valor}` : `el vector ${leer(f.rotulo)}`));
     const lista = fl.length > 1 ? fl.slice(0, -1).join(', ') + ' y ' + fl[fl.length - 1] : fl[0] || 'flechas';
     const ang = (d.angulos || []).filter(a => a.texto && !a.paso).map(a => a.texto);
     return `Flechas a escala, con el largo proporcional al módulo: ${lista}`
       + (ang.length ? `; ángulos de ${ang.join(' y ')}` : '')
-      + (d.regla ? `. Debajo, una regla con la misma escala para medir ${d.resultante ? d.resultante.rotulo : 'la resultante'}` : '');
+      + (d.regla ? `. Debajo, una regla con la misma escala para medir ${d.resultante ? leer(d.resultante.rotulo) : 'la resultante'}` : '');
   }
 
   return { id: 'flechas', dibujar, alt, controles, geometria };

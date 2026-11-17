@@ -161,3 +161,43 @@ test('una flecha corta lleva punta chica', () => {
   assert.ok(!/NaN/.test(s));
   assert.match(s, /stroke-width="2.5"/);
 });
+
+// Notación (17 nov, auditoría de Vectores): flecha de vector solo en el nombre, subíndices de verdad, puntas separadas.
+test('el rótulo «A⃗» pierde la flecha cuando lleva su valor; sin valor la conserva', () => {
+  const d = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗', valor: '6' }, { de: [6, 0], a: [6, 4], color: 'i', rotulo: 'B⃗' }],
+    resultante: { de: [0, 0], a: [6, 4], color: 'd', rotulo: 'R⃗', valor: '?' } };
+  const s = F.dibujar(d, { final: true });
+  assert.match(s, />A = 6</);
+  assert.match(s, />B⃗</);
+  assert.match(s, />R = \?</);
+  assert.ok(!/⃗ = /.test(s), 'un módulo no lleva flecha');
+  assert.match(F.dibujar(d, { paso: 0 }), />A = 6</);
+});
+
+test('«A_x = 3» y «Aᵧ» se dibujan con un <tspan> de subíndice (no queda gamma ni guion bajo)', () => {
+  const d = { unidad: 'u', flechas: [{ de: [0, 0], a: [3, 4], color: 'o', rotulo: 'A⃗' }],
+    segmentos: [{ de: [0, 0], a: [3, 0], color: 'o', texto: 'A_x = 3' }, { de: [3, 0], a: [3, 4], color: 'o', texto: 'Aᵧ = 4' }] };
+  const s = F.dibujar(d, {});
+  assert.ok(!/ᵧ|_x/.test(s));
+  assert.match(s, /A<tspan font-size="72%" dy=".35em">x<\/tspan><tspan dy="-.252em"> = 3<\/tspan>/);
+  assert.match(s, /A<tspan font-size="72%" dy=".35em">y<\/tspan><tspan dy="-.252em"> = 4<\/tspan>/);
+  assert.ok(!/_/.test(F.alt(d)), 'el texto alternativo no lee guiones bajos');
+});
+
+test('cola con punta: la punta de R va 14 px antes de la punta de B (no se enciman)', () => {
+  const d = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗' }, { de: [6, 0], a: [6, 4], color: 'i', rotulo: 'B⃗' }],
+    resultante: { de: [0, 0], a: [6, 4], color: 'd', rotulo: 'R⃗' } };
+  const s = F.dibujar(d, { final: true }), g = F.geometria(d);
+  const pb = puntas(s, 'i')[0], pr = puntas(s, 'd')[0];
+  assert.ok(Math.hypot(pb[0] - g.X(6), pb[1] - g.Y(4)) < 0.05, 'B termina en su punto');
+  assert.ok(Math.abs(Math.hypot(pr[0] - pb[0], pr[1] - pb[1]) - 14) < 0.1, 'R se corta 14 px antes');
+  // Sin otra flecha en esa punta, R llega entera.
+  const solo = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗' }], resultante: { de: [0, 0], a: [6, 4], color: 'd', rotulo: 'R⃗' } };
+  const pr2 = puntas(F.dibujar(solo, { final: true }), 'd')[0], g2 = F.geometria(solo);
+  assert.ok(Math.hypot(pr2[0] - g2.X(6), pr2[1] - g2.Y(4)) < 0.05);
+});
+
+test('si el valor es el vector mismo («8î − 6ĵ»), el rótulo conserva la flecha', () => {
+  const d = { unidad: 'u', flechas: [{ de: [0, 0], a: [8, -6], color: 'o', rotulo: 'R⃗', valor: '8î − 6ĵ' }] };
+  assert.match(F.dibujar(d, {}), />R⃗ = 8î − 6ĵ</);
+});
