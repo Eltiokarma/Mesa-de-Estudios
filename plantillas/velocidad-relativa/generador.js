@@ -146,14 +146,14 @@
       elementos: [
         { tipo: 'punto', x: vB, color: 'i', rotulo: 'B', fila: 0, desde: 1 },
         { tipo: 'punto', x: vA, color: 'o', rotulo: 'A', fila: 0, desde: 1 },
-        { tipo: 'salto', a: vB, b: vA, color: 'd', rotulo: `${f(Math.abs(vA - vB))} ${u}`, fila: 1, desde: 2 },
+        { tipo: 'salto', a: vB, b: vA, color: 'f', rotulo: `${f(Math.abs(vA - vB))} ${u}`, fila: 1, desde: 2 },
       ],
       pasos,
     });
   }
 
   // ================= marco =================
-  const VAR_M = { a: { nombre: 'velocidad del móvil observado', color: 'o' }, b: { nombre: 'velocidad del observador', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  const VAR_M = { a: { nombre: 'velocidad del móvil observado', color: 'o' }, b: { nombre: 'velocidad del observador', color: 'i' }, t: { nombre: 'tiempo', color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
   function marco(rng, semilla, sub) {
     if (sub === 'combis') {
       const vA = 9 * rng.entero(3, 12), vB = 9 * rng.entero(2, 10), mismo = rng.moneda();
@@ -210,7 +210,7 @@
 
   // ================= idavuelta =================
   // Sin escena: ida y vuelta respecto a un marco que se mueve pide dos rectas (la pista y el vehículo).
-  const VAR_IV = { u: { nombre: 'rapidez de quien va y vuelve', color: 'o' }, V: { nombre: 'rapidez del vehículo o la columna', color: 'i' }, L: { nombre: 'largo', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  const VAR_IV = { u: { nombre: 'rapidez de quien va y vuelve', color: 'o' }, V: { nombre: 'rapidez del vehículo o la columna', color: 'i' }, L: { nombre: 'largo', color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
   function idaVuelta(rng, semilla, sub) {
     if (sub === 'columna') {
       const u = rng.entero(3, 12), V = rng.entero(1, u - 1), L = 10 * rng.entero(4, 40);
@@ -273,12 +273,12 @@
       [v('L', `${L}`), '/(u − ', v('V', f(V)), ') + ', v('L', `${L}`), '/(u + ', v('V', f(V)), ') = ', v('x', f(T)), '.'],
       ['Resolviendo: ', v('u', `u = ${f(u)} m/s`), ` (ida ${f(L / (u - V))} s, vuelta ${f(L / (u + V))} s).`],
     ];
-    return cerrar(rng, semilla, { correcta: u, errores, texto: con('m/s'), unidad: 'm/s', variables: { ...VAR_IV, x: { nombre: 'tiempo total', color: 'd' }, u: { nombre: 'rapidez del nadador (lo que se pide)', color: 'o' } },
+    return cerrar(rng, semilla, { correcta: u, errores, texto: con('m/s'), unidad: 'm/s', variables: { ...VAR_IV, L: { nombre: 'largo', color: 'o' }, x: { nombre: 'tiempo total', color: 'd' }, u: { nombre: 'rapidez del nadador (lo que se pide)', color: 'f' } },
       enunciado, pregunta, solucion, datos: { tipo: 'idavuelta', sub, V, L, T } });
   }
 
   // ================= cruce =================
-  const VAR_C = { a: { nombre: 'rapidez del primero', color: 'o' }, b: { nombre: 'rapidez del segundo', color: 'i' }, D: { nombre: 'distancia o largos', color: 'h' }, x: { nombre: 'tiempo', color: 'd' } };
+  const VAR_C = { a: { nombre: 'rapidez del primero', color: 'o' }, b: { nombre: 'rapidez del segundo', color: 'i' }, D: { nombre: 'distancia o largos', color: 'd' }, x: { nombre: 'tiempo', color: 'f' } };
   function cruce(rng, semilla, sub) {
     if (sub === 'encuentro' || sub === 'alcance') {
       const v1 = rng.entero(6, 30), v2 = rng.entero(2, 25), D = rng.elegir([60, 90, 120, 150, 180, 200, 240, 300, 360, 400]);
@@ -317,10 +317,10 @@
         elementos: [
           { tipo: 'punto', x: 0, color: 'o', rotulo: uno, fila: 0, desde: 0 },
           { tipo: 'punto', x: D, color: 'i', rotulo: 'camión', fila: 0, desde: 0 },
-          { tipo: 'distancia', a: 0, b: D, color: 'h', rotulo: `${D} m`, fila: 3, desde: 1 },
+          { tipo: 'distancia', a: 0, b: D, color: 'd', rotulo: `${D} m`, fila: 3, desde: 1 },
           { tipo: 'salto', a: 0, b: x1, color: 'o', rotulo: `${f(x1)} m`, fila: 2, desde: 2 },
           { tipo: 'salto', a: D, b: xc, color: 'i', rotulo: `${f(v2 * correcta)} m`, fila: 1, desde: 2 },
-          { tipo: 'punto', x: x1, color: 'd', fila: 0, desde: 2 }, // sin rótulo: chocaría con el del camión; el tiempo va en la ecuación
+          { tipo: 'punto', x: x1, color: 'f', fila: 0, desde: 2 }, // sin rótulo: chocaría con el del camión; el tiempo va en la ecuación
         ],
         pasos: [
           paso(1, [`Desde el camión, la ${uno} se acerca a `, v('a', `${v1}`), signo, v('b', `${v2}`), ` = ${rel} m/s.`], [`${D} m a ${rel} m/s`]),
@@ -356,7 +356,7 @@
 
   // ================= bote en el río =================
   // Sin escena: la suma de velocidades es del plano; le toca a la pieza de flechas.
-  const VAR_B = { u: { nombre: 'velocidad del bote respecto al agua', color: 'o' }, c: { nombre: 'velocidad de la corriente', color: 'i' }, W: { nombre: 'ancho y distancias', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  const VAR_B = { u: { nombre: 'velocidad del bote respecto al agua', color: 'o' }, c: { nombre: 'velocidad de la corriente', color: 'i' }, W: { nombre: 'ancho y distancias', color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
   // Ángulos notables: [grados, seno, coseno].
   const NOT = [[0, 0, 1], [16, 7 / 25, 24 / 25], [30, 1 / 2, Math.sqrt(3) / 2], [37, 3 / 5, 4 / 5], [53, 4 / 5, 3 / 5], [74, 24 / 25, 7 / 25]];
   const direccion = (g, sentido) => (g === 0 ? { clave: 'proa:0', texto: 'Perpendicular a la orilla (0°)' }
@@ -553,7 +553,7 @@
 
   // ================= botes: lanzar un saco =================
   // Sin escena (cantidad de movimiento con marcos que cambian). La convención va en «datos», aparte del enunciado.
-  const VAR_BS = { M: { nombre: 'masas', color: 'o' }, u: { nombre: 'rapidez del saco respecto al bote', color: 'i' }, V: { nombre: 'velocidades respecto al agua', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  const VAR_BS = { M: { nombre: 'masas', color: 'o' }, u: { nombre: 'rapidez del saco respecto al bote', color: 'i' }, V: { nombre: 'velocidades respecto al agua', color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
   const CONV = ['Todo empieza en reposo y no hay roce con el agua.', 'La rapidez del saco es respecto al bote que lo lanza, ya en movimiento.'];
   function botes(rng, semilla, sub) {
     // Un saco de 10 kg o más no sale a más de 4 m/s (auditoría, M22: «12 kg a 12 m/s», 43 km/h, nadie lo lanza así).

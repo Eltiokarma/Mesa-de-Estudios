@@ -187,7 +187,7 @@
       hh('AD-invierte', e.map(x => -x), 'Te salieron los exponentes con el signo cambiado: pusiste la magnitud que se pide en el otro lado de la ecuación. [Q] = Π[dato]^exp: las dimensiones de los datos, con sus exponentes, deben dar las de Q.', null),
       sub === 'uno' && dfs.some(d => d.M) ? hh('AD-cruza-exponentes', cruzado, `Intercambiaste los exponentes de ${sim(F.fs[0])} y de ${sim(F.fs[1])}. Fíjate en qué base aparece cada magnitud: por ejemplo, la que trae masa es la única que puede equilibrar la M.`, null) : null,
     ].filter(Boolean);
-    const variables = { q: { nombre: nom(F.q), color: 'o' }, a: { nombre: nom(F.fs[0]), color: 'i' }, b: { nombre: nom(F.fs[1]), color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { q: { nombre: nom(F.q), color: 'o' }, a: { nombre: nom(F.fs[0]), color: 'i' }, b: { nombre: nom(F.fs[1]), color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
     // Los dos primeros factores llevan color; el tercero (si hay) va sin color, para no confundirlo con lo que se pide.
     const col = i => (i === 0 ? 'a' : i === 1 ? 'b' : null);
     const vc = (k, t) => (k ? v(k, t) : t);
@@ -233,7 +233,7 @@
 
   function constante(rng, semilla, sub) {
     const mk = rng.elegir(MIEMBROS), dm = D(mk);
-    const variables = { A: { nombre: 'constante A', color: 'o' }, B: { nombre: 'constante B', color: 'i' }, m: { nombre: PROCESOS[mk], color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { A: { nombre: 'constante A', color: 'o' }, B: { nombre: 'constante B', color: 'i' }, m: { nombre: PROCESOS[mk], color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
     const hh = (id, d, explicacion, fuente = null) => (d ? { id, ...opcion(d), explicacion, respaldo: 'hipotesis', fuente } : null);
     let enunciado, pregunta, correcta, errores, solucion, datos, ls;
     if (sub === 'suma' || sub === 'combinada') {
@@ -385,7 +385,7 @@
       return { id: I.id, clave: 'vf:' + vf(otra), texto: vf(otra), respaldo: 'hipotesis', fuente: p.idea === 'detecta' ? 'docs/clasificacion/trampas-admision-unmsm/fisica.md' : null,
         explicacion: `Juzgaste mal la proposición ${ROMANOS[j]}: es ${p.v ? 'verdadera' : 'falsa'}. El error de fondo es ${I.que}. ${p.por}` };
     });
-    const variables = { x: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { x: { nombre: 'lo que se pide', color: 'f' } };
     const enunciado = ['Sobre el análisis dimensional, indica si cada proposición es verdadera (V) o falsa (F).', ...elegidas.map((p, j) => ` ${ROMANOS[j]}. ${p.t}`)];
     const pregunta = ['¿Cuál es la ', v('x', 'secuencia correcta'), ' (I, II, III)?'];
     const solucion = [...elegidas.map((p, j) => [`${ROMANOS[j]}: ${p.v ? 'verdadera' : 'falsa'}. ${p.por}`]), ['Secuencia: ', v('x', correcta.texto), '.']];

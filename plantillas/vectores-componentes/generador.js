@@ -55,9 +55,9 @@
   };
   const DIAG = { F45: [45, 135, 225, 315] };
   const NOMBRES = ['A', 'B', 'C', 'D'];
-  // Colores de la unidad (teoría de Vectores): A naranja, B turquesa, C violeta; D en rojo (aquí los ángulos van del color
-  // de su vector, no hay θ aparte) para que no comparta el verde de la resultante (auditoría, M16).
-  const COLORES = ['o', 'i', 'f', 'h'];
+  // Colores por papel (docs/molde-unidad.md, 5b): A naranja, B turquesa, C verde (tercer dato) y R violeta (lo que se
+  // pide). D va en carmín: aquí cada ángulo va del color de su vector y no hay θ aparte.
+  const COLORES = ['o', 'i', 'd', 'h'];
   const ANG_NOTABLES = [0, 37, 53, 90, 127, 143, 180, 217, 233, 270, 307, 323, 45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330];
 
   // Un vector de la familia: ángulo t y paso k. Devuelve componentes enteras (px, py), su
@@ -173,7 +173,7 @@
     const v = P.v;
     const variables = {};
     vs.forEach((w, i) => { variables[NOMBRES[i]] = { nombre: `vector ${P.vec(NOMBRES[i])}`, color: COLORES[i] }; });
-    if (n < 4) variables.R = { nombre: 'resultante', color: 'd' };
+    if (n < 4) variables.R = { nombre: 'resultante', color: 'f' };
 
     // Cómo se nombra cada dirección.
     const dirTexto = t => {
@@ -304,7 +304,7 @@
     const n = vs.length;
     const nom = i => P.vec(`${coef[i] < 0 ? '−' : ''}${Math.abs(coef[i]) === 1 ? '' : Math.abs(coef[i])}${NOMBRES[i]}`);
     const R_ = P.vec('R');
-    const colorR = n < 4 ? 'd' : null;
+    const colorR = n < 4 ? 'f' : null;
     const flechas = [], guias = [], angulos = [];
     vs.forEach((w, i) => {
       flechas.push({ de: [0, 0], a: [w.x, w.y], color: COLORES[i], rotulo: NOMBRES[i], valor: `${w.texto} ${u}` });

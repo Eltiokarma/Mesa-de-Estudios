@@ -78,7 +78,7 @@
 
   function construir(rng, semilla, tipo) {
     const v = P.v;
-    const variables = { a: { nombre: `vector ${a_}`, color: 'o' }, b: { nombre: `vector ${b_}`, color: 'i' }, r: { nombre: 'razón o punto', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { a: { nombre: `vector ${a_}`, color: 'o' }, b: { nombre: `vector ${b_}`, color: 'i' }, r: { nombre: 'razón o punto', color: 'd' }, X: { nombre: 'lo que se pide', color: 'f' } };
     let enunciado, pregunta, correcta, errores, solucion, datos;
     const N = ['a', 'b'];
 

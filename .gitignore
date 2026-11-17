@@ -6,3 +6,4 @@ node_modules/
 .claude/worktrees/
 # Ejercicios de academia de la tanda de 7000: sirven para clasificar, no se publican (regla 5)
 fuentes/ejercicios/
+__pycache__/

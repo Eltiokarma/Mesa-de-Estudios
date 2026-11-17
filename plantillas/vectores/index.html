@@ -6,31 +6,32 @@
 <title>Flechas que se suman: vectores y análisis dimensional</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md), del molde de triangulo-estira.
-   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   vector a azul, vector b naranja, resultante R fucsia, ángulo θ entre a y b verde, componente en x (sombra
-   sobre el eje x) turquesa, componente en y (sombra sobre el eje y) rojo y vector unitario û oliva oscuro.
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), por papel, con los
+   valores de la app (docs/molde-unidad.md, 5b; 17 nov): a⃗ naranja (primer dato), b⃗ turquesa (segundo dato),
+   lo que se pide y su resultado violeta (R⃗, OP⃗, AG⃗, MN⃗, w⃗ y a⃗ × b⃗ con su área), los ángulos carmín (θ, el de a⃗
+   con el eje x y el de R⃗ con x′) y el tercer vector verde (c⃗, el marcado de «Figuras»).
+   Lo que no es un papel va aparte, con claridad distinta para que el claro-oscuro los separe también con daltonismo:
+   azul marino / celeste para la sombra en x y la diferencia a⃗ − b⃗ (nunca juntas), café / oro para la sombra en y y la
+   sombra de b⃗ sobre a⃗ (nunca juntas), y granate / tostado para û y las aristas z del sólido (nunca juntos).
    Análisis dimensional: [M] siena, [L] índigo y [T] mostaza (solo salen en la balanza, nunca con flechas).
-   Elegidos con CIEDE2000 (docs/metodo/paleta.py): entre los que salen juntos, ΔE00 mínimo 23,6 en claro y 25,3 en
-   oscuro en las flechas (a, b, R, θ, x, y), 27,1 y 26,9 con el unitario (a, x, y, û, R) y 23,6 y 24,6 en la balanza
-   (M, L, T). Pares parecidos que nunca comparten pantalla: b–M, û–T, a–L y R–L. Todos pasan AA (≥ 4,5) sobre el
-   papel y sobre su chip (.v, fondo al 8 %), en claro y en oscuro. Ángulos con los ejes, longitudes sueltas,
-   sumas parciales y el hexágono van en tinta o gris.
-   0.2.0 (medidos igual, contra los que salen juntos y contra tinta, gris, ok y warn): c el vector marcado (oro),
-   z las aristas verticales del sólido (café; las de x y las de y usan x e y), g el vector
-   AG del baricentro (celeste), k el vector MN del trapecio (oliva), w el vector de módulo dado (magenta), D la
-   diferencia a − b (petróleo), sb la sombra de b sobre a (mostaza) y ar el área y a × b (fucsia rosado). En
-   «La sombra y el área» el ángulo va en tinta, para que sb y ar pasen ΔE00 ≥ 20 con a y b. Peores pares:
-   {a, b, R, D, θ} 24,8 y 25,4; {a, b, sb, ar} 26,1 y 30,8; {x, y, z, R} 27,8 y 26,9 (x–y ya estaba); {a, u, w} 30,8
-   y 35,1; {a, b, k} 35,1; {c, R} 57,9 y 66,6; contra tinta, gris, ok y warn, al menos 20 en claro y 20,9 en oscuro.
+   Medidos con herramientas/auditar-colores.py (OKLab, peor caso entre visión normal y protan, deutan y tritan simulados;
+   Machado 2009), par por par entre los que salen en la misma pantalla. Peores pares, claro y oscuro:
+   {a, b, θ, R} y {a, b, θ, R, D} a–θ 0,062 y 0,085 (θ lleva arco y letra), b–D 0,133 y 0,081; {a, aₓ, a_y, 37°} a–a_y
+   0,101 y 0,109, a–37° 0,062 y 0,085; {a, aₓ, a_y, û} a–a_y 0,101 y a–û 0,078; {a, b, sombra, área, θ} a–sombra 0,101
+   y 0,109, b–área 0,101 y 0,126; {c, R} 0,074 y 0,129; {x, y, z, R} 0,110 y 0,103; {a, b, MN} y {a, b, OP} b–R 0,101
+   y 0,126; {a, û, w} 0,107 y 0,078; {a, b, R, R′x, R′y} 0,101 y b–R′x 0,081. Contra la tinta, al menos 0,103. El gris
+   (muted) queda cerca de b y de R (0,025 en claro), pero solo va en trazos finos punteados y en números de los ejes.
+   Texto: ≥ 4,63:1 sobre la tarjeta y sobre su chip (.v, fondo al 8 %) en claro y ≥ 4,87:1 en oscuro; las líneas,
+   ≥ 5:1. Longitudes sueltas, sumas parciales, el hexágono, î y ĵ van en tinta o gris.
    En «El punto que se desliza» OP va en el color de R: es la resultante de las dos partes. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-a:#1f5fbf; --c-b:#a05200; --c-R:#a10fbf; --c-th:#466d14; --c-x:#0f766e; --c-y:#c0364a; --c-u:#5c531f;
+  --c-a:#a95300; --c-b:#07746e; --c-R:#6b3dbd; --c-th:#c02a5c; --c-x:#223d81; --c-y:#6c411a; --c-u:#5c0300;
   --c-M:#773922; --c-L:#3328c4; --c-T:#7d6a00;
-  --c-c:#775403; --c-z:#654115; --c-g:#107293; --c-k:#475223; --c-w:#950487; --c-D:#1d494e; --c-sb:#6e6e0c; --c-ar:#c7058d;
+  --c-c:#3d6b0c; --c-z:#5c0300; --c-g:#6b3dbd; --c-k:#6b3dbd; --c-w:#6b3dbd; --c-D:#223d81; --c-sb:#6c411a; --c-ar:#6b3dbd;
   /* Después de la genérica, fuentes que traen la flecha combinante de los vectores (a⃗, U+20D7): el navegador las usa
      solo para lo que la primera fuente no trae, también en el lienzo. */
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif,"Cambria Math","STIX Two Math","Noto Sans Math","DejaVu Sans";
@@ -41,17 +42,17 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-a:#7cb0ff; --c-b:#f0a04a; --c-R:#cf6bfa; --c-th:#a3d65e; --c-x:#5ed9c8; --c-y:#f17384; --c-u:#fdf2b4;
+  --c-a:#f0a04a; --c-b:#3dcdc3; --c-R:#ab8cf2; --c-th:#f17384; --c-x:#a8ceff; --c-y:#fbd35f; --c-u:#c6916e;
   --c-M:#d9a68c; --c-L:#9f9bff; --c-T:#e3c84a;
-  --c-c:#f9b924; --c-z:#fcc37e; --c-g:#24c4f9; --c-k:#cbff1f; --c-w:#fb74ee; --c-D:#1fe9ff; --c-sb:#fbfb56; --c-ar:#fa38c0;
+  --c-c:#a3d65e; --c-z:#c6916e; --c-g:#ab8cf2; --c-k:#ab8cf2; --c-w:#ab8cf2; --c-D:#a8ceff; --c-sb:#fbd35f; --c-ar:#ab8cf2;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-a:#7cb0ff; --c-b:#f0a04a; --c-R:#cf6bfa; --c-th:#a3d65e; --c-x:#5ed9c8; --c-y:#f17384; --c-u:#fdf2b4;
+  --c-a:#f0a04a; --c-b:#3dcdc3; --c-R:#ab8cf2; --c-th:#f17384; --c-x:#a8ceff; --c-y:#fbd35f; --c-u:#c6916e;
   --c-M:#d9a68c; --c-L:#9f9bff; --c-T:#e3c84a;
-  --c-c:#f9b924; --c-z:#fcc37e; --c-g:#24c4f9; --c-k:#cbff1f; --c-w:#fb74ee; --c-D:#1fe9ff; --c-sb:#fbfb56; --c-ar:#fa38c0;
+  --c-c:#a3d65e; --c-z:#c6916e; --c-g:#ab8cf2; --c-k:#ab8cf2; --c-w:#ab8cf2; --c-D:#a8ceff; --c-sb:#fbd35f; --c-ar:#ab8cf2;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -587,10 +588,10 @@ function crearEscena(cv, idDesc, idLect, idLey){
         rotulo(ctx, c, O.x - 8, (O.y + Py.y)/2, 'a', c.y, 'right', 800, 14, 'y', E.ver.medidas ? ` = ${fmt(E.a.y, 1)}` : '');
       }
     }
-    // ángulo de a con el eje x (en tinta)
+    // ángulo de a con el eje x (carmín: los ángulos del problema, molde-unidad 5b)
     if (E.ver.dirA){
-      const m = arcoGrados(O, 34, 0, pa.angulo, c.ink, 1.8), d = dirPantalla(m);
-      rotulo(ctx, c, O.x + d.x*52, O.y + d.y*52, `${fmt(pa.angulo, 0)}°`, c.ink, 'center', 700, 12);
+      const m = arcoGrados(O, 34, 0, pa.angulo, c.th, 2.2), d = dirPantalla(m);
+      rotulo(ctx, c, O.x + d.x*52, O.y + d.y*52, `${fmt(pa.angulo, 0)}°`, c.th, 'center', 800, 12);
     }
     // paralelogramo: b desde la punta de a y a desde la punta de b, a trazos
     const fp = E.prog.para;
@@ -640,8 +641,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
       }
     }
     if (E.ver.ang && pa.modulo > 0 && pb.modulo > 0){
-      const m = arcoGrados(O, 24, pa.angulo, pb.angulo, c.ink, 1.8), d = dirPantalla(m);
-      rotulo(ctx, c, O.x + d.x*44, O.y + d.y*44, `${fmt(MV.anguloEntre(E.a, E.b), 0)}°`, c.ink, 'center', 700, 12);
+      const m = arcoGrados(O, 24, pa.angulo, pb.angulo, c.th, grosor('th', 2.2)), d = dirPantalla(m);
+      rotulo(ctx, c, O.x + d.x*44, O.y + d.y*44, `${fmt(MV.anguloEntre(E.a, E.b), 0)}°`, c.th, 'center', 800, 12);
     }
     // a y b
     if (E.ver.a) flecha(O, A, c.a, grosor('a', 4));
@@ -820,7 +821,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
       const a = fl('a'), b = fl('b');
       if (v.a) l.push(it('a', a));
       if (v.b) l.push(it('b', b));
-      if (v.th) l.push(it('th', `θ · ángulo entre ${a} y ${b}`));
+      if (v.th || v.ang) l.push(it('th', `θ · ángulo entre ${a} y ${b}`));
+      if (v.dirA) l.push(it('th', `ángulo de ${a} con el eje x`));
       if (v.R) l.push(it('R', fl('R') + ' · resultante'));
       if (v.comp){ l.push(it('x', 'a<sub>x</sub> · sombra en x')); l.push(it('y', 'a<sub>y</sub> · sombra en y')); }
       if (v.u) l.push(it('u', 'û · unitario'));
@@ -843,7 +845,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       b: ['b', `|${fl('b')}|`, fmt(pb.modulo, 2), `b mide ${fmt(pb.modulo, 2)}`],
       th: ['th', 'Ángulo θ', `${angTxt(th).replace('= ', '')}°`, `θ ${angTxt(th).replace('≈', 'cerca de')}°`],
       R: ['R', `|${fl('R')}|`, fmt(Rv.modulo, 2), `R mide ${fmt(Rv.modulo, 2)}`],
-      dirA: ['ink', `Ángulo de ${fl('a')}`, `${fmt(pa.angulo, 0)}°`, `a forma ${fmt(pa.angulo, 0)}° con el eje x`],
+      dirA: ['th', `Ángulo de ${fl('a')}`, `${fmt(pa.angulo, 0)}°`, `a forma ${fmt(pa.angulo, 0)}° con el eje x`],
       ax: ['x', 'a<sub>x</sub>', fmt(E.a.x, 2), `sombra en x ${fmt(E.a.x, 2)}`],
       ay: ['y', 'a<sub>y</sub>', fmt(E.a.y, 2), `sombra en y ${fmt(E.a.y, 2)}`],
       u: ['u', 'û', E.a.x || E.a.y ? `(${fmt(MV.unitario(E.a).x, 2)}; ${fmt(MV.unitario(E.a).y, 2)})` : '—', 'û calculado'],
@@ -854,7 +856,7 @@ function crearEscena(cv, idDesc, idLect, idLey){
       Object.assign(L, {
         D: ['D', `|${fl('a')} − ${fl('b')}|`, fmt(Dm, 2), `a menos b mide ${fmt(Dm, 2)}`],
         razon: ['ink', `|${fl('a')} + ${fl('b')}| ÷ |${fl('a')} − ${fl('b')}|`, Dm > 1e-9 ? fmt(Rv.modulo/Dm, 2) : '—', `a más b dividido entre a menos b: ${Dm > 1e-9 ? fmt(Rv.modulo/Dm, 2) : 'sin valor'}`],
-        ang: ['ink', 'Ángulo', `${fmt(th, 1)}°`, `a y b forman ${fmt(th, 1)}°`],
+        ang: ['th', 'Ángulo θ', `${fmt(th, 1)}°`, `a y b forman ${fmt(th, 1)}°`],
         sb: ['sb', `Sombra de ${fl('b')}`, fmt(pr.escalar, 2), `la sombra de b sobre a mide ${fmt(pr.escalar, 2)}`],
         ar: ['ar', 'Área ▱', fmt(ar.paralelogramo, 2), `el paralelogramo mide ${fmt(ar.paralelogramo, 2)}`],
         tri: ['ink', 'Área △', fmt(ar.triangulo, 2), `el triángulo mide ${fmt(ar.triangulo, 2)}`],
@@ -1067,11 +1069,11 @@ const steps = [
    prep:() => E.config({ a:D37, caja:{ x0:-1.6, x1:10.6, y0:-1.6, y1:7.4 }, ver:{ b:false, ejes:true, dirA:true, comp:!!S.pred[P4.id], numeros:!!S.pred[P4.id], cuadricula:!!S.pred[P4.id] }, lado:{ a:1 },
      lect: S.pred[P4.id] ? ['a','dirA','ax','ay'] : ['a','dirA'] }),
    anima:fin => { E.ver.comp = true; E.ver.numeros = true; E.ver.cuadricula = true; E.lect = ['a','dirA','ax','ay']; E.leyenda(); E.crecer('comp', 1100, () => { E.avisar(); fin(); }); },
-   body:() => `<p>${av_()} mide 10 y forma 37° con el eje x. Una luz desde arriba proyecta su sombra sobre el eje x: es la componente ${x_('a' + SUB)}. ¿Cuánto mide?</p>${datosHTML(['En un triángulo rectángulo: cos θ = cateto junto a θ / hipotenusa y sen θ = cateto frente a θ / hipotenusa.', 'Valores de academia (triángulo 3-4-5): cos 37° = 4/5 y sen 37° = 3/5.'])}${opcionesHTML(P4.opts, 'fb')}
+   body:() => `<p>${av_()} mide 10 y forma ${th_('37°')} con el eje x. Una luz desde arriba proyecta su sombra sobre el eje x: es la componente ${x_('a' + SUB)}. ¿Cuánto mide?</p>${datosHTML(['En un triángulo rectángulo: cos θ = cateto junto a θ / hipotenusa y sen θ = cateto frente a θ / hipotenusa.', 'Valores de academia (triángulo 3-4-5): cos 37° = 4/5 y sen 37° = 3/5.'])}${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <p>Las dos sombras y ${av_()} forman un triángulo rectángulo: ${av_()} es la hipotenusa. La sombra en x es el cateto junto al ángulo y la sombra en y, el opuesto.</p>
-   <div class="eqs"><div class="eq">${x_('a' + SUB)} = ${a_('a')} · cos 37° = ${a_('10')} · cos 37° = ${a_('10')} · 0,8 = ${x_(fmt(C4.x, 0))}</div>
-   <div class="eq">${y_('a' + SUBY)} = ${a_('a')} · sen 37° = ${a_('10')} · sen 37° = ${a_('10')} · 0,6 = ${y_(fmt(C4.y, 0))}</div>
+   <div class="eqs"><div class="eq">${x_('a' + SUB)} = ${a_('a')} · cos ${th_('37°')} = ${a_('10')} · cos ${th_('37°')} = ${a_('10')} · 0,8 = ${x_(fmt(C4.x, 0))}</div>
+   <div class="eq">${y_('a' + SUBY)} = ${a_('a')} · sen ${th_('37°')} = ${a_('10')} · sen ${th_('37°')} = ${a_('10')} · 0,6 = ${y_(fmt(C4.y, 0))}</div>
    <div class="eq">${x_('8')}² + ${y_('6')}² = 100 = ${a_('10')}²</div></div>
    <p>Con calculadora, 10 · cos 37° = ${fmt(C4e.x, 2)} y 10 · sen 37° = ${fmt(C4e.y, 2)}: el triángulo 3-4-5 tiene en realidad 36,87°, casi 37°. En el examen se usa 3-4-5, salvo que el problema diga otra cosa.</p>
    <p class="aviso">Junto al ángulo va el coseno; frente al ángulo, el seno. Si el ángulo se mide desde el eje y, se cambian.</p></div>` },
@@ -2216,7 +2218,7 @@ const pasos = [
        g.rotF(O, A3, fl('a'), c.a, 1, .7); g.rotF(O, B3, fl('b'), c.b, -1, .7);
        if (st.notable && Math.abs(st.phi - PHI) < .5){ const m = g.arco(O, 48, PHI, MV.polar(B3).angulo, c.ink, 1.8); g.rotA(O, 64, m, '53°', c.ink, 12); }
        if (st.R > 0){ const R = MV.suma([A3, B3]); g.flecha(O, R, c.R, g.ancho('R', 4.5), { f:st.R });
-         if (st.arco > 0 && Math.abs(st.phi - PHI) < .5){ g.arco(O, 30, PHI, PHI + GE.resultante.angulo*st.arco, c.R, 2); if (st.arco >= 1) g.rotA(O, 44, PHI + GE.resultante.angulo*.82, `${fmt(GE.resultante.angulo, 0)}°`, c.R, 12); } }
+         if (st.arco > 0 && Math.abs(st.phi - PHI) < .5){ g.arco(O, 30, PHI, PHI + GE.resultante.angulo*st.arco, c.th, 2.2); if (st.arco >= 1) g.rotA(O, 44, PHI + GE.resultante.angulo*.82, `${fmt(GE.resultante.angulo, 0)}°`, c.th, 12); } }
        g.rot(O, 'O', c.ink, { dx:10, dy:12, tam:12, peso:700 });
      };
      L.dibujar();

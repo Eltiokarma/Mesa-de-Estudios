@@ -44,5 +44,11 @@ if __name__ == '__main__':
     oscuro = {'o': '#f0a04a', 'i': '#3dcdc3', 'h': '#f17384', 'd': '#a3d65e', 'f': '#ab8cf2'}
     auditar('app, claro', claro, '#fffaf6', '#2d2340')
     auditar('app, oscuro', oscuro, '#2a2135', '#f1ebf7')
-    esc_claro = {'a': '#1f5fbf', 'b': '#a05200', 'R': '#a10fbf', 'th': '#466d14', 'x': '#0f766e', 'y': '#c0364a'}
+    # Escena de vectores (17 nov): papeles con los tokens de la app; x/D, y/sb y û/z son los colores aparte (no se ven
+    # juntos dentro de cada pareja). Los pares que importan son los de una misma pantalla (ver el comentario de la escena).
+    esc_claro = {'a': '#a95300', 'b': '#07746e', 'R': '#6b3dbd', 'th': '#c02a5c', 'c': '#3d6b0c',
+                 'x': '#223d81', 'y': '#6c411a', 'u': '#5c0300'}
+    esc_oscuro = {'a': '#f0a04a', 'b': '#3dcdc3', 'R': '#ab8cf2', 'th': '#f17384', 'c': '#a3d65e',
+                  'x': '#a8ceff', 'y': '#fbd35f', 'u': '#c6916e'}
     auditar('escena vectores, claro', esc_claro, '#fffaf6', '#2d2340')
+    auditar('escena vectores, oscuro', esc_oscuro, '#2a2135', '#f1ebf7')

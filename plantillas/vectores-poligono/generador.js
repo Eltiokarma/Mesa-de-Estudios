@@ -76,7 +76,7 @@
   function construir(rng, semilla, tipo) {
     const v = P.v;
     const u = rng.elegir(['u', 'cm', 'm']);
-    const variables = { L: { nombre: 'lado', color: 'o' }, R: { nombre: 'resultante', color: 'd' } };
+    const variables = { L: { nombre: 'lado', color: 'o' }, R: { nombre: 'resultante', color: 'f' } };
     let enunciado, pregunta, correcta, errores, solucion;
     let n, L, quita;
     if (tipo === 'lados-menos-uno') { n = rng.entero(3, 8); L = rng.entero(2, 12); }
@@ -181,9 +181,9 @@
     if (tipo === 'desde-vertice') {
       for (let k = 1; k < n; k++) datos.flechas.push({ de: V[0], a: V[k], grosor: 'contorno' });
       datos.puntos.push({ x: 0, y: 0, rotulo: 'O', paso: 1 });
-      datos.guias.push({ de: V[0], a: O, color: 'd', paso: 1 });
+      datos.guias.push({ de: V[0], a: O, color: 'f', paso: 1 });
       for (let k = 0; k < n; k++) datos.flechas.push({ de: O, a: V[k], discontinua: true, grosor: 'contorno', paso: 2 });
-      datos.resultante = { de: V[0], a: sum(V[0], por(n, por(-1, V[0]))), color: 'd', rotulo: 'R', valor: conU(correcta) };
+      datos.resultante = { de: V[0], a: sum(V[0], por(n, por(-1, V[0]))), color: 'f', rotulo: 'R', valor: conU(correcta) };
       pasos = [
         { estado: { paso: 1 }, texto: ['Cada flecha de A se arma pasando por el centro O.'], ecuacion: [`${VEC('AX')} = ${VEC('AO')} + ${VEC('OX')}`] },
         { estado: { paso: 2 }, texto: [`Las ${n} flechas del centro a los vértices suman cero.`], ecuacion: [`${VEC('OA')} + ${VEC('OB')} + … = ${CERO}`] },
@@ -192,8 +192,8 @@
     } else if (tipo === 'lados-menos-uno') {
       for (let k = 0; k < n - 1; k++) datos.flechas.push({ de: V[k], a: V[k + 1], grosor: 'contorno' });
       datos.segmentos = [{ de: V[0], a: V[1], color: 'o', texto: `L = ${L} ${u}` }];
-      datos.guias.push({ de: V[n - 1], a: V[0], color: 'd', paso: 1 });
-      datos.resultante = { de: V[0], a: V[n - 1], color: 'd', rotulo: 'R', valor: conU(correcta) };
+      datos.guias.push({ de: V[n - 1], a: V[0], color: 'f', paso: 1 });
+      datos.resultante = { de: V[0], a: V[n - 1], color: 'f', rotulo: 'R', valor: conU(correcta) };
       pasos = [
         { estado: { paso: 1 }, texto: ['Con el lado que falta, la vuelta se cierra y suma cero.'], ecuacion: [`${letras.slice(0, n).map((x, i) => VEC(x + letras[(i + 1) % n])).join(' + ')} = ${CERO}`] },
         fin(['La resultante va de ', letras[0], ' a ', letras[n - 1], ': mide un lado.'], ['R = ', v('L', `${L} ${u}`)]),
@@ -203,7 +203,7 @@
       for (let k = 0; k < n; k++) if (k !== q) datos.flechas.push({ de: O, a: V[k], grosor: 'contorno' });
       datos.puntos.push({ x: 0, y: 0, rotulo: 'O' });
       datos.flechas.push({ de: O, a: V[q], discontinua: true, grosor: 'contorno', paso: 1 });
-      datos.resultante = { de: O, a: por(-1, V[q]), color: 'd', rotulo: 'R', valor: conU(correcta) };
+      datos.resultante = { de: O, a: por(-1, V[q]), color: 'f', rotulo: 'R', valor: conU(correcta) };
       pasos = [
         { estado: { paso: 1 }, texto: [`Con ${VEC('O' + lq)}, las ${n} flechas del centro se anularían.`], ecuacion: [`${VEC('OA')} + ${VEC('OB')} + … = ${CERO}`] },
         fin([`Sin ${VEC('O' + lq)}, la suma es ${VEC('O' + lq)} al revés: un radio.`], ['R = ', `${n === 3 ? 'L/√3' : n === 4 ? 'L/√2' : 'L'} = `, v('R', conU(correcta))]),

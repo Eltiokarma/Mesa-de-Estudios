@@ -109,7 +109,7 @@
     const u = ctx.u, v = P.v;
     const variables = {
       A: { nombre: `módulo de ${A_}`, color: 'o' }, B: { nombre: `módulo de ${B_}`, color: 'i' },
-      t: { nombre: `ángulo entre ${AyB}`, color: 'h' }, R: { nombre: 'resultante', color: 'd' },
+      t: { nombre: `ángulo entre ${AyB}`, color: 'h' }, R: { nombre: 'resultante', color: 'f' },
     };
     const conU = x => `${P.radical(x)} ${u}`;
     let enunciado, pregunta, correcta, errores, solucion, unidad = u, datos, angular = false;
@@ -176,7 +176,7 @@
       const a = rng.elegir([5, 10, 20, 6, 12]);
       angular = true; unidad = '°';
       correcta = op.t;
-      variables.R = { nombre: 'razón entre la suma y la diferencia', color: 'd' };
+      variables.R = { nombre: 'razón entre la suma y la diferencia', color: 'i' };
       const mayor = op.alReves ? `|${RESTA}|` : `|${SUMA}|`, menor = op.alReves ? `|${SUMA}|` : `|${RESTA}|`;
       enunciado = [`Dos vectores ${AyB} tienen el mismo módulo, `, v('A', `${a} ${u}`), `. Se sabe que ${mayor} es `, v('R', `${op.k}`), ` veces ${menor}.`];
       pregunta = [`¿Qué ángulo forman ${AyB}?`];
@@ -269,7 +269,7 @@
     const pg = resta ? 2 : 1;
     const guias = [{ de: [a, 0], a: R, color: 'i', paso: pg }, { de: W, a: R, color: 'o', paso: pg }];
     const texto = P.radical(correcta) + ' ' + u;
-    const datos = { unidad: u, flechas, angulos, guias, resultante: { de: [0, 0], a: R, color: 'd', rotulo: nombre, valor: texto, paso: 2 } };
+    const datos = { unidad: u, flechas, angulos, guias, resultante: { de: [0, 0], a: R, color: 'f', rotulo: nombre, valor: texto, paso: 2 } };
     // Se arrastra si todas las alternativas caben en una regla que no achica demasiado la figura.
     const vals = alternativas.map(x => x.valor), mayor = Math.max(...vals);
     const arrastra = mayor <= 1.25 * (a + b);

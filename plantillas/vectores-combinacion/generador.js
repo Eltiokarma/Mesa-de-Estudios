@@ -73,7 +73,7 @@
 
   function construir(rng, semilla, tipo) {
     const v = P.v;
-    const variables = { A: { nombre: `vector ${A_}`, color: 'o' }, B: { nombre: `vector ${B_}`, color: 'i' }, C: { nombre: `vector ${C_}`, color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { A: { nombre: `vector ${A_}`, color: 'o' }, B: { nombre: `vector ${B_}`, color: 'i' }, C: { nombre: `vector ${C_}`, color: 'd' }, X: { nombre: 'lo que se pide', color: 'f' } };
     let enunciado, pregunta, correcta, errores, solucion, datos;
 
     if (tipo === 'en-funcion') {

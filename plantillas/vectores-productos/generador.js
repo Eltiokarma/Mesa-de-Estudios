@@ -107,7 +107,7 @@
 
   function construir(rng, semilla, tipo) {
     const v = P.v;
-    const variables = { A: { nombre: `vector ${A_}`, color: 'o' }, B: { nombre: `vector ${B_}`, color: 'i' }, t: { nombre: `ángulo entre ${AyB}`, color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { A: { nombre: `vector ${A_}`, color: 'o' }, B: { nombre: `vector ${B_}`, color: 'i' }, t: { nombre: `ángulo entre ${AyB}`, color: 'h' }, X: { nombre: 'lo que se pide', color: 'f' } };
     let enunciado, pregunta, correcta, errores, solucion, texto = x => f(x), unidad = '', datos;
 
     if (tipo === 'escalar') {
@@ -159,7 +159,7 @@
       const resto = a1 * b1 + a3 * b3;
       if (resto === 0 || resto % b2 !== 0 || a1 === 0 || b1 === 0 || (dim === 3 && (a3 === 0 || b3 === 0))) return null;
       correcta = -resto / b2;
-      variables.X = { nombre: 'm', color: 'd' };
+      variables.X = { nombre: 'm', color: 'f' };
       const A = dim === 3 ? `${ijk([a1, 0, 0])} + m${J} ${a3 < 0 ? '−' : '+'} ${Math.abs(a3) === 1 ? '' : Math.abs(a3)}${K}` : `${ijk([a1, 0, 0])} + m${J}`;
       enunciado = ['Los vectores ', v('A', `${A_} = ${A}`), ' y ', v('B', `${B_} = ${ijk([b1, b2, b3])}`), ' son perpendiculares.'];
       pregunta = ['¿Cuánto vale m?'];
@@ -179,7 +179,7 @@
       const a = vecAzar(rng, 2), b = vecAzar(rng, 2);
       correcta = a[0] * b[1] - a[1] * b[0];
       if (correcta === 0) return null;
-      variables.X = { nombre: 'c', color: 'd' };
+      variables.X = { nombre: 'c', color: 'f' };
       enunciado = ['En el plano xy se tienen ', v('A', `${A_} = ${ijk(a)}`), ' y ', v('B', `${B_} = ${ijk(b)}`), `. Su producto vectorial es ${AxB} = `, v('X', 'c'), `${K}.`];
       pregunta = ['¿Cuánto vale c?'];
       errores = [

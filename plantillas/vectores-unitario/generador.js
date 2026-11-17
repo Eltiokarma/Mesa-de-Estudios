@@ -89,7 +89,7 @@
 
   function construir(rng, semilla, tipo) {
     const v = P.v;
-    const variables = { A: { nombre: 'vector dado', color: 'o' }, B: { nombre: 'otro vector', color: 'i' }, k: { nombre: 'módulo pedido', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { A: { nombre: 'vector dado', color: 'o' }, B: { nombre: 'otro vector', color: 'i' }, k: { nombre: 'módulo pedido', color: 'd' }, X: { nombre: 'lo que se pide', color: 'f' } };
     let enunciado, pregunta, correcta, errores, solucion, datos;
     const suma = c => c.reduce((s, x) => s + Math.abs(x), 0);
 
@@ -257,7 +257,7 @@
     // El unitario, desde el origen como î y ĵ. Es la respuesta en «unitario» y en la suma (color de lo que se pide).
     // Solo «û»: su valor va en la ecuación del paso (con el valor, el rótulo tapaba el origen).
     const uEsRespuesta = d.tipo === 'unitario' || suma;
-    flechas.push({ de: [0, 0], a: u, color: uEsRespuesta ? 'd' : null, rotulo: 'û', paso: p0 + 2 });
+    flechas.push({ de: [0, 0], a: u, color: uEsRespuesta ? 'f' : null, rotulo: 'û', paso: p0 + 2 });
     const modulo = { estado: { paso: p0 + 1 }, texto: ['El módulo sale con Pitágoras sobre las componentes.'],
       ecuacion: [`|${suma ? AB_ : 'A'}| = √(${cuadrados(c)}) = √${m * m} = `, suma ? `${m}` : v('A', `${m}`)] };
     // |û|² = (x/m)² + (y/m)²: «(3/5)²», «1²», «(−1)²»; después cada cuadrado ya hecho, «9/25 + 16/25».
