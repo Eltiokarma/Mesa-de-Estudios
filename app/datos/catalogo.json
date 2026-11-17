@@ -5422,10 +5422,11 @@
       "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-deductivo.js",
       "requiere": [
        "/nucleo/kit/piezas/rm-plano.js",
-       "/nucleo/kit/piezas/rm-tablero.js"
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-objeto.js"
       ],
       "ideas": 4,
-      "terminos": 16
+      "terminos": 18
      }
     },
     {
@@ -5528,7 +5529,7 @@
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
       "ideas": 3,
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -5630,7 +5631,7 @@
        "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
-      "terminos": 18
+      "terminos": 19
      }
     },
     {

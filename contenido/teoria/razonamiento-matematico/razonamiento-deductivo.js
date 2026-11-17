@@ -1,18 +1,38 @@
 /*
- * Teoría de «Razonamiento deductivo y parentesco» (razonamiento-matematico.razonamiento-deductivo).
- * Fuente: docs/teoria/matriz/razonamiento-matematico.json (unidad 1) y su historia (Aristóteles, SEP).
- * Precisión del curso: una disposición correcta no es la solución única; la conclusión necesaria vale en todas
- * las configuraciones compatibles.
- * Colores (regla 4): A turquesa (c-i), B naranja (c-o), C verde (c-d); en la tabla, lo descartado en rojo (c-h).
- * Compañero: Faro (zorro). Códigos de error nuevos (hipótesis): RMT-DED-*.
+ * Teoría de «Razonamiento deductivo y parentesco» (razonamiento-matematico.razonamiento-deductivo). Molde: docs/teoria.md
+ * y docs/molde-unidad.md. Etapa 3 del plan de calidad (docs/plan-calidad.md §7), fase 2 del método: se rehace idea por
+ * idea con lo aprobado por Gerson (docs/etapa3/propuesta-razonamiento-matematico.md; manda docs/etapa3/decisiones.md).
+ * Orden aprobado (17 nov): 1. doble-entrada «El cuadro que descarta» (rehecha, 17 nov) · 2. dos-atributos (nueva, por
+ * escribir) · 3. conclusion-necesaria · 4. si-entonces · 5. parentesco. Las ideas 3 a 5 siguen como en la v0.2.0
+ * (pendientes de rehacer: sus colores, símbolos y códigos RMT-DED-* todavía son los viejos); los ids no cambian.
+ * Público: 5.º de secundaria y preuniversitario. La unidad no declara calidad: 2 hasta que todas las ideas pasen el
+ * contrato (el validador exigiría misión, leyenda y datos también en las ideas viejas).
  *
- * Ficha de tarea (diseno-y-animacion):
- *   Promesa: distinguir lo que se concluye siempre de lo que pasa en un dibujo posible.
- *   Persona y condiciones: postulante de 3.º a 5.º, celular de gama baja, sin conexión en el aula.
- *   Resultado observable: dice qué conclusión vale en todos los casos y cuándo «no se puede saber».
- *   Orden de atención: 1.º la figura (círculos, tabla, árbol) · 2.º la lectura en vivo · acción: Ya probé / Comprobar.
- *   Estados: juego sin tocar · casos probados · predicción respondida · paso de Mira · caso nuevo resuelto o «No sé».
- *   Duda que resuelve: «si encontré un dibujo que cumple, ¿ya es la respuesta?».
+ * Paleta de deducción (decisión de Gerson, 17 nov; el equivalente de molde §5b en un curso sin magnitudes): un papel fijo
+ * por color en toda la unidad, en la teoría, los ejemplos, la escena y la práctica.
+ *   o naranja ... lo primero: el primer dato o grupo (A en los aros, p en el condicional, quien habla en el árbol)
+ *   i turquesa .. lo segundo: el segundo dato o grupo (C en los aros, q en el condicional)
+ *   tinta ....... lo que amarra: personas, cosas, filas, columnas, pistas, el grupo del medio, las líneas del árbol
+ *   f violeta ... lo seguro y lo pedido: la ✓, la conclusión necesaria, la respuesta (antes de comprobar, en tinta o «?»)
+ *   gris ........ lo descartado: la ✗ y el reparto tachado (tinta al 55 %, con su forma: no depende del color)
+ *   sin verde ni carmín (naranja–verde y rojo–verde no se distinguen con protanopía y deuteranopía; el carmín es de los
+ *   ángulos). La idea 1 usa tinta, violeta y gris; la pieza rm-objeto fija esos papeles (rm-objeto.PAPELES) y
+ *   razonamiento-deductivo.test.js falla si un papel cambia de color en cualquier figura o texto de la idea.
+ * Letras y símbolos: ✓ seguro, ✗ imposible; «reparto» es una manera de cumplir todos los datos. Las personas nunca se
+ * abrevian por su inicial (A, B y C quedan para los grupos de la idea de los aros). La letra de una alternativa que
+ * nombra un resuelto va en negrita y en violeta solo si es la respuesta; las descartadas se nombran por su texto.
+ * Errores: códigos RMP de docs/investigacion/codigos-rm-procesos.md, todos hipótesis (no hay datos de alumnos): RMP63
+ * ignorar una pista, RMP72 quedarse con un reparto que choca con una pista, RMP77 elegir lo posible y no lo necesario,
+ * RMP78 creer que no se deduce nada.
+ * Historia: Aristóteles (SEP). Compañero: Faro (zorro).
+ *
+ * Ficha de tarea (diseno-y-animacion), idea 1:
+ *   Promesa: saber cuándo una casilla del cuadro ya es segura, aunque no se sepa todo.
+ *   Persona y condiciones: postulante de 5.º o preuniversitario, celular de gama baja, sin conexión en el aula.
+ *   Resultado observable: dice qué es seguro con unas pistas y por qué (vale en todos los repartos que quedan).
+ *   Orden de atención: 1.º el campeonato y el cuadro · 2.º los repartos que se tachan · acción: − y + de las pistas.
+ *   Estados: sin pistas · repartos tachados · primera ✓ · reparto único · predicción · caso nuevo resuelto o «No sé».
+ *   Duda que resuelve: «¿tengo que saberlo todo para poner una ✓?».
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -328,152 +348,476 @@
     },
   };
 
-  // ---------- Idea 3: cuadro de doble entrada ----------
-  // Cambia: cuántas pistas se usan · Permanece: el cuadro 3 × 3 · Progresa: las ✗ que se acumulan ·
-  // Se reserva: la cuarta pista, que deja un solo reparto · Debe verse: ✓ solo donde todos los repartos coinciden.
-  const PERMS = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
-  const compatibles = pistas => PERMS.filter(p => pistas.every(([q, i]) => p[q] !== i));
-  function cuadro(personas, cosas, pistas, extra = {}) {
-    const vivos = compatibles(pistas);
-    return {
-      columnas: cosas, filas: personas,
-      celdas: personas.map((_, q) => cosas.map((_, i) => {
-        const n = vivos.filter(p => p[q] === i).length;
-        if (n === 0) return { marca: 'no', color: 'h' };
-        if (n === vivos.length) return { marca: 'si', color: 'd' };
-        return '';
-      })),
-      notas: [{ t: extra.nota || `Repartos posibles: ${vivos.length}` }],
-    };
+  // ---------- Idea 1: el cuadro que descarta (etapa 3, 17 nov; docs/etapa3/propuesta-razonamiento-matematico.md) ----------
+  // Objeto de la primera pantalla: tres amigos inscritos en el campeonato del aniversario del colegio (rm-objeto, escena
+  // «campeonato», dibujo de prueba). Cambia: cuántas pistas se usan. · Permanece: los 6 repartos, alineados con las filas
+  // del cuadro. · Progresa: los repartos tachados. · Se reserva: una ✓ que sale por columna (la predicción; el juego la da
+  // por fila). · Debe verse: la ✓ aparece antes de saberlo todo, cuando todos los repartos que quedan coinciden.
+  // Todo lo que se ve sale de contar repartos (perms, cumple, marcasDe): ningún ✓ ni ✗ se escribe a mano (regla 1).
+  const OB = 'rm-objeto';
+  const perms = k => {
+    const out = [], ir = (pre, resto) => { if (!resto.length) { out.push(pre); return; } resto.forEach((x, i) => ir(pre.concat(x), resto.slice(0, i).concat(resto.slice(i + 1)))); };
+    ir([], Array.from({ length: k }, (_, i) => i));
+    return out;
+  };
+  const PERM3 = perms(3);
+  // Una pista prohíbe una casilla ({ q, c }: q no hace c) o la obliga ({ q, c, si: true }: q hace c).
+  const cumple = (p, ps) => ps.every(x => (x.si ? p[x.q] === x.c : p[x.q] !== x.c));
+  const quedanR = (k, ps) => perms(k).filter(p => cumple(p, ps));
+  // ✓ si la casilla vale en todos los repartos que quedan; ✗ si en ninguno (la regla de la idea, contada).
+  function marcasDe(k, ps) {
+    const v = quedanR(k, ps), m = {};
+    if (!v.length) return m;
+    for (let q = 0; q < k; q++) for (let c = 0; c < k; c++) {
+      const n = v.filter(p => p[q] === c).length;
+      if (n === 0) m[`${q},${c}`] = 'no'; else if (n === v.length) m[`${q},${c}`] = 'si';
+    }
+    return m;
   }
-  const P3 = ['Ana', 'Beto', 'Ciro'], D3 = ['Fútbol', 'Vóley', 'Ajedrez'];
-  const PISTAS = [[0, 1], [1, 0], [2, 2], [0, 2]];   // Ana no vóley · Beto no fútbol · Ciro no ajedrez · Ana no ajedrez
-  const TXT = ['Ana no juega vóley', 'Beto no juega fútbol', 'Ciro no juega ajedrez', 'Ana no juega ajedrez'];
+  const segurosDe = (k, ps) => Object.entries(marcasDe(k, ps)).filter(([, x]) => x === 'si').map(([key]) => key.split(',').map(Number));
+  const F = t => ({ v: 'c-f', t });   // lo seguro y lo pedido, en violeta (paleta de deducción)
+  const lista = (xs, y = 'y') => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} ${y} ${xs[xs.length - 1]}` : xs.join(''));
+  const P3 = ['Ana', 'Beto', 'Ciro'], D3 = ['fútbol', 'vóley', 'ajedrez'], I3 = ['futbol', 'voley', 'ajedrez'];
+  const R3 = 'Cada uno juega un solo deporte, y ningún deporte se repite.';
+  const pista = (q, c, si) => ({ q, c, si, t: `${P3[q]}${si ? '' : ' no'} juega ${D3[c]}.` });
+  // La figura del campeonato: la escena, el cuadro, los 6 repartos y las pistas. o.sinMarcas: el planteamiento (Predice).
+  function campeonato(ps, o = {}) {
+    const marcas = o.sinMarcas ? {} : marcasDe(3, ps);
+    const ult = ps[ps.length - 1];
+    if (o.nueva && ult && !ult.si && marcas[`${ult.q},${ult.c}`]) marcas[`${ult.q},${ult.c}`] = { m: 'no', nueva: true };
+    return { escena: 'campeonato', filas: P3, columnas: D3, iconos: I3, marcas,
+      repartos: PERM3.map(a => (o.sinMarcas || cumple(a, ps) ? { a } : { a, fuera: true })),
+      pistas: ps.map((p, k) => ({ t: p.t, nueva: !!o.nueva && k === ps.length - 1 })), lineas: 3,
+      manos: o.sinMarcas ? [] : segurosDe(3, ps).map(([f, c]) => ({ f, c })) };
+  }
+  // El juego: tres pistas, en este orden (propuesta aprobada, §3). La misión es encontrar con cuántas sale la primera ✓.
+  const PJ = [pista(0, 1), pista(0, 2), pista(2, 1)];
+  const PRIMERA = Array.from({ length: PJ.length + 1 }, (_, k) => k).find(k => segurosDe(3, PJ.slice(0, k)).length > 0);
+  const quedanJ = n => quedanR(3, PJ.slice(0, n)).length;
+  const segJ = segurosDe(3, PJ.slice(0, PRIMERA))[0];
+  // La predicción: otras dos pistas; la ✓ sale por la columna del ajedrez (el juego la mostró por fila).
+  const PP = [pista(0, 2), pista(1, 2)];
+  const QP = quedanR(3, PP), SP = segurosDe(3, PP)[0];
+  const quienJuega = (ps, c) => P3[segurosDe(3, ps).find(([, x]) => x === c)[0]];
+  // Un caso posible pero no seguro de la predicción (RMP77): vale en un reparto de los que quedan y no en el otro.
+  const POSIBLE_P = (() => { for (let q = 0; q < 3; q++) for (let c = 0; c < 3; c++) { const n = QP.filter(p => p[q] === c).length; if (n > 0 && n < QP.length) return [q, c]; } return null; })();
+  const otroDe = (q, c) => QP.find(p => p[q] !== c)[q];
+  // Mira: las marcas de la predicción, paso a paso (corte 1: las ✗ de las pistas; 2: repartos tachados; 3: la ✓;
+  // 4: lo que esa ✓ tacha). Todo sale de marcasDe y cumple.
+  const MIRA_P = (() => {
+    const d = campeonato(PP), directas = new Set(PP.map(p => `${p.q},${p.c}`));
+    d.marcas = Object.fromEntries(Object.entries(marcasDe(3, PP)).map(([k, x]) => [k, { m: x, desde: x === 'si' ? 3 : directas.has(k) ? 1 : 4 }]));
+    d.repartos = PERM3.map(a => (cumple(a, PP) ? { a } : { a, fuera: 2 }));
+    d.manos = segurosDe(3, PP).map(([f, c]) => ({ f, c, desde: 3 }));
+    return d;
+  })();
+
+  // ---------- Contextos de «Así se resuelve» y «Ahora tú» (situaciones del colegio; los nombres no se abrevian) ----------
+  // Cabeceras de 8 letras o menos: en un cuadro de 4 columnas caben a 14 px (prueba de la pieza).
+  const CTX = [
+    { cosas: ['fútbol', 'vóley', 'ajedrez', 'básquet'], hace: 'juega', ni: 'ni', que: p => `¿Qué juega ${p}?`, todo: '¿Quién juega qué?', intro: 'se inscribieron en el campeonato del colegio, cada uno en un deporte',
+      regla: 'Cada uno juega un solo deporte, y ningún deporte se repite.' },
+    { cosas: ['danza', 'teatro', 'dibujo', 'banda'], hace: 'está en', ni: 'ni en', que: p => `¿En qué taller está ${p}?`, todo: '¿Quién está en qué taller?', intro: 'están cada uno en un taller distinto del colegio',
+      regla: 'Cada uno está en un solo taller, y ningún taller se repite.' },
+    { cosas: ['tamales', 'jugos', 'choclo', 'queso'], hace: 'vende', ni: 'ni', que: p => `¿Qué vende ${p}?`, todo: '¿Quién vende qué?', intro: 'venden cada uno algo distinto en la kermés del aniversario',
+      regla: 'Cada uno vende una sola cosa, y ninguna se repite.' },
+    { cosas: ['adornos', 'música', 'juegos', 'limpieza'], hace: 'está en', ni: 'ni en', que: p => `¿En qué comisión está ${p}?`, todo: '¿Quién está en qué comisión?', intro: 'están cada uno en una comisión distinta del aniversario',
+      regla: 'Cada uno está en una sola comisión, y ninguna se repite.' },
+  ];
+  const GENTE = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Gaby', 'Hugo'];
+  const REL = ['conversa con', 'almuerza con', 'estudia con', 'viaja con'];
+  const D_DOS = 'Si una pista nombra a dos personas, son personas distintas.';
+  // Las líneas de pista posibles. Cada una dice qué casillas prohíbe u obliga (items) y cómo se lee (t).
+  function lineaPista(r, ctx, ps, sol, tipo) {
+    const k = ps.length, fal = [];
+    for (let q = 0; q < k; q++) for (let c = 0; c < k; c++) if (sol[q] !== c) fal.push([q, c]);
+    const [q, c] = r.elegir(fal), co = ctx.cosas;
+    if (tipo === 'si') { const q2 = r.ent(0, k - 1); return { items: [{ q: q2, c: sol[q2], si: true }], t: `${ps[q2]} ${ctx.hace} ${co[sol[q2]]}.` }; }
+    if (tipo === 'rel') return { items: [{ q, c }], t: `${ps[q]} ${r.elegir(REL)} quien ${ctx.hace} ${co[c]}.`, rel: true };
+    if (tipo === 'dos') {
+      // Dos ✗ en la misma fila («X no hace a ni b») o en la misma columna («Quien hace c … con X y con Y»).
+      const misma = fal.filter(([a, b]) => a === q && b !== c), col = fal.filter(([a, b]) => b === c && a !== q);
+      if (r() < 0.5 && misma.length) { const [, c2] = r.elegir(misma); return { items: [{ q, c }, { q, c: c2 }], t: `${ps[q]} no ${ctx.hace} ${co[c]} ${ctx.ni} ${co[c2]}.` }; }
+      if (col.length) { const [q2] = r.elegir(col); return { items: [{ q, c }, { q: q2, c }], t: `Quien ${ctx.hace} ${co[c]} ${r.elegir(REL)} ${ps[q]} y con ${ps[q2]}.`, rel: true }; }
+    }
+    return { items: [{ q, c }], t: `${ps[q]} no ${ctx.hace} ${co[c]}.` };
+  }
+  const itemsDe = lineas => lineas.flatMap(l => l.items);
+  // Resolver como se enseña: una fila o una columna con una sola casilla libre lleva la ✓, y la ✓ tacha su fila y su
+  // columna. Devuelve las ✓ en el orden en que salen (con por qué: 'fila' o 'columna') y si llegó al reparto completo.
+  function propagar(k, items) {
+    const no = new Set(), si = new Map(), orden = [];
+    const poner = (q, c, por) => { if (si.has(q)) return; si.set(q, c); orden.push({ q, c, por }); for (let x = 0; x < k; x++) { if (x !== c) no.add(`${q},${x}`); if (x !== q) no.add(`${x},${c}`); } };
+    for (const it of items) if (!it.si) no.add(`${it.q},${it.c}`);
+    for (const it of items) if (it.si) poner(it.q, it.c, 'pista');
+    for (let vuelta = 0; vuelta < 3 * k; vuelta++) {
+      let cambio = false;
+      for (let q = 0; q < k; q++) { if (si.has(q)) continue; const libres = [...Array(k).keys()].filter(c => !no.has(`${q},${c}`)); if (libres.length === 1) { poner(q, libres[0], 'fila'); cambio = true; } }
+      for (let c = 0; c < k; c++) { if ([...si.values()].includes(c)) continue; const libres = [...Array(k).keys()].filter(q => !no.has(`${q},${c}`)); if (libres.length === 1) { poner(libres[0], c, 'columna'); cambio = true; } }
+      if (!cambio) break;
+    }
+    return { orden, completo: si.size === k };
+  }
+  // Arma un caso: personas, contexto, pistas (líneas), los repartos que quedan. o.quedan: 1 (reparto único que se
+  // resuelve con filas y columnas) o 2; o.tipos: qué líneas se usan; o.max: tope de líneas (los datos llevan 6 o menos).
+  function armar(r, o) {
+    const k = o.k, ctx = o.ctx || r.elegir(CTX), ps = r.barajar(GENTE).slice(0, k);
+    for (let intento = 0; intento < 400; intento++) {
+      const sol = r.elegir(perms(k));
+      let lineas = [];
+      for (let j = 0; j < 12 && quedanR(k, itemsDe(lineas)).length > o.quedan; j++) lineas.push(lineaPista(r, ctx, ps, sol, r.elegir(o.tipos)));
+      if (quedanR(k, itemsDe(lineas)).length !== o.quedan) continue;
+      // Sin líneas que sobren: se quita cada una que no cambia lo que queda.
+      for (let i = lineas.length - 1; i >= 0; i--) { const sin = lineas.slice(0, i).concat(lineas.slice(i + 1)); if (quedanR(k, itemsDe(sin)).length === o.quedan) lineas = sin; }
+      if (lineas.length > o.max || lineas.length < 2) continue;
+      if (o.quedan === 1 && !propagar(k, itemsDe(lineas)).completo) continue;
+      if (o.conRel && !lineas.some(l => l.rel)) continue;
+      if (o.conSi && !lineas.some(l => l.items.some(x => x.si))) continue;
+      const q = quedanR(k, itemsDe(lineas));
+      if (o.quedan === 2 && !segurosDe(k, itemsDe(lineas)).length) continue;
+      return { k, ctx, ps, sol: q[0], lineas, items: itemsDe(lineas), quedan: q };
+    }
+    return null;
+  }
+  // Caso de respaldo (si el azar no arma uno): el de la predicción, con su contexto.
+  const RESPALDO = { k: 3, ctx: CTX[0], ps: P3, lineas: [{ items: [{ q: 0, c: 2 }], t: 'Ana no juega ajedrez.' }, { items: [{ q: 1, c: 2 }], t: 'Beto no juega ajedrez.' }, { items: [{ q: 0, c: 1 }], t: 'Ana no juega vóley.' }] };
+  function caso(r, o) {
+    const c = armar(r, o) || Object.assign({}, RESPALDO, { items: itemsDe(RESPALDO.lineas) });
+    c.quedan = quedanR(c.k, c.items); c.sol = c.quedan[0];
+    return c;
+  }
+  const datosDe = c => [c.ctx.regla, ...(c.lineas.some(l => l.rel) ? [D_DOS] : []), ...c.lineas.map((l, i) => `Pista ${i + 1}: ${l.t}`)];
+  const introDe = c => `${lista(c.ps)} ${c.ctx.intro}: ${lista(c.ctx.cosas.slice(0, c.k), 'o')}.`;
+  const figCuadro = (c, marcas) => ({ datos: { filas: c.ps, columnas: c.ctx.cosas.slice(0, c.k), marcas: marcas || {} }, estado: {} });
+  const hace = (c, q, x) => `${c.ps[q]} ${c.ctx.hace} ${c.ctx.cosas[x]}`;
+  // Por qué no vale una casilla (q, x) que ningún reparto permite: la primera pista sin la cual sí cabría.
+  function sinLaPista(c, q, x) {
+    for (let i = 0; i < c.lineas.length; i++) {
+      const otras = c.lineas.filter((_, j) => j !== i);
+      if (quedanR(c.k, itemsDe(otras)).some(p => p[q] === x)) return i;
+    }
+    return -1;
+  }
+  function porQueNo(c, q, x) {
+    const i = sinLaPista(c, q, x);
+    return i >= 0 ? { error: 'RMP72', siFuera: `Valdría sin la pista ${i + 1}. Con todas, en ningún reparto ${hace(c, q, x)}.` }
+      : { error: 'RMP63', siFuera: `Tendrías que saltarte dos pistas: con todas, en ningún reparto ${hace(c, q, x)}.` };
+  }
+
   const ideaCuadro = {
     id: 'doble-entrada',
     titulo: 'El cuadro que descarta',
+    pregunta: '¿Cuándo es segura una casilla del cuadro?',
     temas: ['Cuadros de doble entrada'],
-    pieza: 'rm-tablero',
-    // Lee (fase 2): reparto, cuadro de doble entrada y las dos marcas; no resuelve la cuarta pista (Predice).
+    pieza: OB,
+    aprendizaje: 'Una ✓ es segura cuando vale en todos los repartos que quedan; cada ✓ tacha el resto de su fila y de su columna.',
+    actividad: 'Agregar pistas una a una y mirar qué repartos quedan en pie.',
+    // Lee: el campeonato, qué es un reparto, el cuadro y sus dos marcas. No dice cuándo sale una ✓ (eso se descubre).
     lee: {
       tarjetas: [
-        { titulo: 'Un reparto', texto: 'Ana, Beto y Ciro juegan cada uno un deporte distinto: fútbol, vóley o ajedrez. Un reparto dice quién juega qué. Sin ninguna pista, hay 6 repartos posibles.' },
-        { titulo: 'Filas y columnas', texto: 'En un cuadro de doble entrada, las personas van en las filas y los deportes en las columnas. Cada casilla responde una pregunta: ¿esta persona juega esto?' },
-        { titulo: 'Dos marcas', texto: '✗ quiere decir que no puede ser. ✓ quiere decir que es seguro. Una pista como «Ana no juega vóley» pone una ✗ directa en su casilla.' },
-        { titulo: 'Qué mirar al jugar', texto: 'En el juego, agrega las pistas una por una. Fíjate cuándo aparece la primera ✓ y cuántos repartos quedan después de cada pista.' },
+        { titulo: 'El campeonato del aniversario', texto: 'Ana, Beto y Ciro se inscribieron en el campeonato del aniversario del colegio. Cada uno juega un deporte distinto: fútbol, vóley o ajedrez. Sus fichas de inscripción siguen en blanco: todavía no se sabe quién juega qué.',
+          pieza: OB, dibujo: { datos: { escena: 'campeonato', cuadro: false, filas: P3, columnas: D3, iconos: I3 }, estado: {} } },
+        { titulo: `${PERM3.length} repartos`, texto: `Un reparto dice quién juega qué: por ejemplo, Ana fútbol, Beto vóley y Ciro ajedrez. Sin pistas hay ${PERM3.length}: Ana puede tener 3 deportes; Beto, los 2 que quedan, y Ciro, el último. En el panel, cada columna es un reparto.`,
+          ecuacion: [`3 × 2 × 1 = ${PERM3.length} repartos`],
+          pieza: OB, dibujo: { datos: Object.assign(campeonato([]), { pistas: undefined }), estado: {} } },
+        { titulo: 'El cuadro y sus marcas', texto: 'En el cuadro de doble entrada, las personas van en las filas y los deportes en las columnas. Cada casilla pregunta: ¿esta persona juega esto? ✗ quiere decir imposible; ✓, seguro. Una pista como «Ana no juega vóley» descarta los repartos donde Ana juega vóley.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a agregar las pistas una a una. Mira cuántos repartos quedan en pie después de cada una y en qué momento aparece la primera ✓.' },
       ],
     },
-    // Sin arrastre: lo que cambia es cuántas pistas (frases) se usan; las ✗ y ✓ son su consecuencia, no se agarran.
     juega: {
-      consigna: 'Cada uno juega un deporte distinto. Agrega las pistas una a una: ✗ es imposible y ✓ es seguro.',
-      voz: 'Una ✓ sale cuando todos los repartos que quedan coinciden.',
-      controles: [{ id: 'n', etiqueta: 'Pistas', min: 0, max: 3, paso: 1, inicio: 0, decimales: 0 }],
-      dibujo: val => ({ datos: cuadro(P3, D3, PISTAS.slice(0, val.n)), estado: {} }),
-      lectura: val => [val.n ? `Pista ${val.n}: ${TXT[val.n - 1]}` : 'Sin pistas todavía'],
-      minimo: 4,
+      pieza: OB,
+      consigna: 'Ana, Beto y Ciro se inscribieron en el campeonato del colegio. Cada uno juega un deporte distinto: fútbol, vóley o ajedrez.',
+      mision: {
+        texto: 'Agrega pistas una a una: ¿con cuántas pistas aparece la primera ✓?',
+        logrado: v => v.n === PRIMERA,
+        bien: [`Con ${PRIMERA} pistas, antes de saberlo todo: ${P3[segJ[0]]} juega ${D3[segJ[1]]} en los ${quedanJ(PRIMERA)} repartos.`],
+      },
+      voz: 'Mira qué repartos quedan en pie con cada pista.',
+      leyenda: [
+        { s: F('✓'), t: 'seguro: coincide en todos los repartos que quedan' },
+        { s: '✗', t: 'imposible: ningún reparto que queda lo tiene' },
+        { s: 'Repartos', t: 'cada columna dice quién juega qué' },
+        { s: 'gris tachado', t: 'reparto que una pista descarta' },
+      ],
+      controles: [{ id: 'n', etiqueta: 'Pistas', min: 0, max: PJ.length, paso: 1, inicio: 0, decimales: 0 }],
+      dibujo: v => ({ datos: campeonato(PJ.slice(0, v.n), { nueva: true }), estado: {} }),
+      // La lectura dice la relación: cuántos repartos quedan y si alguna casilla coincide en todos.
+      lectura: v => {
+        const ps = PJ.slice(0, v.n), q = quedanR(3, ps), seg = segurosDe(3, ps);
+        if (q.length === 1) return [`Queda 1 reparto: ${P3.map((p, f) => `${p} ${D3[q[0][f]]}`).join(', ')}`];
+        if (seg.length) return [`Quedan ${q.length} repartos; en ${q.length === 2 ? 'ambos' : 'todos'}, ${P3[seg[0][0]]} juega ${D3[seg[0][1]]}: `, F('✓ segura')];
+        return [`${v.n ? PJ[v.n - 1].t.replace(/\.$/, '') : 'Sin pistas'}: ${q.length} repartos; ninguna casilla coincide en todos`];
+      },
+      minimo: PJ.length + 1,
     },
     predice: {
-      pregunta: 'Con las tres pistas quedan dos repartos. Se agrega: «Ana no juega ajedrez». ¿Qué juega Beto?',
+      pregunta: `Otras pistas para los mismos tres: ${PP[0].t.replace(/\.$/, '')} y ${PP[1].t.replace(/\.$/, '')}. ¿Qué es seguro?`,
+      datos: [R3],
+      voz: 'Revisa qué repartos quedan en pie con estas dos pistas.',
       opciones: [
-        { id: 'voley', texto: 'Vóley', error: 'RMT-DED-9', siFuera: 'Vóley era posible con tres pistas, en el reparto que la cuarta tacha.' },
-        { id: 'nose', texto: 'No se puede saber', error: 'RMT-DED-2', siFuera: 'Antes no se sabía. La cuarta pista deja un solo reparto.' },
-        { id: 'c', texto: 'Ajedrez', correcta: true },
-        { id: 'futbol', texto: 'Fútbol', error: 'RMT-DED-10', siFuera: 'La pista 2 ya tachó fútbol para Beto.' },
+        { id: 'c', texto: `${P3[SP[0]]} juega ${D3[SP[1]]}`, correcta: true },
+        { id: 'nada', texto: `Nada todavía: ninguna pista habla de ${P3[SP[0]]}`, error: 'RMP78',
+          siFuera: `Es cierto que ninguna lo nombra, pero la columna del ${D3[SP[1]]} le deja una sola casilla.` },
+        { id: 'posible', texto: `${P3[POSIBLE_P[0]]} juega ${D3[POSIBLE_P[1]]}`, error: 'RMP77',
+          siFuera: `Pasa en uno de los ${QP.length} repartos que quedan; en el otro, ${P3[POSIBLE_P[0]]} juega ${D3[otroDe(...POSIBLE_P)]}.` },
+        { id: 'choca', texto: `${P3[SP[0]]} juega ${D3[0]}`, error: 'RMP72',
+          siFuera: `Sin pistas sería posible; con estas dos, nadie podría jugar ${D3[SP[1]]}.` },
       ],
-      dibujo: { datos: cuadro(P3, D3, PISTAS.slice(0, 3)), estado: {} },
-      revelar: { datos: cuadro(P3, D3, PISTAS), estado: {} },
-      coincide: 'Coincide: Ana queda con fútbol, y en la columna de fútbol ya no cabe Beto.',
+      // El planteamiento: las pistas y los 6 repartos, sin marcas ni tachados (no delata la columna).
+      dibujo: { datos: campeonato(PP, { sinMarcas: true }), estado: {} },
+      revelar: { datos: campeonato(PP), estado: {} },
+      coincide: `Coincide: la columna del ${D3[SP[1]]} dejó una sola casilla libre, la de ${P3[SP[0]]}.`,
+      noCoincide: `Revisemos: en los ${QP.length} repartos que quedan, el ${D3[SP[1]]} es de ${P3[SP[0]]}.`,
     },
     mira: {
-      datos: {
-        columnas: D3, filas: P3,
-        celdas: [
-          [{ marca: 'si', color: 'd', desde: 3 }, { marca: 'no', color: 'h', desde: 1 }, { marca: 'no', color: 'h', desde: 2 }],
-          [{ marca: 'no', color: 'h', desde: 1 }, { marca: 'no', color: 'h', desde: 4 }, { marca: 'si', color: 'd', desde: 4 }],
-          [{ marca: 'no', color: 'h', desde: 3 }, { marca: 'si', color: 'd', desde: 4 }, { marca: 'no', color: 'h', desde: 1 }],
-        ],
-        marcos: [{ f: 0, c: 0, ancho: 3, color: 'i', desde: 2, hasta: 3 }, { f: 0, c: 0, alto: 3, color: 'i', desde: 4 }],
-        notas: [{ t: 'Un solo reparto: fútbol, ajedrez, vóley', desde: 4 }],
-      },
+      pieza: OB,
+      datos: MIRA_P,
+      voz: 'Primero tachan las pistas; después se mira qué coincide.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Las pistas 1, 2 y 3 ponen tres ✗.' },
-        { estado: { corte: 2 }, texto: 'La pista 4 tacha ajedrez para Ana.' },
-        { estado: { corte: 3 }, texto: 'A Ana solo le queda fútbol: ✓, y el resto de esa columna, ✗.' },
-        { estado: { corte: 4 }, texto: 'A Beto solo le queda ajedrez; a Ciro, vóley.' },
+        { estado: { corte: 1 }, texto: `Cada pista pone una ✗ en la columna del ${D3[SP[1]]}.` },
+        { estado: { corte: 2 }, texto: `Y descarta los repartos donde pasa lo que prohíbe: quedan ${QP.length} de ${PERM3.length}.`,
+          ecuacion: [`${PERM3.length} − ${PERM3.length - QP.length} = ${QP.length} repartos`] },
+        { estado: { corte: 3 }, texto: ['En los ', String(QP.length), ` que quedan, el ${D3[SP[1]]} es de ${P3[SP[0]]}: `, F('✓ segura'), '.'] },
+        { estado: { corte: 4 }, texto: `Esa ✓ tacha el resto de la fila de ${P3[SP[0]]}: ni ${D3.filter((_, c) => c !== SP[1]).join(' ni ')}.` },
+        { estado: { corte: 4 }, texto: `${lista(P3.filter((_, q) => q !== SP[0]))} se reparten ${lista(D3.filter((_, c) => c !== SP[1]))} de ${QP.length} maneras: ahí no hay ✓.` },
       ],
     },
     regla: {
-      texto: 'En un cuadro de doble entrada, cada fila y cada columna tiene exactamente una ✓. Al poner una ✓, se tacha el resto de su fila y de su columna.',
-      ecuacion: ['✓ seguro  ⇔  vale en todos los repartos que quedan'],
-      condicion: 'cada persona tiene una sola cosa y cada cosa es de una sola persona; si no, el cuadro no es de reparto.',
+      texto: 'Una casilla es segura (✓) si vale en todos los repartos que quedan; imposible (✗), si no vale en ninguno. Cada ✓ tacha el resto de su fila y columna.',
+      ecuacion: [{ llave: [F('✓')], nota: 'seguro' }, ': en todos los repartos', '   ·   ', { llave: ['✗'], nota: 'imposible' }, ': en ninguno'],
+      condicion: 'cada fila y cada columna lleva una sola ✓. Si una pista nombra a dos personas, son distintas: ahí va una ✗.',
+      voz: 'Una ✓ no espera a que se sepa todo.',
     },
-    // Así se resuelve (fase 2): las mismas pistas de «Ahora tú» (compatibles() y cuadro()), con la semilla + 900.
+    ejemplos: null,   // se completa abajo (EJEMPLOS_CUADRO)
+    // Así se resuelve: el reparto completo, con la cadena de ✓ contada por propagar(). «Ahora tú» no pide el reparto
+    // completo: pide qué hace una persona, qué es seguro o cuál afirmación es verdadera.
     resuelve: {
-      pieza: 'rm-tablero',
+      pieza: OB,
       generar(s) {
-        const r = azar(s + 900);
-        const personas = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 3);
-        const [cosas, verbo] = r.elegir([[['Fútbol', 'Vóley', 'Ajedrez'], 'juega'], [['Flauta', 'Charango', 'Bombo'], 'toca'], [['Rojo', 'Azul', 'Verde'], 'viste'], [['Puno', 'Cusco', 'Lima'], 'vive en']]);
-        let pistas = null;
-        for (let t = 0; t < 30 && !pistas; t++) {
-          const sol = r.elegir(PERMS), falsos = [];
-          for (let q = 0; q < 3; q++) for (let i = 0; i < 3; i++) if (sol[q] !== i) falsos.push([q, i]);
-          const orden = r.barajar(falsos), ps = [];
-          for (const f of orden) { ps.push(f); if (compatibles(ps).length === 1) break; }
-          if (ps.length <= 4) pistas = ps;
-        }
-        const sol = compatibles(pistas)[0], quien = r.ent(0, 2);
-        // Los lugares conservan la mayúscula; lo demás va en minúscula dentro de la frase.
-        const nom = c => (verbo === 'vive en' ? c : c.toLowerCase());
-        const ancho = { ancho: 76 };   // columnas anchas: «Charango» no se monta con su vecina
-        const soloX = { columnas: cosas, filas: personas, ancho: 76,
-          celdas: personas.map((_, q) => cosas.map((_, i) => (pistas.some(([a, b]) => a === q && b === i) ? { marca: 'no', color: 'h' } : ''))),
-          notas: [{ t: `${pistas.length} ✗ de las pistas` }] };
+        const r = azar(s + 900), k = s % 3 === 2 ? 4 : 3;
+        const c = caso(r, { k, quedan: 1, tipos: k === 4 ? ['no', 'no', 'dos', 'rel', 'si'] : ['no', 'no', 'rel'], max: 4 });
+        const pr = propagar(c.k, c.items), co = c.ctx.cosas;
+        const directas = Object.fromEntries(c.items.map(x => [`${x.q},${x.c}`, x.si ? 'si' : 'no']));
+        const nX = c.items.filter(x => !x.si).length, nSi = c.items.filter(x => x.si).length;
+        const cuenta = ({ q, c: x, por }) => (por === 'pista' ? `La pista da la ✓ de ${c.ps[q]} en ${co[x]}.` : por === 'fila' ? `En la fila de ${c.ps[q]} solo queda ${co[x]}: ✓.` : `En la columna de ${co[x]} solo queda ${c.ps[q]}: ✓.`);
+        const primeras = pr.orden.slice(0, 2).map(cuenta).join(' ');
+        const repartoTxt = c.ps.map((p, q) => `${p} ${co[c.sol[q]]}`).join(', ');
         return {
-          enunciado: `Cada uno ${verbo} algo distinto. ${pistas.map(([q, i]) => `${personas[q]} no ${verbo} ${nom(cosas[i])}`).join('; ')}. ¿Qué ${verbo} ${personas[quien]}?`,
-          dibujo: { datos: Object.assign(cuadro(personas, cosas, [], { nota: 'Sin marcas todavía' }), ancho), estado: {} },
+          enunciado: `${introDe(c)} ${c.ctx.todo}`,
+          datos: datosDe(c),
+          dibujo: figCuadro(c),
           pasos: [
-            { tipo: 'pide', texto: `Piden qué ${verbo} ${personas[quien]}.` },
-            { tipo: 'datos', texto: `Tres personas y tres opciones, una para cada una. Hay ${pistas.length} pistas, todas dicen quién no.` },
-            { tipo: 'regla', texto: 'Cada fila y cada columna lleva una sola ✓. Pongo una ✗ por pista; donde una fila o columna queda con una casilla libre, va la ✓.' },
-            { tipo: 'aplica', texto: `Marco las ${pistas.length} ✗ que dicen las pistas.`, dibujo: { datos: soloX, estado: {} } },
-            { tipo: 'aplica', texto: 'Cada ✓ que aparece tacha el resto de su fila y de su columna. Queda un solo reparto.',
-              ecuacion: [personas.map((pp, q) => `${pp}: ${nom(cosas[sol[q]])}`).join(' · ')], dibujo: { datos: Object.assign(cuadro(personas, cosas, pistas), ancho), estado: {} } },
-            { tipo: 'sentido', texto: 'Compruebo con cada pista: nadie quedó con lo que una pista le prohíbe, y nadie repite.' },
+            { tipo: 'pide', texto: `Piden el reparto completo: ${c.ctx.todo.replace(/[¿?]/g, '').toLowerCase()}.` },
+            { tipo: 'datos', texto: `Son ${c.k} personas y ${c.k} opciones, una para cada una. Las pistas ponen ${nX} ✗${nSi ? ` y ${nSi} ✓` : ''} directas.` },
+            { tipo: 'regla', texto: 'Si una fila o una columna queda con una sola casilla libre, ahí va la ✓: vale en todos los repartos. Cada ✓ tacha su fila y su columna.' },
+            { tipo: 'aplica', texto: `Marco lo que dice cada pista${c.lineas.some(l => l.rel) ? ': si nombra a dos personas, son distintas' : ''}.`, dibujo: figCuadro(c, directas) },
+            { tipo: 'aplica', texto: `${primeras}${pr.orden.length > 2 ? ' Las demás salen igual.' : ''}`, ecuacion: [repartoTxt], dibujo: figCuadro(c, marcasDe(c.k, c.items)) },
+            { tipo: 'sentido', texto: 'Compruebo cada pista con el reparto: ninguna se rompe y nadie repite.' },
           ],
-          respuesta: `${personas[quien]} ${verbo} ${nom(cosas[sol[quien]])}`,
+          respuesta: [F(repartoTxt)],
         };
       },
     },
+    // Ahora tú, por tipos (semilla % 4): 0 qué es seguro con dos repartos en pie; 1 qué hace una persona (3 × 3, cadena);
+    // 2 qué hace una persona (4 × 4, con una ✓ en la pista o una pista de dos personas); 3 nivel examen (4 × 4, «¿cuál es
+    // necesariamente verdadera?», como los cuadros de San Marcos). Las ✓, las ✗ y cada opción salen de contar repartos.
     ahoraTu: {
-      voz: 'Tacha en tu cuadro y busca la fila con una sola casilla libre.',
+      pieza: OB,
+      voz: 'Marca las ✗ en tu cuadro y busca la fila o columna con una sola casilla.',
       generar(s) {
-        const r = azar(s);
-        const personas = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 3);
-        const [cosas, verbo] = r.elegir([[['Fútbol', 'Vóley', 'Ajedrez'], 'juega'], [['Flauta', 'Charango', 'Bombo'], 'toca'], [['Rojo', 'Azul', 'Verde'], 'viste'], [['Puno', 'Cusco', 'Lima'], 'vive en']]);
-        let pistas = null;
-        for (let t = 0; t < 30 && !pistas; t++) {
-          const sol = r.elegir(PERMS), falsos = [];
-          for (let q = 0; q < 3; q++) for (let i = 0; i < 3; i++) if (sol[q] !== i) falsos.push([q, i]);
-          const orden = r.barajar(falsos), ps = [];
-          for (const f of orden) { ps.push(f); if (compatibles(ps).length === 1) break; }
-          if (ps.length <= 4) pistas = ps;
+        const r = azar(s), tipo = s % 4;
+        if (tipo === 0) {
+          const c = caso(r, { k: r() < 0.5 ? 3 : 4, quedan: 2, tipos: ['no', 'no', 'dos', 'rel'], max: 4 });
+          const seg = segurosDe(c.k, c.items), [q, x] = r.elegir(seg), co = c.ctx.cosas;
+          const ops = [{ id: 'c', texto: hace(c, q, x), correcta: true },
+            { id: 'nada', texto: 'Nada todavía: faltan pistas', error: 'RMP78', siFuera: `Faltan para saberlo todo, pero en los ${c.quedan.length} repartos que quedan, ${hace(c, q, x)}.` }];
+          const posibles = [], imposibles = [];
+          for (let a = 0; a < c.k; a++) for (let b = 0; b < c.k; b++) { const n = c.quedan.filter(p => p[a] === b).length; if (n > 0 && n < c.quedan.length) posibles.push([a, b]); else if (n === 0 && a !== q) imposibles.push([a, b]); }
+          if (posibles.length) { const [a, b] = r.elegir(posibles); ops.push({ id: 'posible', texto: hace(c, a, b), error: 'RMP77', siFuera: `Pasa en uno de los ${c.quedan.length} repartos que quedan; en el otro, ${hace(c, a, c.quedan.find(p => p[a] !== b)[a])}.` }); }
+          if (imposibles.length) { const [a, b] = r.elegir(imposibles); ops.push(Object.assign({ id: 'choca', texto: hace(c, a, b) }, porQueNo(c, a, b))); }
+          return { pregunta: `${introDe(c)} ¿Qué es seguro?`, datos: datosDe(c), dibujo: figCuadro(c), opciones: ops,
+            solucion: { texto: `Quedan ${c.quedan.length} repartos y en los dos ${hace(c, q, x)}: es la única casilla que coincide.`, dibujo: figCuadro(c, marcasDe(c.k, c.items)) } };
         }
-        const sol = compatibles(pistas)[0], quien = r.ent(0, 2);
-        const minus = c => c.toLowerCase();
-        const correcta = cosas[sol[quien]];
-        return {
-          pregunta: `Cada uno ${verbo} algo distinto. ${pistas.map(([q, i]) => `${personas[q]} no ${verbo} ${minus(cosas[i])}`).join('; ')}. ¿Qué ${verbo} ${personas[quien]}?`,
-          dibujo: { datos: cuadro(personas, cosas, [], { nota: 'Marca tus ✗ en la cabeza' }), estado: {} },
-          opciones: opcionesTexto(correcta, [
-            ...cosas.filter(c => c !== correcta).map((c, k) => ({ id: 'otra' + k, texto: c, error: 'RMT-DED-9', siFuera: `${c} cabe en un reparto que otra pista tacha.` })),
-            { id: 'nose', texto: 'Faltan datos', error: 'RMT-DED-2', siFuera: 'Las pistas dejan un solo reparto.' },
-          ]),
-          solucion: { texto: `Con las ✗, a ${personas[quien]} le queda una sola casilla.`, dibujo: { datos: cuadro(personas, cosas, pistas), estado: {} } },
-        };
+        if (tipo === 1 || tipo === 2) {
+          const k = tipo === 1 ? 3 : 4;
+          const c = caso(r, { k, quedan: 1, tipos: k === 3 ? ['no', 'no', 'rel'] : ['no', 'dos', 'rel', 'si'], max: 4, conRel: k === 4 });
+          // Se pregunta por la persona cuya ✓ sale al final de la cadena (no la da ninguna pista sola).
+          const pr = propagar(c.k, c.items), ult = pr.orden[pr.orden.length - 1], q = ult.q, co = c.ctx.cosas.slice(0, c.k);
+          const ops = co.map((t, x) => (x === c.sol[q] ? { id: 'c', texto: t, correcta: true } : Object.assign({ id: `x${x}`, texto: t }, porQueNo(c, q, x))));
+          ops.push({ id: 'nose', texto: 'Faltan datos', error: 'RMP78', siFuera: 'Parece que faltan, pero cada ✓ tacha su fila y su columna, y al final queda una casilla.' });
+          return { pregunta: `${introDe(c)} ${c.ctx.que(c.ps[q])}`, datos: datosDe(c), dibujo: figCuadro(c), opciones: ops,
+            solucion: { texto: `Con las ✗ y las ✓ que tachan, a ${c.ps[q]} le queda una sola casilla: ${co[c.sol[q]]}.`, dibujo: figCuadro(c, marcasDe(c.k, c.items)) } };
+        }
+        // Nivel examen: «¿Cuál es necesariamente verdadera?» con uno o dos repartos en pie.
+        const quedan = 1 + (Math.floor(s / 4) % 2);
+        const c = caso(r, { k: 4, quedan, tipos: ['no', 'dos', 'rel', 'rel'], max: 4, conRel: true });
+        const seg = segurosDe(c.k, c.items), [q, x] = r.elegir(seg);
+        const ops = [{ id: 'c', texto: hace(c, q, x), correcta: true }], usados = new Set([q]);
+        const posibles = [], imposibles = [];
+        for (let a = 0; a < c.k; a++) for (let b = 0; b < c.k; b++) { const n = c.quedan.filter(p => p[a] === b).length; if (n > 0 && n < c.quedan.length) posibles.push([a, b]); else if (n === 0) imposibles.push([a, b]); }
+        if (posibles.length) { const [a, b] = r.elegir(posibles); usados.add(a); ops.push({ id: 'posible', texto: hace(c, a, b), error: 'RMP77', siFuera: `Pasa en uno de los ${c.quedan.length} repartos que quedan, no en los dos.` }); }
+        for (const [a, b] of r.barajar(imposibles)) {
+          if (ops.length >= 4 || usados.has(a)) continue;
+          usados.add(a); ops.push(Object.assign({ id: `x${a}${b}`, texto: hace(c, a, b) }, porQueNo(c, a, b)));
+        }
+        return { pregunta: `${introDe(c)} ¿Cuál es necesariamente verdadera?`, datos: datosDe(c), dibujo: figCuadro(c), opciones: ops,
+          solucion: { texto: `${quedan === 1 ? 'Queda un solo reparto' : 'Quedan 2 repartos'}, y en ${quedan === 1 ? 'él' : 'los dos'} ${hace(c, q, x)}.`, dibujo: figCuadro(c, marcasDe(c.k, c.items)) } };
       },
     },
   };
+
+  // ---------- Ejemplos resueltos de «El cuadro que descarta» (pestaña «Ejemplos»; molde §3) ----------
+  // Cada uno se resolvió aparte con un script que no usa el código de la unidad (scratchpad e3-rm/ejemplos.py): prueba
+  // todos los repartos y comprueba que lo que se pregunta tiene una sola respuesta (1 y 2: Beto vóley e Iván teatro con 2
+  // repartos en pie; 3: 4 casillas tachadas; 4: quedan 4 de 6, se tachan el 2 y el 5; 5: 2 repartos, Gino cambia y Sara
+  // adornos; 6, 7, 9, 10, 11, 12 y 14: un solo reparto; 8: 2 repartos, seguros Dina y Ana; 13: 2 repartos y solo la E vale
+  // en los dos; 15: 2 repartos y la música es de Pía en los dos). También rehace el juego (6 → 4 → 2 → 1, primera ✓ con 2
+  // pistas) y la predicción (Ciro ajedrez). La figura es el planteamiento: el cuadro sin marcas, nunca la respuesta.
+  // Las pistas van en los datos, una por línea (contrato, punto 13); la respuesta, en violeta, con la letra en negrita.
+  const T3 = ['danza', 'teatro', 'dibujo'], K3 = ['picarones', 'emoliente', 'choclo'], C3 = ['adornos', 'música', 'juegos'];
+  const R_TALLER = 'Cada uno está en un solo taller, y ningún taller se repite.', R_KERMES = 'Cada uno vende una sola cosa, y ninguna se repite.';
+  const R_COMISION = 'Cada uno está en una sola comisión, y ninguna se repite.';
+  const figC = (filas, columnas) => ({ pieza: OB, datos: { filas, columnas }, estado: {} });
+  const figCamp = { pieza: OB, datos: { escena: 'campeonato', filas: P3, columnas: D3, iconos: I3 }, estado: {} };
+  const PIS = (...xs) => xs.map((t, i) => `Pista ${i + 1}: ${t}`);
+  // Ejemplo 4: los repartos del panel en los que Ciro juega vóley (se cuentan con PERM3, el mismo orden del dibujo).
+  const CON_CIRO_VOLEY = PERM3.map((p, i) => [p, i + 1]).filter(([p]) => p[2] === 1).map(([, i]) => i);
+  const EJEMPLOS_CUADRO = [
+    { nivel: 1, titulo: 'La ficha de Beto', figura: figCamp,
+      enunciado: 'Ana, Beto y Ciro se inscribieron en el campeonato: cada uno juega fútbol, vóley o ajedrez, sin repetir. ¿Qué juega Beto?',
+      datos: [R3, ...PIS('Beto no juega fútbol.', 'Beto no juega ajedrez.')],
+      solucion: [
+        { texto: 'Las dos pistas caen en la fila de Beto: ✗ en fútbol y ✗ en ajedrez.' },
+        { texto: ['A Beto le queda una sola casilla, vóley. En todos los repartos que quedan, Beto juega vóley: ', F('✓'), '.'] },
+      ],
+      respuesta: [F('Beto juega vóley')] },
+    { nivel: 1, titulo: 'La columna del teatro', figura: figC(['Rosa', 'Iván', 'Nora'], T3),
+      enunciado: 'Rosa, Iván y Nora están cada uno en un taller distinto del colegio: danza, teatro o dibujo. ¿Quién está en teatro?',
+      datos: [R_TALLER, ...PIS('Rosa no está en teatro.', 'Nora no está en teatro.')],
+      solucion: [
+        { texto: 'Las dos pistas caen en la columna de teatro: ✗ para Rosa y ✗ para Nora.' },
+        { texto: ['En esa columna queda una sola casilla libre, la de Iván. Alguien tiene que estar en teatro: es Iván, ', F('✓'), '.'] },
+      ],
+      respuesta: [F('Iván está en teatro')] },
+    { nivel: 1, titulo: 'Una pista que dice sí', figura: figC(['Lucho', 'Maru', 'Teo'], K3),
+      enunciado: 'En la kermés del aniversario, Lucho, Maru y Teo venden cada uno algo distinto: picarones, emoliente o choclo. Si solo se sabe la pista de abajo, ¿cuántas casillas se tachan?',
+      datos: [R_KERMES, 'Pista: Maru vende emoliente.'],
+      solucion: [
+        { texto: ['La pista pone una ', F('✓'), ' en Maru y emoliente: es seguro.'] },
+        { texto: 'Maru no vende nada más: ✗ en picarones y en choclo. Nadie más vende emoliente: ✗ para Lucho y para Teo.' },
+      ],
+      respuesta: [F('4 casillas'), ': 2 en la fila de Maru y 2 de emoliente'] },
+    { nivel: 1, titulo: '¿Cuántos repartos quedan?', figura: { pieza: OB, datos: Object.assign(campeonato([]), { pistas: undefined }), estado: {} },
+      enunciado: 'Ana, Beto y Ciro juegan cada uno fútbol, vóley o ajedrez, sin repetir. Se sabe que Ciro no juega vóley. ¿Cuántos repartos quedan?',
+      datos: [R3, `Sin pistas hay ${PERM3.length} repartos: los ${PERM3.length} del panel.`],
+      solucion: [
+        { texto: `En ${CON_CIRO_VOLEY.length} de los ${PERM3.length} repartos del panel, Ciro juega vóley: el ${lista(CON_CIRO_VOLEY.map(String))}.` },
+        { texto: 'La pista descarta esos repartos; los demás la cumplen.', ecuacion: [`${PERM3.length} − ${CON_CIRO_VOLEY.length} = `, F(String(PERM3.length - CON_CIRO_VOLEY.length))] },
+      ],
+      respuesta: [F(`Quedan ${PERM3.length - CON_CIRO_VOLEY.length} repartos`)] },
+    { nivel: 1, titulo: '¿Seguro o solo posible?', figura: figC(['Sara', 'Gino', 'Pía'], C3),
+      enunciado: 'Sara, Gino y Pía están cada uno en una comisión distinta del aniversario: adornos, música o juegos. Gino dice: «Yo estoy en música, seguro». ¿Es seguro?',
+      datos: [R_COMISION, ...PIS('Sara no está en música.', 'Sara no está en juegos.')],
+      solucion: [
+        { texto: ['A Sara solo le queda adornos: ', F('✓'), '.'] },
+        { texto: 'Gino y Pía se reparten música y juegos. Quedan 2 repartos: en uno Gino está en música; en el otro, en juegos.' },
+        { texto: 'Lo de Gino es posible, pero no seguro: no vale en los dos repartos.' },
+      ],
+      respuesta: [F('No es seguro'), ': solo es seguro que Sara está en adornos'] },
+    { nivel: 2, titulo: 'Una ✓ que tacha', figura: figCamp,
+      enunciado: 'Ana, Beto y Ciro juegan cada uno fútbol, vóley o ajedrez en el campeonato, sin repetir. ¿Quién juega qué?',
+      datos: [R3, ...PIS('Ana no juega fútbol.', 'Beto no juega fútbol.', 'Beto no juega vóley.')],
+      solucion: [
+        { texto: ['En la columna de fútbol solo queda Ciro: ', F('✓'), '. Esa ✓ tacha el resto de la fila de Ciro.'] },
+        { texto: ['En la fila de Beto ya hay ✗ en fútbol y en vóley: le queda ajedrez, ', F('✓'), '.'] },
+        { texto: 'A Ana le queda lo único libre de su fila: vóley.' },
+      ],
+      respuesta: [F('Ana vóley, Beto ajedrez, Ciro fútbol')] },
+    { nivel: 2, titulo: 'De la columna a la fila', figura: figC(['Rosa', 'Iván', 'Nora'], T3),
+      enunciado: 'Rosa, Iván y Nora están cada uno en un taller distinto: danza, teatro o dibujo. ¿En qué taller está Nora?',
+      datos: [R_TALLER, ...PIS('Iván no está en dibujo.', 'Nora no está en dibujo.', 'Iván no está en teatro.')],
+      solucion: [
+        { texto: ['En la columna de dibujo solo queda Rosa: ', F('✓'), '. Esa ✓ tacha el resto de la fila de Rosa.'] },
+        { texto: ['A Iván le quedan danza y teatro, y la pista 3 tacha teatro: Iván está en danza, ', F('✓'), '.'] },
+        { texto: 'Esa ✓ tacha danza para Nora. A Nora le queda una sola casilla: teatro.' },
+      ],
+      respuesta: [F('Nora está en teatro')] },
+    { nivel: 2, titulo: 'Cuatro amigos: ¿qué es seguro?', figura: figC(['Ana', 'Beto', 'Ciro', 'Dina'], CTX[0].cosas),
+      enunciado: 'Ana, Beto, Ciro y Dina juegan cada uno fútbol, vóley, ajedrez o básquet, sin repetir. ¿Qué es seguro y qué no?',
+      datos: [R3, ...PIS('Dina juega básquet.', 'Ana no juega vóley.', 'Ana no juega ajedrez.')],
+      solucion: [
+        { texto: ['La pista 1 es una ', F('✓'), ': tacha el resto de la fila de Dina y de la columna de básquet.'] },
+        { texto: ['A Ana le quedan fútbol, vóley y ajedrez; las pistas 2 y 3 tachan dos: Ana juega fútbol, ', F('✓'), '.'] },
+        { texto: 'Beto y Ciro se reparten vóley y ajedrez de 2 maneras: en esas casillas no hay ✓.' },
+      ],
+      respuesta: [F('Seguro: Dina básquet y Ana fútbol'), '; Beto y Ciro, no'] },
+    { nivel: 2, titulo: 'Quien conversa no es', figura: figC(['Lucho', 'Maru', 'Teo'], K3),
+      enunciado: 'En la kermés, Lucho, Maru y Teo venden cada uno algo distinto: picarones, emoliente o choclo. ¿Qué vende Lucho?',
+      datos: [R_KERMES, D_DOS, ...PIS('Lucho conversa con quien vende emoliente.', 'Teo no vende emoliente.', 'Quien vende picarones es primo de Teo.')],
+      solucion: [
+        { texto: 'La pista 1 nombra a dos personas: Lucho no vende emoliente. La pista 3 también: Teo no vende picarones.' },
+        { texto: ['En la columna de emoliente solo queda Maru: ', F('✓'), '. A Teo, con dos ✗, le queda choclo: ', F('✓'), '.'] },
+        { texto: 'A Lucho le queda la única casilla libre de su fila: picarones.' },
+      ],
+      respuesta: [F('Lucho vende picarones')] },
+    { nivel: 2, titulo: 'Una ✓ que viene en la pista', figura: figC(['Rosa', 'Iván', 'Nora', 'Leo'], CTX[1].cosas),
+      enunciado: 'Rosa, Iván, Nora y Leo están cada uno en un taller distinto: danza, teatro, dibujo o banda. ¿Quién está en teatro?',
+      datos: [R_TALLER, ...PIS('Ni Rosa ni Iván están en teatro.', 'Leo está en banda.', 'Rosa no está en danza.')],
+      solucion: [
+        { texto: 'La pista 1 pone dos ✗ en la columna de teatro: Rosa e Iván.' },
+        { texto: ['La pista 2 es una ', F('✓'), ' para Leo y tacha el resto de su fila: Leo no está en teatro.'] },
+        { texto: ['En la columna de teatro solo queda Nora: ', F('✓'), '. La pista 3 sirve para el resto del cuadro.'] },
+      ],
+      respuesta: [F('Nora está en teatro')] },
+    { nivel: 3, titulo: 'Las cuatro de la posta', figura: figC(['Carla', 'Delia', 'Elsa', 'Flor'], ['médica', 'obstetra', 'dentista', 'técnica']),
+      enunciado: 'Carla, Delia, Elsa y Flor trabajan en la posta de salud: una es médica; otra, obstetra; otra, dentista, y otra, técnica. ¿Qué es Carla? A) médica B) dentista C) obstetra D) técnica E) no se puede saber',
+      datos: ['Cada una tiene una sola profesión, y ninguna se repite.', D_DOS, ...PIS('La médica almuerza con Carla y con Delia.', 'Delia vive con la dentista y es hermana de la obstetra.', 'La dentista se turna con Carla y con Elsa.')],
+      solucion: [
+        { texto: 'Cada pista nombra a dos personas distintas. Pista 1: ✗ médica para Carla y Delia. Pista 2: ✗ dentista y obstetra para Delia. Pista 3: ✗ dentista para Carla y Elsa.' },
+        { texto: ['A Delia solo le queda técnica: ', F('✓'), '. En la columna de dentista solo queda Flor: ', F('✓'), '.'] },
+        { texto: ['A Carla, con médica y dentista tachadas y técnica tomada, le queda obstetra: ', F('✓'), '.'] },
+      ],
+      respuesta: [F('C'), ': Carla es obstetra'] },
+    { nivel: 3, titulo: 'Papás e hijas', figura: figC(['Raúl', 'Saúl', 'Tito', 'Uriel'], ['Gaby', 'Hilda', 'Inés', 'Julia']),
+      enunciado: 'Raúl, Saúl, Tito y Uriel son los papás de Gaby, Hilda, Inés y Julia, una hija cada uno. ¿Quién es el papá de Julia? A) Saúl B) Tito C) Uriel D) Raúl E) no se puede saber',
+      datos: ['Cada papá tiene una sola hija, y ninguna se repite.', ...PIS('Gaby no es hija de Raúl ni de Saúl.', 'Inés no es hija de Raúl ni de Saúl.', 'El papá de Hilda es Saúl o Tito.', 'Tito no es el papá de Gaby.')],
+      solucion: [
+        { texto: ['Gaby: las pistas 1 y 4 tachan a Raúl, Saúl y Tito. Su papá es Uriel: ', F('✓'), '.'] },
+        { texto: ['Inés: la pista 2 tacha a Raúl y a Saúl, y Uriel ya está tomado. Su papá es Tito: ', F('✓'), '.'] },
+        { texto: 'Hilda: Saúl o Tito, y Tito ya está tomado: Saúl. A Julia le queda Raúl.' },
+        { texto: 'Ninguna pista nombra a Julia, pero las otras tres casillas de su columna quedaron tachadas: sí se sabe.' },
+      ],
+      respuesta: [F('D'), ': Raúl es el papá de Julia'] },
+    { nivel: 3, titulo: '¿Cuál es necesariamente verdadera?', figura: figC(['Ana', 'Beto', 'Ciro', 'Dina'], CTX[0].cosas),
+      enunciado: 'Ana, Beto, Ciro y Dina juegan cada uno fútbol, vóley, ajedrez o básquet, sin repetir. ¿Cuál es necesariamente verdadera? A) Beto juega vóley B) Dina juega básquet C) Ana juega vóley D) Dina juega fútbol E) Ciro juega ajedrez',
+      datos: ['Cada uno juega un solo deporte; si una pista nombra a dos personas, son distintas.', 'Fútbol, vóley y básquet se juegan con pelota; el ajedrez, no.',
+        ...PIS('Ana y quien juega vóley son vecinos.', 'Beto y Dina juegan con pelota.', 'Ciro no juega fútbol ni básquet.', 'Quien juega fútbol entrena con Beto y con Dina.')],
+      solucion: [
+        { texto: 'Las pistas tachan: vóley para Ana; ajedrez para Beto y Dina; fútbol y básquet para Ciro; fútbol para Beto y Dina.' },
+        { texto: ['En la columna de fútbol solo queda Ana: ', F('✓'), '. En la de ajedrez, solo Ciro: ', F('✓'), '.'] },
+        { texto: 'Beto y Dina se reparten vóley y básquet de 2 maneras: «Beto juega vóley» es posible, pero no seguro.' },
+      ],
+      respuesta: [F('E'), ': Ciro juega ajedrez'] },
+    { nivel: 3, titulo: 'Los puestos de la kermés', figura: figC(['Lucho', 'Maru', 'Teo', 'Vilma'], CTX[2].cosas),
+      enunciado: 'En la kermés, Lucho, Maru, Teo y Vilma venden cada uno algo distinto: tamales, jugos, choclo o queso. ¿Qué vende Maru? A) jugos B) choclo C) tamales D) queso E) no se puede saber',
+      datos: [R_KERMES, D_DOS, ...PIS('Quien vende jugos le presta su olla a Lucho y a Teo.', 'Maru no vende jugos ni queso.', 'Teo y Lucho le compran choclo a la misma persona.', 'Lucho no vende tamales.')],
+      solucion: [
+        { texto: 'Las pistas 1 y 3 nombran a dos personas: ✗ jugos y ✗ choclo para Lucho y para Teo.' },
+        { texto: ['En la columna de jugos solo queda Vilma, porque la pista 2 tacha a Maru: ', F('✓'), '.'] },
+        { texto: ['A Lucho le quedan tamales y queso; la pista 4 tacha tamales: queso, ', F('✓'), '. Teo: tamales. Maru: choclo.'] },
+      ],
+      respuesta: [F('B'), ': Maru vende choclo'] },
+    { nivel: 3, titulo: 'Las comisiones del aniversario', figura: figC(['Sara', 'Gino', 'Pía', 'Omar'], CTX[3].cosas),
+      enunciado: 'Sara, Gino, Pía y Omar están cada uno en una comisión distinta: adornos, música, juegos o limpieza. ¿Quién está en música? A) Pía B) Sara C) Gino D) Omar E) no se puede saber',
+      datos: [R_COMISION, D_DOS, ...PIS('Sara está en juegos o en limpieza.', 'Gino también está en juegos o en limpieza.', 'Quien está en música le presta parlantes a Omar.')],
+      solucion: [
+        { texto: 'Las pistas 1 y 2 tachan adornos y música para Sara y Gino. Entre los dos ocupan juegos y limpieza: esas columnas quedan tachadas para Pía y Omar.' },
+        { texto: 'La pista 3 tacha música para Omar.' },
+        { texto: ['En la columna de música solo queda Pía: ', F('✓'), '. De Sara y Gino no se sabe cuál es cuál, pero no hace falta.'] },
+      ],
+      respuesta: [F('A'), ': Pía está en música'] },
+  ];
+  ideaCuadro.ejemplos = EJEMPLOS_CUADRO;
 
   // ---------- Idea 4: parentesco ----------
   // Cambia: el camino que se sigue en el árbol · Permanece: el árbol de tres generaciones · Progresa: las flechas que se
@@ -694,36 +1038,78 @@
         donde: val => enPx(vennLibre(val), val.cx, 3 + val.cr), mover: (pt, val) => ({ cr: aU(vennLibre(val), pt).y - 3 }) },
     ],
   };
-  // Mesa 2: las cuatro pistas del reparto, cada una prendida o apagada: el orden no importa, importa cuáles.
+  // Mesa de la idea 1: las cuatro pistas del reparto, cada una prendida o apagada: el orden no importa, importa cuáles.
+  // Conserva su id y los de sus controles (p0 a p3: la colección guarda { mesa, valores }).
   const SINO = [{ valor: 1, texto: 'Sí' }, { valor: 0, texto: 'No' }];
-  const activas = val => PISTAS.filter((_, k) => val['p' + k]);
-  // Casillas ✓ (iguales en todos los repartos que quedan) y el grupo más chico de pistas que deja un solo reparto.
-  const seguras = pistas => { const v = compatibles(pistas); let n = 0; for (let q = 0; q < 3; q++) for (let i = 0; i < 3; i++) if (v.length && v.every(p => p[q] === i)) n++; return n; };
-  const MIN_PISTAS = Math.min(...Array.from({ length: 1 << PISTAS.length }, (_, m) => PISTAS.filter((_, k) => (m >> k) & 1))
-    .filter(ps => compatibles(ps).length === 1).map(ps => ps.length));
+  const PL = [pista(0, 1), pista(1, 0), pista(2, 2), pista(0, 2)];
+  const activas = val => PL.filter((_, k) => val['p' + k]);
+  const nRep = val => quedanR(3, activas(val)).length;
+  // El grupo más chico de pistas que deja un solo reparto (contado, no escrito a mano).
+  const MIN_PISTAS = Math.min(...Array.from({ length: 1 << PL.length }, (_, m) => PL.filter((_, k) => (m >> k) & 1))
+    .filter(ps => quedanR(3, ps).length === 1).map(ps => ps.length));
   const mesaCuadro = {
-    id: 'pistas-a-eleccion', titulo: 'Pistas a elección', pieza: 'rm-tablero',
+    id: 'pistas-a-eleccion', titulo: 'Pistas a elección', pieza: OB,
     consigna: 'Prende y apaga cada pista. Busca el grupo más chico de pistas que deja un solo reparto.',
-    controles: TXT.map((t, k) => ({ id: 'p' + k, etiqueta: t, opciones: SINO, inicio: k < 3 ? 1 : 0 })),
-    dibujo: val => ({ datos: cuadro(P3, D3, activas(val)), estado: {} }),
-    lectura: val => { const n = compatibles(activas(val)).length, k = activas(val).length; return [`${k} ${k === 1 ? 'pista' : 'pistas'}: ${n} ${n === 1 ? 'reparto posible' : 'repartos posibles'}`]; },
-    // Retos: cuentan con compatibles(), lo mismo que pone las ✗ y las ✓ del cuadro.
+    controles: PL.map((p, k) => ({ id: 'p' + k, etiqueta: p.t.replace(/\.$/, ''), opciones: SINO, inicio: k < 3 ? 1 : 0 })),
+    dibujo: val => ({ datos: Object.assign(campeonato(activas(val)), { lineas: PL.length }), estado: {} }),
+    lectura: val => { const k = activas(val).length, n = nRep(val); return [`${k} ${k === 1 ? 'pista' : 'pistas'}: ${n} ${n === 1 ? 'reparto queda' : 'repartos quedan'}`]; },
+    // Retos: cuentan con quedanR() y segurosDe(), lo mismo que pone las ✗, las ✓ y los repartos tachados.
     invitaciones: [
       { texto: 'Prende y apaga pistas hasta que quede un solo reparto posible.',
-        logrado: val => compatibles(activas(val)).length === 1,
+        logrado: val => nRep(val) === 1,
         bien: 'Un solo reparto: cada fila y cada columna quedó con su ✓.' },
       { texto: 'Deja un solo reparto con el menor número de pistas. ¿Cuál sobraba?',
-        logrado: val => compatibles(activas(val)).length === 1 && activas(val).length === MIN_PISTAS,
+        logrado: val => nRep(val) === 1 && activas(val).length === MIN_PISTAS,
         bien: 'Una pista no aportaba nada: lo que tachaba ya lo tachaban las otras.' },
       { texto: 'Consigue una ✓ segura aunque todavía quede más de un reparto.',
-        logrado: val => compatibles(activas(val)).length > 1 && seguras(activas(val)) > 0,
+        logrado: val => nRep(val) > 1 && segurosDe(3, activas(val)).length > 0,
         bien: 'Esa casilla coincide en todos los repartos que quedan: es seguro sin saberlo todo.' },
       { texto: 'Apaga todas las pistas y cuenta cuántos repartos son posibles sin datos.',
         logrado: val => activas(val).length === 0,
-        bien: `Sin pistas quedan los ${PERMS.length} repartos. Cada pista va tachando algunos.` },
+        bien: `Sin pistas quedan los ${PERM3.length} repartos. Cada pista va descartando algunos.` },
       { texto: 'Guarda dos grupos de pistas distintos que dejen un solo reparto.',
-        logrado: (val, guardados) => new Set(guardados.filter(g => compatibles(activas(g)).length === 1).map(g => activas(g).join('|'))).size >= 2,
+        logrado: (val, guardados) => new Set(guardados.filter(g => nRep(g) === 1).map(g => activas(g).map(p => p.t).join('|'))).size >= 2,
         bien: 'Dos caminos distintos llegan al mismo reparto. ¿Cuál usa menos pistas?' },
+    ],
+  };
+  // Mesa nueva de la idea 1: el cuadro se marca a mano, tocando cada casilla (vacía → ✗ → ✓). Las pistas están fijas y
+  // el motor dice si cada marca cuadra con ellas (data-toque en rm-objeto; Gerson, 17 nov: marcar tocando el cuadro).
+  const PM = [pista(1, 0), pista(2, 0), pista(2, 2)];
+  const SOL_M = quedanR(3, PM)[0];
+  const MARCAS = [{ valor: 'vacia', texto: 'Vacía' }, { valor: 'no', texto: '✗' }, { valor: 'si', texto: '✓' }];
+  const celdas = [];
+  for (let q = 0; q < 3; q++) for (let c = 0; c < 3; c++) celdas.push({ q, c, id: `m${q}${c}` });
+  // Una marca choca si pone ✓ donde el único reparto no lo tiene, o ✗ donde sí lo tiene.
+  const choca = (val, x) => (val[x.id] === 'si' && SOL_M[x.q] !== x.c) || (val[x.id] === 'no' && SOL_M[x.q] === x.c);
+  const malas = val => celdas.filter(x => choca(val, x));
+  const puestas = (val, m) => celdas.filter(x => val[x.id] === m);
+  const mesaMarca = {
+    id: 'marca-tu-cuadro', titulo: 'Marca tú el cuadro', pieza: OB,
+    consigna: 'Toca una casilla para marcarla: una vez ✗, otra vez ✓, otra vez vacía. Las pistas no cambian.',
+    controles: celdas.map(x => ({ id: x.id, etiqueta: `${P3[x.q]} y ${D3[x.c]}`, opciones: MARCAS })),
+    dibujo: val => ({ datos: { escena: 'campeonato', filas: P3, columnas: D3, iconos: I3,
+      marcas: Object.fromEntries(celdas.filter(x => val[x.id] !== 'vacia').map(x => [`${x.q},${x.c}`, val[x.id]])),
+      toques: Object.fromEntries(celdas.map(x => [`${x.q},${x.c}`, x.id])),
+      manos: celdas.filter(x => val[x.id] === 'si' && !choca(val, x)).map(x => ({ f: x.q, c: x.c })),
+      pistas: PM.map(p => ({ t: p.t })), lineas: PM.length }, estado: {} }),
+    lectura: val => {
+      const m = malas(val);
+      if (m.length) return [`${P3[m[0].q]} y ${D3[m[0].c]}: esa marca choca con las pistas`];
+      const n = celdas.filter(x => val[x.id] !== 'vacia').length;
+      if (n === celdas.length) return ['Cuadro completo: una ', F('✓'), ' por fila y por columna'];
+      return [n ? `${n} ${n === 1 ? 'marca' : 'marcas'}, todas de acuerdo con las pistas` : 'Sin marcas: toca una casilla'];
+    },
+    // Retos: todos leen choca(), lo mismo que decide la lectura y qué cosa pasa a la mano de su dueño.
+    invitaciones: [
+      { texto: 'Marca las ✗ que ponen las pistas, sin poner ninguna ✓.',
+        logrado: val => PM.every(p => val[`m${p.q}${p.c}`] === 'no') && !puestas(val, 'si').length && !malas(val).length,
+        bien: 'Esas tres ✗ salen directo de las pistas. ¿Alguna fila o columna quedó con una sola casilla?' },
+      { texto: 'Pon una ✓ que sea segura, sin ninguna marca que choque.',
+        logrado: val => puestas(val, 'si').length > 0 && !malas(val).length,
+        bien: 'Segura: vale en el único reparto que dejan las pistas. Mira la mano de su dueño.' },
+      { texto: 'Completa el cuadro: una ✓ en cada fila y ✗ en todo lo demás.',
+        logrado: val => puestas(val, 'si').length === 3 && puestas(val, 'no').length === 6 && !malas(val).length,
+        bien: 'Cuadro completo: cada ✓ tachó su fila y su columna.' },
     ],
   };
   // Mesa 3: el parentesco entre dos personas cualesquiera del árbol, con el camino que sube y baja.
@@ -787,8 +1173,8 @@
   return {
     unidad: 'razonamiento-matematico.razonamiento-deductivo',
     // Laboratorio: C libre en el Venn, las cuatro pistas a elección y el parentesco entre dos personas cualesquiera.
-    laboratorio: [mesaVenn, mesaFamilia, mesaCuadro],
-    version: '0.2.0',
+    laboratorio: [mesaCuadro, mesaMarca, mesaVenn, mesaFamilia],
+    version: '0.3.0',
     estado: 'completa',
     // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
     glosario: [
@@ -810,10 +1196,24 @@
         ejemplo: 'Si llueve, se moja. Llueve. Entonces está mojada.', ver: ['condicional', 'forma indirecta'] },
       { termino: 'forma indirecta', def: 'Razonar desde «si p, entonces q» y «no pasa q» hasta «no pasa p».',
         ejemplo: 'Si llueve, se moja. Está seca. Entonces no llovió.', ver: ['condicional', 'forma directa'] },
+      // Idea 1 (etapa 3): las palabras que estrena, con su aproximación de todos los días (simple) y 3 ejemplos.
       { termino: 'cuadro de doble entrada', def: 'Tabla con un grupo en las filas y otro en las columnas, para marcar qué va con qué.',
-        formas: ['cuadro de doble entrada', 'cuadro'], ejemplo: 'Personas en filas y deportes en columnas: ✗ si no puede ser, ✓ si es seguro.' },
+        simple: 'Una tabla para marcar quién va con qué.',
+        formas: ['cuadro de doble entrada', 'cuadro'], ejemplos: [
+          'Personas en las filas y deportes en las columnas: cada casilla pregunta «¿esta persona juega esto?».',
+          'Papás en las filas e hijas en las columnas: cada casilla pregunta «¿es su hija?».',
+          'Vendedores en las filas y productos en las columnas, para una kermés.'], ver: ['reparto'] },
       { termino: 'reparto', formas: ['reparto', 'repartos'], def: 'Forma de asignar a cada persona una sola cosa distinta, sin que dos personas compartan la misma.',
-        ejemplo: 'Ana fútbol, Beto ajedrez y Ciro vóley es un reparto de tres deportes.', ver: ['cuadro de doble entrada'] },
+        simple: 'Una manera de darle a cada uno una cosa distinta.', ejemplos: [
+          'Ana fútbol, Beto vóley y Ciro ajedrez es un reparto de tres deportes.',
+          'Con tres personas y tres cosas hay 6 repartos: 3 × 2 × 1.',
+          'Con cuatro personas y cuatro cosas hay 24 repartos: 4 × 3 × 2 × 1.'], ver: ['cuadro de doble entrada'] },
+      { termino: 'descartar', formas: ['descartar', 'descarta', 'descartan', 'descartado', 'descartada', 'descartados', 'descartadas'],
+        def: 'Dejar de lado una posibilidad porque choca con un dato.',
+        simple: 'Tachar lo que ya no puede ser.', ejemplos: [
+          '«Beto no juega fútbol» descarta los repartos donde Beto juega fútbol.',
+          'Si Ana ya tiene el fútbol, se descarta el fútbol para todos los demás.',
+          'Un reparto que choca con una sola pista también queda descartado.'], ver: ['reparto'] },
       { termino: 'parentesco', def: 'Relación de familia entre dos personas, como padre, tío o primo.',
         formas: ['parentesco', 'parentescos'], ejemplo: 'El hijo de tu tío es tu primo.', ver: ['árbol genealógico'] },
       { termino: 'árbol genealógico', def: 'Dibujo de una familia: cada línea une a un padre o una madre con un hijo o una hija.',
@@ -821,7 +1221,7 @@
       { termino: 'radio', def: 'Distancia del centro de un círculo a su borde. Es la mitad del diámetro.',
         formas: ['radio', 'radios'], ver: ['diámetro'] },
     ],
-    requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-objeto.js'],
     historia: {
       texto: 'En el siglo IV a. C., Aristóteles estudió qué conclusiones se siguen necesariamente de unas premisas. Separó dos cosas: que las premisas sean verdaderas y que el paso hacia la conclusión sea válido. Los acertijos de familias y repartos de hoy son otra aplicación de esa misma pregunta.',
       pregunta: '¿Cuándo una conclusión no puede fallar?',
@@ -833,7 +1233,9 @@
       'venn-libre': ['conclusion-necesaria'],
       'cualquier-pariente': ['parentesco'],
       'pistas-a-eleccion': ['doble-entrada'],
+      'marca-tu-cuadro': ['doble-entrada'],
     },
-    ideas: [ideaVenn, ideaSi, ideaCuadro, ideaFamilia],
+    // Orden aprobado (docs/etapa3/decisiones.md): el cuadro primero; los ids no cambian (guardan el avance).
+    ideas: [ideaCuadro, ideaVenn, ideaSi, ideaFamilia],
   };
 });
