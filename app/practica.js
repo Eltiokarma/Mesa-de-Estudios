@@ -8,6 +8,8 @@
 // La mascota (nucleo/mascota.js, de otra rutina) tiene su hueco reservado; si existe, se le piden poses.
 (function () {
 'use strict';
+  // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
+  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const N_PRUEBA = 3, MIN_PRACTICA = 5;
 
 // ---- Kit de escenas vivas: se carga solo cuando un problema trae escena (y su hoja de estilos, al entrar) ----
@@ -100,7 +102,7 @@ async function vista(ctx, id) {
     return `<article class="card practica" style="margin-top:16px">
       <div class="etq-p">${esc(etiqueta)}${total ? ` · ${n} de ${total}` : ''}</div>
       <p class="enun">${texto(p.enunciado, p, esc)}</p>
-      ${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}
+      ${cajaDatos(p.datos, esc)}
       ${figuraHTML(p.figura, esc)}
       <p class="preg">${texto(p.pregunta, p, esc)}</p>
       <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a =>
@@ -229,7 +231,7 @@ async function vista(ctx, id) {
       `<article class="card practica viva" style="margin-top:16px">
         <div class="etq-p">Predice primero</div>
         <p class="enun">${texto(p.enunciado, p, esc)}</p>
-        ${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}
+        ${cajaDatos(p.datos, esc)}
         <div class="kit-escena">
           <div class="kit-lienzo" id="lienzo" ${arrastra
             ? `role="slider" tabindex="0" aria-label="Tu respuesta: mueve la marca" aria-describedby="kit-alt" aria-valuemin="${cm.min}" aria-valuemax="${cm.max}"`

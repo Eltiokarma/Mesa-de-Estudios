@@ -41,6 +41,10 @@
   const reducido = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ICONO_LUPA = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const MAX_CASOS = 4;
+  // Datos y fórmulas de un ejercicio (contrato, punto 13): en su recuadro, una por línea. Ecuacion se pasa porque
+  // se carga junto con la teoría.
+  const datosHTML = (E, ds) => (Array.isArray(ds) && ds.length
+    ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${ds.map(x => `<li>${E.html(x)}</li>`).join('')}</ul></div>` : '');
 
   // Glosario del curso: se pide una vez y queda en memoria (el service worker lo guarda para usarlo sin conexión).
   const glosarios = {};
@@ -479,7 +483,7 @@
         const d = dibujoActual();
         if (d) dibujar(d, R.pieza); else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
         const fin = n >= c.pasos.length;
-        zona.innerHTML = `<div class="te-res-enun" tabindex="-1" data-foco><span class="te-res-et">Así se resuelve</span><p>${E.html(c.enunciado)}</p></div>
+        zona.innerHTML = `<div class="te-res-enun" tabindex="-1" data-foco><span class="te-res-et">Así se resuelve</span><p>${E.html(c.enunciado)}</p>${datosHTML(E, c.datos)}</div>
           <ol class="te-res-pasos">${c.pasos.slice(0, n).map((x, i) => `<li class="te-res-paso" data-tipo="${esc(x.tipo)}"${i === n - 1 ? ' data-nuevo' : ''}>
               <span class="te-res-tipo"><b>${i + 1}</b> ${esc(PASOS[x.tipo])}</span><p>${E.html(x.texto)}</p>${x.ecuacion ? `<p class="te-ec">${E.html(x.ecuacion)}</p>` : ''}</li>`).join('')}</ol>
           ${fin ? `<p class="te-res-resp"><b>Respuesta:</b> ${E.html(c.respuesta)}</p>` : ''}
@@ -617,7 +621,7 @@
         const ops = T.barajar(caso.opciones, semilla + 7);
         actuar('ahora-tu', a.voz || voz('ahora'));
         if (caso.dibujo) dibujar(caso.dibujo, a.pieza); else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
-        zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(caso.pregunta)}</h3>${opcionesHTML(ops, true)}<div class="te-fb" aria-live="polite"></div>`;
+        zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(caso.pregunta)}</h3>${datosHTML(E, caso.datos)}${opcionesHTML(ops, true)}<div class="te-fb" aria-live="polite"></div>`;
         const cual = elegir();
         sig.textContent = 'Comprobar';
         sig.onclick = () => {
@@ -866,11 +870,11 @@
         if (e.figura) { try { const P = Kit.piezas[e.figura.pieza]; fig = P ? P.dibujar(e.figura.datos, e.figura.estado || {}) : ''; } catch (err) { fig = ''; } }
         return `<article class="card te-ej" data-nivel="${e.nivel}">
           <div class="te-ej-cab"><span class="te-ej-n" aria-hidden="true">${k + 1}</span><h4>${esc(e.titulo)}</h4></div>
-          <p class="te-ej-enun">${E.html(e.enunciado)}</p>
+          <p class="te-ej-enun">${E.html(e.enunciado)}</p>${datosHTML(E, e.datos)}
           ${fig ? `<div class="te-ej-fig"><div class="te-figcaja"><figure class="kit-figura te-fig">${fig}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar el dibujo del ejemplo ${k + 1}">${ICONO_LUPA}</button></div></div></div>` : ''}
           <div class="te-ej-sol"><p class="te-ej-et">Resuelto</p>${e.solucion.map(x => `<p>${E.html(x.texto)}</p>${x.ecuacion ? `<p class="te-ec">${E.html(x.ecuacion)}</p>` : ''}`).join('')}</div>
-          <p class="te-ej-resp"><b>Respuesta:</b> ${E.html(e.respuesta)}</p>
+          <p class="te-ej-resp"><b>Respuesta:</b> ${E.html(e.respuesta)}</p>${e.fuente ? `<p class="te-ej-fuente">Fuente del dato: ${esc(e.fuente)}</p>` : ''}
         </article>`;
       };
       const cuerpo = () => [1, 2, 3].map(nv => {
@@ -1443,7 +1447,7 @@
         <div class="ex-puntos" aria-hidden="true">${preguntas.map((_, k) => `<span class="${k === en.i ? 'aqui' : ''}${en.resp[k] ? ' resp' : ''}"></span>`).join('')}</div>
         <div class="etq-p">Pregunta ${en.i + 1} de ${preguntas.length} · ${esc(q.idea.titulo)}</div>
         ${q.caso.dibujo ? `<figure class="te-fig kit-figura">${window.Kit.piezas[q.idea.ahoraTu.pieza || q.idea.pieza].dibujar(q.caso.dibujo.datos, q.caso.dibujo.estado || {})}</figure>` : ''}
-        <h3 class="te-preg">${E.html(q.caso.pregunta)}</h3>
+        <h3 class="te-preg">${E.html(q.caso.pregunta)}</h3>${datosHTML(window.Ecuacion, q.caso.datos)}
         <div class="alts" role="radiogroup" aria-label="Opciones">${q.ops.map((o, k) => `<button type="button" class="alt${en.resp[en.i] === o.id ? ' on' : ''}" role="radio" aria-checked="${en.resp[en.i] === o.id}" data-op="${esc(o.id)}"><span class="letra">${'ABCDE'[k]}</span><span>${E.html(o.texto)}</span></button>`).join('')}
           <button type="button" class="alt nose${en.resp[en.i] === 'nose' ? ' on' : ''}" data-op="nose">No sé</button></div>
         <p class="te-aviso" role="alert"></p>

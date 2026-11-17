@@ -27,9 +27,12 @@ function armar(id) {
     vistos.add(enun);
     const alts = p.alternativas.map(a => `${a.letra}) ${a.texto}`).join('   ');
     const c = p.alternativas.find(a => a.correcta);
+    // Datos y fórmulas (docs/plan-calidad.md, contrato, punto 13): el papel no tiene recuadro, así que la lista del
+    // generador va en el enunciado, tras «Datos:». El texto suelto de los generadores antiguos no se agrega.
+    const datos = Array.isArray(p.datos) && p.datos.length ? ` Datos: ${p.datos.map(l => (/[.:;!?]$/.test(l) ? l : `${l}.`)).join(' ')}` : '';
     problemas.push({
       id: `p${problemas.length + 1}`, nivel: NIVELES[problemas.length],
-      enunciado: `${enun} Alternativas: ${alts}`,
+      enunciado: `${enun}${datos} Alternativas: ${alts}`,
       respuesta: `${c.letra}) ${c.texto}`,
       pasos: p.solucion.map(plano).map(x => x.trim()).filter(Boolean),
     });

@@ -3,6 +3,8 @@
 // en el código. El progreso del alumno se guarda en el celular con el id de cada unidad.
 (() => {
 'use strict';
+  // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
+  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const $app = document.getElementById('app');
 const $nav = document.getElementById('nav');
 const CLAVE = 'lab-v1';
@@ -656,7 +658,7 @@ async function vExamen(c, u) {
     $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
       <div class="ex-puntos" aria-hidden="true">${preguntas.map((_, k) => `<span class="${k === i ? 'aqui' : ''}${resp[k] ? ' resp' : ''}"></span>`).join('')}</div>
       <article class="card practica ex-preg"><div class="etq-p">Pregunta ${i + 1} de ${preguntas.length}</div>
-        <p class="enun">${textoPlano(p.enunciado, esc)}</p>${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}
+        <p class="enun">${textoPlano(p.enunciado, esc)}</p>${cajaDatos(p.datos, esc)}
         ${p.figura && typeof p.figura.svg === 'string' && /^<svg[\s>]/.test(p.figura.svg) ? `<figure class="fig-gen" role="img" aria-label="${esc(p.figura.alt || 'Figura del problema')}">${p.figura.svg}</figure>` : ''}
         <p class="preg">${textoPlano(p.pregunta, esc)}</p>
         <div class="alts" role="group" aria-label="Alternativas">${p.alternativas.map(a => `<button type="button" class="alt${resp[i] === a.letra ? ' on' : ''}" data-letra="${a.letra}" aria-pressed="${resp[i] === a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.texto)}</span></button>`).join('')}</div>

@@ -18,6 +18,8 @@
 // Se registra un 'repaso-item' por pregunta y un 'repaso' al terminar.
 (function () {
 'use strict';
+  // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
+  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const PARA_TIPO = 3;
 
 function textoPlano(partes, esc) {
@@ -70,7 +72,7 @@ async function vista(ctx) {
           try { p = g.generar(R.semilla(est.alumno, id, ficha, k)); } catch { /* semilla sin problema válido: otra */ }
           if (delaUnidad(pl, p, id)) {
             return { fuente: 'generador', plantilla: pl.id, problema: p.id,
-              enunHTML: `<p class="enun">${textoPlano(p.enunciado, esc)}</p>${p.datos ? `<p class="sub">${esc(p.datos)}</p>` : ''}${figura(p.figura, esc)}`,
+              enunHTML: `<p class="enun">${textoPlano(p.enunciado, esc)}</p>${cajaDatos(p.datos, esc)}${figura(p.figura, esc)}`,
               preguntaHTML: textoPlano(p.pregunta, esc),
               alts: p.alternativas.map(a => ({ letra: a.letra, texto: a.texto, correcta: !!a.correcta,
                 explicacion: a.error ? a.error.explicacion : '', error: a.error ? a.error.id : '', respaldo: a.error ? a.error.respaldo : '' })),

@@ -63,6 +63,8 @@
     tarjeta: 45, resuelto: 30, respuesta: 14,
     // Contrato «se entiende sin profesor» (16 nov): qué debe poder decir el alumno y qué es cada símbolo.
     aprendizaje: 25, leyenda: 8,
+    // Datos y fórmulas de un ejercicio (Gerson, 16 nov: «todos los datos deben darse, incluso las fórmulas»), una por línea.
+    dato: 22,
     // Resumen (16 nov): qué va a hacer el alumno en el juego, dicho antes de jugar.
     actividad: 16,
   };
@@ -108,6 +110,15 @@
       if (n > PRESUPUESTO[campo]) mal(donde, `${campo} de ${n} palabras (tope ${PRESUPUESTO[campo]})`);
     };
     const ecuacion = (donde, e) => { try { Ecuacion.revisar(e, donde); } catch (err) { out.push(err.message); } };
+    // Datos de un ejercicio (punto 13 del contrato, docs/plan-calidad.md): las equivalencias, los valores de academia
+    // (cos 37° = 4/5) y las fórmulas van en `datos`, una por línea, y se ven en un recuadro aparte. En el enunciado no:
+    // así se audita de un vistazo qué se le da al alumno, y el enunciado no se alarga.
+    const datos = (donde, enun, ds) => {
+      if (/\bDatos?\s*:/.test(plano(enun))) mal(donde, 'el «Dato:» va en el campo datos, no en el enunciado');
+      if (ds === undefined) return;
+      if (!Array.isArray(ds) || ds.length < 1 || ds.length > 6) { mal(donde, 'datos: de 1 a 6 líneas'); return; }
+      ds.forEach((x, i) => { if (!x || (Array.isArray(x) && !x.length)) mal(`${donde} dato ${i + 1}`, 'vacío'); else { tope(`${donde} dato ${i + 1}`, 'dato', x); ecuacion(`${donde} dato ${i + 1}`, Array.isArray(x) ? x : [x]); } });
+    };
     if (!def || typeof def !== 'object') return ['la unidad no es un objeto'];
     if (!/^[a-z-]+\.[a-z0-9-]+$/.test(def.unidad || '')) mal('unidad', `id inválido «${def.unidad}»`);
     if (!/^\d+\.\d+\.\d+$/.test(def.version || '')) mal(def.unidad, 'falta version x.y.z');
@@ -426,6 +437,9 @@
             if (!e || ![1, 2, 3].includes(e.nivel)) { mal(de, 'nivel 1, 2 o 3'); return; }
             if (!e.titulo) mal(de, 'sin título'); else tope(de, 'titulo', e.titulo);
             if (!e.enunciado) mal(de, 'sin enunciado'); else { tope(de, 'enunciado', e.enunciado); ecuacion(de, Array.isArray(e.enunciado) ? e.enunciado : [e.enunciado]); }
+            datos(de, e.enunciado, e.datos);
+            // Un dato real (el volumen del Titicaca, la lluvia de Juliaca) lleva su fuente (Gerson, 16 nov).
+            if (e.fuente !== undefined && (typeof e.fuente !== 'string' || e.fuente.length < 8 || e.fuente.length > 140)) mal(de, 'fuente: texto de 8 a 140 caracteres');
             if (e.figura) dibujaCon(`${de} figura`, e.figura, e.figura.pieza);
             if (!Array.isArray(e.solucion) || e.solucion.length < 1 || e.solucion.length > 4) mal(de, 'solucion: de 1 a 4 líneas');
             else e.solucion.forEach((x, i) => { if (!x || !x.texto) mal(`${de} línea ${i + 1}`, 'sin texto'); else tope(`${de} línea ${i + 1}`, 'resuelto', x.texto); if (x && x.ecuacion) ecuacion(`${de} línea ${i + 1}`, x.ecuacion); });
@@ -449,6 +463,7 @@
             try { c = R.generar(s); } catch (err) { mal(dd, `falló: ${err.message}`); continue; }
             if (!c || !c.enunciado) { mal(dd, 'sin enunciado'); continue; }
             tope(dd, 'enunciado', c.enunciado);
+            datos(dd, c.enunciado, c.datos);
             if (c.dibujo) dibuja(dd, c.dibujo, R.pieza);
             if (!Array.isArray(c.pasos) || c.pasos.length < 3 || c.pasos.length > 6) { mal(dd, 'de 3 a 6 pasos'); continue; }
             const tipos = c.pasos.map(x => x && x.tipo);
@@ -484,6 +499,7 @@
           const dd = `${d} ahoraTu semilla ${s}`;
           if (!c || !c.pregunta) { mal(dd, 'sin pregunta'); continue; }
           tope(dd, 'enunciado', c.pregunta);
+          datos(dd, c.pregunta, c.datos);
           opciones(dd, c.opciones);
           if (c.dibujo) dibuja(dd, c.dibujo, a.pieza);
           if (!c.solucion || !c.solucion.texto) mal(dd, 'sin solución');
