@@ -1,0 +1,19 @@
+{
+  "id": "exponentes-radicales",
+  "titulo": "Exponentes y radicales",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.exponentes-y-productos-notables"
+  ],
+  "temas": [
+    "Leyes de exponentes",
+    "Propiedades de radicales",
+    "Exponente fraccionario"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -112,9 +112,14 @@
     vandermonde: ['variable', 'variable', 'determinante'], matriz: ['entrada', 'traza'] };
   const TIPOS = ['trabajo', 'enteros', 'parametro', 'parametro', 'vieta', 'vieta', 'franja', 'exponencial', 'vandermonde', 'matriz', 'valor-absoluto'];
 
-  function generar(semilla) {
+  // Abierto desde una unidad que solo usa algunos tipos, da solo esos (propuesta-algebra-exponentes.md §7 y §9, aprobada
+  // el 17 nov: «Exponentes y radicales» solo pide el exponencial, como San Marcos 2025-II). Las demás unidades siguen con
+  // todos los tipos, como antes; sin unidad, el mismo problema de siempre para cada semilla.
+  const TIPOS_POR_UNIDAD = { 'algebra.exponentes-y-productos-notables': ['exponencial'] };
+  function generar(semilla, opciones) {
+    const o = typeof opciones === 'string' ? { unidad: opciones } : opciones || {};
     const rng = Azar.crear(ID + '|' + semilla);
-    const tipo = rng.elegir(TIPOS);
+    const tipo = rng.elegir(TIPOS_POR_UNIDAD[o.unidad] || TIPOS);
     const sub = SUBS[tipo] ? rng.elegir(SUBS[tipo]) : null;   // el sub se fija antes de los reintentos
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
@@ -701,5 +706,5 @@
       datos: { tipo: 'valor-absoluto', signo, c, k, t1, v1, t2 } });
   }
 
-  return { id: ID, titulo: 'Sistemas, raíces y potencias', generar };
+  return { id: ID, titulo: 'Sistemas, raíces y potencias', generar, TIPOS_POR_UNIDAD };
 });

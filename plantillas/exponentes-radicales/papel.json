@@ -1,0 +1,88 @@
+{
+  "titulo": "Exponentes y radicales: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Ana dobla una hoja de cuaderno en tres, como una carta, 2 veces. Después la dobla 1 vez más, igual que antes. ¿Cuántas capas de papel tiene el paquete al final? Datos: Cada doblez en tres triplica las capas de la hoja. aⁿ = a · a · … · a, con n factores iguales a a. aᵐ · aⁿ = aᵐ⁺ⁿ. Alternativas: A) 9 capas   B) 27 capas   C) 3 capas   D) 12 capas",
+      "respuesta": "B) 27 capas",
+      "pasos": [
+        "Los primeros 2 dobleces dejan 3² = 9 capas.",
+        "El 1 doblez más repite ese paquete 3¹ = 3 veces: 3² · 3¹ = 3³ = 27 capas."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se tiene el producto √8 · √18. ¿Cuánto vale? Datos: √(a · b) = √a · √b, con a, b ≥ 0. Alternativas: A) ±12   B) √26   C) 12   D) 144",
+      "respuesta": "C) 12",
+      "pasos": [
+        "Las raíces se juntan en un producto: √8 · √18 = √(8 · 18) = √144.",
+        "Como 12 · 12 = 144, vale 12."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se tiene la raíz ⁵√(x²). ¿Cómo se escribe con un exponente fraccionario? Datos: aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ. Alternativas: A) x¹⁰   B) x⁵ᐟ²   C) x²ᐟ⁵   D) x⁻³",
+      "respuesta": "C) x²ᐟ⁵",
+      "pasos": [
+        "El exponente de adentro, 2, va arriba; el índice, 5, va abajo.",
+        "⁵√(x²) = x²ᐟ⁵."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene la expresión (10⁴)³ · 10⁻⁶. ¿Cómo se escribe como una sola potencia de 10? Datos: (aᵐ)ⁿ = aᵐⁿ, donde mn = m · n. aᵐ · aⁿ = aᵐ⁺ⁿ. Alternativas: A) 10¹⁸   B) 10⁶   C) 10⁻⁷²   D) 10¹",
+      "respuesta": "B) 10⁶",
+      "pasos": [
+        "Elevar una potencia multiplica los exponentes: (10⁴)³ = 10¹².",
+        "En el producto se suman con su signo: 10¹²⁺⁽⁻⁶⁾ = 10⁶."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene la raíz √432. ¿Cómo queda simplificada del todo? Datos: √(a · b) = √a · √b, con a, b ≥ 0. Cuadrados: 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144. Alternativas: A) 12√3   B) 144√3   C) 2√108   D) 3√144",
+      "respuesta": "A) 12√3",
+      "pasos": [
+        "Se busca el cuadrado más grande que divide a 432: 432 = 144 · 3.",
+        "√432 = √144 · √3 = 12√3."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene la potencia 81³ᐟ⁴. ¿Cuánto vale? Datos: aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ. Alternativas: A) 27   B) 3   C) 243/4   D) ≈ 350,5",
+      "respuesta": "A) 27",
+      "pasos": [
+        "Primero la raíz de índice 4, que sale exacta: ⁴√81 = 3.",
+        "Después la potencia: 3³ = 27."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En una feria, Rosa gasta x soles y Luis gasta y soles. Se cumple 27ˣ = 81ʸ, y entre los dos gastan a lo más 42 soles. ¿Cuánto es lo más que puede gastar Luis? Datos: 27 = 3³ y 81 = 3⁴. (aᵐ)ⁿ = aᵐⁿ, donde mn = m · n. Si aʳ = aˢ, con a > 0 y a ≠ 1, entonces r = s. Alternativas: A) 18 soles   B) 24 soles   C) 6 soles   D) 20,5 soles   E) 21 soles",
+      "respuesta": "A) 18 soles",
+      "pasos": [
+        "Todo a base 3: 3³ˣ = 3⁴ʸ, así que 3x = 4y.",
+        "De 3x = 4y, x e y están en la razón 4 : 3: entre los dos son 7 partes, y 7 partes valen a lo más 42 soles.",
+        "Una parte vale a lo más 42 ÷ 7 = 6 soles, y Luis se lleva 3: a lo más 18 soles."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se tiene la raíz √(x · ⁵√(x⁴)). ¿Cómo se escribe como una sola potencia de x? Datos: aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ. aᵐ · aⁿ = aᵐ⁺ⁿ. (aᵐ)ⁿ = aᵐⁿ, donde mn = m · n. Alternativas: A) x⁹ᐟ⁵   B) x⁹ᐟ¹⁰   C) x⁵ᐟ⁷   D) x¹³ᐟ¹⁰",
+      "respuesta": "B) x⁹ᐟ¹⁰",
+      "pasos": [
+        "De adentro hacia afuera. Adentro, el producto suma los exponentes: x · x⁴ᐟ⁵ = x⁹ᐟ⁵.",
+        "La raíz de índice 2 divide ese exponente entre 2: (9/5) ÷ 2 = 9/10, así que queda x⁹ᐟ¹⁰."
+      ]
+    }
+  ]
+}

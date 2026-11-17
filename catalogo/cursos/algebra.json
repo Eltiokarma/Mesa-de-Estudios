@@ -58,7 +58,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["aritmetica.potenciacion-y-radicacion"],
-      "plantillas": ["cuadrado-crece", "sistemas-ecuaciones"],
+      "plantillas": ["exponentes-radicales", "cuadrado-crece", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {

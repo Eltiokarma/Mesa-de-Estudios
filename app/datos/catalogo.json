@@ -2148,6 +2148,7 @@
       "aritmetica.potenciacion-y-radicacion"
      ],
      "plantillas": [
+      "exponentes-radicales",
       "cuadrado-crece",
       "sistemas-ecuaciones"
      ],
@@ -7977,6 +7978,22 @@
     "/plantillas/exponenciales-logaritmos/index.html",
     "/plantillas/exponenciales-logaritmos/motor.js",
     "/plantillas/exponenciales-logaritmos/papel.json"
+   ]
+  },
+  "exponentes-radicales": {
+   "id": "exponentes-radicales",
+   "titulo": "Exponentes y radicales",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.exponentes-y-productos-notables"
+   ],
+   "url": "#/practica/exponentes-radicales",
+   "papel": "/plantillas/exponentes-radicales/papel.json",
+   "archivos": [
+    "/plantillas/exponentes-radicales/generador.js",
+    "/plantillas/exponentes-radicales/papel.json"
    ]
   },
   "fisica-moderna": {
