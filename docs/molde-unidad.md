@@ -71,6 +71,10 @@ El alumno puede volver al momento anterior con «‹ Atrás»; adelante solo con
 - **Si el resuelto usa algo, está en los datos o en el glosario**: el ÷ 3,6, los corchetes de dimensión, î y ĵ,
   «módulo», «u», el «·». Lo que el resuelto dice que hace, se ve hecho (si dice «se tachan», se tachan).
 - **La respuesta lleva color**, el de su variable en el mapa de colores.
+- **La letra de una alternativa va en negrita** cuando el resuelto la nombra («**A** le serviría a cualquier texto»,
+  «Respuesta: **C**»), para que se distinga del texto (Gerson, mesa de revisión, 17 nov).
+- **Ninguna figura de Predice ni de un ejemplo delata la respuesta por su color**: lo que se pide va con «?» o en tinta
+  hasta comprobar, nunca en violeta antes (trigonometría, idea 1, 17 nov).
 - Cuentas comprobadas con un **script aparte que no usa el código de la unidad**; el comentario de la constante dice
   qué cuentas se revisaron.
 
