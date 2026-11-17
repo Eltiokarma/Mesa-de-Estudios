@@ -34,7 +34,7 @@
   'use strict';
   const MAX = 1200;                                   // 14 400 triángulos: queda bajo los 20 000 de docs/3d.md
   const rad = g => g * Math.PI / 180;
-  const HEX = { 'c-o': '#b85a06', 'c-i': '#08807a', 'c-h': '#c0364a', 'c-d': '#4f7a17', 'c-f': '#6b3dbd' };
+  const HEX = { 'c-o': '#a95300', 'c-i': '#07746e', 'c-h': '#c02a5c', 'c-d': '#3d6b0c', 'c-f': '#6b3dbd' };
   const NEUTRO = '#cfc6bd';
   const vistaDe = d => d.vista || { giro: 35, inclinacion: 25 };
   const lados = b => [b.w || 1, b.h || 1, b.d || 1];

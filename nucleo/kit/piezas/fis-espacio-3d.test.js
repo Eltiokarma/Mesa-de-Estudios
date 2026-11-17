@@ -17,8 +17,8 @@ test('el respaldo dibuja una flecha por vector no nulo, con su rótulo del color
   const s = P.dibujar(d);
   assert.match(s, /^<svg/);
   assert.equal((s.match(/class="kit-flecha"/g) || []).length, d.flechas.length);
-  assert.match(s, /fill="var\(--c-d, #4f7a17\)"[^>]*>F</);         // F en verde
-  assert.match(s, /fill="var\(--c-o, #b85a06\)"[^>]*>v</);         // v en naranja
+  assert.match(s, /fill="var\(--c-d, #3d6b0c\)"[^>]*>F</);         // F en verde
+  assert.match(s, /fill="var\(--c-o, #a95300\)"[^>]*>v</);         // v en naranja
   const sin = P.dibujar(F.lorentz({ th: 0, fi: 0, q: 1 }).datos);
   assert.doesNotMatch(sin, />F</);                                   // v paralela a B: sin fuerza
 });

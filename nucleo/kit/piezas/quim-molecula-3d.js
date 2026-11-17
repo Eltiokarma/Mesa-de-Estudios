@@ -146,7 +146,7 @@
     tocar: o => (o && o.userData && o.userData.t ? `Ese átomo es de ${NOMBRE(o.userData.t)} (${o.userData.t}).` : ''),
     construir(T, grupo, d, e, h) {
       const colorDe = t => { try { return El.color(t, h.oscuro() ? 'oscuro' : 'claro'); } catch (err) { return h.oscuro() ? '#c9bfd6' : '#6b5f78'; } };
-      const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06'), violeta = h.varCss('--c-f', '#6b3dbd');
+      const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#a95300'), violeta = h.varCss('--c-f', '#6b3dbd');
       const esc = d.escala || 1;                     // 1 salvo que la mesa pida achicar (dos moléculas lado a lado)
       // Todo va en un pivote que gira con datos.giro (la animación lo mueve sin rearmar); el grupo de afuera es la vista.
       const caja = grupo, Y = new T.Vector3(0, 1, 0), giro = rad(d.giro || 0);

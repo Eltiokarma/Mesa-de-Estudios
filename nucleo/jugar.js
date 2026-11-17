@@ -86,7 +86,7 @@
       + '.jugar-velado>*{opacity:.45}'
       + '.jugar-velado::before{content:"↑ Primero juega con la figura: esta pregunta se abre después";display:block;margin:0 0 10px;padding:8px 12px;border-radius:12px;background:#fff3d6;color:#5b3a00;font-weight:700;font-size:15px;line-height:1.35;opacity:1}'
       + '.jugar-barra{background:#fff3d6;color:#5b3a00;border-color:#d08a00}'
-      + '.jugar-seguir{background:#b85a06;color:#fff;border:0}'
+      + '.jugar-seguir{background:#a95300;color:#fff;border:0}'
       + '@media (prefers-reduced-motion:no-preference){.jugar-velado>*{transition:opacity .2s linear}}';
     document.head.appendChild(st);
   }

@@ -18,8 +18,9 @@ Formato de los campos: `docs/teoria.md`. Reglas del repo: `CLAUDE.md`.
 4. Hacer una **tabla de letras** de la unidad: cada letra con un solo significado (P no puede ser presión, potencia y
    peso). Si la notación del libro choca con otra cosa (T del período y T de la dimensión tiempo), se usa la del libro y
    se avisa (Gerson, 17 nov: péndulo).
-5. Hacer un **mapa de colores** de la unidad: qué color tiene cada variable, el mismo en teoría, ejemplos, escena,
-   generadores y glosario. Dos variables de un mismo problema nunca comparten color (auditoría de Vectores).
+5. Hacer un **mapa de colores** de la unidad con los papeles de §5b (primer dato, segundo dato o factor, lo que se pide,
+   ángulo, tercer dato): el mismo en teoría, ejemplos, escena, generadores y glosario. Dos variables de un mismo problema
+   nunca comparten color.
 
 ## 1. Archivos
 
@@ -103,6 +104,34 @@ Nada imposible: un río de la sierra no corre a 9 m/s ni el Ucayali mide 24 m de
 - Ángulos con «°» y, en un reemplazo, con su función a la vista: `25 · cos 53° = 25 · 0,6`.
 - Una fórmula que el alumno conoce distinta en el colegio se aclara (la ley de cosenos con «+»: θ es el ángulo entre A⃗
   y B⃗ cola con cola; la del colegio usa el ángulo del triángulo, 180° − θ).
+
+## 5b. Colores (auditoría con el skill `teoria-del-color`, 17 nov)
+
+**Un color por papel, el mismo en todos los cursos.** La letra o el rótulo dice cuál variable es (el color guía, no
+identifica: WCAG 1.4.1); el color dice qué papel cumple en el problema, y ese papel no cambia de tema a tema (el lector
+en frío se confundió porque el turquesa era «el resultado» en Magnitudes y «el vector B» en Vectores).
+
+| Token | Claro | Oscuro | Papel | Ejemplos |
+| --- | --- | --- | --- | --- |
+| `o` naranja | `#a95300` | `#f0a04a` | el primer dato | A⃗; la cantidad que te dan |
+| `i` turquesa | `#07746e` | `#3dcdc3` | el segundo dato o el factor | B⃗; el factor de conversión |
+| `f` violeta | `#6b3dbd` | `#ab8cf2` | lo que se pide y su resultado | R⃗; la cantidad convertida; la incógnita (x, [k]) |
+| `h` rojo carmín | `#c02a5c` | `#f17384` | ángulos | θ, α |
+| `d` verde | `#3d6b0c` | `#a3d65e` | un tercer dato, poco frecuente | C⃗; un tercer tramo |
+
+Por qué así (cálculo con las funciones del skill; distancias OKLab, peor caso entre visión normal y protan/deutan/tritan
+simulados, Machado 2009):
+- **El verde no puede ir junto al naranja ni al rojo**: naranja–verde cae a 0,010 en protanopía y rojo–verde a 0,038 en
+  deuteranopía. Antes eran justo los pares de A⃗–R⃗ y dato–factor. Oscurecer o aclarar no lo salva: el texto tiene que
+  ser oscuro para leerse (4,5:1), así que no queda claro-oscuro que separe. Por eso el verde quedó para el tercer dato.
+- Los pares que sí van juntos quedan en ≥ 0,08 (naranja–turquesa 0,114; naranja–violeta 0,189; turquesa–violeta 0,101;
+  violeta–carmín 0,167; turquesa–carmín 0,077), salvo naranja–carmín (A⃗–θ) en 0,062: el ángulo siempre lleva su arco y su
+  letra.
+- **Contraste**: el texto de una variable sobre su resaltado (8 % del color sobre la tarjeta) da 4,64 a 5,93:1 en claro y
+  4,57 a 6,93:1 en oscuro (antes el naranja daba 3,85:1 sobre el resaltado del 12 %). Como línea, ≥ 5:1 contra la tarjeta.
+- Los cinco tienen claridad parecida a propósito (paleta cualitativa: no sugiere orden).
+- Una escena usa estos mismos tokens para los mismos papeles; si necesita más colores (ejes, componentes), los agrega
+  aparte y comprueba sus pares con el script de la auditoría.
 
 ## 6. Dibujos
 

@@ -110,12 +110,12 @@
   }
   function dibujar(d) {
     const pl = plano(d), k = x => Math.round(x * 10) / 10;
-    const COLOR = { celda: 'var(--c-i, #08807a)', vecino: 'var(--c-o, #b85a06)', centro: 'currentColor', otro: 'currentColor' };
+    const COLOR = { celda: 'var(--c-i, #07746e)', vecino: 'var(--c-o, #a95300)', centro: 'currentColor', otro: 'currentColor' };
     const OP = { celda: 0.55, vecino: 0.75, centro: 0.9, otro: 0.15 };
     const ar = pl.aristas.map(([a, b]) => `<line x1="${k(a[0])}" y1="${k(a[1])}" x2="${k(b[0])}" y2="${k(b[1])}"/>`).join('');
     const es = pl.esferas.map(e => `<circle cx="${k(e.c[0])}" cy="${k(e.c[1])}" r="${k(pl.r)}" fill="${COLOR[e.clase]}" fill-opacity="${OP[e.clase]}" stroke="currentColor" stroke-opacity="0.35" class="kit-${e.clase}"/>`).join('');
-    const en = pl.enlaces.map(([a, b]) => `<line x1="${k(a[0])}" y1="${k(a[1])}" x2="${k(b[0])}" y2="${k(b[1])}" stroke="var(--c-o, #b85a06)" stroke-width="2"/>`).join('');
-    const ro = pl.rotulos.map(x => `<text x="${k(x.c[0])}" y="${k(x.c[1])}" font-size="15" font-weight="700" fill="var(--c-i, #08807a)" text-anchor="middle" dy="5">${x.texto}</text>`).join('');
+    const en = pl.enlaces.map(([a, b]) => `<line x1="${k(a[0])}" y1="${k(a[1])}" x2="${k(b[0])}" y2="${k(b[1])}" stroke="var(--c-o, #a95300)" stroke-width="2"/>`).join('');
+    const ro = pl.rotulos.map(x => `<text x="${k(x.c[0])}" y="${k(x.c[1])}" font-size="15" font-weight="700" fill="var(--c-i, #07746e)" text-anchor="middle" dy="5">${x.texto}</text>`).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit">`
       + `<g class="kit-aristas" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.2">${ar}</g><g class="kit-enlaces">${en}</g><g class="kit-esferas">${es}</g><g class="kit-rotulos">${ro}</g></svg>`;
   }
@@ -137,7 +137,7 @@
     },
     distancia: 8.4, distMin: 4, distMax: 14,
     construir(T, grupo, d, e, h) {
-      const tinta = h.varCss('--ink', '#2d2340'), turquesa = h.varCss('--c-i', '#08807a'), naranja = h.varCss('--c-o', '#b85a06');
+      const tinta = h.varCss('--ink', '#2d2340'), turquesa = h.varCss('--c-i', '#07746e'), naranja = h.varCss('--c-o', '#a95300');
       const L = lado(d), N = n(d), r = d.radio * L, V = p => new T.Vector3(...aEscena(d, p));
       // Todo va en un pivote que gira con datos.giro (la animación lo mueve sin rearmar); el grupo de afuera es la vista.
       const caja = grupo, Y = new T.Vector3(0, 1, 0), giro = rad(d.giro || 0);

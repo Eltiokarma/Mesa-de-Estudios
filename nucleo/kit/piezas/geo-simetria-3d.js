@@ -62,7 +62,7 @@
     const linea = ([a, b], extra) => `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}" ${extra}/>`;
     const cuadros = pl.cuadros.map(c => `<polygon points="${pts(c)}" fill="var(--c-d, #2f8f4e)" fill-opacity="${pl.cuadros.length > 1 ? 0.1 : 0.16}" stroke="var(--c-d, #2f8f4e)" stroke-width="1.6"/>`).join('');
     const solido = pl.aristas.map(a => linea(a, 'stroke="var(--c-i, #0f8a8a)" stroke-width="2.4" stroke-linecap="round"')).join('');
-    const reflejo = pl.reflejo.map(a => linea(a, 'stroke="var(--c-o, #b85a06)" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round"')).join('');
+    const reflejo = pl.reflejo.map(a => linea(a, 'stroke="var(--c-o, #a95300)" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round"')).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit"><g class="kit-planos">${cuadros}</g><g class="kit-solido">${solido}</g><g class="kit-reflejo">${reflejo}</g></svg>`;
   }
 
@@ -74,7 +74,7 @@
     distancia: 9, distMin: 5, distMax: 15,
     construir(T, grupo, d, e, h) {
       const g = figura(d), tinta = h.varCss('--ink', '#2d2340');
-      const turq = h.varCss('--c-i', '#0f8a8a'), nar = h.varCss('--c-o', '#b85a06'), verde = h.varCss('--c-d', '#2f8f4e');
+      const turq = h.varCss('--c-i', '#0f8a8a'), nar = h.varCss('--c-o', '#a95300'), verde = h.varCss('--c-d', '#2f8f4e');
       const V = g.P.vertices, tri = [];
       for (const f of g.P.caras) for (let k = 1; k + 1 < f.length; k++) tri.push(...V[f[0]], ...V[f[k]], ...V[f[k + 1]]);
       const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.Float32BufferAttribute(tri, 3)); geo.computeVertexNormals();

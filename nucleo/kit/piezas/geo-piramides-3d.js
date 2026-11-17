@@ -20,7 +20,7 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, S) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
-  const COLORES = [['c-o', '#b85a06'], ['c-i', '#0f8a8a'], ['c-d', '#2f8f4e']];
+  const COLORES = [['c-o', '#a95300'], ['c-i', '#0f8a8a'], ['c-d', '#2f8f4e']];
   const NOMBRES = ['naranja', 'turquesa', 'verde'];
   const { resta, suma, por, unit, centro } = S.util;
   const vistaDe = d => d.vista || { giro: 210, inclinacion: 24 };      // la cúspide común, al frente

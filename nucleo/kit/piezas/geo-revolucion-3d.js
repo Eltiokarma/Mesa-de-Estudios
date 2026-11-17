@@ -48,7 +48,7 @@
   }
   function dibujar(d) {
     const pl = plano(d), n = x => Math.round(x * 100) / 100, pts = c => c.map(p => `${n(p[0])},${n(p[1])}`).join(' ');
-    const reg = (c, op) => `<polygon points="${pts(c)}" fill="var(--c-o, #b85a06)" fill-opacity="${op}" stroke="var(--c-o, #b85a06)" stroke-width="2"/>`;
+    const reg = (c, op) => `<polygon points="${pts(c)}" fill="var(--c-o, #a95300)" fill-opacity="${op}" stroke="var(--c-o, #a95300)" stroke-width="2"/>`;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit">`
       + `<line x1="${n(pl.eje[0][0])}" y1="${n(pl.eje[0][1])}" x2="${n(pl.eje[1][0])}" y2="${n(pl.eje[1][1])}" stroke="var(--c-i, #0f8a8a)" stroke-width="2.4" stroke-dasharray="8 5"/>`
       + pl.bordes.map(b => `<polyline points="${pts(b)}" fill="none" stroke="var(--c-d, #2f8f4e)" stroke-width="2"/>`).join('')
@@ -65,7 +65,7 @@
     distancia: 9, distMin: 5, distMax: 15,
     construir(T, grupo, d, e, h) {
       const g = figura(d), R = g.R;
-      const nar = h.varCss('--c-o', '#b85a06'), turq = h.varCss('--c-i', '#0f8a8a'), verde = h.varCss('--c-d', '#2f8f4e'), rojo = h.varCss('--c-h', '#c0392b');
+      const nar = h.varCss('--c-o', '#a95300'), turq = h.varCss('--c-i', '#0f8a8a'), verde = h.varCss('--c-d', '#2f8f4e'), rojo = h.varCss('--c-h', '#c0392b');
       grupo.add(h.barra(new T.Vector3(0, -1.7, 0), new T.Vector3(0, 1.7, 0), 0.03, turq));
       // La región en su lugar de partida y donde llegó: forma plana en xy, girada φ alrededor del eje.
       const forma = new T.Shape(R.perfil.map(([r, y]) => new T.Vector2(r, y)));

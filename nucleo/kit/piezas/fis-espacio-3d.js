@@ -34,7 +34,7 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
   const rad = g => g * Math.PI / 180;
-  const VAR = { 'c-o': '#b85a06', 'c-i': '#08807a', 'c-h': '#c0364a', 'c-d': '#4f7a17', 'c-f': '#6b3dbd' };
+  const VAR = { 'c-o': '#a95300', 'c-i': '#07746e', 'c-h': '#c02a5c', 'c-d': '#3d6b0c', 'c-f': '#6b3dbd' };
   const vistaDe = d => d.vista || { giro: 30, inclinacion: 20 };
   const aTres = p => [p[0], p[2], -p[1]];                     // física (z arriba) → three.js (y arriba)
   const aEscena = (d, p) => { const k = d.escala || 1; return aTres([p[0] * k, p[1] * k, p[2] * k]); };

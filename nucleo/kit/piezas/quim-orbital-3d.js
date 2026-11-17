@@ -80,7 +80,7 @@
     const pts = s => pl.puntos.filter(p => p[2] === s).map(p => `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="1.6"/>`).join('');
     const nod = pl.circulos.map(r => `<circle cx="${pl.W / 2}" cy="${pl.H / 2}" r="${n(r)}" fill="none" stroke="currentColor" stroke-opacity="0.6" stroke-dasharray="4 4"/>`).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit">`
-      + `<g class="kit-ejes">${ejes}</g><g class="kit-mas" fill="var(--c-i, #08807a)" fill-opacity="0.7">${pts(1)}</g><g class="kit-menos" fill="var(--c-f, #6b3dbd)" fill-opacity="0.7">${pts(-1)}</g>`
+      + `<g class="kit-ejes">${ejes}</g><g class="kit-mas" fill="var(--c-i, #07746e)" fill-opacity="0.7">${pts(1)}</g><g class="kit-menos" fill="var(--c-f, #6b3dbd)" fill-opacity="0.7">${pts(-1)}</g>`
       + `<g class="kit-nodos">${nod}</g><circle cx="${pl.W / 2}" cy="${pl.H / 2}" r="3" fill="currentColor"/></svg>`;
   }
 
@@ -100,7 +100,7 @@
     distancia: 9, distMin: 3.5, distMax: 15,
     construir(T, grupo, d, e, h) {
       const tinta = h.varCss('--ink', '#2d2340');
-      const color = { 1: h.varCss('--c-i', '#08807a'), '-1': h.varCss('--c-f', '#6b3dbd') };
+      const color = { 1: h.varCss('--c-i', '#07746e'), '-1': h.varCss('--c-f', '#6b3dbd') };
       const paso = h.ahorro ? 2 : 1;
       for (const s of [1, -1]) {
         const pos = [], indices = [];

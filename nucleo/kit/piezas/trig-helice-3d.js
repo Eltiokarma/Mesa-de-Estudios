@@ -70,7 +70,7 @@
     partes.push(poli(e.helice, 'var(--brand, #7f5ae0)', 2.4));
     const P = p2(e.P), S = p2(e.sombraP);
     partes.push(`<line x1="${n(P[0])}" y1="${n(P[1])}" x2="${n(S[0])}" y2="${n(S[1])}" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3"/>`);
-    partes.push(`<circle cx="${n(P[0])}" cy="${n(P[1])}" r="6" fill="var(--c-o, #b85a06)"/><circle cx="${n(S[0])}" cy="${n(S[1])}" r="4.5" fill="var(--c-h, #c0392b)"/>`);
+    partes.push(`<circle cx="${n(P[0])}" cy="${n(P[1])}" r="6" fill="var(--c-o, #a95300)"/><circle cx="${n(S[0])}" cy="${n(S[1])}" r="4.5" fill="var(--c-h, #c0392b)"/>`);
     const t0 = p2([e.X(0), PISO + 0.12, -MURO]), t1 = p2([e.X(Math.min(HASTA, e.r.T)), PISO + 0.12, -MURO]);
     partes.push(`<line x1="${n(t0[0])}" y1="${n(t0[1])}" x2="${n(t1[0])}" y2="${n(t1[1])}" stroke="var(--c-d, #2e8b3d)" stroke-width="4" stroke-linecap="round"/>`);
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit">${partes.join('')}</svg>`;
@@ -102,7 +102,7 @@
       grupo.add(tubo(e.helice, 0.035, marca));
       grupo.add(tubo(e.pared, 0.03, col('h', '#c0392b')));
       // P (c-o), su sombra en la onda y la línea que las une.
-      const P = new T.Mesh(new T.SphereGeometry(0.1, h.SEG, h.SEG / 2), h.material(col('o', '#b85a06'))); P.position.copy(V(e.P)); grupo.add(P);
+      const P = new T.Mesh(new T.SphereGeometry(0.1, h.SEG, h.SEG / 2), h.material(col('o', '#a95300'))); P.position.copy(V(e.P)); grupo.add(P);
       const S = new T.Mesh(new T.SphereGeometry(0.075, h.SEG, h.SEG / 2), h.material(col('h', '#c0392b'))); S.position.copy(V(e.sombraP)); grupo.add(S);
       const ls = new T.BufferGeometry(); ls.setAttribute('position', new T.Float32BufferAttribute([...e.P, ...e.sombraP], 3));
       const lsL = new T.Line(ls, new T.LineDashedMaterial({ color: new T.Color(tinta), dashSize: 0.06, gapSize: 0.05 })); lsL.computeLineDistances(); grupo.add(lsL);

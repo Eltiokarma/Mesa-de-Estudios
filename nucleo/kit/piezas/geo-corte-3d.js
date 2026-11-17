@@ -55,7 +55,7 @@
   function dibujar(d) {
     const pl = plano(d), n = x => Math.round(x * 100) / 100;
     const aristas = pl.aristas.map(([a, b]) => `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`).join('');
-    const sec = pl.seccion.length ? `<polygon points="${pl.seccion.map(p => `${n(p[0])},${n(p[1])}`).join(' ')}" fill="var(--c-o, #b85a06)" fill-opacity="0.45" stroke="var(--c-o, #b85a06)" stroke-width="2.4" stroke-linejoin="round"/>` : '';
+    const sec = pl.seccion.length ? `<polygon points="${pl.seccion.map(p => `${n(p[0])},${n(p[1])}`).join(' ')}" fill="var(--c-o, #a95300)" fill-opacity="0.45" stroke="var(--c-o, #a95300)" stroke-width="2.4" stroke-linejoin="round"/>` : '';
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit"><g class="kit-caja">${aristas}</g><g class="kit-seccion">${sec}</g></svg>`;
   }
 
@@ -66,7 +66,7 @@
     clave: d => JSON.stringify([d.caja, d.vista || null]),
     distancia: 8, distMin: 4, distMax: 14,
     construir(T, grupo, d, e, h) {
-      const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06'), marca = h.varCss('--brand', '#7f5ae0');
+      const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#a95300'), marca = h.varCss('--brand', '#7f5ae0');
       const caja = new T.BoxGeometry(d.caja.a, d.caja.b, d.caja.c);
       grupo.add(new T.Mesh(caja, h.material(h.oscuro() ? '#3a2f48' : '#fffaf6', { transparent: true, opacity: 0.35, depthWrite: false })));
       grupo.add(new T.LineSegments(new T.EdgesGeometry(caja), new T.LineBasicMaterial({ color: new T.Color(tinta) })));

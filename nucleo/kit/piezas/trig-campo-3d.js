@@ -100,7 +100,7 @@
     const lin = (a, b, color, ancho, extra = '') => { const p = p2(a), q = p2(b); return `<line x1="${n(p[0])}" y1="${n(p[1])}" x2="${n(q[0])}" y2="${n(q[1])}" stroke="${color}" stroke-width="${ancho}" stroke-linecap="round"${extra}/>`; };
     const poli = (pts, color, ancho) => `<polyline points="${pts.map(p2).map(p => `${n(p[0])},${n(p[1])}`).join(' ')}" fill="none" stroke="${color}" stroke-width="${ancho}"/>`;
     const txt = (p, t, color) => { const q = p2(p); return `<text x="${n(q[0])}" y="${n(q[1])}" fill="${color}" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="middle">${t}</text>`; };
-    const C = { h: 'var(--c-h, #c0392b)', i: 'var(--c-i, #0f8b8d)', d: 'var(--c-d, #2e8b3d)', o: 'var(--c-o, #b85a06)', f: 'var(--c-f, #7f5ae0)' };
+    const C = { h: 'var(--c-h, #c0392b)', i: 'var(--c-i, #0f8b8d)', d: 'var(--c-d, #2e8b3d)', o: 'var(--c-o, #a95300)', f: 'var(--c-f, #7f5ae0)' };
     const partes = [`<polygon points="${pl.piso.map(p => `${n(p[0])},${n(p[1])}`).join(' ')}" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.35"/>`];
     const B = e.borde;
     partes.push(lin([0, 0, -B], [0, 0, B], 'currentColor', 1, ' stroke-opacity="0.35" stroke-dasharray="4 4"'), lin([-B, 0, 0], [B, 0, 0], 'currentColor', 1, ' stroke-opacity="0.35" stroke-dasharray="4 4"'));
@@ -128,7 +128,7 @@
     distancia: 11.5, distMin: 5, distMax: 18,
     tocar: o => (o && o.userData && o.userData.dice) || '',
     construir(T, grupo, d, st, h) {
-      const e = escena(d), col = n => h.varCss(`--c-${n}`, { h: '#c0392b', i: '#0f8b8d', d: '#2e8b3d', o: '#b85a06', f: '#7f5ae0' }[n]);
+      const e = escena(d), col = n => h.varCss(`--c-${n}`, { h: '#c0392b', i: '#0f8b8d', d: '#2e8b3d', o: '#a95300', f: '#7f5ae0' }[n]);
       const tinta = h.varCss('--ink', '#2d2340'), tocables = [];
       grupo.position.set(0, -0.55, 0);
       // El piso: un disco claro con las líneas norte-sur y este-oeste.

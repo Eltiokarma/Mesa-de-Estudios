@@ -82,7 +82,7 @@
   }
 
   // ---------- Respaldo plano ----------
-  const COLOR = { 'c-o': 'var(--c-o, #b85a06)', 'c-i': 'var(--c-i, #0f8a8a)', 'c-d': 'var(--c-d, #2f8f4e)', 'c-h': 'var(--c-h, #c0392b)', tinta: 'currentColor', piso: 'var(--sub, #8a7f99)', '': 'currentColor' };
+  const COLOR = { 'c-o': 'var(--c-o, #a95300)', 'c-i': 'var(--c-i, #0f8a8a)', 'c-d': 'var(--c-d, #2f8f4e)', 'c-h': 'var(--c-h, #c0392b)', tinta: 'currentColor', piso: 'var(--sub, #8a7f99)', '': 'currentColor' };
   function plano(d) {
     const v = vistaDe(d), F = figura(d), E = 58, W = 320, H = 250;
     const p2 = p => { const q = S.proyectar(resta(p, F.centro), v); return [W / 2 + q[0] * E, H / 2 - q[1] * E]; };

@@ -50,7 +50,7 @@
   function dibujar(d) {
     const pl = plano(d), n = x => Math.round(x * 100) / 100, pts = c => c.map(p => `${n(p[0])},${n(p[1])}`).join(' ');
     const caras = pl.caras.map(c => `<polygon points="${pts(c)}" fill="var(--c-d, #2f8f4e)" fill-opacity="0.35" stroke="var(--c-i, #0f8a8a)" stroke-width="2" stroke-linejoin="round"/>`).join('');
-    const vert = pl.vertices.map(p => `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="3.2" fill="var(--c-o, #b85a06)"/>`).join('');
+    const vert = pl.vertices.map(p => `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="3.2" fill="var(--c-o, #a95300)"/>`).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit">${caras}${vert}</svg>`;
   }
 
@@ -61,7 +61,7 @@
     clave: d => JSON.stringify([d.solido, d.vista || null]),
     distancia: 8, distMin: 4, distMax: 14,
     construir(T, grupo, d, e, h) {
-      const g = figura(d), verde = h.varCss('--c-d', '#2f8f4e'), turq = h.varCss('--c-i', '#0f8a8a'), nar = h.varCss('--c-o', '#b85a06');
+      const g = figura(d), verde = h.varCss('--c-d', '#2f8f4e'), turq = h.varCss('--c-i', '#0f8a8a'), nar = h.varCss('--c-o', '#a95300');
       const tri = [], lin = [];
       for (const f of g.caras) {
         for (let k = 1; k + 1 < f.length; k++) tri.push(...f[0], ...f[k], ...f[k + 1]);

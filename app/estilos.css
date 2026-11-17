@@ -7,7 +7,7 @@
   --brand:#7f5ae0; --brand-2:#a58cf0; --brand-ink:#ffffff; --brand-soft:#efe6ff;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1f9d6b; --warn:#e5484d;
   /* Colores de variables: los mismos de las escenas (regla 4). Solo se usan en enunciados y soluciones. */
-  --c-o:#b85a06; --c-i:#08807a; --c-h:#c0364a; --c-d:#4f7a17; --c-f:#6b3dbd;
+  --c-o:#a95300; --c-i:#07746e; --c-h:#c02a5c; --c-d:#3d6b0c; --c-f:#6b3dbd;
   --radius:28px; --radius-s:20px; --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
   --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
   color-scheme:light;
@@ -110,11 +110,11 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 .fig-gen svg{max-width:100%;height:auto;max-height:min(600px,75vh);font-family:inherit}
 .var{white-space:nowrap;font-weight:700;padding:0 4px;border-radius:6px;border-bottom:2px dotted currentColor}
 .var.largo{white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.var.c-o{color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
-.var.c-i{color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
-.var.c-h{color:var(--c-h);background:color-mix(in srgb,var(--c-h) 12%,transparent)}
-.var.c-d{color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
-.var.c-f{color:var(--c-f);background:color-mix(in srgb,var(--c-f) 12%,transparent)}
+.var.c-o{color:var(--c-o);background:color-mix(in srgb,var(--c-o) 8%,transparent)}
+.var.c-i{color:var(--c-i);background:color-mix(in srgb,var(--c-i) 8%,transparent)}
+.var.c-h{color:var(--c-h);background:color-mix(in srgb,var(--c-h) 8%,transparent)}
+.var.c-d{color:var(--c-d);background:color-mix(in srgb,var(--c-d) 8%,transparent)}
+.var.c-f{color:var(--c-f);background:color-mix(in srgb,var(--c-f) 8%,transparent)}
 .formula{font-weight:600;white-space:nowrap}
 .alts{display:grid;gap:10px;margin-top:6px}
 .alt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:var(--radius-s);padding:12px 14px;font-size:17px;font-weight:600}

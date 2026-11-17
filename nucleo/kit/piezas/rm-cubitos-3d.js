@@ -170,21 +170,21 @@
     };
   }
   const RELLENO = {
-    cubo: 'fill="color-mix(in srgb, var(--c-o, #b85a06) 32%, var(--card, #fffaf6))"',
-    pintada: 'fill="color-mix(in srgb, var(--c-o, #b85a06) 85%, var(--card, #fffaf6))"', blanca: 'fill="#ddd5cf"', base: 'fill="#b3a8a0"',
-    dado: 'fill="var(--card, #fffaf6)"', tenue: 'fill="var(--c-o, #b85a06)" fill-opacity="0.12"',
+    cubo: 'fill="color-mix(in srgb, var(--c-o, #a95300) 32%, var(--card, #fffaf6))"',
+    pintada: 'fill="color-mix(in srgb, var(--c-o, #a95300) 85%, var(--card, #fffaf6))"', blanca: 'fill="#ddd5cf"', base: 'fill="#b3a8a0"',
+    dado: 'fill="var(--card, #fffaf6)"', tenue: 'fill="var(--c-o, #a95300)" fill-opacity="0.12"',
   };
   function dibujar(d) {
     const pl = plano(d), n = x => Math.round(x * 100) / 100, pts = ps => ps.map(p => `${n(p.x)},${n(p.y)}`).join(' ');
     const cuerpo = pl.poligonos.map(g => {
-      if (g.tipo !== 'cara') return `<polygon points="${pts(g.ps)}" fill="var(${g.tipo === 'frente' ? '--c-i, #08807a' : '--c-d, #4f7a17'})" fill-opacity="0.4" stroke="none"/>`;
+      if (g.tipo !== 'cara') return `<polygon points="${pts(g.ps)}" fill="var(${g.tipo === 'frente' ? '--c-i, #07746e' : '--c-d, #3d6b0c'})" fill-opacity="0.4" stroke="none"/>`;
       const r = Math.max(1.5, R_PUNTO * pl.E);
       const relleno = /^c-[a-z]$/.test(g.tono) ? `fill="color-mix(in srgb, var(--${g.tono}) 50%, var(--card, #fffaf6))"` : RELLENO[g.tono] || RELLENO.cubo;
       return `<polygon points="${pts(g.ps)}" ${relleno} stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"${g.tono === 'tenue' ? ' stroke-opacity="0.35"' : ''}/>`
         + g.puntos.map(p => `<circle cx="${n(p.x)}" cy="${n(p.y)}" r="${n(r)}" fill="currentColor"/>`).join('');
     }).join('');
     const lineas = pl.lineas.map(([a, b]) => `<line x1="${n(a.x)}" y1="${n(a.y)}" x2="${n(b.x)}" y2="${n(b.y)}" stroke="currentColor" stroke-opacity="0.45" stroke-width="1"/>`).join('');
-    const ruta = pl.ruta.length > 1 ? `<polyline points="${pts(pl.ruta)}" fill="none" stroke="var(--c-o, #b85a06)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>` : '';
+    const ruta = pl.ruta.length > 1 ? `<polyline points="${pts(pl.ruta)}" fill="none" stroke="var(--c-o, #a95300)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>` : '';
     const marcas = pl.marcas.map(m => `<text x="${n(m.en.x)}" y="${n(m.en.y - 8)}" text-anchor="middle" font-size="14" font-weight="700" fill="${m.color ? `var(--${m.color})` : 'currentColor'}">${Kit.esc ? Kit.esc(m.texto) : String(m.texto).replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit"><g class="kit-lineas">${lineas}</g><g class="kit-cubitos">${cuerpo}</g><g class="kit-ruta">${ruta}</g><g class="kit-marcas">${marcas}</g></svg>`;
   }
@@ -202,9 +202,9 @@
       const radio = Math.hypot(...b.mx.map((v, i) => v - b.mn[i])) / 2, escala = Math.min(2.6 / radio, 4.2 / b.lado);
       grupo.scale.setScalar(escala);
       const t3 = p => new T.Vector3(p[0] - b.centro[0], p[2] - b.centro[2], -(p[1] - b.centro[1]));
-      const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06');
+      const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#a95300');
       const colorTono = k => {
-        if (/^c-[a-z]$/.test(k)) return new T.Color(h.varCss(`--${k}`, '#b85a06')).lerp(new T.Color(osc ? '#2a2135' : '#fffaf6'), 0.5).getStyle();
+        if (/^c-[a-z]$/.test(k)) return new T.Color(h.varCss(`--${k}`, '#a95300')).lerp(new T.Color(osc ? '#2a2135' : '#fffaf6'), 0.5).getStyle();
         const t = TONOS[k] || TONOS.cubo;
         if (t.fijo) return osc && t.oscuro ? t.oscuro : t.fijo;
         const c = new T.Color(naranja);
@@ -260,7 +260,7 @@
         const pos = [];
         for (const m of lista) { const q = m.p.map(t3); for (const i of [0, 1, 2, 0, 2, 3]) pos.push(q[i].x, q[i].y, q[i].z); }
         const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
-        grupo.add(new T.Mesh(geo, new T.MeshBasicMaterial({ color: new T.Color(h.varCss(que === 'frente' ? '--c-i' : '--c-d', que === 'frente' ? '#08807a' : '#4f7a17')), transparent: true, opacity: 0.45, side: T.DoubleSide, depthWrite: false })));
+        grupo.add(new T.Mesh(geo, new T.MeshBasicMaterial({ color: new T.Color(h.varCss(que === 'frente' ? '--c-i' : '--c-d', que === 'frente' ? '#07746e' : '#3d6b0c')), transparent: true, opacity: 0.45, side: T.DoubleSide, depthWrite: false })));
         const alto = Math.max(...lista.map(m => m.p[2][2]));
         const bc = cajaCeldas(d), sobre = que === 'frente' ? [(bc.mn[0] + bc.mx[0]) / 2, bc.mx[1] + 0.4, alto + 0.45] : [bc.mn[0] - 0.4, (bc.mn[1] + bc.mx[1]) / 2, alto + 0.45];
         h.etiqueta(t3(sobre), que === 'frente' ? 'vista de frente' : 'vista de lado', { color: que === 'frente' ? 'c-i' : 'c-d' });

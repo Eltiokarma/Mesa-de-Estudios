@@ -21,7 +21,7 @@
   if (nodo) module.exports = api;
 })(typeof self !== 'undefined' ? self : this, function (Kit, S) {
   'use strict';
-  const CLASE = { 3: { color: 'c-h', texto: 'esquinas', hex: '#c0392b' }, 2: { color: 'c-o', texto: 'aristas', hex: '#b85a06' },
+  const CLASE = { 3: { color: 'c-h', texto: 'esquinas', hex: '#c0392b' }, 2: { color: 'c-o', texto: 'aristas', hex: '#a95300' },
     1: { color: 'c-i', texto: 'caras', hex: '#0f8a8a' }, 0: { color: 'c-d', texto: 'interior', hex: '#2f8f4e' } };
   const CARAS = { '+x': [1, 0, 0], '-x': [-1, 0, 0], '+y': [0, 1, 0], '-y': [0, -1, 0], '+z': [0, 0, 1], '-z': [0, 0, -1] };
   const vistaDe = d => d.vista || { giro: 35, inclinacion: 28 };
