@@ -4676,6 +4676,7 @@
       "geometria.triangulos"
      ],
      "plantillas": [
+      "razones-trig-agudas",
       "circunferencia-trig"
      ],
      "teoria": {
@@ -9225,6 +9226,22 @@
     "/plantillas/razonamiento-numerico/index.html",
     "/plantillas/razonamiento-numerico/motor.js",
     "/plantillas/razonamiento-numerico/papel.json"
+   ]
+  },
+  "razones-trig-agudas": {
+   "id": "razones-trig-agudas",
+   "titulo": "Razones trigonométricas de ángulos agudos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.razones-trigonometricas-agudas"
+   ],
+   "url": "#/practica/razones-trig-agudas",
+   "papel": "/plantillas/razones-trig-agudas/papel.json",
+   "archivos": [
+    "/plantillas/razones-trig-agudas/generador.js",
+    "/plantillas/razones-trig-agudas/papel.json"
    ]
   },
   "refraccion-snell": {

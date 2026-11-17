@@ -1,0 +1,20 @@
+{
+  "id": "razones-trig-agudas",
+  "titulo": "Razones trigonométricas de ángulos agudos",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.razones-trigonometricas-agudas"
+  ],
+  "temas": [
+    "Definición en el triángulo rectángulo",
+    "Ángulos notables",
+    "Ángulos aproximados (37°, 53°, 16°, 74°)",
+    "Razones recíprocas y complementarias"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,349 @@
+{
+  "plantilla": "razones-trig-agudas",
+  "tolerancia": 1e-9,
+  "nota": "Entrada = _datos del generador. Objetos: catetos ra (toca al vértice a) y rb (toca al b), hipotenusa h; theta y angulo dicen en qué vértice está θ; pide co-t es el opuesto a θ y ca-a el adyacente a α. Convención del examen: 37° y 53° del 3-4-5, 16° y 74° del 7-24-25. cofuncion-x y reciproca-x: r1(a·x + b) y r2(c·x + d). esperado.valor es el número (o el texto, en vertices y reconoce-angulo) y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (17 nov 2026, python3 -I con math y fractions, en el scratchpad de la sesión, fuera del repo), que no usa el generador ni el núcleo: arma cada triángulo con coordenadas y saca la razón con el ángulo de verdad (atan2 y las funciones de math), evalúa las expresiones escritas como las lee el alumno, resuelve las ecuaciones en x buscando de medio en medio grado el valor que cumple la igualdad con las funciones de verdad, y usa fracciones exactas para la convención. Lee el texto de la alternativa correcta como número y lo compara con tolerancia 1e-9. Los 20 casos cuadran.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "complemento",
+        "idea": "complementarias",
+        "nivel": 3,
+        "co": 8,
+        "ca": 15,
+        "h": 17,
+        "dada": "cos",
+        "pide": "tan(90° − θ)"
+      },
+      "esperado": {
+        "valor": 1.875,
+        "texto": "15/8"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "suma-nombres",
+        "idea": "lados-desde-angulo",
+        "nivel": 3,
+        "objeto": "rampa",
+        "ra": 2.4,
+        "rb": 0.7,
+        "h": 2.5,
+        "theta": "b",
+        "dado": "ra",
+        "pide": "ca-t+ca-a"
+      },
+      "esperado": {
+        "valor": 3.0999999999999996,
+        "texto": "3,1 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "figura-k",
+        "idea": "aproximados",
+        "nivel": 3,
+        "forma": "cartulina",
+        "k": 4,
+        "pide": "per"
+      },
+      "esperado": {
+        "valor": 48,
+        "texto": "48 cm"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "vertices",
+        "idea": "lados-desde-angulo",
+        "nivel": 1,
+        "r": "L",
+        "a": "K",
+        "b": "S",
+        "angulo": "S",
+        "pide": "CO y CA de S"
+      },
+      "esperado": {
+        "valor": "CO = KL; CA = LS",
+        "texto": "CO = KL; CA = LS"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "figura-k",
+        "idea": "aproximados",
+        "nivel": 3,
+        "forma": "sombra",
+        "poste": 6,
+        "pide": "acorta"
+      },
+      "esperado": {
+        "valor": 3.5,
+        "texto": "3,5 m"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "razon-lados",
+        "idea": "razon-cociente",
+        "nivel": 1,
+        "objeto": "poste-sombra",
+        "ra": 12,
+        "rb": 5,
+        "h": 13,
+        "angulo": "b",
+        "razon": "sen",
+        "falta": null,
+        "pide": "sen α"
+      },
+      "esperado": {
+        "valor": 0.923076923076923,
+        "texto": "12/13"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "reconoce-angulo",
+        "idea": "notables",
+        "nivel": 2,
+        "objeto": "rampa",
+        "H": 4,
+        "g": 45,
+        "dado": "rb",
+        "pide": "θ"
+      },
+      "esperado": {
+        "valor": "45°",
+        "texto": "45°"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "expresion-notable",
+        "idea": "notables",
+        "nivel": 3,
+        "expresion": "tan 60° · cos 30° + sen 30°",
+        "th": null,
+        "pide": "tan 60° · cos 30° + sen 30°"
+      },
+      "esperado": {
+        "valor": 1.9999999999999996,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "valor-notable",
+        "idea": "notables",
+        "nivel": 1,
+        "razon": "cos",
+        "g": 60,
+        "pide": "cos 60°"
+      },
+      "esperado": {
+        "valor": 0.5000000000000001,
+        "texto": "1/2"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "lado-objeto",
+        "idea": "lados-desde-angulo",
+        "nivel": 2,
+        "objeto": "repisa",
+        "ra": 20,
+        "rb": 15,
+        "h": 25,
+        "theta": "b",
+        "dado": "ra",
+        "pide": "co-t"
+      },
+      "esperado": {
+        "valor": 20,
+        "texto": "20 cm"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "razon-figura",
+        "idea": "razon-cociente",
+        "nivel": 3,
+        "forma": "diagonal",
+        "AB": 12,
+        "BC": 5,
+        "angulo": "A",
+        "razon": "cos",
+        "pide": "cos θ"
+      },
+      "esperado": {
+        "valor": 0.9230769230769231,
+        "texto": "12/13"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "reciproca-x",
+        "idea": "complementarias",
+        "nivel": 2,
+        "r1": "sec",
+        "r2": "cos",
+        "a": 2,
+        "b": 24,
+        "c": 1,
+        "d": 42,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 18,
+        "texto": "18°"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "reciproca-notable",
+        "idea": "complementarias",
+        "nivel": 2,
+        "expresion": "csc 60° · sen 60° + sec² 30°",
+        "pide": "csc 60° · sen 60° + sec² 30°"
+      },
+      "esperado": {
+        "valor": 2.333333333333333,
+        "texto": "7/3"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "razon-convencion",
+        "idea": "aproximados",
+        "nivel": 1,
+        "razon": "tan",
+        "g": 53,
+        "pide": "tan 53°"
+      },
+      "esperado": {
+        "valor": 1.3333333333333333,
+        "texto": "4/3"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "otra-razon",
+        "idea": "razon-cociente",
+        "nivel": 3,
+        "co": 12,
+        "ca": 5,
+        "h": 13,
+        "dada": "sen",
+        "pide": "tan θ"
+      },
+      "esperado": {
+        "valor": 2.3999999999999995,
+        "texto": "12/5"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "semejante",
+        "idea": "razon-cociente",
+        "nivel": 2,
+        "objeto": "escalera",
+        "ra": 1.2,
+        "rb": 3.5,
+        "h": 3.7,
+        "k": 3,
+        "razon": "tan",
+        "pide": "tan θ"
+      },
+      "esperado": {
+        "valor": 2.916666666666667,
+        "texto": "35/12"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "lado-k",
+        "idea": "aproximados",
+        "nivel": 2,
+        "objeto": "poste",
+        "g": 53,
+        "k": 2,
+        "dado": "ra",
+        "pide": "rb"
+      },
+      "esperado": {
+        "valor": 8,
+        "texto": "8 m"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "cofuncion-x",
+        "idea": "complementarias",
+        "nivel": 2,
+        "r1": "tan",
+        "r2": "cot",
+        "a": 3,
+        "b": 2,
+        "c": 2,
+        "d": 8,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 16,
+        "texto": "16°"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "razon-figura",
+        "idea": "razon-cociente",
+        "nivel": 3,
+        "forma": "medio",
+        "lado": 6,
+        "angulo": "A",
+        "razon": "tan",
+        "pide": "tan θ"
+      },
+      "esperado": {
+        "valor": 0.5,
+        "texto": "1/2"
+      }
+    },
+    {
+      "semilla": 547,
+      "entrada": {
+        "tipo": "figura-k",
+        "idea": "aproximados",
+        "nivel": 3,
+        "forma": "trapecio",
+        "g": 53,
+        "k": 3,
+        "menor": 6,
+        "pide": "per"
+      },
+      "esperado": {
+        "valor": 48,
+        "texto": "48 m"
+      }
+    }
+  ]
+}

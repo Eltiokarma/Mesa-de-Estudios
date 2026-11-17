@@ -1,0 +1,95 @@
+{
+  "titulo": "Razones trigonométricas de ángulos agudos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el triángulo MNT, el ángulo recto está en M. ¿Cuáles son el cateto opuesto y el adyacente al ángulo N? Datos: Un lado se nombra con sus dos vértices: MN es el lado que une M con N. Recto en M: el ángulo de 90° está en el vértice M. Hipotenusa: el lado que queda frente al ángulo recto. Es el lado más largo. Cateto opuesto a un ángulo agudo: el cateto que queda frente a ese ángulo, sin tocarlo. Cateto adyacente a un ángulo agudo: el cateto que forma ese ángulo junto con la hipotenusa. Alternativas: A) CO = MT; CA = MN   B) CO = MT; CA = NT   C) CO = MN; CA = NT   D) CO = MN; CA = MT   E) CO = NT; CA = MN",
+      "respuesta": "A) CO = MT; CA = MN",
+      "pasos": [
+        "Los catetos pasan por el recto, M: MN y MT. NT es la hipotenusa.",
+        "MN pasa por N: es el adyacente. MT no lo toca: es el opuesto.",
+        "Respuesta: CO = MT; CA = MN."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Sin calculadora. ¿Cuál es el valor exacto de cos 30°? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. Media señal (30° y 60°): hipotenusa 2; frente a 30°, 1; frente a 60°, √3. Media loseta (45° y 45°): catetos 1 y 1; hipotenusa √2. Racionalizar: 1/√2 = √2/2; 1/√3 = √3/3. Alternativas: A) √3/2   B) 1/2   C) 2√3/3   D) √3",
+      "respuesta": "A) √3/2",
+      "pasos": [
+        "En la media señal: frente a 30°, 1; frente a 60°, √3; hipotenusa 2.",
+        "cos 30° = CA/H, desde 30°.",
+        "cos 30° = √3/2."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Usa la convención del examen. ¿Cuánto vale sen 74°? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. sen 16° = 7/25 y cos 16° = 24/25 (convención del examen). 16° + 74° = 90°: son los dos agudos del mismo triángulo. Alternativas: A) 7/24   B) 24/7   C) 25/24   D) 24/25   E) 7/25",
+      "respuesta": "D) 24/25",
+      "pasos": [
+        "Con la convención, el triángulo de 16° tiene lados 7, 24 y 25.",
+        "Desde 74°: CO = 24, CA = 7, H = 25.",
+        "sen 74° = 24/25."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una repisa tiene un brazo y un tirante. θ está entre el tirante y la pared; α es el otro agudo. El tirante mide 50 cm y la pared, 40 cm. ¿Cuánto mide el cateto opuesto a α? Datos: Hipotenusa: el lado que queda frente al ángulo recto. Es el lado más largo. Cateto opuesto a un ángulo agudo: el cateto que queda frente a ese ángulo, sin tocarlo. Cateto adyacente a un ángulo agudo: el cateto que forma ese ángulo junto con la hipotenusa. Pitágoras: hipotenusa² = cateto² + cateto². Alternativas: A) 50 cm   B) 30 cm   C) 10 cm   D) 40 cm",
+      "respuesta": "D) 40 cm",
+      "pasos": [
+        "El tirante es la hipotenusa: queda frente al ángulo recto.",
+        "Desde α, ese cateto es la pared.",
+        "Es la pared, el dato: no hace falta Pitágoras.",
+        "Mide 40 cm."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En un triángulo rectángulo, sen θ = 20/29, con θ agudo. ¿Cuánto vale cos θ? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. CO: cateto opuesto a θ; CA: cateto adyacente a θ; H: hipotenusa. Pitágoras: hipotenusa² = cateto² + cateto². Alternativas: A) 9/29   B) 29/21   C) 21/29   D) 20/29   E) 20/21",
+      "respuesta": "C) 21/29",
+      "pasos": [
+        "La razón no depende del tamaño: tomo CO = 20 y H = 29.",
+        "CA = √(29² − 20²) = 21.",
+        "cos θ = 21/29."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se cumple tan(3x + 4°) = cot(2x + 6°), con los dos ángulos agudos. ¿Cuánto vale x? Datos: Cofunciones: sen θ = cos(90° − θ); tan θ = cot(90° − θ); sec θ = csc(90° − θ). Recíprocas: sen θ · csc θ = 1; cos θ · sec θ = 1; tan θ · cot θ = 1. Los ángulos de las razones son agudos: entre 0° y 90°. Alternativas: A) 18°   B) 16°   C) 2°   D) 34°",
+      "respuesta": "B) 16°",
+      "pasos": [
+        "tan y cot son cofunciones: sus ángulos suman 90°.",
+        "3x + 4° + 2x + 6° = 90° → 5x = 80°.",
+        "x = 16°."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Sin calculadora. ¿Cuánto vale 2 cos 30° + sen 60°? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. Media señal (30° y 60°): hipotenusa 2; frente a 30°, 1; frente a 60°, √3. Media loseta (45° y 45°): catetos 1 y 1; hipotenusa √2. Racionalizar: 1/√2 = √2/2; 1/√3 = √3/3. Alternativas: A) 3√3/2   B) 2√3   C) 3/2   D) 3√3",
+      "respuesta": "A) 3√3/2",
+      "pasos": [
+        "Cada razón sale de su figura, nombrada desde su ángulo.",
+        "2 cos 30° + sen 60° = 3√3/2."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un triángulo rectángulo, tan θ = 3/4, con θ agudo. ¿Cuánto vale sec(90° − θ)? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. cot θ = CA/CO; sec θ = H/CA; csc θ = H/CO. Cofunciones: sen θ = cos(90° − θ); tan θ = cot(90° − θ); sec θ = csc(90° − θ). Pitágoras: hipotenusa² = cateto² + cateto². Alternativas: A) 5/3   B) 3/5   C) 7/3   D) 3/4   E) 5/4",
+      "respuesta": "A) 5/3",
+      "pasos": [
+        "Por cofunción, sec(90° − θ) = csc θ.",
+        "Lados: H = √(3² + 4²) = 5.",
+        "csc θ = 5/3."
+      ]
+    }
+  ]
+}

@@ -56,7 +56,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["geometria.triangulos"],
-      "plantillas": ["circunferencia-trig"],
+      "plantillas": ["razones-trig-agudas", "circunferencia-trig"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {
