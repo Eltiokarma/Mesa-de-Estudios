@@ -1,0 +1,321 @@
+{
+  "plantilla": "areas-volumenes",
+  "tolerancia": 1e-09,
+  "nota": "area/simple, area/ha, area/titicaca y volumen/simple: x en 'de', respuesta en 'a' (ha = cuadrado de 100 m de lado; L = dm³). losetas: piso a m × b m, losetas de L cm de lado. cubo: lado L dm, en litros. caja: l × a × al cm, en litros. densidad (rho en g/cm³): conv en kg/m³; masa (dims en cm) y masa-m3 (V en m³) en kg; volumen (m en kg) en litros. caudal: V en m³ y t en min → L/s; tiempo: q en L/s y V en m³ → min; convertir: x L/min → m³/h; lluvia: mm sobre a m × b m → litros.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo), que no usa el generador ni el núcleo: pasa cada dato de entrada al SI con una tabla propia (los m², m³, ha y L se arman elevando el largo: ha = (100 m)², L = (1 dm)³), recalcula la respuesta exacta y comprueba que cada número de la entrada se lee en el enunciado. Los 20 casos cuadran con el generador; 'exacta' es la fracción que dio el script y 'texto', la alternativa correcta que ve el alumno.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "area",
+        "sub": "simple",
+        "nivel": 1,
+        "x": 3,
+        "de": "m²",
+        "a": "cm²"
+      },
+      "esperado": {
+        "respuesta": 30000.0,
+        "exacta": "30000",
+        "texto": "30 000 cm²"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "tiempo",
+        "nivel": 3,
+        "q": 0.2,
+        "V": 1.2
+      },
+      "esperado": {
+        "respuesta": 100.0,
+        "exacta": "100",
+        "texto": "100 min"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "masa-m3",
+        "nivel": 3,
+        "V": 1.1,
+        "rho": 1
+      },
+      "esperado": {
+        "respuesta": 1100.0,
+        "exacta": "1100",
+        "texto": "1100 kg"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "lluvia",
+        "nivel": 3,
+        "mm": 25,
+        "a": 12,
+        "b": 9
+      },
+      "esperado": {
+        "respuesta": 2700.0,
+        "exacta": "2700",
+        "texto": "2700 L"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "masa",
+        "nivel": 3,
+        "dims": [
+          10,
+          5,
+          4
+        ],
+        "rho": 7.9
+      },
+      "esperado": {
+        "respuesta": 1.58,
+        "exacta": "79/50",
+        "texto": "1,58 kg"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "volumen",
+        "sub": "cubo",
+        "nivel": 2,
+        "L": 3
+      },
+      "esperado": {
+        "respuesta": 27.0,
+        "exacta": "27",
+        "texto": "27 L"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "area",
+        "sub": "ha",
+        "nivel": 1,
+        "x": 2500,
+        "de": "m²",
+        "a": "ha"
+      },
+      "esperado": {
+        "respuesta": 0.25,
+        "exacta": "1/4",
+        "texto": "0,25 ha"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "area",
+        "sub": "losetas",
+        "nivel": 3,
+        "a": 12,
+        "b": 9,
+        "L": 60
+      },
+      "esperado": {
+        "respuesta": 300.0,
+        "exacta": "300",
+        "texto": "300"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "volumen",
+        "nivel": 3,
+        "m": 4.6,
+        "rho": 0.92
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5",
+        "texto": "5 L"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "area",
+        "sub": "simple",
+        "nivel": 1,
+        "x": 2.5,
+        "de": "mm²",
+        "a": "cm²"
+      },
+      "esperado": {
+        "respuesta": 0.025,
+        "exacta": "1/40",
+        "texto": "0,025 cm²"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "area",
+        "sub": "ha",
+        "nivel": 1,
+        "x": 3,
+        "de": "ha",
+        "a": "m²"
+      },
+      "esperado": {
+        "respuesta": 30000.0,
+        "exacta": "30000",
+        "texto": "30 000 m²"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "area",
+        "sub": "simple",
+        "nivel": 1,
+        "x": 600,
+        "de": "cm²",
+        "a": "m²"
+      },
+      "esperado": {
+        "respuesta": 0.06,
+        "exacta": "3/50",
+        "texto": "0,06 m²"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "volumen",
+        "sub": "simple",
+        "nivel": 1,
+        "x": 1.1,
+        "de": "m³",
+        "a": "L"
+      },
+      "esperado": {
+        "respuesta": 1100.0,
+        "exacta": "1100",
+        "texto": "1100 L"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "caudal",
+        "nivel": 2,
+        "V": 0.6,
+        "t": 50
+      },
+      "esperado": {
+        "respuesta": 0.2,
+        "exacta": "1/5",
+        "texto": "0,2 L/s"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "caudal",
+        "sub": "convertir",
+        "nivel": 2,
+        "x": 15
+      },
+      "esperado": {
+        "respuesta": 0.9,
+        "exacta": "9/10",
+        "texto": "0,9 m³/h"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "volumen",
+        "sub": "caja",
+        "nivel": 2,
+        "l": 60,
+        "a": 30,
+        "al": 40
+      },
+      "esperado": {
+        "respuesta": 72.0,
+        "exacta": "72",
+        "texto": "72 L"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "volumen",
+        "sub": "simple",
+        "nivel": 1,
+        "x": 750,
+        "de": "cm³",
+        "a": "L"
+      },
+      "esperado": {
+        "respuesta": 0.75,
+        "exacta": "3/4",
+        "texto": "0,75 L"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "volumen",
+        "sub": "simple",
+        "nivel": 1,
+        "x": 20,
+        "de": "dm³",
+        "a": "m³"
+      },
+      "esperado": {
+        "respuesta": 0.02,
+        "exacta": "1/50",
+        "texto": "0,02 m³"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "densidad",
+        "sub": "conv",
+        "nivel": 2,
+        "rho": 7.9
+      },
+      "esperado": {
+        "respuesta": 7900.0,
+        "exacta": "7900",
+        "texto": "7900 kg/m³"
+      }
+    },
+    {
+      "semilla": 111,
+      "entrada": {
+        "tipo": "area",
+        "sub": "titicaca",
+        "nivel": 3,
+        "x": 8372,
+        "de": "km²",
+        "a": "ha"
+      },
+      "esperado": {
+        "respuesta": 837200.0,
+        "exacta": "837200",
+        "texto": "837 200 ha"
+      }
+    }
+  ]
+}
