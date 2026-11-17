@@ -1298,10 +1298,11 @@ async function vPapel(id) {
   if (location.hash !== `#/papel/${id}`) return; // el alumno ya se fue a otra pantalla
   // Vuelve a los ejercicios de la unidad desde la que llegó (una plantilla puede servir a varias unidades).
   const ult = sessionStorage.getItem('ultima-unidad'), deUnidad = ult && p.unidades.includes(ult) ? ult : null;
+  // Un problema de papel puede decir a qué unidades sirve (q.unidades): si se llegó desde una unidad, se ven solo los suyos.
   $app.innerHTML = `<a class="volver" href="${deUnidad ? `#/unidad/${esc(deUnidad)}/ejercicios` : `#/curso/${esc(curso ? curso.id : '')}`}" aria-label="Volver">‹</a>
     <p class="sub">${esc(curso ? curso.nombre : '')} · ${esc(p.titulo)}</p><h1>Lápiz y papel</h1>
     <p class="sub" style="margin-top:8px">${esc(d.indicacion)}</p>
-    <div class="lista papel" style="margin-top:18px">${d.problemas.map((q, k) => `<article class="card">
+    <div class="lista papel" style="margin-top:18px">${d.problemas.filter(q => !deUnidad || !Array.isArray(q.unidades) || q.unidades.includes(deUnidad)).map((q, k) => `<article class="card">
       <div class="etq-p">Problema ${k + 1}${q.nivel ? ` · ${esc(q.nivel)}` : ''}</div>
       <p style="margin:8px 0 12px">${esc(q.enunciado)}</p>${q.texto ? papelLectura(q) : ''}
       <details><summary>Ver respuesta</summary><p><b>${esc(q.respuesta)}</b></p><ol class="sol${q.texto ? ' sol-lectura' : ''}">${q.pasos.map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ol></details>
