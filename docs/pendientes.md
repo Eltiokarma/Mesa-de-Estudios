@@ -1,6 +1,42 @@
 # Pendientes y traspaso
 
-Actualizado el 15 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 17 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 17 nov: Etapa 1 cerrada, el molde listo para replicar
+
+**Hecho (16–17 nov):** «Magnitudes y unidades» y «Vectores» pasaron el contrato completo (`docs/plan-calidad.md` §3,
+13 puntos), dos rondas de lector en frío (momentos y ejemplos), una auditoría con correcciones y la auditoría de colores.
+Son el modelo para las 150 unidades que faltan.
+
+- **Cómo se replica:** `docs/molde-unidad.md` (qué debe cumplir una unidad, con la lista de verificación §10 y la
+  adaptación por curso §11) y `docs/metodo/unidad/` (cómo se hace: las fases, quién hace cada una y el encargo listo para
+  copiar de cada agente). Herramientas: `herramientas/capturas-teoria.js` (capturas de momentos, ejemplos, glosario y
+  laboratorio, en claro, oscuro y pantalla ancha, y la selección para el lector en frío) y
+  `herramientas/auditar-colores.py` (contraste WCAG y distancias OKLab con daltonismo simulado).
+- **Lo nuevo en la app:** pestaña «Ejemplos» (15 resueltos por idea, 3 niveles), recuadro «Datos» en todo ejercicio
+  (también en la práctica y en «Predice», ahí sin fórmulas), campo `fuente` para datos reales, «‹ Atrás» entre los
+  momentos de una idea, opciones de «Predice» barajadas (antes la correcta iba primera en 633 de 689), subíndices
+  «A_y» en la práctica, la práctica que le dice al generador de qué unidad viene, y la paleta de variables por papel
+  (§5b del molde).
+- **Informes:** `rutinas/frio/fisica.magnitudes-y-vectores.md`, `rutinas/frio/fisica.vectores.md`,
+  `rutinas/frio/ejemplos-resueltos.md`, `rutinas/auditoria/fisica.magnitudes-y-vectores.md` y
+  `rutinas/auditoria/fisica.vectores.md` (con su sección «Correcciones»).
+- **Decisiones de Gerson de estos días:** criterio, no memoria (todo ejercicio da sus datos y fórmulas); «Predice» con
+  datos pero sin fórmula; notación de los libros (T = 2π√(L/g)) con aviso si una letra choca; valores de libro con
+  «unos» y sin fuente; el adobe como «valor aproximado»; colores por papel; a_y en violeta oscuro; los distractores de
+  escala (× 1000 contra ÷ 1000) sin tope en la práctica de unidades.
+
+**Pendiente:**
+1. **Vercel no publica desde la v224** (sirve la v223; `main` va por la v226). Probable límite diario de despliegues del
+   plan gratuito: revisar en Vercel → Deployments y, si hace falta, «Redeploy» del último commit de `main`.
+2. **Gerson revisa en el celular** las dos unidades y la galería de capturas.
+3. **Etapa 2** (`docs/plan-calidad.md` §7): `trigonometria.razones-trigonometricas-agudas`, `quimica.materia-y-energia`
+   y `razonamiento-verbal.tema-e-idea-principal`, con `docs/metodo/unidad/LEEME.md`: primero la propuesta de ideas para
+   Gerson (fase 1), después una idea completa para su visto bueno, y recién ahí el resto en paralelo.
+4. Reglas que los auditores propusieron automatizar y todavía no están en el validador (lista en las secciones «Reglas
+   que faltan» de los dos informes): figura de ejemplo que escribe la respuesta, vector sin flecha en texto visible,
+   «Así se resuelve» igual a «Ahora tú», objeto en la primera pantalla (`sinObjeto`), datos con signo cuando el signo se
+   mide, y el campo de datos aparte en el papel.
 
 ## Cómo arrancar una sesión nueva
 

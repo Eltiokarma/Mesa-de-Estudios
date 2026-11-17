@@ -20,7 +20,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 ```
 docs/fundacional.md            documento base (copia del doc vivo en claude.ai)
 docs/arquitectura.md           capas (catálogo, módulos, núcleo, app, datos), formatos de módulo y cómo agregar cursos o unidades
-docs/metodo/                   cómo se construye una plantilla con subagentes (briefs del constructor, verificador y revisor)
+docs/metodo/                   cómo se construye una plantilla con subagentes (briefs del constructor, verificador y revisor); docs/metodo/unidad/: cómo se rehace una unidad de teoría (fases y encargos)
 docs/pendientes.md             traspaso: qué hay hecho, cómo arrancar y pendientes en orden (léelo al empezar)
 docs/cuentas.md                diseño de cuentas, login, progreso y servidor, con el contrato de la API
 docs/carga.md                  prueba de carga del servidor (14 nov 2026): dónde se rompe y qué cambiar; herramientas en servidor/carga/

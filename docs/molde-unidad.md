@@ -4,7 +4,9 @@ Receta para rehacer cualquier unidad de cualquier curso con la calidad de «Magn
 2026), las dos primeras que pasaron por el contrato completo, el lector en frío y una auditoría. Lo que dice aquí sale de
 lo que funcionó y de los errores que encontraron los lectores y los auditores; cada regla dice de dónde viene.
 
-Manda `docs/plan-calidad.md` (el contrato de 13 puntos y los tres filtros). Este documento es el paso a paso.
+Manda `docs/plan-calidad.md` (el contrato de 13 puntos y los tres filtros). Este documento dice **qué** debe cumplir
+una unidad; `docs/metodo/unidad/` dice **cómo** se hace, fase por fase, con el encargo listo para copiar de cada
+agente (ideas, ejemplos, práctica, lector en frío, auditor, correcciones) y las herramientas.
 Formato de los campos: `docs/teoria.md`. Reglas del repo: `CLAUDE.md`.
 
 ## 0. Antes de escribir
@@ -180,3 +182,22 @@ simulados, Machado 2009):
 - [ ] Piezas con prueba numérica de encuadre y rótulos.
 - [ ] Práctica por idea, tipos de la unidad, papel con datos.
 - [ ] `npm test`, cuentas aparte, lector en frío (momentos y ejemplos), auditor, correcciones, galería para Gerson.
+
+## 11. Otros cursos: qué cambia y qué no
+
+Lo que no cambia en ningún curso: objeto reconocible en la primera pantalla, misión, predicción antes de ver, datos en
+todo ejercicio (herramientas, no el paso hecho), ejemplos que suben de nivel con la figura sin la respuesta, colores
+por papel, práctica por idea, lector en frío y auditor. Lo que se adapta:
+
+| Curso | Qué es «dato» | Objeto de la primera pantalla | Notas de color y notación |
+| --- | --- | --- | --- |
+| Física | equivalencias, constantes (g, c), valores de academia (37°, 53°), fórmula | poste, combi, caja con cuerdas, plaza de Juliaca | §5b tal cual; vectores con flecha |
+| Química | masas atómicas, R, Nₐ, condiciones normales, la fórmula (n = m/M) | frasco, balanza, olla, chompa mojada | los elementos tienen su paleta propia (`nucleo/elementos.js`); las variables usan §5b y no se mezclan con los colores de elemento en el mismo dibujo |
+| Trigonometría y geometría | valores notables (sen 37° = 3/5), la definición de la razón, áreas y teoremas que se usan | escalera en la pared, poste y su sombra, rampa, terreno | los ángulos en carmín; los lados por papel (dato, dato, lo que se pide) |
+| Álgebra y aritmética | la propiedad o fórmula que se usa (productos notables, regla de tres), equivalencias | balanza, fichas, precios del mercado | lo que se pide en violeta; los datos por papel |
+| Razonamiento matemático | las reglas del problema escritas, sin el atajo | relojes, calendarios, fichas, mapas de cuadras | el papel de cada cantidad, igual que en física |
+| Razonamiento verbal | la definición o el criterio que se aplica («idea principal: lo que el texto entero afirma del tema») | el texto mismo, corto y propio, con su contexto | tiene paleta propia de lectura (evidencia turquesa, distractor naranja, idea verde; `docs/diseno.md`); los ejemplos resueltos son preguntas sobre textos breves con la evidencia marcada |
+
+Etapa 2 del plan (`docs/plan-calidad.md` §7): `trigonometria.razones-trigonometricas-agudas`, `quimica.materia-y-energia`
+y `razonamiento-verbal.tema-e-idea-principal`. Las tres ya tienen teoría de rondas anteriores (sin el contrato
+completo) y práctica; se rehacen con `docs/metodo/unidad/`, empezando por la propuesta de ideas para Gerson.

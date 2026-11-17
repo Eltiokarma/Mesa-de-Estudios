@@ -125,6 +125,9 @@ Se construye mientras se rehace la primera unidad (etapa 1), con un caso real qu
 
 ### Etapa 1: una unidad de punta a punta
 
+**Cerrada el 17 nov** con «Magnitudes y unidades» y «Vectores» (la unidad se partió en dos). Lo aprendido quedó en
+`docs/molde-unidad.md` y `docs/metodo/unidad/`.
+
 `fisica.magnitudes-y-vectores`, la raíz de física y donde Gerson encontró los tres casos.
 
 1. **Primero una sola idea:** «Otra unidad, otro número», con el poste de luz y tres reglas en SVG a la vez (metro, decímetro, centímetro), misión, leyenda y lectura que diga la relación. Pasa los filtros 1 y 2. Gerson la ve y aprueba o corrige. **Nada más avanza hasta ese visto bueno.**
