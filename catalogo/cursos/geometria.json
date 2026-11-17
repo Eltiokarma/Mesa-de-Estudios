@@ -25,7 +25,7 @@
       "universidades": {"uni": {"semanas": [0, 1]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "requiere": [],
+      "requiere": ["algebra.ecuaciones-lineales-y-cuadraticas"],
       "plantillas": ["segmentos-angulos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },

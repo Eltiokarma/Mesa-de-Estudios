@@ -1,34 +1,58 @@
 /*
- * Teoría de «Segmentos y ángulos» (geometria.segmentos-y-angulos). Molde: docs/teoria.md.
- * Fuente: docs/teoria/matriz/geometria.json (unidad 1), expediente teoria-152-unidades (precisiones de Geometría).
- * Compañera: Neri (nutria). Pieza: geo-figura.
+ * Teoría de «Segmentos y ángulos» (geometria.segmentos-y-angulos), para 5.º de secundaria y preuniversitario. Molde:
+ * docs/teoria.md y docs/molde-unidad.md. Fuente: docs/teoria/matriz/geometria.json (unidad 1), expediente
+ * teoria-152-unidades (precisiones de Geometría). Compañera: Neri (nutria). Piezas: geo-objeto (objetos de prueba) y
+ * geo-figura (las ideas que todavía no se rehacen y la mesa «B fuera de la recta»).
  *
- * Ficha de tarea
+ * Etapa 3 del plan de calidad (17 nov): la propuesta aprobada por Gerson (docs/etapa3/propuesta-geometria.md, con todas
+ * las recomendaciones de su §9) y docs/etapa3/decisiones.md, que manda. Seis ideas: suma-de-segmentos, punto-medio
+ * (nueva), abertura, bisectrices, paralelas y quiebre. Fase 2 del método (docs/metodo/unidad/): por ahora solo la idea 1,
+ * «Suma de segmentos», está rehecha con todo el contrato (objeto en la primera pantalla, misión, leyenda, predicción sin
+ * Pitágoras y con datos sin fórmula, «Mira» con la regla del mapa, regla, «Así se resuelve» distinto de «Ahora tú»,
+ * «Ahora tú» con datos y de nivel examen, glosario con simple y tres ejemplos, y 15 ejemplos resueltos con las cuentas
+ * rehechas aparte). Las ideas 2 a 5 de abajo son las de antes (v0.2.0) y esperan su turno; punto-medio se escribe
+ * después del visto bueno de Gerson a la idea 1. Por eso la unidad aún no declara calidad: 2; la prueba propia
+ * (segmentos-y-angulos.test.js) le exige el contrato completo a la idea 1.
+ *
+ * REGLA DE COLORES DE LA UNIDAD (decisiones de la etapa 3; molde §5b: un color fijo por magnitud, aquí por lo que cada
+ * cosa ES en la figura, porque las letras AB, AC o θ cambian de un problema a otro):
+ *   - segmentos: el todo (el tramo de punta a punta, el viaje directo) en tinta, con su cota; los tramos que se juntan,
+ *     naranja (o) el primero de la carretera, de izquierda a derecha, y turquesa (i) el segundo; lo que se pide, con «?»
+ *     en tinta, para que el color no lo delate; el resultado ya calculado, en violeta (f), solo en el texto del resuelto
+ *     y en la respuesta, nunca en la figura ni en el enunciado; el verde no se usa;
+ *   - ángulos (ideas 3 a 6, cuando se rehagan): el ángulo dado y sus iguales en carmín (h), con arco y letra; su
+ *     compañero (90° − α o 180° − θ) en turquesa; en los ejercicios de las ideas 4 a 6, todo ángulo dado en carmín;
+ *   - la pieza geo-objeto pone el color de cada tramo por su papel (todo, pide, dato) y el texto lo toma de la figura
+ *     (pinta): un tramo no puede llevar en el texto otro color que en el dibujo. Sin figura (qué punto está entre los
+ *     otros dos), ningún tramo lleva color: el color diría cuál es el de punta a punta.
+ *   La comprueba segmentos-y-angulos.test.js en cada figura y cada texto de la idea 1 (juego en toda su grilla, «Lee»,
+ *   predicción, «Mira», ejemplos, y «Así se resuelve» y «Ahora tú» en 400 semillas): falla si un tramo cambia de color,
+ *   si el texto lo pinta distinto que la figura o lo deja sin color, o si aparece violeta en una figura o un enunciado.
+ * Notación: AB nombra el segmento y su medida (se dice en «Lee»); m∠AOB para la medida de un ángulo en enunciados y
+ * datos, y C(x), S(x) para complemento y suplemento, sin puntos C ni S en esas figuras (ideas 3 a 6, cuando se rehagan).
+ * Códigos de error: GE17 (docs/investigacion/geometria-ideas-erroneas.md); los GE-SEG, GE-RAZ, GE-ANG, GE-CS, GE-BIS y
+ * GE-QB son hipótesis de aula, sin medir (rutinas/teoria-geometria.md y el bloque de cada idea).
+ *
+ * Ficha de tarea (diseno-y-animacion):
  *   Promesa: distinguir lo que el dibujo sugiere de lo que la condición garantiza, en segmentos y ángulos.
- *   Persona y condiciones: postulante de 3.º de secundaria, celular de gama baja a 360 px, sin audio, quizás sin conexión.
- *   Resultado observable: resuelve sumas de segmentos, clasifica ángulos, usa complemento, suplemento y bisectriz, y
- *     encuentra ángulos entre paralelas, justificando cada igualdad con su condición.
- *   Orden de atención: 1.º la figura y su lectura en vivo · 2.º la pregunta · acción: «Comprobar» · fondo: Neri.
+ *   Persona y condiciones: postulante de 5.º o de academia, celular de gama baja a 360 px, sin audio, quizás sin conexión.
+ *   Resultado observable: resuelve sumas de segmentos (también los que se pisan y las razones con k), clasifica
+ *     ángulos, usa complemento, suplemento y bisectriz, y encuentra ángulos entre paralelas, justificando con su condición.
+ *   Orden de atención: 1.º la carretera y sus tramos · 2.º la misión · acción: correr el paradero · fondo: Neri.
  *   Estados: jugando (casos probados) · predicción sin elegir · comprobada · paso de «Mira» · regla · caso nuevo.
  *   Duda que resuelve: «¿por qué es igual?» se contesta con una condición (entre, paralelas, adyacentes), no con el aspecto.
- *
- * Colores (regla 4; la app tiene cuatro tokens): en cada idea, o naranja = la medida que el alumno mueve,
- * i turquesa = la que la acompaña, d verde = la de referencia, h rojo = lo que se pide. BC es turquesa en toda la unidad.
- * Códigos de error: GE17 (docs/investigacion/geometria-ideas-erroneas.md); los GE-SEG, GE-ANG, GE-CS, GE-BIS y GE-QB
- * son nuevos e hipótesis (ver rutinas/teoria-geometria.md).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
-  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/kit/piezas/geo-figura.js'))
-    : fabrica(root.Kit, root.Kit.piezas['geo-figura']);
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/kit/piezas/geo-figura.js'), require('../../../nucleo/kit/piezas/geo-objeto.js'))
+    : fabrica(root.Kit, root.Kit.piezas['geo-figura'], root.Kit.piezas['geo-objeto']);
   if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit, G) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, G, PO) {
   'use strict';
   const U = G.util;
   const f = (n, d = 1) => Kit.formatear(n, d);
   const gr = n => `${f(n)}°`;
-  const AB = { v: 'c-o', t: 'AB' }, BC = { v: 'c-i', t: 'BC' }, AC = { v: 'c-d', t: 'AC' };
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -53,9 +77,471 @@
     return ops.slice(0, n);
   }
 
-  // ---------- Idea 1: AB + BC = AC solo si B está entre A y C ----------
-  // Cambia: la posición de B · Permanece: A, C y AC = 10 cm · Progresa: la diferencia entre AB + BC y AC ·
-  // Se reserva: B fuera de la recta (solo en la predicción) · Debe verse: la suma exacta exige «B entre A y C».
+  // ---------- Idea 1 (rehecha, 17 nov): suma de segmentos ----------
+  // Propuesta aprobada por Gerson: docs/etapa3/propuesta-geometria.md y docs/etapa3/decisiones.md (mandan sobre la
+  // propuesta). Objeto de la primera pantalla: la combi en una carretera recta, con los paraderos A, B y C (pieza
+  // geo-objeto, dibujo de prueba).
+  // Cambia: el paradero B, por la carretera (también antes de A y más allá de C). · Permanece: A, C y AC = 10 km.
+  // Progresa: el recorrido AB + BC en la lectura. · Se reserva: B fuera de la carretera (la predicción, sin Pitágoras:
+  // «Mira» lo mide con la regla del mapa). · Debe verse: AB + BC = AC solo con B entre A y C; si no, el camino es más largo.
+  // Colores (regla de la unidad, arriba): la pieza los pone por el papel de cada tramo y el texto los toma de la figura
+  // (pinta), así que un tramo no puede llevar en el texto otro color que en el dibujo.
+  // Errores (hipótesis, sin medir; rutinas/teoria-geometria.md y la propuesta): GE-SEG1 suma los tramos sin mirar si B
+  // está entre A y C, GE-SEG2 suma el desvío a AC, GE-SEG6 (nuevo) cree que el rodeo acorta, GE-SEG4 cuenta dos veces el
+  // tramo que se pisa, GE-SEG5 hace una resta válida que da otro tramo, GE-SEG7 (nuevo) toma por punto del medio una punta
+  // del tramo más largo, GE-SEG8 (nuevo) cree que la letra del medio es el punto del medio, GE-SEG9 (nuevo) cree que, sin
+  // el orden dicho, ninguno está entre los otros, GE-SEG11 (nuevo) parte una suma entre dos, GE-SEG12 (nuevo) parte entre
+  // dos lo que ya era el tramo, GE-SEG14 (nuevo) quita el tramo equivocado, GE-RAZ1 (nuevo) da la otra parte de la razón,
+  // GE-RAZ2 (nuevo) se queda en k, GE-RAZ3 (nuevo) resta los números de la razón a una medida.
+  const GO = 'geo-objeto';
+  const dO = t => ({ v: 'c-o', t }), dI = t => ({ v: 'c-i', t }), dF = t => ({ v: 'c-f', t });
+  // Una letra sola en violeta, derecha (el U+2060 invisible evita la cursiva de variable de nucleo/ecuacion.js).
+  const letraF = L => dF(`${L}⁠`);
+  const SEP = '   ·   ';
+  // Una relación que no se parte en dos líneas: sus espacios pasan a espacios duros (como en razones trigonométricas).
+  const junto = x => (typeof x === 'string' ? x.replace(/ /g, ' ') : Array.isArray(x) ? x.map(junto) : x);
+  // El tramo con el color que le da la figura (la pieza lo decide por su papel), o en tinta si la figura no lo pinta.
+  const pinta = (datos, nom) => { const c = PO.colorDe(datos, nom); return c ? { v: `c-${c}`, t: nom } : nom; };
+  const fig = datos => ({ pieza: GO, datos, estado: {} });
+  const pto = (id, km, alto) => (alto ? { id, km, alto } : { id, km });
+  const tr = (de, a, texto, nivel, papel) => Object.assign({ de, a, nivel: nivel || 1 }, texto !== undefined ? { texto } : {}, papel ? { papel } : {});
+  const km = (x, u = 'km') => `${f(x)} ${u}`;
+  // Cuatro opciones siempre en «Ahora tú»: si dos errores coinciden por los números, se arma otro caso con el mismo azar.
+  function conCuatro(caso, r) {
+    for (let i = 0; i < 80; i++) { const c = caso(r); if (c.opciones.length >= 4) return c; }
+    throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
+  }
+
+  // Lo que se da en los ejercicios (contrato, punto 13): la definición de «entre» y la suma de tramos, una por línea.
+  const D_ENTRE = 'Un punto está entre otros dos si sus dos tramos suman el tramo de punta a punta.';
+  // Con los tramos pintados como en la figura del ejercicio (sin figura, en tinta).
+  const dOrden = F => ['Con puntos en orden, cada medida es la suma de sus tramos: AD = ', ...['AB', 'BC', 'CD'].flatMap((x, i) => [i ? ' + ' : '', F ? pinta(F, x) : x]), '.'];
+  const D_RAZON = (x, y, m, n) => ['Razón ', x, ' : ', y, ` = ${m} : ${n}: `, x, ` = ${m}k y `, y, ` = ${n}k, con k la medida de una parte.`];
+
+  // El juego: A en el km 0 y C en el 10; B se corre de −2 a 12. La vista es fija (el dedo sigue al paradero).
+  const VISTA_J = [-3, 13];
+  const figJ = bx => ({ objeto: 'carretera', vista: VISTA_J, hitos: 1, combi: 2,
+    puntos: [pto('A', 0), pto('B', bx), pto('C', 10)],
+    tramos: [tr('A', 'B', km(Math.abs(bx)), 1), tr('B', 'C', km(Math.abs(10 - bx)), 2), tr('A', 'C', '10 km', -1, 'todo')] });
+  const AB1 = dO('AB'), BC1 = dI('BC');
+  // La predicción y «Mira»: B a 3 km de la carretera, frente al km 4. Los caminos AB = 5 km y BC = √45 ≈ 6,7 km los
+  // calcula el código; el alumno no los saca con Pitágoras (llega ocho unidades después): «Mira» los mide con la regla.
+  const BX = 4, BY = 3, dAB = Math.hypot(BX, BY), dBC = Math.hypot(10 - BX, BY);
+  const figP = (o = {}) => ({ objeto: 'carretera', vista: [-1, 11],
+    puntos: [pto('A', 0), pto('B', BX, BY), pto('C', 10)],
+    tramos: [tr('A', 'B', o.ab), tr('B', 'C', o.bc), tr('A', 'C', '10 km', -1, 'todo')],
+    alturas: [{ punto: 'B', texto: `${f(BY)} km` }], reglas: o.reglas, nota: o.nota });
+  const largo = x => `${Math.abs(x - Math.round(x)) < 1e-9 ? '' : '≈ '}${f(x, 1)} km`;
+
+  // Ejemplos resueltos de «Suma de segmentos» (pestaña «Ejemplos»; molde §3). Cuentas rehechas con un script aparte, sin
+  // el código de la unidad (scratchpad e3-geo/cuentas-idea1.js): 7 + 5 = 12; 18 − 11 = 7; con A en medio 5 + 3 = 8 (y
+  // con B o C en medio, 13 y 11, que no dan); 10 + 3 = 13; 2 + 10 = 12; 13 + 3 = 16; 2400 − 900 = 1500; 12 − 3 − 4 = 5;
+  // 9 + 11 − 15 = 5; 5k = 20 → k = 4 y 3k = 12; x + BC = 14 y BC + 2x = 17 → x = 3, BC = 11; 30 − 21 = 9; 2k = 8 →
+  // k = 4 y 8k = 32; 12 − 5 = 7 o 12 + 5 = 17; 6k = 36 → k = 6, AC = 18, BD = 30 y 48. La figura muestra el
+  // planteamiento: lo que se pide va con «?» en tinta; ningún dibujo trae la respuesta.
+  const EJ = [];
+  {
+    // 1. Un paso: la suma.
+    const F = { objeto: 'carretera', combi: 1.6, puntos: [pto('A', 0), pto('B', 7), pto('C', 12)], tramos: [tr('A', 'B', '7 km'), tr('B', 'C', '5 km'), tr('A', 'C', '?', -1, 'pide')] };
+    const AB = pinta(F, 'AB'), BC = pinta(F, 'BC');
+    EJ.push({ nivel: 1, titulo: 'De A a C por B', figura: fig(F),
+      enunciado: ['La combi va del paradero A al C por una carretera recta, y B está entre los dos: ', AB, ' = 7 km y ', BC, ' = 5 km. ¿Cuántos kilómetros recorre de A a C?'],
+      datos: [['B entre A y C: ', AB, ' + ', BC, ' = AC.']],
+      solucion: [{ texto: 'B está entre A y C: los dos tramos se suman.', ecuacion: junto(['AC = ', AB, ' + ', BC, ' = 7 + 5 = ', dF('12 km')]) }],
+      respuesta: ['AC = ', dF('12 km')] });
+  }
+  {
+    // 2. Un paso: la resta.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 11), pto('C', 18)], tramos: [tr('A', 'B', '11 km'), tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', '18 km', -1, 'todo')] };
+    const AB = pinta(F, 'AB');
+    EJ.push({ nivel: 1, titulo: 'El tramo que falta', figura: fig(F),
+      enunciado: ['A, B y C son paraderos de una carretera recta, en ese orden. De A a C hay 18 km, y ', AB, ' = 11 km. ¿Cuánto mide BC?'],
+      datos: [['B entre A y C: ', AB, ' + BC = AC.']],
+      solucion: [{ texto: ['B está entre A y C: ', AB, ' y BC juntos hacen los 18 km de AC. Le quito ', AB, ':'], ecuacion: junto(['BC = 18 − 11 = ', dF('7 km')]) }],
+      respuesta: ['BC = ', dF('7 km')] });
+  }
+  // 3. Un paso: decidir qué punto está entre los otros dos. Sin figura y sin colores: el dibujo o el color dirían cuál
+  // es el tramo de punta a punta, que es justo lo que se averigua.
+  EJ.push({ nivel: 1, titulo: '¿Cuál está en medio?',
+    enunciado: 'En una carretera recta hay tres paraderos, A, B y C. AB = 5 km, BC = 8 km y AC = 3 km. ¿Cuál de los tres está entre los otros dos?',
+    datos: [D_ENTRE],
+    solucion: [
+      { texto: 'El tramo más largo, BC = 8 km, va de punta a punta: B y C son los extremos. Queda A.' },
+      { texto: 'Compruebo con A en medio: sus dos tramos suman BC.', ecuacion: junto(['BA + AC = 5 + 3 = 8 km = BC']) },
+    ],
+    respuesta: ['El paradero ', letraF('A')] });
+  {
+    // 4. Un paso: el del medio es C.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('C', 10), pto('B', 13)], tramos: [tr('A', 'C', '10 km'), tr('C', 'B', '3 km'), tr('A', 'B', '?', -1, 'pide')] };
+    const AC = pinta(F, 'AC'), CB = pinta(F, 'CB');
+    EJ.push({ nivel: 1, titulo: 'Más allá de C', figura: fig(F),
+      enunciado: ['En una carretera recta, el paradero C está entre A y B: ', AC, ' = 10 km y ', CB, ' = 3 km. ¿Cuánto mide AB?'],
+      datos: [['C entre A y B: ', AC, ' + ', CB, ' = AB.']],
+      solucion: [{ texto: ['Ahora el paradero del medio es C: ', AC, ' y ', CB, ' se suman.'], ecuacion: junto(['AB = ', AC, ' + ', CB, ' = 10 + 3 = ', dF('13 km')]) }],
+      respuesta: ['AB = ', dF('13 km')] });
+  }
+  {
+    // 5. Un paso: el del medio es A.
+    const F = { objeto: 'carretera', puntos: [pto('B', -2), pto('A', 0), pto('C', 10)], tramos: [tr('B', 'A', '2 km'), tr('A', 'C', '10 km'), tr('B', 'C', '?', -1, 'pide')] };
+    const BA = pinta(F, 'BA'), AC = pinta(F, 'AC');
+    EJ.push({ nivel: 1, titulo: 'Antes de A', figura: fig(F),
+      enunciado: ['El paradero B está en la carretera, 2 km antes de A, y de A a C hay 10 km. ¿Cuánto mide BC?'],
+      datos: [['A entre B y C: ', BA, ' + ', AC, ' = BC.']],
+      solucion: [
+        { texto: 'B queda antes de A, y C después: el paradero del medio es A.' },
+        { texto: 'Sumo los dos tramos que tocan a A:', ecuacion: junto(['BC = ', BA, ' + ', AC, ' = 2 + 10 = ', dF('12 km')]) },
+      ],
+      respuesta: ['BC = ', dF('12 km')] });
+  }
+  {
+    // 6. Dos pasos: el recorrido con B más allá de C (ida y vuelta por el mismo tramo).
+    const F = { objeto: 'carretera', combi: 1.6, puntos: [pto('A', 0), pto('C', 10), pto('B', 13)], tramos: [tr('A', 'C', '10 km'), tr('C', 'B', '3 km')] };
+    const AC = pinta(F, 'AC'), CB = pinta(F, 'CB');
+    EJ.push({ nivel: 2, titulo: 'El recorrido de la combi', figura: fig(F),
+      enunciado: ['La combi va de A a C, pero antes pasa por B, que está 3 km más allá de C en la misma carretera. ', AC, ' = 10 km. ¿Cuántos kilómetros recorre en total?'],
+      datos: [['C entre A y B: ', AC, ' + ', CB, ' = AB.'], ['Recorrido de A a C pasando por B: AB + ', CB, '.']],
+      solucion: [
+        { texto: 'Primero va de A a B, y en el camino pasa por C:', ecuacion: junto(['AB = ', AC, ' + ', CB, ' = 10 + 3 = 13 km']) },
+        { texto: 'Después vuelve de B a C: otros 3 km.', ecuacion: junto(['AB + ', CB, ' = 13 + 3 = ', dF('16 km')]) },
+      ],
+      respuesta: ['Recorre ', dF('16 km')] });
+  }
+  {
+    // 7. Unidades mezcladas: km y m.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 1.5), pto('C', 2.4)], tramos: [tr('A', 'B', '?', 1, 'pide'), tr('B', 'C', '900 m'), tr('A', 'C', '2,4 km', -1, 'todo')] };
+    const BC = pinta(F, 'BC');
+    EJ.push({ nivel: 2, titulo: 'Metros y kilómetros', figura: fig(F),
+      enunciado: ['En una avenida recta, el paradero B está entre A y C. AC = 2,4 km y ', BC, ' = 900 m. ¿Cuántos metros mide AB?'],
+      datos: ['1 km = 1000 m', ['B entre A y C: AB + ', BC, ' = AC.']],
+      solucion: [
+        { texto: 'Primero paso AC a metros, para restar en la misma unidad:', ecuacion: junto(['AC = 2,4 · 1000 m = 2400 m']) },
+        { texto: ['B está entre A y C: a AC le quito ', BC, '.'], ecuacion: junto(['AB = 2400 − 900 = ', dF('1500 m')]) },
+      ],
+      respuesta: ['AB = ', dF('1500 m')] });
+  }
+  {
+    // 8. Dos pasos: cuatro paraderos, el tramo del medio.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 3), pto('C', 8), pto('D', 12)], tramos: [tr('A', 'B', '3 km'), tr('C', 'D', '4 km'), tr('B', 'C', '?', 2, 'pide'), tr('A', 'D', '12 km', -1, 'todo')] };
+    const AB = pinta(F, 'AB'), CD = pinta(F, 'CD');
+    EJ.push({ nivel: 2, titulo: 'Cuatro paraderos', figura: fig(F),
+      enunciado: ['A, B, C y D son paraderos de una carretera recta, en ese orden. ', AB, ' = 3 km, ', CD, ' = 4 km y AD = 12 km. ¿Cuánto mide BC?'],
+      datos: [['Con puntos en orden, cada medida es la suma de sus tramos: AD = ', AB, ' + BC + ', CD, '.']],
+      solucion: [
+        { texto: ['AD está hecho de tres tramos: ', AB, ', BC y ', CD, '.'], ecuacion: junto(['3 + BC + 4 = 12']) },
+        { texto: 'A los 12 km les quito los dos tramos que conozco:', ecuacion: junto(['BC = 12 − 3 − 4 = ', dF('5 km')]) },
+      ],
+      respuesta: ['BC = ', dF('5 km')] });
+  }
+  {
+    // 9. Dos pasos: dos tramos que se pisan.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 4), pto('C', 9), pto('D', 15)], tramos: [tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', '9 km', 2), tr('B', 'D', '11 km', 3), tr('A', 'D', '15 km', -1, 'todo')] };
+    const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
+    EJ.push({ nivel: 2, titulo: 'Dos tramos que se pisan', figura: fig(F),
+      enunciado: ['A, B, C y D están en ese orden en una carretera recta. ', AC, ' = 9 km, ', BD, ' = 11 km y AD = 15 km. ¿Cuánto mide BC?'],
+      datos: [dOrden(F)],
+      solucion: [
+        { texto: [AC, ' y ', BD, ' juntos cubren de A a D, y los dos traen BC: BC queda contado dos veces.'], ecuacion: junto([AC, ' + ', BD, ' = AD + BC']) },
+        { texto: 'Le quito AD a la suma:', ecuacion: junto(['BC = 9 + 11 − 15 = ', dF('5 km')]) },
+      ],
+      respuesta: ['BC = ', dF('5 km')] });
+  }
+  {
+    // 10. Dos pasos: la razón con k.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 8), pto('C', 20)], tramos: [tr('A', 'B', '2k'), tr('B', 'C', '3k'), tr('A', 'C', '20 km', -1, 'todo')] };
+    const AB = pinta(F, 'AB'), BC = pinta(F, 'BC');
+    EJ.push({ nivel: 2, titulo: 'La razón 2 : 3', figura: fig(F),
+      enunciado: ['B está entre A y C en una carretera recta, con ', AB, ' : ', BC, ' = 2 : 3 y AC = 20 km. ¿Cuánto mide ', BC, '?'],
+      datos: [D_RAZON(AB, BC, 2, 3), ['B entre A y C: ', AB, ' + ', BC, ' = AC.']],
+      solucion: [
+        { texto: 'Los dos tramos juntan 2 + 3 = 5 partes iguales, que hacen AC:', ecuacion: [junto('2k + 3k = 20 km'), '   →   ', junto('5k = 20 km'), '   →   ', junto('k = 4 km')] },
+        { texto: [BC, ' tiene 3 de esas partes:'], ecuacion: junto([BC, ' = 3 · 4 km = ', dF('12 km')]) },
+      ],
+      respuesta: [BC, ' = ', dF('12 km')] });
+  }
+  {
+    // 11. Examen: un tramo es el doble de otro.
+    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('B', 3), pto('C', 14), pto('D', 20)], tramos: [tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', '14 cm', 2), tr('B', 'D', '17 cm', 3)] };
+    const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
+    EJ.push({ nivel: 3, titulo: 'CD es el doble de AB', figura: fig(F),
+      enunciado: ['A, B, C y D están en ese orden sobre una recta. ', AC, ' = 14 cm, ', BD, ' = 17 cm y CD mide el doble de AB. ¿Cuánto mide BC?'],
+      datos: [['Con puntos en orden, cada medida es la suma de sus tramos: ', AC, ' = AB + BC y ', BD, ' = BC + CD.']],
+      solucion: [
+        { texto: 'Llamo x a AB; entonces CD = 2x. Los dos datos quedan así:', ecuacion: [junto(['x + BC = 14']), SEP, junto(['BC + 2x = 17'])] },
+        { texto: 'Resto la primera de la segunda: BC se cancela y queda x.', ecuacion: [junto('2x − x = 17 − 14'), '   →   ', junto('x = 3 cm')] },
+        { texto: 'Vuelvo a la primera:', ecuacion: junto(['BC = 14 − 3 = ', dF('11 cm')]) },
+      ],
+      respuesta: ['BC = ', dF('11 cm')] });
+  }
+  {
+    // 12. Examen: solo se conoce la suma de los que se pisan (el error típico es partirla entre dos).
+    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('B', 5), pto('C', 14), pto('D', 21)], tramos: [tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', 'AC', 2), tr('B', 'D', 'BD', 3), tr('A', 'D', '21 cm', -1, 'todo')] };
+    const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
+    EJ.push({ nivel: 3, titulo: 'Solo se sabe la suma', figura: fig(F),
+      enunciado: ['A, B, C y D están en ese orden sobre una recta. ', AC, ' + ', BD, ' = 30 cm y AD = 21 cm. ¿Cuánto mide BC?'],
+      datos: [dOrden(F)],
+      solucion: [
+        { texto: [AC, ' y ', BD, ' juntos cubren AD una vez y BC una vez más.'], ecuacion: junto([AC, ' + ', BD, ' = AD + BC']) },
+        { texto: 'Reemplazo y despejo:', ecuacion: junto(['30 = 21 + BC   →   BC = ', dF('9 cm')]) },
+        { texto: ['Partir 30 cm entre dos daría 15 cm: es el error típico. ', AC, ' y ', BD, ' no tienen por qué medir igual.'] },
+      ],
+      respuesta: ['BC = ', dF('9 cm')] });
+  }
+  {
+    // 13. Examen: razón y diferencia.
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 12), pto('C', 32)], tramos: [tr('A', 'B', '3k'), tr('B', 'C', '5k'), tr('A', 'C', '?', -1, 'pide')] };
+    const AB = pinta(F, 'AB'), BC = pinta(F, 'BC');
+    EJ.push({ nivel: 3, titulo: 'Razón y diferencia', figura: fig(F),
+      enunciado: ['En una avenida recta, el paradero B está entre A y C. ', AB, ' : ', BC, ' = 3 : 5, y ', BC, ' mide 8 m más que ', AB, '. ¿Cuánto mide AC?'],
+      datos: [D_RAZON(AB, BC, 3, 5), ['B entre A y C: ', AB, ' + ', BC, ' = AC.']],
+      solucion: [
+        { texto: [BC, ' tiene 2 partes más que ', AB, ', y esas 2 partes miden 8 m:'], ecuacion: [junto('5k − 3k = 8 m'), '   →   ', junto('2k = 8 m'), '   →   ', junto('k = 4 m')] },
+        { texto: 'AC junta 3 + 5 = 8 partes:', ecuacion: junto(['AC = 8 · 4 m = ', dF('32 m')]) },
+      ],
+      respuesta: ['AC = ', dF('32 m')] });
+  }
+  {
+    // 14. Examen: sin el orden, dos respuestas (la trampa es dar solo una).
+    const F = { objeto: 'recta', vista: [-6, 18], puntos: [pto('A', 0), pto('B', 12)], tramos: [tr('A', 'B', '12 cm')] };
+    const AB = pinta(F, 'AB'), BC = dI('BC');
+    EJ.push({ nivel: 3, titulo: 'Dos lugares posibles', figura: fig(F),
+      enunciado: ['En una recta están A, B y C, pero no se sabe en qué orden. ', AB, ' = 12 cm y ', BC, ' = 5\u00a0cm. ¿Cuánto puede medir AC?'],
+      datos: [D_ENTRE],
+      solucion: [
+        { texto: ['C está a 5 cm de B, de un lado o del otro. A no puede ir en medio: ', AB, ' ya pasa de ', BC, '.'] },
+        { texto: 'Si C está entre A y B:', ecuacion: junto(['AC = ', AB, ' − ', BC, ' = 12 − 5 = ', dF('7 cm')]) },
+        { texto: 'Si B está entre A y C:', ecuacion: junto(['AC = ', AB, ' + ', BC, ' = 12 + 5 = ', dF('17 cm')]) },
+      ],
+      respuesta: ['AC = ', dF('7 cm'), ' o ', dF('17 cm')] });
+  }
+  {
+    // 15. Examen: tres tramos en razón. Ningún tramo va en color: se piden AC y BD, y los tres de la razón no se dan.
+    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('B', 6), pto('C', 18), pto('D', 36)], tramos: [tr('A', 'C', 'AC = ?', 1, 'pide'), tr('B', 'D', 'BD = ?', 2, 'pide'), tr('A', 'D', '36 m', -1, 'todo')] };
+    EJ.push({ nivel: 3, titulo: 'Tres tramos en razón', figura: fig(F),
+      enunciado: 'A, B, C y D están en ese orden sobre una recta, con AB : BC : CD = 1 : 2 : 3 y AD = 36 m. ¿Cuánto vale AC + BD?',
+      datos: ['Razón a : b : c entre tres tramos: miden a·k, b·k y c·k, con k la medida de una parte.', dOrden(F)],
+      solucion: [
+        { texto: 'Los tres tramos juntan 1 + 2 + 3 = 6 partes, que hacen AD:', ecuacion: [junto('6k = 36 m'), '   →   ', junto('k = 6 m')] },
+        { texto: 'Entonces AB = 6 m, BC = 12 m y CD = 18 m.', ecuacion: [junto(['AC = 6 + 12 = 18 m']), SEP, junto(['BD = 12 + 18 = 30 m'])] },
+        { texto: 'Sumo las dos medidas:', ecuacion: junto(['AC + BD = 18 + 30 = ', dF('48 m')]) },
+      ],
+      respuesta: ['AC + BD = ', dF('48 m')] });
+  }
+
+  // «Así se resuelve» y «Ahora tú»: lugares y unidades (km en la carretera; metros en la avenida, de 100 en 100).
+  const LUGARES = [{ lugar: 'una carretera recta', u: 'km', k: 1 }, { lugar: 'una avenida recta', u: 'm', k: 100 }];
+  const cuatro = (a, b, c) => [pto('A', 0), pto('B', a), pto('C', a + b), pto('D', a + b + c)];
+
+  // «Ahora tú», tipo 0: qué paradero está entre los otros dos (sin figura ni colores: dirían la respuesta).
+  const LETRAS = [['A', 'B', 'C'], ['P', 'Q', 'R'], ['M', 'N', 'T']];
+  function casoEntre(r) {
+    const ls = r.de(LETRAS), orden = r.de([[0, 1, 2], [1, 0, 2], [0, 2, 1]]);   // quién va en medio: ls[orden[1]]
+    const Y = ls[orden[0]], X = ls[orden[1]], Z = ls[orden[2]];
+    const p = r.ent(2, 9), q0 = r.ent(2, 9), q = q0 === p ? p + 1 : q0;
+    const dist = { [Y + X]: p, [X + Y]: p, [X + Z]: q, [Z + X]: q, [Y + Z]: p + q, [Z + Y]: p + q };
+    const [L1, L2, L3] = ls, mayor = [Y, Z].sort().join('');
+    const ops = [{ id: 'c', texto: `El paradero ${X}`, correcta: true }];
+    for (const L of ls) if (L !== X) {
+      ops.push(L === L2
+        ? { id: `l${L}`, texto: `El paradero ${L}`, error: 'GE-SEG8', siFuera: 'Su letra va en medio, es cierto; pero el orden de los paraderos lo dicen las medidas, no las letras.' }
+        : { id: `l${L}`, texto: `El paradero ${L}`, error: 'GE-SEG7', siFuera: `Buscar el tramo más largo está bien: es ${mayor}. Pero ${L} es una de sus puntas.` });
+    }
+    ops.push({ id: 'ninguno', texto: 'Ninguno de los tres', error: 'GE-SEG9', siFuera: 'Sin el orden dicho parece imposible; pero las tres medidas lo deciden: dos tramos suman el tercero.' });
+    return {
+      pregunta: `En una carretera recta hay tres paraderos, ${L1}, ${L2} y ${L3}. ${L1}${L2} = ${dist[L1 + L2]} km, ${L2}${L3} = ${dist[L2 + L3]} km y ${L1}${L3} = ${dist[L1 + L3]} km. ¿Cuál está entre los otros dos?`,
+      datos: [D_ENTRE],
+      opciones: ops,
+      solucion: { texto: `El más largo, ${mayor} = ${p + q} km, va de punta a punta; ${X} queda en medio: ${p} + ${q} = ${p + q}.` },
+    };
+  }
+  // «Ahora tú», tipo 1: dos tramos que se pisan (AC y BD) y la medida de punta a punta.
+  function casoPisan(r) {
+    const L = r.de(LUGARES), a = r.ent(2, 9), b = r.ent(2, 9), c = r.ent(2, 9), p = a + b, q = b + c, t = a + b + c, u = L.u, K = L.k;
+    const F = { objeto: 'carretera', puntos: cuatro(a, b, c), tramos: [tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', km(p * K, u), 2), tr('B', 'D', km(q * K, u), 3), tr('A', 'D', km(t * K, u), -1, 'todo')] };
+    const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
+    return {
+      pregunta: [`A, B, C y D están en ese orden en ${L.lugar}. `, AC, ` = ${km(p * K, u)}, `, BD, ` = ${km(q * K, u)} y AD = ${km(t * K, u)}. ¿Cuánto mide BC?`],
+      datos: [dOrden(F)],
+      dibujo: { datos: F, estado: {} },
+      opciones: opciones(b * K, [
+        { id: 'doble', valor: (p + q) * K, error: 'GE-SEG4', siFuera: 'Sumar AC y BD tiene sentido; pero así BC queda contado dos veces.' },
+        { id: 'cd', valor: (t - p) * K, error: 'GE-SEG5', siFuera: 'AD − AC sí es una resta válida: da CD, no BC.' },
+        { id: 'mitad', valor: (p + q) * K / 2, error: 'GE-SEG11', siFuera: 'Partir la suma entre dos serviría si AC y BD no se pisaran.' },
+      ], x => km(x, u)),
+      solucion: { texto: [AC, ' y ', BD, ' juntos cubren AD y repiten BC: a su suma le quito AD.'], ecuacion: [junto([AC, ' + ', BD, ' − AD']), ' ', junto(`= ${f(p * K)} + ${f(q * K)} − ${f(t * K)}`), ' ', junto(['= ', dF(km(b * K, u))])] },
+    };
+  }
+  // «Ahora tú», tipo 2: la razón con k (se pide una de las dos partes).
+  const RAZONES = [[2, 3], [3, 2], [1, 3], [3, 4], [2, 5], [4, 3], [3, 5], [5, 2]];
+  function casoRazon(r) {
+    const L = r.de(LUGARES), [m, n] = r.de(RAZONES), k = r.ent(2, 6), u = L.u, K = L.k, t = (m + n) * k, pideAB = r() < 0.5;
+    const F = { objeto: 'carretera', puntos: [pto('A', 0), pto('B', m * k), pto('C', t)], tramos: [tr('A', 'B', `${m}k`), tr('B', 'C', `${n}k`), tr('A', 'C', km(t * K, u), -1, 'todo')] };
+    const AB = pinta(F, 'AB'), BC = pinta(F, 'BC'), X = pideAB ? AB : BC, partes = pideAB ? m : n, otras = pideAB ? n : m;
+    return {
+      pregunta: [`En ${L.lugar}, B está entre A y C, con `, AB, ' : ', BC, ` = ${m} : ${n} y AC = ${km(t * K, u)}. ¿Cuánto mide `, X, '?'],
+      datos: [D_RAZON(AB, BC, m, n), ['B entre A y C: ', AB, ' + ', BC, ' = AC.']],
+      dibujo: { datos: F, estado: {} },
+      opciones: opciones(partes * k * K, [
+        { id: 'otra', valor: otras * k * K, error: 'GE-RAZ1', siFuera: 'Repartir AC en partes está bien; pero esa medida es del otro tramo.' },
+        { id: 'k', valor: k * K, error: 'GE-RAZ2', siFuera: `Hallar k está bien: es una sola parte. El tramo tiene ${partes} partes.` },
+        { id: 'resta', valor: (t - otras) * K, error: 'GE-RAZ3', siFuera: `Quitar algo a AC tiene sentido; pero ${otras} cuenta partes, no ${u}.` },
+      ], x => km(x, u)),
+      solucion: { texto: `AC junta ${m} + ${n} = ${m + n} partes: k = ${km(t * K, u)} ÷ ${m + n} = ${km(k * K, u)}. El tramo tiene ${partes} partes.`, ecuacion: junto([X, ` = ${partes} · ${km(k * K, u)} = `, dF(km(partes * k * K, u))]) },
+    };
+  }
+  // «Ahora tú», tipo 3 (examen): o solo se sabe la suma de los que se pisan, o un tramo es el doble de otro.
+  function casoExamen(r) {
+    if (r() < 0.5) {
+      const a = r.ent(2, 12), b = r.ent(2, 12), c = r.ent(2, 12), s = 2 * b + a + c, t = a + b + c;
+      const F = { objeto: 'recta', puntos: cuatro(a, b, c), tramos: [tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', 'AC', 2), tr('B', 'D', 'BD', 3), tr('A', 'D', `${t} cm`, -1, 'todo')] };
+      const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
+      return {
+        pregunta: ['A, B, C y D están en ese orden sobre una recta. ', AC, ' + ', BD, ` = ${s} cm y AD = ${t} cm. ¿Cuánto mide BC?`],
+        datos: [dOrden(F)],
+        dibujo: { datos: F, estado: {} },
+        opciones: opciones(b, [
+          { id: 'mitad', valor: s / 2, error: 'GE-SEG11', siFuera: 'Partir la suma entre dos daría el promedio de AC y BD, no el tramo que comparten.' },
+          { id: 'puntas', valor: 2 * t - s, error: 'GE-SEG5', siFuera: 'Esa resta es válida, pero da los dos extremos juntos, AB + CD, no BC.' },
+          { id: 'media', valor: (s - t) / 2, error: 'GE-SEG12', siFuera: 'Restar AD a la suma está bien; lo que sobra ya es BC, sin partirlo.' },
+        ], x => `${f(x)} cm`),
+        solucion: { texto: [AC, ' + ', BD, ' cubre AD una vez y BC otra vez: le quito AD.'], ecuacion: junto(['BC = ', `${s} − ${t} = `, dF(`${b} cm`)]) },
+      };
+    }
+    const a = r.ent(2, 6), b = r.ent(a + 1, a + 8), p = a + b, q = b + 2 * a;
+    const F = { objeto: 'recta', puntos: cuatro(a, b, 2 * a), tramos: [tr('B', 'C', '?', 1, 'pide'), tr('A', 'C', `${p} cm`, 2), tr('B', 'D', `${q} cm`, 3)] };
+    const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
+    return {
+      pregunta: ['A, B, C y D están en ese orden sobre una recta. ', AC, ` = ${p} cm, `, BD, ` = ${q} cm y CD mide el doble de AB. ¿Cuánto mide BC?`],
+      datos: [['Con puntos en orden, cada medida es la suma de sus tramos: ', AC, ' = AB + BC y ', BD, ' = BC + CD.']],
+      dibujo: { datos: F, estado: {} },
+      opciones: opciones(b, [
+        { id: 'ab', valor: q - p, error: 'GE-SEG5', siFuera: 'BD − AC está bien planteado: da CD − AB, que aquí es AB, no BC.' },
+        { id: 'mitad', valor: (p + q) / 2, error: 'GE-SEG11', siFuera: 'El promedio de AC y BD serviría si AB y CD midieran igual.' },
+        { id: 'cd', valor: b - a, error: 'GE-SEG14', siFuera: 'Quitarle un tramo a AC está bien; pero se le quita AB, no CD.' },
+      ], x => `${f(x)} cm`),
+      solucion: { texto: ['Con AB = x y CD = 2x: ', BD, ' − ', AC, ` = x, así que AB = ${q} − ${p} = ${a} cm.`], ecuacion: junto(['BC = ', `${p} − ${a} = `, dF(`${b} cm`)]) },
+    };
+  }
+
+  const suma = {
+    id: 'suma-de-segmentos',
+    titulo: 'Suma de segmentos',
+    pregunta: '¿Cuándo el camino de A a C pasando por B mide lo mismo que AC?',
+    temas: ['Punto, recta y plano', 'Segmentos y su medida'],
+    pieza: GO,
+    aprendizaje: 'AB + BC = AC solo si B está entre A y C; si B queda fuera, el camino por B es más largo.',
+    actividad: 'Mover un paradero por la carretera y comparar el recorrido de la combi con AC.',
+    // Lee: punto, recta, plano, segmento y «entre», con la carretera. No dice qué pasa con la suma (eso es el juego) ni con
+    // B fuera de la carretera (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una carretera recta', texto: 'Mira el mapa: una carretera recta con tres paraderos, A, B y C. Cada paradero es un punto: un lugar exacto, sin tamaño. La carretera hace de recta, y la hoja del mapa es un plano. Por dos puntos pasa una sola recta.',
+          pieza: GO, dibujo: { datos: { objeto: 'carretera', combi: 2, puntos: [pto('A', 0), pto('B', 4), pto('C', 10)] }, estado: {} } },
+        { titulo: 'Segmento y su medida', texto: ['El tramo de carretera entre dos paraderos es un segmento. Se nombra con sus puntos: ', AB1, ' va de A a B. Su medida es lo que recorre la combi en ese tramo: ', AB1, ' = 4 km. ', AB1, ' nombra el segmento y también su medida.'],
+          pieza: GO, dibujo: { datos: { objeto: 'carretera', puntos: [pto('A', 0), pto('B', 4), pto('C', 10)], tramos: [tr('A', 'B', '4 km')] }, estado: {} } },
+        { titulo: 'Qué quiere decir «entre»', texto: 'B está entre A y C cuando está en la recta AC y en el tramo que va de A a C. Si B estuviera en la carretera, pero más allá de C, el paradero del medio sería C: C quedaría entre A y B.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Vas a mover el paradero B por la carretera, también antes de A y más allá de C. Compara el recorrido de la combi, ', AB1, ' + ', BC1, ', con AC = 10 km.'] },
+      ],
+    },
+    ejemplos: EJ,
+    juega: {
+      pieza: GO,
+      consigna: 'De A a C hay 10 km por una carretera recta. La combi sale de A, pasa por el paradero B y termina en C.',
+      mision: {
+        texto: 'Pon B donde el recorrido de A a C, pasando por B, mida 14 km.',
+        logrado: v => Math.abs(v.bx) + Math.abs(10 - v.bx) === 14,
+        bien: 'Listo: 14 km, con B fuera del tramo AC. Entre A y C daba 10 km.',
+      },
+      voz: '¿Dónde tiene que estar B para que la combi recorra más?',
+      leyenda: [
+        { s: 'A, B, C', t: 'paraderos; B se mueve' },
+        { s: dO('naranja'), t: 'AB: tramo de A a B' },
+        { s: dI('turquesa'), t: 'BC: tramo de B a C' },
+        { s: 'AC', t: 'de A a C, directo por la carretera' },
+        { s: 'km', t: 'kilómetro: 1000 m' },
+      ],
+      controles: [{ id: 'bx', etiqueta: 'Kilómetro de B (A en el 0)', min: -2, max: 12, paso: 1, inicio: 4, unidad: 'km', decimales: 0 }],
+      dibujo: v => ({ datos: figJ(v.bx), estado: {} }),
+      // Gesto directo: el paradero B se agarra y se corre por la carretera; la vista es fija, así que sigue al dedo.
+      arrastres: [{ id: 'paradero-b', etiqueta: 'paradero B: se corre por la carretera',
+        donde: v => { const p = PO.geometria(figJ(v.bx)).P.B; return { x: p[0], y: p[1] }; },
+        mover: (pt, v) => ({ bx: PO.geometria(figJ(v.bx)).km(pt.x) }) }],
+      // La relación, sin «·» entre dos igualdades.
+      lectura: v => {
+        const a = Math.abs(v.bx), b = Math.abs(10 - v.bx);
+        return v.bx >= 0 && v.bx <= 10 ? [AB1, ' + ', BC1, ` = ${a} + ${b} = 10 km: igual a AC`]
+          : [AB1, ' + ', BC1, ` = ${a} + ${b} = ${a + b} km: más que AC = 10 km`];
+      },
+      minimo: 3,
+    },
+    predice: {
+      pregunta: 'Otro día, el paradero B queda fuera de la carretera, y la combi va de A a B y de B a C por caminos rectos. ¿Cuánto recorre de A a C pasando por B?',
+      datos: ['De A a C por la carretera: 10 km', 'B está a 3 km de la carretera, frente al kilómetro 4'],
+      voz: 'Piensa en el camino de la combi, no solo en los 3 km.',
+      opciones: [
+        { id: 'c', texto: 'Más de 10 km, pero menos de 13 km', correcta: true },
+        { id: 'igual', texto: 'Exactamente 10 km: B sigue entre A y C', error: 'GE-SEG1', siFuera: '10 km sería cierto con B en la carretera, entre A y C. Fuera de ella, el camino rodea.' },
+        { id: 'suma', texto: 'Exactamente 13 km: los 10 km más los 3 del desvío', error: 'GE-SEG2', siFuera: 'Que el desvío alarga el viaje está bien. Pero cada camino va inclinado: los 3 km no se suben aparte.' },
+        { id: 'atajo', texto: 'Menos de 10 km: el desvío acorta', error: 'GE-SEG6', siFuera: 'Un desvío puede ahorrar tráfico, pero no distancia: el camino directo de A a C es el más corto.' },
+      ],
+      dibujo: { datos: figP(), estado: {} },
+      revelar: { datos: figP({ ab: largo(dAB), bc: largo(dBC), nota: `${f(dAB, 1)} + ${f(dBC, 1)} ≈ ${f(dAB + dBC, 1)} km` }), estado: {} },
+      coincide: `Coincide: ${f(dAB, 1)} + ${f(dBC, 1)} ≈ ${f(dAB + dBC, 1)} km. El rodeo pasa de los 10 km de AC, pero no llega a 13.`,
+      noCoincide: `Revisemos: medidos con la regla del mapa, los dos caminos suman unos ${f(dAB + dBC, 1)} km.`,
+    },
+    mira: {
+      pieza: GO,
+      datos: figP({ reglas: [{ de: 'A', a: 'B', texto: largo(dAB), paso: 1 }, { de: 'B', a: 'C', texto: largo(dBC), paso: 2 }] }),
+      voz: 'Avanza paso a paso: la regla del mapa mide cada camino.',
+      pasos: [
+        { estado: { paso: 0 }, texto: 'La combi va de A a B y luego a C, en línea recta.' },
+        { estado: { paso: 1 }, texto: 'La regla del mapa mide el primer camino.', ecuacion: junto([AB1, ` = ${largo(dAB)}`]) },
+        { estado: { paso: 2 }, texto: 'Y el segundo, un poco más largo.', ecuacion: junto([BC1, ` ${largo(dBC)}`]) },
+        { estado: { paso: 2 }, texto: 'Juntos pasan de los 10 km de AC: el rodeo alarga el viaje.', ecuacion: [junto([AB1, ' + ', BC1, ` ≈ ${f(dAB, 1)} + ${f(dBC, 1)} = ${f(dAB + dBC, 1)} km`]), ' ', junto('> 10 km = AC')] },
+        { estado: { paso: 2 }, texto: 'El 13 suma los 3 km aparte; pero cada camino sube mientras avanza.', ecuacion: junto([`${f(dAB + dBC, 1)} km < 13 km = 10 km + 3 km`]) },
+        { estado: { paso: 2 }, texto: 'Solo con B en la carretera, entre A y C, desaparece el rodeo.', ecuacion: junto([AB1, ' + ', BC1, ' = AC']) },
+      ],
+    },
+    regla: {
+      texto: 'Si B está en el segmento AC, AB + BC = AC; fuera de él, AB + BC es mayor. Con puntos en orden, cada medida suma sus tramos.',
+      ecuacion: [junto(['B entre A y C: ', AB1, ' + ', BC1, ' = AC']), SEP, junto(['B fuera: ', AB1, ' + ', BC1, ' > AC'])],
+      condicion: 'B está entre A y C cuando está en la recta AC y en el tramo de A a C.',
+      voz: 'El dibujo sugiere; «entre A y C» lo garantiza.',
+    },
+    // Así se resuelve: cuatro paraderos en orden y el tramo del medio con dos restas. «Ahora tú» pide otras cosas: qué
+    // punto está entre los otros, tramos que se pisan, la razón con k y dos de examen.
+    resuelve: {
+      pieza: GO,
+      generar(s) {
+        const r = azar(s + 900), L = r.de(LUGARES), a = r.ent(3, 9), b = r.ent(3, 9), c = r.ent(3, 9), t = a + b + c, u = L.u, K = L.k;
+        const F = { objeto: 'carretera', puntos: cuatro(a, b, c), tramos: [tr('A', 'B', km(a * K, u)), tr('C', 'D', km(c * K, u)), tr('B', 'C', '?', 2, 'pide'), tr('A', 'D', km(t * K, u), -1, 'todo')] };
+        const AB = pinta(F, 'AB'), CD = pinta(F, 'CD');
+        return {
+          enunciado: [`En ${L.lugar} están los paraderos A, B, C y D, en ese orden. `, AB, ` = ${km(a * K, u)}, `, CD, ` = ${km(c * K, u)} y AD = ${km(t * K, u)}. ¿Cuánto mide BC?`],
+          datos: [dOrden(F)],
+          dibujo: { datos: F, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden BC, el tramo del medio, entre B y C.' },
+            { tipo: 'datos', texto: ['Tengo los dos tramos de las puntas, ', AB, ' y ', CD, ', y AD, que va de punta a punta.'] },
+            { tipo: 'regla', texto: 'Con los puntos en orden, la medida de punta a punta es la suma de sus tramos.', ecuacion: junto(['AD = ', AB, ' + BC + ', CD]) },
+            { tipo: 'cuentas', texto: 'A AD le quito los dos tramos que conozco: lo que queda es BC.', ecuacion: [junto(`BC = ${f(t * K)} − ${f(a * K)} − ${f(c * K)}`), ' ', junto(['= ', dF(km(b * K, u))])] },
+            { tipo: 'sentido', texto: `Compruebo: ${f(a * K)} + ${f(b * K)} + ${f(c * K)} = ${km(t * K, u)}, que es AD.` },
+          ],
+          respuesta: ['BC = ', dF(km(b * K, u))],
+        };
+      },
+    },
+    ahoraTu: {
+      pieza: GO,
+      voz: 'Ubica los puntos en orden antes de sumar o restar.',
+      generar(s) {
+        const r = azar(s + 31);
+        return conCuatro([casoEntre, casoPisan, casoRazon, casoExamen][s % 4], r);
+      },
+    },
+  };
+
+  // Mesa «B fuera de la recta» del laboratorio (geo-figura): B libre en el plano. El todo, AC, en tinta (regla de la unidad).
+  const AB = AB1, BC = BC1;
   const tramos = (bx, by = 0) => ({
     alt: `A y C a 10 cm; B en (${f(bx)}; ${f(by)}). AB más BC ${Math.abs(by) < 1e-9 && bx >= 0 && bx <= 10 ? 'es igual a' : 'es mayor que'} AC`,
     vista: { x: [-3, 13], y: [-1.4, 3.6] },
@@ -71,138 +557,9 @@
       ...(by ? [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'B', a: 'C', color: 'i', grosor: 'variable' }]
         : [{ de: 'a1', a: 'b1', color: 'o', grosor: 'variable', texto: `${f(Math.abs(bx))} cm` },
           { de: 'b2', a: 'c2', color: 'i', grosor: 'variable', texto: `${f(Math.abs(10 - bx))} cm` }]),
-      { de: 'a3', a: 'c3', color: 'd', texto: 'AC = 10 cm' },
+      { de: 'a3', a: 'c3', texto: 'AC = 10 cm' },
     ],
   });
-  const BX = 4, BY = 3, dAB = Math.hypot(BX, BY), dBC = Math.hypot(10 - BX, BY);
-  const fuera = {
-    id: 'suma-de-segmentos',
-    titulo: 'La suma exacta exige «entre»',
-    temas: ['Punto, recta y plano', 'Segmentos y su medida'],
-    pieza: 'geo-figura',
-    // Lee (fase 2): vocabulario de segmento y «entre». No dice qué pasa con B fuera de la recta (eso es «Predice»).
-    lee: {
-      tarjetas: [
-        { titulo: 'Un trozo de recta', texto: 'Imagina la carretera de Juliaca a Puno como si fuera una recta. Un tramo de recta entre dos puntos se llama segmento. El segmento se nombra con esos dos puntos: AB.' },
-        { titulo: 'Qué quiere decir «entre»', texto: 'Si viajas de Juliaca a Puno, pasas por Caracoto: queda entre las dos ciudades. En geometría, B está entre A y C cuando está en la recta AC y en el tramo que va de A a C.' },
-        { titulo: 'Qué mirar', texto: ['Al jugar, mueve B y compara dos números: la suma ', AB, ' + ', BC, ' y la medida ', AC, '. Lleva B también más allá de C y antes de A.'] },
-      ],
-    },
-    juega: {
-      consigna: 'Mueve el punto B por la recta, también fuera del tramo entre A y C. Compara la suma AB + BC con AC.',
-      voz: 'Mueve B y compara las tres medidas, no solo el dibujo.',
-      controles: [{ id: 'bx', etiqueta: 'B', min: -2, max: 12, paso: 1, inicio: 4, unidad: 'cm', decimales: 0, color: 'c-o' }],
-      dibujo: v => ({ datos: tramos(v.bx), estado: {} }),
-      // Se agarra el punto B: corre por la recta, también fuera del tramo AC.
-      arrastres: [{ id: 'punto-b', etiqueta: 'punto B', color: 'c-o',
-        donde: v => enPantalla(tramos(v.bx), [v.bx, 0]),
-        mover: (pt, v) => ({ bx: alPlano(tramos(v.bx), pt)[0] }) }],
-      lectura: v => [AB, ' + ', BC, ` = ${f(Math.abs(v.bx) + Math.abs(10 - v.bx))} cm   ·   `, AC, ' = 10 cm'],
-      minimo: 3,
-    },
-    predice: {
-      pregunta: ['Ahora B sale de la recta: queda 3 cm arriba del punto que está a 4 cm de A. ¿Cuánto mide ', AB, ' + ', BC, '?'],
-      voz: 'Piensa en el camino de A a C pasando por B.',
-      opciones: [
-        { id: 'c', texto: `${f(dAB + dBC)} cm`, correcta: true },
-        { id: 'igual', texto: '10 cm', error: 'GE-SEG1', siFuera: '10 cm sería cierto con B en la recta, entre A y C. Fuera de ella, el camino crece.' },
-        { id: 'altura', texto: '13 cm', error: 'GE-SEG2', siFuera: 'Sumar la altura a AC parece razonable, pero cada tramo se mide inclinado, por separado.' },
-        { id: 'nose', texto: 'No se puede saber', error: 'GE-SEG3', siFuera: 'Faltaría un dato si no supiéramos la altura. Con 4, 6 y 3 cm, cada tramo es una hipotenusa.' },
-      ],
-      dibujo: { datos: tramos(BX, BY), estado: {} },
-      revelar: { datos: Object.assign(tramos(BX, BY), { segmentos: tramos(BX, BY).segmentos.map(s => s.de === 'A' && s.a === 'B' ? Object.assign({}, s, { texto: `${f(dAB)} cm` }) : s.de === 'B' ? Object.assign({}, s, { texto: `${f(dBC)} cm` }) : s) }), estado: {} },
-      coincide: ['Coincide: 5 + 6,7 ≈ 11,7 cm. El rodeo por B es más largo que ', AC, '.'],
-    },
-    // Hallazgo 9: «Mira» no parte del dibujo del juego (B en la recta) sino del de la predicción (B fuera), a propósito:
-    // explica el caso que el alumno acaba de predecir; el juego ya mostró la suma exacta con B entre A y C.
-    mira: {
-      datos: {
-        alt: 'B está 3 cm arriba de la recta AC: AB mide 5, BC mide 6,7 y la suma pasa de 10',
-        vista: { x: [-1, 11], y: [-1.4, 3.8] },
-        puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -90 }, { id: 'C', x: 10, y: 0, rotulo: 'C', lado: -90 }, { id: 'B', x: BX, y: BY, rotulo: 'B', color: 'o', lado: 90 },
-          { id: 'H', x: BX, y: 0, rotulo: 'H', lado: -90, desde: 1 }, { id: 'B0', x: BX, y: 0, sinPunto: true }],
-        segmentos: [
-          { de: 'A', a: 'C', color: 'd', texto: 'AC = 10', lado: -1, desde: 3 },
-          { de: 'B', a: 'H', discontinua: true, grosor: 'fino', texto: '3', lado: 1, desde: 1 },
-          { de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: 'AB = 5', desde: 1 },
-          { de: 'B', a: 'C', color: 'i', grosor: 'variable', texto: `BC ≈ ${f(dBC)}`, desde: 2 },
-        ],
-        angulos: [{ en: 'H', de: 'C', a: 'B', desde: 1 }],
-      },
-      voz: 'Avanza paso a paso. Cada tramo tiene su propio triángulo.',
-      pasos: [
-        { estado: { corte: 1 }, texto: 'AB es la hipotenusa de un triángulo de catetos 4 y 3.', ecuacion: [AB, ' = ', { raiz: [{ sup: ['4', '2'] }, ' + ', { sup: ['3', '2'] }] }, ' = 5 cm'] },
-        { estado: { corte: 2 }, texto: 'BC es la hipotenusa de un triángulo de catetos 6 y 3.', ecuacion: [BC, ' = ', { raiz: [{ sup: ['6', '2'] }, ' + ', { sup: ['3', '2'] }] }, ` ≈ ${f(dBC)} cm`] },
-        { estado: { corte: 3 }, texto: 'El camino por B da un rodeo: la suma pasa de AC.', ecuacion: [AB, ' + ', BC, ` ≈ ${f(dAB + dBC)} > 10 = `, AC] },
-        { estado: { corte: 3 }, texto: 'Solo con B sobre AC, entre A y C, desaparece el rodeo.', ecuacion: [AB, ' + ', BC, ' = ', AC] },
-      ],
-    },
-    regla: {
-      texto: 'Por dos puntos pasa una sola recta. Si B está en el segmento AC, las medidas se suman exacto; si no, AB + BC es mayor que AC.',
-      ecuacion: [{ llave: [AB, ' + ', BC], nota: 'camino por B', color: 'c-o' }, ' ≥ ', { llave: [AC], nota: 'directo', color: 'c-d' }],
-      condicion: 'B está en la recta AC, entre A y C.',
-      voz: 'El dibujo sugiere; la condición «entre A y C» lo garantiza.',
-    },
-    // Así se resuelve (fase 2): el problema de «Ahora tú» con la semilla s + 900. Las mismas cuentas y la misma figura
-    // (fuera.ahoraTu.generar(s + 900) sortea a, b y c en el mismo orden).
-    resuelve: {
-      generar(s) {
-        const r = azar(s + 900), a = r.ent(2, 8), b = r.ent(2, 8), c = r.ent(2, 8);
-        const p = a + b, q = b + c, t = a + b + c, BD = { v: 'c-o', t: 'BD' };
-        const at = fuera.ahoraTu.generar(s + 900);
-        return {
-          enunciado: ['A, B, C y D están en ese orden sobre una recta. ', AC, ` = ${p} cm, `, BD, ` = ${q} cm y AD = ${t} cm. ¿Cuánto mide `, BC, '?'],
-          dibujo: at.dibujo,
-          pasos: [
-            { tipo: 'pide', texto: ['Piden ', BC, ', el tramo del medio, entre B y C.'] },
-            { tipo: 'datos', texto: ['Tengo tres medidas. ', AC, ' y ', BD, ' se enciman en el medio; AD va de punta a punta.'],
-              ecuacion: [AC, ` = ${p}   ·   `, BD, ` = ${q}   ·   AD = ${t}`] },
-            { tipo: 'regla', texto: ['Como los puntos están en orden, cada medida larga es la suma de sus tramos. ', AC, ' y ', BD, ' juntos cubren AD y repiten ', BC, '.'],
-              ecuacion: [AC, ' + ', BD, ' = AD + ', BC] },
-            { tipo: 'cuentas', texto: ['Sumo ', AC, ' y ', BD, ', y le quito AD: lo que sobra es el tramo contado dos veces.'],
-              ecuacion: [BC, ` = ${p} + ${q} − ${t} = ${b} cm`], dibujo: at.solucion.dibujo },
-            { tipo: 'sentido', texto: [`Compruebo: AB = ${p} − ${b} = ${a} y CD = ${q} − ${b} = ${c}. Los tres tramos suman ${a} + ${b} + ${c} = ${t}, que es AD.`] },
-          ],
-          respuesta: [BC, ` = ${b} cm`],
-        };
-      },
-    },
-    ahoraTu: {
-      voz: 'Ubica cada medida en la recta antes de operar.',
-      generar(s) {
-        const r = azar(s), a = r.ent(2, 8), b = r.ent(2, 8), c = r.ent(2, 8);
-        const p = a + b, q = b + c, t = a + b + c;
-        const BD = { v: 'c-o', t: 'BD' };
-        const fig = sol => ({
-          datos: {
-            alt: `A, B, C y D en una recta: AC = ${p}, BD = ${q}, AD = ${t}${sol ? `; BC = ${b}` : ''}`,
-            vista: { x: [-1, t + 1], y: [-2, 3] },
-            puntos: [['A', 0], ['B', a], ['C', a + b], ['D', t]].map(([id, x]) => ({ id, x, y: 0, rotulo: id, lado: -90 }))
-              .concat([['p0', 0, 1], ['p1', a + b, 1], ['q0', a, 2], ['q1', t, 2], ['r0', 0, -1.1], ['r1', t, -1.1]].map(([id, x, y]) => ({ id, x, y, sinPunto: true }))),
-            segmentos: [
-              { de: 'A', a: 'D', grosor: 'fino' },
-              { de: 'p0', a: 'p1', color: 'd', texto: `AC = ${p}` },
-              { de: 'q0', a: 'q1', color: 'o', texto: `BD = ${q}` },
-              { de: 'r0', a: 'r1', texto: `AD = ${t}` },
-              ...(sol ? [{ de: 'B', a: 'C', color: 'i', grosor: 'variable' }] : []),
-            ],
-          },
-          estado: {},
-        });
-        return {
-          pregunta: ['A, B, C y D están en ese orden sobre una recta. ', AC, ` = ${p}, `, BD, ` = ${q} y AD = ${t}. ¿Cuánto mide `, BC, '?'],
-          dibujo: fig(false),
-          opciones: opciones(b, [
-            { id: 'doble', valor: p + q, error: 'GE-SEG4', siFuera: 'Sumar AC y BD tiene sentido, pero BC queda contado dos veces.' },
-            { id: 'cd', valor: t - p, error: 'GE-SEG5', siFuera: 'AD − AC sí es una resta válida: da CD, no BC.' },
-            { id: 'ab', valor: t - q, error: 'GE-SEG5', siFuera: 'AD − BD sí es una resta válida: da AB, no BC.' },
-            { id: 'mitad', valor: (p + q) / 2, error: 'GE-SEG4', siFuera: 'El promedio sería BC solo si AB, BC y CD midieran igual.' },
-          ], n => `${f(n)} cm`),
-          solucion: { texto: 'AC y BD juntos cubren AD y repiten BC una vez.', ecuacion: [AC, ' + ', { v: 'c-o', t: 'BD' }, ' − AD = ', `${p} + ${q} − ${t} = ${b} cm`], dibujo: fig(true) },
-        };
-      },
-    },
-  };
 
   // ---------- Idea 2: el ángulo mide la abertura, no el largo de sus lados ----------
   // Cambia: la abertura del ángulo · Permanece: el largo de los lados y el vértice · Progresa: la clase (agudo → llano → no convexo) ·
@@ -884,9 +1241,9 @@
 
   return {
     unidad: 'geometria.segmentos-y-angulos',
-    version: '0.2.0',
+    version: '0.3.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-objeto.js'],
     historia: {
       texto: 'Los Elementos de Euclides separan el objeto ideal de su dibujo: el punto no tiene tamaño y una marca de tinta solo lo representa. Una regla sirve para explorar una figura, pero su precisión no prueba una igualdad para todos los casos. Esta unidad hereda esa separación entre dibujar, medir y justificar.',
       pregunta: '¿Basta que dos líneas parezcan paralelas?',
@@ -899,11 +1256,19 @@
     // «Triángulos» y «Congruencia», donde son el tema; el lector los marca igual.
     glosario: [
       { termino: 'arco', def: 'Parte de una circunferencia entre dos de sus puntos. Sirve para medir la abertura de un ángulo.', ver: ['ángulo'] },
-      { termino: 'punto', def: 'Lugar exacto, sin tamaño. Se nombra con una letra mayúscula, como A o B.' },
-      { termino: 'recta', def: 'Línea derecha sin principio ni fin. Por dos puntos pasa una sola.', ver: ['segmento', 'rayo'] },
-      { termino: 'plano', def: 'Superficie lisa que se extiende sin fin en todas direcciones, como una hoja que nunca acaba.' },
-      { termino: 'segmento', def: 'Trozo de recta entre dos puntos, sus extremos. Tiene una medida fija.',
-        ejemplo: `Con B entre A y C, AB = 4 y BC = 6: AC = ${4 + 6}.`, ver: ['recta'] },
+      // Las cuatro que estrena la idea 1, con su aproximación de todos los días (simple) y tres ejemplos (calidad 2).
+      { termino: 'punto', def: 'Lugar exacto, sin tamaño. Se nombra con una letra mayúscula, como A o B.',
+        simple: 'Un lugar exacto, como un paradero marcado en el mapa.',
+        ejemplos: ['Cada paradero del mapa de la carretera: A, B o C.', 'La esquina de tu carpeta.', 'El cruce de dos calles en el mapa del celular.'] },
+      { termino: 'recta', def: 'Línea derecha sin principio ni fin. Por dos puntos pasa una sola.', ver: ['segmento', 'rayo'],
+        simple: 'Una línea derecha que no se acaba hacia ningún lado.',
+        ejemplos: ['Una carretera larga y derecha, si la imaginas sin fin.', 'El borde de una regla, alargado hacia los dos lados.', 'La línea que pasa por los paraderos A y C: hay una sola.'] },
+      { termino: 'plano', def: 'Superficie lisa que se extiende sin fin en todas direcciones, como una hoja que nunca acaba.',
+        simple: 'Una superficie lisa, como la hoja del mapa, pero sin bordes.',
+        ejemplos: ['La hoja donde está dibujado el mapa de la carretera.', 'El piso liso de la cancha, imaginado sin fin.', 'La pizarra del salón, si no tuviera bordes.'] },
+      { termino: 'segmento', def: 'Trozo de recta entre dos puntos, sus extremos. Tiene una medida fija.', ver: ['recta'],
+        simple: 'El tramo que va de un punto a otro, como de paradero a paradero.',
+        ejemplos: ['El tramo de carretera entre dos paraderos: AB va del paradero A al B.', 'Un lado de tu cuaderno, de una esquina a la otra.', `Con B entre A y C, AB = 4 km y BC = 6 km: AC = ${4 + 6} km.`] },
       { termino: 'rayo', def: 'Parte de una recta que empieza en un punto y sigue sin fin hacia un solo lado.', ver: ['ángulo'] },
       { termino: 'ángulo', simbolo: '∠', medida: '°', def: 'Abertura entre dos rayos que salen del mismo punto. Se mide en grados.',
         ejemplo: '∠AOB: el vértice es O y los lados son OA y OB.', ver: ['vértice', 'bisectriz'] },
@@ -957,6 +1322,6 @@
       'punto-libre': ['suma-de-segmentos'],
       'quiebre': ['quiebre'],
     },
-    ideas: [fuera, aberturaIdea, bisectriz, paralelas, quiebreIdea],
+    ideas: [suma, aberturaIdea, bisectriz, paralelas, quiebreIdea],
   };
 });
