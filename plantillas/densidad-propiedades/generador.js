@@ -20,8 +20,9 @@
  * Respuestas: densidad, liquido y cubo, un número (g/cm³, g o mL); contar, un número; intensiva, 'prop:<nombre>';
  *   separar, 'metodo:<id>'; barra, 'parte:<m>|<ρ>'.
  *
- * Colores por papel (docs/molde-unidad.md §5b, como la teoría de la idea): la masa que te dan, naranja (o); el volumen
- * o el lado, turquesa (i); lo que se pide y su resultado, violeta (f). Sin figura.
+ * Colores: un color fijo por magnitud, el de la teoría (docs/molde-unidad.md §5b; tabla COLOR, que compara
+ * plantillas/materia-energia/colores.test.js): la masa, naranja (o), también cuando es lo que se pide; el volumen y el
+ * lado, turquesa (i); la densidad, violeta (f). La palabra dice cuál es la pedida. Sin figura.
  * Datos (docs/plan-calidad.md §3, punto 13): ρ = m / V, 1 mL = 1 cm³, 1 L = 1000 mL, 1 kg = 1000 g, el volumen del
  * cubo y la densidad de cada líquido con «unos» (valores de libro: aceite 0,92; alcohol 0,79; leche 1,03; miel 1,4
  * g/mL); las definiciones de intensiva y extensiva; los métodos entre los que se elige. Nunca la densidad del metal que
@@ -63,6 +64,13 @@
   // Una densidad, con los decimales que hacen falta (los mismos en la alternativa y en su explicación).
   const fr = x => f(x, x < 0.01 ? 6 : x < 1 ? 3 : 2);
 
+  // Un color fijo por magnitud (docs/molde-unidad.md §5b): la tabla de la unidad, copia de `colores` de la teoría
+  // (contenido/teoria/quimica/materia-y-energia.js). La práctica carga solo este archivo, así que la tabla va copiada;
+  // plantillas/materia-energia/colores.test.js comprueba que coincida. Cada variable dice su magnitud (`mag`).
+  const COLOR = { masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i' };
+  const va = (nombre, mag) => ({ nombre, mag, color: COLOR[mag] });
+
   // ---- Datos (las mismas líneas de la teoría) ----
   const DEF_RHO = 'Densidad: ρ = m / V';
   const DEF_ML = '1 mL = 1 cm³';
@@ -93,8 +101,8 @@
       e(m * V, 'QM-RHO-PRODUCTO', `Bien la masa y el volumen. Pero se dividen, no se multiplican: ${f(m)} × ${V} = ${fr(m * V)}.`),
     ];
     return {
-      variables: { m: { nombre: 'masa', color: 'o' }, V: { nombre: 'volumen', color: 'i' }, r: { nombre: 'densidad (lo que se pide)', color: 'f' } },
-      enunciado: ['La balanza marca ', v('m', `${f(m)} g`), ` para ${o.nombre}. Al meterlo en una probeta, el agua sube de ${v0} mL a ${v1} mL.`],
+      variables: { m: va('masa', 'masa'), V: va('volumen', 'volumen'), r: va('densidad (lo que se pide)', 'densidad') },
+      enunciado: ['La balanza marca ', v('m', `${f(m)} g`), ` para ${o.nombre}. Al meter el objeto en una probeta, el agua sube de ${v0} mL a ${v1} mL.`],
       pregunta: ['¿Cuál es su ', v('r', 'densidad'), '?'], datos: [DEF_RHO, DEF_ML, DEF_SUBE],
       alternativas: numericas(rng, correcta, errores, x => `${fr(x)} g/cm³`), respuesta: { valor: correcta, unidad: 'g/cm³' },
       solucion: [
@@ -149,7 +157,7 @@
         e(l.rho * L * 100, 'QU2-litro-100-mL', `Bien multiplicar densidad por volumen. Pero 1 L son 1000 mL, no 100: ${f(l.rho)} × ${f(L * 100)} = ${f(l.rho * L * 100)}.`),
       ];
       return {
-        variables: { V: { nombre: 'volumen', color: 'i' }, x: { nombre: 'masa (lo que se pide)', color: 'f' } },
+        variables: { V: va('volumen', 'volumen'), x: va('masa (lo que se pide)', 'masa') },
         enunciado: ['Una botella tiene ', v('V', `${f(L)} L`), ` de ${l.nombre}.`], pregunta: ['¿Cuál es su ', v('x', 'masa'), '?'],
         datos: [DEF_RHO, dRho, '1 L = 1000 mL'],
         alternativas: numericas(rng, correcta, errores, x => `${f(x)} g`), respuesta: { valor: correcta, unidad: 'g' },
@@ -168,7 +176,7 @@
       e(mL / 1000, 'QU2-mL-como-L', `Bien la división: ${f(masa)} ÷ ${f(l.rho)}. Pero eso ya está en mL; ${f(mL / 1000)} son litros.`),
     ];
     return {
-      variables: { m: { nombre: 'masa', color: 'o' }, x: { nombre: 'volumen (lo que se pide)', color: 'f' } },
+      variables: { m: va('masa', 'masa'), x: va('volumen (lo que se pide)', 'volumen') },
       enunciado: ['En un frasco hay ', v('m', `${f(masa)} g`), ` de ${l.nombre}.`], pregunta: ['¿Qué ', v('x', 'volumen'), ' ocupa, en mL?'],
       datos: [DEF_RHO, dRho],
       alternativas: numericas(rng, correcta, errores, x => `${f(x)} mL`), respuesta: { valor: correcta, unidad: 'mL' },
@@ -241,7 +249,7 @@
       e(kg * 100 / V, 'QU1-kg-100-g', `Bien el volumen, ${V} cm³. Pero 1 kg son 1000 g, no 100: ${f(kg * 100)} ÷ ${V} = ${fr(kg * 100 / V)}.`),
     ];
     return {
-      variables: { a: { nombre: 'lado', color: 'i' }, m: { nombre: 'masa', color: 'o' }, r: { nombre: 'densidad (lo que se pide)', color: 'f' } },
+      variables: { a: va('lado', 'longitud'), m: va('masa', 'masa'), r: va('densidad (lo que se pide)', 'densidad') },
       enunciado: ['Un cubo de metal de ', v('a', `${a} cm`), ' de lado tiene una masa de ', v('m', `${f(kg, 4)} kg`), '.'],
       pregunta: ['¿Cuál es su ', v('r', 'densidad'), ', en g/cm³?'],
       datos: [DEF_RHO, 'Volumen de un cubo: lado × lado × lado', '1 kg = 1000 g'],
@@ -270,14 +278,14 @@
     ];
     const errores = cand.map(([mm, rr, id, ex]) => ({ clave: cl(mm, rr), texto: tx(mm, rr), ...err(id, ex) }));
     return {
-      variables: { m: { nombre: 'masa de la barra', color: 'o' }, V: { nombre: 'volumen de la barra', color: 'i' }, x: { nombre: 'masa y densidad de cada parte', color: 'f' } },
+      variables: { m: va('masa de la barra', 'masa'), V: va('volumen de la barra', 'volumen'), mp: va('masa de cada parte', 'masa'), rp: va('densidad de cada parte', 'densidad') },
       enunciado: [`Una barra de ${b.nombre} de `, v('m', `${f(m)} g`), ' ocupa ', v('V', `${V} cm³`), `. Se corta en ${k} partes iguales.`],
-      pregunta: ['¿Qué ', v('x', 'masa y qué densidad'), ' tiene cada parte?'], datos: [DEF_RHO, DEF_INT, DEF_EXT],
+      pregunta: ['¿Qué ', v('mp', 'masa'), ' y qué ', v('rp', 'densidad'), ' tiene cada parte?'], datos: [DEF_RHO, DEF_INT, DEF_EXT],
       alternativas: P.armarTexto({ correcta: { clave: cl(mp, rho), texto: tx(mp, rho) }, errores, rng }),
       respuesta: { valor: cl(mp, rho), texto: tx(mp, rho), unidad: '' },
       solucion: [
-        ['La masa es extensiva: se reparte. ', v('m', `${f(m)} g`), ` ÷ ${k} = `, v('x', `${f(mp)} g`), '.'],
-        ['La densidad es intensiva: la de la barra entera. ', v('m', `${f(m)} g`), ' ÷ ', v('V', `${V} cm³`), ' = ', v('x', `${f(rho)} g/cm³`), '.'],
+        ['La masa es extensiva: se reparte. ', v('m', `${f(m)} g`), ` ÷ ${k} = `, v('mp', `${f(mp)} g`), '.'],
+        ['La densidad es intensiva: la de la barra entera. ', v('m', `${f(m)} g`), ' ÷ ', v('V', `${V} cm³`), ' = ', v('rp', `${f(rho)} g/cm³`), '.'],
         [`Comprobación con una parte: ${f(mp)} g ÷ ${Vp} cm³ = ${f(rho)} g/cm³, lo mismo.`],
       ],
       _datos: { tipo: 'barra', nivel: 3, m, V, partes: k },
@@ -335,5 +343,5 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  return { id: ID, titulo: 'Lo que no cambia al partir', generar, NIVEL, PROPS, SEPARAR };
+  return { id: ID, titulo: 'Lo que no cambia al partir', generar, NIVEL, PROPS, SEPARAR, COLOR };
 });

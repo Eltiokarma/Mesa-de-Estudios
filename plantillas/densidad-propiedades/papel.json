@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "La balanza marca 42 g para un anillo de plata. Al meterlo en una probeta, el agua sube de 15 mL a 19 mL. ¿Cuál es su densidad? Datos: Densidad: ρ = m / V. 1 mL = 1 cm³. El volumen de un objeto es lo que sube el agua al meterlo. Alternativas: A) 168 g/cm³   B) 2,8 g/cm³   C) 2,21 g/cm³   D) 10,5 g/cm³",
+      "enunciado": "La balanza marca 42 g para un anillo de plata. Al meter el objeto en una probeta, el agua sube de 15 mL a 19 mL. ¿Cuál es su densidad? Datos: Densidad: ρ = m / V. 1 mL = 1 cm³. El volumen de un objeto es lo que sube el agua al meterlo. Alternativas: A) 168 g/cm³   B) 2,8 g/cm³   C) 2,21 g/cm³   D) 10,5 g/cm³",
       "respuesta": "D) 10,5 g/cm³",
       "pasos": [
         "El volumen es lo que subió el agua: 19 − 15 = 4 cm³.",

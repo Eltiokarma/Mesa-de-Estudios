@@ -184,9 +184,18 @@ test('«Así se resuelve» no repite el caso de «Ahora tú» con la misma semil
 // La respuesta lleva el color de su magnitud (molde §3; corrección del 17 nov: «la misma magnitud con el mismo color de
 // un ejemplo a otro»): ya no siempre violeta. Lo que se pide no está en la figura.
 // Un subíndice con sus dos partes de color es una sola ficha: t₁/₂ es «t_1/2» (la vida media) y no la t del tiempo.
-const fichas = x => (x === null || x === undefined || typeof x !== 'object' ? [] : Array.isArray(x) ? x.flatMap(fichas)
-  : 'v' in x ? [x] : Array.isArray(x.sub) && x.sub.every(p => p && typeof p === 'object' && 'v' in p) ? [{ v: x.sub[0].v, t: `${x.sub[0].t}_${x.sub[1].t}` }]
-    : Object.values(x).flatMap(fichas));
+// Una potencia de 10 con color ({ sup: [«5 × 10», «−6»] }, que arma potencias() de la unidad) también es una sola ficha,
+// junto con la unidad que la sigue en tinta («5 × 10⁻⁶» + « kg»): así se ve qué magnitud es (auditoría, 17 nov, M8: la
+// prueba partía la potencia en dos fichas sin unidad y no vio la masa en violeta).
+const colorDos = y => y && typeof y === 'object' && !Array.isArray(y) && [y.sub, y.sup].some(q => Array.isArray(q) && q.every(p => p && typeof p === 'object' && 'v' in p));
+const unaFicha = (y, sig = '') => (Array.isArray(y.sub) ? { v: y.sub[0].v, t: `${y.sub[0].t}_${y.sub[1].t}` } : { v: y.sup[0].v, t: `${y.sup[0].t}^${y.sup[1].t}${sig}` });
+const fichas = x => {
+  if (x === null || x === undefined || typeof x !== 'object') return [];
+  if (Array.isArray(x)) return x.flatMap((y, k) => (colorDos(y) ? [unaFicha(y, typeof x[k + 1] === 'string' ? (x[k + 1].match(/^ ?[^\s,;:·]+/) || [''])[0].replace(/\.$/, '') : '')] : fichas(y)));
+  if ('v' in x) return [x];
+  if (colorDos(x)) return [unaFicha(x)];
+  return Object.values(x).flatMap(fichas);
+};
 test('ejemplos: la respuesta lleva color y ninguna figura la muestra (ideas 2 a 6)', () => {
   for (const id of ['propiedades', 'fisico-quimico-nuclear', 'calor-sensible-latente', 'masa-energia', 'vida-media']) for (const [k, e] of idea(id).ejemplos.entries()) {
     assert.ok(fichas(e.respuesta).length, `${id} ejemplo ${k + 1}: respuesta con el color de su magnitud`);
@@ -261,11 +270,12 @@ test('los dibujos de variables de la unidad: rótulos sin pisarse y dentro del l
 // ---------- Correcciones del lector en frío (17 nov) ----------
 
 // Toda molécula dibujada lleva los átomos que dice su fórmula (el propano salía con 2 H y no con 8). Las fórmulas van
-// escritas aquí, aparte de la unidad, como cálculo independiente. Las moléculas grandes (azúcar, glucosa, aceite) se
-// dibujan en corto, y la leyenda del juego lo dice: son las únicas exentas.
+// escritas aquí, aparte de la unidad, como cálculo independiente. El azúcar y el aceite de la idea 1 se dibujan en corto,
+// y la leyenda del juego lo dice: son las únicas exentas, y solo fuera de la idea que cuenta átomos (abajo). La glucosa
+// de la chicha va entera desde la auditoría (17 nov, A2).
 const FORMULAS = { H2O: 'H2O', CO2: 'CO2', O2: 'O2', N2: 'N2', O3: 'O3', H2: 'H2', NH3: 'NH3', Fe2O3: 'Fe2O3', C3H8: 'C3H8',
-  SiO2: 'SiO2', NaCl: 'NaCl', 'Na+': 'Na', 'Cl-': 'Cl', Cu: 'Cu', Sn: 'Sn', Fe: 'Fe', C: 'C', N: 'N', alcohol: 'C2H6O', H: 'H', O: 'O' };
-const EN_CORTO = ['azucar', 'glucosa', 'aceite'];
+  SiO2: 'SiO2', NaCl: 'NaCl', 'Na+': 'Na', 'Cl-': 'Cl', Cu: 'Cu', Sn: 'Sn', Fe: 'Fe', C: 'C', N: 'N', alcohol: 'C2H6O', glucosa: 'C6H12O6', H: 'H', O: 'O' };
+const EN_CORTO = ['azucar', 'aceite'];
 const contar = f => { const c = {}; for (const [, e, n] of f.matchAll(/([A-Z][a-z]?)(\d*)/g)) c[e] = (c[e] || 0) + (n ? +n : 1); return c; };
 test('cada molécula dibujada tiene los átomos de su fórmula (propano: 3 C y 8 H)', () => {
   const vistas = new Set();
@@ -281,7 +291,24 @@ test('cada molécula dibujada tiene los átomos de su fórmula (propano: 3 C y 8
       vistas.add(p.e);
     }
   }
-  for (const e of ['C3H8', 'alcohol', 'Na+', 'Cl-', 'Fe2O3', 'NH3']) assert.ok(vistas.has(e), `no se dibujó ${e}`);
+  for (const e of ['C3H8', 'alcohol', 'glucosa', 'Na+', 'Cl-', 'Fe2O3', 'NH3']) assert.ok(vistas.has(e), `no se dibujó ${e}`);
+});
+
+// Nada en corto donde se cuentan átomos (auditoría, 17 nov, A2 y regla 2): la idea de los cambios enseña que los átomos
+// de cada elemento se conservan, así que ningún dibujo suyo (juego, Mira, ejemplos, Ahora tú, laboratorio) abrevia una
+// molécula. La glucosa de la chicha va entera; el azúcar y el aceite, solo en la idea 1.
+test('la idea de los cambios no dibuja nada en corto', () => {
+  const de3 = DE_PARTICULAS.filter(d => /^fisico-quimico-nuclear /.test(d.donde));
+  assert.ok(de3.length > 20);
+  for (const d of de3) {
+    const usadas = (d.datos.recipientes || []).flatMap(r => ((r.lupa && r.lupa.capas) || []).flatMap(c => c.particulas || []));
+    for (const p of usadas) assert.ok(!EN_CORTO.includes(p.e), `${d.donde}: ${p.e} en corto`);
+  }
+  // Y la chicha cuadra: los átomos de antes son los de después.
+  const L = TODOS.find(d => /^fisico-quimico-nuclear juega .*"chicha".*"tiempo":100/.test(d.donde));
+  assert.ok(L, 'el juego tiene la chicha');
+  const cuenta = r => { const c = {}; for (const cap of r.lupa.capas) for (const p of cap.particulas) for (const [el, k] of Object.entries(contar(FORMULAS[p.e]))) c[el] = (c[el] || 0) + k * p.n; return c; };
+  assert.deepEqual(cuenta(L.datos.recipientes[0]), cuenta(L.datos.recipientes[1]));
 });
 
 // Ninguna partícula pisa a otra (los átomos de partículas distintas no se cruzan): vale para el propano y el alcohol,
@@ -323,12 +350,13 @@ function clase(t) {
   const s = String(t).trim();
   if (s === 't_1/2') return 'vida media';
   if (/_/.test(s)) return clase(s.split('_')[0]);
-  const letra = { m: 'masa', 'Δm': 'masa', V: 'volumen', 'ρ': 'densidad', Q: 'calor', 'cₑ': 'por gramo', L: 'por gramo', T: 'temperatura', 'ΔT': 'temperatura', E: 'energía', c: 'luz', t: 'tiempo', n: 'vidas medias' }[s];
+  const letra = { m: 'masa', 'Δm': 'masa', V: 'volumen', 'ρ': 'densidad', Q: 'calor', 'cₑ': 'por gramo', L: 'por gramo', T: 'temperatura', 'ΔT': 'temperatura', E: 'energía', c: 'luz', t: 'tiempo', n: 'vidas medias', '1,8': 'factor' }[s];
   if (letra) return letra;
   if (/ en cada /.test(s)) return null;
   const u = (s.match(/\d\s*([^\d\s][^\s]*)$/) || [])[1];
   return { '°C': 'temperatura', K: 'temperatura', '°F': 'temperatura', g: 'masa', kg: 'masa', mg: 'masa', mL: 'volumen', 'cm³': 'volumen',
-    'g/cm³': 'densidad', 'g/mL': 'densidad', cal: 'calor', kcal: 'calor', 'cal/g': 'por gramo', 'cal/(g·°C)': 'por gramo' }[u] || null;
+    'g/cm³': 'densidad', 'g/mL': 'densidad', cal: 'calor', kcal: 'calor', 'cal/g': 'por gramo', 'cal/(g·°C)': 'por gramo',
+    'm²/s²': 'luz', 'm/s': 'luz' }[u] || null;
 }
 test('un color por magnitud en toda la unidad (ideas 2 a 6)', () => {
   const visto = {};
@@ -348,12 +376,16 @@ test('un color por magnitud en toda la unidad (ideas 2 a 6)', () => {
     for (const c of i.juega.controles || []) if (c.color) anota(`${id} control`, [{ v: c.color, t: c.etiqueta.split(', ').pop() }]);
   }
   for (const [k, m] of Object.entries(visto)) assert.equal(m.size, 1, `${k} con ${m.size} colores: ${[...m.values()].join(' | ')}`);
-  assert.equal([...visto.calor.keys()][0], 'c-f'); assert.equal([...visto.temperatura.keys()][0], 'c-d');
-  assert.notEqual([...visto.temperatura.keys()][0], [...visto['por gramo'].keys()][0], 'ΔT y L no comparten color');
-  // Idea 6: la masa sigue en naranja; t, t₁/₂ y n tienen cada uno su color, distinto del de la masa y entre sí.
-  assert.equal([...visto.masa.keys()][0], 'c-o');
-  const t6 = ['tiempo', 'vida media', 'vidas medias'].map(k => { assert.ok(visto[k], `no se vio ${k}`); return [...visto[k].keys()][0]; });
-  assert.equal(new Set([...t6, 'c-o']).size, 4, `t, t₁/₂, n y m con colores distintos: ${t6.join(', ')}`);
+  // Y cada color es el de la tabla de la unidad (def.colores), la misma que copia la práctica.
+  for (const [k, m] of Object.entries(visto)) assert.equal([...m.keys()][0], `c-${def.colores[k]}`, `${k}: ${[...m.values()][0]} no lleva el color de la tabla (${def.colores[k]})`);
+  for (const k of ['masa', 'volumen', 'densidad', 'calor', 'por gramo', 'temperatura', 'energía', 'luz', 'tiempo', 'vida media', 'vidas medias']) assert.ok(visto[k], `no se vio ${k}`);
+  assert.notEqual(def.colores.temperatura, def.colores['por gramo'], 'ΔT y L no comparten color');
+  assert.equal(new Set(['tiempo', 'vida media', 'vidas medias', 'masa'].map(k => def.colores[k])).size, 4, 't, t₁/₂, n y m con colores distintos');
+});
+
+test('la tabla de colores de la unidad usa los cinco tokens del molde', () => {
+  for (const [k, c] of Object.entries(def.colores)) assert.ok(['o', 'i', 'f', 'h', 'd'].includes(c), `${k}: ${c}`);
+  assert.equal(def.colores.masa, 'o'); assert.equal(def.colores.calor, 'f'); assert.equal(def.colores.temperatura, 'd');
 });
 
 test('los dibujos de variables pintan Q, T y ρ con su color (juego, eje, termómetro y Mira)', () => {

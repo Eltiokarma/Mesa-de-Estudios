@@ -239,7 +239,7 @@ function registrarPrediccion(problema, opcion, correcta, error, respaldo, t0){
 
 /* ================= Piezas compartidas =================
    Toda la química sale de MotorMateria (motor.js): qué es cada caja, cuántas fases y componentes, si un cambio es
-   físico, químico o nuclear, lo que marca la balanza, qué separa cada método y E = mc². Aquí solo se pinta. */
+   físico, químico o nuclear, lo que marca la balanza, qué separa cada método y E = Δm · c². Aquí solo se pinta. */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MM = MotorMateria;
 const css = Celular.variable; // guardada hasta que cambie el tema o el tamaño (nucleo/celular.js)
@@ -677,7 +677,7 @@ PINTA.separar = {
   describir: v => { if (!v.metodo) return `${MM.MEZCLAS[v.mezcla].nombre}. Todavía no se aplica ningún método.`; const r = MM.separar(v.mezcla, v.metodo); return `${MM.MEZCLAS[v.mezcla].nombre}, por ${r.nombre}: ${r.razon}. ${r.separa ? 'Se separaron.' : 'No se separó nada.'}`; },
 };
 
-/* --- E = mc² en una escala de potencias de 10 (paso 8) --- */
+/* --- E = Δm · c² en una escala de potencias de 10 (paso 8) --- */
 PINTA.emc = {
   alto: w => w < 560 ? 262 : 250,
   llave: v => v.r ? 1 : 0,
@@ -691,16 +691,15 @@ PINTA.emc = {
     ctx.restore();
     texto(ctx, c, 'energía en J (cada marca, 100 veces más)', W/2, y + 36, 11, c.muted, 'center', W - 20, 700);
     if (v.r){
-      const r = MM.energia(1, 'g'), ops = [[r.errores.sinCuadrado, 'sin el cuadrado'], [r.errores.cEnKmPorS, 'c en km/s'], [r.E, 'E = mc²'], [r.errores.gramosSinConvertir, 'en gramos']];
+      const r = MM.energia(1, 'g'), ops = [[r.errores.sinCuadrado, 'sin el cuadrado'], [r.errores.cEnKmPorS, 'c en km/s'], [r.E, 'E = Δm · c²'], [r.errores.gramosSinConvertir, 'en gramos']];
       ops.forEach(([val, t], i) => { const e = Math.log10(val), xx = X(e), ok = i === 2, yy = y - [22, 46, 50, 22][i];
         ctx.save(); ctx.strokeStyle = ok ? c.E : c.muted; ctx.lineWidth = ok ? 3 : 1.5; linea(ctx, xx, y, xx, yy + 8); ctx.restore();
         texto(ctx, c, `${cien(val)}${ok ? ' J' : ''}`, xx, yy - 2, ok ? 13 : 11, ok ? c.E : c.muted, xx < 60 ? 'left' : xx > W - 60 ? 'right' : 'center', 0, ok ? 900 : 700);
         if (!chico || ok) texto(ctx, c, t, xx, yy - 16, 10, ok ? c.ink : c.muted, xx < 60 ? 'left' : xx > W - 60 ? 'right' : 'center', 0, 700); });
-      texto(ctx, c, `= ${cien(r.kWh)} kWh`, X(Math.log10(r.E)), y + 58, 12, c.E, 'center', W - 20, 800);
-    } else texto(ctx, c, '¿dónde cae 1 g convertido en energía?', W/2, y - 28, 12, c.muted, 'center', W - 20, 700);
+    } else texto(ctx, c, '¿dónde cae la energía si falta 1 g?', W/2, y - 28, 12, c.muted, 'center', W - 20, 700);
   },
-  leyenda: () => [leyVar('m', 'm · masa'), leyVar('E', 'E · energía'), leyVar('c', 'c · rapidez de la luz')],
-  describir: v => v.r ? 'En la escala de potencias de 10, la energía de 1 gramo cae en 9 por 10 a la 13 joules. Las otras marcas son los errores: sin el cuadrado, con c en kilómetros por segundo y con la masa en gramos.' : 'Un gramo sobre una balanza y una escala de energía en potencias de 10, todavía sin marcas.',
+  leyenda: () => [leyVar('m', 'Δm · masa que falta'), leyVar('E', 'E · energía'), leyVar('c', 'c · rapidez de la luz')],
+  describir: v => v.r ? 'En la escala de potencias de 10, la energía que sale cuando falta 1 gramo cae en 9 por 10 a la 13 joules. Las otras marcas son los errores: sin el cuadrado, con c en kilómetros por segundo y con la masa en gramos.' : 'Un gramo sobre una balanza y una escala de energía en potencias de 10, todavía sin marcas.',
 };
 
 /* ----- Resaltar en el dibujo lo que se toca en el texto (regla 4) ----- */
@@ -767,7 +766,9 @@ function montarJuego(E, cv, alListo){
 <script>
 /* ================= MODO 1: paso a paso =================
    Pasos 1 a 4 de «Propuesta para las plantillas → 1. Materia: la lupa y la balanza» de
-   docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md, más fases y componentes, separación y E = mc². */
+   docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md, más fases y componentes, separación y E = Δm · c².
+   Alineada con las decisiones de Gerson (auditoría, 17 nov, M5): lo nuclear, con el carbono-14; la masa que va en la
+   fórmula es la que falta (Δm), nunca «toda la materia»; sin el uranio que se parte, sin moles ni kWh. */
 (function(){
 const $ = id => document.getElementById(id);
 const E = crearEscena($('cv'), 'desc1', 'm1', 'ley1');
@@ -842,9 +843,9 @@ const P7 = { id:'materia-emc2', ok:'b', opts:[
   ['c', `${VE(cien(EMC.errores.cEnKmPorS) + ' J')}`, 'emc2-c-en-km-s', 'hipotesis'],
   ['d', `${VE(cien(EMC.errores.sinCuadrado) + ' J')}`, 'emc2-sin-cuadrado', 'hipotesis']],
   fb:{ b:`¡Bien! E = 0,001 kg × (3 × 10⁸ m/s)² = ${cien(EMC.E)} J. Mira la escala: las otras tres opciones caen lejísimos.`,
-    a:`Salió de poner 1 (los gramos) en la fórmula: en E = mc² la masa va en kilogramos, y 1 g = 0,001 kg. El resultado queda 1000 veces más grande.`,
+    a:`Salió de poner 1 (los gramos) en la fórmula: en E = Δm · c² la masa va en kilogramos, y 1 g = 0,001 kg. El resultado queda 1000 veces más grande.`,
     c:`Salió de usar c = 3 × 10⁵ (km/s): con J, la rapidez va en m/s, 3 × 10⁸. Al elevar al cuadrado, el error es de un millón de veces.`,
-    d:`Salió de multiplicar por c sin elevarla al cuadrado: E = mc², c por c.` } };
+    d:`Salió de multiplicar por c sin elevarla al cuadrado: E = Δm · c², c por c.` } };
 
 // Vistas.
 const vCajas = r => ({ tipo:'cajas', r });
@@ -894,7 +895,7 @@ const steps = [
    <p>¿En cuál aparece una sustancia nueva?</p>${opcionesHTML(P5.opts, 'fb')}
    <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">Azúcar: las mismas sustancias antes y después (${AZ.sustanciasDespues.map(F).join(' y ')}) → cambio ${AZ.tipo}</span></div>
    <div class="eq"><span class="ex">Clavo: aparece ${CL.nuevas.map(F).join(', ')} con los mismos átomos (${CL.atomosAntes.Fe} ${F('Fe')} y 6 ${F('O')} del ${F('O2')} → ${CL.atomosDespues.Fe/2} ${F('Fe2O3')}; el agua no cambia) → cambio ${CL.tipo}</span><span class="note">La herrumbre real lleva además agua en su estructura (Fe₂O₃·xH₂O); la lupa la dibuja como Fe₂O₃. El agua ayuda a que pase. El óxido es un sólido: la lupa muestra unidades Fe₂O₃, no moléculas sueltas.</span></div></div>
-   <p>Un cambio químico se reconoce porque aparecen sustancias nuevas, no porque «se vea irreversible» ni porque cambie el color. Y si cambian los propios elementos (el uranio que se parte en bario y kriptón), el cambio es <b>nuclear</b>.</p>
+   <p>Un cambio químico se reconoce porque aparecen sustancias nuevas, no porque «se vea irreversible» ni porque cambie el color. Y si cambian los propios elementos (el carbono-14 de un hueso antiguo que pasa a nitrógeno-14), el cambio es <b>nuclear</b>.</p>
    <div class="nav"><button type="button" class="btn" id="evaporar">Evaporar el agua azucarada</button>${otraVez}</div>
    <p class="fuente">Describir una reacción por lo que se ve y no por las partículas (MA8): según el resumen de Ahtee y Varjola (1998), solo cerca del 6 % de los escolares de último ciclo y del 14 % de los universitarios de primer año la describieron bien.</p></div>` },
  { k:'Paso 7', t:'Separar la mezcla', gate:P6, vista:r => vSep(1),
@@ -905,12 +906,12 @@ const steps = [
    <p class="estado" id="sepEst" aria-live="polite"></p>
    <div class="eqs"><div class="eq"><span class="ex">Agua con sal → ${SAL.adecuados.map(k => MM.METODOS[k].nombre).join(' o ')} (difiere ${SAL.difiere})</span></div>
    <div class="eq"><span class="ex">Filtración: tamaño · decantación: densidad · destilación: temperatura de ebullición · imantación: magnetismo</span></div></div></div>` },
- { k:'Paso 8', t:'E = mc²: la masa que se vuelve energía', gate:P7, vista:r => vEmc(r),
-   body:() => `<p>En las reacciones nucleares, una parte pequeñísima de la masa ${Vm('m')} se transforma en energía ${VE('E')}, según ${VE('E')} = ${Vm('m')}${Vc('c')}², con <span class="f">${Vc('c')} = 3 × 10⁸ m/s</span>, la rapidez de la luz.</p>
-   <p>Si 1 g de materia se transformara por completo en energía, ¿cuánta energía daría?</p>${opcionesHTML(P7.opts, 'fb')}
-   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${VE('E')} = ${Vm('m')}${Vc('c')}² = ${Vm('0,001 kg')} × (${Vc('3 × 10⁸ m/s')})² = ${VE(cien(EMC.E) + ' J')}</span><span class="note">La masa en kg, c en m/s y al cuadrado: así sale en joules. En kWh: ${cien(EMC.E)} ÷ (3,6 × 10⁶) = ${cien(EMC.kWh)} kWh. Si una casa gastara 150 kWh al mes, le alcanzaría para unos ${fmt(Math.round(EMC.kWh/150/12/1000)*1000, 0)} años.</span></div></div>
+ { k:'Paso 8', t:'E = Δm · c²: la masa que falta', gate:P7, vista:r => vEmc(r),
+   body:() => `<p>En un proceso nuclear, a lo que queda le falta un poquito de masa, ${Vm('Δm')} (la masa antes menos la masa después), y sale muchísima energía ${VE('E')}, según ${VE('E')} = ${Vm('Δm')} · ${Vc('c')}², con <span class="f">${Vc('c')} = 3 × 10⁸ m/s</span>, la rapidez de la luz. Solo la masa que falta va en la fórmula.</p>
+   <p>Si al final de un proceso nuclear falta 1 g de masa, ¿cuánta energía sale?</p>${opcionesHTML(P7.opts, 'fb')}
+   <div class="tras" hidden><div class="eqs"><div class="eq"><span class="ex">${VE('E')} = ${Vm('Δm')} · ${Vc('c')}² = ${Vm('0,001 kg')} × (${Vc('3 × 10⁸ m/s')})² = ${VE(cien(EMC.E) + ' J')}</span><span class="note">La masa en kg, c en m/s y al cuadrado: así sale en joules.</span></div></div>
    <p>En una reacción química la masa también cambia, pero tan poco que ninguna balanza lo nota (lo ves en «¿Qué pasa si…?»). Por eso, en química se dice que la masa se conserva.</p>
-   <p class="fuente">No encontramos estudios que midan estos errores de cálculo con E = mc² (gramos sin convertir, c en km/s, olvidar el cuadrado): son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe. La idea de que «una parte de la masa se convierte en energía» es el lenguaje de examen; lo que pasa es que la energía del sistema y su masa cambian a la vez.</p></div>` },
+   <p class="fuente">No encontramos estudios que midan estos errores de cálculo con E = Δm · c² (gramos sin convertir, c en km/s, olvidar el cuadrado): son hipótesis nuestras, de la tabla de lo que no tiene respaldo del informe. La idea de que «una parte de la masa se convierte en energía» es el lenguaje de examen; lo que pasa es que la energía del sistema y su masa cambian a la vez.</p></div>` },
 ];
 
 // ----- Navegación -----
@@ -1130,7 +1131,7 @@ const LANA = MM.quemarMetal({ metal:'Fe', masa:5.6, oxido:'Fe2O3', cerrado:false
 const OZ = MM.clasificarCaja([{ formula:'O2', n:4 }, { formula:'O3', n:3 }]);
 const AZU = MM.particula('S', ['color', 'temperatura de fusión', 'dureza', 'masa']);
 const JUL = MM.hervir({ masa:500, Teb:87, minutos:5, potencia:2000 });
-const NUC = MM.balanzaNuclear(1.8e14), MET = MM.masaDeEnergia(890000);
+const NUC = MM.balanzaNuclear(1.8e14), MET = MM.masaDeEnergia(4.6e8);
 
 const EXPS = [
   { id:'lana-de-acero', corto:'La lana de acero que arde',
@@ -1201,8 +1202,8 @@ const EXPS = [
       d:'Salió de usar c = 3 × 10⁵ (km/s): al cuadrado, el resultado sale un millón de veces más grande.' },
     antes:() => ({ tipo:'nuclear' }), despues:p => ({ tipo:'nuclear', r:true, p }), anima:true,
     exp:() => `<div class="eqs"><div class="eq"><span class="ex">${Vm('Δm')} = ${VE('E')} ÷ ${Vc('c')}² = 1,8 × 10¹⁴ ÷ (${Vc('3 × 10⁸')})² = ${Vm('2 × 10⁻³ kg')} = ${Vm(fmt(NUC.baja, 0) + ' g')}</span></div>
-      <div class="eq"><span class="ex">Química: arder 1 mol de metano libera unos 890 000 J → ${Vm('Δm')} ≈ ${cien(MET.g)} g</span><span class="note">También baja, pero menos de una cienmillonésima de gramo: ninguna balanza lo nota. Por eso en química decimos que la masa se conserva.</span></div></div>
-      <p>En el nuclear, además, cambian los elementos: el uranio-235 se parte en bario y kriptón. En una reacción química, los elementos nunca cambian.</p>
+      <div class="eq"><span class="ex">Química: arder el gas de un balón de 10 kg libera unos 4,6 × 10⁸ J → ${Vm('Δm')} ≈ ${cien(MET.g)} g</span><span class="note">También baja, pero unas milésimas de miligramo: ninguna balanza lo nota. Por eso en química decimos que la masa se conserva.</span></div></div>
+      <p>En lo nuclear, además, puede cambiar el elemento, como el carbono-14 de un hueso que pasa a nitrógeno-14. En una reacción química, los elementos nunca cambian.</p>
       <p class="fuente">No encontramos estudios con porcentaje sobre masa y energía. La idea de que «una parte de la masa se convierte en energía» es muy común y la repiten los libros de divulgación (Taber, por la descripción de un buscador; Riggs, 2023, por su resumen). Los errores de cálculo son hipótesis nuestras.</p>` },
 ];
 const S = { k:0, pred:{}, t0:Date.now() };

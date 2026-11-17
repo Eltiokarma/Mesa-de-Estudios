@@ -74,9 +74,15 @@
   const DEF_F = 'Fracción que queda tras n vidas medias: 1/2ⁿ';
   const DEF_D = 'Lo desintegrado es lo que falta: lo que había menos lo que queda';
   const vidaDe = s => `Vida media del ${s.nombre}: ${UNOS(s)}`;
+  // Un color fijo por magnitud (docs/molde-unidad.md §5b): la tabla de la unidad, copia de `colores` de la teoría
+  // (contenido/teoria/quimica/materia-y-energia.js). La práctica carga solo este archivo, así que la tabla va copiada;
+  // plantillas/materia-energia/colores.test.js comprueba que coincida. Cada variable dice su magnitud (`mag`).
+  const COLOR = { masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i' };
+  const va = (nombre, mag) => ({ nombre, mag, color: COLOR[mag] });
   const VARS = {
-    m0: { nombre: 'lo que había al inicio', color: 'o' }, m: { nombre: 'lo que queda o se desintegró', color: 'o' },
-    t: { nombre: 'tiempo que pasa', color: 'i' }, th: { nombre: 'vida media', color: 'f' }, n: { nombre: 'vidas medias que caben', color: 'h' },
+    m0: va('lo que había al inicio', 'masa'), m: va('lo que queda o se desintegró', 'masa'),
+    t: va('tiempo que pasa', 'tiempo'), th: va('vida media', 'vida media'), n: va('vidas medias que caben', 'vidas medias'),
   };
   const usa = (...ks) => Object.fromEntries(ks.map(k => [k, VARS[k]]));
 
@@ -283,5 +289,5 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  return { id: ID, titulo: 'La mitad cada cierto tiempo', generar, NIVEL, FUENTES, SUSTANCIAS, MEZCLAS, fr };
+  return { id: ID, titulo: 'La mitad cada cierto tiempo', generar, NIVEL, FUENTES, SUSTANCIAS, MEZCLAS, fr, COLOR };
 });

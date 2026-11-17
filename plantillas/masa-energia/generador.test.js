@@ -77,14 +77,21 @@ test('datos: una lista de líneas cortas, sin la respuesta, con la fórmula y si
   }
 });
 
-test('colores por papel: Δm naranja, c² turquesa, la energía de un balón verde, lo que se pide violeta', () => {
+// Un color fijo por magnitud, el de la teoría (molde §5b; auditoría M1: la E dada iba en turquesa, el color de c², y la
+// masa pedida y los balones en violeta). Tabla escrita aquí; colores.test.js de materia-energia la compara con la teoría.
+test('un color por magnitud: masa naranja, c² turquesa, E violeta, la energía de un balón verde, los balones carmín', () => {
+  const POR_MAG = { masa: 'o', luz: 'i', energía: 'f', 'energía de un balón': 'd', balones: 'h' };
   for (let s = 0; s < 400; s++) {
     const p = gen.generar(s), V = p.variables;
-    for (const [k, x] of Object.entries(V)) assert.equal(x.color, { dm: 'o', c2: 'i', E: 'i', b: 'd', x: 'f' }[k], `semilla ${s}: ${k}`);
-    assert.ok(p.pregunta.some(x => typeof x === 'object' && x.v === 'x'), `semilla ${s}: lo que se pide no va en violeta`);
+    for (const [k, x] of Object.entries(V)) assert.equal(x.color, POR_MAG[x.mag], `semilla ${s}: ${k} (${x.mag})`);
+    assert.ok(p.pregunta.some(x => typeof x === 'object' && x.v === 'x'), `semilla ${s}: lo que se pide no va marcado`);
     for (const linea of [p.enunciado, p.pregunta, ...p.solucion])
       for (const x of linea) if (x && typeof x === 'object') assert.ok(V[x.v], `semilla ${s}: «${x.t}» usa la variable ${x.v}, que no existe`);
   }
+});
+
+test('la fisión no se enseña en esta unidad: ni «uranio» ni «fisión» en el texto', () => {
+  for (let s = 0; s < 400; s++) { const { _datos, ...p } = gen.generar(s); assert.ok(!/uranio|fisi[oó]n/i.test(JSON.stringify(p)), `semilla ${s}`); }
 });
 
 test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', () => {

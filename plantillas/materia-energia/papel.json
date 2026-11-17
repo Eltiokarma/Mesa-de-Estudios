@@ -1,11 +1,12 @@
 {
   "titulo": "La lupa y la balanza: problemas para lápiz y papel",
-  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Piensa siempre en las partículas: un elemento tiene un solo tipo de átomo (aunque forme moléculas, como O₂); un compuesto tiene átomos distintos unidos; una mezcla tiene dos o más sustancias sin unirse. Una fase es cada zona con propiedades distintas (lo disuelto está en la fase del líquido) y un componente es cada sustancia (el hielo y el agua son una sola). En un cambio físico quedan las mismas sustancias; en uno químico aparecen otras con los mismos átomos; en uno nuclear cambian los elementos. En un recipiente cerrado la masa no cambia. Para E = mc², la masa va en kg y c = 3 × 10⁸ m/s, al cuadrado.",
+  "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Cada problema trae sus datos al final del enunciado.",
+  "nota": "Alineado con las decisiones de Gerson para Materia y energía (auditoría, 17 nov, M5): datos por problema y no en la indicación; lo nuclear con el carbono-14; la idea 5 es E = Δm · c², con la masa que falta (nunca «toda la materia se vuelve energía»); sin moles, masas atómicas, nombres de nomenclatura ni kWh, que son de otras unidades.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Clasifica cada material como elemento, compuesto, mezcla homogénea o mezcla heterogénea: agua destilada, ozono, aire, bronce, sal de mesa (NaCl), granito y diamante.",
+      "enunciado": "Clasifica cada material como elemento, compuesto, mezcla homogénea o mezcla heterogénea: agua destilada, ozono, aire, bronce, sal de mesa (NaCl), granito y diamante. Datos: Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos. Mezcla homogénea: una sola fase. Heterogénea: dos fases o más. Ozono: moléculas O₃. Aire: N₂, O₂ y otros gases, repartidos parejo. Bronce: cobre y estaño fundidos juntos. Granito: granos de cuarzo, feldespato y mica que se ven. Diamante: solo átomos de carbono.",
       "respuesta": "Agua destilada: compuesto. Ozono: elemento. Aire: mezcla homogénea. Bronce: mezcla homogénea. Sal de mesa: compuesto. Granito: mezcla heterogénea. Diamante: elemento.",
       "pasos": [
         "Agua destilada: solo moléculas de H₂O, todas iguales, con dos clases de átomos unidos: compuesto. Que sea «destilada» no la vuelve mezcla.",
@@ -17,19 +18,75 @@
         "Diamante: solo átomos de carbono: elemento."
       ],
       "verificar": [
-        { "fn": "material", "args": ["agua destilada"], "espera": { "nombre": "sustancia pura (compuesto)" } },
-        { "fn": "material", "args": ["ozono"], "espera": { "nombre": "sustancia pura (elemento)" } },
-        { "fn": "material", "args": ["aire"], "espera": { "nombre": "mezcla homogénea" } },
-        { "fn": "material", "args": ["bronce"], "espera": { "nombre": "mezcla homogénea" } },
-        { "fn": "material", "args": ["sal de mesa (NaCl)"], "espera": { "nombre": "sustancia pura (compuesto)" } },
-        { "fn": "material", "args": ["granito"], "espera": { "nombre": "mezcla heterogénea" } },
-        { "fn": "material", "args": ["diamante"], "espera": { "nombre": "sustancia pura (elemento)" } }
+        {
+          "fn": "material",
+          "args": [
+            "agua destilada"
+          ],
+          "espera": {
+            "nombre": "sustancia pura (compuesto)"
+          }
+        },
+        {
+          "fn": "material",
+          "args": [
+            "ozono"
+          ],
+          "espera": {
+            "nombre": "sustancia pura (elemento)"
+          }
+        },
+        {
+          "fn": "material",
+          "args": [
+            "aire"
+          ],
+          "espera": {
+            "nombre": "mezcla homogénea"
+          }
+        },
+        {
+          "fn": "material",
+          "args": [
+            "bronce"
+          ],
+          "espera": {
+            "nombre": "mezcla homogénea"
+          }
+        },
+        {
+          "fn": "material",
+          "args": [
+            "sal de mesa (NaCl)"
+          ],
+          "espera": {
+            "nombre": "sustancia pura (compuesto)"
+          }
+        },
+        {
+          "fn": "material",
+          "args": [
+            "granito"
+          ],
+          "espera": {
+            "nombre": "mezcla heterogénea"
+          }
+        },
+        {
+          "fn": "material",
+          "args": [
+            "diamante"
+          ],
+          "espera": {
+            "nombre": "sustancia pura (elemento)"
+          }
+        }
       ]
     },
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "Una botella cerrada contiene agua con azúcar disuelta, unos cubitos de hielo flotando y limaduras de hierro en el fondo; encima queda aire, que tomarás como nitrógeno (N₂) y oxígeno (O₂). ¿Cuántas fases, cuántos componentes y cuántos elementos tiene el sistema?",
+      "enunciado": "Una botella cerrada contiene agua con azúcar disuelta, unos cubitos de hielo flotando y limaduras de hierro en el fondo; encima queda aire, que tomarás como nitrógeno (N₂) y oxígeno (O₂). ¿Cuántas fases, cuántos componentes y cuántos elementos tiene el sistema? Datos: Fase: zona que se ve igual en todos sus puntos, con un borde. Componente: cada sustancia distinta del sistema. Hielo: agua en estado sólido, H₂O. Azúcar: C₁₂H₂₂O₁₁. Hierro: Fe.",
       "respuesta": "4 fases, 5 componentes y 5 elementos.",
       "pasos": [
         "Fases (zonas con propiedades distintas): el agua azucarada (el azúcar disuelto no forma otra fase), el hielo, el hierro y el aire. Son 4.",
@@ -38,41 +95,136 @@
         "Error común: contar el hielo como otro componente o el azúcar disuelto como otra fase."
       ],
       "verificar": [
-        { "fn": "contarSistema", "args": [[
-          { "nombre": "agua", "sustancia": "H2O", "formula": "H2O", "fase": "agua azucarada", "estado": "l" },
-          { "nombre": "hielo", "sustancia": "H2O", "formula": "H2O", "fase": "hielo", "estado": "s" },
-          { "nombre": "azúcar disuelta", "sustancia": "C12H22O11", "formula": "C12H22O11", "fase": "agua azucarada", "estado": "s", "disuelto": true },
-          { "nombre": "limaduras de hierro", "sustancia": "Fe", "formula": "Fe", "fase": "hierro", "estado": "s" },
-          { "nombre": "nitrógeno del aire", "sustancia": "N2", "formula": "N2", "fase": "aire", "estado": "g" },
-          { "nombre": "oxígeno del aire", "sustancia": "O2", "formula": "O2", "fase": "aire", "estado": "g" } ]],
-          "espera": { "nFases": 4, "nComponentes": 5, "nElementos": 5 } }
+        {
+          "fn": "contarSistema",
+          "args": [
+            [
+              {
+                "nombre": "agua",
+                "sustancia": "H2O",
+                "formula": "H2O",
+                "fase": "agua azucarada",
+                "estado": "l"
+              },
+              {
+                "nombre": "hielo",
+                "sustancia": "H2O",
+                "formula": "H2O",
+                "fase": "hielo",
+                "estado": "s"
+              },
+              {
+                "nombre": "azúcar disuelta",
+                "sustancia": "C12H22O11",
+                "formula": "C12H22O11",
+                "fase": "agua azucarada",
+                "estado": "s",
+                "disuelto": true
+              },
+              {
+                "nombre": "limaduras de hierro",
+                "sustancia": "Fe",
+                "formula": "Fe",
+                "fase": "hierro",
+                "estado": "s"
+              },
+              {
+                "nombre": "nitrógeno del aire",
+                "sustancia": "N2",
+                "formula": "N2",
+                "fase": "aire",
+                "estado": "g"
+              },
+              {
+                "nombre": "oxígeno del aire",
+                "sustancia": "O2",
+                "formula": "O2",
+                "fase": "aire",
+                "estado": "g"
+              }
+            ]
+          ],
+          "espera": {
+            "nFases": 4,
+            "nComponentes": 5,
+            "nElementos": 5
+          }
+        }
       ]
     },
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Di si cada fenómeno es físico, químico o nuclear: (I) el hielo se derrite; (II) la sal se disuelve en agua; (III) un clavo se oxida; (IV) arde el gas natural (metano); (V) el agua se descompone con corriente eléctrica en hidrógeno y oxígeno; (VI) un núcleo de uranio-235 se parte en bario y kriptón.",
+      "enunciado": "Di si cada fenómeno es físico, químico o nuclear: (I) el hielo se derrite; (II) la sal se disuelve en agua; (III) un clavo se oxida; (IV) arde el gas de la cocina (propano); (V) el agua se descompone con corriente eléctrica en hidrógeno y oxígeno; (VI) un hueso antiguo pierde carbono-14 y gana nitrógeno-14. Datos: Cambio físico: las mismas partículas cambian de estado, de forma o de lugar. Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos. Cambio nuclear: un átomo pasa a ser de otro elemento.",
       "respuesta": "I físico, II físico, III químico, IV químico, V químico, VI nuclear.",
       "pasos": [
         "I y II: las moléculas de H₂O y la sal siguen siendo las mismas sustancias; solo cambian de estado o se reparten. Físicos.",
         "III: aparece óxido de hierro, una sustancia nueva con los mismos átomos de Fe y O. Químico.",
-        "IV: aparecen CO₂ y H₂O. Químico.",
+        "IV: el propano y el oxígeno forman CO₂ y H₂O. Químico.",
         "V: se puede volver a formar agua con H₂ y O₂, pero eso no lo hace físico: aparecen sustancias nuevas. Químico. «Reversible» no es lo mismo que «físico».",
-        "VI: el uranio deja de ser uranio y aparecen otros elementos. Nuclear: en un cambio químico los elementos nunca cambian."
+        "VI: aparecen átomos de nitrógeno que antes eran de carbono: cambió el elemento. Nuclear: en un cambio químico los elementos nunca cambian."
       ],
       "verificar": [
-        { "fn": "fenomeno", "args": ["fundir-hielo"], "espera": { "tipo": "físico" } },
-        { "fn": "fenomeno", "args": ["disolver-sal"], "espera": { "tipo": "físico" } },
-        { "fn": "fenomeno", "args": ["oxidar-hierro"], "espera": { "tipo": "químico" } },
-        { "fn": "fenomeno", "args": ["quemar-metano"], "espera": { "tipo": "químico" } },
-        { "fn": "fenomeno", "args": ["electrolisis-agua"], "espera": { "tipo": "químico" } },
-        { "fn": "fenomeno", "args": ["fision-uranio"], "espera": { "tipo": "nuclear" } }
+        {
+          "fn": "fenomeno",
+          "args": [
+            "fundir-hielo"
+          ],
+          "espera": {
+            "tipo": "físico"
+          }
+        },
+        {
+          "fn": "fenomeno",
+          "args": [
+            "disolver-sal"
+          ],
+          "espera": {
+            "tipo": "físico"
+          }
+        },
+        {
+          "fn": "fenomeno",
+          "args": [
+            "oxidar-hierro"
+          ],
+          "espera": {
+            "tipo": "químico"
+          }
+        },
+        {
+          "fn": "fenomeno",
+          "args": [
+            "quemar-propano"
+          ],
+          "espera": {
+            "tipo": "químico"
+          }
+        },
+        {
+          "fn": "fenomeno",
+          "args": [
+            "electrolisis-agua"
+          ],
+          "espera": {
+            "tipo": "químico"
+          }
+        },
+        {
+          "fn": "fenomeno",
+          "args": [
+            "carbono14-hueso"
+          ],
+          "espera": {
+            "tipo": "nuclear"
+          }
+        }
       ]
     },
     {
       "id": "p4",
       "nivel": "básico",
-      "enunciado": "Un frasco vacío con su tapa pesa 150 g. Se le echan 20 g de alcohol y se tapa. Después de un día caluroso, una cuarta parte del alcohol se evaporó. (a) ¿Cuánto marca la balanza con el frasco tapado? (b) Si el frasco hubiera estado destapado, ¿cuánto marcaría?",
+      "enunciado": "Un frasco vacío con su tapa pesa 150 g. Se le echan 20 g de alcohol y se tapa. Después de un día caluroso, una cuarta parte del alcohol se evaporó. (a) ¿Cuánto marca la balanza con el frasco tapado? (b) Si el frasco hubiera estado destapado, ¿cuánto marcaría? Datos: La balanza pesa todo lo que hay sobre ella. El vapor de alcohol también tiene masa.",
       "respuesta": "(a) 170 g. (b) 165 g.",
       "pasos": [
         "Al principio: 150 + 20 = 170 g.",
@@ -80,14 +232,41 @@
         "(b) Destapado, el vapor se va al aire: se evaporaron 20 ÷ 4 = 5 g, y la balanza marca 170 − 5 = 165 g. La masa no desapareció: está en el aire."
       ],
       "verificar": [
-        { "fn": "evaporar", "args": [{ "recipiente": 150, "masa": 20, "fraccion": 0.25, "cerrado": true }], "espera": { "despues": 170 } },
-        { "fn": "evaporar", "args": [{ "recipiente": 150, "masa": 20, "fraccion": 0.25, "cerrado": false }], "espera": { "despues": 165, "vapor": 5 } }
+        {
+          "fn": "evaporar",
+          "args": [
+            {
+              "recipiente": 150,
+              "masa": 20,
+              "fraccion": 0.25,
+              "cerrado": true
+            }
+          ],
+          "espera": {
+            "despues": 170
+          }
+        },
+        {
+          "fn": "evaporar",
+          "args": [
+            {
+              "recipiente": 150,
+              "masa": 20,
+              "fraccion": 0.25,
+              "cerrado": false
+            }
+          ],
+          "espera": {
+            "despues": 165,
+            "vapor": 5
+          }
+        }
       ]
     },
     {
       "id": "p5",
       "nivel": "básico",
-      "enunciado": "En un frasco tapado de 200 g se ponen 50 g de hielo. El frasco se deja afuera hasta que todo el hielo se derrite. ¿Cuánto marca la balanza al final?",
+      "enunciado": "En un frasco tapado de 200 g se ponen 50 g de hielo. El frasco se deja afuera hasta que todo el hielo se derrite. ¿Cuánto marca la balanza al final? Datos: Fundir: el hielo pasa de sólido a líquido.",
       "respuesta": "250 g, lo mismo que al principio.",
       "pasos": [
         "Antes: 200 + 50 = 250 g.",
@@ -95,29 +274,65 @@
         "Que el hielo flote dice que es menos denso (ocupa más volumen), no que tenga menos masa. La balanza sigue en 250 g."
       ],
       "verificar": [
-        { "fn": "evaporar", "args": [{ "recipiente": 200, "masa": 50, "fraccion": 0, "cerrado": true }], "espera": { "antes": 250, "despues": 250 } },
-        { "fn": "fenomeno", "args": ["fundir-hielo"], "espera": { "tipo": "físico", "conservaAtomos": true } }
+        {
+          "fn": "evaporar",
+          "args": [
+            {
+              "recipiente": 200,
+              "masa": 50,
+              "fraccion": 0,
+              "cerrado": true
+            }
+          ],
+          "espera": {
+            "antes": 250,
+            "despues": 250
+          }
+        },
+        {
+          "fn": "fenomeno",
+          "args": [
+            "fundir-hielo"
+          ],
+          "espera": {
+            "tipo": "físico",
+            "conservaAtomos": true
+          }
+        }
       ]
     },
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Sobre una balanza abierta se queman por completo 11,2 g de lana de acero (hierro) y se forma óxido férrico, Fe₂O₃. Masas atómicas: Fe = 56, O = 16. ¿Cuánto marca la balanza al final? ¿Por qué cambia?",
+      "enunciado": "Sobre una balanza, sin tapa, arden por completo 11,2 g de lana de acero (hierro) y se forma óxido de hierro. ¿Cuánto marca la balanza al final? ¿Por qué cambia? Datos: Al arder, el hierro se une al oxígeno del aire y forma óxido de hierro. Cada 56 g de hierro toman 24 g de oxígeno.",
       "respuesta": "16 g: sube 4,8 g, que es el oxígeno del aire que se unió al hierro.",
       "pasos": [
-        "Moles de Fe: 11,2 ÷ 56 = 0,2 mol.",
-        "En Fe₂O₃ hay 3 átomos de O por cada 2 de Fe: 0,2 × 3/2 = 0,3 mol de O.",
-        "Masa de O: 0,3 × 16 = 4,8 g. Masa de Fe₂O₃: 11,2 + 4,8 = 16 g.",
+        "Oxígeno que toma el hierro: 11,2 × 24 ÷ 56 = 4,8 g.",
+        "El óxido pesa 11,2 + 4,8 = 16 g, y eso marca la balanza.",
         "La balanza sube porque el oxígeno entra del aire y queda unido. En un frasco cerrado no cambiaría: ese oxígeno ya estaba adentro."
       ],
       "verificar": [
-        { "fn": "quemarMetal", "args": [{ "metal": "Fe", "masa": 11.2, "oxido": "Fe2O3", "cerrado": false }], "espera": { "despues": 16, "oxigeno": 4.8 } }
+        {
+          "fn": "quemarMetal",
+          "args": [
+            {
+              "metal": "Fe",
+              "masa": 11.2,
+              "oxido": "Fe2O3",
+              "cerrado": false
+            }
+          ],
+          "espera": {
+            "despues": 16,
+            "oxigeno": 4.8
+          }
+        }
       ]
     },
     {
       "id": "p7",
       "nivel": "básico",
-      "enunciado": "Elige el método para separar cada mezcla y di qué propiedad aprovecha: (a) agua con arena; (b) agua con aceite; (c) limaduras de hierro con azufre en polvo; (d) agua con alcohol; (e) agua con sal, si quieres recuperar la sal.",
+      "enunciado": "Elige el método para separar cada mezcla y di qué propiedad aprovecha: (a) agua con arena; (b) agua con aceite; (c) limaduras de hierro con azufre en polvo; (d) agua con alcohol; (e) agua con sal, si quieres recuperar la sal. Datos: Filtración: el papel retiene lo que no se disuelve. Decantación: se separan dos capas de distinta densidad. Imantación: el imán atrae al hierro. Destilación: se separan líquidos que hierven a temperaturas distintas. Evaporación: el líquido se va y queda lo disuelto.",
       "respuesta": "(a) filtración (o decantación); (b) decantación; (c) imantación; (d) destilación; (e) evaporación (o cristalización).",
       "pasos": [
         "(a) La arena no se disuelve: el papel retiene sus granos. Propiedad: el tamaño de las partículas. También se asienta (decantación).",
@@ -127,46 +342,127 @@
         "(e) El agua se evapora y la sal queda. Filtrar no sirve: la sal disuelta pasa por el papel junto con el agua."
       ],
       "verificar": [
-        { "fn": "metodoPara", "args": ["agua-arena"], "espera": { "adecuados": ["filtracion", "decantacion"] } },
-        { "fn": "metodoPara", "args": ["agua-aceite"], "espera": { "adecuados": ["decantacion"] } },
-        { "fn": "metodoPara", "args": ["hierro-azufre"], "espera": { "adecuados": ["imantacion"] } },
-        { "fn": "metodoPara", "args": ["agua-alcohol"], "espera": { "adecuados": ["destilacion"] } },
-        { "fn": "metodoPara", "args": ["agua-sal"], "espera": { "adecuados": ["evaporacion", "destilacion"] } },
-        { "fn": "separar", "args": ["agua-sal", "filtracion"], "espera": { "separa": false } }
+        {
+          "fn": "metodoPara",
+          "args": [
+            "agua-arena"
+          ],
+          "espera": {
+            "adecuados": [
+              "filtracion",
+              "decantacion"
+            ]
+          }
+        },
+        {
+          "fn": "metodoPara",
+          "args": [
+            "agua-aceite"
+          ],
+          "espera": {
+            "adecuados": [
+              "decantacion"
+            ]
+          }
+        },
+        {
+          "fn": "metodoPara",
+          "args": [
+            "hierro-azufre"
+          ],
+          "espera": {
+            "adecuados": [
+              "imantacion"
+            ]
+          }
+        },
+        {
+          "fn": "metodoPara",
+          "args": [
+            "agua-alcohol"
+          ],
+          "espera": {
+            "adecuados": [
+              "destilacion"
+            ]
+          }
+        },
+        {
+          "fn": "metodoPara",
+          "args": [
+            "agua-sal"
+          ],
+          "espera": {
+            "adecuados": [
+              "evaporacion",
+              "destilacion"
+            ]
+          }
+        },
+        {
+          "fn": "separar",
+          "args": [
+            "agua-sal",
+            "filtracion"
+          ],
+          "espera": {
+            "separa": false
+          }
+        }
       ]
     },
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "Si 2 kg de materia se transformaran por completo en energía, ¿cuántos joules se obtendrían? Exprésalo también en kWh (1 kWh = 3,6 × 10⁶ J). Usa c = 3 × 10⁸ m/s.",
-      "respuesta": "1,8 × 10¹⁷ J, que son 5 × 10¹⁰ kWh.",
+      "enunciado": "En un proceso nuclear, a lo que queda le faltan 2 g de masa. ¿Cuántos joules salen? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. c = 3 × 10⁸ m/s. 1 kg = 1000 g.",
+      "respuesta": "1,8 × 10¹⁴ J.",
       "pasos": [
-        "E = mc² = 2 × (3 × 10⁸)² = 2 × 9 × 10¹⁶ = 1,8 × 10¹⁷ J.",
-        "En kWh: 1,8 × 10¹⁷ ÷ (3,6 × 10⁶) = 5 × 10¹⁰ kWh.",
-        "Cuidado: c va al cuadrado. Sin elevarlo saldría 6 × 10⁸ J, 300 millones de veces menos (c veces)."
+        "La masa que falta, en kg: Δm = 2 g = 0,002 kg.",
+        "E = Δm · c² = 0,002 × (3 × 10⁸)² = 0,002 × 9 × 10¹⁶ = 1,8 × 10¹⁴ J.",
+        "Cuidado: c va al cuadrado y la masa en kg. Con 2 (los gramos) saldría mil veces más; sin elevar c, 6 × 10⁵ J."
       ],
       "verificar": [
-        { "fn": "energia", "args": [2, "kg"], "espera": { "E": 1.8e17, "kWh": 5e10, "errores.sinCuadrado": 6e8 } }
+        {
+          "fn": "energia",
+          "args": [
+            2,
+            "g"
+          ],
+          "espera": {
+            "E": 180000000000000.0,
+            "errores.gramosSinConvertir": 1.8e+17,
+            "errores.sinCuadrado": 600000
+          }
+        }
       ]
     },
     {
       "id": "p9",
       "nivel": "intermedio",
-      "enunciado": "En una reacción nuclear se liberan 4,5 × 10¹³ J. ¿Qué masa se transformó en energía? Da la respuesta en kg y en g.",
+      "enunciado": "En una reacción nuclear se liberan 4,5 × 10¹³ J. ¿Cuánta masa falta al final, Δm? Da la respuesta en kg y en g. Datos: E = Δm · c², con Δm en kg y E en joules (J). c = 3 × 10⁸ m/s. 1 kg = 1000 g.",
       "respuesta": "5 × 10⁻⁴ kg, es decir, 0,5 g.",
       "pasos": [
-        "m = E ÷ c² = 4,5 × 10¹³ ÷ (9 × 10¹⁶) = 0,5 × 10⁻³ = 5 × 10⁻⁴ kg.",
+        "Δm = E ÷ c² = 4,5 × 10¹³ ÷ (9 × 10¹⁶) = 0,5 × 10⁻³ = 5 × 10⁻⁴ kg.",
         "En gramos: 5 × 10⁻⁴ × 1000 = 0,5 g.",
         "La fórmula da kg porque E está en J y c en m/s. Si escribes «5 × 10⁻⁴ g», te equivocas por mil."
       ],
       "verificar": [
-        { "fn": "masaDeEnergia", "args": [4.5e13], "espera": { "kg": 5e-4, "g": 0.5 } }
+        {
+          "fn": "masaDeEnergia",
+          "args": [
+            45000000000000.0
+          ],
+          "espera": {
+            "kg": 0.0005,
+            "g": 0.5
+          }
+        }
       ]
     },
     {
       "id": "p10",
       "nivel": "básico",
-      "enunciado": "De esta lista, ¿cuáles son propiedades extensivas, cuáles intensivas y cuál es química? Masa, volumen, densidad, temperatura, color, temperatura de ebullición y combustibilidad.",
+      "enunciado": "De esta lista, ¿cuáles son propiedades extensivas, cuáles intensivas y cuál es química? Masa, volumen, densidad, temperatura, color, temperatura de ebullición y combustibilidad. Datos: Propiedad intensiva: no depende de cuánta muestra hay. Propiedad extensiva: depende de cuánta muestra hay. Propiedad química: solo se ve cuando la sustancia se transforma en otra.",
       "respuesta": "Extensivas: masa y volumen. Intensivas: densidad, temperatura, color, temperatura de ebullición y combustibilidad. Química: la combustibilidad.",
       "pasos": [
         "Extensiva: cambia si tomas más cantidad. Dos vasos de agua tienen el doble de masa y de volumen.",
@@ -174,8 +470,30 @@
         "Química: solo se ve cuando la sustancia se transforma en otra. Arder es formar CO₂ y agua: la combustibilidad es química (y también intensiva)."
       ],
       "verificar": [
-        { "fn": "clasificarPropiedades", "args": [["masa", "volumen", "densidad", "temperatura", "color", "temperatura de ebullición", "combustibilidad"]],
-          "espera": { "extensivas": ["masa", "volumen"], "quimicas": ["combustibilidad"], "nIntensivas": 5 } }
+        {
+          "fn": "clasificarPropiedades",
+          "args": [
+            [
+              "masa",
+              "volumen",
+              "densidad",
+              "temperatura",
+              "color",
+              "temperatura de ebullición",
+              "combustibilidad"
+            ]
+          ],
+          "espera": {
+            "extensivas": [
+              "masa",
+              "volumen"
+            ],
+            "quimicas": [
+              "combustibilidad"
+            ],
+            "nIntensivas": 5
+          }
+        }
       ]
     }
   ]

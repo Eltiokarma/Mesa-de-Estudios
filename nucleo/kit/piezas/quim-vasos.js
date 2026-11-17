@@ -30,6 +30,8 @@
  *     lupa: {                                         // opcional: la lupa debajo
  *       foco: 0.5,                                    // dónde mira, de 0 (el fondo) a 1 (el borde), como nivel; se marca
  *       capas: [{ alto: 0.5, particulas: [{ e, n }], orden: 'azar' | 'filas' }],   // de arriba abajo; cada una, una fase
+ *                                                     // centro: true: una sola partícula, en el centro de su capa (una
+ *                                                     // molécula grande dibujada entera, como la glucosa)
  *       vacia: true,                                  // la lupa sin mirar todavía: un «?» (para predecir)
  *       desde: 0,                                     // paso en que aparece (Mira)
  *     },
@@ -275,6 +277,8 @@
     bordes.push(Infinity);
     return caps.map((c, ci) => {
       const y1 = bordes[ci], y2 = bordes[ci + 1], lista = [];
+      // Una molécula grande sola (la glucosa entera, con sus 24 átomos): una sola celda, en el centro de su capa.
+      if (c.centro) return { y1, y2, lista: [[cx, (Math.max(y1, cy - Ri) + Math.min(y2, cy + Ri)) / 2, 0]] };
       for (const j of filas) {
         const fy = yFila(j);
         if (fy <= y1 || fy >= y2) continue;

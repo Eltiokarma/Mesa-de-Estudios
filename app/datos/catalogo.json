@@ -7480,7 +7480,7 @@
   },
   "conversiones-quimica": {
    "id": "conversiones-quimica",
-   "titulo": "Termómetros, lingotes e isótopos que se desintegran",
+   "titulo": "Termómetros, lingotes y otras conversiones",
    "formato": "predicciones",
    "estado": "borrador",
    "version": "0.1.0",

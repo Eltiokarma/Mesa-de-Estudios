@@ -126,3 +126,53 @@ Resumen: **2 Alta, 10 Media, 12 Baja.**
    nuclear; física o química) lo declara; los demás deben dar 4 opciones distintas en 400 semillas (B1). Automatizable.
 9. **El título visible de una plantilla compartida, por unidad**, sin palabras que la unidad evita a propósito
    («isótopos», M3). Automatizable con una lista de palabras prohibidas por unidad (la idea 6 ya la tiene en su test).
+
+## Correcciones (17 nov)
+
+Fase 8 (`docs/metodo/unidad/6-correcciones.md`). Lo que ya corrigió el lector en frío no se tocó. Cuentas que cambiaron,
+rehechas con un script aparte que no carga la unidad, el motor ni los generadores (`scratchpad/corr/cuentas.py`, 16 de
+16); las de la práctica de densidad de esta unidad, además, con un recálculo propio en `conversiones-quimica/generador.test.js`.
+
+| # | Qué se hizo |
+| --- | --- |
+| A1 | `cambios-materia`: el propano lleva sus 3 C y 8 H (un hidrógeno más chico, `h`, que se rotula «H»). Pruebas nuevas en el generador: cada especie dibujada tiene los átomos de su fórmula (fórmulas escritas aparte), los círculos del SVG son los de las partículas y, en cada lupa de las 600 semillas, los átomos de cada elemento son los mismos antes y después (salvo el nuclear). `sustancias-mezclas`: la misma prueba de átomos contra fórmula y de círculos contra partículas; el aceite (3 C «en corto») salió de las lupas de la práctica: no cabe entero. |
+| A2 | La glucosa de la chicha va entera, con sus 24 átomos (cadena de 6 C, cada uno con su H y su OH), sola en el centro de la lupa: opción nueva `centro` de `quim-vasos` (una capa con una sola partícula, en el centro; prueba nueva en la pieza). La lupa de la chicha mira el azúcar y lo que sale de él: 1 C₆H₁₂O₆ → 2 C₂H₅OH + 2 CO₂ (sin el agua, que no cabe y no cambia). Leyenda al día. La prueba de la unidad ya no exenta la glucosa y suma «la idea de los cambios no dibuja nada en corto» (regla 2 del informe) y que los átomos de la chicha cuadren. |
+| M1 | La tabla de colores de la unidad está en un solo lugar, la teoría (`COLORES`, exportada como `colores`, con su cabecera al día). La práctica carga solo su generador (`app/practica.js`), así que no puede leerla en el navegador sin tocar `app/`: cada generador lleva una copia (`COLOR`; en `conversiones-quimica`, `COLOR_ME`, solo para esta unidad) y cada variable dice su magnitud (`mag`). Prueba común nueva, `plantillas/materia-energia/colores.test.js`: compara cada copia con la teoría y recorre 400 semillas de cada generador de la unidad. Ahora, igual que en la teoría: calor, ΔT y temperatura verde, cₑ y L turquesa, Q violeta; densidad, la masa pedida naranja y el volumen pedido turquesa (la barra separa masa y densidad de cada parte); masa-energía, E violeta, la masa pedida naranja, los balones carmín; la balanza de cambios, todas las masas naranja; conversiones, temperaturas y ΔT verde, el 1,8 turquesa (se agregó `factor` a la tabla, como en la teoría). Las pruebas de color de cada generador, que pedían la regla vieja («lo que se pide, violeta»), se reescribieron. La prueba de la teoría compara además cada magnitud con la tabla. |
+| M2 | `sustancias-mezclas`: la sal disuelta va como Na⁺ y Cl⁻ sueltos (especies nuevas que cuentan como una sola sustancia, la sal); el cristal sigue como par. Prueba nueva (un Cl⁻ por cada Na⁺, ningún par en una capa con agua). `casos.json`, semilla 6: cambió la entrada; la respuesta es la misma (heterogénea). |
+| M3 | `conversiones-quimica` en esta unidad: densidad propia (`tDensidadME`) con datos en lista («Densidad: ρ = m / V», «Hierro: unos 7,9 g/cm³», «1 kg = 1000 g», «1 L = 1000 cm³»), solo g, kg, cm³ y L, sin potencias de 10 ni m³, con sus errores (QM-COMO-AGUA, QU1, QU2…); las variaciones, con los colores de la unidad. Las otras unidades dan el mismo problema que antes con la misma semilla (prueba que ya existía). Título sin «isótopos»: «Termómetros, lingotes y otras conversiones» (generador, `plantilla.json` y papel). Prueba nueva en 400 semillas. |
+| M4 | `quimica-conceptos` en esta unidad: todo problema trae datos (las ramas de la tarjeta de «Lee»; las definiciones de sustancia pura, elemento y mezcla de la idea 1); ram4 dice «la energía de los cambios químicos»; sus1, sus2, sus7 y sus10, «elemento» en vez de «sustancia simple» y «alótropos»; las ramas pasan a 1 de cada 4 problemas. Prueba nueva. |
+| M5 | Papel de `conversiones-quimica`: cada problema dice sus `unidades` y trae sus datos al final del enunciado (la indicación ya no los trae ni da consejos); los de esta unidad (p1, p3 y p4) son variaciones y densidad en cm³ y L (p4 ya no pide m³). Escena `materia-energia`: «E = Δm · c²» en todo el texto, el paso 8 pregunta por la masa que falta (no «1 g que se transforma por completo») y sin kWh; lo nuclear con el carbono-14 (sin el uranio-235 que se parte en bario y kriptón); la comparación química, con el balón de gas y no con «1 mol de metano». Su papel: sin consejos en la indicación, datos por problema, p3 con el hueso y el propano, p6 sin moles ni «óxido férrico» (con «cada 56 g de hierro toman 24 g de oxígeno»: la respuesta sigue en 16 g), p8 con la masa que falta (2 g → 1,8 × 10¹⁴ J) y sin kWh, p9 con Δm. Motor: fenómenos nuevos `carbono14-hueso` y `quemar-propano`, con casos; la fisión queda en el motor solo como caso de prueba. Además, «uranio que se fisiona» salió de la teoría (idea 5, Ahora tú, ejemplo 13, Así se resuelve y glosario) y de `masa-energia`: ahora es «el combustible de un reactor nuclear». |
+| M6 y M7 | Idea 3, nivel 3: «Lana de acero abierta» y «cerrada» son ahora un solo ejemplo («Dos frascos con lana: ¿cuál marca más y por cuánto?», 2,4 g). «Las burbujas del hervor» pasó a «Hervir o pasar corriente»: dos lupas del gas de dos frascos, elegir cuál es el hervor y qué cambio es cada uno; ninguna lupa dice la respuesta. Nuevo: «La chicha que fermenta» (con la glucosa entera y la lupa de después en «?»: 2 CO₂). |
+| M8 | «Miligramos a kilogramos»: 5 × 10⁻⁶ kg en naranja (masa); «La luz al cuadrado»: c² y 9 × 10¹⁶ m²/s² en turquesa. La prueba de colores ve ahora las potencias de 10 como una ficha (base, exponente y la unidad que sigue) y reconoce m²/s²; con el texto viejo falla («masa con 2 colores»). |
+| M9 | «4 átomos de Fe» (un elemento de átomos sueltos no dice «moléculas»); el error QM-MOLECULAS-IGUALES habla de «partículas». Prueba nueva. |
+| M10 | El ejemplo de «propiedad intensiva» es la dureza (un clavo y una varilla del mismo hierro), no las tazas a 70 °C. |
+| B1 | Idea 4, tipo 4: el distractor que nunca salía (t + 80, igual a q/m) es ahora «80 °C» (leer el 80 cal/g como temperatura). La idea 5, tipo 3 (balones) sigue con 3 opciones: no hay un tercer error real que caiga en escala; queda para quien escriba distractores. |
+| B2 | Sin «como el aluminio» en la respuesta. |
+| B3 | En la práctica, el N va relleno oscuro con su letra clara (ya no se confunde con el H hueco). La paleta de elementos en la práctica necesita `nucleo/elementos.js` cargado en la pantalla de práctica (`app/`): pendiente. |
+| B4 | Solo el signo menos de la variación de `calor-sensible-latente` («de −10 °C»), con prueba. El separador de miles de la teoría (`f()` contra `ent6`) queda sin tocar: cambia muchas cifras y no confunde. |
+| B6 | «Al meter el objeto en una probeta». |
+| B7 | Borrado el código muerto de colores viejos (líneas 38-39) y puestos al día los comentarios de cabecera, de la idea 4 y del laboratorio. |
+| B8 | Glosario «cambio nuclear»: el hueso, la madera vieja (carbono-14) y el Sol marcado «idea 5»; sin el uranio. La idea 5 dice qué es el núcleo («el centro del átomo») en la tarjeta «Químico y nuclear» de Lee. |
+| B9 | «La energía se mide en joules» quedó solo en la tarjeta 1. |
+| B10 | «Un hueso antiguo pierde carbono-14 y gana nitrógeno-14», en la teoría y en `cambios-materia`. |
+| B11 | Idea 2, nivel 3: «Alcohol y agua» pasó a «Agua salada con arena» (filtración y después evaporación, con el error de evaporar primero). |
+| B12 | «Un cristal de sal»: ion sodio y ion cloruro; «la sal une dos elementos distintos». |
+
+### Pendiente, y por qué
+
+- **Para Gerson**:
+  - B5: ¿la teoría da la lectura punto a punto (K = °C + 273, °F = 1,8 · °C + 32) como dato para elegir, como hoy, o ninguna de las dos (teoría y práctica) la da? La práctica de la unidad ya no la da.
+  - El azúcar y el aceite de la idea 1 siguen dibujados «en corto», con su leyenda: enteros (45 y 54 átomos) no caben en las lupas de tres vasos. En la idea 1 no se cuentan átomos; cambiarlos obliga a cambiar el trío de «Lee» y «Mira» (agua destilada, con azúcar y con aceite). ¿Se aceptan así o se cambia el trío?
+  - En la chicha, la lupa muestra solo la glucosa y lo que sale de ella, sin el agua de la chicha: ¿se acepta?
+  - Un título de plantilla por unidad (lo pedía el informe para `conversiones-quimica`) necesita `app/`; se cambió el título común.
+- **Fuera de alcance (`app/` o núcleo)**:
+  - La pantalla de papel (`app/app.js`, `vPapel`) no filtra por unidad: el papel de `conversiones-quimica` ya trae `unidades` por problema, pero en esta unidad se siguen viendo p2 y p5 a p8. Basta filtrar `d.problemas` por `q.unidades` cuando se llega desde una unidad. Lo mismo para la regla 5 del informe (validador).
+  - Que la tabla de colores salga de verdad de un solo archivo también en el navegador: la práctica solo carga el generador. Con un `requiere` por plantilla en `app/practica.js` se podría cargar la tabla desde la teoría; hoy la mantiene en línea la prueba común.
+  - La paleta de elementos en las lupas de la práctica (B3): `nucleo/elementos.js` en la pantalla de práctica.
+- **Leve, sin cambio**: B4 (separador de miles en la teoría) y el tercer distractor de los balones (B1, idea 5).
+
+Pruebas: la teoría, las piezas `quim-*`, el motor, la prueba común de colores, los 8 generadores de la unidad y
+`herramientas/alternativas.test.js`, 706 de 706; `npm run catalogo` hecho; `npm test`, 9326 de 9326.
+Papel de los generadores al día (`herramientas/papel-generador.js`). Capturas en `scratchpad/corr/cap/` (teoría:
+momentos, ejemplos y glosario; práctica: `cambios-materia` con el propano entero, `sustancias-mezclas` con los iones
+sueltos y `conversiones-quimica` con datos y colores de la unidad).

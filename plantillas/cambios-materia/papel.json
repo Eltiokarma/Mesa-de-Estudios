@@ -50,7 +50,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Mira estos fenómenos: I. Se forma escarcha sobre el pasto en una helada. II. La leña arde en el fogón. III. El espejo del baño se empaña con la ducha. IV. El carbono-14 de un hueso antiguo pasa a nitrógeno-14. ¿Cuántos son cambios químicos? Datos: Cambio físico: las mismas partículas cambian de estado, de forma o de lugar. Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos. Cambio nuclear: un átomo pasa a ser de otro elemento. Alternativas: A) 4   B) 2   C) 1   D) 3",
+      "enunciado": "Mira estos fenómenos: I. Se forma escarcha sobre el pasto en una helada. II. La leña arde en el fogón. III. El espejo del baño se empaña con la ducha. IV. Un hueso antiguo pierde carbono-14 y gana nitrógeno-14. ¿Cuántos son cambios químicos? Datos: Cambio físico: las mismas partículas cambian de estado, de forma o de lugar. Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos. Cambio nuclear: un átomo pasa a ser de otro elemento. Alternativas: A) 4   B) 2   C) 1   D) 3",
       "respuesta": "C) 1",
       "pasos": [
         "Químico solo si después hay una sustancia que antes no estaba; un cambio de estado, disolver o romper son físicos.",

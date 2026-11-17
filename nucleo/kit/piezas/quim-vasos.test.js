@@ -24,6 +24,12 @@ const MUESTRAS = {
     { tipo: 'trozo', titulo: 'Bronce', material: 'metal', lupa: { foco: 0.5, capas: [{ particulas: [{ e: 'Cu', n: 12 }, { e: 'Sn', n: 4 }] }] } },
   ], separacion: 16 }),
   uno: Object.assign({}, base, { recipientes: [{ tipo: 'vaso', titulo: 'Agua con hielo', cubitos: 2, lupa: { vacia: true, foco: 0.74 } }] }),
+  // Una molécula grande, entera y sola en el centro de la lupa (la glucosa de la chicha, 17 nov).
+  centro: Object.assign({}, base, { atomos: Object.assign({ h: { el: 'H', estilo: 'hueco', r: 3 } }, atomos), especies: Object.assign({
+    grande: [['C', -20, 0], ['C', -10, 0], ['C', 0, 0], ['C', 10, 0], ['C', 20, 0], ['O', -30, -5], ['O', 30, 5], ['h', -10, -9], ['h', 10, 9], ['h', 0, -9]] }, especies), recipientes: [
+    { tipo: 'frasco', titulo: 'Antes', lupa: { capas: [{ centro: true, particulas: [{ e: 'grande', n: 1 }] }] } },
+    { tipo: 'frasco', titulo: 'Después', lupa: { capas: [{ particulas: [{ e: 'H2O', n: 4 }] }] } },
+  ] }),
   sinLupa: Object.assign({}, base, { clave: false, recipientes: [{ tipo: 'vaso', titulo: 'El vaso', capa: { alto: 0.2 }, fondo: { tipo: 'arena' } }, { tipo: 'trozo', titulo: 'Sal', material: 'cristal' }] }),
 };
 
@@ -116,6 +122,15 @@ test('cada átomo cae dentro de su lupa, y la lupa tiene tantas partículas como
       assert.ok(dc + c.r <= g.lupa.R - 1, `${k}: átomo en (${c.cx}, ${c.cy}) se sale de la lupa ${k2}`);
     }
   }
+});
+
+test('una capa con centro pone su única partícula en el centro de la lupa', () => {
+  const d = MUESTRAS.centro, g = V.geometria(d);
+  assert.deepEqual(V.capacidad(d, 0), [1]);
+  const s = V.dibujar(d, {}), p = s.match(/<g class="kit-particula">(.*?)<\/g>/)[1];
+  const cs = [...p.matchAll(/cx="(-?[\d.]+)"/g)].map(m => +m[1]);
+  assert.ok(Math.abs((Math.min(...cs) + Math.max(...cs)) / 2 - g.cx(0)) < 0.6, 'centrada en x');
+  assert.ok(p.includes(`cy="${g.lupa.cy}"`), 'centrada en y');
 });
 
 test('la lupa sin mirar muestra un «?» y no dibuja partículas ni clave', () => {

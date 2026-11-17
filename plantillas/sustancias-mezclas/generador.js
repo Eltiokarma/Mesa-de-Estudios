@@ -19,7 +19,10 @@
  *   fases, 'fc:F|C'; contar, un número.
  *
  * Figura (lupa): de partículas, nunca de variables (docs/etapa2/decisiones.md). Átomos en tinta (currentColor), cada
- * uno con su símbolo y un relleno por elemento para leerse en grises; la línea punteada es el borde entre dos fases.
+ * uno con su símbolo y un relleno por elemento para leerse en grises (el N, oscuro, para no confundirse con el H hueco);
+ * la línea punteada es el borde entre dos fases. Toda molécula lleva los átomos de su fórmula (auditoría, 17 nov: nada
+ * en corto; el aceite, que no cabe entero, ya no se dibuja). La sal disuelta va como iones sueltos, Na⁺ y Cl⁻, entre el
+ * agua (Gerson, 17 nov); en el cristal, como par NaCl. generador.test.js cuenta los átomos contra la fórmula.
  * No dice la clase. El papel no lleva figura (herramientas/papel-generador.js salta esos problemas).
  * Datos (docs/plan-calidad.md §3, punto 13): las definiciones entre las que se elige, nunca la clase ya decidida.
  * Errores: MA9 y MA10 (docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md, respaldo parcial:
@@ -59,7 +62,8 @@
 
   // ---- Especies: los átomos que dibuja la lupa y su fórmula ----
   // Átomos: radio y relleno (0 hueco, 1 claro, 2 medio) para leerse en grises; el símbolo va dentro.
-  const ATOMO = { H: [6, 0], O: [8.5, 2], C: [8.5, 1], N: [8.5, 0], Na: [9, 1], Cl: [9.5, 2], Si: [8.5, 1], Cu: [10, 2], Sn: [10, 1], He: [8, 0], Ar: [9, 1] };
+  // Relleno: 0 hueco, 1 claro, 2 medio, 3 oscuro (con la letra en el color de la tarjeta).
+  const ATOMO = { H: [6, 0], O: [8.5, 2], C: [8.5, 1], N: [8.5, 3], Na: [9, 1], Cl: [9.5, 2], Si: [8.5, 1], Cu: [10, 2], Sn: [10, 1], He: [8, 0], Ar: [9, 1] };
   const ROT = { Na: 'Na⁺', Cl: 'Cl⁻' };
   const ESP = {
     H2O: { formula: 'H2O', nombre: 'agua', at: [['O', 0, -2], ['H', -11, 6], ['H', 11, 6]] },
@@ -68,19 +72,22 @@
     O3: { formula: 'O3', nombre: 'ozono', at: [['O', -15, 5], ['O', 0, -4], ['O', 15, 5]] },
     CO2: { formula: 'CO2', nombre: 'dióxido de carbono', at: [['O', -16, 0], ['C', 0, 0], ['O', 16, 0]] },
     NaCl: { formula: 'NaCl', nombre: 'sal', at: [['Na', -9, 0], ['Cl', 9.5, 0]] },
+    // La sal disuelta: sus iones sueltos entre el agua. Cuentan como una sola sustancia, la sal (clasificar).
+    'Na+': { formula: 'Na', nombre: 'ion sodio', rotulo: 'Na⁺', de: 'NaCl', at: [['Na', 0, 0]] },
+    'Cl-': { formula: 'Cl', nombre: 'ion cloruro', rotulo: 'Cl⁻', de: 'NaCl', at: [['Cl', 0, 0]] },
     He: { formula: 'He', nombre: 'helio', at: [['He', 0, 0]] },
     Ar: { formula: 'Ar', nombre: 'argón', at: [['Ar', 0, 0]] },
     Cu: { formula: 'Cu', nombre: 'cobre', at: [['Cu', 0, 0]] },
     Sn: { formula: 'Sn', nombre: 'estaño', at: [['Sn', 0, 0]] },
     SiO2: { formula: 'SiO2', nombre: 'arena', at: [['O', -16, 0], ['Si', 0, 0], ['O', 16, 0]] },
-    // El aceite es una mezcla de grasas: la lupa lo dibuja como una sola clase de partícula, una cadena de carbonos.
-    aceite: { formula: 'C18H34O2', nombre: 'aceite', at: [['C', -16, 3], ['C', 0, -3], ['C', 16, 3]] },
   };
   const elementosDe = f => [...new Set(String(f).match(/[A-Z][a-z]?/g))];
 
   // Clasificación por las reglas de la teoría. capas: [[[especie, n], …], …]; cada capa es una fase.
+  // La sustancia de una partícula dibujada: los iones sueltos son de la sal.
+  const sustancia = e => ESP[e].de || e;
   function clasificar(capas) {
-    const especies = [...new Set(capas.flat().filter(([, n]) => n > 0).map(([e]) => e))];
+    const especies = [...new Set(capas.flat().filter(([, n]) => n > 0).map(([e]) => sustancia(e)))];
     if (especies.length === 1) return elementosDe(ESP[especies[0]].formula).length === 1 ? 'elemento' : 'compuesto';
     return capas.length === 1 ? 'homogenea' : 'heterogenea';
   }
@@ -131,10 +138,10 @@
     return ESP[e].at.map(([s, dx, dy]) => {
       const r = n1(K * ATOMO[s][0]), rel = ATOMO[s][1], x = n1(cx + K * dx), y = n1(cy + K * dy);
       const relleno = rel === 0 ? 'none' : 'currentColor';
-      const op = rel === 0 ? '' : ` fill-opacity="${rel === 1 ? 0.12 : 0.28}"`;
+      const op = rel === 0 ? '' : ` fill-opacity="${[0, 0.12, 0.28, 0.62][rel]}"`;
       const t = ROT[s] || s, fs = n1(K * (t.length > 2 ? 7.5 : s === 'H' ? 7.5 : 9));
       return `<circle cx="${x}" cy="${y}" r="${r}" fill="${relleno}"${op} stroke="currentColor" stroke-width="1.2"/>`
- + `<text x="${x}" y="${n1(y + fs * 0.36)}" font-size="${fs}" text-anchor="middle" fill="currentColor">${xml(t)}</text>`;
+ + `<text x="${x}" y="${n1(y + fs * 0.36)}" font-size="${fs}" text-anchor="middle" fill="${rel === 3 ? 'var(--card)' : 'currentColor'}">${xml(t)}</text>`;
     }).join('');
   }
   // Las partículas de una capa, intercaladas (una de cada especie por turno) y en filas.
@@ -180,7 +187,8 @@
     return s + '</svg>';
   }
   function altLupa(paneles) {
-    const capa = c => lista(c.filter(([, n]) => n > 0).map(([e, n]) => `${n} ${n === 1 ? 'partícula' : 'partículas'} de ${ESP[e].nombre} (${fm(ESP[e].formula)})`));
+    const capa = c => lista(c.filter(([, n]) => n > 0).map(([e, n]) => (ESP[e].de ? `${n} ${n === 1 ? ESP[e].nombre : ESP[e].nombre.replace('ion', 'iones')} (${ESP[e].rotulo}) sueltos`
+      : `${n} ${n === 1 ? 'partícula' : 'partículas'} de ${ESP[e].nombre} (${fm(ESP[e].formula)})`)));
     return 'Lupa de una muestra, un modelo y no una foto: cada bolita es un átomo con su símbolo. '
       + paneles.map(pn => (pn.capas.length === 1 ? `En una sola zona: ${capa(pn.capas[0])}.`
         : `${pn.capas.length} zonas separadas por una línea punteada. ` + pn.capas.map((c, i) => `${i === 0 ? 'Arriba' : i === pn.capas.length - 1 ? 'abajo' : 'en medio'}, ${capa(c)}`).join('; ') + '.')).join(' ');
@@ -196,13 +204,12 @@
     { titulo: 'Un extintor', capas: [[['CO2', 5]]] },
     { titulo: 'Un cristal', capas: [[['NaCl', 6]]] },
     { titulo: 'Un frasco de gas', capas: [[['N2', 4], ['O2', 2]]] },
-    { titulo: 'Un vaso', capas: [[['H2O', 4], ['NaCl', 2]]] },
+    { titulo: 'Un vaso', capas: [[['H2O', 4], ['Na+', 2], ['Cl-', 2]]] },
     { titulo: 'Un frasco de gas', capas: [[['N2', 3], ['Ar', 2]]] },
     { titulo: 'Un trozo de metal', capas: [[['Cu', 5], ['Sn', 2]]] },
     { titulo: 'Un vaso', capas: [[['H2O', 3], ['CO2', 2]]] },
-    { titulo: 'Un vaso', capas: [[['aceite', 2]], [['H2O', 4]]] },
     { titulo: 'Un vaso', capas: [[['H2O', 4]], [['SiO2', 3]]] },
-    { titulo: 'Un vaso', capas: [[['H2O', 3], ['NaCl', 1]], [['SiO2', 3]]] },
+    { titulo: 'Un vaso', capas: [[['H2O', 3], ['Na+', 1], ['Cl-', 1]], [['SiO2', 3]]] },
   ];
   function tLupa(rng) {
     // Primero la clase (las cuatro salen igual de seguido) y después una muestra de esa clase.
@@ -211,13 +218,13 @@
     const paneles = [{ titulo: m.titulo, capas: m.capas }];
     const datos = [DEF_LUPA, DEF_SM, DEF_EC, DEF_HH];
     if (m.capas.length > 1) datos.push(DEF_BORDE);
-    const ps = m.capas.flat(), clases = [...new Set(ps.map(([e]) => e))];
+    const ps = m.capas.flat(), clases = [...new Set(ps.map(([e]) => sustancia(e)))];
     return {
       variables: {}, enunciado: ['La figura muestra la lupa de una muestra.'], pregunta: ['¿Cómo se clasifica?'], datos,
       figura: { svg: figuraLupa(paneles), alt: altLupa(paneles) },
       alternativas: alternativasClase(real, rng), respuesta: { valor: 'clase:' + real, texto: NOMBRE[real], unidad: '' },
       solucion: [
-        [`En la lupa hay ${clases.length === 1 ? 'una sola clase de partícula' : `${clases.length} clases de partícula`}: ${lista(clases.map(e => fm(ESP[e].formula)))}.`],
+        [`En la lupa hay ${clases.length === 1 ? 'una sola clase de partícula' : `${clases.length} sustancias`}: ${lista(clases.map(e => (e === 'NaCl' && ps.some(([x]) => x === 'Na+') ? 'la sal (sus iones Na⁺ y Cl⁻, sueltos)' : fm(ESP[e].formula))))}.`],
         [clases.length === 1 ? (pura(real) && real === 'elemento' ? 'Todos sus átomos son de la misma clase.' : 'Cada partícula une átomos de elementos distintos.')
           : m.capas.length === 1 ? 'Están repartidas en una sola zona, sin bordes: una fase.' : 'Hay una línea punteada: dos zonas, dos fases.'],
         [PORQUE[real], ' Es ', NOMBRE[real].toLowerCase(), '.'],
@@ -434,5 +441,5 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  return { id: ID, titulo: '¿Sustancia pura o mezcla?', generar, NIVEL, LUPAS, MATERIALES, MEZCLAS, PARTES, LISTA, ESP };
+  return { id: ID, titulo: '¿Sustancia pura o mezcla?', generar, NIVEL, LUPAS, MATERIALES, MEZCLAS, PARTES, LISTA, ESP, clasificar };
 });

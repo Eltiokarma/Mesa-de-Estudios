@@ -1,5 +1,6 @@
 /*
- * Generador: conversiones de química de examen (escalas de temperatura, densidad y longitudes atómicas,
+ * Generador «Termómetros, lingotes y otras conversiones» (sin «isótopos» en el título: lo ve también Materia y energía,
+ * que evita esa palabra; auditoría, 17 nov, M3): conversiones de química de examen (escalas de temperatura, densidad y longitudes atómicas,
  * calor latente molar y vida media radiactiva). Formato "predicciones" (docs/arquitectura.md). Funciona en el
  * navegador (window.Generadores['conversiones-quimica']) y en Node (require). No usa ningún motor.
  *
@@ -107,13 +108,95 @@
   const SUBTIPOS_POR_UNIDAD = {
     'quimica.materia-y-energia': { densidad: ['volumen', 'volumen', 'masa'] },
   };
+  // En Materia y energía (auditoría, 17 nov, M1 y M3) la práctica sigue a la teoría de la unidad: un color fijo por
+  // magnitud (la tabla `colores` de la teoría, copiada en COLOR_ME; la compara plantillas/materia-energia/colores.test.js),
+  // datos en lista en todo problema (ρ = m / V, 1 kg = 1000 g, 1 L = 1000 cm³, la densidad del metal con «unos») y, en la
+  // densidad, solo g, kg, cm³ y L: nada de m³ ni de potencias de 10, que la unidad presenta recién en la idea 5. El hierro
+  // vale unos 7,9 g/cm³, como en la teoría. Las otras unidades siguen igual que antes.
+  const ME = 'quimica.materia-y-energia';
+  const COLOR_ME = { masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i' };
+  const vaME = (nombre, mag) => ({ nombre, mag, color: COLOR_ME[mag] });
+  // Las variaciones de temperatura, con los colores de la unidad: las lecturas y la variación, temperatura (verde); el
+  // tamaño del grado (el 1,8), factor (turquesa); los instantes del registro, tiempo (turquesa).
+  const MAG_DELTA = { T1: 'temperatura', T2: 'temperatura', d: 'temperatura', k: 'factor', t: 'tiempo' };
+  function tDeltaME(rng, semilla) {
+    const pr = tDelta(rng, semilla);
+    if (!pr) return null;
+    pr.variables = Object.fromEntries(Object.entries(pr.variables).map(([k, x]) => [k, vaME(x.nombre, MAG_DELTA[k])]));
+    return pr;
+  }
+  const METALES_ME = [
+    { s: 'Al', nombre: 'aluminio', rho: 2.7 }, { s: 'Fe', nombre: 'hierro', rho: 7.9 }, { s: 'Zn', nombre: 'zinc', rho: 7.1 },
+    { s: 'Cu', nombre: 'cobre', rho: 8.9 }, { s: 'Ag', nombre: 'plata', rho: 10.5 }, { s: 'Pb', nombre: 'plomo', rho: 11.3 }, { s: 'Au', nombre: 'oro', rho: 19.3 },
+  ];
+  // Un número sin potencias de 10 (entre 0,01 y 100 000, cient lo deja tal cual).
+  const sinPotencia = x => x >= 0.01 && x < 1e5;
+  const limpio = x => Number(x.toPrecision(12));
+  function tDensidadME(rng, semilla) {
+    const sub = rng.elegir(['volumen', 'volumen', 'masa']), met = rng.elegir(METALES_ME);
+    const cm3 = rng.elegir([50, 80, 125, 200, 250, 400, 500, 800, 1000, 1500, 2000]), g = limpio(cm3 * met.rho);
+    if (g > 15000) return null;                                          // un lingote que se pueda cargar
+    const variables = { m: vaME('masa', 'masa'), rho: vaME('densidad', 'densidad'), V: vaME('volumen', 'volumen') };
+    const datos = ['Densidad: ρ = m / V', `${met.nombre[0].toUpperCase()}${met.nombre.slice(1)}: unos ${f(met.rho, 1)} g/cm³`, '1 kg = 1000 g', '1 L = 1000 cm³'];
+    const R = v('rho', `${f(met.rho, 1)} g/cm³`);
+    let pr;
+    if (sub === 'volumen') {
+      const enKg = g >= 1000 && Number.isInteger(limpio(g * 1000) / 1000) && rng.moneda(), kg = limpio(g / 1000);
+      const enL = rng.moneda(), U = enL ? 'L' : 'cm³', k = enL ? 1000 : 1, correcta = limpio(cm3 / k);
+      const masaTxt = enKg ? `${f(kg, 3)} kg` : `${f(g, 1)} g`;
+      const errores = [
+        h('AQ-multiplica-densidad', g * met.rho / k, 'Multiplicaste la masa por la densidad. De ρ = m / V, el volumen es masa entre densidad: V = m / ρ.'),
+        h('QM-COMO-AGUA', g / k, `Usaste 1 g/cm³, la densidad del agua. El ${met.nombre} tiene unos ${f(met.rho, 1)} g/cm³.`),
+        enL ? h('QU2-deja-en-cm3', cm3, `Ese número son los cm³. Falta pasarlos a litros: 1 L = 1000 cm³.`)
+          : h('QU2-cm3-como-L', cm3 / 1000, 'Dividiste entre 1000: eso da litros. Se piden cm³.'),
+        enL ? h('QU2-litro-como-100-cm3', cm3 / 100, 'Tomaste 1 L = 100 cm³. Un litro son 1000 cm³.') : null,
+        enKg ? h('QU1-kg-sin-pasar', kg / met.rho / k, 'Dividiste los kilogramos entre una densidad en g/cm³. Antes, pasa la masa a gramos: 1 kg = 1000 g.') : null,
+      ].filter(Boolean);
+      pr = { correcta, errores, unidad: U, enunciado: ['Un lingote de ', met.nombre, ' tiene una masa de ', v('m', masaTxt), '.'],
+        pregunta: ['¿Qué ', v('V', 'volumen'), ` ocupa, en ${U}?`],
+        solucion: [
+          [enKg ? [v('m', masaTxt), ` = ${f(kg, 3)} · 1000 = ${f(g, 1)} g. `] : [], 'De ρ = m / V: V = m / ρ = ', v('m', `${f(g, 1)} g`), ' ÷ ', R, ' = ',
+            enL ? `${f(cm3, 1)} cm³` : v('V', `${f(cm3, 1)} cm³`), '.'].flat(),
+          ...(enL ? [[`En litros: ${f(cm3, 1)} cm³ ÷ 1000 = `, v('V', `${f(correcta)} L`), '.']] : []),
+        ],
+        _datos: { tipo: 'densidad', sub, metal: met.s, rho: met.rho, masa: g, enKg, unidad: enL ? 'L' : 'cm3' } };
+    } else {
+      const enL = rng.moneda(), enKg = rng.moneda(), volumen = enL ? limpio(cm3 / 1000) : cm3, k = enKg ? 1000 : 1;
+      const correcta = limpio(g / k), U = enKg ? 'kg' : 'g', Vtxt = `${f(volumen)} ${enL ? 'L' : 'cm³'}`;
+      const errores = [
+        h('AQ-divide-densidad', cm3 / met.rho / k, 'Dividiste el volumen entre la densidad. De ρ = m / V, la masa es densidad por volumen: m = ρ · V.'),
+        h('QM-COMO-AGUA', cm3 / k, `Usaste 1 g/cm³, la densidad del agua. El ${met.nombre} tiene unos ${f(met.rho, 1)} g/cm³.`),
+        enL ? h('QU2-sin-pasar-a-cm3', volumen * met.rho / k, 'Multiplicaste los litros por g/cm³ sin pasar el volumen a cm³: 1 L = 1000 cm³.') : null,
+        enKg ? h('QU1-gramos-como-kg', g, `Ese número son gramos. Falta pasarlos a kilogramos: 1 kg = 1000 g.`) : null,
+        enKg ? h('QU1-kg-como-100-g', g / 100, 'Tomaste 1 kg = 100 g. Un kilogramo son 1000 g.') : null,
+      ].filter(Boolean);
+      pr = { correcta, errores, unidad: U, enunciado: ['Una pieza de ', met.nombre, ' ocupa ', v('V', Vtxt), '.'],
+        pregunta: ['¿Cuál es su ', v('m', 'masa'), `, en ${U}?`],
+        solucion: [
+          [enL ? [v('V', Vtxt), ` = ${f(volumen)} · 1000 = ${f(cm3, 1)} cm³. `] : [], 'De ρ = m / V: m = ρ · V = ', R, ' · ', v('V', `${f(cm3, 1)} cm³`), ' = ',
+            enKg ? `${f(g, 1)} g` : v('m', `${f(g, 1)} g`), '.'].flat(),
+          ...(enKg ? [[`En kilogramos: ${f(g, 1)} g ÷ 1000 = `, v('m', `${f(correcta, 3)} kg`), '.']] : []),
+        ],
+        _datos: { tipo: 'densidad', sub, metal: met.s, rho: met.rho, volumen, enKg, unidad: enL ? 'L' : 'cm3' } };
+    }
+    if (!sinPotencia(pr.correcta)) return null;
+    // La respuesta no puede estar escrita en los datos (un «1000 g» que ya dice 1 kg = 1000 g).
+    if (datos.some(l => new RegExp(`(^|[^\\d,])${f(pr.correcta, 3)}(?![\\d,])`).test(l))) return null;
+    const errores = pr.errores.filter(e => sinPotencia(e.valor) && P.enEscala(e.valor, pr.correcta, e.id));
+    if (errores.length < 3) return null;
+    return cerrar(rng, semilla, { correcta: pr.correcta, errores, unidad: pr.unidad, texto: x => `${f(x, 3)} ${pr.unidad}`, variables, enunciado: pr.enunciado,
+      pregunta: pr.pregunta, solucion: pr.solucion, datos, _datos: pr._datos });
+  }
+
   function generar(semilla, opciones) {
     const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
     const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear(ID + '|' + semilla);
     const tipo = rng.elegir(permitidos ? TIPOS.filter(t => permitidos.includes(t)) : TIPOS);
+    const tabla = unidad === ME ? { delta: tDeltaME, densidad: tDensidadME } : { delta: tDelta, lectura: tLectura, densidad: tDensidad, latente: tLatente, vida: tVida };
     for (let intento = 0; intento < 3000; intento++) {
-      const pr = ({ delta: tDelta, lectura: tLectura, densidad: tDensidad, latente: tLatente, vida: tVida })[tipo](rng, semilla, unidad);
+      const pr = tabla[tipo](rng, semilla, unidad);
       if (pr && pr.alternativas.length >= 4) return pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
@@ -498,6 +581,6 @@
     return cerrar(rng, semilla, { correcta, errores, unidad: 'mg', decimales: 2, variables, enunciado, pregunta, solucion, datos: DATOS_VIDA, _datos: { tipo: 'vida', sub, m0, tMedia: iso.t, t } });
   }
 
-  return { id: ID, titulo: 'Termómetros, lingotes e isótopos que se desintegran', generar, tiposPorUnidad: TIPOS_POR_UNIDAD, subtiposPorUnidad: SUBTIPOS_POR_UNIDAD, cient,
+  return { id: ID, titulo: 'Termómetros, lingotes y otras conversiones', generar, COLOR_ME, tiposPorUnidad: TIPOS_POR_UNIDAD, subtiposPorUnidad: SUBTIPOS_POR_UNIDAD, cient,
     convertir, variacion, volumenDeMetal, masaDeMetal, longitud, calorLatente, masaPorCalor, vidaMedia, tiempoPara, METALES, ISOTOPOS };
 });

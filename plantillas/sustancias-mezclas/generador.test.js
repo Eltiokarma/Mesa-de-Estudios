@@ -17,7 +17,8 @@ const COMPOSICION = {
   // Lista del tipo contar (otros ids, la misma regla)
   oxigeno: [['O2'], 1], cobre: [['Cu'], 1], hieloSeco: [['CO2'], 1], nitrogeno: [['N2'], 1], arenaAgua: [['H2O', 'SiO2'], 2],
 };
-const FORMULA = { H2O: 'H2O', O2: 'O2', N2: 'N2', O3: 'O3', CO2: 'CO2', NaCl: 'NaCl', He: 'He', Ar: 'Ar', Cu: 'Cu', Sn: 'Sn', SiO2: 'SiO2', aceite: 'C18H34O2' };
+// La sustancia de cada partícula dibujada: los iones sueltos de la sal disuelta son de la sal (una sola sustancia).
+const FORMULA = { H2O: 'H2O', O2: 'O2', N2: 'N2', O3: 'O3', CO2: 'CO2', NaCl: 'NaCl', 'Na+': 'NaCl', 'Cl-': 'NaCl', He: 'He', Ar: 'Ar', Cu: 'Cu', Sn: 'Sn', SiO2: 'SiO2' };
 const simbolos = f => new Set(f.match(/[A-Z][a-z]?/g)).size;
 function clase(sustancias, zonas) {
   if (sustancias.length === 1) return simbolos(sustancias[0]) === 1 ? 'elemento' : 'compuesto';
@@ -143,4 +144,36 @@ test('la figura (solo en la lupa) es de partículas, en tinta, y no dice la clas
 test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', () => {
   for (let s = 0; s <= 2000; s++) gen.generar(s);
   for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'papel-1', 'papel-8', 'examen-x']) gen.generar(s);
+});
+
+// Toda partícula dibujada lleva los átomos de su fórmula (auditoría, 17 nov, A1: nada en corto; el aceite iba con 3 C).
+// Las fórmulas, escritas aquí aparte del generador; se cuentan también los círculos del dibujo.
+const ATOMOS_DE = { H2O: 'H2O', O2: 'O2', N2: 'N2', O3: 'O3', CO2: 'CO2', NaCl: 'NaCl', 'Na+': 'Na', 'Cl-': 'Cl', He: 'He', Ar: 'Ar', Cu: 'Cu', Sn: 'Sn', SiO2: 'SiO2' };
+const contar = f => { const c = {}; for (const [, e, n] of f.matchAll(/([A-Z][a-z]?)(\d*)/g)) c[e] = (c[e] || 0) + (n ? +n : 1); return c; };
+test('cada partícula dibujada tiene los átomos de su fórmula, y el dibujo tiene todos sus átomos', () => {
+  for (const [e, x] of Object.entries(gen.ESP)) {
+    assert.ok(ATOMOS_DE[e], `${e} sin fórmula en la prueba`);
+    const dib = {}; for (const [a] of x.at) dib[a] = (dib[a] || 0) + 1;
+    assert.deepEqual(dib, contar(ATOMOS_DE[e]), `${e} dibujado con ${JSON.stringify(dib)}`);
+  }
+  let vistas = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s); if (!p.figura) continue;
+    vistas++;
+    const esperado = p._datos.capas.flat().reduce((t, [e, n]) => t + n * gen.ESP[e].at.length, 0);
+    assert.equal((p.figura.svg.match(/<circle/g) || []).length, esperado, `semilla ${s}`);
+  }
+  assert.ok(vistas > 50);
+});
+
+// La sal disuelta va como iones sueltos (decisión de Gerson, 17 nov; auditoría M2), igual que en la teoría: en una capa
+// con agua no hay pares NaCl, y hay un Cl⁻ por cada Na⁺. En el cristal (sin agua), sí va como par.
+test('la sal disuelta va como iones sueltos, uno de Cl⁻ por cada Na⁺', () => {
+  let disueltas = 0;
+  for (const m of gen.LUPAS) for (const c of m.capas) {
+    const n = e => c.filter(([x]) => x === e).reduce((t, [, k]) => t + k, 0);
+    if (n('H2O') && (n('NaCl') || n('Na+'))) { disueltas++; assert.equal(n('NaCl'), 0, 'sal disuelta dibujada como par'); assert.equal(n('Na+'), n('Cl-')); }
+  }
+  assert.ok(disueltas >= 2);
+  assert.equal(gen.clasificar([[['H2O', 4], ['Na+', 2], ['Cl-', 2]]]), 'homogenea');
 });

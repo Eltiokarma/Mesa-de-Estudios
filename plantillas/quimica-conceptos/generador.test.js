@@ -343,3 +343,18 @@ test('por unidad: en Materia y energía solo salen sus temas, y sin unidad todo 
     assert.deepEqual(gen.generar(s, 'quimica.soluciones'), gen.generar(s));
   }
 });
+
+// Materia y energía (auditoría, 17 nov, M4): todo problema trae datos (las definiciones de la unidad entre las que se
+// elige), sin palabras que la unidad no enseña («sustancia simple», «alótropo»), y las ramas pesan menos que lo demás.
+test('Materia y energía: datos con las definiciones de la unidad, sin «sustancia simple», ramas 1 de cada 4', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join(' ') : x && typeof x === 'object' ? String(x.t || x.texto || '') : String(x));
+  let ramas = 0;
+  for (let s = 0; s < 800; s++) {
+    const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' });
+    assert.ok(Array.isArray(p.datos) && p.datos.length >= 3, `semilla ${s}: sin datos`);
+    const todo = plano([p.enunciado, p.datos, p.solucion, p.alternativas.map(a => a.texto)]);
+    assert.ok(!/sustancia simple|alótrop|velocidad y el equilibrio/i.test(todo), `semilla ${s}`);
+    if (p._datos.tema === 'ramas') ramas++;
+  }
+  assert.ok(ramas > 120 && ramas < 280, `ramas: ${ramas} de 800`);
+});

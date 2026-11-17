@@ -22,8 +22,10 @@
  * _datos: { tipo, sub?, nivel, … } con los números del enunciado (masas en g, salvo kg en joules; temperaturas en °C).
  * Respuesta: un número (cal, g, K, °F, kJ o °C).
  *
- * Colores por papel (docs/molde-unidad.md §5b, como la teoría de la idea): la masa, naranja (o); ΔT, L o el calor que te
- * dan, turquesa (i); cₑ, verde (d, tercer dato); lo que se pide, violeta (f). Sin figura.
+ * Colores: un color fijo por magnitud, el de la teoría (docs/molde-unidad.md §5b; tabla COLOR, que compara
+ * plantillas/materia-energia/colores.test.js; auditoría M1: cₑ y ΔT salían con los colores cambiados): la masa,
+ * naranja (o); el calor Q, violeta (f), lo den o lo pidan; cₑ y L, turquesa (i); la temperatura y ΔT, verde (d). La
+ * palabra dice cuál es la pedida. Sin figura.
  * Datos (docs/plan-calidad.md §3, punto 13): las fórmulas de calor sensible y latente, ΔT, los cₑ y L que hacen falta, las
  * equivalencias (1 L de agua = 1000 g, 1 kg = 1000 g, 1 cal ≈ 4,18 J, 1 kJ = 1000 J) y las variaciones de escala.
  * Nunca el calor de un tramo ya calculado. generar() vuelve a sortear si la respuesta quedara escrita en los datos.
@@ -64,8 +66,15 @@
   const D_AGUA = 'Agua líquida: cₑ = 1 cal/(g·°C)', D_HIELO = 'Hielo: cₑ = 0,5 cal/(g·°C)';
   const D_FUS = 'Hielo: se funde a 0 °C con L = 80 cal/g', D_VAP = 'Agua: al hervir, L = 540 cal/g';
   const D_DK = 'En una variación: ΔK = Δ°C', D_DF = 'En una variación: Δ°F = 1,8 · Δ°C';
-  const VARS = (pide, extra = {}) => Object.assign({ m: { nombre: 'masa', color: 'o' }, x: { nombre: pide, color: 'f' } }, extra);
-  const DT = { dT: { nombre: 'cuánto sube la temperatura', color: 'i' } }, CE = { ce: { nombre: 'calor específico', color: 'd' } };
+  // Un color fijo por magnitud (docs/molde-unidad.md §5b): la tabla de la unidad, copia de `colores` de la teoría
+  // (contenido/teoria/quimica/materia-y-energia.js). La práctica carga solo este archivo, así que la tabla va copiada;
+  // plantillas/materia-energia/colores.test.js comprueba que coincida. Cada variable dice su magnitud (`mag`).
+  const COLOR = { masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i' };
+  const va = (nombre, mag) => ({ nombre, mag, color: COLOR[mag] });
+  const VARS = (pide, mag, extra = {}) => Object.assign({ m: va('masa', 'masa'), x: va(pide, mag) }, extra);
+  const DT = { dT: va('cuánto sube la temperatura', 'temperatura') }, CE = { ce: va('calor específico', 'por gramo') };
+  const QD = { Q: va('calor que recibe', 'calor') };
 
   function numericas(rng, correcta, errores, texto, o = {}) {
     const ok = errores.filter(x => Number.isFinite(x.valor) && x.valor !== correcta
@@ -89,7 +98,7 @@
       e(m * d, 'QM-SIN-CE', `Bien m · ΔT. Pero falta el calor específico del ${x.nombre}: así salen ${cal(m * d)}.`),
     ];
     return {
-      variables: VARS('calor (lo que se pide)', { ...DT, ...CE }),
+      variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
       enunciado: [`Se calientan `, v('m', `${m} g`), ` de ${x.nombre} de ${t0} °C a ${t1} °C, sin que cambie de estado.`],
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' necesitan?'], datos: [DEF_SENS, x.dato, DEF_DT],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
@@ -113,7 +122,7 @@
       ];
       if (!funde) errores.push(e(m * CE_AGUA * 100, 'QM-SENSIBLE-EN-LATENTE', `Bien usar la masa. Pero el agua ya hierve: no sube 100 °C, cambia de estado. Así salen ${cal(m * 100)}.`));
       return {
-        variables: VARS('calor (lo que se pide)', { L: { nombre: 'calor latente', color: 'i' } }),
+        variables: VARS('calor (lo que se pide)', 'calor', { L: va('calor latente', 'por gramo') }),
         enunciado: funde ? ['Hay ', v('m', `${m} g`), ' de hielo a 0 °C.'] : ['Una olla hierve. Hay ', v('m', `${m} g`), ' de esa agua.'],
         pregunta: ['¿Cuánto ', v('x', 'calor'), funde ? ' necesitan para fundirse por completo?' : ' necesitan para volverse vapor por completo?'],
         datos: [DEF_LAT, D_FUS, D_VAP],
@@ -132,7 +141,7 @@
       e(q / 100, 'QM-SENSIBLE-EN-LATENTE', `Bien despejar la masa. Pero el agua ya hierve: no sube 100 °C, cambia de estado. Así salen ${f(q / 100)} g.`),
     ];
     return {
-      variables: VARS('masa que hierve (lo que se pide)', { Q: { nombre: 'calor que recibe', color: 'i' } }),
+      variables: VARS('masa que hierve (lo que se pide)', 'masa', QD),
       enunciado: ['Una olla que ya hierve recibe ', v('Q', cal(q)), ' más.'], pregunta: ['¿Cuántos ', v('x', 'gramos de agua'), ' se vuelven vapor?'],
       datos: [DEF_LAT, D_VAP],
       alternativas: numericas(rng, m, errores, x => `${f(x)} g`), respuesta: { valor: m, unidad: 'g' },
@@ -157,11 +166,11 @@
       e(d + 273, 'QM-LECTURA-PUNTO', `Bien la variación en °C, ${d}. Pero sumar 273 sirve para leer un punto; en una variación, ΔK = Δ°C: ${d + 273}.`),
       e(1.8 * d, 'QM-ESCALA-SIN-FACTOR', `Bien la variación en °C, ${d}. Pero el 1,8 es de los °F; un kelvin mide lo mismo que un °C: ${f(1.8 * d)}.`),
       e(t1 + 273, 'QM-LECTURA-PUNTO', `Bien pasar a kelvin. Pero ${t1 + 273} K es la temperatura final, no cuánto varió.`),
-      e(t1 + Math.abs(t0), 'QM-DT-SUMA', `Bien restar las dos lecturas. Pero ${t1} − (${t0}) = ${d}, no ${t1 + Math.abs(t0)}.`),
+      e(t1 + Math.abs(t0), 'QM-DT-SUMA', `Bien restar las dos lecturas. Pero ${t1} − ${par(t0)} = ${d}, no ${t1 + Math.abs(t0)}.`),
     ];
     return {
-      variables: { x: { nombre: 'variación (lo que se pide)', color: 'f' } },
-      enunciado: [`En una curva de calentamiento, un líquido pasa de ${t0} °C a ${t1} °C.`],
+      variables: { x: va('variación (lo que se pide)', 'temperatura') },
+      enunciado: [`En una curva de calentamiento, un líquido pasa de ${f(t0)} °C a ${t1} °C.`],
       pregunta: ['¿Cuánto ', v('x', 'varió su temperatura'), aF ? ', en °F?' : ', en kelvin?'], datos: [D_DK, D_DF],
       alternativas: numericas(rng, correcta, errores, x => `${f(x)} ${u}`), respuesta: { valor: correcta, unidad: u },
       solucion: [
@@ -183,7 +192,7 @@
       e(q1 + m * CE_HIELO * t, 'QM-CE-HIELO', `Bien los dos tramos. Pero lo que se calienta ya es agua líquida, de cₑ = 1, no hielo. Así salen ${cal(q1 + m * CE_HIELO * t)}.`),
     ];
     return {
-      variables: VARS('calor (lo que se pide)', { ...DT, ...CE }),
+      variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
       enunciado: ['Hay ', v('m', `${m} g`), ` de hielo a 0 °C, que se quieren llevar hasta agua líquida a ${t} °C.`],
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' hace falta?'], datos: [DEF_LAT, DEF_SENS, D_FUS, D_AGUA],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
@@ -208,7 +217,7 @@
         e(g * (TEB - t0) + g * LV, 'MA6', `Bien calentar hasta 87 °C. Pero la pregunta es hasta que empieza a hervir: no hace falta volverla vapor. Así salen ${cal(g * (TEB - t0) + g * LV)}.`),
       ];
       return {
-        variables: VARS('calor (lo que se pide)', { ...DT, ...CE }),
+        variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
         enunciado: ['En Juliaca se pone a calentar ', v('m', `${L} L`), ` de agua a ${t0} °C.`],
         pregunta: ['¿Cuánto ', v('x', 'calor'), ' necesita para empezar a hervir?'],
         datos: [DEF_SENS, D_AGUA, '1 L de agua = 1000 g', 'En Juliaca el agua hierve a unos 87 °C'],
@@ -230,7 +239,7 @@
       e(g * (100 - TEB) * 2, 'QM-DT-SUMA', 'Bien la masa. Pero la diferencia entre 100 °C y 87 °C es una sola, 13 °C: no se cuenta dos veces.'),
     ];
     return {
-      variables: VARS('calor de más (lo que se pide)', { ...DT, ...CE }),
+      variables: VARS('calor de más (lo que se pide)', 'calor', { ...DT, ...CE }),
       enunciado: ['En Juliaca y en Lima se pone a calentar ', v('m', `${L} L`), ` de agua a ${t0} °C.`],
       pregunta: ['¿Cuánto ', v('x', 'calor de más'), ' hace falta en Lima para que empiece a hervir?'],
       datos: [DEF_SENS, D_AGUA, '1 L de agua = 1000 g', 'Hierve a unos 87 °C en Juliaca y a unos 100 °C en Lima'],
@@ -255,7 +264,7 @@
       e(g * t1 * 4.18 / 1000, 'QM-T-FINAL', `Bien la masa y el paso a kJ. Pero ΔT es lo que sube, ${d} °C, no ${t1}: así salen ${f(g * t1 * 4.18 / 1000)} kJ.`),
     ];
     return {
-      variables: VARS('calor en kJ (lo que se pide)', { ...DT, ...CE }),
+      variables: VARS('calor en kJ (lo que se pide)', 'calor', { ...DT, ...CE }),
       enunciado: ['Una terma calienta ', v('m', `${kg} kg`), ` de agua de ${t0} °C a ${t1} °C.`],
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' recibe el agua, en kJ?'],
       datos: [DEF_SENS, D_AGUA, '1 kg = 1000 g', '1 cal ≈ 4,18 J', '1 kJ = 1000 J'],
@@ -280,7 +289,7 @@
       e(q2 + q3 - q1, 'QM-T-SIGNO', `Bien los tres tramos. Pero el hielo sube de −${T0} °C a 0 °C: ΔT = +${T0}, y ese calor se suma. Así salen ${cal(q2 + q3 - q1)}.`),
     ];
     return {
-      variables: VARS('calor (lo que se pide)', { ...DT, ...CE }),
+      variables: VARS('calor (lo que se pide)', 'calor', { ...DT, ...CE }),
       enunciado: ['Hay ', v('m', `${m} g`), ` de hielo a −${T0} °C, que se quieren llevar hasta agua líquida a ${t} °C.`],
       pregunta: ['¿Cuánto ', v('x', 'calor'), ' hace falta?'], datos: [DEF_LAT, DEF_SENS, D_HIELO, D_FUS, D_AGUA],
       alternativas: numericas(rng, q, errores, cal), respuesta: { valor: q, unidad: 'cal' },
@@ -303,7 +312,7 @@
       e(0, 'MA6', 'Bien: mientras se funde, el agua está a 0 °C. Pero el calor alcanza para fundir todo el hielo y sobra.'),
     ];
     return {
-      variables: VARS('temperatura final (lo que se pide)', { Q: { nombre: 'calor que recibe', color: 'i' } }),
+      variables: VARS('temperatura final (lo que se pide)', 'temperatura', QD),
       enunciado: ['A ', v('m', `${m} g`), ' de hielo a 0 °C se les dan ', v('Q', cal(q)), '.'],
       pregunta: ['¿A qué ', v('x', 'temperatura'), ' queda el agua?'], datos: [DEF_LAT, DEF_SENS, D_FUS, D_AGUA],
       alternativas: numericas(rng, t, errores, x => `${f(x)} °C`, { cero: true }), respuesta: { valor: t, unidad: '°C' },
@@ -337,5 +346,5 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  return { id: ID, titulo: 'Calor que no sube la temperatura', generar, NIVEL };
+  return { id: ID, titulo: 'Calor que no sube la temperatura', generar, NIVEL, COLOR };
 });

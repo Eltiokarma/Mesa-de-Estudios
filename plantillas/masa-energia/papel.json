@@ -39,12 +39,12 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En un reactor se fisionan 2000 g de uranio y los productos tienen 1998,2 g. ¿Qué masa se usa en E = Δm · c² para calcular la energía que sale? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. Alternativas: A) La que queda: 1998,2 g   B) La que falta: 1,8 g   C) Toda la de antes: 2000 g   D) Ninguna: la masa no cambia",
+      "enunciado": "En un reactor nuclear, el combustible pasa de 2000 g a 1998,2 g. ¿Qué masa se usa en E = Δm · c² para calcular la energía que sale? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. Alternativas: A) La que queda: 1998,2 g   B) La que falta: 1,8 g   C) Toda la de antes: 2000 g   D) Ninguna: la masa no cambia",
       "respuesta": "B) La que falta: 1,8 g",
       "pasos": [
         "Δm es la masa que desaparece: antes menos después.",
         "Δm = 2000 − 1998,2 = 1,8 g.",
-        "Solo esos 1,8 g salen como energía; el resto sigue como productos."
+        "Solo esos 1,8 g salen como energía; el resto sigue ahí, como lo que queda del combustible."
       ]
     },
     {
@@ -66,7 +66,7 @@
       "pasos": [
         "Δm es la masa que desaparece: antes menos después.",
         "Δm = 4,0312 − 4,0026 = 0,0286 g.",
-        "Solo esos 0,0286 g salen como energía; el resto sigue como helio."
+        "Solo esos 0,0286 g salen como energía; el resto sigue ahí, como helio."
       ]
     },
     {

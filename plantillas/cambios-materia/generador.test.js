@@ -112,3 +112,37 @@ test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', ()
   for (let s = 0; s <= 2000; s++) gen.generar(s);
   for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'papel-1', 'papel-8', 'examen-x']) gen.generar(s);
 });
+
+// Toda molécula dibujada lleva los átomos de su fórmula (auditoría, 17 nov, A1: el propano salía con 2 H y no con 8, y
+// en el frasco cerrado «aparecían» 6 hidrógenos). Las fórmulas van escritas aquí, aparte del generador. Además se cuenta
+// en el dibujo: los átomos de cada elemento son los mismos antes y después en los cambios químicos y físicos.
+const FORMULA = { H2O: 'H2O', O2: 'O2', H2: 'H2', N2: 'N2', NH3: 'NH3', CO2: 'CO2', C3H8: 'C3H8', Fe: 'Fe', Fe2O3: 'Fe2O3', C: 'C', N: 'N' };
+const contar = f => { const c = {}; for (const [, e, n] of f.matchAll(/([A-Z][a-z]?)(\d*)/g)) c[e] = (c[e] || 0) + (n ? +n : 1); return c; };
+test('cada molécula dibujada tiene los átomos de su fórmula (propano: 3 C y 8 H)', () => {
+  const usadas = new Set(Object.values(gen.LUPAS).flatMap(c => [...c.antes, ...c.despues].map(([e]) => e)));
+  for (const e of usadas) {
+    assert.ok(FORMULA[e], `${e} sin fórmula en la prueba`);
+    const dib = {}; for (const [a] of gen.ESP[e].at) { const el = a === 'h' ? 'H' : a; dib[el] = (dib[el] || 0) + 1; }
+    assert.deepEqual(dib, contar(FORMULA[e]), `${e} dibujado con ${JSON.stringify(dib)}`);
+  }
+  assert.ok(usadas.has('C3H8'));
+});
+test('en cada lupa dibujada, los átomos de antes son los de después (salvo el nuclear, que cambia de elemento)', () => {
+  const visto = new Set();
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s); if (!p.figura) continue;
+    visto.add(p._datos.caso);
+    const c = gen.LUPAS[p._datos.caso];
+    // Se cuenta en el SVG: letras dentro de cada panel (el primer panel termina en la flecha).
+    const [, izq, der] = p.figura.svg.split('<rect');
+    const letras = t => { const r = {}; for (const m of t.matchAll(/>([A-Z][a-z]?)<\/text>/g)) r[m[1]] = (r[m[1]] || 0) + 1; delete r.A; return r; };
+    const sinTitulo = t => t.replace(/<text[^>]*font-size="12"[^>]*>[^<]*<\/text>/g, '');
+    const a = letras(sinTitulo(izq)), d = letras(sinTitulo(der));
+    if (c.antes.some(([e]) => e === 'C') && c.despues.some(([e]) => e === 'N')) { assert.equal(a.C, (d.C || 0) + (d.N || 0), `semilla ${s}`); continue; }
+    assert.deepEqual(a, d, `semilla ${s}, ${p._datos.caso}: antes ${JSON.stringify(a)}, después ${JSON.stringify(d)}`);
+  }
+  assert.ok(visto.has('propano') && visto.has('oxido'));
+});
+test('el hierro va como átomos, no como moléculas (auditoría, M9)', () => {
+  for (let s = 0; s < 600; s++) { const p = gen.generar(s); assert.ok(!/moléculas? de Fe(?![₀-₉])/.test(JSON.stringify(p.enunciado)), `semilla ${s}`); }
+});

@@ -375,7 +375,7 @@
       }
     },
     {
-      "nombre": "Informe, caso «Fenómeno» (el clavo como en la lupa: 4 Fe y 3 O2 → 2 Fe2O3; 2 H2O que no cambian): fundir hielo y disolver sal son físicos; oxidar hierro y quemar metano, químicos; la fisión del uranio-235, nuclear (cambian los elementos)",
+      "nombre": "Informe, caso «Fenómeno» (el clavo como en la lupa: 4 Fe y 3 O2 → 2 Fe2O3; 2 H2O que no cambian): fundir hielo y disolver sal son físicos; oxidar hierro y quemar metano, químicos; la fisión del uranio-235, nuclear (cambian los elementos; queda solo como prueba del motor: la unidad no la enseña). Desde el 17 nov (auditoría M5), también: el hueso que pierde carbono-14 y gana nitrógeno-14, nuclear; arder el propano (3 C, 8 H y 10 O a los dos lados), químico",
       "fn": "fenomeno",
       "args": [
         "fundir-hielo"
@@ -468,6 +468,23 @@
               "O2"
             ],
             "errores.reversibleEsFisico": "físico"
+          }
+        },
+        {
+          "args": [
+            "carbono14-hueso"
+          ],
+          "espera": {
+            "tipo": "nuclear"
+          }
+        },
+        {
+          "args": [
+            "quemar-propano"
+          ],
+          "espera": {
+            "tipo": "químico",
+            "conservaAtomos": true
           }
         }
       ]
@@ -932,14 +949,14 @@
       ]
     },
     {
-      "nombre": "Experimento 5, comparación química: arder 1 mol de metano libera unos 890 000 J; la masa que «se pierde» es 890 000 / (9 × 10¹⁶) kg ≈ 9,9 × 10⁻⁹ g: ninguna balanza lo nota",
+      "nombre": "Experimento 5 (17 nov, auditoría M5), comparación química de la unidad: el gas de un balón de 10 kg da unos 4,6 × 10⁸ J; la masa que «se pierde» es 4,6 × 10⁸ / (9 × 10¹⁶) kg ≈ 5,1 × 10⁻⁹ kg = 5,1 × 10⁻⁶ g, unas milésimas de miligramo",
       "fn": "masaDeEnergia",
       "args": [
-        890000
+        460000000.0
       ],
       "espera": {
-        "kg": 9.88888888888889e-12,
-        "g": 9.88888888888889e-09
+        "kg": 5.111111111111111e-09,
+        "g": 5.1111111111111115e-06
       }
     },
     {

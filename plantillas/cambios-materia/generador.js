@@ -22,7 +22,11 @@
  * a la izquierda y el después a la derecha, cada uno con su estado (sólido, líquido o gas) en el título. No dice el tipo
  * de cambio. Lo nuclear, un solo ejemplo, como en la teoría: el carbono-14 que pasa a nitrógeno-14, sin partículas
  * subatómicas ni vida media. El papel no lleva figura.
- * Colores por papel (balanza): la masa del frasco, naranja (o); la lana, turquesa (i); lo que se pide, violeta (f).
+ * Colores (balanza): un color fijo por magnitud, la tabla de la unidad (COLOR, copia de `colores` de la teoría; la
+ * compara plantillas/materia-energia/colores.test.js): las tres masas (frasco, lana y lo que marca) en naranja; la
+ * etiqueta de cada una dice cuál es.
+ * Toda molécula dibujada lleva los átomos de su fórmula (auditoría, 17 nov, A1: el propano salía con 2 H): el propano
+ * usa un hidrógeno más chico (h) para caber; generador.test.js cuenta los átomos de cada especie contra su fórmula.
  * Datos (docs/plan-calidad.md §3, punto 13): las definiciones de los tres cambios o de las dos propiedades entre las que
  * se elige; la conservación de los átomos y lo que lleva cada molécula; «cada 56 g de hierro toman 24 g de oxígeno».
  * Errores: MA1, MA2, MA3, MA4 y MA5 (docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md,
@@ -53,6 +57,13 @@
   const lista = xs => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}`);
   const NUM = ['I', 'II', 'III', 'IV'];
 
+  // Un color fijo por magnitud (docs/molde-unidad.md §5b): la tabla de la unidad, copia de `colores` de la teoría
+  // (contenido/teoria/quimica/materia-y-energia.js). La práctica carga solo este archivo, así que la tabla va copiada;
+  // plantillas/materia-energia/colores.test.js comprueba que coincida. Cada variable dice su magnitud (`mag`).
+  const COLOR = { masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i' };
+  const va = (nombre, mag) => ({ nombre, mag, color: COLOR[mag] });
+
   // ---- Definiciones (las mismas de la teoría) ----
   const DEF_FIS = 'Cambio físico: las mismas partículas cambian de estado, de forma o de lugar';
   const DEF_QUI = 'Cambio químico: aparecen sustancias nuevas, hechas con los mismos átomos';
@@ -70,7 +81,8 @@
     lena: { texto: 'La leña arde en el fogón', clase: 'quimico' },
     azucar: { texto: 'El azúcar se disuelve en el té', clase: 'disolver' },
     alcohol: { texto: 'El alcohol de un algodón se evapora', clase: 'estado' },
-    c14: { texto: 'El carbono-14 de un hueso antiguo pasa a nitrógeno-14', clase: 'nuclear' },
+    // (17 nov, auditoría B10) Sin «pasa a»: así no repite la definición de cambio nuclear de los datos.
+    c14: { texto: 'Un hueso antiguo pierde carbono-14 y gana nitrógeno-14', clase: 'nuclear' },
     vinagre: { texto: 'El vinagre con bicarbonato hace burbujas de un gas nuevo', clase: 'quimico' },
     vidrio: { texto: 'Un vidrio se rompe en pedazos', clase: 'forma' },
     espejo: { texto: 'El espejo del baño se empaña con la ducha', clase: 'estado' },
@@ -152,7 +164,10 @@
   }
 
   // ---- Figura: la lupa de antes y la de después ----
-  const ATOMO = { H: [6, 0], O: [8.5, 2], C: [8.5, 1], N: [8.5, 0], Fe: [9.5, 1] };
+  // Átomos: radio y relleno (0 hueco, 1 claro, 2 medio, 3 oscuro con la letra en el color de la tarjeta), para leerse en
+  // grises. El N va oscuro para no confundirse con el H hueco (lector en frío y auditoría, B3). h: el mismo H, más chico.
+  const ATOMO = { H: [6, 0], h: [4.5, 0], O: [8.5, 2], C: [8.5, 1], N: [8.5, 3], Fe: [9.5, 1] };
+  const SIMBOLO = a => (a === 'h' ? 'H' : a);
   const ESP = {
     H2O: { formula: 'H2O', nombre: 'agua', at: [['O', 0, -2], ['H', -11, 6], ['H', 11, 6]] },
     O2: { formula: 'O2', nombre: 'oxígeno', at: [['O', -8, 0], ['O', 8, 0]] },
@@ -160,7 +175,8 @@
     N2: { formula: 'N2', nombre: 'nitrógeno', at: [['N', -8, 0], ['N', 8, 0]] },
     NH3: { formula: 'NH3', nombre: 'amoniaco', at: [['N', 0, 2], ['H', -12, 6], ['H', 12, 6], ['H', 0, -11]] },
     CO2: { formula: 'CO2', nombre: 'dióxido de carbono', at: [['O', -16, 0], ['C', 0, 0], ['O', 16, 0]] },
-    C3H8: { formula: 'C3H8', nombre: 'propano', at: [['C', -15, 0], ['C', 0, 0], ['C', 15, 0], ['H', -15, -12], ['H', 15, 12]] },
+    C3H8: { formula: 'C3H8', nombre: 'propano', at: [['C', -15, 0], ['C', 0, 0], ['C', 15, 0], ['h', -26, -7], ['h', -26, 7], ['h', -15, -13],
+      ['h', 0, -13], ['h', 0, 13], ['h', 26, -7], ['h', 26, 7], ['h', 15, 13]] },
     Fe: { formula: 'Fe', nombre: 'hierro', at: [['Fe', 0, 0]] },
     Fe2O3: { formula: 'Fe2O3', nombre: 'óxido de hierro', at: [['Fe', -9, -6], ['Fe', 9, -6], ['O', -14, 8], ['O', 0, 8], ['O', 14, 8]] },
     C: { formula: 'C', nombre: 'carbono-14', at: [['C', 0, 0]] },
@@ -186,9 +202,9 @@
   function particula(s, x0, cy) {
     const cx = x0 - izq(s);
     return ESP[s].at.map(([a, dx, dy]) => {
-      const r = n1(K * ATOMO[a][0]), rel = ATOMO[a][1], x = n1(cx + K * dx), y = n1(cy + K * dy), fs = n1(K * (a.length > 1 || a === 'H' ? 7.5 : 9));
-      return `<circle cx="${x}" cy="${y}" r="${r}" fill="${rel ? 'currentColor' : 'none'}"${rel ? ` fill-opacity="${rel === 1 ? 0.12 : 0.28}"` : ''} stroke="currentColor" stroke-width="1.2"/>`
-        + `<text x="${x}" y="${n1(y + fs * 0.36)}" font-size="${fs}" text-anchor="middle" fill="currentColor">${xml(a)}</text>`;
+      const r = n1(K * ATOMO[a][0]), rel = ATOMO[a][1], x = n1(cx + K * dx), y = n1(cy + K * dy), fs = n1(K * (a === 'h' ? 6 : a.length > 1 || a === 'H' ? 7.5 : 9));
+      return `<circle cx="${x}" cy="${y}" r="${r}" fill="${rel ? 'currentColor' : 'none'}"${rel ? ` fill-opacity="${[0, 0.12, 0.28, 0.62][rel]}"` : ''} stroke="currentColor" stroke-width="1.2"/>`
+        + `<text x="${x}" y="${n1(y + fs * 0.36)}" font-size="${fs}" text-anchor="middle" fill="${rel === 3 ? 'var(--card)' : 'currentColor'}">${xml(SIMBOLO(a))}</text>`;
     }).join('');
   }
   function filas(capa, util) {
@@ -299,11 +315,13 @@
       const malo = at[otro] / enPide[otro];
       errores.push(e(malo, 'QM-CUENTA-O', `Bien contar átomos. Pero el ${otro} también va en el ${fm(x.fijo[0])}: no todo termina en ${fm(x.pide)}. Así salen ${f(malo)}.`));
     }
-    errores.push(e(x.antes.reduce((t, [, n]) => t + n, 0), 'QM-MOLECULAS-IGUALES', `Bien la idea de que algo se conserva. Pero son los átomos, no las moléculas: antes hay ${x.antes.reduce((t, [, n]) => t + n, 0)} moléculas.`));
+    errores.push(e(x.antes.reduce((t, [, n]) => t + n, 0), 'QM-MOLECULAS-IGUALES', `Bien la idea de que algo se conserva. Pero son los átomos de cada elemento, no las partículas: antes hay ${x.antes.reduce((t, [, n]) => t + n, 0)} partículas.`));
     if (k > 1) errores.push(e(at[x.el], 'QM-SUBINDICE', `Bien: ${at[x.el]} átomos de ${x.el}. Pero cada ${fm(x.pide)} lleva ${k}: hay que repartirlos de ${k} en ${k}.`));
     errores.push(e(correcta + 1, 'QM-CONTEO', `Bien contar átomos de ${x.el}. Pero revisa cuántos lleva cada ${fm(x.pide)}: con ${correcta + 1} sobrarían átomos.`));
     errores.push(e(correcta - 1, 'QM-CONTEO', `Bien contar átomos de ${x.el}. Pero revisa cuántos lleva cada ${fm(x.pide)}: con ${correcta - 1} faltarían átomos.`));
-    const antes = lista(x.antes.map(([fo, n]) => `${n} ${n === 1 ? 'molécula' : 'moléculas'} de ${fm(fo)}`));
+    // Un elemento de átomos sueltos (el hierro) no forma moléculas: «4 átomos de Fe» (auditoría, 17 nov, M9).
+    const suelto = fo => /^[A-Z][a-z]?$/.test(fo);
+    const antes = lista(x.antes.map(([fo, n]) => `${n} ${suelto(fo) ? (n === 1 ? 'átomo' : 'átomos') : (n === 1 ? 'molécula' : 'moléculas')} de ${fm(fo)}`));
     return {
       variables: {}, enunciado: [`En un frasco cerrado hay ${antes}. Reaccionan del todo y, después, hay ${x.fijo ? `${x.fijo[1]} moléculas de ${fm(x.fijo[0])} y ` : 'solo '}moléculas de ${fm(x.pide)}.`],
       pregunta: [`¿Cuántas moléculas de ${fm(x.pide)} hay después?`],
@@ -362,7 +380,7 @@
       e(oxido, 'QM-SOLO-SOLIDO', `Bien la masa del óxido, ${f(oxido)} g. Pero la balanza pesa todo el frasco, no solo el óxido.`),
     ];
     return {
-      variables: { m: { nombre: 'masa del frasco con la lana', color: 'o' }, l: { nombre: 'lana de acero', color: 'i' }, x: { nombre: 'lo que marca al final', color: 'f' } },
+      variables: { m: va('masa del frasco con la lana', 'masa'), l: va('masa de la lana de acero', 'masa'), x: va('lo que marca al final', 'masa') },
       enunciado: [`Sobre una balanza, un frasco ${cerrado ? 'cerrado' : 'abierto'} con `, v('l', `${f(lana)} g`), ' de lana de acero (hierro) marca ', v('m', `${f(frasco)} g`),
         `. La lana arde por completo${cerrado ? ' con el oxígeno de adentro' : ' con el oxígeno del aire'}.`],
       pregunta: ['¿Qué ', v('x', 'marca la balanza'), ' al final?'],
@@ -399,5 +417,5 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  return { id: ID, titulo: '¿Físico, químico o nuclear?', generar, NIVEL, FEN, PROP, LUPAS, ATOMOS, ESP };
+  return { id: ID, titulo: '¿Físico, químico o nuclear?', generar, NIVEL, FEN, PROP, LUPAS, ATOMOS, ESP, COLOR };
 });

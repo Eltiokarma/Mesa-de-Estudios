@@ -284,22 +284,24 @@
       V('ram1', 'La química orgánica estudia principalmente los compuestos del carbono.', 'Naturales o sintéticos: proteínas, plásticos, combustibles, medicinas.', 'AQ-organico-es-vivo'),
       V('ram2', 'La química analítica se ocupa de identificar qué sustancias hay en una muestra y en qué cantidad.', 'Qué hay es el análisis cualitativo; cuánto hay, el cuantitativo.', 'AQ-rama-por-sustancia'),
       V('ram3', 'La bioquímica estudia las sustancias y las reacciones químicas de los seres vivos.', 'Por ejemplo, cómo la célula obtiene energía de la glucosa.'),
-      V('ram4', 'La fisicoquímica estudia la energía, la velocidad y el equilibrio de los procesos químicos.', 'Usa las leyes de la física para explicar los cambios químicos.'),
+      // (17 nov, auditoría M4) Con las palabras de la unidad: la tarjeta de «Lee» solo dice «la energía de los cambios».
+      V('ram4', 'La fisicoquímica estudia la energía de los cambios químicos.', 'Por ejemplo, cuánto calor suelta el gas de la cocina al arder.'),
       F('ram6', 'Determinar cuánta cafeína tiene una bebida es tarea de la química orgánica, porque la cafeína es un compuesto orgánico.', 'AQ-rama-por-sustancia', 'La rama se elige por lo que se hace: medir cuánto hay de una sustancia es química analítica, aunque la sustancia sea orgánica.', 'Determinar cuánta cafeína tiene una bebida es tarea de la química analítica.'),
       F('ram7', 'La química inorgánica estudia solo los metales.', 'AQ-rama-definicion', 'Estudia los elementos y sus compuestos en general (metales, no metales, sales, ácidos), salvo los compuestos orgánicos.', 'La química inorgánica estudia los elementos y los compuestos que no son orgánicos, metálicos o no.'),
       F('ram8', 'La química orgánica estudia solo las sustancias que provienen de seres vivos.', 'AQ-organico-es-vivo', 'Estudia los compuestos del carbono, también los sintéticos, como los plásticos o muchas medicinas.', 'La química orgánica estudia los compuestos del carbono, naturales o sintéticos.'),
       F('ram9', 'Estudiar las reacciones con que una célula muscular obtiene energía de la glucosa es tarea de la química analítica.', 'AQ-rama-por-sustancia', 'Las reacciones de los seres vivos son el campo de la bioquímica.', 'Estudiar cómo una célula obtiene energía de la glucosa es tarea de la bioquímica.'),
     ] },
     { id: 'sustancias', unidad: 'quimica.materia-y-energia', nombre: 'los elementos, los compuestos y las mezclas', props: [
-      V('sus1', 'El oxígeno gaseoso (O₂) es una sustancia simple: sus moléculas tienen un solo tipo de átomo.', 'Una molécula con dos átomos del mismo elemento sigue siendo un elemento.', 'MA9'),
-      V('sus2', 'El ozono (O₃) y el oxígeno (O₂) son formas distintas de un mismo elemento.', 'Son alótropos del oxígeno.', 'MA9'),
+      // (17 nov, auditoría M4) «Sustancia simple» y «alótropos» no se enseñan en la unidad: se dice «elemento».
+      V('sus1', 'El oxígeno gaseoso (O₂) es un elemento: sus moléculas tienen un solo tipo de átomo.', 'Una molécula con dos átomos del mismo elemento sigue siendo un elemento.', 'MA9'),
+      V('sus2', 'El ozono (O₃) y el oxígeno (O₂) son formas distintas de un mismo elemento.', 'Los dos tienen solo átomos de oxígeno, unidos de a 3 o de a 2.', 'MA9'),
       V('sus3', 'El agua pura es un compuesto, porque tiene dos elementos unidos en una proporción fija.', 'Siempre 2 átomos de H por cada átomo de O.'),
       V('sus4', 'El aire seco y limpio es una mezcla homogénea de gases.', 'N₂, O₂, Ar y otros gases repartidos de modo uniforme y en proporción variable.'),
       V('sus5', 'Un compuesto se puede descomponer en sus elementos por medios químicos.', 'Por ejemplo, el agua por electrólisis da H₂ y O₂.'),
-      F('sus7', 'El O₂ es un compuesto, porque cada molécula tiene dos átomos.', 'MA9', 'Un compuesto tiene átomos de elementos distintos. En el O₂ los dos átomos son de oxígeno.', 'El O₂ es una sustancia simple (un elemento): sus dos átomos son del mismo elemento.'),
+      F('sus7', 'El O₂ es un compuesto, porque cada molécula tiene dos átomos.', 'MA9', 'Un compuesto tiene átomos de elementos distintos. En el O₂ los dos átomos son de oxígeno.', 'El O₂ es un elemento: sus dos átomos son del mismo elemento.'),
       F('sus8', 'El agua de mar, que se ve uniforme, es una sustancia pura.', 'MA10', 'Que se vea uniforme solo dice que es homogénea; tiene sales disueltas en proporción variable.', 'El agua de mar es una mezcla homogénea.'),
       F('sus9', 'Un globo lleno de H₂ y O₂ sin reaccionar contiene un compuesto de dos elementos.', 'MA9', 'Si los dos gases no reaccionaron, las moléculas de H₂ y de O₂ solo están mezcladas.', 'Un globo con H₂ y O₂ sin reaccionar contiene una mezcla de dos elementos.'),
-      F('sus10', 'El ozono es un compuesto formado por tres elementos distintos.', 'MA9', 'El O₃ tiene tres átomos de un solo elemento, el oxígeno.', 'El ozono es una sustancia simple: tres átomos de oxígeno.'),
+      F('sus10', 'El ozono es un compuesto formado por tres elementos distintos.', 'MA9', 'El O₃ tiene tres átomos de un solo elemento, el oxígeno.', 'El ozono es un elemento: tres átomos de oxígeno.'),
       F('sus11', 'Un compuesto tiene las mismas propiedades que los elementos que lo forman.', 'AQ-compuesto-suma', 'El sodio es un metal que reacciona con el agua y el cloro un gas tóxico; el cloruro de sodio es la sal de mesa.', 'Un compuesto tiene propiedades propias, distintas de las de sus elementos.'),
       F('oxi12', 'El agua gasificada (agua con CO₂ disuelto) es un compuesto.', 'MA9', 'Es CO₂ disuelto en agua: dos sustancias mezcladas, que se separan al destapar la botella.', 'El agua gasificada es una mezcla homogénea.'),
     ] },
@@ -1030,14 +1032,31 @@
   }
 
   // Los problemas de una sola unidad: su bolsa (sus temas y sus conjuntos para relacionar) y los tipos que esa bolsa permite.
+  // Datos de cada tema en las unidades que pasaron por el contrato (punto 13; auditoría de Materia y energía, 17 nov, M4):
+  // las definiciones entre las que se elige, con las palabras de la unidad (la tarjeta de «Lee» de las ramas y las
+  // definiciones de la idea 1). Y el peso de cada tema: las ramas, que en la teoría son una tarjeta, salen 1 de cada 4.
+  const DATOS_TEMA = {
+    ramas: ['Química inorgánica: los minerales, las sales y los metales', 'Química orgánica: los compuestos del carbono, naturales o sintéticos',
+      'Bioquímica: las sustancias y las reacciones de los seres vivos', 'Química analítica: averigua qué sustancias hay en una muestra y cuánto',
+      'Fisicoquímica: la energía de los cambios químicos'],
+    sustancias: ['Sustancia pura: una sola clase de partícula. Mezcla: varias clases', 'Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos',
+      'Mezcla homogénea: una sola fase. Heterogénea: dos fases o más'],
+  };
+  const PESO_TEMA = { sustancias: 3 };
   function generarDe(semilla, unidad) {
     const rng = Azar.crear(`quimica-conceptos|${unidad}|${semilla}`);
-    const bolsa = { temas: TEMAS.filter(t => t.unidad === unidad), pares: PARES.filter(c => c.unidad === unidad) };
+    const temas = TEMAS.filter(t => t.unidad === unidad).flatMap(t => Array(PESO_TEMA[t.id] || 1).fill(t));
+    const bolsa = { temas, pares: PARES.filter(c => c.unidad === unidad) };
     const tipos = ['vf', 'vf', 'vf', 'vf', 'incorrecta', 'incorrecta', 'correcta', 'correcta', ...(bolsa.pares.length ? ['relacionar', 'relacionar'] : [])];
     const tipo = rng.elegir(tipos);
     for (let intento = 0; intento < 500; intento++) {
       const pr = tipo === 'vf' ? secuencia(rng, bolsa) : tipo === 'relacionar' ? relacionar(rng, bolsa) : unaSola(rng, tipo, bolsa);
-      if (pr && pr.alternativas.length >= 4) { pr.id = `quimica-conceptos#${semilla}`; return pr; }
+      if (pr && pr.alternativas.length >= 4) {
+        pr.id = `quimica-conceptos#${semilla}`;
+        const ds = DATOS_TEMA[pr._datos.tema];
+        if (ds) pr.datos = ds.slice();
+        return pr;
+      }
     }
     throw new Error(`No se pudo generar un problema de ${unidad} con 4 alternativas distintas`);
   }

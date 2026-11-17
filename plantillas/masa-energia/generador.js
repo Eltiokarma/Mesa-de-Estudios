@@ -8,16 +8,17 @@
  * Tipos (nivel 1: un paso; 2: dos pasos; 3: de examen):
  *   energia    (1) desaparecen unos mg o g: ¿cuánta energía sale?
  *   masa       (2) sale una energía: ¿cuántos gramos desaparecieron?
- *   que-masa   (2) en una fisión o en el Sol: ¿qué masa va en la fórmula? (la que falta, no toda)
+ *   que-masa   (2) en un reactor nuclear o en el Sol: ¿qué masa va en la fórmula? (la que falta, no toda)
  *   defecto    (3) la masa antes y después de una reacción nuclear: ¿cuánta energía sale?
  *   balones    (3) unos mg que desaparecen: ¿a cuántos balones de gas equivale la energía?
  * _datos: energia { tipo, nivel, x, u: 'mg'|'g' }; masa { tipo, nivel, E (J) }; que-masa { tipo, nivel, caso, antes, despues
  *   (g) }; defecto { tipo, nivel, antes, despues (g) }; balones { tipo, nivel, mg }.
  * Respuestas: un número (J, g o balones, este redondeado a la unidad); que-masa, 'masa:falta|toda|queda|nada'.
  *
- * Colores por papel (docs/molde-unidad.md §5b, como la teoría de la idea): Δm, naranja (o); c², turquesa (i); E, violeta
- * (f) cuando se pide; la energía de un balón, verde (d, tercer dato). Cuando se pide la masa, la energía dada va en
- * turquesa y la masa en violeta. Sin figura.
+ * Colores: un color fijo por magnitud, el de la teoría (docs/molde-unidad.md §5b; tabla COLOR, que compara
+ * plantillas/materia-energia/colores.test.js; auditoría M1): Δm y toda masa, naranja (o), también cuando se pide; c y
+ * c², turquesa (i); E, violeta (f), la den o la pidan; la energía de un balón, verde (d); el número de balones, carmín
+ * (h). Sin figura. El reactor va sin «uranio que se fisiona»: la fisión no se enseña en esta unidad (auditoría, M5).
  * Datos (docs/plan-calidad.md §3, punto 13): E = Δm · c², c = 3 × 10⁸ m/s, las equivalencias de masa de una en una, la
  * regla de las potencias de 10 y, en los balones, «unos 4,6 × 10⁸ J» por balón de 10 kg (valor de libro: unos 46 MJ
  * por kg de gas). Nunca c² ya elevado: elevar es parte del ejercicio.
@@ -59,7 +60,13 @@
   const DEF_POT = 'Potencias de 10: (10ᵃ)² = 10²ᵃ y al multiplicar se suman los exponentes';
   const DEF_DM = 'Δm: la masa antes menos la masa después';
   const EQ = { mg: '1 kg = 1 000 000 mg', g: '1 kg = 1000 g' };
-  const VARS_E = { dm: { nombre: 'masa que desaparece', color: 'o' }, c2: { nombre: 'c al cuadrado', color: 'i' }, x: { nombre: 'energía (lo que se pide)', color: 'f' } };
+  // Un color fijo por magnitud (docs/molde-unidad.md §5b): la tabla de la unidad, copia de `colores` de la teoría
+  // (contenido/teoria/quimica/materia-y-energia.js). La práctica carga solo este archivo, así que la tabla va copiada;
+  // plantillas/materia-energia/colores.test.js comprueba que coincida. Cada variable dice su magnitud (`mag`).
+  const COLOR = { masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i' };
+  const va = (nombre, mag) => ({ nombre, mag, color: COLOR[mag] });
+  const VARS_E = { dm: va('masa que desaparece', 'masa'), c2: va('c al cuadrado', 'luz'), x: va('energía (lo que se pide)', 'energía') };
 
   function numericas(rng, correcta, errores, texto) {
     const ok = errores.filter(x => Number.isFinite(x.valor) && x.valor > 0 && x.valor !== correcta && P.enEscala(x.valor, correcta, x.id));
@@ -110,7 +117,7 @@
       e(E / 3e16, 'QU1-kg-como-g', `Bien despejar Δm = E / c². Pero hay dos tropiezos: c² es 9 × 10¹⁶, no 3 × 10¹⁶, y el resultado sale en kg. Así queda ${G(E / 3e16)}.`),
     ];
     return {
-      variables: { E: { nombre: 'energía que sale', color: 'i' }, x: { nombre: 'masa que desapareció (lo que se pide)', color: 'f' } },
+      variables: { E: va('energía que sale', 'energía'), x: va('masa que desapareció (lo que se pide)', 'masa') },
       enunciado: ['Un reactor nuclear libera ', v('E', J(E)), '.'], pregunta: ['¿Cuántos ', v('x', 'gramos de masa'), ' desaparecieron?'],
       datos: [DEF_E, DEF_C, '1 kg = 1000 g', DEF_POT],
       alternativas: numericas(rng, g, [0, 2, 4, 3, 1].map(i => errores[i]), G), respuesta: { valor: g, unidad: 'g' },
@@ -125,7 +132,7 @@
 
   // ---- que-masa: la que falta, no toda ----
   const CASOS = {
-    uranio: { texto: (a, d) => `En un reactor se fisionan ${f(a)} g de uranio y los productos tienen ${f(d)} g.`, de: 'el uranio', pares: [[1000, 999.1], [2000, 1998.2], [500, 499.55]] },
+    uranio: { texto: (a, d) => `En un reactor nuclear, el combustible pasa de ${f(a)} g a ${f(d)} g.`, de: 'el combustible', pares: [[1000, 999.1], [2000, 1998.2], [500, 499.55]] },
     sol: { texto: (a, d) => `En el Sol, núcleos de hidrógeno con ${f(a, 4)} g forman núcleos de helio con ${f(d, 4)} g.`, de: 'el hidrógeno', pares: [[4.0312, 4.0026], [8.0624, 8.0052]] },
   };
   function tQueMasa(rng) {
@@ -140,7 +147,7 @@
       { clave: 'masa:nada', texto: T.nada, ...err('QM-MASA-IGUAL', 'Bien: en lo químico, la masa casi no cambia. Pero aquí antes y después hay masas distintas: falta un poco.') },
     ];
     return {
-      variables: { x: { nombre: 'la masa que va en la fórmula (lo que se pide)', color: 'f' } },
+      variables: { x: va('la masa que va en la fórmula (lo que se pide)', 'masa') },
       enunciado: [k.texto(antes, despues)], pregunta: ['¿Qué ', v('x', 'masa'), ' se usa en E = Δm · c² para calcular la energía que sale?'],
       datos: [DEF_E, DEF_DM],
       alternativas: P.armarTexto({ correcta: { clave: 'masa:falta', texto: T.falta }, errores, rng }),
@@ -148,7 +155,7 @@
       solucion: [
         ['Δm es la masa que desaparece: antes menos después.'],
         [`Δm = ${d4(antes)} − ${d4(despues)} = ${d4(falta)} g.`],
-        [`Solo esos ${d4(falta)} g salen como energía; el resto sigue como ${caso === 'sol' ? 'helio' : 'productos'}.`],
+        [`Solo esos ${d4(falta)} g salen como energía; el resto sigue ahí, como ${caso === 'sol' ? 'helio' : 'lo que queda del combustible'}.`],
       ],
       _datos: { tipo: 'que-masa', nivel: 2, caso, antes, despues },
     };
@@ -187,7 +194,7 @@
       ...erroresC2(kg, B, x => Math.round(x / BALON)),
     ];
     return {
-      variables: { dm: { nombre: 'masa que desaparece', color: 'o' }, b: { nombre: 'energía de un balón', color: 'd' }, x: { nombre: 'cuántos balones (lo que se pide)', color: 'f' } },
+      variables: { dm: va('masa que desaparece', 'masa'), b: va('energía de un balón', 'energía de un balón'), x: va('cuántos balones (lo que se pide)', 'balones') },
       enunciado: ['En un proceso nuclear desaparecen ', v('dm', `${mg} mg`), ' de masa.'],
       pregunta: ['¿A ', v('x', 'cuántos balones de gas'), ' equivale la energía que sale? Redondea a la unidad.'],
       datos: [DEF_E, DEF_C, EQ.mg, 'Un balón de gas de 10 kg da unos 4,6 × 10⁸ J al quemarse'],
@@ -222,5 +229,5 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
-  return { id: ID, titulo: 'Poca masa, muchísima energía', generar, NIVEL, cien };
+  return { id: ID, titulo: 'Poca masa, muchísima energía', generar, NIVEL, cien, COLOR };
 });

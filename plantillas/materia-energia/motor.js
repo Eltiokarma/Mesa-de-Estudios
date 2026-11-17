@@ -217,6 +217,12 @@
     'quemar-metano':   { nombre: 'Quemar metano (gas natural)', antes: [{ formula: 'CH4', n: 1, estado: 'g' }, { formula: 'O2', n: 2, estado: 'g' }],
                          despues: [{ formula: 'CO2', n: 1, estado: 'g' }, { formula: 'H2O', n: 2, estado: 'g' }], pistas: { reversible: false, saleGas: true } },
     'electrolisis-agua': { nombre: 'Electrólisis del agua', antes: [{ formula: 'H2O', n: 2, estado: 'l' }], despues: [{ formula: 'H2', n: 2, estado: 'g' }, { formula: 'O2', n: 1, estado: 'g' }], pistas: { reversible: true, saleGas: true } },
+    // (17 nov, auditoría de la unidad, M5) Lo nuclear de Materia y energía es el carbono-14 del hueso (decisiones de
+    // Gerson): la escena y su papel usan este. La fisión del uranio queda en el motor solo para sus casos de prueba; no
+    // se enseña en la unidad.
+    'carbono14-hueso': { nombre: 'Un hueso antiguo pierde carbono-14 y gana nitrógeno-14', antes: [{ formula: 'C', n: 3, estado: 's' }], despues: [{ formula: 'C', n: 2, estado: 's' }, { formula: 'N', n: 1, estado: 's' }] },
+    'quemar-propano':  { nombre: 'Arde el gas de la cocina (propano)', antes: [{ formula: 'C3H8', n: 1, estado: 'g' }, { formula: 'O2', n: 5, estado: 'g' }],
+                         despues: [{ formula: 'CO2', n: 3, estado: 'g' }, { formula: 'H2O', n: 4, estado: 'g' }], pistas: { reversible: false, saleGas: true } },
     'fision-uranio':   { nombre: 'Fisión del uranio-235', antes: [{ formula: 'U', n: 1 }, { formula: 'n', n: 1 }], despues: [{ formula: 'Ba', n: 1 }, { formula: 'Kr', n: 1 }, { formula: 'n', n: 3 }] },
   });
   function fenomeno(id) {

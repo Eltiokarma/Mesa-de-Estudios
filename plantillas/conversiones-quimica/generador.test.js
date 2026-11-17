@@ -173,3 +173,45 @@ test('vida media y variaciones: datos en lista, con la fórmula y sin la respues
     } else assert.ok(todo.includes('ΔK = Δ°C') && todo.includes('Δ°F = 1,8 · Δ°C'), `semilla ${s}: faltan las variaciones`);
   }
 });
+
+// Materia y energía (auditoría, 17 nov, M1 y M3): datos en lista en todo problema, con ρ = m / V y 1 kg = 1000 g en la
+// densidad; solo g, kg, cm³ y L, sin potencias de 10 (llegan en la idea 5); la densidad del metal con «unos» (hierro,
+// 7,9 como en la teoría); los colores de la tabla de la unidad; y la respuesta recalculada aquí por otro camino.
+test('Materia y energía: datos en lista, sin m³ ni potencias de 10, colores de la unidad y cuentas que cuadran', () => {
+  const ME = 'quimica.materia-y-energia', RHO_ME = { Al: 2.7, Fe: 7.9, Zn: 7.1, Cu: 8.9, Ag: 10.5, Pb: 11.3, Au: 19.3 };
+  const POR_MAG = { masa: 'o', volumen: 'i', densidad: 'f', temperatura: 'd', factor: 'i', tiempo: 'i' };
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+  const subs = new Set();
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: ME }), d = p._datos, todo = plano([p.enunciado, p.pregunta, p.datos, p.solucion, p.alternativas.map(a => a.texto)]);
+    assert.ok(Array.isArray(p.datos) && p.datos.length >= 2, `semilla ${s}: datos en lista`);
+    assert.ok(!/(^|[^c])m³|10[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]|×\s*10/.test(todo), `semilla ${s}: m³ o potencias de 10: ${plano(p.pregunta)}`);
+    for (const [k, x] of Object.entries(p.variables)) assert.equal(x.color, POR_MAG[x.mag], `semilla ${s}: ${k} (${x.mag})`);
+    if (d.tipo !== 'densidad') continue;
+    subs.add(d.sub);
+    assert.ok(p.datos.includes('Densidad: ρ = m / V') && p.datos.includes('1 kg = 1000 g') && p.datos.some(l => /: unos \d/.test(l)), `semilla ${s}: ${p.datos}`);
+    assert.equal(d.rho, RHO_ME[d.metal], `semilla ${s}: densidad del ${d.metal}`);
+    const cm3 = d.sub === 'volumen' ? d.masa / d.rho : d.volumen * (d.unidad === 'L' ? 1000 : 1);
+    const esperado = d.sub === 'volumen' ? cm3 / (d.unidad === 'L' ? 1000 : 1) : cm3 * d.rho / (d.enKg ? 1000 : 1);
+    assert.ok(cerca(Number(esperado.toPrecision(10)), Number(p.respuesta.valor.toPrecision(10))), `semilla ${s}: ${p.respuesta.valor} ≠ ${esperado}`);
+  }
+  assert.deepEqual([...subs].sort(), ['masa', 'volumen']);
+  assert.ok(!/isótopo/i.test(gen.titulo) && !/isótopo/i.test(require('./plantilla.json').titulo));
+});
+
+// El papel dice de qué unidades es cada problema y trae sus datos (auditoría, 17 nov, M5). Los de Materia y energía no
+// leen puntos del termómetro, no usan m³ ni potencias de 10, ni kJ/mol, ni vida media.
+test('papel.json: cada problema con sus unidades y sus datos; los de Materia y energía, dentro de la unidad', () => {
+  const papel = require('./papel.json'), unidades = require('./plantilla.json').unidades;
+  let me = 0;
+  for (const q of papel.problemas) {
+    assert.ok(Array.isArray(q.unidades) && q.unidades.length && q.unidades.every(u => unidades.includes(u)), `${q.id}: unidades`);
+    assert.ok(/ Datos: /.test(q.enunciado), `${q.id}: sin datos`);
+    if (!q.unidades.includes('quimica.materia-y-energia')) continue;
+    me++;
+    const t = [q.enunciado, q.respuesta, ...q.pasos].join(' ');
+    assert.ok(!/(^|[^c])m³|10[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]|kJ\/mol|vida media|radiactiv|Å|\+ ?32|\+ ?273/.test(t), `${q.id}: fuera de la unidad`);
+  }
+  assert.ok(me >= 3);
+  assert.ok(!/Datos:/.test(papel.indicacion), 'los datos van por problema, no en la indicación');
+});

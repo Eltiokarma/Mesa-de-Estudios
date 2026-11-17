@@ -21,9 +21,14 @@
  * carbono-14 de la idea 3 (lupa de átomos, quim-vasos) y su curva de masa (quim-cocina).
  * Un dibujo es de partículas o de variables, nunca de los dos. Partículas (ideas 1 y 3, piezas quim-vasos y
  * quim-particulas): la paleta de elementos (nucleo/elementos.js, var(--el-*)) con su relleno (O lleno, H hueco, Na con
- * punto o con su signo de ion). Variables (ideas 2, 4 y 5, pieza quim-cocina): colores por papel del molde §5b, naranja el
- * primer dato, turquesa el segundo o el factor, violeta lo que se pide, verde un tercer dato: m, V y ρ; m, ΔT o L, cₑ y Q;
- * Δm, c², E y la energía de un balón; en la idea 6, m y m₀ naranja (masa), t turquesa, t₁/₂ violeta y n carmín. Letras: cₑ es el calor específico porque c es la rapidez de la luz; T es la
+ * punto o con su signo de ion). Variables (ideas 2, 4, 5 y 6, pieza quim-cocina): un color fijo por magnitud en toda la
+ * unidad (molde §5b, Gerson, 17 nov), en la teoría y en la práctica. La tabla es COLORES (abajo, exportada como
+ * `colores`): masa (m, Δm, m₀) naranja; volumen (V) y el lado de un cubo turquesa; densidad (ρ) violeta; calor (Q) violeta; cₑ y L turquesa;
+ * temperatura y ΔT verde; energía (E) violeta; c y c² turquesa; la energía de un balón verde; el número de balones
+ * carmín; el tiempo (t) turquesa; la vida media (t₁/₂) violeta; las vidas medias que caben (n) carmín; el factor 1,8
+ * de las escalas, turquesa. La prueba de la
+ * unidad la compara con lo que se pinta, y cada generador de la práctica la copia en sus `variables` (con `mag`):
+ * plantillas/materia-energia/colores.test.js los compara con esta tabla. Letras: cₑ es el calor específico porque c es la rapidez de la luz; T es la
  * temperatura (en física también es el período o la dimensión tiempo: es la notación de los libros).
  * Fuentes (no van al alumno): OpenStax Chemistry 2e §1.2 y §10.3; IUPAC; NIST (c = 299 792 458 m/s, aquí 3 × 10⁸).
  */
@@ -35,8 +40,12 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, Motor) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
-  const m = { v: 'c-i', t: 'm' }, Q = { v: 'c-o', t: 'Q' }, Tm = { v: 'c-h', t: 'T' }, E = { v: 'c-d', t: 'E' };
-  const dT = ['Δ', Tm], dm = ['Δ', m];
+  // Un color fijo por magnitud en toda la unidad (molde §5b): la tabla de la unidad, la misma en la teoría y en la
+  // práctica. Va sin el prefijo «c-» (o, i, f, h, d), como en las `variables` de los generadores.
+  const COLORES = {
+    masa: 'o', volumen: 'i', longitud: 'i', densidad: 'f', calor: 'f', 'por gramo': 'i', temperatura: 'd', energía: 'f', luz: 'i',
+    'energía de un balón': 'd', balones: 'h', tiempo: 'i', 'vida media': 'f', 'vidas medias': 'h', factor: 'i',
+  };
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -409,8 +418,8 @@
       datos: [DEF_LUPA, DEF_SM, DEF_EC],
       figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'trozo', titulo: 'Sal de mesa', material: 'cristal', lupa: { foco: 0.5, capas: [{ particulas: [{ e: 'NaCl', n: 12 }], orden: 'filas' }] } }])),
       solucion: [
-        { texto: ['Todas las partículas son iguales: un sodio (Na⁺) junto a un cloro (Cl⁻), los dos con carga. Una sola clase: sustancia pura.'] },
-        { texto: ['Cada partícula une átomos de dos elementos distintos: es un ', dR('compuesto'), '.'] },
+        { texto: ['Todos los pares son iguales: un ion sodio (Na⁺) junto a un ion cloruro (Cl⁻). Una sola clase: sustancia pura.'] },
+        { texto: ['La sal une dos elementos distintos, sodio y cloro, siempre uno por uno: es un ', dR('compuesto'), '.'] },
       ],
       respuesta: [dR('Compuesto')] },
     { nivel: 2, titulo: 'La cafeína de una bebida',
@@ -932,15 +941,18 @@
         { texto: ['La de la barra entera da lo mismo, porque la densidad es intensiva.'], ecuacion: [rho, ' = ', { frac: [vO('237 g'), vI('30 cm³')] }, ' = ', dR('7,9 g/cm³')] },
       ],
       respuesta: [vO('79 g'), ' y ', dR('7,9 g/cm³')] },
-    { nivel: 3, titulo: 'Alcohol y agua',
-      enunciado: 'Un líquido es agua con alcohol, mezclados del todo. ¿Con qué método se separan, y qué propiedad hace posible separarlos?',
-      datos: [METODOS2.decantacion.dato, METODOS2.destilacion.dato, METODOS2.filtracion.dato, 'Alcohol: hierve a unos 78 °C; agua, a 100 °C', 'Alcohol: unos 0,79 g/mL; agua, 1 g/mL'],
-      figura: vaso2({ tipo: 'vaso', titulo: 'Agua con alcohol' }),
+    // (17 nov, auditoría B11) Antes, «Alcohol y agua»: casi el mismo paso que «Sal y agua a la vez» (nivel 2). Ahora, tres
+    // cosas y dos métodos en orden, con la trampa de que la sal disuelta pasa por el filtro.
+    { nivel: 3, titulo: 'Agua salada con arena',
+      enunciado: 'Un vaso tiene agua salada y arena en el fondo. Quieres recuperar la arena y también la sal. ¿Qué dos métodos usas, y en qué orden?',
+      datos: [METODOS2.filtracion.dato, METODOS2.decantacion.dato, METODOS2.evaporacion.dato, METODOS2.imantacion.dato],
+      figura: vaso2({ tipo: 'vaso', titulo: 'Agua salada con arena', fondo: { tipo: 'arena' } }),
       solucion: [
-        { texto: ['Forman una sola fase: no hay capas que decantar ni sólido que filtrar, aunque sus densidades sean distintas.'] },
-        { texto: ['Al calentar, el alcohol hierve primero, a unos 78 °C; su vapor se enfría y se recoge aparte.'] },
+        { texto: ['Primero se filtra: el papel retiene la arena. La sal está disuelta, así que pasa con el agua.'] },
+        { texto: ['Después se evapora el agua que pasó: la sal queda en el fondo del recipiente.'] },
+        { texto: ['Error típico: evaporar primero. Así la sal y la arena quedan juntas, otra vez mezcladas.'] },
       ],
-      respuesta: [dR('Destilación'), ', por la ', dR('temperatura de ebullición')] },
+      respuesta: [dR('Filtración'), ' y después ', dR('evaporación')] },
   ];
 
   const propiedades = {
@@ -1143,8 +1155,16 @@
     // no con 8). El propano y el alcohol usan el hidrógeno chico (h) para caber en su celda: la prueba de la unidad
     // cuenta los átomos de cada especie contra su fórmula y mide que ninguna pise a sus vecinas.
     C3H8: [['C', -8, 1], ['C', 0, -3], ['C', 8, 1], ['h', -14, -3], ['h', -13, 6.5], ['h', -6, 7.5], ['h', -4, -8.5], ['h', 4, -8.5], ['h', 14, -3], ['h', 13, 6.5], ['h', 6, 7.5]],
-    // La glucosa (24 átomos), como el azúcar y el aceite, es una molécula grande: la lupa la dibuja en corto y lo dice.
-    glucosa: [['C', -5, -2.5], ['C', 5, -2.5], ['H', 0, -4], ['O', 0, 4]],
+    // La glucosa entera, con sus 24 átomos (auditoría, 17 nov: en la idea que cuenta átomos no va nada en corto): la
+    // cadena de 6 C, cada uno con su H y su OH, uno arriba y otro abajo, el CHO a la izquierda y el CH₂OH a la derecha.
+    // Va sola en el centro de la lupa (capa `centro` de quim-vasos): no cabe en una celda.
+    glucosa: [['C', -24.5, 0], ['C', -15.5, 0], ['C', -6.5, 0], ['C', 2.5, 0], ['C', 11.5, 0], ['C', 20.5, 0],
+      ['O', -33, -6], ['h', -29, 8],
+      ['O', -15.5, -9.5], ['h', -15.5, -17], ['h', -15.5, 7.5],
+      ['O', -6.5, 9.5], ['h', -6.5, 17], ['h', -6.5, -7.5],
+      ['O', 2.5, -9.5], ['h', 2.5, -17], ['h', 2.5, 7.5],
+      ['O', 11.5, 9.5], ['h', 11.5, 17], ['h', 11.5, -7.5],
+      ['h', 20.5, -7.5], ['h', 20.5, 7.5], ['O', 29.5, -3], ['h', 35.5, 3]],
     alcohol: [['C', -8, 1], ['C', 0, -2], ['O', 8, 1], ['h', -14, -2.5], ['h', -12, 7], ['h', -5, 7.5], ['h', -3.5, -8.5], ['h', 3.5, -8.5], ['h', 13.5, 5]], H2: [['H', -3.8, 0], ['H', 3.8, 0]],
     NH3: [['N', 0, 0], ['H', -6, 4], ['H', 6, 4], ['H', 0, -6.5]], C: [['C', 0, 0]], N: [['N', 0, 0]],
   });
@@ -1162,9 +1182,11 @@
       antes: { titulo: 'Antes: agua en la olla', fuego: true, lupa: L3(0.3, [{ particulas: [{ e: 'H2O', n: 6 }], est: 'l' }]) },
       despues: { titulo: 'Después: el vapor', fuego: true, hierve: true, vapor: 3, nivel: 0.45, lupa: L3(0.95, [{ particulas: [{ e: 'H2O', n: 3 }], est: 'g' }]) } },
     // Celdas de 28 en la chicha: el alcohol lleva sus 9 átomos y con 26 rozaba a sus vecinas (prueba de la unidad).
+    // La lupa mira el azúcar de la chicha y lo que sale de él: una glucosa entera da 2 alcoholes y 2 CO₂ (6 C, 12 H y 6 O
+    // a los dos lados). El agua de la chicha no se dibuja: con la glucosa entera no cabe, y no cambia.
     chicha: { texto: 'La chicha que fermenta', tipoObj: 'jarra', sep: 28,
-      antes: { titulo: 'Antes: chicha recién hecha', lupa: L3(0.4, [{ particulas: [{ e: 'H2O', n: 3 }, { e: 'glucosa', n: 1 }], est: 'l' }]) },
-      despues: { titulo: 'Después: fermentó', espuma: true, lupa: L3(0.4, [{ particulas: [{ e: 'H2O', n: 3 }, { e: 'alcohol', n: 2 }, { e: 'CO2', n: 2 }], est: 'l' }]) } },
+      antes: { titulo: 'Antes: el azúcar de la chicha', lupa: L3(0.4, [{ particulas: [{ e: 'glucosa', n: 1 }], centro: true, est: 'l' }]) },
+      despues: { titulo: 'Después: fermentó', espuma: true, lupa: L3(0.4, [{ particulas: [{ e: 'alcohol', n: 2 }, { e: 'CO2', n: 2 }], est: 'l' }]) } },
     ropa: { texto: 'La ropa que se seca', tipoObj: 'ropa',
       antes: { titulo: 'Antes: polo mojado', mojada: true, lupa: L3(0.55, [{ particulas: [{ e: 'H2O', n: 6 }], est: 'l' }]) },
       despues: { titulo: 'Después: seco', lupa: L3(0.95, [{ particulas: [{ e: 'H2O', n: 3 }], est: 'g' }]) } },
@@ -1217,7 +1239,8 @@
     { texto: 'La leña arde en el fogón', corto: 'La leña arde', a: [['C6H10O5', 1, 's'], ['O2', 6, 'g']], d: [['CO2', 6, 'g'], ['H2O', 5, 'g']], porque: 'La madera y el oxígeno forman dióxido de carbono y agua: sustancias nuevas.' },
     { texto: 'El azúcar se disuelve en el té', corto: 'El azúcar se disuelve en el té', fen: 'disolver-azucar', porque: 'Las moléculas de azúcar siguen enteras; solo se reparten entre las del agua.' },
     { texto: 'El alcohol de un algodón se evapora', corto: 'El alcohol se evapora', a: [['C2H5OH', 2, 'l']], d: [['C2H5OH', 2, 'g']], porque: 'Las moléculas de alcohol pasan de líquido a gas sin romperse.' },
-    { texto: 'El carbono-14 de un hueso antiguo pasa a nitrógeno-14', corto: 'El carbono-14 pasa a nitrógeno-14', a: [['C', 3]], d: [['C', 2], ['N', 1]], porque: 'Un átomo de carbono pasa a ser de nitrógeno: cambia el elemento.' },
+    // (17 nov, auditoría B10) Sin «pasa a»: el enunciado no repite el dato del cambio nuclear.
+    { texto: 'Un hueso antiguo pierde carbono-14 y gana nitrógeno-14', corto: 'El hueso pierde carbono-14 y gana nitrógeno-14', a: [['C', 3]], d: [['C', 2], ['N', 1]], porque: 'Un átomo de carbono pasa a ser de nitrógeno: cambia el elemento.' },
     { texto: 'El vinagre con bicarbonato hace burbujas', corto: 'El vinagre con bicarbonato burbujea', a: [['CH3COOH', 1, 'l'], ['NaHCO3', 1, 's']], d: [['CH3COONa', 1, 'disuelto'], ['H2O', 1, 'l'], ['CO2', 1, 'g']], porque: 'Se forma CO₂, un gas que antes no estaba: sustancias nuevas.' },
     { texto: 'Un vidrio se rompe en pedazos', corto: 'Un vidrio se rompe', a: [['SiO2', 4, 's']], d: [['SiO2', 4, 's']], porque: 'Los pedazos son del mismo vidrio: cambia la forma, no las partículas.' },
     { texto: 'El espejo del baño se empaña con la ducha', corto: 'El espejo se empaña', fen: 'condensar-vapor', porque: 'El vapor de agua se enfría en el espejo y pasa a líquido: sigue siendo H₂O.' },
@@ -1410,23 +1433,17 @@
         { texto: ['Error típico: contar el espejo como químico porque «aparece agua». Esa agua ya estaba en el aire, como vapor.'] },
       ],
       respuesta: [dR('2'), ': II y IV'] },
-    { nivel: 3, titulo: 'Lana de acero abierta',
-      enunciado: 'Sobre una balanza, un frasco abierto con 5,6 g de lana de acero marca 200 g. La lana arde con el oxígeno del aire. ¿Qué marca al final?',
+    // (17 nov, auditoría M7) Abierta y cerrada van juntas: así el ejemplo pide comparar, que es lo de examen. Cuentas:
+    // 5,6 · 24 / 56 = 2,4 g de O; abierto 200 + 2,4 = 202,4 g; cerrado 200 g; diferencia 2,4 g.
+    { nivel: 3, titulo: 'Dos frascos con lana',
+      enunciado: 'Dos frascos iguales, cada uno con 5,6 g de lana de acero, marcan 200 g. Uno está abierto y el otro cerrado. La lana arde en los dos. Al final, ¿cuál marca más y por cuánto?',
       datos: ['Al arder, el hierro se une al oxígeno y forma óxido de hierro', 'Cada 56 g de hierro toman 24 g de oxígeno'],
       solucion: [
-        { texto: ['El frasco está abierto: el oxígeno entra del aire y se queda en el óxido.'], ecuacion: [{ frac: ['5,6 · 24', '56'] }, ' = 2,4 g de oxígeno'] },
-        { texto: ['Esa masa se suma a lo que había.'], ecuacion: ['200 + 2,4 = ', vO('202,4 g')] },
-        { texto: ['Error típico: decir que baja porque «se quema». Arder no destruye átomos: aquí los suma.'] },
+        { texto: ['La lana toma la misma masa de oxígeno en los dos frascos.'], ecuacion: [{ frac: ['5,6 · 24', '56'] }, ' = ', vO('2,4 g'), ' de oxígeno'] },
+        { texto: ['Abierto: ese oxígeno entra del aire y se suma. Cerrado: ya estaba adentro y ya se pesaba.'], ecuacion: ['abierto: 200 + 2,4 = 202,4 g;  cerrado: 200 g'] },
+        { texto: ['Error típico: decir que baja porque «se quema». Arder no destruye átomos.'] },
       ],
-      respuesta: [vO('202,4 g')] },
-    { nivel: 3, titulo: 'Lana de acero cerrada',
-      enunciado: 'Ahora el frasco con 5,6 g de lana de acero está cerrado y marca 200 g. La lana arde con el oxígeno de adentro. ¿Qué marca al final?',
-      datos: ['Al arder, el hierro se une al oxígeno y forma óxido de hierro', 'Cada 56 g de hierro toman 24 g de oxígeno'],
-      solucion: [
-        { texto: ['El hierro toma 2,4 g de oxígeno, pero ese oxígeno ya estaba dentro del frasco y ya se pesaba.'] },
-        { texto: ['Nada entra ni sale: los átomos se reordenan adentro. La masa total no cambia.'], ecuacion: ['masa antes = masa después = ', vO('200 g')] },
-      ],
-      respuesta: [vO('200 g')] },
+      respuesta: ['El abierto, por ', vO('2,4 g')] },
     { nivel: 3, titulo: 'Contar sin balancear',
       enunciado: 'En la lupa, antes hay 1 C₃H₈ y 5 O₂. Después hay moléculas de CO₂ y de H₂O, y nada más. ¿Cuántas de cada una?',
       datos: ['En un cambio químico, los átomos de cada elemento son los mismos antes y después', 'En una fórmula, el subíndice dice cuántos átomos hay; sin subíndice, hay 1: CO₂ tiene 1 C y 2 O', DEF_LUPA],
@@ -1437,15 +1454,31 @@
         { texto: ['Comprobación con el oxígeno: antes 5 · 2 = 10; después 3 · 2 + 4 · 1 = 10.'] },
       ],
       respuesta: [dR('3 CO₂'), ' y ', dR('4 H₂O')] },
-    { nivel: 3, titulo: 'Las burbujas del hervor',
-      enunciado: 'Un alumno dice: «Cuando el agua hierve, las burbujas son de hidrógeno y oxígeno, así que hervir es un cambio químico». ¿Tiene razón?',
-      datos: [DEF_FIS, DEF_QUI, 'Agua: moléculas H₂O, de 1 oxígeno y 2 hidrógenos'],
-      figura: fig3([Object.assign({ tipo: 'olla' }, PROC3.olla.antes), Object.assign({ tipo: 'olla' }, PROC3.olla.despues)]),
+    // (17 nov, auditoría M6 y M7) Antes, «Las burbujas del hervor»: un paso, y la lupa de después ya mostraba el H₂O. Ahora
+    // se elige entre dos lupas de después cuál es el hervor y cuál la electrólisis, sin la respuesta en la figura. Átomos:
+    // 4 H₂O → 4 H₂ + 2 O₂ (8 H y 4 O a los dos lados).
+    { nivel: 3, titulo: 'Hervir o pasar corriente',
+      enunciado: 'En un frasco cerrado, el agua hierve; a otro se le pasa corriente eléctrica: es la electrólisis. En los dos se junta un gas arriba, que muestran las lupas. ¿Cuál es el del hervor y qué cambio es cada uno?',
+      datos: [DEF_LUPA, DEF_FIS, DEF_QUI, 'Agua: moléculas H₂O, de 1 oxígeno y 2 hidrógenos'],
+      figura: fig3([{ tipo: 'frasco', titulo: 'Gas 1', lupa: L3(0.45, [{ particulas: [{ e: 'H2', n: 4 }, { e: 'O2', n: 2 }] }]) },
+        { tipo: 'frasco', titulo: 'Gas 2', lupa: L3(0.45, [{ particulas: [{ e: 'H2O', n: 4 }] }]) }], { flechas: false }),
       solucion: [
-        { texto: ['En las burbujas hay moléculas de H₂O enteras, en estado gaseoso: el vapor del agua.'] },
-        { texto: ['Separar el agua en hidrógeno y oxígeno sí sería químico, pero hervir no lo hace. Es un cambio físico.'] },
+        { texto: ['En el gas 1 hay H₂ y O₂, sustancias nuevas: es un cambio químico. Hervir no forma sustancias nuevas, así que ese gas es de la electrólisis.'] },
+        { texto: ['En el gas 2 hay H₂O entera: es el vapor del hervor, un ', dR('cambio físico'), '.'] },
+        { texto: ['Error típico: creer que al hervir el agua se separa en hidrógeno y oxígeno.'] },
       ],
-      respuesta: [dR('No'), ': hervir es un cambio físico'] },
+      respuesta: [dR('El hervor es el 2'), ' (físico); la electrólisis, química'] },
+    // La glucosa entera (24 átomos) de la chicha. Cuentas: C 6 − 2 · 2 = 2 CO₂; O 6 = 2 · 1 + 2 · 2; H 12 = 2 · 6.
+    { nivel: 3, titulo: 'La chicha que fermenta',
+      enunciado: 'En la chicha, una molécula de glucosa, C₆H₁₂O₆, fermenta y da 2 moléculas de alcohol y moléculas de CO₂, y nada más. ¿Cuántas de CO₂?',
+      datos: ['En un cambio químico, los átomos de cada elemento son los mismos antes y después', 'Alcohol: C₂H₅OH, con 2 C, 6 H y 1 O', 'En una fórmula, el subíndice dice cuántos átomos hay; sin subíndice, hay 1'],
+      figura: fig3([Object.assign({ tipo: 'jarra' }, PROC3.chicha.antes, { titulo: 'Antes' }), { tipo: 'jarra', titulo: 'Después', espuma: true, lupa: { vacia: true, foco: 0.4 } }], { separacion: 28 }),
+      solucion: [
+        { texto: ['El carbono va en el alcohol y en el CO₂. Antes hay 6 C; los 2 alcoholes se llevan 2 · 2 = 4.'], ecuacion: ['C para el CO₂: 6 − 4 = 2 → ', dR('2 CO₂')] },
+        { texto: ['Comprobación con el oxígeno: antes 6; después 2 · 1 + 2 · 2 = 6. Y el hidrógeno: 12 = 2 · 6.'] },
+        { texto: ['Error típico: contar los 6 C como si todos fueran al CO₂ y decir 6.'] },
+      ],
+      respuesta: [dR('2 CO₂')] },
   ];
 
   const cambios = {
@@ -1484,7 +1517,7 @@
         { s: 'C', t: 'carbono: bolita gris llena' },
         { s: 'Fe', t: 'hierro: bolita azul con punto' },
         { s: 'N', t: 'nitrógeno: bolita azul llena' },
-        { s: 'glucosa', t: 'molécula grande: la lupa la dibuja en corto' },
+        { s: 'C₆H₁₂O₆', t: 'glucosa, el azúcar de la chicha, entera' },
         { s: '→', t: 'de antes a después' },
         { s: '- - -', t: 'en la lupa, el borde entre dos fases' },
       ],
@@ -1632,7 +1665,7 @@
   // Agua que hierve en Juliaca: «unos 87 °C» (decisiones, 17 nov; sale de un modelo de presión y de la curva de presión
   // de vapor, sin medición citada). Valores de libro, con «unos»: cₑ del agua 1 cal/(g·°C), del hielo 0,5; fusión
   // 80 cal/g; vaporización 540 cal/g (a 100 °C; a 87 °C es algo más, y aquí se usa el valor de academia).
-  // Cambia: el calor entregado · Permanece: 1 L de agua desde 10 °C y la curva entera, punteada · Progresa: sube hasta
+  // Cambia: el calor entregado · Permanece: 1 L de agua desde 10 °C y los ejes · Progresa: sube hasta
   // 87 °C y después hierve sin subir · Se reserva: la meseta del hielo que se funde (la predicción) · Debe verse: el
   // tramo largo y plano.
   // Códigos: MA6/Q7 (la temperatura sube mientras se funde; Georgiou y Sharma 2010, 30 % a 48 %), Q8, y las hipótesis
@@ -1727,7 +1760,8 @@
       opciones: opciones(t, [
         { id: 'todo', valor: q / m, error: 'QM-SIN-LATENTE', siFuera: 'Usaste Q = m · cₑ · ΔT, bien. Pero primero el hielo se funde y gasta 80 cal por gramo.' },
         { id: 'cero', valor: 0, error: 'MA6', siFuera: 'Mientras se funde, sí está a 0 °C. Pero el calor alcanza para fundirlo y sobra.' },
-        { id: 'mas', valor: t + 80, error: 'QM-SUMA-L', siFuera: 'Fundir pide calor, no suma grados. El calor que sobra es el que calienta.' },
+        // (17 nov, auditoría B1) Antes, «t + 80»: valía lo mismo que «todo» (q/m = 80 + t) y nunca salía.
+        { id: 'l80', valor: 80, error: 'QM-SUMA-L', siFuera: 'Leíste bien el 80 de los datos. Pero son calorías por gramo para fundir, no una temperatura.' },
       ], v => `${f(v)} °C`) };
   }
 
@@ -1783,7 +1817,7 @@
         { texto: ['De la fórmula, se despeja cₑ: el calor entre la masa y lo que sube.'], ecuacion: [ceD, ' = ', { frac: [Qf, [mR, ' · ', dTi]] }] },
         { texto: ['Reemplazo.'], ecuacion: [ceD, ' = ', { frac: [dR('440 cal'), [vO('200 g'), ' · ', vD('10 °C')]] }, ' = ', vI('0,22 cal/(g·°C)')] },
       ],
-      respuesta: [vI('0,22 cal/(g·°C)'), ', como el aluminio'] },
+      respuesta: [vI('0,22 cal/(g·°C)')] },
     { nivel: 2, titulo: 'Una variación en °F',
       enunciado: ['Una sopa pasa de ', vD('15 °C'), ' a ', vD('35 °C'), '. ¿Cuánto varió su temperatura en °F?'],
       datos: DEF_ESCALAS,
@@ -2065,7 +2099,7 @@
   const MASAS5 = [[2, 'mg'], [5, 'mg'], [20, 'mg'], [50, 'mg'], [0.5, 'g'], [2, 'g']];
   const ENERGIAS5 = [9e10, 4.5e13, 1.8e12, 2.7e14, 9e13];
   const DEFECTOS5 = [{ texto: 'una reacción nuclear en el Sol', antes: 4.0312, despues: 4.0026, u: 'g' }, { texto: 'una reacción nuclear', antes: 2000, despues: 1998, u: 'g' },
-    { texto: 'la fisión de un trozo de uranio', antes: 1000, despues: 999.1, u: 'g' }, { texto: 'una reacción nuclear', antes: 10, despues: 9.99, u: 'g' }];
+    { texto: 'el combustible de un reactor nuclear', antes: 1000, despues: 999.1, u: 'g' }, { texto: 'una reacción nuclear', antes: 10, despues: 9.99, u: 'g' }];
   const aKg = (x, u) => (u === 'mg' ? x * 1e-6 : u === 'g' ? x * 1e-3 : x);
   function caso5(s, otro) {
     const tipo = s % 5, r = azar(s + (otro ? 900 : 0));
@@ -2120,9 +2154,9 @@
     }
     const kgU = r.de([1, 2, 5]), dmg = 0.9 * kgU, E = dmg / 1000 * C2;
     return { tipo, km: false, kgU, dmg, E, datos: ['E = Δm · c²', DEF_C, '1 kg = 1000 g'],
-      pregunta: [`En un reactor, ${kgU} kg de uranio se ${kgU === 1 ? 'fisiona' : 'fisionan'} y, al final, a los productos les faltan `, vO(`${f(dmg)} g`), '. ¿Cuánta energía salió?'],
+      pregunta: [`En un reactor nuclear se ${kgU === 1 ? 'usa' : 'usan'} ${kgU} kg de combustible y, al final, a lo que queda le faltan `, vO(`${f(dmg)} g`), '. ¿Cuánta energía salió?'],
       opciones: opciones(E, [
-        { id: 'total', valor: kgU * C2, error: 'QM-TODA-MASA', siFuera: 'Usaste c², bien. Pero solo la masa que falta se vuelve energía, no todo el uranio.' },
+        { id: 'total', valor: kgU * C2, error: 'QM-TODA-MASA', siFuera: 'Usaste c², bien. Pero solo la masa que falta se vuelve energía, no todo el combustible.' },
         { id: 'sinkg', valor: dmg * C2, error: 'QM-G-KG', siFuera: 'Tomaste la masa que falta, bien. Falta pasarla a kg.' },
         { id: 'resta', valor: (kgU - dmg / 1000) * C2, error: 'QM-TODA-MASA', siFuera: 'Esa es la masa que queda. Se usa la que falta.' },
       ], v => `${cien(v)} J`) };
@@ -2157,13 +2191,13 @@
     { nivel: 1, titulo: 'La luz al cuadrado',
       enunciado: 'La rapidez de la luz es c = 3 × 10⁸ m/s. ¿Cuánto vale c²?',
       datos: [DEF_C, 'Potencia de una potencia: (10⁸)² = 10¹⁶'],
-      solucion: [{ texto: ['Se eleva al cuadrado el 3 y también la potencia de 10.'], ecuacion: ['(3 × 10⁸)² = 9 × 10¹⁶ ', '= ', dR('9 × 10¹⁶ m²/s²')] }],
-      respuesta: [dR('9 × 10¹⁶ m²/s²')] },
+      solucion: [{ texto: ['Se eleva al cuadrado el 3 y también la potencia de 10.'], ecuacion: [c2i, ' = (3 × 10⁸)² = 3² × (10⁸)² = ', vI('9 × 10¹⁶ m²/s²')] }],
+      respuesta: [vI('9 × 10¹⁶ m²/s²')] },
     { nivel: 1, titulo: 'Miligramos a kilogramos',
       enunciado: ['¿Cuántos kilogramos son ', vO('5 mg'), '?'],
       datos: ['1 kg = 1 000 000 mg = 10⁶ mg'],
-      solucion: [{ texto: ['Un millón de miligramos hacen un kilogramo: se divide entre 10⁶.'], ecuacion: [vO('5'), ' ÷ 10⁶ = ', dR('5 × 10⁻⁶ kg')] }],
-      respuesta: [dR('5 × 10⁻⁶ kg')] },
+      solucion: [{ texto: ['Un millón de miligramos hacen un kilogramo: se divide entre 10⁶.'], ecuacion: [vO('5 mg'), ' ÷ 10⁶ = ', vO('5 × 10⁻⁶ kg')] }],
+      respuesta: [vO('5 × 10⁻⁶ kg')] },
     { nivel: 2, titulo: 'Veinte miligramos',
       enunciado: ['En un proceso nuclear desaparecen ', vO('20 mg'), '. ¿Cuánta energía sale?'],
       datos: [DEF_E, DEF_C, '1 kg = 10⁶ mg', DEF_POT],
@@ -2227,7 +2261,7 @@
       ],
       respuesta: [vO('Unos 5 × 10⁻⁹ kg'), '; no se nota'] },
     { nivel: 3, titulo: 'No toda la masa',
-      enunciado: ['En un reactor, 1 kg de uranio se fisiona y a los productos les faltan ', vO('0,9 g'), '. ¿Cuánta energía salió?'],
+      enunciado: ['En un reactor nuclear se usa 1 kg de combustible y, al final, a lo que queda le faltan ', vO('0,9 g'), '. ¿Cuánta energía salió?'],
       datos: ['E = Δm · c²', DEF_C, '1 kg = 1000 g'],
       solucion: [
         { texto: ['Solo la masa que falta se vuelve energía: 0,9 g = 9 × 10⁻⁴ kg.'] },
@@ -2308,9 +2342,9 @@
     lee: {
       tarjetas: [
         { titulo: 'Masa y energía', texto: 'En 1905, Einstein propuso que la masa y la energía están ligadas, y que en esa relación entra la rapidez de la luz, c: unos 300 000 km por segundo, 3 × 10⁸ m/s. La energía se mide en joules (J).' },
-        { titulo: 'Químico y nuclear', texto: 'Al quemar el gas de un balón, los átomos se reordenan: es un cambio químico. En el Sol, núcleos de hidrógeno se unen y forman helio: es la fusión nuclear. Los dos sueltan energía, pero no la misma.',
+        { titulo: 'Químico y nuclear', texto: 'Al quemar el gas de un balón, los átomos se reordenan: es un cambio químico. En el Sol, núcleos de hidrógeno (el núcleo es el centro del átomo) se unen y forman helio: es la fusión nuclear. Los dos sueltan energía, pero no la misma.',
           pieza: 'quim-cocina', dibujo: coc([{ tipo: 'balon', titulo: 'Un balón de gas', rotulos: [{ texto: 'unos 4,6 × 10⁸ J', color: 'd' }] }]) },
-        { titulo: 'Números muy grandes y muy chicos', texto: 'Un miligramo (mg) es la milésima parte de un gramo, y un kilogramo tiene un millón de miligramos. La energía se mide en joules (J). 10⁸ es un 1 seguido de ocho ceros.' },
+        { titulo: 'Números muy grandes y muy chicos', texto: 'Un miligramo (mg) es la milésima parte de un gramo, y un kilogramo tiene un millón de miligramos. 10⁸ es un 1 seguido de ocho ceros.' },
         { titulo: 'Qué mirar', texto: 'En el juego, una masa diminuta desaparece en un proceso nuclear. Cada balón dibujado vale por cien balones de gas: mira cuántos hacen falta para igualar esa energía.' },
       ],
     },
@@ -2437,10 +2471,10 @@
           enunciado: c.pregunta, datos: c.datos,
           pasos: [
             { tipo: 'pide', texto: ['Piden la energía ', Ef, ' que salió del reactor.'] },
-            { tipo: 'datos', texto: `Solo cuenta la masa que falta, ${f(c.dmg)} g, no los ${c.kgU} kg de uranio.`, ecuacion: [dmO, ` = ${f(c.dmg)} g = `, vO(`${cien(c.dmg / 1000)} kg`)] },
+            { tipo: 'datos', texto: `Solo cuenta la masa que falta, ${f(c.dmg)} g, no los ${c.kgU} kg de combustible.`, ecuacion: [dmO, ` = ${f(c.dmg)} g = `, vO(`${cien(c.dmg / 1000)} kg`)] },
             { tipo: 'regla', texto: 'La energía es la masa que falta por c².', ecuacion: [Ef, ' = ', dmO, ' · ', c2i] },
             { tipo: 'cuentas', texto: 'Multiplico.', ecuacion: [Ef, ' = ', vO(cien(c.dmg / 1000)), ' · ', vI('9 × 10¹⁶'), ' = ', dR(`${cien(c.E)} J`)] },
-            { tipo: 'sentido', texto: 'Comprobación: con el uranio entero saldría unas mil veces más.' },
+            { tipo: 'sentido', texto: 'Comprobación: con el combustible entero saldría unas mil veces más.' },
           ],
           respuesta: [dR(`${cien(c.E)} J`)],
         };
@@ -2952,6 +2986,7 @@
     unidad: 'quimica.materia-y-energia',
     version: '0.2.0',
     calidad: 2,
+    colores: COLORES,
     estado: 'completa',
     // En orden: la paleta de elementos antes que quim-particulas (define las variables --el-*), el motor de la escena
     // antes que la unidad, y quim-particulas antes que quim-vasos (que dibuja sus especies).
@@ -3003,8 +3038,10 @@
       { termino: 'especie', formas: ['especie', 'especies', 'clase de partícula', 'clases de partícula'], def: 'Cada tipo distinto de partícula que hay en una muestra: las partículas de un mismo tipo son iguales entre sí.',
         ejemplos: ['Agua con azúcar: dos especies, las moléculas de agua y las de azúcar.', 'El agua destilada: una sola especie, la molécula de agua.',
           'El aire seco: varias especies, como las moléculas de nitrógeno y las de oxígeno.'], ver: ['sustancia', 'mezcla'] },
-      // Idea 3 (17 nov): los tres cambios, con su `simple`; lo nuclear con el carbono-14 del hueso, el Sol (idea 5) y el
-      // reactor, sin radiactividad ni vida media (las estrena la idea 6).
+      // Idea 3 (17 nov): los tres cambios, con su `simple`; lo nuclear con el carbono-14 (el hueso y la madera) y el Sol,
+      // marcado «idea 5»; sin el uranio que se parte (auditoría, B8) ni radiactividad ni vida media (las estrena la idea 6).
+      // El ejemplo de «intensiva» es la dureza y no la temperatura: con dos tazas a 70 °C casi daba la respuesta del
+      // Predice de las ollas (auditoría, M10).
       { termino: 'cambio físico', formas: ['cambio físico', 'cambios físicos'],
         def: 'Transformación en la que las partículas siguen siendo las mismas: cambian de orden, de lugar o de estado.',
         simple: 'Algo cambia de forma o de estado, pero sigue siendo lo mismo.',
@@ -3018,8 +3055,9 @@
       { termino: 'cambio nuclear', formas: ['cambio nuclear', 'cambios nucleares', 'proceso nuclear', 'procesos nucleares'],
         def: 'Transformación del núcleo de los átomos: el elemento pasa a ser otro y se libera mucha energía.',
         simple: 'Un átomo se vuelve de otro elemento.',
-        ejemplos: ['En un hueso antiguo, el carbono-14 pasa a nitrógeno-14.', 'En el Sol, núcleos de hidrógeno se unen y forman helio.',
-          'En un reactor, el uranio se parte en átomos de otros elementos.'], ver: ['cambio químico'] },
+        ejemplos: ['En un hueso antiguo, algunos átomos de carbono-14 pasan a nitrógeno-14.',
+          'En la madera de un tronco muy viejo, el carbono-14 también pasa a nitrógeno-14.',
+          'En el Sol, núcleos de hidrógeno se unen y forman helio (lo verás en la idea 5).'], ver: ['cambio químico'] },
       { termino: 'estado de agregación', formas: ['estado de agregación', 'estados de agregación'],
         def: 'Forma en que se juntan las partículas: sólido (en su sitio), líquido (se deslizan) o gas (vuelan separadas).',
         ejemplos: ['El hielo es agua en estado sólido.', 'El agua de la olla está en estado líquido.', 'El vapor que sale de la olla es agua en estado gaseoso.'],
@@ -3051,7 +3089,7 @@
       { termino: 'defecto de masa', formas: ['defecto de masa', 'masa que falta', 'masa que desaparece'], simbolo: 'Δm', medida: 'kg',
         def: 'Diferencia entre la masa de un sistema antes y después de un proceso nuclear; sale como energía.',
         simple: 'Lo poquito que se pierde de peso cuando algo suelta muchísima energía.',
-        ejemplos: ['A cada kilogramo de hidrógeno que forma helio en el Sol le faltan unos 7 g.', 'Al fisionarse 1 kg de uranio faltan unos 0,9 g.',
+        ejemplos: ['A cada kilogramo de hidrógeno que forma helio en el Sol le faltan unos 7 g.', 'Al combustible de un reactor nuclear, por cada kilogramo, le faltan unos 0,9 g.',
           'Al quemar un balón de gas faltan unos 5 × 10⁻⁹ kg: no se mide.'], ver: ['fusión nuclear', 'cambio nuclear'] },
       { termino: 'fusión nuclear', formas: ['fusión nuclear'],
         def: 'Proceso en que núcleos livianos se unen y forman uno más pesado, liberando muchísima energía.',
@@ -3081,7 +3119,7 @@
         def: 'Rasgo de una muestra que no depende de cuánta muestra hay.',
         simple: 'Lo que no cambia si tienes más o menos de algo: color, sabor.',
         ejemplos: ['La densidad: un anillo de oro y un lingote de oro tienen la misma.', 'El color del cobre: igual en un alambre que en una olla.',
-          'La temperatura: dos tazas de té a 70 °C juntas siguen a 70 °C.'],
+          'La dureza: un clavo y una varilla del mismo hierro son igual de duros.'],
         ver: ['propiedad extensiva', 'densidad'] },
       { termino: 'propiedad extensiva', formas: ['propiedad extensiva', 'propiedades extensivas', 'extensiva', 'extensivas'],
         def: 'Rasgo de una muestra que depende de cuánta muestra hay: crece si hay más.',
@@ -3099,8 +3137,8 @@
         ejemplos: ['Que el gas de un balón arda.', 'Que el hierro se oxide con el aire húmedo.', 'Que el cobre se cubra de una capa verde con los años.'],
         ver: ['propiedad física', 'cambio químico'] },
     ],
-    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera lleva el hielo hasta vapor, con la meseta de
-    // hervir que la idea 3 no alcanza; la segunda llega a un gramo y lo traduce a carbón quemado. Las lecturas dicen
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera lleva el hielo hasta vapor, con las dos mesetas
+    // (fundir y hervir); la segunda llega a un gramo y lo traduce a balones de gas. Las lecturas dicen
     // entradas y resultado, para que un caso guardado se lea solo.
     laboratorio: [
       {

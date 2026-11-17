@@ -1,6 +1,6 @@
 {
   "plantilla": "sustancias-mezclas",
-  "nota": "lupa: capas de la lupa, de arriba abajo; cada capa es una fase y trae [especie, número de partículas]. material y contar: ids de los materiales (sus composiciones están en la verificación). formada: las fórmulas de la mezcla. fases: lo que acompaña al agua líquida del vaso. Respuestas: 'clase:<clase>', 'formada:el|co|am', 'fc:F|C' o un número.",
+  "nota": "lupa: capas de la lupa, de arriba abajo; cada capa es una fase y trae [especie, número de partículas]; la sal disuelta va como sus iones sueltos, Na+ y Cl-, que cuentan como una sola sustancia, la sal. material y contar: ids de los materiales (sus composiciones están en la verificación). formada: las fórmulas de la mezcla. fases: lo que acompaña al agua líquida del vaso. Respuestas: 'clase:<clase>', 'formada:el|co|am', 'fc:F|C' o un número.",
   "verificacion": "Script aparte (17 nov 2026, python3, fuera del repo: verif/sustancias.py), que no usa el generador ni el núcleo: con una tabla propia de composiciones (sustancias y zonas con borde de cada material) clasifica por las reglas de la teoría (una sustancia: elemento si su fórmula tiene un solo símbolo, si no compuesto; varias: homogénea con una zona, heterogénea con más), cuenta fases (agua más hielo, aceite y arena) y componentes (agua más todo lo que no es hielo) y escribe el texto de la alternativa correcta. Los 18 casos cuadran con el generador.",
   "casos": [
     {
@@ -113,7 +113,11 @@
               3
             ],
             [
-              "NaCl",
+              "Na+",
+              1
+            ],
+            [
+              "Cl-",
               1
             ]
           ],
