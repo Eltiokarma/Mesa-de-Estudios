@@ -5,7 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Se sospecha que la rapidez v del sonido en un gas depende de la presión p y de la densidad ρ del gas según v = k·p^x·ρ^y, con k un número. Halla x e y.",
+      "enunciado": "Se sospecha que la rapidez v del sonido en un gas depende de la presión p y de la densidad ρ del gas según v = k·p^x·ρ^y, con k un número. Halla x e y. Usa [v] = LT⁻¹, [p] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
       "respuesta": "x = 1/2 e y = −1/2, es decir, v = k·√(p/ρ).",
       "pasos": [
         "[v] = LT⁻¹, [p] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
@@ -20,7 +20,7 @@
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "El caudal Q de agua que sale por un orificio de área S en el fondo de un balde, cuando el agua tiene una altura h, se propone como Q = k·S^x·g^y·h^z. Halla x + y + z.",
+      "enunciado": "El caudal Q de agua que sale por un orificio de área S en el fondo de un balde, cuando el agua tiene una altura h, se propone como Q = k·S^x·g^y·h^z, con k un número. Halla x + y + z. Usa [Q] = L³T⁻¹ (volumen por segundo), [S] = L², [g] = LT⁻² y [h] = L. Además, se sabe que el caudal es proporcional al área del orificio.",
       "respuesta": "x = 1, y = 1/2, z = 1/2; la suma es 2.",
       "pasos": [
         "[Q] = L³T⁻¹, [S] = L², [g] = LT⁻² y [h] = L.",
@@ -33,7 +33,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "La fuerza del aire sobre un ciclista se ajusta con F = A·v² + B·t, donde v es la rapidez y t el tiempo. La ecuación es dimensionalmente correcta. Halla las dimensiones de A y de B.",
+      "enunciado": "La fuerza del aire sobre un ciclista se ajusta con F = A·v² + B·t, donde v es la rapidez y t el tiempo. La ecuación es dimensionalmente correcta. Halla las dimensiones de A y de B. Usa [F] = MLT⁻² y [v] = LT⁻¹.",
       "respuesta": "[A] = ML⁻¹ y [B] = MLT⁻³.",
       "pasos": [
         "Cada término pesa lo mismo que F: MLT⁻².",
@@ -61,7 +61,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "En la ecuación p = A·v² + B·h, p es una presión, v una rapidez y h una altura. Halla la dimensión de A/B.",
+      "enunciado": "En la ecuación p = A·v² + B·h, p es una presión, v una rapidez y h una altura. Halla la dimensión de A/B. Usa [p] = ML⁻¹T⁻² y [v] = LT⁻¹.",
       "respuesta": "[A/B] = L⁻¹T².",
       "pasos": [
         "[A]·L²T⁻² = ML⁻¹T⁻², así que [A] = ML⁻³ (una densidad).",
@@ -74,7 +74,7 @@
     {
       "id": "p6",
       "nivel": "básico",
-      "enunciado": "Un compañero escribió en su cuaderno que el periodo de un péndulo es T = 2π·√(g/L). Sin hacer ningún experimento, ¿puedes saber si está mal?",
+      "enunciado": "Un compañero escribió en su cuaderno que el periodo de un péndulo es T = 2π·√(g/L), con L el largo del hilo y g la gravedad, en m/s². Sin hacer ningún experimento, ¿puedes saber si está mal? Ojo: T es el periodo, cuya dimensión es un tiempo ([T] = T), y L es el largo, cuya dimensión es una longitud ([L] = L).",
       "respuesta": "Sí: √(g/L) tiene dimensión T⁻¹, no T. La fórmula no es homogénea, así que está mal (la correcta es T = 2π·√(L/g)).",
       "pasos": [
         "[g/L] = LT⁻²/L = T⁻², y su raíz es T⁻¹.",
@@ -86,7 +86,7 @@
     {
       "id": "p7",
       "nivel": "básico",
-      "enunciado": "Indica cuáles de estas ecuaciones son dimensionalmente homogéneas (d distancia, v rapidez, a aceleración, t tiempo, m masa, h altura, g gravedad, E energía): (I) d = v·t + ½·a·t²; (II) E = m·v + m·g·h; (III) v² = 2·a·d.",
+      "enunciado": "Indica cuáles de estas ecuaciones son dimensionalmente homogéneas (d distancia, v rapidez, a aceleración, t tiempo, m masa, h altura, g gravedad, E energía): (I) d = v·t + ½·a·t²; (II) E = m·v + m·g·h; (III) v² = 2·a·d. Usa [v] = LT⁻¹, [a] = [g] = LT⁻² y [E] = ML²T⁻².",
       "respuesta": "I y III son homogéneas; II no (m·v es una cantidad de movimiento, no una energía).",
       "pasos": [
         "I: v·t = L y a·t² = L; todos los términos pesan L.",

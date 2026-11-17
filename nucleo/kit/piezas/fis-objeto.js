@@ -26,10 +26,11 @@
  *   bloque   { material: 'adobe'|'hielo', largo, ancho, alto, texto, nombre }   un bloque de material; texto: su densidad o su masa
  *   cano     { texto: '12 L/min', nombre }           un caño que llena un balde, con su caudal junto al chorro
  *   plano    { ancho: '8 cm', alto: '6 cm', escala: '1 : 50' }   el plano de un dormitorio, con puerta, ventana y su escala
- *   techo    { largo, ancho, lluvia: '12 mm' }       lluvia sobre un techo plano: la capa de agua encima, las medidas del techo
+ *   techo    { largo, ancho, lluvia: '120 mm' }      lluvia sobre un techo plano: la capa de agua encima, las medidas del techo
  *   lago     { nombre: 'Lago Titicaca', texto }      un lago visto desde arriba, con una isla y una balsa de totora
  * Análisis dimensional (16 nov):
- *   pendulo  { largo: 'ℓ', g: 'g', texto }          un péndulo con su largo junto al hilo y la flecha de la gravedad
+ *   pendulo  { largo: 'L', g: 'g', texto }          un péndulo con su largo junto al hilo y la flecha de la gravedad
+ *                                                   (notación de los libros: período T, largo L, T = 2π·√(L/g))
  *   planetas { m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F' }   dos masas que se atraen, con la distancia entre centros acotada
  *   caja     { masa: '40 kg', fuerza: 'F', aceleracion: 'a' }   una caja empujada sobre el piso, con F y a como flechas
  *   presion  { fuerza: 'F', area: 'A', texto }      una caja sobre el piso: su peso F encima y la presión repartida bajo su base A
@@ -378,7 +379,7 @@
       }
       return s;
     },
-    // techo: «la lluvia deja sobre el techo una capa de agua de 12 mm de alto».
+    // techo: «la lluvia deja sobre el techo una capa de agua de 120 mm de alto».
     techo(d, c) {
       const x = 62, y = 118, w = 160, dx = 52, dy = -44;
       let s = '';
@@ -413,7 +414,7 @@
       return s;
     },
     // ---- Análisis dimensional (16 nov) ----
-    // pendulo: «el péndulo va y viene; su tiempo depende del largo ℓ y de g».
+    // pendulo: «el péndulo va y viene; su período T depende del largo L y de g».
     pendulo(d, c) {
       const ox = 160, oy = 22, L = 132, a = 22 * Math.PI / 180, bx = ox + L * Math.sin(a), by = oy + L * Math.cos(a), gx = ox - L * Math.sin(a);
       let s = `<rect x="108" y="12" width="104" height="10" fill="currentColor" fill-opacity="0.25" ${tinta({ g: 1.5 })}/>`;

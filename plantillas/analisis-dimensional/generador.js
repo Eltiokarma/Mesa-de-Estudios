@@ -21,6 +21,12 @@
  *
  * Convenciones: dimensiones con M (masa), L (longitud), T (tiempo) y Θ (temperatura); los números,
  * los ángulos en radianes y las funciones sen, cos, e^( ) y log son adimensionales.
+ * Datos (contrato, punto 13 de docs/plan-calidad.md; Gerson, 16 nov: «todos los datos deben darse, incluso las
+ * fórmulas»): `datos` es una lista de líneas con la dimensión y la unidad de cada magnitud que el alumno necesita y
+ * no se pide, los avisos donde la letra de una magnitud choca con una dimensión (el periodo T, el largo L, la masa M
+ * del planeta: notación de los libros, con aviso) y, en las proposiciones, lo que hace falta para juzgarlas (las siete
+ * magnitudes fundamentales, las fórmulas del trabajo y de la energía). Nunca la dimensión ni el exponente que se piden.
+ * Las líneas no gastan azar: casos.json no cambia.
  * Errores: AD-todos-uno, AD-constante-igual-al-miembro, AD-multiplica, AD-sin-exponente y
  * AD-argumento-con-dimension, los mismos códigos que la balanza de plantillas/vectores/index.html;
  * PR2-raiz (docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md); AD-no-detecta, la trampa de la
@@ -73,6 +79,21 @@
     c: ['c', 'el calor específico', dim(0, 2, -2, -1)], Ft: ['F', 'la tensión de la cuerda', dim(1, 1, -2)], Per: ['T', 'el periodo', dim(0, 0, 1)], lam: ['λ', 'la longitud de onda', dim(0, 1)],
   };
   const sim = k => MAG[k][0], nom = k => MAG[k][1], D = k => MAG[k][2];
+  // Unidades del SI, escritas con kg, m y s (sin N, J, W ni Pa, para que se lean las dimensiones).
+  const UNI = {
+    m: 'kg', h: 'm', x: 'm', R: 'm', L: 'm', d: 'm', S: 'm²', t: 's', v: 'm/s', a: 'm/s²', g: 'm/s²', F: 'kg·m/s²',
+    E: 'kg·m²/s²', W: 'kg·m²/s²', Pot: 'kg·m²/s³', p: 'kg/(m·s²)', rho: 'kg/m³', A: 'm²', V: 'm³', f: '1/s', w: '1/s',
+    Q: 'm³/s', q: 'kg·m/s', sig: 'kg/s²', K: 'kg/s²', mu: 'kg/m', G: 'm³/(kg·s²)', M: 'kg', Te: 'K', c: 'm²/(s²·K)',
+    Ft: 'kg·m/s²', Per: 's', lam: 'm',
+  };
+  // Letras que en los libros chocan con una dimensión: se avisa en vez de cambiarlas (contrato, punto 13).
+  const CHOQUE = {
+    Per: 'Ojo: T es el periodo, una magnitud; su dimensión es un tiempo, [T] = T (se mide en s).',
+    L: 'Ojo: L es el largo, una magnitud; su dimensión es una longitud, [L] = L (se mide en m).',
+    M: 'Ojo: M es la masa del planeta, una magnitud; su dimensión es la masa, [M] = M (se mide en kg).',
+  };
+  const linea = k => CHOQUE[k] || `[${sim(k)}] = ${texto(D(k))}: ${nom(k)}, en ${UNI[k]}.`;
+  const lineas = ks => [...new Set(ks)].map(linea);
 
   // ---- exponentes: fórmulas propuestas con su respuesta ----
   const FORMULAS = [
@@ -140,7 +161,7 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
   const salida = (semilla, o, alternativas, respuesta) => ({
-    id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+    id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: o.lineas && o.lineas.length ? o.lineas : '',
     alternativas, solucion: o.solucion, respuesta, _datos: o.datos,
   });
 
@@ -180,7 +201,8 @@
         `${b}: ${lineal(dfs.map(d => d[b]))} = ${fr(dq[b])}`).join('; ') + '.'],
       ['Resolviendo: ', ...e.flatMap((x, i) => [i ? ', ' : '', vc(col(i), `${LETRAS[i]} = ${fr(x)}`)]), sub === 'suma' ? [', y la suma es ', v('x', fr(correcta)), '.'] : ['. Entonces ', v('x', `${LETRAS[j]} = ${fr(correcta)}`), '.']].flat(),
     ];
-    const o = { variables, enunciado, pregunta: pide, solucion, datos: { tipo: 'exponentes', sub, q: F.q, fs: F.fs, ...(sub === 'uno' ? { j } : {}) } };
+    const o = { variables, enunciado, pregunta: pide, solucion, lineas: [...lineas([F.q, ...F.fs]), `${kn} es un número: no tiene dimensión.`],
+      datos: { tipo: 'exponentes', sub, q: F.q, fs: F.fs, ...(sub === 'uno' ? { j } : {}) } };
     const alternativas = P.armar({ correcta, errores: errores.filter(e => Number.isFinite(e.valor) && Math.abs(e.valor) <= 6), rng, negativos: true, texto: fr });
     // La correcta no debe reconocerse por ser la única entera (o la única fracción).
     const esFraccion = t => t.includes('/'), c = alternativas.find(x => x.correcta);
@@ -212,7 +234,7 @@
     const mk = rng.elegir(MIEMBROS), dm = D(mk);
     const variables = { A: { nombre: 'constante A', color: 'o' }, B: { nombre: 'constante B', color: 'i' }, m: { nombre: PROCESOS[mk], color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
     const hh = (id, d, explicacion, fuente = null) => (d ? { id, ...opcion(d), explicacion, respaldo: 'hipotesis', fuente } : null);
-    let enunciado, pregunta, correcta, errores, solucion, datos;
+    let enunciado, pregunta, correcta, errores, solucion, datos, ls;
     if (sub === 'suma' || sub === 'combinada') {
       const t1 = termino(rng, 'A', 'A', [mk]), t2 = termino(rng, 'B', 'B', [mk, ...t1.fs]);
       const dA = div(dm, t1.dim), dB = div(dm, t2.dim);
@@ -249,6 +271,7 @@
         solucion = [...base, ['Entonces [', v('x', 'A/B'), `] = ${texto(dA)} / ${texto(dB)} = `, v('x', texto(dq)), '.']];
       }
       datos = { tipo: 'constante', sub, miembro: mk, t1: { fs: t1.fs, ex: t1.ex }, t2: { fs: t2.fs, ex: t2.ex } };
+      ls = lineas([mk, ...usados]);
     } else {
       // argumento: miembro = A·FUN(B·X^a)
       const xk = rng.elegir(['t', 'h', 'x', 'V', 'm', 'v', 'f']), a = rng.elegir([1, 1, 1, 2]);
@@ -286,8 +309,9 @@
         solucion = [...base, ['[', v('x', 'A·B'), `] = ${texto(dm)} · ${texto(dB)} = `, v('x', texto(dAB)), '.']];
       }
       datos = { tipo: 'constante', sub, miembro: mk, fun, x: xk, a, pide: pideAB ? 'AB' : 'B' };
+      ls = [...lineas([mk, xk]), 'Lo que va dentro de sen, cos, e^( ) o log es un número: no tiene dimensión.'];
     }
-    const o = { variables, enunciado, pregunta, solucion, datos };
+    const o = { variables, enunciado, pregunta, solucion, datos, lineas: ls };
     // Distractores con exponentes desmedidos (más de 6) no engañan a nadie: se dejan fuera.
     const grande = e => /[⁷⁸⁹]|[¹][⁰-⁹]/.test(e.texto);
     const alternativas = P.armarTexto({ correcta, errores: errores.filter(e => e && !grande(e)), rng });
@@ -295,6 +319,18 @@
   }
 
   // ---- proposiciones ----
+  // d: lo que hace falta para juzgar la proposición sin haberlo memorizado (va al recuadro «Datos»).
+  const SIETE = 'Las siete fundamentales del SI: longitud, masa, tiempo, corriente eléctrica, temperatura, cantidad de sustancia e intensidad luminosa.';
+  const TRABAJO = 'Trabajo: fuerza por distancia. Momento de una fuerza: fuerza por su brazo, que es una distancia.';
+  const DPROP = {
+    F1: SIETE, F2: SIETE, F3: SIETE, F4: SIETE, F5: SIETE, F6: SIETE, U1: TRABAJO, U4: TRABAJO,
+    U2: 'Trabajo: W = F·d. Energía cinética: E = ½·m·v². [F] = MLT⁻².',
+    U3: 'Velocidad angular y frecuencia: ω = 2π·f.',
+    H4: '[F] = MLT⁻² (una fuerza) y [E] = ML²T⁻² (una energía).',
+    A1: '[v] = LT⁻¹ (una velocidad) y [a] = LT⁻² (una aceleración).',
+    A4: '[a] = LT⁻² (una aceleración), [t] = T y [d] = L.',
+    N1: 'En T = 2π·√(L/g), T es el periodo, L el largo del péndulo y g la gravedad, en m/s².',
+  };
   const PROPS = [
     { id: 'H1', v: true, idea: 'detecta', t: 'Si una ecuación no es dimensionalmente homogénea, entonces es incorrecta.', por: 'Una ecuación física correcta siempre es homogénea; si no lo es, tiene un error. Por eso la homogeneidad sirve para detectar errores.' },
     { id: 'H2', v: false, idea: 'detecta', t: 'El principio de homogeneidad no sirve para detectar errores en una ecuación física.', por: 'Sí sirve: si los términos de una ecuación no tienen la misma dimensión, la ecuación está mal.' },
@@ -352,7 +388,8 @@
     const enunciado = ['Sobre el análisis dimensional, indica si cada proposición es verdadera (V) o falsa (F).', ...elegidas.map((p, j) => ` ${ROMANOS[j]}. ${p.t}`)];
     const pregunta = ['¿Cuál es la ', v('x', 'secuencia correcta'), ' (I, II, III)?'];
     const solucion = [...elegidas.map((p, j) => [`${ROMANOS[j]}: ${p.v ? 'verdadera' : 'falsa'}. ${p.por}`]), ['Secuencia: ', v('x', correcta.texto), '.']];
-    const o = { variables, enunciado, pregunta, solucion, datos: { tipo: 'proposiciones', sub: 'vf', props: elegidas.map(p => p.id) } };
+    const o = { variables, enunciado, pregunta, solucion, lineas: [...new Set(elegidas.map(p => DPROP[p.id]).filter(Boolean))],
+      datos: { tipo: 'proposiciones', sub: 'vf', props: elegidas.map(p => p.id) } };
     const alternativas = P.armarTexto({ correcta, errores, rng });
     return salida(semilla, o, alternativas, { valor: correcta.clave, texto: correcta.texto, unidad: '' });
   }
