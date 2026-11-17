@@ -1,6 +1,31 @@
 # Pendientes y traspaso
 
-Actualizado el 17 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 17 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 17 nov, noche: Etapa 2 cerrada y la mesa de revisión
+
+**Lo primero en una sesión nueva:** leer las respuestas de Gerson en la mesa de revisión (`herramientas/revision/LEEME.md`:
+`db_list` de `respuestas` y `notas` del artifact) y subir ahí, con captura, todo lo que él tenga que decidir o ver. No
+dejar decisiones solo en el chat.
+
+- **Etapa 2 terminada** con el método completo (`docs/metodo/unidad/`): propuesta, idea 1 con visto bueno, resto de
+  ideas con 15 ejemplos cada una, práctica, lector en frío (momentos y ejemplos), auditor del contrato y correcciones:
+  - `razonamiento-verbal.tema-e-idea-principal`: 4 ideas, módulo `tema-idea-principal` (t175–t189, tres revisiones a
+    ciegas: 79/79, 22/22, 51/51), paso previo `medida`, recuadro `datos` en la lectura.
+  - `trigonometria.razones-trigonometricas-agudas`: 5 ideas, plantilla `razones-trig-agudas`, grado 5.
+  - `quimica.materia-y-energia`: 6 ideas (la 6, vida media, pedida de vuelta por Gerson), plantillas
+    `sustancias-mezclas`, `densidad-propiedades`, `cambios-materia`, `calor-sensible-latente`, `masa-energia`,
+    `vida-media`.
+  Informes en `rutinas/frio/` y `rutinas/auditoria/` (con «Correcciones (17 nov)» al final).
+- **Decisiones nuevas** (`docs/etapa2/decisiones.md`, «Cambios posteriores»): un color fijo por magnitud en cada unidad
+  (molde §5b reescrito; Física ya ajustada), glosario con subrayado gris y tope de 30 términos, grado solo informativo,
+  letra de alternativa en negrita, ninguna figura delata la respuesta, Predice con `orden: 'fijo'` cuando sus letras se
+  ven en la figura, zonas `data-toque` para tocar en la figura.
+- **Pendiente de app** (anotado en los informes): pasar `{ idea }` a la práctica para practicar por idea; cargar la
+  tabla de colores de una unidad en el navegador para que los generadores no la copien; título del papel por unidad.
+- **Siguiente:** Etapa 3 (las siguientes unidades del árbol), con el mismo método. Las conversaciones paralelas
+  necesitan antes la regla de archivos compartidos, el registro de quién tiene qué unidad y el mensaje de arranque
+  (propuesta en el chat del 17 nov, pendiente del «dale» de Gerson).
 
 ## Estado al 17 nov: Etapa 1 cerrada, el molde listo para replicar
 
