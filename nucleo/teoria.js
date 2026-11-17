@@ -113,9 +113,9 @@
     // Datos de un ejercicio (punto 13 del contrato, docs/plan-calidad.md): las equivalencias, los valores de academia
     // (cos 37° = 4/5) y las fórmulas van en `datos`, una por línea, y se ven en un recuadro aparte. En el enunciado no:
     // así se audita de un vistazo qué se le da al alumno, y el enunciado no se alarga.
-    const datos = (donde, enun, ds) => {
+    const datos = (donde, enun, ds, exige) => {
       if (/\bDatos?\s*:/.test(plano(enun))) mal(donde, 'el «Dato:» va en el campo datos, no en el enunciado');
-      if (ds === undefined) return;
+      if (ds === undefined) { if (exige && def.calidad >= 2) mal(donde, 'sin datos: en calidad 2 todo ejercicio da sus datos (contrato, punto 13)'); return; }
       if (!Array.isArray(ds) || ds.length < 1 || ds.length > 6) { mal(donde, 'datos: de 1 a 6 líneas'); return; }
       ds.forEach((x, i) => { if (!x || (Array.isArray(x) && !x.length)) mal(`${donde} dato ${i + 1}`, 'vacío'); else { tope(`${donde} dato ${i + 1}`, 'dato', x); ecuacion(`${donde} dato ${i + 1}`, Array.isArray(x) ? x : [x]); } });
     };
@@ -441,7 +441,7 @@
             if (!e || ![1, 2, 3].includes(e.nivel)) { mal(de, 'nivel 1, 2 o 3'); return; }
             if (!e.titulo) mal(de, 'sin título'); else tope(de, 'titulo', e.titulo);
             if (!e.enunciado) mal(de, 'sin enunciado'); else { tope(de, 'enunciado', e.enunciado); ecuacion(de, Array.isArray(e.enunciado) ? e.enunciado : [e.enunciado]); }
-            datos(de, e.enunciado, e.datos);
+            datos(de, e.enunciado, e.datos, true);
             // Un dato real (el volumen del Titicaca, la lluvia de Juliaca) lleva su fuente (Gerson, 16 nov).
             if (e.fuente !== undefined && (typeof e.fuente !== 'string' || e.fuente.length < 8 || e.fuente.length > 140)) mal(de, 'fuente: texto de 8 a 140 caracteres');
             if (e.figura) dibujaCon(`${de} figura`, e.figura, e.figura.pieza);
@@ -467,7 +467,7 @@
             try { c = R.generar(s); } catch (err) { mal(dd, `falló: ${err.message}`); continue; }
             if (!c || !c.enunciado) { mal(dd, 'sin enunciado'); continue; }
             tope(dd, 'enunciado', c.enunciado);
-            datos(dd, c.enunciado, c.datos);
+            datos(dd, c.enunciado, c.datos, true);
             if (c.dibujo) dibuja(dd, c.dibujo, R.pieza);
             if (!Array.isArray(c.pasos) || c.pasos.length < 3 || c.pasos.length > 6) { mal(dd, 'de 3 a 6 pasos'); continue; }
             const tipos = c.pasos.map(x => x && x.tipo);
@@ -503,7 +503,7 @@
           const dd = `${d} ahoraTu semilla ${s}`;
           if (!c || !c.pregunta) { mal(dd, 'sin pregunta'); continue; }
           tope(dd, 'enunciado', c.pregunta);
-          datos(dd, c.pregunta, c.datos);
+          datos(dd, c.pregunta, c.datos, true);
           opciones(dd, c.opciones);
           if (c.dibujo) dibuja(dd, c.dibujo, a.pieza);
           if (!c.solucion || !c.solucion.texto) mal(dd, 'sin solución');
