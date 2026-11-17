@@ -19,20 +19,26 @@
  *   - cateto opuesto, naranja (o); cateto adyacente, turquesa (i); hipotenusa, en tinta; ángulos, carmín (h), con arco y
  *     letra; el resultado (lo que se pide, ya calculado), violeta (f). Lo que se pide va con «?» en tinta, nunca violeta.
  *   - «Desde el ángulo de la figura»: desde θ si la figura lo tiene; si solo trae α o un ángulo con número (53°, 60°),
- *     desde ese. Un lado no cambia de color dentro de una figura aunque se mire desde el otro agudo: cambia su NOMBRE, y el
- *     rótulo lo dice («CO de θ = 4 m» y, debajo, «CA de α»). Las siglas CO y CA llevan siempre su color (CO naranja, CA
+ *     desde ese; si marca los dos agudos con número, desde el de abajo (en la señal y la escuadra, siempre desde 30°: la
+ *     misma señal y la misma escuadra no cambian de colores entre ejemplos; auditoría, 17 nov). Un lado no cambia de color
+ *     dentro de una figura aunque se mire desde el otro agudo: cambia su NOMBRE, y el texto o el rótulo lo dice («CO de θ
+ *     = 4 m» y, debajo, «CA de α»). Las siglas CO y CA llevan siempre su color (CO naranja, CA
  *     turquesa); un número o el nombre de un objeto (poste, pared) llevan el color de su línea en la figura.
  *   - Así, en las fórmulas cada lado tiene un solo color, esté arriba o abajo: sen θ = CO/H, cos θ = CA/H, tan θ = CO/CA,
  *     cot θ = CA/CO, sec θ = H/CA y csc θ = H/CO.
  *   - Excepción: en los ejercicios de la idea 1 («Así se resuelve», «Ahora tú» y las figuras de sus ejemplos), donde lo
  *     que se practica es nombrar los lados, la figura va en tinta: el color nombraría el lado por el alumno. Los lados
- *     de otras figuras de examen que no son del triángulo (CD en el trapecio) van en tinta.
- *   La leyenda de cada juego dice qué color es cada nombre; la tarjeta 3 de «Lee» de la idea 1 lo presenta. Decisión de
- *   la sesión, pendiente del visto bueno de Gerson: el molde (§5b, tabla de trigonometría) dice «los lados por papel
- *   (dato, dato, lo que se pide)»; aquí el papel es el nombre del lado, que es lo que la unidad enseña.
+ *     de otras figuras de examen que no son del triángulo (AD y CD en el trapecio, AB en el cuadrado) van en tinta.
+ *   - La misma regla vale en la práctica (plantillas/razones-trig-agudas) y en todo «Ahora tú». La comprueban
+ *     razones-trigonometricas-agudas.test.js (cada figura de la teoría, con «Ahora tú» y «Así se resuelve» en 400
+ *     semillas) y generador.test.js (400 semillas): calculan desde el ángulo de la figura (trig-objeto, papeles) cuál lado
+ *     es CO, CA y H y fallan si un lado lleva otro color; así el color nunca señala un distractor.
+ *   La leyenda de cada juego dice qué color es cada nombre; la tarjeta 3 de «Lee» de la idea 1 lo presenta. Aprobada por
+ *   Gerson (molde §5b reescrito, 17 nov: «el lado lleva el color de su nombre desde el ángulo»).
  * Las fórmulas van con espacios que no parten línea dentro de cada relación (junto): «tan θ = CO/CA» no se corta.
- * Convención (decisiones, 17 nov): «≈» en la teoría (37° mide 36,87°); en `datos`, «sen 37° = 3/5 (convención del
- * examen)»; la condición de la regla de la idea 4 dice por qué cambia el signo. Respuestas racionalizadas, con
+ * Convención (decisiones, 17 nov): «≈» en la teoría (37° mide 36,87°); en `datos`, «sen 37° = 3/5 y cos 37° = 4/5
+ * (convención del examen)», la misma forma que en la práctica (auditoría, 17 nov: había tres); la condición de la regla de
+ * la idea 4 dice por qué cambia el signo. Respuestas racionalizadas, con
  * «1/√2 = √2/2» como dato. Despejar un lado (CA = H · cos θ) no entra: los lados se hallan con k. Pitágoras y semejanza
  * van como dato y en «Lee».
  * Errores: TR7 (el seno es una longitud), TR8 (la razón depende del tamaño), TR9 (elige mal la razón) y TR10 (la razón
@@ -73,6 +79,12 @@
     rr.uno = xs => xs[Math.floor(rr() * xs.length)];
     return rr;
   }
+  // Cuatro opciones siempre en «Ahora tú» (auditoría, 17 nov): si un caso sale con menos (dos errores que coinciden por
+  // los números), se arma otro con el mismo azar, como en la práctica.
+  function conCuatro(caso, r) {
+    for (let i = 0; i < 80; i++) { const c = caso(r); if (c.opciones.length >= 4) return c; }
+    throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
+  }
   function opciones(correcta, distractores, fmt) {
     const vistos = new Set([fmt(correcta)]);
     const ops = [{ id: 'c', texto: fmt(correcta), correcta: true }];
@@ -103,7 +115,7 @@
   // el opuesto CO, vertical, naranja; la hipotenusa, en tinta; θ, carmín.
   // o.co, o.ca, o.h: rótulos; o.ang: rótulo de θ; o.otro: rótulo del otro agudo (en B); o.marco: [x, y] del marco.
   const tri = (co, ca, o = {}) => ({
-    puntos: [{ id: 'A', x: 0, y: 0, rotulo: o.nombres ? 'A' : '' }, { id: 'C', x: ca, y: 0, rotulo: o.nombres ? 'C' : '' }, { id: 'B', x: ca, y: co, rotulo: o.nombres ? 'B' : '' }]
+    puntos: [{ id: 'A', x: 0, y: 0, rotulo: o.nombres ? 'A' : '' }, { id: 'C', x: ca, y: 0, rotulo: o.nombres ? 'C' : '' }, { id: 'B', x: ca, y: co, rotulo: o.nombres || o.soloB ? 'B' : '' }]
       .concat(o.puntos || [], o.marco ? marco(o.marco[0], o.marco[1]) : []),
     lados: [
       { de: 'A', a: 'C', color: 'i', texto: o.ca === undefined ? f(ca) : o.ca, grosor: 'variable' },
@@ -129,7 +141,8 @@
   // vertical» (De Kee y otros; parcial), TR9 confunde opuesto con adyacente (Kendal y Stacey; parcial), LAD-HIPOTENUSA toma
   // la hipotenusa por cateto, LAD-SOLO-PISO cree que solo se mide desde el piso, LAD-TOCA-H toma la hipotenusa por adyacente
   // porque también toca al ángulo, LAD-HIP-CATETO toma un cateto por hipotenusa, LAD-NO-CAMBIA nombra desde θ cuando se
-  // pregunta desde α, PIT-SUMA suma los cuadrados para hallar un cateto.
+  // pregunta desde α, PIT-SUMA suma los cuadrados para hallar un cateto, LAD-SIN-RECTO toma como catetos los dos lados que
+  // tocan el ángulo (17 nov, con «Ahora tú» por pares, como en la práctica).
   const OB = 'trig-objeto';
   const TO = () => Kit.piezas[OB];
   const thN = { v: 'c-h', t: 'θ' }, al = { v: 'c-h', t: 'α' };
@@ -331,52 +344,52 @@
   // «Ahora tú», tipo 1: el triángulo de examen, con vértices nombrados (sin A, B, C ni H: «CA» se leería como un lado).
   const LETRAS = [['P', 'Q', 'R'], ['M', 'N', 'T'], ['D', 'E', 'F'], ['K', 'L', 'S']];
   const segN = (x, y) => [x, y].sort().join('');
+  // Se pide el par (opuesto y adyacente): con un solo lado había tres respuestas posibles y salían tres opciones
+  // (auditoría, 17 nov). Con el par salen cinco; quedan la correcta y tres de los cuatro errores, al azar.
+  const tresDe = (r, xs) => { const ys = xs.slice(); ys.splice(r.ent(0, ys.length - 1), 1); return ys; };
   function casoVertices(r) {
     const ls = r.uno(LETRAS), orden = r.uno([[0, 1, 2], [1, 0, 2], [2, 0, 1], [1, 2, 0]]);
     const V = { r: ls[orden[0]], a: ls[orden[1]], b: ls[orden[2]] };
     const [ra, rb] = r.uno([[3, 4], [5, 12], [8, 15], [4, 3], [12, 5]]);
     const giro = r.uno([20, 75, 140, 200, 250, 315]);
-    const en = r.uno(['a', 'b']), pide = r.uno(['co', 'ca', 'ca', 'co']);
+    const en = r.uno(['a', 'b']);
     const seg = { ra: segN(V.r, V.a), rb: segN(V.r, V.b), h: segN(V.a, V.b) };
-    const ds = desde(en), bien = ds[pide], otro = ds[pide === 'co' ? 'ca' : 'co'], X = V[en];
-    const nombre = pide === 'co' ? 'opuesto' : 'adyacente';
-    const ops = [
-      { id: 'c', texto: seg[bien], correcta: true },
-      { id: 'cambia', texto: seg[otro], error: 'TR9', siFuera: pide === 'co' ? `${seg[otro]} es cateto, bien; pero pasa por ${X}: lo toca. El opuesto no pasa por ${X}.` : `${seg[otro]} es cateto, bien; pero no pasa por ${X}: queda enfrente. El adyacente pasa por ${X}.` },
-      { id: 'hip', texto: seg.h, error: pide === 'ca' ? 'LAD-TOCA-H' : 'LAD-HIPOTENUSA', siFuera: pide === 'ca' ? `${seg.h} también pasa por ${X}, es cierto; pero no pasa por ${V.r}: es la hipotenusa.` : `${seg.h} no pasa por el recto, es cierto: por eso es la hipotenusa, no un cateto.` },
-    ];
+    const ds = desde(en), co = seg[ds.co], ca = seg[ds.ca], h = seg.h, X = V[en];
+    const par = (p, q) => `CO = ${p}; CA = ${q}`;
+    const ops = [{ id: 'c', texto: par(co, ca), correcta: true }].concat(tresDe(r, [
+      { id: 'cambia', texto: par(ca, co), error: 'TR9', siFuera: `${co} y ${ca} son los catetos, bien; pero ${ca} pasa por ${X}: lo toca. El opuesto queda enfrente.` },
+      { id: 'toca', texto: par(co, h), error: 'LAD-TOCA-H', siFuera: `El opuesto está bien. ${h} también pasa por ${X}, pero no por ${V.r}: es la hipotenusa.` },
+      { id: 'hip', texto: par(h, ca), error: 'LAD-HIPOTENUSA', siFuera: `El adyacente está bien. Pero ${h} pasa por ${X}: no queda enfrente. Es la hipotenusa.` },
+      { id: 'sinrecto', texto: par(ca, h), error: 'LAD-SIN-RECTO', siFuera: `${ca} y ${h} tocan a ${X}, es cierto; pero los catetos pasan por el recto, ${V.r}.` },
+    ]));
     return {
-      pregunta: `En el triángulo ${ls.join('')}, recto en ${V.r}, ¿cuál es el cateto ${nombre} al ángulo ${X}?`,
+      pregunta: `En el triángulo ${ls.join('')}, recto en ${V.r}, ¿cuáles son el cateto opuesto y el adyacente al ángulo ${X}?`,
       datos: [DL.seg(...[V.r, V.a].sort()), DL.recto(V.r), DL.co, DL.ca],
       dibujo: { datos: { objeto: 'triangulo', medidas: { ra, rb }, giro, vertices: V, angulos: { [en]: {} } }, estado: {} },
       opciones: ops,
-      solucion: { texto: pide === 'ca' ? `Por ${X} pasan ${seg[bien]} y ${seg.h}. ${seg.h} no pasa por ${V.r}: es la hipotenusa. El adyacente es ${seg[bien]}.` : `Los catetos pasan por ${V.r}. De ellos, ${seg[bien]} no pasa por ${X}: queda enfrente.` },
+      solucion: { texto: `Los catetos pasan por ${V.r}. ${ca} pasa por ${X}: es el adyacente. ${co}, no: es el opuesto.` },
     };
   }
-  // «Ahora tú», tipo 0: nombrar un lado de un objeto (los tres largos a la vista, en tinta).
+  // «Ahora tú», tipo 0: los largos del opuesto y del adyacente de un objeto (los tres largos a la vista, en tinta).
   function casoNombrar(r) {
     const o = r.uno(OBJS), [ra, rb, hh] = r.uno(o.ternas), val = { ra, rb, h: hh }, en = r.uno(['a', 'b']);
-    const pide = r.uno(['co', 'ca', 'co', 'ca', 'h']), ds = desde(en), bien = pide === 'h' ? 'h' : ds[pide];
-    const op = k => `${cap(o[k])}, ${largoTxt(val[k], o.u)}`;
-    const err = k => {
-      if (pide === 'h') return { error: 'LAD-HIP-CATETO', siFuera: `${cap(o[k])} es un lado del triángulo, pero forma el ángulo recto: es un cateto.` };
-      if (k === 'h') return pide === 'ca' ? { error: 'LAD-TOCA-H', siFuera: `${cap(o.h)} también toca a θ, es cierto; pero es la hipotenusa, no un cateto.` }
-        : { error: 'LAD-HIPOTENUSA', siFuera: `Buscaste un lado lejos del rincón; pero ${o.h} toca a θ: es la hipotenusa.` };
-      if (pide === 'co' && k === o.vertical) return { error: 'TR7', siFuera: `Elegiste un cateto, bien; ${o[k]} es vertical, pero toca a θ: es el adyacente.` };
-      return { error: 'TR9', siFuera: pide === 'co' ? `Elegiste un cateto, bien; pero ${o[k]} toca a θ: es el adyacente. El opuesto queda enfrente.` : `Elegiste un cateto, bien; pero ${o[k]} queda frente a θ: es el opuesto.` };
-    };
-    const ops = [{ id: 'c', texto: op(bien), correcta: true }];
-    for (const k of ['ra', 'rb', 'h']) if (k !== bien) ops.push(Object.assign({ id: k, texto: op(k) }, err(k)));
-    const pideTxt = pide === 'h' ? ['la hipotenusa'] : [`el cateto ${pide === 'co' ? 'opuesto' : 'adyacente'} a `, thN];
-    const sol = pide === 'h' ? `El ángulo recto lo forman ${o.ra} y ${o.rb}. Frente a él queda ${o.h}: ${largoTxt(hh, o.u)}.`
-      : pide === 'co' ? `Frente a θ, sin tocarlo, queda ${o[bien]}: ${largoTxt(val[bien], o.u)}. Es un cateto.`
-        : `A θ lo tocan ${o.h}, que es la hipotenusa, y ${o[bien]}: ${largoTxt(val[bien], o.u)}.`;
+    const ds = desde(en), L = x => largoTxt(x, o.u);
+    const par = (p, q) => `Opuesto: ${L(val[p])}; adyacente: ${L(val[q])}`;
+    const vertical = o.vertical === ds.ca;
+    const ops = [{ id: 'c', texto: par(ds.co, ds.ca), correcta: true }].concat(tresDe(r, [
+      vertical
+        ? { id: 'cambia', texto: par(ds.ca, ds.co), error: 'TR7', siFuera: `Elegiste los catetos, bien; ${o[ds.ca]} es vertical, pero toca a θ: es el adyacente.` }
+        : { id: 'cambia', texto: par(ds.ca, ds.co), error: 'TR9', siFuera: `Elegiste los catetos, bien; pero ${o[ds.ca]} toca a θ: es el adyacente.` },
+      { id: 'toca', texto: par(ds.co, 'h'), error: 'LAD-TOCA-H', siFuera: `El opuesto está bien. ${cap(o.h)} también toca a θ; pero es la hipotenusa.` },
+      { id: 'hip', texto: par('h', ds.ca), error: 'LAD-HIPOTENUSA', siFuera: `El adyacente está bien. Pero ${o.h} toca a θ: es la hipotenusa.` },
+      { id: 'sinrecto', texto: par(ds.ca, 'h'), error: 'LAD-SIN-RECTO', siFuera: `${cap(o[ds.ca])} y ${o.h} tocan a θ, es cierto; pero los catetos forman el recto.` },
+    ]));
     return {
-      pregunta: [`${o.intro} `, thN, ` es el ángulo ${o[en]}. ¿Cuánto mide `, ...pideTxt, '?'],
+      pregunta: [`${o.intro} `, thN, ` es el ángulo ${o[en]}. ¿Cuánto miden el cateto opuesto y el adyacente a `, thN, '?'],
       datos: [DL.cat, DL.h, DL.co, DL.ca],
-      dibujo: figO(o, ra, rb, t3(largoTxt(ra, o.u), largoTxt(rb, o.u), largoTxt(hh, o.u)), { [en]: { texto: 'θ' } }),
+      dibujo: figO(o, ra, rb, t3(L(ra), L(rb), L(hh)), { [en]: { texto: 'θ' } }),
       opciones: ops,
-      solucion: { texto: sol },
+      solucion: { texto: `Opuesto, frente a θ: ${o[ds.co]}, ${L(val[ds.co])}. Adyacente, el cateto que lo toca: ${o[ds.ca]}, ${L(val[ds.ca])}.` },
     };
   }
   // «Ahora tú», tipo 2 (nivel de examen): se dan la hipotenusa y un cateto; se pregunta desde θ o desde α, o una suma de
@@ -502,7 +515,7 @@
       voz: 'Primero el ángulo recto; después, el ángulo desde el que miras.',
       pasos: [
         { estado: { paso: 0 }, texto: 'El ángulo recto está en el rincón, entre la pared y el piso.' },
-        { estado: { paso: 1 }, texto: 'Frente al ángulo recto queda la escalera: es la hipotenusa, el lado más largo.', ecuacion: ['H = ', dO('5 m')] },
+        { estado: { paso: 1 }, texto: 'Frente al ángulo recto queda la escalera: es la hipotenusa, el lado más largo.', ecuacion: ['H = 5 m'] },
         { estado: { paso: 2 }, texto: ['Desde ', thN, ', el piso toca a ', thN, ': es el cateto adyacente.'], ecuacion: [dI('CA'), ' = ', dI('3 m')] },
         { estado: { paso: 3 }, texto: ['La pared queda frente a ', thN, ', sin tocarlo: es el cateto opuesto.'], ecuacion: [dO('CO'), ' = ', dO('4 m')] },
         { estado: { paso: 4 }, texto: ['Ahora desde ', al, ', arriba: la pared toca a ', al, ' y el piso queda enfrente.'], ecuacion: [junto([dI('CA'), ' de ', al, ' = pared = ', dO('4 m')]), SEP, junto([dO('CO'), ' de ', al, ' = piso = ', dI('3 m')])] },
@@ -543,7 +556,7 @@
       voz: 'Ubica el ángulo recto y el ángulo que te piden.',
       generar(sem) {
         const r = azar(sem + 31);
-        return [casoNombrar, casoVertices, casoExamen][sem % 3](r);
+        return conCuatro([casoNombrar, casoVertices, casoExamen][sem % 3], r);
       },
     },
   };
@@ -729,15 +742,19 @@
         { texto: ['El opuesto es DM, la mitad de DC: ', op('2 cm'), '. No es el lado entero.'], ecuacion: [...tan, ' = ', { frac: [op('2'), ad('4')] }, ' = ', res('1/2')] },
       ],
       respuesta: [...tan, ' = ', res('1/2')] },
-    { nivel: 3, titulo: 'Un seno con decimales',
-      enunciado: ['En un triángulo rectángulo, sen ', thN, ' = 0,28. ¿Cuánto vale tan ', thN, '?'],
-      datos: [DR.razones, DL.pita, '0,28 = 28/100'],
+    // Reemplaza a «Un seno con decimales», que repetía la cuenta de «Dado el seno» (auditoría, 17 nov): el triángulo
+    // escondido en una semicircunferencia, como en el examen. Cuentas aparte: √(13² − 5²) = √144 = 12; tan θ = 12/5 = 2,4.
+    { nivel: 3, titulo: 'El triángulo en la semicircunferencia',
+      figura: fig({ objeto: 'figura', forma: 'semicirculo', medidas: { ra: 5, rb: 12 }, lados: { AC: L2('5 cm', 'i'), AB: L2('13 cm'), BC: { color: 'o' } }, angulos: { A: { texto: 'θ' } } }),
+      enunciado: ['AB es el diámetro de una semicircunferencia y mide 13 cm. C es un punto del arco, con AC = 5 cm. ', thN, ' es el ángulo CAB. ¿Cuánto vale tan ', thN, '?'],
+      datos: ['Un ángulo con su vértice en la semicircunferencia y sus lados en los extremos del diámetro mide 90°.', DR.razones, DL.pita],
       solucion: [
-        { texto: 'Paso el decimal a fracción y simplifico:', ecuacion: ['0,28 = ', { frac: ['28', '100'] }, ' = ', { frac: [op('7'), '25'] }] },
-        { texto: ['Opuesto ', op('7'), ', hipotenusa ', '25', '. Pitágoras da el adyacente:'], ecuacion: ['CA = ', raizDif('25', '7', 'o'), ' = √576 = 24'] },
-        { texto: 'Opuesto entre adyacente:', ecuacion: [...tan, ' = ', { frac: [op('7'), ad('24')] }] },
+        { texto: 'El ángulo en C abarca el diámetro: mide 90°. El triángulo ACB es rectángulo en C, y su hipotenusa es el diámetro AB, 13 cm.' },
+        { texto: ['Desde ', thN, ', en A, el adyacente es AC = ', ad('5 cm'), '. El opuesto es BC, que sale de Pitágoras:'], ecuacion: ['BC = ', raizDif('13', '5', 'i'), ' = √144 = ', op('12 cm')] },
+        { texto: 'Opuesto entre adyacente:', ecuacion: [...tan, ' = ', { frac: [op('12'), ad('5')] }, ' = ', res('12/5')] },
+        { texto: 'Error típico: tomar AB como cateto. AB queda frente al ángulo recto: es la hipotenusa.' },
       ],
-      respuesta: [...tan, ' = ', res('7/24')] },
+      respuesta: [...tan, ' = ', res('12/5 = 2,4')] },
   ];
 
   // «Ahora tú», tipo 0: una razón con los lados de un objeto; el tercer lado puede faltar (Pitágoras).
@@ -755,6 +772,8 @@
       { id: 'otra', valor: frTxt(val[otraR[0]], val[otraR[1]]), error: 'TR9', siFuera: `Dividir dos lados está bien; pero ese cociente usa el otro cateto. Revisa cuál toca a ${letra}.` },
       { id: 'inversa', valor: frTxt(val[kd], val[kn]), error: 'REC-INVERSA', siFuera: 'Los dos lados son los correctos; pero están al revés: arriba va el que nombra la razón primero.' },
       { id: 'largo', valor: L(val[kn]), error: 'TR7', siFuera: `${cap(L(val[kn]))} es el lado de arriba, bien; la razón lo divide entre otro lado.` },
+      // En la tangente, «otra» es la inversa: un cuarto error para que salgan cuatro opciones (auditoría, 17 nov).
+      { id: 'tanH', valor: frTxt(val[kn], hh), error: 'TAN-H', siFuera: 'El opuesto arriba está bien; la tangente lo divide entre el adyacente, no entre la hipotenusa.' },
     ], x => x);
     const pideFalta = falta === kn || falta === kd;
     const pit = falta === 'h' ? ['H = ', { raiz: [[cuad(f(ra)), ' + ', cuad(f(rb))]] }, ` = ${f(hh)}`] : falta ? [`${o[falta]} = `, raizDif(f(hh), f(val[falta === 'ra' ? 'rb' : 'ra'])), ` = ${f(val[falta])}`] : null;
@@ -822,6 +841,8 @@
           razon === 'tan'
             ? { id: 'diag', valor: frTxt(op, AC), error: 'TR9', siFuera: 'Poner el opuesto arriba está bien; la tangente lo divide entre el adyacente, no entre la diagonal.' }
             : { id: 'sinpit', valor: frTxt(val[0], AB + BC), error: 'PIT-LINEAL', siFuera: 'La diagonal es la hipotenusa, bien; pero sale de Pitágoras, no de sumar los lados.' },
+          // Un cuarto error (en la tangente, ANG-OTRO es la inversa; auditoría, 17 nov: salían tres opciones).
+          { id: 'largo', valor: `${val[0]} cm`, error: 'TR7', siFuera: 'Ese es el lado de arriba del cociente, bien ubicado; la razón lo divide entre otro lado.' },
         ], x => x),
         solucion: { texto: `ABC es rectángulo en B; AC = ${AC} cm por Pitágoras. Desde ${en}: opuesto ${op}, adyacente ${ad}.`, ecuacion: [`${razon} `, thN, ' = ', frEc(...val)] },
       };
@@ -832,11 +853,14 @@
       pregunta: [`ABCD es un cuadrado de ${Lc} cm de lado y M es el punto medio de DC. `, thN, ` es el ángulo ${en === 'A' ? 'DAM' : 'AMD'}. ¿Cuánto vale tan `, thN, '?'],
       datos: [DR.razones, DR.medio],
       dibujo: fig({ objeto: 'figura', forma: 'medio', medidas: { ra: Lc, rb: Lc / 2 }, lados: { DA: { texto: `${Lc} cm`, color: en === 'A' ? 'i' : 'o' }, AB: { texto: `${Lc} cm` } }, angulos: { [en]: { texto: 'θ' } } }),
+      // Cuatro opciones siempre (auditoría, 17 nov: ANG-OTRO repetía la correcta o a MEDIO-ENTERO y salían tres). AM, la
+      // hipotenusa, mide Lc·√5/2: opuesto entre AM da √5/5 desde A y 2√5/5 desde M.
       opciones: opciones(frTxt(op, ad), [
         { id: 'entero', valor: '1', error: 'MEDIO-ENTERO', siFuera: 'Usar el triángulo ADM está bien; pero DM es la mitad de DC, no el lado entero.' },
         { id: 'inversa', valor: frTxt(ad, op), error: 'REC-INVERSA', siFuera: 'Los catetos son los correctos; pero desde θ el opuesto va arriba.' },
-        { id: 'diag', valor: frTxt(op, Lc), error: 'ANG-OTRO', siFuera: 'Dividir dos lados está bien; revisa cuál cateto queda frente a θ y cuál lo toca.' },
-      ].filter(x => x.valor !== frTxt(op, ad)), x => x),
+        { id: 'diag', valor: en === 'A' ? '√5/5' : '2√5/5', error: 'TAN-H', siFuera: 'Poner el opuesto arriba está bien; la tangente lo divide entre el otro cateto, no entre AM.' },
+        { id: 'largo', valor: `${f(op)} cm`, error: 'TR7', siFuera: 'Ese es el cateto opuesto, bien ubicado; la tangente lo divide entre el adyacente.' },
+      ], x => x),
       solucion: { texto: `ADM es rectángulo en D: AD = ${Lc} cm y DM = ${f(Lc / 2)} cm, la mitad de DC.`, ecuacion: [`${razon} `, thN, ' = ', { frac: [f(op), f(ad)] }, ' = ', frEc(op, ad)] },
     };
   }
@@ -872,7 +896,8 @@
       mision: {
         texto: 'Corre la sombra del poste hasta que la de tu primo mida 2 m.',
         logrado: val => val.sombra === 8,
-        bien: 'Listo: 6 ÷ 8 = 1,5 ÷ 2 = 0,75. Mismo θ, mismo cociente.',
+        // Sin «Mismo θ, mismo cociente»: era la respuesta de la predicción (auditoría, 17 nov).
+        bien: 'Listo: 6 ÷ 8 = 1,5 ÷ 2 = 0,75.',
       },
       voz: '¿Cuánto da altura ÷ sombra para tu primo con 2 m?',
       leyenda: [
@@ -968,7 +993,7 @@
       voz: 'Nombra los lados desde el ángulo; después divide.',
       generar(sem) {
         const r = azar(sem + 41);
-        return [casoRazonObj, casoOtraRazon, casoFigura][sem % 3](r);
+        return conCuatro([casoRazonObj, casoOtraRazon, casoFigura][sem % 3], r);
       },
     },
   };
@@ -985,7 +1010,8 @@
   // con un solo ángulo nombrado (60°, el 45° de abajo), los colores se nombran desde ese ángulo.
   // Errores (TR7 y TR10 del informe de trigonometría; el resto, hipótesis): TR10 el seno crece como el ángulo (sen 60° =
   // 2 sen 30°), TR7 da el lado y no el cociente, NOT-MISMO toma el cateto del otro ángulo, NOT-CAMBIA cambia 30° por 60°,
-  // REC-INVERSA invierte el cociente, NOT-ADIVINA cree que hace falta el transportador.
+  // REC-INVERSA invierte el cociente, NOT-ADIVINA cree que hace falta el transportador, TAN-H divide la tangente entre la
+  // hipotenusa (17 nov: cuarta opción de tan 30°, 45° y 60°).
 
   // Números exactos de la forma a + b√2 + c√3 + d√6, con a, b, c, d racionales: { 1: [p, q], 2: [p, q], … }. Las
   // razones notables, sus sumas y productos se calculan aquí (regla 1), sin decimales.
@@ -1029,7 +1055,9 @@
   // 2 y 1, 1, √2), y con el cociente al revés.
   const NOT_MAL = {
     cambia: { sen: NOT.cos, cos: NOT.sen, tan: { 30: NOT.tan[60], 45: NOT.tan[45], 60: NOT.tan[30] } },
-    largo: { sen: { 30: Ex.de(1), 45: Ex.de(1), 60: Ex.de(1, 1, 3) }, cos: { 30: Ex.de(1, 1, 3), 45: Ex.de(1), 60: Ex.de(1) }, tan: NOT.tan },
+    // La tangente con el largo del cateto de enfrente (1, 1 o √3), como el seno: antes era la tangente misma y no daba
+    // opción nueva.
+    largo: { sen: { 30: Ex.de(1), 45: Ex.de(1), 60: Ex.de(1, 1, 3) }, cos: { 30: Ex.de(1, 1, 3), 45: Ex.de(1), 60: Ex.de(1) }, tan: { 30: Ex.de(1), 45: Ex.de(1), 60: Ex.de(1, 1, 3) } },
     inversa: { sen: { 30: Ex.de(2), 45: Ex.de(1, 1, 2), 60: Ex.de(2, 3, 3) }, cos: { 30: Ex.de(2, 3, 3), 45: Ex.de(1, 1, 2), 60: Ex.de(2) }, tan: { 30: Ex.de(1, 1, 3), 45: Ex.de(1), 60: Ex.de(1, 3, 3) } },
   };
   // Una expresión: lista de términos [coef, [razón, ángulo, potencia?], …]. ev(expr, tabla) la calcula; ecu(expr) la escribe.
@@ -1073,8 +1101,8 @@
   // Ejemplos resueltos de «Medio cuadrado, medio equilátero». Cuentas rehechas con un script aparte, sin el código de la
   // unidad (scratchpad e2-trig-resto/cuentas-idea3.js), con raíces exactas y con decimales: 20/40 = 1/2;
   // 30/(30√2) = √2/2; 30√3/30 = √3; 40/40 = 1; 10/20 = 1/2; 1/2 + 1/2 = 1; √3 · √3/3 = 1; 1/√3 = √3/3; 2/4 = 1/2 → 60°;
-  // (√3/2)² + 1/2 = 5/4; θ = 15°: 1/2 + 1 = 3/2; (√3/2 + √3/2)/√3 = 1; 1,5/3 = 1/2 → 30° y base 1,5√3 ≈ 2,6;
-  // 4 · 3/4 − 2 + √2 · √2/2 = 2. «La escalera de 60°» (17 nov, reemplaza a «¿El doble de ángulo?», que era más fácil que
+  // (√3/2)² + 1/2 = 5/4; 4 · 3/4 − 2 + √2 · √2/2 = 2. Los tres de nivel 3 nuevos (17 nov, auditoría) llevan sus cuentas
+  // en su comentario. «La escalera de 60°» (17 nov, reemplaza a «¿El doble de ángulo?», que era más fácil que
   // el nivel 2): cos 60° = 1/2 = 1,5/x → x = 3; √(3² − 1,5²) = √6,75 = 1,5√3 ≈ 2,598 ≈ 2,6.
   const sen_ = g => ['sen ', `${g}°`], cos_ = g => ['cos ', `${g}°`], tan_ = g => ['tan ', `${g}°`];
   const EJEMPLOS_NOTABLES = [
@@ -1097,12 +1125,14 @@
       ],
       respuesta: [...cos_(45), ' = ', res('√2/2')] },
     { nivel: 1, titulo: 'La tangente de 60°',
-      figura: fig({ objeto: 'senal', medidas: { lado: 60 }, lados: { media: L2('30 cm', 'i'), lado: L2('60 cm'), altura: L2('30√3 cm', 'o') }, angulos: { esquina: { texto: '60°' }, punta: { texto: '30°' } } }),
+      // La señal con los colores de siempre, desde 30° (auditoría, 17 nov: aquí iban al revés que en el juego). Desde 60°
+      // cambian los nombres, no los colores: la altura, turquesa, es su opuesto.
+      figura: fig({ objeto: 'senal', medidas: { lado: 60 }, lados: { media: L2('30 cm', 'o'), lado: L2('60 cm'), altura: L2('30√3 cm', 'i') }, angulos: { esquina: { texto: '60°' }, punta: { texto: '30°' } } }),
       enunciado: 'Una señal «Ceda el paso» de 60 cm de lado se parte por su altura, que mide 30√3 cm. ¿Cuánto vale tan 60°?',
       datos: [DR.razones, 'Señal «Ceda el paso»: triángulo equilátero; sus tres ángulos miden 60°.'],
       solucion: [
-        { texto: ['El 60° está arriba, en la esquina. Frente a él queda la altura, ', op('30√3 cm'), '; lo toca la media base, ', ad('30 cm'), '.'] },
-        { texto: 'Opuesto entre adyacente; el 30 se simplifica:', ecuacion: [...tan_(60), ' = ', { frac: [op('30√3'), ad('30')] }, ' = ', res('√3')] },
+        { texto: ['El 60° está arriba, en la esquina. Desde 60°, la altura, ', ad('30√3 cm'), ', queda enfrente: es el opuesto. La media base, ', op('30 cm'), ', lo toca.'] },
+        { texto: 'Opuesto entre adyacente; el 30 se simplifica:', ecuacion: [...tan_(60), ' = ', { frac: [ad('30√3'), op('30')] }, ' = ', res('√3')] },
       ],
       respuesta: [...tan_(60), ' = ', res('√3 ≈ 1,73')] },
     { nivel: 1, titulo: 'La tangente de 45°',
@@ -1115,13 +1145,14 @@
       ],
       respuesta: [...tan_(45), ' = ', res('1')] },
     { nivel: 1, titulo: 'La escuadra de 20 cm',
-      // Se pregunta desde 60°: el cateto corto lo toca (adyacente, turquesa) y el largo queda enfrente (naranja).
-      figura: fig(escuadraSola({ corto: 10, c: '10 cm', cc: 'i', h: '20 cm', l: '10√3 cm', lc: 'o' })),
+      // La escuadra con los colores de siempre, desde 30° (auditoría, 17 nov: aquí iban al revés). Desde 60°, el cateto
+      // corto, naranja, es el que lo toca: su adyacente.
+      figura: fig(escuadraSola({ corto: 10, c: '10 cm', h: '20 cm', l: '10√3 cm' })),
       enunciado: 'La escuadra de 30° y 60° del profesor tiene 20 cm de hipotenusa y 10 cm en su cateto corto. ¿Cuánto vale cos 60°?',
       datos: [DR.razones],
       solucion: [
-        { texto: ['El 60° está arriba, a la derecha. Lo toca el cateto corto, ', ad('10 cm'), '; la hipotenusa mide ', '20 cm', '.'] },
-        { texto: 'Adyacente entre hipotenusa:', ecuacion: [...cos_(60), ' = ', { frac: [ad('10'), '20'] }, ' = ', res('1/2')] },
+        { texto: ['El 60° está arriba, a la derecha. Desde 60°, el cateto corto, ', op('10 cm'), ', lo toca: es el adyacente. La hipotenusa mide ', '20 cm', '.'] },
+        { texto: 'Adyacente entre hipotenusa:', ecuacion: [...cos_(60), ' = ', { frac: [op('10'), '20'] }, ' = ', res('1/2')] },
       ],
       respuesta: [...cos_(60), ' = ', res('1/2')] },
     { nivel: 2, titulo: 'Una suma de notables',
@@ -1166,32 +1197,42 @@
         { texto: 'Elevo el seno: la raíz se va al cuadrado.', ecuacion: [{ sup: [{ par: [{ frac: ['√3', '2'] }] }, '2'] }, ' + ', { frac: ['1', '2'] }, ' = ', { frac: ['3', '4'] }, ' + ', { frac: ['2', '4'] }, ' = ', res('5/4')] },
       ],
       respuesta: [res('5/4')] },
-    { nivel: 3, titulo: 'Con 2θ y 3θ',
-      enunciado: ['Si ', thN, ' = 15°, ¿cuánto vale sen 2', thN, ' + tan 3', thN, '?'],
-      datos: [DR.razones, DN.t30, DN.t45],
+    // Los dos de nivel 3 que eran reemplazar y sumar («Con 2θ y 3θ» y «Una fracción de notables», más fáciles que el
+    // nivel 2; auditoría, 17 nov) pasan a un notable escondido en una figura y a una expresión con una x que se despeja.
+    // Cuentas aparte: 80 = 2 · 40, altura √3 · 40 = 40√3 ≈ 69,28; área 80 · 40√3 ÷ 2 = 1600√3 ≈ 2771 (≈ 2768 con 1,73);
+    // x · √3/2 = √3 · √3/2 + 1/2 = 2 → x = 4/√3 = 4√3/3 ≈ 2,309.
+    { nivel: 3, titulo: 'La lámina de la señal',
+      figura: fig({ objeto: 'senal', medidas: { lado: 80 }, lados: { media: { color: 'o' }, lado: L2('80 cm'), altura: L2('?') }, angulos: { esquina: { texto: '60°' }, punta: { texto: '30°' } } }),
+      enunciado: 'Una señal «Ceda el paso» tiene 80 cm de lado. ¿Cuánto mide su altura y cuánta lámina lleva, es decir, cuánto mide su área?',
+      datos: ['Señal «Ceda el paso»: triángulo equilátero, de tres lados iguales.', DN.t30, DN.tam, 'Área de un triángulo: base · altura ÷ 2.', '√3 ≈ 1,73'],
       solucion: [
-        { texto: 'Primero el ángulo, después la razón:', ecuacion: ['2 · 15° = 30°;   3 · 15° = 45°'] },
-        { texto: 'Con las dos figuras:', ecuacion: [...sen_(30), ' + ', ...tan_(45), ' = ', { frac: ['1', '2'] }, ' + 1 = ', res('3/2')] },
-        { texto: 'Error típico: «sen 2θ = 2 sen θ». El seno no crece como el ángulo.' },
+        { texto: ['La altura parte la señal en dos medias señales. En cada una, la hipotenusa es el lado, 80 cm, y frente a 30° queda la media base, ', op('40 cm'), '.'] },
+        { texto: 'Es la media señal de lado 2 con todo multiplicado por 40. Frente a 60°, el √3 pasa a 40√3:', ecuacion: ['altura = √3 · 40 = 40√3 ≈ ', res('69 cm')] },
+        { texto: 'El área, con la base entera:', ecuacion: ['80 · 40√3 ÷ 2 = 1600√3 ≈ ', res('2770 cm²')] },
       ],
-      respuesta: [res('3/2')] },
-    { nivel: 3, titulo: 'Una fracción de notables',
-      enunciado: '¿Cuánto vale (sen 60° + cos 30°) ÷ tan 60°?',
-      datos: [DR.razones, DN.t30],
+      respuesta: ['Altura: ', res('40√3 ≈ 69 cm'), '; área: ', res('1600√3 ≈ 2770 cm²')] },
+    { nivel: 3, titulo: 'Halla x con notables',
+      enunciado: 'Si x · cos 30° = tan 60° · sen 60° + sen 30°, ¿cuánto vale x?',
+      datos: [DR.razones, DN.t30, DN.racio],
       solucion: [
-        { texto: 'Desde 60°, el opuesto es √3; desde 30°, √3 lo toca. Los dos dan √3/2.', ecuacion: [...sen_(60), ' + ', ...cos_(30), ' = ', { frac: ['√3', '2'] }, ' + ', { frac: ['√3', '2'] }, ' = √3'] },
-        { texto: 'Desde 60°, la tangente es √3 entre 1:', ecuacion: ['√3 ÷ √3 = ', res('1')] },
+        { texto: 'Cada razón, con la media señal:', ecuacion: [...cos_(30), ' = ', { frac: ['√3', '2'] }, SEP, ...tan_(60), ' = √3', SEP, ...sen_(60), ' = ', { frac: ['√3', '2'] }, SEP, ...sen_(30), ' = ', { frac: ['1', '2'] }] },
+        { texto: 'Reemplazo a la derecha: √3 · √3 = 3.', ecuacion: ['√3 · ', { frac: ['√3', '2'] }, ' + ', { frac: ['1', '2'] }, ' = ', { frac: ['3', '2'] }, ' + ', { frac: ['1', '2'] }, ' = 2'] },
+        { texto: 'Despejo x y racionalizo:', ecuacion: ['x = 2 ÷ ', { frac: ['√3', '2'] }, ' = ', { frac: ['4', '√3'] }, ' = ', res('4√3/3')] },
+        { texto: 'Error típico: dejar 4/√3, con la raíz abajo.' },
       ],
-      respuesta: [res('1')] },
-    { nivel: 3, titulo: 'La rampa del colegio',
-      figura: fig({ objeto: 'rampa', medidas: { ra: 1.5 * Math.sqrt(3), rb: 1.5 }, lados: { rb: L2('1,5 m', 'o'), h: L2('3 m'), ra: L2('?') }, angulos: { a: { texto: 'θ' } } }),
-      enunciado: ['Una rampa de 3 m sube 1,5 m. ¿Cuánto mide su ángulo ', thN, ' con el piso y cuánto su base?'],
-      datos: [DR.razones, DN.t30, DL.pita, '√3 ≈ 1,73'],
+      respuesta: ['x = ', res('4√3/3 ≈ 2,31')] },
+    // Reemplaza a «La rampa del colegio»: una rampa de 30° no es creíble (auditoría, 17 nov). Cuentas aparte: 6/12 = 1/2 →
+    // 30°; √(12² − 6²) = √108 = 6√3 ≈ 10,39 (10,38 con 1,73).
+    { nivel: 3, titulo: 'El cable del poste de luz',
+      figura: fig({ objeto: 'poste', medidas: { ra: 6 * Math.sqrt(3), rb: 6 }, lados: { rb: L2('6 m', 'o'), h: L2('12 m'), ra: L2('?') }, angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['Un cable de 12 m va de la punta de un poste de 6 m a una estaca en el suelo. ¿Cuánto mide su ángulo ', thN, ' con el suelo y a qué distancia del poste está la estaca?'],
+      datos: [DR.razones, DN.t30, DN.tam, DL.pita, '√3 ≈ 1,73'],
       solucion: [
-        { texto: ['Desde ', thN, ':'], ecuacion: [...sen, ' = ', { frac: [op('1,5'), '3'] }, ' = ', { frac: ['1', '2'] }, '   →   ', thN, ' = ', res('30°')] },
-        { texto: 'La base sale de Pitágoras:', ecuacion: [raizDif('3', '1,5', 'o'), ' = √6,75 = 1,5√3 ≈ ', res('2,6 m')] },
+        { texto: ['Desde ', thN, ', el poste queda enfrente:'], ecuacion: [...sen, ' = ', { frac: [op('6'), '12'] }, ' = ', { frac: ['1', '2'] }] },
+        { texto: 'En la media señal, frente a 30° hay 1 sobre la hipotenusa 2: el mismo cociente.', ecuacion: [thN, ' = ', res('30°')] },
+        { texto: 'La distancia sale de Pitágoras:', ecuacion: [raizDif('12', '6', 'o'), ' = √108 = 6√3 ≈ ', res('10,4 m')] },
       ],
-      respuesta: [thN, ' = ', res('30°'), '; base ≈ ', res('2,6 m')] },
+      respuesta: [thN, ' = ', res('30°'), '; la estaca, a unos ', res('10,4 m')] },
     // Reemplaza a «¿El doble de ángulo?» (lector en frío, 17 nov: el nivel 3 era más fácil que el 2). Tres pasos: el
     // ángulo da la razón, la razón da la escalera y Pitágoras da la altura.
     { nivel: 3, titulo: 'La escalera de 60°',
@@ -1217,7 +1258,8 @@
   // «Ahora tú», tipo 0: el valor exacto de una razón notable (sen, cos o tan de 30°, 45° o 60°).
   function casoValorNotable(r) {
     const g = r.uno([30, 45, 60]), rz = r.uno(['sen', 'cos', 'tan']), bien = NOT[rz][g];
-    const otro = g === 45 ? 30 : 90 - g;
+    // Desde 45°, los dos notables que no son (antes solo 30°: tan 45° y tan 30° salían con tres opciones; auditoría, 17 nov).
+    const otros = g === 45 ? [30, 60] : [90 - g];
     return {
       pregunta: `¿Cuál es el valor exacto de ${rz} ${g}°?`,
       datos: [DR.razones, DN.t30, DN.t45, DN.racio],
@@ -1225,8 +1267,9 @@
         { id: 'cambia', valor: Ex.txt(NOT_MAL.cambia[rz][g]), error: 'NOT-MISMO', siFuera: `Usar la figura está bien; pero ese cateto es el del otro ángulo. Nómbralo desde ${g}°.` },
         { id: 'largo', valor: Ex.txt(NOT_MAL.largo[rz][g]), error: 'TR7', siFuera: 'Ese es el largo de un lado, bien ubicado; la razón lo divide entre otro lado.' },
         { id: 'inversa', valor: Ex.txt(NOT_MAL.inversa[rz][g]), error: 'REC-INVERSA', siFuera: 'Los dos lados son los correctos; pero el cociente está al revés.' },
-        { id: 'otro', valor: Ex.txt(NOT[rz][otro]), error: 'NOT-CAMBIA', siFuera: `Ese es ${rz} ${otro}°: revisa qué ángulo queda frente a cada lado.` },
-      ].concat(rz === 'tan' ? [{ id: 'hip', valor: Ex.txt(NOT.sen[g]), error: 'TR9', siFuera: 'Poner arriba el cateto de enfrente está bien; la tangente lo divide entre el otro cateto, no la hipotenusa.' }] : []), x => x),
+        ...otros.map(o => ({ id: `otro${o}`, valor: Ex.txt(NOT[rz][o]), error: 'NOT-CAMBIA', siFuera: `Ese es ${rz} ${o}°: revisa qué ángulo queda frente a cada lado.` })),
+      ].concat(rz === 'tan' ? [{ id: 'hip', valor: Ex.txt(NOT.sen[g]), error: 'TAN-H', siFuera: 'Poner arriba el cateto de enfrente está bien; la tangente lo divide entre el otro cateto, no la hipotenusa.' },
+        { id: 'cos', valor: Ex.txt(NOT.cos[g]), error: 'TR9', siFuera: 'Usar la figura está bien; pero ese cociente es el coseno: la tangente divide los dos catetos.' }] : []), x => x),
       solucion: { texto: g === 45 ? 'En la media loseta: catetos 1 y 1, hipotenusa √2.' : `En la media señal: frente a 30°, 1; frente a 60°, √3; hipotenusa 2.`, ecuacion: [`${rz} ${g}° = `, res(Ex.txt(bien))] },
       // Las dos escuadras con sus lados, sin colores (lector en frío, 17 nov: era la única «Ahora tú» sin dibujo).
       dibujo: { datos: escuadrasRef(false), estado: {} },
@@ -1234,13 +1277,18 @@
   }
   // «Ahora tú», tipo 1: reconocer el ángulo notable por sus lados, en un objeto. Se dan la hipotenusa y un cateto; el
   // otro va con «?». Desde θ (en a), el adyacente es ra y el opuesto rb.
-  const HIP_REC = { escalera: [2, 4], rampa: [2, 4], poste: [4, 6, 8] };
+  // Objetos con ángulos creíbles (auditoría, 17 nov: salían rampas de 30° y 60°, que son paredes): sin la rampa, y la
+  // escalera solo con 45° o 60° con el piso; el cable y el sol, con los tres.
+  const HIP_REC = { escalera: [2, 4], poste: [4, 6, 8] }, ANG_REC = { escalera: [45, 60], poste: [30, 45, 60] };
   function casoReconoce(r) {
-    const o = r.uno(OBJS.filter(x => HIP_REC[x.objeto])), g = r.uno([30, 45, 60]), H = r.uno(HIP_REC[o.objeto]), m = H / 2;
+    const o = r.uno(OBJS.filter(x => HIP_REC[x.objeto])), g = r.uno(ANG_REC[o.objeto]), H = r.uno(HIP_REC[o.objeto]), m = H / 2;
     const raiz = k => `${m === 1 ? '' : f(m)}√${k}`;
     const lado = { 30: { ra: [m * Math.sqrt(3), raiz(3)], rb: [m, f(m)] }, 45: { ra: [m * Math.SQRT2, raiz(2)], rb: [m * Math.SQRT2, raiz(2)] }, 60: { ra: [m, f(m)], rb: [m * Math.sqrt(3), raiz(3)] } }[g];
     const dado = r.uno(['ra', 'rb']), otro = dado === 'ra' ? 'rb' : 'ra';
-    const lad = { h: { texto: `${f(H)} ${o.u}`, color: 'i' }, [dado]: { texto: `${lado[dado][1]} ${o.u}`, color: 'o' }, [otro]: { texto: '?' } };
+    // Colores por el nombre del lado desde θ (auditoría, 17 nov: la hipotenusa iba en turquesa y el dato siempre en
+    // naranja, y con 60° y el adyacente dado el color llevaba a 30°): la hipotenusa en tinta, el adyacente ra turquesa y
+    // el opuesto rb naranja.
+    const lad = { h: { texto: `${f(H)} ${o.u}` }, [dado]: { texto: `${lado[dado][1]} ${o.u}`, color: desde('a').co === dado ? 'o' : 'i' }, [otro]: { texto: '?' } };
     const fig_ = g === 45 ? 'la media loseta' : 'la media señal';
     return {
       pregunta: [`${o.intro} Con las medidas de la figura, ¿cuánto mide `, thN, `, el ángulo ${o.a}?`],
@@ -1259,7 +1307,8 @@
     { e: [[1, ['sen', 30]], [1, ['cos', 60]], [1, ['tan', 45]]] },
     { e: [[2, ['sen', 30], ['tan', 60]], [1, ['tan', 30]]] },
     { e: [[4, ['sen', 60, 2]], [-1, ['tan', 45]], [2, ['cos', 60]]] },
-    { e: [[2, ['sen', 45, 2]], [1, ['tan', 60], ['tan', 30]]] },
+    // Antes 2 sen² 45° + tan 60° · tan 30°: por simetría, NOT-MISMO daba la correcta y salían tres opciones (17 nov).
+    { e: [[2, ['sen', 45, 2]], [1, ['tan', 60], ['cos', 30]]] },
     { e: [[1, ['cos', 30], ['tan', 30]], [1, ['sen', 30]]] },
     { e: [[1, ['sen', 60], ['cos', 30]], [-1, ['sen', 30], ['cos', 60]]] },
     { e: [[1, ['sen', 30]], [1, ['tan', 45]]], th: 15, args: { sen30: '2θ', tan45: '3θ' } },
@@ -1409,7 +1458,7 @@
       voz: 'Piensa en la escuadra que trae ese ángulo.',
       generar(sem) {
         const r = azar(sem + 53);
-        return [casoValorNotable, casoReconoce, casoExpresion][sem % 3](r);
+        return conCuatro([casoValorNotable, casoReconoce, casoExpresion][sem % 3], r);
       },
     },
   };
@@ -1437,15 +1486,19 @@
     angulos: { transportador: { texto: rev ? `${f(EX37)}°` : '37°' } }, nota: rev ? `tan θ = 3/4 = 0,75  →  θ ≈ ${f(EX37)}°` : undefined });
   // Convención del examen y k, como datos (decisiones, 17 nov).
   const DA = {
-    // Sin partirse dentro de una relación y sin paréntesis (lector en frío, 17 nov: el «(» quedaba solo al final).
-    c37: [junto('sen 37° = 3/5'), ' y ', junto('cos 37° = 4/5'), ', por convención del examen'],
-    c16: [junto('sen 16° = 7/25'), ' y ', junto('cos 16° = 24/25'), ', por convención del examen'],
+    // La forma de las decisiones y de la práctica, «(convención del examen)», con el paréntesis entero sin partirse (lector
+    // en frío, 17 nov: el «(» quedaba solo al final de la línea).
+    c37: [junto('sen 37° = 3/5'), ' y ', junto('cos 37° = 4/5'), ' ', junto('(convención del examen)')],
+    c16: [junto('sen 16° = 7/25'), ' y ', junto('cos 16° = 24/25'), ' ', junto('(convención del examen)')],
     par37: '37° + 53° = 90°: son los dos agudos del mismo triángulo.',
     par16: '16° + 74° = 90°: son los dos agudos del mismo triángulo.',
     // Dicho como herramienta, no como el paso hecho (lector en frío, 17 nov: «la línea de k no se entiende sola»).
     k: 'k: lo que mide una parte. Si una razón vale a/b, sus dos lados miden a·k y b·k.',
     // Las dos convenciones en una línea, para el ejemplo que usa las dos (antes «convención del examen» salía dos veces).
-    c37y16: ['Convención del examen: ', junto('sen 37° = 3/5,'), ' ', junto('cos 37° = 4/5,'), ' ', junto('sen 16° = 7/25'), ' y ', junto('cos 16° = 24/25.')],
+    c37y16: [junto('sen 37° = 3/5,'), ' ', junto('cos 37° = 4/5,'), ' ', junto('sen 16° = 7/25'), ' y ', junto('cos 16° = 24/25'), ' ', junto('(convención del examen)')],
+    // El rectángulo que arma la altura del trapecio (el mismo dato de la práctica; auditoría, 17 nov: «AH mide lo mismo
+    // que DC» se usaba sin estar en los datos).
+    trap: 'AHCD es un rectángulo: CH mide igual que AD, y AH igual que DC.',
   };
   // Las ternas: partes frente a cada ángulo (op), junto a él (ad) y la hipotenusa (h).
   const TERNA = {
@@ -1465,9 +1518,10 @@
       datos: [DR.razones, DA.c37],
       solucion: [
         { texto: ['Desde 37°, enfrente queda la estaca, ', op('3 m'), ', y lo toca la base, ', ad('4 m'), '.'] },
-        { texto: 'Opuesto entre adyacente:', ecuacion: ['tan 37° = ', { frac: [op('3'), ad('4')] }, ' = ', res('0,75')] },
+        // Con la convención dicha (auditoría, 17 nov: «tan 37° = 0,75» sin decirla, en la idea que enseña que 37° no es exacto).
+        { texto: 'Opuesto entre adyacente, con la convención del examen:', ecuacion: ['tan 37° = ', { frac: [op('3'), ad('4')] }, ' = ', res('0,75')] },
       ],
-      respuesta: ['tan 37° = ', res('3/4')] },
+      respuesta: ['tan 37° = ', res('3/4'), ' (convención del examen)'] },
     { nivel: 1, titulo: 'El coseno de 53°',
       // Desde 53°, en la estaca: la estaca lo toca (adyacente, turquesa) y la base queda enfrente (naranja).
       figura: fig({ objeto: 'cuerda', medidas: { base: 4, estaca: 3 }, lados: { base: L2('4 m', 'o'), estaca: L2('3 m', 'i'), cuerda: L2('5 m') }, angulos: { arriba: { texto: '53°' } } }),
@@ -1490,15 +1544,18 @@
       respuesta: ['sen 74° = ', res('24/25 = 0,96')] },
     { nivel: 1, titulo: '¿Cuánto mide de verdad?',
       enunciado: 'En el triángulo de lados 7, 24 y 25, el ángulo frente al 7 se llama 16°. ¿Cuánto mide de verdad, con dos decimales?',
-      datos: [DR.razones, 'Con calculadora: el ángulo de tangente 0,2917 mide 16,26°.'],
+      // Una tabla de calculadora para elegir, no la respuesta escrita (auditoría, 17 nov: el dato decía «mide 16,26°»).
+      // Cuentas aparte: 7/24 = 0,29167; tan 16° = 0,28675; tan 16,26° = 0,29164; tan 16,5° = 0,29621.
+      datos: [DR.razones, 'Con calculadora: tan 16° ≈ 0,2867; tan 16,26° ≈ 0,2917; tan 16,5° ≈ 0,2962.'],
       solucion: [
         { texto: 'Su tangente es opuesto entre adyacente:', ecuacion: ['tan θ = ', { frac: [op('7'), ad('24')] }, ' ≈ 0,2917'] },
-        { texto: ['Esa tangente es la de 16,26°. El examen lo redondea a 16°: es una convención.'] },
+        { texto: ['En la tabla, esa tangente es la de 16,26°: θ mide unos 16,26°. El examen lo redondea a 16°: es una convención.'] },
       ],
       respuesta: ['Unos ', res('16,26°')] },
     { nivel: 1, titulo: '¿Cuánto vale k?',
       enunciado: 'Un triángulo rectángulo de 37° y 53° tiene una hipotenusa de 15 m. Sus lados van como 3k, 4k y 5k. ¿Cuánto vale k?',
-      datos: [DA.k, 'La hipotenusa es el lado mayor: 5k.'],
+      // Herramienta, no el paso hecho (auditoría, 17 nov: «La hipotenusa es el lado mayor: 5k» era el único paso).
+      datos: [DA.k, DL.h],
       solucion: [
         { texto: 'La hipotenusa tiene 5 partes:', ecuacion: ['5k = ', '15 m', '   →   k = 15 ÷ 5 = ', res('3 m')] },
       ],
@@ -1558,22 +1615,23 @@
       ],
       respuesta: ['Cada triángulo: ', res('72 cm')] },
     { nivel: 3, titulo: 'El terreno en trapecio',
-      // CD no es lado del triángulo HBC: en tinta. AD mide lo mismo que CH, el opuesto a 37°: naranja.
-      figura: fig({ objeto: 'figura', forma: 'trapecio', menor: 10, medidas: { ra: 16, rb: 12 }, lados: { CD: L2('10 m'), DA: L2('12 m', 'o') }, angulos: { B: { texto: '37°' } } }),
+      // AD y CD no son lados del triángulo HBC: en tinta. CH, el opuesto a 37°, en naranja (auditoría, 17 nov: AD iba en
+      // naranja y el CO de verdad, CH, en tinta).
+      figura: fig({ objeto: 'figura', forma: 'trapecio', menor: 10, medidas: { ra: 16, rb: 12 }, lados: { CD: L2('10 m'), DA: L2('12 m'), CH: { color: 'o' } }, angulos: { B: { texto: '37°' } } }),
       enunciado: 'Un terreno es un trapecio ABCD con AD = 12 m, perpendicular a las bases, y CD = 10 m. El lado BC forma 37° con AB. ¿Cuánto mide AB?',
-      datos: [DA.c37, DA.k, 'CH es la altura: mide igual que AD.'],
+      datos: [DA.c37, DA.k, DA.trap],
       solucion: [
         { texto: 'La altura CH arma el triángulo HBC, recto en H. Frente a 37° queda CH = 12 m: 3 partes.', ecuacion: ['3k = ', op('12'), '   →   k = 4'] },
         { texto: 'HB toca a 37°: 4 partes. Y AH mide lo mismo que DC.', ecuacion: ['HB = 4k = 16;   AB = AH + HB = 10 + 16 = ', res('26 m')] },
       ],
       respuesta: ['AB = ', res('26 m')] },
     { nivel: 3, titulo: 'Cercar el trapecio',
-      figura: fig({ objeto: 'figura', forma: 'trapecio', menor: 6, medidas: { ra: 6, rb: 8 }, lados: { CD: L2('6 m'), DA: L2('8 m', 'o') }, angulos: { B: { texto: '53°' } } }),
+      figura: fig({ objeto: 'figura', forma: 'trapecio', menor: 6, medidas: { ra: 6, rb: 8 }, lados: { CD: L2('6 m'), DA: L2('8 m'), CH: { color: 'o' } }, angulos: { B: { texto: '53°' } } }),
       enunciado: 'Un corral es un trapecio ABCD con AD = 8 m, perpendicular a las bases, y CD = 6 m. BC forma 53° con AB. Cercarlo cuesta S/ 5 por metro. ¿Cuánto cuesta?',
-      datos: [DA.c37, DA.par37, DA.k, 'Perímetro: la suma de los lados.'],
+      datos: [DA.c37, DA.par37, DA.k, DA.trap, 'Perímetro: la suma de los lados.'],
       solucion: [
         { texto: 'En el triángulo HBC, frente a 53° queda la altura CH = 8 m: 4 partes.', ecuacion: ['4k = ', op('8'), '   →   k = 2;   HB = 3k = 6;   BC = 5k = 10'] },
-        { texto: 'AB = 6 + 6 = 12 m. El perímetro y el costo:', ecuacion: ['12 + 10 + 6 + 8 = 36 m;   36 · 5 = ', res('S/ 180')] },
+        { texto: 'AH mide lo mismo que DC: AB = 6 + 6 = 12 m. El perímetro y el costo:', ecuacion: ['12 + 10 + 6 + 8 = 36 m;   36 · 5 = ', res('S/ 180')] },
       ],
       respuesta: ['Cuesta ', res('S/ 180')] },
     // Las dos posiciones en el dibujo y un k para cada triángulo (lector en frío, 17 nov: la segunda posición no se veía,
@@ -1624,13 +1682,17 @@
         { id: 'otro', valor: largo(kMal * T[otroG[PAPEL[pide]]]), error: 'ANG-OTRO', siFuera: `Usar k está bien; pero esas partes son las del otro ángulo agudo. Frente a ${g}° van ${T.op}.` },
         { id: 'tercero', valor: largo(val[tercero]), error: 'TR9', siFuera: `Ese es ${o[tercero]}, bien calculado; se pedía ${o[pide]}.` },
         { id: 'sink', valor: largo(val[dado] * T[PAPEL[pide]]), error: 'K-SIN-DIVIDIR', siFuera: 'Multiplicar por las partes es el último paso; antes, k sale de dividir el dato entre sus partes.' },
+        // Con la hipotenusa dada, ANG-OTRO coincide con el tercer lado: un cuarto error (17 nov). Las partes al revés.
+        { id: 'inversa', valor: largo(val[dado] * T[PAPEL[dado]] / T[PAPEL[pide]]), error: 'REC-INVERSA', siFuera: `Comparar partes está bien; pero al revés: ${o[pide]} tiene ${T[PAPEL[pide]]} partes y ${o[dado]}, ${T[PAPEL[dado]]}.` },
       ], x => x),
       solucion: { texto: `${cap(o[dado])} tiene ${T[PAPEL[dado]]} partes: k = ${f(val[dado])} ÷ ${T[PAPEL[dado]]} = ${f(k)}. ${cap(o[pide])} tiene ${T[PAPEL[pide]]}.`, ecuacion: [`${T[PAPEL[pide]]} · ${f(k)} = `, res(largo(val[pide]))] },
     };
   }
-  // «Ahora tú», tipo 1: una razón de 53° o de 74° con la convención (que solo da 37° y 16°).
+  // «Ahora tú», tipo 1: una razón de 53° o de 74° con la convención (que solo da 37° y 16°), o la tangente de 37° o 16°.
+  // Nunca sen o cos de 37° o 16°: están escritos en los datos (auditoría, 17 nov: pasaba en 32 de 133 casos). La misma
+  // lista que la práctica (razonConvencion del generador).
   function casoRazonConv(r) {
-    const g = r.uno([53, 74, 37, 16]), T = TERNA[g], rz = r.uno(['sen', 'cos', 'tan']);
+    const [g, rz] = r.uno([[53, 'sen'], [53, 'cos'], [53, 'tan'], [74, 'sen'], [74, 'cos'], [74, 'tan'], [37, 'tan'], [16, 'tan']]), T = TERNA[g];
     const val = { sen: [T.op, T.h], cos: [T.ad, T.h], tan: [T.op, T.ad] }[rz], otro = { sen: [T.ad, T.h], cos: [T.op, T.h], tan: [T.ad, T.op] }[rz];
     const par = g === 53 || g === 37 ? 37 : 16;
     return {
@@ -1640,6 +1702,8 @@
         { id: 'otro', valor: frTxt(...otro), error: 'ANG-OTRO', siFuera: `Usar el triángulo de ${par}° está bien; pero ese valor se lee desde su otro ángulo agudo.` },
         { id: 'inversa', valor: frTxt(val[1], val[0]), error: 'REC-INVERSA', siFuera: 'Los dos lados son los correctos; pero el cociente está al revés.' },
         { id: 'tan', valor: frTxt(...(rz === 'tan' ? [T.op, T.h] : [T.op, T.ad])), error: 'TR9', siFuera: `Ubicar el triángulo está bien; ${rz} divide otros dos lados.` },
+        // En la tangente, ANG-OTRO es la inversa: un cuarto error, el coseno (17 nov).
+        { id: 'cos', valor: frTxt(...(rz === 'tan' ? [T.ad, T.h] : [T.ad, T.op])), error: 'TR9', siFuera: `Ubicar el triángulo está bien; pero ese cociente es otra razón: ${rz} = ${{ sen: 'CO/H', cos: 'CA/H', tan: 'CO/CA' }[rz]}.` },
       ], x => x),
       solucion: { texto: `En el triángulo de ${T.op === 3 || T.op === 4 ? '3, 4 y 5' : '7, 24 y 25'}, frente a ${g}° van ${T.op} partes y junto a él ${T.ad}.`, ecuacion: [`${rz} ${g}° = `, res(frTxt(...val))] },
     };
@@ -1654,8 +1718,9 @@
       const HBmal = T.op * CH / T.ad, mal = { AB: men + HBmal, BC: CH / T.ad * T.h, per: men + HBmal + CH / T.ad * T.h + men + CH }[pide];
       return {
         pregunta: `El trapecio ABCD tiene AD = ${CH} m, perpendicular a las bases, y CD = ${men} m. BC forma ${g}° con AB. ¿Cuánto mide ${txt}?`,
-        datos: [...T.datos, DA.k, 'CH es la altura: mide igual que AD.'],
-        dibujo: fig({ objeto: 'figura', forma: 'trapecio', menor: men, medidas: { ra: HB, rb: CH }, lados: { CD: { texto: `${men} m` }, DA: { texto: `${CH} m`, color: 'o' } }, angulos: { B: { texto: `${g}°` } } }),
+        datos: [...T.datos, DA.k, DA.trap],
+        // AD y CD en tinta; CH, el opuesto al ángulo de B, en naranja (auditoría, 17 nov).
+        dibujo: fig({ objeto: 'figura', forma: 'trapecio', menor: men, medidas: { ra: HB, rb: CH }, lados: { CD: { texto: `${men} m` }, DA: { texto: `${CH} m` }, CH: { color: 'o' } }, angulos: { B: { texto: `${g}°` } } }),
         opciones: opciones(`${f(bien)} m`, [
           { id: 'otro', valor: `${f(mal)} m`, error: 'ANG-OTRO', siFuera: `Ver el triángulo HBC está bien; pero frente a ${g}° van ${T.op} partes, no ${T.ad}.` },
           { id: 'hb', valor: `${f(pide === 'AB' ? HB : pide === 'BC' ? HB : AB + BC + men)} m`, error: pide === 'per' ? 'SUMA-INCOMPLETA' : 'TR9', siFuera: pide === 'per' ? 'Los lados están bien hallados; falta sumar AD, la altura.' : pide === 'AB' ? 'HB está bien hallado; AB también incluye AH, que mide lo mismo que DC.' : 'Ese es HB, bien hallado; BC es la hipotenusa del triángulo HBC.' },
@@ -1799,7 +1864,7 @@
       voz: 'Ubica el ángulo y cuenta las partes de cada lado.',
       generar(sem) {
         const r = azar(sem + 67);
-        return [casoLadoK, casoRazonConv, casoFiguraAprox][sem % 3](r);
+        return conCuatro([casoLadoK, casoRazonConv, casoFiguraAprox][sem % 3], r);
       },
     },
   };
@@ -1816,7 +1881,9 @@
   // al mirarlo desde α: es el mismo lado con otro nombre, y por eso el mismo cociente.
   // Errores (hipótesis): COMP-MISMO-ANG usa el mismo ángulo, COMP-RESTA cree que seno y coseno suman 1, NOT-RECIPROCA da
   // la recíproca, COMP-IGUALA iguala los ángulos de una cofunción, COMP-180 cree que suman 180°, REC-COMPLEMENTO suma 90°
-  // en una recíproca, REC-NO-INVIERTE toma sec por cos (no da vuelta el cociente), NOT-MISMO toma el cateto del otro ángulo.
+  // en una recíproca, REC-NO-INVIERTE toma sec por cos (no da vuelta el cociente), NOT-MISMO toma el cateto del otro ángulo;
+  // y los de la práctica (17 nov, para cuatro opciones): COMP-SIN-FIJOS y REC-SIN-FIJOS olvidan los grados fijos, COMP-DATO
+  // da el dato y PIT-LINEAL halla el lado que falta sin cuadrados.
   const techo = (g, lados, angulos, nota) => ({ objeto: 'techo', marco: [3, 3], medidas: { viga: 3, poste: 3 * Math.tan(g * RAD) }, lados, angulos, nota });
   const LTECHO = { viga: { color: 'i', texto: 'viga' }, poste: { color: 'o', texto: 'poste' }, calamina: { texto: 'calamina' } };
   const techoJ = v => techo(v.g, LTECHO, { alero: { texto: 'θ' }, cumbre: { texto: 'α' } });
@@ -1971,7 +2038,8 @@
       respuesta: [res('29/12')] },
     { nivel: 3, titulo: 'Una condición de examen',
       enunciado: 'Si sen 2x = cos(x + 30°), con ángulos agudos, ¿cuánto vale tan(x + 25°)?',
-      datos: [DC.cof, DC.agudos, DN.t45],
+      // Con la definición de la tangente: tan 45° sale de la media loseta (auditoría, 17 nov).
+      datos: [DC.cof, DC.agudos, DR.razones, DN.t45],
       solucion: [
         { texto: 'Seno igual a coseno: los ángulos suman 90°.', ecuacion: ['2x + x + 30° = 90°   →   x = 20°'] },
         { texto: 'Reemplazo en lo que piden:', ecuacion: ['tan(20° + 25°) = tan 45° = ', res('1')] },
@@ -2005,6 +2073,10 @@
     };
   }
   const arg = (m, b) => `${m === 1 ? '' : m}x${b ? ` + ${b}°` : ''}`;
+  // Cuatro opciones siempre (auditoría, 17 nov: salían tres en 56 de cada 100 casos, y dos en 4 de 400): como en la
+  // práctica, los tres errores tienen que dar números enteros positivos, distintos entre sí y de la respuesta.
+  const entero = v => Number.isFinite(v) && v > 0 && Math.abs(v - Math.round(v)) < 1e-9;
+  const cuatro = (x, vs) => vs.every(entero) && new Set([x, ...vs]).size === 4;
   // «Ahora tú», tipo 1: sen(ax + b) = cos(cx + d), con ángulos agudos.
   function casoCofEcu(r) {
     for (;;) {
@@ -2012,14 +2084,15 @@
       if (resto < 0) continue;
       const b = r.ent(0, resto), d = resto - b;
       if (a * x + b >= 90 || c * x + d >= 90 || a * x + b <= 0 || c * x + d <= 0) continue;
+      if (!cuatro(x, [(d - b) / (a - c), (180 - b - d) / (a + c), 90 / (a + c)])) continue;
       return {
         pregunta: `Si sen(${arg(a, b)}) = cos(${arg(c, d)}), con ángulos agudos, ¿cuánto vale x?`,
         datos: [DC.cof, DC.agudos],
         opciones: opciones(x, [
           { id: 'iguala', valor: (d - b) / (a - c), error: 'COMP-IGUALA', siFuera: 'Relacionar los ángulos está bien; igualarlos vale si las razones fueran iguales. Seno con coseno: suman 90°.' },
           { id: '180', valor: (180 - b - d) / (a + c), error: 'COMP-180', siFuera: 'Sumar los ángulos va bien; pero dos agudos complementarios suman 90°, no 180°.' },
-          { id: 'sin-b', valor: 90 / (a + c), error: 'COMP-180', siFuera: 'Sumar a 90° va bien; faltan los grados fijos de cada ángulo.' },
-        ].filter(o => o.valor > 0), v => `${f(v)}°`),
+          { id: 'sin-b', valor: 90 / (a + c), error: 'COMP-SIN-FIJOS', siFuera: 'Sumar a 90° va bien; faltan los grados fijos de cada ángulo.' },
+        ], v => `${f(v)}°`),
         solucion: { texto: 'Seno y coseno son cofunciones: los dos ángulos suman 90°.', ecuacion: [`${arg(a, b)} + ${arg(c, d)} = 90°   →   `, res(`x = ${x}°`)] },
       };
     }
@@ -2029,35 +2102,48 @@
     for (;;) {
       const a = r.ent(1, 3), c = r.uno([1, 2, 3].filter(x => x !== a)), x = r.ent(2, 9) * 2, b = r.ent(0, 30), d = b + (a - c) * x;
       if (d < 0 || a * x + b >= 90 || c * x + d >= 90) continue;
+      if (!cuatro(x, [(90 - b - d) / (a + c), (180 - b - d) / (a + c), d / (a - c)])) continue;
       return {
         pregunta: `Si tan(${arg(a, b)}) · cot(${arg(c, d)}) = 1, con ángulos agudos, ¿cuánto vale x?`,
         datos: [DC.uno, DC.cof, DC.agudos],
         opciones: opciones(x, [
           { id: 'comp', valor: (90 - b - d) / (a + c), error: 'REC-COMPLEMENTO', siFuera: 'Sumar 90° vale para las cofunciones; tangente por cotangente igual a 1 pide el mismo ángulo.' },
           { id: '180', valor: (180 - b - d) / (a + c), error: 'COMP-180', siFuera: 'Relacionar los ángulos va bien; aquí son recíprocas: los ángulos son iguales.' },
-          { id: 'sin-b', valor: d / (a - c), error: 'COMP-IGUALA', siFuera: 'Igualar los ángulos va bien; falta restar los grados fijos del primero.' },
-        ].filter(o => o.valor > 0), v => `${f(v)}°`),
+          { id: 'sin-b', valor: d / (a - c), error: 'REC-SIN-FIJOS', siFuera: 'Igualar los ángulos va bien; falta restar los grados fijos del primero.' },
+        ], v => `${f(v)}°`),
         solucion: { texto: 'Tangente por cotangente da 1 si son del mismo ángulo: los ángulos son iguales.', ecuacion: [`${arg(a, b)} = ${arg(c, d)}   →   `, res(`x = ${x}°`)] },
       };
     }
   }
-  // «Ahora tú», tipo 3 (nivel de examen): dada sen θ, una razón del complemento (cofunción y recíproca juntas).
+  // «Ahora tú», tipo 3 (nivel de examen): dada una razón de θ, una razón del complemento (cofunción y recíproca juntas).
+  // Cuatro opciones siempre (auditoría, 17 nov: «no invierte» repetía a otra y salían tres): los errores de la práctica,
+  // con el lado que falta restado sin cuadrados (PIT-LINEAL). Nunca tan dado y cot pedido: cot(90° − θ) = tan θ es el dato.
   function casoComplemento(r) {
-    const [p, q, h] = r.uno([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25]]), [co, ca] = r.ent(0, 1) ? [p, q] : [q, p];
-    const pide = r.uno(['sec', 'cot', 'csc']);
-    // sec(90° − θ) = csc θ = h/co; cot(90° − θ) = tan θ = co/ca; csc(90° − θ) = sec θ = h/ca.
-    const bien = { sec: [h, co], cot: [co, ca], csc: [h, ca] }[pide];
-    const mismo = { sec: [h, ca], cot: [ca, co], csc: [h, co] }[pide], noInv = { sec: [co, h], cot: [ca, co], csc: [co, h] }[pide];
-    return {
-      pregunta: ['En un triángulo rectángulo, sen ', thN, ` = ${co}/${h}. ¿Cuánto vale ${pide}(90° − `, thN, ')?'],
-      datos: [DR.razones, DC.rec, DC.cof, DL.pita],
-      opciones: opciones(frTxt(...bien), [
-        { id: 'mismo', valor: frTxt(...mismo), error: 'COMP-MISMO-ANG', siFuera: `Ese es ${pide} θ, bien calculado; pero se pide del otro ángulo, 90° − θ.` },
-        { id: 'noinv', valor: frTxt(...noInv), error: 'REC-NO-INVIERTE', siFuera: 'Pasar al otro ángulo está bien; pero falta dar vuelta el cociente.' },
-        { id: 'dato', valor: frTxt(co, h), error: 'COMP-IGUALA', siFuera: 'Ese es el dato, sen θ; la razón pedida es otra.' },
-      ], x => x),
-      solucion: { texto: `Por cofunción, ${pide}(90° − θ) = ${{ sec: 'csc', cot: 'tan', csc: 'sec' }[pide]} θ. Lados: ${co}, ${ca} y ${h}.`, ecuacion: [`${pide}(90° − `, thN, ') = ', res(frTxt(...bien))] },
-    };
+    for (;;) {
+      const [p, q, h] = r.uno([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25]]), [co, ca] = r.ent(0, 1) ? [p, q] : [q, p];
+      const dada = r.uno(['sen', 'cos', 'tan']), pide = r.uno(['sec', 'cot', 'csc', 'tan']);
+      if (dada === 'tan' && pide === 'cot') continue;
+      const R = { sen: [co, h], cos: [ca, h], tan: [co, ca], cot: [ca, co], sec: [h, ca], csc: [h, co] };
+      // sec(90° − θ) = csc θ; csc(90° − θ) = sec θ; cot(90° − θ) = tan θ; tan(90° − θ) = cot θ.
+      const COF = { sec: 'csc', csc: 'sec', cot: 'tan', tan: 'cot' }, bien = R[COF[pide]];
+      const mal = { co, ca, h };
+      if (dada === 'sen') mal.ca = h - co; else if (dada === 'cos') mal.co = h - ca; else mal.h = co + ca;
+      const Rm = { cot: [mal.ca, mal.co], tan: [mal.co, mal.ca], sec: [mal.h, mal.ca], csc: [mal.h, mal.co] };
+      const ops = opciones(frTxt(...bien), [
+        { id: 'mismo', valor: frTxt(...R[pide]), error: 'COMP-MISMO-ANG', siFuera: `Ese es ${pide} θ, bien calculado; pero se pide del otro ángulo, 90° − θ.` },
+        { id: 'lineal', valor: frTxt(...Rm[COF[pide]]), error: 'PIT-LINEAL', siFuera: 'La cofunción está bien; pero el lado que falta sale de Pitágoras, con cuadrados.' },
+        { id: 'dato', valor: frTxt(...R[dada]), error: 'COMP-DATO', siFuera: `${dada} θ es el dato, bien leído; la razón pedida es otra.` },
+        { id: 'inversa', valor: frTxt(bien[1], bien[0]), error: 'REC-INVERSA', siFuera: 'La cofunción está bien; pero el cociente quedó al revés.' },
+      ], x => x);
+      if (ops.length < 4) continue;
+      const lado = { sen: 'CA', cos: 'CO', tan: 'H' }[dada];
+      return {
+        pregunta: ['En un triángulo rectángulo, ', `${dada} `, thN, ` = ${frTxt(...R[dada])}. ¿Cuánto vale ${pide}(90° − `, thN, ')?'],
+        datos: [DR.razones, DC.rec, DC.cof, DL.pita],
+        opciones: ops,
+        solucion: { texto: `Por cofunción, ${pide}(90° − θ) = ${COF[pide]} θ. ${lado} sale de Pitágoras: lados ${co}, ${ca} y ${h}.`, ecuacion: [`${pide}(90° − `, thN, ') = ', res(frTxt(...bien))] },
+      };
+    }
   }
   // «Así se resuelve»: una expresión sin calculadora, con cofunciones y recíprocas de ángulos no notables.
   function casoSimplifica(s) {
@@ -2118,7 +2204,8 @@
       voz: '¿Cuánto le falta a θ para 90°?',
       leyenda: [
         { s: thN, t: 'ángulo del alero: viga con calamina' },
-        { s: op('poste'), t: 'naranja: opuesto a θ, adyacente a α' },
+        // Sin «adyacente a α»: es el paso clave de la predicción; lo dice «Mira» (auditoría, 17 nov).
+        { s: op('poste'), t: 'naranja: el cateto opuesto a θ' },
         { s: ad('viga'), t: 'turquesa: adyacente a θ' },
         { s: al, t: 'ángulo de arriba: calamina con poste' },
         { s: '∟', t: 'ángulo recto, de 90°' },
@@ -2177,12 +2264,14 @@
       voz: 'Mira si son cofunciones o recíprocas.',
       generar(sem) {
         const r = azar(sem + 79);
-        return [casoExprRec, casoCofEcu, casoRecEcu, casoComplemento][sem % 4](r);
+        return conCuatro([casoExprRec, casoCofEcu, casoRecEcu, casoComplemento][sem % 4], r);
       },
     },
   };
 
   // ---------- Laboratorio ----------
+  // Sin rótulos de vértices: con el marco, el de B caía sobre el vértice; la consigna dice «la punta de arriba»
+  // (auditoría, 17 nov: decía «el vértice B», que no estaba rotulado).
   const tresL = v => tri(v.co, v.ca, { marco: [8, 6] });
   // Razones del triángulo de catetos co y ca (las de la lectura y los retos de «tres-razones»).
   const hipL = v => Math.hypot(v.co, v.ca), senL = v => v.co / hipL(v), cosL = v => v.ca / hipL(v);
@@ -2205,7 +2294,7 @@
   }
   // Triángulo de hipotenusa 1 con θ en A y el otro agudo en B (mesa «complemento-libre»).
   const complemento = (g, o = {}) => tri(Math.sin(g * RAD), Math.cos(g * RAD), Object.assign({ ang: `${g}°`, otro: `${90 - g}°`, co: f(Math.sin(g * RAD)), ca: f(Math.cos(g * RAD)), h: '1' }, o));
-  const compL = v => complemento(v.g, { marco: [1, 1], co: f(Math.sin(v.g * RAD), 3), ca: f(Math.cos(v.g * RAD), 3) });
+  const compL = v => complemento(v.g, { marco: [1, 1], co: f(Math.sin(v.g * RAD), 3), ca: f(Math.cos(v.g * RAD), 3), soloB: true });
 
   return {
     unidad: 'trigonometria.razones-trigonometricas-agudas',
@@ -2227,6 +2316,9 @@
       'complemento-libre': ['complementarias'],
     },
     ideas: [ladosDesdeAngulo, definicion, notables, aproximados, complementarias],
+    // «cofunción» es un término propio de esta unidad (arriba); la entrada «co-razón» del curso, que también se escribe
+    // «cofunción», no se marca aquí.
+    glosarioSin: ['co-razón'],
     // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. «Cotangente», «secante» y
     // «cosecante» se definen aquí, en la idea 5 (decisiones, 17 nov), como términos locales del triángulo rectángulo.
     glosario: [
@@ -2264,7 +2356,7 @@
         simple: 'El lado de enfrente del ángulo dividido entre el lado más largo.', ver: ['coseno', 'razón trigonométrica'],
         ejemplos: ['Escalera de 5 m que llega a 4 m de alto: sen θ = 4/5, con θ en el pie.', 'En el triángulo 3-4-5, desde el ángulo frente al 3: sen θ = 3/5 = 0,6.', 'Un poste de 6 m y su rayo de sol de 10 m: sen θ = 0,6.'] },
       { termino: 'coseno', simbolo: 'cos', def: 'Razón que divide el cateto adyacente a θ entre la hipotenusa.',
-        simple: 'El lado que toca al ángulo dividido entre el lado más largo.', ver: ['seno', 'co-razón'],
+        simple: 'El lado que toca al ángulo dividido entre el lado más largo.', ver: ['seno', 'cofunción'],
         ejemplos: ['Un cable de 10 m con la estaca a 6 m del poste: cos θ = 6/10 = 0,6.', 'En el triángulo 3-4-5, desde el ángulo frente al 3: cos θ = 4/5.', 'Una sombra de 8 m y su rayo de sol de 10 m: cos θ = 0,8.'] },
       { termino: 'tangente', simbolo: 'tan', def: 'Razón que divide el cateto opuesto a θ entre el cateto adyacente.',
         simple: 'El lado de enfrente del ángulo dividido entre el lado que lo toca.', ver: ['seno', 'coseno'],
@@ -2273,10 +2365,19 @@
       // posición normal» se definen con x, y y r, y allá vale esa. Ningún `simple` dice que el coseno de un ángulo sea el
       // coseno del otro (COMP-MISMO-ANG) ni que seno y coseno sumen 1 (COMP-RESTA). «Razones recíprocas» va sin `simple`
       // (la idea estrena cinco palabras y el Resumen muestra hasta cuatro); sus tres razones sí lo traen.
+      // Sin `simple` desde el 17 nov: «cofunción» entra al Resumen de la idea 5 (que muestra hasta cuatro) y los ángulos
+      // complementarios ya vienen de geometría; «Lee» los presenta en su tarjeta 1.
       { termino: 'ángulos complementarios', def: 'Dos ángulos que suman 90°, como los dos agudos de un triángulo rectángulo.',
-        simple: 'Dos ángulos que, juntos, completan una esquina recta.',
-        formas: ['ángulos complementarios', 'complementarios'], ver: ['co-razón'],
+        formas: ['ángulos complementarios', 'complementarios'], ver: ['cofunción'],
         ejemplos: ['25° y 65°, porque 25° + 65° = 90°.', 'En un techo, el ángulo del alero y el de arriba, junto al poste.', '37° y 53° del triángulo 3-4-5.'] },
+      // «Cofunción», propia de esta unidad (auditoría, 17 nov: la palabra central de la idea 5 abría «co-razón», de
+      // «Reducción al primer cuadrante», sin `simple` y con 270°). Local: en esta unidad gana a la del curso, y
+      // glosarioSin deja de marcar «co-razón» aquí. Su `simple` no dice que el coseno de un ángulo sea el coseno del
+      // otro (COMP-MISMO-ANG) ni que seno y coseno sumen 1 (COMP-RESTA).
+      { termino: 'cofunción', local: true, def: 'Pareja de razones de dos agudos complementarios: el seno de uno es el coseno del otro.',
+        simple: 'La razón pareja del otro agudo: seno de uno, coseno del otro.',
+        formas: ['cofunción', 'cofunciones'], ver: ['ángulos complementarios', 'razones recíprocas'],
+        ejemplos: ['sen 25° = cos 65°, porque 25° + 65° = 90°.', 'tan 30° = cot 60° = √3/3.', 'En un techo, el poste es opuesto a θ y adyacente a α: sen θ = cos α.'] },
       { termino: 'razones recíprocas', def: 'Dos razones del mismo ángulo con el cociente al revés: multiplicadas dan 1.',
         formas: ['razones recíprocas', 'razón recíproca', 'recíproca', 'recíprocas'], ver: ['razón trigonométrica', 'cotangente', 'secante', 'cosecante'],
         ejemplos: ['sen θ = 3/5 y csc θ = 5/3: (3/5) · (5/3) = 1.', 'cos 60° = 1/2 y sec 60° = 2.', 'tan 45° = cot 45° = 1.'] },
@@ -2332,7 +2433,7 @@
     laboratorio: [
       {
         id: 'tres-razones', titulo: 'Tres razones de un vistazo', pieza: 'triangulo',
-        consigna: 'Arrastra el vértice B a cualquier sitio. La lectura da seno, coseno y tangente de θ, y cuánto mide θ.',
+        consigna: 'Arrastra la punta de arriba del triángulo a cualquier sitio. La lectura da seno, coseno y tangente de θ, y cuánto mide θ.',
         controles: [
           { id: 'co', etiqueta: 'CO', color: 'c-o', min: 0.5, max: 6, paso: 0.5, inicio: 3, unidad: '', decimales: 1 },
           { id: 'ca', etiqueta: 'CA', color: 'c-i', min: 0.5, max: 8, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
@@ -2345,19 +2446,20 @@
         invitaciones: [
           { texto: 'Haz que la tangente de θ valga justo 1.',
             logrado: v => casi(v.co / v.ca, 1),
-            bien: 'Catetos iguales: θ = 45°, sea cual sea el tamaño.' },
+            // Sin el notable, que llega en la idea 3 (auditoría, 17 nov): la mesa es de la idea 2.
+            bien: 'Catetos iguales: el mismo θ, sea cual sea el tamaño. Mira cuánto marca la lectura.' },
           { texto: 'Haz que el seno de θ pase de 0,9.',
             logrado: v => senL(v) > 0.9,
             bien: 'θ casi se para: el opuesto se acerca a la hipotenusa, sin alcanzarla.' },
-          { texto: 'Arma otro triángulo de lados enteros, distinto del 3-4-5 inicial.',
+          { texto: 'Arma otro triángulo con los tres lados enteros, distinto del inicial.',
             logrado: v => Number.isInteger(v.co) && Number.isInteger(v.ca) && casi(hipL(v), Math.round(hipL(v))) && !(v.co === 3 && v.ca === 4),
-            bien: 'Lados enteros, cocientes limpios. ¿Alguna razón cambió frente al 3-4-5?' },
+            bien: 'Lados enteros, cocientes limpios. ¿Alguna razón cambió frente al inicial?' },
           { texto: 'Guarda dos triángulos de distinto tamaño con el mismo seno.',
             logrado: (v, gs) => gs.some(a => gs.some(b => a.co !== b.co && casi(senL(a), senL(b)))),
             bien: 'Distinto tamaño, mismo ángulo, mismo seno: la razón no mira el tamaño.' },
         ],
-        // El vértice B: de lado cambia CA; hacia arriba, CO.
-        arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: CA de lado, CO hacia arriba', color: 'c-o',
+        // La punta de arriba (el vértice B): de lado cambia CA; hacia arriba, CO.
+        arrastres: [{ id: 'vertice-b', etiqueta: 'punta de arriba: CA de lado, CO hacia arriba', color: 'c-o',
           donde: v => enPx(tresL(v), v.ca, v.co),
           mover: (pt, v) => { const q = delPx(tresL(v), pt); return { ca: q.x, co: q.y }; } }],
       },
@@ -2377,7 +2479,7 @@
         invitaciones: [
           { texto: 'Haz que el cateto opuesto del grande mida justo 3.',
             logrado: v => casi(opGrande(v), 3),
-            bien: 'Con 30°, el opuesto es media hipotenusa: 6 · 1/2 = 3.' },
+            bien: 'Opuesto 3 sobre hipotenusa 6: el seno vale 0,5. La lectura dice con qué θ.' },
           { texto: 'Haz que el seno de θ pase de 0,8.',
             logrado: v => senG(v.g) > 0.8,
             bien: 'Pasa desde unos 54°. Mover k no lo acerca ni lo aleja.' },
@@ -2395,7 +2497,7 @@
       },
       {
         id: 'complemento-libre', titulo: 'Cofunción y recíproca, juntas', pieza: 'triangulo',
-        consigna: 'La hipotenusa mide 1. Lleva el vértice B hasta casi acostarlo o casi pararlo, y compara las cuatro razones.',
+        consigna: 'La hipotenusa mide 1. Lleva el vértice B hasta casi acostar o casi parar el triángulo, y compara las razones.',
         controles: [{ id: 'g', etiqueta: 'θ', color: 'c-h', min: 1, max: 89, paso: 1, inicio: 25, unidad: '°', decimales: 0 }],
         dibujo: v => ({ datos: compL(v), estado: {} }),
         lectura: v => [`sen ${v.g}° = cos ${90 - v.g}° ≈ ${f(senG(v.g), 3)};  csc ${v.g}° ≈ ${f(1 / senG(v.g), 3)}`],

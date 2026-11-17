@@ -43,6 +43,8 @@
  *                       lados { DA: ra, DM: rb, AM: h, AB, BC, MC }    angulos { A: a, M: b }
  *             trapecio  trapecio ABCD con AD vertical, DC arriba y la altura CH; triángulo HBC, recto en H
  *                       lados { HB: ra, CH: rb, BC: h, AH, DA, CD }    angulos { B: a, C: b }; menor: largo de DC
+ *             semicirculo  semicircunferencia de diámetro AB y C en el arco; triángulo ACB, recto en C (17 nov)
+ *                       lados { AC: ra, BC: rb, AB: h }                angulos { A: a, B: b }
  * Lo que no es del triángulo principal (el primo, la otra escuadra, los demás lados de una figura) son «extras»: se
  * pintan y se rotulan igual que ra, rb y h si datos.lados los nombra.
  *
@@ -106,6 +108,7 @@
     diagonal: { lados: { AB: 'ra', BC: 'rb', AC: 'h' }, angulos: { A: 'a', C: 'b' }, nombres: { ra: 'AB', rb: 'BC', h: 'AC' } },
     medio: { lados: { DA: 'ra', DM: 'rb', AM: 'h' }, angulos: { A: 'a', M: 'b' }, nombres: { ra: 'DA', rb: 'DM', h: 'AM' } },
     trapecio: { lados: { HB: 'ra', CH: 'rb', BC: 'h' }, angulos: { B: 'a', C: 'b' }, nombres: { ra: 'HB', rb: 'CH', h: 'BC' } },
+    semicirculo: { lados: { AC: 'ra', BC: 'rb', AB: 'h' }, angulos: { A: 'a', B: 'b' }, nombres: { ra: 'AC', rb: 'BC', h: 'AB' } },
   };
   // Nombres de los lados para el texto alternativo.
   const NOMBRES = {
@@ -390,19 +393,30 @@
         P = { A: [x0, y0], B: [x0 + L * s, y0], C: [x0 + L * s, y0 - L * s], D: [x0, y0 - L * s] };
         P.M = [(P.C[0] + P.D[0]) / 2, P.D[1]];
         main = { r: 'D', a: 'A', b: 'M', extras: { AB: ['A', 'B'], BC: ['B', 'C'], MC: ['M', 'C'] }, s };
+      } else if (f === 'semicirculo') {
+        // El diámetro AB abajo y C en el arco: el ángulo en C es recto porque abarca media circunferencia.
+        const dd = Math.hypot(m.ra, m.rb), s = 232 / dd, x0 = (W - dd * s) / 2, y0 = 206, t = Math.atan2(m.rb, m.ra);
+        P = { A: [x0, y0], B: [x0 + dd * s, y0] };
+        P.C = [x0 + m.ra * s * Math.cos(t), y0 - m.ra * s * Math.sin(t)];
+        main = { r: 'C', a: 'A', b: 'B', extras: {}, s };
       } else {
         const men = +d.menor || 1, w = men + m.ra, h = m.rb, s = Math.min(232 / w, 150 / h), x0 = (W - w * s) / 2, y0 = 196;
         P = { A: [x0, y0], B: [x0 + w * s, y0], C: [x0 + men * s, y0 - h * s], D: [x0, y0 - h * s], H: [x0 + men * s, y0] };
         main = { r: 'H', a: 'B', b: 'C', extras: { AH: ['A', 'H'], DA: ['D', 'A'], CD: ['C', 'D'] }, s };
       }
       const pts = Object.values(P), G = centro(...pts);
-      const contorno = f === 'trapecio' ? [P.A, P.B, P.C, P.D] : [P.A, P.B, P.C, P.D];
-      let fondo = poli(contorno, `fill="currentColor" fill-opacity="0.05" ${tinta(2)}`) + poli([P[main.r], P[main.a], P[main.b]], 'fill="currentColor" fill-opacity="0.08" stroke="none"');
-      const frente = f === 'trapecio' ? linea(P.C, P.H, `${tinta(2)} stroke-dasharray="5 4"`) : f === 'medio' ? linea(P.A, P.M, tinta(2)) : linea(P.A, P.C, tinta(2));
+      const R0 = f === 'semicirculo' ? (P.B[0] - P.A[0]) / 2 : 0;
+      let fondo = f === 'semicirculo'
+        ? `<path d="M${n(P.A[0])} ${n(P.A[1])}A${n(R0)} ${n(R0)} 0 0 1 ${n(P.B[0])} ${n(P.B[1])}Z" fill="currentColor" fill-opacity="0.05" ${tinta(2)}/>`
+        : poli([P.A, P.B, P.C, P.D], `fill="currentColor" fill-opacity="0.05" ${tinta(2)}`);
+      fondo += poli([P[main.r], P[main.a], P[main.b]], 'fill="currentColor" fill-opacity="0.08" stroke="none"');
+      const frente = f === 'trapecio' ? linea(P.C, P.H, `${tinta(2)} stroke-dasharray="5 4"`) : f === 'medio' ? linea(P.A, P.M, tinta(2))
+        : f === 'semicirculo' ? linea(P.A, P.C, tinta(2)) + linea(P.C, P.B, tinta(2)) : linea(P.A, P.C, tinta(2));
       const extras = {};
       for (const [k, [p, q]] of Object.entries(main.extras)) extras[k] = [P[p], P[q]];
       return { r: P[main.r], a: P[main.a], b: P[main.b], s: main.s, fondo, frente, propios: [], punteado: f === 'trapecio' ? ['rb'] : [],
-        extras, centro: G, puntos: P, rectos: f === 'trapecio' ? [['A', 'H', 'D'], ['D', 'A', 'C']] : f === 'medio' ? [['B', 'C', 'A'], ['C', 'B', 'M']] : [['D', 'A', 'C']] };
+        extras, centro: G, puntos: P,
+        rectos: f === 'trapecio' ? [['A', 'H', 'D'], ['D', 'A', 'C']] : f === 'medio' ? [['B', 'C', 'A'], ['C', 'B', 'M']] : f === 'semicirculo' ? [] : [['D', 'A', 'C']] };
     },
   };
 
@@ -489,6 +503,36 @@
   // Todos los segmentos con nombre de una figura: los tres lados del triángulo principal y los extras.
   const segmentos = g => Object.assign({ ra: [g.r, g.a], rb: [g.r, g.b], h: [g.a, g.b] }, g.extras || {});
 
+  // Qué es cada lado de la figura, nombrado desde un agudo (para la regla de colores de la unidad: el opuesto naranja, el
+  // adyacente turquesa, la hipotenusa en tinta; auditoría del 17 nov). Desde θ si la figura lo rotula; si marca un solo
+  // agudo, desde ese; si marca los dos (o ninguno), desde el de referencia del objeto: el de abajo, y en la señal la
+  // punta de 30° (DESDE). Así un mismo objeto (la señal, la escuadra) no cambia de colores de una figura a otra.
+  // papeles(datos) → { desde: 'a' | 'b', papel: { ra, rb, h, …extras } } con 'co', 'ca', 'h' o null (un lado que no es
+  // de un triángulo de la figura, como CD en el trapecio: va en tinta).
+  const DESDE = { senal: 'b' };
+  // Los triángulos extras: el del primo (mismo θ, en el suelo) y la escuadra de 45° (desde su ángulo de abajo, e1).
+  const PAPEL_EXTRAS = { sombras: { primo: 'co', sombra2: 'ca', rayo2: 'h' }, escuadras: { c1: 'ca', c2: 'co', d: 'h' } };
+  function papeles(d = {}) {
+    const g = geometria(d);
+    if (!g) return null;
+    const N = normal(d), marca = k => N.angulos[k] !== undefined && N.angulos[k] !== null;
+    const esTheta = k => { const t = marca(k) ? N.angulos[k].texto : null; return Array.isArray(t) ? t.some(x => x && x.t === 'θ') : t === 'θ'; };
+    const desde = esTheta('a') ? 'a' : esTheta('b') ? 'b' : marca('a') !== marca('b') ? (marca('a') ? 'a' : 'b') : DESDE[d.objeto] || 'a';
+    const papel = { ra: desde === 'a' ? 'ca' : 'co', rb: desde === 'a' ? 'co' : 'ca', h: 'h' };
+    const cambia = { co: 'ca', ca: 'co', h: 'h' }, ex = PAPEL_EXTRAS[d.objeto] || {};
+    for (const k of Object.keys(g.extras || {})) papel[k] = ex[k] ? (d.objeto === 'sombras' && desde === 'b' ? cambia[ex[k]] : ex[k]) : null;
+    return { desde, papel };
+  }
+  // Los colores que toma la línea de cada lado en algún paso (para las pruebas de colores de la unidad).
+  function coloresDe(d = {}) {
+    const N = normal(d), out = {};
+    for (const [k, st] of Object.entries(N.lados)) {
+      if (!st || st.color === undefined) continue;
+      out[k] = (Array.isArray(st.color) ? st.color.map(x => x && x.c) : [st.color]).filter(Boolean);
+    }
+    return out;
+  }
+
   function dibujar(d = {}, estado = {}) {
     const g = geometria(d);
     if (!g) return T.svg(W, H, '', { alt: alt(d) });
@@ -554,7 +598,8 @@
 
   function alt(d = {}) {
     const forma = { diagonal: 'Un rectángulo ABCD con su diagonal AC', medio: 'Un cuadrado ABCD con M, el punto medio de DC, unido con A',
-      trapecio: 'Un trapecio ABCD con la altura CH' }[d.forma];
+      trapecio: 'Un trapecio ABCD con la altura CH',
+      semicirculo: 'Una semicircunferencia de diámetro AB con el punto C en el arco, unido con A y con B' }[d.forma];
     const base = {
       escalera: 'Una escalera apoyada en la pared de una casa de adobe', rampa: 'Una rampa que sube desde el piso hasta una vereda',
       poste: d.sombra ? 'Un poste y su sombra en el suelo, con el rayo de sol que pasa por su punta' : 'Un poste sostenido por un cable que baja hasta una estaca',
@@ -579,5 +624,5 @@
     return `${base}${v}${lados.length ? `; ${lados.join('; ')}` : ''}${angs.length ? `; ángulos ${angs.join(' y ')}` : ''}${nt}.`;
   }
 
-  return { id: 'trig-objeto', dibujar, alt, geometria, OBJETOS: Object.keys(OBJETOS), constantes: { W, H, M, SUELO } };
+  return { id: 'trig-objeto', dibujar, alt, geometria, papeles, coloresDe, OBJETOS: Object.keys(OBJETOS), constantes: { W, H, M, SUELO } };
 });

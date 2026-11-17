@@ -4681,8 +4681,7 @@
       "geometria.triangulos"
      ],
      "plantillas": [
-      "razones-trig-agudas",
-      "circunferencia-trig"
+      "razones-trig-agudas"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/razones-trigonometricas-agudas.js",
@@ -4691,7 +4690,7 @@
        "/nucleo/kit/piezas/trig-objeto.js"
       ],
       "ideas": 5,
-      "terminos": 39
+      "terminos": 41
      }
     },
     {
@@ -7344,7 +7343,6 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "trigonometria.razones-trigonometricas-agudas",
     "trigonometria.triangulos-rectangulos",
     "trigonometria.angulos-en-posicion-normal",
     "trigonometria.reduccion-al-primer-cuadrante",

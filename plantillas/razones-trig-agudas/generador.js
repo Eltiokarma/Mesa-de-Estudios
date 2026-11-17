@@ -28,10 +28,14 @@
  * definiciones, la fórmula de cada tipo y la convención del examen («sen 37° = 3/5 y cos 37° = 4/5 (convención del
  * examen)»), nunca la razón que se pide ni el atajo («frente a 53° van 4 partes»). Si el tipo practica elegir (cofunción
  * o recíproca), van las dos fórmulas.
- * Colores por papel (molde §5b): el primer dato, naranja (o); el segundo, turquesa (i); lo que se pide, violeta (f); θ
- * y α, carmín (h). Un tercer dato va en tinta (el verde no va junto al naranja). La figura (pieza trig-objeto, la de la
- * teoría) se pinta igual: lo que se pide va con «?» o en tinta, y nunca se colorea según el papel en la razón (el
- * numerador y el denominador pintados delatarían qué lados se dividen).
+ * Colores: la regla de la unidad (comentario de cabecera de la teoría; molde §5b, «un color fijo por magnitud», 17 nov),
+ * la misma en el enunciado, la figura y la solución. El lado lleva el color de su nombre desde el ángulo de la figura:
+ * el cateto opuesto naranja (variable co), el adyacente turquesa (ca) y la hipotenusa en tinta; los lados que no son del
+ * triángulo (AD y CD en el trapecio, AB en el cuadrado) en tinta; θ, α y los ángulos dados en carmín (h); lo que se pide
+ * en violeta (f) en el texto y con «?» en la figura. Una razón dada («sen θ = 3/5») va en tinta: pintada, nombraría un
+ * lado. Excepción: los tipos de la idea 1 van enteros en tinta, porque ahí se practica nombrar los lados. Antes se pintaba
+ * por orden de dato (el primero naranja, el segundo turquesa) y la hipotenusa salía naranja, el color de CO en la teoría
+ * (auditoría, 17 nov). generador.test.js lo comprueba en 400 semillas con la pieza (trig-objeto, papeles).
  *
  * Errores (respaldo en docs/investigacion/trigonometria-ideas-erroneas.md): TR7 el seno es una longitud (documentado,
  * con reserva; en su variante «el opuesto es el lado vertical», parcial), TR8 la razón depende del tamaño, TR9 elige
@@ -229,10 +233,11 @@
     const lado = { 'co-t': desde(thEn).co, 'ca-t': desde(thEn).ca, 'co-a': desde(alEn).co, 'ca-a': desde(alEn).ca };
     const nombre = { 'co-t': ['cateto opuesto', TH], 'ca-t': ['cateto adyacente', TH], 'co-a': ['cateto opuesto', AL], 'ca-a': ['cateto adyacente', AL] };
     const Lu = x => L(x, o.u);
+    // Idea 1: todo en tinta, en el texto y en la figura (se practica nombrar; el color nombraría el lado).
     const enun = [`${o.intro} `, TH, ` está ${o[thEn]}; `, AL, ' es el otro agudo. ',
-      `${cap(o.h)} mide `, v('a', Lu(h)), ` y ${o[dado]}, `, v('b', Lu(val[dado])), '.'];
-    const vars = Object.assign({ a: { nombre: o.h, color: 'o' }, b: { nombre: o[dado], color: 'i' } }, ANG);
-    const fig = figO(o, ra, rb, { [dado]: { texto: Lu(val[dado]), color: 'i' }, h: { texto: Lu(h), color: 'o' } }, Object.assign(angFig(thEn, 'θ'), angFig(alEn, 'α')));
+      `${cap(o.h)} mide ${Lu(h)} y ${o[dado]}, ${Lu(val[dado])}.`];
+    const vars = Object.assign({}, ANG);
+    const fig = figO(o, ra, rb, { [dado]: { texto: Lu(val[dado]) }, h: { texto: Lu(h) } }, Object.assign(angFig(thEn, 'θ'), angFig(alEn, 'α')));
     return { o, ra, rb, h, val, thEn, alEn, dado, falta, lado, nombre, Lu, enun, vars, fig, lin: h - val[dado] };
   }
   const pitRaiz = (h, c, u) => `√(${f(h)}² − ${f(c)}²) = √(${f(h * h, 4)} − ${f(c * c, 4)}) = ${L(Math.sqrt(h * h - c * c), u)}`;
@@ -304,15 +309,16 @@
     const falta = rng.elegir(['ra', 'rb', 'h', null, null]);
     const dados = ['ra', 'rb', 'h'].filter(x => x !== falta);
     const Lu = x => L(x, o.u);
-    // Colores por orden de dato (nunca por su papel en la razón): primero naranja, segundo turquesa, tercero en tinta.
-    const claves = ['a', 'b', null], colorFig = ['o', 'i', null];
-    const vars = Object.assign({ x: { nombre: `${razon} ${letra}`, color: 'f' }, a: { nombre: o[dados[0]], color: 'o' }, b: { nombre: o[dados[1]], color: 'i' } }, ANG);
-    const V = i => (claves[i] ? v(claves[i], Lu(val[dados[i]])) : Lu(val[dados[i]]));
+    // Colores por el nombre del lado desde el ángulo de la figura: el opuesto naranja, el adyacente turquesa y la
+    // hipotenusa en tinta (antes, por orden de dato: la hipotenusa podía salir turquesa; auditoría, 17 nov).
+    const clave = k => (k === ds.co ? 'co' : k === ds.ca ? 'ca' : null);
+    const vars = Object.assign({ x: { nombre: `${razon} ${letra}`, color: 'f' }, co: { nombre: `${o[ds.co]}, el cateto opuesto a ${letra}`, color: 'o' }, ca: { nombre: `${o[ds.ca]}, el cateto adyacente a ${letra}`, color: 'i' } }, ANG);
+    const V = i => (clave(dados[i]) ? v(clave(dados[i]), Lu(val[dados[i]])) : Lu(val[dados[i]]));
     const medidas = dados.length === 2
       ? [`${cap(o[dados[0]])} mide `, V(0), ` y ${o[dados[1]]}, `, V(1), '.']
       : [`${cap(o[dados[0]])} mide `, V(0), `; ${o[dados[1]]}, `, V(1), `, y ${o[dados[2]]}, `, V(2), '.'];
     const lados = {};
-    for (const k of ['ra', 'rb', 'h']) lados[k] = k === falta ? { texto: '?' } : Object.assign({ texto: Lu(val[k]) }, colorFig[dados.indexOf(k)] ? { color: colorFig[dados.indexOf(k)] } : {});
+    for (const k of ['ra', 'rb', 'h']) lados[k] = k === falta ? { texto: '?' } : Object.assign({ texto: Lu(val[k]) }, clave(k) ? { color: vars[clave(k)].color } : {});
     // El error lineal: el lado que falta sumando o restando largos (H = CO + CA; CA = H − CO).
     const mal = Object.assign({}, val);
     if (falta === 'h') mal.h = ra + rb; else if (falta) mal[falta] = h - val[otroCat(falta)];
@@ -356,8 +362,9 @@
       er('REC-INVERSA', fr(val[kd], val[kn]), 'Bien los lados; pero el cociente está al revés.'),
     ];
     return {
-      variables: Object.assign({ x: { nombre: `${razon} θ en el triángulo grande`, color: 'f' }, a: { nombre: o.ra, color: 'o' }, b: { nombre: o.rb, color: 'i' } }, ANG),
-      enunciado: [`${o.en}, ${o.ra} mide `, v('a', Lu(ra)), ` y ${o.rb}, `, v('b', Lu(rb)), '; ', TH, ` es el ángulo ${o.a}. ${o.otra} con el mismo `, TH, ` tiene sus lados ${k} veces más largos.`],
+      // θ está en a: ra es el adyacente (turquesa) y rb el opuesto (naranja).
+      variables: Object.assign({ x: { nombre: `${razon} θ en el triángulo grande`, color: 'f' }, ca: { nombre: `${o.ra}, el cateto adyacente a θ`, color: 'i' }, co: { nombre: `${o.rb}, el cateto opuesto a θ`, color: 'o' } }, ANG),
+      enunciado: [`${o.en}, ${o.ra} mide `, v('ca', Lu(ra)), ` y ${o.rb}, `, v('co', Lu(rb)), '; ', TH, ` es el ángulo ${o.a}. ${o.otra} con el mismo `, TH, ` tiene sus lados ${k} veces más largos.`],
       pregunta: ['¿Cuánto vale ', v('x', `${razon} θ`), ` en ${o.laOtra}?`],
       datos: [D.razones('θ'), D.semej, D.pita],
       correcta: { clave: bien, texto: bien }, errores,
@@ -400,8 +407,9 @@
     const falta = { sen: 'CA', cos: 'CO', tan: 'H' }[dada];
     const pit = dada === 'tan' ? `H = √(${co}² + ${ca}²) = ${h}` : `${falta} = √(${h}² − ${dada === 'sen' ? co : ca}²) = ${dada === 'sen' ? ca : co}`;
     return {
-      variables: Object.assign({ x: { nombre: pideTxt, color: 'f' }, a: { nombre: `${dada} θ`, color: 'o' } }, ANG),
-      enunciado: [`En un triángulo rectángulo, ${dada} θ = `, v('a', fr(...R[dada])), ', con θ agudo.'],
+      // La razón dada, en tinta: en naranja parecería un cateto opuesto (auditoría, 17 nov).
+      variables: Object.assign({ x: { nombre: pideTxt, color: 'f' } }, ANG),
+      enunciado: [`En un triángulo rectángulo, ${dada} θ = ${fr(...R[dada])}, con θ agudo.`],
       pregunta: ['¿Cuánto vale ', v('x', pideTxt), '?'],
       datos: [D.razones('θ'), D.letras('θ'), D.pita],
       correcta: { clave: bien, texto: bien }, errores,
@@ -430,9 +438,11 @@
         er('TR7', `${val[0]} cm`, 'Bien el lado de arriba del cociente; la razón lo divide entre otro lado.', 'documentado'),
         er('TR9', fr(...{ sen: [op, ad], cos: [op, ad], tan: [ad, AC] }[razon]), `Bien los lados desde ${en}; pero ese cociente es otra razón: ${razon} θ = ${DEF[razon]}.`, 'parcial'),
       ];
+      // Desde A, AB es el adyacente (turquesa) y BC el opuesto (naranja); desde C, al revés.
+      const cAB = en === 'A' ? 'ca' : 'co', cBC = en === 'A' ? 'co' : 'ca', COL = { co: 'o', ca: 'i' };
       return {
-        variables: Object.assign({ x: { nombre: `${razon} θ`, color: 'f' }, a: { nombre: 'AB', color: 'o' }, b: { nombre: 'BC', color: 'i' } }, ANG),
-        enunciado: ['Un rectángulo ABCD tiene ', v('a', `AB = ${AB} cm`), ' y ', v('b', `BC = ${BC} cm`), '. ', TH, ` es el ángulo entre la diagonal AC y el lado ${lado}.`],
+        variables: Object.assign({ x: { nombre: `${razon} θ`, color: 'f' }, [cAB]: { nombre: 'AB', color: COL[cAB] }, [cBC]: { nombre: 'BC', color: COL[cBC] } }, ANG),
+        enunciado: ['Un rectángulo ABCD tiene ', v(cAB, `AB = ${AB} cm`), ' y ', v(cBC, `BC = ${BC} cm`), '. ', TH, ` es el ángulo entre la diagonal AC y el lado ${lado}.`],
         pregunta: ['¿Cuánto vale ', v('x', `${razon} θ`), '?'],
         datos: [D.rect, D.razones('θ'), D.pita],
         correcta: { clave: fr(...val), texto: fr(...val) }, errores,
@@ -441,7 +451,7 @@
           [`Desde ${en}: CO = ${op} cm y CA = ${ad} cm.`],
           [`${razon} θ = ${cocienteTxt(...val)}`, v('x', fr(...val)), '.'],
         ],
-        extra: escena({ objeto: 'figura', forma: 'diagonal', medidas: { ra: AB, rb: BC }, lados: { AB: { texto: `${AB} cm`, color: 'o' }, BC: { texto: `${BC} cm`, color: 'i' } }, angulos: { [en]: { texto: 'θ' } } }),
+        extra: escena({ objeto: 'figura', forma: 'diagonal', medidas: { ra: AB, rb: BC }, lados: { AB: { texto: `${AB} cm`, color: COL[cAB] }, BC: { texto: `${BC} cm`, color: COL[cBC] } }, angulos: { [en]: { texto: 'θ' } } }),
         _datos: { tipo: 'razon-figura', idea: 'razon-cociente', nivel: 3, forma: 'diagonal', AB, BC, angulo: en, razon, pide: `${razon} θ` },
       };
     }
@@ -456,9 +466,12 @@
       er('TR7', `${f(op)} cm`, 'Bien el cateto opuesto; la razón lo divide entre el adyacente.', 'documentado'),
     ];
     const bien = fr(op, ad);
+    // El lado del cuadrado se rotula en DA, un cateto de ADM: adyacente desde A, opuesto desde M. AB, en tinta (antes AB,
+    // que no es del triángulo, iba en naranja; auditoría, 17 nov).
+    const cDA = en === 'A' ? 'ca' : 'co';
     return {
-      variables: Object.assign({ x: { nombre: 'tan θ', color: 'f' }, a: { nombre: 'el lado del cuadrado', color: 'o' } }, ANG),
-      enunciado: ['ABCD es un cuadrado de ', v('a', `${Lc} cm`), ' de lado y M es el punto medio de DC. ', TH, ` es el ángulo ${en === 'A' ? 'DAM' : 'AMD'}.`],
+      variables: Object.assign({ x: { nombre: 'tan θ', color: 'f' }, [cDA]: { nombre: 'el lado del cuadrado, DA', color: cDA === 'co' ? 'o' : 'i' } }, ANG),
+      enunciado: ['ABCD es un cuadrado de ', v(cDA, `${Lc} cm`), ' de lado y M es el punto medio de DC. ', TH, ` es el ángulo ${en === 'A' ? 'DAM' : 'AMD'}.`],
       pregunta: ['¿Cuánto vale ', v('x', 'tan θ'), '?'],
       datos: [D.cuad, D.medio, D.razones('θ')],
       correcta: { clave: bien, texto: bien }, errores,
@@ -467,7 +480,7 @@
         [`Desde θ, en ${en}: CO = ${f(op)} cm y CA = ${f(ad)} cm.`],
         [`tan θ = ${cocienteTxt(op, ad)}`, v('x', bien), '.'],
       ],
-      extra: escena({ objeto: 'figura', forma: 'medio', medidas: { ra: Lc, rb: Lc / 2 }, lados: { AB: { texto: `${Lc} cm`, color: 'o' } }, angulos: { [en]: { texto: 'θ' } } }),
+      extra: escena({ objeto: 'figura', forma: 'medio', medidas: { ra: Lc, rb: Lc / 2 }, lados: { DA: { texto: `${Lc} cm`, color: cDA === 'co' ? 'o' : 'i' } }, angulos: { [en]: { texto: 'θ' } } }),
       _datos: { tipo: 'razon-figura', idea: 'razon-cociente', nivel: 3, forma: 'medio', lado: Lc, angulo: en, razon: 'tan', pide: 'tan θ' },
     };
   }
@@ -501,10 +514,12 @@
     };
   }
 
-  // Objetos con la hipotenusa par: lados m, m√3 y 2m (30° y 60°) o m√2, m√2 y 2m (45°).
-  const HIP_REC = { escalera: [2, 4], rampa: [2, 4], poste: [4, 6, 8] };
+  // Objetos con la hipotenusa par: lados m, m√3 y 2m (30° y 60°) o m√2, m√2 y 2m (45°). Con ángulos creíbles
+  // (auditoría, 17 nov: «la rampa mide 4 m y la base, 2 m» daba una rampa de 60°): sin la rampa, y la escalera solo con
+  // 45° o 60° con el piso.
+  const HIP_REC = { escalera: [2, 4], poste: [4, 6, 8] }, ANG_REC = { escalera: [45, 60], poste: [30, 45, 60] };
   function reconoceAngulo(rng) {
-    const o = rng.elegir(OBJS.filter(x => HIP_REC[x.objeto] && !x.sombra)), g = rng.elegir([30, 45, 60]), H = rng.elegir(HIP_REC[o.objeto]), m = H / 2;
+    const o = rng.elegir(OBJS.filter(x => HIP_REC[x.objeto] && !x.sombra)), g = rng.elegir(ANG_REC[o.objeto]), H = rng.elegir(HIP_REC[o.objeto]), m = H / 2;
     const raiz = k => `${m === 1 ? '' : f(m)}√${k}`;
     // Desde θ (en a): el adyacente es ra y el opuesto rb.
     const lado = { 30: { ra: [m * Math.sqrt(3), raiz(3)], rb: [m, f(m)] }, 45: { ra: [m * Math.SQRT2, raiz(2)], rb: [m * Math.SQRT2, raiz(2)] }, 60: { ra: [m, f(m)], rb: [m * Math.sqrt(3), raiz(3)] } }[g];
@@ -516,11 +531,12 @@
         : er('NOT-MISMO', '45°', 'Bien buscar un notable; pero los lados son de media señal, no de media loseta.'),
       er('NOT-ADIVINA', 'Sin transportador no se sabe', 'Bien que medir ayudaría; pero el cociente de dos lados ya fija el ángulo.'),
     ];
-    const rz = dado === 'ra' ? 'cos' : 'sen';
+    const rz = dado === 'ra' ? 'cos' : 'sen', cDado = dado === 'ra' ? 'ca' : 'co';
     const cociente = dado === 'ra' ? (g === 60 ? '1/2' : g === 45 ? '√2/2' : '√3/2') : (g === 30 ? '1/2' : g === 45 ? '√2/2' : '√3/2');
     return {
-      variables: Object.assign({ x: { nombre: 'el ángulo θ', color: 'f' }, a: { nombre: o.h, color: 'o' }, b: { nombre: o[dado], color: 'i' } }, ANG),
-      enunciado: [`${o.intro} ${cap(o.h)} mide `, v('a', `${f(H)} ${o.u}`), ` y ${o[dado]}, `, v('b', Lt(dado)), '.'],
+      // La hipotenusa en tinta; el cateto dado, con el color de su nombre desde θ (ra adyacente, rb opuesto).
+      variables: Object.assign({ x: { nombre: 'el ángulo θ', color: 'f' }, [cDado]: { nombre: `${o[dado]}, el cateto ${cDado === 'co' ? 'opuesto' : 'adyacente'} a θ`, color: cDado === 'co' ? 'o' : 'i' } }, ANG),
+      enunciado: [`${o.intro} ${cap(o.h)} mide ${f(H)} ${o.u} y ${o[dado]}, `, v(cDado, Lt(dado)), '.'],
       pregunta: ['¿Cuánto mide ', TH, `, el ángulo ${o.a}?`],
       datos: [D.razones('θ'), D.t30, D.t45],
       correcta: { clave: `${g}°`, texto: `${g}°` }, errores,
@@ -528,7 +544,7 @@
         [`Desde θ, ${o[dado]} es el ${dado === 'ra' ? 'adyacente' : 'opuesto'}: ${rz} θ = ${lado[dado][1]}/${f(H)}${`${lado[dado][1]}/${f(H)}` === cociente ? '' : ` = ${cociente}`}.`],
         [`Ese cociente es el de la ${g === 45 ? 'media loseta' : 'media señal'}, desde ${g}°: θ = `, v('x', `${g}°`), '.'],
       ],
-      extra: figO(o, lado.ra[0], lado.rb[0], { h: { texto: `${f(H)} ${o.u}`, color: 'o' }, [dado]: { texto: Lt(dado), color: 'i' }, [otroCat(dado)]: { texto: '?' } }, { a: { texto: 'θ' } }),
+      extra: figO(o, lado.ra[0], lado.rb[0], { h: { texto: `${f(H)} ${o.u}` }, [dado]: { texto: Lt(dado), color: cDado === 'co' ? 'o' : 'i' }, [otroCat(dado)]: { texto: '?' } }, { a: { texto: 'θ' } }),
       _datos: { tipo: 'reconoce-angulo', idea: 'notables', nivel: 2, objeto: o.objeto, H, g, dado, pide: 'θ' },
     };
   }
@@ -548,8 +564,9 @@
     { e: [[1, ['cos', 60, 1, 2]], [1, ['tan', 60, 1, 2], ['tan', 30, 1, 1]]], th: 30 },
     { e: [[2, ['sen', 30, 1, 3]], [1, ['cos', 60, 1, 6]]], th: 10 },
   ];
-  function expresionNotable(rng) {
-    const x = rng.elegir(EXPR), bien = Ex.txt(ev(x.e)), cuad = x.e.some(([, ...fs]) => fs.some(fa => fa[2] === 2));
+  // conTheta: solo las de múltiplos de θ (el papel avanzado p7; auditoría, 17 nov: salía 2 cos 30° + sen 60°).
+  function expresionNotable(rng, op = {}) {
+    const x = rng.elegir(op.conTheta ? EXPR.filter(e => e.th) : EXPR), bien = Ex.txt(ev(x.e)), cuad = x.e.some(([, ...fs]) => fs.some(fa => fa[2] === 2));
     const errores = [
       er('NOT-MISMO', Ex.txt(ev(x.e, MAL.cambia)), 'Bien reemplazar cada razón; pero usaste el cateto del otro ángulo agudo.'),
       er('TR7', Ex.txt(ev(x.e, MAL.largo)), 'Bien reemplazar cada razón; pero pusiste el largo de un lado y no su cociente.', 'documentado'),
@@ -637,12 +654,15 @@
       ];
       ultimo = [`${cap(o[pide])}: ${T[PAPEL_LADO[pide]]} · ${f(k)} = `, v('x', Lu(val[pide])), '.'];
     }
-    const lados = { [dado]: { texto: Lu(val[dado]), color: 'o' } };
+    // El dato, con el color de su nombre desde el ángulo dado (en a): ra adyacente, rb opuesto, la hipotenusa en tinta
+    // (antes iba siempre en naranja, también el adyacente; auditoría, 17 nov).
+    const cDado = { ra: 'ca', rb: 'co', h: null }[dado], COL = { co: 'o', ca: 'i' };
+    const lados = { [dado]: Object.assign({ texto: Lu(val[dado]) }, cDado ? { color: COL[cDado] } : {}) };
     if (pide !== 'per') lados[pide] = { texto: '?' };
     const pideTxt = pide === 'per' ? 'el perímetro del triángulo' : o[pide];
     return {
-      variables: Object.assign({ x: { nombre: pideTxt, color: 'f' }, a: { nombre: o[dado], color: 'o' }, g: { nombre: 'el ángulo dado', color: 'h' } }, ANG),
-      enunciado: [`${o.intro} El ángulo ${o.a} mide `, v('g', `${g}°`), `. ${cap(o[dado])} mide `, v('a', Lu(val[dado])), '.'],
+      variables: Object.assign({ x: { nombre: pideTxt, color: 'f' }, g: { nombre: 'el ángulo dado', color: 'h' } }, cDado ? { [cDado]: { nombre: o[dado], color: COL[cDado] } } : {}, ANG),
+      enunciado: [`${o.intro} El ángulo ${o.a} mide `, v('g', `${g}°`), `. ${cap(o[dado])} mide `, cDado ? v(cDado, Lu(val[dado])) : Lu(val[dado]), '.'],
       pregunta: ['¿Cuánto mide ', v('x', pideTxt), '?'],
       datos: [...T.datos, D.k, ...(pide === 'per' ? [D.perim] : [])],
       correcta: { clave: Lu(correcta), texto: Lu(correcta) }, errores,
@@ -659,7 +679,9 @@
 
   function figuraK(rng) {
     const forma = rng.elegir(['trapecio', 'trapecio', 'cartulina', 'resbala', 'sombra']);
-    const vars = Object.assign({ a: { nombre: 'el primer dato', color: 'o' }, b: { nombre: 'el segundo dato', color: 'i' }, g: { nombre: 'el ángulo dado', color: 'h' }, g2: { nombre: 'el otro ángulo dado', color: 'h' } }, ANG);
+    // Colores por el nombre del lado (no por orden de dato; auditoría, 17 nov): AD y CD del trapecio y la escalera, en
+    // tinta; el largo AB de la cartulina, adyacente a 37°, turquesa; el poste, opuesto al sol, naranja.
+    const vars = Object.assign({ co: { nombre: 'el cateto opuesto al ángulo dado', color: 'o' }, ca: { nombre: 'el cateto adyacente al ángulo dado', color: 'i' }, g: { nombre: 'el ángulo dado', color: 'h' }, g2: { nombre: 'el otro ángulo dado', color: 'h' } }, ANG);
     if (forma === 'trapecio') {
       const g = rng.elegir([37, 53]), T = TERNA[g], k = rng.elegir([2, 3, 4]), men = rng.elegir([5, 6, 8, 10]);
       const CH = T.op * k, HB = T.ad * k, BC = T.h * k, AB = men + HB, per = AB + BC + men + CH;
@@ -676,7 +698,7 @@
       ];
       return {
         variables: Object.assign({ x: { nombre: txt, color: 'f' } }, vars),
-        enunciado: ['El trapecio ABCD tiene ', v('a', `AD = ${CH} m`), ', perpendicular a las bases, y ', v('b', `CD = ${men} m`), '. BC forma ', v('g', `${g}°`), ' con AB.'],
+        enunciado: [`El trapecio ABCD tiene AD = ${CH} m, perpendicular a las bases, y CD = ${men} m. BC forma `, v('g', `${g}°`), ' con AB.'],
         pregunta: ['¿Cuánto mide ', v('x', txt), '?'],
         datos: [...TERNA[g].datos, D.k, D.trap, ...(pide === 'per' ? [D.perim] : [])],
         correcta: { clave: `${f(bien)} m`, texto: `${f(bien)} m` }, errores,
@@ -685,7 +707,8 @@
           [`HB = ${T.ad}k = ${HB} m y BC = ${T.h}k = ${BC} m. AB = AH + HB = ${men} + ${HB} = ${AB} m.`],
           [{ AB: 'AB', BC: 'BC', per: `Perímetro: ${AB} + ${BC} + ${men} + ${CH}` }[pide], ' = ', v('x', `${f(bien)} m`), '.'],
         ],
-        extra: escena({ objeto: 'figura', forma: 'trapecio', menor: men, medidas: { ra: HB, rb: CH }, lados: { DA: { texto: `${CH} m`, color: 'o' }, CD: { texto: `${men} m`, color: 'i' } }, angulos: { B: { texto: `${g}°` } } }),
+        // AD y CD no son del triángulo HBC: en tinta. CH, el opuesto al ángulo de B, en naranja y sin rótulo.
+        extra: escena({ objeto: 'figura', forma: 'trapecio', menor: men, medidas: { ra: HB, rb: CH }, lados: { DA: { texto: `${CH} m` }, CD: { texto: `${men} m` }, CH: { color: 'o' } }, angulos: { B: { texto: `${g}°` } } }),
         _datos: { tipo: 'figura-k', idea: 'aproximados', nivel: 3, forma, g, k, menor: men, pide },
       };
     }
@@ -698,7 +721,7 @@
       ];
       return {
         variables: Object.assign({ x: { nombre: 'el perímetro de cada triángulo', color: 'f' } }, vars),
-        enunciado: ['Una cartulina rectangular ABCD tiene ', v('a', `AB = ${AB} cm`), ' de largo. Se corta por la diagonal AC, que forma ', v('g', '37°'), ' con AB.'],
+        enunciado: ['Una cartulina rectangular ABCD tiene ', v('ca', `AB = ${AB} cm`), ' de largo. Se corta por la diagonal AC, que forma ', v('g', '37°'), ' con AB.'],
         pregunta: ['¿Cuánto mide ', v('x', 'el perímetro de cada triángulo'), '?'],
         datos: [D.c37, D.k, D.perim],
         correcta: { clave: `${12 * k} cm`, texto: `${12 * k} cm` }, errores,
@@ -707,7 +730,7 @@
           [`BC = 3k = ${BC} cm y la diagonal AC = 5k = ${AC} cm.`],
           [`${AB} + ${BC} + ${AC} = `, v('x', `${12 * k} cm`), '.'],
         ],
-        extra: escena({ objeto: 'figura', forma: 'diagonal', medidas: { ra: AB, rb: BC }, lados: { AB: { texto: `${AB} cm`, color: 'o' } }, angulos: { A: { texto: '37°' } } }),
+        extra: escena({ objeto: 'figura', forma: 'diagonal', medidas: { ra: AB, rb: BC }, lados: { AB: { texto: `${AB} cm`, color: 'i' } }, angulos: { A: { texto: '37°' } } }),
         _datos: { tipo: 'figura-k', idea: 'aproximados', nivel: 3, forma, k, pide: 'per' },
       };
     }
@@ -725,7 +748,7 @@
       ];
       return {
         variables: Object.assign({ x: { nombre: 'lo que bajó la punta', color: 'f' } }, vars),
-        enunciado: ['Una escalera de ', v('a', `${f(Lx)} m`), ' forma ', v('g', `${g1}°`), ' con el piso. Resbala hasta formar ', v('g2', `${g2}°`), '.'],
+        enunciado: [`Una escalera de ${f(Lx)} m forma `, v('g', `${g1}°`), ' con el piso. Resbala hasta formar ', v('g2', `${g2}°`), '.'],
         pregunta: ['¿Cuántos metros ', v('x', 'bajó su punta'), ' en la pared?'],
         datos: [...TERNA[g1].datos, D.c37, ...(g2 === 53 ? [D.par37] : []), D.k],
         correcta: { clave: L(bien, 'm'), texto: L(bien, 'm') }, errores,
@@ -747,7 +770,7 @@
     ];
     return {
       variables: Object.assign({ x: { nombre: 'lo que se acortó la sombra', color: 'f' } }, vars),
-      enunciado: ['Un poste de ', v('a', `${H} m`), ' da sombra cuando el sol forma ', v('g', '37°'), ' con el suelo. Más tarde forma ', v('g2', '53°'), '.'],
+      enunciado: ['Un poste de ', v('co', `${H} m`), ' da sombra cuando el sol forma ', v('g', '37°'), ' con el suelo. Más tarde forma ', v('g2', '53°'), '.'],
       pregunta: ['¿Cuántos metros ', v('x', 'se acortó la sombra'), '?'],
       datos: [D.c37, D.par37, D.k],
       correcta: { clave: L(bien, 'm'), texto: L(bien, 'm') }, errores,
@@ -860,7 +883,8 @@
 
   function complemento(rng) {
     const [p, q, h] = rng.elegir(TERNAS.slice(0, 4)), [co, ca] = rng.moneda() ? [p, q] : [q, p];
-    const dada = rng.elegir(['sen', 'cos', 'tan']), pide = rng.elegir(['sec', 'csc', 'cot', 'tan']);
+    // Nunca tan dada y cot pedida: cot(90° − θ) = tan θ es el dato (auditoría, 17 nov). Se pide sec en su lugar.
+    const dada = rng.elegir(['sen', 'cos', 'tan']), pide0 = rng.elegir(['sec', 'csc', 'cot', 'tan']), pide = dada === 'tan' && pide0 === 'cot' ? 'sec' : pide0;
     const R = { sen: [co, h], cos: [ca, h], tan: [co, ca], cot: [ca, co], sec: [h, ca], csc: [h, co] };
     // Razón de 90° − θ: su cofunción de θ.
     const COF = { sec: 'csc', csc: 'sec', cot: 'tan', tan: 'cot' }, NOINV = { sec: 'sen', csc: 'cos', cot: 'cot', tan: 'tan' };
@@ -879,8 +903,9 @@
     const lado = { sen: 'CA', cos: 'CO', tan: 'H' }[dada];
     const pit = dada === 'tan' ? `H = √(${co}² + ${ca}²) = ${h}` : `${lado} = √(${h}² − ${dada === 'sen' ? co : ca}²) = ${dada === 'sen' ? ca : co}`;
     return {
-      variables: Object.assign({ x: { nombre: `${pide}(90° − θ)`, color: 'f' }, a: { nombre: `${dada} θ`, color: 'o' } }, ANG),
-      enunciado: [`En un triángulo rectángulo, ${dada} θ = `, v('a', fr(...R[dada])), ', con θ agudo.'],
+      // La razón dada, en tinta (en naranja parecería un cateto opuesto).
+      variables: Object.assign({ x: { nombre: `${pide}(90° − θ)`, color: 'f' } }, ANG),
+      enunciado: [`En un triángulo rectángulo, ${dada} θ = ${fr(...R[dada])}, con θ agudo.`],
       pregunta: ['¿Cuánto vale ', v('x', `${pide}(90° − θ)`), '?'],
       datos: [D.razones('θ'), D.rec, D.cof, D.pita],
       correcta: { clave: bien, texto: bien }, errores,
@@ -911,6 +936,8 @@
   // Papel (regla 6; herramientas/papel-generador.js usa «papel-1» a «papel-8»: 3 básicos, 3 intermedios y 2 avanzados).
   const PAPEL = { 'papel-1': 'vertices', 'papel-2': 'valor-notable', 'papel-3': 'razon-convencion', 'papel-4': 'lado-objeto',
     'papel-5': 'otra-razon', 'papel-6': 'cofuncion-x', 'papel-7': 'expresion-notable', 'papel-8': 'complemento' };
+  // Opciones de cada problema de papel: el avanzado p7 es una expresión con múltiplos de θ, de nivel examen.
+  const PAPEL_OP = { 'papel-7': { conTheta: true } };
 
   // θ y α siempre en carmín (molde §5b): cada texto se parte en sus letras de ángulo, también dentro de lo que se pide.
   const ANGULO = /(θ|α)/;
@@ -943,7 +970,7 @@
     const idea = opciones.idea && IDEAS[opciones.idea] ? opciones.idea : rng.elegir(Object.keys(IDEAS));
     const tipo = fijo || rng.elegir(IDEAS[idea]);
     for (let intento = 0; intento < 200; intento++) {
-      const pr = TIPOS[tipo](rng);
+      const pr = TIPOS[tipo](rng, PAPEL_OP[String(semilla)] || {});
       const errores = pr.errores.filter(x => x.clave !== pr.correcta.clave && enEscala(x.texto, pr.correcta.texto) && numDe(x.texto) !== 0);
       const alternativas = P.armarTexto({ correcta: pr.correcta, errores, rng });
       if (alternativas.length < 4) continue;

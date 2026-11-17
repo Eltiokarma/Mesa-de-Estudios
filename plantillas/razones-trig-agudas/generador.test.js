@@ -196,12 +196,14 @@ test('presupuesto de texto: enunciado y pregunta hasta 40 palabras; textos sin p
   }
 });
 
-test('colores por papel: θ y α en carmín, lo que se pide en violeta y cada tramo de color es de una variable', () => {
+test('colores: θ y α en carmín, lo que se pide en violeta y cada tramo de color es de una variable', () => {
   for (let s = 0; s < 400; s++) {
     const p = gen.generar(s), V = p.variables;
     assert.equal(V.x.color, 'f', `semilla ${s}`);
-    if (V.a) assert.equal(V.a.color, 'o');
-    if (V.b) assert.equal(V.b.color, 'i');
+    // Sin colores por orden de dato («a» naranja, «b» turquesa): el color es el del nombre del lado (auditoría, 17 nov).
+    assert.ok(!V.a && !V.b, `semilla ${s}: variables por orden de dato`);
+    if (V.co) assert.equal(V.co.color, 'o');
+    if (V.ca) assert.equal(V.ca.color, 'i');
     assert.ok(p.pregunta.some(x => typeof x === 'object' && x.v === 'x') || p._datos.tipo === 'reconoce-angulo', `semilla ${s}: lo que se pide no va en violeta`);
     for (const linea of [p.enunciado, p.pregunta, ...p.solucion])
       for (const x of linea) {
@@ -212,6 +214,41 @@ test('colores por papel: θ y α en carmín, lo que se pide en violeta y cada tr
         }
       }
   }
+});
+
+// Regla de colores de la unidad (molde §5b, 17 nov: «un color fijo por magnitud… también en la práctica»; comentario de
+// cabecera de la teoría): el lado lleva el color de su nombre desde el ángulo de la figura (CO naranja, CA turquesa, H y
+// los lados que no son del triángulo en tinta). La pieza dice qué es cada lado (papeles). Falla si un lado cambia de color
+// o si su color nombra otro lado (el de un distractor), si la idea 1 lleva color, si un dato en color del texto no es el
+// mismo lado (con el mismo color) de la figura, o si una razón dada va en color.
+const COLOR = { co: 'o', ca: 'i' };
+const conTipos = () => {
+  const ps = [];
+  for (let s = 0; s < 400; s++) ps.push([String(s), gen.generar(s)]);
+  for (const t of gen.TIPOS) for (let s = 0; s < 40; s++) ps.push([`${t} ${s}`, gen.generar(`c${s}`, { tipo: t })]);
+  return ps;
+};
+test('colores por el nombre del lado: figura y texto, en 400 semillas y 40 por tipo', () => {
+  let con = 0;
+  for (const [s, p] of conTipos()) {
+    const d = p._datos, coloreados = [p.enunciado, p.pregunta].flat().filter(x => x && typeof x === 'object' && ['o', 'i'].includes((p.variables[x.v] || {}).color));
+    if (d.idea === 'lados-desde-angulo') assert.equal(coloreados.length, 0, `${s} (${d.tipo}): la idea 1 va en tinta en el texto`);
+    // Una razón dada («cos θ = 4/5») no va en color: nombraría un lado.
+    for (const x of coloreados) assert.ok(/\d\s?(m|cm)$/.test(x.t), `${s} (${d.tipo}): «${x.t}» va en color y no es un largo`);
+    if (!p.escena) continue;
+    con++;
+    const datos = p.escena.datos, { desde, papel } = pieza.papeles(datos), cs = pieza.coloresDe(datos);
+    if (d.idea === 'lados-desde-angulo') assert.deepEqual(cs, {}, `${s} (${d.tipo}): la idea 1 va en tinta en la figura`);
+    for (const [k, colores] of Object.entries(cs)) for (const c of colores)
+      assert.equal(c, COLOR[papel[k]], `${s} (${d.tipo}): el lado ${k} (${papel[k] || 'fuera del triángulo'} desde ${desde}) va en ${c}`);
+    // Cada dato en color del texto es un lado de la figura con ese color.
+    const N = Object.entries(datos.lados || {});
+    for (const x of coloreados) {
+      const col = p.variables[x.v].color;
+      assert.ok(N.some(([, st]) => st && st.color === col && st.texto && x.t.includes(st.texto)), `${s} (${d.tipo}): «${x.t}» en ${col} no es un lado de ese color en la figura`);
+    }
+  }
+  assert.ok(con > 250, `solo ${con} problemas con figura`);
 });
 
 // Recuadro «Datos» (docs/plan-calidad.md §3, punto 13): una lista de líneas cortas en texto plano, con la fórmula de

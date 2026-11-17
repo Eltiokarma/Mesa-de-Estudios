@@ -2,7 +2,7 @@
   "plantilla": "razones-trig-agudas",
   "tolerancia": 1e-9,
   "nota": "Entrada = _datos del generador. Objetos: catetos ra (toca al vértice a) y rb (toca al b), hipotenusa h; theta y angulo dicen en qué vértice está θ; pide co-t es el opuesto a θ y ca-a el adyacente a α. Convención del examen: 37° y 53° del 3-4-5, 16° y 74° del 7-24-25. cofuncion-x y reciproca-x: r1(a·x + b) y r2(c·x + d). esperado.valor es el número (o el texto, en vertices y reconoce-angulo) y esperado.texto, la alternativa correcta que ve el alumno.",
-  "verificacion": "Script aparte (17 nov 2026, python3 -I con math y fractions, en el scratchpad de la sesión, fuera del repo), que no usa el generador ni el núcleo: arma cada triángulo con coordenadas y saca la razón con el ángulo de verdad (atan2 y las funciones de math), evalúa las expresiones escritas como las lee el alumno, resuelve las ecuaciones en x buscando de medio en medio grado el valor que cumple la igualdad con las funciones de verdad, y usa fracciones exactas para la convención. Lee el texto de la alternativa correcta como número y lo compara con tolerancia 1e-9. Los 20 casos cuadran.",
+  "verificacion": "Script aparte (17 nov 2026, python3 -I con math y fractions, en el scratchpad de la sesión, fuera del repo), que no usa el generador ni el núcleo: arma cada triángulo con coordenadas y saca la razón con el ángulo de verdad (atan2 y las funciones de math), evalúa las expresiones escritas como las lee el alumno, resuelve las ecuaciones en x buscando de medio en medio grado el valor que cumple la igualdad con las funciones de verdad, y usa fracciones exactas para la convención. Lee el texto de la alternativa correcta como número y lo compara con tolerancia 1e-9. Los 20 casos cuadran. Caso 6 rehecho el 17 nov (correcciones de la auditoría: la rampa salió de reconoce-angulo): poste de 4√2 m con cable de 8 m, asin(4√2/8) = 45°, con un script aparte (python3 -I, math).",
   "casos": [
     {
       "semilla": 0,
@@ -113,8 +113,8 @@
         "tipo": "reconoce-angulo",
         "idea": "notables",
         "nivel": 2,
-        "objeto": "rampa",
-        "H": 4,
+        "objeto": "poste",
+        "H": 8,
         "g": 45,
         "dado": "rb",
         "pide": "θ"

@@ -105,7 +105,9 @@
     'regla-de-tres': { ...lista(AR + 'razones-y-proporciones', ps(1, 2, 3)), ...lista(AR + 'magnitudes-proporcionales', ps(4, 5, 6, 7, 8, 9)), p10: RM + 'ruedas-poleas-engranajes' },
     solidos: { ...lista(G + 'prisma-y-piramide', ps(1, 2)), ...lista(G + 'solidos-de-revolucion', ps(3, 4, 5, 6, 7, 8, 10)), p9: G + 'poliedros' },
     'cinta-radio': { ...lista(T + 'angulo-trigonometrico', ps(1, 2, 4, 10)), ...lista(T + 'longitud-de-arco-y-sector', ps(3, 5, 6, 7, 8, 9)) },
-    'circunferencia-trig': { ...lista(T + 'razones-trigonometricas-agudas', ps(1, 2, 4, 10)), p3: T + 'triangulos-rectangulos',
+    // p1, p2, p4 y p10 eran de razones-trigonometricas-agudas; esa unidad ya no lista la escena (17 nov, auditoría M7:
+    // traía problemas de unidades posteriores): quedan fuera del repaso.
+    'circunferencia-trig': { p3: T + 'triangulos-rectangulos',
       ...lista([T + 'reduccion-al-primer-cuadrante', T + 'angulos-en-posicion-normal'], ps(5, 6)), p7: T + 'funciones-trigonometricas',
       ...lista(T + 'ecuaciones-trigonometricas', ps(8, 9)) },
     'geometria-analitica': { ...lista(G + 'geometria-analitica', ps(1, 2, 3, 9, 10)), ...lista(T + 'recta-en-el-plano', ps(4, 5, 6, 7, 8)) },

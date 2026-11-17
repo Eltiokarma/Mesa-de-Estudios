@@ -42,6 +42,9 @@ const VARIANTES = [
   { objeto: 'techo', marco: [3, 3], medidas: { viga: 3, poste: 3 * Math.tan(25 * Math.PI / 180) }, lados: { viga: lado('viga'), poste: lado('poste', 'o'), calamina: lado('calamina', 'i') }, angulos: { alero: { texto: 'θ' }, cumbre: { texto: 'α' } } },
   { objeto: 'figura', forma: 'diagonal', medidas: { ra: 8, rb: 6 }, lados: { AB: lado('8 cm', 'o'), BC: lado('6 cm', 'i'), AC: lado('?') }, angulos: { A: { texto: 'θ' } } },
   { objeto: 'figura', forma: 'medio', medidas: { ra: 4, rb: 2 }, lados: { DA: lado('4', 'i'), AB: lado('4') }, angulos: { A: { texto: 'θ' } } },
+  // El triángulo en la semicircunferencia (17 nov): recto en C, con el diámetro AB de hipotenusa.
+  { objeto: 'figura', forma: 'semicirculo', medidas: { ra: 5, rb: 12 }, lados: { AC: lado('5 cm', 'i'), AB: lado('13 cm'), BC: { color: 'o' } }, angulos: { A: { texto: 'θ' } } },
+  { objeto: 'figura', forma: 'semicirculo', medidas: { ra: 12, rb: 5 }, lados: { AC: lado('12 cm'), AB: lado('13 cm') }, angulos: { B: { texto: 'θ' } } },
   // La escalera que resbala (17 nov): la otra posición, punteada, con su ángulo; y un rótulo de tres líneas.
   { objeto: 'escalera', medidas: { piso: 1.5, pared: 2 }, otra: { ra: 0.7, rb: 2.4 }, lados: { escalera: lado('2,5 m') }, angulos: { pie: { texto: '53°' }, pie2: { texto: '74°' } } },
   { objeto: 'escalera', medidas: { piso: 3, pared: 4 }, marco: [4.5, 5], lados: { pared: { color: 'o', texto: '4 m', texto2: 'CO de θ', texto3: 'CA de α', color3: 'i' } }, angulos: { pie: { texto: 'θ' }, arriba: { texto: 'α' } } },
@@ -184,4 +187,21 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
   assert.ok(figs.length > 40, `${figs.length} figuras`);
   for (const [nombre, d, e] of figs) revisar(d, e, nombre, mal);
   assert.deepEqual(mal, []);
+});
+
+test('papeles: qué es cada lado desde el ángulo de la figura (regla de colores de la unidad)', () => {
+  // Desde θ, donde esté.
+  assert.deepEqual(P.papeles({ objeto: 'escalera', medidas: { piso: 3, pared: 4 }, angulos: { pie: { texto: 'θ' }, arriba: { texto: 'α' } } }).papel, { ra: 'ca', rb: 'co', h: 'h' });
+  assert.deepEqual(P.papeles({ objeto: 'escalera', medidas: { piso: 3, pared: 4 }, angulos: { pie: { texto: 'α' }, arriba: { texto: 'θ' } } }).papel, { ra: 'co', rb: 'ca', h: 'h' });
+  // Un solo agudo marcado: desde ese.
+  assert.equal(P.papeles({ objeto: 'cuerda', medidas: { base: 4, estaca: 3 }, angulos: { arriba: { texto: '53°' } } }).desde, 'b');
+  // Los dos con número: el de referencia (la señal, desde la punta de 30°; la escuadra, desde 30°).
+  assert.equal(P.papeles({ objeto: 'senal', medidas: { lado: 40 }, angulos: { esquina: { texto: '60°' }, punta: { texto: '30°' } } }).desde, 'b');
+  assert.equal(P.papeles({ objeto: 'escuadras', angulos: { a30: { texto: '30°' }, a60: { texto: '60°' } } }).desde, 'a');
+  // Lados fuera del triángulo, sin papel (van en tinta); los triángulos extras, con el suyo.
+  const tr = P.papeles({ objeto: 'figura', forma: 'trapecio', menor: 10, medidas: { ra: 16, rb: 12 }, angulos: { B: { texto: '37°' } } }).papel;
+  assert.equal(tr.CD, null); assert.equal(tr.DA, null); assert.equal(tr.rb, 'co');
+  assert.deepEqual(P.papeles({ objeto: 'sombras', medidas: { sombra: 8, poste: 6 }, angulos: { suelo: { texto: 'θ' } } }).papel, { ra: 'ca', rb: 'co', h: 'h', sombra2: 'ca', primo: 'co', rayo2: 'h' });
+  // coloresDe junta los colores de cada lado en todos los pasos.
+  assert.deepEqual(P.coloresDe({ objeto: 'escalera', medidas: { piso: 3, pared: 4 }, lados: { piso: { color: [{ c: 'i', paso: 2 }] }, pared: { color: 'o' } } }), { ra: ['i'], rb: ['o'] });
 });

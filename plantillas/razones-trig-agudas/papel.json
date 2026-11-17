@@ -73,22 +73,23 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Sin calculadora. ¿Cuánto vale 2 cos 30° + sen 60°? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. Media señal (30° y 60°): hipotenusa 2; frente a 30°, 1; frente a 60°, √3. Media loseta (45° y 45°): catetos 1 y 1; hipotenusa √2. Racionalizar: 1/√2 = √2/2; 1/√3 = √3/3. Alternativas: A) 3√3/2   B) 2√3   C) 3/2   D) 3√3",
-      "respuesta": "A) 3√3/2",
+      "enunciado": "Sin calculadora. Si θ = 30°, ¿cuánto vale cos 2θ + tan 2θ · tan θ? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. Media señal (30° y 60°): hipotenusa 2; frente a 30°, 1; frente a 60°, √3. Media loseta (45° y 45°): catetos 1 y 1; hipotenusa √2. Racionalizar: 1/√2 = √2/2; 1/√3 = √3/3. Alternativas: A) 2   B) 3/2   C) (2 + 3√3)/3   D) (2 + √3)/2   E) 3",
+      "respuesta": "B) 3/2",
       "pasos": [
+        "Primero los ángulos: queda cos 60° + tan 60° · tan 30°.",
         "Cada razón sale de su figura, nombrada desde su ángulo.",
-        "2 cos 30° + sen 60° = 3√3/2."
+        "cos 60° + tan 60° · tan 30° = 3/2."
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "En un triángulo rectángulo, tan θ = 3/4, con θ agudo. ¿Cuánto vale sec(90° − θ)? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. cot θ = CA/CO; sec θ = H/CA; csc θ = H/CO. Cofunciones: sen θ = cos(90° − θ); tan θ = cot(90° − θ); sec θ = csc(90° − θ). Pitágoras: hipotenusa² = cateto² + cateto². Alternativas: A) 5/3   B) 3/5   C) 7/3   D) 3/4   E) 5/4",
-      "respuesta": "A) 5/3",
+      "enunciado": "En un triángulo rectángulo, tan θ = 4/3, con θ agudo. ¿Cuánto vale sec(90° − θ)? Datos: sen θ = CO/H; cos θ = CA/H; tan θ = CO/CA. cot θ = CA/CO; sec θ = H/CA; csc θ = H/CO. Cofunciones: sen θ = cos(90° − θ); tan θ = cot(90° − θ); sec θ = csc(90° − θ). Pitágoras: hipotenusa² = cateto² + cateto². Alternativas: A) 4/5   B) 5/3   C) 7/4   D) 4/3   E) 5/4",
+      "respuesta": "E) 5/4",
       "pasos": [
         "Por cofunción, sec(90° − θ) = csc θ.",
-        "Lados: H = √(3² + 4²) = 5.",
-        "csc θ = 5/3."
+        "Lados: H = √(4² + 3²) = 5.",
+        "csc θ = 5/4."
       ]
     }
   ]
