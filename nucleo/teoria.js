@@ -395,6 +395,10 @@
       if (!p) mal(d, 'sin predice');
       else {
         if (!p.pregunta) mal(d, 'predice sin pregunta'); else tope(`${d} predice`, 'pregunta', p.pregunta);
+        // Predice lleva solo la información necesaria (equivalencias, valores), nunca la fórmula: se predice antes de
+        // aprender la regla (Gerson, 17 nov: «no me debían dar toda la ecuación, solo información necesaria»).
+        datos(`${d} predice`, p.pregunta, p.datos);
+        if (Array.isArray(p.datos) && p.datos.some(x => /[A-Za-zθρ]\s*[²³]?\s*=\s*[^0-9\s−-]/.test(plano(x)) && !/^\s*\d/.test(plano(x)))) mal(`${d} predice`, 'datos de una predicción: equivalencias y valores, no fórmulas');
         opciones(`${d} predice`, p.opciones);
         dibuja(`${d} predice`, p.dibujo, p.pieza);
         dibuja(`${d} predice (revelar)`, p.revelar, p.pieza);

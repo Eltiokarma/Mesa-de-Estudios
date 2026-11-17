@@ -366,6 +366,8 @@ con 5 ejemplos por nivel en cada idea.
     (1 km = 1000 m), valores de academia (cos 37° = 4/5), constantes y **también la fórmula** (W = F·d·cos θ). Se ven en un
     recuadro «Datos» bajo el enunciado. Nunca un «Dato:» dentro del enunciado: el validador lo rechaza. Lo mismo vale para
     los casos de «Ahora tú» y de «Así se resuelve» (contrato, punto 13; Gerson, 16 nov: «criterio, no memoria»).
+    En «Predice», `datos` lleva solo equivalencias y valores, nunca la fórmula (Gerson, 17 nov); el validador rechaza
+    una línea con forma de fórmula.
   - **`fuente`**: un dato real del mundo (Titicaca, lluvia de Juliaca) es real y dice de dónde sale («ILEC, World Lake
     Database»). Se muestra en letra chica bajo la respuesta.
   - El validador exige 5 por nivel, topes (título 6 palabras, enunciado 40, cada línea 30, respuesta 14), dibujos puros y nada de NaN.

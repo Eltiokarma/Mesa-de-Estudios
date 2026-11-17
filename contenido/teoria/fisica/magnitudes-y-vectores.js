@@ -255,7 +255,8 @@
       minimo: 3,
     },
     predice: {
-      pregunta: `Una combi va a ${f(V_KMH, 0)} km/h. Un kilómetro tiene 1000 m y una hora, 3600 s. ¿Cuántos metros avanza en cada segundo?`,
+      pregunta: `Una combi va a ${f(V_KMH, 0)} km/h. ¿Cuántos metros avanza en cada segundo?`,
+      datos: ['1 km = 1000 m', '1 h = 3600 s'],
       opciones: [
         { id: 'c', texto: `${f(V_MS, 0)} m`, correcta: true },
         { id: 'solo-km', texto: `${f(V_KMH * 1000, 0)} m`, error: 'CONV-UNO', siFuera: 'Eso pasa bien los km a metros, pero son los metros de una hora entera.' },
@@ -619,7 +620,8 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Un metro tiene 100 cm. ¿Cuántos cuadraditos de 1 cm de lado caben en 1 m²?',
+      pregunta: '¿Cuántos cuadraditos de 1 cm de lado caben en un cuadrado de 1 m²?',
+      datos: ['1 m = 100 cm', '1 m²: un cuadrado de 1 m de lado'],
       opciones: [
         { id: 'c', texto: '10 000', correcta: true },
         { id: 'fila', texto: '100', error: 'CONV-CUADRADO', siFuera: 'Esos caben en una sola fila: 1 m tiene 100 cm. Pero hay 100 filas.' },
