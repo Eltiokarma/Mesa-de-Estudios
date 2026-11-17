@@ -662,7 +662,7 @@
       [`a y b son cifras de 1 a 9 (ninguna puede ser 0, porque las dos van adelante en algún numeral): a va de ${amin} a ${amax}.`],
       ['Son ', `${amax} − ${amin} + 1 = ${correcta}`, ' valores.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, recuadro: [DATOS_CIFRAS[0], DATOS_CIFRAS[1], 'De a hasta z hay z − a + 1 números'], datos: { tipo: 'cifras', sub: sb, N } });
+    return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, recuadro: [DATOS_CIFRAS[0], DATOS_CIFRAS[1], 'Del primero, p, al último, u, hay u − p + 1 números'], datos: { tipo: 'cifras', sub: sb, N } });
   }
 
   // ---------------- grifos ----------------

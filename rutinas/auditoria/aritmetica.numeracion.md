@@ -141,3 +141,55 @@ problema generado. Resultado: 2266 comprobaciones cuadran y queda 1 error, en la
 | **Cada alternativa incorrecta de un ejemplo se explica en el resuelto** (su letra aparece en la solución), y la explicación da ese valor cuando trae una cuenta (M5, B8). | Semi (la letra, sí; que la cuenta dé el valor, el auditor) |
 | **Papel por idea**: el mapa `PAPEL` del generador cubre cada idea con su tipo de nivel 1 o 2 central (B1). Y una plantilla en `plantillas` de una unidad con `calidad: 2` lleva `datos` en todo su papel o sale de la unidad (M12). | Sí |
 | **Un código de error por distractor en cada pregunta** (B10). | Sí |
+
+## Correcciones (17 nov)
+
+Fase 8 del método (`docs/metodo/unidad/6-correcciones.md`). Fuentes: esta auditoría y el lector en frío
+(`rutinas/frio/aritmetica.numeracion.md`). Alcance: `contenido/teoria/aritmetica/numeracion.js` y su test, las piezas
+`arit-puesto` y `arit-talonario` con sus tests, `plantillas/numeracion-bases/` y el tipo `cifras` de
+`plantillas/numeros-sucesiones/`. No se tocaron `app/`, `nucleo/teoria.js` ni la escena vieja `plantillas/numeracion/`
+(pendiente de Gerson). Cada corrección tiene una prueba nueva en `numeracion.test.js` (bloque «Fase 8»); corridas contra
+la versión anterior del archivo, fallan las nueve (comprobado con una copia en el scratchpad). Las respuestas que
+cambiaron se recalcularon aparte, sin el código de la unidad: `correcciones-numeracion/cuentas.js` del scratchpad, 78
+cuentas, todas cuadran.
+
+| # | Qué se hizo | Prueba nueva |
+|---|---|---|
+| A1 | `montonF(4, 75).datos` en la tarjeta 1 de «Lee» de la idea 3: ahora se ven los 75 caramelos. | Ninguna figura (Lee, juego, Predice, revelar, Mira, ejemplos, «Así se resuelve», «Ahora tú») recibe un `datos` con clave `pieza`, y cada una dibuja algo distinto de `dibujar({})`. |
+| M1 | Glosario sin predicciones ni misiones: «orden» (120₍₃₎), «valor posicional» (23₍₅₎, sin el 0 en medio), «descomposición polinómica» (231₍₄₎ = 45), «cociente» y «resto» (23 entre 5; 30 en bolsitas de 4), «cambio de base» (17 = 25₍₆₎; 38 = 212₍₄₎), «base desconocida» (32₍ₙ₎ = 23; 41₍ₙ₎ = 21), «acotar» (52₍ₙ₎), «bloque» (del 100 al 999), «cantidad de cifras» (del 1 al 60, 111; 50 = 200₍₅₎). Apareció además «numeral»: «24 y 40₍₆₎» era la misión de la idea 1; va 22 = 42₍₅₎. Ojo: la corrección que proponía la auditoría para el cambio de base, «41 = 1103₍₃₎», está mal (41 = 1112₍₃₎); no se usó. | Los números de cada predicción y de cada misión (44₍₅₎ y 100₍₅₎; 203₍₅₎ y 53; 19 y 201₍₃₎; 31₍ₙ₎ y 25; 13 y 11 con 8; 100 y 192; 40₍₆₎ y 24; 132 y 56; 75 y 1023₍₄₎; 23, 17 y 7; 492 y 200) no van juntos en el glosario, en «Lee» de esa idea o de las anteriores, en el juego (solo la predicción) ni en ningún ejemplo de la unidad. |
+| M2 | «Un cero en medio» → «Una caja, una bolsita» (112₍₃₎ = 14); en los niveles 1 y 2 de la idea 2 tampoco quedan otros 0 en medio (2013₍₄₎ → 2113₍₄₎ = 151; 205₍₆₎ → 215₍₆₎ = 83). «Leer la tabla» → «Hasta que dé 0» (cuántas divisiones para pasar 50 a base 4). «Una ecuación corta» era 13₍ₙ₎ = 11 → n = 8, la predicción al revés: va 15₍ₙ₎ = 12 → 7. «Dos etiquetas, un puesto» → «Una caja y dos sueltos» (102₍ₙ₎ = 27 → 5). «Boletos de dos cifras» («No son 89») → «Boletos de tres cifras» (del 1 al 250: 151). «Del 1 al 1000» → «Del 1 al 1200» (3693), sin la trampa del boleto que abre el bloque. De paso, en «Ordenar tres pedidos» la frase «la cifra más chica al frente» era falsa (141₍₅₎ empieza en 1): se corrigió. | La misma de M1, y que los niveles 1 y 2 de la idea 2 no tengan un 0 entre otras cifras. |
+| M3 | Base desconocida con ₍ₙ₎: «Ahora tú» de la idea 1 (menor base, tres numerales, cuántas bases), los ejemplos «Una base para tres», la consigna de la idea 2 (132₍ₙ₎), «Así se resuelve» de la idea 2 y «Lee» y la consigna de la idea 4 (23₍ₙ₎). «¿En qué bases?» salió por M10. | En los ejemplos, 400 semillas de «Ahora tú» y 40 de «Así se resuelve», ninguna pregunta que hable de la base trae las cifras de un numeral sin su base; ninguna consigna dice «la etiqueta dice 132» sin base. |
+| M4 | `DD.div` dice «(q: cociente; r: resto)»; en la regla de la idea 3, una llave con «cociente» bajo la q. Se aprovechó para la regla de la idea 5: «p: el primero; u: el último; k: cifras de cada uno». | Toda línea de datos o de regla con «q ×» dice «cociente», y toda con «u − p» dice qué son p y u. |
+| M5 | D de «Una suma con base oculta» pasa de 11 a 10 (5n = 50); la explicación nombra también A (50) y B (40). | D es (45 + 5) / 5 y la solución trae lo que dan A y B. |
+| M6 | «De a hasta z hay z − a + 1» → «Del primero, p, al último, u, hay u − p + 1» en la teoría (datos, regla, «Lee», «Así se resuelve», un `siFuera`), en `numeracion-bases` (`D.hasta` y dos explicaciones) y en el recuadro de `cifras` de `numeros-sucesiones`. `papel.json` regenerado. | Teoría: ningún dato ni regla usa a como extremo. Generadores: 400 semillas sin «z − a» ni «de a hasta» (datos, solución, explicaciones). |
+| M7 | El juego de la idea 5 solo da hecha la cuenta del bloque que se mueve («100 a 150: 51 × 3 = 153»); los bloques de una y dos cifras quedan en las barras sin su cuenta. Opción nueva `soloUltimo` en `arit-talonario`, con su prueba. La lectura dice «150 boletos: 342 cifras; del 100 al 150, 51 × 3 = 153». «Lee» ya explicaba u − p + 1 con el 20 y el 30, que no tocan el 10 ni el 99 (lo que pedía la auditoría). La figura de «Lee» mostraba el boleto 200, la respuesta de la misión: ahora es del 1 al 150, y el texto lo dice (el lector preguntaba de dónde salía el 200). | El juego no muestra «9 × 1», «90 × 2», «= 180» ni 189 en ningún caso; la pieza con `soloUltimo` dibuja una sola línea. |
+| M8 | La leyenda de la idea 3 dice «cociente: lo que se juntó en la ronda» y «resto: lo que no alcanzó, una cifra», sin el 18 ni el 3. La de la idea 5 cambió con el juego (sin el 492 ni el «90 × 2»). | Cada número de una leyenda se ve al empezar el juego (figura, lectura o misión). |
+| M9 | «Leer la etiqueta» da solo la convención de la etiqueta (`DN.etiqueta`); «Leer la tabla» salió (M2). | Los datos de ningún ejemplo traen lo que pide su respuesta ni «la izquierda cuenta…» o los restos en orden. |
+| M10 | «¿En qué bases?» → «Reempacar dos órdenes» (2 cajas, 5 bolsitas y 7 sueltos de 4 → 323₍₄₎, con tres trampas calculadas: 263₍₄₎, 223₍₄₎, 257₍₄₎); «¿Cuántas están bien?» → «Una caja para 30» (la bolsita más grande con caja: 5, 110₍₅₎). En base 4 y no en 5, para no repetir la predicción. | Todo nivel 3 de la unidad trae al menos una cuenta, y en la idea 1, cuatro de los cinco tienen tres pasos o más. («Cifras con un parámetro» no traía ninguna: se le agregaron.) |
+| Lector | `glosarioSin: ['muestra']` (el verbo no es el término de Estadística). | Se comprueba que está. |
+
+**Bajas que se hicieron de paso** (eran de una línea): B2 (la condición de la regla de la idea 4 y «Dos bases a la vez»
+ya no dicen «manda la base más chica»), B3 (`DD.pot(n, k)` recorta n³ en los numerales de tres cifras), B4 (la tabla
+sin filas vacías), B5 («9 × 1 + 90 × 2 = 189» en los dos ejemplos y en «Ahora tú»), B6 («verde: la nueva» en la regla
+de la idea 3), B7 (las figuras de la idea 4 dicen 31₍ₙ₎, con la n turquesa, como el texto), B8 (los distractores de
+«Una cifra repetida», «Cada cifra sube 1», «Juntar de 8 en 8» y «Cifras con un parámetro»), B9 («Cada cifra sube 1» ya
+no resta en base 7) y B13 (185 y 154 en violeta).
+
+**Pendiente, con la razón:**
+- **M2 en la idea 3 y el resto de la idea 5: necesita `app/`.** Todo ejemplo de cambio de base enseña el orden de los
+  restos, y los de «¿Hasta qué boleto?» y «Con 1500 cifras» dan las 189 cifras hasta el 99. Solo lo arregla que la app
+  abra los ejemplos de la idea k después de responder su Predice (`app/teoria.js:338` y `:880`). Recomendación para
+  Gerson: hacerlo para todas las unidades, porque la regla 3 lo pide y la decisión de Exponentes ya lo nota.
+- **M11 (app):** `app/practica.js:168` debe pasar `{ idea }` a `generar`; el generador ya separa por idea.
+- **M12 (escena vieja `plantillas/numeracion/`):** sin tocar, pendiente de la decisión de Gerson en la mesa. Recomendación:
+  pasarla a «Más mesas del tema» y sacarla de `plantillas` de la unidad hasta rehacerla. Su papel trae capicúas, un
+  atajo, la base b y la predicción de la idea 5 al revés.
+- **Decisión de Gerson, M7:** el juego ya no da hechos el 9 y el 180, pero el alumno todavía puede restar: 342 − 153 =
+  189. Si se quiere medir solo con lo que el juego no muestra, la otra salida es preguntar en Predice por el 1 al 1000.
+  Recomendación: dejarlo así; la resta ya es razonar, no leer.
+- **Decisión de Gerson, M10:** «Reempacar dos órdenes» enseña la llevada en cadena, que es la idea de Predice 1, con
+  otra base y sin «llega un caramelo». «Hasta la caja» (nivel 2) ya lo hacía. Recomendación: dejarlo, porque es el
+  problema de examen de la idea.
+- **Bajas sin hacer:** B1 (papel por idea), B10 (un código por distractor), B11 (separar los caramelos en `arit-puesto`),
+  B12 (36a sin «×»), B14 (códigos AT en el informe de investigación), B15 (arreglo de `herramientas/papel-generador.js`)
+  y B16 (`ordenar` del generador).

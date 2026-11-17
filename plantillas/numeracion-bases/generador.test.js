@@ -198,7 +198,7 @@ test('notación: 342₍₆₎ sin raya; con letras, raya sobre cada carácter (a
 });
 
 // Recuadro «Datos» (docs/plan-calidad.md §3, punto 13): líneas cortas en texto plano, sin la respuesta, con la
-// herramienta de cada tipo (la descomposición, la división con resto o «de a hasta z»).
+// herramienta de cada tipo (la descomposición, la división con resto o «del primero, p, al último, u»).
 test('datos: una lista de líneas cortas, sin la respuesta y con la fórmula de cada tipo, en 400 semillas', () => {
   const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
   const FORMULA = {
@@ -206,7 +206,7 @@ test('datos: una lista de líneas cortas, sin la respuesta y con la fórmula de 
     valor: /a̅b̅c̅(d̅)?₍ₙ₎ = a × n/, ordenar: /a̅b̅c̅₍ₙ₎ = a × n²/, 'mayor-k': /a̅b̅(c̅)?(d̅)?₍ₙ₎ = a × n/, cruzados: /a̅b̅₍ₙ₎ = a × n \+ b/,
     'de-10': /N = q × \d \+ r/, 'entre-bases': /N = q × \d \+ r/, 'suma-cifras': /N = q × \d \+ r/, paquetes: /N = q × \d \+ r/,
     lineal: /a̅b̅₍ₙ₎ = a × n \+ b/, cuadratica: /a̅b̅c̅₍ₙ₎ = a × n²/, 'otra-etiqueta': /a̅b̅₍ₙ₎ = a × n \+ b/, 'mayor-suma': /₍ₙ₎ = a × n/,
-    cifras: /z − a \+ 1/, hasta: /z − a \+ 1/, 'cuantos-k': /z − a \+ 1/, 'cifras-base': /z − a \+ 1/, 'bases-tres': /n² a n³ − 1/,
+    cifras: /u − p \+ 1/, hasta: /u − p \+ 1/, 'cuantos-k': /u − p \+ 1/, 'cifras-base': /u − p \+ 1/, 'bases-tres': /n² a n³ − 1/,
   };
   for (let s = 0; s < 400; s++) {
     const p = gen.generar(s), d = p._datos;
@@ -218,7 +218,7 @@ test('datos: una lista de líneas cortas, sin la respuesta y con la fórmula de 
     }
     assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
     const todo = p.datos.join('\n');
-    const f = FORMULA[d.tipo] || (d.sub === 'suma' ? /a̅b̅₍ₙ₎ = a × n \+ b/ : /z − a \+ 1/);
+    const f = FORMULA[d.tipo] || (d.sub === 'suma' ? /a̅b̅₍ₙ₎ = a × n \+ b/ : /u − p \+ 1/);
     assert.match(todo, f, `semilla ${s} (${d.tipo}): falta su fórmula`);
     // La respuesta no está en los datos: ni su numeral ni su número.
     // (Un número de una cifra puede ser la base que da el enunciado: solo se revisan los de dos o más cifras.)
@@ -244,4 +244,14 @@ test('papel.json: 8 problemas de las cinco ideas, con sus datos y su respuesta r
     assert.ok(pr.respuesta.includes(typeof r === 'number' ? formatear(r, 0) : r), `${pr.id}: ${pr.respuesta} no es ${r}`);
   });
   assert.deepEqual([...ideas].sort(), [...IDEAS].sort());
+});
+
+// Auditoría de la unidad (M6): la letra a es una cifra en toda la unidad, también en «¿Cuántos valores puede tomar a?».
+// Los extremos de un bloque se llaman p (el primero) y u (el último), nunca a y z.
+test('la letra a es siempre una cifra: los datos y las explicaciones no la usan como extremo de un bloque', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    const todo = [p.datos.join('\n'), JSON.stringify(p.solucion), p.alternativas.map(a => a.explicacion || '').join('\n')].join('\n');
+    assert.ok(!/z − a|de a hasta|hasta z\b/i.test(todo), `semilla ${s}: a como extremo`);
+  }
 });

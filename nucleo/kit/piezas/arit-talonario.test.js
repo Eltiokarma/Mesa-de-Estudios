@@ -14,6 +14,7 @@ const MUESTRAS = [
   { N: 100, max: 220, cifras: false }, { N: 100, max: 220, lineas: 'cuenta', hasta: 2, total: false },
   { N: 1000, total: '?' }, { N: 1500, lineas: 'cuenta' }, { desde: 45, N: 120, lineas: 'rango' }, { desde: 35, N: 80, cifras: false },
   { pide: 'N', impresas: 1500 }, { N: 200, barras: false }, { N: 9, lineas: 'cuenta', cuenta: false }, {},
+  { N: 150, max: 1100, lineas: 'cuenta', soloUltimo: true }, { N: 400, max: 1100, lineas: 'cuenta', soloUltimo: true },
 ];
 const solapan = (a, b, e = 0) => a.x0 < b.x1 + e && b.x0 < a.x1 + e && a.y0 < b.y1 + e && b.y0 < a.y1 + e;
 function revisar(d, e, nombre, mal) {
@@ -95,4 +96,18 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus textos no s
   assert.ok(figs.length > 200, `${figs.length} figuras`);
   for (const [nombre, d, e] of figs) revisar(d, e, nombre, mal);
   assert.deepEqual(mal.slice(0, 20), []);
+});
+
+test('soloUltimo: una sola línea, la del último bloque, en el lugar de la primera; las barras no cambian', () => {
+  for (const N of [120, 150, 400]) {
+    const d = { N, max: 1100, lineas: 'cuenta' }, g = P.geometria(Object.assign({ soloUltimo: true }, d)), todas = P.geometria(d);
+    const lineas = g.rot.filter(r => /^\d/.test(r.segs[0][0]) && r.segs.length > 1);
+    assert.equal(lineas.length, 1, `${N}: ${lineas.length} líneas`);
+    assert.equal(lineas[0].segs[0][0], `100 a ${N}: `);
+    assert.equal(lineas[0].y, todas.rot.find(r => r.segs[0][0] === '1 a 9: ').y, 'va donde iba la primera');
+    assert.deepEqual(g.tramos, todas.tramos);
+    assert.equal(g.H, 280, 'el alto no salta');
+    const s = P.dibujar(Object.assign({ soloUltimo: true }, d)).replace(/aria-label="[^"]*"/, '');
+    assert.ok(!/1 a 9|10 a 99/.test(s), 'sin las cuentas de los bloques de una y dos cifras (el texto alternativo sí los nombra)');
+  }
 });

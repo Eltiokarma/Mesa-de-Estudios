@@ -39,7 +39,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En base 3 se escriben todos los numerales de 2 cifras. ¿Cuántos son? Datos: De a hasta z hay z − a + 1 números. 3¹ = 3; 3² = 9. La primera cifra de un numeral de varias cifras no es 0. Alternativas: A) 5   B) 6   C) 9   D) 90   E) 4",
+      "enunciado": "En base 3 se escriben todos los numerales de 2 cifras. ¿Cuántos son? Datos: Del primero, p, al último, u, hay u − p + 1 números. 3¹ = 3; 3² = 9. La primera cifra de un numeral de varias cifras no es 0. Alternativas: A) 5   B) 6   C) 9   D) 90   E) 4",
       "respuesta": "B) 6",
       "pasos": [
         "El menor es 1 seguido de ceros; el mayor repite la cifra 2.",

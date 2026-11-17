@@ -247,6 +247,8 @@ test('cifras (Numeración): datos con la descomposición, errores AT-* que empie
     const p = gen.generar(`n${s}`, { unidad: 'aritmetica.numeracion' });
     assert.ok(Array.isArray(p.datos) && p.datos.some(l => l.includes('a̅b̅ = a × 10 + b')), `semilla ${s}: datos`);
     for (const l of p.datos) assert.ok(l.split(/\s+/).filter(w => /\p{L}/u.test(w)).length <= 22);
+    // La a es una cifra (a̅b̅): el conteo de valores usa p y u, no «de a hasta z» (auditoría de Numeración, M6).
+    assert.ok(!p.datos.some(l => /z − a|de a hasta/i.test(l)), `semilla ${s}: a como extremo en los datos`);
     for (const a of p.alternativas.filter(x => x.error)) {
       assert.match(a.error.id, /^AT-/);
       assert.match(a.error.explicacion, /^Bien/);

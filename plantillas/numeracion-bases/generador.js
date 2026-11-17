@@ -32,7 +32,8 @@
  * base 10 violeta (N, f), la base turquesa (n, i), las cifras y los restos naranja (c, o), la segunda base verde (m, d),
  * solo en entre-bases. Sin carmín. Lo que se pide va en tinta en la pregunta, como en la teoría.
  * Datos (docs/plan-calidad.md §3, punto 13): la regla de las cifras, la descomposición en letras, la división con
- * resto, «de a hasta z hay z − a + 1» y las potencias como multiplicación; nunca el paso hecho ni la respuesta.
+ * resto, «del primero, p, al último, u, hay u − p + 1» (p y u, no a y z: a es siempre una cifra; auditoría, M6) y las
+ * potencias como multiplicación; nunca el paso hecho ni la respuesta.
  * Errores: los códigos AT-* de la teoría de la unidad (hipótesis de aula, sin medir: el informe
  * docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md no trae cifras de numeración); los de cifras que no
  * respetan la base, restos al revés y poste y valla citan las trampas 23 y 24 de
@@ -106,7 +107,7 @@
     fk: k => (k <= 2 ? D.f2 : k === 3 ? D.f3 : D.f4),
     pot: (n, k) => [`${n}² = ${n} × ${n}`, `${n}³ = ${n} × ${n} × ${n}`].slice(0, Math.max(1, k - 2)).join('; '),
     div: n => `N = q × ${n} + r, con 0 ≤ r < ${n} (q: cociente; r: resto)`,
-    hasta: 'De a hasta z hay z − a + 1 números',
+    hasta: 'Del primero, p, al último, u, hay u − p + 1 números',
     bloques10: 'Del 1 al 9, una cifra; del 10 al 99, dos; del 100 al 999, tres',
     etiqueta: 'Etiqueta: primero lo más grande (cajas, bolsitas), al final los sueltos; abajo, la base',
   };
@@ -779,7 +780,7 @@
       correcta: V,
       errores: [
         h('AT-CERO', z + 1, `Bien llegar hasta ${f0(z)}. Pero los que empiezan en 0 tienen menos cifras: contándolos salen ${f0(z + 1)}.`, T),
-        h('AT-CONTEO', z - a, `Bien los extremos, ${f0(a)} y ${f0(z)}. Pero de a hasta z hay z − a + 1, no ${f0(z - a)}.`, T),
+        h('AT-CONTEO', z - a, `Bien los extremos, ${f0(a)} y ${f0(z)}. Pero del primero al último hay u − p + 1, no ${f0(z - a)}.`, T),
         h('AT-DECIMAL', 9 * 10 ** (k - 1), `Bien contar los de ${k} cifras. Pero ${f0(9 * 10 ** (k - 1))} son los de base 10; aquí las cifras van de 0 a ${n - 1}.`),
         h('AT-SIN-CERO', (n - 1) ** k, `Bien que la primera cifra no sea 0. Pero en los otros lugares el 0 sí va: sin él salen ${f0((n - 1) ** k)}.`),
       ],
@@ -804,7 +805,7 @@
       correcta: t,
       errores: [
         h('AT-DECIMAL', totalCif(bloques(N, 10)), `Bien contar por bloques. Pero ${f0(totalCif(bloques(N, 10)))} son las cifras en base 10; en base ${n} los bloques son otros.`),
-        h('AT-CONTEO', t - kmax, `Bien los bloques. Pero en cada uno hay z − a + 1 números, no z − a: así salen ${f0(t - kmax)}.`, T),
+        h('AT-CONTEO', t - kmax, `Bien los bloques. Pero en cada uno hay u − p + 1 números, no u − p: así salen ${f0(t - kmax)}.`, T),
         h('AT-BLOQUE', kmax * N, `Bien: los más grandes llevan ${kmax} cifras. Pero los de antes llevan menos: ${kmax} × ${N} = ${f0(kmax * N)}.`, T),
       ],
       solucion: [

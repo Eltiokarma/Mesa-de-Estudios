@@ -19,6 +19,8 @@
  *   cifras: true,           dibuja la barra de cifras (false: solo la de boletos)
  *   lineas: 'cuenta' | 'rango' | false,   una línea por bloque: «10 a 99: 90 × 2 = 180» o «10 a 99: 90 boletos»
  *   cuenta: true,           en las líneas, el resultado de cada bloque (false: «90 × 2 = ?»)
+ *   soloUltimo: true,       una sola línea, la del último bloque (el que se mueve en el juego): los bloques de antes
+ *                           quedan en las barras, sin su cuenta (el juego no da hechos los bloques de la predicción)
  *   total: true | '?' | false,   el total de cifras en el rótulo de la barra de cifras (naranja) o «?»
  *   hasta: 2,               cuántos bloques se ven (Mira: los demás quedan como hueco punteado)
  *   impresas: 492,          sin barras: las cifras que cobró la imprenta (cuando se pide el último boleto)
@@ -109,14 +111,14 @@
       }
       // Líneas de los bloques.
       if (d.lineas) bl.forEach((b, i) => {
-        if (i >= hasta) return;
+        if (i >= hasta || (d.soloUltimo && i !== bl.length - 1)) return;
         const segs = [[`${fmt(b.a)} a ${fmt(b.z)}: `, null, 600]];
         if (d.lineas === 'rango') segs.push([`${fmt(b.cuantos)} ${b.cuantos === 1 ? 'boleto' : 'boletos'} de ${b.k} ${b.k === 1 ? 'cifra' : 'cifras'}`]);
         else {
           segs.push([`${fmt(b.cuantos)} × `], [String(b.k), 'o', 700], [' = ']);
           segs.push(d.cuenta === false ? ['?', null, 700] : [fmt(b.cifras), 'o', 700]);
         }
-        rot.push(tx(`bloque ${i + 1}`, X0, L0 + i * LP, segs));
+        rot.push(tx(`bloque ${i + 1}`, X0, L0 + (d.soloUltimo ? 0 : i) * LP, segs));
       });
     } else if (d.impresas !== undefined) {
       rot.push(tx('impresas', 160, 150, [['La imprenta imprimió '], [fmt(entero(d.impresas)), 'o', 700], [' cifras']], { ancla: 'middle' }));

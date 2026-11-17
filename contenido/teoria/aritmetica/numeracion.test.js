@@ -10,7 +10,13 @@
 //   - las misiones se cumplen con un solo caso y su «bien» no dice la predicción;
 //   - «Ahora tú» trae cuatro opciones distintas en 400 semillas y su respuesta cuadra con un cálculo aparte (fuerza bruta,
 //     sin el código de la unidad); «Así se resuelve» no hace la pregunta de «Ahora tú» y también cuadra;
-//   - la letra de una alternativa va en negrita (letra) en la respuesta; las escalas del dibujo no saltan.
+//   - la letra de una alternativa va en negrita (letra) en la respuesta; las escalas del dibujo no saltan;
+//   - fase 8 (correcciones de la auditoría, 17 nov): ninguna figura recibe la envoltura { pieza, datos } en vez de sus
+//     datos (A1); los números de una predicción o una misión no aparecen juntos antes (glosario, «Lee», el juego, la
+//     pestaña Ejemplos; M1, M2, M7); un numeral de base desconocida lleva su base (M3); cada letra de una regla o de un
+//     dato se dice en palabras (q, p, u, k; M4) y a es siempre una cifra (M6); la leyenda solo nombra números que se ven
+//     (M8); los datos de un ejemplo no traen su respuesta (M9); cada nivel 3 trae una cuenta (M10); el distractor D de
+//     «Una suma con base oculta» sale del error que nombra (M5); «muestra» no se marca como término de Estadística.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -336,7 +342,7 @@ test('«Así se resuelve» no hace la pregunta de «Ahora tú», y su respuesta 
       assert.match(q, plantilla[id], `${id} resuelve ${s}`);
       assert.ok(!plantilla[id].test(plano(i.ahoraTu.generar(s).pregunta)), `${id} ahora tú ${s}`);
       if (id === 'agrupar') { const m = q.match(/tiene (\d+) caramelos sueltos.*bolsitas de (\d)/); assert.equal(resp, `Laetiquetaes${aBase(+m[1], +m[2])}(${m[2]})`); }
-      if (id === 'descomposicion') { const m = q.match(/etiqueta, (\d+): uno tiene bolsitas de (\d) y el otro, de (\d)/); assert.equal(resp, `Elsegundotiene${deBase(m[1], +m[3]) - deBase(m[1], +m[2])}caramelosmás`); }
+      if (id === 'descomposicion') { const m = q.match(/etiqueta, (\d+)\(n\): uno tiene bolsitas de (\d) y el otro, de (\d)/); assert.equal(resp, `Elsegundotiene${deBase(m[1], +m[3]) - deBase(m[1], +m[2])}caramelosmás`); }
       if (id === 'cambio-base') { const m = q.match(/Pasa (\d+)\((\d)\) a base (\d)/); assert.equal(resp, `${m[1]}(${m[2]})=${aBase(deBase(m[1], +m[2]), +m[3])}(${m[3]})`); }
       if (id === 'base-desconocida') {
         const m = q.match(/dice (\d+)\(n\) y tiene (\d+)/), sirve = [];
@@ -377,4 +383,154 @@ test('la mesa 3D y las otras mesas usan los colores de la unidad', () => {
     for (const f of fichas(m3.lectura(v))) assert.equal(f.v, `c-${def.colores[f.m]}`);
   }
   for (const m of def.laboratorio) for (const v of Teoria.grilla(m.controles).slice(0, 50)) for (const f of fichas(m.lectura(v))) assert.ok(f.m in def.colores, `${m.id}: ${f.t}`);
+});
+
+// ---------- Fase 8: las correcciones de la auditoría (rutinas/auditoria/aritmetica.numeracion.md), cada una con su prueba ----------
+// Todas las figuras de una idea, también los pasos de «Mira» y las de «Así se resuelve» y «Ahora tú».
+function todasLasFiguras(i) {
+  const out = [], add = (nombre, dib, pz) => { if (dib) out.push({ nombre, pieza: dib.pieza || pz || i.pieza, dib }); };
+  for (const [k, t] of i.lee.tarjetas.entries()) add(`lee ${k + 1}`, t.dibujo, t.pieza);
+  for (const v of Teoria.grilla(i.juega.controles).filter((_, k) => k % 5 === 0)) add(`juego ${JSON.stringify(v)}`, i.juega.dibujo(v), i.juega.pieza);
+  add('predice', i.predice.dibujo, i.predice.pieza); add('revelar', i.predice.revelar, i.predice.pieza);
+  i.mira.pasos.forEach((p, k) => add(`mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }, i.mira.pieza));
+  for (const [k, e] of i.ejemplos.entries()) add(`ejemplo ${k + 1}`, e.figura);
+  for (let s = 0; s < 40; s++) {
+    const r = i.resuelve.generar(s); add(`resuelve ${s}`, r.dibujo, i.resuelve.pieza); r.pasos.forEach(x => add(`resuelve ${s}`, x.dibujo, i.resuelve.pieza));
+    const a = i.ahoraTu.generar(s); add(`ahora tú ${s}`, a.dibujo, i.ahoraTu.pieza); if (a.solucion.dibujo) add(`ahora tú ${s}`, a.solucion.dibujo, i.ahoraTu.pieza);
+  }
+  return out;
+}
+
+test('A1: cada figura recibe sus datos, no la envoltura { pieza, datos, estado }, y dibuja algo más que su lienzo vacío', () => {
+  let n = 0;
+  for (const id of IDEAS) for (const { nombre, pieza, dib } of todasLasFiguras(idea(id))) {
+    n++;
+    assert.ok(dib.datos && typeof dib.datos === 'object', `${id} ${nombre}: sin datos`);
+    assert.ok(!('pieza' in dib.datos), `${id} ${nombre}: la figura recibe la envoltura (con «pieza») en vez de sus datos`);
+    const pz = Kit.piezas[pieza], e = dib.estado || {};
+    assert.notEqual(pz.dibujar(dib.datos, e), pz.dibujar({}, e), `${id} ${nombre}: dibuja el lienzo vacío`);
+  }
+  assert.ok(n > 300, `${n} figuras`);
+  // El caso de la auditoría: la primera tarjeta de «Lee» de la idea 3 muestra los 75 caramelos.
+  const t1 = idea('cambio-base').lee.tarjetas[0];
+  assert.ok(textosSVG(P.dibujar(t1.dibujo.datos)).some(t => /75 caramelos/.test(t)), 'lee 1 de la idea 3: el montón de 75');
+});
+
+// Texto plano de cualquier cosa que lee el alumno, con 203₍₅₎ escrito como 203(5) (igual que plano()).
+const SUBN = '₀₁₂₃₄₅₆₇₈₉';
+const norm = t => String(t).replace(/₍([₀-₉ₙ?]+)₎/g, (m, d) => `(${[...d].map(c => (c === 'ₙ' ? 'n' : c === '?' ? '?' : SUBN.indexOf(c))).join('')})`);
+const textoDe = x => norm(typeof x === 'string' ? x : plano(x));
+const tiene = (t, tok) => new RegExp(`(^|[^\\d])${tok.replace(/[()?]/g, '\\$&')}(?![\\d])`).test(t);
+const svgDe = (pz, dib) => (dib ? textosSVG(Kit.piezas[dib.pieza || pz].dibujar(dib.datos, dib.estado || {})).join(' | ') : '');
+
+test('M1, M2 y M7: los números de una predicción o una misión no aparecen juntos antes de tiempo', () => {
+  // Cada caso: los números que, juntos, dan resuelta la predicción o la misión.
+  const PRED = { agrupar: [['44(5)', '100(5)']], descomposicion: [['203(5)', '53']], 'cambio-base': [['19', '201(3)']],
+    'base-desconocida': [['31(n)', '25'], ['13(n)', '11'], ['13', '11', '8']], 'conteo-cifras': [['100', '192']] };
+  const MISION = { agrupar: [['40(6)', '24']], descomposicion: [['132', '56']], 'cambio-base': [['75', '1023(4)']],
+    'base-desconocida': [['23', '17', '7']], 'conteo-cifras': [['492', '200']] };
+  // Lo que se puede abrir antes de jugar: el glosario entero (desde cualquier subrayado), los ejemplos de todas las ideas
+  // (la pestaña Ejemplos no se cierra por idea) y «Lee» de esta idea y de las anteriores.
+  const glosario = def.glosario.flatMap(g => [g.def, g.simple || ''].concat(g.ejemplos).map(t => ({ donde: `glosario «${g.termino}»`, t: textoDe(t) })));
+  const ejemplos = def.ideas.flatMap(i => i.ejemplos.map((e, k) => ({ donde: `${i.id} ejemplo ${k + 1}`,
+    t: [e.enunciado, e.alternativas, e.datos, e.solucion, e.respuesta].map(textoDe).join(' | ') + ' | ' + svgDe(i.pieza, e.figura) })));
+  for (const [k, id] of IDEAS.entries()) {
+    const i = idea(id), j = i.juega;
+    const lee = def.ideas.slice(0, k + 1).flatMap(x => x.lee.tarjetas.map((t, m) => ({ donde: `${x.id} lee ${m + 1}`,
+      t: [t.titulo, t.texto, t.ecuacion].map(textoDe).join(' | ') + ' | ' + svgDe(t.pieza || x.pieza, t.dibujo && Object.assign({ pieza: t.pieza || x.pieza }, t.dibujo)) })));
+    const juego = [{ donde: 'consigna', t: textoDe(j.consigna) }, { donde: 'misión', t: textoDe([j.mision.texto, j.mision.bien]) },
+      { donde: 'leyenda', t: textoDe(j.leyenda.map(x => [x.s, ' ', x.t])) }]
+      .concat(Teoria.grilla(j.controles).map(v => ({ donde: `juego ${JSON.stringify(v)}`, t: textoDe(j.lectura(v)) + ' | ' + svgDe(j.pieza, j.dibujo(v)) })));
+    const revisar = (casos, fuentes, que) => { for (const caso of casos) for (const f of fuentes)
+      assert.ok(!caso.every(tok => tiene(f.t, tok)), `${id}: ${f.donde} trae juntos ${caso.join(', ')} (${que}): ${f.t.slice(0, 160)}`); };
+    revisar(PRED[id], glosario.concat(lee, juego, ejemplos), 'la predicción');
+    revisar(MISION[id], glosario.concat(lee, ejemplos), 'la misión');
+  }
+  // M7: el juego de la idea 5 no da hechos los bloques de una y dos cifras (9 × 1 = 9 y 90 × 2 = 180 son Predice).
+  const j5 = idea('conteo-cifras').juega;
+  for (const v of Teoria.grilla(j5.controles)) {
+    const t = textoDe(j5.lectura(v)) + ' | ' + svgDe(j5.pieza, j5.dibujo(v));
+    assert.ok(!/= 180\b|\b189\b|\b9 × 1|\b90 × 2/.test(t), `juego ${v.P}: ${t}`);
+  }
+  // M2: los niveles 1 y 2 de la idea 2 no llevan un 0 entre otras cifras (lo reserva su predicción).
+  for (const [k, e] of idea('descomposicion').ejemplos.entries()) if (e.nivel < 3)
+    for (const m of textoDe(e.enunciado).matchAll(/(\d+)\((\d)\)/g)) assert.ok(!/[1-9]0+[1-9]/.test(m[1]), `ejemplo ${k + 1}: ${m[0]}`);
+});
+
+test('M3: un numeral de base desconocida lleva su base (sin base escrita, la regla dice que es 10)', () => {
+  // Las cifras de un numeral sueltas (fuera de un subíndice, después de «numeral», «etiqueta» o en su lista) en una
+  // pregunta que habla de la base. Una suma de cifras («suman 15») no es un numeral.
+  const sueltas = x => { const out = [];
+    const ir = y => { if (!y || typeof y !== 'object') return;
+      if (Array.isArray(y)) { y.forEach((z, k) => { const antes = typeof y[k - 1] === 'string' ? y[k - 1] : '';
+        if (z && z.m === 'cifras' && /^\d{2,}$/.test(String(z.t)) && /(numerales?|etiqueta|dice|,| y) *$/.test(antes)) out.push(z.t); else ir(z); }); return; }
+      if (y.sub || y.raya) return; Object.values(y).forEach(ir); };
+    ir(x); return out; };
+  const pregs = [];
+  for (const id of IDEAS) {
+    const i = idea(id);
+    for (const [k, e] of i.ejemplos.entries()) pregs.push([`${id} ejemplo ${k + 1}`, e.enunciado]);
+    for (let s = 0; s < SEMILLAS; s++) pregs.push([`${id} ahora tú ${s}`, i.ahoraTu.generar(s).pregunta]);
+    for (let s = 0; s < 40; s++) pregs.push([`${id} resuelve ${s}`, i.resuelve.generar(s).enunciado]);
+    // Las consignas (texto plano): ninguna etiqueta sin base.
+    assert.ok(!/etiqueta (dice )?\d+[^\d₍(]/.test(i.juega.consigna), `${id}: consigna «${i.juega.consigna}»`);
+  }
+  for (const [donde, q] of pregs) if (/base/.test(textoDe(q))) assert.deepEqual(sueltas(q), [], `${donde}: «${textoDe(q)}»`);
+});
+
+test('M4 y M6: cada letra de una regla o de un dato se dice en palabras, y a es siempre una cifra', () => {
+  const lineas = [];
+  for (const id of IDEAS) {
+    const i = idea(id);
+    lineas.push([`${id} regla`, textoDe([i.regla.ecuacion, ' | ', i.regla.condicion, ' | ', i.regla.texto])]);
+    for (const [k, e] of i.ejemplos.entries()) for (const d of e.datos || []) lineas.push([`${id} ejemplo ${k + 1}`, textoDe(d)]);
+    for (let s = 0; s < 60; s++) {
+      for (const d of i.ahoraTu.generar(s).datos || []) lineas.push([`${id} ahora tú ${s}`, textoDe(d)]);
+      for (const d of i.resuelve.generar(s).datos || []) lineas.push([`${id} resuelve ${s}`, textoDe(d)]);
+    }
+  }
+  assert.ok(lineas.some(([, t]) => /\bq\b/.test(t)));
+  for (const [donde, t] of lineas) {
+    if (/\bq × /.test(t)) assert.match(t, /cociente/, `${donde}: la q sin decir qué es: ${t}`);
+    if (/\bu − p\b/.test(t)) assert.match(t, /primero|primer/, `${donde}: p y u sin decir qué son: ${t}`);
+    // La a es una cifra en toda la unidad: nunca el extremo de un bloque.
+    assert.ok(!/z − a|de a hasta|\ba\b.*\bhasta z\b/i.test(t), `${donde}: a como extremo: ${t}`);
+  }
+  // La regla de la idea 5 dice qué son p, u y k.
+  assert.match(textoDe(idea('conteo-cifras').regla.condicion), /p: el primero; u: el último; k: cifras/);
+});
+
+test('M8: la leyenda del juego solo nombra números que se ven al empezar (en la figura o en la lectura)', () => {
+  for (const id of IDEAS) {
+    const j = idea(id).juega, v0 = Object.fromEntries(j.controles.map(c => [c.id, c.inicio]));
+    const visto = textoDe(j.lectura(v0)) + ' | ' + svgDe(j.pieza, j.dibujo(v0)) + ' | ' + textoDe(j.mision.texto);
+    for (const x of j.leyenda) for (const m of textoDe(x.s).matchAll(/\d+/g)) assert.ok(tiene(visto, m[0]), `${id}: la leyenda nombra ${m[0]} y no se ve`);
+  }
+});
+
+test('M9: los datos de un ejemplo no traen su respuesta', () => {
+  for (const id of IDEAS) for (const [k, e] of idea(id).ejemplos.entries()) {
+    const d = (e.datos || []).map(textoDe).join(' | ');
+    for (const q of pedidos(e.respuesta, id)) assert.ok(!tiene(d, norm(q)), `${id} ejemplo ${k + 1}: los datos traen «${q}»`);
+    assert.ok(!/izquierda cuenta|los restos, en el orden/i.test(d), `${id} ejemplo ${k + 1}: los datos dicen el paso`);
+  }
+});
+
+test('M10: cada ejemplo de nivel 3 trae una cuenta, y en la idea 1 tienen varias rondas o dos condiciones', () => {
+  for (const id of IDEAS) for (const [k, e] of idea(id).ejemplos.entries()) if (e.nivel === 3)
+    assert.ok(e.solucion.some(x => x.ecuacion), `${id} ejemplo ${k + 1}: «${e.titulo}» sin ninguna cuenta`);
+  const n3 = idea('agrupar').ejemplos.filter(e => e.nivel === 3);
+  assert.ok(n3.filter(e => e.solucion.length >= 3).length >= 4, 'la idea 1: niveles 3 de un solo paso');
+});
+
+test('M5: el distractor D de «Una suma con base oculta» es el valor que da su error (pasar el 5 sumando)', () => {
+  const e = idea('base-desconocida').ejemplos.find(x => x.titulo === 'Una suma con base oculta');
+  // 23₍ₙ₎ + 32₍ₙ₎ = 5n + 5 = 45: bien, n = 8; con el 5 sumando, 5n = 45 + 5, n = 10; con B (7), 40; con A (9), 50.
+  assert.equal(e.alternativas[3], String((45 + 5) / 5));
+  assert.equal(e.alternativas[2], String((45 - 5) / 5));
+  for (const [L, alt] of [['B', e.alternativas[1]], ['A', e.alternativas[0]]]) assert.match(textoDe(e.solucion.map(x => x.texto)), new RegExp(String(5 * +alt + 5)), L);
+});
+
+test('«muestra» (el verbo) no se marca como el término de Estadística', () => {
+  assert.ok(def.glosarioSin.includes('muestra'));
 });
