@@ -255,7 +255,8 @@ details[open] summary{margin-bottom:8px}
 @media (min-width:900px){ .saludo .solo-grande{display:inline-flex;padding:9px 16px;font-size:14px} }
 
 /* ---------- Formato lectura (app/lectura.js; diseño en docs/formato-lectura.md) ---------- */
-/* Colores del texto pintado (regla 4): evidencia --c-i turquesa, distractor --c-o naranja, idea --c-d verde.
+/* Colores del texto pintado (regla 4): evidencia --c-i turquesa, distractor --c-o naranja, idea --c-f violeta (Gerson,
+   17 nov: antes verde; con protanopía el verde y el naranja eran el mismo color, 0,010 en OKLab).
    Como .var.c-*: la letra en tinta, subrayado de 3 px del color y fondo del 12 %. */
 .lectura{--lec-texto:18px}
 .lec-cab h1{margin-top:2px}
@@ -285,7 +286,7 @@ details[open] summary{margin-bottom:8px}
 /* Si la oración de donde sale el distractor también prueba la correcta: se pinta como evidencia y el origen
    lleva un contorno naranja a trazos (así no se confunde con un distractor solo). */
 .o.pinta-ev.pinta-di{background:color-mix(in srgb,var(--c-i) 12%,transparent);text-decoration-color:var(--c-i);outline:2px dashed var(--c-o);outline-offset:2px}
-.o.pinta-idea{text-decoration-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
+.o.pinta-idea{text-decoration-color:var(--c-f);background:color-mix(in srgb,var(--c-f) 12%,transparent)}
 /* Textos discontinuos: tabla, barras y recuadros. Cada parte se pinta con borde y fondo (no subrayado). */
 .lec-fig{margin:4px 0 16px;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;line-height:1.4}
 .lec-fig figcaption{font-weight:800;margin-bottom:8px}
@@ -308,9 +309,9 @@ details[open] summary{margin-bottom:8px}
 .fig-el.pinta-ev{outline-color:var(--c-i);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
 .fig-el.pinta-di{outline-color:var(--c-o);background:color-mix(in srgb,var(--c-o) 12%,transparent)}
 .fig-el.pinta-ev.pinta-di{outline:3px dashed var(--c-o);background:color-mix(in srgb,var(--c-i) 12%,transparent)}
-.fig-el.pinta-idea{outline-color:var(--c-d);background:color-mix(in srgb,var(--c-d) 12%,transparent)}
+.fig-el.pinta-idea{outline-color:var(--c-f);background:color-mix(in srgb,var(--c-f) 12%,transparent)}
 .marca{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-.marca.ev{background:var(--c-i)}.marca.di{background:var(--c-o)}.marca.idea{background:var(--c-d)}
+.marca.ev{background:var(--c-i)}.marca.di{background:var(--c-o)}.marca.idea{background:var(--c-f)}
 .cita{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:6px 0 12px;font-size:16px;line-height:1.55}
 .cita p{margin:4px 0}
 /* Marcar una oración: cada una es un bloque tocable, con aire entre una y otra. */
@@ -775,6 +776,9 @@ input[type=file]{font:inherit;max-width:100%}
    Al predecir y en «Ahora tú» no: ahí se lee la pregunta y las opciones, y la figura fija las taparía. */
 @media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-figcaja:not(.alta){position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
 .te-fig svg{width:100%;height:auto;max-width:520px}
+/* Verbal: el texto en su soporte con la escalera de temas es una figura alta (rv-escalera, rv-soporte). En pantalla
+   ancha cabe entera a la vista, para ver juntos los avisos y la escalera mientras se cambia el peldaño. */
+@media (min-width:900px){.te-idea .te-fig svg:is(.rv-escalera,.rv-soporte){max-height:calc(100vh - 150px)}}
 .te-lectura{min-height:24px;font-variant-numeric:tabular-nums;font-weight:600;text-align:center}
 .te-zona{display:flex;flex-direction:column;gap:10px;min-height:120px}
 .te-zona h3{margin:0;font-size:17px;line-height:1.4}

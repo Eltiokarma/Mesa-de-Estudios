@@ -121,7 +121,8 @@ async function vista(ctx, id, unidad) {
 
   const { textoHTML, figuraHTML, cuerpoEjercicioHTML } = pintor(esc);
 
-  // Fragmento citado en la explicación, con el color de su rol (una línea por oración o parte de figura).
+  // Fragmento citado en la explicación, con el color de su rol (una línea por oración o parte de figura): pinta-ev en
+  // turquesa, pinta-di en naranja y pinta-idea en violeta (--c-f desde el 17 nov; antes verde: app/estilos.css).
   function citaHTML(it, ids, rol) {
     const cs = L().citas(it, ids);
     if (!cs.length) return '';

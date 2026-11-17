@@ -50,7 +50,7 @@ Es el de `app/practica.js`, para que la medición se compare entre formatos, con
 
 - **El texto solo, primero.** Letra de 18 px, interlineado de 1,6 y a lo sumo 65 caracteres por línea. Los párrafos llevan su número en un círculo (①, ②), y cada oración un número pequeño y gris, seguido en todo el texto (o1 es la oración 1). Las explicaciones del banco citan las oraciones por ese número ("la oración 6 dice…").
 - **"Ya lo leí"** queda al final del texto y registra el tiempo de lectura (sección 6). No hay cronómetro visible.
-- **Paso previo de marcar una oración:** se hace en esta misma pantalla, con el texto completo. Cada oración se vuelve un bloque tocable, con un poco de aire entre una y otra para que un dedo no toque la vecina. Tocar una oración la selecciona (borde en el color de marca, `--brand`, porque es un estado; el verde `idea` queda solo para la corrección); hay que tocar **Confirmar** para seguir. Un toque accidental no graba nada.
+- **Paso previo de marcar una oración:** se hace en esta misma pantalla, con el texto completo. Cada oración se vuelve un bloque tocable, con un poco de aire entre una y otra para que un dedo no toque la vecina. Tocar una oración la selecciona (borde en el color de marca, `--brand`, porque es un estado; el violeta `idea` queda solo para la corrección); hay que tocar **Confirmar** para seguir. Un toque accidental no graba nada.
 - **Durante las preguntas, el texto no desaparece.** Queda plegado en una franja fija arriba, de unos 56 px, con el título y "Ver texto ▾". Al tocarla se abre una hoja que sube desde abajo y ocupa el 85 % de la pantalla, con el texto completo y desplazable. Se cierra deslizando hacia abajo o con "Volver a la pregunta". Así el alumno relee sin perder la pregunta, como en el examen de papel.
 - **Una pregunta por pantalla**, con su número ("Pregunta 2 de 3") y los mismos botones `.alt` de la práctica (letra A–E, estados `ok` y `mal`).
 
@@ -120,7 +120,7 @@ Después de elegir, la pantalla muestra:
 | --- | --- | --- |
 | `evidencia` | `--c-i` turquesa | Lo que prueba la correcta |
 | `distractor` | `--c-o` naranja | De dónde sale lo elegido; la marquita de su explicación va en el mismo naranja |
-| `idea` | `--c-d` verde | La oración aceptada en el paso previo |
+| `idea` | `--c-f` violeta (antes verde `--c-d`; cambio del 17 nov por protanopía) | La oración aceptada en el paso previo |
 
 Las tres se muestran **como en `.var.c-*`: la letra en tinta, un subrayado de 3 px del color y un fondo del 12 %**. Así se siguen leyendo con contraste AA. `idea` se pinta solo en la corrección del paso previo y `evidencia` solo en la de la pregunta; se muestran una debajo de otra, cada una con su propio texto pintado, así que una oración nunca lleva dos colores a la vez. La distancia de color entre los tres y el contraste en los dos modos los fija `docs/diseno.md` (pedido en la sección 8).
 

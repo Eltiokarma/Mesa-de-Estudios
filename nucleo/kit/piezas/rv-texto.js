@@ -21,7 +21,7 @@
  * }
  * estado = {
  *   marcas:  { f1: 'i' },             // subrayado de 3 px y fondo tenue. Trazo distinto por color (no solo color):
- *                                     //   i continuo · o discontinuo · d punteado · h continuo con fondo más fuerte
+ *                                     //   i continuo · o discontinuo · d y f punteado · h continuo con fondo más fuerte
  *   tachar:  ['f3'],                  // raya de tinta encima y texto tenue (lo que se descarta; el error va con marca h)
  *   tapar:   ['f2'],                  // el fragmento se cubre con una banda gris que conserva su lugar
  *   huecos:  { f2: 'sin embargo' },   // texto que entra en un fragmento con hueco: true (si no, «______»)
@@ -43,7 +43,8 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
   const W = 320, PAD = 8, TAM = 16, LH = 25, NUM = 24, PAD_T = 10, SEP = 12;
-  const COLORES = ['i', 'o', 'd', 'h'];
+  // f (violeta, punteado como d): la idea aceptada en «Tema e idea principal» (Gerson, 17 nov: de verde a violeta).
+  const COLORES = ['i', 'o', 'd', 'h', 'f'];
   const HUECO = '______';
 
   // Reparte las palabras de cada fragmento en renglones de ancho `ancho`. Devuelve trozos { id, x, y, texto, w }.
@@ -136,7 +137,7 @@
         }
         if (c && !tr.n) {
           fondo += `<rect class="rv-marca${cl}" x="${T.n(tr.x - 2)}" y="${T.n(tr.y - 16)}" width="${T.n(w + 4)}" height="21" rx="4" fill="${T.color(c)}" fill-opacity="${c === 'h' ? 0.22 : 0.14}"/>`;
-          const raya = c === 'o' ? ' stroke-dasharray="7 4"' : c === 'd' ? ' stroke-dasharray="1 5"' : '';
+          const raya = c === 'o' ? ' stroke-dasharray="7 4"' : c === 'd' || c === 'f' ? ' stroke-dasharray="1 5"' : '';
           encima += `<line class="rv-sub${cl}" x1="${T.n(tr.x)}" y1="${T.n(tr.y + 5)}" x2="${T.n(tr.x + w)}" y2="${T.n(tr.y + 5)}" stroke="${T.color(c)}" stroke-width="${T.GROSOR.variable}" stroke-linecap="round"${raya}/>`;
         }
         if (tr.caja && !tr.n) {

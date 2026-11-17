@@ -196,7 +196,7 @@ por papel, práctica por idea, lector en frío y auditor. Lo que se adapta:
 | Trigonometría y geometría | valores notables (sen 37° = 3/5), la definición de la razón, áreas y teoremas que se usan | escalera en la pared, poste y su sombra, rampa, terreno | los ángulos en carmín; los lados por papel (dato, dato, lo que se pide) |
 | Álgebra y aritmética | la propiedad o fórmula que se usa (productos notables, regla de tres), equivalencias | balanza, fichas, precios del mercado | lo que se pide en violeta; los datos por papel |
 | Razonamiento matemático | las reglas del problema escritas, sin el atajo | relojes, calendarios, fichas, mapas de cuadras | el papel de cada cantidad, igual que en física |
-| Razonamiento verbal | la definición o el criterio que se aplica («idea principal: lo que el texto entero afirma del tema») | el texto mismo, corto y propio, con su contexto | tiene paleta propia de lectura (evidencia turquesa, distractor naranja, idea verde; `docs/diseno.md`); los ejemplos resueltos son preguntas sobre textos breves con la evidencia marcada |
+| Razonamiento verbal | la definición o el criterio que se aplica («idea principal: lo que el texto entero afirma del tema») | el texto mismo, corto y propio, con su contexto | tiene paleta propia de lectura (evidencia turquesa, distractor naranja, idea violeta; `docs/diseno.md`); los ejemplos resueltos son preguntas sobre textos breves con la evidencia marcada |
 
 Etapa 2 del plan (`docs/plan-calidad.md` §7): `trigonometria.razones-trigonometricas-agudas`, `quimica.materia-y-energia`
 y `razonamiento-verbal.tema-e-idea-principal`. Las tres ya tienen teoría de rondas anteriores (sin el contrato

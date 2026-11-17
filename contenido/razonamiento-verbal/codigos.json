@@ -313,5 +313,20 @@
   "nombre": "En una extrapolación con un condicional contrario a lo que dice el texto, se elige una consecuencia que vuelve a confirmar lo que se negó",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RV64": {
+  "nombre": "Se toma como tema el marco, la persona o el lugar con que empieza el texto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV65": {
+  "nombre": "Se responde con el tema cuando se pide la idea principal",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RV66": {
+  "nombre": "El tema o la idea agregan un aspecto que el texto no trata",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

@@ -27,10 +27,10 @@ def simular(h, t): l = lin(h); return hexl([sum(m*c for m, c in zip(f, l)) for f
 
 def auditar(nombre, pal, card, ink):
     print(f'\n== {nombre} (tarjeta {card}, tinta {ink})')
-    print('var  hex      gris  texto/tarjeta  texto/chip  línea/tarjeta')
+    print('var        hex      gris  texto/tarjeta  texto/chip  línea/tarjeta')
     for k, h in pal.items():
         chip = mix_srgb(h, card, 0.12)
-        print(f'{k:4} {h}  {gris(h):4}  {contraste(h, card):5.2f}         {contraste(h, chip):5.2f}       {contraste(h, card):5.2f}')
+        print(f'{k:10} {h}  {gris(h):4}  {contraste(h, card):5.2f}         {contraste(h, chip):5.2f}       {contraste(h, card):5.2f}')
     print('pares (OKLab): normal | protan | deutan | tritan  — el más cercano marca el riesgo')
     filas = []
     for (a, ha), (b, hb) in itertools.combinations(pal.items(), 2):
@@ -50,5 +50,9 @@ if __name__ == '__main__':
                  'x': '#0b5a8c', 'y': '#561a6e', 'u': '#5c0300'}
     esc_oscuro = {'a': '#f0a04a', 'b': '#3dcdc3', 'R': '#ab8cf2', 'th': '#f17384', 'c': '#a3d65e',
                   'x': '#b3d9ff', 'y': '#e0a6ff', 'u': '#c6916e'}
+    # Paleta de lectura (razonamiento verbal, teoría y app/lectura.js; Gerson, 17 nov): evidencia turquesa, distractor
+    # naranja e idea violeta (antes verde: «idea-verde» queda para comparar; con protanopía, verde y naranja daban 0,010).
+    auditar('lectura, claro', {'evidencia': claro['i'], 'distractor': claro['o'], 'idea': claro['f'], 'idea-verde': claro['d']}, '#fffaf6', '#2d2340')
+    auditar('lectura, oscuro', {'evidencia': oscuro['i'], 'distractor': oscuro['o'], 'idea': oscuro['f'], 'idea-verde': oscuro['d']}, '#2a2135', '#f1ebf7')
     auditar('escena vectores, claro', esc_claro, '#fffaf6', '#2d2340')
     auditar('escena vectores, oscuro', esc_oscuro, '#2a2135', '#f1ebf7')
