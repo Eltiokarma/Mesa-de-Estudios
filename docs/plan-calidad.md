@@ -39,7 +39,7 @@ Lo que no cambia: las seis reglas de CLAUDE.md. El cálculo sigue en el motor, s
 
 Una idea está bien cuando un alumno de 5.º, solo y con el celular, puede responder estas preguntas mirando la pantalla. Cada punto nombra el defecto que evita.
 
-1. **¿Qué es esto que veo?** Hay un objeto o una situación reconocible dibujada: un poste, dos personas jalando una caja, una combi. El diagrama abstracto (ejes, flechas sueltas) llega después del objeto o al lado, nunca solo en la primera pantalla de la idea.
+1. **¿Qué es esto que veo?** Hay un objeto o una situación reconocible dibujada: un poste, dos personas jalando una caja, una combi. El diagrama abstracto (ejes, flechas sueltas) llega después del objeto o al lado, nunca solo en la primera pantalla de la idea. **En razonamiento verbal** (Gerson, 17 nov) el objeto reconocible es el texto en su soporte, con quién lo escribe y para quién: un aviso en el mural del colegio, un folleto del muelle de Puno, una hoja de simulacro.
 2. **¿Qué tengo que lograr?** «Juega» trae una **misión** que se puede cumplir y que el motor comprueba: «Haz que R mida exactamente 10 N. ¿Cuánto vale el ángulo?». La consigna es una frase de contexto más la misión. No describe los botones.
 3. **¿Qué significa cada símbolo?** Todo símbolo que aparece en la figura o en la lectura se dice en palabras la primera vez, en la misma pantalla: «θ: el ángulo entre A y B», «A = 6 N». Todo número lleva su unidad.
 4. **¿Qué cambió?** Lo que se compara se ve junto: lado a lado, o el caso anterior queda como rastro. Nunca un dibujo que reemplaza a otro si la idea es compararlos.
