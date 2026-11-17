@@ -14,6 +14,8 @@ const CASOS = {
   puerta: { soporte: 'puerta', lugar: 'Puerta del puesto de salud', hojas: [{ id: 'a', titulo: 'Aviso', de: 'el puesto de salud', para: 'vecinos', oraciones: ors('o', 4) }] },
   cartel: { soporte: 'cartel', lugar: 'Cartel de la feria', hojas: [{ id: 'a', titulo: 'Comunicado de la junta de la feria', de: 'la junta', para: 'vendedores', oraciones: ors('o', 3) }] },
   folleto: { soporte: 'folleto', lugar: 'Folleto del muelle', hojas: [{ id: 'a', titulo: 'Información', oraciones: ors('o', 3), tabla }] },
+  balsa: { soporte: 'folleto', lugar: 'Folleto del muelle', hojas: [{ id: 'a', titulo: 'Los uros y la totora', de: 'la caseta', para: 'visitantes', ilustracion: 'balsa', oraciones: ors('o', 5) }], frase: { etiqueta: 'Tu idea', t: 'La totora, para los uros, es la base de su vida en el lago' } },
+  bandeja: { soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', bandeja: true, hojas: [{ id: 'a', titulo: 'Ciencias Sociales', de: 'el libro', para: 'estudiar', oraciones: ors('o', 5) }] },
   cuaderno: { soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', hojas: [{ id: 'a', titulo: 'Útiles', oraciones: ors('o', 3) }], frase: { etiqueta: 'Frase', t: 'Los útiles para dibujar y para pintar en la clase de arte' } },
   mensaje: { soporte: 'mensaje', lugar: 'Familias de 5.º B', hojas: [{ id: 'a', de: 'la tutora', para: 'familias', oraciones: ors('o', 3) }] },
   simulacro: { soporte: 'simulacro', numero: 12, hojas: [{ id: 'a', titulo: 'Texto A', oraciones: ors('o', 3), barras }, { id: 'b', titulo: 'Texto B', oraciones: ors('p', 2), tabla }],
@@ -22,7 +24,7 @@ const CASOS = {
 const ESTADOS = d => {
   const ids = P.disponer(d).items.filter(i => i.id).map(i => i.id);
   return [{}, { marcas: Object.fromEntries(ids.map((i, k) => [i, ['i', 'o', 'f'][k % 3]])), tenue: ids.slice(0, 2), tachar: ids.slice(-1), nuevo: ids.slice(0, 1) },
-    { marcas: { frase: 'f' }, tenue: ids }];
+    { marcas: { frase: 'f' }, tenue: ids }, { tapar: ['frase', ...ids.slice(0, 2)] }];
 };
 
 // Caja de cada cosa escrita: renglones, números, letras, celdas y barras.
@@ -32,6 +34,7 @@ function cajas(L) {
     if (it.tipo === 'tabla-cab' || it.tipo === 'tabla-fila' || it.tipo === 'barra') out.push({ x: it.x, y: it.y, w: it.w, h: it.h, q: it.tipo });
     else if (it.tipo === 'letra') out.push({ x: it.x - 10, y: it.y - 10, w: 20, h: 20, q: 'letra' });
     else if (it.tipo === 'banda') out.push({ x: it.x - it.w / 2, y: it.y - 16, w: it.w, h: 20, q: it.texto });
+    else if (it.tipo === 'balsa') out.push({ x: it.x + it.w / 2 - 112, y: it.y + 4, w: 224, h: 46, q: 'balsa' });
     else out.push({ x: it.x, y: it.y - (it.tam || 15) + 1, w: it.w, h: (it.tam || 15) + 3, q: it.texto });
   }
   return out;
@@ -60,6 +63,10 @@ for (const [nombre, d] of Object.entries(CASOS)) {
       assert.ok(!/NaN|undefined|null|Infinity/.test(s));
       assert.ok(!/#[0-9a-f]{3,6}\b/i.test(s), 'sin colores fijos');
       assert.ok(!/<script|\son[a-z]+\s*=|\sid=/i.test(s));
+      for (const [tag] of s.matchAll(/<[a-z]+ [^>]+>/g)) {
+        const at = [...tag.matchAll(/\s([a-z-]+)="/g)].map(m => m[1]);
+        assert.equal(new Set(at).size, at.length, `atributo repetido en ${tag.slice(0, 60)}`);
+      }
       for (const [, t] of s.matchAll(/font-size="([\d.]+)"/g)) assert.ok(+t >= 14);
       for (const [, c] of s.matchAll(/var\(--c-([a-z])\)/g)) assert.ok(['i', 'o', 'f'].includes(c), `color ${c} fuera de la paleta de lectura`);
       altos.add(s.match(/viewBox="0 0 320 ([\d.]+)"/)[1]);
@@ -112,4 +119,40 @@ test('las barras son proporcionales al dato desde cero', () => {
   const [a, b] = L.items.filter(i => i.tipo === 'barra');
   assert.ok(Math.abs(a.largo / b.largo - 40 / 160) < 1e-9);
   assert.ok(T.ancho('160', 15, 700) + b.x0 + b.largo + 6 <= 320 - 4);
+});
+
+test('la bandeja queda debajo de la hoja, con sus rótulos dentro del lienzo, y la balsa no pisa el texto', () => {
+  const L = P.disponer(CASOS.bandeja), B = L.bandeja;
+  const hoja = L.papeles.find(p => p.w);
+  assert.ok(B.y >= hoja.y + hoja.h, 'la bandeja va debajo de la hoja');
+  for (const h of [B.resaltador, B.lapiz]) {
+    assert.ok(h.x - 44 >= 4 && h.x + 36 <= 316, 'la herramienta cabe');
+    assert.ok(h.y + 30 <= L.alto - 4, 'el rótulo cabe');
+  }
+  assert.ok(B.resaltador.x + 36 < B.lapiz.x - 44, 'las dos herramientas no se tocan');
+  assert.match(P.dibujar(CASOS.bandeja, {}), /data-objeto="bandeja" data-prueba="si"/);
+  assert.match(P.dibujar(CASOS.balsa, {}), /data-objeto="balsa" data-prueba="si"/);
+  assert.match(P.alt(CASOS.balsa), /balsa de totora/);
+});
+
+test('tapar guarda el lugar del renglón sin mostrar su texto', () => {
+  const d = CASOS.balsa, s = P.dibujar(d, { tapar: ['frase'] });
+  const textos = [...s.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map(m => m[1]).join(' ');
+  assert.ok(!textos.includes('base de su vida'), 'la frase tapada no se lee');
+  assert.match(s, /class="rv-tapa"/);
+  assert.ok(P.dibujar(d, {}).includes('es la base de su vida'));
+});
+
+test('ancla, cercana y enBandeja: la manija cae sobre su oración y soltarla ahí la elige', () => {
+  const d = CASOS.bandeja, ids = ['o1', 'o2', 'o3', 'o4', 'o5'];
+  for (const id of ids) for (const lado of [undefined, 'fin']) {
+    const p = P.ancla(d, id, lado);
+    assert.ok(p.x >= 4 && p.x <= 316, `${id} ${lado}`);
+    assert.equal(P.cercana(d, p, ids), id);
+    assert.equal(P.enBandeja(d, p), false);
+  }
+  const B = P.disponer(d).bandeja;
+  assert.equal(P.enBandeja(d, B.lapiz), true);
+  assert.equal(P.enBandeja(CASOS.mural, { x: 10, y: 9999 }), false, 'sin bandeja, nunca');
+  assert.ok(P.ancla(CASOS.simulacro, 'C'), 'también las letras de las alternativas');
 });

@@ -6267,7 +6267,7 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -6380,7 +6380,7 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
-      "terminos": 30
+      "terminos": 31
      }
     },
     {
@@ -6390,8 +6390,7 @@
       "Jerarquía textual",
       "Tema central",
       "Idea principal e ideas secundarias",
-      "Subrayado",
-      "Mapas conceptuales"
+      "Subrayado"
      ],
      "universidades": {
       "uni": {
@@ -6417,10 +6416,11 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js",
        "/nucleo/kit/piezas/rv-soporte.js",
-       "/nucleo/kit/piezas/rv-escalera.js"
+       "/nucleo/kit/piezas/rv-escalera.js",
+       "/nucleo/kit/piezas/rv-arbol.js"
       ],
-      "ideas": 3,
-      "terminos": 24
+      "ideas": 4,
+      "terminos": 25
      }
     },
     {
@@ -6497,7 +6497,7 @@
        "/nucleo/kit/piezas/rv-barras.js"
       ],
       "ideas": 3,
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -6573,7 +6573,7 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 2,
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -6652,7 +6652,7 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
@@ -6718,7 +6718,7 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 2,
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
@@ -6753,7 +6753,7 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
-      "terminos": 18
+      "terminos": 19
      }
     }
    ]

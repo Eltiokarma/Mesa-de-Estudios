@@ -20,7 +20,10 @@
  *     tabla:  { titulo, cols: ['Año', 'Vende'], filas: [{ id: 'f1', celdas: ['2005', '200 kg'] }], nota },
  *     barras: { titulo, max, unidad, items: [{ id: 'b1', t: 'Antes', v: 12 }], nota },   // los valores los trae quien llama
  *     chica: true,                      // un papel más angosto, a la derecha (el «otro aviso» del mural)
+ *     ilustracion: 'balsa',             // dibujo de prueba bajo la firma (la balsa de totora del folleto del muelle)
  *   }],
+ *   bandeja: true,                      // solo cuaderno: debajo de la hoja, el resaltador y el lápiz (herramientas del
+ *                                       // juego de jerarquía: se arrastran a una oración y vuelven a la bandeja)
  *   pregunta: '…', alternativas: [{ id: 'A', t: '…' }],   // solo simulacro, al pie de la hoja
  *   frase: { etiqueta: 'Frase', t: 'Los útiles de la lista' },   // tarjeta opcional debajo del soporte
  * }
@@ -31,7 +34,10 @@
  *   tenue:  ['o3'],          // gris, sin raya: lo que la frase deja fuera
  *   tachar: ['B'],           // raya de tinta encima: lo descartado (alternativas del simulacro)
  *   nuevo:  ['o2'],          // se anima al avanzar un paso de «Mira» (el texto no se mueve)
+ *   tapar:  ['frase'],       // banda gris que guarda el lugar del renglón sin mostrarlo (la idea, hasta el último paso)
  * }
+ * ancla(datos, id, lado) y cercana(datos, punto, ids) sirven al arrastre de la teoría (docs/teoria.md §4b): la manija va
+ * sobre el número de la oración (lado 'fin': al final del renglón); enBandeja(datos, punto) dice si se soltó en la bandeja.
  * El alto depende solo de los datos: cambiar el estado nunca mueve el texto. Todo texto mide 14 o más; el cuerpo, 15.
  * Función pura: sin azar, ids ni reloj (el grano del corcho sale del índice). Solo currentColor y var(--c-*)/var(--card).
  */
@@ -88,6 +94,7 @@
       for (const r of partir(firma, tw, 14)) { items.push({ tipo: 'firma', x: tx, y: y + 14, w: T.ancho(r, 14), texto: r, tam: 14, peso: 400 }); y += 19; }
     }
     if (h.titulo || firma) y += 6;
+    if (h.ilustracion === 'balsa') { items.push({ tipo: 'balsa', x: tx, y, w: tw, h: 50 }); y += 56; }
     (h.oraciones || []).forEach((o, k) => {
       const rs = partir(o.t, tw - NUM);
       items.push({ tipo: 'num', id: o.id, x: tx, y: y + 15, w: NUM - 6, texto: `${k + 1}`, tam: 14, peso: 700 });
@@ -197,6 +204,12 @@
       if (sop === 'puerta') y += 44;   // se ve la puerta debajo del papel, con su manija
       marco.y = top; marco.h = y - top;
     }
+    // La bandeja del cuaderno: el resaltador a la izquierda y el lápiz a la derecha, cada uno con su nombre debajo.
+    let bandeja = null;
+    if (d.bandeja && sop === 'cuaderno') {
+      bandeja = { y, h: 50, resaltador: { x: 92, y: y + 16 }, lapiz: { x: 228, y: y + 16 } };
+      y += 54;
+    }
     let frase = null;
     if (d.frase) {
       y += 8;
@@ -208,7 +221,7 @@
       rs.forEach((r, j) => frase.lineas.push({ tipo: 'linea', id: 'frase', x: ex, y: y + 8 + 15 + j * LH, w: T.ancho(r, TAM), texto: r, tam: TAM, peso: 400 }));
       y += frase.h;
     }
-    return { soporte: sop, rotulo, marco, papeles, items, frase, alto: Math.ceil(y + MARGEN) };
+    return { soporte: sop, rotulo, marco, papeles, items, frase, bandeja, alto: Math.ceil(y + MARGEN) };
   }
 
   // ---------- Dibujo ----------
@@ -276,6 +289,7 @@
   function cuerpo(d, estado = {}) {
     const L = disponer(d);
     const marcas = estado.marcas || {}, tenue = new Set(estado.tenue || []), tachar = new Set(estado.tachar || []), nuevo = new Set(estado.nuevo || []);
+    const tapar = new Set(estado.tapar || []);
     const cl = id => (id && nuevo.has(id) ? ' kit-nuevo kit-aparece' : '');
     const col = id => (COLORES.includes(marcas[id]) ? marcas[id] : null);
     const M = marcoSVG(L);
@@ -308,8 +322,13 @@
       if (it.tipo === 'num') { tinta += `<text class="kit-num" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="14" font-weight="700" opacity="0.72">${T.esc(it.texto)}</text>`; continue; }
       if (it.tipo === 'letra') {
         const c = col(it.id);
-        fondo += `<circle cx="${T.n(it.x)}" cy="${T.n(it.y)}" r="10" fill="${c ? T.color(c) : 'none'}" fill-opacity="${c ? 0.16 : 0}" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${c ? RAYA[c] : ''}/>`;
+        fondo += `<circle cx="${T.n(it.x)}" cy="${T.n(it.y)}" r="10" fill="${c ? T.color(c) : 'none'}" fill-opacity="${c ? 0.16 : 0}" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${c ? RAYA[c] : ''} stroke-linecap="round"/>`;
         tinta += `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y + 5)}" fill="currentColor" font-size="14" font-weight="700" text-anchor="middle"${op(it.id)}>${T.esc(it.texto)}</text>`;
+        continue;
+      }
+      if (it.tipo === 'balsa') { fondo += balsa(it); continue; }
+      if (it.tipo === 'linea' && tapar.has(it.id)) {
+        encima += `<rect class="rv-tapa${cl(it.id)}" x="${T.n(it.x - 2)}" y="${T.n(it.y - 14)}" width="${T.n(it.w + 4)}" height="18" rx="4" fill="currentColor" fill-opacity="0.16"/>`;
         continue;
       }
       if (it.tipo === 'linea') {
@@ -326,7 +345,7 @@
       }
       if (it.tipo === 'tabla-fila') {
         const c = col(it.id);
-        if (c) fondo += `<rect class="rv-marca${cl(it.id)}" x="${T.n(it.x - 2)}" y="${T.n(it.y + 2)}" width="${T.n(it.w + 4)}" height="${T.n(it.h - 3)}" rx="4" fill="${T.color(c)}" fill-opacity="0.14" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]}/>`;
+        if (c) fondo += `<rect class="rv-marca${cl(it.id)}" x="${T.n(it.x - 2)}" y="${T.n(it.y + 2)}" width="${T.n(it.w + 4)}" height="${T.n(it.h - 3)}" rx="4" fill="${T.color(c)}" fill-opacity="0.14" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]} stroke-linecap="round"/>`;
         it.celdas.forEach((t, k) => { tinta += `<text class="kit-txt" x="${T.n(it.x + k * it.cw + 6)}" y="${T.n(it.y + 18)}" fill="currentColor" font-size="${TAM}" style="font-variant-numeric:tabular-nums"${op(it.id)}>${T.esc(t)}</text>`; });
         fondo += `<line x1="${T.n(it.x)}" y1="${T.n(it.y + it.h)}" x2="${T.n(it.x + it.w)}" y2="${T.n(it.y + it.h)}" stroke="currentColor" stroke-opacity="0.18" stroke-width="1"/>`;
         continue;
@@ -334,17 +353,48 @@
       if (it.tipo === 'barra') {
         const c = col(it.id);
         tinta += `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y + 19)}" fill="currentColor" font-size="14"${op(it.id)}>${T.esc(it.nombre)}</text>`;
-        fondo += `<rect class="${c ? `rv-marca${cl(it.id)}` : 'rv-barra'}" x="${T.n(it.x0)}" y="${T.n(it.y + 5)}" width="${T.n(Math.max(2, it.largo))}" height="18" rx="3" fill="${T.color(c)}" fill-opacity="${c ? 0.4 : 0.22}" stroke="${T.color(c)}" stroke-opacity="${c ? 1 : 0.5}" stroke-width="${T.GROSOR.contorno}"${c ? RAYA[c] : ''}/>`;
+        fondo += `<rect class="${c ? `rv-marca${cl(it.id)}` : 'rv-barra'}" x="${T.n(it.x0)}" y="${T.n(it.y + 5)}" width="${T.n(Math.max(2, it.largo))}" height="18" rx="3" fill="${T.color(c)}" fill-opacity="${c ? 0.4 : 0.22}" stroke="${T.color(c)}" stroke-opacity="${c ? 1 : 0.5}" stroke-width="${T.GROSOR.contorno}"${c ? RAYA[c] : ''} stroke-linecap="round"/>`;
         tinta += `<text class="kit-txt" x="${T.n(it.x0 + Math.max(2, it.largo) + 6)}" y="${T.n(it.y + 19)}" fill="currentColor" font-size="${TAM}" font-weight="700" style="font-variant-numeric:tabular-nums"${op(it.id)}>${T.esc(it.valor)}</text>`;
         continue;
       }
     }
     if (L.frase) {
       const F = L.frase, c = col('frase') || 'o';
-      fondo += `<rect class="rv-frase${cl('frase')}" x="${T.n(F.x)}" y="${T.n(F.y)}" width="${T.n(F.w)}" height="${T.n(F.h)}" rx="10" fill="var(--card)" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]}/>`;
+      fondo += `<rect class="rv-frase${cl('frase')}" x="${T.n(F.x)}" y="${T.n(F.y)}" width="${T.n(F.w)}" height="${T.n(F.h)}" rx="10" fill="var(--card)" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]} stroke-linecap="round"/>`;
       tinta += T.rotulo(F.etiqueta.x, F.etiqueta.y, F.etiqueta.texto, { tam: TAM, peso: 700, color: c });
     }
+    if (L.bandeja) tinta += bandejaSVG(L.bandeja);
     return { s: fondo + tinta + M.encima + encima, alto: L.alto };
+  }
+
+  // La balsa de totora del folleto (dibujo de prueba): casco de haces con la proa y la popa levantadas, sobre el agua.
+  function balsa(it) {
+    const cx = it.x + it.w / 2, y = it.y, P = (dx, dy) => `${T.n(cx + dx)} ${T.n(y + dy)}`;
+    let s = `<path d="M${P(-86, 14)}Q${P(-80, 38)} ${P(-44, 38)}L${P(44, 38)}Q${P(80, 38)} ${P(86, 14)}Q${P(74, 28)} ${P(44, 29)}L${P(-44, 29)}Q${P(-74, 28)} ${P(-86, 14)}Z" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-opacity="0.6" stroke-width="2" stroke-linejoin="round"/>`;
+    // Los haces de totora: tres líneas a lo largo del casco y las amarras.
+    s += `<path d="M${P(-70, 30)}Q${P(0, 36)} ${P(70, 30)}M${P(-62, 34)}Q${P(0, 39)} ${P(62, 34)}`;
+    for (const dx of [-40, -14, 14, 40]) s += `M${P(dx, 29)}L${P(dx, 38)}`;
+    s += `" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.5" stroke-linecap="round"/>`;
+    // La cabeza de puma de la proa y el agua.
+    s += `<circle cx="${T.n(cx + 86)}" cy="${T.n(y + 11)}" r="4" fill="currentColor" fill-opacity="0.55"/>`;
+    let w = `M${P(-110, 46)}`;
+    for (let k = 0; k < 8; k++) w += `q${T.n(7)} -4 ${T.n(14)} 0q7 4 14 0`;
+    s += `<path d="${w}" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5" stroke-linecap="round"/>`;
+    return obj('balsa', s);
+  }
+
+  // La bandeja del cuaderno: resaltador y lápiz (dibujos de prueba) con su nombre debajo.
+  function bandejaSVG(B) {
+    const r = B.resaltador, l = B.lapiz;
+    let s = `<rect x="${T.n(r.x - 34)}" y="${T.n(r.y - 8)}" width="56" height="16" rx="4" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-opacity="0.55" stroke-width="2"/>`;
+    s += `<path d="M${T.n(r.x + 22)} ${T.n(r.y - 6)}L${T.n(r.x + 34)} ${T.n(r.y - 3)}L${T.n(r.x + 34)} ${T.n(r.y + 3)}L${T.n(r.x + 22)} ${T.n(r.y + 6)}Z" fill="currentColor" fill-opacity="0.45"/>`;
+    s += `<rect x="${T.n(l.x - 34)}" y="${T.n(l.y - 6)}" width="54" height="12" rx="2" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-opacity="0.55" stroke-width="2"/>`;
+    s += `<path d="M${T.n(l.x + 20)} ${T.n(l.y - 6)}L${T.n(l.x + 34)} ${T.n(l.y)}L${T.n(l.x + 20)} ${T.n(l.y + 6)}Z" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="2" stroke-linejoin="round"/>`;
+    s += `<circle cx="${T.n(l.x + 31)}" cy="${T.n(l.y)}" r="1.8" fill="currentColor"/>`;
+    s += `<rect x="${T.n(l.x - 42)}" y="${T.n(l.y - 6)}" width="8" height="12" rx="2" fill="currentColor" fill-opacity="0.3"/>`;
+    let t = T.rotulo(r.x, r.y + 30, 'resaltador', { tam: 14, ancla: 'middle' });
+    t += T.rotulo(l.x, l.y + 30, 'lápiz', { tam: 14, ancla: 'middle' });
+    return obj('bandeja', s) + t;
   }
   function dibujar(d, estado = {}) {
     const c = cuerpo(d, estado);
@@ -360,11 +410,35 @@
       const ors = (h.oraciones || []).map((o, k) => `${k + 1}. ${o.t}`).join(' ');
       const tb = h.tabla ? ` Tabla${h.tabla.titulo ? ` «${h.tabla.titulo}»` : ''}: ${(h.tabla.cols || []).join(', ')}; ${(h.tabla.filas || []).map(f => f.celdas.join(', ')).join('; ')}.` : '';
       const br = h.barras ? ` Gráfico de barras${h.barras.titulo ? ` «${h.barras.titulo}»` : ''}: ${(h.barras.items || []).map(i => `${i.t}, ${i.v}${h.barras.unidad || ''}`).join('; ')}.` : '';
-      return `${cab ? `${cab}: ` : ''}${ors}${tb}${br}`;
+      return `${cab ? `${cab}: ` : ''}${h.ilustracion === 'balsa' ? '(Dibujo de una balsa de totora.) ' : ''}${ors}${tb}${br}`;
     });
     const alts = (d.alternativas || []).map(a => `${a.id}) ${a.t}`).join(' ');
-    return `${NOMBRE[sop]}${d.lugar ? ` (${d.lugar})` : ''}. ${hs.join(' · ')}${d.pregunta ? ` Pregunta: ${d.pregunta}` : ''}${alts ? ` ${alts}` : ''}${d.frase ? ` ${d.frase.etiqueta || 'Frase'}: «${d.frase.t}».` : ''}`;
+    return `${NOMBRE[sop]}${d.lugar ? ` (${d.lugar})` : ''}. ${hs.join(' · ')}${d.pregunta ? ` Pregunta: ${d.pregunta}` : ''}${alts ? ` ${alts}` : ''}${d.frase ? ` ${d.frase.etiqueta || 'Frase'}: «${d.frase.t}».` : ''}${d.bandeja && sop === 'cuaderno' ? ' Debajo de la hoja, un resaltador y un lápiz.' : ''}`;
   }
 
-  return { id: 'rv-soporte', dibujar, cuerpo, alt, disponer, partir, constantes: { W, TAM, LH, TENUE } };
+  // Para el arrastre: la manija va sobre el número de la oración (o la letra de la alternativa); con lado 'fin', al final
+  // del renglón, para que dos manijas en la misma oración no se tapen.
+  function ancla(d, id, lado) {
+    const L = disponer(d);
+    const it = L.items.find(i => i.id === id && (i.tipo === 'num' || i.tipo === 'letra'));
+    if (!it) return null;
+    if (lado === 'fin') return { x: W - 18, y: it.tipo === 'num' ? it.y - 5 : it.y };
+    return it.tipo === 'num' ? { x: it.x + 4, y: it.y - 5 } : { x: it.x, y: it.y };
+  }
+  // La oración (de ids) cuyo bloque de renglones queda más cerca del punto, en vertical.
+  function cercana(d, punto, ids) {
+    const L = disponer(d);
+    let mejor = ids[0], dm = Infinity;
+    for (const id of ids) {
+      const rs = L.items.filter(i => i.id === id && (i.tipo === 'linea' || i.tipo === 'letra'));
+      if (!rs.length) continue;
+      const arriba = Math.min(...rs.map(r => r.y - 15)), abajo = Math.max(...rs.map(r => r.y + 5));
+      const dist = punto.y < arriba ? arriba - punto.y : punto.y > abajo ? punto.y - abajo : 0;
+      if (dist < dm) { dm = dist; mejor = id; }
+    }
+    return mejor;
+  }
+  const enBandeja = (d, punto) => { const B = disponer(d).bandeja; return !!B && punto.y >= B.y - 2; };
+
+  return { id: 'rv-soporte', dibujar, cuerpo, alt, disponer, partir, ancla, cercana, enBandeja, constantes: { W, TAM, LH, TENUE } };
 });

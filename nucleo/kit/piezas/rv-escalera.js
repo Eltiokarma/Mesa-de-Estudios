@@ -78,7 +78,7 @@
       for (const p of L.peldanos) {
         const sel = p.n === n, cl = sel && nuevo.has('escalera') ? ' kit-nuevo kit-aparece' : '';
         if (sel) {
-          e += `<rect class="rv-peldano${cl}" x="${TX - 2}" y="${T.n(p.top + 2)}" width="${T.n(W - TX - 8)}" height="${T.n(p.h - 4)}" rx="8" fill="${T.color(c)}" fill-opacity="0.14" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]}/>`;
+          e += `<rect class="rv-peldano${cl}" x="${TX - 2}" y="${T.n(p.top + 2)}" width="${T.n(W - TX - 8)}" height="${T.n(p.h - 4)}" rx="8" fill="${T.color(c)}" fill-opacity="0.14" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]} stroke-linecap="round"/>`;
           e += `<line class="rv-peldano${cl}" x1="${RAIL1}" y1="${T.n(p.cy)}" x2="${TX - 2}" y2="${T.n(p.cy)}" stroke="${T.color(c)}" stroke-width="4" stroke-linecap="round"${RAYA[c]}/>`;
         }
         for (const r of p.lineas) e += `<text class="kit-txt" x="${T.n(r.x)}" y="${T.n(r.y)}" fill="currentColor" font-size="${TAM}"${sel ? ' font-weight="700"' : ''}${r.texto.length > 3 ? ` textLength="${T.n(sel ? r.wb : r.w)}" lengthAdjust="spacing"` : ''}>${T.esc(r.texto)}</text>`;
