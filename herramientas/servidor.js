@@ -91,7 +91,7 @@ async function api(req, res) {
   return enviar(res, 405, 'Método no permitido');
 }
 
-const servidor = http.createServer(async (req, res) => {
+async function atender(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   let ruta = decodeURIComponent(url.pathname);
   if (ruta === '/') return enviar(res, 302, '', undefined, { Location: '/app/' });
@@ -115,6 +115,16 @@ const servidor = http.createServer(async (req, res) => {
       const etag = `W/"${st.size.toString(16)}-${Math.floor(st.mtimeMs).toString(16)}"`;
       enviarConCache(req, res, datos, TIPOS[path.extname(archivo)] || 'application/octet-stream', { etag, modificado: st.mtime, extra });
     });
+  });
+}
+
+// Un archivo a medio editar (por ejemplo una teoría con un error de sintaxis mientras un agente la escribe) hace fallar
+// el armado del catálogo: se responde 500 con el error y el servidor sigue vivo para la petición siguiente.
+const servidor = http.createServer((req, res) => {
+  atender(req, res).catch(e => {
+    console.error(`500 en ${req.url}: ${e && e.message}`);
+    if (!res.headersSent) enviar(res, 500, `Error al armar la respuesta: ${e && e.message}`);
+    else res.end();
   });
 });
 
