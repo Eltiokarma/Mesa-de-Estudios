@@ -1,3 +1,6 @@
+**Teoría de una unidad (17 nov):** el método vigente para rehacer unidades está en `docs/metodo/unidad/` (fases, encargos
+listos para copiar y herramientas). Lo de abajo es el método de las plantillas de escena.
+
 # Método para construir plantillas con subagentes
 
 Así se construyeron las plantillas del 6 de noviembre de 2026. Cada plantilla pasa por cuatro manos:
