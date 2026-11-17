@@ -28,6 +28,14 @@ const MUESTRAS = {
   balanza2: { objetos: [{ tipo: 'balanza2', titulo: 'En el Sol', izq: { nucleos: ['H', 'H', 'H', 'H'] }, der: { nucleos: ['He'] }, inclina: 'izq',
     rotulos: [{ texto: '4,0312 u contra 4,0026 u', color: 'o', desde: 1 }] }] },
   duda: { objetos: [{ tipo: 'balanza2', izq: { nucleos: ['H', 'H', 'H', 'H'] }, der: { nucleos: ['He'] }, inclina: 'duda' }] },
+  // 17 nov (lector en frío): la moneda echada, la pizca sin círculo y la probeta con «antes» y «después», también cuando
+  // el agua sube muy poco (los dos rótulos casi en la misma raya) o llega arriba (junto a «100 mL»).
+  marcas: { objetos: [
+    { tipo: 'balanza', titulo: 'Moneda', carga: 'moneda', pantalla: '31,5 g', color: 'o' },
+    { tipo: 'probeta', titulo: 'En la probeta', antes: 50, despues: 51.25, carga: 'moneda', marcas: true, rotulos: [{ texto: 'V = ?' }] }] },
+  marcasArriba: { objetos: [
+    { tipo: 'balanza', titulo: 'Polvo', carga: 'pizca', pantalla: '1 g', color: 'o' },
+    { tipo: 'probeta', titulo: 'Corona', antes: 50, despues: 90, carga: 'corona', marcas: true }] },
 };
 
 function cajas(svg) {
@@ -99,4 +107,14 @@ test('lo que dice el dibujo: la balanza muestra la masa, la balanza de dos plati
   const [, za, , zb] = viga(MUESTRAS.duda);
   assert.equal(za, zb, 'quieta mientras se predice');
   assert.match(C.alt(MUESTRAS.duda), /pregunta/);
+});
+
+test('la probeta con marcas dice cuál raya es «antes» y cuál «después», y lleva «100 mL» arriba', () => {
+  for (const k of ['marcas', 'marcasArriba']) {
+    const svg = C.dibujar(MUESTRAS[k]), ts = cajas(svg).filter(c => c.tag === 'text').map(c => c.txt);
+    assert.ok(ts.includes('antes') && ts.includes('después') && ts.includes('100 mL') && !ts.includes('mL'), `${k}: ${ts.join(' | ')}`);
+  }
+  // Sin marcas, la probeta se ve como antes (otras figuras no cambian).
+  const ts = cajas(C.dibujar(MUESTRAS.balanzaProbeta)).filter(c => c.tag === 'text').map(c => c.txt);
+  assert.ok(ts.includes('mL') && !ts.includes('antes'));
 });

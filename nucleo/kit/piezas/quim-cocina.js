@@ -23,9 +23,10 @@
  * }
  *   balanza  { carga, pantalla, color }    balanza de cocina con pantalla: la masa se lee en la pantalla, debajo de lo que
  *                                          pesa. carga: 'lingote' | 'lingote-grande' | 'medalla' | 'anillo' | 'piedra' |
- *                                          'corona' | 'cubo' | 'granito' | 'nada'
- *   probeta  { antes: 50, despues: 55, max: 100, carga, color }   probeta graduada en mL: lo que sube el agua al meter el
- *                                          objeto es su volumen (raya punteada en `antes`, agua hasta `despues`)
+ *                                          'corona' | 'cubo' | 'granito' | 'moneda' | 'pizca' | 'nada'
+ *   probeta  { antes: 50, despues: 55, max: 100, carga, color, marcas }   probeta graduada en mL: lo que sube el agua al
+ *                                          meter el objeto es su volumen (raya punteada en `antes`, agua hasta `despues`;
+ *                                          con marcas: true, las dos rayas llevan «antes» y «después» a la izquierda)
  *   olla     { nivel: 0.6, tam: 1, fuego, hierve, vapor: 0..1, termometro: '87 °C', colorT }   olla sobre la hornilla con un
  *                                          termómetro adentro: lo que marca es la temperatura del agua
  *   vaso     { nivel, capa: { alto }, fondo: 'arena', polvo, cubitos: 3, termometro, colorT }   vaso con agua (o sin ella),
@@ -118,9 +119,20 @@
         + `<path d="M${n(x - a / 2)} ${n(y - a)}L${n(x - a / 2 + dx)} ${n(y - a - dx)}L${n(x + a / 2 + dx)} ${n(y - a - dx)}L${n(x + a / 2)} ${n(y - a)}M${n(x + a / 2 + dx)} ${n(y - a - dx)}L${n(x + a / 2 + dx)} ${n(y - dx)}L${n(x + a / 2)} ${n(y)}" fill="currentColor" fill-opacity="0.22" ${tinta(2)}/>`;
     }
     if (tipo === 'granito') return `<circle cx="${n(x)}" cy="${n(y - 2)}" r="2" fill="currentColor"/><circle cx="${n(x)}" cy="${n(y - 2)}" r="9" fill="none" ${tinta(1.5)} stroke-dasharray="3 2"/>`;
+    // moneda (17 nov, lector en frío: la medalla con cintas parecía «un bicho con antenas»): un disco echado, visto de
+    // costado, con su canto.
+    if (tipo === 'moneda') {
+      const rx = s(13), ry = s(4.5), h = s(3.5);
+      // El canto: media elipse de abajo (una Q con la manija al doble de ry pasa por el borde) y los dos lados.
+      return `<path d="M${n(x - rx)} ${n(y - ry - h)}L${n(x - rx)} ${n(y - ry)}Q${n(x)} ${n(y + ry)} ${n(x + rx)} ${n(y - ry)}L${n(x + rx)} ${n(y - ry - h)}" fill="currentColor" fill-opacity="0.28" ${tinta(2)}/>`
+        + `<ellipse cx="${n(x)}" cy="${n(y - ry - h)}" rx="${n(rx)}" ry="${n(ry)}" fill="currentColor" fill-opacity="0.12" ${tinta(2)}/>`
+        + `<ellipse cx="${n(x)}" cy="${n(y - ry - h)}" rx="${n(rx * 0.6)}" ry="${n(ry * 0.6)}" fill="none" ${tinta(1)} stroke-opacity="0.6"/>`;
+    }
+    // pizca (17 nov): un montoncito de polvo, sin el círculo punteado del granito (el lector lo tomaba por una lupa).
+    if (tipo === 'pizca') return `<path d="M${n(x - s(7))} ${n(y)}Q${n(x)} ${n(y - s(9))} ${n(x + s(7))} ${n(y)}Z" fill="currentColor" fill-opacity="0.6" ${tinta(1.5)}/>`;
     return '';
   }
-  const altoCarga = t => ({ lingote: 10, 'lingote-grande': 16, medalla: 34, anillo: 10, piedra: 18, corona: 20, cubo: 34, granito: 12 }[t] || 0);
+  const altoCarga = t => ({ lingote: 10, 'lingote-grande': 16, medalla: 34, anillo: 10, piedra: 18, corona: 20, cubo: 34, granito: 12, moneda: 12, pizca: 6 }[t] || 0);
 
   // ---------- Objetos ----------
   // balanza: la masa de lo que va en el plato se lee en la pantalla del frente.
@@ -154,8 +166,18 @@
     }
     if (o.carga) s += carga(o.carga, x, y0 - 1, 0.6);
     let r = obj('probeta', s);
-    for (let v = 50; v <= max; v += 50) r += T.rotulo(x + w / 2 + 4, Y(v) + 5, String(v), { tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) });
-    r += T.rotulo(x - w / 2 - 6, top + 10, 'mL', { ancla: 'end', tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) });
+    // marcas (17 nov, lector en frío: «no veo de cuánto partía el agua»): a la izquierda, qué raya es el nivel de antes
+    // (la punteada) y cuál el de después (el agua con el objeto adentro).
+    if (o.marcas && o.antes !== undefined && o.despues !== undefined) {
+      const lim = { ancla: 'end', tam: 13, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) };
+      // Si el agua sube poco, «antes» baja hasta dejar una línea entre los dos (nunca debajo del fondo de la probeta).
+      const yd = Y(o.despues) + 5, ya = Math.min(y0 - 2, Math.max(Y(o.antes) + 5, yd + 15));
+      r += T.rotulo(x - w / 2 - 8, ya, 'antes', lim);
+      r += T.rotulo(x - w / 2 - 8, yd, 'después', Object.assign({}, lim, { peso: 700 }));
+    }
+    // Con marcas, la unidad va junto al número de arriba («100 mL»): a la izquierda quedan «antes» y «después».
+    for (let v = 50; v <= max; v += 50) r += T.rotulo(x + w / 2 + 4, Y(v) + 5, o.marcas && v + 50 > max ? `${v} mL` : String(v), { tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) });
+    if (!o.marcas) r += T.rotulo(x - w / 2 - 6, top + 10, 'mL', { ancla: 'end', tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) });
     return r;
   }
   function termometro(x, yTop, yBulbo, texto, color, c) {
@@ -264,7 +286,7 @@
     let s = `<line x1="${n(g.x0)}" y1="${n(g.y0)}" x2="${n(g.x1 + 6)}" y2="${n(g.y0)}" ${tinta(1.5)}/><line x1="${n(g.x0)}" y1="${n(g.y0)}" x2="${n(g.x0)}" y2="${n(g.y1 - 6)}" ${tinta(1.5)}/>`;
     let r = '';
     for (const v of o.xMarcas || []) { s += `<line x1="${n(g.X(v))}" y1="${n(g.y0)}" x2="${n(g.X(v))}" y2="${n(g.y0 + 5)}" ${tinta(1.5)}/>`; r += T.rotulo(g.X(v), g.y0 + 20, String(v.texto || v).replace('.', ','), { ancla: 'middle', tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) }); }
-    for (const v of o.yMarcas || []) { s += `<line x1="${n(g.x0 - 5)}" y1="${n(g.Y(v))}" x2="${n(g.x0)}" y2="${n(g.Y(v))}" ${tinta(1.5)}/><line x1="${n(g.x0)}" y1="${n(g.Y(v))}" x2="${n(g.x1)}" y2="${n(g.Y(v))}" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>`; r += T.rotulo(g.x0 - 8, g.Y(v) + 5, String(v).replace('.', ','), { ancla: 'end', tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) }); }
+    for (const v of o.yMarcas || []) { s += `<line x1="${n(g.x0 - 5)}" y1="${n(g.Y(v))}" x2="${n(g.x0)}" y2="${n(g.Y(v))}" ${tinta(1.5)}/><line x1="${n(g.x0)}" y1="${n(g.Y(v))}" x2="${n(g.x1)}" y2="${n(g.Y(v))}" stroke="currentColor" stroke-opacity="0.15" stroke-width="1"/>`; r += T.rotulo(g.x0 - 8, g.Y(v) + 5, String(v).replace('.', ',').replace(/^-/, '−'), { ancla: 'end', tam: 14, min: Math.max(M, c.x0 + 2), max: Math.min(W - M, c.x1 - 2) }); }
     if (ps.length > 1) {
       if (o.completa !== false) s += `<path d="${lin(ps)}" fill="none" ${tinta(2)} stroke-dasharray="4 4" stroke-opacity="0.45"/>`;
       const h = o.hasta === undefined ? ps[ps.length - 1][0] : o.hasta, l = hasta(ps, h);
