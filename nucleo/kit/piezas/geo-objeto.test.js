@@ -1,4 +1,5 @@
-// Pruebas de la pieza «geo-objeto»: cada objeto se dibuja sin NaN ni colores fijos, es puro, de alto fijo, marcado como
+// Pruebas de la pieza «geo-objeto» (17 nov: también la soga y las escenas con ángulos de las ideas 3 a 6, con los rótulos
+// revisados contra los lados, los arcos y las marcas): cada objeto se dibuja sin NaN ni colores fijos, es puro, de alto fijo, marcado como
 // dibujo de prueba y con su texto alternativo. Con números (no a ojo; docs/molde-unidad.md §6): todo cabe en el lienzo
 // con 4 de margen, ningún rótulo pisa a otro ni cruza una línea (la pista, las cotas, los caminos, la regla), los
 // tramos y el desvío van a una sola escala, y el color de cada tramo sale de su papel (todo y pide en tinta; los datos,
@@ -25,8 +26,26 @@ const MUESTRAS = [
     alturas: [{ punto: 'B', texto: '3 km' }], reglas: [{ de: 'A', a: 'B', texto: '5 km' }, { de: 'B', a: 'C', texto: '≈ 6,7 km' }] },
   { objeto: 'recta', puntos: [pto('A', 0), pto('B', 3), pto('C', 14), pto('D', 20)],
     tramos: [{ de: 'B', a: 'C', papel: 'pide', texto: '?' }, { de: 'A', a: 'C', texto: '14 cm', nivel: 2 }, { de: 'B', a: 'D', texto: '17 cm', nivel: 3 }, { de: 'A', a: 'D', papel: 'todo', texto: '20 cm', nivel: -2 }] },
+  { objeto: 'soga', vista: [-9, 9], soga: ['A', 'C'], panuelo: 'M', raya: 'B', puntos: [pto('A', -6.5), pto('B', 0), pto('M', -1.5), pto('C', 3.5)],
+    tramos: [{ de: 'A', a: 'B', texto: '6,5 m' }, { de: 'B', a: 'C', texto: '3,5 m' }, { de: 'A', a: 'C', papel: 'todo', texto: '10 m', nivel: 2 },
+      { de: 'B', a: 'M', papel: 'otro', texto: '1,5 m', nivel: -1 }, { de: 'A', a: 'M', papel: 'igual', nivel: 0, marcas: 1 }, { de: 'M', a: 'C', papel: 'igual', nivel: 0, marcas: 1 }] },
+];
+// Escenas con ángulos (ideas 3 a 6): los trazos los pone geo-figura; la pieza, el objeto y los rótulos.
+const ESCENAS = [
+  { objeto: 'reloj', relojes: [{ hora: 3, tam: 'plaza', O: true, arco: { texto: '90°', color: 'h' } }] },
+  { objeto: 'reloj', relojes: [{ hora: 8, tam: 'plaza', arco: { texto: '240°', color: 'h' } }] },
+  { objeto: 'reloj', relojes: [{ hora: 1, tam: 'plaza', arco: { texto: '30°', color: 'h' } }, { hora: 2, tam: 'pulsera', arco: { texto: '60°', color: 'h' }, alarga: 1 }] },
+  { objeto: 'tranquera', alfa: 30, pista: { texto: '30°', color: 'h' }, poste: { texto: '60°', color: 'i' }, otro: { texto: '150°', color: 'i' } },
+  { objeto: 'tranquera', alfa: 50, bisectrices: 0, mitades: { texto1: '25°', texto2: '65°', color1: 'h', color2: 'i' }, entre: { texto: '90°' } },
+  { objeto: 'rieles', theta: 40, angulos: ['ad', 'ai', 'bi', 'bd'].flatMap(c => ['P', 'Q'].map(k => ({ cruce: k, cuad: c, texto: c === 'ad' || c === 'bi' ? '40°' : '140°', color: c === 'ad' || c === 'bi' ? 'h' : 'i' }))) },
+  { objeto: 'rieles', theta: 60, giro: 8, letras: true, angulos: [{ cruce: 'P', cuad: 'ad', texto: '60°', color: 'h' }, { cruce: 'Q', cuad: 'ad', texto: '52°' }] },
+  { objeto: 'pasaje', a: 40, b: 30, aux: 0, angulos: { a: { texto: '40°', color: 'h' }, b: { texto: '30°', color: 'h' }, a2: { texto: '40°', color: 'h' }, b2: { texto: '30°', color: 'h' }, x: { texto: 'x' } } },
+  { objeto: 'pasaje', a: 35, b: 45, examen: true, angulos: { afP: { texto: '145°', color: 'h' }, b: { texto: '45°', color: 'h' }, x: { texto: 'x' } } },
+  { objeto: 'angulos', figura: { vista: { x: [-3, 3], y: [-0.8, 3] }, puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'O', lado: -90 }, { id: 'A', x: 2.5, y: 0, rotulo: 'A', lado: 0 }, { id: 'B', x: 2.5 * Math.cos(0.5), y: 2.5 * Math.sin(0.5), rotulo: 'B', lado: 28.6 }],
+    segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '2x + 10°', color: 'h', mide: 28.65 }] } },
 ];
 const casos = () => MUESTRAS.map(d => [d, {}]);
+const esEscena = d => P.ESCENAS.includes(d.objeto);
 
 // Caja de cada elemento del SVG, con medio grosor de trazo. Los textos, con su ancho estimado (T.ancho) y su alto (de
 // y − tam·0,8 a y + tam·0,25, porque y es la línea base). Los trazados, por sus puntos (M, L, Q y Z absolutos).
@@ -40,15 +59,40 @@ function cajas(svg) {
     else if (tag === 'path') {
       const d = (a.match(/\sd="([^"]+)"/) || [])[1] || '';
       assert.ok(!/[a-z]/.test(d), `trazo relativo en ${m[0].slice(0, 60)}`);
-      const xs = [], ys = [];
-      for (const seg of d.matchAll(/([MLQ])([^MLQZ]*)/g)) { const v = seg[2].trim().split(/[\s,]+/).map(Number); for (let i = 0; i + 1 < v.length; i += 2) { xs.push(v[i]); ys.push(v[i + 1]); } }
-      if (xs.length) out.push({ tag, pts: xs.map((x, i) => [x, ys[i]]), x0: Math.min(...xs) - sw, y0: Math.min(...ys) - sw, x1: Math.max(...xs) + sw, y1: Math.max(...ys) + sw, el: m[0] });
+      const pts = trazado(d);
+      const xs = pts.map(q => q[0]), ys = pts.map(q => q[1]);
+      if (xs.length) out.push({ tag, pts, cerrado: /Z\s*$/.test(d), relleno: !/fill="none"/.test(a) && /fill=/.test(a), conTrazo: /stroke="(?!none)/.test(a) && !/stroke-opacity="0\.[01]/.test(a),
+        x0: Math.min(...xs) - sw, y0: Math.min(...ys) - sw, x1: Math.max(...xs) + sw, y1: Math.max(...ys) + sw, el: m[0] });
     } else if (tag === 'text') {
       const tam = num(a, 'font-size') || 16, peso = num(a, 'font-weight') || 400, t = txt.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
       const w = T.ancho(t, tam, peso), x = num(a, 'x'), y = num(a, 'y');
       const anc = (a.match(/text-anchor="(\w+)"/) || [])[1] || 'start', x0 = anc === 'middle' ? x - w / 2 : anc === 'end' ? x - w : x;
       out.push({ tag, x0, y0: y - tam * 0.8, x1: x0 + w, y1: y + tam * 0.25, el: m[0], txt: t });
     }
+  }
+  return out;
+}
+// Los puntos de un trazado absoluto (M, L, Q y A; los arcos, muestreados cada pocos grados).
+function trazado(d) {
+  const out = [], toks = d.match(/[MLQAZ]|-?[\d.]+(?:e-?\d+)?/g) || [];
+  let i = 0, cmd = '', cur = null, ini = null;
+  const num = () => +toks[i++];
+  while (i < toks.length) {
+    if (/[MLQAZ]/.test(toks[i])) cmd = toks[i++];
+    if (cmd === 'Z') { if (ini) out.push(ini); continue; }
+    if (cmd === 'M' || cmd === 'L') { cur = [num(), num()]; if (cmd === 'M') ini = cur; out.push(cur); if (cmd === 'M') cmd = 'L'; }
+    else if (cmd === 'Q') { num(); num(); cur = [num(), num()]; out.push(cur); }
+    else if (cmd === 'A') {
+      const r = num(); num(); num(); const grande = num(), giro = num(), q = [num(), num()];
+      const dx = (cur[0] - q[0]) / 2, dy = (cur[1] - q[1]) / 2, d2 = dx * dx + dy * dy, rr = Math.max(r, Math.sqrt(d2));
+      const k = Math.sqrt(Math.max(0, (rr * rr - d2) / (d2 || 1))) * (grande === giro ? -1 : 1);
+      const cx = k * dy + (cur[0] + q[0]) / 2, cy = -k * dx + (cur[1] + q[1]) / 2;
+      const t1 = Math.atan2(cur[1] - cy, cur[0] - cx); let dt = Math.atan2(q[1] - cy, q[0] - cx) - t1;
+      if (giro && dt < 0) dt += 2 * Math.PI; if (!giro && dt > 0) dt -= 2 * Math.PI;
+      const nn = Math.max(4, Math.ceil(Math.abs(dt) / 0.12));
+      for (let j = 1; j <= nn; j++) out.push([cx + rr * Math.cos(t1 + dt * j / nn), cy + rr * Math.sin(t1 + dt * j / nn)]);
+      cur = q;
+    } else i++;
   }
   return out;
 }
@@ -66,7 +110,32 @@ function cruza(p, q, c, e = 1) {
 }
 const choca = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
 
+// Escenas con ángulos: todo cabe con 4 de margen; ningún rótulo pisa a otro, ni un trazo (lados, rectas, arcos,
+// marcas, durmientes), ni un punto; ni queda dentro de una figura cerrada con borde (la barra de la tranquera). Las
+// franjas sin borde (la calle, las avenidas) sí pueden quedar debajo de un rótulo; el borde del reloj, también, porque
+// los rótulos van adentro o afuera de la esfera y su borde es un trazo que se revisa.
+function revisarEscena(d, e, nombre, mal) {
+  const s = P.dibujar(d, e), { W, M } = P.constantes;
+  const vb = s.match(/viewBox="0 ([\d.]+) ([\d.]+) ([\d.]+)"/), y0v = +vb[1], H = +vb[3];
+  if (/NaN|undefined|Infinity/.test(s)) { mal.push(`${nombre}: NaN o undefined`); return; }
+  const cs = cajas(s);
+  // Las rectas de geo-figura llegan hasta 4 px del borde (con su medio trazo, 3): se acepta 2,5.
+  for (const c of cs) { const mm = c.tag === 'path' ? 2.5 : M; if (!(c.x0 >= mm - 1e-9 && c.y0 >= y0v + mm - 1e-9 && c.x1 <= W - mm + 1e-9 && c.y1 <= y0v + H - mm + 1e-9) && !(c.tag === 'path' && !c.conTrazo))
+    mal.push(`${nombre}: se sale (${c.x0.toFixed(1)}, ${c.y0.toFixed(1)}) – (${c.x1.toFixed(1)}, ${c.y1.toFixed(1)}) en ${c.el.slice(0, 80)}`); }
+  const txt = cs.filter(c => c.tag === 'text');
+  for (let i = 0; i < txt.length; i++) for (let j = i + 1; j < txt.length; j++) if (choca(txt[i], txt[j])) mal.push(`${nombre}: se pisan «${txt[i].txt}» y «${txt[j].txt}»`);
+  for (const t of txt) {
+    for (const l of cs.filter(c => c.tag === 'line')) if (cruza(l.p, l.q, t, 0.5)) mal.push(`${nombre}: «${t.txt}» cruza una línea (${l.el.slice(0, 70)})`);
+    for (const c of cs.filter(x => x.tag === 'circle' && x.x1 - x.x0 < 16)) if (choca(t, c)) mal.push(`${nombre}: «${t.txt}» pisa un punto`);
+    for (const c of cs.filter(x => x.tag === 'path' && x.conTrazo)) {
+      const ps = c.pts;
+      for (let i = 1; i < ps.length; i++) if (cruza(ps[i - 1], ps[i], t, 0.5)) { mal.push(`${nombre}: «${t.txt}» cruza un trazo (${c.el.slice(0, 70)})`); break; }
+    }
+  }
+}
+
 function revisar(d, e, nombre, mal) {
+  if (esEscena(d)) { revisarEscena(d, e, nombre, mal); return; }
   const s = P.dibujar(d, e), { W, M, TOP, BOT } = P.constantes;
   const vb = s.match(/viewBox="0 ([\d.]+) ([\d.]+) ([\d.]+)"/), y0v = +vb[1], H = +vb[3];
   if (/NaN|undefined|Infinity/.test(s)) { mal.push(`${nombre}: NaN o undefined`); return; }
@@ -77,11 +146,11 @@ function revisar(d, e, nombre, mal) {
   for (let i = 0; i < txt.length; i++) for (let j = i + 1; j < txt.length; j++) if (choca(txt[i], txt[j])) mal.push(`${nombre}: se pisan «${txt[i].txt}» y «${txt[j].txt}»`);
   // Ningún rótulo dentro de la pista ni encima de una línea (cotas y sus topes, caminos, alturas, reglas, bordes).
   for (const t of txt) {
-    if (d.objeto !== 'recta' && t.y1 > TOP && t.y0 < BOT) mal.push(`${nombre}: «${t.txt}» cae dentro de la pista`);
+    if (d.objeto !== 'recta' && t.y1 > TOP && t.y0 < BOT) mal.push(`${nombre}: «${t.txt}» cae dentro de la pista o del patio`);
     for (const l of cs.filter(c => c.tag === 'line')) if (cruza(l.p, l.q, t, 0.5)) mal.push(`${nombre}: «${t.txt}» cruza una línea (${l.el.slice(0, 70)})`);
     for (const c of cs.filter(x => x.tag === 'circle')) if (choca(t, c)) mal.push(`${nombre}: «${t.txt}» pisa un punto`);
     // La combi y la regla son figuras cerradas: el rótulo no cruza su borde ni queda adentro.
-    for (const c of cs.filter(x => x.tag === 'path')) {
+    for (const c of cs.filter(x => x.tag === 'path' && x.cerrado)) {
       const ps = c.pts, centro = [(t.x0 + t.x1) / 2, (t.y0 + t.y1) / 2];
       let dentro = false;
       for (let i = 0, j = ps.length - 1; i < ps.length; j = i++) {
@@ -96,14 +165,27 @@ function revisar(d, e, nombre, mal) {
 test('registrada en el kit', () => assert.equal(Kit.piezas['geo-objeto'], P));
 
 test('cada objeto: sin NaN ni colores fijos, puro, alto fijo, marcado de prueba, con su texto alternativo', () => {
-  assert.deepEqual([...P.OBJETOS].sort(), [...new Set(MUESTRAS.map(d => d.objeto))].sort());
+  assert.deepEqual([...P.OBJETOS].sort(), [...new Set([...MUESTRAS, ...ESCENAS].map(d => d.objeto))].sort());
+  for (const d of ESCENAS) {
+    const s = P.dibujar(d, { corte: 9 });
+    assert.ok(!/NaN|undefined|Infinity/.test(s), d.objeto);
+    assert.ok(!/#[0-9a-f]{3,6}\b/i.test(s), `${d.objeto}: sin colores fijos`);
+    assert.ok(!/\sid="|filter|<image/.test(s), `${d.objeto}: sin ids, filtros ni imágenes`);
+    assert.equal(s, P.dibujar(d, { corte: 9 }), `${d.objeto}: puro`);
+    if (d.objeto !== 'angulos' && !d.examen) assert.match(s, new RegExp(`data-objeto="${d.objeto}" data-prueba="si"`));
+    const vb = s.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+    assert.equal(+vb[1], 320);
+    assert.ok(+vb[2] <= 270, vb[0]);
+    assert.equal(s.match(/viewBox="[^"]+"/)[0], P.dibujar(d, { corte: 0 }).match(/viewBox="[^"]+"/)[0], `${d.objeto}: el alto no cambia con el corte`);
+    assert.ok(P.alt(d).length > 20 && !/undefined|NaN/.test(P.alt(d)), d.objeto);
+  }
   for (const [d, e] of casos()) {
     const s = P.dibujar(d, e);
     assert.ok(!/NaN|undefined|Infinity/.test(s), d.objeto);
     assert.ok(!/#[0-9a-f]{3,6}\b/i.test(s), `${d.objeto}: sin colores fijos`);
     assert.ok(!/\sid="|filter|<image/.test(s), `${d.objeto}: sin ids, filtros ni imágenes`);
     assert.equal(s, P.dibujar(d, e), `${d.objeto}: puro`);
-    if (d.objeto === 'carretera') assert.match(s, /data-objeto="carretera" data-prueba="si"/);
+    if (d.objeto === 'carretera' || d.objeto === 'soga') assert.match(s, new RegExp(`data-objeto="${d.objeto}" data-prueba="si"`));
     if (d.combi !== undefined) assert.match(s, /data-objeto="combi" data-prueba="si"/);
     if (d.reglas) assert.match(s, /data-objeto="regla" data-prueba="si"/);
     const vb = s.match(/viewBox="0 ([\d.]+) ([\d.]+) ([\d.]+)"/);
@@ -154,7 +236,28 @@ test('los pasos: un tramo o una regla aparecen en su paso; un texto con pasos mu
 test('muestras: todo cabe con 4 de margen y ningún rótulo pisa a otro ni cruza una línea', () => {
   const mal = [];
   for (const [d, e] of casos()) revisar(d, e, `${d.objeto} ${JSON.stringify(d.puntos.map(p => p.km))}`, mal);
+  for (const d of ESCENAS) for (const corte of [0, 9]) revisar(d, { corte }, `${d.objeto} corte ${corte}`, mal);
   assert.deepEqual(mal, []);
+});
+
+test('escenas: escena() da la figura de geo-figura que se dibuja; cada ángulo mide lo que dice su rótulo', () => {
+  const G = require('./geo-figura.js');
+  for (const d of ESCENAS) {
+    const fig = P.escena(d).fig, g = G.geometria(fig);
+    for (const an of fig.angulos || []) {
+      const V = g.P(an.en), A = g.P(an.de), B = g.P(an.a);
+      let m = G.util.angulo(V, A, B); if (an.mayor) m = 360 - m;
+      const num = /^(\d+(?:,\d+)?)°$/.exec(String(an.texto || ''));
+      const esp = num ? +num[1].replace(',', '.') : an.mide;
+      if (esp !== undefined && !an.sector) assert.ok(Math.abs(m - esp) < 0.5, `${d.objeto}: ${an.texto} mide ${m.toFixed(2)}° en el dibujo`);
+    }
+  }
+  // El rótulo de un ángulo chico se aleja hasta no tocar sus lados; su arco crece con él.
+  const chico = { objeto: 'angulos', figura: { vista: { x: [-0.5, 3], y: [-0.5, 1.5] }, puntos: [{ id: 'O', x: 0, y: 0 }, { id: 'A', x: 3, y: 0 }, { id: 'B', x: 3 * Math.cos(0.35), y: 3 * Math.sin(0.35) }],
+    segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '20°', color: 'h', radio: 20 }] } };
+  const mal = []; revisar(chico, {}, 'ángulo de 20°', mal);
+  assert.deepEqual(mal, []);
+  assert.ok(+P.dibujar(chico).match(/A(\d+) /)[1] > 40, 'el arco del ángulo chico crece hasta su rótulo');
 });
 
 test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no se pisan', () => {
@@ -178,6 +281,9 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
     }
   }
   assert.ok(figs.length > 100, `${figs.length} figuras`);
-  for (const [nombre, d, e] of figs) revisar(d, e, nombre, mal);
-  assert.deepEqual(mal.slice(0, 20), []);
+  for (const [nombre, d, e] of figs) {
+    if (esEscena(d)) { for (const corte of [0, 1, 2, 3, 4, 9]) revisar(d, { corte }, `${nombre} corte ${corte}`, mal); }
+    else revisar(d, e, nombre, mal);
+  }
+  assert.deepEqual([...new Set(mal)].slice(0, 30), []);
 });

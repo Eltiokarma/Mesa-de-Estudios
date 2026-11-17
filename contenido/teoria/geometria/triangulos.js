@@ -774,7 +774,6 @@
       { termino: 'perpendicular', simbolo: '⟂', def: 'Que corta a otra línea formando ángulos de 90°.' },
       { termino: 'altura', def: 'Segmento perpendicular que baja de un vértice o punto hasta la recta de enfrente. Mide la distancia a ella.',
         ver: ['pie', 'línea notable'] },
-      { termino: 'punto medio', formas: ['punto medio', 'puntos medios'], def: 'El que parte un segmento en dos partes de igual medida.' },
       { termino: 'mediana', def: 'Segmento que une un vértice del triángulo con el punto medio del lado opuesto.', ver: ['punto medio'] },
       { termino: 'mediatriz', def: 'Recta perpendicular a un segmento que pasa por su punto medio.', ver: ['perpendicular', 'punto medio'] },
       { termino: 'línea notable', formas: ['líneas notables', 'línea notable'],
