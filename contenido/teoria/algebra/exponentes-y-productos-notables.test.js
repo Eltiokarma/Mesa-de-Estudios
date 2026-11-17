@@ -65,18 +65,21 @@ test('partición: el catálogo pone «Productos notables» después de «Exponen
   assert.equal(par('cc-02').unidad, viejo.id);
 });
 
+// Palabras que Productos notables estrenó después de la partición (18 nov): no estaban en la unidad vieja.
+const NUEVAS = ['binomio', 'doble producto'];
 test('partición: Avance.migrar pasa a la unidad nueva todo lo de sus ideas, mesas y palabras, y nada de lo que se queda', () => {
   const V = def.unidad, N = prod.unidad;
   const ideas = Object.fromEntries([...def.ideas, ...prod.ideas].map((i, k) => [i.id, { casos: k + 1 }]));
   const est = { avanceV: 1, partidoV: 1, teoria: { [V]: { ideas: JSON.parse(JSON.stringify(ideas)) } },
     coleccion: [...def.laboratorio, ...prod.laboratorio].map((m, k) => ({ id: `c${k}`, unidad: V, mesa: m.id })),
-    glosario: { [V]: Object.fromEntries([...def.glosario, ...prod.glosario].map(g => [Glosario.clave(g.termino), 'sabe'])) } };
+    // Las palabras que la unidad vieja ya tenía (las nuevas de Productos notables no pueden tener marcas viejas).
+    glosario: { [V]: Object.fromEntries([...def.glosario, ...prod.glosario.filter(g => !NUEVAS.includes(g.termino))].map(g => [Glosario.clave(g.termino), 'sabe'])) } };
   assert.equal(Avance.migrar(est), true);
   assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), def.ideas.map(i => i.id).sort());
   assert.deepEqual(Object.keys(est.teoria[N].ideas).sort(), prod.ideas.map(i => i.id).sort());
   for (const c of est.coleccion) assert.equal(c.unidad, prod.laboratorio.some(m => m.id === c.mesa) ? N : V, c.mesa);
   assert.deepEqual(Object.keys(est.glosario[V]).sort(), def.glosario.map(g => Glosario.clave(g.termino)).sort());
-  assert.deepEqual(Object.keys(est.glosario[N]).sort(), prod.glosario.map(g => Glosario.clave(g.termino)).sort());
+  assert.deepEqual(Object.keys(est.glosario[N]).sort(), prod.glosario.filter(g => !NUEVAS.includes(g.termino)).map(g => Glosario.clave(g.termino)).sort());
 });
 
 // ---------- La idea 1 ----------

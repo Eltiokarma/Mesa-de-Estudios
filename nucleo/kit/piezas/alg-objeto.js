@@ -14,7 +14,13 @@
  *              (18 nov): la arista es ∛V y el lado, √V; misma escala (16 por dm) y cuadrícula de 1 dm si es entera.
  *              datos = { objeto: 'caja', V, loseta: false, arista | lado: true | '?' | false, tapa: '9 dm²' | '?',
  *              volumen | area: '?', cuadricula: false }; lo que se da en tinta, lo que resulta en violeta, lo que se pide
- *              con «?» (y entonces sin cuadrícula: contar los cuadritos daría la respuesta).
+ *              con «?» (y entonces sin cuadrícula: contar los cuadritos daría la respuesta);
+ *   'terreno'  el terreno cuadrado de Juan, en Juliaca, visto desde arriba, idea «cuadrado-suma» de Productos notables
+ *              (18 nov). datos = { objeto: 'terreno', a, b (m), modo: 'amplia' | 'cede', escala, lados: false,
+ *              ladoA | ladoB: '?' | false, piezas: true (rótulos de área), rot: { a2, ab, b2 } (rótulos propios o '?'),
+ *              comprar: true (franjas punteadas, todavía sin comprar), total: true | '?' | texto | false; en 'cede':
+ *              costado, fondo: true, esquina: 'doble' | 'devuelta', resto: '?' | texto }. a² naranja, las franjas ab
+ *              violeta (el doble producto), la esquina b² turquesa, el total y lo que queda en tinta.
  *
  * Afirmación de la figura: cada doblez multiplica las capas por la base; por eso los dobleces se suman y las capas se
  * multiplican. m dobleces dan bᵐ capas (el paquete naranja); n dobleces más repiten ese paquete bⁿ veces.
@@ -388,12 +394,108 @@
     return t;
   }
 
+
+  // ---------- Objeto 'terreno': el terreno cuadrado de Juan, en Juliaca (idea «cuadrado-suma» de Productos notables) ----------
+  // Visto desde arriba, con su cerco y la casa en una esquina. Modo 'amplia': Juan compra una franja de b por el costado y
+  // otra por el fondo; el terreno nuevo, de lado a + b, son cuatro piezas: a² (naranja), dos franjas ab (violeta: el doble
+  // producto, lo que se olvida) y la esquina b² (turquesa); el total en tinta. Modo 'cede': de un terreno de lado a se
+  // quitan dos franjas de ancho b (costado y fondo) para la vereda: las dos franjas se pisan en la esquina.
+  const TE = { x0: 66, y0: 44, lado: 176, kMax: 22 };
+  const m2 = x => `${fmt(x, 2)} m²`;
+  function geoTerreno(d) {
+    const a = Math.max(1, +d.a || 1), b = Math.max(0, +d.b || 0), cede = d.modo === 'cede';
+    const S = cede ? a : a + b, k = d.escala > 0 ? d.escala : Math.min(TE.kMax, TE.lado / S);
+    const x0 = TE.x0, y0 = TE.y0, A = a * k, B = b * k, W2 = S * k;
+    const objetos = [{ que: 'terreno', x0: x0 - 3, y0: y0 - 3, x1: x0 + W2 + 3, y1: y0 + W2 + 3 }], textos = [];
+    const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
+    const rot = (v, def) => (v === undefined || v === true ? def : v === false ? null : String(v));
+    // Lados: arriba y a la izquierda (a naranja, b turquesa; «?» en tinta).
+    const ladoA = rot(d.ladoA, `${fmt(a, 2)} m`), ladoB = rot(d.ladoB, `${fmt(b, 2)} m`);
+    if (d.lados !== false) {
+      if (cede) {
+        if (ladoA) { pon('lado', x0 + W2 / 2, y0 - 10, [[ladoA, ladoA === '?' ? null : 'o', 700]]); pon('lado', x0 - 8, y0 + W2 / 2 + 5, [[ladoA, ladoA === '?' ? null : 'o', 700]], 'end'); }
+        // El ancho de las franjas, recién cuando hay una franja a la vista.
+        if (ladoB && B > 0 && (d.costado || d.fondo)) pon('lado', x0 + W2 + 6, y0 + W2 - B / 2 + 5, [[ladoB, ladoB === '?' ? null : 'i', 700]], 'start');
+      } else {
+        if (ladoA) { pon('lado', x0 + A / 2, y0 - 10, [[ladoA, ladoA === '?' ? null : 'o', 700]]); pon('lado', x0 - 8, y0 + A / 2 + 5, [[ladoA, ladoA === '?' ? null : 'o', 700]], 'end'); }
+        if (ladoB && B > 0) { pon('lado', x0 + A + B / 2, y0 - 10 - (B < 34 ? 14 : 0), [[ladoB, ladoB === '?' ? null : 'i', 700]]); pon('lado', x0 - 8, y0 + A + B / 2 + 5 + (B < 24 ? 12 : 0), [[ladoB, ladoB === '?' ? null : 'i', 700]], 'end'); }
+      }
+    }
+    // Las piezas: dónde va cada una y su rótulo de área (si cabe).
+    const piezas = [];
+    const pieza = (que, x, y, w, h, color, area, rotulo) => {
+      piezas.push({ que, x, y, w, h, color });
+      const t = rotulo === undefined ? (d.piezas ? m2(area) : null) : rotulo;
+      if (t) {
+        const segs = [[t, t === '?' ? null : color, 700]], ancho = T.ancho(t, 13, 700);
+        if (ancho + 6 <= w && h >= 18) pon('pieza', x + w / 2, y + h / 2 + 5, segs);
+      }
+    };
+    const R = d.rot || {};
+    if (!cede) {
+      pieza('a2', x0, y0, A, A, 'o', a * a, R.a2);
+      if (B > 0) {
+        pieza('ab', x0 + A, y0, B, A, d.comprar ? null : 'f', a * b, R.ab);
+        pieza('ab', x0, y0 + A, A, B, d.comprar ? null : 'f', a * b, R.ab);
+        pieza('b2', x0 + A, y0 + A, B, B, d.comprar ? null : 'i', b * b, R.b2);
+      }
+    } else {
+      const C = A - B;
+      pieza('resto', x0, y0, C, C, null, (a - b) ** 2, d.resto === undefined ? null : d.resto === false ? null : String(d.resto));
+      if (d.costado) pieza('costado', x0 + C, y0, B, A, 'f', a * b, d.piezas ? m2(a * b) : null);
+      if (d.fondo) pieza('fondo', x0, y0 + C, A, B, 'f', a * b, null);
+    }
+    // El total, debajo.
+    const total = d.total === false ? null : d.total === '?' ? '? m²' : d.total === undefined || d.total === true ? (cede ? null : `(${fmt(a, 2)} + ${fmt(b, 2)})² = ${m2(S * S)}`) : String(d.total);
+    // A la izquierda alineado con el terreno (los rótulos de los lados quedan más a la izquierda y no se pisan).
+    if (total) pon('total', x0, Math.min(y0 + W2 + 22, 240), [[total, null, 700]], 'start');
+    return { W, H, M, d, a, b, k, x0, y0, A, B, S, W2, cede, piezas, objetos, textos };
+  }
+  function dibTerreno(datos, estado) {
+    const g = geometria(datos, estado), d = g.d, { x0, y0, A, B, W2 } = g;
+    let s = '';
+    // El terreno: fondo, piezas y cerco.
+    s += `<rect class="alg-terreno" x="${n2(x0)}" y="${n2(y0)}" width="${n2(W2)}" height="${n2(W2)}" fill="currentColor" fill-opacity="0.04"/>`;
+    for (const p of g.piezas) {
+      if (p.que === 'resto') continue;
+      const c = p.color ? `var(--c-${p.color})` : 'currentColor';
+      const punteada = d.comprar && p.que !== 'a2';
+      s += `<rect class="alg-pieza" data-pieza="${p.que}" x="${n2(p.x)}" y="${n2(p.y)}" width="${n2(p.w)}" height="${n2(p.h)}" fill="${c}" fill-opacity="${punteada ? 0 : p.color === 'o' ? 0.1 : 0.2}" stroke="${c}" stroke-width="2"${punteada ? ' stroke-dasharray="5 4"' : ''}/>`;
+    }
+    if (g.cede) {
+      const C = A - B, rest = g.piezas.find(p => p.que === 'resto');
+      s += `<rect class="alg-pieza" data-pieza="a2" x="${n2(x0)}" y="${n2(y0)}" width="${n2(A)}" height="${n2(A)}" fill="none" stroke="var(--c-o)" stroke-width="2.5"/>`;
+      if (rest && d.resto !== undefined && d.resto !== false) s += `<rect x="${n2(x0)}" y="${n2(y0)}" width="${n2(C)}" height="${n2(C)}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/>`;
+      // La esquina que se quitó dos veces: turquesa, con «× 2»; devuelta: con «+».
+      if (d.esquina) {
+        s += `<rect class="alg-esquina" x="${n2(x0 + C)}" y="${n2(y0 + C)}" width="${n2(B)}" height="${n2(B)}" fill="var(--c-i)" fill-opacity="${d.esquina === 'doble' ? 0.45 : 0.12}" stroke="var(--c-i)" stroke-width="2.5"/>`;
+        s += texto(x0 + A + 6, y0 + A + 12, [[d.esquina === 'doble' ? 'esquina: se quitó 2 veces' : 'esquina: se devuelve 1', 'i', 700]], { tam: 12 });
+      }
+    } else {
+      // La casa de Juan, en la esquina de arriba del terreno de antes.
+      const hx = x0 + 8, hy = y0 + 8, hw = Math.min(24, A * 0.3);
+      if (A >= 70) s += `<path d="M${n2(hx)} ${n2(hy + hw * 0.4)}L${n2(hx + hw / 2)} ${n2(hy)}L${n2(hx + hw)} ${n2(hy + hw * 0.4)}V${n2(hy + hw)}H${n2(hx)}Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
+    }
+    // Cerco: el borde del terreno, con postes.
+    let postes = '';
+    const np = Math.max(2, Math.round(W2 / 12));
+    for (let i = 0; i <= np; i++) { const t = (i / np) * W2; postes += `M${n2(x0 + t)} ${n2(y0 - 3)}v6M${n2(x0 + t)} ${n2(y0 + W2 - 3)}v6M${n2(x0 - 3)} ${n2(y0 + t)}h6M${n2(x0 + W2 - 3)} ${n2(y0 + t)}h6`; }
+    s += `<rect x="${n2(x0)}" y="${n2(y0)}" width="${n2(W2)}" height="${n2(W2)}" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="${postes}" stroke="currentColor" stroke-width="1.5" fill="none"/>`;
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.ancla });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="terreno" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altTerreno(d) {
+    const a = +d.a || 1, b = +d.b || 0;
+    if (d.modo === 'cede') return `El terreno cuadrado de ${fmt(a, 2)} m de lado cede una franja de ${fmt(b, 2)} m por el costado y otra por el fondo para la vereda${d.resto && d.resto !== '?' ? `; queda un cuadrado de ${d.resto}` : ''}.`;
+    return `El terreno cuadrado de Juan, de ${d.ladoA === '?' ? 'lado por hallar' : `${fmt(a, 2)} m de lado`}, con una franja de ${fmt(b, 2)} m por el costado y otra por el fondo: un cuadrado más grande, con dos franjas y una esquina.`;
+  }
+
   // ---------- Elige el objeto ----------
-  const OBJ = { hoja: [geoHoja, dibHoja, altHoja], huertos: [geoHuertos, dibHuertos, altHuertos], caja: [geoCaja, dibCaja, altCaja] };
+  const OBJ = { hoja: [geoHoja, dibHoja, altHoja], huertos: [geoHuertos, dibHuertos, altHuertos], caja: [geoCaja, dibCaja, altCaja], terreno: [geoTerreno, dibTerreno, altTerreno] };
   const de = d => OBJ[d && OBJ[d.objeto] ? d.objeto : 'hoja'];
   function geometria(datos, estado = {}) { const d = mezcla(datos, estado); return de(d)[0](d); }
   function dibujar(datos, estado = {}) { return de(mezcla(datos, estado))[1](datos, estado); }
   function alt(datos, estado = {}) { const d = mezcla(datos, estado); return de(d)[2](d); }
 
-  return { id: 'alg-objeto', dibujar, alt, geometria, constantes: { W, H, M, HOJA, CANTO, HU, CA } };
+  return { id: 'alg-objeto', dibujar, alt, geometria, constantes: { W, H, M, HOJA, CANTO, HU, CA, TE } };
 });

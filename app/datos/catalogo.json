@@ -2195,13 +2195,14 @@
      "teoria": {
       "archivo": "/contenido/teoria/algebra/productos-notables.js",
       "requiere": [
+       "/nucleo/kit/piezas/alg-objeto.js",
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/alg-baldosas.js",
        "/plantillas/cuadrado-crece/motor.js",
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 3,
-      "terminos": 21
+      "terminos": 20
      }
     },
     {
@@ -2244,7 +2245,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 30
+      "terminos": 31
      }
     },
     {
@@ -2457,7 +2458,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 37
+      "terminos": 38
      }
     },
     {

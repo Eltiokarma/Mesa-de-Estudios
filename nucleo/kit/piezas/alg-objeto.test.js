@@ -1,4 +1,4 @@
-// Pruebas de la pieza «alg-objeto» (objetos de Álgebra; hoy, la hoja que se dobla): se dibuja sin NaN ni colores fijos,
+// Pruebas de la pieza «alg-objeto» (objetos de Álgebra: la hoja, los biohuertos, la caja y el terreno): se dibuja sin NaN ni colores fijos,
 // es pura, de alto fijo, marcada como dibujo de prueba y con su texto alternativo; es fiel (una línea por capa de canto:
 // bᵐ⁺ⁿ capas en bⁿ paquetes de bᵐ; abierta, bᵏ partes; en tres, a lo más 3 dobleces); nunca usa carmín ni verde. Con
 // números (no a ojo; docs/molde-unidad.md §6): todo cabe en el lienzo con 4 de margen y ningún texto pisa a otro ni a
@@ -23,8 +23,8 @@ function revisar(d, e, nombre, mal) {
     mal.push(`${nombre}: se sale «${c.txt || c.que}» (${c.x0.toFixed(1)}, ${c.y0.toFixed(1)}) – (${c.x1.toFixed(1)}, ${c.y1.toFixed(1)})`);
   const t = g.textos;
   for (let i = 0; i < t.length; i++) for (let j = i + 1; j < t.length; j++) if (solapan(t[i], t[j], 1)) mal.push(`${nombre}: se pisan «${t[i].txt}» y «${t[j].txt}»`);
-  // Un texto no pisa un objeto, salvo el rótulo de la parte, que va dentro de su pedazo de hoja.
-  for (const x of t.filter(y => y.que !== 'parte')) for (const o of g.objetos) if (solapan(x, o)) mal.push(`${nombre}: «${x.txt}» pisa ${o.que}`);
+  // Un texto no pisa un objeto, salvo los que van adentro a propósito: la parte de la hoja y el área de una pieza del terreno.
+  for (const x of t.filter(y => y.que !== 'parte' && y.que !== 'pieza')) for (const o of g.objetos) if (solapan(x, o)) mal.push(`${nombre}: «${x.txt}» pisa ${o.que}`);
   const ob = g.objetos.filter(o => o.que !== 'doblez');
   for (let i = 0; i < ob.length; i++) for (let j = i + 1; j < ob.length; j++) if (solapan(ob[i], ob[j])) mal.push(`${nombre}: se pisan ${ob[i].que} y ${ob[j].que}`);
 }
@@ -72,15 +72,21 @@ test('fiel: una capa por línea, en bⁿ paquetes de bᵐ; abierta, bᵏ partes;
 
 // Las figuras de la teoría que usan la pieza.
 function figurasTeoria() {
-  const def = require('../../../contenido/teoria/algebra/exponentes-y-productos-notables.js');
-  for (const r of def.requiere) require(path.join(__dirname, '..', '..', '..', r));
+  const defs = ['exponentes-y-productos-notables', 'productos-notables'].map(u => require(`../../../contenido/teoria/algebra/${u}.js`));
+  for (const def of defs) for (const r of def.requiere) require(path.join(__dirname, '..', '..', '..', r));
   const out = [];
-  for (const i of def.ideas) {
+  for (const i of defs.flatMap(d => d.ideas)) {
     if (i.pieza === 'alg-objeto') for (const v of Teoria.grilla(i.juega.controles)) out.push([`${i.id} juego ${JSON.stringify(v)}`, i.juega.dibujo(v)]);
     for (const [k, t] of ((i.lee && i.lee.tarjetas) || []).entries()) if (t.dibujo && t.pieza === 'alg-objeto') out.push([`${i.id} lee ${k + 1}`, t.dibujo]);
     if (i.pieza === 'alg-objeto') out.push([`${i.id} predice`, i.predice.dibujo], [`${i.id} revelar`, i.predice.revelar]);
     if (i.mira && i.mira.pieza === 'alg-objeto') i.mira.pasos.forEach((p, k) => out.push([`${i.id} mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }]));
     for (const [k, e] of (i.ejemplos || []).entries()) if (e.figura && e.figura.pieza === 'alg-objeto') out.push([`${i.id} ejemplo ${k + 1}`, e.figura]);
+    // «Ahora tú» y «Así se resuelve», en 40 semillas.
+    for (let s = 0; s < 40; s++) for (const g of [i.ahoraTu, i.resuelve]) {
+      if (!g || g.pieza !== 'alg-objeto') continue;
+      const c = g.generar(s);
+      for (const f of [c.dibujo, ...((c.pasos || []).map(x => x.dibujo))]) if (f && (f.pieza || 'alg-objeto') === 'alg-objeto') out.push([`${i.id} semilla ${s}`, f]);
+    }
   }
   return out;
 }

@@ -5,22 +5,35 @@
  * radicales» (contenido/teoria/algebra/exponentes-y-productos-notables.js). Avance.migrar (nucleo/avance.js) pasa a esta
  * unidad lo hecho en `cuadrado-suma`, `radicales-dobles`, `racionalizar` y las mesas `cubo-se-abre` y `rectangulo-x-p-q`.
  *
- * ESTE ARCHIVO ES EL CONTENIDO VIEJO, MOVIDO TAL CUAL (ideas, mesas, glosario e historia), a la espera de rehacerse con el
- * método (docs/metodo/unidad/): ideas `cuadrado-suma`, `suma-por-diferencia` (nueva), `cubo-binomio` (nueva),
- * `radicales-dobles` y `racionalizar`; colores aprobados: a naranja, b turquesa, el total en tinta y violeta a las piezas
- * del medio que se olvidan (2ab, 3a²b); sin carmín ni verde junto a naranja. Hasta entonces quedan los colores viejos
- * (de abajo) y la numeración de ideas del comentario original (3 a 5).
+ * Etapa 3, fase 2 del método (18 nov): está rehecha SOLO la idea 1, «El cuadrado de una suma» (`cuadrado-suma`), para
+ * el visto bueno de Gerson. Las otras dos ideas que vinieron (`radicales-dobles` y `racionalizar`) siguen como estaban,
+ * con sus colores viejos (abajo) y la numeración de ideas del comentario original (4 y 5), hasta que les toque; las
+ * nuevas de la propuesta (`suma-por-diferencia` y `cubo-binomio`) todavía no están. Por eso la unidad no declara
+ * calidad: 2; productos-notables.test.js corre la idea 1 sola con calidad 2. Las mesas `cubo-se-abre` y
+ * `rectangulo-x-p-q` siguen en la idea 1 hasta que existan sus ideas (cubo-binomio y suma-por-diferencia).
+ * Objeto de la primera pantalla de la idea 1: el terreno cuadrado de Juan, en Juliaca, que compra una franja por el
+ * costado y otra por el fondo (pieza alg-objeto, objeto 'terreno', dibujo de prueba). La predicción cede franjas (una
+ * resta): nada antes de ella (título, Resumen, glosario, pestaña Ejemplos) usa el cuadrado de una resta (Gerson, 18 nov).
+ *
+ * REGLA DE COLORES DE LA UNIDAD (idea 1; docs/molde-unidad.md §5b; decisiones, 17 nov): un color fijo por magnitud,
+ * en la tabla COLORES (def.colores):
+ *   - naranja (c-o): el primer término, a (el lado de antes del terreno) y su cuadrado a²;
+ *   - turquesa (c-i): el segundo término, b (el ancho de las franjas) y la esquina b²;
+ *   - violeta (c-f): las piezas del medio que se olvidan, el doble producto 2ab (las dos franjas); y la letra de una
+ *     alternativa, en negrita;
+ *   - tinta: el total (a + b)², lo que queda al ceder y lo que se pide con «?»;
+ *   - ni carmín (es de los ángulos) ni verde (iría junto al naranja).
  *
  * Molde: docs/teoria.md. Fuente del contenido: docs/teoria/matriz/algebra.json (unidad 3), expediente teoria-152-unidades
  * (Álgebra y sus precisiones: la figura de áreas ilustra lados positivos; la identidad vale por distributividad) e
  * historia-ecuaciones (pp. 57–68). Errores: AL8, AL9 y AL11 de docs/investigacion/algebra-funciones-ideas-erroneas.md;
  * los TAL-* son hipótesis de diseño (rutinas/teoria-algebra.md).
- * Colores (regla 4, viejos): a naranja (c-o), b turquesa (c-i), lo que se suma o resulta verde (c-d), lo que falta o el
- * contraejemplo rojo (c-h).
+ * Colores viejos de las ideas 4 y 5 y de las mesas (regla 4): a naranja (c-o), b turquesa (c-i), lo que se suma o
+ * resulta verde (c-d), lo que falta o el contraejemplo rojo (c-h).
  *
- * Ronda 2 (14 nov 2026): gesto directo en «El cuadrado de una suma» (las esquinas de a² y del cuadrado, con la escala
- * fija de alg-baldosas), llaves en las reglas y en «Mira» y laboratorio: el rectángulo (x + p)(x + q) con dos esquinas y
- * el cubo que se abre (3D). Las ideas 4 y 5 juegan con tablas: no hay figura que agarrar.
+ * Ronda 2 (14 nov 2026): laboratorio con el rectángulo (x + p)(x + q) de dos esquinas y el cubo que se abre (3D). Las
+ * ideas 4 y 5 juegan con tablas: no hay figura que agarrar. La idea 1 conserva el gesto directo de la ronda 2 (las
+ * esquinas del terreno de antes y del terreno nuevo), ahora sobre el terreno.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -50,188 +63,399 @@
 
   const BALD = () => Kit.piezas['alg-baldosas'];
 
-  // ---------- Idea 3: el cuadrado de una suma tiene cuatro piezas ----------
-  // Cambia: los largos a y b · Permanece: el cuadrado de lado a + b, a escala · Progresa: las piezas que lo llenan
-  // · Se reserva: los dos rectángulos ab · Debe verse: a² + b² no alcanza a cubrir (a + b)².
-  // Gesto: el alumno estira el cuadrado por sus esquinas; los huecos ab crecen con él a la vista.
-  const cuadrado = (va, vb, conAB, extra = {}) => ({
-    anchos: [{ t: `a = ${va}`, v: va, color: 'o' }, { t: `b = ${vb}`, v: vb, color: 'i' }],
-    altos: [{ t: 'a', v: va, color: 'o' }, { t: 'b', v: vb, color: 'i' }],
-    celdas: [[{ t: `a² = ${va * va}`, color: 'o' }, conAB ? { t: `ab = ${va * vb}`, color: 'd', desde: conAB === true ? 0 : conAB } : null],
-      [conAB ? { t: `ab = ${va * vb}`, color: 'd', desde: conAB === true ? 0 : conAB } : null, { t: `b² = ${vb * vb}`, color: 'i' }]],
-    total: { t: `(a + b)² = ${(va + vb) ** 2}` },
-    alt: `Cuadrado de lado ${va} + ${vb}: ${conAB ? 'a², b² y dos rectángulos ab' : 'a² y b² dejan dos huecos'}`,
-    ...extra,
-  });
-  // Gesto: la esquina interior de a² (diagonal) cambia a; la esquina de afuera de b² cambia b. Con escala fija
-  // (alg-baldosas `escala`), el cuadrado crece de verdad: lo que se ve es a + b, no una proporción.
-  const ESC_N = 24;   // px por unidad: a + b llega a 8 y el lado a 192 px, lo que cabe en la pieza
-  // Con la escala fija, un tramo de menos de 56 px muestra solo su letra (el valor está en el control y la lectura).
-  const rot = (t, v, val = v) => (v * ESC_N >= 56 ? `${t} = ${val}` : t);
-  const cuadJ = v => ({
-    anchos: [{ t: rot('a', v.a), v: v.a, color: 'o' }, { t: rot('b', v.b), v: v.b, color: 'i' }],
-    altos: [{ t: 'a', v: v.a, color: 'o' }, { t: 'b', v: v.b, color: 'i' }],
-    celdas: [[{ t: rot('a²', v.a, v.a * v.a), color: 'o' }, null], [null, { t: rot('b²', v.b, v.b * v.b), color: 'i' }]],
-    total: { t: `(a + b)² = ${(v.a + v.b) ** 2}` },
-    escala: ESC_N,
-    alt: `Cuadrado de lado ${v.a} + ${v.b}: a² y b² dejan dos huecos`,
-  });
+  // ---------- Colores de la unidad: un color fijo por magnitud (cabecera; lo comprueba productos-notables.test.js) ----------
+  // Solo la idea 1 está rehecha (18 nov); las ideas viejas conservan sus colores hasta que les toque.
+  const COLORES = { 'primer término': 'o', 'segundo término': 'i', 'doble producto': 'f', 'letra de alternativa': 'f' };
+  const ficha = mg => t => ({ v: `c-${COLORES[mg]}`, t: String(t), m: mg });
+  const T1 = ficha('primer término'), T2 = ficha('segundo término'), DP = ficha('doble producto');
+  const aa = T1('a'), bb = T2('b');
+  const SEP = '   ·   ';
+  // La letra de una alternativa, en negrita (Gerson, mesa de revisión, 17 nov), en violeta como en la unidad hermana.
+  // El U+2060 (invisible) evita que la letra sola salga en cursiva como una variable.
+  const letra = L => ({ v: 'c-f', t: `${L}⁠`, m: 'doble producto' });
+  // Texto plano de partes (para comparar opciones).
+  const txt = x => (Array.isArray(x) ? x.map(txt).join('') : x && typeof x === 'object' ? (x.t !== undefined ? String(x.t) : '') : String(x));
+  function opcionesP(correcta, distractores) {
+    const ops = [{ id: 'c', texto: correcta, correcta: true }], vistos = new Set([txt(correcta)]);
+    for (const x of distractores) {
+      const t = txt(x.texto);
+      if (vistos.has(t) || /NaN|undefined|Infinity/.test(t)) continue;
+      vistos.add(t);
+      ops.push({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera });
+    }
+    return ops.slice(0, 4);
+  }
+  function conCuatro(caso, r) {
+    for (let i = 0; i < 80; i++) { const c = caso(r); if (c.opciones.length >= 4) return c; }
+    throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
+  }
+  const z = x => (x < 0 ? `−${-x}` : String(x));
+
+  // ---------- Idea 1 (rehecha, 18 nov): el cuadrado de una suma ----------
+  // Propuesta aprobada: docs/etapa3/propuesta-algebra-exponentes.md (§1 a §6, idea 4, la primera de Productos notables).
+  // Objeto de la primera pantalla: el terreno cuadrado de Juan, en Juliaca, que compra una franja por el costado y otra
+  // por el fondo para que siga cuadrado (pieza alg-objeto, objeto 'terreno', dibujo de prueba).
+  // Cambia: el lado de antes (a) y el ancho de las franjas (b). · Permanece: la escala del terreno (11 por m). · Progresa:
+  // las cuatro piezas del terreno nuevo: a², dos franjas ab y la esquina b². · Se reserva: ceder franjas, una resta (la
+  // predicción: el vecino cede 2 m de un terreno de 7 m). · Debe verse: (a + b)² = a² + 2ab + b²; el 2ab no se olvida.
+  // Nada antes de Predice dice qué pasa con una resta (Gerson, 18 nov: ni el título, ni el Resumen, ni la pestaña
+  // Ejemplos): ningún ejemplo ni término del glosario usa (a − b)²; «Ahora tú» sí, ya después de predecir.
+  // Errores (hipótesis de diseño; AL8 de docs/investigacion/algebra-funciones-ideas-erroneas.md, parcial): AL8 (a ± b)² =
+  // a² ± b² · TAL-2AB cuenta una sola franja ab («omitir el término cruzado», Kombat y otros 2023, estudios débiles; trampa
+  // de San Marcos 2025-I) · TAL-ESQUINA en una resta quita las dos franjas y no devuelve la esquina (o se olvida de b²) ·
+  // TAL-SIGNO cambia el signo del doble producto o de la esquina · TAL-RAIZ-FALTA da el área cuando se pide el lado.
+  const TE = datos => ({ pieza: 'alg-objeto', datos: Object.assign({ objeto: 'terreno' }, datos), estado: {} });
+  const ESC_T = 11;   // el juego: a + b llega a 16 m, 176 px
+  const DF = {
+    suma: ['(', aa, ' + ', bb, ')² = ', aa, '² + 2', aa, bb, ' + ', bb, '²'],
+    resta: ['(', aa, ' − ', bb, ')² = ', aa, '² − 2', aa, bb, ' + ', bb, '²'],
+    area: 'Área de un cuadrado = lado · lado',
+    dist: 'Propiedad distributiva: p · (q + r) = p · q + p · r',
+  };
+  // Un término con su coeficiente: 1·x² → «x²», 4·x² → «4x²».
+  const ct = (c, v) => (c === 1 ? v : `${c}${v}`);
+  // Ahora tú 1: desarrollar el cuadrado de una suma.
+  function casoDesarrolla(r) {
+    const p = r.uno([1, 1, 2, 3]), k = r.ent(2, 9), x = ct(p, 'x');
+    const op = (c2, c1, c0) => [[ct(c2, 'x²'), c1 ? ` + ${ct(c1, 'x')}` : '', c0 ? ` + ${c0}` : ''].join('')];
+    return {
+      pregunta: ['Desarrolla (', T1(x), ' + ', T2(k), ')².'],
+      datos: [DF.suma],
+      opciones: opcionesP(op(p * p, 2 * p * k, k * k), [
+        { id: 'al8', texto: op(p * p, 0, k * k), error: 'AL8', siFuera: `Bien los dos cuadrados. Pero faltan las dos franjas del medio: 2 · ${x} · ${k}.` },
+        { id: 'una', texto: op(p * p, p * k, k * k), error: 'TAL-2AB', siFuera: `Bien que pongas el producto ${x} · ${k}. Pero son dos franjas: va dos veces.` },
+        { id: 'esquina', texto: op(p * p, 2 * p * k, 0), error: 'TAL-ESQUINA', siFuera: `Bien el doble producto. Falta la esquina: ${k}² = ${k * k}.` },
+      ]),
+      solucion: { texto: 'Dos cuadrados y el doble producto en el medio.', ecuacion: ['(', T1(x), ' + ', T2(k), ')² = ', T1(ct(p * p, 'x²')), ' + ', DP(ct(2 * p * k, 'x')), ' + ', T2(k * k)] },
+    };
+  }
+  // Ahora tú 2: el cuadrado de una resta (ya después de predecir).
+  function casoResta(r) {
+    const k = r.ent(2, 9);
+    const op = (s1, c1, s0, c0) => [`x² ${s1} ${c1}x ${s0} ${c0}`.replace(/ \+ 0x| − 0x/, '')];
+    return {
+      pregunta: ['Desarrolla (', T1('x'), ' − ', T2(k), ')².'],
+      datos: [DF.resta],
+      opciones: opcionesP(op('−', 2 * k, '+', k * k), [
+        { id: 'al8', texto: [`x² − ${k * k}`], error: 'AL8', siFuera: `Bien los dos cuadrados. Pero faltan las dos franjas: 2 · x · ${k}, que se restan.` },
+        { id: 'esquina', texto: op('−', 2 * k, '−', k * k), error: 'TAL-ESQUINA', siFuera: `Restar las dos franjas está bien. Pero la esquina se quitó dos veces: se devuelve, + ${k * k}.` },
+        { id: 'signo', texto: op('+', 2 * k, '+', k * k), error: 'TAL-SIGNO', siFuera: 'Bien las tres piezas. Pero en una resta las dos franjas se quitan: van con −.' },
+      ]),
+      solucion: { texto: 'Se quitan las dos franjas y se devuelve la esquina.', ecuacion: ['(', T1('x'), ' − ', T2(k), ')² = ', T1('x²'), ' − ', DP(`${2 * k}x`), ' + ', T2(k * k)] },
+    };
+  }
+  // Ahora tú 3: un número al cuadrado sin multiplicar (con suma o con resta).
+  function casoNumero(r) {
+    const M = r.uno([20, 30, 40, 50, 60, 70, 80, 90, 100]), d = r.ent(1, 3), mas = r() < 0.5, N = mas ? M + d : M - d, sg = mas ? 1 : -1;
+    const bien = M * M + sg * 2 * M * d + d * d;
+    return {
+      pregunta: `¿Cuánto vale ${N}², sin hacer la multiplicación larga?`,
+      datos: [`${N} = ${M} ${mas ? '+' : '−'} ${d}`, mas ? DF.suma : DF.resta],
+      opciones: opcionesP([String(bien)], [
+        { id: 'al8', texto: [String(M * M + sg * d * d)], error: 'AL8', siFuera: `Bien ${M}² y ${d}². Pero faltan las dos franjas: 2 · ${M} · ${d} = ${2 * M * d}.` },
+        { id: 'una', texto: [String(M * M + sg * M * d + d * d)], error: 'TAL-2AB', siFuera: `Bien la franja de ${M * d}. Pero son dos: ${2 * M * d}.` },
+        { id: 'esquina', texto: [String(M * M + sg * 2 * M * d - (mas ? 0 : d * d))], error: 'TAL-ESQUINA', siFuera: mas ? `Bien el doble producto. Falta la esquina: ${d}² = ${d * d}.` : `Bien quitar las dos franjas. Pero la esquina se devuelve: + ${d * d}.` },
+      ]),
+      solucion: { texto: `Se escribe ${N} como ${M} ${mas ? '+' : '−'} ${d} y se arma el cuadrado.`, ecuacion: [`(${M} ${mas ? '+' : '−'} ${d})² = `, T1(M * M), ` ${mas ? '+' : '−'} `, DP(2 * M * d), ' + ', T2(d * d), ` = ${bien}`] },
+    };
+  }
+  // Ahora tú 4 (nivel examen): a² + b² sin conocer a ni b.
+  function casoSumaProducto(r) {
+    let x, y;
+    do { x = r.ent(1, 9); y = r.ent(1, 9); } while (x === y);
+    const S = x + y, P = x * y, bien = S * S - 2 * P;
+    return {
+      pregunta: ['Si ', aa, ' + ', bb, ` = ${S} y `, aa, bb, ` = ${P}, ¿cuánto vale `, aa, '² + ', bb, '²?'],
+      datos: [DF.suma],
+      opciones: opcionesP([String(bien)], [
+        { id: 'al8', texto: [String(S * S)], error: 'AL8', siFuera: `${S}² está bien calculado. Pero ahí están también las dos franjas ab: hay que quitarlas.` },
+        { id: 'una', texto: [String(S * S - P)], error: 'TAL-2AB', siFuera: `Quitar las franjas está bien. Pero son dos: 2 · ${P}.` },
+        { id: 'signo', texto: [String(S * S + 2 * P)], error: 'TAL-SIGNO', siFuera: `Bien el doble producto, 2 · ${P}. Pero ya está dentro de ${S}²: se resta.` },
+      ]),
+      solucion: { texto: 'Al cuadrado de la suma se le quitan las dos franjas.', ecuacion: [aa, '² + ', bb, `² = ${S}² − `, DP(`2 · ${P}`), ` = ${bien}`] },
+    };
+  }
+  // Ahora tú 5 (nivel examen): un terreno partido en dos cuadrados y dos rectángulos iguales; se pide el lado.
+  const raizT = v => { const q = Math.sqrt(v); return Number.isInteger(q) ? String(q) : `≈ ${f(q, 1)}`; };
+  function casoFigura(r) {
+    let x, y;
+    do { x = r.ent(2, 9); y = r.ent(1, 7); } while (x === y);
+    const X = x * x + y * y, Y = x * y, L = x + y;
+    return {
+      pregunta: `Un terreno cuadrado se parte en dos cuadrados y dos rectángulos iguales. Los dos cuadrados suman ${X} m² y cada rectángulo mide ${Y} m². ¿Cuánto mide el lado del terreno?`,
+      datos: [DF.area],
+      dibujo: TE({ a: x, b: y, lados: false, total: false, rot: { a2: '?', b2: '?', ab: `${Y} m²` } }),
+      opciones: opcionesP([`${L} m`], [
+        { id: 'una', texto: [`${raizT(X + Y)} m`], error: 'TAL-2AB', siFuera: `Bien sumar las piezas y sacar la raíz. Pero son dos rectángulos: ${X} + 2 · ${Y}.` },
+        { id: 'al8', texto: [`${raizT(X)} m`], error: 'AL8', siFuera: `Bien que uses los dos cuadrados, ${X} m². Pero el terreno también tiene los dos rectángulos.` },
+        { id: 'raiz', texto: [`${L * L} m`], error: 'TAL-RAIZ-FALTA', siFuera: `${L * L} m² es el área del terreno, bien sumada. Falta sacar la raíz: piden el lado.` },
+      ]),
+      solucion: { texto: 'El área son las cuatro piezas; el lado es su raíz.', ecuacion: [`${X} + `, DP(`2 · ${Y}`), ` = ${L * L}   →   lado = √${L * L} = ${L}`] },
+    };
+  }
+
+  // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h). Cuentas rehechas aparte (scratchpad,
+  // cuentas-productos1.py): (8 + 3)² = 121; (x + 4)² = x² + 8x + 16; en (x + 7)², 14x; 31² = 961; (5 + 3)² = 64 contra
+  // 34; (3x + 2)² = 9x² + 12x + 4; x² + 10x + 25 = (x + 5)²; a + b = 9, ab = 20 → 41; 2,1² = 4,41; 15² − 12² = 81 =
+  // 2 · 12 · 3 + 9; 34 + 2 · 15 = 64 → 8 (errores 7 y √34); a + b = 7, ab = 12 → 25 (errores 49, 37, 73);
+  // (√3 + √2)² = 5 + 2√6; x + 1/x = 5 → 23 (errores 25, 27, 24); 2 · 3 · a + 9 = 69 → a = 10 (errores 11,5 y 13).
+  // Ninguno usa (a − b)² ni una franja que se cede (es la predicción); ninguna figura muestra lo que se pide.
+  const EJEMPLOS_CUADRADO = [
+    { nivel: 1, titulo: 'El terreno nuevo',
+      enunciado: ['Un terreno cuadrado de ', T1(8), ' m de lado se amplía con una franja de ', T2(3), ' m por el costado y otra por el fondo. ¿Cuántos m² mide ahora?'],
+      datos: [DF.area],
+      figura: TE({ a: 8, b: 3, total: '?' }),
+      solucion: [{ texto: 'El terreno nuevo tiene cuatro piezas: el de antes, dos franjas de 8 por 3 y la esquina de 3 por 3.', ecuacion: [T1(64), ' + ', DP(24), ' + ', DP(24), ' + ', T2(9), ' = 121 = 11²'] }],
+      respuesta: '121 m²' },
+    { nivel: 1, titulo: 'Desarrollar un cuadrado',
+      enunciado: ['Desarrolla (', T1('x'), ' + ', T2(4), ')².'],
+      datos: [DF.suma],
+      solucion: [{ texto: 'a es x y b es 4: los dos cuadrados y, en el medio, dos veces x por 4.', ecuacion: ['(', T1('x'), ' + ', T2(4), ')² = ', T1('x²'), ' + ', DP('8x'), ' + ', T2(16)] }],
+      respuesta: [T1('x²'), ' + ', DP('8x'), ' + ', T2(16)] },
+    { nivel: 1, titulo: 'El doble producto',
+      enunciado: ['En el desarrollo de (', T1('x'), ' + ', T2(7), ')², ¿cuál es el doble producto?'],
+      datos: [DF.suma],
+      solucion: [{ texto: 'El doble producto es dos veces el primer término por el segundo: las dos franjas del medio.', ecuacion: ['2 · ', T1('x'), ' · ', T2(7), ' = ', DP('14x')] }],
+      respuesta: ['El doble producto es ', DP('14x')] },
+    { nivel: 1, titulo: 'Un número al cuadrado',
+      enunciado: '¿Cuánto vale 31², sin hacer la multiplicación larga?',
+      datos: ['31 = 30 + 1', DF.suma],
+      solucion: [{ texto: '31 es 30 + 1: el cuadrado de 30, dos franjas de 30 por 1 y la esquina de 1 por 1.', ecuacion: ['(', T1(30), ' + ', T2(1), ')² = ', T1(900), ' + ', DP(60), ' + ', T2(1), ' = 961'] }],
+      respuesta: '31² = 961' },
+    { nivel: 1, titulo: '¿Basta con los cuadrados?',
+      enunciado: ['¿Es (', T1(5), ' + ', T2(3), ')² igual a ', T1(5), '² + ', T2(3), '²?'],
+      datos: [DF.suma],
+      solucion: [{ texto: '(5 + 3)² = 8² = 64, pero 5² + 3² = 25 + 9 = 34. Faltan las dos franjas: 2 · 5 · 3 = 30.', ecuacion: ['64 = 34 + ', DP(30)] }],
+      respuesta: ['No: falta el doble producto, ', DP(30)] },
+    { nivel: 2, titulo: 'Con un coeficiente',
+      enunciado: ['Desarrolla (', T1('3x'), ' + ', T2(2), ')².'],
+      datos: [DF.suma],
+      solucion: [
+        { texto: 'El primer término es 3x: su cuadrado es 3x · 3x = 9x², no 3x².', ecuacion: [{ sup: [{ par: [T1('3x')] }, '2'] }, ' = ', T1('9x²')] },
+        { texto: 'El doble producto: 2 · 3x · 2 = 12x. La esquina: 2² = 4.', ecuacion: ['(', T1('3x'), ' + ', T2(2), ')² = ', T1('9x²'), ' + ', DP('12x'), ' + ', T2(4)] },
+      ],
+      respuesta: [T1('9x²'), ' + ', DP('12x'), ' + ', T2(4)] },
+    { nivel: 2, titulo: 'La esquina que falta',
+      enunciado: ['¿Qué número hay que sumarle a ', T1('x²'), ' + ', DP('10x'), ' para que sea el cuadrado de un binomio?'],
+      datos: [DF.suma],
+      solucion: [
+        { texto: 'x² es el cuadrado del primer término, x. Las dos franjas, 10x, son 2 · x · b: entonces b = 5.', ecuacion: [DP('10x'), ' = 2 · ', T1('x'), ' · ', T2(5)] },
+        { texto: 'Falta la esquina, b²: 5² = 25. Así queda un cuadrado completo.', ecuacion: [T1('x²'), ' + ', DP('10x'), ' + ', T2(25), ' = (', T1('x'), ' + ', T2(5), ')²'] },
+      ],
+      respuesta: ['Hay que sumarle ', T2(25)] },
+    { nivel: 2, titulo: 'Suma y producto',
+      enunciado: ['Si ', aa, ' + ', bb, ' = 9 y ', aa, bb, ' = 20, ¿cuánto vale ', aa, '² + ', bb, '²?'],
+      datos: [DF.suma],
+      solucion: [
+        { texto: 'El cuadrado de la suma trae a² + b² y, además, las dos franjas ab.', ecuacion: ['9² = ', aa, '² + ', bb, '² + ', DP('2 · 20')] },
+        { texto: 'Le quito las dos franjas.', ecuacion: [aa, '² + ', bb, '² = 81 − ', DP(40), ' = 41'] },
+      ],
+      respuesta: [aa, '² + ', bb, '² = 41'] },
+    { nivel: 2, titulo: 'Con decimales',
+      enunciado: '¿Cuánto vale 2,1², sin calculadora?',
+      datos: ['2,1 = 2 + 0,1', DF.suma],
+      solucion: [
+        { texto: 'Escribo 2,1 como 2 + 0,1: un cuadrado de 2, dos franjas de 2 por 0,1 y una esquina chiquita.', ecuacion: ['(', T1(2), ' + ', T2('0,1'), ')² = ', T1(4), ' + ', DP('0,4'), ' + ', T2('0,01')] },
+        { texto: 'Se suman las tres partes.', ecuacion: ['4 + 0,4 + 0,01 = 4,41'] },
+      ],
+      respuesta: '2,1² = 4,41' },
+    { nivel: 2, titulo: 'Lo que compró Juan',
+      enunciado: ['El terreno de Juan medía ', T1(12), ' m de lado y compró franjas de ', T2(3), ' m por el costado y por el fondo. ¿Cuántos m² compró?'],
+      datos: [DF.area, DF.suma],
+      figura: TE({ a: 12, b: 3, total: false, rot: { ab: '?', b2: '?' } }),
+      solucion: [
+        { texto: 'Compró las dos franjas, de 12 por 3, y la esquina, de 3 por 3.', ecuacion: [DP('2 · 12 · 3'), ' + ', T2('3²'), ' = ', DP(72), ' + ', T2(9), ' = 81'] },
+        { texto: 'Lo reviso: el terreno nuevo mide 15² = 225 y el de antes, 12² = 144. La diferencia es 81. Cuadra.' },
+      ],
+      respuesta: '81 m²' },
+    { nivel: 3, titulo: 'Las piezas de un terreno',
+      enunciado: 'Un terreno cuadrado se parte en dos cuadrados y dos rectángulos iguales. Los dos cuadrados suman 34 m² y cada rectángulo mide 15 m². ¿Cuánto mide el lado del terreno?',
+      alternativas: ['7 m', '8 m', '√34 m', '64 m', '6 m'],
+      datos: [DF.area],
+      figura: TE({ a: 5, b: 3, lados: false, total: false, rot: { a2: '?', b2: '?', ab: '15 m²' } }),
+      solucion: [
+        { texto: 'El área del terreno son sus cuatro piezas: los dos cuadrados y los dos rectángulos.', ecuacion: ['34 + ', DP('2 · 15'), ' = 64'] },
+        { texto: 'El lado es la raíz del área.', ecuacion: ['lado = √64 = 8'] },
+        { texto: ['La ', letra('A'), ' cuenta un solo rectángulo: √(34 + 15) = 7. La ', letra('D'), ' da el área, no el lado.'] },
+      ],
+      respuesta: [letra('B'), ', 8 m'] },
+    { nivel: 3, titulo: 'Sin conocer los números',
+      enunciado: ['Si ', aa, ' + ', bb, ' = 7 y ', aa, bb, ' = 12, ¿cuánto vale ', aa, '² + ', bb, '²?'],
+      alternativas: ['49', '37', '25', '1', '73'],
+      datos: [DF.suma],
+      solucion: [
+        { texto: 'No hace falta hallar a ni b. El cuadrado de la suma trae a² + b² más las dos franjas.', ecuacion: ['7² = ', aa, '² + ', bb, '² + ', DP('2 · 12')] },
+        { texto: 'Le quito las dos franjas: 49 − 24 = 25. (Con 3 y 4: 9 + 16 = 25. Cuadra.)', ecuacion: [aa, '² + ', bb, '² = 49 − ', DP(24), ' = 25'] },
+        { texto: ['La ', letra('A'), ' no quita las franjas; la ', letra('B'), ' quita una sola; la ', letra('E'), ' las suma.'] },
+      ],
+      respuesta: [letra('C'), ', 25'] },
+    { nivel: 3, titulo: 'Con raíces',
+      enunciado: ['Desarrolla (', T1('√3'), ' + ', T2('√2'), ')².'],
+      alternativas: ['5', '5 + √6', '5 + 2√6', '25', '6 + 2√5'],
+      datos: [DF.suma, '√a · √b = √(a · b), con a, b ≥ 0'],
+      solucion: [
+        { texto: 'Los dos cuadrados: (√3)² = 3 y (√2)² = 2. El doble producto: 2 · √3 · √2 = 2√6.', ecuacion: ['(', T1('√3'), ' + ', T2('√2'), ')² = ', T1(3), ' + ', DP('2√6'), ' + ', T2(2)] },
+        { texto: 'Se juntan los números sin raíz: 3 + 2 = 5.', ecuacion: ['5 + ', DP('2√6')] },
+        { texto: ['La ', letra('A'), ' se olvida de las franjas, y la ', letra('B'), ' cuenta una sola.'] },
+      ],
+      respuesta: [letra('C'), ', 5 + ', DP('2√6')] },
+    { nivel: 3, titulo: 'Un número y su inverso',
+      enunciado: 'Si x + 1/x = 5, ¿cuánto vale x² + 1/x²?',
+      alternativas: ['25', '23', '27', '24', '10'],
+      datos: [DF.suma, 'x · (1/x) = 1, con x ≠ 0'],
+      solucion: [
+        { texto: 'Elevo al cuadrado los dos lados: a es x y b es 1/x. El doble producto es 2 · x · (1/x) = 2.', ecuacion: ['(', T1('x'), ' + ', T2('1/x'), ')² = ', T1('x²'), ' + ', DP(2), ' + ', T2('1/x²'), ' = 25'] },
+        { texto: 'Le quito el doble producto a los dos lados.', ecuacion: ['x² + 1/x² = 25 − ', DP(2), ' = 23'] },
+        { texto: ['La ', letra('A'), ' se olvida del doble producto; la ', letra('C'), ' lo suma, y la ', letra('D'), ' quita solo 1.'] },
+      ],
+      respuesta: [letra('B'), ', 23'] },
+    { nivel: 3, titulo: 'El lado de antes',
+      enunciado: 'Juan amplía su terreno cuadrado con franjas de 3 m por el costado y por el fondo, y el área crece 69 m². ¿Cuánto medía el lado de antes?',
+      alternativas: ['10 m', '11,5 m', '13 m', '23 m', '7 m'],
+      datos: [DF.area, DF.suma],
+      figura: TE({ a: 10, b: 3, ladoA: '?', total: false }),
+      solucion: [
+        { texto: 'Lo que crece son las dos franjas y la esquina: 2 · a · 3 + 3² = 6a + 9.', ecuacion: [DP('6a'), ' + ', T2(9), ' = 69'] },
+        { texto: 'Despejo: 6a = 60, así que a = 10. Lo reviso: 13² − 10² = 169 − 100 = 69. Cuadra.', ecuacion: ['6a = 60   →   a = 10'] },
+        { texto: ['La ', letra('B'), ' se olvida de la esquina: 69 ÷ 6. La ', letra('C'), ' da el lado nuevo.'] },
+      ],
+      respuesta: [letra('A'), ', ', T1('10 m')] },
+  ];
+
+  // «Mira»: el vecino cede las dos franjas, paso a paso (la situación de la predicción).
+  const MIRA_CEDE = { objeto: 'terreno', modo: 'cede', a: 7, b: 2, escala: 22, total: false, pasos: [
+    {}, { costado: true, piezas: true }, { costado: true, fondo: true, esquina: 'doble' },
+    { costado: true, fondo: true, esquina: 'devuelta' }, { costado: true, fondo: true, esquina: 'devuelta', resto: '25 m²' },
+  ] };
   const notables = {
     id: 'cuadrado-suma',
     titulo: 'El cuadrado de una suma',
+    pregunta: '¿Por qué (a + b)² no es a² + b²?',
     temas: ['Productos notables'],
-    pieza: 'alg-baldosas',
-    // Lee (fase 2): el área de un cuadrado de lado a + b y el nombre «producto notable»; no dice qué falta («Predice»).
+    pieza: 'alg-objeto',
+    aprendizaje: '(a + b)² son cuatro piezas: a², b² y dos rectángulos ab; con una resta, se quitan las dos franjas y la esquina se devuelve.',
+    actividad: 'Ampliar un terreno cuadrado por dos lados y medir sus piezas.',
+    // Lee: el terreno, el binomio y la distributiva. No dice qué piezas salen (es el juego) ni qué pasa al ceder.
     lee: {
       tarjetas: [
-        { titulo: 'Un patio cuadrado', texto: 'En una casa de Juliaca, un patio cuadrado mide a metros hasta una columna y b metros más hasta la pared. Su lado es a + b, y su área es el lado por el lado.',
-          ecuacion: ['(', a, ' + ', b, ')(', a, ' + ', b, ') = (', a, ' + ', b, ')²'] },
-        { titulo: 'Productos notables', texto: 'Algunas multiplicaciones salen tanto en los exámenes que conviene saber su resultado sin hacer toda la cuenta. Se llaman productos notables, y el cuadrado de una suma es el primero de la lista.' },
-        { titulo: 'Qué mirar al jugar', texto: 'El cuadrado grande ya trae dos piezas: a² en una esquina y b² en la opuesta. Cambia a y b, y fíjate si esas dos piezas alcanzan a cubrir todo el cuadrado.' },
+        { titulo: 'El terreno de Juan', texto: 'Juan tiene en Juliaca un terreno cuadrado de 10 m de lado: 10 · 10 = 100 m². Quiere comprar una franja por el costado y otra por el fondo, del mismo ancho, para que siga cuadrado.',
+          pieza: 'alg-objeto', dibujo: TE({ a: 10, b: 2, comprar: true, total: false, rot: { a2: '100 m²' }, escala: ESC_T }) },
+        { titulo: 'Un binomio al cuadrado', texto: 'El lado nuevo mide 10 + 2: una suma de dos términos, un binomio. El área es lado por lado: (10 + 2)(10 + 2), que se escribe (10 + 2)². Multiplicaciones así, que salen tanto, se llaman productos notables.',
+          ecuacion: ['(', T1(10), ' + ', T2(2), ')(', T1(10), ' + ', T2(2), ') = (', T1(10), ' + ', T2(2), ')²'] },
+        { titulo: 'Multiplicar una suma', texto: 'Para multiplicar por una suma, se multiplica cada sumando y se junta todo: 3 · (x + 2) = 3x + 6. Es la propiedad distributiva.',
+          ecuacion: ['3 · (x + 2) = 3 · x + 3 · 2 = 3x + 6'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar el lado del terreno, ', aa, ', y el ancho de las franjas, ', bb, '. Mira qué piezas forman el terreno nuevo y cuánto mide cada una.'] },
       ],
     },
+    ejemplos: EJEMPLOS_CUADRADO,
     juega: {
-      consigna: 'Elige los largos a y b. El cuadrado mide a + b de lado; adentro ya están las piezas a² y b².',
-      voz: 'Mira lo que queda sin cubrir.',
-      controles: [
-        { id: 'a', etiqueta: 'a', min: 1, max: 5, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
-        { id: 'b', etiqueta: 'b', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+      pieza: 'alg-objeto',
+      consigna: 'Juan amplía su terreno cuadrado con una franja por el costado y otra por el fondo, del mismo ancho, para que siga cuadrado.',
+      mision: {
+        texto: ['El terreno de Juan mide ', T1(10), ' m de lado. Amplíalo por dos lados hasta 144 m².'],
+        logrado: val => val.a === 10 && val.b === 2,
+        bien: 'Listo: 2 m por lado no suman 4 m²: suman dos franjas y una esquina.',
+      },
+      voz: 'Cuenta las piezas del terreno nuevo.',
+      leyenda: [
+        { s: aa, t: 'lado del terreno de antes' },
+        { s: bb, t: 'ancho de cada franja comprada' },
+        { s: T1('a²'), t: 'el terreno de antes' },
+        { s: DP('ab'), t: 'cada franja: a de largo, b de ancho' },
+        { s: T2('b²'), t: 'la esquina que completa el cuadrado' },
+        { s: '(a + b)²', t: 'el terreno nuevo, de lado a + b' },
       ],
-      dibujo: v => ({ datos: cuadJ(v), estado: {} }),
-      lectura: v => [`(a + b)² = ${(v.a + v.b) ** 2}`, '   ·   ', `a² + b² = ${v.a ** 2 + v.b ** 2}`],
+      controles: [
+        { id: 'a', etiqueta: 'Lado de antes, a (m)', color: 'c-o', min: 4, max: 12, paso: 1, inicio: 10, decimales: 0 },
+        { id: 'b', etiqueta: 'Ancho de las franjas, b (m)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+      ],
+      dibujo: v => TE({ a: v.a, b: v.b, piezas: true, escala: ESC_T }),
+      // La relación: el terreno nuevo son cuatro piezas.
+      lectura: v => [`(${v.a} + ${v.b})² = ${(v.a + v.b) ** 2}: `, T1(v.a * v.a), ' + ', DP(v.a * v.b), ' + ', DP(v.a * v.b), ' + ', T2(v.b * v.b)],
       minimo: 3,
+      // Gesto directo: la esquina del terreno de antes cambia a; la esquina de afuera, b (escala fija de la pieza).
       arrastres: [
-        { id: 'esquina-a', etiqueta: 'esquina de la pieza a²', color: 'c-o',
-          donde: v => { const g = BALD().geometria(cuadJ(v)); return { x: g.xs[0][1], y: g.ys[0][1] }; },
-          mover: (pt, v) => { const g = BALD().geometria(cuadJ(v)); return { a: ((pt.x - g.x0) + (pt.y - g.y0)) / 2 / g.esc }; } },
-        { id: 'esquina-b', etiqueta: 'esquina de afuera del cuadrado', color: 'c-i',
-          donde: v => { const g = BALD().geometria(cuadJ(v)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
-          mover: (pt, v) => { const g = BALD().geometria(cuadJ(v)); return { b: ((pt.x - g.xs[1][0]) + (pt.y - g.ys[1][0])) / 2 / g.esc }; } },
+        { id: 'esquina-a', etiqueta: 'esquina del terreno de antes', color: 'c-o',
+          donde: v => { const g = Kit.piezas['alg-objeto'].geometria(TE({ a: v.a, b: v.b, escala: ESC_T }).datos); return { x: g.x0 + g.A, y: g.y0 + g.A }; },
+          mover: (pt, v) => { const g = Kit.piezas['alg-objeto'].geometria(TE({ a: v.a, b: v.b, escala: ESC_T }).datos); return { a: ((pt.x - g.x0) + (pt.y - g.y0)) / 2 / g.k }; } },
+        { id: 'esquina-b', etiqueta: 'esquina de afuera del terreno nuevo', color: 'c-i',
+          donde: v => { const g = Kit.piezas['alg-objeto'].geometria(TE({ a: v.a, b: v.b, escala: ESC_T }).datos); return { x: g.x0 + g.W2, y: g.y0 + g.W2 }; },
+          mover: (pt, v) => { const g = Kit.piezas['alg-objeto'].geometria(TE({ a: v.a, b: v.b, escala: ESC_T }).datos); return { b: ((pt.x - g.x0 - g.A) + (pt.y - g.y0 - g.A)) / 2 / g.k }; } },
       ],
     },
     predice: {
-      pregunta: ['Con ', a, ' = 5 y ', b, ' = 2, ¿cuánto le falta a ', a, '² + ', b, '² para llegar a (', a, ' + ', b, ')²?'],
+      pregunta: 'El vecino de Juan tiene un terreno cuadrado de 7 m de lado. Cede una franja de 2 m por el costado y otra por el fondo para la vereda, y le queda un cuadrado. ¿Cuántos m² le quedan?',
+      datos: ['Terreno de 7 m de lado', 'Franjas de 2 m de ancho'],
+      voz: 'Piensa qué parte del terreno está en las dos franjas.',
       opciones: [
-        { id: 'c', texto: '20', correcta: true },
-        { id: 'cero', texto: '0', error: 'AL8', siFuera: '0 sería cierto si (a + b)² fuera a² + b². Quedan dos rectángulos sin cubrir.' },
-        { id: 'uno', texto: '10', error: 'TAL-2AB', siFuera: '10 es un solo rectángulo ab; hay dos, uno en cada esquina.' },
-        { id: 'b2', texto: '4', error: 'TAL-2AB', siFuera: '4 es b². Lo que falta mide a de un lado y b del otro.' },
+        { id: 'c', texto: '25 m²', correcta: true },
+        { id: 'al8', texto: '45 m²', error: 'AL8', siFuera: 'Bien que le quites algo a 49. Pero no se quita un cuadrito de 2 · 2, sino dos franjas.' },
+        { id: 'esquina', texto: '21 m²', error: 'TAL-ESQUINA', siFuera: 'Bien: dos franjas de 7 · 2. Pero la esquina estaba en las dos: se quitó dos veces.' },
+        { id: 'una', texto: '35 m²', error: 'TAL-2AB', siFuera: 'Quitar una franja de 14 m² está bien. Pero son dos: el costado y el fondo.' },
       ],
-      dibujo: { datos: cuadrado(5, 2, false), estado: {} },
-      revelar: { datos: cuadrado(5, 2, true), estado: {} },
-      coincide: 'Coincide: faltan dos rectángulos de 5 · 2 = 10 cada uno.',
+      dibujo: TE({ modo: 'cede', a: 7, b: 2, escala: 22, costado: true, fondo: true, resto: '?', total: false }),
+      revelar: TE({ modo: 'cede', a: 7, b: 2, escala: 22, costado: true, fondo: true, esquina: 'doble', piezas: true, resto: '25 m²', total: false }),
+      coincide: 'Coincide: quedan 5 · 5 = 25 m². Las dos franjas se pisan en la esquina.',
+      noCoincide: 'Revisemos: lo que queda es un cuadrado de 7 − 2 = 5 m de lado.',
     },
     mira: {
-      datos: (() => {
-        const d = cuadrado(3, 2, 3);
-        d.celdas[0][0].desde = 1; d.celdas[1][1].desde = 2; d.total.desde = 4;
-        return d;
-      })(),
-      voz: 'Creo que la figura alcanza para lados positivos. Después, el álgebra.',
+      pieza: 'alg-objeto',
+      datos: MIRA_CEDE,
+      voz: 'Quitemos una franja a la vez.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'La esquina de a por a: a².', ecuacion: [a, '² = 9'] },
-        { estado: { corte: 2 }, texto: 'La esquina opuesta, de b por b: b².', ecuacion: [b, '² = 4'] },
-        { estado: { corte: 3 }, texto: 'Los dos huecos miden a por b: son 2ab.', ecuacion: [{ llave: ['2', a, b], nota: 'dos rectángulos', color: 'c-d' }, ' = 2 · 3 · 2 = 12'] },
-        { estado: { corte: 4 }, texto: 'Las cuatro piezas llenan el cuadrado de lado a + b.', ecuacion: ['9 + 12 + 4 = 25 = 5²'] },
-        { estado: { corte: 4 }, texto: 'Con a = −3 no hay figura, pero la distributividad da igual.', ecuacion: ['(−3 + 2)² = 1 = 9 − 12 + 4'] },
+        { estado: { paso: 0 }, texto: 'El terreno del vecino: un cuadrado de 7 m de lado.', ecuacion: [T1(7), '² = 49'] },
+        { estado: { paso: 1 }, texto: 'Ceder la franja del costado quita 7 · 2 = 14 m².', ecuacion: ['49 − ', DP(14), ' = 35'] },
+        { estado: { paso: 2 }, texto: 'La del fondo quita otros 14, pero la esquina ya se había quitado.', ecuacion: ['35 − ', DP(14), ' = 21'] },
+        { estado: { paso: 3 }, texto: 'Se devuelve la esquina una vez: 2 · 2 = 4 m².', ecuacion: ['21 + ', T2(4), ' = 25'] },
+        { estado: { paso: 4 }, texto: 'Queda un cuadrado de 5 m de lado. Con letras:', ecuacion: ['(', aa, ' − ', bb, ')² = ', aa, '² − 2', aa, bb, ' + ', bb, '²'] },
       ],
     },
     regla: {
-      texto: 'Son productos notables: el cuadrado de una suma tiene dos cuadrados y dos rectángulos iguales; la suma por la diferencia deja una diferencia de cuadrados.',
-      ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + ', { llave: ['2', a, b], nota: 'huecos', color: 'c-d' }, ' + ', b, '²', '   ·   ',
-        '(', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'],
-      condicion: 'valen para todo par de números reales a y b; la figura de áreas solo ilustra el caso de lados positivos.',
+      texto: 'El cuadrado de un binomio son cuatro piezas: dos cuadrados y dos rectángulos iguales, el doble producto. Con una resta, el doble producto se quita y la esquina se suma.',
+      ecuacion: ['(', aa, ' + ', bb, ')² = ', aa, '² + ', { llave: ['2', aa, bb], nota: 'doble producto', color: 'c-f' }, ' + ', bb, '²', SEP,
+        '(', aa, ' − ', bb, ')² = ', aa, '² − ', { llave: ['2', aa, bb], nota: 'se quita', color: 'c-f' }, ' + ', bb, '²'],
+      condicion: 'Vale para todo a y b, también negativos o con letras; el terreno solo muestra lados positivos.',
+      voz: 'Dos cuadrados y dos franjas: no se olvida ninguna.',
     },
+    // Así se resuelve: cuántos m² compra Juan (las dos franjas y la esquina). «Ahora tú» pide otra cosa: desarrollar,
+    // un cuadrado con resta, un número al cuadrado, a² + b² con la suma y el producto, o el lado de un terreno partido.
     resuelve: {
-      pieza: 'alg-baldosas',
+      pieza: 'alg-objeto',
       generar(s) {
-        const r = azar(s + 900), tipo = s % 3;
-        if (tipo === 0) {
-          const va = r.ent(2, 7), vb = r.ent(1, 5), Sv = va + vb, Pv = va * vb, bien = Sv * Sv - 2 * Pv;
-          return {
-            enunciado: ['Si ', a, ' + ', b, ` = ${Sv} y `, a, b, ` = ${Pv}, ¿cuánto vale `, a, '² + ', b, '²?'],
-            dibujo: { datos: cuadrado(va, vb, false), estado: {} },
-            pasos: [
-              { tipo: 'pide', texto: ['Piden ', a, '² + ', b, '², sin conocer ', a, ' ni ', b, ' por separado.'] },
-              { tipo: 'datos', texto: ['La suma ', a, ' + ', b, ` vale ${Sv} y el producto `, a, b, ` vale ${Pv}.`] },
-              { tipo: 'regla', texto: 'El cuadrado de lado a + b tiene cuatro piezas: a², b² y dos rectángulos ab. Si le quito los dos rectángulos, quedan a² y b².',
-                ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + 2', a, b, ' + ', b, '²'] },
-              { tipo: 'cuentas', texto: ['Al cuadrado de la suma le resto dos veces el producto.'], ecuacion: [a, '² + ', b, `² = ${Sv}² − 2 · ${Pv} = ${Sv * Sv} − ${2 * Pv} = ${bien}`],
-                dibujo: { datos: cuadrado(va, vb, true), estado: {} } },
-              { tipo: 'sentido', texto: `Los números ${va} y ${vb} suman ${Sv} y multiplican ${Pv}. Con ellos: ${va * va} + ${vb * vb} = ${bien}. Cuadra.` },
-            ],
-            respuesta: [a, '² + ', b, `² = ${bien}`],
-          };
-        }
-        if (tipo === 1) {
-          const k = r.ent(2, 9), mas = r() < 0.5, signo = mas ? '+' : '−', c = mas ? 2 * k : -2 * k;
-          const des = `x² ${c < 0 ? '−' : '+'} ${Math.abs(c)}x + ${k * k}`, uno = (1 + (mas ? k : -k)) ** 2, seg = mas ? `${k}` : `(−${k})`;
-          return {
-            enunciado: `Al desarrollar (x ${signo} ${k})², ¿qué coeficiente acompaña a x?`,
-            pasos: [
-              { tipo: 'pide', texto: `Piden el número que multiplica a x cuando se desarrolla (x ${signo} ${k})².` },
-              { tipo: 'datos', texto: `Es el cuadrado de un binomio: el primer término es x y el segundo es ${signo === '+' ? '' : '−'}${k}.` },
-              { tipo: 'regla', texto: 'Al cuadrado de una suma salen los dos cuadrados y dos veces el producto de los términos, con su signo.',
-                ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + 2', a, b, ' + ', b, '²'] },
-              { tipo: 'cuentas', texto: `El término del medio es 2 · x · ${seg}, y el último, ${k}² = ${k * k}.`, ecuacion: [`(x ${signo} ${k})² = x² + 2 · ${seg} · x + ${k}² = ${des}`] },
-              { tipo: 'sentido', texto: `Pruebo con x = 1: (1 ${signo} ${k})² = ${uno}, y 1 ${c < 0 ? '−' : '+'} ${Math.abs(c)} + ${k * k} = ${1 + c + k * k}. Cuadra.` },
-            ],
-            respuesta: `El coeficiente de x es ${f(c, 0)}.`,
-          };
-        }
-        const M = r.uno([20, 30, 40, 50, 60, 70]), d = r.ent(1, 4);
+        const r = azar(s + 900), A = r.ent(6, 12), B = r.ent(1, 4), compra = 2 * A * B + B * B;
         return {
-          enunciado: `Calcula ${M + d} · ${M - d} como (m + d)(m − d), con m = ${M}.`,
+          enunciado: ['El terreno de Juan mide ', T1(A), ' m de lado. Compra una franja de ', T2(B), ' m por el costado y otra por el fondo. ¿Cuántos m² compra?'],
+          datos: [DF.area, DF.suma],
+          dibujo: TE({ a: A, b: B, total: false, rot: { ab: '?', b2: '?' } }),
           pasos: [
-            { tipo: 'pide', texto: `Piden el producto ${M + d} · ${M - d} sin hacer la multiplicación larga.` },
-            { tipo: 'datos', texto: `Los dos números están a ${d} de ${M}: uno es ${M} + ${d} y el otro, ${M} − ${d}.` },
-            { tipo: 'regla', texto: 'La suma por la diferencia de dos números da la diferencia de sus cuadrados: los productos cruzados se anulan.',
-              ecuacion: ['(', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'] },
-            { tipo: 'cuentas', texto: `Elevo ${M} y ${d} al cuadrado y resto.`, ecuacion: [`${M}² − ${d}² = ${M * M} − ${d * d} = ${M * M - d * d}`] },
-            { tipo: 'sentido', texto: `Queda un poco menos que ${M}² = ${M * M}: un factor subió ${d} y el otro bajó ${d}, y eso resta solo ${d * d}.` },
+            { tipo: 'pide', texto: 'Piden lo que compra, no el terreno entero: las piezas nuevas.' },
+            { tipo: 'regla', texto: 'El terreno nuevo, de lado a + b, tiene cuatro piezas. Las nuevas son las dos franjas ab y la esquina b².', ecuacion: DF.suma },
+            { tipo: 'cuentas', texto: `Dos franjas de ${A} por ${B} y una esquina de ${B} por ${B}.`,
+              ecuacion: [DP(`2 · ${A} · ${B}`), ' + ', T2(`${B}²`), ' = ', DP(2 * A * B), ' + ', T2(B * B), ` = ${compra}`], dibujo: TE({ a: A, b: B, total: false, piezas: true }) },
+            { tipo: 'sentido', texto: `Lo reviso: el terreno nuevo mide ${(A + B) ** 2} m² y el de antes, ${A * A}; la diferencia es ${(A + B) ** 2 - A * A}. Cuadra.` },
           ],
-          respuesta: `${M + d} · ${M - d} = ${M * M - d * d}`,
+          respuesta: `Compra ${compra} m²`,
         };
       },
     },
     ahoraTu: {
-      pieza: 'alg-baldosas',
-      generar(s) {
-        const r = azar(s), tipo = s % 3;
-        if (tipo === 0) {
-          const va = r.ent(2, 7), vb = r.ent(1, 5), S = va + vb, P = va * vb, bien = S * S - 2 * P;
-          return {
-            pregunta: ['Si ', a, ' + ', b, ` = ${S} y `, a, b, ` = ${P}, ¿cuánto vale `, a, '² + ', b, '²?'],
-            opciones: distintas([{ id: 'c', texto: f(bien, 0), correcta: true },
-              { id: 'al8', texto: f(S * S, 0), error: 'AL8', siFuera: `${S * S} sería cierto si (a + b)² fuera a² + b²; sobran los dos rectángulos ab.` },
-              { id: 'uno', texto: f(S * S - P, 0), error: 'TAL-2AB', siFuera: `Eso resta un solo rectángulo ab; son dos: 2 · ${P}.` },
-              { id: 'suma', texto: f(S * S + 2 * P, 0), error: 'TAL-2AB', siFuera: 'Los rectángulos ya están dentro de (a + b)²: se restan, no se suman.' }]),
-            solucion: { texto: 'Al cuadrado de la suma se le quitan los dos rectángulos.', ecuacion: [a, '² + ', b, `² = ${S}² − 2 · ${P} = ${bien}`], dibujo: { datos: cuadrado(va, vb, true), estado: {} } },
-          };
-        }
-        if (tipo === 1) {
-          const k = r.ent(2, 9), signo = s % 2 ? '−' : '+', c = signo === '+' ? 2 * k : -2 * k;
-          return {
-            pregunta: `Al desarrollar (x ${signo} ${k})², ¿qué coeficiente acompaña a x?`,
-            opciones: distintas([{ id: 'c', texto: f(c, 0), correcta: true },
-              { id: 'uno', texto: f(c / 2, 0), error: 'TAL-2AB', siFuera: `Eso cuenta un solo rectángulo; son dos: 2 · ${k}.` },
-              { id: 'cero', texto: '0', error: 'AL8', siFuera: `0 sería cierto si (x ${signo} ${k})² fuera x² + ${k * k}. Faltan los dos rectángulos.` },
-              { id: 'signo', texto: f(-c, 0), error: 'TAL-SIGNO', siFuera: `El término cruzado lleva el signo de ${signo} ${k}.` }]),
-            solucion: { texto: `Los dos productos cruzados x · (${signo}${k}) se suman.`, ecuacion: [`(x ${signo} ${k})² = x² ${c < 0 ? '−' : '+'} ${Math.abs(c)}x + ${k * k}`] },
-          };
-        }
-        const M = r.uno([20, 30, 40, 50, 60, 70]), d = r.ent(1, 4);
-        return {
-          pregunta: `Calcula ${M + d} · ${M - d} como (m + d)(m − d), con m = ${M}.`,
-          opciones: distintas([{ id: 'c', texto: f(M * M - d * d, 0), correcta: true },
-            { id: 'mas', texto: f(M * M + d * d, 0), error: 'TAL-DIFCUAD', siFuera: 'Los productos cruzados se anulan, y d · (−d) resta d².' },
-            { id: 'cuad', texto: f(M * M, 0), error: 'TAL-DIFCUAD', siFuera: `Falta restar ${d}² = ${d * d}.` },
-            { id: 'dos', texto: f(M * M - 2 * d, 0), error: 'TAL-DIFCUAD', siFuera: `Se resta d² = ${d * d}, no 2d.` }]),
-          solucion: { texto: 'La suma por la diferencia deja m² − d².', ecuacion: [`${M}² − ${d}² = ${M * M} − ${d * d} = ${M * M - d * d}`] },
-        };
+      pieza: 'alg-objeto',
+      voz: 'Dos cuadrados y dos franjas: revisa los signos.',
+      generar(sem) {
+        const r = azar(sem + 23), tipo = sem % 5;
+        if (tipo === 0) return conCuatro(casoDesarrolla, r);
+        if (tipo === 1) return conCuatro(casoResta, r);
+        if (tipo === 2) return conCuatro(casoNumero, r);
+        if (tipo === 3) return conCuatro(casoSumaProducto, r);
+        return conCuatro(casoFigura, r);
       },
     },
   };
+
+  // Escala fija de alg-baldosas en la mesa del rectángulo (x + p)(x + q): un tramo de menos de 56 px muestra solo su letra.
+  const ESC_N = 24;   // px por unidad: a + b llega a 8 y el lado a 192 px, lo que cabe en la pieza
+  // Con la escala fija, un tramo de menos de 56 px muestra solo su letra (el valor está en el control y la lectura).
+  const rot = (t, v, val = v) => (v * ESC_N >= 56 ? `${t} = ${val}` : t);
 
   // ---------- Idea 4: radicales dobles, buscar suma y producto ----------
   // Cambia: el radical doble elegido · Permanece: la tabla de pares que suman A · Progresa: los productos que se
@@ -547,20 +771,35 @@
 
   return {
     unidad: 'algebra.productos-notables',
-    version: '0.2.0',
+    version: '0.3.0',
+    // Un color fijo por magnitud (cabecera); lo comprueba productos-notables.test.js (hoy en la idea 1).
+    colores: COLORES,
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/plantillas/cuadrado-crece/motor.js', '/nucleo/kit/piezas/alg-cubo-3d.js'],
+    requiere: ['/nucleo/kit/piezas/alg-objeto.js', '/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/plantillas/cuadrado-crece/motor.js', '/nucleo/kit/piezas/alg-cubo-3d.js'],
+    // Historia (18 nov): la de Descartes no se pudo comprobar en su fuente y salió. Esta sí está comprobada en el texto
+    // completo (docs/investigacion/historia-ganchos.md, verificación del 8 nov: Rosen 1831, pp. 13-16; MacTutor, 1999).
     historia: {
-      texto: 'En La Géométrie, de 1637, Descartes mostró que los problemas de figuras podían escribirse y resolverse con relaciones algebraicas. No inventó cada identidad escolar: su obra continuó una tradición. Aquí las potencias y los productos notables traducen figuras en expresiones, con una salvedad: una partición de áreas explica una igualdad para lados positivos, y extenderla a negativos pide razones algebraicas.',
-      pregunta: '¿Una figura demuestra una igualdad para todos los números?',
-      fuente: { titulo: 'O’Connor y Robertson, René Descartes — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
+      texto: 'En Bagdad, en el siglo IX, al-Juarismi resolvió x² + 10x = 39 con una figura: un cuadrado x² y dos rectángulos pegados a sus lados, que juntos suman 39. Para completar un cuadrado grande le faltaba una esquina de 5 por 5. Con ella, 39 + 25 = 64: un cuadrado de lado 8, así que x = 8 − 5 = 3. Lo escribió con palabras, sin letras: la identidad del terreno de Juan.',
+      pregunta: '¿Qué pieza le faltaba para completar el cuadrado?',
+      fuente: { titulo: 'Rosen (1831), The Algebra of Mohammed ben Musa, pp. 13-16', url: 'https://archive.org/details/algebraofmohamme00khuwuoft' },
     },
     laboratorio: [mesaCubo, mesaRect],
+    // «raíz» (de una ecuación) se define en Ecuaciones; aquí no se marca: la raíz de esta unidad es la raíz cuadrada.
+    glosarioSin: ['raíz'],
     // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
     glosario: [
+      // Los cuatro que estrena la idea 1 (rehecha, 18 nov), con su aproximación (simple) y tres ejemplos. Ninguno muestra
+      // el cuadrado de una resta (es la predicción).
       { termino: 'producto notable', formas: ['producto notable', 'productos notables'],
-        def: 'Multiplicación tan frecuente que su resultado se escribe de memoria, sin hacer toda la cuenta.',
-        ejemplo: '(a + b)² = a² + 2ab + b².', ver: ['diferencia de cuadrados', 'identidad'] },
+        def: 'Multiplicación que aparece tanto que conviene reconocer sus piezas sin hacer toda la cuenta.',
+        simple: 'Una multiplicación de forma conocida, como (a + b)², que se arma con piezas.', ver: ['binomio', 'doble producto'],
+        ejemplos: ['(a + b)² = a² + 2ab + b².', '(x + 3)² = x² + 6x + 9.', '(2x + 1)² = 4x² + 4x + 1.'] },
+      { termino: 'binomio', formas: ['binomio', 'binomios'], def: 'Expresión de dos términos sumados o restados.',
+        simple: 'Dos términos unidos por un + o un −.', ver: ['producto notable', 'binomio de Newton'],
+        ejemplos: ['a + b es un binomio.', 'x − 5 también: sus términos son x y −5.', '(10 + 2)² es el cuadrado de un binomio.'] },
+      { termino: 'doble producto', formas: ['doble producto', 'dobles productos'], def: 'Dos veces el producto de los dos términos de un binomio: 2ab.',
+        simple: 'Las dos franjas iguales del medio: 2 · a · b.', ver: ['binomio'],
+        ejemplos: ['En (x + 3)², es 2 · x · 3 = 6x.', 'En (10 + 2)², es 2 · 10 · 2 = 40.', 'Es lo que falta si se cree que (a + b)² = a² + b².'] },
       { termino: 'diferencia de cuadrados', formas: ['diferencia de cuadrados', 'diferencias de cuadrados'],
         def: 'La resta a² − b²; sale de multiplicar la suma por la diferencia: (a + b)(a − b).',
         ejemplo: '7² − 3² = (7 + 3)(7 − 3) = 40.', ver: ['producto notable'] },
@@ -571,7 +810,8 @@
       { termino: 'identidad', def: 'Igualdad que se cumple con cualquier valor de las letras, no solo con algunos.',
         ejemplo: '(a + b)² = a² + 2ab + b² vale para todo a y b.' },
       { termino: 'distributiva', formas: ['distributiva', 'distributividad'], def: 'Propiedad que reparte un producto sobre una suma: a(b + c) = ab + ac.',
-        ejemplo: '3(x + 2) = 3x + 6.' },
+        simple: 'Multiplicar una suma es multiplicar cada sumando y juntar.',
+        ejemplos: ['3(x + 2) = 3x + 6.', '5 · 12 = 5 · 10 + 5 · 2 = 60.', '(a + b)(a + b) = aa + ab + ba + bb.'] },
       { termino: 'radical doble', formas: ['radical doble', 'radicales dobles'], def: 'Una raíz con otra raíz adentro, de la forma √(A ± 2√B).',
         ejemplo: '√(5 + 2√6) = √3 + √2, porque 3 + 2 = 5 y 3 · 2 = 6.', ver: ['radical'] },
       { termino: 'denominador', def: 'El número de abajo en una fracción: entre cuánto se divide.', ejemplo: 'En 3/4 es el 4.' },
