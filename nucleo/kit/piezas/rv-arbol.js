@@ -37,12 +37,14 @@
 
   // Una caja: rótulo en negrita arriba («Principal · oración 2» o «¿Cómo? · oración 3») y el texto debajo.
   function caja(x, w, y, rotulo, texto) {
-    const rot = S.partir(rotulo, w - 2 * PAD, 14, 700);
-    const lineas = S.partir(texto, w - 2 * PAD, TAM);
+    // estira: solo los renglones llenos que no cierran su párrafo llevan textLength (rv-soporte, LLENO): apretar uno
+    // corto encimaba sus letras («comen pcco», lector en frío, 17 nov).
+    const rot = S.renglones(rotulo, w - 2 * PAD, 14, 700);
+    const lineas = S.renglones(texto, w - 2 * PAD, TAM);
     let yy = y + PAD;
     const out = { x, y, w, rot: [], lineas: [] };
-    for (const r of rot) { out.rot.push({ x: x + PAD, y: yy + 14, w: T.ancho(r, 14, 700), texto: r }); yy += 19; }
-    for (const r of lineas) { out.lineas.push({ x: x + PAD, y: yy + 15, w: T.ancho(r, TAM), texto: r }); yy += RL; }
+    for (const r of rot) { out.rot.push(Object.assign({ x: x + PAD, y: yy + 14 }, r)); yy += 19; }
+    for (const r of lineas) { out.lineas.push(Object.assign({ x: x + PAD, y: yy + 15 }, r)); yy += RL; }
     out.h = yy - y + PAD - 2;
     return out;
   }
@@ -74,7 +76,7 @@
     let s = d.soporte ? S.cuerpo(d.soporte, estado.soporte || {}).s : '';
     let fondo = `<rect x="${T.n(L.marco.x)}" y="${T.n(L.marco.y)}" width="${T.n(L.marco.w)}" height="${T.n(L.marco.h)}" rx="10" fill="var(--card)" stroke="currentColor" stroke-opacity="0.3" stroke-width="2"/>`;
     let tinta = T.rotulo(L.titulo.x, L.titulo.y, L.titulo.texto, { tam: 16, peso: 700 });
-    const texto = (r, peso, extra = '') => `<text class="kit-txt" x="${T.n(r.x)}" y="${T.n(r.y)}" fill="currentColor" font-size="${peso === 700 ? 14 : TAM}"${peso === 700 ? ' font-weight="700"' : ''}${extra}${r.texto.length > 3 ? ` textLength="${T.n(r.w)}" lengthAdjust="spacing"` : ''}>${T.esc(r.texto)}</text>`;
+    const texto = (r, peso, extra = '') => `<text class="kit-txt" x="${T.n(r.x)}" y="${T.n(r.y)}" fill="currentColor" font-size="${peso === 700 ? 14 : TAM}"${peso === 700 ? ' font-weight="700"' : ''}${extra}${r.estira ? ` textLength="${T.n(r.w)}" lengthAdjust="spacing"` : ''}>${T.esc(r.texto)}</text>`;
     const dibCaja = (c, color, id, tachada) => {
       const borde = tachada ? 'stroke="currentColor" stroke-opacity="0.45"' : `stroke="${T.color(color)}"${RAYA[color]}`;
       fondo += `<rect class="rv-nodo${cl(id)}" x="${T.n(c.x)}" y="${T.n(c.y)}" width="${T.n(c.w)}" height="${T.n(c.h)}" rx="8" fill="${tachada ? 'var(--card)' : T.color(color)}" fill-opacity="${tachada ? 1 : 0.12}" ${borde} stroke-width="${T.GROSOR.contorno}" stroke-linecap="round"/>`;
@@ -85,8 +87,15 @@
         if (tachada) tinta += `<line class="rv-tacha${cl(id)}" x1="${T.n(r.x - 1)}" y1="${T.n(r.y - 5)}" x2="${T.n(r.x + r.w + 1)}" y2="${T.n(r.y - 5)}" stroke="currentColor" stroke-width="${T.GROSOR.contorno}" stroke-linecap="round"/>`;
       }
     };
+    // Lo que todavía no se ve guarda su lugar con una caja de trazos grises: el árbol nunca queda como un hueco en blanco
+    // (lector en frío, 17 nov: «el cuadro está vacío»). La de la principal lleva el aviso de qué irá ahí.
+    const hueco = c => { fondo += `<rect class="rv-hueco" x="${T.n(c.x)}" y="${T.n(c.y)}" width="${T.n(c.w)}" height="${T.n(c.h)}" rx="8" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="6 5"/>`; };
     if (ver.has('raiz')) dibCaja(L.raiz, 'f', 'raiz', false);
-    else if (d.vacio) S.partir(d.vacio, L.raiz.w - 2 * PAD, 14).forEach((r, k) => { tinta += `<text class="kit-txt" x="${T.n(L.raiz.x + PAD)}" y="${T.n(L.raiz.y + PAD + 14 + k * 19)}" fill="currentColor" font-size="14" opacity="0.72">${T.esc(r)}</text>`; });
+    else {
+      hueco(L.raiz);
+      if (d.vacio) S.partir(d.vacio, L.raiz.w - 2 * PAD, 14).forEach((r, k) => { tinta += `<text class="kit-txt" x="${T.n(L.raiz.x + PAD)}" y="${T.n(L.raiz.y + PAD + 14 + k * 19)}" fill="currentColor" font-size="14" opacity="0.72">${T.esc(r)}</text>`; });
+    }
+    for (const r of L.ramas) if (!ver.has(r.id)) hueco(r);
     // El riel baja desde la principal hasta la última rama que cuelga de ella (las tachadas no cuelgan).
     const colgadas = L.ramas.filter(r => ver.has(r.id) && !tachar.has(r.id));
     if (ver.has('raiz') && colgadas.length) {

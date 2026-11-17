@@ -51,7 +51,12 @@
   if (nodo) module.exports = api;
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
-  const W = 320, TAM = 15, LH = 21, NUM = 20, PADH = 12, CAP = 24, MARGEN = 4;
+  const W = 320, TAM = 15, LH = 21, NUM = 20, PADH = 12, CAP = 24, MARGEN = 4, PIE = 10;
+  // textLength (la medida del kit) solo en renglones llenos que no cierran su párrafo: estirar o apretar un renglón corto
+  // o el último de un párrafo separaba o encimaba sus letras («f r í o .», «ncche»: la «o» encima de la «c» cuando el
+  // ancho real pasa al medido). Con ≥ 70 % del ancho, el ancho real medido en Chromium queda entre −6 % y +9 % del
+  // medido, menos de 0,65 de espacio entre cada par de letras (17 nov, 5524 renglones de la unidad; rv-soporte.test.js).
+  const LLENO = 0.7;
   const COLORES = ['i', 'o', 'f'];
   // Opacidad del texto que queda fuera: la tinta del tema al 65 % sobre la tarjeta da 4,70:1 en claro (#2d2340 sobre
   // #fffaf6) y 6,36:1 en oscuro (#f1ebf7 sobre #2a2135); lo comprueba rv-soporte.test.js. Se lee, pero pesa menos.
@@ -68,6 +73,11 @@
     }
     if (r) out.push(r);
     return out;
+  }
+  // Los renglones de un párrafo con su ancho medido y si llevan textLength (estira): solo los llenos que no lo cierran.
+  function renglones(texto, ancho, tam = TAM, peso = 400) {
+    const rs = partir(texto, ancho, tam, peso);
+    return rs.map((r, k) => { const w = T.ancho(r, tam, peso); return { texto: r, w, estira: k < rs.length - 1 && w >= LLENO * ancho }; });
   }
 
   // Dónde va el papel de cada hoja según el soporte (x y ancho); el simulacro y el mensaje los ponen ellos.
@@ -88,42 +98,41 @@
     let y = y0;
     const tx = x + PADH, tw = w - 2 * PADH;
     if (h.titulo) {
-      for (const r of partir(h.titulo, tw, 17, 700)) { items.push({ tipo: 'titulo', x: tx, y: y + 16, w: T.ancho(r, 17, 700), texto: r, tam: 17, peso: 700 }); y += 23; }
+      for (const r of renglones(h.titulo, tw, 17, 700)) { items.push(Object.assign({ tipo: 'titulo', x: tx, y: y + 16, tam: 17, peso: 700 }, r)); y += 23; }
     }
     const firma = [h.de ? `De: ${h.de}` : '', h.para ? `Para: ${h.para}` : ''].filter(Boolean).join(' · ');
     if (firma) {
-      for (const r of partir(firma, tw, 14)) { items.push({ tipo: 'firma', x: tx, y: y + 14, w: T.ancho(r, 14), texto: r, tam: 14, peso: 400 }); y += 19; }
+      for (const r of renglones(firma, tw, 14)) { items.push(Object.assign({ tipo: 'firma', x: tx, y: y + 14, tam: 14, peso: 400 }, r)); y += 19; }
     }
     if (h.titulo || firma) y += 6;
     if (h.ilustracion === 'balsa') { items.push({ tipo: 'balsa', x: tx, y, w: tw, h: 50 }); y += 56; }
     (h.oraciones || []).forEach((o, k) => {
-      const rs = partir(o.t, tw - NUM);
       items.push({ tipo: 'num', id: o.id, x: tx, y: y + 15, w: NUM - 6, texto: `${k + 1}`, tam: 14, peso: 700 });
-      for (const r of rs) { items.push({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, w: T.ancho(r, TAM), texto: r, tam: TAM, peso: 400 }); y += LH; }
+      for (const r of renglones(o.t, tw - NUM)) { items.push(Object.assign({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, tam: TAM, peso: 400 }, r)); y += LH; }
       y += 3;
     });
     if (h.tabla) {
       const tb = h.tabla;
       y += 6;
-      if (tb.titulo) for (const r of partir(tb.titulo, tw, 14, 700)) { items.push({ tipo: 'titulo', x: tx, y: y + 14, w: T.ancho(r, 14, 700), texto: r, tam: 14, peso: 700 }); y += 20; }
+      if (tb.titulo) for (const r of renglones(tb.titulo, tw, 14, 700)) { items.push(Object.assign({ tipo: 'titulo', x: tx, y: y + 14, tam: 14, peso: 700 }, r)); y += 20; }
       const n = (tb.cols || []).length || 1, cw = tw / n;
       items.push({ tipo: 'tabla-cab', x: tx, y, w: tw, h: 24, cols: tb.cols || [], cw });
       y += 24;
       for (const f of tb.filas || []) { items.push({ tipo: 'tabla-fila', id: f.id, x: tx, y, w: tw, h: 26, celdas: f.celdas || [], cw }); y += 26; }
-      if (tb.nota) for (const r of partir(tb.nota, tw, 14)) { items.push({ tipo: 'nota', x: tx, y: y + 16, w: T.ancho(r, 14), texto: r, tam: 14, peso: 400 }); y += 19; }
+      if (tb.nota) for (const r of renglones(tb.nota, tw, 14)) { items.push(Object.assign({ tipo: 'nota', x: tx, y: y + 16, tam: 14, peso: 400 }, r)); y += 19; }
       y += 4;
     }
     if (h.barras) {
       const b = h.barras, nom = 70, max = b.max || Math.max(1, ...(b.items || []).map(i => i.v));
       y += 6;
-      if (b.titulo) for (const r of partir(b.titulo, tw, 14, 700)) { items.push({ tipo: 'titulo', x: tx, y: y + 14, w: T.ancho(r, 14, 700), texto: r, tam: 14, peso: 700 }); y += 20; }
+      if (b.titulo) for (const r of renglones(b.titulo, tw, 14, 700)) { items.push(Object.assign({ tipo: 'titulo', x: tx, y: y + 14, tam: 14, peso: 700 }, r)); y += 20; }
       // La barra más larga deja sitio a su valor: el largo es proporcional al dato desde 0 (escala que empieza en cero).
       const largoMax = tw - nom - 52;
       for (const it of b.items || []) {
         items.push({ tipo: 'barra', id: it.id, x: tx, y, w: tw, h: 28, nombre: it.t, valor: `${it.v}${b.unidad || ''}`, x0: tx + nom, largo: largoMax * it.v / max });
         y += 30;
       }
-      if (b.nota) for (const r of partir(b.nota, tw, 14)) { items.push({ tipo: 'nota', x: tx, y: y + 16, w: T.ancho(r, 14), texto: r, tam: 14, peso: 400 }); y += 19; }
+      if (b.nota) for (const r of renglones(b.nota, tw, 14)) { items.push(Object.assign({ tipo: 'nota', x: tx, y: y + 16, tam: 14, peso: 400 }, r)); y += 19; }
       y += 4;
     }
     return { items, alto: y - y0 };
@@ -136,12 +145,12 @@
     const tx = x + PADH, tw = w - 2 * PADH;
     if (d.pregunta) {
       y += 4;
-      for (const r of partir(d.pregunta, tw, TAM, 700)) { items.push({ tipo: 'pregunta', x: tx, y: y + 15, w: T.ancho(r, TAM, 700), texto: r, tam: TAM, peso: 700 }); y += LH; }
+      for (const r of renglones(d.pregunta, tw, TAM, 700)) { items.push(Object.assign({ tipo: 'pregunta', x: tx, y: y + 15, tam: TAM, peso: 700 }, r)); y += LH; }
       y += 6;
     }
     for (const a of d.alternativas || []) {
       items.push({ tipo: 'letra', id: a.id, x: tx + 10, y: y + 11, texto: a.id });
-      for (const r of partir(a.t, tw - 28)) { items.push({ tipo: 'linea', id: a.id, x: tx + 28, y: y + 15, w: T.ancho(r, TAM), texto: r, tam: TAM, peso: 400 }); y += LH; }
+      for (const r of renglones(a.t, tw - 28)) { items.push(Object.assign({ tipo: 'linea', id: a.id, x: tx + 28, y: y + 15, tam: TAM, peso: 400 }, r)); y += LH; }
       y += 5;
     }
     return { items, alto: y - y0 };
@@ -216,13 +225,14 @@
       y += 8;
       const tx = 8 + PADH, tw = W - 16 - 2 * PADH;
       const et = d.frase.etiqueta || 'Frase';
-      const rs = partir(`«${d.frase.t}»`, tw - T.ancho(`${et}:`, TAM, 700) - 6);
+      const rs = renglones(`«${d.frase.t}»`, tw - T.ancho(`${et}:`, TAM, 700) - 6);
       frase = { x: 8, y, w: W - 16, h: rs.length * LH + 16, etiqueta: { x: tx, y: y + 8 + 15, texto: `${et}:` }, lineas: [] };
       const ex = tx + T.ancho(`${et}:`, TAM, 700) + 6;
-      rs.forEach((r, j) => frase.lineas.push({ tipo: 'linea', id: 'frase', x: ex, y: y + 8 + 15 + j * LH, w: T.ancho(r, TAM), texto: r, tam: TAM, peso: 400 }));
+      rs.forEach((r, j) => frase.lineas.push(Object.assign({ tipo: 'linea', id: 'frase', x: ex, y: y + 8 + 15 + j * LH, tam: TAM, peso: 400 }, r)));
       y += frase.h;
     }
-    return { soporte: sop, rotulo, marco, papeles, items, frase, bandeja, alto: Math.ceil(y + MARGEN) };
+    // PIE: aire bajo el marco para la lupa de la app, que sube unos 8 px sobre la figura (te-figbarra, margin -6px).
+    return { soporte: sop, rotulo, marco, papeles, items, frase, bandeja, alto: Math.ceil(y + MARGEN + PIE) };
   }
 
   // ---------- Dibujo ----------
@@ -303,10 +313,12 @@
     }
     // La banda del título del cartel va encima del rectángulo de su papel.
     for (const P of L.papeles) if (P.banda) fondo += `<rect x="${T.n(P.banda.x + 1)}" y="${T.n(P.banda.y + 1)}" width="${T.n(P.banda.w - 2)}" height="${T.n(P.banda.h - 2)}" rx="5" fill="currentColor" fill-opacity="0.09"/>`;
-    if (L.soporte === 'mensaje' && d.lugar) tinta += T.rotulo(L.marco.x + 46, L.marco.y + 24, d.lugar, { tam: 14, peso: 700, max: L.marco.x + L.marco.w - 14 });
+    // El nombre del grupo y el título del cartel van sobre un fondo teñido: sin el halo del kit (.kit-txt), que ahí se
+    // veía como un borde claro alrededor de las letras (lector en frío, 17 nov).
+    if (L.soporte === 'mensaje' && d.lugar) tinta += T.rotulo(L.marco.x + 46, L.marco.y + 24, d.lugar, { tam: 14, peso: 700, max: L.marco.x + L.marco.w - 14 }).replace('class="kit-txt"', 'class="rv-sin-halo"');
 
     const texto = (it, extra = '') => {
-      const largo = it.texto.length > 3 ? ` textLength="${T.n(it.w)}" lengthAdjust="spacing"` : '';
+      const largo = it.estira ? ` textLength="${T.n(it.w)}" lengthAdjust="spacing"` : '';
       return `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="${it.tam}"${it.peso !== 400 ? ` font-weight="${it.peso}"` : ''}${extra}${largo}>${T.esc(it.texto)}</text>`;
     };
     const marca = (it, c) => {
@@ -319,7 +331,7 @@
     for (const it of L.items.concat(L.frase ? L.frase.lineas : [])) {
       if (it.tipo === 'titulo' || it.tipo === 'pregunta') { tinta += texto(it); continue; }
       if (it.tipo === 'firma' || it.tipo === 'nota') { tinta += texto(it, ' opacity="0.8"'); continue; }
-      if (it.tipo === 'banda') { tinta += `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="18" font-weight="700" text-anchor="middle">${T.esc(it.texto)}</text>`; continue; }
+      if (it.tipo === 'banda') { tinta += `<text class="rv-sin-halo" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="18" font-weight="700" text-anchor="middle">${T.esc(it.texto)}</text>`; continue; }
       if (it.tipo === 'num') { tinta += `<text class="kit-num" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="14" font-weight="700" opacity="0.72">${T.esc(it.texto)}</text>`; continue; }
       if (it.tipo === 'letra') {
         const c = col(it.id);
@@ -451,5 +463,5 @@
   }
   const enBandeja = (d, punto) => { const B = disponer(d).bandeja; return !!B && punto.y >= B.y - 2; };
 
-  return { id: 'rv-soporte', dibujar, cuerpo, alt, disponer, partir, ancla, cercana, enBandeja, constantes: { W, TAM, LH, TENUE } };
+  return { id: 'rv-soporte', dibujar, cuerpo, alt, disponer, partir, renglones, ancla, cercana, enBandeja, constantes: { W, TAM, LH, TENUE, LLENO, PIE } };
 });

@@ -171,3 +171,37 @@ test('toques: una zona tocable por alternativa, dentro del lienzo, sin pisarse y
   for (let k = 1; k < zonas.length; k++) assert.ok(zonas[k].y >= zonas[k - 1].y + zonas[k - 1].h - 0.5, `${zonas[k].c} no pisa a ${zonas[k - 1].c}`);
   assert.equal(P.dibujar(CASOS.simulacro, {}).includes('data-toque'), false, 'sin toques, ninguna zona');
 });
+
+// textLength (la medida del kit) se pone solo en renglones llenos que no cierran su párrafo. Medido en Chromium con
+// las 250 figuras de la unidad (17 nov, 5524 renglones): antes, con textLength en todo renglón de más de 3 letras, el
+// ancho real iba de −9 % a +31 % del medido y se repartían hasta 2,2 de espacio entre letras («f r í o .») o se
+// encimaban («ncche», «Pun o»); ahora, solo en los llenos, va de −6 % a +9 %: menos de 0,65 entre cada par de letras.
+test('textLength solo en renglones llenos que no cierran su párrafo, y nunca más de 0,8 entre letras', () => {
+  for (const [nombre, d] of Object.entries(CASOS)) {
+    const L = P.disponer(d), its = L.items.concat(L.frase ? L.frase.lineas : []).filter(i => i.texto !== undefined && i.tipo !== 'num' && i.tipo !== 'letra' && i.tipo !== 'banda');
+    // El último renglón de cada párrafo (oración, alternativa, título, firma, nota, pregunta o frase) no se estira.
+    const grupos = {};
+    for (const it of its) (grupos[`${it.tipo}|${it.id || ''}|${it.tam}`] = grupos[`${it.tipo}|${it.id || ''}|${it.tam}`] || []).push(it);
+    for (const g of Object.values(grupos)) {
+      const ult = g[g.length - 1];
+      if (g.length && !['titulo', 'firma', 'nota'].includes(ult.tipo)) assert.equal(ult.estira, false, `${nombre}: «${ult.texto}» cierra su párrafo y se estira`);
+    }
+    for (const it of its.filter(i => i.estira)) {
+      assert.ok([...it.texto].length >= 12, `${nombre}: «${it.texto}» es corto y se estira`);
+      assert.ok(0.09 * it.w / ([...it.texto].length - 1) < 0.8, `${nombre}: «${it.texto}» repartiría más de 0,8 entre letras`);
+    }
+    const s = P.dibujar(d, {}), conTL = [...s.matchAll(/<text [^>]*textLength="[^"]+"[^>]*>([^<]*)</g)].map(m => m[1]);
+    assert.equal(conTL.length, its.filter(i => i.estira).length, `${nombre}: textLength solo donde estira`);
+    assert.ok(!conTL.some(x => x.endsWith('renglones.')), `${nombre}: el cierre de una oración no lleva textLength`);
+  }
+});
+
+test('aire bajo el marco para la lupa de la app, y sin halo sobre un fondo teñido', () => {
+  for (const [nombre, d] of Object.entries(CASOS)) {
+    const L = P.disponer(d);
+    const fondo = Math.max(L.marco.y + L.marco.h, ...L.papeles.filter(p => p.w).map(p => p.y + p.h + (d.soporte === 'folleto' ? 6 : 0)), L.bandeja ? L.bandeja.y + L.bandeja.h : 0, L.frase ? L.frase.y + L.frase.h : 0);
+    assert.ok(L.alto - fondo >= 12, `${nombre}: la lupa pisaría el marco (${L.alto - fondo})`);
+  }
+  assert.match(P.dibujar(CASOS.mensaje, {}), /class="rv-sin-halo"[^>]*>Familias de 5.º B</);
+  assert.match(P.dibujar(CASOS.cartel, {}), /class="rv-sin-halo"[^>]*>Comunicado/);
+});

@@ -24,6 +24,10 @@
  * (docs/investigacion/razonamiento-verbal-ideas-erroneas.md).
  * Los conteos se calculan (regla 1); los textos de los ejemplos se revisaron con un script aparte (scratchpad
  * verbal-revisa.js): cada oración citada existe y cada «las cuatro», «las cinco»… coincide con el soporte.
+ * Correcciones del lector en frío (17 nov; rutinas/frio/razonamiento-verbal.tema-e-idea-principal.md), revisadas con
+ * otros dos scripts aparte (scratchpad corr/revisa.js y corr/largas.js): ninguna cita del resuelto recorta su opción,
+ * ninguna respuesta queda cortada, ningún título adelanta una palabra que solo trae la correcta, «amplia» y «estrecha»
+ * con un solo género, y la correcta es la más larga en 5 de 79 preguntas de opción (antes, 22).
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -69,8 +73,13 @@
   const tabla = (titulo, cols, filas) => ({ titulo, cols, filas: filas.map((c, k) => ({ id: `f${k + 1}`, celdas: c })), nota: 'Datos inventados para el ejercicio.' });
   const barras = (titulo, items) => ({ titulo, max: Math.max(...items.map(x => x[1])), items: items.map(([t, v], k) => ({ id: `b${k + 1}`, t, v })), nota: 'Datos inventados para el ejercicio.' });
   // El criterio de la idea, como dato (contrato, punto 13: en verbal, el dato es la definición o el criterio que se aplica).
-  const D_TEMA = 'Tema: de qué trata todo el texto. Si deja fuera una parte, es muy estrecho; si sirve para otro texto, muy amplio.';
+  // Una sola forma en toda la unidad: «muy amplia» y «muy estrecha», de la frase (lector en frío, 17 nov).
+  const D_TEMA = 'Tema: de qué trata todo el texto. Muy estrecha: la frase deja fuera una parte. Muy amplia: sirve a otro texto.';
+  // Lo que pregunta el examen con otras palabras (lector en frío, 17 nov: faltaba saber que «gira en torno a» pide el tema).
+  const D_GIRA = '«Gira en torno a» y «da cuenta de»: así pregunta el examen por el tema central.';
   const D_MIXTO = 'Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto.';
+  // Sin «un mismo asunto», que casi señalaba la respuesta (lector en frío de los ejemplos, 17 nov).
+  const D_AB = 'Textos A y B: dos textos de autores distintos que la pregunta pide leer juntos.';
 
   // El mural: el aviso que se estudia y, al lado, el otro aviso (lo que se compara se ve junto: contrato, punto 4).
   const MURAL = { soporte: 'mural', lugar: 'Mural del colegio', hojas: [
@@ -79,12 +88,12 @@
       'Desde el lunes, el comedor servirá el desayuno a las 7:15.',
       'Así, quienes vienen de Cabana ya no entrarán sin comer.',
       'La primera semana habrá cinco minutos de tolerancia.',
-      'Si su hijo no tomará el desayuno, avise a la Dirección.']) },
+      'Si su hijo no va a desayunar, avise a la Dirección.']) },
     { id: 'a2', chica: true, titulo: 'Aviso del quiosco', para: 'estudiantes', oraciones: ora('q', [
       'El quiosco venderá fruta y emoliente en el recreo.',
       'Cada porción costará un sol.']) },
   ] };
-  // La escalera, de lo más amplio a lo más estrecho: qué oraciones del aviso (o) y del quiosco (q) cubre cada peldaño.
+  // La escalera, de la frase más amplia a la más estrecha: qué oraciones del aviso (o) y del quiosco (q) cubre cada peldaño.
   const ESCALERA = [
     { t: 'La vida escolar', o: [1, 2, 3, 4], q: [1, 2], cualquiera: true },
     { t: 'La comida en el colegio', o: [1, 2, 3, 4], q: [1, 2] },
@@ -94,17 +103,18 @@
   ];
   const N_AVISO = MURAL.hojas[0].oraciones.length;
   const JUSTO = ESCALERA.findIndex(p => p.o.length === N_AVISO && !p.q.length) + 1;
-  const figMural = { soporte: MURAL, titulo: 'Escalera de temas', peldanos: ESCALERA.map(p => p.t), arriba: 'Más amplio', abajo: 'Más estrecho' };
+  const ARRIBA = 'Más amplia', ABAJO = 'Más estrecha';
+  const figMural = { soporte: MURAL, titulo: 'Frases para el tema', peldanos: ESCALERA.map(p => p.t), arriba: ARRIBA, abajo: ABAJO };
   const estMural = n => {
     const p = ESCALERA[n - 1];
     return { n, color: n === JUSTO ? 'f' : 'o', soporte: pinta(MURAL, [...p.o.map(k => `o${k}`), ...p.q.map(k => `q${k}`)]) };
   };
   const lecturaMural = n => {
     const p = ESCALERA[n - 1];
-    if (p.q.length && p.cualquiera) return [prop('Muy amplio'), ': cubre los dos avisos y cualquier otro'];
-    if (p.q.length) return [prop('Muy amplio'), ': también cubre el aviso del quiosco'];
-    if (p.o.length === N_AVISO) return [justo('Justo'), ': cubre las ', cubre(`${N_AVISO} oraciones`), ' y nada del quiosco'];
-    return [prop('Muy estrecho'), ': cubre ', cubre(`${p.o.length} de ${N_AVISO}`), ' oraciones del aviso'];
+    if (p.q.length && p.cualquiera) return [prop('Muy amplia'), ': cubre los dos avisos y cualquier otro'];
+    if (p.q.length) return [prop('Muy amplia'), ': también cubre el aviso del quiosco'];
+    if (p.o.length === N_AVISO) return [justo('Justa'), ': cubre las ', cubre(`${N_AVISO} oraciones`), ' y nada del quiosco'];
+    return [prop('Muy estrecha'), ': cubre ', cubre(`${p.o.length} de ${N_AVISO}`), ' oraciones del aviso'];
   };
 
   // El cartel de la predicción: empieza y termina con una persona que no es el tema.
@@ -115,15 +125,24 @@
       'Así, quien compra sabe cuántos días tiene el queso.',
       'Doña Rufina ya encargó sus etiquetas en una imprenta de Juliaca.']) },
   ] };
+  // Las mismas frases que las opciones de «Predice», palabra por palabra, también la de doña Rufina: así cada opción
+  // tiene su peldaño (lector en frío, 17 nov: «doña Rufina no está en la escalera»). c: qué oraciones cubre.
   const ESC_CARTEL = [
     { t: 'Los alimentos que se venden en las ferias', c: [1, 2, 3, 4] },
     { t: 'La etiqueta con fecha que ahora deben llevar los quesos', c: [1, 2, 3, 4] },
-    { t: 'La imprenta que hace las etiquetas', c: [4] },
+    { t: 'Doña Rufina, la vendedora que lleva veinte años en la feria', c: [1, 4] },
+    { t: 'La imprenta donde se hacen las etiquetas', c: [4] },
   ];
-  const figCartel = { soporte: CARTEL, titulo: 'Escalera de temas', peldanos: ESC_CARTEL.map(p => p.t), arriba: 'Más amplio', abajo: 'Más estrecho' };
+  const figCartel = { soporte: CARTEL, titulo: 'Frases para el tema', peldanos: ESC_CARTEL.map(p => p.t), arriba: ARRIBA, abajo: ABAJO };
+  const pelCartel = t => ESC_CARTEL.findIndex(p => p.t === t) + 1;
   const estCartel = (n, color, ids, extra = {}) => Object.assign({ n, color, soporte: pinta(CARTEL, ids.map(k => `c${k}`)) }, extra);
 
-  // Lee: la tarjeta de «cubre» lleva su dibujo (contrato, punto 6: la metáfora se presenta con su dibujo antes del juego).
+  // Lee: la primera tarjeta muestra el aviso que nombra (quién escribe y para quién) y la de «cubre» lleva su dibujo
+  // (contrato, punto 6: la metáfora se presenta con su dibujo antes del juego). Lector en frío, 17 nov: el cuaderno de
+  // Rosa salía con la tarjeta 1, que habla de otra cosa.
+  const AVISO_LEE = { soporte: 'puerta', lugar: 'Puerta de la Dirección', hojas: [
+    { id: 'd', titulo: 'Aviso', de: 'la Dirección', para: 'estudiantes y familias', oraciones: ora('d', [
+      'El viernes no habrá clases por el Día del Maestro.', 'Las clases vuelven el lunes, a la hora de siempre.']) }] };
   const UTILES = { soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', frase: { etiqueta: 'Frase', t: 'Los útiles para dibujar' }, hojas: [
     { id: 'u', titulo: 'Útiles para el lunes', de: 'la tutora', para: '1.º\u00a0B', oraciones: ora('u', [
       'Un cuaderno de cien hojas para Matemática.', 'Una caja de colores.', 'Un block de dibujo.']) },
@@ -137,9 +156,9 @@
         'El viernes a las 10:00 haremos un simulacro de sismo en el colegio.',
         'Al sonar la sirena, los alumnos saldrán al patio por la escalera de su pabellón.',
         'Ese día no deben traer mochilas pesadas.']) }] },
-      enunciado: 'En este mensaje del tutor, ¿cuál es el tema: «la seguridad en el colegio», «el simulacro de sismo del viernes» o «las mochilas pesadas»?',
+      enunciado: 'En este mensaje del tutor, ¿cuál es el tema: «la seguridad en el colegio», «el simulacro de sismo del viernes» o «las mochilas pesadas que ese día no deben traer los alumnos»?',
       datos: [D_TEMA, 'Simulacro de sismo: práctica de cómo salir a un lugar seguro si tiembla.'],
-      malas: ['«La seguridad en el colegio» también le serviría a un aviso de extintores: ', prop('muy amplia'), '. «Las mochilas pesadas» cubre solo la 3: ', prop('muy estrecha'), '.'],
+      malas: ['«La seguridad en el colegio» sirve a un aviso de extintores: ', prop('muy amplia'), '. «Las mochilas pesadas que ese día no deben traer los alumnos» cubre solo la 3: ', prop('muy estrecha'), '.'],
       buena: ['«El simulacro de sismo del viernes» cubre ', cubre('las oraciones 1, 2 y 3'), ': cuándo es, qué se hace y qué no traer.'],
       sentido: 'No le serviría a otro mensaje y no deja fuera ninguna oración: tiene la medida justa.',
       respuesta: 'El simulacro de sismo del viernes' },
@@ -149,10 +168,10 @@
         'Desde marzo, la municipalidad pide a quienes venden en la calle usar vasos que se lavan, no descartables.',
         'Así se junta menos basura en los paraderos.',
         'Julián ahora lava los vasos con agua caliente después de cada venta.']) }] },
-      enunciado: 'Este folleto empieza con Julián. ¿Su tema es «Julián, el vendedor de emoliente», «los vasos que se lavan en la venta callejera» o «la basura de las ciudades»?',
+      enunciado: 'Este folleto empieza con Julián. ¿Su tema es «Julián, el vendedor de emoliente», «los vasos que se lavan en la venta callejera» o «la basura que se junta en las calles de todas las ciudades»?',
       datos: [D_TEMA, 'Emoliente: bebida caliente de hierbas que se vende en la calle.', 'Descartable: que se usa una vez y se bota.'],
-      malas: ['«Julián» cubre solo la 1 y la 4, que cuentan un caso: ', prop('muy estrecha'), '. «La basura de las ciudades» le serviría a muchos folletos: ', prop('muy amplia'), '.'],
-      buena: ['«Los vasos que se lavan» cubre ', cubre('las cuatro'), ': la regla, para qué sirve y un vendedor que ya la cumple.'],
+      malas: ['«Julián, el vendedor de emoliente» cubre la 1 y la 4, un caso: ', prop('muy estrecha'), '. «La basura que se junta en las calles de todas las ciudades»: ', prop('muy amplia'), '.'],
+      buena: ['«Los vasos que se lavan en la venta callejera» cubre ', cubre('las cuatro'), ': la regla, para qué sirve y un vendedor que ya la cumple.'],
       sentido: 'Julián abre el folleto, pero no es su asunto: el folleto trata de una regla para todos los vendedores.',
       respuesta: 'Los vasos que se lavan en la venta callejera' },
     { nombre: 'el cartel',
@@ -162,7 +181,7 @@
         'Por eso, una botella tirada en la orilla puede quedarse ahí muchos años.']) }] },
       enunciado: '¿Cuál es el tema del cartel: «lo que la gente cree del lago», «la contaminación del agua en el mundo» o «la basura que se queda en el Titicaca»?',
       datos: [D_TEMA],
-      malas: ['«Lo que la gente cree» cubre solo la 1, que el cartel corrige: ', prop('muy estrecha'), '. «La contaminación en el mundo» le serviría a cualquier cartel: ', prop('muy amplia'), '.'],
+      malas: ['«Lo que la gente cree del lago» cubre solo la 1, que el cartel corrige: ', prop('muy estrecha'), '. «La contaminación del agua en el mundo» sirve a cualquier cartel: ', prop('muy amplia'), '.'],
       buena: ['«La basura que se queda en el Titicaca» cubre ', cubre('las tres'), ': la 1 dice lo que se cree; la 2 y la 3, lo que pasa.'],
       sentido: 'No le serviría a un cartel de otro lago y no deja fuera ninguna oración.',
       respuesta: 'La basura que se queda en el Titicaca' },
@@ -172,13 +191,13 @@
         'Por eso, el puesto de salud de Mañazo enseñó a las familias a abrigar a los bebés y a ventilar la casa sin enfriarla.',
         'La tabla compara cuántos niños atendió por resfrío antes y después de la campaña.']),
         tabla: tabla('Niños atendidos por resfrío en junio y julio', ['Año', 'Niños'], [['2024', '90'], ['2025', '35']]) }] },
-      enunciado: 'El texto y la tabla giran en torno a una de estas frases: «las heladas de junio y julio», «los 35 niños de 2025», «la salud en el Perú» o «la campaña de Mañazo contra los resfríos de los niños».',
-      datos: [D_TEMA, D_MIXTO, 'Ventilar: dejar que entre aire nuevo a la casa.'],
+      enunciado: 'El texto y la tabla giran en torno a: «las heladas de junio y julio», «los 35 niños que atendió el puesto en 2025», «la salud en el Perú» o «la campaña de Mañazo contra los resfríos».',
+      datos: [D_TEMA, D_MIXTO, D_GIRA, 'Ventilar: dejar que entre aire nuevo a la casa.'],
       pide: '«Giran en torno a» pide el tema central: una frase que cubra el texto y también la tabla.',
-      malas: ['«Las heladas» es el marco de la 1 y «los 35 niños», una celda de la tabla: ', prop('muy estrechas'), '. «La salud en el Perú»: ', prop('muy amplia'), '.'],
-      buena: ['«La campaña de Mañazo» cubre ', cubre('las oraciones 1 a 3'), ' y ', cubre('las dos filas'), ': la tabla muestra lo que logró.'],
+      malas: ['«Las heladas de junio y julio» es el marco, y «los 35 niños que atendió el puesto en 2025», una celda: ', prop('muy estrechas'), '. «La salud en el Perú»: ', prop('muy amplia'), '.'],
+      buena: ['«La campaña de Mañazo contra los resfríos» cubre ', cubre('las oraciones 1 a 3'), ' y ', cubre('las dos filas'), ': la tabla muestra lo que logró.'],
       sentido: 'Si se tapa la tabla, la frase sigue cubriendo el texto; si se tapa el texto, la frase explica la tabla.',
-      respuesta: 'La campaña de Mañazo contra los resfríos de los niños' },
+      respuesta: 'La campaña de Mañazo contra los resfríos' },
   ];
 
   // «Ahora tú»: dos de base, dos con una persona o un lugar al comienzo y dos de examen (texto mixto, 5 alternativas).
@@ -208,7 +227,7 @@
         'Por eso, el puesto de salud enseña a construir cocinas mejoradas, con chimenea.',
         'Doña Celia ya tiene la suya, y su casa ya no se llena de humo.']) }] },
       pregunta: 'Este folleto empieza con doña Celia. ¿Cuál es su tema?',
-      datos: [D_TEMA, 'Cocina mejorada: cocina de barro o ladrillo con chimenea, que saca el humo de la casa.'],
+      datos: [D_TEMA, 'Cocina mejorada: cocina de barro o ladrillo con chimenea.'],
       ok: 'Las cocinas mejoradas contra el humo dentro de la casa',
       m: [['Doña Celia, la vecina de Acora que cocinaba con leña en su casa', 'RV64', 'Ella abre y cierra el folleto, pero es un caso: la 2 y la 3 tratan de las cocinas.'],
         ['La salud de las familias del campo', 'RV2', 'Es del mismo asunto, pero le serviría a un folleto de vacunas o de agua hervida.'],
@@ -230,7 +249,7 @@
         'El gráfico muestra cuántos libros se leyeron en un mes, antes y después del cambio.',
         'Los profesores cuentan que ahora más alumnos comentan en clase lo que leyeron.']),
         barras: barras('Libros leídos en un mes', [['Antes', 40], ['Después', 160]]) }] },
-      pregunta: 'El texto y el gráfico giran, principalmente, en torno a', datos: [D_TEMA, D_MIXTO],
+      pregunta: 'El texto y el gráfico giran, principalmente, en torno a', datos: [D_TEMA, D_MIXTO, D_GIRA],
       ok: 'El préstamo de libros para la casa y cuánto más leen',
       m: [['La educación en los colegios de Juliaca', 'RV2', 'Es del mismo asunto, pero le serviría a un texto sobre uniformes o exámenes.'],
         ['Los 160 libros que se leyeron en un mes', 'RV1', 'Leíste bien el gráfico, pero es una barra: deja fuera el préstamo del texto.'],
@@ -243,7 +262,7 @@
         'La tabla muestra cuánta agua juntaron en los meses de lluvia.']),
         tabla: tabla('Agua de lluvia juntada', ['Mes', 'Litros'], [['Enero', '2400'], ['Febrero', '3100']]) }] },
       pregunta: 'El texto y la tabla dan cuenta, principalmente, de',
-      datos: [D_TEMA, D_MIXTO, 'Canaleta: canal en el borde del techo que lleva el agua de lluvia.'],
+      datos: [D_TEMA, D_MIXTO, D_GIRA, 'Canaleta: canal en el borde del techo que lleva el agua de lluvia.'],
       ok: 'El agua de lluvia que junta un colegio cuando falta la del caño',
       m: [['El agua del caño, que llega solo tres horas al día', 'RV64', 'Es la 1, el problema que abre el texto, pero deja fuera las canaletas y la tabla.'],
         ['El cuidado del agua en el Perú', 'RV2', 'Es del mismo asunto, pero le serviría a cualquier texto sobre el agua.'],
@@ -260,34 +279,34 @@
   // coinciden con las oraciones del soporte.
   const fig = sop => ({ pieza: 'rv-soporte', datos: sop, estado: {} });
   const EJEMPLOS_TEMA = [
-    { nivel: 1, titulo: 'El aviso del puesto de salud',
-      enunciado: '¿Cuál es el tema del aviso: «la salud de las familias», «la vacunación contra la influenza en el puesto de salud» o «el DNI de los vecinos»?',
+    { nivel: 1, titulo: 'Un aviso para los vecinos',
+      enunciado: '¿Cuál es el tema del aviso: «el cuidado de la salud de las familias de Puno y de todo el Perú», «la vacunación contra la influenza en el puesto de salud» o «el DNI»?',
       datos: [D_TEMA, 'Influenza: la gripe, una enfermedad que se contagia.'],
       figura: fig({ soporte: 'puerta', lugar: 'Puerta del puesto de salud', hojas: [{ id: 'h', titulo: 'Aviso', de: 'el puesto de salud', para: 'vecinos', oraciones: ora('h', [
         'El puesto de salud vacunará contra la influenza del 2 al 6 de junio.', 'Pueden ir niños, adultos mayores y personas con asma.', 'La vacuna es gratuita.', 'Hay que llevar el DNI.']) }] }),
       solucion: [
-        { texto: ['«La salud de las familias» también le serviría a un aviso del dentista: ', prop('muy amplia'), '. «El DNI» cubre solo la 4: ', prop('muy estrecha'), '.'] },
-        { texto: ['«La vacunación contra la influenza» cubre ', cubre('las oraciones 1 a 4'), ': cuándo, quiénes pueden ir, cuánto cuesta y qué llevar.'] }],
+        { texto: ['«El cuidado de la salud de las familias de Puno y de todo el Perú» sirve a otro aviso: ', prop('muy amplia'), '. «El DNI» cubre solo la 4: ', prop('muy estrecha'), '.'] },
+        { texto: ['«La vacunación contra la influenza en el puesto de salud» cubre ', cubre('las oraciones 1 a 4'), ': cuándo, quiénes, cuánto cuesta y qué llevar.'] }],
       respuesta: [justo('La vacunación contra la influenza en el puesto de salud')] },
     { nivel: 1, titulo: 'El cartel del patio',
-      enunciado: '¿Cuál es el tema del cartel: «el deporte en el colegio», «el campeonato de vóley de las secciones de quinto» o «los suplentes de cada equipo»?',
+      enunciado: '¿Cuál es el tema del cartel: «el deporte en el colegio», «el campeonato de vóley de las secciones de quinto» o «los dos suplentes que puede inscribir cada sección en su equipo»?',
       datos: [D_TEMA],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel en el patio', hojas: [{ id: 'h', titulo: 'Convocatoria', de: 'Educación Física', para: 'secciones de 5.º', oraciones: ora('h', [
         'El sábado empieza el campeonato de vóley entre las secciones de quinto.', 'Cada sección inscribe un equipo de seis jugadoras y dos suplentes.',
         'Los partidos serán en el coliseo del colegio, desde las 9:00.', 'El equipo ganador representará al colegio en los Juegos Escolares.']) }] }),
       solucion: [
-        { texto: ['«El deporte en el colegio» le serviría a un cartel de fútbol o de atletismo: ', prop('muy amplia'), '. «Los suplentes» cubre una parte de la 2: ', prop('muy estrecha'), '.'] },
-        { texto: ['«El campeonato de vóley» cubre ', cubre('las cuatro'), ': cuándo empieza, quiénes juegan, dónde y qué gana el campeón.'] }],
+        { texto: ['«El deporte en el colegio» le serviría a otro cartel: ', prop('muy amplia'), '. «Los dos suplentes que puede inscribir cada sección en su equipo» cubre parte de la 2: ', prop('muy estrecha'), '.'] },
+        { texto: ['«El campeonato de vóley de las secciones de quinto» cubre ', cubre('las cuatro'), ': cuándo empieza, quiénes juegan, dónde y qué gana el campeón.'] }],
       respuesta: [justo('El campeonato de vóley de las secciones de quinto')] },
-    { nivel: 1, titulo: 'El mensaje de la tutora',
-      enunciado: '¿Cuál es el tema del mensaje: «las fiestas de Puno», «el desfile de 5.º\u00a0B por el aniversario de Puno» o «el uniforme de gala»?',
+    { nivel: 1, titulo: 'El mensaje del jueves',
+      enunciado: '¿Cuál es el tema del mensaje: «las fiestas de Puno», «el desfile de 5.º\u00a0B por el aniversario de Puno» o «el uniforme de gala y la hora de llegada del jueves»?',
       datos: [D_TEMA],
       figura: fig({ soporte: 'mensaje', lugar: 'Familias de 5.º\u00a0B', hojas: [{ id: 'h', de: 'la tutora', para: 'familias de 5.º\u00a0B', oraciones: ora('h', [
         'El jueves no habrá clases por el aniversario de Puno.', 'Los alumnos de 5.º\u00a0B desfilarán a las 10:00 en la plaza de Armas.',
         'Deben ir con uniforme de gala y llegar a las 9:00.', 'Después del desfile, cada familia recoge a su hijo en la plaza.']) }] }),
       solucion: [
-        { texto: ['«Las fiestas de Puno» le serviría a un mensaje sobre la Candelaria: ', prop('muy amplia'), '. «El uniforme de gala» cubre solo la 3: ', prop('muy estrecha'), '.'] },
-        { texto: ['«El desfile de 5.º\u00a0B» cubre ', cubre('las cuatro'), ': el día sin clases, la hora, la ropa y el recojo.'] }],
+        { texto: ['«Las fiestas de Puno» sirve a un mensaje de otra fiesta: ', prop('muy amplia'), '. «El uniforme de gala y la hora de llegada del jueves» cubre solo la 3: ', prop('muy estrecha'), '.'] },
+        { texto: ['«El desfile de 5.º\u00a0B por el aniversario de Puno» cubre ', cubre('las cuatro'), ': el día sin clases, la hora, la ropa y el recojo.'] }],
       respuesta: [justo('El desfile de 5.º\u00a0B por el aniversario de Puno')] },
     { nivel: 1, titulo: 'El folleto del muelle',
       enunciado: 'Para este folleto, ¿la frase «los viajes por el lago Titicaca» es muy amplia, justa o muy estrecha?',
@@ -305,42 +324,42 @@
       figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', hojas: [{ id: 'h', titulo: 'Ciencia y Ambiente', de: 'Rosa', para: 'estudiar para la práctica', oraciones: ora('h', [
         'La totora crece en las orillas poco hondas del lago Titicaca.', 'Necesita agua quieta y mucho sol.', 'Donde el lago es muy hondo, la totora no crece.']) }] }),
       solucion: [
-        { texto: ['«Las plantas del lago» le serviría a una nota sobre el llachu u otras plantas: ', prop('muy amplia'), '. «El sol» cubre una parte de la 2: ', prop('muy estrecha'), '.'] },
-        { texto: ['«Dónde crece la totora» cubre ', cubre('las tres'), ': la 1 ya lo dice, y la 2 y la 3 lo explican.'] }],
+        { texto: ['«Las plantas del lago» le serviría a una nota sobre el llachu u otras plantas: ', prop('muy amplia'), '. «El sol que necesita la totora» cubre parte de la 2: ', prop('muy estrecha'), '.'] },
+        { texto: ['«Dónde crece la totora en el lago» cubre ', cubre('las tres'), ': la 1 ya lo dice, y la 2 y la 3 lo explican.'] }],
       respuesta: [justo('Dónde crece la totora en el lago')] },
 
     { nivel: 2, titulo: 'La bodega de don Mateo',
-      enunciado: '¿Cuál es el tema: «don Mateo, el bodeguero de Ilave», «la prohibición de las bolsas de plástico en Ilave», «el cuidado del ambiente» o «la multa para quien no cumpla»?',
+      enunciado: '¿Cuál es el tema: «don Mateo, el bodeguero de Ilave», «la prohibición de las bolsas de plástico en Ilave», «el cuidado del ambiente» o «la multa que pagará la bodega o el mercado que no cumpla»?',
       datos: [D_TEMA],
       figura: fig({ soporte: 'folleto', lugar: 'Folleto de la municipalidad de Ilave', hojas: [{ id: 'h', titulo: 'Municipalidad informa', de: 'la municipalidad', para: 'bodegas y mercados', oraciones: ora('h', [
         'Don Mateo tiene una bodega en Ilave y siempre dio bolsas de plástico.', 'Desde julio, la municipalidad prohíbe entregar bolsas de plástico en bodegas y mercados.',
         'Quien vende debe ofrecer bolsas de tela o de papel.', 'Quien no cumpla pagará una multa.', 'Don Mateo ya compró sus primeras bolsas de tela.']) }] }),
       solucion: [
         { texto: ['Primero, de qué tratan las oraciones: la 1 y la 5 cuentan el caso de don Mateo; ', cubre('la 2, la 3 y la 4'), ' tratan de la prohibición.'] },
-        { texto: ['«Don Mateo» deja fuera la regla y «la multa» cubre solo la 4: ', prop('muy estrechas'), '. «El cuidado del ambiente» le serviría a otro folleto: ', prop('muy amplia'), '.'] },
-        { texto: ['«La prohibición de las bolsas» cubre ', cubre('las cinco'), ': don Mateo es una bodega a la que le llega la regla.'] }],
+        { texto: ['«Don Mateo, el bodeguero de Ilave» deja fuera la regla, y «la multa que pagará la bodega o el mercado que no cumpla» cubre solo la 4: ', prop('muy estrechas'), '.'] },
+        { texto: ['«El cuidado del ambiente» le serviría a otro folleto: ', prop('muy amplia'), '. «La prohibición de las bolsas de plástico en Ilave» cubre ', cubre('las cinco'), ': don Mateo es un caso.'] }],
       respuesta: [justo('La prohibición de las bolsas de plástico en Ilave')] },
-    { nivel: 2, titulo: 'Las laptops de la biblioteca',
-      enunciado: '¿Cuál es el tema: «la plaza de Armas de Juliaca», «el préstamo de laptops en la biblioteca municipal», «las bibliotecas del Perú» o «el carné de estudiante»?',
+    { nivel: 2, titulo: 'Un aviso de Juliaca',
+      enunciado: '¿Cuál es el tema: «la plaza de Armas de Juliaca», «el préstamo de laptops en la biblioteca municipal», «las bibliotecas públicas de todas las ciudades del Perú» o «el carné de estudiante»?',
       datos: [D_TEMA, 'Laptop: computadora portátil.'],
       figura: fig({ soporte: 'puerta', lugar: 'Puerta de la biblioteca municipal', hojas: [{ id: 'h', titulo: 'Aviso', de: 'la biblioteca municipal', para: 'estudiantes', oraciones: ora('h', [
         'La biblioteca municipal está en la plaza de Armas de Juliaca.', 'Desde abril, prestará laptops a los estudiantes por dos horas.',
         'Para pedir una, hay que dejar el carné de estudiante.', 'Las laptops no salen de la sala de lectura.']) }] }),
       solucion: [
         { texto: ['La 1 dice dónde está la biblioteca: es el lugar, no el asunto. ', cubre('La 2, la 3 y la 4'), ' tratan del préstamo.'] },
-        { texto: ['«La plaza de Armas» y «el carné» cubren una oración cada una: ', prop('muy estrechas'), '. «Las bibliotecas del Perú»: ', prop('muy amplia'), '.'] },
+        { texto: ['«La plaza de Armas de Juliaca» y «el carné de estudiante» cubren una oración cada una: ', prop('muy estrechas'), '. «Las bibliotecas públicas de todas las ciudades del Perú»: ', prop('muy amplia'), '.'] },
         { texto: ['«El préstamo de laptops en la biblioteca municipal» cubre ', cubre('las cuatro'), ': la 1 dice dónde se presta.'] }],
       respuesta: [justo('El préstamo de laptops en la biblioteca municipal')] },
-    { nivel: 2, titulo: 'El sol de la altura',
-      enunciado: '¿Cuál es el tema: «lo que la gente cree del frío», «el sol que quema en la altura y cómo protegerse», «el clima del Perú» o «el bloqueador para los niños»?',
+    { nivel: 2, titulo: 'Un folleto para el invierno',
+      enunciado: '¿Cuál es el tema: «lo que mucha gente de la sierra cree sobre el sol cuando hace frío», «el sol que quema en la altura y cómo protegerse», «el clima del Perú» o «el bloqueador para los niños»?',
       datos: [D_TEMA, 'Bloqueador: crema que protege la piel del sol.'],
       figura: fig({ soporte: 'folleto', lugar: 'Folleto del puesto de salud de Puno', hojas: [{ id: 'h', titulo: 'Puesto de salud informa', de: 'el puesto de salud', para: 'familias', oraciones: ora('h', [
         'Mucha gente cree que el sol de la sierra no quema cuando hace frío.', 'Pero en Puno, por la altura, el sol quema más que en la costa, aunque el aire esté helado.',
         'Por eso, conviene usar sombrero y bloqueador también en invierno.', 'Los niños y quienes trabajan en el campo son los que más se exponen.']) }] }),
       solucion: [
-        { texto: ['La 1 dice lo que se cree y la 2 lo corrige: ', cubre('la 2, la 3 y la 4'), ' tratan del sol que quema y de cómo cuidarse.'] },
-        { texto: ['«Lo que la gente cree» cubre solo la 1, y «el bloqueador», parte de la 3: ', prop('muy estrechas'), '. «El clima del Perú»: ', prop('muy amplia'), '.'] },
-        { texto: ['«El sol que quema en la altura y cómo protegerse» cubre ', cubre('las cuatro'), ', también la creencia que corrige.'] }],
+        { texto: ['La 1 dice lo que se cree y ', cubre('la 2'), ' lo corrige; ', cubre('la 3'), ' dice cómo protegerse y ', cubre('la 4'), ', quiénes deben cuidarse más.'] },
+        { texto: ['«Lo que mucha gente de la sierra cree sobre el sol cuando hace frío» cubre solo la 1; «el bloqueador para los niños», parte de la 3: ', prop('muy estrechas'), '.'] },
+        { texto: ['«El clima del Perú»: ', prop('muy amplia'), '. «El sol que quema en la altura y cómo protegerse» cubre ', cubre('las cuatro'), ', también la creencia que corrige.'] }],
       respuesta: [justo('El sol que quema en la altura y cómo protegerse')] },
     { nivel: 2, titulo: 'Dos avisos del club',
       enunciado: '¿«Las actividades del Club de Ciencias» es el tema del aviso 1? Si no lo es, ¿cuál sería?',
@@ -354,21 +373,21 @@
         { texto: ['La frase cubre las tres oraciones del aviso 1, pero también ', prop('las dos del aviso 2'), ': le sirve a otro texto. Es ', prop('muy amplia'), '.'] },
         { texto: ['Hay que bajar un peldaño: ', justo('«la medición diaria de la temperatura del patio en junio»'), ' cubre ', cubre('las tres'), ' y nada del aviso 2.'] }],
       respuesta: [justo('No'), ': el tema es la medición diaria de la temperatura del patio'] },
-    { nivel: 2, titulo: 'Los waru waru de Acora',
-      enunciado: '¿Cuál es el tema: «las heladas que queman la papa», «el regreso de los waru waru en Acora contra las heladas», «la agricultura en el altiplano» o «los canales con agua»?',
+    { nivel: 2, titulo: 'El folleto de la agencia agraria',
+      enunciado: '¿Cuál es el tema: «las heladas que queman la papa», «el regreso de los waru waru en Acora contra las heladas», «la agricultura en el altiplano» o «los canales con agua que rodean a los camellones de tierra»?',
       datos: [D_TEMA, 'Camellón: lomo de tierra largo donde se siembra.'],
       figura: fig({ soporte: 'folleto', lugar: 'Folleto de la agencia agraria de Acora', hojas: [{ id: 'h', titulo: 'Agencia agraria informa', de: 'la agencia agraria', para: 'agricultores', oraciones: ora('h', [
         'En los últimos años, las heladas llegan antes y queman la papa recién sembrada.', 'Por eso, muchas familias de Acora vuelven a usar los waru waru.',
         'Son camellones de tierra rodeados de canales con agua.', 'El agua guarda el calor del día y protege a las plantas en la noche.']) }] }),
       solucion: [
         { texto: ['El texto tiene dos partes: un problema (', cubre('la 1'), ') y lo que hacen las familias contra él (', cubre('la 2, la 3 y la 4'), ').'] },
-        { texto: ['«Las heladas» cubre solo el problema y «los canales», parte de la 3: ', prop('muy estrechas'), '. «La agricultura en el altiplano»: ', prop('muy amplia'), '.'] },
-        { texto: ['«El regreso de los waru waru contra las heladas» cubre ', cubre('las dos partes'), ', sin dejar ninguna oración fuera.'] }],
+        { texto: ['«Las heladas que queman la papa» cubre solo el problema, y «los canales con agua que rodean a los camellones de tierra», parte de la 3: ', prop('muy estrechas'), '.'] },
+        { texto: ['«La agricultura en el altiplano»: ', prop('muy amplia'), '. «El regreso de los waru waru en Acora contra las heladas» cubre ', cubre('las dos partes'), ', sin dejar ninguna oración fuera.'] }],
       respuesta: [justo('El regreso de los waru waru en Acora contra las heladas')] },
 
-    { nivel: 3, titulo: 'La ciclovía y el gráfico',
+    { nivel: 3, titulo: 'Las bicicletas de un colegio',
       enunciado: 'Pregunta 8 del simulacro: «El texto y el gráfico giran, principalmente, en torno a». ¿Qué alternativa es la correcta?',
-      datos: [D_TEMA, D_MIXTO, 'Ciclovía: carril de la pista solo para bicicletas.'],
+      datos: [D_TEMA, D_MIXTO, D_GIRA, 'Ciclovía: carril de la pista solo para bicicletas.'],
       figura: fig({ soporte: 'simulacro', numero: 8, hojas: [{ id: 'h', oraciones: ora('h', [
         'Hace cinco años, casi ningún alumno de un colegio de Juliaca iba a clases en bicicleta.',
         'Desde que se abrió una ciclovía cerca del colegio, cada vez más estudiantes la usan.',
@@ -387,7 +406,7 @@
       respuesta: [buena('C'), ': el aumento de alumnos en bicicleta desde la ciclovía'] },
     { nivel: 3, titulo: 'El caño que gotea',
       enunciado: 'Pregunta 9 del simulacro: «El texto y la tabla dan cuenta, principalmente, de». ¿Qué alternativa es la correcta?',
-      datos: [D_TEMA, D_MIXTO],
+      datos: [D_TEMA, D_MIXTO, D_GIRA],
       figura: fig({ soporte: 'simulacro', numero: 9, hojas: [{ id: 'h', oraciones: ora('h', [
         'En muchas casas de Puno, un caño que gotea pasa meses sin arreglarse.', 'Parece poco, pero un goteo de todo el día suma muchos litros en un mes.',
         'La tabla compara cuánta agua pierden en un mes dos caños que gotean.', 'Por eso, la empresa de agua pide a las familias revisar sus caños cada mes.']),
@@ -401,7 +420,7 @@
         { texto: [mala('A'), ': ', prop('muy amplia'), '. ', mala('B'), ' es una celda de la tabla y ', mala('D'), ', quien aparece en la 4: ', prop('muy estrechas'), '. ', mala('E'), ': el texto no explica cómo arreglar un caño.'] },
         { texto: [buena('C'), ' cubre ', cubre('las oraciones 1 a 4'), ' y ', cubre('las dos filas'), ': el goteo, cuánto se pierde y el pedido de revisar.'] }],
       respuesta: [buena('C'), ': el agua que se pierde por los caños que gotean'] },
-    { nivel: 3, titulo: 'La radio del campo',
+    { nivel: 3, titulo: 'Un texto sobre el campo',
       enunciado: 'Pregunta 10 del simulacro: «¿Cuál es el tema central del texto?». ¿Qué alternativa es la correcta?',
       datos: [D_TEMA, 'Chacra: terreno donde una familia siembra.'],
       figura: fig({ soporte: 'simulacro', numero: 10, hojas: [{ id: 'h', oraciones: ora('h', [
@@ -422,7 +441,7 @@
       respuesta: [buena('D'), ': la radio en quechua y aimara para las familias del campo'] },
     { nivel: 3, titulo: 'Dos opiniones sobre el uniforme',
       enunciado: 'En esta pregunta hay dos textos, A y B, de dos autores. ¿Qué alternativa dice el tema que discuten los dos?',
-      datos: [D_TEMA, 'Textos A y B: dos autores que opinan sobre un mismo asunto.'],
+      datos: [D_TEMA, D_AB],
       figura: fig({ soporte: 'simulacro', numero: 21, hojas: [
         { id: 'ha', titulo: 'Texto A', oraciones: ora('a', ['El uniforme escolar debería ser obligatorio.', 'Así, nadie se fija en quién tiene la ropa más cara.', 'Además, en la puerta se reconoce rápido quién es del colegio.']) },
         { id: 'hb', titulo: 'Texto B', oraciones: ora('b', ['El uniforme escolar no debería ser obligatorio.', 'Para muchas familias de Puno, comprar dos juegos cada año es un gasto grande.', 'Un buzo sencillo cumpliría la misma función.']) }],
@@ -437,7 +456,7 @@
       respuesta: [buena('B'), ': si el uniforme escolar debe ser obligatorio'] },
     { nivel: 3, titulo: 'Las truchas del lago',
       enunciado: 'Pregunta 12 del simulacro: «El texto y la tabla giran, principalmente, en torno a». ¿Qué alternativa es la correcta?',
-      datos: [D_TEMA, D_MIXTO, 'Jaula flotante: red que cuelga de un marco sobre el agua, donde se crían peces.'],
+      datos: [D_TEMA, D_MIXTO, D_GIRA, 'Jaula flotante: red que cuelga de un marco sobre el agua, donde se crían peces.'],
       figura: fig({ soporte: 'simulacro', numero: 12, hojas: [{ id: 'h', oraciones: ora('h', [
         'La crianza de truchas en jaulas flotantes creció mucho en el lago Titicaca.', 'Muchas familias de la orilla ganan más que cuando solo pescaban.',
         'Pero el alimento que sobra y los restos de los peces ensucian el agua cerca de las jaulas.', 'La tabla muestra cuántas familias crían truchas en una bahía.']),
@@ -461,15 +480,16 @@
     pieza: 'rv-escalera',
     lee: {
       tarjetas: [
-        { titulo: 'Todo texto habla de algo', texto: 'Un aviso del mural, un cartel de la feria o un mensaje del grupo de padres hablan de algo: ese asunto es su tema. Y alguien lo escribe para alguien: la Dirección, para los alumnos y sus familias.' },
+        { titulo: 'Todo texto habla de algo', texto: 'Un aviso, un cartel de la feria o un mensaje del grupo de padres hablan de algo: ese asunto es su tema. Y alguien lo escribe para alguien: este aviso, la Dirección, para los estudiantes y sus familias.',
+          pieza: 'rv-soporte', dibujo: { datos: AVISO_LEE, estado: {} } },
         { titulo: 'Una frase corta', texto: 'El tema se dice en una frase corta, como el nombre de una carpeta: «La feria de ciencias». No es una oración entera: nombra el asunto, no cuenta qué pasa con él.' },
-        { titulo: 'Qué quiere decir «cubre»', texto: 'Una frase cubre una oración cuando esa oración habla de lo que la frase nombra. En las figuras, lo que la frase cubre va en turquesa; lo que queda fuera, en gris.',
+        { titulo: 'Qué quiere decir «cubre»', texto: 'Una frase cubre una oración cuando esa oración habla de lo que la frase nombra. En las figuras, la frase que se prueba va en el recuadro naranja; lo que cubre, en turquesa, y lo que deja fuera, en gris.',
           pieza: 'rv-soporte', dibujo: { datos: UTILES, estado: { marcas: { u2: 'i', u3: 'i' }, tenue: ['u1'] } } },
-        { titulo: 'Qué mirar al jugar', texto: 'En el mural hay dos avisos y, debajo, una escalera de temas: arriba, los más amplios; abajo, los más estrechos. Muévete por la escalera y mira qué oraciones se pintan en los dos avisos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el mural hay dos avisos y, debajo, una escalera de frases para el tema: arriba, las más amplias; abajo, las más estrechas. Muévete por la escalera y mira qué oraciones se pintan en los dos avisos.' },
       ],
     },
-    actividad: 'Subir y bajar por una escalera de temas, de lo más amplio a lo más estrecho.',
-    aprendizaje: 'El tema dice de qué trata todo el texto: si deja fuera una parte, es muy estrecho; si le sirve a otro texto, muy amplio.',
+    actividad: 'Subir y bajar por una escalera de frases, de la más amplia a la más estrecha.',
+    aprendizaje: 'El tema dice de qué trata el texto: si la frase deja fuera una parte, es muy estrecha; si sirve a otro texto, muy amplia.',
     ejemplos: EJEMPLOS_TEMA,
     juega: {
       consigna: 'En el mural del colegio hay dos avisos. Busca el tema del primero: el que dice de qué trata todo, y solo eso.',
@@ -481,12 +501,14 @@
       voz: 'Prueba arriba y abajo de la escalera, y mira también el aviso del quiosco.',
       leyenda: [
         { s: '1, 2, 3, 4', t: 'número de cada oración del aviso' },
-        { s: cubre('turquesa'), t: 'oración que el tema cubre' },
+        { s: cubre('turquesa'), t: 'oración que la frase cubre' },
         { s: 'gris', t: 'oración que queda fuera' },
-        { s: prop('naranja'), t: 'el tema que estás probando' },
-        { s: justo('violeta'), t: 'el tema con la medida justa' },
+        { s: prop('naranja'), t: 'la frase que estás probando' },
+        { s: justo('violeta'), t: 'la frase con la medida justa' },
       ],
-      controles: [{ id: 'n', etiqueta: 'Peldaño de la escalera', min: 1, max: ESCALERA.length, paso: 1, inicio: 1, decimales: 0, color: 'c-o' }],
+      // La escalera es vertical y el deslizador de la app, horizontal: el rótulo dice que el 1 es el peldaño de arriba
+      // (lector en frío, 17 nov). El marcador también se arrastra arriba y abajo sobre la escalera (arrastres).
+      controles: [{ id: 'n', etiqueta: `Peldaño (1 arriba, ${ESCALERA.length} abajo)`, min: 1, max: ESCALERA.length, paso: 1, inicio: 1, decimales: 0, color: 'c-o' }],
       dibujo: val => ({ datos: figMural, estado: estMural(val.n) }),
       lectura: val => lecturaMural(val.n),
       // Gesto directo (docs/teoria.md §4b): el marcador se arrastra por los largueros y se suelta en un peldaño.
@@ -513,16 +535,16 @@
       pieza: 'rv-escalera',
       datos: figCartel,
       pasos: [
-        { estado: { n: 0, soporte: { marcas: { c1: 'o', c4: 'o' }, tenue: ['c2', 'c3'] } }, texto: 'Doña Rufina solo cubre la 1 y la 4: la etiqueta queda fuera.', ecuacion: [prop('doña Rufina'), ': cubre ', cubre('2 de 4')] },
-        { estado: estCartel(1, 'o', [1, 2, 3, 4], { nuevo: ['escalera'] }), texto: 'El primer peldaño cubre todo, pero le serviría a cualquier cartel de feria.', ecuacion: [prop('muy amplio'), ': cubre ', cubre('4 de 4'), ' y también otros textos'] },
-        { estado: estCartel(3, 'o', [4], { nuevo: ['escalera'] }), texto: 'La imprenta solo cubre la 4: deja fuera la etiqueta y su razón.', ecuacion: [prop('muy estrecho'), ': cubre ', cubre('1 de 4')] },
-        { estado: estCartel(2, 'f', [1, 2, 3, 4], { nuevo: ['escalera'] }), texto: 'La etiqueta con fecha cubre las cuatro: doña Rufina es un caso de ella.', ecuacion: [justo('justo'), ': cubre ', cubre('4 de 4'), ' y solo este cartel'] },
-        { estado: estCartel(2, 'f', [1, 2, 3, 4]), texto: 'Prueba final: ¿le serviría a otro cartel? No. ¿Deja fuera alguna oración? Ninguna.' },
+        { estado: estCartel(pelCartel(ESC_CARTEL[2].t), 'o', ESC_CARTEL[2].c, { nuevo: ['escalera'] }), texto: 'Doña Rufina solo cubre la 1 y la 4: la etiqueta queda fuera.', ecuacion: [prop('doña Rufina'), ': cubre ', cubre(`${ESC_CARTEL[2].c.length} de 4`)] },
+        { estado: estCartel(1, 'o', ESC_CARTEL[0].c, { nuevo: ['escalera'] }), texto: 'El primer peldaño cubre todo, pero le serviría a cualquier cartel de feria.', ecuacion: [prop('muy amplia'), ': cubre ', cubre(`${ESC_CARTEL[0].c.length} de 4`), ' y también otros textos'] },
+        { estado: estCartel(4, 'o', ESC_CARTEL[3].c, { nuevo: ['escalera'] }), texto: 'La imprenta solo cubre la 4: deja fuera la etiqueta y su razón.', ecuacion: [prop('muy estrecha'), ': cubre ', cubre(`${ESC_CARTEL[3].c.length} de 4`)] },
+        { estado: estCartel(2, 'f', ESC_CARTEL[1].c, { nuevo: ['escalera'] }), texto: 'La etiqueta con fecha cubre las cuatro: doña Rufina es un caso de ella.', ecuacion: [justo('justa'), ': cubre ', cubre(`${ESC_CARTEL[1].c.length} de 4`), ' y solo este cartel'] },
+        { estado: estCartel(2, 'f', ESC_CARTEL[1].c), texto: 'Prueba final: ¿le serviría a otro cartel? No. ¿Deja fuera alguna oración? Ninguna.' },
       ],
     },
     regla: {
-      texto: 'El tema dice, en una frase, de qué trata todo el texto, también su tabla o gráfico. Muy estrecho: deja fuera una parte. Muy amplio: le serviría a otro texto.',
-      ecuacion: [{ llave: [justo('tema')], nota: 'una frase', color: 'c-f' }, ' cubre ', { llave: [cubre('todas las oraciones')], nota: 'ni estrecho', color: 'c-i' }, ' y ', { llave: ['solo este texto'], nota: 'ni amplio' }],
+      texto: 'El tema dice, en una frase, de qué trata el texto y su tabla o gráfico, si hay. Muy estrecha: deja fuera una parte. Muy amplia: sirve a otro texto.',
+      ecuacion: [{ llave: [justo('tema')], nota: 'una frase', color: 'c-f' }, ' cubre ', { llave: [cubre('todas las oraciones')], nota: 'ni estrecha', color: 'c-i' }, ' y ', { llave: ['solo este texto'], nota: 'ni amplia' }],
       condicion: 'la frase cubre todas las oraciones; una persona o un lugar que abre el texto no siempre es su tema.',
     },
     resuelve: {
@@ -571,13 +593,16 @@
   // principal f (violeta, punteado), lo que queda fuera en gris. Los conteos salen de las listas de cada opción (regla 1).
   // La idea principal va en cualquier lugar: al inicio, en medio, al final o repartida (Gerson, 17 nov).
   const D_IDEA = 'Idea principal: el tema más lo que todo el texto afirma de él.';
+  // El botón que el alumno marca toma el morado de la app (no es un color de la paleta de lectura): la leyenda lo dice,
+  // porque el violeta del texto es la idea principal (lector en frío, 17 nov). El cambio de fondo es de la app.
+  const BOTON = { s: 'botón marcado', t: 'lo que elegiste; no es color del texto' };
   const SOP = () => Kit.piezas['rv-soporte'];
   const FOLLETO = { soporte: 'folleto', lugar: 'Folleto que se reparte en el muelle de Puno', hojas: [
     { id: 'u', titulo: 'Los uros y la totora', de: 'la caseta del muelle', para: 'visitantes', ilustracion: 'balsa', oraciones: ora('u', [
       'Los uros del lago Titicaca usan la totora para casi todo.',
       'Con ella levantan las islas donde viven, capa sobre capa.',
       'También hacen sus casas y sus balsas.',
-      'La parte blanca del tallo, el chullo, se come.',
+      'La parte blanca y tierna del tallo también se come.',
       'Por eso, cuando el lago baja y la totora se seca, la vida en las islas se complica.']) }] };
   const TEMA_U = 'La totora, para los uros,';
   // Lo que se afirma de la totora: qué oraciones cubre cada opción (la 5 depende de que la totora sea la base de todo).
@@ -592,7 +617,8 @@
   // Todo lo que cubre la idea en turquesa y, si una oración la dice, esa oración en violeta (en = su número; null si
   // está repartida).
   const conIdea = (sop, en) => { const e = todo(sop); if (en) e.marcas[oracionesDe(sop)[en - 1]] = 'f'; return e; };
-  const figFolleto = a => Object.assign({}, FOLLETO, { frase: { etiqueta: 'Tu idea', t: `${TEMA_U} ${AFIRMA[a].t}` } });
+  // «Prueba» y no «Tu idea»: la frase ya viene armada, el alumno no la escribe (lector en frío, 17 nov).
+  const figFolleto = a => Object.assign({}, FOLLETO, { frase: { etiqueta: 'Prueba', t: `${TEMA_U} ${AFIRMA[a].t}` } });
   const estFolleto = a => {
     const A = AFIRMA[a], principal = A.c && A.c.length === N_FOLLETO;
     if (!A.c) return { marcas: { frase: 'o' } };
@@ -624,10 +650,10 @@
         'Cada estudiante traerá su propio plato y su cuchara.',
         'Al terminar, cada uno lavará lo suyo en el lavadero del patio.',
         'Así, el colegio dejará de botar cientos de platos cada día.']) }] },
-      enunciado: '¿Cuál es la idea principal del aviso: «el comedor del colegio», «cada estudiante lavará lo suyo» o «desde mayo, el comedor ya no usará platos descartables»?',
+      enunciado: '¿Cuál es la idea principal del aviso: «el comedor del colegio», «al terminar, cada uno lavará lo suyo en el lavadero del patio» o «desde mayo, el comedor ya no usará platos descartables»?',
       datos: [D_IDEA, 'Descartable: que se usa una vez y se bota.'],
-      malas: ['«El comedor del colegio» ', prop('solo nombra el tema'), ': no afirma nada. «Cada estudiante lavará lo suyo» cubre solo la 3: ', prop('es un detalle'), '.'],
-      buena: ['«Ya no usará platos descartables» cubre ', cubre('las cuatro'), ': la 2 y la 3 dicen cómo; la 4, para qué.'],
+      malas: ['«El comedor del colegio» ', prop('solo nombra el tema'), ': no afirma nada. «Al terminar, cada uno lavará lo suyo en el lavadero del patio» cubre solo la 3: ', prop('es un detalle'), '.'],
+      buena: ['«Desde mayo, el comedor ya no usará platos descartables» cubre ', cubre('las cuatro'), ': la 2 y la 3 dicen cómo; la 4, para qué.'],
       sentido: 'Está en la primera oración: la idea principal puede ir al inicio, en medio o al final.',
       respuesta: 'Desde mayo, el comedor ya no usará platos descartables' },
     { en: 2, nombre: 'el cartel',
@@ -637,10 +663,10 @@
         'Cada aviso que suena corta la concentración por varios minutos.',
         'Además, con solo verlo en la mesa ya dan ganas de mirarlo.',
         'Rosa ahora lo deja en otro cuarto y termina antes sus tareas.']) }] },
-      enunciado: 'Este cartel empieza con Rosa. ¿Su idea principal es «Rosa y su celular», «los avisos que suenan» o «estudiar con el celular cerca distrae, aunque no se use»?',
+      enunciado: 'Este cartel empieza con Rosa. ¿Su idea principal es «Rosa y su celular», «los avisos del celular que cortan la concentración por varios minutos» o «estudiar con el celular cerca distrae, aunque no se use»?',
       datos: [D_IDEA],
-      malas: ['«Rosa y su celular» cubre la 1 y la 5, un caso: ', prop('muy estrecha'), '. «Los avisos que suenan» cubre solo la 3: ', prop('es un detalle'), '.'],
-      buena: ['«Estudiar con el celular cerca distrae» cubre ', cubre('las cinco'), ': la 3 y la 4 dicen por qué, y Rosa es un caso.'],
+      malas: ['«Rosa y su celular» cubre la 1 y la 5: ', prop('muy estrecha'), '. «Los avisos del celular que cortan la concentración por varios minutos» cubre la 3: ', prop('es un detalle'), '.'],
+      buena: ['«Estudiar con el celular cerca distrae, aunque no se use» cubre ', cubre('las cinco'), ': la 3 y la 4 dicen por qué, y Rosa es un caso.'],
       sentido: 'Está en la oración 2: antes va un caso y después, sus razones.',
       respuesta: 'Estudiar con el celular cerca distrae, aunque no se use' },
     { en: 4, nombre: 'el mensaje',
@@ -649,10 +675,10 @@
         'Los que leían con tropiezos ahora leen con más soltura.',
         'Varios pidieron llevar libros a su casa.',
         'La lectura en parejas está dando buenos resultados, y la seguiremos haciendo.']) }] },
-      enunciado: '¿Cuál es la idea principal del mensaje: «la lectura en voz alta», «varios pidieron llevar libros» o «la lectura en parejas da buenos resultados y seguirá»?',
+      enunciado: '¿Cuál es la idea principal del mensaje: «la lectura en voz alta de los estudiantes en el colegio», «varios pidieron llevar libros» o «la lectura en parejas da buenos resultados y seguirá»?',
       datos: [D_IDEA, 'Soltura: facilidad para hacer algo sin trabarse.'],
-      malas: ['«La lectura en voz alta» ', prop('solo nombra el tema'), '. «Varios pidieron llevar libros» cubre solo la 3: ', prop('es un detalle'), '.'],
-      buena: ['«La lectura en parejas da buenos resultados» cubre ', cubre('las cuatro'), ': la 1 dice qué se hizo y la 2 y la 3, qué se logró.'],
+      malas: ['«La lectura en voz alta de los estudiantes en el colegio» ', prop('solo nombra el tema'), '. «Varios pidieron llevar libros» cubre solo la 3: ', prop('es un detalle'), '.'],
+      buena: ['«La lectura en parejas da buenos resultados y seguirá» cubre ', cubre('las cuatro'), ': la 1 dice qué se hizo y la 2 y la 3, qué se logró.'],
       sentido: 'Va al final: las tres primeras son lo que la sostiene.',
       respuesta: 'La lectura en parejas da buenos resultados y seguirá' },
     { en: null, nombre: 'el cartel del biohuerto',
@@ -660,9 +686,9 @@
         'El año pasado, las lechugas del biohuerto crecían chicas y amarillas.',
         'Este año, echamos a la tierra el abono que hicimos con las cáscaras del comedor.',
         'Ahora las lechugas salen grandes y verdes.']) }] },
-      enunciado: 'Ninguna oración del cartel dice sola la idea. ¿Cuál es: «el biohuerto del colegio», «las lechugas crecían chicas» o «el abono de cáscaras hizo crecer mejor las lechugas»?',
+      enunciado: 'Ninguna oración del cartel dice sola la idea. ¿Cuál es: «el biohuerto del colegio», «el año pasado, las lechugas del biohuerto crecían chicas y amarillas» o «el abono de cáscaras hizo crecer mejor las lechugas»?',
       datos: [D_IDEA, 'Abono: lo que se echa a la tierra para que las plantas crezcan mejor.'],
-      malas: ['«El biohuerto del colegio» ', prop('solo nombra el tema'), '. «Las lechugas crecían chicas» es la 1, el antes: ', prop('muy estrecha'), '.'],
+      malas: ['«El biohuerto del colegio» ', prop('solo nombra el tema'), '. «El año pasado, las lechugas del biohuerto crecían chicas y amarillas» es la 1, el antes: ', prop('muy estrecha'), '.'],
       buena: ['«El abono de cáscaras hizo crecer mejor las lechugas» une ', cubre('el antes, el cambio y el después'), ': cubre las tres.'],
       sentido: 'No está escrita en una oración: se arma con las tres, y se puede creer o negar.',
       respuesta: 'El abono de cáscaras hizo crecer mejor las lechugas' },
@@ -765,9 +791,9 @@
         'En invierno, muchos niños de Chucuito se enferman del estómago y de los bronquios.', 'Lavarse las manos con jabón es una forma sencilla de evitar muchas de esas enfermedades.',
         'El jabón saca los microbios que quedan en las manos después de jugar.', 'Por eso, la posta regala jabón a las familias con niños pequeños.']) }] }),
       solucion: [
-        { texto: ['La 1 presenta el problema; ', cubre('la 3'), ' explica por qué funciona y ', cubre('la 4'), ' dice qué hace la posta. Todas giran alrededor de la 2.'] }],
-      respuesta: [justo('La oración 2'), ': lavarse las manos con jabón evita enfermedades'] },
-    { nivel: 1, titulo: 'La frase que solo nombra',
+        { texto: ['La 1 presenta el problema, pero no dice qué hacer; ', cubre('la 3'), ' explica por qué funciona el jabón y ', cubre('la 4'), ', qué hace la posta: las tres sostienen la 2.'] }],
+      respuesta: [justo('La oración 2'), ': lavarse las manos con jabón evita muchas de esas enfermedades'] },
+    { nivel: 1, titulo: 'El aviso del ajedrez',
       enunciado: 'Para este aviso, ¿«el campeonato de ajedrez» es la idea principal? Si no lo es, ¿qué le falta?',
       datos: [D_IDEA],
       figura: fig({ soporte: 'puerta', lugar: 'Puerta de la biblioteca del colegio', hojas: [{ id: 'h', titulo: 'Aviso', de: 'la biblioteca', para: 'estudiantes', oraciones: ora('h', [
@@ -793,29 +819,30 @@
         'La quebrada de la comunidad baja con agua clara.', 'Pero más arriba pastan vacas y ovejas.', 'El agua puede traer microbios que no se ven.', 'Hervirla cinco minutos antes de tomarla los mata.']) }] }),
       solucion: [
         { texto: ['Primero, qué dice cada una: ', cubre('la 1'), ', que el agua parece limpia; ', cubre('la 2 y la 3'), ', que puede traer microbios; ', cubre('la 4'), ', qué hacer.'] },
-        { texto: ['«El agua de la quebrada» ', prop('solo nombra'), ' y «hervir cinco minutos» cubre solo la 4. La tercera frase une ', cubre('las cuatro'), '.'] }],
+        { texto: ['«El agua de la quebrada» ', prop('solo nombra'), ' y «hervir el agua cinco minutos» cubre solo la 4. La tercera frase une ', cubre('las cuatro'), '.'] }],
       respuesta: [justo('El agua de la quebrada parece limpia, pero hay que hervirla')] },
-    { nivel: 2, titulo: 'La creencia sobre la queñua',
-      enunciado: '¿Cuál es la idea principal: «los árboles de la sierra solo sirven para leña», «los manantiales en época seca» o «los bosques de queñua guardan el agua de los manantiales»?',
+    { nivel: 2, titulo: 'El cartel del mirador',
+      enunciado: '¿Cuál es la idea principal: «los árboles de la sierra solo sirven para leña», «los manantiales que se secan antes cuando llega la época seca» o «los bosques de queñua guardan el agua de los manantiales»?',
       datos: [D_IDEA, 'Queñua: árbol de las alturas de los Andes.', 'Manantial: lugar donde el agua sale sola de la tierra.'],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel en el mirador de la comunidad', hojas: [{ id: 'h', titulo: 'Cuidemos la queñua', de: 'la comunidad', para: 'vecinos y visitantes', oraciones: ora('h', [
         'Mucha gente cree que los árboles de la sierra solo sirven para leña.', 'Pero los bosques de queñua guardan en el suelo el agua de las lluvias.',
         'Esa agua baja después, poco a poco, a los manantiales.', 'Sin queñuas, los manantiales se secan antes en la época seca.']) }] }),
       solucion: [
         { texto: ['La 1 dice lo que «mucha gente cree» y la 2 lo corrige: la 1 no es la idea del cartel, es lo que el cartel discute.'] },
-        { texto: ['«Los manantiales en época seca» cubre solo la 4: ', prop('muy estrecha'), '. «Guardan el agua de los manantiales» cubre ', cubre('de la 2 a la 4'), ' y responde a la 1.'] }],
+        { texto: ['«Los manantiales que se secan antes cuando llega la época seca» cubre solo la 4: ', prop('muy estrecha'), '.'] },
+        { texto: ['«Los bosques de queñua guardan el agua de los manantiales» cubre ', cubre('de la 2 a la 4'), ' y responde a la 1.'] }],
       respuesta: [justo('Los bosques de queñua guardan el agua de los manantiales')] },
-    { nivel: 2, titulo: 'Dos oraciones que se completan',
+    { nivel: 2, titulo: 'El folleto del chuño',
       enunciado: '¿Qué oraciones, juntas, dicen la idea principal: la 1 y la 2, la 1 y la 4, o la 2 y la 3?',
-      datos: [D_IDEA, 'Chuño: papa helada y secada al sol, que se guarda años.'],
+      datos: [D_IDEA, 'Chuño: alimento andino hecho de papa.'],
       figura: fig({ soporte: 'folleto', lugar: 'Folleto de la feria gastronómica de Puno', hojas: [{ id: 'h', titulo: 'Conoce el chuño', de: 'la feria', para: 'visitantes', oraciones: ora('h', [
         'El chuño parece una comida sencilla.', 'Para hacerlo, la papa se deja helar en la noche y se pisa para sacarle el agua.',
         'Seca, dura varios años sin malograrse.', 'En realidad, es una forma muy antigua de guardar comida para los años malos.']) }] }),
       solucion: [
         { texto: ['La 2 dice cómo se hace y la 3, cuánto dura: ', prop('son detalles'), ' que sostienen la 4.'] },
-        { texto: [cubre('La 1'), ' dice lo que parece y ', cubre('la 4'), ' lo que es en realidad: juntas dicen la idea, y cubren las cuatro.'] }],
-      respuesta: [justo('La 1 y la 4'), ': parece sencillo, pero es una forma antigua de guardar'] },
-    { nivel: 2, titulo: 'Ana y la charla',
+        { texto: [cubre('La 1'), ' dice lo que el chuño parece, y ', cubre('la 4'), ', lo que es en realidad: juntas dicen la idea y cubren las cuatro.'] }],
+      respuesta: [justo('La 1 y la 4'), ': parece sencillo, pero guarda comida para años malos'] },
+    { nivel: 2, titulo: 'El caso de Ana',
       enunciado: 'Este folleto empieza con Ana. ¿Su idea principal es «Ana quería estudiar Enfermería», «la orientación vocacional» o «cada colegio puede pedir a la UGEL una charla de orientación gratuita»?',
       datos: [D_IDEA, 'UGEL: la oficina del Estado que ve los colegios de una provincia.', 'Orientación vocacional: ayuda para elegir qué estudiar.'],
       figura: fig({ soporte: 'folleto', lugar: 'Folleto de la UGEL Puno', hojas: [{ id: 'h', titulo: 'UGEL informa', de: 'la UGEL Puno', para: 'directores y estudiantes', oraciones: ora('h', [
@@ -824,15 +851,15 @@
       solucion: [
         { texto: ['La 1, la 2 y la 4 cuentan el caso de Ana; la 3 dice lo que vale para todos los colegios.'] },
         { texto: ['«Ana quería estudiar Enfermería» cubre solo la 1: ', prop('muy estrecha'), '. «La orientación vocacional» ', prop('solo nombra'), '. La tercera cubre ', cubre('las cuatro'), ': Ana es un caso de ella.'] }],
-      respuesta: [justo('Cada colegio puede pedir a la UGEL una charla gratuita')] },
+      respuesta: [justo('Cada colegio puede pedir a la UGEL una charla de orientación gratuita')] },
     { nivel: 2, titulo: 'Las colcas de los incas',
       enunciado: '¿Cuál es la idea principal: «las colcas», «los incas fueron los mejores constructores de América» o «los incas guardaban comida en colcas hechas donde corre el viento frío»?',
       datos: [D_IDEA, 'Colca: depósito de piedra para guardar comida.'],
       figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Diego', hojas: [{ id: 'h', titulo: 'Historia del Perú', de: 'Diego', para: 'estudiar para la práctica', oraciones: ora('h', [
         'Los incas guardaban comida en depósitos de piedra llamados colcas.', 'Las colcas se hacían en lomas altas, donde corre el viento.', 'El viento frío ayudaba a que el maíz y el chuño no se malograran.']) }] }),
       solucion: [
-        { texto: ['«Los mejores constructores de América» ', prop('agrega'), ': ninguna oración compara a los incas con otros pueblos. «Las colcas» ', prop('solo nombra'), '.'] },
-        { texto: ['La tercera cubre ', cubre('la 1, la 2 y la 3'), ': qué eran, dónde se hacían y por qué allí.'] }],
+        { texto: ['«Los incas fueron los mejores constructores de América» ', prop('agrega'), ': ninguna oración compara a los incas con otros pueblos. «Las colcas» ', prop('solo nombra'), '.'] },
+        { texto: ['«Los incas guardaban comida en colcas hechas donde corre el viento frío» cubre ', cubre('la 1, la 2 y la 3'), ': qué eran, dónde y por qué allí.'] }],
       respuesta: [justo('Los incas guardaban comida en colcas hechas donde corre el viento frío')] },
 
     { nivel: 3, titulo: 'El puente de la comunidad',
@@ -863,7 +890,7 @@
         { texto: [mala('A'), ' es lo que creen los padres, y el texto lo discute: ', prop('no es su idea'), '. ', mala('B'), ' cubre solo la 3. ', mala('C'), ' ', prop('solo nombra'), '.'] },
         { texto: [mala('E'), ' ', prop('agrega'), ' los libros, de los que el texto no habla. ', buena('D'), ' es la 4, y ', cubre('la 2 y la 3'), ' la sostienen.'] }],
       respuesta: [buena('D'), ': importa a qué juega un chico y cuánto, no si juega'] },
-    { nivel: 3, titulo: 'El balde y el caño',
+    { nivel: 3, titulo: 'El agua de la cocina',
       enunciado: 'Pregunta 9 del simulacro: «¿Cuál es la idea principal del texto y el gráfico?». ¿Qué alternativa es la correcta?',
       datos: [D_IDEA, D_MIXTO],
       figura: fig({ soporte: 'simulacro', numero: 9, hojas: [{ id: 'h', oraciones: ora('h', [
@@ -879,21 +906,21 @@
         { texto: [mala('A'), ' le serviría a otro texto. ', mala('B'), ' es una barra y ', mala('D'), ' es la 1: ', prop('muy estrechas'), '.'] },
         { texto: [mala('E'), ' dice «lo único», y el texto solo compara dos formas de lavar. ', buena('C'), ' cubre ', cubre('las cinco'), ' y el gráfico.'] }],
       respuesta: [buena('C'), ': con balde se gasta mucha menos agua que con el caño abierto'] },
-    { nivel: 3, titulo: 'La oca que vuelve',
+    { nivel: 3, titulo: 'Un tubérculo de Puno',
       enunciado: 'Pregunta 11 del simulacro: «¿Cuál es la idea principal del texto?». ¿Qué alternativa es la correcta?',
-      datos: [D_IDEA, 'Oca: tubérculo de los Andes, pariente lejano de la papa en la chacra.', 'Tubérculo: raíz gruesa que se come, como la papa.'],
+      datos: [D_IDEA, 'Oca: tubérculo que se cultiva en los Andes.', 'Tubérculo: parte gruesa de la planta, bajo tierra, que se come, como la papa.', 'Puna: zona alta y fría de los Andes.'],
       figura: fig({ soporte: 'simulacro', numero: 11, hojas: [{ id: 'h', oraciones: ora('h', [
         'En Puno, casi todos conocen la papa, pero pocos han probado la oca.', 'La oca es un tubérculo andino que vale la pena volver a sembrar.',
         'Crece bien en la puna, donde hace mucho frío.', 'Rinde en suelos pobres, donde otros cultivos dan poco.', 'Y se come dulce después de dejarla unos días al sol.']) }],
         pregunta: '¿Cuál es la idea principal del texto?', alternativas: [
           { id: 'A', t: 'En Puno, pocos han probado la oca.' }, { id: 'B', t: 'La oca se come dulce después de asolearla.' }, { id: 'C', t: 'Los tubérculos de los Andes.' },
-          { id: 'D', t: 'La oca es un tubérculo andino que vale la pena volver a sembrar.' }, { id: 'E', t: 'La oca debe reemplazar a la papa en todas las chacras de Puno, porque rinde más.' }] }),
+          { id: 'D', t: 'Conviene volver a sembrar la oca, porque resiste el frío y los suelos pobres.' }, { id: 'E', t: 'La oca debe reemplazar a la papa en todas las chacras de Puno, porque rinde más.' }] }),
       solucion: [
         { texto: ['La 2 lo anuncia y ', cubre('de la 3 a la 5'), ' dan sus razones: la idea va en medio, después de una presentación.'] },
-        { texto: [mala('A'), ' es la 1 y ', mala('B'), ', la 5: ', prop('muy estrechas'), '. ', mala('C'), ' ', prop('solo nombra'), ', y muy amplio.'] },
-        { texto: [mala('E'), ' ', prop('agrega'), ' «reemplazar» y «todas»: el texto no compara con la papa. ', buena('D'), ' cubre ', cubre('las cinco'), '.'] }],
-      respuesta: [buena('D'), ': la oca vale la pena volver a sembrarla'] },
-    { nivel: 3, titulo: 'Las noticias del celular',
+        { texto: [mala('A'), ' es la 1 y ', mala('B'), ', la 5: ', prop('muy estrechas'), '. ', mala('C'), ' ', prop('solo nombra'), ', y es muy amplia.'] },
+        { texto: [mala('E'), ' ', prop('agrega'), ' «reemplazar» y «todas»: el texto nombra la papa, pero no pide dejarla. ', buena('D'), ' cubre ', cubre('de la 2 a la 5'), ', y la 1 la presenta.'] }],
+      respuesta: [buena('D'), ': conviene volver a sembrar la oca, que resiste frío y suelos pobres'] },
+    { nivel: 3, titulo: 'Radio y celular',
       enunciado: 'Pregunta 13 del simulacro: «¿Cuál es la idea principal del texto?». ¿Qué alternativa es la correcta?',
       datos: [D_IDEA, 'Fuente: lugar de donde sale una noticia (una radio, un periódico, una persona).'],
       figura: fig({ soporte: 'simulacro', numero: 13, hojas: [{ id: 'h', oraciones: ora('h', [
@@ -921,7 +948,7 @@
       tarjetas: [
         { titulo: 'Nombrar no es decir', texto: '«La totora» nombra un asunto, como el tema que buscaste en la idea anterior. «La totora flota» ya dice algo de ella: eso es afirmar.' },
         { titulo: 'Se puede creer o negar', texto: 'Lo que afirma algo se puede creer o negar: «la totora se come» es cierto o falso. «La totora», sola, no es ni cierta ni falsa: no dice nada.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Este folleto se reparte en el muelle de Puno. Debajo va «Tu idea», que ya trae el tema. Elige qué afirma el folleto de la totora y mira cuántas oraciones se pintan.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Este folleto se reparte en el muelle de Puno. Debajo, en el recuadro «Prueba», ya está el tema. Elige qué afirma el folleto de la totora y mira cuántas oraciones se pintan.' },
       ],
     },
     actividad: 'Completar una frase sobre la totora y ver cuántas oraciones del folleto cubre.',
@@ -930,17 +957,18 @@
     juega: {
       consigna: 'Este folleto se reparte a los visitantes en el muelle de Puno. Ya tienes el tema; falta lo que el texto afirma de él.',
       mision: {
-        texto: 'Elige lo que el folleto afirma de la totora hasta cubrir las 5 oraciones.',
+        texto: 'Elige una sola cosa que el folleto afirme de la totora y cubra las 5 oraciones.',
         logrado: val => AFIRMA[val.a].c !== null && AFIRMA[val.a].c.length === N_FOLLETO,
         bien: 'Tema más lo que afirma todo el folleto: esa es la idea principal.',
       },
       voz: 'Una frase que solo nombra no se puede creer ni negar.',
       leyenda: [
         { s: '1, 2, 3, 4, 5', t: 'número de cada oración del folleto' },
-        { s: cubre('turquesa'), t: 'oración que tu idea cubre' },
+        { s: cubre('turquesa'), t: 'oración que la frase cubre' },
         { s: 'gris', t: 'oración que queda fuera' },
-        { s: prop('naranja'), t: 'la idea que estás probando' },
+        { s: prop('naranja'), t: 'la frase que estás probando' },
         { s: justo('violeta'), t: 'la idea principal' },
+        BOTON,
       ],
       controles: [{ id: 'a', etiqueta: 'Lo que afirma de la totora', opciones: Object.entries(AFIRMA).map(([valor, x]) => ({ valor, texto: x.b })) }],
       dibujo: val => ({ datos: figFolleto(val.a), estado: estFolleto(val.a) }),
@@ -949,7 +977,7 @@
     },
     predice: {
       pregunta: 'En estos apuntes, ninguna oración dice sola la idea principal. ¿Cuál es?',
-      datos: ['Tema: de qué trata todo el texto, dicho en una frase.', '°C: grado Celsius, la unidad del termómetro.'],
+      datos: ['Tema: de qué trata todo el texto, dicho en una frase.', D_IDEA, '°C: grado Celsius, la unidad del termómetro.'],
       opciones: [
         { id: 'c', texto: IDEA_AGUA, correcta: true },
         { id: 'primera', texto: 'En Juliaca, el agua de la olla hierve a unos 87\u00a0°C', error: 'RV4', siFuera: 'Es un dato cierto de la oración 1, pero deja fuera Lima, la razón y los fideos.' },
@@ -1023,7 +1051,9 @@
   // Objeto de la primera pantalla: la hoja de cuaderno con el texto copiado del libro, y el resaltador y el lápiz en la
   // bandeja (rv-soporte, dibujos de prueba). Colores: la principal f (violeta), la que se prueba como principal o
   // (naranja), las que la sostienen i (turquesa), lo que sobra tachado. El árbol de «Mira» es rv-arbol.
-  const D_SEC = 'Idea secundaria: da un porqué, un cómo o un ejemplo de la principal.';
+  // Con la creencia que la principal corrige: en el texto del cuy, la oración 1 no es un porqué, un cómo ni un ejemplo
+  // (lector en frío, 17 nov: «Lo que corrige» no calzaba con la regla).
+  const D_SEC = 'Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige.';
   const CASAS = { soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', bandeja: true, hojas: [
     { id: 'c', titulo: 'Copiado del libro de Ciencias Sociales', de: 'el libro de 5.º', para: 'Rosa, que estudia para el examen', oraciones: ora('c', [
       'Las casas de adobe del altiplano están hechas para guardar el calor.',
@@ -1069,9 +1099,9 @@
       'Además, se reproducen rápido y comen hierba y cáscaras de la cocina.']) }] };
   const ARBOL_CUY = { soporte: CUY, titulo: 'Quién manda en el texto', vacio: 'Arriba irá la oración que manda; debajo, las que le responden.',
     raiz: { n: 2, t: 'En muchas familias de Puno, el cuy es una forma de ahorro' },
-    ramas: [{ id: 'r1', n: 1, rel: 'Lo que corrige', t: 'Lo que mucha gente piensa: que es solo para fiestas' },
+    ramas: [{ id: 'r1', n: 1, rel: '¿Qué corrige?', t: 'Lo que mucha gente piensa: que es solo para fiestas' },
       { id: 'r3', n: 3, rel: '¿Cómo ahorran?', t: 'Venden algunos cuando falta plata' },
-      { id: 'r4', n: 4, rel: '¿Por qué conviene?', t: 'Se reproducen rápido y comen poco' }] };
+      { id: 'r4', n: 4, rel: '¿Por qué conviene?', t: 'Se reproducen rápido y comen hierba y cáscaras' }] };
   const solo = (m, extra = {}) => Object.assign({ soporte: { marcas: m } }, extra);
 
   // «Así se resuelve»: la principal al final, en medio y al inicio, y una que sobra. Textos distintos de «Ahora tú».
@@ -1202,20 +1232,20 @@
       respuesta: [justo('Una secundaria'), ': dice cómo se piden los libros'] },
     { nivel: 1, titulo: 'Las plantas que curan',
       enunciado: 'En estos apuntes, ¿qué papel cumple la oración 2?',
-      datos: [D_IDEA, D_SEC, 'Muña: hierba de los Andes que se toma en mate.'],
+      datos: [D_IDEA, D_SEC, 'Muña: hierba aromática de los Andes.', 'Chachacoma: arbusto de las alturas de los Andes.'],
       figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', hojas: [{ id: 'h', titulo: 'Ciencia y Tecnología', de: 'Rosa', para: 'estudiar para la práctica', oraciones: ora('h', [
         'En el altiplano, muchas plantas se usan como remedio casero.', 'Por ejemplo, la muña se toma en mate para el dolor de estómago.', 'Y la chachacoma se toma para el mal de altura.']) }] }),
       solucion: [
         { texto: ['La 1 dice algo que vale para muchas plantas. La 2 muestra una: ', cubre('es un ejemplo'), ' de la 1, igual que la 3.'] }],
       respuesta: [justo('Una secundaria'), ': un ejemplo de la oración 1'] },
-    { nivel: 1, titulo: 'La venta de queques',
+    { nivel: 1, titulo: 'El mensaje de la delegada',
       enunciado: '¿Qué oración de este mensaje es la principal: la 1, la 2 o la 3?',
       datos: [D_IDEA, D_SEC],
       figura: fig({ soporte: 'mensaje', lugar: 'Grupo de 2.º C', hojas: [{ id: 'h', de: 'la delegada', para: 'compañeros de 2.º C', oraciones: ora('h', [
-        'Con la venta de queques juntamos doscientos soles.', 'Con ese dinero compramos dos pelotas y una red.', 'La venta de queques sirvió para equipar al equipo de vóley del salón.']) }] }),
+        'Con la venta de queques juntamos doscientos soles.', 'Con ese dinero compramos dos pelotas y una red.', 'La venta de queques sirvió para comprar lo que le faltaba al equipo de vóley del salón.']) }] }),
       solucion: [
         { texto: [cubre('La 1 y la 2'), ' dicen cuánto se juntó y qué se compró: le responden «¿cómo?» a la 3, que junta las dos.'] }],
-      respuesta: [justo('La oración 3'), ': la venta sirvió para equipar al equipo'] },
+      respuesta: [justo('La oración 3'), ': la venta sirvió al equipo de vóley del salón'] },
     { nivel: 1, titulo: 'La oración que sobra',
       enunciado: '¿Qué oración del cartel no sostiene la idea principal?',
       datos: [D_IDEA, D_SEC],
@@ -1256,13 +1286,15 @@
     { nivel: 2, titulo: 'Subrayar y tachar',
       enunciado: 'Para estudiar este texto, ¿qué oración se subraya como principal y cuál se tacha?',
       datos: [D_IDEA, D_SEC],
-      figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Diego', hojas: [{ id: 'h', titulo: 'Ciencias Sociales', de: 'Diego', para: 'estudiar para el examen', oraciones: ora('h', [
+      // Nivel 2 de verdad: la que sobra habla de la alpaca, de donde sale la chompa, y tienta (lector en frío: la de las
+      // ovejas se veía fuera de lugar enseguida y el ejemplo quedaba más fácil que el del nivel 1).
+      figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Diego', hojas: [{ id: 'h', titulo: 'Texto para subrayar', de: 'Diego', para: 'estudiar para el examen', oraciones: ora('h', [
         'En Puno hace frío casi todo el año.', 'Por eso, una chompa de alpaca es la prenda más útil del ropero.',
-        'Abriga mucho y pesa poco.', 'Además, dura años si se lava a mano.', 'Las ovejas llegaron a América con los españoles.']) }] }),
+        'Abriga mucho y pesa poco.', 'Además, dura años si se lava a mano.', 'La alpaca vive en las alturas de Puno, sobre los 4000 metros.']) }] }),
       solucion: [
         { texto: ['La 2 dice lo que el texto quiere mostrar; ', cubre('la 1, la 3 y la 4'), ' le dan un porqué: el frío, el abrigo y lo que dura.'] },
-        { texto: ['La 5 habla de animales, pero ', prop('no le responde nada a la 2'), ': sin ella, el texto dice lo mismo.'] }],
-      respuesta: [justo('Se subraya la 2'), ' y se tacha la 5'] },
+        { texto: ['La 5 habla de la alpaca, de donde sale la lana, pero ', prop('no dice por qué la chompa es útil'), ': sin ella, el texto dice lo mismo.'] }],
+      respuesta: [justo('Se subraya la 2'), ' y ', prop('se tacha la 5')] },
     { nivel: 2, titulo: 'La pregunta que responde',
       enunciado: '¿A qué pregunta le responde la oración 3: «¿por qué?», «¿cómo?» o «¿por ejemplo?»?',
       datos: [D_IDEA, D_SEC, 'Ladera: el costado inclinado de un cerro.'],
@@ -1286,7 +1318,7 @@
 
     { nivel: 3, titulo: 'La kiwicha del desayuno',
       enunciado: 'Pregunta 20 del simulacro: «¿Qué oración se elimina porque no sostiene la idea principal?». ¿Qué alternativa es la correcta?',
-      datos: [D_IDEA, D_SEC, 'Kiwicha: grano andino pequeño, que se come reventado o en papilla.'],
+      datos: [D_IDEA, D_SEC, 'Kiwicha: grano andino muy pequeño.'],
       figura: fig({ soporte: 'simulacro', numero: 20, hojas: [{ id: 'h', oraciones: ora('h', [
         'La kiwicha es un grano andino que conviene comer más seguido.', 'Tiene más proteína que el arroz.', 'Además, aporta hierro y calcio.',
         'Se puede comer reventada, como canchita, o en papilla.', 'El arroz es uno de los granos que más se comen en el Perú.', 'Por eso, algunos colegios la ponen en el desayuno escolar.']) }],
@@ -1296,9 +1328,9 @@
         { texto: ['La 1 es la principal: ', mala('A'), ' no se elimina. ', cubre('La 2 y la 3'), ' dan razones; ', cubre('la 4'), ', cómo se come; ', cubre('la 6'), ', una consecuencia.'] },
         { texto: [mala('B'), ', ', mala('C'), ' y ', mala('E'), ' sostienen la idea. La 5 habla del arroz, pero no dice nada de la kiwicha: ', buena('D'), '.'] }],
       respuesta: [buena('D'), ': la 5, que habla del arroz y no de la kiwicha'] },
-    { nivel: 3, titulo: 'La puna llena de vida',
+    { nivel: 3, titulo: 'Lo que hay en la puna',
       enunciado: 'Pregunta 22 del simulacro: «En el texto, la oración 4 cumple la función de». ¿Qué alternativa es la correcta?',
-      datos: [D_IDEA, D_SEC, 'Puna: zona alta y fría de los Andes, con pastos.', 'Ichu: paja que crece en la puna.'],
+      datos: [D_IDEA, D_SEC, 'Puna: zona alta y fría de los Andes.', 'Ichu: paja que crece en la puna.'],
       figura: fig({ soporte: 'simulacro', numero: 22, hojas: [{ id: 'h', oraciones: ora('h', [
         'Mucha gente cree que en la puna no hay nada.', 'Sin embargo, la puna está llena de vida.', 'Sus pastos aguantan el frío y la falta de lluvia.',
         'Por ejemplo, el ichu crece donde casi ninguna otra planta resiste.', 'En sus lagunas viven aves como la parihuana.', 'Y en sus pastos comen miles de alpacas y vicuñas.']) }],
@@ -1310,7 +1342,7 @@
         { texto: ['La 4 dice «por ejemplo» y muestra una planta que resiste: sostiene la 3, y con ella a la 2. ', mala('B'), ' y ', mala('E'), ' no van.'] },
         { texto: [buena('C'), ': es un ejemplo que, con ', cubre('la 3, la 5 y la 6'), ', muestra que la puna está llena de vida.'] }],
       respuesta: [buena('C'), ': da un ejemplo que sostiene la idea principal'] },
-    { nivel: 3, titulo: 'Leer en la lengua de casa',
+    { nivel: 3, titulo: 'Las lenguas de Puno',
       enunciado: 'Pregunta 23 del simulacro: «¿Qué oración expresa la idea principal del texto?». ¿Qué alternativa es la correcta?',
       datos: [D_IDEA, D_SEC, 'Lengua materna: la primera lengua que se aprende en casa.'],
       fuente: 'Más de 40 lenguas indígenas en el Perú: Ministerio de Cultura, Base de Datos de Pueblos Indígenas.',
@@ -1325,9 +1357,9 @@
         { texto: [mala('C'), ' y ', mala('D'), ' dan el porqué: se entiende mejor y después cuesta menos el castellano.'] },
         { texto: ['La 5 junta todo y le responden ', cubre('las cuatro anteriores'), ': ', buena('E'), '. La principal va al final.'] }],
       respuesta: [buena('E'), ': la 5, enseñar a leer primero en la lengua de casa'] },
-    { nivel: 3, titulo: 'Los techos con caída',
+    { nivel: 3, titulo: 'Los techos de las zonas altas',
       enunciado: 'Pregunta 24 del simulacro: «¿Qué afirmación sobre las oraciones del texto es correcta?». ¿Qué alternativa es la correcta?',
-      datos: [D_IDEA, D_SEC, 'Pendiente: inclinación de una superficie.'],
+      datos: [D_IDEA, D_SEC, 'Pendiente o caída de un techo: su inclinación.'],
       figura: fig({ soporte: 'simulacro', numero: 24, hojas: [{ id: 'h', oraciones: ora('h', [
         'En las zonas altas de Puno, muchas casas tienen techos con mucha pendiente.', 'La razón está en el granizo y la nieve.',
         'Un techo plano los acumula, y el peso puede romperlo.', 'En un techo empinado, resbalan y caen al suelo.', 'Por eso, en las zonas altas conviene hacer los techos con mucha caída.']) }],
@@ -1335,11 +1367,11 @@
           { id: 'A', t: 'La 1 es la principal porque abre el texto.' }, { id: 'B', t: 'La 3 y la 4 explican por qué la 5 es cierta.' },
           { id: 'C', t: 'La 4 es un ejemplo de la 3.' }, { id: 'D', t: 'La 2 no sostiene la idea principal.' }, { id: 'E', t: 'Todas las oraciones pesan lo mismo, porque todas son ciertas.' }] }),
       solucion: [
-        { texto: ['La 5 dice lo que conviene hacer: es la principal. La 1 presenta el hecho y ', cubre('la 2, la 3 y la 4'), ' dan el porqué.'] },
+        { texto: ['La 5 dice lo que conviene hacer: es la principal. La 1 presenta el hecho; la 2 anuncia la razón, y ', cubre('la 3 y la 4'), ' la dan.'] },
         { texto: [mala('A'), ': abrir el texto no lo hace principal. ', mala('C'), ': la 4 no es un caso de la 3, sino lo contrario. ', mala('D'), ': la 2 anuncia la razón.'] },
         { texto: [mala('E'), ': la 5 manda y las demás le responden. ', buena('B'), ': techo plano y techo empinado dicen por qué conviene la caída.'] }],
       respuesta: [buena('B'), ': la 3 y la 4 explican por qué la 5 es cierta'] },
-    { nivel: 3, titulo: 'El casco que salva',
+    { nivel: 3, titulo: 'Las motos de Juliaca',
       enunciado: 'Pregunta 25 del simulacro: «Rosa subrayó la 1, la 2 y la 6. ¿Qué debió hacer?». ¿Qué alternativa es la correcta?',
       datos: [D_IDEA, D_SEC, 'Subrayar: marcar solo la oración principal.', 'Tachar: marcar lo que no sostiene la principal.'],
       figura: fig({ soporte: 'simulacro', numero: 25, hojas: [{ id: 'h', oraciones: ora('h', [
@@ -1374,7 +1406,7 @@
     juega: {
       consigna: 'Rosa copió este texto del libro para el examen. Con el resaltador y el lápiz, deja a la vista solo lo que importa.',
       mision: {
-        texto: 'Subraya la oración principal y tacha la que no la sostiene.',
+        texto: 'Marca la principal con el resaltador y tacha con el lápiz la que no la sostiene.',
         logrado: val => val.s === PAPEL_C.principal && val.t === PAPEL_C.sobra,
         bien: 'La 2 y la 3 dicen cómo; la 4 es un ejemplo; la 5 sobraba.',
       },
@@ -1385,9 +1417,11 @@
         { s: prop('naranja'), t: 'la que pruebas como principal' },
         { s: cubre('turquesa'), t: 'oración que sostiene a la principal' },
         { s: 'tachado', t: 'oración que no la sostiene' },
+        { s: pinto('c-h')('carmín'), t: 'el lápiz, que tacha' },
+        BOTON,
       ],
       controles: [
-        { id: 's', etiqueta: 'Resaltador: subraya', opciones: [{ valor: 0, texto: 'nada' }, ...[1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` }))] },
+        { id: 's', etiqueta: 'Resaltador: marca', opciones: [{ valor: 0, texto: 'nada' }, ...[1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` }))] },
         { id: 't', etiqueta: 'Lápiz: tacha', opciones: [{ valor: 0, texto: 'nada' }, ...[1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` }))] },
       ],
       dibujo: val => ({ datos: CASAS, estado: estCasas(val.s, val.t) }),
@@ -1395,10 +1429,12 @@
       // Gesto directo (docs/teoria.md §4b): el resaltador se suelta sobre el número de una oración y el lápiz al final
       // del renglón; soltarlos en la bandeja los quita.
       arrastres: [
-        { id: 'resaltador', etiqueta: 'resaltador: subraya una oración', color: 'c-o',
+        { id: 'resaltador', etiqueta: 'resaltador: marca una oración', color: 'c-o',
           donde: val => (val.s ? SOP().ancla(CASAS, `c${val.s}`) : BANDEJA().resaltador),
           mover: pt => ({ s: SOP().enBandeja(CASAS, pt) ? 0 : +SOP().cercana(CASAS, pt, oracionesDe(CASAS)).slice(1) }) },
-        { id: 'lapiz', etiqueta: 'lápiz: tacha una oración',
+        // El lápiz va en carmín, el color de «lo que sobra» en rv-texto: sin color tomaba el violeta de la app, que en la
+        // leyenda es la principal (lector en frío, 17 nov). El validador solo admite colores de variable, no la tinta.
+        { id: 'lapiz', etiqueta: 'lápiz: tacha una oración', color: 'c-h',
           donde: val => (val.t ? SOP().ancla(CASAS, `c${val.t}`, 'fin') : BANDEJA().lapiz),
           mover: pt => ({ t: SOP().enBandeja(CASAS, pt) ? 0 : +SOP().cercana(CASAS, pt, oracionesDe(CASAS)).slice(1) }) },
       ],
@@ -1430,8 +1466,8 @@
       ],
     },
     regla: {
-      texto: 'La oración principal dice la idea, en cualquier lugar del texto; las secundarias le responden un porqué, un cómo o un ejemplo. Se subraya solo la principal.',
-      ecuacion: [{ llave: [justo('principal')], nota: 'manda', color: 'c-f' }, ' ← ', { llave: [cubre('secundarias')], nota: '¿por qué? ¿cómo? ¿por ejemplo?', color: 'c-i' }],
+      texto: 'La oración principal dice la idea, en cualquier lugar; las secundarias le dan un porqué, un cómo, un ejemplo o la creencia que corrige. Se subraya solo la principal.',
+      ecuacion: [{ llave: [justo('principal')], nota: 'manda', color: 'c-f' }, ' ← ', { llave: [cubre('secundarias')], nota: '¿por qué? ¿cómo? ¿por ejemplo? ¿qué corrige?', color: 'c-i' }],
       condicion: 'sin una secundaria, la principal sigue en pie; sin la principal, las demás quedan sueltas; lo que no le responde, sobra.',
     },
     resuelve: {
@@ -1446,7 +1482,7 @@
           pasos: [
             { tipo: 'pide', texto: R.est.sobra && /no sostiene/.test(R.enunciado) ? 'Piden la oración que no le responde nada a la principal.' : /papel/.test(R.enunciado) ? `Piden qué hace la oración 3 con la principal de ${R.nombre}.` : `Piden cuál oración manda en ${R.nombre} y qué hacen las demás con ella.` },
             { tipo: 'datos', texto: `${R.nombre.charAt(0).toUpperCase() + R.nombre.slice(1)} tiene ${n} oraciones numeradas.` },
-            { tipo: 'regla', texto: 'La principal dice la idea; las secundarias le dan un porqué, un cómo o un ejemplo. Lo que no le responde nada, sobra.' },
+            { tipo: 'regla', texto: 'La principal dice la idea; las secundarias le dan un porqué, un cómo, un ejemplo o la creencia que corrige. Lo que no le responde nada, sobra.' },
             { tipo: 'aplica', texto: R.a1 },
             { tipo: 'aplica', texto: R.a2, dibujo: { datos: R.sop, estado: estJer(R.sop, R.est) } },
             { tipo: 'sentido', texto: R.sentido },
@@ -1473,16 +1509,19 @@
 
   // ---------- Idea 4: elegir en el examen (nueva; etapa 2, 17 nov; docs/etapa2/propuesta-verbal.md y decisiones.md) ----------
   // Cambia: qué alternativas están tachadas. Permanece: la hoja de simulacro de las alpacas (texto y gráfico). Progresa:
-  // por qué falla cada tachada, hasta que queda una. Se reserva: el título del mismo texto (predicción). Debe verse: que
+  // por qué falla cada tachada, hasta que queda una. Se reserva: el título de otra hoja, la del camino empedrado, con
+  // sus letras en la figura (predicción; antes era el mismo texto del juego y ya se sabía la respuesta). Debe verse: que
   // cada alternativa equivocada falla por algo distinto (amplia, estrecha, marco, agrega) y la buena tiene la medida del
   // texto y del gráfico. El título entra aquí (Gerson, 17 nov): es el tema con otro nombre.
-  // Objeto de la primera pantalla: la hoja de simulacro con texto y gráfico (rv-soporte), como en San Marcos.
+  // Objeto de la primera pantalla: la hoja de simulacro con texto y gráfico (rv-soporte), como en los exámenes de admisión.
   // Colores: lo que la buena cubre i (turquesa), la alternativa que queda f (violeta), las descartadas tachadas; las
   // letras que nombra un resuelto, en negrita (mala/buena).
   const D_FRASE = 'Tema central y título: una frase que dice de qué trata todo el texto.';
   const D_ORACION = 'Idea principal y tesis: una oración que afirma algo de todo el texto.';
   const D_MEDIDA = 'Muy amplia: le serviría a otro texto. Muy estrecha: deja fuera una parte.';
-  const D_AGREGA = 'Agrega: dice algo que ni el texto ni su gráfico dicen.';
+  // Sin «gráfico» cuando el texto no lo tiene (lector en frío: «Datos dice ni su gráfico, y no hay gráfico»).
+  const D_AGREGA = 'Agrega: dice algo que el texto no dice.';
+  const D_AGREGA_M = 'Agrega: dice algo que ni el texto ni su tabla o gráfico dicen.';
   const D_TESIS = 'Tesis: lo que defiende el autor de un texto que opina.';
   const ORAS_ALPACA = ora('a', [
     'En las zonas altas de Puno, las heladas llegan cada año entre mayo y agosto.',
@@ -1493,7 +1532,7 @@
   // Cada alternativa del juego, con su falla (la que dice la lectura cuando se tacha) y si es la correcta.
   const ALTS = [
     { id: 'A', t: 'Las heladas en las zonas altas de Puno', falla: 'es el marco' },
-    { id: 'B', t: 'La crianza de camélidos en los Andes del Perú', falla: 'muy amplia' },
+    { id: 'B', t: 'La crianza de alpacas y llamas en los Andes del Perú', falla: 'muy amplia' },
     { id: 'C', t: 'El uso de cobertizos para proteger del frío a las crías de alpaca', ok: true },
     { id: 'D', t: 'Las 40 crías que murieron en un año sin cobertizo', falla: 'un dato' },
     { id: 'E', t: 'Los cobertizos como la única defensa de las familias contra todas las heladas', falla: 'agrega «única»' },
@@ -1502,6 +1541,25 @@
   const SIMULACRO = { soporte: 'simulacro', numero: 7, hojas: [{ id: 'h', oraciones: ORAS_ALPACA, barras: BARRAS_ALPACA }],
     pregunta: '¿Cuál es el tema central del texto?', alternativas: ALTS.map(({ id, t }) => ({ id, t })) };
   const TEXTO_ALPACA = { soporte: 'simulacro', numero: 7, hojas: [{ id: 'h', oraciones: ORAS_ALPACA, barras: BARRAS_ALPACA }] };
+  // Predice y Mira: otra hoja, con su gráfico (lector en frío, 17 nov: con el texto de Juega ya se sabía de qué
+  // trataba). La pregunta y las alternativas van en la hoja, y las opciones de «Predice» son esas mismas, con sus letras
+  // (orden: 'fijo'; la correcta no va primera). Lo que «todas» niega lo dice el gráfico: quedan BARRAS_CAMINO … v.
+  const BARRAS_CAMINO = barras('Tardanzas en un mes de lluvias', [['Antes', 60], ['Después', 15]]);
+  const QUEDAN = BARRAS_CAMINO.items[1].v;
+  const ALTS_CAMINO = [
+    { id: 'A', t: 'Sesenta tardanzas en un mes', error: 'RV1', siFuera: 'Sale del gráfico, pero es un dato: deja fuera el camino y su arreglo.' },
+    { id: 'B', t: 'El camino empedrado contra las tardanzas', ok: true },
+    { id: 'C', t: 'El camino que acabó con todas las tardanzas', error: 'RV11', siFuera: `Habla del camino, pero «todas» dice más que el gráfico: después hubo ${QUEDAN}.` },
+    { id: 'D', t: 'La educación en el Perú', error: 'RV2', siFuera: 'Es del mismo asunto, pero le serviría a cualquier texto sobre colegios.' },
+  ];
+  const CAMINO = { soporte: 'simulacro', numero: 9, hojas: [{ id: 'h', oraciones: ora('h', [
+    'En un colegio de Ayaviri, muchos alumnos llegaban tarde en la época de lluvias.',
+    'El camino de tierra más corto se volvía barro, y había que dar la vuelta por la pista.',
+    'Por eso, los padres de familia empedraron ese camino.',
+    'El gráfico compara las tardanzas de un mes de lluvias, antes y después del empedrado.']), barras: BARRAS_CAMINO }],
+    pregunta: '¿Qué título le queda mejor al texto?', alternativas: ALTS_CAMINO.map(({ id, t }) => ({ id, t })) };
+  const BUENA_C = ALTS_CAMINO.find(x => x.ok).id;
+  const conCamino = (tachar, extra = {}) => Object.assign(todo(CAMINO), { tachar }, extra);
   const tachadas = val => ALTS.filter(x => val[x.id.toLowerCase()] === 1);
   const estSimulacro = val => {
     const t = tachadas(val), quedan = ALTS.filter(x => !t.includes(x));
@@ -1530,15 +1588,14 @@
         '¿Qué título le queda mejor al texto?', ['La papa en el Perú', 'Un cuarto oscuro y fresco', 'Guardar la semilla en casa', 'Las familias de Puno ahorran siempre en todo', 'Las variedades del mercado']),
       enunciado: 'Pregunta 4 del simulacro: «¿Qué título le queda mejor al texto?». Las alternativas están en la hoja.',
       datos: [D_FRASE, D_MEDIDA, D_AGREGA],
-      descartes: [mala('A'), ': ', prop('muy amplio'), '. ', mala('B'), ' y ', mala('E'), ': ', prop('muy estrechos'), '. ', mala('D'), ' agrega «siempre» y «en todo».'],
+      descartes: [mala('A'), ': ', prop('muy amplia'), '. ', mala('B'), ' y ', mala('E'), ': ', prop('muy estrechas'), '. ', mala('D'), ' agrega «siempre» y «en todo».'],
       cubre: [buena('C'), ' cubre ', cubre('las cuatro'), ': cómo se guarda la semilla y para qué sirve.'],
       sentido: 'Un título no tiene que ser una oración: basta una frase con la medida justa.' },
     { pide: 'Piden la idea principal: una oración que afirme algo de todo el texto, no solo el tema.', buena: 'B',
-      resp: 'gracias a las abuelas, los jóvenes tejen y los diseños se conservan',
       sop: sim(10, ['En la comunidad de Jayllihuaya, los jóvenes casi no sabían tejer.', 'Las abuelas empezaron a enseñarles los sábados, en el local comunal.',
         'En un año, aprendieron a tejer chalinas y chullos con los diseños de la comunidad.', 'Ahora venden sus tejidos en la feria, y los diseños no se pierden.'],
-        '¿Cuál es la idea principal del texto?', ['Los tejidos de la comunidad de Jayllihuaya.', 'Gracias a las abuelas, los jóvenes aprendieron a tejer y los diseños se conservan.',
-          'Los jóvenes de Jayllihuaya casi no sabían tejer.', 'Los chullos se venden en la feria.', 'Todas las comunidades del altiplano de Puno están perdiendo sus tejidos antiguos.']),
+        '¿Cuál es la idea principal del texto?', ['Los tejidos de la comunidad de Jayllihuaya.', 'Gracias a las abuelas, los jóvenes aprendieron a tejer y conservan los diseños.',
+          'Los jóvenes de Jayllihuaya casi no sabían tejer.', 'Los chullos se venden en la feria.', 'Todas las comunidades del altiplano de Puno están perdiendo sus tejidos y sus diseños antiguos.']),
       enunciado: 'Pregunta 10 del simulacro: «¿Cuál es la idea principal del texto?». Las alternativas están en la hoja.',
       datos: [D_ORACION, D_MEDIDA, D_AGREGA, 'Chullo: gorro tejido con orejeras.'],
       descartes: [mala('A'), ' solo nombra el tema. ', mala('C'), ' es la 1 y ', mala('D'), ', parte de la 4: ', prop('muy estrechas'), '. ', mala('E'), ' agrega «todas las comunidades».'],
@@ -1561,7 +1618,7 @@
           'el biohuerto del colegio y cuántas más verduras comen los alumnos.', 'el patio de un colegio de Puno.', 'el biohuerto como la única forma de que todos los alumnos coman sano.'],
         { tabla: tabla('Porciones de verdura en un mes', ['Momento', 'Porciones'], [['Antes', '40'], ['Después', '160']]) }),
       enunciado: 'Pregunta 15 del simulacro: «El texto y la tabla giran, principalmente, en torno a». Las alternativas están en la hoja.',
-      datos: [D_FRASE, D_MIXTO, D_MEDIDA, D_AGREGA],
+      datos: [D_FRASE, D_MIXTO, D_GIRA, D_MEDIDA, D_AGREGA_M],
       descartes: [mala('A'), ': ', prop('muy amplia'), '. ', mala('B'), ' es una celda y ', mala('D'), ', el lugar de la 1: ', prop('muy estrechas'), '. ', mala('E'), ' agrega «única» y «todos».'],
       cubre: [buena('C'), ' cubre ', cubre('las tres oraciones'), ' y ', cubre('las dos filas'), ': el biohuerto y lo que cambió.'],
       sentido: 'Si se tapa la tabla, la frase sigue cubriendo el texto; si se tapa el texto, explica la tabla.' },
@@ -1586,7 +1643,7 @@
     { sop: sim(8, ['En una comunidad de Acora, el agua del pozo traía tierra y causaba diarreas.', 'La comunidad instaló en el pozo un filtro de arena y piedras.',
       'El gráfico muestra cuántos niños se enfermaron del estómago en un año, antes y después del filtro.'], null, [],
       { barras: barras('Niños con diarrea en un año', [['Antes', 30], ['Después', 8]]) }),
-      pregunta: 'El texto y el gráfico giran, principalmente, en torno a', mixto: true, datos: [D_FRASE, D_MIXTO, D_MEDIDA, D_AGREGA],
+      pregunta: 'El texto y el gráfico giran, principalmente, en torno a', mixto: true, datos: [D_FRASE, D_MIXTO, D_GIRA, D_MEDIDA, D_AGREGA_M],
       ok: 'el filtro del pozo de Acora y cuántos niños menos se enferman',
       m: [['la salud de los niños de las comunidades del Perú', 'RV2', 'Es del mismo asunto, pero le serviría a cualquier texto de salud.'],
         ['los 30 niños que se enfermaron del estómago antes del filtro', 'RV1', 'Leíste bien el gráfico, pero es una barra: deja fuera el filtro.'],
@@ -1603,7 +1660,7 @@
     { sop: sim(13, ['Hay quien dice que hablar quechua o aimara no sirve en la ciudad.', 'Sin embargo, en Puno muchos médicos, jueces y profesores atienden a personas que hablan esas lenguas.',
       'Quien las habla se entiende mejor con ellas y las atiende mejor.', 'Saber quechua o aimara es una ventaja para trabajar en Puno.'], null, []),
       pregunta: '¿Cuál es la tesis del autor?', datos: [D_ORACION, D_TESIS, D_MEDIDA, D_AGREGA],
-      ok: 'Saber quechua o aimara es una ventaja para trabajar en Puno',
+      ok: 'Hablar quechua o aimara ayuda a trabajar mejor en Puno',
       m: [['Hablar quechua o aimara no sirve de nada en la ciudad', 'RV4', 'Es lo que dicen otros, en la 1; el autor lo discute.'],
         ['Las lenguas que se hablan en las ciudades y el campo de Puno', 'RV65', 'Nombra el asunto, pero una tesis afirma algo.'],
         ['Los médicos de Puno atienden a personas que hablan aimara', 'RV1', 'Es un dato de la 2 que sostiene la tesis.'],
@@ -1611,7 +1668,7 @@
     { sop: { soporte: 'simulacro', numero: 21, hojas: [
       { id: 'ha', titulo: 'Texto A', oraciones: ora('a', ['Las tareas para la casa deberían eliminarse.', 'Los alumnos ya pasan seis horas en el colegio.', 'En casa necesitan descansar y ayudar a su familia.']) },
       { id: 'hb', titulo: 'Texto B', oraciones: ora('b', ['Las tareas para la casa son necesarias.', 'Repasar en casa ayuda a no olvidar lo aprendido.', 'Basta con que sean cortas.']) }] },
-      pregunta: '¿Cuál es el tema que discuten los dos textos?', datos: [D_FRASE, D_MEDIDA, D_AGREGA, 'Textos A y B: dos autores que opinan sobre un mismo asunto.'],
+      pregunta: '¿Cuál es el tema que discuten los dos textos?', datos: [D_FRASE, D_MEDIDA, D_AGREGA, D_AB],
       ok: 'Si las tareas para la casa deben eliminarse',
       m: [['La educación de los jóvenes en el Perú', 'RV2', 'Es del mismo asunto, pero le serviría a cualquier texto del colegio.'],
         ['El descanso que necesitan los alumnos en su casa', 'RV3', 'Es lo que dice el texto A; deja fuera el texto B.'],
@@ -1641,25 +1698,25 @@
       figura: fig({ soporte: 'folleto', lugar: 'Folleto de la junta de vecinos', hojas: [{ id: 'h', titulo: 'Junta de vecinos informa', de: 'la junta de vecinos', para: 'familias del barrio', oraciones: ora('h', [
         'Los camiones cisterna ya no subirán al barrio en la noche.', 'Desde ahora pasarán a las 7:00 y a las 15:00.', 'Así, las familias podrán llenar sus tanques de día.']) }] }),
       solucion: [
-        { texto: ['«El horario de los camiones» ', prop('solo nombra'), ': sería el tema. «Ahora pasan de día» afirma algo y ', cubre('cubre las tres'), '.'] }],
+        { texto: ['«El horario de los camiones cisterna» ', prop('solo nombra'), ': sería el tema. «Los camiones cisterna ahora pasan de día» afirma algo y ', cubre('cubre las tres'), '.'] }],
       respuesta: [justo('Los camiones cisterna ahora pasan de día')] },
     { nivel: 1, titulo: 'Lo que pide «gira en torno»',
       enunciado: '«El texto gira en torno a…» ¿pide una frase o una oración? Elige: «la feria del libro del sábado» o «el sábado habrá una feria del libro».',
-      datos: [D_FRASE, D_ORACION],
+      datos: [D_FRASE, D_ORACION, D_GIRA],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel en la municipalidad', hojas: [{ id: 'h', titulo: 'Feria del libro', de: 'la municipalidad', para: 'vecinos y colegios', oraciones: ora('h', [
         'El sábado habrá una feria del libro en la plaza de Armas.', 'Se venderán libros usados desde un sol.', 'Los colegios pueden llevar a sus alumnos.']) }] }),
       solucion: [
         { texto: ['«Gira en torno a» pide el tema central: una frase. ', justo('«La feria del libro del sábado»'), ' nombra el asunto y ', cubre('cubre las tres'), '.'] }],
-      respuesta: [justo('Una frase'), ': la feria del libro del sábado'] },
+      respuesta: [justo('«La feria del libro del sábado»'), ': una frase, porque pide el tema'] },
     { nivel: 1, titulo: 'La alternativa que agrega',
-      enunciado: '¿Cuál de estas agrega algo que el aviso no dice: «la nueva ruta de la combi 12», «la ruta 12 como la mejor de la ciudad» o «el paradero final»?',
+      enunciado: '¿Cuál de estas agrega algo que el aviso no dice: «la nueva ruta de la combi 12», «la ruta 12 como la mejor de la ciudad» o «el nuevo paradero final de la combi 12, en la puerta de emergencias»?',
       datos: [D_FRASE, D_AGREGA],
       figura: fig({ soporte: 'puerta', lugar: 'Paradero de la combi 12', hojas: [{ id: 'h', titulo: 'Aviso', de: 'la empresa de transporte', para: 'pasajeros', oraciones: ora('h', [
         'Desde el lunes, la combi 12 llegará hasta el hospital.', 'Su nuevo paradero final estará en la puerta de emergencias.', 'El pasaje no cambia.']) }] }),
       solucion: [
-        { texto: ['Ninguna oración compara la ruta 12 con otras: «la mejor de la ciudad» ', prop('agrega'), '. «El paradero final» solo es estrecha.'] }],
+        { texto: ['«La ruta 12 como la mejor de la ciudad» ', prop('agrega'), ': ninguna oración compara rutas. «El nuevo paradero final de la combi 12, en la puerta de emergencias» solo es estrecha.'] }],
       respuesta: [justo('La ruta 12 como la mejor de la ciudad')] },
-    { nivel: 1, titulo: 'Una celda de la tabla',
+    { nivel: 1, titulo: 'La basura del colegio',
       enunciado: 'Para este texto con tabla, ¿la frase «los 25 kilos de basura del lunes» es muy amplia, justa o muy estrecha?',
       datos: [D_FRASE, D_MEDIDA, D_MIXTO],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel del municipio escolar', hojas: [{ id: 'h', titulo: 'Menos basura', de: 'el municipio escolar', para: 'estudiantes', oraciones: ora('h', [
@@ -1670,30 +1727,30 @@
       respuesta: [justo('Muy estrecha'), ': es una celda de la tabla'] },
 
     { nivel: 2, titulo: 'El título del folleto',
-      enunciado: '¿Qué título le queda mejor al folleto: «Perros», «Vacuna gratis contra la rabia en Ilave», «El domingo» o «Ilave, ciudad sin perros»?',
+      enunciado: '¿Qué título le queda mejor al folleto: «Perros», «Vacuna gratis contra la rabia en Ilave», «El domingo» o «Ilave, la ciudad que ya no tendrá perros en la calle»?',
       datos: [D_FRASE, D_MEDIDA, D_AGREGA, 'Rabia: enfermedad grave que contagia la mordida de un animal.'],
       figura: fig({ soporte: 'folleto', lugar: 'Folleto de la posta de Ilave', hojas: [{ id: 'h', titulo: 'Posta informa', de: 'la posta de salud', para: 'vecinos', oraciones: ora('h', [
         'Los perros sin dueño del mercado de Ilave serán vacunados contra la rabia.', 'La campaña será el domingo y es gratis.', 'Quien tenga perro también puede llevarlo.']) }] }),
       solucion: [
-        { texto: ['Primero se descarta: «Perros», ', prop('muy amplio'), '; «El domingo», ', prop('muy estrecho'), '; «Ilave, ciudad sin perros» ', prop('agrega'), ' algo que el folleto no dice.'] },
+        { texto: ['Primero se descarta: «Perros», ', prop('muy amplia'), '; «El domingo», ', prop('muy estrecha'), '; «Ilave, la ciudad que ya no tendrá perros en la calle» ', prop('agrega'), ' algo que el folleto no dice.'] },
         { texto: ['Después se comprueba: «Vacuna gratis contra la rabia en Ilave» cubre ', cubre('las tres'), ' y no le serviría a otro folleto.'] }],
       respuesta: [justo('Vacuna gratis contra la rabia en Ilave')] },
-    { nivel: 2, titulo: 'El título demasiado grande',
+    { nivel: 2, titulo: 'Un título para Diego',
       enunciado: 'Para este texto, ¿le queda el título «La lluvia»? Si no, ¿cuál le quedaría mejor?',
-      datos: [D_FRASE, D_MEDIDA, 'Bofedal: pastizal húmedo de las alturas, con agua todo el año.'],
+      datos: [D_FRASE, D_MEDIDA, 'Bofedal: pastizal húmedo de las alturas.'],
       figura: fig({ soporte: 'cuaderno', lugar: 'Cuaderno de Diego', hojas: [{ id: 'h', titulo: 'Ciencia y Tecnología', de: 'Diego', para: 'estudiar para la práctica', oraciones: ora('h', [
         'En enero, las lluvias del altiplano llenan los bofedales.', 'Allí comen las alpacas cuando el pasto de los cerros se seca.', 'Si los bofedales se secan, los criadores pierden su mejor pasto.']) }] }),
       solucion: [
-        { texto: ['«La lluvia» le serviría a un texto sobre huaicos o sobre la cosecha: ', prop('muy amplio'), '. El texto trata de otra cosa.'] },
+        { texto: ['«La lluvia» le serviría a un texto sobre huaicos o sobre la cosecha: ', prop('muy amplia'), '. El texto trata de otra cosa.'] },
         { texto: ['Las tres oraciones hablan de los bofedales como pasto: ', justo('«Bofedales, el pasto de las alpacas»'), ' ', cubre('cubre las tres'), '.'] }],
       respuesta: [justo('No'), ': mejor «Bofedales, el pasto de las alpacas»'] },
     { nivel: 2, titulo: 'Dos títulos parecidos',
-      enunciado: '¿Qué título le queda mejor: «La radio de los alumnos de 4.º» o «La radio que todo el colegio escucha siempre»?',
+      enunciado: '¿Qué título le queda mejor: «La radio de los alumnos de 4.º» o «La radio que escuchan todos los colegios de la ciudad»?',
       datos: [D_FRASE, D_AGREGA],
       figura: fig({ soporte: 'mural', lugar: 'Mural del colegio', hojas: [{ id: 'h', titulo: 'Noticia del mes', de: 'el municipio escolar', para: 'estudiantes', oraciones: ora('h', [
         'Los alumnos de 4.º armaron una radio en el colegio.', 'Cada recreo pasan música, noticias del colegio y saludos.', 'Este mes, también avisaron de la campaña de vacunas.']) }] }),
       solucion: [
-        { texto: ['Los dos hablan de la radio. Pero ninguna oración dice que «todo el colegio» la escuche, ni que sea «siempre»: el segundo ', prop('agrega'), '.'] },
+        { texto: ['Los dos hablan de la radio. Pero ninguna oración dice que la escuchen otros colegios: el segundo ', prop('agrega'), '.'] },
         { texto: ['«La radio de los alumnos de 4.º» ', cubre('cubre las tres'), ' sin decir más que el texto.'] }],
       respuesta: [justo('La radio de los alumnos de 4.º')] },
     { nivel: 2, titulo: 'El título con gráfico',
@@ -1703,7 +1760,7 @@
         'En Juliaca, un grupo de vecinos plantó árboles en una avenida.', 'Ahora, al mediodía, la vereda tiene sombra.', 'El gráfico compara la temperatura del piso al sol y a la sombra.']),
         barras: barras('Grados del piso al mediodía', [['Al sol', 40], ['Sombra', 25]]) }] }),
       solucion: [
-        { texto: ['«Cuarenta grados» es una barra: ', prop('muy estrecho'), '. «Las avenidas de Juliaca» le serviría a otro texto: ', prop('muy amplio'), '.'] },
+        { texto: ['«Cuarenta grados al mediodía» es una barra: ', prop('muy estrecha'), '. «Las avenidas de Juliaca» le serviría a otro texto: ', prop('muy amplia'), '.'] },
         { texto: ['«Árboles que dan sombra en la avenida» cubre ', cubre('las tres oraciones'), ' y ', cubre('el gráfico'), ', que muestra lo que da la sombra.'] }],
       respuesta: [justo('Árboles que dan sombra en la avenida')] },
     { nivel: 2, titulo: 'Título o idea principal',
@@ -1716,9 +1773,9 @@
         { texto: ['«Leer en voz alta» ', prop('solo nombra'), ' el asunto: sirve como tema o como título.'] }],
       respuesta: [justo('La primera es la idea principal'), '; la segunda, el tema o título'] },
 
-    { nivel: 3, titulo: 'La feria de semillas',
+    { nivel: 3, titulo: 'Una feria de Puno',
       enunciado: 'Pregunta 26 del simulacro: «El texto y la tabla giran, principalmente, en torno a». ¿Qué alternativa es la correcta?',
-      datos: [D_FRASE, D_MIXTO, D_MEDIDA, D_AGREGA],
+      datos: [D_FRASE, D_MIXTO, D_GIRA, D_MEDIDA, D_AGREGA_M],
       figura: fig(sim(26, ['En algunas comunidades de Puno, cada año se hace una feria para cambiar semillas.', 'Cada familia lleva las papas, ocas y quinuas que sembró, y las cambia por otras.',
         'Así, ninguna variedad se pierde si una familia la deja de sembrar.', 'La tabla muestra cuántas variedades de papa se llevaron a una feria.'],
         'El texto y la tabla giran, principalmente, en torno a', ['la papa nativa del altiplano.', 'las 95 variedades de papa que se llevaron en 2025.',
@@ -1731,7 +1788,7 @@
       respuesta: [buena('C'), ': las ferias para cambiar semillas'] },
     { nivel: 3, titulo: 'El desayuno y el gráfico',
       enunciado: 'Pregunta 27 del simulacro: «¿Cuál es la idea principal del texto y el gráfico?». ¿Qué alternativa es la correcta?',
-      datos: [D_ORACION, D_MIXTO, D_MEDIDA, D_AGREGA],
+      datos: [D_ORACION, D_MIXTO, D_MEDIDA, D_AGREGA_M],
       figura: fig(sim(27, ['Un colegio de Ilave empezó a dar desayuno a todos sus alumnos.', 'Antes, muchos llegaban sin comer.',
         'El gráfico muestra cuántos alumnos se quedaban dormidos en la primera hora, antes y después.', 'Con el estómago lleno, los alumnos atienden mejor en clase.'],
         '¿Cuál es la idea principal del texto y el gráfico?', ['El desayuno escolar de un colegio de Ilave.', 'Antes, muchos alumnos llegaban sin comer.',
@@ -1756,19 +1813,19 @@
       respuesta: [buena('D'), ': la municipalidad debería hacer ciclovías en las zonas planas'] },
     { nivel: 3, titulo: 'El título de los lavaderos',
       enunciado: 'Pregunta 29 del simulacro: «¿Qué título le queda mejor al texto y la tabla?». ¿Qué alternativa es la correcta?',
-      datos: [D_FRASE, D_MIXTO, D_MEDIDA, D_AGREGA],
+      datos: [D_FRASE, D_MIXTO, D_MEDIDA, D_AGREGA_M],
       figura: fig(sim(29, ['En Puno, varios lavaderos de autos empezaron a reusar el agua.', 'La pasan por un filtro y la vuelven a usar en el primer enjuague.',
         'La tabla compara cuánta agua usaban por auto antes y ahora.'],
         '¿Qué título le queda mejor al texto y la tabla?', ['El agua en Puno', 'Lavaderos que reusan el agua', 'Ciento cincuenta litros por auto', 'Los autos de Puno', 'Lavaderos que ya no gastan agua'],
         { tabla: tabla('Agua por auto lavado', ['Momento', 'Litros'], [['Antes', '150'], ['Ahora', '60']]) })),
       solucion: [
-        { texto: [mala('A'), ' y ', mala('D'), ' le servirían a otros textos: ', prop('muy amplios'), '. ', mala('C'), ' es una celda: ', prop('muy estrecho'), '.'] },
+        { texto: [mala('A'), ' y ', mala('D'), ' le servirían a otros textos: ', prop('muy amplias'), '. ', mala('C'), ' es una celda: ', prop('muy estrecha'), '.'] },
         { texto: [mala('E'), ' agrega: la tabla dice que ahora usan 60 litros, no que ya no gasten.'] },
         { texto: [buena('B'), ' cubre ', cubre('las tres oraciones'), ' y ', cubre('las dos filas'), ', y no dice más que ellas.'] }],
       respuesta: [buena('B'), ': Lavaderos que reusan el agua'] },
     { nivel: 3, titulo: 'Dos opiniones sobre cocinar',
       enunciado: 'Pregunta 30 del simulacro: «¿Cuál es el tema que discuten los textos A y B?». ¿Qué alternativa es la correcta?',
-      datos: [D_FRASE, D_MEDIDA, D_AGREGA, 'Textos A y B: dos autores que opinan sobre un mismo asunto.'],
+      datos: [D_FRASE, D_MEDIDA, D_AGREGA, D_AB],
       figura: fig({ soporte: 'simulacro', numero: 30, hojas: [
         { id: 'ha', titulo: 'Texto A', oraciones: ora('a', ['Los colegios deberían enseñar a cocinar.', 'Muchos jóvenes viven solos cuando van a estudiar a otra ciudad.', 'Saber cocinar les ahorra dinero y les da comida más sana.']) },
         { id: 'hb', titulo: 'Texto B', oraciones: ora('b', ['Los colegios no deberían enseñar a cocinar.', 'Las horas de clase ya no alcanzan para los cursos del examen.', 'Cocinar se aprende en casa.']) }],
@@ -1790,18 +1847,18 @@
     pieza: 'rv-soporte',
     lee: {
       tarjetas: [
-        { titulo: 'Lo que pide cada pregunta', texto: '«Tema central», «el texto gira en torno a», «da cuenta de» y «título» piden una frase. «Idea principal» y «tesis» piden una oración que afirma algo.' },
+        { titulo: 'Lo que pide cada pregunta', texto: '«Tema central», «el texto gira en torno a», «da cuenta de» y «título» piden una frase. «Idea principal» y «tesis» (lo que defiende quien escribe un texto que opina) piden una oración que afirma algo.' },
         { titulo: 'El gráfico también es texto', texto: 'En un texto mixto, el gráfico o la tabla dicen algo junto con las oraciones. Se leen los dos antes de mirar las alternativas.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Esta es una pregunta de simulacro con texto y gráfico, como las de San Marcos. Tacha una alternativa a la vez y lee por qué falla.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Esta es una pregunta de simulacro con texto y gráfico, como las de los exámenes de admisión. Toca una alternativa a la vez para tacharla y lee por qué falla.' },
       ],
     },
     actividad: 'Tachar alternativas en una pregunta de simulacro hasta dejar una sola.',
     aprendizaje: 'Tema central y título piden una frase; idea principal, una oración. La buena cubre el texto y el gráfico sin agregar nada.',
     ejemplos: EJEMPLOS_ALT,
     juega: {
-      consigna: 'Una hoja de simulacro para postulantes, con texto y gráfico como en San Marcos. Cada alternativa equivocada falla por algo.',
+      consigna: 'Una hoja de simulacro de admisión, con texto y gráfico. Cada alternativa equivocada falla por algo.',
       mision: {
-        texto: 'Toca las alternativas que fallan para tacharlas, hasta que quede una sola.',
+        texto: 'Toca en la hoja las alternativas que fallan para tacharlas, hasta que quede una sola.',
         logrado: val => ALTS.every(x => (val[x.id.toLowerCase()] === 1) === !x.ok),
         bien: 'Queda la única que cubre el texto y el gráfico sin agregar nada.',
       },
@@ -1812,6 +1869,7 @@
         { s: 'tachado', t: 'alternativa que descartaste' },
         { s: cubre('turquesa'), t: 'lo que la correcta cubre' },
         { s: justo('violeta'), t: 'la alternativa que queda' },
+        BOTON,
       ],
       controles: ALTS.map(x => ({ id: x.id.toLowerCase(), etiqueta: `Alternativa ${x.id}`, opciones: [{ valor: 0, texto: 'dejar' }, { valor: 1, texto: 'tachar' }] })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(ALTS.map(x => [x.id, x.id.toLowerCase()])) }, SIMULACRO), estado: estSimulacro(val) }),
@@ -1819,34 +1877,29 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Para este mismo texto de las alpacas, ¿qué título le queda mejor?',
-      datos: ['Título: el nombre que se le pone a un texto.', 'Cobertizo: techo bajo donde duermen los animales.'],
-      opciones: [
-        { id: 'c', texto: 'Cobertizos contra la helada', correcta: true },
-        { id: 'amplio', texto: 'La vida en Puno', error: 'RV2', siFuera: 'Es del mismo asunto, pero le serviría a cualquier texto sobre Puno.' },
-        { id: 'dato', texto: 'Cuarenta crías en un año', error: 'RV1', siFuera: 'Sale del gráfico, pero es un dato: deja fuera los cobertizos.' },
-        { id: 'agrega', texto: 'El techo que salva a todas las crías', error: 'RV11', siFuera: 'Habla de los cobertizos, pero «todas» dice más que el gráfico: murieron 12.' },
-      ],
-      dibujo: { datos: TEXTO_ALPACA, estado: {} },
-      revelar: { datos: Object.assign({}, TEXTO_ALPACA, { frase: { etiqueta: 'Título', t: 'Cobertizos contra la helada' } }), estado: Object.assign(todo(TEXTO_ALPACA), { marcas: Object.assign(todo(TEXTO_ALPACA).marcas, { frase: 'f' }) }) },
-      coincide: 'Coincide: el título tiene la misma medida que el tema, ni más ni menos.',
+      pregunta: 'Otra hoja del simulacro, con su gráfico. ¿Qué título le queda mejor al texto? Las letras son las de la hoja.',
+      datos: ['Título: el nombre que se le pone a un texto.', 'Empedrar: cubrir un camino con piedras.'],
+      orden: 'fijo',
+      opciones: ALTS_CAMINO.map(x => (x.ok ? { id: 'c', texto: x.t, correcta: true } : { id: x.id, texto: x.t, error: x.error, siFuera: x.siFuera })),
+      dibujo: { datos: CAMINO, estado: {} },
+      revelar: { datos: CAMINO, estado: conCamino([], { marcas: Object.assign(todo(CAMINO).marcas, { [BUENA_C]: 'f' }) }) },
+      coincide: 'Coincide: el título tiene la medida del texto y del gráfico, sin decir más que ellos.',
     },
     mira: {
       pieza: 'rv-soporte',
-      datos: Object.assign({}, TEXTO_ALPACA, { pregunta: '¿Qué título le queda mejor al texto?', alternativas: [
-        { id: 'A', t: 'La vida en Puno' }, { id: 'B', t: 'Cuarenta crías en un año' }, { id: 'C', t: 'El techo que salva a todas las crías' }, { id: 'D', t: 'Cobertizos contra la helada' }] }),
+      datos: CAMINO,
       pasos: [
-        { estado: Object.assign(todo(TEXTO_ALPACA), { nuevo: ['a1', 'a2', 'a3', 'a4'] }), texto: 'El texto trata de cobertizos contra la helada; el gráfico muestra su efecto.', ecuacion: [cubre('texto'), ' + ', cubre('gráfico')] },
-        { estado: Object.assign(todo(TEXTO_ALPACA), { tachar: ['A'], nuevo: ['A'] }), texto: '«La vida en Puno» le serviría a cualquier texto de Puno.', ecuacion: [mala('A'), ': ', prop('muy amplio')] },
-        { estado: Object.assign(todo(TEXTO_ALPACA), { tachar: ['A', 'B'], nuevo: ['B'] }), texto: '«Cuarenta crías» es una barra del gráfico: deja fuera los cobertizos.', ecuacion: [mala('B'), ': ', prop('muy estrecho')] },
-        { estado: Object.assign(todo(TEXTO_ALPACA), { tachar: ['A', 'B', 'C'], nuevo: ['C'] }), texto: '«Todas» es absoluto: el gráfico dice que murieron 12. Agrega.', ecuacion: [mala('C'), ': ', prop('agrega')] },
-        { estado: Object.assign(todo(TEXTO_ALPACA), { tachar: ['A', 'B', 'C'], marcas: Object.assign(todo(TEXTO_ALPACA).marcas, { D: 'f' }), nuevo: ['D'] }), texto: 'Queda la D: la medida del tema, dicha en pocas palabras.', ecuacion: [buena('D'), ': cubre ', cubre('texto y gráfico')] },
+        { estado: conCamino([], { nuevo: oracionesDe(CAMINO) }), texto: 'El texto trata del camino empedrado; el gráfico muestra su efecto.', ecuacion: [cubre('texto'), ' + ', cubre('gráfico')] },
+        { estado: conCamino(['A'], { nuevo: ['A'] }), texto: '«Sesenta tardanzas en un mes» es una barra: deja fuera el camino.', ecuacion: [mala('A'), ': ', prop('muy estrecha')] },
+        { estado: conCamino(['A', 'D'], { nuevo: ['D'] }), texto: '«La educación en el Perú» le serviría a cualquier texto de colegios.', ecuacion: [mala('D'), ': ', prop('muy amplia')] },
+        { estado: conCamino(['A', 'D', 'C'], { nuevo: ['C'] }), texto: `«Todas» es absoluto: el gráfico dice que después hubo ${QUEDAN}. Agrega.`, ecuacion: [mala('C'), ': ', prop('agrega')] },
+        { estado: conCamino(['A', 'D', 'C'], { marcas: Object.assign(todo(CAMINO).marcas, { [BUENA_C]: 'f' }), nuevo: [BUENA_C] }), texto: `Queda la ${BUENA_C}: la medida del texto y del gráfico, en pocas palabras.`, ecuacion: [buena(BUENA_C), ': cubre ', cubre('texto y gráfico')] },
       ],
     },
     regla: {
       texto: 'Tema central y título piden una frase; idea principal, una oración. La correcta cubre todo el texto y el gráfico; se descarta la amplia, la estrecha y la que agrega.',
       ecuacion: [{ llave: [justo('la correcta')], nota: 'la medida del texto', color: 'c-f' }, ' cubre ', { llave: [cubre('texto y gráfico')], nota: 'todo', color: 'c-i' }, ' y ', { llave: ['nada más'], nota: 'no agrega' }],
-      condicion: 'la tesis es la idea principal de un texto que opina; la que dice más que el texto, agrega.',
+      condicion: 'cubre todo el texto y su gráfico; se tacha la que sirve a otro texto, deja algo fuera o dice más.',
     },
     resuelve: {
       pieza: 'rv-soporte',
@@ -1865,7 +1918,7 @@
             { tipo: 'aplica', texto: R.cubre, dibujo: { datos: R.sop, estado: estResuelto(R.sop, R.buena) } },
             { tipo: 'sentido', texto: R.sentido },
           ],
-          respuesta: [buena(R.buena), ': ', R.resp || R.sop.alternativas.find(a => a.id === R.buena).t],
+          respuesta: [buena(R.buena), ': ', R.sop.alternativas.find(a => a.id === R.buena).t],
         };
       },
     },
@@ -2032,7 +2085,7 @@
           '«El sábado habrá un campeonato de ajedrez» se puede creer o negar.',
           '«El campeonato de ajedrez» solo nombra: no es cierto ni falso.'],
         ver: ['idea principal', 'tema'] },
-      { termino: 'idea secundaria', def: 'Oración que le da a la principal un porqué, un cómo o un ejemplo.',
+      { termino: 'idea secundaria', def: 'Oración que le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige.',
         formas: ['idea secundaria', 'ideas secundarias', 'secundaria', 'secundarias'],
         simple: 'Una oración que ayuda a la principal: la explica o la muestra.',
         ejemplos: ['«El adobe absorbe el sol de día y lo suelta de noche»: dice cómo la casa guarda el calor.',

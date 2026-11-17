@@ -33,6 +33,16 @@ test('todo cabe en el lienzo con 4 de margen y ningún renglón pisa a otro', ()
   cajas.forEach((c, k) => { if (k) assert.ok(c.y >= cajas[k - 1].y + cajas[k - 1].h, 'las cajas no se enciman'); });
 });
 
+test('textLength solo en renglones llenos que no cierran su párrafo (apretar uno corto encimaba letras: «comen pcco»)', () => {
+  const L = P.disponer(datos);
+  for (const c of [L.raiz, ...L.ramas]) for (const g of [c.rot, c.lineas]) g.forEach((r, k) => {
+    if (r.estira) assert.ok(k < g.length - 1 && r.w >= S.constantes.LLENO * (c.w - 20), `«${r.texto}» no debería estirarse`);
+    else assert.ok(k === g.length - 1 || r.w < S.constantes.LLENO * (c.w - 20));
+  });
+  const s = P.dibujar(datos, ESTADOS[2]);
+  for (const [, t] of s.matchAll(/<text [^>]*textLength="[^"]+"[^>]*>([^<]*)</g)) assert.ok(t.length >= 12, `«${t}» es corto y lleva textLength`);
+});
+
 test('el alto no cambia con el estado; puro, sin NaN, colores fijos ni texto chico', () => {
   const altos = new Set();
   for (const e of ESTADOS) {
@@ -60,6 +70,10 @@ test('la principal en violeta punteado, las ramas en turquesa; la tachada no cue
   assert.match(P.dibujar(conVacio, {}), /Arriba irá/);
   assert.ok(!P.dibujar(conVacio, { ver: ['raiz'] }).includes('Arriba irá'), 'el aviso se va cuando aparece la principal');
   const LV = P.disponer(conVacio), filas = S.partir(conVacio.vacio, LV.raiz.w - 20, 14).length;
-  assert.ok(LV.raiz.y + 10 + 14 + (filas - 1) * 19 + 4 < LV.ramas[0].y, 'el aviso cabe en el lugar de la principal y no pisa las ramas');
+  assert.ok(LV.raiz.y + 10 + 14 + (filas - 1) * 19 + 4 < LV.raiz.y + LV.raiz.h, 'el aviso cabe dentro de la caja de la principal');
+  // Lo que no se ve guarda su lugar con una caja de trazos (el árbol no queda como un hueco en blanco).
+  assert.equal((P.dibujar(conVacio, {}).match(/class="rv-hueco"/g) || []).length, 1 + datos.ramas.length);
+  assert.equal((P.dibujar(conVacio, { ver: ['raiz', 'r3'] }).match(/class="rv-hueco"/g) || []).length, datos.ramas.length - 1);
+  assert.ok(!P.dibujar(datos, ESTADOS[2]).includes('rv-hueco'), 'con todo a la vista no quedan huecos');
   assert.match(P.alt(datos), /principal, oración 2/);
 });

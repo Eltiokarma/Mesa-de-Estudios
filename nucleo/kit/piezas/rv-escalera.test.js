@@ -60,3 +60,17 @@ test('sin peldaños, solo el soporte; el texto alternativo nombra la escalera', 
   assert.equal(s.match(/viewBox="0 0 320 ([\d.]+)"/)[1], String(Math.max(60, S.disponer(soporte).alto + 4)));
   assert.match(P.alt(datos), /Escalera de temas, de más amplio a más estrecho: 1\. La vida escolar/);
 });
+
+test('textLength solo en renglones llenos que no cierran su peldaño (rv-soporte, LLENO)', () => {
+  const largo = Object.assign({}, datos, { peldanos: [...datos.peldanos, 'Doña Rufina, la vendedora que lleva veinte años en la feria'] });
+  const L = P.disponer(largo);
+  for (const p of L.peldanos) p.lineas.forEach((r, k) => {
+    if (k === p.lineas.length - 1) assert.equal(r.estira, false, `«${r.texto}» cierra el peldaño y se estira`);
+    if (r.estira) assert.ok(r.wb >= S.constantes.LLENO * (P.constantes.TW - 8));
+  });
+  for (const n of [0, 6]) {
+    const s = P.dibujar(largo, { n, color: 'o' });
+    for (const [, t] of s.matchAll(/<text [^>]*textLength="[^"]+"[^>]*>([^<]*)</g)) assert.ok(t.length >= 12, `«${t}» es corto y lleva textLength`);
+  }
+  assert.ok(!/textLength="[^"]+"[^>]*>La vida escolar</.test(P.dibujar(datos, { n: 1 })), 'un peldaño de un renglón no se estira');
+});

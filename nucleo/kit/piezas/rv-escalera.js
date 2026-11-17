@@ -47,9 +47,11 @@
     const arriba = { x: W - 14, y: y + 18, texto: `▲ ${d.arriba || 'Más amplio'}` };
     y += 28;
     const peldanos = d.peldanos.map((t, k) => {
-      const lineas = S.partir(t, TW - 8, TAM, 700);   // medido en negrita: el elegido va en negrita y no se sale
+      // Medido en negrita: el elegido va en negrita y no se sale. estira: solo los renglones llenos que no cierran el
+      // peldaño llevan textLength (rv-soporte, LLENO).
+      const lineas = S.renglones(t, TW - 8, TAM, 700);
       const h = lineas.length * RL + 12;
-      const p = { n: k + 1, top: y, h, cy: y + h / 2, lineas: lineas.map((r, j) => ({ x: TX + 4, y: y + 7 + 15 + j * RL, w: T.ancho(r, TAM), wb: T.ancho(r, TAM, 700), texto: r })) };
+      const p = { n: k + 1, top: y, h, cy: y + h / 2, lineas: lineas.map((r, j) => ({ x: TX + 4, y: y + 7 + 15 + j * RL, w: T.ancho(r.texto, TAM), wb: r.w, texto: r.texto, estira: r.estira })) };
       y += h + 2;
       return p;
     });
@@ -81,7 +83,7 @@
           e += `<rect class="rv-peldano${cl}" x="${TX - 2}" y="${T.n(p.top + 2)}" width="${T.n(W - TX - 8)}" height="${T.n(p.h - 4)}" rx="8" fill="${T.color(c)}" fill-opacity="0.14" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${RAYA[c]} stroke-linecap="round"/>`;
           e += `<line class="rv-peldano${cl}" x1="${RAIL1}" y1="${T.n(p.cy)}" x2="${TX - 2}" y2="${T.n(p.cy)}" stroke="${T.color(c)}" stroke-width="4" stroke-linecap="round"${RAYA[c]}/>`;
         }
-        for (const r of p.lineas) e += `<text class="kit-txt" x="${T.n(r.x)}" y="${T.n(r.y)}" fill="currentColor" font-size="${TAM}"${sel ? ' font-weight="700"' : ''}${r.texto.length > 3 ? ` textLength="${T.n(sel ? r.wb : r.w)}" lengthAdjust="spacing"` : ''}>${T.esc(r.texto)}</text>`;
+        for (const r of p.lineas) e += `<text class="kit-txt" x="${T.n(r.x)}" y="${T.n(r.y)}" fill="currentColor" font-size="${TAM}"${sel ? ' font-weight="700"' : ''}${r.estira ? ` textLength="${T.n(sel ? r.wb : r.w)}" lengthAdjust="spacing"` : ''}>${T.esc(r.texto)}</text>`;
       }
       s += e;
     }
@@ -91,7 +93,7 @@
   function alt(d) {
     const base = d.soporte ? S.alt(d.soporte) : '';
     if (!Array.isArray(d.peldanos) || !d.peldanos.length) return base || 'Texto para leer.';
-    return `${base} Escalera de temas, de ${String(d.arriba || 'más amplio').toLowerCase()} a ${String(d.abajo || 'más estrecho').toLowerCase()}: ${d.peldanos.map((t, k) => `${k + 1}. ${t}`).join('; ')}.`;
+    return `${base} ${d.titulo || 'Escalera de temas'}, de ${String(d.arriba || 'más amplio').toLowerCase()} a ${String(d.abajo || 'más estrecho').toLowerCase()}: ${d.peldanos.map((t, k) => `${k + 1}. ${t}`).join('; ')}.`;
   }
 
   // Para el arrastre: dónde va la manija del peldaño n (sobre los largueros) y qué peldaño queda más cerca de un punto.
