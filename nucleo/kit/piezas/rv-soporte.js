@@ -36,6 +36,8 @@
  *   tachar: ['B'],           // raya de tinta encima: lo descartado (alternativas del simulacro)
  *   nuevo:  ['o2'],          // se anima al avanzar un paso de «Mira» (el texto no se mueve)
  *   tapar:  ['frase'],       // banda gris que guarda el lugar del renglón sin mostrarlo (la idea, hasta el último paso)
+ *   senal:  ['o3'],          // recuadro de tinta alrededor del número: la oración por la que se pregunta. Va en tinta y
+ *                            // no en un color de la paleta, que ya dice algo (naranja = lo que se descarta; auditoría, 17 nov)
  * }
  * ancla(datos, id, lado) y cercana(datos, punto, ids) sirven al arrastre de la teoría (docs/teoria.md §4b): la manija va
  * sobre el número de la oración (lado 'fin': al final del renglón); enBandeja(datos, punto) dice si se soltó en la bandeja.
@@ -300,7 +302,7 @@
   function cuerpo(d, estado = {}) {
     const L = disponer(d);
     const marcas = estado.marcas || {}, tenue = new Set(estado.tenue || []), tachar = new Set(estado.tachar || []), nuevo = new Set(estado.nuevo || []);
-    const tapar = new Set(estado.tapar || []);
+    const tapar = new Set(estado.tapar || []), senal = new Set(estado.senal || []);
     const cl = id => (id && nuevo.has(id) ? ' kit-nuevo kit-aparece' : '');
     const col = id => (COLORES.includes(marcas[id]) ? marcas[id] : null);
     const M = marcoSVG(L);
@@ -332,7 +334,12 @@
       if (it.tipo === 'titulo' || it.tipo === 'pregunta') { tinta += texto(it); continue; }
       if (it.tipo === 'firma' || it.tipo === 'nota') { tinta += texto(it, ' opacity="0.8"'); continue; }
       if (it.tipo === 'banda') { tinta += `<text class="rv-sin-halo" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="18" font-weight="700" text-anchor="middle">${T.esc(it.texto)}</text>`; continue; }
-      if (it.tipo === 'num') { tinta += `<text class="kit-num" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="14" font-weight="700" opacity="0.72">${T.esc(it.texto)}</text>`; continue; }
+      if (it.tipo === 'num') {
+        const sn = senal.has(it.id);
+        if (sn) fondo += `<rect class="rv-senal" x="${T.n(it.x - 4)}" y="${T.n(it.y - 15)}" width="${T.n(it.w + 2)}" height="20" rx="4" fill="none" stroke="currentColor" stroke-width="${T.GROSOR.contorno}"/>`;
+        tinta += `<text class="kit-num" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="14" font-weight="700"${sn ? '' : ' opacity="0.72"'}>${T.esc(it.texto)}</text>`;
+        continue;
+      }
       if (it.tipo === 'letra') {
         const c = col(it.id);
         fondo += `<circle cx="${T.n(it.x)}" cy="${T.n(it.y)}" r="10" fill="${c ? T.color(c) : 'none'}" fill-opacity="${c ? 0.16 : 0}" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"${c ? RAYA[c] : ''} stroke-linecap="round"/>`;

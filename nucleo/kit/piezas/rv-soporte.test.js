@@ -135,6 +135,24 @@ test('la bandeja queda debajo de la hoja, con sus rótulos dentro del lienzo, y 
   assert.match(P.alt(CASOS.balsa), /balsa de totora/);
 });
 
+test('senal: un recuadro de tinta alrededor del número de la oración, sin color de la paleta y dentro del papel', () => {
+  for (const [nombre, d] of Object.entries(CASOS)) {
+    const L = P.disponer(d), nums = L.items.filter(i => i.tipo === 'num');
+    const s = P.dibujar(d, { senal: nums.map(n => n.id) });
+    const cajas = [...s.matchAll(/<rect class="rv-senal" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"[^>]*\/>/g)];
+    assert.equal(cajas.length, nums.length, `${nombre}: un recuadro por número`);
+    cajas.forEach((m, k) => {
+      const [x, y, w, h] = m.slice(1, 5).map(Number), n = nums[k];
+      assert.ok(!/var\(--c-/.test(m[0]), `${nombre}: el recuadro va en tinta`);
+      assert.ok(x >= 4 && x + w <= 316 && y >= 4 && y + h <= L.alto - 4, `${nombre}: recuadro dentro del lienzo`);
+      assert.ok(x < n.x && x + w > n.x + T.ancho(n.texto, 14, 700), `${nombre}: el recuadro rodea el número ${n.texto}`);
+      const linea = L.items.find(i => i.tipo === 'linea' && i.id === n.id);
+      assert.ok(x + w < linea.x - 0.5, `${nombre}: el recuadro no pisa el renglón`);
+    });
+  }
+  assert.equal(P.dibujar(CASOS.mural, {}).includes('rv-senal'), false, 'sin senal, ningún recuadro');
+});
+
 test('tapar guarda el lugar del renglón sin mostrar su texto', () => {
   const d = CASOS.balsa, s = P.dibujar(d, { tapar: ['frase'] });
   const textos = [...s.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map(m => m[1]).join(' ');

@@ -248,9 +248,9 @@
   "fecha": "2026-11-17",
   "hechos": [],
   "revision": {
-    "por": "autor (sesión de práctica de la etapa 2) y script de revisión aparte (scratchpad practica-verbal/revisa.js); falta el revisor a ciegas",
+    "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "El script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. La revisión a ciegas de docs/formato-lectura.md §5.6 queda pendiente para Gerson."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (6 de 6 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
   }
 }
