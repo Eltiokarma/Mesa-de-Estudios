@@ -113,11 +113,19 @@ Nada imposible: un río de la sierra no corre a 9 m/s ni el Ucayali mide 24 m de
 
 ## 5b. Colores (auditoría con el skill `teoria-del-color`, 17 nov)
 
-**Un color por papel, el mismo en todos los cursos.** La letra o el rótulo dice cuál variable es (el color guía, no
-identifica: WCAG 1.4.1); el color dice qué papel cumple en el problema, y ese papel no cambia de tema a tema (el lector
-en frío se confundió porque el turquesa era «el resultado» en Magnitudes y «el vector B» en Vectores).
+**Un color fijo por magnitud en cada unidad** (Gerson, mesa de revisión, 17 nov; reemplaza «un color por papel en cada
+ejercicio»). Cada magnitud o lado tiene un solo color en toda la unidad: en el juego, el eje, la figura, la fórmula, los
+ejemplos y la práctica. Ese color se elige por el papel que la magnitud cumple casi siempre (tabla de abajo), y la
+unidad lo escribe en su comentario de cabecera con una prueba que lo compruebe. La respuesta lleva el color de su
+magnitud y el recuadro de respuesta. Por qué: los lectores en frío de química y trigonometría se perdieron cuando la
+misma cosa cambiaba de color de un ejercicio a otro (la escalera naranja en uno y verde en otro; Q naranja en el juego y
+violeta en la fórmula). Ejemplos: química, Q violeta, m naranja, cₑ y L turquesa, temperatura y ΔT verde; trigonometría,
+el lado lleva el color de su nombre desde el ángulo (CO naranja, CA turquesa, H en tinta). La letra o el rótulo dice
+cuál variable es (el color guía, no identifica: WCAG 1.4.1). El violeta queda para lo que el alumno busca casi siempre
+en esa unidad; el subrayado del glosario es gris de tinta, no violeta (17 nov). Física (Magnitudes y Vectores) se
+ajusta a esta regla en una pasada aparte.
 
-| Token | Claro | Oscuro | Papel | Ejemplos |
+| Token | Claro | Oscuro | Papel más común de la magnitud | Ejemplos |
 | --- | --- | --- | --- | --- |
 | `o` naranja | `#a95300` | `#f0a04a` | el primer dato | A⃗; la cantidad que te dan |
 | `i` turquesa | `#07746e` | `#3dcdc3` | el segundo dato o el factor | B⃗; el factor de conversión |

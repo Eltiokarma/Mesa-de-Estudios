@@ -87,7 +87,7 @@ test('las ramas y los requisitos forman un mapa sin ciclos', () => {
       for (const p of u.requiere) {
         assert.ok(todas.has(p), `${u.id}: requiere ${p}, que no existe`);
         assert.notEqual(p, u.id, `${u.id}: se requiere a sí misma`);
-        assert.ok(todas.get(p).grado <= u.grado, `${u.id} (${u.grado}.º) requiere ${p}, que es de ${todas.get(p).grado}.º`);
+        // El grado es solo informativo (Gerson, 17 nov): una unidad puede requerir otra de un grado mayor.
       }
     }
   }

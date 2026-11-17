@@ -48,7 +48,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 | `temas` | Lista corta de subtemas, en palabras propias. |
 | `universidades` | Dónde entra la unidad. `uni.semanas`: semanas del sílabo CEPRE-UNI 2026-2. `unmsm.temas`: números de tema del temario CEPRE-UNMSM 2026-I. Si una universidad no la pide, se omite. Se agregan `una`, `unsa`, `unsaac` cuando haya temario. |
 | `potencial_visual` | `alto`, `medio` o `bajo`. |
-| `grado` | Desde qué grado de secundaria (3, 4 o 5) se puede estudiar la unidad. A un alumno de un grado menor se le muestra como "adelanto" y va al final de su cola; no se le oculta. Es una estimación: ver "Grados" más abajo. |
+| `grado` | Desde qué grado de secundaria (3, 4 o 5) se puede estudiar la unidad. A un alumno de un grado menor se le muestra como "adelanto" y va al final de su cola; no se le oculta. Es una estimación y es **solo informativo** (Gerson, 17 nov): una unidad puede requerir otra de un grado mayor; el orden lo da `requiere`. Ver "Grados" más abajo. |
 | `requiere` | Ids de las unidades que conviene estudiar antes, también de otro curso. Lista vacía si no necesita nada. Solo los requisitos directos: si B necesita A y C necesita B, C dice solo B. Ver "Mapa del curso". |
 | `plantillas` | Ids de plantillas que existen en `plantillas/`. Vacío si todavía no hay. |
 | `investigacion` | Ruta al informe de errores típicos, o `null`. |

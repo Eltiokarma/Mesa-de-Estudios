@@ -968,7 +968,7 @@ body.con-lupa{overflow:hidden}
 @media (prefers-reduced-motion:no-preference){.te-invita.logrado{animation:te-logro .45s cubic-bezier(.2,.9,.3,1.2)}}
 @keyframes te-logro{from{transform:scale(.97)}to{transform:none}}
 /* Glosario: el término se subraya con puntos (no solo color) y abre una hoja abajo con su definición. */
-.te-term{font:inherit;color:inherit;background:none;border:0;padding:1px 0;margin:0;cursor:pointer;text-decoration:underline dotted 2px;text-decoration-color:var(--brand);text-underline-offset:4px;border-radius:4px;display:inline}
+.te-term{font:inherit;color:inherit;background:none;border:0;padding:1px 0;margin:0;cursor:pointer;text-decoration:underline dotted 2px;text-decoration-color:color-mix(in srgb,currentColor 55%,transparent);text-underline-offset:4px;border-radius:4px;display:inline}
 .te-term:hover{background:var(--brand-soft)}
 .te-term:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .te-glosa{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + max(12px,env(safe-area-inset-bottom)));width:min(528px,calc(100% - 24px));max-height:60dvh;overflow:auto;overscroll-behavior:contain;z-index:45;background:var(--card);border:2px solid var(--line);border-radius:22px;box-shadow:0 12px 34px rgba(92,52,110,.22);padding:12px 16px 16px}
@@ -1208,7 +1208,7 @@ body.con-lupa{overflow:hidden}
 
 /* Aviso de una vez: las palabras del glosario se tocan (16 nov). */
 .te-pista-glo{display:flex;align-items:center;gap:10px;margin:8px 0 4px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--c-d) 10%,var(--card));font-size:14px;line-height:1.35}
-.te-pista-glo u{text-decoration-style:dotted;text-decoration-color:var(--brand);text-underline-offset:3px}
+.te-pista-glo u{text-decoration-style:dotted;text-decoration-color:color-mix(in srgb,currentColor 55%,transparent);text-underline-offset:3px}
 .te-pista-glo-m{flex:none;width:28px;height:28px;border-radius:8px;background:var(--card);border:2px solid var(--borde);display:grid;place-items:center;font-weight:800;font-size:13px}
 .te-pista-glo-x{flex:none;margin-left:auto;min-width:36px;min-height:36px;border:0;background:none;font-size:16px;color:var(--muted)}
 /* Hay más debajo del botón fijo: un desvanecido arriba de la barra lo sugiere (lector en frío, 16 nov). */

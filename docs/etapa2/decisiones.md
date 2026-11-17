@@ -54,6 +54,12 @@ Las respuestas de Gerson en la mesa de revisión (`herramientas/revision/`) mand
 - **Verbal:** letra de cada alternativa en negrita (en color), en toda la teoría (regla del molde §3); se tacha una
   alternativa tocándola en la hoja; «cubrir» se marca en todo verbal; sin migración del avance viejo.
 - **General:** ninguna figura delata la respuesta por su color (molde §3); no se hace todavía una skill del método.
+- **Colores (segunda ronda):** un color fijo por magnitud en cada unidad, elegido por su papel más común, y la respuesta
+  en el color de su magnitud (molde §5b reescrito); Física se ajusta aparte. El subrayado del glosario pasa a gris de
+  tinta (el violeta es de la respuesta).
+- **Catálogo:** el grado es solo informativo; se quita la regla de que una unidad no requiera otra de grado mayor.
+  Razones trigonométricas pasa a `grado: 5`.
+- **Química:** la vida media va como idea 6 propia (confirmado).
 
 ## Orden de trabajo
 Fase 2 del método (`docs/metodo/unidad/LEEME.md`): la primera idea de cada unidad completa, para el visto bueno de
