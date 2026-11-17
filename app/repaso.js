@@ -19,11 +19,13 @@
 (function () {
 'use strict';
   // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
-  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
+  // «A_y» del texto de un generador se ve como A con subíndice y (no hay «y» subíndice en Unicode: «ᵧ» es una gamma).
+  const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([a-z0-9]{1,3})/g, '$1<sub>$2</sub>');
+  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const PARA_TIPO = 3;
 
 function textoPlano(partes, esc) {
-  return (partes || []).map(x => (typeof x === 'string' ? esc(x) : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join('');
+  return conSub((partes || []).map(x => (typeof x === 'string' ? esc(x) : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join(''));
 }
 const figura = (f, esc) => (f && typeof f.svg === 'string' && /^<svg[\s>]/.test(f.svg)
   ? `<figure class="fig-gen" role="img" aria-label="${esc(f.alt || 'Figura del problema')}">${f.svg}</figure>` : '');
@@ -104,11 +106,11 @@ async function vista(ctx) {
       return { fuente: 'papel', plantilla: pl.id, problema: `${pl.id}/${q.id}/${pq.id}`, indicacion,
         enunHTML: `<p class="enun">${esc(pq.enunciado || q.enunciado)}</p>`, preguntaHTML: esc(pq.pregunta),
         alts: alts.map(a => ({ letra: a.letra, texto: a.texto, correcta: !!a.correcta, explicacion: a.error ? a.error.explicacion : '', error: a.error ? a.error.id : '', respaldo: a.error ? a.error.respaldo : '' })),
-        solucionHTML: `<p><b>Respuesta del problema completo:</b> ${esc(q.respuesta)}</p><ol class="sol">${(q.pasos || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>` };
+        solucionHTML: `<p><b>Respuesta del problema completo:</b> ${esc(q.respuesta)}</p><ol class="sol">${(q.pasos || []).map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ol>` };
     }
     return { fuente: 'papel', autoevaluacion: true, plantilla: pl.id, problema: `${pl.id}/${q.id}`, indicacion,
       enunHTML: `<p class="enun">${esc(q.enunciado)}</p>`,
-      respuesta: q.respuesta, solucionHTML: `<ol class="sol">${(q.pasos || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>` };
+      respuesta: q.respuesta, solucionHTML: `<ol class="sol">${(q.pasos || []).map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ol>` };
   }
 
   // ---- Verbal: el banco de cada módulo de lectura (su índice y los ítems que hagan falta, de a uno) ----

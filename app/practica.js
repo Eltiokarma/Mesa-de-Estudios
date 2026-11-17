@@ -9,7 +9,7 @@
 (function () {
 'use strict';
   // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
-  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
+  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const N_PRUEBA = 3, MIN_PRACTICA = 5;
 
 // ---- Kit de escenas vivas: se carga solo cuando un problema trae escena (y su hoja de estilos, al entrar) ----
@@ -46,15 +46,17 @@ const lista = x => (Array.isArray(x) ? x : [String(x)]);
 const ICONO_MENOS = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 const ICONO_MAS = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 12h12M12 6v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
 
+// «A_y» del texto de un generador se ve como A con subíndice y (no hay «y» subíndice en Unicode: «ᵧ» es una gamma).
+const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([a-z0-9]{1,3})/g, '$1<sub>$2</sub>');
 function texto(partes, p, esc) {
-  return partes.map(x => {
+  return conSub(partes.map(x => {
     if (typeof x === 'string') return esc(x);
     if (x.formula) return `<span class="formula">${esc(x.t)}</span>`;
     const col = (p.variables[x.v] || {}).color || 'o';
     // Un tramo largo (una frase, no un dato) puede partirse en líneas: si no, se sale de la tarjeta en el celular.
     const largo = String(x.t).length > 22 ? ' largo' : '';
     return `<span class="var c-${esc(col)}${largo}" title="${esc((p.variables[x.v] || {}).nombre || '')}">${esc(x.t)}</span>`;
-  }).join('');
+  }).join(''));
 }
 
 // Figura opcional del problema: { svg, alt }. El SVG lo arma el generador con código propio

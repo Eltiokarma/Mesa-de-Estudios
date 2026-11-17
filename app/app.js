@@ -4,7 +4,9 @@
 (() => {
 'use strict';
   // Datos y fórmulas del problema (contrato, punto 13): una lista va en el recuadro «Datos»; un texto, como antes.
-  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
+  // «A_y» del texto de un generador se ve como A con subíndice y (no hay «y» subíndice en Unicode: «ᵧ» es una gamma).
+  const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([a-z0-9]{1,3})/g, '$1<sub>$2</sub>');
+  const cajaDatos = (d, esc) => (Array.isArray(d) ? (d.length ? `<div class="te-datos"><p class="te-datos-et">Datos</p><ul>${d.map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ul></div>` : '') : d ? `<p class="sub">${esc(d)}</p>` : '');
 const $app = document.getElementById('app');
 const $nav = document.getElementById('nav');
 const CLAVE = 'lab-v1';
@@ -605,8 +607,8 @@ function vEjercicios(c, u) {
 // preguntas, sin pistas ni corrección hasta terminar, con la opción de dejar en blanco. No usa el banco de entrada y
 // salida (catalogo/pruebas/), para no gastar esas preguntas ni mezclar la medición. Cada intento trae preguntas
 // nuevas (semilla: alumno, unidad e intento). Se registra un 'examen-item' por pregunta y un 'examen' al final.
-const textoPlano = (partes, esc) => (partes || []).map(x => (typeof x === 'string' ? esc(x)
-  : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join('');
+const textoPlano = (partes, esc) => conSub((partes || []).map(x => (typeof x === 'string' ? esc(x)
+  : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join(''));
 async function vExamen(c, u) {
   const gens = generadoresDe(u), h = location.hash;
   if (!gens.length) {
@@ -1302,7 +1304,7 @@ async function vPapel(id) {
     <div class="lista papel" style="margin-top:18px">${d.problemas.map((q, k) => `<article class="card">
       <div class="etq-p">Problema ${k + 1}${q.nivel ? ` · ${esc(q.nivel)}` : ''}</div>
       <p style="margin:8px 0 12px">${esc(q.enunciado)}</p>${q.texto ? papelLectura(q) : ''}
-      <details><summary>Ver respuesta</summary><p><b>${esc(q.respuesta)}</b></p><ol class="sol${q.texto ? ' sol-lectura' : ''}">${q.pasos.map(x => `<li>${esc(x)}</li>`).join('')}</ol></details>
+      <details><summary>Ver respuesta</summary><p><b>${esc(q.respuesta)}</b></p><ol class="sol${q.texto ? ' sol-lectura' : ''}">${q.pasos.map(x => `<li>${conSub(esc(x))}</li>`).join('')}</ol></details>
     </article>`).join('')}</div>
     <p style="margin-top:18px"><button class="btn borde" onclick="print()">Imprimir</button></p>`;
 }
