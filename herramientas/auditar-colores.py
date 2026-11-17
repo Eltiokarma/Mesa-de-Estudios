@@ -47,8 +47,8 @@ if __name__ == '__main__':
     # Escena de vectores (17 nov): papeles con los tokens de la app; x/D, y/sb y û/z son los colores aparte (no se ven
     # juntos dentro de cada pareja). Los pares que importan son los de una misma pantalla (ver el comentario de la escena).
     esc_claro = {'a': '#a95300', 'b': '#07746e', 'R': '#6b3dbd', 'th': '#c02a5c', 'c': '#3d6b0c',
-                 'x': '#223d81', 'y': '#6c411a', 'u': '#5c0300'}
+                 'x': '#0b5a8c', 'y': '#561a6e', 'u': '#5c0300'}
     esc_oscuro = {'a': '#f0a04a', 'b': '#3dcdc3', 'R': '#ab8cf2', 'th': '#f17384', 'c': '#a3d65e',
-                  'x': '#a8ceff', 'y': '#fbd35f', 'u': '#c6916e'}
+                  'x': '#b3d9ff', 'y': '#e0a6ff', 'u': '#c6916e'}
     auditar('escena vectores, claro', esc_claro, '#fffaf6', '#2d2340')
     auditar('escena vectores, oscuro', esc_oscuro, '#2a2135', '#f1ebf7')

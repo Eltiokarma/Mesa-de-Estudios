@@ -11,15 +11,15 @@
    lo que se pide y su resultado violeta (R⃗, OP⃗, AG⃗, MN⃗, w⃗ y a⃗ × b⃗ con su área), los ángulos carmín (θ, el de a⃗
    con el eje x y el de R⃗ con x′) y el tercer vector verde (c⃗, el marcado de «Figuras»).
    Lo que no es un papel va aparte, con claridad distinta para que el claro-oscuro los separe también con daltonismo:
-   azul marino / celeste para la sombra en x y la diferencia a⃗ − b⃗ (nunca juntas), café / oro para la sombra en y y la
-   sombra de b⃗ sobre a⃗ (nunca juntas), y granate / tostado para û y las aristas z del sólido (nunca juntos).
+   azul / celeste para la sombra en x y la diferencia a⃗ − b⃗ (nunca juntas), violeta oscuro / lila para la sombra en y y
+   la sombra de b⃗ sobre a⃗ (nunca juntas; Gerson, 17 nov: el café de a_y se veía de la familia de a⃗), y granate / tostado para û y las aristas z del sólido (nunca juntos).
    Análisis dimensional: [M] siena, [L] índigo y [T] mostaza (solo salen en la balanza, nunca con flechas).
    Medidos con herramientas/auditar-colores.py (OKLab, peor caso entre visión normal y protan, deutan y tritan simulados;
    Machado 2009), par por par entre los que salen en la misma pantalla. Peores pares, claro y oscuro:
    {a, b, θ, R} y {a, b, θ, R, D} a–θ 0,062 y 0,085 (θ lleva arco y letra), b–D 0,133 y 0,081; {a, aₓ, a_y, 37°} a–a_y
-   0,101 y 0,109, a–37° 0,062 y 0,085; {a, aₓ, a_y, û} a–a_y 0,101 y a–û 0,078; {a, b, sombra, área, θ} a–sombra 0,101
-   y 0,109, b–área 0,101 y 0,126; {c, R} 0,074 y 0,129; {x, y, z, R} 0,110 y 0,103; {a, b, MN} y {a, b, OP} b–R 0,101
-   y 0,126; {a, û, w} 0,107 y 0,078; {a, b, R, R′x, R′y} 0,101 y b–R′x 0,081. Contra la tinta, al menos 0,103. El gris
+   0,220 y 0,102, aₓ–a_y 0,091 y 0,064, a–37° 0,062 y 0,085; {a, aₓ, a_y, û} a_y–û 0,097 y 0,119, a–û 0,078; {a, b, sombra, área, θ} b–sombra 0,171
+   y 0,077, b–área 0,101 y 0,126; {c, R} 0,074 y 0,129; {x, y, z, R} 0,110 y 0,103; {a, b, MN} y {a, b, OP} b–R 0,101
+   y 0,126; {a, û, w} 0,107 y 0,078; {a, b, R, R′x, R′y} b–R′x 0,053 y 0,090 (llevan su subíndice). Contra la tinta, al menos 0,103. El gris
    (muted) queda cerca de b y de R (0,025 en claro), pero solo va en trazos finos punteados y en números de los ejes.
    Texto: ≥ 4,63:1 sobre la tarjeta y sobre su chip (.v, fondo al 8 %) en claro y ≥ 4,87:1 en oscuro; las líneas,
    ≥ 5:1. Longitudes sueltas, sumas parciales, el hexágono, î y ĵ van en tinta o gris.
@@ -29,9 +29,9 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#efe2d8;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-a:#a95300; --c-b:#07746e; --c-R:#6b3dbd; --c-th:#c02a5c; --c-x:#223d81; --c-y:#6c411a; --c-u:#5c0300;
+  --c-a:#a95300; --c-b:#07746e; --c-R:#6b3dbd; --c-th:#c02a5c; --c-x:#0b5a8c; --c-y:#561a6e; --c-u:#5c0300;
   --c-M:#773922; --c-L:#3328c4; --c-T:#7d6a00;
-  --c-c:#3d6b0c; --c-z:#5c0300; --c-g:#6b3dbd; --c-k:#6b3dbd; --c-w:#6b3dbd; --c-D:#223d81; --c-sb:#6c411a; --c-ar:#6b3dbd;
+  --c-c:#3d6b0c; --c-z:#5c0300; --c-g:#6b3dbd; --c-k:#6b3dbd; --c-w:#6b3dbd; --c-D:#0b5a8c; --c-sb:#561a6e; --c-ar:#6b3dbd;
   /* Después de la genérica, fuentes que traen la flecha combinante de los vectores (a⃗, U+20D7): el navegador las usa
      solo para lo que la primera fuente no trae, también en el lienzo. */
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif,"Cambria Math","STIX Two Math","Noto Sans Math","DejaVu Sans";
@@ -42,17 +42,17 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-a:#f0a04a; --c-b:#3dcdc3; --c-R:#ab8cf2; --c-th:#f17384; --c-x:#a8ceff; --c-y:#fbd35f; --c-u:#c6916e;
+  --c-a:#f0a04a; --c-b:#3dcdc3; --c-R:#ab8cf2; --c-th:#f17384; --c-x:#b3d9ff; --c-y:#e0a6ff; --c-u:#c6916e;
   --c-M:#d9a68c; --c-L:#9f9bff; --c-T:#e3c84a;
-  --c-c:#a3d65e; --c-z:#c6916e; --c-g:#ab8cf2; --c-k:#ab8cf2; --c-w:#ab8cf2; --c-D:#a8ceff; --c-sb:#fbd35f; --c-ar:#ab8cf2;
+  --c-c:#a3d65e; --c-z:#c6916e; --c-g:#ab8cf2; --c-k:#ab8cf2; --c-w:#ab8cf2; --c-D:#b3d9ff; --c-sb:#e0a6ff; --c-ar:#ab8cf2;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#33293f;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-a:#f0a04a; --c-b:#3dcdc3; --c-R:#ab8cf2; --c-th:#f17384; --c-x:#a8ceff; --c-y:#fbd35f; --c-u:#c6916e;
+  --c-a:#f0a04a; --c-b:#3dcdc3; --c-R:#ab8cf2; --c-th:#f17384; --c-x:#b3d9ff; --c-y:#e0a6ff; --c-u:#c6916e;
   --c-M:#d9a68c; --c-L:#9f9bff; --c-T:#e3c84a;
-  --c-c:#a3d65e; --c-z:#c6916e; --c-g:#ab8cf2; --c-k:#ab8cf2; --c-w:#ab8cf2; --c-D:#a8ceff; --c-sb:#fbd35f; --c-ar:#ab8cf2;
+  --c-c:#a3d65e; --c-z:#c6916e; --c-g:#ab8cf2; --c-k:#ab8cf2; --c-w:#ab8cf2; --c-D:#b3d9ff; --c-sb:#e0a6ff; --c-ar:#ab8cf2;
   color-scheme:dark }
 
 *{box-sizing:border-box}
