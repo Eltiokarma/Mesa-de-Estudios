@@ -9,10 +9,12 @@
  *   partes: momentos,ejemplos,glosario,laboratorio (por defecto, todas)
  *   --oscuro   también en tema oscuro
  *   --ancha    también a 1280 × 860 (pantalla ancha); por defecto solo 390 × 844 (celular)
+ *   --entera   momentos en página entera (figura y botones sin fijar): lo que lee el lector en frío
  *   --lector   copia aparte, en <carpeta>/lector/, las tarjetas n.º 3, 8 y 14 de cada idea (una por nivel), con nombres
  *              que no dicen la idea, para el lector en frío de los ejemplos
  *
  * Ejemplo: node herramientas/capturas-teoria.js fisica.vectores /tmp/cap --oscuro --lector
+ * Lector en frío: node herramientas/capturas-teoria.js <unidad> <carpeta> momentos,ejemplos --entera --lector
  * Cada momento sale en una captura de la pantalla visible (no de página entera: la barra de abajo y la de acción son
  * fijas y en una captura de página entera quedan encima del contenido). Las tarjetas de ejemplos salen una por una.
  */
@@ -22,7 +24,7 @@ let chromium;
 try { ({ chromium } = require('playwright')); } catch (e) { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
 
 const [unidad, carpeta, ...resto] = process.argv.slice(2);
-if (!unidad || !carpeta) { console.error('uso: node herramientas/capturas-teoria.js <unidad> <carpeta> [partes] [--oscuro] [--ancha] [--lector]'); process.exit(1); }
+if (!unidad || !carpeta) { console.error('uso: node herramientas/capturas-teoria.js <unidad> <carpeta> [partes] [--oscuro] [--ancha] [--entera] [--lector]'); process.exit(1); }
 const banderas = new Set(resto.filter(x => x.startsWith('--')));
 const partes = new Set((resto.find(x => !x.startsWith('--')) || 'momentos,ejemplos,glosario,laboratorio').split(','));
 const BASE = process.env.MESA_URL || 'http://localhost:4173';
@@ -72,7 +74,9 @@ async function abrir(ctx, ruta, teoria) {
     if (partes.has('momentos')) for (const idea of def) for (const m of idea.momentos.filter(x => MOMENTOS.includes(x))) {
       const p = await abrir(ctx, `/unidad/${unidad}/teoria/${idea.id}`, { [unidad]: { idea: idea.id, ideas: { [idea.id]: { momento: m } } } });
       p.on('pageerror', e => errores.push(`${idea.id}/${m}: ${e.message}`));
-      await p.screenshot({ path: path.join(carpeta, `${pref}-${idea.id}-${MOMENTOS.indexOf(m) + 1}-${m}.png`) });
+      // --entera: la página completa, con la figura y la barra de botones en su lugar (no pegadas), para el lector en frío.
+      if (banderas.has('--entera')) await p.addStyleTag({ content: '.te-accion,.te-figcaja{position:static!important;box-shadow:none!important}' });
+      await p.screenshot({ path: path.join(carpeta, `${pref}-${idea.id}-${MOMENTOS.indexOf(m) + 1}-${m}.png`), fullPage: banderas.has('--entera') });
       await p.close();
     }
     // Para ejemplos, glosario y laboratorio basta con la primera idea empezada (abre el tema aunque falte el requisito).
