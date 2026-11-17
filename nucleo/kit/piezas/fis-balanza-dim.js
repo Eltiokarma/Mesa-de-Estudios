@@ -9,7 +9,10 @@
  * datos = {
  *   izq: { nombre: 'd', exps: [0, 1, 0] },          // lado izquierdo: lo que se escribe y su dimensión (exponentes de M, L, T)
  *   der: { nombre: 'v · t', exps: [0, 1, 0],         // lado derecho
- *          oculta: false },                          //   oculta: la dimensión aún no se sabe («?»): la balanza no se inclina
+ *          oculta: false },                          //   oculta (en cualquiera de los dos lados): la dimensión aún no se
+ *                                                    //   sabe («?»): la balanza no se inclina ni da veredicto
+ *   sinVeredicto: false,                             // true: derecha y sin «Cuadra» / «No cuadra» aunque se sepan los dos
+ *                                                    //   lados (la figura de un ejemplo muestra el planteamiento, 17 nov)
  *   color: 'o', colorOculta: 'h',
  *   vistas: [datos, …]                               // opcional: varias balanzas; estado.vista elige (para «Mira»)
  * }
@@ -38,7 +41,8 @@
     return ps.length ? ps.join(' ') : '1';
   }
   const iguales = (a = [], b = []) => [0, 1, 2].every(i => (a[i] || 0) === (b[i] || 0));
-  const cuadra = d => !(d.der && d.der.oculta) && iguales(d.izq && d.izq.exps, d.der && d.der.exps);
+  const sabe = d => !(d.der && d.der.oculta) && !(d.izq && d.izq.oculta);
+  const cuadra = d => sabe(d) && iguales(d.izq && d.izq.exps, d.der && d.der.exps);
 
   // Un platillo colgado de (x, y) y, encima, una caja con lo que se pesa: el lado de la fórmula y su dimensión.
   function platillo(x, y, lado, color, colorOculta) {
@@ -60,21 +64,22 @@
     // Varias vistas en una figura (la línea de tiempo de «Mira»): estado.vista elige cuál.
     const d = Array.isArray(datos.vistas) ? datos.vistas[Math.max(0, Math.min(datos.vistas.length - 1, estado.vista || 0))] : datos;
     const color = d.color || datos.color || 'o', colorOculta = d.colorOculta || 'h';
-    const ok = cuadra(d), sabe = !(d.der && d.der.oculta);
-    const ang = sabe && !ok ? INCL : 0, a = ang * Math.PI / 180;
+    const ok = cuadra(d), veredicto = sabe(d) && !d.sinVeredicto && !datos.sinVeredicto;
+    const ang = veredicto && !ok ? INCL : 0, a = ang * Math.PI / 180;
     const xi = CX - BRAZO * Math.cos(a), yi = EJE - BRAZO * Math.sin(a), xd = CX + BRAZO * Math.cos(a), yd = EJE + BRAZO * Math.sin(a);
     let s = `<path d="M${CX - 22} ${H - 30}L${CX + 22} ${H - 30}L${CX} ${EJE + 4}Z" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`;
     s += `<line x1="${n(xi)}" y1="${n(yi)}" x2="${n(xd)}" y2="${n(yd)}" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`
       + `<circle cx="${CX}" cy="${EJE}" r="5" fill="currentColor"/>`;
     s += platillo(xi, yi, d.izq || {}, color, colorOculta) + platillo(xd, yd, d.der || {}, color, colorOculta);
-    if (sabe) s += T.rotulo(CX, H - 8, ok ? 'Cuadra: los dos lados son iguales' : 'No cuadra: los lados son distintos', { ancla: 'middle', tam: 15, peso: 700, color: ok ? 'd' : 'h' });
+    if (veredicto) s += T.rotulo(CX, H - 8, ok ? 'Cuadra: los dos lados son iguales' : 'No cuadra: los lados son distintos', { ancla: 'middle', tam: 15, peso: 700, color: ok ? 'd' : 'h' });
     return T.svg(W, H, s, { alt: alt(d) });
   }
 
   function alt(d0 = {}) {
     const d = Array.isArray(d0.vistas) ? (d0.vistas[0] || {}) : d0;
     const i = d.izq || {}, r = d.der || {};
-    if (r.oculta) return `Una balanza: a la izquierda ${i.nombre || ''}, de dimensión ${texto(i.exps)}; a la derecha ${r.nombre || ''}, de dimensión desconocida.`;
+    const dim = l => (l.oculta ? 'de dimensión por calcular' : `de dimensión ${texto(l.exps)}`);
+    if (!sabe(d) || d.sinVeredicto || d0.sinVeredicto) return `Una balanza: a la izquierda ${i.nombre || ''}, ${dim(i)}; a la derecha ${r.nombre || ''}, ${dim(r)}.`;
     return `Una balanza: a la izquierda ${i.nombre || ''} (${texto(i.exps)}), a la derecha ${r.nombre || ''} (${texto(r.exps)}). ${cuadra(d) ? 'Queda derecha: cuadra.' : 'Se inclina: no cuadra.'}`;
   }
 

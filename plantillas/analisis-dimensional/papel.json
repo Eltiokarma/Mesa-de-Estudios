@@ -4,11 +4,11 @@
   "problemas": [
     {
       "id": "p1",
-      "nivel": "básico",
-      "enunciado": "Se sospecha que la rapidez v del sonido en un gas depende de la presión p y de la densidad ρ del gas según v = k·p^x·ρ^y, con k un número. Halla x e y. Usa [v] = LT⁻¹, [p] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
-      "respuesta": "x = 1/2 e y = −1/2, es decir, v = k·√(p/ρ).",
+      "nivel": "intermedio",
+      "enunciado": "Se sospecha que la rapidez v del sonido en un gas depende de la presión P y de la densidad ρ del gas según v = k·P^x·ρ^y, con k un número. Halla x e y. Usa [v] = LT⁻¹, [P] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
+      "respuesta": "x = 1/2 e y = −1/2, es decir, v = k·√(P/ρ).",
       "pasos": [
-        "[v] = LT⁻¹, [p] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
+        "[v] = LT⁻¹, [P] = ML⁻¹T⁻² y [ρ] = ML⁻³.",
         "M: x + y = 0. L: −x − 3y = 1. T: −2x = −1.",
         "De T sale x = 1/2; de M, y = −1/2. Comprueba L: −1/2 + 3/2 = 1."
       ],
@@ -25,8 +25,8 @@
       "pasos": [
         "[Q] = L³T⁻¹, [S] = L², [g] = LT⁻² y [h] = L.",
         "T: −2y = −1, así que y = 1/2.",
-        "L: 2x + y + z = 3. Falta otra condición: no hay M. Con la idea de que el caudal es área por rapidez y la rapidez es √(g·h), x = 1 y z = 1/2.",
-        "Ojo: aquí el análisis dimensional solo no basta (hay más incógnitas que ecuaciones útiles); hace falta saber que el caudal es proporcional al área del orificio."
+        "El caudal es proporcional al área del orificio: x = 1. L: 2x + y + z = 3, así que z = 3 − 2 − 1/2 = 1/2.",
+        "Suma: x + y + z = 1 + 1/2 + 1/2 = 2. Ojo: el análisis dimensional solo no bastaba (hay más incógnitas que ecuaciones útiles); hizo falta el dato de la proporcionalidad."
       ],
       "verificar": [ { "tipo": "suma-exponentes", "args": ["Q", ["S", "g", "h"], [1, 0.5, 0.5]], "espera": 2 } ]
     },
@@ -61,7 +61,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "En la ecuación p = A·v² + B·h, p es una presión, v una rapidez y h una altura. Halla la dimensión de A/B. Usa [p] = ML⁻¹T⁻² y [v] = LT⁻¹.",
+      "enunciado": "En la ecuación P = A·v² + B·h, P es una presión, v una rapidez y h una altura. Halla la dimensión de A/B. Usa [P] = ML⁻¹T⁻² y [v] = LT⁻¹.",
       "respuesta": "[A/B] = L⁻¹T².",
       "pasos": [
         "[A]·L²T⁻² = ML⁻¹T⁻², así que [A] = ML⁻³ (una densidad).",

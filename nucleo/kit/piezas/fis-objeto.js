@@ -12,13 +12,15 @@
  *   atleta   { distancia: '100 m', tiempo: '10 s' } una pista con un corredor, la distancia y un cronómetro
  *   caracol  { texto: '3 mm en cada segundo' }      un caracol sobre una regla
  *   corazon  { texto: '72 latidos en un minuto' }   un corazón con su pulso
- *   comparar { barras: [{ nombre, valor, texto, color }], titulo }   barras horizontales a una misma escala
+ *   comparar { barras: [{ nombre, valor, texto, color }], titulo }   barras horizontales a una misma escala; una barra sin
+ *                                                   valor es una caja punteada con «?» (en otra unidad: aún no se compara)
  *   sol      { texto: '300 000 000 m en cada segundo' }  el Sol y un rayo de luz hacia la Tierra
  *   cabello  { texto: '70 μm' }                     un cabello visto con lupa, con su grosor acotado
  * Áreas y volúmenes (16 nov):
  *   terreno  { largo, ancho, texto, cuadrado }      una chacra con cerca vista desde arriba, sus lados acotados y su área en el centro
  *   botella  { texto: '2,5 L', nombre }             una botella con agua; lo que guarda, rotulado al costado
- *   tanque   { texto: '1,1 m³', nombre, altura }    el tanque de agua sobre el techo; con altura, una flecha desde el suelo
+ *   tanque   { texto: '1,1 m³', nombre, altura }    el tanque de agua sobre el techo, con lo que guarda escrito encima
+ *                                                   (no al costado: parecía una altura); con altura, una flecha desde el suelo
  *   jeringa  { ml: 2.5, max: 5, texto: '2,5 mL' }   una jeringa con su escala en mL y el líquido hasta el émbolo
  *   hoja     { ancho: '21 cm', alto: '29,7 cm', texto }   una hoja de cuaderno con ancho y alto acotados y su área
  *   piso     { largo, ancho, loseta, nx, ny }        el piso de un aula con nx × ny losetas y una loseta ampliada con su lado
@@ -31,11 +33,13 @@
  * Análisis dimensional (16 nov):
  *   pendulo  { largo: 'L', g: 'g', texto }          un péndulo con su largo junto al hilo y la flecha de la gravedad
  *                                                   (notación de los libros: período T, largo L, T = 2π·√(L/g))
- *   planetas { m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F' }   dos masas que se atraen, con la distancia entre centros acotada
- *   caja     { masa: '40 kg', fuerza: 'F', aceleracion: 'a' }   una caja empujada sobre el piso, con F y a como flechas
+ *   planetas { m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F', color2 }   dos masas que se atraen, con la distancia acotada
+ *   caja     { masa: '40 kg', fuerza: 'F', aceleracion: 'a', color2 }   una caja empujada sobre el piso, con F y a como flechas
  *   presion  { fuerza: 'F', area: 'A', texto }      una caja sobre el piso: su peso F encima y la presión repartida bajo su base A
  *   deposito { altura: 'h', texto: 'P', superficie: 'P₀', colorAltura }   un tanque visto por dentro: la profundidad h del punto del fondo
- *   viento   { v, fuerza, area, aire }               una combi de costado: el aire choca con su frente (A) y la frena (F)
+ *   viento   { v, fuerza, area, aire, color2 }       una combi de costado: el aire choca con su frente (A) y la frena (F)
+ *   color2: el color de la segunda variable (la fuerza F de planetas y viento, la aceleración a de la caja); por omisión,
+ *   'i'. Si en el ejemplo esa letra es un dato, va en el color del dato (17 nov: un color, un papel en la unidad).
  * Cada objeto nuevo lleva en su comentario la afirmación de su dibujo, en una línea.
  * estado = {} (sin pasos). Función pura de (datos, estado): sin ids, sin azar, sin reloj.
  */
@@ -179,9 +183,11 @@
       const bs = (d.barras || []).slice(0, 3), max = Math.max(1, ...bs.map(b => b.valor || 0)), x0 = 20, L = 190;   // deja lugar para el número a la derecha
       let s = d.titulo ? T.rotulo(x0, 28, d.titulo, { tam: 14, peso: 700 }) : '';
       bs.forEach((b, k) => {
-        const y = 50 + k * 54, w = L * (b.valor || 0) / max;
+        const y = 50 + k * 54, mide = Number.isFinite(b.valor), w = mide ? L * b.valor / max : 150;
         s += T.rotulo(x0, y + 4, b.nombre || '', { tam: 14, peso: 700 });
-        s += `<rect x="${x0}" y="${y + 12}" width="${n(Math.max(2, w))}" height="20" rx="4" fill="${T.color(b.color || 'o')}" fill-opacity="0.75"/>`;
+        if (mide) s += `<rect x="${x0}" y="${y + 12}" width="${n(Math.max(2, w))}" height="20" rx="4" fill="${T.color(b.color || 'o')}" fill-opacity="0.75"/>`;
+        else s += `<rect x="${x0}" y="${y + 12}" width="${w}" height="20" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="5 4"/>`
+          + T.rotulo(x0 + w / 2, y + 28, '?', { ancla: 'middle', tam: 15, peso: 800, color: 'h' });
         s += T.rotulo(x0 + w + 8, y + 28, b.texto || '', { tam: 15, peso: 800, color: b.color || 'o', max: W - 4 });
       });
       return s;
@@ -246,9 +252,8 @@
       s += `<ellipse cx="150" cy="46" rx="16" ry="5" fill="currentColor" fill-opacity="0.35" ${tinta({ g: 1.5 })}/>`;
       for (const y of [84, 112, 140]) s += `<path d="M106 ${y}Q150 ${y + 12} 194 ${y}" fill="none" ${tinta({ g: 1.2 })} stroke-opacity="0.6"/>`;
       s = obj('tanque', s);
-      s += `<line x1="200" y1="104" x2="214" y2="104" stroke="${T.color(c)}" stroke-width="2" stroke-linecap="round"/>`;
-      s += T.rotulo(220, 110, d.texto || '', { tam: 16, peso: 800, color: c, min: 4, max: W - 4 });
-      if (d.nombre) s += T.rotulo(220, 130, d.nombre, { tam: 14, min: 4, max: W - 4 });
+      if (d.texto) s += etiqueta(150, 106, d.texto, c);
+      if (d.nombre) s += T.rotulo(150, 138, d.nombre, { ancla: 'middle', tam: 14, min: 4, max: W - 4 });
       if (d.altura) {
         s += `<line x1="40" y1="160" x2="104" y2="160" stroke="${T.color(c)}" stroke-width="1.5" stroke-dasharray="4 4"/>`;
         s += T.flecha(40, 204, 40, 162, { color: c, grosor: 2.5 });
@@ -433,11 +438,13 @@
     planetas(d, c) {
       const x1 = 74, x2 = 252, y = 92;
       let s = `<circle cx="${x1}" cy="${y}" r="40" fill="var(--c-i)" fill-opacity="0.22" ${tinta()}/><path d="M${x1 - 26} ${y - 16}Q${x1 - 10} ${y - 30} ${x1 + 8} ${y - 22}Q${x1 + 18} ${y - 16} ${x1 + 24} ${y - 22}" fill="none" stroke="var(--c-d)" stroke-width="3" stroke-linecap="round"/>`;
-      s += `<circle cx="${x2}" cy="${y}" r="22" fill="currentColor" fill-opacity="0.14" ${tinta()}/><circle cx="${x2 + 6}" cy="${y - 7}" r="4" fill="none" ${tinta({ g: 1.2 })}/>`;
+      // el cráter, arriba a la izquierda: sobre el centro tapaba el subíndice de m₂ (lector en frío, 17 nov)
+      s += `<circle cx="${x2}" cy="${y}" r="22" fill="currentColor" fill-opacity="0.14" ${tinta()}/><circle cx="${x2 - 11}" cy="${y - 12}" r="3.5" fill="none" ${tinta({ g: 1.2 })}/>`;
       for (const x of [x1, x2]) s += `<line x1="${x}" y1="${x === x1 ? y + 42 : y + 24}" x2="${x}" y2="${y + 66}" stroke="currentColor" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="3 3"/>`;
       s = obj('planetas', s);
-      s += T.flecha(x1 + 44, y, x1 + 84, y, { color: 'i', grosor: 3 }) + T.flecha(x2 - 26, y, x2 - 66, y, { color: 'i', grosor: 3 });
-      if (d.fuerza) s += T.rotulo(x1 + 64, y - 12, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: 'i' }) + T.rotulo(x2 - 46, y - 12, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: 'i' });
+      const c2 = d.color2 || 'i';
+      s += T.flecha(x1 + 44, y, x1 + 84, y, { color: c2, grosor: 3 }) + T.flecha(x2 - 26, y, x2 - 66, y, { color: c2, grosor: 3 });
+      if (d.fuerza) s += T.rotulo(x1 + 64, y - 12, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: c2 }) + T.rotulo(x2 - 46, y - 12, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: c2 });
       s += T.rotulo(x1, y + 6, d.m1 || '', { ancla: 'middle', tam: 16, peso: 800, color: c });
       s += T.rotulo(x2, y + 6, d.m2 || '', { ancla: 'middle', tam: 15, peso: 800, color: c });
       if (d.d) s += T.cota(x1, x2, y + 66, { texto: d.d, color: c, lado: 'abajo' });
@@ -452,7 +459,7 @@
       s = obj('caja', s);
       s += etiqueta(172, 136, d.masa || '', c);
       if (d.fuerza) s += T.flecha(36, 128, 124, 128, { color: c, grosor: 3 }) + T.rotulo(78, 116, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: c });
-      if (d.aceleracion) s += T.flecha(140, 74, 214, 74, { color: 'i', grosor: 3 }) + T.rotulo(224, 80, d.aceleracion, { tam: 16, peso: 800, color: 'i' });
+      if (d.aceleracion) s += T.flecha(140, 74, 214, 74, { color: d.color2 || 'i', grosor: 3 }) + T.rotulo(224, 80, d.aceleracion, { tam: 16, peso: 800, color: d.color2 || 'i' });
       return s;
     },
     // presion: «el peso F de la caja se reparte sobre el área A de su base: eso es la presión».
@@ -494,7 +501,7 @@
       for (let k = 0; k < 3; k++) { const y = 104 + k * 20; s += `<line x1="306" y1="${y}" x2="244" y2="${y}" stroke="var(--c-d)" stroke-width="2" stroke-linecap="round"/><path d="M236 ${y}l9 -5v10z" fill="var(--c-d)"/>`; }
       s = obj('viento', s);
       if (d.v) s += T.flecha(100, 56, 184, 56, { color: c, grosor: 3 }) + T.rotulo(192, 62, d.v, { tam: 16, peso: 800, color: c });
-      if (d.fuerza) s += T.flecha(38, 116, 8, 116, { color: 'i', grosor: 3 }) + T.rotulo(20, 104, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: 'i', min: 4 });
+      if (d.fuerza) s += T.flecha(38, 116, 8, 116, { color: d.color2 || 'i', grosor: 3 }) + T.rotulo(20, 104, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: d.color2 || 'i', min: 4 });
       if (d.area) s += `<line x1="214" y1="178" x2="217" y2="158" stroke="${T.color(c)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(212, 194, d.area, { ancla: 'middle', tam: 14, peso: 700, color: c, min: 4, max: W - 4 });
       if (d.aire) s += T.rotulo(274, 92, d.aire, { ancla: 'middle', tam: 14, peso: 700, color: 'd', min: 4, max: W - 4 });
       return s;
@@ -510,7 +517,7 @@
     const txt = { cancha: `Una cancha de fútbol de ${d.largo || ''} de largo`, bebe: `Un bebé sobre una balanza que marca ${d.pantalla || ''}`,
       reloj: `Un reloj con ${d.texto || ''} pintados`, lapiz: `Un lápiz de ${Kit.formatear(d.cm || 0, 1)} cm sobre una regla`, camion: `Un camión con ${d.carga || ''} de carga`,
       atleta: `Un corredor en una pista de ${d.distancia || ''}; el cronómetro marca ${d.tiempo || ''}`, caracol: `Un caracol que avanza ${d.texto || ''}`,
-      corazon: `Un corazón: ${d.texto || ''}`, comparar: `Comparación: ${(d.barras || []).map(b => `${b.nombre} ${b.texto}`).join('; ')}`,
+      corazon: `Un corazón: ${d.texto || ''}`, comparar: `Comparación: ${(d.barras || []).map(b => `${b.nombre} ${b.texto}`).join('; ')}${(d.barras || []).some(b => !Number.isFinite(b.valor)) ? ' (todavía sin pasar a la misma unidad)' : ''}`,
       sol: `Un rayo de luz del Sol a la Tierra: ${d.texto || ''}`, cabello: `Un cabello visto con lupa: ${d.texto || ''} de grosor`,
       terreno: `Un terreno ${d.cuadrado ? 'cuadrado' : 'rectangular'} con cerca, visto desde arriba${d.largo ? `; largo: ${d.largo}` : ''}${d.ancho ? `; ancho: ${d.ancho}` : ''}${d.texto ? `; ${d.texto}` : ''}`,
       botella: `Una botella con agua: ${d.texto || ''}${d.nombre ? ` (${d.nombre})` : ''}`,

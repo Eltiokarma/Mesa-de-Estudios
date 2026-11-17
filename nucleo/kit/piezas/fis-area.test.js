@@ -53,3 +53,11 @@ test('las vistas: estado.vista elige la figura', () => {
   assert.match(P.dibujar(d, { vista: 1 }), /kit-cubo/);
 });
 
+
+test('cubo sin «abajo»: no escribe el volumen ni lo dice el texto alternativo', () => {
+  const d = { color: 'i', cubo: { n: 2, arriba: '2 dm', nombre: 'cada cubito: 1 dm de lado' } };
+  const s = P.dibujar(d);
+  assert.ok(!/NaN|undefined/.test(s));
+  assert.ok(!/dm³|= 8/.test(s));
+  assert.equal(P.alt(d), 'Un cubo de 2 dm de lado con una cuadrícula en sus caras (cada cubito: 1 dm de lado).');
+});

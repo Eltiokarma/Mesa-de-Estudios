@@ -19,7 +19,8 @@
  *   proposiciones tres proposiciones V/F sobre la homogeneidad y las magnitudes fundamentales y
  *                 derivadas; la respuesta es la secuencia (armarTexto).
  *
- * Convenciones: dimensiones con M (masa), L (longitud), T (tiempo) y Θ (temperatura); los números,
+ * Letras (17 nov, como la teoría de la unidad: una letra, un significado): P es la presión y Pot, la potencia; q es la
+ * cantidad de movimiento. Convenciones: dimensiones con M (masa), L (longitud), T (tiempo) y Θ (temperatura); los números,
  * los ángulos en radianes y las funciones sen, cos, e^( ) y log son adimensionales.
  * Datos (contrato, punto 13 de docs/plan-calidad.md; Gerson, 16 nov: «todos los datos deben darse, incluso las
  * fórmulas»): `datos` es una lista de líneas con la dimensión y la unidad de cada magnitud que el alumno necesita y
@@ -71,7 +72,7 @@
     m: ['m', 'la masa', dim(1)], h: ['h', 'la altura', dim(0, 1)], x: ['x', 'la posición', dim(0, 1)], R: ['R', 'el radio', dim(0, 1)],
     L: ['L', 'el largo', dim(0, 1)], d: ['d', 'la deformación', dim(0, 1)], S: ['S', 'el área', dim(0, 2)], t: ['t', 'el tiempo', dim(0, 0, 1)], v: ['v', 'la rapidez', dim(0, 1, -1)], a: ['a', 'la aceleración', dim(0, 1, -2)],
     g: ['g', 'la aceleración de la gravedad', dim(0, 1, -2)], F: ['F', 'la fuerza', dim(1, 1, -2)], E: ['E', 'la energía', dim(1, 2, -2)],
-    W: ['W', 'el trabajo', dim(1, 2, -2)], Pot: ['P', 'la potencia', dim(1, 2, -3)], p: ['p', 'la presión', dim(1, -1, -2)],
+    W: ['W', 'el trabajo', dim(1, 2, -2)], Pot: ['Pot', 'la potencia', dim(1, 2, -3)], p: ['P', 'la presión', dim(1, -1, -2)],
     rho: ['ρ', 'la densidad', dim(1, -3)], A: ['A', 'el área', dim(0, 2)], V: ['V', 'el volumen', dim(0, 3)], f: ['f', 'la frecuencia', dim(0, 0, -1)],
     w: ['ω', 'la velocidad angular', dim(0, 0, -1)], Q: ['Q', 'el caudal', dim(0, 3, -1)], q: ['q', 'la cantidad de movimiento', dim(1, 1, -1)],
     sig: ['σ', 'la tensión superficial', dim(1, 0, -2)], K: ['K', 'la constante del resorte', dim(1, 0, -2)], mu: ['μ', 'la densidad lineal de la cuerda', dim(1, -1)],
@@ -100,7 +101,7 @@
     { q: 'Per', ctx: 'El periodo T de un péndulo simple', fs: ['L', 'g'], e: [0.5, -0.5] },
     { q: 'v', ctx: 'La rapidez v de una onda en una cuerda', fs: ['Ft', 'mu'], e: [0.5, -0.5] },
     { q: 'v', ctx: 'La rapidez v con que sale el agua por un agujero en el fondo de un tanque', fs: ['g', 'h'], e: [0.5, 0.5] },
-    { q: 'Pot', ctx: 'La potencia P que entrega un molino de viento', fs: ['rho', 'S', 'v'], e: [1, 1, 3] },
+    { q: 'Pot', ctx: 'La potencia Pot que entrega un molino de viento', fs: ['rho', 'S', 'v'], e: [1, 1, 3] },
     { q: 'F', ctx: 'La fuerza F del aire sobre un auto en la carretera', fs: ['rho', 'v', 'S'], e: [1, 2, 1] },
     { q: 'f', ctx: 'La frecuencia f con que oscila un bloque colgado de un resorte', fs: ['m', 'K'], e: [-0.5, 0.5] },
     { q: 'Per', ctx: 'El periodo T de un satélite en órbita circular', fs: ['R', 'G', 'M'], e: [1.5, -0.5, -0.5] },
@@ -108,16 +109,16 @@
     { q: 'h', ctx: 'La altura máxima h de una pelota lanzada hacia arriba', fs: ['v', 'g'], e: [2, -1] },
     { q: 'f', ctx: 'La frecuencia f con que vibra una gota de agua', fs: ['sig', 'rho', 'R'], e: [0.5, -0.5, -1.5] },
     { q: 'F', ctx: 'La fuerza centrípeta F sobre una combi que da una curva', fs: ['m', 'v', 'R'], e: [1, 2, -1] },
-    { q: 'p', ctx: 'La presión p que ejerce un chorro de agua al chocar contra una pared', fs: ['rho', 'v'], e: [1, 2] },
+    { q: 'p', ctx: 'La presión P que ejerce un chorro de agua al chocar contra una pared', fs: ['rho', 'v'], e: [1, 2] },
     { q: 'E', ctx: 'La energía E guardada en un resorte estirado una longitud d', fs: ['K', 'd'], e: [1, 2] },
     { q: 'v', ctx: 'La rapidez v de un satélite en órbita circular', fs: ['G', 'M', 'R'], e: [0.5, 0.5, -0.5] },
     { q: 'v', ctx: 'La rapidez v de las olas en mar abierto', fs: ['g', 'lam'], e: [0.5, 0.5] },
-    { q: 'p', ctx: 'La presión p del agua en el fondo de una piscina', fs: ['rho', 'g', 'h'], e: [1, 1, 1] },
+    { q: 'p', ctx: 'La presión P del agua en el fondo de una piscina', fs: ['rho', 'g', 'h'], e: [1, 1, 1] },
     { q: 'E', ctx: 'La energía cinética E de una moto', fs: ['m', 'v'], e: [1, 2] },
     { q: 'Per', ctx: 'El periodo T de un bloque que oscila colgado de un resorte', fs: ['m', 'K'], e: [0.5, -0.5] },
     { q: 'f', ctx: 'La frecuencia f del sonido más grave de una cuerda de guitarra', fs: ['L', 'Ft', 'mu'], e: [-1, 0.5, -0.5] },
     { q: 'W', ctx: 'El trabajo W que hace una fuerza constante a lo largo de su recorrido', fs: ['F', 'd'], e: [1, 1] },
-    { q: 'Pot', ctx: 'La potencia P de una grúa que sube una carga con rapidez constante', fs: ['m', 'g', 'v'], e: [1, 1, 1] },
+    { q: 'Pot', ctx: 'La potencia Pot de una grúa que sube una carga con rapidez constante', fs: ['m', 'g', 'v'], e: [1, 1, 1] },
   ];
   const LETRAS = ['x', 'y', 'z'];
   // «−3x + 2y + z», sin coeficientes 1 ni términos con 0.
@@ -213,7 +214,7 @@
   // ---- constante ----
   const MIEMBROS = ['E', 'F', 'p', 'Pot', 'v', 'x', 'q', 'Q'];
   const FACTORES = ['v', 't', 'h', 'm', 'a', 'F', 'rho', 'S', 'f', 'V'];
-  const PROCESOS = { E: 'la energía E que se le da a un sistema', F: 'la fuerza F sobre un cuerpo', p: 'la presión p dentro de un recipiente', Pot: 'la potencia P de un motor',
+  const PROCESOS = { E: 'la energía E que se le da a un sistema', F: 'la fuerza F sobre un cuerpo', p: 'la presión P dentro de un recipiente', Pot: 'la potencia Pot de un motor',
     v: 'la rapidez v de un móvil', x: 'la posición x de una partícula', q: 'la cantidad de movimiento q de un cuerpo', Q: 'el caudal Q de un río' };
   // Un término: constante · factor^exp (· factor^exp). Devuelve { segs, dim, dimUno }.
   function termino(rng, letra, color, excluir) {
@@ -344,10 +345,10 @@
     { id: 'F1', v: true, idea: 'fundamental', t: 'La masa, la longitud, el tiempo y la temperatura son cuatro de las siete magnitudes fundamentales del SI.', por: 'El SI tiene siete magnitudes fundamentales: longitud, masa, tiempo, intensidad de corriente, temperatura, cantidad de sustancia e intensidad luminosa.' },
     { id: 'F2', v: false, idea: 'fundamental', t: 'La fuerza es una magnitud fundamental del SI.', por: 'La fuerza es derivada: sale de la masa, la longitud y el tiempo, [F] = MLT⁻².' },
     { id: 'F3', v: false, idea: 'fundamental', t: 'La velocidad es una magnitud fundamental, porque se mide directamente con el velocímetro.', por: 'La velocidad es derivada, [v] = LT⁻¹: sale de dividir una longitud entre un tiempo, aunque un aparato la muestre directamente.' },
-    { id: 'F4', v: true, idea: 'fundamental', t: 'La presión es una magnitud derivada.', por: 'La presión es fuerza entre área: [p] = ML⁻¹T⁻², derivada de M, L y T.' },
+    { id: 'F4', v: true, idea: 'fundamental', t: 'La presión es una magnitud derivada.', por: 'La presión es fuerza entre área: [P] = ML⁻¹T⁻², derivada de M, L y T.' },
     { id: 'A1', v: false, idea: 'suma', t: 'Se puede sumar una velocidad con una aceleración si las dos están en unidades del SI.', por: 'Solo se suman magnitudes de la misma dimensión: LT⁻¹ y LT⁻² no se pueden sumar, estén en las unidades que estén.' },
     { id: 'A2', v: false, idea: 'suma', t: 'Al sumar dos longitudes, el resultado tiene dimensión L².', por: 'Sumar no cambia la dimensión: L + L sigue siendo L. Las dimensiones se suman (en el exponente) solo al multiplicar.' },
-    { id: 'A3', v: true, idea: 'suma', t: 'Si P + Q = R es una ecuación física correcta, entonces P, Q y R tienen la misma dimensión.', por: 'Es el principio de homogeneidad aplicado a una suma: [P] = [Q] = [R].' },
+    { id: 'A3', v: true, idea: 'suma', t: 'Si X + Y = Z es una ecuación física correcta, entonces X, Y y Z tienen la misma dimensión.', por: 'Es el principio de homogeneidad aplicado a una suma: [X] = [Y] = [Z].' },
     { id: 'U1', v: false, idea: 'unica', t: 'Si dos magnitudes tienen la misma dimensión, son la misma magnitud física.', por: 'El trabajo y el momento de una fuerza tienen la misma dimensión, ML²T⁻², y son magnitudes distintas.' },
     { id: 'U2', v: true, idea: 'unica', t: 'El trabajo y la energía cinética tienen la misma dimensión.', por: 'Los dos son ML²T⁻²: el trabajo cambia la energía cinética, así que tienen que pesar igual.' },
     { id: 'H4', v: true, idea: 'detecta', t: 'Si en una ecuación un término es una fuerza y otro es una energía, la ecuación está mal escrita.', por: 'Una fuerza (MLT⁻²) y una energía (ML²T⁻²) no pesan igual: la ecuación no es homogénea y por eso tiene un error.' },

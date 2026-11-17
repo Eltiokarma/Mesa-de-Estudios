@@ -77,3 +77,51 @@ Método:
 13. **El distractor muestra el valor que produce su error.** Automatizable: volver a leer el texto mostrado y exigir que quede a menos de 1 % de `valor`.
 14. **El dibujo muestra el objeto que nombra el texto** (ciclista frente a combi). Semiautomático: si la pieza es `fis-combi`, el enunciado debe decir «combi».
 15. **Historia y requisitos al partir una unidad.** Al separar Vectores quedaron la historia, el código y los `requiere` de vectores. Automatizable: avisar si la historia usa términos del glosario de otra unidad, y si `requiere` carga piezas que ninguna idea dibuja.
+
+## Correcciones (17 nov)
+
+Hechas en `contenido/teoria/fisica/magnitudes-y-vectores.js` (glosario incluido), `fis-objeto`, `fis-area`, `fis-balanza-dim` (con sus pruebas) y `plantillas/analisis-dimensional/` (generador y papel). No se tocaron `app/`, `nucleo/teoria.js`, `vectores.js`, `fis-fuerzas`, `flechas.js` ni otras plantillas. Cuentas nuevas recalculadas con un script aparte (`scratchpad/fix-mag/recalc.py`); capturas a 390 px en `scratchpad/fix-mag/`.
+
+| # | Qué se hizo |
+|---|---|
+| 1 | Lo arregló Gerson en la app (Predice baraja). Además, la opción correcta de la idea 3 ya no dice «como una aceleración» (hallazgo 16). |
+| 2 | `simple` de «constante»: «Un valor fijo de una fórmula; puede ser solo un número o traer unidades». Sus ejemplos: el ½ sin dimensión, k con L T⁻², g con unidades. |
+| 3 | «Así se resuelve» y «Ahora tú» de la idea 2: los datos dan el largo (1 m = 10 dm, 1 dm = 10 cm, 1 L = 1 dm³; la hectárea como cuadrado de 100 m), no la equivalencia ya elevada. Tipo nuevo m³ ↔ cm³ (balde): ahora hay 5 tipos y 4 piden elevar. |
+| 4 | Regla de la idea 3: «… y en una suma, cada término también», con `[d] = [v · t] = [½ a · t²] = L`. |
+| 5 | P es la presión en toda la unidad; la potencia, Pot (teoría y práctica); el glosario ya no usa P para el peso; la proposición A3 usa X + Y = Z. q sigue siendo la cantidad de movimiento en la práctica. |
+| 6 | Fuera de los datos «½ / 2 no tiene dimensión» (SUMAS, MRUV, frenado). El péndulo avisa «aquí T es el período y L, el largo del hilo» sin escribir [T] = T ni [L] = L; queda «k es un número» porque k no es lo que se pide. |
+| 7 | Historia sin vectores: patrones antiguos, sistema métrico (1795), SI (1960) y redefinición de 2019. |
+| 8 | Tarjeta 2 de «Lee» con los prefijos k, c, m y μ; tipo nuevo de «Así se resuelve» y «Ahora tú» con mg → g (error CONV-PREFIJO); ejemplos con μm y mg/mL. |
+| 9 | Niveles: idea 1, N3 rehecho (ordenar guepardo, auto y caballo; jarabe mg/mL → g/L; combi a 54 km/h en 20 min con el error típico; avión que recorre 1800 km en 2 h frente al sonido); el cabello baja a N2, los latidos a N1 y sale el lápiz. Idea 2: la caja de 2 dm baja a N2 y el hielo sube a N3 (masa de 0,5 m³ y el error de elevar al cuadrado). Idea 3: el n.º 8 pasa a F = m·v²/t (potencia, división y comparación). |
+| 10 | Con «unos» y sin fuente: guepardo, sonido, hielo, −8 °C. Adobe: la fuente es la revisión de la Revista Pakamuros 14(1), UNJ, 2026 (Piedra y otros, 1690–1700 kg/m³), con su dirección. El título, el volumen y la cifra salen del índice del buscador; el dominio revistas.unj.edu.pe no se abre desde esta sesión. |
+| 11 | En los datos de cada ejemplo, de «Así se resuelve» y de «Ahora tú» de la idea 3: «[x] se lee “la dimensión de x”; a · b se lee “a por b”» y la regla de los exponentes; en la leyenda del juego, «·: por». |
+| 12 | Color por papel en toda la unidad (decisión del 17 nov): dato naranja, factor verde, resultado turquesa, incógnita roja. El área y el volumen de la idea 2 pasan a turquesa (juego, Predice, Mira, figuras); la h del tanque, naranja (dato); las fuerzas y la aceleración dadas, naranja (`color2` en `fis-objeto`); las respuestas del guepardo y el avión, turquesa. **Queda para Gerson** escribirlo en el contrato. |
+| 13 | **Pendiente (Gerson):** no hay práctica ni papel de las ideas 1 y 2. |
+| 14 | p2 resuelto con x = 1 por proporcionalidad, sin Torricelli; p1 pasa a «intermedio». **Pendiente:** campo `datos` en el papel, nivel «examen» y su validación (formato y validador fuera del alcance). |
+| 15 | Con la misma semilla, «Así se resuelve» y «Ahora tú» siguen siendo del mismo tipo en las ideas 1 y 3 (docs/teoria.md 4e), pero `otro`/`otroPar` eligen otro valor: 0 enunciados iguales en las semillas 0–59 de las tres ideas. **Pendiente (Gerson):** la regla del molde (la idea 2 sigue con el desfase de tipo) y que el validador lo vigile. |
+| 16 | Hecho (ver 1). |
+| 17 | «Así se resuelve», tipo 3: «Una combi va a…». El ejemplo de 15 min pasó a «Una combi», sin tramos. |
+| 18 | Distractores chicos con las cifras que hacen falta (`fc`): 0,00025 m². |
+| 19 | En esta unidad, `f` escribe los números de 4 cifras sin espacio (3300 s), como los escritos a mano. `Kit.formatear` no se tocó. |
+| 20 | **Pendiente:** «MLT⁻²» frente a «M L T⁻²» y «periodo» frente a «período» en la práctica (se cambiarían textos y casos de la plantilla). |
+| 21 | **Pendiente (criterio de Gerson):** datos de las proposiciones V/F. |
+| 22 | Consigna «Un piso cuadrado»; sin 108 km/h; clases de 40 a 90 min. |
+| 23 | «¿Cuántos segundos son?» |
+| 24 | Fuera F3, A, B, R, θ, vA, vB, anguloDe, FL, cosG, senG, marco, û y `recta.js` de `requiere`; la pieza de la idea 1 es `fis-medida`. |
+| 25 | CONV-CUBO y CONV-PREFIJO en la lista de códigos. |
+
+**Lector en frío (ejemplos):**
+- Ninguna figura da la respuesta. La balanza va con «?» y sin veredicto: `oculta` en cualquiera de los dos lados y `sinVeredicto: true`, con su prueba. La combi va sin tramos. Las rapideces en unidades distintas se dibujan como cajas punteadas con «?» (`comparar` sin `valor`). El cubo de 2 dm no muestra «8 dm³ = 8 L».
+- El ÷ 3,6 se hace con 1000 y 3600 o se dice de dónde sale.
+- Los segundos de un día tachan día, h y min; el reloj dice «1 h: una vuelta del minutero».
+- El volumen del tanque va escrito sobre el tanque.
+- La combi de 72 km/h ahora es una combi a 54 km/h.
+- El cráter de m₂ se movió.
+- En G se dice que M² resta porque divide.
+- El nivel 1 de dimensiones va con letras: ni el adobe, ni el corredor, ni la chacra, ni la caja traen números que no se usan.
+- En el glosario, el cuadrado tiene lado a (no L).
+
+**Pendientes fuera del alcance:**
+- El requisito de potencias de 10 en el `requiere` del catálogo.
+- Las reglas 1–15 del contrato y del validador propuestas arriba.
+- `npm test` tiene 4 fallas de `fisica/vectores.js`, que está a medio editar en paralelo («LEE_COMP is not defined»). Rompen el glosario, el catálogo y la escena `vectores-componentes`. Además, `herramientas/servidor.js` se cae al cargar `vectores.js` («LEE_PROD is not defined»), así que las capturas se tomaron con un servidor estático en el puerto 4180.

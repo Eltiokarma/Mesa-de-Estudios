@@ -89,7 +89,8 @@
 
   function alt(datos0 = {}) {
     const datos = Array.isArray(datos0.vistas) ? (datos0.vistas[0] || {}) : datos0;
-    if (datos.cubo) return `Un cubo de ${datos.cubo.arriba || ''} de lado con una cuadrícula en sus caras: ${datos.cubo.abajo || ''}.`;
+    // Sin `abajo` (la figura de un ejemplo no dice el volumen pedido, 17 nov), el texto alternativo tampoco lo dice.
+    if (datos.cubo) return `Un cubo de ${datos.cubo.arriba || ''} de lado con una cuadrícula en sus caras${datos.cubo.abajo ? `: ${datos.cubo.abajo}` : ''}${datos.cubo.nombre ? ` (${datos.cubo.nombre})` : ''}.`;
     const qs = datos.cuadros || [];
     if (!qs.length) return 'Un panel vacío.';
     return `${qs.length > 1 ? 'Dos cuadrados iguales' : 'Un cuadrado'} con cuadrícula: ${qs.map(q => `${q.abajo || ''} (${q.nombre || ''})`).join(' y ')}.`;

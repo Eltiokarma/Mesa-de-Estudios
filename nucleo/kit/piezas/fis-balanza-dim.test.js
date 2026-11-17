@@ -49,6 +49,21 @@ test('sin NaN ni colores fijos, alto fijo, puro y con texto alternativo', () => 
   assert.equal(altos.size, 1);
 });
 
+test('sinVeredicto: derecha y sin «Cuadra» aunque se sepan los dos lados; la incógnita también a la izquierda', () => {
+  const mal = P.dibujar({ izq: { nombre: 'd', exps: L }, der: { nombre: 'v / t', exps: A }, sinVeredicto: true });
+  const [, y1, , y2] = brazo(mal);
+  assert.equal(y1, y2, 'no se inclina');
+  assert.ok(!/Cuadra|No cuadra/.test(mal));
+  assert.ok(!/cuadra/.test(P.alt({ izq: { nombre: 'd', exps: L }, der: { nombre: 'v / t', exps: A }, sinVeredicto: true })));
+  const dos = P.dibujar({ izq: { nombre: 'v · t', oculta: true }, der: { nombre: '½ a t²', oculta: true } });
+  assert.equal((dos.match(/>\?</g) || []).length, 2, 'los dos lados con «?»');
+  assert.ok(!/Cuadra|No cuadra/.test(dos));
+  const [, z1, , z2] = brazo(dos);
+  assert.equal(z1, z2);
+  assert.match(P.alt({ izq: { nombre: 'v · t', oculta: true }, der: { nombre: '½ a t²', oculta: true } }), /por calcular/);
+  assert.ok(!/NaN|undefined/.test(dos));
+});
+
 test('las vistas: estado.vista elige la balanza', () => {
   const d = { vistas: [{ izq: { nombre: 'x', exps: L }, der: { nombre: 'k · t²', oculta: true } }, { izq: { nombre: 'x', exps: L }, der: { nombre: 'k · t²', exps: L } }] };
   assert.ok(!/Cuadra/.test(P.dibujar(d, { vista: 0 })));

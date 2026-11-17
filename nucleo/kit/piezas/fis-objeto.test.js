@@ -114,3 +114,35 @@ test('los rótulos de los objetos nuevos no se pisan entre sí', () => {
   }
   assert.deepEqual(mal, []);
 });
+
+// 17 nov (auditoría y lector en frío de «Magnitudes y unidades»): la figura de un ejemplo muestra el planteamiento.
+test('comparar: una barra sin valor es una caja punteada con «?», no una barra medida', () => {
+  const s = P.dibujar({ objeto: 'comparar', titulo: 'En dos unidades', barras: [{ nombre: 'Avión', texto: '1800 km en 2 h' }, { nombre: 'Sonido', texto: '340 m/s' }] });
+  assert.ok(!/NaN|undefined/.test(s));
+  assert.equal((s.match(/stroke-dasharray="5 4"/g) || []).length, 2);
+  assert.equal((s.match(/>\?</g) || []).length, 2);
+  assert.ok(!/fill-opacity="0.75"/.test(s), 'sin barras llenas');
+  assert.match(P.alt({ objeto: 'comparar', barras: [{ nombre: 'A', texto: '1 m/s' }] }), /misma unidad/);
+  for (const [x0, , x1] of cajas(s)) assert.ok(x0 >= 0 && x1 <= P.constantes.W, 'cabe a lo ancho');
+});
+
+test('tanque: lo que guarda va escrito sobre el tanque, no al costado como una cota', () => {
+  const s = P.dibujar({ objeto: 'tanque', texto: '1,1 m³' });
+  const t = s.match(/<text[^>]*x="([\d.]+)"[^>]*>1,1 m³</);
+  assert.ok(t && Math.abs(+t[1] - 150) < 1, 'centrado en el tanque');
+  assert.ok(!/<line x1="200" y1="104"/.test(s), 'sin la rayita del costado');
+});
+
+test('planetas: el cráter no tapa el rótulo de m₂', () => {
+  const s = P.dibujar({ objeto: 'planetas', m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F' });
+  const cs = cajas(s), rot = cs.find(c => c[4].includes('m₂')), crater = cs.find(c => /<circle[^>]*r="3.5"/.test(c[4]));
+  assert.ok(rot && crater);
+  assert.ok(!(rot[0] < crater[2] && crater[0] < rot[2] && rot[1] < crater[3] && crater[1] < rot[3]), 'se pisan');
+});
+
+test('color2: la fuerza o la aceleración en el color de su papel; por omisión, turquesa', () => {
+  assert.match(P.dibujar({ objeto: 'planetas', m1: 'm₁', m2: 'm₂', fuerza: 'F' }), /fill="var\(--c-i\)"[^>]*>F</);
+  assert.match(P.dibujar({ objeto: 'planetas', m1: 'm₁', m2: 'm₂', fuerza: 'F', color2: 'o' }), /fill="var\(--c-o\)"[^>]*>F</);
+  assert.match(P.dibujar({ objeto: 'caja', masa: 'm', fuerza: 'F', aceleracion: 'a', color2: 'o' }), /fill="var\(--c-o\)"[^>]*>a</);
+  assert.match(P.dibujar({ objeto: 'viento', v: 'v', fuerza: 'F', color2: 'o' }), /fill="var\(--c-o\)"[^>]*>F</);
+});
