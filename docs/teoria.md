@@ -77,7 +77,8 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
                dibujo: valores => ({ datos, estado }), lectura: valores => partes (≤ 12 palabras),
                montar?(contenedor, { valores, pintar }) },   // solo si la pieza trae un gesto propio
     predice: { pregunta (≤ 40), voz, opciones: [{ id, texto (≤ 14), correcta } | { id, texto, error, siFuera (≤ 20) }],
-               dibujo: { datos, estado }, revelar: { datos, estado }, coincide, noCoincide },
+               dibujo: { datos, estado }, revelar: { datos, estado }, coincide, noCoincide,
+               orden?: 'fijo' },   // la app baraja las opciones; 'fijo' solo si sus letras se ven en la figura (correcta no primera)
     mira:    { pieza?, datos, base?, voz, pasos: [{ estado, texto (≤ 14), ecuacion }] },   // de 2 a 7 pasos
     regla:   { texto (≤ 30), ecuacion, condicion (≤ 22), voz },
     ahoraTu: { pieza?, voz, generar: semilla => ({ pregunta (≤ 40), dibujo?, opciones, solucion: { texto (≤ 20), ecuacion, dibujo? } }) },
