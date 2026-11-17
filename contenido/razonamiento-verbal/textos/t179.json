@@ -1,6 +1,6 @@
 {
   "id": "t179",
-  "version": 1,
+  "version": 2,
   "titulo": "Carta de una vecina al diario de Piura",
   "tema": "Ciudad · sombra y bancas o una pileta en el parque (parque inventado)",
   "grado": 5,
@@ -55,67 +55,6 @@
   "preguntas": [
     {
       "id": "p1",
-      "tipo": "idea-principal",
-      "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "alternativas",
-      "previo": {
-        "tipo": "marcar-oracion",
-        "pide": "Antes de ver las alternativas, toca la oración que dice lo que defiende el autor.",
-        "aceptadas": [
-          "o1"
-        ],
-        "ninguna": "RV3",
-        "codigos": {
-          "o5": "RV42"
-        },
-        "explicacion": "La oración 1 dice lo que la autora defiende: árboles y bancas antes que una pileta. Las demás son sus razones, una ventaja de la pileta que ella responde y un deseo final.",
-        "explicaciones": {
-          "o2": "Es una razón: el sol fuerte y la falta de sombra.",
-          "o3": "Es una consecuencia de esa razón: el parque vacío al mediodía.",
-          "o4": "Es otra razón: hoy el parque no les sirve a los adultos mayores ni a las familias con niños.",
-          "o5": "Reconoce una ventaja de la pileta, pero la autora no la defiende: la responde en la oración 6.",
-          "o6": "Responde a la oración 5: es una razón contra la pileta.",
-          "o7": "Es una propuesta concreta que sale de la tesis.",
-          "o8": "Es un deseo final, con una razón general; no dice qué conviene poner en el parque en vez de la pileta.",
-          "ninguna": "La oración 1 sí la dice completa: qué conviene y frente a qué."
-        }
-      },
-      "enunciado": "¿Cuál es la tesis de la autora de la carta?",
-      "alternativas": [
-        {
-          "t": "Al parque le hacen más falta árboles y bancas que una pileta nueva.",
-          "correcta": true,
-          "evidencia": [
-            "o1"
-          ],
-          "explicacion": "Es lo que dice la oración 1; las demás dan las razones y responden a la ventaja de la pileta."
-        },
-        {
-          "t": "Una pileta nueva haría más bonito el parque y atraería visitantes.",
-          "codigo": "RV42",
-          "origen": "o5",
-          "explicacion": "Leíste bien la oración 5, pero ahí la autora reconoce una ventaja para responderla en la 6: no es lo que defiende."
-        },
-        {
-          "t": "Los adultos mayores no tienen dónde sentarse en el parque.",
-          "codigo": "RV1",
-          "origen": "o4",
-          "explicacion": "Sí lo dice la oración 4, pero es una de las razones de la tesis."
-        },
-        {
-          "t": "Los árboles, las bancas y la pileta del parque del barrio.",
-          "codigo": "RV65",
-          "explicacion": "Nombra bien de qué trata la carta, pero una tesis afirma algo."
-        },
-        {
-          "t": "La municipalidad debe cerrar todas las piletas de la ciudad para ahorrar agua.",
-          "codigo": "RV66",
-          "explicacion": "Habla de piletas y de agua, pero la autora no pide cerrar ninguna: agrega algo que la carta no dice."
-        }
-      ]
-    },
-    {
-      "id": "p2",
       "tipo": "tema-central",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "tema",
@@ -135,6 +74,9 @@
         }
       },
       "enunciado": "¿Cuál es el tema central de la carta?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
       "alternativas": [
         {
           "t": "Qué le conviene más al parque del barrio, sombra y bancas o una pileta",
@@ -144,7 +86,7 @@
             "o5",
             "o6"
           ],
-          "explicacion": "Cubre toda la carta: la tesis, las razones y la ventaja de la pileta que la autora discute."
+          "explicacion": "Cubre toda la carta: lo que pide la autora, sus razones y lo que dice de la pileta."
         },
         {
           "t": "Los espacios verdes en las ciudades del Perú",
@@ -171,11 +113,79 @@
       ]
     },
     {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que dice lo que defiende el autor.",
+        "aceptadas": [
+          "o1"
+        ],
+        "ninguna": "RV3",
+        "codigos": {
+          "o5": "RV42"
+        },
+        "explicacion": "La oración 1 dice lo que la autora defiende: árboles y bancas antes que una pileta.",
+        "explicaciones": {
+          "o2": "Es una razón: el sol fuerte y la falta de sombra.",
+          "o3": "Es una consecuencia de esa razón: el parque vacío al mediodía.",
+          "o4": "Es otra razón: hoy el parque no les sirve a los adultos mayores ni a las familias con niños.",
+          "o5": "Reconoce una ventaja de la pileta, pero la autora no la defiende: la responde en la oración 6.",
+          "o6": "Responde a la oración 5: es una razón contra la pileta.",
+          "o7": "Es una propuesta concreta que sale de la tesis.",
+          "o8": "Es un deseo final, con una razón general; no dice qué conviene poner en el parque en vez de la pileta.",
+          "ninguna": "La oración 1 sí la dice completa: qué conviene y frente a qué."
+        }
+      },
+      "enunciado": "¿Cuál es la tesis de la autora de la carta?",
+      "datos": [
+        "Tesis: lo que defiende el autor de un texto que opina.",
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
+      "alternativas": [
+        {
+          "t": "Al parque le hacen más falta árboles y bancas que una pileta nueva.",
+          "correcta": true,
+          "evidencia": [
+            "o1"
+          ],
+          "explicacion": "Es lo que dice la oración 1; lo demás de la carta la sostiene."
+        },
+        {
+          "t": "Una pileta nueva haría más bonito el parque y atraería visitantes.",
+          "codigo": "RV42",
+          "origen": "o5",
+          "explicacion": "Leíste bien la oración 5, pero la autora no pide la pileta: en la oración 1 pide otra cosa."
+        },
+        {
+          "t": "Los adultos mayores no tienen dónde sentarse en el parque.",
+          "codigo": "RV1",
+          "origen": "o4",
+          "explicacion": "Sí lo dice la oración 4, pero es una de las razones de la tesis."
+        },
+        {
+          "t": "Los árboles, las bancas y la pileta del parque del barrio.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien de qué trata la carta, pero una tesis afirma algo."
+        },
+        {
+          "t": "La municipalidad debe cerrar todas las piletas de la ciudad para ahorrar agua.",
+          "codigo": "RV66",
+          "explicacion": "Habla de piletas y de agua, pero la autora no pide cerrar ninguna: agrega algo que la carta no dice."
+        }
+      ]
+    },
+    {
       "id": "p3",
       "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "jerarquia",
       "enunciado": "En la carta, ¿qué papel cumple la oración 5?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
           "t": "Reconoce una ventaja de la pileta, que la autora responde en la oración 6.",
@@ -214,6 +224,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): El tema central (antes p2) va ahora primero y la tesis segunda, para que la tesis no dé el tema; se reescribieron las explicaciones de la tesis que adelantaban el papel de la oración 5 (p3). Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

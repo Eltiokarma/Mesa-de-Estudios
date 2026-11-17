@@ -1,6 +1,6 @@
 {
   "id": "t183",
-  "version": 1,
+  "version": 2,
   "titulo": "Relato del periódico mural de un colegio de Moquegua",
   "tema": "Relato · aprender con el abuelo",
   "grado": 5,
@@ -60,66 +60,6 @@
   "preguntas": [
     {
       "id": "p1",
-      "tipo": "idea-principal",
-      "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "tema-e-idea",
-      "previo": {
-        "tipo": "marcar-oracion",
-        "pide": "Antes de ver las alternativas, toca la oración que mejor dice lo que el relato quiere mostrar.",
-        "aceptadas": [
-          "o9"
-        ],
-        "ninguna": "correcta",
-        "explicacion": "La oración 9 dice lo que el relato muestra, aunque sin nombrarlo: lo aprendido con el abuelo. También vale «Ninguna la dice completa», porque ese «algo» no se dice con todas sus palabras.",
-        "explicaciones": {
-          "o1": "La primera oración presenta el deseo de Andrés: es el comienzo del relato.",
-          "o2": "Cuenta lo que hizo el abuelo: es un hecho.",
-          "o3": "Es lo que dice el abuelo: prepara lo que viene.",
-          "o4": "Cuenta el trabajo de Andrés: un hecho.",
-          "o5": "Dice qué aprendió, pero no qué significó para él.",
-          "o6": "Cuenta el resultado del arreglo: la bicicleta rueda.",
-          "o7": "Presenta el problema del vecino.",
-          "o8": "Muestra lo aprendido, pero no dice qué entendió Andrés."
-        }
-      },
-      "enunciado": "¿Cuál es la idea principal del relato?",
-      "alternativas": [
-        {
-          "t": "Arreglando la bicicleta con su abuelo, Andrés ganó un saber que no se compra.",
-          "correcta": true,
-          "evidencia": [
-            "o5",
-            "o8",
-            "o9"
-          ],
-          "explicacion": "La oración 9 lo dice sin nombrarlo, y la 5 y la 8 muestran qué es: lo que Andrés aprendió y pudo usar."
-        },
-        {
-          "t": "Andrés quería una bicicleta nueva para ir al colegio, igual a la que tenía su vecino.",
-          "codigo": "RV4",
-          "origen": "o1",
-          "explicacion": "Repite bien la primera oración, pero es el deseo del comienzo: el relato muestra cómo cambia."
-        },
-        {
-          "t": "Andrés aprendió a cambiar una cámara y a ajustar los frenos.",
-          "codigo": "RV1",
-          "origen": "o5",
-          "explicacion": "Sí lo dice la oración 5, pero es una parte: deja fuera lo que eso significó para él."
-        },
-        {
-          "t": "Andrés, su abuelo y una bicicleta vieja.",
-          "codigo": "RV65",
-          "explicacion": "Nombra bien a quiénes y de qué trata el relato, pero no dice nada de lo que pasa."
-        },
-        {
-          "t": "Las bicicletas viejas son más seguras que las nuevas.",
-          "codigo": "RV66",
-          "explicacion": "Habla de la bicicleta vieja, pero el relato no compara cuál es más segura: agrega un asunto."
-        }
-      ]
-    },
-    {
-      "id": "p2",
       "tipo": "titulo",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "alternativas",
@@ -139,14 +79,17 @@
         }
       },
       "enunciado": "¿Qué título le queda mejor al relato?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
       "alternativas": [
         {
-          "t": "Lo que el abuelo le dio a Andrés",
+          "t": "Un regalo que no se vende",
           "correcta": true,
           "evidencia": [
             "o9"
           ],
-          "explicacion": "Tiene la medida del relato: apunta a lo que Andrés recibió, que es lo que la oración 9 deja ver."
+          "explicacion": "Tiene la medida del relato: apunta a lo que Andrés recibió del abuelo, que la oración 9 deja ver sin nombrarlo."
         },
         {
           "t": "Diez minutos para cambiar una llanta",
@@ -173,11 +116,77 @@
       ]
     },
     {
+      "id": "p2",
+      "tipo": "idea-principal",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema-e-idea",
+      "previo": {
+        "tipo": "marcar-oracion",
+        "pide": "Antes de ver las alternativas, toca la oración que mejor dice lo que el relato quiere mostrar.",
+        "aceptadas": [
+          "o9"
+        ],
+        "ninguna": "correcta",
+        "explicacion": "La oración 9 dice lo que el relato muestra, aunque sin nombrarlo: lo aprendido con el abuelo. También vale «Ninguna la dice completa», porque ese «algo» no se dice con todas sus palabras.",
+        "explicaciones": {
+          "o1": "La primera oración presenta el deseo de Andrés: es el comienzo del relato.",
+          "o2": "Cuenta lo que hizo el abuelo: es un hecho.",
+          "o3": "Es lo que dice el abuelo: prepara lo que viene.",
+          "o4": "Cuenta el trabajo de Andrés: un hecho.",
+          "o5": "Dice qué aprendió, pero no qué significó para él.",
+          "o6": "Cuenta el resultado del arreglo: la bicicleta rueda.",
+          "o7": "Presenta el problema del vecino.",
+          "o8": "Muestra lo aprendido, pero no dice qué entendió Andrés."
+        }
+      },
+      "enunciado": "¿Cuál es la idea principal del relato?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
+      "alternativas": [
+        {
+          "t": "Arreglando la bicicleta con su abuelo, Andrés ganó un saber que no se compra.",
+          "correcta": true,
+          "evidencia": [
+            "o5",
+            "o8",
+            "o9"
+          ],
+          "explicacion": "La oración 9 lo dice sin nombrarlo, y la 5 cuenta qué es: lo que Andrés aprendió al arreglar la bicicleta."
+        },
+        {
+          "t": "Andrés quería una bicicleta nueva para ir al colegio, igual a la que tenía su vecino.",
+          "codigo": "RV4",
+          "origen": "o1",
+          "explicacion": "Repite bien la primera oración, pero es el deseo del comienzo: el relato muestra cómo cambia."
+        },
+        {
+          "t": "Andrés aprendió a cambiar una cámara y a ajustar los frenos.",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Sí lo dice la oración 5, pero es una parte: deja fuera lo que eso significó para él."
+        },
+        {
+          "t": "Andrés, su abuelo y una bicicleta vieja.",
+          "codigo": "RV65",
+          "explicacion": "Nombra bien a quiénes y de qué trata el relato, pero no dice nada de lo que pasa."
+        },
+        {
+          "t": "Las bicicletas viejas son más seguras que las nuevas.",
+          "codigo": "RV66",
+          "explicacion": "Habla de la bicicleta vieja, pero el relato no compara cuál es más segura: agrega un asunto."
+        }
+      ]
+    },
+    {
       "id": "p3",
       "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "jerarquia",
       "enunciado": "¿Qué papel cumplen las oraciones 7 y 8 en el relato?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
           "t": "Muestran que lo aprendido con el abuelo le sirvió a Andrés.",
@@ -218,6 +227,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): El título (antes p2) va ahora primero, con correcta nueva («Un regalo que no se vende»), y la idea principal segunda: el título ya no sale de la idea; la explicación de la idea ya no da el papel de las oraciones 7 y 8 (p3). Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

@@ -1,6 +1,6 @@
 {
   "id": "t185",
-  "version": 1,
+  "version": 2,
   "titulo": "Página de la revista escolar de un colegio de Huancayo",
   "tema": "Ciudad · encuesta de cómo llegan los alumnos y pedido de un cruce (datos inventados)",
   "grado": 5,
@@ -87,24 +87,28 @@
           "justa": "RV3",
           "amplia": "RV2"
         },
-        "explicacion": "Cubre la oración 1 y el gráfico, pero deja fuera el peligro de la avenida y el pedido del cruce, que es adonde va el texto.",
+        "explicacion": "Cubre la oración 1 y el gráfico, pero deja fuera la avenida y el pedido del cruce, que es adonde va el texto.",
         "explicaciones": {
           "justa": "Es verdad que la encuesta abre el texto y da el gráfico, pero el texto no termina ahí: la usa para pedir algo.",
           "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera el pedido."
         }
       },
       "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto.",
+        "«Gira en torno a» y «da cuenta de»: así pregunta el examen por el tema central.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
-          "t": "el cruce seguro que se pide para los muchos alumnos que llegan a pie.",
+          "t": "el cruce seguro que piden para los alumnos que llegan a pie.",
           "correcta": true,
           "evidencia": [
-            "o3",
             "o4",
             "o5",
-            "f1a"
+            "f1"
           ],
-          "explicacion": "Cubre el texto y el gráfico: la encuesta muestra que más de la mitad llega a pie, y por eso se pide el cruce."
+          "explicacion": "Cubre el texto y el gráfico: la encuesta, la avenida y lo que el municipio escolar pide a la municipalidad."
         },
         {
           "t": "las formas en que los 400 alumnos llegan cada mañana al colegio.",
@@ -142,7 +146,7 @@
           "o5"
         ],
         "ninguna": "RV3",
-        "explicacion": "La oración 5 dice la idea completa: el pedido del cruce y su motivo, los muchos que cruzan a pie. La encuesta, el gráfico y el peligro de la avenida lo sostienen.",
+        "explicacion": "La oración 5 dice la idea completa: el pedido del cruce y su motivo, los muchos que cruzan a pie. Las demás oraciones y el gráfico llevan a ese pedido.",
         "explicaciones": {
           "o1": "La primera oración cuenta cómo empezó: la encuesta.",
           "o2": "Presenta el gráfico.",
@@ -153,6 +157,10 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
           "t": "Como más de la mitad llega a pie por la avenida, los alumnos piden un cruce señalizado.",
@@ -174,7 +182,7 @@
           "t": "La avenida que pasa frente al colegio no tiene semáforo, y las combis pasan rápido a la hora de entrada.",
           "codigo": "RV3",
           "origen": "o4",
-          "explicacion": "Sí lo dice la oración 4, pero es el peligro: deja fuera lo que se pide."
+          "explicacion": "Sí lo dice la oración 4, pero habla de la avenida: deja fuera lo que se pide."
         },
         {
           "t": "Los alumnos, la avenida y el cruce peatonal frente al colegio.",
@@ -190,56 +198,39 @@
     },
     {
       "id": "p3",
-      "tipo": "titulo",
+      "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "alternativas",
-      "previo": {
-        "tipo": "medida",
-        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
-        "sonda": "El pedido de un cruce peatonal para los alumnos que llegan caminando",
-        "aceptada": "justa",
-        "codigos": {
-          "amplia": "RV2",
-          "estrecha": "RV1"
-        },
-        "explicacion": "Cubre la encuesta y el gráfico (los que llegan caminando), el peligro de la avenida y el pedido, y no le serviría a otro texto.",
-        "explicaciones": {
-          "amplia": "Es verdad que hay muchos pedidos de cruces, pero la frase habla de estos alumnos: no le serviría a otro texto.",
-          "estrecha": "Es verdad que no nombra la encuesta, pero la incluye: los que llegan caminando son los que muestra el gráfico."
-        }
-      },
-      "enunciado": "¿Qué título le queda mejor al texto?",
+      "enunciado": "¿Qué papel cumple la oración 4 respecto del pedido de la oración 5?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
-          "t": "Un cruce seguro para los que llegan a pie",
+          "t": "Dice por qué cruzar esa avenida es peligroso, y así sostiene el pedido.",
           "correcta": true,
           "evidencia": [
-            "o5",
-            "f1a"
+            "o4",
+            "o5"
           ],
-          "explicacion": "Tiene la medida del texto: lo que se pide y para quiénes, que es lo que el gráfico justifica."
+          "explicacion": "Sin semáforo, sin paso de cebra y con combis rápidas, cruzar es un riesgo: por eso hace falta un cruce señalizado."
         },
         {
-          "t": "Veinte alumnos en bicicleta",
+          "t": "Es la idea principal del texto, porque dice cuál es el problema de la avenida.",
           "codigo": "RV1",
-          "origen": "f1d",
-          "explicacion": "Leíste bien la barra de la bicicleta, pero es un dato: deja fuera el pedido."
+          "origen": "o4",
+          "explicacion": "Leíste bien el problema de la avenida, pero es una razón: lo que el texto pide está en la oración 5."
         },
         {
-          "t": "Las calles y los colegios de las ciudades del Perú",
-          "codigo": "RV2",
-          "explicacion": "Es del mismo asunto, pero le serviría a muchos textos."
+          "t": "Da la opinión de los choferes de combi sobre la avenida del colegio.",
+          "codigo": "RV42",
+          "origen": "o4",
+          "explicacion": "Es verdad que nombra a las combis, pero nadie da su opinión: describe cómo es la avenida a la hora de entrada."
         },
         {
-          "t": "La encuesta de marzo",
-          "codigo": "RV3",
-          "origen": "o1",
-          "explicacion": "Es la oración 1, una parte: deja fuera el peligro y el pedido."
-        },
-        {
-          "t": "Combis más lentas en toda la ciudad",
-          "codigo": "RV66",
-          "explicacion": "Habla de las combis, pero el texto pide un cruce frente al colegio, no nada para toda la ciudad."
+          "t": "Sobra, porque el gráfico ya dice cuántos alumnos llegan a pie.",
+          "codigo": "RV30",
+          "origen": "o4",
+          "explicacion": "Es verdad que el gráfico dice cuántos llegan a pie, pero no dice que la avenida sea peligrosa: eso lo trae la oración 4."
         }
       ]
     }
@@ -251,6 +242,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (6 de 6 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (6 de 6 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («el pedido de un cruce seguro frente a la puerta del colegio»), que ya no trae el motivo de la idea principal; p3: antes título («Un cruce seguro para los que llegan a pie», casi la misma respuesta que p1), ahora papel de la oración 4, sin previo. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

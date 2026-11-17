@@ -1,6 +1,6 @@
 {
   "id": "t001",
-  "version": 2,
+  "version": 3,
   "titulo": "El frío que conserva",
   "tema": "Perú andino · tecnología tradicional",
   "grado": 3,
@@ -162,13 +162,13 @@
           "explicacion": "Es demasiado general: el texto no habla de toda la agricultura, sino de la helada y de la papa."
         },
         {
-          "t": "Una helada fuera de temporada puede arruinar en una sola noche una chacra de papa.",
+          "t": "Una helada fuera de temporada puede arruinar en una sola noche toda una chacra de papa en las punas del sur andino.",
           "codigo": "RV3",
           "origen": "o1",
           "explicacion": "Se queda con la mitad del texto. Falta lo principal: que ese mismo frío sirve para conservar."
         },
         {
-          "t": "El chuño también se prepara en el altiplano de Bolivia y en el norte de Chile.",
+          "t": "El chuño también se prepara desde hace siglos en el altiplano de Bolivia y en el norte de Chile.",
           "codigo": "RV8",
           "explicacion": "Puede ser cierto, pero el texto no lo dice. La idea principal sale de lo que se leyó, no de lo que se sabe por otro lado."
         }
@@ -229,6 +229,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5 (3 preguntas y 2 pasos previos). Cambios: las heladas que arruinan la papa son las de fuera de temporada (las de junio sirven para el chuño, con la papa ya cosechada); hechos y fuentes del proceso del chuño negro. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Intención antes que idea principal, con una correcta que ya no regala la idea; RV1 más corto."
+    "notas": "A ciegas: 5 de 5 (3 preguntas y 2 pasos previos). Cambios: las heladas que arruinan la papa son las de fuera de temporada (las de junio sirven para el chuño, con la papa ya cosechada); hechos y fuentes del proceso del chuño negro. Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Intención antes que idea principal, con una correcta que ya no regala la idea; RV1 más corto. 17 nov (auditoría M11 de tema-e-idea-principal): en p2 se alargaron dos incorrectas (RV3 y RV8), para que la correcta no sea la más larga. La correcta y el error de cada alternativa no cambian."
   }
 }

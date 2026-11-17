@@ -1,6 +1,6 @@
 {
   "id": "t188",
-  "version": 1,
+  "version": 2,
   "titulo": "Boletín de la junta vecinal de un barrio de Arequipa",
   "tema": "Ciudad · medidores de agua en un barrio (datos inventados)",
   "grado": 5,
@@ -91,9 +91,14 @@
         }
       },
       "enunciado": "El texto y la tabla dan cuenta, principalmente, de",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto.",
+        "«Gira en torno a» y «da cuenta de»: así pregunta el examen por el tema central.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
-          "t": "los medidores y el agua que ahora alcanza para todo el barrio.",
+          "t": "el cambio que trajeron los medidores al uso del agua del barrio.",
           "correcta": true,
           "evidencia": [
             "o1",
@@ -101,7 +106,7 @@
             "o6",
             "f1"
           ],
-          "explicacion": "Cubre el texto (por qué los medidores cambiaron el gasto y qué se logró) y la tabla, que mide el gasto antes y después."
+          "explicacion": "Cubre el texto (el antes, los medidores y el después) y la tabla, que compara el gasto en esos dos momentos."
         },
         {
           "t": "lo que pagaban las familias antes de tener medidor.",
@@ -149,6 +154,10 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
           "t": "Con un medidor en cada casa, se gasta menos agua y ahora alcanza también para la parte alta.",
@@ -170,7 +179,7 @@
           "t": "Con el medidor, cada familia paga según el agua que usa.",
           "codigo": "RV3",
           "origen": "o4",
-          "explicacion": "Sí lo dice la oración 4, pero es la razón del cambio: deja fuera lo que se logró."
+          "explicacion": "Sí lo dice la oración 4, pero habla de cómo se paga: deja fuera lo que se logró en la parte alta."
         },
         {
           "t": "Los medidores de agua de un barrio de Arequipa.",
@@ -190,6 +199,9 @@
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "jerarquia",
       "enunciado": "¿Qué papel cumple la oración 4 en el texto?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
           "t": "Explica por qué, con el medidor, las familias gastan menos agua.",
@@ -228,6 +240,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («el cambio que trajeron los medidores al uso del agua del barrio»), que ya no dice la idea principal; la explicación de una incorrecta de p2 ya no da el papel de la oración 4 (p3). Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

@@ -349,3 +349,23 @@ test('cada código usado tiene su frase para el alumno (regla 11)', () => {
   for (const c of usados) assert.ok(FRASES[c] && FRASES[c].length > 10, `frases.json: falta la frase de ${c}`);
   for (const c of Object.keys(FRASES)) assert.ok(codigoValido(c), `frases.json: ${c} no está en el informe`);
 });
+
+// R10 de la auditoría de tema-e-idea-principal (M10, 17 nov): la práctica de la unidad trae sus datos (plan-calidad §3,
+// punto 13). Tema central, título e idea principal llevan la definición que piden; si el enunciado dice «tesis», «da
+// cuenta de» o «gira en torno a», el recuadro explica esas palabras. Los datos son criterios: no copian el texto ni dan
+// la respuesta (eso lo comprueba Lectura.validar).
+test('R10: la práctica de tema e idea principal trae los datos que piden sus preguntas', () => {
+  const ix = INDICES.find(x => x.archivo === 'indice-tema-idea-principal.json');
+  assert.ok(ix, 'falta indice-tema-idea-principal.json');
+  for (const id of ix.i.textos) {
+    const { t } = TEXTOS.find(x => x.t.id === id);
+    for (const q of t.preguntas) {
+      const donde = `${t.id}.${q.id}`, ds = q.datos || [];
+      if (['tema-central', 'titulo', 'idea-principal'].includes(q.tipo)) assert.ok(ds.length, `${donde}: ${q.tipo} sin datos`);
+      if (['tema-central', 'titulo'].includes(q.tipo)) assert.ok(ds.some(x => /^Tema central y título:/.test(x)), `${donde}: falta qué es una frase de tema`);
+      if (q.tipo === 'idea-principal') assert.ok(ds.some(x => /^Idea principal/.test(x)), `${donde}: falta qué es una idea principal`);
+      if (/\btesis\b/i.test(q.enunciado)) assert.ok(ds.some(x => /^Tesis:/.test(x)), `${donde}: dice «tesis» y no la define`);
+      if (/\bdan? cuenta\b|\bgiran? en torno\b/i.test(q.enunciado)) assert.ok(ds.some(x => /da cuenta de/.test(x)), `${donde}: no explica «da cuenta de» o «gira en torno a»`);
+    }
+  }
+});

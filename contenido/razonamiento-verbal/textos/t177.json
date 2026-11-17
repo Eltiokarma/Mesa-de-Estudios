@@ -1,6 +1,6 @@
 {
   "id": "t177",
-  "version": 1,
+  "version": 2,
   "titulo": "Artículo de la revista escolar, para las familias",
   "tema": "Educación · leer en voz alta a los niños que ya leen (colegio inventado)",
   "grado": 5,
@@ -67,16 +67,19 @@
           "justa": "RV64",
           "amplia": "RV2"
         },
-        "explicacion": "Cubre solo la oración 1 y la 2, que el artículo corrige. Deja fuera lo principal: que leer en voz alta sigue ayudando.",
+        "explicacion": "Cubre solo la oración 1 y la 2. Deja fuera lo que pasa con los niños que ya leen, el caso del colegio y la invitación.",
         "explicaciones": {
           "justa": "Es verdad que el artículo empieza por esa creencia, pero la presenta para corregirla: el tema es lo que viene después.",
           "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera lo que ganan los niños."
         }
       },
       "enunciado": "¿Cuál es el tema central del artículo?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
       "alternativas": [
         {
-          "t": "La lectura en voz alta para los niños que ya saben leer",
+          "t": "Escuchar leer a otros después de aprender a leer",
           "correcta": true,
           "evidencia": [
             "o3",
@@ -84,13 +87,13 @@
             "o5",
             "o6"
           ],
-          "explicacion": "Cubre todo el artículo: lo que se cree, por qué no es así, qué ganan los niños, el caso del colegio y la invitación a hacerlo en casa."
+          "explicacion": "Cubre todo el artículo: lo que se piensa en las casas, lo que pasa con los niños de primaria, el caso del colegio y la invitación a hacerlo en casa."
         },
         {
           "t": "La creencia de que leer en voz alta solo sirve antes de que el niño aprenda a leer",
           "codigo": "RV64",
           "origen": "o1",
-          "explicacion": "Sí está en la oración 1, pero es lo que el artículo corrige: el texto trata de lo que pasa después."
+          "explicacion": "Sí está en la oración 1, pero el artículo sigue hasta los niños que ya leen y lo que ganan: deja fuera casi todo."
         },
         {
           "t": "La educación de los niños en el Perú",
@@ -135,6 +138,9 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del artículo?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
       "alternativas": [
         {
           "t": "Leerles en voz alta sigue ayudando a los niños, aunque ya sepan leer solos.",
@@ -142,7 +148,7 @@
           "evidencia": [
             "o4"
           ],
-          "explicacion": "Es la oración 4; la 3 la prepara, y de la 5 a la 7 dicen qué ganan los niños y lo muestran."
+          "explicacion": "Es la oración 4, que empieza con «Por eso»: lo que viene después dice qué ganan los niños y lo muestra con un caso."
         },
         {
           "t": "Leerles en voz alta a los niños solo sirve antes de que aprendan a leer solos.",
@@ -172,36 +178,38 @@
       "id": "p3",
       "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "jerarquia",
-      "enunciado": "En el artículo, ¿qué papel cumple la oración 1?",
+      "enunciado": "En el artículo, ¿qué papel cumple la oración 3?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
-          "t": "Presenta una creencia que el artículo corrige después.",
+          "t": "Da un dato que contradice la creencia y prepara la oración 4.",
           "correcta": true,
           "evidencia": [
             "o1",
             "o3",
             "o4"
           ],
-          "explicacion": "La oración 3 empieza con «Sin embargo» y la 4 dice lo contrario de la 1: leer en voz alta sirve también después."
+          "explicacion": "Empieza con «Sin embargo»: si un niño entiende al oír más palabras de las que puede leer, escuchar leer le sigue sirviendo, y eso dice la 4."
         },
         {
-          "t": "Dice la idea principal del artículo, que va al comienzo.",
-          "codigo": "RV4",
-          "origen": "o1",
-          "explicacion": "Es verdad que abre el artículo, pero el artículo no la defiende: la corrige."
+          "t": "Dice la idea principal del artículo, porque empieza con «Sin embargo».",
+          "codigo": "RV1",
+          "origen": "o3",
+          "explicacion": "Leíste bien el «Sin embargo», pero la oración 3 da un dato: lo que el artículo defiende llega en la 4, con su «Por eso»."
         },
         {
-          "t": "No sostiene nada y podría quitarse sin que cambie el artículo.",
-          "codigo": "RV30",
-          "origen": "o1",
-          "explicacion": "Es verdad que no es la idea principal, pero sin ella el «Sin embargo» de la oración 3 no se entiende: sí cumple una función."
-        },
-        {
-          "t": "Da un ejemplo de lo que afirma la oración 4.",
+          "t": "Da un ejemplo de lo que se cree en muchas casas sobre leerles a los niños.",
           "codigo": "RV42",
-          "origen": "o1",
-          "explicacion": "Es verdad que se relaciona con la oración 4, pero no es un ejemplo de ella: dice lo contrario."
+          "origen": "o3",
+          "explicacion": "Es verdad que habla de un niño de segundo grado, pero no muestra la creencia de la oración 1: la contradice."
+        },
+        {
+          "t": "Sobra, porque dice lo mismo que la oración 4 con otras palabras.",
+          "codigo": "RV30",
+          "origen": "o3",
+          "explicacion": "Es verdad que las dos hablan de escuchar leer, pero la 3 da un dato y la 4 saca la conclusión: sin la 3, su «Por eso» no tendría de dónde salir."
         }
       ]
     }
@@ -222,6 +230,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («Escuchar leer a otros después de aprender a leer»), con otras palabras que la idea principal; p3: antes el papel de la oración 1 (que la explicación de p2 ya daba), ahora el papel de la oración 3. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

@@ -1,6 +1,6 @@
 {
   "id": "t006",
-  "version": 2,
+  "version": 3,
   "titulo": "El rojo que vino de la tuna",
   "tema": "Ciencia e historia · tintes naturales",
   "grado": 4,
@@ -90,7 +90,7 @@
       "enunciado": "¿Cuál es la idea principal del texto?",
       "alternativas": [
         {
-          "t": "La cochinilla perdió valor frente a los colorantes artificiales y lo recuperó cuando se buscaron tintes naturales.",
+          "t": "La cochinilla perdió valor ante los colorantes artificiales y lo recuperó cuando se buscó lo natural.",
           "correcta": true,
           "evidencia": [
             "o5",
@@ -101,7 +101,7 @@
           "explicacion": "Resume las etapas del texto en una sola idea: caída frente a lo artificial y regreso cuando cambió lo que se buscaba."
         },
         {
-          "t": "Al aplastar una hembra de cochinilla queda una mancha roja por el ácido carmínico.",
+          "t": "Al aplastar una hembra de cochinilla queda una mancha de un rojo intenso, que se debe al ácido carmínico.",
           "codigo": "RV1",
           "origen": "o2",
           "explicacion": "Es un detalle de la cochinilla. El texto cuenta su historia, no solo cómo produce el color."
@@ -112,7 +112,7 @@
           "explicacion": "Es demasiado general: el texto habla de un tinte, la cochinilla, y de lo que le pasó."
         },
         {
-          "t": "En el siglo XIX, los colorantes artificiales desplazaron a la cochinilla del comercio.",
+          "t": "En el siglo XIX, los colorantes artificiales, más baratos y fáciles de producir, desplazaron a la cochinilla del comercio.",
           "codigo": "RV3",
           "origen": "o5",
           "explicacion": "Es una etapa del texto, pero deja fuera el final: la cochinilla recuperó su valor."
@@ -257,6 +257,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara). Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sin el \"Sin embargo\" explícito en o7; sonda nueva sobre las tunas; RV1 más corto."
+    "notas": "A ciegas: 6 de 6. Cambios: enunciado de p2 sobre los cambios del valor (el ácido carmínico ya no es defendible), paso previo de p2 alineado con la pregunta, evidencia de p1 y hecho de Paracas corregido (la cochinilla abunda desde Wari; en Paracas es rara). Segunda ronda (pedidos de la integración): explicaciones en todo paso previo, versión 2 y revisión a ciegas de los cambios (coincidió con todas las claves). Sin el \"Sin embargo\" explícito en o7; sonda nueva sobre las tunas; RV1 más corto. 17 nov (auditoría M11 de tema-e-idea-principal): en p1 se acortó la correcta y se alargaron dos incorrectas (RV3 y RV1). La correcta y el error de cada alternativa no cambian."
   }
 }

@@ -1,6 +1,6 @@
 {
   "id": "t182",
-  "version": 1,
+  "version": 2,
   "titulo": "Nota del boletín vecinal de un barrio del Cusco",
   "tema": "Ciudad · aceite usado que se vuelve combustible (barrio inventado)",
   "grado": 5,
@@ -102,16 +102,21 @@
         }
       },
       "enunciado": "El texto y la tabla dan cuenta, principalmente, de",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto.",
+        "«Gira en torno a» y «da cuenta de»: así pregunta el examen por el tema central.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
-          "t": "el aceite que juntan los restaurantes para volverlo combustible.",
+          "t": "lo que hacen ahora los restaurantes del barrio con su aceite usado.",
           "correcta": true,
           "evidencia": [
             "o1",
             "o5",
             "f1"
           ],
-          "explicacion": "Cubre el texto (qué hacen los restaurantes, por qué y qué pasa con el aceite) y la tabla, que mide cuánto se junta."
+          "explicacion": "Cubre el texto (el aceite que se junta, lo que hace en el desagüe y adónde va) y la tabla, que mide cuánto se junta."
         },
         {
           "t": "la contaminación de los ríos del Perú.",
@@ -128,7 +133,7 @@
           "t": "las tuberías del barrio que se van tapando con el aceite que se echa por el lavadero.",
           "codigo": "RV3",
           "origen": "o2",
-          "explicacion": "Es una parte verdadera, la de la oración 2, pero es una razón: deja fuera lo que hacen los restaurantes."
+          "explicacion": "Es una parte verdadera, la de la oración 2, pero deja fuera lo que hacen los restaurantes y la tabla."
         },
         {
           "t": "la comida frita que se vende en los restaurantes del Cusco.",
@@ -160,6 +165,10 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del texto?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
           "t": "El aceite de los restaurantes del barrio ya no se pierde en el desagüe, sino que se vuelve combustible.",
@@ -168,13 +177,13 @@
             "o1",
             "f1"
           ],
-          "explicacion": "Es la oración 1; la 2 y la 3 dicen por qué conviene, la 4 y la 5 cómo se hace, y la tabla cuánto se junta."
+          "explicacion": "Es la oración 1: todo lo demás habla de ese cambio, y la tabla mide cuánto aceite se junta."
         },
         {
           "t": "El aceite que se echa por el lavadero tapa las tuberías y, cuando llega al río, forma una capa sobre el agua.",
           "codigo": "RV3",
           "origen": "o3",
-          "explicacion": "Es verdad que junta la oración 2 y la 3, pero son las razones: deja fuera lo que hacen los restaurantes."
+          "explicacion": "Es verdad que junta la oración 2 y la 3, pero habla del desagüe y del río: deja fuera lo que hacen los restaurantes."
         },
         {
           "t": "Una empresa recoge los bidones cada semana y paga por cada litro.",
@@ -200,6 +209,9 @@
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "jerarquia",
       "enunciado": "¿Qué papel cumplen las oraciones 2 y 3 respecto de la oración 1?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
           "t": "Explican por qué conviene no echar el aceite al desagüe.",
@@ -248,6 +260,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (5 de 5 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (5 de 5 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («lo que hacen ahora los restaurantes del barrio con su aceite usado»), que ya no dice la idea principal; se reescribieron las explicaciones de p1 y p2 que daban el papel de las oraciones 2 y 3 (p3). Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

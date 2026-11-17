@@ -483,3 +483,32 @@ test('«No sé» en la prueba de lectura: ni acierto ni código, 0 en las respue
   const [c] = M.resumirCursos([{ alumno: 'x', ...e }, { alumno: 'x', ...p }]);
   assert.deepEqual(c.errores, []);
 });
+
+test('datos de una pregunta: de 1 a 4 líneas de hasta 22 palabras, sin copiar el texto ni dar la respuesta', () => {
+  const base = TEXTOS.find(t => t.preguntas.some(q => Array.isArray(q.datos)));
+  assert.ok(base, 'algún texto de práctica trae datos');
+  const k = base.preguntas.findIndex(q => Array.isArray(q.datos));
+  const con = datos => ({ ...base, preguntas: base.preguntas.map((q, j) => (j === k ? { ...q, datos } : q)) });
+  const errores = datos => L.validar(con(datos), { codigos: CODIGOS, unidades: UNIDADES });
+  assert.deepEqual(errores(base.preguntas[k].datos), []);
+  assert.deepEqual(errores(undefined), [], 'el campo es opcional');
+  assert.deepEqual(errores(['Tesis: lo que defiende el autor de un texto que opina.']), []);
+  const q = base.preguntas[k], correcta = q.alternativas.find(a => a.correcta).t;
+  const oracion = L.oraciones(base)[1].t;
+  const casos = [
+    [[], /de 1 a 4 líneas/],
+    [['a', 'b', 'c', 'd', 'e'], /de 1 a 4 líneas/],
+    ['Tesis: lo que defiende el autor.', /de 1 a 4 líneas/],
+    [['  '], /línea de datos vacía/],
+    [[Array.from({ length: 23 }, () => 'palabra').join(' ')], /pasa de 22 palabras/],
+    [[`Recuerda: ${oracion}`], /copia el texto/],
+    [[oracion.split(' ').slice(0, 7).join(' ')], /copia el texto/],
+    [[`Respuesta: ${correcta}`], /trae la respuesta/],
+  ];
+  for (const [datos, re] of casos) assert.ok(errores(datos).some(e => re.test(e)), `${JSON.stringify(datos)} → ${errores(datos)}`);
+  // Un «Dato:» dentro del enunciado se rechaza: va en el recuadro.
+  const enEnunciado = { ...base, preguntas: base.preguntas.map((x, j) => (j === k ? { ...x, enunciado: `${x.enunciado} Dato: la tesis es lo que defiende el autor.` } : x)) };
+  assert.ok(L.validar(enEnunciado).some(e => /«Dato:»/.test(e)));
+  // preparar conserva los datos para la pantalla.
+  assert.deepEqual(L.preparar(base, 's').preguntas[k].datos, q.datos);
+});

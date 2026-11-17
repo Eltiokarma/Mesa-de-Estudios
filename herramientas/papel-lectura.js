@@ -117,6 +117,8 @@ function problema(item, k) {
     n: j + 1,
     ...(q.previo ? { previo: consigna(q.previo, it) } : {}),
     enunciado: q.enunciado,
+    // Datos de la pregunta (definiciones y criterios), como el recuadro de la app; solo si la pregunta los trae.
+    ...(Array.isArray(q.datos) && q.datos.length ? { datos: q.datos } : {}),
     alternativas: q.alternativas.map(a => ({ letra: a.letra, t: a.t })),
   }));
   const clave = it.preguntas.map((q, j) => `${varias ? `${j + 1}: ` : ''}${q.alternativas.find(a => a.correcta).letra}`).join(' · ');

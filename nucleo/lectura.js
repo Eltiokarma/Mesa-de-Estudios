@@ -434,6 +434,29 @@
       nose: resultados.filter(r => r.nose).length, ms }),
   };
 
+  // ---------- Datos de una pregunta (plan-calidad §3, punto 13; auditoría M10 de tema-e-idea-principal, 17 nov) ----------
+  // "datos": lista opcional de 1 a 4 líneas, cada una de hasta 22 palabras: definiciones y criterios («Tesis: lo que
+  // defiende el autor…»), nunca contenido del texto ni la respuesta. La app los muestra en un recuadro «Datos».
+  const DATOS = { min: 1, max: 4, palabras: 22 };
+  const plano = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9ñ]+/g, ' ').trim();
+  const nPalabras = t => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+  function validarDatos(q, it, mal, d) {
+    if (/\bdatos?\s*:/i.test(q.enunciado || '')) mal(`${d}: el enunciado trae un «Dato:»; va en el campo "datos"`);
+    if (q.datos === undefined) return;
+    const ds = q.datos;
+    if (!Array.isArray(ds) || ds.length < DATOS.min || ds.length > DATOS.max) { mal(`${d}: "datos" lleva de ${DATOS.min} a ${DATOS.max} líneas`); return; }
+    const ors = it.ejercicio ? [] : oraciones(it).map(o => plano(o.t));
+    const correcta = plano(((q.alternativas || []).find(a => a.correcta === true) || {}).t);
+    for (const x of ds) {
+      if (typeof x !== 'string' || !x.trim()) { mal(`${d}: hay una línea de datos vacía`); continue; }
+      if (nPalabras(x) > DATOS.palabras) mal(`${d}: una línea de datos pasa de ${DATOS.palabras} palabras: «${x}»`);
+      const px = plano(x);
+      // Copia del texto: la línea trae una oración entera, o es un trozo largo (6 palabras o más) de una oración.
+      if (ors.some(o => (o.length >= 20 && px.includes(o)) || (nPalabras(px) >= 6 && o.includes(px)))) mal(`${d}: una línea de datos copia el texto: «${x}»`);
+      if (correcta.length >= 8 && px.includes(correcta)) mal(`${d}: una línea de datos trae la respuesta: «${x}»`);
+    }
+  }
+
   // ---------- Validación (lo que la app necesita para mostrar un ítem) ----------
   // Devuelve la lista de problemas encontrados (vacía si está bien). banco.test.js aplica además las reglas editoriales.
   function validar(item, { codigos, unidades } = {}) {
@@ -460,6 +483,7 @@
         if (!a.correcta && !codigoOk(a.codigo)) mal(`${d}: código ${a.codigo} desconocido`);
         for (const o of [...(a.evidencia || []), ...(a.origen ? [a.origen] : [])]) if (!it.ejercicio && !ids.has(o)) mal(`${d}: apunta a ${o}, que no existe`);
       }
+      validarDatos(q, it, mal, d);
       const p = q.previo;
       if (!p) continue;
       if (!TIPOS_PREVIO.includes(p.tipo)) { mal(`${d}: tipo de paso previo "${p.tipo}" desconocido`); continue; }

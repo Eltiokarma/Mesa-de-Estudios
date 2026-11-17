@@ -217,6 +217,7 @@ async function vista(ctx, id, unidad) {
           <div class="etq-p">Antes de ver las alternativas</div>
           ${it.ejercicio && p.tipo !== 'ordenar' && p.tipo !== 'marcar-oracion' ? cuerpoEjercicioHTML(it) : ''}
           <p class="pide">${esc(pide(p.pide))}</p>
+          ${datosHTML(q)}
           ${cuerpo}
           ${confirmar}
         </div>${bloqueo}`;
@@ -343,9 +344,13 @@ async function vista(ctx, id, unidad) {
   // La etiqueta de la tarjeta ya dice "Antes de ver las alternativas": no se repite en la consigna.
   const pide = t => { const x = String(t).replace(/^antes de ver las alternativas\s*[,:]?\s*/i, ''); return x.charAt(0).toUpperCase() + x.slice(1); };
   const etqPregunta = q => `<div class="etq-p">${q.numero ? `Pregunta ${q.numero} de ${q.total}` : 'Pregunta'}</div>`;
+  // Recuadro «Datos» (plan-calidad §3, punto 13): definiciones y criterios de la pregunta, como .te-datos de la teoría.
+  // Va en español aunque la pregunta esté en inglés. Se ve en el paso previo y con las alternativas.
+  const datosHTML = q => (Array.isArray(q.datos) && q.datos.length
+    ? `<div class="te-datos lec-datos" lang="es"><p class="te-datos-et">Datos</p><ul>${q.datos.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '');
   // Una pregunta con "idioma" (inglés, como en el examen de San Marcos) marca su enunciado y sus alternativas con lang.
   // conNose: las pruebas de entrada y salida traen «No sé» al final, sin letra (la práctica no).
-  const altsHTML = (q, conNose) => `<p class="preg" tabindex="-1"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${esc(q.enunciado)}</p>
+  const altsHTML = (q, conNose) => `<p class="preg" tabindex="-1"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${esc(q.enunciado)}</p>${datosHTML(q)}
     <div class="alts lec-alts" role="group" aria-label="Alternativas"${q.idioma ? ` lang="${esc(q.idioma)}"` : ''}>${q.alternativas.map(a =>
       `<button type="button" class="alt" data-letra="${a.letra}"><span class="letra">${a.letra}</span><span>${esc(a.t)}</span></button>`).join('')}${conNose
       ? '<button type="button" class="alt nose" data-nose="1" lang="es">No sé</button>' : ''}</div>

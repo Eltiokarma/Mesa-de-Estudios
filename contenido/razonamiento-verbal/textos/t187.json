@@ -1,6 +1,6 @@
 {
   "id": "t187",
-  "version": 1,
+  "version": 2,
   "titulo": "Folleto del centro de salud para las familias de Chorrillos",
   "tema": "Salud · el sol en los días nublados de Lima",
   "grado": 5,
@@ -48,6 +48,63 @@
   "preguntas": [
     {
       "id": "p1",
+      "tipo": "titulo",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "alternativas",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "Lo que creen las familias de Lima sobre el sol",
+        "aceptada": "estrecha",
+        "codigos": {
+          "justa": "RV64",
+          "amplia": "RV2"
+        },
+        "explicacion": "Cubre solo la oración 1. Deja fuera casi todo el folleto: lo que pasa en los días grises, los niños y cómo cuidarse.",
+        "explicaciones": {
+          "justa": "Es verdad que el folleto empieza con esa creencia, pero la presenta para corregirla: el tema es el cuidado de la piel.",
+          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera casi todo el folleto."
+        }
+      },
+      "enunciado": "¿Qué título le queda mejor al folleto?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
+      "alternativas": [
+        {
+          "t": "Protección solar también con nubes",
+          "correcta": true,
+          "evidencia": [
+            "o7"
+          ],
+          "explicacion": "Tiene la medida del folleto: nombra lo que se pide y cuándo, y no le serviría a otro texto."
+        },
+        {
+          "t": "Lo que se cree en Lima sobre los días nublados",
+          "codigo": "RV64",
+          "origen": "o1",
+          "explicacion": "Es la oración 1, la creencia con que empieza el folleto: deja fuera el cuidado."
+        },
+        {
+          "t": "Una gorra con visera",
+          "codigo": "RV1",
+          "origen": "o5",
+          "explicacion": "Está en la oración 5, pero es un detalle."
+        },
+        {
+          "t": "El sol y la salud",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a muchos textos, también a uno sobre la vitamina D."
+        },
+        {
+          "t": "Bloqueador, siempre y para todo",
+          "codigo": "RV11",
+          "explicacion": "Habla del bloqueador, pero «siempre y para todo» dice más que el folleto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
       "tipo": "idea-principal",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "tema-e-idea",
@@ -70,6 +127,9 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del folleto?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
       "alternativas": [
         {
           "t": "Aun con el cielo nublado, conviene cuidar la piel del sol, sobre todo la de los niños.",
@@ -77,7 +137,7 @@
           "evidencia": [
             "o7"
           ],
-          "explicacion": "Es la oración 7; la 2 dice por qué, la 3 y la 4 lo muestran y la 5 y la 6 dicen cómo."
+          "explicacion": "Es la oración 7, y su «Por eso» la une con todo lo anterior."
         },
         {
           "t": "En los días nublados de Lima no hace falta cuidarse del sol.",
@@ -104,111 +164,40 @@
       ]
     },
     {
-      "id": "p2",
-      "tipo": "tema-central",
+      "id": "p3",
+      "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "tema",
-      "previo": {
-        "tipo": "medida",
-        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
-        "sonda": "Lo que creen las familias de Lima sobre el sol",
-        "aceptada": "estrecha",
-        "codigos": {
-          "justa": "RV64",
-          "amplia": "RV2"
-        },
-        "explicacion": "Cubre solo la oración 1, la creencia que el folleto corrige. Deja fuera lo principal: por qué y cómo cuidarse.",
-        "explicaciones": {
-          "justa": "Es verdad que el folleto empieza con esa creencia, pero la presenta para corregirla: el tema es el cuidado de la piel.",
-          "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera casi todo el folleto."
-        }
-      },
-      "enunciado": "¿Cuál es el tema central del folleto?",
+      "enunciado": "¿Qué papel cumple la oración 4 en el folleto?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
-          "t": "El cuidado de la piel frente al sol en los días nublados",
+          "t": "Explica por qué el folleto pide cuidar más la piel de los niños.",
           "correcta": true,
           "evidencia": [
-            "o2",
+            "o4",
             "o7"
           ],
-          "explicacion": "Cubre todo: la creencia, por qué es un error, el caso de la playa, los niños y cómo cuidarse."
+          "explicacion": "La oración 7 dice «sobre todo la de los niños», y la 4 da la razón: su piel es más delgada y se quema más rápido."
         },
         {
-          "t": "La creencia de que el día nublado no quema",
-          "codigo": "RV64",
-          "origen": "o1",
-          "explicacion": "Sí está en la oración 1, pero es lo que el folleto corrige: el folleto trata del cuidado."
-        },
-        {
-          "t": "La salud de la piel",
-          "codigo": "RV2",
-          "explicacion": "Tiene que ver con el folleto, pero le serviría a un texto sobre heridas o granos."
-        },
-        {
-          "t": "La piel delgada de los niños",
+          "t": "Dice la idea principal, porque habla de quiénes se queman más rápido.",
           "codigo": "RV1",
           "origen": "o4",
-          "explicacion": "Sí está en la oración 4, pero es una parte: deja fuera a los adultos y los días nublados."
+          "explicacion": "Leíste bien que los niños se queman más rápido, pero es una razón: lo que el folleto pide está en la oración 7."
         },
         {
-          "t": "Las enfermedades de la piel que causa el agua de mar",
-          "codigo": "RV66",
-          "explicacion": "Habla de la playa y de la piel, pero el folleto no trata del agua de mar: agrega un asunto."
-        }
-      ]
-    },
-    {
-      "id": "p3",
-      "tipo": "titulo",
-      "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "alternativas",
-      "previo": {
-        "tipo": "medida",
-        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
-        "sonda": "Por qué y cómo cuidar la piel del sol cuando está nublado",
-        "aceptada": "justa",
-        "codigos": {
-          "amplia": "RV2",
-          "estrecha": "RV1"
-        },
-        "explicacion": "Cubre todo el folleto: la creencia que corrige, por qué los días grises también queman y cómo cuidarse. No le serviría a otro texto.",
-        "explicaciones": {
-          "amplia": "Es verdad que se habla mucho del sol y la piel, pero esta frase dice «cuando está nublado»: es la de este folleto.",
-          "estrecha": "Es verdad que no nombra a los niños, pero ellos entran en «cuidar la piel»: la frase no deja fuera ninguna parte."
-        }
-      },
-      "enunciado": "¿Qué título le queda mejor al folleto?",
-      "alternativas": [
-        {
-          "t": "Cielo gris, piel cuidada",
-          "correcta": true,
-          "evidencia": [
-            "o7"
-          ],
-          "explicacion": "Junta lo que el folleto pide: cuidar la piel también cuando el cielo está gris."
+          "t": "Presenta la creencia de las familias que el folleto corrige después.",
+          "codigo": "RV42",
+          "origen": "o4",
+          "explicacion": "Es verdad que el folleto corrige una creencia, pero está en la oración 1: la 4 da un dato sobre la piel de los niños."
         },
         {
-          "t": "Lo que se cree en Lima",
-          "codigo": "RV64",
-          "origen": "o1",
-          "explicacion": "Es la oración 1, la creencia con que empieza el folleto: deja fuera el cuidado."
-        },
-        {
-          "t": "Una gorra con visera",
-          "codigo": "RV1",
-          "origen": "o5",
-          "explicacion": "Está en la oración 5, pero es un detalle."
-        },
-        {
-          "t": "El sol y la salud",
-          "codigo": "RV2",
-          "explicacion": "Es del mismo asunto, pero le serviría a muchos textos, también a uno sobre la vitamina D."
-        },
-        {
-          "t": "Bloqueador, siempre y para todo",
-          "codigo": "RV11",
-          "explicacion": "Habla del bloqueador, pero «siempre y para todo» dice más que el folleto."
+          "t": "Sobra, porque el folleto trata de los días nublados y no de la edad.",
+          "codigo": "RV30",
+          "origen": "o4",
+          "explicacion": "Es verdad que el folleto trata de los días nublados, pero pide cuidar sobre todo a los niños, y la oración 4 dice por qué: no sobra."
         }
       ]
     }
@@ -229,6 +218,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): El tema central (antes p2, casi la misma respuesta que la idea) salió. El título (antes p3) va primero, con correcta nueva («Protección solar también con nubes»), la alternativa del marco alargada y el previo «estrecha» del tema que salió; la idea principal (antes p1) va segunda; p3 nueva: papel de la oración 4. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

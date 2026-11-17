@@ -1,6 +1,6 @@
 {
   "id": "t022",
-  "version": 2,
+  "version": 3,
   "titulo": "Medir dos veces",
   "tema": "Relato · el error que enseña",
   "grado": 3,
@@ -99,7 +99,7 @@
           "explicacion": "Es lo que entiende Joel al final (oración 9): el problema fue el apuro de no medir dos veces."
         },
         {
-          "t": "Joel midió la pared más larga y cortó todas las tiras de cartón del mismo tamaño.",
+          "t": "Joel midió solo la pared más larga del cuarto y cortó todas las tiras de cartón del mismo tamaño.",
           "codigo": "RV1",
           "origen": "o2",
           "explicacion": "Es un hecho del relato, el error de Joel, no lo que el relato quiere mostrar."
@@ -215,6 +215,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5. Cambio menor en o3 (las paredes no medían todas lo mismo). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
+    "notas": "A ciegas: 5 de 5. Cambio menor en o3 (las paredes no medían todas lo mismo). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md. 17 nov (auditoría M11 de tema-e-idea-principal): en p1 se alargó una incorrecta (RV1), que empataba en largo con la correcta. La correcta y el error de cada alternativa no cambian."
   }
 }

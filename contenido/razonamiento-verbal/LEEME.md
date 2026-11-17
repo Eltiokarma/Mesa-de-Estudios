@@ -19,6 +19,8 @@ Reglas cortas para escribir un texto:
 4. Al menos un paso previo por texto (`previo`). En idea principal, `aceptadas` son las oraciones de rol `principal`.
 5. Las explicaciones no nombran letras, porque las alternativas se barajan.
 6. La correcta no tiene que ser la alternativa más larga: alarga algún distractor.
+7. `datos` (opcional, por pregunta): de 1 a 4 líneas de hasta 22 palabras con las definiciones y criterios que la pregunta pide («Tesis: lo que defiende el autor de un texto que opina.»), nunca contenido del texto ni la respuesta. La app los muestra en un recuadro «Datos» en el paso previo y con las alternativas, y el papel los copia. Lo valida `nucleo/lectura.js`; en la práctica de tema e idea principal, `banco.test.js` los exige (R10). Las líneas son las de la teoría de la unidad (`D_FRASE`, `D_GIRA`, `D_ORACION`, `D_TESIS`, `D_MIXTO`, `D_SEC`).
+8. En un mismo texto, tema central, título e idea principal no tienen casi la misma respuesta, y la explicación de una pregunta no responde la siguiente: si el texto pide la frase y la idea, la frase va primero y con otras palabras; la tercera pregunta es de otro tipo (el papel de una oración, por ejemplo).
 
 Reglas cortas para un ejercicio suelto:
 

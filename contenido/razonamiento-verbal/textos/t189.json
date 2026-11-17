@@ -1,6 +1,6 @@
 {
   "id": "t189",
-  "version": 1,
+  "version": 2,
   "titulo": "Panel para visitantes en un circuito de lomas de Lima",
   "tema": "Costa · las lomas y la neblina",
   "grado": 5,
@@ -69,22 +69,25 @@
         }
       },
       "enunciado": "¿Cuál es el tema central del panel?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
       "alternativas": [
         {
-          "t": "Las lomas, que reverdecen con la neblina, y su cuidado",
+          "t": "Las lomas de la costa de Lima y su cuidado",
           "correcta": true,
           "evidencia": [
             "o3",
             "o6",
             "o7"
           ],
-          "explicacion": "Cubre todo el panel: de dónde sale el agua, qué son las lomas, qué vive en ellas y qué las amenaza."
+          "explicacion": "Cubre todo el panel: qué son las lomas, qué vive en ellas, qué las amenaza y qué se pide a los visitantes."
         },
         {
           "t": "La neblina del mar en los cerros de Lima",
           "codigo": "RV64",
           "origen": "o1",
-          "explicacion": "Sí está en la oración 1, pero es el marco: el panel la presenta para explicar las lomas."
+          "explicacion": "Sí está en la oración 1, pero es el marco con que empieza: deja fuera las lomas y su cuidado."
         },
         {
           "t": "La naturaleza y los paisajes de toda la costa del Perú",
@@ -128,6 +131,9 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del panel?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
       "alternativas": [
         {
           "t": "La neblina hace reverdecer las lomas, y como la ciudad las amenaza, hay que cuidarlas.",
@@ -166,50 +172,13 @@
     },
     {
       "id": "p3",
-      "tipo": "titulo",
-      "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "alternativas",
-      "enunciado": "¿Qué título le queda mejor al panel?",
-      "alternativas": [
-        {
-          "t": "Flores de neblina que hay que cuidar",
-          "correcta": true,
-          "evidencia": [
-            "o3",
-            "o7"
-          ],
-          "explicacion": "Tiene la medida del panel: las lomas que florecen con la neblina (oración 3) y su cuidado (oración 7)."
-        },
-        {
-          "t": "La fiesta de los amancaes",
-          "codigo": "RV1",
-          "origen": "o4",
-          "explicacion": "Está en la oración 4, pero es un detalle."
-        },
-        {
-          "t": "El clima de la costa de Lima en invierno",
-          "codigo": "RV2",
-          "explicacion": "Es del mismo asunto, pero le serviría a un texto sobre la garúa o el calor del verano."
-        },
-        {
-          "t": "La neblina de junio",
-          "codigo": "RV64",
-          "origen": "o1",
-          "explicacion": "Es el marco de la oración 1: deja fuera las lomas."
-        },
-        {
-          "t": "Cómo sembrar flores en los cerros",
-          "codigo": "RV66",
-          "explicacion": "Habla de flores y cerros, pero el panel no enseña a sembrar: agrega un asunto."
-        }
-      ]
-    },
-    {
-      "id": "p4",
       "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "jerarquia",
       "enunciado": "¿Qué papel cumplen las oraciones 1 y 2 respecto de la oración 3?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
           "t": "Explican de dónde sale la humedad que forma las lomas.",
@@ -262,6 +231,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (6 de 6 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 6 de 6). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (6 de 6 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («Las lomas de la costa de Lima y su cuidado»), que ya no dice la idea principal; salió el título («Flores de neblina que hay que cuidar», la misma respuesta que p1 y p2): quedan 3 preguntas y la de estructura pasa a p3. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

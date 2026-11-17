@@ -43,6 +43,8 @@ for (const { ficha, dir } of MODULOS) {
         const orig = it.preguntas[j];
         assert.equal(Boolean(q.previo), Boolean(orig.previo), `${p.id}.${orig.id}: el paso previo no pasó al papel`);
         if (q.previo) assert.match(q.previo, /^Antes de mirar las alternativas/);
+        // Los datos de la pregunta (definiciones y criterios) pasan al papel tal cual, y solo si la pregunta los trae.
+        assert.deepEqual(q.datos, orig.datos, `${p.id}.${orig.id}: los datos no pasaron al papel`);
         assert.doesNotMatch(q.previo || '', /\b(toca|arrastra)\b/i, `${p.id}.${orig.id}: el previo del papel usa verbos de la pantalla`);
         // Mismas alternativas que el banco, barajadas, con letras seguidas.
         assert.deepEqual(q.alternativas.map(a => a.t).sort(), orig.alternativas.map(a => a.t).sort());

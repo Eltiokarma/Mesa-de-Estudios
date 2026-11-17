@@ -1,6 +1,6 @@
 {
   "id": "t024",
-  "version": 1,
+  "version": 2,
   "titulo": "Una ciudad en el desierto",
   "tema": "Sociedad · el agua en Lima",
   "grado": 4,
@@ -78,7 +78,7 @@
       "enunciado": "¿Cuál es la idea principal del texto?",
       "alternativas": [
         {
-          "t": "Como Lima crece en un desierto con la misma agua de siempre, cuidarla es necesario para que la ciudad pueda seguir.",
+          "t": "Lima crece en un desierto con la misma agua de siempre: cuidarla es necesario para que la ciudad pueda seguir.",
           "correcta": true,
           "evidencia": [
             "o5",
@@ -98,7 +98,7 @@
           "explicacion": "Es demasiado general: el texto habla del agua en Lima."
         },
         {
-          "t": "En muchos barrios de las afueras de Lima, las familias compran el agua a camiones cisterna.",
+          "t": "En muchos barrios de las afueras de Lima, el agua no llega por tubería y las familias la compran a camiones cisterna.",
           "codigo": "RV3",
           "origen": "o6",
           "explicacion": "Es una parte del texto, pero deja fuera la conclusión del autor."
@@ -251,6 +251,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 7 de 7. Cambios: la correcta de inferencia decía más de lo que el texto permite (gasto total frente a precio por cantidad); códigos RV11 y RV7 cruzados; «la mayor parte del agua». Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles."
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de inferencia decía más de lo que el texto permite (gasto total frente a precio por cantidad); códigos RV11 y RV7 cruzados; «la mayor parte del agua». Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. 17 nov (auditoría M11 de tema-e-idea-principal): en p1 se acortó la correcta y se alargó una incorrecta (RV3). La correcta y el error de cada alternativa no cambian."
   }
 }

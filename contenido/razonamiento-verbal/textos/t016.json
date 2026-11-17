@@ -1,6 +1,6 @@
 {
   "id": "t016",
-  "version": 1,
+  "version": 2,
   "titulo": "La memoria del cuerpo",
   "tema": "Ciencia · las vacunas",
   "grado": 3,
@@ -16,7 +16,7 @@
       {
         "id": "o2",
         "rol": "detalle",
-        "t": "Mientras tanto, la persona puede enfermarse de gravedad."
+        "t": "Mientras tanto, la persona puede enfermarse de gravedad, y nada parece detener al microbio."
       },
       {
         "id": "o3",
@@ -83,7 +83,7 @@
       "enunciado": "¿Cuál es la idea principal del texto?",
       "alternativas": [
         {
-          "t": "Las vacunas enseñan a las defensas a reconocer un microbio, y así protegen a quien se vacuna y a quienes lo rodean.",
+          "t": "Las vacunas enseñan a las defensas a reconocer un microbio y protegen a quien se vacuna y a quienes lo rodean.",
           "correcta": true,
           "evidencia": [
             "o4",
@@ -260,6 +260,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: el revisor marcó «ninguna la dice completa» en el previo de idea principal, y tenía razón: la idea junta las oraciones 4 y 7, así que ahora «ninguna» también se acepta. El resto, 6 de 6. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles."
+    "notas": "A ciegas: el revisor marcó «ninguna la dice completa» en el previo de idea principal, y tenía razón: la idea junta las oraciones 4 y 7, así que ahora «ninguna» también se acepta. El resto, 6 de 6. Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles. 17 nov (auditoría M11 de tema-e-idea-principal): en p1 se acortó la correcta, que empataba en largo con una incorrecta. La correcta y el error de cada alternativa no cambian."
   }
 }

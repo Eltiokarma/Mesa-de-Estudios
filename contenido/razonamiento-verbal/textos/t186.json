@@ -1,6 +1,6 @@
 {
   "id": "t186",
-  "version": 1,
+  "version": 2,
   "titulo": "Carta de un estudiante al municipio escolar de su colegio de Tarapoto",
   "tema": "Escuela · repartir el patio en el recreo (colegio inventado)",
   "grado": 5,
@@ -50,6 +50,65 @@
   "preguntas": [
     {
       "id": "p1",
+      "tipo": "tema-central",
+      "unidad": "razonamiento-verbal.tema-e-idea-principal",
+      "idea": "tema",
+      "previo": {
+        "tipo": "medida",
+        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
+        "sonda": "El recreo en los colegios",
+        "aceptada": "amplia",
+        "codigos": {
+          "justa": "RV2",
+          "estrecha": "RV1"
+        },
+        "explicacion": "Le serviría a un texto sobre la comida del recreo o su horario: esta carta trata de cómo repartir el patio.",
+        "explicaciones": {
+          "justa": "Es verdad que la carta habla del recreo, pero esa frase también le serviría a muchos otros textos.",
+          "estrecha": "Viste bien que la frase no tiene la medida justa, pero no deja fuera ninguna parte de la carta: falla al revés, porque abarca mucho más."
+        }
+      },
+      "enunciado": "¿Cuál es el tema central de la carta?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
+      "alternativas": [
+        {
+          "t": "Quién puede usar el patio a la hora del recreo",
+          "correcta": true,
+          "evidencia": [
+            "o2",
+            "o4",
+            "o7"
+          ],
+          "explicacion": "Cubre toda la carta: el problema, la opinión contraria, las razones del autor y lo que propone."
+        },
+        {
+          "t": "La vida escolar de los alumnos de secundaria",
+          "codigo": "RV2",
+          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto del colegio."
+        },
+        {
+          "t": "El partido de fútbol de los alumnos de quinto en el patio",
+          "codigo": "RV3",
+          "origen": "o2",
+          "explicacion": "Es una parte verdadera, la de la oración 2, pero deja fuera a los demás grados y la propuesta."
+        },
+        {
+          "t": "Los turnos por días que usan otros colegios de la ciudad",
+          "codigo": "RV1",
+          "origen": "o6",
+          "explicacion": "Sí está en la oración 6, pero habla de otros colegios: la carta trata del suyo."
+        },
+        {
+          "t": "Los castigos para quienes no respeten los turnos del patio",
+          "codigo": "RV66",
+          "explicacion": "Tiene que ver con los turnos, pero la carta no habla de castigos: agrega un asunto."
+        }
+      ]
+    },
+    {
+      "id": "p2",
       "tipo": "idea-principal",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "alternativas",
@@ -63,7 +122,7 @@
         "codigos": {
           "o4": "RV33"
         },
-        "explicacion": "La oración 7 dice lo que el autor pide; el «Por eso» la une con las razones de la 5 y la 6. La 4 es la opinión contraria.",
+        "explicacion": "La oración 7 dice lo que el autor pide, y su «Por eso» la une con lo anterior. La 4 es la opinión contraria.",
         "explicaciones": {
           "o1": "La primera oración presenta el patio: es el punto de partida.",
           "o2": "Cuenta el problema: los de quinto ocupan el patio.",
@@ -75,6 +134,10 @@
         }
       },
       "enunciado": "¿Cuál es la tesis del autor de la carta?",
+      "datos": [
+        "Tesis: lo que defiende el autor de un texto que opina.",
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
       "alternativas": [
         {
           "t": "El patio debería repartirse por turnos para que todos los grados lo usen.",
@@ -82,7 +145,7 @@
           "evidencia": [
             "o7"
           ],
-          "explicacion": "Es la oración 7, que empieza con «Por eso»: la 5 y la 6 son sus razones y la 4 es la opinión contraria."
+          "explicacion": "Es la oración 7, que empieza con «Por eso»; la 4 es la opinión contraria, que el autor responde con «Pero»."
         },
         {
           "t": "Los de quinto se ganaron el patio por ser los mayores del colegio.",
@@ -110,67 +173,14 @@
       ]
     },
     {
-      "id": "p2",
-      "tipo": "tema-central",
-      "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "tema",
-      "previo": {
-        "tipo": "medida",
-        "pide": "Antes de ver las alternativas: si esta frase fuera el tema central, ¿qué medida tendría?",
-        "sonda": "El recreo en los colegios",
-        "aceptada": "amplia",
-        "codigos": {
-          "justa": "RV2",
-          "estrecha": "RV1"
-        },
-        "explicacion": "Le serviría a un texto sobre la comida del recreo o su horario: esta carta trata de cómo repartir el patio.",
-        "explicaciones": {
-          "justa": "Es verdad que la carta habla del recreo, pero esa frase también le serviría a muchos otros textos.",
-          "estrecha": "Viste bien que la frase no tiene la medida justa, pero no deja fuera ninguna parte de la carta: falla al revés, porque abarca mucho más."
-        }
-      },
-      "enunciado": "¿Cuál es el tema central de la carta?",
-      "alternativas": [
-        {
-          "t": "Cómo debería repartirse el patio en el recreo",
-          "correcta": true,
-          "evidencia": [
-            "o2",
-            "o4",
-            "o7"
-          ],
-          "explicacion": "Cubre toda la carta: el problema, la opinión contraria, las razones y la propuesta de turnos."
-        },
-        {
-          "t": "La vida escolar de los alumnos de secundaria",
-          "codigo": "RV2",
-          "explicacion": "Es del mismo asunto, pero le serviría a cualquier texto del colegio."
-        },
-        {
-          "t": "El partido de fútbol de los alumnos de quinto en el patio",
-          "codigo": "RV3",
-          "origen": "o2",
-          "explicacion": "Es una parte verdadera, la de la oración 2, pero deja fuera a los demás grados y la propuesta."
-        },
-        {
-          "t": "Los turnos por días que usan otros colegios de la ciudad",
-          "codigo": "RV1",
-          "origen": "o6",
-          "explicacion": "Sí está en la oración 6, pero es una razón: la carta habla de su propio colegio."
-        },
-        {
-          "t": "Los castigos para quienes no respeten los turnos del patio",
-          "codigo": "RV66",
-          "explicacion": "Tiene que ver con los turnos, pero la carta no habla de castigos: agrega un asunto."
-        }
-      ]
-    },
-    {
       "id": "p3",
       "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "jerarquia",
       "enunciado": "¿Qué papel cumple la oración 6 en la carta?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
           "t": "Da una razón que apoya la propuesta de la oración 7.",
@@ -209,6 +219,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): El tema central (antes p2) va ahora primero, con correcta nueva («Quién puede usar el patio a la hora del recreo»), y la tesis segunda; las explicaciones de la tesis ya no dan el papel de la oración 6 (p3). Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

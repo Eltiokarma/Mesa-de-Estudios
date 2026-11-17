@@ -1,6 +1,6 @@
 {
   "id": "t178",
-  "version": 1,
+  "version": 2,
   "titulo": "Folleto de la municipalidad para los vendedores del mercado",
   "tema": "Ciudad · restos del mercado convertidos en abono (datos inventados)",
   "grado": 5,
@@ -102,16 +102,21 @@
         }
       },
       "enunciado": "El folleto y su tabla dan cuenta, principalmente, de",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto.",
+        "«Gira en torno a» y «da cuenta de»: así pregunta el examen por el tema central.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
-          "t": "los restos del mercado que ahora se vuelven abono para los parques.",
+          "t": "lo que se hace ahora con los restos del mercado.",
           "correcta": true,
           "evidencia": [
             "o3",
             "o5",
             "f1"
           ],
-          "explicacion": "Cubre el folleto (qué se recoge, cómo y para qué) y la tabla, que mide los restos y el abono."
+          "explicacion": "Cubre el folleto (el antes, el recojo y la planta) y la tabla, que mide lo que se recoge y lo que sale cada mes."
         },
         {
           "t": "lo que dejan cada día los puestos de frutas y verduras.",
@@ -160,6 +165,10 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del folleto?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
           "t": "Desde enero, los restos del mercado se recogen aparte y se vuelven abono.",
@@ -200,6 +209,10 @@
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
       "idea": "alternativas",
       "enunciado": "¿Qué título le queda mejor al folleto?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
           "t": "Del mercado al parque",
@@ -247,6 +260,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («lo que se hace ahora con los restos del mercado»), que ya no dice la idea principal; el título («Del mercado al parque») ya tenía otro ángulo y no cambia. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

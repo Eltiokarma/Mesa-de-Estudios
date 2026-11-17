@@ -1,6 +1,6 @@
 {
   "id": "t176",
-  "version": 1,
+  "version": 2,
   "titulo": "Informe del municipio escolar de un colegio de Iquitos",
   "tema": "Selva · bebederos y botellas de plástico en un colegio (datos inventados)",
   "grado": 5,
@@ -77,16 +77,21 @@
           "justa": "RV3",
           "amplia": "RV2"
         },
-        "explicacion": "Cubre solo el problema de la oración 2. Deja fuera los bebederos, el cambio y el gráfico.",
+        "explicacion": "Cubre solo la oración 2. Deja fuera los bebederos, el cambio y el gráfico.",
         "explicaciones": {
           "justa": "Es una parte verdadera del informe, el problema del comienzo, pero deja fuera la solución y el gráfico que la mide.",
           "amplia": "Viste bien que la frase no tiene la medida justa, pero no le serviría a otro texto: falla al revés, porque se queda corta y deja fuera los bebederos."
         }
       },
       "enunciado": "El texto y el gráfico giran, principalmente, en torno a",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto.",
+        "«Gira en torno a» y «da cuenta de»: así pregunta el examen por el tema central.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
-          "t": "los bebederos del colegio y cuántas botellas menos se botan.",
+          "t": "lo que cambió en el colegio desde que llegaron los bebederos.",
           "correcta": true,
           "evidencia": [
             "o3",
@@ -94,7 +99,7 @@
             "o6",
             "f1"
           ],
-          "explicacion": "Cubre el texto (los bebederos y lo que cambió) y también el gráfico, que compara las botellas antes y después."
+          "explicacion": "Cubre el texto (de dónde salían las botellas y qué hizo el municipio escolar) y también el gráfico, que compara una semana de marzo con una de mayo."
         },
         {
           "t": "el calor de Iquitos, que hacía que muchos alumnos compraran agua en el recreo.",
@@ -143,6 +148,10 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del informe?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto.",
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
           "t": "Gracias a los bebederos, el colegio bota muchas menos botellas de plástico.",
@@ -151,7 +160,7 @@
             "o6",
             "f1"
           ],
-          "explicacion": "Es lo que dice la oración 6, y el gráfico lo muestra: de 420 botellas en una semana se pasó a 90."
+          "explicacion": "Es lo que dice la oración 6; las de antes cuentan cómo se llegó a ella."
         },
         {
           "t": "En Iquitos hace calor todo el año y en el recreo se compraba agua embotellada.",
@@ -179,41 +188,45 @@
     },
     {
       "id": "p3",
-      "tipo": "titulo",
+      "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "alternativas",
-      "enunciado": "¿Qué título le queda mejor al informe?",
+      "enunciado": "¿Qué papel cumple el gráfico respecto de la oración 6?",
+      "datos": [
+        "Texto mixto: el texto y su tabla o gráfico se leen juntos, como un solo texto."
+      ],
       "alternativas": [
         {
-          "t": "Menos botellas con los bebederos",
+          "t": "Da las cifras que prueban lo que dice la oración 6.",
           "correcta": true,
           "evidencia": [
             "o6",
             "f1"
           ],
-          "explicacion": "Tiene la medida del informe: nombra los bebederos y lo que lograron, que es lo que muestra el gráfico."
+          "explicacion": "La oración 6 dice que se botan muchas menos botellas, y las barras lo miden: 420 en una semana de marzo y 90 en una de mayo."
         },
         {
-          "t": "El agua en la selva",
-          "codigo": "RV2",
-          "explicacion": "Tiene que ver con el informe, pero le serviría a un texto sobre los ríos o la lluvia."
-        },
-        {
-          "t": "Noventa botellas en mayo",
+          "t": "Dice la idea principal del informe, porque trae los números.",
           "codigo": "RV1",
           "origen": "f1b",
-          "explicacion": "Leíste bien la barra de mayo, pero es un dato: deja fuera los bebederos y el antes."
+          "explicacion": "Leíste bien que el gráfico trae los números, pero los números prueban una idea: esa idea la dice la oración 6."
         },
         {
-          "t": "El calor del recreo en Iquitos",
-          "codigo": "RV64",
-          "origen": "o1",
-          "explicacion": "Es el marco de la oración 1, con que empieza el informe; el informe trata de los bebederos."
+          "t": "Muestra un problema nuevo que el informe deja sin resolver.",
+          "codigo": "RV42",
+          "origen": "f1b",
+          "explicacion": "Es verdad que en mayo todavía se botan botellas, pero el gráfico no trae un problema nuevo: compara el antes y el después de los bebederos."
         },
         {
-          "t": "Un colegio sin ninguna botella de plástico",
+          "t": "Sobra, porque la oración 5 ya dice lo que muestra el gráfico.",
+          "codigo": "RV30",
+          "origen": "o5",
+          "explicacion": "Es verdad que la oración 5 presenta el gráfico, pero no da las cifras: sin ellas, el «muchas menos» de la oración 6 no tendría prueba."
+        },
+        {
+          "t": "Muestra que en mayo el colegio ya no botó ninguna botella.",
           "codigo": "RV11",
-          "explicacion": "Habla de las botellas, pero «sin ninguna» dice más que el gráfico, que todavía marca 90."
+          "origen": "f1b",
+          "explicacion": "Leíste bien que la barra de mayo es mucho más corta, pero marca 90 botellas: no llega a cero."
         }
       ]
     }
@@ -225,6 +238,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («lo que cambió en el colegio desde que llegaron los bebederos»), que ya no dice el resultado; p3: antes título («Menos botellas con los bebederos», casi la misma respuesta que p1 y p2), ahora papel del gráfico respecto de la oración 6, sin previo. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }

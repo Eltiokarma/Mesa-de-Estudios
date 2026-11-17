@@ -1,6 +1,6 @@
 {
   "id": "t184",
-  "version": 1,
+  "version": 2,
   "titulo": "Reportaje del diario regional de Piura",
   "tema": "Salud · brigadas escolares contra el dengue (colegio y brigadas inventados)",
   "grado": 5,
@@ -74,9 +74,12 @@
         }
       },
       "enunciado": "¿Cuál es el tema central del reportaje?",
+      "datos": [
+        "Tema central y título: una frase que dice de qué trata todo el texto."
+      ],
       "alternativas": [
         {
-          "t": "Las brigadas de alumnos que combaten el dengue en sus barrios",
+          "t": "El trabajo de los escolares contra el dengue en Sullana",
           "correcta": true,
           "evidencia": [
             "o3",
@@ -84,7 +87,7 @@
             "o5",
             "o7"
           ],
-          "explicacion": "Cubre todo el reportaje: el caso de Milagros, qué hacen las brigadas, cómo se formaron y qué se ha logrado."
+          "explicacion": "Cubre todo el reportaje: lo que hace Milagros, cómo se formaron las brigadas, cómo trabajan y lo que dice el centro de salud."
         },
         {
           "t": "Milagros y su recorrido de cada sábado por su cuadra de Sullana",
@@ -135,6 +138,9 @@
         }
       },
       "enunciado": "¿Cuál es la idea principal del reportaje?",
+      "datos": [
+        "Idea principal y tesis: una oración que afirma algo de todo el texto."
+      ],
       "alternativas": [
         {
           "t": "Alumnos como Milagros ayudan a frenar el dengue en sus barrios como brigadistas.",
@@ -173,35 +179,43 @@
       "id": "p3",
       "tipo": "estructura",
       "unidad": "razonamiento-verbal.tema-e-idea-principal",
-      "idea": "jerarquia",
-      "enunciado": "En el reportaje, ¿qué papel cumplen las oraciones 1 a 4?",
+      "enunciado": "En el reportaje, ¿qué papel cumple la oración 7?",
+      "datos": [
+        "Idea secundaria: le da a la principal un porqué, un cómo, un ejemplo o la creencia que corrige."
+      ],
       "alternativas": [
         {
-          "t": "Presentan un caso que luego se explica como parte de algo más amplio.",
+          "t": "Da una prueba de que las brigadas ya ayudan contra el dengue.",
           "correcta": true,
           "evidencia": [
-            "o1",
-            "o5"
+            "o5",
+            "o7"
           ],
-          "explicacion": "Cuentan lo que hace Milagros, y la oración 5 dice que, como ella, hay cuarenta alumnos en las brigadas."
+          "explicacion": "La oración 5 dice que las brigadas «ya están ayudando», y la 7 lo muestra con lo que encontró el centro de salud: menos recipientes con larvas que en enero."
         },
         {
-          "t": "Dicen la idea principal, porque abren el reportaje.",
-          "codigo": "RV4",
-          "origen": "o1",
-          "explicacion": "Es verdad que abren el reportaje, pero cuentan un caso: la idea que lo explica llega en la oración 5."
+          "t": "Dice la idea principal, porque cuenta lo que lograron las brigadas.",
+          "codigo": "RV1",
+          "origen": "o7",
+          "explicacion": "Leíste bien lo que encontró el centro de salud, pero es una prueba: la idea que junta el reportaje está en la oración 5."
         },
         {
-          "t": "Dan la opinión de la periodista sobre el dengue.",
+          "t": "Muestra que en las cuadras visitadas ya no quedan larvas de zancudo.",
+          "codigo": "RV11",
+          "origen": "o7",
+          "explicacion": "Leíste bien que hay menos recipientes con larvas, pero «menos» no es «ninguno»: la oración 7 no dice que se acabaron."
+        },
+        {
+          "t": "Da la opinión de la periodista sobre el trabajo de las brigadas.",
           "codigo": "RV42",
-          "origen": "o3",
-          "explicacion": "Es verdad que la oración 3 explica algo del dengue, pero nadie opina: cuentan lo que hace una alumna."
+          "origen": "o7",
+          "explicacion": "Es verdad que la oración habla bien de las brigadas, pero no opina la periodista: cuenta lo que encontró el centro de salud."
         },
         {
-          "t": "Sobran, porque hablan de una sola alumna y no del tema.",
+          "t": "Sobra, porque habla de enero y no de lo que hacen los brigadistas.",
           "codigo": "RV30",
-          "origen": "o1",
-          "explicacion": "Es verdad que hablan de una sola alumna, pero su caso muestra qué hace una brigada: sí sostiene el tema."
+          "origen": "o7",
+          "explicacion": "Es verdad que nombra enero, pero para comparar: sin la oración 7, el reportaje no mostraría que las brigadas funcionan."
         }
       ]
     }
@@ -218,6 +232,6 @@
     "por": "subagente (revisor a ciegas) y script de revisión aparte (scratchpad practica-verbal/revisa.js)",
     "fecha": "2026-11-17",
     "veredicto": "aprobado",
-    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (5 de 5 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola."
+    "notas": "Revisión a ciegas de docs/formato-lectura.md §5.6: el revisor resolvió las preguntas y los pasos previos sin ver las claves y coincidió en 79 de 79 ítems de la tanda t175–t189 (46 preguntas y 33 previos; en este texto, 5 de 5). Este texto tenía ítems con dudas: se reescribieron y una segunda vuelta a ciegas de t182, t184, t185 y t189 dio 22 de 22 (5 de 5 en este texto). Antes, el script comprobó que cada oración citada existe, que las cuentas coinciden con el texto y que la correcta no es la más larga sola. 17 nov (auditoría M4 y M10): p1: correcta nueva («El trabajo de los escolares contra el dengue en Sullana»), con otras palabras que la idea principal; p3: antes el papel de las oraciones 1 a 4 (un caso, que el previo de p1 ya decía), ahora el papel de la oración 7. Todas las preguntas llevan «datos». Las preguntas reescritas esperan otra vuelta a ciegas."
   }
 }
