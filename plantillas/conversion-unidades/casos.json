@@ -1,0 +1,327 @@
+{
+  "plantilla": "conversion-unidades",
+  "tolerancia": 1e-09,
+  "nota": "Unidades: x en la unidad 'de', respuesta en la unidad 'a'. tiempo/h-min: h horas y min minutos, respuesta en horas. dos-cambios/media: distancia d (ud) en un tiempo t (ut), rapidez en 'a'. comparar: a (ua; en horas, [h, min]) frente a b (ub); veces y cuantas, a / b en la misma unidad; diferencia, a − b en m/s. notacion: el texto de la respuesta va en notación científica.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo), que no usa el generador ni el núcleo: pasa cada dato de entrada al SI con una tabla propia (los m², m³, ha y L se arman elevando el largo: ha = (100 m)², L = (1 dm)³), recalcula la respuesta exacta y comprueba que cada número de la entrada se lee en el enunciado. Los 20 casos cuadran con el generador; 'exacta' es la fracción que dio el script y 'texto', la alternativa correcta que ve el alumno.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "dos-cambios",
+        "sub": "media",
+        "nivel": 3,
+        "d": 45,
+        "ud": "km",
+        "t": 50,
+        "ut": "min",
+        "a": "m/s"
+      },
+      "esperado": {
+        "respuesta": 15.0,
+        "exacta": "15",
+        "texto": "15 m/s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "notacion",
+        "nivel": 2,
+        "x": 300000,
+        "de": "km",
+        "a": "m"
+      },
+      "esperado": {
+        "respuesta": 300000000.0,
+        "exacta": "300000000",
+        "texto": "3 × 10⁸ m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 1,
+        "x": 850,
+        "de": "g",
+        "a": "kg"
+      },
+      "esperado": {
+        "respuesta": 0.85,
+        "exacta": "17/20",
+        "texto": "0,85 kg"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "comparar",
+        "sub": "veces",
+        "nivel": 3,
+        "a": 54,
+        "ua": "km/h",
+        "b": 5,
+        "ub": "m/s"
+      },
+      "esperado": {
+        "respuesta": 3.0,
+        "exacta": "3",
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "notacion",
+        "nivel": 2,
+        "x": 2,
+        "de": "μm",
+        "a": "m"
+      },
+      "esperado": {
+        "respuesta": 2e-06,
+        "exacta": "1/500000",
+        "texto": "2 × 10⁻⁶ m"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "s-min",
+        "nivel": 1,
+        "x": 150,
+        "de": "s",
+        "a": "min"
+      },
+      "esperado": {
+        "respuesta": 2.5,
+        "exacta": "5/2",
+        "texto": "2,5 min"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "comparar",
+        "sub": "diferencia",
+        "nivel": 3,
+        "a": 36,
+        "ua": "km/h",
+        "b": 4,
+        "ub": "m/s"
+      },
+      "esperado": {
+        "respuesta": 6.0,
+        "exacta": "6",
+        "texto": "6 m/s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "longitud",
+        "nivel": 1,
+        "x": 3800,
+        "de": "m",
+        "a": "km"
+      },
+      "esperado": {
+        "respuesta": 3.8,
+        "exacta": "19/5",
+        "texto": "3,8 km"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "longitud",
+        "nivel": 1,
+        "x": 0.1,
+        "de": "mm",
+        "a": "μm"
+      },
+      "esperado": {
+        "respuesta": 100.0,
+        "exacta": "100",
+        "texto": "100 μm"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "rapidez",
+        "nivel": 2,
+        "x": 13,
+        "de": "m/s",
+        "a": "km/h"
+      },
+      "esperado": {
+        "respuesta": 46.8,
+        "exacta": "234/5",
+        "texto": "46,8 km/h"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "comparar",
+        "sub": "cuantas",
+        "nivel": 3,
+        "a": 50,
+        "ua": "kg",
+        "b": 2500,
+        "ub": "g"
+      },
+      "esperado": {
+        "respuesta": 20.0,
+        "exacta": "20",
+        "texto": "20"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "min-s",
+        "nivel": 1,
+        "x": 15,
+        "de": "min",
+        "a": "s"
+      },
+      "esperado": {
+        "respuesta": 900.0,
+        "exacta": "900",
+        "texto": "900 s"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "longitud",
+        "nivel": 1,
+        "x": 45,
+        "de": "km",
+        "a": "m"
+      },
+      "esperado": {
+        "respuesta": 45000.0,
+        "exacta": "45000",
+        "texto": "45 000 m"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 1,
+        "x": 750,
+        "de": "mg",
+        "a": "g"
+      },
+      "esperado": {
+        "respuesta": 0.75,
+        "exacta": "3/4",
+        "texto": "0,75 g"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "tipo": "rapidez",
+        "nivel": 2,
+        "x": 36,
+        "de": "km/h",
+        "a": "m/s"
+      },
+      "esperado": {
+        "respuesta": 10.0,
+        "exacta": "10",
+        "texto": "10 m/s"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "h-s",
+        "nivel": 2,
+        "x": 8,
+        "de": "h",
+        "a": "s"
+      },
+      "esperado": {
+        "respuesta": 28800.0,
+        "exacta": "28800",
+        "texto": "28 800 s"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "tipo": "notacion",
+        "nivel": 2,
+        "x": 20,
+        "de": "mg",
+        "a": "kg"
+      },
+      "esperado": {
+        "respuesta": 2e-05,
+        "exacta": "1/50000",
+        "texto": "2 × 10⁻⁵ kg"
+      }
+    },
+    {
+      "semilla": 43,
+      "entrada": {
+        "tipo": "comparar",
+        "sub": "cuantas",
+        "nivel": 3,
+        "a": [
+          1,
+          30
+        ],
+        "ua": "h",
+        "b": 18,
+        "ub": "min"
+      },
+      "esperado": {
+        "respuesta": 5.0,
+        "exacta": "5",
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": 88,
+      "entrada": {
+        "tipo": "dos-cambios",
+        "sub": "compuesta",
+        "nivel": 3,
+        "x": 54,
+        "de": "km/h",
+        "a": "m/min"
+      },
+      "esperado": {
+        "respuesta": 900.0,
+        "exacta": "900",
+        "texto": "900 m/min"
+      }
+    },
+    {
+      "semilla": 143,
+      "entrada": {
+        "tipo": "tiempo",
+        "sub": "h-min",
+        "nivel": 2,
+        "h": 5,
+        "min": 30,
+        "a": "h"
+      },
+      "esperado": {
+        "respuesta": 5.5,
+        "exacta": "11/2",
+        "texto": "5,5 h"
+      }
+    }
+  ]
+}

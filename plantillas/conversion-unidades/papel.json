@@ -1,0 +1,93 @@
+{
+  "titulo": "Cambiar de unidad: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una carrera escolar de Puno tiene 3000 m de recorrido. ¿Cuánto es en kilómetros (km)? Datos: 1 km = 1000 m. Alternativas: A) 300 km   B) 3 000 000 km   C) 0,3 km   D) 30 km   E) 3 km",
+      "respuesta": "E) 3 km",
+      "pasos": [
+        "El kilómetro es más grande que el metro: el número tiene que bajar.",
+        "Se multiplica por un factor que vale 1, con km arriba y m abajo, para que m se tache: (1 km / 1000 m).",
+        "3000 m × (1 km / 1000 m) = 3000 ÷ 1000 = 3 km."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un camión lleva 15 t de papa a la feria de Juliaca. ¿Cuánto es en kilogramos (kg)? Datos: 1 t = 1000 kg (t: tonelada). Alternativas: A) 1500 kg   B) 0,015 kg   C) 150 000 kg   D) 15 000 kg   E) 150 kg",
+      "respuesta": "D) 15 000 kg",
+      "pasos": [
+        "El kilogramo es más chico que la tonelada: el número tiene que subir.",
+        "Se multiplica por un factor que vale 1, con kg arriba y t abajo, para que t se tache: (1000 kg / 1 t).",
+        "15 t × (1000 kg / 1 t) = 15 × 1000 = 15 000 kg."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un microondas calienta la leche en 270 s. ¿Cuántos minutos (min) son? Datos: 1 min = 60 s. Alternativas: A) 4,3 min   B) 2,7 min   C) 16 200 min   D) 0,075 min   E) 4,5 min",
+      "respuesta": "E) 4,5 min",
+      "pasos": [
+        "Un minuto tiene 60 segundos: el minuto es más grande y el número baja.",
+        "270 s × (1 min / 60 s) = 270 ÷ 60 = 4,5 min.",
+        "Comprobación: 4 min son 240 s, y faltan 30 s, que son 0,5 de minuto."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una vicuña corre a unos 13 m/s. ¿Cuál es su rapidez en kilómetros por hora (km/h)? Datos: 1 km = 1000 m. 1 h = 3600 s. Alternativas: A) 0,78 km/h   B) 0,013 km/h   C) 46,8 km/h   D) 46 800 km/h   E) 3,611 km/h",
+      "respuesta": "C) 46,8 km/h",
+      "pasos": [
+        "13 m/s son 13 m en cada segundo. En una hora hay 3600 s y en un km, 1000 m.",
+        "13 m/s × (1 km / 1000 m) × (3600 s / 1 h) = 46 800 km / 1000 h.",
+        "46 800 ÷ 1000 = 46,8 km/h (por 3600 y entre 1000 es lo mismo que por 3,6)."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un glóbulo rojo mide unos 7 μm de ancho. ¿Cuánto es en metros (m), en notación científica? Datos: 1 m = 1 000 000 μm (μ, micro: una millonésima). Notación científica: a × 10ⁿ, con a de 1 a menos de 10. Potencias de 10: 10ᵃ × 10ᵇ = 10ᵃ⁺ᵇ y 10ᵃ ÷ 10ᵇ = 10ᵃ⁻ᵇ. Alternativas: A) 7 × 10⁻⁶ m   B) 7 × 10⁶ m   C) 7 × 10⁻⁵ m   D) 7 × 10⁻⁷ m",
+      "respuesta": "A) 7 × 10⁻⁶ m",
+      "pasos": [
+        "El dato ya tiene una sola cifra antes de la coma: 7 μm.",
+        "El factor que vale 1: (1 m / 1 000 000 μm), que es multiplicar por 10⁻⁶.",
+        "Queda 7 × 10⁻⁶ m."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La feria del domingo dura 1 h 15 min. ¿Cuántas horas (h) son, escritas con decimales? Datos: 1 h = 60 min. Alternativas: A) 1,15 h   B) 1,25 h   C) 75 h   D) 0,75 h   E) 5 h",
+      "respuesta": "B) 1,25 h",
+      "pasos": [
+        "15 min son 15 de los 60 min de una hora: 15/60 = 0,25 h.",
+        "Se suman las horas enteras: 1 h + 0,25 h = 1,25 h."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un atleta corre los 400 m de una vuelta a la pista en 80 s. ¿Cuál es su rapidez media en kilómetros por hora (km/h)? Datos: Rapidez media: v = d / t (distancia entre tiempo). 1 km = 1000 m. 1 h = 3600 s. Alternativas: A) 300 km/h   B) 18 km/h   C) 5 km/h   D) 1,389 km/h   E) 18 000 km/h",
+      "respuesta": "B) 18 km/h",
+      "pasos": [
+        "La rapidez es distancia entre tiempo: v = 400 m ÷ 80 s = 5 m/s.",
+        "A km/h, con sus dos factores: 5 m/s × (1 km / 1000 m) × (3600 s / 1 h).",
+        "5 × 3600 ÷ 1000 = 18 km/h."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un taller de 1 h 30 min se divide en turnos de 18 min cada uno. ¿Cuántos turnos son? Datos: 1 h = 60 min. Alternativas: A) 5   B) 4,333   C) 1,667   D) 0,08333   E) 7,222",
+      "respuesta": "A) 5",
+      "pasos": [
+        "Todo en minutos: 1 h 30 min = 1 × 60 + 30 = 90 min.",
+        "90 min ÷ 18 min = 5."
+      ]
+    }
+  ]
+}
