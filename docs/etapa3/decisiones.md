@@ -51,5 +51,15 @@ Predice con `orden: 'fijo'` cuando sus letras se ven en la figura; zonas `data-t
 - **Letras de las alternativas** (toda la app): se quedan A–E como en el examen; donde la figura tiene puntos con
   letras, ningún resuelto nombra una alternativa por su letra.
 
+## Tercera ronda (mesa, 17 nov, noche): Exponentes y radicales
+- **Visto bueno de la idea 1** `leyes-exponentes` («El exponente cuenta factores», la hoja que se dobla, pieza
+  `alg-objeto`): se sigue igual con `radicales` y `exponente-fraccionario`.
+- La pregunta del Resumen pasa a «¿Qué significa un exponente negativo, como el de 2⁻³?» (la de la propuesta descartaba
+  dos alternativas de Predice).
+- La unidad queda sin historia hasta tener una fuente comprobada (la de Descartes se fue con Productos notables).
+- Ningún ejemplo resuelto pide el valor de un exponente negativo: la pestaña Ejemplos se abre antes de Predice.
+- La escena `cuadrado-crece` queda compartida entre Exponentes y radicales, Productos notables y Factorización hasta que
+  cada unidad tenga la suya.
+
 ## Orden de trabajo
 Fase 2 del método: la idea 1 de cada unidad completa, para el visto bueno de Gerson en la mesa, antes del resto.
