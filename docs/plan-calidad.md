@@ -93,6 +93,8 @@ Límite conocido: un modelo lee mejor que un alumno de 16 años. Si el lector en
 
 ## 5. Qué entrega cada unidad
 
+El paso a paso, con su lista de verificación, está en `docs/molde-unidad.md` (17 nov).
+
 - La unidad rehecha contra el contrato, con «Lee» y «Así se resuelve» en todas sus ideas. Las 59 unidades que la ronda 6 dejó sin esos momentos los reciben aquí, cuando les toque su turno.
 - Los ángulos y vectores de sus ejercicios de práctica (`plantillas/` de la unidad) revisados con las mismas reglas del punto 5 del contrato.
 - `rutinas/frio/<unidad>.md` con el lector en frío aprobado.
