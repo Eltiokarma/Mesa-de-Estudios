@@ -38,5 +38,18 @@ Predice con `orden: 'fijo'` cuando sus letras se ven en la figura; zonas `data-t
   `aritmetica.conjuntos`, donde San Marcos la pregunta), reusando `propuesta-algebra.md`; la unidad de Álgebra apunta a
   esas.
 
+## Segunda ronda (mesa, 17 nov, noche)
+- **Visto bueno de las tres ideas 1** (Numeración `agrupar`, Razonamiento deductivo `doble-entrada`, Segmentos y ángulos
+  `suma-de-segmentos`): se sigue igual con el resto de ideas. Pendiente anotado: en Razonamiento deductivo, las
+  alternativas A–E van en línea aparte, no pegadas al enunciado (ejemplo 13).
+- **Álgebra, `propuesta-algebra-exponentes.md` aprobada con todas sus recomendaciones**: la unidad se parte en dos, como
+  Magnitudes y Vectores: «Exponentes y radicales» (ideas `leyes-exponentes`, `radicales`, `exponente-fraccionario`
+  nueva; conserva el id `algebra.exponentes-y-productos-notables`) y «Productos notables» (`cuadrado-suma`,
+  `suma-por-diferencia` nueva, `cubo-binomio` nueva, `radicales-dobles`, `racionalizar`; unidad nueva
+  `algebra.productos-notables`, con el avance migrado). Colores: a naranja, b turquesa, base y total en tinta, violeta
+  al resultado (exponentes) y a las piezas del medio que se olvidan (2ab, 3a²b); sin carmín ni verde junto a naranja.
+- **Letras de las alternativas** (toda la app): se quedan A–E como en el examen; donde la figura tiene puntos con
+  letras, ningún resuelto nombra una alternativa por su letra.
+
 ## Orden de trabajo
 Fase 2 del método: la idea 1 de cada unidad completa, para el visto bueno de Gerson en la mesa, antes del resto.

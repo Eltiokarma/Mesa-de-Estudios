@@ -1,6 +1,21 @@
 # Pendientes y traspaso
 
-Actualizado el 17 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 17 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 17 nov, cierre: Etapa 3 en marcha (fase 2 hecha en tres unidades)
+
+- **Hecho y en main (v235):** propuestas de la Etapa 3 en `docs/etapa3/` y sus decisiones en `docs/etapa3/decisiones.md`;
+  idea 1 completa y con visto bueno de `aritmetica.numeracion` (`agrupar`, pieza `arit-puesto`, `{ raya }` en
+  `nucleo/ecuacion.js`), `razonamiento-matematico.razonamiento-deductivo` (`doble-entrada`, pieza `rm-objeto`) y
+  `geometria.segmentos-y-angulos` (`suma-de-segmentos`, pieza `geo-objeto`).
+- **Siguiente (fase 3 del método):** el resto de ideas de esas tres unidades, con 15 ejemplos cada una (un agente por
+  unidad, como en la Etapa 2; encargo en `docs/metodo/unidad/1-ideas.md` §B y `2-ejemplos.md`, con lo de
+  `docs/etapa3/decisiones.md`). Y para Álgebra: partir `algebra.exponentes-y-productos-notables` en dos unidades
+  (catálogo, migración del avance como en Magnitudes y Vectores) y escribir la idea 1 (`leyes-exponentes`) para el visto
+  bueno. Después: práctica, lector en frío, auditor y correcciones, como en la Etapa 2.
+- **Cómo integrar** (lo que funcionó): un agente por unidad, sin commits; al terminar, la sesión copia solo sus archivos a
+  un worktree limpio desde HEAD, corre `npm run catalogo` y `npm test` ahí, y commitea desde ese worktree con
+  `git update-index --cacheinfo`; un commit por unidad; `VERSION` en `app/sw.js` si se toca la cáscara.
 
 ## Estado al 17 nov, noche: Etapa 2 cerrada y la mesa de revisión
 
