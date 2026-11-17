@@ -192,7 +192,7 @@
         'Saquen sus bolsas solo cuando oigan la campana del camión.']) }] },
       pregunta: '¿Cuál es el tema de este aviso de la municipalidad?', datos: [D_TEMA],
       ok: 'El nuevo horario del camión de la basura en el barrio',
-      m: [['La limpieza de las ciudades', 'RV2', 'Es del mismo asunto, pero le serviría a cualquier aviso de limpieza, también al de barrer las calles.'],
+      m: [['La limpieza de las calles y los barrios de las ciudades', 'RV2', 'Es del mismo asunto, pero le serviría a cualquier aviso de limpieza, también al de barrer las calles.'],
         ['La campana del camión de la basura', 'RV1', 'Sí está en la 3, pero deja fuera el cambio de hora de la 1 y la 2.']] },
     { sop: { soporte: 'cartel', lugar: 'Cartel en la biblioteca del colegio', hojas: [{ id: 'k', titulo: 'Convocatoria', de: 'la biblioteca', para: 'estudiantes de 1.º a 5.º', oraciones: ora('k', [
         'En agosto habrá un concurso de cuentos escritos por estudiantes del colegio.',
@@ -201,7 +201,7 @@
       pregunta: '¿Cuál es el tema de este cartel de la biblioteca?', datos: [D_TEMA],
       ok: 'El concurso de cuentos de los estudiantes en agosto',
       m: [['La lectura y la escritura', 'RV2', 'Tiene que ver con el cartel, pero le serviría a cualquier texto sobre libros o cuadernos.'],
-        ['El largo de cada cuento', 'RV1', 'Sí está en la 2, pero deja fuera el concurso y los premios de la radio.']] },
+        ['El número de páginas que puede tener cada cuento del concurso', 'RV1', 'Sí está en la 2, pero deja fuera el concurso y los premios de la radio.']] },
     { sop: { soporte: 'folleto', lugar: 'Folleto del puesto de salud de Acora', hojas: [{ id: 'e', titulo: 'Puesto de salud informa', de: 'el puesto de salud', para: 'familias de Acora', oraciones: ora('e', [
         'Doña Celia, de Acora, cocinaba con leña en una cocina sin ventana.',
         'El humo de la leña en un cuarto cerrado daña los pulmones de toda la familia.',
@@ -210,7 +210,7 @@
       pregunta: 'Este folleto empieza con doña Celia. ¿Cuál es su tema?',
       datos: [D_TEMA, 'Cocina mejorada: cocina de barro o ladrillo con chimenea, que saca el humo de la casa.'],
       ok: 'Las cocinas mejoradas contra el humo dentro de la casa',
-      m: [['Doña Celia, la vecina de Acora que cocinaba con leña', 'RV64', 'Ella abre y cierra el folleto, pero es un caso: la 2 y la 3 tratan de las cocinas.'],
+      m: [['Doña Celia, la vecina de Acora que cocinaba con leña en su casa', 'RV64', 'Ella abre y cierra el folleto, pero es un caso: la 2 y la 3 tratan de las cocinas.'],
         ['La salud de las familias del campo', 'RV2', 'Es del mismo asunto, pero le serviría a un folleto de vacunas o de agua hervida.'],
         ['La chimenea de la cocina mejorada', 'RV1', 'Sí está en la 3, pero deja fuera el daño del humo de la 2.']] },
     { sop: { soporte: 'cartel', lugar: 'Cartel en la entrada de la feria de Ilave', hojas: [{ id: 'v', titulo: 'Comunicado', de: 'la municipalidad', para: 'vendedores y compradores', oraciones: ora('v', [
@@ -220,7 +220,7 @@
         'Así, quien compra sabe que esa papa o esa quinua se cultivó sin fertilizantes químicos.']) }] },
       pregunta: 'Este cartel empieza hablando de Ilave. ¿Cuál es su tema?',
       datos: [D_TEMA, 'Fertilizante químico: producto de fábrica que se echa a la tierra para que la planta crezca.'],
-      ok: 'La nueva zona de productos sin químicos en la feria de Ilave',
+      ok: 'La nueva zona sin químicos de la feria de Ilave',
       m: [['La feria de Ilave, una de las más grandes del sur', 'RV64', 'La 1 presenta la feria y el lugar, pero el cartel trata de la zona nueva.'],
         ['La comida sana', 'RV2', 'Tiene que ver con el cartel, pero le serviría a cualquier texto sobre comer bien.'],
         ['La constancia de la municipalidad', 'RV1', 'Sí está en la 3, pero deja fuera la zona nueva y para qué sirve.']] },
@@ -231,7 +231,7 @@
         'Los profesores cuentan que ahora más alumnos comentan en clase lo que leyeron.']),
         barras: barras('Libros leídos en un mes', [['Antes', 40], ['Después', 160]]) }] },
       pregunta: 'El texto y el gráfico giran, principalmente, en torno a', datos: [D_TEMA, D_MIXTO],
-      ok: 'El préstamo de libros para la casa y cuánto más leen los alumnos',
+      ok: 'El préstamo de libros para la casa y cuánto más leen',
       m: [['La educación en los colegios de Juliaca', 'RV2', 'Es del mismo asunto, pero le serviría a un texto sobre uniformes o exámenes.'],
         ['Los 160 libros que se leyeron en un mes', 'RV1', 'Leíste bien el gráfico, pero es una barra: deja fuera el préstamo del texto.'],
         ['Los libros que antes no salían de la sala', 'RV3', 'Sí está en la 2, pero es el antes: deja fuera el cambio y el gráfico.'],
@@ -244,11 +244,11 @@
         tabla: tabla('Agua de lluvia juntada', ['Mes', 'Litros'], [['Enero', '2400'], ['Febrero', '3100']]) }] },
       pregunta: 'El texto y la tabla dan cuenta, principalmente, de',
       datos: [D_TEMA, D_MIXTO, 'Canaleta: canal en el borde del techo que lleva el agua de lluvia.'],
-      ok: 'Cómo un colegio junta agua de lluvia para cuando falta la del caño',
+      ok: 'El agua de lluvia que junta un colegio cuando falta la del caño',
       m: [['El agua del caño, que llega solo tres horas al día', 'RV64', 'Es la 1, el problema que abre el texto, pero deja fuera las canaletas y la tabla.'],
         ['El cuidado del agua en el Perú', 'RV2', 'Es del mismo asunto, pero le serviría a cualquier texto sobre el agua.'],
         ['Los 3100 litros que se juntaron en febrero', 'RV1', 'Leíste bien la tabla, pero es una celda: deja fuera el texto.'],
-        ['Las enfermedades que causa el agua guardada en tanques', 'RV66', 'Habla de los tanques, pero el texto no trata de enfermedades: agrega un asunto.']] },
+        ['Las enfermedades que puede causar el agua guardada en los tanques del colegio', 'RV66', 'Habla de los tanques, pero el texto no trata de enfermedades: agrega un asunto.']] },
   ];
 
   // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h; docs/metodo/unidad/2-ejemplos.md). La figura es el texto en
@@ -377,8 +377,8 @@
         barras: barras('Alumnos que llegan en bicicleta', [['Antes', 12], ['Después', 85]]) }],
         pregunta: 'El texto y el gráfico giran, principalmente, en torno a', alternativas: [
           { id: 'A', t: 'el tránsito de la ciudad de Juliaca.' }, { id: 'B', t: 'los 85 alumnos que hoy llegan en bicicleta.' },
-          { id: 'C', t: 'el aumento de alumnos que van al colegio en bicicleta desde que se abrió la ciclovía.' },
-          { id: 'D', t: 'lo que las familias ahorran en pasajes.' }, { id: 'E', t: 'la bicicleta como el único transporte seguro para los escolares.' }] }),
+          { id: 'C', t: 'el aumento de alumnos que van en bicicleta desde que se abrió la ciclovía.' },
+          { id: 'D', t: 'lo que las familias ahorran en pasajes.' }, { id: 'E', t: 'la bicicleta como el único transporte seguro para los escolares de todo Juliaca.' }] }),
       solucion: [
         { texto: ['«Giran en torno a» pide el tema central: una frase que cubra ', cubre('las cuatro oraciones'), ' y ', cubre('el gráfico'), '.'] },
         { texto: [mala('A'), ' le serviría a cualquier texto sobre la ciudad: ', prop('muy amplia'), '. ', mala('B'), ' es una barra y ', mala('D'), ', solo la 4: ', prop('muy estrechas'), '.'] },
@@ -394,8 +394,8 @@
         tabla: tabla('Agua que se pierde en un mes', ['Caño', 'Litros'], [['Gotea poco', '150'], ['Gotea mucho', '900']]) }],
         pregunta: 'El texto y la tabla dan cuenta, principalmente, de', alternativas: [
           { id: 'A', t: 'el agua potable en las ciudades del Perú.' }, { id: 'B', t: 'los 900 litros que pierde un caño que gotea mucho.' },
-          { id: 'C', t: 'el agua que se pierde por los caños que gotean y por qué hay que revisarlos.' },
-          { id: 'D', t: 'la empresa de agua de Puno.' }, { id: 'E', t: 'cómo arreglar un caño en casa sin pedir ayuda.' }] }),
+          { id: 'C', t: 'el agua que pierden los caños que gotean y por qué revisarlos.' },
+          { id: 'D', t: 'la empresa de agua de Puno.' }, { id: 'E', t: 'cómo arreglar en casa un caño que gotea, sin tener que pedir ayuda a nadie.' }] }),
       solucion: [
         { texto: ['«Dan cuenta, principalmente, de» pide el tema central: lo que cubren juntos ', cubre('el texto'), ' y ', cubre('la tabla'), '.'] },
         { texto: [mala('A'), ': ', prop('muy amplia'), '. ', mala('B'), ' es una celda de la tabla y ', mala('D'), ', quien aparece en la 4: ', prop('muy estrechas'), '. ', mala('E'), ': el texto no explica cómo arreglar un caño.'] },
@@ -413,8 +413,8 @@
         pregunta: '¿Cuál es el tema central del texto?', alternativas: [
           { id: 'A', t: 'Las mañanas en el campo de Puno' }, { id: 'B', t: 'Los medios de comunicación en el Perú' },
           { id: 'C', t: 'Las heladas que anuncia la radio' },
-          { id: 'D', t: 'La radio en quechua y aimara como fuente de noticias para las familias del campo' },
-          { id: 'E', t: 'La radio como reemplazo del celular en el campo' }] }),
+          { id: 'D', t: 'La radio en quechua y aimara, fuente de noticias de las familias del campo' },
+          { id: 'E', t: 'La radio como reemplazo del celular y de la televisión en las casas del campo' }] }),
       solucion: [
         { texto: ['La 1 abre con la hora y el lugar; ', cubre('de la 2 a la 5'), ' tratan de lo que la radio en quechua y aimara les da a las familias.'] },
         { texto: [mala('A'), ' es el marco de la 1 y ', mala('C'), ', parte de la 3: ', prop('muy estrechas'), '. ', mala('B'), ' le serviría a un texto sobre periódicos: ', prop('muy amplia'), '.'] },
@@ -443,9 +443,9 @@
         'Pero el alimento que sobra y los restos de los peces ensucian el agua cerca de las jaulas.', 'La tabla muestra cuántas familias crían truchas en una bahía.']),
         tabla: tabla('Familias que crían truchas en una bahía', ['Año', 'Familias'], [['2010', '30'], ['2025', '120']]) }],
         pregunta: 'El texto y la tabla giran, principalmente, en torno a', alternativas: [
-          { id: 'A', t: 'el crecimiento de la crianza de truchas en el lago y el daño que causa al agua.' }, { id: 'B', t: 'las 120 familias que crían truchas en 2025.' },
+          { id: 'A', t: 'la crianza de truchas que crece en el lago y el daño que causa al agua.' }, { id: 'B', t: 'las 120 familias que crían truchas en 2025.' },
           { id: 'C', t: 'los peces del lago Titicaca.' }, { id: 'D', t: 'lo que ganan las familias que crían truchas.' },
-          { id: 'E', t: 'la prohibición de las jaulas flotantes en todo el lago.' }] }),
+          { id: 'E', t: 'la prohibición de las jaulas flotantes de truchas en todo el lago Titicaca.' }] }),
       solucion: [
         { texto: ['El texto tiene dos caras: ', cubre('lo que se gana'), ' (la 1, la 2 y la tabla) y ', cubre('lo que se ensucia'), ' (la 3).'] },
         { texto: [mala('D'), ' cubre solo la ganancia y ', mala('B'), ' es una celda: ', prop('muy estrechas'), '. ', mala('C'), ' le serviría a un texto sobre el ispi o el carachi: ', prop('muy amplia'), '.'] },
