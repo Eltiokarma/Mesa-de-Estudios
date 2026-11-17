@@ -1,6 +1,6 @@
 // Pruebas propias de «Exponentes y radicales» y de su partición (además del validador común de
-// contenido/teoria/teoria.test.js). La idea 1 (`leyes-exponentes`) es la única rehecha contra el contrato (fase 2 del
-// método, 17 nov); cada idea que se rehaga se suma a IDEAS_REHECHAS.
+// contenido/teoria/teoria.test.js). Las tres ideas están rehechas contra el contrato: `leyes-exponentes` (17 nov, visto
+// bueno de Gerson), `radicales` y `exponente-fraccionario` (18 nov); la unidad declara calidad: 2.
 //   - la partición (17 nov, Gerson): esta unidad conserva el id con `leyes-exponentes` y `radicales`; las ideas, mesas y
 //     palabras de productos notables viven en algebra.productos-notables, el catálogo lo dice igual, y Avance.migrar las
 //     mueve todas (nada queda en la unidad vieja ni se pierde);
@@ -27,7 +27,7 @@ const prod = require('./productos-notables.js');
 for (const r of [...def.requiere, ...prod.requiere]) require(path.join(__dirname, '..', '..', '..', r));
 const RAIZ = path.join(__dirname, '..', '..', '..');
 const P = Kit.piezas['alg-objeto'];
-const IDEAS_REHECHAS = ['leyes-exponentes'];
+const IDEAS_REHECHAS = ['leyes-exponentes', 'radicales', 'exponente-fraccionario'];
 const idea = id => def.ideas.find(i => i.id === id);
 const SEMILLAS = 400;
 const plano = x => E.texto(x === undefined || x === null ? '' : x);
@@ -35,7 +35,7 @@ const plano = x => E.texto(x === undefined || x === null ? '' : x);
 // ---------- La partición ----------
 test('partición: cada unidad con sus ideas, sus mesas y sus palabras, sin repetir ninguna', () => {
   assert.equal(def.unidad, 'algebra.exponentes-y-productos-notables', 'la unidad vieja conserva el id');
-  assert.deepEqual(def.ideas.map(i => i.id), ['leyes-exponentes', 'radicales']);
+  assert.deepEqual(def.ideas.map(i => i.id), ['leyes-exponentes', 'radicales', 'exponente-fraccionario']);
   assert.deepEqual(prod.ideas.map(i => i.id), ['cuadrado-suma', 'radicales-dobles', 'racionalizar']);
   assert.deepEqual(def.laboratorio.map(m => m.id).sort(), ['exponentes-con-signo', 'raiz-de-la-potencia']);
   assert.deepEqual(prod.laboratorio.map(m => m.id).sort(), ['cubo-se-abre', 'rectangulo-x-p-q']);
@@ -101,8 +101,8 @@ function lecturas(i) {
   return out;
 }
 
-test('la tabla de colores de la unidad: primer exponente naranja, segundo turquesa, resultado violeta', () => {
-  assert.deepEqual(def.colores, { 'primer exponente': 'o', 'segundo exponente': 'i', resultado: 'f' });
+test('la tabla de colores de la unidad: primer dato naranja, segundo turquesa, resultado violeta', () => {
+  assert.deepEqual(def.colores, { 'primer exponente': 'o', 'segundo exponente': 'i', resultado: 'f', 'primer radicando': 'o', 'segundo radicando': 'i' });
   assert.ok(!Object.values(def.colores).some(c => c === 'h' || c === 'd'), 'sin carmín ni verde');
 });
 
@@ -123,33 +123,48 @@ test('un color por magnitud: cada ficha de las ideas rehechas dice su magnitud y
   assert.equal(c.find(x => x.id === 'a').color, undefined, 'la base va en tinta');
 });
 
-// Todas las figuras de la idea 1 (juego en toda su grilla, Lee, Predice, Mira, ejemplos).
+// Todas las figuras de una idea (juego en toda su grilla, Lee, Predice, Mira, ejemplos y «Ahora tú»), con su pieza.
 function figuras(i) {
-  const out = [];
-  for (const v of Teoria.grilla(i.juega.controles)) out.push([`juego ${JSON.stringify(v)}`, i.juega.dibujo(v)]);
-  for (const [k, t] of i.lee.tarjetas.entries()) if (t.dibujo) out.push([`lee ${k + 1}`, t.dibujo]);
-  out.push(['predice', i.predice.dibujo], ['revelar', i.predice.revelar]);
-  i.mira.pasos.forEach((p, k) => out.push([`mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }]));
-  i.ejemplos.forEach((e, k) => { if (e.figura) out.push([`ejemplo ${k + 1}`, e.figura]); });
+  const out = [], con = (donde, f, pieza) => out.push([donde, f, f.pieza || pieza || i.pieza]);
+  for (const v of Teoria.grilla(i.juega.controles)) con(`juego ${JSON.stringify(v)}`, i.juega.dibujo(v), i.juega.pieza);
+  for (const [k, t] of i.lee.tarjetas.entries()) if (t.dibujo) con(`lee ${k + 1}`, t.dibujo, t.pieza);
+  con('predice', i.predice.dibujo, i.predice.pieza); con('revelar', i.predice.revelar, i.predice.pieza);
+  i.mira.pasos.forEach((p, k) => con(`mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }, i.mira.pieza));
+  i.ejemplos.forEach((e, k) => { if (e.figura) con(`ejemplo ${k + 1}`, e.figura); });
+  for (let s = 0; s < 60; s++) { const a = i.ahoraTu.generar(s); if (a.dibujo) con(`ahora tú ${s}`, a.dibujo, i.ahoraTu.pieza); }
   return out;
 }
-test('las figuras de la idea 1 son la hoja, sin carmín ni verde, y con los colores de su magnitud', () => {
-  for (const [donde, f] of figuras(idea('leyes-exponentes'))) {
-    const s = P.dibujar(f.datos, f.estado || {});
-    assert.ok(!/var\(--c-[hd]\)/.test(s), `${donde}: carmín o verde`);
-    assert.match(s, /data-objeto="hoja"/, donde);
-    // Los dobleces que ya tiene, en naranja; los que se hacen después, en turquesa.
-    const g = P.geometria(f.datos, f.estado || {});
-    for (const [k, mk] of g.marcas.entries()) assert.equal(mk.color, k < g.D.m ? 'o' : 'i', `${donde}: doblez ${k + 1}`);
+test('las figuras de las ideas rehechas: sin carmín ni verde; la hoja con m naranja y n turquesa; el objeto de cada idea', () => {
+  const OBJ = { 'leyes-exponentes': 'hoja', radicales: 'huertos', 'exponente-fraccionario': 'caja' };
+  for (const id of IDEAS_REHECHAS) {
+    let objeto = 0;
+    for (const [donde, f, pieza] of figuras(idea(id))) {
+      const s = Kit.piezas[pieza].dibujar(f.datos, f.estado || {});
+      assert.ok(!/var\(--c-[hd]\)/.test(s), `${id} ${donde}: carmín o verde`);
+      if (pieza !== 'alg-objeto') continue;
+      objeto++;
+      assert.match(s, new RegExp(`data-objeto="${OBJ[id]}"`), `${id} ${donde}`);
+      if (OBJ[id] === 'hoja') { const g = P.geometria(f.datos, f.estado || {}); for (const [k, mk] of g.marcas.entries()) assert.equal(mk.color, k < g.D.m ? 'o' : 'i', `${donde}: doblez ${k + 1}`); }
+      // En los biohuertos, el primero naranja y el segundo turquesa; el junto, en tinta.
+      if (OBJ[id] === 'huertos') for (const m of s.matchAll(/data-huerto="(\w+)"><rect[^>]*stroke="([^"]+)"/g)) assert.equal(m[2], { a: 'var(--c-o)', b: 'var(--c-i)', junto: 'currentColor' }[m[1]], `${donde}: biohuerto ${m[1]}`);
+    }
+    assert.ok(objeto > 5, `${id}: la idea casi no usa su objeto (${objeto})`);
   }
+  // La primera pantalla de cada idea (Lee) es su objeto.
+  for (const id of IDEAS_REHECHAS) assert.equal(idea(id).lee.tarjetas[0].pieza, 'alg-objeto', id);
 });
 
-test('la idea 1 cumple el contrato de calidad 2 (validador común con calidad: 2, sola)', () => {
-  const i = idea('leyes-exponentes'), glos = Glosario.porIdea(def)[0];
-  assert.deepEqual(glos.map(g => g.termino).sort(), ['base', 'exponente', 'potencia']);
-  const sub = Object.assign({}, def, { calidad: 2, estado: 'borrador', ideas: [i], glosario: glos, laboratorio: undefined, laboratorioIdeas: undefined });
-  const p = Teoria.problemas(sub, { semillas: 60 });
-  assert.deepEqual(p, [], p.join('\n'));
+test('cada idea rehecha cumple el contrato de calidad 2 (validador común con calidad: 2, sola) y estrena sus palabras', () => {
+  const ESPERA = [['base', 'exponente', 'potencia'], ['radicando', 'raíz cuadrada', 'valor absoluto', 'área'], ['exponente fraccionario', 'radical', 'índice']];
+  const porIdea = Glosario.porIdea(def);
+  def.ideas.forEach((i, k) => {
+    assert.deepEqual(porIdea[k].map(g => g.termino).sort(), ESPERA[k], i.id);
+    const sub = Object.assign({}, def, { calidad: 2, estado: 'borrador', ideas: [i], glosario: porIdea[k], laboratorio: undefined, laboratorioIdeas: undefined, glosarioSin: undefined });
+    const p = Teoria.problemas(sub, { semillas: 60 });
+    assert.deepEqual(p, [], `${i.id}:\n${p.join('\n')}`);
+  });
+  // La unidad entera ya tiene todas sus ideas rehechas: todo término de su glosario trae simple y 3 ejemplos.
+  for (const g of def.glosario) assert.ok(g.simple && Array.isArray(g.ejemplos) && g.ejemplos.length >= 3, g.termino);
 });
 
 const textosSVG = s => [...s.matchAll(/<text\b[^>]*>(.*?)<\/text>/g)].map(m => m[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim());
@@ -167,6 +182,52 @@ test('ninguna figura de Predice ni de un ejemplo delata la respuesta', () => {
     for (const f of fichas(e.respuesta).filter(x => x.v === 'c-f')) assert.ok(!new RegExp(`(^|[^0-9])${f.t}([^0-9]|$)`).test(ts), `ejemplo ${k + 1}: la figura muestra «${f.t}»`);
     if (/capas/.test(plano(e.enunciado))) assert.ok(!/class="alg-capas"/.test(s), `ejemplo ${k + 1}: las capas se cuentan en la figura`);
   }
+});
+
+test('ideas 2 y 3: ninguna figura de Predice ni de un ejemplo delata la respuesta', () => {
+  const ej = Kit.piezas.ejes;
+  const p2 = idea('radicales').predice, txt2 = textosSVG(ej.dibujar(p2.dibujo.datos, {})).join(' ');
+  assert.ok(!/(^|\D)5(\D|$)/.test(txt2.replace('−5', '')), `idea 2: la predicción muestra 5: ${txt2}`);
+  assert.ok(!(p2.dibujo.datos.curvas || []).some(c => c.color === 'f'), 'idea 2: sin la gráfica de la raíz antes de responder');
+  const p3 = P.dibujar(idea('exponente-fraccionario').predice.dibujo.datos), txt3 = textosSVG(p3).join(' ');
+  assert.ok(!/(^|\D)9(\D|$)/.test(txt3) && !/var\(--c-f\)/.test(p3), `idea 3: la predicción delata: ${txt3}`);
+  assert.match(txt3, /tapa: \?/);
+  // Con algo que se pide, la caja y la loseta van sin cuadrícula (contar cuadritos daría la respuesta).
+  const sinCuadricula = d => !/stroke-opacity="0\.(35|3)" stroke-width="1"/.test(P.dibujar(d));
+  assert.ok(sinCuadricula(idea('exponente-fraccionario').predice.dibujo.datos), 'idea 3: la tapa que se pide trae cuadrícula');
+  for (const e of idea('exponente-fraccionario').ejemplos) if (e.figura) assert.ok(sinCuadricula(e.figura.datos), e.titulo);
+  for (const id of ['radicales', 'exponente-fraccionario']) for (const [k, e] of idea(id).ejemplos.entries()) {
+    if (!e.figura) continue;
+    const s = P.dibujar(e.figura.datos), ts = textosSVG(s).join(' | ');
+    for (const f of fichas(e.respuesta).filter(x => x.v === 'c-f')) {
+      const num = String(f.t).replace(/\s*(m|dm)$/, '');
+      assert.ok(!new RegExp(`(^|[^0-9,])${num.replace(/[()?√]/g, '\\$&')}([^0-9,]|$)`).test(ts), `${id} ejemplo ${k + 1}: la figura muestra «${f.t}»: ${ts}`);
+    }
+    assert.ok(!/var\(--c-f\)/.test(s), `${id} ejemplo ${k + 1}: violeta en la figura`);
+  }
+});
+
+test('ideas 2 y 3: los ejemplos no usan la situación de la predicción', () => {
+  for (const [k, e] of idea('radicales').ejemplos.entries()) {
+    const t = plano([e.enunciado, e.solucion.map(x => [x.texto, x.ecuacion || '']), e.respuesta]);
+    assert.ok(!/raíz de \(−\d+\)|√\(\(−|\(−\d+\)²|\|−?\d|valor absoluto|\|x\|/.test(t), `radicales ejemplo ${k + 1}: ${t}`);
+  }
+  for (const [k, e] of idea('exponente-fraccionario').ejemplos.entries()) {
+    const t = plano([e.enunciado, e.solucion.map(x => [x.texto, x.ecuacion || '']), e.respuesta]);
+    assert.ok(!/tapa|27 elevado a 2\/3/.test(t), `exponente-fraccionario ejemplo ${k + 1}: ${t}`);
+    if (e.figura) assert.ok(e.figura.datos.tapa === undefined, `ejemplo ${k + 1}: figura con tapa`);
+  }
+});
+
+test('ideas 2 y 3: la misión no está cumplida al abrir y se cumple solo con lo que pide', () => {
+  const j2 = idea('radicales').juega, b2 = Teoria.grilla(j2.controles).filter(v => j2.mision.logrado(v));
+  assert.ok(b2.length > 10 && b2.every(v => v.a + v.b === 100));
+  assert.ok(!/5|negativ/.test(j2.mision.bien), 'el «bien» no dice la predicción');
+  const j3 = idea('exponente-fraccionario').juega;
+  assert.deepEqual(Teoria.grilla(j3.controles).filter(v => j3.mision.logrado(v)), [{ e: '1/3', V: 64 }]);
+  // El juego de la idea 3 no tiene exponentes como 2/3 (son la predicción), ni el de la idea 2 negativos.
+  for (const v of Teoria.grilla(j3.controles)) assert.ok(!/2\/3|tapa/.test(plano(j3.lectura(v))));
+  for (const v of Teoria.grilla(j2.controles)) assert.ok(!/−/.test(plano(j2.lectura(v))));
 });
 
 test('los ejemplos no piden el valor de una potencia de exponente negativo (es la predicción)', () => {
@@ -257,9 +318,101 @@ test('ejemplos: las cuentas de las respuestas, rehechas aparte', () => {
   assert.equal(4 ** 4 * 8, 2 ** 11); assert.match(resp(12), /^B, x = 4/);
   assert.equal(-(2 ** 4) + (-2) ** 4 + (-2) ** 3, -8); assert.match(resp(13), /^B, −8/);
   assert.ok(9 ** 3 === 27 ** 2 && 3 + 2 === 5); assert.match(resp(14), /^B, x = 3/);
-  // Las alternativas: la letra de la respuesta es la del valor correcto.
+  // Las alternativas (en su campo, en su propia línea): la letra de la respuesta es la del valor correcto.
   for (const k of [10, 11, 12, 13, 14]) {
-    const en = plano(ej[k].enunciado), [L, v] = resp(k).split(', ');
-    assert.ok(en.includes(`${L}) ${v.replace('x = ', '')} `) || en.endsWith(`${L}) ${v.replace('x = ', '')}`), `ejemplo ${k + 1}: ${L} no es ${v}`);
+    const [L, v] = resp(k).split(', '), a = ej[k].alternativas;
+    assert.ok(Array.isArray(a), `ejemplo ${k + 1}: sin alternativas`);
+    assert.equal(plano(a['ABCDE'.indexOf(L)]), v.replace('x = ', ''), `ejemplo ${k + 1}: ${L} no es ${v}`);
+    assert.ok(!/A\)/.test(plano(ej[k].enunciado)), `ejemplo ${k + 1}: alternativas pegadas al enunciado`);
   }
+});
+
+// ---------- Ideas 2 y 3: cálculo aparte ----------
+const valorRaiz = t => { // «7», «6√2», «π − 3», «√2 − 1»… → número
+  const r = t.replace(/π/g, String(Math.PI)).replace(/(\d*)√(\d+)/g, (_, c, n) => `(${c || 1}*Math.sqrt(${n}))`).replace(/−/g, '-');
+  return Function(`return ${r}`)();
+};
+test('idea 2, «Ahora tú»: cuatro opciones distintas, una correcta, y la respuesta cuadra con un cálculo aparte (400 semillas)', () => {
+  const i = idea('radicales'), vistos = new Set();
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = i.ahoraTu.generar(s), ops = a.opciones, bien = ops.find(o => o.correcta);
+    assert.equal(ops.length, 4, `semilla ${s}`);
+    assert.equal(new Set(ops.map(o => plano(o.texto))).size, 4, `semilla ${s}`);
+    const q = plano(a.pregunta), r = plano(bien.texto);
+    vistos.add(s % 5);
+    let m;
+    if (s % 5 === 0) { m = q.match(/^Si x = (−?\d+)/); assert.equal(Number(r), Math.abs(Number(m[1].replace('−', '-'))), `semilla ${s}`); }
+    else if (s % 5 === 1) { m = q.match(/de (\d+) m² y otro de (\d+) m²/); assert.equal(r, `${Math.sqrt(+m[1] + +m[2])} m`, `semilla ${s}`); }
+    else if (s % 5 === 2) { m = q.match(/raíz de (\d+) · raíz de (\d+)/); assert.equal(Number(r), Math.sqrt(m[1] * m[2]), `semilla ${s}`); }
+    else if (s % 5 === 3) { m = q.match(/raíz de \((\d) − (π|√\d+)\)²/); assert.ok(m, q); const v = valorRaiz(m[1]) - valorRaiz(m[2]); assert.ok(Math.abs(valorRaiz(r) - Math.abs(v)) < 1e-9, `semilla ${s}: ${r}`); }
+    else { m = q.match(/raíz de (\d+) \+ raíz de (\d+) − raíz de (\d+)/); const v = Math.sqrt(+m[1]) + Math.sqrt(+m[2]) - Math.sqrt(+m[3]); assert.ok(Math.abs(valorRaiz(r) - v) < 1e-9, `semilla ${s}: ${r} contra ${v}`);
+      for (const o of ops.filter(x => !x.correcta)) assert.ok(Math.abs(valorRaiz(plano(o.texto)) - v) > 1e-6, `semilla ${s}: un distractor vale lo mismo`); }
+  }
+  assert.equal(vistos.size, 5);
+});
+
+test('idea 2, «Así se resuelve» simplifica una raíz; cuadra aparte, y «Ahora tú» nunca pide eso', () => {
+  const i = idea('radicales');
+  for (let s = 0; s < SEMILLAS; s++) {
+    const r = i.resuelve.generar(s), m = plano(r.enunciado).match(/simplifica √(\d+)\.$/), N = +m[1], resp = plano(r.respuesta).split(' = ')[1];
+    const [c, t] = resp.split('√').map(Number);
+    assert.equal(c * c * t, N, `resuelve ${s}`);
+    for (let k = 2; k * k <= t; k++) assert.ok(t % (k * k) !== 0, `resuelve ${s}: ${t} todavía tiene un cuadrado`);
+    assert.ok(!/Saca de la raíz/.test(plano(i.ahoraTu.generar(s).pregunta)));
+  }
+});
+
+// Una potencia de x con exponente fraccionario, del texto plano: «x elevado a 5/6» → 5/6.
+const expX = t => { const m = t.match(/elevado a (−?\d+)(?:\/(\d+))?|al (cuadrado|cubo)/); return m[3] ? (m[3] === 'cuadrado' ? 2 : 3) : Number(m[1].replace('−', '-')) / (m[2] ? Number(m[2]) : 1); };
+test('idea 3, «Ahora tú»: cuatro opciones distintas, una correcta, y la respuesta cuadra con un cálculo aparte (400 semillas)', () => {
+  const i = idea('exponente-fraccionario'), vistos = new Set();
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = i.ahoraTu.generar(s), ops = a.opciones, bien = ops.find(o => o.correcta);
+    assert.equal(ops.length, 4, `semilla ${s}`);
+    assert.equal(new Set(ops.map(o => plano(o.texto))).size, 4, `semilla ${s}`);
+    const q = plano(a.pregunta), r = plano(bien.texto);
+    vistos.add(s % 5);
+    let m;
+    if (s % 5 === 0) { m = q.match(/raíz (\d) de x elevado a (\d+)|raíz (\d) de x (al cuadrado|al cubo)/); const n = +(m[1] || m[3]), e = m[2] ? +m[2] : (m[4] === 'al cuadrado' ? 2 : 3); assert.ok(Math.abs(expX(r) - e / n) < 1e-9, `semilla ${s}: ${q} → ${r}`); }
+    else if (s % 5 === 1) { m = q.match(/(\d+) elevado a (\d+)\/(\d+)/); assert.ok(Math.abs(Number(r) - Number(m[1]) ** (m[2] / m[3])) < 1e-9, `semilla ${s}`); }
+    else if (s % 5 === 2) { const ps = [...q.matchAll(/(\d+) elevado a (\d+)\/(\d+)/g)].map(x => Number(x[1]) ** (x[2] / x[3])); assert.ok(Math.abs(Number(r.replace('−', '-')) - (ps[0] + ps[1] - ps[2])) < 1e-9, `semilla ${s}`); }
+    else if (s % 5 === 3) { m = q.match(/raíz de x (?:elevado a (\d)|al (cuadrado|cubo)) · raíz 3 de x (?:elevado a (\d)|al (cuadrado|cubo))?/) || q.match(/raíz de x elevado a 1/);
+      const ex = q.match(/raíz de x (elevado a \d|al cuadrado|al cubo) · raíz 3 de x (elevado a \d|al cuadrado|al cubo)/), A = expX(ex[1]), B = expX(ex[2]);
+      assert.ok(Math.abs(expX(r) - (A + B / 3) / 2) < 1e-9, `semilla ${s}: ${q} → ${r}`); }
+    else { m = q.match(/de 2 elevado a x = (\d+)/); const n = /raíz 3/.test(q) ? 3 : /raíz 4/.test(q) ? 4 : 2; assert.equal(r, `x = ${n * Math.log2(+m[1])}`, `semilla ${s}`); }
+  }
+  assert.equal(vistos.size, 5);
+});
+
+test('idea 3, «Así se resuelve» junta dos raíces de x en una potencia; cuadra aparte, y «Ahora tú» nunca pide eso', () => {
+  const i = idea('exponente-fraccionario');
+  for (let s = 0; s < SEMILLAS; s++) {
+    const r = i.resuelve.generar(s), q = plano(r.enunciado);
+    const rs = [...q.matchAll(/raíz (?:(\d) )?de x(?: (elevado a \d+|al cuadrado|al cubo))?/g)].map(x => (x[2] ? expX(x[2]) : 1) / (x[1] ? Number(x[1]) : 2));
+    assert.equal(rs.length, 2, q);
+    assert.ok(Math.abs(expX(plano(r.respuesta)) - (rs[0] + rs[1])) < 1e-9, `resuelve ${s}: ${q} → ${plano(r.respuesta)}`);
+    assert.ok(!/una sola potencia de x, con x > 0/.test(plano(i.ahoraTu.generar(s).pregunta)));
+  }
+});
+
+test('ideas 2 y 3, ejemplos: cuentas rehechas aparte y la letra de cada alternativa', () => {
+  const v = (id, k) => plano(idea(id).ejemplos[k].respuesta).replace(/\u2060/g, '');
+  assert.equal(Math.sqrt(49), 7); assert.equal(Math.sqrt(1600), 40); assert.equal(Math.sqrt(4 * 25), 10);
+  assert.equal(Math.cbrt(-27), -3); assert.equal(Math.sqrt(81 + 144), 15); assert.equal(Math.sqrt(12 * 3), 6);
+  assert.ok(Math.abs(4 * Math.sqrt(50) - 20 * Math.SQRT2) < 1e-9 && Math.abs(Math.sqrt(12) + Math.sqrt(27) - 5 * Math.sqrt(3)) < 1e-9);
+  assert.ok(Math.abs(Math.sqrt(50) + Math.sqrt(18) - Math.sqrt(8) - 6 * Math.SQRT2) < 1e-9 && Math.abs(Math.sqrt(72) - Math.sqrt(32) - 2 * Math.SQRT2) < 1e-9);
+  assert.equal(Math.cbrt(-64) + Math.sqrt(81) - Math.cbrt(8), 3); assert.equal(Math.sqrt(4 * 36), 12);
+  assert.ok(Math.sqrt(48) > Math.sqrt(45) && Math.sqrt(45) > Math.sqrt(44));
+  assert.match(v('radicales', 0), /7 m/); assert.match(v('radicales', 6), /15 m/); assert.match(v('radicales', 9), /5√3/);
+  assert.ok(Math.abs(125 ** (1 / 3) - 5) < 1e-9 && Math.abs(81 ** 0.25 - 3) < 1e-9 && Math.abs(32 ** 0.4 - 4) < 1e-9 && Math.abs(64 ** (2 / 6) - 4) < 1e-9);
+  assert.equal(16 ** 0.5 + 16 ** 0.25 + 16 ** 0.75, 14);
+  assert.ok(Math.abs(8 ** (2 / 3) + 16 ** 0.75 - 27 ** (1 / 3) - 9) < 1e-9 && 3 ** 2 > 2 ** 3 && Math.abs((2 ** 3.5) ** 0.25 - 2 ** (7 / 8)) < 1e-12);
+  assert.ok(Math.abs(Math.cbrt(2 ** 15) - 32) < 1e-9);
+  assert.match(v('exponente-fraccionario', 0), /5 dm/); assert.match(v('exponente-fraccionario', 9), /14/);
+  for (const id of ['radicales', 'exponente-fraccionario']) idea(id).ejemplos.forEach((e, k) => {
+    if (e.nivel !== 3) return;
+    const a = e.alternativas, [L, ...resto] = v(id, k).split(', '), val = resto.join(', ');
+    assert.ok(Array.isArray(a) && a.length >= 4, `${id} ejemplo ${k + 1}: sin alternativas`);
+    assert.ok(val.replace(/^x = /, '').startsWith(plano(a['ABCDE'.indexOf(L)])), `${id} ejemplo ${k + 1}: ${L} es «${plano(a['ABCDE'.indexOf(L)])}», la respuesta «${val}»`);
+  });
 });

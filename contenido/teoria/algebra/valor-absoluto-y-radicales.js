@@ -795,8 +795,7 @@
     laboratorio: LABORATORIO,
     // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
     glosario: [
-      { termino: 'valor absoluto', simbolo: '|x|', def: 'La distancia de un número al cero, sin signo: nunca es negativa.',
-        ejemplo: '|−4| = 4 y |4| = 4.', ver: ['distancia'] },
+      // «valor absoluto» se define en «Exponentes y radicales» (18 nov), que lo usa primero: √(x²) = |x|.
       { termino: 'distancia', formas: ['distancia', 'distancias'], def: 'Cuánto separa a dos puntos de la recta: el mayor menos el menor.',
         ejemplo: 'De 1 a −2 hay |1 − (−2)| = 3.', ver: ['valor absoluto', 'centro'] },
       { termino: 'centro', def: 'El punto o el término del medio. En |x − a| ≤ r, es a: desde ahí se mide.', ejemplo: 'En |x + 1| ≤ 3 es −1.' },

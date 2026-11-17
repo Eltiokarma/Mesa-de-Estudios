@@ -2125,7 +2125,8 @@
      "nombre": "Exponentes y radicales",
      "temas": [
       "Leyes de exponentes",
-      "Propiedades de radicales"
+      "Propiedades de radicales",
+      "Exponente fraccionario"
      ],
      "universidades": {
       "uni": {
@@ -2157,8 +2158,8 @@
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 2,
-      "terminos": 19
+      "ideas": 3,
+      "terminos": 24
      }
     },
     {
@@ -2329,7 +2330,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -2503,7 +2504,7 @@
        "/nucleo/kit/piezas/flechas.js"
       ],
       "ideas": 6,
-      "terminos": 40
+      "terminos": 41
      }
     },
     {
@@ -2549,7 +2550,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -2676,7 +2677,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {

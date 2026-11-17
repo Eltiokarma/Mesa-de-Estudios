@@ -3,8 +3,18 @@
  * (como trig-objeto; docs/etapa3/propuesta-algebra-exponentes.md §2). Dibujo de prueba (data-prueba): Gerson decide
  * después si lo reemplaza (docs/plan-calidad.md, M4). Por ahora trae un objeto:
  *
- *   'hoja'   una hoja de cuaderno que se dobla por la mitad (o en tres, como una carta), idea «leyes-exponentes» de
- *            contenido/teoria/algebra/exponentes-y-productos-notables.js.
+ *   'hoja'     una hoja de cuaderno que se dobla por la mitad (o en tres, como una carta), idea «leyes-exponentes» de
+ *              contenido/teoria/algebra/exponentes-y-productos-notables.js (datos abajo);
+ *   'huertos'  dos biohuertos cuadrados del colegio y el que junta sus áreas, idea «radicales» (18 nov): el área es el
+ *              radicando y el lado del cerco, la raíz; abajo, los dos lados seguidos contra el lado del junto.
+ *              datos = { objeto: 'huertos', a, b (m²; 0: no va), junto: false, comparar: false, escala (px por m),
+ *              ladoA | ladoB | ladoJ: true | '?' | false, areaA | areaB | areaJ: true | '?' | false, nombreA… };
+ *              a en naranja, b en turquesa, el junto en tinta con su lado en violeta (lo que se busca);
+ *   'caja'     una caja cúbica de cartón de V dm³ junto a una loseta cuadrada de V dm², idea «exponente-fraccionario»
+ *              (18 nov): la arista es ∛V y el lado, √V; misma escala (16 por dm) y cuadrícula de 1 dm si es entera.
+ *              datos = { objeto: 'caja', V, loseta: false, arista | lado: true | '?' | false, tapa: '9 dm²' | '?',
+ *              volumen | area: '?', cuadricula: false }; lo que se da en tinta, lo que resulta en violeta, lo que se pide
+ *              con «?» (y entonces sin cuadrícula: contar los cuadritos daría la respuesta).
  *
  * Afirmación de la figura: cada doblez multiplica las capas por la base; por eso los dobleces se suman y las capas se
  * multiplican. m dobleces dan bᵐ capas (el paquete naranja); n dobleces más repiten ese paquete bⁿ veces.
@@ -76,8 +86,8 @@
     return { que, txt: segs.map(s => s[0]).join(''), x0, x1: x0 + w, y0: y - tam * 0.8, y1: y + tam * 0.25 };
   };
 
-  function geometria(datos, estado = {}) {
-    const d = mezcla(datos, estado), D = dobleces(d), { b, m, n, k } = D;
+  function geoHoja(d) {
+    const D = dobleces(d), { b, m, n, k } = D;
     const objetos = [], textos = [];
     const cols = b ** Math.floor(k / 2), filas = b ** Math.ceil(k / 2);
     // Sin el canto, la hoja va al centro del lienzo (no queda media figura vacía).
@@ -161,7 +171,7 @@
     return s ? `<path d="${s}" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>` : '';
   }
 
-  function dibujar(datos, estado = {}) {
+  function dibHoja(datos, estado) {
     const g = geometria(datos, estado), d = g.d, { b, k } = g.D;
     let s = '';
     // La tira de dobleces.
@@ -207,8 +217,8 @@
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="hoja" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
   }
 
-  function alt(datos, estado = {}) {
-    const d = mezcla(datos, estado), D = dobleces(d), L = D.b ** D.k;
+  function altHoja(d) {
+    const D = dobleces(d), L = D.b ** D.k;
     const como = D.b === 3 ? 'en tres' : 'por la mitad';
     let t = d.abierta ? `Una hoja de cuaderno abierta, con los pliegues de ${D.k} dobleces ${como}: ${L} partes iguales.`
       : `Una hoja de cuaderno doblada ${como} ${D.m} ${D.m === 1 ? 'vez' : 'veces'}${D.n ? ` y ${D.n} ${D.n === 1 ? 'vez' : 'veces'} más` : ''}; ${d.canto === false ? 'las capas no se muestran' : `de canto se ven ${d.total === '?' ? 'sus capas, sin contar' : `${L} ${L === 1 ? 'capa' : 'capas'}`}`}.`;
@@ -217,5 +227,173 @@
     return t;
   }
 
-  return { id: 'alg-objeto', dibujar, alt, geometria, constantes: { W, H, M, HOJA, CANTO } };
+  // ---------- Objeto 'huertos': dos biohuertos cuadrados y el que junta sus áreas (idea «radicales») ----------
+  // El área es el radicando; el lado del cerco, la raíz. Cada biohuerto va centrado en su casilla, con la misma escala
+  // para los tres (los lados se comparan de verdad). Abajo, dos barras a la misma escala: los dos lados seguidos y el
+  // lado del biohuerto junto.
+  const HU = { piso: 150, casillas: [[8, 102], [106, 200], [204, 312]], kMax: 6.7 };
+  const fmt = (x, d = 1) => (Math.abs(x - Math.round(x)) < 1e-9 ? String(Math.round(x)) : `≈ ${(Math.round(x * 10 ** d) / 10 ** d).toFixed(d).replace('.', ',')}`);
+  const raizTxt = x => fmt(Math.sqrt(x));
+  function geoHuertos(d) {
+    const A = Math.max(0, +d.a || 0), B = Math.max(0, +d.b || 0), J = A + B, junto = d.junto !== false;
+    const lista = [['a', A, 'o'], ['b', B, 'i']].concat(junto ? [['junto', J, null]] : []).filter(x => x[1] > 0);
+    const sMax = Math.max(...lista.map(x => Math.sqrt(x[1])), 1);
+    const k = d.escala > 0 ? d.escala : Math.min(HU.kMax, 92 / sMax);
+    const objetos = [], textos = [], cuad = [];
+    const nombres = { a: d.nombreA || 'Biohuerto 1', b: d.nombreB || 'Biohuerto 2', junto: d.nombreJ || 'Los dos juntos' };
+    lista.forEach(([que, area, col], i) => {
+      const [c0, c1] = HU.casillas[que === 'junto' ? 2 : que === 'b' ? 1 : 0], cx = (c0 + c1) / 2, w = Math.sqrt(area) * k;
+      const q = { que, area, col, s: Math.sqrt(area), x0: cx - w / 2, x1: cx + w / 2, y0: HU.piso - w, y1: HU.piso, cx };
+      cuad.push(q);
+      objetos.push({ que: `biohuerto ${que}`, x0: q.x0 - 2, y0: q.y0 - 2, x1: q.x1 + 2, y1: q.y1 + 2 });
+      const nom = [[nombres[que], null, 600]];
+      textos.push(Object.assign(cajaTexto('nombre', cx, 30, nom, 12, 'middle'), { segs: nom, x: cx, y: 30, tam: 12 }));
+      // El lado, arriba (o «?»), y el área, abajo (o «?»). Lo que no se rotula: false.
+      const lado = d[`lado${que === 'junto' ? 'J' : que.toUpperCase()}`], ar = d[`area${que === 'junto' ? 'J' : que.toUpperCase()}`];
+      if (lado !== false) {
+        const segs = lado === '?' ? [['? m', null, 700]] : [[`${raizTxt(area)} m`, que === 'junto' ? 'f' : col, 700]];
+        const y = Math.min(q.y0 - 6, 140);
+        textos.push(Object.assign(cajaTexto('lado', cx, y, segs, 13, 'middle'), { segs, x: cx, y, tam: 13 }));
+      }
+      if (ar !== false) {
+        const segs = ar === '?' ? [['? m²', null, 700]] : [[`${fmt(area, 2)} m²`, que === 'junto' ? null : col, 700]];
+        textos.push(Object.assign(cajaTexto('area', cx, 170, segs, 13, 'middle'), { segs, x: cx, y: 170, tam: 13 }));
+      }
+    });
+    // Las barras: los dos lados seguidos y el lado del junto, a la misma escala de los biohuertos.
+    const barras = [];
+    if (junto && d.comparar !== false && A > 0 && B > 0) {
+      const sA = Math.sqrt(A), sB = Math.sqrt(B), sJ = Math.sqrt(J), x0 = 14;
+      const exacto = [sA, sB].every(x => Math.abs(x - Math.round(x)) < 1e-9), sin = x => fmt(x).replace('≈ ', '');
+      const t1 = [[sin(sA), 'o', 700], [' + '], [sin(sB), 'i', 700], [exacto ? ' = ' : ' ≈ '], [`${sin(sA + sB)} m`, null, 700]];
+      const pJ = d.ladoJ === '?';
+      const t2 = [[pJ ? '? m' : `${raizTxt(J)} m`, pJ ? null : 'f', 700]];
+      barras.push({ y: 196, tramos: [[x0, x0 + sA * k, 'o'], [x0 + sA * k, x0 + (sA + sB) * k, 'i']], segs: t1 },
+        { y: 224, tramos: [[x0, x0 + sJ * k, pJ ? null : 'f']], segs: t2 });
+      for (const b of barras) {
+        const xf = b.tramos[b.tramos.length - 1][1];
+        objetos.push({ que: 'barra', x0, y0: b.y - 4, x1: xf, y1: b.y + 4 });
+        b.tx = xf + 8;
+        textos.push(Object.assign(cajaTexto('barra', b.tx, b.y + 5, b.segs, 13), { segs: b.segs, x: b.tx, y: b.y + 5, tam: 13 }));
+      }
+    }
+    return { W, H, M, d, k, cuad, barras, objetos, textos };
+  }
+  function dibHuertos(datos, estado) {
+    const g = geometria(datos, estado);
+    let s = '';
+    for (const q of g.cuad) {
+      const w = q.x1 - q.x0, c = q.col ? `var(--c-${q.col})` : 'currentColor';
+      s += `<g class="alg-biohuerto" data-huerto="${q.que}"><rect x="${n2(q.x0)}" y="${n2(q.y0)}" width="${n2(w)}" height="${n2(w)}" fill="${c}" fill-opacity="0.1" stroke="${c}" stroke-width="2.5"/>`;
+      // Postes del cerco, cada 8 de lado, y almácigos en filas (solo si el biohuerto es grande).
+      let postes = '';
+      const np = Math.max(1, Math.round(w / 8));
+      for (let i = 0; i <= np; i++) { const t = (i / np) * w; postes += `M${n2(q.x0 + t)} ${n2(q.y0 - 3)}v6M${n2(q.x0 + t)} ${n2(q.y1 - 3)}v6M${n2(q.x0 - 3)} ${n2(q.y0 + t)}h6M${n2(q.x1 - 3)} ${n2(q.y0 + t)}h6`; }
+      s += `<path d="${postes}" stroke="${c}" stroke-width="1.5" fill="none"/>`;
+      if (w >= 24) {
+        let pl = '';
+        for (let yy = q.y0 + 9; yy < q.y1 - 5; yy += 10) for (let xx = q.x0 + 8; xx < q.x1 - 5; xx += 10) pl += `M${n2(xx - 3)} ${n2(yy - 3)}L${n2(xx)} ${n2(yy + 1)}L${n2(xx + 3)} ${n2(yy - 3)}`;
+        s += `<path d="${pl}" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+      s += '</g>';
+    }
+    for (const b of g.barras) for (const [x0, x1, c] of b.tramos) s += `<line class="alg-barra" x1="${n2(x0)}" y1="${b.y}" x2="${n2(x1)}" y2="${b.y}" stroke="${c ? `var(--c-${c})` : 'currentColor'}" stroke-width="6" stroke-linecap="butt"/>`;
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.que === 'barra' ? 'start' : 'middle' });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="huertos" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altHuertos(d) {
+    const A = +d.a || 0, B = +d.b || 0, partes = [];
+    if (A > 0) partes.push(`un biohuerto cuadrado de ${A} m²${d.ladoA === '?' ? ', de lado por hallar' : ''}`);
+    if (B > 0) partes.push(`otro de ${B} m²`);
+    let t = `Biohuertos cercados del colegio: ${partes.join(' y ')}.`;
+    if (d.junto !== false && A > 0 && B > 0) t += ` Al lado, uno solo que junta sus áreas: ${A + B} m², con su lado ${d.ladoJ === '?' ? 'por hallar' : `de ${raizTxt(A + B)} m`}.`;
+    return t;
+  }
+
+  // ---------- Objeto 'caja': una caja cúbica de cartón y una loseta cuadrada con el mismo número (idea 3) ----------
+  // La caja tiene V dm³ y la loseta V dm²: la arista es ∛V y el lado, √V. Las dos van a la misma escala (16 por dm), con
+  // su cuadrícula de 1 dm cuando la medida es entera. Lo que se pide va con «?» en tinta.
+  const CA = { piso: 194, xc: 44, xl: 168, k: 16 };
+  function geoCaja(d) {
+    // Sin loseta, la caja va al centro y más grande (22 por dm): no queda media figura vacía.
+    const V = Math.max(1, +d.V || 1), sola = d.loseta === false, k = d.escala > 0 ? d.escala : sola ? 22 : CA.k;
+    const a = Math.cbrt(V), t = Math.sqrt(V), L = a * k, dx = 0.5 * L, dy = -0.32 * L, T2 = t * k;
+    const xc = sola ? (W - 1.5 * L) / 2 - 20 : CA.xc;
+    const cubo = { x0: xc, x1: xc + L, y0: CA.piso - L, y1: CA.piso, dx, dy, L, a };
+    const losa = d.loseta === false ? null : { x0: CA.xl, x1: CA.xl + T2, y0: CA.piso - T2, y1: CA.piso, t };
+    const objetos = [{ que: 'caja', x0: cubo.x0, y0: cubo.y0 + dy, x1: cubo.x1 + dx, y1: cubo.y1 }];
+    if (losa) objetos.push({ que: 'loseta', x0: losa.x0, y0: losa.y0, x1: losa.x1, y1: losa.y1 });
+    const textos = [];
+    const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
+    // Debajo: el volumen y el área (tinta: son el número que se da).
+    pon('volumen', (cubo.x0 + cubo.x1 + dx) / 2, 216, [[d.volumen === '?' ? '? dm³' : `${fmt(V, 2)} dm³`, null, 700]]);
+    if (losa) pon('area', (losa.x0 + losa.x1) / 2, 216, [[d.area === '?' ? '? dm²' : `${fmt(V, 2)} dm²`, null, 700]]);
+    pon('nombre', (cubo.x0 + cubo.x1 + dx) / 2, 236, [['caja de cartón']], 'middle', 12);
+    if (losa) pon('nombre', (losa.x0 + losa.x1) / 2, 236, [['loseta']], 'middle', 12);
+    // La arista (a la izquierda de la cara de adelante) y el lado de la loseta (arriba).
+    if (d.arista !== undefined && d.arista !== false) pon('arista', cubo.x0 - 6, (cubo.y0 + cubo.y1) / 2 + 5, [[d.arista === '?' ? '?' : `${fmt(a)} dm`, d.arista === '?' ? null : 'f', 700]], 'end');
+    if (losa && d.lado !== undefined && d.lado !== false) pon('lado', (losa.x0 + losa.x1) / 2, losa.y0 - 7, [[d.lado === '?' ? '?' : `${fmt(t)} dm`, d.lado === '?' ? null : 'f', 700]]);
+    // La tapa (la cara de arriba): su área o «?», a la derecha del cubo.
+    if (d.tapa !== undefined && d.tapa !== false) pon('tapa', cubo.x1 + dx + 6, cubo.y0 + dy / 2 + 4, [[d.tapa === '?' ? 'tapa: ?' : `tapa: ${d.tapa}`, d.tapa === '?' ? null : 'f', 700]], 'start');
+    return { W, H, M, d, V, cubo, losa, objetos, textos };
+  }
+  function dibCaja(datos, estado) {
+    const g = geometria(datos, estado), d = g.d, c = g.cubo, { dx, dy, L } = c;
+    const P = pts => pts.map(([x, y]) => `${n2(x)} ${n2(y)}`).join('L');
+    const frente = [[c.x0, c.y0], [c.x1, c.y0], [c.x1, c.y1], [c.x0, c.y1]];
+    const tapa = [[c.x0, c.y0], [c.x1, c.y0], [c.x1 + dx, c.y0 + dy], [c.x0 + dx, c.y0 + dy]];
+    const lado = [[c.x1, c.y0], [c.x1 + dx, c.y0 + dy], [c.x1 + dx, c.y1 + dy], [c.x1, c.y1]];
+    const tapaPide = d.tapa === '?', tapaDa = d.tapa !== undefined && d.tapa !== false && !tapaPide;
+    let s = `<g class="alg-caja"><path d="M${P(lado)}Z" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`
+      + `<path d="M${P(tapa)}Z" fill="${tapaDa ? 'var(--c-f)' : 'currentColor'}" fill-opacity="${tapaDa || tapaPide ? 0.22 : 0.06}" stroke="${tapaDa ? 'var(--c-f)' : 'currentColor'}" stroke-width="2" stroke-linejoin="round"/>`
+      + `<path d="M${P(frente)}Z" fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`;
+    // Cuadrícula de 1 dm en las tres caras, si la arista es entera.
+    // Si algo se pide («?»), sin cuadrícula: contar los cuadritos daría la respuesta.
+    const pide = [d.arista, d.lado, d.tapa, d.volumen, d.area].includes('?') || d.cuadricula === false;
+    const a = Math.round(c.a);
+    if (!pide && Math.abs(c.a - a) < 1e-9 && a > 1) {
+      let gr = '';
+      for (let i = 1; i < a; i++) {
+        const u = i / a;
+        gr += `M${n2(c.x0 + u * L)} ${n2(c.y0)}V${n2(c.y1)}M${n2(c.x0)} ${n2(c.y0 + u * L)}H${n2(c.x1)}`;
+        gr += `M${n2(c.x0 + u * L)} ${n2(c.y0)}L${n2(c.x0 + u * L + dx)} ${n2(c.y0 + dy)}M${n2(c.x0 + u * dx)} ${n2(c.y0 + u * dy)}L${n2(c.x1 + u * dx)} ${n2(c.y0 + u * dy)}`;
+        gr += `M${n2(c.x1 + u * dx)} ${n2(c.y0 + u * dy)}L${n2(c.x1 + u * dx)} ${n2(c.y1 + u * dy)}M${n2(c.x1)} ${n2(c.y0 + u * L)}L${n2(c.x1 + dx)} ${n2(c.y0 + u * L + dy)}`;
+      }
+      s += `<path d="${gr}" stroke="currentColor" stroke-opacity="0.35" stroke-width="1" fill="none"/>`;
+    }
+    // Una cinta de embalaje cruza la tapa (que se reconozca la caja).
+    s += `<path d="M${n2(c.x0 + L / 2)} ${n2(c.y0)}L${n2(c.x0 + L / 2 + dx)} ${n2(c.y0 + dy)}" stroke="currentColor" stroke-width="3" stroke-opacity="0.35"/>`;
+    if (d.arista !== undefined && d.arista !== false) s += `<line x1="${n2(c.x0)}" y1="${n2(c.y0)}" x2="${n2(c.x0)}" y2="${n2(c.y1)}" stroke="${d.arista === '?' ? 'currentColor' : 'var(--c-f)'}" stroke-width="4"/>`;
+    s += '</g>';
+    if (g.losa) {
+      const q = g.losa, w = q.x1 - q.x0, t = Math.round(q.t);
+      s += `<g class="alg-loseta"><rect x="${n2(q.x0)}" y="${n2(q.y0)}" width="${n2(w)}" height="${n2(w)}" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="2"/>`;
+      if (!pide && Math.abs(q.t - t) < 1e-9 && t > 1) {
+        let gr = '';
+        for (let i = 1; i < t; i++) gr += `M${n2(q.x0 + i * w / t)} ${n2(q.y0)}V${n2(q.y1)}M${n2(q.x0)} ${n2(q.y0 + i * w / t)}H${n2(q.x1)}`;
+        s += `<path d="${gr}" stroke="currentColor" stroke-opacity="0.3" stroke-width="1" fill="none"/>`;
+      }
+      if (d.lado !== undefined && d.lado !== false) s += `<line x1="${n2(q.x0)}" y1="${n2(q.y0)}" x2="${n2(q.x1)}" y2="${n2(q.y0)}" stroke="${d.lado === '?' ? 'currentColor' : 'var(--c-f)'}" stroke-width="4"/>`;
+      s += '</g>';
+    }
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.ancla });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="caja" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altCaja(d) {
+    const V = +d.V || 1;
+    let t = `Una caja cúbica de cartón de ${fmt(V, 2)} dm³${d.loseta === false ? '' : ` y una loseta cuadrada de ${fmt(V, 2)} dm²`}.`;
+    if (d.arista !== undefined && d.arista !== false) t += d.arista === '?' ? ' Se pide la arista de la caja.' : ` La arista de la caja mide ${fmt(Math.cbrt(V))} dm.`;
+    if (d.lado !== undefined && d.lado !== false && d.loseta !== false) t += d.lado === '?' ? ' Se pide el lado de la loseta.' : ` El lado de la loseta mide ${fmt(Math.sqrt(V))} dm.`;
+    if (d.tapa !== undefined && d.tapa !== false) t += d.tapa === '?' ? ' Se pide el área de la tapa.' : ` La tapa mide ${d.tapa}.`;
+    return t;
+  }
+
+  // ---------- Elige el objeto ----------
+  const OBJ = { hoja: [geoHoja, dibHoja, altHoja], huertos: [geoHuertos, dibHuertos, altHuertos], caja: [geoCaja, dibCaja, altCaja] };
+  const de = d => OBJ[d && OBJ[d.objeto] ? d.objeto : 'hoja'];
+  function geometria(datos, estado = {}) { const d = mezcla(datos, estado); return de(d)[0](d); }
+  function dibujar(datos, estado = {}) { return de(mezcla(datos, estado))[1](datos, estado); }
+  function alt(datos, estado = {}) { const d = mezcla(datos, estado); return de(d)[2](d); }
+
+  return { id: 'alg-objeto', dibujar, alt, geometria, constantes: { W, H, M, HOJA, CANTO, HU, CA } };
 });

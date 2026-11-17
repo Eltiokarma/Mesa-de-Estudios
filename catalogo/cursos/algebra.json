@@ -51,7 +51,8 @@
       "nombre": "Exponentes y radicales",
       "temas": [
         "Leyes de exponentes",
-        "Propiedades de radicales"
+        "Propiedades de radicales",
+        "Exponente fraccionario"
       ],
       "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
       "potencial_visual": "alto",
