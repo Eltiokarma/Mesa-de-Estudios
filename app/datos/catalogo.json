@@ -94,7 +94,6 @@
       "archivo": "/contenido/teoria/fisica/magnitudes-y-vectores.js",
       "requiere": [
        "/nucleo/kit/piezas/fis-objeto.js",
-       "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/fis-medida.js",
        "/nucleo/kit/piezas/fis-combi.js",
        "/nucleo/kit/piezas/fis-area.js",
@@ -154,7 +153,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
-      "terminos": 32
+      "terminos": 31
      }
     },
     {
@@ -201,7 +200,7 @@
        "/nucleo/kit/piezas/torre.js"
       ],
       "ideas": 5,
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -256,7 +255,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -300,7 +299,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -343,7 +342,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -427,7 +426,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 5,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -472,7 +471,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -515,7 +514,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -556,7 +555,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -776,7 +775,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 38
+      "terminos": 39
      }
     },
     {
@@ -820,7 +819,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -866,7 +865,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 6,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -999,7 +998,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
-      "terminos": 38
+      "terminos": 39
      }
     }
    ]
