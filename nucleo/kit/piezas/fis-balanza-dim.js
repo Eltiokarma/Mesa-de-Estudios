@@ -71,7 +71,9 @@
     s += `<line x1="${n(xi)}" y1="${n(yi)}" x2="${n(xd)}" y2="${n(yd)}" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>`
       + `<circle cx="${CX}" cy="${EJE}" r="5" fill="currentColor"/>`;
     s += platillo(xi, yi, d.izq || {}, color, colorOculta) + platillo(xd, yd, d.der || {}, color, colorOculta);
-    if (veredicto) s += T.rotulo(CX, H - 8, ok ? 'Cuadra: los dos lados son iguales' : 'No cuadra: los lados son distintos', { ancla: 'middle', tam: 15, peso: 700, color: ok ? 'd' : 'h' });
+    // El veredicto va en tinta (17 nov, un color por magnitud): el verde junto al naranja de las dimensiones no se
+    // distingue con protanopía (0,010) y el carmín es de los ángulos. Lo dicen la frase y la inclinación.
+    if (veredicto) s += T.rotulo(CX, H - 8, ok ? 'Cuadra: los dos lados son iguales' : 'No cuadra: los lados son distintos', { ancla: 'middle', tam: 15, peso: 700 });
     return T.svg(W, H, s, { alt: alt(d) });
   }
 

@@ -22,8 +22,9 @@
  * Dato del mundo: el área del lago Titicaca, 8372 km², con su fuente (ILEC) en el campo `fuente` del problema. Lo
  * demás, valores de todos los días con «unos» y sin fuente (aceite y hielo a unos 0,92 g/cm³, adobe a unos 1,7 g/cm³,
  * tanques de techo de 600 a 2500 L).
- * Colores por papel (docs/molde-unidad.md §5b): la cantidad que te dan, naranja (o); el factor, turquesa (i); lo que se
- * pide y su resultado, violeta (f). Con dos datos (densidad, caudal), el segundo es turquesa y el factor va sin color.
+ * Colores: un color fijo por magnitud, el mismo de la teoría (docs/molde-unidad.md §5b; cabecera de
+ * contenido/teoria/fisica/magnitudes-y-vectores.js): lo que te dan, naranja (o), también los dos datos de densidad o
+ * caudal; el factor que vale 1, turquesa (i), siempre; lo que se pide y su resultado, violeta (f).
  * Errores (todos hipótesis: no hay estudio que mida cuántos postulantes los eligen):
  *   docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md: U3-lineal (el factor sin elevar: 100 en vez de
  *     10 000), U3-cuadrado (en un volumen, el factor al cuadrado y no al cubo), U4-gramos (la masa en gramos donde
@@ -112,7 +113,9 @@
   }
 
   const VARS = (que, pide) => ({ d: { nombre: que, color: 'o' }, k: { nombre: 'factor que vale 1', color: 'i' }, x: { nombre: pide, color: 'f' } });
-  const VARS2 = (a, b, pide) => ({ a: { nombre: a, color: 'o' }, b: { nombre: b, color: 'i' }, x: { nombre: pide, color: 'f' } });
+  // Con dos datos (densidad y volumen, caudal y tiempo), los dos van en naranja: son lo que te dan (un color fijo por
+  // magnitud, molde §5b); el turquesa queda para el factor, como en la teoría.
+  const VARS2 = (a, b, pide) => ({ a: { nombre: a, color: 'o' }, b: { nombre: b, color: 'o' }, k: { nombre: 'factor que vale 1', color: 'i' }, x: { nombre: pide, color: 'f' } });
 
   // ---- Áreas ----
   // Exponente del largo de cada unidad respecto del metro.

@@ -37,14 +37,17 @@
  *   planetas { m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F', color2 }   dos masas que se atraen, con la distancia acotada
  *   caja     { masa: '40 kg', fuerza: 'F', aceleracion: 'a', color2, colorFuerza }   una caja empujada sobre el piso, con F
  *                                                   y a como flechas (colorFuerza: si F es lo que se pide, 'f')
- *   presion  { fuerza: 'F', area: 'A', texto }      una caja sobre el piso: su peso F encima y la presión repartida bajo su base A
- *                                                   (la presión, lo que se pide, en violeta)
+ *   presion  { fuerza: 'F', area: 'A', texto, colorP, colorArea }   una caja sobre el piso: su peso F encima y la presión
+ *                                                   repartida bajo su base A (colorP: el de la presión; por omisión, violeta)
  *   deposito { altura: 'h', texto: 'P', superficie: 'P₀', colorAltura }   un tanque visto por dentro: la profundidad h del punto del fondo
- *   viento   { v, fuerza, area, aire, color2 }       una combi de costado: el aire choca con su frente (A) y la frena (F)
+ *   viento   { v, fuerza, area, aire, color2, colorArea }   una combi de costado: el aire (en tinta) choca con su frente (A)
+ *                                                   y la frena (F)
  *   color2: el color de la segunda variable (la fuerza F de planetas y viento, la aceleración a de la caja); por omisión,
  *   'i'. Si en el ejemplo esa letra es un dato, va en el color del dato (17 nov: un color, un papel en la unidad).
- * Colores por papel (docs/molde-unidad.md §5b, 17 nov): el dato, naranja (color); el segundo dato, turquesa (P₀ del
- *   depósito); lo que se pide, violeta ('f': el «?» de comparar, la presión, colorFuerza y colorTexto).
+ * Colores (docs/molde-unidad.md §5b, 17 nov): el dato, naranja (color); el segundo dato, turquesa (P₀ del depósito); lo
+ *   que se pide, violeta ('f': el «?» de comparar). Con «un color fijo por magnitud en cada unidad», la unidad que llama
+ *   pasa el color de cada magnitud (colorFuerza, colorTexto, colorP, colorArea): en «Magnitudes y unidades», F y P van en
+ *   naranja y el área A, en violeta.
  * Cada objeto nuevo lleva en su comentario la afirmación de su dibujo, en una línea.
  * estado = {} (sin pasos). Función pura de (datos, estado): sin ids, sin azar, sin reloj.
  */
@@ -474,11 +477,13 @@
       s += `<rect x="110" y="84" width="100" height="76" rx="3" fill="var(--c-o)" fill-opacity="0.14" ${tinta()}/>`;
       s += `<line x1="110" y1="109" x2="210" y2="109" ${tinta({ g: 1.2 })} stroke-opacity="0.5"/><line x1="110" y1="134" x2="210" y2="134" ${tinta({ g: 1.2 })} stroke-opacity="0.5"/>`;
       s += `<line x1="111" y1="160" x2="209" y2="160" stroke="${T.color(c)}" stroke-width="5" stroke-linecap="butt"/>`;
-      for (let k = 0; k < 5; k++) s += T.flecha(120 + k * 20, 166, 120 + k * 20, 188, { color: 'f', grosor: 2 });
+      const cP = d.colorP || 'f';
+      for (let k = 0; k < 5; k++) s += T.flecha(120 + k * 20, 166, 120 + k * 20, 188, { color: cP, grosor: 2 });
       s = obj('presion', s);
       if (d.fuerza) s += T.flecha(160, 18, 160, 78, { color: c, grosor: 3 }) + T.rotulo(172, 54, d.fuerza, { tam: 16, peso: 800, color: c });
-      if (d.area) s += `<line x1="212" y1="160" x2="226" y2="148" stroke="${T.color(c)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(230, 148, d.area, { tam: 16, peso: 800, color: c, min: 4, max: W - 4 });
-      if (d.texto) s += T.rotulo(224, 186, d.texto, { tam: 14, peso: 700, color: 'f', min: 4, max: W - 4 });
+      const cA = d.colorArea || c;
+      if (d.area) s += `<line x1="212" y1="160" x2="226" y2="148" stroke="${T.color(cA)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(230, 148, d.area, { tam: 16, peso: 800, color: cA, min: 4, max: W - 4 });
+      if (d.texto) s += T.rotulo(224, 186, d.texto, { tam: 14, peso: 700, color: cP, min: 4, max: W - 4 });
       return s;
     },
     // deposito: «en el fondo del tanque la presión depende de lo hondo que está el punto: h».
@@ -504,11 +509,12 @@
       s += `<path d="M190 82L200 84L212 106L190 106Z" fill="var(--c-i)" fill-opacity="0.2" ${tinta({ g: 1.2 })}/>`;
       s += `<path d="M212 106L222 120L222 148Q222 154 216 154L212 154Z" fill="${T.color(c)}" fill-opacity="0.45"/>`;
       for (const x of [84, 186]) s += `<circle cx="${x}" cy="156" r="13" fill="currentColor"/><circle cx="${x}" cy="156" r="5" fill="var(--card)"/>`;
-      for (let k = 0; k < 3; k++) { const y = 104 + k * 20; s += `<line x1="306" y1="${y}" x2="244" y2="${y}" stroke="var(--c-d)" stroke-width="2" stroke-linecap="round"/><path d="M236 ${y}l9 -5v10z" fill="var(--c-d)"/>`; }
+      for (let k = 0; k < 3; k++) { const y = 104 + k * 20; s += `<line x1="306" y1="${y}" x2="244" y2="${y}" stroke="currentColor" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round"/><path d="M236 ${y}l9 -5v10z" fill="currentColor" fill-opacity="0.55"/>`; }
       s = obj('viento', s);
       if (d.v) s += T.flecha(100, 56, 184, 56, { color: c, grosor: 3 }) + T.rotulo(192, 62, d.v, { tam: 16, peso: 800, color: c });
       if (d.fuerza) s += T.flecha(38, 116, 8, 116, { color: d.color2 || 'i', grosor: 3 }) + T.rotulo(20, 104, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: d.color2 || 'i', min: 4 });
-      if (d.area) s += `<line x1="214" y1="178" x2="217" y2="158" stroke="${T.color(c)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(212, 194, d.area, { ancla: 'middle', tam: 14, peso: 700, color: c, min: 4, max: W - 4 });
+      const cA = d.colorArea || c;
+      if (d.area) s += `<line x1="214" y1="178" x2="217" y2="158" stroke="${T.color(cA)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(212, 194, d.area, { ancla: 'middle', tam: 14, peso: 700, color: cA, min: 4, max: W - 4 });
       if (d.aire) s += T.rotulo(274, 92, d.aire, { ancla: 'middle', tam: 14, peso: 700, color: c, min: 4, max: W - 4 });
       return s;
     },

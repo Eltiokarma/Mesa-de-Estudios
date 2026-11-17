@@ -159,7 +159,8 @@
       const resto = a1 * b1 + a3 * b3;
       if (resto === 0 || resto % b2 !== 0 || a1 === 0 || b1 === 0 || (dim === 3 && (a3 === 0 || b3 === 0))) return null;
       correcta = -resto / b2;
-      variables.X = { nombre: 'm', color: 'f' };
+      // m es una componente de A⃗: va con el color de su vector, como en la teoría (un color fijo por magnitud).
+      variables.X = { nombre: `m, componente de ${A_}`, color: 'o' };
       const A = dim === 3 ? `${ijk([a1, 0, 0])} + m${J} ${a3 < 0 ? '−' : '+'} ${Math.abs(a3) === 1 ? '' : Math.abs(a3)}${K}` : `${ijk([a1, 0, 0])} + m${J}`;
       enunciado = ['Los vectores ', v('A', `${A_} = ${A}`), ' y ', v('B', `${B_} = ${ijk([b1, b2, b3])}`), ' son perpendiculares.'];
       pregunta = ['¿Cuánto vale m?'];

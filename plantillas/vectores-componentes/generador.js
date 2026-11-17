@@ -55,9 +55,11 @@
   };
   const DIAG = { F45: [45, 135, 225, 315] };
   const NOMBRES = ['A', 'B', 'C', 'D'];
-  // Colores por papel (docs/molde-unidad.md, 5b): A naranja, B turquesa, C verde (tercer dato) y R violeta (lo que se
-  // pide). D va en carmín: aquí cada ángulo va del color de su vector y no hay θ aparte.
-  const COLORES = ['o', 'i', 'd', 'h'];
+  // Un color fijo por magnitud, el de la teoría (docs/molde-unidad.md §5b; cabecera de contenido/teoria/fisica/
+  // vectores.js): A naranja, B turquesa, C verde (tercer dato), D en tinta ('t': la tabla no tiene un cuarto dato),
+  // R violeta y los ángulos carmín, también el de R cuando se pide (antes cada ángulo iba del color de su vector y D
+  // en carmín).
+  const COLORES = ['o', 'i', 'd', 't'];
   const ANG_NOTABLES = [0, 37, 53, 90, 127, 143, 180, 217, 233, 270, 307, 323, 45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330];
 
   // Un vector de la familia: ángulo t y paso k. Devuelve componentes enteras (px, py), su
@@ -173,7 +175,8 @@
     const v = P.v;
     const variables = {};
     vs.forEach((w, i) => { variables[NOMBRES[i]] = { nombre: `vector ${P.vec(NOMBRES[i])}`, color: COLORES[i] }; });
-    if (n < 4) variables.R = { nombre: 'resultante', color: 'f' };
+    variables.R = { nombre: 'resultante', color: 'f' };
+    variables.t = { nombre: 'ángulo', color: 'h' };
 
     // Cómo se nombra cada dirección.
     const dirTexto = t => {
@@ -259,8 +262,8 @@
       ...vs.map(filaComp),
       [`Se suman por componentes: R_x = ${comp(PX, F.qx)} y R_y = ${comp(PY, F.qy)}.`],
       angular
-        ? [`tan α = |R_y|/|R_x| da el ángulo de referencia α = ${anguloNotable(X, Y).ref}°; con los signos de R_x y R_y, la resultante forma `, `${correcta}°`, ' con +x.']
-        : [`${equilibrio ? `La fuerza que falta es −${P.vec('R')}: mide lo mismo que ${P.vec('R')}. ` : ''}R = √(R_x² + R_y²) = ${P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `}`, n < 4 ? v('R', `${P.radical(R)} ${u}`) : `${P.radical(R)} ${u}`, '.'],
+        ? [`tan α = |R_y|/|R_x| da el ángulo de referencia α = ${anguloNotable(X, Y).ref}°; con los signos de R_x y R_y, la resultante forma `, v('t', `${correcta}°`), ' con +x.']
+        : [`${equilibrio ? `La fuerza que falta es −${P.vec('R')}: mide lo mismo que ${P.vec('R')}. ` : ''}R = √(R_x² + R_y²) = ${P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `}`, v('R', `${P.radical(R)} ${u}`), '.'],
     ];
 
     const texto = angular ? (x => `${f(x)}°`) : (x => `${P.radical(x)} ${u}`);
@@ -304,13 +307,13 @@
     const n = vs.length;
     const nom = i => P.vec(`${coef[i] < 0 ? '−' : ''}${Math.abs(coef[i]) === 1 ? '' : Math.abs(coef[i])}${NOMBRES[i]}`);
     const R_ = P.vec('R');
-    const colorR = n < 4 ? 'f' : null;
+    const colorR = 'f';
     const flechas = [], guias = [], angulos = [];
     vs.forEach((w, i) => {
       flechas.push({ de: [0, 0], a: [w.x, w.y], color: COLORES[i], rotulo: NOMBRES[i], valor: `${w.texto} ${u}` });
       if (w.t % 90 !== 0) {
         const b = cardinal ? Math.floor(w.t / 90) * 90 : 0;
-        angulos.push({ en: [0, 0], de: b, a: w.t, texto: `${w.t - b}°`, color: COLORES[i], radio: 22 + 12 * i });
+        angulos.push({ en: [0, 0], de: b, a: w.t, texto: `${w.t - b}°`, color: 'h', radio: 22 + 12 * i });
       }
       if (Math.abs(w.x) > 1e-9 && Math.abs(w.y) > 1e-9) {
         guias.push({ de: [w.x, w.y], a: [w.x, 0], color: COLORES[i], paso: 1 }, { de: [w.x, w.y], a: [0, w.y], color: COLORES[i], paso: 1 });
@@ -327,7 +330,7 @@
     const datos = { unidad: u, ejes: true, flechas, guias, angulos,
       // Con el ángulo, el rótulo dice el vector (R⃗ = 8î − 6ĵ); con el módulo, el largo (R = 10 u).
       resultante: { de: [0, 0], a: [X, Y], color: colorR, rotulo: angular ? R_ : 'R', valor: angular ? conIJ(PX, PY, F) : textoR } };
-    if (angular) angulos.push({ en: [0, 0], de: 0, a: correcta, texto: `${correcta}°`, color: colorR, radio: 22 + 12 * n, paso: 3 });
+    if (angular) angulos.push({ en: [0, 0], de: 0, a: correcta, texto: `${correcta}°`, color: 'h', radio: 22 + 12 * n, paso: 3 });
     if (equilibrio) flechas.push({ de: [0, 0], a: [-X, -Y], rotulo: 'F', valor: textoR, discontinua: true, grosor: 'contorno', paso: 3 });
     const compo = [];
     vs.forEach((w, i) => { if (i > 0) compo.push(', '); compo.push(v(NOMBRES[i], `${nom(i)} = ${conIJ(coef[i] * w.px, coef[i] * w.py, F)}`)); });
@@ -340,7 +343,7 @@
     const r2 = R * R;
     if (angular) {
       const an = anguloNotable(X, Y);
-      pasos.push({ estado: { paso: 3, final: true }, texto: ['tan α = |R_y| ÷ |R_x|; los signos dan el cuadrante.'], ecuacion: [`α = ${an.ref}° → θ = `, vR(`${correcta}°`)] });
+      pasos.push({ estado: { paso: 3, final: true }, texto: ['tan α = |R_y| ÷ |R_x|; los signos dan el cuadrante.'], ecuacion: [`α = ${an.ref}° → θ = `, v('t', `${correcta}°`)] });
     } else {
       pasos.push({ estado: { paso: 3, final: true }, texto: [equilibrio ? `La fuerza que falta es −${R_}: mide lo mismo que ${R_}.` : 'El módulo sale con Pitágoras sobre R_x y R_y.'],
         ecuacion: ['R = √(R_x² + R_y²) = ', P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `, vR(textoR)] });

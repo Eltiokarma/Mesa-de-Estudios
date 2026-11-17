@@ -73,16 +73,13 @@ test('los textos no muestran 10⁰, ni un punto decimal, ni «de el»', () => {
   }
 });
 
-test('colores por papel: dato naranja, factor turquesa, lo que se pide violeta', () => {
+// Un color fijo por magnitud (molde §5b, 17 nov), el de la teoría: lo que te dan naranja (d, y a y b al comparar), el
+// factor turquesa (k) y lo que se pide violeta (x). Falla si una cambia de color.
+test('un color por magnitud: dato naranja, factor turquesa, lo que se pide violeta', () => {
+  const COLOR = { d: 'o', a: 'o', b: 'o', k: 'i', x: 'f' };
   for (let s = 0; s < 400; s++) {
     const p = gen.generar(s), V = p.variables;
-    const colores = Object.values(V).map(x => x.color);
-    assert.equal(new Set(colores).size, colores.length, `semilla ${s}: dos variables con el mismo color`);
-    for (const [k, x] of Object.entries(V)) {
-      if (k === 'x') assert.equal(x.color, 'f');
-      else if (k === 'd' || k === 'a') assert.equal(x.color, 'o');
-      else assert.equal(x.color, 'i');
-    }
+    for (const [k, x] of Object.entries(V)) assert.equal(x.color, COLOR[k], `semilla ${s}: ${k} (${x.nombre}) en ${x.color}`);
     assert.ok(p.pregunta.some(x => typeof x === 'object' && x.v === 'x'), `semilla ${s}: lo que se pide no va en violeta`);
     // Todo tramo de color es de una variable del problema (si no, la app lo pinta naranja, como un dato).
     for (const linea of [p.enunciado, p.pregunta, ...p.solucion])

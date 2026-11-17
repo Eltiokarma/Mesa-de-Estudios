@@ -59,7 +59,7 @@
   const girar = (p, g) => { const c = cosG(g), sn = senG(g); return [p[0] * c + p[1] * sn, -p[0] * sn + p[1] * c]; };
   const camino = (pts, g, o = [0, 0]) => 'M' + pts.map(p => { const q = girar(p, g); return `${n(o[0] + q[0])} ${n(o[1] + q[1])}`; }).join('L') + 'Z';
   const DIR = { E: [1, 0], N: [0, 1], O: [-1, 0], S: [0, -1] };
-  // Un color por papel (docs/molde-unidad.md §5b, 17 nov): el primer tramo naranja, el segundo turquesa, el tercero
+  // Un color fijo por magnitud (docs/molde-unidad.md §5b, 17 nov): el primer tramo naranja, el segundo turquesa, el tercero
   // verde; el cuarto va en tinta (el carmín es del ángulo y el violeta, de la resultante, lo que se pide).
   const COLORES_TRAMO = ['o', 'i', 'd', 't'];
 
@@ -209,9 +209,10 @@
             const x0 = cl(X(i) + e, 2, W - 2), x1 = cl(X(i + 1) - e, 2, W - 2), y0 = cl(Y(j + 1) + e, 2, H - 2), y1 = cl(Y(j) - e, 2, H - 2);
             if (x1 - x0 < 4 || y1 - y0 < 4) continue;
             const plaza = Array.isArray(d.plaza) && d.plaza[0] === i && d.plaza[1] === j;
-            s += `<rect x="${n(x0)}" y="${n(y0)}" width="${n(x1 - x0)}" height="${n(y1 - y0)}" rx="4" fill="${plaza ? 'var(--c-d)' : 'currentColor'}" fill-opacity="${plaza ? 0.25 : 0.07}"/>`;
+            s += `<rect x="${n(x0)}" y="${n(y0)}" width="${n(x1 - x0)}" height="${n(y1 - y0)}" rx="4" fill="currentColor" fill-opacity="${plaza ? 0.2 : 0.07}"/>`;
           }
-          if (Array.isArray(d.plaza)) s += T.rotulo(X(d.plaza[0] + 0.5), Y(d.plaza[1] + 0.5) + 5, 'Plaza', { ancla: 'middle', tam: 14, peso: 700, color: 'd', min: 4, max: W - 4 });
+          // La plaza, en tinta (17 nov): en verde quedaba pegada al primer tramo, naranja (0,010 con protanopía).
+          if (Array.isArray(d.plaza)) s += T.rotulo(X(d.plaza[0] + 0.5), Y(d.plaza[1] + 0.5) + 5, 'Plaza', { ancla: 'middle', tam: 14, peso: 700, min: 4, max: W - 4 });
         } else {
           // Una sola calle: una franja a lo largo del recorrido.
           // La franja cubre todos los renglones del recorrido.
@@ -225,7 +226,8 @@
         // Quien camina: una figura chica en la salida; la llegada, un alfiler.
         // La salida es la cola del primer tramo y la llegada, la punta del último (en una sola calle van en renglones).
         const tr = g.fl.filter(f => !f.f.resultante), [x, y] = tr.length ? tr[0].p0 : [g.ax, g.ay], [fx, fy] = tr.length ? tr[tr.length - 1].p1 : [x, y];
-        let s = `<circle cx="${n(x)}" cy="${n(y)}" r="5" fill="var(--c-d)" ${tinta(1.5)}/>`;
+        // La salida, en tinta (17 nov): en verde quedaba pegada a la cola del primer tramo, naranja.
+        let s = `<circle cx="${n(x)}" cy="${n(y)}" r="5" fill="currentColor" ${tinta(1.5)}/>`;
         if (Math.hypot(fx - x, fy - y) > 4) s += `<circle cx="${n(fx)}" cy="${n(fy)}" r="5" fill="var(--card)" ${tinta(2)}/><circle cx="${n(fx)}" cy="${n(fy)}" r="2" fill="currentColor"/>`;
         return obj('persona', s);
       },

@@ -16,9 +16,9 @@
  *   comparar   (3) sub veces: cuántas veces más rápido; sub cuantas: cuántas vueltas, bolsas o capítulos;
  *              sub diferencia: cuánto más rápido, en m/s
  *
- * Colores por papel (docs/molde-unidad.md §5b): la cantidad que te dan, naranja (o); el factor, turquesa (i); lo que
- * se pide y su resultado, violeta (f). Al comparar, la segunda cantidad es el segundo dato, turquesa, y ahí el factor
- * va sin color (un color, un papel en cada problema).
+ * Colores: un color fijo por magnitud, el mismo de la teoría (docs/molde-unidad.md §5b; cabecera de
+ * contenido/teoria/fisica/magnitudes-y-vectores.js): lo que te dan, naranja (o), también las dos cantidades que se
+ * comparan; el factor que vale 1, turquesa (i), siempre; lo que se pide y su resultado, violeta (f).
  * Datos (docs/plan-calidad.md §3, punto 13): las equivalencias de una en una (1 km = 1000 m, 1 h = 3600 s), nunca el
  * 3,6 ni el factor ya armado; en notación científica, qué es y la regla de las potencias de 10; la fórmula v = d / t
  * cuando se calcula una rapidez. Valores de todos los días con «unos» y sin fuente (Gerson, 17 nov).
@@ -482,7 +482,8 @@
   const el = t => t.toLowerCase().replace(/^un /, 'el ').replace(/^una /, 'la ');
   function comparar(rng, forzado) {
     const sub = forzado || rng.elegir(['veces', 'cuantas', 'cuantas', 'diferencia']);
-    const VC = (a, b, x) => ({ a: { nombre: a, color: 'o' }, b: { nombre: b, color: 'i' }, x: { nombre: x, color: 'f' } });
+    // Las dos cantidades son datos: naranja las dos (un color fijo por magnitud, molde §5b); el turquesa es del factor.
+    const VC = (a, b, x) => ({ a: { nombre: a, color: 'o' }, b: { nombre: b, color: 'o' }, k: { nombre: 'factor que vale 1', color: 'i' }, x: { nombre: x, color: 'f' } });
     if (sub === 'veces') {
       const [A, B] = rng.elegir([[[90, 'Un bus'], [5, 'una bicicleta']], [[108, 'Un auto'], [10, 'un velocista']], [[54, 'Una combi'], [5, 'una ciclista']],
         [[72, 'Un tren'], [4, 'un caballo al trote']], [[36, 'Una moto en la ciudad'], [2, 'una persona que camina rápido']]]);

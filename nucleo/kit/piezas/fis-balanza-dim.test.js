@@ -28,6 +28,18 @@ test('derecha si cuadra, inclinada si no', () => {
   assert.match(mal, /No cuadra/);
 });
 
+// Un color por magnitud (molde §5b, 17 nov): el veredicto no usa verde ni carmín (junto al naranja de las dimensiones,
+// el verde no se distingue con protanopía; el carmín es de los ángulos). Va en tinta.
+test('el veredicto va en tinta: sin verde ni carmín', () => {
+  for (const der of [{ nombre: 'v · t', exps: L }, { nombre: 'v / t', exps: A }]) {
+    const s = P.dibujar({ izq: { nombre: 'd', exps: L }, der });
+    const t = s.match(/<text[^>]*>(No cuadra|Cuadra)[^<]*<\/text>/);
+    assert.ok(t, 'hay veredicto');
+    assert.ok(!/var\(--c-[dh]\)/.test(t[0]), t[0]);
+    assert.ok(!/var\(--c-[dh]\)/.test(s), 'ningún verde ni carmín en la balanza');
+  }
+});
+
 test('con la incógnita oculta no se inclina ni dice nada', () => {
   const s = P.dibujar({ izq: { nombre: 'x', exps: L }, der: { nombre: 'k · t²', oculta: true } });
   const [, y1, , y2] = brazo(s);

@@ -254,10 +254,10 @@
       flechas.push({ de: [0, 0], a: [c[0], 0], color: colorV, discontinua: true, grosor: 'contorno', paso: p0 + 1 },
         { de: [c[0], 0], a: c, color: colorV, discontinua: true, grosor: 'contorno', paso: p0 + 1 });
     }
-    // El unitario, desde el origen como î y ĵ. Es la respuesta en «unitario» y en la suma (color de lo que se pide).
-    // Solo «û»: su valor va en la ecuación del paso (con el valor, el rótulo tapaba el origen).
-    const uEsRespuesta = d.tipo === 'unitario' || suma;
-    flechas.push({ de: [0, 0], a: u, color: uEsRespuesta ? 'f' : null, rotulo: 'û', paso: p0 + 2 });
+    // El unitario, desde el origen como î y ĵ, siempre en violeta: un color fijo por magnitud, el de la teoría (antes iba
+    // en tinta cuando no era la respuesta). Solo «û»: su valor va en la ecuación del paso (con el valor, el rótulo
+    // tapaba el origen).
+    flechas.push({ de: [0, 0], a: u, color: 'f', rotulo: 'û', paso: p0 + 2 });
     const modulo = { estado: { paso: p0 + 1 }, texto: ['El módulo sale con Pitágoras sobre las componentes.'],
       ecuacion: [`|${suma ? AB_ : 'A'}| = √(${cuadrados(c)}) = √${m * m} = `, suma ? `${m}` : v('A', `${m}`)] };
     // |û|² = (x/m)² + (y/m)²: «(3/5)²», «1²», «(−1)²»; después cada cuadrado ya hecho, «9/25 + 16/25».

@@ -11,15 +11,19 @@
  *   max: 400, paso: 100,                         // m: radio que entra en el mapa y separación de las calles
  *   lugares: [{ nombre: 'Mercado', largo: 300, rumbo: 'NO' }],   // dónde quedan, vistos desde la plaza
  *   drones: [{ largo: 300, rumbo: 'NE',          // rumbo: 'E', 'NE', 'N', 'NO', 'O', 'SO', 'S', 'SE' o grados (antihorario desde el este)
- *              color: 'o', valor: '300 m',        // rótulo sobre la flecha (el módulo)
+ *              color: 'f', valor: '300 m',        // rótulo sobre la flecha (el módulo)
  *              flecha: true, fantasma: false }],
  *   circulo: null | 300,                         // m: dibuja el círculo punteado de los puntos a esa distancia
  *   textoCirculo: 'Todos a 300 m de la plaza',   // rótulo del círculo (abajo)
- *   color: 'o',
+ *   color: 'f',                                  // el vuelo es un desplazamiento: violeta, como d⃗ en la unidad
  *   vistas: [datos, …]                           // opcional: varias figuras; estado.vista elige (para «Mira»)
  * }
  * estado = { vista } (opcional). Función pura de (datos, estado): sin ids, sin azar, sin reloj. El dron es un dibujo
  * de prueba (data-prueba).
+ * Colores (un color fijo por magnitud, docs/molde-unidad.md §5b, 17 nov): el vuelo, de la plaza al dron, es un
+ * desplazamiento y va en violeta, como d⃗ en toda la unidad Vectores; el círculo de los puntos a la misma distancia y la
+ * plaza, en tinta (la distancia recorrida no tiene color en la unidad, el carmín es de los ángulos y el verde de la
+ * plaza quedaba junto a la flecha).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -33,7 +37,7 @@
   const W = 320, H = 330, CX = 160, CY = 164, RPX = 118, MAPA = 128;
   const RUMBOS = { E: 0, NE: 45, N: 90, NO: 135, O: 180, SO: 225, S: 270, SE: 315 };
   const NOMBRES = { E: 'el este', NE: 'el noreste', N: 'el norte', NO: 'el noroeste', O: 'el oeste', SO: 'el suroeste', S: 'el sur', SE: 'el sureste' };
-  const BASE = { max: 400, paso: 100, lugares: [], drones: [], circulo: null, color: 'o' };
+  const BASE = { max: 400, paso: 100, lugares: [], drones: [], circulo: null, color: 'f' };
   const n = T.n;
   const grados = r => (typeof r === 'number' ? r : RUMBOS[r] || 0);
   // Metros y rumbo a coordenadas del lienzo (y hacia abajo en el lienzo, hacia el norte en el mapa).
@@ -85,15 +89,15 @@
       + `<line x1="${n(ex)}" y1="${n(ey - 5)}" x2="${n(ex)}" y2="${n(ey + 5)}" stroke="currentColor" stroke-width="2"/><line x1="${n(ex + e)}" y1="${n(ey - 5)}" x2="${n(ex + e)}" y2="${n(ey + 5)}" stroke="currentColor" stroke-width="2"/>`
       + T.rotulo(ex, ey - 9, `${Kit.formatear(d.paso, 0)} m`, { tam: 14, peso: 700 }) + '</g>';
     // La plaza.
-    s += `<rect x="${CX - 9}" y="${CY - 9}" width="18" height="18" rx="3" fill="${T.color('d')}" fill-opacity="0.35" stroke="${T.color('d')}" stroke-width="2"/>`;
+    s += `<rect x="${CX - 9}" y="${CY - 9}" width="18" height="18" rx="3" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2"/>`;
     // El círculo de los puntos a la misma distancia.
     if (Number.isFinite(d.circulo) && d.circulo > 0) {
-      s += `<circle class="kit-circulo" cx="${CX}" cy="${CY}" r="${n(d.circulo * s0)}" fill="none" stroke="${T.color('h')}" stroke-width="2" stroke-dasharray="5 6"/>`;
-      if (d.textoCirculo) s += T.rotulo(CX, H - 10, d.textoCirculo, { ancla: 'middle', tam: 14, peso: 700, color: 'h' });
+      s += `<circle class="kit-circulo" cx="${CX}" cy="${CY}" r="${n(d.circulo * s0)}" fill="none" stroke="currentColor" stroke-opacity="0.75" stroke-width="2" stroke-dasharray="5 6"/>`;
+      if (d.textoCirculo) s += T.rotulo(CX, H - 10, d.textoCirculo, { ancla: 'middle', tam: 14, peso: 700 });
     }
     for (const l of d.lugares || []) s += lugar(d, l);
     // «Plaza» a la izquierda del cuadrado, a su altura: debajo quedaba encima del paradero (lector en frío, 16 nov).
-    s += T.rotulo(CX - 14, CY + 5, 'Plaza', { ancla: 'end', tam: 14, peso: 700, color: 'd' });
+    s += T.rotulo(CX - 14, CY + 5, 'Plaza', { ancla: 'end', tam: 14, peso: 700 });
     // Los drones con su flecha: de la plaza al dron, y el módulo escrito al costado.
     for (const v of d.drones || []) {
       const [x, y] = punto(d, v.largo, v.rumbo), a = grados(v.rumbo) * Math.PI / 180, c = v.color || d.color;

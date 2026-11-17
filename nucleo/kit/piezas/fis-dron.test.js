@@ -56,3 +56,11 @@ test('las vistas: estado.vista elige la figura', () => {
   assert.match(P.dibujar(d, { vista: 1 }), /data-objeto="dron"/);
   assert.ok(!/data-objeto="dron"/.test(P.dibujar(d, { vista: 0 })));
 });
+
+// Un color fijo por magnitud (molde §5b, 17 nov): el vuelo es un desplazamiento, violeta como d⃗ en la unidad; la plaza
+// y el círculo de la distancia, en tinta (ni el verde de antes, junto a la flecha, ni el carmín de los ángulos).
+test('el vuelo va en violeta; la plaza y el círculo, en tinta', () => {
+  const s = P.dibujar({ lugares: [{ nombre: 'Mercado', largo: 300, rumbo: 'NO' }], drones: [{ largo: 300, rumbo: 'NE', valor: '300 m' }], circulo: 300, textoCirculo: 'Todos a 300 m' });
+  assert.match(s, /var\(--c-f\)/, 'la flecha del vuelo en violeta');
+  assert.ok(!/var\(--c-[odhi]\)/.test(s), 'ningún otro color de variable');
+});

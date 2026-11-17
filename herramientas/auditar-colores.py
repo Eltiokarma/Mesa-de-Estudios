@@ -56,3 +56,8 @@ if __name__ == '__main__':
     auditar('lectura, oscuro', {'evidencia': oscuro['i'], 'distractor': oscuro['o'], 'idea': oscuro['f'], 'idea-verde': oscuro['d']}, '#2a2135', '#f1ebf7')
     auditar('escena vectores, claro', esc_claro, '#fffaf6', '#2d2340')
     auditar('escena vectores, oscuro', esc_oscuro, '#2a2135', '#f1ebf7')
+    # Física (17 nov, un color fijo por magnitud): en Vectores la distancia recorrida, el círculo y la plaza del dron van
+    # en tinta junto al violeta del desplazamiento; en Magnitudes, el veredicto de la balanza, en tinta junto al naranja.
+    # Peores pares con la tinta: claro tinta-f 0,203 (tritan), oscuro tinta-d 0,141 (tritan).
+    auditar('física, tinta junto a variables, claro', dict(claro, tinta='#2d2340'), '#fffaf6', '#2d2340')
+    auditar('física, tinta junto a variables, oscuro', dict(oscuro, tinta='#f1ebf7'), '#2a2135', '#f1ebf7')
