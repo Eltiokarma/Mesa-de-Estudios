@@ -607,7 +607,7 @@ function vEjercicios(c, u) {
 // preguntas, sin pistas ni corrección hasta terminar, con la opción de dejar en blanco. No usa el banco de entrada y
 // salida (catalogo/pruebas/), para no gastar esas preguntas ni mezclar la medición. Cada intento trae preguntas
 // nuevas (semilla: alumno, unidad e intento). Se registra un 'examen-item' por pregunta y un 'examen' al final.
-const textoPlano = (partes, esc) => conSub((partes || []).map(x => (typeof x === 'string' ? esc(x)
+const textoPlano = (partes, esc) => conSub((partes || []).map(x => (typeof x === 'string' ? esc(x).replace(/\n/g, '<br>')
   : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join(''));
 async function vExamen(c, u) {
   const gens = generadoresDe(u), h = location.hash;
@@ -708,7 +708,7 @@ async function vExamen(c, u) {
         const estado = !a ? ['blanco', 'En blanco'] : a.correcta ? ['bien', 'Correcta'] : ['malo', 'Incorrecta'];
         return `<article class="card ex-rev"><div class="etq-p">Pregunta ${k + 1} · <span class="ex-${estado[0]}">${estado[1]}</span></div>
           <p class="enun">${textoPlano(p.enunciado, esc)} <b>${textoPlano(p.pregunta, esc)}</b></p>
-          <p>${a && !a.correcta ? `Marcaste la ${a.letra}: ${esc(a.texto)}. ` : ''}La respuesta es la <b>${ok.letra}: ${esc(ok.texto)}</b>.</p>
+          <p>${a && !a.correcta ? `Marcaste: ${esc(a.texto)}. ` : ''}La correcta: <b>${esc(ok.texto)}</b>.</p>
           ${a && !a.correcta && a.error && a.error.explicacion ? `<div class="retro malo"><p style="margin:0">${esc(a.error.explicacion)}</p></div>` : ''}
           ${Array.isArray(p.solucion) && p.solucion.length ? `<details><summary>Solución paso a paso</summary><ol class="sol">${p.solucion.map(q => `<li>${textoPlano(q, esc)}</li>`).join('')}</ol></details>` : ''}
         </article>`; }).join('')}</div>`;

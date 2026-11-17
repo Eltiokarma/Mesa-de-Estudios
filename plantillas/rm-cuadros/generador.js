@@ -409,7 +409,7 @@
     const nombres = lista(p.personas);
     const listasTexto = ats.map(a => `${LISTAS[a].plural}: ${lista(p.atributos[a].map(x => itemEn(a, x)), 'y')}`);
     const enunciado = [`${nombres} ${ctx.intro}. ${mayus(listasTexto.join('; '))}. Se sabe que:`];
-    d.pistas.forEach((q, i) => enunciado.push(` ${ROM[i]}. ${textoPista(p, q)}.`));
+    d.pistas.forEach((q, i) => enunciado.push(`\n${ROM[i]}. ${textoPista(p, q)}.`));
     const datos = [ats.length === 1 ? LISTAS[ats[0]].regla : R_LISTAS, D_REPARTO];
     if (ats.length > 1) datos.push(D_QUIEN);
     if (d.sub === 'seguro') datos.push(D_SEGURO);

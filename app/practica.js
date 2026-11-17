@@ -50,7 +50,8 @@ const ICONO_MAS = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="
 const conSub = h => h.replace(/([A-Za-zÁÉÍÓÚáéíóúθρ\)])_([a-z0-9]{1,3})/g, '$1<sub>$2</sub>');
 function texto(partes, p, esc) {
   return conSub(partes.map(x => {
-    if (typeof x === 'string') return esc(x);
+    // Un «\n» del generador abre línea nueva: las pistas I, II, III… van una por renglón.
+    if (typeof x === 'string') return esc(x).replace(/\n/g, '<br>');
     if (x.formula) return `<span class="formula">${esc(x.t)}</span>`;
     const col = (p.variables[x.v] || {}).color || 'o';
     // Un tramo largo (una frase, no un dato) puede partirse en líneas: si no, se sale de la tarjeta en el celular.
@@ -195,8 +196,8 @@ async function vista(ctx, id, desde) {
       anotar(p, { a, nose, t0 });
       document.getElementById('retro').innerHTML = `
         <div class="retro ${nose ? 'nose' : a.correcta ? 'bien' : 'malo'}">
-          <b>${nose ? `Gracias por decirlo. La respuesta es la ${correcta.letra}: ${esc(correcta.texto)}.`
-            : a.correcta ? `¡Bien! Es la ${correcta.letra}.` : `La respuesta es la ${correcta.letra}: ${esc(correcta.texto)}.`}</b>
+          <b>${nose ? `Gracias por decirlo. La correcta: ${esc(correcta.texto)}.`
+            : a.correcta ? `¡Bien! ${esc(correcta.texto)}.` : `La correcta: ${esc(correcta.texto)}.`}</b>
           ${nose ? '<p>Mira la solución paso a paso y prueba con el siguiente.</p>' : a.correcta ? '' : `<p>${esc(a.error.explicacion)}</p>`}
         </div>`;
       document.getElementById('sol').innerHTML = `
@@ -371,7 +372,7 @@ async function vista(ctx, id, desde) {
       const titulo = nose ? `Es ${nb(correcta.texto)}.`
         : acierto ? `¡Bien! Es ${nb(correcta.texto)}.`
           : arrastra ? `Marcaste ${nb(cm.texto(valor))}; es ${nb(correcta.texto)}.`
-            : `Es la ${correcta.letra}: ${nb(correcta.texto)}.`;
+            : `La correcta: ${nb(correcta.texto)}.`;
       const detalle = nose ? 'Mira cómo se llega, paso a paso.' : acierto ? '' : a && a.error ? a.error.explicacion : 'Recorre los pasos sobre la barra.';
       $('#retro').innerHTML = `<div class="retro ${nose ? 'nose' : acierto ? 'bien' : 'malo'}"><b>${titulo}</b>${detalle ? `<p>${esc(detalle)}</p>` : ''}</div>`;
       // La figura deja de ser un control: pasa a ser la imagen de la solución.

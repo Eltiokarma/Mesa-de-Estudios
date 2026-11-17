@@ -25,7 +25,7 @@
 const PARA_TIPO = 3;
 
 function textoPlano(partes, esc) {
-  return conSub((partes || []).map(x => (typeof x === 'string' ? esc(x) : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join(''));
+  return conSub((partes || []).map(x => (typeof x === 'string' ? esc(x).replace(/\n/g, '<br>') : x.formula ? `<span class="formula">${esc(x.t)}</span>` : `<b>${esc(x.t)}</b>`)).join(''));
 }
 const figura = (f, esc) => (f && typeof f.svg === 'string' && /^<svg[\s>]/.test(f.svg)
   ? `<figure class="fig-gen" role="img" aria-label="${esc(f.alt || 'Figura del problema')}">${f.svg}</figure>` : '');
@@ -247,7 +247,7 @@ async function vista(ctx) {
         guardar(); marcarDia();
         registrar(Object.assign(base(), { opcion: a ? a.letra : '', correcta: bien, error: a && !bien ? a.error : '', respaldo: a && !bien ? a.respaldo : '' }, esNose ? { nose: true } : {}));
         $app.querySelector('#retro').innerHTML = `<div class="retro ${esNose ? 'nose' : bien ? 'bien' : 'malo'}">
-          <b>${bien ? `¡Bien! Es la ${ok.letra}. Lo recuerdas.` : `La respuesta es la ${ok.letra}: ${esc(ok.texto)}${/[.!?…]$/.test(ok.texto) ? '' : '.'}`}</b>
+          <b>${bien ? `¡Bien! Lo recuerdas.` : `La correcta: ${esc(ok.texto)}${/[.!?…]$/.test(ok.texto) ? '' : '.'}`}</b>
           ${!bien && a && a.explicacion ? `<p>${esc(a.explicacion)}</p>` : ''}
           ${bien ? '' : '<p>Te lo vamos a preguntar otra vez en dos días.</p>'}</div>`;
         $app.querySelector('#sol').innerHTML = `${!bien && q.solucionHTML ? `<details open><summary>${q.fuente === 'generador' || q.fuente === 'papel' ? 'Solución paso a paso' : 'Por qué'}</summary>${q.solucionHTML}</details>` : ''}

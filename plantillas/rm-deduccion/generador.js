@@ -319,7 +319,7 @@
     if (alternativas.length < 4) return null;
     const lugar = rng.elegir(LUGARES);
     const enunciado = [`${lugar} se sabe que:`];
-    prem.forEach((q, i) => enunciado.push(` ${ROMANOS[i]}. `, ...frase(q.f, q.s, q.p, T, true), '.'));
+    prem.forEach((q, i) => enunciado.push(`\n${ROMANOS[i]}. `, ...frase(q.f, q.s, q.p, T, true), '.'));
     const pregunta = ['¿Qué conclusión se deduce necesariamente de I y II?'];
     const fig = figuraVenn(prem, T, 'vn' + Math.floor(rng.sig() * 1e6).toString(36).replace(/^[0-9a-f]+/, 'q'));
     const cc = correcta === 'sil:nada' ? null : leerClave(correcta);
@@ -624,7 +624,7 @@
     const pintar = segs => segs.map(s => (typeof s === 'string' ? s : s));
     const intro = pi.intro(cosas.map((c, i) => v(CV[i], c)));
     const enunciado = [...intro, ' Se sabe que:'];
-    pistas.forEach((q, i) => enunciado.push(` ${ROMANOS[i]}. `, ...pintar(segP(q)), '.'));
+    pistas.forEach((q, i) => enunciado.push(`\n${ROMANOS[i]}. `, ...pintar(segP(q)), '.'));
     const pregunta = ['¿Cuál de las siguientes afirmaciones es siempre cierta?'];
     const nombreLit = l => plano(segLit(l, pi, cosas, false));
     const uno = pi.un === 'una' ? 'una' : 'uno', alg = pi.un === 'una' ? 'alguna' : 'algún';
