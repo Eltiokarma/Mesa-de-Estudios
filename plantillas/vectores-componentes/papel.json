@@ -6,103 +6,103 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Se tienen los vectores A = 6 u (150° con +x), B = 6 u (90° con +x) y C = 6 u (330° con +x). ¿Cuánto mide |A⃗ + 2B⃗ + C⃗|? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. k·A⃗ multiplica cada componente por k; −B⃗ cambia el signo de sus dos componentes. Rx = suma de las componentes x; Ry = suma de las componentes y. Módulo: |R| = √(Rx² + Ry²). Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
+      "enunciado": "Se tienen los vectores A = 6 u (150° con +x), B = 6 u (90° con +x) y C = 6 u (330° con +x). ¿Cuánto mide |A⃗ + 2B⃗ + C⃗|? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. k·A⃗ multiplica cada componente por k; −B⃗ cambia el signo de sus dos componentes. R_x = suma de las componentes x; R_y = suma de las componentes y. Módulo: R = √(R_x² + R_y²). Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
       "respuesta": "A) 12 u",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
         "A⃗: x = −3√3, y = 3",
         "2B⃗: x = 0, y = 12",
         "C⃗: x = 3√3, y = −3",
-        "Se suman por componentes: Rx = 0 y Ry = 12.",
-        "|R| = √(Rx² + Ry²) = √144 = 12 u."
+        "Se suman por componentes: R_x = 0 y R_y = 12.",
+        "R = √(R_x² + R_y²) = √144 = 12 u."
       ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Se tienen los vectores A = 4 u (0° con +x), B = 8 u (300° con +x) y C = 4 u (240° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Datos: Valores de academia: sen 60° = √3/2 y cos 60° = 1/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. tan α = |Ry|/|Rx|, con α el ángulo entre la resultante y el eje x. tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3. Alternativas: A) 120°   B) 300°   C) 60°   D) 330°",
+      "enunciado": "Se tienen los vectores A = 4 u (0° con +x), B = 8 u (300° con +x) y C = 4 u (240° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Datos: Valores de academia: sen 60° = √3/2 y cos 60° = 1/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. tan α = |R_y|/|R_x|, con α el ángulo entre la resultante y el eje x. tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3. Alternativas: A) 120°   B) 300°   C) 60°   D) 330°",
       "respuesta": "B) 300°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
         "A⃗: x = 4, y = 0",
         "B⃗: x = 4, y = −4√3",
         "C⃗: x = −2, y = −2√3",
-        "Se suman por componentes: Rx = 6 y Ry = −6√3.",
-        "tan α = |Ry|/|Rx| da el ángulo de referencia α = 60°; con los signos de Rx y Ry, la resultante forma 300° con +x."
+        "Se suman por componentes: R_x = 6 y R_y = −6√3.",
+        "tan α = |R_y|/|R_x| da el ángulo de referencia α = 60°; con los signos de R_x y R_y, la resultante forma 300° con +x."
       ]
     },
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (240° con +x), B = 6 N (120° con +x) y C = 4 N (0° con +x). Otra fuerza lo deja en equilibrio. ¿Cuánto mide esa fuerza? Datos: Valores de academia: sen 60° = √3/2 y cos 60° = 1/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. En equilibrio, la suma de todas las fuerzas es 0⃗. Módulo: |R| = √(Rx² + Ry²). Alternativas: A) 4√13 N   B) 2 N   C) 4 N   D) 16 N",
+      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (240° con +x), B = 6 N (120° con +x) y C = 4 N (0° con +x). Otra fuerza lo deja en equilibrio. ¿Cuánto mide esa fuerza? Datos: Valores de academia: sen 60° = √3/2 y cos 60° = 1/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. En equilibrio, la suma de todas las fuerzas es 0⃗. Módulo: R = √(R_x² + R_y²). Alternativas: A) 4√13 N   B) 2 N   C) 4 N   D) 16 N",
       "respuesta": "B) 2 N",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
         "A⃗: x = −3, y = −3√3",
         "B⃗: x = −3, y = 3√3",
         "C⃗: x = 4, y = 0",
-        "Se suman por componentes: Rx = −2 y Ry = 0.",
-        "La fuerza que falta es −R⃗: mide lo mismo que R⃗. |R| = √(Rx² + Ry²) = √4 = 2 N."
+        "Se suman por componentes: R_x = −2 y R_y = 0.",
+        "La fuerza que falta es −R⃗: mide lo mismo que R⃗. R = √(R_x² + R_y²) = √4 = 2 N."
       ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Se tienen los vectores A = 2 u (150° con +x) y B = 6 u (330° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. tan α = |Ry|/|Rx|, con α el ángulo entre la resultante y el eje x. tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3. Alternativas: A) 30°   B) 150°   C) 300°   D) 330°",
+      "enunciado": "Se tienen los vectores A = 2 u (150° con +x) y B = 6 u (330° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. tan α = |R_y|/|R_x|, con α el ángulo entre la resultante y el eje x. tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3. Alternativas: A) 30°   B) 150°   C) 300°   D) 330°",
       "respuesta": "D) 330°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
         "A⃗: x = −√3, y = 1",
         "B⃗: x = 3√3, y = −3",
-        "Se suman por componentes: Rx = 2√3 y Ry = −2.",
-        "tan α = |Ry|/|Rx| da el ángulo de referencia α = 30°; con los signos de Rx y Ry, la resultante forma 330° con +x."
+        "Se suman por componentes: R_x = 2√3 y R_y = −2.",
+        "tan α = |R_y|/|R_x| da el ángulo de referencia α = 30°; con los signos de R_x y R_y, la resultante forma 330° con +x."
       ]
     },
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Una persona camina, en este orden: 10 m hacia el este, 5 m 53° al este del sur y 10 m hacia el norte. Toma norte = +y y este = +x. ¿A qué distancia queda del punto de partida? Datos: «37° al norte del este»: se parte del este y se giran 37° hacia el norte. Valores de academia: sen 37° = 3/5 y cos 37° = 4/5; sen 53° = 4/5 y cos 53° = 3/5 (triángulo 3-4-5). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. Módulo: |R| = √(Rx² + Ry²). Alternativas: A) 25 m   B) 245 m   C) 21 m   D) √365 m   E) 7√5 m",
+      "enunciado": "Una persona camina, en este orden: 10 m hacia el este, 5 m 53° al este del sur y 10 m hacia el norte. Toma norte = +y y este = +x. ¿A qué distancia queda del punto de partida? Datos: «37° al norte del este»: se parte del este y se giran 37° hacia el norte. Valores de academia: sen 37° = 3/5 y cos 37° = 4/5; sen 53° = 4/5 y cos 53° = 3/5 (triángulo 3-4-5). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. Módulo: R = √(R_x² + R_y²). Alternativas: A) 25 m   B) 245 m   C) 21 m   D) √365 m   E) 7√5 m",
       "respuesta": "E) 7√5 m",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 37° = 3/5, cos 37° = 4/5); norte = +y, este = +x.",
         "A⃗: x = 10, y = 0",
         "B⃗: x = 4, y = −3",
         "C⃗: x = 0, y = 10",
-        "Se suman por componentes: Rx = 14 y Ry = 7.",
-        "|R| = √(Rx² + Ry²) = √245 = 7√5 m."
+        "Se suman por componentes: R_x = 14 y R_y = 7.",
+        "R = √(R_x² + R_y²) = √245 = 7√5 m."
       ]
     },
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Una persona camina, en este orden: 6√2 m hacia el noreste, 4√2 m hacia el sureste y 6√2 m hacia el noroeste. Toma norte = +y y este = +x. ¿A qué distancia queda del punto de partida? Datos: Noreste, noroeste, suroeste y sureste: justo a 45° entre los dos puntos cardinales. Valores de academia: sen 45° = cos 45° = √2/2. Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. Módulo: |R| = √(Rx² + Ry²). Alternativas: A) 16√2 m   B) 12 m   C) 80 m   D) 4√5 m",
+      "enunciado": "Una persona camina, en este orden: 6√2 m hacia el noreste, 4√2 m hacia el sureste y 6√2 m hacia el noroeste. Toma norte = +y y este = +x. ¿A qué distancia queda del punto de partida? Datos: Noreste, noroeste, suroeste y sureste: justo a 45° entre los dos puntos cardinales. Valores de academia: sen 45° = cos 45° = √2/2. Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. Módulo: R = √(R_x² + R_y²). Alternativas: A) 16√2 m   B) 12 m   C) 80 m   D) 4√5 m",
       "respuesta": "D) 4√5 m",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 45° = sen 45° = √2/2); norte = +y, este = +x.",
         "A⃗: x = 6, y = 6",
         "B⃗: x = 4, y = −4",
         "C⃗: x = −6, y = 6",
-        "Se suman por componentes: Rx = 4 y Ry = 8.",
-        "|R| = √(Rx² + Ry²) = √80 = 4√5 m."
+        "Se suman por componentes: R_x = 4 y R_y = 8.",
+        "R = √(R_x² + R_y²) = √80 = 4√5 m."
       ]
     },
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Se tienen los vectores A = 8 u (270° con +x) y B = 8 u (210° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. tan α = |Ry|/|Rx|, con α el ángulo entre la resultante y el eje x. tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3. Alternativas: A) 210°   B) 240°   C) 60°   D) 120°",
+      "enunciado": "Se tienen los vectores A = 8 u (270° con +x) y B = 8 u (210° con +x). ¿Qué ángulo forma la resultante con +x, en sentido antihorario? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. tan α = |R_y|/|R_x|, con α el ángulo entre la resultante y el eje x. tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3. Alternativas: A) 210°   B) 240°   C) 60°   D) 120°",
       "respuesta": "B) 240°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
         "A⃗: x = 0, y = −8",
         "B⃗: x = −4√3, y = −4",
-        "Se suman por componentes: Rx = −4√3 y Ry = −12.",
-        "tan α = |Ry|/|Rx| da el ángulo de referencia α = 60°; con los signos de Rx y Ry, la resultante forma 240° con +x."
+        "Se suman por componentes: R_x = −4√3 y R_y = −12.",
+        "tan α = |R_y|/|R_x| da el ángulo de referencia α = 60°; con los signos de R_x y R_y, la resultante forma 240° con +x."
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (30° con +x), B = 6 N (150° con +x), C = 6 N (90° con +x) y D = 6 N (210° con +x). Otra fuerza lo deja en equilibrio. ¿Cuánto mide esa fuerza? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ. Rx = suma de las componentes x; Ry = suma de las componentes y. En equilibrio, la suma de todas las fuerzas es 0⃗. Módulo: |R| = √(Rx² + Ry²). Alternativas: A) 6√3 N   B) 24 N   C) 108 N   D) 6√13 N",
+      "enunciado": "Sobre un anillo actúan las fuerzas A = 6 N (30° con +x), B = 6 N (150° con +x), C = 6 N (90° con +x) y D = 6 N (210° con +x). Otra fuerza lo deja en equilibrio. ¿Cuánto mide esa fuerza? Datos: Valores de academia: sen 30° = 1/2 y cos 30° = √3/2. Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y. Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α. Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −). Si A⃗ forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ. R_x = suma de las componentes x; R_y = suma de las componentes y. En equilibrio, la suma de todas las fuerzas es 0⃗. Módulo: R = √(R_x² + R_y²). Alternativas: A) 6√3 N   B) 24 N   C) 108 N   D) 6√13 N",
       "respuesta": "A) 6√3 N",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
@@ -110,8 +110,8 @@
         "B⃗: x = −3√3, y = 3",
         "C⃗: x = 0, y = 6",
         "D⃗: x = −3√3, y = −3",
-        "Se suman por componentes: Rx = −3√3 y Ry = 9.",
-        "La fuerza que falta es −R⃗: mide lo mismo que R⃗. |R| = √(Rx² + Ry²) = √108 = 6√3 N."
+        "Se suman por componentes: R_x = −3√3 y R_y = 9.",
+        "La fuerza que falta es −R⃗: mide lo mismo que R⃗. R = √(R_x² + R_y²) = √108 = 6√3 N."
       ]
     }
   ]

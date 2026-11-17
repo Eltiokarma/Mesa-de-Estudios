@@ -1,21 +1,21 @@
 {
   "plantilla": "velocidad-relativa",
-  "tolerancia": 1e-06,
+  "tolerancia": 0.000001,
   "nota": "Velocidades con signo donde el enunciado da sentidos (vB < 0: va al sur u oeste; v2 < 0 en cruce: va hacia el otro). Bote: u respecto al agua, c corriente, W ancho, d > 0 río abajo; la respuesta de «angulo» y «linea» es la clave de la proa (grados desde la perpendicular y lado). Botes: M (o MB, el del centro en «tres») bote con tripulante, m cada saco, u rapidez del saco respecto al bote ya en movimiento; en «tres», MA y MC reciben los sacos y cual dice qué bote se pregunta.",
-  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 46 problemas (16 de casos + 30 semillas 300-329) resueltos aparte: rumbo de la proa con las dos raíces comprobadas, ida y vuelta relativas y cantidad de movimiento paso a paso en los botes, sin ver generador ni claves: 46/46 coinciden. Barrido de 4000 semillas limpio. El subtipo de tres botes, agregado tras la revisión, lo recalculó el constructor aparte.",
+  "verificacion": "Verificación a ciegas (subagente verificador, 12 nov 2026): 46 problemas (16 de casos + 30 semillas 300-329) resueltos aparte: rumbo de la proa con las dos raíces comprobadas, ida y vuelta relativas y cantidad de movimiento paso a paso en los botes, sin ver generador ni claves: 46/46 coinciden. Barrido de 4000 semillas limpio. El subtipo de tres botes, agregado tras la revisión, lo recalculó el constructor aparte. 17 nov 2026 (auditoría de Vectores): ríos con medidas posibles y sacos a 4 m/s o menos; los casos que cambiaron se rehicieron con el recálculo independiente de generador.test.js (bisección en el marco de tierra), sin las fórmulas del generador.",
   "casos": [
     {
       "semilla": 0,
       "entrada": {
         "tipo": "botes",
         "sub": "lanza",
-        "M": 180,
-        "m": 12,
-        "u": 12
+        "M": 100,
+        "m": 25,
+        "u": 3
       },
       "esperado": {
-        "respuesta": 0.75,
-        "exacta": "0,75 m/s"
+        "respuesta": 0.6,
+        "exacta": "0,6 m/s"
       }
     },
     {
@@ -27,7 +27,7 @@
         "vB": 18
       },
       "esperado": {
-        "respuesta": 25.0,
+        "respuesta": 25,
         "exacta": "25 m/s"
       }
     },
@@ -36,16 +36,16 @@
       "entrada": {
         "tipo": "botes",
         "sub": "tres",
-        "MA": 120,
+        "MA": 40,
         "MB": 120,
-        "MC": 170,
-        "m": 30,
-        "u": 12,
-        "cual": "C"
+        "MC": 80,
+        "m": 40,
+        "u": 3,
+        "cual": "A"
       },
       "esperado": {
-        "respuesta": 1.74,
-        "exacta": "1,74 m/s"
+        "respuesta": 1.2,
+        "exacta": "1,2 m/s"
       }
     },
     {
@@ -53,13 +53,13 @@
       "entrada": {
         "tipo": "bote",
         "sub": "deriva",
-        "u": 2.4,
-        "c": 1,
-        "W": 60
+        "u": 0.8,
+        "c": 0.6,
+        "W": 264
       },
       "esperado": {
-        "respuesta": 25.0,
-        "exacta": "25 m"
+        "respuesta": 198,
+        "exacta": "198 m"
       }
     },
     {
@@ -69,8 +69,8 @@
         "sub": "linea",
         "u": 5,
         "c": 1,
-        "W": 60,
-        "d": 60
+        "W": 108,
+        "d": 108
       },
       "esperado": {
         "respuesta": "proa:37:abajo",
@@ -87,7 +87,7 @@
         "L": 30
       },
       "esperado": {
-        "respuesta": 30.0,
+        "respuesta": 30,
         "exacta": "30 s"
       }
     },
@@ -101,7 +101,7 @@
         "D": 360
       },
       "esperado": {
-        "respuesta": 9.0,
+        "respuesta": 9,
         "exacta": "9 s"
       }
     },
@@ -110,13 +110,13 @@
       "entrada": {
         "tipo": "bote",
         "sub": "tmin",
-        "u": 2,
-        "c": 1.5,
-        "W": 288
+        "u": 1.2,
+        "c": 1.6,
+        "W": 144
       },
       "esperado": {
-        "respuesta": 144.0,
-        "exacta": "144 s"
+        "respuesta": 120,
+        "exacta": "120 s"
       }
     },
     {
@@ -124,14 +124,14 @@
       "entrada": {
         "tipo": "botes",
         "sub": "recibe",
-        "M": 90,
-        "m": 10,
-        "u": 12,
-        "M2": 190
+        "M": 130,
+        "m": 30,
+        "u": 4,
+        "M2": 220
       },
       "esperado": {
-        "respuesta": 0.54,
-        "exacta": "0,54 m/s"
+        "respuesta": 0.39,
+        "exacta": "0,39 m/s"
       }
     },
     {
@@ -139,13 +139,13 @@
       "entrada": {
         "tipo": "bote",
         "sub": "angulo",
-        "u": 7,
-        "c": 3.5,
-        "W": 110
+        "u": 3,
+        "c": 0.8400000000000001,
+        "W": 190
       },
       "esperado": {
-        "respuesta": "proa:30:arriba",
-        "exacta": "30° río arriba de la perpendicular"
+        "respuesta": "proa:16:arriba",
+        "exacta": "16° río arriba de la perpendicular"
       }
     },
     {
@@ -155,11 +155,11 @@
         "sub": "dos",
         "M": 120,
         "m": 40,
-        "u": 4
+        "u": 2
       },
       "esperado": {
-        "respuesta": 0.2,
-        "exacta": "0,2 m/s"
+        "respuesta": 0.1,
+        "exacta": "0,1 m/s"
       }
     },
     {
@@ -172,7 +172,7 @@
         "L": 70
       },
       "esperado": {
-        "respuesta": 24.0,
+        "respuesta": 24,
         "exacta": "24 s"
       }
     },
@@ -201,7 +201,7 @@
         "L2": 60
       },
       "esperado": {
-        "respuesta": 180.0,
+        "respuesta": 180,
         "exacta": "180 s"
       }
     },
@@ -215,7 +215,7 @@
         "N": 1000
       },
       "esperado": {
-        "respuesta": 110.0,
+        "respuesta": 110,
         "exacta": "110 m"
       }
     },
@@ -229,7 +229,7 @@
         "W": 340
       },
       "esperado": {
-        "respuesta": 170.0,
+        "respuesta": 170,
         "exacta": "170 s"
       }
     }

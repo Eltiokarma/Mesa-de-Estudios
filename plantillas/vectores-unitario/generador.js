@@ -10,7 +10,7 @@
  *   unitario-suma el unitario de A + B (no es la suma de los unitarios)
  *   recta         el unitario en la dirección de la recta y = mx + b, hacia x creciente
  * Todo con fracciones exactas. Errores: hipótesis nuestras (no hay informe de vectores).
- * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (A⃗) y su módulo no (|A|); los
+ * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (A⃗) y su módulo no (A); los
  * unitarios de los ejes, sombrerito (î, ĵ, k̂). Los pares (3/5; 4/5) quedan como están.
  * Escena viva (pieza «flechas»): en los tipos del plano, A⃗ a escala sobre los ejes con î y ĵ, sus componentes y
  * el unitario û de largo 1. Los tipos en 3D y la recta no llevan escena (ver escenaViva).
@@ -65,14 +65,14 @@
    */
   // Las fórmulas van con un vector cualquiera V⃗, para no confundirlo con el A⃗ del enunciado.
   const V_ = P.vec('V');
-  const MODULO = dim => `Módulo de un vector ${V_}: |V| = √(Vₓ² + V_y²${dim === 3 ? ' + V_z²' : ''}).`;
-  const UNITARIO = `Unitario de ${V_}: û = ${V_}/|V|. Mide 1 y apunta hacia donde apunta ${V_}.`;
+  const MODULO = dim => `Módulo de un vector ${V_}: V = √(V_x² + V_y²${dim === 3 ? ' + V_z²' : ''}).`;
+  const UNITARIO = `Unitario de ${V_}: û = ${V_}/V. Mide 1 y apunta hacia donde apunta ${V_}.`;
   function lineasDatos(d) {
     const dim = d.c ? d.c.length : 2;
     if (d.tipo === 'unitario') return [MODULO(dim), UNITARIO];
     if (d.tipo === 'con-modulo') return [MODULO(dim), UNITARIO,
       'Un vector de módulo k en la dirección de û es k·û; en sentido contrario, −k·û.'];
-    if (d.tipo === 'constante') return [MODULO(dim), 'Un vector es unitario si su módulo es 1.', `Si c > 0: |c·${V_}| = c·|V|.`];
+    if (d.tipo === 'constante') return [MODULO(dim), 'Un vector es unitario si su módulo es 1.', `Si c > 0: |c·${V_}| = c·|${V_}|.`];
     if (d.tipo === 'unitario-suma') return ['Suma con componentes: (a; b) + (c; d) = (a + c; b + d).', MODULO(2), UNITARIO];
     return ['La recta y = mx + b sube m por cada unidad que avanza x: su dirección es (1; m).', MODULO(2), UNITARIO];
   }
@@ -107,7 +107,7 @@
         h('VE-unitario-unos', P.vector(c.map(x => Math.sign(x))), 'Pusiste 1 en cada componente, con su signo. Ese vector no mide 1 (mide √2 o √3).'),
       ];
       solucion = [
-        [`Módulo: |A| = √(${c.map(x => (x < 0 ? `(${P.formatear(x)})²` : `${P.formatear(x)}²`)).join(' + ')}) = √${m * m} = ${m}.`],
+        [`Módulo: A = √(${c.map(x => (x < 0 ? `(${P.formatear(x)})²` : `${P.formatear(x)}²`)).join(' + ')}) = √${m * m} = ${m}.`],
         [`El unitario es ${A_} dividido entre su módulo: `, v('X', `û = ${A_}/${m} = ${correcta.texto}`), '.'],
         ['Comprobación: la suma de los cuadrados de sus componentes es 1.'],
       ];
@@ -127,7 +127,7 @@
         h('VE-modulo-entre', vec(c.map(x => s * x), k * m), `Dividiste entre ${k} en vez de multiplicar: ese vector mide 1/${k}.`),
       ];
       solucion = [
-        [`|A| = ${m}, así que el unitario de ${A_} es û = ${A_}/${m} = ${vec(c, m).texto}.`],
+        [`A = ${m}, así que el unitario de ${A_} es û = ${A_}/${m} = ${vec(c, m).texto}.`],
         [anti ? 'Antiparalelo: se usa −û. ' : 'Paralelo y del mismo sentido: se usa û. ', 'Un vector de módulo ', v('k', `${k}`), ' en esa dirección es ', v('k', `${k}`), anti ? '·(−û).' : '·û.'],
         [`${B_} = `, v('X', correcta.texto), '.'],
       ];
@@ -144,7 +144,7 @@
         h('VE-raiz-que-no-cumple', numero(fr(-1, m)), 'Si c fuera negativo también saldría unitario, pero el problema pide c > 0.'),
       ];
       solucion = [
-        [`|c·${A_}| = c·|A| para c > 0, y |A| = √(${c.map(x => (x < 0 ? `(${P.formatear(x)})²` : `${P.formatear(x)}²`)).join(' + ')}) = ${m}.`],
+        [`|c·${A_}| = c·|${A_}| para c > 0, y A = √(${c.map(x => (x < 0 ? `(${P.formatear(x)})²` : `${P.formatear(x)}²`)).join(' + ')}) = ${m}.`],
         [`c·${m} = 1 → c = `, v('X', correcta.texto), '.'],
       ];
       datos = { tipo, c };
@@ -215,7 +215,7 @@
    * Escena viva (docs/escena-viva.md, sección 4; pieza nucleo/kit/piezas/flechas.js): A⃗ a escala sobre los ejes con
    * î y ĵ, sus componentes como tramos sobre x e y, y el unitario û desde el origen, como î y ĵ. Fidelidad: û mide 1
    * en la escala de la figura, igual que î y ĵ, y apunta como A⃗. Pasos: módulo (Pitágoras), dividir y comprobar.
-   *   constante      c·A⃗ es el unitario: el paso «dividir» da c = 1/|A|
+   *   constante      c·A⃗ es el unitario: el paso «dividir» da c = 1/A
    *   unitario-suma  primero A⃗ + B⃗, cola con punta; después lo mismo con la suma
    * Los tipos en 3D no llevan escena: A⃗ no cabe a escala en el plano de la figura sin falsear largos ni ángulos.
    * La recta tampoco (su figura es la recta, no una flecha), ni «con módulo»: B⃗ mide de 2 a 4 veces A⃗ y la escala

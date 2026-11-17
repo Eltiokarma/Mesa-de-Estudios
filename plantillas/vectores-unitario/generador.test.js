@@ -41,14 +41,15 @@ test('salen los cinco tipos, y el unitario de la suma muestra la suma de unitari
   assert.equal(tipos.size, 5); assert.ok(sumaUnit > 0);
 });
 
-test('notación: A⃗ con flecha, î ĵ k̂ con sombrerito y |A| sin flecha', () => {
+test('notación: A⃗ con flecha, î ĵ k̂ con sombrerito y el módulo sin flecha (A, o |A⃗| donde hace falta distinguir)', () => {
   const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
   for (let s = 0; s < 300; s++) {
     const p = gen.generar(s);
     const visto = [p.enunciado, p.pregunta, p.solucion, p.alternativas.map(a => a.texto), p.alternativas.filter(a => a.error).map(a => a.error.explicacion), (p.pasos || []).map(q => [q.texto, q.ecuacion])].map(plano).join(' ');
     assert.ok(!/\d[ijk](?![\p{L}\p{M}])|[ +−(·][ijk](?![\p{L}\p{M}])/u.test(visto), `semilla ${s}: unitario sin sombrerito en «${visto}»`);
     assert.ok(!/(?<![\p{L}\p{M}|])[AB](?![\p{L}\p{M}|²])(?! =)/u.test(visto.replace(/\|[^|]*\|/g, '')), `semilla ${s}: vector sin flecha en «${visto}»`);
-    assert.ok(!/\|[AB]⃗\|/.test(visto), `semilla ${s}: el módulo lleva flecha`);
+    // El módulo va sin flecha (A); |A⃗| solo donde hace falta distinguir: «|c·A⃗| = c·|A⃗|».
+    assert.ok(!/(?<!c·)\|[AB]⃗\|/.test(visto), `semilla ${s}: el módulo lleva flecha`);
   }
 });
 
@@ -107,7 +108,7 @@ test('datos: una lista de líneas cortas en texto plano, en todos los tipos', ()
 });
 
 function revisarDatos(p, d, s) {
-  assert.ok(d.includes('√(Vₓ² + V_y²'), `semilla ${s}: falta el módulo`);
+  assert.ok(d.includes('√(V_x² + V_y²'), `semilla ${s}: falta el módulo`);
   if (p._datos.tipo === 'recta') assert.ok(d.includes('(1; m)'), `semilla ${s}: falta la dirección de la recta`);
   assert.ok(!d.includes(p.respuesta.texto), `semilla ${s}: los datos dicen la respuesta`);
 }

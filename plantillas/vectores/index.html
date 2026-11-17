@@ -407,9 +407,10 @@ function rotulo(ctx, c, x, y, t, color, align, peso, tam, sub, resto){
   if (resto){ ctx.font = `${peso || 700} ${T}px ${c.font}`; fillVec(ctx, resto, x0 + w1 + w2, y, T); }
   return w;
 }
-// Nombre de una flecha en el dibujo: a⃗ sola; con su medida, |a⃗| = 5 (a⃗ = 5 diría que un vector es un número).
-// ya: el nombre ya trae sus flechas (a⃗ − b⃗).
-const nomV = (t, conMedida, ya) => { const v = ya ? t : fl(t); return conMedida ? `|${v}|` : v; };
+// Nombre de una flecha en el dibujo: a⃗ sola; con su medida, a = 5: el módulo va con la letra sola, sin flecha (a⃗ = 5
+// diría que un vector es un número; 17 nov, auditoría: una sola notación de módulo en la unidad, la de la teoría).
+// ya: el nombre ya trae sus flechas (a⃗ − b⃗): su módulo sí va entre barras, |a⃗ − b⃗|, para distinguirlo.
+const nomV = (t, conMedida, ya) => { const v = ya ? t : fl(t); return conMedida ? (ya ? `|${v}|` : t) : v; };
 // Resaltar en el dibujo la variable que se toca en el texto (regla 4).
 const ESCENAS = [];
 function resaltar(k){ ESCENAS.forEach(E => { E.hl = k; E.dibujar(); }); document.querySelectorAll('.v').forEach(s => s.classList.toggle('hl', !!k && s.dataset.var === k)); }
@@ -1231,7 +1232,7 @@ const EXPS = [
     fb:{ b:'(6; 8) es el mismo a\u20D7, que mide 10. Para que mida 1 hay que dividir cada componente entre 10.', c:`(1; 1) mide √2 y apunta a 45°, no como a\u20D7. Hay que dividir entre el módulo, 10.`, d:`Se dividió entre 6 + 8 = 14. Ese vector mide ${fmt(U3.errores.moduloEntreSuma, 2)}, no 1: hay que dividir entre el módulo, √(36 + 64) = 10.` },
     antes:ya => E.config({ a:{ x:6, y:8 }, caja:{ x0:-1.6, x1:8.6, y0:-1.6, y1:9.4 }, ver:{ b:false, ejes:true, comp:true, u:ya, coord:true }, lect: ya ? ['a','ax','ay','u'] : ['ax','ay'] }),
     despues:() => { E.ver.u = true; E.lect = ['a','ax','ay','u']; E.leyenda(); E.crecer('u', 600, () => E.avisar()); },
-    exp:() => `<div class="eqs"><div class="eq">|${av_()}| = √(${x_('6')}² + ${y_('8')}²) = ${a_(fmt(U3.moduloOriginal, 0))}</div><div class="eq">${u_('û')} = ${av_()} / |${av_()}| = (${x_('6')}/10; ${y_('8')}/10) = ${u_(`(${fmt(U3.x, 1)}; ${fmt(U3.y, 1)})`)}</div></div>
+    exp:() => `<div class="eqs"><div class="eq">${a_('a')} = √(${x_('6')}² + ${y_('8')}²) = ${a_(fmt(U3.moduloOriginal, 0))}</div><div class="eq">${u_('û')} = ${av_()} / ${a_('a')} = (${x_('6')}/10; ${y_('8')}/10) = ${u_(`(${fmt(U3.x, 1)}; ${fmt(U3.y, 1)})`)}</div></div>
       <p>${u_('û')} llega justo a la circunferencia punteada de radio 1. Sirve para escribir cualquier vector como módulo por dirección: ${av_()} = 10 · ${u_('û')}.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'hexagono', corto:'El hexágono',
@@ -1289,20 +1290,20 @@ const EXPS = [
     montar:() => { const r = $('per6'), o = $('per6o'); if (!r) return; r.oninput = () => { const v = +r.value, g = v === 53 ? Math.atan2(4, 3)*180/Math.PI : v === 37 ? Math.atan2(3, 4)*180/Math.PI : v;
       o.textContent = v + '°'; E.b = MV.vector(5, g, { exacto:true }); E.dibujar(); E.avisar(); }; } },
   { id:'sombra-area', corto:'La sombra y el área',
-    q:`La ${sb_('sombra')} de ${bv_()} sobre la dirección de ${av_()} da el producto escalar: a\u20D7 · b\u20D7 = |a\u20D7| · sombra. El ${ar_('paralelogramo')} que forman ${av_()} y ${bv_()} da el módulo del producto vectorial: |a\u20D7 × b\u20D7| = área. Si ${bv_()} gira hasta quedar perpendicular a ${av_()}, sin cambiar los largos, ¿qué pasa?`,
+    q:`La ${sb_('sombra')} de ${bv_()} sobre la dirección de ${av_()} da el producto escalar: a\u20D7 · b\u20D7 = a · sombra. El ${ar_('paralelogramo')} que forman ${av_()} y ${bv_()} da el módulo del producto vectorial: |a\u20D7 × b\u20D7| = área. Si ${bv_()} gira hasta quedar perpendicular a ${av_()}, sin cambiar los largos, ¿qué pasa?`,
     opts:[['a', 'La sombra llega a su mayor valor y el área se anula', 'VE-escalar-por-vectorial', 'hipotesis'],
           ['b', 'La sombra se anula y el área llega a su mayor valor'],
           ['c', 'La sombra se anula y el área también se anula', 'VE-perpendicular-todo-cero', 'hipotesis'],
           ['d', 'La sombra llega a su mayor valor y el área también', 'VE-perpendicular-todo-maximo', 'hipotesis']],
     ok:'b',
     fb:{ a:'Es al revés: la sombra (con el coseno) es la mayor cuando b\u20D7 apunta igual que a\u20D7, y el área (con el seno) es la mayor cuando b\u20D7 queda de pie sobre a\u20D7.',
-      c:'El área no se anula: con 90° el paralelogramo es un rectángulo de lados |a\u20D7| y |b\u20D7|. Lo que se anula es la sombra.',
+      c:'El área no se anula: con 90° el paralelogramo es un rectángulo de lados a y b. Lo que se anula es la sombra.',
       d:'La sombra no crece: con b\u20D7 de pie sobre a\u20D7, la luz que cae perpendicular a a\u20D7 no deja sombra. Lo que llega a su mayor valor es el área.' },
     antes:ya => E.config({ a:{ x:5, y:0 }, b: ya ? MV.vector(Math.hypot(2, 4), 90, { exacto:true }) : { x:2, y:4 }, caja:{ x0:-3.4, x1:6.6, y0:-2.6, y1:5.6 },
       ver:{ proy:true, area:true, ang:true }, arr: ya ? { a:true, b:true } : {}, lado:{ a:-1, b:1 }, lect:['a','b','ang','sb','ar'] }),
     despues:() => { E.girarB(90, 1500, () => { E.permitir({ a:true, b:true }); E.avisar(); }); },
-    exp:() => `<div class="eqs"><div class="eq">${av_()} · ${bv_()} = |${av_()}| · |${bv_()}| · cos θ = |${av_()}| · ${sb_('sombra')}<span class="note">con 90°, cos 90° = 0</span></div>
-      <div class="eq">|${av_()} × ${bv_()}| = |${av_()}| · |${bv_()}| · sen θ = ${ar_('área')}<span class="note">con 90°, sen 90° = 1</span></div></div>
+    exp:() => `<div class="eqs"><div class="eq">${av_()} · ${bv_()} = ${a_('a')} ${b_('b')} cos θ = ${a_('a')} · ${sb_('sombra')}<span class="note">con 90°, cos 90° = 0</span></div>
+      <div class="eq">|${av_()} × ${bv_()}| = ${a_('a')} ${b_('b')} sen θ = ${ar_('área')}<span class="note">con 90°, sen 90° = 1</span></div></div>
       <p>El producto escalar va con el coseno: es máximo cuando las flechas apuntan igual, cero cuando son perpendiculares y negativo si se oponen (la sombra cae hacia atrás). El vectorial va con el seno: cero si son paralelas y máximo con 90°. Arrastra las puntas y mira las dos lecturas.</p>
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>`,
     q2:{ boton:'Otra pregunta: el triángulo',
@@ -1712,10 +1713,10 @@ const RF = MV.reduccion(FIG1), cF = RF.c;
 const pto = n => ({ x:FIG1.puntos[n][0], y:FIG1.puntos[n][1] });
 const F1 = { id:'vectores-figuras-1', ok:'b',
   q:() => `<p>En la figura, ${cv_()} va de P a Q y mide ${fmt(cF.modulo, 0)}. Los números son los largos de las otras flechas. ¿Cuánto mide la ${R_('resultante')} de las seis flechas, ${cv_()} incluida?</p>`,
-  opts:[['a', `|R\u20D7| = ${fmt(RF.errores.menosUno, 0)}`, 'VE-cuenta-repetido', 'hipotesis'],
-        ['b', `|R\u20D7| = ${fmt(RF.modulo, 0)}`],
-        ['c', `|R\u20D7| = ${fmt(RF.errores.masUno, 0)}`, 'VE-cuenta-repetido', 'hipotesis'],
-        ['d', `|R\u20D7| = ${fmt(RF.errores.sumaModulos, 0)}`, 'VE-suma-modulos', 'parcial'],
+  opts:[['a', `R = ${fmt(RF.errores.menosUno, 0)}`, 'VE-cuenta-repetido', 'hipotesis'],
+        ['b', `R = ${fmt(RF.modulo, 0)}`],
+        ['c', `R = ${fmt(RF.errores.masUno, 0)}`, 'VE-cuenta-repetido', 'hipotesis'],
+        ['d', `R = ${fmt(RF.errores.sumaModulos, 0)}`, 'VE-suma-modulos', 'parcial'],
         ['e', 'Faltan datos', 'VE-faltan-datos', 'hipotesis']],
   fb:{ b:`Hay tres caminos de P a Q: el de arriba, el de abajo y ${cv_()} mismo. Cada uno vale ${cv_()}.`,
     a:`${fmt(RF.errores.menosUno, 0)} es 2 · ${fmt(cF.modulo, 0)}: se contaron los dos caminos, pero no ${cv_()}, que también es una de las seis flechas.`,
@@ -1768,10 +1769,10 @@ const CAJA = MV.caja(6, 3, 2), PK = [['A', 'G'], ['B', 'H']], SK = MV.sumaSolido
 const rad = x => MV.radical(x) || fmt(x, 2);
 const F2 = { id:'vectores-figuras-2', ok:'c',
   q:() => `<p>El cubo tiene aristas de 2. Se trazan tres vectores: AB\u20D7, DH\u20D7 y FG\u20D7. ¿Cuánto mide su ${R_('resultante')}?</p>${datosHTML(['En un cubo, las tres aristas que salen de un vértice son perpendiculares entre sí.', 'Módulo de (x; y; z): √(x² + y² + z²).'])}`,
-  opts:[['a', `|R\u20D7| = ${rad(SC.errores.plano)}`, 'VE-solido-plano', 'hipotesis'],
-        ['b', `|R\u20D7| = ${rad(SC.errores.sumaModulos)}`, 'VE-suma-modulos', 'parcial'],
-        ['c', `|R\u20D7| = ${rad(SC.modulo)}`],
-        ['d', `|R\u20D7| = ${rad(SC.errores.sinProfundidad)}`, 'VE-sin-profundidad', 'hipotesis']],
+  opts:[['a', `R = ${rad(SC.errores.plano)}`, 'VE-solido-plano', 'hipotesis'],
+        ['b', `R = ${rad(SC.errores.sumaModulos)}`, 'VE-suma-modulos', 'parcial'],
+        ['c', `R = ${rad(SC.modulo)}`],
+        ['d', `R = ${rad(SC.errores.sinProfundidad)}`, 'VE-sin-profundidad', 'hipotesis']],
   fb:{ c:'Cada vector se puede trasladar a una arista paralela: FG\u20D7 va a BC\u20D7 y DH\u20D7 va a CG\u20D7. Así quedan cola con punta, de A hasta G, la diagonal del cubo.',
     a:`${rad(SC.errores.plano)} sale de sumar como si FG\u20D7 estuviera en el papel, inclinada 45° y con su largo de 2. En el cubo, FG\u20D7 es perpendicular a AB\u20D7 y a DH\u20D7.`,
     b:'6 es 2 + 2 + 2, como si las tres flechas apuntaran hacia el mismo lado. Apuntan en tres direcciones perpendiculares.',
@@ -1794,10 +1795,10 @@ const F2 = { id:'vectores-figuras-2', ok:'c',
     <p class="fuente">${fuenteSuma} Las demás opciones de este paso son hipótesis nuestras (ver un sólido como plano se parece a lo que anotamos en geometría del espacio).</p>` };
 const F2b = { id:'vectores-figuras-2b', boton:'Ahora, una caja', ok:'a',
   q:() => `<p>La caja mide 6 de largo, 3 de fondo y 2 de alto, con los vértices nombrados como en el cubo. Se trazan los vectores AG\u20D7 y BH\u20D7 sobre las diagonales, que se cruzan en el centro de la caja. ¿Cuánto mide su ${R_('resultante')}?</p>${datosHTML(['Con coordenadas, un vector entre dos vértices es final menos inicio.', 'Módulo de (x; y; z): √(x² + y² + z²).'])}`,
-  opts:[['a', `|R\u20D7| = ${rad(SK.modulo)}`],
-        ['b', `|R\u20D7| = ${rad(SK.errores.sumaModulos)}`, 'VE-suma-modulos', 'parcial'],
-        ['c', `|R\u20D7| = ${rad(SK.errores.alReves[1])}`, 'VE-sentido-opuesto', 'hipotesis'],
-        ['d', `|R\u20D7| = ${rad(SK.errores.seAnulan)}`, 'VE-se-anulan', 'hipotesis']],
+  opts:[['a', `R = ${rad(SK.modulo)}`],
+        ['b', `R = ${rad(SK.errores.sumaModulos)}`, 'VE-suma-modulos', 'parcial'],
+        ['c', `R = ${rad(SK.errores.alReves[1])}`, 'VE-sentido-opuesto', 'hipotesis'],
+        ['d', `R = ${rad(SK.errores.seAnulan)}`, 'VE-se-anulan', 'hipotesis']],
   fb:{ a:'Con coordenadas: AG\u20D7 = (6; 3; 2) y BH\u20D7 = (−6; 3; 2). Lo del largo se anula; lo del fondo y lo del alto se suman.',
     b:'14 es 7 + 7, la suma de los dos largos. Las diagonales no apuntan hacia el mismo lado.',
     c:'12 sale de restar AG\u20D7 − BH\u20D7, o de tomar BH\u20D7 de H a B: final menos inicio, BH\u20D7 empieza en B.',
@@ -1913,7 +1914,7 @@ const F4b = { id:'vectores-figuras-4b', boton:'Ahora, un trapecio', ok:'b',
   anima:(L, fin) => { const st = L.st; L.serie([[500, f => { st.MN = f; }], [600, f => { st.pol1 = f; }], [600, f => { st.pol2 = f; }], [400, f => { st.media = f; }]], () => { L.permitir(arr4b(L)); L.avisar(); fin(); }); },
   tras:() => `<div class="eqs"><div class="eq">${kv_()} = MA\u20D7 + ${av_('AB')} + BN\u20D7</div><div class="eq">${kv_()} = MC\u20D7 + CD\u20D7 + DN\u20D7, con CD\u20D7 = −${bv_()}</div>
     <div class="eq">2${kv_()} = (MA\u20D7 + MC\u20D7) + ${av_()} − ${bv_()} + (BN\u20D7 + DN\u20D7) = ${av_()} − ${bv_()}<span class="note">MA\u20D7 + MC\u20D7 = 0\u20D7 y BN\u20D7 + DN\u20D7 = 0\u20D7: M y N son puntos medios</span></div>
-    <div class="eq">${kv_()} = (${av_()} − ${bv_()})/2 → |${kv_()}| = (${fmt(TR.a.modulo, 0)} − ${fmt(TR.b.modulo, 0)})/2 = ${k_(fmt(TR.MN.modulo, 0))}</div></div>
+    <div class="eq">${kv_()} = (${av_()} − ${bv_()})/2 → ${k_('MN')} = (${fmt(TR.a.modulo, 0)} − ${fmt(TR.b.modulo, 0)})/2 = ${k_(fmt(TR.MN.modulo, 0))}</div></div>
     <p>M y N caen sobre la base media (a trazos), que une los puntos medios de los lados no paralelos y es la semisuma: (${fmt(TR.a.modulo, 0)} + ${fmt(TR.b.modulo, 0)})/2 = ${fmt(TR.mediana.modulo, 0)}. Arrastra D o C para cambiar la base de arriba.</p>
     <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` };
 function arr4(L){
@@ -2071,7 +2072,7 @@ const C1b = { id:'vectores-componentes-1b', ok:'b',
 // ---- Paso 2: el vector de largo dado ----
 const a2 = { x:4, y:3 }, UW = MV.unitarioConModulo(a2, 10), UA = MV.unitario(a2), UW2 = MV.unitarioConModulo({ x:UW.x, y:UW.y }, 1);
 const C2 = { id:'vectores-componentes-2', ok:'c',
-  q:() => `<p>${av_()} = (4; 3). El vector ${wv_()} mide 10 y es paralelo a ${av_()}, con el mismo sentido. ¿Cuál es ${wv_()}?</p>${datosHTML(['Módulo de (x; y): √(x² + y²).', 'Unitario de a\u20D7: û = a\u20D7/|a\u20D7|. Mide 1 y apunta como a\u20D7.', 'Un vector de módulo k en la dirección de û es k·û.'])}`,
+  q:() => `<p>${av_()} = (4; 3). El vector ${wv_()} mide 10 y es paralelo a ${av_()}, con el mismo sentido. ¿Cuál es ${wv_()}?</p>${datosHTML(['Módulo de (x; y): √(x² + y²).', 'Unitario de a\u20D7: û = a\u20D7/a, con a su módulo. Mide 1 y apunta como a\u20D7.', 'Un vector de módulo k en la dirección de û es k·û.'])}`,
   opts:[['a', `w\u20D7 = ${pv(UW.errores.sinEscalar)}`, 'VE-unitario-sin-escalar', 'hipotesis'],
         ['b', `w\u20D7 = ${pv(UW.errores.sinDividir)}`, 'VE-unitario-sin-dividir', 'hipotesis'],
         ['c', `w\u20D7 = ${pv(UW)}`],
@@ -2081,10 +2082,10 @@ const C2 = { id:'vectores-componentes-2', ok:'c',
     b:'Se multiplicó a\u20D7 por 10 sin dividir entre su módulo: (40; 30) mide 50, no 10.',
     d:'Ese mide 10, pero apunta al revés: es el antiparalelo.' },
   anima:(L, fin) => { const st = L.st; L.serie([[700, f => { st.u = f; }], [900, f => { st.w = f; }], [500, f => { st.anti = f; }]], () => { L.avisar(); fin(); }); },
-  tras:() => `<div class="eqs"><div class="eq">${u_('û')} = ${av_()}/|${av_()}| = (4; 3)/5 = ${u_(pv(UA))}</div><div class="eq">${wv_()} = 10 · ${u_('û')} = ${w_(pv(UW))}<span class="note">el antiparalelo: −${wv_()} = ${pv(UW.antiparalelo)}</span></div></div>
+  tras:() => `<div class="eqs"><div class="eq">${u_('û')} = ${av_()}/${a_('a')} = (4; 3)/5 = ${u_(pv(UA))}</div><div class="eq">${wv_()} = 10 · ${u_('û')} = ${w_(pv(UW))}<span class="note">el antiparalelo: −${wv_()} = ${pv(UW.antiparalelo)}</span></div></div>
 ` };
 const C2b = { id:'vectores-componentes-2b', ok:'b',
-  q:() => `<p>Como |${av_()}| = 5, resulta que ${wv_()} = 2${av_()}. ¿Cuál es el vector unitario de ${wv_()}?</p>`,
+  q:() => `<p>Como ${a_('a')} = 5, resulta que ${wv_()} = 2${av_()}. ¿Cuál es el vector unitario de ${wv_()}?</p>`,
   opts:[['a', `unitario de w\u20D7 = ${pv(UW.errores.escalado)}`, 'VE-unitario-escalado', 'hipotesis'],
         ['b', `unitario de w\u20D7 = ${pv(UW2)}`],
         ['c', `unitario de w\u20D7 = ${pv(UW)}`, 'VE-unitario-sin-dividir', 'hipotesis'],

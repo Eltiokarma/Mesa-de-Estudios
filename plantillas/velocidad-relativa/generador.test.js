@@ -248,3 +248,27 @@ function revisarDatos(p, d, s) {
   if (tipo === 'botes') assert.match(p.datos[0], /^Todo empieza en reposo/);
   if (tipo === 'bote') assert.ok(d.includes('v⃗ = u⃗ + c⃗'), `semilla ${s}: falta la suma de velocidades`);
 }
+
+// Auditoría de Vectores (17 nov): tipos por unidad, ríos posibles y sacos que se pueden lanzar.
+test('generar(semilla, { unidad }): Vectores y MRU no sacan botes con sacos; Impulso solo los saca a ellos', () => {
+  for (let s = 0; s < 600; s++) {
+    for (const u of ['fisica.vectores', 'fisica.movimiento-rectilineo']) assert.notEqual(gen.generar(s, { unidad: u })._datos.tipo, 'botes', `semilla ${s} en ${u}`);
+    assert.equal(gen.generar(s, 'fisica.impulso-y-choques')._datos.tipo, 'botes', `semilla ${s}`);
+  }
+  assert.deepEqual(gen.generar(7), gen.generar(7, {}), 'sin unidad, todo sigue como antes');
+  assert.deepEqual(Object.keys(gen.tiposPorUnidad).sort(), ['fisica.impulso-y-choques', 'fisica.movimiento-rectilineo', 'fisica.vectores']);
+});
+
+test('ríos sin nombre propio y con medidas posibles; sacos de 10 kg o más a 4 m/s o menos', () => {
+  const plano = seg => seg.map(x => (typeof x === 'string' ? x : x.t)).join('');
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(s), d = p._datos, t = plano(p.enunciado);
+    assert.ok(!/Ramis|Rímac|Ucayali|Madre de Dios|Coata/.test(t), `semilla ${s}: ${t}`);
+    if (d.tipo === 'bote') {
+      assert.ok(d.c <= 3, `semilla ${s}: corriente de ${d.c} m/s`);
+      if (/andino/.test(t)) assert.ok(d.W <= 60 && d.u <= 6, `semilla ${s}: río andino de ${d.W} m con bote a ${d.u} m/s`);
+      if (/amazónico/.test(t)) assert.ok(d.W > 150 && d.c <= 2, `semilla ${s}: río amazónico de ${d.W} m con corriente de ${d.c} m/s`);
+    }
+    if (d.tipo === 'botes' && d.m >= 10) assert.ok(d.u <= 4, `semilla ${s}: saco de ${d.m} kg a ${d.u} m/s`);
+  }
+});

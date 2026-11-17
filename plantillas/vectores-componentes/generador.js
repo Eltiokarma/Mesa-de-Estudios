@@ -19,7 +19,7 @@
  * Las componentes se guardan como enteros (x = px·√qx, y = py·√qy) y R² sale entero.
  * Errores: hipótesis nuestras salvo sumar módulos (parcial: E8 de docs/investigacion/).
  * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (A⃗, |2A⃗ − B⃗|, R⃗ = 8î − 6ĵ) y su
- * módulo no (A = 10 u, |R|); los unitarios de los ejes, sombrerito (î, ĵ).
+ * módulo no (A = 10 u, R); los unitarios de los ejes, sombrerito (î, ĵ).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -55,7 +55,9 @@
   };
   const DIAG = { F45: [45, 135, 225, 315] };
   const NOMBRES = ['A', 'B', 'C', 'D'];
-  const COLORES = ['o', 'i', 'h', 'd'];
+  // Colores de la unidad (teoría de Vectores): A naranja, B turquesa, C violeta; D en rojo (aquí los ángulos van del color
+  // de su vector, no hay θ aparte) para que no comparta el verde de la resultante (auditoría, M16).
+  const COLORES = ['o', 'i', 'f', 'h'];
   const ANG_NOTABLES = [0, 37, 53, 90, 127, 143, 180, 217, 233, 270, 307, 323, 45, 135, 225, 315, 30, 60, 120, 150, 210, 240, 300, 330];
 
   // Un vector de la familia: ángulo t y paso k. Devuelve componentes enteras (px, py), su
@@ -112,7 +114,7 @@
    * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): los valores de academia de los ángulos de referencia
    * (cos 37° = 4/5, …), las reglas de cuadrante y las fórmulas, una por línea. Este problema mide el signo por
    * cuadrante (VE-signo-por-cuadrante): por eso no se da cos 127° = −3/5 con su signo, sino la referencia y la regla.
-   * No da Rx, Ry ni el ángulo de la resultante.
+   * No da R_x, R_y ni el ángulo de la resultante.
    */
   const BASE_NOTABLE = { F37: 'sen 37° = 3/5 y cos 37° = 4/5; sen 53° = 4/5 y cos 53° = 3/5 (triángulo 3-4-5).',
     F45: 'sen 45° = cos 45° = √2/2.', F30: 'sen 30° = 1/2 y cos 30° = √3/2.', F60: 'sen 60° = √3/2 y cos 60° = 1/2.' };
@@ -130,15 +132,15 @@
       if (vs.some(w => w.t % 90 === 0)) l.push('Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y.');
       if (tipo === 'angulo' || vs.some(w => w.t > 90 && w.t % 90 !== 0)) l.push(CUADRANTE, SIGNOS);
     }
-    l.push(`Si ${P.vec('A')} forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ.`);
+    l.push(`Si ${P.vec('A')} forma θ con +x, sus componentes son A_x = A cos θ y A_y = A sen θ.`);
     if (tipo === 'combinacion') l.push(`k·${P.vec('A')} multiplica cada componente por k; −${P.vec('B')} cambia el signo de sus dos componentes.`);
-    l.push('Rx = suma de las componentes x; Ry = suma de las componentes y.');
+    l.push('R_x = suma de las componentes x; R_y = suma de las componentes y.');
     if (equilibrio) l.push(`En equilibrio, la suma de todas las fuerzas es 0${P.FLECHA}.`);
     if (tipo === 'angulo') {
-      l.push('tan α = |Ry|/|Rx|, con α el ángulo entre la resultante y el eje x.');
+      l.push('tan α = |R_y|/|R_x|, con α el ángulo entre la resultante y el eje x.');
       l.push('tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3.');
     } else {
-      l.push('Módulo: |R| = √(Rx² + Ry²).');
+      l.push('Módulo: R = √(R_x² + R_y²).');
     }
     return l;
   }
@@ -218,7 +220,7 @@
                  : pa('VE-suma-modulos', sumaMod, 'Si todos apuntaran al mismo lado, sí sumarían eso. Hay que sumar componente por componente.', E8),
         h('VE-sen-cos-cambiados', Math.hypot(CX, CY), 'Bien partir en componentes, pero con θ desde +x: x lleva el coseno e y el seno.'),
         h('VE-signo-por-cuadrante', Math.hypot(AX, AY), 'Bien las componentes, pero fuera del primer cuadrante alguna es negativa y resta.'),
-        h('VE-componentes-sumadas', Math.abs(X) + Math.abs(Y), 'Bien Rx y Ry; son perpendiculares, así que el módulo sale con Pitágoras, no sumándolas.'),
+        h('VE-componentes-sumadas', Math.abs(X) + Math.abs(Y), 'Bien R_x y R_y; son perpendiculares, así que el módulo sale con Pitágoras, no sumándolas.'),
         h('VE-sin-raiz', r2, `Bien calculado R² = ${f(r2)}; solo faltó sacar la raíz cuadrada.`),
       ];
       if (tipo === 'combinacion') {
@@ -238,11 +240,11 @@
       const ref = an.ref, cuadrante = X > 0 && Y > 0 ? 1 : X < 0 && Y > 0 ? 2 : X < 0 ? 3 : 4;
       const conRef = r => (cuadrante === 1 ? r : cuadrante === 2 ? 180 - r : cuadrante === 3 ? 180 + r : 360 - r);
       errores = [
-        h('VE-tangente-invertida', conRef(90 - ref), `Bien con la tangente, pero es Ry/Rx. Al revés sale el complemento: ${90 - ref}° en vez de ${ref}°.`),
+        h('VE-tangente-invertida', conRef(90 - ref), `Bien con la tangente, pero es R_y/R_x. Al revés sale el complemento: ${90 - ref}° en vez de ${ref}°.`),
         h('VE-angulo-de-referencia', ref, `Cierto, ${ref}° es el ángulo con el eje x. Desde +x, en sentido antihorario, es ${an.t}°.`),
         h('VE-sentido-opuesto', (an.t + 180) % 360, 'Bien la dirección, pero apunta al revés: las dos componentes cambiaron de signo.'),
         h('VE-signo-por-cuadrante', cuadrante === 1 ? 180 - an.t : ref, 'Bien el ángulo de referencia; el signo de una componente te llevó a otro cuadrante.'),
-        h('VE-signo-por-cuadrante', 360 - an.t, 'Bien el ángulo de referencia; el signo de Ry te llevó a otro cuadrante.'),
+        h('VE-signo-por-cuadrante', 360 - an.t, 'Bien el ángulo de referencia; el signo de R_y te llevó a otro cuadrante.'),
       ];
     }
 
@@ -255,10 +257,10 @@
     const solucion = [
       [`Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x${fam === 'F37' ? ' (sen 37° = 3/5, cos 37° = 4/5)' : fam === 'F45' ? ' (cos 45° = sen 45° = √2/2)' : fam === 'F30' ? ' (sen 30° = 1/2, cos 30° = √3/2)' : ' (cos 60° = 1/2, sen 60° = √3/2)'}${cardinal ? '; norte = +y, este = +x' : ''}.`],
       ...vs.map(filaComp),
-      [`Se suman por componentes: Rx = ${comp(PX, F.qx)} y Ry = ${comp(PY, F.qy)}.`],
+      [`Se suman por componentes: R_x = ${comp(PX, F.qx)} y R_y = ${comp(PY, F.qy)}.`],
       angular
-        ? [`tan α = |Ry|/|Rx| da el ángulo de referencia α = ${anguloNotable(X, Y).ref}°; con los signos de Rx y Ry, la resultante forma `, `${correcta}°`, ' con +x.']
-        : [`${equilibrio ? `La fuerza que falta es −${P.vec('R')}: mide lo mismo que ${P.vec('R')}. ` : ''}|R| = √(Rx² + Ry²) = ${P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `}`, n < 4 ? v('R', `${P.radical(R)} ${u}`) : `${P.radical(R)} ${u}`, '.'],
+        ? [`tan α = |R_y|/|R_x| da el ángulo de referencia α = ${anguloNotable(X, Y).ref}°; con los signos de R_x y R_y, la resultante forma `, `${correcta}°`, ' con +x.']
+        : [`${equilibrio ? `La fuerza que falta es −${P.vec('R')}: mide lo mismo que ${P.vec('R')}. ` : ''}R = √(R_x² + R_y²) = ${P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `}`, n < 4 ? v('R', `${P.radical(R)} ${u}`) : `${P.radical(R)} ${u}`, '.'],
     ];
 
     const texto = angular ? (x => `${f(x)}°`) : (x => `${P.radical(x)} ${u}`);
@@ -280,7 +282,7 @@
    */
   const ROTULOS = {
     'VE-recorrido-vs-desplazamiento': 'lo caminado', 'VE-suma-modulos': 'sumando módulos', 'VE-sen-cos-cambiados': 'sen y cos cambiados',
-    'VE-signo-por-cuadrante': 'signo cambiado', 'VE-componentes-sumadas': 'Rx + Ry', 'VE-sin-raiz': 'sin la raíz',
+    'VE-signo-por-cuadrante': 'signo cambiado', 'VE-componentes-sumadas': 'R_x + R_y', 'VE-sin-raiz': 'sin la raíz',
     'VE-resta-como-suma': 'sin el menos', 'VE-coeficiente-olvidado': 'sin coeficientes', 'VE-tangente-invertida': 'tangente al revés',
     'VE-angulo-de-referencia': 'ángulo con el eje', 'VE-sentido-opuesto': 'al revés',
   };
@@ -338,10 +340,10 @@
     const r2 = R * R;
     if (angular) {
       const an = anguloNotable(X, Y);
-      pasos.push({ estado: { paso: 3, final: true }, texto: ['tan α = |Ry| ÷ |Rx|; los signos de Rx y Ry dan el cuadrante.'], ecuacion: [`α = ${an.ref}° → θ = `, vR(`${correcta}°`)] });
+      pasos.push({ estado: { paso: 3, final: true }, texto: ['tan α = |R_y| ÷ |R_x|; los signos dan el cuadrante.'], ecuacion: [`α = ${an.ref}° → θ = `, vR(`${correcta}°`)] });
     } else {
-      pasos.push({ estado: { paso: 3, final: true }, texto: [equilibrio ? `La fuerza que falta es −${R_}: mide lo mismo que ${R_}.` : 'El módulo sale con Pitágoras sobre Rx y Ry.'],
-        ecuacion: ['|R| = √(Rx² + Ry²) = ', P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `, vR(textoR)] });
+      pasos.push({ estado: { paso: 3, final: true }, texto: [equilibrio ? `La fuerza que falta es −${R_}: mide lo mismo que ${R_}.` : 'El módulo sale con Pitágoras sobre R_x y R_y.'],
+        ecuacion: ['R = √(R_x² + R_y²) = ', P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `, vR(textoR)] });
     }
     let respuesta = { valor: correcta, unidad: angular ? '°' : u };
     if (!angular) {

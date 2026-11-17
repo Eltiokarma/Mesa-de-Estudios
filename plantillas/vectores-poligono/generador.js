@@ -11,7 +11,7 @@
  * Las coordenadas se calculan en cada problema y R sale de sumar componentes (no de la fórmula).
  * Errores: VE-suma-modulos es parcial (E8 de docs/investigacion/); los demás, hipótesis.
  * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (AB⃗, OA⃗ + OB⃗ + … = 0⃗) y su
- * módulo no (|R| = 8 u, L = 4 u).
+ * módulo no (R = 8 u, L = 4 u).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -55,6 +55,11 @@
     const l = [`Polígono regular de ${n} lados: lados iguales y ángulo central de 360°/${n}${360 % n ? '' : ` = ${360 / n}°`} entre dos radios seguidos.`];
     if (tipo !== 'lados-menos-uno') l.push(`En un ${NOMBRE[n]} de lado L, del centro a cada vértice hay ${RADIO[n]}${n === 6 ? ' (el mismo lado)' : ''}.`);
     l.push(COLA_PUNTA);
+    // Desde un vértice (auditoría, M20): las herramientas del camino de la solución, no el atajo R = n·(vértice al centro).
+    if (tipo === 'desde-vertice') {
+      l.push(`Vector entre dos puntos: final menos inicio, ${P.vec('AX')} = ${P.vec('OX')} − ${P.vec('OA')}.`);
+      l.push(`Los vectores del centro a los vértices de un polígono regular suman ${CERO}.`);
+    }
     return l;
   }
 
@@ -99,7 +104,7 @@
         [`Con O el centro: cada vector ${VEC('AX')} es ${VEC('OX')} − ${VEC('OA')}. Al sumar todos, aparece la suma de las posiciones de los otros vértices menos `, `${n - 1}·${VEC('OA')}.`],
         [`La suma de las ${n} posiciones desde el centro es ${CERO}, así que la de los otros ${n - 1} vale −${VEC('OA')}.`],
         [`${VEC('R')} = −${VEC('OA')} − ${n - 1}·${VEC('OA')} = ${n}·${VEC('AO')}: ${n} veces el vector de A al centro, que mide el radio ${P.radical(redondeo(Rc))} ${u}.`],
-        ['|R| = ', v('R', conU(correcta)), '.'],
+        ['R = ', v('R', conU(correcta)), '.'],
       ];
     } else if (tipo === 'lados-menos-uno') {
       const vs = [];
@@ -117,7 +122,7 @@
       solucion = [
         [`Con los ${n} lados cola con punta se vuelve al punto de partida: la suma es ${CERO}.`],
         [`Entonces la suma de ${n - 1} lados es lo que falta para cerrar: el vector ${VEC(letras[0] + letras[n - 1])}, al revés del lado ${VEC(letras[n - 1] + letras[0])}.`],
-        ['|R| = un lado = ', v('R', conU(correcta)), '.'],
+        ['R = un lado = ', v('R', conU(correcta)), '.'],
       ];
     } else {
       quita = rng.entero(0, n - 1);
@@ -135,7 +140,7 @@
       solucion = [
         [`Los ${n} vectores del centro a los vértices se anulan: el polígono es simétrico.`],
         [`Si falta ${VEC('O' + letras[quita])}, la suma de los demás es −${VEC('O' + letras[quita])}.`],
-        [`|R| = radio = ${n === 3 ? 'L/√3' : n === 4 ? 'L/√2' : 'L'} = `, v('R', conU(correcta)), '.'],
+        [`R = radio = ${n === 3 ? 'L/√3' : n === 4 ? 'L/√2' : 'L'} = `, v('R', conU(correcta)), '.'],
       ];
     }
     errores = errores.filter(e => e.valor === 0 || limpio(e.valor));
@@ -182,7 +187,7 @@
       pasos = [
         { estado: { paso: 1 }, texto: ['Cada flecha de A se arma pasando por el centro O.'], ecuacion: [`${VEC('AX')} = ${VEC('AO')} + ${VEC('OX')}`] },
         { estado: { paso: 2 }, texto: [`Las ${n} flechas del centro a los vértices suman cero.`], ecuacion: [`${VEC('OA')} + ${VEC('OB')} + … = ${CERO}`] },
-        fin([`Queda ${VEC('AO')} sumada ${n} veces: esa es la resultante.`], ['|R| = ', `${n} × ${P.radical(radio)} = `, v('R', conU(correcta))]),
+        fin([`Queda ${VEC('AO')} sumada ${n} veces: esa es la resultante.`], ['R = ', `${n} × ${P.radical(radio)} = `, v('R', conU(correcta))]),
       ];
     } else if (tipo === 'lados-menos-uno') {
       for (let k = 0; k < n - 1; k++) datos.flechas.push({ de: V[k], a: V[k + 1], grosor: 'contorno' });
@@ -191,7 +196,7 @@
       datos.resultante = { de: V[0], a: V[n - 1], color: 'd', rotulo: 'R', valor: conU(correcta) };
       pasos = [
         { estado: { paso: 1 }, texto: ['Con el lado que falta, la vuelta se cierra y suma cero.'], ecuacion: [`${letras.slice(0, n).map((x, i) => VEC(x + letras[(i + 1) % n])).join(' + ')} = ${CERO}`] },
-        fin(['La resultante va de ', letras[0], ' a ', letras[n - 1], ': mide un lado.'], ['|R| = ', v('L', `${L} ${u}`)]),
+        fin(['La resultante va de ', letras[0], ' a ', letras[n - 1], ': mide un lado.'], ['R = ', v('L', `${L} ${u}`)]),
       ];
     } else {
       const q = e.quita, lq = letras[q];
@@ -201,7 +206,7 @@
       datos.resultante = { de: O, a: por(-1, V[q]), color: 'd', rotulo: 'R', valor: conU(correcta) };
       pasos = [
         { estado: { paso: 1 }, texto: [`Con ${VEC('O' + lq)}, las ${n} flechas del centro se anularían.`], ecuacion: [`${VEC('OA')} + ${VEC('OB')} + … = ${CERO}`] },
-        fin([`Sin ${VEC('O' + lq)}, la suma es ${VEC('O' + lq)} al revés: un radio.`], ['|R| = ', `${n === 3 ? 'L/√3' : n === 4 ? 'L/√2' : 'L'} = `, v('R', conU(correcta))]),
+        fin([`Sin ${VEC('O' + lq)}, la suma es ${VEC('O' + lq)} al revés: un radio.`], ['R = ', `${n === 3 ? 'L/√3' : n === 4 ? 'L/√2' : 'L'} = `, v('R', conU(correcta))]),
       ];
     }
     // Se arrastra si todas las alternativas caben en una regla que no achica demasiado la figura.

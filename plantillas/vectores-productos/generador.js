@@ -8,13 +8,13 @@
  *   angulo          el ángulo entre A y B, con vectores elegidos para que el coseno sea notable
  *   perpendicular   el valor de m que hace A ⊥ B (A·B = 0)
  *   vectorial-z     A y B en el plano xy: A × B = c·k; se pide c (con signo)
- *   modulo-cruz     |A × B| a partir de |A|, |B| y A·B
+ *   modulo-cruz     |A⃗ × B⃗| a partir de A, B y A⃗·B⃗
  *   area            área del triángulo de vértices enteros en el plano
  *
  * Convención de academia: cos 37° = 4/5 y cos 53° = 3/5. Errores: hipótesis nuestras.
  * Necesita la opción negativos de nucleo/predicciones.js (respuestas con signo).
  * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (A⃗·B⃗, |A⃗ × B⃗|, PQ⃗) y su módulo no
- * (|A|, |B|); los unitarios de los ejes, sombrerito (î, ĵ, k̂).
+ * (A, B; |A⃗ × B⃗| solo donde hace falta distinguir); los unitarios de los ejes, sombrerito (î, ĵ, k̂).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -69,14 +69,14 @@
    * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): las fórmulas de los dos productos (con componentes y
    * con el ángulo) y, si hace falta, la tabla de academia, una por línea. Nunca el cos θ ni el número que sale.
    */
-  const ESCALAR = (dim) => `Producto escalar: ${AB} = AₓBₓ + A_yB_y${dim === 3 ? ' + A_zB_z' : ''}.`;
-  const ESC_ANG = `Con el ángulo θ entre ${AyB}: ${AB} = |A||B|·cos θ.`;
-  const VEC_ANG = `Producto vectorial: |${AxB}| = |A||B|·sen θ.`;
-  const CRUZ_Z = `En el plano xy: ${AxB} = (AₓB_y − A_yBₓ) ${K}.`;
+  const ESCALAR = (dim) => `Producto escalar: ${AB} = A_xB_x + A_yB_y${dim === 3 ? ' + A_zB_z' : ''}.`;
+  const ESC_ANG = `Con el ángulo θ entre ${AyB}: ${AB} = A B cos θ.`;
+  const VEC_ANG = `Producto vectorial: |${AxB}| = A B sen θ.`;
+  const CRUZ_Z = `En el plano xy: ${AxB} = (A_xB_y − A_yB_x) ${K}.`;
   function lineasDatos(tipo, d) {
     const dim = d.a && d.a.length === 3 && d.a[2] || d.b && d.b.length === 3 && d.b[2] ? 3 : 2;
     if (tipo === 'escalar') return [ESCALAR(dim)];
-    if (tipo === 'angulo') return [ESCALAR(dim), ESC_ANG, `Módulo: |A| = √(Aₓ² + A_y²${dim === 3 ? ' + A_z²' : ''}).`,
+    if (tipo === 'angulo') return [ESCALAR(dim), ESC_ANG, `Módulo: A = √(A_x² + A_y²${dim === 3 ? ' + A_z²' : ''}).`,
       'Valores de academia: cos 30° = √3/2, cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2.',
       'Para un ángulo obtuso, el coseno es negativo: cos(180° − α) = −cos α.'];
     if (tipo === 'perpendicular') return [ESCALAR(dim), `${A_} y ${B_} (no nulos) son perpendiculares si ${AB} = 0.`];
@@ -84,7 +84,7 @@
     if (tipo === 'modulo-cruz') return [ESC_ANG, VEC_ANG, 'Para cualquier ángulo: sen² θ + cos² θ = 1.'];
     return [`Un lado como vector: final menos inicio, ${PQ} = Q − P.`,
       `|${P.vec('u')} × ${P.vec('w')}| es el área del paralelogramo de lados ${P.vec('u')} y ${P.vec('w')}, que salen del mismo vértice.`,
-      `En el plano xy: ${P.vec('u')} × ${P.vec('w')} = (uₓw_y − u_ywₓ) ${K}.`];
+      `En el plano xy: ${P.vec('u')} × ${P.vec('w')} = (u_x w_y − u_y w_x) ${K}.`];
   }
 
   function generar(semilla) {
@@ -125,7 +125,7 @@
         h('VE-escalar-signo-final', -correcta, 'Cambiaste el signo del resultado al sumar los productos.'),
       ];
       solucion = [
-        [`El producto escalar multiplica componente por componente y suma: ${AB} = AₓBₓ + A_yB_y`, dim === 3 ? ' + A_zB_z.' : '.'],
+        [`El producto escalar multiplica componente por componente y suma: ${AB} = A_xB_x + A_yB_y`, dim === 3 ? ' + A_zB_z.' : '.'],
         [`${AB} = `, a.slice(0, dim).map((x, q) => `(${f(x)})(${f(b[q])})`).join(' + '), ` = ${prods.map(f).join(' + ').replace(/\+ −/g, '− ')}.`],
         [`${AB} = `, v('X', f(correcta)), correcta === 0 ? `: ${AyB} son perpendiculares.` : correcta < 0 ? `: es negativo, así que el ángulo entre ${AyB} es obtuso.` : `: es positivo, así que el ángulo entre ${AyB} es agudo.`],
       ];
@@ -139,13 +139,13 @@
       pregunta = [`¿Qué ángulo forman ${AyB}?`];
       errores = [
         h('VE-signo-del-escalar', 180 - p.t, `Tomaste ${AB} sin su signo. ${ab < 0 ? `${AB} es negativo: el ángulo es obtuso.` : `${AB} es positivo: el ángulo es agudo.`}`),
-        h('VE-escalar-por-vectorial', Math.abs(90 - p.t), `Usaste el resultado como seno en vez de coseno. ${AB} = |A||B|·cos θ; el seno va con |${AxB}|.`),
+        h('VE-escalar-por-vectorial', Math.abs(90 - p.t), `Usaste el resultado como seno en vez de coseno. ${AB} = A B cos θ; el seno va con |${AxB}|.`),
         h('VE-perpendicular-sin-escalar-cero', 90, `Dos vectores son perpendiculares solo si ${AB} = 0, y aquí ${AB} = ${f(ab)}.`),
       ];
       const c = ab / Math.sqrt(na * nb);
       solucion = [
-        [`De ${AB} = |A||B|·cos θ: cos θ = ${AB} / (|A||B|).`],
-        [`${AB} = `, `${f(ab)}; |A| = ${raizDe(na)}; |B| = ${raizDe(nb)}.`],
+        [`De ${AB} = A B cos θ: cos θ = ${AB} / (A B).`],
+        [`${AB} = `, `${f(ab)}; A = ${raizDe(na)}; B = ${raizDe(nb)}.`],
         [`cos θ = ${f(ab)} / ${P.radical(Math.sqrt(na * nb))} = ${P.radical(c)}${c < 0 ? ' (negativo: obtuso)' : ''}.`],
         ['θ = ', v('t', `${p.t}°`), p.t === 37 || p.t === 53 || p.t === 127 || p.t === 143 ? ' (triángulo 3-4-5 de academia).' : '.'],
       ];
@@ -183,13 +183,13 @@
       enunciado = ['En el plano xy se tienen ', v('A', `${A_} = ${ijk(a)}`), ' y ', v('B', `${B_} = ${ijk(b)}`), `. Su producto vectorial es ${AxB} = `, v('X', 'c'), `${K}.`];
       pregunta = ['¿Cuánto vale c?'];
       errores = [
-        h('VE-mano-derecha-invertida', -correcta, `Calculaste ${BxA}, que apunta al revés: ${AxB} = −(${BxA}). Con ${I} × ${J} = ${K}, la componente es AₓB_y − A_yBₓ, en ese orden.`),
-        h('VE-signo-determinante', a[0] * b[1] + a[1] * b[0], 'Sumaste los dos productos cruzados. En el determinante se restan: AₓB_y − A_yBₓ.'),
+        h('VE-mano-derecha-invertida', -correcta, `Calculaste ${BxA}, que apunta al revés: ${AxB} = −(${BxA}). Con ${I} × ${J} = ${K}, la componente es A_xB_y − A_yB_x, en ese orden.`),
+        h('VE-signo-determinante', a[0] * b[1] + a[1] * b[0], 'Sumaste los dos productos cruzados. En el determinante se restan: A_xB_y − A_yB_x.'),
         h('VE-escalar-por-vectorial', a[0] * b[0] + a[1] * b[1], 'Calculaste el producto escalar (x con x, y con y). El vectorial cruza: x con y.'),
         h('VE-vectorial-modulos', Math.abs(a[0] * b[1]) + Math.abs(a[1] * b[0]), 'Sumaste los productos cruzados sin sus signos.'),
       ];
       solucion = [
-        [`Con ${I} × ${J} = ${K} y ${J} × ${I} = −${K} (y ${I} × ${I} = ${J} × ${J} = 0${P.FLECHA}), ${AxB} = (AₓB_y − A_yBₓ) ${K}.`],
+        [`Con ${I} × ${J} = ${K} y ${J} × ${I} = −${K} (y ${I} × ${I} = ${J} × ${J} = 0${P.FLECHA}), ${AxB} = (A_xB_y − A_yB_x) ${K}.`],
         [`c = (${f(a[0])})(${f(b[1])}) − (${f(a[1])})(${f(b[0])}) = ${f(a[0] * b[1])} − (${f(a[1] * b[0])}).`],
         ['c = ', v('X', f(correcta)), correcta > 0 ? `: ${AxB} sale de la pantalla (+${K}); de ${A_} a ${B_} se gira en sentido antihorario.` : `: ${AxB} entra en la pantalla (−${K}); de ${A_} a ${B_} se gira en sentido horario.`],
       ];
@@ -209,16 +209,16 @@
       correcta = Math.sqrt(Math.max(0, A * A * B * B - ab * ab));
       texto = x => P.radical(x);
       const abT = op.t === 30 ? P.radical(ab) : f(ab);
-      enunciado = ['Dos vectores tienen módulos ', v('A', `|A| = ${A}`), ' y ', v('B', `|B| = ${B}`), `, y su producto escalar es ${AB} = `, abT, '.'];
+      enunciado = ['Dos vectores tienen módulos ', v('A', `A = ${A}`), ' y ', v('B', `B = ${B}`), `, y su producto escalar es ${AB} = `, abT, '.'];
       pregunta = [`¿Cuánto mide |${AxB}|?`];
       errores = [
         h('VE-escalar-por-vectorial', Math.abs(ab), `Creíste que |${AxB}| es igual a ${AB}. Uno lleva el coseno del ángulo y el otro el seno.`),
         h('VE-producto-modulos', A * B, 'Multiplicaste los módulos: eso solo vale si son perpendiculares. Falta el seno del ángulo.'),
-        h('VE-identidad-con-mas', Math.sqrt(A * A * B * B + ab * ab), `Usaste |${AxB}|² = |A|²|B|² + (${AB})². La identidad lleva signo menos, porque sen² θ = 1 − cos² θ.`),
+        h('VE-identidad-con-mas', Math.sqrt(A * A * B * B + ab * ab), `Usaste |${AxB}|² = A²B² + (${AB})². La identidad lleva signo menos, porque sen² θ = 1 − cos² θ.`),
         h('VE-sin-raiz', A * A * B * B - ab * ab, `Calculaste |${AxB}|² y olvidaste sacar la raíz cuadrada.`),
       ];
       solucion = [
-        [`${AB} = |A||B|·cos θ y |${AxB}| = |A||B|·sen θ, con sen² θ + cos² θ = 1: |${AxB}|² = |A|²|B|² − (${AB})².`],
+        [`${AB} = A B cos θ y |${AxB}| = A B sen θ, con sen² θ + cos² θ = 1: |${AxB}|² = A²B² − (${AB})².`],
         [`|${AxB}|² = `, v('A', `${A}`), '²·', v('B', `${B}`), `² − (${abT})² = ${A * A * B * B} − ${f(ab * ab)} = ${f(A * A * B * B - ab * ab)}.`],
         [`|${AxB}| = `, v('X', P.radical(correcta)), `. (Con cos θ = ${P.radical(cs)}, θ = `, v('t', `${op.t}°`), '.)'],
       ];
@@ -237,7 +237,7 @@
       errores = [
         h('VE-area-sin-mitad', Math.abs(cruz), `|${PQ} × ${PS}| es el área del paralelogramo que forman los dos lados. El triángulo es la mitad.`),
         h('VE-signo-determinante', Math.abs(u[0] * w[1] + u[1] * w[0]) / 2, 'Sumaste los dos productos cruzados. En el determinante se restan.'),
-        h('VE-escalar-por-vectorial', Math.abs(dot(u, w)) / 2, `Usaste el producto escalar. El área sale del producto vectorial: |${P.vec('u')} × ${P.vec('w')}| = |u||w|·sen θ.`),
+        h('VE-escalar-por-vectorial', Math.abs(dot(u, w)) / 2, `Usaste el producto escalar. El área sale del producto vectorial: |${P.vec('u')} × ${P.vec('w')}| = u w sen θ.`),
         h('VE-vertices-sin-restar', Math.abs(pts[1][0] * pts[2][1] - pts[1][1] * pts[2][0]) / 2, 'Usaste las coordenadas de Q y S como si fueran los lados. Los lados son vectores que salen de un mismo vértice: final menos inicio.'),
       ];
       solucion = [

@@ -104,7 +104,7 @@ function revisarDatos(p, d, s) {
   assert.ok(/Valores de academia: sen (30|37|45|60)°/.test(d), `semilla ${s}: falta la tabla de academia`);
   if (!x.cardinal && (x.tipo === 'angulo' || x.vectores.some(w => w.angulo > 90 && w.angulo % 90 !== 0)))
     assert.ok(d.includes('180° + α') && d.includes('III (−; −)'), `semilla ${s}: falta la regla de cuadrantes`);
-  assert.ok(d.includes('A·cos θ'), `semilla ${s}: falta la fórmula de las componentes`);
+  assert.ok(d.includes('A cos θ'), `semilla ${s}: falta la fórmula de las componentes`);
   if (x.tipo === 'angulo') assert.ok(d.includes('tan 37° = 3/4'), `semilla ${s}: falta la tabla de tangentes`);
-  else assert.ok(d.includes('√(Rx² + Ry²)'), `semilla ${s}: falta el módulo`);
+  else assert.ok(d.includes('√(R_x² + R_y²)'), `semilla ${s}: falta el módulo`);
 }

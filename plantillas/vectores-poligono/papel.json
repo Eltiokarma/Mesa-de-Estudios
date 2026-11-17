@@ -11,7 +11,7 @@
       "pasos": [
         "Con los 7 lados cola con punta se vuelve al punto de partida: la suma es 0⃗.",
         "Entonces la suma de 6 lados es lo que falta para cerrar: el vector AG⃗, al revés del lado GA⃗.",
-        "|R| = un lado = 12 cm."
+        "R = un lado = 12 cm."
       ]
     },
     {
@@ -22,7 +22,7 @@
       "pasos": [
         "Los 4 vectores del centro a los vértices se anulan: el polígono es simétrico.",
         "Si falta OB⃗, la suma de los demás es −OB⃗.",
-        "|R| = radio = L/√2 = 2√2 m."
+        "R = radio = L/√2 = 2√2 m."
       ]
     },
     {
@@ -33,7 +33,7 @@
       "pasos": [
         "Con los 7 lados cola con punta se vuelve al punto de partida: la suma es 0⃗.",
         "Entonces la suma de 6 lados es lo que falta para cerrar: el vector AG⃗, al revés del lado GA⃗.",
-        "|R| = un lado = 3 u."
+        "R = un lado = 3 u."
       ]
     },
     {
@@ -44,19 +44,19 @@
       "pasos": [
         "Con los 6 lados cola con punta se vuelve al punto de partida: la suma es 0⃗.",
         "Entonces la suma de 5 lados es lo que falta para cerrar: el vector AF⃗, al revés del lado FA⃗.",
-        "|R| = un lado = 6 cm."
+        "R = un lado = 6 cm."
       ]
     },
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "En un cuadrado ABCD de lado 6 u, se dibujan los vectores que van de A a cada uno de los otros vértices (AB⃗, AC⃗, AD⃗). ¿Cuánto mide su resultante? Datos: Polígono regular de 4 lados: lados iguales y ángulo central de 360°/4 = 90° entre dos radios seguidos. En un cuadrado de lado L, del centro a cada vértice hay L/√2. Para sumar, se ponen cola con punta: la resultante va de la cola del primero a la punta del último. Alternativas: A) 24√2 u   B) 9√2 u   C) 12√2 u   D) 0 u   E) 6√2 u",
+      "enunciado": "En un cuadrado ABCD de lado 6 u, se dibujan los vectores que van de A a cada uno de los otros vértices (AB⃗, AC⃗, AD⃗). ¿Cuánto mide su resultante? Datos: Polígono regular de 4 lados: lados iguales y ángulo central de 360°/4 = 90° entre dos radios seguidos. En un cuadrado de lado L, del centro a cada vértice hay L/√2. Para sumar, se ponen cola con punta: la resultante va de la cola del primero a la punta del último. Vector entre dos puntos: final menos inicio, AX⃗ = OX⃗ − OA⃗. Los vectores del centro a los vértices de un polígono regular suman 0⃗. Alternativas: A) 24√2 u   B) 9√2 u   C) 12√2 u   D) 0 u   E) 6√2 u",
       "respuesta": "C) 12√2 u",
       "pasos": [
         "Con O el centro: cada vector AX⃗ es OX⃗ − OA⃗. Al sumar todos, aparece la suma de las posiciones de los otros vértices menos 3·OA⃗.",
         "La suma de las 4 posiciones desde el centro es 0⃗, así que la de los otros 3 vale −OA⃗.",
         "R⃗ = −OA⃗ − 3·OA⃗ = 4·AO⃗: 4 veces el vector de A al centro, que mide el radio 3√2 u.",
-        "|R| = 12√2 u."
+        "R = 12√2 u."
       ]
     },
     {
@@ -67,7 +67,7 @@
       "pasos": [
         "Los 4 vectores del centro a los vértices se anulan: el polígono es simétrico.",
         "Si falta OD⃗, la suma de los demás es −OD⃗.",
-        "|R| = radio = L/√2 = 4√2 m."
+        "R = radio = L/√2 = 4√2 m."
       ]
     },
     {
@@ -78,7 +78,7 @@
       "pasos": [
         "Los 4 vectores del centro a los vértices se anulan: el polígono es simétrico.",
         "Si falta OD⃗, la suma de los demás es −OD⃗.",
-        "|R| = radio = L/√2 = 2√2 m."
+        "R = radio = L/√2 = 2√2 m."
       ]
     },
     {
@@ -89,7 +89,7 @@
       "pasos": [
         "Con los 5 lados cola con punta se vuelve al punto de partida: la suma es 0⃗.",
         "Entonces la suma de 4 lados es lo que falta para cerrar: el vector AE⃗, al revés del lado EA⃗.",
-        "|R| = un lado = 12 cm."
+        "R = un lado = 12 cm."
       ]
     }
   ]

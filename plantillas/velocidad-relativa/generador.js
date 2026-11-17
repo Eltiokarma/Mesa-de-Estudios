@@ -29,6 +29,9 @@
  *             tres        tres botes en fila: el del centro lanza un saco al de la izquierda y luego otro al de
  *                         la derecha; la rapidez final del bote de un extremo (paso a paso)
  *
+ * Por unidad (17 nov, auditoría de Vectores): generar(semilla, { unidad }) da en Vectores y en MRU solo marco,
+ * idavuelta, cruce y bote; en Impulso y choques, solo botes (cantidad de movimiento). Sin unidad, todos (tiposPorUnidad).
+ * Los ríos no llevan nombre propio y sus medidas son posibles (corriente ≤ 3 m/s); un saco de 10 kg o más sale a ≤ 4 m/s.
  * Convenciones: rapideces del bote «respecto al agua»; la del saco «respecto al bote» se mide con el bote ya
  * en movimiento (después del lanzamiento). Ángulos de la proa medidos desde la perpendicular a la orilla,
  * con sen 16° = 7/25, sen 30° = 1/2, sen 37° = 3/5, sen 53° = 4/5 y sen 74° = 24/25. Coma decimal.
@@ -61,9 +64,20 @@
     ['cruce', 'encuentro'], ['cruce', 'alcance'], ['cruce', 'trenes'], ['bote', 'recto'], ['bote', 'angulo'], ['bote', 'tmin'], ['bote', 'deriva'],
     ['bote', 'resultante'], ['bote', 'linea'], ['bote', 'linea'], ['botes', 'lanza'], ['botes', 'objeto'], ['botes', 'recibe'], ['botes', 'dos'], ['botes', 'tres'], ['botes', 'tres']];
 
-  function generar(semilla) {
+  // Qué tipos sirve a cada unidad del catálogo (auditoría de Vectores, A1: la práctica de Vectores sacaba botes con
+  // sacos, que piden cantidad de movimiento, dos unidades antes de tiempo). generar(semilla, { unidad }) elige solo
+  // entre los tipos de esa unidad; sin unidad (o con una que no está aquí), entre todos, como antes.
+  const TIPOS_POR_UNIDAD = {
+    'fisica.movimiento-rectilineo': ['marco', 'idavuelta', 'cruce', 'bote'],
+    'fisica.vectores': ['marco', 'idavuelta', 'cruce', 'bote'],
+    'fisica.impulso-y-choques': ['botes'],
+  };
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
+    const lista = permitidos ? TIPOS.filter(t => permitidos.includes(t[0])) : TIPOS;
     const rng = Azar.crear('velocidad-relativa|' + semilla);
-    const [tipo, sub] = rng.elegir(TIPOS);
+    const [tipo, sub] = rng.elegir(lista);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
       // Se evita que la correcta sea la única «redonda» (las demás con más decimales).
@@ -347,17 +361,27 @@
   const NOT = [[0, 0, 1], [16, 7 / 25, 24 / 25], [30, 1 / 2, Math.sqrt(3) / 2], [37, 3 / 5, 4 / 5], [53, 4 / 5, 3 / 5], [74, 24 / 25, 7 / 25]];
   const direccion = (g, sentido) => (g === 0 ? { clave: 'proa:0', texto: 'Perpendicular a la orilla (0°)' }
     : { clave: `proa:${g}:${sentido}`, texto: `${g}° río ${sentido} de la perpendicular` });
-  const RIO = ['Un bote cruza el río Ramis', 'Un bote cruza el Rímac', 'Una lancha cruza el Ucayali', 'Un bote cruza el Madre de Dios'];
+  // Ríos sin nombre propio, con medidas posibles (auditoría de Vectores, A2: el «Ucayali» salía de 24 m de ancho y el
+  // «Rímac» con 9 m/s). Un río de la sierra: de 20 a 60 m de ancho; uno de la selva, cientos de metros. La corriente
+  // nunca pasa de 3 m/s (2 m/s en la selva) y en un río chico el bote no va a más de 6 m/s respecto al agua.
+  const RIO_CORRIENTE = 3;
+  function rio(W, u, c) {
+    if (c > RIO_CORRIENTE) return null;
+    if (W <= 60) return u <= 6 ? 'Un bote cruza un río andino' : null;
+    if (W <= 150) return 'Un bote cruza un río';
+    return c <= 2 ? 'Una lancha cruza un río amazónico' : null;
+  }
   const U_ = P.vec('u'), C_ = P.vec('c'), V_ = P.vec('v');
 
   function bote(rng, semilla, sub) {
-    const Rio = rng.elegir(RIO);
     if (sub === 'recto' || sub === 'angulo') {
       const [g, s, c0] = rng.elegir(NOT.filter(n => n[0] && (sub === 'angulo' || n[0] !== 30)));
       const u = rng.elegir(g === 30 ? [2, 3, 4, 5, 6, 7, 8, 9, 10, 12] : [1, 2, 2.5, 3, 4, 5, 6, 7.5, 8, 10, 12.5, 25].filter(x => limpio(x * s) && limpio(x * c0)));
       if (u === undefined) return null;
       const c = u * s, vy = u * c0, W = 10 * rng.entero(3, 40);
-      if (!limpio(c) || c > 10 || u > 12) return null;
+      if (!limpio(c) || u > 12) return null;
+      const Rio = rio(W, u, c);
+      if (!Rio) return null;
       const enunciado = [`${Rio} (`, v('W', `${W} m`), ' de ancho). Corriente: ', v('c', `${f(c)} m/s`), '; bote: ', v('u', `${f(u)} m/s`),
         ' respecto al agua. Quiere llegar justo enfrente, en línea recta.'];
       if (sub === 'recto') {
@@ -396,6 +420,8 @@
       const [u, c, R] = rng.elegir([[4, 3, 5], [3, 4, 5], [8, 6, 10], [6, 8, 10], [12, 5, 13], [5, 12, 13], [2.4, 1, 2.6], [1.5, 2, 2.5], [2, 1.5, 2.5], [1.6, 1.2, 2], [1.2, 1.6, 2], [2.4, 1.8, 3], [1.8, 2.4, 3], [3.2, 2.4, 4], [4.8, 3.6, 6], [2.4, 0.7, 2.5], [0.8, 0.6, 1], [6, 2.5, 6.5], [9, 12, 15], [12, 9, 15]]);
       if (!limpio(Math.hypot(u, c), 2) || Math.abs(Math.hypot(u, c) - R) > 1e-9) return null;
       const W = 12 * rng.entero(2, 25);
+      const Rio = rio(W, u, c);
+      if (!Rio) return null;
       const t = W / u, deriva = c * t;
       if (!limpio(t, 1) || !limpio(deriva, 1)) return null;
       const enunciado = [`${Rio} (`, v('W', `${W} m`), ' de ancho). Corriente: ', v('c', `${f(c)} m/s`), '; bote: ', v('u', `${f(u)} m/s`), ' respecto al agua.',
@@ -457,6 +483,8 @@
     if (!phi) return null;
     const W = 12 * rng.entero(2, 20), d = W * Math.abs(tg);
     if (!Number.isInteger(d)) return null;
+    const Rio = rio(W, u, c);
+    if (!Rio) return null;
     const lado = Rx > 0 ? 'abajo' : 'arriba';
     const enunciado = [`${Rio} (`, v('W', `${W} m`), ' de ancho). Corriente: ', v('c', `${f(c)} m/s`), '; bote: ', v('u', `${f(u)} m/s`),
       ' respecto al agua. Quiere llegar al embarcadero ', v('W', `${d} m`), ` río ${lado} del punto de enfrente.`];
@@ -528,7 +556,8 @@
   const VAR_BS = { M: { nombre: 'masas', color: 'o' }, u: { nombre: 'rapidez del saco respecto al bote', color: 'i' }, V: { nombre: 'velocidades respecto al agua', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
   const CONV = ['Todo empieza en reposo y no hay roce con el agua.', 'La rapidez del saco es respecto al bote que lo lanza, ya en movimiento.'];
   function botes(rng, semilla, sub) {
-    const M = 10 * rng.entero(5, 25), m = rng.elegir([2, 4, 5, 8, 10, 12, 15, 20, 25, 30, 40]), u = rng.entero(1, 12);
+    // Un saco de 10 kg o más no sale a más de 4 m/s (auditoría, M22: «12 kg a 12 m/s», 43 km/h, nadie lo lanza así).
+    const M = 10 * rng.entero(5, 25), m = rng.elegir([2, 4, 5, 8, 10, 12, 15, 20, 25, 30, 40]), u = rng.entero(1, m >= 10 ? 4 : 6);
     const VA = m * u / (M + m), w = u - VA;
     const base = ['Un bote de ', v('M', `${M} kg`), ' lleva un saco de ', v('M', `${m} kg`), ' y lo lanza al este a ', v('u', `${f(u)} m/s`), '.'];
     const sol1 = ['Se conserva: ', v('M', `${M}`), '·V = ', v('M', `${m}`), '·(', v('u', f(u)), ' − V), con V hacia el oeste.'];
@@ -640,5 +669,5 @@
       datos: { tipo: 'botes', sub: 'tres', MA, MB, MC, m, u, cual } });
   }
 
-  return { id: 'velocidad-relativa', titulo: 'La combi y el río', generar };
+  return { id: 'velocidad-relativa', titulo: 'La combi y el río', generar, tiposPorUnidad: TIPOS_POR_UNIDAD };
 });
