@@ -36,7 +36,9 @@ async function abrir(ctx, ruta, teoria) {
   const p = await ctx.newPage();
   await p.addInitScript(e => localStorage.setItem('lab-v1', JSON.stringify(e)), estado(teoria));
   await p.goto(`${BASE}/app/#${ruta}`);
-  await p.waitForTimeout(1500);
+  // Espera a que la teoría termine de abrir (con la máquina cargada pasa de 1,5 s), con tope de 20 s.
+  await p.waitForFunction(() => document.body && !/Abriendo la teoría|Cargando/.test(document.body.innerText) && document.querySelector('#app *'), null, { timeout: 20000 }).catch(() => {});
+  await p.waitForTimeout(600);
   await p.addStyleTag({ content: '#nav{display:none!important}' }).catch(() => {});
   return p;
 }
@@ -50,10 +52,15 @@ async function abrir(ctx, ruta, teoria) {
   const def = await (async () => {
     const ctx = await navegador.newContext();
     const p = await abrir(ctx, `/unidad/${unidad}/teoria`, { [unidad]: {} });
-    const ideas = await p.evaluate(u => {
-      const d = window.Teoria && window.Teoria.unidades && window.Teoria.unidades[u];
-      return d ? d.ideas.map(i => ({ id: i.id, momentos: window.Teoria.momentosDe(i), ejemplos: (i.ejemplos || []).length })) : null;
-    }, unidad).catch(() => null);
+    // La teoría se carga aparte: se pregunta cada medio segundo, hasta 20 s.
+    let ideas = null;
+    for (let k = 0; k < 40 && !ideas; k++) {
+      ideas = await p.evaluate(u => {
+        const d = window.Teoria && window.Teoria.unidades && window.Teoria.unidades[u];
+        return d ? d.ideas.map(i => ({ id: i.id, momentos: window.Teoria.momentosDe(i), ejemplos: (i.ejemplos || []).length })) : null;
+      }, unidad).catch(() => null);
+      if (!ideas) await p.waitForTimeout(500);
+    }
     await ctx.close();
     return ideas;
   })();
