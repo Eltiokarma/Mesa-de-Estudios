@@ -172,7 +172,9 @@ test('segmentos: string o {v, t} con t string y v declarada; toda variable decla
 test('colores: cada segmento usa una variable definida, con un color de la app', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s);
-    for (const [k, x] of Object.entries(p.variables)) assert.ok(['o', 'i', 'd', 'h'].includes(x.color) && x.nombre, `semilla ${s}: ${k}`);
+    for (const [k, x] of Object.entries(p.variables)) assert.ok(['o', 'i', 'd', 'h', 'f'].includes(x.color) && x.nombre, `semilla ${s}: ${k}`);
+    // Cifras es de Numeración: la paleta de esa unidad (numerales naranja, cantidad violeta, sin carmín).
+    if (p._datos.tipo === 'cifras') for (const x of Object.values(p.variables)) assert.ok(['o', 'f'].includes(x.color), `semilla ${s}: cifras en ${x.color}`);
     const colores = Object.values(p.variables).map(x => x.color);
     assert.equal(new Set(colores).size, colores.length, `semilla ${s}: dos variables con el mismo color`);
     for (const campo of ['enunciado', 'pregunta']) for (const x of p[campo]) if (typeof x !== 'string') assert.ok(p.variables[x.v], `semilla ${s}: falta ${x.v}`);
@@ -222,4 +224,33 @@ test('papel.json: cada respuesta se recalcula', () => {
   tiene('p8', String(cifras({ sub: 'fraccion', F: [11, 37] })));
   tiene('p9', grifos({ numerales: [{ cifras: [4, 0], base: 'a' }, { cifras: ['a', 0], base: 'n' }, { cifras: ['n', 6], base: 7 }] }).slice(2).replace('/1', ''));
   tiene('p10', String(cubos({ sub: 'cuenta', b: 7, k: 4 })), String(cubos({ sub: 'suma', b: 7, k: 4 })));
+});
+
+// Por unidad (propuesta de Numeración, pregunta 8): cada unidad del catálogo recibe solo sus tipos.
+test('generar(semilla, { unidad }) da a cada unidad solo sus tipos, y sin unidad todos', () => {
+  const ficha = require('./plantilla.json');
+  assert.deepEqual(Object.keys(gen.tiposPorUnidad).sort(), [...ficha.unidades].sort(), 'cada unidad de la ficha tiene sus tipos');
+  for (const [unidad, tipos] of Object.entries(gen.tiposPorUnidad)) {
+    const vistos = new Set();
+    for (let s = 0; s < 200; s++) {
+      const p = gen.generar(`u${s}`, { unidad });
+      assert.ok(tipos.includes(p._datos.tipo), `${unidad}: salió ${p._datos.tipo}`);
+      vistos.add(p._datos.tipo);
+    }
+    assert.deepEqual([...vistos].sort(), [...tipos].sort(), `${unidad}: no salen todos sus tipos`);
+  }
+  assert.deepEqual(gen.generar(7, { unidad: 'otra.unidad' }), gen.generar(7));
+});
+
+test('cifras (Numeración): datos con la descomposición, errores AT-* que empiezan por lo que está bien', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`n${s}`, { unidad: 'aritmetica.numeracion' });
+    assert.ok(Array.isArray(p.datos) && p.datos.some(l => l.includes('a̅b̅ = a × 10 + b')), `semilla ${s}: datos`);
+    for (const l of p.datos) assert.ok(l.split(/\s+/).filter(w => /\p{L}/u.test(w)).length <= 22);
+    for (const a of p.alternativas.filter(x => x.error)) {
+      assert.match(a.error.id, /^AT-/);
+      assert.match(a.error.explicacion, /^Bien/);
+      assert.ok(a.error.explicacion.includes(String(a.valor)), `semilla ${s}: ${a.error.explicacion}`);
+    }
+  }
 });

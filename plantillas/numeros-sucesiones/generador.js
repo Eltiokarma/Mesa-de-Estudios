@@ -35,6 +35,11 @@
  *   cubos        (sub cuenta, suma) cubos perfectos que tienen k cifras en base b: cuántos son o la
  *                suma de sus raíces. Cubre «combinar cubos perfectos con cifras en otra base».
  *
+ * Por unidad (17 nov, propuesta de Numeración, pregunta 8): generar(semilla, { unidad }) da a cada unidad solo sus tipos
+ * (TIPOS_POR_UNIDAD): en Numeración, solo cifras (las demás ideas las practica plantillas/numeracion-bases); grifos pasa a
+ * Números racionales (trabajo conjunto con fracciones) y cubos a Potenciación. Sin unidad, todos, como antes.
+ * Cifras sigue la paleta y los códigos de la teoría de Numeración (numerales naranja, cantidad violeta, sin carmín;
+ * AT-* de contenido/teoria/aritmetica/numeracion.js) y trae su recuadro «Datos»; los demás tipos, todavía sin datos.
  * Notación: numerales con raya encima (a̅b̅) y base en subíndice entre paréntesis (2̅a̅₍₅₎), como
  * plantillas/numeracion; términos tₖ como plantillas/sucesiones. Respuestas enteras, salvo las
  * fracciones (fracciones y grifos), que van con armarTexto y clave canónica.
@@ -52,6 +57,7 @@
   'use strict';
   const ID = 'numeros-sucesiones';
   const INF = 'docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md';
+  const TRAMPAS = 'docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md';
   const e = (id, valor, explicacion, respaldo = 'hipotesis', fuente = null) => ({ id, valor, explicacion, respaldo, fuente });
   const et = (id, r, explicacion, respaldo = 'hipotesis', fuente = null) => (r ? { id, clave: r.clave, texto: r.texto, explicacion, respaldo, fuente } : null);
   const v = P.v;
@@ -82,9 +88,22 @@
   const PESOS = ['intercalada', 'intercalada', 'pa-pg', 'fracciones', 'fracciones', 'comunes', 'comunes', 'sumatoria', 'sumatoria',
     'grupos', 'divisores', 'divisores', 'primos-pa', 'cifras', 'cifras', 'grifos', 'cubos'];
 
-  function generar(semilla) {
+  // Qué tipos sirve a cada unidad del catálogo (propuesta de Numeración, pregunta 8, aprobada el 17 nov: la práctica de
+  // numeración salía con sucesiones y divisores). generar(semilla, { unidad }) elige solo entre los tipos de esa unidad;
+  // sin unidad (o con una que no está aquí), entre todos, como antes. Modelo: plantillas/velocidad-relativa.
+  const TIPOS_POR_UNIDAD = {
+    'aritmetica.sucesiones-y-series': ['intercalada', 'pa-pg', 'fracciones', 'comunes', 'sumatoria', 'primos-pa'],
+    'aritmetica.divisibilidad': ['grupos', 'divisores'],
+    'aritmetica.numeros-primos-y-divisores': ['divisores', 'primos-pa'],
+    'aritmetica.numeracion': ['cifras'],
+    'aritmetica.potenciacion-y-radicacion': ['cubos'],
+    'aritmetica.numeros-racionales': ['grifos'],
+  };
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear(ID + '|' + semilla);
-    const tipo = rng.elegir(PESOS);
+    const tipo = rng.elegir(permitidos ? PESOS.filter(t => permitidos.includes(t)) : PESOS);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -117,7 +136,7 @@
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto, negativos: !!o.negativos });
       respuesta = { valor: o.correcta, unidad: o.unidad || '' };
     }
-    return { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+    return { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: o.recuadro || '',
       alternativas, solucion: o.solucion, respuesta, _datos: o.datos };
   }
 
@@ -594,6 +613,11 @@
   }
 
   // ---------------- cifras ----------------
+  // Colores y errores de la unidad de numeración (contenido/teoria/aritmetica/numeracion.js, cabecera): numerales y
+  // cifras naranja, la cantidad en base 10 violeta, sin carmín; códigos AT-* de la teoría (hipótesis) y dos nuevos,
+  // AT-SIN-RELACION y AT-SIN-ORDEN. Datos: la descomposición en base 10 y la regla de las cifras.
+  const VAR_NUM = { c: { nombre: 'las cifras y los numerales', color: 'o' }, N: { nombre: 'la cantidad en base 10', color: 'f' } };
+  const DATOS_CIFRAS = ['a̅b̅ = a × 10 + b; a̅b̅c̅ = a × 100 + b × 10 + c', 'Las cifras van de 0 a 9; la primera de un numeral no es 0'];
   function cifras(rng, semilla) {
     const sb = rng.elegir(['fraccion', 'suma-invertida']);
     if (sb === 'fraccion') {
@@ -603,43 +627,42 @@
       if (K < 2) return null;
       const F = P.frac(11 * u, 111 * w);
       const a = u * K, b = w * K, correcta = 10 * a + b;
-      const variables = { aa: { nombre: 'numeral a̅a̅', color: 'o' }, bbb: { nombre: 'numeral b̅b̅b̅', color: 'i' }, ab: { nombre: 'numeral a̅b̅', color: 'd' }, F: { nombre: 'fracción dada', color: 'h' } };
-      const enunciado = ['Las cifras a y b cumplen ', v('aa', raya('aa')), ' / ', v('bbb', raya('bbb')), ' = ', v('F', `${F.n}/${F.d}`), '.'];
-      const pregunta = ['¿Cuál es el mayor valor que puede tomar el numeral ', v('ab', raya('ab')), '?'];
-      const a2 = u * (K + 1), b2 = w * (K + 1);
+      const variables = { c: VAR_NUM.c };
+      const enunciado = ['Las cifras a y b cumplen ', v('c', raya('aa')), ' / ', v('c', raya('bbb')), ` = ${F.n}/${F.d}.`];
+      const pregunta = ['¿Cuál es el mayor valor que puede tomar el numeral ', v('c', raya('ab')), '?'];
       const errores = [
-        e('solo-la-proporcion-reducida', 10 * u + w, `Tomaste a = ${u} y b = ${w}, la proporción más chica. También sirven sus múltiplos (a = ${u}k, b = ${w}k) mientras las cifras no pasen de 9: el mayor es con k = ${K}.`),
-        e('cifras-invertidas', 10 * b + a, `Ese es ${raya('ba')}: pusiste b como cifra de las decenas. En ${raya('ab')} la a va primero.`),
-        e('cifras-maximas-sin-relacion', 99, `Tomaste a = b = 9, las cifras más grandes. Pero a y b no son libres: deben cumplir a/b = ${u}/${w}, y 99/999 = 1/9.`),
+        e('AT-MENOR', 10 * u + w, `Bien: a/b = ${u}/${w}. Pero esa es la proporción más chica; también sirven a = ${u}k y b = ${w}k mientras las cifras no pasen de 9. Con k = 1 sale ${10 * u + w}.`),
+        e('AT-ORDEN', 10 * b + a, `Bien las cifras, a = ${a} y b = ${b}. Pero ${10 * b + a} es ${raya('ba')}: en ${raya('ab')} la a va primero.`),
+        e('AT-SIN-RELACION', 99, `Bien buscar las cifras más grandes. Pero a y b no son libres: deben cumplir a/b = ${u}/${w}, y 99 no lo cumple (99/999 = 1/9).`),
       ];
-      if (K >= 3) errores.push(e('no-llega-al-mayor-multiplo', 10 * u * (K - 1) + w * (K - 1), `Te quedaste en k = ${K - 1}. Con k = ${K} las cifras (${a} y ${b}) todavía son menores que 10.`));
+      if (K >= 3) errores.push(e('AT-MENOR', 10 * u * (K - 1) + w * (K - 1), `Bien a = ${u}k y b = ${w}k. Pero con k = ${K - 1} sale ${10 * u * (K - 1) + w * (K - 1)}, y con k = ${K} las cifras (${a} y ${b}) todavía son menores que 10.`));
       const solucion = [
-        ['Por descomposición: ', v('aa', `${raya('aa')} = 11a`), ' y ', v('bbb', `${raya('bbb')} = 111b`), '.'],
-        [`11a/(111b) = `, v('F', `${F.n}/${F.d}`), ` → a/b = ${F.n}·111/(${F.d}·11) = ${u}/${w}.`],
+        ['Por descomposición: ', v('c', `${raya('aa')} = 11a`), ' y ', v('c', `${raya('bbb')} = 111b`), '.'],
+        [`11a/(111b) = ${F.n}/${F.d} → a/b = ${F.n}·111/(${F.d}·11) = ${u}/${w}.`],
         [`Entonces a = ${u}k y b = ${w}k; como las cifras no pasan de 9, k llega a lo más a ${K}: a = ${a}, b = ${b}.`],
-        ['El mayor ', v('ab', `${raya('ab')} = ${correcta}`), '. Comprobación: ', `${11 * a}/${111 * b} = ${F.n}/${F.d}.`],
+        ['El mayor ', v('c', `${raya('ab')} = ${correcta}`), '. Comprobación: ', `${11 * a}/${111 * b} = ${F.n}/${F.d}.`],
       ];
-      return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'cifras', sub: sb, F: [F.n, F.d] } });
+      return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, recuadro: DATOS_CIFRAS, datos: { tipo: 'cifras', sub: sb, F: [F.n, F.d] } });
     }
     const s = rng.entero(4, 17);
     let correcta = 0; for (let a = 1; a <= 9; a++) { const b = s - a; if (b >= 1 && b <= 9) correcta++; }
     const N = 11 * s;
-    const variables = { ab: { nombre: 'numeral a̅b̅', color: 'o' }, ba: { nombre: 'numeral b̅a̅', color: 'i' }, s: { nombre: 'suma de las cifras', color: 'h' }, res: { nombre: 'cantidad de numerales', color: 'd' } };
-    const enunciado = ['Los numerales de dos cifras ', v('ab', raya('ab')), ' y ', v('ba', raya('ba')), ` suman ${N}.`];
-    const pregunta = ['¿Cuántos valores puede tomar ', v('ab', raya('ab')), '?'];
+    const variables = { c: VAR_NUM.c, N: VAR_NUM.N };
+    const enunciado = ['Los numerales de dos cifras ', v('c', raya('ab')), ' y ', v('c', raya('ba')), ' suman ', v('N', String(N)), '.'];
+    const pregunta = ['¿Cuántos valores puede tomar ', v('c', raya('ab')), '?'];
     const amin = Math.max(1, s - 9), amax = Math.min(9, s - 1);
     const errores = [
-      e('poste-valla-sin-sumar-uno', correcta - 1, `Hiciste ${amax} − ${amin} = ${correcta - 1}. Del ${amin} al ${amax} hay ${correcta} valores: se cuentan los dos extremos.`, 'hipotesis', INF),
-      e('cuenta-sin-orden', Math.ceil(correcta / 2), `Contaste cada pareja de cifras una sola vez. Pero ${raya('ab')} y ${raya('ba')} son numerales distintos: si a ≠ b, cada pareja da dos valores de ${raya('ab')}.`),
+      e('AT-CONTEO', correcta - 1, `Bien los extremos, ${amin} y ${amax}. Pero de ${amin} a ${amax} hay ${amax} − ${amin} + 1 valores, no ${correcta - 1}: se cuentan los dos extremos.`, 'hipotesis', TRAMPAS),
+      e('AT-SIN-ORDEN', Math.ceil(correcta / 2), `Bien encontrar las parejas de cifras. Pero ${raya('ab')} y ${raya('ba')} son numerales distintos: con a ≠ b, cada pareja da dos valores de ${raya('ab')}, no ${Math.ceil(correcta / 2)} en total.`),
     ];
-    if (s <= 9) errores.push(e('primera-cifra-cero', correcta + 1, `Contaste b = 0. Entonces ${raya('ba')} empezaría con 0 y no sería un numeral de dos cifras.`));
-    if (s > 10) errores.push(e('cifra-mayor-que-nueve', s - 1, `Dejaste que a vaya de 1 a ${s - 1}. Pero a y b son cifras: ninguna pasa de 9, así que a va de ${amin} a ${amax}.`));
+    if (s <= 9) errores.push(e('AT-CERO', correcta + 1, `Bien a + b = ${s}. Pero con b = 0, ${raya('ba')} empezaría con 0 y no sería un numeral de dos cifras: así salen ${correcta + 1}.`, 'hipotesis', TRAMPAS));
+    if (s > 10) errores.push(e('AT-CIFRA-B', s - 1, `Bien a + b = ${s}. Pero a y b son cifras y ninguna pasa de 9: a va de ${amin} a ${amax}, no de 1 a ${s - 1}, que da ${s - 1}.`, 'hipotesis', TRAMPAS));
     const solucion = [
-      ['Por descomposición: ', v('ab', '(10a + b)'), ' + ', v('ba', '(10b + a)'), ` = 11(a + b) = ${N}, así que `, v('s', `a + b = ${s}`), '.'],
+      ['Por descomposición: ', v('c', '(10a + b)'), ' + ', v('c', '(10b + a)'), ' = 11(a + b) = ', v('N', String(N)), ', así que ', v('c', `a + b = ${s}`), '.'],
       [`a y b son cifras de 1 a 9 (ninguna puede ser 0, porque las dos van adelante en algún numeral): a va de ${amin} a ${amax}.`],
-      ['Son ', `${amax} − ${amin} + 1 = `, v('res', String(correcta)), ' valores.'],
+      ['Son ', `${amax} − ${amin} + 1 = ${correcta}`, ' valores.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'cifras', sub: sb, N } });
+    return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, recuadro: [DATOS_CIFRAS[0], DATOS_CIFRAS[1], 'De a hasta z hay z − a + 1 números'], datos: { tipo: 'cifras', sub: sb, N } });
   }
 
   // ---------------- grifos ----------------
@@ -772,5 +795,5 @@
     return cerrar(rng, semilla, { correcta, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'cubos', sub: sb, b, k } });
   }
 
-  return { id: ID, titulo: 'Sucesiones, divisores y numerales', TIPOS, generar };
+  return { id: ID, titulo: 'Sucesiones, divisores y numerales', TIPOS, generar, tiposPorUnidad: TIPOS_POR_UNIDAD };
 });

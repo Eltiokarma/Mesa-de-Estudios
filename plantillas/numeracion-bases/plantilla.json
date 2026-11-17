@@ -1,0 +1,21 @@
+{
+  "id": "numeracion-bases",
+  "titulo": "El puesto de las bases",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.numeracion"
+  ],
+  "temas": [
+    "Base de un sistema",
+    "Descomposición polinómica",
+    "Cambio de base",
+    "Base desconocida y cifras ocultas",
+    "Conteo de números y cifras"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

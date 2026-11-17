@@ -7,10 +7,11 @@
     "aritmetica.divisibilidad",
     "aritmetica.numeros-primos-y-divisores",
     "aritmetica.numeracion",
-    "aritmetica.potenciacion-y-radicacion"
+    "aritmetica.potenciacion-y-radicacion",
+    "aritmetica.numeros-racionales"
   ],
   "estado": "borrador",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "generador": "generador.js",
   "casos": "casos.json",
   "pruebas": "generador.test.js",

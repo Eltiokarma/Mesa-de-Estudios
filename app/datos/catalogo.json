@@ -3391,6 +3391,7 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
+      "numeracion-bases",
       "numeracion",
       "numeros-sucesiones"
      ],
@@ -3621,7 +3622,8 @@
      ],
      "plantillas": [
       "fracciones",
-      "fracciones-problemas"
+      "fracciones-problemas",
+      "numeros-sucesiones"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/numeros-racionales.js",
@@ -8928,6 +8930,22 @@
     "/plantillas/numeracion/papel.json"
    ]
   },
+  "numeracion-bases": {
+   "id": "numeracion-bases",
+   "titulo": "El puesto de las bases",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeracion"
+   ],
+   "url": "#/practica/numeracion-bases",
+   "papel": "/plantillas/numeracion-bases/papel.json",
+   "archivos": [
+    "/plantillas/numeracion-bases/generador.js",
+    "/plantillas/numeracion-bases/papel.json"
+   ]
+  },
   "numeros-complejos": {
    "id": "numeros-complejos",
    "titulo": "La flecha en el plano: números complejos",
@@ -8967,13 +8985,14 @@
    "titulo": "Sucesiones, divisores y numerales",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "aritmetica.sucesiones-y-series",
     "aritmetica.divisibilidad",
     "aritmetica.numeros-primos-y-divisores",
     "aritmetica.numeracion",
-    "aritmetica.potenciacion-y-radicacion"
+    "aritmetica.potenciacion-y-radicacion",
+    "aritmetica.numeros-racionales"
    ],
    "url": "#/practica/numeros-sucesiones",
    "papel": "/plantillas/numeros-sucesiones/papel.json",

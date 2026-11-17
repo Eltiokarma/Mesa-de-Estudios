@@ -1,0 +1,96 @@
+{
+  "titulo": "El puesto de las bases: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Doña Juana empaca 28 caramelos en bolsitas de 8. Llena todas las bolsitas que puede. ¿Qué etiqueta lleva el pedido? Datos: 1 bolsita = 8 caramelos. Etiqueta: primero lo más grande (cajas, bolsitas), al final los sueltos; abajo, la base. Alternativas: A) 28₍₈₎   B) 3₍₈₎   C) 43₍₈₎   D) 34₍₈₎",
+      "respuesta": "D) 34₍₈₎",
+      "pasos": [
+        "Se juntan los caramelos de 8 en 8: 28 = 3 × 8 + 4.",
+        "Quedan 3 bolsitas y 4 sueltos. La etiqueta es 34₍₈₎."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un pedido del puesto de bolsitas de 6 se anota 335₍₆₎. ¿Cuántos caramelos tiene? Datos: a̅b̅c̅₍ₙ₎ = a × n² + b × n + c. 6² = 6 × 6. Alternativas: A) 66   B) 131   C) 335   D) 201",
+      "respuesta": "B) 131",
+      "pasos": [
+        "Cada cifra por lo que vale su lugar: 335₍₆₎ = 3 × 36 + 3 × 6 + 5 × 1.",
+        "Se suma todo: 108 + 18 + 5 = 131."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Doña Juana tiene 56 caramelos para empacar en bolsitas de 7 y en cajas de 7 bolsitas. ¿Cómo se escribe 56 en base 7? Datos: N = q × 7 + r, con 0 ≤ r < 7 (q: cociente; r: resto). En base n, las cifras van de 0 a n − 1. Alternativas: A) 56₍₇₎   B) 80₍₇₎   C) 10₍₇₎   D) 110₍₇₎",
+      "respuesta": "D) 110₍₇₎",
+      "pasos": [
+        "Se divide entre 7 hasta que el cociente es 0:",
+        "56 = 8 × 7 + 0",
+        "8 = 1 × 7 + 1",
+        "1 = 0 × 7 + 1",
+        "Los restos, del último al primero: 56 = 110₍₇₎."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En base 3 se escriben todos los numerales de 2 cifras. ¿Cuántos son? Datos: De a hasta z hay z − a + 1 números. 3¹ = 3; 3² = 9. La primera cifra de un numeral de varias cifras no es 0. Alternativas: A) 5   B) 6   C) 9   D) 90   E) 4",
+      "respuesta": "B) 6",
+      "pasos": [
+        "El menor es 1 seguido de ceros; el mayor repite la cifra 2.",
+        "El menor: 10₍₃₎ = 3.",
+        "El mayor: 22₍₃₎ = 9 − 1 = 8.",
+        "De 3 a 8: 8 − 3 + 1 = 6 numerales."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un pedido del puesto de bolsitas de 4 se anota 300₍₄₎. Se vuelve a empacar en bolsitas de 7. ¿Qué etiqueta lleva ahora? Datos: a̅b̅c̅₍ₙ₎ = a × n² + b × n + c. N = q × 7 + r, con 0 ≤ r < 7 (q: cociente; r: resto). Alternativas: A) 300₍₇₎   B) 66₍₇₎   C) 6₍₇₎   D) 48₍₇₎",
+      "respuesta": "B) 66₍₇₎",
+      "pasos": [
+        "Primero, cuántos caramelos son: 300₍₄₎ = 3 × 16 + 0 × 4 + 0 × 1 = 48.",
+        "Después, divisiones entre 7:",
+        "48 = 6 × 7 + 6",
+        "6 = 0 × 7 + 6",
+        "Los restos, del último al primero: 66₍₇₎."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En un puesto, la bolsa con etiqueta 54₍ₙ₎ tiene 49 caramelos. ¿Cuántos caramelos tiene la bolsa 45₍ₙ₎ del mismo puesto? Datos: a̅b̅₍ₙ₎ = a × n + b. Las dos etiquetas son del mismo puesto: la misma base. Alternativas: A) 94   B) 41   C) 36   D) 9   E) 45",
+      "respuesta": "B) 41",
+      "pasos": [
+        "Con la primera etiqueta sale la base: 5 × n + 4 = 49, así que 5 × n = 45 y n = 9.",
+        "Con esa base se lee la otra: 45₍₉₎ = 4 × 9 + 5 = 41."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Los numerales a̅4̅₍₇₎ y 1̅a̅₍₅₎ están bien escritos. ¿Cuál es el mayor valor que puede tener su suma, en base 10? Datos: En base n, las cifras van de 0 a n − 1. La primera cifra de un numeral de varias cifras no es 0. a̅b̅₍ₙ₎ = a × n + b. Alternativas: A) 57   B) 58   C) 41   D) 17",
+      "respuesta": "C) 41",
+      "pasos": [
+        "En base 7, a < 7; en base 5, a < 5. Además, a no es 0 (es la primera cifra de a̅4̅₍₇₎).",
+        "Las dos cotas a la vez: a llega a lo más a 4.",
+        "44₍₇₎ + 14₍₅₎ = 32 + 9 = 41."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Las cifras a y b cumplen a + b = 7. ¿Cuánto vale a̅b̅₍₅₎ + b̅a̅₍₅₎ en base 10? Datos: a̅b̅₍ₙ₎ = a × n + b. a y b son cifras distintas de 0. Alternativas: A) 14   B) 35   C) 42   D) 77",
+      "respuesta": "C) 42",
+      "pasos": [
+        "Por descomposición: (a × 5 + b) + (b × 5 + a) = 6 × a + 6 × b.",
+        "6 × (a + b) = 6 × 7 = 42."
+      ]
+    }
+  ]
+}

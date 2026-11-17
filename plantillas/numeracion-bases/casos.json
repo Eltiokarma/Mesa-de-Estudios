@@ -1,0 +1,300 @@
+{
+  "plantilla": "numeracion-bases",
+  "nota": "entrada es _datos del generador. respuesta: un número (base 10) o el numeral escrito como lo ve el alumno, con la base de subíndice (342₍₆₎). Por tipo: etiqueta y de-10, N en base n; sucesor, el numeral cifras₍ₙ₎ más llega; valor, cifras₍ₙ₎ en base 10; cruzados, ab₍ₙ₎ ± ba₍ₙ₎ con a + b = S o a − b = d; entre-bases, cifras₍de₎ escrito en base a; suma-cifras y paquetes, la suma de las cifras de N en base n; lineal y cuadratica, la base en que cifras₍ₙ₎ = N; acotar, la mayor suma o cuántos valores de a; mayor-suma, el mayor numeral de k cifras cuyas cifras suman S; cifras, cifras del 1 al N; hasta, el último boleto; cuantos-k, numerales de k cifras en base n; cifras-base, cifras del 1 al N en base n; bases-tres, bases en que N tiene tres cifras.",
+  "verificacion": "Script aparte (17 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: cambia de base por divisiones sucesivas, lee los numerales por Horner y cuenta por fuerza bruta (cifras de cada número, numerales de k cifras, bases en que N tiene tres cifras, valores de la cifra con parámetro). Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "conteo-cifras",
+        "tipo": "hasta",
+        "nivel": 2,
+        "cifras": 861
+      },
+      "esperado": {
+        "respuesta": 323,
+        "texto": "el 323"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "descomposicion",
+        "tipo": "valor",
+        "nivel": 1,
+        "n": 9,
+        "cifras": "601"
+      },
+      "esperado": {
+        "respuesta": 487,
+        "texto": "487"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "conteo-cifras",
+        "tipo": "cifras",
+        "nivel": 1,
+        "N": 73,
+        "n": 10
+      },
+      "esperado": {
+        "respuesta": 137,
+        "texto": "137"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "idea": "conteo-cifras",
+        "tipo": "cifras-base",
+        "nivel": 3,
+        "N": 189,
+        "n": 4
+      },
+      "esperado": {
+        "respuesta": 675,
+        "texto": "675"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "cambio-base",
+        "tipo": "entre-bases",
+        "nivel": 2,
+        "cifras": "311",
+        "de": 6,
+        "a": 3
+      },
+      "esperado": {
+        "respuesta": "11021₍₃₎",
+        "texto": "11021₍₃₎"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "conteo-cifras",
+        "tipo": "bases-tres",
+        "nivel": 3,
+        "N": 151
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7 bases"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "cambio-base",
+        "tipo": "suma-cifras",
+        "nivel": 3,
+        "N": 308,
+        "n": 7
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "idea": "cambio-base",
+        "tipo": "paquetes",
+        "nivel": 3,
+        "N": 160,
+        "n": 4
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "idea": "conteo-cifras",
+        "tipo": "cuantos-k",
+        "nivel": 2,
+        "n": 8,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 448,
+        "texto": "448"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "agrupar",
+        "tipo": "etiqueta",
+        "sub": "bolsitas",
+        "nivel": 1,
+        "N": 39,
+        "n": 8
+      },
+      "esperado": {
+        "respuesta": "47₍₈₎",
+        "texto": "47₍₈₎"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "idea": "cambio-base",
+        "tipo": "de-10",
+        "nivel": 1,
+        "N": 47,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": "1202₍₃₎",
+        "texto": "1202₍₃₎"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "idea": "base-desconocida",
+        "tipo": "acotar",
+        "sub": "suma",
+        "nivel": 3,
+        "p": 7,
+        "q": 3,
+        "u": 3,
+        "w": 1
+      },
+      "esperado": {
+        "respuesta": 22,
+        "texto": "22"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "idea": "agrupar",
+        "tipo": "sucesor",
+        "sub": "sigue",
+        "nivel": 3,
+        "n": 7,
+        "cifras": "266",
+        "llega": 1
+      },
+      "esperado": {
+        "respuesta": "300₍₇₎",
+        "texto": "300₍₇₎"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "idea": "base-desconocida",
+        "tipo": "otra-etiqueta",
+        "nivel": 2,
+        "n": 9,
+        "A": "86",
+        "B": "68"
+      },
+      "esperado": {
+        "respuesta": 62,
+        "texto": "62"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "idea": "base-desconocida",
+        "tipo": "cuadratica",
+        "nivel": 2,
+        "cifras": "121",
+        "N": 81
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "n = 8"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "idea": "base-desconocida",
+        "tipo": "mayor-suma",
+        "nivel": 3,
+        "k": 2,
+        "S": 8
+      },
+      "esperado": {
+        "respuesta": 24,
+        "texto": "24"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "idea": "agrupar",
+        "tipo": "menor-base",
+        "sub": "tres",
+        "nivel": 3,
+        "cifras": [
+          "105",
+          "327",
+          "328"
+        ]
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "base 9"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "idea": "base-desconocida",
+        "tipo": "lineal",
+        "nivel": 1,
+        "cifras": "33",
+        "N": 24
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "n = 7"
+      }
+    },
+    {
+      "semilla": 112,
+      "entrada": {
+        "idea": "descomposicion",
+        "tipo": "cruzados",
+        "sub": "resta",
+        "nivel": 3,
+        "n": 6,
+        "d": 1
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": 227,
+      "entrada": {
+        "idea": "base-desconocida",
+        "tipo": "acotar",
+        "sub": "cuantos",
+        "nivel": 3,
+        "n": 9,
+        "s": 1,
+        "m": 2
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 valores"
+      }
+    }
+  ]
+}

@@ -325,7 +325,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["numeracion", "numeros-sucesiones"],
+      "plantillas": ["numeracion-bases", "numeracion", "numeros-sucesiones"],
       "investigacion": null
     },
     {
@@ -478,7 +478,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": ["aritmetica.mcd-y-mcm"],
-      "plantillas": ["fracciones", "fracciones-problemas"],
+      "plantillas": ["fracciones", "fracciones-problemas", "numeros-sucesiones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
