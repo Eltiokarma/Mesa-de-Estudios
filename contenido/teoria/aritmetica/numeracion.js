@@ -890,7 +890,7 @@
         { s: num('132', 'n'), t: 'etiqueta: 1 caja, 3 bolsitas, 2 sueltos' },
         { s: bas('n'), t: 'caramelos por bolsita: la base' },
         { s: cif('3'), t: 'cifra: cuántas hay de ese tamaño' },
-        { s: cant('56'), t: 'caramelos de todo el pedido' },
+        { s: cant('30'), t: 'caramelos de todo el pedido' },
       ],
       controles: [{ id: 'b', etiqueta: 'Caramelos por bolsita, n', color: 'c-i', min: 4, max: 9, paso: 1, inicio: 4, decimales: 0 }],
       dibujo: v => ({ datos: Object.assign(ped132(v.b), { escala: escalaD() }), estado: {} }),
