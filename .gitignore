@@ -7,3 +7,6 @@ node_modules/
 # Ejercicios de academia de la tanda de 7000: sirven para clasificar, no se publican (regla 5)
 fuentes/ejercicios/
 __pycache__/
+
+# Imágenes de la mesa de revisión: viven en el artifact, no en el repo
+herramientas/revision/img/

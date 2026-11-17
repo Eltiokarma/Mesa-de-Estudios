@@ -32,6 +32,7 @@ docs/temario-completo.md       las 152 unidades con ruta, gesto, tramo y campos 
 docs/recorrido.md              recorrido para los ocho alumnos ficticios: avance honesto (nucleo/avance.js), prueba del tema, retomar, «Terminar», colección y muestra
 docs/dos-entradas.md           decisión del 15 nov: una base, dos entradas (explorar o examen), gráficos que se adaptan y una unidad completa antes de tres
 docs/plan-calidad.md           plan vigente (16 nov): contrato «se entiende sin profesor», tres filtros, molde y orden por el árbol
+herramientas/revision/         mesa de revisión de Gerson (artifact con base de datos): cada cambio con su captura, Va / No va / comentario; las sesiones suben ahí lo que Gerson debe ver y leen sus respuestas (LEEME.md)
 docs/molde-unidad.md           receta paso a paso de una unidad terminada (17 nov, de Magnitudes y Vectores): datos, ejemplos, notación, dibujos, práctica, comprobación
 docs/teoria.md                 contrato de la teoría interactiva (molde de las 152 unidades; 4e: momentos «Lee» y «Así se resuelve»); fuentes investigadas en docs/teoria/
 contenido/teoria/<curso>/<unidad>.js  teoría de cada unidad (cinco momentos por idea); lector en app/teoria.js, formato en nucleo/teoria.js

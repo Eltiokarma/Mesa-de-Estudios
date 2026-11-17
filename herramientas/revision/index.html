@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesa de revisión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#fbf3ed;--card:#fffaf6;--ink:#2d2340;--suave:#6b5f7a;--linea:#e7dcd3;--brand:#7b55d6;--brand-soft:#ece5fb;
+    --ok:#1f7a4d;--ok-soft:#e3f3ea;--no:#b3261e;--no-soft:#fbe6e4;--com:#a95300;--com-soft:#f8ebde;--cerr:#07746e;--cerr-soft:#dff2f0}
+  @media (prefers-color-scheme:dark){:root{--bg:#1d1726;--card:#2a2135;--ink:#f1ebf7;--suave:#b9aec8;--linea:#43385a;--brand:#ab8cf2;
+    --brand-soft:#352a4d;--ok:#6fd69f;--ok-soft:#203a2d;--no:#ff8a80;--no-soft:#43211f;--com:#f0a04a;--com-soft:#40301e;--cerr:#3dcdc3;--cerr-soft:#173836}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:16px 14px 80px}
+  h1{font-size:24px;margin:4px 0 2px;font-weight:800}
+  .sub{color:var(--suave);font-size:14px;margin:0 0 14px}
+  .aviso{background:var(--com-soft);border-radius:12px;padding:10px 12px;font-size:14px;margin:10px 0}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+  .tab{border:1.5px solid var(--linea);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font:600 14px Inter,sans-serif;cursor:pointer}
+  .tab[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+  .tab b{font-weight:800}
+  h2{font-size:18px;margin:26px 0 4px}
+  h3{font-size:15px;color:var(--suave);margin:14px 0 8px;font-weight:600}
+  .item{background:var(--card);border:1.5px solid var(--linea);border-radius:16px;padding:14px;margin:10px 0}
+  .item.ok{border-color:var(--ok)}.item.no{border-color:var(--no)}.item.com{border-color:var(--com)}.item.cerr{border-color:var(--cerr)}
+  .cab{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;background:var(--brand-soft);color:var(--brand);text-transform:uppercase;letter-spacing:.03em}
+  .titulo{font-weight:800;font-size:17px;margin:4px 0 6px}
+  .item p{margin:6px 0}
+  .lbl{font-weight:700}
+  .preg{background:var(--brand-soft);border-radius:10px;padding:8px 10px;margin:8px 0;font-weight:600}
+  .opcs{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+  .opc{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--linea);border-radius:10px;padding:8px 10px;cursor:pointer;background:var(--card)}
+  .opc input{margin-top:4px;accent-color:var(--brand)}
+  .opc .rec{font-size:12px;color:var(--brand);font-weight:700}
+  .imgs{display:flex;gap:10px;overflow-x:auto;padding:4px 0 8px;scroll-snap-type:x mandatory}
+  figure{margin:0;flex:0 0 auto;width:min(300px,78vw);scroll-snap-align:start}
+  .marco{height:380px;overflow:hidden;border:1.5px solid var(--linea);border-radius:10px;background:#fff;cursor:zoom-in;position:relative}
+  .marco img{width:100%;display:block}
+  .marco::after{content:"Ver entera";position:absolute;right:6px;bottom:6px;background:rgba(45,35,64,.85);color:#fff;font-size:12px;font-weight:700;border-radius:6px;padding:3px 7px}
+  figcaption{font-size:13px;color:var(--suave);margin-top:4px}
+  .acciones{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .btn{border:1.5px solid var(--linea);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 14px;font:700 15px Inter,sans-serif;cursor:pointer;min-height:44px}
+  .btn.ok[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#fff}
+  .btn.no[aria-pressed=true]{background:var(--no);border-color:var(--no);color:#fff}
+  .btn:disabled{opacity:.5;cursor:default}
+  textarea{width:100%;min-height:70px;border:1.5px solid var(--linea);border-radius:10px;padding:8px 10px;font:15px/1.4 Inter,sans-serif;background:var(--bg);color:var(--ink);margin-top:8px;resize:vertical}
+  .estado{font-size:13px;color:var(--suave);margin-top:6px}
+  .atendido{background:var(--cerr-soft);border-radius:10px;padding:8px 10px;margin-top:8px;font-size:14px}
+  .vacio{color:var(--suave);text-align:center;padding:30px 0}
+  #visor{position:fixed;inset:0;background:rgba(20,15,30,.92);z-index:20;overflow:auto;display:none}
+  #visor.abierto{display:block}
+  #visor img{display:block;width:100%;max-width:520px;margin:56px auto 30px;background:#fff}
+  #cerrar{position:fixed;top:10px;right:12px;z-index:21;font-size:15px}
+  .nota{background:var(--card);border:1.5px dashed var(--linea);border-radius:16px;padding:14px;margin-top:30px}
+  .notas-prev{font-size:14px;color:var(--suave)}
+  .notas-prev li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Mesa de revisión</h1>
+  <p class="sub">Mesa de Estudios · cada cambio con su captura. Marca <b>Va</b> o <b>No va</b>, comenta si quieres, y Claude lee tus respuestas desde la sesión.</p>
+  <div id="aviso" class="aviso" hidden></div>
+  <div class="tabs" role="toolbar" aria-label="Filtro">
+    <button class="tab" data-f="pendientes" aria-pressed="true">Pendientes <b id="n-pendientes">0</b></button>
+    <button class="tab" data-f="respondidas" aria-pressed="false">Respondidas <b id="n-respondidas">0</b></button>
+    <button class="tab" data-f="cerradas" aria-pressed="false">Cerradas <b id="n-cerradas">0</b></button>
+    <button class="tab" data-f="todas" aria-pressed="false">Todas <b id="n-todas">0</b></button>
+  </div>
+  <div id="lista"><p class="vacio">Cargando…</p></div>
+  <section class="nota">
+    <div class="lbl">Nota general para Claude</div>
+    <p class="sub" style="margin:2px 0 0">Algo que no encaja en ninguna tarjeta: un pedido, una idea, una queja.</p>
+    <textarea id="nota-texto" placeholder="Escribe aquí…"></textarea>
+    <div class="acciones"><button class="btn" id="nota-enviar">Enviar nota</button></div>
+    <ul class="notas-prev" id="notas"></ul>
+  </section>
+</main>
+<div id="visor" role="dialog" aria-label="Captura entera"><button class="btn" id="cerrar">Cerrar ✕</button><img id="visor-img" alt=""></div>
+<script>
+(function () {
+  'use strict';
+  let db = null, filtro = 'pendientes';
+  let items = [], resp = {}, notas = [];
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const parrafos = s => esc(s).split(/\n{2,}/).map(p => p.replace(/\n/g, '<br>')).join('</p><p>');
+  const aviso = t => { const a = $('#aviso'); a.hidden = !t; a.textContent = t || ''; };
+  const fecha = iso => { try { return new Date(iso).toLocaleString('es-PE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+
+  function clase(it) {
+    if (it.atendido) return 'cerradas';
+    return resp[it.id] ? 'respondidas' : 'pendientes';
+  }
+
+  function render() {
+    const cuenta = { pendientes: 0, respondidas: 0, cerradas: 0, todas: items.length };
+    items.forEach(it => cuenta[clase(it)]++);
+    Object.keys(cuenta).forEach(k => { $('#n-' + k).textContent = cuenta[k]; });
+    const ver = items.filter(it => filtro === 'todas' || clase(it) === filtro)
+      .sort((a, b) => (a.orden || 0) - (b.orden || 0));
+    const L = $('#lista');
+    if (!ver.length) {
+      L.innerHTML = `<p class="vacio">${items.length ? 'Nada en esta pestaña.' : 'Todavía no hay cambios para revisar.'}</p>`;
+      return;
+    }
+    let html = '', g = null, s = null;
+    for (const it of ver) {
+      if (it.grupo !== g) { g = it.grupo; s = null; html += `<h2>${esc(g)}</h2>`; }
+      if (it.sub && it.sub !== s) { s = it.sub; html += `<h3>${esc(s)}</h3>`; }
+      html += tarjeta(it);
+    }
+    // No se pierde lo que se está escribiendo al llegar otra actualización.
+    const borr = {};
+    L.querySelectorAll('textarea[data-id]').forEach(t => { if (t.value) borr[t.dataset.id] = t.value; });
+    L.innerHTML = html;
+    Object.keys(borr).forEach(id => { const t = L.querySelector(`textarea[data-id="${id}"]`); if (t && !t.value) t.value = borr[id]; });
+  }
+
+  function tarjeta(it) {
+    const r = resp[it.id] || {};
+    const est = it.atendido ? 'cerr' : r.estado === 'ok' ? 'ok' : r.estado === 'no' ? 'no' : r.comentario ? 'com' : '';
+    const imgs = (it.imgs || []).map(im => `<figure><div class="marco" data-src="${esc(im.src)}"><img loading="lazy" src="${esc(im.src)}" alt="${esc(im.pie || it.titulo)}"></div>${im.pie ? `<figcaption>${esc(im.pie)}</figcaption>` : ''}</figure>`).join('');
+    const opcs = (it.opciones || []).map((o, k) => `<label class="opc"><input type="radio" name="op-${esc(it.id)}" value="${k}" data-id="${esc(it.id)}" ${r.opcion === k ? 'checked' : ''}><span>${esc(o)}${it.recomendada === k ? ' <span class="rec">· lo que recomiendo</span>' : ''}</span></label>`).join('');
+    return `<article class="item ${est}" id="i-${esc(it.id)}">
+      <div class="cab"><span class="chip">${esc(it.tipo || 'cambio')}</span></div>
+      <div class="titulo">${esc(it.titulo)}</div>
+      ${it.que ? `<p><span class="lbl">Qué cambió:</span> ${parrafos(it.que)}</p>` : ''}
+      ${it.porque ? `<p><span class="lbl">Por qué:</span> ${parrafos(it.porque)}</p>` : ''}
+      ${imgs ? `<div class="imgs">${imgs}</div>` : ''}
+      ${it.pregunta ? `<div class="preg">${esc(it.pregunta)}</div>` : ''}
+      ${opcs ? `<div class="opcs">${opcs}</div>` : ''}
+      <div class="acciones">
+        <button class="btn ok" data-acc="ok" data-id="${esc(it.id)}" aria-pressed="${r.estado === 'ok'}">✓ Va</button>
+        <button class="btn no" data-acc="no" data-id="${esc(it.id)}" aria-pressed="${r.estado === 'no'}">✗ No va</button>
+      </div>
+      <textarea data-id="${esc(it.id)}" placeholder="Comentario (qué cambiarías, qué no se entiende)…">${esc(r.comentario || '')}</textarea>
+      <div class="acciones"><button class="btn" data-acc="com" data-id="${esc(it.id)}">Guardar comentario</button></div>
+      ${r.en ? `<div class="estado">Tu respuesta: ${r.estado === 'ok' ? 'va' : r.estado === 'no' ? 'no va' : 'comentario'} · ${fecha(r.en)}</div>` : ''}
+      ${it.atendido ? `<div class="atendido"><b>Claude:</b> ${esc(it.atendido)}</div>` : ''}
+    </article>`;
+  }
+
+  async function guardar(id, cambios) {
+    if (!db) { aviso('No se pudo guardar: abre la página con tu cuenta de Claude.'); return; }
+    const antes = resp[id] || {};
+    const nuevo = Object.assign({}, antes, cambios, { en: new Date().toISOString() });
+    resp[id] = nuevo; render();
+    try { await db.doc('respuestas/' + id).set(nuevo); aviso(''); }
+    catch (e) { resp[id] = antes; render(); aviso('No se guardó (' + (e && e.code || 'error') + '). Prueba otra vez.'); }
+  }
+
+  document.addEventListener('click', ev => {
+    const t = ev.target.closest('button, .marco');
+    if (!t) return;
+    if (t.classList.contains('tab')) {
+      filtro = t.dataset.f;
+      document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-pressed', String(b === t)));
+      render(); return;
+    }
+    if (t.classList.contains('marco')) { $('#visor-img').src = t.dataset.src; $('#visor').classList.add('abierto'); return; }
+    if (t.id === 'cerrar') { $('#visor').classList.remove('abierto'); return; }
+    if (t.id === 'nota-enviar') { enviarNota(); return; }
+    const id = t.dataset.id, acc = t.dataset.acc;
+    if (!id || !acc) return;
+    const txt = (document.querySelector(`textarea[data-id="${id}"]`) || {}).value || '';
+    if (acc === 'com') { if (txt.trim()) guardar(id, { comentario: txt.trim() }); return; }
+    const actual = (resp[id] || {}).estado;
+    guardar(id, { estado: actual === acc ? null : acc, comentario: txt.trim() || (resp[id] || {}).comentario || '' });
+  });
+  document.addEventListener('change', ev => {
+    const r = ev.target;
+    if (r.type === 'radio' && r.dataset.id) guardar(r.dataset.id, { opcion: Number(r.value) });
+  });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape') $('#visor').classList.remove('abierto'); });
+
+  async function enviarNota() {
+    const t = $('#nota-texto'), texto = t.value.trim();
+    if (!texto || !db) return;
+    try { await db.collection('notas').add({ texto, en: new Date().toISOString() }); t.value = ''; aviso(''); }
+    catch (e) { aviso('No se envió la nota (' + (e && e.code || 'error') + ').'); }
+  }
+  function renderNotas() {
+    $('#notas').innerHTML = notas.slice(-5).reverse().map(n => `<li>${fecha(n.en)} · ${esc(n.texto)}${n.leida ? ' · <b>leída</b>' : ''}</li>`).join('');
+  }
+
+  (async () => {
+    const espera = setTimeout(() => aviso('Todavía no llegan los datos. Revisa tu conexión; la página sigue intentando.'), 10000);
+    db = await claude.use('db');
+    if (!db) { clearTimeout(espera); aviso('Para ver y guardar la revisión, abre esta página con tu cuenta de Claude.'); $('#lista').innerHTML = ''; return; }
+    db.collection('items').onSnapshot(snap => {
+      if (!snap.metadata.fromCache) clearTimeout(espera), aviso('');
+      items = snap.docs.map(d => Object.assign({ id: d.id }, d.data())); render();
+    }, e => { clearTimeout(espera); aviso('No se pudo leer la revisión (' + e.code + ').'); });
+    db.collection('respuestas').onSnapshot(snap => {
+      resp = {}; snap.docs.forEach(d => { resp[d.id] = d.data(); }); render();
+    }, () => {});
+    db.collection('notas').orderBy('en').onSnapshot(snap => {
+      notas = snap.docs.map(d => d.data()); renderNotas();
+    }, () => {});
+  })();
+})();
+</script>
+</body>
+</html>
