@@ -65,6 +65,28 @@
     return PARES;
   }
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): las fórmulas de los dos productos (con componentes y
+   * con el ángulo) y, si hace falta, la tabla de academia, una por línea. Nunca el cos θ ni el número que sale.
+   */
+  const ESCALAR = (dim) => `Producto escalar: ${AB} = AₓBₓ + A_yB_y${dim === 3 ? ' + A_zB_z' : ''}.`;
+  const ESC_ANG = `Con el ángulo θ entre ${AyB}: ${AB} = |A||B|·cos θ.`;
+  const VEC_ANG = `Producto vectorial: |${AxB}| = |A||B|·sen θ.`;
+  const CRUZ_Z = `En el plano xy: ${AxB} = (AₓB_y − A_yBₓ) ${K}.`;
+  function lineasDatos(tipo, d) {
+    const dim = d.a && d.a.length === 3 && d.a[2] || d.b && d.b.length === 3 && d.b[2] ? 3 : 2;
+    if (tipo === 'escalar') return [ESCALAR(dim)];
+    if (tipo === 'angulo') return [ESCALAR(dim), ESC_ANG, `Módulo: |A| = √(Aₓ² + A_y²${dim === 3 ? ' + A_z²' : ''}).`,
+      'Valores de academia: cos 30° = √3/2, cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2.',
+      'Para un ángulo obtuso, el coseno es negativo: cos(180° − α) = −cos α.'];
+    if (tipo === 'perpendicular') return [ESCALAR(dim), `${A_} y ${B_} (no nulos) son perpendiculares si ${AB} = 0.`];
+    if (tipo === 'vectorial-z') return [`${I} × ${J} = ${K}, ${J} × ${I} = −${K} y ${I} × ${I} = ${J} × ${J} = 0${P.FLECHA}.`, CRUZ_Z];
+    if (tipo === 'modulo-cruz') return [ESC_ANG, VEC_ANG, 'Para cualquier ángulo: sen² θ + cos² θ = 1.'];
+    return [`Un lado como vector: final menos inicio, ${PQ} = Q − P.`,
+      `|${P.vec('u')} × ${P.vec('w')}| es el área del paralelogramo de lados ${P.vec('u')} y ${P.vec('w')}, que salen del mismo vértice.`,
+      `En el plano xy: ${P.vec('u')} × ${P.vec('w')} = (uₓw_y − u_ywₓ) ${K}.`];
+  }
+
   function generar(semilla) {
     const rng = Azar.crear('vectores-productos|' + semilla);
     const tipo = rng.elegir(TIPOS);
@@ -228,7 +250,7 @@
     if (['escalar', 'perpendicular', 'vectorial-z'].includes(tipo)) errores = errores.filter(e => esEntero(e.valor));
     const alternativas = P.armar({ correcta, errores, rng, texto, negativos: tipo !== 'angulo' && tipo !== 'modulo-cruz' && tipo !== 'area' });
     return {
-      id: `vectores-productos#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-productos#${semilla}`, variables, enunciado, pregunta, datos: lineasDatos(tipo, datos), alternativas, solucion,
       respuesta: { valor: correcta, unidad },
       _datos: datos,
     };

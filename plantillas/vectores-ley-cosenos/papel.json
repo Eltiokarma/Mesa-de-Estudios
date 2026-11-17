@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Dos desplazamientos A⃗ y B⃗ miden 6 m y 5 m y forman un ángulo de 37° entre sí. ¿Cuánto mide la resultante |A⃗ + B⃗|? Alternativas: A) 11 m   B) √13 m   C) √61 m   D) 1 m   E) √109 m",
+      "enunciado": "Dos desplazamientos A⃗ y B⃗ miden 6 m y 5 m y forman un ángulo de 37° entre sí. ¿Cuánto mide la resultante |A⃗ + B⃗|? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Diferencia: |A⃗ − B⃗|² = A² + B² − 2AB·cos θ. Valor de academia: cos 37° = 4/5. Alternativas: A) 11 m   B) √13 m   C) √61 m   D) 1 m   E) √109 m",
       "respuesta": "E) √109 m",
       "pasos": [
         "Ley de cosenos para la suma (método del paralelogramo): R² = A² + B² + 2AB·cos θ.",
@@ -18,7 +18,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Dos vectores A⃗ y B⃗ miden 8 u y 5 u y forman un ángulo de 53° entre sí. ¿Cuánto mide la diferencia |A⃗ − B⃗|? Alternativas: A) √41 u   B) 13 u   C) 3 u   D) √89 u   E) √137 u",
+      "enunciado": "Dos vectores A⃗ y B⃗ miden 8 u y 5 u y forman un ángulo de 53° entre sí. ¿Cuánto mide la diferencia |A⃗ − B⃗|? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Diferencia: |A⃗ − B⃗|² = A² + B² − 2AB·cos θ. Valor de academia: cos 53° = 3/5. Alternativas: A) √41 u   B) 13 u   C) 3 u   D) √89 u   E) √137 u",
       "respuesta": "A) √41 u",
       "pasos": [
         "Para la diferencia, −B⃗ forma 180° − θ con A⃗, y cos(180° − θ) = −cos θ: D² = A² + B² − 2AB·cos θ.",
@@ -30,7 +30,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Dos vectores A⃗ y B⃗ tienen el mismo módulo, 20 u. Se sabe que |A⃗ − B⃗| es √3 veces |A⃗ + B⃗|. ¿Qué ángulo forman A⃗ y B⃗? Alternativas: A) 120°   B) 60°   C) 30°   D) 90°",
+      "enunciado": "Dos vectores A⃗ y B⃗ tienen el mismo módulo, 20 u. Se sabe que |A⃗ − B⃗| es √3 veces |A⃗ + B⃗|. ¿Qué ángulo forman A⃗ y B⃗? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Diferencia: |A⃗ − B⃗|² = A² + B² − 2AB·cos θ. Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Ángulo obtuso: cos(180° − α) = −cos α. Alternativas: A) 120°   B) 60°   C) 30°   D) 90°",
       "respuesta": "A) 120°",
       "pasos": [
         "Con módulos iguales, el módulo 20 u se cancela al dividir suma entre diferencia.",
@@ -42,7 +42,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Dos vectores A⃗ y B⃗ tienen el mismo módulo, 10 u. Se sabe que |A⃗ − B⃗| es 2 veces |A⃗ + B⃗|. ¿Qué ángulo forman A⃗ y B⃗? Alternativas: A) 63,5°   B) 37°   C) 90°   D) 53°   E) 127°",
+      "enunciado": "Dos vectores A⃗ y B⃗ tienen el mismo módulo, 10 u. Se sabe que |A⃗ − B⃗| es 2 veces |A⃗ + B⃗|. ¿Qué ángulo forman A⃗ y B⃗? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Diferencia: |A⃗ − B⃗|² = A² + B² − 2AB·cos θ. Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Ángulo obtuso: cos(180° − α) = −cos α. Alternativas: A) 63,5°   B) 37°   C) 90°   D) 53°   E) 127°",
       "respuesta": "E) 127°",
       "pasos": [
         "Con módulos iguales, el módulo 10 u se cancela al dividir suma entre diferencia.",
@@ -54,7 +54,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Tres vectores A⃗, B⃗ y C⃗ suman cero: A⃗ + B⃗ + C⃗ = 0⃗. Sus módulos son 8 u, 5 u y √129 u. ¿Qué ángulo forman A⃗ y B⃗ (puestos con el origen en el mismo punto)? Alternativas: A) 120°   B) 30°   C) 90°   D) 60°",
+      "enunciado": "Tres vectores A⃗, B⃗ y C⃗ suman cero: A⃗ + B⃗ + C⃗ = 0⃗. Sus módulos son 8 u, 5 u y √129 u. ¿Qué ángulo forman A⃗ y B⃗ (puestos con el origen en el mismo punto)? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Ángulo obtuso: cos(180° − α) = −cos α. Alternativas: A) 120°   B) 30°   C) 90°   D) 60°",
       "respuesta": "D) 60°",
       "pasos": [
         "Si A⃗ + B⃗ + C⃗ = 0⃗, entonces A⃗ + B⃗ = −C⃗: R mide como C.",
@@ -66,7 +66,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Dos vectores A⃗ y B⃗ miden 15 u y 8 u y forman un ángulo de 37° entre sí. ¿Cuánto mide la resultante |A⃗ + B⃗|? Alternativas: A) 7 u   B) 17 u   C) 23 u   D) √97 u   E) √481 u",
+      "enunciado": "Dos vectores A⃗ y B⃗ miden 15 u y 8 u y forman un ángulo de 37° entre sí. ¿Cuánto mide la resultante |A⃗ + B⃗|? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Diferencia: |A⃗ − B⃗|² = A² + B² − 2AB·cos θ. Valor de academia: cos 37° = 4/5. Alternativas: A) 7 u   B) 17 u   C) 23 u   D) √97 u   E) √481 u",
       "respuesta": "E) √481 u",
       "pasos": [
         "Ley de cosenos para la suma (método del paralelogramo): R² = A² + B² + 2AB·cos θ.",
@@ -78,7 +78,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Tres vectores A⃗, B⃗ y C⃗ suman cero: A⃗ + B⃗ + C⃗ = 0⃗. Sus módulos son 12 m, 15 m y 9 m. ¿Qué ángulo forman A⃗ y B⃗ (puestos con el origen en el mismo punto)? Alternativas: A) 143°   B) 37°   C) 53°   D) 90°",
+      "enunciado": "Tres vectores A⃗, B⃗ y C⃗ suman cero: A⃗ + B⃗ + C⃗ = 0⃗. Sus módulos son 12 m, 15 m y 9 m. ¿Qué ángulo forman A⃗ y B⃗ (puestos con el origen en el mismo punto)? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Ángulo obtuso: cos(180° − α) = −cos α. Alternativas: A) 143°   B) 37°   C) 53°   D) 90°",
       "respuesta": "A) 143°",
       "pasos": [
         "Si A⃗ + B⃗ + C⃗ = 0⃗, entonces A⃗ + B⃗ = −C⃗: R mide como C.",
@@ -90,7 +90,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Dos vectores A⃗ y B⃗ tienen el mismo módulo, 20 N. Se sabe que |A⃗ + B⃗| es 2 veces |A⃗ − B⃗|. ¿Qué ángulo forman A⃗ y B⃗? Alternativas: A) 53°   B) 127°   C) 26,5°   D) 90°   E) 37°",
+      "enunciado": "Dos vectores A⃗ y B⃗ tienen el mismo módulo, 20 N. Se sabe que |A⃗ + B⃗| es 2 veces |A⃗ − B⃗|. ¿Qué ángulo forman A⃗ y B⃗? Datos: Suma: |A⃗ + B⃗|² = A² + B² + 2AB·cos θ, con θ el ángulo entre A⃗ y B⃗. Diferencia: |A⃗ − B⃗|² = A² + B² − 2AB·cos θ. Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2. Ángulo obtuso: cos(180° − α) = −cos α. Alternativas: A) 53°   B) 127°   C) 26,5°   D) 90°   E) 37°",
       "respuesta": "A) 53°",
       "pasos": [
         "Con módulos iguales, el módulo 20 N se cancela al dividir suma entre diferencia.",

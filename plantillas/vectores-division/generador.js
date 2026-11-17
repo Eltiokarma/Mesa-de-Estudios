@@ -48,6 +48,34 @@
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): las reglas y propiedades que el problema usa, una
+   * por línea. Dicen cómo se parte un segmento o dónde está el baricentro, no la combinación que se pide.
+   */
+  const FINAL_INICIO = `Vector entre dos puntos: final menos inicio, ${V('AB')} = ${V('OB')} − ${V('OA')}.`;
+  const COLA_PUNTA = `Cola con punta: ${V('OP')} = ${V('OA')} + ${V('AP')}.`;
+  const MEDIO = 'Desde un mismo origen, el punto medio de XY está en (X + Y)/2.';
+  function lineasDatos(d) {
+    if (d.tipo === 'division') return [
+      FINAL_INICIO, COLA_PUNTA,
+      `Si AP : PB = m : n, el segmento AB se parte en m + n trozos iguales: ${V('AP')} = m/(m + n) de ${V('AB')}.`,
+    ];
+    if (d.tipo === 'baricentro') return [
+      'La mediana AM va del vértice A al punto medio M del lado opuesto BC.', MEDIO,
+      'El baricentro G está sobre la mediana AM, a 2/3 de ella contando desde A: AG = 2·GM.',
+    ];
+    if (d.tipo === 'trapecio') return [
+      MEDIO,
+      `Vector entre dos puntos: final menos inicio, ${V('MN')} = N − M.`,
+    ];
+    return [
+      `En un paralelogramo, los lados opuestos son el mismo vector: ${V('BC')} = ${V('AD')} y ${V('DC')} = ${V('AB')}.`,
+      `Cola con punta: ${V('AC')} = ${V('AB')} + ${V('BC')}.`,
+      d.caso === 'AM-tercio' ? `Si BM : MC = 1 : 2, el lado BC se parte en 3 trozos iguales: ${V('BM')} = (1/3)${V('BC')}.`
+        : 'El punto medio parte el lado en dos mitades iguales.',
+    ];
+  }
+
   function construir(rng, semilla, tipo) {
     const v = P.v;
     const variables = { a: { nombre: `vector ${a_}`, color: 'o' }, b: { nombre: `vector ${b_}`, color: 'i' }, r: { nombre: 'razón o punto', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
@@ -161,7 +189,7 @@
     }
     const alternativas = P.armarTexto({ correcta, errores: errores.filter(Boolean), rng });
     return {
-      id: `vectores-division#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-division#${semilla}`, variables, enunciado, pregunta, datos: lineasDatos(datos), alternativas, solucion,
       respuesta: { valor: correcta.clave, texto: correcta.texto, unidad: '' },
       _datos: datos,
     };

@@ -220,3 +220,31 @@ test('escena viva: cada paso se dibuja sin NaN; los rótulos dicen lo que valen'
     }
   }
 });
+
+// Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): datos y fórmulas en una lista, una por línea, en texto
+// plano y cortas (22 palabras o menos). El generador dice qué se puede usar; el alumno decide qué usa.
+test('datos: una lista de líneas cortas en texto plano, en todos los tipos', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length, `semilla ${s}: línea vacía o con espacios`);
+      assert.ok(palabras(l) <= 22, `semilla ${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|\d\.\d/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
+    revisarDatos(p, p.datos.join('\n'), s);
+  }
+});
+
+function revisarDatos(p, d, s) {
+  const { tipo, sub } = p._datos;
+  if (tipo === 'marco' || tipo === 'idavuelta' || tipo === 'cruce') assert.ok(d.includes('v⃗_AB = v⃗_A − v⃗_B'), `semilla ${s}: falta la velocidad relativa`);
+  if (sub === 'combis') assert.ok(d.includes('1 m/s = 3,6 km/h'), `semilla ${s}: falta la equivalencia`);
+  if (sub === 'placas') assert.ok(d.includes('1 m = 100 cm'), `semilla ${s}: falta la equivalencia`);
+  // La convención que ya traía el texto de datos sigue en la primera línea.
+  if (sub === 'angulo' || sub === 'linea') assert.match(p.datos[0], /desde la perpendicular a la orilla/);
+  if (tipo === 'botes') assert.match(p.datos[0], /^Todo empieza en reposo/);
+  if (tipo === 'bote') assert.ok(d.includes('v⃗ = u⃗ + c⃗'), `semilla ${s}: falta la suma de velocidades`);
+}

@@ -94,7 +94,7 @@
     const alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto, negativos: !!o.negativos });
     const respuesta = { valor: o.correcta, unidad: o.unidad };
     const pr = {
-      id: `velocidad-relativa#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: o.datosTxt || '',
+      id: `velocidad-relativa#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: lineasDatos(o.datos),
       alternativas, solucion: o.solucion, respuesta, _datos: o.datos,
     };
     return o.viva ? Object.assign(pr, o.viva(alternativas, respuesta)) : pr;
@@ -349,7 +349,6 @@
     : { clave: `proa:${g}:${sentido}`, texto: `${g}° río ${sentido} de la perpendicular` });
   const RIO = ['Un bote cruza el río Ramis', 'Un bote cruza el Rímac', 'Una lancha cruza el Ucayali', 'Un bote cruza el Madre de Dios'];
   const U_ = P.vec('u'), C_ = P.vec('c'), V_ = P.vec('v');
-  const SENOS = 'Ángulo desde la perpendicular a la orilla. Usa sen 16° = 7/25, sen 30° = 1/2, sen 37° = 3/5, sen 53° = 4/5 y sen 74° = 24/25.';
 
   function bote(rng, semilla, sub) {
     const Rio = rng.elegir(RIO);
@@ -390,7 +389,7 @@
         ['La corriente empuja río abajo: la proa apunta río arriba para anularla.'],
         [v('u', f(u)), '·sen θ = ', v('c', f(c)), ` → sen θ = ${f(c)}/${f(u)} → `, v('x', `θ = ${g}° río arriba`), '.'],
       ];
-      return cerrarTexto(rng, semilla, { correcta, errores, variables: VAR_B, enunciado, pregunta: ['¿Hacia dónde apunta la ', v('x', 'proa'), '?'], solucion, datosTxt: SENOS,
+      return cerrarTexto(rng, semilla, { correcta, errores, variables: VAR_B, enunciado, pregunta: ['¿Hacia dónde apunta la ', v('x', 'proa'), '?'], solucion,
         datos: { tipo: 'bote', sub, u, c, W } });
     }
     if (sub === 'tmin' || sub === 'deriva' || sub === 'resultante') {
@@ -480,21 +479,54 @@
       ['La proa: ', v('x', correcta.texto), '.'],
     ];
     return cerrarTexto(rng, semilla, { correcta, errores, variables: VAR_B, enunciado,
-      pregunta: ['¿Hacia dónde apunta la ', v('x', 'proa'), '?'], solucion, datosTxt: SENOS,
+      pregunta: ['¿Hacia dónde apunta la ', v('x', 'proa'), '?'], solucion,
       datos: { tipo: 'bote', sub, u, c, W, d: Rx > 0 ? d : -d } });
   }
   function cerrarTexto(rng, semilla, o) {
     const alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores, rng });
     return {
-      id: `velocidad-relativa#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: o.datosTxt || '',
+      id: `velocidad-relativa#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: lineasDatos(o.datos),
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta.clave, texto: o.correcta.texto, unidad: '' }, _datos: o.datos,
     };
+  }
+
+  // ================= recuadro «Datos» =================
+  /*
+   * docs/plan-calidad.md, contrato, punto 13: las fórmulas, las equivalencias y la convención de cada tipo, una por
+   * línea (antes, solo el bote y los botes traían su convención en un texto). Dicen qué vale en general, no qué
+   * sentido tienen estos móviles ni cuánto sale.
+   */
+  const REL = 'Velocidad de A respecto a B: v⃗_AB = v⃗_A − v⃗_B (lo que ve alguien que va en B).';
+  const REL_RECTA = 'En una recta, con un sentido positivo, cada velocidad lleva su signo: v_AB = v_A − v_B.';
+  const MRU = 'Con rapidez constante: distancia = rapidez × tiempo.';
+  const PROA = 'La proa se mide desde la perpendicular a la orilla.';
+  const SEN_NOT = 'sen 16° = 7/25, sen 30° = 1/2, sen 37° = 3/5, sen 53° = 4/5 y sen 74° = 24/25.';
+  const COS_NOT = 'cos 16° = 24/25, cos 37° = 4/5, cos 53° = 3/5 y cos 74° = 7/25.';
+  const RIO_SUMA = `Respecto a tierra: ${V_} = ${U_} + ${C_} (bote respecto al agua más corriente).`;
+  const PROA_COMP = 'Con la proa a θ de la perpendicular: u·cos θ cruza el río y u·sen θ va a lo largo.';
+  const PITAGORAS = 'Si dos velocidades son perpendiculares, su suma mide √(a² + b²).';
+  function lineasDatos(d) {
+    if (d.tipo === 'marco') return d.sub === 'combis'
+      ? [REL, REL_RECTA, '1 m/s = 3,6 km/h.']
+      : [REL, REL_RECTA, MRU, '1 m = 100 cm.'];
+    if (d.tipo === 'idavuelta' || d.tipo === 'cruce') return [REL, REL_RECTA, MRU];
+    if (d.tipo === 'bote') {
+      if (d.sub === 'recto') return [RIO_SUMA, PITAGORAS, MRU];
+      // La convención de siempre (ángulo desde la perpendicular y senos de academia) sigue primero.
+      if (d.sub === 'angulo') return [PROA, SEN_NOT, RIO_SUMA, PROA_COMP];
+      if (d.sub === 'linea') return [PROA, SEN_NOT, COS_NOT, RIO_SUMA, PROA_COMP];
+      if (d.sub === 'resultante') return [RIO_SUMA, PITAGORAS];
+      return [RIO_SUMA, MRU];
+    }
+    // botes con sacos
+    return [...CONV, 'Cantidad de movimiento: p = m·v. Sin fuerzas de afuera, la total se conserva.',
+      'Velocidad del saco respecto al agua = la del saco respecto al bote + la del bote, con signos.'];
   }
 
   // ================= botes: lanzar un saco =================
   // Sin escena (cantidad de movimiento con marcos que cambian). La convención va en «datos», aparte del enunciado.
   const VAR_BS = { M: { nombre: 'masas', color: 'o' }, u: { nombre: 'rapidez del saco respecto al bote', color: 'i' }, V: { nombre: 'velocidades respecto al agua', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
-  const CONV = 'Todo empieza en reposo. La rapidez del saco es respecto al bote que lo lanza, ya en movimiento. Sin roce con el agua.';
+  const CONV = ['Todo empieza en reposo y no hay roce con el agua.', 'La rapidez del saco es respecto al bote que lo lanza, ya en movimiento.'];
   function botes(rng, semilla, sub) {
     const M = 10 * rng.entero(5, 25), m = rng.elegir([2, 4, 5, 8, 10, 12, 15, 20, 25, 30, 40]), u = rng.entero(1, 12);
     const VA = m * u / (M + m), w = u - VA;
@@ -510,7 +542,7 @@
           h('CHO-misma-rapidez', u, 'El bote no sale con la rapidez del saco: tiene más masa. Conserva la cantidad de movimiento.'),
           h('CHO-masa-doble', m * u / (M + 2 * m), `Sumaste la masa del saco dos veces. El bote (${M} kg) se lleva V y el saco, u − V.`),
         ];
-        return cerrar(rng, semilla, { correcta: VA, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado: base, datosTxt: CONV,
+        return cerrar(rng, semilla, { correcta: VA, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado: base,
           pregunta: ['¿Con qué ', v('x', 'rapidez'), ' retrocede el bote respecto al agua?'], solucion: [sol1, [...sol2.slice(0, 2), v('x', `V = ${f(VA)} m/s`), ' hacia el oeste.']],
           datos: { tipo: 'botes', sub, M, m, u } });
       }
@@ -520,7 +552,7 @@
         h('CHO-rapidez-del-bote', VA, 'Esa es la rapidez del bote. Se pide la del saco respecto al agua.'),
         h('REL-V-respecto-al-agua', u - m * u / M, 'Hallaste V como si el saco fuera a u respecto al agua. Usa u − V desde el inicio.'),
       ];
-      return cerrar(rng, semilla, { correcta: w, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado: base, datosTxt: CONV,
+      return cerrar(rng, semilla, { correcta: w, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado: base,
         pregunta: ['¿Con qué ', v('x', 'rapidez'), ' va el saco respecto al agua?'],
         solucion: [sol1, sol2, ['Saco: ', v('u', f(u)), ' − ', v('V', f(VA)), ' = ', v('x', `${f(w)} m/s`), ' hacia el este.']], datos: { tipo: 'botes', sub, M, m, u } });
     }
@@ -537,7 +569,7 @@
       ];
       const solucion = [sol1, sol2, ['El saco va a ', `${f(w)} m/s`, '; al atraparlo: ', v('M', `${m}`), `·${f(w)} = (`, v('M', `${M2} + ${m}`), ')·V₂.'],
         [v('x', 'V₂'), ` = ${f(m * w)}/${M2 + m} = `, v('x', `${f(VB)} m/s`), ' al este.']];
-      return cerrar(rng, semilla, { correcta: VB, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado, datosTxt: CONV,
+      return cerrar(rng, semilla, { correcta: VB, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado,
         pregunta: ['¿Con qué ', v('x', 'rapidez'), ' sigue ese bote?'], solucion, datos: { tipo: 'botes', sub, M, m, u, M2 } });
     }
     if (sub === 'tres') return tresBotes(rng, semilla, M, m, u);
@@ -559,7 +591,7 @@
       ['Segundo (este): ', v('M', `(${M} + ${m})`), `·${f(V1)} = `, v('M', `${M}`), '·V₂ + ', v('M', `${m}`), '·(V₂ + ', v('u', f(u)), ').'],
       [`V₂ = ${f(V2)} m/s: va al ${V2 < 0 ? 'oeste' : 'este'} a `, v('x', `${f(correcta)} m/s`), '.'],
     ];
-    return cerrar(rng, semilla, { negativos: true, correcta, errores: errores.filter(e => e.valor >= 0), texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado, datosTxt: CONV,
+    return cerrar(rng, semilla, { negativos: true, correcta, errores: errores.filter(e => e.valor >= 0), texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado,
       pregunta: ['¿Con qué ', v('x', 'rapidez'), ' queda el bote?'], solucion, datos: { tipo: 'botes', sub, M, m, u } });
   }
 
@@ -604,7 +636,7 @@
         ? ['A: ', v('M', `${m}`), `·${f(w1)} = (`, v('M', `${MA} + ${m}`), ')·V → ', v('x', `${f(VA)} m/s`), ' al oeste.']
         : ['C: ', v('M', `${m}`), `·${f(w2)} = (`, v('M', `${MC} + ${m}`), ')·V → ', v('x', `${f(VC)} m/s`), ' al este.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado, pregunta, solucion, datosTxt: CONV,
+    return cerrar(rng, semilla, { correcta, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_BS, enunciado, pregunta, solucion,
       datos: { tipo: 'botes', sub: 'tres', MA, MB, MC, m, u, cual } });
   }
 

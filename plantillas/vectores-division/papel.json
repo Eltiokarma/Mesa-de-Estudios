@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Desde un punto O salen OA⃗ = a⃗ y OB⃗ = b⃗. El punto P está en el segmento AB y cumple AP : PB = 2 : 3. ¿Cuánto vale OP⃗ en función de a⃗ y b⃗? Alternativas: A) (3a⃗ + 2b⃗)/5   B) (2a⃗ + 3b⃗)/5   C) (2b⃗ − 2a⃗)/5   D) 3a⃗ + 2b⃗   E) (a⃗ + b⃗)/2",
+      "enunciado": "Desde un punto O salen OA⃗ = a⃗ y OB⃗ = b⃗. El punto P está en el segmento AB y cumple AP : PB = 2 : 3. ¿Cuánto vale OP⃗ en función de a⃗ y b⃗? Datos: Vector entre dos puntos: final menos inicio, AB⃗ = OB⃗ − OA⃗. Cola con punta: OP⃗ = OA⃗ + AP⃗. Si AP : PB = m : n, el segmento AB se parte en m + n trozos iguales: AP⃗ = m/(m + n) de AB⃗. Alternativas: A) (3a⃗ + 2b⃗)/5   B) (2a⃗ + 3b⃗)/5   C) (2b⃗ − 2a⃗)/5   D) 3a⃗ + 2b⃗   E) (a⃗ + b⃗)/2",
       "respuesta": "A) (3a⃗ + 2b⃗)/5",
       "pasos": [
         "AP⃗ es 2/5 de AB⃗, y AB⃗ = OB⃗ − OA⃗ = b⃗ − a⃗.",
@@ -17,7 +17,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "En el trapecio ABCD, las bases son AB⃗ = a⃗ y DC⃗ = b⃗ (paralelas y del mismo sentido, con AB más larga). M y N son los puntos medios de las diagonales AC y BD. ¿Cuánto vale MN⃗ en función de a⃗ y b⃗? Alternativas: A) a⃗ − b⃗   B) (a⃗ + b⃗)/2   C) (b⃗ − a⃗)/2   D) a⃗/2   E) (a⃗ − b⃗)/2",
+      "enunciado": "En el trapecio ABCD, las bases son AB⃗ = a⃗ y DC⃗ = b⃗ (paralelas y del mismo sentido, con AB más larga). M y N son los puntos medios de las diagonales AC y BD. ¿Cuánto vale MN⃗ en función de a⃗ y b⃗? Datos: Desde un mismo origen, el punto medio de XY está en (X + Y)/2. Vector entre dos puntos: final menos inicio, MN⃗ = N − M. Alternativas: A) a⃗ − b⃗   B) (a⃗ + b⃗)/2   C) (b⃗ − a⃗)/2   D) a⃗/2   E) (a⃗ − b⃗)/2",
       "respuesta": "E) (a⃗ − b⃗)/2",
       "pasos": [
         "Con A como origen y AD⃗ = d⃗: M = (AC⃗)/2 = (d⃗ + b⃗)/2 y N = (AB⃗ + AD⃗)/2 = (a⃗ + d⃗)/2.",
@@ -28,7 +28,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Desde un punto O salen OA⃗ = a⃗ y OB⃗ = b⃗. El punto P está en el segmento AB y cumple AP : PB = 3 : 4. ¿Cuánto vale OP⃗ en función de a⃗ y b⃗? Alternativas: A) (3b⃗ − 3a⃗)/7   B) (4a⃗ + 3b⃗)/7   C) (a⃗ + b⃗)/2   D) (3a⃗ + 4b⃗)/7   E) 4a⃗ + 3b⃗",
+      "enunciado": "Desde un punto O salen OA⃗ = a⃗ y OB⃗ = b⃗. El punto P está en el segmento AB y cumple AP : PB = 3 : 4. ¿Cuánto vale OP⃗ en función de a⃗ y b⃗? Datos: Vector entre dos puntos: final menos inicio, AB⃗ = OB⃗ − OA⃗. Cola con punta: OP⃗ = OA⃗ + AP⃗. Si AP : PB = m : n, el segmento AB se parte en m + n trozos iguales: AP⃗ = m/(m + n) de AB⃗. Alternativas: A) (3b⃗ − 3a⃗)/7   B) (4a⃗ + 3b⃗)/7   C) (a⃗ + b⃗)/2   D) (3a⃗ + 4b⃗)/7   E) 4a⃗ + 3b⃗",
       "respuesta": "B) (4a⃗ + 3b⃗)/7",
       "pasos": [
         "AP⃗ es 3/7 de AB⃗, y AB⃗ = OB⃗ − OA⃗ = b⃗ − a⃗.",
@@ -39,7 +39,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En el trapecio ABCD, las bases son AB⃗ = a⃗ y DC⃗ = b⃗ (paralelas y del mismo sentido, con AB más larga). M y N son los puntos medios de los lados no paralelos AD y BC. ¿Cuánto vale MN⃗ en función de a⃗ y b⃗? Alternativas: A) (a⃗ + b⃗)/2   B) a⃗ + b⃗   C) −(a⃗ + b⃗)/2   D) a⃗/2   E) (a⃗ − b⃗)/2",
+      "enunciado": "En el trapecio ABCD, las bases son AB⃗ = a⃗ y DC⃗ = b⃗ (paralelas y del mismo sentido, con AB más larga). M y N son los puntos medios de los lados no paralelos AD y BC. ¿Cuánto vale MN⃗ en función de a⃗ y b⃗? Datos: Desde un mismo origen, el punto medio de XY está en (X + Y)/2. Vector entre dos puntos: final menos inicio, MN⃗ = N − M. Alternativas: A) (a⃗ + b⃗)/2   B) a⃗ + b⃗   C) −(a⃗ + b⃗)/2   D) a⃗/2   E) (a⃗ − b⃗)/2",
       "respuesta": "A) (a⃗ + b⃗)/2",
       "pasos": [
         "Con A como origen y AD⃗ = d⃗: M = d⃗/2 y N = (AB⃗ + AC⃗)/2 = (a⃗ + d⃗ + b⃗)/2.",
@@ -50,7 +50,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "En el triángulo ABC, AB⃗ = u⃗ y AC⃗ = w⃗. M es el punto medio de BC y G es el baricentro. ¿Cuánto vale AM⃗ en función de u⃗ y w⃗? Alternativas: A) (w⃗ − u⃗)/2   B) −(u⃗ + w⃗)/2   C) (u⃗ + w⃗)/3   D) (u⃗ + w⃗)/2   E) u⃗ + w⃗",
+      "enunciado": "En el triángulo ABC, AB⃗ = u⃗ y AC⃗ = w⃗. M es el punto medio de BC y G es el baricentro. ¿Cuánto vale AM⃗ en función de u⃗ y w⃗? Datos: La mediana AM va del vértice A al punto medio M del lado opuesto BC. Desde un mismo origen, el punto medio de XY está en (X + Y)/2. El baricentro G está sobre la mediana AM, a 2/3 de ella contando desde A: AG = 2·GM. Alternativas: A) (w⃗ − u⃗)/2   B) −(u⃗ + w⃗)/2   C) (u⃗ + w⃗)/3   D) (u⃗ + w⃗)/2   E) u⃗ + w⃗",
       "respuesta": "D) (u⃗ + w⃗)/2",
       "pasos": [
         "M es el punto medio de BC: AM⃗ = (AB⃗ + AC⃗)/2 = (u⃗ + w⃗)/2.",
@@ -61,7 +61,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Desde un punto O salen OA⃗ = a⃗ y OB⃗ = b⃗. El punto P está en el segmento AB y cumple AP : PB = 3 : 1. ¿Cuánto vale OP⃗ en función de a⃗ y b⃗? Alternativas: A) (3a⃗ + b⃗)/4   B) (3b⃗ − 3a⃗)/4   C) (a⃗ + 3b⃗)/4   D) (a⃗ + b⃗)/2   E) a⃗ + 3b⃗",
+      "enunciado": "Desde un punto O salen OA⃗ = a⃗ y OB⃗ = b⃗. El punto P está en el segmento AB y cumple AP : PB = 3 : 1. ¿Cuánto vale OP⃗ en función de a⃗ y b⃗? Datos: Vector entre dos puntos: final menos inicio, AB⃗ = OB⃗ − OA⃗. Cola con punta: OP⃗ = OA⃗ + AP⃗. Si AP : PB = m : n, el segmento AB se parte en m + n trozos iguales: AP⃗ = m/(m + n) de AB⃗. Alternativas: A) (3a⃗ + b⃗)/4   B) (3b⃗ − 3a⃗)/4   C) (a⃗ + 3b⃗)/4   D) (a⃗ + b⃗)/2   E) a⃗ + 3b⃗",
       "respuesta": "C) (a⃗ + 3b⃗)/4",
       "pasos": [
         "AP⃗ es 3/4 de AB⃗, y AB⃗ = OB⃗ − OA⃗ = b⃗ − a⃗.",
@@ -72,7 +72,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "En el paralelogramo ABCD (los vértices en ese orden), AB⃗ = a⃗ y AD⃗ = b⃗. M es el punto medio de CD. ¿Cuánto vale BM⃗ en función de a⃗ y b⃗? Alternativas: A) (a⃗ − 2b⃗)/2   B) −(a⃗ + 2b⃗)/2   C) (2a⃗ − b⃗)/2   D) (a⃗ + b⃗)/2   E) (2b⃗ − a⃗)/2",
+      "enunciado": "En el paralelogramo ABCD (los vértices en ese orden), AB⃗ = a⃗ y AD⃗ = b⃗. M es el punto medio de CD. ¿Cuánto vale BM⃗ en función de a⃗ y b⃗? Datos: En un paralelogramo, los lados opuestos son el mismo vector: BC⃗ = AD⃗ y DC⃗ = AB⃗. Cola con punta: AC⃗ = AB⃗ + BC⃗. El punto medio parte el lado en dos mitades iguales. Alternativas: A) (a⃗ − 2b⃗)/2   B) −(a⃗ + 2b⃗)/2   C) (2a⃗ − b⃗)/2   D) (a⃗ + b⃗)/2   E) (2b⃗ − a⃗)/2",
       "respuesta": "E) (2b⃗ − a⃗)/2",
       "pasos": [
         "Se va de un punto al otro siguiendo los lados: en un paralelogramo, BC⃗ = AD⃗ = b⃗ y DC⃗ = AB⃗ = a⃗.",
@@ -83,7 +83,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "En el triángulo ABC, AB⃗ = u⃗ y AC⃗ = w⃗. M es el punto medio de BC y G es el baricentro. ¿Cuánto vale GM⃗ en función de u⃗ y w⃗? Alternativas: A) −(u⃗ + w⃗)/6   B) (u⃗ + w⃗)/3   C) u⃗ + w⃗   D) (u⃗ + w⃗)/6   E) (u⃗ + w⃗)/2",
+      "enunciado": "En el triángulo ABC, AB⃗ = u⃗ y AC⃗ = w⃗. M es el punto medio de BC y G es el baricentro. ¿Cuánto vale GM⃗ en función de u⃗ y w⃗? Datos: La mediana AM va del vértice A al punto medio M del lado opuesto BC. Desde un mismo origen, el punto medio de XY está en (X + Y)/2. El baricentro G está sobre la mediana AM, a 2/3 de ella contando desde A: AG = 2·GM. Alternativas: A) −(u⃗ + w⃗)/6   B) (u⃗ + w⃗)/3   C) u⃗ + w⃗   D) (u⃗ + w⃗)/6   E) (u⃗ + w⃗)/2",
       "respuesta": "D) (u⃗ + w⃗)/6",
       "pasos": [
         "M es el punto medio de BC: AM⃗ = (AB⃗ + AC⃗)/2 = (u⃗ + w⃗)/2.",

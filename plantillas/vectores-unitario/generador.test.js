@@ -88,3 +88,26 @@ test('escena viva: los tres tipos del plano la llevan; 3D, la recta y «con mód
   assert.deepEqual([...con].sort(), ['constante2', 'unitario-suma', 'unitario2']);
   assert.ok(sin.has('unitario3') && sin.has('constante3') && sin.has('recta') && sin.has('con-modulo2'));
 });
+
+// Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): datos y fórmulas en una lista, una por línea, en texto
+// plano y cortas (22 palabras o menos). El generador dice qué se puede usar; el alumno decide qué usa.
+test('datos: una lista de líneas cortas en texto plano, en todos los tipos', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length, `semilla ${s}: línea vacía o con espacios`);
+      assert.ok(palabras(l) <= 22, `semilla ${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|\d\.\d/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
+    revisarDatos(p, p.datos.join('\n'), s);
+  }
+});
+
+function revisarDatos(p, d, s) {
+  assert.ok(d.includes('√(Vₓ² + V_y²'), `semilla ${s}: falta el módulo`);
+  if (p._datos.tipo === 'recta') assert.ok(d.includes('(1; m)'), `semilla ${s}: falta la dirección de la recta`);
+  assert.ok(!d.includes(p.respuesta.texto), `semilla ${s}: los datos dicen la respuesta`);
+}

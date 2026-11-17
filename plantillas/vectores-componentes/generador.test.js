@@ -79,3 +79,32 @@ probarViva(gen, {
     if (cadena.length) { const ult = cadena[cadena.length - 1].a; assert.ok(Math.abs(ult[0] - sx) < 1e-9 && Math.abs(ult[1] - sy) < 1e-9); }
   },
 });
+
+// Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): datos y fórmulas en una lista, una por línea, en texto
+// plano y cortas (22 palabras o menos). El generador dice qué se puede usar; el alumno decide qué usa.
+test('datos: una lista de líneas cortas en texto plano, en todos los tipos', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length, `semilla ${s}: línea vacía o con espacios`);
+      assert.ok(palabras(l) <= 22, `semilla ${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|\d\.\d/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
+    revisarDatos(p, p.datos.join('\n'), s);
+  }
+});
+
+function revisarDatos(p, d, s) {
+  const x = p._datos;
+  // El problema mide el signo por cuadrante: ningún seno ni coseno se da con su signo; va la referencia y la regla.
+  assert.ok(!/(cos|sen) \d+° = −/.test(d), `semilla ${s}: un seno o coseno con signo`);
+  assert.ok(/Valores de academia: sen (30|37|45|60)°/.test(d), `semilla ${s}: falta la tabla de academia`);
+  if (!x.cardinal && (x.tipo === 'angulo' || x.vectores.some(w => w.angulo > 90 && w.angulo % 90 !== 0)))
+    assert.ok(d.includes('180° + α') && d.includes('III (−; −)'), `semilla ${s}: falta la regla de cuadrantes`);
+  assert.ok(d.includes('A·cos θ'), `semilla ${s}: falta la fórmula de las componentes`);
+  if (x.tipo === 'angulo') assert.ok(d.includes('tan 37° = 3/4'), `semilla ${s}: falta la tabla de tangentes`);
+  else assert.ok(d.includes('√(Rx² + Ry²)'), `semilla ${s}: falta el módulo`);
+}

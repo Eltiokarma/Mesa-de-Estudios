@@ -78,3 +78,32 @@ test('escena viva: los tipos de longitud se arrastran casi siempre', () => {
   for (let s = 0; s < 300; s++) { const p = gen.generar(s); if (p.escena) { con++; if (p.respuesta.tipo === 'arrastrar') arr++; } }
   assert.ok(arr / con > 0.6, `${arr} de ${con}`);
 });
+
+// Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): datos y fórmulas en una lista, una por línea, en texto
+// plano y cortas (22 palabras o menos). El generador dice qué se puede usar; el alumno decide qué usa.
+test('datos: una lista de líneas cortas en texto plano, en todos los tipos', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length, `semilla ${s}: línea vacía o con espacios`);
+      assert.ok(palabras(l) <= 22, `semilla ${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|\d\.\d/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
+    revisarDatos(p, p.datos.join('\n'), s);
+  }
+});
+
+function revisarDatos(p, d, s) {
+  const x = p._datos;
+  assert.ok(d.includes('A² + B² + 2AB·cos θ'), `semilla ${s}: falta la ley de cosenos`);
+  if (x.tipo === 'angulo-desde-R' || x.tipo === 'suma-diferencia') {
+    // Se pide el ángulo: va la tabla entera y nunca «cos θ = …» resuelto.
+    for (const t of [37, 53, 60]) assert.ok(d.includes(`cos ${t}° = `), `semilla ${s}: falta cos ${t}°`);
+    assert.ok(d.includes('cos(180° − α) = −cos α') && !/cos \d+° = −/.test(d), `semilla ${s}: va la reducción, no el valor con signo`);
+    assert.ok(!/cos θ = /.test(d), `semilla ${s}: los datos dan cos θ`);
+  } else assert.ok(d.includes(`cos ${x.t}° = `), `semilla ${s}: falta cos ${x.t}°`);
+  if (x.tipo === 'desde-max-min') assert.ok(d.includes('A + B') && d.includes('A − B'), `semilla ${s}: falta el máximo y el mínimo`);
+}

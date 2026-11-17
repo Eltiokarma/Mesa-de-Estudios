@@ -41,6 +41,26 @@
     return `${ts.join('')} = ${P.formatear(r)}`;
   }
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): las reglas que el problema usa, una por línea.
+   * No dicen cómo se resuelve ni qué coeficiente sale: el alumno decide qué regla usa.
+   */
+  const OPERAR = 'Con componentes: k·(a; b) = (k·a; k·b) y (a; b) + (c; d) = (a + c; b + d).';
+  function lineasDatos(tipo) {
+    if (tipo === 'en-funcion') return [
+      `Escribir ${C_} en función de ${A_} y ${B_} es hallar los números m y n de ${C_} = m·${A_} + n·${B_}.`,
+      OPERAR,
+      'Dos vectores son iguales si sus componentes x son iguales y sus componentes y también.',
+    ];
+    if (tipo === 'suma-diferencia') return [
+      OPERAR,
+    ];
+    return [
+      `Paralelos: ${A_} = k·${B_} para algún número k (k puede ser negativo).`,
+      'Con componentes: (a₁; a₂) y (b₁; b₂) son paralelos si a₁/b₁ = a₂/b₂.',
+    ];
+  }
+
   function generar(semilla) {
     const rng = Azar.crear('vectores-combinacion|' + semilla);
     const tipo = rng.elegir(TIPOS);
@@ -130,7 +150,7 @@
     }
     const alternativas = P.armarTexto({ correcta, errores: errores.filter(Boolean), rng });
     return {
-      id: `vectores-combinacion#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-combinacion#${semilla}`, variables, enunciado, pregunta, datos: lineasDatos(tipo), alternativas, solucion,
       respuesta: { valor: correcta.clave, texto: correcta.texto, unidad: '' },
       _datos: datos,
     };

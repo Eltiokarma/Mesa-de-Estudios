@@ -62,6 +62,29 @@
       ` = ${a * a} + ${b * b} ${s} 2·${a}·${b}·(${f(cos(t))}) = ${f(R2(a, b, t, signo))}`];
   }
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): la convención de academia (cos 37° = 4/5, …) y las
+   * fórmulas, una por línea. Van las dos fórmulas, la de la suma y la de la diferencia: el alumno elige. Si se pide
+   * el ángulo, va la tabla de cosenos, nunca el cos θ que sale.
+   */
+  const textoCos = t => { const [n, d] = COS[t]; return `cos ${t}° = ${n < 0 ? '−' : ''}${Math.abs(n)}${d === 1 ? '' : `/${d}`}`; };
+  const LEY_SUMA = `Suma: |${SUMA}|² = A² + B² + 2AB·cos θ, con θ el ángulo entre ${AyB}.`;
+  const LEY_RESTA = `Diferencia: |${RESTA}|² = A² + B² − 2AB·cos θ.`;
+  // Si se pide el ángulo, el error típico es el signo del coseno (sale el suplemento): va la reducción, no el valor
+  // con signo de 120°, 127° y 143°.
+  const TABLA_COS = ['Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2.',
+    'Ángulo obtuso: cos(180° − α) = −cos α.'];
+  function lineasDatos(d) {
+    if (d.tipo === 'resultante' || d.tipo === 'diferencia') return [LEY_SUMA, LEY_RESTA, `Valor de academia: ${textoCos(d.t)}.`];
+    if (d.tipo === 'angulo-desde-R') return [LEY_SUMA, ...TABLA_COS];
+    if (d.tipo === 'suma-diferencia') return [LEY_SUMA, LEY_RESTA, ...TABLA_COS];
+    return [
+      'La resultante es máxima cuando los vectores apuntan al mismo lado (θ = 0°): A + B.',
+      'Es mínima cuando apuntan a lados opuestos (θ = 180°): A − B, con A el mayor.',
+      LEY_SUMA, `Valor de academia: ${textoCos(d.t)}.`,
+    ];
+  }
+
   function generar(semilla) {
     const rng = Azar.crear('vectores-ley-cosenos|' + semilla);
     for (let intento = 0; intento < 80; intento++) {
@@ -200,7 +223,7 @@
     if (!angular) errores = errores.filter(e => conRaiz(e.valor));
     const alternativas = P.armar({ correcta, errores, rng, texto });
     return {
-      id: `vectores-ley-cosenos#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-ley-cosenos#${semilla}`, variables, enunciado, pregunta, datos: lineasDatos(datos), alternativas, solucion,
       respuesta: { valor: correcta, unidad },
       _datos: datos,
       // escena, pasos, fantasmas y respuesta viva; solo en los tipos que piden un largo (ver escenaViva).

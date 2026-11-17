@@ -59,6 +59,24 @@
     return PARES;
   }
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): módulo, unitario y las reglas que el tipo usa, una
+   * por línea. Nunca el módulo que sale ni el unitario.
+   */
+  // Las fórmulas van con un vector cualquiera V⃗, para no confundirlo con el A⃗ del enunciado.
+  const V_ = P.vec('V');
+  const MODULO = dim => `Módulo de un vector ${V_}: |V| = √(Vₓ² + V_y²${dim === 3 ? ' + V_z²' : ''}).`;
+  const UNITARIO = `Unitario de ${V_}: û = ${V_}/|V|. Mide 1 y apunta hacia donde apunta ${V_}.`;
+  function lineasDatos(d) {
+    const dim = d.c ? d.c.length : 2;
+    if (d.tipo === 'unitario') return [MODULO(dim), UNITARIO];
+    if (d.tipo === 'con-modulo') return [MODULO(dim), UNITARIO,
+      'Un vector de módulo k en la dirección de û es k·û; en sentido contrario, −k·û.'];
+    if (d.tipo === 'constante') return [MODULO(dim), 'Un vector es unitario si su módulo es 1.', `Si c > 0: |c·${V_}| = c·|V|.`];
+    if (d.tipo === 'unitario-suma') return ['Suma con componentes: (a; b) + (c; d) = (a + c; b + d).', MODULO(2), UNITARIO];
+    return ['La recta y = mx + b sube m por cada unidad que avanza x: su dirección es (1; m).', MODULO(2), UNITARIO];
+  }
+
   function generar(semilla) {
     const rng = Azar.crear('vectores-unitario|' + semilla);
     const tipo = rng.elegir(TIPOS);
@@ -185,7 +203,7 @@
     }
     const alternativas = P.armarTexto({ correcta, errores: errores.filter(Boolean), rng });
     return {
-      id: `vectores-unitario#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-unitario#${semilla}`, variables, enunciado, pregunta, datos: lineasDatos(datos), alternativas, solucion,
       respuesta: { valor: correcta.clave, texto: correcta.texto, unidad: '' },
       _datos: datos,
       // escena, pasos y fantasmas; solo en los tipos del plano que dividen un vector entre su módulo (ver escenaViva).

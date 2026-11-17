@@ -5,7 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Dos cuerdas tiran de una argolla: una con 6 N hacia el este y otra con 8 N hacia el norte. ¿Cuánto mide la fuerza resultante sobre la argolla?",
+      "enunciado": "Dos cuerdas tiran de una argolla: una con 6 N hacia el este y otra con 8 N hacia el norte. ¿Cuánto mide la fuerza resultante sobre la argolla? Datos: R² = a² + b² + 2ab·cos θ, con θ el ángulo entre las dos fuerzas (cos 90° = 0).",
       "respuesta": "10 N.",
       "pasos": [
         "Las dos fuerzas forman 90°. Se pone la cola de la segunda en la punta de la primera: queda un triángulo rectángulo de catetos 6 y 8.",
@@ -17,7 +17,7 @@
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "Sea el vector a⃗ = (−5; 12). a) Halla su módulo y su vector unitario. b) ¿El vector b⃗ = (12; 5) es perpendicular a a⃗?",
+      "enunciado": "Sea el vector a⃗ = (−5; 12). a) Halla su módulo y su vector unitario. b) ¿El vector b⃗ = (12; 5) es perpendicular a a⃗? Datos: módulo |a⃗| = √(ax² + ay²); unitario â = a⃗/|a⃗|; producto escalar a⃗ · b⃗ = ax·bx + ay·by; si a⃗ · b⃗ = 0 y ninguno es nulo, son perpendiculares.",
       "respuesta": "a) Módulo 13; unitario (−5/13; 12/13). b) Sí: a⃗ · b⃗ = 0.",
       "pasos": [
         "Módulo: √(25 + 144) = √169 = 13.",
@@ -32,7 +32,7 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "El vector a⃗ mide 10 y forma 53° con el eje x positivo. El vector b⃗ mide 6 y apunta hacia el eje x negativo. Halla el módulo y la dirección de a⃗ + b⃗.",
+      "enunciado": "El vector a⃗ mide 10 y forma 53° con el eje x positivo. El vector b⃗ mide 6 y apunta hacia el eje x negativo. Halla el módulo y la dirección de a⃗ + b⃗. Datos: ax = a·cos θ y ay = a·sen θ, con θ medido desde el eje x positivo; cos 53° = 3/5 y sen 53° = 4/5; la resultante se suma por componentes.",
       "respuesta": "8, vertical hacia arriba (90°).",
       "pasos": [
         "Componentes de a⃗ con el notable 3-4-5: ax = 10 · cos 53° = 10 · 0,6 = 6 y ay = 10 · sen 53° = 10 · 0,8 = 8.",
@@ -48,7 +48,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En un cuadrado ABCD de 4 cm de lado se trazan los vectores AB⃗, AC⃗ y AD⃗, todos desde el vértice A. ¿Cuánto mide su resultante?",
+      "enunciado": "En un cuadrado ABCD de 4 cm de lado se trazan los vectores AB⃗, AC⃗ y AD⃗, todos desde el vértice A. ¿Cuánto mide su resultante? Datos: dos vectores que salen del mismo punto suman la diagonal del paralelogramo que forman; la diagonal de un cuadrado de lado L mide L√2 (por Pitágoras).",
       "respuesta": "8√2 cm, unos 11,3 cm.",
       "pasos": [
         "Por el paralelogramo, AB⃗ + AD⃗ = AC⃗: los dos lados que salen de A suman la diagonal.",
@@ -61,7 +61,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Tres vectores salen del origen: a⃗ de módulo 10 a 37°, b⃗ de módulo 5 a 127° y c⃗ de módulo 10 apuntando hacia abajo (270°). Halla el módulo de la resultante.",
+      "enunciado": "Tres vectores salen del origen: a⃗ de módulo 10 a 37°, b⃗ de módulo 5 a 127° y c⃗ de módulo 10 apuntando hacia abajo (270°). Halla el módulo de la resultante. Datos: cos 37° = 4/5 y sen 37° = 3/5; cos 53° = 3/5 y sen 53° = 4/5; en el II cuadrante (θ = 180° − α), x es negativa e y positiva; ax = a·cos θ y ay = a·sen θ, con θ desde el eje x positivo.",
       "respuesta": "5, sobre el eje x positivo.",
       "pasos": [
         "a⃗: ax = 10 · cos 37° = 10 · 0,8 = 8 y ay = 10 · sen 37° = 10 · 0,6 = 6.",
@@ -77,7 +77,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Los vectores a⃗ = (5; p) y b⃗ = (q; 2) tienen una resultante que está sobre el eje y y mide 10. Halla p y q. Ojo: hay más de una posibilidad.",
+      "enunciado": "Los vectores a⃗ = (5; p) y b⃗ = (q; 2) tienen una resultante que está sobre el eje y y mide 10. Halla p y q. Ojo: hay más de una posibilidad. Datos: R⃗ = a⃗ + b⃗ se suma por componentes; un vector sobre el eje y tiene componente x igual a 0; |R| = √(Rx² + Ry²).",
       "respuesta": "q = −5, y p = 8 o p = −12.",
       "pasos": [
         "R⃗ = a⃗ + b⃗ = (5 + q; p + 2).",
@@ -90,7 +90,7 @@
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "En el triángulo OAB, llamamos a⃗ = OA⃗ y b⃗ = OB⃗. El punto P está sobre el lado AB, de modo que AP : PB = 1 : 3 (P está más cerca de A). Escribe el vector OP⃗ en función de a⃗ y b⃗.",
+      "enunciado": "En el triángulo OAB, llamamos a⃗ = OA⃗ y b⃗ = OB⃗. El punto P está sobre el lado AB, de modo que AP : PB = 1 : 3 (P está más cerca de A). Escribe el vector OP⃗ en función de a⃗ y b⃗. Datos: AB⃗ = OB⃗ − OA⃗ (final menos inicio); OP⃗ = OA⃗ + AP⃗; si AP : PB = m : n, entonces AP⃗ es m/(m + n) de AB⃗.",
       "respuesta": "OP⃗ = (3a⃗ + b⃗)/4.",
       "pasos": [
         "Por el método del polígono, OP⃗ = OA⃗ + AP⃗ = a⃗ + AP⃗.",
@@ -103,7 +103,7 @@
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "Una caja tiene 4 cm de largo, 3 cm de fondo y 12 cm de alto. Abajo están los vértices A, B, C y D, y arriba E, F, G y H (E sobre A, F sobre B, G sobre C). Se trazan los vectores AB⃗, BC⃗ y CG⃗, uno a continuación del otro. ¿Cuánto mide su resultante?",
+      "enunciado": "Una caja tiene 4 cm de largo, 3 cm de fondo y 12 cm de alto. Abajo están los vértices A, B, C y D, y arriba E, F, G y H (E sobre A, F sobre B, G sobre C). Se trazan los vectores AB⃗, BC⃗ y CG⃗, uno a continuación del otro. ¿Cuánto mide su resultante? Datos: en coordenadas, un vector va del inicio al final: final menos inicio; el módulo de (x; y; z) es √(x² + y² + z²).",
       "respuesta": "13 cm.",
       "pasos": [
         "Los tres vectores van cola con punta: la resultante va de A a G, la diagonal de la caja.",
@@ -116,7 +116,7 @@
     {
       "id": "p9",
       "nivel": "intermedio",
-      "enunciado": "La ecuación U = K₁·v² + K₂·h es dimensionalmente correcta, donde U es una energía, v una velocidad y h una altura. Halla las dimensiones de K₁ y de K₂.",
+      "enunciado": "La ecuación U = K₁·v² + K₂·h es dimensionalmente correcta, donde U es una energía, v una velocidad y h una altura. Halla las dimensiones de K₁ y de K₂. Datos: [energía] = ML²T⁻², [velocidad] = LT⁻¹ y [altura] = L; en una suma, cada término tiene la misma dimensión que el total.",
       "respuesta": "[K₁] = M; [K₂] = MLT⁻² (una fuerza).",
       "pasos": [
         "Principio de homogeneidad: cada término de la suma pesa lo mismo que U, ML²T⁻².",
@@ -132,7 +132,7 @@
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "La potencia que el viento entrega a un molino depende de la densidad del aire ρ, del largo ℓ de sus aspas y de la rapidez v del viento: potencia = k·ρ^α·ℓ^β·v^γ, donde k es un número. Halla α + β + γ.",
+      "enunciado": "La potencia que el viento entrega a un molino depende de la densidad del aire ρ, del largo ℓ de sus aspas y de la rapidez v del viento: potencia = k·ρ^α·ℓ^β·v^γ, donde k es un número. Halla α + β + γ. Datos: [potencia] = ML²T⁻³, [densidad] = ML⁻³, [largo] = L y [velocidad] = LT⁻¹; k es un número, sin dimensión.",
       "respuesta": "6 (α = 1, β = 2 y γ = 3).",
       "pasos": [
         "Dimensiones: potencia ML²T⁻³; ρ: ML⁻³; ℓ: L; v: LT⁻¹. El número k no tiene dimensión.",

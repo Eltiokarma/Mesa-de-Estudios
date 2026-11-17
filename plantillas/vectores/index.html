@@ -161,6 +161,11 @@ table.barrido th{font-family:var(--font); text-align:left}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
+/* Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): fórmulas y valores de academia, una por línea. */
+.datos{margin:2px 0; padding:8px 12px; border:1.5px dashed var(--line); border-radius:12px; max-width:66ch}
+.datos-et{margin:0 0 2px; font-size:.8rem; font-weight:800; letter-spacing:.02em; color:var(--muted)}
+.datos ul{margin:0; padding-left:18px}
+.datos li{font-size:.95rem; margin:2px 0}
 .perilla{display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; font-weight:700; font-size:.92rem; max-width:66ch}
 .perilla input{width:100%; min-height:36px; accent-color:var(--ink)}
 .perilla output{font-family:var(--mono); font-variant-numeric:tabular-nums; min-width:4ch; text-align:right}
@@ -926,6 +931,8 @@ function crearEscena(cv, idDesc, idLect, idLey){
 }
 
 // Opciones de predicción (las mismas en los dos modos)
+// Recuadro «Datos» bajo una pregunta que pide una cuenta: la fórmula y los valores de academia, una línea cada uno.
+const datosHTML = lineas => (lineas && lineas.length ? `<div class="datos"><p class="datos-et">Datos</p><ul>${lineas.map(l => `<li>${l}</li>`).join('')}</ul></div>` : '');
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
 // Expresiones de la balanza: [texto, superíndice]
 const EXPR = {
@@ -1022,7 +1029,7 @@ const steps = [
    prep:() => E.config({ a:{ x:3, y:0 }, b:{ x:0, y:4 }, caja:{ x0:-1.2, x1:5.5, y0:-1.2, y1:5 }, ver:{ th:true, cola:!!S.pred[P1.id], R:!!S.pred[P1.id] }, lado:{ a:-1, R:1 },
      lect: S.pred[P1.id] ? ['a','b','th','R'] : ['a','b','th'] }),
    anima:fin => { E.ver.cola = true; E.ver.th = false; E.leyenda(); E.crecer('cola', 900, () => { E.ver.R = true; E.lect = ['a','b','th','R']; E.leyenda(); E.crecer('R', 700, () => { E.ver.th = true; E.dibujar(); E.avisar(); fin(); }); }); },
-   body:() => `<p>${av_()} = ${a_('3')}î (3 hacia la derecha, como el eje x) y ${bv_()} = ${b_('4')}ĵ (4 hacia arriba, como el eje y): forman ${th_('θ = 90°')}. La <b>resultante</b> ${Rv_()} = ${av_()} + ${bv_()} es lo que hacen los dos juntos. ¿Cuánto mide ${Rv_()}?</p>${opcionesHTML(P1.opts, 'fb')}
+   body:() => `<p>${av_()} = ${a_('3')}î (3 hacia la derecha, como el eje x) y ${bv_()} = ${b_('4')}ĵ (4 hacia arriba, como el eje y): forman ${th_('θ = 90°')}. La <b>resultante</b> ${Rv_()} = ${av_()} + ${bv_()} es lo que hacen los dos juntos. ¿Cuánto mide ${Rv_()}?</p>${datosHTML(['Pitágoras: en un triángulo rectángulo, hipotenusa² = cateto² + cateto².'])}${opcionesHTML(P1.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <p><b>Método del polígono:</b> se pone la cola de ${bv_()} en la punta de ${av_()}. ${Rv_()} va desde la cola de la primera hasta la punta de la última.</p>
    <div class="eqs"><div class="eq">${R_('R')}² = ${a_('3')}² + ${b_('4')}² = 9 + 16 = 25 → ${R_('R')} = ${R_(fmt(R1.R, 0))}</div></div>
@@ -1040,7 +1047,7 @@ const steps = [
    prep:() => E.config({ a:{ x:5, y:0 }, b:VB60, thR:50, caja:{ x0:-1, x1:7.5, y0:-1.2, y1:3.6 }, ver:{ th:true, para:!!S.pred[P2.id], R:!!S.pred[P2.id] }, lado:{ a:-1 },
      lect: S.pred[P2.id] ? ['a','b','th','R'] : ['a','b','th'] }),
    anima:fin => { E.ver.para = true; E.leyenda(); E.crecer('para', 800, () => { E.ver.R = true; E.lect = ['a','b','th','R']; E.leyenda(); E.crecer('R', 700, () => { E.avisar(); fin(); }); }); },
-   body:() => `<p>${av_()} mide 5, ${bv_()} mide 3 y forman ${th_('θ = 60°')}. ¿Cuánto mide ${Rv_()}?</p>${opcionesHTML(P2.opts, 'fb')}
+   body:() => `<p>${av_()} mide 5, ${bv_()} mide 3 y forman ${th_('θ = 60°')}. ¿Cuánto mide ${Rv_()}?</p>${datosHTML(['La fórmula del paralelogramo (paso 3): R² = a² + b² + 2ab·cos θ.', 'Valor de academia: cos 60° = 1/2.'])}${opcionesHTML(P2.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <div class="eqs"><div class="eq">${R_('R')}² = ${a_('a')}² + ${b_('b')}² + 2·${a_('a')}·${b_('b')}·cos ${th_('θ')}</div>
    <div class="eq">${R_('R')}² = ${a_('5')}² + ${b_('3')}² + 2 · ${a_('5')} · ${b_('3')} · cos ${th_('60°')} = 25 + 9 + ${fmt(R2.terminoCruzado, 0)} = ${fmt(R2.R2, 0)} → ${R_('R')} = ${R_(fmt(R2.R, 0))}</div></div>
@@ -1059,7 +1066,7 @@ const steps = [
    prep:() => E.config({ a:D37, caja:{ x0:-1.6, x1:10.6, y0:-1.6, y1:7.4 }, ver:{ b:false, ejes:true, dirA:true, comp:!!S.pred[P4.id], numeros:!!S.pred[P4.id], cuadricula:!!S.pred[P4.id] }, lado:{ a:1 },
      lect: S.pred[P4.id] ? ['a','dirA','ax','ay'] : ['a','dirA'] }),
    anima:fin => { E.ver.comp = true; E.ver.numeros = true; E.ver.cuadricula = true; E.lect = ['a','dirA','ax','ay']; E.leyenda(); E.crecer('comp', 1100, () => { E.avisar(); fin(); }); },
-   body:() => `<p>${av_()} mide 10 y forma 37° con el eje x. Una luz desde arriba proyecta su sombra sobre el eje x: es la componente ${x_('a' + SUB)}. ¿Cuánto mide?</p>${opcionesHTML(P4.opts, 'fb')}
+   body:() => `<p>${av_()} mide 10 y forma 37° con el eje x. Una luz desde arriba proyecta su sombra sobre el eje x: es la componente ${x_('a' + SUB)}. ¿Cuánto mide?</p>${datosHTML(['En un triángulo rectángulo: cos θ = cateto junto a θ / hipotenusa y sen θ = cateto frente a θ / hipotenusa.', 'Valores de academia (triángulo 3-4-5): cos 37° = 4/5 y sen 37° = 3/5.'])}${opcionesHTML(P4.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <p>Las dos sombras y ${av_()} forman un triángulo rectángulo: ${av_()} es la hipotenusa. La sombra en x es el cateto junto al ángulo y la sombra en y, el opuesto.</p>
    <div class="eqs"><div class="eq">${x_('a' + SUB)} = ${a_('a')} · cos 37° = ${a_('10')} · cos 37° = ${a_('10')} · 0,8 = ${x_(fmt(C4.x, 0))}</div>
@@ -1083,7 +1090,7 @@ const steps = [
        { nombre:'h', dim:'longitud', exp:X6.exponentes['α'], oculto:true }, { nombre:'g', dim:'aceleracion', exp:X6.exponentes['β'], oculto:true }, { nombre:'m', dim:'masa', exp:X6.exponentes['γ'], oculto:true }] },
      revelado:!!S.pred[P6.id], nota:'k: número · h: altura · g: aceleración · m: masa' } }),
    anima:fin => { E.dim.revelado = true; E.crecer('dim', 1400, () => { E.avisar(); fin(); }); },
-   body:() => `<p>El tiempo t que tarda un cuerpo en caer desde una altura h podría depender de h, de la aceleración de la gravedad g y de la masa m: t = k · h<sup>α</sup> · g<sup>β</sup> · m<sup>γ</sup>, donde k es un número. Sin hacer el experimento, ¿cuánto vale γ, el exponente de la masa?</p>${opcionesHTML(P6.opts, 'fb')}
+   body:() => `<p>El tiempo t que tarda un cuerpo en caer desde una altura h podría depender de h, de la aceleración de la gravedad g y de la masa m: t = k · h<sup>α</sup> · g<sup>β</sup> · m<sup>γ</sup>, donde k es un número. Sin hacer el experimento, ¿cuánto vale γ, el exponente de la masa?</p>${datosHTML(['[t] = T, [h] = L, [g] = LT⁻² (una aceleración) y [m] = M. El número k no tiene dimensión.'])}${opcionesHTML(P6.opts, 'fb')}
    <div id="tras" class="body" hidden>
    <p>Una ecuación por cada dimensión: a la izquierda, t pesa ${T_('T')}; a la derecha, h trae ${L_('L')}, g trae ${dimHTML('aceleracion')} y m trae ${M_('M')}.</p>
    <div class="eqs"><div class="eq">${M_('M')}: γ = 0</div><div class="eq">${T_('T')}: −2β = 1 → β = ${X6.textos['β']}</div><div class="eq">${L_('L')}: α + β = 0 → α = ${X6.textos['α']}</div>
@@ -1186,6 +1193,7 @@ const fuenteE8 = fuenteSuma + ' Las demás opciones son hipótesis nuestras.';
 const EXPS = [
   { id:'iguales-120', corto:'Dos iguales con 120°',
     q:`${av_()} y ${bv_()} miden 4 cada uno y forman ${th_('θ = 120°')}. ¿Cuánto mide ${Rv_()}?`,
+    datos:['Suma de dos vectores: R² = a² + b² + 2ab·cos θ, con θ el ángulo entre ellos.', 'Valor de academia: cos 120° = −1/2.'],
     opts:[['a', `R = ${fmt(Q1.errores.sumaModulos, 0)}`, 'VE-suma-modulos', 'parcial'],
           ['b', `R = ${fmt(Q1.R, 0)}`],
           ['c', 'R = 0', 'VE-se-anulan', 'hipotesis'],
@@ -1214,6 +1222,7 @@ const EXPS = [
       <p class="fuente">La opción B (el mínimo en 90°) y las demás son hipótesis nuestras: no encontramos datos.</p>` },
   { id:'unitario', corto:'El vector unitario',
     q:`${av_()} = (6; 8). Su vector unitario ${u_('û')} apunta igual que ${av_()} pero mide 1. ¿Cuál es ${u_('û')}?`,
+    datos:['Módulo de (x; y): √(x² + y²).'],
     opts:[['a', `û = (${fmt(U3.x, 1)}; ${fmt(U3.y, 1)})`],
           ['b', `û = (${fmt(U3.errores.sinDividir.x, 0)}; ${fmt(U3.errores.sinDividir.y, 0)})`, 'VE-unitario-sin-dividir', 'hipotesis'],
           ['c', `û = (${fmt(U3.errores.unos.x, 0)}; ${fmt(U3.errores.unos.y, 0)})`, 'VE-unitario-unos', 'hipotesis'],
@@ -1227,6 +1236,7 @@ const EXPS = [
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'hexagono', corto:'El hexágono',
     q:`En el hexágono regular de lado 2 se trazan los cinco vectores que salen de A hacia los otros vértices. ¿Cuánto mide su ${R_('resultante')}?`,
+    datos:['Hexágono regular ABCDEF de lado L: las diagonales AC y AE miden L√3, y la diagonal AD mide 2L.', 'Ángulo central: 360°/6 = 60°.'],
     opts:[['a', `R = 8 + 4√3 ≈ ${fmt(HEX.errores.sumaModulos, 1)}`, 'VE-suma-modulos', 'parcial'],
           ['b', `R = ${fmt(HEX.errores.seAnulan, 0)}`, 'VE-se-anulan', 'hipotesis'],
           ['c', `R = ${fmt(HEX.modulo, 0)}`],
@@ -1259,6 +1269,7 @@ const EXPS = [
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` },
   { id:'angulo-escondido', corto:'El ángulo escondido',
     q:`${av_()} y ${bv_()} miden 5 cada uno y salen del mismo punto. ¿Qué ángulo ${th_('θ')} tienen que formar para que ${R_('a\u20D7 + b\u20D7')} mida el doble que ${D_('a\u20D7 − b\u20D7')}?`,
+    datos:['|a\u20D7 + b\u20D7|² = a² + b² + 2ab·cos θ y |a\u20D7 − b\u20D7|² = a² + b² − 2ab·cos θ.', 'Valores de academia: cos 37° = 4/5, cos 53° = 3/5 y cos 60° = 1/2.'],
     opts:[['a', `θ = ${fmt(IS.errores.complementario, 0)}°`, 'VE-angulo-complementario', 'hipotesis'],
           ['b', `θ = ${fmt(IS.errores.diagonalesPerpendiculares, 0)}°`, 'VE-diagonales-perpendiculares', 'hipotesis'],
           ['c', `θ = ${fmt(IS.academia, 0)}°`],
@@ -1296,6 +1307,7 @@ const EXPS = [
       <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>`,
     q2:{ boton:'Otra pregunta: el triángulo',
       q:`Ahora ${av_()} = (4; 0) y ${bv_()} = (1; 3). ¿Cuánto mide el área del triángulo que forman ${av_()} y ${bv_()}, y hacia dónde apunta ${ar_('a\u20D7 × b\u20D7')}?`,
+      datos:['En el plano: a\u20D7 × b\u20D7 = (aₓb_y − a_ybₓ) k̂. Si sale positivo, a\u20D7 × b\u20D7 sale de la pantalla.', '|a\u20D7 × b\u20D7| es el área del paralelogramo que forman a\u20D7 y b\u20D7.'],
       opts:[['a', `${fmt(AR.triangulo, 0)}, y a\u20D7 × b\u20D7 entra en la pantalla`, 'VE-mano-derecha-invertida', 'hipotesis'],
             ['b', `${fmt(AR.errores.sinMitad, 0)}, y a\u20D7 × b\u20D7 sale de la pantalla`, 'VE-area-sin-mitad', 'hipotesis'],
             ['c', `${fmt(AR.triangulo, 0)}, y a\u20D7 × b\u20D7 sale de la pantalla`],
@@ -1339,7 +1351,7 @@ function ir(k){
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
-  $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  $('body2').innerHTML = `<p>${x.q}</p>${datosHTML(x.datos)}${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
   const btns = [...$('body2').querySelectorAll('.opt')];
   const siguiente = () => (k < EXPS.length - 1 && hecho(x) ? `<div class="nav"><span></span><button type="button" class="btn primary" id="sig2">Siguiente: ${EXPS[k+1].corto}</button></div>` : '');
   const atarSig = () => { const sig = $('sig2'); if (sig) sig.onclick = () => { ir(k + 1); document.querySelector('#m2').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }); }; };
@@ -1354,7 +1366,7 @@ function ir(k){
     const Q = x.q2, d = $('q2'); if (!Q || !d) return;
     if (!S.abierto[x.id]){ d.innerHTML = `<div class="nav"><span></span><button type="button" class="btn primary" id="abrir2">${Q.boton}</button></div>`;
       $('abrir2').onclick = () => { S.abierto[x.id] = true; S.t0 = Date.now(); E.compactar(true); Q.antes(false); pintar2(); botones(); const o = d.querySelector('.opt'); if (o) o.focus({ preventScroll:true }); }; return; }
-    d.innerHTML = `<p>${Q.q}</p>${opcionesHTML(Q.opts, 'fb2b')}<div id="res2b" class="body"></div>`;
+    d.innerHTML = `<p>${Q.q}</p>${datosHTML(Q.datos)}${opcionesHTML(Q.opts, 'fb2b')}<div id="res2b" class="body"></div>`;
     const bs = [...d.querySelectorAll('.opt')], id2 = x.id + '-2';
     const fin = () => { const p = S.pred[id2]; if (!p) return; marcar(bs, Q, p, 'fb2b'); $('res2b').innerHTML = Q.exp() + siguiente(); atarSig(); if (Q.montar) Q.montar(); };
     bs.forEach(b => b.onclick = () => {
@@ -1755,7 +1767,7 @@ const CUBO = MV.cubo(2), PC = [['A', 'B'], ['D', 'H'], ['F', 'G']], SC = MV.suma
 const CAJA = MV.caja(6, 3, 2), PK = [['A', 'G'], ['B', 'H']], SK = MV.sumaSolido(CAJA, PK);
 const rad = x => MV.radical(x) || fmt(x, 2);
 const F2 = { id:'vectores-figuras-2', ok:'c',
-  q:() => `<p>El cubo tiene aristas de 2. Se trazan tres vectores: AB\u20D7, DH\u20D7 y FG\u20D7. ¿Cuánto mide su ${R_('resultante')}?</p>`,
+  q:() => `<p>El cubo tiene aristas de 2. Se trazan tres vectores: AB\u20D7, DH\u20D7 y FG\u20D7. ¿Cuánto mide su ${R_('resultante')}?</p>${datosHTML(['En un cubo, las tres aristas que salen de un vértice son perpendiculares entre sí.', 'Módulo de (x; y; z): √(x² + y² + z²).'])}`,
   opts:[['a', `|R\u20D7| = ${rad(SC.errores.plano)}`, 'VE-solido-plano', 'hipotesis'],
         ['b', `|R\u20D7| = ${rad(SC.errores.sumaModulos)}`, 'VE-suma-modulos', 'parcial'],
         ['c', `|R\u20D7| = ${rad(SC.modulo)}`],
@@ -1781,7 +1793,7 @@ const F2 = { id:'vectores-figuras-2', ok:'c',
     <div class="perilla"><label for="giro3">Gira el sólido</label><input id="giro3" type="range" min="0" max="360" step="2" value="28"><output id="giro3o" for="giro3">28°</output></div>
     <p class="fuente">${fuenteSuma} Las demás opciones de este paso son hipótesis nuestras (ver un sólido como plano se parece a lo que anotamos en geometría del espacio).</p>` };
 const F2b = { id:'vectores-figuras-2b', boton:'Ahora, una caja', ok:'a',
-  q:() => `<p>La caja mide 6 de largo, 3 de fondo y 2 de alto, con los vértices nombrados como en el cubo. Se trazan los vectores AG\u20D7 y BH\u20D7 sobre las diagonales, que se cruzan en el centro de la caja. ¿Cuánto mide su ${R_('resultante')}?</p>`,
+  q:() => `<p>La caja mide 6 de largo, 3 de fondo y 2 de alto, con los vértices nombrados como en el cubo. Se trazan los vectores AG\u20D7 y BH\u20D7 sobre las diagonales, que se cruzan en el centro de la caja. ¿Cuánto mide su ${R_('resultante')}?</p>${datosHTML(['Con coordenadas, un vector entre dos vértices es final menos inicio.', 'Módulo de (x; y; z): √(x² + y² + z²).'])}`,
   opts:[['a', `|R\u20D7| = ${rad(SK.modulo)}`],
         ['b', `|R\u20D7| = ${rad(SK.errores.sumaModulos)}`, 'VE-suma-modulos', 'parcial'],
         ['c', `|R\u20D7| = ${rad(SK.errores.alReves[1])}`, 'VE-sentido-opuesto', 'hipotesis'],
@@ -1845,7 +1857,7 @@ const leySolido = () => [['x', 'a lo largo (x)'], ['y', 'hacia el fondo (y)'], [
 // ---- Paso 3: el punto que se desliza ----
 const A3 = { x:2, y:5 }, B3 = { x:7, y:1 }, DV = MV.division(A3, B3, 1, 2);
 const F3 = { id:'vectores-figuras-3', ok:'b',
-  q:() => `<p>${av_()} = OA\u20D7 y ${bv_()} = OB\u20D7. El punto P está sobre el segmento AB y lo parte en dos trozos con AP : PB = 1 : 2 (las marcas parten AB en tres partes iguales). ¿Cómo se escribe ${Rv_('OP')} con ${av_()} y ${bv_()}?</p>`,
+  q:() => `<p>${av_()} = OA\u20D7 y ${bv_()} = OB\u20D7. El punto P está sobre el segmento AB y lo parte en dos trozos con AP : PB = 1 : 2 (las marcas parten AB en tres partes iguales). ¿Cómo se escribe ${Rv_('OP')} con ${av_()} y ${bv_()}?</p>${datosHTML(['Vector entre dos puntos: final menos inicio, AB\u20D7 = OB\u20D7 − OA\u20D7.', 'Cola con punta: OP\u20D7 = OA\u20D7 + AP\u20D7.'])}`,
   opts:[['a', `OP\u20D7 = (a\u20D7 + 2b\u20D7)/3`, 'VE-pesos-derechos', 'hipotesis'],
         ['b', `OP\u20D7 = (2a\u20D7 + b\u20D7)/3`],
         ['c', `OP\u20D7 = (a\u20D7 + b\u20D7)/2`, 'VE-pesos-mitades', 'hipotesis'],
@@ -1889,7 +1901,7 @@ const F4 = { id:'vectores-figuras-4', ok:'b',
     <p class="fuente">Las opciones incorrectas son hipótesis nuestras.</p>` };
 const TR = MV.trapecio([0, 0], [8, 0], [6, 3], [2, 3]);
 const F4b = { id:'vectores-figuras-4b', boton:'Ahora, un trapecio', ok:'b',
-  q:() => `<p>En el trapecio ABCD, las bases son ${av_()} = AB\u20D7 y ${bv_()} = DC\u20D7, que apuntan hacia el mismo lado. M y N son los puntos medios de las diagonales AC y BD. ¿Cuánto vale ${kv_()}?</p>`,
+  q:() => `<p>En el trapecio ABCD, las bases son ${av_()} = AB\u20D7 y ${bv_()} = DC\u20D7, que apuntan hacia el mismo lado. M y N son los puntos medios de las diagonales AC y BD. ¿Cuánto vale ${kv_()}?</p>${datosHTML(['Desde un mismo origen, el punto medio de XY está en (X + Y)/2.', 'Vector entre dos puntos: final menos inicio, MN\u20D7 = N − M.'])}`,
   opts:[['a', `MN\u20D7 = (a\u20D7 + b\u20D7)/2`, 'VE-semisuma-por-semidiferencia', 'hipotesis'],
         ['b', `MN\u20D7 = (a\u20D7 − b\u20D7)/2`],
         ['c', `MN\u20D7 = a\u20D7 − b\u20D7`, 'VE-sin-mitad', 'hipotesis'],
@@ -2027,7 +2039,7 @@ const pv = v => `(${fmt(v.x, 1)}; ${fmt(v.y, 1)})`;
 // ---- Paso 1: la resultante sobre el eje ----
 const DS = MV.dosSentidos([null, 3], [2, null], 'x', 5), [S1, S2] = DS.soluciones;
 const C1 = { id:'vectores-componentes-1', ok:'a',
-  q:() => `<p>${av_()} = (p; 3) y ${bv_()} = (2; q). La ${R_('resultante')} ${Rv_()} = ${av_()} + ${bv_()} está sobre el eje x y mide 5. ¿Cuánto vale p?</p>`,
+  q:() => `<p>${av_()} = (p; 3) y ${bv_()} = (2; q). La ${R_('resultante')} ${Rv_()} = ${av_()} + ${bv_()} está sobre el eje x y mide 5. ¿Cuánto vale p?</p>${datosHTML(['Con componentes: (a; b) + (c; d) = (a + c; b + d).', 'Un vector sobre el eje x tiene componente y igual a 0.', 'Módulo de (x; y): √(x² + y²).'])}`,
   opts:[['a', `p = ${fmt(S1.incognitaEje, 0)} o p = ${fmt(S2.incognitaEje, 0)}`],
         ['b', `p = ${fmt(DS.errores.unaSola, 0)}, nada más`, 'VE-una-sola-solucion', 'hipotesis'],
         ['c', `p = ${fmt(DS.errores.signoCambiado[0], 0)} o p = ${fmt(DS.errores.signoCambiado[1], 0)}`, 'VE-despeje-signo', 'hipotesis'],
@@ -2059,7 +2071,7 @@ const C1b = { id:'vectores-componentes-1b', ok:'b',
 // ---- Paso 2: el vector de largo dado ----
 const a2 = { x:4, y:3 }, UW = MV.unitarioConModulo(a2, 10), UA = MV.unitario(a2), UW2 = MV.unitarioConModulo({ x:UW.x, y:UW.y }, 1);
 const C2 = { id:'vectores-componentes-2', ok:'c',
-  q:() => `<p>${av_()} = (4; 3). El vector ${wv_()} mide 10 y es paralelo a ${av_()}, con el mismo sentido. ¿Cuál es ${wv_()}?</p>`,
+  q:() => `<p>${av_()} = (4; 3). El vector ${wv_()} mide 10 y es paralelo a ${av_()}, con el mismo sentido. ¿Cuál es ${wv_()}?</p>${datosHTML(['Módulo de (x; y): √(x² + y²).', 'Unitario de a\u20D7: û = a\u20D7/|a\u20D7|. Mide 1 y apunta como a\u20D7.', 'Un vector de módulo k en la dirección de û es k·û.'])}`,
   opts:[['a', `w\u20D7 = ${pv(UW.errores.sinEscalar)}`, 'VE-unitario-sin-escalar', 'hipotesis'],
         ['b', `w\u20D7 = ${pv(UW.errores.sinDividir)}`, 'VE-unitario-sin-dividir', 'hipotesis'],
         ['c', `w\u20D7 = ${pv(UW)}`],
@@ -2106,7 +2118,7 @@ const C3 = { id:'vectores-componentes-3', ok:'b',
     <div class="eq">${Rv_()} = (${x_('−6')}; ${y_('8')}) en los ejes girados → |${Rv_()}| = √(36 + 64) = ${R_('10')}</div></div>
     <p class="aviso">Girar los ejes es un truco de academia: se eligen para que los ángulos queden notables. El módulo de la resultante es el mismo en cualquier par de ejes perpendiculares.</p>` };
 const C3b = { id:'vectores-componentes-3b', ok:'b',
-  q:() => `<p>Con los ejes girados ${PHI}°, ${Rv_()} = (${x_('−6')}; ${y_('8')}). ¿Qué ángulo forma ${Rv_()} con el semieje +x′, medido en sentido antihorario?</p>`,
+  q:() => `<p>Con los ejes girados ${PHI}°, ${Rv_()} = (${x_('−6')}; ${y_('8')}). ¿Qué ángulo forma ${Rv_()} con el semieje +x′, medido en sentido antihorario?</p>${datosHTML(['tan α = |R′y|/|R′x|, con α el ángulo agudo entre R\u20D7 y el eje x′.', 'tan 37° = 3/4 y tan 53° = 4/3.', 'Desde +x′, en sentido antihorario: cuadrante II, 180° − α; III, 180° + α; IV, 360° − α.'])}`,
   opts:[['a', `${fmt(GE.errores.anguloDeReferencia, 0)}°`, 'VE-angulo-de-referencia', 'hipotesis'],
         ['b', `${fmt(GE.resultante.angulo, 0)}°`],
         ['c', `${fmt(GE.errores.anguloComplementario, 0)}°`, 'VE-angulo-complementario', 'hipotesis'],

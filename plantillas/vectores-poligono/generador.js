@@ -45,6 +45,19 @@
   const len = v => Math.hypot(v[0], v[1]);
   const redondeo = x => (Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : Math.abs(x * x - Math.round(x * x)) < 1e-7 ? Math.sqrt(Math.round(x * x)) : x);
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): las propiedades del polígono regular y las reglas
+   * de la suma, una por línea. El radio va como fórmula en L (sin el número), y la simetría la ve el alumno.
+   */
+  const RADIO = { 3: 'L/√3', 4: 'L/√2', 6: 'L' };
+  const COLA_PUNTA = 'Para sumar, se ponen cola con punta: la resultante va de la cola del primero a la punta del último.';
+  function lineasDatos(tipo, n) {
+    const l = [`Polígono regular de ${n} lados: lados iguales y ángulo central de 360°/${n}${360 % n ? '' : ` = ${360 / n}°`} entre dos radios seguidos.`];
+    if (tipo !== 'lados-menos-uno') l.push(`En un ${NOMBRE[n]} de lado L, del centro a cada vértice hay ${RADIO[n]}${n === 6 ? ' (el mismo lado)' : ''}.`);
+    l.push(COLA_PUNTA);
+    return l;
+  }
+
   function generar(semilla) {
     const rng = Azar.crear('vectores-poligono|' + semilla);
     const tipo = rng.elegir(TIPOS);
@@ -128,7 +141,7 @@
     errores = errores.filter(e => e.valor === 0 || limpio(e.valor));
     const alternativas = P.armar({ correcta, errores, rng, negativos: true, texto: conU });
     return {
-      id: `vectores-poligono#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-poligono#${semilla}`, variables, enunciado, pregunta, datos: lineasDatos(tipo, n), alternativas, solucion,
       respuesta: { valor: correcta, unidad: u },
       _datos: { tipo, n, L },
       ...escenaViva({ tipo, n, L, u, V, letras, quita: typeof quita === 'number' ? quita : null }, alternativas, correcta, conU),

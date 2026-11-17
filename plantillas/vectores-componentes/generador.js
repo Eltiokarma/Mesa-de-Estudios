@@ -108,6 +108,41 @@
     return false;
   }
 
+  /*
+   * Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): los valores de academia de los ángulos de referencia
+   * (cos 37° = 4/5, …), las reglas de cuadrante y las fórmulas, una por línea. Este problema mide el signo por
+   * cuadrante (VE-signo-por-cuadrante): por eso no se da cos 127° = −3/5 con su signo, sino la referencia y la regla.
+   * No da Rx, Ry ni el ángulo de la resultante.
+   */
+  const BASE_NOTABLE = { F37: 'sen 37° = 3/5 y cos 37° = 4/5; sen 53° = 4/5 y cos 53° = 3/5 (triángulo 3-4-5).',
+    F45: 'sen 45° = cos 45° = √2/2.', F30: 'sen 30° = 1/2 y cos 30° = √3/2.', F60: 'sen 60° = √3/2 y cos 60° = 1/2.' };
+  const CARDINAL_45 = { 45: 1, 135: 1, 225: 1, 315: 1 };
+  const CUADRANTE = 'Con α el ángulo agudo con el eje x, desde +x: I, α; II, 180° − α; III, 180° + α; IV, 360° − α.';
+  const SIGNOS = 'Signos de (x; y) por cuadrante: I (+; +), II (−; +), III (−; −) y IV (+; −).';
+  function lineasDatos({ tipo, fam, vs, cardinal, equilibrio }) {
+    const l = [];
+    if (cardinal) {
+      if (vs.some(w => w.t % 90 !== 0 && !CARDINAL_45[w.t])) l.push('«37° al norte del este»: se parte del este y se giran 37° hacia el norte.');
+      if (vs.some(w => CARDINAL_45[w.t])) l.push('Noreste, noroeste, suroeste y sureste: justo a 45° entre los dos puntos cardinales.');
+      l.push(`Valores de academia: ${BASE_NOTABLE[fam === 'F45' ? 'F45' : 'F37']}`);
+    } else {
+      l.push(`Valores de academia: ${BASE_NOTABLE[fam]}`);
+      if (vs.some(w => w.t % 90 === 0)) l.push('Sobre los ejes: 0° apunta a +x, 90° a +y, 180° a −x y 270° a −y.');
+      if (tipo === 'angulo' || vs.some(w => w.t > 90 && w.t % 90 !== 0)) l.push(CUADRANTE, SIGNOS);
+    }
+    l.push(`Si ${P.vec('A')} forma θ con +x, sus componentes son Ax = A·cos θ y Ay = A·sen θ.`);
+    if (tipo === 'combinacion') l.push(`k·${P.vec('A')} multiplica cada componente por k; −${P.vec('B')} cambia el signo de sus dos componentes.`);
+    l.push('Rx = suma de las componentes x; Ry = suma de las componentes y.');
+    if (equilibrio) l.push(`En equilibrio, la suma de todas las fuerzas es 0${P.FLECHA}.`);
+    if (tipo === 'angulo') {
+      l.push('tan α = |Ry|/|Rx|, con α el ángulo entre la resultante y el eje x.');
+      l.push('tan 30° = √3/3, tan 37° = 3/4, tan 45° = 1, tan 53° = 4/3 y tan 60° = √3.');
+    } else {
+      l.push('Módulo: |R| = √(Rx² + Ry²).');
+    }
+    return l;
+  }
+
   function construir(rng, semilla, tipo) {
     const fam = rng.elegir(tipo === 'angulo' ? ['F37', 'F37', 'F45', 'F30', 'F60'] : ['F37', 'F37', 'F45', 'F30', 'F60']);
     const F = FAMILIAS[fam];
@@ -230,7 +265,8 @@
     if (!angular) errores = errores.filter(e => Number.isFinite(e.valor) && e.valor > 0 && esEntero(4 * e.valor * e.valor));
     const alternativas = P.armar({ correcta, errores, rng, texto });
     return {
-      id: `vectores-componentes#${semilla}`, variables, enunciado, pregunta, datos: '', alternativas, solucion,
+      id: `vectores-componentes#${semilla}`, variables, enunciado, pregunta, alternativas, solucion,
+      datos: lineasDatos({ tipo, fam, vs, cardinal, equilibrio }),
       respuesta: { valor: correcta, unidad: angular ? '°' : u },
       _datos: { tipo, fam, vectores: vs.map(w => ({ modulo: w.texto, m: w.modulo, angulo: w.t })), coef, cardinal, equilibrio },
       ...escenaViva({ vs, coef, F, X, Y, PX, PY, u, cardinal, equilibrio, angular, R }, alternativas, correcta),

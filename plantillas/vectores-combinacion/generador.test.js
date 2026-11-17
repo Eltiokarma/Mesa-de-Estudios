@@ -37,3 +37,25 @@ test('salen los tres tipos', () => {
   const tipos = new Set(); for (let s = 0; s < 200; s++) tipos.add(gen.generar(s)._datos.tipo);
   assert.equal(tipos.size, 3);
 });
+
+// Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): datos y fórmulas en una lista, una por línea, en texto
+// plano y cortas (22 palabras o menos). El generador dice qué se puede usar; el alumno decide qué usa.
+test('datos: una lista de líneas cortas en texto plano, en todos los tipos', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length, `semilla ${s}: línea vacía o con espacios`);
+      assert.ok(palabras(l) <= 22, `semilla ${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|\d\.\d/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
+    revisarDatos(p, p.datos.join('\n'), s);
+  }
+});
+
+function revisarDatos(p, d, s) {
+  if (p._datos.tipo === 'paralelo') assert.ok(d.includes('a₁/b₁ = a₂/b₂'), `semilla ${s}: falta la condición de paralelos`);
+  else assert.ok(d.includes('(a + c; b + d)'), `semilla ${s}: falta cómo se suma con componentes`);
+}

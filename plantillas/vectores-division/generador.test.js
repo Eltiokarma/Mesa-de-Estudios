@@ -40,3 +40,28 @@ test('pesos derechos y semisuma salen como distractores cuando corresponde', () 
   }
   assert.ok(derechos > 20 && semisuma > 20);
 });
+
+// Recuadro «Datos» (docs/plan-calidad.md, contrato, punto 13): datos y fórmulas en una lista, una por línea, en texto
+// plano y cortas (22 palabras o menos). El generador dice qué se puede usar; el alumno decide qué usa.
+test('datos: una lista de líneas cortas en texto plano, en todos los tipos', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length, `semilla ${s}: línea vacía o con espacios`);
+      assert.ok(palabras(l) <= 22, `semilla ${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|\d\.\d/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length, `semilla ${s}: líneas repetidas`);
+    revisarDatos(p, p.datos.join('\n'), s);
+  }
+});
+
+function revisarDatos(p, d, s) {
+  const x = p._datos;
+  if (x.tipo === 'division') assert.ok(d.includes('m/(m + n)'), `semilla ${s}: falta cómo se parte el segmento`);
+  if (x.tipo === 'baricentro') assert.ok(d.includes('2/3'), `semilla ${s}: falta dónde está el baricentro`);
+  // Nunca la respuesta: la combinación pedida no aparece en los datos.
+  assert.ok(!d.includes(p.respuesta.texto), `semilla ${s}: los datos dicen la respuesta`);
+}
