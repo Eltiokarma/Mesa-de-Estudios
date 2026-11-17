@@ -25,6 +25,7 @@ El id de cada alternativa es `<código>-<detalle>` (por ejemplo `RMP20-una-vuelt
 | RMP77 | Elegir lo posible y no lo necesario | rm-a #16 |
 | RMP78 | Creer que no se deduce nada cuando sí se deduce algo | nueva |
 | RMP79 | Tomar la primera parte de un contrafáctico («si X fuera…») como un dato | hueco de admisión 2021 |
+| RMP87 | Agregarle a la regla algo que no dice: otro momento, otra causa («llovió y ya se secó») | nueva (teoría de razonamiento deductivo, 17 nov; propuesta de la etapa 3, aprobada) |
 
 ## Trasvases y movimientos (`rm-trasvases`, `rm-movimientos`)
 

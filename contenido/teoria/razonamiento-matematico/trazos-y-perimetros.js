@@ -726,6 +726,9 @@
         ejemplo: 'Con 4 cm de diámetro mide π · 4 = 4π cm.', ver: ['diámetro', 'número pi'] },
       { termino: 'diámetro', simbolo: 'D', medida: 'cm', def: 'Segmento que cruza un círculo de borde a borde pasando por el centro. Mide dos radios.',
         ver: ['radio', 'circunferencia'] },
+      // Se mudó aquí desde «Razonamiento deductivo» (17 nov): allá ya no se usa (el aro se agranda con «tamaño del aro»).
+      { termino: 'radio', def: 'Distancia del centro de un círculo a su borde. Es la mitad del diámetro.',
+        formas: ['radio', 'radios'], ver: ['diámetro'] },
       { termino: 'número pi', simbolo: 'π', def: 'Número fijo, cerca de 3,14: cuántas veces cabe el diámetro en el largo de la circunferencia.',
         formas: ['número pi', 'π'], ver: ['circunferencia'] },
       { termino: 'arco', def: 'Trozo curvo de una circunferencia, entre dos de sus puntos.', ver: ['semicircunferencia'] },

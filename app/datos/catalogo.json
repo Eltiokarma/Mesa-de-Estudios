@@ -5466,12 +5466,13 @@
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-deductivo.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-plano.js",
-       "/nucleo/kit/piezas/rm-tablero.js",
-       "/nucleo/kit/piezas/rm-objeto.js"
+       "/nucleo/kit/piezas/rm-objeto.js",
+       "/nucleo/kit/piezas/rm-aros.js",
+       "/nucleo/kit/piezas/rm-casos.js",
+       "/nucleo/kit/piezas/rm-familia.js"
       ],
-      "ideas": 4,
-      "terminos": 18
+      "ideas": 5,
+      "terminos": 23
      }
     },
     {
