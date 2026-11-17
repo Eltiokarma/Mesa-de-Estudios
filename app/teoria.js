@@ -378,12 +378,17 @@
         <div class="te-zona"></div>
         ${vozHTML}
         <p class="te-aviso" role="alert"></p>
-        <div class="te-accion"><button type="button" class="btn morado ancho te-sig"></button></div>
+        <div class="te-accion"><button type="button" class="btn borde te-atras" hidden aria-label="Volver al momento anterior">‹ Atrás</button><button type="button" class="btn morado ancho te-sig"></button></div>
       </section>`;
     const raiz = $app.querySelector('.te-idea');
     const $ = s => raiz.querySelector(s);
     const fig = $('.te-fig'), zona = $('.te-zona'), lectura = $('.te-lectura'), dice = $('.te-dice span'), aviso = $('.te-aviso'), sig = $('.te-sig');
     const masc = $('[data-mascota]');
+    const atras = $('.te-atras');
+    atras.onclick = () => { const k = MOM.indexOf(si.momento); if (k > 0) ir(MOM[k - 1]); };
+    raiz.querySelector('.te-momentos').addEventListener('click', e => {
+      const li = e.target.closest('li.pasado'); if (li) ir(li.dataset.m);
+    });
     const si = estadoIdea(st, idea.id);
     let lt = null, t0 = Date.now(), caso = null, semilla = 0;
 
@@ -424,6 +429,9 @@
       if (lt) { lt.destruir(); lt = null; }
       if (juego) { juego.destruir(); juego = null; }
       marcarMomento(m);
+      // Volver atrás (Gerson, 17 nov: «no podías ir atrás cuando explorabas una idea»): al momento anterior, con el botón
+      // o tocando un momento ya pasado de la tira. Adelante solo con «Seguir»: la predicción sigue bloqueando (regla 3).
+      atras.hidden = MOM.indexOf(m) <= 0;
       ({ lee, juega, predice, mira, regla, resuelve, 'ahora-tu': ahoraTu })[m]();
       const foco = zona.querySelector('h3,[data-foco]');
       if (foco && document.activeElement && document.activeElement !== document.body) foco.focus({ preventScroll: true });
@@ -553,7 +561,7 @@
       actuar('prediccion', p.voz || voz('prediccion'));
       dibujar(p.dibujo, p.pieza);
       const ya = si.prediccion;
-      zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(p.pregunta)}</h3>${opcionesHTML(p.opciones)}<p class="te-fb" aria-live="polite"></p>`;
+      zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(p.pregunta)}</h3>${datosHTML(E, p.datos)}${opcionesHTML(p.opciones)}<p class="te-fb" aria-live="polite"></p>`;
       const cual = elegir();
       const resolver = elegida => {
         const o = p.opciones.find(x => x.id === elegida);
