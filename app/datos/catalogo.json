@@ -4668,7 +4668,6 @@
      "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
-      "trigonometria.angulo-trigonometrico",
       "geometria.triangulos"
      ],
      "plantillas": [
@@ -4677,10 +4676,11 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/razones-trigonometricas-agudas.js",
       "requiere": [
-       "/nucleo/kit/piezas/triangulo.js"
+       "/nucleo/kit/piezas/triangulo.js",
+       "/nucleo/kit/piezas/trig-objeto.js"
       ],
-      "ideas": 4,
-      "terminos": 24
+      "ideas": 5,
+      "terminos": 27
      }
     },
     {

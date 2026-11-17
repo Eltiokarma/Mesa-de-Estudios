@@ -15,6 +15,13 @@
  * entre relaciones y laboratorio de tres mesas (tres razones, semejantes uno dentro de otro, cofunción de 1° a 89°).
  * Las cuatro ideas usan la misma figura en «Juega» y en «Mira» (hallazgo 9 de docs/auditoria-teoria.md).
  *
+ * Etapa 2 del plan de calidad (17 nov, fase 2): idea nueva al inicio, «Los lados se nombran desde θ»
+ * (lados-desde-angulo), escrita completa contra el contrato (docs/etapa2/propuesta-trigonometria.md y decisiones.md):
+ * escalera en la pared de una casa de adobe (pieza trig-objeto), misión, predicción con datos, «Mira», regla, «Así se
+ * resuelve», «Ahora tú» de nivel examen con datos y 15 ejemplos. Sus colores van por papel (molde §5b; ver su bloque).
+ * Las otras cuatro ideas siguen como estaban (se rehacen después del visto bueno de Gerson): sus colores (θ naranja,
+ * CO rojo, H verde, abajo) todavía no siguen §5b, y la unidad aún no declara calidad: 2.
+ *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: una razón trigonométrica es un cociente de lados que depende solo del ángulo agudo, no del tamaño.
  *   Persona y condiciones: postulante de 3.º, celular de 360 px de gama baja, con o sin conexión, en el aula o en casa.
@@ -82,7 +89,425 @@
       .concat(o.otro ? [{ en: 'B', de: 'C', a: 'A', texto: o.otro, paso: o.pasoOtro }] : []).concat(o.angulos || []),
   });
 
-  // ---------- Idea 1: la razón no depende del tamaño ----------
+  // ---------- Idea 1 (nueva, 17 nov): los lados se nombran desde θ ----------
+  // Propuesta aprobada por Gerson: docs/etapa2/propuesta-trigonometria.md y docs/etapa2/decisiones.md (mandan sobre la
+  // propuesta). Objeto de la primera pantalla: una escalera de 5 m en la pared de una casa de adobe (pieza trig-objeto).
+  // Cambia: el pie de la escalera (lo que la separa de la pared). · Permanece: los 5 m de la escalera y el rincón recto.
+  // Progresa: el piso crece y la pared baja; la escalera sigue siendo el lado mayor. · Se reserva: el ángulo de arriba, α
+  // (la predicción). · Debe verse: los catetos cambian de nombre según el ángulo desde el que se mira; la hipotenusa, no.
+  // Colores de esta idea (molde §5b; fijos en juego, predicción y «Mira»): la escalera, naranja (el primer dato, 5 m); la
+  // pared, turquesa; el piso, violeta (lo que pide la misión y lo que pide la predicción); θ y α, carmín, con arco y letra.
+  // CO, CA y H van en tinta en la regla: el color sigue al objeto, no al nombre (si el opuesto tuviera un color fijo, el
+  // color nombraría el lado por el alumno). En los ejemplos y en «Ahora tú», los lados que solo se nombran van en tinta;
+  // en los de Pitágoras, la hipotenusa dada en naranja, el cateto dado en turquesa y lo que se pide, en violeta.
+  // Errores (hipótesis salvo TR7 y TR9, de docs/investigacion/trigonometria-ideas-erroneas.md): TR7 «el opuesto es el lado
+  // vertical» (De Kee y otros; parcial), TR9 confunde opuesto con adyacente (Kendal y Stacey; parcial), LAD-HIPOTENUSA toma
+  // la hipotenusa por cateto, LAD-SOLO-PISO cree que solo se mide desde el piso, LAD-TOCA-H toma la hipotenusa por adyacente
+  // porque también toca al ángulo, LAD-HIP-CATETO toma un cateto por hipotenusa, LAD-NO-CAMBIA nombra desde θ cuando se
+  // pregunta desde α, PIT-SUMA suma los cuadrados para hallar un cateto.
+  const OB = 'trig-objeto';
+  const TO = () => Kit.piezas[OB];
+  const thN = { v: 'c-h', t: 'θ' }, al = { v: 'c-h', t: 'α' };
+  const dO = t => ({ v: 'c-o', t }), dI = t => ({ v: 'c-i', t }), dF = t => ({ v: 'c-f', t });
+  const cuad = x => ({ sup: [x, '2'] });
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  // Datos de cada ejercicio (contrato, punto 13): definiciones y la fórmula de Pitágoras, una por línea. Pitágoras no
+  // está en el `requiere` de la unidad: va siempre como dato (decisiones, 17 nov).
+  const DL = {
+    cat: 'Catetos: los dos lados que forman el ángulo recto, de 90°.',
+    h: 'Hipotenusa: el lado que queda frente al ángulo recto. Es el lado más largo.',
+    co: 'Cateto opuesto a un ángulo agudo: el cateto que queda frente a ese ángulo, sin tocarlo.',
+    ca: 'Cateto adyacente a un ángulo agudo: el cateto que forma ese ángulo junto con la hipotenusa.',
+    pita: ['Pitágoras: ', cuad('hipotenusa'), ' = ', cuad('cateto'), ' + ', cuad('cateto')],
+    seg: (p, q) => `Un lado se nombra con sus dos vértices: ${p}${q} es el lado que une ${p} con ${q}.`,
+    recto: v => `Recto en ${v}: el ángulo de 90° está en el vértice ${v}.`,
+  };
+  // Un largo con su unidad: «1,5 m»; si no es exacto con dos decimales, con «≈».
+  const largoTxt = (x, u = 'm') => `${Math.abs(x - Math.round(x * 100) / 100) < 1e-9 ? '' : '≈ '}${f(x, 2)} ${u}`;
+  const fig = datos => ({ pieza: OB, datos, estado: {} });
+
+  // El juego: la escalera de 5 m; el pie, a «pie» metros de la pared. La escala queda fija (marco) para que el pie siga
+  // al dedo cuando se arrastra.
+  const ESC = 5, altoEsc = pie => Math.sqrt(ESC * ESC - pie * pie);
+  const escJ = v => ({ objeto: 'escalera', medidas: { piso: v.pie, pared: altoEsc(v.pie) }, marco: [4.5, 5],
+    lados: { escalera: { color: 'o', texto: '5 m' }, pared: { color: 'i', texto: largoTxt(altoEsc(v.pie)) }, piso: { color: 'f', texto: largoTxt(v.pie) } },
+    angulos: { pie: { texto: 'θ' } } });
+  // Predicción y «Mira»: la escalera con el pie a 3 m (lados 3, 4 y 5).
+  const ESC345 = (o = {}) => ({ objeto: 'escalera', medidas: { piso: 3, pared: 4 }, marco: [4.5, 5],
+    lados: { escalera: { color: 'o', texto: o.h || '5 m' }, pared: { color: 'i', texto: o.pared || '4 m', texto2: o.pared2 }, piso: { color: o.pisoColor === undefined ? 'f' : o.pisoColor, texto: o.piso || '3 m', texto2: o.piso2 } },
+    angulos: { pie: { texto: 'θ' }, arriba: o.alfa === false ? undefined : { texto: 'α', paso: o.pasoAlfa || 0 } } });
+
+  // Objetos de «Así se resuelve» y «Ahora tú»: cada uno con sus lados (ra y rb, los catetos; h, la hipotenusa), sus dos
+  // ángulos agudos (a, junto a ra; b, junto a rb), el cateto vertical (para el error TR7) y medidas posibles (ternas
+  // pitagóricas a escala: 3-4-5, 7-24-25, 5-12-13, 12-35-37 y 8-15-17).
+  const OBJS = [
+    { objeto: 'escalera', u: 'm', ra: 'el piso', rb: 'la pared', h: 'la escalera', vertical: 'rb', a: 'entre la escalera y el piso', b: 'entre la escalera y la pared',
+      intro: 'Una escalera está apoyada en una pared.', ternas: [[1.5, 2, 2.5], [1.8, 2.4, 3], [0.7, 2.4, 2.5], [1.2, 3.5, 3.7], [1, 2.4, 2.6], [1.6, 3, 3.4]] },
+    { objeto: 'rampa', u: 'm', ra: 'la base', rb: 'la altura', h: 'la rampa', vertical: 'rb', a: 'entre la rampa y el piso', b: 'entre la rampa y el borde de la plataforma',
+      intro: 'Una rampa sube del piso a una plataforma.', ternas: [[1.2, 0.5, 1.3], [2.4, 0.7, 2.5], [1.5, 0.8, 1.7]] },
+    { objeto: 'poste', u: 'm', ra: 'el suelo', rb: 'el poste', h: 'el cable', vertical: 'rb', a: 'entre el cable y el suelo', b: 'entre el cable y el poste',
+      intro: 'Un cable va de la punta de un poste a una estaca en el suelo.', ternas: [[6, 8, 10], [4.5, 6, 7.5], [5, 12, 13]] },
+    { objeto: 'poste', sombra: true, u: 'm', ra: 'la sombra', rb: 'el poste', h: 'el rayo de sol', vertical: 'rb', a: 'entre el rayo de sol y el suelo', b: 'entre el rayo de sol y el poste',
+      intro: 'Un poste da sombra en el suelo; un rayo de sol pasa por su punta.', ternas: [[8, 6, 10], [6, 4.5, 7.5], [12, 5, 13]] },
+    { objeto: 'repisa', u: 'cm', ra: 'la pared', rb: 'el brazo', h: 'el tirante', vertical: 'ra', a: 'entre el tirante y la pared', b: 'entre el tirante y el brazo',
+      intro: 'Una repisa tiene un brazo horizontal sostenido por un tirante.', ternas: [[40, 30, 50], [20, 15, 25], [24, 18, 30], [36, 15, 39]] },
+  ];
+  // Figura de un objeto: lados = { ra|rb|h: { texto, color } }, angulos = { a|b: { texto } }.
+  const figO = (o, ra, rb, lados, angulos) => fig({ objeto: o.objeto, sombra: o.sombra, medidas: { ra, rb }, lados, angulos });
+  // Desde el vértice a: el adyacente es ra y el opuesto rb; desde b, al revés. La hipotenusa es h desde los dos.
+  const desde = v => (v === 'a' ? { ca: 'ra', co: 'rb' } : { ca: 'rb', co: 'ra' });
+
+  // Ejemplos resueltos de «Los lados se nombran desde θ» (pestaña «Ejemplos»; molde §3). Cuentas revisadas con un script
+  // aparte, que las rehace sin el código de la unidad (scratchpad e2-trig/scripts/cuentas-lados.js): 1,5² + 2² = 2,5²; 0,5² + 1,2² = 1,3²;
+  // 6² + 8² = 10²; 1,8² + 2,4² = 3²; 6² + 8² = 10² (sombra); 0,7² + 2,4² = 2,5²; 30² + 40² = 50²; √(3,4² − 1,6²) = 3;
+  // √(2,5² − 0,7²) = 2,4; √(7,5² − 4,5²) = 6; √(2,6² − 2,4²) = 1; 90² + 120² = 150²; 20² + 21² = 29²; √(25² − 20²) = 15
+  // y 15 + 15 = 30. La figura muestra el planteamiento: las medidas que se dan, nunca cuál es el lado pedido.
+  const t3 = (ra, rb, h) => ({ ra: { texto: ra }, rb: { texto: rb }, h: { texto: h } });
+  const raizDif = (h, c) => ({ raiz: [[cuad(dO(h)), ' − ', cuad(dI(c))]] });
+  const EJEMPLOS_LADOS = [
+    { nivel: 1, titulo: 'La escalera de la casa', figura: fig({ objeto: 'escalera', medidas: { ra: 1.5, rb: 2 }, lados: t3('1,5 m', '2 m', '2,5 m'), angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['Una escalera de 2,5 m se apoya en una pared: su pie queda a 1,5 m y llega a 2 m de alto. ', thN, ' es su ángulo con el piso. ¿Cuál es el cateto adyacente a ', thN, '?'],
+      datos: [DL.cat, DL.ca],
+      solucion: [
+        { texto: 'El ángulo recto está en el rincón, entre la pared y el piso: esos dos son los catetos. La escalera es la hipotenusa.' },
+        { texto: [thN, ' está en el pie, entre la escalera y el piso. El cateto que forma ', thN, ' junto con la escalera es el piso: ', dF('1,5 m'), '.'] },
+      ],
+      respuesta: ['El piso: ', dF('1,5 m')] },
+    { nivel: 1, titulo: 'La rampa de la vereda', figura: fig({ objeto: 'rampa', medidas: { ra: 1.2, rb: 0.5 }, lados: t3('1,2 m', '0,5 m', '1,3 m'), angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['Para subir una carretilla a la vereda hay una rampa de 1,3 m: sube 0,5 m y su base mide 1,2 m. ', thN, ' es el ángulo entre la rampa y el piso. ¿Cuál es el cateto opuesto a ', thN, '?'],
+      datos: [DL.cat, DL.co],
+      solucion: [
+        { texto: 'El borde de la vereda y el piso forman el ángulo recto: la altura, 0,5 m, y la base, 1,2 m, son los catetos.' },
+        { texto: [thN, ' está abajo, donde empieza la rampa. Frente a ', thN, ', sin tocarlo, queda la altura: ', dF('0,5 m'), '.'] },
+      ],
+      respuesta: ['La altura: ', dF('0,5 m')] },
+    { nivel: 1, titulo: 'El cable del poste', figura: fig({ objeto: 'poste', medidas: { ra: 6, rb: 8 }, lados: t3('6 m', '8 m', '10 m') }),
+      enunciado: 'Un poste de 8 m se sostiene con un cable de 10 m, que va de su punta a una estaca clavada a 6 m de su base. ¿Cuál de los tres lados es la hipotenusa?',
+      datos: [DL.h],
+      solucion: [
+        { texto: 'El poste y el suelo forman el ángulo recto, en la base del poste.' },
+        { texto: ['Frente a ese ángulo queda el cable: es la hipotenusa. También es el lado más largo, ', dF('10 m'), '.'] },
+      ],
+      respuesta: ['El cable: ', dF('10 m')] },
+    { nivel: 1, titulo: 'Desde arriba de la escalera', figura: fig({ objeto: 'escalera', medidas: { ra: 1.8, rb: 2.4 }, lados: t3('1,8 m', '2,4 m', '3 m'), angulos: { b: { texto: 'α' } } }),
+      enunciado: ['Una escalera de 3 m se apoya en una pared a 2,4 m de altura; su pie queda a 1,8 m. ', al, ' es el ángulo entre la escalera y la pared. ¿Cuál es el cateto adyacente a ', al, '?'],
+      datos: [DL.cat, DL.ca],
+      solucion: [
+        { texto: 'Los catetos son la pared y el piso, que forman el ángulo recto.' },
+        { texto: [al, ' está arriba, entre la escalera y la pared. El cateto que forma ', al, ' junto con la escalera es la pared: ', dF('2,4 m'), '.'] },
+      ],
+      respuesta: ['La pared: ', dF('2,4 m')] },
+    { nivel: 1, titulo: 'La sombra del poste', figura: fig({ objeto: 'poste', sombra: true, medidas: { ra: 8, rb: 6 }, lados: t3('8 m', '6 m', '10 m'), angulos: { b: { texto: 'α' } } }),
+      enunciado: ['Un poste de 6 m da una sombra de 8 m; el rayo de sol que roza su punta mide 10 m. ', al, ' es el ángulo entre el rayo y el poste. ¿Cuál es el cateto opuesto a ', al, '?'],
+      datos: [DL.cat, DL.co],
+      solucion: [
+        { texto: 'El poste y la sombra forman el ángulo recto, en la base del poste.' },
+        { texto: [al, ' está arriba, en la punta del poste. Frente a ', al, ', sin tocarlo, queda la sombra: ', dF('8 m'), '.'] },
+      ],
+      respuesta: ['La sombra: ', dF('8 m')] },
+    { nivel: 2, titulo: 'Los dos opuestos', figura: fig({ objeto: 'escalera', medidas: { ra: 0.7, rb: 2.4 }, lados: t3('0,7 m', '2,4 m', '2,5 m'), angulos: { a: { texto: 'θ' }, b: { texto: 'α' } } }),
+      enunciado: ['Una escalera de 2,5 m llega a 2,4 m de alto en una pared; su pie está a 0,7 m. ', thN, ' es su ángulo con el piso; ', al, ', con la pared. ¿Cuánto miden los opuestos a ', thN, ' y a ', al, '?'],
+      datos: [DL.cat, DL.co],
+      solucion: [
+        { texto: [thN, ' está en el pie. Frente a ', thN, ' queda la pared: ', dF('2,4 m'), '.'] },
+        { texto: [al, ' está arriba. Frente a ', al, ' queda el piso: ', dF('0,7 m'), '. Cada ángulo agudo tiene enfrente un cateto distinto.'] },
+      ],
+      respuesta: ['Opuesto a ', thN, ': ', dF('2,4 m'), '; opuesto a ', al, ': ', dF('0,7 m')] },
+    { nivel: 2, titulo: 'La repisa y su tirante', figura: fig({ objeto: 'repisa', medidas: { ra: 40, rb: 30 }, lados: t3('40 cm', '30 cm', '50 cm'), angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['Una repisa tiene un brazo de 30 cm y un tirante de 50 cm, que baja hasta la pared 40 cm más abajo. ', thN, ' es el ángulo entre el tirante y la pared. ¿Cuál es el cateto opuesto a ', thN, '?'],
+      datos: [DL.cat, DL.co],
+      solucion: [
+        { texto: 'El ángulo recto está arriba, donde el brazo toca la pared: los catetos son el brazo y la pared. El tirante es la hipotenusa.' },
+        { texto: [thN, ' está abajo. Frente a ', thN, ' queda el brazo, que es horizontal y está arriba: ', dF('30 cm'), '. El opuesto no siempre es el lado vertical.'] },
+      ],
+      respuesta: ['El brazo: ', dF('30 cm')] },
+    { nivel: 2, titulo: '¿Hasta dónde sube la escalera?', figura: fig({ objeto: 'escalera', medidas: { ra: 1.6, rb: 3 }, lados: { ra: { texto: '1,6 m', color: 'i' }, h: { texto: '3,4 m', color: 'o' } }, angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['Una escalera de 3,4 m se apoya en una pared con su pie a 1,6 m de ella. ', thN, ' es su ángulo con el piso. ¿Cuánto mide el cateto opuesto a ', thN, '?'],
+      datos: [DL.co, DL.pita],
+      solucion: [
+        { texto: ['Frente a ', thN, ' queda la pared: el cateto opuesto es la altura a la que llega la escalera. La escalera es la hipotenusa.'] },
+        { texto: 'Con Pitágoras, el cateto que falta es la raíz de la hipotenusa al cuadrado menos el otro cateto al cuadrado.',
+          ecuacion: [raizDif('3,4', '1,6'), ' = ', { raiz: ['11,56 − 2,56'] }, ' = √9 = ', dF('3 m')] },
+      ],
+      respuesta: ['La pared: ', dF('3 m')] },
+    { nivel: 2, titulo: 'El cable visto desde arriba', figura: fig({ objeto: 'poste', medidas: { ra: 6, rb: 8 }, lados: t3('6 m', '8 m', '10 m'), angulos: { b: { texto: 'α' } } }),
+      enunciado: ['Un cable de 10 m va de la punta de un poste de 8 m a una estaca, a 6 m del poste. ', al, ' está entre el cable y el poste. ¿Cuánto miden los catetos opuesto y adyacente a ', al, '?'],
+      datos: [DL.co, DL.ca],
+      solucion: [
+        { texto: [al, ' está en la punta del poste: lo forman el cable y el poste. El poste es el cateto adyacente: ', dF('8 m'), '.'] },
+        { texto: ['Frente a ', al, ', sin tocarlo, queda el suelo, de la base a la estaca: es el cateto opuesto, ', dF('6 m'), '.'] },
+      ],
+      respuesta: ['Opuesto a ', al, ': ', dF('6 m'), '; adyacente a ', al, ': ', dF('8 m')] },
+    { nivel: 2, titulo: 'La base de la rampa', figura: fig({ objeto: 'rampa', medidas: { ra: 2.4, rb: 0.7 }, lados: { rb: { texto: '0,7 m', color: 'i' }, h: { texto: '2,5 m', color: 'o' } }, angulos: { a: { texto: 'θ' } } }),
+      enunciado: ['Una rampa de 2,5 m sube 0,7 m, desde el piso hasta la puerta de un almacén. ', thN, ' es su ángulo con el piso. ¿Cuánto mide el cateto adyacente a ', thN, '?'],
+      datos: [DL.ca, DL.pita],
+      solucion: [
+        { texto: [thN, ' está abajo: lo forman la rampa, que es la hipotenusa, y la base en el piso. El cateto adyacente es la base.'] },
+        { texto: 'Con Pitágoras, la base es la raíz de la rampa al cuadrado menos la altura al cuadrado.',
+          ecuacion: [raizDif('2,5', '0,7'), ' = ', { raiz: ['6,25 − 0,49'] }, ' = √5,76 = ', dF('2,4 m')] },
+      ],
+      respuesta: ['La base: ', dF('2,4 m')] },
+    { nivel: 3, titulo: 'La sombra vista desde arriba', figura: fig({ objeto: 'poste', sombra: true, medidas: { ra: 6, rb: 4.5 }, lados: { rb: { texto: '4,5 m', color: 'i' }, h: { texto: '7,5 m', color: 'o' } }, angulos: { b: { texto: 'α' } } }),
+      enunciado: ['Un poste de 4,5 m da sombra. El rayo de sol que roza su punta mide 7,5 m hasta el final de la sombra. ', al, ' está entre el rayo y el poste. ¿Cuánto mide el cateto opuesto a ', al, '?'],
+      datos: [DL.co, DL.pita],
+      solucion: [
+        { texto: [al, ' está arriba: lo forman el rayo y el poste. Frente a ', al, ' queda la sombra. El poste es vertical, pero toca a ', al, ': no es su opuesto.'] },
+        { texto: 'La sombra es un cateto y el rayo, la hipotenusa. Con Pitágoras:',
+          ecuacion: [raizDif('7,5', '4,5'), ' = ', { raiz: ['56,25 − 20,25'] }, ' = √36 = ', dF('6 m')] },
+      ],
+      respuesta: ['La sombra: ', dF('6 m')] },
+    { nivel: 3, titulo: 'Una medida con dos nombres', figura: fig({ objeto: 'escalera', medidas: { ra: 1, rb: 2.4 }, lados: { h: { texto: '2,6 m', color: 'o' } }, angulos: { a: { texto: 'θ' }, b: { texto: 'α' } } }),
+      enunciado: ['Una escalera de 2,6 m se apoya en una pared. ', thN, ' es su ángulo con el piso; ', al, ', con la pared. El opuesto a ', thN, ' mide 2,4 m. ¿Cuánto miden el adyacente a ', al, ' y el opuesto a ', al, '?'],
+      datos: [DL.co, DL.ca, DL.pita],
+      solucion: [
+        { texto: ['Frente a ', thN, ', que está en el pie, queda la pared: mide ', dI('2,4 m'), '. La pared forma ', al, ' junto con la escalera: es el adyacente a ', al, ', ', dF('2,4 m'), '.'] },
+        { texto: ['El opuesto a ', al, ' es el piso. Sale de Pitágoras, con la escalera como hipotenusa:'],
+          ecuacion: [raizDif('2,6', '2,4'), ' = ', { raiz: ['6,76 − 5,76'] }, ' = √1 = ', dF('1 m')] },
+      ],
+      respuesta: ['Adyacente a ', al, ': ', dF('2,4 m'), '; opuesto a ', al, ': ', dF('1 m')] },
+    { nivel: 3, titulo: 'La chacra triangular', figura: fig({ objeto: 'chacra', medidas: { ra: 90, rb: 120 }, lados: t3('90 m', '120 m', '150 m') }),
+      enunciado: ['Una chacra tiene forma de triángulo rectángulo, con lados de 90 m, 120 m y 150 m. ', thN, ' es el ángulo de la esquina que queda frente al lado de 90 m. ¿Cuánto mide el cateto adyacente a ', thN, '?'],
+      datos: [DL.h, DL.ca],
+      solucion: [
+        { texto: 'La hipotenusa es el lado más largo: 150 m. Los catetos son los otros dos, 90 m y 120 m.' },
+        { texto: ['La esquina de ', thN, ' queda frente al lado de 90 m, así que la tocan los lados de 120 m y 150 m.'] },
+        { texto: ['De esos dos, 150 m es la hipotenusa. El cateto adyacente es el otro: ', dF('120 m'), '. Tocar a ', thN, ' no basta: también tiene que ser cateto.'] },
+      ],
+      respuesta: [dF('120 m')] },
+    { nivel: 3, titulo: 'Recto en Q', figura: fig({ objeto: 'triangulo', medidas: { ra: 20, rb: 21 }, giro: 25, vertices: { r: 'Q', a: 'P', b: 'R' }, lados: t3('20', '21', '29'), angulos: { b: {} } }),
+      enunciado: 'En el triángulo PQR, recto en Q, PQ = 20, QR = 21 y PR = 29. ¿Cuánto miden el cateto opuesto y el cateto adyacente al ángulo R?',
+      datos: [DL.seg('P', 'Q'), DL.recto('Q'), DL.co, DL.ca],
+      solucion: [
+        { texto: 'El ángulo recto está en Q: los catetos son los dos lados que pasan por Q, PQ y QR. PR es la hipotenusa.' },
+        { texto: ['El ángulo R lo forman QR y PR. El cateto adyacente es QR: ', dF('21'), '. Frente a R, sin tocarlo, queda PQ: ', dF('20'), '.'] },
+      ],
+      respuesta: ['Opuesto a R: ', dF('PQ = 20'), '; adyacente a R: ', dF('QR = 21')] },
+    { nivel: 3, titulo: 'La suma en la repisa', figura: fig({ objeto: 'repisa', medidas: { ra: 20, rb: 15 }, lados: { ra: { texto: '20 cm', color: 'i' }, h: { texto: '25 cm', color: 'o' } }, angulos: { a: { texto: 'θ' }, b: { texto: 'α' } } }),
+      enunciado: ['El tirante de una repisa mide 25 cm y llega a la pared 20 cm bajo el brazo. ', thN, ' y ', al, ' son los ángulos marcados. ¿Cuánto suman el opuesto a ', thN, ' y el adyacente a ', al, '?'],
+      datos: [DL.co, DL.ca, DL.pita],
+      solucion: [
+        { texto: ['Frente a ', thN, ' queda el brazo. ', al, ' lo forman el tirante y el brazo: su adyacente también es el brazo. Se suma dos veces el mismo lado.'] },
+        { texto: 'El brazo es un cateto; el tirante, la hipotenusa. Con Pitágoras:', ecuacion: [raizDif('25', '20'), ' = ', { raiz: ['625 − 400'] }, ' = √225 = 15 cm'] },
+        { texto: 'La suma:', ecuacion: ['15 cm + 15 cm = ', dF('30 cm')] },
+      ],
+      respuesta: [dF('30 cm')] },
+  ];
+
+  // «Ahora tú», tipo 1: el triángulo de examen, con vértices nombrados (sin A, B, C ni H: «CA» se leería como un lado).
+  const LETRAS = [['P', 'Q', 'R'], ['M', 'N', 'T'], ['D', 'E', 'F'], ['K', 'L', 'S']];
+  const segN = (x, y) => [x, y].sort().join('');
+  function casoVertices(r) {
+    const ls = r.uno(LETRAS), orden = r.uno([[0, 1, 2], [1, 0, 2], [2, 0, 1], [1, 2, 0]]);
+    const V = { r: ls[orden[0]], a: ls[orden[1]], b: ls[orden[2]] };
+    const [ra, rb] = r.uno([[3, 4], [5, 12], [8, 15], [4, 3], [12, 5]]);
+    const giro = r.uno([20, 75, 140, 200, 250, 315]);
+    const en = r.uno(['a', 'b']), pide = r.uno(['co', 'ca', 'ca', 'co']);
+    const seg = { ra: segN(V.r, V.a), rb: segN(V.r, V.b), h: segN(V.a, V.b) };
+    const ds = desde(en), bien = ds[pide], otro = ds[pide === 'co' ? 'ca' : 'co'], X = V[en];
+    const nombre = pide === 'co' ? 'opuesto' : 'adyacente';
+    const ops = [
+      { id: 'c', texto: seg[bien], correcta: true },
+      { id: 'cambia', texto: seg[otro], error: 'TR9', siFuera: pide === 'co' ? `${seg[otro]} es cateto, bien; pero pasa por ${X}: lo toca. El opuesto no pasa por ${X}.` : `${seg[otro]} es cateto, bien; pero no pasa por ${X}: queda enfrente. El adyacente pasa por ${X}.` },
+      { id: 'hip', texto: seg.h, error: pide === 'ca' ? 'LAD-TOCA-H' : 'LAD-HIPOTENUSA', siFuera: pide === 'ca' ? `${seg.h} también pasa por ${X}, es cierto; pero no pasa por ${V.r}: es la hipotenusa.` : `${seg.h} no pasa por el recto, es cierto: por eso es la hipotenusa, no un cateto.` },
+    ];
+    return {
+      pregunta: `En el triángulo ${ls.join('')}, recto en ${V.r}, ¿cuál es el cateto ${nombre} al ángulo ${X}?`,
+      datos: [DL.seg(...[V.r, V.a].sort()), DL.recto(V.r), DL.co, DL.ca],
+      dibujo: { datos: { objeto: 'triangulo', medidas: { ra, rb }, giro, vertices: V, angulos: { [en]: {} } }, estado: {} },
+      opciones: ops,
+      solucion: { texto: pide === 'ca' ? `Por ${X} pasan ${seg[bien]} y ${seg.h}. ${seg.h} no pasa por ${V.r}: es la hipotenusa. El adyacente es ${seg[bien]}.` : `Los catetos pasan por ${V.r}. De ellos, ${seg[bien]} no pasa por ${X}: queda enfrente.` },
+    };
+  }
+  // «Ahora tú», tipo 0: nombrar un lado de un objeto (los tres largos a la vista, en tinta).
+  function casoNombrar(r) {
+    const o = r.uno(OBJS), [ra, rb, hh] = r.uno(o.ternas), val = { ra, rb, h: hh }, en = r.uno(['a', 'b']);
+    const pide = r.uno(['co', 'ca', 'co', 'ca', 'h']), ds = desde(en), bien = pide === 'h' ? 'h' : ds[pide];
+    const op = k => `${cap(o[k])}, ${largoTxt(val[k], o.u)}`;
+    const err = k => {
+      if (pide === 'h') return { error: 'LAD-HIP-CATETO', siFuera: `${cap(o[k])} es un lado del triángulo, pero forma el ángulo recto: es un cateto.` };
+      if (k === 'h') return pide === 'ca' ? { error: 'LAD-TOCA-H', siFuera: `${cap(o.h)} también toca a θ, es cierto; pero es la hipotenusa, no un cateto.` }
+        : { error: 'LAD-HIPOTENUSA', siFuera: `Buscaste un lado lejos del rincón; pero ${o.h} toca a θ: es la hipotenusa.` };
+      if (pide === 'co' && k === o.vertical) return { error: 'TR7', siFuera: `Elegiste un cateto, bien; ${o[k]} es vertical, pero toca a θ: es el adyacente.` };
+      return { error: 'TR9', siFuera: pide === 'co' ? `Elegiste un cateto, bien; pero ${o[k]} toca a θ: es el adyacente. El opuesto queda enfrente.` : `Elegiste un cateto, bien; pero ${o[k]} queda frente a θ: es el opuesto.` };
+    };
+    const ops = [{ id: 'c', texto: op(bien), correcta: true }];
+    for (const k of ['ra', 'rb', 'h']) if (k !== bien) ops.push(Object.assign({ id: k, texto: op(k) }, err(k)));
+    const pideTxt = pide === 'h' ? ['la hipotenusa'] : [`el cateto ${pide === 'co' ? 'opuesto' : 'adyacente'} a `, thN];
+    const sol = pide === 'h' ? `El ángulo recto lo forman ${o.ra} y ${o.rb}. Frente a él queda ${o.h}: ${largoTxt(hh, o.u)}.`
+      : pide === 'co' ? `Frente a θ, sin tocarlo, queda ${o[bien]}: ${largoTxt(val[bien], o.u)}. Es un cateto.`
+        : `A θ lo tocan ${o.h}, que es la hipotenusa, y ${o[bien]}: ${largoTxt(val[bien], o.u)}.`;
+    return {
+      pregunta: [`${o.intro} `, thN, ` es el ángulo ${o[en]}. ¿Cuánto mide `, ...pideTxt, '?'],
+      datos: [DL.cat, DL.h, DL.co, DL.ca],
+      dibujo: figO(o, ra, rb, t3(largoTxt(ra, o.u), largoTxt(rb, o.u), largoTxt(hh, o.u)), { [en]: { texto: 'θ' } }),
+      opciones: ops,
+      solucion: { texto: sol },
+    };
+  }
+  // «Ahora tú», tipo 2 (nivel de examen): se dan la hipotenusa y un cateto; se pregunta desde θ o desde α, o una suma de
+  // dos nombres que pueden ser el mismo lado. El cateto que falta sale de Pitágoras.
+  function casoExamen(r) {
+    const o = r.uno(OBJS), [ra, rb, hh] = r.uno(o.ternas), val = { ra, rb, h: hh };
+    const thEn = r.uno(['a', 'b']), alEn = thEn === 'a' ? 'b' : 'a';
+    const dado = r.uno(['ra', 'rb']), falta = dado === 'ra' ? 'rb' : 'ra';
+    const nombres = { 'co-t': desde(thEn).co, 'ca-t': desde(thEn).ca, 'co-a': desde(alEn).co, 'ca-a': desde(alEn).ca };
+    const txt = { 'co-t': ['el cateto opuesto a ', thN], 'ca-t': ['el cateto adyacente a ', thN], 'co-a': ['el cateto opuesto a ', al], 'ca-a': ['el cateto adyacente a ', al] };
+    const L = x => largoTxt(x, o.u);
+    const pitS = Math.sqrt(hh * hh + val[dado] * val[dado]);
+    const forma = r.uno(['uno', 'uno', 'suma']);
+    let pide, correcta, ops, sol;
+    if (forma === 'uno') {
+      const q = r.uno(['co-a', 'ca-a', 'co-a', 'co-t']), k = nombres[q], otro = k === 'ra' ? 'rb' : 'ra', deAlfa = q.endsWith('-a');
+      pide = ['¿Cuánto mide ', ...txt[q], '?'];
+      correcta = val[k];
+      ops = opciones(correcta, [
+        { id: 'otro', valor: val[otro], error: deAlfa ? 'LAD-NO-CAMBIA' : 'TR9', siFuera: deAlfa ? 'Nombrar desde θ está bien; pero se pregunta desde α, y desde α los catetos se intercambian.' : 'Elegiste un cateto, bien; pero es el otro: el opuesto queda enfrente y el adyacente toca al ángulo.' },
+        { id: 'hip', valor: hh, error: 'LAD-HIPOTENUSA', siFuera: 'La hipotenusa también está en el triángulo, pero no es cateto: queda frente al ángulo recto.' },
+        { id: 'suma', valor: pitS, error: 'PIT-SUMA', siFuera: 'Pitágoras es la herramienta; pero la hipotenusa es la mayor: el cateto sale restando los cuadrados.' },
+      ], L);
+      sol = k === dado
+        ? { texto: [`Ese cateto es ${o[k]}, el que ya mide ${L(val[k])}: no hace falta Pitágoras.`] }
+        : { texto: [`Ese cateto es ${o[k]}, el que falta. Con Pitágoras:`], ecuacion: [raizDif(f(hh), f(val[dado])), ' = ', dF(L(val[k]))] };
+    } else {
+      const par = r.uno([['co-t', 'ca-a'], ['co-t', 'co-a'], ['ca-t', 'co-a'], ['ca-t', 'ca-a']]), k1 = nombres[par[0]], k2 = nombres[par[1]];
+      pide = ['¿Cuánto suman ', ...txt[par[0]], ' y ', ...txt[par[1]], '?'];
+      correcta = val[k1] + val[k2];
+      const malo = k1 === k2 ? ra + rb : 2 * val[k1];
+      ops = opciones(correcta, [
+        { id: 'cambia', valor: malo, error: 'LAD-NO-CAMBIA', siFuera: k1 === k2 ? 'Cada nombre está bien buscado; pero desde α los catetos se intercambian: los dos nombres son el mismo lado.' : 'Cada nombre está bien buscado; pero desde α los catetos se intercambian: son dos lados distintos.' },
+        { id: 'hip', valor: val[k1] + hh, error: 'LAD-HIPOTENUSA', siFuera: 'Sumar es lo que se pide; pero la hipotenusa no es cateto: queda frente al ángulo recto.' },
+        { id: 'suma', valor: k1 === k2 ? 2 * pitS : pitS + val[dado], error: 'PIT-SUMA', siFuera: 'Pitágoras es la herramienta; pero la hipotenusa es la mayor: el cateto sale restando los cuadrados.' },
+      ], L);
+      sol = k1 === k2
+        ? { texto: [`Los dos nombres son ${o[k1]}: se suma dos veces.`], ecuacion: [`${L(val[k1])} + ${L(val[k1])} = `, dF(L(correcta))] }
+        : { texto: [`Son los dos catetos, ${o.ra} y ${o.rb}; el que falta sale de Pitágoras.`], ecuacion: [`${L(ra)} + ${L(rb)} = `, dF(L(correcta))] };
+    }
+    return {
+      pregunta: [`En la figura, ${o.h} mide ${L(hh)} y ${o[dado]}, ${L(val[dado])}. `, ...pide],
+      datos: [DL.co, DL.ca, DL.pita],
+      dibujo: figO(o, ra, rb, { [dado]: { texto: L(val[dado]), color: 'i' }, h: { texto: L(hh), color: 'o' } }, { [thEn]: { texto: 'θ' }, [alEn]: { texto: 'α' } }),
+      opciones: ops,
+      solucion: sol,
+    };
+  }
+
+  const ladosDesdeAngulo = {
+    id: 'lados-desde-angulo',
+    titulo: 'Los lados se nombran desde θ',
+    pregunta: '¿Qué cateto es el opuesto si miras desde el otro ángulo agudo?',
+    temas: ['Definición en el triángulo rectángulo'],
+    pieza: OB,
+    aprendizaje: 'La hipotenusa queda frente al ángulo recto; el opuesto, frente al ángulo que miras, y el adyacente lo toca. Desde el otro agudo, se intercambian.',
+    actividad: 'Correr el pie de una escalera de 5 m apoyada en una pared.',
+    // Lee: el objeto y el vocabulario (catetos, hipotenusa, opuesto y adyacente desde θ), sin decir qué pasa desde α.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una escalera en la pared', texto: 'Una escalera apoyada en la pared de una casa forma un triángulo con la pared y el piso. La pared y el piso se juntan en un ángulo recto, de 90°: se marca con un cuadradito.',
+          pieza: OB, dibujo: { datos: { objeto: 'escalera', medidas: { piso: 3, pared: 4 }, marco: [4.5, 5], lados: { escalera: { color: 'o' }, pared: { color: 'i' }, piso: { color: 'f' } } }, estado: {} } },
+        { titulo: 'Catetos e hipotenusa', texto: 'Los dos lados que forman el ángulo recto se llaman catetos: aquí, la pared y el piso. El lado de enfrente del ángulo recto es la hipotenusa, H: aquí, la escalera. Pitágoras los une.',
+          ecuacion: ['Pitágoras: ', cuad('H'), ' = ', cuad('cateto'), ' + ', cuad('cateto')] },
+        { titulo: 'Opuesto y adyacente', texto: ['Los catetos se nombran desde un ángulo agudo: el que miras. Aquí es ', thN, ', abajo. El cateto que toca a ', thN, ' es el adyacente, CA. El que queda frente a ', thN, ', sin tocarlo, es el opuesto, CO.'],
+          pieza: OB, dibujo: { datos: { objeto: 'escalera', medidas: { piso: 3, pared: 4 }, marco: [4.5, 5], lados: { escalera: { color: 'o' }, pared: { color: 'i' }, piso: { color: 'f' } }, angulos: { pie: { texto: 'θ' } } }, estado: {} } },
+        { titulo: 'Qué mirar al jugar', texto: ['Vas a correr el pie de una escalera de 5 m. Mira qué lado toca a ', thN, ', cuál queda enfrente y cuál es siempre el más largo.'] },
+      ],
+    },
+    ejemplos: EJEMPLOS_LADOS,
+    juega: {
+      pieza: OB,
+      consigna: ['Una escalera de 5 m está apoyada en la pared de una casa de adobe. ', thN, ' es el ángulo entre la escalera y el piso.'],
+      mision: {
+        texto: 'Corre el pie hasta que el cateto adyacente a θ mida 3 m.',
+        logrado: val => Math.abs(val.pie - 3) < 1e-9,
+        bien: 'Listo: el piso toca a θ y mide 3 m. La escalera es la hipotenusa.',
+      },
+      voz: '¿Qué lado toca a θ y cuál queda enfrente?',
+      leyenda: [
+        { s: thN, t: 'ángulo entre la escalera y el piso' },
+        { s: '∟', t: 'ángulo recto, de 90°' },
+        { s: '>', t: 'más largo que' },
+        { s: '≈', t: 'aproximado, redondeado' },
+      ],
+      controles: [
+        { id: 'pie', etiqueta: 'Pie a la pared', color: 'c-f', min: 1, max: 4.5, paso: 0.5, inicio: 1.5, unidad: 'm', decimales: 1 },
+      ],
+      // Gesto directo: el pie se arrastra por el piso; la escala está fija (marco), así que sigue al dedo.
+      arrastres: [{ id: 'pie', etiqueta: 'pie de la escalera: se corre por el piso', color: 'c-f',
+        donde: v => { const g = TO().geometria(escJ(v)); return { x: g.a[0], y: g.a[1] }; },
+        mover: (pt, v) => { const g = TO().geometria(escJ(v)); return { pie: (g.r[0] - pt.x) / g.s }; } }],
+      dibujo: v => ({ datos: escJ(v), estado: {} }),
+      lectura: v => ['Escalera ', dO('5 m'), ' > pared ', dI(largoTxt(altoEsc(v.pie))), ' y > piso ', dF(largoTxt(v.pie))],
+      minimo: 3,
+    },
+    predice: {
+      pregunta: ['Ahora miras desde ', al, ', el ángulo de arriba, entre la escalera y la pared. ¿Cuál es el cateto opuesto a ', al, '?'],
+      datos: ['Escalera: 5 m', 'Pared, del piso hasta donde se apoya la escalera: 4 m', 'Piso, del pie de la escalera hasta la pared: 3 m'],
+      voz: 'Ubica α y mira qué lados lo forman.',
+      opciones: [
+        { id: 'c', texto: 'El piso, de 3 m', correcta: true },
+        { id: 'vertical', texto: 'La pared, de 4 m', error: 'TR7', siFuera: 'La pared queda frente a θ, es cierto. Pero α está arriba, y la pared lo toca.' },
+        { id: 'escalera', texto: 'La escalera, de 5 m', error: 'LAD-HIPOTENUSA', siFuera: 'Buscar un lado lejos de α está bien; pero la escalera forma α: lo toca. Es la hipotenusa.' },
+        { id: 'piso', texto: 'Ninguno: α no está en el piso', error: 'LAD-SOLO-PISO', siFuera: 'Es cierto que α no toca el piso. Justo por eso el piso es el cateto que tiene enfrente.' },
+      ],
+      // El piso va en tinta al predecir: en violeta (lo que se pide) delataría la respuesta.
+      dibujo: { datos: ESC345({ pisoColor: null }), estado: {} },
+      revelar: { datos: ESC345({ piso2: 'opuesto a α', pared2: 'adyacente a α' }), estado: {} },
+      coincide: 'Coincide: el piso queda frente a α. Desde arriba, los catetos cambian de nombre.',
+      noCoincide: 'Revisemos: α lo forman la escalera y la pared. Frente a α queda el piso.',
+    },
+    mira: {
+      pieza: OB,
+      datos: ESC345({ h: [{ t: '5 m' }, { t: 'H = 5 m', paso: 1 }], piso: [{ t: '3 m' }, { t: 'CA = 3 m', paso: 2 }], pared: [{ t: '4 m' }, { t: 'CO = 4 m', paso: 3 }],
+        piso2: [{ t: 'opuesto a α', paso: 4 }], pared2: [{ t: 'adyacente a α', paso: 4 }], pasoAlfa: 4 }),
+      voz: 'Primero el ángulo recto; después, el ángulo desde el que miras.',
+      pasos: [
+        { estado: { paso: 0 }, texto: 'El ángulo recto está en el rincón, entre la pared y el piso.' },
+        { estado: { paso: 1 }, texto: 'Frente al ángulo recto queda la escalera: es la hipotenusa, el lado más largo.', ecuacion: ['H = ', dO('5 m')] },
+        { estado: { paso: 2 }, texto: ['Desde ', thN, ', el piso toca a ', thN, ': es el cateto adyacente.'], ecuacion: ['CA = ', dF('3 m')] },
+        { estado: { paso: 3 }, texto: ['La pared queda frente a ', thN, ', sin tocarlo: es el cateto opuesto.'], ecuacion: ['CO = ', dI('4 m')] },
+        { estado: { paso: 4 }, texto: ['Ahora desde ', al, ', arriba: la pared toca a ', al, ' y el piso queda enfrente.'], ecuacion: ['adyacente a ', al, ' = ', dI('4 m'), ';   opuesto a ', al, ' = ', dF('3 m')] },
+        { estado: { paso: 4 }, texto: 'Los catetos se intercambian; la hipotenusa sigue siendo la escalera.', ecuacion: ['CO = adyacente a ', al, ' = ', dI('4 m')] },
+      ],
+    },
+    regla: {
+      texto: 'La hipotenusa es el lado frente al ángulo recto, el más largo. Desde un ángulo agudo, el cateto que lo toca es el adyacente; el de enfrente, el opuesto.',
+      ecuacion: ['Desde ', thN, ':   CA toca a ', thN, ';   CO queda frente a ', thN, ';   H queda frente a 90°'],
+      condicion: 'Vale en un triángulo rectángulo. Desde el otro ángulo agudo, α, opuesto y adyacente se intercambian; la hipotenusa no cambia.',
+      voz: 'Ubica primero el ángulo recto; después, el ángulo que miras.',
+    },
+    // Así se resuelve: nombrar los tres lados de un objeto desde un ángulo (desde α en las semillas pares). «Ahora tú»
+    // pide otra cosa: un largo por su nombre, en un objeto, en un triángulo de examen o con Pitágoras.
+    resuelve: {
+      pieza: OB,
+      generar(s) {
+        const r = azar(s + 900), o = r.uno(OBJS), [ra, rb, hh] = r.uno(o.ternas), val = { ra, rb, h: hh };
+        const en = s % 2 === 0 ? 'b' : 'a', ang = en === 'b' ? al : thN, ds = desde(en), L = x => largoTxt(x, o.u);
+        const cuadra = `${f(ra)}² + ${f(rb)}² = ${f(ra * ra, 4)} + ${f(rb * rb, 4)} = ${f(hh * hh, 4)} = ${f(hh)}²`;
+        return {
+          enunciado: [`${o.intro} `, ang, ` es el ángulo ${o[en]}. Nombra los tres lados desde `, ang, ': cateto opuesto, cateto adyacente e hipotenusa.'],
+          datos: [DL.h, DL.co, DL.ca],
+          dibujo: figO(o, ra, rb, t3(L(ra), L(rb), L(hh)), { [en]: { texto: en === 'b' ? 'α' : 'θ' } }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el nombre de cada lado, mirando desde ', ang, `, el ángulo ${o[en]}.`] },
+            { tipo: 'datos', texto: `Los lados miden ${L(ra)}, ${L(rb)} y ${L(hh)}. El ángulo recto lo forman ${o.ra} y ${o.rb}.` },
+            { tipo: 'regla', texto: ['La hipotenusa queda frente al ángulo recto. Desde ', ang, ', el cateto que lo toca es el adyacente; el de enfrente, el opuesto.'] },
+            { tipo: 'aplica', texto: [`${cap(o.h)} queda frente al ángulo recto: es la hipotenusa. ${cap(o[ds.ca])} forma `, ang, ` junto con la hipotenusa: es el adyacente. ${cap(o[ds.co])} queda enfrente: es el opuesto.`] },
+            { tipo: 'sentido', texto: `La hipotenusa, ${L(hh)}, es el lado más largo. Y cuadra con Pitágoras: ${cuadra}.` },
+          ],
+          respuesta: ['Opuesto a ', ang, `: ${L(val[ds.co])}; adyacente: ${L(val[ds.ca])}; hipotenusa: ${L(hh)}`],
+        };
+      },
+    },
+    ahoraTu: {
+      pieza: OB,
+      voz: 'Ubica el ángulo recto y el ángulo que te piden.',
+      generar(sem) {
+        const r = azar(sem + 31);
+        return [casoNombrar, casoVertices, casoExamen][sem % 3](r);
+      },
+    },
+  };
+
+  // ---------- Idea 2: la razón no depende del tamaño ----------
   // Cambia: los dos catetos (opuesto y adyacente a θ). · Permanece: el ángulo recto y los nombres de los lados.
   // Progresa: el cociente CO/H en la lectura. · Se reserva: dos triángulos semejantes de tamaños distintos (la predicción).
   // Debe verse: que el triángulo grande contiene al chico y los dos cocientes coinciden.
@@ -207,7 +632,7 @@
     },
   };
 
-  // ---------- Idea 2: notables exactos ----------
+  // ---------- Idea 3: notables exactos ----------
   // Cambia: la figura (medio cuadrado o medio triángulo equilátero) y su lado. · Permanece: el ángulo recto y la mitad
   // punteada que se cortó. · Progresa: los lados con raíz que salen de Pitágoras. · Se reserva: una razón de 60° a
   // partir de la de 30° (la predicción). · Debe verse: que 30°, 45° y 60° tienen lados exactos y razones exactas.
@@ -367,7 +792,7 @@
     },
   };
 
-  // ---------- Idea 3: 37° y 16° son aproximaciones ----------
+  // ---------- Idea 4: 37° y 16° son aproximaciones ----------
   // Cambia: el ángulo θ con el adyacente fijo en 4. · Permanece: el adyacente y el ángulo recto.
   // Progresa: el cateto opuesto 4 · tan θ. · Se reserva: el ángulo exacto del triángulo 3-4-5 (la predicción).
   // Debe verse: que 37° y 16° son ángulos redondeados de triángulos con lados enteros.
@@ -490,7 +915,7 @@
     },
   };
 
-  // ---------- Idea 4: complementarias y recíprocas ----------
+  // ---------- Idea 5: complementarias y recíprocas ----------
   // Cambia: el ángulo θ (y con él, el otro agudo 90° − θ). · Permanece: la hipotenusa 1 y el recto.
   // Progresa: los dos ángulos que se reparten 90°. · Se reserva: cos 65° a partir de sen 25° (la predicción).
   // Debe verse: el mismo cateto rojo es opuesto para θ y adyacente para 90° − θ.
@@ -669,7 +1094,7 @@
     unidad: 'trigonometria.razones-trigonometricas-agudas',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/triangulo.js'],
+    requiere: ['/nucleo/kit/piezas/triangulo.js', '/nucleo/kit/piezas/trig-objeto.js'],
     historia: {
       texto: 'Aryabhata, en la India del año 499, calculó tablas de la semicuerda para la astronomía: el antepasado de nuestro seno. Los griegos usaban la cuerda entera. Esas tablas todavía no eran gráficas en ejes; funcionaban porque figuras semejantes conservan los cocientes de sus lados, y por eso un valor se podía tabular.',
       pregunta: '¿Por qué se podría tabular un seno, pero no el largo de un lado?',
@@ -682,7 +1107,7 @@
       'semejantes': ['razon-cociente'],
       'complemento-libre': ['complementarias'],
     },
-    ideas: [definicion, notables, aproximados, complementarias],
+    ideas: [ladosDesdeAngulo, definicion, notables, aproximados, complementarias],
     // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. «Cotangente», «secante» y
     // «cosecante» se definen en «Ángulos en posición normal» (mapa del curso); aquí solo salen como cot, sec y csc.
     glosario: [
@@ -690,14 +1115,24 @@
         formas: ['razón trigonométrica', 'razones trigonométricas'], ejemplo: 'Catetos 3 y 4, hipotenusa 5: sen θ = 3/5 = 0,6.', ver: ['seno', 'coseno', 'tangente'] },
       { termino: 'triángulo rectángulo', def: 'Figura de tres lados con un ángulo de 90°, llamado ángulo recto.',
         formas: ['triángulo rectángulo', 'triángulos rectángulos'], ejemplo: 'Lados 3, 4 y 5: como 3² + 4² = 5², tiene un ángulo de 90°.', ver: ['cateto', 'hipotenusa'] },
+      // Idea 1 (17 nov): sus cuatro palabras, con `simple` y tres ejemplos (contrato, puntos 11 y 12). Ningún `simple` dice
+      // que el opuesto sea «el vertical» (TR7, distractor de la predicción).
       { termino: 'cateto', def: 'Cada uno de los dos lados que forman el ángulo de 90° de un triángulo rectángulo.',
-        formas: ['cateto', 'catetos'], ejemplo: 'En el triángulo de lados 3, 4 y 5, miden 3 y 4.', ver: ['cateto opuesto', 'cateto adyacente', 'hipotenusa'] },
+        simple: 'Cada lado que forma la esquina recta del triángulo.',
+        formas: ['cateto', 'catetos'], ver: ['cateto opuesto', 'cateto adyacente', 'hipotenusa'],
+        ejemplos: ['En una escalera apoyada, la pared y el piso.', 'En el triángulo de lados 3, 4 y 5, los lados de 3 y 4.', 'En un poste con su cable, el poste y el suelo hasta la estaca.'] },
       { termino: 'cateto opuesto', simbolo: 'CO', def: 'De los dos lados que forman el ángulo de 90°, el que queda frente a θ, sin tocarlo.',
-        formas: ['cateto opuesto', 'catetos opuestos'], ejemplo: 'En el 3-4-5, frente al ángulo de 36,87° queda el lado 3.', ver: ['cateto adyacente'] },
+        simple: 'El lado de la esquina recta que queda frente al ángulo que miras.',
+        formas: ['cateto opuesto', 'catetos opuestos'], ver: ['cateto adyacente'],
+        ejemplos: ['Con θ en el pie de una escalera apoyada, la pared.', 'Con α arriba, entre la escalera y la pared, el piso.', 'En una repisa, frente al ángulo de abajo queda el brazo, que es horizontal.'] },
       { termino: 'cateto adyacente', simbolo: 'CA', def: 'De los dos lados que forman el ángulo de 90°, el que toca a θ.',
-        formas: ['cateto adyacente', 'catetos adyacentes'], ejemplo: 'En el 3-4-5, el ángulo de 36,87° está entre el lado 4 y la hipotenusa.', ver: ['cateto opuesto'] },
+        simple: 'El lado de la esquina recta que toca al ángulo que miras.',
+        formas: ['cateto adyacente', 'catetos adyacentes'], ver: ['cateto opuesto'],
+        ejemplos: ['Con θ en el pie de una escalera apoyada, el piso.', 'Con α arriba, entre la escalera y la pared, la pared.', 'Con θ entre un cable y el suelo, el suelo hasta el poste.'] },
       { termino: 'hipotenusa', simbolo: 'H', def: 'El lado más largo de un triángulo rectángulo: el que queda frente al ángulo de 90°.',
-        formas: ['hipotenusa', 'hipotenusas'], ejemplo: 'Catetos 6 y 8: mide √(36 + 64) = 10.', ver: ['teorema de Pitágoras'] },
+        simple: 'El lado largo, el que queda frente a la esquina recta.',
+        formas: ['hipotenusa', 'hipotenusas'], ver: ['teorema de Pitágoras'],
+        ejemplos: ['La escalera apoyada en la pared.', 'El cable que va de la punta del poste hasta la estaca.', 'Catetos 6 y 8: mide √(36 + 64) = 10.'] },
       { termino: 'ángulo agudo', def: 'Ángulo que mide más de 0° y menos de 90°.',
         formas: ['ángulo agudo', 'ángulos agudos', 'agudo', 'agudos'], ejemplo: '25° y 65° lo son; 90° y 120°, no.', ver: ['ángulos complementarios'] },
       { termino: 'seno', simbolo: 'sen', def: 'Razón que divide el cateto opuesto a θ entre la hipotenusa.',
