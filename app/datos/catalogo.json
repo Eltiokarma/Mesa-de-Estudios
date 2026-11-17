@@ -4606,7 +4606,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
@@ -4685,7 +4685,7 @@
        "/nucleo/kit/piezas/trig-objeto.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 39
      }
     },
     {
@@ -4726,7 +4726,7 @@
        "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 3,
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -5218,7 +5218,7 @@
        "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 5,
-      "terminos": 36
+      "terminos": 37
      }
     },
     {

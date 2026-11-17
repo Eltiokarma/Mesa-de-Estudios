@@ -18,6 +18,14 @@ const MUESTRAS = {
   repisa: { medidas: { pared: 40, brazo: 30 }, lados: { tirante: lado('50 cm'), pared: lado('40 cm'), brazo: lado('30 cm') }, angulos: { abajo: { texto: 'θ' }, punta: { texto: 'α' } } },
   chacra: { medidas: { ra: 90, rb: 120 }, lados: { ra: lado('90 m'), rb: lado('120 m'), h: lado('150 m') } },
   triangulo: { medidas: { ra: 20, rb: 21 }, giro: 25, vertices: { r: 'Q', a: 'P', b: 'R' }, lados: { ra: lado('20'), rb: lado('21'), h: lado('29') }, angulos: { b: { texto: 'R' } } },
+  // Objetos de las ideas 2 a 5 (17 nov).
+  sombras: { marco: [10, 6], medidas: { sombra: 10, poste: 6 }, lados: { poste: lado('6 m', 'o'), sombra: lado('10 m', 'i'), rayo: lado('≈ 11,66 m'), primo: lado('1,5 m', 'o'), sombra2: lado('2,5 m', 'i') }, angulos: { suelo: { texto: 'θ' }, suelo2: {}, arriba: { texto: 'α' } }, nota: '6 ÷ 10 = 1,5 ÷ 2,5 = 0,6' },
+  senal: { medidas: { lado: 80 }, lados: { media: lado('40 cm', 'o'), lado: lado('80 cm', 'i'), altura: lado('40√3 cm') }, angulos: { esquina: { texto: '60°' }, punta: { texto: '30°' } } },
+  loseta: { medidas: { lado: 30 }, lados: { costado: lado('30 cm', 'o'), diagonal: lado('30√2 cm', 'i'), base: lado('30 cm') }, angulos: { izquierda: { texto: '45°' }, arriba: { texto: '45°' } } },
+  escuadras: { lados: { corto: lado('1', 'o'), largo: lado('√3'), hip: lado('2', 'i'), c1: lado('1'), c2: lado('1', 'o'), d: lado('√2', 'i') }, angulos: { a30: { texto: '30°' }, a60: { texto: '60°' }, e1: { texto: '45°' }, e2: { texto: '45°' } }, nota: 'sen 45° = 1/√2 = √2/2' },
+  cuerda: { marco: [4, 6], medidas: { base: 4, estaca: 3 }, lados: { base: lado('4 m', 'o'), estaca: lado('3 m', 'i'), cuerda: lado('5 m', 'f') }, angulos: { transportador: { texto: '37°' } } },
+  techo: { marco: [3, 3], medidas: { viga: 3, poste: 3 * Math.tan(20 * Math.PI / 180) }, lados: { viga: lado('viga'), poste: lado('poste', 'o'), calamina: lado('calamina', 'i') }, angulos: { alero: { texto: 'θ' }, cumbre: { texto: 'α' } } },
+  figura: { forma: 'trapecio', menor: 10, medidas: { ra: 16, rb: 12 }, lados: { CH: lado('12 m', 'o'), CD: lado('10 m', 'i'), BC: lado('?') }, angulos: { B: { texto: '37°' } } },
 };
 const VARIANTES = [
   Object.assign({ objeto: 'poste', sombra: true }, { medidas: { sombra: 8, poste: 6 }, lados: { rayo: lado('10 m'), sombra: lado('8 m'), poste: lado('6 m') }, angulos: { suelo: { texto: 'θ' }, arriba: { texto: 'α' } } }),
@@ -26,6 +34,14 @@ const VARIANTES = [
   { objeto: 'escalera', medidas: { piso: 1, pared: Math.sqrt(24) }, marco: [4.5, 5], lados: { escalera: lado('5 m', 'o'), piso: lado('1 m', 'f'), pared: lado('≈ 4,9 m', 'i') }, angulos: { pie: { texto: 'θ' } } },
   { objeto: 'triangulo', medidas: { ra: 5, rb: 12 }, giro: 200, vertices: { r: 'N', a: 'M', b: 'L' }, angulos: { a: { texto: 'M' } } },
   { objeto: 'repisa', medidas: { pared: 36, brazo: 15 }, lados: { tirante: lado('39 cm', 'o'), pared: lado('36 cm', 'i') }, angulos: { abajo: { texto: 'θ' }, punta: { texto: 'α' } } },
+  { objeto: 'sombras', marco: [10, 6], medidas: { sombra: 4, poste: 6 }, lados: { poste: lado('6 m', 'o'), sombra: lado('4 m', 'i'), primo: lado('1,5 m', 'o'), sombra2: lado('?') }, angulos: { suelo: { texto: 'θ' }, suelo2: {} } },
+  { objeto: 'senal', medidas: { lado: 20 }, lados: { media: lado('10 cm', 'o'), lado: lado('20 cm', 'i'), altura: lado('10√3 cm') }, angulos: { esquina: { texto: '60°' }, punta: { texto: '30°' } } },
+  { objeto: 'cuerda', marco: [4, 6], medidas: { base: 4, estaca: 1 }, lados: { base: lado('4 m', 'o'), estaca: lado('1 m', 'i'), cuerda: lado('≈ 4,12 m', 'f') }, angulos: { transportador: { texto: '14°' } } },
+  { objeto: 'cuerda', marco: [4, 6], medidas: { base: 4, estaca: 6 }, lados: { base: lado('4 m', 'o'), estaca: lado('6 m', 'i'), cuerda: lado('≈ 7,21 m', 'f') }, angulos: { transportador: { texto: '56°' } } },
+  { objeto: 'techo', marco: [3, 3], medidas: { viga: 3, poste: 3 }, lados: { viga: lado('viga'), poste: lado('poste', 'o'), calamina: lado('calamina', 'i') }, angulos: { alero: { texto: 'θ' }, cumbre: { texto: 'α' } } },
+  { objeto: 'techo', marco: [3, 3], medidas: { viga: 3, poste: 3 * Math.tan(25 * Math.PI / 180) }, lados: { viga: lado('viga'), poste: lado('poste', 'o'), calamina: lado('calamina', 'i') }, angulos: { alero: { texto: 'θ' }, cumbre: { texto: 'α' } } },
+  { objeto: 'figura', forma: 'diagonal', medidas: { ra: 8, rb: 6 }, lados: { AB: lado('8 cm', 'o'), BC: lado('6 cm', 'i'), AC: lado('?') }, angulos: { A: { texto: 'θ' } } },
+  { objeto: 'figura', forma: 'medio', medidas: { ra: 4, rb: 2 }, lados: { DA: lado('4', 'i'), AB: lado('4') }, angulos: { A: { texto: 'θ' } } },
 ];
 const casos = () => Object.entries(MUESTRAS).map(([o, d]) => Object.assign({ objeto: o }, d)).concat(VARIANTES).map(d => [d, {}]);
 
@@ -80,8 +96,11 @@ function revisar(d, e, nombre, mal) {
     const a = txt[i], b = txt[j];
     if (a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1) mal.push(`${nombre}: se pisan «${a.txt}» y «${b.txt}»`);
   }
-  const g = P.geometria(d), lados = [[g.r, g.a], [g.r, g.b], [g.a, g.b]];
-  if (['escalera', 'rampa', 'poste'].includes(d.objeto)) lados.push([[8, SUELO], [W - M, SUELO]]);
+  // Los lados del triángulo, los extras (el primo, la otra escuadra, los demás lados de una figura), lo que la pieza dice
+  // que hay que evitar (el hueco de las escuadras) y el suelo.
+  const g = P.geometria(d), lados = [[g.r, g.a], [g.r, g.b], [g.a, g.b]].concat(Object.values(g.extras || {}), g.evitar || []);
+  if (['escalera', 'rampa', 'poste', 'sombras'].includes(d.objeto)) lados.push([[8, SUELO], [W - M, SUELO]]);
+  if (g.suelo) lados.push([[8, g.suelo], [W - M, g.suelo]]);
   for (const t of txt) for (const [p, q] of lados) if (cruza(p, q, t)) mal.push(`${nombre}: «${t.txt}» cruza un lado o el suelo`);
 }
 
