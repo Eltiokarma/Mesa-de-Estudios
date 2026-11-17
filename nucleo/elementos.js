@@ -208,6 +208,16 @@
     ['materia-energia: separar arena del agua', ['H', 'O', 'Si']],
     ['materia-energia: separar hierro y azufre', ['H', 'O', 'Fe', 'S']],
     ['materia-energia: separar con carbono', ['H', 'O', 'C']],
+    // Teoría de «Materia y energía» (17 nov, piezas quim-vasos y quim-particulas): las lupas de cada dibujo. La comprueba
+    // contenido/teoria/quimica/materia-y-energia.test.js (ningún dibujo de la unidad sale sin su vista aquí).
+    ['teoría materia-y-energia: agua con azúcar o con aceite', ['C', 'H', 'O']],
+    ['teoría materia-y-energia: agua con sal', ['H', 'O', 'Na', 'Cl']],
+    ['teoría materia-y-energia: agua con arena', ['H', 'O', 'Si']],
+    ['teoría materia-y-energia: dióxido de carbono', ['C', 'O']],
+    ['teoría materia-y-energia: aire seco', ['N', 'O']],
+    ['teoría materia-y-energia: bronce', ['Cu', 'Sn']],
+    ['teoría materia-y-energia: cristal de sal', ['Na', 'Cl']],
+    ['teoría materia-y-energia: carbono-14 que pasa a nitrógeno', ['C', 'N']],
   ];
   const SIMBOLOS = Object.keys(COLORES);
 

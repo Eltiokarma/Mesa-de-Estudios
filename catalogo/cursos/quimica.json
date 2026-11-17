@@ -37,7 +37,9 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "requiere": [],
+      "requiere": [
+        "fisica.magnitudes-y-vectores"
+      ],
       "plantillas": ["materia-energia", "configuracion-ubicacion", "quimica-conceptos", "conversiones-quimica"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },

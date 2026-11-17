@@ -31,6 +31,15 @@
  * }
  * estado = { corte }: se ve lo que tiene desde ≤ corte y no tiene hasta < corte. Lo nuevo del paso se anima.
  * El dibujo es una función pura de (datos, estado): sin ids, sin azar, sin reloj. El alto depende solo de datos.
+ *
+ * Paleta de elementos (17 nov, docs/etapa2/decisiones.md: «un dibujo es de partículas o de variables, nunca de los
+ * dos»): un átomo con `el: 'O'` se pinta con var(--el-O), el color del oxígeno en nucleo/elementos.js, y no con un token
+ * de variable. Sin `el`, todo sigue como antes (color: 'h' → var(--c-h)); las unidades que ya usan la pieza no cambian.
+ * En el navegador, si la página cargó nucleo/elementos.js antes que esta pieza, se definen una sola vez las variables
+ * --el-<Símbolo> (claro y oscuro, con el mismo esquema de tema de la app). Por eso, una unidad que pinta con `el` pone
+ * '/nucleo/elementos.js' en `requiere` antes de la pieza.
+ * especieSVG(datos, especie, cx, cy, escala) y atomoDe(datos, símbolo) quedan a la vista para las piezas que dibujan
+ * partículas dentro de un objeto (quim-vasos).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -39,6 +48,13 @@
   const api = fabrica(Kit, T);
   Kit.registrar(api);
   if (nodo) module.exports = api;
+  // Variables --el-* para el navegador (una vez por página). No toca el dibujo: dibujar sigue siendo puro.
+  else if (root.Elementos && root.document && root.document.head && !root.document.querySelector('style[data-elementos]')) {
+    const st = root.document.createElement('style');
+    st.setAttribute('data-elementos', '');
+    st.textContent = root.Elementos.css();
+    root.document.head.appendChild(st);
+  }
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
   const W = 320, M = 8, GAP_FLECHA = 30, GAP = 12, TOP = 30;
@@ -81,12 +97,14 @@
   }
 
   const atomoDe = (d, sim) => Object.assign({ color: null, estilo: 'lleno', r: 6 }, (d.atomos || {})[sim] || {});
+  // Color de un átomo: el de su elemento (var(--el-O)) si trae `el`; si no, el token de variable o la tinta.
+  const colorDe = a => (a.el && /^[A-Z][a-z]?$/.test(a.el) ? `var(--el-${a.el})` : T.color(a.color));
 
   function especieSVG(d, e, cx, cy, esc = 1) {
     const forma = (d.especies || {})[e] || [[e, 0, 0]];
     let s = '';
     for (const [sim, dx, dy] of forma) {
-      const a = atomoDe(d, sim), x = cx + dx * esc, y = cy + dy * esc, r = a.r * esc, c = T.color(a.color);
+      const a = atomoDe(d, sim), x = cx + dx * esc, y = cy + dy * esc, r = a.r * esc, c = colorDe(a);
       if (a.estilo === 'hueco') s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="var(--card)" stroke="${c}" stroke-width="2"/>`;
       else if (a.estilo === 'punto') s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="var(--card)" stroke="${c}" stroke-width="2"/><circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(Math.max(1.5, r * 0.38))}" fill="${c}"/>`;
       else s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="${c}" fill-opacity="0.85" stroke="${c}" stroke-width="1.5"/>`;
@@ -176,5 +194,5 @@
     return `Partículas (modelo, no a escala) en ${cajas.join('; ')}.`;
   }
 
-  return { id: 'quim-particulas', dibujar, alt, geometria, region };
+  return { id: 'quim-particulas', dibujar, alt, geometria, region, especieSVG, atomoDe };
 });

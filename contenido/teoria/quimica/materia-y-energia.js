@@ -7,23 +7,30 @@
  *
  * Ficha de tarea (diseno-y-animacion)
  *   Promesa: clasificar una muestra por sus partículas y decidir qué hace el calor y la energía con ella.
- *   Persona y condiciones: postulante de 3.º–5.º, celular de gama baja a 360 px, sin audio, a veces sin conexión.
+ *   Persona y condiciones: alumno de 5.º de secundaria o preuniversitario, celular de gama baja a 360 px, sin audio,
+ *     a veces sin conexión.
  *   Resultado observable: clasifica una muestra nueva, dice si un cambio es físico, químico o nuclear y calcula
  *     Q = mcΔT, Q = mL y E = Δm·c² con sus unidades.
  *   Orden de atención: 1.º la lupa (qué partículas hay) · 2.º la lectura en vivo · acción: probar casos · fondo: Bruna.
  *   Estados: juego sin tocar · casos probados · predicción abierta · revelado · paso a paso · caso nuevo · acierto · «No sé».
  *   Duda que resuelve: ¿lo uniforme es puro?, ¿el calor siempre sube la temperatura?, ¿de dónde sale la energía nuclear?
  *
- * Colores (regla 4): m masa (y Δm) turquesa c-i, Q calor naranja c-o, T temperatura rojo c-h, E energía verde c-d.
- * En las ideas de partículas, los átomos llevan color y relleno propio (O rojo lleno, H turquesa hueco, Na naranja con
- * punto, Cl verde, C tinta): no comparten pantalla con las variables.
+ * Etapa 2 (17 nov 2026, docs/etapa2/propuesta-quimica.md y decisiones.md): orden de las ideas sustancia-mezcla,
+ * propiedades (nueva, por escribir), fisico-quimico-nuclear, calor-sensible-latente y masa-energia. La idea 1 ya pasó
+ * por el contrato «se entiende sin profesor» (misión, leyenda, datos, 15 ejemplos); las otras siguen como estaban y la
+ * unidad todavía no declara calidad: 2.
+ * Colores (regla 4): m masa (y Δm) turquesa c-i, Q calor naranja c-o, T temperatura rojo c-h, E energía verde c-d
+ * (pendiente: pasar a §5b del molde cuando se rehagan las ideas 4 y 5).
+ * En los dibujos de partículas, los átomos llevan la paleta de elementos (nucleo/elementos.js, var(--el-*)) y su
+ * relleno (O lleno, H hueco, Na con punto): un dibujo es de partículas o de variables, nunca de los dos.
  * Fuentes (no van al alumno): OpenStax Chemistry 2e §1.2 y §10.3; IUPAC; NIST (c = 299 792 458 m/s, aquí 3 × 10⁸).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/materia-energia/motor.js')) : fabrica(root.Kit, root.MotorMateria);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, Motor) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const m = { v: 'c-i', t: 'm' }, Q = { v: 'c-o', t: 'Q' }, Tm = { v: 'c-h', t: 'T' }, E = { v: 'c-d', t: 'E' };
@@ -56,8 +63,10 @@
   }
 
   // ---------- Partículas: átomos y especies de la unidad ----------
-  const ATOMOS = { O: { color: 'h', estilo: 'lleno', r: 6 }, H: { color: 'i', estilo: 'hueco', r: 4.5 }, Na: { color: 'o', estilo: 'punto', r: 6 },
-    Cl: { color: 'd', estilo: 'lleno', r: 7 }, C: { estilo: 'lleno', r: 5 }, N: { color: 'o', estilo: 'hueco', r: 6 }, He: { color: 'd', estilo: 'punto', r: 5 } };
+  // Paleta de elementos (nucleo/elementos.js, var(--el-*)), no colores de variable: un dibujo es de partículas o de
+  // variables, nunca de los dos (docs/etapa2/decisiones.md, 17 nov). El relleno distingue también en grises.
+  const ATOMOS = { O: { el: 'O', estilo: 'lleno', r: 6 }, H: { el: 'H', estilo: 'hueco', r: 4.5 }, Na: { el: 'Na', estilo: 'punto', r: 6 },
+    Cl: { el: 'Cl', estilo: 'lleno', r: 7 }, C: { el: 'C', estilo: 'lleno', r: 5 }, N: { el: 'N', estilo: 'hueco', r: 6 }, He: { el: 'He', estilo: 'punto', r: 5 } };
   const ESPECIES = {
     O2: [['O', -5, 0], ['O', 5, 0]], N2: [['N', -5, 0], ['N', 5, 0]], H2: [['H', -4, 0], ['H', 4, 0]],
     H2O: [['O', 0, -1], ['H', -6, 4], ['H', 6, 4]], CO2: [['C', 0, 0], ['O', -9, 0], ['O', 9, 0]], He: [['He', 0, 0]],
@@ -116,155 +125,559 @@
   }
   const T_ANIMA = { id: 't', etiqueta: 't', min: 0, max: CICLO, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
 
-  // ---------- Idea 1: sustancia o mezcla se decide con la lupa ----------
-  // Cambia: la muestra · Permanece: la caja y la escala de la lupa · Progresa: de una especie a varias, de una fase
-  // a dos · Se reserva: la mezcla que se ve uniforme (agua con azúcar) · Debe verse: cuántas especies hay.
-  const MUESTRAS = {
-    oxigeno: { titulo: 'Oxígeno', caja: { forma: 'cilindro', nivel: 0.95, particulas: [{ e: 'O2', n: 8 }] }, lee: 'Oxígeno: 1 especie, 1 elemento. Sustancia simple.' },
-    agua: { titulo: 'Agua', caja: { forma: 'vaso', nivel: 0.85, particulas: [{ e: 'H2O', n: 14 }] }, lee: 'Agua: 1 especie, 2 elementos. Compuesto.' },
-    salada: { titulo: 'Agua salada', caja: { forma: 'vaso', nivel: 0.85, particulas: [{ e: 'H2O', n: 10 }, { e: 'Na', n: 3 }, { e: 'Cl', n: 3 }] }, lee: 'Agua salada: 3 especies, una fase. Mezcla homogénea.' },
-    aceite: { titulo: 'Agua y aceite', caja: { forma: 'vaso', nivel: 0.9, particulas: [...rejilla('aceite', 6, 3, 0.18, 0.82, 0.1, 0.3), ...rejilla('H2O', 9, 3, 0.15, 0.85, 0.55, 0.92)] }, lee: 'Agua y aceite: 2 especies, dos fases. Mezcla heterogénea.' },
-  };
-  const muestra = k => lupa([Object.assign({ titulo: MUESTRAS[k].titulo }, MUESTRAS[k].caja)]);
-  // En el juego las partículas se mueven: el oxígeno vuela (gas); el agua y lo disuelto se deslizan (líquido), y el
-  // aceite y el agua se mueven cada uno en su capa, sin mezclarse.
-  const muestraT = (k, t) => { const c = MUESTRAS[k].caja; return lupa([Object.assign({ titulo: MUESTRAS[k].titulo }, c, { particulas: mover(c.particulas, c.forma === 'cilindro' ? 'gas' : 'liquido', t) })]); };
   // Gesto directo (docs/teoria.md §4b): en las ideas con ejes, la manija es el punto del gráfico. Se ubica con
   // ejes.geometria y se lee con su inversa lineal (como en fisica/movimiento-rectilineo.js).
   const EJES = () => Kit.piezas.ejes;
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
 
-  // Sin arrastre: el control elige entre muestras distintas; no hay una magnitud que agarrar en la lupa.
+  // ---------- Idea 1: ¿sustancia pura o mezcla? Se cuentan las clases de partícula ----------
+  // Rehecha el 17 nov contra el contrato «se entiende sin profesor» (docs/plan-calidad.md §3; propuesta aprobada en
+  // docs/etapa2/propuesta-quimica.md, con docs/etapa2/decisiones.md). Primera pantalla: tres vasos sobre una mesa (pieza
+  // quim-vasos, objetos de prueba) y, al jugar, la lupa debajo de cada uno.
+  // Cambia: lo que se echa al agua y cuánto se revuelve · Permanece: el vaso de agua destilada al lado, como referencia ·
+  // Progresa: el montoncito del fondo se disuelve hasta que el vaso se ve igual que el de agua sola · Se reserva: el
+  // hielo (una sustancia en dos fases), que es la predicción · Debe verse: cuántas clases de partícula hay y si forman
+  // una fase o dos.
+  // Un dibujo de partículas, nunca de variables: los átomos van con la paleta de elementos (AT1, `el`) y los vasos en
+  // tinta. Los pares que no se distinguen (C–Na, N–Fe; Elementos.CERCANOS) no comparten dibujo: por eso el trío de
+  // «Lee» y «Mira» es agua destilada, agua con azúcar y agua con aceite (la propuesta decía sal; sal y aceite juntarían
+  // Na con C). La sal sale en el juego y en los ejemplos, nunca junto al azúcar ni al aceite. Lo comprueba
+  // contenido/teoria/quimica/materia-y-energia.test.js en todos los dibujos de la idea.
+  // La sal se dibuja como «partícula de sal» (Na y Cl juntos, sin cargas): la idea va antes de estructura atómica y de
+  // enlace (punto 9). El agua es «destilada» y no «hervida»: el agua hervida de la llave conserva sales disueltas.
+  // La clasificación la decide el motor de la escena materia-energia (MotorMateria.clasificarCaja y contarSistema), con
+  // la misma lista de partículas que dibuja la lupa (regla 1).
+  // Códigos: MA9 (dos clases de átomo = compuesto, o hielo y agua = dos sustancias), MA10 (uniforme a la vista = pura),
+  // QM-HOMO (mezcla de una fase porque «todo es agua»), y las hipótesis nuevas QM-HETERO (dos clases repartidas = dos
+  // fases), QM-FASE-DISUELTO (lo disuelto como fase aparte), QM-CADA-COSA (cada cosa nombrada, una fase), QM-INVIERTE
+  // (fases y componentes al revés) y AQ-rama-por-sustancia (la rama se elige por la sustancia, no por la tarea).
+  const AT1 = {
+    H: { el: 'H', estilo: 'hueco', r: 3.6 }, O: { el: 'O', estilo: 'lleno', r: 5 }, C: { el: 'C', estilo: 'lleno', r: 4.2 },
+    N: { el: 'N', estilo: 'hueco', r: 5 }, Na: { el: 'Na', estilo: 'punto', r: 4.6 }, Cl: { el: 'Cl', estilo: 'lleno', r: 5.4 },
+    Si: { el: 'Si', estilo: 'punto', r: 5 }, Cu: { el: 'Cu', estilo: 'lleno', r: 6 }, Sn: { el: 'Sn', estilo: 'punto', r: 6 },
+  };
+  const ESP1 = {
+    H2O: [['O', 0, -1.5], ['H', -5.5, 3.5], ['H', 5.5, 3.5]], NaCl: [['Na', -4.6, 0], ['Cl', 5, 0]],
+    azucar: [['C', -5, -2.5], ['C', 5, -2.5], ['H', 0, -4], ['O', 0, 4]],
+    aceite: [['C', -5.5, 2], ['C', 0, -2], ['C', 5.5, 2]], SiO2: [['O', -6, 0], ['O', 6, 0], ['Si', 0, 0]],
+    O2: [['O', -4, 0], ['O', 4, 0]], N2: [['N', -4, 0], ['N', 4, 0]], O3: [['O', -5, 2], ['O', 0, -2.5], ['O', 5, 2]],
+    CO2: [['O', -6, 0], ['O', 6, 0], ['C', 0, 0]], Cu: [['Cu', 0, 0]], Sn: [['Sn', 0, 0]],
+  };
+  const NOM1 = { H2O: 'agua (H₂O)', NaCl: 'sal (NaCl)', azucar: 'azúcar', aceite: 'aceite', SiO2: 'arena (SiO₂)', O2: 'oxígeno (O₂)',
+    N2: 'nitrógeno (N₂)', O3: 'ozono (O₃)', CO2: 'dióxido de carbono (CO₂)', Cu: 'cobre (Cu)', Sn: 'estaño (Sn)' };
+  // La fórmula que entiende el motor por cada especie dibujada (el aceite es una mezcla de grasas: va como una sustancia).
+  const FORMULA1 = { H2O: { formula: 'H2O' }, NaCl: { formula: 'NaCl' }, azucar: { formula: 'C12H22O11' }, aceite: { formula: 'C18H34O2', sustancia: 'aceite' },
+    SiO2: { formula: 'SiO2' }, O2: { formula: 'O2' }, N2: { formula: 'N2' }, O3: { formula: 'O3' }, CO2: { formula: 'CO2' }, Cu: { formula: 'Cu' }, Sn: { formula: 'Sn' } };
+  const mesa1 = (recipientes, extra = {}) => ({ datos: Object.assign({ atomos: AT1, especies: ESP1, nombres: NOM1, clave: true, recipientes }, extra), estado: {} });
+  // Las partículas de una lupa como las cuenta el motor: cada capa de la lupa es una fase.
+  const listaDe = capas => capas.flatMap((c, k) => (c.particulas || []).filter(p => p.n > 0).map(p => Object.assign({ n: p.n, fase: `fase ${k + 1}` }, FORMULA1[p.e])));
+  // elemento | compuesto | homogenea | heterogenea, según el motor.
+  const claseDe = capas => { const c = Motor.clasificarCaja(listaDe(capas)); return c.pura ? c.tipo : c.sistema === 'homogéneo' ? 'homogenea' : 'heterogenea'; };
+  const dR = t => ({ v: 'c-f', t });
+
+  // Los recipientes que se repiten: el agua destilada de referencia y el trío de «Lee» y «Mira».
+  const AGUA9 = [{ particulas: [{ e: 'H2O', n: 8 }] }];
+  const destilada = (lupa = true, desde = 0) => ({ tipo: 'vaso', titulo: 'Agua destilada', lupa: lupa ? { foco: 0.4, desde, capas: AGUA9 } : undefined });
+  const conAzucar = (lupa = true, desde = 0) => ({ tipo: 'vaso', titulo: 'Agua con azúcar', lupa: lupa ? { foco: 0.4, desde, capas: [{ particulas: [{ e: 'H2O', n: 4 }, { e: 'azucar', n: 3 }] }] } : undefined });
+  const conAceite = (lupa = true, desde = 0) => ({ tipo: 'vaso', titulo: 'Agua con aceite', capa: { alto: 0.22 },
+    lupa: lupa ? { foco: 0.53, desde, capas: [{ alto: 0.42, particulas: [{ e: 'aceite', n: 2 }], orden: 'filas' }, { alto: 0.58, particulas: [{ e: 'H2O', n: 3 }] }] } : undefined });
+
+  // ---- El juego: un vaso de agua destilada al lado de otro al que le echas algo y lo revuelves ----
+  // Lo que se echa se disuelve en DISUELVE segundos de revolver (un modelo para jugar, no una medida): el montoncito del
+  // fondo baja de N_SOL partículas a 0. Mientras quede algo sin disolver, el vaso tiene dos fases (el líquido y el sólido
+  // del fondo); cuando ya no queda, una sola. El aceite y la arena no se disuelven por más que se revuelva.
+  const DISUELVE = 20, N_SOL = 3;
+  const ECHA = { azucar: { texto: 'Azúcar', e: 'azucar', nombre: 'el azúcar', disuelve: true }, sal: { texto: 'Sal', e: 'NaCl', nombre: 'la sal', disuelve: true },
+    aceite: { texto: 'Aceite', e: 'aceite' }, arena: { texto: 'Arena', e: 'SiO2' }, nada: { texto: 'Nada' } };
+  const quedan = t => Math.round(N_SOL * (1 - Math.min(1, Math.max(0, t) / DISUELVE)));
+  function tuVaso(echa, t) {
+    const x = ECHA[echa];
+    if (x.disuelve) {
+      const k = quedan(t);
+      const capas = k > 0
+        ? [{ alto: 0.6, particulas: [{ e: 'H2O', n: 4 }, { e: x.e, n: N_SOL - k }] }, { alto: 0.4, particulas: [{ e: x.e, n: k }], orden: 'filas' }]
+        : [{ particulas: [{ e: 'H2O', n: 4 }, { e: x.e, n: N_SOL }] }];
+      return { tipo: 'vaso', titulo: 'Tu vaso', fondo: { tipo: 'sal', cantidad: k / N_SOL }, lupa: { foco: 0.12, capas } };
+    }
+    if (echa === 'aceite') return Object.assign(conAceite(), { titulo: 'Tu vaso' });
+    if (echa === 'arena') return { tipo: 'vaso', titulo: 'Tu vaso', fondo: { tipo: 'arena' }, lupa: { foco: 0.1, capas: [{ alto: 0.55, particulas: [{ e: 'H2O', n: 3 }] }, { alto: 0.45, particulas: [{ e: 'SiO2', n: 3 }], orden: 'filas' }] } };
+    return { tipo: 'vaso', titulo: 'Tu vaso', lupa: { foco: 0.4, capas: AGUA9 } };
+  }
+  const juego1 = v => mesa1([destilada(), tuVaso(v.echa, v.t)]);
+  const lectura1 = v => {
+    const x = ECHA[v.echa];
+    if (x.disuelve) {
+      const k = quedan(v.t);
+      if (k > 0) return [k === 1 ? 'Queda 1 partícula' : `Quedan ${k} partículas`, ` de ${x.texto.toLowerCase()} sin disolver en el fondo: 2 fases.`];
+      return [`Ya no se ve ${x.nombre}: 2 clases de partícula, 1 fase.`];
+    }
+    if (v.echa === 'aceite') return ['El aceite no se mezcla: queda en su capa. 2 fases.'];
+    if (v.echa === 'arena') return ['La arena no se disuelve: se asienta abajo. 2 fases.'];
+    return ['Solo agua: 1 clase de partícula, como el agua destilada.'];
+  };
+
+  // ---- Definiciones que van en `datos` (contrato, punto 13: si el ejercicio practica elegir, van las definiciones
+  // entre las que se elige; nunca la clase ya decidida) ----
+  const DEF_LUPA = 'En la lupa, cada bolita es un átomo; los átomos pegados forman una partícula';
+  const DEF_SM = 'Sustancia pura: una sola clase de partícula. Mezcla: varias clases';
+  const DEF_EC = 'Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos';
+  const DEF_HH = 'Mezcla homogénea: una sola fase. Heterogénea: dos fases o más';
+  const DEF_FASE = 'Fase: zona que se ve igual en todos sus puntos, con un borde';
+  const DEF_COMP = 'Componente: cada sustancia distinta del sistema';
+  const DEF_FORM = 'En una fórmula, cada símbolo es una clase de átomo: CO₂ tiene C y O';
+  const NOMBRE_CLASE = { elemento: 'Un elemento', compuesto: 'Un compuesto', homogenea: 'Una mezcla homogénea', heterogenea: 'Una mezcla heterogénea' };
+  const CORTO_CLASE = { elemento: 'un elemento', compuesto: 'un compuesto', homogenea: 'una mezcla homogénea', heterogenea: 'una mezcla heterogénea' };
+  // Por qué no es la opción elegida (empieza por lo que el alumno vio bien) y el código del error.
+  function siFueraClase(elegida, real) {
+    const pura = x => x === 'elemento' || x === 'compuesto';
+    if (pura(elegida) && pura(real)) return elegida === 'elemento'
+      ? ['MA9', 'Hay una sola clase de partícula, bien. Sería elemento si sus átomos fueran todos de una clase.']
+      : ['MA9', 'Hay una sola clase de partícula, bien. Sería compuesto si uniera átomos de elementos distintos.'];
+    if (pura(elegida)) return [real === 'homogenea' ? 'MA10' : 'MA9', 'Cada partícula está bien mirada. Sería sustancia pura si todas fueran de una sola clase.'];
+    if (pura(real)) return ['MA9', real === 'compuesto' ? 'Hay dos clases de átomo, bien visto. Sería mezcla si estuvieran sueltos; aquí van unidos.' : 'Viste partículas de varios átomos, bien. Pero todas son iguales: una sola clase.'];
+    return elegida === 'homogenea'
+      ? ['QM-HOMO', 'Son dos clases de partícula, bien. Sería homogénea si formaran una sola fase; hay un borde.']
+      : ['QM-HETERO', 'Son dos clases, bien contadas. Sería heterogénea si formaran capas; aquí se reparten en una fase.'];
+  }
+  const opcionesClase = real => Object.keys(NOMBRE_CLASE).map(k => (k === real ? { id: 'c', texto: NOMBRE_CLASE[k], correcta: true }
+    : (([error, siFuera]) => ({ id: k, texto: NOMBRE_CLASE[k], error, siFuera }))(siFueraClase(k, real))));
+
+  // Tipo 0: una muestra vista con la lupa. La clase la decide el motor con las mismas capas que se dibujan.
+  const LUPAS = [
+    { tipo: 'vaso', capas: [{ particulas: [{ e: 'H2O', n: 8 }] }] },
+    { tipo: 'frasco', capas: [{ particulas: [{ e: 'O2', n: 6 }] }] },
+    { tipo: 'frasco', capas: [{ particulas: [{ e: 'N2', n: 6 }] }] },
+    { tipo: 'frasco', capas: [{ particulas: [{ e: 'CO2', n: 5 }] }] },
+    { tipo: 'frasco', capas: [{ particulas: [{ e: 'O3', n: 5 }] }] },
+    { tipo: 'frasco', capas: [{ particulas: [{ e: 'N2', n: 5 }, { e: 'O2', n: 2 }] }] },
+    { tipo: 'vaso', capas: [{ particulas: [{ e: 'H2O', n: 5 }, { e: 'azucar', n: 3 }] }] },
+    { tipo: 'vaso', capas: [{ particulas: [{ e: 'H2O', n: 5 }, { e: 'NaCl', n: 3 }] }] },
+    { tipo: 'vaso', capa: { alto: 0.22 }, foco: 0.53, capas: [{ alto: 0.42, particulas: [{ e: 'aceite', n: 2 }], orden: 'filas' }, { alto: 0.58, particulas: [{ e: 'H2O', n: 3 }] }] },
+    { tipo: 'vaso', fondo: { tipo: 'arena' }, foco: 0.1, capas: [{ alto: 0.55, particulas: [{ e: 'H2O', n: 3 }] }, { alto: 0.45, particulas: [{ e: 'SiO2', n: 3 }], orden: 'filas' }] },
+  ];
+  const muestraLupa = m => mesa1([{ tipo: m.tipo, titulo: 'Muestra', capa: m.capa, fondo: m.fondo, lupa: { foco: m.foco === undefined ? 0.4 : m.foco, capas: m.capas } }]);
+  const PORQUE_CLASE = {
+    elemento: 'Una sola clase de partícula, y todos sus átomos son de la misma clase.',
+    compuesto: 'Una sola clase de partícula, y cada una une átomos de elementos distintos.',
+    homogenea: 'Dos clases de partícula repartidas en una sola fase, sin bordes.',
+    heterogenea: 'Dos clases de partícula, cada una en su zona: hay un borde, dos fases.',
+  };
+
+  // Tipo 1: un material de todos los días, con lo que tiene escrito en los datos. Lo clasifica Motor.material.
+  const MATERIALES1 = [
+    { nombre: 'el bronce de una campana', corto: 'El bronce', dato: 'Bronce: cobre y estaño fundidos juntos; se ve parejo', motor: 'bronce' },
+    { nombre: 'el aire limpio y seco', corto: 'El aire seco', dato: 'Aire seco: nitrógeno (N₂), oxígeno (O₂) y otros gases, repartidos parejo', motor: 'aire' },
+    { nombre: 'un diamante', corto: 'El diamante', dato: 'Diamante: solo átomos de carbono, unidos en una red', motor: 'diamante' },
+    { nombre: 'la sal de mesa', corto: 'La sal de mesa', dato: 'Sal de mesa: cloruro de sodio, NaCl; un sodio por cada cloro', motor: 'sal de mesa (NaCl)' },
+    { nombre: 'el ozono', corto: 'El ozono', dato: 'Ozono: moléculas O₃, de tres átomos de oxígeno', motor: 'ozono' },
+    { nombre: 'un trozo de granito', corto: 'El granito', dato: 'Granito: roca con granos de cuarzo, feldespato y mica que se ven a simple vista', motor: 'granito' },
+    { nombre: 'el agua de mar', corto: 'El agua de mar', dato: 'Agua de mar: agua con sales disueltas; se ve transparente', motor: 'agua de mar' },
+    { nombre: 'una joya de oro de 24 quilates', corto: 'El oro de 24 quilates', dato: 'Oro de 24 quilates: solo átomos de oro', motor: 'oro de 24 quilates' },
+    { nombre: 'el azúcar de la azucarera', corto: 'El azúcar', dato: 'Azúcar: moléculas C₁₂H₂₂O₁₁, todas iguales', motor: 'azúcar' },
+    { nombre: 'una varilla de acero', corto: 'El acero', dato: 'Acero: hierro con un poco de carbono, fundidos juntos; se ve parejo', motor: 'acero' },
+  ];
+  const claseMaterial = m => { const c = Motor.material(m.motor); return c.pura ? c.tipo : c.sistema === 'homogéneo' ? 'homogenea' : 'heterogenea'; };
+
+  // Tipo 2 (examen): fases y componentes de un vaso descrito con palabras. Cuenta Motor.contarSistema.
+  const PARTES1 = {
+    hielo: { nombre: 'cubitos de hielo', sustancia: 'H2O', formula: 'H2O', fase: 'hielo', estado: 's' },
+    sal: { nombre: 'sal disuelta', sustancia: 'NaCl', formula: 'NaCl', fase: 'líquido', estado: 's', disuelto: true },
+    azucar: { nombre: 'azúcar disuelto', sustancia: 'C12H22O11', formula: 'C12H22O11', fase: 'líquido', estado: 's', disuelto: true },
+    aceite: { nombre: 'una capa de aceite', sustancia: 'aceite', fase: 'aceite', estado: 'l' },
+    arena: { nombre: 'arena en el fondo', sustancia: 'SiO2', formula: 'SiO2', fase: 'arena', estado: 's' },
+  };
+  const AGUA_L = { nombre: 'agua', sustancia: 'H2O', formula: 'H2O', fase: 'líquido', estado: 'l' };
+  // Combinaciones con hielo o algo disuelto (así siempre hay una trampa que contar) y con tres partes o más.
+  const SISTEMAS = [];
+  for (const hielo of [0, 1]) for (const dis of [null, 'sal', 'azucar']) for (const aceite of [0, 1]) for (const arena of [0, 1]) {
+    const ps = [hielo && 'hielo', dis, aceite && 'aceite', arena && 'arena'].filter(Boolean);
+    if ((hielo || dis) && ps.length >= 2) SISTEMAS.push(ps);
+  }
+  const listaPalabras = xs => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}`);
+  function sistema(ps) {
+    const partes = [AGUA_L, ...ps.map(p => PARTES1[p])], c = Motor.contarSistema(partes);
+    const vaso = { tipo: 'vaso', titulo: 'El vaso', capa: ps.includes('aceite') ? { alto: 0.2 } : undefined,
+      fondo: ps.includes('arena') ? { tipo: 'arena' } : undefined, cubitos: ps.includes('hielo') ? 2 : 0 };
+    const datos = [DEF_FASE, DEF_COMP];
+    if (ps.includes('hielo')) datos.push('Hielo: agua en estado sólido, H₂O');
+    return { partes, c, vaso, datos, texto: listaPalabras(partes.map(p => p.nombre)) };
+  }
+  const fc = (F, C) => `${F} ${F === 1 ? 'fase' : 'fases'} y ${C} ${C === 1 ? 'componente' : 'componentes'}`;
+  function opcionesSistema(S) {
+    const F = S.c.nFases, C = S.c.nComponentes, ds = [];
+    if (S.partes.some(p => p.disuelto)) ds.push({ id: 'disuelto', F: S.c.errores.disueltoEsFase, C, error: 'QM-FASE-DISUELTO', siFuera: 'Contaste bien los componentes. Lo disuelto no forma otra fase: queda repartido dentro del agua.' });
+    if (S.partes.some(p => p.nombre === 'cubitos de hielo')) ds.push({ id: 'hielo', F, C: S.c.errores.hieloOtroComponente, error: 'MA9', siFuera: 'Las fases están bien contadas. El hielo es agua: el mismo componente, en otra fase.' });
+    ds.push({ id: 'cada', F: S.c.errores.cadaCosaUnaFase, C, error: 'QM-CADA-COSA', siFuera: 'Los componentes están bien. Una fase no es cada cosa nombrada: es cada zona con borde.' });
+    ds.push({ id: 'reves', F: C, C: F, error: 'QM-INVIERTE', siFuera: 'Contaste los dos números, pero al revés: fases son zonas; componentes, sustancias.' });
+    const ops = [{ id: 'c', texto: fc(F, C), correcta: true }], vistos = new Set([fc(F, C)]);
+    for (const d of ds) { const t = fc(d.F, d.C); if (vistos.has(t)) continue; vistos.add(t); ops.push({ id: d.id, texto: t, error: d.error, siFuera: d.siFuera }); }
+    return ops.slice(0, 4);
+  }
+
+  // Tipo 3 (examen): entre cuatro materiales, el único que es mezcla (o el único que es sustancia pura).
+  const esPura = m => { const c = claseMaterial(m); return c === 'elemento' || c === 'compuesto'; };
+  function cuatro(r, buscaMezcla) {
+    const unos = MATERIALES1.filter(m => esPura(m) === buscaMezcla), otros = MATERIALES1.filter(m => esPura(m) !== buscaMezcla);   // unos: los distractores
+    const bueno = r.de(otros), resto = [];
+    while (resto.length < 3) { const m = r.de(unos); if (!resto.includes(m)) resto.push(m); }
+    const todos = [bueno, ...resto].sort((a, b) => MATERIALES1.indexOf(a) - MATERIALES1.indexOf(b));
+    return { bueno, resto, todos };
+  }
+
+  // Tipo 4 (examen, como San Marcos 2019-I): de qué sustancias está hecha una mezcla. Lo decide Motor.especie.
+  const MEZCLAS1 = [
+    { nombre: 'el aire húmedo', dato: 'Aire húmedo: N₂, O₂, CO₂ y vapor de agua (H₂O), repartidos parejo', formulas: ['N2', 'O2', 'CO2', 'H2O'] },
+    { nombre: 'el agua de una pecera', dato: 'Agua de pecera: agua (H₂O) con oxígeno (O₂) disuelto', formulas: ['H2O', 'O2'] },
+    { nombre: 'el gas de un encendedor', dato: 'Gas de encendedor: butano (C₄H₁₀) y propano (C₃H₈) mezclados', formulas: ['C4H10', 'C3H8'] },
+    { nombre: 'el agua con gas', dato: 'Agua con gas: agua (H₂O) con dióxido de carbono (CO₂) disuelto', formulas: ['H2O', 'CO2'] },
+    { nombre: 'el bronce', dato: 'Bronce: cobre (Cu) y estaño (Sn) fundidos juntos', formulas: ['Cu', 'Sn'] },
+    { nombre: 'el acero', dato: 'Acero: hierro (Fe) con un poco de carbono (C), fundidos juntos', formulas: ['Fe', 'C'] },
+    { nombre: 'el nitrox de un tanque de buceo', dato: 'Nitrox: gas para bucear, de nitrógeno (N₂) y oxígeno (O₂) mezclados', formulas: ['N2', 'O2'] },
+  ];
+  const FORMADA = { el: 'Una mezcla de elementos solamente', co: 'Una mezcla de compuestos solamente', am: 'Una mezcla de elementos y compuestos', uno: 'Un compuesto, porque tiene varios elementos' };
+  const formadaDe = m => { const t = m.formulas.map(x => Motor.especie(x).tipo); return t.every(x => x === 'elemento') ? 'el' : t.every(x => x === 'compuesto') ? 'co' : 'am'; };
+  const SI_FORMADA = {
+    el: ['AQ-solo-elementos', 'Viste elementos en la lista, bien. Faltan los que unen átomos distintos: esos son compuestos.'],
+    co: ['AQ-solo-compuestos', 'Viste compuestos en la lista, bien. Revisa las fórmulas de un solo símbolo: son elementos.'],
+    am: ['AQ-elementos-y-compuestos', 'Revisaste cada fórmula, bien. Sería así si hubiera elementos y compuestos a la vez.'],
+    uno: ['MA9', 'Tiene varios elementos, cierto. Pero están en sustancias distintas y sueltas: es una mezcla.'],
+  };
+  function porqueFormada(m) {
+    const els = m.formulas.filter(x => Motor.especie(x).tipo === 'elemento'), cos = m.formulas.filter(x => Motor.especie(x).tipo !== 'elemento');
+    const sub = x => x.replace(/\d+/g, d => [...d].map(c => '₀₁₂₃₄₅₆₇₈₉'[c]).join(''));
+    const partes = [];
+    if (els.length) partes.push(`${listaPalabras(els.map(sub))}: ${els.length === 1 ? 'elemento' : 'elementos'}`);
+    if (cos.length) partes.push(`${listaPalabras(cos.map(sub))}: ${cos.length === 1 ? 'compuesto' : 'compuestos'}`);
+    return partes.join('; ');
+  }
+
+  // Un caso de cada tipo. «Ahora tú» toma el índice de azar(s); «Así se resuelve», otro distinto con la misma semilla.
+  const TIPOS1 = 5;
+  const idx = (s, n, otro) => { const a = Math.floor(azar(s)() * n); return otro ? (a + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n : a; };
+
+  function caso1(s, otro) {
+    const tipo = s % TIPOS1;
+    if (tipo === 0) {
+      const m = LUPAS[idx(s, LUPAS.length, otro)], real = claseDe(m.capas);
+      return { tipo, dibujo: muestraLupa(m), real, datos: [DEF_LUPA, DEF_SM, DEF_EC, DEF_HH],
+        pregunta: 'Esta es la lupa de una muestra. ¿Cómo se clasifica?', opciones: opcionesClase(real), porque: PORQUE_CLASE[real] };
+    }
+    if (tipo === 1) {
+      const m = MATERIALES1[idx(s, MATERIALES1.length, otro)], real = claseMaterial(m);
+      return { tipo, m, real, datos: [m.dato, DEF_SM, DEF_EC, DEF_HH], pregunta: `¿Cómo se clasifica ${m.nombre}?`, opciones: opcionesClase(real), porque: PORQUE_CLASE[real] };
+    }
+    if (tipo === 2) {
+      const S = sistema(SISTEMAS[idx(s, SISTEMAS.length, otro)]);
+      return { tipo, S, dibujo: mesa1([S.vaso], { clave: false }), datos: S.datos,
+        pregunta: `Un vaso tiene ${S.texto}. ¿Cuántas fases y cuántos componentes tiene el sistema?`, opciones: opcionesSistema(S) };
+    }
+    if (tipo === 3) {
+      const r = azar(s + (otro ? 900 : 0)), buscaMezcla = r() < 0.5, q = cuatro(r, buscaMezcla);
+      const opciones = q.todos.map(m => (m === q.bueno ? { id: 'c', texto: m.corto, correcta: true }
+        : { id: m.motor.replace(/[^a-z0-9]+/g, '-'), texto: m.corto, error: buscaMezcla ? 'MA9' : 'MA10',
+          siFuera: `Revisaste su dato, bien. ${m.corto} tiene ${buscaMezcla ? 'una sola clase de partícula: es sustancia pura' : 'varias clases de partícula: es mezcla'}.` }));
+      return { tipo, q, buscaMezcla, datos: [...q.todos.map(m => m.dato), DEF_SM],
+        pregunta: buscaMezcla ? '¿Cuál de estos materiales es una mezcla?' : '¿Cuál de estos materiales es una sustancia pura?', opciones };
+    }
+    const m = MEZCLAS1[idx(s, MEZCLAS1.length, otro)], real = formadaDe(m);
+    return { tipo, m, real, datos: [m.dato, DEF_SM, DEF_EC, DEF_FORM], pregunta: `¿Qué es ${m.nombre}?`,
+      opciones: Object.keys(FORMADA).map(k => (k === real ? { id: 'c', texto: FORMADA[k], correcta: true } : { id: k, texto: FORMADA[k], error: SI_FORMADA[k][0], siFuera: SI_FORMADA[k][1] })) };
+  }
+
+  // Ejemplos resueltos de la idea 1 (pestaña «Ejemplos»): 5 por nivel. N1, un paso (contar clases o fases en la lupa);
+  // N2, dos pasos (sustancia o mezcla y después de qué tipo; o elegir la rama por la tarea); N3, de examen (la lista de
+  // San Marcos, fases y componentes con lo disuelto y los líquidos que se mezclan, O₃ contra O₂). Ninguno usa hielo: es
+  // la predicción de la idea. La figura muestra la muestra o el vaso, nunca la clase.
+  // Cuentas revisadas aparte (17 nov, script fuera del repo que no usa este archivo ni el motor): ejemplo 12, mezclas
+  // aire y bronce, elementos O₃ y C, compuestos H₂O y NaCl → 2, 2 y 2; ejemplo 13, fases {aceite, agua con sal, arena} = 3
+  // y componentes {agua, aceite, sal, arena} = 4; ejemplo 15, fases {aceite, agua con alcohol y sal} = 2 y componentes
+  // {agua, alcohol, sal, aceite} = 4; ejemplo 11, cinco clases, elementos N₂, O₂, Ar y compuestos CO₂, H₂O.
+  const vasoLupa = (titulo, capas, extra = {}) => Object.assign({ tipo: 'vaso', titulo, lupa: { foco: extra.foco === undefined ? 0.4 : extra.foco, capas } }, extra);
+  const frascoLupa = (titulo, capas) => ({ tipo: 'frasco', titulo, lupa: { foco: 0.4, capas } });
+  // El bronce como un sólido lleno: 17 de cobre y 4 de estaño intercalados (en filas, para que no queden huecos).
+  const BRONCE = [...Array.from({ length: 4 }, () => [{ e: 'Cu', n: 4 }, { e: 'Sn', n: 1 }]).flat(), { e: 'Cu', n: 1 }];
+  const EJEMPLOS_SUSTANCIA = [
+    { nivel: 1, titulo: 'Agua destilada de la farmacia',
+      enunciado: 'En la farmacia venden agua destilada. La figura muestra su lupa. ¿Es una sustancia pura o una mezcla?',
+      datos: [DEF_LUPA, DEF_SM],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([vasoLupa('Agua destilada', [{ particulas: [{ e: 'H2O', n: 9 }] }])])),
+      solucion: [{ texto: ['En la lupa todas las partículas son iguales, H₂O: hay ', dR('una sola clase de partícula'), '.'] }],
+      respuesta: [dR('Sustancia pura')] },
+    { nivel: 1, titulo: 'Agua con azúcar',
+      enunciado: 'Un vaso de agua con una cucharadita de azúcar bien disuelta se ve transparente, como el agua sola. Con su lupa, ¿es una sustancia pura o una mezcla?',
+      datos: [DEF_LUPA, DEF_SM],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([vasoLupa('Agua con azúcar', [{ particulas: [{ e: 'H2O', n: 6 }, { e: 'azucar', n: 3 }] }])])),
+      solucion: [{ texto: ['La lupa muestra dos clases de partícula: las de agua y las de azúcar. Que se vea transparente no cambia eso.'] }],
+      respuesta: [dR('Mezcla')] },
+    { nivel: 1, titulo: 'Un frasco de oxígeno',
+      enunciado: 'Un frasco cerrado tiene oxígeno, O₂. Su lupa está en la figura. ¿Es un elemento o un compuesto?',
+      datos: [DEF_LUPA, DEF_EC],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([frascoLupa('Oxígeno', [{ particulas: [{ e: 'O2', n: 7 }] }])])),
+      solucion: [{ texto: ['Cada partícula tiene dos átomos, pero los dos son de oxígeno: ', dR('una sola clase de átomo'), '.'] }],
+      respuesta: [dR('Elemento')] },
+    { nivel: 1, titulo: 'El gas de un extintor',
+      enunciado: 'Algunos extintores tienen dióxido de carbono, CO₂. La figura muestra la lupa de ese gas en un frasco. ¿Es un elemento o un compuesto?',
+      datos: [DEF_LUPA, DEF_EC],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([frascoLupa('Dióxido de carbono', [{ particulas: [{ e: 'CO2', n: 6 }] }])])),
+      solucion: [{ texto: ['Cada partícula une un átomo de carbono con dos de oxígeno: ', dR('dos clases de átomo unidas'), '.'] }],
+      respuesta: [dR('Compuesto')] },
+    { nivel: 1, titulo: 'Arena en un vaso',
+      enunciado: 'Echas arena a un vaso de agua, revuelves y esperas un rato. ¿Cuántas fases ves en el vaso?',
+      datos: [DEF_FASE],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'vaso', titulo: 'Agua con arena', fondo: { tipo: 'arena' } }], { clave: false })),
+      solucion: [{ texto: ['Hay dos zonas con un borde entre ellas: el agua arriba y la arena asentada en el fondo.'] }],
+      respuesta: [dR('2 fases')] },
+    { nivel: 2, titulo: 'El agua de mar',
+      enunciado: 'El agua de mar se ve transparente. Su lupa está en la figura. ¿Es una sustancia pura o una mezcla, y de qué tipo?',
+      datos: [DEF_LUPA, DEF_SM, DEF_HH],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([vasoLupa('Agua de mar', [{ particulas: [{ e: 'H2O', n: 6 }, { e: 'NaCl', n: 3 }] }])])),
+      solucion: [
+        { texto: ['Primero, las clases de partícula: agua y sal. Son dos: es una ', dR('mezcla'), '.'] },
+        { texto: ['Después, las fases: todo está repartido en una sola zona, sin bordes. Una fase: ', dR('homogénea'), '.'] },
+      ],
+      respuesta: [dR('Mezcla homogénea')] },
+    { nivel: 2, titulo: 'El aire de un frasco',
+      enunciado: 'Un frasco tiene aire limpio y seco; su lupa muestra moléculas N₂ y O₂. ¿Cómo se clasifica el aire, y sus partículas son de elementos o de compuestos?',
+      datos: [DEF_LUPA, DEF_SM, DEF_EC, DEF_HH],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([frascoLupa('Aire seco', [{ particulas: [{ e: 'N2', n: 6 }, { e: 'O2', n: 2 }] }])])),
+      solucion: [
+        { texto: ['Hay dos clases de partícula, N₂ y O₂, repartidas por todo el frasco sin capas: mezcla de una sola fase.'] },
+        { texto: ['Cada clase tiene un solo tipo de átomo: el N₂ solo nitrógeno y el O₂ solo oxígeno. Las dos son elementos.'] },
+      ],
+      respuesta: [dR('Mezcla homogénea'), ' de dos elementos'] },
+    { nivel: 2, titulo: 'Una campana de bronce',
+      enunciado: 'El bronce de una campana se ve como un solo metal, parejo. La figura muestra la lupa de un trozo. ¿Es una sustancia pura o una mezcla, y de qué tipo?',
+      datos: [DEF_LUPA, DEF_SM, DEF_HH, 'Bronce: cobre (Cu) y estaño (Sn) fundidos juntos'],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'trozo', titulo: 'Bronce', material: 'metal', lupa: { foco: 0.5, capas: [{ particulas: BRONCE, orden: 'filas' }] } }], { separacion: 17 })),
+      solucion: [
+        { texto: ['En la lupa hay átomos de dos clases, cobre y estaño, sueltos y no unidos: dos sustancias. Es una ', dR('mezcla'), '.'] },
+        { texto: ['Se reparten parejo en todo el trozo: una sola fase. Una mezcla así de metales se llama aleación.'] },
+      ],
+      respuesta: [dR('Mezcla homogénea'), ' (una aleación)'] },
+    { nivel: 2, titulo: 'Un cristal de sal',
+      enunciado: 'Un cristal de sal de mesa es transparente y parejo. Su lupa está en la figura. ¿Es un elemento, un compuesto o una mezcla?',
+      datos: [DEF_LUPA, DEF_SM, DEF_EC],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'trozo', titulo: 'Sal de mesa', material: 'cristal', lupa: { foco: 0.5, capas: [{ particulas: [{ e: 'NaCl', n: 12 }], orden: 'filas' }] } }])),
+      solucion: [
+        { texto: ['Todas las partículas son iguales: un sodio pegado a un cloro. Una sola clase: es una sustancia pura.'] },
+        { texto: ['Cada partícula une átomos de dos elementos distintos: es un ', dR('compuesto'), '.'] },
+      ],
+      respuesta: [dR('Compuesto')] },
+    { nivel: 2, titulo: 'La cafeína de una bebida',
+      enunciado: 'Un laboratorio mide cuánta cafeína tiene una lata de bebida energética. La cafeína es un compuesto del carbono. ¿Qué rama de la química hace ese trabajo?',
+      datos: ['Química orgánica: estudia los compuestos del carbono', 'Química analítica: averigua qué sustancias hay en una muestra y cuánto de cada una', 'Bioquímica: estudia las sustancias y las reacciones de los seres vivos'],
+      solucion: [
+        { texto: ['La rama se elige por la tarea, no por la sustancia. Aquí la tarea es medir cuánto hay de algo.'] },
+        { texto: ['Que la cafeína sea un compuesto del carbono es la trampa: medir cuánto hay es trabajo de la ', dR('química analítica'), '.'] },
+      ],
+      respuesta: [dR('Química analítica')] },
+    { nivel: 3, titulo: 'El aire que respiramos',
+      enunciado: 'El aire húmedo tiene nitrógeno (N₂), oxígeno (O₂), argón (Ar), dióxido de carbono (CO₂) y vapor de agua (H₂O), repartidos parejo. ¿Cómo se clasifica y de qué sustancias está formado?',
+      datos: [DEF_SM, DEF_EC, DEF_HH, DEF_FORM],
+      solucion: [
+        { texto: ['Cinco clases de partícula en una sola fase: es una mezcla homogénea.'] },
+        { texto: ['N₂, O₂ y Ar tienen una sola clase de átomo: son elementos. CO₂ y H₂O unen átomos distintos: son compuestos.'] },
+        { texto: ['Error típico: decir «solo elementos» porque el aire tiene nitrógeno y oxígeno, y olvidar el CO₂ y el agua.'] },
+      ],
+      respuesta: [dR('Mezcla homogénea'), ' de elementos y compuestos'] },
+    { nivel: 3, titulo: 'Contar en una lista',
+      enunciado: 'Clasifica el aire, el agua destilada, el ozono (O₃), el bronce, la sal de mesa (NaCl) y el diamante. ¿Cuántos son elementos, cuántos compuestos y cuántas mezclas?',
+      datos: ['Aire: N₂, O₂ y otros gases', 'Agua destilada: solo H₂O', 'Bronce: cobre y estaño fundidos juntos', 'Diamante: solo átomos de carbono', DEF_SM, DEF_EC],
+      solucion: [
+        { texto: ['Mezclas, con varias clases de partícula: el aire y el bronce.'] },
+        { texto: ['Elementos, con una sola clase de átomo: el ozono (solo O, aunque tenga tres átomos) y el diamante (solo C).'] },
+        { texto: ['Compuestos, con átomos distintos unidos: el agua (H y O) y la sal (Na y Cl).'] },
+      ],
+      respuesta: [dR('2 elementos'), ', ', dR('2 compuestos'), ' y ', dR('2 mezclas')] },
+    { nivel: 3, titulo: 'Un vaso con cuatro cosas',
+      enunciado: 'Un vaso tiene agua, una capa de aceite encima, sal disuelta y arena en el fondo. ¿Cuántas fases y cuántos componentes tiene el sistema?',
+      datos: [DEF_FASE, DEF_COMP],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'vaso', titulo: 'El vaso', capa: { alto: 0.2 }, fondo: { tipo: 'arena' } }], { clave: false })),
+      solucion: [
+        { texto: ['Fases, las zonas con borde: el aceite, el agua con la sal y la arena. Son ', dR('3'), '.'] },
+        { texto: ['La sal disuelta no es otra fase: está repartida dentro del agua. Contarla aparte es el error típico.'] },
+        { texto: ['Componentes, las sustancias: agua, aceite, sal y arena. Son ', dR('4'), '.'] },
+      ],
+      respuesta: [dR('3 fases y 4 componentes')] },
+    { nivel: 3, titulo: 'Oxígeno y ozono',
+      enunciado: 'El oxígeno que respiramos es O₂ y el ozono de la alta atmósfera es O₃. Un alumno dice: «El O₃ es un compuesto, porque tiene tres átomos». ¿Tiene razón?',
+      datos: [DEF_EC, 'En una fórmula, cada símbolo es una clase de átomo y el subíndice dice cuántos hay'],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([frascoLupa('Oxígeno, O₂', [{ particulas: [{ e: 'O2', n: 6 }] }]), frascoLupa('Ozono, O₃', [{ particulas: [{ e: 'O3', n: 5 }] }])])),
+      solucion: [
+        { texto: ['Un compuesto une átomos de elementos distintos. En el O₃ los tres átomos son de oxígeno: una sola clase.'] },
+        { texto: ['Tener más átomos no lo vuelve compuesto. O₂ y O₃ son dos sustancias distintas del mismo elemento, el oxígeno.'] },
+      ],
+      respuesta: [dR('No'), ': el O₃ es un elemento, como el O₂'] },
+    { nivel: 3, titulo: 'Dos líquidos que se mezclan',
+      enunciado: 'Un vaso tiene agua, alcohol, sal disuelta y una capa de aceite encima. El alcohol se mezcla del todo con el agua. ¿Cuántas fases y cuántos componentes tiene?',
+      datos: [DEF_FASE, DEF_COMP],
+      figura: Object.assign({ pieza: 'quim-vasos' }, mesa1([{ tipo: 'vaso', titulo: 'El vaso', capa: { alto: 0.2 } }], { clave: false })),
+      solucion: [
+        { texto: ['El alcohol y la sal no forman capas: quedan dentro del agua, en una sola zona.'] },
+        { texto: ['Fases: el aceite y el agua con el alcohol y la sal. Son ', dR('2'), '.'] },
+        { texto: ['Componentes: agua, alcohol, sal y aceite. Son ', dR('4'), '.'] },
+      ],
+      respuesta: [dR('2 fases y 4 componentes')] },
+  ];
+
   const sustancia = {
     id: 'sustancia-mezcla',
-    titulo: 'Sustancia o mezcla: mira dentro',
+    titulo: '¿Sustancia pura o mezcla?',
+    pregunta: '¿Cómo sabes si algo es puro o es una mezcla?',
     temas: ['Qué estudia la química', 'Sustancias y mezclas'],
-    pieza: 'quim-particulas',
-    // Lee (fase 2): contexto y vocabulario. No dice cómo se clasifica una muestra que se ve uniforme (eso se predice).
+    pieza: 'quim-vasos',
+    actividad: 'Echar cosas a un vaso de agua y mirar con una lupa qué partículas hay.',
+    aprendizaje: 'Para saber si algo es puro se cuentan las clases de partícula, no se mira el aspecto. Una mezcla de una sola fase es homogénea.',
+    ejemplos: EJEMPLOS_SUSTANCIA,
+    // Lee: qué estudia la química, sus ramas (decisiones, 17 nov), la lupa como modelo y qué es una fase. No dice qué es
+    // una sustancia pura ni una mezcla (eso se descubre al jugar) ni nombra el hielo (es la predicción).
     lee: {
       tarjetas: [
-        { titulo: '¿De qué está hecho?', texto: 'La química estudia de qué está hecha la materia y cómo se transforma. El cobre de Toquepala, el gas de un balón o la chicha del mercado: todo está formado por partículas diminutas.' },
-        { titulo: 'Especie y fase', texto: 'En la lupa, cada dibujo de átomos que se repite igual es una especie de partícula. Una fase es una zona que se ve igual en todos sus puntos: el agua y el aceite forman dos fases, una sobre otra.' },
-        { titulo: 'Qué mirar', texto: 'Cuando juegues, cuenta dos cosas en cada muestra: cuántas especies distintas hay y si forman una capa o dos. Después compara lo que contaste con el aspecto de la muestra.' },
+        { titulo: '¿Qué estudia la química?', texto: 'La química estudia la materia: de qué está hecha, cómo cambia y cuánta energía gana o pierde al cambiar. Materia es todo lo que tiene masa y ocupa un lugar: el agua de estos vasos, el aire, tu chompa.',
+          pieza: 'quim-vasos', dibujo: mesa1([destilada(false), conAzucar(false), conAceite(false)], { clave: false }) },
+        { titulo: 'Las ramas de la química', texto: 'La química general estudia lo común a toda la materia; la inorgánica, los minerales, las sales y los metales; la orgánica, los compuestos del carbono; la bioquímica, los seres vivos; la analítica averigua qué hay y cuánto; la fisicoquímica, la energía de los cambios.' },
+        { titulo: 'Una lupa imaginaria', texto: 'La materia está hecha de partículas diminutas, que no se ven. La lupa las dibuja como bolitas: es un modelo, no una foto. Cada bolita es un átomo, y su color y su relleno dicen de qué elemento es. Los átomos pegados forman una partícula.',
+          pieza: 'quim-vasos', dibujo: mesa1([destilada()]) },
+        { titulo: 'Qué mirar al jugar', texto: 'Una fase es una zona que se ve igual en todos sus puntos, con un borde que la separa de otra: el aceite forma una fase sobre el agua. Al jugar, mira el vaso por fuera y, en la lupa, cuántas clases de partícula hay.' },
       ],
     },
     juega: {
-      consigna: 'Las partículas se mueven solas, en cámara lenta. Elige una muestra y cuenta cuántas especies hay y si forman una o dos capas.',
-      voz: 'Mira primero cuántas clases de partícula hay. El aspecto viene después.',
-      controles: [{ id: 'k', etiqueta: 'Muestra', opciones: Object.keys(MUESTRAS).map(k => ({ valor: k, texto: MUESTRAS[k].titulo })) }, T_ANIMA],
-      dibujo: val => muestraT(val.k, val.t),
-      lectura: val => [`t = ${f(val.t, 1)} s · `, MUESTRAS[val.k].lee],
+      pieza: 'quim-vasos',
+      consigna: 'Endulzaste un vaso de agua destilada con una cucharadita de azúcar. Revuelve, prueba otras cosas y compara con el vaso de agua sola.',
+      mision: {
+        texto: 'Haz que tu vaso se vea igual que el agua destilada, pero que sea una mezcla.',
+        // Lo decide el motor con las partículas de la lupa: mezcla (varias sustancias) en una sola fase.
+        logrado: v => { const c = Motor.clasificarCaja(listaDe(tuVaso(v.echa, v.t).lupa.capas)); return !c.pura && c.sistema === 'homogéneo'; },
+        bien: 'Listo: se ve igual que el agua destilada, pero la lupa muestra dos clases de partícula.',
+      },
+      voz: 'Mira el vaso por fuera y después la lupa. ¿Dicen lo mismo?',
+      leyenda: [
+        { s: 'O', t: 'oxígeno: bolita roja llena' },
+        { s: 'H', t: 'hidrógeno: bolita turquesa hueca' },
+        { s: 'C', t: 'carbono, en el azúcar y el aceite' },
+        { s: 'Na  Cl', t: 'sodio y cloro: juntos forman la sal' },
+        { s: 'Si', t: 'silicio: con dos oxígenos forma la arena' },
+        { s: '- - -', t: 'en la lupa, el borde entre dos fases' },
+      ],
+      controles: [
+        { id: 'echa', etiqueta: 'Le echas al agua', opciones: Object.keys(ECHA).map(k => ({ valor: k, texto: ECHA[k].texto })) },
+        { id: 't', etiqueta: 'Tiempo revolviendo', min: 0, max: 30, paso: 2, inicio: 0, unidad: 's', decimales: 0, auto: { velocidad: 3 } },
+      ],
+      dibujo: v => juego1(v),
+      lectura: v => lectura1(v),
       minimo: 3,
     },
     predice: {
-      pregunta: 'Agua con azúcar bien disuelta se ve igual que agua pura: transparente y uniforme. Mirada con la lupa, ¿qué es?',
-      voz: 'Anota tu predicción antes de abrir la lupa.',
+      pregunta: 'En un vaso de agua flotan unos cubitos de hielo. Por fuera se ven dos partes. Con la lupa, ¿qué hay en el vaso?',
+      datos: ['El agua se congela a 0 °C', 'Agua: partículas H₂O, de 1 oxígeno y 2 hidrógenos'],
+      voz: 'Antes de mirar, decide qué esperas ver en la lupa.',
+      pieza: 'quim-vasos',
       opciones: [
-        { id: 'c', texto: 'Una mezcla homogénea', correcta: true },
-        { id: 'pura', texto: 'Una sustancia pura, porque se ve uniforme', error: 'MA10', siFuera: 'Se ve uniforme, es cierto. Sería pura si la lupa mostrara una sola especie de partícula.' },
-        { id: 'compuesto', texto: 'Un compuesto, porque tiene varios elementos', error: 'MA9', siFuera: 'Tiene varios elementos, sí. Un compuesto es una sola especie; aquí hay dos especies sueltas.' },
-        { id: 'hetero', texto: 'Una mezcla heterogénea, porque tiene dos sustancias', error: 'QM-HOMO', siFuera: 'Hay dos sustancias, bien visto. Sería heterogénea si formaran dos fases separadas.' },
+        { id: 'c', texto: 'Una sola sustancia, el agua, en dos fases', correcta: true },
+        { id: 'vista', texto: 'Una mezcla, porque se ven dos partes', error: 'MA10', siFuera: 'Se ven dos partes, bien visto: son dos fases. Sería mezcla si hubiera dos clases de partícula.' },
+        { id: 'dos', texto: 'Dos sustancias distintas: el hielo y el agua', error: 'MA9', siFuera: 'Hielo y agua se ven distintos, es cierto. Serían dos sustancias si sus partículas fueran distintas.' },
+        { id: 'homo', texto: 'Una mezcla de una sola fase, porque todo es agua', error: 'QM-HOMO', siFuera: 'Todo es agua, eso sí. Pero el hielo forma otra zona con borde: son dos fases.' },
       ],
-      dibujo: lupa([{ titulo: 'Agua con azúcar', forma: 'vaso', nivel: 0.85, particulas: [] }]),
-      revelar: lupa([{ titulo: 'Agua con azúcar', forma: 'vaso', nivel: 0.85, particulas: [{ e: 'H2O', n: 11 }, { e: 'azucar', n: 3 }] }]),
-      coincide: 'Coincide: dos especies repartidas en una sola fase.',
-      noCoincide: 'La lupa muestra dos especies mezcladas en una sola fase.',
+      dibujo: mesa1([{ tipo: 'vaso', titulo: 'Agua con hielo', cubitos: 2, lupa: { vacia: true, foco: 0.74 } }]),
+      revelar: mesa1([{ tipo: 'vaso', titulo: 'Agua con hielo', cubitos: 2, lupa: { foco: 0.74, capas: [{ alto: 0.45, particulas: [{ e: 'H2O', n: 4 }], orden: 'filas' }, { alto: 0.55, particulas: [{ e: 'H2O', n: 4 }] }] } }]),
+      coincide: 'Coincide: una sola clase de partícula, H₂O, en dos fases: hielo y agua líquida.',
+      noCoincide: 'La lupa muestra una sola clase de partícula, H₂O, en dos fases: hielo arriba y agua abajo.',
     },
     mira: {
-      datos: lupa([
-        { titulo: 'Oxígeno', forma: 'caja', particulas: [{ e: 'O2', n: 5, desde: 1 }] },
-        { titulo: 'Agua', forma: 'caja', particulas: [{ e: 'H2O', n: 5, desde: 2 }] },
-        { titulo: 'Agua salada', forma: 'caja', particulas: [{ e: 'H2O', n: 4, desde: 3 }, { e: 'Na', n: 2, desde: 3 }, { e: 'Cl', n: 2, desde: 3 }] },
-      ], { separacion: 26 }).datos,
-      voz: 'Comparemos las tres cajas especie por especie.',
+      pieza: 'quim-vasos',
+      datos: mesa1([destilada(true, 1), conAzucar(true, 3), conAceite(true, 4)]).datos,
+      voz: 'Comparemos los tres vasos: primero por fuera, después con la lupa.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Oxígeno: una sola especie, hecha de un solo elemento.', ecuacion: ['sustancia simple: O₂'] },
-        { estado: { corte: 2 }, texto: 'Agua: una sola especie con dos elementos unidos.', ecuacion: ['compuesto: H₂O'] },
-        { estado: { corte: 3 }, texto: 'Agua salada: varias especies sueltas en una sola fase.', ecuacion: ['mezcla homogénea: H₂O + Na⁺ + Cl⁻'] },
-        { estado: { corte: 3 }, texto: 'La química estudia de qué está hecho algo y cómo se transforma.' },
+        { estado: { corte: 0 }, texto: 'Por fuera, el agua destilada y el agua con azúcar se ven iguales.' },
+        { estado: { corte: 1 }, texto: 'Agua destilada: todas sus partículas son H₂O. Una sola clase: sustancia pura.', ecuacion: ['sustancia pura: 1 clase de partícula'] },
+        { estado: { corte: 2 }, texto: 'Cada H₂O une átomos de dos elementos, oxígeno e hidrógeno: es un compuesto.', ecuacion: ['compuesto: átomos distintos unidos'] },
+        { estado: { corte: 3 }, texto: 'Agua con azúcar: dos clases de partícula, repartidas en una sola fase.', ecuacion: ['mezcla homogénea: 1 fase'] },
+        { estado: { corte: 4 }, texto: 'Agua con aceite: dos clases, cada una en su capa. Son dos fases.', ecuacion: ['mezcla heterogénea: 2 fases o más'] },
+        { estado: { corte: 4 }, texto: 'El azúcar disuelto no forma otra fase: queda dentro del agua.', ecuacion: ['agua con azúcar: 2 componentes, 1 fase'] },
       ],
     },
     regla: {
-      texto: 'Una sustancia tiene una sola especie de partícula: elemento si es un tipo de átomo, compuesto si son varios unidos. Una mezcla tiene varias especies.',
-      ecuacion: ['homogénea: una fase', '   ·   ', 'heterogénea: varias fases'],
-      condicion: 'se decide por las partículas y las fases, no por el aspecto: algo transparente y uniforme puede ser una mezcla.',
-      voz: 'Cuenta especies, después fases. En ese orden.',
+      texto: 'Una sustancia pura tiene una sola clase de partícula; una mezcla tiene varias. Si sus átomos son de una clase, es elemento; si son distintos, compuesto.',
+      ecuacion: ['homogénea: 1 fase', '   ·   ', 'heterogénea: 2 fases o más', '   ·   ', 'componentes: cuántas sustancias hay'],
+      condicion: 'Se decide por las partículas, no por el aspecto. Lo disuelto no forma otra fase; el hielo es agua en otra fase.',
+      voz: 'Primero cuenta clases de partícula; después, fases.',
     },
-    // Así se resuelve (fase 2): una muestra de «Ahora tú» con otra semilla, armada igual (mismas especies y rejilla).
-    // Los elementos de cada especie los cuenta ESPECIES, la misma lista que dibuja la lupa.
+    // Así se resuelve: el mismo tipo que «Ahora tú» con la misma semilla, pero otro caso (caso1(s, true)).
     resuelve: {
-      pieza: 'quim-particulas',
+      pieza: 'quim-vasos',
       generar(s) {
-        const r = azar(s + 900);
-        const tipo = ['elemento', 'compuesto', 'homogenea', 'heterogenea'][s % 4];
-        let parts, n;
-        if (tipo === 'elemento') { const e = r.de(['O2', 'N2', 'He', 'H2']); n = r.ent(6, 11); parts = [{ e, n }]; }
-        else if (tipo === 'compuesto') { const e = r.de(['H2O', 'CO2']); n = r.ent(6, 11); parts = [{ e, n }]; }
-        else if (tipo === 'homogenea') { const a = r.de([['N2', 'O2'], ['H2O', 'azucar'], ['O2', 'CO2'], ['H2O', 'Na']]); const na = r.ent(5, 8), nb = r.ent(2, 4); n = na + nb; parts = [{ e: a[0], n: na }, { e: a[1], n: nb }]; }
-        else { const na = 3 * r.ent(1, 2), nb = 3 * r.ent(2, 3); n = na + nb; parts = [...rejilla('aceite', na, 3, 0.18, 0.82, 0.1, na > 3 ? 0.35 : 0.2), ...rejilla('H2O', nb, 3, 0.15, 0.85, 0.55, 0.92)]; }
-        const forma = tipo === 'elemento' || (tipo === 'homogenea' && parts[0].e === 'N2') || (tipo === 'homogenea' && parts[0].e === 'O2') ? 'cilindro' : 'vaso';
-        const NOM = { O2: 'oxígeno (O₂)', N2: 'nitrógeno (N₂)', He: 'helio (He)', H2: 'hidrógeno (H₂)', H2O: 'agua (H₂O)', CO2: 'dióxido de carbono (CO₂)', azucar: 'azúcar', Na: 'sodio (Na)', aceite: 'aceite' };
-        const especies = [...new Set(parts.map(p => p.e))];
-        const cuenta = e => parts.filter(p => p.e === e).reduce((a, p) => a + p.n, 0);
-        const clases = e => new Set(ESPECIES[e].map(x => x[0])).size;     // clases de átomo de una especie
-        const fases = tipo === 'heterogenea' ? 2 : 1;
-        const lista = especies.map(e => `${cuenta(e)} de ${NOM[e]}`).join(' y ');
-        const nombres = { elemento: 'Sustancia simple (elemento)', compuesto: 'Compuesto', homogenea: 'Mezcla homogénea', heterogenea: 'Mezcla heterogénea' };
-        const e0 = especies[0];
-        const aplica = {
-          elemento: `Hay una sola especie, ${NOM[e0]}, y ${clases(e0) === 1 ? 'todos sus átomos son de la misma clase' : `tiene ${clases(e0)} clases de átomo`}: es una sustancia simple.`,
-          compuesto: `Hay una sola especie, ${NOM[e0]}, pero con ${clases(e0)} clases de átomo unidas: es un compuesto.`,
-          homogenea: `Hay ${especies.length} especies sueltas, repartidas en ${fases === 1 ? 'una sola fase' : `${fases} fases`}: es una mezcla homogénea.`,
-          heterogenea: `Hay ${especies.length} especies, cada una en su capa: ${fases} fases. Es una mezcla heterogénea.`,
-        }[tipo];
-        const sentido = {
-          elemento: 'Comprobación: si apareciera otra especie sería mezcla, y si sus átomos fueran de dos clases, compuesto.',
-          compuesto: 'Comprobación: todas las partículas son iguales entre sí; por eso no es mezcla, aunque lleve dos elementos.',
-          homogenea: 'Comprobación: no hay capas ni bordes dentro de la muestra; si los hubiera, sería heterogénea.',
-          heterogenea: 'Comprobación: se ve un borde entre las dos capas; con una sola fase sería homogénea.',
-        }[tipo];
-        const dib = { datos: lupa([{ titulo: 'Muestra', forma, nivel: 0.9, particulas: parts }]).datos, estado: {} };
-        return {
-          enunciado: `Con la lupa se ven ${n} partículas en la muestra. ¿Cómo se clasifica?`,
-          dibujo: dib,
+        const c = caso1(s, true);
+        if (c.tipo === 0) return {
+          enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
           pasos: [
             { tipo: 'pide', texto: 'Piden clasificar la muestra: elemento, compuesto, mezcla homogénea o mezcla heterogénea.' },
-            { tipo: 'datos', texto: `En la lupa cuento ${lista}: ${especies.length} ${especies.length === 1 ? 'especie' : 'especies'} en ${fases} ${fases === 1 ? 'fase' : 'fases'}.` },
-            { tipo: 'regla', texto: 'Primero cuento especies: una sola es sustancia; varias, mezcla. Después miro cuántas clases de átomo tiene la especie, o cuántas fases forma la mezcla.' },
-            { tipo: 'aplica', texto: aplica, ecuacion: [nombres[tipo]] },
-            { tipo: 'sentido', texto: sentido },
+            { tipo: 'datos', texto: `En la lupa hay ${c.real === 'elemento' || c.real === 'compuesto' ? 'una sola clase de partícula' : 'dos clases de partícula'}${c.real === 'heterogenea' ? ', separadas por un borde' : ''}.` },
+            { tipo: 'regla', texto: 'Primero cuento clases de partícula: una es sustancia pura; varias, mezcla. Después miro los átomos de la sustancia, o las fases de la mezcla.' },
+            { tipo: 'aplica', texto: c.porque, ecuacion: [dR(NOMBRE_CLASE[c.real])] },
+            { tipo: 'sentido', texto: 'Comprobación: el aspecto no decidió nada; lo decidieron las partículas de la lupa.' },
           ],
-          respuesta: nombres[tipo],
+          respuesta: NOMBRE_CLASE[c.real],
+        };
+        if (c.tipo === 1) return {
+          enunciado: c.pregunta, datos: c.datos,
+          pasos: [
+            { tipo: 'pide', texto: `Piden clasificar ${c.m.nombre}.` },
+            { tipo: 'datos', texto: `El dato dice qué tiene: ${c.m.dato.split(': ')[1]}.` },
+            { tipo: 'regla', texto: 'Una clase de partícula es sustancia pura (elemento o compuesto); varias, mezcla (homogénea con una fase, heterogénea con más).' },
+            { tipo: 'aplica', texto: `${c.porque} Por eso es ${CORTO_CLASE[c.real]}.`, ecuacion: [dR(NOMBRE_CLASE[c.real])] },
+            { tipo: 'sentido', texto: c.real === 'homogenea' ? 'Comprobación: se ve parejo y aun así es mezcla; lo parejo dice homogénea, no pura.' : 'Comprobación: la clase sale de lo que tiene adentro, no de cómo se ve.' },
+          ],
+          respuesta: NOMBRE_CLASE[c.real],
+        };
+        if (c.tipo === 2) {
+          const F = c.S.c.nFases, C = c.S.c.nComponentes;
+          return {
+            enunciado: c.pregunta, datos: c.datos, dibujo: c.dibujo,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden dos números: las fases (zonas con borde) y los componentes (sustancias distintas).' },
+              { tipo: 'datos', texto: `En el vaso hay ${c.S.texto}.` },
+              { tipo: 'regla', texto: 'Lo disuelto queda dentro del líquido, en su misma fase. El hielo es agua: otra fase, pero el mismo componente.' },
+              { tipo: 'aplica', texto: `Fases: ${listaPalabras(c.S.c.fases.map(x => ({ líquido: 'el líquido', hielo: 'el hielo', aceite: 'el aceite', arena: 'la arena' })[x]))}. Componentes: ${listaPalabras(c.S.c.componentes.map(x => ({ H2O: 'agua', NaCl: 'sal', C12H22O11: 'azúcar', aceite: 'aceite', SiO2: 'arena' })[x]))}.`, ecuacion: [dR(fc(F, C))] },
+              { tipo: 'sentido', texto: 'Comprobación: cada fase es una zona que se ve con borde en la figura; lo disuelto no se ve.' },
+            ],
+            respuesta: fc(F, C),
+          };
+        }
+        if (c.tipo === 3) return {
+          enunciado: c.pregunta, datos: c.datos,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el único material que es ${c.buscaMezcla ? 'mezcla' : 'sustancia pura'}.` },
+            { tipo: 'datos', texto: 'Cada dato dice qué partículas tiene cada material.' },
+            { tipo: 'regla', texto: 'Una sola clase de partícula es sustancia pura; varias clases, mezcla. Lo parejo a la vista no decide.' },
+            { tipo: 'aplica', texto: `${c.q.bueno.corto} tiene ${c.buscaMezcla ? 'varias clases de partícula' : 'una sola clase de partícula'}; los otros tres, ${c.buscaMezcla ? 'una sola' : 'varias'}.`, ecuacion: [dR(c.q.bueno.corto)] },
+            { tipo: 'sentido', texto: 'Comprobación: solo una opción cumple; si dos cumplieran, habría que revisar los datos.' },
+          ],
+          respuesta: c.q.bueno.corto,
+        };
+        return {
+          enunciado: c.pregunta, datos: c.datos,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden si las sustancias de la mezcla son elementos, compuestos o de las dos clases.' },
+            { tipo: 'datos', texto: `La mezcla tiene ${c.m.formulas.length} sustancias; sus fórmulas están en el dato.` },
+            { tipo: 'regla', texto: 'Una fórmula con un solo símbolo es un elemento; con dos símbolos o más, un compuesto.' },
+            { tipo: 'aplica', texto: `${porqueFormada(c.m)}.`, ecuacion: [dR(FORMADA[c.real])] },
+            { tipo: 'sentido', texto: 'Comprobación: el subíndice no cuenta. O₂ tiene dos átomos y sigue siendo un elemento.' },
+          ],
+          respuesta: FORMADA[c.real],
         };
       },
     },
     ahoraTu: {
-      pieza: 'quim-particulas',
-      voz: 'Una muestra nueva. Cuenta especies y fases.',
+      pieza: 'quim-vasos',
+      voz: 'Primero cuenta clases de partícula; después, fases.',
       generar(s) {
-        const r = azar(s);
-        const tipo = ['elemento', 'compuesto', 'homogenea', 'heterogenea'][s % 4];
-        let parts, n;
-        if (tipo === 'elemento') { const e = r.de(['O2', 'N2', 'He', 'H2']); n = r.ent(6, 11); parts = [{ e, n }]; }
-        else if (tipo === 'compuesto') { const e = r.de(['H2O', 'CO2']); n = r.ent(6, 11); parts = [{ e, n }]; }
-        else if (tipo === 'homogenea') { const a = r.de([['N2', 'O2'], ['H2O', 'azucar'], ['O2', 'CO2'], ['H2O', 'Na']]); const na = r.ent(5, 8), nb = r.ent(2, 4); n = na + nb; parts = [{ e: a[0], n: na }, { e: a[1], n: nb }]; }
-        else { const na = 3 * r.ent(1, 2), nb = 3 * r.ent(2, 3); n = na + nb; parts = [...rejilla('aceite', na, 3, 0.18, 0.82, 0.1, na > 3 ? 0.35 : 0.2), ...rejilla('H2O', nb, 3, 0.15, 0.85, 0.55, 0.92)]; }
-        const forma = tipo === 'elemento' || (tipo === 'homogenea' && parts[0].e === 'N2') || (tipo === 'homogenea' && parts[0].e === 'O2') ? 'cilindro' : 'vaso';
-        const nombres = { elemento: 'Sustancia simple (elemento)', compuesto: 'Compuesto', homogenea: 'Mezcla homogénea', heterogenea: 'Mezcla heterogénea' };
-        const si = {
-          elemento: 'Sería elemento si hubiera una sola especie con un solo tipo de átomo.',
-          compuesto: 'Sería compuesto si hubiera una sola especie con átomos de varios elementos unidos.',
-          homogenea: 'Sería mezcla homogénea si hubiera varias especies repartidas en una sola fase.',
-          heterogenea: 'Sería heterogénea si hubiera varias especies en fases separadas.',
-        };
-        const ops = Object.keys(nombres).map(k => (k === tipo ? { id: 'c', texto: nombres[k], correcta: true } : { id: k, texto: nombres[k], error: k === 'elemento' || k === 'compuesto' ? 'MA9' : 'MA10', siFuera: si[k] }));
-        const porque = { elemento: 'Una sola especie, de un solo elemento.', compuesto: 'Una sola especie, con átomos de dos elementos unidos.', homogenea: 'Dos especies repartidas en una sola fase.', heterogenea: 'Dos especies en dos capas separadas.' };
-        return {
-          pregunta: `Con la lupa se ven ${n} partículas en la muestra. ¿Cómo se clasifica?`,
-          dibujo: lupa([{ titulo: 'Muestra', forma, nivel: 0.9, particulas: parts }]),
-          opciones: ops,
-          solucion: { texto: porque[tipo], ecuacion: [nombres[tipo]] },
-        };
+        const c = caso1(s, false);
+        let solucion;
+        if (c.tipo === 0 || c.tipo === 1) solucion = { texto: c.porque, ecuacion: [dR(NOMBRE_CLASE[c.real])] };
+        else if (c.tipo === 2) solucion = { texto: 'Fases: zonas con borde; lo disuelto no cuenta aparte. Componentes: sustancias; el hielo es agua.', ecuacion: [dR(fc(c.S.c.nFases, c.S.c.nComponentes))] };
+        else if (c.tipo === 3) solucion = { texto: `${c.q.bueno.corto} es el único con ${c.buscaMezcla ? 'varias clases de partícula' : 'una sola clase de partícula'}.`, ecuacion: [dR(c.q.bueno.corto)] };
+        else solucion = { texto: `${porqueFormada(c.m)}.`, ecuacion: [dR(FORMADA[c.real])] };
+        return { pregunta: c.pregunta, datos: c.datos, dibujo: c.dibujo, opciones: c.opciones, solucion };
       },
     },
   };
@@ -725,7 +1138,9 @@
     unidad: 'quimica.materia-y-energia',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/ejes.js'],
+    // En orden: la paleta de elementos antes que quim-particulas (define las variables --el-*), el motor de la escena
+    // antes que la unidad, y quim-particulas antes que quim-vasos (que dibuja sus especies).
+    requiere: ['/nucleo/elementos.js', '/plantillas/materia-energia/motor.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-vasos.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
       texto: 'En el siglo XVIII, para entender una combustión había que decidir qué pesar: solo el sólido o también el aire. Las mediciones de Lavoisier y de otros mostraron que una muestra puede ganar masa al tomar un gas. Por eso importa dónde termina el sistema que se estudia. La relación entre masa y energía llegó mucho después, con la física del siglo XX.',
       pregunta: '¿Qué pesarías para saber si algo pierde masa al quemarse?',
@@ -733,23 +1148,42 @@
     },
     // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso de química.
     glosario: [
+      // Idea 1 (17 nov): los cuatro con `simple` son los que el Resumen muestra como «Palabras de esta idea»; ningún
+      // ejemplo usa el hielo, que es la predicción de la idea.
       { termino: 'sustancia', formas: ['sustancia pura', 'sustancias puras', 'sustancia', 'sustancias'],
-        def: 'Materia formada por una sola especie de partícula, con propiedades fijas: el agua, el oxígeno, la sal.',
+        def: 'Materia formada por una sola clase de partícula, con propiedades fijas: el agua, el oxígeno, la sal.',
+        simple: 'Una sola cosa, sin nada más mezclado: agua destilada, oro puro, azúcar.',
+        ejemplos: ['El agua destilada: todas sus partículas son H₂O.', 'El oxígeno de un balón medicinal: solo moléculas O₂.',
+          'La sal de mesa: solo NaCl, aunque esté molida en granitos.'],
         ver: ['elemento', 'compuesto', 'mezcla'] },
       { termino: 'elemento', def: 'Sustancia con átomos de una sola clase. No se descompone en otras más simples por medios químicos.',
-        ejemplo: 'El oxígeno O₂: moléculas de dos átomos, los dos de oxígeno.', ver: ['compuesto'] },
+        simple: 'Lo que tiene átomos de una sola clase: oxígeno, oro, diamante.',
+        ejemplos: ['El oxígeno O₂: moléculas de dos átomos, los dos de oxígeno.', 'El ozono O₃: tres átomos, todos de oxígeno.',
+          'El diamante: solo átomos de carbono.'], ver: ['compuesto'] },
       { termino: 'compuesto', def: 'Sustancia con dos o más clases de átomos unidos en proporción fija.',
-        ejemplo: 'El agua H₂O: siempre 2 átomos de hidrógeno por 1 de oxígeno.', ver: ['elemento', 'molécula'] },
+        ejemplos: ['El agua H₂O: siempre 2 átomos de hidrógeno por 1 de oxígeno.', 'El dióxido de carbono CO₂: 1 carbono y 2 oxígenos unidos.',
+          'La sal de mesa NaCl: un sodio por cada cloro.'], ver: ['elemento', 'molécula'] },
       { termino: 'molécula', def: 'Grupo de átomos unidos que viaja junto: la partícula más pequeña de muchas sustancias.',
-        ejemplo: 'Una molécula de CO₂ lleva 1 carbono y 2 oxígenos: 3 átomos.', ver: ['compuesto'] },
-      { termino: 'mezcla', def: 'Dos o más sustancias juntas que no se unen químicamente y se pueden separar por medios físicos.',
+        ejemplos: ['Una molécula de CO₂ lleva 1 carbono y 2 oxígenos: 3 átomos.', 'Una molécula de agua: 1 oxígeno y 2 hidrógenos.',
+          'Una molécula de O₂: dos átomos de oxígeno unidos.'], ver: ['compuesto'] },
+      { termino: 'mezcla', formas: ['mezcla', 'mezclas'], def: 'Dos o más sustancias juntas que no se unen químicamente y se pueden separar por medios físicos.',
+        simple: 'Varias sustancias juntas que no se vuelven una: agua con azúcar, aire.',
+        ejemplos: ['Agua con azúcar: moléculas de agua y de azúcar sueltas, en una fase.', 'El aire: nitrógeno, oxígeno y otros gases repartidos parejo.',
+          'Agua con aceite: dos sustancias en dos capas.'],
         ver: ['mezcla homogénea', 'mezcla heterogénea'] },
       { termino: 'mezcla homogénea', formas: ['mezcla homogénea', 'mezclas homogéneas'],
-        def: 'Mezcla que se ve igual en todas sus partes: tiene una sola fase.', ejemplo: 'Agua con azúcar disuelta.', ver: ['fase'] },
+        def: 'Mezcla que se ve igual en todas sus partes: tiene una sola fase.',
+        ejemplos: ['Agua con azúcar bien disuelta.', 'El aire limpio y seco.', 'El bronce: cobre y estaño fundidos juntos.'], ver: ['fase'] },
       { termino: 'mezcla heterogénea', formas: ['mezcla heterogénea', 'mezclas heterogéneas'],
-        def: 'Mezcla en la que se distinguen partes distintas: tiene dos o más fases.', ejemplo: 'Agua con aceite: dos capas.', ver: ['fase'] },
-      { termino: 'fase', def: 'Parte de un sistema con las mismas propiedades en todos sus puntos, separada de las otras por un borde.',
-        ejemplo: 'Hielo flotando en agua: una sola sustancia, dos fases.' },
+        def: 'Mezcla en la que se distinguen partes distintas: tiene dos o más fases.',
+        ejemplos: ['Agua con aceite: dos capas.', 'Agua con arena: la arena se asienta en el fondo.', 'El granito: se ven granos de distintos colores.'], ver: ['fase'] },
+      { termino: 'fase', formas: ['fase', 'fases'], def: 'Parte de un sistema con las mismas propiedades en todos sus puntos, separada de las otras por un borde.',
+        simple: 'Una zona pareja, con un borde que la separa de otra.',
+        ejemplos: ['Agua con aceite: dos fases, una sobre otra.', 'Agua con azúcar disuelto: una sola fase.',
+          'Agua con arena en el fondo: dos fases, la del agua y la de la arena.'], ver: ['componente'] },
+      { termino: 'componente', formas: ['componente', 'componentes'], def: 'Cada sustancia distinta de un sistema o de una mezcla.',
+        ejemplos: ['Agua con azúcar: dos componentes, el agua y el azúcar.', 'Agua con aceite y arena: tres componentes.',
+          'El agua destilada: un solo componente.'], ver: ['fase', 'mezcla'] },
       { termino: 'cambio físico', formas: ['cambio físico', 'cambios físicos'],
         def: 'Transformación en la que las partículas siguen siendo las mismas: cambian de orden, de lugar o de estado.',
         ejemplo: 'Fundir hielo: antes y después hay moléculas de H₂O.', ver: ['cambio químico'] },
@@ -760,6 +1194,8 @@
         def: 'Transformación del núcleo de los átomos: el elemento pasa a ser otro y se libera mucha energía.',
         ejemplo: 'El radio-226 emite una partícula alfa y queda radón-222.', ver: ['cambio químico'] },
       { termino: 'energía', simbolo: 'E', medida: 'J', def: 'Lo que permite calentar, mover o transformar algo. Se mide en joules.',
+        ejemplos: ['La cocina a gas le da energía al agua de la olla y la calienta.', 'Al quemarse, el gas de un balón libera energía como calor y luz.',
+          'Al caminar, una persona gasta energía; al comer, la recupera.'],
         ver: ['calor sensible', 'calor latente'] },
       { termino: 'calor sensible', def: 'Calor que sube o baja la temperatura de un cuerpo sin cambiarle el estado.',
         ejemplo: 'Calentar 10 g de agua 20 °C: 10 · 4,18 · 20 = 836 J.', ver: ['calor específico', 'calor latente'] },

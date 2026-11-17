@@ -58,3 +58,24 @@ test('agita (ronda 5): sin el campo el dibujo no cambia; con él, las partícula
   const quieto = xs(P.dibujar(Object.assign({}, D, { agita: 0, agitaAmp: 0 }), { corte: 1 })), movido = xs(P.dibujar(Object.assign({}, D, { agita: 0.45, agitaAmp: 2 }), { corte: 1 }));
   movido.forEach(([x, y], j) => { assert.ok(Math.abs(x - quieto[j][0]) <= 2.01 && Math.abs(y - quieto[j][1]) <= 2.01); });
 });
+
+// Paleta de elementos (17 nov): un átomo con `el` se pinta con var(--el-<Símbolo>) y nunca con un token de variable;
+// sin `el`, el dibujo es el mismo de antes (las unidades que ya usan la pieza no cambian).
+test('paleta de elementos: con el, var(--el-*) y ningún color de variable; sin el, nada cambia', () => {
+  const E = require('../../elementos.js');
+  const conEl = Object.assign({}, D, {
+    atomos: { H: { el: 'H', estilo: 'hueco', r: 5 }, O: { el: 'O', r: 7 }, Na: { el: 'Na', estilo: 'punto' } } });
+  const s = P.dibujar(conEl, { corte: 1 });
+  sana(s);
+  assert.ok(!/var\(--c-/.test(s), 'un dibujo de partículas no usa colores de variable');
+  const usados = [...new Set([...s.matchAll(/var\(--el-([A-Za-z]+)\)/g)].map(m => m[1]))].sort();
+  assert.deepEqual(usados, ['H', 'Na', 'O']);
+  for (const e of usados) assert.ok(E.COLORES[e], `${e} está en nucleo/elementos.js`);
+  // La misma geometría: solo cambia el color.
+  const sinColor = x => x.replace(/var\(--(c|el)-[A-Za-z]+\)/g, 'C');
+  assert.equal(sinColor(s), sinColor(P.dibujar(D, { corte: 1 })));
+  // Un `el` que no es un símbolo no inyecta nada raro: cae en el color de siempre.
+  const raro = P.dibujar(Object.assign({}, D, { atomos: { H: { el: 'h2"', color: 'i' } } }), { corte: 0 });
+  assert.ok(!/--el-/.test(raro));
+  assert.equal(typeof P.especieSVG, 'function');
+});

@@ -1084,7 +1084,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "requiere": [],
+     "requiere": [
+      "fisica.magnitudes-y-vectores"
+     ],
      "plantillas": [
       "materia-energia",
       "configuracion-ubicacion",
@@ -1094,11 +1096,14 @@
      "teoria": {
       "archivo": "/contenido/teoria/quimica/materia-y-energia.js",
       "requiere": [
+       "/nucleo/elementos.js",
+       "/plantillas/materia-energia/motor.js",
        "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/quim-vasos.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 32
+      "terminos": 35
      }
     },
     {
