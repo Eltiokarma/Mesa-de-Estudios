@@ -80,32 +80,47 @@
       est.avanceV = 1;
       cambio = true;
     }
-    if (partirVectores(est)) cambio = true;
+    for (const pt of PARTICIONES) if (partir(est, pt)) cambio = true;
     return cambio;
   }
-  // 16 nov: «Magnitudes y vectores» se partió (Gerson). Las ideas de vectores, sus casos del laboratorio y la visita
-  // pasan a fisica.vectores; quien ya había empezado no pierde nada ni encuentra la unidad nueva cerrada.
-  const MAG = 'fisica.magnitudes-y-vectores', VEC = 'fisica.vectores';
-  const IDEAS_VEC = ['componentes', 'resultante', 'productos'];
-  const MESAS_VEC = ['flechas-espacio', 'suma-libre', 'componentes', 'productos-libre'];
-  function partirVectores(est) {
-    if (est.partidoV >= 1) return false;
-    est.partidoV = 1;
-    let cambio = true;
-    const t = est.teoria && est.teoria[MAG];
-    if (t && t.ideas) for (const id of IDEAS_VEC) if (t.ideas[id]) {
-      const n = est.teoria[VEC] = est.teoria[VEC] || { ideas: {} };
+  // Unidades que se partieron en dos (Gerson): las ideas que se fueron, sus mesas del laboratorio, las marcas del glosario
+  // de sus palabras y la visita pasan a la unidad nueva; quien ya había empezado no pierde nada ni encuentra la unidad
+  // nueva cerrada. Cada partición tiene su marca en est (una sola vez cada una).
+  const PARTICIONES = [
+    // 16 nov: «Magnitudes y vectores» → «Magnitudes y unidades» (conserva el id) + fisica.vectores.
+    { marca: 'partidoV', de: 'fisica.magnitudes-y-vectores', a: 'fisica.vectores',
+      ideas: ['componentes', 'resultante', 'productos'], mesas: ['flechas-espacio', 'suma-libre', 'componentes', 'productos-libre'] },
+    // 17 nov: «Exponentes, radicales y productos notables» → «Exponentes y radicales» (conserva el id) +
+    // algebra.productos-notables (docs/etapa3/decisiones.md, «Segunda ronda»).
+    { marca: 'partidoExp', de: 'algebra.exponentes-y-productos-notables', a: 'algebra.productos-notables',
+      ideas: ['cuadrado-suma', 'radicales-dobles', 'racionalizar'], mesas: ['cubo-se-abre', 'rectangulo-x-p-q'],
+      glosario: ['producto notable', 'diferencia de cuadrados', 'arista', 'volumen', 'identidad', 'distributiva', 'radical doble',
+        'denominador', 'racionalizar', 'conjugado'] },
+  ];
+  function partir(est, { marca, de, a, ideas, mesas, glosario }) {
+    if (est[marca] >= 1) return false;
+    est[marca] = 1;
+    const t = est.teoria && est.teoria[de];
+    if (t && t.ideas) for (const id of ideas) if (t.ideas[id]) {
+      const n = est.teoria[a] = est.teoria[a] || { ideas: {} };
       n.ideas = n.ideas || {};
       if (!n.ideas[id]) n.ideas[id] = t.ideas[id];
       delete t.ideas[id];
       if (t.idea === id) { t.idea = undefined; n.idea = id; }
     }
     for (const c of Array.isArray(est.coleccion) ? est.coleccion : []) {
-      if (c && c.unidad === MAG && MESAS_VEC.includes(c.mesa)) c.unidad = VEC;
+      if (c && c.unidad === de && mesas.includes(c.mesa)) c.unidad = a;
     }
-    // «Ya la estudié» en la unidad vieja incluía los vectores: la marca y la visita también valen para la nueva.
-    for (const k of ['vistas', 'marcadas']) if (est[k] && est[k][MAG] && !est[k][VEC]) est[k][VEC] = est[k][MAG];
-    return cambio;
+    // «Ya me la sé» de una palabra que ahora se define en la unidad nueva (est.glosario[unidad][término]).
+    const g = est.glosario && est.glosario[de];
+    if (g && glosario) for (const k of Object.keys(g)) if (glosario.includes(k)) {
+      const n = est.glosario[a] = est.glosario[a] || {};
+      if (n[k] === undefined) n[k] = g[k];
+      delete g[k];
+    }
+    // «Ya la estudié» en la unidad vieja incluía lo que se fue: la marca y la visita también valen para la nueva.
+    for (const k of ['vistas', 'marcadas']) if (est[k] && est[k][de] && !est[k][a]) est[k][a] = est[k][de];
+    return true;
   }
 
   return { NIVELES, MIN_AYUDA, MIN_SOLO, indice, nivel, estudiadas, teoriaCompleta, migrar };

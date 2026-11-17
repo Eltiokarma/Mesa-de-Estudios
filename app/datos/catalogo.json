@@ -2008,6 +2008,7 @@
      "nombre": "Expresiones algebraicas",
      "unidades": [
       "algebra.exponentes-y-productos-notables",
+      "algebra.productos-notables",
       "algebra.polinomios",
       "algebra.division-de-polinomios",
       "algebra.factorizacion",
@@ -2121,10 +2122,49 @@
     },
     {
      "id": "algebra.exponentes-y-productos-notables",
-     "nombre": "Exponentes, radicales y productos notables",
+     "nombre": "Exponentes y radicales",
      "temas": [
       "Leyes de exponentes",
-      "Propiedades de radicales",
+      "Propiedades de radicales"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        2,
+        7
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2,
+        5
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "grado": 3,
+     "requiere": [
+      "aritmetica.potenciacion-y-radicacion"
+     ],
+     "plantillas": [
+      "cuadrado-crece",
+      "sistemas-ecuaciones"
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/exponentes-y-productos-notables.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-objeto.js",
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 2,
+      "terminos": 19
+     }
+    },
+    {
+     "id": "algebra.productos-notables",
+     "nombre": "Productos notables",
+     "temas": [
       "Productos notables",
       "Radicales dobles",
       "Racionalización"
@@ -2143,26 +2183,24 @@
        ]
       }
      },
-     "potencial_visual": "bajo",
+     "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
-      "aritmetica.potenciacion-y-radicacion"
+      "algebra.exponentes-y-productos-notables"
      ],
      "plantillas": [
-      "cuadrado-crece",
-      "sistemas-ecuaciones"
+      "cuadrado-crece"
      ],
      "teoria": {
-      "archivo": "/contenido/teoria/algebra/exponentes-y-productos-notables.js",
+      "archivo": "/contenido/teoria/algebra/productos-notables.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/alg-baldosas.js",
-       "/nucleo/kit/piezas/ejes.js",
        "/plantillas/cuadrado-crece/motor.js",
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
-      "ideas": 5,
-      "terminos": 32
+      "ideas": 3,
+      "terminos": 21
      }
     },
     {
@@ -2190,7 +2228,7 @@
      "potencial_visual": "medio",
      "grado": 3,
      "requiere": [
-      "algebra.exponentes-y-productos-notables"
+      "algebra.productos-notables"
      ],
      "plantillas": [
       "traductor-enunciados",
@@ -2402,7 +2440,8 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "requiere": [
-      "algebra.division-de-polinomios"
+      "algebra.division-de-polinomios",
+      "algebra.productos-notables"
      ],
      "plantillas": [
       "cuadrado-crece",
@@ -2839,7 +2878,7 @@
      "potencial_visual": "bajo",
      "grado": 5,
      "requiere": [
-      "algebra.exponentes-y-productos-notables",
+      "algebra.productos-notables",
       "aritmetica.analisis-combinatorio"
      ],
      "plantillas": [
@@ -7542,6 +7581,7 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
+    "algebra.productos-notables",
     "algebra.exponentes-y-productos-notables",
     "algebra.factorizacion"
    ],

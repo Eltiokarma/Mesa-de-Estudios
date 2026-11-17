@@ -3,6 +3,7 @@
   "titulo": "El cuadrado que crece: productos notables y linealidad indebida",
   "formato": "escena",
   "unidades": [
+    "algebra.productos-notables",
     "algebra.exponentes-y-productos-notables",
     "algebra.factorizacion"
   ],

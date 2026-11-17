@@ -14,8 +14,15 @@ D.registrar('algebra', {
   'algebra.numeros-reales': P =>
     recta(P, 66) + P.ac('M44 66H116') + P.c(44, 66, 7, 'tn') + P.c(116, 66, 7, 'b')
     + P.t(44, 98, 'a', 18) + P.t(116, 98, 'b', 18) + P.t(44, 44, '[', 26) + P.t(116, 44, ')', 26),
+  // Una hoja doblada tres veces: 2³ = 8 capas; el exponente cuenta los dobleces (17 nov, al partir la unidad).
+  'algebra.exponentes-y-productos-notables': P => {
+    let r = P.r(16, 22, 50, 72, 'b', 2) + P.r(16, 22, 25, 18, 'a', 2);
+    for (let k = 0; k < 8; k++) r += P.l([[92, 30 + k * 9], [134, 30 + k * 9]], 'f');
+    return r + P.p('M134 30A4.5 4.5 0 0 1 134 39M92 39A4.5 4.5 0 0 0 92 48M134 48A4.5 4.5 0 0 1 134 57M92 57A4.5 4.5 0 0 0 92 66M134 66A4.5 4.5 0 0 1 134 75M92 75A4.5 4.5 0 0 0 92 84M134 84A4.5 4.5 0 0 1 134 93')
+      + P.t(46, 113, '2³', 22) + P.t(113, 113, '8', 20);
+  },
   // (a + b)² son cuatro piezas: a², dos veces ab y b².
-  'algebra.exponentes-y-productos-notables': P =>
+  'algebra.productos-notables': P =>
     P.r(34, 12, 62, 62, 'b', 2) + P.r(96, 12, 28, 62, 'a', 2) + P.r(34, 74, 62, 28, 'a', 2) + P.r(96, 74, 28, 28, 'm', 2)
     + P.t(65, 50, 'a²', 20) + P.t(110, 94, 'b²', 14) + P.t(110, 47, 'ab', 14) + P.t(65, 93, 'ab', 14)
     + P.t(65, 117, 'a', 15) + P.t(110, 117, 'b', 15),

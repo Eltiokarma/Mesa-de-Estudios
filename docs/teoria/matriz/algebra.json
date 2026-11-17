@@ -172,14 +172,11 @@
    "curso": "Álgebra",
    "curso_id": "algebra",
    "numero": 3,
-   "titulo": "Exponentes, radicales y productos notables",
+   "titulo": "Exponentes y radicales",
    "grado": 3,
    "temas_catalogo": [
     "Leyes de exponentes",
-    "Propiedades de radicales",
-    "Productos notables",
-    "Radicales dobles",
-    "Racionalización"
+    "Propiedades de radicales"
    ],
    "modulos_actuales": [
     "cuadrado-crece",
@@ -246,8 +243,89 @@
      }
     ],
     "id": "algebra.exponentes-y-productos-notables",
-    "titulo": "Exponentes, radicales y productos notables"
-   }
+    "titulo": "Exponentes y radicales"
+   },
+   "particion": "Partida en dos el 17 nov 2026 (Gerson; docs/etapa3/decisiones.md): esta ficha queda para «Exponentes y radicales» (conserva el id) y los productos notables, radicales dobles y racionalización pasan a algebra.productos-notables."
+  },
+  {
+   "id": "algebra.productos-notables",
+   "curso": "Álgebra",
+   "curso_id": "algebra",
+   "numero": 3,
+   "titulo": "Productos notables",
+   "grado": 3,
+   "temas_catalogo": [
+    "Productos notables",
+    "Radicales dobles",
+    "Racionalización"
+   ],
+   "modulos_actuales": [
+    "cuadrado-crece"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": "Las leyes de potencias dependen del dominio: a^m a^n=a^(m+n); a^(−n)=1/a^n exige a≠0. En reales, raíces de índice par exigen radicando no negativo y se toma raíz principal; √(a²)=|a|. Productos notables son identidades que provienen de distributividad: (a+b)²=a²+2ab+b² y (a−b)(a+b)=a²−b². Una figura de áreas con lados positivos ilustra la identidad, pero no demuestra por sí sola todos los signos. Radicales dobles se descomponen buscando sumas/productos y comprobando condiciones. Racionalizar multiplica por una expresión igual a uno, con denominador no nulo; no cambia el valor ni elimina restricciones.",
+   "condiciones": "Las condiciones están incluidas en la teoría y el ejemplo; deben mantenerse en el guion final.",
+   "prerrequisitos": [
+    "Distributividad",
+    "Exponentes enteros",
+    "Valor absoluto y signos"
+   ],
+   "desempeno": "Transforma una expresión indicando restricciones y detecta una identidad falsa con un contraejemplo.",
+   "escena_propuesta": "Predice las piezas del cuadrado (a+b); corta y reordena sin cambiar área. Congela dos rectángulos ab y la ecuación. Después compara el caso a<0 mediante álgebra, para mostrar el límite de la metáfora.",
+   "otra_representacion": "Tabla de potencias y desarrollo distributivo; recta para raíz principal.",
+   "ejemplo": "(3+2)²=9+12+4=25; √((-3)²)=3.",
+   "error_objetivo": {
+    "descripcion": "Distribuir raíz o cuadrado sobre suma, o reemplazar √(x²) por x sin condición.",
+    "estatus": "Hipótesis de diseño; no se atribuye prevalencia a estudiantes peruanos."
+   },
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "id": "AAT-X",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.3 radicals and rational exponents",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-3-radicals-and-rational-exponents",
+     "fecha_consulta": "2026-11-14"
+    },
+    {
+     "id": "AAT-P",
+     "autor": "OpenStax",
+     "titulo": "Algebra and Trigonometry, 2e",
+     "localizador": "1.4 polynomials",
+     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-4-polynomials",
+     "fecha_consulta": "2026-11-14"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "curso": "algebra",
+    "numero": 3,
+    "historia": "La Géométrie de Descartes, publicada en 1637, fortaleció una relación decisiva: los problemas geométricos podían organizarse y resolverse mediante relaciones algebraicas. Su trabajo formó parte de una evolución con antecedentes y no convierte toda identidad escolar en una invención suya. En esta unidad, las potencias y los productos notables muestran esa traducción entre figuras y expresiones. Una partición de áreas puede explicar una igualdad para longitudes positivas; extenderla a valores negativos exige razones algebraicas. La imagen es un modelo con condiciones, no una licencia para ignorarlas.",
+    "puente_escena": "Un cuadrado se divide al desplazar una separación entre dos longitudes. Antes de revelar etiquetas, el estudiante predice las áreas de sus piezas. La suma y el producto se actualizan juntos; una comprobación numérica separada permite examinar valores negativos.",
+    "ecuaciones": [
+     {
+      "latex": "(a+b)^2=a^2+2ab+b^2",
+      "lectura": "El cuadrado de una suma contiene dos cuadrados y dos productos cruzados.",
+      "condiciones": "Identidad para números reales; el modelo literal de áreas requiere longitudes no negativas."
+     },
+     {
+      "latex": "\\sqrt{x^2}=|x|",
+      "lectura": "La raíz cuadrada principal del cuadrado recupera la magnitud sin signo.",
+      "condiciones": "x real; la raíz principal siempre es no negativa."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "O’Connor y Robertson, René Descartes — MacTutor",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/"
+     }
+    ],
+    "id": "algebra.productos-notables",
+    "titulo": "Productos notables"
+   },
+   "particion": "Nace el 17 nov 2026 de partir algebra.exponentes-y-productos-notables (Gerson; docs/etapa3/decisiones.md). La teoría y la historia de abajo son las de la ficha original, que se repartirán al rehacer la unidad."
   },
   {
    "id": "algebra.ecuaciones-lineales-y-cuadraticas",

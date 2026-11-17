@@ -751,7 +751,8 @@ Por unidad del catálogo:
 | algebra.programacion-lineal | 10 | 6 | 10 / 0 / 0 | programacion-lineal, inecuaciones-planteo |
 | algebra.division-de-polinomios | 9 | 8 | 9 / 0 / 0 | division-polinomios, polinomios |
 | algebra.tipos-de-funciones-e-inversa | 7 | 4 | 7 / 0 / 0 | grafica-perillas, funciones-dominio-rango |
-| algebra.exponentes-y-productos-notables | 6 | 4 | 6 / 0 / 0 | cuadrado-crece, sistemas-ecuaciones |
+| algebra.productos-notables | 5 | 3 | 5 / 0 / 0 | cuadrado-crece |
+| algebra.exponentes-y-productos-notables | 1 | 1 | 1 / 0 / 0 | sistemas-ecuaciones |
 | algebra.valor-absoluto-y-radicales | 6 | 5 | 6 / 0 / 0 | grafica-perillas, sistemas-ecuaciones, inecuaciones-planteo |
 | algebra.polinomios | 5 | 5 | 5 / 0 / 0 | polinomios |
 | algebra.numeros-complejos | 4 | 2 | 4 / 0 / 0 | numeros-complejos |
@@ -787,14 +788,14 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Trinomio positivo (discriminante negativo) | 2 | 2 | algebra.inecuaciones | inecuaciones-planteo | 2 / 0 / 0 |
 | Algoritmo de la división y teorema del resto | 1 | 1 | algebra.division-de-polinomios | division-polinomios | 1 / 0 / 0 |
 | Algoritmo de la división y término independiente | 1 | 1 | algebra.division-de-polinomios | division-polinomios | 1 / 0 / 0 |
-| Binomio al cuadrado como áreas | 1 | 1 | algebra.exponentes-y-productos-notables | cuadrado-crece | 1 / 0 / 0 |
+| Binomio al cuadrado como áreas | 1 | 1 | algebra.productos-notables | cuadrado-crece | 1 / 0 / 0 |
 | Cambio de variable: término independiente y suma de coeficientes | 1 | 1 | algebra.polinomios | polinomios | 1 / 0 / 0 |
 | Cocientes notables: número de términos | 1 | 1 | algebra.division-de-polinomios | division-polinomios | 1 / 0 / 0 |
 | Complejo: conjugado y módulo | 1 | 1 | algebra.numeros-complejos | numeros-complejos | 1 / 0 / 0 |
 | Composición de funciones en contexto | 1 | 1 | algebra.funciones | funciones-dominio-rango | 1 / 0 / 0 |
 | Desigualdad MA ≥ MG (optimización) | 1 | 1 | algebra.numeros-reales | inecuaciones-planteo | 1 / 0 / 0 |
 | Despejar el exponente con logaritmos | 1 | 1 | algebra.exponenciales-y-logaritmos | exponenciales-logaritmos | 1 / 0 / 0 |
-| Diferencia de cuadrados con cubos | 1 | 1 | algebra.exponentes-y-productos-notables | cuadrado-crece | 1 / 0 / 0 |
+| Diferencia de cuadrados con cubos | 1 | 1 | algebra.productos-notables | cuadrado-crece | 1 / 0 / 0 |
 | Dominio de la inversa = rango de la función | 1 | 1 | algebra.tipos-de-funciones-e-inversa | grafica-perillas | 1 / 0 / 0 |
 | Dominio de una función con radicales anidados | 1 | 1 | algebra.funciones | funciones-dominio-rango | 1 / 0 / 0 |
 | Dominio de una función logarítmica anidada | 1 | 1 | algebra.exponenciales-y-logaritmos | funciones-dominio-rango | 1 / 0 / 0 |
@@ -830,8 +831,8 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Función valor absoluto: parámetros y extremos | 1 | 1 | algebra.funciones | grafica-perillas | 1 / 0 / 0 |
 | Grado absoluto de un polinomio | 1 | 1 | algebra.polinomios | polinomios | 1 / 0 / 0 |
 | Gráfica de función valor absoluto | 1 | 1 | algebra.funciones | grafica-perillas | 1 / 0 / 0 |
-| Identidad de la suma de cubos | 1 | 1 | algebra.exponentes-y-productos-notables | cuadrado-crece | 1 / 0 / 0 |
-| Identidades de Legendre | 1 | 1 | algebra.exponentes-y-productos-notables | cuadrado-crece | 1 / 0 / 0 |
+| Identidad de la suma de cubos | 1 | 1 | algebra.productos-notables | cuadrado-crece | 1 / 0 / 0 |
+| Identidades de Legendre | 1 | 1 | algebra.productos-notables | cuadrado-crece | 1 / 0 / 0 |
 | Igualar polinomios y factorizar una cúbica | 1 | 1 | algebra.ecuaciones-polinomiales | ecuaciones-polinomiales | 1 / 0 / 0 |
 | Inecuación con valor absoluto anidado | 1 | 1 | algebra.valor-absoluto-y-radicales | grafica-perillas | 1 / 0 / 0 |
 | Inecuación con valores absolutos (desigualdad triangular) | 1 | 1 | algebra.valor-absoluto-y-radicales | inecuaciones-planteo | 1 / 0 / 0 |
@@ -860,7 +861,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Potencias de complejos y distancia en el plano | 1 | 1 | algebra.numeros-complejos | numeros-complejos | 1 / 0 / 0 |
 | Potencias de i y de complejos | 1 | 1 | algebra.numeros-complejos | numeros-complejos | 1 / 0 / 0 |
 | Potencias de una matriz y traza | 1 | 1 | algebra.matrices-y-determinantes | sistemas-ecuaciones | 1 / 0 / 0 |
-| Productos notables por cambio de variable | 1 | 1 | algebra.exponentes-y-productos-notables | cuadrado-crece | 1 / 0 / 0 |
+| Productos notables por cambio de variable | 1 | 1 | algebra.productos-notables | cuadrado-crece | 1 / 0 / 0 |
 | Programación lineal con solución entera | 1 | 1 | algebra.programacion-lineal | inecuaciones-planteo | 1 / 0 / 0 |
 | Programación lineal: cantidad óptima | 1 | 1 | algebra.programacion-lineal | programacion-lineal | 1 / 0 / 0 |
 | Programación lineal: costo mínimo | 1 | 1 | algebra.programacion-lineal | programacion-lineal | 1 / 0 / 0 |

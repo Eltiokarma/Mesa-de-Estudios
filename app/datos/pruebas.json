@@ -390,7 +390,7 @@
     {
      "par": "cc-01",
      "plantilla": "cuadrado-crece",
-     "unidad": "algebra.exponentes-y-productos-notables",
+     "unidad": "algebra.productos-notables",
      "mide": "Cuadrado de un binomio: (x + b)² = x² + 2bx + b²",
      "A": {
       "enunciado": "¿Cuál es el desarrollo de (x + 5)²?",

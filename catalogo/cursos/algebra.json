@@ -5,7 +5,7 @@
   "formato_principal": "predicciones",
   "ramas": [
     {"nombre": "Lógica y números reales", "unidades": ["algebra.logica-y-conjuntos", "algebra.numeros-reales"]},
-    {"nombre": "Expresiones algebraicas", "unidades": ["algebra.exponentes-y-productos-notables", "algebra.polinomios", "algebra.division-de-polinomios", "algebra.factorizacion", "algebra.ecuaciones-polinomiales", "algebra.binomio-de-newton"]},
+    {"nombre": "Expresiones algebraicas", "unidades": ["algebra.exponentes-y-productos-notables", "algebra.productos-notables", "algebra.polinomios", "algebra.division-de-polinomios", "algebra.factorizacion", "algebra.ecuaciones-polinomiales", "algebra.binomio-de-newton"]},
     {"nombre": "Ecuaciones e inecuaciones", "unidades": ["algebra.ecuaciones-lineales-y-cuadraticas", "algebra.inecuaciones", "algebra.valor-absoluto-y-radicales", "algebra.sistemas-de-ecuaciones", "algebra.matrices-y-determinantes", "algebra.programacion-lineal", "algebra.numeros-complejos"]},
     {"nombre": "Funciones", "unidades": ["algebra.funciones", "algebra.tipos-de-funciones-e-inversa", "algebra.exponenciales-y-logaritmos", "algebra.sucesiones-y-series"]}
   ],
@@ -48,19 +48,31 @@
     },
     {
       "id": "algebra.exponentes-y-productos-notables",
-      "nombre": "Exponentes, radicales y productos notables",
+      "nombre": "Exponentes y radicales",
       "temas": [
         "Leyes de exponentes",
-        "Propiedades de radicales",
+        "Propiedades de radicales"
+      ],
+      "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
+      "potencial_visual": "alto",
+      "grado": 3,
+      "requiere": ["aritmetica.potenciacion-y-radicacion"],
+      "plantillas": ["cuadrado-crece", "sistemas-ecuaciones"],
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
+    },
+    {
+      "id": "algebra.productos-notables",
+      "nombre": "Productos notables",
+      "temas": [
         "Productos notables",
         "Radicales dobles",
         "Racionalización"
       ],
       "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
-      "potencial_visual": "bajo",
+      "potencial_visual": "alto",
       "grado": 3,
-      "requiere": ["aritmetica.potenciacion-y-radicacion"],
-      "plantillas": ["cuadrado-crece", "sistemas-ecuaciones"],
+      "requiere": ["algebra.exponentes-y-productos-notables"],
+      "plantillas": ["cuadrado-crece"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
@@ -76,7 +88,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "requiere": ["algebra.exponentes-y-productos-notables"],
+      "requiere": ["algebra.productos-notables"],
       "plantillas": ["traductor-enunciados", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -160,7 +172,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "requiere": ["algebra.division-de-polinomios"],
+      "requiere": ["algebra.division-de-polinomios", "algebra.productos-notables"],
       "plantillas": ["cuadrado-crece", "division-polinomios", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -336,7 +348,7 @@
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
       "grado": 5,
-      "requiere": ["algebra.exponentes-y-productos-notables", "aritmetica.analisis-combinatorio"],
+      "requiere": ["algebra.productos-notables", "aritmetica.analisis-combinatorio"],
       "plantillas": ["binomio-newton"],
       "investigacion": null
     }

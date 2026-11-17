@@ -74,3 +74,26 @@ test('al partir «Magnitudes y vectores», el avance de los vectores pasa a fisi
   assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
 });
 
+test('al partir «Exponentes, radicales y productos notables», el avance de los productos pasa a algebra.productos-notables', () => {
+  const V = 'algebra.exponentes-y-productos-notables', N = 'algebra.productos-notables';
+  const est = { avanceV: 1, partidoV: 1, vistas: { [V]: '2026-11-12' }, marcadas: { [V]: '2026-11-13' },
+    teoria: { [V]: { idea: 'racionalizar', ideas: { 'leyes-exponentes': { hecha: true }, radicales: { casos: 3 }, 'cuadrado-suma': { hecha: true }, racionalizar: { casos: 1 } } } },
+    coleccion: [{ id: 'c1', unidad: V, mesa: 'cubo-se-abre' }, { id: 'c2', unidad: V, mesa: 'rectangulo-x-p-q' }, { id: 'c3', unidad: V, mesa: 'exponentes-con-signo' }],
+    glosario: { [V]: { potencia: 'sabe', conjugado: 'repasa', 'producto notable': 'sabe' } } };
+  assert.equal(A.migrar(est), true);
+  assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), ['leyes-exponentes', 'radicales']);
+  assert.deepEqual(est.teoria[N].ideas, { 'cuadrado-suma': { hecha: true }, racionalizar: { casos: 1 } });
+  assert.equal(est.teoria[N].idea, 'racionalizar', 'la idea en curso se va con su unidad');
+  assert.equal(est.teoria[V].idea, undefined);
+  assert.deepEqual(est.coleccion.map(c => c.unidad), [N, N, V], 'las mesas del cubo y del rectángulo se van; la de exponentes se queda');
+  assert.deepEqual(est.glosario[V], { potencia: 'sabe' });
+  assert.deepEqual(est.glosario[N], { conjugado: 'repasa', 'producto notable': 'sabe' });
+  assert.equal(est.vistas[N], '2026-11-12');
+  assert.equal(est.marcadas[N], '2026-11-13', '«Ya la estudié» incluía los productos notables');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+  // Quien nunca abrió la unidad: solo queda la marca.
+  const nuevo = { avanceV: 1, partidoV: 1 };
+  assert.equal(A.migrar(nuevo), true);
+  assert.equal(nuevo.partidoExp, 1);
+  assert.equal(nuevo.teoria, undefined);
+});
