@@ -1,0 +1,22 @@
+{
+  "id": "geo-segmentos-angulos",
+  "titulo": "Segmentos y ángulos",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.segmentos-y-angulos"
+  ],
+  "temas": [
+    "Segmentos y su medida",
+    "Punto medio",
+    "Clases de ángulos",
+    "Bisectriz",
+    "Ángulos complementarios y suplementarios",
+    "Rectas paralelas y una secante"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

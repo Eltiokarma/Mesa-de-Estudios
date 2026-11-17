@@ -26,7 +26,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["algebra.ecuaciones-lineales-y-cuadraticas"],
-      "plantillas": ["segmentos-angulos"],
+      "plantillas": ["segmentos-angulos", "geo-segmentos-angulos"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

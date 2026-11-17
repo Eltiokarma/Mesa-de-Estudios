@@ -1,0 +1,87 @@
+{
+  "titulo": "Segmentos y ángulos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "A, B, C y D son paraderos de una avenida recta, en ese orden. AD = 1 500 m, AB = 400 m y CD = 800 m. ¿Cuánto mide BC? Datos: Con puntos en orden, cada medida es la suma de sus tramos: AD = AB + BC + CD. Alternativas: A) 300 m   B) 700 m   C) 150 m   D) 1 100 m   E) 1 200 m",
+      "respuesta": "A) 300 m",
+      "pasos": [
+        "BC es lo que queda de AD sin AB ni CD.",
+        "BC = 1 500 − 400 − 800 = 300 m."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El reloj de la plaza marca las 7:00. ¿Cuánto mide el ángulo convexo que forman sus agujas? Datos: Una vuelta completa: 360°. El reloj tiene 12 números a igual distancia. El ángulo convexo de las agujas es el del lado corto: menos de 180°. Alternativas: A) 75°   B) 150°   C) 210°   D) 30°",
+      "respuesta": "B) 150°",
+      "pasos": [
+        "Entre dos números hay 360° ÷ 12 = 30°. Por el lado corto hay 5 espacios.",
+        "5 · 30° = 150°."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂. PV forma 25° con L₁ y QV forma 45° con L₂. ¿Cuánto mide el quiebre x, en V? Datos: Por V se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales. Alternativas: A) 70°   B) 110°   C) 20°   D) 35°",
+      "respuesta": "A) 70°",
+      "pasos": [
+        "La paralela por V parte x en dos: cada parte es alterna interna con el ángulo de su tramo.",
+        "x = 25° + 45° = 70°."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "A, B, C y D están en ese orden en una carretera recta. AC = 8 km, BD = 15 km y AD = 17 km. ¿Cuánto mide BC? Datos: Con puntos en orden, cada medida es la suma de sus tramos: AD = AB + BC + CD. Alternativas: A) 2 km   B) 6 km   C) 9 km   D) 23 km   E) 11,5 km",
+      "respuesta": "B) 6 km",
+      "pasos": [
+        "AC y BD juntos cubren AD y repiten BC: a su suma le quito AD.",
+        "BC = 8 + 15 − 17 = 6 km."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El complemento del suplemento de un ángulo x mide 65°: C(S(x)) = 65°. ¿Cuánto mide x? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°. Alternativas: A) 25°   B) 155°   C) 115°   D) 32,5°",
+      "respuesta": "B) 155°",
+      "pasos": [
+        "C(S(x)) = 90° − (180° − x) = x − 90°.",
+        "x − 90° = 65°, así que x = 155°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "L₁ ∥ L₂. Dos conjugados externos miden 5x − 40° y 4x − 5°. ¿Cuánto vale x? Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°. En un cruce: opuestos por el vértice iguales; vecinos, suman 180°. Alternativas: A) 25°   B) 35°   C) 15°   D) 95°   E) 85°",
+      "respuesta": "A) 25°",
+      "pasos": [
+        "Son conjugados externos: suman 180°.",
+        "5x − 40° + 4x − 5° = 180°, así que x = 25°."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Sobre una recta, B está entre A y C, y M es el punto de AC equidistante de A y de C. AB − BC = 20 cm. ¿Cuánto mide BM? Datos: M equidistante de A y C, y entre ellos: AM = MC = AC/2. Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman. Alternativas: A) 10 cm   B) No se puede: faltan AB y BC   C) 20 cm   D) 40 cm",
+      "respuesta": "A) 10 cm",
+      "pasos": [
+        "BM = AB − AM, y AM es la mitad de AB + BC.",
+        "Así, BM = (AB − BC) ÷ 2 = 20 ÷ 2 = 10 cm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "El suplemento de un ángulo es 4 veces su complemento: S(x) = 4 · C(x). ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°. Alternativas: A) 210°   B) 45°   C) 30°   D) 60°",
+      "respuesta": "D) 60°",
+      "pasos": [
+        "180° − x = 4(90° − x) = 360° − 4x.",
+        "3x = 180°, así que x = 60°."
+      ]
+    }
+  ]
+}

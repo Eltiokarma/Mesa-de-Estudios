@@ -3847,7 +3847,8 @@
       "algebra.ecuaciones-lineales-y-cuadraticas"
      ],
      "plantillas": [
-      "segmentos-angulos"
+      "segmentos-angulos",
+      "geo-segmentos-angulos"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/segmentos-y-angulos.js",
@@ -5464,6 +5465,7 @@
      "requiere": [],
      "plantillas": [
       "orden-informacion",
+      "rm-cuadros",
       "rm-deduccion",
       "rm-parentesco"
      ],
@@ -8264,6 +8266,22 @@
     "/plantillas/geo-revolucion/papel.json"
    ]
   },
+  "geo-segmentos-angulos": {
+   "id": "geo-segmentos-angulos",
+   "titulo": "Segmentos y ángulos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.segmentos-y-angulos"
+   ],
+   "url": "#/practica/geo-segmentos-angulos",
+   "papel": "/plantillas/geo-segmentos-angulos/papel.json",
+   "archivos": [
+    "/plantillas/geo-segmentos-angulos/generador.js",
+    "/plantillas/geo-segmentos-angulos/papel.json"
+   ]
+  },
   "geo-triangulos-notables": {
    "id": "geo-triangulos-notables",
    "titulo": "Lados posibles y ángulos en los puntos notables",
@@ -9574,12 +9592,28 @@
     "/plantillas/rm-cortes/papel.json"
    ]
   },
+  "rm-cuadros": {
+   "id": "rm-cuadros",
+   "titulo": "El cuadro que descarta",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.razonamiento-deductivo"
+   ],
+   "url": "#/practica/rm-cuadros",
+   "papel": "/plantillas/rm-cuadros/papel.json",
+   "archivos": [
+    "/plantillas/rm-cuadros/generador.js",
+    "/plantillas/rm-cuadros/papel.json"
+   ]
+  },
   "rm-deduccion": {
    "id": "rm-deduccion",
    "titulo": "Lo que se deduce: clases, frascos y condicionales",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "razonamiento-matematico.razonamiento-deductivo",
     "razonamiento-matematico.certezas"
@@ -9680,7 +9714,7 @@
    "titulo": "Parentescos, órdenes y repartos con pistas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.2.0",
    "unidades": [
     "razonamiento-matematico.razonamiento-deductivo",
     "razonamiento-matematico.ordenamiento-de-informacion"

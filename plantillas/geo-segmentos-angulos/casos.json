@@ -1,0 +1,436 @@
+{
+  "plantilla": "geo-segmentos-angulos",
+  "tolerancia": 1e-9,
+  "nota": "Entrada = _datos del generador (sin valor); enunciado = lo que lee el alumno (enunciado y pregunta). esperado.valor es el número (o el texto, en entre y son-paralelas) y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (17 nov 2026, python3 -I con fractions, en el scratchpad de la sesión, fuera del repo: segmentos-f5/verificar_casos.py), que no usa el generador, el núcleo ni el motor: resuelve cada problema leyendo solo el enunciado, como el alumno (suma y resta de tramos con los puntos en orden, la razón con k, el punto medio, consecutivos, la vuelta de 360°, C(x) = 90° − x y S(x) = 180° − x despejados con fracciones exactas, el mayor entero por búsqueda, la regla de cada par entre paralelas, la paralela auxiliar y la regla del serrucho), escribe el resultado como la alternativa y lo compara con la correcta del generador. Los 22 casos cuadran.",
+  "casos": [
+    {
+      "semilla": 67,
+      "enunciado": "A, B, C y D son puntos de una recta, en ese orden. AD = 13 cm, AB = 7 cm y CD = 2 cm. ¿Cuánto mide BC?",
+      "entrada": {
+        "tipo": "tramo-orden",
+        "idea": "suma-de-segmentos",
+        "nivel": 1,
+        "sub": "cuatro",
+        "K": 1,
+        "u": "cm",
+        "puntos": {
+          "A": 0,
+          "B": 7,
+          "C": 11,
+          "D": 13
+        },
+        "pide": "BC"
+      },
+      "esperado": {
+        "valor": 4,
+        "texto": "4 cm"
+      }
+    },
+    {
+      "semilla": 10,
+      "enunciado": "En una recta hay tres puntos: A, B y C. AB = 8 cm, BC = 15 cm y AC = 7 cm. ¿Cuál de los tres está entre los otros dos?",
+      "entrada": {
+        "tipo": "entre",
+        "idea": "suma-de-segmentos",
+        "nivel": 1,
+        "distancias": {
+          "AB": 8,
+          "BC": 15,
+          "AC": 7
+        },
+        "pide": "el del medio"
+      },
+      "esperado": {
+        "valor": "El punto A",
+        "texto": "El punto A"
+      }
+    },
+    {
+      "semilla": 37,
+      "enunciado": "A, B, C y D están en ese orden en una carretera recta. AC = 12 km, BD = 18 km y AD = 21 km. ¿Cuánto mide BC?",
+      "entrada": {
+        "tipo": "pisan",
+        "idea": "suma-de-segmentos",
+        "nivel": 2,
+        "K": 1,
+        "u": "km",
+        "puntos": {
+          "A": 0,
+          "B": 3,
+          "C": 12,
+          "D": 21
+        },
+        "pide": "BC"
+      },
+      "esperado": {
+        "valor": 9,
+        "texto": "9 km"
+      }
+    },
+    {
+      "semilla": 46,
+      "enunciado": "En una recta, B está entre A y C, con AB : BC = 2 : 5 y AC = 42 cm. ¿Cuánto mide BC?",
+      "entrada": {
+        "tipo": "razon",
+        "idea": "suma-de-segmentos",
+        "nivel": 2,
+        "sub": "parte",
+        "K": 1,
+        "u": "cm",
+        "m": 2,
+        "n": 5,
+        "puntos": {
+          "A": 0,
+          "B": 12,
+          "C": 42
+        },
+        "pide": "BC"
+      },
+      "esperado": {
+        "valor": 30,
+        "texto": "30 cm"
+      }
+    },
+    {
+      "semilla": 70,
+      "enunciado": "A, B, C y D están en ese orden sobre una recta. AC = 17 cm, BD = 23 cm y CD mide el doble de AB. ¿Cuánto mide BC?",
+      "entrada": {
+        "tipo": "examen-seg",
+        "idea": "suma-de-segmentos",
+        "nivel": 3,
+        "sub": "doble",
+        "K": 1,
+        "u": "cm",
+        "puntos": {
+          "A": 0,
+          "B": 6,
+          "C": 17,
+          "D": 29
+        },
+        "pide": "BC"
+      },
+      "esperado": {
+        "valor": 11,
+        "texto": "11 cm"
+      }
+    },
+    {
+      "semilla": 44,
+      "enunciado": "Sobre una recta, M es el punto medio de AB. AM = (3x + 6) cm y MB = (x + 12) cm. ¿Cuánto mide AM?",
+      "entrada": {
+        "tipo": "mitad",
+        "idea": "punto-medio",
+        "nivel": 1,
+        "a1": 3,
+        "b1": 6,
+        "a2": 1,
+        "b2": 12,
+        "puntos": {
+          "A": 0,
+          "M": 15,
+          "B": 30
+        },
+        "pide": "AM"
+      },
+      "esperado": {
+        "valor": 15,
+        "texto": "15 cm"
+      }
+    },
+    {
+      "semilla": 31,
+      "enunciado": "B está entre A y C sobre una recta, con AB = 5 cm y BC = 13 cm. M es el punto medio de AC. ¿Cuánto mide BM?",
+      "entrada": {
+        "tipo": "medio-entre",
+        "idea": "punto-medio",
+        "nivel": 2,
+        "sub": "antes",
+        "puntos": {
+          "A": 0,
+          "B": 5,
+          "M": 9,
+          "C": 18
+        },
+        "pide": "BM"
+      },
+      "esperado": {
+        "valor": 4,
+        "texto": "4 cm"
+      }
+    },
+    {
+      "semilla": 42,
+      "enunciado": "A, B, C y D son paraderos de una carretera recta, en ese orden. M es el punto medio de AB y N, el de CD. AD = 26 km y BC = 6 km. ¿Cuánto mide MN?",
+      "entrada": {
+        "tipo": "dos-medios",
+        "idea": "punto-medio",
+        "nivel": 3,
+        "sub": "ad-bc",
+        "u": "km",
+        "puntos": {
+          "A": 0,
+          "M": 5,
+          "B": 10,
+          "C": 16,
+          "N": 21,
+          "D": 26
+        },
+        "pide": "MN"
+      },
+      "esperado": {
+        "valor": 16,
+        "texto": "16 km"
+      }
+    },
+    {
+      "semilla": 18,
+      "enunciado": "Sobre una recta, B está entre A y C, y M es el punto de AC equidistante de A y de C. AB − BC = 24 cm. ¿Cuánto mide BM?",
+      "entrada": {
+        "tipo": "equidistante",
+        "idea": "punto-medio",
+        "nivel": 3,
+        "puntos": {
+          "A": 0,
+          "M": 17,
+          "B": 29,
+          "C": 34
+        },
+        "diferencia": 24,
+        "pide": "BM"
+      },
+      "esperado": {
+        "valor": 12,
+        "texto": "12 cm"
+      }
+    },
+    {
+      "semilla": 20,
+      "enunciado": "El reloj de la plaza marca las 5:00. ¿Cuánto mide el ángulo convexo que forman sus agujas?",
+      "entrada": {
+        "tipo": "reloj",
+        "idea": "abertura",
+        "nivel": 1,
+        "hora": 5,
+        "pide": "el convexo"
+      },
+      "esperado": {
+        "valor": 150,
+        "texto": "150°"
+      }
+    },
+    {
+      "semilla": 11,
+      "enunciado": "∠AOB y ∠BOC son consecutivos. m∠AOB = 2x + 20°, m∠BOC = 3x + 10° y m∠AOC = 155°. ¿Cuánto mide ∠AOB?",
+      "entrada": {
+        "tipo": "consec-x",
+        "idea": "abertura",
+        "nivel": 2,
+        "a1": 2,
+        "b1": 20,
+        "a2": 3,
+        "b2": 10,
+        "total": 155,
+        "pide": "AOB"
+      },
+      "esperado": {
+        "valor": 70,
+        "texto": "70°"
+      }
+    },
+    {
+      "semilla": 27,
+      "enunciado": "Los rayos OA, OB, OC y OD salen de O en ese orden. m∠AOC = 100°, m∠BOD = 85° y m∠AOD = 135°. ¿Cuánto mide ∠BOC?",
+      "entrada": {
+        "tipo": "pisan-ang",
+        "idea": "abertura",
+        "nivel": 2,
+        "aob": 50,
+        "boc": 50,
+        "cod": 35,
+        "pide": "BOC"
+      },
+      "esperado": {
+        "valor": 50,
+        "texto": "50°"
+      }
+    },
+    {
+      "semilla": 55,
+      "enunciado": "Alrededor del punto O hay cuatro ángulos consecutivos que dan la vuelta entera: 2x, 4x, x, 3x. ¿Cuánto mide el mayor?",
+      "entrada": {
+        "tipo": "vuelta",
+        "idea": "abertura",
+        "nivel": 3,
+        "ks": [
+          2,
+          4,
+          1,
+          3
+        ],
+        "pide": "el mayor"
+      },
+      "esperado": {
+        "valor": 144,
+        "texto": "144°"
+      }
+    },
+    {
+      "semilla": 3,
+      "enunciado": "A, O y E están en una recta, con O en medio. El rayo OB forma m∠AOB = 30°. ¿Cuánto mide ∠BOE?",
+      "entrada": {
+        "tipo": "comp-sup",
+        "idea": "bisectrices",
+        "nivel": 1,
+        "sub": "S",
+        "a": 30,
+        "pide": "BOE"
+      },
+      "esperado": {
+        "valor": 150,
+        "texto": "150°"
+      }
+    },
+    {
+      "semilla": 30,
+      "enunciado": "El suplemento del complemento de un ángulo x mide 145°: S(C(x)) = 145°. ¿Cuánto mide x?",
+      "entrada": {
+        "tipo": "cadena",
+        "idea": "bisectrices",
+        "nivel": 2,
+        "sub": "SC",
+        "k": 145,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 55,
+        "texto": "55°"
+      }
+    },
+    {
+      "semilla": 80,
+      "enunciado": "El suplemento de un ángulo es 19 veces su complemento: S(x) = 19 · C(x). ¿Cuánto mide el ángulo?",
+      "entrada": {
+        "tipo": "veces-cs",
+        "idea": "bisectrices",
+        "nivel": 3,
+        "sub": "veces",
+        "m": 19,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 85,
+        "texto": "85°"
+      }
+    },
+    {
+      "semilla": 17,
+      "enunciado": "∠AOB y ∠BOD son consecutivos, con m∠AOB = 2x y m∠BOD = 3x + 15°. ∠AOD es agudo. ¿Cuál es el mayor valor entero de x?",
+      "entrada": {
+        "tipo": "maximo",
+        "idea": "bisectrices",
+        "nivel": 3,
+        "p": 2,
+        "q": 3,
+        "c": 15,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 14,
+        "texto": "14°"
+      }
+    },
+    {
+      "semilla": 6,
+      "enunciado": "L₁ ∥ L₂. Dos correspondientes miden 5x + 35° y 2x + 53°. ¿Cuánto vale x?",
+      "entrada": {
+        "tipo": "ecuacion",
+        "idea": "paralelas",
+        "nivel": 2,
+        "sub": "nombra",
+        "par": "correspondientes",
+        "igual": true,
+        "a1": 5,
+        "b1": 35,
+        "a2": 2,
+        "b2": 53,
+        "th": 115,
+        "cuadP": "ai",
+        "cuadQ": "ai",
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 6,
+        "texto": "6°"
+      }
+    },
+    {
+      "semilla": 1,
+      "enunciado": "Una secante corta a L₁ y L₂. Dos correspondientes miden 80° y 80°. ¿L₁ y L₂ son paralelas?",
+      "entrada": {
+        "tipo": "son-paralelas",
+        "idea": "paralelas",
+        "nivel": 3,
+        "par": "correspondientes",
+        "igual": true,
+        "mP": 80,
+        "mQ": 80,
+        "abre": 0,
+        "pide": "¿paralelas?"
+      },
+      "esperado": {
+        "valor": "Sí: los dos cumplen la regla de su par",
+        "texto": "Sí: los dos cumplen la regla de su par"
+      }
+    },
+    {
+      "semilla": 38,
+      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂. PV forma 60° con L₁ y QV forma 45° con L₂. ¿Cuánto mide el quiebre x, en V?",
+      "entrada": {
+        "tipo": "quiebre",
+        "idea": "quiebre",
+        "nivel": 1,
+        "a": 60,
+        "b": 45,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 105,
+        "texto": "105°"
+      }
+    },
+    {
+      "semilla": 7,
+      "enunciado": "L₁ ∥ L₂. Arriba, PV forma 130° con L₁, medido del lado de afuera; abajo, QV forma 45° con L₂. ¿Cuánto mide el quiebre x, en V?",
+      "entrada": {
+        "tipo": "quiebre-afuera",
+        "idea": "quiebre",
+        "nivel": 2,
+        "a": 50,
+        "b": 45,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 95,
+        "texto": "95°"
+      }
+    },
+    {
+      "semilla": 16,
+      "enunciado": "L₁ ∥ L₂. La línea P–M–N–Q dobla dos veces. En P forma 45° con L₁, en Q forma 45° con L₂ y en M dobla 70°. ¿Cuánto mide el quiebre en N?",
+      "entrada": {
+        "tipo": "serrucho",
+        "idea": "quiebre",
+        "nivel": 3,
+        "a": 45,
+        "m": 25,
+        "b": 45,
+        "pide": "N"
+      },
+      "esperado": {
+        "valor": 70,
+        "texto": "70°"
+      }
+    }
+  ]
+}
