@@ -803,6 +803,10 @@ input[type=file]{font:inherit;max-width:100%}
 .te-ec-grande .ec-sep{display:block;height:6px;overflow:hidden;color:transparent;border:0;margin:0;width:auto}
 /* Fuera de la regla grande, el separador de dos relaciones es una raya vertical con aire, no un «·» que parece producto. */
 .ec-sep{display:inline-block;width:0;height:1.1em;margin:0 .75em;border-left:2px solid var(--line);vertical-align:-.2em;color:transparent;overflow:hidden}
+/* En el celular y en las tarjetas de ejemplos, cada relación en su renglón: si no, la raya quedaba colgada al final de una
+   línea (lector en frío, 17 nov). */
+.te-ej .ec-sep{display:block;height:0;border:0;margin:0}
+@media (max-width:600px){.ec-sep{display:block;height:0;border:0;margin:0}}
 .te-ec-grande .ec-frac,.te-ec-grande .ec-raiz{white-space:nowrap}
 /* Revelar: la figura cambia a lo que pasa de verdad; un fundido corto marca dónde mirar (oficio: atención). */
 @media (prefers-reduced-motion:no-preference){.te-fig.te-revela svg{animation:te-revela 320ms cubic-bezier(0,0,.2,1)}}

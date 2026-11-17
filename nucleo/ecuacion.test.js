@@ -45,10 +45,16 @@ test('una unidad tachada se dibuja tachada y se lee en voz alta', () => {
   assert.match(E2.texto(eq), /km \(tachado\)/);
 });
 
+test('una cuenta solo se parte después de un «=»: nunca junto a + − × ÷', () => {
+  const h = E.html(['AC = 13 + 5 = 18 cm   ·   ', { v: 'c-o', t: 'a' }, ' ÷ 2 − 9']);
+  assert.ok(!/ [+−×÷]|[+−×÷] /.test(h), h);
+  assert.ok(/ = /.test(h), 'se puede partir después de «=»');
+});
+
 test('raya: un numeral con letras lleva raya encima, sin cambiar las demás partes', () => {
   // Lo que ya existía se ve igual (la raya es una parte nueva, 17 nov).
   const antes = [{ v: 'c-o', t: 'v' }, ' = ', { frac: ['d', 't'] }, ' + ', { sub: ['A', 'x'] }, { par: ['2'] }, { tacha: 'km' }];
-  assert.equal(E.html(antes), '<span class="var c-o ec-v ec-letra">v</span> = <span class="ec-frac"><span class="ec-num">d</span><span class="ec-den">t</span></span> + A<sub class="ec-sub">x</sub><span class="ec-par">(2)</span><span class="ec-tacha">km</span>');
+  assert.equal(E.html(antes).replace(/ /g, ' '), '<span class="var c-o ec-v ec-letra">v</span> = <span class="ec-frac"><span class="ec-num">d</span><span class="ec-den">t</span></span> + A<sub class="ec-sub">x</sub><span class="ec-par">(2)</span><span class="ec-tacha">km</span>');
   // a̅b̅c̅₍ₙ₎: las cifras naranja, la base turquesa, la raya en tinta sobre las cifras.
   const num = [{ sub: [{ raya: [{ v: 'c-o', t: 'abc' }] }, { v: 'c-i', t: '(n)' }] }];
   E.revisar(num, 'prueba');
