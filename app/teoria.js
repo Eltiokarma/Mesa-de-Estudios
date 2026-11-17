@@ -561,7 +561,10 @@
       actuar('prediccion', p.voz || voz('prediccion'));
       dibujar(p.dibujo, p.pieza);
       const ya = si.prediccion;
-      zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(p.pregunta)}</h3>${datosHTML(E, p.datos)}${opcionesHTML(p.opciones)}<p class="te-fb" aria-live="polite"></p>`;
+      // Las opciones van barajadas (auditoría, 17 nov: la correcta iba siempre primera en 633 de 689 predicciones y el
+      // único bloqueo de la regla 3 se resolvía marcando la A). Orden fijo por alumno e idea: al volver, no cambia.
+      const opsP = T.barajar(p.opciones, [...`${idea.id}|${ctx.est.alumno || ''}`].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7));
+      zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(p.pregunta)}</h3>${datosHTML(E, p.datos)}${opcionesHTML(opsP)}<p class="te-fb" aria-live="polite"></p>`;
       const cual = elegir();
       const resolver = elegida => {
         const o = p.opciones.find(x => x.id === elegida);
