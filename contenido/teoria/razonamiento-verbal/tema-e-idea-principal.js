@@ -1801,7 +1801,7 @@
     juega: {
       consigna: 'Una hoja de simulacro para postulantes, con texto y gráfico como en San Marcos. Cada alternativa equivocada falla por algo.',
       mision: {
-        texto: 'Tacha las alternativas que fallan hasta que quede una sola.',
+        texto: 'Toca las alternativas que fallan para tacharlas, hasta que quede una sola.',
         logrado: val => ALTS.every(x => (val[x.id.toLowerCase()] === 1) === !x.ok),
         bien: 'Queda la única que cubre el texto y el gráfico sin agregar nada.',
       },
@@ -1814,7 +1814,7 @@
         { s: justo('violeta'), t: 'la alternativa que queda' },
       ],
       controles: ALTS.map(x => ({ id: x.id.toLowerCase(), etiqueta: `Alternativa ${x.id}`, opciones: [{ valor: 0, texto: 'dejar' }, { valor: 1, texto: 'tachar' }] })),
-      dibujo: val => ({ datos: SIMULACRO, estado: estSimulacro(val) }),
+      dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(ALTS.map(x => [x.id, x.id.toLowerCase()])) }, SIMULACRO), estado: estSimulacro(val) }),
       lectura: val => lecturaSimulacro(val),
       minimo: 3,
     },

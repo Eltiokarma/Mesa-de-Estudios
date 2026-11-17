@@ -156,3 +156,18 @@ test('ancla, cercana y enBandeja: la manija cae sobre su oración y soltarla ah�
   assert.equal(P.enBandeja(CASOS.mural, { x: 10, y: 9999 }), false, 'sin bandeja, nunca');
   assert.ok(P.ancla(CASOS.simulacro, 'C'), 'también las letras de las alternativas');
 });
+
+test('toques: una zona tocable por alternativa, dentro del lienzo, sin pisarse y con su control', () => {
+  const d = Object.assign({ toques: { A: 'a', B: 'b', C: 'c', D: 'd', E: 'e' } }, CASOS.simulacro);
+  const svg = P.dibujar(d, {});
+  const zonas = [...svg.matchAll(/<rect class="rv-toque" data-toque="(\w)" x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"/g)]
+    .map(m => ({ c: m[1], x: +m[2], y: +m[3], w: +m[4], h: +m[5] }));
+  assert.deepEqual(zonas.map(z => z.c), ['a', 'b', 'c', 'd', 'e']);
+  const alto = +/viewBox="0 0 \d+ ([\d.]+)"/.exec(svg)[1];
+  for (const z of zonas) {
+    assert.ok(z.x >= 4 && z.x + z.w <= 316 && z.y >= 4 && z.y + z.h <= alto - 4, `zona ${z.c} dentro del lienzo`);
+    assert.ok(z.h >= 24, `zona ${z.c}: al menos 24 de alto para el dedo`);
+  }
+  for (let k = 1; k < zonas.length; k++) assert.ok(zonas[k].y >= zonas[k - 1].y + zonas[k - 1].h - 0.5, `${zonas[k].c} no pisa a ${zonas[k - 1].c}`);
+  assert.equal(P.dibujar(CASOS.simulacro, {}).includes('data-toque'), false, 'sin toques, ninguna zona');
+});

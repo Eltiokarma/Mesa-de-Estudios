@@ -1250,6 +1250,15 @@
       f.addEventListener('pointerdown', abajo); f.addEventListener('pointermove', mueve);
       f.addEventListener('pointerup', arriba); f.addEventListener('pointercancel', arriba);
       f.addEventListener('touchstart', sinScroll, { passive: false });
+      // Toque directo (Gerson, 17 nov): la pieza marca zonas con data-toque="<control>" (una alternativa de la hoja de
+      // simulacro); tocarla pasa ese control a su opción siguiente. Los botones del control siguen ahí (teclado y lector).
+      const enToque = e => {
+        const el = e.target.closest && e.target.closest('[data-toque]'); if (!el) return;
+        const c = ctr.find(x => x.id === el.getAttribute('data-toque')); if (!c || !c.opciones) return;
+        const k = c.opciones.findIndex(op => String(op.valor) === String(vals[c.id]));
+        if (aplicar({ [c.id]: c.opciones[(k + 1) % c.opciones.length].valor })) { tocar(); pintarJ(true); }
+      };
+      f.addEventListener('click', enToque);
       // ---------- Animación (decisión de Gerson, 15 nov: física y química se mueven solas) ----------
       // Un control con `auto: { velocidad, modo }` (el tiempo t, un ángulo que gira…) avanza solo apenas se abre la
       // pantalla, sin apretar nada. La figura, la gráfica y los números de la lectura se mueven con él. Se pausa con su
@@ -1357,7 +1366,7 @@
           if (misEl && misEl.parentNode !== z) misEl.remove();
           f.removeEventListener('pointerdown', abajo); f.removeEventListener('pointermove', mueve);
           f.removeEventListener('pointerup', arriba); f.removeEventListener('pointercancel', arriba);
-          f.removeEventListener('touchstart', sinScroll); f.classList.remove('con-manijas', 'arrastrando');
+          f.removeEventListener('touchstart', sinScroll); f.removeEventListener('click', enToque); f.classList.remove('con-manijas', 'arrastrando');
           z.removeEventListener('input', enInput); z.removeEventListener('click', enClick);
         },
       };

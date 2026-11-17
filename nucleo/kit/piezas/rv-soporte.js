@@ -26,6 +26,7 @@
  *                                       // juego de jerarquía: se arrastran a una oración y vuelven a la bandeja)
  *   pregunta: '…', alternativas: [{ id: 'A', t: '…' }],   // solo simulacro, al pie de la hoja
  *   frase: { etiqueta: 'Frase', t: 'Los útiles de la lista' },   // tarjeta opcional debajo del soporte
+ *   toques: { A: 'a' },      // solo simulacro: zona tocable sobre la alternativa A que cambia el control 'a' del juego
  * }
  * estado = {
  *   marcas: { o1: 'i' },     // i turquesa continuo (lo que se cubre: evidencia) · o naranja a trazos (lo que se prueba) ·
@@ -364,7 +365,17 @@
       tinta += T.rotulo(F.etiqueta.x, F.etiqueta.y, F.etiqueta.texto, { tam: TAM, peso: 700, color: c });
     }
     if (L.bandeja) tinta += bandejaSVG(L.bandeja);
-    return { s: fondo + tinta + M.encima + encima, alto: L.alto };
+    // Toques (Gerson, 17 nov: tachar tocando la alternativa en la hoja): una zona invisible sobre cada alternativa con
+    // data-toque = el control del juego que cambia; el lector de la teoría pasa ese control a su opción siguiente.
+    let toques = '';
+    for (const [alt, ctl] of Object.entries(d.toques || {})) {
+      const its = L.items.filter(it => it.id === alt && (it.tipo === 'letra' || it.tipo === 'linea'));
+      if (!its.length) continue;
+      const y0 = Math.min(...its.map(it => it.y - (it.tipo === 'letra' ? 13 : 17))), y1 = Math.max(...its.map(it => it.y + (it.tipo === 'letra' ? 13 : 7)));
+      const x0 = Math.min(...its.map(it => it.x - (it.tipo === 'letra' ? 12 : 2))), x1 = Math.max(...its.map(it => (it.tipo === 'letra' ? it.x + 12 : it.x + it.w + 2)));
+      toques += `<rect class="rv-toque" data-toque="${T.esc(ctl)}" x="${T.n(x0)}" y="${T.n(y0)}" width="${T.n(x1 - x0)}" height="${T.n(y1 - y0)}" rx="6" fill="transparent"><title>Alternativa ${T.esc(alt)}: tocar para tachar o dejar</title></rect>`;
+    }
+    return { s: fondo + tinta + M.encima + encima + toques, alto: L.alto };
   }
 
   // La balsa de totora del folleto (dibujo de prueba): casco de haces con la proa y la popa levantadas, sobre el agua.

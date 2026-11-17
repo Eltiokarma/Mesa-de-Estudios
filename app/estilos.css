@@ -776,6 +776,9 @@ input[type=file]{font:inherit;max-width:100%}
    Al predecir y en «Ahora tú» no: ahí se lee la pregunta y las opciones, y la figura fija las taparía. */
 @media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-figcaja:not(.alta){position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
 .te-fig svg{width:100%;height:auto;max-width:520px}
+/* Zona tocable de una pieza (data-toque, p. ej. una alternativa del simulacro): mano y un resalte suave al pasar. */
+.te-fig [data-toque]{cursor:pointer}
+@media (hover:hover){.te-fig [data-toque]:hover{fill:color-mix(in srgb,var(--brand) 8%,transparent)}}
 /* Verbal: el texto en su soporte con la escalera de temas es una figura alta (rv-escalera, rv-soporte). En pantalla
    ancha cabe entera a la vista, para ver juntos los avisos y la escalera mientras se cambia el peldaño. */
 @media (min-width:900px){.te-idea .te-fig svg:is(.rv-escalera,.rv-soporte){max-height:calc(100vh - 150px)}}
