@@ -171,6 +171,78 @@
     return s;
   }
 
+  // ---------- Objetos de la cocina (17 nov, idea «¿Siguen siendo las mismas partículas?»): cada uno en su estado de
+  // antes o de después, para mirar con la lupa qué partículas hay. Todos en tinta. ----------
+  // olla: una olla en la hornilla; con vapor, rizos sobre la boca (el agua que se fue al aire).
+  function olla(g, k, r) {
+    const cx = g.cx(k), w = Math.min(72, g.sw * 0.6), yb = g.mesa - 10, h = 40, y0 = yb - h, xi = cx - w / 2, xd = cx + w / 2;
+    const nivel = Math.max(0, Math.min(0.9, r.nivel === undefined ? 0.7 : r.nivel)), yl = yb - h * nivel;
+    let s = `<rect x="${n(cx - w / 2 - 6)}" y="${n(g.mesa - 8)}" width="${n(w + 12)}" height="6" rx="2" fill="currentColor" fill-opacity="0.2" ${tinta(1.5)}/>`;
+    if (r.fuego) for (let j = -2; j <= 2; j++) { const fx = cx + j * w * 0.15; s += `<path d="M${n(fx - 3)} ${n(g.mesa - 8)}Q${n(fx)} ${n(g.mesa - 17)} ${n(fx + 3)} ${n(g.mesa - 8)}" fill="currentColor" fill-opacity="0.35" ${tinta(1)}/>`; }
+    if (nivel > 0) s += `<rect x="${n(xi + 3)}" y="${n(yl)}" width="${n(w - 6)}" height="${n(yb - yl - 2)}" fill="currentColor" fill-opacity="0.1"/><line x1="${n(xi + 3)}" y1="${n(yl)}" x2="${n(xd - 3)}" y2="${n(yl)}" ${tinta(1.5)} stroke-opacity="0.7"/>`;
+    if (r.hierve) for (let j = 0; j < 4; j++) s += `<circle cx="${n(xi + w * (0.22 + 0.18 * j))}" cy="${n(yb - 5 - (j % 2) * 8)}" r="${2 + (j % 2)}" fill="none" ${tinta(1)}/>`;
+    s += `<path d="M${n(xi)} ${n(y0)}L${n(xi)} ${n(yb - 3)}Q${n(xi)} ${n(yb)} ${n(xi + 3)} ${n(yb)}L${n(xd - 3)} ${n(yb)}Q${n(xd)} ${n(yb)} ${n(xd)} ${n(yb - 3)}L${n(xd)} ${n(y0)}" fill="none" ${tinta(2.5)}/>`;
+    s += `<path d="M${n(xi - 3)} ${n(y0)}L${n(xd + 3)} ${n(y0)}M${n(xi)} ${n(y0 + 6)}L${n(xi - 7)} ${n(y0 + 6)}M${n(xd)} ${n(y0 + 6)}L${n(xd + 7)} ${n(y0 + 6)}" fill="none" ${tinta(2.5)}/>`;
+    const nv = Math.max(0, Math.min(3, Math.round(r.vapor || 0)));
+    for (let j = 0; j < nv; j++) { const vx = cx - 14 + j * 14, vy = y0 - 4; s += `<path d="M${n(vx)} ${n(vy)}Q${n(vx - 5)} ${n(vy - 7)} ${n(vx)} ${n(vy - 13)}Q${n(vx + 5)} ${n(vy - 19)} ${n(vx)} ${n(vy - 25)}" fill="none" ${tinta(1.5)} stroke-opacity="0.55"/>`; }
+    return s;
+  }
+  // jarra: chicha en un porongo de barro; fermentando, espuma y burbujas arriba.
+  function jarra(g, k, r) {
+    const cx = g.cx(k), w = Math.min(60, g.sw * 0.5), yb = g.mesa - 2, h = 66, y0 = yb - h, xi = cx - w / 2, xd = cx + w / 2;
+    const yl = y0 + 16;
+    let s = `<path d="M${n(xi + 6)} ${n(yl)}L${n(xd - 6)} ${n(yl)}L${n(xd - 4)} ${n(yb - 4)}L${n(xi + 4)} ${n(yb - 4)}Z" fill="currentColor" fill-opacity="0.16"/>`;
+    s += `<line x1="${n(xi + 5)}" y1="${n(yl)}" x2="${n(xd - 5)}" y2="${n(yl)}" ${tinta(1.5)} stroke-opacity="0.7"/>`;
+    if (r.espuma) for (let j = 0; j < 5; j++) s += `<circle cx="${n(xi + 10 + j * (w - 20) / 4)}" cy="${n(yl - 3 - (j % 2) * 2)}" r="3" fill="var(--card)" ${tinta(1.2)}/>`;
+    if (r.espuma) for (let j = 0; j < 3; j++) s += `<circle cx="${n(cx - 12 + j * 12)}" cy="${n(yl + 14 + (j % 2) * 16)}" r="2" fill="none" ${tinta(1)}/>`;
+    s += `<path d="M${n(xi + 4)} ${n(y0)}Q${n(xi - 6)} ${n(y0 + h * 0.45)} ${n(xi + 2)} ${n(yb)}L${n(xd - 2)} ${n(yb)}Q${n(xd + 6)} ${n(y0 + h * 0.45)} ${n(xd - 4)} ${n(y0)}Z" fill="none" ${tinta(2.5)}/>`;
+    s += `<path d="M${n(xd + 1)} ${n(y0 + 12)}Q${n(xd + 16)} ${n(y0 + 18)} ${n(xd + 2)} ${n(y0 + 36)}" fill="none" ${tinta(2.5)}/>`;
+    return s;
+  }
+  // ropa: un polo colgado del cordel; mojado, gotas que caen.
+  function ropa(g, k, r) {
+    const cx = g.cx(k), x0 = g.sw * k + 6, x1 = g.sw * (k + 1) - 6, yc = g.v0 + 8, w = Math.min(54, g.sw * 0.45);
+    let s = `<line x1="${n(x0)}" y1="${n(yc)}" x2="${n(x1)}" y2="${n(yc)}" ${tinta(1.5)}/>`;
+    const a = cx - w / 2, b = cx + w / 2, yh = yc + 2;
+    s += `<path d="M${n(a)} ${n(yh)}L${n(cx - 7)} ${n(yh)}Q${n(cx)} ${n(yh + 7)} ${n(cx + 7)} ${n(yh)}L${n(b)} ${n(yh)}L${n(b + 10)} ${n(yh + 14)}L${n(b - 2)} ${n(yh + 20)}L${n(b - 4)} ${n(yh + 52)}L${n(a + 4)} ${n(yh + 52)}L${n(a + 2)} ${n(yh + 20)}L${n(a - 10)} ${n(yh + 14)}Z" fill="currentColor" fill-opacity="${r.mojada ? 0.32 : 0.1}" ${tinta(2)}/>`;
+    s += `<path d="M${n(a + 6)} ${n(yc - 4)}L${n(a + 6)} ${n(yh + 4)}M${n(b - 6)} ${n(yc - 4)}L${n(b - 6)} ${n(yh + 4)}" ${tinta(2.5)}/>`;
+    if (r.mojada) for (let j = 0; j < 3; j++) { const dx = cx - 12 + j * 12, dy = yh + 60 + (j % 2) * 7; s += `<path d="M${n(dx)} ${n(dy - 4)}Q${n(dx + 3)} ${n(dy + 1)} ${n(dx)} ${n(dy + 2)}Q${n(dx - 3)} ${n(dy + 1)} ${n(dx)} ${n(dy - 4)}Z" fill="currentColor" fill-opacity="0.5" ${tinta(1)}/>`; }
+    return s;
+  }
+  // clavo: un clavo en el patio; oxidado, con manchas de óxido.
+  function clavo(g, k, r) {
+    const cx = g.cx(k), L = Math.min(76, g.sw * 0.62), y = g.mesa - 8, a = cx - L / 2, b = cx + L / 2;
+    let s = `<rect x="${n(a)}" y="${n(y - 9)}" width="5" height="18" rx="1.5" fill="currentColor" fill-opacity="0.3" ${tinta(2)}/>`;
+    s += `<path d="M${n(a + 5)} ${n(y - 3)}L${n(b - 8)} ${n(y - 3)}L${n(b)} ${n(y)}L${n(b - 8)} ${n(y + 3)}L${n(a + 5)} ${n(y + 3)}Z" fill="currentColor" fill-opacity="0.18" ${tinta(2)}/>`;
+    if (r.oxido) for (let j = 0; j < 4; j++) s += `<circle cx="${n(a + 14 + j * (L - 26) / 3)}" cy="${n(y + (j % 2 ? 1 : -1))}" r="${3 + (j % 2)}" fill="currentColor" fill-opacity="0.6"/>`;
+    return s;
+  }
+  // hornilla: la hornilla de la cocina a gas; encendida, con su llama.
+  function hornilla(g, k, r) {
+    const cx = g.cx(k), w = Math.min(70, g.sw * 0.56), yb = g.mesa - 2;
+    let s = `<rect x="${n(cx - w / 2)}" y="${n(yb - 12)}" width="${n(w)}" height="12" rx="3" fill="currentColor" fill-opacity="0.15" ${tinta(2)}/>`;
+    s += `<rect x="${n(cx - 14)}" y="${n(yb - 18)}" width="28" height="6" rx="2" fill="currentColor" fill-opacity="0.35" ${tinta(1.5)}/>`;
+    if (r.llama) for (let j = -2; j <= 2; j++) { const fx = cx + j * 6, hh = 22 - Math.abs(j) * 4; s += `<path d="M${n(fx - 4)} ${n(yb - 18)}Q${n(fx - 4)} ${n(yb - 18 - hh * 0.6)} ${n(fx)} ${n(yb - 18 - hh)}Q${n(fx + 4)} ${n(yb - 18 - hh * 0.6)} ${n(fx + 4)} ${n(yb - 18)}Z" fill="currentColor" fill-opacity="0.3" ${tinta(1.2)}/>`; }
+    else for (let j = 0; j < 3; j++) { const vx = cx - 8 + j * 8; s += `<path d="M${n(vx)} ${n(yb - 21)}Q${n(vx - 3)} ${n(yb - 28)} ${n(vx)} ${n(yb - 34)}" fill="none" ${tinta(1.2)} stroke-opacity="0.45" stroke-dasharray="2 3"/>`; }
+    return s;
+  }
+  // hueso: un hueso antiguo sobre la mesa.
+  function hueso(g, k) {
+    const cx = g.cx(k), L = Math.min(70, g.sw * 0.56), y = g.mesa - 10, a = cx - L / 2, b = cx + L / 2;
+    const nudo = (x, sg) => `<circle cx="${n(x)}" cy="${n(y - 5)}" r="6" ${tinta(2)}/><circle cx="${n(x)}" cy="${n(y + 5)}" r="6" ${tinta(2)}/>`;
+    return `<g fill="currentColor" fill-opacity="0.15">${nudo(a + 6, -1)}${nudo(b - 6, 1)}</g><rect x="${n(a + 8)}" y="${n(y - 5)}" width="${n(L - 16)}" height="10" fill="var(--card)" ${tinta(2)}/><rect x="${n(a + 9)}" y="${n(y - 3.5)}" width="${n(L - 18)}" height="7" fill="currentColor" fill-opacity="0.15"/>`;
+  }
+  // botella: una botella de agua recién sacada del refrigerador; con gotitas por fuera.
+  function botella(g, k, r) {
+    const cx = g.cx(k), w = Math.min(40, g.sw * 0.32), yb = g.mesa - 2, y0 = g.v0 + 2, xi = cx - w / 2, xd = cx + w / 2, cu = w * 0.32;
+    let s = `<rect x="${n(cx - cu / 2 - 1)}" y="${n(y0)}" width="${n(cu + 2)}" height="8" rx="2" fill="currentColor" fill-opacity="0.45" ${tinta(1.5)}/>`;
+    s += `<path d="M${n(xi + 4)} ${n(y0 + 34)}L${n(xd - 4)} ${n(y0 + 34)}L${n(xd - 4)} ${n(yb - 4)}L${n(xi + 4)} ${n(yb - 4)}Z" fill="currentColor" fill-opacity="0.1"/>`;
+    s += `<path d="M${n(cx - cu / 2)} ${n(y0 + 8)}L${n(cx - cu / 2)} ${n(y0 + 16)}Q${n(xi)} ${n(y0 + 20)} ${n(xi)} ${n(y0 + 30)}L${n(xi)} ${n(yb - 4)}Q${n(xi)} ${n(yb)} ${n(xi + 4)} ${n(yb)}L${n(xd - 4)} ${n(yb)}Q${n(xd)} ${n(yb)} ${n(xd)} ${n(yb - 4)}L${n(xd)} ${n(y0 + 30)}Q${n(xd)} ${n(y0 + 20)} ${n(cx + cu / 2)} ${n(y0 + 16)}L${n(cx + cu / 2)} ${n(y0 + 8)}" fill="none" ${tinta(2)}/>`;
+    if (r.gotas) for (let j = 0; j < 7; j++) { const gx = (j % 2 ? xd + 3 : xi - 3), gy = y0 + 32 + j * 6.5; s += `<circle cx="${n(gx)}" cy="${n(gy)}" r="2.2" fill="currentColor" fill-opacity="0.5" ${tinta(1)}/>`; }
+    return s;
+  }
+  const OBJETOS = { olla, jarra, ropa, clavo, hornilla, hueso, botella };
+
   // Dónde está, en el objeto, el punto que mira la lupa.
   function foco(g, k, r) {
     const f = Math.max(0, Math.min(1, r.lupa && r.lupa.foco !== undefined ? r.lupa.foco : 0.5));
@@ -267,12 +339,13 @@
     if (!els.length) return '';
     const y = g.lupa.cy + g.lupa.R + 22, items = els.map(e => {
       const sim = Object.keys(d.atomos || {}).find(k => (d.atomos[k].el || k) === e) || e;
-      return { sim, e, w: 14 + 4 + T.ancho(e, 14, 700) };
+      const q = ((d.atomos || {})[sim] || {}).carga, txt = q === '+' ? `${e}⁺` : q === '-' ? `${e}⁻` : e;   // ion: con su signo
+      return { sim, e, txt, w: 14 + 4 + T.ancho(txt, 14, 700) };
     });
     const gap = 14, total = items.reduce((a, x) => a + x.w, 0) + gap * (items.length - 1);
     let x = Math.max(M, (W - total) / 2), s = '';
     for (const it of items) {
-      s += `<g class="kit-clave">${P().especieSVG(d, it.sim, x + 7, y - 5, 1)}${T.rotulo(x + 18, y, it.e, { peso: 700, tam: 14, min: M, max: W - M })}</g>`;
+      s += `<g class="kit-clave">${P().especieSVG(d, it.sim, x + 7, y - 5, 1)}${T.rotulo(x + 18, y, it.txt, { peso: 700, tam: 14, min: M, max: W - M })}</g>`;
       x += it.w + gap;
     }
     return s;
@@ -285,8 +358,10 @@
     recs(d).forEach((r, k) => {
       const ls = lineas(r.titulo, g.sw - 8);
       ls.forEach((t, j) => { s += T.rotulo(g.cx(k), 16 + LINEA_TIT * j + (g.nl - ls.length) * LINEA_TIT, t, { ancla: 'middle', peso: 700, tam: TAM_TIT, min: Math.max(M, g.sw * k + 2), max: Math.min(W - M, g.sw * (k + 1) - 2) }); });
-      const cuerpo = r.tipo === 'frasco' ? frasco(g, k) : r.tipo === 'trozo' ? trozo(g, k, r) : vaso(g, k, r);
-      s += `<g class="kit-objeto" data-objeto="${r.tipo === 'frasco' || r.tipo === 'trozo' ? r.tipo : 'vaso'}" data-prueba="si">${cuerpo}</g>`;
+      const cuerpo = r.tipo === 'frasco' ? frasco(g, k) : r.tipo === 'trozo' ? trozo(g, k, r) : OBJETOS[r.tipo] ? OBJETOS[r.tipo](g, k, r) : vaso(g, k, r);
+      s += `<g class="kit-objeto" data-objeto="${r.tipo === 'frasco' || r.tipo === 'trozo' || OBJETOS[r.tipo] ? r.tipo : 'vaso'}" data-prueba="si">${cuerpo}</g>`;
+      // Flecha de antes a después, entre un objeto y el siguiente (a media altura de los objetos).
+      if (d.flechas && k > 0) { const ym = g.mesa - HV / 2, xa = g.sw * k - 13, xb = g.sw * k + 13; s += `<g class="kit-flecha">${T.flecha(xa, ym, xb, ym, { grosor: 2 })}</g>`; }
       if (r.lupa && (r.lupa.desde || 0) <= corte) {
         const nuevo = (r.lupa.desde || 0) === corte && corte > 0 ? ' kit-nuevo kit-aparece' : '';
         s += `<g class="kit-lupa${nuevo}">${lupa(d, g, k, r)}</g>`;
@@ -300,7 +375,7 @@
     if (d.alt) return d.alt;
     const nom = e => (d.nombres && d.nombres[e]) || e;
     const partes = recs(d).map(r => {
-      const que = r.tipo === 'frasco' ? 'frasco cerrado' : r.tipo === 'trozo' ? 'trozo' : 'vaso';
+      const que = { frasco: 'frasco cerrado', trozo: 'trozo', olla: 'olla en la hornilla', jarra: 'porongo de chicha', ropa: 'ropa en el cordel', clavo: 'clavo de hierro', hornilla: 'hornilla de gas', hueso: 'hueso antiguo', botella: 'botella fría' }[r.tipo] || 'vaso';
       const aspecto = [];
       if (r.capa) aspecto.push('una capa encima');
       if (r.fondo) aspecto.push(r.fondo.tipo === 'arena' ? 'arena en el fondo' : 'granitos en el fondo');

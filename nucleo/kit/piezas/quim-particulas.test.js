@@ -79,3 +79,13 @@ test('paleta de elementos: con el, var(--el-*) y ningún color de variable; sin 
   assert.ok(!/--el-/.test(raro));
   assert.equal(typeof P.especieSVG, 'function');
 });
+
+test('ion: con carga, el signo va trazado dentro del átomo (sin texto); sin carga, nada cambia', () => {
+  const P = require('./quim-particulas.js');
+  const d = { atomos: { Na: { el: 'Na', estilo: 'punto', r: 5, carga: '+' }, Cl: { el: 'Cl', r: 5.6, carga: '-' }, K: { el: 'K', estilo: 'punto', r: 5 } } };
+  const na = P.especieSVG(d, 'Na', 50, 50), cl = P.especieSVG(d, 'Cl', 50, 50), k = P.especieSVG(d, 'K', 50, 50);
+  assert.match(na, /class="kit-carga" d="M46.7 50L53.3 50M50 46.7L50 53.3"/);
+  assert.match(cl, /class="kit-carga" d="M46.3 50L53.7 50" stroke="var\(--card\)"/);
+  assert.ok(!/<text/.test(na + cl));
+  assert.ok(!/kit-carga/.test(k) && /r="1.9"/.test(k), 'sin carga, el átomo «punto» conserva su punto');
+});

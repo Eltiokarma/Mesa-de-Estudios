@@ -38,6 +38,9 @@
  * En el navegador, si la página cargó nucleo/elementos.js antes que esta pieza, se definen una sola vez las variables
  * --el-<Símbolo> (claro y oscuro, con el mismo esquema de tema de la app). Por eso, una unidad que pinta con `el` pone
  * '/nucleo/elementos.js' en `requiere` antes de la pieza.
+ * Un átomo con `carga: '+'` o `'-'` es un ion: lleva el signo dentro, trazado (no con texto), del color de la tarjeta
+ * si el átomo es lleno o del color del elemento si es hueco; con carga '+', un átomo 'punto' cambia el punto por el signo.
+ * Sin `carga`, nada cambia.
  * especieSVG(datos, especie, cx, cy, escala) y atomoDe(datos, símbolo) quedan a la vista para las piezas que dibujan
  * partículas dentro de un objeto (quim-vasos).
  */
@@ -106,8 +109,14 @@
     for (const [sim, dx, dy] of forma) {
       const a = atomoDe(d, sim), x = cx + dx * esc, y = cy + dy * esc, r = a.r * esc, c = colorDe(a);
       if (a.estilo === 'hueco') s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="var(--card)" stroke="${c}" stroke-width="2"/>`;
-      else if (a.estilo === 'punto') s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="var(--card)" stroke="${c}" stroke-width="2"/><circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(Math.max(1.5, r * 0.38))}" fill="${c}"/>`;
+      else if (a.estilo === 'punto') s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="var(--card)" stroke="${c}" stroke-width="2"/>${a.carga ? '' : `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(Math.max(1.5, r * 0.38))}" fill="${c}"/>`}`;
       else s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${T.n(r)}" fill="${c}" fill-opacity="0.85" stroke="${c}" stroke-width="1.5"/>`;
+      // Ion (17 nov, Gerson: la sal con sus cargas): el signo va dentro del átomo, con trazos y no con texto, para que no
+      // pise a los vecinos; en un átomo lleno, del color de la tarjeta; en uno hueco, del color del elemento.
+      if (a.carga === '+' || a.carga === '-') {
+        const L = Math.max(2.4, r * 0.66), sc = a.estilo === 'hueco' || a.estilo === 'punto' ? c : 'var(--card)';
+        s += `<path class="kit-carga" d="M${T.n(x - L)} ${T.n(y)}L${T.n(x + L)} ${T.n(y)}${a.carga === '+' ? `M${T.n(x)} ${T.n(y - L)}L${T.n(x)} ${T.n(y + L)}` : ''}" stroke="${sc}" stroke-width="${T.n(Math.max(2, r * 0.36))}" stroke-linecap="round" fill="none"/>`;
+      }
     }
     return s;
   }
