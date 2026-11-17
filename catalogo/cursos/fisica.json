@@ -23,7 +23,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["analisis-dimensional"],
+      "plantillas": ["conversion-unidades", "areas-volumenes", "analisis-dimensional"],
       "investigacion": null
     },
     {

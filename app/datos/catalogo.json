@@ -88,6 +88,8 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
+      "conversion-unidades",
+      "areas-volumenes",
       "analisis-dimensional"
      ],
      "teoria": {
@@ -6824,6 +6826,22 @@
     "/plantillas/angulo-inscrito/papel.json"
    ]
   },
+  "areas-volumenes": {
+   "id": "areas-volumenes",
+   "titulo": "Áreas y volúmenes",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/areas-volumenes",
+   "papel": "/plantillas/areas-volumenes/papel.json",
+   "archivos": [
+    "/plantillas/areas-volumenes/generador.js",
+    "/plantillas/areas-volumenes/papel.json"
+   ]
+  },
   "arreglos-giros": {
    "id": "arreglos-giros",
    "titulo": "Fichas, banderas y ruedas: arreglos y movimientos de figuras",
@@ -7398,6 +7416,22 @@
     "/plantillas/conjuntos/index.html",
     "/plantillas/conjuntos/motor.js",
     "/plantillas/conjuntos/papel.json"
+   ]
+  },
+  "conversion-unidades": {
+   "id": "conversion-unidades",
+   "titulo": "Cambiar de unidad",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.magnitudes-y-vectores"
+   ],
+   "url": "#/practica/conversion-unidades",
+   "papel": "/plantillas/conversion-unidades/papel.json",
+   "archivos": [
+    "/plantillas/conversion-unidades/generador.js",
+    "/plantillas/conversion-unidades/papel.json"
    ]
   },
   "conversiones-quimica": {
