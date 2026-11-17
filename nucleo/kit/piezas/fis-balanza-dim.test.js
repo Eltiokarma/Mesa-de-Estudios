@@ -70,3 +70,10 @@ test('las vistas: estado.vista elige la balanza', () => {
   assert.match(P.dibujar(d, { vista: 1 }), /Cuadra/);
 });
 
+
+// Un color por papel (docs/molde-unidad.md §5b, 17 nov): el lado que falta, «?», es lo que se pide: violeta.
+test('el «?» del lado oculto va en violeta, no en carmín (el carmín es de los ángulos)', () => {
+  const s = P.dibujar({ izq: { nombre: 'x', exps: [0, 1, 0] }, der: { nombre: 'k · t²', oculta: true } });
+  assert.match(s, /fill="var\(--c-f\)"[^>]*>\?</);
+  assert.ok(!/--c-h/.test(s));
+});

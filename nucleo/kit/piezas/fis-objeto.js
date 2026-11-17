@@ -17,7 +17,8 @@
  *   sol      { texto: '300 000 000 m en cada segundo' }  el Sol y un rayo de luz hacia la Tierra
  *   cabello  { texto: '70 μm' }                     un cabello visto con lupa, con su grosor acotado
  * Áreas y volúmenes (16 nov):
- *   terreno  { largo, ancho, texto, cuadrado }      una chacra con cerca vista desde arriba, sus lados acotados y su área en el centro
+ *   terreno  { largo, ancho, texto, cuadrado, colorTexto }   una chacra con cerca vista desde arriba, sus lados acotados y
+ *                                                   su área en el centro (colorTexto: si el área es lo que se pide, 'f')
  *   botella  { texto: '2,5 L', nombre }             una botella con agua; lo que guarda, rotulado al costado
  *   tanque   { texto: '1,1 m³', nombre, altura }    el tanque de agua sobre el techo, con lo que guarda escrito encima
  *                                                   (no al costado: parecía una altura); con altura, una flecha desde el suelo
@@ -34,12 +35,16 @@
  *   pendulo  { largo: 'L', g: 'g', texto }          un péndulo con su largo junto al hilo y la flecha de la gravedad
  *                                                   (notación de los libros: período T, largo L, T = 2π·√(L/g))
  *   planetas { m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F', color2 }   dos masas que se atraen, con la distancia acotada
- *   caja     { masa: '40 kg', fuerza: 'F', aceleracion: 'a', color2 }   una caja empujada sobre el piso, con F y a como flechas
+ *   caja     { masa: '40 kg', fuerza: 'F', aceleracion: 'a', color2, colorFuerza }   una caja empujada sobre el piso, con F
+ *                                                   y a como flechas (colorFuerza: si F es lo que se pide, 'f')
  *   presion  { fuerza: 'F', area: 'A', texto }      una caja sobre el piso: su peso F encima y la presión repartida bajo su base A
+ *                                                   (la presión, lo que se pide, en violeta)
  *   deposito { altura: 'h', texto: 'P', superficie: 'P₀', colorAltura }   un tanque visto por dentro: la profundidad h del punto del fondo
  *   viento   { v, fuerza, area, aire, color2 }       una combi de costado: el aire choca con su frente (A) y la frena (F)
  *   color2: el color de la segunda variable (la fuerza F de planetas y viento, la aceleración a de la caja); por omisión,
  *   'i'. Si en el ejemplo esa letra es un dato, va en el color del dato (17 nov: un color, un papel en la unidad).
+ * Colores por papel (docs/molde-unidad.md §5b, 17 nov): el dato, naranja (color); el segundo dato, turquesa (P₀ del
+ *   depósito); lo que se pide, violeta ('f': el «?» de comparar, la presión, colorFuerza y colorTexto).
  * Cada objeto nuevo lleva en su comentario la afirmación de su dibujo, en una línea.
  * estado = {} (sin pasos). Función pura de (datos, estado): sin ids, sin azar, sin reloj.
  */
@@ -187,7 +192,7 @@
         s += T.rotulo(x0, y + 4, b.nombre || '', { tam: 14, peso: 700 });
         if (mide) s += `<rect x="${x0}" y="${y + 12}" width="${n(Math.max(2, w))}" height="20" rx="4" fill="${T.color(b.color || 'o')}" fill-opacity="0.75"/>`;
         else s += `<rect x="${x0}" y="${y + 12}" width="${w}" height="20" rx="4" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="5 4"/>`
-          + T.rotulo(x0 + w / 2, y + 28, '?', { ancla: 'middle', tam: 15, peso: 800, color: 'h' });
+          + T.rotulo(x0 + w / 2, y + 28, '?', { ancla: 'middle', tam: 15, peso: 800, color: 'f' });   // lo que se pide: violeta (§5b)
         s += T.rotulo(x0 + w + 8, y + 28, b.texto || '', { tam: 15, peso: 800, color: b.color || 'o', max: W - 4 });
       });
       return s;
@@ -223,7 +228,7 @@
       s = obj('terreno', s);
       if (d.largo) s += T.cota(x0, x1, y1 + 16, { texto: d.largo, color: c, lado: 'abajo' });
       if (d.ancho) s += cotaV(x0 - 14, y0, y1, d.ancho, c, 'izq');
-      if (d.texto) s += etiqueta((x0 + x1) / 2, (y0 + y1) / 2 + 6, d.texto, c);
+      if (d.texto) s += etiqueta((x0 + x1) / 2, (y0 + y1) / 2 + 6, d.texto, d.colorTexto || c);
       return s;
     },
     // botella: «lo que cabe en la botella es su volumen».
@@ -458,7 +463,8 @@
       s += `<line x1="130" y1="117" x2="214" y2="117" ${tinta({ g: 1.2 })} stroke-opacity="0.5"/><line x1="130" y1="141" x2="214" y2="141" ${tinta({ g: 1.2 })} stroke-opacity="0.5"/>`;
       s = obj('caja', s);
       s += etiqueta(172, 136, d.masa || '', c);
-      if (d.fuerza) s += T.flecha(36, 128, 124, 128, { color: c, grosor: 3 }) + T.rotulo(78, 116, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: c });
+      const cF = d.colorFuerza || c;
+      if (d.fuerza) s += T.flecha(36, 128, 124, 128, { color: cF, grosor: 3 }) + T.rotulo(78, 116, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: cF });
       if (d.aceleracion) s += T.flecha(140, 74, 214, 74, { color: d.color2 || 'i', grosor: 3 }) + T.rotulo(224, 80, d.aceleracion, { tam: 16, peso: 800, color: d.color2 || 'i' });
       return s;
     },
@@ -468,11 +474,11 @@
       s += `<rect x="110" y="84" width="100" height="76" rx="3" fill="var(--c-o)" fill-opacity="0.14" ${tinta()}/>`;
       s += `<line x1="110" y1="109" x2="210" y2="109" ${tinta({ g: 1.2 })} stroke-opacity="0.5"/><line x1="110" y1="134" x2="210" y2="134" ${tinta({ g: 1.2 })} stroke-opacity="0.5"/>`;
       s += `<line x1="111" y1="160" x2="209" y2="160" stroke="${T.color(c)}" stroke-width="5" stroke-linecap="butt"/>`;
-      for (let k = 0; k < 5; k++) s += T.flecha(120 + k * 20, 166, 120 + k * 20, 188, { color: 'i', grosor: 2 });
+      for (let k = 0; k < 5; k++) s += T.flecha(120 + k * 20, 166, 120 + k * 20, 188, { color: 'f', grosor: 2 });
       s = obj('presion', s);
       if (d.fuerza) s += T.flecha(160, 18, 160, 78, { color: c, grosor: 3 }) + T.rotulo(172, 54, d.fuerza, { tam: 16, peso: 800, color: c });
       if (d.area) s += `<line x1="212" y1="160" x2="226" y2="148" stroke="${T.color(c)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(230, 148, d.area, { tam: 16, peso: 800, color: c, min: 4, max: W - 4 });
-      if (d.texto) s += T.rotulo(224, 186, d.texto, { tam: 14, peso: 700, color: 'i', min: 4, max: W - 4 });
+      if (d.texto) s += T.rotulo(224, 186, d.texto, { tam: 14, peso: 700, color: 'f', min: 4, max: W - 4 });
       return s;
     },
     // deposito: «en el fondo del tanque la presión depende de lo hondo que está el punto: h».
@@ -482,8 +488,8 @@
       s += `<path d="M70 28L70 180L250 180L250 28" fill="none" ${tinta({ g: 3 })}/>`;
       s = obj('deposito', s);
       if (d.superficie) {
-        for (const x of [104, 144]) s += T.flecha(x, 30, x, 58, { color: 'f', grosor: 2.5 });
-        s += T.rotulo(156, 46, d.superficie, { tam: 16, peso: 800, color: 'f' });
+        for (const x of [104, 144]) s += T.flecha(x, 30, x, 58, { color: 'i', grosor: 2.5 });
+        s += T.rotulo(156, 46, d.superficie, { tam: 16, peso: 800, color: 'i' });
       }
       s += `<circle cx="200" cy="172" r="5" fill="${T.color(c)}"/>`;
       if (d.texto) s += T.rotulo(188, 170, d.texto, { ancla: 'end', tam: 16, peso: 800, color: c });
@@ -503,7 +509,7 @@
       if (d.v) s += T.flecha(100, 56, 184, 56, { color: c, grosor: 3 }) + T.rotulo(192, 62, d.v, { tam: 16, peso: 800, color: c });
       if (d.fuerza) s += T.flecha(38, 116, 8, 116, { color: d.color2 || 'i', grosor: 3 }) + T.rotulo(20, 104, d.fuerza, { ancla: 'middle', tam: 16, peso: 800, color: d.color2 || 'i', min: 4 });
       if (d.area) s += `<line x1="214" y1="178" x2="217" y2="158" stroke="${T.color(c)}" stroke-width="2" stroke-linecap="round"/>` + T.rotulo(212, 194, d.area, { ancla: 'middle', tam: 14, peso: 700, color: c, min: 4, max: W - 4 });
-      if (d.aire) s += T.rotulo(274, 92, d.aire, { ancla: 'middle', tam: 14, peso: 700, color: 'd', min: 4, max: W - 4 });
+      if (d.aire) s += T.rotulo(274, 92, d.aire, { ancla: 'middle', tam: 14, peso: 700, color: c, min: 4, max: W - 4 });
       return s;
     },
   };

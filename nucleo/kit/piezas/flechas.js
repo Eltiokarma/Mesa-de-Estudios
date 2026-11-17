@@ -14,13 +14,13 @@
  *   flechas: [{ de: [x, y], a: [x, y], color: 'o', rotulo: 'A', valor: '6 N', valorPaso: 0,
  *               paso: 0, discontinua: false, grosor: 'variable'|'contorno', lejos: [x, y], rotuloEn: 0.5 }],
  *                                              // lejos: como en resultante; rotuloEn: dónde va el rótulo (0 cola, 1 punta)
- *   resultante: { de, a, color: 'd', rotulo: 'R', valor: '2√13 N', paso: (por defecto, solo en el final),
+ *   resultante: { de, a, color: 'f', rotulo: 'R', valor: '2√13 N', paso: (por defecto, solo en el final),
  *                 lejos: [x, y] },          // opcional: el rótulo va del lado contrario a ese punto
  *   guias: [{ de, a, color, paso }],          // líneas discontinuas: lados del paralelogramo, proyecciones
  *   segmentos: [{ de, a, color: 'o', texto: 'L = 6 cm', paso }],  // un dato que es un largo sin sentido (un lado)
  *   angulos: [{ en: [x, y], de: 0, a: 60, texto: '60°', color: 'h', paso }],  // de y a en grados, antihorario desde +x
  *   puntos: [{ x, y, rotulo: 'A', paso }],     // vértices con nombre
- *   fuera: [{ en: [x, y], sentido: 'sale'|'entra', rotulo: 'A × B', paso }],   // una flecha perpendicular a la pantalla:
+ *   fuera: [{ en: [x, y], sentido: 'sale'|'entra', rotulo: 'A × B', color: 'f', paso }],   // perpendicular a la pantalla:
  *                                              // ⊙ si sale hacia quien mira, ⊗ si entra (notación de los exámenes)
  *   contorno: [[x, y], …],                     // figura de fondo (polígono cerrado), tenue
  *   ejes: false,                               // ejes x e y por el origen, con los unitarios î y ĵ de largo 1
@@ -248,12 +248,12 @@
       s += `<g class="kit-aparece${nuevo(f)}">${a}${texto ? rotuloFlecha(g, x1, y1, x2, y2, texto, { color: f.color, lado: f.lado, en: f.rotuloEn, lejos: f.lejos ? [g.X(f.lejos[0]), g.Y(f.lejos[1])] : null }) : ''}</g>`;
     }
     for (const q of d.fuera || []) if (ve(q)) {
-      const x = g.X(q.en[0]), y = g.Y(q.en[1]), c = T.color(q.color || 'd');
+      const x = g.X(q.en[0]), y = g.Y(q.en[1]), c = T.color(q.color || 'f');
       const marca = q.sentido === 'entra'
         ? `<path d="M${T.n(x - 7)} ${T.n(y - 7)}L${T.n(x + 7)} ${T.n(y + 7)}M${T.n(x + 7)} ${T.n(y - 7)}L${T.n(x - 7)} ${T.n(y + 7)}" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`
         : `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="4" fill="${c}"/>`;
       s += `<g class="kit-fuera kit-aparece${nuevo(q)}"><circle cx="${T.n(x)}" cy="${T.n(y)}" r="13" fill="var(--card)" stroke="${c}" stroke-width="3"/>${marca}`
-        + `${q.rotulo ? T.rotulo(x + 20, y + 6, q.rotulo, { color: q.color || 'd', peso: 700, max: W - 2 }) : ''}</g>`;
+        + `${q.rotulo ? T.rotulo(x + 20, y + 6, q.rotulo, { color: q.color || 'f', peso: 700, max: W - 2 }) : ''}</g>`;
     }
     for (const q of d.puntos || []) if (ve(q)) {
       const x = g.X(q.x), y = g.Y(q.y), L = Math.hypot(x - g.centro[0], y - g.centro[1]) || 1;

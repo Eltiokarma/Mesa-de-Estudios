@@ -17,7 +17,7 @@ const SUMA = {
   ],
   guias: [{ de: [6, 0], a: R, color: 'i', paso: 1 }, { de: c60, a: R, color: 'o', paso: 1 }],
   angulos: [{ en: [0, 0], de: 0, a: 60, texto: '60°', color: 'h' }],
-  resultante: { de: [0, 0], a: R, color: 'd', rotulo: 'R', valor: '2√37 N', paso: 2 },
+  resultante: { de: [0, 0], a: R, color: 'f', rotulo: 'R', valor: '2√37 N', paso: 2 },
   regla: { max: 16, respuesta: Math.hypot(...R), texto: '2√37 N', decimales: 1 },
 };
 const POLI = {
@@ -25,12 +25,12 @@ const POLI = {
   contorno: [[0, 0], [4, 0], [4, 4], [0, 4]],
   puntos: [{ x: 0, y: 0, rotulo: 'A' }, { x: 4, y: 0, rotulo: 'B' }, { x: 4, y: 4, rotulo: 'C' }, { x: 0, y: 4, rotulo: 'D' }],
   flechas: [{ de: [0, 0], a: [4, 0], color: 'o', rotulo: 'AB' }, { de: [4, 0], a: [4, 4], color: 'o', rotulo: 'BC', paso: 1 }],
-  resultante: { de: [0, 0], a: [4, 4], color: 'd', rotulo: 'R', valor: '4√2 cm' },
+  resultante: { de: [0, 0], a: [4, 4], color: 'f', rotulo: 'R', valor: '4√2 cm' },
   ejes: true,
   segmentos: [{ de: [4, 4], a: [0, 4], color: 'o', texto: 'L = 4 cm' }],
 };
 const NULA = { unidad: 'u', flechas: [{ de: [0, 0], a: [3, 0], color: 'o', rotulo: 'A' }, { de: [3, 0], a: [0, 0], color: 'i', rotulo: 'B', paso: 1 }],
-  resultante: { de: [0, 0], a: [0, 0], color: 'd', rotulo: 'R', valor: '0 u' } };
+  resultante: { de: [0, 0], a: [0, 0], color: 'f', rotulo: 'R', valor: '0 u' } };
 const PASOS = [{ estado: { paso: 1 } }, { estado: { paso: 2 } }, { estado: { paso: 2, final: true } }];
 
 // Lee del SVG las líneas de las flechas con su color: [x1, y1, x2, y2].
@@ -46,9 +46,9 @@ test('el final dibuja la resultante con su valor, la copia en la regla y la marc
   assert.match(s, /R = 2√37 N/);
   assert.match(s, /2√37 N ✓/);
   const g = F.geometria(SUMA);
-  const copia = lineas(s, "d").find(l => Math.abs(l[1] - g.copiaY) < 0.01);
+  const copia = lineas(s, "f").find(l => Math.abs(l[1] - g.copiaY) < 0.01);
   assert.ok(copia, 'la copia de R está acostada sobre la regla');
-  const pf = puntas(s, 'd').find(q => Math.abs(q[1] - g.copiaY) < 0.01);
+  const pf = puntas(s, 'f').find(q => Math.abs(q[1] - g.copiaY) < 0.01);
   assert.ok(Math.abs(pf[0] - 14 - SUMA.regla.respuesta * g.s) < 0.02, 'la copia mide R en la escala de la regla');
   assert.match(F.dibujar(POLI, { final: true }), /R = 4√2 cm/);
   assert.match(F.dibujar(POLI, {}), />L = 4 cm</);
@@ -62,7 +62,7 @@ test('a escala: cada flecha mide su módulo por la escala y el ángulo dibujado 
   assert.ok(Math.abs(Math.hypot(pb[0] - o[0], pb[1] - o[1]) / g.s - 8) < 0.01, 'B mide 8 por la escala');
   const ang = Math.atan2(o[1] - pb[1], pb[0] - o[0]) * 180 / Math.PI;
   assert.ok(Math.abs(ang - 60) < 0.2, `B se dibuja a 60° (sale ${ang})`);
-  const pr = puntas(s, 'd').find(q => q[1] < g.copiaY - 1);
+  const pr = puntas(s, 'f').find(q => q[1] < g.copiaY - 1);
   assert.ok(Math.abs(Math.hypot(pr[0] - o[0], pr[1] - o[1]) / g.s - SUMA.regla.respuesta) < 0.01, 'la diagonal mide R');
   // El arco del ángulo termina sobre la dirección de B.
   const arco = s.match(/<path d="M([\d.]+) ([\d.]+)A26 26 0 0 0 ([\d.]+) ([\d.]+)"/);
@@ -153,11 +153,14 @@ test('fuera: ⊙ si la flecha sale de la pantalla y ⊗ si entra, con su rótulo
   assert.match(sale, /kit-fuera/); assert.match(sale, />A × B</); assert.ok(!/<path d="M[^"]*M/.test(sale.match(/<g class="kit-fuera[\s\S]*?<\/g>/)[0]));
   const entra = P.dibujar(Object.assign({ fuera: [{ en: [2, 1], sentido: 'entra' }] }, base));
   assert.match(entra.match(/<g class="kit-fuera[\s\S]*?<\/g>/)[0], /<path d="M[^"]*M/);
+  // Un color por papel (molde §5b): A⃗ × B⃗ es lo que se pide, violeta por omisión; nunca el verde del tercer dato.
+  assert.match(sale.match(/<g class="kit-fuera[\s\S]*?<\/g>/)[0], /stroke="var\(--c-f\)"/);
+  assert.ok(!/--c-d/.test(sale));
 });
 
 test('una flecha corta lleva punta chica', () => {
   const P = require('./flechas.js');
-  const s = P.dibujar({ flechas: [{ de: [0, 0], a: [8, 0], color: 'o', rotulo: 'A' }, { de: [0, 0], a: [1, 0], color: 'd', rotulo: 'û' }] });
+  const s = P.dibujar({ flechas: [{ de: [0, 0], a: [8, 0], color: 'o', rotulo: 'A' }, { de: [0, 0], a: [1, 0], color: 'f', rotulo: 'û' }] });
   assert.ok(!/NaN/.test(s));
   assert.match(s, /stroke-width="2.5"/);
 });
@@ -165,7 +168,7 @@ test('una flecha corta lleva punta chica', () => {
 // Notación (17 nov, auditoría de Vectores): flecha de vector solo en el nombre, subíndices de verdad, puntas separadas.
 test('el rótulo «A⃗» pierde la flecha cuando lleva su valor; sin valor la conserva', () => {
   const d = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗', valor: '6' }, { de: [6, 0], a: [6, 4], color: 'i', rotulo: 'B⃗' }],
-    resultante: { de: [0, 0], a: [6, 4], color: 'd', rotulo: 'R⃗', valor: '?' } };
+    resultante: { de: [0, 0], a: [6, 4], color: 'f', rotulo: 'R⃗', valor: '?' } };
   const s = F.dibujar(d, { final: true });
   assert.match(s, />A = 6</);
   assert.match(s, />B⃗</);
@@ -186,14 +189,14 @@ test('«A_x = 3» y «Aᵧ» se dibujan con un <tspan> de subíndice (no queda g
 
 test('cola con punta: la punta de R va 14 px antes de la punta de B (no se enciman)', () => {
   const d = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗' }, { de: [6, 0], a: [6, 4], color: 'i', rotulo: 'B⃗' }],
-    resultante: { de: [0, 0], a: [6, 4], color: 'd', rotulo: 'R⃗' } };
+    resultante: { de: [0, 0], a: [6, 4], color: 'f', rotulo: 'R⃗' } };
   const s = F.dibujar(d, { final: true }), g = F.geometria(d);
-  const pb = puntas(s, 'i')[0], pr = puntas(s, 'd')[0];
+  const pb = puntas(s, 'i')[0], pr = puntas(s, 'f')[0];
   assert.ok(Math.hypot(pb[0] - g.X(6), pb[1] - g.Y(4)) < 0.05, 'B termina en su punto');
   assert.ok(Math.abs(Math.hypot(pr[0] - pb[0], pr[1] - pb[1]) - 14) < 0.1, 'R se corta 14 px antes');
   // Sin otra flecha en esa punta, R llega entera.
-  const solo = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗' }], resultante: { de: [0, 0], a: [6, 4], color: 'd', rotulo: 'R⃗' } };
-  const pr2 = puntas(F.dibujar(solo, { final: true }), 'd')[0], g2 = F.geometria(solo);
+  const solo = { unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗' }], resultante: { de: [0, 0], a: [6, 4], color: 'f', rotulo: 'R⃗' } };
+  const pr2 = puntas(F.dibujar(solo, { final: true }), 'f')[0], g2 = F.geometria(solo);
   assert.ok(Math.hypot(pr2[0] - g2.X(6), pr2[1] - g2.Y(4)) < 0.05);
 });
 

@@ -146,3 +146,17 @@ test('color2: la fuerza o la aceleración en el color de su papel; por omisión,
   assert.match(P.dibujar({ objeto: 'caja', masa: 'm', fuerza: 'F', aceleracion: 'a', color2: 'o' }), /fill="var\(--c-o\)"[^>]*>a</);
   assert.match(P.dibujar({ objeto: 'viento', v: 'v', fuerza: 'F', color2: 'o' }), /fill="var\(--c-o\)"[^>]*>F</);
 });
+
+// Un color por papel (docs/molde-unidad.md §5b, 17 nov): lo que se pide va en violeta, el segundo dato en turquesa.
+test('lo que se pide, violeta: el «?» de comparar, la presión, colorFuerza y colorTexto; P₀ es un dato, turquesa', () => {
+  const cmp = P.dibujar({ objeto: 'comparar', barras: [{ nombre: 'Auto', texto: '100 km/h' }] });
+  assert.match(cmp, /fill="var\(--c-f\)"[^>]*>\?</);
+  const pre = P.dibujar({ objeto: 'presion', fuerza: 'F', area: 'A', texto: 'la presión P' });
+  assert.match(pre, /fill="var\(--c-f\)"[^>]*>la presión P</);
+  assert.ok(!/--c-i/.test(pre), 'la presión ya no va en turquesa');
+  assert.match(P.dibujar({ objeto: 'caja', masa: 'm', fuerza: 'F', aceleracion: 'a', color2: 'o', colorFuerza: 'f' }), /fill="var\(--c-f\)"[^>]*>F</);
+  assert.match(P.dibujar({ objeto: 'caja', masa: 'm', fuerza: 'F' }), /fill="var\(--c-o\)"[^>]*>F</);
+  assert.match(P.dibujar({ objeto: 'terreno', largo: 'largo', ancho: 'ancho', texto: 'A', colorTexto: 'f' }), /fill="var\(--c-f\)"[^>]*>A</);
+  assert.match(P.dibujar({ objeto: 'deposito', altura: 'h', texto: 'P', superficie: 'P₀' }), /fill="var\(--c-i\)"[^>]*>P₀</);
+  assert.match(P.dibujar({ objeto: 'viento', v: 'v', fuerza: 'F', aire: 'aire, ρ', color2: 'o' }), /fill="var\(--c-o\)"[^>]*>aire, ρ</);
+});

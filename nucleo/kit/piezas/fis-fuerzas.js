@@ -59,8 +59,9 @@
   const girar = (p, g) => { const c = cosG(g), sn = senG(g); return [p[0] * c + p[1] * sn, -p[0] * sn + p[1] * c]; };
   const camino = (pts, g, o = [0, 0]) => 'M' + pts.map(p => { const q = girar(p, g); return `${n(o[0] + q[0])} ${n(o[1] + q[1])}`; }).join('L') + 'Z';
   const DIR = { E: [1, 0], N: [0, 1], O: [-1, 0], S: [0, -1] };
-  // El cuarto tramo va en tinta: el rojo (c-h) es del ángulo θ en esta unidad.
-  const COLORES_TRAMO = ['o', 'i', 'f', 't'];
+  // Un color por papel (docs/molde-unidad.md §5b, 17 nov): el primer tramo naranja, el segundo turquesa, el tercero
+  // verde; el cuarto va en tinta (el carmín es del ángulo y el violeta, de la resultante, lo que se pide).
+  const COLORES_TRAMO = ['o', 'i', 'd', 't'];
 
   // ---------- Los objetos ----------
   // forma(d) → { ext: [x0, y0, x1, y1] en px desde el centro, puntos: { nombre: [px, py] }, area?, abajo? }
@@ -262,7 +263,7 @@
       const r = d.resultante, cero = Math.hypot(fin[0], fin[1]) < 1e-9;
       const sep = d.rejilla === false ? 28 : 12;
       const recta = pts.every(p => p[1] === 0) ? [0, -sep] : pts.every(p => p[0] === 0) ? [-sep, 0] : [0, 0];
-      if (!cero) out.push({ de: [0, 0], a: fin, desde: recta, color: 'd', rotulo: r.rotulo, valor: r.valor, rotuloEn: r.rotuloEn, lado: r.lado, resultante: true });
+      if (!cero) out.push({ de: [0, 0], a: fin, desde: recta, color: 'f', rotulo: r.rotulo, valor: r.valor, rotuloEn: r.rotuloEn, lado: r.lado, resultante: true });
     }
     return out;
   }
@@ -456,12 +457,12 @@
       s += `<g class="kit-vector">${a}</g>`;
     });
     for (const q of g.fuera) {
-      const [x, y] = q.c, c = T.color(q.q.color || 'd');
+      const [x, y] = q.c, c = T.color(q.q.color || 'f');
       const marca = q.q.sentido === 'entra'
         ? `<path d="M${n(x - 6)} ${n(y - 6)}L${n(x + 6)} ${n(y + 6)}M${n(x + 6)} ${n(y - 6)}L${n(x - 6)} ${n(y + 6)}" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`
         : `<circle cx="${n(x)}" cy="${n(y)}" r="4" fill="${c}"/>`;
       s += `<g class="kit-fuera"><circle cx="${n(x)}" cy="${n(y)}" r="12" fill="var(--card)" stroke="${c}" stroke-width="3"/>${marca}</g>`;
-      if (q.b) s += rotulo(q.b, q.q.color || 'd');
+      if (q.b) s += rotulo(q.b, q.q.color || 'f');
     }
     for (const m of g.marcas) {
       s += `<circle cx="${n(m.c[0])}" cy="${n(m.c[1])}" r="4" fill="currentColor"/>`;

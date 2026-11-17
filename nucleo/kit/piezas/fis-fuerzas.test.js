@@ -12,10 +12,10 @@ const rad = g => g * Math.PI / 180;
 const MUESTRAS = {
   caja: { texto: '50 kg', flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A', valor: '50 N' }, { ang: -30, mod: 40, color: 'i', rotulo: 'B', valor: '40 N' }], angulos: [{ de: 0, a: 37, texto: '37°' }] },
   rampa: { objeto: 'caja', rampa: 37, flechas: [{ ang: -90, mod: 100, color: 'o', rotulo: 'W', valor: '100 N' }, { ang: 217, mod: 60, color: 'i', rotulo: 'Wₓ', valor: '60 N', discontinua: true }, { ang: -53, mod: 80, color: 'd', rotulo: 'Wᵧ', valor: '80 N', discontinua: true }] },
-  nudo: { flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A', valor: '50 N' }, { ang: 135, mod: 28.3, color: 'i', rotulo: 'B', valor: '20√2 N' }, { ang: -90, mod: 30, color: 'f', rotulo: 'C', valor: '30 N' }] },
-  bote: { orillas: true, ancho: 'Río de 80 m de ancho', flechas: [{ ang: 90, mod: 4, color: 'o', rotulo: 'A', valor: '4 m/s' }, { de: [0, 4], ang: 0, mod: 3, color: 'i', rotulo: 'B', valor: '3 m/s' }, { a: [3, 4], color: 'd', rotulo: 'R', valor: '5 m/s' }] },
-  avion: { flechas: [{ ang: 106, mod: 250, color: 'o', rotulo: 'A', valor: '250 km/h' }, { de: [250 * Math.cos(rad(106)), 250 * Math.sin(rad(106))], ang: 0, mod: 70, color: 'i', rotulo: 'B', valor: '70 km/h' }, { ang: 90, mod: 240, color: 'd', rotulo: 'R', valor: '240 km/h' }], angulos: [{ de: 90, a: 106, texto: '16°', radio: 40 }] },
-  llave: { cota: 'r = 0,3 m', flechas: [{ desde: 'punta', ang: 53, mod: 50, color: 'o', rotulo: 'F', valor: '50 N' }], angulos: [{ en: 'punta', de: 0, a: 53, texto: '53°' }], fuera: [{ en: 'tuerca', sentido: 'sale', rotulo: 'τ', color: 'd' }] },
+  nudo: { flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A', valor: '50 N' }, { ang: 135, mod: 28.3, color: 'i', rotulo: 'B', valor: '20√2 N' }, { ang: -90, mod: 30, color: 'd', rotulo: 'C', valor: '30 N' }] },
+  bote: { orillas: true, ancho: 'Río de 80 m de ancho', flechas: [{ ang: 90, mod: 4, color: 'o', rotulo: 'A', valor: '4 m/s' }, { de: [0, 4], ang: 0, mod: 3, color: 'i', rotulo: 'B', valor: '3 m/s' }, { a: [3, 4], color: 'f', rotulo: 'R', valor: '5 m/s' }] },
+  avion: { flechas: [{ ang: 106, mod: 250, color: 'o', rotulo: 'A', valor: '250 km/h' }, { de: [250 * Math.cos(rad(106)), 250 * Math.sin(rad(106))], ang: 0, mod: 70, color: 'i', rotulo: 'B', valor: '70 km/h' }, { ang: 90, mod: 240, color: 'f', rotulo: 'R', valor: '240 km/h' }], angulos: [{ de: 90, a: 106, texto: '16°', radio: 40 }] },
+  llave: { cota: 'r = 0,3 m', flechas: [{ desde: 'punta', ang: 53, mod: 50, color: 'o', rotulo: 'F', valor: '50 N' }], angulos: [{ en: 'punta', de: 0, a: 53, texto: '53°' }], fuera: [{ en: 'tuerca', sentido: 'sale', rotulo: 'τ', color: 'f' }] },
   carretilla: { texto: '30 kg', flechas: [{ hasta: 'manijas', ang: -30, mod: 40, color: 'o', rotulo: 'F', valor: '40 N' }, { desde: 'piso', ang: 0, mod: 30, color: 'i', rotulo: 'd', valor: '15 m' }] },
   cuadras: { tramos: [{ dir: 'E', n: 6, rotulo: '6 cuadras' }, { dir: 'N', n: 5, rotulo: '5' }, { dir: 'O', n: 2, rotulo: '2' }, { dir: 'S', n: 2, rotulo: '2' }], resultante: { rotulo: 'R', valor: '500 m' } },
   calle: { objeto: 'cuadras', rejilla: false, tramos: [{ dir: 'E', n: 60, rotulo: 'A', valor: '60 m' }, { dir: 'O', n: 25, rotulo: 'B', valor: '25 m' }, { dir: 'E', n: 15, rotulo: 'C', valor: '15 m' }], resultante: { rotulo: 'R', valor: '50 m' } },
@@ -144,17 +144,28 @@ test('«A_x», «Aₓ» y «Aᵧ» se dibujan con un <tspan> de subíndice, igua
 });
 
 test('cola con punta: si dos flechas terminan en el mismo punto, la de después acorta su punta y no se enciman', () => {
-  const d = { objeto: 'bote', orillas: true, flechas: [{ ang: 90, mod: 4, color: 'o', rotulo: 'A⃗' }, { de: [0, 4], ang: 0, mod: 3, color: 'i', rotulo: 'B⃗' }, { a: [3, 4], color: 'd', rotulo: 'R⃗', valor: '?' }] };
+  const d = { objeto: 'bote', orillas: true, flechas: [{ ang: 90, mod: 4, color: 'o', rotulo: 'A⃗' }, { de: [0, 4], ang: 0, mod: 3, color: 'i', rotulo: 'B⃗' }, { a: [3, 4], color: 'f', rotulo: 'R⃗', valor: '?' }] };
   const s = P.dibujar(d), g = P.geometria(d);
   const punta = c => [...s.matchAll(new RegExp(`<path d="M([\\d.-]+) ([\\d.-]+)L[^"]*Z" fill="var\\(--c-${c}\\)"`, 'g'))].map(m => [+m[1], +m[2]])[0];
-  const pb = punta('i'), pr = punta('d');
+  const pb = punta('i'), pr = punta('f');
   assert.ok(Math.hypot(pb[0] - g.fl[1].p1[0], pb[1] - g.fl[1].p1[1]) < 0.05, 'B termina en su punto');
   assert.ok(Math.abs(Math.hypot(pr[0] - pb[0], pr[1] - pb[1]) - 14) < 0.1, 'la punta de R queda 14 px antes');
 });
 
 test('el rótulo de un ángulo no cae sobre una flecha que sale de su vértice (dos toros: R va por la bisectriz)', () => {
-  const d = { objeto: 'nudo', largo: 190, flechas: [{ ang: 30, mod: 400, color: 'o', rotulo: 'A⃗' }, { ang: -30, mod: 400, color: 'i', rotulo: 'B⃗' }, { ang: 0, mod: 693, color: 'd', rotulo: 'R⃗', valor: '?', cuerda: false, discontinua: true }], angulos: [{ de: -30, a: 30, texto: '60°', radio: 30 }] };
+  const d = { objeto: 'nudo', largo: 190, flechas: [{ ang: 30, mod: 400, color: 'o', rotulo: 'A⃗' }, { ang: -30, mod: 400, color: 'i', rotulo: 'B⃗' }, { ang: 0, mod: 693, color: 'f', rotulo: 'R⃗', valor: '?', cuerda: false, discontinua: true }], angulos: [{ de: -30, a: 30, texto: '60°', radio: 30 }] };
   const g = P.geometria(d), b = g.ang[0].bx, r = g.fl[2];
   const yR = r.p0[1];   // R es horizontal: su línea va a la altura del nudo
   assert.ok(b.y1 < yR - 2 || b.y0 > yR + 2, `«60°» pisa la línea de R (${b.y0}..${b.y1} contra ${yR})`);
+});
+
+// Un color por papel (docs/molde-unidad.md §5b, 17 nov): en las cuadras, la resultante es lo que se pide (violeta) y el
+// tercer tramo va en verde; el verde nunca hace de resultante. ⊙ y ⊗ sin color van en violeta.
+test('cuadras: tramos naranja, turquesa y verde; la resultante, violeta; ⊙ por omisión, violeta', () => {
+  const tramos = [{ dir: 'E', n: 6 }, { dir: 'N', n: 5 }, { dir: 'O', n: 2 }, { dir: 'S', n: 2 }];
+  const g = P.geometria({ objeto: 'cuadras', tramos, resultante: { rotulo: 'd⃗' } });
+  assert.deepEqual(g.fl.map(x => x.f.color), ['o', 'i', 'd', 't', 'f']);
+  assert.ok(g.fl[4].f.resultante);
+  const s = P.dibujar({ objeto: 'llave', flechas: [{ desde: 'punta', ang: 53, mod: 50, color: 'o', rotulo: 'F' }], fuera: [{ en: 'tuerca', sentido: 'sale', rotulo: 'τ' }] });
+  assert.match(s.match(/<g class="kit-fuera">[\s\S]*?<\/g>/)[0], /stroke="var\(--c-f\)"/);
 });

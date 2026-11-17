@@ -13,7 +13,7 @@
  *                                                    //   sabe («?»): la balanza no se inclina ni da veredicto
  *   sinVeredicto: false,                             // true: derecha y sin «Cuadra» / «No cuadra» aunque se sepan los dos
  *                                                    //   lados (la figura de un ejemplo muestra el planteamiento, 17 nov)
- *   color: 'o', colorOculta: 'h',
+ *   color: 'o', colorOculta: 'f',                     // el «?» es lo que se pide: violeta (molde §5b, 17 nov)
  *   vistas: [datos, …]                               // opcional: varias balanzas; estado.vista elige (para «Mira»)
  * }
  * estado = { vista } (opcional). Función pura de (datos, estado): sin ids, sin azar, sin reloj.
@@ -63,7 +63,7 @@
   function dibujar(datos = {}, estado = {}) {
     // Varias vistas en una figura (la línea de tiempo de «Mira»): estado.vista elige cuál.
     const d = Array.isArray(datos.vistas) ? datos.vistas[Math.max(0, Math.min(datos.vistas.length - 1, estado.vista || 0))] : datos;
-    const color = d.color || datos.color || 'o', colorOculta = d.colorOculta || 'h';
+    const color = d.color || datos.color || 'o', colorOculta = d.colorOculta || datos.colorOculta || 'f';
     const ok = cuadra(d), veredicto = sabe(d) && !d.sinVeredicto && !datos.sinVeredicto;
     const ang = veredicto && !ok ? INCL : 0, a = ang * Math.PI / 180;
     const xi = CX - BRAZO * Math.cos(a), yi = EJE - BRAZO * Math.sin(a), xd = CX + BRAZO * Math.cos(a), yd = EJE + BRAZO * Math.sin(a);

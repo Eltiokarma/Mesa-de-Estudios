@@ -6,9 +6,12 @@
  * rondas de lector en frío cada una (rutinas/frio/fisica.vectores.md).
  * 16 nov, más tarde: 15 ejemplos resueltos por idea (pestaña «Ejemplos», docs/teoria.md 4h; molde EJEMPLOS_UNIDADES),
  * con la pieza fis-fuerzas para los objetos de la vida real (caja, nudo, bote, avioneta, llave, carretilla, cuadras).
- * Colores (regla 4), los mismos en control, figura, texto y ecuación:
- *   A naranja (c-o), B turquesa (c-i), la resultante R y el unitario û verde (c-d), el ángulo θ rojo (c-h); en la
- *   idea 1, el desplazamiento d verde y la distancia recorrida roja (en esa idea no hay ángulo θ).
+ * Colores (regla 4), los mismos en control, figura, texto y ecuación. Desde el 17 nov, un color por papel en todos
+ *   los cursos (docs/molde-unidad.md §5b): A naranja (c-o, el primer dato), B turquesa (c-i, el segundo), lo que se
+ *   pide en violeta (c-f: la resultante R, el unitario û, A⃗ · B⃗ y el área de A⃗ × B⃗, la C⃗ que equilibra), el ángulo θ
+ *   carmín (c-h) y una tercera flecha C⃗ o un tercer tramo, verde (c-d). El verde nunca hace de resultante: junto al
+ *   naranja casi no se distingue con protanopía. En la idea 1, el desplazamiento d (lo que se pide, como R) va en
+ *   violeta y la distancia recorrida en carmín: es la otra cantidad que se pide y en esa idea no hay ángulos.
  * Notación (17 nov, auditoría): el vector lleva flecha (A⃗, { vec }) en todo texto, rótulo y dato; su módulo se escribe
  *   con la letra sola (A) y |A⃗| solo donde hace falta distinguir (|A⃗ × B⃗|, |A⃗ − B⃗|). Subíndices con { sub } en las
  *   ecuaciones y «A_x» en los rótulos de las piezas (las piezas lo dibujan como subíndice): nunca «ᵧ», que es una gamma.
@@ -37,8 +40,8 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
-  const A = { v: 'c-o', t: 'A' }, B = { v: 'c-i', t: 'B' }, R = { v: 'c-d', t: 'R' }, th = { v: 'c-h', t: 'θ' };
-  const k = { v: 'c-h', t: 'k' }, u = { v: 'c-d', t: 'û' };
+  const A = { v: 'c-o', t: 'A' }, B = { v: 'c-i', t: 'B' }, R = { v: 'c-f', t: 'R' }, th = { v: 'c-h', t: 'θ' };
+  const k = { v: 'c-h', t: 'k' }, u = { v: 'c-f', t: 'û' };
   const vA = { vec: A }, vB = { vec: B };
   const rad = g => g * Math.PI / 180;
   const cosG = g => (g % 180 === 90 ? 0 : Math.cos(rad(g)));
@@ -77,15 +80,20 @@
 
   // ---------- Ejemplos resueltos (pestaña «Ejemplos», Gerson 16 nov; docs/teoria.md 4h) ----------
   // Molde: EJEMPLOS_UNIDADES de magnitudes-y-vectores.js (3 niveles × 5, la solución entera a la vista). Colores de la
-  // unidad: A naranja, B turquesa, R y û verde, θ rojo; una tercera flecha C, violeta (c-f). La fuerza F y el peso P
-  // van en naranja (son «la primera flecha»); el desplazamiento d y el brazo r, en turquesa. El vector lleva flecha
+  // unidad (§5b): A naranja, B turquesa, R, û y lo que se pide violeta, θ carmín; una tercera flecha C, verde (c-d). La
+  // fuerza F y el peso P van en naranja (son «la primera flecha»); el desplazamiento d del trabajo, en turquesa (el
+  // segundo dato). Las componentes A_x y A_y van con el color de su vector, aunque se pidan. El vector lleva flecha
   // ({ vec }); su módulo, no. Las figuras de objetos de la vida real usan la pieza fis-fuerzas.
-  const C = { v: 'c-f', t: 'C' }, vC = { vec: C }, vR = { vec: R };
+  const C = { v: 'c-d', t: 'C' }, vC = { vec: C }, vR = { vec: R };
+  // En «La fuerza que equilibra», C⃗ es lo que se pide: va en violeta, como R⃗ (un color por papel, molde §5b).
+  const Cq = { v: 'c-f', t: 'C' }, vCq = { vec: Cq };
   const F = { v: 'c-o', t: 'F' }, vF = { vec: F }, Pe = { v: 'c-o', t: 'P' };
-  const dv = { v: 'c-d', t: 'd' }, vdv = { vec: dv };
-  const dA = t => ({ v: 'c-o', t }), dB = t => ({ v: 'c-i', t }), dR = t => ({ v: 'c-d', t }), dC = t => ({ v: 'c-f', t });
-  // Idea 1: el desplazamiento d (verde, como lo que se pide) y la distancia recorrida (roja: en esa idea no hay θ).
-  const Dd = { v: 'c-d', t: 'd' }, vDd = { vec: Dd }, dist = t => ({ v: 'c-h', t });
+  const dv = { v: 'c-i', t: 'd' }, vdv = { vec: dv };
+  const dA = t => ({ v: 'c-o', t }), dB = t => ({ v: 'c-i', t }), dR = t => ({ v: 'c-f', t }), dC = t => ({ v: 'c-d', t });
+  // Idea 1: el desplazamiento d (violeta, lo que se pide, como R) y la distancia recorrida (carmín: es la otra cantidad
+  // que se pide y en esa idea no hay ángulos; carmín–verde y carmín–violeta se distinguen, ≥ 0,086 en la auditoría).
+  // Los tramos: naranja, turquesa y el tercero verde (dC).
+  const Dd = { v: 'c-f', t: 'd' }, vDd = { vec: Dd }, dist = t => ({ v: 'c-h', t });
   const ff = datos => ({ pieza: 'fis-fuerzas', datos, estado: {} });
   const flx = (datos, estado = { final: true }) => ({ pieza: 'flechas', datos, estado });
   const raiz2 = (a, b, signo = ' + ') => ({ raiz: [[{ sup: [a, '2'] }, signo, { sup: [b, '2'] }]] });
@@ -288,7 +296,7 @@
     { nivel: 3, titulo: 'Media vuelta a la pista',
       figura: flx({ unidad: 'm', contorno: Array.from({ length: 19 }, (_, i) => [50 * Math.cos(i * Math.PI / 18), 50 * Math.sin(i * Math.PI / 18)]),
         segmentos: [{ de: [0, 0], a: [0, 50], texto: 'r = 50 m' }],
-        resultante: { de: [50, 0], a: [-50, 0], color: 'd', rotulo: 'd⃗', valor: '?', lejos: [0, 50] } }),
+        resultante: { de: [50, 0], a: [-50, 0], color: 'f', rotulo: 'd⃗', valor: '?', lejos: [0, 50] } }),
       enunciado: ['Una atleta corre media vuelta en una pista circular de 50 m de radio, de un extremo al otro. ¿Cuál es su distancia recorrida y cuál el módulo de su desplazamiento?'],
       datos: ['Longitud de una circunferencia de radio r: L = 2πr', 'π ≈ 3,14', [Dd, ': el módulo del desplazamiento']],
       solucion: [
@@ -297,8 +305,8 @@
       ],
       respuesta: ['Recorrió ', dist('157 m'), '; se desplazó ', dR('100 m')] },
     { nivel: 3, titulo: 'Un dron que sube y baja',
-      figura: flx({ unidad: 'm', flechas: [{ de: [0, 0], a: [0, 40], color: 'o', rotulo: 'sube', valor: '40 m' }, { de: [0, 40], a: [30, 40], color: 'i', rotulo: 'avanza', valor: '30 m' }, { de: [30, 40], a: [30, 0], color: 'f', rotulo: 'baja', valor: '40 m' }],
-        resultante: { de: [0, 0], a: [30, 0], color: 'd', rotulo: 'd⃗', lejos: [15, 40] } }),
+      figura: flx({ unidad: 'm', flechas: [{ de: [0, 0], a: [0, 40], color: 'o', rotulo: 'sube', valor: '40 m' }, { de: [0, 40], a: [30, 40], color: 'i', rotulo: 'avanza', valor: '30 m' }, { de: [30, 40], a: [30, 0], color: 'd', rotulo: 'baja', valor: '40 m' }],
+        resultante: { de: [0, 0], a: [30, 0], color: 'f', rotulo: 'd⃗', lejos: [15, 40] } }),
       enunciado: ['Un dron sube ', dA('40 m'), ', avanza ', dB('30 m'), ' en horizontal y baja ', dC('40 m'), '. ¿Cuántos metros más larga es su distancia recorrida que su desplazamiento?'],
       datos: [DT.distancia, DT.desplaz],
       solucion: [
@@ -482,7 +490,7 @@
         angulos: g > 0 && g < 180 ? [{ en: [a, 0], de: 0, a: g, texto: o.angTexto || `${f(g, 0)}°`, color: 'h', paso: o.pasoB || 0 }] : [],
         guias: [{ de: [a, 0], a: [a + b + 0.5, 0], color: 'h', paso: o.pasoB || 0 }, ...(o.marco ? [marco(...o.marco)] : [])],
         // En los ejemplos, R lleva «?»: la figura muestra el planteamiento, no la respuesta.
-        resultante: { de: [0, 0], a: tip, color: 'd', rotulo: 'R⃗', valor: o.sinR ? undefined : o.rTexto || `${f(r, 2)}`, paso: o.pasoR === undefined ? 0 : o.pasoR, lejos: [a, 0] },
+        resultante: { de: [0, 0], a: tip, color: 'f', rotulo: 'R⃗', valor: o.sinR ? undefined : o.rTexto || `${f(r, 2)}`, paso: o.pasoR === undefined ? 0 : o.pasoR, lejos: [a, 0] },
       },
       estado: { paso: o.paso === undefined ? 9 : o.paso },
       r,
@@ -503,7 +511,7 @@
   const LEE_SUMA = (() => {
     const a = [40 * cosG(35), 40 * senG(35)], b = [30 * cosG(5), 30 * senG(5)];
     return { datos: { objeto: 'caja', flechas: [{ ang: 35, mod: 40, desde: [34, -10], color: 'o', rotulo: 'A⃗' }, { ang: 5, mod: 30, desde: [34, 8], color: 'i', rotulo: 'B⃗', lado: -1 },
-      { a: [a[0] + b[0], a[1] + b[1]], desde: [34, 0], color: 'd', rotulo: 'R⃗', discontinua: true }] }, estado: {} };
+      { a: [a[0] + b[0], a[1] + b[1]], desde: [34, 0], color: 'f', rotulo: 'R⃗', discontinua: true }] }, estado: {} };
   })();
   // Valor de academia de un coseno, con paréntesis si es negativo: «(−1/2)».
   const cosP = g => (COS[g].startsWith('−') ? `(${COS[g]})` : COS[g]);
@@ -554,8 +562,8 @@
       ],
       respuesta: [th, ' = ', { v: 'c-h', t: '120°' }] },
     { nivel: 2, titulo: 'El método del polígono',
-      figura: flx({ unidad: 'm', flechas: [{ de: [0, 0], a: [5, 0], color: 'o', rotulo: 'A⃗', valor: '5 m' }, { de: [5, 0], a: [5, 4], color: 'i', rotulo: 'B⃗', valor: '4 m' }, { de: [5, 4], a: [3, 4], color: 'f', rotulo: 'C⃗', valor: '2 m' }],
-        resultante: { de: [0, 0], a: [3, 4], color: 'd', rotulo: 'R⃗', valor: '?', lejos: [5, 0] } }),
+      figura: flx({ unidad: 'm', flechas: [{ de: [0, 0], a: [5, 0], color: 'o', rotulo: 'A⃗', valor: '5 m' }, { de: [5, 0], a: [5, 4], color: 'i', rotulo: 'B⃗', valor: '4 m' }, { de: [5, 4], a: [3, 4], color: 'd', rotulo: 'C⃗', valor: '2 m' }],
+        resultante: { de: [0, 0], a: [3, 4], color: 'f', rotulo: 'R⃗', valor: '?', lejos: [5, 0] } }),
       enunciado: ['Un perro pastor camina ', A, ' = 5 m al este, ', B, ' = 4 m al norte y ', C, ' = 2 m al oeste. ¿Cuánto mide su desplazamiento total?'],
       datos: [['Cada flecha empieza en la punta de la anterior; ', vR, ' va de la primera cola a la última punta.'], 'En una misma recta, los tramos de ida suman y los de vuelta restan.', [R, ' = ', { raiz: [[cuad(sub(R, 'x')), ' + ', cuad(sub(R, 'y'))]] }]],
       solucion: [
@@ -566,7 +574,7 @@
       respuesta: [R, ' = ', dR('5 m')] },
     { nivel: 2, titulo: 'Sumar por componentes',
       figura: flx({ unidad: 'm', guias: ejesG(-1, 8, -1, 6), flechas: [{ de: [0, 0], a: [3, 5], color: 'o', rotulo: 'A⃗' }, { de: [3, 5], a: [7, 3], color: 'i', rotulo: 'B⃗' }],
-        resultante: { de: [0, 0], a: [7, 3], color: 'd', rotulo: 'R⃗', valor: '?', lejos: [3, 5] } }),
+        resultante: { de: [0, 0], a: [7, 3], color: 'f', rotulo: 'R⃗', valor: '?', lejos: [3, 5] } }),
       enunciado: ['Un dron hace dos tramos: ', vA, ' = 3î + 5ĵ y ', vB, ' = 4î − 2ĵ, en metros. ¿Cuál es su desplazamiento total y cuánto mide?'],
       datos: [DT.ij, DT.sumaComp, modD(R)],
       solucion: [
@@ -576,14 +584,14 @@
       respuesta: [vR, ' = 7î + 3ĵ, que mide ', dR('√58 ≈ 7,62 m')] },
     { nivel: 2, titulo: 'La fuerza que equilibra',
       figura: ff({ objeto: 'nudo', flechas: [{ a: [30, 10], color: 'o', rotulo: 'A⃗' }, { a: [-6, 22], color: 'i', rotulo: 'B⃗' }] }),
-      enunciado: ['Sobre un nudo actúan ', vA, ' = 30î + 10ĵ y ', vB, ' = −6î + 22ĵ, en newtons. ¿Qué tercera fuerza ', vC, ' lo deja en equilibrio, y cuánto mide?'],
-      datos: [['En equilibrio, las fuerzas suman cero: ', vA, ' + ', vB, ' + ', vC, ' = 0'], DT.sumaComp, modD(C)],
+      enunciado: ['Sobre un nudo actúan ', vA, ' = 30î + 10ĵ y ', vB, ' = −6î + 22ĵ, en newtons. ¿Qué tercera fuerza ', vCq, ' lo deja en equilibrio, y cuánto mide?'],
+      datos: [['En equilibrio, las fuerzas suman cero: ', vA, ' + ', vB, ' + ', vCq, ' = 0'], DT.sumaComp, modD(Cq)],
       solucion: [
         { texto: ['En equilibrio, las tres fuerzas suman cero. Primero se suman ', vA, ' y ', vB, '.'], ecuacion: [vA, ' + ', vB, ' = (30 − 6)î + (10 + 22)ĵ = 24î + 32ĵ'] },
-        { texto: [vC, ' es la opuesta de esa suma: mismo largo y sentido contrario.'], ecuacion: [vC, ' = −24î − 32ĵ'] },
-        { texto: ['Su módulo, con Pitágoras.'], ecuacion: [C, ' = ', raiz2('24', '32'), ' = √1600 = 40 N'] },
+        { texto: [vCq, ' es la opuesta de esa suma: mismo largo y sentido contrario.'], ecuacion: [vCq, ' = −24î − 32ĵ'] },
+        { texto: ['Su módulo, con Pitágoras.'], ecuacion: [Cq, ' = ', raiz2('24', '32'), ' = √1600 = 40 N'] },
       ],
-      respuesta: [vC, ' = −24î − 32ĵ N, que mide ', dC('40 N')] },
+      respuesta: [vCq, ' = −24î − 32ĵ N, que mide ', dR('40 N')] },
     { nivel: 2, titulo: 'La diferencia de dos vectores',
       figura: flx({ unidad: 'u', flechas: [{ de: [0, 0], a: [6, 0], color: 'o', rotulo: 'A⃗', valor: '6' }, { de: [0, 0], a: [2, 2 * Math.sqrt(3)], color: 'i', rotulo: 'B⃗', valor: '4' }], angulos: [{ en: [0, 0], de: 0, a: 60, texto: '60°', color: 'h' }] }),
       enunciado: ['Dos vectores miden ', A, ' = 6 u y ', B, ' = 4 u, y forman ', th, ' = 60°. ¿Cuánto mide su diferencia ', vA, ' − ', vB, '?'],
@@ -595,7 +603,7 @@
       ],
       respuesta: ['|', vA, ' − ', vB, '| = ', dR('2√7 ≈ 5,29 u')] },
     { nivel: 3, titulo: 'Cruzar un río de la sierra',
-      figura: ff({ objeto: 'bote', orillas: true, ancho: 'Río de 40 m de ancho', flechas: [{ ang: 90, mod: 2, color: 'o', rotulo: 'A⃗', valor: '2 m/s' }, { de: [0, 2], ang: 0, mod: 1.5, color: 'i', rotulo: 'B⃗', valor: '1,5 m/s' }, { a: [1.5, 2], color: 'd', rotulo: 'R⃗', valor: '?' }] }),
+      figura: ff({ objeto: 'bote', orillas: true, ancho: 'Río de 40 m de ancho', flechas: [{ ang: 90, mod: 2, color: 'o', rotulo: 'A⃗', valor: '2 m/s' }, { de: [0, 2], ang: 0, mod: 1.5, color: 'i', rotulo: 'B⃗', valor: '1,5 m/s' }, { a: [1.5, 2], color: 'f', rotulo: 'R⃗', valor: '?' }] }),
       enunciado: ['Un bote cruza un río de la sierra, de 40 m de ancho: avanza a ', A, ' = 2 m/s hacia la otra orilla y la corriente lo lleva a ', B, ' = 1,5 m/s. ¿Rapidez, tiempo de cruce y arrastre?'],
       datos: [DT.pita, 'Con rapidez constante: distancia = rapidez × tiempo'],
       solucion: [
@@ -605,7 +613,7 @@
       ],
       respuesta: [R, ' = ', dR('2,5 m/s'), '; tarda 20 s y llega 30 m río abajo'] },
     { nivel: 3, titulo: 'Una avioneta con viento cruzado',
-      figura: ff({ objeto: 'avion', norte: true, largo: 150, flechas: [{ ang: 106.26, mod: 250, color: 'o', rotulo: 'A⃗', valor: '250 km/h' }, { de: [-70, 240], ang: 0, mod: 70, color: 'i', rotulo: 'B⃗', valor: '70 km/h' }, { ang: 90, mod: 240, color: 'd', rotulo: 'R⃗', valor: '?' }], angulos: [{ de: 90, a: 106.26, texto: 'θ', radio: 60 }] }),
+      figura: ff({ objeto: 'avion', norte: true, largo: 150, flechas: [{ ang: 106.26, mod: 250, color: 'o', rotulo: 'A⃗', valor: '250 km/h' }, { de: [-70, 240], ang: 0, mod: 70, color: 'i', rotulo: 'B⃗', valor: '70 km/h' }, { ang: 90, mod: 240, color: 'f', rotulo: 'R⃗', valor: '?' }], angulos: [{ de: 90, a: 106.26, texto: 'θ', radio: 60 }] }),
       enunciado: ['Una avioneta vuela a ', A, ' = 250 km/h respecto al aire, y el viento sopla a ', B, ' = 70 km/h hacia el este. ¿Hacia dónde apunta para ir al norte, y con qué rapidez avanza?'],
       datos: [DT.hip, ['En un triángulo rectángulo: sen ', th, ' = ', { frac: ['cateto opuesto a θ', 'hipotenusa'] }], 'sen 16° = 7/25 y sen 74° = 24/25'],
       solucion: [
@@ -615,7 +623,7 @@
       ],
       respuesta: [th, ' = 16° al oeste del norte; avanza a ', R, ' = ', dR('240 km/h')] },
     { nivel: 3, titulo: 'Tres cuerdas en un nudo',
-      figura: ff({ objeto: 'nudo', largo: 210, flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A⃗', valor: '50 N' }, { ang: 143.13, mod: 10, color: 'i', rotulo: 'B⃗', valor: '10 N', lado: -1 }, { ang: 270, mod: 12, color: 'f', rotulo: 'C⃗', valor: '12 N', lado: -1 }],
+      figura: ff({ objeto: 'nudo', largo: 210, flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A⃗', valor: '50 N' }, { ang: 143.13, mod: 10, color: 'i', rotulo: 'B⃗', valor: '10 N', lado: -1 }, { ang: 270, mod: 12, color: 'd', rotulo: 'C⃗', valor: '12 N', lado: -1 }],
         angulos: [{ de: 0, a: 36.87, texto: '37°', radio: 28 }], guias: [{ de: [-30, 0], a: [42, 0] }] }),
       enunciado: ['Sobre un nudo jalan tres cuerdas: ', A, ' = 50 N a 37°, ', B, ' = 10 N a 143° y ', C, ' = 12 N a 270°, desde el eje +x. Halla cuánto mide la fuerza total.'],
       datos: [senCos(37), DT.cuadrante, 'Tamaños de las componentes, con α agudo desde el eje x: F cos α en x y F sen α en y.', DT.signos, DT.sumaComp, modD(R)],
@@ -838,7 +846,7 @@
     const m = Math.hypot(ax, ay);
     // En el juego, A lleva escrito cuánto mide (lector en frío, 16 nov: el número estaba solo en la lectura, abajo).
     const fl = [{ de: [0, 0], a: [ax, ay], color: 'o', rotulo: 'A⃗', valor: o.valor && m > 0 ? f(m, 2) : undefined, paso: 0 }];
-    if (m > 0 && o.unitario) fl.push({ de: [0, 0], a: [ax / m, ay / m], color: 'd', rotulo: 'û', paso: o.pasoU || 0 });
+    if (m > 0 && o.unitario) fl.push({ de: [0, 0], a: [ax / m, ay / m], color: 'f', rotulo: 'û', paso: o.pasoU || 0 });
     return { datos: { unidad: 'u', flechas: fl,
       guias: [...EJES, ...(m > 0 ? [{ de: [ax, 0], a: [ax, ay], color: 'o', paso: o.pasoG || 0 }, { de: [0, ay], a: [ax, ay], color: 'o', paso: o.pasoG || 0 }] : [])],
       // A_y se marca en la vertical de la punta, a la derecha, lejos del rótulo de A (lector en frío: se encimaban);
@@ -1013,20 +1021,20 @@
           texto: ['Una cuerda que jala una caja en diagonal, ', vA, ', hace dos cosas a la vez: la arrastra hacia adelante, ', sub(A, 'x'), ', y la levanta un poco, ', sub(A, 'y'), '. Esas dos partes son sus componentes.'] },
         { titulo: 'Los ejes', texto: ['En un plano, el eje x va a la derecha y el eje y hacia arriba. î y ĵ son flechas de largo 1 por los ejes: ', vA, ' = 3î + 2ĵ avanza 3 en x y sube 2 en y.'] },
         { titulo: 'Con un ángulo', texto: ['A veces te dan cuánto mide ', vA, ', su módulo ', A, ', y el ángulo ', th, ' que forma con el eje x. Entonces lo que avanza es ', A, ' cos ', th, ', y lo que sube, ', A, ' sen ', th, '.'] },
-        { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar cuánto avanza y cuánto sube ', vA, '. Mira cuánto mide, su módulo ', A, ', y la flechita verde que sale con ella: ¿cuánto mide siempre?'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar cuánto avanza y cuánto sube ', vA, '. Mira cuánto mide, su módulo ', A, ', y la flechita violeta que sale con ella: ¿cuánto mide siempre?'] },
       ],
     },
-    actividad: 'Cambiar cuánto avanza y cuánto sube una flecha, y mirar su largo y su flechita verde.',
+    actividad: 'Cambiar cuánto avanza y cuánto sube una flecha, y mirar su largo y su flechita violeta.',
     ejemplos: EJEMPLOS_COMPONENTES,
     aprendizaje: 'A⃗ se parte en lo que avanza en x y lo que sube en y; su módulo sale de Pitágoras; û = A⃗ ÷ A.',
     juega: {
-      consigna: [sub(A, 'x'), ' va y viene sola. Arrastra la punta de ', vA, ' y la flecha se queda donde la sueltes. La verde es su unitario.'],
+      consigna: [sub(A, 'x'), ' va y viene sola. Arrastra la punta de ', vA, ' y la flecha se queda donde la sueltes. La violeta es su unitario.'],
       mision: {
         texto: ['Haz que ', vA, ' mida justo 5.'],
         logrado: val => Math.abs(Math.hypot(val.ax, val.ay) - 5) < 1e-9,
         bien: 'Avanza 3 y sube 4: 3² + 4² = 25, y √25 = 5.',
       },
-      voz: 'Alarga A⃗ sin girarla. ¿Cambia la flecha verde?',
+      voz: 'Alarga A⃗ sin girarla. ¿Cambia la flecha violeta?',
       leyenda: [
         { s: [{ sub: [A, 'x'] }], t: 'cuánto avanza A⃗ en x' },
         { s: [{ sub: [A, 'y'] }], t: 'cuánto sube A⃗ en y' },
@@ -1080,7 +1088,7 @@
     },
     regla: {
       texto: 'Un vector se escribe con sus componentes sobre î y ĵ. Su módulo sale de Pitágoras, y el unitario es el vector dividido entre su módulo.',
-      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', ';   ', A, ' = ', { llave: [{ raiz: [[{ sub: [A, 'x'] }, '²', ' + ', { sub: [A, 'y'] }, '²']] }], nota: 'el módulo', color: 'c-o' }, ';   ', u, ' = ', { llave: [{ frac: [vA, A] }], nota: 'û mide 1', color: 'c-d' }],
+      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', ';   ', A, ' = ', { llave: [{ raiz: [[{ sub: [A, 'x'] }, '²', ' + ', { sub: [A, 'y'] }, '²']] }], nota: 'el módulo', color: 'c-o' }, ';   ', u, ' = ', { llave: [{ frac: [vA, A] }], nota: 'û mide 1', color: 'c-f' }],
       condicion: 'los ejes son perpendiculares; con θ desde el eje x, avanza A cos θ y sube A sen θ.',
     },
     resuelve: {
@@ -1235,11 +1243,11 @@
       flechas: [{ de: [0, 0], a: [a, 0], color: 'o', rotulo: 'A⃗' }, { de: [0, 0], a: tip, color: 'i', rotulo: 'B⃗' }],
       angulos: g > 0 && g < 180 ? [{ en: [0, 0], de: 0, a: g, texto: o.angTexto || `${f(g, 0)}°`, color: 'h' }] : [],
       guias: [{ de: tip, a: [sombra, yS], color: 'i', paso: o.pasoS || 0 },
-        { de: [a, 0], a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 }, { de: tip, a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 },
+        { de: [a, 0], a: [a + tip[0], tip[1]], color: 'f', paso: o.pasoP || 0 }, { de: tip, a: [a + tip[0], tip[1]], color: 'f', paso: o.pasoP || 0 },
         ...(o.marco ? [marco(...o.marco)] : [])],
       segmentos: Math.abs(sombra) > 1e-9 ? [{ de: [0, yS], a: [sombra, yS], color: 'i', texto: `B cos θ = ${f(sombra, 2)}`, paso: o.pasoS || 0 }] : [],
       // A × B, perpendicular a la pantalla: ⊙ (sale) en el centro del paralelogramo (lector en frío: no se dibujaba).
-      fuera: o.pasoK === undefined || !(g > 0 && g < 180) ? [] : [{ en: [(a + tip[0]) / 2, tip[1] / 2], sentido: 'sale', rotulo: 'A⃗ × B⃗', color: 'd', paso: o.pasoK }],
+      fuera: o.pasoK === undefined || !(g > 0 && g < 180) ? [] : [{ en: [(a + tip[0]) / 2, tip[1] / 2], sentido: 'sale', rotulo: 'A⃗ × B⃗', color: 'f', paso: o.pasoK }],
     }, estado: { paso: o.paso === undefined ? 9 : o.paso } };
   };
   // El juego fija la escala con todo lo que puede ocupar la figura en la media vuelta (sombra y paralelogramo).
@@ -1284,7 +1292,7 @@
       solucion: [
         { texto: ['Si forman 90°, cos 90° = 0 y el producto escalar vale 0: ninguno hace sombra sobre el otro. Se calcula con componentes.'], ecuacion: [vA, ' · ', vB, ' = (3)(8) + (4)(−6) = 24 − 24 = 0'] },
       ],
-      respuesta: ['Sí: ', vA, ' · ', vB, ' = 0, forman ', dR('90°')] },
+      respuesta: ['Sí: ', vA, ' · ', vB, ' = 0, forman ', { v: 'c-h', t: '90°' }] },
     { nivel: 1, titulo: 'El área que encierran', figura: pr(4, 5, 30, { pasoS: 99 }),
       enunciado: ['Dos vectores de ', A, ' = 4 y ', B, ' = 5 forman ', th, ' = 30°. ¿Cuánto mide ', vA, ' × ', vB, '?'],
       datos: [DT.vectorial, senD(30)],
@@ -1294,7 +1302,7 @@
       respuesta: ['|', vA, ' × ', vB, '| = ', dR('10')] },
     { nivel: 1, titulo: '¿Sale o entra?',
       figura: flx({ unidad: 'u', flechas: [{ de: [0, 0], a: [3, 0], color: 'o', rotulo: 'A⃗ = 3î' }, { de: [0, 0], a: [0, 2], color: 'i', rotulo: 'B⃗ = 2ĵ', lado: -1, rotuloEn: 0.8 }],
-        guias: [{ de: [3, 0], a: [3, 2], color: 'd' }, { de: [0, 2], a: [3, 2], color: 'd' }] }),
+        guias: [{ de: [3, 0], a: [3, 2], color: 'f' }, { de: [0, 2], a: [3, 2], color: 'f' }] }),
       enunciado: ['Si ', vA, ' = 3î y ', vB, ' = 2ĵ, ¿cuánto vale ', vA, ' × ', vB, ' y hacia dónde apunta? ¿Y ', vB, ' × ', vA, '?'],
       datos: [DT.mano, DT.sale],
       solucion: [
@@ -1313,7 +1321,7 @@
       respuesta: [th, ' = ', { v: 'c-h', t: '45°' }] },
     { nivel: 2, titulo: 'Una chacra en paralelogramo',
       figura: flx({ unidad: 'm', contorno: [[0, 0], [30, 10], [40, 30], [10, 20]], flechas: [{ de: [0, 0], a: [30, 10], color: 'o', rotulo: 'A⃗' }, { de: [0, 0], a: [10, 20], color: 'i', rotulo: 'B⃗' }],
-        guias: [{ de: [30, 10], a: [40, 30], color: 'd' }, { de: [10, 20], a: [40, 30], color: 'd' }] }),
+        guias: [{ de: [30, 10], a: [40, 30], color: 'f' }, { de: [10, 20], a: [40, 30], color: 'f' }] }),
       enunciado: ['Una chacra tiene forma de paralelogramo. Dos de sus lados, desde una esquina, son ', vA, ' = 30î + 10ĵ y ', vB, ' = 10î + 20ĵ, en metros. ¿Cuál es su área?'],
       datos: [DT.area, DT.vectorialC],
       solucion: [
@@ -1339,7 +1347,7 @@
       ],
       respuesta: [dA('m = 4'), ', y ', vA, ' = 2î + 4ĵ'] },
     { nivel: 2, titulo: 'El vectorial con componentes',
-      figura: flx({ unidad: 'u', guias: [...ejesG(-1, 6, -1, 7), { de: [2, 5], a: [5, 6], color: 'd' }, { de: [3, 1], a: [5, 6], color: 'd' }], flechas: [{ de: [0, 0], a: [2, 5], color: 'o', rotulo: 'A⃗', rotuloEn: 0.95 }, { de: [0, 0], a: [3, 1], color: 'i', rotulo: 'B⃗' }] }),
+      figura: flx({ unidad: 'u', guias: [...ejesG(-1, 6, -1, 7), { de: [2, 5], a: [5, 6], color: 'f' }, { de: [3, 1], a: [5, 6], color: 'f' }], flechas: [{ de: [0, 0], a: [2, 5], color: 'o', rotulo: 'A⃗', rotuloEn: 0.95 }, { de: [0, 0], a: [3, 1], color: 'i', rotulo: 'B⃗' }] }),
       enunciado: ['Si ', vA, ' = 2î + 5ĵ y ', vB, ' = 3î + ĵ, ¿cuánto vale ', vA, ' × ', vB, '? ¿Sale de la pantalla o entra?'],
       datos: [DT.vectorialC, DT.sale],
       solucion: [
@@ -1348,7 +1356,7 @@
       ],
       respuesta: [vA, ' × ', vB, ' = ', dR('−13 k̂'), ': entra (⊗)'] },
     { nivel: 3, titulo: 'El trabajo con componentes',
-      figura: ff({ objeto: 'carretilla', flechas: [{ hasta: 'manijas', ang: -36.87, mod: 50, color: 'o', rotulo: 'F⃗', valor: '50 N' }, { desde: 'manijas', de: [-40, 30], a: [0, 30], color: 'o', rotulo: '40 N', discontinua: true }, { desde: 'manijas', de: [-40, 30], a: [-40, 0], color: 'o', rotulo: '30 N', discontinua: true, rotuloEn: 0.6 }, { desde: 'piso', ang: 0, mod: 15, color: 'd', rotulo: 'd⃗', valor: '15 m' }] }),
+      figura: ff({ objeto: 'carretilla', flechas: [{ hasta: 'manijas', ang: -36.87, mod: 50, color: 'o', rotulo: 'F⃗', valor: '50 N' }, { desde: 'manijas', de: [-40, 30], a: [0, 30], color: 'o', rotulo: '40 N', discontinua: true }, { desde: 'manijas', de: [-40, 30], a: [-40, 0], color: 'o', rotulo: '30 N', discontinua: true, rotuloEn: 0.6 }, { desde: 'piso', ang: 0, mod: 15, color: 'i', rotulo: 'd⃗', valor: '15 m' }] }),
       enunciado: ['Se empuja una carretilla con ', vF, ' = 40î − 30ĵ N, y avanza ', vdv, ' = 15î m por el piso. ¿Cuánto trabajo hace esa fuerza? ¿Qué parte de la fuerza no trabaja?'],
       datos: [['Trabajo de una fuerza: W = ', vF, ' · ', vdv, ' = ', sub(F, 'x'), sub(dv, 'x'), ' + ', sub(F, 'y'), sub(dv, 'y')], '1 J = 1 N · m'],
       solucion: [
@@ -1382,7 +1390,7 @@
       ],
       respuesta: ['Área = ', dR('16 u²')] },
     { nivel: 3, titulo: 'Tres estacas en la chacra',
-      figura: flx({ unidad: 'm', guias: [...ejesG(0, 55, 0, 45), { de: [50, 20], a: [20, 40], color: 'd' }], flechas: [{ de: [10, 10], a: [50, 20], color: 'o', rotulo: 'A⃗' }, { de: [10, 10], a: [20, 40], color: 'i', rotulo: 'B⃗' }],
+      figura: flx({ unidad: 'm', guias: [...ejesG(0, 55, 0, 45), { de: [50, 20], a: [20, 40], color: 'f' }], flechas: [{ de: [10, 10], a: [50, 20], color: 'o', rotulo: 'A⃗' }, { de: [10, 10], a: [20, 40], color: 'i', rotulo: 'B⃗' }],
         puntos: [{ x: 10, y: 10, rotulo: 'P' }, { x: 50, y: 20, rotulo: 'Q' }, { x: 20, y: 40, rotulo: 'S' }] }),
       enunciado: ['Tres estacas marcan un terreno triangular en P(10; 10), Q(50; 20) y S(20; 40), en metros. ¿Cuál es su área?'],
       datos: ['Vector de un punto P a otro Q: Q − P, eje por eje (punta menos cola).', DT.vectorialC, DT.area, 'El área de un triángulo es la mitad de la del paralelogramo.'],
@@ -1467,7 +1475,7 @@
     },
     regla: {
       texto: 'El producto escalar es un número: A por la sombra de B⃗ sobre A⃗. El vectorial es un vector perpendicular a los dos, de módulo igual al área del paralelogramo.',
-      ecuacion: [vA, ' · ', vB, ' = ', A, { llave: [B, ' cos ', th], nota: 'sombra de B⃗', color: 'c-i' }, ';   ', '|', vA, ' × ', vB, '| = ', { llave: [A, B, ' sen ', th], nota: 'área', color: 'c-d' }],
+      ecuacion: [vA, ' · ', vB, ' = ', A, { llave: [B, ' cos ', th], nota: 'sombra de B⃗', color: 'c-i' }, ';   ', '|', vA, ' × ', vB, '| = ', { llave: [A, B, ' sen ', th], nota: 'área', color: 'c-f' }],
       condicion: 'θ es el ángulo entre A⃗ y B⃗. B⃗ × A⃗ mide lo mismo que A⃗ × B⃗, pero apunta al revés.',
     },
     resuelve: {

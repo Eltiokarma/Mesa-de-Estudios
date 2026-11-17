@@ -3,10 +3,13 @@
  * se partió en dos y los vectores pasaron a fisica/vectores.js). Molde de docs/teoria.md y contrato «se entiende sin
  * profesor» (docs/plan-calidad.md). Ideas: cambiar de unidad, áreas y volúmenes (aprobada por Gerson el 16 nov) y
  * dimensiones; las tres con 15 ejemplos resueltos (pestaña «Ejemplos»).
- * Colores por papel (regla 4; Gerson, 17 nov: un mismo color no cambia de papel en toda la unidad): el dato, naranja
- * (c-o), también el alto h del poste y la profundidad h del tanque (no L: L es la dimensión longitud de la idea 3); el
- * factor que vale 1, verde (c-d); el resultado y la respuesta, turquesa (c-i), también el área y el volumen de la
- * idea 2; la incógnita (k, una constante, un exponente), rojo (c-h).
+ * Colores por papel (regla 4; Gerson, 17 nov: un mismo color no cambia de papel en toda la unidad, ni de un curso a
+ * otro: docs/molde-unidad.md §5b): el dato, naranja (c-o), también el alto h del poste y la profundidad h del tanque
+ * (no L: L es la dimensión longitud de la idea 3), y lo que sale a mitad de camino para usarse como dato; el factor que
+ * vale 1, turquesa (c-i); lo que se pide, violeta (c-f): la cantidad convertida y la respuesta, el área y el volumen de
+ * la idea 2, y la incógnita que se despeja (k, una constante como A, B o G, un exponente x o y). El carmín (c-h) queda
+ * solo para ángulos, y en esta unidad no hay. Antes eran factor verde, resultado turquesa e incógnita roja: el
+ * turquesa decía «resultado» aquí y «el vector B» en Vectores, y el verde junto al naranja no se distingue con protanopía.
  * Letras (una letra, un significado en la unidad; 17 nov): P es la presión; la potencia se escribe Pot, como en las
  * academias; T es el período del péndulo (choca con la dimensión T: se avisa); q es la cantidad de movimiento (práctica).
  * Todo ejercicio da sus datos en el campo `datos`, una línea por dato (contrato, punto 13; Gerson, 16 nov: «todos los
@@ -37,7 +40,7 @@
   const f = (n, d = 2) => Kit.formatear(n, d).replace(/^(−?\d) (\d{3})(?=,|$)/, '$1$2');
   // Para los distractores muy chicos (2,5 ÷ 10 000): las cifras que hagan falta, no un redondeo a 4 decimales.
   const fc = n => f(n, Math.abs(n) >= 1 || n === 0 ? 3 : Math.min(8, 2 - Math.floor(Math.log10(Math.abs(n)))));
-  const k = { v: 'c-h', t: 'k' };
+  const k = { v: 'c-f', t: 'k' };
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -85,7 +88,7 @@
   // La combi en su pista (pieza fis-combi): dónde está en cada segundo. segundos: 0 la deja en la partida.
   const pista = (segundos, v = V_MS) => ({ v, segundos, max: Math.max(100, Math.ceil(5 * v / 20) * 20), paso: 10, numero: 20, color: 'o' });
   // Ejemplos resueltos de «Cambiar de unidad» (pestaña «Ejemplos», Gerson 16 nov): 3 niveles × 5, resueltos enteros.
-  // Colores por papel: el dato, naranja (c-o); el factor que vale 1, verde (c-d); el resultado, turquesa (c-i). Cada
+  // Colores por papel (§5b): el dato, naranja (c-o); el factor que vale 1, turquesa (c-i); el resultado, violeta (c-f). Cada
   // ejemplo trae sus equivalencias y su fórmula en `datos` (contrato, punto 13), también la regla de las potencias de
   // 10 donde se usa. El ÷ 3,6 no se da por sabido: se hace con 1000 y 3600 o se dice de dónde sale. Niveles (17 nov,
   // auditoría): N1, un factor; N2, dos factores o dos pasos; N3, tres pasos o más, o el error típico del examen.
@@ -93,7 +96,7 @@
   // Cuentas recalculadas con un script aparte, fuera del repo (17 nov): 105/1000, 3,4·1000, 45/60, 12·1000, 72·60;
   // 90·1000/3600, 10·3600/1000, 24·60·60, 3·3600/1000, 70·10⁻⁶; 3·10⁸·60/10³; 100 000/3600 ≈ 27,8 y 900/60 = 15;
   // 120/5 = 24, 24/1000·1000; 54 000/3600 = 15, 20·60 = 1200, 15·1200; 1800/2 = 900, 900 000/3600 = 250.
-  const dO = t => ({ v: 'c-o', t }), dF = t => ({ v: 'c-d', t }), dR = t => ({ v: 'c-i', t });
+  const dO = t => ({ v: 'c-o', t }), dF = t => ({ v: 'c-i', t }), dR = t => ({ v: 'c-f', t });
   const fo = datos => ({ pieza: 'fis-objeto', datos, estado: {} });
   const tc = t => ({ tacha: t });
   // km/h a m/s con los dos factores a la vista (para no dar el ÷ 3,6 por sabido).
@@ -303,7 +306,7 @@
     },
     regla: {
       texto: 'Cambiar de unidad no cambia lo medido: el poste es el mismo y la combi va igual de rápido. Cambia el número: se multiplica por factores que valen 1.',
-      ecuacion: [{ frac: [['72 ', { tacha: 'km' }], ['1 ', { tacha: 'h' }]] }, ' × ', { llave: [{ frac: ['1000 m', ['1 ', { tacha: 'km' }]] }], nota: 'vale 1', color: 'c-d' }, ' × ', { llave: [{ frac: [['1 ', { tacha: 'h' }], '3600 s'] }], nota: 'vale 1', color: 'c-d' }, ' = 20 ', { frac: ['m', 's'] }],
+      ecuacion: [{ frac: [['72 ', { tacha: 'km' }], ['1 ', { tacha: 'h' }]] }, ' × ', { llave: [{ frac: ['1000 m', ['1 ', { tacha: 'km' }]] }], nota: 'vale 1', color: 'c-i' }, ' × ', { llave: [{ frac: [['1 ', { tacha: 'h' }], '3600 s'] }], nota: 'vale 1', color: 'c-i' }, ' = 20 ', { frac: ['m', 's'] }],
       condicion: 'cada factor vale 1 y va de modo que la unidad vieja se tache: arriba si estaba abajo, y al revés.',
     },
     // «Así se resuelve» y «Ahora tú» son del mismo tipo con la misma semilla (docs/teoria.md 4e), pero con otro valor:
@@ -466,9 +469,9 @@
   // fis-area: el mismo piso cubierto con cuadros de 1 m y de 1 dm, lado a lado, y un cubo con cuadrícula para el volumen.
   // Cambia: el lado del piso · Permanece: el piso es uno solo · Progresa: los cuadros que caben (× 100 al pasar a dm²) ·
   // Se reserva: m² a cm² (10 000), que se predice · Debe verse: el factor 10 entra una vez por cada lado.
-  // El área y el volumen son lo que resulta de cambiar de unidad: turquesa (c-i); el lado que se cambia, naranja.
-  const Ar = { v: 'c-i', t: 'A' };
-  const pisoDoble = L => ({ datos: { color: 'i', cuadros: [
+  // El área y el volumen son lo que resulta de cambiar de unidad: violeta (c-f, lo que se pide); el lado que se cambia, naranja.
+  const Ar = { v: 'c-f', t: 'A' };
+  const pisoDoble = L => ({ datos: { color: 'f', cuadros: [
     { lado: L, max: 3, celdas: 1, arriba: `${f(L, 1)} m`, abajo: `${f(L * L, 2)} m²`, nombre: 'cuadros de 1 m' },
     { lado: L * 10, max: 30, celdas: 1, arriba: `${f(L * 10, 0)} dm`, abajo: `${f(L * L * 100, 0)} dm²`, nombre: 'cuadros de 1 dm' },
   ] }, estado: {} });
@@ -485,7 +488,7 @@
   const PIZARRAS = [1.5, 2, 2.4, 3], BALDES = [0.008, 0.01, 0.012, 0.02];
   const HA = '1 ha (hectárea): un cuadrado de 100 m de lado';
   // Ejemplos resueltos de «Áreas y volúmenes» (pestaña «Ejemplos», 16 nov): 3 niveles × 5, con el molde de
-  // EJEMPLOS_UNIDADES (dato naranja, factor que vale 1 verde, resultado turquesa) y objetos de fis-objeto. En áreas y
+  // EJEMPLOS_UNIDADES (dato naranja, factor que vale 1 turquesa, resultado violeta) y objetos de fis-objeto. En áreas y
   // volúmenes los datos dan la equivalencia de largo cuando el ejemplo enseña a elevarla (1 m = 100 cm), y la fórmula
   // del área o del volumen que se usa.
   // Cuentas recalculadas con un script aparte, fuera del repo: 2,5·10 000 = 250·100, 2,5·1000,
@@ -494,10 +497,10 @@
   // 40·20·10 = 8000, 8000·1,7 = 13 600, /1000 = 13,6; 8·50 = 400, 6·50 = 300, 4·3 = 12, 48·2500 = 120 000 = 12·10⁴;
   // 120/1000 = 0,12, 10·8·0,12 = 9,6, 9,6·1000 = 9600, 9600/1100 ≈ 8,7 (16 nov, con los datos reales).
   // Datos reales, con su `fuente`: el Titicaca guarda unos 893 km³ (ILEC; 8372 km² por 107 m de hondo medio dan
-  // ≈ 896 km³, cuadra); el adobe tradicional peruano, 1690–1750 kg/m³ (se usa 1,7 g/cm³); la lluvia normal de febrero
-  // en Juliaca, 120,3 mm (SENAMHI). Creíbles, sin fuente: hielo a 0,92 g/cm³; tanques de techo de 1100 L.
+  // ≈ 896 km³, cuadra) y la lluvia normal de febrero en Juliaca, 120,3 mm (SENAMHI). Creíbles, sin fuente: hielo a
+  // 0,92 g/cm³; tanques de techo de 1100 L; el adobe, a 1,7 g/cm³ (valor aproximado, abajo se dice por qué).
   // Ejemplos resueltos de «Áreas y volúmenes» (pestaña «Ejemplos», 16 nov): 3 niveles × 5, con el molde de
-  // EJEMPLOS_UNIDADES (dato naranja, factor que vale 1 verde, resultado turquesa) y objetos de fis-objeto. En áreas y
+  // EJEMPLOS_UNIDADES (dato naranja, factor que vale 1 turquesa, resultado violeta) y objetos de fis-objeto. En áreas y
   // volúmenes los datos dan la equivalencia de largo cuando el ejemplo enseña a elevarla (1 m = 100 cm), y la fórmula
   // del área o del volumen que se usa. Niveles (17 nov, auditoría): la caja de 2 dm baja a N2 y el hielo sube a N3, con
   // un paso más (la masa del bloque) y el error típico de elevar al cuadrado.
@@ -508,12 +511,12 @@
   // 40·20·10 = 8000, 8000·1,7 = 13 600, /1000 = 13,6; 8·50 = 400, 6·50 = 300, 4·3 = 12, 48·2500 = 120 000 = 12·10⁴;
   // 120/1000 = 0,12, 10·8·0,12 = 9,6, 9,6·1000 = 9600, 9600/1100 ≈ 8,7.
   // Datos reales, con su `fuente`: el Titicaca guarda unos 893 km³ (ILEC; 8372 km² por 107 m de hondo medio dan
-  // ≈ 896 km³, cuadra); el adobe tradicional, 1690–1700 kg/m³ según la revisión de Pakamuros (UNJ, 2026; se usa
-  // 1,7 g/cm³); la lluvia normal de febrero en Juliaca, 120,3 mm (SENAMHI). De todos los días, con «unos» y sin
-  // fuente (Gerson, 17 nov): hielo a 0,92 g/cm³; tanques de techo de 1100 L.
-  // Piedra y otros, «Análisis de las propiedades del adobe como material de construcción», Revista Científica Pakamuros
-  // 14(1), pp. 172-188, Universidad Nacional de Jaén, 2026 (revisión PRISMA): adobe tradicional, 1690-1700 kg/m³.
-  const FUENTE_ADOBE = 'Revista Pakamuros 14(1), UNJ, 2026, revisión sobre el adobe: revistas.unj.edu.pe/index.php/pakamuros/article/view/948';
+  // ≈ 896 km³, cuadra) y la lluvia normal de febrero en Juliaca, 120,3 mm (SENAMHI). De todos los días, con «unos» y
+  // sin fuente (Gerson, 17 nov): hielo a 0,92 g/cm³; tanques de techo de 1100 L.
+  // El adobe no lleva `fuente` (decisión de Gerson, 17 nov): la que tenía (una revisión de la Revista Pakamuros, UNJ,
+  // 2026) salió del índice de un buscador y su página no se pudo abrir para comprobarla, y la densidad de un adobe
+  // cambia con la tierra y la paja de cada lugar. Por eso el enunciado la da como lo que es: unos 1,7 g/cm³, un valor
+  // aproximado que se asume para el problema (contrato, punto 10: datos de libro con «unos»).
   const EJEMPLOS_AREAS = [
     { nivel: 1, titulo: 'Una chacra en metros cuadrados', figura: fo({ objeto: 'terreno', largo: '250 m', ancho: '100 m', texto: '2,5 ha' }),
       enunciado: ['Una chacra de quinua en Cabana mide ', dO('2,5 ha'), '. ¿Cuántos metros cuadrados son?'],
@@ -583,7 +586,7 @@
         { texto: ['De m³ a litros, factor con L arriba.'], ecuacion: [dO('108'), ' ', { tacha: 'm³' }, ' × ', { frac: [dF('1000 L'), ['1 ', { tacha: 'm³' }]] }, ' = ', dR('108 000 L')] },
       ],
       respuesta: [dR('108 000 L')] },
-    { nivel: 2, titulo: 'Una caja de 2 dm', figura: { pieza: 'fis-area', datos: { color: 'i', cubo: { n: 2, arriba: '2 dm', nombre: 'cada cubito: 1 dm de lado' } }, estado: {} },
+    { nivel: 2, titulo: 'Una caja de 2 dm', figura: { pieza: 'fis-area', datos: { color: 'f', cubo: { n: 2, arriba: '2 dm', nombre: 'cada cubito: 1 dm de lado' } }, estado: {} },
       enunciado: ['Una caja cúbica de cartón mide ', dO('2 dm'), ' de lado. ¿Cuántos litros de agua le caben?'],
       datos: ['1 L = 1 dm³', 'Volumen de un cubo: V = lado × lado × lado'],
       solucion: [
@@ -619,9 +622,8 @@
       ],
       respuesta: [dR('460 kg')] },
     { nivel: 3, titulo: 'La masa de un adobe', figura: fo({ objeto: 'bloque', material: 'adobe', largo: '40 cm', ancho: '20 cm', alto: '10 cm', texto: '1,7 g/cm³' }),
-      enunciado: ['Un adobe mide ', dO('40 cm'), ' × ', dO('20 cm'), ' × ', dO('10 cm'), '. El adobe tradicional tiene una densidad de unos ', dO('1,7 g/cm³'), '. ¿Cuál es su masa en kilogramos?'],
+      enunciado: ['Un adobe mide ', dO('40 cm'), ' × ', dO('20 cm'), ' × ', dO('10 cm'), '. Asume que su densidad es de unos ', dO('1,7 g/cm³'), ', un valor aproximado. ¿Cuál es su masa en kilogramos?'],
       datos: ['Volumen de una caja: V = largo × ancho × alto', 'Densidad: ρ = m / V (masa entre volumen)', '1 kg = 1000 g'],
-      fuente: FUENTE_ADOBE,
       solucion: [
         { texto: ['Primero su volumen: largo por ancho por alto.'], ecuacion: [dO('40 cm'), ' × ', dO('20 cm'), ' × ', dO('10 cm'), ' = ', dO('8000 cm³')] },
         { texto: ['La densidad dice cuántos gramos hay en cada cm³: se multiplica.'], ecuacion: [dO('8000 '), { tacha: 'cm³' }, ' × ', { frac: [dO('1,7 g'), ['1 ', { tacha: 'cm³' }]] }, ' = 13 600 g'] },
@@ -696,12 +698,12 @@
         { id: 'mil', texto: '1000', error: 'CONV-CUADRADO', siFuera: 'Mil serían 10 filas de 100. En 1 m hay 100 filas, no 10.' },
         { id: 'millon', texto: '1 000 000', error: 'CONV-CUBO', siFuera: 'Un millón es lo que cabe en un metro cúbico: ahí el factor va tres veces.' },
       ],
-      dibujo: { datos: { color: 'i', cuadros: [{ lado: 1, celdas: 1, arriba: '1 m', abajo: '1 m²', nombre: 'un cuadro de 1 m de lado' }] }, estado: {} },
-      revelar: { datos: Object.assign({ color: 'i' }, VISTAS_AREA[1]), estado: {} },
+      dibujo: { datos: { color: 'f', cuadros: [{ lado: 1, celdas: 1, arriba: '1 m', abajo: '1 m²', nombre: 'un cuadro de 1 m de lado' }] }, estado: {} },
+      revelar: { datos: Object.assign({ color: 'f' }, VISTAS_AREA[1]), estado: {} },
       coincide: 'Coincide: 100 filas de 100 cuadraditos son 10 000 cm².',
     },
     mira: {
-      datos: { color: 'i', vistas: VISTAS_AREA },
+      datos: { color: 'f', vistas: VISTAS_AREA },
       pasos: [
         { estado: { vista: 0 }, texto: 'Un metro tiene 10 dm: en una fila caben 10 cuadros de 1 dm.', ecuacion: ['1 m = 10 dm'] },
         { estado: { vista: 0 }, texto: 'Son 10 filas de 10: el factor 10 entra dos veces.', ecuacion: ['1 m² = 10 dm × 10 dm = 100 dm²'] },
@@ -727,7 +729,7 @@
           return {
             enunciado: `Una chacra en Puno mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son?`,
             datos: [HA],
-            dibujo: { datos: { color: 'i', cuadros: [{ lado: 100, celdas: 0.1, arriba: '100 m', abajo: '1 ha', nombre: 'cada cuadro: 10 m × 10 m' }] }, estado: {} },
+            dibujo: { datos: { color: 'f', cuadros: [{ lado: 100, celdas: 0.1, arriba: '100 m', abajo: '1 ha', nombre: 'cada cuadro: 10 m × 10 m' }] }, estado: {} },
             pasos: [
               { tipo: 'pide', texto: 'Piden la misma área en metros cuadrados.' },
               { tipo: 'datos', texto: `La chacra mide ${f(ha, 1)} ha, y una hectárea es un cuadrado de 100 m de lado.` },
@@ -758,7 +760,7 @@
           return {
             enunciado: `Un tanque de agua del techo guarda ${f(L, 0)} L. ¿Cuántos m³ son?`,
             datos: ['1 m = 10 dm', '1 L = 1 dm³'],
-            dibujo: { datos: { color: 'i', cubo: { n: 10, arriba: '1 m = 10 dm', nombre: 'cada cubito: 1 dm³ = 1 L' } }, estado: {} },
+            dibujo: { datos: { color: 'f', cubo: { n: 10, arriba: '1 m = 10 dm', nombre: 'cada cubito: 1 dm³ = 1 L' } }, estado: {} },
             pasos: [
               { tipo: 'pide', texto: 'Piden el mismo volumen en metros cúbicos.' },
               { tipo: 'datos', texto: `El tanque guarda ${f(L, 0)} litros, y cada litro es un dm³.` },
@@ -929,8 +931,9 @@
     return PAREJAS[(ia + 1 + ib) % PAREJAS.length];
   };
   // Ejemplos resueltos de «Análisis dimensional» (pestaña «Ejemplos», 16 nov): 3 niveles × 5, con el molde de
-  // EJEMPLOS_UNIDADES. Colores: la dimensión de un dato, naranja (c-o); la que resulta, turquesa (c-i); la incógnita
-  // (una constante o un exponente), roja (c-h), como la k de esta idea. Notación de la app: [v] = L T⁻¹.
+  // EJEMPLOS_UNIDADES. Colores (§5b): la dimensión de un dato, naranja (c-o); lo que se pide, violeta (c-f): la
+  // dimensión que resulta y la incógnita (una constante o un exponente), como la k de esta idea. En la figura, lo que se
+  // pide también va en violeta (colorFuerza, colorTexto, la presión). Notación de la app: [v] = L T⁻¹.
   // Datos (contrato, punto 13): la fórmula, las unidades de lo que no se pide (g en m/s²) o su dimensión ([F] si no es
   // lo que se pide), las dimensiones de base, qué es [ ] y «·» y la regla de los exponentes. Nunca la dimensión que se
   // pide ni un paso hecho: el péndulo avisa que T es el período y L el largo, pero el alumno escribe [T] y [L].
@@ -941,7 +944,7 @@
   // m·v²/t = (1,2,−3) ≠ F = (1,1,−2), m·v/t = (1,1,−2); v², v₀² y 2·a·d = (0,2,−2); ρ·g = (1,−2,−2) ≠ P;
   // péndulo (T, L y g): x + y = 0, −2y = 1 → x = ½, y = −½; [A] = E/v² = M, [B] = E/P = L³;
   // [A/B] = (0,1,−2) − (0,1,−1) = T⁻¹; [G] = F·L²/M² = (−1,3,−2); aire: (1,−3+2x+y,−y) = (1,1,−2) → y = 2, x = 1.
-  const dH = t => ({ v: 'c-h', t });
+  const dH = t => ({ v: 'c-f', t });
   // La balanza de un ejemplo: un lado sin exps se muestra con «?»; sin veredicto ni inclinación (planteamiento).
   const lado = (nombre, exps) => (exps ? { nombre, exps } : { nombre, oculta: true });
   const bal = (iz, ie, de, ee) => ({ pieza: 'fis-balanza-dim', datos: { izq: lado(iz, ie), der: lado(de, ee), sinVeredicto: true }, estado: {} });
@@ -954,7 +957,7 @@
         { texto: ['Se dividen las letras: L entre T se escribe L T⁻¹.'], ecuacion: ['[v] = ', { frac: [dO('L'), dO('T')] }, ' = ', dR('L T⁻¹')] },
       ],
       respuesta: ['[v] = ', dR('L T⁻¹'), ', en m/s o en km/h'] },
-    { nivel: 1, titulo: 'La dimensión de un área', figura: fo({ objeto: 'terreno', largo: 'largo', ancho: 'ancho', texto: 'A' }),
+    { nivel: 1, titulo: 'La dimensión de un área', figura: fo({ objeto: 'terreno', largo: 'largo', ancho: 'ancho', texto: 'A', colorTexto: 'f' }),
       enunciado: ['Una chacra es un rectángulo. ¿Cuál es la dimensión de su área A?'],
       datos: ['Área de un rectángulo: A = largo × ancho', BASE_DIM, LEE_DIM],
       solucion: [
@@ -971,7 +974,7 @@
         { texto: ['Dividir entre L³ se escribe L⁻³.'], ecuacion: ['[ρ] = ', { frac: [dO('M'), dO('L³')] }, ' = ', dR('M L⁻³')] },
       ],
       respuesta: ['[ρ] = ', dR('M L⁻³'), ', en kg/m³ o en g/cm³'] },
-    { nivel: 1, titulo: 'La dimensión de una fuerza', figura: fo({ objeto: 'caja', masa: 'm', fuerza: 'F', aceleracion: 'a', color2: 'o' }),
+    { nivel: 1, titulo: 'La dimensión de una fuerza', figura: fo({ objeto: 'caja', masa: 'm', fuerza: 'F', aceleracion: 'a', color2: 'o', colorFuerza: 'f' }),
       enunciado: ['Un estudiante empuja una caja de masa m y le da una aceleración a. ¿Cuál es la dimensión de la fuerza F?'],
       datos: ['Fuerza: F = m · a (masa por aceleración)', 'La aceleración a se mide en m/s²', BASE_DIM, LEE_DIM],
       solucion: [
