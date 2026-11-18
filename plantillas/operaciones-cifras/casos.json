@@ -1,0 +1,311 @@
+{
+  "plantilla": "operaciones-cifras",
+  "nota": "entrada es _datos del generador. respuesta: un número, el numeral escrito como lo ve el alumno (342₍₆₎), la cifra manchada como texto o la frase de las cifras («4 o 5 cifras»). Por tipo: suma-base, resta-base, ca-base y por-cifra-base, la cuenta en base n; cuanto-lleva, la llevada a las cajas; base-cuadra, la base en que la suma de la etiqueta cuadra; aperturas, cuántos envases se abren; suma-tres, el minuendo si minuendo + sustraendo + diferencia = suma; ca-oculto, a + b + c con CA(p̅a̅q̅) = b̅r̅c̅; mancha-dos, la suma de las dos cifras manchadas; mancha-resta, la cifra de arriba o la de abajo; reverso, el mayor a̅b̅c̅ con a̅b̅c̅ − c̅b̅a̅ = diferencia; los-dos, lo que sube (F + s) × (G + t) sobre F × G; exceso, lo que falta para otra bolsita; restos, lo que sobra si es k veces lo que falta; dos-repartos, los sobrinos; uno-mas, los caramelos; cifras-factor, las cifras de B si A × B tiene c y A tiene p; potencias, las cifras de A² × B³.",
+  "verificacion": "Script aparte (18 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: suma y resta con enteros de Python, cambia de base por divisiones sucesivas, simula la resta a mano para contar los envases abiertos, llena las manchas por fuerza bruta, busca la base, los sobrinos, el dividendo y los restos probando todos los valores, y cuenta las cifras de los productos extremos con enteros grandes. Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta; el mismo script cuadró con 3000 problemas seguidos.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "cifras-ocultas",
+        "tipo": "reverso",
+        "nivel": 3,
+        "diferencia": 594
+      },
+      "esperado": {
+        "respuesta": 993,
+        "texto": "993"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "cifras-producto",
+        "tipo": "potencias",
+        "nivel": 3,
+        "p": 4,
+        "q": 3
+      },
+      "esperado": {
+        "respuesta": "de 13 a 17 cifras",
+        "texto": "de 13 a 17 cifras"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "defecto-exceso",
+        "tipo": "dos-repartos",
+        "nivel": 3,
+        "p": 7,
+        "e": 3,
+        "sobran": 3,
+        "faltan": 21
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "idea": "complemento",
+        "tipo": "ca-oculto",
+        "nivel": 3,
+        "p": 7,
+        "q": 2,
+        "r": 8
+      },
+      "esperado": {
+        "respuesta": 11,
+        "texto": "11"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "idea": "prestamo",
+        "tipo": "aperturas",
+        "nivel": 2,
+        "minuendo": "6083",
+        "sustraendo": "1988",
+        "n": 10
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 veces"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "prestamo",
+        "tipo": "resta-base",
+        "nivel": 2,
+        "minuendo": "404",
+        "sustraendo": "317",
+        "n": 8
+      },
+      "esperado": {
+        "respuesta": "65₍₈₎",
+        "texto": "65₍₈₎"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "cifras-ocultas",
+        "tipo": "mancha-dos",
+        "nivel": 2,
+        "sumandos": [
+          "4☐4",
+          "☐79"
+        ],
+        "resultado": "813"
+      },
+      "esperado": {
+        "respuesta": "6",
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "defecto-exceso",
+        "tipo": "uno-mas",
+        "nivel": 3,
+        "p": 6,
+        "sobran": 2,
+        "faltan": 10
+      },
+      "esperado": {
+        "respuesta": 74,
+        "texto": "74"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "idea": "prestamo",
+        "tipo": "ceros",
+        "nivel": 2,
+        "minuendo": "7006",
+        "sustraendo": "4282",
+        "n": 10
+      },
+      "esperado": {
+        "respuesta": 2724,
+        "texto": "2 724"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "cuanto-lleva",
+        "nivel": 2,
+        "sumandos": [
+          "994",
+          "172",
+          "833",
+          "288"
+        ],
+        "n": 10
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "idea": "prestamo",
+        "tipo": "suma-tres",
+        "nivel": 3,
+        "suma": 1884
+      },
+      "esperado": {
+        "respuesta": 942,
+        "texto": "942"
+      }
+    },
+    {
+      "semilla": 36,
+      "entrada": {
+        "idea": "complemento",
+        "tipo": "ca-base",
+        "nivel": 2,
+        "N": "231",
+        "n": 6
+      },
+      "esperado": {
+        "respuesta": "325₍₆₎",
+        "texto": "325₍₆₎"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "base-cuadra",
+        "nivel": 3,
+        "sumandos": [
+          "16",
+          "55"
+        ],
+        "resultado": "72"
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "base 9"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "idea": "cifras-ocultas",
+        "tipo": "mancha-resta",
+        "nivel": 3,
+        "sub": "arriba",
+        "minuendo": "5☐4",
+        "sustraendo": "☐46",
+        "diferencia": "378"
+      },
+      "esperado": {
+        "respuesta": "2",
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 44,
+      "entrada": {
+        "idea": "multiplicar-partes",
+        "tipo": "por-cifra-base",
+        "nivel": 2,
+        "N": "565",
+        "m": 5,
+        "n": 7
+      },
+      "esperado": {
+        "respuesta": "4154₍₇₎",
+        "texto": "4154₍₇₎"
+      }
+    },
+    {
+      "semilla": 47,
+      "entrada": {
+        "idea": "defecto-exceso",
+        "tipo": "exceso",
+        "nivel": 1,
+        "D": 28,
+        "d": 6
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 60,
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "suma-base",
+        "nivel": 2,
+        "sumandos": [
+          "428",
+          "484"
+        ],
+        "n": 9
+      },
+      "esperado": {
+        "respuesta": "1023₍₉₎",
+        "texto": "1023₍₉₎"
+      }
+    },
+    {
+      "semilla": 68,
+      "entrada": {
+        "idea": "cifras-producto",
+        "tipo": "cifras-factor",
+        "nivel": 2,
+        "p": 2,
+        "c": 9
+      },
+      "esperado": {
+        "respuesta": "7 o 8 cifras",
+        "texto": "7 o 8 cifras"
+      }
+    },
+    {
+      "semilla": 76,
+      "entrada": {
+        "idea": "multiplicar-partes",
+        "tipo": "los-dos",
+        "nivel": 3,
+        "F": 19,
+        "G": 12,
+        "s": 3,
+        "t": 2
+      },
+      "esperado": {
+        "respuesta": 80,
+        "texto": "80"
+      }
+    },
+    {
+      "semilla": 83,
+      "entrada": {
+        "idea": "defecto-exceso",
+        "tipo": "restos",
+        "nivel": 2,
+        "d": 35,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 28,
+        "texto": "28"
+      }
+    }
+  ]
+}

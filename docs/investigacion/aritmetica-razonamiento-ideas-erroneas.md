@@ -205,6 +205,87 @@ Verificados con `fractions.Fraction`, `math.comb`, `math.perm` e `itertools.prod
 | Móviles | Encuentro y alcance | 300 km, 70 y 50 km/h de frente; 60 km, 70 y 50 km/h en el mismo sentido | 5/2 h; 3 h (RM4: 0,5 h) |
 | Sucesión | Objeto entero | f(n) = 3n + 2 | f(10) = 32, f(20) = 62 (RM2: 64) |
 
+## Las cuatro operaciones (18 nov)
+
+Códigos AT de la unidad `aritmetica.cuatro-operaciones` (teoría `contenido/teoria/aritmetica/cuatro-operaciones.js` y
+práctica `plantillas/operaciones-cifras/`), pedidos por la auditoría de Numeración (B14) y por la propuesta de la etapa 4
+(`docs/etapa4/propuesta-aritmetica.md` §4). **Todos son hipótesis**: no encontramos estudios con cifras de errores en las
+cuatro operaciones por columnas, en otras bases, el complemento ni las cifras ocultas. Los respaldan, como mucho, las
+trampas deducidas de los solucionarios de San Marcos (`docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md`):
+la 29 (préstamo olvidado en la resta y complemento aplicado también a la última cifra; 2022, 2024-I y 2026-I) y la 18
+(resto por defecto contra resto por exceso; 2023-I, 2023-II y 2024-II). Se confirman con las predicciones de la app y con
+la práctica (cuántos eligen cada distractor), como en los otros temas. Los códigos que también usa Numeración
+(AT-DECIMAL, AT-MENOR) tienen aquí el sentido de esta unidad.
+
+| Código | Idea | Qué hace el alumno | Ejemplo (correcto → error) | Respaldo |
+| --- | --- | --- | --- | --- |
+| AT-DECIMAL | 1, 2, 5 | Opera en otra base como en base 10: lleva al llegar a 10, o abrir un envase le da 10 | 34₍₅₎ + 23₍₅₎ = 112₍₅₎ → 57₍₅₎ | Hipótesis |
+| AT-LLEVA-OLVIDA | 1, 4, 5 | No suma la llevada en la columna siguiente | 34₍₅₎ + 23₍₅₎ → 102₍₅₎ | Hipótesis (trampa 29) |
+| AT-LLEVA-FINAL | 1, 5 | No anota la última llevada | 34₍₅₎ + 23₍₅₎ → 12₍₅₎ | Hipótesis |
+| AT-LLEVA-UNO | 1, 5 | Lleva 1 donde van 2 o más | 58 + 67 + 49 = 174 → 164 | Hipótesis |
+| AT-LLEVA-DOBLE | 1, 4 | Suma dos veces la llevada que llega | 6☐9 + 231 = 930: ☐ = 9 → 8 | Hipótesis |
+| AT-LLEVA-CIFRA | 1 | Confunde la cifra que se anota con lo que se lleva | columna de 23: lleva 2 → 3 | Hipótesis |
+| AT-LLEVA-TODO | 1 | Lleva la suma entera de la columna | columna de 23: lleva 2 → 23 | Hipótesis |
+| AT-CADENA | 1 | No cuenta la llevada que llega al decidir la que sale | 9 + 9 + 7 + 2 = 27: lleva 2 → sin el 2, 25: lleva 2; con 18 + 2 → 1 | Hipótesis |
+| AT-MENOR | 1, 4 | Toma el menor caso posible sin comprobar (la menor base, el menor número) | 13₍ₙ₎ + 13₍ₙ₎ = 31₍ₙ₎: n = 5 → 4 | Hipótesis |
+| AT-SUMA-COLUMNA | 1 | Toma la suma de los sueltos como la base | 3 + 3 = 6 → n = 6 | Hipótesis |
+| AT-MENOR-MAYOR | 2, 4 | En cada columna resta el menor del mayor, sin pedir prestado | 5 003 − 1 478 = 3 525 → 4 475 | Hipótesis |
+| AT-SIN-DESCONTAR | 2, 4 | Presta y no le quita 1 a la columna que prestó | 5 003 − 1 478 → 4 635 | Hipótesis (trampa 29; San Marcos 2024-I) |
+| AT-CERO-DIEZ | 2 | Un 0 que presta queda en 10 (en n), no en 9 (en n − 1) | 5 003 − 1 478 → 3 635 | Hipótesis |
+| AT-DOBLE-DESCUENTO | 2, 4 | Le quita 1 de más a la columna que prestó, o cuenta un envase de más | 8☐2 − ☐57 = 375: ☐ = 4 → 3 | Hipótesis |
+| AT-PRESTA-COLUMNAS | 2 | Cuenta solo las columnas que no alcanzan, sin los ceros que también abren | 6 600 − 4 605: 3 aperturas → 1 | Hipótesis |
+| AT-PRESTA-CEROS | 2 | Cuenta los ceros del minuendo, no los envases que se abren | 6 600 − 4 605 → 2 | Hipótesis |
+| AT-RESTA-TOTAL | 2 | Toma la suma de minuendo, sustraendo y diferencia como el minuendo | suman 240: minuendo 120 → 240 | Hipótesis |
+| AT-RESTA-TERCIO | 2 | Reparte esa suma en tres partes iguales | → 80 | Hipótesis |
+| AT-RESTA-CUARTO | 2 | Toma la cuarta parte de esa suma | → 60 | Hipótesis |
+| AT-CA9 | 3 | Resta de 9 todas las cifras, también la última que no es 0 | CA(4 073) = 5 927 → 5 926 | Hipótesis (trampa 29; San Marcos 2026-I) |
+| AT-CERO-QUEDA | 3 | Deja un 0 de adentro como 0 | CA(4 073) → 5 027 | Hipótesis |
+| AT-CA-K | 3 | Usa una potencia de la base de más | CA(4 073) → 95 927 | Hipótesis |
+| AT-CA-DIEZ | 3 | Resta de 10 todas las cifras | CA(4̅a̅3̅) = b̅3̅c̅: a + b + c = 18 → 20 | Hipótesis |
+| AT-CA-SIN-RESTAR | 3 | Deja la cifra del medio sin restarla de 9 | → 15 | Hipótesis |
+| AT-CA-DECIMAL | 3 | Saca el complemento en otra base con la regla de base 10 | CA(533₍₆₎) = 23₍₆₎ → 467₍₆₎ | Hipótesis |
+| AT-CA-CEROS | 3 | Saca el complemento sin los ceros finales y no los repone (nuevo en la práctica) | CA(3 560) = 6 440 → 644 | Hipótesis |
+| AT-CA-MISMO | 3 | Toma el complemento como si fuera el número | — | Hipótesis |
+| AT-CA-MITAD, AT-CA-TERCIO | 3 | Toma mal la relación entre el número y su complemento | — | Hipótesis |
+| AT-SUFICIENCIA | 3, 4, 5 | Cree que faltan datos («No se puede saber») cuando las columnas dejan una sola cifra | (código de razonamiento numérico) | Hipótesis |
+| AT-REVERSO-CIEN | 4 | En a̅b̅c̅ − c̅b̅a̅ mira solo las centenas | — | Hipótesis |
+| AT-REVERSO-NOVENTA | 4 | En a̅b̅c̅ − c̅b̅a̅ olvida las unidades | — | Hipótesis |
+| AT-REVERSO-ONCE | 4 | Usa el 11 de la suma con el reverso (a̅b̅ + b̅a̅) en una resta | — | Hipótesis |
+| AT-MEDIO-CERO | 4 | No aprovecha la cifra del medio, que se cancela, y la deja en 0 | mayor a̅b̅c̅ con diferencia 495: 994 → 904 | Hipótesis (San Marcos 2019-II) |
+| AT-REVERSO-C | 4 | Toma c = a − c | → 995 | Hipótesis |
+| AT-RESTA-AUMENTO | 5 | Resta el aumento de cada bolsa a lo que sube el pedido | sube 52 con 4 por bolsa: 13 → 48 | Hipótesis |
+| AT-SUMA-AUMENTO | 5 | Suma el aumento de cada bolsa | → 56 | Hipótesis |
+| AT-MULTIPLICA | 5 | Multiplica por el aumento en vez de dividir | → 208 | Hipótesis |
+| AT-SUBE-SOLO | 5 | Cree que el producto sube lo mismo que el factor | 14 bolsas, 4 más cada una: 56 → 4 | Hipótesis |
+| AT-SUBE-MISMO | 5 | Multiplica (o divide) el aumento por el factor que cambió | 23 por bolsa: 56 → 92 | Hipótesis |
+| AT-PRODUCTO-NUEVO | 5 | Da el producto nuevo en vez de lo que sube | → 378 | Hipótesis |
+| AT-SUMA-AUMENTOS, AT-SUMA-FACTORES | 5 | Suma en vez de multiplicar | — | Hipótesis |
+| AT-SIN-ESQUINA | 5 | Cuando cambian los dos factores, olvida la parte de los dos aumentos (s × t) | 5 bolsas de 11, +5 bolsas y +2: 75 → 65 | Hipótesis |
+| AT-EXCESO-IGUAL | 6 | Cree que el resto por exceso es el mismo que por defecto | 41 en bolsitas de 8: faltan 7 → 1 | Hipótesis (trampa 18) |
+| AT-EXCESO-DIVISOR | 6 | Responde el divisor | → 8 | Hipótesis |
+| AT-EXCESO-SUMA | 6 | Suma el resto y el divisor | → 9 | Hipótesis |
+| AT-EXCESO-RESTA | 6 | Usa q en vez de q + 1 al restar el resto por exceso | 18 × 23 − 10 = 404 → 386 | Hipótesis |
+| AT-EXCESO-MAS | 6 | Suma el resto por exceso en vez de restarlo | → 424 | Hipótesis |
+| AT-EXCESO-CAMBIA | 6 | Cambia un resto por el otro | → 406 | Hipótesis |
+| AT-RESTO-MAX | 6 | Da el mayor resto posible, d − 1 | sobra el triple de lo que falta con d = 32: 24 → 31 | Hipótesis |
+| AT-RESTO-MITAD | 6 | Da la mitad del divisor, como si los dos restos fueran iguales | → 16 | Hipótesis |
+| AT-REPARTO-SIN-DIVIDIR | 6 | En dos repartos junta lo que sobra y lo que falta y no lo divide | sobran 2 con 7, faltan 14 con 9: 8 → 16 | Hipótesis (San Marcos 2023-II) |
+| AT-REPARTO-TOTAL | 6 | Responde los caramelos en vez de cuántos son | → 58 | Hipótesis |
+| AT-REPARTO-RESTA | 6 | Resta lo que sobra y lo que falta | → 12 | Hipótesis |
+| AT-REPARTO-CUENTA | 6 | Responde cuántos son en vez de los caramelos | 4 a cada nieto, sobran 3, faltan 2: 23 → 5 | Hipótesis (San Marcos 2024-II) |
+| AT-REPARTO-NUEVO | 6 | Toma el total del reparto que no alcanza | → 25 | Hipótesis |
+| AT-REPARTO-SIN-RESTO | 6 | Olvida sumar lo que sobra | → 20 | Hipótesis |
+| AT-COTA-RESTA | 7 | En un cociente resta las cifras sin mirar el otro extremo | 7 y 4 cifras: 3 o 4 → siempre 3 | Hipótesis |
+| AT-COTA-MAX | 7 | Mira solo el caso mayor | 2 y 3 cifras: 4 o 5 → siempre 5 | Hipótesis |
+| AT-COTA-MIN | 7 | Mira solo el caso menor | → siempre 4 | Hipótesis |
+| AT-COTA-PRODUCTO | 7 | Usa la regla del producto en un cociente | 7 y 4 cifras → 10 o 11 | Hipótesis |
+| AT-COTA-MULT | 7 | Multiplica las cantidades de cifras | 2 y 3 cifras → 5 o 6 | Hipótesis |
+| AT-COTA-SUMA | 7 | Suma las cifras cuando se busca un factor | A × B de 9 cifras, A de 3: 6 o 7 → 11 o 12 | Hipótesis |
+| AT-COTA-UNA | 7 | Con potencias, deja un margen de una sola cifra | A² × B³ de 3 y 3 cifras: de 11 a 15 → de 14 a 15 | Hipótesis |
+| AT-COTA-EXPONENTE | 7 | No cuenta los exponentes: usa la regla de A × B | → de 5 a 6 | Hipótesis |
+
+Los ejemplos con números son casos de la práctica o de la propuesta, recalculados aparte (`plantillas/operaciones-cifras/casos.json`).
+
 ## Huecos y siguientes pasos
 
 - **Abrir los originales.** En esta sesión no se pudo descargar nada. Las cifras "por confirmar" son las de la tesis de Roa sobre Navarro-Pelayo (37,8 % y 66,6 %), la tabla de Lecoutre (51 %), el 68 % de Clement y el 40 % de la regla del número entero de Resnick. El artículo de 1996 de Navarro-Pelayo y otros está en acceso abierto en la revista *Educación Matemática* y en ugr.es; Jacobs Danan y Gelman (2018) está en PMC; Van Dooren y otros (2005) y De Bock y otros (1998) son de pago.

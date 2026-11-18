@@ -359,7 +359,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": ["aritmetica.numeracion"],
-      "plantillas": ["cuatro-operaciones"],
+      "plantillas": ["operaciones-cifras", "cuatro-operaciones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

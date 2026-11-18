@@ -585,6 +585,18 @@ const V = {
   'ari-18': d => { const r = motor('cuatro-operaciones').division(d.D, d.d), e = r.errores;
     if (r.exacta) throw new Error('la división debe ser inexacta');
     return { correcta: r.rExceso, errores: { 'residuo-por-exceso-igual-al-por-defecto': e.igualAlDefecto, 'resta-desde-el-residuo-maximo': e.divisorMenosUnoMenosR, 'suma-el-divisor-al-residuo': e.sumaElDivisor } }; },
+  // ari-29 y ari-30 (18 nov): ítems de la práctica operaciones-cifras, verificados con el motor de la escena (otro camino).
+  'ari-29': d => { const r = motor('cuatro-operaciones').complemento(String(d.N), 10), e = r.errores;
+    return { correcta: r.valor, errores: { 'complemento-de-9-todas': Number(e.todasANueve), 'deja-el-cero-de-adentro': Number(e.dejaElCero), 'complemento-con-una-potencia-de-mas': Number(e.potenciaDeMas) } }; },
+  'ari-30': d => {
+    // M − S = D se reconstruye como la suma S + D = M; la cifra pedida es la de las centenas de S. La llevada que entra
+    // a las centenas es el préstamo que dieron: quien no lo descuenta la ve 1 más grande, y quien lo descuenta dos veces, 1 menos.
+    const r = motor('cuatro-operaciones').cifrasFaltantes([d.sustraendo, String(d.diferencia)], d.minuendo, 10);
+    if (!r.unica || r.huecos[0].fila !== 0 || r.huecos[0].orden !== 2) throw new Error('la cifra pedida debe ser la única de las centenas del sustraendo');
+    const presto = r.columnas[2].llevadaEntra, c = r.faltan[0];
+    if (!presto) throw new Error('las centenas deben haber prestado');
+    return { correcta: c, errores: { 'presta-sin-descontar': c + presto, 'descuenta-dos-veces': c - presto } };
+  },
   'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
     return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
   'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;

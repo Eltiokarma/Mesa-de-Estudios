@@ -1,0 +1,24 @@
+{
+  "id": "operaciones-cifras",
+  "titulo": "El cuaderno de las cuentas",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.cuatro-operaciones"
+  ],
+  "temas": [
+    "Adición con llevadas",
+    "Sustracción y préstamos",
+    "Complemento aritmético",
+    "Cifras ocultas en las operaciones",
+    "Multiplicación",
+    "Operaciones en otras bases",
+    "División entera por defecto y por exceso",
+    "Cantidad de cifras de un producto o cociente"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

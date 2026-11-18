@@ -3489,6 +3489,7 @@
       "aritmetica.numeracion"
      ],
      "plantillas": [
+      "operaciones-cifras",
       "cuatro-operaciones"
      ],
      "teoria": {
@@ -9142,6 +9143,22 @@
    "archivos": [
     "/plantillas/ondas-llegadas/generador.js",
     "/plantillas/ondas-llegadas/papel.json"
+   ]
+  },
+  "operaciones-cifras": {
+   "id": "operaciones-cifras",
+   "titulo": "El cuaderno de las cuentas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.cuatro-operaciones"
+   ],
+   "url": "#/practica/operaciones-cifras",
+   "papel": "/plantillas/operaciones-cifras/papel.json",
+   "archivos": [
+    "/plantillas/operaciones-cifras/generador.js",
+    "/plantillas/operaciones-cifras/papel.json"
    ]
   },
   "optica-espejo-esferico": {

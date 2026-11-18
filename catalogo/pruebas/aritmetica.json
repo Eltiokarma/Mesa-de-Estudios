@@ -1,12 +1,12 @@
 {
   "curso": "aritmetica",
-  "version": "2.1.0",
-  "fecha": "2026-11-06",
+  "version": "2.2.0",
+  "fecha": "2026-11-18",
   "minutos": 16,
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Diez pares, dos por cada módulo del curso: porcentajes sucesivos, regla de tres, los dos dados, la torre de fichas y la barra que se parte. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica.",
+  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -291,6 +291,26 @@
     "resta-lo-que-gasto-de-mas": {
       "respaldo": "hipotesis",
       "describe": "Al ir hacia atrás, resta lo que se gastó de más en vez de devolverlo"
+    },
+    "complemento-de-9-todas": {
+      "respaldo": "hipotesis",
+      "describe": "Resta de 9 todas las cifras, también la última que no es 0 (AT-CA9; trampa 29 de San Marcos)"
+    },
+    "deja-el-cero-de-adentro": {
+      "respaldo": "hipotesis",
+      "describe": "Deja como 0 un cero de adentro, en vez de restarlo de 9 (AT-CERO-QUEDA)"
+    },
+    "complemento-con-una-potencia-de-mas": {
+      "respaldo": "hipotesis",
+      "describe": "Resta de una potencia de 10 con un cero de más (AT-CA-K)"
+    },
+    "descuenta-dos-veces": {
+      "respaldo": "hipotesis",
+      "describe": "Le quita 2 a la columna que prestó, en vez de 1 (AT-DOBLE-DESCUENTO)"
+    },
+    "cree-que-faltan-datos": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que con dos cifras ocultas faltan datos, aunque cada columna deja una sola (AT-SUFICIENCIA)"
     }
   },
   "pares": [
@@ -356,70 +376,6 @@
             "texto": "S/ 525",
             "valor": 525,
             "error": "un-solo-descuento"
-          }
-        ]
-      }
-    },
-    {
-      "par": "ari-04",
-      "plantilla": "porcentajes-sucesivos",
-      "unidad": "aritmetica.porcentajes",
-      "mide": "Subir y bajar el mismo porcentaje no devuelve el valor inicial",
-      "A": {
-        "enunciado": "Un sueldo de S/ 1500 sube un 10 % y, al mes siguiente, baja un 10 %. ¿Cuánto es el sueldo ahora?",
-        "datos": {
-          "P": 1500,
-          "a": 10
-        },
-        "opciones": [
-          {
-            "texto": "S/ 1500",
-            "valor": 1500,
-            "error": "se-compensan"
-          },
-          {
-            "texto": "S/ 1485",
-            "valor": 1485,
-            "correcta": true
-          },
-          {
-            "texto": "S/ 1650",
-            "valor": 1650,
-            "error": "solo-aumento"
-          },
-          {
-            "texto": "S/ 15",
-            "valor": 15,
-            "error": "monto-variacion"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Un pasaje de S/ 2000 sube un 20 % en julio y, en agosto, baja un 20 %. ¿Cuánto cuesta ahora?",
-        "datos": {
-          "P": 2000,
-          "a": 20
-        },
-        "opciones": [
-          {
-            "texto": "S/ 2000",
-            "valor": 2000,
-            "error": "se-compensan"
-          },
-          {
-            "texto": "S/ 1920",
-            "valor": 1920,
-            "correcta": true
-          },
-          {
-            "texto": "S/ 2400",
-            "valor": 2400,
-            "error": "solo-aumento"
-          },
-          {
-            "texto": "S/ 80",
-            "valor": 80,
-            "error": "monto-variacion"
           }
         ]
       }
@@ -899,65 +855,131 @@
       }
     },
     {
-      "par": "fr-02",
-      "plantilla": "fracciones",
-      "unidad": "aritmetica.mcd-y-mcm",
-      "mide": "Coincidencias periódicas: el primer momento común es el MCM",
+      "par": "ari-17",
+      "plantilla": "cuatro-operaciones",
+      "unidad": "aritmetica.cuatro-operaciones",
+      "nombreUnidad": "Las cuatro operaciones",
+      "mide": "Restar cuando el minuendo tiene ceros: el préstamo pasa por los ceros, que quedan en 9",
       "A": {
-        "enunciado": "Dos luces se prenden a la vez. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+        "enunciado": "Una cooperativa tenía 7002 sacos de papa en su almacén y vendió 2586. Haz la resta en columnas: ¿cuántos sacos le quedan?",
         "datos": {
-          "a": 8,
-          "b": 12
+          "minuendo": 7002,
+          "sustraendo": 2586
         },
         "opciones": [
           {
-            "texto": "4 segundos",
-            "valor": 4,
-            "error": "AR13-mcd-en-vez-de-mcm"
+            "texto": "5584",
+            "valor": 5584,
+            "error": "resta-el-menor-del-mayor"
           },
           {
-            "texto": "24 segundos",
-            "valor": 24,
+            "texto": "4416",
+            "valor": 4416,
             "correcta": true
           },
           {
-            "texto": "96 segundos",
-            "valor": 96,
-            "error": "AR13-producto"
+            "texto": "4526",
+            "valor": 4526,
+            "error": "ceros-que-prestan-quedan-en-10"
           },
           {
-            "texto": "20 segundos",
-            "valor": 20,
-            "error": "suma"
+            "texto": "5526",
+            "valor": 5526,
+            "error": "presta-sin-descontar"
           }
         ]
       },
       "B": {
-        "enunciado": "Un paciente toma un jarabe cada 6 horas y una pastilla cada 9 horas. Al mediodía tomó los dos a la vez. ¿Cuántas horas después le vuelve a tocar tomar los dos juntos por primera vez?",
+        "enunciado": "Una biblioteca tenía 6004 libros y prestó 3257 durante el año. Haz la resta en columnas: ¿cuántos libros quedaron en los estantes?",
         "datos": {
-          "a": 6,
-          "b": 9
+          "minuendo": 6004,
+          "sustraendo": 3257
         },
         "opciones": [
           {
-            "texto": "3 horas",
-            "valor": 3,
-            "error": "AR13-mcd-en-vez-de-mcm"
+            "texto": "3857",
+            "valor": 3857,
+            "error": "presta-sin-descontar"
           },
           {
-            "texto": "54 horas",
-            "valor": 54,
-            "error": "AR13-producto"
+            "texto": "2857",
+            "valor": 2857,
+            "error": "ceros-que-prestan-quedan-en-10"
           },
           {
-            "texto": "18 horas",
-            "valor": 18,
+            "texto": "2747",
+            "valor": 2747,
             "correcta": true
           },
           {
-            "texto": "15 horas",
-            "valor": 15,
-            "error": "suma"
+            "texto": "3253",
+            "valor": 3253,
+            "error": "resta-el-menor-del-mayor"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-30",
+      "plantilla": "operaciones-cifras",
+      "unidad": "aritmetica.cuatro-operaciones",
+      "nombreUnidad": "Las cuatro operaciones",
+      "mide": "Cifras ocultas en una resta con préstamos: se reconstruye columna por columna desde las unidades, y la columna que prestó queda con uno menos",
+      "A": {
+        "enunciado": "En una boleta de venta, la humedad borró dos cifras de una resta bien hecha: 7☐3 − ☐68 = 445. Cada ☐ es una sola cifra. ¿Qué cifra se borró en el número que se resta?",
+        "datos": {
+          "minuendo": "7?3",
+          "sustraendo": "?68",
+          "diferencia": 445
+        },
+        "opciones": [
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "presta-sin-descontar"
+          },
+          {
+            "texto": "No se puede saber",
+            "error": "cree-que-faltan-datos"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "correcta": true
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "descuenta-dos-veces"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un recibo viejo, la humedad borró dos cifras de una resta bien hecha: 9☐4 − ☐79 = 535. Cada ☐ es una sola cifra. ¿Qué cifra se borró en el número que se resta?",
+        "datos": {
+          "minuendo": "9?4",
+          "sustraendo": "?79",
+          "diferencia": 535
+        },
+        "opciones": [
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "descuenta-dos-veces"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "No se puede saber",
+            "error": "cree-que-faltan-datos"
+          },
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "presta-sin-descontar"
           }
         ]
       }
@@ -1090,136 +1112,6 @@
             "texto": "6",
             "valor": 6,
             "error": "base-minima-como-respuesta"
-          }
-        ]
-      }
-    },
-    {
-      "par": "ari-17",
-      "plantilla": "cuatro-operaciones",
-      "unidad": "aritmetica.cuatro-operaciones",
-      "nombreUnidad": "Las cuatro operaciones",
-      "mide": "Restar cuando el minuendo tiene ceros: el préstamo pasa por los ceros, que quedan en 9",
-      "A": {
-        "enunciado": "Una cooperativa tenía 7002 sacos de papa en su almacén y vendió 2586. Haz la resta en columnas: ¿cuántos sacos le quedan?",
-        "datos": {
-          "minuendo": 7002,
-          "sustraendo": 2586
-        },
-        "opciones": [
-          {
-            "texto": "5584",
-            "valor": 5584,
-            "error": "resta-el-menor-del-mayor"
-          },
-          {
-            "texto": "4416",
-            "valor": 4416,
-            "correcta": true
-          },
-          {
-            "texto": "4526",
-            "valor": 4526,
-            "error": "ceros-que-prestan-quedan-en-10"
-          },
-          {
-            "texto": "5526",
-            "valor": 5526,
-            "error": "presta-sin-descontar"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Una biblioteca tenía 6004 libros y prestó 3257 durante el año. Haz la resta en columnas: ¿cuántos libros quedaron en los estantes?",
-        "datos": {
-          "minuendo": 6004,
-          "sustraendo": 3257
-        },
-        "opciones": [
-          {
-            "texto": "3857",
-            "valor": 3857,
-            "error": "presta-sin-descontar"
-          },
-          {
-            "texto": "2857",
-            "valor": 2857,
-            "error": "ceros-que-prestan-quedan-en-10"
-          },
-          {
-            "texto": "2747",
-            "valor": 2747,
-            "correcta": true
-          },
-          {
-            "texto": "3253",
-            "valor": 3253,
-            "error": "resta-el-menor-del-mayor"
-          }
-        ]
-      }
-    },
-    {
-      "par": "ari-18",
-      "plantilla": "cuatro-operaciones",
-      "unidad": "aritmetica.cuatro-operaciones",
-      "nombreUnidad": "Las cuatro operaciones",
-      "mide": "Residuo por exceso: lo que falta para completar otro grupo es el divisor menos el residuo por defecto",
-      "A": {
-        "enunciado": "Se empacan 89 panes en bolsas de 12. Se llenan todas las bolsas que se pueda y sobran algunos panes. ¿Cuántos panes faltan para que esos panes sobrantes completen otra bolsa?",
-        "datos": {
-          "D": 89,
-          "d": 12
-        },
-        "opciones": [
-          {
-            "texto": "17",
-            "valor": 17,
-            "error": "suma-el-divisor-al-residuo"
-          },
-          {
-            "texto": "5",
-            "valor": 5,
-            "error": "residuo-por-exceso-igual-al-por-defecto"
-          },
-          {
-            "texto": "6",
-            "valor": 6,
-            "error": "resta-desde-el-residuo-maximo"
-          },
-          {
-            "texto": "7",
-            "valor": 7,
-            "correcta": true
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Se acomodan 74 sillas en filas de 11. Se completan todas las filas que se pueda y sobran algunas sillas. ¿Cuántas sillas faltan para que esas sillas sobrantes completen otra fila?",
-        "datos": {
-          "D": 74,
-          "d": 11
-        },
-        "opciones": [
-          {
-            "texto": "8",
-            "valor": 8,
-            "error": "residuo-por-exceso-igual-al-por-defecto"
-          },
-          {
-            "texto": "2",
-            "valor": 2,
-            "error": "resta-desde-el-residuo-maximo"
-          },
-          {
-            "texto": "3",
-            "valor": 3,
-            "correcta": true
-          },
-          {
-            "texto": "19",
-            "valor": 19,
-            "error": "suma-el-divisor-al-residuo"
           }
         ]
       }
@@ -1887,6 +1779,262 @@
             "texto": "28 panes",
             "valor": 28,
             "error": "olvida-lo-que-gasto-de-mas"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-04",
+      "plantilla": "porcentajes-sucesivos",
+      "unidad": "aritmetica.porcentajes",
+      "mide": "Subir y bajar el mismo porcentaje no devuelve el valor inicial",
+      "A": {
+        "enunciado": "Un sueldo de S/ 1500 sube un 10 % y, al mes siguiente, baja un 10 %. ¿Cuánto es el sueldo ahora?",
+        "datos": {
+          "P": 1500,
+          "a": 10
+        },
+        "opciones": [
+          {
+            "texto": "S/ 1500",
+            "valor": 1500,
+            "error": "se-compensan"
+          },
+          {
+            "texto": "S/ 1485",
+            "valor": 1485,
+            "correcta": true
+          },
+          {
+            "texto": "S/ 1650",
+            "valor": 1650,
+            "error": "solo-aumento"
+          },
+          {
+            "texto": "S/ 15",
+            "valor": 15,
+            "error": "monto-variacion"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un pasaje de S/ 2000 sube un 20 % en julio y, en agosto, baja un 20 %. ¿Cuánto cuesta ahora?",
+        "datos": {
+          "P": 2000,
+          "a": 20
+        },
+        "opciones": [
+          {
+            "texto": "S/ 2000",
+            "valor": 2000,
+            "error": "se-compensan"
+          },
+          {
+            "texto": "S/ 1920",
+            "valor": 1920,
+            "correcta": true
+          },
+          {
+            "texto": "S/ 2400",
+            "valor": 2400,
+            "error": "solo-aumento"
+          },
+          {
+            "texto": "S/ 80",
+            "valor": 80,
+            "error": "monto-variacion"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fr-02",
+      "plantilla": "fracciones",
+      "unidad": "aritmetica.mcd-y-mcm",
+      "mide": "Coincidencias periódicas: el primer momento común es el MCM",
+      "A": {
+        "enunciado": "Dos luces se prenden a la vez. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+        "datos": {
+          "a": 8,
+          "b": 12
+        },
+        "opciones": [
+          {
+            "texto": "4 segundos",
+            "valor": 4,
+            "error": "AR13-mcd-en-vez-de-mcm"
+          },
+          {
+            "texto": "24 segundos",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "96 segundos",
+            "valor": 96,
+            "error": "AR13-producto"
+          },
+          {
+            "texto": "20 segundos",
+            "valor": 20,
+            "error": "suma"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un paciente toma un jarabe cada 6 horas y una pastilla cada 9 horas. Al mediodía tomó los dos a la vez. ¿Cuántas horas después le vuelve a tocar tomar los dos juntos por primera vez?",
+        "datos": {
+          "a": 6,
+          "b": 9
+        },
+        "opciones": [
+          {
+            "texto": "3 horas",
+            "valor": 3,
+            "error": "AR13-mcd-en-vez-de-mcm"
+          },
+          {
+            "texto": "54 horas",
+            "valor": 54,
+            "error": "AR13-producto"
+          },
+          {
+            "texto": "18 horas",
+            "valor": 18,
+            "correcta": true
+          },
+          {
+            "texto": "15 horas",
+            "valor": 15,
+            "error": "suma"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-18",
+      "plantilla": "cuatro-operaciones",
+      "unidad": "aritmetica.cuatro-operaciones",
+      "nombreUnidad": "Las cuatro operaciones",
+      "mide": "Residuo por exceso: lo que falta para completar otro grupo es el divisor menos el residuo por defecto",
+      "A": {
+        "enunciado": "Se empacan 89 panes en bolsas de 12. Se llenan todas las bolsas que se pueda y sobran algunos panes. ¿Cuántos panes faltan para que esos panes sobrantes completen otra bolsa?",
+        "datos": {
+          "D": 89,
+          "d": 12
+        },
+        "opciones": [
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "suma-el-divisor-al-residuo"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "error": "residuo-por-exceso-igual-al-por-defecto"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "resta-desde-el-residuo-maximo"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Se acomodan 74 sillas en filas de 11. Se completan todas las filas que se pueda y sobran algunas sillas. ¿Cuántas sillas faltan para que esas sillas sobrantes completen otra fila?",
+        "datos": {
+          "D": 74,
+          "d": 11
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "residuo-por-exceso-igual-al-por-defecto"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "resta-desde-el-residuo-maximo"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "19",
+            "valor": 19,
+            "error": "suma-el-divisor-al-residuo"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-29",
+      "plantilla": "operaciones-cifras",
+      "unidad": "aritmetica.cuatro-operaciones",
+      "nombreUnidad": "Las cuatro operaciones",
+      "mide": "Complemento aritmético de un número con un cero en medio: de 9 todas las cifras (también el 0) y de 10 la última que no es 0, con la potencia de 10 de tantas cifras como el número",
+      "A": {
+        "enunciado": "El complemento aritmético de un número es lo que le falta para llegar a la potencia de 10 que tiene un cero por cada cifra del número (10, 100, 1000…). ¿Cuál es el complemento aritmético de 407?",
+        "datos": {
+          "N": 407
+        },
+        "opciones": [
+          {
+            "texto": "592",
+            "valor": 592,
+            "error": "complemento-de-9-todas"
+          },
+          {
+            "texto": "593",
+            "valor": 593,
+            "correcta": true
+          },
+          {
+            "texto": "9593",
+            "valor": 9593,
+            "error": "complemento-con-una-potencia-de-mas"
+          },
+          {
+            "texto": "503",
+            "valor": 503,
+            "error": "deja-el-cero-de-adentro"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "El complemento aritmético de un número es lo que le falta para llegar a la potencia de 10 que tiene un cero por cada cifra del número (10, 100, 1000…). ¿Cuál es el complemento aritmético de 608?",
+        "datos": {
+          "N": 608
+        },
+        "opciones": [
+          {
+            "texto": "302",
+            "valor": 302,
+            "error": "deja-el-cero-de-adentro"
+          },
+          {
+            "texto": "9392",
+            "valor": 9392,
+            "error": "complemento-con-una-potencia-de-mas"
+          },
+          {
+            "texto": "392",
+            "valor": 392,
+            "correcta": true
+          },
+          {
+            "texto": "391",
+            "valor": 391,
+            "error": "complemento-de-9-todas"
           }
         ]
       }

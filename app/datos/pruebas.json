@@ -637,7 +637,7 @@
   },
   "aritmetica": {
    "curso": "aritmetica",
-   "version": "2.1.0",
+   "version": "2.2.0",
    "minutos": 16,
    "errores": {
     "suma-descuentos": {
@@ -923,6 +923,26 @@
     "resta-lo-que-gasto-de-mas": {
      "respaldo": "hipotesis",
      "describe": "Al ir hacia atrás, resta lo que se gastó de más en vez de devolverlo"
+    },
+    "complemento-de-9-todas": {
+     "respaldo": "hipotesis",
+     "describe": "Resta de 9 todas las cifras, también la última que no es 0 (AT-CA9; trampa 29 de San Marcos)"
+    },
+    "deja-el-cero-de-adentro": {
+     "respaldo": "hipotesis",
+     "describe": "Deja como 0 un cero de adentro, en vez de restarlo de 9 (AT-CERO-QUEDA)"
+    },
+    "complemento-con-una-potencia-de-mas": {
+     "respaldo": "hipotesis",
+     "describe": "Resta de una potencia de 10 con un cero de más (AT-CA-K)"
+    },
+    "descuenta-dos-veces": {
+     "respaldo": "hipotesis",
+     "describe": "Le quita 2 a la columna que prestó, en vez de 1 (AT-DOBLE-DESCUENTO)"
+    },
+    "cree-que-faltan-datos": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que con dos cifras ocultas faltan datos, aunque cada columna deja una sola (AT-SUFICIENCIA)"
     }
    },
    "pares": [
@@ -966,48 +986,6 @@
        }
       ],
       "k": "e3a3c54db215af542a98d915a9ac72e3b6cb883e739d397a7859928c5d1b000621ae3e596106f5f0871cf2cf588a1f48cc5885de189c88e9c2cf8f06cf701713"
-     }
-    },
-    {
-     "par": "ari-04",
-     "plantilla": "porcentajes-sucesivos",
-     "unidad": "aritmetica.porcentajes",
-     "mide": "Subir y bajar el mismo porcentaje no devuelve el valor inicial",
-     "A": {
-      "enunciado": "Un sueldo de S/ 1500 sube un 10 % y, al mes siguiente, baja un 10 %. ¿Cuánto es el sueldo ahora?",
-      "opciones": [
-       {
-        "texto": "S/ 1500"
-       },
-       {
-        "texto": "S/ 1485"
-       },
-       {
-        "texto": "S/ 1650"
-       },
-       {
-        "texto": "S/ 15"
-       }
-      ],
-      "k": "34ef253dda024a039d64e494ec607013fcc67284bfb44354504f2bfa8a4eb326f398ff437cc8567d56361d19ca80b3b4930cbcb4d0793994"
-     },
-     "B": {
-      "enunciado": "Un pasaje de S/ 2000 sube un 20 % en julio y, en agosto, baja un 20 %. ¿Cuánto cuesta ahora?",
-      "opciones": [
-       {
-        "texto": "S/ 2000"
-       },
-       {
-        "texto": "S/ 1920"
-       },
-       {
-        "texto": "S/ 2400"
-       },
-       {
-        "texto": "S/ 80"
-       }
-      ],
-      "k": "992411e60be2316829ef0037f8d52b156a61c37a53eb17832024dbe7767bba7e0baac0bc4ee356c0ea03009ff6b9a3e0a5516b8eb4377551"
      }
     },
     {
@@ -1305,45 +1283,87 @@
      }
     },
     {
-     "par": "fr-02",
-     "plantilla": "fracciones",
-     "unidad": "aritmetica.mcd-y-mcm",
-     "mide": "Coincidencias periódicas: el primer momento común es el MCM",
+     "par": "ari-17",
+     "plantilla": "cuatro-operaciones",
+     "unidad": "aritmetica.cuatro-operaciones",
+     "mide": "Restar cuando el minuendo tiene ceros: el préstamo pasa por los ceros, que quedan en 9",
      "A": {
-      "enunciado": "Dos luces se prenden a la vez. Una se enciende cada 8 segundos y la otra cada 12 segundos. ¿Cuántos segundos después vuelven a encenderse juntas por primera vez?",
+      "enunciado": "Una cooperativa tenía 7002 sacos de papa en su almacén y vendió 2586. Haz la resta en columnas: ¿cuántos sacos le quedan?",
       "opciones": [
        {
-        "texto": "4 segundos"
+        "texto": "5584"
        },
        {
-        "texto": "24 segundos"
+        "texto": "4416"
        },
        {
-        "texto": "96 segundos"
+        "texto": "4526"
        },
        {
-        "texto": "20 segundos"
+        "texto": "5526"
        }
       ],
-      "k": "062974d3c8ee88aeeb4fbc9f2c6a5dd4048c91895187ba73e0509fa5e4552184f7ed8f5ebb6764e20360123ae4c5b8d1fae98b74ca9d4f2a"
+      "k": "70e52a67a076795d167a8297630fb45ebfde19bc25829c49849f3ad3d0dc1c721d971406731ca5b83bf76f1e07e840af122afd9f03220e642241d145f2523ba8be6e76b32fa82b292644fd56df3176af2b33bac9f8a3b82ee8ae01"
      },
      "B": {
-      "enunciado": "Un paciente toma un jarabe cada 6 horas y una pastilla cada 9 horas. Al mediodía tomó los dos a la vez. ¿Cuántas horas después le vuelve a tocar tomar los dos juntos por primera vez?",
+      "enunciado": "Una biblioteca tenía 6004 libros y prestó 3257 durante el año. Haz la resta en columnas: ¿cuántos libros quedaron en los estantes?",
       "opciones": [
        {
-        "texto": "3 horas"
+        "texto": "3857"
        },
        {
-        "texto": "54 horas"
+        "texto": "2857"
        },
        {
-        "texto": "18 horas"
+        "texto": "2747"
        },
        {
-        "texto": "15 horas"
+        "texto": "3253"
        }
       ],
-      "k": "fcf7e76bf82efa06db641ebf0ba30397513e540120475cc09c99567d2e1d7b3e5776856dc846c3b7d1b8ee33840d2a86c26f691668956d74"
+      "k": "03e052e034f0a021bfb900d64e2e40469e91f603b244732c9f9d83d66f906276926d8ba13596e16e118babbbab17d8bdc307653935da8754c962e264ccda7d61a616731099971f034d2fc6618ea3320656b0c5699a749b0c9fd2c4"
+     }
+    },
+    {
+     "par": "ari-30",
+     "plantilla": "operaciones-cifras",
+     "unidad": "aritmetica.cuatro-operaciones",
+     "mide": "Cifras ocultas en una resta con préstamos: se reconstruye columna por columna desde las unidades, y la columna que prestó queda con uno menos",
+     "A": {
+      "enunciado": "En una boleta de venta, la humedad borró dos cifras de una resta bien hecha: 7☐3 − ☐68 = 445. Cada ☐ es una sola cifra. ¿Qué cifra se borró en el número que se resta?",
+      "opciones": [
+       {
+        "texto": "3"
+       },
+       {
+        "texto": "No se puede saber"
+       },
+       {
+        "texto": "2"
+       },
+       {
+        "texto": "1"
+       }
+      ],
+      "k": "5efcb430ae14cf37f58cd616889a238209743b42eebe6b969b1b008dbd5d0c57750b39815bf347aff3d54ddd6b0346b47f2f475a241edcf64c79f97170e391d968a80a80ab84e6381f088d117e"
+     },
+     "B": {
+      "enunciado": "En un recibo viejo, la humedad borró dos cifras de una resta bien hecha: 9☐4 − ☐79 = 535. Cada ☐ es una sola cifra. ¿Qué cifra se borró en el número que se resta?",
+      "opciones": [
+       {
+        "texto": "2"
+       },
+       {
+        "texto": "3"
+       },
+       {
+        "texto": "No se puede saber"
+       },
+       {
+        "texto": "4"
+       }
+      ],
+      "k": "f4b2c34cb04913eca7fad4f7281d73e972fb70b3b41141d67fd2800768f464ff3dbb042bb748e8807a95fe488d60840de219dcb2fc478f88274fa3adab5eb458032346a032b18c4a1923cd17d7"
      }
     }
    ]

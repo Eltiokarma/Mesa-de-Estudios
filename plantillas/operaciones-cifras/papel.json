@@ -1,0 +1,94 @@
+{
+  "titulo": "El cuaderno de las cuentas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Doña Juana junta un pedido de 285 caramelos y otro de 935. ¿Cuántos caramelos tiene ahora? Datos: 1 bolsita = 10 caramelos; 1 caja = 10 bolsitas; 1 cajón = 10 cajas. Suma de una columna = llevada × 10 + cifra que se anota. Alternativas: A) 1 110   B) 220   C) 1 330   D) 1 220",
+      "respuesta": "D) 1 220",
+      "pasos": [
+        "Sueltos: 5 + 5 = 10 = 1 × 10 + 0.",
+        "Bolsitas: 8 + 3 + 1 = 12 = 1 × 10 + 2.",
+        "Cajas: 2 + 9 + 1 = 12 = 1 × 10 + 2.",
+        "La última llevada, 1, abre otra columna.",
+        "Tiene 1 220 caramelos."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Doña Juana anota en su cuaderno el número 1 943. ¿Cuál es su complemento aritmético? Datos: CA(N) = 10ᵏ − N, con k las cifras de N. Alternativas: A) 8 057   B) 98 057   C) 98 056   D) 9 167   E) 8 056",
+      "respuesta": "A) 8 057",
+      "pasos": [
+        "1 943 tiene 4 cifras: la meta es 10 000.",
+        "CA(1 943) = 10 000 − 1 943 = 8 057."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Doña Juana tiene 15 bolsas con 17 caramelos cada una. A cada bolsa le agrega 4 caramelos más. ¿Cuántos caramelos sube el pedido? Datos: (F + s) × G = F × G + s × G. F: caramelos de cada bolsa; G: bolsas; s: caramelos que se agregan a cada bolsa. Alternativas: A) 4   B) 60   C) 315   D) 68",
+      "respuesta": "B) 60",
+      "pasos": [
+        "(17 + 4) × 15 = 17 × 15 + 4 × 15.",
+        "El pedido sube 4 × 15 = 60 caramelos."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Doña Juana tiene 7 009 caramelos en su puesto y despacha 4 315. ¿Cuántos caramelos le quedan? Datos: 1 bolsita = 10 caramelos; 1 caja = 10 bolsitas; 1 cajón = 10 cajas. Cifra = arriba + p × 10 − abajo, con p = 1 si se abrió un envase. Alternativas: A) 3 794   B) 2 694   C) 3 314   D) 1 594   E) 2 794",
+      "respuesta": "B) 2 694",
+      "pasos": [
+        "Sueltos: 9 − 5 = 4.",
+        "Bolsitas: 0 + 10 − 1 = 9; se abre 1 de la columna de la izquierda.",
+        "Cajas: 0 + 10 − 1 − 3 = 6; se abre 1 de la columna de la izquierda.",
+        "Cajones: 7 − 1 − 4 = 2.",
+        "Le quedan 2 694 caramelos."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En su calculadora, doña Juana divide un número A de 7 cifras entre un número B de 4 cifras y se queda con el cociente entero. ¿Cuántas cifras puede tener ese cociente? Datos: Un número de k cifras va de 10ᵏ⁻¹ a 10ᵏ − 1. 10ᵃ ÷ 10ᵇ = 10ᵃ⁻ᵇ. Alternativas: A) 10 o 11 cifras   B) siempre 3 cifras   C) 3 o 4 cifras   D) siempre 4 cifras",
+      "respuesta": "C) 3 o 4 cifras",
+      "pasos": [
+        "El menor cociente: A lo más chico y B lo más grande, 1 000 000 ÷ 9 999, da 3 cifras.",
+        "El mayor: A lo más grande y B lo más chico, 9 999 999 ÷ 1 000, da 4 cifras. El cociente tiene 3 o 4 cifras."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Doña Juana empaca unos caramelos en bolsitas de 22. Llena 24 bolsitas, y para llenar una más le faltan 14. ¿Cuántos caramelos empaca? Datos: D = d × q + r, con 0 ≤ r < d. D = d × (q + 1) − rₑ. D: los caramelos; d: lo que lleva una bolsita; q: bolsitas llenas; r: sobran; rₑ: faltan. Alternativas: A) 514   B) 564   C) 536   D) 542",
+      "respuesta": "C) 536",
+      "pasos": [
+        "Con una bolsita más serían 22 × 25 = 550, y faltan 14.",
+        "D = 22 × 25 − 14 = 536 caramelos."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En una resta del cuaderno, dos manchas tapan dos cifras: 6☐1 − ☐48 = 383. ¿Qué cifra está bajo la mancha del sustraendo (el número de abajo)? Datos: Bajo cada mancha ☐ hay una cifra de 0 a 9. La cuenta del cuaderno está bien hecha. Cifra = arriba + p × 10 − abajo, con p = 1 si se abrió un envase. Alternativas: A) 3   B) 2   C) 1   D) No se puede saber",
+      "respuesta": "B) 2",
+      "pasos": [
+        "Sueltos: 1 no alcanza para 8; se abre 1 bolsita: 1 + 10 − 8 = 3.",
+        "Bolsitas: ☐ − 1 − 4 tiene que dar 8; no alcanza, se abre 1 caja: ☐ + 10 − 1 − 4 = 8, así que la mancha de arriba es 3.",
+        "Cajas: 6 − 1 − ☐ = 3: la mancha de abajo es 2."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Doña Juana reparte sus caramelos entre sus sobrinos. Si da 6 a cada uno, le sobran 2; si da 9 a cada uno, le faltan 22. ¿Cuántos sobrinos tiene? Datos: Si al dar q a cada uno de d sobran r: D = d × q + r. Si al dar q a cada uno de d faltan f: D = d × q − f. Alternativas: A) 20   B) 24   C) 50   D) 8",
+      "respuesta": "D) 8",
+      "pasos": [
+        "Los caramelos son los mismos: sobrinos × 6 + 2 = sobrinos × 9 − 22.",
+        "Dar 3 más a cada uno pide 2 + 22 = 24 caramelos: sobrinos = 24 ÷ 3 = 8."
+      ]
+    }
+  ]
+}
