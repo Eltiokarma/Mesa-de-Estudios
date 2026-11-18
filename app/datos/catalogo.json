@@ -4524,7 +4524,6 @@
      ],
      "plantillas": [
       "geo-triangulos",
-      "geo-triangulos-notables",
       "triangulo-estira"
      ],
      "teoria": {
@@ -4542,7 +4541,7 @@
        "lineas-notables": "Líneas notables",
        "angulo-de-bisectrices": "Ángulos entre bisectrices"
       },
-      "terminos": 49
+      "terminos": 51
      }
     },
     {
@@ -9442,6 +9441,14 @@
     "geometria.triangulos"
    ],
    "url": "#/practica/geo-triangulos",
+   "ideas": [
+    "suma-de-angulos",
+    "angulo-exterior",
+    "isosceles",
+    "desigualdad",
+    "lineas-notables",
+    "angulo-de-bisectrices"
+   ],
    "papel": "/plantillas/geo-triangulos/papel.json",
    "archivos": [
     "/plantillas/geo-triangulos/generador.js",
@@ -9455,7 +9462,6 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "geometria.triangulos",
     "geometria.puntos-notables",
     "geometria.relaciones-metricas"
    ],

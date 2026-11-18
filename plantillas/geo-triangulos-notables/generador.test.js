@@ -262,7 +262,7 @@ probarViva(gen, {
 
 // Tipos por unidad (docs/etapa4/decisiones.md, Triángulos, 18 nov): la práctica de cada unidad solo saca sus tipos; sin
 // unidad, todos, como antes (el papel, casos.json y la cola de repaso no cambian).
-test('tipos por unidad: Triángulos solo desigualdad, Puntos notables sus ángulos, Relaciones métricas el obtusángulo', () => {
+test('tipos por unidad: Puntos notables sus ángulos y Relaciones métricas el obtusángulo (Triángulos usa geo-triangulos)', () => {
   const ficha = require('./plantilla.json');
   assert.deepEqual(Object.keys(gen.tiposPorUnidad).sort(), ficha.unidades.slice().sort());
   for (const [u, tipos] of Object.entries(gen.tiposPorUnidad)) {

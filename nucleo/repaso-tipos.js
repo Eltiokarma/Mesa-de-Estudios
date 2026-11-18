@@ -56,7 +56,7 @@
     'geo-proporcionalidad': todo(G + 'proporcionalidad-y-semejanza', ['bisectriz', 'raices-areas', 'incentro', 'cuerdas', 'bis-semejanza', 'thales']),
     // 18 nov (docs/etapa4/decisiones.md): la condición de obtusángulo (x² frente a a² + b²) va a Relaciones métricas, y
     // las bisectrices con 37°/2 y 53°/2, a Puntos notables, igual que TIPOS_POR_UNIDAD del generador.
-    'geo-triangulos-notables': { desigualdad: G + 'triangulos', obtusangulo: G + 'relaciones-metricas', ...todo(G + 'puntos-notables', ['ortocentro', 'arco', 'angulos', 'mitades']) },
+    'geo-triangulos-notables': { obtusangulo: G + 'relaciones-metricas', ...todo(G + 'puntos-notables', ['ortocentro', 'arco', 'angulos', 'mitades']) },
     'inecuaciones-planteo': { ...todo(AL + 'inecuaciones', ['discriminante', 'area', 'moviles', 'entero-unico', 'cuadratica-entera']),
       ...todo(AL + 'programacion-lineal', ['lineal-entera', 'dos-enteros']), 'valor-absoluto': AL + 'valor-absoluto-y-radicales',
       racional: AL + 'numeros-reales', medias: AL + 'numeros-reales' },

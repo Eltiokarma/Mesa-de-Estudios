@@ -364,9 +364,11 @@ const V = {
     return { correcta: r.diagonales, errores: { 'GE23-diagonales-con-lados': e.conLados, 'diagonales-contadas-dos-veces': e.sinDividir, 'diagonales-de-un-vertice': e.soloDesdeUnVertice } }; },
   'geo-11': d => { const r = motor('poligonos').poligono(d.n), e = r.errores.sumaInteriores;
     return { correcta: r.sumaInteriores, errores: { 'GE23-suma-180n': e.con180n, 'suma-siempre-360': e.siempre360, 'suma-n-menos-1-triangulos': e.conNmenos1 } }; },
-  // geo-12 a geo-14 (18 nov, Triángulos): geo-triangulos es un generador sin motor; sus dos ítems se recalculan aquí
-  // probando cada x (y cada ángulo) hasta que se cumpla la regla, otro camino que el del generador. geo-14 usa calc de
-  // geo-triangulos-notables, el cálculo de la desigualdad de la plantilla, y lo comprueba contando los enteros uno por uno.
+  // geo-12 a geo-14 (18 nov, Triángulos): geo-triangulos es un generador sin motor; geo-12 y geo-13 se recalculan aquí
+  // probando cada x (y cada ángulo) hasta que se cumpla la regla, otro camino que el del generador. geo-14 (desde las
+  // correcciones del 18 nov, de geo-triangulos: Triángulos ya no lista geo-triangulos-notables) usa calc de geo-triangulos,
+  // el cálculo de la desigualdad que usa su práctica, y lo comprueba contando los enteros uno por uno. geo-13 pasó a la
+  // reserva: la prueba admite dos ítems por plantilla.
   'geo-12': d => {
     const sol = f => { for (let x = 1; x <= 200; x++) if (f(x)) return x; return NaN; };
     const ext = x => d.aE * x + d.bE, lejanos = x => d.aP * x + d.bP + d.aQ * x + d.bQ, x = sol(x => ext(x) === lejanos(x));
@@ -378,7 +380,7 @@ const V = {
     return { correcta: base, errores: { 'GE-ISO4': 180 - d.cumbrera, 'GE-ISO5': d.cumbrera, 'GE-ISO6': 90 - d.cumbrera } };
   },
   'geo-14': d => {
-    const r = require(path.join(__dirname, '..', '..', 'plantillas', 'geo-triangulos-notables', 'generador.js')).calc.tercerLado(d.brazo1, d.brazo2);
+    const r = require(path.join(__dirname, '..', '..', 'plantillas', 'geo-triangulos', 'generador.js')).calc.tercerLado(d.brazo1, d.brazo2);
     let n = 0; for (let x = 1; x < 500; x++) if (x < d.brazo1 + d.brazo2 && x > Math.abs(d.brazo1 - d.brazo2)) n++;
     if (n !== r.cuantos) throw new Error('calc y el conteo no coinciden');
     return { correcta: r.cuantos, errores: { 'GE-DT3': r.cuantos + 2, 'GE-DT4': r.cuantos + 1, 'GE-DT2': d.brazo1 + d.brazo2 - 1, 'GE-DT14': r.min } };

@@ -371,10 +371,10 @@ function rehacer2(id, a) {
     if ((m = /AB = BD = DC\. Si m∠C = (\d+)°, ¿cuánto mide el ángulo (A|ABC)\?/.exec(t))) return gra(m[2] === 'A' ? 2 * m[1] : 180 - 3 * m[1]);
   }
   if (id === 'desigualdad') {
-    if ((m = /miden (\d+) cm y (\d+) cm\. ¿Cuántos valores/.exec(t))) return String(2 * Math.min(+m[1], +m[2]) - 1);
+    if ((m = /miden (\d+) cm y (\d+) cm\. ¿Cuántos valores/.exec(t))) return `${2 * Math.min(+m[1], +m[2]) - 1} valores`;
     if ((m = /miden (\d+) cm y (\d+) cm\. Si el tercero, x, mide un número entero de cm, ¿cuál es su (mayor|menor) valor\?/.exec(t))) return `${m[3] === 'mayor' ? +m[1] + +m[2] - 1 : Math.abs(m[1] - m[2]) + 1} cm`;
     if ((m = /isósceles tiene un lado de (\d+) cm y otro de (\d+) cm/.exec(t))) { const [p, q] = [+m[1], +m[2]], c = 2 * p > q ? null : 2 * q + p; return `${c} cm`; }
-    if ((m = /AB = (\d+) cm, BC = (\d+) cm, CD = (\d+) cm y DA = (\d+) cm/.exec(t))) { const [p, q, r, s] = m.slice(1).map(Number); let n = 0; for (let x = 1; x < 50; x++) if (x > Math.abs(p - q) && x < p + q && x > Math.abs(r - s) && x < r + s) n++; return String(n); }
+    if ((m = /AB = (\d+) cm, BC = (\d+) cm, CD = (\d+) cm y DA = (\d+) cm/.exec(t))) { const [p, q, r, s] = m.slice(1).map(Number); let n = 0; for (let x = 1; x < 50; x++) if (x > Math.abs(p - q) && x < p + q && x > Math.abs(r - s) && x < r + s) n++; return `${n} valores`; }
   }
   if (id === 'lineas-notables') {
     if (/mira las marcas de la línea/.test(t)) return { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' }[Object.keys(a.dibujo.datos.lineas)[0]];
@@ -428,11 +428,40 @@ test('ideas 2 a 6, notación: x sin «°», nunca C(x) ni S(x); m∠ y ∠ACD co
   assert.ok(!def.glosario.some(g => /^(incentro|excentro)$/.test(g.termino)), 'incentro y excentro se definen en otras unidades');
 });
 
-test('ideas 2 a 6: la lectura del juego enuncia la relación (el giro en C suma A y B; BIC = 90° + A/2)', () => {
+test('ideas 2 a 6: la lectura del juego enuncia la relación (el giro en C suma A y B; BIC sale de las dos mitades)', () => {
   const j2 = def.ideas[1].juega;
   for (const v of Teoria.grilla(j2.controles)) { const n = [...plano(j2.lectura(v)).matchAll(/(\d+)°/g)].map(m => +m[1]); assert.equal(n[0] + n[1], n[2]); assert.equal(n[2], 180 - v.c); }
   const j6 = def.ideas[5].juega;
-  for (const v of Teoria.grilla(j6.controles)) { const n = [...plano(j6.lectura(v)).matchAll(/(\d+)°/g)].map(m => +m[1]); assert.equal(n[1] + n[2], n[3]); assert.equal(n[2] * 2, n[0]); }
+  // m∠BIC = 180° − B/2 − C/2 = …; m∠A = …: la cuenta con las mitades (la regla 90° + A/2 llega después, en «Mira»).
+  for (const v of Teoria.grilla(j6.controles)) { const n = [...plano(j6.lectura(v)).matchAll(/(\d+)°/g)].map(m => +m[1]); assert.deepEqual([n[0], n[1], n[2]], [180, v.b / 2, v.c / 2]); assert.equal(n[0] - n[1] - n[2], n[3]); assert.equal(n[4], 180 - v.b - v.c); }
   const j4 = def.ideas[3].juega;
   for (const v of Teoria.grilla(j4.controles)) { const x = +/AC ≈ ([\d,]+)/.exec(plano(j4.lectura(v)))[1].replace(',', '.'); assert.ok(x > 15 && x < 65); }
+});
+
+// ---------- Correcciones (18 nov, auditoría y lector en frío) ----------
+// M6: en un ejercicio, el carmín dice «dato». Un arco carmín sin rótulo tiene su valor en el enunciado (un número, una
+// expresión «m∠X = …» o «recto»); un arco en tinta sin rótulo no es un dato numérico del enunciado. Las mitades de una
+// bisectriz (rayitas) y el cuadradito de una altura no cuentan.
+test('correcciones, arcos: en los ejercicios, carmín sin rótulo solo si es dato; un dato numérico nunca en tinta (400 semillas)', () => {
+  const mal = [];
+  def.ideas.forEach(id => {
+    const items = [];
+    id.ejemplos.forEach((e, i) => e.figura && items.push([`ejemplo ${i + 1}`, e.figura.datos, [e.enunciado, ...e.datos]]));
+    for (let s = 0; s < SEMILLAS; s++) {
+      const a = id.ahoraTu.generar(s), r = id.resuelve.generar(s);
+      if (a.dibujo) items.push([`ahora tú ${s}`, a.dibujo.datos, [a.pregunta, ...a.datos]]);
+      if (r.dibujo) items.push([`resuelve ${s}`, r.dibujo.datos, [r.enunciado, ...r.datos]]);
+    }
+    for (const [donde, d, tx] of items) {
+      const t = tx.map(plano).join(' ').replace(/[  ⁠]/g, ' ');
+      for (const an of P.escena(d).fig.angulos || []) {
+        if (an.rayita || (an.texto !== undefined && an.texto !== null && an.texto !== '')) continue;
+        const n = Math.round(an.mide), suyo = new RegExp(`m∠[A-Z]{0,2}${an.en}[A-Z]{0,2} =`);
+        if (an.color === 'h' && !(new RegExp(`(^|[^\\d,])${n}°`).test(t) || suyo.test(t) || (n === 90 && /recto/.test(t))))
+          mal.push(`${id.id} ${donde}: arco carmín en ${an.en} (${n}°) sin rótulo ni valor en el enunciado`);
+        if (!an.color && n !== 90 && new RegExp(`m∠${an.en} = ${n}°`).test(t)) mal.push(`${id.id} ${donde}: m∠${an.en} = ${n}° es dato y va en tinta`);
+      }
+    }
+  });
+  assert.deepEqual([...new Set(mal)].slice(0, 20), []);
 });

@@ -54,6 +54,9 @@
  *   lampara    la lámpara de escritorio de costado: brazos CB y BA, el codo, AC punteado y los dos extremos (cerrado y estirado)
  *   caserio    el caserío junto a la carretera con dos paraderos: altura, mediana, bisectriz y mediatriz, con sus marcas
  *   parque     el parque triangular: bisectrices de B y C que se cruzan en la pileta I; la exterior de C y su cruce E
+ *   ejercicio: true (cartulina, plaza, compas, lampara, caserio y parque): un arco sin texto ni color va en tinta, no en
+ *              carmín ni turquesa (en un ejercicio el carmín dice «dato»; auditoría de Triángulos, 18 nov). Sin la clave,
+ *              como antes (Segmentos y ángulos no la usa).
  *   Comunes a estas y a «angulos»: llaves (marca de igualdad sobre una llave que une las puntas del tramo), ladosRot (la
  *   medida de un lado), libres (un rótulo suelto junto a un punto) y masPuntos, masSegmentos, masAngulos. Lo que escriben
  *   y lo que trazan (llaves, objetos) es obstáculo para los rótulos de los ángulos, y escenaCabe lo revisa; las letras de
@@ -122,6 +125,8 @@
     return out;
   };
   const visible = (x, p) => !x || !(x.paso > p);
+  // El color de un arco sin texto ni color: def (carmín o turquesa), o tinta en un ejercicio (datos.ejercicio).
+  const colorSinDato = (d, x, def) => (x && (x.color !== undefined || x.texto !== undefined) ? x.color : d && d.ejercicio ? undefined : def);
   const pasoDe = estado => (estado && estado.final ? Infinity : estado && Number.isFinite(estado.paso) ? estado.paso : Infinity);
 
   // Escala y posiciones: una sola escala (px por km) para lo largo y lo alto.
@@ -786,7 +791,7 @@
       for (const v of ['A', 'B', 'C']) {
         if (AN[v] === null) continue;
         const x = AN[v] || {};
-        const an = ang(v, LADOS[v][0], LADOS[v][1], { radio: d.radio || 20, holgura: 6, marcas: x.marcas || ARCOS_V[v], mide: medida[v], color: x.color === undefined && x.texto === undefined ? 'h' : x.color, texto: x.texto });
+        const an = ang(v, LADOS[v][0], LADOS[v][1], { radio: d.radio || 20, holgura: 6, marcas: x.marcas || ARCOS_V[v], mide: medida[v], color: colorSinDato(d, x, 'h'), texto: x.texto });
         if (x.desde !== undefined) an.desde = x.desde;
         if (x.hasta !== undefined) an.hasta = x.hasta;
         const conRotulo = d.cortes === undefined || K === undefined ? llena : [[0, d.cortes - 1], ...llena.slice(1)];
@@ -807,7 +812,7 @@
       // Los bordes de la esquina son trazos de la figura: así ningún rótulo los pisa (la pieza los revisa).
       for (const [u, w] of [['v', '1'], ['1', '2'], ['2', 'v']]) segmentos.push(Object.assign({ de: `${id}${u}`, a: `${id}${w}`, grosor: 'fino' }, q.desde !== undefined ? { desde: q.desde } : {}, q.hasta !== undefined ? { hasta: q.hasta } : {}));
       // El rótulo de una esquina va afuera de su corte, en su bisectriz (adentro no cabe con sus arcos).
-      const an = ang(`${id}v`, `${id}1`, `${id}2`, { radio: 17, holgura: 4, marcas: q.marcas || 1, mide: q.a - q.de, color: q.color === undefined ? 'h' : q.color, texto: q.texto, lejos: 0, afuera: R, ajusta: false, fijo: true });
+      const an = ang(`${id}v`, `${id}1`, `${id}2`, { radio: 17, holgura: 4, marcas: q.marcas || 1, mide: q.a - q.de, color: q.color === undefined ? (d.ejercicio && q.texto === undefined ? undefined : 'h') : q.color, texto: q.texto, lejos: 0, afuera: R, ajusta: false, fijo: true });
       if (q.desde !== undefined) an.desde = q.desde;
       if (q.hasta !== undefined) an.hasta = q.hasta;
       angulos.push(an);
@@ -1010,7 +1015,7 @@
       if (AN[v] === null || (o.solo && AN[v] === undefined)) continue;
       const x = AN[v] || {};
       const an = ang(v, LADOS[v][0], LADOS[v][1], { radio: x.radio || o.radio || 20, holgura: x.holgura || 6, marcas: x.marcas || ARCOS_V[v], mide: medida[v],
-        color: x.color === undefined && x.texto === undefined ? 'h' : x.color, texto: x.texto });
+        color: colorSinDato(o.d, x, 'h'), texto: x.texto });
       if (x.desde !== undefined) an.desde = x.desde;
       if (x.hasta !== undefined) an.hasta = x.hasta;
       if (x.arcoRecto) an.arcoRecto = true;   // un recto que es la respuesta («¿qué clase es?») va con arco
@@ -1063,13 +1068,13 @@
       ...(EX.A ? [pt('E', E, d.letraE ? { rotulo: 'E', lado: gr(C, A), sinPunto: true } : undefined)] : []),
       ...(EX.B ? [pt('F', F, d.letraF ? { rotulo: 'F', lado: gr(A, B), sinPunto: true } : undefined)] : [])];
     const segmentos = [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }];
-    const angs = interiores(AN, { A: a, B: b, C: c }, { radio: d.radio });
+    const angs = interiores(AN, { A: a, B: b, C: c }, { radio: d.radio, d });
     const EXT = { C: ['D', 'A', 180 - c], A: ['E', 'B', 180 - a], B: ['F', 'C', 180 - b] }, PROL = { C: 'D', A: 'E', B: 'F' };
     for (const v of ['A', 'B', 'C']) {
       const x = EX[v];
       if (!x) continue;
       segmentos.push(Object.assign({ de: v, a: PROL[v], discontinua: true, grosor: 'fino' }, x.desde !== undefined ? { desde: x.desde } : {}));
-      angs.push(ang(v, EXT[v][0], EXT[v][1], { radio: x.radio || 26, holgura: 6, marcas: x.marcas || 1, mide: EXT[v][2], color: x.color === undefined && x.texto === undefined ? 'i' : x.color, texto: x.texto, desde: x.desde || 0 }));
+      angs.push(ang(v, EXT[v][0], EXT[v][1], { radio: x.radio || 26, holgura: 6, marcas: x.marcas || 1, mide: EXT[v][2], color: colorSinDato(d, x, 'i'), texto: x.texto, desde: x.desde || 0 }));
     }
     const ps = [A, B, C, ...['A', 'B', 'C'].filter(v => EX[v]).map(v => ({ A: E, B: F, C: D })[v])];
     const fig = acomodarLetras(masFig(d, { alt: d.alt || `${d.examen ? 'Un triángulo' : 'Una plaza triangular vista desde arriba'}, con ángulos de ${Kit.formatear(a, 1)}° en A, ${Kit.formatear(b, 1)}° en B y ${Kit.formatear(c, 1)}° en C${EX.C ? `; la calle BC sigue de largo después de C, hasta D` : ''}${d.mototaxi ? '; un mototaxi la rodea' : ''}.`,
@@ -1112,7 +1117,7 @@
     const segmentos = [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'A', a: 'C', color: 'o', grosor: 'variable' }];
     if (d.raya !== false) segmentos.push({ de: 'B', a: 'C' });
     const AN2 = { A: AN.A === null ? null : Object.assign({ radio: 30, marcas: 1 }, AN.A || {}), B: AN.B === null ? null : Object.assign({ marcas: 2 }, AN.B || {}), C: AN.C === null ? null : Object.assign({ marcas: 2 }, AN.C || {}) };
-    const angs = interiores(AN2, { A: t, B: al, C: al });
+    const angs = interiores(AN2, { A: t, B: al, C: al }, { d });
     const fig = { alt: d.alt || `Un compás abierto ${Kit.formatear(t, 1)}° sobre la hoja: sus dos patas miden ${Kit.formatear(L, 1)} cm y la raya entre sus puntas mide ${Kit.formatear(2 * L * Math.sin(t / 2 * RAD), 1)} cm.`,
       vista: d.vista || { x: [-9.2, 9.2], y: [-13.5, 2.6] }, alto: d.alto || 262, puntos, segmentos, angulos: angs };
     const datos = Object.assign({}, d);
@@ -1161,7 +1166,7 @@
     if (d.ac !== false) segmentos.push({ de: 'C', a: 'A', discontinua: true });
     const angs = [];
     const xb = (d.angulos || {}).B;
-    if (xb !== null) angs.push(ang('B', 'C', 'A', { radio: (xb && xb.radio) || 20, holgura: 6, marcas: 1, mide: g0, color: xb && (xb.color !== undefined || xb.texto !== undefined) ? xb.color : 'h', texto: xb && xb.texto, desde: (xb && xb.desde) || 0 }));
+    if (xb !== null) angs.push(ang('B', 'C', 'A', { radio: (xb && xb.radio) || 20, holgura: 6, marcas: 1, mide: g0, color: colorSinDato(d, xb, 'h'), texto: xb && xb.texto, desde: (xb && xb.desde) || 0 }));
     const ps = [A, B, C];
     if (d.extremos !== undefined) {
       const A0 = pol(C, CB - BA, inc), A1 = pol(C, CB + BA, inc);
@@ -1217,7 +1222,7 @@
     const Z = [Lc / 2, Math.max(ay, 1) + 0.7];
     const puntos = [pt('A', A, { rotulo: nom.A, lado: 0, sinPunto: true }), pt('B', B), pt('C', C), pt('H', H), pt('M', Mm), pt('F', F), pt('Z', Z), pt('Bi', [-50, 0]), pt('Bd', [50, 0])];
     const segmentos = [{ de: 'Bi', a: 'Bd', recta: true, grosor: 'fino' }, { de: 'A', a: 'B' }, { de: 'C', a: 'A' }, { de: 'B', a: 'C' }];
-    const angs = interiores(d.angulos || {}, { A: angU(A, B, C), B: angU(B, C, A), C: angU(C, A, B) }, { solo: true });
+    const angs = interiores(d.angulos || {}, { A: angU(A, B, C), B: angU(B, C, A), C: angU(C, A, B) }, { solo: true, d });
     const cuadrito = (en, a2, de2, l) => ang(en, de2, a2, { radio: 12, mide: 90, color: l.color, desde: l.desde || 0, hasta: l.hasta });
     if (Li.h) {
       const l = Li.h, fuera = ax < -1e-9 || ax > Lc + 1e-9;
@@ -1294,7 +1299,8 @@
   // cruce de las bisectrices interiores; E, el de la interior de B con la exterior de C (la que parte ∠ACD).
   //   { b, c, angulos: { A, B, C }, I: corte | false, E: corte (desde ahí, la exterior de C, D y E), mitades: { B, C, Ce },
   //     BIC: { texto, color, desde }, BEC: { texto, color, desde }, ICE: { texto, color, desde }, pileta: false,
-  //     vista, alto }
+  //     Q: corte (desde ahí, las bisectrices exteriores de B y de C, en turquesa, que se cortan en Q debajo de BC, con la
+  //     prolongación de AB más allá de B), BQC: { texto, color, desde }, vista, alto }
   function parque(d) {
     const b = d.b, c = d.c, a = 180 - b - c, { A, B, C } = vertices(b, c);
     const la = TRI_L, lb = Math.hypot(A[0] - C[0], A[1] - C[1]), lc = Math.hypot(A[0], A[1]), s = la + lb + lc;
@@ -1310,7 +1316,7 @@
     if (vI) puntos.push(pt('I', I, { rotulo: 'I', lado: dirIB - 62, sinPunto: true, desde: kI }));
     const segmentos = [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }];
     if (vI) segmentos.push({ de: 'B', a: 'I', color: 'h', desde: kI }, { de: 'C', a: 'I', color: 'h', desde: kI });
-    const angs = interiores(d.angulos || { A: {} }, { A: a, B: b, C: c }, { solo: true });
+    const angs = interiores(d.angulos || { A: {} }, { A: a, B: b, C: c }, { solo: true, d });
     const k = (x, def) => (x && x.desde !== undefined ? x.desde : def);
     if (vI && MI.B) angs.push(ang('B', 'C', 'I', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kI }), ang('B', 'I', 'A', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kI }));
     if (vI && MI.C) angs.push(ang('C', 'I', 'B', { radio: 28, rayita: 2, mide: c / 2, color: 'h', desde: kI }), ang('C', 'A', 'I', { radio: 28, rayita: 2, mide: c / 2, color: 'h', desde: kI }));
@@ -1319,14 +1325,22 @@
       puntos.push(pt('D', D, { rotulo: 'D', lado: -90, sinPunto: true, desde: kE }), pt('E', E, { rotulo: 'E', lado: 30, sinPunto: true, desde: kE }));
       segmentos.push({ de: 'C', a: 'D', discontinua: true, grosor: 'fino', desde: kE }, { de: 'I', a: 'E', color: 'h', desde: kE }, { de: 'C', a: 'E', color: 'i', desde: kE });
       if (!vI) segmentos.push({ de: 'B', a: 'E', color: 'h', desde: kE });
-      if (MI.Ce) angs.push(ang('C', 'D', 'E', { radio: 22, rayita: 3, mide: (180 - c) / 2, color: 'i', desde: kE }), ang('C', 'E', 'A', { radio: 22, rayita: 3, mide: (180 - c) / 2, color: 'i', desde: kE }));
+      if (MI.Ce) angs.push(ang('C', 'D', 'E', { radio: 30, rayita: 3, mide: (180 - c) / 2, color: 'i', desde: kE }), ang('C', 'E', 'A', { radio: 30, rayita: 3, mide: (180 - c) / 2, color: 'i', desde: kE }));
       if (!vI && MI.B) angs.push(ang('B', 'C', 'E', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kE }), ang('B', 'E', 'A', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kE }));
       if (d.BEC) angs.push(ang('E', 'B', 'C', { radio: 24, holgura: 6, mide: a / 2, color: d.BEC.color, texto: d.BEC.texto, desde: k(d.BEC, kE) }));
       if (d.ICE && vI) angs.push(ang('C', 'I', 'E', { radio: 14, mide: 90, color: d.ICE.color, texto: d.ICE.texto, desde: k(d.ICE, kE), arcoRecto: d.ICE.arcoRecto }));
     }
-    const ps = [A, B, C].concat(conE ? [D, E] : []);
-    const fig = acomodarLetras(masFig(d, { alt: d.alt || `${d.examen ? 'Un triángulo' : 'Un parque triangular'} con ${Kit.formatear(a, 1)}° en A, ${Kit.formatear(b, 1)}° en B y ${Kit.formatear(c, 1)}° en C; ${d.examen ? 'las bisectrices de B y C se cortan en I' : 'los caminos que parten B y C en mitades iguales se cruzan en la pileta I'}${conE ? `; ${d.examen ? 'la bisectriz' : 'el camino'} que parte el ángulo exterior en C cruza ${d.examen ? 'a la de B' : 'al de B'} en E` : ''}.`,
-      vista: d.vista || vistaDe(ps, 1.0, 1.05), alto: d.alto || 262, puntos, segmentos, angulos: angs }), ['A', 'B', 'C'].concat(conE ? ['D', 'E'] : []));
+    // Q: el cruce de las dos bisectrices exteriores, de B y de C (la de C sigue la recta de CE, del otro lado de C).
+    const conQ = d.Q !== undefined && d.Q !== false, kQ = conQ ? d.Q : 0;
+    const Q = conQ ? GF().util.corte(B, pol(B, 1, b / 2 - 90), C, pol(C, 1, -90 - c / 2)) : null, Fq = conQ ? mas2(B, unidad(A, B), 2.0) : null;
+    if (conQ) {
+      puntos.push(pt('Q', Q, { rotulo: 'Q', lado: -90, sinPunto: true, desde: kQ }), pt('Fq', Fq, { sinPunto: true, desde: kQ }));
+      segmentos.push({ de: 'B', a: 'Fq', discontinua: true, grosor: 'fino', desde: kQ }, { de: 'B', a: 'Q', color: 'i', desde: kQ }, { de: 'C', a: 'Q', color: 'i', desde: kQ });
+      if (d.BQC) angs.push(ang('Q', 'B', 'C', { radio: 20, holgura: 6, mide: 90 - a / 2, color: d.BQC.color, texto: d.BQC.texto, desde: k(d.BQC, kQ) }));
+    }
+    const ps = [A, B, C].concat(conE ? [D, E] : [], conQ ? [Q, Fq] : []);
+    const fig = acomodarLetras(masFig(d, { alt: d.alt || `${d.examen ? 'Un triángulo' : 'Un parque triangular'} con ${Kit.formatear(a, 1)}° en A, ${Kit.formatear(b, 1)}° en B y ${Kit.formatear(c, 1)}° en C; ${d.examen ? 'las bisectrices de B y C se cortan en I' : 'los caminos que parten B y C en mitades iguales se cruzan en la pileta I'}${conE ? `; ${d.examen ? 'la bisectriz' : 'el camino'} que parte el ángulo exterior en C cruza ${d.examen ? 'a la de B' : 'al de B'} en E` : ''}${conQ ? '; las bisectrices exteriores de B y de C se cortan en Q, debajo de BC' : ''}.`,
+      vista: d.vista || vistaDe(ps, 1.0, 1.05), alto: d.alto || 262, puntos, segmentos, angulos: angs }), ['A', 'B', 'C'].concat(conE ? ['D', 'E'] : [], conQ ? ['Q'] : []));
     const pileta = g => (vI && d.pileta !== false ? circuloPs(g.S(I), 4.5, 12) : null);
     const deco = g => {
       let s = `<path d="${rutaPx([A, B, C].map(x => g.S(x)))}" fill="currentColor" fill-opacity="0.08"/>`;

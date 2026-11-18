@@ -159,3 +159,72 @@ No se sostienen:
    glosario del curso, el término tiene que vivir en X (M9). *Automático*.
 10. **Un `bien` o una lectura de mesa no afirma una condición que no hace falta.** Esto se revisa a mano, con
     cuidado, en los `bien` que dicen «con B = C, …» (M3). *Manual.*
+
+## Correcciones (18 nov)
+
+Fase 8 (`docs/metodo/unidad/6-correcciones.md`). Archivos: `contenido/teoria/geometria/triangulos.js` (y su prueba),
+`nucleo/kit/piezas/geo-objeto.js`, `plantillas/geo-triangulos/` (generador, prueba y papel regenerado),
+`plantillas/geo-triangulos-notables/` (ficha, `TIPOS_POR_UNIDAD` y prueba), `catalogo/cursos/geometria.json`,
+`catalogo/pruebas/geometria.json` y `verificar.js` (solo geo-13 y geo-14). Cuentas nuevas rehechas por coordenadas, sin
+el código de la unidad: `scratchpad/cor-geo-cuentas/cuentas.js` (13 de 13, y 200 + 200 semillas de los dos «Así se
+resuelve» nuevos). Capturas después: `scratchpad/cor-geo/` (antes: `scratchpad/aud-geo/`). Pruebas: teoría, geometría,
+piezas geo-*, las dos plantillas, catálogo, pruebas y papel: 407 de 408 (la que falla, abajo en «Pendiente»).
+
+**Alta**
+- A1. El ejemplo 15 de la idea 5 es ahora «La mediana que mide la mitad» (nivel 3): AM mediana con AM = BM y m∠B = 35°;
+  dos isósceles y la suma dan m∠BAC = 90°. Usa solo mediana, isósceles y suma (están en Datos). Va sin figura: a escala, A
+  se vería recto.
+- A2. `geometria.triangulos` salió de las `unidades` de geo-triangulos-notables y de su `TIPOS_POR_UNIDAD`; la unidad ya no
+  la lista en `catalogo/cursos/geometria.json` (la desigualdad la cubre geo-triangulos, idea 4). geo-14 pasa a
+  geo-triangulos, con su verificador sobre `calc` de geo-triangulos (que ahora lo exporta). Como la prueba admite dos ítems
+  por plantilla, **geo-13 (isósceles del tijeral) pasó a la reserva**: decisión revisable por Gerson (podría ser geo-12).
+
+**Media**
+- M1. Ejemplo 13 de la idea 5 sin el atajo: Datos = suma, altura y bisectriz; el resuelto saca ∠BAH = 85° − 3x,
+  ∠BAF = 85° − 2x y resta (x = 25, m∠BAC = 70°). B lleva su arco carmín (el rótulo «3x + 5°» no cabía junto a H).
+- M2. Toda pregunta de la idea 6 que usa una regla trae las tres (`R3`), también `casoBIC`, `casoBEC`, `casoBQC`,
+  `casoInverso`, los dos «Así se resuelve» y el tipo `inverso` del generador. Niveles: «El cruce y la clase» bajó al 2; en
+  el 3 entran «Dos exteriores, sin la regla» (B = 70°, C = 50°: mitades de los exteriores, BQC = 60°) y «El cruce, con
+  exterior y x» (exterior 4x − 10° = A + B, x = 30, BIC = 115° con las mitades), los dos sin reglas en Datos. Salieron «De I
+  a E» y «Dos exteriores con x».
+- M3. El reto de la mesa: «Con B = C, I cae en la línea de A al punto medio de BC.» (cierto solo con B = C).
+- M4. La regla de la idea 6 tiene dibujo propio con I, E y Q (geo-objeto `parque` aprendió `Q` y `BQC`), m∠A = 60° como
+  rótulo suelto, 120° en I y 60° en Q. «Así se resuelve» rama par ya no pide BIC (ver B7).
+- M5. Predice de la idea 3: techo simétrico y «El dibujo no está a escala» en la pregunta; al revelar, el techo real.
+  Sin figura: `casoOrden`, ejemplos 5, 10 y 15 de la idea 3 y «El cruce y la clase».
+- M6. geo-objeto: `ejercicio: true` (opcional; Segmentos no la usa y sus pruebas pasan) pinta en tinta el arco sin texto ni
+  color en cartulina, plaza, compás, lámpara, caserío y parque. La unidad la pone en todo ejemplo, «Así se resuelve» y
+  «Ahora tú»; los datos sin rótulo piden `color: 'h'` (recto de B, m∠B de la pileta isósceles, B en `casoHAF`, etc.).
+  Prueba nueva en 400 semillas: carmín sin rótulo solo si su valor está en el enunciado, y ningún dato numérico en tinta.
+- M7. Triángulo libre con los colores de la idea 5 (altura naranja, mediana turquesa, bisectriz carmín con pie F,
+  mediatriz en tinta discontinua), ángulos en carmín con 1, 2 y 3 arcos, sin verde; lectura «m∠A = …, m∠B = … y m∠C = …:
+  clase». La bisagra es «Lámpara con brazos libres»: BC naranja, AB turquesa, codo en carmín, x en tinta, todo en cm
+  (controles de 10 a 60 y de 10 a 80 cm; mismos id), lectura «3 cm < x ≈ … cm < 13 cm» sin «·»; comentario corregido.
+- M8. geo-triangulos exporta `TIPOS_POR_IDEA` (= `IDEAS`); el catálogo ya trae sus seis `ideas`.
+- M9. La tarjeta 3 de Lee dice dónde se explica cada uno: incentro en Proporcionalidad y semejanza (donde lo define el
+  glosario), excentro en Puntos notables.
+- M10. La mariposa del nivel 3: m∠C = x + 25° y m∠D = 70°; la x hace falta (x = 20, ∠AOB = 65°, comprobado en COD).
+
+**Baja**: B1 (`3 · 45 = 135°`, `4 · 20 = 80°`, `${p} · ${k}`, sin «°» en el número), B2 (`Y`/`COMA` en vez de `SEP` fuera de
+la regla; Mira 6 paso 5), B3 (⟺ en la regla; △ en ACD, BDC, ABD; tarjeta nueva «Nombres de tres letras» en la idea 2),
+B4 (dibujo solo con las dos bisectrices de C), B5 (la solución del tipo `punto` dice de dónde sale AB + AC > PB + PC),
+B6 (vista de la lámpara del ejemplo 3, sin el arco del codo), B7 (idea 4 impar: el punto interior; idea 6 par: ∠BEC con x),
+B8 (glosario: «sus tres ángulos miden lo mismo»; «pie»: la recta del lado de enfrente), B9 (`npm run catalogo` no borra
+geo-triangulos; diff revisado).
+
+**Lector en frío** (lo que el auditor confirmó): «15 cm / 65 cm» → «AC = 15 cm / AC = 65 cm»; el codo fuera del juego a
+105° (sin cuadradito; el juego empieza en 105°); la regla de la idea 5 con dibujo propio: el isósceles donde las tres
+coinciden (H = M = F, AB = AC con dos rayitas), sin la mediatriz; la lectura del juego 6 es «m∠BIC = 180° − B/2 − C/2 =
+…; m∠A = …» (la regla llega en Mira); rayitas del exterior en C a radio 30; «A es una parte y B, dos»; «Cinco palitos» en
+tres líneas con ✓ y ✗; palitos en tinta; opciones «7 valores»; «El cruce y la clase» con el paso m∠A ÷ 2 = 45°;
+paréntesis en 90° ± (m∠A ÷ 2) (teoría y generador); sin la D del ejemplo 4 de la idea 2.
+
+**Pendiente**
+- `nucleo/repaso-tipos.test.js` falla: la fila de geo-triangulos-notables en `nucleo/repaso-tipos.js` todavía manda
+  `desigualdad` a `geometria.triangulos`. Arreglo de una línea, fuera de mi alcance (nucleo/): quitar
+  `desigualdad: G + 'triangulos', ` de esa fila. El tipo desigualdad sigue en el sorteo sin unidad de notables (su papel
+  p1, p4 y p6 y casos.json): decidir si se saca.
+- El 27° del ejemplo 8 de la idea 6 y «x + 25°» en B (isósceles con x afuera) siguen solo en el enunciado: sus rótulos
+  quedan más cerca de otro vértice (prueba de la unidad). Igual «3x + 5°» en B del ejemplo 13 de la idea 5.
+- Sin tocar: «60° y 70° pegados» en el centro (ideas 1 y 2), los 35° del tijeral junto a la punta, la regla de la idea 3
+  con dibujo isósceles (AC > AB no se ve), el incentro definido en Puntos notables (decisión de Gerson; es otra unidad).

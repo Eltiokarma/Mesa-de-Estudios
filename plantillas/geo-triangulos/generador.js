@@ -136,9 +136,10 @@
     marcas: 'Marcas: cuadradito = 90°; rayitas iguales = tramos iguales; arcos iguales = ángulos iguales.',
     paralelas: 'Entre paralelas, los alternos internos son iguales.',
     bis2: 'Cada bisectriz parte su ángulo en dos ángulos iguales.',
-    BIC: 'Dos bisectrices interiores, de B y de C: m∠BIC = 90° + m∠A ÷ 2.',
+    // Con paréntesis, iguales a la teoría («90° − m∠A ÷ 2» se leía como (90° − m∠A) ÷ 2; lector en frío, 18 nov).
+    BIC: 'Dos bisectrices interiores, de B y de C: m∠BIC = 90° + (m∠A ÷ 2).',
     BEC: 'Interior de B con exterior de C: m∠BEC = m∠A ÷ 2.',
-    BQC: 'Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − m∠A ÷ 2.',
+    BQC: 'Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − (m∠A ÷ 2).',
   };
   const kT = p => (p === 1 ? 'k' : `${p}k`);
 
@@ -948,7 +949,8 @@
           er('GE-DT15', p + q + 1, 'Bien usar AB + AC > PB + PC; falta el límite de BC, que pasa de la diferencia.'),
           er('GE-DT16', 2 * M + 2, 'Bien los dos límites; pero el perímetro entero sale de la suma, sin redondear cada parte.'),
         ],
-        solucion: [[`AB + AC > ${p} + ${q} = ${p + q} y BC > ${M} − ${Math.min(p, q)} = ${Math.abs(p - q)}: el perímetro pasa de ${2 * M} cm.`], ['El menor entero: ', v('x', cm(bien)), '.']],
+        solucion: [['El dato de P sale de prolongar BP hasta AC y usar la desigualdad en los dos triángulos que se forman.'],
+          [`AB + AC > ${p} + ${q} = ${p + q} y BC > ${M} − ${Math.min(p, q)} = ${Math.abs(p - q)}: el perímetro pasa de ${2 * M} cm.`], ['El menor entero: ', v('x', cm(bien)), '.']],
         fig, _datos: { tipo: 'punto', idea: 'desigualdad', nivel: 3, p, q, pide: 'perimetro' },
       };
     }
@@ -1134,7 +1136,7 @@
           er('GE-BIS6', 90 + a, 'Bien sumar 90°; pero cada bisectriz deja solo la mitad: va la mitad de A.'),
           er('GE-BIS7', calc.angulo('excentro', a), 'Bien usar la mitad de A; 90° menos esa mitad va con dos bisectrices exteriores.'),
         ],
-        solucion: [['Dos bisectrices interiores: 90° más la mitad de A.'], [`m∠BIC = 90° + ${a}° ÷ 2 = `, v('x', gr(x)), '.']],
+        solucion: [['Dos bisectrices interiores: 90° más la mitad de A.'], [`m∠BIC = 90° + (${a}° ÷ 2) = `, v('x', gr(x)), '.']],
         fig, _datos: { tipo: 'incentro', idea: 'angulo-de-bisectrices', nivel: 1, A: a, B: b, C: c, pide: 'BIC' },
       };
     }
@@ -1170,7 +1172,7 @@
           er('GE-BIS4', calc.angulo('int-ext', a), 'Bien usar la mitad de A; sola va con una interior y una exterior.'),
           er('GE-BIS8', 180 - a, 'Bien restar; pero la regla es 90° menos la mitad de A.'),
         ],
-        solucion: [['Dos bisectrices exteriores: 90° menos la mitad de A.'], [`m∠BQC = 90° − ${a}° ÷ 2 = `, v('x', gr(x)), '.']],
+        solucion: [['Dos bisectrices exteriores: 90° menos la mitad de A.'], [`m∠BQC = 90° − (${a}° ÷ 2) = `, v('x', gr(x)), '.']],
         fig, _datos: { tipo: 'dos-ext', idea: 'angulo-de-bisectrices', nivel: 2, A: a, B: b, C: c, pide: 'BQC' },
       };
     }
@@ -1200,7 +1202,7 @@
       if (c < 25 || b < 25 || (conE && (a < 60 || a > 100))) continue;
       const th = conE ? calc.angulo('int-ext', a) : calc.angulo('incentro', a), fig = bisFig(b, c, conE ? 'E' : 'I', { A: pide(), X: dado(`${th}°`) });
       if (!rotular(fig)) continue;
-      const base0 = { variables: {}, datos: conE ? [D.BIC, D.BEC] : [D.BIC], correcta: a, fmt: gr, fig, _datos: { tipo: 'inverso', idea: 'angulo-de-bisectrices', nivel: 3, conE, X: th, B: b, C: c, pide: 'A' } };
+      const base0 = { variables: {}, datos: [D.BIC, D.BEC, D.BQC], correcta: a, fmt: gr, fig, _datos: { tipo: 'inverso', idea: 'angulo-de-bisectrices', nivel: 3, conE, X: th, B: b, C: c, pide: 'A' } };
       if (conE) return Object.assign(base0, {
         enunciado: [`En el triángulo ABC, la bisectriz interior de B y la exterior de C se cortan en E, y m∠BEC = ${th}°.`], pregunta: ['¿Cuánto mide el ángulo A?'],
         errores: [
@@ -1274,5 +1276,7 @@
     throw new Error(`${ID}: no se pudo generar un problema con 4 alternativas distintas (${tipo})`);
   }
 
-  return { id: ID, titulo: 'Triángulos y líneas notables', generar, TIPOS: Object.keys(TIPOS), IDEAS, marco, diag };
+  // TIPOS_POR_IDEA: lo que lee el catálogo para «Practicar por idea» (herramientas/construir-catalogo.js; auditoría, M8).
+  // calc: el cálculo de la desigualdad que usa esta práctica (el de geo-triangulos-notables), para el verificador de geo-14.
+  return { id: ID, titulo: 'Triángulos y líneas notables', generar, TIPOS: Object.keys(TIPOS), IDEAS, TIPOS_POR_IDEA: IDEAS, calc, marco, diag };
 });

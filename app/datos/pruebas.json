@@ -2413,50 +2413,8 @@
      }
     },
     {
-     "par": "geo-13",
-     "plantilla": "geo-triangulos",
-     "unidad": "geometria.triangulos",
-     "mide": "Isósceles: frente a lados iguales hay ángulos iguales, y los dos de la base se reparten lo que deja el ángulo entre los lados iguales",
-     "A": {
-      "enunciado": "Las dos vigas inclinadas de un tijeral miden lo mismo y en la cumbrera forman un ángulo de 80°. ¿Qué ángulo forma cada una con la viga horizontal de la base?",
-      "opciones": [
-       {
-        "texto": "100°"
-       },
-       {
-        "texto": "50°"
-       },
-       {
-        "texto": "10°"
-       },
-       {
-        "texto": "80°"
-       }
-      ],
-      "k": "e3f66758155ac88e6b9f32114938d5f67addececd1378398879797fbe430904e682597ed3204"
-     },
-     "B": {
-      "enunciado": "Las dos vigas inclinadas de un tijeral miden lo mismo y en la cumbrera forman un ángulo de 64°. ¿Qué ángulo forma cada una con la viga horizontal de la base?",
-      "opciones": [
-       {
-        "texto": "64°"
-       },
-       {
-        "texto": "26°"
-       },
-       {
-        "texto": "116°"
-       },
-       {
-        "texto": "58°"
-       }
-      ],
-      "k": "5b9be41bc5607aed1bd05f13bc28f66352a42cef088a36ef8d756c8990e3db24ac2ef62f490b"
-     }
-    },
-    {
      "par": "geo-14",
-     "plantilla": "geo-triangulos-notables",
+     "plantilla": "geo-triangulos",
      "unidad": "geometria.triangulos",
      "mide": "Desigualdad triangular con lados enteros: el tercer lado está estrictamente entre la diferencia y la suma de los otros dos",
      "A": {

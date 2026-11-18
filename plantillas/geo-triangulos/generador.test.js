@@ -271,9 +271,9 @@ const FORMULA = {
   diagonal: ['Desigualdad triangular'], punto: ['Desigualdad triangular', 'AB + AC > PB + PC', 'Perímetro'],
   reconocer: ['cuadradito = 90°'], donde: ['Altura: va del vértice', 'Obtusángulo'], 'ang-altura': ['Altura: va del vértice', 'adyacentes', 'suman 180°'],
   'ang-bisectriz': ['= 180°', 'Bisectriz: parte', 'Un ángulo exterior mide'], 'altura-bisectriz': ['= 180°', 'Altura: va del vértice', 'Bisectriz: parte'],
-  incentro: ['m∠BIC = 90° + m∠A ÷ 2', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − m∠A ÷ 2'], 'int-ext': ['m∠BIC = 90° + m∠A ÷ 2', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − m∠A ÷ 2'],
-  'dos-ext': ['m∠BIC = 90° + m∠A ÷ 2', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − m∠A ÷ 2'], 'con-bc': ['Cada bisectriz parte su ángulo', 'suman 180°'],
-  inverso: ['m∠BIC = 90° + m∠A ÷ 2'],
+  incentro: ['m∠BIC = 90° + (m∠A ÷ 2)', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − (m∠A ÷ 2)'], 'int-ext': ['m∠BIC = 90° + (m∠A ÷ 2)', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − (m∠A ÷ 2)'],
+  'dos-ext': ['m∠BIC = 90° + (m∠A ÷ 2)', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − (m∠A ÷ 2)'], 'con-bc': ['Cada bisectriz parte su ángulo', 'suman 180°'],
+  inverso: ['m∠BIC = 90° + (m∠A ÷ 2)', 'm∠BEC = m∠A ÷ 2', 'm∠BQC = 90° − (m∠A ÷ 2)'],
 };
 test('datos: lista de líneas cortas, con la herramienta de cada tipo, sin la respuesta ni consejos, en 400 semillas', () => {
   for (const [s, p] of muestras) {

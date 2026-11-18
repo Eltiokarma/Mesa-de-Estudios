@@ -36,7 +36,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En el triángulo ABC, m∠A = 70°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC? Datos: Dos bisectrices interiores, de B y de C: m∠BIC = 90° + m∠A ÷ 2. Interior de B con exterior de C: m∠BEC = m∠A ÷ 2. Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − m∠A ÷ 2. Alternativas: A) 70°   B) 90°   C) 17,5°   D) 125°   E) 35°",
+      "enunciado": "En el triángulo ABC, m∠A = 70°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC? Datos: Dos bisectrices interiores, de B y de C: m∠BIC = 90° + (m∠A ÷ 2). Interior de B con exterior de C: m∠BEC = m∠A ÷ 2. Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − (m∠A ÷ 2). Alternativas: A) 70°   B) 90°   C) 17,5°   D) 125°   E) 35°",
       "respuesta": "E) 35°",
       "pasos": [
         "Interior con exterior: la mitad de A.",
@@ -79,6 +79,7 @@
       "enunciado": "P está dentro del triángulo ABC, con PB = 12 cm y PC = 6 cm. El perímetro de ABC mide un número entero de cm. ¿Cuál es su menor valor? Datos: Desigualdad triangular: cada lado es menor que la suma de los otros dos y mayor que su diferencia. Con P dentro del triángulo ABC: AB + AC > PB + PC. Perímetro: la suma de los tres lados. Alternativas: A) 26 cm   B) 25 cm   C) 19 cm   D) 24 cm",
       "respuesta": "B) 25 cm",
       "pasos": [
+        "El dato de P sale de prolongar BP hasta AC y usar la desigualdad en los dos triángulos que se forman.",
         "AB + AC > 12 + 6 = 18 y BC > 12 − 6 = 6: el perímetro pasa de 24 cm.",
         "El menor entero: 25 cm."
       ]

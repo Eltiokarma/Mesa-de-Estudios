@@ -45,7 +45,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["geometria.segmentos-y-angulos"],
-      "plantillas": ["geo-triangulos", "geo-triangulos-notables", "triangulo-estira"],
+      "plantillas": ["geo-triangulos", "triangulo-estira"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

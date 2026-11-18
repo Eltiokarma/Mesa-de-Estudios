@@ -3,7 +3,6 @@
   "titulo": "Lados posibles y ángulos en los puntos notables",
   "formato": "predicciones",
   "unidades": [
-    "geometria.triangulos",
     "geometria.puntos-notables",
     "geometria.relaciones-metricas"
   ],
