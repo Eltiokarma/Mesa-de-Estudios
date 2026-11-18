@@ -588,3 +588,557 @@ También tienen problemas:
 **Colores:** el rojo casi siempre es «dato». Pero hay arcos rojos sin número en ángulos desconocidos o que no se usan (07 en B y C, 05 en A, 10 en B, 18 en A, 17 en E). El naranja y el verde de los lados cambian de sentido entre 10, 11 y 12.
 
 **Cuentas:** rehíce las 18 y **todas cuadran**. Los dibujos que medí están a escala con los números. No encontré ningún número imposible.
+
+---
+
+# Ronda 2 (18 nov, noche)
+
+Dos lectores nuevos, sobre la unidad corregida, capturas `--entera --lector`.
+
+## Veredicto de la sesión
+
+Pasan las seis ideas (frase = `aprendizaje`; resolvió todos los Ahora tú). Se corrige: **por segunda vez, «mueve A»
+con controles de B y C** en las misiones de las ideas 1 y 2 (que la consigna diga cómo se mueve A: arrastrando la punta
+o con B y C); en Predice de la idea 1, el texto habla de un triángulo y el dibujo muestra dos; por qué los ángulos sobre
+la paralela son iguales; «en cada vértice se toma uno solo» sin explicar; el 75° de Ahora tú lejos de B y un exterior en
+el color de los interiores (idea 2); el Predice del techo confunde «frente a» con «junto a» y α no está en el dibujo
+(idea 3); «AC = 15 cm» parece del brazo naranja (idea 4); «mediatriz» sin explicar y las tres líneas muy juntas en el
+celular (idea 5); Q de golpe en la regla, el valor en E falta y rayitas incontables en C (idea 6). Ejemplos: las
+cuentas cuadran y los niveles suben; **en 16 y 17 Datos todavía trae solo la fórmula que da la respuesta, con I y E sin
+definir** (verificar en el código: la corrección decía las tres reglas); los dibujos van a escala y con transportador se
+saca la respuesta (01, 07, 13): que digan «no está a escala» o dejen de estarlo; 15 sin dibujo y salta 2C = 110;
+rótulos encimados en 06, 09 y 18; x sin «°» al despejar en 03 y 09 (es la regla de la unidad, pero falta el paso).
+
+## Momentos
+
+# Informe de un alumno: "Triángulos y líneas notables" (vista celular, tema claro)
+
+Soy alumno de 5.º de secundaria en Juliaca y me preparo para la admisión. Solo miré las capturas `claro-cel-<tema>-N-*.png`. Las revisé en el orden de la tira de ideas que sale arriba (1 Suma de ángulos interiores, 2 El ángulo exterior, 3 Triángulo isósceles y equilátero, 4 Desigualdad triangular, 5 Líneas notables, 6 Ángulos entre bisectrices). Todas las pantallas comparten lo mismo: una cabecera rosada ("Teoría · 0 de 6 terminadas", "Triángulos y líneas notables"), las pestañas Ideas / Ejemplos / Glosario / Laboratorio, la tira de ideas con números, una barra de 7 pasos y la nutria Neri que da pistas. Abajo de cada dibujo hay un botón de lupa.
+
+Aviso: en las pantallas Mira solo veo el paso 1 (por ejemplo "1/7" o "1/4"), y en Así se resuelve solo el paso 1 ("¿Qué me piden?"). No sé qué dicen los pasos que siguen.
+
+---
+
+## 1. Suma de ángulos interiores
+
+### 1 Lee
+1. **Qué veo:** un tijeral de techo, que son tres vigas formando un triángulo sobre una pared gris. Hay una tarjeta "1/4" con el título "El tijeral de un techo", los puntitos del carrusel, el enlace "Ir directo a jugar" y el botón "Siguiente tarjeta".
+2. **Qué me piden:** leer. El texto dice que un triángulo de vigas no se deforma mientras sus lados no cambien de largo.
+3. **Letras y símbolos:** no hay letras en el dibujo. La palabra "triángulos" sale subrayada con puntitos; creo que eso lleva al glosario.
+4. —
+5. **Dudas:** el título es "Suma de ángulos" pero esta tarjeta habla de que el triángulo es rígido. Todavía no veo qué tiene que ver con los ángulos; quizás lo explican las tarjetas 2 a 4, que no vi.
+
+### 2 Juega
+1. **Qué veo:** un triángulo de cartulina ABC sobre una mesa con rayas y una regla debajo. A tiene un círculo que se puede arrastrar. Los arcos marcan A = 70° (un arco), B = 60° (dos arcos) y C = 50° (tres arcos). Debajo están la fórmula m∠A + m∠B + m∠C = 70° + 60° + 50° = 180°, una leyenda, dos deslizadores (m∠B = 60°, m∠C = 50°) con botones – y +, "Volver al inicio" y "Prueba 4 casos distintos: llevas 1".
+2. **Qué me piden:** la misión es "Mueve la punta A hasta que su ángulo mida lo mismo que los otros dos juntos".
+3. **Letras y símbolos:** A, B y C son las puntas, y A se mueve. m∠A es la medida del ángulo en A. El color carmín marca los tres ángulos de adentro. Los arcos son uno en A, dos en B y tres en C.
+4. **Lo que aprendí:** muevas lo que muevas, los tres ángulos siempre suman 180°, así que si A vale lo mismo que B + C, entonces A = 90°.
+5. **Dudas:** la misión dice "mueve la punta A", pero los deslizadores son de B y de C, no de A. No sé si lo correcto es arrastrar A o usar los deslizadores. Además el resultado "= 180°" se pasa a la siguiente línea y queda un poco cortado.
+
+### 3 Predice
+1. **Qué veo:** dos triangulitos separados sobre la mesa. Uno lleva el letrero 100° con un arco y el otro 95° con dos arcos. Abajo está la regla.
+2. **Qué me piden:** Rosa dice que recortó un triángulo con dos ángulos obtusos, de 100° y 95°. ¿Puede ser? Las opciones son A "No: ya suman más de 180°", B "Sí, si el tercero es muy pequeño", C "Sí: no llega a 360°" y D "Sí, si la cartulina es grande".
+3. **Letras y símbolos:** el dato dice que un ángulo obtuso mide más de 90° y menos de 180°.
+4. —
+5. **Dudas:** el enunciado habla de UN triángulo con dos ángulos obtusos, pero el dibujo muestra DOS triángulos, cada uno con un ángulo marcado. Me confundió. Además los arcos dibujados no se ven tan abiertos como para ser de 100° y 95°. Yo respondería A.
+
+### 4 Mira
+1. **Qué veo:** el mismo triángulo del juego, con 70° en A, 60° en B y 50° en C, y la regla abajo. También hay un botón de reproducir, una barra "1/7" y "Paso 2 de 7".
+2. **Qué me piden:** avanzar paso a paso. Neri dice que "las tres esquinas van a la regla".
+3. **Letras y símbolos:** m∠A = 70°, m∠B = 60° y m∠C = 50°, resaltados en carmín.
+4. **Lo que aprendí:** al parecer, si cortas las tres esquinas y las juntas sobre la regla, forman una línea recta, que es 180°. Lo deduzco por lo que dice Neri; en el paso 1 todavía no se ve.
+5. **Dudas:** solo vi el paso 1, así que no vi las esquinas moverse.
+
+### 5 La regla
+1. **Qué veo:** el triángulo ABC con una recta punteada que pasa por A, paralela a la base. Al lado de A, sobre esa recta, se repiten 60° (dos arcos) y 50° (tres arcos), y en medio queda 70°. Abajo están 60° en B y 50° en C, más la regla.
+2. **Qué me piden:** entender la regla m∠A + m∠B + m∠C = 180° ("los tres interiores"). Si un ángulo es recto u obtuso, los otros dos son agudos.
+3. **Letras y símbolos:** la línea punteada es la paralela por A. Los arcos iguales marcan ángulos iguales. "Vale si" el triángulo está en un plano.
+4. —
+5. **Dudas:** entiendo que arriba 60 + 70 + 50 forman una línea llana, pero no explican por qué los ángulos de arriba son iguales a los de abajo (creo que son alternos internos, y no lo dice). "Está en un plano" no lo entendí bien: ¿existen triángulos que no estén en un plano?
+
+### 6 Así se resuelve
+1. **Qué veo:** un triángulo rectángulo ABC con un cuadradito rojo en C, un "?" en A y dos arcos en B.
+2. **Qué me piden:** C es recto y A mide 20° más que B. ¿Cuánto mide A? Solo se ve el paso 1, "Piden m∠A, uno de los dos ángulos agudos".
+3. **Letras y símbolos:** el cuadradito es un ángulo recto (90°) y el "?" es lo que se busca.
+4. —
+5. **Dudas:** ninguna. Mi solución: A + B = 90 y A = B + 20, entonces 2B + 20 = 90, B = 35 y **A = 55°**.
+
+### 7 Ahora tú
+1. **Qué veo:** un triángulo ABC con 40° en A, 65° en B (dos arcos) y "?" en C (tres arcos).
+2. **Qué me piden:** encontrar m∠C. Las opciones son 105°, 140°, 75°, 255° y "No sé".
+3. **Letras y símbolos:** los mismos de antes.
+4. —
+5. **Dudas:** ninguna. 180 − 40 − 65 = **75°** (opción C).
+
+**Ejercicio inventado:** en un triángulo, el ángulo A es el doble de B y C mide 30°. ¿Cuánto miden A y B?
+**Solución:** 2B + B + 30 = 180, entonces 3B = 150, **B = 50°** y **A = 100°**.
+
+---
+
+## 2. El ángulo exterior
+
+### 1 Lee
+1. **Qué veo:** una plaza triangular ABC con calles grises anchas y un mototaxi sobre la calle BC. Hay una tarjeta "1/4", "La plaza y el mototaxi".
+2. **Qué me piden:** leer. El mototaxi rodea la plaza siempre en el mismo sentido y dobla en cada esquina.
+3. **Letras y símbolos:** A, B y C son las esquinas, y los lados son calles.
+4. —
+5. **Dudas:** ninguna. Me gusta que sea un mototaxi, como en Juliaca.
+
+### 2 Juega
+1. **Qué veo:** la plaza ABC con un círculo arrastrable en A. Los ángulos son 60° en A, 70° en B y 50° en C, y la calle BC sigue punteada hasta D. Un arco verde en C marca 130°. La fórmula es "Giro en C = m∠A + m∠B = 60° + 70° = 130°". Hay deslizadores de B (70°) y C (50°) y "Prueba 3 casos: llevas 1".
+2. **Qué me piden:** la misión es "Mueve la esquina A hasta que el mototaxi gire 120° en la esquina C".
+3. **Letras y símbolos:** el carmín marca los ángulos de adentro. ∠ACD (en verde) es el giro en C. D está en la calle BC, prolongada después de C.
+4. **Lo que aprendí:** el giro en C es igual a la suma de los ángulos de A y B, así que para 120° necesito A + B = 120°, o sea C = 60°.
+5. **Dudas:** otra vez la misión dice "mueve A", pero los deslizadores son de B y C. El deslizador de C está casi al mínimo en 50°, así que no sé si puede bajar más.
+
+### 3 Predice
+1. **Qué veo:** la plaza con A = 50°, B = 60° y C = 70°, y tres arcos exteriores con "?", uno en cada esquina, con las calles prolongadas en punteado.
+2. **Qué me piden:** sumar los tres giros de una vuelta completa. Las opciones son A 180°, B 360°, C "Depende de la forma" y D 540°.
+3. **Letras y símbolos:** D es la prolongación de BC. El giro es el ángulo entre la calle que deja y la que toma.
+4. —
+5. **Dudas:** aquí los números son distintos a los del Juega (antes A era 60°, ahora 50°). No es grave, pero tuve que fijarme bien. Yo respondería B: 360°.
+
+### 4 Mira
+1. **Qué veo:** la plaza con 50°, 60° y 70°, y en C un arco verde de 110° hacia D. La barra marca "1/4".
+2. **Qué me piden:** seguir los pasos. Paso 1: "En C, el giro y el ángulo de adentro forman una recta: suman 180°", m∠ACD = 180° − 70° = 110°.
+3. **Letras y símbolos:** el verde es el giro (exterior) y el carmín los de adentro.
+4. **Lo que aprendí:** el ángulo exterior y el interior de la misma esquina suman 180°; después, según Neri, se suman los tres giros.
+5. **Dudas:** solo vi el paso 1.
+
+### 5 La regla
+1. **Qué veo:** el triángulo con las prolongaciones de los lados: E pasando por A, D después de C y F después de B, con arcos verdes exteriores en las tres esquinas y arcos carmín interiores.
+2. **Qué me piden:** entender que m∠ACD (exterior en C) = m∠BAC + m∠ABC, y que m∠ACD + m∠BAE + m∠CBF = 360°.
+3. **Letras y símbolos:** E, D y F son los puntos de las prolongaciones. ∠BAC es el ángulo en A y ∠ABC el ángulo en B. La llave verde dice "exterior en C".
+4. —
+5. **Dudas:** la fórmula larga se corta al final de la línea ("= 360°" baja al siguiente renglón). "En cada vértice se toma uno solo" no lo entendí del todo: ¿en cada esquina hay dos exteriores?
+
+### 6 Así se resuelve
+1. **Qué veo:** el triángulo ABC con un ángulo recto marcado afuera de C (entre CA y CD, con "90°" en carmín), "?" en A y dos arcos en B.
+2. **Qué me piden:** el exterior ACD mide 90° y B es el doble de A. ¿Cuánto mide A? Paso 1: "Piden m∠A, uno de los dos interiores que no están junto al exterior".
+3. **Letras y símbolos:** el cuadradito es 90°.
+4. —
+5. **Dudas:** el 90° sale en carmín, el color que usaban para los ángulos de adentro, aunque aquí es un exterior. Mi solución: A + 2A = 90, entonces **A = 30°**.
+
+### 7 Ahora tú
+1. **Qué veo:** un triángulo con 65° en A y 75° en B, y un "?" en el arco exterior de C hacia D.
+2. **Qué me piden:** encontrar m∠ACD. Las opciones son 105°, 40°, 140°, 10° y "No sé".
+3. **Letras y símbolos:** D es la prolongación de BC.
+4. —
+5. **Dudas:** el número 75° está bastante metido hacia el centro y no pegado a B; dudé un segundo de qué ángulo era, pero el arco doble está en B. Respuesta: 65 + 75 = **140°** (opción C).
+
+**Ejercicio inventado:** el ángulo exterior en C mide 130° y el ángulo A mide 50°. ¿Cuánto miden B y el ángulo interior C?
+**Solución:** B = 130 − 50 = **80°** y C interior = 180 − 130 = **50°**. Comprobación: 50 + 80 + 50 = 180.
+
+---
+
+## 3. Triángulo isósceles y equilátero
+
+### 1 Lee
+1. **Qué veo:** un triángulo alto ABC, con unas "llaves" (corchetes) al costado de AB y de AC, cada una con una rayita.
+2. **Qué me piden:** leer las tres clases de triángulo por sus lados: escaleno, isósceles y equilátero.
+3. **Letras y símbolos:** una misma rayita en la llave de dos lados quiere decir que esos lados miden igual.
+4. —
+5. **Dudas:** al principio no sabía qué eran esas "llaves" paralelas a los lados; me lo aclaró el texto.
+
+### 2 Juega
+1. **Qué veo:** un compás con la bisagra en A, una pata en B y otra en C (con un círculo naranja para arrastrar). Marca θ = 40° arriba, 70° y 70° abajo, y BC ≈ 8,2 cm. Debajo están la fórmula "α = 70° y 70° abajo; θ = 40°; BC ≈ 8,2 cm" y el deslizador θ (40°).
+2. **Qué me piden:** las patas miden 12 cm. La misión es "Abre el compás hasta que la raya BC mida lo mismo que cada pata".
+3. **Letras y símbolos:** A es la bisagra y B y C las puntas (aguja y lápiz). θ es la abertura en A. α es el ángulo de cada pata con la raya. El naranja marca las dos patas iguales.
+4. **Lo que aprendí:** los dos ángulos de abajo siempre salen iguales, y cuando BC = 12 cm el triángulo es equilátero, con θ = 60° y todos sus ángulos de 60°.
+5. **Dudas:** la leyenda dice que α es "el ángulo de cada pata", pero en el dibujo no aparece la letra α, solo los números. Tampoco sé cuál punta es la aguja y cuál el lápiz.
+
+### 3 Predice
+1. **Qué veo:** un techo a dos aguas con AB = 3 m (naranja), AC = 4 m (verde) y la viga BC = 6 m.
+2. **Qué me piden:** decir qué lado queda más inclinado, es decir, con el ángulo mayor sobre la viga. Las opciones son A "No se sabe", B "El lado largo: más lado, más ángulo", C "El lado corto, AB" y D "Los dos igual". El dibujo no está a escala.
+3. **Letras y símbolos:** AB, AC y BC son los lados con sus medidas.
+4. —
+5. **Dudas:** fue difícil. La opción B "más lado, más ángulo" suena bien, pero el ángulo grande no está junto al lado largo sino frente a él. El ángulo en B está frente a AC (4 m), así que B es mayor y el lado AB queda más inclinado. Yo diría C. El dibujo casi simétrico no ayuda (lo avisan).
+
+### 4 Mira
+1. **Qué veo:** el mismo techo, con "1/6".
+2. **Qué me piden:** paso 1: "AC (4 m) es más largo que AB (3 m)", AC > AB.
+3. **Letras y símbolos:** el signo > es "mayor que".
+4. **Lo que aprendí:** para comparar ángulos se arma un isósceles dentro del techo (lo dice Neri); el lado más largo tiene enfrente el ángulo más grande.
+5. **Dudas:** no vi cómo se arma ese isósceles adentro, porque solo está el paso 1.
+
+### 5 La regla
+1. **Qué veo:** un isósceles ABC con llaves de una rayita en AB y AC, un arco en A y dos arcos dobles en B y C.
+2. **Qué me piden:** entender que frente a lados iguales hay ángulos iguales, que frente al lado mayor está el ángulo mayor y que el equilátero tiene tres ángulos de 60°.
+3. **Letras y símbolos:** ⟺ se lee "vale en los dos sentidos". AB = AC ⟺ m∠C = m∠B, y AC > AB ⟺ m∠B > m∠C. "Lado opuesto" es el que está enfrente del ángulo.
+4. —
+5. **Dudas:** en la fórmula escriben m∠C = m∠B (al revés de lo que esperaba, B = C); está bien, pero me hizo pensar.
+
+### 6 Así se resuelve
+1. **Qué veo:** un isósceles ABC con llaves y rayitas en AB y AC, "?" en A y arcos dobles en B y C.
+2. **Qué me piden:** AB = AC y A mide 18° más que B. ¿Cuánto mide A? Paso 1: "Piden m∠A, el ángulo entre los dos lados iguales".
+3. **Letras y símbolos:** los mismos.
+4. —
+5. **Dudas:** ninguna. B = C, A = B + 18, entonces 3B + 18 = 180, B = 54 y **A = 72°**.
+
+### 7 Ahora tú
+1. **Qué veo:** un isósceles alto con 34° en A y "?" en B.
+2. **Qué me piden:** con AB = AC y A = 34°, encontrar B. Las opciones son 34°, 146°, 73°, 56° y "No sé".
+3. **Letras y símbolos:** las llaves con rayita marcan los lados iguales.
+4. —
+5. **Dudas:** ninguna. (180 − 34) ÷ 2 = **73°** (opción C).
+
+**Ejercicio inventado:** en un triángulo isósceles, el ángulo desigual mide 45° más que cada uno de los ángulos iguales. ¿Cuánto mide cada ángulo?
+**Solución:** x + x + (x + 45) = 180, entonces 3x = 135 y **x = 45°**. Los ángulos son **45°, 45° y 90°** (un isósceles rectángulo).
+
+---
+
+## 4. Desigualdad triangular
+
+### 1 Lee
+1. **Qué veo:** una lámpara de escritorio con la base C, el brazo CB de 40 cm (naranja), el codo B con un arco y el brazo BA de 25 cm (verde) hasta la cabeza A. Una línea punteada une A con C. La tarjeta dice "1/3".
+2. **Qué me piden:** leer. AC, de la base a la cabeza, es el tercer lado.
+3. **Letras y símbolos:** C es la base, B el codo y A la cabeza. La línea punteada es AC.
+4. —
+5. **Dudas:** ninguna.
+
+### 2 Juega
+1. **Qué veo:** la lámpara con un círculo verde en A, AC ≈ 52,4 cm y la línea "AC ≈ 52,4 cm, menos que 40 + 25 = 65 cm". El deslizador m∠B marca 105° y hay "Prueba 4 casos: llevas 1".
+2. **Qué me piden:** la misión es "Estira el codo hasta que la cabeza quede a más de 62 cm de la base".
+3. **Letras y símbolos:** CB es el brazo de abajo (40), BA el de arriba (25), AC la distancia de la base a la cabeza y m∠B la abertura del codo.
+4. **Lo que aprendí:** mientras más abro el codo, más se aleja la cabeza, pero nunca llega a 65 cm, que sería la suma de los dos brazos.
+5. **Dudas:** no sé qué abertura exacta da más de 62 cm; hay que probar.
+
+### 3 Predice
+1. **Qué veo:** la lámpara con "?" en la línea punteada AC.
+2. **Qué me piden:** si el codo se pudiera cerrar y estirar del todo, ¿entre qué valores está AC para que haya triángulo? Las opciones son A "Solo 65", B "Entre 15 y 65, sin llegar a ninguno", C "De 15 a 65, incluidos" y D "Menor que 65".
+3. **Letras y símbolos:** CB = 40 y BA = 25.
+4. —
+5. **Dudas:** dudé entre B y C. Cuando está estirado del todo da 65, pero ahí no hay triángulo, es una línea. Yo diría B.
+
+### 4 Mira
+1. **Qué veo:** la lámpara con el codo a 105°, sin la línea punteada. La barra marca "1/5".
+2. **Qué me piden:** paso 1: "La lámpara del juego, con el codo abierto a 105°", CB = 40 cm y BA = 25 cm.
+3. **Letras y símbolos:** los mismos.
+4. **Lo que aprendí:** en los dos extremos (codo cerrado o estirado del todo) el triángulo desaparece, según Neri.
+5. **Dudas:** solo vi el paso 1; aquí no se ve AC.
+
+### 5 La regla
+1. **Qué veo:** la lámpara con dos puntos verdes extra: uno arriba, en la prolongación de CB ("AC = 65 cm"), y otro encima del brazo CB ("AC = 15 cm").
+2. **Qué me piden:** entender que cada lado es menor que la suma de los otros dos y mayor que su diferencia: CB − BA < AC < CB + BA.
+3. **Letras y símbolos:** < es "menor que". "La diferencia" es 40 − 25 y "la suma" es 40 + 25. "Vale si" las desigualdades son estrictas.
+4. —
+5. **Dudas:** al principio no entendí los dos puntos verdes; luego vi que son las posiciones de la cabeza A en los extremos. El letrero "AC = 15 cm" está al lado del brazo naranja y parece que habla de ese brazo.
+
+### 6 Así se resuelve
+1. **Qué veo:** tres palitos de 14 cm, 10 cm y 5 cm.
+2. **Qué me piden:** decir si forman un triángulo. Paso 1: "Piden si los tres palitos se cierran en un triángulo".
+3. **Letras y símbolos:** ninguno especial.
+4. —
+5. **Dudas:** ninguna. 10 + 5 = 15 > 14, así que **sí se puede**.
+
+### 7 Ahora tú
+1. **Qué veo:** un triángulo con AB = 4 cm (naranja), BC = 8 cm (verde) y AC = x punteado.
+2. **Qué me piden:** cuántos valores enteros puede tomar x. Las opciones son 11, 9, 7 y 8 valores, y "No sé".
+3. **Letras y símbolos:** x es el lado que no se conoce.
+4. —
+5. **Dudas:** ninguna. 4 < x < 12, así que x puede ser 5, 6, 7, 8, 9, 10 u 11: **7 valores** (opción C).
+
+**Ejercicio inventado:** dos lados miden 6 cm y 9 cm. ¿Cuál es el mayor y el menor valor entero del tercer lado?
+**Solución:** 3 < x < 15, así que el **menor es 4 cm** y el **mayor es 14 cm**.
+
+---
+
+## 5. Líneas notables
+
+### 1 Lee
+1. **Qué veo:** un caserío (tres casitas) en A, una carretera recta horizontal con los paraderos B y C, y el triángulo ABC. La tarjeta dice "1/4".
+2. **Qué me piden:** leer. Del caserío salen caminos rectos a la carretera, y el "pie" es donde cada camino llega.
+3. **Letras y símbolos:** A es el caserío y B y C los paraderos.
+4. —
+5. **Dudas:** ninguna.
+
+### 2 Juega
+1. **Qué veo:** el caserío A, con un círculo arrastrable, y tres caminos de A a la carretera: naranja hasta H (con un cuadradito), carmín hasta F (con arcos y rayitas en A) y verde hasta M. Debajo de BM y MC hay llaves con una rayita. Aparecen "H a 1,5 km de M; F queda entre los dos" y el deslizador "el caserío, a lo largo (km desde B)" en 1,5 km.
+2. **Qué me piden:** la misión es "Mueve el caserío hasta que la altura y la mediana sean un solo camino".
+3. **Letras y símbolos:** la altura llega a la carretera con 90° en H. La mediana llega al punto medio M de BC. La bisectriz parte el ángulo A y su pie es F. B y C están a 6 km uno del otro.
+4. **Lo que aprendí:** cuando el caserío queda justo encima del punto medio (a 3 km de B), la altura, la mediana y la bisectriz se juntan en una sola.
+5. **Dudas:** el deslizador mueve el caserío "a lo largo", pero ¿también se puede cambiar su altura? Las tres líneas salen muy juntas y cuesta distinguirlas en el celular.
+
+### 3 Predice
+1. **Qué veo:** otro caserío A, más allá de B, con un ángulo de 120° en B (dos arcos) y la carretera BC.
+2. **Qué me piden:** decir dónde llega la altura desde A si B es obtuso. Las opciones son A "Dentro de BC", B "Al punto medio", C "Fuera de BC, más allá de B" y D "Justo en B".
+3. **Letras y símbolos:** la altura va de A a la recta BC con 90°, y m∠B = 120°.
+4. —
+5. **Dudas:** ninguna grande. Yo diría C. El letrero 120° está dentro del triángulo y un poco lejos de B.
+
+### 4 Mira
+1. **Qué veo:** el triángulo con la altura AH en naranja y un cuadradito en H. La barra marca "1/5".
+2. **Qué me piden:** paso 1: "Altura: el camino que forma 90° con la carretera. Llega a H".
+3. **Letras y símbolos:** ⊥ significa perpendicular, así que AH ⊥ BC.
+4. **Lo que aprendí:** cada línea notable tiene su marca: la altura el cuadradito, la mediana las rayitas iguales y la bisectriz los arcos iguales.
+5. **Dudas:** solo vi el paso 1.
+
+### 5 La regla
+1. **Qué veo:** un isósceles con llaves de dos rayitas en AB y AC. Una sola línea carmín baja de A hasta "H = M = F", con un cuadradito y arcos con rayitas en A. Debajo de BM y MC hay llaves con una rayita.
+2. **Qué me piden:** entender que la altura forma 90° y puede caer fuera, que la mediana va al punto medio, que la bisectriz parte el ángulo y que las tres coinciden solo en el isósceles.
+3. **Letras y símbolos:** AH ⊥ BC, BM = MC y m∠BAF = m∠FAC.
+4. —
+5. **Dudas:** de repente sale la palabra "mediatriz" ("no sale de un vértice"), pero no la explicaron antes en ninguna pantalla que vi. Tampoco entendí "Nombra cada línea por su marca, no por cómo luce". Aquí los lados iguales llevan dos rayitas y en el tema 3 llevaban una; no sé si eso importa.
+
+### 6 Así se resuelve
+1. **Qué veo:** un triángulo ABC con la bisectriz AF y dos arcos marcados en A.
+2. **Qué me piden:** con m∠BAF = 3x + 5° y m∠FAC = 4x − 10°, encontrar el ángulo BAC. Paso 1: "Piden el ángulo A entero".
+3. **Letras y símbolos:** F es el pie de la bisectriz.
+4. —
+5. **Dudas:** ninguna. 3x + 5 = 4x − 10, entonces x = 15, cada mitad mide 50° y **BAC = 100°**.
+
+### 7 Ahora tú
+1. **Qué veo:** un triángulo RST con una línea que baja de R a la base ST con un cuadradito. El pie no tiene letra.
+2. **Qué me piden:** decir qué línea notable es. Las opciones son bisectriz, mediana, altura, mediatriz y "No sé".
+3. **Letras y símbolos:** el cuadradito vale 90°, las rayitas iguales marcan tramos iguales y los arcos iguales, ángulos iguales.
+4. —
+5. **Dudas:** "mediatriz" vuelve a aparecer como opción y nunca me la explicaron; también forma 90° y me hizo dudar. Como sale del vértice R, elijo **altura** (opción C).
+
+**Ejercicio inventado:** en un triángulo ABC, AM es la mediana, BM = 2x + 3 y MC = 5x − 9. ¿Cuánto mide BC?
+**Solución:** 2x + 3 = 5x − 9, entonces 3x = 12, x = 4, BM = MC = 11 y **BC = 22**.
+
+---
+
+## 6. Ángulos entre bisectrices
+
+### 1 Lee
+1. **Qué veo:** un parque triangular ABC con las bisectrices de B y C (carmín) que se cruzan en I, un circulito que es la pileta, un arco en A y arcos con rayitas en B y en C. La tarjeta dice "1/4".
+2. **Qué me piden:** leer. Los caminos desde B y desde C parten cada esquina en dos ángulos iguales y se cruzan en I.
+3. **Letras y símbolos:** I es la pileta. Las rayitas en los arcos marcan mitades iguales: una rayita en B y dos en C.
+4. —
+5. **Dudas:** ninguna.
+
+### 2 Juega
+1. **Qué veo:** el parque con un círculo en A y el ángulo en I. Aparecen m∠BIC = 180° − 30° − 25° = 125° y m∠A = 70°, y los deslizadores de B (60°) y C (50°).
+2. **Qué me piden:** la misión es "Cambia B y C hasta que los caminos se crucen formando 120°".
+3. **Letras y símbolos:** I es la pileta, m∠A es el ángulo del parque en A, las rayitas son las mitades iguales y m∠BIC es el ángulo entre los caminos.
+4. **Lo que aprendí:** el ángulo en la pileta solo depende de A; para 120° hace falta A = 60°, o sea B + C = 120°.
+5. **Dudas:** hay un círculo en A como si se pudiera arrastrar, pero la misión dice cambiar B y C. El 30° y el 25° de la fórmula son las mitades de B y C, aunque eso no está escrito en el dibujo.
+
+### 3 Predice
+1. **Qué veo:** un triángulo ABC con A = 60°, la bisectriz interior de B (carmín) y la bisectriz exterior de C (verde, entre CA y la prolongación CD) que se cruzan afuera, en E, con "?".
+2. **Qué me piden:** encontrar el ángulo en E. Las opciones son 90°, 120°, 30° y 60°.
+3. **Letras y símbolos:** E es el cruce y D la prolongación de BC. Los arcos con rayitas marcan las mitades.
+4. —
+5. **Dudas:** en C hay muchas rayitas juntas en los arcos verdes y es difícil ver cuál es cuál. Yo diría 30° (la mitad de A), pero no estoy seguro.
+
+### 4 Mira
+1. **Qué veo:** el parque con la pileta I. La barra marca "1/5".
+2. **Qué me piden:** paso 1: "Los caminos toman la mitad de B y la mitad de C", m∠B/2 + m∠C/2 = (180° − m∠A)/2.
+3. **Letras y símbolos:** la raya de fracción significa "dividido entre 2".
+4. **Lo que aprendí:** la mitad de B más la mitad de C es la mitad de lo que le falta a A para 180°, y de ahí sale el ángulo en I.
+5. **Dudas:** solo vi el paso 1.
+
+### 5 La regla
+1. **Qué veo:** un triángulo con m∠A = 60°, I adentro con 120°, E afuera arriba a la derecha, Q abajo con 60°, líneas verdes y punteadas y D.
+2. **Qué me piden:** aprender tres fórmulas: m∠BIC = 90° + m∠A/2, m∠BEC = m∠A/2 y m∠BQC = 90° − m∠A/2.
+3. **Letras y símbolos:** I es el cruce de las dos interiores, E el de la interior con la exterior y Q el de las dos exteriores.
+4. —
+5. **Dudas:** el punto Q aparece de golpe, sin explicación previa. En E no ponen el número (debería ser 30°). Hay demasiadas líneas juntas en un dibujo pequeño. La línea punteada que baja de B no sé exactamente qué prolonga.
+
+### 6 Así se resuelve
+1. **Qué veo:** un triángulo con 3x en A, la bisectriz interior de B y la exterior de C que se cruzan en E.
+2. **Qué me piden:** con m∠A = 3x y m∠BEC = x + 9°, encontrar A. Paso 1: "Piden m∠A; para eso hay que hallar x".
+3. **Letras y símbolos:** E es el cruce interior–exterior.
+4. —
+5. **Dudas:** ninguna. x + 9 = 3x/2, entonces x/2 = 9, x = 18 y **A = 54°**.
+
+### 7 Ahora tú
+1. **Qué veo:** un triángulo con 60° en A y las bisectrices interiores de B y C, que se cortan en I con "?".
+2. **Qué me piden:** encontrar m∠BIC. Las opciones son 150°, 30°, 120° y 60°.
+3. **Letras y símbolos:** los mismos.
+4. —
+5. **Dudas:** ninguna. 90 + 30 = **120°** (opción C).
+
+**Ejercicio inventado:** en un triángulo, las bisectrices exteriores de B y C se cortan en Q y m∠BQC = 55°. ¿Cuánto mide A?
+**Solución:** 90 − A/2 = 55, entonces A/2 = 35 y **A = 70°**.
+
+---
+
+## Resumen de dudas que se repiten
+- En las misiones de Juega dicen "mueve A", pero los deslizadores son de B y C (temas 1, 2 y 6).
+- En Mira y en Así se resuelve solo vi el primer paso, así que el "por qué" queda pendiente.
+- Algunos números de ángulos están lejos de su vértice (temas 2 y 5), y en varias pantallas las fórmulas largas se cortan en dos renglones.
+- "Mediatriz" aparece sin explicación (tema 5), y el punto Q aparece de golpe (tema 6).
+- En el Predice del tema 1, el texto habla de un triángulo y el dibujo muestra dos.
+
+## Ejemplos resueltos
+
+# Informe del lector: ejemplos resueltos de Geometría, triángulos (18 tarjetas)
+
+Lector: alumno de 5.º de secundaria de Juliaca, preparándose para la admisión. Solo miré las imágenes PNG.
+Rehíce todas las cuentas. También medí los dibujos sobre la imagen (coordenadas en píxeles) para ver si están a escala.
+
+Nota general: el círculo de arriba solo lleva los números 3, 8 y 14, y cada uno se repite seis veces (01, 04, 07, 10, 13 y 16 llevan «3»; 02, 05, 08, 11, 14 y 17 llevan «8»; 03, 06, 09, 12, 15 y 18 llevan «14»). Si veo las tarjetas sueltas, no sé si ese número es el nivel, el número del ejercicio o qué. Las tarjetas parecen ir en 6 temas de 3 tarjetas cada uno.
+
+---
+
+## 01.png (3, «La punta del tijeral»)
+1. **Qué piden:** el ángulo de arriba de un tijeral, sabiendo que cada viga inclinada forma 35° con la de abajo.
+2. **¿Tengo todo?** Sí. Los datos traen la suma de 180°.
+3. **¿Sigo el resuelto?** Sí, todas las líneas.
+4. **Dibujo:** ayuda, porque el tijeral se ve como un triángulo. Las vigas tienen grosor y doble línea, así que no está claro en qué línea empieza cada ángulo, pero no confunde. El ángulo de arriba se ve claramente obtuso, así que no me regala el número.
+5. **Algo raro:** nada importante. Los arcos de 35° van con doble línea.
+- **Cuentas:** 180 − 35 − 35 = 110. Cuadra.
+
+## 02.png (8, «Uno es el doble de otro»)
+1. **Qué piden:** m∠B, si C = 66° y B = 2A.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el resuelto?** Sí. La idea de las «partes» (A es una parte, B son dos) se entiende muy bien.
+4. **Dibujo:** ayuda. Está a escala (B mide unos 76° y A unos 38°). En el dibujo no aparece que B = 2A; solo hay un «?».
+5. **Algo raro:** nada.
+- **Cuentas:** 3A = 114, A = 38, B = 76. Comprobación: 38 + 76 + 66 = 180. Cuadra.
+
+## 03.png (14, «La mariposa: el ángulo en O»)
+1. **Qué piden:** m∠AOB en dos triángulos que se cruzan en O.
+2. **¿Tengo todo?** Sí. Los datos dicen «opuestos por el vértice miden igual».
+3. **¿Sigo el resuelto?** Casi todo. Me trabo un poco en «3x + 2x + 15° = x + 25° + 70° → 4x = 80», porque salta los pasos 5x + 15 = x + 95 y 5x − x = 95 − 15. Lo saqué solo, pero tuve que hacerlo en el cuaderno. También es raro que escriba «x = 20» sin grados.
+4. **Dibujo:** ayuda. Los arcos de A, B, C y D están marcados. En el dibujo no aparecen las expresiones 3x, 2x + 15° ni x + 25°, solo el 70° en D.
+5. **Algo raro:** nada grave. Me gustó la línea «Compruebo en COD».
+- **Cuentas:** 5x + 15 = x + 95, entonces x = 20. A = 60, B = 55, AOB = 65. C = 45 y 45 + 70 + 65 = 180. Cuadra.
+
+## 04.png (3, «El último giro»)
+1. **Qué piden:** cuánto gira el mototaxi en C, si gira 140° en A y 100° en B.
+2. **¿Tengo todo?** Sí. Los datos dan la suma de exteriores, 360°.
+3. **¿Sigo el resuelto?** Sí.
+4. **Dibujo:** ayuda en parte. Las franjas grises (la pista) se superponen al triángulo y lo ensucian un poco. Las líneas punteadas de los giros sí son coherentes (el recorrido va C→A→B→C). Está a escala: los interiores miden unos 40°, 80° y 60°.
+5. **Algo raro:** el «100°» queda debajo de B, fuera del triángulo, y tarda en verse a qué arco pertenece.
+- **Cuentas:** 360 − 140 − 100 = 120. Interiores: 40 + 80 + 60 = 180. Cuadra.
+
+## 05.png (8, «El triple de un ángulo»)
+1. **Qué piden:** m∠ACD (exterior), si ACD = 3·A y B = 50°.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el resuelto?** Sí, todo.
+4. **Dibujo:** ayuda. Está a escala (A unos 25°, exterior unos 75°). D está bien puesto en la prolongación de BC.
+5. **Algo raro:** nada.
+- **Cuentas:** 3A = A + 50, A = 25, ACD = 75. Interior C = 105 y 25 + 50 + 105 = 180. Cuadra.
+
+## 06.png (14, «Dos triángulos encadenados»)
+1. **Qué piden:** m∠DAC, con D en BC, B = 60°, BAD = 35° y C = 45°.
+2. **¿Tengo todo?** Sí, los dos datos que hacen falta están.
+3. **¿Sigo el resuelto?** Sí. Lo de «interiores lejanos» se entiende, aunque en los datos se dice «que no están a su lado». Son dos formas de decir lo mismo.
+4. **Dibujo:** ayuda mucho. Está a escala (ADB unos 85°, ADC unos 95°).
+5. **Algo raro:** el «35°» y el «60°» quedan uno encima del otro, cerca de B. Hay que fijarse para ver que el 35° es el arco de arriba, en A.
+- **Cuentas:** ADC = 60 + 35 = 95 y DAC = 180 − 95 − 45 = 40. Ángulo A completo: 75, y 60 + 75 + 45 = 180. Cuadra.
+
+## 07.png (3, «La señal de tránsito»)
+1. **Qué piden:** cada ángulo de un triángulo equilátero.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el resuelto?** Sí.
+4. **Dibujo:** las marcas de lados iguales están en unos «corchetes» paralelos a los lados, no en los lados. Al principio pensé que era otra figura (como el borde de la señal). Los arcos de B y C no tienen «?», solo A. El triángulo se ve tan equilátero que la respuesta (60°) salta antes de leer.
+5. **Algo raro:** los corchetes de medida pueden confundir.
+- **Cuentas:** 180 ÷ 3 = 60. Cuadra.
+
+## 08.png (8, «Dos lados con x»)
+1. **Qué piden:** AB, si B = C, AB = 3x − 2 y AC = x + 10.
+2. **¿Tengo todo?** Sí. Eso sí, para saber qué lado está «frente a» cada ángulo hay que pensar un poco.
+3. **¿Sigo el resuelto?** Sí. La línea «Los lados frente a B y frente a C, AC y AB» me obliga a releer el orden, pero está bien.
+4. **Dibujo:** ayuda. Los arcos dobles en B y C indican ángulos iguales.
+5. **Algo raro:** nada.
+- **Cuentas:** 3x − 2 = x + 10, x = 6, AB = 16. AC = 16. Cuadra.
+
+## 09.png (14, «Isósceles con x afuera»)
+1. **Qué piden:** m∠BAC, si AB = AC, BAE = 4x (exterior en A) y B = x + 25°.
+2. **¿Tengo todo?** Sí. Los tres datos sirven.
+3. **¿Sigo el resuelto?** Me trabo en «4x = 2(x + 25°) → 2x = 50». Falta el paso 4x = 2x + 50. Lo demás se sigue.
+4. **Dibujo:** ayuda. E está bien en la prolongación de CA. Está a escala (BAC unos 80°).
+5. **Algo raro:** el arco de B es rojo (como los datos), pero no dice «x + 25°». El de C, en cambio, es negro. El arco de «4x» toca el corchete del lado AB cerca de A, un poco encimado. Otra vez «x = 25» sale sin grados.
+- **Cuentas:** 4x = 2x + 50, x = 25. Exterior = 100, B = C = 50, BAC = 80. Comprobación: 50 + 50 + 80 = 180. Cuadra.
+
+## 10.png (3, «Los límites de otra lámpara»)
+1. **Qué piden:** entre qué valores está AC, con brazos de 30 y 18 cm.
+2. **¿Tengo todo?** Sí, con la desigualdad triangular de los datos.
+3. **¿Sigo el resuelto?** Sí.
+4. **Dibujo:** ayuda. Los colores de los brazos coinciden con sus medidas. La cabeza de la lámpara es otro triángulo, y por un momento dudé cuál es «el triángulo».
+5. **Algo raro:** el título dice «otra lámpara», pero yo no he visto ninguna lámpara antes. Suena a que falta una tarjeta anterior. Las letras van al revés de lo normal (C es la base, A la cabeza), aunque no molesta.
+- **Cuentas:** 30 − 18 = 12 y 30 + 18 = 48, entonces 12 < AC < 48. Cuadra. El dibujo da una proporción BC/BA de unos 1,66 (igual a 30/18), así que está a escala.
+
+## 11.png (8, «Un lado con x»)
+1. **Qué piden:** cuántos valores enteros puede tomar x, con lados 5, 8 y x + 2.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el resuelto?** Sí. «10 − 2 + 1» para contar enteros está bien, pero no se explica por qué se suma 1.
+4. **Dibujo:** ayuda. El lado con x va punteado y los colores coinciden con las medidas.
+5. **Algo raro:** nada.
+- **Cuentas:** 3 < x + 2 < 13, entonces 1 < x < 11, es decir x = 2, …, 10: son 9 valores. Cuadra.
+
+## 12.png (14, «Cinco palitos»)
+1. **Qué piden:** cuántos triángulos distintos salen eligiendo 3 de los palitos de 2, 3, 4, 5 y 6.
+2. **¿Tengo todo?** Sí. El dato dice «el mayor es menor que la suma de los otros dos».
+3. **¿Sigo el resuelto?** Me pierdo en la primera línea: «Con el palito de 2 hay seis tríos». No dice por qué son seis (son las parejas que se pueden hacer con 3, 4, 5 y 6). Luego «2 más el del medio no pasa al mayor» suena raro: «no pasa» quiere decir «no supera». La lista de ✓ y × va toda seguida, sin comas ni separadores, y se corta a media línea. Cuesta leerla.
+4. **Dibujo:** los palitos están a escala, pero casi no ayudan. Sobran un poco.
+5. **Algo raro:** el orden de la lista mezcla primero los buenos y luego los malos, y salta de un trío a otro sin orden.
+- **Cuentas:** con el 2: (2,3,4) ✓, (2,4,5) ✓, (2,5,6) ✓, (2,3,5) × (5 = 5), (2,3,6) ×, (2,4,6) × (6 = 6). Sin el 2: 4 tríos, todos ✓. Total 7. Cuadra.
+
+## 13.png (3, «Partir el ángulo»)
+1. **Qué piden:** m∠BAF, si BAC = 70° y AF es bisectriz.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el resuelto?** Sí.
+4. **Dibujo:** ayuda, pero el «70°» está escrito a la derecha de AF, dentro de la mitad FAC. Parece que el 70° es solo la mitad derecha. El arco rojo grande sí abarca todo el ángulo, pero el número confunde. Está a escala (35° y 35°).
+5. **Algo raro:** la línea de la base sigue más allá de B y C, y no se sabe por qué.
+- **Cuentas:** 70 ÷ 2 = 35. Cuadra.
+
+## 14.png (8, «La altura que cae fuera»)
+1. **Qué piden:** m∠BAH, si B = 120° y la altura desde A cae en la prolongación de CB.
+2. **¿Tengo todo?** Sí, los tres datos se usan.
+3. **¿Sigo el resuelto?** Sí, todo.
+4. **Dibujo:** ayuda mucho. Se ve claro que H queda afuera y está la marca de 90°. Está a escala (BAH unos 30°).
+5. **Algo raro:** nada.
+- **Cuentas:** ABH = 60 y BAH = 180 − 90 − 60 = 30. Cuadra.
+
+## 15.png (14, «La mediana que mide la mitad»)
+1. **Qué piden:** m∠BAC, si AM es mediana, AM = BM y B = 35°.
+2. **¿Tengo todo?** Los datos sí, pero **no hay dibujo** (tampoco el botón de lupa). Es la tarjeta más difícil del tema y la única sin figura. Tuve que dibujarla yo para entender ∠BAM, ∠MAC y los triángulos ABM y AMC.
+3. **¿Sigo el resuelto?** Me pierdo en «En △ABM, AM = BM: ∠BAM mide lo mismo que B». Sin dibujo no veo qué ángulo está frente a qué lado. Después, «35° + 35° + m∠C + m∠C = 180° → m∠C = 55°» salta el paso 2·m∠C = 110°.
+4. **Dibujo:** falta. Es lo que más hace falta en esta tarjeta.
+5. **Algo raro:** la falta de figura.
+- **Cuentas:** BAM = 35, MAC = C, 70 + 2C = 180, C = 55 y BAC = 90. Comprobación: 35 + 90 + 55 = 180. Cuadra.
+
+## 16.png (3, «Dos exteriores»)
+1. **Qué piden:** m∠BQC, con Q el corte de las bisectrices exteriores de B y C, y A = 70°.
+2. **¿Tengo todo?** Sí, pero solo porque los datos me dan la fórmula ya hecha: BQC = 90° − A/2. No entiendo de dónde sale. Los datos también traen dos fórmulas que no se usan aquí, con letras I y E que en esta tarjeta no aparecen ni se explican (¿qué es I? ¿qué es E?).
+3. **¿Sigo el resuelto?** Sí, porque solo es reemplazar en la fórmula. Pero no aprendo nada.
+4. **Dibujo:** ayuda a ver qué son las bisectrices exteriores (prolongaciones punteadas, una rayita en B y dos en C). Está a escala (Q unos 55°).
+5. **Algo raro:** las marcas de C quedan amontonadas. I y E sin definir.
+- **Cuentas:** 90 − 35 = 55. Verificado sin la fórmula: B = C = 55, exteriores de 125, mitades de 62,5, y 180 − 125 = 55. Cuadra.
+
+## 17.png (8, «De E al ángulo A»)
+1. **Qué piden:** el ángulo A, si la bisectriz interior de B y la exterior de C se cortan en E, con BEC = 27°.
+2. **¿Tengo todo?** Solo con la fórmula regalada de los datos (BEC = A/2). Sin ella no sabría hacerlo. Otra vez aparecen I y Q, que aquí no se usan.
+3. **¿Sigo el resuelto?** Sí, es muy corto.
+4. **Dibujo:** ayuda. Está a escala (A unos 54°, E unos 27°) y las marcas de las bisectrices están bien (dos rayitas en B, tres en cada mitad de C). Pero el 27° no está escrito en el dibujo: E solo tiene un arquito rojo sin número.
+5. **Algo raro:** el dato principal (27°) falta en el dibujo.
+- **Cuentas:** A = 2·27 = 54. Con el dibujo: B unos 66°, C unos 60°, y E = C/2 + … sale unos 27°. Cuadra.
+
+## 18.png (14, «Dos exteriores, sin la regla»)
+1. **Qué piden:** m∠BQC con B = 70°, C = 50° y Q el corte de las bisectrices exteriores.
+2. **¿Tengo todo?** Sí, y esta vez con datos de verdad (adyacentes 180°, bisectriz, suma 180°), sin la fórmula.
+3. **¿Sigo el resuelto?** Sí, todo. Además comprueba con la regla de la tarjeta 16, y eso me sirvió para entender de dónde sale.
+4. **Dibujo:** ayuda, pero los arcos rojos (interiores) y los verdes (exteriores) quedan encimados en B y C. Los arcos rojos no dicen 70° ni 50°. El arco doble de B (70°) y las dos rayitas de C (mitades del exterior) se parecen, y uno puede pensar que tienen algo que ver.
+5. **Algo raro:** amontonamiento en C.
+- **Cuentas:** exteriores 110 y 130, mitades 55 y 65, BQC = 60. A = 60 y 90 − 30 = 60. Cuadra. Medido en el dibujo: QBC unos 55° y QCB unos 65°.
+
+---
+
+## Resumen
+
+**Las 3 mejores**
+1. **06.png**: dos pasos encadenados, bien explicados; dibujo a escala y claro.
+2. **14.png**: la altura que cae afuera se ve perfecto en el dibujo y cada dato se usa.
+3. **18.png**: resuelve sin fórmula y luego comprueba con la regla. Por fin entendí la tarjeta 16. (Casi empata con 03.png por su «compruebo».)
+
+**Las 3 peores**
+1. **15.png**: no tiene dibujo, justo en el problema más difícil de su tema, y salta el paso 2C = 110.
+2. **16.png**: los datos regalan la fórmula de la respuesta y traen fórmulas con letras (I, E) sin definir. No se aprende, solo se reemplaza.
+3. **17.png**: el mismo problema de la fórmula regalada, y el dato 27° no aparece en el dibujo.
+   (Cerca: **12.png**, por la lista de ✓/× apretada y el «seis tríos» sin explicar.)
+
+**¿Suben los niveles?** Sí. Dentro de cada tema el orden 3 → 8 → 14 sube bien: de un paso directo, a una ecuación, a dos triángulos o varias propiedades juntas. Lo raro es que en bisectrices la de nivel 3 (16) usa una fórmula avanzada que no se demuestra, y recién la 18 la explica. Entre temas no se ve una subida, cada tema empieza fácil otra vez.
+
+**¿«Datos» ayuda, distrae o regala?**
+- En la mayoría (01–15, 18) **ayuda**: recuerda la propiedad justa sin dar el número.
+- En **16 y 17** **regala** la respuesta (la fórmula ya hecha) y **distrae** con fórmulas que no se usan y letras sin definir.
+- En 09, 14 y 18 trae 3 propiedades, todas usadas. Está bien.
+
+**Dibujos que regalan la respuesta:** todos están a escala. Con transportador se puede medir la respuesta antes del resuelto (sobre todo 01, 07 y 13). En 07 el equilátero se ve a simple vista.
+
+**Cuentas:** rehice las 18 y **todas cuadran**. No hay números imposibles: todos los triángulos suman 180°, los exteriores son coherentes y las medidas del dibujo coinciden con los datos.
