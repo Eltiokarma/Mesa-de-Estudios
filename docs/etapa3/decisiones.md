@@ -61,5 +61,21 @@ Predice con `orden: 'fijo'` cuando sus letras se ven en la figura; zonas `data-t
 - La escena `cuadrado-crece` queda compartida entre Exponentes y radicales, Productos notables y Factorización hasta que
   cada unidad tenga la suya.
 
+## Cuarta ronda (mesa, 18 nov)
+- **Toda la app:** la pestaña Ejemplos de una idea se abre recién después de su Predice. La Regla puede llevar un dibujo
+  propio (opcional), con sus mismas letras. Las escenas que esperan rehacerse van al final de Ejercicios, en «Más mesas
+  del tema» (primero la de Numeración).
+- **Exponentes y radicales:** se queda el título «La raíz cuadrada es un lado»; **«valor absoluto» vuelve a definirse en
+  «Valor absoluto y radicales»** y aquí se marca como «se explica en…»; la práctica vieja `sistemas-ecuaciones` sale de
+  la unidad (el repaso usa `exponentes-radicales`).
+- **Productos notables:** visto bueno de la idea 1 (`cuadrado-suma`); se sigue con las otras cuatro ideas. **«binomio»
+  vuelve a definirse en Binomio de Newton.**
+- **Numeración:** el quipu queda fuera hasta comprobar la fuente; la escena vieja va a «Más mesas del tema».
+- **Segmentos y ángulos:** la predicción nueva de la idea 1 va; el reloj propio con el ángulo no convexo en el juego; x
+  sin «°» (m∠AOB = 3x + 29°, x = 17) en la unidad y su práctica.
+- **Razonamiento deductivo:** nombres de columna girados en el cuadro en L; «cada grupo tiene al menos un integrante»
+  como dato; la tabla completa de nombres de parentesco en Datos; el contrafáctico se lee como la teoría («si p, q») en
+  toda la unidad y su práctica; puntajes y edades pasan a Ordenamiento de información.
+
 ## Orden de trabajo
 Fase 2 del método: la idea 1 de cada unidad completa, para el visto bueno de Gerson en la mesa, antes del resto.
