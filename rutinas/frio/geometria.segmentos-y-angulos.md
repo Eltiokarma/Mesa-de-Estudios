@@ -529,3 +529,458 @@ En la mayoría de los grupos sí: 04→05→06, 07→08→09 y 13→14→15. Hay
 - Hay palabras con subrayado de puntitos (punto, consecutivos, bisectriz, conjugados, agudo, simétrico…) y no sé si se pueden tocar ni qué hacen.
 - El color de una misma letra cambia entre tarjetas: BC es verde en la 03 y la 05, y naranja en la 06. Dentro de cada tarjeta los colores sí son coherentes.
 - No encontré **ningún número imposible ni ninguna cuenta equivocada**: comprobé las 18 respuestas. Los dibujos que medí están a escala.
+
+# Ronda 2 (18 nov 2026)
+
+Lectores nuevos, después de las correcciones del auditor y de la cuarta ronda de la mesa, con capturas `--entera`
+(página entera; primer estado de cada momento).
+
+## Momentos (ronda 2)
+
+### Respuestas: un alumno de 5.º de secundaria (Juliaca) recorre «Segmentos y ángulos»
+
+Solo vi las capturas `claro-cel-…`. Cada pantalla muestra su primer estado: la primera tarjeta de Lee y el primer paso de Mira y de Así se resuelve. Lo que pase en los pasos siguientes no lo vi.
+
+---
+
+#### Idea 1: Suma de segmentos
+
+##### 1 Lee (`claro-cel-suma-de-segmentos-1-lee.png`)
+1. **Veo** una carretera gris con una línea discontinua al medio, una combi, tres paraderos marcados con circulitos (A, B y C) en el borde de abajo y una lupa. Abajo hay la tarjeta 1/4, «Una carretera recta», y una nutria (Neri) que dice «Lee con calma».
+2. **Me piden** leer y pasar a la siguiente tarjeta (o «Ir directo a jugar»).
+3. **Símbolos:** A, B y C son paraderos, es decir, puntos. La carretera es la recta y el mapa es el plano.
+5. **Dudas:** ninguna.
+
+##### 2 Juega (`claro-cel-suma-de-segmentos-2-juega.png`)
+1. **Veo** la carretera con rayitas como de regla (cada una sería un km), A, B (el círculo morado que se mueve) y C, la combi, un tramo naranja de 4 km (de A a B), uno turquesa de 6 km (de B a C) y una barra de 10 km abajo. Debajo están la fórmula «AB + BC = 4 + 6 = 10 km: igual a AC» y una barra deslizante «Kilómetro de B (A en el 0)» en 4 km.
+2. **Me piden** poner B donde el recorrido de A a C, pasando por B, mida 14 km. También probar 3 casos.
+3. **Símbolos:** AB es el tramo de A a B (naranja), BC el de B a C (turquesa), AC es de A a C directo y km es kilómetro (1000 m).
+4. **Aprendí:** si B está sobre la carretera entre A y C, AB + BC siempre da 10 = AC, muevas B donde lo muevas.
+5. **Dudas:** si B se queda entre A y C, el total siempre es 10, así que no veo cómo llegar a 14. Neri pregunta «¿Dónde tiene que estar B para que la combi recorra más?». Supongo que B debe ir más allá de C (en el km 12: 12 + 2 = 14), pero en este primer estado no sé si la barra deja pasar de C. Además el texto dice «pasa por B y termina en C»: si B está después de C, la combi pasa por C antes de llegar a B, y eso me confunde.
+
+##### 3 Predice (`claro-cel-suma-de-segmentos-3-predice.png`)
+1. **Veo** la carretera con A y C en el borde y B arriba, fuera de la carretera. Hay un camino naranja de A a B, uno turquesa de B a C, una línea punteada vertical de B a la carretera con «3 km» y una barra de 10 km.
+2. **Me piden** predecir cuánto recorre la combi de A a C pasando por B. Opciones: A) exactamente 10, B) más de 10, C) menos de 10, D) depende del lado.
+3. **Símbolos:** los 3 km son la distancia de B a la carretera.
+5. **Mi respuesta:** B (más de 10 km). **Dudas:** dice «frente al kilómetro 4», pero en este dibujo no hay rayitas de kilómetro. Tampoco sé si los 3 km se miden desde el borde de la carretera o desde la línea del medio (la punteada cruza toda la franja gris).
+
+##### 4 Mira (`claro-cel-suma-de-segmentos-4-mira.png`)
+1. **Veo** el mismo dibujo de Predice, un botón de play, la barra de pasos 1/5 y el texto «La combi va de A a B y luego a C, en línea recta».
+2. **Me piden** avanzar paso a paso (botón «Paso 2 de 5»).
+3. **Símbolos:** los mismos de Predice.
+4. **Aprendí:** solo vi el paso 1, que dice que la combi va de A a B y luego a C. Todavía no muestra la medida, así que no puedo decir más sin suponer.
+5. **Dudas:** Neri dice «la regla del mapa mide cada camino», pero en el paso 1 no veo ninguna regla. Supongo que aparece en los pasos que no vi.
+
+##### 5 La regla (`claro-cel-suma-de-segmentos-5-regla.png`)
+1. **Veo** el dibujo con dos reglas puestas sobre AB y BC, «5 km», «≈ 6,7 km», «3 km» y «10 km».
+2. **Me piden** leer la regla: si B está en el segmento AC, AB + BC = AC; si está fuera, AB + BC > AC.
+3. **Símbolos:** «≈» es aproximadamente y «>» es mayor que.
+5. **Dudas:** no dice de dónde salen 5 y 6,7. Yo los saco con Pitágoras: √(4² + 3²) = 5 y √(6² + 3²) = √45 ≈ 6,7. Pero en este dibujo no aparece el 4 ni el 6. El «Vale si B está en la recta AC y en el tramo de A a C» creo que es solo para la primera línea (la igualdad).
+
+##### 6 Así se resuelve (`claro-cel-suma-de-segmentos-6-resuelve.png`)
+1. **Veo** una carretera con A, B, C y D en orden, AB = 7 km (naranja), CD = 9 km (turquesa), BC con «?» y AD = 21 km.
+2. **Me piden** BC. El paso 1 es «¿Qué me piden?».
+3. **Símbolos:** AD = AB + BC + CD.
+5. **Mi cuenta:** BC = 21 − 7 − 9 = 5 km. **Dudas:** ninguna (solo vi el paso 1).
+
+##### 7 Ahora tú (`claro-cel-suma-de-segmentos-7-ahora-tu.png`)
+1. **Veo** solo texto, sin dibujo: P, Q y R con PQ = 5, QR = 2 y PR = 3. Hay cuatro opciones y «No sé».
+2. **Me piden** decir cuál está entre los otros dos.
+3. **Símbolos:** PQ, QR y PR son distancias.
+5. **Mi respuesta:** PR + RQ = 3 + 2 = 5 = PQ, así que R está entre P y Q (opción C). **Dudas:** ninguna.
+
+##### Ejercicio inventado
+En una recta están A, B, C y D, en ese orden. AC = 15, BD = 20 y AD = 28. ¿Cuánto mide BC?
+AC + BD = AB + BC + BC + CD = AD + BC, entonces 35 = 28 + BC, así que **BC = 7**.
+
+---
+
+#### Idea 2: El punto medio
+
+##### 1 Lee (`claro-cel-punto-medio-1-lee.png`)
+1. **Veo** una soga a rayas de 10 m de A a C, un triángulo gris (el pañuelo) en M, una raya punteada vertical en B, una franja gris (el patio) y la tarjeta 1/3, «El tira y afloja».
+2. **Me piden** leer.
+3. **Símbolos:** A y C son las puntas de la soga, M el pañuelo (la mitad) y B la raya del patio.
+5. **Dudas:** ninguna. En el dibujo M queda a la izquierda de B.
+
+##### 2 Juega (`claro-cel-punto-medio-2-juega.png`)
+1. **Veo** la soga, «10 m» arriba, «5 m» naranja y «5 m» turquesa, y el pañuelo encima de B (pone «BM» porque están juntos). Debajo está la fórmula «AB = BC = 5 m: el pañuelo está sobre la raya» y una barra «Soga de tu lado de la raya (AB)» en 5 m.
+2. **Me piden** jalar hasta que el pañuelo quede de mi lado, a 1,5 m de la raya.
+3. **Símbolos:** AB es la soga de mi lado, BC la soga del otro lado y BM la distancia del pañuelo a la raya.
+4. **Aprendí:** si mi lado gana 1 m de soga, el pañuelo se mueve 1 m. Para que BM = 1,5, AB tiene que ser 6,5 m (y BC 3,5).
+5. **Dudas:** en el dibujo parece que lo que se mueve es B (la raya), aunque la raya está pintada en el patio y no debería moverse. Me costó un rato entender quién se mueve. Al inicio «B» y «M» están pegados y casi no se leen.
+
+##### 3 Predice (`claro-cel-punto-medio-3-predice.png`)
+1. **Veo** una avenida con A, M, B, C, N y D, una barra naranja de 12 m (AC), una turquesa de 18 m (BD) y «?» de M a N.
+2. **Me piden** cuánto hay de M a N.
+3. **Símbolos:** M es el punto medio de AB y N el de CD.
+5. **Mi respuesta:** MN = AB/2 + BC + CD/2 = (AC + BD)/2 = 30/2 = **15 m** (opción A). **Dudas:** ninguna.
+
+##### 4 Mira (`claro-cel-punto-medio-4-mira.png`)
+1. **Veo** A, M, B, C, N y D, con rayitas «/» entre A-M y M-B y «//» entre C-N y N-D, más las barras de 12 y 18. El paso 1/5 dice «Cada banca parte su tramo en dos mitades iguales».
+2. **Me piden** avanzar paso a paso.
+3. **Símbolos:** las rayitas «/» y «//» no se explican con palabras. Supongo que marcan partes iguales: una rayita para la mitad de AB y dos para la mitad de CD.
+4. **Aprendí:** cada banca parte su tramo en dos mitades iguales (solo vi el paso 1).
+5. **Dudas:** el significado de «/» y «//» (lo deduje, no me lo dijeron).
+
+##### 5 La regla (`claro-cel-punto-medio-5-regla.png`)
+1. **Veo** A, M, B y C con barras AC, AB (naranja), BC (turquesa) y BM, y rayitas «/» en AM y MC.
+2. **Me piden** leer la regla AM = MC = AC/2 y BM = (AB − BC)/2.
+3. **Símbolos:** la fracción es «dividido entre 2».
+5. **Dudas:** ninguna. El «Vale si B está entre M y C» lo entiendo.
+
+##### 6 Así se resuelve (`claro-cel-punto-medio-6-resuelve.png`)
+1. **Veo** A, M y B con AM = 4x + 6 (naranja), MB = x + 21 (turquesa) y AB = «?».
+2. **Me piden** AB. Paso 1: «Piden AB, el segmento entero».
+3. **Símbolos:** x es un número desconocido y las medidas están en cm.
+5. **Mi cuenta:** 4x + 6 = x + 21, entonces x = 5, AM = 26 y **AB = 52 cm**. **Dudas:** ninguna.
+
+##### 7 Ahora tú (`claro-cel-punto-medio-7-ahora-tu.png`)
+1. **Veo** A, M, B y C, AB = 11 cm, BC = 9 cm, rayitas en AM y MC, y un «?» muy chiquito entre M y B.
+2. **Me piden** BM.
+5. **Mi respuesta:** AC = 20, AM = 10, BM = 11 − 10 = **1 cm** (opción C). **Dudas:** M y B están tan pegados que casi se tapan y el «?» se ve muy pequeño.
+
+##### Ejercicio inventado
+A, B y C están en ese orden con AB = 18 y BC = 6. M es el punto medio de AC. ¿Cuánto mide BM?
+BM = (18 − 6)/2 = **6**. Comprobación: AC = 24, AM = 12, BM = 18 − 12 = 6.
+
+---
+
+#### Idea 3: abertura (la app la llama «Clases de ángulos»)
+
+##### 1 Lee (`claro-cel-abertura-1-lee.png`)
+1. **Veo** un reloj de plaza con los números 12, 3, 6 y 9, el centro O, el minutero en el 12, el horario hacia el 2 y un arquito rojo entre los dos.
+2. **Me piden** leer la tarjeta 1/4, «Dos agujas y un vértice».
+3. **Símbolos:** O es el vértice y las agujas son los lados (rayos).
+5. **Dudas:** la tarjeta no dice qué hora es. Por el dibujo parecen las 2:00.
+
+##### 2 Juega (`claro-cel-abertura-2-juega.png`)
+1. **Veo** el reloj con un ángulo carmín de 60° y un círculo para arrastrar en la punta del horario. Debajo está «2:00: 2 × 30° = 60°: ángulo agudo» y una barra «Giro del horario desde las 12».
+2. **Me piden** poner una hora en punto en la que las agujas formen un ángulo llano.
+3. **Símbolos:** O es el eje (vértice), «°» es grado (una vuelta tiene 360°) y m∠AOB es la medida del ángulo AOB.
+4. **Aprendí:** cada hora en punto suma 30° de abertura. El ángulo llano (180°) sale a las 6:00.
+5. **Dudas:** **no sé** qué son A y B en «m∠AOB», porque en el reloj no hay ninguna A ni B. El «× 30°» aparece antes de que me expliquen de dónde sale 30 (eso viene en Mira). Neri pregunta «¿la hora o el largo?», pero en esta pantalla no hay nada para cambiar el largo de las agujas.
+
+##### 3 Predice (`claro-cel-abertura-3-predice.png`)
+1. **Veo** un reloj grande (la plaza) a la 1:00 y un reloj de pulsera chico, los dos con «?».
+2. **Me piden** decir en cuál las agujas forman el ángulo mayor.
+5. **Mi respuesta:** la plaza a la 1:00 tiene 30° y la pulsera a las 2:00 tiene 60°, así que es el de pulsera (C). **Dudas:** las agujas del reloj de pulsera son tan chiquitas que no se ve bien la hora. Me fío del texto.
+
+##### 4 Mira (`claro-cel-abertura-4-mira.png`)
+1. **Veo** los dos relojes más grandes (1:00 y 2:00). El paso 1/5 dice «De un número al siguiente hay 30°. 360° ÷ 12 = 30°».
+2. **Me piden** avanzar paso a paso.
+4. **Aprendí:** entre dos números seguidos del reloj hay 30°, sin importar el largo de las agujas.
+5. **Dudas:** ninguna (solo vi el paso 1).
+
+##### 5 La regla (`claro-cel-abertura-5-regla.png`)
+1. **Veo** los relojes con 30° y 60° en carmín y la tabla agudo / recto / obtuso / llano / no convexo.
+2. **Me piden** leer la regla: el ángulo mide la abertura, no el largo.
+3. **Símbolos:** «no convexo» significa más de 180°.
+5. **Dudas:** «no convexo» es una palabra nueva para mí. La regla habla de «consecutivos», pero el dibujo no muestra ninguno.
+
+##### 6 Así se resuelve (`claro-cel-abertura-6-resuelve.png`)
+1. **Veo** los rayos OA, OB y OC desde O, 70° entre OA y OB y «?» entre OB y OC.
+2. **Me piden** cuánto mide ∠BOC y qué clase es, sabiendo que m∠AOC = 130°.
+3. **Símbolos:** ∠ significa ángulo.
+5. **Mi cuenta:** 130 − 70 = **60°, agudo**. **Dudas:** ninguna.
+
+##### 7 Ahora tú (`claro-cel-abertura-7-ahora-tu.png`)
+1. **Veo** OA, OB y OC con 30° (AOB) y 65° (BOC).
+2. **Me piden** decir qué clase de ángulo es ∠AOC.
+5. **Mi respuesta:** 30 + 65 = 95°, **obtuso** (C). **Dudas:** ninguna.
+
+##### Ejercicio inventado
+¿Qué ángulo forman las agujas a las 4:00 y de qué clase es? 4 × 30° = **120°, obtuso**. ¿Y a las 9:00? 9 × 30° = 270°, que es no convexo; por el otro lado mide 90°, recto.
+
+---
+
+#### Idea 4: bisectrices (la app la llama «Complemento, suplemento y bisectriz»)
+
+##### 1 Lee (`claro-cel-bisectrices-1-lee.png`)
+1. **Veo** una tranquera: un poste vertical, una barra inclinada desde el pie O, la pista (línea con franja gris) y el ángulo α en carmín entre la barra y la pista.
+2. **Me piden** leer la tarjeta 1/3, «La tranquera».
+3. **Símbolos:** α (alfa) es el ángulo entre la barra y la pista. El poste forma 90° con la pista.
+5. **Dudas:** ninguna.
+
+##### 2 Juega (`claro-cel-bisectrices-2-juega.png`)
+1. **Veo** la barra a 30° (carmín), 60° turquesa entre la barra y el poste, 150° turquesa hasta la pista de la izquierda y la fórmula «30° + 60° = 90° y 30° + 150° = 180°».
+2. **Me piden** subir la barra hasta que α sea el doble de su ángulo con el poste.
+3. **Símbolos:** α es la barra con la pista y turquesa es lo que falta para 90° o para 180°.
+4. **Aprendí:** cuando α crece, los dos turquesas bajan lo mismo. La misión sale con α = 60°, porque α = 2(90° − α).
+5. **Dudas:** ninguna.
+
+##### 3 Predice (`claro-cel-bisectrices-3-predice.png`)
+1. **Veo** la barra a 50°, dos líneas punteadas (las bisectrices) y un arco «?» entre ellas.
+2. **Me piden** el ángulo entre la bisectriz de 50° y la del otro lado (130°).
+5. **Mi respuesta:** 25 + 65 = **90°** (B). **Dudas:** ninguna.
+
+##### 4 Mira (`claro-cel-bisectrices-4-mira.png`)
+1. **Veo** la tranquera con 50°. El paso 1/6 dice «La barra forma 50° con la pista. α = 50°».
+2. **Me piden** avanzar.
+4. **Aprendí:** en el paso 1 solo me dicen que α = 50°. Lo de las bisectrices debe venir después y no lo vi.
+5. **Dudas:** Neri dice «Sigue las rayitas: iguales dentro de cada ángulo», pero en el paso 1 no hay ninguna rayita dibujada.
+
+##### 5 La regla (`claro-cel-bisectrices-5-regla.png`)
+1. **Veo** la tranquera con x en carmín, «180° − x» en turquesa, dos bisectrices punteadas y un «90°» arriba.
+2. **Me piden** leer: C(x) = 90° − x, S(x) = 180° − x y x/2 + (180° − x)/2 = 90°.
+3. **Símbolos:** C(x) es el complemento y S(x) el suplemento.
+5. **Dudas:** el «90°» de arriba no sé si es el ángulo entre las bisectrices o el del poste con la pista: está pegado al poste, y los dos miden 90°. El complemento C(x) no está marcado en el dibujo. El texto dice «la mitad de su suma» para dos consecutivos cualesquiera, pero la fórmula es solo para el caso de 180°.
+
+##### 6 Así se resuelve (`claro-cel-bisectrices-6-resuelve.png`)
+1. **Veo** E, O y A en una recta, OB, OD (la bisectriz punteada), 100° en AOB con rayitas y «?» desde D hasta E.
+2. **Me piden** ∠DOE.
+5. **Mi cuenta:** AOD = 50, así que DOE = 180 − 50 = **130°**. **Dudas:** ninguna.
+
+##### 7 Ahora tú (`claro-cel-bisectrices-7-ahora-tu.png`)
+1. **Veo** OA, OB y OD con 100° (AOB) y 40° (BOD), las bisectrices OM y ON y «?» entre M y N.
+2. **Me piden** ∠MON.
+5. **Mi respuesta:** 50 + 20 = **70°** (C). **Dudas:** Neri dice «Escribe cada operación como una resta», pero yo lo resolví sumando y no entiendo dónde va la resta.
+
+##### Ejercicio inventado
+Un ángulo mide 36°. ¿Cuánto mide el suplemento de su complemento? C = 90 − 36 = 54 y S(54) = 180 − 54 = **126°**.
+
+---
+
+#### Idea 5: paralelas («Paralelas cortadas por una secante»)
+
+##### 1 Lee (`claro-cel-paralelas-1-lee.png`)
+1. **Veo** dos líneas horizontales, L₁ y L₂, con muchas rayitas cortas encima y una flecha «>», y una línea inclinada que las cruza.
+2. **Me piden** leer la tarjeta 1/4, «Rieles que no se juntan» (Juliaca a Cusco).
+3. **Símbolos:** L₁ ∥ L₂ significa que son paralelas.
+5. **Dudas:** **no sé** qué significan la flecha «>» sobre cada riel ni las rayitas (¿durmientes?). La tarjeta no lo dice.
+
+##### 2 Juega (`claro-cel-paralelas-2-juega.png`)
+1. **Veo** los rieles, la calle inclinada (franja gris), dos cruces con círculos y en cada uno 70° (carmín) y 110° (turquesa). Debajo está «En los dos cruces: 70° y 110°; suman 180°» y una barra θ en 70°.
+2. **Me piden** girar la calle hasta que en un cruce un ángulo mida el doble que su vecino.
+3. **Símbolos:** θ (theta) es el ángulo de la calle con los rieles. Carmín es θ y los iguales a él; turquesa es 180° − θ.
+4. **Aprendí:** en los dos cruces solo hay dos medidas, θ y 180° − θ. La misión sale con θ = 60° (120 = 2 × 60).
+5. **Dudas:** ninguna.
+
+##### 3 Predice (`claro-cel-paralelas-3-predice.png`)
+1. **Veo** L₁ inclinado (ya girado), L₂ horizontal, la calle por P y Q, 60° en P y «?» en Q.
+2. **Me piden** qué pasa con los ángulos correspondientes si el riel de arriba gira 8°.
+5. **Mi respuesta:** dejan de ser iguales y difieren en 8° (B). **Dudas:** no dice hacia qué lado gira, aunque para la diferencia no importa.
+
+##### 4 Mira (`claro-cel-paralelas-4-mira.png`)
+1. **Veo** los rieles paralelos, la calle, P y Q, y 60° en P. Paso 1/5: «θ = 60°».
+4. **Aprendí:** solo vi el paso 1, que dice que en P la calle forma 60° con el riel de abajo. La cadena de igualdades que anuncia Neri viene después.
+5. **Dudas:** ninguna en el paso 1.
+
+##### 5 La regla (`claro-cel-paralelas-5-regla.png`)
+1. **Veo** los ocho ángulos: los θ en carmín y los 180° − θ en turquesa.
+2. **Me piden** leer: correspondientes, alternos internos y alternos externos son iguales; conjugados suman 180°.
+5. **Dudas:** el dibujo no señala qué par es «correspondiente», cuál «alterno» y cuál «conjugado». Tengo que saberlo de antes.
+
+##### 6 Así se resuelve (`claro-cel-paralelas-6-resuelve.png`)
+1. **Veo** L₁ y L₂ con una secante, 2x + 46° arriba y 3x + 29° abajo, los dos a la derecha y arriba de cada recta.
+2. **Me piden** x.
+5. **Mi cuenta:** 3x + 29 = 2x + 46, así que **x = 17**. **Dudas:** ninguna.
+
+##### 7 Ahora tú (`claro-cel-paralelas-7-ahora-tu.png`)
+1. **Veo** L₁ y L₂ inclinadas con flechas, una secante casi vertical, 100° en L₁ (abajo a la izquierda) y x en L₂ (arriba a la derecha).
+2. **Me piden** x.
+5. **Mi respuesta:** son alternos internos, así que **x = 100** (C). **Dudas:** tuve que mirar con cuidado de qué lado está cada arco. Las opciones no llevan el símbolo «°».
+
+##### Ejercicio inventado
+L₁ ∥ L₂. Dos conjugados internos miden 3x + 10 y 2x + 20. Entonces 5x + 30 = 180, así que **x = 30**, y los ángulos miden 100° y 80°.
+
+---
+
+#### Idea 6: quiebre («El quiebre entre paralelas»)
+
+##### 1 Lee (`claro-cel-quiebre-1-lee.png`)
+1. **Veo** dos avenidas (L₁ arriba y L₂ abajo, con franjas grises) y un pasaje que sale de P, dobla en V y llega a Q.
+2. **Me piden** leer la tarjeta 1/3, «Un pasaje que dobla».
+3. **Símbolos:** V es el vértice donde dobla.
+5. **Dudas:** ninguna.
+
+##### 2 Juega (`claro-cel-quiebre-2-juega.png`)
+1. **Veo** el pasaje con a = 40° arriba, b = 30° abajo y «x = 70» en V. Debajo está «x = 70 y a + b = 40 + 30» y dos barras, una para a y otra para b.
+2. **Me piden** que el pasaje doble en ángulo recto sin que a y b sean iguales.
+3. **Símbolos:** a es el tramo de arriba con su avenida, b el tramo de abajo y x el quiebre en V.
+4. **Aprendí:** el quiebre siempre vale a + b. Para 90°, por ejemplo, a = 40 y b = 50.
+5. **Dudas:** ninguna.
+
+##### 3 Predice (`claro-cel-quiebre-3-predice.png`)
+1. **Veo** el mismo pasaje y una línea punteada por V paralela a las avenidas.
+2. **Me piden** en qué dos ángulos queda partido x.
+5. **Mi respuesta:** uno igual a a y otro igual a b (B). **Dudas:** ninguna.
+
+##### 4 Mira (`claro-cel-quiebre-4-mira.png`)
+1. **Veo** el pasaje con 40° y 30°. Paso 1/5: «a = 40 y b = 30».
+4. **Aprendí:** en el paso 1 solo me dan a y b. La paralela auxiliar que menciona Neri no aparece todavía.
+5. **Dudas:** ninguna en el paso 1.
+
+##### 5 La regla (`claro-cel-quiebre-5-regla.png`)
+1. **Veo** el pasaje con a, b, x y la paralela punteada. Debajo está «x = a + b» (quiebre = arriba + abajo).
+5. **Dudas:** la frase «Con varios quiebres, los de un lado suman igual que los del otro» no tiene dibujo: solo veo un quiebre y no entiendo bien qué lados son.
+
+##### 6 Así se resuelve (`claro-cel-quiebre-6-resuelve.png`)
+1. **Veo** P, V y Q, 40° arriba, 85° en V y b abajo.
+2. **Me piden** b.
+5. **Mi cuenta:** b = 85 − 40 = **45°**. **Dudas:** ninguna.
+
+##### 7 Ahora tú (`claro-cel-quiebre-7-ahora-tu.png`)
+1. **Veo** P, V y Q con 45° arriba, 25° abajo y x en V.
+2. **Me piden** x.
+5. **Mi respuesta:** 45 + 25 = **70** (C). **Dudas:** ninguna.
+
+##### Ejercicio inventado
+L₁ ∥ L₂. El quiebre en V mide 3k y los tramos forman k + 10 y 50° con sus rectas. Entonces 3k = k + 10 + 50, así que k = 30 y el quiebre mide **90°**.
+
+## Ejemplos resueltos (ronda 2)
+
+### Respuestas: ejemplos resueltos de segmentos y ángulos
+
+Soy alumno de 5.º de secundaria y solo miré las 18 imágenes. Hice todas las cuentas yo mismo y también medí los dibujos (en píxeles) para ver si están a escala. Todas las respuestas finales están bien.
+
+Algo general antes de empezar: el circulito de arriba dice 3, 8 o 14 y se repite cada tres tarjetas. Supongo que es el nivel o el número del ejercicio, pero la tarjeta no lo explica. Algunas palabras tienen un subrayado punteado («punto», «consecutivos», «bisectriz», «agudos», «simétrico», «ángulo obtuso»…). En la imagen no sé qué significa; supongo que al tocarlas sale algo.
+
+---
+
+#### 01 — (3) ¿Cuál está en medio?
+1. Me piden cuál de los paraderos A, B, C está entre los otros dos, sabiendo que AB = 5, BC = 8 y AC = 3.
+2. Sí, tengo todo. «Datos» me da el criterio.
+3. Sí lo sigo. Lo único que da un saltito es «el tramo más largo va de punta a punta»: no lo dice «Datos», pero se entiende, y después lo comprueba.
+4. No tiene dibujo. Me parece bien, porque un dibujo me habría dado la respuesta.
+5. Nada raro. Comprobé: 5 + 3 = 8 ✓.
+
+#### 02 — (8) Cuatro paraderos
+1. Me piden BC, con A, B, C, D en orden, AB = 3, CD = 4 y AD = 12.
+2. Sí.
+3. Sí, todo.
+4. Ayuda mucho: los colores de AB (naranja) y CD (verde) coinciden con el texto. Está a escala (BC mide unos 5/12 del total), pero eso no me regala nada, porque igual hay que restar.
+5. Nada raro. 12 − 3 − 4 = 5 ✓.
+
+#### 03 — (14) Dos lugares posibles
+1. Me piden AC, sin saber el orden de los puntos, con AB = 12 y BC = 5.
+2. Sí.
+3. Me pierdo un poco en la primera línea: «A no puede ir en medio: AB ya pasa de BC». Tuve que pensar que, si A estuviera en medio, BA + AC tendría que dar BC = 5, y solo BA ya es 12. Está muy resumido. Lo demás lo sigo bien.
+4. Ayuda: dibuja solo A y B y deja que yo imagine C a cada lado. No me da la respuesta.
+5. Nada raro. 12 − 5 = 7 y 12 + 5 = 17 ✓.
+
+#### 04 — (3) ¿Dónde queda el punto medio?
+1. Me piden AM, con A, P, B en orden, AP = 4, PB = 6 y M punto medio de AB.
+2. Sí.
+3. Sí, todo. La última línea («P no es el punto medio») está buena para no confundirse.
+4. Ayuda: está a escala y M sale a la derecha de P, que es justo la trampa.
+5. Nada raro. 10 ÷ 2 = 5 ✓.
+
+#### 05 — (8) Un punto entre los extremos
+1. Me piden BM, con B entre A y C, AB = 13, BC = 5 y M punto medio de AC.
+2. Sí.
+3. Sí, todo.
+4. Casi siempre ayuda (está a escala, AM ≈ 9). Lo que confunde es la rayita que marca la mitad MC: está pegada a B, en el tramo B–C, y parece que marca BC. Se lee como «AM = BC», y eso es falso (9 ≠ 5).
+5. La rayita de la mitad MC está mal ubicada (ver punto 4). Cuentas: 18 ÷ 2 = 9 y 13 − 9 = 4 ✓.
+
+#### 06 — (14) Sin saber cuánto mide AB
+1. Me piden MN, con A, B, C en orden, BC = 18, M punto medio de AB y N punto medio de AC.
+2. Sí.
+3. Lo sigo, pero «MN es lo que AN le saca a AM» suena raro. Yo diría «MN = AN − AM». El álgebra de a/2 + 9 − a/2 está bien.
+4. Confunde. Las dos rayitas dobles, que deberían marcar AN = NC, están una entre B y N y la otra entre N y C. Se lee como «BN = NC», y eso es falso (en el dibujo BN ≈ 5 y NC ≈ 13). Además, entre A, M, B y N hay muchas rayitas amontonadas (A / M / B // N).
+5. BC sale en naranja, cuando en las tarjetas 03 y 05 BC era verde: el color cambia de una tarjeta a otra. Cuentas: (a + 18)/2 − a/2 = 9 ✓; con a = 8 da MN = 13 − 4 = 9 ✓.
+
+#### 07 — (3) Dos consecutivos
+1. Me piden m∠AOC, con ∠AOB = 35° y ∠BOC = 50° consecutivos.
+2. Sí. «Datos» casi me da la respuesta: me da la fórmula exacta.
+3. Sí.
+4. Ayuda. Los ángulos del dibujo miden más o menos 35° y 50° de verdad.
+5. Nada raro. 35 + 50 = 85 ✓.
+
+#### 08 — (8) Uno es el doble del otro
+1. Me piden ∠AOB y ∠BOC, si suman 150° y uno es el doble del otro.
+2. Sí. «Datos» me da el truco de 2k y k.
+3. Sí.
+4. Ayuda: marca k y 2k en su lugar, y el dibujo está a escala (≈100° y 50°).
+5. Nada raro. 3k = 150 → k = 50, y 100 + 50 = 150 ✓.
+
+#### 09 — (14) Tres ángulos y una vuelta
+1. Me piden el mayor de tres ángulos que dan la vuelta: 120°, 2x y x + 30°.
+2. Sí.
+3. Sí. Salta de 120 + 2x + x + 30 = 360 a 3x = 210 sin escribir 3x + 150 = 360, pero se sigue. Luego pierde el ° (3x = 210, x = 70).
+4. Ayuda. Está a escala (≈120°, 140° y 100°). No me da la respuesta.
+5. Nada raro. 140 + 120 + 100 = 360 ✓.
+
+#### 10 — (3) La bisectriz de 76°
+1. Me piden m∠AOD, si OD es la bisectriz de un ángulo de 76°.
+2. Sí.
+3. Sí.
+4. Ayuda, aunque el «76°» está escrito encima de la línea punteada OD, casi pegado, y por un momento parece que 76° es lo que mide algo de OD. El «?» queda entre el arco chico y el grande, y no está del todo claro a qué arco pertenece.
+5. Etiqueta encimada en la línea OD. 76 ÷ 2 = 38 ✓.
+
+#### 11 — (8) Bisectriz y suplemento
+1. Me piden m∠DOE, con A, O, E en línea, ∠AOB = 70° y OD bisectriz de AOB.
+2. Sí.
+3. Sí. Solo la primera línea, «70° ÷ 2 = 35°», no dice qué ángulo es (¿AOD o DOB?). Lo saqué del dibujo.
+4. Ayuda: el arco grande con «?» va de E hasta D y se ve que pasa por B. Igual que en la 10, el «70°» está encima de la línea punteada OD, y las rayitas de las mitades están amontonadas cerca de O.
+5. Etiqueta encimada. 35 + 110 = 145 ✓ (o 180 − 35 = 145 ✓).
+
+#### 12 — (14) Cuatro veces el ángulo
+1. Me piden el ángulo x tal que el suplemento de su complemento es 4x.
+2. Sí, con «Datos».
+3. Me pierdo en la primera línea: «de adentro hacia afuera: el complemento dentro del suplemento». Recién con la fórmula S(C(x)) entendí. La notación S(C(x)) nunca la usé en el colegio. También se lee raro «Eso vale 4x; el ángulo mide lo que vale x». Las cuentas sí las sigo.
+4. No hay dibujo. Aquí no hace falta mucho, pero un dibujito del ángulo, su complemento y su suplemento me habría ayudado a entender «de adentro hacia afuera».
+5. Mezcla palabras dentro de la cadena de flechas («→ x = 30 → mide 30°») y pierde el ° en «3x = 90». Comprobé: complemento de 30 = 60, suplemento de 60 = 120 = 4·30 ✓.
+
+#### 13 — (3) Conjugados internos
+1. Me piden x, conjugado interno de 65° entre paralelas.
+2. Sí: el título y «Datos» ya me dicen la regla.
+3. Sí.
+4. Ayuda. Está bien dibujado: la secante forma ≈65° y x queda del mismo lado y entre las rectas. Las flechitas indican que son paralelas, pero nadie lo explica (igual el enunciado pone ∥).
+5. La respuesta dice «x = 115», sin °, cuando la ecuación sí lleva °. 180 − 65 = 115 ✓.
+
+#### 14 — (8) En dos pasos
+1. Me piden x en el cruce de arriba, con un ángulo de 112° en el cruce de abajo.
+2. Sí.
+3. Me pierdo un poco en «Ese vecino y x ocupan el mismo lugar». El 112° tiene dos vecinos (arriba-derecha y abajo-izquierda) y el dibujo no marca cuál es el de 68°. Tuve que deducir que es el de arriba a la derecha.
+4. Ayuda, pero le falta marcar el vecino de 68°. No me da la respuesta.
+5. Respuesta «x = 68» sin °. 180 − 112 = 68 ✓. En el dibujo x ≈ 68 ✓.
+
+#### 15 — (14) Los cuatro agudos
+1. Me piden cuánto mide cada ángulo obtuso si los cuatro agudos (θ) suman 220°.
+2. Sí.
+3. Sí, es muy corto.
+4. Ayuda, aunque en el cruce de arriba los tres arcos (θ, «?» y θ) tienen el mismo radio y se juntan en una sola curva en forma de S. Cuesta ver dónde termina cada uno. Solo el color los separa.
+5. Nada imposible. 220 ÷ 4 = 55 y 180 − 55 = 125 ✓. Como es nivel 14 se me hizo muy fácil: el dibujo ya los llama a todos θ, o sea, ya te dice que son iguales.
+
+#### 16 — (3) Un quiebre simétrico
+1. Me piden x (el ángulo del quiebre en V) y qué clase de ángulo es, si cada tramo forma 25° con su recta.
+2. Sí, con «Datos» (la paralela por V y los alternos internos).
+3. Me pierdo en la primera línea: «x junta las dos copias». ¿Copias de qué? No dice que los 25° se copian arriba y abajo de la línea punteada por alternos internos. Después, «Aquí la paralela por V **sí** es bisectriz» suena a que antes alguien dijo que no lo era. Es una comparación con algo que no está en la tarjeta, y además nadie preguntó por la bisectriz.
+4. Ayuda (la línea punteada por V está bien y a escala). La «x» está encima de la línea punteada, entre las rayas.
+5. Respuesta «x = 50» sin °. 25 + 25 = 50 ✓, menos de 90 → agudo ✓.
+
+#### 17 — (8) El triple de b
+1. Me piden cuánto mide el quiebre (3b), si el tramo de arriba forma 40° y el de abajo forma b.
+2. Sí.
+3. Casi todo. «El quiebre es la suma de 40° y b» lo dice sin explicar. Hay que acordarse de la tarjeta anterior o de «Datos».
+4. Ayuda. Está a escala (≈40°, ≈20°, ≈60°).
+5. Nada raro. 3b = 40 + b → b = 20 → 60 ✓.
+
+#### 18 — (14) La paralela como bisectriz
+1. Me piden a y b, con un quiebre de 84° cuya bisectriz es la paralela por V.
+2. Sí.
+3. Sí, todo.
+4. Ayuda (a ≈ b ≈ 41° en el dibujo). El «84°» corta la línea punteada.
+5. Respuesta «a = b = 42» sin °. 84 ÷ 2 = 42 ✓. Para ser nivel 14 es más fácil que la 17 (nivel 8): es una sola división, y es casi lo que ya decía la última línea de la 16.
+
+---
+
+#### Resumen
+
+**Las 3 que mejor se entienden:**
+1. **02 Cuatro paraderos**: el texto, los colores, el dibujo y el resuelto encajan perfecto.
+2. **04 ¿Dónde queda el punto medio?**: clara, y avisa de la trampa (P no es M).
+3. **09 Tres ángulos y una vuelta**: ecuación limpia y dibujo a escala. (Muy cerca están la 07 y la 08.)
+
+**Las 3 que peor se entienden:**
+1. **06 Sin saber cuánto mide AB**: las rayitas dobles dicen BN = NC, que es falso; las marcas están amontonadas; «le saca» suena raro; y BC cambia de color respecto a otras tarjetas.
+2. **16 Un quiebre simétrico**: «junta las dos copias» no se explica, el comentario «sí es bisectriz» no viene a cuento y la «x» está encimada en la línea.
+3. **12 Cuatro veces el ángulo**: «de adentro hacia afuera», la notación S(C(x)) y «el ángulo mide lo que vale x» confunden; no tiene dibujo.
+(Casi entra la **14 En dos pasos**: no dice cuál de los dos vecinos es.)
+
+**¿Suben los niveles?** En cuatro de los seis grupos, sí: «entre» (01→02→03), punto medio (04→05→06), ángulos consecutivos (07→08→09) y bisectriz/complemento (10→11→12). En paralelas (13→14→15) la 15 no es más difícil que la 14: es dividir y restar. En el quiebre (16→17→18) **bajan**: la 18 (nivel 14) es más fácil que la 17 (nivel 8).
+
+**¿«Datos» ayuda, distrae o regala?** Ayuda: nunca da el número final y siempre trae la regla que hace falta. Pero muchas veces regala el método casi entero: en la 02 escribe AD = AB + BC + CD, en la 07 m∠AOC = m∠AOB + m∠BOC, en la 08 «miden 2k y k», en la 13 (junto con el título) «conjugados internos suman 180°». Con eso, en los niveles 3 y 8 casi no hay que pensar. No distrae.
+
+**Detalles que se repiten:** en 13, 14, 16 y 18 la respuesta va sin ° (115, 68, 50, 42), aunque en las de ángulos 07–12 sí lo lleva. Las etiquetas de ángulo (76°, 70°, x, 84°) quedan encima de la línea punteada en 10, 11, 16 y 18. Hay rayitas de «iguales» mal ubicadas en 05 y 06.

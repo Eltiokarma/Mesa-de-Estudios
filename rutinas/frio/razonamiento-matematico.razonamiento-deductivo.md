@@ -456,3 +456,441 @@ Miré solo las 15 imágenes. Cada tarjeta trae su número de nivel (3, 8 o 14). 
 - «Ilave» se lee igual que «llave» (04).
 - Hay etiquetas montadas sobre la línea del aro (08, 09).
 - Hay subrayados punteados en palabras comunes, como «razón» o «dueño», y no sé qué hacen.
+
+# Ronda 2 (18 nov 2026)
+
+Lectores nuevos, después de las correcciones del auditor y de la cuarta ronda de la mesa, con capturas `--entera`
+(página entera; primer estado de cada momento).
+
+## Momentos (ronda 2)
+
+### Respuestas de un alumno de 5.º (Juliaca) — Razonamiento deductivo y parentesco
+
+Solo miré las capturas `claro-cel-…`. Cada una muestra el primer estado de la pantalla (primera tarjeta, primer paso). Lo que pasa en los pasos siguientes no lo vi y no lo supongo.
+
+---
+
+#### Idea 1: doble-entrada («El cuadro que descarta»)
+
+##### 1 Lee — `claro-cel-doble-entrada-1-lee.png`
+1. **Qué veo:** arriba, el título «Razonamiento deductivo y parentesco» y «0 de 5 terminadas». Pestañas: Ideas, Ejemplos, Glosario y Laboratorio. Las ideas están numeradas (1 «El cuadro que descarta», 2, 3…) y hay un enlace «¿De dónde sale esta idea?». En el dibujo hay una mesa con el letrero «Campeonato» y encima tres cosas: una pelota con estrella (fútbol), una pelota de vóley y un tablero a cuadros (ajedrez). A la derecha están tres alumnos con mochila: Ana (con cola de caballo), Beto y Ciro (con gorra). Abajo hay una tarjeta «1/4» que se titula «El campeonato del aniversario», cuatro puntitos, el enlace «Ir directo a jugar», un zorro que se llama Faro y el botón «Siguiente tarjeta».
+2. **Qué me piden:** leer la tarjeta. Cada uno juega un deporte distinto y todavía no se sabe quién juega qué.
+3. **Símbolos:** la estrella es fútbol, la pelota con rayas es vóley y el tablero es ajedrez. «1/4» quiere decir tarjeta 1 de 4. La lupa debe ser para agrandar el dibujo.
+5. **Dudas:** solo vi la tarjeta 1, así que no sé qué dicen las tarjetas 2 a 4. Tampoco sé qué sale en «¿De dónde sale esta idea?».
+
+##### 2 Juega — `claro-cel-doble-entrada-2-juega.png`
+1. **Qué veo:** el mismo dibujo y, debajo, un cuadro de 3×3 vacío con Ana, Beto y Ciro en las filas y fútbol, vóley y ajedrez en las columnas. Al costado hay 6 columnitas que se llaman «Repartos», numeradas del 1 al 6, cada una con tres íconos. Debajo dice «Todavía no hay pistas.» y «Sin pistas: 6 repartos; ninguna casilla coincide en todos». Hay una leyenda, un deslizador «Pistas 0» con botones − y +, el botón «Volver al inicio» y el texto «Prueba 4 casos distintos… llevas 1».
+2. **Qué me piden:** «Agrega pistas una a una: ¿con cuántas pistas aparece la primera ✓?».
+3. **Símbolos:** ✓ = seguro (coincide en todos los repartos que quedan). × = imposible (ningún reparto lo tiene). «Repartos» = cada columna dice quién juega qué. Leyendo las columnas de arriba abajo (Ana, Beto, Ciro): 1 = fútbol, vóley, ajedrez; 2 = fútbol, ajedrez, vóley; 3 = vóley, fútbol, ajedrez; 4 = vóley, ajedrez, fútbol; 5 = ajedrez, fútbol, vóley; 6 = ajedrez, vóley, fútbol. «Gris tachado» = un reparto que una pista descarta.
+4. **Qué aprendí:** al inicio hay 6 maneras posibles de repartir los deportes y ninguna casilla es segura hasta que lleguen pistas.
+5. **Dudas:** no veo cuáles son las pistas que se agregan con «+», porque la captura está en 0, así que no puedo responder la misión desde aquí. Tampoco sé qué cuenta como «4 casos distintos».
+
+##### 3 Predice — `claro-cel-doble-entrada-3-predice.png`
+1. **Qué veo:** el mismo cuadro vacío, los 6 repartos y dos pistas: «1. Ana no juega ajedrez. 2. Beto no juega ajedrez.» Debajo hay un recuadro de Datos y cuatro opciones.
+2. **Qué me piden:** decir qué es seguro con esas dos pistas. Las opciones son: A) Nada todavía, B) Ciro juega fútbol, C) Ana juega fútbol, D) Ciro juega ajedrez.
+3. **Símbolos:** los mismos íconos. A, B, C y D son las opciones.
+5. **Dudas:** ninguna. Elijo **D**: si Ana y Beto no juegan ajedrez, alguien tiene que jugarlo y solo queda Ciro.
+
+##### 4 Mira — `claro-cel-doble-entrada-4-mira.png`
+1. **Qué veo:** el cuadro con dos × en la columna de ajedrez (filas de Ana y Beto). La fila de Ciro sigue vacía y los repartos todavía no están tachados. Hay un botón ▶ con una barra «1/5» y el botón «Paso 2 de 5».
+2. **Qué me piden:** mirar la animación paso a paso.
+3. **Símbolos:** × = imposible. «1/5» = paso 1 de 5.
+4. **Qué aprendí:** cada pista se convierte en una × en su casilla del cuadro.
+5. **Dudas:** solo veo el paso 1. No sé cómo se tachan los repartos ni cuándo aparece la ✓ (Faro dice «después se mira qué coincide»).
+
+##### 5 Regla — `claro-cel-doble-entrada-5-regla.png`
+1. **Qué veo:** el ajedrez ya no está en la mesa (quedó un círculo punteado) y Ciro lo tiene en la mano. En el cuadro, Ciro tiene ✓ en ajedrez y × en fútbol y en vóley. Los repartos 2, 4, 5 y 6 están tachados con una raya gris. Quedan el 1 y el 3, y la fila de Ciro está encerrada en morado. Luego viene la regla escrita, una «fórmula» con ✓ seguro y × imposible, y un «Vale si…».
+2. **Qué me piden:** entender la regla. Una casilla es segura (✓) si vale en todos los repartos que quedan e imposible (×) si no vale en ninguno. Cada ✓ tacha el resto de su fila y de su columna.
+3. **Símbolos:** ✓ = seguro; × = imposible; raya gris = reparto descartado; marco morado = lo que coincide en los repartos que quedan. «Repartos» está subrayado con puntitos, así que debe estar en el Glosario.
+5. **Dudas:** la fórmula del recuadro está partida en renglones raros: «✓ si vale en todos los / repartos / × si no vale en ninguno». Me costó ver que «repartos» va con la primera línea. El ejemplo «Ana almuerza con quien juega vóley» aparece aquí, pero no tiene nada que ver con el dibujo del campeonato.
+
+##### 6 Así se resuelve — `claro-cel-doble-entrada-6-resuelve.png`
+1. **Qué veo:** un cuadro vacío con Gaby, Ana y Dina en las filas y danza, teatro y dibujo en las columnas. El problema trae datos y 3 pistas: Gaby almuerza con quien está en teatro, Dina no está en dibujo y Dina no está en teatro. Abajo está el paso 1 «¿Qué me piden?», el botón «Ver todos los pasos» y «Paso 2: ¿Qué regla uso?».
+2. **Qué me piden:** el reparto completo, o sea, quién está en qué taller.
+3. **Símbolos:** no hay símbolos nuevos.
+5. **Dudas:** solo veo el paso 1. Lo resolví yo: Dina no está en dibujo ni en teatro, entonces Dina está en danza. Gaby no está en teatro (almuerza con quien está ahí), entonces Gaby está en dibujo y Ana en teatro. No sé si la app lo hace así porque no vi los pasos.
+
+##### 7 Ahora tú — `claro-cel-doble-entrada-7-ahora-tu.png`
+1. **Qué veo:** un cuadro de 4×4 vacío con Gaby, Eva, Ciro y Ana en las filas y danza, teatro, dibujo y banda en las columnas. Hay 4 pistas y las opciones A a D más «No sé».
+2. **Qué me piden:** decir qué es seguro.
+3. **Símbolos:** los mismos.
+5. **Dudas:** ninguna. Ana no está en banda, dibujo ni danza, así que está en teatro. Ciro y Gaby no están en danza, entonces danza es de Eva. Respuesta **C) Eva está en danza**. Que Ciro esté en dibujo no es seguro: puede estar en dibujo o en banda.
+
+##### Ejercicio inventado (doble entrada)
+Rosa, Hugo y Lía llevan al compartir queso, choclo o chicha (uno cada uno). Pistas: 1) Hugo no lleva chicha. 2) Lía no lleva chicha. 3) Hugo no lleva queso.
+**Solución:** por las pistas 1 y 2, la chicha es de Rosa (✓). Hugo no lleva chicha ni queso, entonces lleva choclo. Lía lleva queso.
+
+---
+
+#### Idea 2: dos-atributos («Pistas que cruzan dos listas»)
+
+##### 1 Lee — `claro-cel-dos-atributos-1-lee.png`
+1. **Qué veo:** una combi con el letrero «Comparsa» y, en la parrilla del techo, una quena, un charango y un bombo. Al costado están Ana, Beto y Ciro, cada uno con una correa cruzada en el pecho (una franja diagonal). Debajo, la tarjeta 1/4 «La comparsa del colegio».
+2. **Qué me piden:** leer. Cada uno toca un instrumento distinto y vive en una ciudad distinta: Puno, Juliaca o Ilave.
+3. **Símbolos:** los tres instrumentos dibujados.
+5. **Dudas:** no sé qué es la franja diagonal de los chicos; parece una correa, pero no lo dice. Solo vi la tarjeta 1 de 4.
+
+##### 2 Juega — `claro-cel-dos-atributos-2-juega.png`
+1. **Qué veo:** tres cuadros. El primero cruza personas con instrumentos, el segundo personas con ciudades y el de abajo cruza ciudades (Puno, Juliaca, Ilave) con instrumentos. Dice «Quedan 36 de 36 repartos» y «Sin pistas: 36 repartos; ninguna casilla es segura». Hay una leyenda, un deslizador «Pistas 0» con − y +, y «Prueba 4 casos distintos».
+2. **Qué me piden:** «Agrega pistas una a una hasta saber qué toca Beto».
+3. **Símbolos:** ✓ = seguro; × = imposible; «cuadro de abajo» = ciudades e instrumentos, sin nombrar a nadie; «casilla punteada» = donde cae la pista nueva.
+4. **Qué aprendí:** con dos listas hay muchos más repartos (36) y cada pista cae en uno de los tres cuadros.
+5. **Dudas:** no veo las pistas porque está en 0. Tampoco veo ninguna casilla punteada todavía. ¿Por qué 36? Supongo que son 6 maneras de repartir instrumentos por 6 de repartir ciudades, pero no lo dice.
+
+##### 3 Predice — `claro-cel-dos-atributos-3-predice.png`
+1. **Qué veo:** los tres cuadros vacíos y 4 pistas: 1) Beto vive en Ilave. 2) Quien toca charango vive en Juliaca. 3) Beto no toca quena. 4) Ana no vive en Juliaca. También dice «Sin marcas: 36 repartos posibles».
+2. **Qué me piden:** decir qué toca Ana con la cuarta pista. Las opciones son: A) No se sabe, B) Bombo, C) Charango, D) Quena.
+3. **Símbolos:** los mismos.
+5. **Dudas:** ninguna. Beto vive en Ilave y Ana no vive en Juliaca, entonces Ana vive en Puno y Ciro en Juliaca. Ciro toca charango por la pista 2. Beto no toca quena, entonces toca bombo y Ana toca **quena (D)**.
+
+##### 4 Mira — `claro-cel-dos-atributos-4-mira.png`
+1. **Qué veo:** en el cuadro de personas y ciudades, Beto tiene ✓ en Ilave y × en Puno y Juliaca, y Ana y Ciro tienen × en Ilave. Dice «Quedan 12 de 36 repartos», la barra marca 1/5 y el texto dice «La pista 1 nombra a Beto: va al cuadro de personas y ciudades».
+2. **Qué me piden:** mirar.
+3. **Símbolos:** ✓ y × como antes. «Cuadro» está subrayado con puntitos (Glosario).
+4. **Qué aprendí:** una pista que nombra a una persona y una ciudad va al cuadro de personas y ciudades, y su ✓ tacha el resto de la fila y de la columna.
+5. **Dudas:** solo veo el paso 1. No sé cómo se ve el paso en que «lo sabido pasa a las personas».
+
+##### 5 Regla — `claro-cel-dos-atributos-5-regla.png`
+1. **Qué veo:** los tres cuadros completos con ✓ y ×. Ana tiene quena y Puno, Beto bombo e Ilave, Ciro charango y Juliaca. Abajo: Puno con quena, Juliaca con charango, Ilave con bombo. Los instrumentos ya no están en la combi (quedan círculos punteados) y cada chico tiene el suyo en la mano. Dice «Quedan 1 de 36 repartos». Luego viene la regla y una fórmula: «Beto ✓ Ilave y Ilave ✓ bombo, entonces Beto ✓ bombo», con las llaves «con nombre» y «sin nombre».
+2. **Qué me piden:** entender que una pista que une dos listas sin nombrar a nadie va al cuadro de esas listas, y que lo que se sabe de una cosa pasa a su dueño.
+3. **Símbolos:** ✓ entre dos palabras = «van juntos». «Con nombre» = la pista nombra a una persona; «sin nombre» = solo une ciudad e instrumento.
+5. **Dudas:** ninguna grande. «Dueño» está subrayado como palabra del Glosario y no sé qué definición exacta tiene.
+
+##### 6 Así se resuelve — `claro-cel-dos-atributos-6-resuelve.png`
+1. **Qué veo:** tres cuadros vacíos con Gaby, Ana y Dina; tamales, jugos y choclo; mandil rojo, azul y blanco. Hay 4 pistas y el paso 1 «¿Qué me piden?».
+2. **Qué me piden:** el producto y el mandil de cada uno.
+3. **Símbolos:** los mismos.
+5. **Dudas:** solo veo el paso 1. Lo resolví yo: Gaby usa blanco, y quien vende choclo usa blanco, entonces Gaby vende choclo. Dina vende tamales y Ana jugos. Ana conversa con quien usa rojo, así que Ana no usa rojo: Ana usa azul y Dina rojo.
+
+##### 7 Ahora tú — `claro-cel-dos-atributos-7-ahora-tu.png`
+1. **Qué veo:** tres cuadros vacíos con Fito, Gaby y Ana; fútbol, vóley y básquet; los números 5, 7 y 9. Hay 2 pistas.
+2. **Qué me piden:** qué número lleva Gaby.
+3. **Símbolos:** 5, 7 y 9 son números de camiseta.
+5. **Dudas:** ninguna. Gaby juega vóley y quien juega vóley lleva el 5, así que la respuesta es **C) 5**.
+
+##### Ejercicio inventado (dos atributos)
+Juan, Mery y Saúl venden en la feria papas, quesos o lana, y son de Lampa, Ayaviri o Azángaro. Pistas: 1) Mery es de Ayaviri. 2) Quien vende lana es de Ayaviri. 3) Juan no vende papas. 4) Saúl no es de Lampa.
+**Solución:** Mery es de Ayaviri y quien vende lana es de Ayaviri, así que Mery vende lana. Saúl no es de Lampa ni de Ayaviri, entonces es de Azángaro y Juan de Lampa. Juan no vende papas ni lana, así que vende quesos y Saúl vende papas.
+
+---
+
+#### Idea 3: conclusion-necesaria («Lo que vale en todo dibujo»)
+
+##### 1 Lee — `claro-cel-conclusion-necesaria-1-lee.png`
+1. **Qué veo:** un recuadro «Patio del colegio» con un aro grande negro «banda» y, adentro, un aro naranja «quenistas». Hay muñequitos dentro del aro naranja, dentro de banda, encima de la línea de banda y uno afuera de todo, arriba a la derecha. Debajo, la tarjeta 1/4 «Los aros del patio».
+2. **Qué me piden:** leer. Cada aro es un grupo: en el de banda se paran los de la banda y en el de quenistas los que tocan quena.
+3. **Símbolos:** aro negro = banda; aro naranja = quenistas.
+5. **Dudas:** hay muñequitos parados justo sobre la línea del aro de banda y uno está casi en el borde del aro naranja. No sé si están adentro o afuera. Tampoco sé quién es el que está afuera de todo.
+
+##### 2 Juega — `claro-cel-conclusion-necesaria-2-juega.png`
+1. **Qué veo:** las premisas: todos los quenistas están en la banda y algunos de la banda bailan diablada. El patio tiene un tercer aro verde «diablada» que cruza al de quenistas y un circulito blanco con borde verde dentro del aro verde. El texto dice «Cumple las dos premisas, y algún quenista baila diablada». Hay una leyenda, botones «Aro de la diablada: Cruza / Cubre / Lejos / Fuera», «Volver al inicio» y «Prueba 3 casos distintos».
+2. **Qué me piden:** «Pon el aro de la diablada sin tocar a ningún quenista».
+3. **Símbolos:** aro naranja = quenistas; aro negro = banda; aro verde = diablada; «aro gris punteado» = dibujo que no cumple las premisas. El circulito blanco debe ser lo que se arrastra (dice «Arrastra los círculos de la figura, o usa − y +»).
+4. **Qué aprendí:** el aro de la diablada se puede poner en varios lugares y todos cumplen las premisas. En uno toca a los quenistas y en otro no.
+5. **Dudas:** no vi qué pasa con «Cubre», «Lejos» ni «Fuera». Supongo que «Lejos» es el que no toca quenistas, pero no lo vi. Tampoco vi ningún aro gris punteado.
+
+##### 3 Predice — `claro-cel-conclusion-necesaria-3-predice.png`
+1. **Qué veo:** el patio con banda y quenistas («falta la diablada»), otras premisas (ningún integrante de la banda baila diablada) y 4 opciones.
+2. **Qué me piden:** qué se puede asegurar.
+3. **Símbolos:** «Ningún … es …» = nadie está en los dos grupos.
+5. **Dudas:** ninguna. Si los quenistas están dentro de la banda y la diablada no toca la banda, tampoco toca a los quenistas. Respuesta **B) Ningún quenista baila diablada**.
+
+##### 4 Mira — `claro-cel-conclusion-necesaria-4-mira.png`
+1. **Qué veo:** «Dibujo 1»: un círculo «banda» con el círculo «quenistas» adentro, sin muñequitos. La barra está en 1/4 y el texto dice «Premisa 1: el aro de quenistas va entero dentro del de la banda». Faro dice que los aros vistos desde arriba forman un diagrama de Venn.
+2. **Qué me piden:** mirar.
+3. **Símbolos:** círculo dentro de círculo = «todos los … son …». «Premisa» y «entero» están subrayadas (Glosario).
+4. **Qué aprendí:** «todos los quenistas están en la banda» se dibuja como un aro entero dentro del otro.
+5. **Dudas:** solo veo el paso 1, sin la diablada. No sé qué otros dibujos aparecen después. «Diagrama de Venn» lo nombra, pero aquí no lo explica.
+
+##### 5 Regla — `claro-cel-conclusion-necesaria-5-regla.png`
+1. **Qué veo:** dos dibujos. En el Dibujo 1 la diablada (verde) cruza a los quenistas dentro de la banda. En el Dibujo 2 la diablada está en el borde de la banda, sin tocar a los quenistas. Debajo hay tres «fórmulas»: «todos los A son B → A adentro», «ningún A es B → no se tocan», «algunos A son B → comparten un pedazo».
+2. **Qué me piden:** entender que una conclusión es segura solo si se cumple en todos los dibujos que respetan las premisas, y que basta un dibujo que la rompa para descartarla.
+3. **Símbolos:** A y B = dos grupos cualesquiera. Las llaves explican cómo se dibuja cada frase.
+5. **Dudas:** no dice con palabras qué conclusión se descarta con los dos dibujos. Yo deduzco que es «algún quenista baila diablada», porque en el Dibujo 2 no pasa. En el Dibujo 2 el aro verde se sale de la banda; entiendo que está permitido, pero no lo dice.
+
+##### 6 Así se resuelve — `claro-cel-conclusion-necesaria-6-resuelve.png`
+1. **Qué veo:** un círculo grande con un círculo naranja adentro. La palabra «cantantes» (en naranja) está escrita dentro del círculo grande, arriba, y «ajedrecistas» afuera, abajo a la derecha. El problema dice: todos los cantantes son ajedrecistas y ningún ajedrecista es delegado. Abajo está el paso 1 «¿Qué me piden?».
+2. **Qué me piden:** qué se concluye con certeza sobre cantantes y delegados.
+3. **Símbolos:** círculo naranja = cantantes (por el color); círculo grande = ajedrecistas.
+5. **Dudas:** la etiqueta «cantantes» no está pegada al círculo naranja sino dentro del grande, y me confundió cuál círculo era cuál. Los delegados todavía no están dibujados porque es el paso 1. Mi respuesta: ningún cantante es delegado.
+
+##### 7 Ahora tú — `claro-cel-conclusion-necesaria-7-ahora-tu.png`
+1. **Qué veo:** solo texto, sin dibujo: todos los pintores son cantantes y todos los cantantes son ajedrecistas. Hay 5 opciones más «No sé».
+2. **Qué me piden:** qué se concluye con certeza.
+3. **Símbolos:** ninguno nuevo.
+5. **Dudas:** ninguna. Aro dentro de aro dentro de aro: **D) Todos los pintores son ajedrecistas**.
+
+##### Ejercicio inventado (conclusión necesaria)
+Todos los danzantes de morenada son de la comparsa. Algunos de la comparsa son de Juliaca. ¿Es seguro que algún danzante de morenada es de Juliaca?
+**Solución:** no. Puedo dibujar el aro «Juliaca» cruzando la comparsa pero lejos del aro de morenada, y ese dibujo cumple las dos premisas. Como hay un dibujo que rompe la conclusión, no es segura.
+
+---
+
+#### Idea 4: si-entonces («Si llueve, la pista se moja»)
+
+##### 1 Lee — `claro-cel-si-entonces-1-lee.png`
+1. **Qué veo:** «Calle del colegio», una nube con «¿llueve?», un camión «cisterna» y una franja gris «pista: ¿mojada o seca?». Debajo, la tarjeta 1/4 «La calle del colegio».
+2. **Qué me piden:** leer. Cuando llueve la pista se moja, pero también se moja cuando pasa la cisterna que riega la calle.
+3. **Símbolos:** nube = lluvia; cisterna = camión que riega; «pista» = la pista (la calle).
+5. **Dudas:** ninguna en esta tarjeta. No vi las tarjetas 2 a 4.
+
+##### 2 Juega — `claro-cel-si-entonces-2-juega.png`
+1. **Qué veo:** el mismo dibujo y una tabla de 4 casos (Llueve / Pista): 1 llueve-mojada, 2 llueve-seca (tachado, con la palabra «regla»), 3 no llueve-mojada, 4 no llueve-seca. Dice «Sin dato, la regla tacha un caso: quedan 3». Hay una leyenda y botones «Se sabe: Nada aún / Llueve / No llueve / Está mojada».
+2. **Qué me piden:** «Elige un dato con el que quede un solo caso».
+3. **Símbolos:** «llueve» = lo primero (p), la lluvia; «mojada» = lo segundo (q), la pista mojada; fila tachada = caso que la regla o el dato prohíben; ✓ = el único caso que queda, se concluye.
+4. **Qué aprendí:** la regla «si llueve, se moja» solo prohíbe el caso «llueve y está seca». Por mi cuenta pienso que con el dato «Llueve» queda un solo caso (el 1), pero no lo vi en la captura.
+5. **Dudas:** las letras p y q solo aparecen en la leyenda y no en la tabla, así que no sé para qué sirven aquí. No hay botón «Está seca», que sería otro dato posible. No vi qué pasa al tocar cada botón.
+
+##### 3 Predice — `claro-cel-si-entonces-3-predice.png`
+1. **Qué veo:** la misma tabla con el caso 2 tachado. La pregunta: pasas por la calle y la pista está seca.
+2. **Qué me piden:** qué se puede asegurar. Las opciones son: A) Nada, B) Que no llovió, C) Que llovió y ya se secó.
+3. **Símbolos:** los mismos.
+5. **Dudas:** ninguna. Seca solo deja el caso 4 (no llueve, seca), así que la respuesta es **B**.
+
+##### 4 Mira — `claro-cel-si-entonces-4-mira.png`
+1. **Qué veo:** dos tablas, una con «Dato: seca» y otra con «Dato: mojada». En las dos está tachado con × solo el caso «llueve-seca». La barra marca 1/4 y el texto dice «La regla tacha el caso 2: llueve y la pista sigue seca».
+2. **Qué me piden:** mirar.
+3. **Símbolos:** × al costado = caso prohibido.
+4. **Qué aprendí:** primero la regla tacha «llueve y seca» en las dos tablas, y después cada dato tacha lo suyo.
+5. **Dudas:** solo veo el paso 1. Todavía no se ve qué tacha cada dato.
+
+##### 5 Regla — `claro-cel-si-entonces-5-regla.png`
+1. **Qué veo:** en «Dato: seca» quedan tachados 3 casos y solo queda «no llueve-seca» con ✓ y marco morado. En «Dato: mojada» quedan «llueve-mojada» y «no llueve-mojada» (dos casos). Luego viene la regla y una fórmula: «si p, q, y pasa p se concluye q» (forma directa) y «si p, q, y no pasa q se concluye no p» (forma indirecta).
+2. **Qué me piden:** entender que «Si p, entonces q» solo prohíbe p sin q. Si pasa p, pasa q. Si no pasa q, no pasó p. Saber q o «no p» no basta.
+3. **Símbolos:** p = lo primero (llueve); q = lo segundo (se moja); «no p» = no pasa p; «si p, q» = «si p, entonces q».
+5. **Dudas:** en la fórmula, «si p, q» con solo una coma me costó leerlo como «si p entonces q». Además los renglones se cortan raro («se concluye» queda en una línea y la «q» sola en la siguiente).
+
+##### 6 Así se resuelve — `claro-cel-si-entonces-6-resuelve.png`
+1. **Qué veo:** una tabla de 4 casos con columnas p y q (sí/sí, sí/no, no/sí, no/no), todavía sin tachar. El problema: si un número termina en 0, es par; se sabe que el número es par. Abajo está el paso 1 «¿Qué me piden?».
+2. **Qué me piden:** lo que es seguro sabiendo la regla y el dato.
+3. **Símbolos:** p = termina en 0; q = es par.
+5. **Dudas:** solo veo el paso 1. Mi respuesta: no se concluye nada sobre si termina en 0 (puede ser 12 o 20), porque saber q no basta.
+
+##### 7 Ahora tú — `claro-cel-si-entonces-7-ahora-tu.png`
+1. **Qué veo:** solo texto: si Rosa tiene fiebre, falta al colegio; Rosa no falta. Hay 4 opciones más «No sé».
+2. **Qué me piden:** qué se concluye con certeza.
+3. **Símbolos:** p = tiene fiebre; q = falta.
+5. **Dudas:** ninguna. No pasa q, entonces no pasa p: **C) Que Rosa no tiene fiebre**.
+
+##### Ejercicio inventado (si-entonces)
+Regla: si hay helada, se congela el agua del balde. Hoy el agua del balde está congelada. ¿Es seguro que hubo helada?
+**Solución:** no. Saber q (congelada) deja dos casos: hubo helada, o no hubo y se congeló por otra cosa (por ejemplo, la dejaron en la congeladora). No se concluye nada sobre la helada.
+
+---
+
+#### Idea 5: parentesco («Subir y bajar por el árbol»)
+
+##### 1 Lee — `claro-cel-parentesco-1-lee.png`
+1. **Qué veo:** un árbol de fotos. Arriba está Raúl (con sombrero y bigote), al medio Pedro y Tomás, y abajo Ana y Luis (debajo de Pedro) e Iván (debajo de Tomás). Las fotos están unidas con líneas. Debajo, la tarjeta 1/4 «Las fotos de la familia».
+2. **Qué me piden:** leer. El abuelo está arriba, sus dos hijos al medio y los nietos abajo.
+3. **Símbolos:** las líneas unen padre e hijos. «Árbol» está subrayado (Glosario).
+5. **Dudas:** «Ana pegó en un árbol las fotos» suena a un árbol de verdad; recién con el dibujo entendí que es un árbol genealógico. No aparecen mamás ni abuela.
+
+##### 2 Juega — `claro-cel-parentesco-2-juega.png`
+1. **Qué veo:** el mismo árbol. Ana tiene marco naranja, una línea gruesa va de Ana a Pedro y la foto de Pedro tiene un marco punteado con un circulito morado al lado. Abajo dice «Sube 1 y baja 0» y «Para Ana, Pedro es su padre: sube 1, baja 0». Hay botones «Manija en: Pedro / Raúl / Tomás / Iván / Luis».
+2. **Qué me piden:** Ana dice «el hijo del único hermano de mi papá» y tengo que llevar la manija hasta esa persona.
+3. **Símbolos:** «Ana» = quien habla, de ella sale el camino; línea gruesa = el camino desde Ana; marco punteado = donde está la manija; circulito morado = la manija que se arrastra.
+4. **Qué aprendí:** subir es ir a los padres y bajar es ir a los hijos, y el camino se cuenta desde quien habla. (Por mi cuenta, la respuesta es Iván, pero en la captura la manija sigue en Pedro.)
+5. **Dudas:** no vi cómo cambian los números «sube/baja» al mover la manija a Iván.
+
+##### 3 Predice — `claro-cel-parentesco-3-predice.png`
+1. **Qué veo:** el árbol y la pregunta: dos padres y dos hijos fueron a pescar a la laguna. Las opciones son: A) Tres, B) Cuatro, C) No se sabe.
+2. **Qué me piden:** cuántas personas son como mínimo.
+3. **Símbolos:** ninguno nuevo.
+5. **Dudas:** ninguna. Abuelo, padre e hijo: el padre del medio es hijo y padre a la vez. **A) Tres** (como Raúl, Pedro y Ana).
+
+##### 4 Mira — `claro-cel-parentesco-4-mira.png`
+1. **Qué veo:** el árbol con Ana en marco naranja y la frase «Se lee desde «mi»: Ana». La barra marca 1/5 y el texto dice «Se empieza por «mi»: quien habla es Ana».
+2. **Qué me piden:** mirar.
+3. **Símbolos:** marco naranja = quien habla.
+4. **Qué aprendí:** para leer un parentesco hay que empezar por «mi», o sea, por la persona que habla.
+5. **Dudas:** solo veo el paso 1. Faro dice «la frase se lee al revés», pero todavía no veo cómo se recorre.
+
+##### 5 Regla — `claro-cel-parentesco-5-regla.png`
+1. **Qué veo:** el árbol con el camino marcado. Ana (naranja) sube a Pedro («mi papá»), sube a Raúl, baja a Tomás («su hermano») y baja a Iván («su hijo», marco morado). Debajo dice «Pedro: hijo de Raúl y padre de Ana». La fórmula es «hermano: sube 1, baja 1; tío: sube 2, baja 1; primo: sube 2, baja 2».
+2. **Qué me piden:** entender que un parentesco es un camino que se lee desde «mi». Cada padre o madre sube una línea, cada hijo o hija baja una, y una persona puede tener dos papeles.
+3. **Símbolos:** «sube N» = líneas hacia arriba; «baja N» = líneas hacia abajo.
+5. **Dudas:** «hermano: sube 1, baja 1». Si subo de Ana a Pedro y bajo 1, puedo caer otra vez en Ana. Entiendo que se baja a otra persona, pero la fórmula no lo dice. «Vale si no se supone matrimonio, sexo ni hijo único…»: la palabra «sexo» ahí no la entendí bien; creo que quiere decir que no supongas si es hombre o mujer.
+
+##### 6 Así se resuelve — `claro-cel-parentesco-6-resuelve.png`
+1. **Qué veo:** casi vacío, solo una cajita «Rosa» con «Se parte de quien habla». El problema: Rosa dice «Ayer llamó la hija de mi hermana». Los datos traen la lista de sube/baja (hermano, tío, primo, abuelo, nieto, sobrino, bisabuelo, bisnieto, tío abuelo, sobrino nieto). Abajo, el paso 1.
+2. **Qué me piden:** qué parentesco tiene esa persona con Rosa.
+3. **Símbolos:** los de sube/baja.
+5. **Dudas:** solo veo el paso 1 y no hay árbol todavía. La lista usa palabras en masculino (sobrino) y aquí es «hija», así que tengo que pensar que es «sobrina». Mi cuenta: hermana = sube 1, baja 1; hija = baja 1 más; total sube 1, baja 2, o sea, sobrina.
+
+##### 7 Ahora tú — `claro-cel-parentesco-7-ahora-tu.png`
+1. **Qué veo:** solo texto: Iván dice «Me visitó el abuelo de mi padre». Están la lista de datos y 4 opciones más «No sé».
+2. **Qué me piden:** qué es esa persona de Iván.
+3. **Símbolos:** los de sube/baja.
+5. **Dudas:** ninguna. Padre = sube 1; abuelo de él = sube 2 más; total sube 3, que es **C) Bisabuelo**.
+
+##### Ejercicio inventado (parentesco)
+Lucho dice: «Hoy vino el hijo del hermano de mi abuelo». ¿Qué es esa persona de Lucho?
+**Solución:** abuelo = sube 2; hermano del abuelo = sube 1 y baja 1 más (sube 3, baja 1: tío abuelo); su hijo = baja 1 más. Total: sube 3, baja 2. Esa combinación no está en la lista de la app. Como es el primo de mi papá, en mi familia le diríamos «tío segundo».
+
+## Ejemplos resueltos (ronda 2)
+
+### Respuestas de un alumno de 5.º (Juliaca) a las tarjetas de ejemplos resueltos
+
+Las miré solo como imágenes. Resolví cada acertijo antes de leer el «Resuelto». Hay 15 tarjetas: 5 temas con 3 tarjetas cada uno, y en los 5 temas el circulito dice **3, 8 y 14**. Al comienzo eso me desubicó: ¿dónde están la 1, la 2, la 4…? Supongo que son las preguntas 3, 8 y 14 de una lista más larga, pero la tarjeta no lo dice.
+
+---
+
+#### 01 — «Una pista que dice sí» (tabla 3×3, kermés)
+1. Me piden cuántas casillas se tachan si solo sé que Maru vende emoliente.
+2. Sí, tengo todo. La regla de «no se repite» está en Datos.
+3. Lo sigo completo, no me pierdo en ninguna línea.
+4. El dibujo ayuda a contar fila y columna, pero está vacío: el Resuelto habla de ✓ y ×, y en la tabla no aparece ninguna. No me da la respuesta antes.
+5. Nada raro. Solo el detalle de que la ✓ no cuenta como tachada; se entiende por la respuesta.
+- Mi respuesta: 2 en la fila de Maru + 2 en la columna de emoliente = **4**. **Coincide.**
+
+#### 02 — «Cuatro amigos: ¿qué es seguro?» (tabla 4×4, deportes)
+1. Me piden qué es seguro y qué no. La pregunta es algo vaga: no dice si quieren una lista o una casilla.
+2. Sí, tengo todo.
+3. Lo sigo bien.
+4. La tabla ayuda, pero sigue vacía y no da la respuesta.
+5. La respuesta está como cortada: dice «Beto y Ciro, en cualquier orden», pero no dice de qué. Se sobreentiende «vóley y ajedrez». No hay errores de números.
+- Mi respuesta: Dina juega básquet. A Ana le quitan vóley y ajedrez, así que juega fútbol. Beto y Ciro se reparten vóley y ajedrez y no se puede saber quién juega cuál. **Coincide.**
+
+#### 03 — «Los puestos de la kermés» (tabla 4×4, alternativas)
+1. Me piden qué vende Maru.
+2. Casi todo. El dato «Si una pista nombra a dos personas, son personas distintas» suena raro, porque la pista 1 menciona a tres (quien vende jugos, Lucho y Teo). Lo que quiere decir es que quien vende jugos no es Lucho ni Teo. Lo entendí, pero me costó.
+3. **Primera línea donde dudo:** «Las pistas 1 y 3 nombran a dos personas: × jugos y × choclo para Lucho y para Teo». Tuve que pensar por qué el que presta la olla no puede ser Lucho. El final está apretado: «Teo: tamales. Maru: choclo» va sin explicar que Teo no puede vender choclo por la pista 3.
+4. La tabla ayuda, aunque esté vacía. No da la respuesta.
+5. Nada imposible. La redacción del dato de «dos personas» es lo más raro.
+- Mi respuesta: jugos no es de Lucho ni de Teo (pista 1) ni de Maru (pista 2), así que es de Vilma. Choclo no es de Lucho ni de Teo (pista 3) ni de Vilma, así que es de Maru. **B, choclo. Coincide.**
+
+#### 04 — «Una × que pasa de cuadro» (3 tablas, comparsa)
+1. Me preguntan si Iván puede vivir en Ilave.
+2. Sí, tengo todo. Con las dos pistas sale casi al toque.
+3. Lo sigo. «Pasa al dueño del bombo» está subrayado como si tuviera una explicación aparte, pero igual se entiende.
+4. Para algo tan corto, tres cuadros casi sobran, aunque sirven para ver qué es «el cuadro de abajo». No da la respuesta.
+5. **«Ilave» se lee «llave»**: en esta letra la I mayúscula y la l minúscula son iguales. Yo sé que Ilave es un pueblo, pero alguien de fuera podría leer «llave». Los nombres de las columnas están girados y hay que torcer la cabeza.
+- Mi respuesta: Iván toca bombo y el del bombo no vive en Ilave, entonces **No**. **Coincide.**
+
+#### 05 — «El número del vóley» (3 tablas, olimpiada)
+1. Me piden qué juega Dina.
+2. Sí, tengo todo.
+3. Lo sigo sin problema.
+4. Los cuadros casi sobran: sale en dos líneas sin dibujar nada. No dan la respuesta.
+5. **Los números 5, 7 y 9 de arriba están girados.** El 9 echado se confunde con un 6 y cuesta leerlo. Nada imposible.
+- Mi respuesta: Eva lleva el 5 y el vóley va con el 7, así que Eva no juega vóley. Fito tampoco. Queda **Dina, vóley. Coincide.**
+
+#### 06 — «Los dados de colores» (3 tablas, alternativas)
+1. Me piden qué número sacó quien tiene el dado azul.
+2. Sí, tengo todo. Hasta explican qué es «par» (para 5.º es demasiado, pero no estorba).
+3. Lo sigo línea por línea y está muy claro.
+4. Los cuadros ayudan a ordenar, aunque no hacen falta. No dan la respuesta.
+5. Nada raro. Las etiquetas giradas (2, 3, 5 y los colores) sí se pueden leer.
+- Mi respuesta: el único par es 2. El rojo salió 2 y Ciro sacó 2, así que Ciro tiene el rojo. Beto sacó más que Ana: Beto 5 y Ana 3. Ana no tiene el azul, entonces el azul es de Beto, que sacó 5. **C. Coincide.**
+
+#### 07 — «"Algunos" también al revés» (Venn de 2 aros)
+1. Me preguntan si, sabiendo que «algunos músicos son pintores», es seguro que algunos pintores son músicos.
+2. Sí, con la definición de «algunos» que está en Datos.
+3. Lo sigo, pero la segunda línea dice «Vale en todo dibujo que cumple la premisa» y solo hay un dibujo. ¿Cuáles son los otros?
+4. Ayuda. Al ver los aros cruzados casi se ve la respuesta.
+5. El Resuelto dice «un pedazo con alguien adentro», pero en el dibujo no hay ningún punto ni marca de esa persona.
+- Mi respuesta: **Sí es seguro. Coincide.**
+
+#### 08 — «Dentro, y lejos del otro» (Venn)
+1. Me piden qué se concluye seguro sobre delegados e impuntuales.
+2. Sí, tengo todo.
+3. Lo sigo completo.
+4. Ayuda mucho, y **da la respuesta antes del Resuelto**: se ve que delegados está dentro de lectores y lejos de impuntuales.
+5. Nada raro.
+- Mi respuesta: **Ningún delegado es impuntual** (y al revés, ningún impuntual es delegado). **Coincide.**
+
+#### 09 — «La trampa del grupo del medio» (Venn, 2 dibujos, alternativas)
+1. Me piden cuál alternativa es necesariamente verdadera.
+2. Sí, tengo todo. El dato «cada grupo tiene al menos un integrante» es justo lo que hace falta para D.
+3. Las dos primeras partes las sigo. **Me pierdo en la última línea:** «"Todos los músicos son quenistas" es la premisa 1 al revés». No explica por qué al revés no vale. Hay que mirar el dibujo para darse cuenta de que músicos es más grande.
+4. Los dos dibujos ayudan a ver que cantantes puede tocar o no a quenistas. Pero confunden en dos cosas:
+   - En el **Dibujo 1** la palabra «quenistas» está afuera del aro de músicos, arriba a la izquierda, aunque el aro de quenistas está adentro. Lo mismo pasa con «cantantes», abajo a la derecha. Parece que esos grupos estuvieran fuera de músicos.
+   - En el Dibujo 1 el aro de cantantes llega justo al borde de músicos. No se sabe si está adentro o se sale.
+   - En el **Dibujo 2**, en cambio, «quenistas» está escrito adentro. Los nombres cambian de lugar de un dibujo a otro.
+5. Lo raro son las etiquetas mal ubicadas y el aro que toca el borde.
+- Mi respuesta: A, B y E dependen del dibujo y C es al revés. Como hay al menos un quenista y es músico, la segura es **D. Coincide.**
+
+#### 10 — «Saber lo segundo no basta» (tabla de casos p, q)
+1. Me preguntan si es seguro que Rosa tiene fiebre si faltó al colegio.
+2. Sí, tengo todo.
+3. Lo sigo completo.
+4. La tabla ayuda a ver los 4 casos, pero no tiene nada tachado; el tachado lo hago en mi cabeza. No da la respuesta.
+5. Nada raro. Los colores de p (naranja) y q (verde) son siempre los mismos.
+- Mi respuesta: pudo faltar por otra razón, así que **no es seguro. Coincide.**
+
+#### 11 — «Una regla que empieza con "no"» (tabla p, q)
+1. Me piden qué se concluye seguro si Beto no jugó fútbol.
+2. Sí, tengo todo, y el Datos aclara que p es «no hay examen».
+3. **Primera línea donde dudo:** «El dato es "q no": tacha los casos con q». «Con q» quiere decir «con q sí», pero así suena raro y lo tuve que leer dos veces.
+4. La tabla ayuda, pero sigue sin tachados. No da la respuesta.
+5. Nada imposible, solo esa frase.
+- Mi respuesta: solo queda el caso p no, q no. «No es cierto que no hay examen» significa que **hay examen. Coincide.**
+
+#### 12 — «¿Cuál no se concluye?» (tabla de 8 casos p, q, r)
+1. Me piden cuál alternativa NO se puede concluir de las dos reglas.
+2. Sí, tengo todo. Datos dice «una regla se concluye si…»; yo diría «una afirmación», pero se entiende.
+3. **Me pierdo en la segunda línea:** «se cumplen "si p, r", "si no r, no q", "si no q, no p" y "si no r, no p"». Esas son A, B, C y E, pero escritas con letras p, q, r en vez de con las palabras de las alternativas, y sin decir cuál es cuál. Tuve que traducirlas una por una.
+4. La tabla de 8 casos ayuda, pero es larga y no tiene tachados. Tengo que tachar 4 filas mentalmente (2, 3, 4 y 6). No da la respuesta.
+5. **La columna r está en negro**, mientras que p es naranja y q es verde. Ese color cambia respecto a los demás.
+- Mi respuesta: quedan los casos 1, 5, 7 y 8. D («si lleva buzo, es lunes») falla en el caso 5 (y también en el 7). **D. Coincide.**
+
+#### 13 — «El papá de mi papá» (árbol)
+1. Me piden qué es de Luis el papá de su papá.
+2. Sí, tengo todo. Esto ya lo sabía de memoria igual.
+3. Lo sigo completo.
+4. El árbol ayuda: Luis está marcado en naranja. No hace falta para la respuesta.
+5. Nada raro. **El Datos regala la respuesta**: dice «Abuelo: sube 2», así que solo cuento hasta 2 y listo. También trae bisabuelo y tío abuelo, que aquí no se usan.
+- Mi respuesta: **abuelo (Raúl). Coincide.**
+
+#### 14 — «El sobrino de mi papá» (árbol)
+1. Me piden qué es de Luis el sobrino de su papá.
+2. Sí, tengo todo.
+3. Lo sigo completo.
+4. El árbol ayuda a encontrar a Iván. No da la respuesta directo, pero casi.
+5. Nada raro. Otra vez **el Datos casi la regala**: dice «Primo: sube 2, baja 2». El árbol es el mismo de la tarjeta 13 (está bien).
+- Mi respuesta: el sobrino de Pedro es el hijo de su hermano Tomás, o sea Iván: **primo. Coincide.**
+
+#### 15 — «Los hijos de doña Rufina» (sin dibujo, alternativas)
+1. Me piden cuántos hijos tiene en total doña Rufina.
+2. Sí, tengo todo. El Datos de «mismo padre» evita la trampa de los medio hermanos.
+3. Lo sigo completo. Me gusta que explique por qué 6 está mal.
+4. No hay dibujo y no hace falta.
+5. Nada raro.
+- Mi respuesta: una sola hija, hermana de los tres, así que 3 + 1 = **4 (A). Coincide.**
+
+---
+
+#### Resumen
+
+**Las 3 que mejor se entienden**
+1. **15 – Doña Rufina**: es corta, sin dibujo innecesario y explica la trampa (6).
+2. **06 – Dados de colores**: cada línea del Resuelto se apoya en una pista y es fácil de seguir.
+3. **10 – Fiebre de Rosa**: es simple y la tabla de casos se entiende bien.
+(La 01 y la 13 también son muy claras, pero son demasiado fáciles.)
+
+**Las 3 que peor se entienden**
+1. **09 – Trampa del grupo del medio**: en el Dibujo 1 los nombres están fuera de sus aros, el aro de cantantes toca el borde y no se explica por qué C falla.
+2. **12 – ¿Cuál no se concluye?**: las alternativas aparecen como fórmulas p, q, r sin decir qué letra es cuál, la tabla de 8 filas no tiene tachados y la columna r está en negro.
+3. **03 – Puestos de la kermés**: el dato «si una pista nombra a dos personas» es confuso y el final («Teo: tamales. Maru: choclo») va muy apretado.
+(Cerca está la 11, por la frase «tacha los casos con q».)
+
+**¿Suben los niveles?** Sí, dentro de cada tema el 3 es fácil, el 8 es medio y el 14 es más difícil:
+- **Tabla de una persona:** 1 pista → 3 pistas → 4 pistas con alternativas.
+- **Tres cuadros:** 2 pistas → 3 → 4.
+- **Conjuntos:** 2 aros → 3 aros → 2 dibujos con alternativas.
+- **Condicionales:** 4 casos → regla con «no» → 8 casos con dos reglas.
+- **Parentesco:** el salto es menor. La 13 y la 14 son casi lo mismo, y la 15 es más de truco que de dificultad.
+
+Todas las respuestas coincidieron con las mías. No encontré ningún número imposible.
+
+**El recuadro «Datos»:**
+- **Ayuda** casi siempre: trae las pistas, las reglas de «no se repite» y las definiciones de «algunos», «todos», «ningún» y «si p, q».
+- **Regala la respuesta** en parentesco (13: «Abuelo: sube 2»; 14: «Primo: sube 2, baja 2»): solo hay que contar.
+- **Distrae un poco** en la 13 (bisabuelo y tío abuelo no se usan), y en la 03 su regla de «dos personas» confunde más de lo que aclara.
+
+**Cosas generales:**
+- Las tablas y los cuadros siempre salen vacíos, aunque el Resuelto habla de ✓ y ×. Faltaría ver las marcas.
+- Las etiquetas giradas (números y lugares) cuestan leer.
+- «Ilave» se confunde con «llave» por el tipo de letra.
+- Los números 3, 8 y 14 repetidos en los cinco temas confunden.

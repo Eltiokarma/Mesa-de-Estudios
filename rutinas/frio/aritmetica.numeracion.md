@@ -436,3 +436,421 @@ Cada tarjeta tiene un número de nivel en el círculo (3, 8 o 14). Van en grupos
 - **Rayitas verticales sueltas** al inicio de renglón (06, 08, 09) y **cuentas cortadas** entre renglones (05, 15) en los resueltos.
 - **Subrayados de puntitos** en palabras comunes («muestra», «orden», «bloque»). No sé qué significan.
 - **Dibujos de la tienda que solo repiten la etiqueta** (01, 05, 10). Una sola bolsa cerrada no me ayuda a imaginar bolsitas y sueltos.
+
+# Ronda 2 (18 nov 2026)
+
+Lectores nuevos, después de las correcciones del auditor y de la cuarta ronda de la mesa, con capturas `--entera`
+(página entera; primer estado de cada momento).
+
+## Momentos (ronda 2)
+
+### Respuestas de un alumno de 5.º (Juliaca) — Sistemas de numeración
+
+Solo miré las capturas `claro-cel-*`. Cada captura es el primer estado de la pantalla: de Lee veo solo la tarjeta 1/4; de Mira y de Así se resuelve, solo el paso 1.
+
+En todas las pantallas se repite lo mismo arriba: un botón «‹» para volver, un dibujo de ábaco, «Teoría · 0 de 5 terminadas», el título «Sistemas de numeración», las pestañas Ideas / Ejemplos / Glosario / Laboratorio, unos circulitos numerados (1, 2, 3, 4…), una barra de colores con el nombre del momento (Lee, Juega…) y una lupa con «+» (creo que sirve para agrandar el dibujo). Abajo aparece casi siempre una tortuguita que se llama «Luma» y da pistas.
+
+Símbolos que se repiten:
+- Un número chiquito entre paréntesis abajo a la derecha, como 23₍₅₎, es la base (el tamaño de la bolsita).
+- Los colores: el morado es la cantidad de caramelos o el número de verdad, el verde azulado es la base n y el naranja son las cifras de la etiqueta.
+- Hay palabras subrayadas con puntitos (cifra, orden, numeral, entero, cociente, resto…). **No sé** qué pasa si las toco; supongo que llevan al glosario, pero no lo veo.
+
+---
+
+#### Idea 1: agrupar (Agrupar de n en n)
+
+##### 1 Lee — `claro-cel-agrupar-1-lee.png`
+1. **Qué veo:** un puesto con toldo, el letrero «Caramelos de doña Juana» y la nota «1 bolsita = 5 caramelos». Sobre el mostrador hay 2 bolsitas (cada una con 5 caramelos dibujados) y 3 caramelos sueltos. Debajo dice «2 bolsitas» y «3 sueltos». Luego viene la tarjeta 1/4 «El puesto de doña Juana», cuatro puntitos (las tarjetas), el enlace «Ir directo a jugar», un globo de Luma y el botón «Siguiente tarjeta ›». Más arriba hay un enlace, «¿De dónde sale esta idea?».
+2. **Qué me piden:** solo leer y pasar a la siguiente tarjeta.
+3. **Símbolos:** el 5 (en verde) son los caramelos que entran en una bolsita. En el título sale «n», pero esta tarjeta no dice qué es n (me imagino que es el 5). **No sé** qué hay en «¿De dónde sale esta idea?».
+5. **Dudas:** el título habla de «n» y la tarjeta 1 no lo explica. Tampoco dice cuántos caramelos hay en total (yo cuento 2×5 + 3 = 13, pero no está escrito).
+
+##### 2 Juega — `claro-cel-agrupar-2-juega.png`
+1. **Qué veo:** el mismo puesto con 2 bolsitas y 3 sueltos. Del toldo cuelga una etiqueta que dice 23₍₅₎. Hay un recuadro de MISIÓN, la fórmula «13 caramelos = 2 bolsitas de 5 + 3 sueltos → 23₍₅₎», una leyenda de colores y dos deslizadores: «Caramelos del pedido» (13) y «Caramelos por bolsita, n» (5). También un botón «Volver al inicio», el texto «Prueba 3 casos distintos… llevas 1», Luma y los botones «‹ Atrás» y «Siguiente: Predice ›».
+2. **Qué me piden:** mover los deslizadores. La misión es: «Con bolsitas de 6, arma un pedido que se anote 40₍₆₎».
+3. **Símbolos:** el 13 son los caramelos contados uno por uno, n son los caramelos por bolsita (la base), el 2 y el 3 son las cifras, 23₍₅₎ es la etiqueta y la flecha → quiere decir «se anota en la etiqueta».
+4. **Qué aprendí:** la etiqueta dice primero cuántas bolsitas llenas hay y después cuántos sueltos quedan, y el numerito de abajo es el tamaño de la bolsita (40₍₆₎ son 4 bolsitas de 6 y 0 sueltos, o sea 24 caramelos).
+5. **Dudas:** el deslizador de n está pegado a la izquierda en 5; **no sé** si puede bajar a menos de 5. Tampoco sé qué cuenta como «caso distinto» (¿basta mover un poco el deslizador?). Y aquí todavía no sale qué pasa cuando hay muchas bolsitas.
+
+##### 3 Predice — `claro-cel-agrupar-3-predice.png`
+1. **Qué veo:** el puesto con una línea nueva: «1 caja = 5 bolsitas». Hay 4 bolsitas, 4 sueltos y «+ llega 1» (un caramelo con borde punteado). La etiqueta dice ?₍₅₎. Abajo están la pregunta, el cuadro de Datos y las opciones A 100₍₅₎, B 50₍₅₎, C 45₍₅₎ y D 40₍₅₎.
+2. **Qué me piden:** si la etiqueta era 44₍₅₎ y llega un caramelo más, ¿cómo queda la etiqueta?
+3. **Símbolos:** el «?» es la etiqueta que no se sabe y el caramelo punteado es el que llega.
+5. **Dudas:** la «caja» aparece de golpe; en Juega no se habló de cajas. Yo respondería A, 100₍₅₎: 5 sueltos hacen 1 bolsita, con eso hay 5 bolsitas, y 5 bolsitas hacen 1 caja.
+
+##### 4 Mira — `claro-cel-agrupar-4-mira.png`
+1. **Qué veo:** el mismo puesto con la etiqueta 44₍₅₎, 4 bolsitas, 4 sueltos y «llega 1». Hay un botón de play morado, una barra de pasos «1/5» con 5 puntitos, el texto del paso 1, Luma y el botón «Paso 2 de 5 ›».
+2. **Qué me piden:** mirar el paso, darle play o pasar al siguiente.
+3. **Símbolos:** «4 sueltos + 1 = 5 sueltos»; el 5 en verde es la base.
+4. **Qué aprendí:** cuando llega el caramelo se juntan 5 sueltos, y eso alcanza justo para llenar una bolsita.
+5. **Dudas:** solo veo el paso 1 de 5. Lo de formar la bolsita y la caja debe pasar en los pasos 2 a 5, que no veo.
+
+##### 5 La regla — `claro-cel-agrupar-5-regla.png`
+1. **Qué veo:** el puesto con 1 caja (dibujada con 5 bolsitas encima), 0 bolsitas, 0 sueltos (sus lugares tienen un óvalo punteado vacío) y la etiqueta 100₍₅₎. Debajo están el texto de la regla, un recuadro con fórmulas, «Vale si…» y Luma.
+2. **Qué me piden:** leer la regla.
+3. **Símbolos:** «n de un orden = 1 del siguiente» y «0 ≤ cifra ≤ n − 1». El signo ≤ es «menor o igual».
+5. **Dudas:** la palabra «orden» no me la explicaron antes; creo que se refiere a sueltos, bolsitas y cajas, pero no estoy seguro. Tampoco entiendo bien la frase «la primera cifra de un numeral no es 0».
+
+##### 6 Así se resuelve — `claro-cel-agrupar-6-resuelve.png`
+1. **Qué veo:** un montón de caramelos en forma de pirámide con el rótulo «44 caramelos», las notas «1 bolsita = 4 caramelos» y «1 caja = 4 bolsitas», y la etiqueta ?₍₄₎. Hay un recuadro morado con el problema, Datos, el paso 1 «¿Qué me piden?», un botón «Ver todos los pasos» y otro «Paso 2: ¿Qué regla uso? ›».
+2. **Qué me piden:** por ahora solo entender qué me piden: cuántas cajas, bolsitas y sueltos quedan.
+3. **Símbolos:** el 44 en morado son los caramelos y el 4 en verde es la base.
+5. **Dudas:** solo veo el paso 1, así que no sé cómo lo resuelve la app. Yo lo hice así: 44 = 2 cajas (32) + 3 bolsitas (12) + 0 sueltos, o sea 230₍₄₎. Aquí no puedo comprobarlo.
+
+##### 7 Ahora tú — `claro-cel-agrupar-7-ahora-tu.png`
+1. **Qué veo:** la pregunta «¿Cuál de estos numerales está mal escrito?», Datos y las opciones A 301₍₅₎, B 316₍₇₎, C 1051₍₅₎, D 657, además de «No sé». También Luma y «Comprobar».
+2. **Qué me piden:** encontrar el numeral mal escrito.
+3. **Símbolos:** si el número no tiene base escrita, está en base 10.
+5. **Dudas:** ninguna. Respondo C, porque en base 5 no puede haber un 5.
+
+##### Ejercicio inventado
+Con bolsitas de 3 y cajas de 3 bolsitas, ¿qué etiqueta lleva un pedido de 17 caramelos?
+Una caja tiene 9 caramelos. 17 = 1 caja (9) + 2 bolsitas (6) + 2 sueltos. La etiqueta es **122₍₃₎**. Comprobación: 9 + 6 + 2 = 17. Todas las cifras son menores que 3, así que está bien escrita.
+
+---
+
+#### Idea 2: descomposicion (Cada cifra vale según su lugar)
+
+##### 1 Lee — `claro-cel-descomposicion-1-lee.png`
+1. **Qué veo:** el puesto con «1 bolsita = 5 caramelos», «1 caja = 5 bolsitas», 1 caja, 3 bolsitas, 2 sueltos y la etiqueta 132₍₅₎. Debajo está la tarjeta 1/4 «Cada lugar, un tamaño».
+2. **Qué me piden:** leer.
+3. **Símbolos:** en 132₍₅₎, el 1 es una caja, el 3 son bolsitas y el 2 son sueltos. «Valor posicional» aparece subrayado.
+5. **Dudas:** ninguna en esta tarjeta.
+
+##### 2 Juega — `claro-cel-descomposicion-2-juega.png`
+1. **Qué veo:** el puesto con bolsitas de 4: 1 caja, 3 bolsitas, 2 sueltos y la etiqueta 132₍₄₎. Hay la fórmula «132₍₄₎ = 1 caja de 16 + 3 × 4 + 2 = 30 caramelos», una leyenda y un solo deslizador, «Caramelos por bolsita, n» (en 4).
+2. **Qué me piden:** la misión dice: «Con la bolsita más chica posible, haz que el pedido tenga más de 50 caramelos».
+3. **Símbolos:** 132₍ₙ₎ es la etiqueta, n es la base, el 3 dice cuántas cosas hay de ese tamaño y el 30 es el total de caramelos.
+4. **Qué aprendí:** la misma etiqueta vale más caramelos si la bolsita es más grande. Con n = 5 da 42 y con n = 6 da 56, así que la respuesta es n = 6.
+5. **Dudas:** el deslizador empieza en 4 y no dice por qué no baja más (me imagino que es por el 3 de la etiqueta). El 16 de «caja de 16» sale de 4 × 4, pero no lo escriben así.
+
+##### 3 Predice — `claro-cel-descomposicion-3-predice.png`
+1. **Qué veo:** 2 cajas, 0 bolsitas (un óvalo punteado vacío), 3 sueltos y la etiqueta 203₍₅₎. En Datos dice «1 caja = 5 bolsitas = 25 caramelos». Las opciones son A 13, B 53, C 77 y D 203 caramelos.
+2. **Qué me piden:** cuántos caramelos son 203₍₅₎.
+3. **Símbolos:** el 0 quiere decir que no hay bolsitas.
+5. **Dudas:** ninguna. 2 × 25 + 0 + 3 = 53, así que respondo B.
+
+##### 4 Mira — `claro-cel-descomposicion-4-mira.png`
+1. **Qué veo:** el mismo dibujo, el botón de play, «1/6» con 6 puntitos y el texto «203₍₅₎ = 2 cajas + 0 bolsitas + 3 sueltos».
+2. **Qué me piden:** mirar los pasos.
+3. **Símbolos:** las cifras naranjas son las cantidades de cada cosa.
+4. **Qué aprendí:** la etiqueta se separa en cajas, bolsitas y sueltos, cada una con su cifra.
+5. **Dudas:** solo veo el paso 1 de 6. No sé cómo pasa a caramelos en los pasos siguientes.
+
+##### 5 La regla — `claro-cel-descomposicion-5-regla.png`
+1. **Qué veo:** el puesto con 2 cajas, un hueco y unos sueltos. En lugar de números, debajo dice «a × n²», «b × n» y «c × 1», y la etiqueta es abc₍ₙ₎. Abajo están el texto de la regla, la fórmula y «Vale si…».
+2. **Qué me piden:** leer la regla.
+3. **Símbolos:** a, b y c son las cifras; n² = n × n; 1, n, n², n³… es lo que vale cada lugar desde la derecha. **No sé** qué significa la rayita encima de «abc» en la fórmula; no la explican.
+5. **Dudas:** el dibujo todavía dice «1 bolsita = 5 caramelos» pero las etiquetas usan n, y eso me confunde. Además, el lugar de las bolsitas está vacío y abajo dice «b × n».
+
+##### 6 Así se resuelve — `claro-cel-descomposicion-6-resuelve.png`
+1. **Qué veo:** el puesto con bolsitas de 4: 1 caja, 3 bolsitas, 3 sueltos y la etiqueta 133₍₄₎. Hay el problema de los dos puestos, Datos y el paso 1.
+2. **Qué me piden:** ¿cuántos caramelos más tiene el pedido 133₍₆₎ que el 133₍₄₎?
+3. **Símbolos:** la misma fórmula abc₍ₙ₎, otra vez con la rayita arriba.
+5. **Dudas:** solo veo el paso 1. Mi cuenta: 133₍₄₎ = 16 + 12 + 3 = 31 y 133₍₆₎ = 36 + 18 + 3 = 57, así que son 26 más. No lo puedo comprobar.
+
+##### 7 Ahora tú — `claro-cel-descomposicion-7-ahora-tu.png`
+1. **Qué veo:** la pregunta sobre 203₍₆₎, Datos y las opciones A 110, B 203, C 75, D 15 y «No sé».
+2. **Qué me piden:** cuántos caramelos son.
+3. **Símbolos:** la fórmula con 6 en lugar de n.
+5. **Dudas:** ninguna. 2 × 36 + 0 + 3 = 75, respondo C.
+
+##### Ejercicio inventado
+¿Cuántos caramelos tiene un pedido que se anota 312₍₄₎?
+3 × 16 + 1 × 4 + 2 = 48 + 4 + 2 = **54 caramelos**.
+
+---
+
+#### Idea 3: cambio-base (De base 10 a otra base)
+
+##### 1 Lee — `claro-cel-cambio-base-1-lee.png`
+1. **Qué veo:** el puesto con «1 bolsita = 4 caramelos», una pirámide de caramelos y el rótulo «75 caramelos». Debajo está la tarjeta 1/4 «Un montón por empacar».
+2. **Qué me piden:** leer.
+3. **Símbolos:** el 75 en morado son los caramelos y el 4 en verde es el tamaño de la bolsita.
+5. **Dudas:** dice «y así» después de las cajas, pero no dice qué viene después de una caja.
+
+##### 2 Juega — `claro-cel-cambio-base-2-juega.png`
+1. **Qué veo:** el puesto con «1 bolsita = 4 caramelos», «1 caja = 4 bolsitas», «1 cajón = 4 cajas», la pirámide de 75 y la etiqueta ?₍₄₎. Al pie de la pirámide se asoma algo verde que **no sé** qué es (¿una bolsita escondida?). El texto dice «75 caramelos sueltos: todavía no se junta nada». Hay una leyenda (75, n, cociente, resto, abc₍ₙ₎) y tres deslizadores: Caramelos sueltos (75), Caramelos por bolsita n (4) y Ronda de empaque (0).
+2. **Qué me piden:** la misión es empacar los 75 caramelos en bolsitas de 4 hasta que ya no se pueda juntar nada.
+3. **Símbolos:** el cociente es lo que se juntó en la ronda y el resto es lo que no alcanzó, que es una cifra.
+4. **Qué aprendí:** cada ronda es como dividir entre 4, y lo que sobra es una cifra de la etiqueta. Mi cuenta: 75 → 18 r 3 → 4 r 2 → 1 r 0 → 0 r 1, o sea 1023₍₄₎. La pantalla está en la ronda 0, así que no vi el resultado.
+5. **Dudas:** el «cajón» aparece por primera vez sin explicarlo. Tampoco sé qué se ve al mover «Ronda de empaque».
+
+##### 3 Predice — `claro-cel-cambio-base-3-predice.png`
+1. **Qué veo:** una tabla con las columnas número / entre / cociente / resto y las filas 19‑3‑6‑1, 6‑3‑2‑0, 2‑3‑0‑2. La columna resto está sombreada. Las opciones son A 201₍₃₎, B 62₍₃₎, C 102₍₃₎ y D 19₍₃₎.
+2. **Qué me piden:** cómo se escribe 19 en base 3 si los restos salen 1, 0 y 2.
+3. **Símbolos:** «entre» es dividir entre.
+5. **Dudas:** aquí cambian de caramelos a divisiones sin dibujo, de golpe. Hay que adivinar si los restos se leen al revés. Yo creo que sí, y respondo A, 201₍₃₎ (2 × 9 + 0 + 1 = 19).
+
+##### 4 Mira — `claro-cel-cambio-base-4-mira.png`
+1. **Qué veo:** la tabla con una columna nueva, «va en», que está vacía. Solo está llena la primera fila (19, 3, 6, 1). Hay play, «1/6» y el texto «19 entre 3: 6 bolsitas y sobra 1 suelto. 19 = 6 × 3 + 1».
+2. **Qué me piden:** mirar los pasos.
+3. **Símbolos:** **no sé** qué significa la columna «va en» en este paso, porque está vacía. Recién en La regla veo que dice sueltos, bolsitas, cajas.
+4. **Qué aprendí:** la primera división dice cuántas bolsitas salen y el resto son los sueltos.
+5. **Dudas:** solo veo el paso 1 de 6.
+
+##### 5 La regla — `claro-cel-cambio-base-5-regla.png`
+1. **Qué veo:** la tabla completa con «va en»: sueltos, bolsitas, cajas. Debajo están el texto de la regla, la fórmula «N = q × n + r» con flechas que señalan «cociente» y «resto: una cifra», «0 ≤ r < n» y «Vale si…».
+2. **Qué me piden:** leer la regla.
+3. **Símbolos:** N mayúscula es el número, n minúscula es la base, q es el cociente y r es el resto.
+5. **Dudas:** dice «(verde: la nueva)», pero **no sé** qué parte está en verde; casi todo lo verde aquí es n. También se me cruzan N y n, porque solo cambian de tamaño. Y «Entre dos bases que no son 10, se pasa por base 10» lo dice sin ejemplo.
+
+##### 6 Así se resuelve — `claro-cel-cambio-base-6-resuelve.png`
+1. **Qué veo:** solo texto, sin dibujo del puesto: «Pasa 200₍₄₎ a base 8», Datos con dos fórmulas y el paso 1.
+2. **Qué me piden:** escribir el mismo número en base 8.
+3. **Símbolos:** el 8 está en un verde más oscuro que el (4). Creo que ese es el «verde: la nueva» de La regla, pero no me lo dijeron.
+5. **Dudas:** solo veo el paso 1. Mi cuenta: 200₍₄₎ = 2 × 16 = 32, y 32 = 4 × 8 + 0, o sea 40₍₈₎. No lo puedo comprobar.
+
+##### 7 Ahora tú — `claro-cel-cambio-base-7-ahora-tu.png`
+1. **Qué veo:** «Escribe 174 en base 8», Datos y las opciones A 56₍₈₎, B 652₍₈₎, C 256₍₈₎, D 174₍₈₎ y «No sé».
+2. **Qué me piden:** pasar 174 a base 8.
+3. **Símbolos:** los mismos de La regla.
+5. **Dudas:** ninguna. 174 = 21 × 8 + 6, 21 = 2 × 8 + 5 y 2 = 0 × 8 + 2. Leo los restos desde el último: 256₍₈₎, respondo C. (B, 652₍₈₎, es la trampa de leerlos al revés.)
+
+##### Ejercicio inventado
+Pasa 50 a base 6.
+50 = 8 × 6 + 2; 8 = 1 × 6 + 2; 1 = 0 × 6 + 1. Leo los restos desde el último: **122₍₆₎**. Comprobación: 36 + 12 + 2 = 50.
+
+---
+
+#### Idea 4: base-desconocida (La base que no se ve)
+
+##### 1 Lee — `claro-cel-base-desconocida-1-lee.png`
+1. **Qué veo:** una bolsa cerrada (como una bolsa de papel con un caramelo dibujado) sobre el mostrador. Dice «En la bolsa: 17 caramelos», «1 bolsita = ? caramelos» y la etiqueta 23₍ₙ₎. Debajo está la tarjeta 1/4 «Una bolsa del vecino».
+2. **Qué me piden:** leer.
+3. **Símbolos:** n es la base que no se ve y el ? es lo mismo: cuántos caramelos entran en una bolsita.
+5. **Dudas:** se pueden confundir «bolsa» (el paquete cerrado) y «bolsita» (el grupo de n).
+
+##### 2 Juega — `claro-cel-base-desconocida-2-juega.png`
+1. **Qué veo:** el puesto con «En la bolsa: 17 caramelos» y «1 bolsita = 4 caramelos», 2 bolsitas, 3 sueltos y la etiqueta 23₍₄₎. La fórmula dice «23₍₄₎ = 2 × 4 + 3 = 11: faltan 6 para 17». Hay una leyenda y un deslizador «Caramelos por bolsita, n» en 4.
+2. **Qué me piden:** encontrar el tamaño de bolsita con el que 23₍ₙ₎ vale 17.
+3. **Símbolos:** 23₍ₙ₎ es la etiqueta, n es la base que falta y el 17 son los caramelos que hay de verdad.
+4. **Qué aprendí:** voy probando n hasta que la cuenta dé 17. Con n = 7 sale 2 × 7 + 3 = 17.
+5. **Dudas:** otra vez el deslizador empieza en 4 sin decir por qué; recién en La regla dice n ≥ 4.
+
+##### 3 Predice — `claro-cel-base-desconocida-3-predice.png`
+1. **Qué veo:** la bolsa cerrada, «Bolsa 31: 25 caramelos», «Bolsa 13: ? caramelos», la etiqueta 31₍ₙ₎ y las opciones A 11, B 13, C 52 y D 8 caramelos.
+2. **Qué me piden:** cuántos caramelos tiene la bolsa que dice 13₍ₙ₎.
+3. **Símbolos:** las dos bolsas tienen la misma n.
+5. **Dudas:** el dibujo muestra una sola bolsa aunque se habla de dos. Mi cuenta: 3n + 1 = 25, entonces n = 8, y 13₍₈₎ = 11. Respondo A.
+
+##### 4 Mira — `claro-cel-base-desconocida-4-mira.png`
+1. **Qué veo:** la bolsa cerrada, «Bolsa 31: 25 caramelos», la etiqueta 31₍ₙ₎, play, «1/5» y el texto «31₍ₙ₎ = 3 × n + 1».
+2. **Qué me piden:** mirar los pasos.
+3. **Símbolos:** n es la incógnita.
+4. **Qué aprendí:** la etiqueta se convierte en una ecuación con n (3 bolsitas de n más 1 suelto).
+5. **Dudas:** solo veo el paso 1 de 5. No veo cómo despeja n ni cómo calcula la otra bolsa.
+
+##### 5 La regla — `claro-cel-base-desconocida-5-regla.png`
+1. **Qué veo:** la bolsa cerrada, la etiqueta 31₍ₙ₎ y el texto «Sin saber cuántos hay: 3 < n, así que n ≥ 4». Debajo están la regla, la fórmula «ab₍ₙ₎ = a × n + b = N», «0 < a < n, 0 ≤ b < n» y «Vale si…».
+2. **Qué me piden:** leer.
+3. **Símbolos:** a y b son las cifras, N es el número conocido y < es «menor que». Otra vez la rayita sobre «ab» (**no sé** qué es).
+5. **Dudas:** no entiendo la frase «Una cifra en dos numerales es menor que las dos bases». La palabra «acota» tampoco la conocía bien.
+
+##### 6 Así se resuelve — `claro-cel-base-desconocida-6-resuelve.png`
+1. **Qué veo:** la bolsa cerrada, «112 caramelos», «1 bolsita = ? caramelos», la etiqueta 160₍ₙ₎, el problema, Datos, el paso 1 y el botón «Paso 2: ¿Qué tengo? ›».
+2. **Qué me piden:** encontrar la base n.
+3. **Símbolos:** la fórmula de tres cifras con n².
+5. **Dudas:** solo veo el paso 1. Aquí la ecuación tiene n² (n² + 6n = 112) y no sé si la app la resuelve probando o factorizando. Yo probé y sale n = 8 (64 + 48 = 112), que además cumple que 8 es mayor que 6.
+
+##### 7 Ahora tú — `claro-cel-base-desconocida-7-ahora-tu.png`
+1. **Qué veo:** la pregunta sobre 36₍ₙ₎ = 33, Datos y las opciones A n = 13, B n = 7, C n = 9, D n = 11 y «No sé».
+2. **Qué me piden:** encontrar n.
+3. **Símbolos:** los de La regla.
+5. **Dudas:** ninguna. 3n + 6 = 33, entonces n = 9 (y 9 > 6). Respondo C.
+
+##### Ejercicio inventado
+Una bolsa dice 45₍ₙ₎ y tiene 37 caramelos. ¿De cuánto es cada bolsita?
+4n + 5 = 37, 4n = 32, **n = 8**. Como 8 > 5, la cifra 5 está permitida.
+
+---
+
+#### Idea 5: conteo-cifras (Contar cifras por bloques)
+
+##### 1 Lee — `claro-cel-conteo-cifras-1-lee.png`
+1. **Qué veo:** un taco de boletos de rifa («N.º 1», con el 1 en una cajita naranja) y a la derecha el «último boleto», N.º 150, con 1, 5 y 0 en cajitas. Abajo hay una barra «boletos» partida en tres pedazos de distinto gris, sin números. Luego viene la tarjeta 1/4 «La rifa de la promoción».
+2. **Qué me piden:** leer.
+3. **Símbolos:** cada cajita es una cifra impresa. **No sé** qué representa cada pedazo de la barra «boletos»; no tiene números (supongo que son los boletos de 1, 2 y 3 cifras).
+5. **Dudas:** la barra sin rótulos.
+
+##### 2 Juega — `claro-cel-conteo-cifras-2-juega.png`
+1. **Qué veo:** los boletos 1 y 150. Hay una barra «boletos» muy cortita con un círculo morado para arrastrar, una barra «cifras impresas: 342» con dos pedazos naranjas y «100 a 150: 51 × 3 = 153». La fórmula dice «150 boletos: 342 cifras; del 100 al 150, 51 × 3 = 153». También hay una leyenda, un recuadro verde que dice «Arrastra los círculos de la figura, o usa − y +» y el deslizador «Último boleto, N» en 150.
+2. **Qué me piden:** la imprenta cobró 492 cifras; ¿hasta qué boleto alcanza? Hay que correr el último boleto.
+3. **Símbolos:** N es el último boleto. «100 a N» es el bloque de tres cifras.
+4. **Qué aprendí:** se cuentan las cifras por bloques (de 1, 2 y 3 cifras) y luego se suman. Mi cuenta: 492 − 189 = 303 = 101 × 3, o sea hasta el boleto 200.
+5. **Dudas:** la barra «boletos» es mucho más corta que la de cifras, y la leyenda dice «a la misma escala»; no entendí a qué escala. La línea «boletos: un tramo por bloque: igual cantidad de cifras» está rara de leer. Además, solo sale el texto del bloque 100 a 150; los de 1–9 y 10–99 no se ven escritos.
+
+##### 3 Predice — `claro-cel-conteo-cifras-3-predice.png`
+1. **Qué veo:** los boletos 1 y 100, la barra «boletos» y las opciones A 189, B 192, C 200 y D 190 cifras.
+2. **Qué me piden:** cuántas cifras se imprimen del 1 al 100.
+3. **Símbolos:** nada nuevo.
+5. **Dudas:** ninguna. 9 + 180 + 3 = 192, respondo B (la trampa es olvidar el 100 y marcar 189).
+
+##### 4 Mira — `claro-cel-conteo-cifras-4-mira.png`
+1. **Qué veo:** los boletos 1 y 100, la barra «boletos» y la barra «cifras impresas» casi vacías (con bordes punteados) y «1 a 9: 9 × 1 = 9». Hay play, «1/5» y el texto «Del 1 al 9: nueve boletos de una cifra. 9 × 1 = 9».
+2. **Qué me piden:** mirar los pasos.
+3. **Símbolos:** el borde punteado es lo que falta llenar.
+4. **Qué aprendí:** el primer bloque, del 1 al 9, gasta 9 cifras.
+5. **Dudas:** solo veo el paso 1 de 5.
+
+##### 5 La regla — `claro-cel-conteo-cifras-5-regla.png`
+1. **Qué veo:** las barras llenas: «cifras impresas: 192», «1 a 9: 9 × 1 = 9», «10 a 99: 90 × 2 = 180», «100 a 100: 1 × 3 = 3». Debajo están el texto de la regla, las fórmulas y «Vale si…».
+2. **Qué me piden:** leer.
+3. **Símbolos:** p es el primero, u el último, k las cifras de cada número y n la base. La fórmula «de n^(k−1) a n^k − 1» da los números de k cifras.
+5. **Dudas:** de repente aparece «en base n» en una idea que trata de boletos en base 10, sin ejemplo. Luma dice «puntas» y no me queda claro si son el primero y el último de cada bloque.
+
+##### 6 Así se resuelve — `claro-cel-conteo-cifras-6-resuelve.png`
+1. **Qué veo:** los boletos 43 y 312, las barras «boletos» y «cifras impresas: ?», el problema, Datos y el paso 1.
+2. **Qué me piden:** cuántas cifras se imprimen del 43 al 312.
+3. **Símbolos:** p y u, como en La regla.
+5. **Dudas:** solo veo el paso 1. Mi cuenta: del 43 al 99 hay 57 × 2 = 114 y del 100 al 312 hay 213 × 3 = 639, total 753. No lo puedo comprobar.
+
+##### 7 Ahora tú — `claro-cel-conteo-cifras-7-ahora-tu.png`
+1. **Qué veo:** los boletos 1 y 314, las barras, «cifras impresas: ?» y las opciones A 831, B 942, C 834, D 825 y «No sé».
+2. **Qué me piden:** cuántas cifras se imprimen del 1 al 314.
+3. **Símbolos:** nada nuevo.
+5. **Dudas:** ninguna. 9 + 180 + 215 × 3 = 9 + 180 + 645 = 834, respondo C.
+
+##### Ejercicio inventado
+¿Cuántas cifras se usan para numerar del 1 al 250?
+1–9: 9; 10–99: 90 × 2 = 180; 100–250: 151 × 3 = 453. Total: **642 cifras**.
+
+## Ejemplos resueltos (ronda 2)
+
+### Respuestas del alumno: ejemplos resueltos de sistemas de numeración
+
+Solo miré las 15 imágenes. Todas se leen; no hay nada cortado ni encimado. Cada tarjeta lleva un número en un círculo (3, 8 o 14) que parece marcar el nivel. Las 15 forman 5 grupos de 3 tarjetas:
+etiquetas de caramelos (01-03), descomponer (04-06), divisiones sucesivas (07-09), qué cifras se pueden usar (10-12) y contar cifras (13-15).
+
+Hice todas las cuentas yo mismo y **todas las respuestas me salen bien**.
+
+---
+
+#### 01 · «3 Leer la etiqueta»
+1. Con la etiqueta 42₍₇₎ hay que decir cuántas bolsitas hay, de cuántos caramelos es cada una y cuántos caramelos van sueltos.
+2. Casi todo está. «Datos» dice el orden (primero bolsitas, después sueltos, la base abajo), pero **no dice que la base es lo que lleva cada bolsita**. Eso solo aparece en el Resuelto. Si no lo sé de antes, no sé de dónde sale el «de 7».
+3. Lo sigo entero. La línea «cada bolsita lleva 7 caramelos» es justo la que no podía sacar de los Datos.
+4. Sobra. Es una bolsa cerrada con la etiqueta, y no muestra las bolsitas ni los sueltos. No me da la respuesta.
+5. Nada raro. Cuenta: 4 × 7 + 2 = 30 caramelos. No lo piden, pero cuadra.
+
+#### 02 · «8 Mal empacado»
+1. Hay 2 bolsitas de 5 y 9 caramelos sueltos. Piden cómo debe quedar el pedido y qué etiqueta lleva.
+2. Sí. «1 bolsita = 5» y «las cifras van de 0 a n − 1» me dicen que 9 sueltos no se puede.
+3. Lo sigo todo: 9 = 1 × 5 + 4, las bolsitas pasan a 3 y la etiqueta es 34₍₅₎.
+4. Ayuda mucho. Conté los caramelos: cada bolsita tiene 2 + 3 = 5 y los sueltos son 2 + 3 + 4 = 9, como dice el texto. Muestra el problema sin darme la respuesta.
+5. Nada raro. Comprobé: 3 × 5 + 4 = 19 = 2 × 5 + 9.
+
+#### 03 · «14 Una caja para 30»
+1. Un pedido de 30 caramelos tiene que llevar al menos una caja. Piden la bolsita más grande que sirve y su etiqueta.
+2. Sí. «1 caja = n × n caramelos» es la clave: hay que buscar n × n ≤ 30.
+3. Lo sigo. «Dos rondas» es una palabra nueva, pero se entiende con las dos líneas de abajo.
+4. Ayuda un poco. Conté 4 + 5 + 6 + 7 + 8 = 30 caramelos, así que el montón está bien. Lo útil es el letrero «1 bolsita = ? caramelos». No da la respuesta.
+5. Detalles de color: en «6 × 6 = 36» el 6 va sin el recuadro verde que sí tiene el 5. Comprobé: 30 = 6 × 5 + 0 y 6 = 1 × 5 + 1, entonces 110₍₅₎ = 25 + 5 + 0 = 30. Está bien.
+
+#### 04 · «3 Tres cifras en base 4»
+1. Piden cuánto vale 213₍₄₎ en base 10.
+2. Sí. La fórmula de «Datos» se usa directo.
+3. Lo sigo entero.
+4. No tiene dibujo y no le hace falta.
+5. Nada raro. 2 × 16 + 1 × 4 + 3 = 39. Está bien.
+
+#### 05 · «8 La cifra borrosa»
+1. Bolsitas de 5, hay 68 caramelos y la etiqueta es 2a3₍₅₎. Piden la cifra a.
+2. Sí: la fórmula más 68.
+3. Lo sigo todo. Saqué 2 × 25 = 50 y 50 + 3 = 53, así que 53 + 5a = 68 y a = 3.
+4. Sobra. Solo repite los datos («68 caramelos», «1 bolsita = 5», la etiqueta) y una bolsa cerrada. No da la respuesta.
+5. **Tiene el mismo título que la 10 («La cifra borrosa»)** aunque es otro problema. En el enunciado la «a» va en negro, sin el color naranja que lleva después. Comprobé: 50 + 15 + 3 = 68. Está bien.
+
+#### 06 · «14 Una cifra repetida»
+1. Si a0a₍₆₎ = 185, piden aa₍₆₎ en base 10. Es de alternativas.
+2. Sí, con la fórmula.
+3. **Me pierdo un poco en «= 36a + 0 + a»**. De repente aparece 36a sin «×» y no dice que 36 = 6². Después salta de 37a = 185 a a = 5 sin mostrar la división 185 ÷ 37. Lo reconstruyo, pero va rápido.
+4. No tiene dibujo.
+5. Escribir «36a» pegado es nuevo, porque en Datos siempre va «×». Comprobé: 37 × 5 = 185 y 55₍₆₎ = 30 + 5 = 35, que es la B. Las explicaciones de las trampas (5, 55, 30) me sirven.
+
+#### 07 · «3 Hasta que dé 0»
+1. Para pasar 50 a base 4 se divide entre 4 una y otra vez. Piden cuántas divisiones hay hasta que el cociente sea 0.
+2. Sí. La fórmula de división de Datos alcanza.
+3. Las cuentas las sigo. La frase «Cada división junta de a 4 lo que salió de la anterior» habla de caramelos, pero esta tarjeta no tiene caramelos ni dibujo y no la entendí a la primera.
+4. No tiene dibujo.
+5. La respuesta dice «50 tiene tres cifras en base 4» pero **nunca escribe el número en base 4**. Yo lo saqué: 302₍₄₎ = 48 + 0 + 2 = 50. En Datos la «q» va sin color y la «N» va morada. Las cuentas 12 × 4 + 2, 3 × 4 + 0 y 0 × 4 + 3 están bien.
+
+#### 08 · «8 Solo ceros y unos»
+1. Piden escribir 13 en base 2.
+2. Falta algo. Datos solo da la división. **No dice que los restos se leen del último al primero**, y tampoco que en base 2 los lugares valen 1, 2, 4, 8. La fórmula abc es de tres cifras y aquí hay cuatro.
+3. **Me pierdo en «Del último resto al primero: 1, 1, 0, 1»**: no dice por qué al revés. Lo hago porque lo dice, pero no lo entiendo. El «= 8 + 4 + 0 + 1» del final me convence de que está bien, aunque no explica de dónde sale el 8.
+4. No tiene dibujo.
+5. Comprobé las cuentas (6·2+1, 3·2+0, 1·2+1, 0·2+1) y 8 + 4 + 1 = 13. Está bien.
+
+#### 09 · «14 De base 4 a base 7»
+1. Piden escribir en base 7 el mayor número de tres cifras de base 4.
+2. Sí, con los tres Datos.
+3. Lo sigo entero.
+4. No tiene dibujo.
+5. **El 7 va en un verde más oscuro (oliva) que el 4, que va en verde azulado.** Las dos son bases y nadie explica por qué cambia el color. Supongo que es para separarlas. Comprobé: 333₍₄₎ = 48 + 12 + 3 = 63 y 120₍₇₎ = 49 + 14 + 0 = 63. Está bien.
+
+#### 10 · «3 La cifra borrosa»
+1. En 4a₍₆₎ la cifra a está borrosa. Piden qué valores puede tener.
+2. Sí, con «cifras de 0 a n − 1».
+3. Lo sigo. Me gusta que aclare que puede ser 0.
+4. Ayuda poco. Lo que sirve es el letrero «1 bolsita = 6 caramelos», que explica «40₍₆₎ son 4 bolsitas y ningún suelto». No da la respuesta.
+5. Título repetido con la 05. El «40₍₆₎» del texto va en letra chica y sin recuadro, distinto de los otros numerales. Respuesta: 0 a 5, o sea 6 valores. Está bien.
+
+#### 11 · «8 Dos bases a la vez»
+1. Si 2a₍₄₎ y a1₍₃₎ están bien escritos, piden los valores posibles de a.
+2. Sí. Los dos Datos son justo lo que se usa.
+3. Lo sigo entero.
+4. No tiene dibujo.
+5. La «a» va en negro dentro del texto y en naranja en la respuesta. Comprobé: a < 4, a < 3 y a ≠ 0, así que a = 1 o 2. Está bien.
+
+#### 12 · «14 Cifras con un parámetro»
+1. Piden para cuántos valores de a está bien escrito (a − 1)(2a)₍₇₎. Es de alternativas.
+2. Casi. **Ningún Dato dice que lo que va entre paréntesis bajo la raya es una sola cifra.** Eso hay que saberlo de antes. Lo demás sí está en Datos.
+3. Lo sigo: a ≥ 2, a ≤ 3, luego 14₍₇₎ y 26₍₇₎.
+4. No tiene dibujo.
+5. Comprobé las trampas. Con a = 1 sale B, que da 3 valores (1, 2, 3). Contando desde 0 sale D, que da 4. Con 2a < 6 sale A, que da 1. Todo cuadra y la C (2) está bien.
+
+#### 13 · «3 Un bloque de tres cifras»
+1. Piden cuántas cifras se imprimen en los boletos del 100 al 150.
+2. Sí, con u − p + 1.
+3. Lo sigo entero: 51 boletos × 3 = 153.
+4. Ayuda. Las dos barras muestran que «cifras» es 3 veces «boletos» (medí la imagen y es 3 veces). Los boletos 100 y 150 se ven bien. No da 153.
+5. En el enunciado el 150 va morado y el 100 no lleva color. En el dibujo las cifras de 150 son moradas y las de 100 negras. «bloque» va subrayado con puntos en el título; quizá es una ayuda que se toca, pero en la imagen no se ve qué hace.
+
+#### 14 · «8 ¿Hasta qué boleto?»
+1. Se imprimieron 234 cifras desde el boleto 1. Piden hasta qué boleto llegó.
+2. Sí. El segundo Dato (1 a 9 una cifra, 10 a 99 dos, 100 a 999 tres) es casi todo el método.
+3. Lo sigo entero: 189, luego 45, luego 15 boletos, luego 114.
+4. Sobra un poco. **Debajo del dibujo se repite el enunciado palabra por palabra**, y el boleto «?» no aporta. No da la respuesta.
+5. Comprobé: 9 + 180 + 15 × 3 = 234. Está bien. Primero dice «van del 100 al 114» y recién después hace la cuenta 99 + 15; el orden está al revés, pero se entiende.
+
+#### 15 · «14 Cifras en base 3»
+1. Si se escriben en base 3 los números del 1 al 26, piden cuántas cifras se usan.
+2. Sí. Con la fórmula saco dónde cambian los bloques, aunque para 10₍₃₎ = 3 hay que usar una versión de dos cifras que no está escrita.
+3. Lo sigo entero.
+4. No tiene dibujo.
+5. Comprobé: 22₍₃₎ = 8, 222₍₃₎ = 18 + 6 + 2 = 26 y 2 + 12 + 54 = 68. Está bien.
+
+---
+
+#### Las 3 que mejor se entienden
+1. **02 Mal empacado.** El dibujo cuenta exacto y cada paso se ve.
+2. **15 Cifras en base 3.** Va por bloques bien ordenados, sin saltos.
+3. **13 Un bloque de tres cifras** (casi empatada con la 04 y la 14). Es corta y las barras ayudan.
+
+#### Las 3 que peor se entienden
+1. **08 Solo ceros y unos.** La regla «del último resto al primero» no se explica ni está en Datos.
+2. **06 Una cifra repetida.** «36a» sale sin «×», sin decir que 36 = 6², y no muestra 185 ÷ 37.
+3. **12 Cifras con un parámetro.** Hay que saber de antes que (a − 1) y (2a) son una cifra cada uno.
+
+Menciones: en la 07 nunca se ve el número en base 4 (302₍₄₎). En la 01, Datos no dice que la base es lo que lleva cada bolsita.
+
+#### ¿Suben los niveles?
+Sí, en los 5 grupos el 3 es más fácil que el 8 y el 8 más fácil que el 14. El salto más chico está en divisiones: la 07 ya hace todas las divisiones de un cambio de base, y la 08 solo agrega leer los restos, que justo es lo que no se explica. Los saltos más claros son en etiquetas (de leer, a reagrupar, a elegir la base) y en contar cifras (de un bloque, a dos bloques al revés, a otra base).
+
+#### ¿«Datos» ayuda, distrae o regala?
+- **Ayuda** en casi todas, porque es la fórmula o la regla que se usa y no hace falta memorizar.
+- **Casi regala** en la 04 (solo hay que reemplazar), en la 14 (el Dato de cuántas cifras por tramo es medio método) y en la 01 (dice el orden de lectura).
+- **Le falta** algo en la 01 (base = caramelos por bolsita), la 08 (orden de los restos y valores 1, 2, 4, 8) y la 12 (lo que va entre paréntesis es una cifra).
+- **Distrae poco**: solo los colores de la «q» sin color y la «N» morada en la 07 y la 08.
+- En la 05 y la 14 el dibujo repite lo que ya dicen los Datos o el enunciado.
