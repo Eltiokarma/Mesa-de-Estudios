@@ -472,6 +472,14 @@
       pieza('resto', x0, y0, C, C, null, (a - b) ** 2, d.resto === undefined ? null : d.resto === false ? null : String(d.resto));
       if (d.costado) pieza('costado', x0 + C, y0, B, A, 'f', a * b, d.piezas ? m2(a * b) : null);
       if (d.fondo) pieza('fondo', x0, y0 + C, A, B, 'f', a * b, null);
+      // La esquina que se quitó dos veces (o que se devuelve): su rótulo, en tres renglones cortos junto a la esquina, a
+      // la derecha y debajo del ancho de la franja (auditoría de Productos notables, M5: en un renglón se salía unos 70 px
+      // del lienzo). Va en textos, para que la prueba numérica lo mida como a los demás.
+      if (d.esquina) {
+        const lin = d.esquina === 'doble' ? ['esquina:', 'se quitó', '2 veces'] : ['esquina:', 'se', 'devuelve'];
+        const yb = Math.min(Math.max(y0 + W2 + 4, y0 + W2 - B / 2 + 21), H - M - 3 - 28);
+        lin.forEach((t, j) => pon('esquina', x0 + W2 + 6, yb + 14 * j, [[t, 'i', 700]], 'start', 12));
+      }
     }
     // El total, debajo.
     const total = d.total === false ? null : d.total === '?' ? '? m²' : d.total === undefined || d.total === true ? (cede ? null : `(${fmt(a, 2)} + ${fmt(b, 2)})² = ${m2(S * S)}`) : String(d.total);
@@ -497,7 +505,6 @@
       // La esquina que se quitó dos veces: turquesa, con «× 2»; devuelta: con «+».
       if (d.esquina) {
         s += `<rect class="alg-esquina" x="${n2(x0 + C)}" y="${n2(y0 + C)}" width="${n2(B)}" height="${n2(B)}" fill="var(--c-i)" fill-opacity="${d.esquina === 'doble' ? 0.45 : 0.12}" stroke="var(--c-i)" stroke-width="2.5"/>`;
-        s += texto(x0 + A + 6, y0 + A + 12, [[d.esquina === 'doble' ? 'esquina: se quitó 2 veces' : 'esquina: se devuelve 1', 'i', 700]], { tam: 12 });
       }
     } else {
       // La casa de Juan, en la esquina de arriba del terreno de antes.
@@ -618,12 +625,13 @@
   // tinta, b³ turquesa. datos = { objeto: 'taco', a, b, abrir: 0 | 1, cortes: false (el taco entero, sin cortar),
   // escala, tramos: true | false (a y b junto a la arista de la izquierda), arista: true | '?' | texto | false (debajo),
   // total: true | '?' | texto | false (debajo), rot: { a3, a2b, ab2, b3 } (en la cara de adelante; true: el volumen),
-  // solo: 'medio' | 'esquinas' (las demás tenues), pasos }.
+  // solo: 'medio' | 'esquinas' (las demás tenues), unidad: 'cm' (por defecto; auditoría de Productos notables, M9: un
+  // taco de madera de 5 dm pesaba de 60 a 90 kg), pasos }.
   const TA = { ox: 50, hueco: 1.2, dz: 0.433, dyz: 0.25, kMax: 30 };
   const COLOR_TACO = { a3: 'o', a2b: 'f', ab2: null, b3: 'i' };
   const NOMBRE_TACO = { a3: 'a³', a2b: 'a²b', ab2: 'ab²', b3: 'b³' };
   function geoTaco(d) {
-    const a = Math.max(0.5, +d.a || 1), b = Math.max(0.5, +d.b || 1), ab = d.abrir === 1 || d.abrir === true ? 1 : 0;
+    const a = Math.max(0.5, +d.a || 1), b = Math.max(0.5, +d.b || 1), ab = d.abrir === 1 || d.abrir === true ? 1 : 0, u = d.unidad || 'cm';
     // La escala se fija con el taco abierto (abrir no lo agranda ni lo achica); el bloque (taco y textos) va centrado.
     const rot0 = (v, def) => (v === undefined || v === true ? def : v === false ? null : String(v));
     const nTxt = (d.arista === undefined || d.arista === false ? 0 : 1) + (d.total === undefined || d.total === false ? 0 : 1), hTxt = nTxt ? 4 + 18 * nTxt : 0;
@@ -644,12 +652,12 @@
     const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
     // Los tramos, junto a la arista de la izquierda (de abajo hacia arriba: a, después b).
     if (d.tramos !== false && d.cortes !== false) {
-      pon('tramo', ox - 8, oy - (a / 2) * k + 5, [[`${fmt(a, 2)} dm`, 'o', 700]], 'end');
-      pon('tramo', ox - 8, oy - (a + g + b / 2) * k + 5, [[`${fmt(b, 2)} dm`, 'i', 700]], 'end');
+      pon('tramo', ox - 8, oy - (a / 2) * k + 5, [[`${fmt(a, 2)} ${u}`, 'o', 700]], 'end');
+      pon('tramo', ox - 8, oy - (a + g + b / 2) * k + 5, [[`${fmt(b, 2)} ${u}`, 'i', 700]], 'end');
     }
     const rot = rot0;
-    const ar = d.arista === undefined || d.arista === false ? null : rot(d.arista, `arista: ${fmt(a, 2)} + ${fmt(b, 2)} = ${fmt(a + b, 2)} dm`);
-    const tot = d.total === undefined || d.total === false ? null : d.total === '?' ? 'volumen: ? dm³' : rot(d.total, `(${fmt(a, 2)} + ${fmt(b, 2)})³ = ${fmt((a + b) ** 3, 2)} dm³`);
+    const ar = d.arista === undefined || d.arista === false ? null : rot(d.arista, `arista: ${fmt(a, 2)} + ${fmt(b, 2)} = ${fmt(a + b, 2)} ${u}`);
+    const tot = d.total === undefined || d.total === false ? null : d.total === '?' ? `volumen: ? ${u}³` : rot(d.total, `(${fmt(a, 2)} + ${fmt(b, 2)})³ = ${fmt((a + b) ** 3, 2)} ${u}³`);
     let yy = oy + 20;
     if (ar) { pon('arista', ox, yy, [[ar, null, 700]], 'start'); yy += 18; }
     if (tot) pon('total', ox, yy, [[tot, null, 700]], 'start');
@@ -657,7 +665,7 @@
     const R = d.rot || {};
     for (const p of piezas) {
       if (p.tipo === 'entero' || p.l !== 0) continue;
-      const t = R[p.tipo] === undefined || R[p.tipo] === false ? null : R[p.tipo] === true ? `${fmt(p.volumen, 2)} dm³` : String(R[p.tipo]);
+      const t = R[p.tipo] === undefined || R[p.tipo] === false ? null : R[p.tipo] === true ? `${fmt(p.volumen, 2)} ${u}³` : String(R[p.tipo]);
       if (!t) continue;
       if (p.tipo === 'a2b' && p.j === 1) continue;   // una sola a²b rotulada adelante (la de la derecha)
       const [x1, y1] = P(p.x, p.y, 0), [x2, y2] = P(p.x + p.w, p.y + p.h, 0), w = x2 - x1, h = y1 - y2;
@@ -690,10 +698,10 @@
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="taco" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
   }
   function altTaco(d) {
-    const a = +d.a || 1, b = +d.b || 1;
-    if (d.cortes === false) return `Un taco de madera con forma de cubo, ${d.arista === '?' ? 'de arista por hallar' : `de ${fmt(a + b, 2)} dm de arista`}, todavía sin cortar.`;
+    const a = +d.a || 1, b = +d.b || 1, u = d.unidad || 'cm';
+    if (d.cortes === false) return `Un taco de madera con forma de cubo, ${d.arista === '?' ? 'de arista por hallar' : `de ${fmt(a + b, 2)} ${u} de arista`}, todavía sin cortar.`;
     const v = x => fmt(x, 2);
-    return `Un taco cúbico de madera de arista ${v(a)} + ${v(b)} dm, ${d.abrir === 1 ? 'abierto en sus ocho piezas' : 'cortado en ocho piezas'}: un cubo de ${v(a)} dm, tres piezas de ${v(a)} por ${v(a)} por ${v(b)}, tres de ${v(a)} por ${v(b)} por ${v(b)} y un cubo de ${v(b)} dm.${d.solo === 'medio' ? ' A la vista, las seis piezas del medio.' : d.solo === 'esquinas' ? ' A la vista, los dos cubos de las esquinas.' : ''}`;
+    return `Un taco cúbico de madera de arista ${v(a)} + ${v(b)} ${u}, ${d.abrir === 1 ? 'abierto en sus ocho piezas' : 'cortado en ocho piezas'}: un cubo de ${v(a)} ${u}, tres piezas de ${v(a)} por ${v(a)} por ${v(b)}, tres de ${v(a)} por ${v(b)} por ${v(b)} y un cubo de ${v(b)} ${u}.${d.solo === 'medio' ? ' A la vista, las seis piezas del medio.' : d.solo === 'esquinas' ? ' A la vista, los dos cubos de las esquinas.' : ''}`;
   }
 
   // ---------- Objeto 'mesa': la mesa cuadrada armada con cuatro planchas (idea «radicales-dobles») ----------
@@ -755,20 +763,22 @@
   }
 
   // ---------- Objeto 'cometa': una cometa cuadrada con su varilla diagonal (idea «racionalizar») ----------
-  // Afirmación: la varilla larga va de punta a punta: es la diagonal del cuadrado, d = lado · √2, así que lado = d/√2. La
+  // Afirmación: una varilla va de punta a punta: es la diagonal del cuadrado, d = lado · √2, así que lado = d/√2. La
   // cometa, su varilla y su cola en tinta. datos = { objeto: 'cometa', d (m), lado: texto | '?' | false (rótulo del lado de
   // arriba a la derecha), diag: true | texto | false (la cota de la varilla, a la izquierda), otro: un lado en m (una
-  // cometa punteada de ese lado, para comparar), escala }.
+  // cometa punteada de ese lado, para comparar), unidad: 'm' (por defecto) o 'dm', escala }.
   const CO = { cx: 132, cy: 106, hMax: 80 };
   function geoCometa(d) {
-    const D = Math.max(0.2, +d.d || 1), otro = +d.otro > 0 ? +d.otro : 0;
+    const D = Math.max(0.2, +d.d || 1), otro = +d.otro > 0 ? +d.otro : 0, u = d.unidad || 'm';
     const k = d.escala > 0 ? d.escala : (2 * CO.hMax) / Math.max(D, otro * Math.SQRT2);
-    const h = (D * k) / 2, ho = (otro * Math.SQRT2 * k) / 2, { cx, cy } = CO;
+    const h = (D * k) / 2, ho = (otro * Math.SQRT2 * k) / 2, { cy } = CO;
     const H2 = Math.max(h, ho);
+    const dg = d.diag === undefined || d.diag === true ? `${fmt(D, 2)} ${u}` : d.diag === false ? null : String(d.diag);
+    // Con un rótulo de la varilla más largo («12 dm»), la cometa se corre a la derecha para que quepa a su izquierda.
+    const cx = Math.max(CO.cx, M + 2 + (dg ? T.ancho(dg, 13, 700) : 0) + 18 + H2);
     const objetos = [{ que: 'cometa', x0: cx - H2 - 12, y0: cy - H2, x1: cx + H2, y1: cy + H2 }, { que: 'cola', x0: cx - 34, y0: cy + H2 + 0.5, x1: cx + 4, y1: Math.min(cy + h + 50, 242) }];
     const textos = [];
     const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
-    const dg = d.diag === undefined || d.diag === true ? `${fmt(D, 2)} m` : d.diag === false ? null : String(d.diag);
     if (dg) pon('diag', cx - H2 - 18, cy + 5, [[dg, null, 700]], 'end');
     // El lado de arriba a la derecha, con una línea que lo une a su rótulo, afuera de la cometa.
     if (d.lado !== undefined && d.lado !== false) pon('lado', cx + H2 + 12, cy - h / 2 + 5, [[d.lado === '?' ? 'lado: ?' : String(d.lado), null, 700]], 'start');
@@ -797,8 +807,8 @@
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="cometa" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
   }
   function altCometa(d) {
-    const D = +d.d || 1;
-    return `Una cometa con forma de cuadrado, parada sobre una punta, con su cola. La varilla larga va de punta a punta y mide ${fmt(D, 2)} m: es la diagonal del cuadrado.${d.lado === '?' ? ' Se pide el lado.' : d.lado ? ` El lado mide ${d.lado}.` : ''}${+d.otro > 0 ? ` Punteada, una cometa de ${fmt(+d.otro, 2)} m de lado, para comparar.` : ''}`;
+    const D = +d.d || 1, u = d.unidad || 'm';
+    return `Una cometa con forma de cuadrado, parada sobre una punta, con su cola. Una de sus varillas va de punta a punta y mide ${fmt(D, 2)} ${u}: es la diagonal del cuadrado.${d.lado === '?' ? ' Se pide el lado.' : d.lado ? ` El lado mide ${d.lado}.` : ''}${+d.otro > 0 ? ` Punteada, una cometa de ${fmt(+d.otro, 2)} ${u} de lado, para comparar.` : ''}`;
   }
 
   // ---------- Elige el objeto ----------

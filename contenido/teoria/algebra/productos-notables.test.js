@@ -26,7 +26,8 @@ const P = Kit.piezas['alg-objeto'];
 const IDEAS = ['cuadrado-suma', 'suma-por-diferencia', 'cubo-binomio', 'radicales-dobles', 'racionalizar'];
 const idea = id => def.ideas.find(i => i.id === id);
 const SEMILLAS = 400;
-const plano = x => E.texto(x === undefined || x === null ? '' : x);
+// La raíz cúbica con su índice de color se lee «raíz 3 de 4»: aquí se vuelve a escribir «∛4» para leerla con números.
+const plano = x => E.texto(x === undefined || x === null ? '' : x).replace(/raíz 3 de (\d+)/g, '∛$1');
 const fichas = x => (x === null || x === undefined || typeof x !== 'object' ? [] : Array.isArray(x) ? x.flatMap(fichas)
   : typeof x.v === 'string' && /^c-/.test(x.v) ? [x] : Object.values(x).flatMap(fichas));
 const textosSVG = s => [...s.matchAll(/<text\b[^>]*>(.*?)<\/text>/g)].map(m => m[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim());
@@ -53,7 +54,7 @@ function lecturas(i) {
 // ---------- Colores ----------
 test('la tabla de colores: a naranja, b turquesa, lo del medio violeta; sin carmín ni verde', () => {
   assert.deepEqual(def.colores, { 'primer término': 'o', 'segundo término': 'i', 'doble producto': 'f', 'piezas del medio': 'f',
-    'lados del tablero': 'f', 'factor uno': 'f', 'letra de alternativa': 'f' });
+    'lados del tablero': 'f', 'factor uno': 'f', 'letra de alternativa': 'f', 'índice': 'i' });
   assert.ok(!Object.values(def.colores).some(c => c === 'h' || c === 'd'));
 });
 
@@ -268,7 +269,7 @@ function coefs(t) {
 }
 // Un número escrito con raíces («2(√5 − √2) / 3», «3∛4», «√7 + 2») → su valor, sin usar el código de la unidad.
 function valor(t) {
-  const js = t.replace(/\s/g, '').replace(/−/g, '-').replace(/,/g, '.')
+  const js = t.replace(/\s/g, '').replace(/−/g, '-').replace(/,/g, '.').replace(/·/g, '*')
     .replace(/(\d)([√∛(])/g, '$1*$2').replace(/\)([\d√∛(])/g, ')*$1')
     .replace(/√(\d+)/g, 'Math.sqrt($1)').replace(/∛(\d+)/g, 'Math.cbrt($1)');
   assert.ok(/^[-+*/().\d\sMathsqrcb]+$/.test(js), `no sé leer «${t}»`);
@@ -358,15 +359,16 @@ test('«Así se resuelve» de cada idea: cuadra aparte, y «Ahora tú» nunca ha
     assert.equal(plano(r.respuesta), `Compra ${(+m[1] + +m[2]) ** 2 - m[1] ** 2} m²`);
     r = idea('suma-por-diferencia').resuelve.generar(s); m = plano(r.enunciado).match(/mide (\d+) dm de lado\. Se le corta una esquina de (\d+) dm/);
     assert.equal(plano(r.respuesta), `${+m[1] + +m[2]} dm por ${m[1] - m[2]} dm: ${m[1] ** 2 - m[2] ** 2} dm²`);
-    r = idea('cubo-binomio').resuelve.generar(s); m = plano(r.enunciado).match(/a (\d+) dm de una esquina.*mide (\d+) dm/);
-    assert.equal(plano(r.respuesta), `Las seis del medio: ${(+m[1] + +m[2]) ** 3 - m[1] ** 3 - m[2] ** 3} dm³`);
+    r = idea('cubo-binomio').resuelve.generar(s); m = plano(r.enunciado).match(/a (\d+) cm de una esquina.*mide (\d+) cm/);
+    assert.equal(plano(r.respuesta), `Las seis del medio: ${(+m[1] + +m[2]) ** 3 - m[1] ** 3 - m[2] ** 3} cm³`);
     r = idea('radicales-dobles').resuelve.generar(s); m = plano(r.enunciado).match(/^Una mesa cuadrada de (\d+) \+ 2√(\d+) dm²/);
     const pr = plano(r.respuesta).match(/^Planchas de (\d+) y (\d+) dm²; lado √(\d+) \+ √(\d+) dm$/);
     assert.ok(pr, plano(r.respuesta));
     assert.equal(+pr[1] + +pr[2], +m[1]); assert.equal(pr[1] * pr[2], +m[2]); assert.ok(+pr[1] > +pr[2]);
     assert.ok(cerca(Math.sqrt(+pr[3]) + Math.sqrt(+pr[4]), Math.sqrt(+m[1] + 2 * Math.sqrt(+m[2]))));
-    r = idea('racionalizar').resuelve.generar(s); m = plano(r.enunciado).match(/mide (\d+) m\./);
-    const lado = plano(r.respuesta).match(/^Lado: (.+) m, unos/)[1];
+    r = idea('racionalizar').resuelve.generar(s); m = plano(r.enunciado).match(/mide (\d+) dm\./);
+    assert.ok(+m[1] >= 6 && +m[1] <= 15, `varilla de ${m[1]} dm`);
+    const lado = plano(r.respuesta).match(/^Lado: (.+) dm, unos/)[1];
     assert.ok(cerca(valor(lado.replace(/\/2$/, ' / 2')), m[1] / Math.SQRT2) && !/\/\s*√/.test(lado), lado);
     // «Ahora tú» pide otra cosa: nunca el objeto del ejemplo resuelto.
     for (const [id, re] of [['cuadrado-suma', /Compra/], ['suma-por-diferencia', /tablero|plancha/], ['cubo-binomio', /taco|madera/], ['radicales-dobles', /mesa|plancha/], ['racionalizar', /cometa|varilla/]]) {
@@ -400,7 +402,7 @@ test('ejemplos de la idea 2: cuentas rehechas aparte', () => {
   assert.deepEqual(coefs(v(6)), { 2: 9, 0: -16 });
   assert.deepEqual(coefs(v(7)), { 2: 1, 1: 8, 0: 15 }); for (const x of [1, 4]) assert.equal((x + 5) * (x + 3), x * x + 8 * x + 15);
   assert.deepEqual(coefs(v(8)), { 2: 1, 1: 3, 0: -28 }); for (const x of [1, 4]) assert.equal((x + 7) * (x - 4), x * x + 3 * x - 28);
-  assert.equal(75 ** 2 - 25 ** 2, 5000); assert.equal(v(9), '5000');
+  assert.equal(7 + 3, 10); assert.equal(7 ** 2 - 3 ** 2, 40); assert.equal(40 / 10, 4); assert.equal(v(9), 'a − b = 4');
   // Nivel 3: a = 7, b = 2; (x + 1)⁴ − (x − 1)⁴ en varios x; a³ = 8, b³ = 1; −2 constante; 1001 · 999 − 1000².
   assert.equal(7 + 2, 9); assert.equal(7 - 2, 5); assert.equal(7 * 2, 14);
   for (const x of [-2, 1, 3]) assert.equal((x + 1) ** 4 - (x - 1) ** 4, 8 * x ** 3 + 8 * x);
@@ -413,16 +415,17 @@ test('ejemplos de la idea 2: cuentas rehechas aparte', () => {
 
 test('ejemplos de la idea 3: cuentas rehechas aparte', () => {
   const ej = idea('cubo-binomio').ejemplos, v = k => sinLetra(plano(ej[k].respuesta));
-  assert.equal(3 * 3 * 1, 9); assert.equal(v(0), '9 dm³');
+  assert.equal(3 * 3 * 1, 9); assert.equal(v(0), '9 cm³');
   assert.deepEqual(coefs(v(1)), { 3: 1, 2: 6, 1: 12, 0: 8 });
   assert.equal(27 - 9, 3 * 4 * 1 + 3 * 2 * 1); assert.match(v(2), /18/);
   assert.equal(11 ** 3, 1331); assert.match(v(3), /1331/);
   assert.match(v(4), /15x²/);
   assert.deepEqual(coefs(v(5)), { 3: 1, 2: -9, 1: 27, 0: -27 });
   assert.deepEqual(coefs(v(6)), { 3: 8, 2: 12, 1: 6, 0: 1 }); for (const x of [1, 2]) assert.equal((2 * x + 1) ** 3, 8 * x ** 3 + 12 * x * x + 6 * x + 1);
-  for (const x of [-1, 3]) { assert.equal((x + 2) * (x * x - 2 * x + 4), x ** 3 + 8); assert.equal((2 * x - 3) * (4 * x * x + 6 * x + 9), 8 * x ** 3 - 27); }
-  assert.equal(v(7), '(x + 2)(x² − 2x + 4)'); assert.equal(v(8), '(2x − 3)(4x² + 6x + 9)');
-  assert.equal(99 ** 3, 970299); assert.match(v(9), /970 299/);
+  for (const x of [-1, 3]) for (const y of [2, -5]) assert.equal((x + 2 * y) * (x * x - 2 * x * y + 4 * y * y), x ** 3 + 8 * y ** 3);
+  for (const x of [-1, 3]) assert.equal((2 * x - 3) * (4 * x * x + 6 * x + 9), 8 * x ** 3 - 27);
+  assert.equal(v(7), '(x + 2y)(x² − 2xy + 4y²)'); assert.equal(v(8), '(2x − 3)(4x² + 6x + 9)');
+  assert.equal(101 ** 3 - 99 ** 3, 60002); assert.equal(2 * 3 * 100 ** 2 * 1 + 2 * 1, 60002); assert.match(v(9), /60 002/);
   // Nivel 3, con raíces de verdad: a + b = 5, ab = 3; a + b = 4, a³ + b³ = 28; a − b = 2, ab = 15; x + 1/x = 3; a + b = 3, a² + b² = 5.
   const raices = (S, Pp) => [(S + Math.sqrt(S * S - 4 * Pp)) / 2, (S - Math.sqrt(S * S - 4 * Pp)) / 2];
   const [p1, q1] = raices(5, 3); assert.ok(cerca(p1 ** 3 + q1 ** 3, 80));
@@ -445,21 +448,21 @@ test('ejemplos de la idea 4: cuentas rehechas aparte', () => {
   assert.ok(cerca((r(7) + r(2)) ** 2, 9 + 2 * r(14)));
   // Nivel 3.
   assert.ok(cerca(r(5 + 2 * r(6)) + r(5 - 2 * r(6)), 2 * r(3)));
-  assert.ok(cerca(r(9 - 2 * r(14)), r(7) - r(2)));
+  assert.ok(cerca(r(9 - 2 * r(14)) * r(9 + 2 * r(14)), 5)); assert.ok(cerca(r(9 - 2 * r(14)), r(7) - r(2)));
   assert.ok(cerca(r(3 + r(8)) - r(2), 1));
   assert.ok(cerca(4 * r(12 + 2 * r(35)), 4 * r(7) + 4 * r(5)));
   assert.ok(cerca(r(16 - 6 * r(7)), 3 - r(7)));
-  const esperado = ['2√3', '√7 − √2', '1', '4√7 + 4√5 dm', '3 − √7'];
+  const esperado = ['2√3', '5', '1', '4√7 + 4√5 dm', '3 − √7'];
   ej.slice(10).forEach((e, k) => assert.equal(v(10 + k), esperado[k]));
 });
 
 test('ejemplos de la idea 5: cuentas rehechas aparte', () => {
   const ej = idea('racionalizar').ejemplos, v = k => sinLetra(plano(ej[k].respuesta)), r = Math.sqrt, c = Math.cbrt;
-  assert.ok(cerca(3 / r(2), 3 * r(2) / 2) && Math.abs(3 / r(2) - 2.12) < 0.005); assert.match(v(0), /3√2\/2 m/);
-  const fr = [[1, 1 / r(5)], [2, 6 / r(3)], [4, r(3) / r(2)], [5, 2 / (r(3) + 1)], [6, 4 / (r(7) - r(3))], [7, 3 / (2 * r(3))], [8, 1 / c(2)]];
+  assert.ok(cerca(9 / r(2), 9 * r(2) / 2) && Math.abs(9 / r(2) - 6.36) < 0.005); assert.match(v(0), /9√2\/2 dm/);
+  const fr = [[1, 1 / r(5)], [2, 6 / r(3)], [4, r(3) / r(2)], [5, 2 / (r(3) + 1)], [6, 4 / (r(7) - r(3))], [7, (2 + r(2)) / r(2)], [8, 1 / c(2)]];
   for (const [k, x] of fr) { assert.ok(cerca(valor(v(k)), x), `${k + 1}: ${v(k)}`); assert.ok(!/\/\s*\(?[^)]*[√∛]/.test(v(k).split(' / ')[1] || ''), v(k)); }
   assert.ok(cerca(r(2) / 2, 1 / r(2)));
-  assert.ok(cerca(4 / r(2), 2 * r(2)) && Math.abs(2 * r(2) - 2.83) < 0.005); assert.match(v(9), /2√2 m/);
+  assert.ok(cerca(4 * 12 / r(2), 24 * r(2)) && Math.abs(24 * r(2) - 33.94) < 0.005); assert.match(v(9), /24√2 dm/);
   // Nivel 3.
   assert.ok(cerca(1 / (r(5) - 2) + 1 / (r(5) + 2), 2 * r(5)));
   assert.ok(cerca(1 / (r(3) - r(2)) - 1 / (r(3) + r(2)), 2 * r(2)));
@@ -480,4 +483,165 @@ test('la letra de cada alternativa es la del valor correcto, en negrita y en vio
     const f = fichas(e.respuesta)[0];
     assert.ok(f && f.m === 'letra de alternativa' && f.v === 'c-f', `${id} ejemplo ${k + 1}`);
   }
+});
+
+// ---------- Correcciones del 18 nov (rutinas/auditoria/algebra.productos-notables.md, «Correcciones») ----------
+// Un número o un polinomio en x escrito como texto («2√5/9», «(∛3 + ∛2)/5», «8x³ + 8x», «4(√12 + √35)», «7 m»), en x.
+function num(t, x = 0) {
+  let js = plano(t).replace(/\s*(m|dm|cm)$/, '').replace(/\s/g, '').replace(/−/g, '-').replace(/,/g, '.').replace(/·/g, '*')
+    .replace(/√(\d+)/g, 'S($1)').replace(/∛(\d+)/g, 'C($1)').replace(/√\(/g, 'S(').replace(/²/g, '^2').replace(/³/g, '^3').replace(/⁴/g, '^4');
+  js = js.replace(/([\dx)])(?=[xSC(])/g, '$1*').replace(/\^/g, '**');
+  assert.ok(/^[-+*/().\dxSC]+$/.test(js), `no sé leer «${plano(t)}» (${js})`);
+  return Function('x', 'S', 'C', `return ${js};`)(x, Math.sqrt, Math.cbrt);
+}
+// M2 y B1: lo que dice la explicación de cada alternativa incorrecta de nivel 3, rehecho aquí con números (no con el
+// texto del resuelto), y comparado con el valor de su alternativa. Una función de x es un polinomio (se compara en 2 y 3).
+const r2 = Math.sqrt, r3 = Math.cbrt, X1 = r2(2) + 1;
+const TRAMPAS = {
+  'cuadrado-suma|Las piezas de un terreno': { A: r2(34 + 15), C: r2(34), D: 34 + 2 * 15, E: r2(34 - 2 * 15) },
+  'cuadrado-suma|El producto escondido': { A: 49 - 25, B: (49 + 25) / 2, D: (7 - 25) / 2, E: 49 + 25 },
+  'cuadrado-suma|Con raíces': { A: 3 + 2, B: 5 + r2(6), D: (3 + 2) ** 2, E: 5 + 2 * r2(3 + 2) },
+  'cuadrado-suma|Un número y su inverso': { A: 5 ** 2, C: 5 ** 2 + 2, D: 5 ** 2 - 1, E: 2 * 5 },
+  'cuadrado-suma|El lado de antes': { B: 69 / 6, C: 10 + 3, D: 69 / 3, E: (69 - 9) / 3 },
+  'suma-por-diferencia|Suma y diferencia': { A: 9 ** 2 - 5 ** 2, B: (9 ** 2 - 5 ** 2) / 2, D: 9 * 5, E: (9 + 5) / 2 },
+  'suma-por-diferencia|Cuartas potencias': { B: 0, C: x => 4 * x, D: x => 2 * x * x * 4 * x, E: x => (x ** 4 + 1) - (x ** 4 - 1) },
+  'suma-por-diferencia|Sextas potencias': { B: 63 / 7, C: 63 / 7 - 8, D: 63 - 7, E: 63 / 7 / 2 },
+  'suma-por-diferencia|Una diferencia constante': { B: 6 - 4, C: 0, D: 4 + 6, E: x => (x * x + 4 * x + 5) - (x * x + 6 * x + 5) },
+  'suma-por-diferencia|Un número enorme': { A: 1000 ** 2 - 1000 ** 2, C: 1, D: -2 * 1, E: 2 * 1000 * 1 - 1 },
+  'cubo-binomio|Suma y producto': { A: 5 ** 3, B: 5 ** 3 - 3 * 5, D: 5 ** 3 + 3 * 3 * 5, E: 3 * 3 * 5 },
+  'cubo-binomio|Al revés': { B: (64 - 28) / 4, C: (64 - 28) / 3, D: 64 - 28, E: (64 - 28) / 6 },
+  'cubo-binomio|Diferencia y producto': { A: 2 ** 3, C: 2 ** 3 + 3 * 15, D: 2 ** 3 - 3 * 15 * 2, E: 2 ** 3 + 15 * 2 },
+  'cubo-binomio|Un número y su inverso': { A: 3 ** 3, B: 3 ** 3 - 3 * 1, D: 3 * 1 * 3, E: 3 ** 3 - 1 },
+  'cubo-binomio|Cuadrados y cubos': { A: 3 ** 3, B: 3 ** 3 - 3 * 2, D: 3 * 5, E: 3 * 2 * 3 },
+  'radicales-dobles|Dos radicales dobles': { A: r2(5) + r2(5), C: (r2(3) + r2(2)) - (r2(3) - r2(2)), D: 0, E: r2(3) + r2(2) },
+  'radicales-dobles|Un producto de radicales dobles': { A: 81 - 56, B: 7 + 2, D: r2(81 - 2 * 14), E: r2(7) - r2(2) },
+  'radicales-dobles|Una resta que da entero': { B: r2(2) + 1, C: (r2(2) - 1) - r2(2), D: 3 + 2 * r2(2) - r2(2), E: 2 * (r2(2) + 1) - r2(2) },
+  'radicales-dobles|El perímetro de la mesa': { B: 4 * (r2(12) + r2(35)), C: 2 * (r2(7) + r2(5)), D: r2(7) + r2(5), E: 4 * r2(35) },
+  'radicales-dobles|Con número delante y resta': { A: r2(7) - 3, C: r2(15) - 1, D: r2(16) - r2(63), E: 3 + r2(7) },
+  'racionalizar|Suma con conjugados': { B: (r2(5) + 2) - (r2(5) - 2), C: 0, D: 2 * r2(5) / 9, E: (r2(5) + 2) + (r2(5) + 2) },
+  'racionalizar|Resta con conjugados': { A: (r2(3) + r2(2)) + (r2(3) - r2(2)), B: 0, D: 2 * r2(2) / 5, E: (r2(3) - r2(2)) - (r2(3) + r2(2)) },
+  'racionalizar|Con raíces cúbicas': { A: r3(3) + r3(2), C: r3(9) - r3(6) + r3(4), D: (r3(3) + r3(2)) / 5, E: r3(9) + r3(4) },
+  'racionalizar|Un número y su inverso': { B: X1 + 1 / X1, C: 0, D: X1 * (1 / X1), E: (r2(2) - 1) - (r2(2) + 1) },
+  'racionalizar|Un radical doble abajo': { A: r2(2) + 1, C: (r2(2) - 1) / 3, D: 1 / (r2(3) + r2(2)), E: 1 / (3 + 2 * r2(2)) },
+};
+test('M2 y B1: cada alternativa incorrecta de nivel 3 se explica, y lo que dice su explicación da su valor', () => {
+  let n = 0;
+  for (const id of IDEAS) for (const e of idea(id).ejemplos.filter(x => x.nivel === 3)) {
+    const t = TRAMPAS[`${id}|${e.titulo}`], L = plano(e.respuesta).replace(/⁠/g, '').split(', ')[0];
+    assert.ok(t, `${id}: «${e.titulo}» sin su tabla de trampas`);
+    const texto = plano(e.solucion.map(x => x.texto)).replace(/⁠/g, '');
+    for (const [k, alt] of e.alternativas.entries()) {
+      const letra = 'ABCDE'[k];
+      if (letra === L) continue;
+      assert.ok(new RegExp(`\\bLa ${letra}\\b`).test(texto), `${id} «${e.titulo}»: la ${letra} (${plano(alt)}) no se explica`);
+      assert.ok(letra in t, `${id} «${e.titulo}»: falta rehacer la ${letra}`);
+      const f = t[letra];
+      for (const x of typeof f === 'function' ? [2, 3] : [0]) {
+        const esp = typeof f === 'function' ? f(x) : f;
+        assert.ok(cerca(num(alt, x), esp), `${id} «${e.titulo}»: la ${letra} vale ${num(alt, x)} y su explicación da ${esp}`);
+      }
+      n++;
+    }
+  }
+  assert.equal(n, 100);
+});
+
+test('A1: todo ejercicio que usa 3ab(a ± b) trae en Datos la identidad de la suma o de la resta de cubos', () => {
+  const SUMA = 'a³ + b³ = (a + b)³ − 3ab(a + b)', RESTA = 'a³ − b³ = (a − b)³ + 3ab(a − b)';
+  const usa = (sol, datos, donde) => {
+    const t = plano(sol), d = plano(datos);
+    if (/3ab\(a \+ b\)|3 · [\d ·]*\(x \+ 1\/x\)/.test(t)) assert.ok(d.includes(SUMA), `${donde}: ${t}`);
+    if (/3ab\(a − b\)/.test(t)) assert.ok(d.includes(RESTA), `${donde}: ${t}`);
+    return /3ab\(a [+−] b\)/.test(t) ? 1 : 0;
+  };
+  let n = 0;
+  for (const id of IDEAS) for (const e of idea(id).ejemplos) n += usa(e.solucion.map(x => [x.texto, x.ecuacion || '']), e.datos, `${id} «${e.titulo}»`);
+  for (let s = 0; s < SEMILLAS; s++) { const a = idea('cubo-binomio').ahoraTu.generar(s); n += usa([a.solucion.texto, a.solucion.ecuacion], a.datos, `ahora tú ${s}`); }
+  assert.ok(n >= 85, `${n} ejercicios con la identidad`);
+  // La regla trae las dos, cada una en su renglón, sin ± ni ∓ (M7).
+  const reg = plano(idea('cubo-binomio').regla.ecuacion);
+  assert.ok(reg.includes(SUMA) && reg.includes(RESTA) && !/[±∓]/.test(reg), reg);
+});
+
+test('M1 y M8: en cada idea, dos ejemplos de niveles distintos no son la misma cuenta con otros números', () => {
+  // Cada número distinto se vuelve #1, #2…: «(x + 6)(x − 6)» (suma por diferencia) no es «(x + 7)(x − 4)».
+  // El 2 de «A + 2√B» es parte de la forma del radical doble (con 4√6 ya hay un paso más): se deja como está.
+  const forma = e => { const m = new Map(); return plano(e.enunciado).replace(/(?<![\d,])2√/g, '§√').replace(/\d+(,\d+)?/g, n => { if (!m.has(n)) m.set(n, `#${m.size + 1}`); return m.get(n); }); };
+  for (const id of IDEAS) {
+    const vistos = new Map();
+    for (const e of idea(id).ejemplos) {
+      const f = forma(e);
+      if (vistos.has(f)) assert.equal(vistos.get(f), e.nivel, `${id}: «${e.titulo}» (nivel ${e.nivel}) repite «${f}» del nivel ${vistos.get(f)}`);
+      vistos.set(f, e.nivel);
+    }
+  }
+  // Las cometas de los ejemplos: una de nivel 1 (el lado) y otra de nivel 2 (el contorno), no la misma pregunta.
+  const com = idea('racionalizar').ejemplos.filter(e => /cometa/.test(plano(e.enunciado)));
+  assert.deepEqual(com.map(e => e.nivel), [1, 2]);
+  assert.match(plano(com[1].enunciado), /contorno/);
+  // Cubos: el nivel 2 de la suma de cubos pide ver el cubo primero (8y³ = (2y)³), no solo reemplazar.
+  assert.match(plano(idea('cubo-binomio').ejemplos.find(e => /suma de cubos/i.test(e.titulo)).enunciado), /8y³/);
+});
+
+test('M7: cada letra y signo de la regla se dice en palabras (en la regla, su condición o la leyenda del juego)', () => {
+  for (const id of IDEAS) {
+    const i = idea(id), ec = plano([i.regla.ecuacion, ' ', i.regla.condicion]);
+    const dicho = [i.regla.texto, i.regla.condicion, ...i.juega.leyenda.map(x => plano(x.s))].join(' | ');
+    for (const l of new Set(ec.match(/(?<![\p{L}])[A-Za-z](?![\p{L}])/gu) || [])) assert.ok(new RegExp(`(?<![\\p{L}])${l}(?![\\p{L}])`, 'u').test(dicho), `${id}: «${l}» no se dice`);
+    for (const sg of ['±', '∓']) if (ec.includes(sg)) assert.ok(i.regla.texto.includes(sg) && /más o menos|contrario/.test(i.regla.texto), `${id}: «${sg}» sin explicar`);
+    assert.ok(!/\bC\b/.test(ec), `${id}: una C sin presentar`);
+    assert.ok(!/^\s*Vale\b/.test(i.regla.condicion), `${id}: la app ya antepone «Vale si»`);
+  }
+  assert.match(idea('suma-por-diferencia').regla.condicion, /p y q son/);
+});
+
+test('M3, M4 y M10: la figura no junta datos, el juego no abre con una raíz exacta y el glosario no cumple la misión', () => {
+  // M3: «El lado de la mesa» no rotula las planchas rectangulares con √12 (√6 · √2, lo que sale de juntar los datos).
+  const e = idea('radicales-dobles').ejemplos.find(x => x.titulo === 'El lado de la mesa');
+  const ts = textosSVG(P.dibujar(e.figura.datos)).join(' | ');
+  assert.ok(!/√12|12 dm/.test(ts), ts);
+  // M4: la lectura saca la raíz cuando el producto es un cuadrado; el juego no abre en la misión.
+  const j = idea('radicales-dobles').juega;
+  for (const v of Teoria.grilla(j.controles)) {
+    const t = plano(j.lectura(v));
+    for (const [, k] of t.matchAll(/√(\d+)/g)) assert.ok(!Number.isInteger(Math.sqrt(+k)), `${JSON.stringify(v)}: ${t}`);
+  }
+  const ini = Object.fromEntries(j.controles.map(c => [c.id, c.inicio]));
+  assert.ok(!j.mision.logrado(ini) && !Number.isInteger(Math.sqrt(ini.x * ini.y)), JSON.stringify(ini));
+  // M10: ni el glosario de la idea ni sus tarjetas de «Lee» traen la mesa de la misión (8 + 2√15) resuelta.
+  const k = def.ideas.indexOf(idea('radicales-dobles')), g = Glosario.porIdea(def)[k];
+  for (const x of [...g.map(y => [y.def, y.simple, ...(y.ejemplos || [])].join(' ')), ...idea('radicales-dobles').lee.tarjetas.map(t => plano([t.texto, t.ecuacion || '']))])
+    assert.ok(!/8 \+ 2√15|√5 \+ √3/.test(x), x);
+});
+
+test('M9 y B2: valores creíbles (taco en cm, cometas de 1 a 2 m o de 6 a 15 dm) y sin el paso hecho en los datos', () => {
+  const cb = idea('cubo-binomio'), ra = idea('racionalizar');
+  const limpio = x => (Array.isArray(x) ? x.map(limpio) : x === undefined || x === null ? '' : x);
+  for (const x of lecturas(cb)) assert.ok(!/\bdm/.test(plano(limpio(x.x))), `cubo ${x.donde}: ${plano(limpio(x.x))}`);
+  assert.ok(ra.juega.controles.find(c => c.id === 'd').max <= 2);
+  for (const e of ra.ejemplos.filter(y => /cometa/.test(plano(y.enunciado)))) {
+    const d = +plano(e.enunciado).match(/mide (\d+) dm/)[1];
+    assert.ok(d >= 6 && d <= 15, e.titulo);
+    assert.ok(!/larga/.test(plano(e.enunciado)), e.titulo);
+  }
+  assert.ok(!/larga/.test(ra.lee.tarjetas[0].texto));
+  // «31 = 30 + 1» no va en los datos: escribir el número así es lo que se practica (B2).
+  for (const id of IDEAS) {
+    const i = idea(id);
+    for (const e of i.ejemplos) for (const l of e.datos || []) assert.ok(!/^\d+(,\d+)? = \d+(,\d+)? [+−] \d/.test(plano(l)), `${id} «${e.titulo}»: ${plano(l)}`);
+    for (let s = 0; s < 100; s++) for (const l of i.ahoraTu.generar(s).datos) assert.ok(!/^\d+(,\d+)? = \d+(,\d+)? [+−] \d/.test(plano(l)), `${id} ${s}: ${plano(l)}`);
+  }
+});
+
+test('lector en frío: «¿Bastan las esquinas?» trae el dibujo de las piezas que nombra; el índice de la raíz cúbica en turquesa', () => {
+  const e = idea('cubo-binomio').ejemplos.find(x => x.titulo === '¿Bastan las esquinas?');
+  assert.ok(e.figura && e.figura.datos.abrir === 1 && !e.figura.datos.total && !e.figura.datos.rot, 'dibujo abierto, sin volúmenes');
+  // Ningún resuelto sin dibujo habla de «franjas» (idea 1): el dibujo no está.
+  for (const x of idea('cuadrado-suma').ejemplos.filter(y => !y.figura)) assert.ok(!/franja/.test(plano(x.solucion.map(y => y.texto))), x.titulo);
+  // La raíz cúbica de la idea 5 va con su índice de color, nunca con el signo ∛ pegado.
+  const ra = idea('racionalizar'), raices = [];
+  const busca = x => { if (Array.isArray(x)) x.forEach(busca); else if (x && typeof x === 'object') { if (x.raiz && x.indice) raices.push(x); Object.values(x).forEach(busca); } else if (typeof x === 'string') assert.ok(!x.includes('∛'), x); };
+  busca([ra.regla.ecuacion, ra.ejemplos.map(y => [y.enunciado, y.alternativas, y.solucion.map(z => z.ecuacion), y.respuesta]), [0, 1, 2, 3, 4, 5, 8, 13].map(s => ra.ahoraTu.generar(s * 5 + 3).pregunta)]);
+  assert.ok(raices.length > 20);
+  for (const r of raices) assert.ok(r.indice.v === 'c-i' && r.indice.m === 'índice', JSON.stringify(r.indice));
 });

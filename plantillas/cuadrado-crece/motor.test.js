@@ -270,3 +270,20 @@ test('papel.json: formato', () => {
 for (const p of papel.problemas) test(`papel ${p.id}: ${p.enunciado.slice(0, 60)}`, () => {
   for (const v of p.verificar) comprobar(v.fn, v.args, v.espera, p.id);
 });
+
+// Auditoría de Productos notables (18 nov, M11): los problemas que el repaso asigna a esa unidad (calidad 2) traen su
+// «Datos:» con la fórmula, como p6 y p7 (de Exponentes y radicales). La escena es compartida con otras dos unidades.
+test('papel: los problemas de cada unidad de calidad 2 traen «Datos:» con su fórmula', () => {
+  const RT = require('../../nucleo/repaso-tipos.js');
+  const ficha = JSON.parse(fs.readFileSync(path.join(__dirname, 'plantilla.json'), 'utf8'));
+  const FORMULA = { p1: /\(a \+ b\)² = a² \+ 2ab \+ b²/, p2: /\(a − b\)² = a² − 2ab \+ b²/, p4: /\(a \+ b\)² = .*\(a − b\)² = /, p10: /\(a \+ b\)³ = a³ \+ 3a²b \+ 3ab² \+ b³/ };
+  let n = 0;
+  for (const p of papel.problemas) {
+    const us = RT.unidadesPapel ? RT.unidadesPapel(Object.assign({ papel: true }, ficha), p.id) : [];
+    if (!us.includes('algebra.productos-notables')) continue;
+    n++;
+    assert.match(p.enunciado, /Datos: /, p.id);
+    assert.match(p.enunciado.split('Datos: ')[1], FORMULA[p.id], p.id);
+  }
+  assert.equal(n, 4);
+});

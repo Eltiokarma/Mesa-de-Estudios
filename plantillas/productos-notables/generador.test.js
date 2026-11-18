@@ -17,7 +17,7 @@ const TEORIA = require.resolve('../../contenido/teoria/algebra/productos-notable
 // ---- Camino independiente: el texto de la alternativa se lee como expresión y se evalúa ----
 // «3√2/2», «(√7 + √3)/2», «2 · ³√4/3», «x³ − 9x² + 27x − 27», «(2x − 3)(4x² + 6x + 9)», «16 + 2√55 dm²».
 function evaluar(texto, x) {
-  let t = String(texto).replace(/ (m|dm|m²|dm²|dm³)$/, '').replace(/−/g, '-').replace(/·/g, '*').replace(/\s+/g, '');
+  let t = String(texto).replace(/ (m|dm|cm|m²|dm²|dm³|cm³)$/, '').replace(/−/g, '-').replace(/·/g, '*').replace(/\s+/g, '');
   t = t.replace(/³√(\d+)/g, 'C($1)').replace(/³√\(/g, 'C(').replace(/√(\d+)/g, 'S($1)').replace(/√\(/g, 'S(');
   t = t.replace(/⁶/g, '**6').replace(/⁴/g, '**4').replace(/³/g, '**3').replace(/²/g, '**2');
   t = t.replace(/([\dx)])(?=[(xSC])/g, '$1*');
@@ -298,5 +298,30 @@ test('la práctica no repite las predicciones de la unidad', () => {
     assert.ok(!ve(p._datos), `${idea} semilla ${s}: ${JSON.stringify(p._datos)}`);
     const t = [p.enunciado, p.pregunta].map(plano).join(' ');
     assert.ok(!/31 · 29|7 − 2√12|7 − 4√3|√5 − √3|cede/.test(t), `${idea} semilla ${s}: ${t}`);
+  }
+});
+
+// Correcciones del 18 nov (rutinas/auditoria/algebra.productos-notables.md).
+const planoG = x => (Array.isArray(x) ? x.map(planoG).join('') : x && typeof x === 'object' ? String(x.t ?? '') : String(x ?? ''));
+test('A1: toda solución que usa 3ab(a ± b) trae en sus datos la identidad de la suma o de la resta de cubos', () => {
+  let n = 0;
+  for (const idea of [undefined, 'cubo-binomio']) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`a1-${s}`, idea ? { idea } : {}), sol = planoG(p.solucion), datos = p.datos.join('\n');
+    if (/3ab\(a \+ b\)/.test(sol)) { n++; assert.ok(datos.includes('a³ + b³ = (a + b)³ − 3ab(a + b)'), `semilla ${s}: ${sol}`); }
+    if (/3ab\(a − b\)|piezas del medio se restan/.test(sol)) { n++; assert.ok(datos.includes('a³ − b³ = (a − b)³ + 3ab(a − b)'), `semilla ${s}: ${sol}`); }
+  }
+  assert.ok(n > 20, `${n} problemas con la identidad`);
+  const p7 = papel.problemas.find(p => /a³ \+ b³\?/.test(p.enunciado));
+  assert.ok(p7 && p7.enunciado.includes('a³ + b³ = (a + b)³ − 3ab(a + b)'), 'el papel de la suma de cubos trae la identidad');
+});
+
+test('M6 y M9: los datos no pegan la «y» a la variable; la cometa, de 6 a 15 dm; el taco, en cm y de 10 cm a lo más', () => {
+  for (let s = 0; s < 400; s++) {
+    for (const idea of ['radicales-dobles', 'racionalizar', 'cubo-binomio']) {
+      const p = gen.generar(`m9-${s}`, { idea }), d = p._datos, t = [p.enunciado, p.pregunta].map(planoG).join(' ');
+      for (const l of p.datos) assert.ok(!/= A y x/.test(l), l);
+      if (d.tipo === 'cometa') { assert.ok(d.d >= 6 && d.d <= 15, `varilla de ${d.d}`); assert.match(t, / dm\b/); assert.ok(!/ m\b/.test(t), t); }
+      if (d.tipo === 'taco') { assert.ok(d.a + d.b <= 10, `arista de ${d.a + d.b}`); assert.match(t, / cm\b/); assert.ok(!/dm/.test(t + planoG(p.alternativas.map(a => a.texto))), t); }
+    }
   }
 });

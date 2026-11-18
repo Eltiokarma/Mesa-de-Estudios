@@ -8,7 +8,8 @@
  * por unidad) y docs/etapa3/decisiones.md (Álgebra, rondas 2 a 4). Objetos, como en la teoría: el terreno de Juan en
  * Juliaca (idea 1), el triplay de la carpintería (idea 2), el taco de madera (idea 3), la mesa de cuatro planchas (idea
  * 4) y la cometa de agosto en Puno (idea 5). Valores de problema, sin fuente: terrenos de 6 a 14 m con franjas de 1 a 4
- * m, planchas de 8 a 15 dm, tacos de hasta 10 dm de arista, planchas de mesa de hasta 12 dm², varillas de 2 a 9 m.
+ * m, planchas de 8 a 15 dm, tacos de hasta 10 cm de arista, planchas de mesa de hasta 12 dm², varillas de 6 a 15 dm
+ * (auditoría, M9, 18 nov: un taco de 1 m de arista pesaba media tonelada y una cometa de 9 m no la vuela un chico).
  *
  * Tipos por idea (TIPOS_POR_IDEA; nivel 1 un paso, 2 dos pasos, 3 de examen). generar(semilla, { idea }) da solo los
  * de esa idea; sin idea, las cinco con el mismo peso.
@@ -146,10 +147,13 @@
     pot4: 'a⁴ = (a²)²',
     cubo: '(a + b)³ = a³ + 3a²b + 3ab² + b³',
     cuboR: '(a − b)³ = a³ − 3a²b + 3ab² − b³',
+    // Las identidades con la suma (o la resta) y el producto, que la solución usa (auditoría, A1, 18 nov).
+    cuboSP: 'a³ + b³ = (a + b)³ − 3ab(a + b)',
+    difSP: 'a³ − b³ = (a − b)³ + 3ab(a − b)',
     sumaC: 'a³ + b³ = (a + b)(a² − ab + b²)',
     difC: 'a³ − b³ = (a − b)(a² + ab + b²)',
     vol: 'Volumen de una caja = largo · ancho · alto',
-    rd: '√(A + 2√B) = √x + √y, si x + y = A y x · y = B',
+    rd: '√(A + 2√B) = √x + √y, si x + y = A, x · y = B',   // sin la conjunción «y» junto a la variable y (M6)
     rdm: '√(A − 2√B) = √x − √y, con x mayor que y',
     meter: 'k√M = √(k² · M), con k positivo',
     prod: '√x · √y = √(xy)',
@@ -700,21 +704,21 @@
   function taco(rng) {
     const a = rng.entero(2, 6), b = rng.entero(1, 4);
     if (a === b || (a === 3 && b === 2) || (a === 5 && b === 2)) return null;   // el taco del juego y el de la predicción
-    const fmt = x => `${f(x)} dm³`, A2B = a * a * b, AB2 = a * b * b, ans = 3 * A2B + 3 * AB2;
+    const fmt = x => `${f(x)} cm³`, A2B = a * a * b, AB2 = a * b * b, ans = 3 * A2B + 3 * AB2;
     return {
-      enunciado: ['Un taco de madera tiene forma de cubo. Cada arista se parte en dos tramos, de ', Ta(`${a} dm`), ' y de ', Tb(`${b} dm`),
+      enunciado: ['Un taco de madera tiene forma de cubo. Cada arista se parte en dos tramos, de ', Ta(`${a} cm`), ' y de ', Tb(`${b} cm`),
         ', y el carpintero lo corta por esos puntos en ocho piezas: un corte a lo ancho, otro a lo largo y otro a lo alto.'],
-      pregunta: ['¿Cuántos dm³ de madera suman las seis piezas que no son cubos?'],
+      pregunta: ['¿Cuántos cm³ de madera suman las seis piezas que no son cubos?'],
       datos: [D.vol, D.cubo],
       correcta: ans, fmt,
       errores: [
-        en('TAL-CUBO-TRES', A2B + AB2, fmt, t => `Bien las dos clases de piezas, de ${A2B} y de ${AB2} dm³. Pero hay tres de cada clase; con una de cada una salen ${t}.`),
-        en('TAL-CUBO-UNA', 3 * A2B, fmt, t => `Bien las tres piezas de ${a} · ${a} · ${b} = ${A2B} dm³. Faltan las tres de ${a} · ${b} · ${b}; sin ellas salen ${t}.`),
+        en('TAL-CUBO-TRES', A2B + AB2, fmt, t => `Bien las dos clases de piezas, de ${A2B} y de ${AB2} cm³. Pero hay tres de cada clase; con una de cada una salen ${t}.`),
+        en('TAL-CUBO-UNA', 3 * A2B, fmt, t => `Bien las tres piezas de ${a} · ${a} · ${b} = ${A2B} cm³. Faltan las tres de ${a} · ${b} · ${b}; sin ellas salen ${t}.`),
         en('TAL-CUBO-SUMA', 3 * a * b, fmt, t => `Bien 3 · ${a} · ${b} = ${3 * a * b}. Pero las seis piezas suman 3ab(a + b): falta multiplicar por ${a + b}; sin eso salen ${t}.`),
-        en('TAL-CUBO-SEIS', 6 * A2B, fmt, t => `Bien que sean seis piezas. Pero no son iguales: tres miden ${A2B} y tres ${AB2} dm³; seis de ${A2B} dan ${t}.`),
+        en('TAL-CUBO-SEIS', 6 * A2B, fmt, t => `Bien que sean seis piezas. Pero no son iguales: tres miden ${A2B} y tres ${AB2} cm³; seis de ${A2B} dan ${t}.`),
       ],
       solucion: [
-        ['Tres piezas miden ', Tm(`${a} · ${a} · ${b} = ${A2B} dm³`), ` y tres, ${a} · ${b} · ${b} = ${AB2} dm³.`],
+        ['Tres piezas miden ', Tm(`${a} · ${a} · ${b} = ${A2B} cm³`), ` y tres, ${a} · ${b} · ${b} = ${AB2} cm³.`],
         [`3 · ${A2B} + 3 · ${AB2} = `, Tr(fmt(ans)), `. (El taco entero: ${a ** 3} + ${ans} + ${b ** 3} = ${(a + b) ** 3} = ${a + b}³.)`],
       ],
       _datos: { a, b },
@@ -802,7 +806,7 @@
       return {
         enunciado: ['Dos números cumplen ', LA(), ' + ', LB(), ` = ${S} y `, LA(), LB(), ` = ${Pp}.`],
         pregunta: ['¿Cuánto vale ', LA(), '³ + ', LB(), '³?'],
-        datos: [D.cubo], correcta: ans, fmt,
+        datos: [D.cubo, D.cuboSP], correcta: ans, fmt,
         errores: [
           en('AL11', S ** 3, fmt, t => `${S}³ = ${t} está bien calculado. Pero ahí están también las seis piezas del medio: hay que quitarlas.`),
           en('TAL-CUBO-SUMA', S ** 3 - 3 * Pp, fmt, t => `Bien quitar 3ab = ${3 * Pp}. Pero las piezas del medio son 3ab(a + b): falta multiplicar por ${S}; así sale ${t}.`),
@@ -822,7 +826,7 @@
     return {
       enunciado: ['Dos números cumplen ', LA(), ' − ', LB(), ` = ${Dd} y `, LA(), LB(), ` = ${Pp}.`],
       pregunta: ['¿Cuánto vale ', LA(), '³ − ', LB(), '³?'],
-      datos: [D.cuboR], correcta: ans, fmt,
+      datos: [D.cuboR, D.difSP], correcta: ans, fmt,
       errores: [
         en('AL11', Dd ** 3, fmt, t => `${Dd}³ = ${t} está bien calculado. Pero a ese cubo se le restaron las piezas del medio: hay que devolverlas.`),
         en('TAL-CUBO-SUMA', Dd ** 3 + 3 * Pp, fmt, t => `Bien devolver 3ab = ${3 * Pp}. Pero las piezas del medio son 3ab(a − b): falta multiplicar por ${Dd}; así sale ${t}.`),
@@ -1061,10 +1065,10 @@
   const sobre = (arriba, den) => (den === 1 ? arriba : `${arriba}/${den}`);
 
   function cometa(rng) {
-    const d = rng.entero(2, 9), m = t => `${t} m`;
+    const d = rng.entero(6, 15), m = t => `${t} dm`;
     const ok = d % 2 === 0 ? coefRaiz(d / 2, '√2') : `${d}√2/2`;
     return {
-      enunciado: ['En agosto, en Puno, se hacen volar cometas. Una cometa cuadrada tiene una varilla de punta a punta, su diagonal, de ', Ta(`${d} m`), '.'],
+      enunciado: ['En agosto, en Puno, se hacen volar cometas. Una cometa cuadrada tiene una varilla de punta a punta, su diagonal, de ', Ta(`${d} dm`), '.'],
       pregunta: ['¿Cuánto mide su lado, escrito sin raíz en el denominador?'],
       datos: [D.diag, D.uno],
       correcta: m(ok),

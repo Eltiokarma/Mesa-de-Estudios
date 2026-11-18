@@ -5,7 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Desarrolla (2x + 5)² y comprueba tu resultado con x = 1.",
+      "enunciado": "Desarrolla (2x + 5)² y comprueba tu resultado con x = 1. Datos: (a + b)² = a² + 2ab + b².",
       "respuesta": "4x² + 20x + 25. Con x = 1, los dos lados valen 49.",
       "pasos": [
         "Dibuja un cuadrado de lado 2x + 5. Tiene cuatro piezas: un cuadrado de lado 2x, un cuadrado de lado 5 y dos rectángulos de 2x por 5.",
@@ -22,7 +22,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Calcula 99² sin calculadora, escribiendo 99 como 100 − 1.",
+      "enunciado": "Calcula 99² sin calculadora, escribiendo 99 como 100 − 1. Datos: (a − b)² = a² − 2ab + b².",
       "respuesta": "9801.",
       "pasos": [
         "(100 − 1)² = 100² − 2 · 100 · 1 + 1².",
@@ -51,7 +51,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Si a + b = 9 y ab = 20, halla a² + b² y (a − b)².",
+      "enunciado": "Si a + b = 9 y ab = 20, halla a² + b² y (a − b)². Datos: (a + b)² = a² + 2ab + b²; (a − b)² = a² − 2ab + b².",
       "respuesta": "a² + b² = 41 y (a − b)² = 1.",
       "pasos": [
         "(a + b)² = a² + 2ab + b², así que a² + b² = (a + b)² − 2ab = 81 − 40 = 41.",
@@ -145,7 +145,7 @@
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "Sin elevar al cubo, explica cuánto le falta a 2³ + 3³ para llegar a (2 + 3)³.",
+      "enunciado": "Sin elevar al cubo, explica cuánto le falta a 2³ + 3³ para llegar a (2 + 3)³. Datos: (a + b)³ = a³ + 3a²b + 3ab² + b³.",
       "respuesta": "Le faltan 90: las seis piezas del medio, 3 · 2² · 3 + 3 · 2 · 3² = 36 + 54.",
       "pasos": [
         "El cubo de arista 2 + 3 se corta en ocho piezas: un cubo de 2, un cubo de 3, tres bloques de 2 · 2 · 3 y tres de 2 · 3 · 3.",

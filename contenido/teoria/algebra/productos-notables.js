@@ -33,6 +33,13 @@
  * historia-ecuaciones (pp. 57–68). Errores: AL8, AL9 y AL11 de docs/investigacion/algebra-funciones-ideas-erroneas.md;
  * los TAL-* son hipótesis de diseño (rutinas/teoria-algebra.md).
  * Laboratorio: el rectángulo (x + p)(x + q) de dos esquinas cuelga de la idea 2 y el cubo que se abre (3D), de la idea 3.
+ * La práctica (plantillas/productos-notables) resalta el resultado en violeta; aquí el total va en tinta (auditoría, B7).
+ *
+ * Correcciones (18 nov; rutinas/auditoria/algebra.productos-notables.md, «Correcciones»): las identidades de a³ ± b³
+ * con la suma y el producto en los Datos de todo ejercicio que las usa (A1); cada alternativa incorrecta de nivel 3
+ * explicada con el valor que da (M2, B1; la prueba lo recalcula); niveles que suben de verdad (M1, M8); p, q y ± dichos
+ * en las reglas (M7); el taco en cm y las cometas de 6 a 15 dm (M9); el índice de la raíz cúbica en turquesa
+ * (Gerson, quinta ronda). Cuentas nuevas rehechas en el scratchpad, correcciones-productos/cuentas-correcciones.py.
  * La idea 1 conserva el gesto directo de la ronda 2 (las esquinas del terreno de antes y del terreno nuevo).
  */
 (function (root, fabrica) {
@@ -58,17 +65,26 @@
 
   // ---------- Colores de la unidad: un color fijo por magnitud (cabecera; lo comprueba productos-notables.test.js) ----------
   const COLORES = { 'primer término': 'o', 'segundo término': 'i', 'doble producto': 'f', 'piezas del medio': 'f',
-    'lados del tablero': 'f', 'factor uno': 'f', 'letra de alternativa': 'f' };
+    'lados del tablero': 'f', 'factor uno': 'f', 'letra de alternativa': 'f', 'índice': 'i' };
   const ficha = mg => t => ({ v: `c-${COLORES[mg]}`, t: String(t), m: mg });
   const T1 = ficha('primer término'), T2 = ficha('segundo término'), DP = ficha('doble producto');
-  const PM = ficha('piezas del medio'), LT = ficha('lados del tablero'), F1 = ficha('factor uno');
+  const PM = ficha('piezas del medio'), LT = ficha('lados del tablero'), F1 = ficha('factor uno'), IX = ficha('índice');
+  // La raíz cúbica con su índice en turquesa (Gerson, quinta ronda, 18 nov), como en Exponentes y radicales; solo en la
+  // idea 5, donde b nunca va junto a un índice de color.
+  const c3 = x => ({ raiz: Array.isArray(x) ? x : [String(x)], indice: IX('3') });
+  // El factor que vale 1 con raíces cúbicas: no cabe en una ficha de color, así que va con su llave violeta.
+  const uno3 = X => ({ llave: [{ frac: [[c3(X)], [c3(X)]] }], nota: 'vale 1', color: 'c-f' });
   const aa = T1('a'), bb = T2('b');
   const SEP = '   ·   ';
   // La letra de una alternativa, en negrita (Gerson, mesa de revisión, 17 nov), en violeta como en la unidad hermana.
   // El U+2060 (invisible) evita que la letra sola salga en cursiva como una variable.
   const letra = L => ({ v: 'c-f', t: `${L}⁠`, m: 'letra de alternativa' });
   // Texto plano de partes (para comparar opciones).
-  const txt = x => (Array.isArray(x) ? x.map(txt).join('') : x && typeof x === 'object' ? (x.t !== undefined ? String(x.t) : '') : String(x));
+  // Las fracciones y las raíces cuentan (antes daban '' y dos opciones con fracción se tomaban por iguales: «Ahora tú»
+  // de racionalizar nunca salía con una respuesta fraccionaria).
+  const txt = x => (Array.isArray(x) ? x.map(txt).join('') : x && typeof x === 'object' ? (x.t !== undefined ? String(x.t)
+    : x.frac ? `(${txt(x.frac[0])})/(${txt(x.frac[1])})` : x.raiz ? `r${txt(x.indice || '')}(${txt(x.raiz)})`
+      : x.sup ? `${txt(x.sup[0])}^${txt(x.sup[1])}` : x.par ? `(${txt(x.par)})` : '') : String(x));
   function opcionesP(correcta, distractores) {
     const ops = [{ id: 'c', texto: correcta, correcta: true }], vistos = new Set([txt(correcta)]);
     for (const x of distractores) {
@@ -144,7 +160,8 @@
     const bien = M * M + sg * 2 * M * d + d * d;
     return {
       pregunta: `¿Cuánto vale ${N}², sin hacer la multiplicación larga?`,
-      datos: [`${N} = ${M} ${mas ? '+' : '−'} ${d}`, mas ? DF.suma : DF.resta],
+      // Sin «N = M ± d» en los datos: elegir esa descomposición es lo que se practica (auditoría, B2).
+      datos: [mas ? DF.suma : DF.resta],
       opciones: opcionesP([String(bien)], [
         { id: 'al8', texto: [String(M * M + sg * d * d)], error: 'AL8', siFuera: `Bien ${M}² y ${d}². Pero faltan las dos franjas: 2 · ${M} · ${d} = ${2 * M * d}.` },
         { id: 'una', texto: [String(M * M + sg * M * d + d * d)], error: 'TAL-2AB', siFuera: `Bien la franja de ${M * d}. Pero son dos: ${2 * M * d}.` },
@@ -191,7 +208,8 @@
   // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h). Cuentas rehechas aparte (scratchpad,
   // cuentas-productos1.py): (8 + 3)² = 121; (x + 4)² = x² + 8x + 16; en (x + 7)², 14x; 31² = 961; (5 + 3)² = 64 contra
   // 34; (3x + 2)² = 9x² + 12x + 4; x² + 10x + 25 = (x + 5)²; a + b = 9, ab = 20 → 41; 2,1² = 4,41; 15² − 12² = 81 =
-  // 2 · 12 · 3 + 9; 34 + 2 · 15 = 64 → 8 (errores 7 y √34); a + b = 7, ab = 12 → 25 (errores 49, 37, 73);
+  // 2 · 12 · 3 + 9; 34 + 2 · 15 = 64 → 8 (errores 7, √34 y √(34 − 30) = 2); a + b = 7, a² + b² = 25 → ab = 12
+  // (errores 24, 37, −9, 74);
   // (√3 + √2)² = 5 + 2√6; x + 1/x = 5 → 23 (errores 25, 27, 24); 2 · 3 · a + 9 = 69 → a = 10 (errores 11,5 y 13).
   // Ninguno usa (a − b)² ni una franja que se cede (es la predicción); ninguna figura muestra lo que se pide.
   const EJEMPLOS_CUADRADO = [
@@ -209,17 +227,17 @@
     { nivel: 1, titulo: 'El doble producto',
       enunciado: ['En el desarrollo de (', T1('x'), ' + ', T2(7), ')², ¿cuál es el doble producto?'],
       datos: [DF.suma],
-      solucion: [{ texto: 'El doble producto es dos veces el primer término por el segundo: las dos franjas del medio.', ecuacion: ['2 · ', T1('x'), ' · ', T2(7), ' = ', DP('14x')] }],
+      solucion: [{ texto: 'El doble producto es 2ab: dos veces el primer término, x, por el segundo, 7.', ecuacion: ['2 · ', T1('x'), ' · ', T2(7), ' = ', DP('14x')] }],
       respuesta: ['El doble producto es ', DP('14x')] },
     { nivel: 1, titulo: 'Un número al cuadrado',
       enunciado: '¿Cuánto vale 31², sin hacer la multiplicación larga?',
-      datos: ['31 = 30 + 1', DF.suma],
-      solucion: [{ texto: '31 es 30 + 1: el cuadrado de 30, dos franjas de 30 por 1 y la esquina de 1 por 1.', ecuacion: ['(', T1(30), ' + ', T2(1), ')² = ', T1(900), ' + ', DP(60), ' + ', T2(1), ' = 961'] }],
+      datos: [DF.suma],
+      solucion: [{ texto: '31 es 30 + 1, con a = 30 y b = 1: el cuadrado de 30, el doble producto 2 · 30 · 1 y el cuadrado de 1.', ecuacion: ['(', T1(30), ' + ', T2(1), ')² = ', T1(900), ' + ', DP(60), ' + ', T2(1), ' = 961'] }],
       respuesta: '31² = 961' },
     { nivel: 1, titulo: '¿Basta con los cuadrados?',
       enunciado: ['¿Es (', T1(5), ' + ', T2(3), ')² igual a ', T1(5), '² + ', T2(3), '²?'],
       datos: [DF.suma],
-      solucion: [{ texto: '(5 + 3)² = 8² = 64, pero 5² + 3² = 25 + 9 = 34. Faltan las dos franjas: 2 · 5 · 3 = 30.', ecuacion: ['64 = 34 + ', DP(30)] }],
+      solucion: [{ texto: '(5 + 3)² = 8² = 64, pero 5² + 3² = 25 + 9 = 34. Falta el doble producto: 2 · 5 · 3 = 30.', ecuacion: ['64 = 34 + ', DP(30)] }],
       respuesta: ['No: falta el doble producto, ', DP(30)] },
     { nivel: 2, titulo: 'Con un coeficiente',
       enunciado: ['Desarrolla (', T1('3x'), ' + ', T2(2), ')².'],
@@ -229,27 +247,27 @@
         { texto: 'El doble producto: 2 · 3x · 2 = 12x. La esquina: 2² = 4.', ecuacion: ['(', T1('3x'), ' + ', T2(2), ')² = ', T1('9x²'), ' + ', DP('12x'), ' + ', T2(4)] },
       ],
       respuesta: [T1('9x²'), ' + ', DP('12x'), ' + ', T2(4)] },
-    { nivel: 2, titulo: 'La esquina que falta',
+    { nivel: 2, titulo: 'Lo que falta para el cuadrado',
       enunciado: ['¿Qué número hay que sumarle a ', T1('x²'), ' + ', DP('10x'), ' para que sea el cuadrado de un binomio?'],
       datos: [DF.suma],
       solucion: [
-        { texto: 'x² es el cuadrado del primer término, x. Las dos franjas, 10x, son 2 · x · b: entonces b = 5.', ecuacion: [DP('10x'), ' = 2 · ', T1('x'), ' · ', T2(5)] },
-        { texto: 'Falta la esquina, b²: 5² = 25. Así queda un cuadrado completo.', ecuacion: [T1('x²'), ' + ', DP('10x'), ' + ', T2(25), ' = (', T1('x'), ' + ', T2(5), ')²'] },
+        { texto: 'x² es el cuadrado del primer término, x. El doble producto, 10x, es 2 · x · b: entonces b = 5.', ecuacion: [DP('10x'), ' = 2 · ', T1('x'), ' · ', T2(5)] },
+        { texto: 'Falta el cuadrado del segundo término, b²: 5² = 25. Así queda un cuadrado completo.', ecuacion: [T1('x²'), ' + ', DP('10x'), ' + ', T2(25), ' = (', T1('x'), ' + ', T2(5), ')²'] },
       ],
       respuesta: ['Hay que sumarle ', T2(25)] },
     { nivel: 2, titulo: 'Suma y producto',
       enunciado: ['Si ', aa, ' + ', bb, ' = 9 y ', aa, bb, ' = 20, ¿cuánto vale ', aa, '² + ', bb, '²?'],
       datos: [DF.suma],
       solucion: [
-        { texto: 'El cuadrado de la suma trae a² + b² y, además, las dos franjas ab.', ecuacion: ['9² = ', aa, '² + ', bb, '² + ', DP('2 · 20')] },
-        { texto: 'Le quito las dos franjas.', ecuacion: [aa, '² + ', bb, '² = 81 − ', DP(40), ' = 41'] },
+        { texto: 'El cuadrado de la suma trae a² + b² y, además, el doble producto 2ab.', ecuacion: ['9² = ', aa, '² + ', bb, '² + ', DP('2 · 20')] },
+        { texto: 'Le quito el doble producto, 2 · 20 = 40.', ecuacion: [aa, '² + ', bb, '² = 81 − ', DP(40), ' = 41'] },
       ],
       respuesta: [aa, '² + ', bb, '² = 41'] },
     { nivel: 2, titulo: 'Con decimales',
       enunciado: '¿Cuánto vale 2,1², sin calculadora?',
-      datos: ['2,1 = 2 + 0,1', DF.suma],
+      datos: [DF.suma],
       solucion: [
-        { texto: 'Escribo 2,1 como 2 + 0,1: un cuadrado de 2, dos franjas de 2 por 0,1 y una esquina chiquita.', ecuacion: ['(', T1(2), ' + ', T2('0,1'), ')² = ', T1(4), ' + ', DP('0,4'), ' + ', T2('0,01')] },
+        { texto: 'Escribo 2,1 como 2 + 0,1: el cuadrado de 2, el doble producto 2 · 2 · 0,1 y el cuadrado de 0,1.', ecuacion: ['(', T1(2), ' + ', T2('0,1'), ')² = ', T1(4), ' + ', DP('0,4'), ' + ', T2('0,01')] },
         { texto: 'Se suman las tres partes.', ecuacion: ['4 + 0,4 + 0,01 = 4,41'] },
       ],
       respuesta: '2,1² = 4,41' },
@@ -264,33 +282,38 @@
       respuesta: '81 m²' },
     { nivel: 3, titulo: 'Las piezas de un terreno',
       enunciado: 'Un terreno cuadrado se parte en dos cuadrados y dos rectángulos iguales. Los dos cuadrados suman 34 m² y cada rectángulo mide 15 m². ¿Cuánto mide el lado del terreno?',
-      alternativas: ['7 m', '8 m', '√34 m', '64 m', '6 m'],
+      alternativas: ['7 m', '8 m', '√34 m', '64 m', '2 m'],
       datos: [DF.area],
       figura: TE({ a: 5, b: 3, lados: false, total: false, rot: { a2: '?', b2: '?', ab: '15 m²' } }),
       solucion: [
         { texto: 'El área del terreno son sus cuatro piezas: los dos cuadrados y los dos rectángulos.', ecuacion: ['34 + ', DP('2 · 15'), ' = 64'] },
         { texto: 'El lado es la raíz del área.', ecuacion: ['lado = √64 = 8'] },
-        { texto: ['La ', letra('A'), ' cuenta un solo rectángulo: √(34 + 15) = 7. La ', letra('D'), ' da el área, no el lado.'] },
+        { texto: ['La ', letra('A'), ' cuenta un solo rectángulo: √(34 + 15) = 7. La ', letra('C'), ' se olvida de los rectángulos: √34.'] },
+        { texto: ['La ', letra('D'), ' da el área, no el lado. La ', letra('E'), ' resta los rectángulos: √(34 − 30) = 2.'] },
       ],
       respuesta: [letra('B'), ', 8 m'] },
-    { nivel: 3, titulo: 'Sin conocer los números',
-      enunciado: ['Si ', aa, ' + ', bb, ' = 7 y ', aa, bb, ' = 12, ¿cuánto vale ', aa, '² + ', bb, '²?'],
-      alternativas: ['49', '37', '25', '1', '73'],
+    // Nivel 3 (auditoría, M1): ya no repite el nivel 2 («Suma y producto») con otros números; va al revés: con la suma
+    // y la suma de cuadrados, se despeja el producto.
+    { nivel: 3, titulo: 'El producto escondido',
+      enunciado: ['Si ', aa, ' + ', bb, ' = 7 y ', aa, '² + ', bb, '² = 25, ¿cuánto vale ', aa, bb, '?'],
+      alternativas: ['24', '37', '12', '−9', '74'],
       datos: [DF.suma],
       solucion: [
-        { texto: 'No hace falta hallar a ni b. El cuadrado de la suma trae a² + b² más las dos franjas.', ecuacion: ['7² = ', aa, '² + ', bb, '² + ', DP('2 · 12')] },
-        { texto: 'Le quito las dos franjas: 49 − 24 = 25. (Con 3 y 4: 9 + 16 = 25. Cuadra.)', ecuacion: [aa, '² + ', bb, '² = 49 − ', DP(24), ' = 25'] },
-        { texto: ['La ', letra('A'), ' no quita las franjas; la ', letra('B'), ' quita una sola; la ', letra('E'), ' las suma.'] },
+        { texto: 'El cuadrado de la suma trae a² + b², que ya se sabe, y el doble producto 2ab.', ecuacion: ['7² = 25 + ', DP('2ab')] },
+        { texto: 'Se despeja el doble producto: 2ab = 49 − 25 = 24. Y ab es la mitad. (Con 3 y 4: 9 + 16 = 25 y 3 · 4 = 12. Cuadra.)', ecuacion: [aa, bb, ' = 24 ÷ 2 = 12'] },
+        { texto: ['La ', letra('A'), ' se queda en 2ab: 49 − 25 = 24. La ', letra('B'), ' suma en vez de restar: (49 + 25) ÷ 2 = 37.'] },
+        { texto: ['La ', letra('D'), ' no eleva el 7 al cuadrado: (7 − 25) ÷ 2 = −9. La ', letra('E'), ' suma y no divide: 49 + 25 = 74.'] },
       ],
-      respuesta: [letra('C'), ', 25'] },
+      respuesta: [letra('C'), ', 12'] },
     { nivel: 3, titulo: 'Con raíces',
       enunciado: ['Desarrolla (', T1('√3'), ' + ', T2('√2'), ')².'],
-      alternativas: ['5', '5 + √6', '5 + 2√6', '25', '6 + 2√5'],
+      alternativas: ['5', '5 + √6', '5 + 2√6', '25', '5 + 2√5'],
       datos: [DF.suma, '√a · √b = √(a · b), con a, b ≥ 0'],
       solucion: [
         { texto: 'Los dos cuadrados: (√3)² = 3 y (√2)² = 2. El doble producto: 2 · √3 · √2 = 2√6.', ecuacion: ['(', T1('√3'), ' + ', T2('√2'), ')² = ', T1(3), ' + ', DP('2√6'), ' + ', T2(2)] },
         { texto: 'Se juntan los números sin raíz: 3 + 2 = 5.', ecuacion: ['5 + ', DP('2√6')] },
-        { texto: ['La ', letra('A'), ' se olvida de las franjas, y la ', letra('B'), ' cuenta una sola.'] },
+        { texto: ['La ', letra('A'), ' se olvida del doble producto: 5. La ', letra('B'), ' lo cuenta una sola vez: 5 + √6.'] },
+        { texto: ['La ', letra('D'), ' eleva 3 + 2 como si no hubiera raíces: 25. La ', letra('E'), ' suma al multiplicar: √3 · √2 no es √5.'] },
       ],
       respuesta: [letra('C'), ', 5 + ', DP('2√6')] },
     { nivel: 3, titulo: 'Un número y su inverso',
@@ -300,18 +323,20 @@
       solucion: [
         { texto: 'Elevo al cuadrado los dos lados: a es x y b es 1/x. El doble producto es 2 · x · (1/x) = 2.', ecuacion: ['(', T1('x'), ' + ', T2('1/x'), ')² = ', T1('x²'), ' + ', DP(2), ' + ', T2('1/x²'), ' = 25'] },
         { texto: 'Le quito el doble producto a los dos lados.', ecuacion: ['x² + 1/x² = 25 − ', DP(2), ' = 23'] },
-        { texto: ['La ', letra('A'), ' se olvida del doble producto; la ', letra('C'), ' lo suma, y la ', letra('D'), ' quita solo 1.'] },
+        { texto: ['La ', letra('A'), ' se olvida del doble producto: 25. La ', letra('C'), ' lo suma: 25 + 2 = 27.'] },
+        { texto: ['La ', letra('D'), ' quita solo 1: 24. La ', letra('E'), ' multiplica 5 por 2 en vez de elevarlo al cuadrado: 10.'] },
       ],
       respuesta: [letra('B'), ', 23'] },
     { nivel: 3, titulo: 'El lado de antes',
       enunciado: 'Juan amplía su terreno cuadrado con franjas de 3 m por el costado y por el fondo, y el área crece 69 m². ¿Cuánto medía el lado de antes?',
-      alternativas: ['10 m', '11,5 m', '13 m', '23 m', '7 m'],
+      alternativas: ['10 m', '11,5 m', '13 m', '23 m', '20 m'],
       datos: [DF.area, DF.suma],
       figura: TE({ a: 10, b: 3, ladoA: '?', total: false }),
       solucion: [
         { texto: 'Lo que crece son las dos franjas y la esquina: 2 · a · 3 + 3² = 6a + 9.', ecuacion: [DP('6a'), ' + ', T2(9), ' = 69'] },
         { texto: 'Despejo: 6a = 60, así que a = 10. Lo reviso: 13² − 10² = 169 − 100 = 69. Cuadra.', ecuacion: ['6a = 60   →   a = 10'] },
-        { texto: ['La ', letra('B'), ' se olvida de la esquina: 69 ÷ 6. La ', letra('C'), ' da el lado nuevo.'] },
+        { texto: ['La ', letra('B'), ' se olvida de la esquina: 69 ÷ 6 = 11,5. La ', letra('C'), ' da el lado nuevo: 10 + 3 = 13.'] },
+        { texto: ['La ', letra('D'), ' cuenta una sola franja y se olvida de la esquina: 69 ÷ 3 = 23. La ', letra('E'), ' cuenta una sola franja: 3a + 9 = 69, a = 20.'] },
       ],
       respuesta: [letra('A'), ', ', T1('10 m')] },
   ];
@@ -408,7 +433,8 @@
       texto: 'El cuadrado de un binomio son cuatro piezas: dos cuadrados y dos rectángulos iguales, el doble producto. Con una resta, el doble producto se quita y la esquina se suma.',
       ecuacion: ['(', aa, ' + ', bb, ')² = ', aa, '² + ', { llave: ['2', aa, bb], nota: 'doble producto', color: 'c-f' }, ' + ', bb, '²', SEP,
         '(', aa, ' − ', bb, ')² = ', aa, '² − ', { llave: ['2', aa, bb], nota: 'se quita', color: 'c-f' }, ' + ', bb, '²'],
-      condicion: 'Vale para todo a y b, también negativos o con letras; el terreno solo muestra lados positivos.',
+      // La app antepone «Vale si» (auditoría, B13: se leía «Vale si Vale para todo…»).
+      condicion: 'a y b son cualquier número, también negativos o con letras; el terreno solo muestra lados positivos.',
       voz: 'Dos cuadrados y dos franjas: no se olvida ninguna.',
     },
     // Así se resuelve: cuántos m² compra Juan (las dos franjas y la esquina). «Ahora tú» pide otra cosa: desarrollar,
@@ -434,7 +460,8 @@
     },
     ahoraTu: {
       pieza: 'alg-objeto',
-      voz: 'Dos cuadrados y dos franjas: revisa los signos.',
+      // Una voz que sirve a los cinco tipos (auditoría, B4: «revisa los signos» salía en (2x + 7)², que no tiene).
+      voz: 'Dos cuadrados y el doble producto: no te olvides de ninguno.',
       generar(sem) {
         const r = azar(sem + 23), tipo = sem % 5;
         if (tipo === 0) return conCuatro(casoDesarrolla, r);
@@ -552,7 +579,8 @@
 
   // Ejemplos resueltos de la idea 2. Cuentas rehechas aparte (scratchpad, cuentas-productos-f3.py): 9 + 2 = 11 y 9 − 2 = 7;
   // (x + 6)(x − 6) = x² − 36; x² − 49 = (x + 7)(x − 7); 12² − 5² = 119; 7² − 3² = 10 · 4 = 40; 52 · 48 = 2496;
-  // (3x + 4)(3x − 4) = 9x² − 16; (x + 5)(x + 3) = x² + 8x + 15; (x + 7)(x − 4) = x² + 3x − 28; 75² − 25² = 5000;
+  // (3x + 4)(3x − 4) = 9x² − 16; (x + 5)(x + 3) = x² + 8x + 15; (x + 7)(x − 4) = x² + 3x − 28; a + b = 10 y
+  // a² − b² = 40 → a − b = 4;
   // a + b = 9, a − b = 5 → ab = 14 (56, 28, 45); (x + 1)⁴ − (x − 1)⁴ = 8x³ + 8x; a³ − b³ = 7, a⁶ − b⁶ = 63 → a³ = 8;
   // (x + 1)(x + 4) − (x + 2)(x + 3) = −2; 1001 · 999 − 1000² = −1. El nivel 1 no multiplica dos números cercanos (es la
   // predicción); ninguna figura muestra lo que se pide.
@@ -609,7 +637,7 @@
       datos: [DF2.xpq],
       figura: BALD_XPQ(5, 3),
       solucion: [
-        { texto: 'El rectángulo tiene cuatro piezas: x², dos piezas del medio, 5x y 3x, y la esquina, 5 · 3.', ecuacion: [T1('x²'), ' + ', PM('5x'), ' + ', PM('3x'), ' + 15'] },
+        { texto: 'p es 5 y q es 3 (q va sin color). El rectángulo tiene x², dos piezas del medio, 5x y 3x, y la esquina, 5 · 3.', ecuacion: [T1('x²'), ' + ', PM('5x'), ' + ', PM('3x'), ' + 15'] },
         { texto: 'Las del medio se juntan: 5x + 3x = 8x.', ecuacion: ['(', T1('x'), ' + ', T2(5), ')(', T1('x'), ' + 3) = ', T1('x²'), ' + ', PM('8x'), ' + 15'] },
       ],
       respuesta: [T1('x²'), ' + ', PM('8x'), ' + 15'] },
@@ -621,14 +649,16 @@
         { texto: 'Su producto, 7 · (−4) = −28, va solo.', ecuacion: ['(', T1('x'), ' + ', T2(7), ')(', T1('x'), ' − 4) = ', T1('x²'), ' + ', PM('3x'), ' − 28'] },
       ],
       respuesta: [T1('x²'), ' + ', PM('3x'), ' − 28'] },
-    { nivel: 2, titulo: 'Una resta de cuadrados grandes',
-      enunciado: ['¿Cuánto vale ', T1(75), '² − ', T2(25), '², sin elevar al cuadrado?'],
+    // Nivel 2 (auditoría, M1): ya no repite el nivel 1 («Una resta sin cuadrados», 7² − 3²) con números grandes; aquí la
+    // regla se usa al revés y hay que despejar.
+    { nivel: 2, titulo: 'La diferencia escondida',
+      enunciado: ['Si ', aa, ' + ', bb, ' = 10 y ', aa, '² − ', bb, '² = 40, ¿cuánto vale ', aa, ' − ', bb, '?'],
       datos: [DF2.sxd],
       solucion: [
-        { texto: 'Es una diferencia de cuadrados: se escribe como la suma por la diferencia.', ecuacion: [T1('75²'), ' − ', T2('25²'), ' = ', LT('(75 + 25)'), LT('(75 − 25)')] },
-        { texto: 'La suma da 100 y la diferencia, 50.', ecuacion: ['100 · 50 = 5000'] },
+        { texto: 'La resta de cuadrados es la suma por la diferencia, y la suma ya se sabe: 10.', ecuacion: [aa, '² − ', bb, '² = ', LT('(a + b)'), LT('(a − b)'), ' = 10 · ', LT('(a − b)')] },
+        { texto: 'Diez veces la diferencia da 40: se divide entre 10. (Con 7 y 3: 49 − 9 = 40. Cuadra.)', ecuacion: ['10 · ', LT('(a − b)'), ' = 40   →   ', LT('a − b'), ' = 4'] },
       ],
-      respuesta: '5000' },
+      respuesta: [LT('a − b'), ' = 4'] },
     { nivel: 3, titulo: 'Suma y diferencia',
       enunciado: ['Si ', aa, ' + ', bb, ' = 9 y ', aa, ' − ', bb, ' = 5, ¿cuánto vale ', aa, bb, '?'],
       alternativas: ['56', '28', '14', '45', '7'],
@@ -636,17 +666,19 @@
       solucion: [
         { texto: '(a + b)² − (a − b)² es una suma por diferencia de los dos paréntesis.', ecuacion: ['9² − 5² = (9 + 5)(9 − 5) = 14 · 4 = 56'] },
         { texto: 'Esa misma resta, con letras: la suma de los paréntesis da 2a y su diferencia, 2b. Entonces vale 4ab.', ecuacion: ['4', aa, bb, ' = 56   →   ', aa, bb, ' = 14'] },
-        { texto: ['La ', letra('A'), ' se queda en 4ab; la ', letra('B'), ' divide entre 2; la ', letra('D'), ' multiplica 9 · 5, que es a² − b².'] },
+        { texto: ['La ', letra('A'), ' se queda en 4ab: 56. La ', letra('B'), ' divide entre 2: 28.'] },
+        { texto: ['La ', letra('D'), ' multiplica 9 · 5 = 45, que es a² − b². La ', letra('E'), ' da a, no ab: (9 + 5) ÷ 2 = 7.'] },
       ],
       respuesta: [letra('C'), ', 14'] },
     { nivel: 3, titulo: 'Cuartas potencias',
       enunciado: 'Reduce (x + 1)⁴ − (x − 1)⁴.',
-      alternativas: ['8x³ + 8x', '0', '4x', '8x³', '2x⁴ + 2'],
+      alternativas: ['8x³ + 8x', '0', '4x', '8x³', '2'],
       datos: [DF2.sxd, DF.suma, DF.resta],
       solucion: [
-        { texto: 'Es una diferencia de cuadrados: el primero es (x + 1)² y el segundo, (x − 1)².', ecuacion: ['[(x + 1)² + (x − 1)²] · [(x + 1)² − (x − 1)²]'] },
-        { texto: 'La suma da 2x² + 2. En la resta se van x² y 1, y queda el doble producto dos veces: 4x.', ecuacion: ['(2x² + 2) · 4x = 8x³ + 8x'] },
-        { texto: ['La ', letra('B'), ' cree que todo se anula; la ', letra('C'), ' se queda con un solo factor.'] },
+        { texto: 'Es una diferencia de cuadrados, con a = (x + 1)² y b = (x − 1)²: vale la suma a + b por la diferencia a − b.', ecuacion: ['(x + 1)⁴ − (x − 1)⁴ = (', aa, ' + ', bb, ')(', aa, ' − ', bb, ')'] },
+        { texto: 'La suma a + b da 2x² + 2. En la diferencia a − b se van x² y 1, y queda el doble producto dos veces: 4x.', ecuacion: ['(2x² + 2) · 4x = 8x³ + 8x'] },
+        { texto: ['La ', letra('B'), ' cree que todo se anula: 0. La ', letra('C'), ' se queda con un solo factor: 4x.'] },
+        { texto: ['La ', letra('D'), ' se olvida del 1 + 1 de la suma: 2x² · 4x = 8x³. La ', letra('E'), ' quita las piezas del medio: (x⁴ + 1) − (x⁴ − 1) = 2.'] },
       ],
       respuesta: [letra('A'), ', 8x³ + 8x'] },
     { nivel: 3, titulo: 'Sextas potencias',
@@ -656,17 +688,19 @@
       solucion: [
         { texto: 'a⁶ − b⁶ es una diferencia de cuadrados: los de a³ y b³.', ecuacion: ['63 = (a³ + b³)(a³ − b³) = (a³ + b³) · 7'] },
         { texto: 'Entonces a³ + b³ = 9. Se suma con a³ − b³ = 7: se van las b³.', ecuacion: ['2a³ = 9 + 7 = 16   →   a³ = 8'] },
-        { texto: ['La ', letra('B'), ' se queda en a³ + b³; la ', letra('C'), ' da b³; la ', letra('D'), ' resta 63 − 7.'] },
+        { texto: ['La ', letra('B'), ' se queda en a³ + b³: 9. La ', letra('C'), ' da b³: 9 − 8 = 1.'] },
+        { texto: ['La ', letra('D'), ' resta 63 − 7 = 56. La ', letra('E'), ' se olvida de sumar 7: 9 ÷ 2 = 4,5.'] },
       ],
       respuesta: [letra('A'), ', 8'] },
     { nivel: 3, titulo: 'Una diferencia constante',
       enunciado: 'Reduce (x + 1)(x + 4) − (x + 2)(x + 3).',
-      alternativas: ['−2', '2', '0', '10', '2x + 2'],
+      alternativas: ['−2', '2', '0', '10', '−2x'],
       datos: [DF2.xpq],
       solucion: [
         { texto: 'Los dos productos tienen p + q = 5: los dos traen x² y el mismo término del medio, 5x.', ecuacion: ['(x + 1)(x + 4) = x² + ', PM('5x'), ' + 4'] },
         { texto: 'El otro es x² + 5x + 6. Al restar, se van x² y 5x: queda 4 − 6.', ecuacion: ['(x² + ', PM('5x'), ' + 4) − (x² + ', PM('5x'), ' + 6) = −2'] },
-        { texto: ['La ', letra('B'), ' resta al revés; la ', letra('C'), ' cree que todo se anula.'] },
+        { texto: ['La ', letra('B'), ' resta al revés: 6 − 4 = 2. La ', letra('C'), ' cree que todo se anula: 0.'] },
+        { texto: ['La ', letra('D'), ' suma los números: 4 + 6 = 10. La ', letra('E'), ' cambia la suma por el producto: (x² + 4x + 5) − (x² + 6x + 5) = −2x.'] },
       ],
       respuesta: [letra('A'), ', −2'] },
     { nivel: 3, titulo: 'Un número enorme',
@@ -675,8 +709,9 @@
       datos: [DF2.sxd],
       solucion: [
         { texto: '1001 es 1000 + 1 y 999 es 1000 − 1: una suma por su diferencia.', ecuacion: ['1001 · 999 = ', T1('1000²'), ' − ', T2('1²')] },
-        { texto: 'Al restar 1000², solo queda la esquina, con signo menos.', ecuacion: [T1('1000²'), ' − ', T2(1), ' − ', T1('1000²'), ' = −1'] },
-        { texto: ['La ', letra('A'), ' se olvida de la esquina; la ', letra('C'), ' la suma.'] },
+        { texto: 'Al restar 1000², solo queda el 1², con signo menos.', ecuacion: [T1('1000²'), ' − ', T2(1), ' − ', T1('1000²'), ' = −1'] },
+        { texto: ['La ', letra('A'), ' se olvida de restar 1²: 0. La ', letra('C'), ' lo suma: 1. La ', letra('D'), ' resta 2 · 1 en vez de 1²: −2.'] },
+        { texto: ['La ', letra('E'), ' deja un doble producto, que aquí se anula: 2 · 1000 · 1 − 1 = 1999.'] },
       ],
       respuesta: [letra('B'), ', −1'] },
   ];
@@ -765,10 +800,11 @@
       ],
     },
     regla: {
-      texto: 'La suma por la diferencia de dos términos es el cuadrado del primero menos el del segundo. En (x + p)(x + q), el medio es (p + q)x.',
+      // p y q dichos en palabras (auditoría, M7), en la condición: la regla tiene tope de 30 palabras.
+      texto: 'La suma por la diferencia de dos términos es el cuadrado del primero menos el del segundo. Si q = −p, el término del medio, (p + q)x, se anula.',
       ecuacion: ['(', aa, ' + ', bb, ')(', aa, ' − ', bb, ') = ', aa, '² − ', bb, '²', SEP,
         '(x + p)(x + q) = x² + ', { llave: ['(p + q)x'], nota: 'el término del medio', color: 'c-f' }, ' + pq'],
-      condicion: 'Vale para todo a y b. Si q = −p, el término del medio se anula y vuelve la suma por diferencia.',
+      condicion: 'a y b son cualquier número; en (x + p)(x + q), p y q son los números que acompañan a x.',
       voz: 'Las piezas del medio se anulan: queda la resta de los cuadrados.',
     },
     // Así se resuelve: el tablero que se arma con una plancha (largo, ancho y área). «Ahora tú» pide otra cosa: un producto
@@ -793,7 +829,8 @@
     },
     ahoraTu: {
       pieza: 'alg-objeto',
-      voz: 'Busca la suma y la diferencia de los mismos dos términos.',
+      // Una voz que sirve a los cinco tipos (auditoría, B4).
+      voz: '¿Qué términos se repiten en los dos factores?',
       generar(sem) {
         const r = azar(sem + 31), tipo = sem % 5;
         if (tipo === 0) return conCuatro(casoCercanos, r);
@@ -817,13 +854,21 @@
   // de San Marcos 2024-I): AL11 (a + b)³ = a³ + b³ · TAL-CUBO-SUMA resta 3ab sin multiplicar por a + b · TAL-CUBO-TRES
   // cuenta una pieza de cada tipo · TAL-CUBO-CAMBIA cambia a²b por ab² · TAL-CUBO-UNA olvida un tipo de pieza ·
   // TAL-CUBO-SIGNO el signo de b³ en una resta · TAL-CUBO-CUAD (a − b)² en lugar de a² − ab + b² · TAL-SIGNO.
-  const TA = datos => ({ pieza: 'alg-objeto', datos: Object.assign({ objeto: 'taco' }, datos), estado: {} });
+  // El taco va en cm (auditoría, M9: uno de 5 dm de arista pesaba de 60 a 90 kg); la pieza lo rotula en cm.
+  const TA = datos => ({ pieza: 'alg-objeto', datos: Object.assign({ objeto: 'taco', unidad: 'cm' }, datos), estado: {} });
+  // El lado derecho de cada identidad va agrupado: así el renglón se puede partir después del «=» en el celular (sin
+  // grupo, el «=» quedaba pegado a la «a» que sigue y la línea se salía; medido a 390 px, 18 nov).
   const DF3 = {
-    cubo: ['(', aa, ' + ', bb, ')³ = ', aa, '³ + 3', aa, '²', bb, ' + 3', aa, bb, '² + ', bb, '³'],
-    cuboR: ['(', aa, ' − ', bb, ')³ = ', aa, '³ − 3', aa, '²', bb, ' + 3', aa, bb, '² − ', bb, '³'],
+    cubo: ['(', aa, ' + ', bb, ')³ = ', [aa, '³ + 3', aa, '²', bb, ' + 3', aa, bb, '² + ', bb, '³']],
+    cuboR: ['(', aa, ' − ', bb, ')³ = ', [aa, '³ − 3', aa, '²', bb, ' + 3', aa, bb, '² − ', bb, '³']],
     sumaC: 'a³ + b³ = (a + b)(a² − ab + b²)',
     difC: 'a³ − b³ = (a − b)(a² + ab + b²)',
     vol: 'Volumen de una caja = largo · ancho · alto',
+    // Las seis piezas del medio juntas, y las dos identidades que salen de ahí (auditoría, A1: todo ejercicio que las
+    // usa las trae en sus datos; antes el resuelto decía 3ab(a + b) y los datos daban 3a²b + 3ab²).
+    medio: ['3', aa, '²', bb, ' + 3', aa, bb, '² = ', ['3', aa, bb, '(', aa, ' + ', bb, ')']],
+    sumaSP: [aa, '³ + ', bb, '³ = ', ['(', aa, ' + ', bb, ')³ − 3', aa, bb, '(', aa, ' + ', bb, ')']],
+    difSP: [aa, '³ − ', bb, '³ = ', ['(', aa, ' − ', bb, ')³ + 3', aa, bb, '(', aa, ' − ', bb, ')']],
   };
   // Ahora tú 1: desarrollar el cubo de una suma.
   function casoCubo(r) {
@@ -858,7 +903,7 @@
     const M = r.uno([10, 20, 30]), d = r.ent(1, 2), N = M + d, bien = N ** 3;
     return {
       pregunta: `¿Cuánto vale ${N}³, sin hacer la multiplicación larga?`,
-      datos: [`${N} = ${M} + ${d}`, DF3.cubo],
+      datos: [DF3.cubo],
       opciones: opcionesP([String(bien)], [
         { id: 'al11', texto: [String(M ** 3 + d ** 3)], error: 'AL11', siFuera: `Bien ${M}³ y ${d}³. Pero faltan las seis piezas del medio.` },
         { id: 'tres', texto: [String(M ** 3 + M * M * d + M * d * d + d ** 3)], error: 'TAL-CUBO-TRES', siFuera: 'Bien las cuatro clases de piezas. Pero del medio hay tres de cada una.' },
@@ -874,7 +919,7 @@
     const S = x + y, P = x * y, bien = S ** 3 - 3 * P * S;
     return {
       pregunta: ['Si ', aa, ' + ', bb, ` = ${S} y `, aa, bb, ` = ${P}, ¿cuánto vale `, aa, '³ + ', bb, '³?'],
-      datos: [DF3.cubo],
+      datos: [DF3.cubo, DF3.sumaSP],
       opciones: opcionesP([String(bien)], [
         { id: 'al11', texto: [String(S ** 3)], error: 'AL11', siFuera: `${S}³ está bien calculado. Pero ahí están también las seis piezas del medio.` },
         { id: 'suma', texto: [String(S ** 3 - 3 * P)], error: 'TAL-CUBO-SUMA', siFuera: `Bien quitar 3ab. Pero las piezas del medio son 3ab(a + b): por ${S}.` },
@@ -901,41 +946,46 @@
 
   // Ejemplos resueltos de la idea 3. Cuentas rehechas aparte (cuentas-productos-f3.py): 3 · 3 · 1 = 9; (x + 2)³ =
   // x³ + 6x² + 12x + 8; (2 + 1)³ = 27 contra 9 (faltan 18 = 12 + 6); 11³ = 1331; en (x + 5)³, 15x²; (x − 3)³ =
-  // x³ − 9x² + 27x − 27; (2x + 1)³ = 8x³ + 12x² + 6x + 1; x³ + 8 = (x + 2)(x² − 2x + 4); 8x³ − 27 = (2x − 3)(4x² + 6x + 9);
-  // 99³ = 970 299; a + b = 5, ab = 3 → 80; a + b = 4, a³ + b³ = 28 → ab = 3; a − b = 2, ab = 15 → 98; x + 1/x = 3 → 18;
+  // x³ − 9x² + 27x − 27; (2x + 1)³ = 8x³ + 12x² + 6x + 1; x³ + 8y³ = (x + 2y)(x² − 2xy + 4y²); 8x³ − 27 =
+  // (2x − 3)(4x² + 6x + 9); 101³ − 99³ = 60 002; a + b = 5, ab = 3 → 80; a + b = 4, a³ + b³ = 28 → ab = 3; a − b = 2, ab = 15 → 98; x + 1/x = 3 → 18;
   // a + b = 3, a² + b² = 5 → 9. El nivel 1 no halla a³ + b³ con la suma y el producto (es la predicción).
   const EJEMPLOS_CUBO = [
     { nivel: 1, titulo: 'Las piezas del taco',
-      enunciado: ['Un taco cúbico de arista ', T1(3), ' + ', T2(1), ' dm se corta en sus ocho piezas. ¿Cuánto mide cada pieza a²b?'],
+      enunciado: ['Un taco cúbico de arista a + b = ', T1(3), ' + ', T2(1), ' cm se corta en sus ocho piezas. ¿Cuánto mide cada pieza a²b?'],
       datos: [DF3.vol],
       figura: TA({ a: 3, b: 1, abrir: 1, rot: { a2b: '?' } }),
       solucion: [{ texto: 'Una pieza a²b mide a de largo, a de ancho y b de alto.', ecuacion: [PM('3 · 3 · 1 = 9')] }],
-      respuesta: [PM('9 dm³')] },
+      respuesta: [PM('9 cm³')] },
     { nivel: 1, titulo: 'Desarrollar un cubo',
       enunciado: ['Desarrolla (', T1('x'), ' + ', T2(2), ')³.'],
       datos: [DF3.cubo],
-      solucion: [{ texto: 'a es x y b es 2: x³, tres piezas x² · 2, tres x · 2² y 2³.', ecuacion: ['(', T1('x'), ' + ', T2(2), ')³ = ', T1('x³'), ' + ', PM('6x²'), ' + 12x + ', T2(8)] }],
+      solucion: [{ texto: 'a es x y b es 2: x³, tres veces x² · 2, tres veces x · 2² y 2³.', ecuacion: ['(', T1('x'), ' + ', T2(2), ')³ = ', T1('x³'), ' + ', PM('6x²'), ' + 12x + ', T2(8)] }],
       respuesta: [T1('x³'), ' + ', PM('6x²'), ' + 12x + ', T2(8)] },
     { nivel: 1, titulo: '¿Bastan las esquinas?',
-      enunciado: ['¿Es (', T1(2), ' + ', T2(1), ')³ igual a ', T1(2), '³ + ', T2(1), '³?'],
+      enunciado: ['¿Es (', T1(2), ' + ', T2(1), ')³ igual a ', T1(2), '³ + ', T2(1), '³? El dibujo es un taco de arista ', T1(2), ' + ', T2(1), ' cm, abierto.'],
       datos: [DF3.cubo],
-      solucion: [{ texto: '(2 + 1)³ = 3³ = 27, pero 2³ + 1³ = 8 + 1 = 9. Faltan las seis piezas del medio: 3 · 4 + 3 · 2 = 18.', ecuacion: ['27 = 9 + ', PM(12), ' + 6'] }],
+      // El dibujo de las piezas que nombra el resuelto (lector en frío, 07; auditoría, B9), sin sus volúmenes.
+      figura: TA({ a: 2, b: 1, abrir: 1 }),
+      solucion: [
+        { texto: '(2 + 1)³ = 3³ = 27, pero 2³ + 1³ = 8 + 1 = 9: son solo los dos cubos de las esquinas.', ecuacion: ['27 ≠ 9'] },
+        { texto: 'Faltan las seis piezas del medio: tres a²b de 2 · 2 · 1 y tres ab² de 2 · 1 · 1.', ecuacion: [PM('3 · 2² · 1'), ' + 3 · 2 · 1² = ', PM(12), ' + 6 = 18'] },
+      ],
       respuesta: 'No: faltan las piezas del medio, 18' },
     { nivel: 1, titulo: 'Un número al cubo',
       enunciado: '¿Cuánto vale 11³, sin hacer la multiplicación larga?',
-      datos: ['11 = 10 + 1', DF3.cubo],
-      solucion: [{ texto: '11 es 10 + 1: el cubo de 10, tres piezas de 10 · 10 · 1, tres de 10 · 1 · 1 y el cubo de 1.', ecuacion: [T1(1000), ' + ', PM(300), ' + 30 + ', T2(1), ' = 1331'] }],
+      datos: [DF3.cubo],
+      solucion: [{ texto: '11 es 10 + 1, con a = 10 y b = 1: el cubo de 10, tres veces 10 · 10 · 1, tres veces 10 · 1 · 1 y el cubo de 1.', ecuacion: [T1(1000), ' + ', PM(300), ' + 30 + ', T2(1), ' = 1331'] }],
       respuesta: '11³ = 1331' },
     { nivel: 1, titulo: 'Un término del desarrollo',
       enunciado: ['En el desarrollo de (', T1('x'), ' + ', T2(5), ')³, ¿cuál es el término con x²?'],
       datos: [DF3.cubo],
-      solucion: [{ texto: 'Es el de las piezas a²b: tres veces x² por 5.', ecuacion: ['3 · ', T1('x²'), ' · ', T2(5), ' = ', PM('15x²')] }],
+      solucion: [{ texto: 'Es el término 3a²b, con a = x y b = 5: tres veces x² por 5.', ecuacion: ['3 · ', T1('x²'), ' · ', T2(5), ' = ', PM('15x²')] }],
       respuesta: ['El término es ', PM('15x²')] },
     { nivel: 2, titulo: 'Con una resta',
       enunciado: ['Desarrolla (', T1('x'), ' − ', T2(3), ')³.'],
       datos: [DF3.cuboR],
       solucion: [
-        { texto: 'Las mismas cuatro piezas: x³, 3 · x² · 3 = 9x², 3 · x · 9 = 27x y 3³ = 27.', ecuacion: [T1('x³'), '   ', PM('9x²'), '   27x   ', T2(27)] },
+        { texto: 'Los mismos cuatro términos: x³, 3 · x² · 3 = 9x², 3 · x · 9 = 27x y 3³ = 27.', ecuacion: [T1('x³'), '   ', PM('9x²'), '   27x   ', T2(27)] },
         { texto: 'Con la resta, los signos se alternan: −, +, −.', ecuacion: ['(', T1('x'), ' − ', T2(3), ')³ = ', T1('x³'), ' − ', PM('9x²'), ' + 27x − ', T2(27)] },
       ],
       respuesta: [T1('x³'), ' − ', PM('9x²'), ' + 27x − ', T2(27)] },
@@ -944,17 +994,19 @@
       datos: [DF3.cubo],
       solucion: [
         { texto: 'El primer término es 2x: su cubo es 2x · 2x · 2x = 8x³, y su cuadrado, 4x².', ecuacion: [{ sup: [{ par: [T1('2x')] }, '3'] }, ' = ', T1('8x³')] },
-        { texto: 'Las del medio: 3 · 4x² · 1 = 12x² y 3 · 2x · 1 = 6x. La otra esquina: 1.', ecuacion: ['(', T1('2x'), ' + ', T2(1), ')³ = ', T1('8x³'), ' + ', PM('12x²'), ' + 6x + ', T2(1)] },
+        { texto: 'Los del medio: 3 · 4x² · 1 = 12x² y 3 · 2x · 1 = 6x. Y 1³ = 1.', ecuacion: ['(', T1('2x'), ' + ', T2(1), ')³ = ', T1('8x³'), ' + ', PM('12x²'), ' + 6x + ', T2(1)] },
       ],
       respuesta: [T1('8x³'), ' + ', PM('12x²'), ' + 6x + ', T2(1)] },
-    { nivel: 2, titulo: 'Suma de cubos',
-      enunciado: ['Factoriza ', T1('x³'), ' + ', T2(8), '.'],
+    // Nivel 2 (auditoría, M8; lector en frío, 08): antes, x³ + 8, solo reemplazar en la fórmula; ahora hay que ver
+    // primero que 8y³ es un cubo, (2y)³.
+    { nivel: 2, titulo: 'Suma de cubos con dos letras',
+      enunciado: ['Factoriza ', T1('x³'), ' + ', T2('8y³'), '.'],
       datos: [DF3.sumaC],
       solucion: [
-        { texto: '8 es 2³: es una suma de cubos, con a = x y b = 2.', ecuacion: [T1('x³'), ' + ', T2('2³')] },
-        { texto: 'Se aplica la fórmula: a² − ab + b² es x² − 2x + 4.', ecuacion: ['x³ + 8 = (x + 2)(x² − 2x + 4)'] },
+        { texto: '8y³ es 2y · 2y · 2y = (2y)³: es una suma de cubos, con a = x y b = 2y.', ecuacion: [T1('x³'), ' + ', { sup: [{ par: [T2('2y')] }, '3'] }] },
+        { texto: 'Se aplica la fórmula: a² es x², ab es x · 2y = 2xy y b² es (2y)² = 4y².', ecuacion: ['x³ + 8y³ = (x + 2y)(x² − 2xy + 4y²)'] },
       ],
-      respuesta: '(x + 2)(x² − 2x + 4)' },
+      respuesta: '(x + 2y)(x² − 2xy + 4y²)' },
     { nivel: 2, titulo: 'Diferencia de cubos',
       enunciado: ['Factoriza ', T1('8x³'), ' − ', T2(27), '.'],
       datos: [DF3.difC],
@@ -963,69 +1015,75 @@
         { texto: 'a² + ab + b² es 4x² + 6x + 9.', ecuacion: ['8x³ − 27 = (2x − 3)(4x² + 6x + 9)'] },
       ],
       respuesta: '(2x − 3)(4x² + 6x + 9)' },
-    { nivel: 2, titulo: 'Casi cien',
-      enunciado: '¿Cuánto vale 99³, sin hacer la multiplicación larga?',
-      datos: ['99 = 100 − 1', DF3.cuboR],
+    // Nivel 2: ya no es «un número al cubo» del nivel 1 con una resta; junta los dos cubos y resta.
+    { nivel: 2, titulo: 'Dos cubos casi iguales',
+      enunciado: '¿Cuánto vale 101³ − 99³, sin hacer las multiplicaciones largas?',
+      datos: [DF3.cubo, DF3.cuboR],
       solucion: [
-        { texto: '99 es 100 − 1: el cubo de una resta.', ecuacion: [T1('100³'), ' − ', PM('3 · 100² · 1'), ' + 3 · 100 · 1² − ', T2('1³')] },
-        { texto: 'Con los signos alternados:', ecuacion: ['1 000 000 − ', PM('30 000'), ' + 300 − 1 = 970 299'] },
+        { texto: 'Es (a + b)³ − (a − b)³ con a = 100 y b = 1. Al restar se anulan a³ y 3ab²; quedan dos veces 3a²b y dos veces b³.', ecuacion: ['101³ − 99³ = 2 · ', PM('3 · 100² · 1'), ' + 2 · ', T2('1³')] },
+        { texto: 'Se hacen las cuentas.', ecuacion: ['2 · ', PM('30 000'), ' + 2 = 60 002'] },
       ],
-      respuesta: '99³ = 970 299' },
+      respuesta: '101³ − 99³ = 60 002' },
     { nivel: 3, titulo: 'Suma y producto',
       enunciado: ['Si ', aa, ' + ', bb, ' = 5 y ', aa, bb, ' = 3, ¿cuánto vale ', aa, '³ + ', bb, '³?'],
       alternativas: ['125', '110', '80', '170', '45'],
-      datos: [DF3.cubo],
+      datos: [DF3.cubo, DF3.medio, DF3.sumaSP],
       solucion: [
-        { texto: '(a + b)³ trae a³ + b³ y las seis piezas del medio, que juntas son 3ab(a + b).', ecuacion: ['5³ = ', aa, '³ + ', bb, '³ + ', PM('3 · 3 · 5')] },
+        { texto: '(a + b)³ trae a³ + b³ y las seis piezas del medio, 3a²b + 3ab², que juntas son 3ab(a + b): sale de sacar 3ab de factor común.', ecuacion: ['5³ = ', aa, '³ + ', bb, '³ + ', PM('3 · 3 · 5')] },
         { texto: 'Se quitan las del medio.', ecuacion: [aa, '³ + ', bb, '³ = 125 − ', PM(45), ' = 80'] },
-        { texto: ['La ', letra('A'), ' no quita nada; la ', letra('B'), ' quita 3ab sin multiplicar por a + b; la ', letra('D'), ' las suma; la ', letra('E'), ' da el medio.'] },
+        { texto: ['La ', letra('A'), ' no quita nada: 125. La ', letra('B'), ' quita ab(a + b) una sola vez, no tres: 125 − 15 = 110.'] },
+        { texto: ['La ', letra('D'), ' suma las del medio: 125 + 45 = 170. La ', letra('E'), ' da las del medio: 45.'] },
       ],
       respuesta: [letra('C'), ', 80'] },
     { nivel: 3, titulo: 'Al revés',
       enunciado: ['Si ', aa, ' + ', bb, ' = 4 y ', aa, '³ + ', bb, '³ = 28, ¿cuánto vale ', aa, bb, '?'],
-      alternativas: ['3', '9', '12', '36', '1'],
-      datos: [DF3.cubo],
+      alternativas: ['3', '9', '12', '36', '6'],
+      datos: [DF3.cubo, DF3.sumaSP],
       solucion: [
-        { texto: 'El cubo de la suma son las dos esquinas y las piezas del medio, 3ab(a + b) = 12ab.', ecuacion: ['4³ = 28 + ', PM('3 · ab · 4'), '   →   64 = 28 + ', PM('12ab')] },
+        { texto: 'Por la identidad de los datos, el cubo de la suma son las dos esquinas y las piezas del medio, 3ab(a + b) = 3 · ab · 4 = 12ab.', ecuacion: ['4³ = 28 + ', PM('3 · ab · 4'), '   →   64 = 28 + ', PM('12ab')] },
         { texto: 'Se despeja: 12ab = 36. (Con 3 y 1: 27 + 1 = 28. Cuadra.)', ecuacion: [aa, bb, ' = 36 ÷ 12 = 3'] },
-        { texto: ['La ', letra('B'), ' se olvida del 3; la ', letra('C'), ' no divide entre a + b; la ', letra('D'), ' se queda en 36.'] },
+        { texto: ['La ', letra('B'), ' se olvida del 3: 36 ÷ 4 = 9. La ', letra('C'), ' no divide entre a + b: 36 ÷ 3 = 12.'] },
+        { texto: ['La ', letra('D'), ' se queda en 36. La ', letra('E'), ' cuenta seis piezas de ab, sin el a + b: 36 ÷ 6 = 6.'] },
       ],
       respuesta: [letra('A'), ', 3'] },
     { nivel: 3, titulo: 'Diferencia y producto',
       enunciado: ['Si ', aa, ' − ', bb, ' = 2 y ', aa, bb, ' = 15, ¿cuánto vale ', aa, '³ − ', bb, '³?'],
-      alternativas: ['8', '98', '53', '−82', '30'],
-      datos: [DF3.cuboR],
+      alternativas: ['8', '98', '53', '−82', '38'],
+      datos: [DF3.cuboR, DF3.difSP],
       solucion: [
-        { texto: 'En el cubo de una resta, las piezas del medio se restan: −3ab(a − b).', ecuacion: ['2³ = ', aa, '³ − ', bb, '³ − ', PM('3 · 15 · 2')] },
+        { texto: 'En el cubo de una resta, las piezas del medio se restan; juntas son 3ab(a − b). Por eso a³ − b³ = (a − b)³ + 3ab(a − b).', ecuacion: ['2³ = ', aa, '³ − ', bb, '³ − ', PM('3 · 15 · 2')] },
         { texto: 'Se despeja. (Con 5 y 3: 125 − 27 = 98. Cuadra.)', ecuacion: [aa, '³ − ', bb, '³ = 8 + ', PM(90), ' = 98'] },
-        { texto: ['La ', letra('A'), ' olvida el medio; la ', letra('C'), ' no multiplica por a − b; la ', letra('D'), ' resta en vez de sumar.'] },
+        { texto: ['La ', letra('A'), ' se olvida del medio: 8. La ', letra('C'), ' no multiplica por a − b: 8 + 3 · 15 = 53.'] },
+        { texto: ['La ', letra('D'), ' resta en vez de sumar: 8 − 90 = −82. La ', letra('E'), ' suma ab(a − b) una sola vez, no tres: 8 + 30 = 38.'] },
       ],
       respuesta: [letra('B'), ', 98'] },
     { nivel: 3, titulo: 'Un número y su inverso',
       enunciado: 'Si x + 1/x = 3, ¿cuánto vale x³ + 1/x³?',
       alternativas: ['27', '24', '18', '9', '26'],
-      datos: [DF3.cubo, 'x · (1/x) = 1, con x ≠ 0'],
+      datos: [DF3.cubo, DF3.sumaSP, 'x · (1/x) = 1, con x ≠ 0'],
       solucion: [
-        { texto: 'a es x y b es 1/x, con ab = 1. Las piezas del medio: 3 · 1 · (x + 1/x) = 9.', ecuacion: ['3³ = x³ + 1/x³ + ', PM(9)] },
+        { texto: 'Con a = x y b = 1/x: ab = 1 y a + b = 3. Las piezas del medio son 3ab(a + b) = 3 · 1 · 3 = 9.', ecuacion: ['3³ = x³ + 1/x³ + ', PM(9)] },
         { texto: 'Se quitan las del medio.', ecuacion: ['x³ + 1/x³ = 27 − ', PM(9), ' = 18'] },
-        { texto: ['La ', letra('A'), ' no quita nada; la ', letra('B'), ' quita solo 3ab = 3; la ', letra('D'), ' da el medio.'] },
+        { texto: ['La ', letra('A'), ' no quita nada: 27. La ', letra('B'), ' quita solo 3ab = 3: 24.'] },
+        { texto: ['La ', letra('D'), ' da las del medio: 9. La ', letra('E'), ' quita solo ab = 1: 26.'] },
       ],
       respuesta: [letra('C'), ', 18'] },
     { nivel: 3, titulo: 'Cuadrados y cubos',
       enunciado: ['Si ', aa, ' + ', bb, ' = 3 y ', aa, '² + ', bb, '² = 5, ¿cuánto vale ', aa, '³ + ', bb, '³?'],
       alternativas: ['27', '21', '9', '15', '18'],
-      datos: [DF.suma, DF3.cubo],
+      datos: [DF.suma, DF3.cubo, DF3.sumaSP],
       solucion: [
         { texto: 'Primero ab, con el cuadrado de la suma: 9 = 5 + 2ab.', ecuacion: ['3² = 5 + ', DP('2ab'), '   →   ', aa, bb, ' = 2'] },
-        { texto: 'Después el cubo: se quitan las piezas del medio, 3 · 2 · 3 = 18. (Con 1 y 2: 1 + 8 = 9.)', ecuacion: [aa, '³ + ', bb, '³ = 27 − ', PM(18), ' = 9'] },
-        { texto: ['La ', letra('A'), ' no quita nada; la ', letra('B'), ' quita solo 3ab; la ', letra('D'), ' multiplica 3 · 5; la ', letra('E'), ' da el medio.'] },
+        { texto: 'Después el cubo: se quitan las piezas del medio, 3ab(a + b) = 3 · 2 · 3 = 18. (Con 1 y 2: 1 + 8 = 9.)', ecuacion: [aa, '³ + ', bb, '³ = 27 − ', PM(18), ' = 9'] },
+        { texto: ['La ', letra('A'), ' no quita nada: 27. La ', letra('B'), ' quita solo 3ab = 6: 21.'] },
+        { texto: ['La ', letra('D'), ' multiplica la suma por la suma de cuadrados: 3 · 5 = 15. La ', letra('E'), ' da las del medio: 18.'] },
       ],
       respuesta: [letra('C'), ', 9'] },
   ];
 
   // «Mira» de la idea 3: suman 7 y multiplican 10 (la predicción), con el taco de 5 + 2.
   const MIRA_CUBO = { objeto: 'taco', a: 5, b: 2, escala: 18, pasos: [
-    { cortes: false, arista: 'arista: a + b = 7 dm', total: 'volumen: 7³ = 343 dm³' },
+    { cortes: false, arista: 'arista: a + b = 7 cm', total: 'volumen: 7³ = 343 cm³' },
     { abrir: 1, tramos: false, total: '343 = a³ + b³ + las seis del medio' },
     { abrir: 1, tramos: false, solo: 'medio', total: 'medio: 3ab(a + b) = 3 · 10 · 7 = 210' },
     { abrir: 1, tramos: false, solo: 'esquinas', total: 'a³ + b³ = 343 − 210 = 133' },
@@ -1041,11 +1099,11 @@
     // Lee: el taco, los tres cortes y el volumen de una caja. No dice cuántas piezas salen ni cuánto miden (es el juego).
     lee: {
       tarjetas: [
-        { titulo: 'El taco del carpintero', texto: 'En la carpintería hay un taco de madera con forma de cubo. Cada arista mide 5 dm, así que tiene 5 · 5 · 5 = 125 dm³ de madera. El carpintero lo va a cortar en piezas.',
-          pieza: 'alg-objeto', dibujo: TA({ a: 3, b: 2, cortes: false, arista: 'arista: 5 dm', total: 'volumen: 125 dm³' }) },
+        { titulo: 'El taco del carpintero', texto: 'En la carpintería hay un taco de madera con forma de cubo. Cada arista mide 5 cm, así que tiene 5 · 5 · 5 = 125 cm³ de madera. El carpintero lo va a cortar en piezas.',
+          pieza: 'alg-objeto', dibujo: TA({ a: 3, b: 2, cortes: false, arista: 'arista: 5 cm', total: 'volumen: 125 cm³' }) },
         { titulo: 'Tres cortes', texto: 'Hace un corte a lo ancho, otro a lo largo y otro a lo alto, los tres a la misma distancia de una esquina. Así cada arista queda partida en dos tramos: a y b.',
           ecuacion: ['arista = ', aa, ' + ', bb] },
-        { titulo: 'El volumen de una caja', texto: 'Una caja guarda largo por ancho por alto: una de 3 dm por 2 dm por 2 dm guarda 12 dm³. Un cubo de arista a guarda a · a · a = a³.',
+        { titulo: 'El volumen de una caja', texto: 'Una caja guarda largo por ancho por alto: una de 3 cm por 2 cm por 2 cm guarda 12 cm³. Un cubo de arista a guarda a · a · a = a³.',
           ecuacion: ['3 · 2 · 2 = 12'] },
         { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar los tramos ', aa, ' y ', bb, ' y abrir el taco. Cuenta cuántas piezas salen y cuánto mide cada una.'] },
       ],
@@ -1055,9 +1113,9 @@
       pieza: 'alg-objeto',
       consigna: 'El carpintero corta un taco cúbico con tres cortes, uno en cada dirección. Cada arista queda en dos tramos: a y b.',
       mision: {
-        texto: ['El taco se corta a ', T1(3), ' dm de una esquina. Ábrelo y logra 125 dm³.'],
+        texto: ['El taco se corta a ', T1(3), ' cm de una esquina. Ábrelo y logra 125 cm³.'],
         logrado: val => val.a === 3 && val.b === 2 && val.abrir === 1,
-        bien: 'a³ y b³ son solo 35 de 125 dm³: el resto está en el medio.',
+        bien: 'a³ y b³ son solo 35 de 125 cm³: el resto está en el medio.',
       },
       voz: 'Cuenta las piezas: ¿cuántas hay de cada forma?',
       leyenda: [
@@ -1070,8 +1128,8 @@
         { s: '(a + b)³', t: 'el taco entero, de arista a + b' },
       ],
       controles: [
-        { id: 'a', etiqueta: 'Tramo a (dm)', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
-        { id: 'b', etiqueta: 'Tramo b (dm)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'a', etiqueta: 'Tramo a (cm)', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'b', etiqueta: 'Tramo b (cm)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
         { id: 'abrir', etiqueta: 'El taco', opciones: [{ valor: 0, texto: 'Cortado' }, { valor: 1, texto: 'Abierto' }] },
       ],
       dibujo: v => TA({ a: v.a, b: v.b, abrir: v.abrir, total: true, rot: { a3: true, a2b: true, ab2: true } }),
@@ -1101,18 +1159,21 @@
       pasos: [
         { estado: { paso: 0 }, texto: 'El taco entero tiene arista a + b = 7: su volumen es 343.', ecuacion: ['(a + b)³ = 7³ = 343'] },
         { estado: { paso: 1 }, texto: 'Abierto: dos cubos en las esquinas y seis piezas en el medio.', ecuacion: ['343 = ', T1('a³'), ' + ', T2('b³'), ' + ', PM('3a²b'), ' + 3ab²'] },
-        { estado: { paso: 2 }, texto: 'Las seis del medio juntas son 3ab(a + b).', ecuacion: [PM('3a²b'), ' + 3ab² = 3ab(a + b) = 3 · 10 · 7 = 210'] },
+        { estado: { paso: 2 }, texto: 'Las seis del medio, con 3ab de factor común:', ecuacion: [PM('3a²b'), ' + 3ab² = 3ab(a + b)', SEP, '3ab(a + b) = 3 · 10 · 7 = 210'] },
         { estado: { paso: 3 }, texto: 'Se quitan del taco entero: quedan las dos esquinas.', ecuacion: [T1('a³'), ' + ', T2('b³'), ' = 343 − 210 = 133'] },
         { estado: { paso: 3 }, texto: 'Con letras, el cubo de una suma:', ecuacion: DF3.cubo },
       ],
     },
     regla: {
-      texto: 'El cubo de un binomio son ocho piezas: los dos cubos de las esquinas, tres a²b y tres ab². Con una resta, los signos se alternan.',
+      // Sin ± ni ∓ (auditoría, M7): la suma y la diferencia de cubos, cada una en su renglón, y las dos identidades con
+      // la suma (o la resta) y el producto, que los datos de los ejercicios de examen traen (A1). Cada renglón cabe en el
+      // celular a 390 px (antes se cortaba en «3ab(a +»; lo mide herramientas/… en el scratchpad, medir-cortes.js).
+      texto: 'El cubo de un binomio son ocho piezas: dos cubos, tres a²b y tres ab². Las seis del medio juntas son 3ab(a + b). Con resta, los signos se alternan.',
       ecuacion: ['(', aa, ' + ', bb, ')³ = ', aa, '³ + ', { llave: ['3', aa, '²', bb], nota: 'piezas del medio', color: 'c-f' }, ' + 3', aa, bb, '² + ', bb, '³', SEP,
-        '(', aa, ' − ', bb, ')³ = ', aa, '³ − 3', aa, '²', bb, ' + 3', aa, bb, '² − ', bb, '³', SEP,
-        aa, '³ + ', bb, '³ = (', aa, ' + ', bb, ')³ − 3', aa, bb, '(', aa, ' + ', bb, ')', SEP,
-        aa, '³ ± ', bb, '³ = (', aa, ' ± ', bb, ')(', aa, '² ∓ ', aa, bb, ' + ', bb, '²)'],
-      condicion: 'Vale para todo a y b, también negativos; el taco solo muestra tramos positivos.',
+        ...DF3.cuboR, SEP, ...DF3.sumaSP, SEP, ...DF3.difSP, SEP,
+        aa, '³ + ', bb, '³ = ', ['(', aa, ' + ', bb, ')(', aa, '² − ', aa, bb, ' + ', bb, '²)'], SEP,
+        aa, '³ − ', bb, '³ = ', ['(', aa, ' − ', bb, ')(', aa, '² + ', aa, bb, ' + ', bb, '²)']],
+      condicion: 'a y b son cualquier número, también negativos; el taco solo muestra tramos positivos.',
       voz: 'Ocho piezas: no te olvides de las seis del medio.',
     },
     // Así se resuelve: la madera de las seis piezas del medio de un taco. «Ahora tú» pide otra cosa: desarrollar (con suma
@@ -1125,17 +1186,17 @@
         do { A = r.ent(2, 5); B = r.ent(1, 3); } while (A === B);
         const p1 = A * A * B, p2 = A * B * B, tot = 3 * p1 + 3 * p2, V = (A + B) ** 3;
         return {
-          enunciado: ['Un taco cúbico de madera se corta a ', T1(A), ' dm de una esquina, en las tres direcciones; el otro tramo mide ', T2(B), ' dm. ¿Cuánta madera hay en las seis piezas del medio?'],
+          enunciado: ['Un taco cúbico de madera se corta a ', T1(A), ' cm de una esquina, en las tres direcciones; el otro tramo mide ', T2(B), ' cm. ¿Cuánta madera hay en las seis piezas del medio?'],
           datos: [DF3.vol, DF3.cubo],
           dibujo: TA({ a: A, b: B, abrir: 1, rot: { a2b: '?', ab2: '?' } }),
           pasos: [
             { tipo: 'pide', texto: 'Piden las seis piezas del medio, no el taco entero.' },
-            { tipo: 'regla', texto: 'El taco se abre en ocho piezas: los cubos a³ y b³ de las esquinas y, en el medio, tres a²b y tres ab².', ecuacion: DF3.cubo },
+            { tipo: 'regla', texto: 'El taco se abre en ocho piezas: los cubos a³ y b³ de las esquinas y, en el medio, tres a²b y tres ab².', ecuacion: ['medio = ', PM('3a²b'), ' + 3ab²'] },
             { tipo: 'cuentas', texto: `Tres piezas de ${A} · ${A} · ${B} = ${p1} y tres de ${A} · ${B} · ${B} = ${p2}.`,
               ecuacion: [PM(`3 · ${p1}`), ` + 3 · ${p2} = `, PM(3 * p1), ` + ${3 * p2} = ${tot}`], dibujo: TA({ a: A, b: B, abrir: 1, solo: 'medio', rot: { a2b: true, ab2: true } }) },
-            { tipo: 'sentido', texto: `Lo reviso: el taco mide ${A + B}³ = ${V} dm³; sin las esquinas, ${A ** 3} y ${B ** 3}, quedan ${V - A ** 3 - B ** 3}. Cuadra.` },
+            { tipo: 'sentido', texto: `Lo reviso: el taco mide ${A + B}³ = ${V} cm³; sin las esquinas, ${A ** 3} y ${B ** 3}, quedan ${V - A ** 3 - B ** 3}. Cuadra.` },
           ],
-          respuesta: `Las seis del medio: ${tot} dm³`,
+          respuesta: `Las seis del medio: ${tot} cm³`,
         };
       },
     },
@@ -1166,7 +1227,8 @@
   const ME = datos => ({ pieza: 'alg-objeto', datos: Object.assign({ objeto: 'mesa' }, datos), estado: {} });
   const RD = t => ({ raiz: Array.isArray(t) ? t : [t] });
   const DF4 = {
-    rd: '√(A + 2√B) = √x + √y, si x + y = A y x · y = B',
+    // Sin la conjunción «y» junto a la variable y (auditoría, M6: se leía «A y x · y = B»).
+    rd: '√(A + 2√B) = √x + √y, si x + y = A, x · y = B',
     rdm: '√(A − 2√B) = √x − √y, con x mayor que y',
     cuad: '(√x + √y)² = x + y + 2√(xy)',
     meter: 'k√M = √(k² · M), con k positivo',
@@ -1255,13 +1317,15 @@
   // Ejemplos resueltos de la idea 4. Cuentas rehechas aparte (cuentas-productos-f3.py): lado √6 + √2; √(5 + 2√6) = √3 + √2;
   // √(9 + 2√20) = √5 + 2; 6 · 2 = 12 ≠ 15; 7 + 3 + 2√21; √(8 − 2√15) = √5 − √3; √(7 + √40) = √5 + √2; √(11 + 4√6) =
   // 2√2 + √3; (√7 + √2)² = 9 + 2√14; √(6 − √20) = √5 − 1; suma de √(5 ± 2√6) = 2√3; √(9 − 2√14) = √7 − √2;
-  // √(3 + √8) − √2 = 1; 12 + 2√35 → lado √7 + √5, perímetro 4√7 + 4√5; √(16 − 6√7) = 3 − √7. El nivel 1 solo usa «+»
+  // √(3 + √8) − √2 = 1; 12 + 2√35 → lado √7 + √5, perímetro 4√7 + 4√5; √(16 − 6√7) = 3 − √7;
+  // √(9 − 2√14) · √(9 + 2√14) = 5. El nivel 1 solo usa «+»
   // (el menos es la predicción).
   const EJEMPLOS_RD = [
     { nivel: 1, titulo: 'El lado de la mesa',
       enunciado: ['Una mesa se arma con dos planchas cuadradas, de ', T1(6), ' dm² y de ', T2(2), ' dm², y dos rectangulares iguales. ¿Cuánto mide su lado?'],
       datos: ['Lado de un cuadrado = √(su área)'],
-      figura: ME({ x: 6, y: 2, lados: false, lado: '?' }),
+      // Solo lo que cada dato marca (molde §3, 18 nov): las dos planchas cuadradas; las rectangulares, sin su √12.
+      figura: ME({ x: 6, y: 2, lados: false, lado: '?', rot: { xy: false } }),
       solucion: [{ texto: 'El lado de la mesa es el lado de una plancha cuadrada más el de la otra.', ecuacion: ['lado = ', T1('√6'), ' + ', T2('√2')] }],
       respuesta: ['Mide ', T1('√6'), ' + ', T2('√2'), ' dm'] },
     { nivel: 1, titulo: 'Un radical doble',
@@ -1332,48 +1396,55 @@
       solucion: [
         { texto: 'Los dos usan 3 y 2, que suman 5 y multiplican 6.', ecuacion: ['(', T1('√3'), ' + ', T2('√2'), ') + (', T1('√3'), ' − ', T2('√2'), ')'] },
         { texto: 'Las √2 se anulan y quedan dos √3.', ecuacion: ['= ', T1('2√3')] },
-        { texto: ['La ', letra('A'), ' cree que las raíces chicas se anulan adentro; la ', letra('C'), ' se queda con la √2; la ', letra('E'), ' es solo el primero.'] },
+        { texto: ['La ', letra('A'), ' cree que las raíces chicas se anulan adentro: √5 + √5 = 2√5. La ', letra('C'), ' se queda con las √2: 2√2.'] },
+        { texto: ['La ', letra('D'), ' cree que todo se anula: 0. La ', letra('E'), ' es solo el primero: √3 + √2.'] },
       ],
       respuesta: [letra('B'), ', ', T1('2√3')] },
-    { nivel: 3, titulo: 'El orden importa',
-      enunciado: ['¿A qué es igual ', RD('9 − 2√14'), '?'],
-      alternativas: ['√2 − √7', '√9 − √14', '√7 − √2', '√7 + √2', '3 − √14'],
-      datos: [DF4.rd, DF4.rdm],
+    // Nivel 3: ya no es el «Con una resta» del nivel 2 con otros números (la prueba de niveles lo vio); junta dos
+    // radicales dobles con la suma por diferencia de la idea 2.
+    { nivel: 3, titulo: 'Un producto de radicales dobles',
+      enunciado: ['¿Cuánto vale ', RD('9 − 2√14'), ' · ', RD('9 + 2√14'), '?'],
+      alternativas: ['25', '9', '5', '√53', '√7 − √2'],
+      datos: [DF4.rd, DF4.rdm, DF2.sxd],
       solucion: [
-        { texto: '7 + 2 = 9 y 7 · 2 = 14.', ecuacion: [T1(7), ' + ', T2(2), ' = 9   y   ', T1(7), ' · ', T2(2), ' = 14'] },
-        { texto: 'Con el menos, primero la raíz mayor.', ecuacion: [RD('9 − 2√14'), ' = ', T1('√7'), ' − ', T2('√2')] },
-        { texto: ['La ', letra('A'), ' es negativa; la ', letra('B'), ' y la ', letra('E'), ' reparten la raíz; la ', letra('D'), ' cambia el signo.'] },
+        { texto: '7 + 2 = 9 y 7 · 2 = 14: los dos usan √7 y √2. Con el menos, primero el mayor; con el más, √7 + √2.', ecuacion: [RD('9 − 2√14'), ' = ', T1('√7'), ' − ', T2('√2')] },
+        { texto: 'Es una suma por diferencia: el cuadrado del primero menos el del segundo.', ecuacion: ['(', T1('√7'), ' − ', T2('√2'), ')(', T1('√7'), ' + ', T2('√2'), ') = 7 − 2 = 5'] },
+        { texto: ['La ', letra('A'), ' junta todo en una raíz y no la saca: 81 − 56 = 25. La ', letra('B'), ' suma los cuadrados: 7 + 2 = 9.'] },
+        { texto: ['La ', letra('D'), ' no eleva el 2 al cuadrado: √(81 − 28) = √53. La ', letra('E'), ' da solo el primero: √7 − √2.'] },
       ],
-      respuesta: [letra('C'), ', ', T1('√7'), ' − ', T2('√2')] },
+      respuesta: [letra('C'), ', 5'] },
     { nivel: 3, titulo: 'Una resta que da entero',
       enunciado: ['¿Cuánto vale ', RD('3 + √8'), ' − √2?'],
-      alternativas: ['1', '√3', '√2', '0', '2√2 + 1'],
+      alternativas: ['1', '√2 + 1', '−1', '3 + √2', '√2 + 2'],
       datos: [DF4.rd, DF4.meter],
       solucion: [
         { texto: 'Se saca el 2: √8 = 2√2. Luego 2 + 1 = 3 y 2 · 1 = 2.', ecuacion: [RD('3 + 2√2'), ' = ', T1('√2'), ' + ', T2(1)] },
         { texto: 'Al restar √2, queda 1.', ecuacion: ['√2 + 1 − √2 = 1'] },
-        { texto: ['La ', letra('B'), ' reparte la raíz; la ', letra('E'), ' saca el 2 y lo deja afuera.'] },
+        { texto: ['La ', letra('B'), ' no resta √2: √2 + 1. La ', letra('C'), ' cambia el signo: (√2 − 1) − √2 = −1.'] },
+        { texto: ['La ', letra('D'), ' se olvida de la raíz grande: 3 + 2√2 − √2 = 3 + √2. La ', letra('E'), ' deja el 2 afuera: 2(√2 + 1) − √2 = √2 + 2.'] },
       ],
       respuesta: [letra('A'), ', 1'] },
     { nivel: 3, titulo: 'El perímetro de la mesa',
       enunciado: ['Una mesa cuadrada de 12 + 2√35 dm² se arma con dos planchas cuadradas y dos rectangulares iguales. ¿Cuál es su perímetro?'],
       alternativas: ['4√7 + 4√5', '4√12 + 4√35', '2√7 + 2√5', '√7 + √5', '4√35'],
-      datos: [DF4.rd, 'Perímetro de un cuadrado = 4 · lado'],
+      datos: [DF4.rd, DF4.prod, 'Perímetro de un cuadrado = 4 · lado'],
       figura: ME({ x: 7, y: 5, areas: false, lados: false, total: 'mesa: 12 + 2√35 dm²', lado: '?' }),
       solucion: [
-        { texto: 'Las planchas cuadradas suman 12 y multiplican 35: son de 7 y 5 dm².', ecuacion: ['lado = ', RD('12 + 2√35'), ' = ', T1('√7'), ' + ', T2('√5')] },
+        { texto: 'Con cuadradas de x e y dm², cada rectangular mide √x · √y = √(xy); las dos, 2√35: x · y = 35. Y x + y = 12: son de 7 y 5 dm².', ecuacion: ['lado = ', RD('12 + 2√35'), ' = ', T1('√7'), ' + ', T2('√5')] },
         { texto: 'El perímetro son cuatro lados.', ecuacion: ['4(', T1('√7'), ' + ', T2('√5'), ') = 4√7 + 4√5'] },
-        { texto: ['La ', letra('B'), ' reparte la raíz; la ', letra('D'), ' da el lado, no el perímetro.'] },
+        { texto: ['La ', letra('B'), ' reparte la raíz: 4(√12 + √35). La ', letra('C'), ' suma dos lados, no cuatro: 2√7 + 2√5.'] },
+        { texto: ['La ', letra('D'), ' da el lado, no el perímetro. La ', letra('E'), ' toma como lado el área de una plancha rectangular: 4√35.'] },
       ],
       respuesta: [letra('A'), ', 4√7 + 4√5 dm'] },
     { nivel: 3, titulo: 'Con número delante y resta',
       enunciado: ['¿A qué es igual ', RD('16 − 6√7'), '?'],
-      alternativas: ['√7 − 3', '3 − √7', '4 − √6', '√16 − √63', '3 + √7'],
+      alternativas: ['√7 − 3', '3 − √7', '√15 − 1', '√16 − √63', '3 + √7'],
       datos: [DF4.rd, DF4.rdm, DF4.meter],
       solucion: [
         { texto: 'Se deja solo un 2 afuera: 6√7 = 2 · 3√7 = 2√63.', ecuacion: [RD('16 − 6√7'), ' = ', RD('16 − 2√63')] },
         { texto: '9 + 7 = 16 y 9 · 7 = 63. Primero el mayor, y √9 = 3.', ecuacion: [T1('√9'), ' − ', T2('√7'), ' = ', T1(3), ' − ', T2('√7')] },
-        { texto: ['La ', letra('A'), ' es negativa; la ', letra('D'), ' reparte la raíz; la ', letra('E'), ' cambia el signo.'] },
+        { texto: ['La ', letra('A'), ' pone primero la menor y es negativa: √7 − 3. La ', letra('C'), ' usa un par que suma 16 pero no multiplica 63: 15 · 1 = 15.'] },
+        { texto: ['La ', letra('D'), ' reparte la raíz: √16 − √63. La ', letra('E'), ' cambia el signo: 3 + √7.'] },
       ],
       respuesta: [letra('B'), ', ', T1(3), ' − ', T2('√7')] },
   ];
@@ -1384,7 +1455,7 @@
     pregunta: '¿Cómo se quita una raíz que está dentro de otra?',
     temas: ['Radicales dobles'],
     pieza: 'alg-objeto',
-    aprendizaje: '√(A + 2√B) = √x + √y si x + y = A y xy = B: es el lado de una mesa de dos planchas cuadradas y dos rectangulares.',
+    aprendizaje: '√(A + 2√B) = √x + √y si x + y = A, xy = B: es el lado de una mesa de dos planchas cuadradas y dos rectangulares.',
     actividad: 'Armar una mesa cuadrada con cuatro planchas de madera.',
     // Lee: la mesa y qué es un radical doble. No dice cómo se encuentran las planchas (es el juego) ni qué pasa con un menos.
     lee: {
@@ -1415,12 +1486,18 @@
         { s: '√x + √y', t: 'el lado de la mesa' },
       ],
       controles: [
-        { id: 'x', etiqueta: 'Plancha grande, x (dm²)', color: 'c-o', min: 4, max: 8, paso: 1, inicio: 4, decimales: 0 },
-        { id: 'y', etiqueta: 'Plancha chica, y (dm²)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+        // Abre en 7 y 2 (9 + 2√14): ni la misión ni una raíz exacta (auditoría, M4: abría en «5 + 2√4» con la mesa en 9 dm²).
+        { id: 'x', etiqueta: 'Plancha grande, x (dm²)', color: 'c-o', min: 4, max: 8, paso: 1, inicio: 7, decimales: 0 },
+        { id: 'y', etiqueta: 'Plancha chica, y (dm²)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: v => ME({ x: v.x, y: v.y, total: true }),
       // La relación: lo que suman y lo que multiplican las planchas da el área de la mesa.
-      lectura: v => ['Suman ', T1(v.x), ' + ', T2(v.y), ` = ${v.x + v.y} y multiplican ${v.x * v.y}: mesa de ${v.x + v.y} + 2√${v.x * v.y}`],
+      // Si el producto es un cuadrado perfecto, la raíz se saca (como en el dibujo): «mesa de 5 + 2 · 2 = 9», no «5 + 2√4».
+      lectura: v => {
+        const A = v.x + v.y, B = v.x * v.y, q = Math.round(Math.sqrt(B));
+        return q * q === B ? ['Suman ', T1(v.x), ' + ', T2(v.y), ` = ${A}, multiplican ${B}: mesa de ${A} + 2 · ${q} = ${A + 2 * q}`]
+          : ['Suman ', T1(v.x), ' + ', T2(v.y), ` = ${A} y multiplican ${B}: mesa de ${A} + 2√${B}`];
+      },
       minimo: 3,
     },
     predice: {
@@ -1452,11 +1529,12 @@
       ],
     },
     regla: {
-      texto: 'Un radical doble √(A ± 2√B) se vuelve dos raíces simples si hay x e y que suman A y multiplican B. Con el menos, va primero el mayor.',
+      // ± dicho en palabras y sin C (auditoría, M7); «primero el mayor» queda en la condición (x mayor que y).
+      texto: 'Un radical doble, √(A ± 2√B), es √x ± √y si x e y suman A y multiplican B. El signo ± es «más o menos»: el mismo en los dos lados.',
       ecuacion: [RD(['A ± 2', RD('B')]), ' = ', RD([T1('x')]), ' ± ', RD([T2('y')]), SEP,
         { llave: [T1('x'), ' + ', T2('y')], nota: 'suman A' }, ' = A', SEP,
         { llave: [T1('x'), ' · ', T2('y')], nota: 'multiplican B', color: 'c-f' }, ' = B'],
-      condicion: 'x mayor que y, ambos positivos. Si no hay un 2 delante de la raíz chica, se hace: √C = 2√(C/4).',
+      condicion: 'x mayor que y, los dos positivos. Si la raíz chica no tiene el 2 delante, se lo pone: √40 = 2√10.',
       voz: 'Suman lo de afuera y multiplican lo de adentro.',
     },
     // Así se resuelve: las dos planchas y el lado de una mesa. «Ahora tú» pide otra cosa: radicales dobles con +, con −,
@@ -1509,8 +1587,9 @@
     uno: '√a · √a = a',
     conj: '(√a + √b)(√a − √b) = a − b',
     conjN: '(√a + c)(√a − c) = a − c²',
-    cubo: '∛a · ∛(a²) = ∛(a³) = a',
+    cubo: [c3('a'), ' · ', c3('a²'), ' = ', c3('a³'), ' = a'],
     diag: 'Diagonal de un cuadrado = lado · √2',
+    perim: 'Perímetro de un cuadrado = 4 · lado',
   };
   // k√A/den escrito corto: «2√3», «√5/5», «3√2/2».
   const coefRaiz = (k, raiz) => `${k === 1 ? '' : k}${raiz}`;
@@ -1552,18 +1631,20 @@
       solucion: { texto: `Se multiplica por el conjugado; abajo queda ${A} − ${B} = ${Dv}.`, ecuacion: [{ frac: [String(K), `√${A} ${s} ${segundo}`] }, ' = ', ...fraccion(arriba(inv, cc), den)] },
     };
   }
-  // Ahora tú 4 (nivel examen): una raíz cúbica abajo.
+  // Ahora tú 4 (nivel examen): una raíz cúbica abajo. Con un número delante, «2 · ∛4» (pegado, 2 y el índice 3 se leerían
+  // como 2³).
+  const coefC = (k, A) => (k === 1 ? [c3(A)] : [`${k} · `, c3(A)]);
   function casoCubica(r) {
     const A = r.uno([2, 3, 5, 6, 7]), K = r.ent(1, 6), g = mcd(K, A), c = K / g, den = A / g;
     return {
-      pregunta: ['Racionaliza ', { frac: [String(K), `∛${A}`] }, '.'],
+      pregunta: ['Racionaliza ', { frac: [String(K), [c3(A)]] }, '.'],
       datos: [DF5.cubo],
-      opciones: opcionesP(fraccion(coefRaiz(c, `∛${A * A}`), den), [
-        { id: 'cubo', texto: fraccion(coefRaiz(c, `∛${A}`), den), error: 'TAL-RAC-CUBO', siFuera: `Bien la idea de multiplicar por 1. Pero ∛${A} · ∛${A} no da ${A}: faltan tres factores.` },
-        { id: 'den', texto: [coefRaiz(K, `∛${A * A}`)], error: 'TAL-RAC-DEN', siFuera: `Bien ∛${A * A} arriba. Pero abajo quedó ∛${A ** 3} = ${A}: falta dividir.` },
+      opciones: opcionesP(fraccion(coefC(c, A * A), den), [
+        { id: 'cubo', texto: fraccion(coefC(c, A), den), error: 'TAL-RAC-CUBO', siFuera: `Bien multiplicar por 1. Pero dos raíces cúbicas de ${A} no dan ${A}: hacen falta tres.` },
+        { id: 'den', texto: coefC(K, A * A), error: 'TAL-RAC-DEN', siFuera: `Bien arriba. Pero abajo quedó la raíz cúbica de ${A ** 3}, que es ${A}: falta dividir.` },
         { id: 'uno', texto: fraccion(String(K / g), den), error: 'TAL-RAC-UNO', siFuera: `Bien que abajo quede ${A}. Pero si solo cambias abajo, cambia el valor.` },
       ]),
-      solucion: { texto: `Para que abajo haya tres factores ∛${A}, se multiplica por ∛${A}² = ∛${A * A}.`, ecuacion: [{ frac: [String(K), `∛${A}`] }, ' · ', F1(`∛${A * A}/∛${A * A}`), ' = ', ...fraccion(coefRaiz(c, `∛${A * A}`), den)] },
+      solucion: { texto: `Para que abajo haya tres factores iguales, se multiplica por la raíz cúbica de ${A}², que es la de ${A * A}.`, ecuacion: [{ frac: [String(K), [c3(A)]] }, ' · ', uno3(A * A), ' = ', ...fraccion(coefC(c, A * A), den)] },
     };
   }
   // Ahora tú 5 (nivel examen): la suma o la resta de dos fracciones con denominadores conjugados.
@@ -1584,18 +1665,20 @@
     };
   }
 
-  // Ejemplos resueltos de la idea 5. Cuentas rehechas aparte (cuentas-productos-f3.py): 3/√2 = 3√2/2 ≈ 2,12;
+  // Ejemplos resueltos de la idea 5. Cuentas rehechas aparte (cuentas-productos-f3.py y, las del 18 nov,
+  // correcciones-productos/cuentas-correcciones.py): 9/√2 = 9√2/2 ≈ 6,36;
   // 1/√5 = √5/5; 6/√3 = 2√3; 1/√2 = √2/2 ≈ 0,707; √3/√2 = √6/2; 2/(√3 + 1) = √3 − 1; 4/(√7 − √3) = √7 + √3;
-  // 3/(2√3) = √3/2; 1/∛2 = ∛4/2; 4/√2 = 2√2 ≈ 2,83; 1/(√5 − 2) + 1/(√5 + 2) = 2√5; 1/(√3 − √2) − 1/(√3 + √2) = 2√2;
+  // (2 + √2)/√2 = √2 + 1; 1/∛2 = ∛4/2; 4 · 12/√2 = 24√2 ≈ 33,94; 1/(√5 − 2) + 1/(√5 + 2) = 2√5; 1/(√3 − √2) − 1/(√3 + √2) = 2√2;
   // 1/(∛3 − ∛2) = ∛9 + ∛6 + ∛4; x = 1/(√2 − 1) → x − 1/x = 2; 1/√(3 + 2√2) = √2 − 1. El nivel 1 no usa el conjugado
   // (es la predicción).
   const EJEMPLOS_RAC = [
+    // Las cometas, en dm y de 9 a 12 dm (auditoría, M9: una varilla de 8 m no es creíble; la del «Lee» mide 1 m).
     { nivel: 1, titulo: 'El lado de una cometa',
-      enunciado: 'La varilla de punta a punta de una cometa cuadrada mide 3 m. ¿Cuánto mide su lado, sin raíz en el denominador?',
+      enunciado: 'Una de las varillas de una cometa cuadrada va de punta a punta y mide 9 dm. ¿Cuánto mide su lado, sin raíz en el denominador?',
       datos: [DF5.diag, DF5.uno],
-      figura: CM({ d: 3, lado: '?' }),
-      solucion: [{ texto: 'El lado es 3/√2. Se multiplica arriba y abajo por √2, que es multiplicar por 1.', ecuacion: [{ frac: ['3', '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: ['3√2', '2'] }, ' ≈ 2,12'] }],
-      respuesta: 'Lado: 3√2/2 m, unos 2,12 m' },
+      figura: CM({ d: 9, lado: '?', unidad: 'dm' }),
+      solucion: [{ texto: 'El lado es 9/√2. Se multiplica arriba y abajo por √2, que es multiplicar por 1.', ecuacion: [{ frac: ['9', '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: ['9√2', '2'] }, ' ≈ 6,36'] }],
+      respuesta: 'Lado: 9√2/2 dm, unos 6,36 dm' },
     { nivel: 1, titulo: 'Una raíz abajo',
       enunciado: ['Racionaliza ', { frac: ['1', '√5'] }, '.'],
       datos: [DF5.uno],
@@ -1632,79 +1715,87 @@
         { texto: 'Se simplifica el 4.', ecuacion: ['= √7 + √3'] },
       ],
       respuesta: '√7 + √3' },
-    { nivel: 2, titulo: 'Un número con la raíz',
-      enunciado: ['Racionaliza ', { frac: ['3', '2√3'] }, '.'],
-      datos: [DF5.uno],
+    // Nivel 2 (auditoría, M1; lector en frío, 13 y 14): ya no es 6/√3 con otros números; arriba hay una suma y la raíz
+    // multiplica a cada sumando.
+    { nivel: 2, titulo: 'Una suma arriba',
+      enunciado: ['Racionaliza ', { frac: ['2 + √2', '√2'] }, '.'],
+      datos: [DF5.uno, DF.dist],
       solucion: [
-        { texto: 'Basta multiplicar por √3: el 2 no tiene raíz.', ecuacion: [{ frac: ['3', '2√3'] }, ' · ', F1('√3/√3'), ' = ', { frac: ['3√3', '2 · 3'] }] },
-        { texto: 'Abajo, 2 · 3 = 6, y 3/6 = 1/2.', ecuacion: ['= ', { frac: ['√3', '2'] }] },
+        { texto: 'Por √2 arriba y abajo. Arriba, √2 multiplica a cada sumando: 2 · √2 + √2 · √2 = 2√2 + 2.', ecuacion: [{ frac: ['2 + √2', '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: ['2√2 + 2', '2'] }] },
+        { texto: 'Cada sumando de arriba se divide entre 2.', ecuacion: ['= √2 + 1'] },
       ],
-      respuesta: [{ frac: ['√3', '2'] }] },
+      respuesta: '√2 + 1' },
     { nivel: 2, titulo: 'Una raíz cúbica',
-      enunciado: ['Racionaliza ', { frac: ['1', '∛2'] }, '.'],
+      enunciado: ['Racionaliza ', { frac: ['1', [c3(2)]] }, '.'],
       datos: [DF5.cubo],
       solucion: [
-        { texto: 'Con ∛2 abajo no basta multiplicar por ∛2: hacen falta tres factores ∛2. Faltan dos: ∛4.', ecuacion: ['∛2 · ∛4 = ∛8 = 2'] },
-        { texto: 'Se multiplica arriba y abajo por ∛4.', ecuacion: [{ frac: ['1', '∛2'] }, ' · ', F1('∛4/∛4'), ' = ', { frac: ['∛4', '2'] }] },
+        { texto: 'Con la raíz cúbica de 2 abajo no basta multiplicar por ella: hacen falta tres factores iguales. Con la raíz cúbica de 4 se completan.', ecuacion: [c3(2), ' · ', c3(4), ' = ', c3(8), ' = 2'] },
+        { texto: 'Se multiplica arriba y abajo por la raíz cúbica de 4.', ecuacion: [{ frac: ['1', [c3(2)]] }, ' · ', uno3(4), ' = ', { frac: [[c3(4)], '2'] }] },
       ],
-      respuesta: [{ frac: ['∛4', '2'] }] },
-    { nivel: 2, titulo: 'La cometa grande',
-      enunciado: 'La varilla de punta a punta de una cometa cuadrada mide 4 m. ¿Cuánto mide su lado, sin raíz abajo?',
-      datos: [DF5.diag, DF5.uno],
-      figura: CM({ d: 4, lado: '?' }),
+      respuesta: [{ frac: [[c3(4)], '2'] }] },
+    // Nivel 2 (auditoría, M1): ya no es la cometa del nivel 1 con otra varilla; pide el contorno, con un paso más.
+    { nivel: 2, titulo: 'El contorno de la cometa',
+      enunciado: 'Una de las varillas de una cometa cuadrada va de punta a punta y mide 12 dm. ¿Cuánto mide el contorno de la cometa, sin raíz en el denominador?',
+      datos: [DF5.diag, DF5.uno, DF5.perim],
+      figura: CM({ d: 12, unidad: 'dm' }),
       solucion: [
-        { texto: 'El lado es la varilla entre √2.', ecuacion: ['lado = ', { frac: ['4', '√2'] }] },
-        { texto: 'Por √2 arriba y abajo, y 4 entre 2 es 2.', ecuacion: [{ frac: ['4', '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: ['4√2', '2'] }, ' = 2√2 ≈ 2,83'] },
+        { texto: 'El lado es la varilla entre √2, y el contorno son cuatro lados.', ecuacion: ['4 · ', { frac: ['12', '√2'] }, ' = ', { frac: ['48', '√2'] }] },
+        { texto: 'Por √2 arriba y abajo, y 48 entre 2 es 24.', ecuacion: [{ frac: ['48', '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: ['48√2', '2'] }, ' = 24√2 ≈ 33,94'] },
       ],
-      respuesta: 'Lado: 2√2 m, unos 2,83 m' },
+      respuesta: 'Contorno: 24√2 dm, unos 33,94 dm' },
     { nivel: 3, titulo: 'Suma con conjugados',
       enunciado: ['¿Cuánto vale ', { frac: ['1', '√5 − 2'] }, ' + ', { frac: ['1', '√5 + 2'] }, '?'],
-      alternativas: ['2√5', '4', '0', '√5', '2√5 + 4'],
+      alternativas: ['2√5', '4', '0', '2√5/9', '2√5 + 4'],
       datos: [DF5.conjN],
       solucion: [
         { texto: 'Abajo, con el conjugado: 5 − 4 = 1. Así la primera es √5 + 2 y la segunda, √5 − 2.', ecuacion: [{ frac: ['1', '√5 − 2'] }, ' = √5 + 2   y   ', { frac: ['1', '√5 + 2'] }, ' = √5 − 2'] },
         { texto: 'Al sumar, los 2 se anulan.', ecuacion: ['(√5 + 2) + (√5 − 2) = 2√5'] },
-        { texto: ['La ', letra('B'), ' resta en vez de sumar; la ', letra('C'), ' cree que todo se anula.'] },
+        { texto: ['La ', letra('B'), ' resta en vez de sumar: 4. La ', letra('C'), ' cree que todo se anula: 0.'] },
+        { texto: ['La ', letra('D'), ' deja abajo 5 + 4 = 9: 2√5/9. La ', letra('E'), ' no cambia el signo en la segunda: (√5 + 2) + (√5 + 2) = 2√5 + 4.'] },
       ],
       respuesta: [letra('A'), ', 2√5'] },
     { nivel: 3, titulo: 'Resta con conjugados',
       enunciado: ['¿Cuánto vale ', { frac: ['1', '√3 − √2'] }, ' − ', { frac: ['1', '√3 + √2'] }, '?'],
-      alternativas: ['2√3', '0', '2√2', '√2', '2√6'],
+      alternativas: ['2√3', '0', '2√2', '2√2/5', '−2√2'],
       datos: [DF5.conj],
       solucion: [
         { texto: 'Abajo, 3 − 2 = 1: la primera es √3 + √2 y la segunda, √3 − √2.', ecuacion: [{ frac: ['1', '√3 − √2'] }, ' = √3 + √2'] },
         { texto: 'Al restar, se van las √3 y quedan dos √2.', ecuacion: ['(√3 + √2) − (√3 − √2) = 2√2'] },
-        { texto: ['La ', letra('A'), ' suma en vez de restar; la ', letra('B'), ' cree que todo se anula.'] },
+        { texto: ['La ', letra('A'), ' suma en vez de restar: 2√3. La ', letra('B'), ' cree que todo se anula: 0.'] },
+        { texto: ['La ', letra('D'), ' deja abajo 3 + 2 = 5: 2√2/5. La ', letra('E'), ' no usa el conjugado: (√3 − √2) − (√3 + √2) = −2√2.'] },
       ],
       respuesta: [letra('C'), ', 2√2'] },
     { nivel: 3, titulo: 'Con raíces cúbicas',
-      enunciado: ['Racionaliza ', { frac: ['1', '∛3 − ∛2'] }, '.'],
-      alternativas: ['∛3 + ∛2', '∛9 + ∛6 + ∛4', '∛9 − ∛6 + ∛4', '(∛3 + ∛2)/5', '∛9 + ∛4'],
-      datos: [DF3.difC],
+      enunciado: ['Racionaliza ', { frac: ['1', [c3(3), ' − ', c3(2)]] }, '.'],
+      alternativas: [[c3(3), ' + ', c3(2)], [c3(9), ' + ', c3(6), ' + ', c3(4)], [c3(9), ' − ', c3(6), ' + ', c3(4)], [{ frac: [[c3(3), ' + ', c3(2)], '5'] }], [c3(9), ' + ', c3(4)]],
+      datos: [DF3.difC, DF5.cubo],
       solucion: [
-        { texto: 'Con a = ∛3 y b = ∛2, a³ − b³ = 3 − 2 = 1. Se multiplica por a² + ab + b².', ecuacion: ['(∛3 − ∛2)(∛9 + ∛6 + ∛4) = 3 − 2 = 1'] },
-        { texto: 'Abajo queda 1: la fracción es lo de arriba.', ecuacion: [{ frac: ['1', '∛3 − ∛2'] }, ' = ∛9 + ∛6 + ∛4'] },
-        { texto: ['La ', letra('A'), ' usa el conjugado de las raíces cuadradas, que aquí no sirve; la ', letra('C'), ' cambia un signo.'] },
+        { texto: 'Con a, la raíz cúbica de 3, y b, la de 2: a³ − b³ = 3 − 2 = 1. Se multiplica arriba y abajo por a² + ab + b².', ecuacion: ['(', c3(3), ' − ', c3(2), ')(', c3(9), ' + ', c3(6), ' + ', c3(4), ') = 3 − 2 = 1'] },
+        { texto: 'Abajo queda 1: la fracción es lo de arriba.', ecuacion: [{ frac: ['1', [c3(3), ' − ', c3(2)]] }, ' = ', c3(9), ' + ', c3(6), ' + ', c3(4)] },
+        { texto: ['La ', letra('A'), ' usa el conjugado de las raíces cuadradas, que aquí no quita la raíz de abajo. La ', letra('C'), ' cambia el signo del medio.'] },
+        { texto: ['La ', letra('D'), ' usa ese conjugado y deja abajo 3 + 2 = 5. La ', letra('E'), ' se olvida del término del medio, ab.'] },
       ],
-      respuesta: [letra('B'), ', ∛9 + ∛6 + ∛4'] },
+      respuesta: [letra('B'), ', ', c3(9), ' + ', c3(6), ' + ', c3(4)] },
     { nivel: 3, titulo: 'Un número y su inverso',
       enunciado: ['Si x = ', { frac: ['1', '√2 − 1'] }, ', ¿cuánto vale x − 1/x?'],
-      alternativas: ['2', '2√2', '0', '1', '√2'],
+      alternativas: ['2', '2√2', '0', '1', '−2'],
       datos: [DF5.conjN],
       solucion: [
         { texto: 'Con el conjugado, abajo queda 2 − 1 = 1: x = √2 + 1. Y 1/x es √2 − 1.', ecuacion: ['x = √2 + 1   y   1/x = √2 − 1'] },
         { texto: 'Al restar, se van las √2.', ecuacion: ['(√2 + 1) − (√2 − 1) = 2'] },
-        { texto: ['La ', letra('B'), ' suma en vez de restar; la ', letra('C'), ' cree que todo se anula.'] },
+        { texto: ['La ', letra('B'), ' suma en vez de restar: x + 1/x = 2√2. La ', letra('C'), ' cree que todo se anula: 0.'] },
+        { texto: ['La ', letra('D'), ' confunde x − 1/x con x · (1/x) = 1. La ', letra('E'), ' resta al revés: (√2 − 1) − (√2 + 1) = −2.'] },
       ],
       respuesta: [letra('A'), ', 2'] },
     { nivel: 3, titulo: 'Un radical doble abajo',
       enunciado: ['Racionaliza ', { frac: ['1', ['√(3 + 2√2)']] }, '.'],
-      alternativas: ['√2 + 1', '√2 − 1', '1/3', '√3 − √2', '3 − 2√2'],
+      alternativas: ['√2 + 1', '√2 − 1', '(√2 − 1)/3', '√3 − √2', '3 − 2√2'],
       datos: [DF4.rd, DF5.conjN],
       solucion: [
         { texto: 'Primero el radical doble: 2 + 1 = 3 y 2 · 1 = 2, así que √(3 + 2√2) = √2 + 1.', ecuacion: [{ frac: ['1', '√2 + 1'] }] },
         { texto: 'Con el conjugado, abajo queda 2 − 1 = 1.', ecuacion: [{ frac: ['1', '√2 + 1'] }, ' · ', F1('(√2 − 1)/(√2 − 1)'), ' = √2 − 1'] },
-        { texto: ['La ', letra('A'), ' no cambia el signo; la ', letra('D'), ' reparte la raíz; la ', letra('E'), ' se olvida de la raíz grande.'] },
+        { texto: ['La ', letra('A'), ' no cambia el signo y cree que abajo queda 1: √2 + 1. La ', letra('C'), ' deja abajo 2 + 1 = 3: (√2 − 1)/3.'] },
+        { texto: ['La ', letra('D'), ' reparte la raíz, √3 + √2, y racionaliza eso: √3 − √2. La ', letra('E'), ' se olvida de la raíz grande: 3 − 2√2.'] },
       ],
       respuesta: [letra('B'), ', √2 − 1'] },
   ];
@@ -1726,7 +1817,7 @@
     // predicción).
     lee: {
       tarjetas: [
-        { titulo: 'La cometa', texto: 'En agosto, en Puno, los chicos hacen volar cometas. Esta tiene forma de cuadrado, y su varilla larga, de punta a punta, mide 1 m. Esa varilla es la diagonal del cuadrado.',
+        { titulo: 'La cometa', texto: 'En agosto, en Puno, los chicos hacen volar cometas. Esta tiene forma de cuadrado, y una de sus varillas, de punta a punta, mide 1 m. Esa varilla es la diagonal del cuadrado.',
           pieza: 'alg-objeto', dibujo: CM({ d: 1 }) },
         { titulo: 'El lado de la cometa', texto: 'En un cuadrado, la diagonal mide el lado por √2. Así que el lado mide 1 entre √2: dividir entre 1,4142…, un número cuyas cifras no terminan. Sin calculadora, es incómodo.',
           ecuacion: ['lado = ', { frac: ['1', '√2'] }, ' m'] },
@@ -1751,7 +1842,8 @@
         { s: 'm', t: 'metro' },
       ],
       controles: [
-        { id: 'd', etiqueta: 'Varilla, d (m)', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 },
+        // De 1 a 2 m (auditoría, M9: una cometa de 3 m o más ya no la hacen volar los chicos).
+        { id: 'd', etiqueta: 'Varilla, d (m)', min: 1, max: 2, paso: 1, inicio: 1, decimales: 0 },
         { id: 'por', etiqueta: 'Multiplicar', opciones: Object.entries(POR).map(([valor, x]) => ({ valor, texto: x.texto })) },
       ],
       dibujo: v => CM({ d: v.d, lado: ladoJuego(v.d, v.por), otro: v.por === 'arriba' ? v.d : undefined }),
@@ -1797,10 +1889,10 @@
       ],
     },
     regla: {
-      texto: 'Se multiplica arriba y abajo por un mismo factor, que vale 1, hasta que abajo no quede raíz: √a con √a, √a − √b con su conjugado, ∛a con ∛a².',
+      texto: 'Se multiplica arriba y abajo por un 1 que quita la raíz de abajo: √a por √a, √a − √b por su conjugado, la cúbica de a por la de a².',
       ecuacion: [{ frac: ['1', ['√', aa]] }, ' = ', { frac: [['√', aa], aa] }, SEP,
         { frac: ['1', ['√', aa, ' − √', bb]] }, ' = ', { frac: [{ llave: ['√', aa, ' + √', bb], nota: 'el conjugado', color: 'c-f', arriba: true }, { llave: [aa, ' − ', bb], nota: 'sin raíces' }] }, SEP,
-        { frac: ['1', ['∛', aa]] }, ' = ', { frac: [['∛', aa, '²'], aa] }],
+        { frac: ['1', [c3([aa])]] }, ' = ', { frac: [[c3([aa, '²'])], aa] }],
       condicion: 'a y b positivos y distintos, para que abajo no quede cero. El valor de la fracción no cambia.',
       voz: 'Multiplicar por 1 no cambia el valor, solo la forma.',
     },
@@ -1809,19 +1901,20 @@
     resuelve: {
       pieza: 'alg-objeto',
       generar(s) {
-        const r = azar(s + 900), D = r.ent(1, 8), lado = ladoCometa(D), val = f(D / Math.SQRT2, 2);
+        // Varillas de 6 a 15 dm (auditoría, M9: llegaban a 8 m).
+        const r = azar(s + 900), D = r.ent(6, 15), lado = ladoCometa(D), val = f(D / Math.SQRT2, 2);
         return {
-          enunciado: `La varilla de punta a punta de una cometa cuadrada mide ${D} m. ¿Cuánto mide su lado, escrito sin raíz en el denominador?`,
+          enunciado: `Una de las varillas de una cometa cuadrada va de punta a punta y mide ${D} dm. ¿Cuánto mide su lado, escrito sin raíz en el denominador?`,
           datos: [DF5.diag, DF5.uno],
-          dibujo: CM({ d: D, lado: '?' }),
+          dibujo: CM({ d: D, lado: '?', unidad: 'dm' }),
           pasos: [
             { tipo: 'pide', texto: 'Piden el lado de la cometa, sin raíz abajo.' },
             { tipo: 'regla', texto: `La diagonal es el lado por √2, así que el lado es ${D}/√2. Para sacar la raíz de abajo, multiplico arriba y abajo por √2: es multiplicar por 1.`, ecuacion: ['lado = ', { frac: [String(D), '√2'] }] },
             { tipo: 'cuentas', texto: `Abajo queda √2 · √2 = 2.${D % 2 === 0 ? ` Y ${D} entre 2 es ${D / 2}.` : ''}`,
-              ecuacion: [{ frac: [String(D), '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: [`${D}√2`, '2'] }, ...(D % 2 === 0 ? [` = ${lado}`] : [])], dibujo: CM({ d: D, lado: `${lado} m` }) },
+              ecuacion: [{ frac: [String(D), '√2'] }, ' · ', F1('√2/√2'), ' = ', { frac: [`${D}√2`, '2'] }, ...(D % 2 === 0 ? [` = ${lado}`] : [])], dibujo: CM({ d: D, lado: `${lado} dm`, unidad: 'dm' }) },
             { tipo: 'sentido', texto: `Lo reviso: ${D}/√2 ≈ ${val} y ${lado} ≈ ${val}. Es el mismo lado, y es menor que la varilla, como debe ser.` },
           ],
-          respuesta: `Lado: ${lado} m, unos ${val} m`,
+          respuesta: `Lado: ${lado} dm, unos ${val} dm`,
         };
       },
     },
@@ -1938,7 +2031,7 @@
 
   return {
     unidad: 'algebra.productos-notables',
-    version: '0.4.0',
+    version: '0.5.0',
     // Fase 3 del método (18 nov): las cinco ideas rehechas contra el contrato; la unidad pasa a calidad 2.
     calidad: 2,
     // Un color fijo por magnitud (cabecera); lo comprueba productos-notables.test.js.
@@ -1986,14 +2079,14 @@
         ejemplos: ['Un cubo tiene 12 aristas iguales.', 'Un cubo de arista 3 tiene volumen 3 · 3 · 3 = 27.', 'Una caja de 3 por 2 por 1 tiene aristas de 3, 2 y 1.'] },
       { termino: 'volumen', formas: ['volumen', 'volúmenes'], def: 'Cuánto espacio ocupa un cuerpo: en una caja, largo por ancho por alto.',
         simple: 'Cuánto espacio ocupa algo, contado en cubitos.', ver: ['arista'],
-        ejemplos: ['Un cubo de arista 2 tiene volumen 2 · 2 · 2 = 8.', 'Una caja de 3 por 2 por 2 dm guarda 12 dm³.', 'Un litro es 1 dm³.'] },
+        ejemplos: ['Un cubo de arista 2 tiene volumen 2 · 2 · 2 = 8.', 'Una caja de 3 por 2 por 2 cm guarda 12 cm³.', 'Un litro es 1 dm³.'] },
       { termino: 'suma de cubos', formas: ['suma de cubos', 'sumas de cubos'], def: 'La suma de dos números elevados al cubo: a³ + b³.',
         simple: 'Un cubo más otro cubo.', ver: ['volumen'],
         ejemplos: ['2³ + 1³ = 8 + 1 = 9.', 'x³ + 27 lo es: 27 = 3³.', '4³ + 1³ = 64 + 1 = 65.'] },
       // Los dos que estrena la idea 4 (reescrita, 18 nov).
       { termino: 'radical doble', formas: ['radical doble', 'radicales dobles'], def: 'Una raíz con otra raíz adentro, de la forma √(A ± 2√B).',
         simple: 'Una raíz con otra raíz adentro.', ver: ['radical', 'radical simple'],
-        ejemplos: ['√(5 + 2√6) es uno.', '√(8 + 2√15) = √5 + √3, porque 5 + 3 = 8 y 5 · 3 = 15.', 'El lado de una mesa de 5 + 2√6 dm² es uno.'] },
+        ejemplos: ['√(5 + 2√6) es uno.', '√(7 + 2√10) = √5 + √2, porque 5 + 2 = 7 y 5 · 2 = 10.', 'El lado de una mesa de 5 + 2√6 dm² es uno.'] },
       { termino: 'radical simple', formas: ['radical simple', 'radicales simples', 'raíces simples', 'raíz simple'], def: 'Una raíz sola, sin otra raíz adentro.',
         simple: 'Una raíz sin otra raíz adentro, como √5.', ver: ['radical doble'],
         ejemplos: ['√5 y √3 lo son.', 'En √3 + √2 hay dos.', '√(5 + 2√6) no lo es, pero vale √3 + √2.'] },

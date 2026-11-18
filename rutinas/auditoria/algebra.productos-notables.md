@@ -137,3 +137,55 @@ el generador, `cuadrado-crece` y `alg-objeto`: 111 de 111 en verde.
 | **Rango creíble de las magnitudes del mundo** (M9): el generador y `resuelve` declaran el rango de su objeto (cometa de 0,6 a 2 m) y el test lo comprueba en 400 semillas. | Semi (el rango se declara a mano) |
 | **Todo problema que el repaso asigna a una unidad `calidad: 2` trae datos** (M11), también el papel de escenas compartidas. | Sí |
 | **Una escena listada en una unidad `calidad: 2` usa la paleta de la unidad** (M11): sus `--c-*` coinciden con `def.colores` o la escena va a «Más mesas del tema». | Semi |
+
+## Correcciones (18 nov)
+
+Fase 8 del método (`docs/metodo/unidad/6-correcciones.md`). Cada corrección tiene la prueba que la habría detectado:
+`contenido/teoria/algebra/productos-notables.test.js` («Correcciones del 18 nov»), `nucleo/kit/piezas/alg-objeto.test.js`
+(M5 y M9), `plantillas/productos-notables/generador.test.js` (A1, M6 y M9) y `plantillas/cuadrado-crece/motor.test.js`
+(M11). Las respuestas que cambiaron se rehicieron aparte, sin el código de la unidad:
+`/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/correcciones-productos/cuentas-correcciones.py`
+(24 de 24 bien). Que ninguna ecuación se salga a 390 px se midió con Playwright (`medir-cortes.js` y `medir-lineas.js`, en
+el mismo scratchpad): regla, «Así se resuelve» con todos los pasos, «Ahora tú», Predice y los 75 ejemplos, sin nada
+que se salga. La unidad pasa a la versión 0.5.0.
+
+| # | Qué se hizo |
+|---|---|
+| A1 | `DF3.sumaSP` (a³ + b³ = (a + b)³ − 3ab(a + b)) y `DF3.difSP` (a³ − b³ = (a − b)³ + 3ab(a − b)) en los datos de `casoCuboSP` y de los 5 ejemplos de nivel 3 de la idea 3 (con `DF3.medio`, 3a²b + 3ab² = 3ab(a + b), en «Suma y producto»); en el generador, `D.cuboSP` y `D.difSP` en `sumaProductoCubo` (papel regenerado: p7 la trae). La regla de la idea 3 tiene seis renglones sin ± ni ∓ (los dos cubos, las dos identidades nuevas, la suma y la diferencia de cubos) y cada lado derecho va agrupado para que el renglón se parta después del «=»: a 390 px ningún renglón pasa de 289 de 318 px (antes, 363). Pruebas: toda solución con 3ab(a ± b) trae su identidad en datos (teoría, 400 semillas de «Ahora tú» y 800 del generador) y la regla trae las dos. |
+| M2 | La B de «Suma y producto»: «quita ab(a + b) una sola vez, no tres: 125 − 15 = 110». Prueba nueva: una tabla con lo que dice cada una de las 100 explicaciones de distractor de nivel 3, rehecho con números (y en x = 2 y 3 si es un polinomio), contra el valor de su alternativa. |
+| M1 | Idea 1, nivel 3: «El producto escondido» (a + b = 7, a² + b² = 25 → ab = 12). Idea 2, nivel 2: «La diferencia escondida» (a + b = 10, a² − b² = 40 → a − b = 4). Idea 5, nivel 2: «El contorno de la cometa» (varilla de 12 dm → 24√2 dm) y «Una suma arriba» ((2 + √2)/√2 = √2 + 1). La prueba nueva de niveles (enunciados con los números cambiados por #1, #2…) encontró dos repeticiones más, que también se cambiaron: «Casi cien» (99³, la forma de 11³) pasó a «Dos cubos casi iguales» (101³ − 99³ = 60 002) y «El orden importa» (√(9 − 2√14), la forma del nivel 2) pasó a «Un producto de radicales dobles» (√(9 − 2√14) · √(9 + 2√14) = 5). |
+| M8 | «Suma de cubos con dos letras»: factoriza x³ + 8y³ (hay que ver que 8y³ = (2y)³). |
+| M3 | «El lado de la mesa»: `rot: { xy: false }`, las planchas rectangulares sin rótulo. Prueba: la figura no muestra √12. |
+| M4 | El juego de la idea 4 abre en x = 7, y = 2 (9 + 2√14) y, cuando el producto es un cuadrado, la lectura saca la raíz: «mesa de 5 + 2 · 2 = 9». Prueba: ninguna lectura de la grilla trae √k con k cuadrado, y el inicio no es la misión. |
+| M5 | `alg-objeto`, terreno que se cede: el rótulo de la esquina va en tres renglones («esquina:», «se quitó», «2 veces» o «se», «devuelve») junto a la esquina, y entra en `geometria().textos`. Prueba: el número de `<text>` del SVG es el de `geometria().textos` en todas las muestras y figuras de la teoría de las dos unidades, y el terreno cabe con 4 de margen. Exponentes y radicales, en verde (34 de 34). |
+| M6 | «√(A + 2√B) = √x + √y, si x + y = A, x · y = B», en la teoría y en el generador (papel p3 regenerado). |
+| M7 | Idea 2: la condición dice «en (x + p)(x + q), p y q son los números que acompañan a x» (la regla tiene tope de 30 palabras). Idea 3: sin ± ni ∓. Idea 4: «El signo ± es «más o menos»: el mismo en los dos lados» y la condición «Si la raíz chica no tiene el 2 delante, se lo pone: √40 = 2√10» (sin C). Prueba: cada letra de la regla se dice en su texto, su condición o la leyenda, y ± o ∓ se explican. |
+| M9 | El taco va en cm en toda la idea 3, en la pieza (unidad por defecto `cm`) y en el generador (arista de 10 cm a lo más). Las cometas de los ejemplos y de «Así se resuelve» van en dm (de 6 a 15 dm), el juego de 1 a 2 m, y el generador de 6 a 15 dm. La pieza corre la cometa a la derecha cuando el rótulo de la varilla es largo («12 dm»). |
+| M10 | El ejemplo del glosario de «radical doble» pasa a √(7 + 2√10) = √5 + √2. Prueba: ni el glosario ni «Lee» de la idea traen 8 + 2√15 ni √5 + √3. |
+| M11 | La escena es compartida (Exponentes y radicales, Productos notables y Factorización): p1, p2, p4 y p10 traen «Datos:» con su fórmula. Prueba en `motor.test.js`. **Pendiente para Gerson:** la paleta de la escena (a azul, b naranja, verde) y su paso 4, que predice (x − 3)²; mandarla a «Más mesas del tema» (`"rehacer": true`) la mueve en las tres unidades. |
+| B1 | Las 100 alternativas incorrectas de nivel 3 se explican con el valor que da su error; las que no salían de ningún error se cambiaron por una que sí: E de «Las piezas de un terreno» (2 m, resta los rectángulos), D y E de «El lado de antes» (23 y 20), E de «Con raíces» (5 + 2√5), E de «Cuartas potencias» (2), E de «Una diferencia constante» (−2x), E de «Al revés» (6), E de «Diferencia y producto» (38), las cuatro de «Una resta que da entero», C de «Con número delante y resta» (√15 − 1) y, en la idea 5, la D de las dos sumas y restas con conjugados, la E de «Resta con conjugados» y de «Un número y su inverso», y la C de «Un radical doble abajo». Pruebas: cada letra incorrecta aparece en el resuelto y su valor cuadra (la de M2). |
+| B2 | Sin «31 = 30 + 1», «2,1 = 2 + 0,1», «11 = 10 + 1», «99 = 100 − 1» ni «N = M ± d» en datos (`casoNumero`, `casoCuboNum`). Prueba. |
+| B3 | Pendiente: «Así se resuelve» de la idea 4 sigue pidiendo las planchas y el lado. |
+| B4 | Voces generales: «Dos cuadrados y el doble producto: no te olvides de ninguno»; «¿Qué términos se repiten en los dos factores?». |
+| B5 | La teoría escribe la raíz cúbica con el signo de raíz y el índice 3 en turquesa (`c3`, magnitud «índice» en `def.colores`; Gerson, quinta ronda), como Exponentes y radicales; el generador sigue con «³√» y el ³ turquesa. El factor que vale 1 con raíces cúbicas va con su llave violeta («vale 1»). |
+| B6 | «p es 5 y q es 3 (q va sin color)». |
+| B7 | La cabecera de la teoría dice que la práctica resalta el resultado en violeta. |
+| B8 | Sin cambio: texto aprobado (cuarta ronda); queda para Gerson. |
+| B9 | «¿Bastan las esquinas?» trae el taco abierto de 2 + 1 cm (sin volúmenes) y «3 · 2² · 1 + 3 · 2 · 1² = 12 + 6 = 18». |
+| B10 | «una de sus varillas, de punta a punta» en «Lee», los ejemplos, el generador y el texto alternativo de la pieza. |
+| B11 | «de arista a + b = 3 + 1 cm». |
+| B12 | «Pero dos raíces cúbicas de A no dan A: hacen falta tres». |
+| B13 | Las condiciones empiezan por «a y b son cualquier número…» (la app antepone «Vale si»). Prueba. |
+| B14 | Pendiente: es de `app/practica.js` (pasar `{ idea }`), fuera de alcance. |
+
+**Del lector en frío** (lo que la auditoría confirmó): los resueltos de la idea 1 sin dibujo ya no hablan de «franjas»
+(dicen «el doble producto, 2ab»; prueba), «¿Bastan las esquinas?» tiene su dibujo, el paso 3ab(a + b) está en datos y
+en «Mira» («Las seis del medio, con 3ab de factor común»), «El perímetro de la mesa» explica por qué multiplican 35, y
+los niveles de cubos y de racionalizar suben (M1, M8).
+
+**Encontrado al corregir:** `txt()` (la que compara opciones) devolvía '' para fracciones y raíces, así que dos opciones
+con fracción se tomaban por iguales y «Ahora tú» de racionalizar solo salía con respuestas sin fracción (11/√11, 4/√2).
+Ahora las cuenta. Las soluciones de nivel 3 con cuatro explicaciones se partieron en dos renglones (tope de 30 palabras).
+
+Capturas `--entera` (momentos, ejemplos y glosario, 390 px):
+`/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/correcciones-productos/cap/`.

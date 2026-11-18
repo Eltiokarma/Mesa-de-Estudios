@@ -200,3 +200,29 @@ test('ronda 2: sin escala dada, el biohuerto más grande llena su casilla y el j
     for (const q of h.cuad) { const [c0, c1] = P.constantes.HU.casillas[{ a: 0, b: 1, junto: 2 }[q.que]]; assert.ok(q.x0 >= c0 - 1e-9 && q.x1 <= c1 + 1e-9, `${a}, ${b}: ${q.que} se sale de su casilla`); }
   }
 });
+
+// Correcciones de Productos notables (18 nov; rutinas/auditoria/algebra.productos-notables.md).
+test('M5: todo texto del dibujo está en geometria().textos (la prueba de encuadre lo mide); la esquina del terreno cabe', () => {
+  const cuenta = (d, e = {}) => [(P.dibujar(d, e).match(/<text\b/g) || []).length, P.geometria(d, e).textos.length];
+  const casos = [...MUESTRAS.map(d => [JSON.stringify(d), d, {}]), ...NUEVOS.map(d => [JSON.stringify(d), d, {}]), ...figurasTeoria().map(([n, f]) => [n, f.datos, f.estado || {}])];
+  for (const a of [5, 6, 7]) for (const b of [1, 2, 3]) for (const esquina of ['doble', 'devuelta']) {
+    const d = { objeto: 'terreno', modo: 'cede', a, b, escala: 22, costado: true, fondo: true, esquina, piezas: true, resto: '?', total: false };
+    casos.push([`terreno cede ${a} ${b} ${esquina}`, d, {}]);
+  }
+  const mal = [];
+  for (const [n, d, e] of casos) { const [k, g] = cuenta(d, e); if (k !== g) mal.push(`${n}: ${k} textos dibujados, ${g} medidos`); }
+  assert.deepEqual(mal, []);
+  const mal2 = [];
+  casos.filter(c => c[1].objeto === 'terreno').forEach(([n, d, e]) => revisar(d, e, n, mal2));
+  assert.deepEqual(mal2, []);
+  // El rótulo de la esquina va en renglones cortos que caben enteros (antes: «esquina: se devuelv…»).
+  const g = P.geometria({ objeto: 'terreno', modo: 'cede', a: 7, b: 2, escala: 22, costado: true, fondo: true, esquina: 'devuelta' });
+  assert.deepEqual(g.textos.filter(t => t.que === 'esquina').map(t => t.txt), ['esquina:', 'se', 'devuelve']);
+});
+
+test('M9: el taco va en cm y la cometa dice su unidad; ninguna dice «la varilla larga» (las dos diagonales son iguales)', () => {
+  assert.match(P.dibujar({ objeto: 'taco', a: 3, b: 2, abrir: 1, total: true }), />3 cm<.*>2 cm<|125 cm³/s);
+  assert.ok(!/dm/.test(P.dibujar({ objeto: 'taco', a: 3, b: 2, abrir: 1, total: true, rot: { a3: true } })));
+  assert.match(P.dibujar({ objeto: 'cometa', d: 9, unidad: 'dm' }), />9 dm</);
+  assert.ok(!/larga/.test(P.alt({ objeto: 'cometa', d: 1 })));
+});
