@@ -570,3 +570,522 @@ Lo que no cuadra:
 - En la 05, el rectángulo «alfas» parece la lámina de oro.
 
 No hubo nada que no pudiera leer.
+
+---
+
+# Ronda 2 (18 nov, noche)
+
+Dos lectores nuevos, sobre la unidad corregida, capturas `--entera --lector`.
+
+## Veredicto de la sesión
+
+Pasan las seis ideas (frase = `aprendizaje`). Se corrige: «Vale si hay reacción química» no dice cuándo cambia el núcleo;
+isóbaros e isótonos sin ejemplo (idea 1); la unidad «radios del centro» del deslizador, la rayita ondulada de Bohr y la
+nube «Actual» sin nombre, y las proporciones fijas que Ahora tú pide sin que el lector las viera en el primer paso de
+Mira (idea 2); la leyenda de ℓ solo hasta d, el espín y mₛ sin presentar, y la respuesta de Ahora tú (4f = 7) que ya
+salía en Predice (idea 3); el empate 2p/3s en Lee antes de la regla y el Cr y el Cu sin explicar (idea 4); el juego de la
+idea 5 arranca en el cloro con la misión del sodio, y **por segunda vez el «Así se resuelve» del Ni²⁺ sale con el dibujo
+del hueso** (la app dibuja con la pieza del momento y no con la del dibujo: lo arregla la sesión en app/teoria.js);
+«fila de dos asientos» de la combi que no calza con el dibujo, un reparto 2, 1, 0 en el juego que no cumple Hund, Mira
+que dice 3 electrones con 4 dibujados (otra vez) e «isoelectrónicos» en el título sin aparecer (idea 6). Ejemplos: las
+cuentas y las fechas cuadran; **la explicación de la E del ejemplo 09 dice «cuenta dos veces el 3» y 2 + 8 + 18 + 18 = 46,
+no 36**; 04 (Thomson) no trae dónde está la carga positiva; 05 con el dibujo de las alfas que parece la lámina; ¹⁰ que se
+lee «1o»; los números bajo las cajas sin decir que son mₗ; Datos que regalan en 14, 16, 17 y 18.
+
+## Momentos
+
+# Informe de un alumno de 5.º (Juliaca): Estructura atómica, pantallas de celular en modo claro
+
+Revisé solo las capturas `claro-cel-<tema>-N-*.png`, en el orden de la tira de ideas que sale arriba:
+1 Partículas, isótopos e iones · 2 Modelos atómicos · 3 Niveles, subniveles y orbitales · 4 Configuración electrónica · 5 Configuración de los iones · 6 Hund y el último electrón.
+
+En todas las pantallas se repite lo mismo: arriba una tarjeta verde con "Teoría · 0 de 6 terminadas" y "Estructura atómica", un botón para volver (‹) y un ícono de átomo. Debajo están las pestañas Ideas / Ejemplos / Glosario / Laboratorio, después la tira con los números de los temas y, más abajo, una barra de 7 rayitas que avanza (Lee, Juega, Predice, Mira, La regla, Así se resuelve, Ahora tú). Abajo aparece Bruna, un castor con mandil verde, con un globo de consejo. En varias pantallas hay una lupa (+) para hacer zoom.
+
+---
+
+## Tema 1: Partículas, isótopos e iones
+
+### 1 Lee
+1. **Qué veo:** un "Hueso de llama del museo" (un hueso largo con un círculo punteado al medio). De ese círculo salen dos líneas hacia dos átomos grises, "carbono-12" y "carbono-14". Cada átomo tiene un núcleo con "?p⁺ ?n°" y arriba "? e⁻". También hay una tarjeta 1/4, "El hueso del museo", con cuatro puntitos para pasar tarjetas, el enlace "Ir directo a jugar" y el botón "Siguiente tarjeta". Arriba hay un enlace "¿De dónde sale esta idea?".
+2. **Qué me piden:** leer. La pregunta es en qué se diferencian los átomos de C-12 y C-14.
+3. **Símbolos:** p⁺ es protón, n° es neutrón, e⁻ es electrón. El "?" indica que todavía no sé cuántos hay. El 12 y el 14 son algún número del átomo (todavía no me dicen cuál).
+5. **Dudas:** en esta pantalla Bruna no se ve, solo su globo de texto. Lo demás se entiende.
+
+### 2 Juega
+1. **Qué veo:** el mismo hueso. A la izquierda está el carbono-12 con un núcleo 6p⁺ 6n° y 6 puntos morados alrededor; debajo dice A = 12. A la derecha está "Tu átomo" con 5p⁺ 6n° y 5 puntos; debajo, A = 11. La frase dice "Z = 5: boro. A = 5 + 6 = 11". Hay una leyenda (Z, N, A, p⁺, n°, e⁻), dos deslizadores con − y + (Protones (Z) = 5 y Neutrones (N) = 6), el botón "Volver al inicio" y el aviso "Prueba 3 casos distintos: llevas 1".
+2. **Qué me piden:** la misión es armar un átomo de carbono-14.
+3. **Símbolos:** Z es el número atómico (los protones). N son los neutrones. A es el número de masa, Z + N. Los puntos morados son electrones.
+4. **Qué aprendí:** si cambio los protones cambia el elemento (5 es boro, 6 es carbono). El 14 del carbono-14 es A, así que necesito Z = 6 y N = 8.
+5. **Dudas:** no hay deslizador para los electrones. Supongo que es porque dice "siempre neutro", así que los electrones siguen a los protones solos. No estoy seguro de cuándo la "N" mayúscula y la "n°" son lo mismo.
+
+### 3 Predice
+1. **Qué veo:** "Antes: sodio", un átomo con 11p⁺ 12n° y 11 electrones. "Después: ?", un núcleo con "?p⁺ ?n°" y 10 electrones, más uno que sale volando con una flecha. Datos: Z del neón = 10, Z del magnesio = 12. Hay cuatro opciones y el botón Comprobar.
+2. **Qué me piden:** decir qué es el sodio después de perder un electrón.
+3. **Símbolos:** Na⁺ es el sodio con carga +1.
+5. **Dudas:** ninguna grande. Al principio el dato del neón me tentó a marcar C. Yo elijo **A: un ion Na⁺, sigue siendo sodio**, porque los protones no cambiaron.
+
+### 4 Mira
+1. **Qué veo:** el hueso, C-12 (6p⁺ 6n°, 6 electrones, A = 12) y C-14 (6p⁺ 8n°, 6 electrones, A = 14). Hay un botón de play, una barra de pasos 1/5 y el texto "Z = 6 en los dos: los dos son carbono". El botón dice "Paso 2 de 5".
+2. **Qué me piden:** mirar la animación por pasos.
+3. **Símbolos:** el mismo Z y el mismo A de antes.
+4. **Qué aprendí:** C-12 y C-14 tienen los mismos protones y electrones y solo cambian los neutrones: son isótopos.
+5. **Dudas:** solo veo el paso 1. Bruna habla de "miles de años después" y no sé qué le pasa al C-14 con el tiempo; aquí no se ve.
+
+### 5 La regla
+1. **Qué veo:** a la izquierda un sodio neutro (11p⁺ 12n°, 11 e⁻) y a la derecha un Na⁺ (11p⁺ 12n°, 10 e⁻ y uno que se va), con "carga: 11 − 10 = +1" en rojo. Debajo, las fórmulas A = Z + N y "carga (con signo) = Z − e⁻".
+2. **Qué me piden:** leer la regla. Z decide el elemento. Los isótopos cambian N. Isóbaros: mismo A. Isótonos: mismo N. Isoelectrónicos: mismos electrones.
+3. **Símbolos:** A, Z, N y e⁻. La palabra "carga" va con su signo.
+5. **Dudas:** "Vale si hay una reacción química: ahí el núcleo no cambia". Entonces, ¿hay casos en que el núcleo sí cambia? No lo explican. Los isóbaros, isótonos e isoelectrónicos solo aparecen nombrados, sin dibujo ni ejemplo.
+
+### 6 Así se resuelve
+1. **Qué veo:** un átomo de ⁴⁴Ca²⁺ con núcleo "20p⁺ ?n°", "? e⁻" y A = 44. Luego la caja "Así se resuelve" con sus datos, el paso 1 "¿Qué me piden?", el botón "Ver todos los pasos" y "Paso 2: ¿Qué tengo?".
+2. **Qué me piden:** decir cuántos protones, neutrones y electrones tiene el ⁴⁴Ca²⁺.
+3. **Símbolos:** el número de arriba a la izquierda es A y el de arriba a la derecha es la carga.
+5. **Dudas:** ninguna. Mi cuenta: 20 p⁺, 44 − 20 = 24 n°, 20 − 2 = 18 e⁻.
+
+### 7 Ahora tú
+1. **Qué veo:** solo texto: la pregunta, los datos, las opciones A 39, B 19, C 20, D 58, "No sé" y Comprobar.
+2. **Qué me piden:** decir cuántos neutrones tiene el ³⁹K⁺ si Z = 19.
+3. **Símbolos:** igual que antes.
+5. **Dudas:** ninguna. Elijo **C: 20**, porque N = A − Z = 39 − 19. La carga no cambia los neutrones.
+
+**Ejercicio inventado:** ¿cuántos p⁺, n° y e⁻ tiene el ³²S²⁻ (Z = 16)?
+**Solución:** p⁺ = 16; n° = 32 − 16 = 16; e⁻ = 16 + 2 = 18, porque el ion ganó 2 electrones (carga −2 = 16 − 18).
+
+---
+
+## Tema 2: Modelos atómicos
+
+### 1 Lee
+1. **Qué veo:** un "Retablo con pan de oro" (un arco de iglesia), un cuadradito "pan de oro" colgado de dos hilos, una barra vertical "alfas" a la izquierda y un círculo punteado grande con "?", titulado "Un átomo de oro". La tarjeta es 1/4, "Un retablo dorado".
+2. **Qué me piden:** leer. En 1909 se lanzaron partículas contra una hoja de oro para ver qué hay dentro del átomo.
+3. **Símbolos:** el "?" es que no sabemos cómo es el átomo por dentro.
+5. **Dudas:** todavía no sé qué es una "alfa"; la barra solo tiene el nombre.
+
+### 2 Juega
+1. **Qué veo:** el retablo y el pan de oro. Hay un "Átomo de Thomson": un círculo rosado lleno de "+" rojos y puntos morados. Una flecha negra sale de la barra de alfas y lo cruza casi recta, un poco arriba del centro. La frase dice "Thomson: la alfa cruza el átomo y se desvía casi nada". Hay una leyenda, un selector de modelo (Thomson / Dalton) y un deslizador "Dónde apunta (radios del centro)" en 0,5.
+2. **Qué me piden:** la misión es apuntar una alfa justo al centro de un átomo de Thomson.
+3. **Símbolos:** → es el camino de la alfa; alfas son partículas positivas; + es la carga positiva de Thomson; el punto morado es un electrón.
+4. **Qué aprendí:** en el átomo de Thomson la carga positiva está repartida y la alfa pasa casi sin desviarse.
+5. **Dudas:** no entiendo bien la unidad "radios del centro" (¿0,5 es medio radio?). Tampoco sé qué pasaría con Dalton porque no lo veo.
+
+### 3 Predice
+1. **Qué veo:** "Lo que se vio": una caja "alfas" de donde salen muchas flechas hacia una "lámina de oro". Casi todas pasan derecho, una se desvía hacia arriba y otra rebota hacia atrás.
+2. **Qué me piden:** decir qué tiene que haber dentro del átomo si unas pocas alfas rebotaron.
+3. **Símbolos:** las flechas son las alfas. Los datos dicen que las cargas iguales se repelen.
+5. **Dudas:** Bruna dice que "ninguno de los dos átomos del juego da justo eso" y eso me ayudó. Elijo **B: un núcleo diminuto y positivo; lo demás, casi vacío**.
+
+### 4 Mira
+1. **Qué veo:** una esfera gris maciza, "Dalton 1808", y cuatro círculos punteados vacíos. Está en el paso 1/7.
+2. **Qué me piden:** seguir los modelos paso a paso.
+3. **Símbolos:** cada círculo vacío parece un modelo que todavía no aparece.
+4. **Qué aprendí:** para Dalton (1808) los átomos son esferas macizas que no se parten.
+5. **Dudas:** solo veo a Dalton; los otros modelos están vacíos en esta captura.
+
+### 5 La regla
+1. **Qué veo:** cinco dibujos. Dalton 1808 (esfera gris). Thomson 1904 (círculo con + y puntos). Rutherford 1911 (círculo punteado con un punto naranja al centro y puntos morados lejos). Bohr 1913 (anillos con un punto al centro, un electrón con una flecha y una rayita ondulada que sale). Actual 1926 (una nube de puntitos).
+2. **Qué me piden:** leer que cada modelo explicó una evidencia que el anterior no podía. Rutherford: núcleo diminuto. Bohr: niveles permitidos, y al bajar sale luz de un color fijo. Hoy: orbitales.
+3. **Símbolos:** la rayita ondulada de Bohr creo que es la luz que sale. La nube es el orbital.
+5. **Dudas:** la rayita ondulada y la nube no tienen nombre en el dibujo. "Vale si... Bohr solo explicó bien el hidrógeno": ¿por qué solo el hidrógeno? No lo dicen.
+
+### 6 Así se resuelve
+1. **Qué veo:** no hay dibujo, solo la caja con tres afirmaciones (I Dalton, II Rutherford, III Bohr) y los datos (años y "partícula alfa").
+2. **Qué me piden:** marcar verdadero o falso en cada una.
+3. **Símbolos:** V es verdadero y F es falso.
+5. **Dudas:** el dato de la partícula alfa no parece hacer falta. Yo diría **V, V, V**.
+
+### 7 Ahora tú
+1. **Qué veo:** solo texto: «Las sustancias se combinan siempre en proporciones fijas de masa», los datos (años y "electrón descubierto en 1897") y las opciones Bohr, Rutherford, Thomson, Dalton.
+2. **Qué me piden:** decir qué modelo se propuso para explicar esa evidencia.
+5. **Dudas:** lo de las "proporciones fijas de masa" no apareció en ninguna pantalla anterior; lo saqué por descarte. Elijo **D: Dalton**, porque es el único anterior a 1897.
+
+**Ejercicio inventado:** se observa que el hidrógeno caliente da luz solo de unos pocos colores fijos. ¿Qué modelo lo explicó primero?
+**Solución:** Bohr (1913), porque el electrón solo está en niveles permitidos y al bajar de nivel suelta luz de un color fijo.
+
+---
+
+## Tema 3: Niveles, subniveles y orbitales
+
+### 1 Lee
+1. **Qué veo:** un "Hotel del electrón" con techo. En el Piso 1 está el 1s con una caja ↑↓. En el Piso 2 están el 2s (una caja ↑↓) y el 2p (tres cajas ↑↓). La tarjeta es 1/4, "El hotel del electrón".
+2. **Qué me piden:** leer la comparación: el piso es el nivel n, el pasillo es el subnivel y el cuarto doble es el orbital; los huéspedes son los electrones.
+3. **Símbolos:** ↑↓ son dos electrones; cada cuadrado es un orbital.
+5. **Dudas:** ninguna. Me gustó que diga que es solo una analogía.
+
+### 2 Juega
+1. **Qué veo:** el hotel: Piso 1 con 1s (2 e⁻) y Piso 2 con 2s (2 e⁻) y 2p (6 e⁻, sombreado). La frase dice "Piso 2: 4 cuartos y 8 huéspedes; el 2p tiene 3". Hay una leyenda y dos deslizadores: Piso (n) = 2 y Pasillo marcado (ℓ) = 1.
+2. **Qué me piden:** la misión es abrir un piso donde quepan justo 18 huéspedes.
+3. **Símbolos:** n es el piso. ℓ es el pasillo (0 = s, 1 = p, 2 = d). □ es un orbital. ↑↓ son dos electrones de espín opuesto. e⁻ es lo que cabe en el pasillo.
+4. **Qué aprendí:** cada piso tiene un pasillo más y caben más huéspedes. El piso 3 tiene s, p y d, que suman 2 + 6 + 10 = 18.
+5. **Dudas:** la leyenda de ℓ llega solo hasta 2 (d) y no dice qué pasa con f. "Espín opuesto" no está explicado.
+
+### 3 Predice
+1. **Qué veo:** el Piso 4 con 4s (1 caja), 4p (3), 4d (5) y 4f (7), todos con "? e⁻", y la pregunta "Piso 4: ¿cuántos huéspedes caben?".
+2. **Qué me piden:** el máximo de electrones en todo el piso 4.
+3. **Símbolos:** cada caja vacía es un orbital.
+5. **Dudas:** f aparece por primera vez aquí. Mi cuenta: 2 + 6 + 10 + 14 = 32, así que elijo **B: 32**.
+
+### 4 Mira
+1. **Qué veo:** solo "3s", una caja ↑↓ con un 0 debajo y "2 e⁻". El resto de la pantalla está vacío. Está en el paso 1/6.
+2. **Qué me piden:** ver cómo se arma el piso 3 pasillo por pasillo.
+3. **Símbolos:** el 0 debajo de la caja es mₗ = 0. La fórmula ℓ = 0: 2·0 + 1 = 1 da un cuarto.
+4. **Qué aprendí:** el número de cuartos de un pasillo es 2ℓ + 1; el s tiene 1.
+5. **Dudas:** el símbolo mₗ es tan chiquito que parece "mı". Queda mucho espacio en blanco y no sé si falta dibujo o si aparece en los otros pasos.
+
+### 5 La regla
+1. **Qué veo:** el hotel completo hasta el piso 3: 1s, 2s, 2p, 3s, 3p y 3d (cinco cajas ↑↓, 10 e⁻). Abajo, las fórmulas "orbitales = 2ℓ + 1" y "electrones del nivel = 2n²".
+2. **Qué me piden:** leer. n es el nivel. ℓ va de 0 a n − 1. mₗ va de −ℓ a +ℓ, y es un orbital por valor. mₛ es +½ o −½.
+3. **Símbolos:** n, ℓ, mₗ y mₛ (los cuatro números cuánticos, aunque no los llaman así).
+5. **Dudas:** no dicen qué significa físicamente mₛ ni el espín, solo los valores.
+
+### 6 Así se resuelve
+1. **Qué veo:** no hay dibujo, solo la pregunta de cuántos orbitales tiene el 3p, los datos (ℓ: s 0, p 1, d 2, f 3; orbitales = 2ℓ + 1) y el paso 1.
+2. **Qué me piden:** contar los orbitales (cajas) del 3p.
+5. **Dudas:** ninguna. Mi cuenta: 2·1 + 1 = 3.
+
+### 7 Ahora tú
+1. **Qué veo:** la pregunta de cuántos orbitales tiene el 4f y las opciones 4, 14, 7 y 9.
+2. **Qué me piden:** aplicar 2ℓ + 1 con ℓ = 3.
+5. **Dudas:** es fácil, y además en Predice ya decían "el pasillo f tiene 7 cuartos dobles". Elijo **C: 7**.
+
+**Ejercicio inventado:** ¿cuántos orbitales tiene el 5d y cuántos electrones caben como máximo en el nivel n = 2?
+**Solución:** en el 5d, ℓ = 2, así que 2·2 + 1 = 5 orbitales. En el nivel 2 caben 2·2² = 8 electrones.
+
+---
+
+## Tema 4: Configuración electrónica
+
+### 1 Lee
+1. **Qué veo:** un hotel con 1s (S/ 1), 2s (S/ 2), 2p (S/ 3) y 3s (S/ 3), con las cajas vacías. La tarjeta es 1/4, "El precio en la puerta".
+2. **Qué me piden:** leer que cada pasillo tiene un precio n + ℓ en soles y que los huéspedes llegan de uno en uno.
+3. **Símbolos:** S/ es el precio del pasillo, n + ℓ.
+5. **Dudas:** el 2p y el 3s cuestan los dos S/ 3. ¿Cuál se llena primero? Aquí no lo dicen (lo aclaran recién en La regla).
+
+### 2 Juega
+1. **Qué veo:** un hotel de 4 pisos. Están llenos el 1s ↑↓, el 2s ↑↓ y el 2p con ↑ ↑ y una caja vacía; los demás pasillos están en gris y vacíos (3s S/3, 3p S/4, 3d S/5, 4s S/4, 4p S/5). Debajo: "1s² 2s² 2p²" y "Carbono, Z = 6: su último electrón entra al 2p (S/ 3)". Hay un deslizador Protones (Z) = 6 y el aviso de probar 4 casos.
+2. **Qué me piden:** la misión es encontrar el primer átomo que estrena el pasillo 3d.
+3. **Símbolos:** el superíndice es el número de electrones del subnivel; S/ es el precio; ↑ es un electrón.
+4. **Qué aprendí:** los electrones van entrando del pasillo más barato al más caro. Como el 4s (S/4) es más barato que el 3d (S/5), el 3d se estrena después del 4s: en Z = 21.
+5. **Dudas:** confunde que el 3d esté dibujado en el piso 3 pero se llene después del 4s, que está en el piso 4.
+
+### 3 Predice
+1. **Qué veo:** el Piso 5 con 5s (S/ ?) y el Piso 4 con 4s ↑↓ (S/4), 4p ↑↓↑↓↑↓ (S/5), 4d y 4f vacíos (S/ ?). La pregunta: "Rb: ¿adónde va el electrón 37?".
+2. **Qué me piden:** decir adónde va el electrón 37 del rubidio.
+3. **Símbolos:** S/ ? es un precio que tengo que calcular yo.
+5. **Dudas:** la configuración del kriptón tiene 3d¹⁰, pero el dibujo no muestra los pisos 1 a 3. Mi cuenta de precios: 5s = 5, 4d = 6, 4f = 7. Elijo **A: al 5s**.
+
+### 4 Mira
+1. **Qué veo:** el hotel vacío, salvo el Piso 1 con 1s ↑↓ (S/ 1). Está en el paso 1/7.
+2. **Qué me piden:** ver cómo se llena del más barato al más caro.
+3. **Símbolos:** el S/ 1 es 1 + 0.
+4. **Qué aprendí:** el 1s es el más barato y se llena primero.
+5. **Dudas:** solo veo el primer paso.
+
+### 5 La regla
+1. **Qué veo:** el hotel lleno hasta el 4p, con todos sus precios. Debajo, el orden 1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p.
+2. **Qué me piden:** leer que se llena primero el de menor n + ℓ y, si empatan, el de menor n. El cromo y el cobre pasan un electrón del 4s al 3d.
+3. **Símbolos:** las flechas marcan el orden de llenado.
+4. Aquí por fin se resuelve mi duda del 2p y el 3s: va primero el 2p, porque tiene menor n.
+5. **Dudas:** lo del cromo y el cobre no lo explican: no dicen por qué ni cómo queda su configuración.
+
+### 6 Así se resuelve
+1. **Qué veo:** el hotel vacío hasta el 4p con sus precios y la pregunta de la configuración del cobalto (Z = 27).
+2. **Qué me piden:** repartir los 27 electrones.
+5. **Dudas:** ninguna. Mi respuesta: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁷.
+
+### 7 Ahora tú
+1. **Qué veo:** la pregunta de la configuración del potasio (Z = 19) y cuatro opciones.
+2. **Qué me piden:** escoger la correcta.
+5. **Dudas:** ninguna. Elijo **C: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹**, porque el 4s es más barato que el 3d.
+
+**Ejercicio inventado:** configuración del calcio (Z = 20).
+**Solución:** 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² (2 + 2 + 6 + 2 + 6 + 2 = 20).
+
+---
+
+## Tema 5: Configuración de los iones
+
+### 1 Lee
+1. **Qué veo:** un "Salero con sal de Maras" con granitos y las cajas del Na: 1s ↑↓, 2s ↑↓, 2p ↑↓↑↓↑↓ y 3s ↑ (1 e⁻). Debajo: "Na: 1s² 2s² 2p⁶ 3s¹". La tarjeta es 1/3, "La sal de Maras".
+2. **Qué me piden:** leer que en la sal el sodio está como Na⁺ y el cloro como Cl⁻. El ion positivo se llama catión y el negativo, anión.
+3. **Símbolos:** ⁺ y ⁻ son las cargas.
+5. **Dudas:** ninguna. Me gustó que sea de Maras.
+
+### 2 Juega
+1. **Qué veo:** el salero y las cajas del Cl: 1s, 2s, 2p y 3s llenos, y el 3p con ↑↓ ↑↓ ↑ (5 e⁻). Debajo: "Cl: [Ne] 3s² 3p⁵" y "Cl: 17 p⁺ y 17 e⁻". Hay una leyenda (Z, carga, ↑, punteada, sombra, [Ne], [Ar]) y dos deslizadores: Protones (Z) = 17 y Carga = 0.
+2. **Qué me piden:** la misión es dejar al sodio con la misma configuración que el neón.
+3. **Símbolos:** [Ne] son los 10 electrones del neón y [Ar] los 18 del argón. La flecha punteada es un electrón que se fue; la sombra violeta, un electrón que llegó.
+4. **Qué aprendí:** se cambia la carga y cambian solo los electrones de afuera. El Na⁺ (Z = 11, carga +1) queda con 10 e⁻, igual que el neón.
+5. **Dudas:** la misión habla del sodio, pero la pantalla arranca en el cloro. La flecha punteada y la sombra están en la leyenda, pero no se ven en esta captura.
+
+### 3 Predice
+1. **Qué veo:** "Gotas de sulfato ferroso" (un frasco gotero con una gota), las cajas 4s ↑↓ (2 e⁻) y 3d ↑↓ ↑ ↑ ↑ ↑ (6 e⁻), y la pregunta "Fe: [Ar] y estos; ¿cuáles salen?".
+2. **Qué me piden:** decir de qué subnivel salen los 2 electrones para formar Fe²⁺.
+5. **Dudas:** Bruna dice "Al llenar, el 4s entró antes. ¿Y al quitar?". Me hizo dudar porque lo lógico sería que salga lo último que entró (3d). Al final elijo **B: del 4s: queda [Ar] 3d⁶**.
+
+### 4 Mira
+1. **Qué veo:** las cajas 4s ↑↓ y 3d con 6 e⁻, "Después de los 18 del argón". Está en el paso 1/4, con "Fe: [Ar] 4s² 3d⁶".
+2. **Qué me piden:** ver cómo el hierro pasa a Fe²⁺ y luego a Fe³⁺.
+4. **Qué aprendí:** el hierro neutro es [Ar] 4s² 3d⁶; al llenar, el 4s entró antes.
+5. **Dudas:** solo veo el paso 1; no llego a ver cómo salen los electrones.
+
+### 5 La regla
+1. **Qué veo:** un 4s con dos flechas punteadas (0 e⁻) y un 3d con una flecha ↓ punteada y cinco ↑ (5 e⁻). Debajo: "Fe³⁺: [Ar] 3d⁵" y la fórmula "e⁻ = Z − carga (con signo)".
+2. **Qué me piden:** leer que el anión suma electrones en el orden de llenado. El catión pierde primero los de mayor n (4s antes que 3d) y, si empatan en n, los de mayor ℓ.
+3. **Símbolos:** las flechas punteadas son los electrones que se fueron.
+4. Aquí confirmé mi respuesta de Predice: salen primero los del 4s.
+5. **Dudas:** "a igual n, los de mayor ℓ" no tiene un ejemplo.
+
+### 6 Así se resuelve
+1. **Qué veo:** **el dibujo es el "Hueso de llama del museo" del tema 1**, con dos líneas que bajan y no llegan a nada. No hay cajas del níquel. Debajo: la pregunta de la configuración abreviada del Ni²⁺, los datos (Ni Z = 28: [Ar] 4s² 3d⁸, etc.) y el paso 1.
+2. **Qué me piden:** decir cómo queda el Ni²⁺.
+5. **Dudas:** el hueso no tiene nada que ver con el níquel; me confundió y parece que se equivocaron de dibujo. Mi respuesta: [Ar] 3d⁸, porque salen los dos del 4s.
+
+### 7 Ahora tú
+1. **Qué veo:** la pregunta de la configuración del Cl⁻, los datos y cuatro opciones.
+2. **Qué me piden:** escoger la correcta.
+5. **Dudas:** ninguna. 17 + 1 = 18 e⁻, así que elijo **C: 1s² 2s² 2p⁶ 3s² 3p⁶**.
+
+**Ejercicio inventado:** configuración del ion O²⁻ (Z = 8).
+**Solución:** e⁻ = 8 − (−2) = 10, y como es anión se suman en orden de llenado: 1s² 2s² 2p⁶. Es igual que el neón.
+
+---
+
+## Tema 6: Hund y el último electrón
+
+### 1 Lee
+1. **Qué veo:** una "Combi que se va llenando" vista desde arriba: un rectángulo con 6 asientos (dos filas de tres cuadraditos), dos de ellos con un punto morado, y un circulito a la derecha. Debajo, el 2p con tres cajas: ↑ en −1, ↑ en 0 y la de +1 vacía (2 e⁻); las cajas con una flecha sola tienen borde punteado. La tarjeta es 1/4, "La combi".
+2. **Qué me piden:** leer que cada pasajero se sienta solo en una fila vacía y recién después se junta con otro, y que los electrones hacen lo mismo.
+3. **Símbolos:** el punto morado es un pasajero (un electrón). −1, 0 y +1 son los números de las cajas.
+5. **Dudas:** el texto dice que "cada fila tiene dos asientos", pero en el dibujo yo veo dos filas de tres; las "filas" serían las columnas. El circulito de la derecha no tiene nombre (¿el timón?).
+
+### 2 Juega
+1. **Qué veo:** la combi con 3 pasajeros: dos juntos en la primera columna y uno en la segunda. El 2p tiene ↑↓ en −1, ↑ en 0 (punteada) y +1 vacía (3 e⁻). La frase: "3 en 3 cajas: 1 solo; Hund ocupa antes la vacía". Hay una leyenda (pasajero, ↑, ↑↓, mₗ, caja punteada) y tres deslizadores: caja mₗ = −1 en 2, caja 0 en 1, caja +1 en 0.
+2. **Qué me piden:** la misión es repartir los 4 electrones 2p del oxígeno como en la combi.
+3. **Símbolos:** la caja punteada es un electrón desapareado; mₗ es el número de cada caja, de −ℓ a +ℓ.
+4. **Qué aprendí:** primero va una flecha en cada caja vacía y después se aparea. Para 4 electrones queda 2, 1, 1: dos desapareados.
+5. **Dudas:** el estado que se ve (2, 1, 0) es justo el que no cumple Hund. No sé si la app me lo muestra a propósito como ejemplo malo.
+
+### 3 Predice
+1. **Qué veo:** el frasco de sulfato ferroso y el 3d con cinco cajas vacías (−2, −1, 0, +1, +2) y "? e⁻". La pregunta: "Fe²⁺, 3d⁶: ¿cuántos solos?".
+2. **Qué me piden:** decir cuántos electrones quedan solos en el Fe²⁺.
+5. **Dudas:** ninguna. Una flecha en cada caja (5) y la sexta se aparea, así que quedan 4 solos. Elijo **C: 4**.
+
+### 4 Mira
+1. **Qué veo:** el 2p con ↑↓ en −1, ↑ en 0 y ↑ en +1 (4 e⁻), con las dos últimas cajas punteadas. Está en el paso 1/6, y el texto dice "Los tres primeros, una ↑ en cada caja".
+2. **Qué me piden:** seguir al último electrón del oxígeno y del Fe²⁺.
+4. **Qué aprendí:** en el oxígeno los tres primeros ocupan una caja cada uno y el cuarto se aparea en la −1.
+5. **Dudas:** el texto habla solo de los tres primeros, pero el dibujo ya muestra los cuatro.
+
+### 5 La regla
+1. **Qué veo:** el 3d del Fe²⁺: ↑↓ en −2 (la ↓ dentro de un óvalo) y ↑ en −1, 0, +1 y +2 (punteadas), 6 e⁻. Debajo: "Fe²⁺: (3; 2; −2; −½)".
+2. **Qué me piden:** leer la regla de Hund. Con electrones solos el átomo es paramagnético (un imán lo atrae); sin ellos, diamagnético. El último electrón se escribe (n; ℓ; mₗ; mₛ).
+3. **Símbolos:** el óvalo marca el último electrón: n = 3, ℓ = 2 (d), mₗ = −2 (su caja), mₛ = −½ (porque es ↓).
+5. **Dudas:** "Vale si se usa la convención del examen": entonces, ¿hay otras convenciones? Tampoco veo nada de "isoelectrónicos" en este tema; solo se nombraron en la regla del tema 1.
+
+### 6 Así se resuelve
+1. **Qué veo:** el 3d con cinco cajas vacías (−2 a +2) y "? e⁻". Debajo, la pregunta de cuántos desapareados tiene el Mn²⁺ y si lo atrae un imán, los datos (Mn Z = 25: [Ar] 4s² 3d⁵, catión, Hund, para/diamagnética) y el paso 1.
+2. **Qué me piden:** contar los electrones solos y decir si el imán lo atrae.
+5. **Dudas:** ninguna. Mi respuesta: Mn²⁺ = [Ar] 3d⁵, con 5 desapareados, así que es paramagnético y el imán sí lo atrae.
+
+### 7 Ahora tú
+1. **Qué veo:** la pregunta de cuántos electrones desapareados tiene el titanio (Z = 22), los datos y las opciones 3, 0, 2 y 1.
+2. **Qué me piden:** contar las cajas con una sola flecha.
+5. **Dudas:** el dato del cromo y el cobre no sirve para el titanio y me distrajo un poco. Ti = [Ar] 4s² 3d²: dos flechas solas en el 3d. Elijo **C: 2**.
+
+**Ejercicio inventado:** ¿cuántos electrones desapareados tiene el nitrógeno (Z = 7) y cuáles son los números cuánticos de su último electrón?
+**Solución:** 1s² 2s² 2p³, con una ↑ en cada caja del 2p (−1, 0, +1): 3 desapareados, paramagnético. El último electrón está en la caja +1 con ↑: (2; 1; +1; +½).
+
+## Ejemplos resueltos
+
+# Informe del lector: ejemplos resueltos de Química, estructura atómica
+
+Soy alumno de 5.º de secundaria y solo miré las 18 imágenes. Las tarjetas vienen en seis grupos de tres, numeradas 3, 8 y 14. Por el tema, los grupos son: partículas e isótopos (01-03), modelos atómicos (04-06), números cuánticos (07-09), configuración electrónica (10-12), iones (13-15) y espín y magnetismo (16-18).
+
+---
+
+## 01.png — #3 «Los electrones del Ca²⁺»
+
+1. **Qué piden:** cuántos electrones tiene el Ca²⁺.
+2. **¿Alcanza?** Sí. Me dan Z = 20 y carga = Z − e⁻; de ahí despejo.
+3. **¿Lo sigo?** Sí, línea por línea. Lo único es que despejar «e⁻ = Z − carga» pide un pasito de álgebra que la tarjeta dice con palabras. Está bien.
+4. **Dibujo:** ayuda, porque muestra 20p⁺ en el núcleo y «? e⁻» afuera. No da la respuesta antes.
+5. **Raro:** nada grave. La «carga» de Datos no lleva el color rojo que sí tiene el (+2) en el resuelto, pero es mínimo.
+- **Cuenta:** 20 − 2 = 18. Cuadra.
+
+## 02.png — #8 «Dos átomos de cloro»
+
+1. **Qué piden:** en qué se diferencian las partículas del Cl-35 y el Cl-37.
+2. **¿Alcanza?** Sí: Z = 17, A = Z + N, y en el neutro e⁻ = p⁺.
+3. **¿Lo sigo?** Sí. Hay un salto pequeño: la respuesta dice «2 neutrones más», pero el resuelto nunca escribe 20 − 18 = 2. Lo tengo que restar yo.
+4. **Dibujo:** ayuda. Pone los dos átomos lado a lado con 17p⁺, «?n°» y A = 35 / A = 37. No regala la respuesta.
+5. **Raro:** el neutrón aparece como «n°», con algo que parece el símbolo de grado. Se entiende.
+- **Cuentas:** 35 − 17 = 18; 37 − 17 = 20; e⁻ = 17 en los dos; 20 − 18 = 2. Cuadra.
+
+## 03.png — #14 «Un isótopo y un ion» (opción múltiple)
+
+1. **Qué piden:** qué tienen igual el ³⁵Cl⁻ y el ³⁷Cl.
+2. **¿Alcanza?** Sí. Hasta me explican qué significa el número de arriba a la izquierda y el de arriba a la derecha.
+3. **¿Lo sigo?** Sí, todo. También explica por qué fallan A, B, D y E.
+4. **Dibujo:** no hay. Un dibujo de los dos átomos como en la 02 ayudaría, pero no hace falta.
+5. **Raro:** nada. Ojo: en el ³⁵Cl⁻ salen N = 18 y e⁻ = 18, el mismo número, y uno podría confundirse, pero los colores (verde para N, morado para e⁻) los separan bien.
+- **Cuentas:** ³⁵Cl⁻: p = 17, N = 18, e = 18. ³⁷Cl: p = 17, N = 20, e = 17. Respuesta C. Cuadra.
+
+## 04.png — #3 «La carga positiva de Thomson»
+
+1. **Qué piden:** dónde estaba la carga positiva en el modelo de Thomson.
+2. **¿Alcanza?** **No.** Los Datos dan fechas y que el átomo es neutro, pero nada de eso dice *dónde* está la carga positiva. Si no he memorizado el «budín de pasas», no lo saco. Falta un dato como «Thomson: esfera de carga positiva con los electrones incrustados» (o un dibujo).
+3. **¿Lo sigo?** El resuelto es una sola línea que afirma el modelo. Me pierdo en la primera línea, «Thomson metió los electrones en una esfera positiva», porque es justo lo que preguntaban y no sale de los Datos.
+4. **Dibujo:** no hay, y aquí es donde más falta haría.
+5. **Raro:** nada visual.
+- **Historia:** electrón en 1897 y modelo en 1904, correcto.
+
+## 05.png — #8 «Si el oro fuera de Dalton»
+
+1. **Qué piden:** qué pasaría con las alfas si el oro fueran esferas macizas pegadas.
+2. **¿Alcanza?** Sí, razonando: macizas y pegadas, miles de capas, entonces no pasan. El tercer dato (casi todas atravesaron) sirve para comparar.
+3. **¿Lo sigo?** Sí.
+4. **Dibujo:** **confunde un poco.** La etiqueta «alfas» está sobre una barra vertical delgada que parece la *lámina*, no la fuente de alfas. Además dibuja **una sola** esfera, cuando el enunciado habla de esferas pegadas y de una lámina de miles de átomos. No regala la respuesta.
+5. **Raro:** lo de la barra «alfas». Hay bastante espacio vacío bajo el dibujo.
+- **Historia:** es un caso hipotético (Dalton, hacia 1803-1808, no conoció las alfas, que son del experimento de Rutherford de 1909-1911). La tarjeta lo plantea como «si…», así que está bien.
+
+## 06.png — #14 «El núcleo de una cancha» (opción múltiple)
+
+1. **Qué piden:** cuánto mediría el núcleo si el átomo midiera 100 m.
+2. **¿Alcanza?** Sí: la razón es 100 000 y 1 m = 1000 mm.
+3. **¿Lo sigo?** Sí, línea por línea.
+4. **Dibujo:** no hay. Un dibujo a escala (una cancha con un punto) ayudaría, pero no hace falta.
+5. **Raro:** solo explica por qué fallan C y A. No dice nada de B (10 cm = ÷1000) ni de E (0,1 mm = ÷1 000 000).
+- **Cuentas:** 100 ÷ 100 000 = 0,001 m = 1 mm. A: ÷10 000 = 1 cm. C: ÷100 = 1 m. Cuadra.
+
+## 07.png — #3 «La letra del subnivel»
+
+1. **Qué piden:** el subnivel con n = 4 y ℓ = 1.
+2. **¿Alcanza?** Sí; la tabla de ℓ está en Datos.
+3. **¿Lo sigo?** Sí. Usa «piso» para n sin haberlo definido antes, pero se entiende.
+4. **Dibujo:** no hay, y no hace falta.
+5. **Raro:** nada. Datos casi regala la respuesta, pero ese dato es justo lo que se practica.
+- **Resultado:** 4p. Correcto.
+
+## 08.png — #8 «¿Existe el 2d?»
+
+1. **Qué piden:** si existe el subnivel 2d.
+2. **¿Alcanza?** Sí: ℓ va de 0 a n − 1 y d = 2.
+3. **¿Lo sigo?** Sí.
+4. **Dibujo:** no hay.
+5. **Raro:** nada.
+- **Cuenta:** n = 2, entonces ℓ máximo = 1 < 2. No existe. Correcto.
+
+## 09.png — #14 «Tres pisos juntos» (opción múltiple)
+
+1. **Qué piden:** máximo de electrones en los niveles 1, 2 y 3 juntos.
+2. **¿Alcanza?** Sí: ℓ de 0 a n − 1, orbitales 2ℓ + 1 y 2 e⁻ por orbital.
+3. **¿Lo sigo?** Sí, el cálculo. Me pierdo en la explicación de la **E**.
+4. **Dibujo:** no hay. Una fila de cajitas por nivel ayudaría.
+5. **Raro / NO CUADRA:** «La E cuenta dos veces el 3». Si sumo el nivel 3 dos veces me da 2 + 8 + 18 + 18 = **46**, no 36. Con 36 tendría que ser 18 + 18 (sin los niveles 1 y 2) o 2 + 8 + 8 + 18 (el 2 repetido). La explicación de la E no lleva al número de la E.
+- **Cuentas:** orbitales 1, 4 y 9; electrones 2, 8 y 18; total 28 (D). B = 8 × 3 = 24 y C = 1 + 4 + 9 = 14 cuadran. A = 18 cuadra (solo el nivel 3). La E no cuadra.
+
+## 10.png — #3 «El último nivel del sodio»
+
+1. **Qué piden:** electrones en el último nivel del Na (11 e⁻).
+2. **¿Alcanza?** Sí: orden de llenado, capacidades y definición de último nivel.
+3. **¿Lo sigo?** Casi. El resuelto pone la configuración directamente, sin mostrar el reparto 2 + 2 + 6 + 1 = 11. Lo puedo hacer yo, pero sería mejor mostrarlo.
+4. **Dibujo:** no hay.
+5. **Raro:** nada.
+- **Configuración:** 1s² 2s² 2p⁶ 3s¹ (suma 11). Último nivel con 1 e⁻. Cuadra.
+
+## 11.png — #8 «El último nivel del bromo»
+
+1. **Qué piden:** electrones en el último nivel del Br (Z = 35).
+2. **¿Alcanza?** Sí, con [Ar] = 18.
+3. **¿Lo sigo?** Sí. Es muy bueno que avise que el 3d es del nivel 3 y no se cuenta.
+4. **Dibujo:** no hay.
+5. **Raro:** los dos puntos en «nivel 3:» se ven algo distintos, pero es mínimo.
+- **Configuración:** [Ar] 4s² 3d¹⁰ 4p⁵ = 18 + 2 + 10 + 5 = 35. Último nivel: 2 + 5 = 7. Cuadra.
+
+## 12.png — #14 «El último subnivel del yodo» (opción múltiple)
+
+1. **Qué piden:** dónde entra el último electrón del I (Z = 53) y cuántos hay ahí.
+2. **¿Alcanza?** Sí; el orden de llenado llega hasta 5p y me dan [Kr] = 36.
+3. **¿Lo sigo?** Sí, y explica las cuatro incorrectas.
+4. **Dibujo:** no hay.
+5. **Raro:** en la línea de la fórmula, «[Kr] 5s² 4d¹⁰ 5p⁵», el superíndice **¹⁰** sale con otra letra: el «0» parece una «o» gorda, distinta del ² y el ⁵. Parece «4d1o».
+- **Cuentas:** 53 − 36 = 17 = 2 + 10 + 5. [Kr] 5s² 4d¹⁰ 5p⁵. Respuesta B. La D (4f⁵) es coherente con «llenar 4f antes del 5p». Cuadra.
+
+## 13.png — #3 «¿Catión o anión?»
+
+1. **Qué piden:** si el S²⁻ es catión o anión, y si ganó o perdió electrones.
+2. **¿Alcanza?** Sí; no hace falta el Z del azufre.
+3. **¿Lo sigo?** Sí. Hay un pequeño salto: de carga −2 pasa a «tiene más electrones que protones» sin usar la fórmula carga = Z − e⁻ que pusieron en Datos. Igual se entiende.
+4. **Dibujo:** no hay.
+5. **Raro:** nada.
+- **Resultado:** anión, ganó 2. Correcto.
+
+## 14.png — #8 «El Cu⁺»
+
+1. **Qué piden:** la configuración abreviada del Cu⁺.
+2. **¿Alcanza?** Sí, porque Datos avisa de la excepción del cobre (un 4s pasa al 3d). Sin ese dato tendría que haberlo memorizado. **Ese dato casi regala la mitad del problema.**
+3. **¿Lo sigo?** Sí.
+4. **Dibujo:** no hay. Unas cajitas 4s / 3d ayudarían a ver la excepción.
+5. **Raro:** pasa lo mismo que en la 12: en la línea «Cu⁺: [Ar] 3d¹⁰» el «0» del superíndice parece una «o». También en Datos aparece «carga = Z − e⁻», que casi no se usa.
+- **Configuración:** Cu = [Ar] 4s¹ 3d¹⁰ (18 + 1 + 10 = 29). Cu⁺ = [Ar] 3d¹⁰, con 28 e⁻. Cuadra.
+
+## 15.png — #14 «Los 3d del Fe²⁺ y Fe³⁺» (opción múltiple)
+
+1. **Qué piden:** electrones 3d del Fe²⁺ y del Fe³⁺.
+2. **¿Alcanza?** Sí: Z = 26, orden, [Ar] y la regla para sacar electrones.
+3. **¿Lo sigo?** Sí.
+4. **Dibujo:** no hay. Cajitas 3d ayudarían.
+5. **Raro:** la explicación de la **E** («saca uno de cada subnivel») es floja. Saco 1 del 4s y 1 del 3d para Fe²⁺ y quedan 5 en 3d, bien. Pero para Fe³⁺ no queda claro de dónde sale el tercero para llegar a 4. La **B** («el tercero también sale del 4s») es un error imposible, porque el 4s solo tiene 2; como trampa vale, pero podría decirlo.
+- **Cuentas:** Fe = [Ar] 4s² 3d⁶. Fe²⁺: 3d⁶ (6). Fe³⁺: 3d⁵ (5). Respuesta D. A (sacar del 3d: 4 y 3) y C (sumar: 8 y 9) cuadran.
+
+## 16.png — #3 «Una flecha hacia abajo»
+
+1. **Qué piden:** el mₛ del electrón ↓ en el 2s del berilio.
+2. **¿Alcanza?** Sí; Datos da la convención ↑ = +½ y que los espines son opuestos.
+3. **¿Lo sigo?** Sí, es una línea.
+4. **Dibujo:** ayuda poco. Bajo la caja hay un **«0»** que no se explica (supongo que es mₗ) y que podría confundirse con un valor de mₛ. Hay mucho espacio vacío arriba y abajo del dibujo.
+5. **Raro:** el «0» sin etiqueta. Datos regala casi todo: con la convención, la respuesta es inmediata.
+- **Resultado:** −½. Correcto (Be: 1s² 2s², el 2s está lleno).
+
+## 17.png — #8 «El Mn²⁺ y el imán»
+
+1. **Qué piden:** electrones desapareados del Mn²⁺ (Z = 25).
+2. **¿Alcanza?** Sí. Datos ya da la configuración del Mn, así que el Z = 25 del enunciado sobra.
+3. **¿Lo sigo?** Sí.
+4. **Dibujo:** ayuda. Las cinco cajas vacías con «? e⁻» y «¿cuántos solos?» invitan a llenarlas, y no dan la respuesta. Los números −2 … +2 debajo no se explican (supongo que son mₗ).
+5. **Raro:** etiquetas mₗ sin nombre. Mucho espacio vacío antes y después del dibujo.
+- **Configuración:** Mn = [Ar] 4s² 3d⁵. Mn²⁺ = [Ar] 3d⁵, con 5 desapareados: paramagnético. Cuadra.
+
+## 18.png — #14 «Un ion sin electrones solos» (opción múltiple)
+
+1. **Qué piden:** cuál ion es diamagnético.
+2. **¿Alcanza?** Sí, de sobra: Datos da todas las configuraciones neutras.
+3. **¿Lo sigo?** Sí, y es la que mejor explica las incorrectas (cuántos solos tiene cada una).
+4. **Dibujo:** no hay. Cajitas para cada ion ayudarían.
+5. **Raro:** el orden cambia en cada parte: el enunciado dice Fe, Cu, Zn, Mn, Ni; las opciones siguen ese orden; Datos dice Mn, Fe, Ni, Cu, Zn. Obliga a buscar. Datos regala buena parte (sobre todo el 4s¹ 3d¹⁰ del Cu).
+- **Configuraciones:** Fe²⁺ 3d⁶ (4 solos), Cu²⁺ 3d⁹ (1), Zn²⁺ 3d¹⁰ (0), Mn²⁺ 3d⁵ (5), Ni²⁺ 3d⁸ (2). Respuesta C. Cuadra todo.
+
+---
+
+## Resumen
+
+**Las 3 mejores**
+1. **03.png** (isótopo y ion): todo está en los Datos, los colores separan N y e⁻, y explica cada trampa.
+2. **18.png** (diamagnético): las cuentas son claras y explica cuántos solos tiene cada incorrecta.
+3. **11.png** (bromo): es corta y avisa justo del error típico (contar el 3d).
+
+**Las 3 peores**
+1. **04.png** (Thomson): no se puede resolver sin haber memorizado el modelo; los Datos no dicen dónde está la carga y no hay dibujo.
+2. **09.png** (tres pisos): la explicación de la E («cuenta dos veces el 3») da 46, no 36.
+3. **05.png** (Dalton): el dibujo confunde. La etiqueta «alfas» está sobre lo que parece la lámina y dibuja una sola esfera en vez de esferas pegadas.
+
+**¿Suben los niveles?** Sí. En cada grupo, la #3 es de un paso, la #8 pide dos o tres pasos y la #14 es de opción múltiple con trampas explicadas. La excepción es 04 → 05: la #3 de Thomson es más difícil que la #8 de Dalton, porque la #3 pide memoria y la #8 se razona con los Datos.
+
+**Datos:** casi siempre ayuda y deja resolver sin memorizar. A veces **regala**: la convención ↑ = +½ (16), la excepción del cobre (14), la configuración del Mn ya escrita (17) y todas las configuraciones neutras (18). Distrae poco: «carga = Z − e⁻» en 13 y 14 casi no se usa, y en 10 y 11 el orden de llenado trae más de lo necesario (inofensivo). En 04 falla al revés: no da lo que hace falta.
+
+**Cuentas y configuraciones:** todas las rehíce y cuadran (Ca²⁺ 18; Cl 18/20 y 17; 1 mm; 28; Na 3s¹; Br 7; I [Kr]5s²4d¹⁰5p⁵; Cu⁺ [Ar]3d¹⁰ con 28 e⁻; Fe²⁺/Fe³⁺ 6 y 5; Mn²⁺ 5; Zn²⁺ 0). La única que **no cuadra** es la justificación de la E en la 09 (36 frente a 46).
+
+**Fechas:** 1897 (electrón) y 1904 (modelo de Thomson) están bien. La de Dalton con alfas es hipotética y se presenta como tal.
+
+**Detalles visuales:** el superíndice ¹⁰ en las líneas de fórmula de la 12 y la 14 parece «1o». En 16 y 17 los números mₗ bajo las cajas no tienen etiqueta. En 05, 16 y 17 hay mucho espacio vacío alrededor del dibujo. No vi nada cortado ni encimado.
