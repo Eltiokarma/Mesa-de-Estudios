@@ -59,7 +59,8 @@ async function abrir(ctx, ruta, teoria) {
     for (let k = 0; k < 40 && !ideas; k++) {
       ideas = await p.evaluate(u => {
         const d = window.Teoria && window.Teoria.unidades && window.Teoria.unidades[u];
-        return d ? d.ideas.map(i => ({ id: i.id, momentos: window.Teoria.momentosDe(i), ejemplos: (i.ejemplos || []).length })) : null;
+        return d ? d.ideas.map(i => ({ id: i.id, momentos: window.Teoria.momentosDe(i), ejemplos: (i.ejemplos || []).length,
+          pred: i.predice && i.predice.opciones ? (i.predice.opciones.find(o => o.correcta) || i.predice.opciones[0]).id : null })) : null;
       }, unidad).catch(() => null);
       if (!ideas) await p.waitForTimeout(500);
     }
@@ -81,13 +82,17 @@ async function abrir(ctx, ruta, teoria) {
     }
     // Para ejemplos, glosario y laboratorio basta con la primera idea empezada (abre el tema aunque falte el requisito).
     const empezada = { [unidad]: { idea: def[0].id, ideas: { [def[0].id]: { momento: 'lee' } } } };
+    // Los ejemplos de una idea se abren después de su «Predice» (18 nov): para verlos todos, el estado sembrado trae las
+    // predicciones de la unidad ya respondidas.
+    const predichas = { [unidad]: { idea: def[0].id, ideas: Object.fromEntries(def.map((i, k) => [i.id, Object.assign(k ? {} : { momento: 'lee' }, i.pred ? { prediccion: i.pred } : {})])) } };
     if (partes.has('ejemplos') && def.some(i => i.ejemplos)) {
-      const p = await abrir(ctx, `/unidad/${unidad}/teoria/ejemplos`, empezada);
+      const p = await abrir(ctx, `/unidad/${unidad}/teoria/ejemplos`, predichas);
       await p.waitForSelector('.te-ej', { timeout: 20000 }).catch(() => errores.push('ejemplos: no aparecieron las tarjetas'));
       p.on('pageerror', e => errores.push(`ejemplos: ${e.message}`));
       for (const idea of def.filter(i => i.ejemplos)) {
         await p.click(`[data-ej="${idea.id}"]`).catch(() => {});
         await p.waitForTimeout(400);
+        if (await p.$('.te-ej-bloq')) errores.push(`ejemplos ${idea.id}: salió el aviso «Primero haz la predicción», no las tarjetas`);
         const tarjetas = await p.$$('.te-ej');
         for (const [k, t] of tarjetas.entries()) {
           await t.scrollIntoViewIfNeeded(); await p.waitForTimeout(150);

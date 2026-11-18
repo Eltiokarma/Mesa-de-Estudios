@@ -80,7 +80,8 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
                dibujo: { datos, estado }, revelar: { datos, estado }, coincide, noCoincide,
                orden?: 'fijo' },   // la app baraja las opciones; 'fijo' solo si sus letras se ven en la figura (correcta no primera)
     mira:    { pieza?, datos, base?, voz, pasos: [{ estado, texto (≤ 14), ecuacion }] },   // de 2 a 7 pasos
-    regla:   { texto (≤ 30), ecuacion, condicion (≤ 22), voz },
+    regla:   { texto (≤ 30), ecuacion, condicion (≤ 22), voz,
+               dibujo?: { pieza?, datos, estado? } },   // dibujo propio de la regla (4i); si no, la figura del último paso de «Mira»
     ahoraTu: { pieza?, voz, generar: semilla => ({ pregunta (≤ 40), dibujo?, opciones, solucion: { texto (≤ 20), ecuacion, dibujo? } }) },
   }],
 }
@@ -378,6 +379,35 @@ con 5 ejemplos por nivel en cada idea.
 - La pestaña «Ejemplos» aparece entre «Ideas» y «Glosario» cuando alguna idea los trae. Arriba se elige la idea; debajo
   van los tres niveles. Cada tarjeta: enunciado, dibujo, «Resuelto» (todo a la vista, sin pasos que se revelan) y la
   respuesta. Se registra `momento: 'ejemplos'`.
+- **Se abre después de «Predice»** (Gerson, mesa del 18 nov): ver 4i.
+
+## 4i. Ejemplos después de predecir y dibujo propio de la regla (mesa del 18 nov)
+
+**Ejemplos después de «Predice».** Antes, el alumno podía abrir «Ejemplos» antes de predecir y veía resuelta la
+situación de la predicción (regla 3). Ahora los ejemplos de una idea se abren recién cuando su «Predice» está respondida.
+- Mientras no lo está, la pestaña muestra, para esa idea, un aviso corto («Primero haz la predicción de esta idea.
+  Después ves sus ejemplos resueltos.») con un botón que lleva a la idea, en el momento donde el alumno se quedó. No
+  muestra sus tarjetas. En el selector de ideas, la idea dice «· tras predecir».
+- Cuenta como respondida la predicción guardada (`est.teoria[unidad].ideas[idea].prediccion`) o la idea terminada
+  (`hecha`). Así, el avance de quien ya predijo sigue abriéndolos sin migrar nada. Una idea sin `predice` no se bloquea.
+- La regla vive en `Teoria.ejemplosAbiertos(idea, estadoIdea)` (`nucleo/teoria.js`, con pruebas en
+  `nucleo/teoria-ejemplos-regla.test.js`). El evento `ejemplos` lleva `bloqueada: true` cuando se vio el aviso.
+- Las capturas de revisión (`herramientas/capturas-teoria.js … ejemplos`, también con `--lector`) siembran las
+  predicciones de la unidad ya respondidas, para sacar las tarjetas de todas las ideas; si sale el aviso, lo reportan
+  como error.
+
+**Dibujo propio de la regla (`regla.dibujo`, opcional).** Con el mismo formato de figura de los otros momentos:
+
+```js
+regla: { texto, ecuacion, condicion, voz,
+         dibujo: { pieza: 'arit-tabla', datos: { … }, estado: { … } } },   // pieza opcional
+```
+
+- Si está, «La regla» muestra ese dibujo; si no, la figura del último paso de «Mira», como siempre.
+- La pieza, si el dibujo no la dice: la de `regla.pieza`, la de `mira.pieza` o la de la idea (`Teoria.figuraRegla`).
+- Lleva las mismas letras y colores que la ecuación de la regla (regla 4).
+- El validador lo dibuja y exige un SVG puro (el mismo estado da el mismo SVG), sin NaN, undefined ni Infinity, y con
+  texto alternativo.
 
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 

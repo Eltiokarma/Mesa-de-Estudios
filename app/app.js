@@ -597,8 +597,12 @@ function vEjercicios(c, u) {
       <span class="ej-ir" aria-hidden="true"><span class="v">${esc(VERBO[p.formato] || "Abrir")}</span> ›</span>
       ${p.papel ? `<a class="ej-papel" href="#/papel/${esc(p.id)}">✎ Lápiz y papel<span class="lector">: ${esc(p.titulo)}</span></a>` : ''}
     </article>`;
+  // Escenas que esperan rehacerse ("rehacer": true en su plantilla.json; Gerson, mesa del 18 nov): van al final, después
+  // de las prácticas y la lectura, bajo «Más mesas del tema». Siguen abiertas; solo dejan de ir primero.
+  const hoy = pl.filter(p => !p.rehacer), mas = pl.filter(p => p.rehacer);
   $app.innerHTML = `${cabUnidad(c, u, 'Ejercicios')}
-    ${pl.length ? `<div class="lista ejercicios aparece">${pl.map(fila).join('')}</div>`
+    ${pl.length ? `${hoy.length ? `<div class="lista ejercicios aparece">${hoy.map(fila).join('')}</div>` : ''}
+      ${mas.length ? `<h2 class="ej-mas">Más mesas del tema</h2><div class="lista ejercicios aparece">${mas.map(fila).join('')}</div>` : ''}`
       : `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>Este tema todavía no tiene ejercicios. Estamos haciéndolos; mientras, puedes dejarle una pregunta a tu profesor.</p>
         <a class="btn morado" href="#/unidad/${esc(u.id)}/pregunta">Dejar una pregunta ›</a></div>`}`;
 }

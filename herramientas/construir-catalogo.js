@@ -119,7 +119,9 @@ function construir() {
     const archivos = [...new Set([...(formato === 'escena' ? [f.escena, f.motor, ...locales] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(url))];
     plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
       url: formato === 'escena' ? url(f.escena) : `#/practica/${f.id}`,
-      papel: f.papel ? url(f.papel) : null, archivos };
+      papel: f.papel ? url(f.papel) : null, archivos,
+      // "rehacer": true (18 nov): la escena espera rehacerse; Ejercicios la pone al final, en «Más mesas del tema».
+      ...(f.rehacer ? { rehacer: true } : {}) };
   }
   const nombresUni = Object.fromEntries(Object.entries(universidades).map(([k, v]) => [k, { nombre: v.nombre, ubicacion: v.ubicacion }]));
   return { universidades: nombresUni, cursos, plantillas };

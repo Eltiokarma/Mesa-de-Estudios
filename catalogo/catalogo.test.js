@@ -130,6 +130,7 @@ test('cada plantilla tiene ficha válida y está en el catálogo', () => {
       assert.ok(r.startsWith('contenido' + path.sep), `${ficha}: ${campo} debe apuntar dentro de contenido/ (apunta a ${r})`);
     }
     if (f.papel) assert.ok(existe(`plantillas/${d}/${f.papel}`), `${ficha}: no existe el archivo de papel`);
+    if (f.rehacer !== undefined) assert.equal(f.rehacer, true, `${ficha}: "rehacer" va en true o no va`);
     if (f.estado !== 'borrador') assert.ok(f.papel, `${ficha}: una plantilla ${f.estado} necesita problemas de papel (regla 6)`);
     assert.ok(Array.isArray(f.unidades) && f.unidades.length > 0, `${ficha}: no dice qué unidades cubre`);
     for (const u of f.unidades) {

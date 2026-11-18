@@ -614,11 +614,11 @@
 
     // 4. La regla: texto corto, ecuación con el hilo de color y la condición que la hace verdadera.
     function regla() {
-      const r = idea.regla, m = idea.mira;
+      const r = idea.regla;
       actuar('regla', r.voz || voz('regla'));
-      const P = pieza(m.pieza);
-      fig.innerHTML = P.dibujar(m.datos, Object.assign({}, m.base || {}, m.pasos[m.pasos.length - 1].estado || {}));
-      $('#te-alt').textContent = P.alt(m.datos);
+      // La regla puede traer su propio dibujo (regla.dibujo, 18 nov); si no, la figura del último paso de «Mira».
+      const fr = T.figuraRegla(idea);
+      dibujar(fr, fr.pieza);
       zona.innerHTML = reglaHTML(r, true);
       const res = MOM.includes('resuelve');
       sig.textContent = res ? 'Siguiente: Así se resuelve ›' : 'Siguiente: Ahora tú ›';
@@ -896,20 +896,27 @@
         return `<section class="te-ej-niv" aria-labelledby="te-ej-n${nv}"><h3 id="te-ej-n${nv}"><span>${NIVEL[nv][0]}</span> ${NIVEL[nv][1]}</h3>
           ${es.map((e, j) => tarjeta(e, base + j)).join('')}</section>`;
       }).join('');
+      // Los ejemplos de una idea se abren recién después de su «Predice» (Gerson, mesa del 18 nov): antes, el alumno veía
+      // resuelta la situación de la predicción. Mientras no la responda, la idea muestra un aviso con un botón a esa idea
+      // (abre en el momento guardado) en vez de sus tarjetas. Una idea sin «Predice» no se bloquea (T.ejemplosAbiertos).
+      const abierta = i => T.ejemplosAbiertos(i, st.ideas[i.id]);
+      const bloqueo = () => `<div class="card te-ej-bloq" role="status">
+          <p class="te-ej-bloq-t"><b>Primero haz la predicción de esta idea.</b> Después ves sus ejemplos resueltos.</p>
+          <a class="btn morado" href="#/unidad/${esc(u.id)}/teoria/${esc(actual.id)}">Ir a «${esc(actual.titulo)}» ›</a></div>`;
       const pintarE = () => {
         $app.innerHTML = cab + `<section class="te-ejs">
           <h2 class="lector">Ejemplos resueltos</h2>
           <p class="sub te-ej-intro">Problemas ya resueltos, del más simple al tipo examen. Léelos con calma: el color de cada dato es el mismo en el texto, en el dibujo y en las cuentas.</p>
-          ${conEjemplos.length > 1 ? `<nav class="te-ej-ideas" aria-label="Ejemplos de qué idea">${conEjemplos.map(i => `<button type="button" class="te-ficha-op" data-ej="${esc(i.id)}" aria-pressed="${i === actual}">${ideas.indexOf(i) + 1}. ${esc(i.titulo)}</button>`).join('')}</nav>` : ''}
-          <div class="te-ej-cuerpo">${cuerpo()}</div></section>`;
+          ${conEjemplos.length > 1 ? `<nav class="te-ej-ideas" aria-label="Ejemplos de qué idea">${conEjemplos.map(i => `<button type="button" class="te-ficha-op" data-ej="${esc(i.id)}" aria-pressed="${i === actual}">${ideas.indexOf(i) + 1}. ${esc(i.titulo)}${abierta(i) ? '' : '<span class="te-ej-candado" aria-hidden="true"> · tras predecir</span><span class="lector"> (se abre después de su predicción)</span>'}</button>`).join('')}</nav>` : ''}
+          <div class="te-ej-cuerpo">${abierta(actual) ? cuerpo() : bloqueo()}</div></section>`;
         $app.querySelectorAll('[data-ej]').forEach(b => b.onclick = () => {
           actual = conEjemplos.find(i => i.id === b.dataset.ej); st.ejIdea = actual.id; ctx.guardar(); pintarE();
-          ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'ejemplos' });
+          ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'ejemplos', ...(abierta(actual) ? {} : { bloqueada: true }) });
         });
         conectarLupas($app); vigilar($app.querySelector('.te-ejs'));
       };
       pintarE();
-      ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'ejemplos' });
+      ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'ejemplos', ...(abierta(actual) ? {} : { bloqueada: true }) });
     }
     function conectarFicha() {
       // «Ver la figura» (celular): abre y cierra la figura de la idea, sin salir del mapa.

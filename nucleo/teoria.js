@@ -428,6 +428,15 @@
         tope(`${d} regla`, 'regla', r.texto);
         if (r.ecuacion) ecuacion(`${d} regla`, r.ecuacion);
         if (!r.condicion) mal(d, 'regla sin condición (cuándo vale)'); else tope(`${d} regla`, 'condicion', r.condicion);
+        // Dibujo propio de la regla (opcional, 18 nov): { pieza?, datos, estado? }, puro y sin NaN, como los otros momentos.
+        if (r.dibujo !== undefined) {
+          if (!r.dibujo || typeof r.dibujo !== 'object' || r.dibujo.datos === undefined) mal(`${d} regla (dibujo)`, 'el dibujo de la regla es { pieza?, datos, estado? }');
+          else {
+            const pz = figuraRegla(idea).pieza;
+            if (!pz || !Kit.piezas[pz]) mal(`${d} regla (dibujo)`, `pieza «${pz}» no registrada (¿falta en requiere?)`);
+            else dibuja(`${d} regla (dibujo)`, r.dibujo, pz);
+          }
+        }
       }
 
       // 4c. Ejemplos resueltos (opcional; pestaña «Ejemplos», Gerson 16 nov): 3 niveles × 5, resueltos enteros (no paso a
@@ -563,6 +572,25 @@
     return Math.round(r * 1e6) / 1e6;
   }
 
+  // La figura de «La regla» (Gerson, mesa del 18 nov): la regla puede traer su propio dibujo, `regla.dibujo` = { pieza?,
+  // datos, estado? }, con las mismas letras de la regla. Si no lo trae, va la figura del último paso de «Mira», como
+  // antes. La pieza, si el dibujo no la dice: la de la regla, la de «Mira» o la de la idea. Devuelve { pieza, datos, estado }.
+  function figuraRegla(idea) {
+    const r = (idea && idea.regla) || {}, m = (idea && idea.mira) || {};
+    if (r.dibujo) return { pieza: r.dibujo.pieza || r.pieza || m.pieza || idea.pieza, datos: r.dibujo.datos, estado: r.dibujo.estado || {} };
+    const pasos = m.pasos || [];
+    return { pieza: m.pieza || idea.pieza, datos: m.datos, estado: Object.assign({}, m.base || {}, (pasos[pasos.length - 1] || {}).estado || {}) };
+  }
+
+  // La pestaña «Ejemplos» de una idea se abre recién después de su «Predice» (Gerson, mesa del 18 nov: antes de predecir,
+  // los ejemplos le mostraban resuelta la situación de la predicción). `si` es el estado guardado de la idea
+  // (est.teoria[unidad].ideas[idea]): vale la predicción ya respondida o la idea terminada. Una idea sin «Predice» no se
+  // bloquea.
+  function ejemplosAbiertos(idea, si) {
+    if (!idea || !idea.predice) return true;
+    return !!(si && ((si.prediccion !== undefined && si.prediccion !== null) || si.hecha));
+  }
+
   // Baraja las opciones con la semilla del caso, para que la correcta no quede siempre en el mismo lugar.
   function barajar(ops, semilla) {
     let a = (semilla * 2654435761) >>> 0;
@@ -572,5 +600,5 @@
     return x;
   }
 
-  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
+  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, figuraRegla, ejemplosAbiertos, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
 });

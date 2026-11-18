@@ -73,6 +73,8 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 
 `formato`: `escena` (necesita `escena`, `motor`, `casos` y `pruebas`) o `predicciones` (necesita `generador`, `casos` y `pruebas`; ver `nucleo/predicciones.js`). `estado`: `borrador` (en construcción), `probada` (pasó sus casos de prueba y el pase 2), `publicada` (está en la app). `papel` apunta al archivo de problemas para resolver sin la escena (regla 6), o `null` si falta. El formato está en `plantillas/optica-lente-delgada/papel.json`: `indicacion` y una lista `problemas` con `id`, `nivel`, `enunciado`, `respuesta`, `pasos` y `verificar`, que son los datos con los que la prueba de la plantilla recalcula la respuesta con el motor. La app los muestra en `#/papel/<id>`, con la respuesta escondida y un botón para imprimir.
 
+`rehacer` (opcional, solo `true`; Gerson, mesa del 18 nov): la escena espera rehacerse. Sigue abierta, pero la pantalla Ejercicios de la unidad la pone al final, después de las prácticas y la lectura, bajo el subtítulo «Más mesas del tema». `npm run catalogo` lo pasa a `app/datos/catalogo.json`. La primera es la escena vieja de Numeración (`plantillas/numeracion/`). Al rehacer la escena, se quita el campo.
+
 ## Decisiones de agrupación pendientes (4 nov 2026)
 
 El catálogo inicial de 8 cursos y 151 unidades se armó con los sílabos del CEPRE-UNI 2026-2 y el temario del CEPRE-UNMSM 2026-I. Todos los temas quedaron ubicados; la única excepción es la semana 4 de química de la UNI, que es Semana Santa y no tiene clases. Quedan estas decisiones abiertas:

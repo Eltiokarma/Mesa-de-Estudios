@@ -8963,7 +8963,8 @@
     "/plantillas/numeracion/index.html",
     "/plantillas/numeracion/motor.js",
     "/plantillas/numeracion/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "numeracion-bases": {
    "id": "numeracion-bases",
