@@ -82,6 +82,20 @@
   const palabras = x => Kit.palabras(plano(x));
 
   // ---------- Registro (navegador) ----------
+  // Los números que se leen en un texto, normalizados para compararlos: «× 4» → 4, «6,5 m» → 6.5, «10 000» → 10000,
+  // «1/3» y «1 / 3» → 1/3. El signo no cuenta (−3 y 3 son el mismo número escrito). Un número pegado detrás de una letra
+  // («P1», «x2») es un nombre, no un valor, y no cuenta. Los superíndices (m²) no son cifras ASCII y tampoco.
+  function numerosDe(txt, acc = new Set()) {
+    const norma = x => String(Number(x.replace(',', '.')));
+    const s = String(txt || '').replace(/(\d)[   ](?=\d{3}(?!\d))/g, '$1');
+    for (const m of s.matchAll(/(?<![A-Za-zÀ-ÿα-ωΑ-Ω_\d.,])(\d+(?:[.,]\d+)?)(?:\s*\/\s*(\d+(?:[.,]\d+)?))?/g)) acc.add(m[2] ? `${norma(m[1])}/${norma(m[2])}` : norma(m[1]));
+    return acc;
+  }
+  // El texto que se lee en un SVG (sus <text>), sin etiquetas.
+  function textoSVG(svg) {
+    return (String(svg).match(/<text\b[\s\S]*?<\/text>/g) || []).map(t => t.replace(/<[^>]+>/g, ' ')).join(' · ')
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&amp;/g, '&');
+  }
   const unidades = {};
   // El validador completo (retos en toda la grilla, glosario, semillas de «Ahora tú») corre en las pruebas (npm test):
   // en el celular del alumno no se repite, porque tardaba segundos al abrir cada unidad (15 nov). En la computadora de
@@ -237,7 +251,48 @@
           ecuacion(`${d} leyenda`, [x.s]);
           tope(d, 'leyenda', x.t);
         }
+        if (j.mision && typeof j.mision.logrado === 'function') leyendaSinRespuesta(d, idea);
       } else if (exige) mal(d, 'sin leyenda: cada símbolo de la figura y la lectura dicho en palabras');
+    }
+    // La leyenda de Juega no muestra la respuesta de la misión (auditoría de Exponentes y radicales, M1, y Numeración, M8;
+    // 18 nov). La leyenda es fija y se lee antes de jugar: si escribe un número que solo se ve con la misión cumplida
+    // («× 4», «64 m²»), le regala la respuesta al alumno y además contradice la figura. Se juntan:
+    //   1. los números de la leyenda: todos los del símbolo (s) y, de la descripción (t), solo los de una cuenta escrita
+    //      (tras =, ×, ·, √ o ∛: «√100», «= 10»). Así «cada doblez multiplica las capas por 2» no cuenta como respuesta
+    //      aunque la misión se cumpla con n = 2 (falso positivo de la primera versión, Exponentes y radicales, idea 1);
+    //   2. los que se ven al abrir el juego: lectura y texto del dibujo en el inicio, consigna, misión, etiquetas de los
+    //      controles y su valor inicial, y en un control de opciones el texto de todas (se ven como botones; 18 nov);
+    //   3. los de la lectura y el texto del dibujo en los casos de la grilla que cumplen la misión (o su testigo).
+    // Falla si un número está en 1 y en 3 pero no en 2.
+    function leyendaSinRespuesta(d, idea) {
+      const j = idea.juega, ctr = j.controles || [], P = Kit.piezas[j.pieza || idea.pieza];
+      const vistos = (v, acc) => {
+        try { if (typeof j.lectura === 'function') numerosDe(plano(j.lectura(v)), acc); } catch (err) { /* lo revisa revisarJuego */ }
+        try {
+          if (P && typeof j.dibujo === 'function') { const dib = j.dibujo(v); if (dib) numerosDe(textoSVG(P.dibujar(dib.datos, dib.estado || {})), acc); }
+        } catch (err) { /* lo revisa revisarJuego */ }
+        return acc;
+      };
+      const ley = new Set();
+      for (const x of j.leyenda) if (x && x.s && x.t) {
+        numerosDe(plano([x.s]), ley);
+        for (const m of plano(x.t).matchAll(/[=×·√∛]\s*(\d[\d.,]*(?:\s*\/\s*\d[\d.,]*)?)/g)) numerosDe(m[1], ley);
+      }
+      if (!ley.size) return;
+      const v0 = inicio(j), alAbrir = vistos(v0, new Set());
+      numerosDe(plano(j.consigna), alAbrir); numerosDe(plano(j.mision.texto), alAbrir);
+      for (const c of ctr) {
+        numerosDe(plano(c.etiqueta), alAbrir);
+        if (c.opciones) c.opciones.forEach(o => numerosDe(plano(o.texto), alAbrir));
+        else numerosDe(`${Kit.formatear(v0[c.id], c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? ` ${c.unidad}` : ''}`, alAbrir);
+      }
+      const ok = v => { try { return j.mision.logrado(v) === true; } catch (err) { return false; } };
+      const t = j.mision.testigo;
+      const cumplen = Array.isArray(t) && t.length ? [t[t.length - 1]] : muestra(grilla(ctr).filter(ok), 400);
+      const alCumplir = new Set();
+      for (const v of cumplen) vistos(v, alCumplir);
+      const regalados = [...ley].filter(x => alCumplir.has(x) && !alAbrir.has(x));
+      if (regalados.length) mal(`${d} leyenda`, `muestra ${regalados.map(x => `«${x}»`).join(', ')}, que solo se ve con la misión cumplida (al abrir el juego no está): la leyenda no da la respuesta; dila con palabras o con lo que se ve al empezar`);
     }
     // Una invitación del laboratorio: { texto, logrado, bien?, testigo? }. logrado(valores, guardados, mesa) → true solo si
     // se cumplió. Se busca un caso que la cumpla en la grilla de los controles (toda, o una muestra fija si es muy grande);
@@ -600,5 +655,5 @@
     return x;
   }
 
-  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, figuraRegla, ejemplosAbiertos, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
+  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
 });

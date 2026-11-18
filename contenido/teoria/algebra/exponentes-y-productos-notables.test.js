@@ -162,7 +162,8 @@ test('las figuras de las ideas rehechas: sin carmín ni verde; la hoja con m nar
 });
 
 test('cada idea rehecha cumple el contrato de calidad 2 (validador común con calidad: 2, sola) y estrena sus palabras', () => {
-  const ESPERA = [['base', 'exponente', 'potencia'], ['radicando', 'raíz cuadrada', 'área'], ['exponente fraccionario', 'radical', 'índice']];
+  // «índice» se estrena en la idea 2 desde las correcciones del 18 nov (M9: la raíz cúbica se presenta en su «Mira»).
+  const ESPERA = [['base', 'exponente', 'potencia'], ['radicando', 'raíz cuadrada', 'área', 'índice'], ['exponente fraccionario', 'radical']];
   const porIdea = Glosario.porIdea(def);
   def.ideas.forEach((i, k) => {
     assert.deepEqual(porIdea[k].map(g => g.termino).sort(), ESPERA[k], i.id);
@@ -192,10 +193,11 @@ test('ninguna figura de Predice ni de un ejemplo delata la respuesta', () => {
 });
 
 test('ideas 2 y 3: ninguna figura de Predice ni de un ejemplo delata la respuesta', () => {
-  const ej = Kit.piezas.ejes;
-  const p2 = idea('radicales').predice, txt2 = textosSVG(ej.dibujar(p2.dibujo.datos, {})).join(' ');
-  assert.ok(!/(^|\D)5(\D|$)/.test(txt2.replace('−5', '')), `idea 2: la predicción muestra 5: ${txt2}`);
-  assert.ok(!(p2.dibujo.datos.curvas || []).some(c => c.color === 'f'), 'idea 2: sin la gráfica de la raíz antes de responder');
+  // Idea 2 (M6): un cuadrado de 25 m² con su lado «?», sin el 5 ni el violeta del resultado (antes, un plano con y = x).
+  const p2 = idea('radicales').predice, s2 = P.dibujar(p2.dibujo.datos), txt2 = textosSVG(s2).join(' ');
+  assert.equal(p2.pieza, undefined, 'la figura de Predice es el objeto de la idea');
+  assert.match(s2, /data-objeto="huertos"/);
+  assert.ok(!/(^|[^0-9−])5( m|$)/.test(txt2) && txt2.includes('? m') && !/var\(--c-f\)/.test(s2), `idea 2: la predicción delata: ${txt2}`);
   const p3 = P.dibujar(idea('exponente-fraccionario').predice.dibujo.datos), txt3 = textosSVG(p3).join(' ');
   assert.ok(!/(^|\D)9(\D|$)/.test(txt3) && !/var\(--c-f\)/.test(p3), `idea 3: la predicción delata: ${txt3}`);
   assert.match(txt3, /tapa: \?/);
@@ -346,16 +348,17 @@ test('idea 2, «Ahora tú»: cuatro opciones distintas, una correcta, y la respu
     assert.equal(ops.length, 4, `semilla ${s}`);
     assert.equal(new Set(ops.map(o => plano(o.texto))).size, 4, `semilla ${s}`);
     const q = plano(a.pregunta), r = plano(bien.texto);
-    vistos.add(s % 5);
+    vistos.add(s % 6);
     let m;
-    if (s % 5 === 0) { m = q.match(/^Si x = (−?\d+)/); assert.equal(Number(r), Math.abs(Number(m[1].replace('−', '-'))), `semilla ${s}`); }
-    else if (s % 5 === 1) { m = q.match(/de (\d+) m² y otro de (\d+) m²/); assert.equal(r, `${Math.sqrt(+m[1] + +m[2])} m`, `semilla ${s}`); }
-    else if (s % 5 === 2) { m = q.match(/raíz de (\d+) · raíz de (\d+)/); assert.equal(Number(r), Math.sqrt(m[1] * m[2]), `semilla ${s}`); }
-    else if (s % 5 === 3) { m = q.match(/raíz de \((\d) − (π|√\d+)\)²/); assert.ok(m, q); const v = valorRaiz(m[1]) - valorRaiz(m[2]); assert.ok(Math.abs(valorRaiz(r) - Math.abs(v)) < 1e-9, `semilla ${s}: ${r}`); }
+    if (s % 6 === 5) { m = q.match(/^¿Cuánto vale raíz 3 de (−?\d+)\?$/); assert.ok(m, q); assert.equal(Number(r.replace('−', '-')), Math.round(Math.cbrt(Number(m[1].replace('−', '-')))), `semilla ${s}`); }
+    else if (s % 6 === 0) { m = q.match(/^Si x = (−?\d+)/); assert.equal(Number(r), Math.abs(Number(m[1].replace('−', '-'))), `semilla ${s}`); }
+    else if (s % 6 === 1) { m = q.match(/de (\d+) m² y otro de (\d+) m²/); assert.equal(r, `${Math.sqrt(+m[1] + +m[2])} m`, `semilla ${s}`); }
+    else if (s % 6 === 2) { m = q.match(/raíz de (\d+) · raíz de (\d+)/); assert.equal(Number(r), Math.sqrt(m[1] * m[2]), `semilla ${s}`); }
+    else if (s % 6 === 3) { m = q.match(/raíz de \((\d) − (π|√\d+)\)²/); assert.ok(m, q); const v = valorRaiz(m[1]) - valorRaiz(m[2]); assert.ok(Math.abs(valorRaiz(r) - Math.abs(v)) < 1e-9, `semilla ${s}: ${r}`); }
     else { m = q.match(/raíz de (\d+) \+ raíz de (\d+) − raíz de (\d+)/); const v = Math.sqrt(+m[1]) + Math.sqrt(+m[2]) - Math.sqrt(+m[3]); assert.ok(Math.abs(valorRaiz(r) - v) < 1e-9, `semilla ${s}: ${r} contra ${v}`);
       for (const o of ops.filter(x => !x.correcta)) assert.ok(Math.abs(valorRaiz(plano(o.texto)) - v) > 1e-6, `semilla ${s}: un distractor vale lo mismo`); }
   }
-  assert.equal(vistos.size, 5);
+  assert.equal(vistos.size, 6);
 });
 
 test('idea 2, «Así se resuelve» simplifica una raíz; cuadra aparte, y «Ahora tú» nunca pide eso', () => {
@@ -380,11 +383,11 @@ test('idea 3, «Ahora tú»: cuatro opciones distintas, una correcta, y la respu
     const q = plano(a.pregunta), r = plano(bien.texto);
     vistos.add(s % 5);
     let m;
-    if (s % 5 === 0) { m = q.match(/raíz (\d) de x elevado a (\d+)|raíz (\d) de x (al cuadrado|al cubo)/); const n = +(m[1] || m[3]), e = m[2] ? +m[2] : (m[4] === 'al cuadrado' ? 2 : 3); assert.ok(Math.abs(expX(r) - e / n) < 1e-9, `semilla ${s}: ${q} → ${r}`); }
+    if (s % 5 === 0) { m = q.match(/raíz (\d) de x(?: elevado a (\d+)| (al cuadrado|al cubo))?/); const n = +m[1], e = m[2] ? +m[2] : m[3] ? (m[3] === 'al cuadrado' ? 2 : 3) : 1; assert.ok(Math.abs(expX(r) - e / n) < 1e-9, `semilla ${s}: ${q} → ${r}`); }
     else if (s % 5 === 1) { m = q.match(/(\d+) elevado a (\d+)\/(\d+)/); assert.ok(Math.abs(Number(r) - Number(m[1]) ** (m[2] / m[3])) < 1e-9, `semilla ${s}`); }
     else if (s % 5 === 2) { const ps = [...q.matchAll(/(\d+) elevado a (\d+)\/(\d+)/g)].map(x => Number(x[1]) ** (x[2] / x[3])); assert.ok(Math.abs(Number(r.replace('−', '-')) - (ps[0] + ps[1] - ps[2])) < 1e-9, `semilla ${s}`); }
     else if (s % 5 === 3) { m = q.match(/raíz de x (?:elevado a (\d)|al (cuadrado|cubo)) · raíz 3 de x (?:elevado a (\d)|al (cuadrado|cubo))?/) || q.match(/raíz de x elevado a 1/);
-      const ex = q.match(/raíz de x (elevado a \d|al cuadrado|al cubo) · raíz 3 de x (elevado a \d|al cuadrado|al cubo)/), A = expX(ex[1]), B = expX(ex[2]);
+      const ex = q.match(/raíz de x( elevado a \d| al cuadrado| al cubo)? · raíz 3 de x( elevado a \d| al cuadrado| al cubo)?/), A = ex[1] ? expX(ex[1]) : 1, B = ex[2] ? expX(ex[2]) : 1;
       assert.ok(Math.abs(expX(r) - (A + B / 3) / 2) < 1e-9, `semilla ${s}: ${q} → ${r}`); }
     else { m = q.match(/de 2 elevado a x = (\d+)/); const n = /raíz 3/.test(q) ? 3 : /raíz 4/.test(q) ? 4 : 2; assert.equal(r, `x = ${n * Math.log2(+m[1])}`, `semilla ${s}`); }
   }
@@ -422,4 +425,79 @@ test('ideas 2 y 3, ejemplos: cuentas rehechas aparte y la letra de cada alternat
     assert.ok(Array.isArray(a) && a.length >= 4, `${id} ejemplo ${k + 1}: sin alternativas`);
     assert.ok(val.replace(/^x = /, '').startsWith(plano(a['ABCDE'.indexOf(L)])), `${id} ejemplo ${k + 1}: ${L} es «${plano(a['ABCDE'.indexOf(L)])}», la respuesta «${val}»`);
   });
+});
+
+// ---------- Correcciones del 18 nov (rutinas/auditoria/algebra.exponentes-y-productos-notables.md) ----------
+// Cada prueba nombra el hallazgo que habría detectado.
+test('M1: ninguna leyenda de Juega escribe un número de la misión cumplida (la regla común, en la unidad entera)', () => {
+  const p = Teoria.problemas(def, { semillas: 12 }).filter(x => /leyenda/.test(x));
+  assert.deepEqual(p, []);
+  for (const i of def.ideas) for (const x of i.juega.leyenda) assert.ok(!/\d/.test(plano([x.s])) || /^(dm|Por la mitad)/.test(plano([x.s])), `${i.id}: ${plano([x.s])}`);
+});
+
+// Todas las raíces con índice de una idea (ecuaciones, datos, ejemplos y 60 casos de «Ahora tú» y «Así se resuelve»).
+function indices(x, out = []) {
+  if (Array.isArray(x)) x.forEach(y => indices(y, out));
+  else if (x && typeof x === 'object') { if ('raiz' in x && x.indice !== undefined) out.push(x.indice); Object.values(x).forEach(y => indices(y, out)); }
+  return out;
+}
+test('M2: el índice de una raíz lleva el color de n (turquesa), como en el exponente 1/n', () => {
+  let n = 0;
+  for (const i of def.ideas) {
+    const todo = [i.lee, i.mira, i.regla, i.ejemplos, i.predice.pregunta];
+    for (let s = 0; s < 60; s++) todo.push(i.ahoraTu.generar(s), i.resuelve.generar(s));
+    for (const ind of indices(todo)) { n++; assert.ok(ind && ind.v === 'c-i' && ind.m === 'segundo exponente', `${i.id}: índice ${JSON.stringify(ind)}`); }
+  }
+  assert.ok(n > 100, `${n} índices`);
+});
+
+test('M3 y regla 3: nada antes de Predice de la idea 2 dice que la raíz «no es negativa»', () => {
+  const i = idea('radicales'), k = def.ideas.indexOf(i), re = /negativ|±|−5/;
+  for (const t of [i.titulo, i.pregunta, i.actividad]) assert.ok(!re.test(t), t);
+  for (const t of i.lee.tarjetas) assert.ok(!re.test(plano([t.titulo, t.texto, t.ecuacion || ''])), t.titulo);
+  for (const g of Glosario.porIdea(def)[k]) assert.ok(!re.test([g.def, g.simple, ...(g.ejemplos || [])].join(' ')), g.termino);
+});
+
+test('M5 y B6, B7: los datos dan herramientas, no el paso hecho', () => {
+  const ej = id => idea(id).ejemplos;
+  const datosDe = e => plano(e.datos);
+  assert.ok(!/\(−2\)⁴|−2⁴/.test(datosDe(ej('leyes-exponentes').find(e => e.titulo === 'El signo y la base'))));
+  assert.ok(!/⁶/.test(datosDe(ej('exponente-fraccionario').find(e => e.titulo === 'Cuál es mayor'))));
+  assert.match(datosDe(ej('exponente-fraccionario').find(e => e.titulo === 'Una raíz dentro de otra')), /índice 2/);
+  for (const t of ['A la misma base', 'Dos potencias iguales']) assert.match(datosDe(ej('leyes-exponentes').find(e => e.titulo === t)), /^Potencias de \d: /);
+  for (let s = 4; s < 400; s += 5) assert.match(plano(idea('leyes-exponentes').ahoraTu.generar(s).datos), /^Potencias de \d: /, `semilla ${s}`);
+  // M10: el ejercicio de √((k − t)²) trae la fórmula que se aplica.
+  for (let s = 3; s < 400; s += 6) assert.match(plano(idea('radicales').ahoraTu.generar(s).datos[0]), /√\(x²\) = /, `semilla ${s}`);
+});
+
+test('M9: la raíz cúbica se presenta en «Mira» de la idea 2 y «Ahora tú» la practica', () => {
+  const i = idea('radicales');
+  assert.ok(i.mira.pasos.some(p => /raíz cúbica/.test(p.texto) && indices(p.ecuacion).length), 'Mira presenta ∛');
+  const cub = Array.from({ length: 60 }, (_, s) => i.ahoraTu.generar(s)).filter(a => indices(a.pregunta).length);
+  assert.ok(cub.length >= 8 && cub.some(a => /−/.test(plano(a.pregunta))), `${cub.length} casos con ∛`);
+});
+
+test('B1: cada ejemplo de nivel 3 explica todas sus alternativas incorrectas', () => {
+  for (const i of def.ideas) for (const [k, e] of i.ejemplos.entries()) {
+    if (e.nivel !== 3) continue;
+    const L = plano(e.respuesta).replace(/⁠/g, '').split(', ')[0], letras = 'ABCDE'.slice(0, e.alternativas.length).split('').filter(x => x !== L);
+    const nombradas = new Set(fichas(e.solucion).filter(f => f.m === 'resultado' && /^[A-E]⁠$/.test(f.t)).map(f => f.t[0]));
+    for (const x of letras) assert.ok(nombradas.has(x), `${i.id} ejemplo ${k + 1}: no explica la ${x}`);
+  }
+});
+
+test('B2, B14 y B15: n llega a 3 (la misión no es el tope), la lectura concuerda en número y x¹ no se escribe', () => {
+  const j = idea('leyes-exponentes').juega;
+  assert.equal(j.controles.find(c => c.id === 'n').max, 3);
+  assert.deepEqual(j.controles.find(c => c.id === 'e'), undefined);
+  for (const v of Teoria.grilla(j.controles)) assert.ok(!/\b1 (capas|dobleces)\b/.test(plano(j.lectura(v))), JSON.stringify(v));
+  assert.equal(idea('exponente-fraccionario').juega.controles.find(c => c.id === 'e').opciones.length, 5);
+  for (let s = 0; s < 400; s++) assert.ok(!/x elevado a 1(?![/\d])/.test(plano(idea('exponente-fraccionario').ahoraTu.generar(s).pregunta)), `semilla ${s}`);
+});
+
+test('B12 y B13: «Cuál es mayor» ordena las alternativas como la pregunta, y ningún título se repite', () => {
+  const e = idea('exponente-fraccionario').ejemplos.find(x => x.titulo === 'Cuál es mayor');
+  assert.deepEqual(e.alternativas.slice(0, 2), ['∛3', '√2']);
+  const titulos = def.ideas.flatMap(i => i.ejemplos.map(x => x.titulo));
+  assert.equal(new Set(titulos).size, titulos.length);
 });

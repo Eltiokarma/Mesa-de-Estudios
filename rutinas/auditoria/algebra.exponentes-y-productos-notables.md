@@ -145,3 +145,48 @@ verde.
 | **Datos sin los números del enunciado en la relación que se pide**: una línea de datos que repite una subexpresión literal del enunciado («(−2)⁴», «a⁶» con índices 2 y 3) se marca para revisión (M5). | Semi |
 | **Concordancia en lecturas**: recorrer la grilla del juego y rechazar «1 capas», «1 dobleces» o «1 veces», como ya hace el test del generador (B14). | Sí |
 | **Figura de un objeto que ocupa su lienzo**: el contenido dibujado cubre ≥ 50 % del ancho del `viewBox` (M7). | Sí |
+
+## Correcciones (18 nov)
+
+Fase 8 del método (`docs/metodo/unidad/6-correcciones.md`). Cada corrección tiene la prueba que la habría detectado, en
+`contenido/teoria/algebra/exponentes-y-productos-notables.test.js` («Correcciones del 18 nov»), en
+`nucleo/kit/piezas/alg-objeto.test.js` y en `plantillas/exponentes-radicales/generador.test.js`. Cuentas que
+cambiaron, rehechas aparte: la semilla 7 de `casos.json` (4 elevado a 3/2 = (√4)³ = 8), los valores de los
+distractores de nivel 3 que ahora se explican (8, 15, 125, 13; 4, 2, 8, 10; 6, 1,5, 2; 0 y 8; −3 y 15; 10 y 8; 13, 3 y
+21; 96; 1/8 y ⁴√16 = 2; 3√5 ≈ 6,71, 2√11 ≈ 6,63 y 4√3 ≈ 6,93) y la raíz cúbica de «Ahora tú» (con `Math.cbrt`).
+
+| # | Qué se hizo |
+|---|---|
+| A1 | Ya resuelto en la app (commit b7637324). |
+| M1 | Las tres leyendas dicen cada símbolo con palabras o con letras: «paquete», «× veces», «capas»; a, b, √a, √b, √(a + b); «exponente», «arista», «lado», «∛ y √». La regla común `leyendaSinRespuesta` queda en verde para la unidad, y una prueba de la unidad lo repite. |
+| M2 | El índice de toda raíz (regla, datos, «Lee», «Mira», ejemplos, «Ahora tú» y «Así se resuelve») es la ficha turquesa de n. Prueba: recorre los índices de las tres ideas en 60 semillas. |
+| M3 | «raíz cuadrada»: «El número que, multiplicado por sí mismo, da lo de adentro: el lado de un cuadrado de esa área». Prueba: nada antes de Predice de la idea 2 dice «negativ», «±» ni «−5». |
+| M4 | El generador ya no da 2⁻³, √((−5)²) ni 27²ᐟ³ (devuelve `null` y vuelve a sortear: solo cambió la semilla 7 de `casos.json`). Prueba en 400 semillas, sin idea y con cada idea. |
+| M5 | «El signo y la base»: «En −aⁿ el exponente toca solo a a; en (−a)ⁿ toca a −a». «Cuál es mayor»: «Si a, b > 0 y k es un entero positivo, a > b cuando aᵏ > bᵏ». |
+| M6 | Predice de la idea 2: un cuadrado de (−5)² = 25 m² con su lado «? m»; al revelar, «Su lado mide 5 m, no −5 m». El plano queda en «Mira». |
+| M7 | `alg-objeto`, un biohuerto solo: al centro y de 160 px (la mitad del lienzo). Prueba numérica. |
+| M8 | El canto de la hoja: las capas a 12 px cuando caben (≥ 8 px hasta 8 capas), con trazo de 1,2. Prueba numérica. |
+| M9 | «Mira» de la idea 2 presenta la raíz cúbica y el índice (∛(−8) = −2), «índice» pasa a estrenarse en la idea 2 y «Ahora tú» tiene un sexto tipo, `casoCubica` (con negativos; errores TAL-RAIZ-CUBICA, TAL-RAIZ-NOEXISTE, TAL-RAIZ-INDICE y TAL-EXP-POR). |
+| M10 | `casoResta` da «√(x²) = \|x\|» en datos. |
+| M11 | p6 de `cuadrado-crece` sale de la unidad en `nucleo/repaso-tipos.js` (pide Pitágoras); p6 y p7 traen «Datos:» al final del enunciado. La práctica de la unidad ya es solo `exponentes-radicales`. |
+| B1 | Los 15 ejemplos de nivel 3 explican todas sus alternativas incorrectas. Prueba: cada letra incorrecta aparece en el resuelto. |
+| B2 | Idea 1: n llega a 3 (por la mitad caben 5 dobleces; con 3 + 3 la lectura y la figura lo dicen), así n = 2 ya no es el tope; la misión aprobada no cambia. Idea 3: los cinco exponentes de la propuesta (1/3, 1/2, 1, 2 y 3). |
+| B3 | Sin cambio: es texto aprobado; queda para Gerson. |
+| B4 | Sin cambio: «arista» y «volumen» se estrenan en la idea 3 de Productos notables (que con ellas cumple su mínimo de 2 palabras) y «factor» en Inecuaciones; moverlos es decisión de Gerson. |
+| B5 | Un código por distractor: TAL-RAIZ-NEG (x positivo), TAL-RAIZ-LADOS, TAL-EXP-SOLO-EXP y TAL-FRAC-RESTA, en la cabecera de cada idea; el test del generador ya no los cuenta como nuevos. |
+| B6 | «Una raíz dentro de otra» da «√a = a elevado a 1/2: la raíz cuadrada tiene índice 2». |
+| B7 | Una tabla de potencias («Potencias de 2: 2, 4, 8, 16, 32, 64») en vez de «4 = 2² y 8 = 2³», en `casoMismaBase`, en los ejemplos L13 y L15 y en `mismaBase` y `dosVariables` del generador (papel regenerado). |
+| B8 | «√2 ≈ 1,414» y «≈ 20 · 1,414 ≈ 28,3». |
+| B9 | «Mira» de la idea 3, paso 1: «64 elevado a 1/3 = ∛64 = 4, porque (64¹ᐟ³)³ = 64». |
+| B10 | «Si n es par, a ≥ 0; si n es impar, a puede ser negativo: ∛(−8) = −2». |
+| B11 | a y b de las leyes de radicales en naranja y turquesa; √(12 · 3) conserva sus colores. |
+| B12 | «Cuál es mayor»: A ∛3, B √2 (respuesta A), y explica las otras tres. |
+| B13 | Idea 2: «Sin hallar x» y «El mayor de tres». Prueba: ningún título de ejemplo se repite. |
+| B14 | La lectura de la idea 1 dice «1 doblez» y «1 capa». Prueba en toda la grilla. |
+| B15 | x¹ no se escribe (`xe`). Prueba en 400 semillas. |
+| B16 | Rótulo «y = x» en [4, 5,2] y «En x = −6 la raíz da 6 y la recta, −6: 12 de diferencia». |
+| B17 | Cabecera al día (las tres ideas en el test de colores, el índice incluido). |
+| B18 | `cuadrado-crece/index.html`: «(2³)² = 2⁶ = 64 es una potencia de potencia». |
+| B19 | Pendiente: es de `app/practica.js` (pasar `{ idea }` al generador), fuera de alcance. |
+
+Capturas `--entera`: `/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/correcciones-exponentes/`.

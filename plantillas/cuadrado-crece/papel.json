@@ -81,7 +81,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Un terreno rectangular mide 5 m por 12 m. ¿Cuánto mide su diagonal? ¿Por qué no mide 17 m?",
+      "enunciado": "Un terreno rectangular mide 5 m por 12 m. ¿Cuánto mide su diagonal? ¿Por qué no mide 17 m? Datos: diagonal de un rectángulo = √(largo² + ancho²).",
       "respuesta": "13 m. 17 m es lo que se camina por los dos lados; la diagonal es un atajo.",
       "pasos": [
         "La diagonal es la hipotenusa de un triángulo rectángulo de catetos 5 y 12: √(5² + 12²) = √(25 + 144) = √169 = 13.",
@@ -95,7 +95,7 @@
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "Si 2ⁿ = 5, ¿cuánto vale 2ⁿ⁺³?",
+      "enunciado": "Si 2ⁿ = 5, ¿cuánto vale 2ⁿ⁺³? Datos: aᵐ · aⁿ = aᵐ⁺ⁿ.",
       "respuesta": "40.",
       "pasos": [
         "2ⁿ⁺³ = 2ⁿ · 2³: al sumar exponentes, las potencias se multiplican.",

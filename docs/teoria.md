@@ -330,6 +330,12 @@ juega: {
   - no bloquea nada: el único bloqueo sigue siendo la predicción (regla 3);
   - el validador exige que no esté cumplida al abrir y que alguien la pueda lograr.
 - **`leyenda`:** cada símbolo de la figura y de la lectura, dicho en palabras. Va debajo de la lectura.
+  - **La leyenda no da la respuesta de la misión** (18 nov, auditoría de Exponentes y radicales). Es fija y se lee antes de
+    jugar. El validador junta los números de la leyenda (todos los de `s`; de `t`, los de una cuenta escrita: tras =, ×,
+    ·, √ o ∛) y los compara con lo que se ve al abrir el juego (lectura y texto del dibujo en el inicio, consigna, misión,
+    etiquetas y valor inicial de los controles, y los textos de todas las opciones, que se ven como botones) y con lo que se ve en los casos que cumplen la misión (o su `testigo`).
+    Falla si un número de la leyenda solo aparece con la misión cumplida («× 4», «64 m²»). La leyenda dice qué es cada
+    símbolo con palabras o con los valores del inicio.
 - **`pregunta`** (por idea, ≤ 16 palabras, termina en «?»): la que responde la idea. La muestra el Resumen.
 - **Lector en frío:** sus respuestas quedan en `rutinas/frio/<unidad>.md`.
 

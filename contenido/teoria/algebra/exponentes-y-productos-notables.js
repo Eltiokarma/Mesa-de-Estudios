@@ -40,7 +40,10 @@
  *   - ni carmín (es de los ángulos) ni verde (iría junto al naranja).
  *   La respuesta lleva el color de su magnitud; la letra de una alternativa va en negrita, en violeta (nombra un valor
  *   del resultado). Cada ficha de color dice su magnitud (m); exponentes-y-productos-notables.test.js falla si una
- *   magnitud cambia de color (hoy en la idea 1; cada idea que se rehaga se suma a IDEAS_REHECHAS).
+ *   magnitud cambia de color, en las tres ideas, también en el índice de una raíz (turquesa, como el n de 1/n).
+ * Correcciones del 18 nov (rutinas/auditoria/algebra.exponentes-y-productos-notables.md, «Correcciones»): leyendas sin
+ * los valores de la misión cumplida, índice con su color, glosario y datos que no regalan la predicción ni el paso, la
+ * raíz cúbica presentada en la idea 2 y con su «Ahora tú», y los distractores de nivel 3 explicados.
  * Los errores de las ideas 2 y 3 están en el comentario de cada idea.
  * Errores de la idea 1 (hipótesis de diseño, sin dato propio; docs/investigacion/algebra-funciones-ideas-erroneas.md):
  *   AL11 reparte el exponente sobre una suma (2ˣ⁺³ = 2ˣ + 2³) · AL32 iguala exponentes con bases distintas ·
@@ -48,7 +51,8 @@
  *   TAL-EXP-FRAC divide entre base por exponente (1/6 por 2⁻³) · TAL-EXP-PRODUCTO multiplica exponentes en un producto
  *   · TAL-EXP-COCIENTE suma el exponente del divisor · TAL-EXP-BASE multiplica las bases · TAL-EXP-ELEVAR suma al elevar
  *   ((a²)ˣ = a²⁺ˣ) · TAL-EXP-SUMA suma el exponente al valor (5 + 3) · TAL-EXP-RESTA resta exponentes en una resta de
- *   potencias · TAL-EXP-DATO usa el número 8 como exponente · TAL-SIGNO cambia el signo de una resta.
+ *   potencias · TAL-EXP-SOLO-EXP resta los exponentes y no los valores · TAL-EXP-DATO usa el número 8 como exponente
+ *   · TAL-SIGNO cambia el signo de una resta.
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: con la misma base, los exponentes cuentan factores; por eso se suman, se restan o se multiplican.
@@ -123,6 +127,8 @@
   const hoja = datos => ({ pieza: HO, datos: Object.assign({ objeto: 'hoja' }, datos), estado: {} });
   // Las leyes, como datos (punto 13: la fórmula general, no el paso hecho), con los colores de la regla.
   const mm = e1('m'), nn = e2('n');
+  // Una tabla de potencias como herramienta (auditoría, B7): no dice cuál es la que sirve.
+  const POTS = p => `Potencias de ${p}: ${(p === 2 ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4]).map(e => p ** e).join(', ')}`;
   const LEY = {
     def: [pw('a', 'n'), ' = a · a · … · a, con n factores a'],
     producto: [pw('a', mm), ' · ', pw('a', nn), ' = ', pw('a', [mm, ' + ', nn])],
@@ -133,8 +139,11 @@
     igualar: 'Si dos potencias de la misma base son iguales, sus exponentes también lo son',
     dobla: 'Cada doblez por la mitad duplica las capas de la hoja',
   };
-  // Los dobleces que caben (la pieza dice lo mismo): en tres, a lo más 3.
-  const cabe = v => (v.a === 3 && v.m + v.n > 3 ? { m: v.m, n: Math.max(0, 3 - v.m), topado: true } : { m: v.m, n: v.n, topado: false });
+  // Los dobleces que caben (la pieza dice lo mismo): en tres, a lo más 3; por la mitad, a lo más 5.
+  const tope = v => (v.a === 3 ? 3 : 5);
+  const cabe = v => (v.m + v.n > tope(v) ? { m: v.m, n: Math.max(0, tope(v) - v.m), topado: true } : { m: v.m, n: v.n, topado: false });
+  // Singular o plural: «1 capa», «2 capas» (auditoría, B14).
+  const pl = (k, uno, varios) => (k === 1 ? uno : varios);
   // Cuatro opciones siempre en «Ahora tú»: si dos errores dan el mismo texto, se arma otro caso con el mismo azar.
   function conCuatro(caso, r) {
     for (let i = 0; i < 80; i++) { const c = caso(r); if (c.opciones.length >= 4) return c; }
@@ -224,7 +233,7 @@
       opciones: opcionesP([String(ans)], [
         { id: 'resta', texto: [String(B ** (p - q))], error: 'TAL-EXP-RESTA', siFuera: `Bien que separes la potencia de x. Pero ${p} − ${q} se resta así solo al dividir potencias, no al restarlas.` },
         { id: 'signo', texto: [String(B ** p + B ** q)], error: 'TAL-SIGNO', siFuera: `Sacar el factor común está bien. Pero arriba hay una resta: ${B ** p} − ${B ** q}.` },
-        { id: 'expo', texto: [String(p - q)], error: 'TAL-EXP-RESTA', siFuera: `Restar está bien, pero los valores: ${pot(B, p)} − ${pot(B, q)}, no los exponentes.` },
+        { id: 'expo', texto: [String(p - q)], error: 'TAL-EXP-SOLO-EXP', siFuera: `Restar está bien, pero los valores: ${pot(B, p)} − ${pot(B, q)}, no los exponentes.` },
       ]),
       solucion: { texto: `Cada término trae ${pot(B, 'x')} como factor; sale y se simplifica con el de abajo.`,
         ecuacion: [{ frac: [[pw(B, 'x'), ` · (${B ** p} − ${B ** q})`], pw(B, 'x')] }, ` = ${B ** p} − ${B ** q} = `, res(ans)] },
@@ -239,7 +248,7 @@
     const op = (num, den = 1) => { const g = mcd(num, den); return [`x = ${z(num / g)}${den / g === 1 ? '' : `/${den / g}`}`]; };
     return {
       pregunta: ['Halla x si ', pw(A, 'x'), ` · ${c} = `, pw(p, String(N)), '.'],
-      datos: [`${A} = ${pot(p, k)} y ${c} = ${pot(p, j)}`, LEY.potencia, LEY.producto, LEY.igualar],
+      datos: [POTS(p), LEY.potencia, LEY.producto, LEY.igualar],
       opciones: opcionesP(op(x0), [
         { id: 'bases', texto: op(N - j), error: 'AL32', siFuera: `Igualar exponentes está bien, pero con la misma base: antes, ${A} se escribe ${pot(p, k)}.` },
         { id: 'elevar', texto: op(N - j - k), error: 'TAL-EXP-ELEVAR', siFuera: `Pasar ${A} a ${pot(p, k)} está bien. Pero (${pot(p, k)})ˣ multiplica: ${k}x, no ${k} + x.` },
@@ -343,7 +352,7 @@
       datos: [LEY.producto],
       solucion: [
         { texto: 'No hace falta hallar x. Se separa la potencia en dos factores de base 2 y se reemplaza el dato.', ecuacion: [pw('2', ['x + ', e2('3')]), ' = ', pw('2', 'x'), ' · ', pw('2', e2('3')), ' = 5 · 8 = ', res('40')] },
-        { texto: ['La ', letra('A'), ' suma 3 al valor, y la ', letra('E'), ' reparte el exponente en una suma: 5 + 2³. El exponente sumado multiplica.'] },
+        { texto: ['La ', letra('A'), ' suma 3 al valor; la ', letra('B'), ' multiplica por 3, no por 2³; la ', letra('D'), ' eleva 5 al cubo; la ', letra('E'), ' reparte el exponente: 5 + 2³.'] },
       ],
       respuesta: [letra('C'), ', ', res('40')] },
     { nivel: 3, titulo: 'Un factor común',
@@ -353,38 +362,37 @@
       solucion: [
         { texto: 'Cada término se separa en 2ˣ por otra potencia de 2.', ecuacion: [pw('2', 'x + 3'), ' = ', pw('2', 'x'), ' · 8', SEP, pw('2', 'x + 1'), ' = ', pw('2', 'x'), ' · 2'] },
         { texto: 'Arriba, 2ˣ es factor común; al dividir entre 2ˣ, se simplifica.', ecuacion: [{ frac: [[pw('2', 'x'), ' · (8 − 2)'], pw('2', 'x')] }, ' = 8 − 2 = ', res('6')] },
-        { texto: ['La ', letra('A'), ' resta los exponentes, 3 − 1 = 2, y da 2² = 4. Eso vale al dividir potencias, no al restarlas.'] },
+        { texto: ['La ', letra('A'), ' resta exponentes, 2² = 4, como al dividir; la ', letra('C'), ' se queda en 3 − 1; la ', letra('D'), ' olvida un término; la ', letra('E'), ' suma 8 + 2.'] },
       ],
       respuesta: [letra('B'), ', ', res('6')] },
     { nivel: 3, titulo: 'A la misma base',
       enunciado: ['Halla x si ', pw('4', 'x'), ' · 8 = ', pw('2', '11'), '.'],
       alternativas: ['2', '4', '6', '8', '1,5'],
-      datos: ['4 = 2² y 8 = 2³', LEY.potencia, LEY.producto, LEY.igualar],
+      datos: [POTS(2), LEY.potencia, LEY.producto, LEY.igualar],
       solucion: [
         { texto: 'Se pasa todo a base 2: 4ˣ es (2²)ˣ = 2²ˣ, y 8 es 2³.', ecuacion: [pw('4', 'x'), ' · 8 = ', pw('2', '2x'), ' · ', pw('2', '3'), ' = ', pw('2', '2x + 3')] },
         { texto: 'Las dos potencias de 2 son iguales, así que sus exponentes también.', ecuacion: ['2x + 3 = 11   →   2x = 8   →   x = ', res('4')] },
-        { texto: ['La ', letra('D'), ' iguala x + 3 = 11 sin pasar el 4 a base 2: con bases distintas, los exponentes no se igualan.'] },
+        { texto: ['La ', letra('D'), ' no pasa el 4 a base 2; la ', letra('C'), ' suma al elevar, 2 + x; la ', letra('E'), ' usa el 8 como exponente; la ', letra('A'), ' divide 8 entre 4.'] },
       ],
       respuesta: [letra('B'), ', x = ', res('4')] },
     { nivel: 3, titulo: 'El signo y la base',
       enunciado: ['¿Cuánto vale −', pw('2', '4'), ' + ', pw('(−2)', '4'), ' + ', pw('(−2)', '3'), '?'],
       alternativas: ['0', '−8', '8', '−40', '24'],
-      datos: ['En (−2)⁴ la base es −2; en −2⁴ la base es 2 y el menos queda afuera', 'Un producto con un número par de factores negativos es positivo; con impar, negativo'],
+      datos: ['En −aⁿ el exponente toca solo a a; en (−a)ⁿ toca a −a', 'Un producto con un número par de factores negativos es positivo; con impar, negativo'],
       solucion: [
         { texto: '−2⁴ tiene base 2: es −(2⁴) = −16. En (−2)⁴ la base es −2: cuatro factores negativos dan 16.', ecuacion: ['−', pw('2', '4'), ' = −16', SEP, pw('(−2)', '4'), ' = 16', SEP, pw('(−2)', '3'), ' = −8'] },
         { texto: 'Tres factores negativos dan negativo. Se juntan los tres valores.', ecuacion: ['−16 + 16 + (−8) = ', res('−8')] },
-        { texto: ['La ', letra('E'), ' toma −2⁴ como (−2)⁴; la ', letra('D'), ' hace negativo también a (−2)⁴.'] },
+        { texto: ['La ', letra('E'), ' toma −2⁴ como (−2)⁴; la ', letra('D'), ' hace negativo también a (−2)⁴; la ', letra('C'), ' deja positivo (−2)³; la ', letra('A'), ' se olvida de (−2)³.'] },
       ],
       respuesta: [letra('B'), ', ', res('−8')] },
     { nivel: 3, titulo: 'Dos potencias iguales',
       enunciado: ['Si ', pw('9', 'x'), ' = ', pw('27', 'y'), ' y x + y = 5, ¿cuánto vale x?'],
       alternativas: ['2', '3', '5/2', '4', '1'],
-      datos: ['9 = 3² y 27 = 3³', LEY.potencia, LEY.igualar],
+      datos: [POTS(3), LEY.potencia, LEY.igualar],
       solucion: [
         { texto: 'A base 3: 9ˣ = 3²ˣ y 27ʸ = 3³ʸ. Como son iguales, sus exponentes también.', ecuacion: [pw('3', '2x'), ' = ', pw('3', '3y'), '   →   2x = 3y'] },
         { texto: 'Con y = 5 − x: 2x = 15 − 3x, así que 5x = 15.', ecuacion: ['x = ', res('3'), ' y y = 2'] },
-        { texto: 'Lo reviso: 9³ = 729 y 27² = 729. Cuadra.' },
-        { texto: ['La ', letra('C'), ' iguala x = y sin pasar a base 3: con bases distintas, los exponentes no se igualan.'] },
+        { texto: ['Lo reviso: 9³ = 27² = 729. La ', letra('C'), ' iguala x = y sin pasar a base 3; la ', letra('A'), ' da y; la ', letra('D'), ' y la ', letra('E'), ' suman 5, pero 9⁴ ≠ 27.'] },
       ],
       respuesta: [letra('B'), ', x = ', res('3')] },
   ];
@@ -422,25 +430,27 @@
         bien: 'Listo: 3 + 2 = 5 dobleces, y el paquete de 8 capas, cuatro veces, da 32.',
       },
       voz: 'Cuenta los dobleces y las capas: ¿cambian igual?',
+      // Sin los valores de la misión cumplida (auditoría, M1): la leyenda es fija y se lee antes de jugar.
       leyenda: [
         { s: mm, t: 'dobleces que la hoja ya tiene' },
         { s: nn, t: 'dobleces que le haces después' },
-        { s: e1('8 capas'), t: 'el paquete que dejan los m dobleces' },
-        { s: e2('× 4'), t: 'cuántas veces se repite ese paquete' },
-        { s: res('32 capas'), t: 'hojitas encimadas al final, vistas de canto' },
+        { s: e1('paquete'), t: 'capas que dejan los m dobleces (marco naranja)' },
+        { s: e2('× veces'), t: 'cuántas veces se repite ese paquete' },
+        { s: res('capas'), t: 'todas las hojitas encimadas, vistas de canto' },
         { s: 'Por la mitad', t: 'cada doblez multiplica las capas por 2' },
       ],
       controles: [
         { id: 'a', etiqueta: 'Cómo se dobla', opciones: [{ valor: 2, texto: 'Por la mitad' }, { valor: 3, texto: 'En tres' }] },
         { id: 'm', etiqueta: 'Dobleces que ya tiene, m', color: 'c-o', min: 0, max: 3, paso: 1, inicio: 3, decimales: 0 },
-        { id: 'n', etiqueta: 'Dobleces más, n', color: 'c-i', min: 0, max: 2, paso: 1, inicio: 0, decimales: 0 },
+        { id: 'n', etiqueta: 'Dobleces más, n', color: 'c-i', min: 0, max: 3, paso: 1, inicio: 0, decimales: 0 },
       ],
       dibujo: v => hoja({ base: v.a, m: v.m, n: v.n }),
       // La relación: los dobleces se suman y las capas se multiplican.
       lectura: v => {
         const c = cabe(v);
-        if (c.topado) return ['En tres solo caben 3 dobleces: ', e1(v.m), ' + ', e2(v.n), ' es más'];
-        return [e1(c.m), ' + ', e2(c.n), ' = ', res(c.m + c.n), ` dobleces; ${v.a ** c.m} · ${v.a ** c.n} = `, res(v.a ** (c.m + c.n)), ' capas'];
+        if (c.topado) return [`${v.a === 3 ? 'En tres' : 'Por la mitad'} solo caben ${tope(v)} dobleces: `, e1(v.m), ' + ', e2(v.n), ' es más'];
+        const k = c.m + c.n, L = v.a ** k;
+        return [e1(c.m), ' + ', e2(c.n), ' = ', res(k), ` ${pl(k, 'doblez', 'dobleces')}; ${v.a ** c.m} · ${v.a ** c.n} = `, res(L), ` ${pl(L, 'capa', 'capas')}`];
       },
       minimo: 3,
     },
@@ -544,7 +554,8 @@
   // Errores (hipótesis de diseño): TAL-RAIZ-X √(x²) = x siempre · TAL-RAIZ-DOBLE da ±, como las soluciones de x² = 25 ·
   // TAL-RAIZ-FALTA se queda en el cuadrado · AL9 reparte la raíz en una suma · TAL-RAIZ-SALE saca el factor sin su raíz ·
   // TAL-RAIZ-SIMP saca el número que no es cuadrado · TAL-SIGNO cambia el signo de una resta · TAL-RAIZ-CUBICA cree que la
-  // raíz cúbica de un negativo no existe o es positiva.
+  // raíz cúbica de un negativo es positiva · TAL-RAIZ-NOEXISTE cree que no existe · TAL-RAIZ-INDICE usa índice 2 en vez de 3
+  // · TAL-RAIZ-NEG da un negativo con x positivo · TAL-RAIZ-LADOS resta los lados en vez de sumar las áreas (18 nov).
   const r1 = ficha('primer radicando'), r2 = ficha('segundo radicando');
   const HU = (datos, k = 6.7) => ({ pieza: HO, datos: Object.assign({ objeto: 'huertos', escala: k }, datos), estado: {} });
   // Una raíz: entera si es exacta; si no, con ≈ y un decimal.
@@ -553,9 +564,12 @@
   const DR = {
     def: 'La raíz cuadrada √a es el número no negativo que, multiplicado por sí mismo, da a',
     lado: 'Lado de un cuadrado = √(área)',
-    producto: [{ raiz: ['a · b'] }, ' = ', { raiz: ['a'] }, ' · ', { raiz: ['b'] }, ', con a, b ≥ 0'],
+    // a y b con el color de su radicando (auditoría, B11), como m y n en las leyes de la idea 1.
+    producto: [{ raiz: [[r1('a'), ' · ', r2('b')]] }, ' = ', { raiz: [r1('a')] }, ' · ', { raiz: [r2('b')] }, ', con a, b ≥ 0'],
+    raizAbs: ['√(x²) = ', { abs: ['x'] }],
     abs: '|x| es la distancia de x al cero: |−3| = 3 y |3| = 3',
     cubica: 'La raíz cúbica ∛a es el número que, elevado al cubo, da a',
+    cubos: 'Cubos: 2³ = 8, 3³ = 27, 4³ = 64, 5³ = 125',
     semejantes: 'p√t + q√t = (p + q)√t: se suman las raíces iguales',
     cuadrados: 'Cuadrados: 4, 9, 16, 25, 36, 49, 64, 81, 100',
   };
@@ -566,7 +580,7 @@
       pregunta: `Si x = ${z(x)}, ¿cuánto vale √(x²)?`,
       datos: [DR.def],
       opciones: opcionesP([String(k)], [
-        { id: 'x', texto: [z(-k)], error: 'TAL-RAIZ-X', siFuera: x < 0 ? `Elevar al cuadrado primero está bien. Pero √${k * k} es ${k}: la raíz cuadrada no es negativa.` : `Bien que eleves x al cuadrado. Pero la raíz de ${k * k} es ${k}, no un negativo.` },
+        { id: 'x', texto: [z(-k)], error: x < 0 ? 'TAL-RAIZ-X' : 'TAL-RAIZ-NEG', siFuera: x < 0 ? `Elevar al cuadrado primero está bien. Pero √${k * k} es ${k}: la raíz cuadrada no es negativa.` : `Bien que eleves x al cuadrado. Pero la raíz de ${k * k} es ${k}, no un negativo.` },
         { id: 'doble', texto: [`±${k}`], error: 'TAL-RAIZ-DOBLE', siFuera: `±${k} son las soluciones de t² = ${k * k}. El signo √ da una sola: la no negativa.` },
         { id: 'falta', texto: [String(k * k)], error: 'TAL-RAIZ-FALTA', siFuera: `${k * k} es x² y está bien calculado. Falta sacar la raíz.` },
       ]),
@@ -583,7 +597,7 @@
       opciones: opcionesP([`${h} m`], [
         { id: 'reparte', texto: [`${p + q} m`], error: 'AL9', siFuera: `Bien que saques las raíces: ${p} y ${q}. Pero la raíz de una suma no es la suma de raíces.` },
         { id: 'falta', texto: [`${p * p + q * q} m`], error: 'TAL-RAIZ-FALTA', siFuera: `${p * p + q * q} m² es el área del biohuerto junto. Falta sacarle la raíz.` },
-        { id: 'resta', texto: [`${q - p} m`], error: 'AL9', siFuera: `Usar los dos lados está bien, pero restarlos no da el lado del junto: se suman las áreas.` },
+        { id: 'resta', texto: [`${q - p} m`], error: 'TAL-RAIZ-LADOS', siFuera: `Usar los dos lados está bien, pero restarlos no da el lado del junto: se suman las áreas.` },
       ]),
       solucion: { texto: 'Se suman las áreas y después se saca la raíz.', ecuacion: [{ raiz: [[r1(p * p), ' + ', r2(q * q)]] }, ` = √${h * h} = `, res(`${h} m`)] },
     };
@@ -607,13 +621,28 @@
     const [k, t, cuenta] = r.uno([['3', 'π', '3 < π'], ['1', '√2', '1 < √2'], ['2', '√5', '2 < √5'], ['4', '√17', '4 < √17'], ['3', '√10', '3 < √10'], ['2', '√7', '2 < √7']]);
     return {
       pregunta: ['Simplifica ', { raiz: [`(${k} − ${t})²`] }, '.'],
-      datos: [DR.abs, cuenta],
+      datos: [DR.raizAbs, DR.abs, cuenta],
       opciones: opcionesP([`${t} − ${k}`], [
         { id: 'x', texto: [`${k} − ${t}`], error: 'TAL-RAIZ-X', siFuera: `Quitar la raíz y el cuadrado está bien. Pero ${k} − ${t} es negativo, y la raíz no lo es.` },
         { id: 'doble', texto: [`±(${k} − ${t})`], error: 'TAL-RAIZ-DOBLE', siFuera: 'Pensar en el signo está bien. Pero √ da un solo número: el no negativo.' },
         { id: 'falta', texto: [`(${k} − ${t})²`], error: 'TAL-RAIZ-FALTA', siFuera: 'Esa expresión es lo de adentro, bien copiado. Falta sacarle la raíz.' },
       ]),
       solucion: { texto: `Da |${k} − ${t}|. Como ${cuenta}, la resta es negativa y se le cambia el signo.`, ecuacion: [{ raiz: [`(${k} − ${t})²`] }, ` = |${k} − ${t}| = `, res(`${t} − ${k}`)] },
+    };
+  }
+  // Ahora tú 6: una raíz cúbica, también de un negativo (auditoría, M9: la regla trae ∛ y «Ahora tú» no lo practicaba).
+  function casoCubica(r) {
+    const k = r.ent(2, 5), neg = r() < 0.6, N = neg ? -(k ** 3) : k ** 3, x = neg ? -k : k;
+    return {
+      pregunta: ['¿Cuánto vale ', { raiz: [z(N)], indice: e2('3') }, '?'],
+      datos: [DR.cubica, DR.cubos],
+      opciones: opcionesP([z(x)], [
+        { id: 'signo', texto: [z(-x)], error: 'TAL-RAIZ-CUBICA', siFuera: neg ? `Bien el ${k}: ${k}³ = ${k ** 3}. Pero ${z(N)} es negativo, y (${z(-x)})³ no.` : `Bien el ${k}. Pero (${z(-x)})³ es negativo, y ${N} es positivo.` },
+        neg ? { id: 'noexiste', texto: ['No existe'], error: 'TAL-RAIZ-NOEXISTE', siFuera: 'Eso pasa con la raíz cuadrada de un negativo. La cúbica sí existe: tres factores negativos dan negativo.' }
+          : { id: 'cuadrada', texto: [String(k * k)], error: 'TAL-RAIZ-INDICE', siFuera: `Bien que busques un número por sí mismo. Pero el índice es 3: ${k} · ${k} · ${k}, no ${k} · ${k}.` },
+        { id: 'tercio', texto: [N % 3 === 0 ? z(N / 3) : `${z(N)}/3`], error: 'TAL-EXP-POR', siFuera: `Bien: el índice es 3. Pero la raíz no divide entre 3: busca qué número, al cubo, da ${z(N)}.` },
+      ]),
+      solucion: { texto: `Tres factores ${z(x)} dan ${z(N)}${neg ? ': con índice impar, el signo se queda' : ''}.`, ecuacion: [{ raiz: [z(N)], indice: e2('3') }, ' = ', res(z(x)), `, porque (${z(x)})³ = ${z(N)}`] },
     };
   }
   // Ahora tú 5 (nivel examen): sumar y restar raíces después de simplificarlas.
@@ -688,17 +717,17 @@
       enunciado: ['¿Cuánto vale ', { raiz: [r1(12)] }, ' · ', { raiz: [r2(3)] }, '?'],
       datos: [DR.producto],
       solucion: [
-        { texto: 'Ninguna de las dos raíces es exacta, pero el producto se junta en una sola raíz.', ecuacion: [{ raiz: [r1(12)] }, ' · ', { raiz: [r2(3)] }, ' = ', { raiz: ['12 · 3'] }, ' = √36'] },
+        { texto: 'Ninguna de las dos raíces es exacta, pero el producto se junta en una sola raíz.', ecuacion: [{ raiz: [r1(12)] }, ' · ', { raiz: [r2(3)] }, ' = ', { raiz: [[r1(12), ' · ', r2(3)]] }, ' = √36'] },
         { texto: '36 sí es un cuadrado: 6 · 6.', ecuacion: ['√36 = ', res(6)] },
       ],
       respuesta: [res(6)] },
     { nivel: 2, titulo: 'El cerco del biohuerto',
       enunciado: ['Un biohuerto cuadrado tiene ', r1(50), ' m². ¿Cuántos metros de cerco necesita para rodearlo?'],
-      datos: [DR.lado, 'Perímetro de un cuadrado = 4 · lado', DR.producto, '√2 ≈ 1,41'],
+      datos: [DR.lado, 'Perímetro de un cuadrado = 4 · lado', DR.producto, '√2 ≈ 1,414'],
       figura: HU({ a: 50, b: 0, junto: false, ladoA: '?', nombreA: 'Biohuerto' }, 0),
       solucion: [
         { texto: 'El lado es √50. Como 50 = 25 · 2, sale el 5 y queda √2.', ecuacion: [{ raiz: [r1(50)] }, ' = ', { raiz: ['25 · 2'] }, ' = 5√2'] },
-        { texto: 'El cerco da la vuelta: cuatro lados.', ecuacion: ['4 · 5√2 = ', res('20√2'), ' ≈ 20 · 1,41 ≈ 28,3'] },
+        { texto: 'El cerco da la vuelta: cuatro lados.', ecuacion: ['4 · 5√2 = ', res('20√2'), ' ≈ 20 · 1,414 ≈ 28,3'] },
       ],
       respuesta: [res('20√2 m'), ', unos 28,3 m'] },
     { nivel: 2, titulo: 'Sumar raíces',
@@ -717,7 +746,7 @@
       solucion: [
         { texto: 'Cada raíz trae un cuadrado y un 2: 50 = 25 · 2, 18 = 9 · 2 y 8 = 4 · 2.', ecuacion: ['5√2 + 3√2 − 2√2'] },
         { texto: 'Se suman y se restan los números de adelante: 5 + 3 − 2 = 6.', ecuacion: ['5√2 + 3√2 − 2√2 = ', res('6√2')] },
-        { texto: ['La ', letra('A'), ' junta todo en una raíz, √(50 + 18 − 8): la raíz no se reparte en una suma. La ', letra('C'), ' suma también la última.'] },
+        { texto: ['La ', letra('A'), ' junta todo en una raíz: no se reparte en una suma. La ', letra('C'), ' suma también la última; la ', letra('D'), ' cambia los signos; la ', letra('E'), ' cambia √2 por √6.'] },
       ],
       respuesta: [letra('B'), ', ', res('6√2')] },
     { nivel: 3, titulo: 'Cuánto más de cerco',
@@ -728,7 +757,7 @@
       solucion: [
         { texto: 'Los lados son √72 y √32. Los simplifico: 72 = 36 · 2 y 32 = 16 · 2.', ecuacion: [{ raiz: [r1(72)] }, ' = 6√2', SEP, { raiz: [r2(32)] }, ' = 4√2'] },
         { texto: 'Son raíces iguales: se restan sus números de adelante.', ecuacion: ['6√2 − 4√2 = ', res('2√2')] },
-        { texto: ['La ', letra('A'), ' resta las áreas dentro de una raíz, √(72 − 32): la raíz no se reparte en una resta.'] },
+        { texto: ['La ', letra('A'), ' resta las áreas dentro de una raíz; la ', letra('C'), ' suma 6 + 4; la ', letra('D'), ' se olvida de √2; la ', letra('E'), ' resta las áreas, sin raíz.'] },
       ],
       respuesta: [letra('B'), ', ', res('2√2 m'), ', unos 2,8 m'] },
     { nivel: 3, titulo: 'Con raíces cúbicas',
@@ -738,26 +767,27 @@
       solucion: [
         { texto: 'La raíz cúbica de un negativo existe y es negativa: (−4)³ = −64. Las otras dos: √81 = 9 y ∛8 = 2.', ecuacion: ['∛(−64) = −4', SEP, '√81 = 9', SEP, '∛8 = 2'] },
         { texto: 'Se juntan con sus signos.', ecuacion: ['−4 + 9 − 2 = ', res(3)] },
-        { texto: ['La ', letra('B'), ' toma ∛(−64) como 4, y la ', letra('E'), ' cree que no existe: eso pasa con √, no con ∛.'] },
+        { texto: ['La ', letra('B'), ' toma ∛(−64) como 4; la ', letra('E'), ' cree que no existe, como con √; la ', letra('C'), ' cambia todos los signos; la ', letra('D'), ' suma todo: 4 + 9 + 2.'] },
       ],
       respuesta: [letra('A'), ', ', res(3)] },
-    { nivel: 3, titulo: 'El dato escondido',
+    { nivel: 3, titulo: 'Sin hallar x',
       enunciado: 'Si √x = 6, ¿cuánto vale √(4x)?',
       alternativas: ['24', '12', '10', '8', '144'],
       datos: [DR.producto],
       solucion: [
         { texto: 'No hace falta hallar x: la raíz se reparte en el producto 4 · x.', ecuacion: [{ raiz: ['4 · x'] }, ' = ', { raiz: ['4'] }, ' · ', { raiz: ['x'] }, ' = 2 · 6 = ', res(12)] },
         { texto: 'Lo reviso: x = 36, 4x = 144 y √144 = 12. Cuadra.' },
-        { texto: ['La ', letra('A'), ' saca el 4 sin su raíz, y la ', letra('E'), ' se queda en 4x, sin sacar la raíz.'] },
+        { texto: ['La ', letra('A'), ' saca el 4 sin su raíz; la ', letra('E'), ' se queda en 4x; la ', letra('C'), ' y la ', letra('D'), ' suman 4 + 6 y 2 + 6 en vez de multiplicar.'] },
       ],
       respuesta: [letra('B'), ', ', res(12)] },
-    { nivel: 3, titulo: 'Cuál es mayor',
+    { nivel: 3, titulo: 'El mayor de tres',
       enunciado: '¿Cuál de estos números es el mayor: 3√5, 2√11 o 4√3?',
       alternativas: ['3√5', '2√11', '4√3', 'Son iguales', 'No se puede saber'],
       datos: ['k√a = √(k² · a), con k ≥ 0', 'Entre dos raíces cuadradas, es mayor la de mayor radicando'],
       solucion: [
         { texto: 'Meto el número de adelante en la raíz, elevándolo al cuadrado.', ecuacion: ['3√5 = √45', SEP, '2√11 = √44', SEP, '4√3 = √48'] },
         { texto: 'Ahora se comparan los radicandos: 48 es el mayor.', ecuacion: ['√48 > √45 > √44   →   ', res('4√3'), ' es el mayor'] },
+        { texto: ['La ', letra('B'), ' mira solo el número de adentro, 11; la ', letra('A'), ' queda segunda: √45 < √48; la ', letra('D'), ' y la ', letra('E'), ' no ven que, metidos, se comparan.'] },
       ],
       respuesta: [letra('C'), ', ', res('4√3')] },
   ];
@@ -791,17 +821,18 @@
         bien: 'Listo: el junto mide 10 m de lado, menos que los dos lados de antes seguidos.',
       },
       voz: 'Compara el lado del junto con los dos lados seguidos.',
+      // Con letras y palabras, sin los valores de la misión cumplida (auditoría, M1).
       leyenda: [
-        { s: r1('36 m²'), t: 'área del biohuerto 1: el radicando' },
-        { s: r2('64 m²'), t: 'área del biohuerto 2' },
-        { s: r1('6 m'), t: 'lado del biohuerto 1: √36' },
-        { s: '100 m²', t: 'las dos áreas juntas' },
-        { s: res('10 m'), t: 'lado del biohuerto junto: √100' },
+        { s: r1('a'), t: 'área del biohuerto 1 (m²): el radicando' },
+        { s: r2('b'), t: 'área del biohuerto 2 (m²)' },
+        { s: r1('√a'), t: 'lado del biohuerto 1, en m' },
+        { s: r2('√b'), t: 'lado del biohuerto 2, en m' },
+        { s: res('√(a + b)'), t: 'lado del biohuerto que junta las dos áreas' },
         { s: 'barras', t: 'los dos lados seguidos contra el del junto' },
       ],
       controles: [
-        { id: 'a', etiqueta: 'Área del biohuerto 1 (m²)', color: 'c-o', min: 1, max: 100, paso: 1, inicio: 36, decimales: 0 },
-        { id: 'b', etiqueta: 'Área del biohuerto 2 (m²)', color: 'c-i', min: 1, max: 100, paso: 1, inicio: 49, decimales: 0 },
+        { id: 'a', etiqueta: 'Área del biohuerto 1, a (m²)', color: 'c-o', min: 1, max: 100, paso: 1, inicio: 36, decimales: 0 },
+        { id: 'b', etiqueta: 'Área del biohuerto 2, b (m²)', color: 'c-i', min: 1, max: 100, paso: 1, inicio: 49, decimales: 0 },
       ],
       dibujo: v => HU({ a: v.a, b: v.b }),
       // La relación: la raíz de la suma es menor que la suma de las raíces.
@@ -821,9 +852,10 @@
         { id: 'doble', texto: '±5', error: 'TAL-RAIZ-DOBLE', siFuera: '±5 son las dos soluciones de x² = 25. El signo √ da una sola: la no negativa.' },
         { id: 'cuadrado', texto: '25', error: 'TAL-RAIZ-FALTA', siFuera: 'Bien calculado (−5)² = 25. Falta sacarle la raíz.' },
       ],
-      pieza: 'ejes',
-      dibujo: { datos: ejesRaiz({ curvas: [{ puntos: [[-6, -6], [6, 6]], discontinua: true, rotulo: 'y = x', en: [4, 4] }], puntos: [{ x: -5, y: 0, rotulo: 'x = −5' }], alt: 'Plano con la recta y = x y el punto x = −5 marcado en el eje; sin la gráfica de la raíz' }), estado: {} },
-      revelar: { datos: ejesRaiz({ curvas: [{ puntos: [[-6, -6], [6, 6]], discontinua: true, rotulo: 'y = x', en: [4, 4] }, { puntos: VX.map(x => [x, Math.abs(x)]), color: 'f', rotulo: 'y = √(x²)', en: [-6, 6] }], puntos: [{ x: -5, y: 5, color: 'f', rotulo: '5', guias: true }], alt: 'La gráfica de raíz de x al cuadrado tiene forma de V: en x = −5 vale 5' }), estado: {} },
+      // Un cuadrado de (−5)² = 25 m² con su lado por hallar (auditoría, M6: el plano con y = x no decía nada y empujaba
+      // hacia −5). El plano queda para «Mira» y la regla, donde se explica.
+      dibujo: HU({ a: 25, b: 0, junto: false, ladoA: '?', nombreA: 'Un cuadrado de (−5)² m²' }),
+      revelar: HU({ a: 25, b: 0, junto: false, nombreA: 'Su lado mide 5 m, no −5 m' }),
       coincide: 'Coincide: (−5)² = 25, y la raíz cuadrada de 25 es 5.',
       noCoincide: 'Revisemos: primero (−5)² = 25; después, √25 es el número no negativo que, al cuadrado, da 25.',
     },
@@ -842,13 +874,14 @@
         { estado: { corte: 2 }, texto: 'Si x es negativo, el cuadrado borra el signo: la raíz da positivo.', ecuacion: [{ raiz: ['(−3)²'] }, ' = √9 = 3'] },
         { estado: { corte: 3 }, texto: 'Siempre da la distancia de x al cero: su valor absoluto, |x|.', ecuacion: [{ raiz: ['x²'] }, ' = ', { llave: [{ abs: ['x'] }], nota: 'nunca negativo', color: 'c-f' }] },
         { estado: { corte: 3 }, texto: 'En un producto, la raíz se reparte; en una suma, no.', ecuacion: [{ raiz: ['9 · 16'] }, ' = 3 · 4 = 12', SEP, { raiz: ['9 + 16'] }, ' = 5, no 3 + 4'] },
+        { estado: { corte: 3 }, texto: 'Con índice 3, el número chico, es la raíz cúbica: sí da negativos.', ecuacion: [{ raiz: ['−8'], indice: e2('3') }, ' = −2, porque (−2)³ = −8'] },
       ],
     },
     regla: {
       texto: 'La raíz cuadrada √a es el número no negativo que, al cuadrado, da a. Por eso √(x²) = |x|. La raíz se reparte en un producto, nunca en una suma.',
       ecuacion: [{ raiz: ['x²'] }, ' = ', { llave: [{ abs: ['x'] }], nota: 'nunca negativo', color: 'c-f' }, SEP,
-        { raiz: ['a · b'] }, ' = ', { llave: [[{ raiz: ['a'] }, ' · ', { raiz: ['b'] }]], nota: 'se reparte', color: 'c-f' }, SEP,
-        { raiz: ['a + b'] }, ' ≠ ', { raiz: ['a'] }, ' + ', { raiz: ['b'] }],
+        { raiz: [[r1('a'), ' · ', r2('b')]] }, ' = ', { llave: [[{ raiz: [r1('a')] }, ' · ', { raiz: [r2('b')] }]], nota: 'se reparte', color: 'c-f' }, SEP,
+        { raiz: [[r1('a'), ' + ', r2('b')]] }, ' ≠ ', { raiz: [r1('a')] }, ' + ', { raiz: [r2('b')] }],
       condicion: 'a, b ≥ 0. |x| es la distancia de x al cero: |−5| = 5. La raíz cúbica sí admite negativos: ∛(−8) = −2.',
       voz: 'Primero lo de adentro; la raíz al final.',
     },
@@ -874,19 +907,20 @@
       pieza: HO,
       voz: 'Primero lo de adentro; la raíz al final.',
       generar(sem) {
-        const r = azar(sem + 47), tipo = sem % 5;
+        const r = azar(sem + 47), tipo = sem % 6;
         if (tipo === 0) return conCuatro(casoCuadrado, r);
         if (tipo === 1) return conCuatro(casoJuntar, r);
         if (tipo === 2) return conCuatro(casoProductoRaiz, r);
         if (tipo === 3) return conCuatro(casoResta, r);
-        return conCuatro(casoSemejantes, r);
+        if (tipo === 4) return conCuatro(casoSemejantes, r);
+        return conCuatro(casoCubica, r);
       },
     },
   };
 
   // ---------- Idea 3 (nueva, 18 nov): la raíz es un exponente fraccionario ----------
   // Propuesta aprobada (idea 3). Objeto de la primera pantalla: una caja cúbica de cartón de V dm³ al lado de una loseta
-  // cuadrada de V dm² (pieza alg-objeto, objeto 'caja'). Cambia: el exponente (1/3, 1/2 o 1) y el número (8, 27 o 64). ·
+  // cuadrada de V dm² (pieza alg-objeto, objeto 'caja'). Cambia: el exponente (1/3, 1/2, 1, 2 o 3) y el número (8, 27 o 64). ·
   // Permanece: la caja, la loseta y su escala. · Progresa: el exponente que da la arista y el que da el lado. · Se
   // reserva: un exponente como 2/3 (la predicción: 27^(2/3) es el área de la tapa). · Debe verse: elevar a 1/n deshace
   // elevar a n: es la raíz de índice n.
@@ -896,7 +930,8 @@
   // Errores (hipótesis de diseño): TAL-EXP-POR multiplica la base por el exponente (27 · 2/3) · TAL-FRAC-MEDIO saca la raíz
   // y se olvida del m · TAL-FRAC-INVIERTE invierte índice y exponente · TAL-FRAC-ANIDA no aplica la raíz de afuera a
   // la de adentro · TAL-FRAC-AFUERA se olvida de la raíz de afuera · TAL-FRAC-SUMA suma numeradores y denominadores ·
-  // TAL-FRAC-DIVIDE divide donde se multiplica · TAL-EXP-SUMA suma el índice al exponente.
+  // TAL-FRAC-DIVIDE divide donde se multiplica · TAL-EXP-SUMA suma el índice al exponente · TAL-FRAC-RESTA le resta el
+  // índice al exponente.
   const CJ = (datos) => ({ pieza: HO, datos: Object.assign({ objeto: 'caja' }, datos), estado: {} });
   const mcdN = (u, w) => (w ? mcdN(w, u % w) : Math.abs(u));
   // Una fracción simplificada como texto: 4/6 → «2/3», 6/3 → «2».
@@ -905,25 +940,28 @@
   const SUPI = { 2: '', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' };
   const raizI = (n, dentro) => `${SUPI[n] || n}√${dentro}`;
   const DF = {
-    def: [pw('a', ['1/', nn]), ' = ', { raiz: ['a'], indice: 'n' }, ': el número que, elevado a ', nn, ', da a'],
-    mn: [pw('a', [mm, '/', nn]), ' = ', { raiz: [pw('a', mm)], indice: 'n' }, ' = ', { sup: [{ par: [{ raiz: ['a'], indice: 'n' }] }, mm] }],
+    def: [pw('a', ['1/', nn]), ' = ', { raiz: ['a'], indice: nn }, ': el número que, elevado a ', nn, ', da a'],
+    dos: ['√a = ', pw('a', ['1/', e2('2')]), ': la raíz cuadrada tiene índice ', e2('2')],
+    mn: [pw('a', [mm, '/', nn]), ' = ', { raiz: [pw('a', mm)], indice: nn }, ' = ', { sup: [{ par: [{ raiz: ['a'], indice: nn }] }, mm] }],
     producto: LEY.producto,
     potencia: LEY.potencia,
     igualar: LEY.igualar,
   };
   // Ahora tú 1: de raíz a potencia de exponente fraccionario.
+  // x elevado a 1 se escribe x (auditoría, B15).
+  const xe = (k, exp) => (k === 1 ? 'x' : pw('x', exp === undefined ? String(k) : exp));
   function casoARaiz(r) {
     const n = r.uno([3, 4, 5, 7]), m = r.uno([1, 2, 3, 4, 5, 6].filter(x => x !== n && mcdN(x, n) === 1));
     const op = (p, q) => [pw('x', fq(p, q))];
     return {
-      pregunta: ['Escribe ', { raiz: [pw('x', e1(m))], indice: String(n) }, ' con un exponente fraccionario.'],
+      pregunta: ['Escribe ', { raiz: [xe(m, e1(m))], indice: e2(String(n)) }, ' con un exponente fraccionario.'],
       datos: [DF.mn],
       opciones: opcionesP(op(m, n), [
         { id: 'invierte', texto: op(n, m), error: 'TAL-FRAC-INVIERTE', siFuera: `Usar ${m} y ${n} en una fracción está bien. Pero el índice ${n} va abajo: la raíz divide.` },
         { id: 'por', texto: [pw('x', String(m * n))], error: 'TAL-EXP-POR', siFuera: `Bien que juntes ${m} y ${n}. Pero sacar raíz divide el exponente, no lo multiplica.` },
-        { id: 'resta', texto: [pw('x', z(m - n))], error: 'TAL-FRAC-SUMA', siFuera: `La raíz sí cambia el exponente, es cierto. Pero lo divide entre ${n}: no le resta ${n}.` },
+        { id: 'resta', texto: [pw('x', z(m - n))], error: 'TAL-FRAC-RESTA', siFuera: `La raíz sí cambia el exponente, es cierto. Pero lo divide entre ${n}: no le resta ${n}.` },
       ]),
-      solucion: { texto: 'El exponente de adentro va arriba y el índice, abajo.', ecuacion: [{ raiz: [pw('x', e1(m))], indice: String(n) }, ' = ', pw('x', res(fq(m, n)))] },
+      solucion: { texto: 'El exponente de adentro va arriba y el índice, abajo.', ecuacion: [{ raiz: [xe(m, e1(m))], indice: e2(String(n)) }, ' = ', pw('x', res(fq(m, n)))] },
     };
   }
   // Ahora tú 2: el valor de una potencia de exponente fraccionario.
@@ -939,7 +977,7 @@
         { id: 'medio', texto: [String(raiz)], error: 'TAL-FRAC-MEDIO', siFuera: `Bien la raíz: ${raizI(n, B)} = ${raiz}. Falta elevarla a ${m}.` },
         { id: 'invierte', texto: [otroT], error: 'TAL-FRAC-INVIERTE', siFuera: `Elevar y sacar raíz está bien. Pero el índice es ${n}, el de abajo: aquí se invirtió.` },
       ]),
-      solucion: { texto: 'Primero la raíz, que sale exacta; después, la potencia.', ecuacion: [pw(B, [e1(m), '/', e2(n)]), ' = ', { sup: [{ par: [{ raiz: [String(B)], indice: n === 2 ? undefined : String(n) }] }, e1(m)] }, ` = ${raiz}${sup(m)} = `, res(ans)] },
+      solucion: { texto: 'Primero la raíz, que sale exacta; después, la potencia.', ecuacion: [pw(B, [e1(m), '/', e2(n)]), ' = ', { sup: [{ par: [{ raiz: [String(B)], indice: n === 2 ? undefined : e2(String(n)) }] }, e1(m)] }, ` = ${raiz}${sup(m)} = `, res(ans)] },
     };
   }
   // Ahora tú 3 (nivel examen): la suma de tres potencias de exponente fraccionario.
@@ -966,11 +1004,11 @@
     // √(xᵃ · ∛(xᵇ)) = x^((a + b/3)/2) = x^((3a + b)/6)
     const op = (p, q) => [pw('x', fq(p, q))];
     return {
-      pregunta: ['Escribe ', { raiz: [[pw('x', String(a)), ' · ', { raiz: [pw('x', String(b))], indice: '3' }]] }, ' como una sola potencia de x.'],
+      pregunta: ['Escribe ', { raiz: [[xe(a), ' · ', { raiz: [xe(b)], indice: e2('3') }]] }, ' como una sola potencia de x.'],
       datos: [DF.mn, DF.producto, DF.potencia],
       opciones: opcionesP(op(3 * a + b, 6), [
-        { id: 'afuera', texto: op(3 * a + b, 3), error: 'TAL-FRAC-AFUERA', siFuera: `Juntar x${sup(a)} con la raíz cúbica está bien. Falta la raíz de afuera: todo se divide entre 2.` },
-        { id: 'anida', texto: op(3 * a + 2 * b, 6), error: 'TAL-FRAC-ANIDA', siFuera: `Bien x${sup(a)} entre 2. Pero la raíz de afuera también divide al ${b}/3: queda ${b}/6.` },
+        { id: 'afuera', texto: op(3 * a + b, 3), error: 'TAL-FRAC-AFUERA', siFuera: `Juntar x${a === 1 ? '' : sup(a)} con la raíz cúbica está bien. Falta la raíz de afuera: todo se divide entre 2.` },
+        { id: 'anida', texto: op(3 * a + 2 * b, 6), error: 'TAL-FRAC-ANIDA', siFuera: `Bien x${a === 1 ? '' : sup(a)} entre 2. Pero la raíz de afuera también divide al ${b}/3: queda ${b}/6.` },
         { id: 'suma', texto: op(a + b, 5), error: 'TAL-FRAC-SUMA', siFuera: 'Sumar exponentes en el producto está bien, pero las fracciones no se suman arriba con arriba y abajo con abajo.' },
       ]),
       solucion: { texto: 'De adentro hacia afuera: el producto suma los exponentes y la raíz cuadrada los divide entre 2.', ecuacion: [pw('x', `(${a} + ${b}/3)/2`), ' = ', pw('x', res(fq(3 * a + b, 6)))] },
@@ -981,7 +1019,7 @@
     const n = r.uno([2, 3, 4]), k = r.ent(2, 5), x0 = n * k;
     const op = v => [`x = ${v}`];
     return {
-      pregunta: ['Halla x si ', { raiz: [pw('2', 'x')], indice: n === 2 ? undefined : String(n) }, ` = ${2 ** k}.`],
+      pregunta: ['Halla x si ', { raiz: [pw('2', 'x')], indice: n === 2 ? undefined : e2(String(n)) }, ` = ${2 ** k}.`],
       datos: [`${2 ** k} = 2${sup(k)}`, DF.mn, DF.igualar],
       opciones: opcionesP(op(x0), [
         { id: 'divide', texto: op(fq(k, n)), error: 'TAL-FRAC-DIVIDE', siFuera: `Igualar exponentes está bien: x/${n} = ${k}. Pero se despeja multiplicando por ${n}.` },
@@ -1005,19 +1043,19 @@
       solucion: [{ texto: 'La arista es el número que, elevado al cubo, da 125: la raíz cúbica, que es elevar a 1/3.', ecuacion: [pw('125', ['1/', e2('3')]), ' = ∛125 = ', res('5')] }],
       respuesta: ['La arista es ', pw('125', '1/3'), ' = ', res('5 dm')] },
     { nivel: 1, titulo: 'De raíz a potencia',
-      enunciado: ['Escribe ', { raiz: [pw('x', e1('3'))], indice: '5' }, ' con un exponente fraccionario.'],
+      enunciado: ['Escribe ', { raiz: [pw('x', e1('3'))], indice: e2('5') }, ' con un exponente fraccionario.'],
       datos: [DF.mn],
-      solucion: [{ texto: 'El exponente de adentro, 3, va arriba; el índice, 5, va abajo.', ecuacion: [{ raiz: [pw('x', e1('3'))], indice: '5' }, ' = ', pw('x', [e1('3'), '/', e2('5')])] }],
+      solucion: [{ texto: 'El exponente de adentro, 3, va arriba; el índice, 5, va abajo.', ecuacion: [{ raiz: [pw('x', e1('3'))], indice: e2('5') }, ' = ', pw('x', [e1('3'), '/', e2('5')])] }],
       respuesta: [pw('x', res('3/5'))] },
     { nivel: 1, titulo: 'De potencia a raíz',
       enunciado: ['Escribe ', pw('x', [e1('4'), '/', e2('7')]), ' como una raíz.'],
       datos: [DF.mn],
-      solucion: [{ texto: 'El de abajo, 7, es el índice de la raíz; el de arriba, 4, es el exponente de adentro.', ecuacion: [pw('x', [e1('4'), '/', e2('7')]), ' = ', { raiz: [pw('x', e1('4'))], indice: '7' }] }],
-      respuesta: [{ raiz: [pw('x', res('4'))], indice: '7' }] },
+      solucion: [{ texto: 'El de abajo, 7, es el índice de la raíz; el de arriba, 4, es el exponente de adentro.', ecuacion: [pw('x', [e1('4'), '/', e2('7')]), ' = ', { raiz: [pw('x', e1('4'))], indice: e2('7') }] }],
+      respuesta: [{ raiz: [pw('x', res('4'))], indice: e2('7') }] },
     { nivel: 1, titulo: 'Una raíz cuarta',
       enunciado: ['¿Cuánto vale ', pw('81', ['1/', e2('4')]), '?'],
       datos: [DF.def],
-      solucion: [{ texto: 'Elevar a 1/4 es sacar la raíz cuarta: el número que, multiplicado 4 veces por sí mismo, da 81. Es 3: 3 · 3 · 3 · 3 = 81.', ecuacion: [pw('81', ['1/', e2('4')]), ' = ', { raiz: ['81'], indice: '4' }, ' = ', res(3)] }],
+      solucion: [{ texto: 'Elevar a 1/4 es sacar la raíz cuarta: el número que, multiplicado 4 veces por sí mismo, da 81. Es 3: 3 · 3 · 3 · 3 = 81.', ecuacion: [pw('81', ['1/', e2('4')]), ' = ', { raiz: ['81'], indice: e2('4') }, ' = ', res(3)] }],
       respuesta: [res(3)] },
     { nivel: 1, titulo: 'El lado de la loseta',
       enunciado: 'Una loseta cuadrada tiene 49 dm². ¿A qué exponente hay que elevar 49 para obtener su lado, y cuánto mide?',
@@ -1028,12 +1066,12 @@
       enunciado: ['¿Cuánto vale ', pw('32', [e1('2'), '/', e2('5')]), '?'],
       datos: [DF.mn, '2⁵ = 32'],
       solucion: [
-        { texto: 'Primero la raíz quinta de 32: el número que, elevado a 5, da 32. Es 2.', ecuacion: [{ raiz: ['32'], indice: '5' }, ' = 2'] },
+        { texto: 'Primero la raíz quinta de 32: el número que, elevado a 5, da 32. Es 2.', ecuacion: [{ raiz: ['32'], indice: e2('5') }, ' = 2'] },
         { texto: 'Después, el exponente de arriba: 2 al cuadrado.', ecuacion: [pw('32', [e1('2'), '/', e2('5')]), ' = ', pw('2', e1('2')), ' = ', res(4)] },
       ],
       respuesta: [res(4)] },
     { nivel: 2, titulo: 'Dos raíces cúbicas',
-      enunciado: ['Escribe ', { raiz: [pw('x', e1('2'))], indice: '3' }, ' · ', { raiz: [pw('x', e2('4'))], indice: '3' }, ' como una sola potencia de x.'],
+      enunciado: ['Escribe ', { raiz: [pw('x', e1('2'))], indice: e2('3') }, ' · ', { raiz: [pw('x', e2('4'))], indice: e2('3') }, ' como una sola potencia de x.'],
       datos: [DF.mn, DF.producto],
       solucion: [
         { texto: 'Cada raíz pasa a exponente fraccionario: arriba el exponente de adentro, abajo el índice 3.', ecuacion: [pw('x', [e1('2'), '/3']), ' · ', pw('x', [e2('4'), '/3'])] },
@@ -1041,13 +1079,13 @@
       ],
       respuesta: [pw('x', res('2'))] },
     { nivel: 2, titulo: 'Una raíz dentro de otra',
-      enunciado: ['Escribe ', { raiz: [{ raiz: ['x'], indice: '3' }] }, ' como una sola raíz.'],
-      datos: [DF.mn, DF.potencia],
+      enunciado: ['Escribe ', { raiz: [{ raiz: ['x'], indice: e2('3') }] }, ' como una sola raíz.'],
+      datos: [DF.mn, DF.dos, DF.potencia],
       solucion: [
         { texto: 'La de adentro es x elevado a 1/3. La de afuera, raíz cuadrada, eleva todo a 1/2.', ecuacion: [{ sup: [{ par: [pw('x', '1/3')] }, '1/2'] }] },
-        { texto: 'Potencia de una potencia: se multiplican, 1/3 · 1/2 = 1/6.', ecuacion: [pw('x', res('1/6')), ' = ', { raiz: ['x'], indice: '6' }] },
+        { texto: 'Potencia de una potencia: se multiplican, 1/3 · 1/2 = 1/6.', ecuacion: [pw('x', res('1/6')), ' = ', { raiz: ['x'], indice: e2('6') }] },
       ],
-      respuesta: [{ raiz: ['x'], indice: '6' }, ' = ', pw('x', res('1/6'))] },
+      respuesta: [{ raiz: ['x'], indice: e2('6') }, ' = ', pw('x', res('1/6'))] },
     { nivel: 2, titulo: 'Simplificar el exponente',
       enunciado: ['¿Cuánto vale ', pw('64', [e1('2'), '/', e2('6')]), '?'],
       datos: [DF.mn, 'Una fracción se simplifica dividiendo arriba y abajo entre lo mismo'],
@@ -1065,13 +1103,13 @@
       ],
       respuesta: [res(14)] },
     { nivel: 3, titulo: 'Una raíz anidada',
-      enunciado: ['Escribe ', { raiz: [['x · ', { raiz: [pw('x', '2')], indice: '3' }]] }, ' como una sola potencia de x.'],
+      enunciado: ['Escribe ', { raiz: [['x · ', { raiz: [pw('x', '2')], indice: e2('3') }]] }, ' como una sola potencia de x.'],
       alternativas: [[pw('x', '5/6')], [pw('x', '5/3')], [pw('x', '1/3')], [pw('x', '7/6')], [pw('x', '3/5')]],
       datos: [DF.mn, DF.producto, DF.potencia],
       solucion: [
         { texto: 'Adentro, x por x elevado a 2/3: misma base, se suman los exponentes, 1 + 2/3 = 5/3.', ecuacion: ['x · ', pw('x', '2/3'), ' = ', pw('x', '5/3')] },
         { texto: 'Afuera, la raíz cuadrada divide ese exponente entre 2.', ecuacion: [{ sup: [{ par: [pw('x', '5/3')] }, '1/2'] }, ' = ', pw('x', res('5/6'))] },
-        { texto: ['La ', letra('B'), ' se olvida de la raíz de afuera. La ', letra('D'), ' divide entre 2 solo la x de afuera: 1/2 + 2/3.'] },
+        { texto: ['La ', letra('B'), ' olvida la raíz de afuera; la ', letra('D'), ' divide solo la x: 1/2 + 2/3; la ', letra('C'), ' olvida la x; la ', letra('E'), ' invierte 5/3.'] },
       ],
       respuesta: [letra('A'), ', ', pw('x', res('5/6'))] },
     { nivel: 3, titulo: 'Sumar y restar potencias',
@@ -1081,43 +1119,44 @@
       solucion: [
         { texto: 'Cada potencia: primero su raíz, después el exponente de arriba.', ecuacion: [pw('8', '2/3'), ' = 2² = 4', SEP, pw('16', '3/4'), ' = 2³ = 8', SEP, pw('27', '1/3'), ' = 3'] },
         { texto: 'Se juntan con sus signos.', ecuacion: ['4 + 8 − 3 = ', res(9)] },
-        { texto: ['La ', letra('A'), ' suma también el 3, que se resta.'] },
+        { texto: ['La ', letra('A'), ' suma el 3; la ', letra('C'), ' hace 16 · 3/4 = 12; la ', letra('D'), ' toma 27 elevado a 1/3 como 27 ÷ 3 = 9; la ', letra('E'), ', además, lo suma.'] },
       ],
       respuesta: [letra('B'), ', ', res(9)] },
     { nivel: 3, titulo: 'El exponente escondido',
-      enunciado: ['Halla x si ', { raiz: [pw('2', 'x')], indice: '3' }, ' = 32.'],
+      enunciado: ['Halla x si ', { raiz: [pw('2', 'x')], indice: e2('3') }, ' = 32.'],
       alternativas: ['5/3', '8', '15', '96', '2'],
       datos: ['32 = 2⁵', DF.mn, DF.igualar],
       solucion: [
         { texto: 'La raíz cúbica divide el exponente entre 3, y 32 es 2⁵.', ecuacion: [pw('2', 'x/3'), ' = ', pw('2', '5')] },
         { texto: 'Igualo exponentes y despejo multiplicando por 3.', ecuacion: ['x/3 = 5   →   x = ', res(15)] },
-        { texto: ['La ', letra('A'), ' divide entre 3 en vez de multiplicar, y la ', letra('B'), ' suma el índice: 5 + 3.'] },
+        { texto: ['La ', letra('A'), ' divide entre 3 en vez de multiplicar; la ', letra('B'), ' suma el índice: 5 + 3; la ', letra('D'), ' multiplica 32 · 3; la ', letra('E'), ' toma la base 2 como x.'] },
       ],
       respuesta: [letra('C'), ', x = ', res(15)] },
     { nivel: 3, titulo: 'Cuál es mayor',
       enunciado: '¿Cuál es mayor: ∛3 o √2?',
-      alternativas: ['√2', '∛3', 'Son iguales', 'No se puede saber'],
-      datos: [DF.mn, DF.potencia, 'Si a y b son positivos, a > b cuando a⁶ > b⁶'],
+      alternativas: ['∛3', '√2', 'Son iguales', 'No se puede saber'],
+      datos: [DF.mn, DF.potencia, 'Si a, b > 0 y k es un entero positivo, a > b cuando aᵏ > bᵏ'],
       solucion: [
         { texto: 'Escribo los dos con exponente: 3 elevado a 1/3 y 2 elevado a 1/2. Los elevo a 6, múltiplo de 3 y de 2.', ecuacion: [{ sup: [{ par: [pw('3', '1/3')] }, '6'] }, ' = 3² = 9', SEP, { sup: [{ par: [pw('2', '1/2')] }, '6'] }, ' = 2³ = 8'] },
         { texto: '9 es mayor que 8, así que ∛3 es mayor que √2.', ecuacion: ['∛3 ≈ 1,44 > √2 ≈ 1,41'] },
+        { texto: ['La ', letra('B'), ' cree que la raíz cuadrada da más porque su índice es menor; la ', letra('C'), ' y la ', letra('D'), ' no ven que, elevando a 6, se pueden comparar.'] },
       ],
-      respuesta: [letra('B'), ', ', res('∛3')] },
+      respuesta: [letra('A'), ', ', res('∛3')] },
     { nivel: 3, titulo: 'Raíz de un producto',
-      enunciado: ['Escribe ', { raiz: [['8 · ', { raiz: ['2'] }]], indice: '4' }, ' como una potencia de 2.'],
+      enunciado: ['Escribe ', { raiz: [['8 · ', { raiz: ['2'] }]], indice: e2('4') }, ' como una potencia de 2.'],
       alternativas: [[pw('2', '3/4')], [pw('2', '7/2')], [pw('2', '1/8')], [pw('2', '7/8')], [pw('2', '2')]],
       datos: ['8 = 2³', DF.mn, DF.producto, DF.potencia],
       solucion: [
         { texto: 'Adentro, todo en base 2: 8 es 2³ y √2 es 2 elevado a 1/2; se suman los exponentes.', ecuacion: [pw('2', '3'), ' · ', pw('2', '1/2'), ' = ', pw('2', '7/2')] },
         { texto: 'La raíz cuarta divide ese exponente entre 4.', ecuacion: [{ sup: [{ par: [pw('2', '7/2')] }, '1/4'] }, ' = ', pw('2', res('7/8'))] },
-        { texto: ['La ', letra('B'), ' se olvida de la raíz cuarta, y la ', letra('A'), ' se olvida del √2.'] },
+        { texto: ['La ', letra('B'), ' se olvida de la raíz cuarta; la ', letra('A'), ' se olvida del √2; la ', letra('C'), ' se olvida del 8; la ', letra('E'), ' toma √2 como 2: ⁴√16 = 2.'] },
       ],
       respuesta: [letra('D'), ', ', pw('2', res('7/8'))] },
   ];
 
   // «Mira»: la caja de 64 y su loseta; después, la caja de 27 y su tapa.
   const MIRA_FRAC = { objeto: 'caja', pasos: [{ V: 64, arista: true }, { V: 64, lado: true }, { V: 27, loseta: false, arista: true }, { V: 27, loseta: false, arista: true, tapa: '9 dm²' }, { V: 27, loseta: false, arista: true, tapa: '9 dm²' }] };
-  const EXPS = { '1/3': 3, '1/2': 2, 1: 1 };
+  const EXPS = { '1/3': 3, '1/2': 2, 1: 1, 2: 1 / 2, 3: 1 / 3 };
   const fraccionario = {
     id: 'exponente-fraccionario',
     titulo: 'La raíz es un exponente fraccionario',
@@ -1132,10 +1171,10 @@
         { titulo: 'Una caja y una loseta', texto: 'Una caja cúbica de cartón tiene 64 dm³: su arista mide 4 dm, porque 4 · 4 · 4 = 64. A su lado, una loseta cuadrada de 64 dm² mide 8 dm de lado, porque 8 · 8 = 64.',
           pieza: HO, dibujo: CJ({ V: 64, arista: true, lado: true }) },
         { titulo: 'El índice de una raíz', texto: 'La arista es la raíz cúbica de 64: ∛64 = 4. Una raíz escrita con su signo es un radical, y el número chico, 3, es su índice. En la raíz cuadrada el índice es 2 y no se escribe.',
-          ecuacion: [{ raiz: ['64'], indice: '3' }, ' = 4', SEP, '√64 = 8'] },
+          ecuacion: [{ raiz: ['64'], indice: e2('3') }, ' = 4', SEP, '√64 = 8'] },
         { titulo: 'Las mismas letras', texto: ['En esta idea, ', nn, ' es el índice de la raíz y ', mm, ', el exponente de lo que está adentro. En la idea 1, n era el segundo exponente: así lo escriben los libros.'],
-          ecuacion: [{ raiz: [pw('a', mm)], indice: 'n' }] },
-        { titulo: 'Qué mirar al jugar', texto: 'Vas a elevar el número de la caja a un exponente: 1/3, 1/2 o 1. Mira cuál da la arista de la caja y cuál, el lado de la loseta.' },
+          ecuacion: [{ raiz: [pw('a', mm)], indice: nn }] },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a elevar el número de la caja a un exponente: 1/3, 1/2, 1, 2 o 3. Mira cuál da la arista de la caja y cuál, el lado de la loseta.' },
       ],
     },
     ejemplos: EJEMPLOS_FRACCIONARIO,
@@ -1148,22 +1187,24 @@
         bien: 'Listo: 64 elevado a 1/3 es ∛64 = 4 dm, porque 4 · 4 · 4 = 64.',
       },
       voz: '¿Qué exponente deshace el cubo?',
+      // Con palabras, sin los valores de la misión cumplida (auditoría, M1).
       leyenda: [
-        { s: '64 dm³', t: 'volumen de la caja de cartón' },
-        { s: '64 dm²', t: 'área de la loseta' },
-        { s: e2('1/3'), t: 'el exponente: 1 entre el índice' },
-        { s: res('4 dm'), t: 'la arista de la caja: ∛64' },
-        { s: res('8 dm'), t: 'el lado de la loseta: √64' },
+        { s: 'dm³', t: 'el volumen de la caja de cartón' },
+        { s: 'dm²', t: 'el área de la loseta' },
+        { s: e2('exponente'), t: 'arriba: a qué se eleva el número' },
+        { s: res('arista'), t: 'cada borde de la caja' },
+        { s: res('lado'), t: 'cada lado de la loseta' },
+        { s: '∛ y √', t: 'raíz cúbica y raíz cuadrada' },
       ],
       controles: [
-        { id: 'e', etiqueta: 'Exponente', color: 'c-i', opciones: [{ valor: '1', texto: '1' }, { valor: '1/2', texto: '1/2' }, { valor: '1/3', texto: '1/3' }] },
+        { id: 'e', etiqueta: 'Exponente', color: 'c-i', opciones: ['1', '1/2', '1/3', '2', '3'].map(x => ({ valor: x, texto: x })) },
         { id: 'V', etiqueta: 'Número de la caja y de la loseta', opciones: [{ valor: 64, texto: '64' }, { valor: 27, texto: '27' }, { valor: 8, texto: '8' }] },
       ],
       dibujo: v => CJ({ V: v.V, arista: v.e === '1/3', lado: v.e === '1/2' }),
       // La relación: el exponente 1/3 da la arista y el 1/2, el lado (con la cuenta que lo comprueba).
       lectura: v => {
         const n = EXPS[v.e], r = v.V ** (1 / n), ex = Math.abs(r - Math.round(r)) < 1e-9, t = ex ? String(Math.round(r)) : f(r, 1);
-        if (n === 1) return [pw(v.V, e2('1')), ` = ${v.V}: ni arista ni lado`];
+        if (n <= 1) return [pw(v.V, e2(v.e)), ` = ${f(v.V ** (1 / n), 0)}: ni arista ni lado`];
         return [pw(v.V, e2(v.e)), ` = ${n === 3 ? '∛' : '√'}${v.V} ${ex ? '=' : '≈'} `, res(`${t} dm`), n === 3 ? ': la arista' : ': lado de la loseta'];
       },
       minimo: 3,
@@ -1188,18 +1229,18 @@
       datos: MIRA_FRAC,
       voz: 'Cada exponente deshace una potencia.',
       pasos: [
-        { estado: { paso: 0 }, texto: 'Elevar a 1/3 deshace el cubo: da la arista de la caja.', ecuacion: [{ sup: [{ par: [pw('64', e2('1/3'))] }, '3'] }, ' = ', pw('64', '1/3 · 3'), ' = ', pw('64', '1'), ' = 64'] },
+        { estado: { paso: 0 }, texto: 'Elevar a 1/3 deshace el cubo: da la arista de la caja.', ecuacion: [pw('64', e2('1/3')), ' = ∛64 = ', res(4), ', porque ', { sup: [{ par: [pw('64', e2('1/3'))] }, '3'] }, ' = ', pw('64', '1'), ' = 64'] },
         { estado: { paso: 1 }, texto: 'Elevar a 1/2 deshace el cuadrado: da el lado de la loseta.', ecuacion: [pw('64', e2('1/2')), ' = √64 = ', res(8)] },
         { estado: { paso: 2 }, texto: 'Otra caja, de 27 dm³: su arista es 27 elevado a 1/3.', ecuacion: [pw('27', ['1/', e2('3')]), ' = ∛27 = ', res(3)] },
         { estado: { paso: 3 }, texto: 'La tapa es la arista al cuadrado: 27 elevado a 2/3.', ecuacion: [pw('27', [e1('2'), '/', e2('3')]), ' = ', { sup: [{ par: [pw('27', '1/3')] }, e1('2')] }, ' = 3² = ', res(9)] },
-        { estado: { paso: 4 }, texto: 'También se puede elevar primero y sacar la raíz después.', ecuacion: [{ raiz: [pw('27', e1('2'))], indice: '3' }, ' = ∛729 = ', res(9)] },
+        { estado: { paso: 4 }, texto: 'También se puede elevar primero y sacar la raíz después.', ecuacion: [{ raiz: [pw('27', e1('2'))], indice: e2('3') }, ' = ∛729 = ', res(9)] },
       ],
     },
     regla: {
       texto: 'Sacar la raíz de índice n es elevar a 1/n. La raíz de una potencia es una potencia de exponente fraccionario, y valen las leyes de los exponentes.',
-      ecuacion: [pw('a', ['1/', nn]), ' = ', { llave: [{ raiz: ['a'], indice: 'n' }], nota: 'raíz de índice n', color: 'c-f' }, SEP,
-        pw('a', [mm, '/', nn]), ' = ', { raiz: [pw('a', mm)], indice: 'n' }, ' = ', { sup: [{ par: [{ raiz: ['a'], indice: 'n' }] }, mm] }],
-      condicion: 'a ≥ 0 si n es par. m/n se puede simplificar: 64 elevado a 2/6 es ∛64 = 4.',
+      ecuacion: [pw('a', ['1/', nn]), ' = ', { llave: [{ raiz: ['a'], indice: nn }], nota: 'raíz de índice n', color: 'c-f' }, SEP,
+        pw('a', [mm, '/', nn]), ' = ', { raiz: [pw('a', mm)], indice: nn }, ' = ', { sup: [{ par: [{ raiz: ['a'], indice: nn }] }, mm] }],
+      condicion: 'Si n es par, a ≥ 0; si n es impar, a puede ser negativo: ∛(−8) = −2. m/n se puede simplificar.',
       voz: 'Arriba, el exponente; abajo, el índice.',
     },
     // Así se resuelve: el producto de dos raíces de x como una sola potencia. «Ahora tú» pide otra cosa: pasar una raíz a
@@ -1210,7 +1251,7 @@
         let n1, m1, n2, m2;
         do { n1 = r.uno([2, 3, 4]); n2 = r.uno([2, 3]); m1 = r.ent(1, n1 - 1); m2 = r.ent(1, n2); } while (n1 === n2 || mcdN(m1, n1) !== 1 || mcdN(m2, n2) !== 1);
         const num = m1 * n2 + m2 * n1, den = n1 * n2, res2 = fq(num, den);
-        const rz = (m, n) => ({ raiz: [m === 1 ? 'x' : pw('x', String(m))], indice: n === 2 ? undefined : String(n) });
+        const rz = (m, n) => ({ raiz: [m === 1 ? 'x' : pw('x', String(m))], indice: n === 2 ? undefined : e2(String(n)) });
         return {
           enunciado: ['Escribe ', rz(m1, n1), ' · ', rz(m2, n2), ' como una sola potencia de x, con x > 0.'],
           datos: [DF.mn, DF.producto, 'p/q + r/s = (p · s + r · q)/(q · s)'],
@@ -1242,7 +1283,7 @@
   // ---------- Laboratorio ----------
   // Mesa 2: la raíz del cuadrado contra la raíz cúbica del cubo, con x negativo (lo que la idea 2 reserva).
   const ejesIndice = v => ejesRaiz({
-    curvas: [{ puntos: [[-6, -6], [6, 6]], discontinua: true, rotulo: 'y = x', en: [4.5, 3] },
+    curvas: [{ puntos: [[-6, -6], [6, 6]], discontinua: true, rotulo: 'y = x', en: [4, 5.2] },
       { puntos: VX.map(x => [x, v.k === 2 ? Math.abs(x) : x]), color: 'f', rotulo: v.k === 2 ? 'y = √(x²)' : 'y = ∛(x³)', en: v.k === 2 ? [-6, 6] : [-6, -6] }],
     puntos: [{ x: v.x, y: v.k === 2 ? Math.abs(v.x) : v.x, color: 'f', rotulo: f(v.k === 2 ? Math.abs(v.x) : v.x, 0), guias: true }],
     alt: v.k === 2 ? `Raíz de x al cuadrado: en x = ${v.x} vale ${Math.abs(v.x)}` : `Raíz cúbica de x al cubo: en x = ${v.x} vale ${v.x}`,
@@ -1272,7 +1313,7 @@
         bien: 'El índice impar conserva el signo. ¿Y el par?' },
       { texto: 'Con √(x²), busca el punto que más se aleja de la recta y = x.',
         logrado: v => v.k === 2 && raizDe(v) - v.x === Math.max(...XS_INDICE.map(x => raizDe({ k: 2, x }) - x)),
-        bien: 'En x = −6 la distancia es 12: la raíz da 6, no −6.' },
+        bien: 'En x = −6 la raíz da 6 y la recta, −6: 12 de diferencia.' },
       { texto: 'Guarda el mismo x con los dos índices, cuando den resultados distintos.',
         logrado: (v, guardados) => guardados.some(g => g.x === v.x && g.k !== v.k && raizDe(g) !== raizDe(v)) && guardados.some(g => g.x === v.x && g.k === v.k),
         bien: 'Solo los negativos los separan: ahí √(x²) = −x.' },
@@ -1343,7 +1384,8 @@
       // Los que estrena la idea 2 (rehecha, 18 nov). «valor absoluto» se define en «Valor absoluto y radicales» (Gerson,
       // mesa del 18 nov, cuarta ronda): aquí no se repite; el lector lo marca igual, con «Se explica en…» esa unidad
       // (nucleo/glosario.js: un término del curso vale en todas sus unidades).
-      { termino: 'raíz cuadrada', formas: ['raíz cuadrada', 'raíces cuadradas'], simbolo: '√', def: 'El número no negativo que, multiplicado por sí mismo, da el número de adentro.',
+      // Sin «no negativo» (auditoría, M3): eso es la predicción; lo dicen la regla y los datos de después.
+      { termino: 'raíz cuadrada', formas: ['raíz cuadrada', 'raíces cuadradas'], simbolo: '√', def: 'El número que, multiplicado por sí mismo, da lo de adentro: el lado de un cuadrado de esa área.',
         simple: 'El lado de un cuadrado cuando se conoce su área.', ver: ['radicando', 'radical'],
         ejemplos: ['√36 = 6, porque 6 · 6 = 36.', 'Un biohuerto cuadrado de 49 m² tiene 7 m de lado.', '√2 no es exacta: vale unos 1,41.'] },
       { termino: 'radicando', formas: ['radicando', 'radicandos'], def: 'Lo que está debajo del signo √.',

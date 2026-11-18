@@ -113,8 +113,9 @@ test('salen todas las variantes y los errores de la teoría', () => {
 
 // Los códigos son los de la teoría de la unidad, salvo los nuevos (hipótesis, en la cabecera del generador). AL9 es
 // parcial (Aguerrea y otros 2022; Matz 1982), como en el informe; los demás, hipótesis.
-const NUEVOS = ['TAL-EXP-DOBLECES', 'TAL-EXP-ORDEN', 'TAL-EXP-FACTOR', 'TAL-EXP-SOLO-EXP', 'TAL-EXP-INVIERTE', 'TAL-RAIZ-CUARTO',
-  'TAL-RAIZ-INCOMPLETA', 'TAL-RAIZ-UNA', 'TAL-FRAC-INDICE', 'TAL-FRAC-NEG', 'TAL-RAIZ-LADOS', 'TAL-EXP-PARTE'];
+// TAL-EXP-SOLO-EXP y TAL-RAIZ-LADOS ya son de la teoría (correcciones del 18 nov, auditoría B5).
+const NUEVOS = ['TAL-EXP-DOBLECES', 'TAL-EXP-ORDEN', 'TAL-EXP-FACTOR', 'TAL-EXP-INVIERTE', 'TAL-RAIZ-CUARTO',
+  'TAL-RAIZ-INCOMPLETA', 'TAL-RAIZ-UNA', 'TAL-FRAC-INDICE', 'TAL-FRAC-NEG', 'TAL-EXP-PARTE'];
 test('cada error usa un código de la teoría (o uno de los nuevos) con su respaldo; los nuevos no están en la teoría', () => {
   const teoria = fs.readFileSync(require.resolve('../../contenido/teoria/algebra/exponentes-y-productos-notables.js'), 'utf8');
   const deLaTeoria = new Set(teoria.match(/\b(AL\d+|TAL-[A-Z-]+[A-Z])\b/g));
@@ -248,4 +249,17 @@ test('sistemas-ecuaciones ya no es de esta unidad: ni en el catálogo, ni en su 
   assert.deepEqual(ficha.unidades, [UNIDAD]);
   assert.ok(RT.cubre(ficha, UNIDAD));
   for (let s = 0; s < 50; s++) assert.equal(RT.unidadDe(ficha, gen.generar(`r${s}`)), UNIDAD, `semilla ${s}`);
+});
+
+// La práctica no da resueltas las tres predicciones de la teoría (auditoría, M4): Ejercicios se abre sin pasar por
+// Predice. 2⁻³ (idea 1), √((−5)²) (idea 2) y 27²ᐟ³ (idea 3), en ninguna semilla ni idea.
+test('la práctica no repite las predicciones: ni 2⁻³, ni √((−5)²), ni 27 elevado a 2/3', () => {
+  const ve = d => (d.tipo === 'negativo' && d.b === 2 && d.k === 3) || (d.tipo === 'raiz-cuadrado' && d.sub === 'cuadrado' && d.k === 5)
+    || (d.tipo === 'valor' && d.b === 27 && d.m === 2 && d.n === 3);
+  for (const idea of [undefined, ...Object.keys(gen.TIPOS_POR_IDEA)]) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`p${s}`, idea ? { idea } : {});
+    assert.ok(!ve(p._datos), `${idea} semilla ${s}: ${JSON.stringify(p._datos)}`);
+    if (p._datos.tipo === 'suma-fracc') assert.ok(!/27²ᐟ³|27\^\(2\/3\)/.test(JSON.stringify(p.enunciado)), `semilla ${s}`);
+    if (p._datos.tipo === 'negativo') assert.ok(!(p._datos.b === 2 && p._datos.k === 3));
+  }
 });

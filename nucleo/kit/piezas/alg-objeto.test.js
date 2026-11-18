@@ -150,3 +150,22 @@ test('fieles: el tablero mide a + b por a − b; el taco son 8 piezas que suman 
   const g = P.geometria({ objeto: 'cometa', d: 2 });
   assert.ok(Math.abs((2 * g.h) / g.k - 2) < 1e-9 && Math.abs(Math.hypot(g.h, g.h) / g.k - 2 / Math.SQRT2) < 1e-9);
 });
+
+// Correcciones de Exponentes y radicales (18 nov; rutinas/auditoria/algebra.exponentes-y-productos-notables.md).
+test('M7: un biohuerto solo va al centro y ocupa medio lienzo; con dos o tres, la misma escala', () => {
+  for (const a of [1, 25, 36, 49, 50, 100]) {
+    const g = P.geometria({ objeto: 'huertos', a, b: 0, junto: false, ladoA: '?' }), q = g.cuad[0];
+    assert.ok(q.x1 - q.x0 >= 0.5 * P.constantes.W - 1e-9, `${a} m²: ${q.x1 - q.x0} px de ancho`);
+    assert.ok(Math.abs((q.x0 + q.x1) / 2 - P.constantes.W / 2) < 1e-9, `${a} m²: no está al centro`);
+  }
+  const g = P.geometria({ objeto: 'huertos', a: 36, b: 64 }), [qa, qb, qj] = g.cuad;
+  assert.ok(Math.abs((qa.x1 - qa.x0) / 6 - (qb.x1 - qb.x0) / 8) < 1e-9 && Math.abs((qj.x1 - qj.x0) / 10 - (qa.x1 - qa.x0) / 6) < 1e-9);
+});
+
+test('M8: con pocas capas, las líneas del canto van a 8 px o más (que 4 capas no se vean como 2 tiras)', () => {
+  for (const base of [2, 3]) for (let m = 0; m <= 3; m++) for (let n = 0; n <= 3; n++) {
+    const g = P.geometria({ objeto: 'hoja', base, m, n });
+    if (g.L > 8 || g.L < 2) continue;
+    for (let j = 1; j < g.ys.length; j++) assert.ok(g.ys[j] - g.ys[j - 1] >= 8, `base ${base}, m ${m}, n ${n}: ${g.ys[j] - g.ys[j - 1]} px`);
+  }
+});

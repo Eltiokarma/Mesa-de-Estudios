@@ -1,7 +1,7 @@
 {
   "plantilla": "exponentes-radicales",
   "nota": "entrada es _datos del generador. respuesta: la clave de la alternativa correcta (potencia «base^exponente», valor «=n/d», «x=…», radical «c r t» para c√t, o el texto tal cual) o un número (capas, metros, soles). Por tipo: una-potencia, bᵖ · bᵠ ÷ bᵗ; hoja, b elevado a los dobleces; negativo, bᵖ ÷ bᵖ⁺ᵏ; elevar, (bᵖ)ᵠ · bʷ; dato/cuadrado, (b²)ˣ con bˣ = K; factor-comun, (bˣ⁺ᵖ ∓ bˣ⁺ᵠ) ÷ bˣ; misma-base, (pᵏ)ˣ · pʲ = pᴺ; dos-variables, (pᵏ¹)ˣ = (pᵏ²)ʸ con x + y = S o x + y ≤ T; raiz-cuadrado/cubo, ³√((−k)³); biohuertos, √(p² + q²); simplificar, √(c² · t); resta-cuadrado/dos, |k₁ − t| + |t − k₂|; semejantes, √(c₁²t) + √(c₂²t) − √(c₃²t); a-radical/a-raiz, xᵐᐟⁿ como raíz; caja/arista, V¹ᐟ³; valor, bᵐᐟⁿ; producto-fracc, ⁿ¹√(xᵃ) · ⁿ²√(xᵇ); anidado, ᵏ√(xᵃ · ʲ√(xᵇ)); ecuacion-raiz/base4, ⁿ√(4ˣ) = 2ᵏ.",
-  "verificacion": "Script aparte (17 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: fracciones exactas (fractions.Fraction), logaritmos para el dato y la cota, raíces enteras por búsqueda, el mayor cuadrado que divide a N por fuerza bruta, x + y = S por fuerza bruta en medios, y π y √n con math. Escribe la clave y el texto con su propia tabla de superíndices. Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+  "verificacion": "Script aparte (17 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: fracciones exactas (fractions.Fraction), logaritmos para el dato y la cota, raíces enteras por búsqueda, el mayor cuadrado que divide a N por fuerza bruta, x + y = S por fuerza bruta en medios, y π y √n con math. Escribe la clave y el texto con su propia tabla de superíndices. Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta. 18 nov: la semilla 7 dejó de dar 27 elevado a 2/3 (es la predicción de la idea 3; auditoría, M4) y da 4 elevado a 3/2 = (√4)³ = 8, rehecho aparte.",
   "casos": [
     {
       "semilla": 0,
@@ -71,13 +71,13 @@
         "idea": "exponente-fraccionario",
         "tipo": "valor",
         "nivel": 2,
-        "b": 27,
-        "m": 2,
-        "n": 3
+        "b": 4,
+        "m": 3,
+        "n": 2
       },
       "esperado": {
-        "respuesta": "=9",
-        "texto": "9"
+        "respuesta": "=8",
+        "texto": "8"
       }
     },
     {

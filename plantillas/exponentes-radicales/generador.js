@@ -130,6 +130,8 @@
     uno: 'a¹ᐟⁿ = ⁿ√a: el número que, elevado a n, da a',
     cubo: 'Volumen de un cubo = arista³',
     cuadrado: 'Área de un cuadrado = lado²',
+    // Una tabla de potencias como herramienta (auditoría, B7): no dice cuál de ellas es la que sirve.
+    potencias: p => `Potencias de ${p}: ${(p === 2 ? [1, 2, 3, 4, 5, 6] : [1, 2, 3, 4]).map(e => p ** e).join(', ')}`,
   };
 
   // ---- Tipos por idea ----
@@ -244,6 +246,8 @@
   function negativo(rng, forzado) {
     const sub = forzado || rng.elegir(['producto', 'cociente']);
     const [b, k] = rng.elegir([[2, 3], [2, 4], [2, 5], [3, 2], [3, 3], [3, 4], [4, 2], [5, 2], [10, 2], [10, 3]]);
+    // 2⁻³ es la predicción de la idea 1: la práctica no la da resuelta (auditoría, M4; Ejercicios se abre sin Predice).
+    if (b === 2 && k === 3) return null;
     const den = b ** k, uno = Q(1, den);
     const neg = e('TAL-EXP-NEG', `=${z(-den)}`, z(-den), x => `Bien que llegues a ${pot(b, -k)}. Pero el exponente negativo no cambia el signo: indica dividir entre ${pot(b, k)}; ${x} es negativo.`);
     const frac = e('TAL-EXP-FRAC', `=1/${b * k}`, `1/${b * k}`, x => `Bien: ${pot(b, -k)} es una fracción con 1 arriba. Pero abajo va ${b} multiplicado ${k} veces por sí mismo, no ${b} · ${k}; por eso ${x} no es.`);
@@ -379,7 +383,7 @@
     return {
       enunciado: ['Se cumple ', String(a), M('ˣ'), ` · ${c} = `, pot(p, Nn), '.'],
       pregunta: ['¿Cuánto vale x?'],
-      datos: [`${a} = ${pot(p, k)} y ${c} = ${pot(p, j)}`, D.potencia, D.producto, D.igualar],
+      datos: [D.potencias(p), D.potencia, D.producto, D.igualar],
       correcta: cX(Q(x0)),
       errores: [
         err('AL32', Q(Nn - j), x => `Bien que iguales exponentes al final. Pero solo se igualan con la misma base: antes, ${a} se escribe ${pot(p, k)}; saltarse ese paso da ${x}.`),
@@ -401,7 +405,7 @@
     const pares = p === 2 ? [[2, 3], [3, 2], [3, 4], [4, 3], [2, 5], [5, 2], [3, 5], [5, 3]] : [[2, 3], [3, 2], [3, 4], [4, 3]];
     const [k1, k2] = rng.elegir(pares), a = p ** k1, b = p ** k2, s = k1 + k2;
     const igualdad = [String(a), M('ˣ'), ' = ', String(b), N('ʸ')];
-    const datos = [`${a} = ${pot(p, k1)} y ${b} = ${pot(p, k2)}`, D.potencia, D.igualar];
+    const datos = [D.potencias(p), D.potencia, D.igualar];
     const paso1 = ['Todo a base ', String(p), ': ', pot(p, `${k1}x`), ' = ', pot(p, `${k2}y`), `, así que ${k1}x = ${k2}y.`];
     if (sub === 'suma') {
       const t = rng.entero(1, 4), S = s * t, pide = rng.elegir(['x', 'y']);
@@ -457,6 +461,8 @@
     const t = s => ({ clave: s, texto: s });
     if (sub === 'cuadrado') {
       const k = rng.entero(2, 12), kk = k * k;
+      // √((−5)²) es la predicción de la idea 2 (auditoría, M4).
+      if (k === 5) return null;
       return {
         enunciado: [`Se sabe que x = −${k}.`],
         pregunta: ['¿Cuánto vale √(x²)?'],
@@ -736,6 +742,8 @@
 
   function valor(rng) {
     const [b, m, n] = rng.elegir([[8, 2, 3], [16, 3, 4], [32, 2, 5], [4, 3, 2], [9, 3, 2], [25, 3, 2], [64, 2, 3], [81, 3, 4], [125, 2, 3], [16, 5, 4], [27, 2, 3], [32, 3, 5]]);
+    // 27²ᐟ³ es la predicción de la idea 3 (auditoría, M4).
+    if (b === 27 && m === 2 && n === 3) return null;
     const r = Math.round(b ** (1 / n)), ans = r ** m, otro = b ** (n / m);
     const otroE = Math.abs(otro - Math.round(otro)) < 1e-9;
     const otroT = otroE ? String(Math.round(otro)) : `≈ ${f(otro, 1)}`;
@@ -785,6 +793,7 @@
   const LISTA_FRAC = [[8, 2, 3], [16, 3, 4], [32, 2, 5], [4, 3, 2], [9, 3, 2], [27, 1, 3], [64, 1, 2], [16, 1, 4], [81, 1, 2], [125, 1, 3], [27, 2, 3]];
   function sumaFracc(rng) {
     const [x1, x2, x3] = rng.barajar(LISTA_FRAC).slice(0, 3);
+    if ([x1, x2, x3].some(([B0, m, n]) => B0 === 27 && m === 2 && n === 3)) return null;   // la predicción (M4)
     const raiz = ([B0, , n]) => Math.round(B0 ** (1 / n)), val = t => raiz(t) ** t[1];
     const ans = val(x1) + val(x2) - val(x3);
     if (ans <= 0) return null;

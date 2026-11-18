@@ -111,7 +111,8 @@
     // El canto: L capas en P paquetes de C capas.
     const C = b ** m, P = b ** n, L = C * P;
     const gap = P > 1 ? Math.min(10, 64 / (P - 1)) : 0, pad = P > 1 ? Math.min(4, (gap - 2) / 2) : 4;
-    const alto = CANTO.y1 - CANTO.y0, paso = L > 1 ? Math.min(6, (alto - gap * (P - 1)) / (L - 1)) : 0;
+    // Las capas bien separadas cuando caben (auditoría, M8: a 6 px, «4 capas» se veían como 2 tiras): hasta 12 px.
+    const alto = CANTO.y1 - CANTO.y0, paso = L > 1 ? Math.min(12, (alto - gap * (P - 1)) / (L - 1)) : 0;
     const usado = paso * (L - 1) + gap * (P - 1), y0 = CANTO.y0 + (alto - usado) / 2;
     const ys = Array.from({ length: L }, (_, j) => y0 + j * paso + Math.floor(j / C) * gap);
     const paquetes = Array.from({ length: P }, (_, q) => ({ y0: ys[q * C] - pad, y1: ys[q * C + C - 1] + pad }));
@@ -222,7 +223,7 @@
       const r = (ys[j] - ys[j - 1]) / 2, der = j % 2 === 1;
       z += `A${n2(Math.max(r, 0.5))} ${n2(Math.max(r, 0.5))} 0 0 ${der ? 1 : 0} ${der ? x1 : x0} ${n2(ys[j])}H${der ? x0 : x1}`;
     }
-    if (g.canto) s += `<path class="alg-capas" d="${z}" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>`;
+    if (g.canto) s += `<path class="alg-capas" d="${z}" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>`;
     if (g.canto && g.D.m > 0) for (const q of g.paquetes) s += `<rect class="alg-paquete" x="${x0 - 8}" y="${n2(q.y0)}" width="${x1 - x0 + 16}" height="${n2(q.y1 - q.y0)}" rx="4" fill="none" stroke="var(--c-o)" stroke-width="1.5"/>`;
     for (const r of g.rot) s += texto(r.x, r.y, r.segs, { ancla: 'end' });
     if (g.total) s += texto(g.total.cx, g.total.y, g.total.segs, { tam: 14, ancla: 'middle' });
@@ -251,26 +252,31 @@
     const A = Math.max(0, +d.a || 0), B = Math.max(0, +d.b || 0), J = A + B, junto = d.junto !== false;
     const lista = [['a', A, 'o'], ['b', B, 'i']].concat(junto ? [['junto', J, null]] : []).filter(x => x[1] > 0);
     const sMax = Math.max(...lista.map(x => Math.sqrt(x[1])), 1);
-    const k = d.escala > 0 ? d.escala : Math.min(HU.kMax, 92 / sMax);
+    // Un solo biohuerto (sin el segundo ni el junto) va al centro y ocupa medio lienzo (auditoría, M7: quedaba de 50 px en
+    // una esquina); con dos o tres, la misma escala para todos, para que los lados se comparen.
+    const solo = lista.length === 1, piso = solo ? 186 : HU.piso;
+    const k = solo ? 160 / sMax : d.escala > 0 ? d.escala : Math.min(HU.kMax, 92 / sMax);
     const objetos = [], textos = [], cuad = [];
     const nombres = { a: d.nombreA || 'Biohuerto 1', b: d.nombreB || 'Biohuerto 2', junto: d.nombreJ || 'Los dos juntos' };
     lista.forEach(([que, area, col], i) => {
-      const [c0, c1] = HU.casillas[que === 'junto' ? 2 : que === 'b' ? 1 : 0], cx = (c0 + c1) / 2, w = Math.sqrt(area) * k;
-      const q = { que, area, col, s: Math.sqrt(area), x0: cx - w / 2, x1: cx + w / 2, y0: HU.piso - w, y1: HU.piso, cx };
+      const [c0, c1] = solo ? [0, W] : HU.casillas[que === 'junto' ? 2 : que === 'b' ? 1 : 0], cx = (c0 + c1) / 2, w = Math.sqrt(area) * k;
+      const q = { que, area, col, s: Math.sqrt(area), x0: cx - w / 2, x1: cx + w / 2, y0: piso - w, y1: piso, cx };
       cuad.push(q);
       objetos.push({ que: `biohuerto ${que}`, x0: q.x0 - 2, y0: q.y0 - 2, x1: q.x1 + 2, y1: q.y1 + 2 });
       const nom = [[nombres[que], null, 600]];
-      textos.push(Object.assign(cajaTexto('nombre', cx, 30, nom, 12, 'middle'), { segs: nom, x: cx, y: 30, tam: 12 }));
+      const yn = solo ? 226 : 30;
+      textos.push(Object.assign(cajaTexto('nombre', cx, yn, nom, 12, 'middle'), { segs: nom, x: cx, y: yn, tam: 12 }));
       // El lado, arriba (o «?»), y el área, abajo (o «?»). Lo que no se rotula: false.
       const lado = d[`lado${que === 'junto' ? 'J' : que.toUpperCase()}`], ar = d[`area${que === 'junto' ? 'J' : que.toUpperCase()}`];
       if (lado !== false) {
         const segs = lado === '?' ? [['? m', null, 700]] : [[`${raizTxt(area)} m`, que === 'junto' ? 'f' : col, 700]];
-        const y = Math.min(q.y0 - 6, 140);
+        const y = Math.min(q.y0 - 6, piso - 10);
         textos.push(Object.assign(cajaTexto('lado', cx, y, segs, 13, 'middle'), { segs, x: cx, y, tam: 13 }));
       }
       if (ar !== false) {
         const segs = ar === '?' ? [['? m²', null, 700]] : [[`${fmt(area, 2)} m²`, que === 'junto' ? null : col, 700]];
-        textos.push(Object.assign(cajaTexto('area', cx, 170, segs, 13, 'middle'), { segs, x: cx, y: 170, tam: 13 }));
+        const ya = piso + 20;
+        textos.push(Object.assign(cajaTexto('area', cx, ya, segs, 13, 'middle'), { segs, x: cx, y: ya, tam: 13 }));
       }
     });
     // Las barras: los dos lados seguidos y el lado del junto, a la misma escala de los biohuertos.

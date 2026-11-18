@@ -66,7 +66,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "En una feria, Rosa gasta x soles y Luis gasta y soles. Se cumple 27ˣ = 81ʸ, y entre los dos gastan a lo más 42 soles. ¿Cuánto es lo más que puede gastar Luis? Datos: 27 = 3³ y 81 = 3⁴. (aᵐ)ⁿ = aᵐⁿ, donde mn = m · n. Si aʳ = aˢ, con a > 0 y a ≠ 1, entonces r = s. Alternativas: A) 18 soles   B) 24 soles   C) 6 soles   D) 20,5 soles   E) 21 soles",
+      "enunciado": "En una feria, Rosa gasta x soles y Luis gasta y soles. Se cumple 27ˣ = 81ʸ, y entre los dos gastan a lo más 42 soles. ¿Cuánto es lo más que puede gastar Luis? Datos: Potencias de 3: 3, 9, 27, 81. (aᵐ)ⁿ = aᵐⁿ, donde mn = m · n. Si aʳ = aˢ, con a > 0 y a ≠ 1, entonces r = s. Alternativas: A) 18 soles   B) 24 soles   C) 6 soles   D) 20,5 soles   E) 21 soles",
       "respuesta": "A) 18 soles",
       "pasos": [
         "Todo a base 3: 3³ˣ = 3⁴ʸ, así que 3x = 4y.",

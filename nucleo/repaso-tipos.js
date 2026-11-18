@@ -109,9 +109,9 @@
     'regla-de-tres': { ...lista(AR + 'razones-y-proporciones', ps(1, 2, 3)), ...lista(AR + 'magnitudes-proporcionales', ps(4, 5, 6, 7, 8, 9)), p10: RM + 'ruedas-poleas-engranajes' },
     solidos: { ...lista(G + 'prisma-y-piramide', ps(1, 2)), ...lista(G + 'solidos-de-revolucion', ps(3, 4, 5, 6, 7, 8, 10)), p9: G + 'poliedros' },
     // 17 nov: la escena del cuadrado que crece sirve a las dos mitades de «Exponentes, radicales y productos notables» y a
-    // factorización. p6 (la diagonal no es la suma de los lados) y p7 (2ⁿ⁺³ con 2ⁿ = 5) son de exponentes y radicales;
-    // p8 (fracciones algebraicas) y p9 (logaritmos) no son de ninguna de sus unidades y quedan fuera.
-    'cuadrado-crece': { ...lista(AL + 'productos-notables', ps(1, 2, 4, 10)), ...lista(AL + 'factorizacion', ps(3, 5)), ...lista(AL + 'exponentes-y-productos-notables', ps(6, 7)) },
+    // factorización. p7 (2ⁿ⁺³ con 2ⁿ = 5) es de exponentes y radicales. p6 (la diagonal de un rectángulo) pide Pitágoras,
+    // que esa unidad no enseña (auditoría, M11, 18 nov): queda fuera, como p8 (fracciones algebraicas) y p9 (logaritmos).
+    'cuadrado-crece': { ...lista(AL + 'productos-notables', ps(1, 2, 4, 10)), ...lista(AL + 'factorizacion', ps(3, 5)), p7: AL + 'exponentes-y-productos-notables' },
     'cinta-radio': { ...lista(T + 'angulo-trigonometrico', ps(1, 2, 4, 10)), ...lista(T + 'longitud-de-arco-y-sector', ps(3, 5, 6, 7, 8, 9)) },
     // p1, p2, p4 y p10 eran de razones-trigonometricas-agudas; esa unidad ya no lista la escena (17 nov, auditoría M7:
     // traía problemas de unidades posteriores): quedan fuera del repaso.

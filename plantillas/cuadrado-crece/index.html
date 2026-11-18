@@ -1319,7 +1319,7 @@ const EXPS = [
           ['d', n0(P3.errores.porSuma.valor), 'potencia-base-por-exponente', 'hipotesis']],
     ok:'a',
     fb:{ b:`2³ + 2² = 8 + 4 = ${n0(P3.errores.reparte.valor)} reparte el exponente sobre la suma. Sumar exponentes es multiplicar potencias: 2³ · 2².`,
-         c:`2^(3 · 2) = ${n0(P3.errores.multiplicaExp.valor)} sería (2³)², una potencia de potencia. Aquí los exponentes se suman.`,
+         c:`(2³)² = 2⁶ = ${n0(P3.errores.multiplicaExp.valor)} es una potencia de potencia: ahí los exponentes se multiplican. Aquí se suman.`,
          d:`2 · 5 = ${n0(P3.errores.porSuma.valor)} multiplica la base por el exponente. 2⁵ es 2 · 2 · 2 · 2 · 2.` },
     antes:r => E.config({ modo:'potencia', prog:{ pot:r ? 1 : 0 }, extra:{ pot:P3, m:3, n:2, etG:'2³ = 8', etN:'2² = 4', etTotal:`8 grupos de 4: ${n0(P3.valor)} puntos` } }),
     despues:fin => { E.prog.pot = .001; E.recajar(); E.animar('pot', 1, 2600, fin); },
