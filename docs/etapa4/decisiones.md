@@ -70,6 +70,15 @@ de igualdad van sobre una llave).
 - Visto bueno de las correcciones de Productos notables.
 - La escena `cuadrado-crece` va a «Más mesas del tema» en las tres unidades que la usan (`"rehacer": true`).
 
+## Segunda ronda (mesa, 18 nov, noche)
+- **Visto bueno de las cinco ideas 1** (MRU `mru`, MRUV `aceleracion`, Estructura atómica `nucleo-identidad`, Las cuatro
+  operaciones `otras-bases`, Triángulos `suma-de-angulos`): se sigue igual con el resto de ideas de cada unidad. Valen
+  las decisiones chicas que se tomaron solas y quedaron anotadas en las tarjetas (el eco con ida y vuelta, B y C de 40°
+  a 60° en el juego de Triángulos, la mariposa como versión propia, combis de 54 a 90 km/h, el 1836 con «unas»).
+- **Tope de ideas:** una unidad puede llegar a 7 ideas si declara `septimaIdea` con su motivo (`nucleo/teoria.js`);
+  hoy solo Las cuatro operaciones, que entra con `prestamo` y `cifras-ocultas`.
+- Visto bueno de la ronda 2 de correcciones de Productos notables.
+
 ## Orden de trabajo
 Fase 2 del método: la idea 1 de cada unidad completa, para el visto bueno de Gerson en la mesa. Movimiento rectilíneo
 se parte primero, con la migración del avance.

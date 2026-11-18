@@ -137,7 +137,10 @@
     if (!/^[a-z-]+\.[a-z0-9-]+$/.test(def.unidad || '')) mal('unidad', `id inválido «${def.unidad}»`);
     if (!/^\d+\.\d+\.\d+$/.test(def.version || '')) mal(def.unidad, 'falta version x.y.z');
     if (!Array.isArray(def.ideas) || def.ideas.length < 1) { mal(def.unidad, 'sin ideas'); return out; }
-    if (def.ideas.length > 6) mal(def.unidad, `${def.ideas.length} ideas: el tope es 6 (divide la unidad en lecciones más chicas)`);
+    // Tope de 6 ideas; una unidad puede llegar a 7 si declara su motivo en `septimaIdea` (Gerson, mesa del 18 nov:
+    // Las cuatro operaciones, porque la resta y las cifras ocultas son 4 de las 6 preguntas de San Marcos).
+    const topeIdeas = typeof def.septimaIdea === 'string' && def.septimaIdea.trim().length >= 20 ? 7 : 6;
+    if (def.ideas.length > topeIdeas) mal(def.unidad, `${def.ideas.length} ideas: el tope es ${topeIdeas}${topeIdeas === 6 ? ' (divide la unidad en lecciones más chicas, o declara septimaIdea con su motivo para llegar a 7)' : ''}`);
     if (def.historia) {
       if (!def.historia.texto) mal('historia', 'sin texto');
       else tope('historia', 'historia', def.historia.texto);

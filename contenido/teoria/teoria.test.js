@@ -63,3 +63,15 @@ test('glosario: un término por curso, referencias que existen y archivos de la 
     assert.ok(fs.existsSync(f) && fs.readFileSync(f, 'utf8') === C.textoGlosario(g), `app/datos/glosario/${g.curso}.json no está al día: corre npm run catalogo`);
   }
 });
+
+// Tope de ideas (Gerson, mesa del 18 nov): 6 por unidad; 7 solo si la unidad declara septimaIdea con su motivo.
+test('tope de ideas: 6, o 7 con septimaIdea y su motivo', () => {
+  const base = require('./aritmetica/numeracion.js');
+  const siete = base.ideas.concat(base.ideas.slice(0, 2)).slice(0, 7).map((i, k) => Object.assign({}, i, { id: `${i.id}-${k}` }));
+  const tope = def => Teoria.problemas(def).filter(m => /el tope es/.test(m));
+  assert.equal(tope(Object.assign({}, base, { ideas: siete })).length, 1, 'sin motivo, 7 ideas no pasan');
+  assert.equal(tope(Object.assign({}, base, { ideas: siete, septimaIdea: 'corto' })).length, 1, 'un motivo vacío no cuenta');
+  assert.equal(tope(Object.assign({}, base, { ideas: siete, septimaIdea: 'la resta y las cifras ocultas son 4 de 6 preguntas' })).length, 0);
+  const ocho = siete.concat([Object.assign({}, siete[0], { id: 'otra' })]);
+  assert.equal(tope(Object.assign({}, base, { ideas: ocho, septimaIdea: 'la resta y las cifras ocultas son 4 de 6 preguntas' })).length, 1, 'ni con motivo pasan 8');
+});

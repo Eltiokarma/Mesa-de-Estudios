@@ -112,7 +112,8 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
   - `temas` usa los textos exactos del catálogo;
   - una unidad `completa` cubre todos sus temas;
   - un tema puede repartirse en varias ideas, o una idea cubrir varios temas, si de verdad los enseña;
-  - si una unidad necesita más de 6 ideas, se parte en dos archivos de lección.
+  - si una unidad necesita más de 6 ideas, se parte en dos archivos de lección. Excepción (Gerson, 18 nov): puede llegar
+    a 7 si declara `septimaIdea: '<motivo>'` (hoy solo Las cuatro operaciones).
 
   Esto último todavía no está soportado: se anota en pendientes y se pide.
 
