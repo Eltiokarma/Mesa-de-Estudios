@@ -7602,7 +7602,8 @@
     "/plantillas/cuadrado-crece/index.html",
     "/plantillas/cuadrado-crece/motor.js",
     "/plantillas/cuadrado-crece/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "cuadricula-piezas": {
    "id": "cuadricula-piezas",
