@@ -2190,6 +2190,7 @@
       "algebra.exponentes-y-productos-notables"
      ],
      "plantillas": [
+      "productos-notables",
       "cuadrado-crece"
      ],
      "teoria": {
@@ -9300,6 +9301,22 @@
     "/plantillas/probabilidad-dados/index.html",
     "/plantillas/probabilidad-dados/motor.js",
     "/plantillas/probabilidad-dados/papel.json"
+   ]
+  },
+  "productos-notables": {
+   "id": "productos-notables",
+   "titulo": "Productos notables",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.productos-notables"
+   ],
+   "url": "#/practica/productos-notables",
+   "papel": "/plantillas/productos-notables/papel.json",
+   "archivos": [
+    "/plantillas/productos-notables/generador.js",
+    "/plantillas/productos-notables/papel.json"
    ]
   },
   "programacion-lineal": {

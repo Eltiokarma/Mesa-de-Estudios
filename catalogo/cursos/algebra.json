@@ -73,7 +73,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["algebra.exponentes-y-productos-notables"],
-      "plantillas": ["cuadrado-crece"],
+      "plantillas": ["productos-notables", "cuadrado-crece"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {

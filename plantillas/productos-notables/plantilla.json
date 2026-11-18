@@ -1,0 +1,19 @@
+{
+  "id": "productos-notables",
+  "titulo": "Productos notables",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.productos-notables"
+  ],
+  "temas": [
+    "Productos notables",
+    "Radicales dobles",
+    "Racionalización"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

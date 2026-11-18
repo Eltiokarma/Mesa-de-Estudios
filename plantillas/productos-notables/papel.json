@@ -1,0 +1,89 @@
+{
+  "titulo": "Productos notables: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se tiene el cuadrado (3x + 6)². ¿A qué es igual, desarrollado? Datos: (a + b)² = a² + 2ab + b². Alternativas: A) 9x² + 36x + 36   B) 9x² + 36x   C) 9x² + 18x + 36   D) 9x² + 36",
+      "respuesta": "A) 9x² + 36x + 36",
+      "pasos": [
+        "Los dos cuadrados: 9x² y 36.",
+        "El doble producto: 2 · 3x · 6 = 36x.",
+        "(3x + 6)² = 9x² + 36x + 36."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se quiere calcular 34 · 26 sin hacer la multiplicación larga. ¿Cuánto vale? Datos: (a + b)(a − b) = a² − b². Alternativas: A) 868   B) 900   C) 892   D) 916   E) 884",
+      "respuesta": "E) 884",
+      "pasos": [
+        "34 = 30 + 4 y 26 = 30 − 4: una suma por su diferencia.",
+        "30² − 4² = 900 − 16 = 884."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se tiene el radical doble √(13 + 2√42). ¿A qué es igual, como dos raíces simples? Datos: √(A + 2√B) = √x + √y, si x + y = A y x · y = B. Alternativas: A) √7 + √6   B) √10 + √3   C) √11 + √2   D) √13 + √42",
+      "respuesta": "A) √7 + √6",
+      "pasos": [
+        "7 + 6 = 13 y 7 · 6 = 42.",
+        "√(13 + 2√42) = √7 + √6."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se quiere calcular 102³ sin hacer la multiplicación larga. ¿Cuánto vale? Datos: (a + b)³ = a³ + 3a²b + 3ab² + b³. Alternativas: A) 1 000 008   B) 1 061 208   C) 1 120 008   D) 1 020 408   E) 1 060 008",
+      "respuesta": "B) 1 061 208",
+      "pasos": [
+        "102 = 100 + 2: el cubo de dos términos.",
+        "Las piezas: 100³ = 1 000 000, 3 · 100² · 2 = 60 000, 3 · 100 · 2² = 1 200 y 2³ = 8.",
+        "1 000 000 + 60 000 + 1 200 + 8 = 1 061 208."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene la fracción 6/(√7 − 2). ¿Cómo se escribe sin raíces en el denominador? Datos: (√a + c)(√a − c) = a − c². Alternativas: A) 2(√7 − 2)   B) 2(√7 + 2)   C) 6(√7 + 2)   D) 6(√7 + 2)/11",
+      "respuesta": "B) 2(√7 + 2)",
+      "pasos": [
+        "Se multiplica arriba y abajo por el conjugado: (√7 + 2)/(√7 + 2). Abajo queda 7 − 4 = 3.",
+        "6(√7 + 2)/3, simplificado entre 3: 2(√7 + 2)."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene x² − 6x + □. ¿Qué número va en el □ para que sea el cuadrado de un binomio? Datos: (a − b)² = a² − 2ab + b². Alternativas: A) 6   B) 36   C) 3   D) 9",
+      "respuesta": "D) 9",
+      "pasos": [
+        "6x es el doble producto: 2 · x · 3. Así, b vale 3.",
+        "La esquina es 3² = 9: x² − 6x + 9 = (x − 3)²."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Dos números cumplen a + b = 7 y ab = 6. ¿Cuánto vale a³ + b³? Datos: (a + b)³ = a³ + 3a²b + 3ab² + b³. Alternativas: A) 325   B) 301   C) 126   D) 343   E) 217",
+      "respuesta": "E) 217",
+      "pasos": [
+        "El cubo de la suma trae los dos cubos y las seis piezas del medio, que juntas son 3ab(a + b): 7³ = a³ + b³ + 3 · 6 · 7.",
+        "a³ + b³ = 343 − 126 = 217."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Dos números cumplen a + b = 5 y a − b = 1. ¿Cuánto vale ab? Datos: (a + b)² = a² + 2ab + b². (a − b)² = a² − 2ab + b². (a + b)(a − b) = a² − b². Alternativas: A) 4   B) 12   C) 6   D) 24   E) 5",
+      "respuesta": "C) 6",
+      "pasos": [
+        "Al restar los dos cuadrados se van a² y b², y quedan cuatro piezas ab: 5² − 1² = 4ab.",
+        "24 = 4ab, así que ab = 24 ÷ 4 = 6."
+      ]
+    }
+  ]
+}

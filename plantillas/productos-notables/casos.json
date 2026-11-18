@@ -1,0 +1,301 @@
+{
+  "plantilla": "productos-notables",
+  "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta (un número, o el texto tal cual: polinomio, factorización o expresión con raíces); texto: lo que ve el alumno. Por tipo: desarrolla, (px ± k)²; terreno/compra, (a + b)² − a²; figura, √(x² + y² + 2xy); inverso, x² + 1/x² con x ± 1/x = k; cercanos, (M + d)(M − d); xpq, (x + p)(x + q); legendre/cuartas, (x + y)⁴ − (x − y)⁴; cambio-variable, (x + a)(x + b)(x + c)(x + d) con x² + (a + d)x = y0; sextas, a³ con a³ = u y b³ = w; desarrolla-cubo, (x ± k)³; taco, las seis piezas de (a + b)³; coeficiente/x2, el de x² en (px + k)³; suma-producto-cubo/diferencia, x³ − y³; factoriza-cubos, (px)³ ± k³; resta, sin-dos y coef-resta, el radical doble con x + y y xy; suma-dobles, la suma de los dos radicales dobles; conjugado, K/(√A ± √B); cubica, K/³√A; inverso-rac, x ± 1/x con x = 1/(√A − √(A − 1)).",
+  "verificacion": "Script aparte (18 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: desarrolla los binomios multiplicando polinomios (convolución), factoriza dividiendo (px)³ ± k³ entre px ± k, busca por fuerza bruta el lado del terreno, el par x, y del radical doble y el a³ de las sextas, resuelve x + 1/x = k y x² + sx = y0 con la fórmula cuadrática y evalúa los productos con decimales, racionaliza con enteros y comprueba el valor con math.sqrt, y simplifica cada raíz con su propia búsqueda del mayor cuadrado. Escribe el texto con su propia tabla de superíndices y miles con espacio. Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "suma-por-diferencia",
+        "tipo": "cambio-variable",
+        "nivel": 3,
+        "a": 1,
+        "b": 2,
+        "c": 4,
+        "d": 5,
+        "y0": 3
+      },
+      "esperado": {
+        "respuesta": 88,
+        "texto": "88"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "radicales-dobles",
+        "tipo": "suma-dobles",
+        "nivel": 3,
+        "x": 5,
+        "y": 4,
+        "suma": true
+      },
+      "esperado": {
+        "respuesta": "2√5",
+        "texto": "2√5"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "idea": "cubo-binomio",
+        "tipo": "factoriza-cubos",
+        "nivel": 3,
+        "p": 1,
+        "k": 1,
+        "mas": true
+      },
+      "esperado": {
+        "respuesta": "(x + 1)(x² − x + 1)",
+        "texto": "(x + 1)(x² − x + 1)"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "idea": "cuadrado-suma",
+        "tipo": "desarrolla",
+        "nivel": 1,
+        "sub": "resta",
+        "p": 3,
+        "k": 6
+      },
+      "esperado": {
+        "respuesta": "9x² − 36x + 36",
+        "texto": "9x² − 36x + 36"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "idea": "racionalizar",
+        "tipo": "cubica",
+        "nivel": 2,
+        "A": 6,
+        "K": 2
+      },
+      "esperado": {
+        "respuesta": "³√36/3",
+        "texto": "³√36/3"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "idea": "suma-por-diferencia",
+        "tipo": "sextas",
+        "nivel": 3,
+        "u": 4,
+        "w": 3
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "radicales-dobles",
+        "tipo": "sin-dos",
+        "nivel": 2,
+        "sub": "coef",
+        "x": 6,
+        "y": 3
+      },
+      "esperado": {
+        "respuesta": "√6 + √3",
+        "texto": "√6 + √3"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "idea": "suma-por-diferencia",
+        "tipo": "xpq",
+        "nivel": 2,
+        "p": 3,
+        "q": -2
+      },
+      "esperado": {
+        "respuesta": "x² + x − 6",
+        "texto": "x² + x − 6"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "idea": "suma-por-diferencia",
+        "tipo": "legendre",
+        "nivel": 3,
+        "sub": "cuartas",
+        "x": 3,
+        "y": 1
+      },
+      "esperado": {
+        "respuesta": 240,
+        "texto": "240"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "idea": "cubo-binomio",
+        "tipo": "taco",
+        "nivel": 1,
+        "a": 6,
+        "b": 2
+      },
+      "esperado": {
+        "respuesta": 288,
+        "texto": "288 dm³"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "idea": "cuadrado-suma",
+        "tipo": "figura",
+        "nivel": 3,
+        "x": 8,
+        "y": 5
+      },
+      "esperado": {
+        "respuesta": "13 m",
+        "texto": "13 m"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "idea": "cuadrado-suma",
+        "tipo": "inverso",
+        "nivel": 3,
+        "sub": "suma",
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "idea": "cubo-binomio",
+        "tipo": "desarrolla-cubo",
+        "nivel": 1,
+        "sub": "resta",
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": "x³ − 9x² + 27x − 27",
+        "texto": "x³ − 9x² + 27x − 27"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "idea": "racionalizar",
+        "tipo": "inverso-rac",
+        "nivel": 3,
+        "sub": "resta",
+        "A": 7
+      },
+      "esperado": {
+        "respuesta": "2√6",
+        "texto": "2√6"
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "idea": "radicales-dobles",
+        "tipo": "resta",
+        "nivel": 2,
+        "x": 10,
+        "y": 4
+      },
+      "esperado": {
+        "respuesta": "√10 − 2",
+        "texto": "√10 − 2"
+      }
+    },
+    {
+      "semilla": 40,
+      "entrada": {
+        "idea": "cubo-binomio",
+        "tipo": "coeficiente",
+        "nivel": 2,
+        "sub": "x2",
+        "p": 2,
+        "k": 4
+      },
+      "esperado": {
+        "respuesta": 48,
+        "texto": "48"
+      }
+    },
+    {
+      "semilla": 49,
+      "entrada": {
+        "idea": "racionalizar",
+        "tipo": "conjugado",
+        "nivel": 2,
+        "sub": "raices",
+        "A": 14,
+        "B": 10,
+        "K": 3,
+        "s": "+"
+      },
+      "esperado": {
+        "respuesta": "3(√14 − √10)/4",
+        "texto": "3(√14 − √10)/4"
+      }
+    },
+    {
+      "semilla": 63,
+      "entrada": {
+        "idea": "suma-por-diferencia",
+        "tipo": "cercanos",
+        "nivel": 1,
+        "M": 30,
+        "d": 2
+      },
+      "esperado": {
+        "respuesta": 896,
+        "texto": "896"
+      }
+    },
+    {
+      "semilla": 100,
+      "entrada": {
+        "idea": "cuadrado-suma",
+        "tipo": "terreno",
+        "nivel": 1,
+        "sub": "compra",
+        "a": 8,
+        "b": 3
+      },
+      "esperado": {
+        "respuesta": 57,
+        "texto": "57 m²"
+      }
+    },
+    {
+      "semilla": 200,
+      "entrada": {
+        "idea": "cubo-binomio",
+        "tipo": "suma-producto-cubo",
+        "nivel": 3,
+        "sub": "diferencia",
+        "x": 9,
+        "y": 2
+      },
+      "esperado": {
+        "respuesta": 721,
+        "texto": "721"
+      }
+    }
+  ]
+}
