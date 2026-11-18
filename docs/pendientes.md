@@ -1,6 +1,32 @@
 # Pendientes y traspaso
 
-Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 18 nov, mañana: tres unidades con dos rondas de lector; Álgebra al día
+
+**Lo primero:** leer la mesa de revisión (tarjetas de las rondas 5 y 6) y aplicar lo que Gerson respondió.
+
+- **Hecho y en main (v243, 9706 pruebas):**
+  - `aritmetica.numeracion`, `razonamiento-matematico.razonamiento-deductivo` y `geometria.segmentos-y-angulos`:
+    método completo con **dos rondas de lector en frío** (`rutinas/frio/`, sección «Ronda 2») y sus correcciones (al
+    final de cada informe del auditor). En la ronda 2 lo que aprendió cada lector coincide con el aprendizaje de cada
+    idea.
+  - `algebra.exponentes-y-productos-notables` («Exponentes y radicales»): ideas, práctica, lector (ronda 1), auditor y
+    correcciones. `algebra.productos-notables`: sus 5 ideas (calidad 2), sin práctica ni lector todavía.
+  - App: Ejemplos de una idea solo tras su Predice; `regla.dibujo` opcional (usado en Segmentos); escenas por rehacer
+    al final de Ejercicios (`"rehacer": true`); raíz con índice bien dibujada y con color; leyenda que no se encoge.
+  - Validador: `leyendaSinRespuesta` (una leyenda de Juega no muestra números que solo salen con la misión cumplida).
+- **Siguiente:**
+  1. Aplicar la mesa (decisiones abiertas: llaves en las marcas de igualdad, columna r en tinta, criterio de qué
+     muestra el dibujo de un ejemplo —candidato al molde—, pregunta del Resumen y colores de la idea 3 de Productos
+     notables, escala del juego).
+  2. Productos notables: práctica (fase 5), lector en frío, auditor y correcciones. Exponentes y radicales: lector en
+     frío ronda 2.
+  3. Después, las siguientes unidades del árbol con el mismo método (Etapa 4: una propuesta por unidad para la mesa).
+  4. Pendientes de app: práctica por idea (`app/practica.js` debe pasar `{ idea }`); «Prueba 3 casos distintos» no
+     dice qué cuenta como caso distinto; `requiere` en `plantilla.json` para generadores que cargan otro archivo.
+- **Lección de esta tanda:** las capturas para el lector en frío van con `--entera` (sin eso la barra de botones tapa
+  el contenido y la ronda se pierde); la herramienta ya siembra las predicciones para que Ejemplos se vea.
 
 ## Estado al 18 nov, madrugada: tres unidades con el método casi completo
 
