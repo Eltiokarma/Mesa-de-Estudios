@@ -1,0 +1,85 @@
+{
+  "titulo": "MRUV y caída libre: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una combi va a 10 m/s hacia la derecha y frena parejo: 2 s después va a 8 m/s, todavía hacia la derecha. ¿Cuánto vale su aceleración, con su signo? Datos: Aceleración: a = Δv/Δt, con Δv = v − v_0. + hacia la derecha y − hacia la izquierda. Alternativas: A) 4 m/s²   B) 1 m/s²   C) −1 m/s²   D) −2 m/s²   E) −4 m/s²",
+      "respuesta": "C) −1 m/s²",
+      "pasos": [
+        "El cambio de velocidad: 8 − 10 = −2 m/s, en 2 s.",
+        "a = −2 ÷ 2 = −1 m/s²: negativa, porque frena yendo hacia el +."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Frente al colegio, una combi va a 9 m/s y frena parejo con a = −5 m/s² hasta detenerse. ¿Cuántos metros recorre mientras frena? Datos: Velocidad con aceleración constante: v = v_0 + a · t. Desplazamiento: Δx = (v_0 + v)/2 · t. Posición: x = x_0 + v_0 · t + ½ · a · t². Velocidad y desplazamiento: v² = v_0² + 2 · a · Δx. + hacia la derecha y − hacia la izquierda. Alternativas: A) 8,1 m   B) 16,2 m   C) 1,8 m   D) 0,9 m   E) −8,1 m",
+      "respuesta": "A) 8,1 m",
+      "pasos": [
+        "Al detenerse, v = 0: 0 = 9² + 2 · (−5) · Δx.",
+        "Δx = 81 ÷ 10 = 8,1 m."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Sueltas una piedra desde un puente y llega al río en 4 s. ¿Desde qué altura cayó? Datos: g = 10 m/s² (convención del examen); sin aire. Desde el reposo: v = g · t, h = ½ · g · t². Velocidad y lo que cayó: v² = 2 · g · h. h se mide hacia abajo, desde donde se suelta. Alternativas: A) 160 m   B) 40 m   C) 80 m   D) 20 m",
+      "respuesta": "C) 80 m",
+      "pasos": [
+        "h = ½ · 10 · 4² = 80 m."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un mototaxi avanza 3 s a 6 m/s y después retrocede 2 s a 1,5 m/s para estacionarse. ¿Cuál es su desplazamiento, con su signo? Datos: Pendiente de la gráfica v–t: a = Δv/Δt. Área bajo la gráfica v–t: Δx, con su signo (bajo el eje, negativa). La distancia recorrida suma las áreas sin signo. Rectángulo: base · altura. Triángulo: base · altura ÷ 2. Trapecio: (base 1 + base 2) ÷ 2 · altura. + hacia adelante; v negativa: va hacia atrás. Alternativas: A) 4,5 m   B) 15 m   C) −15 m   D) 21 m   E) 18 m",
+      "respuesta": "B) 15 m",
+      "pasos": [
+        "Áreas de la gráfica v–t: 6 · 3 = 18 m sobre el eje y 1,5 · 2 = 3 m bajo el eje.",
+        "Δx = 18 − 3 = 15 m."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una combi arranca del reposo. Su gráfica a–t vale 4 m/s² durante 2 s y después −2 m/s² durante 3 s. ¿Qué velocidad tiene al final? Datos: x–t: posición contra tiempo; v–t: velocidad contra tiempo; a–t: aceleración contra tiempo. Posición: x = x_0 + v_0 · t + ½ · a · t². Velocidad con aceleración constante: v = v_0 + a · t. Inclinación de x–t en un instante: v. Área bajo a–t: Δv. Rectángulo: base · altura. Triángulo: base · altura ÷ 2. Trapecio: (base 1 + base 2) ÷ 2 · altura. Alternativas: A) 14 m/s   B) 2 m/s   C) 8 m/s   D) 20 m/s",
+      "respuesta": "B) 2 m/s",
+      "pasos": [
+        "Áreas de a–t: 4 · 2 = 8 m/s y −2 · 3 = −6 m/s.",
+        "v = 0 + 8 − 6 = 2 m/s."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Pateas una pelota hacia arriba desde el patio con v_0 = 12 m/s. ¿A qué altura sobre el patio está en t = 2 s? Datos: g = 10 m/s² (convención del examen); sin aire. Eje hacia arriba: + al subir, − al bajar; la altura se mide desde donde sale. Velocidad: v = v_0 − g · t. Altura: y = v_0 · t − ½ · g · t². Velocidad y altura: v² = v_0² − 2 · g · y. Alternativas: A) 20 m   B) 7,2 m   C) 4 m   D) 44 m   E) 24 m",
+      "respuesta": "C) 4 m",
+      "pasos": [
+        "y = 12 · 2 − ½ · 10 · 2² = 24 − 20 = 4 m: ya va bajando."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un carrito se mueve sobre un riel recto. Su posición es x = 12 + 6t + t², con x en metros y t en segundos. ¿Qué velocidad tiene en t = 1 s? Datos: Posición: x = x_0 + v_0 · t + ½ · a · t². Velocidad con aceleración constante: v = v_0 + a · t. + hacia la derecha y − hacia la izquierda. Alternativas: A) 19 m/s   B) 4 m/s   C) 8 m/s   D) 2 m/s   E) 7 m/s",
+      "respuesta": "C) 8 m/s",
+      "pasos": [
+        "Se compara con x = x_0 + v_0 · t + ½ · a · t²: v_0 = 6 m/s y ½ · a = 1, así que a = 2 m/s².",
+        "v = 6 + 2 · 1 = 8 m/s."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Desde lo alto de un edificio de 18 m sueltas una piedra y, a la vez, desde el suelo lanzan una pelota hacia arriba con v_0 = 12 m/s, en la misma vertical. ¿A los cuántos segundos se encuentran? Datos: g = 10 m/s² (convención del examen); sin aire. Eje hacia arriba: + al subir, − al bajar; la altura se mide desde donde sale. Velocidad: v = v_0 − g · t. Altura: y = v_0 · t − ½ · g · t². Velocidad y altura: v² = v_0² − 2 · g · y. Alternativas: A) 0,75 s   B) 1,5 s   C) 1,2 s   D) 1,9 s",
+      "respuesta": "B) 1,5 s",
+      "pasos": [
+        "Piedra: y = 18 − 5 · t². Pelota: y = 12 · t − 5 · t².",
+        "Iguales: 18 = 12 · t, así que t = 1,5 s, a y = 6,75 m del suelo."
+      ]
+    }
+  ]
+}

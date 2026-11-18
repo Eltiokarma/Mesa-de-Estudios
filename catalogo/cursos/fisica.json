@@ -54,7 +54,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["fisica.vectores"],
-      "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
+      "plantillas": ["fis-mru", "mruv", "cinematica-medias", "velocidad-relativa"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -70,7 +70,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["fisica.movimiento-rectilineo", "algebra.ecuaciones-lineales-y-cuadraticas"],
-      "plantillas": ["mruv", "cinematica-medias"],
+      "plantillas": ["fis-mruv", "cinematica-medias", "mruv"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {

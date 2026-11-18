@@ -2534,11 +2534,14 @@
       { termino: 'lanzamiento vertical', def: 'Movimiento de algo lanzado hacia arriba o hacia abajo en línea recta, con solo la gravedad.',
         simple: 'Tirar algo derecho hacia arriba y verlo subir y bajar.',
         ejemplos: ['Una pelota pateada hacia arriba junto al pabellón.', 'Una moneda lanzada al aire para un «cara o sello».', 'Una pelota lanzada desde una azotea que después cae al patio.'],
-        formas: ['lanzamiento vertical', 'lanzamientos verticales'], ver: ['gravedad', 'cima'] },
-      { termino: 'cima', def: 'El punto más alto de un lanzamiento hacia arriba: ahí v = 0 un instante.',
+        formas: ['lanzamiento vertical', 'lanzamientos verticales'], ver: ['gravedad', 'altura máxima'] },
+      // «Altura máxima» se estrena aquí (B6) y vale para todo el curso: Movimiento parabólico la usa sin definirla y el
+      // lector la marca «se explica en MRUV y caída libre» (pendiente de la fase 3, 18 nov). «Cima» queda como palabra de
+      // todos los días, sin entrada propia.
+      { termino: 'altura máxima', simbolo: 'H', medida: 'm', def: 'Lo más alto que sube algo lanzado: ahí su velocidad hacia arriba vale 0 un instante.',
         simple: 'Lo más alto que llega una pelota antes de empezar a bajar.',
-        ejemplos: ['A 10 m/s, la pelota llega a su cima a 5 m.', 'A 20 m/s, a 20 m: el doble de rapidez, cuatro veces la altura.', 'En la cima v = 0, pero a sigue siendo −10 m/s².'],
-        formas: ['cima', 'cimas'], ver: ['lanzamiento vertical'] },
+        ejemplos: ['A 10 m/s, la pelota sube hasta 5 m.', 'A 20 m/s, hasta 20 m: el doble de rapidez, cuatro veces la altura.', 'Arriba v = 0, pero a sigue siendo −10 m/s².'],
+        formas: ['altura máxima', 'alturas máximas'], ver: ['lanzamiento vertical'] },
     ],
     // Laboratorio: juego libre, sin preguntas. La pista con acelerador va primera (nucleo/teoria-retos.test.js la usa).
     laboratorio: [

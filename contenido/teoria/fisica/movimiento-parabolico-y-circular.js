@@ -688,15 +688,14 @@
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js', '/plantillas/tiro-parabolico/motor.js', '/nucleo/fisica3d.js',
       '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Velocidad, aceleración
-    // y caída libre vienen de MRU, MRUV y caída libre; vector y componente, de magnitudes y vectores.
+    // y caída libre vienen de MRU, MRUV y caída libre; vector y componente, de magnitudes y vectores. «Altura máxima» se
+    // estrena en MRUV y caída libre (lanzamiento vertical, 18 nov): aquí no se define y el lector la marca «se explica en…».
     glosario: [
       { termino: 'tiro parabólico', def: 'Movimiento de algo lanzado que avanza de lado mientras cae; sin aire, su camino es una parábola.',
         ejemplo: '25 m/s a 53°: cae a 60 m del punto de salida.', ver: ['alcance horizontal', 'altura máxima', 'tiempo de vuelo'] },
       { termino: 'alcance horizontal', simbolo: 'R', medida: 'm', formas: ['alcance horizontal', 'alcance', 'alcances'],
         def: 'Distancia de lado entre el punto de salida y donde cae, a la misma altura.',
         ejemplo: 'vₓ = 15 m/s durante 4 s: R = 60 m.', ver: ['tiempo de vuelo'] },
-      { termino: 'altura máxima', simbolo: 'y máx', medida: 'm', def: 'Lo más alto que sube un proyectil: ahí su velocidad vertical vale 0.',
-        ejemplo: 'Sale con vᵧ = 20 m/s: sube 20² / 20 = 20 m.', ver: ['tiro parabólico'] },
       { termino: 'tiempo de vuelo', simbolo: 't', medida: 's', def: 'Cuánto dura un lanzamiento en el aire, desde que sale hasta que cae.',
         ejemplo: 'Sale con vᵧ = 20 m/s: sube 2 s y baja 2 s; vuela 4 s.', ver: ['altura máxima'] },
       { termino: 'radián', simbolo: 'rad', formas: ['radián', 'radianes'], def: 'Ángulo cuyo arco mide lo mismo que el radio. Una vuelta tiene 2π de ellos.',

@@ -1,0 +1,22 @@
+{
+  "id": "fis-mruv",
+  "titulo": "MRUV y caída libre",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.mruv-y-caida-libre"
+  ],
+  "temas": [
+    "Aceleración",
+    "Ecuaciones del MRUV",
+    "Gráfica v–t",
+    "Gráficas x–t y a–t",
+    "Caída libre",
+    "Lanzamiento vertical"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,272 @@
+{
+  "plantilla": "fis-mruv",
+  "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta, en SI (m, s, m/s, m/s²) o en km/h cuando la pregunta lo pide; texto: lo que ve el alumno (coma decimal, «−» de verdad, espacio que no se parte en los miles). Tres casos por idea: aceleración (medias, velocimetro, tiempo), ecuaciones (posicion, frenado, enesimo), gráfica v–t (tren, retroceso, pendiente), gráficas x–t y a–t (separacion, igual-velocidad, alcance), caída desde el reposo (pozo, altura, caida-kmh) y lanzamiento vertical (azotea, encuentro, velocidad-y).",
+  "verificacion": "Script aparte (18 nov 2026, python3, fuera del repo), que no usa el generador, el núcleo ni plantillas/mruv/motor.js: calcula cada respuesta con las ecuaciones del MRUV escritas a mano (a = Δv/Δt; v² = v₀² + 2aΔx; x = x₀ + v₀t + ½at²; h = ½gt²; y = v₀t − ½gt² con g = 10 m/s²; sonido a 340 m/s) y, donde se puede, por un segundo camino: integra el movimiento paso a paso (200 000 pasos, punto medio, con el freno que no retrocede) para la posición, la distancia de frenado, el n-ésimo segundo y las gráficas por tramos; deriva x(t) numéricamente para la velocidad de la ecuación horaria; busca la mayor separación en una grilla de 1 ms y resuelve las cuadráticas (alcance desde atrás, azotea) con su propia fórmula. Escribe el texto con su propio redondeo (la mitad hacia afuera, con Decimal) y su coma decimal. Los 18 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "ecuaciones-mruv",
+        "tipo": "posicion",
+        "nivel": 1,
+        "x0": 50,
+        "v0": 6,
+        "a": 3,
+        "t": 7
+      },
+      "esperado": {
+        "respuesta": 165.5,
+        "texto": "165,5 m"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "caida-reposo",
+        "tipo": "pozo",
+        "nivel": 3,
+        "t": 2
+      },
+      "esperado": {
+        "respuesta": 2.0588235294117645,
+        "texto": "2,06 s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "aceleracion",
+        "tipo": "medias",
+        "nivel": 3,
+        "sub": "tramo2",
+        "k1": 36,
+        "k2": 108,
+        "t1": 8,
+        "t2": 2
+      },
+      "esperado": {
+        "respuesta": 10,
+        "texto": "10 m/s²"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "caida-reposo",
+        "tipo": "altura",
+        "nivel": 1,
+        "t": 4
+      },
+      "esperado": {
+        "respuesta": 80,
+        "texto": "80 m"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "pendiente-aceleracion",
+        "tipo": "tren",
+        "nivel": 3,
+        "sub": "vmax",
+        "a": 0.5,
+        "k": 12
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 m/s"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "idea": "graficas-xt-at",
+        "tipo": "separacion",
+        "nivel": 3,
+        "V": 6,
+        "a": 1
+      },
+      "esperado": {
+        "respuesta": 18,
+        "texto": "18 m"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "idea": "caida-libre",
+        "tipo": "azotea",
+        "nivel": 3,
+        "v0": 10,
+        "t": 4
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "idea": "graficas-xt-at",
+        "tipo": "igual-velocidad",
+        "nivel": 1,
+        "V": 6,
+        "a": 1.5
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 s"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "caida-libre",
+        "tipo": "encuentro",
+        "nivel": 3,
+        "sub": "altura",
+        "v0": 12,
+        "t": 2
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4 m"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "aceleracion",
+        "tipo": "velocimetro",
+        "nivel": 3,
+        "K": 108,
+        "T": 6,
+        "t": 5
+      },
+      "esperado": {
+        "respuesta": 90,
+        "texto": "90 km/h"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "idea": "caida-libre",
+        "tipo": "velocidad-y",
+        "nivel": 2,
+        "v0": 19,
+        "vb": 11
+      },
+      "esperado": {
+        "respuesta": -11,
+        "texto": "−11 m/s"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "graficas-xt-at",
+        "tipo": "alcance",
+        "nivel": 2,
+        "sub": "donde",
+        "V": 6,
+        "a": 1
+      },
+      "esperado": {
+        "respuesta": 72,
+        "texto": "72 m"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "idea": "aceleracion",
+        "tipo": "tiempo",
+        "nivel": 1,
+        "v0": 2,
+        "a": 1,
+        "dt": 3
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 s"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "idea": "caida-reposo",
+        "tipo": "caida-kmh",
+        "nivel": 2,
+        "t": 3
+      },
+      "esperado": {
+        "respuesta": 108,
+        "texto": "108 km/h"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "idea": "pendiente-aceleracion",
+        "tipo": "retroceso",
+        "nivel": 2,
+        "sub": "distancia",
+        "v1": 3,
+        "t1": 2,
+        "v2": 1,
+        "t2": 3
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9 m"
+      }
+    },
+    {
+      "semilla": 34,
+      "entrada": {
+        "idea": "pendiente-aceleracion",
+        "tipo": "pendiente",
+        "nivel": 1,
+        "sub": "baja",
+        "v1": 14,
+        "v2": 2,
+        "T": 4
+      },
+      "esperado": {
+        "respuesta": -3,
+        "texto": "−3 m/s²"
+      }
+    },
+    {
+      "semilla": 38,
+      "entrada": {
+        "idea": "ecuaciones-mruv",
+        "tipo": "frenado",
+        "nivel": 1,
+        "v0": 12,
+        "A": 1.5
+      },
+      "esperado": {
+        "respuesta": 48,
+        "texto": "48 m"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "idea": "ecuaciones-mruv",
+        "tipo": "enesimo",
+        "nivel": 3,
+        "v0": 0,
+        "a": 2,
+        "n": 3
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 m"
+      }
+    }
+  ]
+}

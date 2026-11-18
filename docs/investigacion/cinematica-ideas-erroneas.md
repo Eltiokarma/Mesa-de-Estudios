@@ -178,6 +178,178 @@ midan las predicciones y el «Ahora tú» en el colegio.
 Se confirman como los demás de este informe: con el registro de opciones elegidas en las predicciones y en «Ahora tú»
 (evento `teoria` de la medición), y con preguntas abiertas en la prueba del pase 2.
 
+## Práctica de MRU (fis-mru, 18 nov)
+
+Códigos nuevos de la práctica de «Movimiento rectilíneo uniforme» (`plantillas/fis-mru/generador.js`, un generador con
+tipos por idea). Usa también los de la sección anterior y los de la cabecera de la unidad. **Todos son hipótesis de
+diseño, sin dato propio**: salen de la forma de las alternativas de academia y de examen, y se confirman con las
+opciones que eligen los alumnos en la práctica (evento `prediccion` de la medición). Los de unidades (U1-kmh,
+U1-inversa, U6-min, U2-km, U2-cm) son los códigos U de `fisica-calculo-transversal-ideas-erroneas.md`.
+
+| Código | Idea errónea (lo que hace el alumno) | Dónde aparece | Respaldo |
+| --- | --- | --- | --- |
+| MRU-ECO-MITAD | Divide entre 2 el camino del trueno, como si rebotara | A1 (el rayo y el trueno) | Hipótesis |
+| MRU-ECO-DOBLE | Cuenta ida y vuelta en un sonido que viaja una sola vez | A1 (el trueno) | Hipótesis |
+| MRU-ECO-SIN-MITAD | No divide entre 2 el camino de ida y vuelta del eco | A1 (dos ecos, la bocina) | Hipótesis |
+| MRU-ECO-UNO | Entre dos cerros, da la distancia a uno solo | A1 (dos ecos) | Hipótesis |
+| MRU-ECO-RESTA | Resta las distancias a dos cerros que están a lados opuestos | A1 (dos ecos) | Hipótesis |
+| MRU-ECO-QUIETO | Trata como quieta a la combi que toca la bocina y sigue avanzando | A1 (la bocina) | Hipótesis |
+| MRU-ECO-ESCUCHA | Da la distancia al cerro cuando oye el eco, no cuando tocó la bocina | A1 (la bocina) | Hipótesis |
+| MRU-ECO-MEDIO | Divide entre 2 el camino del sonido, pero suma entero lo que avanzó la combi | A1 (la bocina) | Hipótesis |
+| MRU-IDA | En una ida y vuelta, da la posición al final de la ida | A1 | Hipótesis |
+| MRU-RESTA-V | Resta las velocidades y multiplica por el tiempo total, aunque cada una dure su propio tiempo | A1 | Hipótesis |
+| XT-PRIMER-PUNTO | Toma un punto de la recta como x₀, aunque no esté en t = 0 | A2 | Hipótesis |
+| XT-POSICION | Da la posición final como la distancia recorrida, sin restar la salida | A2 (San Marcos 2024-II) | Hipótesis |
+| XT-CAMBIA | En la ecuación de la recta, cambia de lugar x₀ y v | A2 | Hipótesis |
+| DX-VUELTA-ENTERA | Cuenta la vuelta entera aunque no llegó a la partida | A3 | Hipótesis |
+| DX-SUMA-POSICIONES | Suma las posiciones de una tabla en vez de los tramos recorridos | A3 (San Marcos 2021) | Hipótesis |
+| MED-SIN-PARADA | Deja fuera de la rapidez media el tiempo de una espera | A3 | Hipótesis |
+| VR-PROMEDIO | Divide la separación entre el promedio de las rapideces | A4 | Hipótesis |
+| ENC-OTRO | Da lo que recorrió el otro móvil, no el que se pide | A4 | Hipótesis |
+| ENC-MITAD | Supone que de frente se cruzan a la mitad del camino | A4 | Hipótesis |
+| ENC-UN-LARGO | Para cruzarse por completo, cuenta un solo largo | A4 (trenes) | Hipótesis |
+| ENC-PRIMERA | Da la primera vez que están a cierta separación cuando se pide la segunda | A4 | Hipótesis |
+| ENC-CRUCE | Da el instante del cruce cuando se pide una separación | A4 | Hipótesis |
+| ENC-SOLO-S | Cuenta solo el tiempo de separarse, sin el de acercarse | A4 | Hipótesis |
+| REL-SIN-MITAD | De los viajes río abajo y río arriba, no divide entre 2 | A5 | Hipótesis |
+| REL-CRUZA | Da la corriente cuando se pide lo que rema el bote, o al revés | A5 | Hipótesis |
+| REL-UN-LARGO | Al adelantar a otra combi, cuenta un solo largo | A5 | Hipótesis |
+
+## MRUV y caída libre (18 nov)
+
+Códigos de las seis ideas de «MRUV y caída libre» (`contenido/teoria/fisica/mruv-y-caida-libre.js`, ideas B1 a B6 de
+`docs/etapa4/propuesta-fisica.md`; la lista completa está en la cabecera de la unidad) y de su práctica
+(`plantillas/fis-mruv/generador.js`, un tipo por idea con tres niveles). Los que se apoyan en el catálogo de arriba
+llevan su respaldo (K1-a y K3 de Trowbridge y McDermott, sin porcentaje; G3 y G4 de Beichner 1994; C1 de Thornton y
+Sokoloff 1998; C2 de Carrascosa y otros 2004). Los de unidades y proporción (U1-kmh, U1-al-reves, U1-ms, U2-cm, PR1,
+PR1-frenado) son los de `fisica-calculo-transversal-ideas-erroneas.md`, con un sufijo que dice el caso. **Todos los
+demás son hipótesis de diseño, sin dato propio**: salen de la forma de las alternativas de examen y de academia, y se
+confirman con las opciones que eligen los alumnos en las predicciones, en «Ahora tú» (evento `teoria`) y en la práctica
+(evento `prediccion`). DX-IDA y MED-TRAMO son los mismos códigos de MRU, llevados a la gráfica v–t y a la aceleración.
+
+### En la teoría (B1 a B6)
+
+| Código | Idea errónea (lo que hace el alumno) | Dónde aparece | Respaldo |
+| --- | --- | --- | --- |
+| K-A0 | Cree que sin cambio de sentido no hay aceleración | B1 Predice | Hipótesis |
+| K-SIGNO | Da la aceleración (o la velocidad) con el signo al revés | B1, B3, B4, B6 | Hipótesis |
+| K-TIEMPO | Da la velocidad después de un solo segundo | B1, B4, B6 | Hipótesis |
+| K-CUADRADO | Eleva t al cuadrado donde va a · t (o g · t) | B1, B2, B4, B5 | Hipótesis |
+| K-SINDIV | Da el cambio de velocidad Δv sin dividir entre Δt | B1, B3 | Hipótesis (versión de K4) |
+| K-SUMA | Suma las velocidades inicial y final en vez de restarlas | B1 | Hipótesis |
+| K-POR | Multiplica el cambio de velocidad por el tiempo, o la velocidad por a | B1, B4 | Hipótesis |
+| MED-PROMEDIO-A | Promedia (o suma) las aceleraciones de dos tramos que duran distinto | B1 (San Marcos 2021) | Hipótesis |
+| MED-TRAMO | Da la aceleración media de otro tramo o de todo el viaje | B1 | Hipótesis (como en MRU) |
+| MRUV-FRENO-IGUAL | Con el mismo freno y más rapidez, da la misma distancia de frenado | B2 Predice | Hipótesis |
+| MRUV-VT | Multiplica la rapidez inicial por el tiempo de frenado, sin la media | B2 | Hipótesis de arriba («d = v·t en un MRUV») |
+| MRUV-TIEMPO | Da el tiempo de frenado cuando se piden metros | B2 | Hipótesis |
+| MRUV-SIGNO-D | Da la distancia de frenado con signo negativo, como la aceleración | B2 | Hipótesis |
+| DX-RECT | Multiplica la velocidad final por el tiempo, como si fuera así todo el tramo | B2, B3 | Hipótesis (versión de G4) |
+| DX-INICIAL | Multiplica la velocidad inicial por el tiempo | B2, B3 | Hipótesis |
+| DX-SEMI | Suma v₀ y v sin dividir entre 2 (la media o el trapecio) | B2, B3 | Hipótesis |
+| MRUV-ACEL | Da la aceleración cuando se pide lo que avanzó | B2 | Hipótesis |
+| MRUV-MEDIO | Olvida el ½ de ½ · a · t² | B2, B4 | Hipótesis (PR3 del informe transversal) |
+| MRUV-SIN-A | Calcula la posición sin el término de la aceleración | B2 | Hipótesis |
+| MRUV-MEDIO-A | En x = A + Bt + Ct², toma C como la aceleración (no como ½ · a) | B2 (San Marcos 2025-II) | Hipótesis |
+| MRUV-POSICION | Da la posición en ese instante cuando se pide la velocidad | B2 | Hipótesis |
+| MRUV-POSICION-FINAL | Da la posición final cuando se pide el desplazamiento | B2 (San Marcos 2026-II) | Hipótesis |
+| MRUV-DESDE-0 | Resta la posición en t = 0 y no la del instante inicial pedido | B2 | Hipótesis |
+| DX-SUMA | Suma un área bajo el eje cuando se pide el desplazamiento | B3 Predice | Hipótesis |
+| DX-ALTURA | Suma o resta las alturas de la gráfica v–t en vez de sus áreas | B3 | Hipótesis (versión de G2) |
+| DX-RESTA | Da el desplazamiento cuando se pide la distancia recorrida | B3 | Hipótesis |
+| DX-TRIANGULO | Toma un triángulo como base por altura, sin dividir entre 2 | B3, B4 | Hipótesis |
+| MRUV-MITAD | En el viaje que acelera y frena, da solo el tiempo de una mitad | B3 (San Marcos 2020-I) | Hipótesis |
+| MRUV-SOLO-ACELERA | Supone que acelera todo el camino, sin frenar | B3 | Hipótesis |
+| MRUV-DIVIDE | Divide la distancia entre la aceleración para sacar un tiempo | B3 | Hipótesis |
+| MRUV-LEE-PUNTO | Da la velocidad de un punto de la recta v–t como la de t = 0 | B3 (San Marcos 2021) | Hipótesis |
+| MRUV-ORIGEN | Supone que la recta v–t sale del 0 | B3 | Hipótesis |
+| K1-a | «Misma posición, misma velocidad»: da el instante del alcance como el de igual velocidad | B4 Predice | K1 de Trowbridge y McDermott (1980), sin porcentaje |
+| K1-b | La misma idea en la salida: juntos al empezar, igual de rápidos | B4 Predice | Hipótesis (K1 partido, como GE17) |
+| MRUV-NUNCA | Cree que un móvil que acelera nunca iguala la velocidad de uno parejo | B4 Predice | Hipótesis |
+| G-SENTIDO | Elige la gráfica del movimiento contrario (la que frena por la que acelera) | B4 | Hipótesis |
+| G4-medio | Divide entre 2 el área de un tramo parejo (un rectángulo) | B4 | Hipótesis (versión de G4) |
+| DX-TRAMO | Cuenta solo el tramo parejo, sin lo que avanzó al acelerar y al frenar | B3, B4 | Hipótesis |
+| K-ALC-PERSEGUIDOR | Da la distancia del que alcanza cuando se pide la del alcanzado | B4 (San Marcos 2024-II) | Hipótesis (trampa de la clave) |
+| K-ALC-D | Da la separación inicial como lo que recorre el alcanzado | B4 | Hipótesis |
+| C2-suave | «La piedra llega un poco antes»: la versión suave de C2 | B5 Predice | Hipótesis |
+| C2-liviano | Cree que lo liviano cae más rápido | B5 Predice | Hipótesis |
+| C-MEDIO | Olvida el ½ (o el 2) en h = ½ · g · t² o en v² = 2 · g · h | B5, B6 | Hipótesis |
+| C-VELOCIDAD | Da la velocidad (g · t o √(2gh)) cuando se pide la altura o el tiempo | B5 | Hipótesis |
+| C-LINEAL | Trata lo que cae como proporcional al tiempo (o a la altura), sin el cuadrado o sin la raíz | B5 | Hipótesis (PR1 y PR2 del informe transversal) |
+| C-RAIZ | Da v² = 2 · g · h sin sacar la raíz | B5 | Hipótesis |
+| C-TIEMPO | Da el tiempo de caída o de subida cuando se pide otra cosa | B5, B6 | Hipótesis |
+| C-JUNTAS | Cree que dos objetos soltados desde alturas distintas llegan a la vez | B5 | Hipótesis |
+| C-RESTA-ALTURAS | Calcula el tiempo de caer la diferencia de alturas desde el reposo | B5 (San Marcos 2019-II) | Hipótesis |
+| C-SIN-SONIDO | En el pozo con eco, olvida lo que tarda el sonido en subir | B5 | Hipótesis |
+| C-SOLO-SONIDO | En el pozo con eco, cuenta solo lo que tarda el sonido | B5 | Hipótesis |
+| C-VUELTA | Usa el tiempo de ida y vuelta donde va uno solo (o el sonido como la piedra) | B5, B6 | Hipótesis |
+| C-ENESIMO | Da lo que cae en n segundos cuando se pide el n-ésimo segundo | B5 | Hipótesis de arriba («en el n-ésimo segundo») |
+| C-ALTURA | Da la altura máxima cuando se pide un tiempo, una velocidad u otra altura | B6 | Hipótesis |
+| C-AREA | Toma el área del triángulo de la subida sin dividir entre 2 | B6 | Hipótesis |
+| C-SOLTAR | Desde la azotea, calcula el tiempo como si soltara la pelota | B6 | Hipótesis |
+| C-SUBIDA | Da solo el tiempo de subida | B6 | Hipótesis |
+| C-ENC-MITAD | En el encuentro en el aire, divide entre 2 la rapidez con que se acercan | B6 | Hipótesis |
+| C-ENC-CAIDA | Da el tiempo que la piedra tardaría en caer toda, sin encontrarse | B6 | Hipótesis |
+
+### Nuevos de la práctica (`fis-mruv`)
+
+| Código | Idea errónea (lo que hace el alumno) | Dónde aparece | Respaldo |
+| --- | --- | --- | --- |
+| K-SIN-V0 | Da a · t (lo que cambió la velocidad) sin sumarle v₀ | B1, B4 | Hipótesis |
+| K-INVERSA | Divide a entre la velocidad (o entre Δv) para sacar un tiempo | B1, B4 | Hipótesis |
+| K-RESTA-T | Usa el tiempo que falta en vez del que pasó | B1 (el velocímetro) | Hipótesis |
+| K-MITAD | Da la mitad de la rapidez final para un instante que no es la mitad | B1 | Hipótesis |
+| MED-SIN-RESTA | En el segundo tramo, divide la velocidad final entre su tiempo sin restar la del inicio del tramo | B1 (San Marcos 2021) | Hipótesis |
+| MED-SUMA-A | Suma las aceleraciones de dos tramos | B1 | Hipótesis |
+| U1-al-reves | Pasa km/h a m/s (o al revés) multiplicando donde va dividir | B1, B5 | U1 del informe transversal, hipótesis |
+| U1-ms | Deja en m/s una respuesta que se pide en km/h | B1 | U1 del informe transversal, hipótesis |
+| MRUV-RESTA | Resta v₀ y v en la velocidad media | B2 | Hipótesis |
+| MRUV-SIN-CUADRADO | Escribe ½ · a · t sin elevar t | B2 | Hipótesis |
+| MRUV-RAIZ | Da v² = v₀² + 2aΔx sin sacar la raíz | B2 | Hipótesis |
+| MRUV-SIN-DOS | Olvida el 2 de 2 · a · Δx | B2 | Hipótesis |
+| MRUV-SIN-V0 | Olvida v₀ (o v₀²) en la ecuación, como si arrancara del reposo | B2 | Hipótesis |
+| MRUV-SUMA-RAIZ | Saca la raíz por separado: v₀ + √(2aΔx) | B2 | Hipótesis |
+| MRUV-POS-INICIAL | Da la posición del instante inicial cuando se pide el desplazamiento | B2 | Hipótesis |
+| MRUV-DISTANCIA | Da la distancia recorrida cuando se pide el desplazamiento de un móvil que da la vuelta | B2 | Hipótesis |
+| MRUV-DIF-D | Con el mismo freno y más rapidez, da solo los metros de más | B2 (San Marcos 2026-I) | Hipótesis |
+| MRUV-ENESIMO | Da lo que avanza en n segundos cuando se pide el n-ésimo segundo | B2 | Hipótesis de arriba («en el n-ésimo segundo») |
+| MRUV-VEL-N | Da la velocidad a los n segundos como lo que avanza en el n-ésimo | B2 | Hipótesis |
+| MRUV-ANTERIOR | Da la posición al empezar el n-ésimo segundo, sin restarla | B2 | Hipótesis |
+| MRUV-OTRO-SEG | Calcula lo del segundo anterior (de n − 2 a n − 1) | B2, B5 | Hipótesis |
+| DX-SIGNO | Resta al revés: la posición inicial menos la final, o lo de vuelta menos lo de ida | B2, B3 | Hipótesis |
+| DX-SOLO-TRI | Cuenta solo el triángulo de la salida, sin el tramo parejo | B3 | Hipótesis |
+| DX-MEDIA-V | Usa la mitad de la rapidez máxima para todo el viaje | B3 | Hipótesis |
+| DX-TRAPECIO | Toma como un trapecio la recta v–t que cruza el eje | B3 | Hipótesis |
+| MRUV-DOBLE-TRAMO | En el viaje que acelera y frena, cuenta todo el camino en cada parte | B3 | Hipótesis |
+| MRUV-VMAX | Da la rapidez máxima cuando se pide el tiempo | B3 | Hipótesis |
+| MRUV-MEDIA-V | Da la rapidez media cuando se pide la máxima | B3 | Hipótesis |
+| G4-tiempo | Da la base del triángulo (el tiempo) cuando se pide la pendiente | B3 (San Marcos 2021) | Hipótesis (versión de G4) |
+| AT-TRAMO | De una gráfica a–t por tramos, cuenta solo el primero | B4 | Hipótesis |
+| AT-TODO | Estira la aceleración del primer tramo a todo el tiempo | B4 | Hipótesis |
+| AT-ALTURA | Suma las alturas de la gráfica a–t en vez de sus áreas | B4 | Hipótesis (versión de G4) |
+| K-ALC-TIEMPO | Da el tiempo del alcance cuando se piden metros | B4 | Hipótesis |
+| K-ALC-SIN-D | Hace salir del mismo lugar a los dos móviles (o al doble de rapidez) | B4 | Hipótesis |
+| K-SEP-ALCANCE | Da la posición del alcance cuando se pide la mayor separación | B4 | Hipótesis |
+| K-SEP-TIEMPO | Da el instante de la mayor separación cuando se piden metros | B4 | Hipótesis |
+| K-SEP-MOTO | Da lo que avanzó uno solo, sin restar lo del otro | B4 | Hipótesis |
+| C-IGUAL | Cree que desde más alto tarda lo mismo | B5 | Hipótesis |
+| C-CUADRADO | Cree que el tiempo crece con el cuadrado de la altura | B5 | Hipótesis |
+| C-ANTERIOR | Da lo que cayó hasta el segundo anterior, sin restarlo | B5 | Hipótesis |
+| C-OTRO-SEG | Calcula lo que cae en el segundo anterior al pedido | B5 | Hipótesis |
+| C-SUMA-T | Suma los tiempos de caída de dos objetos cuando se pide la diferencia | B5 (San Marcos 2019-II) | Hipótesis |
+| C-SOLO-UNA | Da el tiempo de un solo objeto cuando se pide la diferencia | B5 | Hipótesis |
+| C-SONIDO-DOBLE | Cuenta ida y vuelta para el sonido del pozo | B5 | Hipótesis |
+| U2-cm | Usa los centímetros de la regla como metros | B5 (la regla) | U2 del informe transversal, hipótesis |
+| C-SIN-G | Calcula la altura o el encuentro sin la gravedad (solo v₀ · t) | B6 | Hipótesis |
+| C-SIN-V0 | Olvida la velocidad de salida (solo −g · t o √(2gy)) | B6 | Hipótesis |
+| C-MITAD-T | Divide entre 2 el tiempo de subida | B6 | Hipótesis |
+| C-SOLO-G | Da ½ · g · t², lo que le quita la gravedad, como la altura | B6 | Hipótesis |
+| C-VUELTA-SOLTAR | Desde la azotea, suma la subida y vuelta y la caída desde el reposo | B6 | Hipótesis |
+| C-ENC-CAIDO | En el encuentro, da lo que bajó la piedra en vez de la altura | B6 | Hipótesis |
+| C-ENC-SIN-G | En el encuentro, calcula la altura de la pelota sin la gravedad | B6 | Hipótesis |
+| C-ENC-MITAD-H | Supone que se encuentran a la mitad de la altura | B6 | Hipótesis |
+| C-CUARTO | Divide dos veces entre 2 el tiempo de vuelo | B6 | Hipótesis |
+
 ## Fuentes
 
 - [Beichner (1994), *Testing student interpretation of kinematics graphs*, American Journal of Physics 62(8), 750–762](https://moodle2.units.it/pluginfile.php/732257/mod_resource/content/1/Testing%20student%20understanding%20kinematics%20graphs.pdf). 895 estudiantes; test TUG-K con porcentajes por objetivo y por pregunta.

@@ -274,3 +274,30 @@ test('ríos sin nombre propio y con medidas posibles; sacos de 10 kg o más a 4 
     if (d.tipo === 'botes' && d.m >= 10) assert.ok(d.u <= 4, `semilla ${s}: saco de ${d.m} kg a ${d.u} m/s`);
   }
 });
+
+// 18 nov (docs/etapa4/decisiones.md): en Movimiento rectilíneo uniforme salen solo los tipos de una recta, con la
+// notación y los colores de esa unidad: sin flechas de vector, un color fijo por magnitud (tabla `colores` de la teoría)
+// y la explicación de cada error empezando por lo que el alumno hizo bien. El problema es el mismo que sin unidad.
+test('Movimiento rectilíneo uniforme: tipos de una recta, sin vectores y con un color fijo por magnitud', () => {
+  const U = 'fisica.movimiento-rectilineo';
+  const T = require('../../contenido/teoria/fisica/movimiento-rectilineo.js');
+  const COLOR = { 'm/s': T.colores.velocidad, s: T.colores.tiempo, m: T.colores['posición'] };
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? x.t : String(x));
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { unidad: U }), d = p._datos;
+    assert.ok(['marco', 'idavuelta', 'cruce'].includes(d.tipo), `semilla ${s}: ${d.tipo}`);
+    const visto = [p.enunciado, p.pregunta, ...p.solucion].map(plano).concat(p.datos).join(' ');
+    assert.ok(!/⃗|_|×/.test(visto), `semilla ${s}: flecha, «_» o «×»: ${visto}`);
+    assert.ok(p.datos.some(l => /la suya menos la del que mira/.test(l)), `semilla ${s}: falta la velocidad relativa`);
+    for (const linea of [p.enunciado, p.pregunta, ...p.solucion]) for (const x of linea) if (x && typeof x === 'object') {
+      const u = (x.t.match(/(m\/s|km\/h|cm\/año|s|m)$/) || [])[1];
+      const esperado = u === 'km/h' || u === 'cm/año' ? COLOR['m/s'] : COLOR[u];
+      if (esperado) assert.equal(p.variables[x.v].color, esperado, `semilla ${s}: «${x.t}» en ${p.variables[x.v].color}`);
+    }
+    for (const v of Object.values(p.variables)) assert.ok(['o', 'i', 'f'].includes(v.color), `semilla ${s}: ${v.nombre} en ${v.color}`);
+    if (p.escena) for (const e of p.escena.datos.elementos) assert.equal(e.color, d.tipo === 'marco' ? 'o' : 'f', `semilla ${s}: ${e.tipo} en ${e.color}`);
+    for (const a of p.alternativas.filter(x => x.error)) assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
+    const sinUnidad = gen.generar(s, { unidad: 'fisica.vectores' });
+    if (sinUnidad._datos.tipo === d.tipo) assert.ok(sinUnidad.datos.some(l => l.includes('v⃗_AB')), 'en Vectores sigue la suma con flechas');
+  }
+});

@@ -1,0 +1,19 @@
+{
+  "id": "fis-mru",
+  "titulo": "La combi, la gráfica y el río",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.movimiento-rectilineo"
+  ],
+  "temas": [
+    "Posición, desplazamiento y distancia",
+    "Velocidad y rapidez media",
+    "MRU y velocidad relativa"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -107,7 +107,11 @@ test('la unidad entera cumple el contrato de calidad 2: validador común, 15 eje
   assert.deepEqual(p, [], p.join('\n'));
   const glos = Glosario.porIdea(def).map(es => es.map(g => g.termino).sort());
   assert.deepEqual(glos, [['MRUV', 'aceleración', 'frenar'], ['distancia de frenado', 'ecuación horaria'], ['gráfica v–t', 'área bajo la gráfica'],
-    ['gráfica a–t', 'parábola'], ['caída libre', 'gravedad'], ['cima', 'lanzamiento vertical']]);
+    ['gráfica a–t', 'parábola'], ['caída libre', 'gravedad'], ['altura máxima', 'lanzamiento vertical']]);
+  // «Altura máxima» es del curso entero: se define aquí y Movimiento parabólico ya no la define (la marca «se explica en…»).
+  const parabolico = require('./movimiento-parabolico-y-circular.js');
+  assert.ok(!parabolico.glosario.some(g => g.termino === 'altura máxima'), 'Movimiento parabólico vuelve a definir «altura máxima»');
+  assert.ok(!def.glosario.some(g => g.termino === 'cima'), '«cima» quedó como palabra de todos los días');
   for (const g of def.glosario) assert.ok(g.simple && g.ejemplos.length >= 3, g.termino);
   assert.ok(!idea('aceleracion').regla.dibujo, 'sin dibujo propio en la regla: la idea 1 es la de nucleo/teoria-ejemplos-regla.test.js');
   for (const i of def.ideas) {

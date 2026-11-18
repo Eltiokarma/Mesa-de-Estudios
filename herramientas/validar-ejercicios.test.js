@@ -152,7 +152,9 @@ test('contar: totales por curso, origen, estado y pieza, y huérfanos', () => {
   assert.equal(c.por.origen['oficial unmsm'], 1);
   assert.equal(c.por.estado.crudo, 1);
   assert.equal(c.por.pieza['barra-porcentaje'], 1);
-  assert.equal(c.por.via.generador, 2);
+  // Los tres ejemplos de juguete ya tienen generador: el frenado de MRUV pasó a fis-mruv (18 nov), con la pieza fis-combi.
+  assert.equal(c.por.via.generador, 3);
+  assert.equal(c.por.pieza['fis-combi'], 1);
   assert.equal(c.sin_tipo, 1);
   assert.equal(c.duplicados, 1);
   assert.equal(c.figura_fuente, 1);

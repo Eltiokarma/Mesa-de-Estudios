@@ -29,8 +29,10 @@
  *             tres        tres botes en fila: el del centro lanza un saco al de la izquierda y luego otro al de
  *                         la derecha; la rapidez final del bote de un extremo (paso a paso)
  *
- * Por unidad (17 nov, auditoría de Vectores): generar(semilla, { unidad }) da en Vectores y en MRU solo marco,
- * idavuelta, cruce y bote; en Impulso y choques, solo botes (cantidad de movimiento). Sin unidad, todos (tiposPorUnidad).
+ * Por unidad (17 nov, auditoría de Vectores): generar(semilla, { unidad }) da en Vectores solo marco, idavuelta, cruce
+ * y bote; en Movimiento rectilíneo uniforme, marco, idavuelta y cruce (18 nov: el bote con ángulo es de Vectores), con
+ * la notación y los colores de esa unidad (aMRU); en Impulso y choques, solo botes (cantidad de movimiento). Sin
+ * unidad, todos (tiposPorUnidad).
  * Los ríos no llevan nombre propio y sus medidas son posibles (corriente ≤ 3 m/s); un saco de 10 kg o más sale a ≤ 4 m/s.
  * Convenciones: rapideces del bote «respecto al agua»; la del saco «respecto al bote» se mide con el bote ya
  * en movimiento (después del lanzamiento). Ángulos de la proa medidos desde la perpendicular a la orilla,
@@ -83,9 +85,38 @@
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
       // Se evita que la correcta sea la única «redonda» (las demás con más decimales).
-      if (pr && pr.alternativas.length >= 4 && (intento > 300 || !soloRedonda(pr))) return pr;
+      if (pr && pr.alternativas.length >= 4 && (intento > 300 || !soloRedonda(pr))) return unidad === MRU ? aMRU(pr) : pr;
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
+  }
+  /*
+   * En «Movimiento rectilíneo uniforme» (18 nov; docs/etapa4/decisiones.md) los tipos de una recta (marco, idavuelta y
+   * cruce) se ven con la notación y los colores de esa unidad: sin magnitudes vectoriales (v, Δx son números con
+   * signo, sin flecha) y un color fijo por magnitud (tabla `colores` de contenido/teoria/fisica/movimiento-rectilineo.js):
+   * toda velocidad o rapidez naranja, el tiempo turquesa, la posición, la separación y los largos violeta. Lo que se pide
+   * toma el color de la magnitud de su respuesta. El problema es el mismo (mismos números, alternativas y errores); en
+   * Vectores, sin unidad o en otra, sigue como antes.
+   */
+  const MRU = 'fisica.movimiento-rectilineo';
+  const REL_MRU = 'Velocidad de un móvil vista desde otro: la suya menos la del que mira, cada una con su signo.';
+  const RECORRE_MRU = 'Lo que recorre algo con rapidez constante: rapidez · tiempo.';
+  const POR_UNIDAD = { 'm/s': 'o', s: 'i', m: 'f' };
+  function colorMRU(nombre, unidadRespuesta) {
+    if (/rapidez|velocidad/.test(nombre)) return 'o';
+    if (/tiempo/.test(nombre)) return 'i';
+    if (/largo|distancia/.test(nombre)) return 'f';
+    return POR_UNIDAD[unidadRespuesta] || 'f';
+  }
+  function aMRU(pr) {
+    const variables = Object.fromEntries(Object.entries(pr.variables).map(([k, x]) => [k, { ...x, color: colorMRU(x.nombre, pr.respuesta.unidad) }]));
+    const datos = pr.datos.filter(l => l !== REL).map(l => (l === REL_RECTA ? REL_MRU : l === MRU_LINEA ? RECORRE_MRU : l));
+    const out = { ...pr, variables, datos };
+    // La recta del kit: en «marco», velocidades (naranja); en «encuentro» y «alcance», posiciones y tramos (violeta).
+    if (pr.escena && pr.escena.pieza === 'recta') {
+      const vel = /^v /.test(pr.escena.datos.variable);
+      out.escena = { ...pr.escena, datos: { ...pr.escena.datos, elementos: pr.escena.datos.elementos.map(e => ({ ...e, color: vel ? 'o' : 'f' })) } };
+    }
+    return out;
   }
   function construir(rng, semilla, tipo, sub) {
     if (tipo === 'marco') return marco(rng, semilla, sub);
@@ -166,10 +197,10 @@
         mismo ? ', las dos hacia el norte.' : ', A al norte y B al sur.'];
       const pregunta = ['¿Con qué ', v('x', 'rapidez'), ', en m/s, ve moverse a A un pasajero de B?'];
       const errores = [
-        h('REL-V-signo', otra / 3.6, mismo ? 'Sumaste las rapideces. Van en el mismo sentido: para B, A solo gana la diferencia.' : 'Restaste las rapideces. Van en sentidos opuestos: para B, A se acerca con la suma.'),
-        h('REL-V-respecto-a-tierra', vA / 3.6, 'Esa es la rapidez de A respecto a la pista. El pasajero de B ve vA − vB.'),
-        h('REL-V-la-propia', vB / 3.6, 'Esa es la rapidez de B, la del observador. Él ve vA − vB.'),
-        h('U1-kmh', rel, `Eso está en km/h. En m/s se divide entre 3,6: ${f(correcta)} m/s.`, TRV),
+        h('REL-V-signo', otra / 3.6, mismo ? `Bien pasar a m/s. Pero van en el mismo sentido: para B, A solo gana la diferencia.` : `Bien pasar a m/s. Pero van en sentidos opuestos: para B, A se acerca con la suma.`),
+        h('REL-V-respecto-a-tierra', vA / 3.6, `Bien pasar a m/s. Pero esa es la rapidez de A desde la pista; B ve vA − vB.`),
+        h('REL-V-la-propia', vB / 3.6, `Bien pasar a m/s. Pero esa es la rapidez de B, el observador; él ve vA − vB.`),
+        h('U1-kmh', rel, `Bien la velocidad de A vista desde B. Pero está en km/h: en m/s se divide entre 3,6.`, TRV),
       ];
       const solucion = [
         ['Norte positivo: ', v('a', `vA = ${vA}`), ' y ', v('b', `vB = ${f(vBs)}`), ' km/h.'],
@@ -192,9 +223,9 @@
       mismo ? 'este' : 'oeste', ' a ', v('b', `${vBm} cm/año`), ', en una misma línea.'];
     const pregunta = ['¿Cuántos metros se ', v('x', 'desplaza A respecto a B'), ' en ', v('t', `${f(N)} años`), '?'];
     const errores = [
-      h('REL-V-signo', (mismo ? vA + vBm : Math.abs(vA - vBm)) * N / 100, mismo ? 'Sumaste las velocidades. Las dos van al este: respecto a B, A avanza la diferencia.' : 'Restaste las velocidades. Van en sentidos opuestos: respecto a B, A se aleja con la suma.'),
-      h('REL-V-respecto-a-tierra', vA * N / 100, 'Ese es el desplazamiento de A respecto a M. Se pide respecto a B: vA − vB.'),
-      h('REL-V-la-propia', vBm * N / 100, 'Ese es el desplazamiento de B respecto a M. Se pide el de A visto desde B.'),
+      h('REL-V-signo', (mismo ? vA + vBm : Math.abs(vA - vBm)) * N / 100, mismo ? `Bien pasar a metros. Pero las dos van al este: respecto a B, A avanza la diferencia.` : `Bien pasar a metros. Pero van en sentidos opuestos: respecto a B, A se aleja con la suma.`),
+      h('REL-V-respecto-a-tierra', vA * N / 100, `Bien pasar a metros. Pero eso se desplaza A respecto a M; desde B cuenta vA − vB.`),
+      h('REL-V-la-propia', vBm * N / 100, `Bien pasar a metros. Pero eso se desplaza B respecto a M; se pide A visto desde B.`),
     ];
     const solucion = [
       ['Este positivo, respecto a M: ', v('a', `vA = ${vA}`), ' y ', v('b', `vB = ${f(vB)}`), ' cm/año.'],
@@ -222,10 +253,10 @@
         '. Un ciclista va de la cola a la cabeza y vuelve, a ', v('u', `${u} m/s`), ' respecto a la pista.'];
       const pregunta = ['¿Cuánto ', v('x', 'tiempo'), ' tarda en ir y volver?'];
       const errores = [
-        h('REL-V-ignora-marco', 2 * L / u, `Dividiste ${2 * L} m entre ${u} m/s, como si la columna estuviera quieta. Ida: u − V; vuelta: u + V.`),
-        h('REL-V-signo', 2 * L / (u - V), 'Usaste u − V también a la vuelta. A la vuelta se cruzan: u + V.'),
-        h('REL-V-signo', 2 * L / (u + V), 'Usaste u + V también a la ida. A la ida van igual: solo gana u − V.'),
-        h('REL-V-solo-ida', t1, 'Ese es solo el tiempo de ida. Falta la vuelta.'),
+        h('REL-V-ignora-marco', 2 * L / u, `Bien los ${2 * L} m. Pero la columna avanza: ida con u − V; vuelta con u + V.`),
+        h('REL-V-signo', 2 * L / (u - V), `Bien la ida, con u − V. Pero a la vuelta se cruzan: va con u + V.`),
+        h('REL-V-signo', 2 * L / (u + V), `Bien la vuelta, con u + V. Pero a la ida van hacia el mismo lado: solo gana u − V.`),
+        h('REL-V-solo-ida', t1, `Bien la ida, ${f(t1)} s. Pero falta la vuelta.`),
       ];
       const solucion = [
         ['Respecto a la columna recorre ', v('L', `${L} m`), ' de ida y otros tantos de vuelta.'],
@@ -244,10 +275,10 @@
         ' respecto al vagón, de la puerta de atrás a la de adelante, y vuelve. El vagón mide ', v('L', `${L} m`), '.'];
       const pregunta = ['¿Cuánto ', v('x', 'tiempo'), ' tarda en ir y volver?'];
       const errores = [
-        h('REL-V-suma-vehiculo', L / (u + V) + L / (V - u), `Sumaste o restaste la rapidez del tren. Dentro del vagón va a ${f(u)} m/s en los dos sentidos.`),
-        h('REL-V-suma-vehiculo', 2 * L / (u + V), 'Usaste su rapidez respecto a la vía. El largo del vagón se recorre respecto al vagón.'),
-        h('REL-V-solo-ida', L / u, 'Ese es solo el tiempo de ida. Falta volver.'),
-        h('REL-V-la-propia', 2 * L / V, `Dividiste entre la rapidez del tren. Dentro del vagón el pasajero va a ${f(u)} m/s.`),
+        h('REL-V-suma-vehiculo', L / (u + V) + L / (V - u), `Bien los dos tramos por separado. Pero dentro del vagón va a ${f(u)} m/s en los dos sentidos.`),
+        h('REL-V-suma-vehiculo', 2 * L / (u + V), `Bien la ida y la vuelta. Pero el largo del vagón se recorre con la rapidez respecto al vagón.`),
+        h('REL-V-solo-ida', L / u, `Bien la ida, ${f(L / u)} s. Pero falta volver.`),
+        h('REL-V-la-propia', 2 * L / V, `Bien los ${2 * L} m de ida y vuelta. Pero dentro del vagón el pasajero va a ${f(u)} m/s.`),
       ];
       const solucion = [
         ['En el vagón, va a ', v('u', `${f(u)} m/s`), ' de ida y de vuelta.'],
@@ -265,10 +296,10 @@
       v('x', `${f(T)} s`), '.'];
     const pregunta = ['¿Cuál es la ', v('u', 'rapidez del nadador'), ' respecto al agua?'];
     const errores = [
-      h('REL-V-ignora-marco', 2 * L / T, `Dividiste ${2 * L} m entre ${f(T)} s como si el bote estuviera quieto. Ida: u − V; vuelta: u + V.`),
-      h('REL-V-signo', 2 * L / T + V, 'Sumaste la rapidez del bote al promedio. Plantea L/(u − V) + L/(u + V) = T.'),
-      h('REL-V-solo-ida', L / T + V, 'Tomaste todo el tiempo como si fuera la ida. Es de ida y vuelta.'),
-      h('REL-V-signo', Math.abs(2 * L / T - V), 'Restaste la rapidez del bote al promedio. Plantea L/(u − V) + L/(u + V) = T.'),
+      h('REL-V-ignora-marco', 2 * L / T, `Bien los ${2 * L} m. Pero el bote avanza: ida con u − V; vuelta con u + V.`),
+      h('REL-V-signo', 2 * L / T + V, `Bien que la rapidez del bote cuente. Pero no se suma al promedio: L/(u − V) + L/(u + V) = T.`),
+      h('REL-V-solo-ida', L / T + V, `Bien que a la ida cuente u − V. Pero el tiempo dado es de ida y vuelta.`),
+      h('REL-V-signo', Math.abs(2 * L / T - V), `Bien que la rapidez del bote cuente. Pero no se resta al promedio: L/(u − V) + L/(u + V) = T.`),
     ];
     const solucion = [
       ['Respecto al bote: ida con ', v('u', 'u'), ' − ', v('V', f(V)), ', vuelta con ', v('u', 'u'), ' + ', v('V', f(V)), '.'],
@@ -294,10 +325,10 @@
       const pregunta = enc ? ['¿Dentro de cuánto ', v('x', 'tiempo'), ' se cruzan?'] : ['¿Dentro de cuánto ', v('x', 'tiempo'), ' la alcanza?'];
       const otra = enc ? Math.abs(v1 - v2) : v1 + v2;
       const errores = [
-        h('REL-V-signo', D / otra, enc ? 'Restaste las rapideces. Van uno hacia el otro: la distancia baja con la suma.' : 'Sumaste las rapideces. Van en el mismo sentido: la moto solo descuenta la diferencia.'),
-        h('REL-V-ignora-marco', D / v1, 'Usaste la rapidez de uno solo, como si el otro estuviera quieto.'),
-        h('REL-V-ignora-marco', D / v2, 'Usaste solo la rapidez del camión. Cuenta la rapidez de uno respecto al otro.'),
-        h('REL-V-promedio', D / ((v1 + v2) / 2), 'Usaste el promedio de las rapideces. La distancia cambia con la suma o la diferencia.'),
+        h('REL-V-signo', D / otra, enc ? `Bien dividir la distancia entre una rapidez. Pero van uno hacia el otro: la distancia baja con la suma.` : `Bien dividir la distancia entre una rapidez. Pero van en el mismo sentido: la moto descuenta la diferencia.`),
+        h('REL-V-ignora-marco', D / v1, `Bien dividir la distancia entre una rapidez. Pero así el otro estaría quieto.`),
+        h('REL-V-ignora-marco', D / v2, `Bien dividir la distancia entre una rapidez. Pero cuenta la de uno respecto al otro, no la del camión.`),
+        h('REL-V-promedio', D / ((v1 + v2) / 2), `Bien juntar las dos rapideces. Pero la distancia cambia con su suma o su diferencia, no con su promedio.`),
       ];
       const signo = enc ? ' + ' : ' − ';
       const solucion = [
@@ -342,10 +373,10 @@
     const pregunta = opuestos ? ['¿Cuánto ', v('x', 'tiempo'), ' pasa de frente con frente a cola con cola?']
       : ['¿Cuánto ', v('x', 'tiempo'), ' tarda el más rápido en pasar por completo al otro?'];
     const errores = [
-      h('REL-V-signo', (L1 + L2) / (opuestos ? Math.abs(v1 - v2) : v1 + v2), opuestos ? 'Restaste las rapideces. En sentidos opuestos uno pasa frente al otro con la suma.' : 'Sumaste las rapideces. En el mismo sentido el rápido gana solo la diferencia.'),
-      h('REL-V-un-largo', L1 / rel, `Contaste un solo largo. Para cruzarse por completo se recorren ${L1} + ${L2} m.`),
-      h('REL-V-un-largo', L2 / rel, `Contaste un solo largo. Respecto a un tren, el otro recorre ${L1 + L2} m.`),
-      h('REL-V-ignora-marco', (L1 + L2) / v1, 'Usaste la rapidez de un solo tren, como si el otro estuviera parado.'),
+      h('REL-V-signo', (L1 + L2) / (opuestos ? Math.abs(v1 - v2) : v1 + v2), opuestos ? `Bien los dos largos. Pero en sentidos opuestos uno pasa frente al otro con la suma.` : `Bien los dos largos. Pero en el mismo sentido el rápido gana solo la diferencia.`),
+      h('REL-V-un-largo', L1 / rel, `Bien la rapidez de uno respecto al otro. Pero para cruzarse por completo se recorren ${L1} + ${L2} m.`),
+      h('REL-V-un-largo', L2 / rel, `Bien la rapidez de uno respecto al otro. Pero respecto a un tren, el otro recorre ${L1 + L2} m.`),
+      h('REL-V-ignora-marco', (L1 + L2) / v1, `Bien los dos largos. Pero usar la rapidez de un solo tren deja parado al otro.`),
     ];
     const solucion = [
       ['Desde un tren, el otro va a ', v('a', `${v1}`), opuestos ? ' + ' : ' − ', v('b', `${v2}`), ` = ${rel} m/s.`],
@@ -528,7 +559,7 @@
    */
   const REL = 'Velocidad de A respecto a B: v⃗_AB = v⃗_A − v⃗_B (lo que ve alguien que va en B).';
   const REL_RECTA = 'En una recta, con un sentido positivo, cada velocidad lleva su signo: v_AB = v_A − v_B.';
-  const MRU = 'Con rapidez constante: distancia = rapidez × tiempo.';
+  const MRU_LINEA = 'Con rapidez constante: distancia = rapidez × tiempo.';
   const PROA = 'La proa se mide desde la perpendicular a la orilla.';
   const SEN_NOT = 'sen 16° = 7/25, sen 30° = 1/2, sen 37° = 3/5, sen 53° = 4/5 y sen 74° = 24/25.';
   const COS_NOT = 'cos 16° = 24/25, cos 37° = 4/5, cos 53° = 3/5 y cos 74° = 7/25.';
@@ -538,15 +569,15 @@
   function lineasDatos(d) {
     if (d.tipo === 'marco') return d.sub === 'combis'
       ? [REL, REL_RECTA, '1 m/s = 3,6 km/h.']
-      : [REL, REL_RECTA, MRU, '1 m = 100 cm.'];
-    if (d.tipo === 'idavuelta' || d.tipo === 'cruce') return [REL, REL_RECTA, MRU];
+      : [REL, REL_RECTA, MRU_LINEA, '1 m = 100 cm.'];
+    if (d.tipo === 'idavuelta' || d.tipo === 'cruce') return [REL, REL_RECTA, MRU_LINEA];
     if (d.tipo === 'bote') {
-      if (d.sub === 'recto') return [RIO_SUMA, PITAGORAS, MRU];
+      if (d.sub === 'recto') return [RIO_SUMA, PITAGORAS, MRU_LINEA];
       // La convención de siempre (ángulo desde la perpendicular y senos de academia) sigue primero.
       if (d.sub === 'angulo') return [PROA, SEN_NOT, RIO_SUMA, PROA_COMP];
       if (d.sub === 'linea') return [PROA, SEN_NOT, COS_NOT, RIO_SUMA, PROA_COMP];
       if (d.sub === 'resultante') return [RIO_SUMA, PITAGORAS];
-      return [RIO_SUMA, MRU];
+      return [RIO_SUMA, MRU_LINEA];
     }
     // botes con sacos
     return [...CONV, 'Cantidad de movimiento: p = m·v. Sin fuerzas de afuera, la total se conserva.',

@@ -203,3 +203,62 @@ probarViva(gen, {
   },
 });
 
+
+// 18 nov (docs/etapa4/decisiones.md): «MRU, MRUV y caída libre» se partió en dos. Cada unidad saca solo sus tipos:
+// las medias y la tabla de ida y vuelta son de Movimiento rectilíneo uniforme; la gráfica v–t y la ecuación horaria, de
+// MRUV y caída libre; el plano x–y y la latitud, de Movimiento parabólico. Sin unidad, todo sigue como antes.
+test('generar(semilla, { unidad }): cada unidad, solo sus tipos; sin unidad, como antes', () => {
+  assert.deepEqual(gen.tiposPorUnidad, {
+    'fisica.movimiento-rectilineo': ['media', 'idavuelta'],
+    'fisica.mruv-y-caida-libre': ['vt', 'ecuacion'],
+    'fisica.movimiento-parabolico-y-circular': ['xy', 'latitud'],
+  });
+  const ficha = require('./plantilla.json');
+  assert.deepEqual([...ficha.unidades].sort(), Object.keys(gen.tiposPorUnidad).sort());
+  const RT = require('../../nucleo/repaso-tipos.js');
+  for (const [u, tipos] of Object.entries(gen.tiposPorUnidad)) {
+    const vistos = new Set();
+    for (let s = 0; s < 400; s++) {
+      const p = gen.generar(s, { unidad: u });
+      assert.ok(tipos.includes(p._datos.tipo), `${u} semilla ${s}: ${p._datos.tipo}`);
+      assert.equal(RT.unidadDe(ficha, p), u, `${u} semilla ${s}: el repaso lo pone en otra unidad`);
+      vistos.add(p._datos.tipo);
+    }
+    assert.deepEqual([...vistos].sort(), [...tipos].sort());
+  }
+  for (const s of [0, 7, 'entrada-1']) assert.deepEqual(gen.generar(s), gen.generar(s, {}));
+});
+
+// Recuadro «Datos» (docs/plan-calidad.md §3, punto 13): la fórmula general de cada tipo, una por línea, sin la
+// respuesta ni el atajo de academia.
+test('datos: una lista de líneas cortas, con la fórmula de cada tipo, sin la respuesta ni el atajo, en 400 semillas', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  const FORMULA = { media: /Rapidez media = d\/Δt/, idavuelta: /vₘ = Δx\/Δt/, vt: /el área bajo la línea es el desplazamiento/,
+    ecuacion: /x = x₀ \+ v₀ · t \+ ½ · a · t²/, xy: /√|v₀ \+ a · t|x₀ \+ v₀/, latitud: /r = R · cos λ/ };
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && palabras(l) <= 22, `semilla ${s}: «${l}»`);
+      assert.ok(!/<[a-z/]|\bnull\b|\bNaN\b|\bundefined\b|^Dato:|2·v₁·v₂|atajo/i.test(l), `semilla ${s}: «${l}»`);
+    }
+    assert.match(p.datos.join('\n'), FORMULA[p._datos.tipo], `semilla ${s} (${p._datos.tipo})`);
+    const c = p.alternativas.find(a => a.correcta).texto.replace(/[  ]/g, ''), todo = p.datos.join('\n').replace(/ /g, '');
+    for (const [n] of c.matchAll(/\d+(?:,\d+)?/g)) if (n.replace(',', '').length >= 2) assert.ok(!new RegExp(`(?<![\\d,])${n}(?![\\d,])`).test(todo), `semilla ${s}: los datos traen ${n}`);
+  }
+});
+
+// En Movimiento rectilíneo uniforme, los colores de la unidad (tabla `colores` de la teoría): velocidad y rapidez
+// naranja (también la media), tiempo turquesa, posición violeta; y cada explicación empieza por lo que salió bien.
+test('Movimiento rectilíneo uniforme: un color fijo por magnitud y explicaciones que empiezan por lo que salió bien', () => {
+  const T = require('../../contenido/teoria/fisica/movimiento-rectilineo.js');
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { unidad: 'fisica.movimiento-rectilineo' });
+    // Media: las rapideces (v₁, v₂, v₃ y la media x) naranja y los tiempos turquesa. Tabla: posiciones violeta,
+    // instantes turquesa y la rapidez o velocidad media naranja.
+    const M = p._datos.tipo === 'media' ? { v1: 'velocidad', v2: 'velocidad', v3: 'velocidad', x: 'velocidad', t: 'tiempo' }
+      : { x: 'posición', t: 'tiempo', r: 'velocidad' };
+    for (const [k, v] of Object.entries(p.variables)) assert.equal(v.color, T.colores[M[k]], `semilla ${s}: ${k} («${v.nombre}») en ${v.color}`);
+    for (const a of p.alternativas.filter(x => x.error)) assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
+  }
+});

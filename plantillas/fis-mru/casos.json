@@ -1,0 +1,322 @@
+{
+  "plantilla": "fis-mru",
+  "nota": "entrada es _datos del generador (idea, tipo, nivel y los números del enunciado). respuesta: el valor de la alternativa correcta (un número, o el texto tal cual en ecuacion-recta y dos-rectas); texto: lo que ve el alumno. Posiciones con signo desde el paradero (+ hacia la derecha); v con signo; en donde-cruzan, frente y dos-veces, D es la separación inicial; en eco/bocina, v es la rapidez de la combi y T el tiempo hasta oír el eco; en placas, a y b son las rapideces de A y B en cm por año y N los años; en tabla, xs son las posiciones cada dt segundos; en frente-kmh y carril, vA y kA son de tu combi.",
+  "verificacion": "Script aparte (18 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: calcula cada respuesta con fracciones exactas a partir de la entrada y la definición de la situación (dos posiciones que se igualan en los encuentros y el adelanto, todo el camino entre todo el tiempo en las medias, la ida del sonido al cerro y su vuelta hasta la combi que sigue avanzando en el eco, la recta por dos puntos en las gráficas), y escribe el texto con su propia función de formato (coma decimal, «−», miles con espacio que no se parte). Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta. Además, generador.test.js recalcula 600 problemas por otro camino (paso a paso en el tiempo y bisección).",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "encuentro",
+        "tipo": "dos-veces",
+        "nivel": 3,
+        "v1": 12,
+        "v2": 3,
+        "D": 240,
+        "s": 30
+      },
+      "esperado": {
+        "respuesta": 18,
+        "texto": "18 s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "encuentro",
+        "tipo": "donde-cruzan",
+        "nivel": 2,
+        "v1": 8,
+        "v2": 4,
+        "D": 240
+      },
+      "esperado": {
+        "respuesta": 160,
+        "texto": "160 m"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "desplazamiento-distancia",
+        "tipo": "mitades",
+        "nivel": 3,
+        "v1": 3,
+        "v2": 14,
+        "v3": 16
+      },
+      "esperado": {
+        "respuesta": 5,
+        "texto": "5 m/s"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "mru",
+        "tipo": "combi-kmh",
+        "nivel": 2,
+        "kmh": 36,
+        "x0": 30,
+        "t": 7
+      },
+      "esperado": {
+        "respuesta": 100,
+        "texto": "x = 100 m"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "velocidad-relativa",
+        "tipo": "placas",
+        "nivel": 3,
+        "sub": "frente",
+        "a": 2,
+        "b": 8,
+        "N": 200
+      },
+      "esperado": {
+        "respuesta": 20,
+        "texto": "20 m"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "idea": "mru",
+        "tipo": "trueno",
+        "nivel": 2,
+        "t": 5
+      },
+      "esperado": {
+        "respuesta": 1700,
+        "texto": "1 700 m"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "idea": "encuentro",
+        "tipo": "salio-antes",
+        "nivel": 3,
+        "v1": 7,
+        "v2": 5,
+        "dt": 15
+      },
+      "esperado": {
+        "respuesta": 37.5,
+        "texto": "37,5 s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "velocidad-relativa",
+        "tipo": "adelanto",
+        "nivel": 3,
+        "L1": 8,
+        "v1": 14,
+        "L2": 12,
+        "v2": 4
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2 s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "idea": "encuentro",
+        "tipo": "frente",
+        "nivel": 1,
+        "v1": 12,
+        "v2": 4,
+        "D": 120
+      },
+      "esperado": {
+        "respuesta": 7.5,
+        "texto": "7,5 s"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "grafica-xt",
+        "tipo": "ecuacion-recta",
+        "nivel": 3,
+        "x0": 30,
+        "t1": 3,
+        "x1": 39
+      },
+      "esperado": {
+        "respuesta": "x = 30 + 3t",
+        "texto": "x = 30 + 3t"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "grafica-xt",
+        "tipo": "pendiente",
+        "nivel": 1,
+        "sub": "baja",
+        "t1": 2,
+        "x1": 80,
+        "t2": 6,
+        "x2": 68
+      },
+      "esperado": {
+        "respuesta": -3,
+        "texto": "−3 m/s"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "mru",
+        "tipo": "ida-vuelta",
+        "nivel": 3,
+        "t1": 11,
+        "v1": 12,
+        "t2": 11,
+        "v2": 6
+      },
+      "esperado": {
+        "respuesta": 66,
+        "texto": "x = 66 m"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "idea": "desplazamiento-distancia",
+        "tipo": "tramos-distancia",
+        "nivel": 2,
+        "d1": 120,
+        "v1": 8,
+        "d2": 560,
+        "v2": 16
+      },
+      "esperado": {
+        "respuesta": 13.6,
+        "texto": "13,6 m/s"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "idea": "mru",
+        "tipo": "eco",
+        "nivel": 3,
+        "sub": "dos-ecos",
+        "t1": 1,
+        "t2": 5
+      },
+      "esperado": {
+        "respuesta": 1020,
+        "texto": "1 020 m"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "idea": "desplazamiento-distancia",
+        "tipo": "tabla",
+        "nivel": 3,
+        "sub": "rapidez",
+        "dt": 2,
+        "xs": [
+          0,
+          16,
+          22,
+          14,
+          8
+        ]
+      },
+      "esperado": {
+        "respuesta": 4.5,
+        "texto": "4,5 m/s"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "idea": "grafica-xt",
+        "tipo": "inicio",
+        "nivel": 2,
+        "t1": 2,
+        "x1": 58,
+        "t2": 5,
+        "x2": 70
+      },
+      "esperado": {
+        "respuesta": 50,
+        "texto": "x = 50 m"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "idea": "grafica-xt",
+        "tipo": "extrapolar",
+        "nivel": 2,
+        "sub": "donde",
+        "x0": 20,
+        "t1": 4,
+        "x1": 28,
+        "T": 8
+      },
+      "esperado": {
+        "respuesta": 36,
+        "texto": "x = 36 m"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "idea": "velocidad-relativa",
+        "tipo": "frente-kmh",
+        "nivel": 2,
+        "kA": 72,
+        "kB": 18
+      },
+      "esperado": {
+        "respuesta": -25,
+        "texto": "−25 m/s"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "idea": "desplazamiento-distancia",
+        "tipo": "parada",
+        "nivel": 2,
+        "sub": "regresa",
+        "d1": 7,
+        "m1": 10,
+        "p": 5,
+        "d2": 7,
+        "m2": 6
+      },
+      "esperado": {
+        "respuesta": 40,
+        "texto": "40 km/h"
+      }
+    },
+    {
+      "semilla": 406,
+      "entrada": {
+        "idea": "velocidad-relativa",
+        "tipo": "carril",
+        "nivel": 1,
+        "vA": 13,
+        "vB": 14
+      },
+      "esperado": {
+        "respuesta": 1,
+        "texto": "1 m/s"
+      }
+    }
+  ]
+}

@@ -186,6 +186,7 @@
       "fisica.vectores"
      ],
      "plantillas": [
+      "fis-mru",
       "mruv",
       "cinematica-medias",
       "velocidad-relativa"
@@ -233,8 +234,9 @@
       "algebra.ecuaciones-lineales-y-cuadraticas"
      ],
      "plantillas": [
-      "mruv",
-      "cinematica-medias"
+      "fis-mruv",
+      "cinematica-medias",
+      "mruv"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/mruv-y-caida-libre.js",
@@ -245,7 +247,7 @@
        "/nucleo/kit/piezas/fis-mruv.js"
       ],
       "ideas": 6,
-      "terminos": 33
+      "terminos": 32
      }
     },
     {
@@ -300,7 +302,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
-      "terminos": 28
+      "terminos": 27
      }
     },
     {
@@ -387,7 +389,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 27
+      "terminos": 26
      }
     },
     {
@@ -643,7 +645,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 29
+      "terminos": 28
      }
     },
     {
@@ -8049,6 +8051,38 @@
    "archivos": [
     "/plantillas/exponentes-radicales/generador.js",
     "/plantillas/exponentes-radicales/papel.json"
+   ]
+  },
+  "fis-mru": {
+   "id": "fis-mru",
+   "titulo": "La combi, la gráfica y el río",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-rectilineo"
+   ],
+   "url": "#/practica/fis-mru",
+   "papel": "/plantillas/fis-mru/papel.json",
+   "archivos": [
+    "/plantillas/fis-mru/generador.js",
+    "/plantillas/fis-mru/papel.json"
+   ]
+  },
+  "fis-mruv": {
+   "id": "fis-mruv",
+   "titulo": "MRUV y caída libre",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.mruv-y-caida-libre"
+   ],
+   "url": "#/practica/fis-mruv",
+   "papel": "/plantillas/fis-mruv/papel.json",
+   "archivos": [
+    "/plantillas/fis-mruv/generador.js",
+    "/plantillas/fis-mruv/papel.json"
    ]
   },
   "fisica-moderna": {

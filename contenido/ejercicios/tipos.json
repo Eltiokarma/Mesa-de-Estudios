@@ -15,10 +15,12 @@
       "subtipo": "sustitucion",
       "pieza": "balanza"
     },
-    "movimiento-rectilineo/frenado-distancia": {
-      "unidad": "fisica.movimiento-rectilineo",
-      "via": "pieza",
-      "pieza": "ejes"
+    "mruv-y-caida-libre/frenado-distancia": {
+      "unidad": "fisica.mruv-y-caida-libre",
+      "via": "generador",
+      "generador": "fis-mruv",
+      "subtipo": "frenado",
+      "pieza": "fis-combi"
     }
   }
 }
