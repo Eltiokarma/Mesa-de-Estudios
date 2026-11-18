@@ -1,6 +1,35 @@
 # Pendientes y traspaso
 
-Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 18 nov, noche: Etapa 4 en fase 2 (las cuatro ideas 1 en la mesa)
+
+**Lo primero:** leer la mesa (ronda 8): visto bueno de las ideas 1 de Movimiento rectilíneo uniforme, Estructura
+atómica, Las cuatro operaciones y Triángulos, y la decisión del tope de 7 ideas en Las cuatro operaciones.
+
+- **Hecho y en main (v247, 9826 pruebas):**
+  - Decisiones de la Etapa 4 en `docs/etapa4/decisiones.md` (las cuatro propuestas, con todas sus recomendaciones).
+  - `fisica.movimiento-rectilineo` partida: «Movimiento rectilíneo uniforme» (conserva el id) y
+    `fisica.mruv-y-caida-libre` (nueva, contenido viejo), con la partición `partidoMRU` en `nucleo/avance.js`; idea 1
+    `mru` completa (combi en la avenida, `fis-combi` vista `avenida`; eco y trueno en `fis-sonido`).
+  - `quimica.estructura-atomica` en seis ideas; idea 1 `nucleo-identidad` completa (`quim-objeto`, `quim-atomo`
+    paleta `zne`).
+  - `aritmetica.cuatro-operaciones`: idea 1 `otras-bases` completa (`arit-puesto` con el cuaderno). La unidad sigue
+    en 6 ideas: `prestamo` y `cifras-ocultas` esperan la decisión del tope (tarjeta `a-tope7`); las sumatorias se
+    mudan a Sucesiones en la fase 3, con `Avance.migrar`.
+  - `geometria.triangulos` en seis ideas; idea 1 `suma-de-angulos` completa (`geo-objeto`: cartulina y tijeral).
+  - Productos notables: ronda 2 del lector en frío y sus correcciones (`{ negrita }` nuevo en `nucleo/ecuacion.js`
+    para las letras de alternativa donde el violeta tiene otro papel). Escenas `cuadrado-crece`, `mruv` y
+    `triangulo-estira` en «Más mesas del tema».
+- **En curso:** idea 1 de «MRUV y caída libre» (`aceleracion`), para el visto bueno.
+- **Siguiente:**
+  1. Con los vistos buenos, fase 3 de las cinco unidades (resto de ideas) y su práctica.
+  2. Pendientes que dejaron los agentes: códigos de error nuevos (hipótesis) a los informes de `docs/investigacion/`
+     (cinemática, átomo, geometría); `contenido/ejercicios/tipos.json` tiene `movimiento-rectilineo/frenado-distancia`,
+     que ahora es de MRUV; «llevada» se define en Las cuatro operaciones (quitarla de Razonamiento numérico y sacar el
+     `local`); el dibujo de la unidad de Triángulos todavía muestra el ángulo exterior.
+  3. Pendientes de app: práctica por idea (`app/practica.js` con `{ idea }`); prueba de que ninguna ecuación se corte
+     a 390 px; «Prueba N casos distintos» sigue sin entenderse en los juegos.
 
 ## Estado al 18 nov, tarde: Álgebra con el método completo y Etapa 4 propuesta
 
