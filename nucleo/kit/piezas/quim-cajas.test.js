@@ -104,3 +104,19 @@ test('encuadre y rótulos, con números, en toda la unidad', () => {
   for (const f of figs) { sana(P.dibujar(f.datos, f.estado)); revisar(P.marcos(f.datos, f.estado), f.donde, mal); }
   assert.deepEqual(mal.slice(0, 20), [], `${mal.length} problemas`);
 });
+
+// Ronda 2 del lector en frío (18 nov, noche): el rótulo «mₗ» junto a los números de abajo, y las flechas que entran
+// recién desde un corte («Mira» de Hund decía «los tres primeros» con los cuatro dibujados).
+test('ronda 2: «mₗ» rotula los números de las cajas, y fila.entran deja fuera las últimas flechas hasta su corte', () => {
+  const s = P.dibujar(Z, { corte: 2 });
+  assert.equal((s.match(/class="kit-txt kit-ml"[^>]*>m<tspan[^>]*>ℓ<\/tspan><\/text>/g) || []).length, 2, 'un «mₗ» por fila');
+  assert.ok(!P.dibujar({ paleta: 'zne', filas: [{ nombre: '2p', e: 4, cajas: 3 }] }).includes('kit-ml'), 'sin ml, sin rótulo');
+  const E = { paleta: 'zne', ml: true, desapareados: true, filas: [{ nombre: '2p', e: 4, cajas: 3, entran: { k: 1, desde: 2 } }] };
+  const lineas = c => (P.dibujar(E, { corte: c }).match(/<line[^>]*var\(--c-f\)/g) || []).length;
+  assert.equal(lineas(1), 3, 'en el corte 1, los tres primeros');
+  assert.equal(lineas(2), 4, 'en el corte 2, el cuarto');
+  // Con los tres primeros, las tres cajas van solas (punteadas) y la cuenta dice 3 e⁻.
+  assert.equal((P.dibujar(E, { corte: 1 }).match(/stroke-dasharray="3 2"/g) || []).length, 3);
+  assert.ok(P.dibujar(E, { corte: 1 }).includes('>3 e⁻<') && P.dibujar(E, { corte: 2 }).includes('>4 e⁻<'));
+  assert.ok(P.marcos(E, { corte: 1 }).textos.some(t => t.que === 'cuenta' && t.txt === '3 e⁻'));
+});

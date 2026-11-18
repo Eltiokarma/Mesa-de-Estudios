@@ -20,6 +20,8 @@
 //     (A1); la regla del catión y Hund en Datos donde se usan (A2); cada [Gas] con su línea (A3); la misma abreviada que
 //     el generador (M5); «Vale si» solo con condiciones (M4); el papel de atomo-y-tabla por unidad (M2) y los ejemplos
 //     corregidos (M1, M6, M7, B1, B3, B4).
+//   - ronda 2 del lector en frío (18 nov, noche): cada alternativa con número de los ejemplos se rehace con la cuenta de
+//     su error (tabla DISTRACTORES) y el resuelto nombra todas las incorrectas; lo que marcó el veredicto en los momentos.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -556,4 +558,121 @@ test('ejemplos corregidos: Co²⁺, Cu²⁺, isóbaros, la flecha ↓, isótopo 
   const iso = ej('nucleo-identidad', 'Un isótopo y un ion');
   assert.equal(iso.alternativas[2], 'Solo los protones');
   assert.match(plano(ej('nucleo-identidad', 'Isóbaros e isótonos').solucion.map(x => x.texto)), /La E cruza los pares/);
+});
+
+// ---------- Ronda 2 del lector en frío (rutinas/frio/quimica.estructura-atomica.md, «Ronda 2», 18 nov, noche) ----------
+// La E de «Tres pisos juntos» valía 36 y su resuelto decía «cuenta dos veces el 3» (eso da 2 + 8 + 18 + 18 = 46). Aquí
+// se rehace, sin el código de la unidad, el valor de cada alternativa con número de los ejemplos con la cuenta del error
+// que su resuelto le pone; y el resuelto nombra todas las incorrectas. Un ejemplo nuevo con alternativas de números que
+// no esté en la tabla hace fallar la prueba.
+const MM = { mm: 1, cm: 10, m: 1000 };
+const valorAlt = t => {
+  const m = t.match(/^(\d+(?:,\d+)?)(?: (mm|cm|m))?$/);
+  if (m) return [Number(m[1].replace(',', '.')) * (m[2] ? MM[m[2]] : 1)];
+  const y = t.match(/^(\d+) y (\d+)$/);
+  return y ? [Number(y[1]), Number(y[2])] : null;
+};
+const hund = (e, cajas) => (e <= cajas ? e : 2 * cajas - e);   // electrones solos de un subnivel (Hund)
+const DISTRACTORES = {
+  // Ca²⁺: 20 − 2 = 18 e⁻; X³⁻ con 18 e⁻: Z = 18 + (−3).
+  'X³⁻ y el calcio': { bien: 'A', A: 18 - 3, B: 18, C: 18 + 3, D: 20 - 3, E: 20 + 3 },
+  // X²⁺ con 24 e⁻ y 30 n: Z = 24 + 2.
+  'Número de masa de un ion': { bien: 'B', A: 24 + 30, B: 26 + 30, C: (24 - 2) + 30, D: 26, E: 26 + 30 + 2 },
+  // A = 52, N = 28: Z = e⁻ = 24.
+  'Todas las partículas': { bien: 'A', A: 24 + 28 + 24, B: 52, C: 52 + 28, D: 2 * 52, E: 24 + 24 },
+  // 100 m = 100 000 mm, dividido entre lo que dice cada una (en mm).
+  'El núcleo de una cancha': { bien: 'D', A: 100000 / 10000, B: 100000 / 1000, C: 100000 / 100, D: 100000 / 100000, E: 100000 / 1000000 },
+  // Nivel 3: 3s, 3p y 3d tienen una caja con mₗ = 0 cada uno.
+  'Los que tienen mₗ = 0': { bien: 'C', A: 2 * 1, B: 3, C: 2 * 3, D: 1 + 3 + 5, E: 2 * 3 ** 2 },
+  'Tres pisos juntos': { bien: 'D', A: 2 * (1 + 3 + 5), B: 8 * 3, C: 1 + (1 + 3) + (1 + 3 + 5), D: 2 * 1 + 2 * (1 + 3) + 2 * (1 + 3 + 5), E: 2 * 1 + 2 * 2 + 2 * 3 },
+  // d existe desde n = 3: 3d y 4d, 5 orbitales cada uno.
+  'Los orbitales d': { bien: 'B', A: 5, B: 5 + 5, C: 2 * (5 + 5), D: 5 + 5 + 5, E: 2 },
+  // Cu: [Ar] 4s¹ 3d¹⁰ (nivel 3: 3s² 3p⁶ 3d¹⁰).
+  'El último nivel del cobre': { bien: 'C', A: 2, B: 1 + 10, C: 1, D: 2 + 6 + 10, E: 10 },
+  // Br: [Ar] 4s² 3d¹⁰ 4p⁵: llenos 1, 2 y 3; con electrones, 1 a 4.
+  'Niveles llenos del bromo': { bien: 'D', A: 4, B: 3 - 1, C: 2 + 5, D: 3, E: 0 },
+  // Termina en 4p³: [Ar] 4s² 3d¹⁰ 4p³.
+  'Termina en 4p³': { bien: 'E', A: 18 + 2 + 3, B: 2 + 2 + 6 + 2 + 3, C: 18 + 3, D: 18 + 10 + 3, E: 18 + 2 + 10 + 3 },
+  // X²⁺ = [Ar] 3d⁸: 26 e⁻, Z = 26 + 2.
+  'El X²⁺ con 3d⁸': { bien: 'C', A: 18 + 8, B: 18 + 8 - 2, C: 18 + 8 + 2, D: 18 + 8 + 2 + 2, E: 18 },
+  // Fe: [Ar] 4s² 3d⁶; Fe²⁺ y Fe³⁺, electrones 3d.
+  'Los 3d del Fe²⁺ y Fe³⁺': { bien: 'D', A: [6 - 2, 6 - 3], B: [6, 6], C: [6 + 2, 6 + 3], D: [6, 6 - 1], E: [6 - 1, 6 - 2] },
+  // Fe³⁺: [Ar] 3d⁵, cinco cajas.
+  'Los solos del Fe³⁺': { bien: 'D', A: hund(3, 5), B: hund(6, 5), C: 5 % 2, D: hund(5, 5), E: 6 },
+  // Cr: [Ar] 4s¹ 3d⁵ (sin la excepción, 4s² 3d⁴).
+  'Los solos del cromo': { bien: 'E', A: hund(2, 1) + hund(4, 5), B: hund(5, 5), C: 1 % 2 + 5 % 2, D: hund(1, 1), E: hund(1, 1) + hund(5, 5) },
+};
+test('ronda 2: cada alternativa con número de los ejemplos vale lo que da el error que le pone su resuelto (cuentas aparte)', () => {
+  const vistos = [];
+  for (const i of def.ideas) for (const x of i.ejemplos) {
+    if (!x.alternativas) continue;
+    const vals = x.alternativas.map(valorAlt);
+    if (vals.some(v => !v)) continue;
+    vistos.push(x.titulo);
+    const t = DISTRACTORES[x.titulo];
+    assert.ok(t, `«${x.titulo}»: alternativas con número sin su cuenta en DISTRACTORES`);
+    'ABCDE'.split('').forEach((L, k) => {
+      const esperado = [].concat(t[L]);
+      assert.equal(vals[k].length, esperado.length, `«${x.titulo}» ${L}`);
+      vals[k].forEach((v, j) => assert.ok(Math.abs(v - esperado[j]) < 1e-9, `«${x.titulo}» ${L}: dice ${x.alternativas[k]}, su error da ${esperado.join(' y ')}`));
+    });
+    // La letra de la respuesta es la correcta, y el resuelto nombra (en negrita) cada una de las otras.
+    const enResp = fichasNegrita(x.respuesta), enSol = new Set(fichasNegrita(x.solucion));
+    assert.deepEqual(enResp, [t.bien], `«${x.titulo}»: la respuesta`);
+    for (const L of 'ABCDE') if (L !== t.bien) assert.ok(enSol.has(L), `«${x.titulo}»: el resuelto no dice qué hace la ${L}`);
+  }
+  assert.deepEqual(vistos.sort(), Object.keys(DISTRACTORES).sort(), 'la tabla y los ejemplos con números coinciden');
+});
+function fichasNegrita(x) {
+  if (x === null || x === undefined || typeof x !== 'object') return [];
+  if (Array.isArray(x)) return x.flatMap(fichasNegrita);
+  if (Array.isArray(x.negrita)) return x.negrita.map(String);
+  return Object.values(x).flatMap(fichasNegrita);
+}
+
+test('ronda 2: lo que marcó el veredicto, en los momentos', () => {
+  const I1r = I('nucleo-identidad').regla;
+  assert.match(I1r.texto, /Isóbaros: mismo A \(¹⁴C y ¹⁴N\)/);
+  assert.match(I1r.texto, /Isótonos: mismo N \(¹³C y ¹⁴N\)/);
+  assert.match(I1r.condicion, /el núcleo cambia solo en procesos nucleares/);
+  // Idea 2: qué es 0 y qué es 1 en el control; Dalton y las proporciones fijas en la regla (Ahora tú las pide).
+  const i2 = I('modelos-atomicos');
+  assert.match(i2.juega.controles.find(c => c.id === 'b').etiqueta, /0: al centro; 1 o −1: al borde/);
+  assert.match(i2.regla.texto, /Dalton: átomos macizos \(proporciones fijas\)/);
+  assert.match(i2.regla.condicion, /de un solo electrón/);
+  // Idea 3: la f en la leyenda, el espín en la regla y, en Ahora tú, ningún «cuántos orbitales/electrones del nf».
+  const i3 = I('numeros-cuanticos');
+  assert.ok(i3.juega.leyenda.some(l => l.s === 'f'));
+  assert.match(i3.regla.texto, /mₛ, espín: \+½ \(↑\) o −½ \(↓\)/);
+  for (let s = 0; s < SEMILLAS; s++) assert.ok(!/subnivel \df\?/.test(plano(i3.ahoraTu.generar(s).pregunta)), `semilla ${s}: ${plano(i3.ahoraTu.generar(s).pregunta)}`);
+  // Idea 4: «Lee» sin el empate 2p/3s; la regla dice cómo quedan el Cr y el Cu.
+  const i4 = I('configuracion-electronica');
+  assert.ok(!/3s/.test(i4.lee.tarjetas[0].texto) && !Teoria.textoSVG(i4.lee.tarjetas[0].dibujo).includes('3s'));
+  assert.match(i4.regla.texto, /quedan 3d⁵ \(medio lleno\) y 3d¹⁰ \(lleno\)/);
+  // Idea 5: el juego arranca en el sodio de la misión.
+  assert.equal(Teoria.inicio(I('configuracion-iones').juega).z, 11);
+  // Idea 6: el juego no arranca con un reparto que Hund prohíbe; «Mira» dibuja los tres primeros y después el cuarto.
+  const i6 = I('desapareados-isoelectronicos'), v0 = Teoria.inicio(i6.juega), k0 = [v0.c1, v0.c2, v0.c3];
+  assert.ok(!(k0.includes(2) && k0.includes(0)), `arranca en ${k0}`);
+  const cajas = Kit.piezas['quim-cajas'], lineas = c => (cajas.dibujar(i6.mira.datos, i6.mira.pasos[c].estado).match(/<line[^>]*var\(--c-f\)/g) || []).length;
+  assert.match(i6.mira.pasos[0].texto, /tres primeros/); assert.equal(lineas(0), 3);
+  assert.match(i6.mira.pasos[1].texto, /cuarto/); assert.equal(lineas(1), 4);
+  assert.match(i6.lee.tarjetas[0].texto, /de ventana a ventana, tiene dos asientos/);
+});
+
+test('ronda 2: los ejemplos que marcó el lector', () => {
+  const ej = (id, t) => I(id).ejemplos.find(x => x.titulo === t);
+  // 04: se resuelve con los datos (la neutralidad), no de memoria.
+  const th = ej('modelos-atomicos', 'La carga positiva de Thomson');
+  assert.ok(th.figura && /neutro/.test(plano(th.solucion.map(x => x.texto))));
+  // 17: la configuración del Mn sale del orden de llenado; no está en los datos.
+  const mn = ej('desapareados-isoelectronicos', 'Los solos del Mn²⁺');
+  assert.ok(!mn.datos.some(d => /Manganeso: |4s² 3d⁵/.test(plano(d))) && mn.datos.some(d => /^Orden de llenado/.test(plano(d))));
+  assert.ok(mn.datos.length <= 6);
+  // 18: los datos van en el orden del enunciado (Fe, Cu, Zn, Mn, Ni).
+  const d18 = plano(ej('desapareados-isoelectronicos', 'Un ion sin electrones solos').datos[0]);
+  assert.deepEqual(['Fe', 'Cu', 'Zn', 'Mn', 'Ni'].map(x => d18.indexOf(` ${x} `)).every((p, k, l) => p > 0 && (k === 0 || p > l[k - 1])), true, d18);
+  // 02 y 10: la resta y el reparto, a la vista.
+  assert.ok(ej('nucleo-identidad', 'Dos átomos de cloro').solucion.some(x => /20 − 18 = 2/.test(plano(x.ecuacion))));
+  assert.match(plano(ej('configuracion-electronica', 'El último nivel del sodio').solucion.map(x => x.texto)), /2 \+ 2 \+ 6 = 10/);
 });

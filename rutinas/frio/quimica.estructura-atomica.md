@@ -1089,3 +1089,66 @@ Soy alumno de 5.º de secundaria y solo miré las 18 imágenes. Las tarjetas vie
 **Fechas:** 1897 (electrón) y 1904 (modelo de Thomson) están bien. La de Dalton con alfas es hipotética y se presenta como tal.
 
 **Detalles visuales:** el superíndice ¹⁰ en las líneas de fórmula de la 12 y la 14 parece «1o». En 16 y 17 los números mₗ bajo las cajas no tienen etiqueta. En 05, 16 y 17 hay mucho espacio vacío alrededor del dibujo. No vi nada cortado ni encimado.
+
+# Correcciones de la ronda 2
+
+Sesión de correcciones (fase 8, ronda 2), 18 nov, noche. Alcance: `estructura-atomica.js` (0.3.2) con su prueba y las
+piezas `quim-cajas`, `quim-lamina` y `quim-objeto` con las suyas. No se tocó `app/`, `nucleo/teoria.js`, otras unidades
+ni la práctica (ningún cambio la toca: el generador `configuracion-ubicacion` y los papeles quedan igual). Lo decidido en
+«Correcciones (18 nov)» de la auditoría se mantiene (fechas A1, reglas en datos A2 y A3, abreviada M5, «Vale si» de una
+frase M4, convención M3 pendiente).
+
+**Cuentas.** Prueba nueva en `estructura-atomica.test.js` (tabla `DISTRACTORES`): las 14 tarjetas con alternativas de
+números, las 70 alternativas rehechas con la cuenta del error que les pone su resuelto, sin el código de la unidad; la
+letra de la respuesta es la correcta y el resuelto nombra cada incorrecta. Si aparece un ejemplo con alternativas de
+números que no está en la tabla, la prueba falla. Además, `scratchpad/cor2-qui/scripts/cuentas2.py` (configuraciones por
+Madelung escritas aparte): 19 comprobaciones de lo que cambió, 0 diferencias.
+
+**Pruebas.** `npm run catalogo` y la tanda pedida: 337 de 339. Las dos que fallan son de `geometria/triangulos.js` y
+`aritmetica/cuatro-operaciones.js` (topes de texto), que otra sesión está editando ahora; no son de esta unidad.
+
+## Veredicto
+
+| Lo que marcó | Qué se hizo |
+|---|---|
+| Idea 1: «Vale si hay reacción química» no dice cuándo cambia el núcleo | Condición: «… el núcleo cambia solo en procesos nucleares, como en el ¹⁴C» (una frase, M4). |
+| Idea 1: isóbaros e isótonos sin ejemplo | La regla trae ejemplos: isótopos ¹²C y ¹⁴C, isóbaros ¹⁴C y ¹⁴N, isótonos ¹³C y ¹⁴N (no ³⁹K y ⁴⁰Ca: es la respuesta de un ejemplo). El paso 5 de «Mira» dice que ¹⁴C y ¹⁴N son isóbaros. |
+| Idea 2: «radios del centro» | El control dice «Dónde apunta (0: al centro; 1 o −1: al borde)». |
+| Idea 2: rayita de Bohr y nube «Actual» sin nombre | `quim-lamina`: rótulos «luz» (junto a la onda de Bohr) y «orbital» (junto a la nube); salen con su modelo. |
+| Idea 2: Ahora tú pide las proporciones fijas y el lector solo vio el paso 1 de «Mira» | La regla nombra los cinco: «Dalton: átomos macizos (proporciones fijas). Thomson: el electrón…». Condición: «Bohr solo explicó bien el hidrógeno, de un solo electrón». |
+| Idea 3: la leyenda de ℓ llega solo a d | Entrada nueva: «f: pasillo ℓ = 3: aparece en el piso 4» (lo mismo que dicen los datos de Predice; el juego llega al piso 3). |
+| Idea 3: espín y mₛ sin presentar | Leyenda: «dos huéspedes de espín opuesto: uno ↑ y otro ↓». Regla: «mₛ, espín: +½ (↑) o −½ (↓)». «Lee» (tarjeta 3) y el glosario ya lo decían. |
+| Idea 3: Ahora tú (4f = 7) ya salía en Predice | `casoOrbSub` y `casoESub` ya no piden un subnivel f (Predice muestra sus 7 cuartos y, revelado, sus 14). El f se practica en `casoSubnivel` y en los ejemplos. `r.ent` se llama igual: las demás semillas no cambian. Prueba en 400 semillas. |
+| Idea 4: el empate 2p/3s en «Lee» antes de la regla | La tarjeta 1 usa 2s (S/ 2) y 2p (S/ 3) y dibuja solo 1s, 2s y 2p. El empate se ve en el paso 3 de «Mira» y en la regla. |
+| Idea 4: Cr y Cu sin explicar | Regla: «Cr y Cu pasan un 4s al 3d: quedan 3d⁵ (medio lleno) y 3d¹⁰ (lleno)». El porqué, en la voz de Bruna: «Un 3d medio lleno o lleno es más estable». |
+| Idea 5: el juego arranca en el cloro con la misión del sodio | Arranca en Z = 11, carga 0. |
+| Idea 5: el Ni²⁺ de «Así se resuelve» con el dibujo del hueso | Su dibujo ya trae `pieza: 'quim-cajas'` (el frasco, `quim-objeto`, solo para el hierro) y la app lo dibuja con esa pieza desde 3b6af625. Revisado en las capturas (abajo). |
+| Idea 6: «fila de dos asientos» que no calza con el dibujo | «Lee»: «La combi, vista desde arriba, va hacia la derecha; el círculo es el timón. Cada fila, de ventana a ventana, tiene dos asientos». `quim-objeto` enmarca los dos asientos de cada fila. |
+| Idea 6: el juego arranca en 2, 1, 0, que Hund no permite | Arranca en 1, 1, 0 (el carbono, como «Lee»). |
+| Idea 6: «Mira» dice 3 electrones con 4 dibujados (otra vez) | `quim-cajas` suma `fila.entran: { k, desde }`: el paso 1 dibuja los tres primeros y el paso 2, el cuarto. Los pasos siguientes corren un corte. Prueba en la pieza y en la unidad. |
+| Idea 6: «isoelectrónicos» en el título sin aparecer | No se cambió: lo que el lector vio es el id de la idea (`desapareados-isoelectronicos`), que sale en el nombre de las capturas. El alumno no lo ve y el avance se guarda con ese id. |
+| 09: la E «cuenta dos veces el 3» con 36 (da 46) | La E es ahora 12: «usa 2n en vez de 2n²: 2 + 4 + 6 = 12» (QM-2N, el error del generador). Prueba que rehace las 70 alternativas con número (arriba). Al armarla salieron otras explicaciones flojas o ausentes, corregidas: «Niveles llenos del bromo» (la B decía «el nivel 3 se llena con 8», que también da 3: ahora «deja fuera el nivel 3 porque su 3d se llenó después del 4s»; la E pasa de 1 a 0, «deja llegar ℓ hasta n»; se explica la C), «Los orbitales d» (la E pasa de 0 a 2, «cuenta subniveles»), «Los que tienen mₗ = 0» (se explican la A y la D), «Termina en 4p³» (la C), «El X²⁺ con 3d⁸» (la D), «Los solos del Fe³⁺» (la C; la E pasa de 0 a 6, «cuenta solos los seis 3d del átomo neutro»), «Los solos del cromo» (la C y la D, que pasa de 0 a 1, «mira solo el 4s¹»), «El núcleo de una cancha» (la B y la E) y «Los 3d del Fe²⁺ y Fe³⁺» (cada una con su cuenta; la B ya no dice algo imposible). Ninguna respuesta cambió de letra. |
+| 04: Thomson no trae dónde está la carga positiva | Se rehízo para razonarlo con los datos: «Thomson halló que todo átomo tiene electrones… ¿Por qué su modelo tenía que llevar, además, carga positiva?», con el átomo de Thomson dibujado (sin la fuente de alfas: `quim-lamina` acepta `fuente: false`). Respuesta: para compensar la carga de los electrones. |
+| 05: la barra «alfas» parece la lámina | `quim-lamina`: el rótulo es «fuente de alfas» y va debajo de la barra (ninguna alfa lo cruza; también en la vista de la lámina). El título del dibujo dice «Uno de sus átomos, según Dalton». |
+| ¹⁰ que se lee «1o» | **Pendiente, fuera de alcance**: es la letra de las fórmulas en `app/` (ya anotado en la ronda 1). |
+| Los números bajo las cajas sin decir que son mₗ | `quim-cajas` pone «mₗ» (m con la ℓ abajo, en un solo `<text>`) a la izquierda de los números cuando lleva `ml`. |
+| Datos que regalan en 14, 16, 17 y 18 | **17**: los datos ya no traen la configuración del Mn; se arma con el orden de llenado y el Z del enunciado (título «Los solos del Mn²⁺»; sin «paramagnético» en la respuesta, los datos caben en 6 líneas). **18**: las configuraciones en el orden del enunciado (Fe, Cu, Zn, Mn, Ni); se dejan los neutros, como en el «Ahora tú» `casoDesapCat`: el ejercicio practica la salida del catión y Hund, y sin ellos los datos pasan de 6 líneas. **14** y **16**: sin cambio. La excepción del Cu es una regla, no el paso hecho (punto 13: sin ella habría que memorizarla), y la ↑ = +½ del 16 es la convención que pidió B3 en un nivel 1 de un paso. |
+
+## Lo barato de los informes
+
+- 02: tercer paso con la resta, `20 − 18 = 2`.
+- 10: el resuelto muestra el reparto, «2 + 2 + 6 = 10 hasta el 2p; el 11 va al 3s».
+- 13: usa la fórmula de datos, «Carga = Z − e⁻ = −2».
+- 15: cada alternativa con su cuenta (6 − 2 y 6 − 3; 6 + 2 y 6 + 3; 6 − 1 y 6 − 2).
+- Idea 5, regla: «a igual n, los de mayor ℓ (5p antes que 5s)», el caso del Sn²⁺ de los ejemplos.
+
+## Qué quedó y por qué
+
+- **¹⁰ con otra letra** y **Bruna sin su cuerpo junto al globo** (`app/`): fuera de alcance, como en la ronda 1.
+- **M3** (la convención de mₗ y mₛ con un libro): sigue para Gerson; `fuentes/libros/` está vacía.
+- **Idea 1, «miles de años después»** sin verse en el paso 1, **idea 3, espacio en blanco del paso 1 de «Mira»**, **idea
+  4, el 3d dibujado en el piso 3 que se llena después del 4s**: son de la animación por pasos (el lector vio solo el paso
+  1) o lo que la idea enseña; no se cambian.
+- **Idea 2, el dato de la alfa en «Así se resuelve»** y **idea 6, el dato del Cr y el Cu en el Ti de «Ahora tú»**: los
+  ponen las reglas comunes de datos de la unidad para todo el tipo; quitarlos por semilla no es barato ni seguro.
+- **03, 06, 09, 12 y 14 sin dibujo**: el lector dice que no hace falta; queda para cuando se revise la galería con Gerson.

@@ -29,7 +29,11 @@
  *   - ultimos: [{ fila, caja, j, desde }] → un marco en tinta alrededor de una flecha (el último electrón; j = 0 la ↑);
  *   - fila.saleDesde           → las que salen se dibujan discontinuas recién desde ese corte («Mira»);
  *   - fila.llega: k            → las k últimas flechas de la fila llegaron (fondo violeta tenue: un anión);
- *   - fila.vacia: true         → la fila se dibuja sin flechas aunque traiga e (la pregunta es dónde van).
+ *   - fila.vacia: true         → la fila se dibuja sin flechas aunque traiga e (la pregunta es dónde van);
+ *   - fila.entran: { k, desde } → las k últimas flechas (en el orden de Hund) se dibujan recién desde ese corte («Mira»
+ *                                 que dice «los tres primeros» y después «el cuarto»; lector en frío, ronda 2, 18 nov).
+ *   Con ml: true, a la izquierda de los números va el rótulo «mₗ» (m con ℓ abajo), para que se lea qué son (lector en
+ *   frío, ronda 2: «los números bajo las cajas sin decir que son mₗ»).
  * cuerpo(d, estado) da el contenido sin el <svg> (para que quim-objeto lo componga) y marcos(d, estado) las cajas de
  * textos y objetos, con las mismas cuentas del dibujo, para la prueba numérica de encuadre y rótulos.
  */
@@ -58,7 +62,18 @@
     for (let k = 0; k < Math.min(e, 2 * cajas); k++) out[k % cajas][k < cajas ? 0 : 1] = 1;
     return out;
   }
-  const flechasDe = f => (f.vacia ? Array.from({ length: cajasDe(f) }, () => [0, 0]) : f.flechas || llenar(f.e || 0, cajasDe(f)));
+  const flechasTodas = f => (f.vacia ? Array.from({ length: cajasDe(f) }, () => [0, 0]) : f.flechas || llenar(f.e || 0, cajasDe(f)));
+  // Las flechas que se ven en ese corte: sin las k últimas de `entran` mientras no llegue su corte.
+  function flechasDe(f, corte = Infinity) {
+    const fl = flechasTodas(f).map(x => x.slice());
+    if (!f.entran || corte >= (f.entran.desde || 0)) return fl;
+    const o = ordenDe(fl);
+    for (const [k, j] of o.slice(Math.max(0, o.length - (f.entran.k || 0)))) fl[k][j] = 0;
+    return fl;
+  }
+  // El rótulo «mₗ» de la fila de números: m y una ℓ más abajo, en un solo <text> (tamaño mínimo 14, como todo el kit).
+  const ML_X = X0 - 12;
+  const rotuloMl = (y) => `<text class="kit-txt kit-ml" x="${ML_X}" y="${T.n(y)}" fill="currentColor" font-size="14" font-weight="600" text-anchor="end">m<tspan font-size="14" dy="4">ℓ</tspan></text>`;
   // Orden de las flechas de una fila: las ↑ de izquierda a derecha y después las ↓ (el orden de llenado de Hund).
   function ordenDe(fl) {
     const o = [];
@@ -70,7 +85,7 @@
   function filaSVG(fila, i, d, corte) {
     const L = ladoCaja(d), y = TOP + i * filaAlto(d), z = zne(d);
     const nuevo = (fila.desde || 0) === corte && corte > 0 ? ' kit-nuevo kit-aparece' : '';
-    const cajas = cajasDe(fila), fl = flechasDe(fila), orden = ordenDe(fl);
+    const cajas = cajasDe(fila), fl = flechasDe(fila, corte), orden = ordenDe(fl);
     const saleVe = (fila.saleDesde || 0) <= corte ? fila.sale || 0 : 0;
     const salen = new Set(orden.slice(orden.length - saleVe).map(([k, j]) => `${k}-${j}`));
     const llegan = new Set(z && fila.llega ? orden.slice(orden.length - fila.llega).map(([k, j]) => `${k}-${j}`) : []);
@@ -99,6 +114,7 @@
         s += T.rotulo(x + L / 2, y + L + 18, signoMl(k - l), { ancla: 'middle', peso: 600, tam: 14, min: M, max: W - M });
       }
     }
+    if (conMl(d)) s += rotuloMl(y + L + 18);
     for (const u of (z && d.ultimos) || []) {
       if (u.fila !== i || (u.desde || 0) > corte) continue;
       const xx = X0 + u.caja * L + Math.round(L * (u.j ? 0.66 : 0.34));
@@ -142,10 +158,15 @@
     };
     (d.filas || []).forEach((f, i) => {
       if ((f.desde || 0) > corte) return;
-      const y = TOP + i * filaAlto(d), cajas = cajasDe(f), fl = flechasDe(f);
+      const y = TOP + i * filaAlto(d), cajas = cajasDe(f), fl = flechasDe(f, corte);
       if (f.nombre) caja('nombre', f.nombre, X0 - 12, y + L / 2 + 6, 16, 700, 'end');
       objetos.push({ que: 'cajas', x0: X0, x1: X0 + cajas * L, y0: y, y1: y + L });
-      if (conMl(d)) for (let k = 0; k < cajas; k++) caja('ml', signoMl(k - (cajas - 1) / 2), X0 + k * L + L / 2, y + L + 18, 14, 600, 'middle');
+      if (conMl(d)) {
+        for (let k = 0; k < cajas; k++) caja('ml', signoMl(k - (cajas - 1) / 2), X0 + k * L + L / 2, y + L + 18, 14, 600, 'middle');
+        // «mₗ»: la m y la ℓ, que baja 4 (el alto del rótulo crece en 4).
+        const w = T.ancho('mℓ', 14, 600);
+        textos.push({ que: 'rotulo-ml', txt: 'mₗ', x0: ML_X - w, x1: ML_X, y0: y + L + 18 - 0.78 * 14, y1: y + L + 18 + 4 + 0.22 * 14 });
+      }
       if (!(z && d.cuenta === false)) caja('cuenta', z && f.oculto ? '? e⁻' : `${ordenDe(fl).length - ((f.saleDesde || 0) <= corte ? f.sale || 0 : 0)} e⁻`, X0 + cajas * L + 10, y + L / 2 + 6, 16, 600, 'start');
     });
     if (d.rotulo) caja('rotulo', d.rotulo, X0, alto(d) - 10, 16, 700, 'start');

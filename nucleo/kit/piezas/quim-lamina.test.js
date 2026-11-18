@@ -92,3 +92,18 @@ test('encuadre, rótulos y caminos, con números, en las muestras y en toda la u
   for (const f of figs) { sana(P.dibujar(f.datos, f.estado), f.donde); const g = P.geometria(f.datos, f.estado); revisar(g, f.donde, mal, { dentroDe }); caminos(g, f.donde); }
   assert.deepEqual(mal.slice(0, 20), [], `${mal.length} problemas`);
 });
+
+// Ronda 2 del lector en frío (18 nov, noche): la barra de la izquierda se leía como la lámina; la onda de Bohr y la nube
+// del modelo actual no tenían nombre.
+test('ronda 2: «fuente de alfas» bajo la barra, «luz» y «orbital» en los modelos, y el zoom sin fuente', () => {
+  const z = P.dibujar({ vista: 'zoom', modelo: 'dalton', alfas: [{ b: 0.3, llega: true }] });
+  assert.ok(z.includes('>fuente de alfas<') && !z.includes('>alfas<'));
+  const g = P.geometria({ vista: 'zoom', modelo: 'dalton', alfas: [{ b: -1, desvio: 0 }] }), f = g.textos.find(t => t.txt === 'fuente de alfas');
+  assert.ok(f.y0 > g.caminos[0][0][1] + 4, 'ninguna alfa cruza el rótulo');
+  assert.ok(P.dibujar({ vista: 'lamina', resultado: true }).includes('>fuente de alfas<'));
+  const m = P.dibujar({ vista: 'modelos' }, { corte: 5 });
+  assert.ok(m.includes('>luz<') && m.includes('>orbital<'));
+  assert.ok(!P.dibujar({ vista: 'modelos' }, { corte: 3 }).includes('>luz<'), 'la luz llega con Bohr');
+  const sin = P.dibujar({ vista: 'zoom', modelo: 'thomson', fuente: false });
+  assert.ok(!sin.includes('fuente de alfas') && !/<rect x="8"/.test(sin));
+});

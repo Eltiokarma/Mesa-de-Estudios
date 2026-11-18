@@ -22,6 +22,7 @@
  *   modelo: 'thomson' | 'dalton' | 'nuclear' | 'incognita',   // incognita: el átomo con «?» (lo que se predice)
  *   alfas: [{ b, desvio, llega: true }],  // b: dónde apunta, de −1 a 1 radios del átomo (+ arriba); desvio en grados;
  *                                         // llega: solo el tramo de ida, con «?» (lo que se pide)
+ *   fuente: false,           // zoom sin la fuente de alfas (un modelo solo, sin experimento; ronda 2, 18 nov)
  *   // lámina: el experimento entero
  *   resultado: true,         // con lo que se vio (casi todas pasan, pocas se desvían, alguna rebota); si no, «?»
  *   // modelos: cinco dibujos chicos, de Dalton al actual, que aparecen con el corte (desde 1 a 5)
@@ -119,14 +120,16 @@
   function zoom(d, top) {
     let s = atomo(d.modelo, ZC.cx, top + ZC.cy, ZC.R);
     // La fuente de alfas, a la izquierda.
-    s += `<rect x="8" y="${top + 50}" width="16" height="136" rx="4" fill="currentColor" fill-opacity="0.12" ${tinta(1.5)}/>`;
+    if (d.fuente !== false) s += `<rect x="8" y="${top + 50}" width="16" height="136" rx="4" fill="currentColor" fill-opacity="0.12" ${tinta(1.5)}/>`;
     for (const a of d.alfas || []) s += `<g class="kit-alfa">${caminoSVG(camino(a, d.modelo, top))}</g>`;
     return s;
   }
   function textosZoom(d, top) {
     const out = [];
     if (d.titulo) out.push({ que: 'titulo', txt: d.titulo, x: W / 2, y: top + 20, tam: 16, peso: 700, ancla: 'middle' });
-    out.push({ que: 'rotulo', txt: 'alfas', x: 6, y: top + 44, tam: 14, peso: 600, ancla: 'start' });
+    // «fuente de alfas», debajo de la barra (lector en frío, ronda 2: con «alfas» encima, la barra se leía como la lámina;
+    // abajo, ninguna alfa la cruza: la más baja pasa por top + 190).
+    if (d.fuente !== false) out.push({ que: 'rotulo', txt: 'fuente de alfas', x: 6, y: top + 208, tam: 14, peso: 600, ancla: 'start' });
     if (d.modelo === 'incognita') out.push({ que: 'pide', txt: '?', x: ZC.cx, y: top + ZC.cy + 8, tam: 22, peso: 700, ancla: 'middle' });
     for (const a of d.alfas || []) if (a.llega) {
       const c = camino(a, d.modelo, top);
@@ -153,7 +156,7 @@
   function textosLamina(d, top) {
     const out = [];
     if (d.titulo) out.push({ que: 'titulo', txt: d.titulo, x: W / 2, y: top + 20, tam: 16, peso: 700, ancla: 'middle' });
-    out.push({ que: 'rotulo', txt: 'alfas', x: 25, y: top + 140, tam: 14, peso: 600, ancla: 'middle' });
+    out.push({ que: 'rotulo', txt: 'fuente de alfas', x: 6, y: top + 140, tam: 14, peso: 600, ancla: 'start' });
     out.push({ que: 'rotulo', txt: 'lámina de oro', x: LM.fx, y: top + 194, tam: 14, peso: 600, ancla: 'middle' });
     if (!d.resultado) out.push({ que: 'pide', txt: '?', x: 236, y: top + 110, tam: 22, peso: 700, ancla: 'middle' });
     return out;
@@ -163,7 +166,7 @@
   const MODELOS = [
     { k: 'dalton', nombre: 'Dalton', anio: '1808', cx: 58, cy: 50 }, { k: 'thomson', nombre: 'Thomson', anio: '1904', cx: 160, cy: 50 },
     { k: 'nuclear', nombre: 'Rutherford', anio: '1911', cx: 262, cy: 50 }, { k: 'bohr', nombre: 'Bohr', anio: '1913', cx: 108, cy: 170 },
-    { k: 'actual', nombre: 'Actual', anio: '1926', cx: 212, cy: 170 }];
+    { k: 'actual', nombre: 'Actual', anio: '1926', cx: 206, cy: 170 }];
   const RM = 32;
   function mini(m, top) {
     const cx = m.cx, cy = top + m.cy;
@@ -198,6 +201,9 @@
       if (corte && i + 1 > corte) continue;
       out.push({ que: 'rotulo', txt: m.nombre, x: m.cx, y: top + m.cy + RM + 20, tam: 14, peso: 700, ancla: 'middle' });
       out.push({ que: 'rotulo', txt: m.anio, x: m.cx, y: top + m.cy + RM + 37, tam: 14, peso: 400, ancla: 'middle' });
+      // La onda de Bohr y la nube del modelo actual, con su nombre (lector en frío, ronda 2).
+      if (m.k === 'bohr') out.push({ que: 'rotulo', txt: 'luz', x: m.cx + 42, y: top + m.cy - 21, tam: 14, peso: 600, ancla: 'start' });
+      if (m.k === 'actual') out.push({ que: 'rotulo', txt: 'orbital', x: m.cx + RM + 6, y: top + m.cy + 5, tam: 14, peso: 600, ancla: 'start' });
     }
     return out;
   }
@@ -241,7 +247,7 @@
     const NOM = { thomson: 'de Thomson: la carga positiva repartida en todo el átomo, con los electrones metidos adentro', dalton: 'de Dalton: una esfera maciza',
       nuclear: 'nuclear: un núcleo diminuto y positivo al centro, electrones afuera y casi todo vacío (no a escala: el núcleo es unas 100 000 veces menor)', incognita: 'sin dibujar por dentro («?»)' };
     const banda = d.banda === 'retablo' ? 'Un retablo dorado con pan de oro; una lupa agranda una hojita de oro. ' : '';
-    if (d.vista === 'modelos') return `${banda}Cinco modelos del átomo, en orden: Dalton (1808), esfera maciza; Thomson (1904), carga positiva repartida con electrones adentro; Rutherford (1911), núcleo diminuto y positivo; Bohr (1913), niveles de energía, y un electrón que baja de nivel y suelta luz; actual (1926), una nube donde es probable hallar al electrón.`;
+    if (d.vista === 'modelos') return `${banda}Cinco modelos del átomo, en orden: Dalton (1808), esfera maciza; Thomson (1904), carga positiva repartida con electrones adentro; Rutherford (1911), núcleo diminuto y positivo; Bohr (1913), niveles de energía, y un electrón que baja de nivel y suelta luz (la onda rotulada «luz»); actual (1926), una nube, el orbital, donde es probable hallar al electrón.`;
     if (d.vista === 'lamina') return `${banda}Experimento de la lámina de oro: una fuente lanza alfas contra una hoja de oro muy fina. ${d.resultado ? 'Casi todas pasan derecho, una se desvía mucho y otra rebota hacia atrás.' : 'Lo que pasa detrás de la hoja está sin dibujar («?»).'}`;
     const as = (d.alfas || []).map(a => (a.llega ? `una alfa apunta a ${Kit.formatear(a.b, 1)} radios del centro; qué le pasa está sin dibujar («?»)` : `una alfa apunta a ${Kit.formatear(a.b, 1)} radios del centro y se desvía ${Kit.formatear(a.desvio || 0, 0)}°`));
     return `${banda}Un átomo ${NOM[d.modelo] || ''}. ${as.join('; ')}.`;

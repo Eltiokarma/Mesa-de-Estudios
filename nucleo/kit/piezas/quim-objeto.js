@@ -139,6 +139,9 @@
     s += `<circle cx="${n(x1 - 34)}" cy="64" r="8" fill="none" ${tinta(1.8)}/>`;
     for (let c = 0; c < k; c++) {
       const cx = g.x0 + c * g.lado + g.lado / 2;
+      // La fila: los dos asientos, de ventana a ventana, en un mismo marco (lector en frío, ronda 2: «fila de dos asientos»
+      // no calzaba con un dibujo de dos hileras de tres).
+      s += `<rect class="kit-fila-asientos" x="${n(cx - 14)}" y="30" width="28" height="48" rx="7" fill="currentColor" fill-opacity="0.1" ${tinta(1.2)}/>`;
       for (const [j, y] of [[0, 32], [1, 56]]) {
         s += `<rect x="${n(cx - 11)}" y="${y}" width="22" height="20" rx="5" fill="var(--card)" ${tinta(1.5)}/>`;
         if (fl[c][j]) s += `<circle class="kit-pasajero" cx="${n(cx)}" cy="${y + 10}" r="6" fill="var(--c-f)"/>`;
