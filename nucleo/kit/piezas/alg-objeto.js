@@ -622,7 +622,8 @@
   // Afirmación: tres cortes, uno en cada dirección, a a de una esquina, parten el taco de arista a + b en ocho piezas: a³,
   // tres a²b, tres ab² y b³ (las del medio son seis). Proyección oblicua (la cara de adelante sin deformar, el fondo en
   // diagonal), de atrás hacia adelante. Colores: a³ naranja, a²b violeta (las piezas del medio que se olvidan), ab² en
-  // tinta, b³ turquesa. datos = { objeto: 'taco', a, b, abrir: 0 | 1, cortes: false (el taco entero, sin cortar),
+  // tinta y rayadas (Gerson, quinta ronda: ab² en tinta; el rayado diagonal las deja encontrar sin otro color, ronda 2 del
+  // lector en frío, 18 nov), b³ turquesa. datos = { objeto: 'taco', a, b, abrir: 0 | 1, cortes: false (el taco entero, sin cortar),
   // escala, tramos: true | false (a y b junto a la arista de la izquierda), arista: true | '?' | texto | false (debajo),
   // total: true | '?' | texto | false (debajo), rot: { a3, a2b, ab2, b3 } (en la cara de adelante; true: el volumen),
   // solo: 'medio' | 'esquinas' (las demás tenues), unidad: 'cm' (por defecto; auditoría de Productos notables, M9: un
@@ -673,6 +674,20 @@
     }
     return { W, H, M, d, a, b, k, ox, oy, g, P, piezas, objetos, textos };
   }
+  // Rayado diagonal de una cara (paralelogramo p0, p1, p2, p3): rectas s + t = c entre p0 + s·(p1 − p0) y p0 + t·(p3 − p0),
+  // con s y t de 0 a 1, cada ~7 px. Queda dentro de la cara por construcción (sin clipPath ni ids: la pieza es pura).
+  function rayado(cara, op) {
+    const [p0, p1, , p3] = cara, U = [p1[0] - p0[0], p1[1] - p0[1]], V = [p3[0] - p0[0], p3[1] - p0[1]];
+    const N = Math.max(2, Math.round((Math.hypot(U[0], U[1]) + Math.hypot(V[0], V[1])) / 7));
+    const en = (a, b) => [p0[0] + a * U[0] + b * V[0], p0[1] + a * U[1] + b * V[1]];
+    let dd = '';
+    for (let k = 1; k < N; k++) {
+      const c = (2 * k) / N, [s1, t1] = c <= 1 ? [c, 0] : [1, c - 1], [s2, t2] = c <= 1 ? [0, c] : [c - 1, 1];
+      const [x1, y1] = en(s1, t1), [x2, y2] = en(s2, t2);
+      dd += `M${n2(x1)} ${n2(y1)}L${n2(x2)} ${n2(y2)}`;
+    }
+    return `<path class="alg-rayado" d="${dd}" stroke="currentColor" stroke-opacity="${op}" stroke-width="1.1" fill="none"/>`;
+  }
   function dibTaco(datos, estado) {
     const g = geometria(datos, estado), d = g.d, P = g.P;
     const pts = l => l.map(([x, y]) => `${n2(x)},${n2(y)}`).join(' ');
@@ -690,7 +705,8 @@
         + `<polygon points="${pts(frente)}" fill="var(--card)" ${borde}/><polygon points="${pts(frente)}" fill="${col}" fill-opacity="${op[0]}" stroke="none"/>`
         + `<polygon points="${pts(arriba)}" fill="var(--card)" ${borde}/><polygon points="${pts(arriba)}" fill="${col}" fill-opacity="${op[1]}" stroke="none"/>`
         + `<polygon points="${pts(der)}" fill="var(--card)" ${borde}/><polygon points="${pts(der)}" fill="${col}" fill-opacity="${op[2]}" stroke="none"/>`
-        + (c && !tenue ? `<polygon points="${pts(frente)}" fill="none" stroke="${col}" stroke-width="2"/>` : '') + '</g>';
+        + (c && !tenue ? `<polygon points="${pts(frente)}" fill="none" stroke="${col}" stroke-width="2"/>` : '')
+        + (p.tipo === 'ab2' ? [frente, arriba, der].map(f => rayado(f, tenue ? 0.14 : 0.42)).join('') : '') + '</g>';
     }
     // El taco entero: vetas en la cara de adelante, para que se lea como madera.
     if (g.piezas.length === 1) { const [x1, y1] = P(0, 0, 0), [x2, y2] = P(g.a + g.b, g.a + g.b, 0); s += vetas(x1, y2, x2 - x1, y1 - y2, false); }
@@ -701,7 +717,7 @@
     const a = +d.a || 1, b = +d.b || 1, u = d.unidad || 'cm';
     if (d.cortes === false) return `Un taco de madera con forma de cubo, ${d.arista === '?' ? 'de arista por hallar' : `de ${fmt(a + b, 2)} ${u} de arista`}, todavía sin cortar.`;
     const v = x => fmt(x, 2);
-    return `Un taco cúbico de madera de arista ${v(a)} + ${v(b)} ${u}, ${d.abrir === 1 ? 'abierto en sus ocho piezas' : 'cortado en ocho piezas'}: un cubo de ${v(a)} ${u}, tres piezas de ${v(a)} por ${v(a)} por ${v(b)}, tres de ${v(a)} por ${v(b)} por ${v(b)} y un cubo de ${v(b)} ${u}.${d.solo === 'medio' ? ' A la vista, las seis piezas del medio.' : d.solo === 'esquinas' ? ' A la vista, los dos cubos de las esquinas.' : ''}`;
+    return `Un taco cúbico de madera de arista ${v(a)} + ${v(b)} ${u}, ${d.abrir === 1 ? 'abierto en sus ocho piezas' : 'cortado en ocho piezas'}: un cubo de ${v(a)} ${u}, tres piezas de ${v(a)} por ${v(a)} por ${v(b)}, tres rayadas de ${v(a)} por ${v(b)} por ${v(b)} y un cubo de ${v(b)} ${u}.${d.solo === 'medio' ? ' A la vista, las seis piezas del medio.' : d.solo === 'esquinas' ? ' A la vista, los dos cubos de las esquinas.' : ''}`;
   }
 
   // ---------- Objeto 'mesa': la mesa cuadrada armada con cuatro planchas (idea «radicales-dobles») ----------

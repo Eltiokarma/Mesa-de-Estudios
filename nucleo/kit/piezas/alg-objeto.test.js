@@ -226,3 +226,28 @@ test('M9: el taco va en cm y la cometa dice su unidad; ninguna dice «la varilla
   assert.match(P.dibujar({ objeto: 'cometa', d: 9, unidad: 'dm' }), />9 dm</);
   assert.ok(!/larga/.test(P.alt({ objeto: 'cometa', d: 1 })));
 });
+
+// Ronda 2 del lector en frío de Productos notables (18 nov): las piezas ab² van en tinta (Gerson) y no se encontraban.
+// Ahora llevan un rayado diagonal en sus tres caras, sin otro color; ninguna otra pieza lo lleva, y cada raya queda
+// dentro de su cara.
+test('taco: las tres piezas ab² rayadas (sin color), y solo ellas; cada raya dentro de su cara', () => {
+  for (const d of NUEVOS.filter(x => x.objeto === 'taco' && x.cortes !== false)) {
+    const s = P.dibujar(d), grupos = [...s.matchAll(/<g class="alg-pieza" data-pieza="(\w+)">(.*?)<\/g>/g)];
+    const ray = grupos.filter(m => /alg-rayado/.test(m[2])).map(m => m[1]);
+    assert.deepEqual(ray, ['ab2', 'ab2', 'ab2'], JSON.stringify(d));
+    for (const m of grupos.filter(x => x[1] === 'ab2')) {
+      assert.ok(!/var\(--c-/.test(m[2]), 'ab² sin color');
+      const caras = [...m[2].matchAll(/<polygon points="([^"]+)" fill="var\(--card\)"/g)].map(x => x[1].split(' ').map(q => q.split(',').map(Number)));
+      const rayas = [...m[2].matchAll(/class="alg-rayado" d="([^"]+)"/g)].map(x => x[1]);
+      assert.equal(rayas.length, 3);
+      rayas.forEach((dd, k) => {
+        const [p0, p1, , p3] = caras[k], U = [p1[0] - p0[0], p1[1] - p0[1]], V = [p3[0] - p0[0], p3[1] - p0[1]], det = U[0] * V[1] - U[1] * V[0];
+        for (const [, x, y] of dd.matchAll(/[ML](-?[\d.]+) (-?[\d.]+)/g)) {
+          const X = +x - p0[0], Y = +y - p0[1], a = (X * V[1] - Y * V[0]) / det, b = (U[0] * Y - U[1] * X) / det;
+          assert.ok(a > -0.02 && a < 1.02 && b > -0.02 && b < 1.02, `${JSON.stringify(d)}: raya fuera de su cara`);
+        }
+      });
+    }
+  }
+  assert.match(P.alt({ objeto: 'taco', a: 3, b: 2, abrir: 1 }), /tres rayadas de 3 por 2 por 2/);
+});

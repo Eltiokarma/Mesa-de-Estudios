@@ -477,3 +477,81 @@ Las cuentas están todas bien y los niveles suben. Mejor: 01, 04, 13. Peor: 07, 
   líneas. 10: no dice cómo se hallan 5 y 4.
 - En toda la unidad, el violeta sirve a la vez para la pieza clave y para las letras A–E de las alternativas (es la
   regla de la app: negrita, no color; revisar si las letras salen en violeta).
+
+# Correcciones de la ronda 2 (18 nov, noche)
+
+Fase 8 sobre la ronda 2. Archivos: `contenido/teoria/algebra/productos-notables.js` (y su prueba),
+`nucleo/kit/piezas/alg-objeto.js` (y su prueba) y `nucleo/ecuacion.js` (y su prueba). Cuentas nuevas rehechas sin el
+código de la unidad: scratchpad de la sesión, `pn-cor2/cuentas-ronda2.py` (sympy; 20 de 20). Pruebas: teoría, álgebra,
+piezas `alg-*` y ecuación, 293 de 293; `npm run catalogo` al día. Capturas a 390 px antes (`pn-cor2/antes/`) y después
+(`pn-cor2/` y `pn-cor2/extra/`, el último paso de Mira).
+
+## Lo marcado en negrita
+
+- **Suma por diferencia: (x + p)(x + q) de la nada.** Lo mínimo que lo deja entendible, sin sacarlo de la idea (la
+  propuesta aprobada y la práctica lo traen): (1) el último paso de Mira ya no dice solo «es una identidad»: multiplica
+  término a término, (a + b)(a − b) = a² − ab + ab − b², con los dos del medio en violeta; así «el término del medio se
+  anula» se ve antes de la regla. (2) La regla trae su propio dibujo (decisión del 18 nov): el rectángulo de x + p por
+  x + q con sus cuatro piezas rotuladas x², px, qx y pq, y el texto las nombra: «En (x + p)(x + q) salen x², px, qx y
+  pq; si q = −p, px y qx se anulan». La ecuación lleva la llave «las dos del medio» sobre px + qx. La condición dice qué
+  son p y q. (3) p y q van los dos en tinta en toda la idea (ejemplos, «Ahora tú», el dibujo y la mesa del laboratorio):
+  hacen el mismo papel, y el 5 turquesa con el 3 en tinta no se entendía. El texto de la regla lleva espacios duros
+  para que «(x + p)(x + q)» y «q = −p» no se partan a 390 px.
+- **La pista de 64 · 56.** La voz de «Ahora tú» sirve a los cinco tipos, así que se cambió por una que dice qué buscar:
+  «Busca un mismo número en los dos factores: ¿cuánto le suma o le resta cada uno?». Y la pregunta de ese tipo agrega
+  «Los dos están a la misma distancia de un número que termina en 0»: lleva al 60 sin escribir 64 = 60 + 4 (el paso
+  sigue siendo del alumno; los datos siguen sin él).
+- **Cubo: las piezas ab² no se encuentran.** Siguen en tinta (Gerson). La pieza `alg-objeto` les pone un rayado diagonal
+  en sus tres caras (sin color, sin ids; la prueba comprueba que solo las tres ab² lo llevan y que cada raya queda
+  dentro de su cara), el alt las llama «rayadas», la leyenda del juego dice «tres rayadas, de a por b por b» y, en las
+  cuentas, un rótulo: la llave «tres ab²» (en tinta) junto a la llave «tres a²b» (violeta). La lectura del juego muestra
+  el 3: «8 + 3 · 4 + 3 · 2 + 1». La regla tiene ahora su dibujo: el taco abierto con las ocho piezas en sus colores (antes
+  repetía el último paso de Mira, con las del medio en blanco).
+- **Cubo: ocho fórmulas de golpe.** Quedan cuatro renglones, todo lo que «Ahora tú» pide: (a + b)³ con sus dos llaves,
+  (a − b)³, y a³ + b³ y a³ − b³ cada una en una cadena «sin las seis del medio = factorizada». La factorización ya no
+  llega sin presentar: un sexto paso de Mira la saca de a³ + b³ = (a + b)[(a + b)² − 3ab] = (a + b)(a² + 2ab + b² − 3ab)
+  = (a + b)(a² − ab + b²). El texto de la regla lo dice: «Sin las seis del medio quedan a³ + b³, que se factoriza
+  sacando a + b». Se quitó la llave de 3ab(a + b) en la regla: era un bloque y partía el renglón a 390 px.
+- **Así se resuelve del cubo: el «?» en dos de seis piezas.** El dibujo marca las seis del medio (las esquinas, tenues) y
+  el «?» va en el texto de abajo, «las seis del medio: ? cm³». El paso de las cuentas sigue mostrando sus volúmenes.
+- **Racionalizar: 1/∛a sin porqué.** Se queda en la regla porque «Ahora tú» lo pide (tipo 4). Mira trae un quinto paso
+  con números: «Con una raíz cúbica abajo no basta una vez: hacen falta tres factores iguales», ∛2 · ∛2² = ∛2³ = 2. La
+  regla lo muestra: 1/∛a = ∛a²/∛a³ = ∛a²/a, con la llave «tres factores a» bajo ∛a³. La condición ya no aplica
+  «distintos» a las tres fórmulas.
+- **05 «Un rectángulo de piezas».** Sin la nota «(q va sin color)»; p y q en tinta (enunciado y dibujo); el resuelto nombra
+  lo que el dibujo muestra: «un rectángulo de x por 5, otro de x por 3 y la esquina de 5 por 3» (ya no «las dos piezas
+  del medio», que en el dibujo están en esquinas opuestas). El dibujo ya no tiene escala fija: llena el lienzo.
+- **07 «¿Bastan las esquinas?».** Pasa a «Las esquinas y el taco» y pregunta cuánto le falta a 2³ + 1³ para ser todo el
+  taco (2 + 1)³: el título no dice nada y el dibujo marca solo las dos esquinas que nombra el enunciado (las demás,
+  tenues; ninguna con su volumen). Respuesta con unidad: «Le faltan 18 cm³: las seis piezas del medio». La cuenta de
+  las del medio lleva sus dos llaves («tres a²b» violeta, «tres ab²» en tinta).
+- **12 «El perímetro de la mesa».** El primer paso dice de dónde sale todo: cada rectangular mide √x · √y = √(xy) y la
+  mesa es x + y + 2√(xy) = 12 + 2√35; el segundo, «afuera de la raíz, x + y = 12; adentro, x · y = 35». La B se explica
+  con su valor: «toma como lado √12 + √35, una raíz para cada parte del área». Las cinco alternativas llevan «dm». Los
+  datos traen las tres fórmulas que se usan (√x · √y, el cuadrado de √x + √y y el radical doble).
+- **15.** El primer paso muestra la multiplicación por el conjugado: 1/(√2 − 1) · (√2 + 1)/(√2 + 1) = (√2 + 1)/(2 − 1);
+  el segundo dice que 1/x es la fracción del enunciado volteada. La C tiene su propia explicación: usa √2 + 1 también
+  para 1/x, (√2 + 1) − (√2 + 1) = 0.
+- **Títulos repetidos.** 03 «Cuadrados de x y 1/x», 09 «Cubos de x y 1/x», 15 «x menos su inverso».
+- **Letras A–E.** En negrita y en tinta en toda la unidad (antes, negrita violeta: se confundían con la pieza del medio).
+  `nucleo/ecuacion.js` tiene una parte nueva, `{ negrita }` (negrita sin color de variable, estilo en línea, con su
+  prueba); la tabla de colores de la unidad ya no tiene «letra de alternativa». Exponentes y radicales sigue con su
+  letra violeta (ahí el violeta es el resultado; no se tocó).
+
+## Lo barato que también se hizo
+
+- Juega de la idea 2 arranca con la plancha de 10 dm de la misión (con 8 el lector creyó que algo estaba mal).
+- La misión del cubo dice cuál tramo mide 3: «El primer tramo, a, mide 3 cm».
+- Mira de racionalizar dice qué es el conjugado: «El conjugado de √5 − √3 es √5 + √3».
+
+## Lo que se dejó y por qué
+
+- Predice de la idea 2 (31 × 29 parece un cuadrado) y el rótulo «1 cm» del taco junto a la losa: el rótulo marca el
+  tramo b de la arista, que es correcto; en el ejemplo 07 la losa ahora va tenue. Sin cambio.
+- 09: el segundo dato sigue dando a³ + b³ = (a + b)³ − 3ab(a + b): lo pidió la auditoría (A1) y la prueba lo exige.
+- 10 y 11 (cómo se hallan 5 y 4; el corte de «√(11 + 2√24) = √8 + √3») y radicales dobles («x > y» sin porqué, √40 =
+  2√10, «lo de afuera y lo de adentro» de Nox): no estaban en negrita; quedan para la próxima pasada.
+- La voz de «Ahora tú» es una por idea (la app no lee una voz por caso); por eso la pista específica de 64 · 56 va en
+  la pregunta de ese tipo.
+- `app/sw.js`: no se subió `VERSION` (no se toca `app/`). Como cambió `nucleo/ecuacion.js`, que la app guarda sin
+  conexión, quien integre debe subirla.

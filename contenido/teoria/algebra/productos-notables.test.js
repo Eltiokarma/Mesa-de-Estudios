@@ -54,7 +54,7 @@ function lecturas(i) {
 // ---------- Colores ----------
 test('la tabla de colores: a naranja, b turquesa, lo del medio violeta; sin carmín ni verde', () => {
   assert.deepEqual(def.colores, { 'primer término': 'o', 'segundo término': 'i', 'doble producto': 'f', 'piezas del medio': 'f',
-    'lados del tablero': 'f', 'factor uno': 'f', 'letra de alternativa': 'f', 'índice': 'i' });
+    'lados del tablero': 'f', 'factor uno': 'f', 'índice': 'i' });
   assert.ok(!Object.values(def.colores).some(c => c === 'h' || c === 'd'));
 });
 
@@ -249,9 +249,10 @@ test('cada misión la cumple un solo caso y su «bien» no dice la predicción',
   }
   const cb = idea('cubo-binomio').juega;
   for (const w of Teoria.grilla(cb.controles)) {
-    const n = plano(cb.lectura(w)).match(/= (\d+): (\d+) \+ (\d+) \+ (\d+) \+ (\d+)/).slice(1).map(Number);
-    assert.equal(n[0], (w.a + w.b) ** 3); assert.equal(n[1] + n[2] + n[3] + n[4], n[0]);
-    assert.deepEqual(n.slice(1), [w.a ** 3, 3 * w.a * w.a * w.b, 3 * w.a * w.b * w.b, w.b ** 3]);
+    // Ronda 2: con el 3 a la vista, «8 + 3 · 4 + 3 · 2 + 1».
+    const n = plano(cb.lectura(w)).match(/= (\d+): (\d+) \+ 3 · (\d+) \+ 3 · (\d+) \+ (\d+)/).slice(1).map(Number);
+    assert.equal(n[0], (w.a + w.b) ** 3); assert.equal(n[1] + 3 * n[2] + 3 * n[3] + n[4], n[0]);
+    assert.deepEqual(n.slice(1), [w.a ** 3, w.a * w.a * w.b, w.a * w.b * w.b, w.b ** 3]);
   }
 });
 
@@ -473,15 +474,17 @@ test('ejemplos de la idea 5: cuentas rehechas aparte', () => {
   ej.slice(10).forEach((e, k) => assert.equal(v(10 + k), esperado[k]));
 });
 
-test('la letra de cada alternativa es la del valor correcto, en negrita y en violeta', () => {
+// Ronda 2 del lector en frío (18 nov): la letra va en negrita y en tinta, no en violeta (el violeta es de la pieza del medio).
+test('la letra de cada alternativa es la del valor correcto, en negrita y en tinta', () => {
   for (const id of IDEAS) for (const [k, e] of idea(id).ejemplos.entries()) {
     if (e.nivel !== 3) continue;
     const L = plano(e.respuesta).replace(/⁠/g, '').split(', ')[0];
     assert.ok(Array.isArray(e.alternativas) && /^[A-E]$/.test(L), `${id} ejemplo ${k + 1}`);
-    assert.equal(plano(e.alternativas['ABCDE'.indexOf(L)]), sinLetra(plano(e.respuesta)).replace(/ dm$/, ''), `${id} ejemplo ${k + 1}: ${L}`);
+    assert.equal(plano(e.alternativas['ABCDE'.indexOf(L)]).replace(/ dm$/, ''), sinLetra(plano(e.respuesta)).replace(/ dm$/, ''), `${id} ejemplo ${k + 1}: ${L}`);
     assert.equal(new Set(e.alternativas.map(plano)).size, e.alternativas.length, `${id} ejemplo ${k + 1}: alternativas repetidas`);
-    const f = fichas(e.respuesta)[0];
-    assert.ok(f && f.m === 'letra de alternativa' && f.v === 'c-f', `${id} ejemplo ${k + 1}`);
+    const f = e.respuesta[0];
+    assert.ok(f && typeof f.negrita === 'string' && !('v' in f), `${id} ejemplo ${k + 1}`);
+    for (const x of e.solucion) for (const y of [].concat(x.texto)) assert.ok(!(y && y.v && /^[A-E]⁠$/.test(y.t)), `${id} ejemplo ${k + 1}: letra con color`);
   }
 });
 
@@ -501,7 +504,7 @@ const TRAMPAS = {
   'cuadrado-suma|Las piezas de un terreno': { A: r2(34 + 15), C: r2(34), D: 34 + 2 * 15, E: r2(34 - 2 * 15) },
   'cuadrado-suma|El producto escondido': { A: 49 - 25, B: (49 + 25) / 2, D: (7 - 25) / 2, E: 49 + 25 },
   'cuadrado-suma|Con raíces': { A: 3 + 2, B: 5 + r2(6), D: (3 + 2) ** 2, E: 5 + 2 * r2(3 + 2) },
-  'cuadrado-suma|Un número y su inverso': { A: 5 ** 2, C: 5 ** 2 + 2, D: 5 ** 2 - 1, E: 2 * 5 },
+  'cuadrado-suma|Cuadrados de x y 1/x': { A: 5 ** 2, C: 5 ** 2 + 2, D: 5 ** 2 - 1, E: 2 * 5 },
   'cuadrado-suma|El lado de antes': { B: 69 / 6, C: 10 + 3, D: 69 / 3, E: (69 - 9) / 3 },
   'suma-por-diferencia|Suma y diferencia': { A: 9 ** 2 - 5 ** 2, B: (9 ** 2 - 5 ** 2) / 2, D: 9 * 5, E: (9 + 5) / 2 },
   'suma-por-diferencia|Cuartas potencias': { B: 0, C: x => 4 * x, D: x => 2 * x * x * 4 * x, E: x => (x ** 4 + 1) - (x ** 4 - 1) },
@@ -511,7 +514,7 @@ const TRAMPAS = {
   'cubo-binomio|Suma y producto': { A: 5 ** 3, B: 5 ** 3 - 3 * 5, D: 5 ** 3 + 3 * 3 * 5, E: 3 * 3 * 5 },
   'cubo-binomio|Al revés': { B: (64 - 28) / 4, C: (64 - 28) / 3, D: 64 - 28, E: (64 - 28) / 6 },
   'cubo-binomio|Diferencia y producto': { A: 2 ** 3, C: 2 ** 3 + 3 * 15, D: 2 ** 3 - 3 * 15 * 2, E: 2 ** 3 + 15 * 2 },
-  'cubo-binomio|Un número y su inverso': { A: 3 ** 3, B: 3 ** 3 - 3 * 1, D: 3 * 1 * 3, E: 3 ** 3 - 1 },
+  'cubo-binomio|Cubos de x y 1/x': { A: 3 ** 3, B: 3 ** 3 - 3 * 1, D: 3 * 1 * 3, E: 3 ** 3 - 1 },
   'cubo-binomio|Cuadrados y cubos': { A: 3 ** 3, B: 3 ** 3 - 3 * 2, D: 3 * 5, E: 3 * 2 * 3 },
   'radicales-dobles|Dos radicales dobles': { A: r2(5) + r2(5), C: (r2(3) + r2(2)) - (r2(3) - r2(2)), D: 0, E: r2(3) + r2(2) },
   'radicales-dobles|Un producto de radicales dobles': { A: 81 - 56, B: 7 + 2, D: r2(81 - 2 * 14), E: r2(7) - r2(2) },
@@ -521,7 +524,7 @@ const TRAMPAS = {
   'racionalizar|Suma con conjugados': { B: (r2(5) + 2) - (r2(5) - 2), C: 0, D: 2 * r2(5) / 9, E: (r2(5) + 2) + (r2(5) + 2) },
   'racionalizar|Resta con conjugados': { A: (r2(3) + r2(2)) + (r2(3) - r2(2)), B: 0, D: 2 * r2(2) / 5, E: (r2(3) - r2(2)) - (r2(3) + r2(2)) },
   'racionalizar|Con raíces cúbicas': { A: r3(3) + r3(2), C: r3(9) - r3(6) + r3(4), D: (r3(3) + r3(2)) / 5, E: r3(9) + r3(4) },
-  'racionalizar|Un número y su inverso': { B: X1 + 1 / X1, C: 0, D: X1 * (1 / X1), E: (r2(2) - 1) - (r2(2) + 1) },
+  'racionalizar|x menos su inverso': { B: X1 + 1 / X1, C: X1 - X1, D: X1 * (1 / X1), E: (r2(2) - 1) - (r2(2) + 1) },
   'racionalizar|Un radical doble abajo': { A: r2(2) + 1, C: (r2(2) - 1) / 3, D: 1 / (r2(3) + r2(2)), E: 1 / (3 + 2 * r2(2)) },
 };
 test('M2 y B1: cada alternativa incorrecta de nivel 3 se explica, y lo que dice su explicación da su valor', () => {
@@ -633,9 +636,11 @@ test('M9 y B2: valores creíbles (taco en cm, cometas de 1 a 2 m o de 6 a 15 dm)
   }
 });
 
-test('lector en frío: «¿Bastan las esquinas?» trae el dibujo de las piezas que nombra; el índice de la raíz cúbica en turquesa', () => {
-  const e = idea('cubo-binomio').ejemplos.find(x => x.titulo === '¿Bastan las esquinas?');
-  assert.ok(e.figura && e.figura.datos.abrir === 1 && !e.figura.datos.total && !e.figura.datos.rot, 'dibujo abierto, sin volúmenes');
+test('lector en frío: «Las esquinas y el taco» trae el dibujo de las piezas que nombra; el índice de la raíz cúbica en turquesa', () => {
+  // Ronda 2: ni el título ni el dibujo dicen que no bastan; el dibujo marca las dos esquinas que nombra el enunciado.
+  const e = idea('cubo-binomio').ejemplos.find(x => x.titulo === 'Las esquinas y el taco');
+  assert.ok(e.figura && e.figura.datos.abrir === 1 && e.figura.datos.solo === 'esquinas' && !e.figura.datos.total && !e.figura.datos.rot, 'dibujo abierto, sin volúmenes');
+  assert.match(plano(e.respuesta), /18 cm³/);
   // Ningún resuelto sin dibujo habla de «franjas» (idea 1): el dibujo no está.
   for (const x of idea('cuadrado-suma').ejemplos.filter(y => !y.figura)) assert.ok(!/franja/.test(plano(x.solucion.map(y => y.texto))), x.titulo);
   // La raíz cúbica de la idea 5 va con su índice de color, nunca con el signo ∛ pegado.

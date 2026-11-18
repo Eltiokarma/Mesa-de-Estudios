@@ -97,3 +97,13 @@ test('raíz: índice en su caja, signo que se estira y el índice con color', ()
   assert.throws(() => E.revisar([{ raiz: ['a'], indice: '' }]), /índice de raíz/);
   assert.throws(() => E.revisar([{ raiz: ['a'], indice: null }]), /índice de raíz/);
 });
+
+// Negrita sin color (Productos notables, 18 nov): la letra de una alternativa donde el violeta ya tiene otro papel.
+test('negrita: en tinta, sin color de variable, y se lee tal cual', () => {
+  const p = ['La ', { negrita: 'B⁠' }, ' suma 5 + 3.'];
+  E.revisar(p);
+  assert.match(E.html(p), /<b class="ec-negrita" style="font-weight:800">B⁠<\/b>/);
+  assert.equal(E.texto(p), 'La B⁠ suma 5 + 3.');
+  assert.equal(E.colores(p).size, 0);
+  assert.throws(() => E.revisar([{ negrita: [{ v: 'rojo', t: 'a' }] }]), /color/);
+});

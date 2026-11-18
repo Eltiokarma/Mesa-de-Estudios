@@ -23,10 +23,11 @@
  *   - turquesa (c-i): el segundo término, b (la franja, la esquina, el segundo tramo), sus b², b³; la plancha y y √y; √b;
  *   - violeta (c-f): las piezas del medio que se olvidan: el doble producto 2ab (las dos franjas, las dos planchas
  *     rectangulares √(xy)), las piezas a²b del cubo y px, qx de (x + p)(x + q); los lados del tablero (a + b y a − b); el
- *     factor que vale 1 al racionalizar; y la letra de una alternativa, en negrita;
- *   - tinta: el total ((a + b)², (a + b)³, la mesa, la cometa), las piezas ab² del cubo, lo que se pide con «?»;
+ *     factor que vale 1 al racionalizar (la letra de una alternativa va en negrita y en tinta: ronda 2, 18 nov);
+ *   - tinta: el total ((a + b)², (a + b)³, la mesa, la cometa), las piezas ab² del cubo (rayadas en el dibujo y con su
+ *     llave en las cuentas, para encontrarlas sin color), p y q de (x + p)(x + q), lo que se pide con «?»;
  *   - ni carmín (es de los ángulos) ni verde (iría junto al naranja), tampoco en las mesas del laboratorio (cubo-se-abre
- *     con datos.colores; rectangulo-x-p-q con q en tinta).
+ *     con datos.colores; rectangulo-x-p-q con p y q en tinta, como en la idea 2: ronda 2, 18 nov).
  *
  * Molde: docs/teoria.md. Fuente del contenido: docs/teoria/matriz/algebra.json (unidad 3), expediente teoria-152-unidades
  * (Álgebra y sus precisiones: la figura de áreas ilustra lados positivos; la identidad vale por distributividad) e
@@ -41,6 +42,13 @@
  * en las reglas (M7); el taco en cm y las cometas de 6 a 15 dm (M9); el índice de la raíz cúbica en turquesa
  * (Gerson, quinta ronda). Cuentas nuevas rehechas en el scratchpad, correcciones-productos/cuentas-correcciones.py.
  * La idea 1 conserva el gesto directo de la ronda 2 (las esquinas del terreno de antes y del terreno nuevo).
+ *
+ * Correcciones de la ronda 2 del lector en frío (18 nov, tarde; rutinas/frio/algebra.productos-notables.md, «Correcciones
+ * de la ronda 2»): (x + p)(x + q) presentado (Mira de la idea 2 anula los productos del medio con letras; la regla trae
+ * su rectángulo con x², px, qx y pq), con p y q en tinta los dos; la pista de «Ahora tú» dice qué buscar; las piezas
+ * ab² rayadas en el taco y nombradas con llave; la regla del cubo en cuatro renglones (la factorización sale de sacar
+ * a + b, que Mira muestra antes); 1/∛a con su porqué; ejemplos 07, 05, 12 y 15 rehechos, títulos sin repetir; la letra
+ * de una alternativa en negrita y en tinta. Cuentas rehechas aparte: scratchpad, pn-cor2/cuentas-ronda2.py.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -65,7 +73,7 @@
 
   // ---------- Colores de la unidad: un color fijo por magnitud (cabecera; lo comprueba productos-notables.test.js) ----------
   const COLORES = { 'primer término': 'o', 'segundo término': 'i', 'doble producto': 'f', 'piezas del medio': 'f',
-    'lados del tablero': 'f', 'factor uno': 'f', 'letra de alternativa': 'f', 'índice': 'i' };
+    'lados del tablero': 'f', 'factor uno': 'f', 'índice': 'i' };
   const ficha = mg => t => ({ v: `c-${COLORES[mg]}`, t: String(t), m: mg });
   const T1 = ficha('primer término'), T2 = ficha('segundo término'), DP = ficha('doble producto');
   const PM = ficha('piezas del medio'), LT = ficha('lados del tablero'), F1 = ficha('factor uno'), IX = ficha('índice');
@@ -76,9 +84,10 @@
   const uno3 = X => ({ llave: [{ frac: [[c3(X)], [c3(X)]] }], nota: 'vale 1', color: 'c-f' });
   const aa = T1('a'), bb = T2('b');
   const SEP = '   ·   ';
-  // La letra de una alternativa, en negrita (Gerson, mesa de revisión, 17 nov), en violeta como en la unidad hermana.
-  // El U+2060 (invisible) evita que la letra sola salga en cursiva como una variable.
-  const letra = L => ({ v: 'c-f', t: `${L}⁠`, m: 'letra de alternativa' });
+  // La letra de una alternativa, en negrita y en tinta (Gerson, mesa de revisión, 17 nov: negrita, no color). En esta
+  // unidad el violeta es de la pieza del medio: una «B» violeta junto a un 2ab violeta se leía como una pieza más
+  // (lector en frío, ronda 2, 18 nov). El U+2060 (invisible) queda para que la letra no se lea como variable.
+  const letra = L => ({ negrita: `${L}⁠` });
   // Texto plano de partes (para comparar opciones).
   // Las fracciones y las raíces cuentan (antes daban '' y dos opciones con fracción se tomaban por iguales: «Ahora tú»
   // de racionalizar nunca salía con una respuesta fraccionaria).
@@ -316,7 +325,7 @@
         { texto: ['La ', letra('D'), ' eleva 3 + 2 como si no hubiera raíces: 25. La ', letra('E'), ' suma al multiplicar: √3 · √2 no es √5.'] },
       ],
       respuesta: [letra('C'), ', 5 + ', DP('2√6')] },
-    { nivel: 3, titulo: 'Un número y su inverso',
+    { nivel: 3, titulo: 'Cuadrados de x y 1/x',
       enunciado: 'Si x + 1/x = 5, ¿cuánto vale x² + 1/x²?',
       alternativas: ['25', '23', '27', '24', '10'],
       datos: [DF.suma, 'x · (1/x) = 1, con x ≠ 0'],
@@ -508,7 +517,9 @@
   function casoCercanos(r) {
     const M = r.uno([20, 30, 40, 50, 60, 70, 80, 90, 100]), d = r.ent(1, 4), N1 = M + d, N2 = M - d, bien = M * M - d * d;
     return {
-      pregunta: `¿Cuánto vale ${N1} · ${N2}, sin hacer la multiplicación larga?`,
+      // La pista dice qué buscar (un número que termina en 0, a igual distancia de los dos), no cuál es (ronda 2 del
+      // lector en frío: «¿qué términos se repiten?» no servía para 64 · 56, donde el 60 no se ve).
+      pregunta: `¿Cuánto vale ${N1} · ${N2}, sin hacer la multiplicación larga? Los dos están a la misma distancia de un número que termina en 0.`,
       datos: [DF2.sxd],
       opciones: opcionesP([String(bien)], [
         { id: 'falta', texto: [String(M * M)], error: 'TAL-DIFCUAD-FALTA', siFuera: `Bien ${M}² = ${M * M}. Pero falta quitar la esquina: ${d}² = ${d * d}.` },
@@ -538,7 +549,7 @@
     do { p = r.ent(-9, 9); q = r.ent(-9, 9); } while (!p || !q || p === q || p === -q);
     const s = p + q, m = p * q;
     return {
-      pregunta: ['Desarrolla (', T1('x'), ` ${sg(p)} `, T2(Math.abs(p)), `)(`, T1('x'), ` ${sg(q)} ${Math.abs(q)}).`],
+      pregunta: ['Desarrolla (', T1('x'), ` ${sg(p)} ${Math.abs(p)})(`, T1('x'), ` ${sg(q)} ${Math.abs(q)}).`],
       datos: [DF2.xpq],
       opciones: opcionesP([poli([1, s, m])], [
         { id: 'cambia', texto: [poli([1, m, s])], error: 'TAL-XPQ-CAMBIA', siFuera: `Bien p + q = ${z(s)} y p · q = ${z(m)}. Pero la suma va con la x, y el producto, solo.` },
@@ -584,10 +595,12 @@
   // a + b = 9, a − b = 5 → ab = 14 (56, 28, 45); (x + 1)⁴ − (x − 1)⁴ = 8x³ + 8x; a³ − b³ = 7, a⁶ − b⁶ = 63 → a³ = 8;
   // (x + 1)(x + 4) − (x + 2)(x + 3) = −2; 1001 · 999 − 1000² = −1. El nivel 1 no multiplica dos números cercanos (es la
   // predicción); ninguna figura muestra lo que se pide.
+  // p y q van en tinta los dos (ronda 2 del lector en frío: el 5 turquesa y el 3 en tinta no se entendían; hacen el
+  // mismo papel). Las piezas px y qx, violeta, sin rótulo: su área sale de juntar dos datos.
   const BALD_XPQ = (p, q) => ({ pieza: 'alg-baldosas', estado: {}, datos: {
-    anchos: [{ t: 'x', v: 6, color: 'o' }, { t: String(p), v: p, color: 'i' }], altos: [{ t: 'x', v: 6, color: 'o' }, { t: String(q), v: q }],
-    celdas: [[{ t: 'x²', color: 'o' }, { t: '', color: 'f' }], [{ t: '', color: 'f' }, { t: '' }]], escala: 16,
-    alt: `Rectángulo de x + ${p} por x + ${q}: un cuadrado x², dos piezas del medio y una esquina` } });
+    anchos: [{ t: 'x', v: 6, color: 'o' }, { t: String(p), v: p }], altos: [{ t: 'x', v: 6, color: 'o' }, { t: String(q), v: q }],
+    celdas: [[{ t: 'x²', color: 'o' }, { t: '', color: 'f' }], [{ t: '', color: 'f' }, { t: '' }]],
+    alt: `Rectángulo de x + ${p} por x + ${q}: un cuadrado x², un rectángulo de x por ${p}, otro de x por ${q} y una esquina de ${p} por ${q}` } });
   const EJEMPLOS_SXD = [
     { nivel: 1, titulo: 'El tablero de la carpintería',
       enunciado: ['Una plancha cuadrada de triplay mide ', T1(9), ' dm de lado. Se le corta una esquina de ', T2(2), ' dm de lado y se arma un tablero. ¿Cuánto mide de largo y de ancho?'],
@@ -633,20 +646,20 @@
       ],
       respuesta: [T1('9x²'), ' − ', T2(16)] },
     { nivel: 2, titulo: 'Un rectángulo de piezas',
-      enunciado: ['Desarrolla (', T1('x'), ' + ', T2(5), ')(', T1('x'), ' + 3).'],
+      enunciado: ['Desarrolla (', T1('x'), ' + 5)(', T1('x'), ' + 3).'],
       datos: [DF2.xpq],
       figura: BALD_XPQ(5, 3),
       solucion: [
-        { texto: 'p es 5 y q es 3 (q va sin color). El rectángulo tiene x², dos piezas del medio, 5x y 3x, y la esquina, 5 · 3.', ecuacion: [T1('x²'), ' + ', PM('5x'), ' + ', PM('3x'), ' + 15'] },
-        { texto: 'Las del medio se juntan: 5x + 3x = 8x.', ecuacion: ['(', T1('x'), ' + ', T2(5), ')(', T1('x'), ' + 3) = ', T1('x²'), ' + ', PM('8x'), ' + 15'] },
+        { texto: 'Aquí p = 5 y q = 3. El rectángulo tiene cuatro piezas: x², un rectángulo de x por 5, otro de x por 3 y la esquina de 5 por 3.', ecuacion: [T1('x²'), ' + ', PM('5x'), ' + ', PM('3x'), ' + 15'] },
+        { texto: 'Los dos rectángulos de x se juntan: 5x + 3x = 8x.', ecuacion: ['(', T1('x'), ' + 5)(', T1('x'), ' + 3) = ', T1('x²'), ' + ', PM('8x'), ' + 15'] },
       ],
       respuesta: [T1('x²'), ' + ', PM('8x'), ' + 15'] },
     { nivel: 2, titulo: 'Signos distintos',
-      enunciado: ['Desarrolla (', T1('x'), ' + ', T2(7), ')(', T1('x'), ' − 4).'],
+      enunciado: ['Desarrolla (', T1('x'), ' + 7)(', T1('x'), ' − 4).'],
       datos: [DF2.xpq],
       solucion: [
         { texto: 'Aquí p = 7 y q = −4. Su suma, 7 − 4 = 3, va con la x.', ecuacion: ['p + q = 3   →   ', PM('3x')] },
-        { texto: 'Su producto, 7 · (−4) = −28, va solo.', ecuacion: ['(', T1('x'), ' + ', T2(7), ')(', T1('x'), ' − 4) = ', T1('x²'), ' + ', PM('3x'), ' − 28'] },
+        { texto: 'Su producto, 7 · (−4) = −28, va solo.', ecuacion: ['(', T1('x'), ' + 7)(', T1('x'), ' − 4) = ', T1('x²'), ' + ', PM('3x'), ' − 28'] },
       ],
       respuesta: [T1('x²'), ' + ', PM('3x'), ' − 28'] },
     // Nivel 2 (auditoría, M1): ya no repite el nivel 1 («Una resta sin cuadrados», 7² − 3²) con números grandes; aquí la
@@ -761,7 +774,8 @@
         { s: 'dm', t: 'decímetro: 10 dm = 1 m' },
       ],
       controles: [
-        { id: 'a', etiqueta: 'Lado de la plancha, a (dm)', color: 'c-o', min: 6, max: 12, paso: 1, inicio: 8, decimales: 0 },
+        // Arranca en 10 dm, la plancha de la misión (ronda 2: con 8 el lector creyó que algo estaba mal).
+        { id: 'a', etiqueta: 'Lado de la plancha, a (dm)', color: 'c-o', min: 6, max: 12, paso: 1, inicio: 10, decimales: 0 },
         { id: 'b', etiqueta: 'Lado de la esquina, b (dm)', color: 'c-i', min: 2, max: 4, paso: 1, inicio: 2, decimales: 0 },
         { id: 'f', etiqueta: 'La tira', opciones: [{ valor: 0, texto: 'Cortada' }, { valor: 1, texto: 'Girada: tablero' }] },
       ],
@@ -796,15 +810,25 @@
         { estado: { paso: 1 }, texto: 'Un lado es 30 + 1 y el otro, 30 − 1.', ecuacion: ['(', T1(30), ' + ', T2(1), ')(', T1(30), ' − ', T2(1), ')'] },
         { estado: { paso: 2 }, texto: 'Es un cuadrado de 30 por 30 sin una esquina de 1 por 1.', ecuacion: [T1('30²'), ' − ', T2('1²')] },
         { estado: { paso: 3 }, texto: 'La tira de abajo se gira y completa el rectángulo.', ecuacion: [T1(900), ' − ', T2(1), ' = 899'] },
-        { estado: { paso: 3 }, texto: 'Con letras es una identidad: vale para todo a y b.', ecuacion: DF2.sxd },
+        // Ronda 2: «el término del medio se anula» de la regla se ve aquí antes, término a término.
+        { estado: { paso: 3 }, texto: 'Con letras es una identidad: término a término, los del medio se anulan.',
+          ecuacion: ['(', aa, ' + ', bb, ')(', aa, ' − ', bb, ') = ', [aa, '²\u00a0', PM('− ab + ab'), ' − ', bb, '²'], ' = ', [aa, '² − ', bb, '²']] },
       ],
     },
     regla: {
-      // p y q dichos en palabras (auditoría, M7), en la condición: la regla tiene tope de 30 palabras.
-      texto: 'La suma por la diferencia de dos términos es el cuadrado del primero menos el del segundo. Si q = −p, el término del medio, (p + q)x, se anula.',
+      // Ronda 2 del lector en frío: (x + p)(x + q) llegaba «de la nada». Ahora Mira muestra antes cómo se anulan los dos
+      // productos del medio, y la regla trae su propio dibujo: el rectángulo de x + p por x + q con sus cuatro piezas
+      // rotuladas (x², px, qx, pq), que la regla nombra. p y q dichos en palabras en la condición (auditoría, M7).
+      // Con espacios duros (\u00a0) dentro de (x + p)(x + q) y de q = −p: a 390 px se partían en dos renglones.
+      texto: 'Suma por diferencia: el cuadrado del primero menos el del segundo. En (x\u00a0+\u00a0p)(x\u00a0+\u00a0q) salen x², px, qx y pq; si q\u00a0=\u00a0−p, px y qx se anulan.',
       ecuacion: ['(', aa, ' + ', bb, ')(', aa, ' − ', bb, ') = ', aa, '² − ', bb, '²', SEP,
-        '(x + p)(x + q) = x² + ', { llave: ['(p + q)x'], nota: 'el término del medio', color: 'c-f' }, ' + pq'],
-      condicion: 'a y b son cualquier número; en (x + p)(x + q), p y q son los números que acompañan a x.',
+        '(', T1('x'), ' + p)(', T1('x'), ' + q) = ', [T1('x²'), ' + ', { llave: ['px + qx'], nota: 'las dos del medio', color: 'c-f' }, ' + pq']],
+      // q más largo que p: el alto es el lado mayor y el rectángulo llena la altura fija de la pieza (sin hueco abajo).
+      dibujo: { pieza: 'alg-baldosas', estado: {}, datos: {
+        anchos: [{ t: 'x', v: 5, color: 'o' }, { t: 'p', v: 2 }], altos: [{ t: 'x', v: 5, color: 'o' }, { t: 'q', v: 3 }],
+        celdas: [[{ t: 'x²', color: 'o' }, { t: 'px', color: 'f' }], [{ t: 'qx', color: 'f' }, { t: 'pq' }]],
+        alt: 'Rectángulo de x + p por x + q, partido en cuatro piezas: x², px, qx y pq' } },
+      condicion: 'a, b, p y q son cualquier número, también negativos; p y q son los que se suman a x.',
       voz: 'Las piezas del medio se anulan: queda la resta de los cuadrados.',
     },
     // Así se resuelve: el tablero que se arma con una plancha (largo, ancho y área). «Ahora tú» pide otra cosa: un producto
@@ -830,7 +854,8 @@
     ahoraTu: {
       pieza: 'alg-objeto',
       // Una voz que sirve a los cinco tipos (auditoría, B4).
-      voz: '¿Qué términos se repiten en los dos factores?',
+      // Ronda 2: «¿qué términos se repiten?» no ayudaba con 64 · 56 (el 60 no se ve). Dice qué buscar, no cuál es.
+      voz: 'Busca un mismo número en los dos factores: ¿cuánto le suma o le resta cada uno?',
       generar(sem) {
         const r = azar(sem + 31), tipo = sem % 5;
         if (tipo === 0) return conCuatro(casoCercanos, r);
@@ -961,16 +986,19 @@
       datos: [DF3.cubo],
       solucion: [{ texto: 'a es x y b es 2: x³, tres veces x² · 2, tres veces x · 2² y 2³.', ecuacion: ['(', T1('x'), ' + ', T2(2), ')³ = ', T1('x³'), ' + ', PM('6x²'), ' + 12x + ', T2(8)] }],
       respuesta: [T1('x³'), ' + ', PM('6x²'), ' + 12x + ', T2(8)] },
-    { nivel: 1, titulo: '¿Bastan las esquinas?',
-      enunciado: ['¿Es (', T1(2), ' + ', T2(1), ')³ igual a ', T1(2), '³ + ', T2(1), '³? El dibujo es un taco de arista ', T1(2), ' + ', T2(1), ' cm, abierto.'],
+    // Ronda 2 del lector en frío: «¿Bastan las esquinas?» y el taco de ocho piezas regalaban el «no». Ahora se pide cuánto
+    // falta (el dibujo marca las dos esquinas que nombra el enunciado, sin volúmenes), con unidad, y las seis piezas del
+    // medio con su llave: las a²b violeta y las ab² en tinta, rayadas en el dibujo.
+    { nivel: 1, titulo: 'Las esquinas y el taco',
+      enunciado: ['Un taco cúbico de arista ', T1(2), ' + ', T2(1), ' cm se abre en sus ocho piezas. ¿Cuánto le falta a ', T1(2), '³ + ', T2(1), '³ para ser todo el taco, (', T1(2), ' + ', T2(1), ')³?'],
       datos: [DF3.cubo],
-      // El dibujo de las piezas que nombra el resuelto (lector en frío, 07; auditoría, B9), sin sus volúmenes.
-      figura: TA({ a: 2, b: 1, abrir: 1 }),
+      figura: TA({ a: 2, b: 1, abrir: 1, solo: 'esquinas' }),
       solucion: [
-        { texto: '(2 + 1)³ = 3³ = 27, pero 2³ + 1³ = 8 + 1 = 9: son solo los dos cubos de las esquinas.', ecuacion: ['27 ≠ 9'] },
-        { texto: 'Faltan las seis piezas del medio: tres a²b de 2 · 2 · 1 y tres ab² de 2 · 1 · 1.', ecuacion: [PM('3 · 2² · 1'), ' + 3 · 2 · 1² = ', PM(12), ' + 6 = 18'] },
+        { texto: 'Todo el taco: (2 + 1)³ = 3³ = 27 cm³. Las dos esquinas: 2³ + 1³ = 8 + 1 = 9 cm³.', ecuacion: ['27 − 9 = 18'] },
+        { texto: 'Faltan las seis del medio: tres a²b de 2 · 2 · 1 y tres ab² de 2 · 1 · 1.',
+          ecuacion: [{ llave: [PM('3 · 2² · 1')], nota: 'tres a²b', color: 'c-f' }, ' + ', { llave: ['3 · 2 · 1²'], nota: 'tres ab²' }, ' = ', PM(12), ' + 6 = 18'] },
       ],
-      respuesta: 'No: faltan las piezas del medio, 18' },
+      respuesta: 'Le faltan 18 cm³: las seis piezas del medio' },
     { nivel: 1, titulo: 'Un número al cubo',
       enunciado: '¿Cuánto vale 11³, sin hacer la multiplicación larga?',
       datos: [DF3.cubo],
@@ -1057,7 +1085,7 @@
         { texto: ['La ', letra('D'), ' resta en vez de sumar: 8 − 90 = −82. La ', letra('E'), ' suma ab(a − b) una sola vez, no tres: 8 + 30 = 38.'] },
       ],
       respuesta: [letra('B'), ', 98'] },
-    { nivel: 3, titulo: 'Un número y su inverso',
+    { nivel: 3, titulo: 'Cubos de x y 1/x',
       enunciado: 'Si x + 1/x = 3, ¿cuánto vale x³ + 1/x³?',
       alternativas: ['27', '24', '18', '9', '26'],
       datos: [DF3.cubo, DF3.sumaSP, 'x · (1/x) = 1, con x ≠ 0'],
@@ -1113,7 +1141,8 @@
       pieza: 'alg-objeto',
       consigna: 'El carpintero corta un taco cúbico con tres cortes, uno en cada dirección. Cada arista queda en dos tramos: a y b.',
       mision: {
-        texto: ['El taco se corta a ', T1(3), ' cm de una esquina. Ábrelo y logra 125 cm³.'],
+        // Ronda 2: «a 3 cm de una esquina» no decía si 3 era a o b.
+        texto: ['El primer tramo, ', aa, ', mide ', T1(3), ' cm. Ábrelo y logra un taco de 125 cm³.'],
         logrado: val => val.a === 3 && val.b === 2 && val.abrir === 1,
         bien: 'a³ y b³ son solo 35 de 125 cm³: el resto está en el medio.',
       },
@@ -1123,7 +1152,7 @@
         { s: bb, t: 'segundo tramo de cada arista' },
         { s: T1('a³'), t: 'el cubo de una esquina' },
         { s: PM('a²b'), t: 'tres piezas de a por a por b' },
-        { s: 'ab²', t: 'tres piezas de a por b por b' },
+        { s: 'ab²', t: 'tres rayadas, de a por b por b' },
         { s: T2('b³'), t: 'el cubo de la otra esquina' },
         { s: '(a + b)³', t: 'el taco entero, de arista a + b' },
       ],
@@ -1134,7 +1163,8 @@
       ],
       dibujo: v => TA({ a: v.a, b: v.b, abrir: v.abrir, total: true, rot: { a3: true, a2b: true, ab2: true } }),
       // La relación: el taco entero son sus ocho piezas.
-      lectura: v => [`(${v.a} + ${v.b})³ = ${(v.a + v.b) ** 3}: `, T1(v.a ** 3), ' + ', PM(3 * v.a * v.a * v.b), ` + ${3 * v.a * v.b * v.b} + `, T2(v.b ** 3)],
+      // Con el 3 a la vista (ronda 2: en «8 + 12 + 6 + 1» no se veían las tres piezas de cada forma).
+      lectura: v => [`(${v.a} + ${v.b})³ = ${(v.a + v.b) ** 3}: `, T1(v.a ** 3), ' + ', PM(`3 · ${v.a * v.a * v.b}`), ` + 3 · ${v.a * v.b * v.b} + `, T2(v.b ** 3)],
       minimo: 3,
     },
     predice: {
@@ -1162,17 +1192,29 @@
         { estado: { paso: 2 }, texto: 'Las seis del medio, con 3ab de factor común:', ecuacion: [PM('3a²b'), ' + 3ab² = 3ab(a + b)', SEP, '3ab(a + b) = 3 · 10 · 7 = 210'] },
         { estado: { paso: 3 }, texto: 'Se quitan del taco entero: quedan las dos esquinas.', ecuacion: [T1('a³'), ' + ', T2('b³'), ' = 343 − 210 = 133'] },
         { estado: { paso: 3 }, texto: 'Con letras, el cubo de una suma:', ecuacion: DF3.cubo },
+        // Ronda 2: la factorización de a³ + b³ llegaba a la regla sin presentarse. Sale de aquí, sacando a + b.
+        { estado: { paso: 3 }, texto: 'Sacando a + b de factor común, la suma de cubos queda como producto.',
+          ecuacion: [aa, '³ + ', bb, '³ = ', ['(', aa, ' + ', bb, ')[(', aa, ' + ', bb, ')² − 3', aa, bb, ']'], ' = ',
+            ['(', aa, ' + ', bb, ')(', aa, '² + 2', aa, bb, ' + ', bb, '² − 3', aa, bb, ')'], ' = ', ['(', aa, ' + ', bb, ')(', aa, '² − ', aa, bb, ' + ', bb, '²)']] },
       ],
     },
     regla: {
       // Sin ± ni ∓ (auditoría, M7): la suma y la diferencia de cubos, cada una en su renglón, y las dos identidades con
       // la suma (o la resta) y el producto, que los datos de los ejercicios de examen traen (A1). Cada renglón cabe en el
       // celular a 390 px (antes se cortaba en «3ab(a +»; lo mide herramientas/… en el scratchpad, medir-cortes.js).
-      texto: 'El cubo de un binomio son ocho piezas: dos cubos, tres a²b y tres ab². Las seis del medio juntas son 3ab(a + b). Con resta, los signos se alternan.',
-      ecuacion: ['(', aa, ' + ', bb, ')³ = ', aa, '³ + ', { llave: ['3', aa, '²', bb], nota: 'piezas del medio', color: 'c-f' }, ' + 3', aa, bb, '² + ', bb, '³', SEP,
-        ...DF3.cuboR, SEP, ...DF3.sumaSP, SEP, ...DF3.difSP, SEP,
-        aa, '³ + ', bb, '³ = ', ['(', aa, ' + ', bb, ')(', aa, '² − ', aa, bb, ' + ', bb, '²)'], SEP,
-        aa, '³ − ', bb, '³ = ', ['(', aa, ' − ', bb, ')(', aa, '² + ', aa, bb, ' + ', bb, '²)']],
+      // Ronda 2 del lector en frío: ocho fórmulas de golpe, dos sin presentar. Ahora son cuatro renglones: el cubo de la
+      // suma y el de la resta, y a³ ± b³ (sin las seis del medio) seguida de su factorización, que Mira ya mostró (sale
+      // de sacar a + b). Las piezas ab² se nombran con su llave (en tinta, por decisión de Gerson; rayadas en el dibujo).
+      texto: 'Ocho piezas: dos cubos, tres a²b y tres ab²; con resta, los signos se alternan. Sin las seis del medio quedan a³ + b³, que se factoriza sacando a + b.',
+      ecuacion: ['(', aa, ' + ', bb, ')³ = ', [aa, '³ + ', { llave: ['3', aa, '²', bb], nota: 'tres a²b', color: 'c-f' }, ' + ', { llave: ['3', aa, bb, '²'], nota: 'tres ab²' }, ' + ', bb, '³'], SEP,
+        ...DF3.cuboR, SEP,
+        // Sin llave en 3ab(a + b): la llave es un bloque y partía el renglón en «(a + b)³ −» (medido a 390 px).
+        aa, '³ + ', bb, '³ = ', ['(', aa, ' + ', bb, ')³ − 3', aa, bb, '(', aa, ' + ', bb, ')'],
+        ' = ', ['(', aa, ' + ', bb, ')(', aa, '² − ', aa, bb, ' + ', bb, '²)'], SEP,
+        aa, '³ − ', bb, '³ = ', ['(', aa, ' − ', bb, ')³ + 3', aa, bb, '(', aa, ' − ', bb, ')'], ' = ', ['(', aa, ' − ', bb, ')(', aa, '² + ', aa, bb, ' + ', bb, '²)']],
+      // El taco abierto con sus ocho piezas a la vista (antes, la regla mostraba el último paso de Mira, con las seis del
+      // medio en blanco).
+      dibujo: TA({ a: 5, b: 2, abrir: 1, tramos: false }),
       condicion: 'a y b son cualquier número, también negativos; el taco solo muestra tramos positivos.',
       voz: 'Ocho piezas: no te olvides de las seis del medio.',
     },
@@ -1188,7 +1230,9 @@
         return {
           enunciado: ['Un taco cúbico de madera se corta a ', T1(A), ' cm de una esquina, en las tres direcciones; el otro tramo mide ', T2(B), ' cm. ¿Cuánta madera hay en las seis piezas del medio?'],
           datos: [DF3.vol, DF3.cubo],
-          dibujo: TA({ a: A, b: B, abrir: 1, rot: { a2b: '?', ab2: '?' } }),
+          // Ronda 2: el «?» estaba en dos piezas de seis. Ahora las seis del medio se marcan (las esquinas, tenues) y el
+          // «?» va en el texto de abajo, que nombra las seis.
+          dibujo: TA({ a: A, b: B, abrir: 1, solo: 'medio', total: 'las seis del medio: ? cm³' }),
           pasos: [
             { tipo: 'pide', texto: 'Piden las seis piezas del medio, no el taco entero.' },
             { tipo: 'regla', texto: 'El taco se abre en ocho piezas: los cubos a³ y b³ de las esquinas y, en el medio, tres a²b y tres ab².', ecuacion: ['medio = ', PM('3a²b'), ' + 3ab²'] },
@@ -1425,14 +1469,18 @@
       ],
       respuesta: [letra('A'), ', 1'] },
     { nivel: 3, titulo: 'El perímetro de la mesa',
+      // Ronda 2 del lector en frío: el resuelto no decía que el área es x + y + 2√(xy) ni de dónde salía x + y = 12; la B
+      // se explicaba mal («reparte la raíz») y las opciones iban sin unidad.
       enunciado: ['Una mesa cuadrada de 12 + 2√35 dm² se arma con dos planchas cuadradas y dos rectangulares iguales. ¿Cuál es su perímetro?'],
-      alternativas: ['4√7 + 4√5', '4√12 + 4√35', '2√7 + 2√5', '√7 + √5', '4√35'],
-      datos: [DF4.rd, DF4.prod, 'Perímetro de un cuadrado = 4 · lado'],
+      alternativas: ['4√7 + 4√5 dm', '4√12 + 4√35 dm', '2√7 + 2√5 dm', '√7 + √5 dm', '4√35 dm'],
+      datos: [DF4.prod, DF4.cuad, DF4.rd, 'Perímetro de un cuadrado = 4 · lado'],
       figura: ME({ x: 7, y: 5, areas: false, lados: false, total: 'mesa: 12 + 2√35 dm²', lado: '?' }),
       solucion: [
-        { texto: 'Con cuadradas de x e y dm², cada rectangular mide √x · √y = √(xy); las dos, 2√35: x · y = 35. Y x + y = 12: son de 7 y 5 dm².', ecuacion: ['lado = ', RD('12 + 2√35'), ' = ', T1('√7'), ' + ', T2('√5')] },
-        { texto: 'El perímetro son cuatro lados.', ecuacion: ['4(', T1('√7'), ' + ', T2('√5'), ') = 4√7 + 4√5'] },
-        { texto: ['La ', letra('B'), ' reparte la raíz: 4(√12 + √35). La ', letra('C'), ' suma dos lados, no cuatro: 2√7 + 2√5.'] },
+        { texto: 'Si las cuadradas miden x e y dm², cada rectangular mide √x · √y = √(xy). La mesa entera es x + y + 2√(xy).',
+          ecuacion: [T1('x'), ' + ', T2('y'), ' + ', DP('2√(xy)'), ' = 12 + ', DP('2√35')] },
+        { texto: 'Afuera de la raíz, x + y = 12; adentro, x · y = 35. Son 7 y 5. El perímetro son cuatro lados.',
+          ecuacion: ['lado = ', T1('√7'), ' + ', T2('√5'), '   →   ', ['4(', T1('√7'), ' + ', T2('√5'), ') = 4√7 + 4√5']] },
+        { texto: ['La ', letra('B'), ' toma como lado √12 + √35, una raíz para cada parte del área: 4√12 + 4√35. La ', letra('C'), ' suma dos lados, no cuatro.'] },
         { texto: ['La ', letra('D'), ' da el lado, no el perímetro. La ', letra('E'), ' toma como lado el área de una plancha rectangular: 4√35.'] },
       ],
       respuesta: [letra('A'), ', 4√7 + 4√5 dm'] },
@@ -1776,14 +1824,16 @@
         { texto: ['La ', letra('D'), ' usa ese conjugado y deja abajo 3 + 2 = 5. La ', letra('E'), ' se olvida del término del medio, ab.'] },
       ],
       respuesta: [letra('B'), ', ', c3(9), ' + ', c3(6), ' + ', c3(4)] },
-    { nivel: 3, titulo: 'Un número y su inverso',
+    // Ronda 2 del lector en frío: «con el conjugado» no mostraba la multiplicación, y la C repetía la frase de otro ejemplo.
+    { nivel: 3, titulo: 'x menos su inverso',
       enunciado: ['Si x = ', { frac: ['1', '√2 − 1'] }, ', ¿cuánto vale x − 1/x?'],
       alternativas: ['2', '2√2', '0', '1', '−2'],
       datos: [DF5.conjN],
       solucion: [
-        { texto: 'Con el conjugado, abajo queda 2 − 1 = 1: x = √2 + 1. Y 1/x es √2 − 1.', ecuacion: ['x = √2 + 1   y   1/x = √2 − 1'] },
-        { texto: 'Al restar, se van las √2.', ecuacion: ['(√2 + 1) − (√2 − 1) = 2'] },
-        { texto: ['La ', letra('B'), ' suma en vez de restar: x + 1/x = 2√2. La ', letra('C'), ' cree que todo se anula: 0.'] },
+        { texto: 'Se multiplica arriba y abajo por el conjugado de √2 − 1, que es √2 + 1. Abajo queda 2 − 1 = 1.',
+          ecuacion: [{ frac: ['1', '√2 − 1'] }, ' · ', F1('(√2 + 1)/(√2 + 1)'), ' = ', { frac: ['√2 + 1', '2 − 1'] }, ' = √2 + 1'] },
+        { texto: 'Así x = √2 + 1. Y 1/x es la fracción del enunciado volteada: √2 − 1. Al restar, se van las √2.', ecuacion: ['(√2 + 1) − (√2 − 1) = 2'] },
+        { texto: ['La ', letra('B'), ' suma en vez de restar: x + 1/x = 2√2. La ', letra('C'), ' usa √2 + 1 también para 1/x: (√2 + 1) − (√2 + 1) = 0.'] },
         { texto: ['La ', letra('D'), ' confunde x − 1/x con x · (1/x) = 1. La ', letra('E'), ' resta al revés: (√2 − 1) − (√2 + 1) = −2.'] },
       ],
       respuesta: [letra('A'), ', 2'] },
@@ -1882,18 +1932,24 @@
       },
       voz: 'Un 1 bien elegido: el conjugado sobre sí mismo.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Se multiplica por el conjugado sobre sí mismo: eso vale 1.', ecuacion: [F1('(√5 + √3)/(√5 + √3)'), ' = 1'] },
+        // Ronda 2: «conjugado» se dice aquí qué es, no solo en el glosario.
+        { estado: { corte: 1 }, texto: 'El conjugado de √5 − √3 es √5 + √3. Sobre sí mismo, vale 1.', ecuacion: [F1('(√5 + √3)/(√5 + √3)'), ' = 1'] },
         { estado: { corte: 2 }, texto: 'Abajo queda una suma por diferencia: las raíces se van.', ecuacion: ['(√5 − √3)(√5 + √3) = 5 − 3 = 2'] },
         { estado: { corte: 3 }, texto: 'Arriba queda √5 + √3, y abajo, 2.', ecuacion: [{ frac: ['√5 + √3', '2'] }] },
         { estado: { corte: 3 }, texto: 'El valor no cambió: los dos dan lo mismo.', ecuacion: [`1/(√5 − √3) ≈ ${f(1 / (Math.sqrt(5) - Math.sqrt(3)), 3)} ≈ (√5 + √3)/2`] },
+        // Ronda 2: la raíz cúbica llegaba a la regla sin su porqué. Aquí, con números: hacen falta tres factores iguales.
+        { estado: { corte: 3 }, texto: 'Con una raíz cúbica abajo no basta una vez: hacen falta tres factores iguales.',
+          ecuacion: [c3(2), ' · ', c3('2²'), ' = ', c3('2³'), ' = 2'] },
       ],
     },
     regla: {
+      // Ronda 2: 1/∛a con su porqué a la vista: abajo, la cúbica de a por la de a² es la cúbica de a³, que es a (tres
+      // factores iguales; Mira lo muestra antes con 2). «Distintos» solo vale para la segunda (se leía para todas).
       texto: 'Se multiplica arriba y abajo por un 1 que quita la raíz de abajo: √a por √a, √a − √b por su conjugado, la cúbica de a por la de a².',
       ecuacion: [{ frac: ['1', ['√', aa]] }, ' = ', { frac: [['√', aa], aa] }, SEP,
         { frac: ['1', ['√', aa, ' − √', bb]] }, ' = ', { frac: [{ llave: ['√', aa, ' + √', bb], nota: 'el conjugado', color: 'c-f', arriba: true }, { llave: [aa, ' − ', bb], nota: 'sin raíces' }] }, SEP,
-        { frac: ['1', [c3([aa])]] }, ' = ', { frac: [[c3([aa, '²'])], aa] }],
-      condicion: 'a y b positivos y distintos, para que abajo no quede cero. El valor de la fracción no cambia.',
+        { frac: ['1', [c3([aa])]] }, ' = ', [{ frac: [[c3([aa, '²'])], [{ llave: [c3([aa, '³'])], nota: 'tres factores a' }]] }, ' = ', { frac: [[c3([aa, '²'])], aa] }]],
+      condicion: 'a y b positivos; en la segunda, además distintos, para que abajo no quede cero. El valor no cambia.',
       voz: 'Multiplicar por 1 no cambia el valor, solo la forma.',
     },
     // Así se resuelve: el lado de una cometa. «Ahora tú» pide otra cosa: racionalizar una raíz, dos raíces o una raíz y un
@@ -1934,14 +1990,14 @@
 
   // ---------- Laboratorio (cada mesa cuelga de su idea, con la paleta de la unidad) ----------
   // Mesa de la idea 2: el rectángulo (x + p)(x + q); si q = −p no se puede dibujar, pero con p = q vuelve el cuadrado de la
-  // idea 1. x naranja, p turquesa, q en tinta con su rótulo; las dos piezas del medio, px y qx, violeta; la esquina pq en
+  // idea 1. x naranja, p y q en tinta con su rótulo (hacen el mismo papel; ronda 2, 18 nov); las dos piezas del medio, px y qx, violeta; la esquina pq en
   // tinta.
   const ESC_N = 24;   // px por unidad: x + p llega a 8 y el lado a 192 px, lo que cabe en la pieza
   // Con la escala fija, un tramo de menos de 56 px muestra solo su letra (el valor está en el control y la lectura).
   const rot = (t, v, val = v) => (v * ESC_N >= 56 ? `${t} = ${val}` : t);
-  const xx = T1('x'), pp = T2('p');
+  const xx = T1('x'), pp = 'p';
   const rectXPQ = v => ({
-    anchos: [{ t: rot('x', v.x), v: v.x, color: 'o' }, { t: rot('p', v.p), v: v.p, color: 'i' }],
+    anchos: [{ t: rot('x', v.x), v: v.x, color: 'o' }, { t: rot('p', v.p), v: v.p }],
     altos: [{ t: 'x', v: v.x, color: 'o' }, { t: rot('q', v.q), v: v.q }],
     celdas: [[{ t: rot('x²', v.x, v.x * v.x), color: 'o' }, { t: `${v.p * v.x}`, color: 'f' }], [{ t: `${v.q * v.x}`, color: 'f' }, { t: `${v.p * v.q}` }]],
     total: { t: `x² + ${v.p + v.q}x + ${v.p * v.q} = ${(v.x + v.p) * (v.x + v.q)}` },
@@ -1953,7 +2009,7 @@
     consigna: 'Arrastra la esquina de x² para cambiar x y la esquina de afuera para cambiar p y q. ¿Cuándo vuelve a ser un cuadrado?',
     controles: [
       { id: 'x', etiqueta: 'x', min: 1, max: 5, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
-      { id: 'p', etiqueta: 'p', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+      { id: 'p', etiqueta: 'p', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
       { id: 'q', etiqueta: 'q', min: 1, max: 3, paso: 1, inicio: 3, decimales: 0 },
     ],
     dibujo: v => ({ datos: rectXPQ(v), estado: {} }),
