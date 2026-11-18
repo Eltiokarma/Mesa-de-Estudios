@@ -4,7 +4,7 @@ Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 
 ## Estado al 18 nov, noche: Etapa 4 en fase 2 (las cuatro ideas 1 en la mesa)
 
-**Lo primero:** leer la mesa (ronda 8): visto bueno de las ideas 1 de Movimiento rectilíneo uniforme, Estructura
+**Lo primero:** leer la mesa (ronda 8): visto bueno de las ideas 1 de Movimiento rectilíneo uniforme, MRUV y caída libre, Estructura
 atómica, Las cuatro operaciones y Triángulos, y la decisión del tope de 7 ideas en Las cuatro operaciones.
 
 - **Hecho y en main (v247, 9826 pruebas):**
@@ -21,7 +21,8 @@ atómica, Las cuatro operaciones y Triángulos, y la decisión del tope de 7 ide
   - Productos notables: ronda 2 del lector en frío y sus correcciones (`{ negrita }` nuevo en `nucleo/ecuacion.js`
     para las letras de alternativa donde el violeta tiene otro papel). Escenas `cuadrado-crece`, `mruv` y
     `triangulo-estira` en «Más mesas del tema».
-- **En curso:** idea 1 de «MRUV y caída libre» (`aceleracion`), para el visto bueno.
+- **También en main (v248, 9842 pruebas):** «MRUV y caída libre» en seis ideas, con la idea 1 `aceleracion` completa
+  (tarjeta `m1-idea`). En su ejemplo 9 la regla pone el grifo en 0: corregir en la fase 3.
 - **Siguiente:**
   1. Con los vistos buenos, fase 3 de las cinco unidades (resto de ideas) y su práctica.
   2. Pendientes que dejaron los agentes: códigos de error nuevos (hipótesis) a los informes de `docs/investigacion/`
