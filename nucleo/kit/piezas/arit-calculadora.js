@@ -37,6 +37,9 @@
   const Y0 = 6, Y1 = 186, YROT = 206;          // cuerpo de la calculadora y línea base del rótulo
   const YCU = 36, YP0 = 44, YP1 = 82;           // cuenta tecleada y pantalla
   const TC = 13, TD = 17, TR = 14;              // tamaños: cuenta, cifras de la pantalla, rótulo
+  // El panel solar, arriba a la izquierda: termina 3,6 por encima de la cuenta (antes la tocaba con «1 000 000 ÷ 999»;
+  // lector en frío, 18 nov, ronda 2).
+  const PANEL = { y0: Y0 + 8, y1: Y0 + 16, ancho: 34 };
 
   const casillasDe = d => Math.max(4, Math.min(10, Math.floor(+((d && d.casillas) || 8)) || 8));
   function calcsDe(d) {
@@ -66,6 +69,7 @@
       const v = vista(c, K);
       objetos.push({ que: 'calculadora', x0, y0: Y0, x1, y1: Y1 });
       objetos.push({ que: 'pantalla', x0: px0, y0: YP0, x1: px1, y1: YP1, dentro: 'calculadora' });
+      objetos.push({ que: 'panel', x0: px0, y0: PANEL.y0, x1: px0 + PANEL.ancho, y1: PANEL.y1, dentro: 'calculadora' });
       const yD = YP1 - 10;
       const items = [];
       if (c.cuenta) {
@@ -100,8 +104,8 @@
       const { x0, x1, px0, px1 } = c;
       // Cuerpo, panel solar chico arriba a la izquierda y pantalla.
       s += `<g class="ac-calculadora"><rect x="${n2(x0)}" y="${Y0}" width="${n2(x1 - x0)}" height="${Y1 - Y0}" rx="12" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2"/>`;
-      s += `<rect x="${n2(px0)}" y="${Y0 + 12}" width="34" height="10" rx="2" fill="currentColor" fill-opacity="0.18"/>`;
-      for (let k = 1; k < 4; k++) s += `<line x1="${n2(px0 + k * 8.5)}" y1="${Y0 + 12}" x2="${n2(px0 + k * 8.5)}" y2="${Y0 + 22}" stroke="var(--card)" stroke-width="1"/>`;
+      s += `<rect x="${n2(px0)}" y="${PANEL.y0}" width="${PANEL.ancho}" height="${PANEL.y1 - PANEL.y0}" rx="2" fill="currentColor" fill-opacity="0.18"/>`;
+      for (let k = 1; k < 4; k++) s += `<line x1="${n2(px0 + k * 8.5)}" y1="${PANEL.y0}" x2="${n2(px0 + k * 8.5)}" y2="${PANEL.y1}" stroke="var(--card)" stroke-width="1"/>`;
       s += `<rect class="ac-pantalla" x="${n2(px0)}" y="${YP0}" width="${n2(px1 - px0)}" height="${YP1 - YP0}" rx="5" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>`;
       // Las casillas: una por cifra, en turquesa (la capacidad de la pantalla).
       for (let j = 0; j < g.K; j++) {
@@ -114,7 +118,12 @@
         const op = k === 3;
         s += `<rect x="${n2(kx0 + k * (kw + 7))}" y="${n2(ky0 + f * (kh + 6))}" width="${n2(kw)}" height="${n2(kh)}" rx="4" fill="currentColor" fill-opacity="${op ? 0.2 : 0.1}" stroke="currentColor" stroke-width="1" stroke-opacity="0.45"/>`;
       }
-      for (const t of c.items) s += `<text class="kit-txt" x="${n2(t.x)}" y="${n2(t.y)}" font-size="${t.tam}" font-weight="${t.peso}"${t.ancla !== 'start' ? ` text-anchor="${t.ancla}"` : ''} fill="${T.color(t.color)}" style="font-variant-numeric:tabular-nums">${T.esc(t.txt)}</text>`;
+      // El «?» de lo que se pide va centrado en la pantalla: con casillas pares cae sobre la raya entre dos. Lleva un halo
+      // del color de la tarjeta, para que la raya no lo cruce (lector en frío, ronda 2: «el ? montado sobre la raya»).
+      for (const t of c.items) {
+        const halo = t.txt === '?' && t.que === 'pantalla' ? ' stroke="var(--card)" stroke-width="6" stroke-linejoin="round" paint-order="stroke"' : '';
+        s += `<text class="kit-txt" x="${n2(t.x)}" y="${n2(t.y)}" font-size="${t.tam}" font-weight="${t.peso}"${t.ancla !== 'start' ? ` text-anchor="${t.ancla}"` : ''} fill="${T.color(t.color)}"${halo} style="font-variant-numeric:tabular-nums">${T.esc(t.txt)}</text>`;
+      }
       s += '</g>';
     }
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="calculadora" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });

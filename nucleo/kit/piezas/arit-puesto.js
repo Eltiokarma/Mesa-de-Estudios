@@ -40,7 +40,8 @@
  *     base: '5' | 'n',                      el subíndice ₍₅₎ de cada fila, en turquesa (sin base, o '10', base 10)
  *     foco: 0,                              una columna resaltada con un fondo tenue
  *     iconos: false,                        sin los iconos de la cabecera (caramelo, bolsita, caja y cajón sobre cada
- *                                           columna: dicen qué orden cuenta cada columna)
+ *                                           columna: dicen qué orden cuenta cada columna; con más de 4 columnas
+                                           no va ninguno)
  *     solo: true,                           solo el cuaderno, abierto y más grande sobre el mostrador, sin pedido
  *   }
  *   llevada: { bolsitas: 1, cajas: 1 },     cuántos de ese orden acaban de subir (los últimos del grupo): aro naranja
@@ -295,7 +296,9 @@
     });
     if (base) pon(`(${base})`, xr + 3, yR + 5, { tam: TB, peso: 600, ancla: 'start', color: base === '?' ? null : 'i', que: 'base' });
     const cajas = items.map(t => caja(t.txt, t.x, t.y, t.tam, t.peso, t.ancla, t.que));
-    const iconos = cu.iconos === false ? [] : Array.from({ length: Math.min(K, 4) }, (_, k) => ({ k, tipo: ICONO[k], x: cx(k), y: yIcono }));
+    // Con más columnas que envases (10 000 tiene 5 y hay 4 iconos), no va ninguno: una columna sin icono se leía como
+    // un envase que falta (lector en frío, 18 nov, ronda 2).
+    const iconos = cu.iconos === false || K > ICONO.length ? [] : Array.from({ length: K }, (_, k) => ({ k, tipo: ICONO[k], x: cx(k), y: yIcono }));
     for (const ic of iconos) cajas.push({ que: `icono ${ic.tipo}`, txt: ic.tipo, x0: ic.x - 7, x1: ic.x + 7, y0: ic.y - 7, y1: ic.y + 7, dentro: 'cuaderno' });
     const foco = Number.isInteger(cu.foco) && cu.foco >= 0 && cu.foco < K ? cu.foco : null;
     // Tachas del préstamo: sobre la cifra de la primera fila de esa columna (si la hay).

@@ -179,3 +179,12 @@ test('el cuaderno: los números que se operan en tinta, la llevada naranja, el r
   assert.equal((a.match(/class="ar-subio"[^>]*stroke="var\(--c-o\)"/g) || []).length, 1);
   assert.ok(!/class="ar-etiqueta"/.test(P.dibujar({ n: 5, bolsitas: 1, etiqueta: { cifras: '1' }, cuenta: { sumandos: ['1'] } })), 'con cuaderno no va la etiqueta');
 });
+
+test('los iconos del cuaderno: uno por columna hasta 4; con más columnas que envases, ninguno', () => {
+  const ic = cu => P.geometria({ cuenta: Object.assign({ solo: true }, cu) }).cuenta.iconos.map(x => x.tipo);
+  assert.deepEqual(ic({ sumandos: ['5003', '1478'], op: '−' }), ['sueltos', 'bolsitas', 'cajas', 'cajones']);
+  assert.deepEqual(ic({ sumandos: ['26', '15'] }), ['sueltos', 'bolsitas']);
+  // 10 000 tiene 5 columnas: la quinta no tiene envase (lector en frío, ronda 2).
+  assert.deepEqual(ic({ sumandos: ['10000', '4073'], op: '−' }), []);
+  assert.deepEqual(ic({ sumandos: ['4073', '5927'], resultado: '10000' }), []);
+});

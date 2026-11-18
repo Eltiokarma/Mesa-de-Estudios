@@ -1149,3 +1149,69 @@ Rehice todas las cuentas. **Ninguna cuenta está mal**: todas las respuestas y t
 **Colores:** el naranja es *p* o llevada en Datos, pero en 04 y 05 marca «lo que quedó». Las respuestas de 09, 14 y 18 no salen en morado, como sí salen las demás.
 
 **Cuentas:** todas cuadran (21 de 21), incluidas las trampas de las tarjetas de nivel 14.
+
+## Correcciones de la ronda 2
+
+Fase 8, ronda 2 (18 nov, noche), sobre el veredicto y los dos informes de arriba, sin deshacer lo decidido en
+«Correcciones (18 nov)» de `rutinas/auditoria/aritmetica.cuatro-operaciones.md`. Archivos: `cuatro-operaciones.js` y su
+prueba, `arit-puesto` y `arit-calculadora` con sus pruebas. No se tocó `plantillas/operaciones-cifras/` (ningún cambio la
+toca), ni `app/` ni `nucleo/` fuera de las piezas. Cuentas que cambiaron, rehechas aparte con un script que no usa la unidad
+(`/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/cuentas-cor2.py`): cuadran todas. Pruebas de la lista del encargo: 300 de 300, después de
+`npm run catalogo`. Capturas: `/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/cor2-ari/`.
+
+Lo que se repetía de la ronda 1. El lector solo ve la tarjeta 1 de Lee, así que se pasó a la tarjeta 1 lo que antes
+estaba en la 2 o en la 3:
+
+| Punto | Qué se hizo |
+|---|---|
+| Idea 1: el (5) y la raya de a̅b̅c̅ | La tarjeta 1, «El puesto en base 10», dice «Otra base se escribe abajo, entre paréntesis: 21₍₅₎ se lee “21 en base 5”». Su ecuación es a̅b̅ = a × 10 + b, con una llave en la raya: «la raya: cifras, no a × b». La tarjeta 3 da a̅b̅₍₅₎ en el puesto de 5. No dice qué pasa al sumar en otra base. Se quitó el «ahora» que el lector no entendió. |
+| Idea 3: «complemento aritmético» antes de Predice | La tarjeta 1, «El cajón de 1 000», da el nombre con las metas posibles: «Lo que le falta a un número para llegar a una meta así (10, 100, 1 000, 10 000…) es su complemento aritmético». Trae CA(600) = 1 000 − 600 = 400. No dice qué meta le toca a cada número: eso sigue siendo de Predice (AT-CA-K). Así se responde también a «el cajón de 1 000 en Lee y la meta 10 000». |
+| Idea 6: la misión de 47 con una sola respuesta | La misión pasa a «Pon 47 caramelos: elige la bolsita que llena 9 y deja 3 huecos en otra». `logrado` comprueba eso mismo. 47 = 10 × d − 3 solo da d = 5. La prueba recorre los controles: la grilla solo cumple con 47 y 5, y cada d de 3 a 9 responde como la condición. Además, comprueba que con cualquier bolsita de 2 a 47 solo cumple la de 5 (antes, con bolsitas de 10 también faltaban 3). |
+| Idea 7: Predice del cociente | Se cambió el título: «Cifras del producto y del cociente». La predicción del cociente está en la propuesta aprobada (§5) y la regla trae los dos. También se cambiaron `pregunta` y `aprendizaje`: este ahora dice las dos reglas, en 25 palabras. El título nuevo queda fijado en la prueba. |
+
+El resto del veredicto:
+
+| Punto | Qué se hizo |
+|---|---|
+| Idea 1: la misión no coincide con el juego | La misión dice «Pon los pedidos de la misión: 47 y 38», como pidió el veredicto. En la idea 2 y en la 3 dice «Pon los valores de la misión». Las ideas 5, 6 y 7 ya empezaban con «Pon…». El tope de 16 palabras de la misión no deja escribir «el juego empieza en otro caso». |
+| Idea 1: ¿«columna» incluye la llevada? | En la regla, «columna» lleva una llave: «sus cifras + lo que llega». |
+| Idea 2: «arriba» ambiguo | En la regla, «arriba» lleva una llave: «con 1 menos si prestó». La segunda relación ya no repite «arriba»: «la columna que prestó queda con 1 menos». El dato `DR.resta` dice lo mismo («arriba va con 1 menos si prestó»). También dice «p = 1 si se abrió 1 de la izquierda», sin «caja o cajón», que distraía en las tarjetas 04 y 10. |
+| Idea 2: la leyenda nombra un naranja que no se ve | La leyenda dice «al abrir: lo que queda en la columna». En la idea 3 pasa lo mismo con la llevada: «al agregar: el envase lleno que sube». |
+| Idea 3: más cifras que iconos | Con más de 4 columnas (10 000), `arit-puesto` no dibuja ningún icono. Así no queda una columna sin envase. Lo comprueba una prueba nueva de la pieza. |
+| Idea 4: abc − cba = 99 × (a − c) suelto | El texto de la regla termina en «Una letra repetida vale lo mismo, como en un número menos su reverso:». La fórmula lleva una llave: «un número menos su reverso». |
+| Idea 4: el juego arranca en «085» | El control de la mancha de las centenas va de 1 a 9 y empieza en 1, porque es la primera cifra. La cuenta sigue con una sola solución, 585 + 697. |
+| Idea 5: «columna = L × n + c» sin explicar | En la regla dice «cifra × factor + lo que llega = L × n + c», con las llaves de la idea 1: «L: se lleva» y «c: se anota». |
+| Idea 5: Datos que se salen del cuadro | `DO.producto(n)` usa L y c y las explica en la misma línea: «L: la llevada nueva; c: la cifra que se anota». La parte que no se puede partir queda corta. |
+| Idea 6: los sobrinos dibujados como bolsitas | La bolsita es lo que recibe cada sobrino. La pregunta dice «le da a cada uno una bolsita de 5». El rótulo de Predice y de Mira (pasos 1 a 4) dice «7 bolsitas, una por sobrino». |
+| Idea 7: la «E» que no aparece | La leyenda dice «sale si no cabe: más cifras que casillas». La E sale en el juego con A de 5 cifras y B de 4. |
+| Idea 7: 1001 sin decir que es el cociente entero | En Mira ya no hay igualdades falsas. El paso 5 dice «Cociente entero, sin decimales: 1 000 000 ÷ 999 da 1 001 y sobra 1» y escribe 1 000 000 = 999 × 1 001 + 1. El paso 6 escribe 9 999 999 = 100 × 99 999 + 99. Las calculadoras del cociente dicen «cociente menor» y «cociente mayor», también en la regla. Una prueba nueva falla si en la unidad se escribe X ÷ Y = Z y la división no es exacta. |
+| Idea 7: «1 000 000 ÷ 999» pegado a las rayitas | En `arit-calculadora`, el panel solar sube y queda a 3,6 de la cuenta. La prueba de la pieza falla si un texto toca el panel. |
+| Ejemplo 20 | Se cambió el título: «Ocho cifras entre tres cifras». El nivel 1 «Un cociente de 4 entre 1» pasa a «Cuatro cifras entre una cifra» y dice «sobra 1». El resuelto explica por qué el menor sale del A menor entre el B mayor, y escribe cada cociente con su resto (999 × 10 010 + 10 y 100 × 999 999 + 99). Un dato nuevo dice qué es el cociente entero. |
+| Ejemplos 07 y 08: el atajo sin explicar | Se quitó el atajo. El 07 comprueba que 306 + 694 = 1 000. El 08 dice que 216 se escribe 1000₍₆₎ y pasa 115 a base 6 a la vista: caben 3 cajas de 36 y sobran 7, y en 7 cabe 1 bolsita de 6 y sobra 1. |
+| Ejemplo 21 | El «?» de la calculadora lleva un halo del color de la tarjeta, así que la raya entre las casillas 4 y 5 ya no lo cruza. La prueba de la pieza lo comprueba. Se quitó el dato «de 1 000 a 1 999», que casi regalaba la respuesta: ahora es la primera línea del resuelto. Las trampas se explican: **B** suma 4 + 3 cifras y no mira los casos; **C** usa «la suma o una menos» sin ver que empiezan con 1. |
+| Ejemplo 11: la raya pegada a «b + c» | La raya (overline) toca el renglón de arriba. En el recuadro, el reverso va primero («Reverso de a̅b̅c̅: c̅b̅a̅, con las mismas cifras al revés»). La descomposición escribe a̅b̅c̅ al final: «100 × a + 10 × b + c = a̅b̅c̅». Se cambió en los 8 ejercicios que usan esas líneas. |
+| Ejemplos 04 y 05: el naranja de p y de «lo que quedó» | El resuelto liga el naranja con el préstamo: «la columna de las bolsitas prestó 1: el 6 queda en 5», «el 1 prestó y quedó en 0», «el 3 prestó y quedó en 2». |
+| Ejemplos 03, 10, 16 y 18 | 03: el dato pasa a «En base 10, las cifras van de 0 a 9». Antes decía «la mayor cifra es 9» y regalaba el primer paso. 10: la línea repetida ahora dice en palabras la cuenta de la ecuación. 16: el título pasa a «¿Sobra o falta algo?», porque «Una división exacta» daba la respuesta. 18: `DR.letrasDiv` dice «d: el divisor, lo que lleva una bolsita». |
+
+Lo que quedó, y por qué:
+- **Las respuestas sin violeta de los ejemplos 09, 14 y 18, y el 58 en violeta del 10**: no se cambiaron. Siguen el mapa
+  de colores aprobado (propuesta §7, cabecera de la unidad): N, las bolsas y el dividendo son números que se operan y van
+  en tinta, y el resultado de una cuenta va en violeta aunque se dé. La prueba de la unidad ya lo fija (`tinta`). La
+  respuesta sigue en su recuadro.
+- **El atajo en los ejemplos 80 400, 1 001, base 5 y 7 040 600**: queda como está. El lector de esta ronda no marcó esas
+  tarjetas, y la regla de la idea lo presenta. Las que marcó (07 y 08) ya no lo usan.
+- **De `app/` o de la pieza, para Gerson**:
+  - la tortuga que falta en Lee 1;
+  - las teclas sin números y las rayitas de la calculadora;
+  - las 5 cajitas sobre el cajón;
+  - las bolsitas de 7 que parecen tener 5 o 6;
+  - «Juntar 10 en una bolsita» como botón junto al toque.
+
+  Son dibujos de prueba o textos comunes.
+- **Sin cambio, porque es barato pero no se pidió**:
+  - la F que sobra en los datos de 13 y 14;
+  - rₑ en los datos de 16 y 18;
+  - el 14, que es casi tan fácil como el 13;
+  - la letra chica del 12.
+- **Las capturas siguen mostrando solo la tarjeta 1 de Lee y el paso 1 de Mira**: es como trabaja la herramienta. Por eso
+  lo que Predice usa ahora está en la tarjeta 1, y la prueba nueva «Lee presenta en su primera tarjeta…» lo vigila.

@@ -32,6 +32,8 @@ function revisar(d, nombre, mal, e = {}) {
     const o = g.objetos.filter(x => x.que === c.dentro)[c.calc];
     if (!(o && c.x0 >= o.x0 + 2 && c.x1 <= o.x1 - 2 && c.y0 >= o.y0 + 2 && c.y1 <= o.y1 - 2)) mal.push(`${nombre}: «${c.txt}» se sale de la ${c.dentro}`);
   }
+  // Ningún texto toca el panel solar (lector en frío, ronda 2: «1 000 000 ÷ 999» quedaba pegado a sus rayitas).
+  for (const pn of g.objetos.filter(x => x.que === 'panel')) for (const c of t) if (solapan(pn, c, 2)) mal.push(`${nombre}: «${c.txt}» toca el panel`);
   const cs = g.objetos.filter(x => x.que === 'calculadora');
   for (let i = 0; i < cs.length; i++) for (let j = i + 1; j < cs.length; j++) if (solapan(cs[i], cs[j])) mal.push(`${nombre}: se pisan las calculadoras`);
 }
@@ -101,4 +103,11 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus textos no s
   assert.ok(figs.length > 30, `${figs.length} figuras`);
   for (const [nombre, d, e] of figs) revisar(d, nombre, mal, e);
   assert.deepEqual(mal.slice(0, 20), []);
+});
+
+test('el «?» de lo que se pide lleva un halo: con casillas pares cae sobre la raya entre dos y la raya no lo cruza', () => {
+  const s = P.dibujar({ casillas: 8, calcs: [{ cuenta: '1☐☐☐ × 1☐☐', pantalla: '?' }] });
+  assert.match(s, /stroke="var\(--card\)"[^>]*paint-order="stroke"[^>]*>\?</);
+  // Las cifras no llevan halo.
+  assert.ok(!/paint-order[^>]*>\d</.test(P.dibujar({ calcs: [{ cuenta: '24 × 7', pantalla: '168' }] })));
 });

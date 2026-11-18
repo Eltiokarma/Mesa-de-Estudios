@@ -107,7 +107,7 @@ test('siete ideas en el orden de la propuesta, con septimaIdea y calidad 2; las 
   assert.ok(suc.laboratorio.some(m => m.id === 'escaleras-a-z') && suc.laboratorioIdeas['escaleras-a-z'][0] === 'suma-rectangulo');
   assert.ok(suc.glosario.some(g => g.termino === 'sumatoria'));
   assert.deepEqual(ID.map(k => idea(k).titulo), ['La llevada llena una bolsita', 'Abrir una bolsita para restar', 'Lo que falta para llenar',
-    'Cifras que faltan, columna por columna', 'Multiplicar es juntar bolsas iguales', 'Sobran o faltan para otra bolsita', '¿Cabe el producto en la pantalla?']);
+    'Cifras que faltan, columna por columna', 'Multiplicar es juntar bolsas iguales', 'Sobran o faltan para otra bolsita', 'Cifras del producto y del cociente']);
 });
 
 test('un color por magnitud: cada ficha dice su magnitud y lleva su color; nada en verde ni carmín, tampoco en las figuras', () => {
@@ -146,8 +146,15 @@ test('las misiones: cada una se cumple solo con su caso y su «bien» no dice la
   assert.deepEqual(r.dibujo({ M: 432, S: 178, ob: 1, oc: 1 }).datos.cuenta.presta, { 0: '12', 1: '12', 2: '3' });
   // Las cifras ocultas: la cuenta del cuaderno cuadra solo con 585 + 697.
   assert.deepEqual(manchas('☐85 + 6☐☐ = 1282'), [[5, 9, 7]]);
-  // La división: con 47 caramelos, solo las bolsitas de 5 dejan 3 huecos.
-  assert.deepEqual([3, 4, 5, 6, 7, 8, 9].filter(d => 47 % d && d - 47 % d === 3), [5]);
+  // La división: la misión tiene una sola respuesta recorriendo los controles (arriba: solo 47,5) y también con
+  // cualquier bolsita, de 2 a 47 caramelos, dentro o fuera de los controles (lector en frío, ronda 2: «con bolsitas de 10
+  // también faltan 3»). Lo que pide el texto: 9 bolsitas llenas y 3 huecos en la décima.
+  const dv = idea('defecto-exceso').juega;
+  assert.match(dv.mision.texto, /llena 9 y deja 3 huecos en otra/);
+  const cumple = d => Math.floor(47 / d) === 9 && 47 % d !== 0 && d - (47 % d) === 3;
+  assert.deepEqual(Array.from({ length: 46 }, (_, k) => k + 2).filter(cumple), [5]);
+  const rangoD = dv.controles.find(c => c.id === 'd');
+  for (let d = rangoD.min; d <= rangoD.max; d++) assert.equal(dv.mision.logrado({ a: 47, d }), cumple(d), `bolsitas de ${d}`);
   // La calculadora: con A de 5 cifras, B de 3 llena justo las 8 casillas y B de 4 ya no cabe.
   assert.equal(cifrasDe(99999 * 999), 8); assert.equal(cifrasDe(99999 * 9999), 9);
 });
@@ -447,5 +454,25 @@ test('la idea 1 sigue: su «Ahora tú» cuadra y la predicción en base 5 da 112
     const a = i.ahoraTu.generar(s), q = plano(a.pregunta), buena = plano(a.opciones.find(o => o.correcta).texto);
     const m = q.match(/^¿Cuánto es (.+)\?$/);
     if (m) { const xs = [...m[1].matchAll(/(\d+)\((\d)\)/g)], n = +xs[0][2]; assert.equal(buena, `${aBase(xs.reduce((t, x) => t + val(x[1], n), 0), n)}(${n})`, q); }
+  }
+});
+
+test('Lee presenta en su primera tarjeta lo que Predice usa: la base entre paréntesis, la raya y el complemento aritmético', () => {
+  // La primera tarjeta es la que todos ven (y la de las capturas del lector en frío: dos rondas sin verla en la 3).
+  const t1 = id => plano([idea(id).lee.tarjetas[0].texto, idea(id).lee.tarjetas[0].ecuacion || '']);
+  assert.match(t1('otras-bases'), /21\(5\) se lee «21 en base 5»/);
+  assert.match(t1('otras-bases'), /la raya: cifras, no a × b/);
+  assert.match(t1('complemento'), /complemento aritmético/);
+  assert.match(t1('complemento'), /10 000/);
+  // Predice de la idea 7 es del cociente: el título lo dice.
+  assert.match(plano(idea('cifras-producto').predice.pregunta), /cociente/);
+  assert.match(idea('cifras-producto').titulo, /cociente/);
+});
+
+test('ninguna división se escribe como igualdad si no es exacta (el cociente entero va con su resto)', () => {
+  const num = x => +x.replace(/\s/g, '');
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) {
+    for (const m of plano(x).matchAll(/(\d[\d ]*\d|\d) ÷ (\d[\d ]*\d|\d) = (\d[\d ]*\d|\d)(?![\d,])/g))
+      assert.equal(num(m[1]) / num(m[2]), num(m[3]), `${i.id} ${donde}: ${m[0]}`);
   }
 });
