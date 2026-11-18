@@ -953,14 +953,19 @@
         { estado: { paso: 3 }, texto: 'Entre 4 se partiría también BC: por eso 7,5 m no cuadra.', ecuacion: junto('30 ÷ 4 = 7,5 m ≠ MN') },
       ],
     },
-    // La figura de la regla es la del último paso de «Mira» (app/teoria.js): las bancas, con M el medio de AB y N el de CD.
-    // La regla usa esas mismas letras y colores (auditoría, 17 nov: decía «M parte AC» y «BM = (AB − BC)/2» junto a un
-    // dibujo en que M es el medio de AB). Lo del punto entre los extremos (el juego de la soga) va en palabras, sin letras.
+    // La regla tiene su propio dibujo (regla.dibujo, docs/teoria.md 4i; mesa del 18 nov, auditoría M2: junto a las bancas
+    // el lector en frío se perdió): la recta de examen con M en la mitad de AC y B entre M y C, a escala, con las mismas
+    // (B en 6,5 y no en 7: en 7 caía casi en la mitad de MC y su rayita lo tachaba; la prueba M6 pide 16 px en la regla)
+    // letras y colores que el texto (AB naranja, BC turquesa; AC, las mitades y BM en tinta). Sin medidas: las cotas
+    // llevan el nombre del tramo, así que no da ninguna respuesta de «Ahora tú». Los dos puntos medios (las bancas) se
+    // quedan en la predicción y en «Mira».
     regla: {
-      texto: 'Cada punto medio parte su segmento en mitades iguales. Si otro punto queda entre los extremos, su distancia al medio es la mitad de la diferencia de sus dos tramos.',
-      ecuacion: [junto(['AM = MB = ', { frac: ['AB', '2'] }]), SEP, junto(['MN = ', { frac: [[dO('AC'), ' + ', dI('BD')], '2'] }])],
-      condicion: 'M está entre A y B, y N entre C y D. MN junta media AB, todo BC y media CD.',
+      texto: 'El punto medio M parte AC en dos mitades iguales. Si B está entre A y C, BM es la mitad de la diferencia de sus dos tramos.',
+      ecuacion: [junto(['AM = MC = ', { frac: ['AC', '2'] }]), SEP, junto(['BM = ', { frac: [[AB2, ' − ', BC2], '2'] }])],
+      condicion: 'M está entre A y C, con AM = MC, y B está entre M y C.',
       voz: 'El punto medio reparte en mitades; las diferencias también se reparten.',
+      dibujo: { pieza: GO, datos: { objeto: 'recta', puntos: [pto('A', 0), pto('M', 5), pto('B', 6.5), pto('C', 10)],
+        tramos: [tr('A', 'B', 'AB', 1), tr('B', 'C', 'BC', 1), tr('A', 'C', 'AC', 2, 'todo'), igual('A', 'M', 1), igual('M', 'C', 1), tr('B', 'M', 'BM', -1, 'otro')] }, estado: {} },
     },
     // Así se resuelve: las dos mitades con expresiones (se igualan). «Ahora tú» pide otras cosas: BM con B entre los
     // extremos, dos puntos medios, el punto equidistante con una diferencia y un punto de afuera.
@@ -1691,9 +1696,11 @@
     // 390 px; la prueba mide cada tramo que no se parte).
     regla: {
       texto: 'C(x) es lo que a x le falta para 90°; S(x), lo que falta para 180°. Entre las bisectrices de dos consecutivos hay la mitad de su suma.',
-      ecuacion: [junto(['C(x) = 90° − x']), SEP, junto(['S(x) = 180° − x']), SEP, junto([{ frac: [dH('α'), '2'] }, ' + ', { frac: [[dI('180° − α')], '2'] }, ' = 90°'])],
+      ecuacion: [junto(['C(x) = 90° − x']), SEP, junto(['S(x) = 180° − x']), SEP, junto([{ frac: [dH('x'), '2'] }, ' + ', { frac: [[dI('180° − x')], '2'] }, ' = 90°'])],
       condicion: 'x < 90 para C(x) y x < 180 para S(x). Dos adyacentes suman 180°: sus bisectrices forman 90°.',
       voz: 'Primero el complemento, después el suplemento.',
+      // Dibujo propio (4i): la tranquera con las letras de la regla (x y 180° − x), no los 50° de «Mira».
+      dibujo: esc(tranq(50, { pista: { texto: 'x', color: 'h' }, otro: { texto: '180° − x', color: 'i' }, bisectrices: 0, entre: { texto: '90°' } })),
     },
     // Así se resuelve: la bisectriz y el suplemento juntos (A, O y E en una recta). «Ahora tú» pide las bisectrices de dos
     // consecutivos, ecuaciones con C(x) y S(x) y el mayor entero.
@@ -2021,6 +2028,8 @@
       ecuacion: [junto([{ llave: [dH('θ')], nota: 'correspondientes y alternos', color: 'c-h' }, ' = ', dH('θ')]), SEP, junto([dH('θ'), ' + ', { llave: [dI('180° − θ')], nota: 'su conjugado', color: 'c-i' }, ' = 180°'])],
       condicion: 'las rectas son paralelas. Al revés también vale: si dos correspondientes son iguales, las rectas son paralelas.',
       voz: 'Primero la condición de paralelas; después las igualdades.',
+      // Dibujo propio (4i): los ocho ángulos con las letras de la regla (θ y 180° − θ), no los 60° y 120° de «Mira».
+      dibujo: esc({ objeto: 'rieles', theta: 60, letras: true, angulos: ['ad', 'ai', 'bi', 'bd'].flatMap(c => ['P', 'Q'].map(k => ({ cruce: k, cuad: c, texto: c === 'ad' || c === 'bi' ? 'θ' : '180° − θ', color: c === 'ad' || c === 'bi' ? 'h' : 'i' }))) }),
     },
     // Así se resuelve: un par con nombre y dos expresiones. «Ahora tú» no dice el par: hay que reconocerlo en la figura.
     resuelve: {
@@ -2320,6 +2329,9 @@
       ecuacion: [junto([{ llave: ['x'], nota: 'quiebre' }, ' = ', { llave: [dH('a')], nota: 'arriba', color: 'c-h' }, ' + ', { llave: [dH('b')], nota: 'abajo', color: 'c-h' }])],
       condicion: 'las rectas son paralelas, y a y b se miden del lado donde está el vértice del quiebre.',
       voz: 'Una paralela auxiliar convierte el quiebre en dos alternos.',
+      // Dibujo propio (4i): el pasaje con la paralela por V y las letras de la regla (a, b y x), no los 40° y 30° de «Mira».
+      // Sin las copias de a y b en V: con ellas, geo-objeto deja a x sin rótulo.
+      dibujo: esc({ objeto: 'pasaje', a: 40, b: 30, aux: 0, angulos: { a: { texto: 'a', color: 'h' }, b: { texto: 'b', color: 'h' }, x: { texto: 'x' } } }),
     },
     // Así se resuelve: se conoce el quiebre y un tramo; se pide el otro. «Ahora tú» pide el quiebre, un tramo que es
     // varias veces el otro, el ángulo de afuera y el serrucho.

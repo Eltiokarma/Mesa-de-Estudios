@@ -48,6 +48,8 @@ function piezas() {
     add('predice', false, 'predice', idea.predice.dibujo, [{ parte: 'enunciado', x: idea.predice.pregunta }, ...idea.predice.datos.map(x => ({ parte: 'enunciado', x }))]);
     add('revelar', false, 'revelar', idea.predice.revelar, []);
     idea.mira.pasos.forEach((ps, i) => add(`mira ${i + 1}`, false, 'mira', { datos: idea.mira.datos, estado: ps.estado }, [{ parte: 'solucion', x: ps.texto }, { parte: 'solucion', x: ps.ecuacion || [] }]));
+    // El dibujo propio de la regla (docs/teoria.md 4i) pasa por las mismas pruebas de color y de escala.
+    if (idea.regla.dibujo) add('regla', false, 'regla', idea.regla.dibujo, [idea.regla.texto, idea.regla.ecuacion, idea.regla.condicion].map(x => ({ parte: 'solucion', x })));
     for (const [i, e] of idea.ejemplos.entries()) add(`ejemplo ${i + 1} «${e.titulo}»`, true, 'ejemplo', e.figura, [
       { parte: 'enunciado', x: e.enunciado }, ...e.datos.map(x => ({ parte: 'enunciado', x })),
       ...e.solucion.flatMap(l => [{ parte: 'solucion', x: l.texto }, { parte: 'solucion', x: l.ecuacion || [] }]), { parte: 'solucion', x: e.respuesta }]);
@@ -337,9 +339,9 @@ test('M1: «Ahora tú» practica cada parte de la regla (400 semillas)', () => {
   }
 });
 
-test('M2: las letras de la regla son los puntos de su figura (la del último paso de «Mira»), y sus igualdades se cumplen en ella', () => {
+test('M2: las letras de la regla son los puntos de su figura (la suya, o la del último paso de «Mira»), y sus igualdades se cumplen en ella', () => {
   for (const idea of def.ideas.slice(0, 2)) {
-    const d = idea.mira.datos, km = Object.fromEntries(d.puntos.map(p => [p.id, p.km])), r = idea.regla;
+    const d = idea.regla.dibujo ? idea.regla.dibujo.datos : idea.mira.datos, km = Object.fromEntries(d.puntos.map(p => [p.id, p.km])), r = idea.regla;
     const txt = [r.texto, r.ecuacion, r.condicion].map(plano).join(' ');
     for (const m of txt.matchAll(/\b([A-Z]{2})\b/g)) for (const L of m[1]) assert.ok(L in km, `${idea.id}: la regla nombra ${m[1]} y la figura no tiene el punto ${L}`);
     const largo = n => Math.abs(km[n[0]] - km[n[1]]);
@@ -413,7 +415,13 @@ test('M5: dos ángulos consecutivos del mismo color (sin rayitas) nunca tienen e
 
 test('M6: ninguna rayita de «miden igual» a menos de 10 px de un punto ni de las rayitas de otro grupo', () => {
   const mal = [];
-  for (const it of RECTA.filter(x => x.figura)) for (const z of P.marcas(it.figura)) if (z.holgura < P.HOLGURA_MARCA) mal.push(`${it.donde}: las rayitas de ${z.tramo.de}${z.tramo.a} quedan a ${z.holgura.toFixed(1)} px`);
+  // Las figuras de la regla son fijas (no salen de un sorteo): ahí se pide más aire, 16 px. Con 10,1 px, la rayita de MC
+  // tachaba el punto B en la regla del punto medio (captura de la regla, 18 nov).
+  assert.ok(RECTA.some(x => x.momento === 'regla' && x.figura), 'la prueba no ve el dibujo propio de la regla');
+  for (const it of RECTA.filter(x => x.figura)) for (const z of P.marcas(it.figura)) {
+    const tope = it.momento === 'regla' ? 16 : P.HOLGURA_MARCA;
+    if (z.holgura < tope) mal.push(`${it.donde}: las rayitas de ${z.tramo.de}${z.tramo.a} quedan a ${z.holgura.toFixed(1)} px (tope ${tope})`);
+  }
   assert.deepEqual([...new Set(mal)].slice(0, 20), []);
 });
 
@@ -544,4 +552,39 @@ test('x sin «°»: una letra vale un número; el grado va en lo que se mide (to
   for (const t of ['x = 17°', 'x°', '3x = 90°', 'x < 25°', 'x = 35° + 45° = 80°', '40° = 2x', '¿Cuánto mide x?', 'a = b = 42°']) assert.ok(gradosMal(t).length, `no detecta «${t}»`);
   for (const t of ['x = 17', 'm∠AOB = 3x + 29°', 'm∠AOB = 3 · 17 + 29° = 80°', 'x + 20° + 2x = 110°', 'θ = 55°', 'C(x) = 30°', '75° = m + 40°']) assert.deepEqual(gradosMal(t), [], `«${t}» está bien`);
   assert.deepEqual([...mal].slice(0, 20), []);
+});
+
+// Dibujo de la regla (docs/teoria.md 4i; mesa del 18 nov; auditoría M2: el lector en frío se perdió con una regla que
+// nombraba M, A y C junto a las bancas). La figura que acompaña a cada regla (su dibujo propio o, si no tiene, la del
+// último paso de «Mira», como hace la app) muestra cada letra que nombra el texto: los puntos (A, M, ∠AOB, P–V–Q) entre
+// sus puntos rotulados, y las letras de ángulo (x, a, b, θ, α) entre los rótulos de sus ángulos.
+test('cada letra que nombra una Regla (puntos y ángulos) aparece en su dibujo', () => {
+  const mal = [];
+  for (const idea of def.ideas) {
+    const r = idea.regla;
+    // La app escribe el texto de la regla tal cual: con partes de color ({ v, t }) saldría «[object Object]».
+    assert.equal(typeof r.texto, 'string', `${idea.id}: el texto de la regla va sin partes de color`);
+    const dib = r.dibujo || { datos: idea.mira.datos, estado: (idea.mira.pasos[idea.mira.pasos.length - 1] || {}).estado || {} };
+    const txt = [r.texto, r.ecuacion, r.condicion].map(plano).join(' ').replace(/[CS]\(x\)/g, '');
+    const d = dib.datos;
+    let puntos, rotulos;
+    if (ESC(d)) {
+      const fig = P.escena(d).fig;
+      puntos = new Set((fig.puntos || []).filter(p => p.rotulo).map(p => String(p.rotulo)));
+      rotulos = (fig.angulos || []).map(a => String(a.texto || (a.etiqueta && a.etiqueta.texto) || ''));
+    } else {
+      puntos = new Set(d.puntos.map(p => p.id));
+      rotulos = (d.tramos || []).map(t => String(t.texto || ''));
+    }
+    // Letras de punto: mayúsculas sueltas o en nombres de segmento y de ángulo (AB, ∠AOB), sin L₁ ni L₂.
+    const letrasPunto = new Set();
+    for (const m of txt.matchAll(/(?<![A-Za-zÀ-ÿ])([A-Z]{1,3})(?![a-zà-ÿ₁₂])/g)) for (const L of m[1]) letrasPunto.add(L);
+    letrasPunto.delete('L');
+    for (const L of letrasPunto) if (!puntos.has(L)) mal.push(`${idea.id}: la regla nombra el punto ${L} y su dibujo no lo tiene (${[...puntos].join(', ') || 'ninguno'})`);
+    // Letras de ángulo: una minúscula o griega suelta que vale un ángulo (x, a, b, θ, α).
+    const letrasAng = new Set();
+    for (const m of plano(r.ecuacion).matchAll(/(?<![A-Za-zÀ-ÿ(])([a-dfg-np-xzθα])(?![A-Za-zÀ-ÿ)])/g)) letrasAng.add(m[1]);   // sin «y», «o» ni «e», que son palabras
+    for (const L of letrasAng) if (!rotulos.some(t => new RegExp(`(^|[^A-Za-zÀ-ÿ])${L}([^A-Za-zÀ-ÿ]|$)`).test(t))) mal.push(`${idea.id}: la regla usa ${L} y ningún rótulo de su dibujo la muestra (${rotulos.join(', ')})`);
+  }
+  assert.deepEqual(mal, []);
 });
