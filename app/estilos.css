@@ -839,7 +839,17 @@ input[type=file]{font:inherit;max-width:100%}
 .ec-num{border-bottom:2px solid currentColor;padding:0 3px}
 .ec-den{padding:0 3px}
 .ec-sup,.ec-sub{font-size:.75em;line-height:0}
-.ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}.ec-rad{display:flex;align-items:flex-start;font-size:1.2em;line-height:1;margin-right:-1px;margin-top:-.04em}.ec-bajo{display:inline-block;border-top:2px solid currentColor;padding:4px 2px 0;line-height:1.25}.ec-ind{align-self:flex-start}
+/* Raíz (18 nov, auditoría de Exponentes y radicales A1): el signo es un trazo SVG que se estira al alto de lo de adentro
+   (una fracción, otra raíz), y su raya sigue en el borde de arriba de .ec-bajo. El índice va chico (0,62 del texto), con
+   su base a media altura del signo y metido sobre el gancho: «ⁿ√a» y no «n √a». */
+.ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}
+.ec-rad{flex:none;position:relative;width:.62em;margin-right:-1px}
+.ec-rad svg{position:absolute;left:0;top:1px;width:100%;height:calc(100% - 1px);overflow:visible}
+.ec-rad path{fill:none;stroke:currentColor;stroke-width:2px;stroke-linejoin:round;stroke-linecap:round}
+.ec-bajo{display:inline-block;border-top:2px solid currentColor;padding:4px 2px 0;line-height:1.25}
+.ec-ind{display:grid;grid-template-rows:1fr 1fr;font-size:.62em;line-height:1;margin-right:-.42em;position:relative;z-index:1}
+.ec-ind-n{grid-row:1;align-self:end;padding:0 .08em .12em 0}
+.ec-ind .ec-v{padding:0 1px}
 .ec-tacha{text-decoration:line-through;text-decoration-color:var(--c-h);text-decoration-thickness:2px;opacity:.75}
 .ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
 /* Una línea con flechas de vector necesita aire arriba: la flecha chocaba con la línea de encima (lector en frío, 17 nov). */

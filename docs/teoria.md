@@ -92,6 +92,10 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
   - `{ v: 'c-o', t: 'v' }` (variable con su color);
   - `{ frac: [num, den] }`, `{ sup: [base, exp] }`, `{ sub: [base, índice] }`;
   - `{ raiz }`, `{ vec }`, `{ abs }` y `{ par }`.
+  - La raíz de otro índice es `{ raiz: radicando, indice }`. El índice es un texto (`'3'`, `'n'`) o, para que lleve el color
+    de su variable (regla 4), una ficha `{ v: 'c-i', t: 'n' }` o una lista de fichas y textos. Nada de fracciones ni
+    raíces en el índice: `Ecuacion.revisar` lo rechaza. Se dibuja chico, arriba a la izquierda del signo, y el signo crece
+    con lo de adentro: en √(∛x) el de afuera cubre todo (18 nov; prueba en el navegador: `nucleo/ecuacion-dibujo.test.js`).
   Dos relaciones en una misma ecuación se separan con la parte `'   ·   '` (tres espacios a cada lado): en la regla grande cada una va en su línea.
   Un color por variable en toda la unidad, el mismo en el control, la figura, el texto y la ecuación (regla 4). Los colores de figura de las piezas son los mismos tokens sin `c-` (`'o'`, `'i'`, `'h'`, `'d'`).
 - **Regla 1:** todo número que se ve lo calcula el archivo con código. Ningún resultado se escribe a mano si sale de una cuenta. Los casos de «Ahora tú» salen de `generar(semilla)` y dan al menos 5 casos distintos.

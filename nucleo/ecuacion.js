@@ -12,7 +12,10 @@
  *   { frac: [num, den] }            fracción; num y den son a su vez listas de partes (o un texto)
  *   { sup: [base, exp] }            potencia: base^exp
  *   { sub: [base, ind] }            subíndice: v₀ se escribe { sub: [{ v: 'c-o', t: 'v' }, '0'] }
- *   { raiz: radicando, indice? }    raíz cuadrada (o de índice dado)
+ *   { raiz: radicando, indice? }    raíz cuadrada (o de índice dado). El índice es un texto ('3', 'n') o, para llevar el
+ *                                   color de su variable, una ficha { v, t } (o una lista de fichas y textos). Sale chico,
+ *                                   arriba a la izquierda del signo, y el signo (un trazo SVG) crece con lo de adentro:
+ *                                   en √(∛x) el de afuera cubre todo (auditoría de Exponentes y radicales, A1 y M2, 18 nov).
  *   { vec: partes }                 flecha encima (vector)
  *   { tacha: partes }               unidad tachada: se cancela arriba con abajo (conversiones, 16 nov)
  *   { abs: partes }                 valor absoluto |…|
@@ -42,6 +45,10 @@
   const signos = t => t.replace(SIGNOS, c => `<span class="ec-op">${c}</span>`);
   // Signo menos tipográfico en los números escritos con guion: «-3» → «−3» (no toca los guiones entre letras).
   const menos = t => String(t).replace(/(^|[\s(=+×·÷/])-(?=[\d.,])/g, '$1−');
+  // El signo de raíz: gancho, bajada y subida hasta la raya de arriba (la raya es el borde de .ec-bajo). Se estira sin
+  // deformar el grosor del trazo (vector-effect), así sirve igual para una línea que para una fracción o una raíz anidada.
+  const conInd = p => p.indice !== undefined && p.indice !== null && p.indice !== '';
+  const RAD = '<svg viewBox="0 0 10 20" preserveAspectRatio="none" focusable="false"><path d="M0.6 12 L2.8 10.6 L5.6 19.3 L10 0" vector-effect="non-scaling-stroke"/></svg>';
 
   function revisar(p, donde = 'ecuación') {
     if (p === null || p === undefined) throw new Error(`${donde}: parte vacía`);
@@ -62,6 +69,13 @@
     const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'raya'].includes(c));
     if (!k) throw new Error(`${donde}: parte desconocida ${JSON.stringify(p)}`);
     if (['frac', 'sup', 'sub'].includes(k) && !(Array.isArray(p[k]) && p[k].length === 2)) throw new Error(`${donde}: ${k} lleva dos partes`);
+    if (k === 'raiz' && p.indice !== undefined) {
+      // El índice: un texto o número, una ficha de color { v, t }, o una lista de esas (nada de fracciones ni raíces).
+      const ok = x => typeof x === 'string' || typeof x === 'number' || (x && typeof x === 'object' && !Array.isArray(x) && 'v' in x);
+      const ind = lista(p.indice);
+      if (!ind.length || !ind.every(ok) || !texto(p.indice).trim()) throw new Error(`${donde}: índice de raíz inválido ${JSON.stringify(p.indice)} (texto o { v, t })`);
+      ind.forEach(x => revisar(x, donde));
+    }
     lista(p[k]).forEach(x => revisar(x, donde));
   }
 
@@ -79,7 +93,10 @@
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;
       if (p.sup) return `${html(p.sup[0])}<sup class="ec-sup">${html(p.sup[1])}</sup>`;
       if (p.sub) return `${html(p.sub[0])}<sub class="ec-sub">${html(p.sub[1])}</sub>`;
-      if (p.raiz) return `<span class="ec-raiz">${p.indice ? `<sup class="ec-ind">${esc(p.indice)}</sup>` : ''}<span class="ec-rad" aria-hidden="true">√</span><span class="ec-bajo">${html(p.raiz)}</span></span>`;
+      // El signo es un trazo SVG que se estira al alto de lo de adentro (el glifo √ no crecía: en √(∛x) la raya de afuera
+      // tapaba el 3). El índice va chico, con su base a media altura del signo, sobre el gancho (.ec-ind en estilos.css).
+      if (p.raiz) return `<span class="ec-raiz${conInd(p) ? ' con-ind' : ''}">${conInd(p) ? `<span class="ec-ind"><span class="ec-ind-n">${html(p.indice)}</span></span>` : ''}`
+        + `<span class="ec-rad" aria-hidden="true">${RAD}</span><span class="ec-bajo">${html(p.raiz)}</span></span>`;
       if (p.vec) return `<span class="ec-vec">${html(p.vec)}</span>`;
       if (p.tacha) return `<span class="ec-tacha">${html(p.tacha)}</span>`;
       if (p.abs) return `<span class="ec-abs">|${html(p.abs)}|</span>`;
@@ -106,7 +123,7 @@
       if (p.frac) return `(${texto(p.frac[0])}) / (${texto(p.frac[1])})`.replace(/\((\w+)\)/g, '$1');
       if (p.sup) { const e = texto(p.sup[1]); return `${texto(p.sup[0])}${e === '2' ? ' al cuadrado' : e === '3' ? ' al cubo' : ` elevado a ${e}`}`; }
       if (p.sub) return `${texto(p.sub[0])}${texto(p.sub[1])}`;
-      if (p.raiz) return `${p.indice ? `raíz ${p.indice} de` : 'raíz de'} ${texto(p.raiz)}`;
+      if (p.raiz) return `${conInd(p) ? `raíz ${texto(p.indice)} de` : 'raíz de'} ${texto(p.raiz)}`;
       if (p.vec) return `vector ${texto(p.vec)}`;
       if (p.tacha) return `${texto(p.tacha)} (tachado)`;
       if (p.abs) return `valor absoluto de ${texto(p.abs)}`;
@@ -123,7 +140,7 @@
       if (!p || typeof p !== 'object') continue;
       if (Array.isArray(p)) { colores(p, acc); continue; }
       if ('v' in p) { acc.add(p.v); continue; }
-      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'raya', 'llave']) if (p[k]) colores(p[k], acc);
+      for (const k of ['frac', 'sup', 'sub', 'raiz', 'indice', 'vec', 'tacha', 'abs', 'par', 'raya', 'llave']) if (p[k]) colores(p[k], acc);
     }
     return acc;
   }

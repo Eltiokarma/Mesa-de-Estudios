@@ -65,3 +65,26 @@ test('raya: un numeral con letras lleva raya encima, sin cambiar las demás part
   assert.equal(E.texto([{ raya: '2a3' }]), '2a3');
   assert.throws(() => E.revisar([{ raya: [{ v: 'rojo', t: 'a' }] }]), /color/);
 });
+
+// Raíz con índice (auditoría de Exponentes y radicales, A1 y M2, 18 nov): el índice va en su caja chica antes del signo,
+// el signo es un trazo SVG que se estira (no el glifo √) y el índice puede llevar el color de su variable.
+test('raíz: índice en su caja, signo que se estira y el índice con color', () => {
+  const simple = E.html([{ raiz: ['a'] }]);
+  assert.doesNotMatch(simple, /ec-ind|√/, 'sin índice no hay caja de índice, y el signo ya no es el glifo');
+  assert.match(simple, /^<span class="ec-raiz"><span class="ec-rad" aria-hidden="true"><svg [^>]*preserveAspectRatio="none"[^>]*><path [^>]*vector-effect="non-scaling-stroke"\/><\/svg><\/span><span class="ec-bajo">a<\/span><\/span>$/);
+  const n = { v: 'c-i', t: 'n' };
+  const h = E.html([{ raiz: ['a'], indice: n }]);
+  assert.match(h, /^<span class="ec-raiz con-ind"><span class="ec-ind"><span class="ec-ind-n"><span class="var c-i ec-v ec-letra">n<\/span><\/span><\/span><span class="ec-rad"/);
+  assert.match(E.html([{ raiz: ['x'], indice: '3' }]), /<span class="ec-ind-n">3<\/span>/, 'el índice de texto sigue igual');
+  assert.equal(E.texto([{ raiz: ['a'], indice: n }]), 'raíz n de a');
+  assert.equal(E.texto([{ raiz: ['x'], indice: '3' }]), 'raíz 3 de x');
+  assert.ok(E.colores([{ raiz: ['a'], indice: n }]).has('c-i'), 'el color del índice cuenta');
+  // Anidada: la de adentro queda entera dentro del .ec-bajo de la de afuera.
+  const an = E.html([{ raiz: [{ raiz: ['x'], indice: '3' }] }]);
+  assert.match(an, /^<span class="ec-raiz"><span class="ec-rad"[\s\S]*?<span class="ec-bajo"><span class="ec-raiz con-ind">[\s\S]*<\/span><\/span><\/span>$/);
+  E.revisar([{ raiz: ['a'], indice: n }, { raiz: ['a'], indice: '3' }, { raiz: ['a'], indice: 4 }, { raiz: ['a'], indice: [n, '+1'] }]);
+  assert.throws(() => E.revisar([{ raiz: ['a'], indice: { v: 'rojo', t: 'n' } }]), /color/);
+  assert.throws(() => E.revisar([{ raiz: ['a'], indice: { frac: ['1', '2'] } }]), /índice de raíz/);
+  assert.throws(() => E.revisar([{ raiz: ['a'], indice: '' }]), /índice de raíz/);
+  assert.throws(() => E.revisar([{ raiz: ['a'], indice: null }]), /índice de raíz/);
+});
