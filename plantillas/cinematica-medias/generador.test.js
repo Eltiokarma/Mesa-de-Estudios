@@ -262,3 +262,57 @@ test('Movimiento rectilíneo uniforme: un color fijo por magnitud y explicacione
     for (const a of p.alternativas.filter(x => x.error)) assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
   }
 });
+
+// En MRUV y caída libre (auditoría de la unidad, M5 y M6, 18 nov): los colores de su tabla `colores` (rapidez naranja,
+// tiempo turquesa, distancia y posición violeta, aceleración carmín, sin verde), también en la gráfica viva; y en vmax la
+// distancia y el tiempo van en el enunciado, no solo en la figura.
+test('MRUV y caída libre: un color fijo por magnitud, sin verde, y vmax se resuelve sin la figura', () => {
+  const T = require('../../contenido/teoria/fisica/mruv-y-caida-libre.js');
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t ?? '') : String(x ?? ''));
+  const MAG = { d: 'posición', x: 'posición', x0: 'posición', a: 'aceleración', t: 'tiempo', v: 'velocidad', v0: 'velocidad' };
+  let vmax = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { unidad: 'fisica.mruv-y-caida-libre' });
+    for (const [k, v] of Object.entries(p.variables)) assert.equal(v.color, T.colores[MAG[k]], `semilla ${s}: ${k} («${v.nombre}») en ${v.color}`);
+    const fichas = x => (Array.isArray(x) ? x.flatMap(fichas) : x && typeof x === 'object' && x.v ? [x.v] : []);
+    for (const k of fichas([p.enunciado, p.pregunta, p.solucion])) assert.ok(p.variables[k], `semilla ${s}: «${k}» sin color`);
+    if (p.escena) assert.ok(!/"color":"d"/.test(JSON.stringify(p.escena.datos)), `semilla ${s}: verde en la gráfica`);
+    if (p._datos.sub === 'vmax') {
+      vmax++;
+      const t = plano(p.enunciado);
+      assert.ok(t.includes(`${p._datos.d} m`) && t.includes(`${p._datos.t} s`), `semilla ${s}: «${t}» sin la distancia o el tiempo`);
+    }
+  }
+  assert.ok(vmax > 10);
+});
+
+// Auditoría de MRU (18 nov, M2 y M3): en Movimiento rectilíneo uniforme, rapideces posibles por sujeto (la tabla de
+// plantillas/fis-mru/topes.js), lugares sin nombre propio (un tramo real iría con «unos» o con su fuente) y el papel
+// filtrado por unidad (cada problema dice a qué unidad sirve; app/app.js filtra por q.unidades).
+test('MRU: rapideces posibles por sujeto y lugares sin nombre propio (400 semillas)', () => {
+  const Topes = require('../fis-mru/topes.js'), U = 'fisica.movimiento-rectilineo';
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? x.t : String(x));
+  const TOPE = { combi: 25, carrito: 2, bicicleta: 12, mototaxi: 15 };
+  const malas = [];
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`t${s}`, { unidad: U }), d = p._datos, t = [p.enunciado, p.pregunta].map(plano).join(' ');
+    for (const m of Topes.revisar(t)) malas.push(`${s}: ${m.sujeto} a ${m.texto} — ${t}`);
+    assert.ok(!/Juliaca|Puno|Arequipa|Camaná|Cusco|Sicuani|Lima|Huacho|Chucuito/.test(t), `semilla ${s}: ${t}`);
+    if (d.tipo === 'idavuelta') {
+      // En la tabla no se ve la rapidez: se saca de las posiciones y se compara con el tope de quien va.
+      const r = Math.max(...[1, 3].map(k => Math.abs(d.x[k] - d.x[k - 1]) / (d.t[k] - d.t[k - 1])).filter(Number.isFinite));
+      const quien = Object.keys(TOPE).find(k => t.toLowerCase().includes(k));
+      assert.ok(quien && r <= TOPE[quien] + 1e-9, `semilla ${s}: ${quien} a ${r} m/s`);
+    }
+  }
+  assert.deepEqual(malas.slice(0, 5), []);
+});
+
+test('papel.json: cada problema dice a qué unidad sirve, y desde MRU solo se ven los de rapidez media', () => {
+  const ficha = require('./plantilla.json');
+  for (const p of papel.problemas) {
+    assert.ok(Array.isArray(p.unidades) && p.unidades.length, `${p.id}: sin unidades`);
+    for (const u of p.unidades) assert.ok(ficha.unidades.includes(u), `${p.id}: ${u}`);
+  }
+  assert.deepEqual(papel.problemas.filter(p => p.unidades.includes('fisica.movimiento-rectilineo')).map(p => p.id), ['p1', 'p2', 'p3']);
+});

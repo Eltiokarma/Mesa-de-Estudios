@@ -74,10 +74,10 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Desde lo alto de un edificio de 18 m sueltas una piedra y, a la vez, desde el suelo lanzan una pelota hacia arriba con v_0 = 12 m/s, en la misma vertical. ¿A los cuántos segundos se encuentran? Datos: g = 10 m/s² (convención del examen); sin aire. Eje hacia arriba: + al subir, − al bajar; la altura se mide desde donde sale. Velocidad: v = v_0 − g · t. Altura: y = v_0 · t − ½ · g · t². Velocidad y altura: v² = v_0² − 2 · g · y. Alternativas: A) 0,75 s   B) 1,5 s   C) 1,2 s   D) 1,9 s",
+      "enunciado": "Desde lo alto de un edificio de 18 m sueltas una piedra y, a la vez, desde el suelo lanzan una pelota hacia arriba con v_0 = 12 m/s, en la misma vertical. ¿A los cuántos segundos se encuentran? Datos: g = 10 m/s² (convención del examen); sin aire. Eje hacia arriba: + al subir, − al bajar; la altura se mide desde donde sale. Velocidad: v = v_0 − g · t. Altura: y = v_0 · t − ½ · g · t². Velocidad y altura: v² = v_0² − 2 · g · y. Si sale desde la altura y_0: y = y_0 + v_0 · t − ½ · g · t². Alternativas: A) 0,75 s   B) 1,5 s   C) 1,2 s   D) 1,9 s",
       "respuesta": "B) 1,5 s",
       "pasos": [
-        "Piedra: y = 18 − 5 · t². Pelota: y = 12 · t − 5 · t².",
+        "Piedra, con y_0 = 18 m y v_0 = 0: y = 18 − 5 · t². Pelota: y = 12 · t − 5 · t².",
         "Iguales: 18 = 12 · t, así que t = 1,5 s, a y = 6,75 m del suelo."
       ]
     }

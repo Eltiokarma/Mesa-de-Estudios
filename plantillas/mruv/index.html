@@ -6,14 +6,16 @@
 <title>MRUV y gráficas</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
-   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   x azul, v rojo, a verde, t naranja. El morado de marca no se usa aquí. */
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Desde el 18 nov son los de
+   las dos unidades del movimiento rectilíneo (tabla `colores` de contenido/teoria/fisica/movimiento-rectilineo.js y
+   mruv-y-caida-libre.js; auditoría de MRUV, M7), porque esta escena se abre desde las dos en «Más mesas del tema»:
+   x violeta, v naranja, a carmín, t turquesa. El morado de marca no se usa aquí. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-x:#1f5fbf; --c-v:#c02a5c; --c-a:#3d6b0c; --c-t:#a95300;
+  --c-x:#6b3dbd; --c-v:#a95300; --c-a:#c02a5c; --c-t:#07746e;
   --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -23,13 +25,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#7cb0ff; --c-v:#f17384; --c-a:#a3d65e; --c-t:#f0a04a;
+  --c-x:#ab8cf2; --c-v:#f0a04a; --c-a:#f17384; --c-t:#3dcdc3;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-x:#7cb0ff; --c-v:#f17384; --c-a:#a3d65e; --c-t:#f0a04a;
+  --c-x:#ab8cf2; --c-v:#f0a04a; --c-a:#f17384; --c-t:#3dcdc3;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -524,7 +526,7 @@ const steps = [
    body:() => `<p>¿Cómo crees que será la gráfica de la ${V('x','posición')} contra el ${V('t','tiempo')} (x-t)?</p>${opciones(P1)}` },
  { k:'Paso 3', t:'Tres gráficas, un solo movimiento', anim:[0, 5],
    body:() => `<p>Mira las tres gráficas mientras la combi avanza. La de ${V('a','a')} es una recta horizontal: la aceleración no cambia. La de ${V('v','v')} es una recta que sube: la velocidad crece lo mismo cada segundo. La de ${V('x','x')} es una curva: cada segundo avanza más que el anterior.</p>
-   <p>No son tres dibujos del camino: son tres maneras de describir el mismo movimiento. La flecha roja sobre la combi es su ${V('v','velocidad')}; la verde, su ${V('a','aceleración')}.</p>` },
+   <p>No son tres dibujos del camino: son tres maneras de describir el mismo movimiento. La flecha naranja sobre la combi es su ${V('v','velocidad')}; la carmín, su ${V('a','aceleración')}.</p>` },
  { k:'Paso 4', t:'La pendiente de v-t es la aceleración', fin:true, extra:() => ({ pendiente:{ g:'v', t1:1, t2:4, texto:'pendiente = 6/3 = 2' } }),
    body:() => `<div class="eqs">
      <div class="eq">${V('a','a')} = ${fr('Δ' + V('v','v'), 'Δ' + V('t','t'))} = ${fr(V('v','12') + ' − ' + V('v','6'), V('t','4') + ' − ' + V('t','1'))} = ${V('a','2 m/s²')}<span class="note">Cambio entre cambio, entre dos puntos cualesquiera</span></div>
@@ -537,7 +539,7 @@ const steps = [
      <div class="eq">Δ${V('x','x')} = área = ${fr('(' + V('v','4') + ' + ' + V('v','14') + ')', '2')}·${V('t','5')} = ${V('x','45 m')}<span class="note">Un trapecio</span></div>
      <div class="eq">${V('x','x')} = ${V('v','v₀')}·${V('t','t')} + ½·${V('a','a')}·${V('t','t')}² = 4·5 + ½·2·25 = ${V('x','45 m')}<span class="note">La fórmula dice lo mismo</span></div>
    </div>
-   <p>La zona sombreada bajo la recta de ${V('v','velocidad')} está en azul, el color de ${V('x','x')}, porque mide en metros lo que avanzó la combi. Por eso la gráfica de ${V('x','x')} llega a 45 m a los 5 s.</p>
+   <p>La zona sombreada bajo la recta de ${V('v','velocidad')} está en violeta, el color de ${V('x','x')}, porque mide en metros lo que avanzó la combi. Por eso la gráfica de ${V('x','x')} llega a 45 m a los 5 s.</p>
    <p class="aviso">Si usas d = v·t con la velocidad final te sale 70 m, y con la inicial, 20 m: ninguna es la velocidad que tuvo todo el tiempo.</p>` },
  { k:'Paso 6', t:'Llega un mototaxi: predice', dos:true, ver:[], gate:P2,
    body:() => `<p>Justo cuando la combi pasa por el paradero a 4 m/s, un mototaxi pasa por el mismo lugar a ${V('v','10 m/s')} constantes. La combi sigue acelerando a 2 m/s². ¿En qué momento van <b>igual de rápido</b>?</p>${opciones(P2)}` },
@@ -736,7 +738,7 @@ const EXPS = [
     antes:() => Object.assign(E, { cfg:{ moviles:[{ o:{ v0:2, a:3 }, tipo:'combi' }], tmax:4, graficas:['a','v'], rango:{ a:[0, 4], v:[0, 16], x:[0, 35] }, pista:'h', ver:['a'] }, t:4, T:4 }),
     despues:() => { E.cfg.ver = true; E.cfg.sombra = { g:'a', t1:0, t2:4, todo:true, texto:'área = 3·4 = 12 m/s' }; E.cfg.marcas = [{ g:'v', t:4, texto:'de 2 a 14 m/s', col:'v' }]; correr(0, 4); },
     ctrl:() => tiempo(),
-    exp:`<p>El área bajo la gráfica a-t es el cambio de velocidad: 3 m/s² × 4 s = ${V('v','12 m/s')}. Por eso está pintada en rojo, el color de ${V('v','v')}. Aquí el móvil iba a 2 m/s y termina a 14 m/s.</p>
+    exp:`<p>El área bajo la gráfica a-t es el cambio de velocidad: 3 m/s² × 4 s = ${V('v','12 m/s')}. Por eso está pintada en naranja, el color de ${V('v','v')}. Aquí el móvil iba a 2 m/s y termina a 14 m/s.</p>
       <p>No hace falta la velocidad inicial para el <b>cambio</b>; sí para la velocidad final. Y la pendiente de a-t (que aquí es cero) diría cómo cambia la aceleración, no la velocidad.</p>
       <p class="fuente">Fue el objetivo más difícil del test de Beichner (1994): solo el 23 % de 524 alumnos sacó el cambio de velocidad del área de una gráfica a-t. Los errores típicos son calcular la pendiente o leer el valor del eje.</p>` },
   { id:'enesimo', corto:'El quinto segundo',

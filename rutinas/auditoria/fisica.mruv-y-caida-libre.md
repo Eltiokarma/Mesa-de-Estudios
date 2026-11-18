@@ -96,3 +96,165 @@
 | **El `siFuera` describe el error que da su valor.** | No (revisión humana; a lo más, recalcular el error nombrado). |
 | **La práctica que se abre desde una idea pasa la idea al generador** que tiene `TIPOS_POR_IDEA`. | Sí (prueba de la app). |
 | **La línea del «±» en toda regla con signo** (decisión del 18 nov): si la regla tiene una ecuación con − g o con a, lleva la traducción a la academia, y esa traducción dice que en la academia a o g van sin signo. | Semi. |
+
+## Correcciones (18 nov)
+
+Sesión de correcciones (`docs/metodo/unidad/6-correcciones.md`), con las notas de la sesión (a) a (i). Archivos tocados:
+`contenido/teoria/fisica/mruv-y-caida-libre.js` y su `.test.js`, `nucleo/kit/piezas/fis-mruv.js` y su `.test.js`,
+`plantillas/fis-mruv/generador.js`, su `.test.js` y `papel.json` (regenerado con `herramientas/papel-generador.js`), los
+tipos `vt` y `ecuacion` de `plantillas/cinematica-medias/generador.js` y su `.test.js`, y `plantillas/mruv/index.html`.
+No toqué `app/`, `nucleo/avance.js`, `fis-combi` ni nada de MRU. Las respuestas nuevas o cambiadas se recalcularon con un
+script aparte que no usa el código de la unidad (scratchpad `cor/cuentas.py`: las cuadráticas con su fórmula, la
+distancia del riel integrada paso a paso, la maceta buscada por tanteo); todas cuadran. Pruebas: `npm run catalogo` y las
+de la teoría, las piezas, `fis-mruv`, `cinematica-medias`, `mruv`, el catálogo y el glosario, en verde (338 de 338).
+Capturas: scratchpad `cor-mruv/` (las de antes están en `aud-mruv/`).
+
+### Alta
+
+- **A1 (predicciones viejas de `pendiente-aceleracion`).** Fuera de mi alcance (`nucleo/avance.js`). La app ya vuelve a
+  preguntar si la opción guardada no existe (`derecha`, `cero`, `sin-v0`) o si la huella de la pregunta cambió. Queda un
+  caso: la `c` guardada antes de la huella (sin `prediccionDe`) dice «Coincide» a una pregunta que el alumno no vio. Hace
+  falta una marca de migración que borre las guardadas sin huella. Código exacto para la sesión, en `nucleo/avance.js`:
+
+  ```js
+  // en migrar(est), después de `for (const pt of PARTICIONES) if (partir(est, pt)) cambio = true;`
+  // 18 nov (auditoría de MRUV, A1): `pendiente-aceleracion` conservó su id con otra Predice (antes «¿hacia dónde apunta su
+  // aceleración?», ahora el mototaxi que retrocede). Una predicción guardada sin huella (prediccionDe) es de la pregunta
+  // vieja, también la «c»: se borra y la idea vuelve a preguntar. Lo demás (hecha, momento, casos) se queda.
+  if (!(est.reinicioVT >= 1)) {
+    est.reinicioVT = 1;
+    cambio = true;
+    for (const u of ['fisica.mruv-y-caida-libre', 'fisica.movimiento-rectilineo']) {
+      const si = est.teoria && est.teoria[u] && est.teoria[u].ideas && est.teoria[u].ideas['pendiente-aceleracion'];
+      if (si && si.prediccion && !si.prediccionDe) delete si.prediccion;
+    }
+  }
+  ```
+
+  Y su prueba en `nucleo/avance.test.js`:
+
+  ```js
+  test('migrar: la predicción vieja de pendiente-aceleracion (sin huella) se borra una sola vez', () => {
+    const U = 'fisica.mruv-y-caida-libre';
+    const est = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, mudadoSum: 1,
+      teoria: { [U]: { ideas: { 'pendiente-aceleracion': { prediccion: 'c', hecha: true }, 'caida-libre': { prediccion: 'c' } } } } };
+    assert.equal(Avance.migrar(est), true);
+    assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].prediccion, undefined);
+    assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].hecha, true);
+    assert.equal(est.teoria[U].ideas['caida-libre'].prediccion, 'c', 'caida-libre no cambió de pregunta');
+    est.teoria[U].ideas['pendiente-aceleracion'] = { prediccion: 'c', prediccionDe: 'x1' };
+    assert.equal(Avance.migrar(est), false);
+    assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].prediccion, 'c', 'la respuesta nueva, con huella, se queda');
+  });
+  ```
+
+  Si la partición `partidoMRU` todavía no corrió para un alumno, corre antes (el `for` de `PARTICIONES` va primero) y la
+  idea ya está en la unidad nueva cuando se revisa.
+- **A2 (el glosario regalaba la Predice y la misión).** Hecho, con la nota (a). «frenar»: la definición ya no dice el
+  signo de a («Bajar la rapidez poco a poco; mientras no se detiene, el móvil sigue yendo hacia el mismo lado») y sus
+  ejemplos son el mototaxi de 15 a 5 m/s, la bicicleta y el «no retrocede»; así «frena», en la pregunta y los Datos de la
+  Predice de B1, se puede subrayar sin resolverla. «aceleración»: la moto que gana 4 m/s cada segundo en lugar de la
+  combi con −3 m/s². «distancia de frenado»: el ciclista a 6 m/s con 1 m/s² (18 m) en lugar de «al doble, cuatro veces».
+  «gravedad»: la Luna (unos 1,6 m/s²) y «en Juliaca y en Lima casi lo mismo» en lugar de la canica y la piedra y del
+  ½ · 10 · 2². «altura máxima»: la moneda a 3 m/s (unos 45 cm), «donde deja de subir» y «v = 0 un instante», sin la
+  misión (10 m/s → 5 m) ni la aceleración en la cima. De paso, «área bajo la gráfica» ya no dice «bajo el eje cuenta
+  negativa» (la respuesta de la Predice de B3) y «gráfica a–t» no usa los 2 m/s² del juego de B4. Prueba nueva: ningún
+  término tocable antes de predecir (los de la idea y los que aparecen en Lee, el juego y la Predice) trae lo que se
+  predice ni lo que pide la misión.
+- **A3 (el encuentro sin y₀).** Hecho, con la nota (b): `DB6E` agrega «Si sale desde la altura y₀: y = y₀ + v₀ · t − ½ ·
+  g · t²» al ejemplo «El encuentro en el aire» y al «Ahora tú» del encuentro; el resuelto dice «piedra, y₀ = 40 m y v₀ =
+  0». En el generador, `D.ly0` en los dos subtipos de `encuentro` (y en el papel p8, regenerado), con su prueba.
+
+### Media
+
+- **M1 (el consejo de las dos raíces).** Hecho, nota (c). La línea «puede tener dos raíces; aquí t no es negativo» salió
+  de los cinco lugares y entró la fórmula general, la misma del generador (`DA.cuadratica`: con p, q y r para no chocar
+  con la a). Los tres ejemplos que factorizaban (el grifo, el alcance desde atrás, la azotea) resuelven con la fórmula y
+  dicen por qué la raíz negativa no sirve (sería antes de pasar, de arrancar o de lanzar); los «Ahora tú» lo dicen en su
+  solución. Prueba nueva: ningún dato con «puede tener / aquí t no es», y la fórmula está donde el resuelto la usa.
+- **M2 (la regla que se atrapa después de 31,25 cm).** Hecho, nota (d): `cm` sale de 5; 11,25; 24,2 y 28,8 (0,1 a 0,24 s;
+  los 20 cm de la misión quedan fuera) y la figura la dibuja siempre atrapada. Con prueba.
+- **M3 (niveles que no suben).** Hecho, nota (f). B2: los cuatro de nivel 3 que repetían cuentas pasan a «Con tiempo de
+  reacción» (72 km/h, 0,5 s, −5 m/s² → 50 m), «Vuelve a pasar» (x = 2 + 8t − 2t², a los 4 s con −8 m/s), «Distancia en el
+  riel» (la del lector, 06: ahora pide la distancia recorrida, 5 m, y justifica la vuelta con v = 0 a los 3 s) y «El último
+  segundo de frenado» (1,5 m en el último de 6 s → 18 m/s). B6: «La moneda en la cima» pide además el tiempo (4 m/s →
+  0,4 s; a = −10 m/s²). B5: «A media altura» y «A la mitad del tiempo» pasan a «La maceta y el letrero» (0,2 s frente a
+  1,8 m → 3,2 m, con la línea h = v₀t + ½gt² en sus datos) y «Dos piedras, una tras otra» (25 m). B1: «Frena yendo a la
+  izquierda» pide también cuándo se detiene (8,33 s) y «La velocidad en una ecuación» (lector, 03) pasa a un carrito en
+  un riel: ¿cuándo va a 6 m/s riel abajo? (8 s). B3: «Frena y retrocede» pide la velocidad media y la rapidez media
+  (1 y 2,6 m/s) en vez de repetir «La recta cruza el eje». Las letras de examen siguen repartidas (cuatro o cinco por
+  idea).
+- **M4 (Lee de B3 y B4 con una gráfica sola).** Hecho, nota (g): la tarjeta 1 de B3 es el atleta en la pista con su v–t
+  debajo (vista `pista`); la de B4, el mototaxi en la avenida con su x–t debajo (vista `alcance`). La tarjeta 2 de B3
+  dibuja el escalón carmín que nombra («sube 3 m/s en 1 s»).
+- **M5 (paleta vieja en `vt` y `ecuacion`).** Hecho: `VAR_VT` y `VAR_EC` con los colores de la unidad (rapidez naranja,
+  tiempo turquesa, distancia y posición violeta, aceleración carmín; lo que se pide en el color de su magnitud), también
+  las curvas, áreas, puntos y la regla de arrastre de la gráfica viva. Sin verde. Prueba nueva que compara con `colores`
+  de la teoría en 600 semillas. Los tipos de MRU no se tocaron.
+- **M6 (vmax sin datos en el enunciado).** Hecho: «… se detiene en la otra estación, a d m, t s después de partir». La
+  gráfica los repite. Con prueba. El `_datos` no cambió, así que `casos.json` sigue igual.
+- **M7 (la escena vieja con colores contrarios).** Hecho: `plantillas/mruv/index.html` pasa a la paleta de las dos
+  unidades del movimiento rectilíneo (x violeta, v naranja, a carmín, t turquesa, en claro y oscuro), con los tres textos
+  que nombraban colores («la flecha naranja… la carmín», «en violeta», «en naranja»). Como sirve a MRU y a MRUV con la
+  misma tabla, no hizo falta filtrar su papel por unidad. `v2.html` no la abre nadie y quedó igual.
+- **M8 (la práctica por idea).** Ya estaba resuelto en la app: `app/practica.js` pasa `{ unidad, idea }` cuando el
+  catálogo trae las ideas del generador, y `npm run catalogo` las saca de `TIPOS_POR_IDEA`. No hice nada. Queda por
+  decidir (app) si el repaso mezcla solo las ideas terminadas.
+- **M9 (el `siFuera` del área).** Hecho: «Pero dividiste dos veces entre 2; el triángulo, una sola vez.»
+- **M10 («parábola» contra G-SENTIDO).** Hecho: «Curva como la de x = t²: se empina o se aplana. La x–t del MRUV es parte
+  de una.»
+- **M11 (el «±» en B5 y B6).** Hecho, nota (h), y de paso B1 y B2 (lector): la línea dice ahora que en la academia a o g
+  van sin signo. B1: «La academia escribe v = v₀ ± a·t, con a sin signo», y la condición «Aquí a trae su signo». B2:
+  «Δx = v₀t ± ½at², con a sin signo» (ya no d). B5: «h = v₀t ± ½gt², con g sin signo: + si baja». B6: «h = v₀t ± ½gt²:
+  − si sube, + si baja», con la condición «a = −g y el eje pone el signo» (lector: «a = −g» contra «+g con un menos»).
+  Prueba nueva.
+- **M12 (el pabellón con dos alturas).** Hecho, nota (e): un solo pabellón en toda la unidad (`PABELLON` y `VENTANA` en la
+  cabecera de B5): dos pisos de 2,5 m, techo a 5 m (la misión de B6 y el ejemplo 5.2 no cambian) y la ventana del segundo
+  piso a 3,2 m (el ejemplo 5.3 ya la tenía). La Predice de B5 suelta la canica y la piedra desde 3,2 m: el «Mira» va cada
+  0,2 s, 0,2 + 0,6 + 1 + 1,4 = 3,2 m, y llegan a los 0,8 s. En la pieza, con `ventana`, el alféizar de las ventanas
+  dibujadas queda en la rayita (lector: la rayita a 3,2 m y la ventana dibujada a unos 5 m). Con prueba.
+
+### Baja
+
+- **B1.** Hecho: frente al colegio, hasta 12 m/s. La Predice de B2 pasa a «En la carretera» y sin el letrero; «El freno
+  que falta» va del grifo al peaje; los ejemplos de 15 y 20 m/s, en la avenida o la carretera; «Así se resuelve» y el
+  «Ahora tú» de B2 ponen el colegio solo hasta 12 m/s. En el generador, `frenado` y `kmh-frenado` dicen «En la
+  carretera, una combi» por encima de 12 m/s, sin cambiar el azar.
+- **B2.** Hecho: la ciclista frena con |a| ≤ 4 m/s² («Así se resuelve» y «Ahora tú» de B3); el tren, hasta 1 m/s²;
+  puentes hasta 80 m en la teoría y en el generador (más alto, el borde de un acantilado); por encima de 20 m/s la
+  pelota «se lanza» (ejemplos 6.10 y 6.15 y «Así se resuelve» de B6).
+- **B3.** Hecho en parte: «Ahora tú» ya no repite la Predice de B2 (20 m/s con 2 m/s²) ni la de B4 (10 m/s con 2 m/s²), ni
+  el ejemplo 5.1 (3 s), ni el tren del ejemplo 3.11. «Así se resuelve» de B3 y B5 tiene ahora más casos, pero sigue con
+  `azar(s + 900)`: sin la mezcla de semillas del generador.
+- **B4.** Hecho en `fis-mruv`: la pista en tinta tenue y sus rayitas en tinta (la leyenda de B3 dice «rayitas en la
+  pista»). Pendiente en `fis-combi` (los tramos naranjas): fuera de mi alcance.
+- **B5.** Hecho: «vₘₐₓ» y «tₐ» con `{ sub }`. Pendiente: una sola letra para la altura máxima en Parabólico (y_máx), que
+  es otra unidad. Aquí H queda declarada como «la y de la cima» en Lee y en los resueltos (lector, 18).
+- **B6.** Hecho: «Bien: la Tierra jala más a la piedra. Pero sin aire, a todo le da la misma aceleración.»
+- **B7.** Hecho: quinta alternativa del ejemplo 1.15 («25 km/h», los m/s leídos como km/h) y `retorno`/altura con
+  `C-VELOCIDAD` (da la rapidez cuando piden la altura) en vez de `C-TIEMPO`. Pendiente: el papel de 2 por idea
+  (`herramientas/papel-generador.js` arma 8) y los datos aparte en el papel (Vectores M21).
+
+### Lector en frío (veredicto e informes)
+
+- «v = v₀ ± a·t» y solo «+» en la fórmula: hecho (M11).
+- La letra d: hecho, nota (i). d es solo la distancia recorrida en toda la unidad (la regla de B2 dice Δx), y se declara en
+  los datos de B3, en su regla y en el ejemplo del riel. Prueba nueva: ninguna «d =» con v₀t o ½.
+- Leyendas con marcas que no se ven: el escalón carmín ahora se ve en Lee de B3; las rayitas dejaron de ser naranjas; en
+  la regla de B4 la tangente se llama «inclinación: v» y la línea en 0 de la a–t, «mototaxi». En el juego de B4 cada
+  vehículo lleva su nombre en su carril (pieza `fis-mruv`, vista `alcance`, con prueba).
+- El eje de altura sube y h se mide hacia abajo (B5): la condición de la regla lo dice («h es lo que cae, medido hacia
+  abajo desde donde se suelta») y la regla de B5 tiene dibujo propio con la flecha violeta h que baja de la ventana al
+  patio (la pieza acepta `cota.x` y `cota.flecha`).
+- «0,02 s → 0,17 cm»: hecho; la lectura calcula con el tiempo redondeado que muestra.
+- B6 «a = −g» contra «+g con un menos»: hecho (M11). El «Mira» de B6 avisa que pasa a la gráfica v–t.
+- Ejemplos: 02 (1.8, y también 1.2, 1.9 y «Ahora tú» k = 2) con v = v₀ + a·t en los datos; 03 rehecho (M3); 06 rehecho
+  (M3, con la vuelta a los 3 s justificada y la suma 4 + 1); 10 (4.3) con la a–t vacía y su «?» debajo de la v–t; 11
+  (4.8) con el paso 48 = a · 16; 12 (4.14) con los tres ejes vacíos y su «?»; 13 (5.3) con el pabellón de la unidad; 15
+  (5.14) sin la n: con t, el cuadrado desarrollado en su línea; 18 (6.14, y 6.2 y 6.10) con H como la y de la cima y la
+  cuenta 0 = v₀² − 2gH entera.
+- Pendiente (fuera de alcance o decisión de Gerson): las etiquetas «0 s» y «1 s» pegadas en Lee de B1 y el «3 s» que no se
+  ve en Lee de B2 (`fis-combi`); «Velocidad: Normal» del control de animación (app); que la Predice dé como dato el
+  resultado del juego en B2 y B4 (está así a propósito: la predicción parte del juego); la pelota de la Predice de B6, que
+  todavía sube; en los ejemplos con alternativas, explicar todos los distractores (hoy dos o tres); el renglón que se
+  corta en 3.15 (la app); la regla de metros que sobra en 1.3 y 1.8 y la marca de 15 m en 6.8.

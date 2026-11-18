@@ -90,3 +90,29 @@ test('el pabellón: la pelota en su altura, la flecha de v según su sentido y l
   assert.match(P.dibujar({ vista: 'pabellon', g: { texto: 'g' }, pelotas: [{ y: 5, v: 0 }] }), /fis-aceleracion/);
   assert.match(P.dibujar({ vista: 'pabellon', pelotas: [{ y: 5, v: -12 }] }), />12 m\/s</);
 });
+
+// Correcciones del 18 nov (lector en frío y auditoría de MRUV y caída libre).
+test('alcance: cada vehículo con su nombre en su carril, también juntos y en el borde', () => {
+  for (const [xc, xm] of [[0, 0], [200, 200], [100, 0], [0, 200]]) {
+    const d = { vista: 'alcance', regla: { min: 0, max: 200, paso: 25, numero: 50 }, lugares: [{ en: 0, texto: 'Paradero' }], combi: { x: xc }, mototaxi: { x: xm } };
+    const g = P.geometria(d), nom = t => g.rotulos.find(r => r.texto === t);
+    assert.ok(nom('combi') && nom('mototaxi'), `${xc}, ${xm}`);
+    for (const r of g.rotulos) assert.ok(r.x0 >= 4 - 1e-9 && r.x1 <= W - 4 + 1e-9, `«${r.texto}» se sale`);
+    for (const o of g.objetos) for (const t of ['combi', 'mototaxi']) assert.ok(!pisa(o, nom(t)), `«${t}» pisa ${o.nombre}`);
+    for (let a = 0; a < g.rotulos.length; a++) for (let b = a + 1; b < g.rotulos.length; b++) assert.ok(!pisa(g.rotulos[a], g.rotulos[b]), `«${g.rotulos[a].texto}» pisa «${g.rotulos[b].texto}»`);
+  }
+  assert.ok(!P.geometria({ vista: 'alcance', combi: { x: 0 }, nombres: false }).rotulos.some(r => r.texto === 'combi'));
+});
+
+test('pabellón: la ventana dibujada se apoya en su rayita y la cota de h baja con su flecha', () => {
+  const d = { vista: 'pabellon', alto: 6, paso: 0.5, numero: 1, edificio: { techo: 5, pisos: 2, ventana: 3.2 }, pelotas: [{ y: 0 }],
+    cota: { de: 3.2, a: 0, texto: 'h', x: 190, flecha: true } };
+  const s = P.dibujar(d), g = P.geometria(d), { SUELO, TECHO } = P.constantes, Y = m => SUELO - (SUELO - TECHO) * m / 6;
+  const bases = [...s.matchAll(/<rect x="\d+" y="([\d.]+)" width="20" height="([\d.]+)"/g)].map(m => +m[1] + +m[2]);
+  assert.ok(bases.some(b => Math.abs(b - Y(3.2)) < 0.01), `alféizares en ${bases}`);
+  assert.ok(bases.some(b => Math.abs(b - Y(0.7)) < 0.01), 'el primer piso, a la misma altura sobre su piso');
+  assert.match(s, /stroke="var\(--c-f\)"/);
+  const h = g.rotulos.find(r => r.texto === 'h');
+  assert.ok(h && h.x1 <= 190 && h.y1 > Y(3.2) && h.y0 < Y(0), 'la h a la izquierda de la flecha, a media altura');
+  for (const o of g.objetos) assert.ok(!pisa(o, h), `la h pisa ${o.nombre}`);
+});

@@ -5,6 +5,9 @@
     {
       "id": "p1",
       "nivel": "básico",
+      "unidades": [
+        "fisica.movimiento-rectilineo"
+      ],
       "enunciado": "Una combi sube de Puno a Juliaca. La primera mitad del camino va a 40 km/h, porque hay tráfico, y la segunda mitad a 60 km/h. ¿Cuál es su rapidez media?",
       "respuesta": "48 km/h",
       "pasos": [
@@ -26,6 +29,9 @@
     {
       "id": "p2",
       "nivel": "básico",
+      "unidades": [
+        "fisica.movimiento-rectilineo"
+      ],
       "enunciado": "Un ciclista va 30 min a 20 km/h, descansa 10 min y luego va 20 min a 30 km/h. ¿Cuál es su rapidez media en todo el viaje?",
       "respuesta": "20 km/h",
       "pasos": [
@@ -50,6 +56,9 @@
     {
       "id": "p3",
       "nivel": "intermedio",
+      "unidades": [
+        "fisica.movimiento-rectilineo"
+      ],
       "enunciado": "Un heladero empuja su carrito por una calle recta. Sus posiciones, medidas desde la esquina, son: en t = 0, x = 10 m; en t = 20 s, x = 70 m; de t = 20 s a t = 30 s se queda quieto; en t = 50 s, x = 30 m. Halla su rapidez media y el módulo de su velocidad media entre t = 0 y t = 50 s.",
       "respuesta": "Rapidez media: 2 m/s. Velocidad media: 0,4 m/s.",
       "pasos": [
@@ -101,6 +110,9 @@
     {
       "id": "p4",
       "nivel": "intermedio",
+      "unidades": [
+        "fisica.mruv-y-caida-libre"
+      ],
       "enunciado": "Un tren de juguete debe ir de una estación a otra, a 60 m, partiendo y llegando en reposo. Puede acelerar como máximo a 2 m/s² y frenar como máximo a 3 m/s². ¿Cuál es el menor tiempo posible?",
       "respuesta": "10 s",
       "pasos": [
@@ -123,6 +135,9 @@
     {
       "id": "p5",
       "nivel": "avanzado",
+      "unidades": [
+        "fisica.mruv-y-caida-libre"
+      ],
       "enunciado": "El mismo tren del problema anterior ahora no puede pasar de 10 m/s. Con la misma distancia (60 m) y las mismas aceleraciones máximas, ¿cuál es el menor tiempo?",
       "respuesta": "61/6 s ≈ 10,17 s",
       "pasos": [
@@ -147,6 +162,9 @@
     {
       "id": "p6",
       "nivel": "básico",
+      "unidades": [
+        "fisica.mruv-y-caida-libre"
+      ],
       "enunciado": "La posición de una moto es x = 4 + 6t − t², con x en m y t en s. ¿Cuál es su velocidad en t = 5 s y en qué instante pasa por el origen?",
       "respuesta": "v = −4 m/s (va hacia atrás); pasa por el origen en t = 3 + √13 ≈ 6,61 s.",
       "pasos": [
@@ -179,6 +197,9 @@
     {
       "id": "p7",
       "nivel": "intermedio",
+      "unidades": [
+        "fisica.movimiento-parabolico-y-circular"
+      ],
       "enunciado": "Las coordenadas de una pelota son x = 4 + 8t e y = 1 + 9t − 5t², con x e y en m y t en s. ¿A qué distancia del origen está en t = 1 s? ¿Cuál es la mayor coordenada y que alcanza?",
       "respuesta": "Distancia: 13 m. Mayor coordenada y: 5,05 m.",
       "pasos": [
@@ -211,6 +232,9 @@
     {
       "id": "p8",
       "nivel": "básico",
+      "unidades": [
+        "fisica.movimiento-parabolico-y-circular"
+      ],
       "enunciado": "Toma R = 6400 km, π = 3 y un día de 24 h. Juliaca está a unos 16° de latitud sur (cos 16° = 24/25). ¿Con qué rapidez la lleva la rotación de la Tierra? ¿Y a un punto del ecuador?",
       "respuesta": "Juliaca: 1536 km/h. Ecuador: 1600 km/h.",
       "pasos": [

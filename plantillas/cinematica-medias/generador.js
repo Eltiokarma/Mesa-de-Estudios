@@ -151,12 +151,14 @@
   // toda velocidad o rapidez en naranja (también la media), el tiempo en turquesa y la posición en violeta.
   const VAR_MEDIA = { v1: { nombre: 'rapidez del primer tramo', color: 'o' }, v2: { nombre: 'rapidez del segundo tramo', color: 'o' },
     t: { nombre: 'tiempos de cada tramo', color: 'i' }, x: { nombre: 'rapidez media', color: 'o' } };
-  // [quién, distancia mínima y máxima del viaje en km, rapidez máxima creíble en km/h]
-  const VIAJES = [['Una combi va de Juliaca a Puno', 'la combi', 38, 50, 90], ['Un ciclista va de su casa a la chacra', 'el ciclista', 2, 25, 36],
-    ['Un bus interprovincial va de Arequipa a Camaná', 'el bus', 150, 190, 90], ['Una mototaxi va del mercado al paradero', 'la mototaxi', 1, 8, 40],
-    ['Un camión va de Cusco a Sicuani', 'el camión', 120, 150, 80], ['Un auto va de Lima a Huacho', 'el auto', 135, 160, 100],
-    ['Una combi va de Puno a Chucuito', 'la combi', 15, 22, 72], ['Un ciclista entrena por una carretera', 'el ciclista', 5, 80, 45],
-    ['Un bus recorre una carretera de la sierra', 'el bus', 20, 300, 90]];
+  // [quién, distancia mínima y máxima del viaje en km, rapidez máxima creíble en km/h]. Lugares sin nombre propio
+  // (auditoría de MRU, 18 nov, M2): la distancia cambia con la semilla, y un tramo real (Cusco–Sicuani, Lima–Huacho) solo
+  // iría con «unos» o con su fuente. Las rapideces, dentro de los topes de plantillas/fis-mru/topes.js (ciclista 43 km/h).
+  const VIAJES = [['Una combi va de una ciudad a otra cercana', 'la combi', 38, 50, 90], ['Un ciclista va de su casa a la chacra', 'el ciclista', 2, 25, 36],
+    ['Un bus interprovincial va de una ciudad a otra de la costa', 'el bus', 150, 190, 90], ['Una mototaxi va del mercado al paradero', 'la mototaxi', 1, 8, 40],
+    ['Un camión va de una ciudad a otra de la sierra', 'el camión', 120, 150, 80], ['Un auto va por la carretera de una ciudad a otra', 'el auto', 135, 160, 100],
+    ['Una combi va de la ciudad a un pueblo cercano', 'la combi', 15, 22, 72], ['Un ciclista entrena entre dos pueblos', 'el ciclista', 5, 80, 40],
+    ['Un bus va entre dos pueblos de la sierra', 'el bus', 20, 300, 90]];
   // Un viaje creíble para esa distancia (o sin distancia) y esas rapideces; null si no hay.
   function viaje(rng, D, vs) {
     const ok = VIAJES.filter(([, , a, b, vmax]) => Math.max(...vs) <= vmax && (D === null || (D >= a && D <= b)));
@@ -187,7 +189,8 @@
       const solucion = [
         ['Tiempo de cada mitad: ', v('t', `t₁ = ${f(D / 2)}/${f(v1)} = ${f(t1)} h`), ' y ', v('t', `t₂ = ${f(D / 2)}/${f(v2)} = ${f(t2)} h`), '.'],
         [v('x', 'Rapidez media'), ` = distancia total / tiempo total = ${f(D)}/${f(t1 + t2)} = `, v('x', `${f(correcta)} km/h`), '.'],
-        ['Atajo para mitades de recorrido: 2·', v('v1', 'v₁'), '·', v('v2', 'v₂'), '/(', v('v1', 'v₁'), ' + ', v('v2', 'v₂'), `) = 2·${f(v1)}·${f(v2)}/${f(v1 + v2)}. Sale menos que el promedio, ${f((v1 + v2) / 2)}, porque el tramo lento dura más.`],
+        // Sin el atajo 2·v₁·v₂/(v₁ + v₂) (auditoría de MRU, B6: criterio, no fórmulas memorizadas): solo el porqué.
+        [`Sale menos que el promedio, ${f((v1 + v2) / 2)} km/h, porque el tramo lento dura más.`],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: con('km/h'), unidad: 'km/h', variables: VAR_MEDIA, enunciado, pregunta, solucion,
         datos: { tipo: 'media', sub, v1, v2, D } });
@@ -204,7 +207,7 @@
       const pregunta = ['¿Cuál es su ', v('x', 'rapidez media'), ' en todo el viaje?'];
       const d1 = v1 * T / 2, d2 = v2 * T / 2;
       const errores = [
-        h('MED-armonica-por-aritmetica', 2 * v1 * v2 / (v1 + v2), 'Bien usar las dos rapideces. Pero 2·v₁·v₂/(v₁ + v₂) es para mitades de recorrido; aquí son mitades de tiempo: cada rapidez dura lo mismo.'),
+        h('MED-armonica-por-aritmetica', 2 * v1 * v2 / (v1 + v2), 'Bien usar las dos rapideces. Pero eso sería con mitades de recorrido; aquí son mitades de tiempo: cada rapidez dura lo mismo.'),
         h('MED-entre-medio-tiempo', v1 + v2, `Bien la distancia total, ${f(d1 + d2)} km. Pero se divide entre el tiempo total, ${f(T)} h, no entre la mitad.`),
         h('MED-un-tramo', Math.max(v1, v2), `Bien que el tramo rápido avance más. Pero la media junta los dos tramos: ${f(d1 + d2)} km en ${f(T)} h.`),
         h('MED-un-tramo', Math.min(v1, v2), 'Bien que la media tenga que ver con los tramos. Pero junta los dos: distancia total entre tiempo total.'),
@@ -270,8 +273,8 @@
     ];
     const solucion = [
       ['En la segunda mitad, los dos ratos duran lo mismo: su rapidez media es el promedio, ', v('v3', `u = (${f(v2)} + ${f(v3)})/2 = ${f(u)} km/h`), '.'],
-      ['Queda un viaje de dos mitades de recorrido, a ', v('v1', f(v1)), ' y a ', v('v3', f(u)), ' km/h: ', v('x', 'v'), ` = 2·${f(v1)}·${f(u)}/(${f(v1)} + ${f(u)}) = `, v('x', `${f(correcta)} km/h`), '.'],
-      [`Comprobación con 1 km por mitad: t = 1/${f(v1)} + 1/${f(u)} h y v = 2/t = ${f(correcta)} km/h.`],
+      ['Queda un viaje de dos mitades de recorrido, a ', v('v1', f(v1)), ' y a ', v('v3', f(u)), ' km/h.'],
+      [`Con 1 km por mitad: t = 1/${f(v1)} + 1/${f(u)} h y `, v('x', 'v'), ' = 2/t = ', v('x', `${f(correcta)} km/h`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto: con('km/h'), unidad: 'km/h', variables: VAR, enunciado, pregunta, solucion,
       datos: { tipo: 'media', sub, v1, v2, v3 } });
@@ -289,7 +292,11 @@
     const correcta = sub === 'rapidez' ? dist / tc : desp / tc;
     if (!limpio(correcta)) return null;
     if (sub === 'rapidez' && x2 === x0 && rng.moneda()) return null;
-    const [Quien, quien] = rng.elegir([['Una combi', 'la combi'], ['Un carrito de helados', 'el carrito'], ['Una bicicleta', 'la bicicleta']]);
+    // Quién va y vuelve: solo los que pueden ir así de rápido (auditoría de MRU, M2: un carrito de helados a 24 m/s). Se
+    // elige con una sola tirada, como antes, así que los números de cada semilla no cambian.
+    const rapida = Math.max(d1 / ta, d2 / tv);
+    const QUIENES = [['Una combi', 'la combi', 25], ['Un carrito de helados', 'el carrito', 2], ['Una bicicleta', 'la bicicleta', 12], ['Un mototaxi', 'el mototaxi', 15]].filter(q => q[2] >= rapida);
+    const [Quien, quien] = rng.elegir(QUIENES);
     const tabla = tpar ? [`t (s): `, v('t', `0; ${ta}; ${tb}; ${tc}`), '  |  x (m): ', v('x', `${x0}; ${x1}; ${x1}; ${x2}`)]
       : [`t (s): `, v('t', `0; ${ta}; ${tc}`), '  |  x (m): ', v('x', `${x0}; ${x1}; ${x2}`)];
     const enunciado = [`${Quien} se mueve por una avenida recta. Sus posiciones, medidas desde un grifo, se anotaron en esta tabla (en cada tramo va con rapidez constante): `, ...tabla, '.'];
@@ -360,7 +367,7 @@
     } else {
       const er = escala(Math.max(...alts.map(a => a.valor)));
       paso = pasoArrastre(alts, er.max);
-      datos.marca = { eje: 'regla', min: 0, max: er.max, inicio: 0, paso: er.tick, nombre: o.regla.nombre, unidad: o.regla.unidad, color: 'd' };
+      datos.marca = { eje: 'regla', min: 0, max: er.max, inicio: 0, paso: er.tick, nombre: o.regla.nombre, unidad: o.regla.unidad, color: 'o' };
     }
     const fantasmas = {};
     // Un id que se repite en el problema no lleva fantasma: no se sabría cuál de los dos dibujar.
@@ -371,7 +378,10 @@
   }
 
   // ================= vt: tiempo mínimo con tramos acelerado y frenado =================
-  const VAR_VT = { d: { nombre: 'distancia', color: 'o' }, a: { nombre: 'aceleraciones', color: 'i' }, t: { nombre: 'tiempo o rapidez tope', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  // Colores de «MRUV y caída libre» (auditoría de la unidad, M5, 18 nov; tabla `colores` de
+  // contenido/teoria/fisica/mruv-y-caida-libre.js): la rapidez naranja, el tiempo turquesa, la distancia (el área bajo la
+  // v–t) violeta y la aceleración carmín; lo que se pide lleva el color de su magnitud. Sin verde.
+  const VAR_VT = { d: { nombre: 'distancia', color: 'f' }, a: { nombre: 'aceleraciones', color: 'h' }, t: { nombre: 'tiempo', color: 'i' }, v: { nombre: 'rapidez', color: 'o' } };
   const ACEL = [0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5];
   function graficaVT(rng, semilla, sub) {
     const [Quien, quien] = rng.elegir([['Un tren', 'el tren'], ['Un metro de Lima', 'el metro'], ['Un bus del Metropolitano', 'el bus']]);
@@ -379,9 +389,11 @@
       const vm = rng.entero(5, 30), t = rng.elegir([20, 24, 30, 36, 40, 50, 60, 80, 100]);
       const d = vm * t / 2;
       if (!Number.isInteger(d)) return null;
-      // La gráfica carga la distancia (el área) y el tiempo: el enunciado solo cuenta cómo se mueve.
-      const enunciado = [`${Quien} parte del reposo y se detiene en la otra estación. Acelera y, apenas llega a su rapidez máxima, frena con una aceleración del mismo módulo.`];
-      const pregunta = ['¿Cuál es su ', v('x', 'rapidez máxima'), '?'];
+      // La distancia y el tiempo van en el enunciado (auditoría M6): sin la figura (papel, repaso, lector de pantalla) se
+      // resuelve igual. La gráfica los repite.
+      const enunciado = [`${Quien} parte del reposo y se detiene en la otra estación, a `, v('d', `${d} m`), ', ', v('t', `${t} s`),
+        ' después de partir. Acelera y, apenas llega a su rapidez máxima, frena con una aceleración del mismo módulo.'];
+      const pregunta = ['¿Cuál es su ', v('v', 'rapidez máxima'), '?'];
       const errores = [
         pa('G4-area-como-rectangulo', d / t, `${f(d / t)} m/s es la rapidez media, bien calculada; la máxima es el doble: la gráfica es un triángulo.`),
         h('VT-tramo-constante', 1.5 * d / t, 'Un tramo plano valdría si mantuviera la máxima un rato; aquí frena apenas llega: la gráfica es un triángulo.'),
@@ -391,21 +403,21 @@
       const viva = (alts, resp) => vivaVT(alts, resp, {
         tMax: t, marca: 'regla', regla: { nombre: 'vmax', unidad: 'm/s' }, sufijo: ' m/s',
         y: { min: 0, max: vm * 1.35, paso: vm * 3, nombre: 'v', unidad: 'm/s' },
-        curvas: [{ puntos: [[0, 0], [t / 2, vm], [t, 0]], desde: 0 }],
-        areas: [{ puntos: [[0, 0], [t / 2, vm], [t, 0]], color: 'o', rotulo: `${d} m`, desde: 0 }],
+        curvas: [{ puntos: [[0, 0], [t / 2, vm], [t, 0]], color: 'o', desde: 0 }],
+        areas: [{ puntos: [[0, 0], [t / 2, vm], [t, 0]], color: 'f', rotulo: `${d} m`, desde: 0 }],
         puntos: [
-          { x: t / 2, y: vm, color: 'd', rotulo: 'vmax', desde: 0, hasta: 1 },
-          { x: t / 2, y: vm, color: 'd', rotulo: `${f(vm)} m/s`, guias: true, desde: 2 },
+          { x: t / 2, y: vm, color: 'o', rotulo: 'vmax', desde: 0, hasta: 1 },
+          { x: t / 2, y: vm, color: 'o', rotulo: `${f(vm)} m/s`, guias: true, desde: 2 },
         ],
         alt: `Gráfica v-t en triángulo: parte de 0, sube hasta vmax a los ${f(t / 2)} s y baja a 0 a los ${t} s; el área es ${d} m`,
         pasos: [
-          pasoVT(1, ['El recorrido es el área del triángulo.'], [v('d', `${d}`), ' = ½ · ', v('t', `${t}`), ' · ', v('x', 'vmax')]),
-          pasoVT(2, ['Se despeja la altura del triángulo.'], [`vmax = 2·${d}/${t} = `, v('x', `${f(vm)} m/s`)], true),
+          pasoVT(1, ['El recorrido es el área del triángulo.'], [v('d', `${d}`), ' = ½ · ', v('t', `${t}`), ' · ', v('v', 'vmax')]),
+          pasoVT(2, ['Se despeja la altura del triángulo.'], [`vmax = 2·${d}/${t} = `, v('v', `${f(vm)} m/s`)], true),
         ],
       });
       const solucion = [
-        ['La gráfica v-t es un triángulo: sube hasta ', v('x', 'vmax'), ' en la mitad del tiempo y baja a cero.'],
-        ['El recorrido es el área: ', v('d', `${d}`), ' = ½ · ', v('t', `${t}`), ' · ', v('x', 'vmax'), ' → ', v('x', `vmax = 2·${d}/${t} = ${f(vm)} m/s`), '.'],
+        ['La gráfica v-t es un triángulo: sube hasta ', v('v', 'vmax'), ' en la mitad del tiempo y baja a cero.'],
+        ['El recorrido es el área: ', v('d', `${d}`), ' = ½ · ', v('t', `${t}`), ' · ', v('v', 'vmax'), ' → ', v('v', `vmax = 2·${d}/${t} = ${f(vm)} m/s`), '.'],
       ];
       return cerrar(rng, semilla, { correcta: vm, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_VT, enunciado, pregunta, solucion, viva,
         datos: { tipo: 'vt', sub, d, t } });
@@ -417,7 +429,7 @@
       if (!Number.isInteger(d) || !limpio(correcta, 1) || d > 2000) return null;
       const enunciado = [`${Quien} va de una estación a otra, a `, v('d', `${d} m`), ', del reposo al reposo. Puede acelerar hasta ',
         v('a', `${f(a)} m/s²`), ' y frenar hasta ', v('a', `${f(b)} m/s²`), ', sin límite de rapidez.'];
-      const pregunta = ['¿Cuál es el ', v('x', 'tiempo mínimo'), ' del viaje?'];
+      const pregunta = ['¿Cuál es el ', v('t', 'tiempo mínimo'), ' del viaje?'];
       const errores = [
         h('VT-sin-frenar', Math.sqrt(2 * d / a), 'd = ½·a·t² valdría si solo acelerara; para llegar en reposo también frena, y eso alarga el viaje.'),
         a !== b ? h('VT-mitad-camino', Math.sqrt(d / a) + Math.sqrt(d / b), 'Cambiar a mitad del camino vale si acelera y frena igual; aquí no, y el punto de cambio se corre.') : null,
@@ -429,22 +441,22 @@
       const viva = (alts, resp) => vivaVT(alts, resp, {
         tMax: correcta, marca: 'x', sufijo: ' s',
         y: { min: 0, max: ey.max, paso: ey.tick, nombre: 'v', unidad: 'm/s' },
-        curvas: [{ puntos: [[0, 0], [ta, vm]], color: 'i', desde: 1 }, { puntos: [[ta, vm], [correcta, 0]], color: 'i', desde: 1 }],
-        areas: [{ puntos: [[0, 0], [ta, vm], [correcta, 0]], color: 'o', rotulo: `${d} m`, desde: 1 }],
-        puntos: [{ x: ta, y: vm, color: 'd', rotulo: `${f(vm)} m/s`, guias: true, desde: 1 }, { x: ta, y: 0, rotulo: `${f(ta)} s`, desde: 2 },
-          { x: correcta, y: 0, color: 'd', desde: 3 }], // el instante de llegada lo rotula la marca con ✓
+        curvas: [{ puntos: [[0, 0], [ta, vm]], color: 'o', desde: 1 }, { puntos: [[ta, vm], [correcta, 0]], color: 'o', desde: 1 }],
+        areas: [{ puntos: [[0, 0], [ta, vm], [correcta, 0]], color: 'f', rotulo: `${d} m`, desde: 1 }],
+        puntos: [{ x: ta, y: vm, color: 'o', rotulo: `${f(vm)} m/s`, guias: true, desde: 1 }, { x: ta, y: 0, color: 'i', rotulo: `${f(ta)} s`, desde: 2 },
+          { x: correcta, y: 0, color: 'i', desde: 3 }], // el instante de llegada lo rotula la marca con ✓
         alt: `Gráfica v-t en triángulo: sube con pendiente ${f(a)} hasta ${f(vm)} m/s a los ${f(ta)} s y baja con pendiente ${f(b)} hasta 0 a los ${f(correcta)} s; el área es ${d} m`,
         pasos: [
           pasoVT(1, ['Lo más rápido: acelerar y frenar al máximo, sin tramo plano.'],
             [v('d', `${d}`), ` = ½·vmax²·(1/${f(a)} + 1/${f(b)}) → vmax = ${f(vm)} m/s`]),
           pasoVT(2, ['Acelera durante vmax/a y frena durante vmax/b.'], [`${f(vm)}/${f(a)} = ${f(ta)} s; ${f(vm)}/${f(b)} = ${f(tb)} s`]),
-          pasoVT(3, ['El viaje dura la suma de los dos tiempos.'], [v('x', 't'), ` = ${f(ta)} + ${f(tb)} = `, v('x', `${f(correcta)} s`)], true),
+          pasoVT(3, ['El viaje dura la suma de los dos tiempos.'], [v('t', 't'), ` = ${f(ta)} + ${f(tb)} = `, v('t', `${f(correcta)} s`)], true),
         ],
       });
       const solucion = [
         ['El tiempo mínimo se logra acelerando al máximo y frenando al máximo, sin tramo plano: la gráfica v-t es un triángulo.'],
         ['Si la cima es vmax: tiempos vmax/', v('a', f(a)), ' y vmax/', v('a', f(b)), '; área = ', v('d', `${d}`), ` = ½·vmax²·(1/${f(a)} + 1/${f(b)}) → vmax = ${f(vm)} m/s.`],
-        [v('x', 't'), ` = ${f(ta)} + ${f(tb)} = `, v('x', `${f(correcta)} s`), '.'],
+        [v('t', 't'), ` = ${f(ta)} + ${f(tb)} = `, v('t', `${f(correcta)} s`), '.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_VT, enunciado, pregunta, solucion, viva,
         datos: { tipo: 'vt', sub, d, a, b } });
@@ -456,8 +468,8 @@
     const tc = (d - dab) / vt, correcta = ta + tc + tb;
     if (!limpio(dab) || !limpio(correcta, 1) || d > 3000) return null;
     const enunciado = [`${Quien} va de una estación a otra, a `, v('d', `${d} m`), ', del reposo al reposo. Puede acelerar hasta ',
-      v('a', `${f(a)} m/s²`), ', frenar hasta ', v('a', `${f(b)} m/s²`), ' y no debe pasar de ', v('t', `${f(vt)} m/s`), '.'];
-    const pregunta = ['¿Cuál es el ', v('x', 'tiempo mínimo'), ' del viaje?'];
+      v('a', `${f(a)} m/s²`), ', frenar hasta ', v('a', `${f(b)} m/s²`), ' y no debe pasar de ', v('v', `${f(vt)} m/s`), '.'];
+    const pregunta = ['¿Cuál es el ', v('t', 'tiempo mínimo'), ' del viaje?'];
     const errores = [
       h('VT-sin-arranque', d / vt, `${d}/${f(vt)} valdría yendo al tope todo el viaje; al acelerar y al frenar va más lento.`),
       h('VT-suma-tiempos', d / vt + ta + tb, 'Los tres tramos están bien vistos; pero las rampas ya recorren parte del camino, más lento que el tope.'),
@@ -469,32 +481,34 @@
       tMax: T, marca: 'x', sufijo: ' s',
       y: { min: 0, max: ey.max, paso: ey.tick, nombre: 'v', unidad: 'm/s' },
       curvas: [
-        { puntos: [[0, vt], [T * 1.04, vt]], color: 'h', rotulo: `tope ${f(vt)} m/s`, en: [0, vt], discontinua: true, desde: 0, hasta: 2 },
-        { puntos: [[0, 0], [ta, vt]], color: 'i', desde: 1 }, { puntos: [[T - tb, vt], [T, 0]], color: 'i', desde: 1 },
-        { puntos: [[ta, vt], [T - tb, vt]], color: 'h', desde: 3 },
+        { puntos: [[0, vt], [T * 1.04, vt]], color: 'o', rotulo: `tope ${f(vt)} m/s`, en: [0, vt], discontinua: true, desde: 0, hasta: 2 },
+        { puntos: [[0, 0], [ta, vt]], color: 'o', desde: 1 }, { puntos: [[T - tb, vt], [T, 0]], color: 'o', desde: 1 },
+        { puntos: [[ta, vt], [T - tb, vt]], color: 'o', desde: 3 },
       ],
-      areas: [{ puntos: [[0, 0], [ta, vt]], color: 'i', desde: 2 }, { puntos: [[T - tb, vt], [T, 0]], color: 'i', desde: 2 },
-        { puntos: [[ta, vt], [T - tb, vt]], color: 'o', rotulo: `${f(d - dab)} m`, desde: 3 }],
-      puntos: [{ x: ta, y: 0, rotulo: `${f(ta)} s`, desde: 1, hasta: 3 }, { x: T, y: 0, color: 'd', desde: 4 }], // el instante de llegada lo rotula la marca con ✓
+      areas: [{ puntos: [[0, 0], [ta, vt]], color: 'f', desde: 2 }, { puntos: [[T - tb, vt], [T, 0]], color: 'f', desde: 2 },
+        { puntos: [[ta, vt], [T - tb, vt]], color: 'f', rotulo: `${f(d - dab)} m`, desde: 3 }],
+      puntos: [{ x: ta, y: 0, color: 'i', rotulo: `${f(ta)} s`, desde: 1, hasta: 3 }, { x: T, y: 0, color: 'i', desde: 4 }], // el instante de llegada lo rotula la marca con ✓
       alt: `Gráfica v-t en trapecio: sube hasta ${f(vt)} m/s en ${f(ta)} s, sigue constante ${f(tc)} s y baja a 0 en ${f(tb)} s; el área es ${d} m`,
       pasos: [
         pasoVT(1, ['Acelera hasta el tope y frena desde el tope.'], [`${f(vt)}/${f(a)} = ${f(ta)} s; ${f(vt)}/${f(b)} = ${f(tb)} s`]),
         pasoVT(2, ['En las dos rampas recorre su área: la mitad que a rapidez tope.'], [`½·${f(vt)}·(${f(ta)} + ${f(tb)}) = ${f(dab)} m`]),
         pasoVT(3, ['El resto del camino lo hace a rapidez tope.'], ['(', v('d', `${d}`), ` − ${f(dab)})/${f(vt)} = ${f(tc)} s`]),
-        pasoVT(4, ['El viaje dura la suma de los tres tiempos.'], [v('x', 't'), ` = ${f(ta)} + ${f(tc)} + ${f(tb)} = `, v('x', `${f(T)} s`)], true),
+        pasoVT(4, ['El viaje dura la suma de los tres tiempos.'], [v('t', 't'), ` = ${f(ta)} + ${f(tc)} + ${f(tb)} = `, v('t', `${f(T)} s`)], true),
       ],
     });
     const solucion = [
-      ['La gráfica v-t es un trapecio: acelera hasta ', v('t', `${f(vt)} m/s`), ', sigue constante y frena.'],
+      ['La gráfica v-t es un trapecio: acelera hasta ', v('v', `${f(vt)} m/s`), ', sigue constante y frena.'],
       [`Acelerando: ${f(vt)}/${f(a)} = ${f(ta)} s; frenando: ${f(vt)}/${f(b)} = ${f(tb)} s. En esos tramos avanza ½·${f(vt)}·(${f(ta)} + ${f(tb)}) = ${f(dab)} m.`],
-      [`Tramo constante: (${d} − ${f(dab)})/${f(vt)} = ${f(tc)} s. `, v('x', 't'), ` = ${f(ta)} + ${f(tc)} + ${f(tb)} = `, v('x', `${f(correcta)} s`), '.'],
+      [`Tramo constante: (${d} − ${f(dab)})/${f(vt)} = ${f(tc)} s. `, v('t', 't'), ` = ${f(ta)} + ${f(tc)} + ${f(tb)} = `, v('t', `${f(correcta)} s`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_VT, enunciado, pregunta, solucion, viva,
       datos: { tipo: 'vt', sub, d, a, b, vt } });
   }
 
   // ================= ecuacion: lectura de x = x0 + b·t + c·t² =================
-  const VAR_EC = { x0: { nombre: 'posición inicial', color: 'o' }, v0: { nombre: 'velocidad inicial', color: 'i' }, a: { nombre: 'aceleración', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  // Los mismos colores de «MRUV y caída libre» (auditoría M5): x₀ y Δx violeta, v₀ y v naranja, a carmín, t turquesa.
+  const VAR_EC = { x0: { nombre: 'posición inicial', color: 'f' }, v0: { nombre: 'velocidad inicial', color: 'o' }, a: { nombre: 'aceleración', color: 'h' },
+    v: { nombre: 'velocidad', color: 'o' }, x: { nombre: 'posición y desplazamiento', color: 'f' }, t: { nombre: 'tiempo', color: 'i' } };
   function ecuacion(a, b, c) {
     const seg = ['x = '];
     const terms = [];
@@ -529,10 +543,10 @@
         ];
         const solucion = [
           ['Comparando con x = ', v('x0', 'x0'), ' + ', v('v0', 'v0'), '·t + ½·', v('a', 'a'), '·t²: ', v('v0', `v0 = ${f(b)} m/s`), ' y ½·a = ', f(c), ', así que ', v('a', `a = ${f(2 * c)} m/s²`), '.'],
-          [v('x', 'v'), ` = v0 + a·t = ${f(b)} + ${par(2 * c)}·${t} = `, v('x', `${f(correcta)} m/s`), correcta < 0 ? ' (va hacia el oeste).' : ' (va hacia el este).'],
+          [v('v', 'v'), ` = v0 + a·t = ${f(b)} + ${par(2 * c)}·${t} = `, v('v', `${f(correcta)} m/s`), correcta < 0 ? ' (va hacia el oeste).' : ' (va hacia el este).'],
         ];
         return cerrar(rng, semilla, { negativos: true, correcta, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_EC, enunciado: ok(a, b, c),
-          pregunta: ['¿Cuál es su ', v('x', 'velocidad'), ` en t = ${t} s? (Positiva hacia el este.)`], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c], t } });
+          pregunta: ['¿Cuál es su ', v('v', 'velocidad'), ` en t = ${t} s? (Positiva hacia el este.)`], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c], t } });
       }
       const correcta = 2 * c;
       const errores = [
@@ -543,10 +557,10 @@
       ];
       const solucion = [
         ['Comparando con x = ', v('x0', 'x0'), ' + ', v('v0', 'v0'), '·t + ½·', v('a', 'a'), '·t², el coeficiente de t² es a/2.'],
-        [v('x', 'a'), ` = 2·${par(c)} = `, v('x', `${f(correcta)} m/s²`), '.'],
+        [v('a', 'a'), ` = 2·${par(c)} = `, v('a', `${f(correcta)} m/s²`), '.'],
       ];
       return cerrar(rng, semilla, { negativos: true, correcta, errores, texto: con('m/s²'), unidad: 'm/s²', variables: VAR_EC, enunciado: ok(a, b, c),
-        pregunta: ['¿Cuál es su ', v('x', 'aceleración'), '? (Con signo: positiva hacia el este.)'], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c] } });
+        pregunta: ['¿Cuál es su ', v('a', 'aceleración'), '? (Con signo: positiva hacia el este.)'], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c] } });
     }
     if (sub === 'desplazamiento') {
       const a = rng.entero(-20, 30), b = rng.entero(1, 12), c = rng.elegir([-1, -0.5, 0.5, 1, 1.5, 2, 3]);
@@ -582,7 +596,7 @@
       ].filter(Boolean);
       const solucion = [
         ['Comparando con x = x0 + v0·t + ½·a·t²: ', v('v0', `v0 = ${f(b)} m/s`), ' y ', v('a', `a = 2·(${f(c)}) = ${f(2 * c)} m/s²`), ': va hacia el este y frena.'],
-        ['Se detiene cuando v = v0 + a·t = 0: ', v('x', 't'), ` = ${f(b)}/${f(2 * k)} = `, v('x', `${f(correcta)} s`), `. Ahí está en x = ${f(T(tp))} m, el punto más al este.`],
+        ['Se detiene cuando v = v0 + a·t = 0: ', v('t', 't'), ` = ${f(b)}/${f(2 * k)} = `, v('t', `${f(correcta)} s`), `. Ahí está en x = ${f(T(tp))} m, el punto más al este.`],
       ];
       return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_EC, enunciado: ok(a, b, c),
         pregunta: [`¿En qué instante se detiene ${obj} por un momento?`], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c] } });
@@ -603,7 +617,7 @@
     const solucion = [
       ['Pasa por el origen cuando x = 0: ', ...ecuacion(a, b, c).slice(1), ' = 0.'],
       [`Factorizando: ${f(c)}·(t − ${r})·(t + ${s}) = 0 → t = ${r} s o t = −${s} s.`],
-      ['El instante negativo no sirve: ', v('x', `t = ${correcta} s`), '.'],
+      ['El instante negativo no sirve: ', v('t', `t = ${correcta} s`), '.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto: con('s'), unidad: 's', variables: VAR_EC, enunciado: ok(a, b, c),
       pregunta: [`¿En qué instante pasa ${obj} por el origen (x = 0)?`], solucion, datos: { tipo: 'ecuacion', sub, coef: [a, b, c] } });

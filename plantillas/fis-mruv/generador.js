@@ -12,7 +12,7 @@
  * con su gráfica v–t (B3), el mototaxi y la combi que lo alcanza, con sus gráficas (B4), la regla que se atrapa, la
  * ventana, el puente y el pozo (B5) y la pelota pateada junto al pabellón o desde la azotea (B6). Valores de problema,
  * sin fuente (§8): combis de 2 a 30 m/s (en km/h, de 18 a 108), mototaxis de 4 a 15 m/s, atletas de 6 a 10 m/s,
- * pelotas pateadas o lanzadas de 5 a 20 m/s, puentes hasta 125 m, azoteas hasta 40 m, pozos de 20 a 80 m; el sonido a unos
+ * pelotas pateadas o lanzadas de 5 a 20 m/s, puentes hasta 80 m (más alto, un acantilado), azoteas hasta 40 m, pozos de 20 a 80 m; el sonido a unos
  * 340 m/s y g = 10 m/s² como convención del examen.
  *
  * Tipos por idea (TIPOS_POR_IDEA; nivel 1 un paso, 2 dos pasos, 3 de examen). generar(semilla, { idea }) da solo los
@@ -164,6 +164,8 @@
     lv: 'Velocidad: v = v_0 − g · t',
     ly: 'Altura: y = v_0 · t − ½ · g · t²',
     lv2: 'Velocidad y altura: v² = v_0² − 2 · g · y',
+    // La piedra que se suelta desde H en el encuentro no sale del 0 (auditoría A3, 18 nov): la altura con y_0.
+    ly0: 'Si sale desde la altura y_0: y = y_0 + v_0 · t − ½ · g · t²',
   };
   const DB2 = [D.vt, D.dx, D.horaria, D.v2, D.eje];
   const DB3 = [D.pend, D.area, D.dist, D.fig, D.adelante];
@@ -485,6 +487,7 @@
   }
 
   const VEHICULOS = [['Frente al colegio, una combi', 'la combi'], ['En la carretera, un auto', 'el auto'], ['En la avenida, un mototaxi', 'el mototaxi']];
+  const donde = (quien, v0) => (/colegio/.test(quien) && v0 > 12 ? 'En la carretera, una combi' : quien);
   function frenado(rng) {
     const [quien] = rng.elegir(VEHICULOS);
     const v0 = rng.entero(6, 30), Af = rng.elegir([1, 1.5, 2, 2.5, 3, 4, 5, 6]);
@@ -493,7 +496,7 @@
     const m = M.movil({ v0, a: -Af, frena: true }), ts = m.tParada, d = m.distancia(0, ts + 5);
     if (!limpio(d, 1) || !limpio(ts, 1) || d > 300) return null;
     return {
-      enunciado: [`${quien} va a `, V(ms(v0)), ' y frena parejo con ', A(`a = −${f(Af)} m/s²`), ' hasta detenerse.'],
+      enunciado: [`${donde(quien, v0)} va a `, V(ms(v0)), ' y frena parejo con ', A(`a = −${f(Af)} m/s²`), ' hasta detenerse.'],
       pregunta: ['¿Cuántos metros recorre mientras frena?'],
       datos: DB2, correcta: d, fmt: mt, negativos: true,
       errores: [
@@ -566,7 +569,7 @@
     const v0 = k0 / 3.6, m = M.movil({ v0, a: -Af, frena: true }), ts = m.tParada, d = m.distancia(0, ts + 5);
     if (!limpio(d, 2) || d > 300) return null;
     return {
-      enunciado: [`${quien} va a `, V(kmh(k0)), ' cuando un perro cruza; frena parejo con ', A(`a = −${f(Af)} m/s²`), ' hasta detenerse.'],
+      enunciado: [`${donde(quien, k0 / 3.6)} va a `, V(kmh(k0)), ' cuando un perro cruza; frena parejo con ', A(`a = −${f(Af)} m/s²`), ' hasta detenerse.'],
       pregunta: ['¿Cuántos metros recorre mientras frena?'],
       datos: [...DB2, D.kmh], correcta: d, fmt: mt, negativos: true,
       errores: [
@@ -1091,10 +1094,12 @@
 
   // ======================= Idea B5: caída libre desde el reposo =======================
 
-  // Desde dónde se suelta algo, según la altura (todo posible: ventanas de 1 a 15 m, azoteas hasta 45, puentes hasta 125).
+  // Desde dónde se suelta algo, según la altura (todo posible: ventanas de 1 a 15 m, azoteas hasta 45, puentes hasta 80 y,
+  // más alto, el borde de un acantilado).
   const lugarCaida = h => (h <= 15 ? { frase: 'Sueltas un borrador desde una ventana', de: 'del patio', llega: 'al patio' }
     : h <= 45 ? { frase: 'Una maceta cae desde una azotea', de: 'de la vereda', llega: 'a la vereda' }
-      : { frase: 'Sueltas una piedra desde un puente', de: 'del río', llega: 'al río' });
+      : h <= 80 ? { frase: 'Sueltas una piedra desde un puente', de: 'del río', llega: 'al río' }
+        : { frase: 'Sueltas una piedra desde el borde de un acantilado', de: 'del suelo', llega: 'al suelo' });
   const caer = h => M.lanzamientoVertical({ y0: h, v0: 0 });   // el motor: tiempo y velocidad al llegar al piso
 
   function altura(rng) {
@@ -1182,7 +1187,7 @@
   function caidaKmh(rng) {
     const t = rng.elegir([2, 3, 4, 5]), h = 5 * t * t, vms = -caer(h).vSuelo, ok = vms * 3.6;
     return {
-      enunciado: ['Una piedra se suelta desde un puente a ', X(mt(h)), ' del río.'],
+      enunciado: h <= 80 ? ['Una piedra se suelta desde un puente a ', X(mt(h)), ' del río.'] : ['Una piedra se suelta desde el borde de un acantilado, a ', X(mt(h)), ' del suelo.'],
       pregunta: ['¿Con qué rapidez llega al agua, en km/h?'],
       datos: [...DB5, D.kmh], correcta: ok, fmt: kmh,
       errores: [
@@ -1413,11 +1418,11 @@
     const y = M.movil(pelota).x(te);
     if (y <= 0 || y >= H) return null;
     const enunciado = ['Desde lo alto de un edificio de ', X(mt(H)), ' sueltas una piedra y, a la vez, desde el suelo lanzan una pelota hacia arriba con ', V(`v_0 = ${ms(v0)}`), ', en la misma vertical.'];
-    const sol = [['Piedra: y = ', X(f(H)), ' − 5 · ', T('t²'), '. Pelota: y = ', V(f(v0)), ' · ', T('t'), ' − 5 · ', T('t²'), '.'],
+    const sol = [['Piedra, con y_0 = ', X(mt(H)), ' y v_0 = 0: y = ', X(f(H)), ' − 5 · ', T('t²'), '. Pelota: y = ', V(f(v0)), ' · ', T('t'), ' − 5 · ', T('t²'), '.'],
       ['Iguales: ', `${f(H)} = ${v0} · t, así que t = `, T(sg(te)), ', a ', X(`y = ${mt(y)}`), ' del suelo.']];
     if (sub === 'tiempo') return {
       enunciado, pregunta: ['¿A los cuántos segundos se encuentran?'],
-      datos: DB6, correcta: te, fmt: sg,
+      datos: [...DB6, D.ly0], correcta: te, fmt: sg,
       errores: [
         e('C-ENC-MITAD', te / 2, x => `Bien que se acerquen. Pero se acercan a la rapidez de la pelota, ${v0} m/s, sin dividir; así sale ${x}.`),
         e('C-ENC-CAIDA', Math.sqrt(2 * H / G), x => `Bien la caída de la piedra. Pero ${x} es lo que tardaría en caer todo, sin encontrarse.`),
@@ -1427,7 +1432,7 @@
     };
     return {
       enunciado, pregunta: ['¿A qué altura del suelo se encuentran?'],
-      datos: DB6, correcta: y, fmt: mt,
+      datos: [...DB6, D.ly0], correcta: y, fmt: mt,
       errores: [
         e('C-ENC-CAIDO', H - y, x => `Bien el instante del encuentro, ${f(te)} s. Pero ${x} es lo que bajó la piedra; la altura es lo que le queda.`),
         e('C-ENC-SIN-G', v0 * te, x => `Bien v_0 · t para la pelota. Pero también la frena g: falta restar ½ · g · t²; así sale ${x}.`),
@@ -1462,7 +1467,7 @@
       errores: [
         e('C-VUELTA', G * Tt * Tt / 2, x => `Bien ½ · g · t². Pero ${f(Tt)} s es subir y bajar; baja solo la mitad del tiempo. Así sale ${x}.`),
         e('C-MEDIO', G * (Tt / 2) ** 2, x => `Bien la mitad del tiempo para bajar. Pero lo que cae lleva un ½: ½ · g · t²; así sale ${x}.`),
-        e('C-TIEMPO', v0, x => `Bien v_0 = ${f(v0)} m/s. Pero ese número es la rapidez de salida; ${x} no es la altura.`),
+        e('C-VELOCIDAD', v0, x => `Bien v_0 = ${f(v0)} m/s. Pero ese número es la rapidez de salida; ${x} no es la altura.`),
       ],
       solucion: [...sol, ['Baja desde el reposo en ', T(sg(Tt / 2)), ': ', X('H'), ` = ½ · 10 · ${f(Tt / 2)}² = `, X(mt(L.H)), '.']],
       _datos: { sub, T: Tt },

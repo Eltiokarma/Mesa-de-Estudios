@@ -311,3 +311,20 @@ test('la práctica no repite las predicciones de la unidad', () => {
     assert.ok(!/canica y una piedra|Justo ahí, ¿cuánto vale su aceleración/.test(t), `${idea} semilla ${s}: ${t}`);
   }
 });
+
+// Correcciones del 18 nov (auditoría de la unidad): el encuentro trae la altura con y_0 (A3), frente al colegio no se va a
+// más de 12 m/s y los puentes no pasan de 80 m (B1 y B2).
+test('el encuentro trae y = y_0 + …; frente al colegio, hasta 12 m/s; puentes de hasta 80 m', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? (x.t !== undefined ? String(x.t) : '') : String(x));
+  const num = s => Number(s.replace(/\s/g, '').replace(',', '.'));
+  let enc = 0;
+  for (const idea of [undefined, ...IDEAS]) for (let s = 0; s < 600; s++) {
+    const p = gen.generar(`c${s}`, idea ? { idea } : {}), t = plano(p.enunciado), d = p.datos.join('\n');
+    if (p._datos.tipo === 'encuentro') { enc++; assert.match(d, /y = y_0 \+ v_0 · t − ½ · g · t²/, `semilla ${s}`); }
+    const col = t.match(/Frente al colegio, una combi va a ([\d,]+) (m\/s|km\/h)/);
+    if (col) assert.ok(num(col[1]) / (col[2] === 'km/h' ? 3.6 : 1) <= 12 + 1e-9, `semilla ${s}: ${t}`);
+    const pu = t.match(/puente a ([\d ,]+) m/);
+    if (pu) assert.ok(num(pu[1]) <= 80, `semilla ${s}: ${t}`);
+  }
+  assert.ok(enc > 10, `${enc} encuentros`);
+});

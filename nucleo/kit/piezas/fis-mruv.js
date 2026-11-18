@@ -202,15 +202,15 @@
   }
   function vPista(d, e) {
     const L = d.largo || 100, X = m => 26 + 268 * lim(m, 0, L) / L, Y0 = 30, Y1 = 66;
-    let s = `<g data-prueba="si" class="fis-pista"><rect x="12" y="${Y0}" width="${W - 24}" height="${Y1 - Y0}" rx="5" fill="var(--c-h)" fill-opacity="0.12"/>`
+    let s = `<g data-prueba="si" class="fis-pista"><rect x="12" y="${Y0}" width="${W - 24}" height="${Y1 - Y0}" rx="5" fill="currentColor" fill-opacity="0.07"/>`
       + `<line x1="14" y1="${(Y0 + Y1) / 2}" x2="${W - 14}" y2="${(Y0 + Y1) / 2}" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"/>`
       + `<line x1="${n(X(0))}" y1="${Y0}" x2="${n(X(0))}" y2="${Y1}" stroke="currentColor" stroke-width="3"/>`
       + `<line x1="${n(X(L))}" y1="${Y0}" x2="${n(X(L))}" y2="${Y1}" stroke="currentColor" stroke-width="3" stroke-dasharray="4 3"/></g>`;
     const rot = [caja(X(0), Y0 - 8, 'salida', { ancla: 'start' }), caja(X(L), Y0 - 8, 'meta', { ancla: 'end' })];
     for (let m = 0; m <= L + 1e-9; m += 10) s += `<line x1="${n(X(m))}" y1="${Y1}" x2="${n(X(m))}" y2="${Y1 + (m % 50 ? 4 : 8)}" stroke="currentColor" stroke-width="1"/>`;
     for (const m of [0, L / 2, L]) rot.push(caja(X(m), Y1 + 22, m === L ? `${fmt(m)} m` : fmt(m), { ancla: 'middle', tipo: 'numero' }));
-    // dónde estaba en cada segundo: rayitas naranjas sobre el carril
-    for (const m of d.marcas || []) s += `<line x1="${n(X(m))}" y1="${Y1 - 6}" x2="${n(X(m))}" y2="${Y1 + 2}" stroke="var(--c-o)" stroke-width="2.5" stroke-linecap="round"/>`;
+    // dónde estaba en cada segundo: rayitas en tinta sobre el carril (la pista y sus marcas no son una magnitud: sin color)
+    for (const m of d.marcas || []) s += `<line x1="${n(X(m))}" y1="${Y1 - 6}" x2="${n(X(m))}" y2="${Y1 + 2}" stroke="currentColor" stroke-opacity="0.7" stroke-width="2.5" stroke-linecap="round"/>`;
     const ax = X(Number.isFinite(d.x) ? d.x : 0);
     s += atleta(ax, Y1 - 4);
     const R = { x0: 48, x1: 300, y0: 124, y1: 124 + (d.grafica && d.grafica.alto || 120) };
@@ -236,8 +236,13 @@
     }
     rot.push(caja(W - M, EJE + 21, 'm', { ancla: 'end', peso: 700, tipo: 'numero' }));
     // dos carriles: el mototaxi en el de arriba y la combi en el de abajo (así no se tapan cuando van juntos)
-    if (d.mototaxi) { const cx = X(d.mototaxi.x); s += mototaxi(cx, 56); obj.push({ nombre: 'mototaxi', x0: cx - 17, x1: cx + 17, y0: 31, y1: 56 }); }
-    if (d.combi) { const cx = X(d.combi.x); s += combi(cx, 84); obj.push({ nombre: 'combi', x0: cx - 20, x1: cx + 20, y0: 62, y1: 84 }); }
+    // cada uno con su nombre al lado, en su carril (a la derecha; a la izquierda si no cabe): no se confunden aunque vayan juntos
+    const nombreV = (cx, medio, y, texto) => {
+      const der = caja(cx + medio + 6, y, texto, { tam: 13 });
+      rot.push(der.x1 <= W - M - 1e-9 && der.x0 >= cx + medio + 6 - 1e-9 ? der : caja(cx - medio - 6, y, texto, { tam: 13, ancla: 'end' }));
+    };
+    if (d.mototaxi) { const cx = X(d.mototaxi.x); s += mototaxi(cx, 56); obj.push({ nombre: 'mototaxi', x0: cx - 17, x1: cx + 17, y0: 31, y1: 56 }); if (d.nombres !== false) nombreV(cx, 17, 50, 'mototaxi'); }
+    if (d.combi) { const cx = X(d.combi.x); s += combi(cx, 84); obj.push({ nombre: 'combi', x0: cx - 20, x1: cx + 20, y0: 62, y1: 84 }); if (d.nombres !== false) nombreV(cx, 20, 79, 'combi'); }
     if (!d.grafica) return { H: 128, s, rotulos: rot, objetos: obj, lineas: [], planos: [] };
     const R = { x0: 48, x1: 300, y0: 150, y1: 150 + (d.grafica.alto || 120) };
     const p = plano(d.grafica, R, e.corte || 0);
@@ -331,19 +336,29 @@
     if (d.regla !== false) s += `<g class="kit-regla">${r}</g>`;
     else rot.splice(0, rot.length);
     if (d.cota) {
-      const ya = Y(d.cota.de), yb = Y(d.cota.a), cx = 28;
-      s += `<path d="M${cx - 6} ${n(ya)}H${cx + 6}M${cx} ${n(ya)}V${n(yb)}M${cx - 6} ${n(yb)}H${cx + 6}" stroke="var(--c-f)" stroke-width="2" stroke-linecap="round" fill="none"/>`;
-      rot.push(caja(cx - 8, Math.min(ya, yb) - 10, d.cota.texto, { peso: 700, color: 'f', ancla: 'start' }));
+      // x: dónde va (por defecto, junto a la regla de alturas); flecha: con punta en «a» (lo que cae, hacia abajo), y el
+      // rótulo a su izquierda, a media altura.
+      const ya = Y(d.cota.de), yb = Y(d.cota.a), cx = d.cota.x || 28;
+      if (d.cota.flecha) {
+        s += `<path d="M${cx - 6} ${n(ya)}H${cx + 6}" stroke="var(--c-f)" stroke-width="2" stroke-linecap="round" fill="none"/>${T.flecha(cx, ya, cx, yb, { color: 'f', grosor: 2.5 })}`;
+        rot.push(caja(cx - 6, (ya + yb) / 2 + 5, d.cota.texto, { peso: 700, color: 'f', ancla: 'end' }));
+      } else {
+        s += `<path d="M${cx - 6} ${n(ya)}H${cx + 6}M${cx} ${n(ya)}V${n(yb)}M${cx - 6} ${n(yb)}H${cx + 6}" stroke="var(--c-f)" stroke-width="2" stroke-linecap="round" fill="none"/>`;
+        rot.push(caja(cx - 8, Math.min(ya, yb) - 10, d.cota.texto, { peso: 700, color: 'f', ancla: 'start' }));
+      }
     }
     // el pabellón del colegio (dibujo de prueba)
     const ed = d.edificio || { techo: 5, pisos: 1 }, yt = Y(ed.techo), pisos = ed.pisos || 1, X0 = 56, X1 = 164;
     let b = `<rect x="${X0}" y="${n(yt)}" width="${X1 - X0}" height="${n(SUELO - yt)}" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2"/>`
       + `<line x1="${X0 - 4}" y1="${n(yt)}" x2="${X1 + 4}" y2="${n(yt)}" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`;
-    const hp = (SUELO - yt) / pisos;
+    const hp = (SUELO - yt) / pisos, hpm = ed.techo / pisos;
+    // Con `ventana` (en m), el alféizar de cada piso va a esa misma altura sobre su piso: la rayita de la ventana queda
+    // justo bajo la ventana dibujada (lector en frío, 18 nov: la rayita a 3,2 m y la ventana dibujada a unos 5 m).
+    const alfeizar = ed.ventana !== undefined ? ed.ventana - Math.floor(ed.ventana / hpm + 1e-9) * hpm : null;
     for (let k = 0; k < pisos; k++) {
       const yb = SUELO - k * hp;
       if (k) b += `<line x1="${X0}" y1="${n(yb)}" x2="${X1}" y2="${n(yb)}" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.6"/>`;
-      const wh = Math.min(16, hp * 0.4), wy = yb - hp * 0.62 - wh / 2;
+      const wh = Math.min(16, hp * 0.4), wy = alfeizar !== null ? Y(k * hpm + alfeizar) - wh : yb - hp * 0.62 - wh / 2;
       for (const wx of [X0 + 12, X0 + 44, X0 + 76]) b += `<rect x="${wx}" y="${n(wy)}" width="20" height="${n(wh)}" rx="1.5" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="1.2"/>`;
     }
     s += `<g class="kit-objeto" data-objeto="pabellon" data-prueba="si">${b}</g>`;

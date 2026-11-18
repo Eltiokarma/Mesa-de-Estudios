@@ -319,8 +319,8 @@ test('ejemplos: las cuentas de las respuestas, rehechas aparte, y la letra de ca
   const letra = (k, alt) => { const L = 'ABCDE'[ej[k].alternativas.indexOf(alt)]; assert.ok(L, `ejemplo ${k + 1}: «${alt}» no es alternativa`); assert.match(r(k), new RegExp(`^${L}, `), `ejemplo ${k + 1}`); };
   letra(10, `${fmt(acel(0, kmh(36), 4))} m/s² y ${fmt(acel(kmh(36), kmh(72), 5))} m/s²`);
   letra(11, fmt(acel(0, 0, 18)));
-  letra(12, `+${fmt(acel(-25, -10, 5))} m/s²`);
-  letra(13, `${fmt(-3)} m/s², a los ${fmt(18 / 3)} s`);
+  letra(12, `+${fmt(acel(-25, -10, 5))} m/s², a los ${fmt(25 / acel(-25, -10, 5))} s`);
+  letra(13, `${fmt((18 + 6) / 3)} s`);   // −6 = 18 − 3t: riel abajo lleva signo −
   letra(14, `${fmt(acel(0, kmh(90), 10) * 4 * 3.6)} km/h`);
   // Los distractores de examen salen de errores que el resuelto nombra.
   assert.ok(ej[10].alternativas.includes(`${fmt(kmh(36) / 4)} m/s² y ${fmt(kmh(72) / 5)} m/s²`), 'K4: 20 ÷ 5 sin restar');
@@ -410,7 +410,7 @@ test('nada de lo que se ve antes de predecir adelanta la respuesta (B2 a B6)', (
   assert.ok(!/100/.test(textosSVG(Kit.piezas['fis-combi'].dibujar(B2.predice.dibujo.datos)).filter(t => !/^\d+$/.test(t)).join(' ')));
   assert.ok(!B3.predice.dibujo.datos.areas.some(a => a.rotulo), 'B3: las áreas sin número');
   assert.ok(!(B4.predice.dibujo.datos.tangentes || []).length && B4.predice.revelar.datos.tangentes.length, 'B4: la inclinación igual aparece al revelar');
-  assert.ok(B5.predice.dibujo.datos.pelotas.every(p => p.y === 5), 'B5: las dos todavía en la ventana');
+  assert.ok(B5.predice.dibujo.datos.pelotas.every(p => p.y === B5.predice.dibujo.datos.edificio.ventana), 'B5: las dos todavía en la ventana');
 });
 
 test('las predicciones de B2 a B6 cuadran aparte', () => {
@@ -513,8 +513,8 @@ test('«Ahora tú» de B2 a B6: opciones distintas, una correcta, datos, y la re
 
 const RESUELVE = {
   'ecuaciones-mruv': [
-    [new RegExp(`^Frente al colegio, una combi va a ${N} m/s y frena parejo hasta detenerse ${N} m más adelante\\. ¿Cuál es su aceleración\\?$`), m => `a = ${fmt(-(n2(m[1]) ** 2) / (2 * n2(m[2])))} m/s²`],
-    [new RegExp(`^Frente al colegio, una combi va a ${N} m/s y frena parejo hasta detenerse ${N} m más adelante\\. ¿Cuánto tarda en detenerse\\?$`), m => `Tarda ${fmt(2 * n2(m[2]) / n2(m[1]))} s`],
+    [new RegExp(`^(?:Frente al colegio|En la avenida), una combi va a ${N} m/s y frena parejo hasta detenerse ${N} m más adelante\\. ¿Cuál es su aceleración\\?$`), m => `a = ${fmt(-(n2(m[1]) ** 2) / (2 * n2(m[2])))} m/s²`],
+    [new RegExp(`^(?:Frente al colegio|En la avenida), una combi va a ${N} m/s y frena parejo hasta detenerse ${N} m más adelante\\. ¿Cuánto tarda en detenerse\\?$`), m => `Tarda ${fmt(2 * n2(m[2]) / n2(m[1]))} s`],
   ],
   'pendiente-aceleracion': [
     [new RegExp(`^Un atleta acelera parejo desde el reposo hasta ${N} m/s en (\\d+) s y sigue a esa rapidez (\\d+) s más\\. ¿Cuánto avanza en total\\?$`), m => `Avanza ${fmt(n2(m[1]) * n2(m[2]) / 2 + n2(m[1]) * n2(m[3]))} m`],
@@ -530,8 +530,8 @@ const RESUELVE = {
     [new RegExp(`^Atrapas una regla que suelta tu compañero cuando ya cayó ${N} cm\\. ¿Cuál es tu tiempo de reacción\\?$`), m => `Unos ${fmt(raiz(2 * n2(m[1]) / 100 / 10))} s`],
   ],
   'caida-libre': [
-    [new RegExp(`^Pateas una pelota hacia arriba con ${N} m/s\\. ¿Qué rapidez tiene cuando pasa por ${N} m al subir\\?$`), m => `v = ${fmt(raiz(n2(m[1]) ** 2 - 20 * n2(m[2])))} m/s`],
-    [new RegExp(`^Pateas una pelota hacia arriba con ${N} m/s\\. ¿A qué altura está a los ${N} s\\?$`), m => `y = ${fmt(n2(m[1]) * n2(m[2]) - 5 * n2(m[2]) ** 2)} m`],
+    [new RegExp(`^(?:Pateas|Lanzas) una pelota hacia arriba con ${N} m/s\\. ¿Qué rapidez tiene cuando pasa por ${N} m al subir\\?$`), m => `v = ${fmt(raiz(n2(m[1]) ** 2 - 20 * n2(m[2])))} m/s`],
+    [new RegExp(`^(?:Pateas|Lanzas) una pelota hacia arriba con ${N} m/s\\. ¿A qué altura está a los ${N} s\\?$`), m => `y = ${fmt(n2(m[1]) * n2(m[2]) - 5 * n2(m[2]) ** 2)} m`],
   ],
 };
 test('«Así se resuelve» de B2 a B6: cuadra aparte y no repite ninguna pregunta de «Ahora tú»', () => {
@@ -567,11 +567,18 @@ test('ejemplos de B2 a B6: las cuentas, rehechas aparte, y la letra de cada alte
   q(id, 7, new RegExp(`x = ${fmt(10 + 8 * 3 + 9)} m y v = ${fmt(8 + 2 * 3)} m/s`));
   q(id, 8, new RegExp(`${fmt(25 - 4)} m`));
   { const t = (-4 + raiz(16 + 240)) / 2; q(id, 9, new RegExp(`${fmt(t)} s`)); }
-  letra(id, 10, `${fmt(8 * 2 ** 2)} m`); letra(id, 11, `${fmt(20 ** 2 / 10)} m`);
-  letra(id, 12, `${fmt(6 - 2 * 2)} m/s`);
-  { const x = t => 4 + 6 * t - t * t; letra(id, 13, `${fmt(x(4) - x(1))} m`); assert.ok(idea(id).ejemplos[13].alternativas.includes(`${fmt(x(3) - x(1) + x(3) - x(4))} m`), 'la distancia recorrida es un distractor'); }
-  letra(id, 14, `${fmt(25 - 16)} m`);
-  assert.ok(idea(id).ejemplos[11].alternativas.includes(`${fmt(72 ** 2 / 10).replace(/ /g, ' ')} m`) || idea(id).ejemplos[11].alternativas.includes('518,4 m'), 'U1: en km/h');
+  letra(id, 10, `${fmt(8 * 2 ** 2)} m`);
+  // Con tiempo de reacción: 0,5 s a 72 km/h sin frenar y después el frenado con 5 m/s².
+  letra(id, 11, `${fmt(20 * 0.5 + 20 ** 2 / 10)} m`);
+  assert.ok(idea(id).ejemplos[11].alternativas.includes(`${fmt(20 ** 2 / 10)} m`), 'sin la reacción es un distractor');
+  assert.ok(idea(id).ejemplos[11].alternativas.includes(`${fmt(72 * 0.5 + 72 ** 2 / 10)} m`), 'U1: en km/h');
+  // x = 2 + 8t − 2t² vuelve a x = 2 cuando 8t = 2t², con v = 8 − 4t.
+  { const t = 8 / 2; letra(id, 12, `A los ${fmt(t)} s, con ${fmt(8 - 4 * t)} m/s`); }
+  // x = 4 + 6t − t²: da la vuelta cuando 6 − 2t = 0 y la distancia suma cada sentido sin signo.
+  { const x = t => 4 + 6 * t - t * t, tv = 6 / 2; letra(id, 13, `${fmt(Math.abs(x(tv) - x(1)) + Math.abs(x(4) - x(tv)))} m`);
+    assert.ok(idea(id).ejemplos[13].alternativas.includes(`${fmt(x(4) - x(1))} m`), 'el desplazamiento es un distractor'); }
+  // Para en 6 s y en el último segundo avanza 1,5 m: lo mismo que en el primero de un arranque con la misma |a|.
+  { const k = 1.5 / (1 ** 2 / 2); letra(id, 14, `${fmt(k * 6)} m/s`); }
   // B3: la gráfica v–t.
   id = 'pendiente-aceleracion';
   q(id, 0, new RegExp(`a = ${fmt((14 - 2) / 4)} m/s²`)); q(id, 1, new RegExp(`${fmt(5 * 8)} m`)); q(id, 2, new RegExp(`${fmt(4 * 8 / 2)} m`));
@@ -580,7 +587,7 @@ test('ejemplos de B2 a B6: las cuentas, rehechas aparte, y la letra de cada alte
   q(id, 7, new RegExp(`Δx = ${fmt(24 - 6)} m; recorrió ${fmt(24 + 6)} m`)); q(id, 8, new RegExp(`${fmt((12 * 4 / 2 + 12 * 2) / 6)} m/s`));
   q(id, 9, new RegExp(`Δx = ${fmt(8 * 4 / 2 - 4 * 2 / 2)} m`));
   letra(id, 10, `${fmt(2 * raiz(400 / 1))} s`); letra(id, 11, `${fmt(10 - 2 * 2)} m/s y ${fmt((6 + 18) / 2 * 6)} m`);
-  letra(id, 12, `${fmt(-12 / (2 * 36 / 12))} m/s²`); letra(id, 13, `${fmt(6 * 3 / 2 - 4 * 2 / 2)} m y ${fmt(6 * 3 / 2 + 4 * 2 / 2)} m`);
+  letra(id, 12, `${fmt(-12 / (2 * 36 / 12))} m/s²`); letra(id, 13, `${fmt((6 * 3 / 2 - 4 * 2 / 2) / 5)} m/s y ${fmt((6 * 3 / 2 + 4 * 2 / 2) / 5)} m/s`);
   letra(id, 14, `${fmt(2 * (12 - 100 / 10))} s`);
   // B4: gráficas x–t y a–t.
   id = 'graficas-xt-at';
@@ -600,9 +607,10 @@ test('ejemplos de B2 a B6: las cuentas, rehechas aparte, y la letra de cada alte
   q(id, 6, new RegExp(`${fmt(raiz(20 * 20))} m/s`)); q(id, 7, new RegExp(`${fmt(raiz(20 * 45) * 3.6)} km/h`)); q(id, 8, new RegExp(`${fmt(45 - 20)} m`));
   q(id, 9, new RegExp(`${fmt(raiz(2 * 20 / 5))} s`));
   letra(id, 10, `${fmt(raiz(45 / 5) - raiz(20 / 5))} s`); letra(id, 11, `${fmt(raiz(45 / 5) + 45 / 340)} s`);
-  letra(id, 12, `${fmt(raiz(20 * 40))} m/s`);
+  // La maceta frente al letrero: 1,8 = v·0,2 + 5·0,2², y v² = 2·10·h.
+  { const v = (1.8 - 5 * 0.04) / 0.2; letra(id, 12, `${fmt(v * v / 20)} m`); }
   { let n = 1; while (5 * (2 * n - 1) !== 25) n++; letra(id, 13, `${fmt(5 * n * n)} m`); }
-  letra(id, 14, `${fmt(5 * 2 * 2)} m`);
+  letra(id, 14, `${fmt(5 * 3 * 3 - 5 * 2 * 2)} m`);
   // B6: lanzamiento vertical.
   id = 'caida-libre';
   q(id, 0, new RegExp(`${fmt(15 / 10)} s`)); q(id, 1, new RegExp(`H = ${fmt(144 / 20)} m`)); q(id, 2, new RegExp(`v = ${fmt(20 - 30)} m/s`));
@@ -611,7 +619,7 @@ test('ejemplos de B2 a B6: las cuentas, rehechas aparte, y la letra de cada alte
   q(id, 8, new RegExp(`A los ${fmt(15 / 5)} s, con −${fmt(15)} m/s`)); q(id, 9, new RegExp(`H = ${fmt((72 / 3.6) ** 2 / 20)} m`));
   letra(id, 10, `${fmt((10 + raiz(100 + 300)) / 10)} s`);
   letra(id, 11, `${fmt(40 / 20)} s, a ${fmt(40 - 5 * 4)} m`);
-  letra(id, 12, 'v = 0 y a = 10 m/s², hacia abajo');
+  letra(id, 12, `${fmt(4 / 10)} s; a = −10 m/s²`);
   letra(id, 13, `${fmt(10 * 4 / 2)} m/s y ${fmt((10 * 4 / 2) ** 2 / 20)} m`);
   { const d = raiz(25 * 25 - 4 * 5 * 30), t1 = (25 - d) / 10, t2 = (25 + d) / 10; letra(id, 14, `${fmt(t1)} s y ${fmt(t2)} s`); }
 });
@@ -623,4 +631,86 @@ test('los ids que guardan avance siguen en su lugar: las dos ideas, las tres mes
   assert.deepEqual(m('ida-vuelta').controles.map(c => c.id), ['v2', 't2', 't']);
   assert.deepEqual(m('pista-libre').controles.map(c => c.id), ['v0', 'a', 't']);
   assert.deepEqual(idea('caida-libre').juega.controles.map(c => c.id), ['v0', 't'], 'caida-libre conserva v0 y t');
+});
+
+// ---------- Correcciones del 18 nov (auditoría y lector en frío) ----------
+// El glosario no regala la respuesta de la Predice ni de la misión de su idea (auditoría A2): ningún término tocable antes
+// de predecir (los de la idea y los que aparecen en Lee, el juego y la Predice) trae en su definición, su «simple» o sus
+// ejemplos lo que se predice o lo que la misión pide.
+test('el glosario no dice la respuesta de la Predice ni de la misión de su idea', () => {
+  const PROHIBIDO = {
+    aceleracion: /−3|signo contrario|contrari|al revés|12 m\/s a los 4/,
+    'ecuaciones-mruv': /cuatro veces|al doble|\b100 m\b|25 m\b/,
+    'pendiente-aceleracion': /cuenta negativa|se resta|\bresta\b|negativ|12,5 s/,
+    'graficas-xt-at': /misma velocidad|igual velocidad|\b5 s\b|2 m\/s²/,
+    'caida-reposo': /misma g|pese lo que pese|masa|a la vez|juntas|½ · 10|20 cm|0,2 s/,
+    'caida-libre': /también en la cima|sigue siendo|−10 m\/s²|10 m\/s, la pelota|hasta 5 m/,
+  };
+  const porIdea = Glosario.porIdea(def);
+  def.ideas.forEach((i, k) => {
+    const antes = plano([i.lee.tarjetas.map(t => [t.titulo, t.texto]), i.pregunta, i.actividad, i.juega.consigna, i.juega.mision.texto,
+      i.juega.leyenda.map(x => x.t), i.predice.pregunta, i.predice.datos]);
+    const tocables = new Set([...porIdea[k], ...def.glosario.filter(g => Glosario.marcas(antes, [g]).length)]);
+    for (const g of tocables) for (const t of [g.def, g.simple, ...(g.ejemplos || [])]) assert.ok(!PROHIBIDO[i.id].test(t), `${i.id}: «${g.termino}» dice «${t}»`);
+  });
+});
+
+// Datos: herramientas, no consejos (auditoría M1; nota c): la fórmula general de segundo grado donde el resuelto la usa, y
+// nunca «aquí t no es negativo». El encuentro en el aire trae la altura con y₀ (auditoría A3; nota b).
+test('datos sin consejos, con la fórmula de segundo grado y la de y₀ donde se usan', () => {
+  const todos = [];
+  for (const i of def.ideas) {
+    for (const e of i.ejemplos) todos.push([`${i.id} ${e.titulo}`, e.datos, plano(e.solucion.map(l => [l.texto, l.ecuacion || '']))]);
+    for (let s = 0; s < 60; s++) {
+      const a = i.ahoraTu.generar(s), r = i.resuelve.generar(s);
+      todos.push([`${i.id} ahora tú ${s}`, a.datos, plano([a.solucion.texto, a.solucion.ecuacion])]);
+      todos.push([`${i.id} resuelve ${s}`, r.datos, plano(r.pasos.map(p => [p.texto, p.ecuacion || '']))]);
+    }
+  }
+  for (const [donde, datos, sol] of todos) {
+    const d = plano(datos);
+    assert.ok(!/puede tener|aquí t no es|recuerda/i.test(d), `${donde}: un consejo en los datos`);
+    if (/segundo grado|raíz negativa|otra raíz/.test(sol)) assert.match(d, /t = \(−q ± √\(q2? ?− 4pr\)\)|√\(q.*4pr\)/, `${donde}: usa la de segundo grado y no la trae`);
+    if (/piedra, y0 = 40|sueltas una piedra y, a la vez/.test(sol + plano(datos)) || /y = 40 − 5/.test(sol)) assert.match(d, /y = y0 \+ v0/, `${donde}: sin la fórmula con y₀`);
+  }
+  const enc = idea('caida-libre').ejemplos.find(e => e.titulo === 'El encuentro en el aire');
+  assert.match(plano(enc.datos), /y = y0 \+ v0 · t − ½ · g · t/);
+});
+
+// La regla de 30 cm no se atrapa después de caer más que su largo (auditoría M2; nota d), y la figura la dibuja atrapada.
+test('«Así se resuelve» de B5: la regla siempre se atrapa antes de sus 30 cm', () => {
+  for (let s = 0; s < 400; s++) {
+    const r = idea('caida-reposo').resuelve.generar(s), m = plano(r.enunciado).match(/ya cayó (\S+) cm/);
+    if (!m) continue;
+    assert.ok(num(m[1]) <= 30, `semilla ${s}: ${m[1]} cm`);
+    assert.ok(r.dibujo.datos.cerrada && !r.dibujo.datos.escapo && Math.abs(r.dibujo.datos.cae - num(m[1])) < 1e-9, `semilla ${s}: la figura`);
+  }
+});
+
+// El pabellón es el mismo en toda la unidad (auditoría M12; nota e): techo a 5 m y ventana del segundo piso a 3,2 m.
+test('el pabellón y su ventana miden lo mismo en el texto y en el dibujo de toda la unidad', () => {
+  const B5 = idea('caida-reposo'), B6 = idea('caida-libre');
+  assert.match(plano(B5.predice.datos), /3,2 m del patio/);
+  assert.equal(B5.predice.dibujo.datos.edificio.ventana, 3.2);
+  assert.equal(B5.predice.dibujo.datos.edificio.techo, 5);
+  assert.match(B6.juega.consigna, /techo está a 5 m/);
+  for (const f of [B6.juega.dibujo({ v0: 10, t: 1 }).datos, B6.predice.dibujo.datos, B5.ejemplos[1].figura.datos, B5.ejemplos[2].figura.datos]) assert.equal(f.edificio.techo, 5);
+  assert.match(plano(B5.ejemplos[2].enunciado), /ventana del segundo piso, a 3,2 m/);
+  // La ventana dibujada tiene su alféizar en la rayita.
+  const s = PM.dibujar(B5.predice.dibujo.datos), Y = m => PM.constantes.SUELO - (PM.constantes.SUELO - PM.constantes.TECHO) * m / 6;
+  const ventanas = [...s.matchAll(/<rect x="\d+" y="([\d.]+)" width="20" height="([\d.]+)"/g)].map(m => +m[1] + +m[2]);
+  assert.ok(ventanas.some(b => Math.abs(b - Y(3.2)) < 0.01), `alféizares en ${ventanas}`);
+});
+
+// La línea del «±» de la academia en toda regla con signo (decisión del 18 nov; auditoría M11; nota h), y d solo para la
+// distancia recorrida (nota i).
+test('las reglas con signo traducen el eje al «±» de la academia, y d es siempre la distancia recorrida', () => {
+  for (const id of ['aceleracion', 'ecuaciones-mruv', 'caida-reposo', 'caida-libre']) assert.match(idea(id).regla.texto, /academia escribe .*±/, id);
+  for (const id of ['aceleracion', 'ecuaciones-mruv', 'caida-reposo']) assert.match(idea(id).regla.texto, /sin signo/, id);
+  assert.match(idea('caida-libre').regla.condicion, /a = −g/);
+  assert.match(idea('caida-reposo').regla.condicion, /hacia abajo/);
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) {
+    const t = plano(x);
+    for (const m of t.matchAll(/(?<![\p{L}Δ])d = ([^;.]+)/gu)) assert.ok(!/v₀t|v0t|½/.test(m[1]), `${i.id} ${donde}: d como desplazamiento («d = ${m[1]}»)`);
+  }
 });
