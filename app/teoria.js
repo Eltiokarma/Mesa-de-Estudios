@@ -1482,7 +1482,7 @@
       $app.innerHTML = `${cab}<section class="card te-entrada">
         <div class="ex-puntos" aria-hidden="true">${preguntas.map((_, k) => `<span class="${k === en.i ? 'aqui' : ''}${en.resp[k] ? ' resp' : ''}"></span>`).join('')}</div>
         <div class="etq-p">Pregunta ${en.i + 1} de ${preguntas.length} · ${esc(q.idea.titulo)}</div>
-        ${q.caso.dibujo ? `<figure class="te-fig kit-figura">${window.Kit.piezas[q.idea.ahoraTu.pieza || q.idea.pieza].dibujar(q.caso.dibujo.datos, q.caso.dibujo.estado || {})}</figure>` : ''}
+        ${q.caso.dibujo ? `<figure class="te-fig kit-figura">${window.Kit.piezas[q.caso.dibujo.pieza || q.idea.ahoraTu.pieza || q.idea.pieza].dibujar(q.caso.dibujo.datos, q.caso.dibujo.estado || {})}</figure>` : ''}
         <h3 class="te-preg">${E.html(q.caso.pregunta)}</h3>${datosHTML(window.Ecuacion, q.caso.datos)}
         <div class="alts" role="radiogroup" aria-label="Opciones">${q.ops.map((o, k) => `<button type="button" class="alt${en.resp[en.i] === o.id ? ' on' : ''}" role="radio" aria-checked="${en.resp[en.i] === o.id}" data-op="${esc(o.id)}"><span class="letra">${'ABCDE'[k]}</span><span>${E.html(o.texto)}</span></button>`).join('')}
           <button type="button" class="alt nose${en.resp[en.i] === 'nose' ? ' on' : ''}" data-op="nose">No sé</button></div>
