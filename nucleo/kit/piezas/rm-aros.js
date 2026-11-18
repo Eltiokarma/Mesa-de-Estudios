@@ -47,14 +47,18 @@
   // ---------- El patio en perspectiva ----------
   const PX = x => 14 + x * 29.2, PY = y => 34 + y * 17, RX = r => r * 29.2, RY = r => r * 17;
   const ALTO_PATIO = 200;
+  // Alto del alumno de pie (px): de los pies a la coronilla, y medio ancho con los brazos. Las pruebas de la unidad
+  // comprueban que ninguno toca la línea de un aro (lector en frío, ronda 2, 18 nov: «parados sobre la línea»).
+  const NINO_ALTO = 28, NINO_MEDIO = 7.5;
   function nino(x, y) {
-    // Un alumno de pie, visto de frente: pies en (x, y).
-    let s = `<line x1="${n(x - 3)}" y1="${n(y - 11)}" x2="${n(x - 4.5)}" y2="${n(y)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
-    s += `<line x1="${n(x + 3)}" y1="${n(y - 11)}" x2="${n(x + 4.5)}" y2="${n(y)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
-    s += `<line x1="${n(x - 6)}" y1="${n(y - 21)}" x2="${n(x - 9)}" y2="${n(y - 13)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
-    s += `<line x1="${n(x + 6)}" y1="${n(y - 21)}" x2="${n(x + 9)}" y2="${n(y - 13)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
-    s += `<rect x="${n(x - 6.5)}" y="${n(y - 24)}" width="13" height="15" rx="5" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
-    s += `<circle cx="${n(x)}" cy="${n(y - 29)}" r="5.5" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
+    // Un alumno de pie, visto de frente: pies en (x, y). Medidas de antes por 0,8, para que quepa entero en su aro.
+    const k = 0.8, P = (dx, dy) => `${n(x + dx * k)}`, Q = dy => `${n(y + dy * k)}`;
+    let s = `<line x1="${P(-3)}" y1="${Q(-11)}" x2="${P(-4.5)}" y2="${Q(0)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<line x1="${P(3)}" y1="${Q(-11)}" x2="${P(4.5)}" y2="${Q(0)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<line x1="${P(-6)}" y1="${Q(-21)}" x2="${P(-9)}" y2="${Q(-13)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<line x1="${P(6)}" y1="${Q(-21)}" x2="${P(9)}" y2="${Q(-13)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<rect x="${P(-6.5)}" y="${Q(-24)}" width="${n(13 * k)}" height="${n(15 * k)}" rx="4" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
+    s += `<circle cx="${n(x)}" cy="${Q(-29)}" r="${n(5.5 * k)}" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
     return `<g data-nino="si">${s}</g>`;
   }
   function aroPatio(a, corte) {
@@ -132,5 +136,5 @@
   // Lo mismo en el diagrama i (sin escena): de unidades del diagrama a la figura y de vuelta.
   const vennPx = (d, i, x, y) => { const g = geometria(d); return { x: g.x0(i) + 4 + g.xoff + x * g.esc, y: g.y0(i) + g.titulo + 4 + y * g.esc }; };
   const vennPiso = (d, i, p) => { const g = geometria(d); return { x: (p.x - g.x0(i) - 4 - g.xoff) / g.esc, y: (p.y - g.y0(i) - g.titulo - 4) / g.esc }; };
-  return { id: 'rm-aros', dibujar, alt, geometria, patioPx, patioPiso, vennPx, vennPiso, PAPELES, constantes: { W, TENUE, ALTO_PATIO } };
+  return { id: 'rm-aros', dibujar, alt, geometria, patioPx, patioPiso, vennPx, vennPiso, PAPELES, constantes: { W, TENUE, ALTO_PATIO, NINO_ALTO, NINO_MEDIO } };
 });

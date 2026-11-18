@@ -498,7 +498,7 @@
       } else if (q.t === 'contra') {
         // Leer la primera parte como un dato («si Ana fuera de Puno…» → «Ana es de Puno»). El contrafáctico es una
         // regla «si p, q» (D_CONTRA): no dice que pase la primera parte.
-        out.push({ id: 'RMP79-contrafactico', pistas: cambia({ t: 'hecho', a: q.a, b: q.a }), como: `Tomaste la primera parte de ${dicha} como un dato. «Si fuera p, sería q» es una regla «si p, q»: no dice que p pase.`, i });
+        out.push({ id: 'RMP79-contrafactico', pistas: cambia({ t: 'hecho', a: q.a, b: q.a }), como: `Tomaste la primera parte de ${dicha} como un dato. «Si fuera p, sería q» es una regla «si p, entonces q»: no dice que p pase.`, i });
       }
     });
     return out;
@@ -694,7 +694,7 @@
       intro: (ps, cs) => [...ps, ' llevan cada uno un taller distinto: ', ...cs, '.'] },
     deportes: { cosas: ['vóley', 'fútbol', 'básquet', 'atletismo', 'natación', 'ajedrez'], pres: 'practica', inf: 'practicar', unico: 'cada deporte lo practica una sola persona', subj: 'practicara', cond: 'practicaría', pre: '', que: 'deporte',
       intro: (ps, cs) => [...ps, ' practican cada uno un deporte distinto: ', ...cs, '.'] },
-    ciudades: { cosas: ['Puno', 'Juliaca', 'Cusco', 'Arequipa', 'Tacna', 'Ilave'], pres: 'es', inf: 'ser', unico: 'cada uno es de una ciudad distinta', subj: 'fuera', cond: 'sería', pre: 'de ', que: 'ciudad',
+    ciudades: { cosas: ['Puno', 'Juliaca', 'Cusco', 'Arequipa', 'Tacna', 'Lampa'], pres: 'es', inf: 'ser', unico: 'cada uno es de una ciudad distinta', subj: 'fuera', cond: 'sería', pre: 'de ', que: 'ciudad',
       intro: (ps, cs) => [...ps, ' son cada uno de una ciudad distinta: ', ...cs, '.'] },
   };
   const PV = ['p0', 'p1', 'p2', 'p3'];
@@ -768,7 +768,7 @@
     const sinRevisar = (a, i) => {
       const q = pistas[i], dicha = `«${plano(segP(q, false))}»`;
       // Con la lectura de la teoría, lo único que rompe el contrafáctico es que pase lo primero y no lo segundo.
-      if (q.t === 'contra') return `El reparto ${solTexto(a)} cumple las demás pistas, pero choca con la ${ROMANOS[i]}: ${dicha} es una regla «si p, q», y en ese reparto ${nombreLit(q.a)} y ${nombreLit({ ...q.b, neg: !q.b.neg })}. Hay que comprobar todas las pistas.`;
+      if (q.t === 'contra') return `El reparto ${solTexto(a)} cumple las demás pistas, pero choca con la ${ROMANOS[i]}: ${dicha} es una regla «si p, entonces q», y en ese reparto ${nombreLit(q.a)} y ${nombreLit({ ...q.b, neg: !q.b.neg })}. Hay que comprobar todas las pistas.`;
       return `El reparto ${solTexto(a)} cumple las demás pistas, pero no cumple la ${ROMANOS[i]}: ${dicha}. Hay que comprobar todas las pistas.`;
     };
     if (modo === 'quien') {
@@ -1002,7 +1002,7 @@
     { id: 'simulacro', gente: true, intro: 'En la academia, este ciclo se cumplió una regla sin excepciones.', reglaP: 'alguien estudia para el simulacro', reglaQ: 'lo aprueba',
       p: x => `${x} estudió para el simulacro`, np: x => `${x} no estudió para el simulacro`, q: x => `${x} aprobó el simulacro`, nq: x => `${x} no aprobó el simulacro`,
       excusa: x => `${x} estudió, pero el simulacro estuvo difícil` },
-    { id: 'plaza', gente: false, sujetos: ['Ilave', 'Juli', 'Lampa', 'Ayaviri', 'Pomata', 'Azángaro'], intro: 'Anoche se cumplió una regla sin excepciones.',
+    { id: 'plaza', gente: false, sujetos: ['Yunguyo', 'Juli', 'Lampa', 'Ayaviri', 'Pomata', 'Azángaro'], intro: 'Anoche se cumplió una regla sin excepciones.',
       reglaP: 'llueve en un pueblo', reglaQ: 'su plaza amanece mojada',
       p: x => `llovió en ${x}`, np: x => `no llovió en ${x}`, q: x => `la plaza de ${x} amaneció mojada`, nq: x => `la plaza de ${x} amaneció seca`,
       excusa: x => `llovió en ${x}, pero la plaza se secó antes del amanecer` },
@@ -1019,11 +1019,14 @@
       p: x => `el número de ${x} termina en 0`, np: x => `el número de ${x} no termina en 0`, q: x => `el número de ${x} es par`, nq: x => `el número de ${x} no es par`,
       excusa: null },
   ];
-  const D_SI = '«Si p, q»: siempre que pasa p, también pasa q.';
+  // «entonces» escrito (lector en frío de la teoría, ronda 2, 18 nov: «si p, q» con una sola coma se leía mal). «Siempre
+  // cierto» lo usa también Certezas, que sigue recibiendo lo mismo de antes: conserva su línea (D_SI_CERT).
+  const D_SI = '«Si p, entonces q»: siempre que pasa p, también pasa q.';
+  const D_SI_CERT = '«Si p, q»: siempre que pasa p, también pasa q.';
   // El contrafáctico se lee como en la teoría (Gerson, cuarta ronda, 18 nov): la misma línea que el ejemplo 12 de la
   // idea 4 de Razonamiento deductivo (contenido/teoria/razonamiento-matematico/razonamiento-deductivo.js); una prueba
   // de la teoría compara las dos.
-  const D_CONTRA = '«Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.';
+  const D_CONTRA = '«Si fuera p, sería q» se lee como «si p, entonces q»: no dice que p pase.';
   const D_SEGURO_SI = 'Seguro: se cumple en todos los casos que dejan la regla y el dato.';
 
   function construirCondicional(rng, semilla, nivelFijo) {
@@ -1115,7 +1118,7 @@
       return [...fs.map(f => D_CUANT[f]), 'Se deduce: vale en todos los dibujos que cumplen las dos premisas.'];
     }
     if (d.tipo === 'siempre-cierto') {
-      const out = [D_SI, 'Siempre cierto: se cumple en todos los casos que dejan las pistas.'];
+      const out = [D_SI_CERT, 'Siempre cierto: se cumple en todos los casos que dejan las pistas.'];
       if (d.pistas.some(q => q.t === 'nocond')) out.splice(1, 0, '«Si p, q» solo es falso cuando pasa p y no pasa q.');
       return out;
     }

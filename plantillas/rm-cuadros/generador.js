@@ -85,7 +85,7 @@
     comision: { plural: 'comisiones', sing: 'comisión', frase: 'está en la comisión de {v}', preg: '¿En qué comisión está', items: ['adornos', 'música', 'juegos', 'limpieza'],
       regla: 'Cada uno está en una sola comisión, y ninguna se repite.' },
     instrumento: { plural: 'instrumentos', frase: 'toca {v}', preg: '¿Qué toca', items: ['quena', 'charango', 'bombo', 'zampoña'] },
-    ciudad: { plural: 'ciudades', frase: 'vive en {v}', preg: '¿Dónde vive', items: ['Puno', 'Juliaca', 'Ilave', 'Ayaviri'] },
+    ciudad: { plural: 'ciudades', frase: 'vive en {v}', preg: '¿Dónde vive', items: ['Puno', 'Juliaca', 'Lampa', 'Ayaviri'] },
     edad: { plural: 'edades', frase: 'tiene {v} años', preg: '¿Cuántos años tiene', items: ['15', '16', '17', '18'], op: x => `${x} años` },
     producto: { plural: 'productos', frase: 'vende {v}', preg: '¿Qué vende', items: ['tamales', 'jugos', 'choclo', 'queso'] },
     mandil: { plural: 'mandiles', frase: 'usa mandil {v}', preg: '¿De qué color es el mandil de', items: ['rojo', 'azul', 'blanco', 'negro'] },

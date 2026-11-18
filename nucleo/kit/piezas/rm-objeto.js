@@ -8,7 +8,7 @@
  * ajedrez. Cuando una casilla es segura, la cosa pasa de la banca a la mano de su dueño.
  *
  * Escena «comparsa» (idea 2, «Pistas que cruzan dos listas»): los tres músicos de la comparsa del colegio bajan de la
- * combi; en la parrilla del techo van una quena, un charango y un bombo. Cuando se sabe qué toca uno, su instrumento pasa
+ * combi con la correa del instrumento cruzada en el pecho; en la parrilla del techo van una quena, un charango y un bombo. Cuando se sabe qué toca uno, su instrumento pasa
  * de la parrilla a su mano. Va con el cuadro en L (datos.listas): personas × primera lista, personas × segunda lista y,
  * abajo, segunda lista × primera lista, el cuadro donde va una pista que no nombra a nadie. Con tres listas, el cuadro
  * sigue en escalera (personas × A, B, C; C × A, B; B × A).
@@ -140,7 +140,11 @@
   // La ficha de inscripción en blanco (campeonato) o la faja de la comparsa cruzada en el pecho.
   const ficha = x => `<rect x="${n(x - 7)}" y="58" width="14" height="16" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>`
     + `<line x1="${n(x - 4)}" y1="63" x2="${n(x + 4)}" y2="63" stroke="currentColor" stroke-width="1" stroke-opacity="0.6"/><line x1="${n(x - 4)}" y1="68" x2="${n(x + 4)}" y2="68" stroke="currentColor" stroke-width="1" stroke-opacity="0.6"/>`;
-  const faja = x => `<line x1="${n(x - 8)}" y1="53" x2="${n(x + 8)}" y2="78" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-opacity="0.55"/>`;
+  // La correa del instrumento, cruzada en el pecho: una banda de borde a borde (dos trazos) con su gancho al costado, donde
+  // se cuelga el instrumento (lector en frío, ronda 2, 18 nov: «la franja diagonal no se sabe qué es»).
+  const faja = x => `<g data-correa="si"><line x1="${n(x - 8)}" y1="52" x2="${n(x + 9)}" y2="77" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-opacity="0.55"/>`
+    + `<line x1="${n(x - 8)}" y1="52" x2="${n(x + 9)}" y2="77" stroke="var(--card)" stroke-width="1.5" stroke-linecap="round"/>`
+    + `<circle cx="${n(x + 10.5)}" cy="79.5" r="2.6" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/></g>`;
   function combi() {
     // Carrocería con su letrero, ventanas, ruedas y la parrilla del techo.
     let s = `<rect${CAJA} x="10" y="52" width="146" height="34" rx="8" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="2"/>`;
@@ -373,7 +377,7 @@
   function alt(d) {
     const partes = [];
     if (d.escena === 'campeonato') partes.push(`Campeonato del colegio: ${lista(d.filas || [])}, con sus fichas de inscripción en blanco, y en la banca ${lista(d.columnas || [])}`);
-    if (d.escena === 'comparsa') partes.push(`Comparsa del colegio: ${lista(d.personas || [])} bajan de la combi; en la parrilla del techo van ${lista(d.listas[0].items)}`);
+    if (d.escena === 'comparsa') partes.push(`Comparsa del colegio: ${lista(d.personas || [])} bajan de la combi, cada uno con la correa de su instrumento cruzada en el pecho; en la parrilla del techo van ${lista(d.listas[0].items)}`);
     if (d.cuadro === false) return partes.join('. ') + '.';
     const marcas = Object.entries(d.marcas || {});
     if (d.listas) {

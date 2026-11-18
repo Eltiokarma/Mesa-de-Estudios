@@ -1038,7 +1038,7 @@
             "items": [
               "Puno",
               "Juliaca",
-              "Ilave"
+              "Lampa"
             ]
           }
         ],
@@ -1059,7 +1059,7 @@
           {
             "tipo": "noMismo",
             "atr1": "ciudad",
-            "val1": "Ilave",
+            "val1": "Lampa",
             "atr2": "instrumento",
             "val2": "quena"
           },
@@ -1067,7 +1067,7 @@
             "tipo": "noEs",
             "persona": "Gaby",
             "atributo": "ciudad",
-            "valor": "Ilave"
+            "valor": "Lampa"
           },
           {
             "tipo": "noEs",
@@ -1114,7 +1114,7 @@
             "items": [
               "Puno",
               "Juliaca",
-              "Ilave"
+              "Lampa"
             ]
           }
         ],
@@ -1123,7 +1123,7 @@
             "tipo": "noEs",
             "persona": "Fito",
             "atributo": "ciudad",
-            "valor": "Ilave"
+            "valor": "Lampa"
           },
           {
             "tipo": "noEs",
@@ -1141,12 +1141,12 @@
             "tipo": "noEs",
             "persona": "Rosa",
             "atributo": "ciudad",
-            "valor": "Ilave"
+            "valor": "Lampa"
           },
           {
             "tipo": "mismo",
             "atr1": "ciudad",
-            "val1": "Ilave",
+            "val1": "Lampa",
             "atr2": "instrumento",
             "val2": "bombo"
           }
@@ -1189,7 +1189,7 @@
             "items": [
               "Puno",
               "Juliaca",
-              "Ilave"
+              "Lampa"
             ]
           }
         ],
@@ -1216,7 +1216,7 @@
           {
             "tipo": "noMismo",
             "atr1": "ciudad",
-            "val1": "Ilave",
+            "val1": "Lampa",
             "atr2": "instrumento",
             "val2": "bombo"
           }
@@ -1243,7 +1243,7 @@
             {
               "tipo": "mismo",
               "atr1": "ciudad",
-              "val1": "Ilave",
+              "val1": "Lampa",
               "atr2": "instrumento",
               "val2": "charango"
             },
@@ -1476,7 +1476,7 @@
             "items": [
               "Puno",
               "Juliaca",
-              "Ilave"
+              "Lampa"
             ]
           },
           {
@@ -1498,7 +1498,7 @@
           {
             "tipo": "mismo",
             "atr1": "ciudad",
-            "val1": "Ilave",
+            "val1": "Lampa",
             "atr2": "edad",
             "val2": "15"
           },
@@ -1641,7 +1641,7 @@
             "items": [
               "Puno",
               "Juliaca",
-              "Ilave"
+              "Lampa"
             ]
           }
         ],
@@ -1655,7 +1655,7 @@
           {
             "tipo": "mismo",
             "atr1": "ciudad",
-            "val1": "Ilave",
+            "val1": "Lampa",
             "atr2": "instrumento",
             "val2": "quena"
           },

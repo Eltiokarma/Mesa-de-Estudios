@@ -401,7 +401,9 @@ test('datos: una lista de líneas cortas con la regla de cada tipo y sin la resp
     const todo = p.datos.join('\n'), c = p.respuesta.texto.replace(/\.$/, '');
     assert.ok(!todo.toLowerCase().includes(c.toLowerCase()), `d-${s}: los datos traen la respuesta ${c}`);
     if (d.tipo === 'silogismo') { assert.ok(/^«(Todos|Ningún|Algunos)/.test(p.datos[0])); assert.ok(todo.includes('Se deduce:')); }
-    if (d.tipo === 'condicional' || d.tipo === 'siempre-cierto' || d.tipo === 'asignacion') assert.ok(todo.includes('«Si p, q»'), `d-${s}: falta qué dice «si p, q»`);
+    // «Siempre cierto» (también de Certezas) conserva «si p, q»; el condicional y la asignación dicen «si p, entonces q».
+    if (d.tipo === 'siempre-cierto') assert.ok(todo.includes('«Si p, q»'), `d-${s}: falta qué dice «si p, q»`);
+    if (d.tipo === 'condicional' || d.tipo === 'asignacion') assert.ok(todo.includes('«Si p, entonces q»'), `d-${s}: falta qué dice «si p, entonces q»`);
     if (d.tipo === 'condicional') assert.ok(todo.includes('Seguro:'));
     if (d.tipo === 'siempre-cierto') assert.ok(todo.includes('Siempre cierto:'));
     if (d.tipo === 'asignacion' && d.pistas.some(q => q.t === 'contra')) assert.ok(p.datos.includes(gen.lineas.contrafactico));

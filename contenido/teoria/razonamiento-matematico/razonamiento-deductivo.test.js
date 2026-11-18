@@ -138,9 +138,16 @@ test('paleta en los textos: violeta en el cuadro; naranja y turquesa solo para l
 test('ninguna figura de antes de responder delata la respuesta', () => {
   for (const [id, fs] of Object.entries(FIG)) for (const f of fs.filter(x => x.antes)) {
     const s = svgDe(f), donde = `${id} ${f.donde}`;
-    assert.ok(!/var\(--c-f\)|data-marca="si"|data-marca="fila-segura"|data-reparto="fuera"|data-papel="pedida"/.test(s), donde);
     assert.ok(!(f.datos.manos || []).length, `${donde}: una cosa en la mano`);
-    // Los ejemplos y los enunciados van sin ninguna marca ni caso tachado: el planteamiento, no la respuesta.
+    assert.ok(!/data-marca="fila-segura"|data-reparto="fuera"|data-papel="pedida"/.test(s), donde);
+    // Los ejemplos de las ideas 1, 2 y 4 traen lo que cada pista marca por sí sola (ronda 2 del lector, 18 nov; se
+    // comprueba abajo, pista por pista): sus ✓ son de una pista. Nada que salga de juntar pistas ni el caso que queda.
+    if (/^ejemplo/.test(f.donde) && ['doble-entrada', 'dos-atributos', 'si-entonces'].includes(id)) {
+      for (const t of (f.datos.tablas || [])) assert.ok(t.filas.every(x => !x.seguro && (!x.fuera || x.fuera === 'regla')), `${donde}: solo tacha la regla`);
+      continue;
+    }
+    assert.ok(!/var\(--c-f\)|data-marca="si"/.test(s), donde);
+    // Los enunciados van sin ninguna marca ni caso tachado: el planteamiento, no la respuesta.
     if (/^(ejemplo|ahora tú \d+$|resuelve \d+$)/.test(f.donde)) assert.ok(!/data-marca|data-fila="fuera"/.test(s), donde);
   }
   // Idea 3: el enunciado de «Así se resuelve» y los ejemplos de nivel 1 dibujan solo la primera premisa (dos aros como
@@ -197,27 +204,84 @@ const EJ1 = [
   { ps: ['Sara', 'Gino', 'Pía', 'Omar'], ls: [['adornos', 'música', 'juegos', 'limpieza']], c: [r => ['juegos', 'limpieza'].includes(r.Sara[0]), r => ['juegos', 'limpieza'].includes(r.Gino[0]), NO('Omar', 0, 'música')],
     q: rs => unico(rs, r => de(r, 0, 'música')), sale: 'Pía' },
 ];
-const LI = ['quena', 'charango', 'bombo'], LC = ['Puno', 'Juliaca', 'Ilave'], P3 = ['Ana', 'Beto', 'Ciro'], RIN = ['Rosa', 'Iván', 'Nora'];
+const LI = ['quena', 'charango', 'bombo'], LC = ['Puno', 'Juliaca', 'Lampa'], P3 = ['Ana', 'Beto', 'Ciro'], RIN = ['Rosa', 'Iván', 'Nora'];
 const EJ2 = [
   { ps: P3, ls: [LI, LC], c: [MISMO(0, 'charango', 1, 'Juliaca')], q: rs => rs.every(r => de(r, 0, 'charango') === de(r, 1, 'Juliaca')), sale: true },
   { ps: RIN, ls: [LI, LC], c: [SI('Rosa', 1, 'Puno'), MISMO(1, 'Puno', 0, 'quena')], q: rs => unico(rs, r => r.Rosa[0]), sale: 'quena' },
-  { ps: RIN, ls: [LI, LC], c: [SI('Iván', 0, 'bombo'), DISTINTO(0, 'bombo', 1, 'Ilave')], q: rs => rs.some(r => r.Iván[1] === 'Ilave'), sale: false },
+  { ps: RIN, ls: [LI, LC], c: [SI('Iván', 0, 'bombo'), DISTINTO(0, 'bombo', 1, 'Lampa')], q: rs => rs.some(r => r.Iván[1] === 'Lampa'), sale: false },
   { ps: P3, ls: [LI, LC], c: [], q: rs => rs.length, sale: 36 },
   { ps: P3, ls: [LI, LC], c: [MISMO(0, 'charango', 1, 'Juliaca'), NO('Ana', 0, 'charango')], q: rs => rs.every(r => r.Ana[1] !== 'Juliaca'), sale: true },
   { ps: ['Lucho', 'Maru', 'Teo'], ls: [['tamales', 'jugos', 'choclo'], ['rojo', 'azul', 'blanco']], c: [SI('Maru', 1, 'azul'), MISMO(0, 'jugos', 1, 'rojo'), NO('Maru', 0, 'tamales')], q: rs => unico(rs, r => r.Maru[0]), sale: 'choclo' },
-  { ps: P3, ls: [LI, LC], c: [SI('Ciro', 0, 'bombo'), SI('Ana', 1, 'Puno'), NO('Beto', 1, 'Ilave')], q: rs => unico(rs, r => r[de(r, 0, 'bombo')][1]), sale: 'Ilave' },
+  { ps: P3, ls: [LI, LC], c: [SI('Ciro', 0, 'bombo'), SI('Ana', 1, 'Puno'), NO('Beto', 1, 'Lampa')], q: rs => unico(rs, r => r[de(r, 0, 'bombo')][1]), sale: 'Lampa' },
   { ps: ['Dina', 'Eva', 'Fito'], ls: [['fútbol', 'vóley', 'ajedrez'], ['5', '7', '9']], c: [MISMO(0, 'vóley', 1, '7'), SI('Eva', 1, '5'), NO('Fito', 0, 'vóley')], q: rs => unico(rs, r => r.Dina[0]), sale: 'vóley' },
   { ps: ['Gaby', 'Hugo', 'Inés'], ls: [LI, ['15', '16', '17']], c: [DISTINTO(0, 'quena', 1, '15'), DISTINTO(0, 'charango', 1, '15'), SI('Hugo', 1, '15')], q: rs => unico(rs, r => r.Hugo[0]), sale: 'bombo' },
   { ps: ['Ana', 'Beto', 'Ciro', 'Dina'], ls: [['fútbol', 'vóley', 'básquet', 'ajedrez'], ['5', '7', '9', '10']], c: [SI('Ana', 1, '10'), r => !['fútbol', 'vóley'].includes(r[de(r, 1, '10')][0]), SI('Beto', 0, 'ajedrez')], q: rs => unico(rs, r => r.Ana[0]), sale: 'básquet' },
-  { ps: ['Ana', 'Beto', 'Ciro', 'Dina'], ls: [['quena', 'charango', 'bombo', 'zampoña'], ['Puno', 'Juliaca', 'Ilave', 'Ayaviri']], c: [MISMO(0, 'zampoña', 1, 'Juliaca'), NO('Ana', 0, 'zampoña'), SI('Ciro', 0, 'charango'), SI('Beto', 1, 'Puno')],
+  { ps: ['Ana', 'Beto', 'Ciro', 'Dina'], ls: [['quena', 'charango', 'bombo', 'zampoña'], ['Puno', 'Juliaca', 'Lampa', 'Ayaviri']], c: [MISMO(0, 'zampoña', 1, 'Juliaca'), NO('Ana', 0, 'zampoña'), SI('Ciro', 0, 'charango'), SI('Beto', 1, 'Puno')],
     q: rs => unico(rs, r => de(r, 1, 'Juliaca')), sale: 'Dina' },
-  { ps: ['Gaby', 'Hugo', 'Inés'], ls: [LI, LC, ['15', '16', '17']], c: [MISMO(0, 'quena', 1, 'Ilave'), DISTINTO(1, 'Ilave', 2, '15'), SI('Gaby', 2, '16'), NO('Gaby', 0, 'quena')],
+  { ps: ['Gaby', 'Hugo', 'Inés'], ls: [LI, LC, ['15', '16', '17']], c: [MISMO(0, 'quena', 1, 'Lampa'), DISTINTO(1, 'Lampa', 2, '15'), SI('Gaby', 2, '16'), NO('Gaby', 0, 'quena')],
     q: rs => unico(rs, r => r[de(r, 0, 'quena')][2]), sale: '17' },
   { ps: ['Lucho', 'Maru', 'Teo', 'Vilma'], ls: [['tamales', 'jugos', 'choclo', 'queso'], ['rojo', 'azul', 'blanco', 'negro']], c: [MISMO(0, 'jugos', 1, 'azul'), SI('Maru', 1, 'rojo'), SI('Teo', 0, 'queso'), DISTINTO(1, 'negro', 0, 'tamales'), NO('Lucho', 1, 'azul')],
     q: rs => ['Lucho vende choclo', 'Teo usa mandil negro', 'Vilma usa mandil azul', 'Maru vende tamales', 'Lucho usa mandil negro'].filter(t => { const [p, v, ...x] = t.split(' '), it = x[x.length - 1]; return rs.every(r => r[p][v === 'vende' ? 0 : 1] === it); }).join(), sale: 'Vilma usa mandil azul' },
   { ps: ['Ana', 'Beto', 'Ciro'], ls: [[2, 3, 5], ['rojo', 'azul', 'blanco']], c: [r => r[de(r, 1, 'rojo')][0] % 2 === 0, r => r.Ciro[0] % 2 === 0, r => r.Beto[0] > r.Ana[0], NO('Ana', 1, 'azul')], q: rs => String(unico(rs, r => r[de(r, 1, 'azul')][0])), sale: '5' },
   { ps: ['Rosa', 'Nora', 'Lía'], ls: [[10, 20, 50], ['pan', 'fruta', 'leche']], c: [r => r[de(r, 1, 'pan')][0] === 10, NO('Nora', 0, 10), r => r.Lía[0] > r.Rosa[0], r => r[de(r, 1, 'leche')][0] !== 50], q: rs => unico(rs, r => r.Rosa[1]), sale: 'pan' },
 ];
+
+// Lo que cada pista marca por sí sola, escrito otra vez aquí (ronda 2 del lector, 18 nov): «A✗B» o «A✓B», con A y B
+// personas o cosas. El cuadro del ejemplo trae exactamente estas marcas.
+const M1 = ['Beto✗fútbol, Beto✗ajedrez', 'Rosa✗teatro, Nora✗teatro', 'Maru✓emoliente', 'Ciro✗vóley', 'Sara✗música, Sara✗juegos',
+  'Ana✗fútbol, Beto✗fútbol, Beto✗vóley', 'Iván✗dibujo, Nora✗dibujo, Iván✗teatro', 'Dina✓básquet, Ana✗vóley, Ana✗ajedrez', 'Lucho✗emoliente, Teo✗emoliente, Teo✗picarones',
+  'Rosa✗teatro, Iván✗teatro, Leo✓banda, Rosa✗danza', 'Carla✗médica, Delia✗médica, Delia✗dentista, Delia✗obstetra, Carla✗dentista, Elsa✗dentista',
+  'Raúl✗Gaby, Saúl✗Gaby, Raúl✗Inés, Saúl✗Inés, Raúl✗Hilda, Uriel✗Hilda, Tito✗Gaby', 'Ana✗vóley, Beto✗ajedrez, Dina✗ajedrez, Ciro✗fútbol, Ciro✗básquet, Beto✗fútbol, Dina✗fútbol',
+  'Lucho✗jugos, Teo✗jugos, Maru✗jugos, Maru✗queso, Lucho✗choclo, Teo✗choclo, Lucho✗tamales', 'Sara✗adornos, Sara✗música, Gino✗adornos, Gino✗música, Omar✗música'];
+const M2 = ['', 'Rosa✓Puno, Puno✓quena', 'Iván✓bombo, bombo✗Lampa', '', 'charango✓Juliaca, Ana✗charango', 'Maru✓azul, jugos✓rojo, Maru✗tamales',
+  'Ciro✓bombo, Ana✓Puno, Beto✗Lampa', 'vóley✓7, Eva✓5, Fito✗vóley', 'quena✗15, charango✗15, Hugo✓15', 'Ana✓10, 10✗fútbol, 10✗vóley, Beto✓ajedrez',
+  'zampoña✓Juliaca, Ana✗zampoña, Ciro✓charango, Beto✓Puno', 'quena✓Lampa, Lampa✗15, Gaby✓16, Gaby✗quena', 'jugos✓azul, Maru✓rojo, Teo✓queso, negro✗tamales, Lucho✗azul',
+  'rojo✗3, rojo✗5, Ciro✗3, Ciro✗5, Ana✗azul', 'pan✓10, Nora✗10, leche✗50'];
+const leerM = t => (t ? t.split(', ').map(x => { const si = x.includes('✓'), [a, b] = x.split(/[✓✗]/); return { a, b, si }; }) : []);
+const sinUnidad = t => String(t).replace(/ (años|soles)$/, '');
+// Las marcas de una figura de rm-objeto, por nombre (cuadro simple o en L).
+function marcasFig(d) {
+  const nom = e => { const [g, i] = e.split(':'); return g === 'p' ? d.personas[+i] : sinUnidad(d.listas[+g].items[+i]); };
+  return Object.entries(d.marcas || {}).map(([k, v]) => {
+    const si = (typeof v === 'string' ? v : v.m) === 'si';
+    if (d.listas) { const [a, b] = k.split('|').map(nom); return { a, b, si }; }
+    const [f, c] = k.split(',').map(Number); return { a: d.filas[f], b: d.columnas[c], si };
+  });
+}
+const claveM = m => `${[m.a, m.b].sort().join('|')}${m.si ? '✓' : '✗'}`;
+test('ejemplos de las ideas 1, 2 y 4: el cuadro trae lo que cada pista marca por sí sola, y nada que salga de juntarlas', () => {
+  for (const [id, EJ, M] of [['doble-entrada', EJ1, M1], ['dos-atributos', EJ2, M2]]) EJ.forEach((x, k) => {
+    const e = ID[id].ejemplos[k], donde = `${id} ejemplo ${k + 1} «${e.titulo}»`, quiere = leerM(M[k]);
+    assert.deepEqual(marcasFig(e.figura.datos).map(claveM).sort(), quiere.map(claveM).sort(), donde);
+    const todos = repartos(x.ps, x.ls), rs = todos.filter(r => x.c.every(f => f(r)));
+    // Dueño de una persona o de una cosa en un reparto.
+    const dueno = (r, t) => { if (x.ps.includes(t)) return t; const L = x.ls.findIndex(l => l.map(String).includes(t)); assert.ok(L >= 0, `${donde}: ${t}`); return de(r, L, x.ls[L][x.ls[L].map(String).indexOf(t)]); };
+    const vale = (r, m) => (dueno(r, m.a) === dueno(r, m.b)) === m.si;
+    for (const m of quiere) {
+      // La marca es cierta (vale en todos los repartos que quedan) y la da una sola pista, sin juntarla con otra.
+      assert.ok(rs.every(r => vale(r, m)), `${donde}: ${claveM(m)} no es cierta`);
+      assert.ok(x.c.some(f => todos.filter(f).every(r => vale(r, m))), `${donde}: ${claveM(m)} no sale de una sola pista`);
+    }
+    // El cuadro no es el final: queda al menos una marca por deducir.
+    const finales = [];
+    const ents = x.ps.concat(x.ls.flat().map(String));
+    for (const a of ents) for (const b of ents) if (a < b) for (const si of [true, false]) { const m = { a, b, si }; if (rs.length && rs.every(r => vale(r, m))) finales.push(claveM(m)); }
+    if (rs.length && x.c.length) assert.ok(finales.some(f => !quiere.map(claveM).includes(f)), `${donde}: el cuadro ya trae la respuesta`);
+  });
+  // Idea 4: la tabla tacha lo que prohíben las reglas (con dos partes, «p sí, q no»; con tres, la cadena), nada por el
+  // dato; «El caso que la regla prohíbe» va sin tachar (es lo que se pregunta). Los cuadros, con las marcas de sus pistas.
+  const I = ID['si-entonces'];
+  const M4 = { 9: 'Beto✗ajedrez, Ciro✗fútbol', 11: 'Ciro✓abogado', 12: 'Dina✓básquet, Beto✗vóley' };
+  I.ejemplos.forEach((e, k) => {
+    const d = e.figura.datos, donde = `si-entonces ejemplo ${k + 1} «${e.titulo}»`;
+    if (!d.tablas) { assert.deepEqual(marcasFig(d).map(claveM).sort(), leerM(M4[k]).map(claveM).sort(), donde); return; }
+    for (const f of d.tablas[0].filas) {
+      const [p, q, r] = f.v, prohibe = f.v.length === 2 ? p && !q : (p && !q) || (q && !r);
+      assert.equal(f.fuera === 'regla', /prohíbe/.test(e.titulo) ? false : prohibe, `${donde}: ${f.v}`);
+      assert.ok(!f.seguro && f.fuera !== 'dato', donde);
+    }
+  });
+});
 
 test('ejemplos de las ideas 1 y 2: cada acertijo tiene la respuesta que dice el resuelto (fuerza bruta aparte)', () => {
   for (const [id, EJ] of [['doble-entrada', EJ1], ['dos-atributos', EJ2]]) EJ.forEach((x, k) => {
@@ -311,7 +375,7 @@ test('idea 2, «Así se resuelve»: un solo reparto, con una pista que cruza, y 
 
 test('idea 2: juego, misión y predicción contados aparte (36 → 12 → 4 → 2 → 1)', () => {
   const I = ID['dos-atributos'], todos = repartos(P3, [LI, LC]);
-  const J = [SI('Beto', 1, 'Ilave'), MISMO(0, 'charango', 1, 'Juliaca'), NO('Beto', 0, 'quena'), NO('Ana', 1, 'Juliaca')];
+  const J = [SI('Beto', 1, 'Lampa'), MISMO(0, 'charango', 1, 'Juliaca'), NO('Beto', 0, 'quena'), NO('Ana', 1, 'Juliaca')];
   const q = n => todos.filter(r => J.slice(0, n).every(f => f(r)));
   assert.deepEqual([0, 1, 2, 3, 4].map(n => q(n).length), [36, 12, 4, 2, 1]);
   const sabeBeto = n => unico(q(n), r => r.Beto[0]) !== undefined;
@@ -431,7 +495,7 @@ test('idea 3, ejemplos: cada respuesta vale en todos los dibujos, y las otras al
       assert.deepEqual(aros.slice().sort(), nombres.slice().sort(), `ejemplo ${k + 1} «${e.titulo}»: aros ${aros} y grupos ${nombres}`);
       // El dibujo cumple las premisas: se lee qué zonas tienen a alguien (con el centro de cada zona, en una rejilla).
       const idx = nombres.map(nm => D.aros.find(a => a.nombre === nm)), zonas = new Set();
-      for (let x = 0; x <= 10; x += 0.05) for (let y = 0; y <= 7.2; y += 0.05) {
+      for (let x = -2; x <= 12; x += 0.05) for (let y = 0; y <= (e.figura.datos.alto || 7.2); y += 0.05) {
         let z = 0;
         idx.forEach((a, gI) => { if (Math.hypot(x - a.x, y - a.y) < a.r) z |= 1 << gI; });
         if (z) zonas.add(z);
@@ -462,8 +526,9 @@ test('idea 3: juego, misión, predicción y «Mira», comprobados con la geometr
     assert.equal(I.juega.mision.logrado(v), cumple && bailan === 0, v.c);
     const l = plano(I.juega.lectura(v));
     assert.match(l, cumple ? (bailan === 0 ? /ningún quenista/ : bailan === d.ninos.filter(p => pies(p, Q)).length ? /todos los quenistas/ : /algún quenista/) : /No cumple/, v.c);
-    // Nadie se para sobre la línea de un aro (auditoría M14): los pies, a 0,45 o más de cada borde.
-    for (const p of d.ninos) for (const a of d.aros) assert.ok(Math.abs(Math.hypot(p[0] - a.x, p[1] - a.y) - a.r) >= 0.45, `${v.c}: alumno en ${p} sobre el aro ${a.nombre}`);
+    // Nadie se para sobre la línea de un aro (auditoría M14; ronda 2 del lector, 18 nov): rm-aros.test.js lo comprueba con
+    // el cuerpo entero (de los pies a la cabeza). Aquí, los pies a 0,3 o más de cada borde.
+    for (const p of d.ninos) for (const a of d.aros) assert.ok(Math.abs(Math.hypot(p[0] - a.x, p[1] - a.y) - a.r) >= 0.3, `${v.c}: alumno en ${p} sobre el aro ${a.nombre}`);
     // Los nombres van en el piso del patio, y la manija cae en el aro.
     const pt = I.juega.arrastres[0].donde(v), piso = P.patioPiso(pt);
     assert.ok(Math.abs(piso.x - D.x) < 1e-9 && Math.abs(piso.y - D.y) < 1e-9);
@@ -833,12 +898,12 @@ test('contrafáctico: la línea de datos es la misma en la teoría y en la prác
         if (d.pistas[i].t === 'contra') {
           chocaContra++;
           const q = d.pistas[i];
-          assert.ok(t.includes(`es una regla «si p, q», y en ese reparto ${lit(q.a)} y ${lit(neg(q.b))}.`), `${donde}: ${t}`);
-        } else assert.ok(!/regla «si p, q»/.test(t));
+          assert.ok(t.includes(`es una regla «si p, entonces q», y en ese reparto ${lit(q.a)} y ${lit(neg(q.b))}.`), `${donde}: ${t}`);
+        } else assert.ok(!/regla «si p, entonces q»/.test(t));
       } else if (id === 'RMP79-contrafactico') {
         // Tomar lo primero como dato: con eso y las demás pistas (el contrafáctico, otra vez «si p, q»), sale la opción.
         rmp79++;
-        assert.ok(t.includes('«Si fuera p, sería q» es una regla «si p, q»: no dice que p pase.'), t);
+        assert.ok(t.includes('«Si fuera p, sería q» es una regla «si p, entonces q»: no dice que p pase.'), t);
         const ok = d.pistas.some((q, i) => q.t === 'contra' && (() => {
           const mal = PERMS.filter(r => litV(r, q.a) && d.pistas.every((x, j) => j === i || vale(r, x)));
           return mal.length && mal.every(r => tiene(r, a.valor));

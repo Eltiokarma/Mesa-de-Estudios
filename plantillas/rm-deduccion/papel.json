@@ -417,10 +417,10 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una? Datos: Cada una toca un solo instrumento, y ninguno se repite. «Si p, q»: siempre que pasa p, también pasa q. «Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.",
+      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una? Datos: Cada una toca un solo instrumento, y ninguno se repite. «Si p, entonces q»: siempre que pasa p, también pasa q. «Si fuera p, sería q» se lee como «si p, entonces q»: no dice que p pase.",
       "respuesta": "Ana, el bombo; Bety, la zampoña; Ceci, el charango; Dora, la quena.",
       "pasos": [
-        "«Si Ana tocara la quena, Ceci tocaría el bombo» es una regla «si p, q»: no dice si Ana toca la quena.",
+        "«Si Ana tocara la quena, Ceci tocaría el bombo» es una regla «si p, entonces q»: no dice si Ana toca la quena.",
         "Si Ana tocara la quena, por I Ceci tocaría el bombo; entonces Ceci no tocaría el charango y, por IV, Dora tocaría la quena, que ya sería de Ana: imposible. Ana no toca la quena.",
         "Como Ana no toca la quena, por II, Bety toca la zampoña.",
         "Bety no toca la quena: no pasa lo segundo de III. Forma indirecta: tampoco pasa lo primero, Ana no toca el charango. A Ana solo le queda el bombo.",
@@ -620,7 +620,7 @@
     {
       "id": "p10",
       "nivel": "básico",
-      "enunciado": "En el colegio se cumple una regla sin excepciones: si un alumno tiene fiebre, se queda en casa. Se sabe que Rosa no se quedó en casa, que Luis se quedó en casa y que Ana no tuvo fiebre. ¿De quién se puede asegurar algo más, y qué? Datos: «Si p, q»: siempre que pasa p, también pasa q. p: un alumno tiene fiebre. q: se queda en casa. Seguro: se cumple en todos los casos que dejan la regla y el dato.",
+      "enunciado": "En el colegio se cumple una regla sin excepciones: si un alumno tiene fiebre, se queda en casa. Se sabe que Rosa no se quedó en casa, que Luis se quedó en casa y que Ana no tuvo fiebre. ¿De quién se puede asegurar algo más, y qué? Datos: «Si p, entonces q»: siempre que pasa p, también pasa q. p: un alumno tiene fiebre. q: se queda en casa. Seguro: se cumple en todos los casos que dejan la regla y el dato.",
       "respuesta": "Solo de Rosa: no tuvo fiebre. De Luis no se sabe si tuvo fiebre, y de Ana no se sabe si se quedó en casa.",
       "pasos": [
         "Para cada uno hay cuatro casos: fiebre y en casa; fiebre y no en casa; sin fiebre y en casa; sin fiebre y no en casa. La regla tacha uno solo: fiebre y no en casa.",

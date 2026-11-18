@@ -11,7 +11,7 @@ const R = require('./rm-pruebas.js');
 
 const P3 = ['Ana', 'Beto', 'Ciro'], D3 = ['fútbol', 'vóley', 'ajedrez'], I3 = ['futbol', 'voley', 'ajedrez'];
 const PERM = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
-const INS = { nombre: 'instrumento', items: ['quena', 'charango', 'bombo'] }, CIU = { nombre: 'ciudad', items: ['Puno', 'Juliaca', 'Ilave'] };
+const INS = { nombre: 'instrumento', items: ['quena', 'charango', 'bombo'] }, CIU = { nombre: 'ciudad', items: ['Puno', 'Juliaca', 'Lampa'] };
 const MUESTRAS = [
   { escena: 'campeonato', cuadro: false, filas: P3, columnas: D3, iconos: I3 },
   { escena: 'campeonato', filas: P3, columnas: D3, iconos: I3, repartos: PERM.map(a => ({ a })), pistas: [], lineas: 3 },
@@ -24,7 +24,7 @@ const MUESTRAS = [
   { filas: ['Raúl', 'Saúl', 'Tito', 'Uriel'], columnas: ['Gaby', 'Hilda', 'Inés', 'Julia'], pistas: [{ t: 'Una pista larga que tiene que partirse en dos renglones para caber en el ancho del cuadro.' }], lineas: 2 },
   { escena: 'comparsa', cuadro: false, personas: P3, listas: [INS, CIU] },
   { escena: 'comparsa', personas: P3, listas: [INS, CIU], marcas: { 'p:1|1:2': 'si', '1:1|0:1': { m: 'si', desde: 2 }, 'p:1|0:1': { m: 'no', nueva: true } },
-    manos: [{ f: 1, c: 2, desde: 3 }], pistas: [{ t: 'Beto vive en Ilave.' }, { t: 'Quien toca charango vive en Juliaca.', nueva: true }], lineas: 4, nota: 'Quedan 4 de 36 repartos' },
+    manos: [{ f: 1, c: 2, desde: 3 }], pistas: [{ t: 'Beto vive en Lampa.' }, { t: 'Quien toca charango vive en Juliaca.', nueva: true }], lineas: 4, nota: 'Quedan 4 de 36 repartos' },
   { personas: ['Ana', 'Beto', 'Ciro', 'Dina'], listas: [{ nombre: 'deporte', items: ['fútbol', 'vóley', 'ajedrez', 'básquet'] }, { nombre: 'número', items: ['5', '7', '9', '10'] }] },
   { personas: P3, listas: [INS, CIU, { nombre: 'edad', items: ['15 años', '16 años', '17 años'] }], marcas: { '2:0|1:1': 'si', '2:1|0:0': 'no' } },
 ];

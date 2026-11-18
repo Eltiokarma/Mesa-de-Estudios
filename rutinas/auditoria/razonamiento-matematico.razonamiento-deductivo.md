@@ -211,3 +211,77 @@ Decisiones de Gerson (`docs/etapa3/decisiones.md`, «Cuarta ronda»).
   catálogo; `TIPOS_POR_UNIDAD`: puntajes; `rm-parentesco`: orden y edades). Papeles p9 (dados) y p8 (edades) marcados
   con esa unidad. Las demás unidades reciben los mismos tipos que antes, semilla por semilla (fijado en las pruebas de
   cada generador); Certezas, el mismo contenido.
+
+## Correcciones de la ronda 2 del lector (18 nov)
+
+Ronda 2 del lector en frío (`rutinas/frio/razonamiento-matematico.razonamiento-deductivo.md`, sección «Ronda 2»).
+No se tocó lo que es decisión de Gerson (nombres girados en el cuadro en L, «cada grupo tiene al menos un integrante», la
+tabla completa de parentescos, el contrafáctico como «si p, entonces q»), ni «solo se ve el paso 1» ni el número del
+circulito. Capturas `--entera` en el scratchpad de la sesión (`deductivo-r2/cap/`). Ninguna respuesta cambió: los
+acertijos tocados se vuelven a resolver en `razonamiento-deductivo.test.js` y cada uno sigue con una sola respuesta.
+
+### 1. Cuadros y tablas vacíos en los ejemplos
+
+**Criterio (molde §3).** La figura del ejemplo trae **lo que cada pista marca por sí sola** (la primera línea del
+resuelto): las ✗ y las ✓ que dice una pista, sola. No trae lo que sale de juntar pistas (la ✓ que se deduce, lo que tacha
+una ✓, los repartos tachados) ni el caso que queda: eso es la respuesta, y está debajo, en el resuelto. Si la pregunta es
+justo dónde va una marca o qué caso tacha la regla («La pista sin nombre», «El caso que la regla prohíbe»), o no hay
+pistas («¿Cuántos repartos hay?»), la figura va sin marcas. En la idea 4 la tabla trae tachado lo que prohíben las
+reglas; el dato no se aplica en la figura, porque el caso que deja es la respuesta escrita en la fila.
+
+| Qué se hizo | Prueba nueva |
+|---|---|
+| Ideas 1 y 2: `figC`, `figCamp` y `figLE` reciben las marcas por nombre (`X('Beto', 'fútbol')`, `SI_('Rosa', 'Puno')`); los 30 ejemplos y los 3 cuadros de la idea 4 las traen. Idea 4: `figT` tacha con «regla» lo que prohíben las reglas (dos partes o la cadena de tres). | «El cuadro trae lo que cada pista marca por sí sola»: las marcas se escriben otra vez en la prueba (`M1`, `M2`, `M4`) y deben ser exactamente las de la figura; cada una es cierta en todos los repartos y la da **una sola** pista (fuerza bruta con esa pista sola); el cuadro no es el final (queda algo por deducir). En la idea 4, las filas tachadas son las que prohíben las reglas (fórmula escrita en la prueba), ninguna por el dato ni marcada como segura. La prueba de «antes de responder» deja pasar esas marcas solo en los ejemplos de las ideas 1, 2 y 4. |
+
+### 2. Diagramas de Venn y patio
+
+| Qué se hizo | Prueba nueva |
+|---|---|
+| `rotularVenn` con dos reglas: el nombre va dentro de su aro y fuera de los que no lo contienen; si no cabe, afuera de todos los aros, a 8 px o menos del suyo y más cerca de él que de otro. Nunca dentro de un aro ajeno. Apilados, el diagrama usa el ancho libre a cada lado. | `rm-aros.test.js`: en toda figura de Venn de la teoría (sin el laboratorio, donde el alumno mueve los aros), cada nombre cumple esa regla con números (más de 1000 nombres) y entre dos aros hay 6 px o más (ninguno llega justo al borde de otro). |
+| Geometría nueva de los dibujos de muestra (`MUESTRA`, las 7 formas de «Así se resuelve» y «Ahora tú»), con su alto por forma; los dos dibujos de «algunos» (`ALG1`, `ALG2`, alto 8) se comparten entre «Mira», la forma 1 y los ejemplos «El grupo del medio no amarra» y «La trampa del grupo del medio». Se buscaron con el nombre más largo (ajedrecistas) en cada aro (scratchpad `deductivo-r2/opt.js`). | La de arriba; la prueba de los ejemplos de la idea 3 lee las zonas en todo el ancho y alto del dibujo y sigue comprobando que cada dibujo cumple las premisas. |
+| Patio (Lee, Juega, Predice): alumnos a 0,8 de su tamaño (28 px de alto) y banda, quenistas, los cuatro lugares de la diablada y cinco alumnos en lugares nuevos (scratchpad `deductivo-r2/patio-opt2.js`). Cada lugar sigue diciendo lo mismo: cruza, algún quenista; cubre, todos; lejos, ninguno; fuera, no cumple. | `rm-aros.test.js`: ningún alumno (de los pies a la cabeza, con los brazos) toca la línea de un aro, con 3 px, en todos los lugares; cada nombre del patio va en su aro o pegado a él, sin cruzar líneas ni pisar alumnos, y si queda dentro de otro aro, ese aro contiene al suyo. La prueba de la unidad sigue contando la lectura, la misión y la predicción. |
+
+### 3. Tarjeta 12, «¿Cuál no se concluye?»
+
+- La tabla de 8 casos trae tachados los 4 que prohíben las reglas (con 1).
+- El resuelto dice en palabras qué alternativas se cumplen, sin fórmulas de p, q y r; Datos dice «una afirmación se
+  concluye…».
+- p, q y r en Datos llevan el color de su columna (`PQ`: naranja, turquesa y tinta), en todos los ejemplos de la idea 4.
+- **La columna r sigue en tinta**: la paleta de deducción no tiene un tercer color (sin verde ni carmín). Va a Gerson.
+
+### 4. Redacción
+
+| Hallazgo | Qué se hizo |
+|---|---|
+| «si p, q» con una sola coma | Regla y Mira de la idea 4: «“si p, entonces q” y pasa p…»; D_SI, el contrafáctico (teoría y `rm-deduccion`, iguales) y el resuelto 5 dicen «si p, entonces q». En la práctica, «Siempre cierto» conserva «si p, q» porque también es de Certezas, que debe recibir lo mismo. |
+| «tacha los casos con q» | «tacha los casos con “q sí”». |
+| «Beto y Ciro, en cualquier orden» | «Beto y Ciro se reparten vóley y ajedrez». |
+| «si una pista nombra a dos personas» | D_DOS: «Las personas que junta una pista son distintas: “Ana conversa con quien vende jugos” dice que Ana no vende jugos.» Los resueltos dicen «junta a personas distintas»; el de la kermés explica la pista de tres personas y cierra con una línea para Teo y Maru. |
+| «C es la premisa 1 al revés» | «…al revés, y falla en el dibujo 2: los músicos que cantan no tocan quena.» |
+| «sobrino» cuando se pregunta por una hija | Datos de la idea 5 en masculino y femenino («Sobrino o sobrina…»), en «Así se resuelve», «Ahora tú» y los ejemplos. |
+| «no se supone sexo» | «no se supone nada que el enunciado no diga: hombre o mujer, casado, hijo único. Cada uno cuenta una vez.» |
+| La Regla de la idea 1 con «Ana almuerza…» | «“Ana entrena con quien juega vóley” junta a dos personas distintas: ✗ en Ana y vóley» (el campeonato del dibujo). |
+| La franja de los chicos de la comparsa | `rm-objeto`: una correa (banda con su borde y un gancho al costado), y la tarjeta 1 dice «con la correa del instrumento cruzada en el pecho»; también el texto alternativo. |
+
+Las pruebas: el validador (topes de la regla y de la tarjeta), la prueba del contrafáctico (las dos líneas iguales,
+ahora con «entonces») y la de los datos de `rm-deduccion` (el condicional y la asignación dicen «si p, entonces q»;
+«Siempre cierto», «si p, q»).
+
+### 5. «Ilave» se leía «llave»
+
+La ciudad pasa a **Lampa** en la teoría, en `rm-cuadros` (generador, `casos.json` y `papel.json`), en `rm-deduccion`
+(ciudades de la asignación; en la plaza mojada, que ya tenía Lampa, va **Yunguyo**) y en las pruebas. Es solo el nombre:
+las semillas y las respuestas no cambian (`casos.json` renombrado y en verde).
+
+### Para Gerson
+
+1. **Color de r** en las tablas de tres partes: tinta, porque la paleta no tiene tercer color. ¿Se queda así, o las tres
+   letras en tinta en las tablas de 8 casos?
+2. **Criterio de la figura de los ejemplos**: las marcas de cada pista, no lo deducido; en la idea 4, la regla tachada y
+   el dato sin aplicar. ¿Va así en el molde para las demás unidades?
+3. **Patio**: el nombre «quenistas» va encima de su aro, dentro de la banda (con alumnos dentro, no cabe adentro sin
+   agrandar todo el patio). En los diagramas de Venn la regla es estricta.
+4. Los dibujos de «algunos» apilados quedan más altos (alto 8, unos 430 px en el celular) para que cada nombre quepa.
+5. Laboratorio «El aro donde quieras»: con aros que el alumno junta, un nombre puede quedar lejos de su aro (regla vieja
+   como respaldo). La práctica de `rm-parentesco` define los parentescos en masculino genérico («Sobrino: hijo de un
+   hermano»): con la forma doble no cabe en el tope de 22 palabras.

@@ -62,16 +62,16 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Beto, Fito y Inés tocan en la comparsa del colegio. Instrumentos: quena, charango y bombo; ciudades: Puno, Juliaca y Ilave. Se sabe que: I. Beto no vive en Puno. II. Quien vive en Ilave toca charango. III. Quien vive en Juliaca toca bombo. IV. Beto no toca charango. V. Fito no toca quena. ¿Dónde vive Beto? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Alternativas: A) Faltan datos para saberlo   B) Puno   C) Ilave   D) Juliaca",
+      "enunciado": "Beto, Fito y Inés tocan en la comparsa del colegio. Instrumentos: quena, charango y bombo; ciudades: Puno, Juliaca y Lampa. Se sabe que: I. Beto no vive en Puno. II. Quien vive en Lampa toca charango. III. Quien vive en Juliaca toca bombo. IV. Beto no toca charango. V. Fito no toca quena. ¿Dónde vive Beto? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Alternativas: A) Faltan datos para saberlo   B) Puno   C) Lampa   D) Juliaca",
       "respuesta": "D) Juliaca",
       "pasos": [
         "Se arma un cuadro por lista (instrumentos y ciudades), con una fila por persona. Una pista con «quien…» une dos listas.",
         "Pista I: Beto no vive en Puno. Se tacha esa casilla (✗).",
-        "Pista II: Quien vive en Ilave toca charango. Une Ilave con charango: si una persona tiene una, tiene la otra.",
+        "Pista II: Quien vive en Lampa toca charango. Une Lampa con charango: si una persona tiene una, tiene la otra.",
         "Pista III: Quien vive en Juliaca toca bombo. Une Juliaca con bombo: si una persona tiene una, tiene la otra.",
         "Pista IV: Beto no toca charango. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Beto toca bombo y Beto vive en Juliaca.",
-        "Pista V: Fito no toca quena. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Fito toca charango, Inés toca quena, Fito vive en Ilave y Inés vive en Puno.",
-        "Queda un solo reparto: Beto: bombo y Juliaca; Fito: charango y Ilave; Inés: quena y Puno.",
+        "Pista V: Fito no toca quena. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Fito toca charango, Inés toca quena, Fito vive en Lampa y Inés vive en Puno.",
+        "Queda un solo reparto: Beto: bombo y Juliaca; Fito: charango y Lampa; Inés: quena y Puno.",
         "Respuesta: Beto vive en Juliaca."
       ]
     },
@@ -93,7 +93,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Beto, Ciro y Eva tocan en la comparsa del colegio. Instrumentos: quena, charango y bombo; ciudades: Puno, Juliaca y Ilave; edades: 15 años, 16 años y 17 años. Se sabe que: I. Eva no vive en Juliaca. II. Ciro no vive en Juliaca. III. Beto no tiene 15 años. IV. Quien tiene 16 años toca charango. V. Quien tiene 15 años no toca bombo. VI. Ciro no toca quena. VII. Quien vive en Ilave tiene 16 años. ¿Qué toca quien tiene 15 años? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Alternativas: A) Charango   B) Faltan datos para saberlo   C) Quena   D) Bombo",
+      "enunciado": "Beto, Ciro y Eva tocan en la comparsa del colegio. Instrumentos: quena, charango y bombo; ciudades: Puno, Juliaca y Lampa; edades: 15 años, 16 años y 17 años. Se sabe que: I. Eva no vive en Juliaca. II. Ciro no vive en Juliaca. III. Beto no tiene 15 años. IV. Quien tiene 16 años toca charango. V. Quien tiene 15 años no toca bombo. VI. Ciro no toca quena. VII. Quien vive en Lampa tiene 16 años. ¿Qué toca quien tiene 15 años? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Alternativas: A) Charango   B) Faltan datos para saberlo   C) Quena   D) Bombo",
       "respuesta": "C) Quena",
       "pasos": [
         "Se arma un cuadro por lista (instrumentos, ciudades y edades), con una fila por persona. Una pista con «quien…» une dos listas.",
@@ -103,8 +103,8 @@
         "Pista IV: Quien tiene 16 años toca charango. Une 16 años con charango: si una persona tiene una, tiene la otra.",
         "Pista V: Quien tiene 15 años no toca bombo. Separa 15 años de bombo: nadie tiene las dos.",
         "Pista VI: Ciro no toca quena. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Eva toca quena y Eva tiene 15 años.",
-        "Pista VII: Quien vive en Ilave tiene 16 años. Une Ilave con 16 años: si una persona tiene una, tiene la otra. Con lo que va, ya es seguro: Beto toca bombo, Ciro toca charango, Ciro vive en Ilave, Eva vive en Puno, Beto tiene 17 años y Ciro tiene 16 años.",
-        "Queda un solo reparto: Beto: bombo, Juliaca y 17 años; Ciro: charango, Ilave y 16 años; Eva: quena, Puno y 15 años.",
+        "Pista VII: Quien vive en Lampa tiene 16 años. Une Lampa con 16 años: si una persona tiene una, tiene la otra. Con lo que va, ya es seguro: Beto toca bombo, Ciro toca charango, Ciro vive en Lampa, Eva vive en Puno, Beto tiene 17 años y Ciro tiene 16 años.",
+        "Queda un solo reparto: Beto: bombo, Juliaca y 17 años; Ciro: charango, Lampa y 16 años; Eva: quena, Puno y 15 años.",
         "Respuesta: Quien tiene 15 años toca quena."
       ]
     },
