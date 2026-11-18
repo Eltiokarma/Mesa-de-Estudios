@@ -234,3 +234,205 @@ test('el objeto de la primera pantalla es la cartulina (dibujo de prueba), y «L
   assert.equal(rot(2), '50° 60° 70°');
   assert.equal(rot(4), '50° 50° 50° 60° 60° 60° 70° 70°');
 });
+
+// ---------- Fase 3 (18 nov): las ideas 2 a 6 ----------
+// La unidad entera declara calidad: 2 y pasa el validador con 400 semillas. Para las seis ideas: colores de la regla de
+// la unidad, fidelidad de cada ángulo, rótulos que caben y quedan más cerca de su vértice, ninguna figura con la respuesta, datos sin la respuesta, «Ahora tú»
+// rehecho aparte leyendo el enunciado y la notación (x sin «°», nunca C(x) ni S(x)). Los rótulos, más cerca de su vértice
+// que de cualquier otro vértice con ángulo (en la figura de examen la unidad elige 0,85 al armar cada caso).
+const C = require('../../../catalogo/cursos/geometria.json');
+const TEMAS = C.unidades.find(u => u.id === def.unidad).temas;
+
+test('la unidad entera: calidad 2, el validador con 400 semillas y cada idea con 15 ejemplos', () => {
+  assert.equal(def.calidad, 2);
+  const p = Teoria.problemas(def, { temas: TEMAS, semillas: SEMILLAS });
+  assert.deepEqual(p, [], p.join('\n'));
+  for (const i of def.ideas) assert.equal(i.ejemplos.length, 15, i.id);
+  // Los id que guardan avance: las ideas y las mesas.
+  assert.deepEqual(def.laboratorio.map(m => m.id), ['triangulo-libre', 'bisagra-libre', 'bisectrices']);
+  assert.deepEqual(def.ideas[5].juega.controles.map(c => c.id), ['b', 'c']);
+  assert.deepEqual(def.ideas[3].juega.controles.map(c => c.id), ['g']);
+  assert.deepEqual(def.ideas[4].juega.controles.map(c => c.id), ['ax']);
+});
+
+// Todas las figuras de una idea: { donde, ejercicio, figura, estado, textos, respuesta }.
+function figurasDe(id, N = SEMILLAS) {
+  const out = [], j = id.juega;
+  const add = (donde, ejercicio, dib, textos = [], extra = {}) => dib && out.push(Object.assign({ donde, ejercicio, figura: dib.datos, estado: dib.estado || {}, textos }, extra));
+  for (const v of Teoria.grilla(j.controles)) add(`juego ${JSON.stringify(v)}`, false, j.dibujo(v));
+  (id.lee.tarjetas || []).forEach((t, i) => add(`lee ${i + 1}`, false, t.dibujo));
+  add('predice', false, id.predice.dibujo, [plano(id.predice.pregunta), ...id.predice.datos], { respuesta: id.predice.opciones.find(o => o.correcta).texto });
+  add('revelar', false, id.predice.revelar);
+  id.mira.pasos.forEach((ps, i) => add(`mira ${i + 1}`, false, { datos: id.mira.datos, estado: ps.estado }));
+  if (id.regla.dibujo) add('regla', false, id.regla.dibujo);
+  id.ejemplos.forEach((e, i) => add(`ejemplo ${i + 1} «${e.titulo}»`, true, e.figura, [e.enunciado, ...e.datos], { respuesta: e.respuesta }));
+  for (let s = 0; s < N; s++) {
+    const a = id.ahoraTu.generar(s);
+    add(`ahora tú ${s}`, true, a.dibujo, [a.pregunta, ...a.datos], { respuesta: a.opciones.find(o => o.correcta).texto });
+    const r = id.resuelve.generar(s);
+    add(`resuelve ${s}`, true, r.dibujo, [r.enunciado, ...r.datos], { respuesta: r.respuesta });
+  }
+  return out;
+}
+const IDEAS = def.ideas.slice(1);
+const FIGS2 = IDEAS.map(i => [i, figurasDe(i)]);
+const angulosDe2 = d => { const fig = P.escena(d).fig, g = G.geometria(fig); return (fig.angulos || []).map(an => ({ an, m: G.util.angulo(g.P(an.en), g.P(an.de), g.P(an.a)), texto: an.texto === undefined || an.texto === null ? '' : String(an.texto), color: an.color || 'tinta' })); };
+const CORTES = [0, 1, 2, 3, 4, 9];
+
+test('ideas 2 a 6: los objetos de la primera pantalla son dibujos de prueba de geo-objeto', () => {
+  const OBJ = { 'angulo-exterior': 'plaza', isosceles: 'compas', desigualdad: 'lampara', 'lineas-notables': 'caserio', 'angulo-de-bisectrices': 'parque' };
+  for (const i of IDEAS) {
+    const s = P.dibujar(i.juega.dibujo(Teoria.inicio(i.juega)).datos);
+    assert.match(s, new RegExp(`data-objeto="${OBJ[i.id]}" data-prueba="si"`), i.id);
+    assert.equal(i.pieza, 'geo-objeto');
+  }
+  assert.match(P.dibujar(def.ideas[1].juega.dibujo(Teoria.inicio(def.ideas[1].juega)).datos), /data-objeto="mototaxi" data-prueba="si"/);
+  assert.match(P.dibujar(def.ideas[2].predice.dibujo.datos), /data-objeto="tijeral" data-prueba="si"/, 'el techo a dos aguas');
+});
+
+test('ideas 2 a 6, colores: en los ejercicios lo dado en carmín y lo pedido («?») en tinta; nunca violeta en una figura ni en un enunciado', () => {
+  const mal = [];
+  for (const [i, figs] of FIGS2) for (const it of figs) {
+    if (/var\(--c-[fd]\)/.test(P.dibujar(it.figura, it.estado))) mal.push(`${i.id} ${it.donde}: violeta o verde en la figura`);
+    for (const z of angulosDe2(it.figura)) {
+      if (z.texto === '?' && z.color !== 'tinta') mal.push(`${i.id} ${it.donde}: lo pedido va en ${z.color}`);
+      if (it.ejercicio && z.texto && z.texto !== '?' && z.color !== 'h') mal.push(`${i.id} ${it.donde}: «${z.texto}» dado en ${z.color}, no en carmín`);
+      if (!['h', 'i', 'o', 'tinta'].includes(z.color)) mal.push(`${i.id} ${it.donde}: ángulo en ${z.color}`);
+    }
+  }
+  assert.deepEqual([...new Set(mal)].slice(0, 20), []);
+  const conV = x => JSON.stringify(x).includes('"c-f"');
+  for (const i of IDEAS) {
+    for (const e of i.ejemplos) { assert.ok(!conV(e.enunciado) && !conV(e.datos), `${i.id}: ${e.titulo}`); assert.ok(conV(e.respuesta), `${i.id}: ${e.titulo}: la respuesta va en violeta`); }
+    for (let s = 0; s < 60; s++) { const a = i.ahoraTu.generar(s), r = i.resuelve.generar(s); assert.ok(!conV(a.pregunta) && !conV(a.datos) && !conV(r.enunciado) && !conV(r.datos), `${i.id} ${s}`); assert.ok(conV(r.respuesta), `${i.id} resuelve ${s}`); }
+  }
+  // Fuera de los ejercicios: el exterior en turquesa (idea 2) y los interiores en carmín.
+  const J2 = angulosDe2(def.ideas[1].juega.dibujo(Teoria.inicio(def.ideas[1].juega)).datos);
+  assert.ok(J2.some(z => z.an.en === 'C' && z.color === 'i' && z.texto === '130°'), 'el giro en C, en turquesa');
+  assert.ok(J2.filter(z => z.color === 'h').length === 3, 'los tres interiores en carmín');
+});
+
+test('ideas 2 a 6, fidelidad: cada ángulo mide en el dibujo lo que dice su rótulo o su valor (±0,5°)', () => {
+  const mal = [];
+  for (const [i, figs] of FIGS2) for (const it of figs) for (const z of angulosDe2(it.figura)) {
+    const num = /^(\d+)°$/.exec(z.texto), esp = num ? +num[1] : z.an.mide;
+    if (esp === undefined) { mal.push(`${i.id} ${it.donde}: «${z.texto}» sin medida`); continue; }
+    if (Math.abs(z.m - esp) > 0.5) mal.push(`${i.id} ${it.donde}: «${z.texto || '(arco)'}» mide ${z.m.toFixed(2)}° y debería medir ${esp}°`);
+  }
+  assert.deepEqual([...new Set(mal)].slice(0, 20), []);
+});
+
+test('ideas 2 a 6, rótulos: caben, no pisan nada ni tocan una línea, y quedan más cerca de su vértice que de otro', () => {
+  const mal = [];
+  for (const [i, figs] of FIGS2) for (const it of figs) for (const corte of (it.donde.startsWith('mira') ? [it.estado.corte || 0] : CORTES)) {
+    if (!P.escenaCabe(it.figura, corte)) mal.push(`${i.id} ${it.donde} corte ${corte}: un rótulo no cabe, pisa algo o toca una línea`);
+    const { rot, vertice, fig } = P.rotulos(it.figura, corte), ids = [...new Set((fig.angulos || []).map(a => a.en))];
+    for (const z of rot) {
+      const cx = (z.caja.x0 + z.caja.x1) / 2, cy = (z.caja.y0 + z.caja.y1) / 2, d = id => Math.hypot(cx - vertice(id)[0], cy - vertice(id)[1]);
+      for (const id of ids) if (id !== z.an.en && !(d(z.an.en) < d(id))) mal.push(`${i.id} ${it.donde}: «${z.an.texto}» queda casi tan cerca de ${id} como de ${z.an.en}`);
+    }
+  }
+  assert.deepEqual([...new Set(mal)].slice(0, 20), []);
+});
+
+test('ideas 2 a 6: ninguna figura de la predicción, de un ejemplo, de «Así se resuelve» ni de «Ahora tú» trae la respuesta', () => {
+  const nums = x => [...plano(x).matchAll(/\d+(?:,\d+)?/g)].map(m => m[0]);
+  const mal = [];
+  for (const [i, figs] of FIGS2) for (const it of figs) {
+    if (it.respuesta === undefined) continue;
+    const txt = Teoria.textoSVG(P.dibujar(it.figura, it.estado)), dice = new Set(it.textos.flatMap(nums));
+    for (const n of nums(it.respuesta)) if (!dice.has(n) && new RegExp(`(^|[^\\d,])${n}(°| cm|$|[^\\d,])`).test(txt)) mal.push(`${i.id} ${it.donde}: la figura dice ${n}`);
+  }
+  assert.deepEqual([...new Set(mal)].slice(0, 20), []);
+});
+
+// La respuesta de «Ahora tú», rehecha leyendo el enunciado (y, en el tipo de reconocer la línea, la figura): sin el
+// código de la unidad.
+const gra = n => `${String(n).replace('.', ',')}°`;
+function lineal(e) { const m = /^\s*(\d*)x(?:\s*([+−])\s*(\d+)°?)?\s*$/.exec(e); return m ? { a: m[1] ? +m[1] : 1, b: m[2] ? (m[2] === '−' ? -m[3] : +m[3]) : 0 } : null; }
+function rehacer2(id, a) {
+  const t = plano(a.pregunta).replace(/[  ⁠]/g, ' ');
+  let m;
+  if (id === 'angulo-exterior') {
+    if ((m = /m∠A = (\d+)° y m∠B = (\d+)°\. Se prolonga BC/.exec(t))) return gra(+m[1] + +m[2]);
+    if ((m = /m∠A = (.+?), m∠B = (.+?) y m∠ACD = (.+?)\. ¿(Cuánto vale x|Cuánto mide el ángulo ACD)\?/.exec(t))) {
+      const [A, B, E] = [m[1], m[2], m[3]].map(lineal), x = (A.b + B.b - E.b) / (E.a - A.a - B.a);
+      return m[4] === 'Cuánto vale x' ? String(x) : gra(E.a * x + E.b);
+    }
+    if ((m = /exterior ACD mide (\d+)° y m∠A = (\d+)°/.exec(t))) return gra(m[1] - m[2]);
+    if ((m = /exterior en A mide (\d+)° y el exterior en B mide (\d+)°/.exec(t))) return gra(360 - m[1] - m[2]);
+    if ((m = /m∠BAC = (\d+)°, m∠ABD = (\d+)° y m∠ACD = (\d+)°/.exec(t))) return gra(+m[1] + +m[2] + +m[3]);
+  }
+  if (id === 'isosceles') {
+    if ((m = /AB = AC y m∠A = (\d+)°/.exec(t))) return gra((180 - m[1]) / 2);
+    if ((m = /AB = AC y m∠B = (\d+)°/.exec(t))) return gra(180 - 2 * m[1]);
+    if ((m = /AB = \((.+?)\) cm, AC = \((.+?)\) cm/.exec(t))) { const p = lineal(m[1].replace(/ − (\d+)$/, ' − $1')), q = lineal(m[2]); const x = (q.b - p.b) / (p.a - q.a); return `${p.a * x + p.b} cm`; }
+    if ((m = /m∠A = (\d+)° y m∠B = (\d+)°\. ¿Cuál es su lado mayor\?/.exec(t))) { const v = { A: +m[1], B: +m[2], C: 180 - m[1] - m[2] }, k = Object.keys(v).sort((x, y) => v[y] - v[x])[0]; return { A: 'BC', B: 'AC', C: 'AB' }[k]; }
+    if ((m = /AB = BD = DC\. Si m∠C = (\d+)°, ¿cuánto mide el ángulo (A|ABC)\?/.exec(t))) return gra(m[2] === 'A' ? 2 * m[1] : 180 - 3 * m[1]);
+  }
+  if (id === 'desigualdad') {
+    if ((m = /miden (\d+) cm y (\d+) cm\. ¿Cuántos valores/.exec(t))) return String(2 * Math.min(+m[1], +m[2]) - 1);
+    if ((m = /miden (\d+) cm y (\d+) cm\. Si el tercero, x, mide un número entero de cm, ¿cuál es su (mayor|menor) valor\?/.exec(t))) return `${m[3] === 'mayor' ? +m[1] + +m[2] - 1 : Math.abs(m[1] - m[2]) + 1} cm`;
+    if ((m = /isósceles tiene un lado de (\d+) cm y otro de (\d+) cm/.exec(t))) { const [p, q] = [+m[1], +m[2]], c = 2 * p > q ? null : 2 * q + p; return `${c} cm`; }
+    if ((m = /AB = (\d+) cm, BC = (\d+) cm, CD = (\d+) cm y DA = (\d+) cm/.exec(t))) { const [p, q, r, s] = m.slice(1).map(Number); let n = 0; for (let x = 1; x < 50; x++) if (x > Math.abs(p - q) && x < p + q && x > Math.abs(r - s) && x < r + s) n++; return String(n); }
+  }
+  if (id === 'lineas-notables') {
+    if (/mira las marcas de la línea/.test(t)) return { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' }[Object.keys(a.dibujo.datos.lineas)[0]];
+    if ((m = /m∠B = (\d+)° y m∠C = (\d+)°\. ¿Dónde cae/.exec(t))) return +m[1] > 90 ? 'Fuera, en la prolongación de CB' : +m[1] === 90 ? 'Justo en B: AB es la altura' : 'Dentro del lado BC';
+    if ((m = /m∠B = (\d+)° y AH es la altura desde A/.exec(t))) return gra(Math.abs(90 - m[1]));
+    if ((m = /m∠B = (\d+)°, m∠C = (\d+)° y AF es la bisectriz/.exec(t))) return gra(+m[1] + (180 - m[1] - m[2]) / 2);
+    if ((m = /m∠B = (\d+)° y m∠C = (\d+)°\. AH es la altura y AF/.exec(t))) return gra((m[1] - m[2]) / 2);
+  }
+  if (id === 'angulo-de-bisectrices') {
+    if ((m = /m∠A = (\d+)°\. Las bisectrices interiores de B y C se cortan en I\./.exec(t))) return gra(90 + m[1] / 2);
+    if ((m = /m∠A = (\d+)°\. La bisectriz interior de B y la exterior de C/.exec(t))) return gra(m[1] / 2);
+    if ((m = /m∠A = (\d+)°\. Las bisectrices de los ángulos exteriores/.exec(t))) return gra(90 - m[1] / 2);
+    if ((m = /m∠B = (\d+)° y m∠C = (\d+)°\. Las bisectrices interiores/.exec(t))) return gra(180 - (+m[1] + +m[2]) / 2);
+    if ((m = /m∠BIC = (\d+)°\. ¿Cuánto mide el ángulo A\?/.exec(t))) return gra(2 * (m[1] - 90));
+  }
+  return null;
+}
+
+test('ideas 2 a 6, «Ahora tú»: cuatro opciones distintas, códigos distintos, datos sin la respuesta y la respuesta rehecha aparte (400 semillas)', () => {
+  for (const i of IDEAS) {
+    const tipos = new Set();
+    for (let s = 0; s < SEMILLAS; s++) {
+      const a = i.ahoraTu.generar(s), ok = a.opciones.filter(o => o.correcta);
+      assert.equal(a.opciones.length, 4, `${i.id} ${s}`);
+      assert.equal(ok.length, 1);
+      assert.equal(new Set(a.opciones.map(o => plano(o.texto))).size, 4, `${i.id} ${s}: opciones repetidas`);
+      assert.equal(new Set(a.opciones.filter(o => !o.correcta).map(o => o.error)).size, 3, `${i.id} ${s}: dos opciones con el mismo código`);
+      const bien = plano(ok[0].texto), esp = rehacer2(i.id, a);
+      assert.ok(esp !== null, `${i.id} ${s}: no se pudo leer «${plano(a.pregunta)}»`);
+      assert.equal(bien, esp, `${i.id} ${s}: «${plano(a.pregunta)}» → ${bien}, y rehecho da ${esp}`);
+      const n = /^(\d+)/.exec(bien);
+      if (n && !['90', '180', '360'].includes(n[1])) for (const d of a.datos) assert.ok(!new RegExp(`(?<![\\d,])${n[1]}(?![\\d,])`).test(plano(d)), `${i.id} ${s}: los datos dicen ${n[1]}`);
+      tipos.add(s % 5);
+    }
+    assert.equal(tipos.size, 5);
+  }
+});
+
+test('ideas 2 a 6, notación: x sin «°», nunca C(x) ni S(x); m∠ y ∠ACD como en la propuesta', () => {
+  const mal = new Set();
+  for (const i of IDEAS) {
+    const textos = cadenas(i);
+    for (let s = 0; s < 120; s++) { cadenas(i.ahoraTu.generar(s), textos); cadenas(i.resuelve.generar(s), textos); }
+    for (const t of textos) { for (const m of gradosMal(t)) mal.add(`${i.id}: ${m} en «${t.slice(0, 80)}»`); if (/\b[CS]\(/.test(t)) mal.add(`${i.id}: C(x) o S(x) en «${t.slice(0, 80)}»`); }
+  }
+  assert.deepEqual([...mal].slice(0, 20), []);
+  assert.ok(def.ideas[1].juega.leyenda.some(l => /∠ACD/.test(plano(l.s))), 'el exterior en C se llama ∠ACD');
+  // Los nombres que vienen después: «incentro» y «excentro» solo como cruces, con «se explican en Puntos notables».
+  const lee6 = def.ideas[5].lee.tarjetas.map(x => plano(x.texto)).join(' ');
+  assert.match(lee6, /incentro/); assert.match(lee6, /excentro/); assert.match(lee6, /Puntos notables/);
+  assert.ok(!def.glosario.some(g => /^(incentro|excentro)$/.test(g.termino)), 'incentro y excentro se definen en otras unidades');
+});
+
+test('ideas 2 a 6: la lectura del juego enuncia la relación (el giro en C suma A y B; BIC = 90° + A/2)', () => {
+  const j2 = def.ideas[1].juega;
+  for (const v of Teoria.grilla(j2.controles)) { const n = [...plano(j2.lectura(v)).matchAll(/(\d+)°/g)].map(m => +m[1]); assert.equal(n[0] + n[1], n[2]); assert.equal(n[2], 180 - v.c); }
+  const j6 = def.ideas[5].juega;
+  for (const v of Teoria.grilla(j6.controles)) { const n = [...plano(j6.lectura(v)).matchAll(/(\d+)°/g)].map(m => +m[1]); assert.equal(n[1] + n[2], n[3]); assert.equal(n[2] * 2, n[0]); }
+  const j4 = def.ideas[3].juega;
+  for (const v of Teoria.grilla(j4.controles)) { const x = +/AC ≈ ([\d,]+)/.exec(plano(j4.lectura(v)))[1].replace(',', '.'); assert.ok(x > 15 && x < 65); }
+});

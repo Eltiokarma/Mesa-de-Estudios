@@ -91,7 +91,13 @@ práctica de academia; no tienen datos de alumnos y se confirman con la medició
 | Familia | Unidad | Qué recogen |
 | --- | --- | --- |
 | GE-SEG1–5, GE-ANG1–3, GE-CS1–4, GE-BIS1–3, GE-QB1–2 | segmentos-y-angulos | sumar tramos sin colinealidad, complemento/suplemento cruzados, bisectrices, quiebre entre paralelas |
-| GE-TRI1–3, GE-DT1–3, GE-BIS4–5 | triangulos | suma de ángulos, desigualdad triangular, ángulo entre bisectrices |
+| GE-TRI1–3, GE-DT1–3, GE-BIS4–5 | triangulos (hasta el 17 nov) | suma de ángulos, desigualdad triangular, ángulo entre bisectrices |
+| GE-TRI4–19, GE-RAZ1–2 | triangulos, idea 1 (18 nov) | dos obtusos, la vuelta de 360°, restar uno solo, clase sin el tercero, falta un dato, partes iguales, x por ángulo, signo al despejar, la mariposa |
+| GE-EXT1–13 | triangulos, idea 2 (18 nov) | la suma de los exteriores como 180°, 540° o «depende», interior por exterior, restar o sumar al revés, la punta de flecha, partes iguales |
+| GE-ISO1–15 | triangulos, idea 3 (18 nov) | ángulo pegado y no el de enfrente, techo simétrico, falta un dato, no dividir la base, punta y base iguales, x por lado, lados que tocan, la cadena de isósceles |
+| GE-DT1–13 | triangulos, idea 4 (18 nov) | extremos incluidos, sin el límite de abajo, máximo y mínimo cruzados, el isósceles de 4 y 9, la diagonal con un solo triángulo |
+| GE7-a, GE7-b, GE8, GE-LN1–13 | triangulos, idea 5 (18 nov) | la altura dentro o un lado (GE7 partido), la mediana como altura (GE8), reconocer por el aspecto, ∠BAH, ∠AFC, ángulo entre altura y bisectriz |
+| GE-BIS4, GE-BIS5-a, GE-BIS5-b, GE-BIS6–13 | triangulos, idea 6 (18 nov) | interior con exterior, A entero, 90° en E, sin la mitad, la de dos exteriores, el inverso |
 | GE-CON1–3, GE-CON6–15 | congruencia | LLA, AAA, correspondencia de lados, base media, mediana a la hipotenusa, notables |
 | GE-POL1–5, GE-TRP1–2, GE-VAR1–2 | poligonos-y-cuadrilateros | diagonales, ángulos interiores y exteriores, trapecios, Varignon |
 | GE-TAN1–2, GE-POS1–2, GE-CIC1–2, GE-PON1–3 | circunferencia | tangentes, posiciones relativas, cuadrilátero inscrito, Poncelet y Pitot |
@@ -153,3 +159,16 @@ Se comprobarían con las predicciones del piloto (tasa de acierto antes y despu�
 **Conflictos.** El molde fija un «Vale si» que obliga a redactar las aclaraciones como condición (pedido 6). Cuatro
 colores obligan a repetir colores entre ideas de una misma unidad (pedido 2). Sin recorte en la pieza, cada archivo
 cuida su marco (pedido 3).
+
+## Triángulos, fase 3 (18 nov): códigos nuevos (hipótesis)
+
+Todos son hipótesis de aula sin medir; se confirman con la medición del piloto. La lista completa, con lo que dice cada
+uno, está en `docs/investigacion/geometria-ideas-erroneas.md` (sección «Triángulos (18 nov)») y en el bloque de cada
+idea de `contenido/teoria/geometria/triangulos.js`. GE7 y GE8 son los únicos con datos; GE7 se parte en GE7-a (la altura
+cae dentro, inclinada) y GE7-b (un lado como altura), y GE-BIS5 en -a (A entero) y -b (90° en E), para que dos opciones
+no lleven el mismo código.
+
+Revisión de capturas (18 nov, fase 3): un ángulo recto que es lo que se pide («?», una letra o una expresión como «9k» o
+«3x») se dibuja con arco y no con el cuadradito, que diría la respuesta (∠BAD = 90° del equilátero prolongado; la clase de
+triángulo cuando ∠BIC = 135°; la razón 4 : 9 : 5; el ángulo C que se calcula en «¿cuál es el lado mayor?»). En los juegos,
+la letra del punto que se arrastra se aleja 8 px (`manija` en `geo-objeto`): la manija la tapaba.

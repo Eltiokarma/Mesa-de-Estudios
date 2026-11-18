@@ -48,6 +48,17 @@ const ESCENAS = [
   { objeto: 'cartulina', triangulo: false, piezas: [{ en: [0.3, 0.3], de: 15, a: 115, texto: '100°', marcas: 1 }, { en: [4.2, 0.1], de: 40, a: 135, texto: '95°', marcas: 2 }] },
   { objeto: 'cartulina', triangulo: false, piezas: [{ en: 'regla', de: 80, a: 180, texto: '100°', marcas: 1 }, { en: 'regla', de: 0, a: 95, texto: '95°', marcas: 2 }] },
   { objeto: 'tijeral', b: 35, c: 35, angulos: { A: { texto: '?' }, B: { texto: '35°', color: 'h', marcas: 2 }, C: { texto: '35°', color: 'h', marcas: 2 } } },
+  // Triángulos, fase 3 (18 nov): la plaza con el mototaxi y sus exteriores, el compás, el techo a dos aguas (tijeral con
+  // lados), la lámpara con sus extremos, el caserío con las tres líneas y la mediatriz, y el parque con I y E.
+  { objeto: 'plaza', b: 70, c: 50, radio: 14, angulos: { A: { texto: '60°', color: 'h' }, B: { texto: '70°', color: 'h' }, C: { texto: '50°', color: 'h' } }, exteriores: { C: { texto: '130°', color: 'i' } }, mototaxi: true, vista: { x: [-1, 9], y: [-1.15, 8.95] }, alto: 270 },
+  { objeto: 'plaza', b: 60, c: 70, prolonga: 1.6, alto: 270, angulos: { A: { texto: '50°', color: 'h' }, B: { texto: '60°', color: 'h' }, C: { texto: '70°', color: 'h' } }, exteriores: { A: { texto: '130°', color: 'i' }, B: { texto: '120°', color: 'i' }, C: { texto: '110°', color: 'i' } }, letraE: true, letraF: true },
+  { objeto: 'plaza', examen: true, b: 65, c: 65, llaves: [{ de: 'A', a: 'B', marcas: 1 }, { de: 'A', a: 'C', marcas: 1 }], angulos: { A: { texto: '?' }, B: { marcas: 2 }, C: null }, exteriores: { C: { texto: '115°', color: 'h' } } },
+  { objeto: 'compas', t: 50, raya: { texto: '≈ 10,1 cm' }, angulos: { A: { texto: '50°', color: 'h' }, B: { texto: '65°', color: 'h', radio: 14, holgura: 3 }, C: { texto: '65°', color: 'h', radio: 14, holgura: 3 } } },
+  { objeto: 'tijeral', lados: [3, 4, 6], letras: true, colores: { AB: 'o', AC: 'i' }, medidas: { AB: '3 m', AC: '4 m', BC: '6 m' } },
+  { objeto: 'lampara', g: 90, ac: false, angulos: { B: {} }, lados: { CB: { texto: '40 cm', en: 0.78 }, BA: { texto: '25 cm' } }, extremos: 1, textoExtremos: ['15 cm', '65 cm'] },
+  { objeto: 'caserio', ax: 1.5, ay: 3.6, lineas: { h: { color: 'o', desde: 1 }, m: { color: 'i', desde: 2 }, b: { color: 'h', desde: 3 }, z: { desde: 4 } } },
+  { objeto: 'caserio', ax: 3, ay: 3.6, lineas: { h: { color: 'o' }, m: { color: 'i' }, b: { color: 'h' } } },
+  { objeto: 'parque', b: 70, c: 50, I: 1, E: 3, mitades: { B: true, C: true, Ce: true }, angulos: { A: { color: 'h' } }, BIC: { texto: '120°', desde: 2 }, ICE: { desde: 3, arcoRecto: true }, BEC: { color: 'h', desde: 4 } },
   { objeto: 'angulos', figura: { vista: { x: [-3, 3], y: [-0.8, 3] }, puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'O', lado: -90 }, { id: 'A', x: 2.5, y: 0, rotulo: 'A', lado: 0 }, { id: 'B', x: 2.5 * Math.cos(0.5), y: 2.5 * Math.sin(0.5), rotulo: 'B', lado: 28.6 }],
     segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '2x + 10°', color: 'h', mide: 28.65 }] } },
 ];
@@ -338,4 +349,22 @@ test('rayitas en su arco; rótulo «centro» junto a la bisectriz, sin tocarla; 
     segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }, { de: 'O', a: 'C' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '50°', color: 'h', radio: 24 }, { en: 'O', de: 'B', a: 'C', texto: '70°', color: 'h', radio: 24 }] } };
   const [a1, a2] = P.angulosListos(c);
   assert.ok(Math.abs(a1.radio - a2.radio) >= 6, `radios ${a1.radio} y ${a2.radio}`);
+});
+
+test('un recto que se pide o que lleva una expresión va con arco, no con el cuadradito (18 nov)', () => {
+  // El cuadradito diría la respuesta: ∠BAD = 90° con AC adentro (Isósceles, ej. 13), «9k» de 90° (razón 4 : 9 : 5) o el
+  // ángulo A de 90° cuando se pregunta la clase de triángulo (arcoRecto en las escenas). Un recto en grados («90°») o sin
+  // rótulo (el que da el enunciado) sí lleva el cuadradito.
+  const cuadradito = /<path d="M[\d. -]+L[\d. -]+L[\d. -]+" fill="none" stroke="[^"]+" stroke-width="2" stroke-linejoin="round"\/>/;
+  const base = (an, extra = []) => ({ objeto: 'angulos', figura: { vista: { x: [-1, 7], y: [-1, 7] },
+    puntos: [{ id: 'A', x: 0, y: 6 }, { id: 'B', x: 0, y: 0 }, { id: 'C', x: 6, y: 0 }, { id: 'D', x: 3, y: 0 }],
+    segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, ...extra], angulos: [Object.assign({ en: 'B', de: 'C', a: 'A' }, an)] } });
+  assert.ok(!cuadradito.test(P.dibujar(base({ texto: '?' }, [{ de: 'B', a: 'A' }, { de: 'A', a: 'D' }]))), '«?» de 90°');
+  assert.ok(!cuadradito.test(P.dibujar(base({ texto: '9k', color: 'h' }))), '«9k» de 90°');
+  assert.ok(!cuadradito.test(P.dibujar(base({ arcoRecto: true }))), 'arcoRecto');
+  const conRayo = base({ texto: '?' }); conRayo.figura.puntos.push({ id: 'E', x: 3, y: 3 }); conRayo.figura.segmentos.push({ de: 'B', a: 'E' });
+  assert.ok(!cuadradito.test(P.dibujar(conRayo)), '«?» de 90° con un rayo adentro');
+  assert.ok(cuadradito.test(P.dibujar(base({ texto: '90°', color: 'h' }))), '«90°» lleva el cuadradito');
+  assert.ok(cuadradito.test(P.dibujar(base({}))), 'el recto sin rótulo lleva el cuadradito');
+  assert.ok(!cuadradito.test(P.dibujar({ objeto: 'parque', b: 45, c: 45, angulos: { A: { arcoRecto: true } } })), 'parque con A recto pedido');
 });

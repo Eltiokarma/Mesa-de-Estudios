@@ -1,19 +1,24 @@
 /*
  * Teoría de «Triángulos y líneas notables» (geometria.triangulos), para 5.º de secundaria y preuniversitario. Molde:
  * docs/teoria.md y docs/molde-unidad.md. Fuente: docs/teoria/matriz/geometria.json (unidad 2); Elementos I.32 (suma de
- * ángulos) e I.20 (desigualdad). Compañera: Neri (nutria). Piezas: geo-objeto (la cartulina y el tijeral, dibujos de
- * prueba, y las figuras de examen, que trazan con geo-figura) y geo-figura (ideas 2 a 6, todavía sin rehacer).
+ * ángulos) e I.20 (desigualdad). Compañera: Neri (nutria). Pieza: geo-objeto, con sus dibujos de prueba (la cartulina y
+ * el tijeral; la plaza con el mototaxi; el compás y el techo a dos aguas; la lámpara de escritorio; el caserío junto a la
+ * carretera; el parque con la pileta) y las figuras de examen, que trazan con geo-figura.
  *
  * Etapa 4 del plan de calidad (18 nov): la propuesta aprobada por Gerson con todas sus recomendaciones
  * (docs/etapa4/propuesta-geometria.md) y docs/etapa4/decisiones.md, que manda. Seis ideas: suma-de-angulos,
  * angulo-exterior (nueva), isosceles (nueva), desigualdad, lineas-notables y angulo-de-bisectrices; se conservan los id de
- * las cuatro de antes. Fase 2 del método (docs/metodo/unidad/): la idea 1 está completa con el contrato «se entiende sin
- * profesor» (objeto en la primera pantalla, misión, leyenda, predicción con datos sin fórmula, «Mira», regla, «Así se
- * resuelve» distinto de «Ahora tú», «Ahora tú» con datos y de nivel examen, glosario con simple y tres ejemplos, y 15
- * ejemplos resueltos con las cuentas rehechas aparte: scratchpad e4-geo/cuentas-idea1.js). Las ideas 2 a 6 quedan con su
- * contenido de antes reacomodado (2: el exterior que antes era la predicción de la idea 1; 4 a 6: las de antes) o como
- * esqueleto (3: el isósceles); se escriben en la fase 3. Por eso la unidad todavía no declara calidad: 2; la idea 1 se
- * prueba sola contra el validador con calidad 2 (triangulos.test.js).
+ * las cuatro de antes y los de las tres mesas. Fase 2: la idea 1 (visto bueno de Gerson, segunda ronda del 18 nov). Fase 3
+ * (18 nov, noche): las ideas 2 a 6 con el contrato «se entiende sin profesor» completo; la unidad declara calidad: 2.
+ * Cuentas de los 75 ejemplos nuevos rehechas aparte (scratchpad f3-geo/cuentas.js) y las de «Ahora tú», leyendo el
+ * enunciado, en triangulos.test.js.
+ * Rangos de los juegos que cambian de la propuesta (para que los rótulos quepan y no se lean como de otro vértice, a 390
+ * px): plaza B y C de 50° a 70° (no 30° a 80°); compás de 40° a 80° (no de 20°); lámpara de 45° a 150° (no 15° a 165°),
+ * con la misión en «más de 62 cm» (62,9 cm a 150°); parque B y C de 50° a 70°. En el juego del parque, m∠A y m∠BIC se
+ * leen en la lectura; en el de la lámpara, la abertura del codo en su control.
+ * Ángulos en cuñas angostas (las de ABD y ACD en la punta de flecha, ∠BEC, ∠HAF dado, los ángulos B y C enteros junto a
+ * sus bisectrices): llevan su arco y su valor va en el enunciado, como las expresiones de la mariposa de la idea 1 (un
+ * rótulo en una cuña angosta queda lejos de su vértice y se lee como de otro).
  * Controles de la idea 1 (decisión 6 de la propuesta): el juego mueve A con los ángulos b y c (de 5° en 5°), así los tres
  * rótulos suman siempre 180° exactos; ax y ay salen del juego. El avance guardado no se toca (el lector ignora los
  * valores de controles que ya no existen).
@@ -22,19 +27,22 @@
  *   - todo ángulo interior en carmín (h), con su arco y su letra; tres ángulos distintos se distinguen por 1, 2 o 3 arcos
  *     (1 en A, 2 en B, 3 en C) y sus copias y sus esquinas recortadas llevan los mismos arcos; dos ángulos iguales, los
  *     mismos arcos; en la mariposa (cuatro medidas de afuera), un arco en cada ángulo;
- *   - el ángulo exterior en turquesa (i), el compañero del interior (idea 2); los lados dados, naranja y turquesa (3 y 4);
- *     altura naranja, mediana turquesa, bisectriz carmín y mediatriz en tinta discontinua (idea 5);
- *   - en los ejercicios (ejemplos, «Así se resuelve», «Ahora tú»), todo ángulo dado en carmín y lo pedido con «?» en
- *     tinta; el violeta (f) solo en el texto del resuelto y en la respuesta, nunca en una figura ni en un enunciado;
+ *   - el ángulo exterior en turquesa (i), el compañero del interior (ideas 2 y 6: el giro del mototaxi; el exterior en C,
+ *     su bisectriz y sus mitades); los lados dados, naranja y turquesa (ideas 3 y 4: la pata y el lado corto del techo en
+ *     naranja, el lado largo en turquesa; el brazo de abajo naranja y el de arriba turquesa); altura naranja, mediana
+ *     turquesa, bisectriz carmín y mediatriz en tinta discontinua (idea 5);
+ *   - en los ejercicios (ejemplos, «Así se resuelve», «Ahora tú»), todo ángulo dado en carmín (también un exterior) y lo
+ *     pedido con «?» en tinta; en la idea 5, las cevianas en tinta: la línea se reconoce por su marca, no por su color;
+ *     el violeta (f) solo en el texto del resuelto y en la respuesta, nunca en una figura ni en un enunciado;
  *   - el verde no se usa.
- *   La comprueba triangulos.test.js en todas las figuras y textos de la idea 1 (juego en toda su grilla, «Lee», predicción,
- *   «Mira», ejemplos, y «Así se resuelve» y «Ahora tú» en 400 semillas).
+ *   La comprueba triangulos.test.js en todas las figuras y textos de las seis ideas (juego en toda su grilla, «Lee»,
+ *   predicción, «Mira», regla, ejemplos, y «Así se resuelve» y «Ahora tú» en 400 semillas).
  * Notación (decisión 5): m∠A cuando el vértice tiene un solo ángulo en la figura; m∠BAC cuando tiene varios; x sin «°»
  * (m∠A = 2x + 10°, x = 20); nunca C(x) ni S(x), porque C es un vértice; los lados por sus letras (AB), sin la convención
  * a, b, c de Relaciones métricas.
- * Códigos de error: GE7 y GE8 (docs/investigacion/geometria-ideas-erroneas.md); GE-ANG1 viene de Segmentos y ángulos; los
- * GE-TRI, GE-RAZ, GE-DT, GE-ISO y GE-BIS son hipótesis de aula, sin medir (rutinas/teoria-geometria.md y el bloque de cada
- * idea); GE-TRI4 y GE-TRI5 son de la propuesta, GE-TRI6 a GE-TRI19 se agregan aquí (18 nov).
+ * Códigos de error: GE7 y GE8 (docs/investigacion/geometria-ideas-erroneas.md; GE7 se parte en GE7-a y GE7-b); GE-ANG1
+ * viene de Segmentos y ángulos; los GE-TRI, GE-RAZ, GE-EXT, GE-ISO, GE-DT, GE-LN y GE-BIS son hipótesis de aula, sin
+ * medir (rutinas/teoria-geometria.md, el informe de geometría, sección «Triángulos (18 nov)», y el bloque de cada idea).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: justificar la suma de 180° y usarla para hallar ángulos, también con razones, con x y entre dos triángulos.
@@ -602,606 +610,2006 @@
     },
   };
 
-  // ---------- Idea 2 (nueva, esqueleto para la fase 3): el ángulo exterior ----------
-  // Lo que antes era la predicción de la idea 1. Se rehace en la fase 3 con la plaza y el mototaxi (propuesta §2 y §3).
-  // Colores ya con la regla de la unidad: interiores en carmín y el exterior en turquesa (en los ejercicios, en carmín).
-  const exterior = (b, c, o = {}) => {
-    const { A } = porAngulos(b, c), a = 180 - b - c;
-    return {
-      alt: o.alt || `Triángulo con ${a}° en A, ${b}° en B y ${c}° en C; el exterior en C mide ${a + b}°`,
-      vista: o.vista || { x: [-1, 9.6], y: [-0.8, Math.max(A[1], 2) + 0.9] },
-      puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: -120 }, { id: 'C', x: 6, y: 0, rotulo: 'C', lado: -90 },
-        { id: 'D', x: 9, y: 0, rotulo: 'D', lado: -90 }],
-      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'C', a: 'D', discontinua: true }],
-      angulos: [
-        { en: 'A', de: 'B', a: 'C', color: 'h', texto: o.sinA ? undefined : `${a}°` },
-        { en: 'B', de: 'C', a: 'A', color: 'h', texto: o.sinB ? undefined : `${b}°` },
-        ...(o.sinC ? [] : [{ en: 'C', de: 'A', a: 'B', color: 'h', texto: `${c}°` }]),
-        { en: 'C', de: 'D', a: 'A', color: o.extColor === undefined ? 'i' : o.extColor, radio: 20, texto: o.extTexto },
-      ],
-    };
-  };
+  // ---------- Ayudantes de las ideas 2 a 6 (fase 3, 18 nov) ----------
+  const dO = t => ({ v: 'c-o', t });
+  // Una figura de geo-objeto sirve si sus rótulos caben y cada rótulo de ángulo queda claramente más cerca de su vértice
+  // que de otro vértice con ángulo marcado (vale para cualquier escena, no solo la figura de examen).
+  function propios(F, k = 0.85) {
+    const R = PO.rotulos(F), ids = [...new Set((R.fig.angulos || []).map(q => q.en))];
+    return R.rot.every(z => {
+      const cx = (z.caja.x0 + z.caja.x1) / 2, cy = (z.caja.y0 + z.caja.y1) / 2, d = id => { const v = R.vertice(id); return Math.hypot(cx - v[0], cy - v[1]); };
+      return ids.every(id => id === z.an.en || d(z.an.en) < k * d(id));
+    });
+  }
+  const sirve = F => PO.escenaCabe(F) && propios(F);
+  const LET = ['A', 'B', 'C'];
+  const fmtCm = n => `${f(n)} cm`;
+  // La figura de examen de un triángulo con sus exteriores: la plaza sin calles (examen: true).
+  const TRI = (b, c, o = {}) => Object.assign({ objeto: 'plaza', examen: true, b, c }, o);
+  const t = (x, color = 'h', o = {}) => Object.assign({ texto: x, color }, o);     // un ángulo dado (carmín) o con «?» (sin color)
+  const pide = (o = {}) => Object.assign({ texto: '?' }, o);
+
+  const D_EXT = 'Un ángulo exterior mide lo que suman los dos ángulos interiores que no están a su lado.';
+  const D_EXT3 = 'Los tres ángulos exteriores de un triángulo, uno en cada vértice, suman 360°.';
+  const D_EXTDEF = 'El ángulo exterior en C, ∠ACD, lo forman el lado CA y la prolongación de BC.';
+
+  // ---------- Idea 2 (rehecha, 18 nov): el ángulo exterior ----------
+  // Objeto de la primera pantalla: una plaza triangular vista desde arriba y el mototaxi que la rodea (geo-objeto, plaza;
+  // dibujo de prueba). Cambia: la esquina A (los ángulos en B y C, de 10° en 10°). · Permanece: las calles BC y su
+  // prolongación hasta D. · Progresa: el giro del mototaxi en C, que siempre suma los ángulos de A y B. · Se reserva: la
+  // suma de los tres giros (la predicción) y por qué el giro suma A y B (en «Mira»). · Debe verse: el giro en C y el
+  // ángulo de adentro en C forman una recta.
+  // Colores (regla de la unidad): interiores en carmín (1, 2 y 3 arcos), el giro (exterior) en turquesa; en los
+  // ejercicios, todo ángulo dado en carmín (también un exterior) y lo pedido con «?» en tinta.
+  // Errores (hipótesis, sin medir; rutinas/teoria-geometria.md): GE-EXT1 iguala la suma de los exteriores a 180°, GE-EXT2
+  // cuenta 180° en cada vértice (540°), GE-EXT3 cree que la suma depende de la forma (propuesta); nuevos (18 nov): GE-EXT4
+  // da el interior del mismo vértice en vez del exterior, GE-EXT5 resta de 180° un solo ángulo lejano, GE-EXT6 resta los
+  // dos lejanos en vez de sumarlos, GE-EXT7 suma el exterior con un interior en vez de restar, GE-EXT8 iguala a 180° la
+  // suma de los dos lejanos y el exterior, GE-EXT9 da uno de los interiores en vez del exterior pedido, GE-EXT10 en la
+  // punta de flecha suma solo dos de los tres ángulos, GE-EXT11 toma el ángulo de afuera de la punta (360° menos la
+  // suma), GE-EXT12 cree que el ángulo de la punta es lo que suman los ángulos B y C del triángulo grande; de la idea 1,
+  // GE-TRI13, GE-TRI14 y GE-TRI15 (x por ángulo, ángulo por x, signo al despejar).
+  const VJ2 = { x: [-1.0, 9.0], y: [-1.15, 8.95] };
+  const AJ2 = (b, c) => ({ A: t(`${180 - b - c}°`), B: t(`${b}°`), C: t(`${c}°`) });
+  const figJ2 = (b, c) => ({ objeto: 'plaza', b, c, radio: 14, angulos: AJ2(b, c), exteriores: { C: t(`${180 - c}°`, 'i') }, mototaxi: true, vista: VJ2, alto: 270, manija: 'A' });
+  // Predicción y «Mira»: la plaza de 50°, 60° y 70° (A, B y C) con los tres giros.
+  const PRED2 = (rev, o = {}) => Object.assign({ objeto: 'plaza', b: 60, c: 70, prolonga: 1.6, alto: 270, angulos: { A: t('50°'), B: t('60°'), C: t('70°') },
+    exteriores: rev ? { A: t('130°', 'i'), B: t('120°', 'i'), C: t('110°', 'i') } : { A: pide(), B: pide(), C: pide() } }, o);
+  // El cóncavo (punta de flecha): D dentro del triángulo ABC, con ∠ABD = p y ∠ACD = q. Devuelve la figura de examen.
+  // Los ángulos ABD y ACD son cuñas angostas: llevan su arco (uno y dos) y su valor va en el enunciado, como las
+  // expresiones de la mariposa (un rótulo en una cuña angosta queda lejos de su vértice y se lee como de D).
+  function flecha(b, c, p, q, rot, o = {}) {
+    const { A } = vert(b, c), D = U.corte([0, 0], U.polar([0, 0], 1, b - p), [6, 0], U.polar([6, 0], 1, 180 - c + q));
+    const pts = [{ id: 'D', x: D[0], y: D[1], rotulo: 'D', lado: 90, sinPunto: true }];
+    const segs = [{ de: 'B', a: 'D' }, { de: 'D', a: 'C' }];
+    const angs = [];
+    if (rot.p) angs.push(Object.assign({ en: 'B', de: 'D', a: 'A', radio: 34, holgura: 6, mide: p }, rot.p));
+    if (rot.q) angs.push(Object.assign({ en: 'C', de: 'A', a: 'D', radio: 34, holgura: 6, mide: q, marcas: 2 }, rot.q));
+    if (rot.D) angs.push(Object.assign({ en: 'D', de: 'B', a: 'C', radio: 12, holgura: 5, mide: 180 - (b - p) - (c - q), marcas: 3 }, rot.D));
+    if (o.P) {
+      // La prolongación de BD hasta el lado AC, en P (la que usa el resuelto).
+      const P = U.corte([0, 0], D, A, [6, 0]);
+      pts.push({ id: 'P', x: P[0], y: P[1], rotulo: 'P', lado: 90 - c, sinPunto: true });
+      segs.push({ de: 'D', a: 'P', discontinua: true, grosor: 'fino' });
+    }
+    const { A: AA } = vert(b, c);
+    return TRI(b, c, { angulos: { A: rot.A || {}, B: null, C: null }, masPuntos: pts, masSegmentos: segs, masAngulos: angs, alto: 262, vista: { x: [-0.7, 6.7], y: [-0.85, AA[1] + 0.75] },
+      alt: o.alt || 'Triángulo ABC con un punto D adentro, unido a B y a C: la figura ABDC tiene forma de punta de flecha.' });
+  }
+  // La antena AB sobre el techo y dos cables, a C y a D (ejemplo de nivel 3).
+  function antena() {
+    const h = 3, C = [h / Math.tan(60 * RAD), 0], D = [h / Math.tan(30 * RAD), 0];
+    return { objeto: 'angulos', figura: { alt: 'Una antena vertical AB sobre el techo plano; dos cables van de la punta A al techo, a C y a D, más lejos.',
+      vista: { x: [-0.9, D[0] + 0.9], y: [-0.85, h + 0.8] }, alto: 240,
+      puntos: [{ id: 'A', x: 0, y: h, rotulo: 'A', lado: 135, sinPunto: true }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: 225, sinPunto: true }, { id: 'C', x: C[0], y: 0, rotulo: 'C', lado: -90, sinPunto: true }, { id: 'D', x: D[0], y: 0, rotulo: 'D', lado: -60, sinPunto: true }],
+      segmentos: [{ de: 'A', a: 'B', grosor: 'variable' }, { de: 'B', a: 'D' }, { de: 'A', a: 'C' }, { de: 'A', a: 'D' }],
+      angulos: [{ en: 'C', de: 'A', a: 'B', texto: '60°', color: 'h', radio: 22, holgura: 6 }, { en: 'D', de: 'A', a: 'C', color: 'h', radio: 30, holgura: 6, marcas: 2, mide: 30 },
+        { en: 'A', de: 'C', a: 'D', texto: '?', radio: 40, holgura: 6, mide: 30 }] } };
+  }
+  // Una ceviana AD del lado BC que forma ∠BAD = p con AB (para «dos triángulos encadenados»).
+  function conCeviana(b, c, p) {
+    const { A } = vert(b, c), D = U.corte(A, U.polar(A, 1, 180 + b + p), [0, 0], [6, 0]);
+    return { D, puntos: [{ id: 'D', x: D[0], y: 0, rotulo: 'D', lado: -90, sinPunto: true }], segmentos: [{ de: 'A', a: 'D' }] };
+  }
+
+  // Ejemplos resueltos de «El ángulo exterior» (molde §3). Cuentas rehechas con un script aparte, sin el código de la
+  // unidad (scratchpad f3-geo/cuentas.js): 55 + 65 = 120; 180 − 72 = 108; 360 − 140 − 100 = 120; 35 + 90 = 125;
+  // 130 − 75 = 55; 5x = 125, x = 25; 180 − 115 = 65, 180 − 135 = 45, 180 − 65 − 45 = 70; 3A = A + 50, A = 25, 75;
+  // 12k = 360, k = 30, 180 − 90 = 90; 6x + 30 = 180, x = 25, 110; 50 + 35 = 85, 85 + 30 = 115; 3x = x + 70, x = 35,
+  // 180 − 105 = 75; 12x + 60 = 360, x = 25, 180 − 105 = 75; 60 + 35 = 95, 180 − 95 − 45 = 40; 60 − 30 = 30.
+  const EJ2 = [];
+  EJ2.push({ nivel: 1, titulo: 'El giro en una esquina',
+    figura: fig({ objeto: 'plaza', b: 65, c: 60, angulos: { A: t('55°'), B: t('65°'), C: null }, exteriores: { C: pide() }, mototaxi: true }),
+    enunciado: 'Un mototaxi rodea una plaza triangular. En la esquina A la plaza mide 55° y en la esquina B, 65°. ¿Cuánto gira el mototaxi al doblar en la esquina C?',
+    datos: [D_EXT],
+    solucion: [{ texto: 'El giro en C es el ángulo exterior en C: suma los dos ángulos de la plaza que no están en C.', ecuacion: junto(['m∠ACD = 55° + 65° = ', dF('120°')]) }],
+    respuesta: ['Gira ', dF('120°')] });
+  EJ2.push({ nivel: 1, titulo: 'Del interior al exterior',
+    figura: fig(TRI(50, 72, { angulos: { A: null, B: null, C: t('72°') }, exteriores: { C: pide() } })),
+    enunciado: 'En el triángulo ABC, el ángulo C mide 72°. Se prolonga el lado BC más allá de C, hasta D. ¿Cuánto mide el ángulo ACD?',
+    datos: [D_ADY],
+    solucion: [{ texto: 'ACD y ACB forman una recta: suman 180°.', ecuacion: junto(['m∠ACD = 180° − 72° = ', dF('108°')]) }],
+    respuesta: ['m∠ACD = ', dF('108°')] });
+  EJ2.push({ nivel: 1, titulo: 'El último giro',
+    figura: fig({ objeto: 'plaza', b: 80, c: 60, prolonga: 1.6, angulos: { A: null, B: null, C: null }, exteriores: { A: t('140°'), B: t('100°'), C: pide() } }),
+    enunciado: 'El mototaxi da una vuelta a la plaza: gira 140° en la esquina A y 100° en la esquina B. ¿Cuánto gira en la esquina C?',
+    datos: [D_EXT3],
+    solucion: [{ texto: 'Los tres giros dan una vuelta completa: 360°. Le quito los dos que conozco.', ecuacion: junto(['360° − 140° − 100° = ', dF('120°')]) }],
+    respuesta: ['Gira ', dF('120°'), ' en C'] });
+  EJ2.push({ nivel: 1, titulo: 'Exterior con un ángulo recto',
+    figura: fig(TRI(90, 55, { angulos: { A: t('35°'), B: {}, C: null }, exteriores: { C: pide() } })),
+    enunciado: 'En el triángulo ABC, el ángulo B es recto y m∠A = 35°. Se prolonga BC más allá de C, hasta D. ¿Cuánto mide el ángulo ACD?',
+    datos: [D_EXT, D_RECTO],
+    solucion: [{ texto: 'El exterior en C suma los dos interiores lejanos: el de A y el recto de B.', ecuacion: junto(['m∠ACD = 35° + 90° = ', dF('125°')]) }],
+    respuesta: ['m∠ACD = ', dF('125°')] });
+  EJ2.push({ nivel: 1, titulo: 'El interior que falta',
+    figura: fig(TRI(55, 50, { angulos: { A: t('75°'), B: pide(), C: null }, exteriores: { C: t('130°') } })),
+    enunciado: 'En el triángulo ABC, el ángulo exterior ACD mide 130° y m∠A = 75°. ¿Cuánto mide el ángulo B?',
+    datos: [D_EXT],
+    solucion: [{ texto: 'A y B juntos dan el exterior, 130°. Le quito el de A:', ecuacion: junto(['m∠B = 130° − 75° = ', dF('55°')]) }],
+    respuesta: ['m∠B = ', dF('55°')] });
+  EJ2.push({ nivel: 2, titulo: 'Exterior con x',
+    figura: fig(TRI(75, 55, { angulos: { A: t('2x', 'h', { mide: 50 }), B: t('3x'), C: null }, exteriores: { C: t('125°') } })),
+    enunciado: 'En el triángulo ABC, m∠A = 2x, m∠B = 3x y el ángulo exterior ACD mide 125°. ¿Cuánto vale x?',
+    datos: [D_EXT],
+    solucion: [
+      { texto: 'El exterior en C suma los dos interiores lejanos, A y B:', ecuacion: [junto('2x + 3x = 125'), '   →   ', junto('5x = 125'), '   →   ', junto(['x = ', dF('25')])] },
+      { texto: 'Compruebo: m∠A = 50° y m∠B = 75°; juntos, 125°.' },
+    ],
+    respuesta: ['x = ', dF('25')] });
+  EJ2.push({ nivel: 2, titulo: 'Dos exteriores',
+    figura: fig(TRI(65, 45, { prolonga: 1.8, angulos: { A: pide(), B: null, C: null }, exteriores: { B: t('115°'), C: t('135°') } })),
+    enunciado: 'En el triángulo ABC, el ángulo exterior en B mide 115° y el exterior en C mide 135°. ¿Cuánto mide el ángulo A?',
+    datos: [D_ADY, D_SUMA],
+    solucion: [
+      { texto: 'Cada interior es lo que le falta a su exterior para 180°:', ecuacion: [junto('m∠B = 180° − 115° = 65°'), SEP, junto('m∠C = 180° − 135° = 45°')] },
+      { texto: 'Los tres interiores suman 180°:', ecuacion: junto(['m∠A = 180° − 65° − 45° = ', dF('70°')]) },
+    ],
+    respuesta: ['m∠A = ', dF('70°')] });
+  EJ2.push({ nivel: 2, titulo: 'El triple de un ángulo',
+    figura: fig(TRI(50, 105, { angulos: { A: {}, B: t('50°'), C: null }, exteriores: { C: pide() } })),
+    enunciado: 'En el triángulo ABC, el ángulo exterior ACD mide el triple del ángulo A, y m∠B = 50°. ¿Cuánto mide el ángulo ACD?',
+    datos: [D_EXT],
+    solucion: [
+      { texto: 'El exterior es A + B, y también es 3 veces A:', ecuacion: [junto('3 · m∠A = m∠A + 50°'), '   →   ', junto('2 · m∠A = 50°'), '   →   ', junto('m∠A = 25°')] },
+      { texto: 'El exterior es el triple:', ecuacion: junto(['m∠ACD = 3 · 25° = ', dF('75°')]) },
+    ],
+    respuesta: ['m∠ACD = ', dF('75°')] });
+  EJ2.push({ nivel: 2, titulo: 'Exteriores en razón 3 : 4 : 5',
+    enunciado: 'Los tres ángulos exteriores de un triángulo, uno en cada vértice, están en razón 3 : 4 : 5. ¿Cuánto mide el mayor ángulo interior?',
+    datos: [D_EXT3, 'Razón 3 : 4 : 5: los exteriores miden 3k, 4k y 5k grados.', D_ADY],
+    solucion: [
+      { texto: 'Los tres exteriores suman 360°:', ecuacion: [junto('3k + 4k + 5k = 360'), '   →   ', junto('12k = 360'), '   →   ', junto('k = 30')] },
+      { texto: 'Miden 90°, 120° y 150°. El mayor interior está junto al menor exterior:', ecuacion: junto(['180° − 90° = ', dF('90°')]) },
+    ],
+    respuesta: ['Mide ', dF('90°')] });
+  EJ2.push({ nivel: 2, titulo: 'El giro con x',
+    figura: fig({ objeto: 'plaza', b: 60, c: 70, angulos: { A: null, B: null, C: t('2x + 20°', 'h', { mide: 70 }) }, exteriores: { C: t('4x + 10°', 'h', { mide: 110 }) }, mototaxi: true }),
+    enunciado: 'En la esquina C de la plaza, el mototaxi gira 4x + 10° y el ángulo de la plaza mide 2x + 20°. ¿Cuánto gira el mototaxi en C?',
+    datos: [D_ADY],
+    solucion: [
+      { texto: 'El giro y el ángulo de la plaza forman una recta:', ecuacion: [junto('4x + 10° + 2x + 20° = 180°'), '   →   ', junto('6x = 150'), '   →   ', junto('x = 25')] },
+      { texto: 'Reemplazo x en el giro:', ecuacion: junto(['4 · 25 + 10° = ', dF('110°')]) },
+    ],
+    respuesta: ['Gira ', dF('110°')] });
+  EJ2.push({ nivel: 3, titulo: 'La punta de flecha',
+    figura: fig(flecha(65, 65, 35, 30, { A: t('50°'), p: { color: 'h' }, q: { color: 'h' }, D: pide() }, { P: true })),
+    enunciado: 'En la figura, D está dentro del triángulo ABC. m∠BAC = 50°, m∠ABD = 35° y m∠ACD = 30°. ¿Cuánto mide el ángulo BDC?',
+    datos: [D_EXT],
+    solucion: [
+      { texto: 'Prolongo BD hasta el lado AC, en P. ∠BPC es exterior del triángulo ABP:', ecuacion: junto('m∠BPC = 50° + 35° = 85°') },
+      { texto: '∠BDC es exterior del triángulo DPC:', ecuacion: junto(['m∠BDC = 85° + 30° = ', dF('115°')]) },
+      { texto: 'Es la suma de los tres ángulos: 50° + 35° + 30°.' },
+    ],
+    respuesta: ['m∠BDC = ', dF('115°')] });
+  EJ2.push({ nivel: 3, titulo: 'Exterior e interior con x',
+    figura: fig(TRI(40, 75, { angulos: { A: t('x + 30°', 'h', { mide: 65 }), B: t('40°'), C: pide() }, exteriores: { C: t('3x', 'h', { mide: 105 }) } })),
+    enunciado: 'En el triángulo ABC, D está en la prolongación de BC. m∠ACD = 3x, m∠A = x + 30° y m∠B = 40°. ¿Cuánto mide el ángulo ACB?',
+    datos: [D_EXT, D_ADY],
+    solucion: [
+      { texto: 'El exterior en C suma A y B:', ecuacion: [junto('3x = x + 30° + 40°'), '   →   ', junto('2x = 70'), '   →   ', junto('x = 35')] },
+      { texto: 'Entonces m∠ACD = 105°, y ACB es su vecino en la recta:', ecuacion: junto(['m∠ACB = 180° − 105° = ', dF('75°')]) },
+    ],
+    respuesta: ['m∠ACB = ', dF('75°')] });
+  EJ2.push({ nivel: 3, titulo: 'Tres exteriores con x',
+    figura: fig(TRI(60, 75, { prolonga: 1.7, alto: 270, angulos: { A: null, B: null, C: pide() }, exteriores: { A: t('5x + 10°', 'h', { mide: 135 }), B: t('4x + 20°', 'h', { mide: 120 }), C: t('3x + 30°', 'h', { mide: 105 }) } })),
+    enunciado: 'Los ángulos exteriores de un triángulo ABC miden 5x + 10° en A, 4x + 20° en B y 3x + 30° en C. ¿Cuánto mide el ángulo interior en C?',
+    datos: [D_EXT3, D_ADY],
+    solucion: [
+      { texto: 'Los tres exteriores suman 360°:', ecuacion: [junto('12x + 60° = 360°'), '   →   ', junto('12x = 300'), '   →   ', junto('x = 25')] },
+      { texto: 'El exterior en C mide 3 · 25 + 30° = 105°. El interior es su vecino en la recta:', ecuacion: junto(['180° − 105° = ', dF('75°')]) },
+    ],
+    respuesta: ['El interior en C mide ', dF('75°')] });
+  EJ2.push({ nivel: 3, titulo: 'Dos triángulos encadenados',
+    figura: (() => { const cv = conCeviana(60, 45, 35); return fig(TRI(60, 45, { angulos: { A: null, B: t('60°'), C: t('45°') }, masPuntos: cv.puntos, masSegmentos: cv.segmentos,
+      masAngulos: [{ en: 'A', de: 'B', a: 'D', texto: '35°', color: 'h', radio: 26, holgura: 6, mide: 35 }, { en: 'A', de: 'D', a: 'C', texto: '?', radio: 36, holgura: 6, mide: 40 }] })); })(),
+    enunciado: 'En el triángulo ABC, D está en el lado BC. m∠B = 60°, m∠BAD = 35° y m∠C = 45°. ¿Cuánto mide el ángulo DAC?',
+    datos: [D_EXT, D_SUMA_O],
+    solucion: [
+      { texto: '∠ADC es exterior del triángulo ABD: suma sus dos interiores lejanos.', ecuacion: junto('m∠ADC = 60° + 35° = 95°') },
+      { texto: 'En el triángulo ADC, los tres suman 180°:', ecuacion: junto(['m∠DAC = 180° − 95° − 45° = ', dF('40°')]) },
+    ],
+    respuesta: ['m∠DAC = ', dF('40°')] });
+  EJ2.push({ nivel: 3, titulo: 'La antena y sus dos cables',
+    figura: fig(antena()),
+    enunciado: 'Una antena vertical AB está sobre un techo plano. Un cable va de A a C y forma 60° con el techo; otro va de A a D, más lejos, y forma 30°. ¿Qué ángulo forman los cables en A?',
+    datos: [D_EXT],
+    solucion: [
+      { texto: 'En el triángulo ACD, el ángulo de 60° en C es exterior: está entre CA y la prolongación de DC.', ecuacion: junto('60° = m∠CAD + 30°') },
+      { texto: 'Despejo el ángulo en A:', ecuacion: junto(['m∠CAD = 60° − 30° = ', dF('30°')]) },
+    ],
+    respuesta: ['Forman ', dF('30°')] });
+
+  // «Ahora tú» de la idea 2: cinco tipos, uno por semilla (s % 5).
+  // Dos ángulos múltiplos de 5 y el tercero, cada uno entre lo y hi.
+  function dosDe(r, lo, hi) { for (;;) { const a = 5 * r.ent(lo / 5, hi / 5), b = 5 * r.ent(lo / 5, hi / 5), c = 180 - a - b; if (c >= lo && c <= hi && a !== b) return [a, b, c]; } }
+  function casoExt(r) {
+    for (let i = 0; i < 400; i++) {
+      const [a, b, c] = dosDe(r, 30, 95), F = TRI(b, c, { angulos: { A: t(`${a}°`), B: t(`${b}°`), C: {} }, exteriores: { C: pide() } });
+      if (!sirve(F)) continue;
+      return { pregunta: `En el triángulo ABC, m∠A = ${a}° y m∠B = ${b}°. Se prolonga BC más allá de C, hasta D. ¿Cuánto mide el ángulo ACD?`,
+        datos: [D_EXT, D_ADY], dibujo: fig(F),
+        opciones: opciones(a + b, [
+          { id: 'interior', valor: c, error: 'GE-EXT4', siFuera: `${c}° es el ángulo de adentro en C; el exterior es su vecino en la recta.` },
+          { id: 'uno', valor: 180 - b, error: 'GE-EXT5', siFuera: 'Restar de 180° sirve con el interior de C; con un ángulo lejano no.' },
+          { id: 'resta', valor: Math.abs(a - b), error: 'GE-EXT6', siFuera: 'Usar los dos ángulos lejanos está bien; el exterior los suma, no los resta.' },
+        ], gr),
+        solucion: { texto: 'El exterior en C suma los interiores A y B.', ecuacion: junto(`m∠ACD = ${a}° + ${b}° = ${a + b}°`) } };
+    }
+    throw new Error('casoExt');
+  }
+  // Una expresión con x: «2x + 10°», «x − 5°», «3x» (exp, de la idea 1).
+  function casoExtX(r) {
+    for (let i = 0; i < 4000; i++) {
+      const x = r.ent(10, 30), aA = r.ent(1, 3), aB = r.ent(1, 2), aE = aA + aB + r.ent(1, 2), bA = 5 * r.ent(-2, 6), bB = 5 * r.ent(-2, 6);
+      const A = aA * x + bA, B = aB * x + bB, E = A + B, bE = E - aE * x, C = 180 - E;
+      if (A < 20 || B < 20 || C < 20 || Math.abs(bE) > 60 || bE % 5 !== 0) continue;
+      const F = TRI(B, C, { angulos: { A: t(exp(aA, bA), 'h', { mide: A }), B: t(exp(aB, bB), 'h', { mide: B }), C: {} }, exteriores: { C: t(exp(aE, bE), 'h', { mide: E }) } });
+      if (!sirve(F)) continue;
+      const pideX = r() < 0.5, ent = n => (Number.isInteger(n) && n > 0 ? n : NaN);
+      const SA = aA + aB, SB = bA + bB;
+      const ops = pideX ? opciones(x, [
+        { id: 'llano', valor: ent((180 - SB - bE) / (SA + aE)), error: 'GE-EXT8', siFuera: 'Igualar es la idea; pero el exterior es igual a A + B, no suma 180° con ellos.' },
+        { id: 'signo', valor: ent((bE + SB) / (aE - SA)), error: 'GE-TRI15', siFuera: 'Igualar el exterior con A + B está bien; al pasar los números, cambia su signo.' },
+        { id: 'angulo', valor: E, error: 'GE-TRI13', siFuera: `${E}° es lo que mide el exterior; piden x, el número de las expresiones.` },
+      ], NUM) : opciones(E, [
+        { id: 'x', valor: x, error: 'GE-TRI14', siFuera: `Hallar x = ${x} está bien; falta reemplazarlo en la expresión del exterior.` },
+        { id: 'interior', valor: C, error: 'GE-EXT4', siFuera: `${C}° es el ángulo de adentro en C; piden el exterior, su vecino.` },
+        { id: 'lejano', valor: A, error: 'GE-EXT9', siFuera: `${A}° mide el ángulo A, uno de los dos que se suman; piden el exterior.` },
+      ], gr);
+      if (ops.length < 4) continue;
+      const ec = [junto(`${exp(aE, bE)} = ${exp(aA, bA)} + ${exp(aB, bB)}`), '   →   ', junto(`x = ${x}`)];
+      return { pregunta: `En el triángulo ABC, D está en la prolongación de BC. m∠A = ${exp(aA, bA)}, m∠B = ${exp(aB, bB)} y m∠ACD = ${exp(aE, bE)}. ${pideX ? '¿Cuánto vale x?' : '¿Cuánto mide el ángulo ACD?'}`,
+        datos: [D_EXT], dibujo: fig(F), opciones: ops,
+        solucion: { texto: pideX ? 'El exterior es igual a A + B: igualo y despejo.' : 'Igualo el exterior con A + B, despejo x y reemplazo.', ecuacion: pideX ? ec : [...ec, '   →   ', junto(`m∠ACD = ${E}°`)] } };
+    }
+    throw new Error('casoExtX');
+  }
+  function casoIntDesdeExt(r) {
+    for (let i = 0; i < 400; i++) {
+      const [a, b, c] = dosDe(r, 30, 95), e = a + b, F = TRI(b, c, { angulos: { A: t(`${a}°`), B: pide(), C: {} }, exteriores: { C: t(`${e}°`) } });
+      if (!sirve(F)) continue;
+      const ops = opciones(b, [
+        { id: 'suma', valor: e + a, error: 'GE-EXT7', siFuera: 'El exterior y A se relacionan, cierto; pero A + B = exterior: hay que restar.' },
+        { id: 'interior', valor: c, error: 'GE-EXT4', siFuera: `${c}° es el ángulo de adentro en C; piden el ángulo B.` },
+        { id: 'uno', valor: 180 - a, error: 'GE-EXT5', siFuera: 'Restar de 180° sirve entre vecinos en una recta; A y B no lo son.' },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, el ángulo exterior ACD mide ${e}° y m∠A = ${a}°. ¿Cuánto mide el ángulo B?`,
+        datos: [D_EXT, D_ADY], dibujo: fig(F), opciones: ops,
+        solucion: { texto: 'A + B es el exterior: le quito el de A.', ecuacion: junto(`m∠B = ${e}° − ${a}° = ${b}°`) } };
+    }
+    throw new Error('casoIntDesdeExt');
+  }
+  function casoTresExt(r) {
+    for (let i = 0; i < 400; i++) {
+      const [a, b, c] = dosDe(r, 35, 90), eA = 180 - a, eB = 180 - b, eC = 180 - c;
+      const F = TRI(b, c, { prolonga: 1.6, alto: 270, angulos: { A: null, B: null, C: null }, exteriores: { A: t(`${eA}°`), B: t(`${eB}°`), C: pide() } });
+      if (!sirve(F)) continue;
+      const ops = opciones(eC, [
+        { id: 'iguales', valor: 120, error: 'GE-EXT13', siFuera: '120° saldría si los tres giros fueran iguales; aquí cada uno mide distinto.' },
+        { id: 'llanos', valor: 540 - eA - eB, error: 'GE-EXT2', siFuera: 'Cada exterior con su interior da 180°; pero los tres exteriores solos suman 360°.' },
+        { id: 'interior', valor: c, error: 'GE-EXT4', siFuera: `${c}° es el ángulo de adentro en C; piden el exterior.` },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, el ángulo exterior en A mide ${eA}° y el exterior en B mide ${eB}°. ¿Cuánto mide el ángulo exterior en C?`,
+        datos: [D_EXT3], dibujo: fig(F), opciones: ops,
+        solucion: { texto: 'Los tres exteriores dan una vuelta: 360°.', ecuacion: junto(`360° − ${eA}° − ${eB}° = ${eC}°`) } };
+    }
+    throw new Error('casoTresExt');
+  }
+  function casoFlecha(r) {
+    for (let i = 0; i < 4000; i++) {
+      const a = 5 * r.ent(10, 12), p = 5 * r.ent(6, 8), q = 5 * r.ent(6, 8);
+      if (p === q || a + p + q > 130) continue;
+      const b = 5 * r.ent((p + 30) / 5, 20), c = 180 - a - b;
+      if (c < q + 30 || b > 100 || c > 100) continue;
+      const F = flecha(b, c, p, q, { A: t(`${a}°`), p: { color: 'h' }, q: { color: 'h' }, D: pide() });
+      if (!sirve(F)) continue;
+      const x = a + p + q;
+      const ops = opciones(x, [
+        { id: 'dos', valor: a + p, error: 'GE-EXT10', siFuera: 'Usar el exterior está bien; el ángulo en D suma los tres ángulos, no dos.' },
+        { id: 'afuera', valor: 360 - x, error: 'GE-EXT11', siFuera: `${360 - x}° es el ángulo de afuera de la punta; piden el de adentro, ∠BDC.` },
+        { id: 'grande', valor: 180 - a, error: 'GE-EXT12', siFuera: `${180 - a}° suman B y C en el triángulo grande; D no es un vértice de ese triángulo.` },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En la figura, D está dentro del triángulo ABC. m∠BAC = ${a}°, m∠ABD = ${p}° y m∠ACD = ${q}°. ¿Cuánto mide el ángulo BDC?`,
+        datos: [D_EXT, D_SUMA_O], dibujo: fig(F), opciones: ops,
+        solucion: { texto: 'Con dos exteriores seguidos, el ángulo en D suma los tres.', ecuacion: junto(`m∠BDC = ${a}° + ${p}° + ${q}° = ${x}°`) } };
+    }
+    throw new Error('casoFlecha');
+  }
+
   const exteriorIdea = {
     id: 'angulo-exterior',
     titulo: 'El ángulo exterior',
     pregunta: '¿Cuánto gira un mototaxi en cada esquina de una plaza triangular?',
     temas: ['Suma de ángulos internos y ángulo externo'],
-    pieza: 'geo-figura',
+    pieza: GO,
     aprendizaje: 'Un ángulo exterior mide lo que suman los dos interiores que no están a su lado, y los tres exteriores dan una vuelta: 360°.',
-    actividad: 'Cambiar los ángulos de un triángulo y comparar el ángulo de afuera con los de adentro.',
+    actividad: 'Mover una esquina de la plaza y comparar el giro del mototaxi con los de adentro.',
+    // Lee: la plaza, la prolongación y el ángulo exterior. No dice cuánto mide el giro ni cuánto suman los tres (eso es el
+    // juego y la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Adentro y afuera', texto: 'Cada vértice tiene un ángulo interior, entre sus dos lados. Si prolongas un lado más allá del vértice, aparece un ángulo exterior, por fuera de la figura: el exterior en C es ∠ACD.' },
-        { titulo: 'Qué mirar', texto: 'Cambia los ángulos en B y en C. Compara el ángulo exterior en C con los dos interiores que no lo tocan, A y B.' },
+        { titulo: 'La plaza y el mototaxi', texto: 'La plaza tiene forma de triángulo: sus esquinas son A, B y C, y sus lados son calles. Un mototaxi la rodea siempre en el mismo sentido, y en cada esquina dobla para tomar la calle siguiente.',
+          pieza: GO, dibujo: fig({ objeto: 'plaza', b: 70, c: 50, angulos: { A: null, B: null, C: null }, mototaxi: true }) },
+        { titulo: 'El ángulo de afuera', texto: 'Si en C no doblara, seguiría de largo por la calle BC: esa es la prolongación de BC, hasta D. Lo que gira al doblar es el ángulo entre esa prolongación y la calle CA. Es el ángulo exterior en C: ∠ACD.',
+          pieza: GO, dibujo: fig({ objeto: 'plaza', b: 70, c: 50, angulos: { A: null, B: null, C: {} }, exteriores: { C: {} }, mototaxi: true }) },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a mover la esquina A; B y C se quedan en su sitio. Mira cuánto gira el mototaxi en C y compáralo con los ángulos de adentro en A y en B.' },
       ],
     },
+    ejemplos: EJ2,
     juega: {
-      consigna: 'Prolongamos el lado BC más allá de C, hasta D. Cambia los ángulos en B y en C.',
-      mision: { texto: 'Cambia los ángulos hasta que el exterior en C mida 120°.', logrado: v => 180 - v.c === 120, bien: 'Listo: 120°, lo mismo que m∠A + m∠B.' },
-      voz: 'Mira el ángulo de afuera y los dos de adentro que no lo tocan.',
-      leyenda: [{ s: dH('carmín'), t: 'los ángulos interiores' }, { s: dI('turquesa'), t: 'el ángulo exterior en C, ∠ACD' }],
-      controles: [
-        { id: 'b', etiqueta: 'm∠B', min: 30, max: 70, paso: 10, inicio: 70, unidad: '°', decimales: 0, color: 'c-h' },
-        { id: 'c', etiqueta: 'm∠C', min: 30, max: 70, paso: 10, inicio: 50, unidad: '°', decimales: 0, color: 'c-h' },
+      pieza: GO,
+      consigna: 'El mototaxi da la vuelta a la plaza y en cada esquina dobla. B y C quedan en su sitio; la esquina A se mueve.',
+      mision: {
+        texto: 'Mueve la esquina A hasta que el mototaxi gire 120° en la esquina C.',
+        logrado: v => 180 - v.c === 120,
+        bien: 'Listo: gira 120° en C, lo mismo que m∠A + m∠B juntos.',
+      },
+      voz: 'Mira el giro en C. ¿Con qué ángulos de adentro coincide?',
+      leyenda: [
+        { s: 'A, B, C', t: 'las esquinas de la plaza; A se mueve' },
+        { s: dH('carmín'), t: 'los ángulos de adentro de la plaza' },
+        { s: dI('∠ACD'), t: 'el giro del mototaxi en C' },
+        { s: 'D', t: 'la calle BC, de largo después de C' },
       ],
-      dibujo: v => ({ datos: exterior(v.b, v.c, { extTexto: `${180 - v.c}°` }), estado: {} }),
-      lectura: v => [junto('m∠ACD = 180° − '), dH(`${v.c}°`), ' = ', dI(`${180 - v.c}°`), junto(' = m∠A + m∠B')],
+      controles: [
+        { id: 'b', etiqueta: 'm∠B, la esquina B', min: 50, max: 70, paso: 10, inicio: 70, unidad: '°', decimales: 0, color: 'c-h' },
+        { id: 'c', etiqueta: 'm∠C, la esquina C', min: 50, max: 70, paso: 10, inicio: 50, unidad: '°', decimales: 0, color: 'c-h' },
+      ],
+      dibujo: v => ({ datos: figJ2(v.b, v.c), estado: {} }),
+      arrastres: [{ id: 'esquina-a', etiqueta: 'esquina A de la plaza: decide los ángulos en B y en C', color: 'c-h',
+        donde: v => PO.aPantalla(figJ2(v.b, v.c), vert(v.b, v.c).A),
+        mover: (pt, v) => { const q = PO.aPlano(figJ2(v.b, v.c), pt), p = [q[0], Math.max(q[1], 0.05)]; return { b: U.angulo([0, 0], [6, 0], p), c: U.angulo([6, 0], [0, 0], p) }; } }],
+      lectura: v => [junto('Giro en C = m∠A + m∠B = '), dH(`${180 - v.b - v.c}°`), ' + ', dH(`${v.b}°`), ' = ', dI(`${180 - v.c}°`)],
       minimo: 3,
     },
     predice: {
-      pregunta: 'En el triángulo, m∠A = 50° y m∠B = 70°. Prolongamos el lado BC más allá de C. ¿Cuánto mide el ángulo exterior en C?',
-      datos: ['m∠A = 50°', 'm∠B = 70°'],
-      voz: 'Piensa en el ángulo de afuera antes de verlo.',
+      pregunta: 'El mototaxi da una vuelta completa a la plaza y vuelve a su esquina mirando hacia donde salió. ¿Cuánto giró en total, sumando sus tres giros?',
+      datos: ['Los ángulos de la plaza miden 50° en A, 60° en B y 70° en C.', 'El giro en una esquina es el ángulo entre la calle que deja de seguir y la que toma.'],
+      voz: 'Piensa en los tres giros antes de sumar.',
       opciones: [
-        { id: 'c', texto: '120°', correcta: true },
-        { id: 'interior', texto: '60°', error: 'GE-TRI1', siFuera: '60° es el ángulo interior en C. El exterior es su vecino en la recta.' },
-        { id: 'llano', texto: '180°', error: 'GE-TRI2', siFuera: '180° mide toda la recta prolongada. El exterior es solo la parte de afuera.' },
-        { id: 'suma3', texto: '110°', error: 'GE-TRI3', siFuera: '110° vendría de restar 70° de 180°: sería el exterior en B, no en C.' },
+        { id: 'c', texto: '360°', correcta: true },
+        { id: 'plaza', texto: '180°: lo mismo que suman los ángulos de la plaza', error: 'GE-EXT1', siFuera: 'Hay una suma fija, es cierto; pero los giros son los de afuera, no los de la plaza.' },
+        { id: 'llanos', texto: '540°: 180° en cada esquina', error: 'GE-EXT2', siFuera: 'Cada giro forma 180° con su ángulo de adentro; el giro solo es una parte.' },
+        { id: 'forma', texto: 'Depende de la forma de la plaza', error: 'GE-EXT3', siFuera: 'Cada giro sí cambia con la forma; lo que suman los tres no cambia.' },
       ],
-      dibujo: { datos: exterior(70, 60, { sinC: true, extTexto: '?', extColor: null }), estado: {} },
-      revelar: { datos: exterior(70, 60, { extTexto: '120°' }), estado: {} },
-      coincide: 'Coincide: el exterior en C mide m∠A + m∠B = 120°.',
+      dibujo: fig(PRED2(false)),
+      revelar: fig(PRED2(true)),
+      coincide: 'Coincide: 130° + 120° + 110° = 360°. Con tres giros, el mototaxi da una vuelta entera.',
+      noCoincide: 'Revisemos: los giros miden 130°, 120° y 110°; juntos, 360°: una vuelta entera.',
     },
     mira: {
-      datos: exterior(70, 60, { extTexto: '120°' }),
-      voz: 'El exterior y el interior en C forman una recta.',
+      pieza: GO,
+      datos: PRED2(true, { exteriores: { A: t('130°', 'i', { desde: 1 }), B: t('120°', 'i', { desde: 1 }), C: t('110°', 'i') } }),
+      voz: 'Primero un giro; después, los tres.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'El exterior en C y el interior en C son adyacentes: suman 180°.', ecuacion: junto(['m∠ACD = 180° − ', dH('60°'), ' = ', dI('120°')]) },
-        { estado: { corte: 0 }, texto: 'Los tres interiores suman 180°: A y B también suman 120°.', ecuacion: junto([dH('50°'), ' + ', dH('70°'), ' = ', dI('120°')]) },
+        { estado: { corte: 0 }, texto: 'En C, el giro y el ángulo de adentro forman una recta: suman 180°.', ecuacion: junto(['m∠ACD = 180° − ', dH('70°'), ' = ', dI('110°')]) },
+        { estado: { corte: 0 }, texto: 'Los tres de adentro suman 180°: A y B juntos también dan 110°.', ecuacion: junto([dH('50°'), ' + ', dH('60°'), ' = ', dI('110°')]) },
+        { estado: { corte: 1 }, texto: 'Lo mismo en A y en B: cada giro es 180° menos su ángulo.', ecuacion: junto([dI('130°'), ' + ', dI('120°'), ' + ', dI('110°'), ' = 360°']) },
+        { estado: { corte: 1 }, texto: 'Tres rectas son 540°; los ángulos de adentro se llevan 180°. Quedan 360°.', ecuacion: junto('3 · 180° − 180° = 360°') },
       ],
     },
     regla: {
-      texto: 'Un ángulo exterior es igual a la suma de los dos ángulos interiores que no están a su lado.',
-      ecuacion: [junto('m∠ACD = '), { llave: [junto('m∠A + m∠B')], nota: 'los dos lejanos', color: 'c-h' }],
-      condicion: 'el exterior se forma con un lado y la prolongación del otro, en el mismo vértice.',
-      voz: 'Primero ubica el exterior; después, los dos que no lo tocan.',
+      texto: 'Un ángulo exterior mide lo que suman los dos ángulos interiores que no están a su lado. Los tres exteriores, uno en cada vértice, suman 360°.',
+      ecuacion: [{ llave: [junto('m∠ACD')], nota: 'exterior en C', color: 'c-i' }, junto(' = m∠BAC + m∠ABC'), SEP, junto('m∠ACD + m∠BAE + m∠CBF = 360°')],
+      condicion: 'lo forman un lado y la prolongación del otro, en el mismo vértice; en cada vértice se toma uno solo.',
+      voz: 'Ubica el exterior y busca los dos interiores que no lo tocan.',
+      // Dibujo propio (docs/teoria.md 4i): la plaza con los tres exteriores y sus letras D, E y F, como en la ecuación.
+      dibujo: { pieza: GO, datos: PRED2(true, { exteriores: { A: {}, B: {}, C: {} }, angulos: { A: {}, B: {}, C: {} }, letraE: true, letraF: true }), estado: {} },
     },
-    ahoraTu: {
-      voz: 'Ubica cuál es interior y cuál exterior antes de operar.',
+    // Así se resuelve: un exterior que es el triple de un interior, o dos exteriores que dan el tercer interior. «Ahora
+    // tú» pide otras cosas: el exterior directo, con x, un interior desde el exterior, la suma de los tres y la flecha.
+    resuelve: {
+      pieza: GO,
       generar(s) {
-        const r = azar(s), a = 5 * r.ent(6, 16), b = 5 * r.ent(6, 16), c = 180 - a - b;
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const a = 5 * r.ent(5, 8), b = 2 * a, e = 3 * a, c = 180 - e;
+          const F = TRI(b, c, { angulos: { A: pide(), B: {}, C: null }, exteriores: { C: t(`${e}°`) } });
+          return {
+            enunciado: `En el triángulo ABC, el ángulo exterior ACD mide ${e}° y el ángulo B mide el doble que el ángulo A. ¿Cuánto mide el ángulo A?`,
+            datos: [D_EXT],
+            dibujo: fig(F),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden m∠A, uno de los dos interiores que no están junto al exterior.' },
+              { tipo: 'datos', texto: `El exterior en C mide ${e}°, y B es el doble de A.` },
+              { tipo: 'regla', texto: 'El exterior en C es la suma de los interiores A y B.', ecuacion: junto(`m∠A + m∠B = ${e}°`) },
+              { tipo: 'cuentas', texto: 'B son dos partes de A: entre los dos, tres partes iguales a A.', ecuacion: [junto(`3 · m∠A = ${e}°`), '   →   ', junto(['m∠A = ', dF(`${a}°`)])] },
+              { tipo: 'sentido', texto: `Compruebo: m∠B = ${b}°, y ${a}° + ${b}° = ${e}°. El interior en C mide ${c}°; los tres suman 180°.` },
+            ],
+            respuesta: ['m∠A = ', dF(`${a}°`)],
+          };
+        }
+        const [a, b, c] = dosDe(r, 35, 85), eB = 180 - b, eC = 180 - c;
+        const F = TRI(b, c, { prolonga: 1.8, angulos: { A: pide(), B: null, C: null }, exteriores: { B: t(`${eB}°`), C: t(`${eC}°`) } });
         return {
-          pregunta: `En el triángulo ABC, m∠A = ${a}° y m∠B = ${b}°. ¿Cuánto mide el ángulo exterior en C?`,
-          datos: ['Un ángulo exterior es el que forma un lado con la prolongación del otro.', D_SUMA],
-          dibujo: { datos: exterior(b, c, { sinC: true, extTexto: '?', extColor: null }), estado: {} },
-          opciones: opciones(a + b, [
-            { id: 'interior', valor: c, error: 'GE-TRI1', siFuera: `${c}° es el ángulo interior en C; el exterior es su vecino.` },
-            { id: 'otro-ext', valor: 180 - b, error: 'GE-TRI3', siFuera: `${180 - b}° es el exterior en B, no en C.` },
-            { id: 'resta', valor: Math.abs(a - b), error: 'GE-TRI2', siFuera: 'Restar A y B no da un ángulo de la figura; el exterior los suma.' },
-          ], gr),
-          solucion: { texto: 'El exterior en C suma los interiores A y B.', ecuacion: junto(`m∠ACD = ${a}° + ${b}° = ${a + b}°`) },
+          enunciado: `En el triángulo ABC, el ángulo exterior en B mide ${eB}° y el exterior en C mide ${eC}°. ¿Cuánto mide el ángulo A?`,
+          datos: [D_ADY, D_SUMA],
+          dibujo: fig(F),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden m∠A, el interior del vértice que no tiene exterior en la figura.' },
+            { tipo: 'datos', texto: `Tengo dos exteriores: ${eB}° en B y ${eC}° en C.` },
+            { tipo: 'regla', texto: 'Cada exterior y su interior forman una recta: 180°. Después, los tres interiores suman 180°.' },
+            { tipo: 'cuentas', texto: 'Saco los interiores de B y de C, y después el de A.', ecuacion: [junto(`m∠B = ${b}°`), SEP, junto(`m∠C = ${c}°`), SEP, junto(['m∠A = 180° − ', `${b}° − ${c}° = `, dF(`${a}°`)])] },
+            { tipo: 'sentido', texto: `Compruebo con la otra regla: el exterior en B, ${eB}°, es m∠A + m∠C = ${a}° + ${c}°.` },
+          ],
+          respuesta: ['m∠A = ', dF(`${a}°`)],
         };
       },
     },
+    ahoraTu: {
+      pieza: GO,
+      voz: 'Ubica cuál es el exterior y cuáles son los dos interiores lejanos.',
+      generar(s) { return conCuatro([casoExt, casoExtX, casoIntDesdeExt, casoTresExt, casoFlecha][s % 5], azar(s + 7)); },
+    },
   };
 
-  // ---------- Idea 3 (nueva, esqueleto para la fase 3): triángulo isósceles y equilátero ----------
-  // El compás abierto sobre la hoja: patas AB = AC = 12 cm (naranja), la raya BC entre sus puntas (tinta), la abertura θ
-  // en A y α en cada pata con la raya (carmín). La predicción del techo (3 m, 4 m y una viga de 6 m) se rehace en la fase 3
-  // con su objeto; aquí va a escala con la geo-figura.
-  const compas = (t, o = {}) => {
-    const A = [0, 0], L = 12, B = U.polar(A, L, -90 - t / 2), C = U.polar(A, L, -90 + t / 2), al = (180 - t) / 2, bc = U.dist(B, C);
-    return {
-      alt: `Compás abierto ${t}°: patas de 12 cm, la raya entre sus puntas mide ${f(bc)} cm y cada pata forma ${f(al)}° con ella`,
-      vista: { x: [-10.5, 10.5], y: [-12.6, 1.6] },
-      puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 90 }, { id: 'B', x: B[0], y: B[1], rotulo: 'B', lado: -150 }, { id: 'C', x: C[0], y: C[1], rotulo: 'C', lado: -30 }],
-      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable', marcas: 1 }, { de: 'A', a: 'C', color: 'o', grosor: 'variable', marcas: 1 }, { de: 'B', a: 'C', texto: o.sinBC ? undefined : `${f(bc)} cm` }],
-      angulos: [{ en: 'A', de: 'B', a: 'C', color: 'h', texto: `${t}°`, radio: 30 },
-        { en: 'B', de: 'C', a: 'A', color: 'h', marcas: 2, texto: o.sinAlfa ? undefined : `${f(al)}°` }, { en: 'C', de: 'A', a: 'B', color: 'h', marcas: 2, texto: o.sinAlfa ? undefined : `${f(al)}°` }],
-    };
-  };
-  // El techo de la predicción: AB = 3 m, AC = 4 m sobre la viga BC = 6 m.
-  const techo = revela => {
-    const x = (9 - 16 + 36) / 12, y = Math.sqrt(9 - x * x), A = [x, y], b = U.angulo([0, 0], [6, 0], A), c = U.angulo([6, 0], [0, 0], A);
-    return {
-      alt: `Techo a dos aguas con un lado de 3 m y otro de 4 m sobre una viga de 6 m${revela ? `: el lado corto forma ${f(b, 0)}° con la viga y el largo, ${f(c, 0)}°` : ''}`,
-      vista: { x: [-0.8, 6.8], y: [-0.8, 2.6] },
-      puntos: [{ id: 'A', x, y, rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: -120 }, { id: 'C', x: 6, y: 0, rotulo: 'C', lado: -60 }],
-      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: '3 m' }, { de: 'A', a: 'C', color: 'i', grosor: 'variable', texto: '4 m' }, { de: 'B', a: 'C', texto: '6 m' }],
-      angulos: revela ? [{ en: 'B', de: 'C', a: 'A', color: 'h', texto: `≈ ${f(b, 0)}°`, radio: 40 }, { en: 'C', de: 'A', a: 'B', color: 'h', marcas: 2, texto: `≈ ${f(c, 0)}°`, radio: 50 }] : [],
-    };
-  };
+  // ---------- Idea 3 (nueva, 18 nov): triángulo isósceles y equilátero ----------
+  // Objeto de la primera pantalla: el compás abierto sobre la hoja (geo-objeto, compas; dibujo de prueba), con la raya
+  // entre sus puntas. En «Predice» y «Mira», un techo a dos aguas con un lado más largo (geo-objeto, tijeral con lados).
+  // Cambia: la abertura θ (de 10° en 10°). · Permanece: las patas de 12 cm. · Progresa: los dos ángulos de abajo, siempre
+  // iguales, y la raya BC frente a θ. · Se reserva: qué pasa con lados distintos (el techo, la predicción). · Debe verse:
+  // con la raya igual a las patas, tres lados iguales y tres ángulos de 60°.
+  // Colores: los ángulos en carmín (θ con un arco, los dos α con dos); las patas en naranja con su rayita sobre una llave;
+  // en el techo, el lado corto naranja y el largo turquesa; la raya y la viga en tinta.
+  // Errores (hipótesis, sin medir): GE-ISO1 toma el ángulo pegado al lado y no el de enfrente, GE-ISO2 supone el techo
+  // simétrico, GE-ISO3 cree que falta un dato (propuesta); nuevos (18 nov): GE-ISO4 no divide entre los dos ángulos de la
+  // base, GE-ISO5 iguala el ángulo de la punta con los de la base, GE-ISO6 resta de 90° sin partir, GE-ISO7 resta de 180°
+  // un solo ángulo de la base, GE-ISO8 da lo que suman los dos de la base, GE-ISO9 da x en vez del lado, GE-ISO10 iguala
+  // los lados que tocan a los ángulos iguales y no los de enfrente, GE-ISO11 da el tercer lado, GE-ISO12 invierte la
+  // relación (lado mayor frente al ángulo menor), GE-ISO13 en la cadena copia el ángulo de C en A, GE-ISO14 toma el
+  // ángulo de D que no es del triángulo ABD, GE-ISO15 duplica dos veces.
+  const VJ3 = { x: [-9.2, 9.2], y: [-13.5, 2.6] };
+  const bc3 = th => 2 * 12 * Math.sin(th / 2 * RAD);
+  const cm3 = th => (Math.abs(bc3(th) - Math.round(bc3(th))) < 1e-9 ? `${f(bc3(th))} cm` : `≈ ${f(bc3(th), 1)} cm`);
+  const ALFA = { radio: 14, holgura: 3 };
+  const figJ3 = th => ({ objeto: 'compas', t: th, vista: VJ3, alto: 262, manija: 'C', raya: { texto: cm3(th) },
+    angulos: { A: t(`${th}°`), B: Object.assign(t(`${(180 - th) / 2}°`), ALFA), C: Object.assign(t(`${(180 - th) / 2}°`), ALFA) } });
+  // El techo de la predicción: AB = 3 m (naranja), AC = 4 m (turquesa) sobre la viga BC = 6 m. Sus ángulos con la viga:
+  // 36,34° en B y 26,38° en C (ley de cosenos, rehecho aparte); se rotulan redondeados.
+  const TECHO = [3, 4, 6];
+  const TX = (9 - 16 + 36) / 12, TY = Math.sqrt(9 - TX * TX), T_A = [TX, TY], T_C = [6, 0];
+  const T_B = U.angulo([0, 0], T_C, T_A), T_Cang = U.angulo(T_C, T_A, [0, 0]);
+  const T_D = [TX + (6 - TX) * 3 / 4, TY / 4];                       // en AC, con AD = 3 m = AB
+  const figTecho = (o = {}) => Object.assign({ objeto: 'tijeral', lados: TECHO, letras: true, colores: { AB: 'o', AC: 'i' }, medidas: { AB: '3 m', AC: '4 m', BC: '6 m' }, alto: 230 }, o);
+  // «Mira»: el punto D en AC con AD = AB (desde el corte 1); ABD isósceles (2); ∠ADB exterior de DBC (3); los ángulos (4).
+  const ABD = (180 - U.angulo(T_A, [0, 0], T_C)) / 2;
+  const miraTecho = () => figTecho({ medidas: undefined, alto: 236,
+    ladosRot: [{ de: 'A', a: 'B', texto: '3 m', color: 'o', dist: 13, hasta: 0 }, { de: 'A', a: 'C', texto: '4 m', color: 'i', dist: 13, hasta: 0 }, { de: 'B', a: 'C', texto: '6 m', dist: 22 }],
+    llaves: [{ de: 'A', a: 'B', marcas: 1, dist: 15, desde: 1 }, { de: 'A', a: 'D', marcas: 1, dist: 15, desde: 1 }],
+    masPuntos: [{ id: 'D', x: T_D[0], y: T_D[1], desde: 1, sinPunto: true }], libres: [{ en: 'D', dir: 75, dist: 22, texto: 'D', desde: 1 }],
+    masSegmentos: [{ de: 'B', a: 'D', desde: 1 }],
+    masAngulos: [
+      { en: 'B', de: 'D', a: 'A', radio: 44, holgura: 8, marcas: 2, mide: ABD, color: 'h', desde: 2 },
+      { en: 'D', de: 'A', a: 'B', radio: 16, holgura: 6, marcas: 2, mide: ABD, color: 'h', desde: 2 },
+      { en: 'C', de: 'A', a: 'B', radio: 40, holgura: 9, marcas: 3, mide: T_Cang, color: 'h', desde: 3, hasta: 3 },
+      { en: 'C', de: 'A', a: 'B', radio: 40, holgura: 9, marcas: 3, mide: T_Cang, color: 'h', desde: 4 },
+      { en: 'B', de: 'C', a: 'A', radio: 28, holgura: 9, marcas: 1, mide: T_B, color: 'h', desde: 3, hasta: 3 },
+      { en: 'B', de: 'C', a: 'A', radio: 28, holgura: 9, marcas: 1, mide: T_B, color: 'h', desde: 4 },
+    ] });
+  // Isósceles con AB = AC (vértice A): la figura de examen con las llaves de los lados iguales.
+  const LL_AB_AC = [{ de: 'A', a: 'B', marcas: 1 }, { de: 'A', a: 'C', marcas: 1 }];
+  const ISO = (base, o = {}) => TRI(base, base, Object.assign({ llaves: LL_AB_AC }, o));
+  // La cadena AB = BD = DC, con D en AC y m∠C = c (ejemplo y «Ahora tú»): B en (0, 0) y C en (6, 0).
+  function cadena(c, rot, o = {}) {
+    const u = [Math.cos((180 - c) * RAD), Math.sin((180 - c) * RAD)], L = 6, s = L / (2 * Math.cos(c * RAD));
+    const D = [L + s * u[0], s * u[1]], tA = L * Math.cos(c * RAD) + Math.sqrt(Math.max(0, L * L * Math.cos(c * RAD) ** 2 - L * L + s * s)), A = [L + tA * u[0], tA * u[1]];
+    const P = { A, B: [0, 0], C: [L, 0], D };
+    const puntos = [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 110, sinPunto: true }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: 240, sinPunto: true }, { id: 'C', x: L, y: 0, rotulo: 'C', lado: -30, sinPunto: true }, { id: 'D', x: D[0], y: D[1], rotulo: 'D', lado: 90 - c, sinPunto: true }];
+    const angulos = [];
+    if (rot.C) angulos.push(Object.assign({ en: 'C', de: 'D', a: 'B', radio: 30, holgura: 6, mide: c, marcas: 1 }, rot.C));
+    if (rot.A) angulos.push(Object.assign({ en: 'A', de: 'B', a: 'D', radio: 22, holgura: 6, mide: 2 * c, marcas: 2 }, rot.A));
+    if (rot.ABC) angulos.push(Object.assign({ en: 'B', de: 'C', a: 'A', radio: 24, holgura: 6, mide: 180 - 3 * c, marcas: 3 }, rot.ABC));
+    const xs = Object.values(P).map(p => p[0]), ys = Object.values(P).map(p => p[1]);
+    return { objeto: 'angulos', llaves: [{ de: 'A', a: 'B', marcas: 1 }, { de: 'B', a: 'D', marcas: 1, ref: 'C' }, { de: 'D', a: 'C', marcas: 1, ref: 'B' }],
+      figura: { alt: o.alt || 'Triángulo ABC con D en el lado AC; los tramos AB, BD y DC miden lo mismo.',
+        vista: { x: [Math.min(...xs) - 0.9, Math.max(...xs) + 0.9], y: [Math.min(...ys) - 0.9, Math.max(...ys) + 0.9] }, alto: 250,
+        puntos, segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'B', a: 'D' }], angulos } };
+  }
+
+  // Ejemplos resueltos de «Triángulo isósceles y equilátero». Cuentas rehechas aparte (scratchpad f3-geo/cuentas.js):
+  // (180 − 50)/2 = 65; la base: 52 y 52; 180/3 = 60; AC = AB = 7; C = 180 − 40 − 65 = 75, el mayor frente a C: AB;
+  // 4x + 40 = 180, x = 35, 55; C = 180 − 115 = 65, A = 180 − 130 = 50; 3x − 2 = x + 10, x = 6, AB = 16; 5x + 45 = 180,
+  // x = 27: 54, 54 y 72; B = 50, C = 60, A = 70: BC > AB > AC; DC = DA = 7, BC = 11; C = 25: A = 50, ABC = 105;
+  // ACD = 120, CAD = 30, BAD = 90; 4x = 2x + 50, x = 25, B = C = 50, A = 80; 2x + 2 = 3x − 4, x = 6, AB = 14, C = 55.
+  const EJ3 = [];
+  EJ3.push({ nivel: 1, titulo: 'El ángulo de una pata',
+    figura: fig({ objeto: 'compas', t: 50, raya: {}, angulos: { A: t('50°'), B: Object.assign(pide(), ALFA), C: ALFA } }),
+    enunciado: 'Las dos patas de un compás miden lo mismo. Lo abres 50° y apoyas sus puntas en la hoja. ¿Qué ángulo forma cada pata con la raya entre sus puntas?',
+    datos: [D_SUMA_O, 'Frente a lados iguales hay ángulos iguales.'],
+    solucion: [{ texto: 'Los dos ángulos de abajo son iguales y se reparten lo que deja la abertura:', ecuacion: junto(['(180° − 50°) ÷ 2 = ', dF('65°')]) }],
+    respuesta: ['Cada pata forma ', dF('65°')] });
+  EJ3.push({ nivel: 1, titulo: 'El otro ángulo de la base',
+    figura: fig(ISO(52, { angulos: { A: null, B: t('52°', 'h', { marcas: 2 }), C: pide({ marcas: 2 }) } })),
+    enunciado: 'En el triángulo ABC, AB = AC y m∠B = 52°. ¿Cuánto mide el ángulo C?',
+    datos: ['Frente a lados iguales hay ángulos iguales.'],
+    solucion: [{ texto: 'C está frente a AB y B frente a AC. Como AB = AC, esos ángulos son iguales.', ecuacion: junto(['m∠C = m∠B = ', dF('52°')]) }],
+    respuesta: ['m∠C = ', dF('52°')] });
+  EJ3.push({ nivel: 1, titulo: 'La señal de tránsito',
+    figura: fig(TRI(60, 60, { llaves: [{ de: 'A', a: 'B', marcas: 1 }, { de: 'A', a: 'C', marcas: 1 }, { de: 'B', a: 'C', marcas: 1 }], angulos: { A: pide({ marcas: 1 }), B: { marcas: 1 }, C: { marcas: 1 } } })),
+    enunciado: 'Una señal de tránsito tiene forma de triángulo con sus tres lados iguales. ¿Cuánto mide cada uno de sus ángulos?',
+    datos: [D_SUMA_O, 'Frente a lados iguales hay ángulos iguales.'],
+    solucion: [{ texto: 'Tres lados iguales dan tres ángulos iguales, que se reparten 180°:', ecuacion: junto(['180° ÷ 3 = ', dF('60°')]) }],
+    respuesta: ['Cada ángulo mide ', dF('60°')] });
+  EJ3.push({ nivel: 1, titulo: 'Ángulos iguales, lados iguales',
+    figura: fig(TRI(40, 40, { angulos: { A: null, B: t('40°', 'h', { marcas: 2 }), C: t('40°', 'h', { marcas: 2 }) }, ladosRot: [{ de: 'A', a: 'B', texto: '7 cm' }, { de: 'A', a: 'C', texto: '?' }] })),
+    enunciado: 'En el triángulo ABC, m∠B = m∠C = 40° y AB = 7 cm. ¿Cuánto mide AC?',
+    datos: ['Frente a ángulos iguales hay lados iguales.'],
+    solucion: [{ texto: 'AC está frente al ángulo B y AB frente al ángulo C. Si los ángulos son iguales, esos lados también.', ecuacion: junto(['AC = AB = ', dF('7 cm')]) }],
+    respuesta: ['AC = ', dF('7 cm')] });
+  EJ3.push({ nivel: 1, titulo: '¿Cuál es el lado mayor?',
+    figura: fig(TRI(65, 75, { angulos: { A: t('40°'), B: t('65°'), C: t('75°') } })),
+    enunciado: 'Los ángulos de un triángulo ABC miden 40° en A, 65° en B y 75° en C. ¿Cuál es su lado mayor?',
+    datos: ['Frente al ángulo mayor está el lado mayor.', 'Lado opuesto de un vértice: el que no lo toca.'],
+    solucion: [{ texto: 'El ángulo mayor es el de C, 75°. Su lado opuesto, el que no toca a C, es AB.', ecuacion: junto('75° > 65° > 40°   →   AB > AC > BC') }],
+    respuesta: ['El lado mayor es ', dF('AB')] });
+  EJ3.push({ nivel: 2, titulo: 'La base desde la punta',
+    figura: fig(ISO(55, { angulos: { A: t('2x', 'h', { mide: 70 }), B: t('x + 20°', 'h', { marcas: 2, mide: 55 }), C: { marcas: 2 } } })),
+    enunciado: 'En el triángulo ABC, AB = AC, m∠A = 2x y m∠B = x + 20°. ¿Cuánto mide el ángulo B?',
+    datos: [D_SUMA, 'Frente a lados iguales hay ángulos iguales.'],
+    solucion: [
+      { texto: 'C mide lo mismo que B. Sumo los tres e igualo a 180°:', ecuacion: [junto('2x + 2(x + 20°) = 180°'), '   →   ', junto('4x = 140'), '   →   ', junto('x = 35')] },
+      { texto: 'Reemplazo x en B:', ecuacion: junto(['m∠B = 35 + 20° = ', dF('55°')]) },
+    ],
+    respuesta: ['m∠B = ', dF('55°')] });
+  EJ3.push({ nivel: 2, titulo: 'Isósceles con un exterior',
+    figura: fig(ISO(65, { angulos: { A: pide(), B: { marcas: 2 }, C: null }, exteriores: { C: t('115°') } })),
+    enunciado: 'En el triángulo ABC, AB = AC. Se prolonga BC más allá de C, hasta D, y el ángulo ACD mide 115°. ¿Cuánto mide el ángulo A?',
+    datos: [D_ADY, D_SUMA, 'Frente a lados iguales hay ángulos iguales.'],
+    solucion: [
+      { texto: 'ACB es vecino de ACD en la recta, y B mide lo mismo que C:', ecuacion: [junto('m∠C = 180° − 115° = 65°'), SEP, junto('m∠B = 65°')] },
+      { texto: 'Lo que queda para A:', ecuacion: junto(['m∠A = 180° − 2 · 65° = ', dF('50°')]) },
+    ],
+    respuesta: ['m∠A = ', dF('50°')] });
+  EJ3.push({ nivel: 2, titulo: 'Dos lados con x',
+    figura: fig(TRI(55, 55, { angulos: { A: null, B: { marcas: 2 }, C: { marcas: 2 } }, ladosRot: [{ de: 'A', a: 'B', texto: '(3x − 2) cm' }, { de: 'A', a: 'C', texto: '(x + 10) cm' }] })),
+    enunciado: 'En el triángulo ABC, m∠B = m∠C, AB = (3x − 2) cm y AC = (x + 10) cm. ¿Cuánto mide AB?',
+    datos: ['Frente a ángulos iguales hay lados iguales.'],
+    solucion: [
+      { texto: 'Los lados frente a B y frente a C, AC y AB, son iguales:', ecuacion: [junto('3x − 2 = x + 10'), '   →   ', junto('2x = 12'), '   →   ', junto('x = 6')] },
+      { texto: 'Reemplazo:', ecuacion: junto(['AB = 3 · 6 − 2 = ', dF('16 cm')]) },
+    ],
+    respuesta: ['AB = ', dF('16 cm')] });
+  EJ3.push({ nivel: 2, titulo: 'Dos clases a la vez',
+    enunciado: 'Los ángulos de un triángulo miden 2x, 2x y x + 45°. ¿Qué clase de triángulo es, por sus lados y por sus ángulos?',
+    datos: [D_SUMA_O, 'Frente a ángulos iguales hay lados iguales.', D_CLASES],
+    solucion: [
+      { texto: 'Sumo e igualo a 180°:', ecuacion: [junto('5x + 45° = 180°'), '   →   ', junto('x = 27')] },
+      { texto: 'Miden 54°, 54° y 72°: dos ángulos iguales (dos lados iguales) y los tres agudos.' },
+    ],
+    respuesta: ['Es ', dF('isósceles y acutángulo')] });
+  EJ3.push({ nivel: 2, titulo: 'Ordenar los tres lados',
+    figura: fig(TRI(50, 60, { prolonga: 1.8, angulos: { A: t('70°'), B: null, C: {} }, exteriores: { B: t('130°') } })),
+    enunciado: 'En el triángulo ABC, m∠A = 70° y el ángulo exterior en B mide 130°. Ordena sus tres lados de mayor a menor.',
+    datos: [D_ADY, D_SUMA, 'Frente al ángulo mayor está el lado mayor.'],
+    solucion: [
+      { texto: 'Saco los otros dos ángulos:', ecuacion: [junto('m∠B = 180° − 130° = 50°'), SEP, junto('m∠C = 180° − 70° − 50° = 60°')] },
+      { texto: 'Cada lado sigue a su ángulo opuesto: BC frente a A, AB frente a C, AC frente a B.', ecuacion: junto(['70° > 60° > 50°   →   ', dF('BC > AB > AC')]) },
+    ],
+    respuesta: [dF('BC > AB > AC')] });
+  EJ3.push({ nivel: 3, titulo: 'El corte que forma un isósceles',
+    figura: (() => { const D = [4, 0], A = [4 + 7 * Math.cos(110 * RAD), 7 * Math.sin(110 * RAD)];
+      return fig({ objeto: 'angulos', ladosRot: [{ de: 'B', a: 'D', texto: '4 cm', dist: 8, ref: 'A' }, { de: 'D', a: 'A', texto: '7 cm', ref: 'B', en: 0.35 }],
+        figura: { alt: 'Triángulo ABC con D en el lado BC; el ángulo DAC mide lo mismo que el ángulo C.', vista: { x: [-0.9, 11.9], y: [-1.7, A[1] + 0.9] }, alto: 240,
+          puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 100, sinPunto: true }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: 200, sinPunto: true }, { id: 'C', x: 11, y: 0, rotulo: 'C', lado: -20, sinPunto: true }, { id: 'D', x: 4, y: 0, rotulo: 'D', lado: -90, sinPunto: true }],
+          segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'A', a: 'D' }],
+          angulos: [{ en: 'A', de: 'D', a: 'C', radio: 34, marcas: 2, color: 'h', mide: 35 }, { en: 'C', de: 'A', a: 'D', radio: 44, marcas: 2, color: 'h', mide: 35 }] } }); })(),
+    enunciado: 'En el triángulo ABC, D está en el lado BC y m∠DAC = m∠C. Además, BD = 4 cm y AD = 7 cm. ¿Cuánto mide BC?',
+    datos: ['Frente a ángulos iguales hay lados iguales.', 'Si D está entre B y C: BC = BD + DC.'],
+    solucion: [
+      { texto: 'En el triángulo ADC, los ángulos en A y en C son iguales: sus lados opuestos, DC y DA, también.', ecuacion: junto('DC = DA = 7 cm') },
+      { texto: 'BC junta los dos tramos:', ecuacion: junto(['BC = 4 + 7 = ', dF('11 cm')]) },
+    ],
+    respuesta: ['BC = ', dF('11 cm')] });
+  EJ3.push({ nivel: 3, titulo: 'La cadena de isósceles',
+    figura: fig(cadena(25, { C: t('25°'), ABC: pide() })),
+    enunciado: 'En el triángulo ABC, D está en el lado AC y AB = BD = DC. Si m∠C = 25°, ¿cuánto mide el ángulo ABC?',
+    datos: ['Frente a lados iguales hay ángulos iguales.', D_EXT, D_SUMA],
+    solucion: [
+      { texto: 'BD = DC: en BDC, ∠DBC = ∠C = 25°. ∠ADB es exterior de BDC:', ecuacion: junto('m∠ADB = 25° + 25° = 50°') },
+      { texto: 'AB = BD: en ABD, el ángulo A es igual a ∠ADB.', ecuacion: junto('m∠A = 50°') },
+      { texto: 'En ABC, lo que queda para B:', ecuacion: junto(['m∠ABC = 180° − 50° − 25° = ', dF('105°')]) },
+    ],
+    respuesta: ['m∠ABC = ', dF('105°')] });
+  EJ3.push({ nivel: 3, titulo: 'Equilátero con una prolongación',
+    figura: fig({ objeto: 'angulos', llaves: [{ de: 'A', a: 'B', marcas: 1 }, { de: 'B', a: 'C', marcas: 1, ref: 'A' }, { de: 'C', a: 'A', marcas: 1, ref: 'B' }, { de: 'C', a: 'D', marcas: 1, ref: 'A' }],
+      figura: { alt: 'Triángulo equilátero ABC; se prolonga BC hasta D, con CD igual al lado, y se une A con D.', vista: { x: [-0.9, 12.9], y: [-1.2, 6.1] }, alto: 220,
+        puntos: [{ id: 'A', x: 3, y: 3 * Math.sqrt(3), rotulo: 'A', lado: 100, sinPunto: true }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: 200, sinPunto: true }, { id: 'C', x: 6, y: 0, rotulo: 'C', lado: -90, sinPunto: true }, { id: 'D', x: 12, y: 0, rotulo: 'D', lado: -20, sinPunto: true }],
+        segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'C', a: 'D' }, { de: 'A', a: 'D' }],
+        angulos: [{ en: 'A', de: 'B', a: 'D', texto: '?', radio: 30, holgura: 6, mide: 90, arcoRecto: true }] } }),
+    enunciado: 'El triángulo ABC es equilátero. Se prolonga BC más allá de C, hasta D, con CD = CA. ¿Cuánto mide el ángulo BAD?',
+    datos: ['Equilátero: tres lados iguales y tres ángulos de 60°.', 'Frente a lados iguales hay ángulos iguales.', D_ADY, D_SUMA_O],
+    solucion: [
+      { texto: 'ACD es vecino del ángulo de 60° en C: mide 120°. ACD es isósceles (CD = CA):', ecuacion: junto('m∠CAD = (180° − 120°) ÷ 2 = 30°') },
+      { texto: 'El ángulo BAD junta el de 60° del equilátero y el de 30°:', ecuacion: junto(['m∠BAD = 60° + 30° = ', dF('90°')]) },
+    ],
+    respuesta: ['m∠BAD = ', dF('90°')] });
+  EJ3.push({ nivel: 3, titulo: 'Isósceles con x afuera',
+    figura: fig(ISO(50, { prolonga: 2.2, angulos: { A: pide(), B: { marcas: 2 }, C: { marcas: 2 } }, exteriores: { A: t('4x', 'h', { mide: 100 }) }, letraE: true })),
+    enunciado: 'En el triángulo ABC, AB = AC. Se prolonga CA más allá de A, hasta E; m∠BAE = 4x y m∠B = x + 25°. ¿Cuánto mide el ángulo BAC?',
+    datos: [D_EXT, 'Frente a lados iguales hay ángulos iguales.', D_ADY],
+    solucion: [
+      { texto: 'El exterior en A suma B y C, que son iguales:', ecuacion: [junto('4x = 2(x + 25°)'), '   →   ', junto('2x = 50'), '   →   ', junto('x = 25')] },
+      { texto: 'El exterior mide 100°; BAC es su vecino en la recta:', ecuacion: junto(['m∠BAC = 180° − 100° = ', dF('80°')]) },
+    ],
+    respuesta: ['m∠BAC = ', dF('80°')] });
+  EJ3.push({ nivel: 3, titulo: 'Un lado con x',
+    figura: fig(TRI(55, 55, { angulos: { A: t('70°'), B: t('55°', 'h', { marcas: 2 }), C: null }, ladosRot: [{ de: 'A', a: 'B', texto: '(3x − 4) cm' }, { de: 'A', a: 'C', texto: '(2x + 2) cm' }] })),
+    enunciado: 'En el triángulo ABC, m∠A = 70°, m∠B = 55°, AC = (2x + 2) cm y AB = (3x − 4) cm. ¿Cuánto mide AB, y cuál es el lado mayor?',
+    datos: [D_SUMA, 'Frente a ángulos iguales hay lados iguales.', 'Frente al ángulo mayor está el lado mayor.'],
+    solucion: [
+      { texto: 'm∠C = 180° − 70° − 55° = 55°, igual que B. Sus lados opuestos son iguales:', ecuacion: [junto('3x − 4 = 2x + 2'), '   →   ', junto('x = 6'), '   →   ', junto('AB = 14 cm')] },
+      { texto: 'El ángulo mayor es A, 70°: su lado opuesto, BC, es el mayor.' },
+    ],
+    respuesta: [dF('AB = 14 cm'), '; el mayor es ', dF('BC')] });
+
+  // «Ahora tú» de la idea 3: cinco tipos, uno por semilla (s % 5).
+  const D_ISO = 'Frente a lados iguales hay ángulos iguales, y frente a ángulos iguales, lados iguales.';
+  function casoBase(r) {
+    for (let i = 0; i < 400; i++) {
+      const th = 2 * r.ent(10, 60), al = (180 - th) / 2, F = ISO(al, { angulos: { A: t(`${th}°`), B: pide({ marcas: 2 }), C: { marcas: 2 } } });
+      if (!sirve(F)) continue;
+      const ops = opciones(al, [
+        { id: 'juntos', valor: 180 - th, error: 'GE-ISO4', siFuera: `${180 - th}° es lo que suman B y C juntos; cada uno es la mitad.` },
+        { id: 'igual', valor: th, error: 'GE-ISO5', siFuera: 'El ángulo A está entre los lados iguales; los iguales son B y C.' },
+        { id: 'recto', valor: 90 - th, error: 'GE-ISO6', siFuera: 'Partir en dos es la idea; también hay que partir A: 90° − m∠A ÷ 2.' },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, AB = AC y m∠A = ${th}°. ¿Cuánto mide el ángulo B?`, datos: [D_SUMA, D_ISO], dibujo: fig(F), opciones: ops,
+        solucion: { texto: 'B y C son iguales y se reparten lo que deja A.', ecuacion: junto(`m∠B = (180° − ${th}°) ÷ 2 = ${al}°`) } };
+    }
+    throw new Error('casoBase');
+  }
+  function casoPunta(r) {
+    for (let i = 0; i < 400; i++) {
+      const al = r.ent(25, 80), th = 180 - 2 * al, F = ISO(al, { angulos: { A: pide(), B: t(`${al}°`, 'h', { marcas: 2 }), C: { marcas: 2 } } });
+      if (!sirve(F)) continue;
+      const ops = opciones(th, [
+        { id: 'uno', valor: 180 - al, error: 'GE-ISO7', siFuera: 'Restar de 180° está bien; pero hay dos ángulos de la base iguales: se restan los dos.' },
+        { id: 'igual', valor: al, error: 'GE-ISO5', siFuera: 'B y C son los iguales; A es el que queda entre los lados iguales.' },
+        { id: 'doble', valor: 2 * al, error: 'GE-ISO8', siFuera: `${2 * al}° suman B y C; A es lo que les falta para 180°.` },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, AB = AC y m∠B = ${al}°. ¿Cuánto mide el ángulo A?`, datos: [D_SUMA, D_ISO], dibujo: fig(F), opciones: ops,
+        solucion: { texto: 'C mide lo mismo que B; A es lo que les falta para 180°.', ecuacion: junto(`m∠A = 180° − 2 · ${al}° = ${th}°`) } };
+    }
+    throw new Error('casoPunta');
+  }
+  function casoReciproco(r) {
+    for (let i = 0; i < 400; i++) {
+      const x = r.ent(3, 9), p = r.ent(2, 4), q = r.ent(1, p - 1), k = r.ent(1, 8), AB = p * x - k, mAC = AB - q * x;
+      if (AB <= 4 || mAC < -9) continue;
+      const AC = `${q === 1 ? '' : q}x${mAC >= 0 ? ` + ${mAC}` : ` − ${-mAC}`}`, ABt = `${p}x − ${k}`;
+      const bc = r.ent(3, 2 * AB - 2), BCx = r.ent(1, 2), bcK = bc - BCx * x;
+      if (bc === AB) continue;
+      const BC = `${BCx === 1 ? '' : BCx}x${bcK >= 0 ? ` + ${bcK}` : ` − ${-bcK}`}`, b = U.grados(Math.acos(bc / (2 * AB)));
+      const xMal = p !== BCx ? (k + bcK) / (p - BCx) : NaN, abMal = p * xMal - k;
+      const F = TRI(b, b, { angulos: { A: null, B: { marcas: 2 }, C: { marcas: 2 } } });
+      if (!sirve(F)) continue;
+      const ops = opciones(AB, [
+        { id: 'x', valor: x, error: 'GE-ISO9', siFuera: `x = ${x} está bien; falta reemplazarlo en AB.` },
+        { id: 'tocan', valor: Number.isInteger(xMal) && xMal > 0 ? abMal : NaN, error: 'GE-ISO10', siFuera: 'Igualar dos lados es la idea; pero los iguales son los opuestos a B y C: AC y AB.' },
+        { id: 'bc', valor: bc, error: 'GE-ISO11', siFuera: `${bc} cm mide BC; piden AB.` },
+      ], fmtCm);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, m∠B = m∠C. AB = (${ABt}) cm, AC = (${AC}) cm y BC = (${BC}) cm. ¿Cuánto mide AB?`,
+        datos: [D_ISO], dibujo: fig(F), opciones: ops,
+        solucion: { texto: 'AB y AC están frente a C y frente a B: son iguales.', ecuacion: [junto(`${ABt} = ${AC}`), '   →   ', junto(`x = ${x}`), '   →   ', junto(`AB = ${AB} cm`)] } };
+    }
+    throw new Error('casoReciproco');
+  }
+  const OPUESTO = { A: 'BC', B: 'AC', C: 'AB' };
+  function casoOrden(r) {
+    for (let i = 0; i < 400; i++) {
+      const [a, b, c] = dosDe(r, 35, 95);
+      if (new Set([a, b, c]).size < 3) continue;
+      const m = { A: a, B: b, C: c }, orden = LET.slice().sort((x, y) => m[y] - m[x]);
+      const F = TRI(b, c, { angulos: { A: t(`${a}°`), B: t(`${b}°`), C: { arcoRecto: true } } });   // C se calcula: si es recto, con arco
+      if (!sirve(F)) continue;
+      const ops = [
+        { id: 'c', texto: OPUESTO[orden[0]], correcta: true },
+        { id: 'pegado', texto: OPUESTO[orden[1]], error: 'GE-ISO1', siFuera: `${OPUESTO[orden[1]]} toca al ángulo mayor; pero el lado mayor es el que queda enfrente.` },
+        { id: 'menor', texto: OPUESTO[orden[2]], error: 'GE-ISO12', siFuera: `${OPUESTO[orden[2]]} está frente al ángulo menor: es el lado menor.` },
+        { id: 'falta', texto: 'No se sabe sin medir los lados', error: 'GE-ISO3', siFuera: 'Medir confirmaría; pero los ángulos ya ordenan los lados.' },
+      ];
+      return { pregunta: `En el triángulo ABC, m∠A = ${a}° y m∠B = ${b}°. ¿Cuál es su lado mayor?`, datos: [D_SUMA, 'Frente al ángulo mayor está el lado mayor.'], dibujo: fig(F), opciones: ops,
+        solucion: { texto: `m∠C = ${c}°. El ángulo mayor está en ${orden[0]}; su lado opuesto es el mayor.`, ecuacion: junto(`m∠${orden[0]} = ${m[orden[0]]}°   →   ${OPUESTO[orden[0]]}`) } };
+    }
+    throw new Error('casoOrden');
+  }
+  function casoCadena(r) {
+    for (let i = 0; i < 400; i++) {
+      const c = 5 * r.ent(3, 8), pideA = r() < 0.5, F = cadena(c, pideA ? { C: t(`${c}°`), A: pide() } : { C: t(`${c}°`), ABC: pide() });
+      if (!sirve(F)) continue;
+      const ops = pideA ? opciones(2 * c, [
+        { id: 'copia', valor: c, error: 'GE-ISO13', siFuera: 'C y ∠DBC son iguales, cierto; A se compara con ∠ADB, no con C.' },
+        { id: 'otro', valor: 180 - 2 * c, error: 'GE-ISO14', siFuera: `${180 - 2 * c}° mide ∠BDC; A es igual a ∠ADB, su vecino en la recta.` },
+        { id: 'doble', valor: 4 * c, error: 'GE-ISO15', siFuera: 'Duplicar una vez está bien (el exterior); la segunda vez sobra.' },
+      ], gr) : opciones(180 - 3 * c, [
+        { id: 'abd', valor: 180 - 4 * c, error: 'GE-ISO14', siFuera: `${180 - 4 * c}° mide ∠ABD; falta sumarle ∠DBC.` },
+        { id: 'a', valor: 2 * c, error: 'GE-ISO13', siFuera: `${2 * c}° es lo que mide el ángulo A; piden el ángulo ABC.` },
+        { id: 'simple', valor: 180 - 2 * c, error: 'GE-ISO15', siFuera: 'Restar de 180° está bien; pero A mide el doble de C, no lo mismo.' },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, D está en el lado AC y AB = BD = DC. Si m∠C = ${c}°, ¿cuánto mide el ángulo ${pideA ? 'A' : 'ABC'}?`,
+        datos: [D_ISO, D_EXT, D_SUMA], dibujo: fig(F), opciones: ops,
+        solucion: { texto: `∠DBC = ${c}°; ∠ADB = ${2 * c}° (exterior); m∠A = ∠ADB.`, ecuacion: pideA ? junto(`m∠A = ${c}° + ${c}° = ${2 * c}°`) : junto(`m∠ABC = 180° − ${2 * c}° − ${c}° = ${180 - 3 * c}°`) } };
+    }
+    throw new Error('casoCadena');
+  }
+
   const isosceles = {
     id: 'isosceles',
     titulo: 'Triángulo isósceles y equilátero',
     pregunta: '¿Qué ángulos son iguales cuando dos lados son iguales?',
     temas: ['Triángulo isósceles y equilátero', 'Relación entre lados y ángulos', 'Clasificación'],
-    pieza: 'geo-figura',
+    pieza: GO,
     aprendizaje: 'Frente a lados iguales hay ángulos iguales, y al revés; frente al lado mayor, el ángulo mayor. Equilátero: tres ángulos de 60°.',
-    actividad: 'Abrir un compás de patas iguales y comparar los ángulos de abajo.',
+    actividad: 'Abrir un compás de patas iguales y comparar los dos ángulos de abajo.',
+    // Lee: las clases por lados y el compás. No dice qué pasa con los ángulos de abajo (eso es el juego) ni qué lado del
+    // techo queda más inclinado (la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Tres clases por sus lados', texto: 'Por sus lados, un triángulo es escaleno si sus tres lados miden distinto, isósceles si dos lados son iguales y equilátero si los tres son iguales. Las rayitas iguales marcan lados iguales.' },
-        { titulo: 'El compás', texto: 'Las patas del compás miden lo mismo, 12 cm. Al abrirlo, sus puntas y la bisagra forman un triángulo isósceles: las patas son los lados iguales.' },
+        { titulo: 'Tres clases por sus lados', texto: 'Por sus lados, un triángulo es escaleno si sus tres lados miden distinto, isósceles si tiene dos lados iguales y equilátero si tiene los tres iguales. Una misma rayita sobre la llave de dos lados dice que esos lados miden igual.',
+          pieza: GO, dibujo: fig(TRI(70, 70, { llaves: LL_AB_AC, angulos: { A: null, B: null, C: null } })) },
+        { titulo: 'El compás', texto: 'Las dos patas del compás miden 12 cm. Con sus puntas sobre la hoja, la bisagra A y las puntas B y C forman un triángulo isósceles. θ es la abertura en A, y α, el ángulo de cada pata con la raya BC.',
+          pieza: GO, dibujo: fig({ objeto: 'compas', t: 60, raya: {}, angulos: { A: {}, B: ALFA, C: ALFA } }) },
+        { titulo: 'Qué mirar al jugar', texto: 'Abre y cierra el compás. Compara los dos ángulos de abajo entre sí, y mira cuánto mide la raya BC frente a lo que mide cada pata.' },
       ],
     },
+    ejemplos: EJ3,
     juega: {
-      consigna: 'Las dos patas del compás miden 12 cm. Abre y cierra el compás sobre la hoja.',
-      mision: { texto: 'Abre el compás hasta que sus puntas queden tan lejos como mide cada pata.', logrado: v => v.t === 60, bien: 'Puntas a 12 cm: tres lados iguales y tres ángulos de 60°.' },
+      pieza: GO,
+      consigna: 'Las dos patas del compás miden 12 cm. Lo abres sobre la hoja y marcas la raya BC entre sus puntas.',
+      mision: { texto: 'Abre el compás hasta que la raya BC mida lo mismo que cada pata.', logrado: v => v.t === 60, bien: 'Listo: BC = 12 cm. Tres lados iguales y tres ángulos de 60°.' },
       voz: 'Mira los dos ángulos de abajo mientras abres.',
-      leyenda: [{ s: 'θ', t: 'la abertura del compás, en A' }, { s: 'α', t: 'cada pata con la raya' }, { s: { v: 'c-o', t: 'naranja' }, t: 'las patas, de 12 cm' }],
-      controles: [{ id: 't', etiqueta: 'θ, la abertura', min: 20, max: 80, paso: 10, inicio: 40, unidad: '°', decimales: 0, color: 'c-h' }],
-      dibujo: v => ({ datos: compas(v.t), estado: {} }),
-      lectura: v => [junto('θ = '), dH(`${v.t}°`), junto(' arriba; abajo, α = '), dH(`${f((180 - v.t) / 2)}°`), ' y ', dH(`${f((180 - v.t) / 2)}°`)],
+      leyenda: [
+        { s: 'A', t: 'la bisagra del compás' },
+        { s: 'B, C', t: 'las puntas: la aguja y el lápiz' },
+        { s: dH('θ'), t: 'la abertura del compás, en A' },
+        { s: dH('α'), t: 'el ángulo de cada pata con la raya' },
+        { s: dO('naranja'), t: 'las dos patas, iguales: la misma rayita' },
+      ],
+      controles: [{ id: 't', etiqueta: 'θ, la abertura', min: 40, max: 80, paso: 10, inicio: 40, unidad: '°', decimales: 0, color: 'c-h' }],
+      dibujo: v => ({ datos: figJ3(v.t), estado: {} }),
+      // Gesto directo: se agarra la punta C (el lápiz); su ángulo con la vertical es la mitad de la abertura.
+      arrastres: [{ id: 'punta-c', etiqueta: 'punta C del compás: abre o cierra la abertura', color: 'c-o',
+        donde: v => PO.aPantalla(figJ3(v.t), U.polar([0, 0], 12, -90 + v.t / 2)),
+        mover: (pt, v) => { const q = PO.aPlano(figJ3(v.t), pt); return { t: 2 * Math.abs(U.grados(Math.atan2(q[0], -q[1]))) }; } }],
+      lectura: v => [dH('α'), ' = ', dH(`${(180 - v.t) / 2}°`), ' y ', dH(`${(180 - v.t) / 2}°`), junto(' abajo; θ = '), dH(`${v.t}°`), junto(`; BC ${cm3(v.t).startsWith('≈') ? '' : '= '}${cm3(v.t)}`)],
       minimo: 3,
     },
     predice: {
-      pregunta: 'Un techo a dos aguas tiene sus lados distintos: uno de 3 m y otro de 4 m, sobre una viga de 6 m. ¿Qué lado queda más inclinado, es decir, forma el ángulo mayor con la viga?',
+      pregunta: 'Un techo a dos aguas tiene sus dos lados distintos: AB de 3 m y AC de 4 m, sobre una viga BC de 6 m. ¿Qué lado queda más inclinado, es decir, forma el ángulo mayor con la viga?',
       datos: ['AB = 3 m', 'AC = 4 m', 'BC = 6 m'],
       voz: 'Mira qué lado queda frente a cada ángulo.',
       opciones: [
-        { id: 'c', texto: 'El lado corto, el de 3 m', correcta: true },
+        { id: 'c', texto: 'El lado corto, AB, de 3 m', correcta: true },
         { id: 'largo', texto: 'El lado largo: más lado, más ángulo', error: 'GE-ISO1', siFuera: 'Más lado sí da más ángulo, pero el de enfrente, no el que está pegado.' },
-        { id: 'iguales', texto: 'Los dos igual: suben al mismo punto', error: 'GE-ISO2', siFuera: 'Serían iguales si los lados midieran igual; aquí uno es más corto.' },
-        { id: 'falta', texto: 'No se sabe sin medir la altura del techo', error: 'GE-ISO3', siFuera: 'La altura ayudaría a calcular; pero los tres lados ya deciden la forma.' },
+        { id: 'iguales', texto: 'Los dos igual: suben al mismo punto', error: 'GE-ISO2', siFuera: 'Serían iguales si los dos lados midieran lo mismo; aquí uno es más corto.' },
+        { id: 'falta', texto: 'No se sabe sin saber qué tan alto es el techo', error: 'GE-ISO3', siFuera: 'Esa medida ayudaría a calcular; pero los tres lados ya deciden la forma.' },
       ],
-      dibujo: { datos: techo(false), estado: {} },
-      revelar: { datos: techo(true), estado: {} },
-      coincide: 'Coincide: el lado corto forma unos 36° con la viga y el largo, unos 26°.',
+      dibujo: fig(figTecho()),
+      revelar: fig(figTecho({ angulos: { B: { color: 'h', marcas: 1 }, C: { color: 'h', marcas: 2 } } })),
+      coincide: 'Coincide: AB forma unos 36° con la viga y AC, unos 26°. El ángulo de 36° está frente al lado de 4 m.',
+      noCoincide: 'Revisemos: AB forma unos 36° con la viga y AC, unos 26°. El mayor está frente al lado mayor.',
     },
     mira: {
-      datos: compas(40),
-      voz: 'Patas iguales, ángulos iguales.',
+      pieza: GO,
+      datos: miraTecho(),
+      voz: 'Para comparar, armamos un isósceles dentro del techo.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Doblado por la mitad, una pata del compás cae sobre la otra.', ecuacion: junto('AB = AC') },
-        { estado: { corte: 0 }, texto: 'Los dos ángulos de abajo coinciden: miden igual.', ecuacion: junto(['α = (180° − θ) ÷ 2 = ', dH('70°')]) },
+        { estado: { corte: 0 }, texto: 'En el techo, AC (4 m) es más largo que AB (3 m).', ecuacion: junto([dI('AC'), ' > ', dO('AB')]) },
+        { estado: { corte: 1 }, texto: 'Marcamos D en AC, con AD = 3 m: lo mismo que AB.', ecuacion: junto('AD = AB = 3 m') },
+        { estado: { corte: 2 }, texto: 'ABD es isósceles: doblado por la mitad, sus ángulos en B y D coinciden.', ecuacion: junto('m∠ABD = m∠ADB') },
+        { estado: { corte: 3 }, texto: '∠ADB es exterior del triángulo DBC: mide más que el ángulo C.', ecuacion: junto('m∠ADB = m∠DBC + m∠C > m∠C') },
+        { estado: { corte: 3 }, texto: 'Y el ángulo B entero es más grande que ∠ABD.', ecuacion: junto('m∠B > m∠ABD = m∠ADB > m∠C') },
+        { estado: { corte: 4 }, texto: 'Frente al lado mayor, AC, está el ángulo mayor, B.', ecuacion: junto([dI('AC'), ' > ', dO('AB'), '   →   ', dH('m∠B'), ' > ', dH('m∠C')]) },
       ],
     },
     regla: {
-      texto: 'Frente a lados iguales hay ángulos iguales, y al revés. Frente al lado mayor está el ángulo mayor. En el equilátero, los tres ángulos miden 60°.',
-      ecuacion: [junto('AB = AC  ⟺  m∠B = m∠C')],
-      condicion: 'se compara cada lado con el ángulo que tiene enfrente, no con los que lo tocan.',
+      texto: 'Frente a lados iguales hay ángulos iguales, y al revés. Frente al lado mayor está el ángulo mayor. El equilátero tiene tres ángulos de 60°.',
+      ecuacion: [junto('AB = AC  ⟺  m∠C = m∠B'), SEP, junto('AC > AB  ⟺  m∠B > m∠C')],
+      condicion: 'cada lado se compara con el ángulo que tiene enfrente, su lado opuesto, no con los dos ángulos que lo tocan.',
       voz: 'Lado y ángulo se miran de frente.',
+      dibujo: { pieza: GO, datos: TRI(65, 65, { llaves: LL_AB_AC, angulos: { A: {}, B: { marcas: 2 }, C: { marcas: 2 } } }), estado: {} },
     },
-    ahoraTu: {
-      voz: 'Ubica los lados iguales y mira qué ángulos tienen enfrente.',
+    // Así se resuelve: el ángulo de la punta que le gana a los de la base por una diferencia, o el exterior de un
+    // isósceles. «Ahora tú» pide la base, la punta, el recíproco, el lado mayor y la cadena.
+    resuelve: {
+      pieza: GO,
       generar(s) {
-        const r = azar(s), t = 2 * r.ent(10, 70), al = (180 - t) / 2, pideBase = s % 2 === 0;
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const k = r.ent(2, 12), d = 3 * k, b = 60 - k, a = b + d;
+          const F = ISO(b, { angulos: { A: pide(), B: { marcas: 2 }, C: { marcas: 2 } } });
+          return {
+            enunciado: `En el triángulo ABC, AB = AC y el ángulo A mide ${d}° más que el ángulo B. ¿Cuánto mide el ángulo A?`,
+            datos: [D_SUMA, D_ISO], dibujo: fig(F),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden m∠A, el ángulo entre los dos lados iguales.' },
+              { tipo: 'datos', texto: `AB = AC, y A le gana a B por ${d}°.` },
+              { tipo: 'regla', texto: 'Frente a lados iguales, ángulos iguales: C mide lo mismo que B. Los tres suman 180°.', ecuacion: junto(`m∠B + m∠B + (m∠B + ${d}°) = 180°`) },
+              { tipo: 'cuentas', texto: `Tres veces B más ${d}° dan 180°.`, ecuacion: [junto(`3 · m∠B = ${180 - d}°`), '   →   ', junto(`m∠B = ${b}°`), SEP, junto(['m∠A = ', `${b}° + ${d}° = `, dF(`${a}°`)])] },
+              { tipo: 'sentido', texto: `Compruebo: ${a}° + ${b}° + ${b}° = 180°.` },
+            ],
+            respuesta: ['m∠A = ', dF(`${a}°`)],
+          };
+        }
+        const b = 5 * r.ent(7, 16), e = 180 - b, a = 180 - 2 * b;
+        const F = ISO(b, { angulos: { A: pide(), B: { marcas: 2 }, C: null }, exteriores: { C: t(`${e}°`) } });
         return {
-          pregunta: pideBase ? `En el triángulo ABC, AB = AC y m∠A = ${t}°. ¿Cuánto mide el ángulo B?` : `En el triángulo ABC, AB = AC y m∠B = ${al}°. ¿Cuánto mide el ángulo A?`,
-          datos: [D_SUMA, 'Frente a lados iguales hay ángulos iguales.'],
-          opciones: opciones(pideBase ? al : t, pideBase ? [
-            { id: 'todo', valor: 180 - t, error: 'GE-ISO4', siFuera: `${180 - t}° es lo que suman B y C juntos; cada uno es la mitad.` },
-            { id: 'igual', valor: t, error: 'GE-ISO5', siFuera: 'El ángulo A está entre los lados iguales; los iguales son B y C.' },
-            { id: 'recto', valor: 90 - t, error: 'GE-ISO6', siFuera: 'Restar de 90° sería de un ángulo recto; aquí se reparte lo que falta para 180°.' },
-          ] : [
-            { id: 'mitad', valor: 180 - al, error: 'GE-ISO4', siFuera: 'Hay dos ángulos de la base iguales: se restan los dos.' },
-            { id: 'igual', valor: al, error: 'GE-ISO5', siFuera: 'B y C son los iguales; A es el que queda entre los lados iguales.' },
-            { id: 'doble', valor: 2 * al, error: 'GE-ISO6', siFuera: `${2 * al}° suman B y C; A es lo que les falta para 180°.` },
-          ], gr),
-          solucion: { texto: 'B y C miden igual, y los tres suman 180°.', ecuacion: junto(pideBase ? `m∠B = (180° − ${t}°) ÷ 2 = ${al}°` : `m∠A = 180° − 2 · ${al}° = ${t}°`) },
+          enunciado: `En el triángulo ABC, AB = AC y el ángulo exterior ACD mide ${e}°. ¿Cuánto mide el ángulo A?`,
+          datos: [D_ADY, D_SUMA, D_ISO], dibujo: fig(F),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden m∠A, el ángulo entre los lados iguales.' },
+            { tipo: 'datos', texto: `AB = AC, y el exterior en C mide ${e}°.` },
+            { tipo: 'regla', texto: 'El interior en C es vecino del exterior; B es igual a C porque AB = AC.' },
+            { tipo: 'cuentas', texto: 'Primero C y B; después, lo que queda para A.', ecuacion: [junto(`m∠C = m∠B = 180° − ${e}° = ${b}°`), SEP, junto(['m∠A = 180° − 2 · ', `${b}° = `, dF(`${a}°`)])] },
+            { tipo: 'sentido', texto: `Compruebo con el exterior: m∠A + m∠B = ${a}° + ${b}° = ${e}°.` },
+          ],
+          respuesta: ['m∠A = ', dF(`${a}°`)],
         };
       },
     },
+    ahoraTu: {
+      pieza: GO,
+      voz: 'Ubica los lados iguales y mira qué ángulos tienen enfrente.',
+      generar(s) { return conCuatro([casoBase, casoPunta, casoReciproco, casoOrden, casoCadena][s % 5], azar(s + 7)); },
+    },
   };
 
-  // ---------- Idea 4 (antes 2, sin rehacer): desigualdad triangular ----------
-  // Cambia: el ángulo entre los lados de 5 y 8 · Permanece: esos dos lados · Progresa: el largo del tercer lado ·
-  // Se reserva: los dos extremos aplastados (3 y 13) · Debe verse: en los extremos no hay triángulo, solo un segmento.
-  const bisagra = (g, o = {}) => {
-    const B = [0, 0], C = [8, 0], A = U.polar(B, 5, g);
-    const x = U.dist(A, C);
-    return {
-      alt: o.alt || `Lados de 5 y 8 con ángulo de ${g}° entre ellos: el tercer lado mide ${f(x)}`,
-      vista: { x: [-5.6, 8.6], y: [-0.8, 5.4] },
-      puntos: [{ id: 'B', x: 0, y: 0, rotulo: 'B', lado: -90 }, { id: 'C', x: 8, y: 0, rotulo: 'C', lado: -90 }, { id: 'A', x: A[0], y: A[1], rotulo: 'A', color: 'o', lado: 90 },
-        ...(o.extremos ? [{ id: 'A0', x: 5, y: 0, color: 'h', rotulo: 'x = 3', lado: -90, desde: o.extremos[0] }, { id: 'A1', x: -5, y: 0, color: 'h', rotulo: 'x = 13', lado: -90, desde: o.extremos[1] }] : [])],
-      segmentos: [{ de: 'B', a: 'C', texto: '8', grosor: 'variable', color: 'i' }, { de: 'B', a: 'A', texto: '5', grosor: 'variable', color: 'o' },
-        { de: 'A', a: 'C', color: 'h', texto: o.sinX ? 'x' : `x ≈ ${f(x)}` },
-        ...(o.extremos ? [{ de: 'A1', a: 'C', color: 'h', discontinua: true, desde: o.extremos[1] }] : [])],
-    };
-  };
-  // La bisagra de «Así se resuelve»: lados m ≤ M que se dan, ángulo de 70° en B; con extremos, los dos casos aplastados.
-  const bisagraPQ = (m, M, o = {}) => {
-    const A = U.polar([0, 0], m, 70), lo = M - m, hi = M + m;
-    return {
-      alt: o.extremos ? `Lados de ${m} y ${M}: cerrada, x mide ${lo}; abierta del todo, ${hi}. En los dos casos queda un segmento`
-        : `Dos lados de ${m} y ${M} unidos en B; el tercer lado x está entre las puntas`,
-      vista: { x: [-m - 1, M + 1], y: [-1, m + 1] },
-      puntos: [{ id: 'B', x: 0, y: 0, rotulo: 'B', lado: -90 }, { id: 'C', x: M, y: 0, rotulo: 'C', lado: -90 }, { id: 'A', x: A[0], y: A[1], rotulo: 'A', color: 'o', lado: 90 },
-        ...(o.extremos && lo > 0 ? [{ id: 'A0', x: m, y: 0, color: 'h', rotulo: `x = ${lo}`, lado: 90 }] : []),
-        ...(o.extremos ? [{ id: 'A1', x: -m, y: 0, color: 'h', rotulo: `x = ${hi}`, lado: -90 }] : [])],
-      segmentos: [{ de: 'B', a: 'C', texto: String(M), grosor: 'variable', color: 'i' }, { de: 'B', a: 'A', texto: String(m), grosor: 'variable', color: 'o' },
-        { de: 'A', a: 'C', color: 'h', texto: 'x' },
-        ...(o.extremos ? [{ de: 'A1', a: 'C', color: 'h', discontinua: true }] : [])],
-    };
-  };
+  // ---------- Idea 4 (rehecha, 18 nov): desigualdad triangular ----------
+  // Objeto de la primera pantalla: una lámpara de escritorio de brazo articulado, de costado (geo-objeto, lampara; dibujo
+  // de prueba). Cambia: la abertura del codo (de 15° en 15°). · Permanece: los brazos de 40 cm y 25 cm. · Progresa: AC,
+  // de la base a la cabeza. · Se reserva: los dos extremos, cerrado y estirado del todo (la predicción). · Debe verse: en
+  // los extremos, base, codo y cabeza quedan en una recta: no hay triángulo.
+  // Colores: el brazo de abajo (primer lado dado) naranja, el de arriba turquesa, AC en tinta discontinua, el codo en
+  // carmín; en los ejercicios, los lados dados con su medida y lo pedido con «?» o x, en tinta.
+  // Errores (hipótesis, sin medir): GE-DT1 toma la suma como único valor, GE-DT2 olvida el límite de abajo, GE-DT3 cuenta
+  // los extremos (la trampa de San Marcos 2026-I); nuevos (18 nov): GE-DT4 cuenta uno solo de los extremos, GE-DT5
+  // confunde el máximo con el mínimo, GE-DT6 cree que el tercer lado no pasa del mayor, GE-DT7 repite el lado corto en el
+  // isósceles, GE-DT8 suma solo los dos lados dados, GE-DT9 cree que el isósceles admite las dos formas, GE-DT10 suma o
+  // resta solo un par de lados, GE-DT11 en la diagonal usa un solo triángulo, GE-DT12 junta los dos rangos en vez de
+  // cruzarlos, GE-DT13 cree que con el mayor menor que la suma de los otros no alcanza.
+  const VJ4 = { x: [-8.5, 47.5], y: [-5.2, 57] };
+  const acDe = (g, p = 40, q = 25) => Math.sqrt(p * p + q * q - 2 * p * q * Math.cos(g * RAD));
+  // El codo lleva su arco; su abertura se lee en el control (con 105° a 135°, su rótulo tocaba AC).
+  const figJ4 = g => ({ objeto: 'lampara', g, vista: VJ4, angulos: { B: { radio: 14 } }, lados: { CB: { texto: '40 cm' }, BA: { texto: '25 cm', en: 0.38 }, AC: { texto: `≈ ${f(acDe(g), 1)} cm`, en: 0.62 } } });
+  const D_DT = 'Desigualdad triangular: cada lado es menor que la suma de los otros dos y mayor que su diferencia.';
+  const D_DT_TRIO = 'Tres largos forman triángulo si el mayor es menor que la suma de los otros dos.';
+  const D_ISO_L = 'Isósceles: dos de sus tres lados miden igual.';
+  // Tres palitos sueltos, uno debajo de otro, a escala (ejemplos de nivel 1): se ven sus largos, no si se cierran.
+  function palitos(ls) {
+    const M = Math.max(...ls), sp = 0.17 * (M + 1.2), puntos = [], segmentos = [], ladosRot = [];
+    ls.forEach((L, i) => {
+      const y = -sp * i;
+      puntos.push({ id: `p${i}`, x: 0, y }, { id: `q${i}`, x: L, y });
+      segmentos.push({ de: `p${i}`, a: `q${i}`, grosor: 'variable', color: i === 0 ? 'o' : i === 1 ? 'i' : undefined });
+      ladosRot.push({ de: `p${i}`, a: `q${i}`, texto: `${f(L)} cm`, color: i === 0 ? 'o' : i === 1 ? 'i' : undefined, ref: [L / 2, y - 1], dist: 4, en: 0.5 });
+    });
+    return { objeto: 'angulos', ladosRot, figura: { alt: `Palitos sueltos de ${ls.map(f).join(' cm, ')} cm, uno debajo de otro, a escala.`,
+      vista: { x: [-0.6, M + 0.6], y: [-sp * (ls.length - 1) - 0.4 * sp, 0.85 * sp] }, alto: 40 + 46 * ls.length, puntos, segmentos, angulos: [] } };
+  }
+  // Un triángulo con dos lados dados (p y q, en cm) unidos en B con 70°, y el tercero, x, por averiguar.
+  function dosLados(p, q, o = {}) {
+    const A = U.polar([0, 0], p, 70), C = [q, 0];
+    return { objeto: 'angulos', ladosRot: [{ de: 'B', a: 'A', texto: o.tp || `${f(p)} cm`, color: 'o' }, { de: 'B', a: 'C', texto: o.tq || `${f(q)} cm`, color: 'i' }, { de: 'A', a: 'C', texto: o.tx || 'x' }],
+      figura: { alt: o.alt || `Triángulo con dos lados de ${f(p)} cm y ${f(q)} cm; el tercero, x, une sus puntas.`, vista: vistaPs([A, [0, 0], C], 1.4), alto: 230,
+        puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 100, sinPunto: true }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: 210, sinPunto: true }, { id: 'C', x: q, y: 0, rotulo: 'C', lado: -30, sinPunto: true }],
+        segmentos: [{ de: 'B', a: 'A', color: 'o', grosor: 'variable' }, { de: 'B', a: 'C', color: 'i', grosor: 'variable' }, { de: 'A', a: 'C', discontinua: true }], angulos: [] } };
+  }
+  const vistaPs = (ps, m) => { const xs = ps.map(p => p[0]), ys = ps.map(p => p[1]); return { x: [Math.min(...xs) - m, Math.max(...xs) + m], y: [Math.min(...ys) - m, Math.max(...ys) + m] }; };
+  // El cuadrilátero ABCD con su diagonal AC (de largo x0, solo para dibujarlo): ABC abajo de AC y ACD arriba.
+  function cuadri(a, b, c, d, x0) {
+    const A = [0, 0], C = [x0, 0], ang = (p, q, r) => Math.acos((p * p + q * q - r * r) / (2 * p * q)) / RAD;
+    const B = U.polar(A, a, -ang(a, x0, b)), D = U.polar(A, d, ang(d, x0, c));
+    const P = { A, B, C, D }, lab = { A: 180, B: -90, C: 0, D: 90 };
+    return { objeto: 'angulos', ladosRot: [{ de: 'A', a: 'B', texto: `${a} cm` }, { de: 'B', a: 'C', texto: `${b} cm` }, { de: 'C', a: 'D', texto: `${c} cm` }, { de: 'D', a: 'A', texto: `${d} cm` }, { de: 'A', a: 'C', texto: 'x', dist: 4, ref: Math.abs(B[1]) > Math.abs(D[1]) ? 'D' : 'B', en: 0.62 }],
+      figura: { alt: `Cuadrilátero ABCD de lados ${a}, ${b}, ${c} y ${d} cm, con la diagonal AC.`, vista: vistaPs(Object.values(P), 1.5), alto: 250,
+        puntos: Object.entries(P).map(([id, p]) => ({ id, x: p[0], y: p[1], rotulo: id, lado: lab[id], sinPunto: true })),
+        segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'D' }, { de: 'D', a: 'A' }, { de: 'A', a: 'C', discontinua: true }], angulos: [] } };
+  }
+  // Un punto P dentro del triángulo, a distancias PB y PC (en cm) de dos vértices.
+  function puntoDentro() {
+    const B = [0, 0], C = [10.4, 0], P = [4, 3], A = [5.6, 7.2];
+    return { objeto: 'angulos', ladosRot: [{ de: 'P', a: 'B', texto: '5 cm', ref: 'A', dist: 4 }, { de: 'P', a: 'C', texto: '7 cm', ref: 'A', dist: 4 }, { de: 'B', a: 'C', texto: '?', ref: 'A', dist: 6 }],
+      figura: { alt: 'Triángulo ABC con un punto P adentro, unido a B y a C.', vista: vistaPs([A, B, C], 1.1), alto: 240,
+        puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 90, sinPunto: true }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: 210, sinPunto: true }, { id: 'C', x: C[0], y: 0, rotulo: 'C', lado: -30, sinPunto: true }, { id: 'P', x: P[0], y: P[1], rotulo: 'P', lado: 90 }],
+        segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'P', a: 'B', color: 'o' }, { de: 'P', a: 'C', color: 'i' }], angulos: [] } };
+  }
+
+  // Ejemplos resueltos de «Desigualdad triangular». Cuentas rehechas aparte (scratchpad f3-geo/cuentas.js): 3 + 4 = 7 < 8;
+  // 5 + 7 = 12 > 11; 30 − 18 = 12 y 30 + 18 = 48; 4 + 6 = 10, no pasa; 6 + 9 − 1 = 14; 5 < x < 19: 13 enteros; 9, 9 y 4:
+  // 22; 3 < x + 2 < 13, x de 2 a 10: 9; 4 y 10: el tercero de 7 en adelante, 21; 5 < x < 11 y par: 6, 8 y 10; diagonal:
+  // 3 < x < 13 y 3 < x < 15, de 4 a 12: 9; x de 3 a 6: 4; BC < 12: 11; palitos de 2 a 6: 7 tríos; perímetro 20: base 2, 4,
+  // 6 u 8: 4.
+  const EJ4 = [];
+  EJ4.push({ nivel: 1, titulo: '¿Se arma el triángulo?',
+    figura: fig(palitos([8, 4, 3])),
+    enunciado: 'Rosa tiene tres palitos de 3 cm, 4 cm y 8 cm. ¿Puede armar un triángulo juntándolos punta con punta?',
+    datos: [D_DT_TRIO],
+    solucion: [{ texto: 'Comparo el mayor con la suma de los otros dos:', ecuacion: junto('3 + 4 = 7 < 8') }, { texto: 'Los dos cortos no alcanzan a cubrir el largo: no se cierra.' }],
+    respuesta: [dF('No'), ': 3 + 4 no llega a 8'] });
+  EJ4.push({ nivel: 1, titulo: 'Con 5, 7 y 11',
+    figura: fig(palitos([11, 7, 5])),
+    enunciado: '¿Se puede armar un triángulo con palitos de 5 cm, 7 cm y 11 cm?',
+    datos: [D_DT_TRIO],
+    solucion: [{ texto: 'El mayor, 11 cm, frente a la suma de los otros dos:', ecuacion: junto('5 + 7 = 12 > 11') }, { texto: 'Los dos cortos sí alcanzan: el triángulo se cierra.' }],
+    respuesta: [dF('Sí'), ': 5 + 7 pasa de 11'] });
+  EJ4.push({ nivel: 1, titulo: 'Los límites de otra lámpara',
+    figura: fig({ objeto: 'lampara', CB: 30, BA: 18, g: 80, angulos: { B: {} }, lados: { CB: { texto: '30 cm' }, BA: { texto: '18 cm' }, AC: { texto: '?', en: 0.6 } } }),
+    enunciado: 'Una lámpara tiene un brazo de abajo de 30 cm y uno de arriba de 18 cm. ¿Entre qué valores puede estar AC, de la base a la cabeza, si forman triángulo?',
+    datos: [D_DT],
+    solucion: [{ texto: 'AC queda entre la diferencia y la suma de los brazos, sin llegar a ninguna:', ecuacion: junto(['30 − 18 < AC < 30 + 18   →   ', dF('12 cm < AC < 48 cm')]) }],
+    respuesta: ['Entre ', dF('12 cm'), ' y ', dF('48 cm'), ', sin llegar a ellos'] });
+  EJ4.push({ nivel: 1, titulo: 'El caso justo',
+    figura: fig(palitos([10, 6, 4])),
+    enunciado: '¿Se puede armar un triángulo con palitos de 4 cm, 6 cm y 10 cm?',
+    datos: [D_DT_TRIO],
+    solucion: [{ texto: 'La suma de los dos cortos es justo el largo:', ecuacion: junto('4 + 6 = 10') }, { texto: 'Juntos quedan alineados sobre el largo: es un segmento, no un triángulo.' }],
+    respuesta: [dF('No'), ': quedan alineados'] });
+  EJ4.push({ nivel: 1, titulo: 'El mayor valor entero',
+    figura: fig(dosLados(6, 9)),
+    enunciado: 'Dos lados de un triángulo miden 6 cm y 9 cm. Si el tercero, x, mide un número entero de cm, ¿cuál es su mayor valor?',
+    datos: [D_DT],
+    solucion: [{ texto: 'x tiene que ser menor que 6 + 9 = 15. El mayor entero menor que 15:', ecuacion: junto(['x < 15   →   x = ', dF('14 cm')]) }],
+    respuesta: ['x = ', dF('14 cm')] });
+  EJ4.push({ nivel: 2, titulo: '¿Cuántos valores enteros?',
+    figura: fig(dosLados(7, 12)),
+    enunciado: 'Dos lados de un triángulo miden 7 cm y 12 cm. ¿Cuántos valores enteros, en cm, puede tomar el tercer lado x?',
+    datos: [D_DT],
+    solucion: [
+      { texto: 'Los dos límites:', ecuacion: junto('12 − 7 < x < 12 + 7   →   5 < x < 19') },
+      { texto: 'Los enteros van de 6 a 18, sin los bordes:', ecuacion: junto(['18 − 6 + 1 = ', dF('13')]) },
+    ],
+    respuesta: [dF('13'), ' valores'] });
+  EJ4.push({ nivel: 2, titulo: 'Isósceles de 4 y 9',
+    figura: fig(palitos([9, 4])),
+    enunciado: 'Un triángulo isósceles tiene un lado de 4 cm y otro de 9 cm. ¿Cuánto mide su perímetro?',
+    datos: [D_ISO_L, D_DT_TRIO],
+    solucion: [
+      { texto: 'El tercer lado repite a uno de los dos. Con 4, 4 y 9 no se cierra:', ecuacion: junto('4 + 4 = 8 < 9') },
+      { texto: 'Tiene que ser 9, 9 y 4 (9 + 4 > 9):', ecuacion: junto(['9 + 9 + 4 = ', dF('22 cm')]) },
+    ],
+    respuesta: ['Perímetro: ', dF('22 cm')] });
+  EJ4.push({ nivel: 2, titulo: 'Un lado con x',
+    figura: fig(dosLados(5, 8, { tx: '(x + 2) cm', alt: 'Triángulo con lados de 5 cm, 8 cm y x + 2 cm.' })),
+    enunciado: 'Los lados de un triángulo miden 5 cm, 8 cm y (x + 2) cm. ¿Cuántos valores enteros puede tomar x?',
+    datos: [D_DT],
+    solucion: [
+      { texto: 'El lado x + 2 queda entre 8 − 5 y 8 + 5:', ecuacion: [junto('3 < x + 2 < 13'), '   →   ', junto('1 < x < 11')] },
+      { texto: 'Los enteros de 2 a 10:', ecuacion: junto(['10 − 2 + 1 = ', dF('9')]) },
+    ],
+    respuesta: [dF('9'), ' valores'] });
+  EJ4.push({ nivel: 2, titulo: 'El menor perímetro entero',
+    figura: fig(dosLados(4, 10)),
+    enunciado: 'Dos lados de un triángulo miden 4 cm y 10 cm, y el tercero mide un número entero de cm. ¿Cuál es el menor perímetro posible?',
+    datos: [D_DT, 'Perímetro: la suma de los tres lados.'],
+    solucion: [
+      { texto: 'El tercero pasa de 10 − 4 = 6: el menor entero es 7.', ecuacion: junto('6 < x   →   x = 7') },
+      { texto: 'Sumo los tres:', ecuacion: junto(['4 + 10 + 7 = ', dF('21 cm')]) },
+    ],
+    respuesta: ['Perímetro: ', dF('21 cm')] });
+  EJ4.push({ nivel: 2, titulo: 'El tercer lado es par',
+    figura: fig(dosLados(3, 8)),
+    enunciado: 'Dos lados de un triángulo miden 3 cm y 8 cm, y el tercero mide un número par de cm. ¿Cuántos triángulos distintos se pueden armar?',
+    datos: [D_DT],
+    solucion: [
+      { texto: 'Los límites del tercer lado:', ecuacion: junto('8 − 3 < x < 8 + 3   →   5 < x < 11') },
+      { texto: 'Los pares entre 5 y 11 son 6, 8 y 10.' },
+    ],
+    respuesta: [dF('3'), ' triángulos'] });
+  EJ4.push({ nivel: 3, titulo: 'La diagonal del cuadrilátero',
+    figura: fig(cuadri(5, 8, 6, 9, 8)),
+    enunciado: 'En el cuadrilátero ABCD, AB = 5 cm, BC = 8 cm, CD = 6 cm y DA = 9 cm. ¿Cuántos valores enteros puede tomar la diagonal AC?',
+    datos: [D_DT],
+    solucion: [
+      { texto: 'AC es lado de dos triángulos: ABC y ACD.', ecuacion: [junto('ABC: 3 < x < 13'), SEP, junto('ACD: 3 < x < 15')] },
+      { texto: 'Tiene que cumplir los dos a la vez: 3 < x < 13. Los enteros van de 4 a 12:', ecuacion: junto(['12 − 4 + 1 = ', dF('9')]) },
+    ],
+    respuesta: [dF('9'), ' valores'] });
+  EJ4.push({ nivel: 3, titulo: 'Tres lados con x',
+    enunciado: 'Los lados de un triángulo miden x, x + 3 y 10 − x, en cm. ¿Cuántos valores enteros puede tomar x?',
+    datos: [D_DT],
+    solucion: [
+      { texto: 'Cada lado es menor que la suma de los otros dos:', ecuacion: [junto('10 − x < 2x + 3'), SEP, junto('x + 3 < 10'), SEP, junto('x < 13')] },
+      { texto: 'Queda 7/3 < x < 7: los enteros 3, 4, 5 y 6.' },
+    ],
+    respuesta: [dF('4'), ' valores'] });
+  EJ4.push({ nivel: 3, titulo: 'Un punto dentro del triángulo',
+    figura: fig(puntoDentro()),
+    enunciado: 'P está dentro del triángulo ABC, con PB = 5 cm y PC = 7 cm. Si BC mide un número entero de cm, ¿cuál es su mayor valor?',
+    datos: [D_DT],
+    solucion: [
+      { texto: 'B, P y C forman un triángulo: BC es menor que PB + PC.', ecuacion: junto('BC < 5 + 7 = 12') },
+      { texto: 'Con BC = 12, P quedaría sobre BC, no adentro. El mayor entero menor que 12:', ecuacion: junto(['BC = ', dF('11 cm')]) },
+    ],
+    respuesta: ['BC = ', dF('11 cm')] });
+  EJ4.push({ nivel: 3, titulo: 'Cinco palitos',
+    figura: fig(palitos([6, 5, 4, 3, 2])),
+    enunciado: 'Hay cinco palitos de 2, 3, 4, 5 y 6 cm. ¿Cuántos triángulos distintos se arman eligiendo tres de ellos?',
+    datos: [D_DT_TRIO],
+    solucion: [
+      { texto: 'Hay 10 tríos. Con el 2 solo sirven 2, 3, 4; 2, 4, 5; y 2, 5, 6: en los otros, 2 + menor = mayor o no llega.' },
+      { texto: 'Sin el 2 sirven los cuatro: 3, 4, 5; 3, 4, 6; 3, 5, 6 y 4, 5, 6.', ecuacion: junto(['3 + 4 = ', dF('7')]) },
+    ],
+    respuesta: [dF('7'), ' triángulos'] });
+  EJ4.push({ nivel: 3, titulo: 'Isósceles de perímetro 20',
+    enunciado: 'Un triángulo isósceles tiene 20 cm de perímetro y sus lados miden números enteros de cm. ¿Cuántos triángulos distintos hay?',
+    datos: [D_ISO_L, D_DT_TRIO],
+    solucion: [
+      { texto: 'Con lados a, a y una base b: 2a + b = 20, así que b es par.' },
+      { texto: 'La base tiene que ser menor que a + a = 20 − b: b < 10. Sirven b = 2, 4, 6 y 8.', ecuacion: junto('b < 20 − b   →   b < 10') },
+    ],
+    respuesta: [dF('4'), ' triángulos'] });
+
+  // «Ahora tú» de la idea 4: cinco tipos (s % 5).
+  function dos(r) { for (;;) { const p = r.ent(3, 14), q = r.ent(3, 14); if (p !== q && Math.max(p, q) <= 3 * Math.min(p, q)) return [p, q]; } }
+  function casoCuantos(r) {
+    let p, q; do { [p, q] = dos(r); } while (!sirve(dosLados(p, q)));
+    const _ = 0, lo = Math.abs(p - q), hi = p + q, n = hi - lo - 1;
+    return { pregunta: `Dos lados de un triángulo miden ${p} cm y ${q} cm. ¿Cuántos valores enteros, en cm, puede tomar el tercer lado x?`, datos: [D_DT], dibujo: fig(dosLados(p, q)),
+      opciones: opciones(n, [
+        { id: 'bordes', valor: n + 2, error: 'GE-DT3', siFuera: `Contar ${lo} y ${hi} serviría si los extremos dieran triángulo; ahí los puntos quedan alineados.` },
+        { id: 'arriba', valor: hi - 1, error: 'GE-DT2', siFuera: 'El límite de arriba está bien; también hay uno de abajo: la diferencia.' },
+        { id: 'uno', valor: n + 1, error: 'GE-DT4', siFuera: 'Eso incluye uno de los extremos; ninguno de los dos da triángulo.' },
+      ], n => `${f(n, 0)}`),
+      solucion: { texto: `x va de más de ${lo} a menos de ${hi}.`, ecuacion: junto(`${lo} < x < ${hi}   →   ${n} enteros`) } };
+  }
+  function casoMax(r) {
+    let p, q; do { [p, q] = dos(r); } while (!sirve(dosLados(p, q)));
+    const _ = 0, hi = p + q;
+    return { pregunta: `Dos lados de un triángulo miden ${p} cm y ${q} cm. Si el tercero, x, mide un número entero de cm, ¿cuál es su mayor valor?`, datos: [D_DT], dibujo: fig(dosLados(p, q)),
+      opciones: opciones(hi - 1, [
+        { id: 'suma', valor: hi, error: 'GE-DT3', siFuera: `Con ${hi} cm los tres puntos quedan alineados: es un segmento, no un triángulo.` },
+        { id: 'min', valor: Math.abs(p - q) + 1, error: 'GE-DT5', siFuera: 'Ese es el menor entero posible; piden el mayor.' },
+        { id: 'mayor', valor: Math.max(p, q), error: 'GE-DT6', siFuera: 'El tercer lado sí puede pasar al mayor de los otros dos; el tope es su suma.' },
+      ], fmtCm),
+      solucion: { texto: `x < ${p} + ${q} = ${hi}: el mayor entero es uno menos.`, ecuacion: junto(`x = ${hi - 1} cm`) } };
+  }
+  function casoMin(r) {
+    let p, q; do { [p, q] = dos(r); } while (!sirve(dosLados(p, q)));
+    const _ = 0, lo = Math.abs(p - q);
+    return { pregunta: `Dos lados de un triángulo miden ${p} cm y ${q} cm. Si el tercero, x, mide un número entero de cm, ¿cuál es su menor valor?`, datos: [D_DT], dibujo: fig(dosLados(p, q)),
+      opciones: opciones(lo + 1, [
+        { id: 'resta', valor: lo, error: 'GE-DT3', siFuera: `Con ${lo} cm los tres puntos quedan alineados: no hay triángulo.` },
+        { id: 'uno', valor: 1, error: 'GE-DT2', siFuera: 'Cualquier largo positivo no sirve: el tercer lado pasa de la diferencia.' },
+        { id: 'max', valor: p + q - 1, error: 'GE-DT5', siFuera: 'Ese es el mayor entero posible; piden el menor.' },
+      ], fmtCm),
+      solucion: { texto: `x > ${Math.max(p, q)} − ${Math.min(p, q)} = ${lo}: el menor entero es uno más.`, ecuacion: junto(`x = ${lo + 1} cm`) } };
+  }
+  function casoIsoDT(r) {
+    for (;;) {
+      const a = r.ent(2, 7), b = r.ent(2 * a, 2 * a + 7);
+      if (!sirve(palitos([b, a]))) continue;
+      const ops = [
+        { id: 'c', texto: `${2 * b + a} cm`, correcta: true },
+        { id: 'corto', texto: `${2 * a + b} cm`, error: 'GE-DT7', siFuera: `Repetir un lado está bien; pero ${a} + ${a} no alcanza a ${b}: se repite el largo.` },
+        { id: 'dos', texto: `${a + b} cm`, error: 'GE-DT8', siFuera: 'Sumar los lados está bien; el perímetro lleva también el lado que se repite.' },
+        { id: 'ambos', texto: `${2 * a + b} cm o ${2 * b + a} cm`, error: 'GE-DT9', siFuera: `Las dos formas existirían si ${a} + ${a} pasara de ${b}; aquí una no se cierra.` },
+      ];
+      return { pregunta: `Un triángulo isósceles tiene un lado de ${a} cm y otro de ${b} cm. ¿Cuánto mide su perímetro?`, datos: [D_ISO_L, D_DT_TRIO], dibujo: fig(palitos([b, a])), opciones: ops,
+        solucion: { texto: `${a}, ${a} y ${b} no se cierran (${2 * a} ≤ ${b}): son ${b}, ${b} y ${a}.`, ecuacion: junto(`${b} + ${b} + ${a} = ${2 * b + a} cm`) } };
+    }
+  }
+  function casoDiagonal(r) {
+    for (let i = 0; i < 400; i++) {
+      const a = r.ent(3, 10), b = r.ent(3, 12), c = r.ent(3, 10), d = r.ent(3, 12);
+      const lo = Math.max(Math.abs(a - b), Math.abs(c - d)), hi = Math.min(a + b, c + d), n = hi - lo - 1;
+      if (n < 3 || Math.abs(a - b) === Math.abs(c - d) || a + b === c + d) continue;
+      const n1 = a + b - Math.abs(a - b) - 1, n2 = Math.max(a + b, c + d) - Math.min(Math.abs(a - b), Math.abs(c - d)) - 1;
+      const ops = opciones(n, [
+        { id: 'uno', valor: n1 === n ? c + d - Math.abs(c - d) - 1 : n1, error: 'GE-DT11', siFuera: 'Ese conteo vale para un solo triángulo; AC también es lado del otro.' },
+        { id: 'union', valor: n2, error: 'GE-DT12', siFuera: 'Juntar los dos rangos no basta: AC tiene que cumplir los dos a la vez.' },
+        { id: 'bordes', valor: n + 2, error: 'GE-DT3', siFuera: `En ${lo} o en ${hi} uno de los triángulos se aplasta: los bordes no cuentan.` },
+      ], v => `${f(v, 0)}`);
+      if (ops.length < 4 || !sirve(cuadri(a, b, c, d, (lo + hi) / 2))) continue;
+      return { pregunta: `En el cuadrilátero ABCD, AB = ${a} cm, BC = ${b} cm, CD = ${c} cm y DA = ${d} cm. ¿Cuántos valores enteros puede tomar la diagonal AC?`,
+        datos: [D_DT], dibujo: fig(cuadri(a, b, c, d, (lo + hi) / 2)), opciones: ops,
+        solucion: { texto: 'AC cumple a la vez los límites de ABC y de ACD.', ecuacion: junto(`${lo} < AC < ${hi}   →   ${n} enteros`) } };
+    }
+    throw new Error('casoDiagonal');
+  }
+
   const desigualdad = {
     id: 'desigualdad',
-    titulo: 'El tercer lado tiene límites',
+    titulo: 'Desigualdad triangular',
+    pregunta: '¿Con qué tres largos se puede armar un triángulo?',
     temas: ['Desigualdad triangular'],
-    pieza: 'geo-figura',
-    // Lee (fase 2): contexto y qué mirar. No da los límites ni dice qué pasa en ellos: eso es la predicción.
+    pieza: GO,
+    aprendizaje: 'Cada lado es menor que la suma de los otros dos y mayor que su diferencia; en los extremos no hay triángulo, solo un segmento.',
+    actividad: 'Abrir y cerrar el codo de una lámpara y ver cuánto se aleja su cabeza.',
+    // Lee: la lámpara y sus partes, y los palitos. No dice entre qué valores queda AC ni qué pasa en los extremos (eso es
+    // la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Tres palitos', texto: 'Corta tres palitos de distinto largo y trata de armar un triángulo con ellos, punta con punta. Con algunos tríos la figura se cierra y con otros no. El juego te deja ver por qué.' },
-        { titulo: 'La bisagra', texto: 'En el juego, los lados de 5 y 8 se unen en B, como las dos hojas de una bisagra. Al abrir el ángulo en B, cambia la distancia entre las puntas: ese es el tercer lado, x.' },
-        { titulo: 'Qué mirar', texto: 'Abre y cierra la bisagra hasta los topes. Anota el x más corto y el más largo que ves, y fíjate en la forma de la figura cerca de esos topes.' },
+        { titulo: 'La lámpara de escritorio', texto: 'La lámpara tiene dos brazos unidos en un codo: el de abajo, CB, mide 40 cm, y el de arriba, BA, 25 cm. C es la base, B el codo y A la cabeza. AC, de la base a la cabeza, es el tercer lado.',
+          pieza: GO, dibujo: fig({ objeto: 'lampara', g: 90, angulos: { B: {} }, lados: { CB: { texto: '40 cm' }, BA: { texto: '25 cm' } } }) },
+        { titulo: 'Tres palitos', texto: 'Con tres palitos puestos punta con punta se puede armar un triángulo. Con algunos tríos la figura se cierra y con otros no. El juego te deja ver por qué.',
+          pieza: GO, dibujo: fig(palitos([7, 5, 4])) },
+        { titulo: 'Qué mirar al jugar', texto: 'Abre y cierra el codo hasta los topes. Fíjate cuánto mide AC cuando el codo está casi cerrado y cuando está casi estirado.' },
       ],
     },
+    ejemplos: EJ4,
     juega: {
-      consigna: 'Dos lados de 5 y 8 giran en B como bisagra. Abre y cierra el ángulo y mira cómo cambia el tercer lado x.',
-      voz: 'Abre y cierra la bisagra. Fíjate en el x más corto y el más largo.',
-      controles: [{ id: 'g', etiqueta: 'Ángulo en B', min: 15, max: 165, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
-      dibujo: v => ({ datos: bisagra(v.g), estado: {} }),
-      // Se agarra la punta A del lado de 5: gira alrededor de B, como la bisagra.
-      arrastres: [{ id: 'punta-a', etiqueta: 'punta A de la bisagra', color: 'c-o',
-        donde: v => enPantalla(bisagra(v.g), U.polar([0, 0], 5, v.g)),
-        mover: (pt, v) => { const q = alPlano(bisagra(v.g), pt); return { g: U.grados(Math.atan2(q[1], q[0])) }; } }],
-      lectura: v => [{ v: 'c-h', t: 'x' }, ` ≈ ${f(U.dist(U.polar([0, 0], 5, v.g), [8, 0]))}`],
+      pieza: GO,
+      consigna: 'Los brazos de la lámpara miden 40 cm y 25 cm. La base C queda quieta; abres o cierras el codo B.',
+      mision: { texto: 'Estira el codo hasta que la cabeza quede a más de 62 cm de la base.', logrado: v => acDe(v.g) > 62, bien: 'Listo: 62,9 cm. Se acerca a 40 + 25 = 65 cm, pero no llega.' },
+      voz: 'Abre y cierra el codo. ¿Cuánto puede alejarse la cabeza?',
+      leyenda: [
+        { s: 'C, B, A', t: 'la base, el codo y la cabeza' },
+        { s: dO('CB'), t: 'el brazo de abajo, de 40 cm' },
+        { s: dI('BA'), t: 'el brazo de arriba, de 25 cm' },
+        { s: 'AC', t: 'de la base a la cabeza' },
+        { s: dH('m∠B'), t: 'la abertura del codo' },
+      ],
+      controles: [{ id: 'g', etiqueta: 'm∠B, la abertura del codo', min: 45, max: 150, paso: 15, inicio: 90, unidad: '°', decimales: 0, color: 'c-h' }],
+      dibujo: v => ({ datos: figJ4(v.g), estado: {} }),
+      // Gesto directo: se agarra la cabeza A; gira alrededor del codo B.
+      arrastres: [{ id: 'cabeza-a', etiqueta: 'cabeza A de la lámpara: abre o cierra el codo', color: 'c-i',
+        donde: v => PO.aPantalla(figJ4(v.g), U.polar(U.polar([0, 0], 40, 65), 25, 245 + v.g)),
+        mover: (pt, v) => { const q = PO.aPlano(figJ4(v.g), pt), B = U.polar([0, 0], 40, 65); let a = U.grados(Math.atan2(q[1] - B[1], q[0] - B[0])) - 245; a = ((a % 360) + 360) % 360; return { g: a > 270 ? 0 : Math.min(a, 180) }; } }],
+      lectura: v => [junto('AC ≈ '), `${f(acDe(v.g), 1)} cm`, junto(', menos que 40 + 25 = 65 cm')],
       minimo: 4,
     },
     predice: {
-      pregunta: 'Si la bisagra pudiera cerrarse del todo o abrirse del todo, ¿entre qué valores puede estar x para que haya triángulo?',
+      pregunta: 'Imagina que el codo de la lámpara pudiera cerrarse del todo y estirarse del todo. ¿Entre qué valores puede estar AC para que base, codo y cabeza formen un triángulo?',
+      datos: ['CB = 40 cm', 'BA = 25 cm'],
       voz: 'Imagina los dos extremos. ¿Queda un triángulo ahí?',
       opciones: [
-        { id: 'c', texto: 'Entre 3 y 13, sin llegar a ninguno', correcta: true },
-        { id: 'cerrado', texto: 'De 3 a 13, incluidos', error: 'GE-DT3', siFuera: 'En 3 y en 13 los lados sí existen, pero quedan sobre una recta: es un segmento, no un triángulo.' },
-        { id: 'solo-sup', texto: 'Cualquier valor menor que 13', error: 'GE-DT2', siFuera: 'El límite de 13 está bien. Si x es muy chico, 5 y x no alcanzan a cubrir 8.' },
-        { id: 'suma', texto: 'Solo 13', error: 'GE-DT1', siFuera: 'Sumar 5 + 8 da el límite de arriba. x puede tomar todo un rango.' },
+        { id: 'c', texto: 'Entre 15 cm y 65 cm, sin llegar a ninguno', correcta: true },
+        { id: 'cerrado', texto: 'De 15 cm a 65 cm, los dos incluidos', error: 'GE-DT3', siFuera: 'En 15 y en 65 los brazos sí existen, pero quedan en una recta: es un segmento.' },
+        { id: 'arriba', texto: 'Cualquier valor menor que 65 cm', error: 'GE-DT2', siFuera: 'El tope de 65 cm está bien; pero AC tampoco baja de 40 − 25 = 15 cm.' },
+        { id: 'suma', texto: 'Solo 65 cm', error: 'GE-DT1', siFuera: 'Sumar 40 + 25 da el tope de arriba; AC puede tomar todo un rango.' },
       ],
-      dibujo: { datos: bisagra(60, { sinX: true }), estado: {} },
-      revelar: { datos: bisagra(60, { extremos: [0, 0], sinX: true, alt: 'Cerrada, x mide 3; abierta del todo, 13: en ambos casos los lados quedan en una recta' }), estado: {} },
-      coincide: 'Coincide: 8 − 5 < x < 8 + 5. En los extremos el triángulo se aplasta.',
+      dibujo: fig({ objeto: 'lampara', g: 90, angulos: { B: {} }, lados: { CB: { texto: '40 cm' }, BA: { texto: '25 cm' }, AC: { texto: '?', en: 0.6 } } }),
+      revelar: fig({ objeto: 'lampara', g: 90, ac: false, angulos: { B: {} }, lados: { CB: { texto: '40 cm', en: 0.78 }, BA: { texto: '25 cm' } }, extremos: 0, textoExtremos: ['15 cm', '65 cm'] }),
+      coincide: 'Coincide: 40 − 25 < AC < 40 + 25. En los extremos, base, codo y cabeza quedan en una recta: no hay triángulo.',
+      noCoincide: 'Revisemos: cerrado del todo, AC = 15 cm; estirado del todo, 65 cm. En los dos, un segmento sin triángulo.',
     },
     mira: {
-      datos: bisagra(60, { extremos: [1, 2], sinX: true, alt: 'La bisagra cerrada da x = 3 y abierta da x = 13; entre ambos hay triángulo' }),
+      pieza: GO,
+      datos: { objeto: 'lampara', g: 90, ac: false, angulos: { B: {} }, lados: { CB: { texto: '40 cm', en: 0.78 }, BA: { texto: '25 cm' } }, extremos: 1, textoExtremos: ['15 cm', '65 cm'] },
       voz: 'Mira los dos extremos: ahí el triángulo desaparece.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cerrada del todo, A cae sobre BC: x = 8 − 5.', ecuacion: [{ v: 'c-h', t: 'x' }, ' = 3: segmento, sin triángulo'] },
-        { estado: { corte: 2 }, texto: 'Abierta del todo, A queda al otro lado: x = 8 + 5.', ecuacion: [{ v: 'c-h', t: 'x' }, ' = 13: otro segmento'] },
-        { estado: { corte: 2 }, texto: 'Cualquier abertura intermedia da triángulo.', ecuacion: ['8 − 5 < ', { v: 'c-h', t: 'x' }, ' < 8 + 5'] },
+        { estado: { corte: 0 }, texto: 'La lámpara del juego, con el codo abierto a 90°.', ecuacion: junto(['CB = ', dO('40 cm'), ', BA = ', dI('25 cm')]) },
+        { estado: { corte: 1 }, texto: 'Cerrado del todo, A cae sobre el brazo CB.', ecuacion: junto('AC = 40 − 25 = 15 cm: un segmento') },
+        { estado: { corte: 1 }, texto: 'Estirado del todo, A sigue la recta de CB.', ecuacion: junto('AC = 40 + 25 = 65 cm: otro segmento') },
+        { estado: { corte: 1 }, texto: 'Ir de C a A por el codo es más largo que ir directo.', ecuacion: junto('AC < CB + BA') },
+        { estado: { corte: 1 }, texto: 'Toda abertura entre los dos extremos deja un triángulo de verdad.', ecuacion: junto('40 − 25 < AC < 40 + 25') },
       ],
     },
     regla: {
-      texto: 'Cada lado de un triángulo es menor que la suma de los otros dos y mayor que su diferencia.',
-      ecuacion: [{ llave: [{ abs: ['a − b'] }], nota: 'la diferencia', color: 'c-i' }, ' < ', { v: 'c-h', t: 'x' }, ' < ', { llave: ['a + b'], nota: 'la suma', color: 'c-o' }],
-      condicion: 'las desigualdades son estrictas: con igualdad, los tres puntos quedan alineados y no hay triángulo.',
+      texto: 'Cada lado de un triángulo es menor que la suma de los otros dos y mayor que su diferencia. En los extremos, los tres puntos quedan alineados: no hay triángulo.',
+      ecuacion: [{ llave: [dO('CB'), ' − ', dI('BA')], nota: 'la diferencia' }, junto(' < AC < '), { llave: [dO('CB'), ' + ', dI('BA')], nota: 'la suma' }],
+      condicion: 'las desigualdades son estrictas. Para tres largos, basta que el mayor sea menor que la suma de los otros dos.',
       voz: 'Los extremos no cuentan: ahí la figura es un segmento.',
     },
-    // Así se resuelve (fase 2): el conteo de enteros de «Ahora tú», con otras semillas y la bisagra de esos lados.
+    // Así se resuelve: ¿forman triángulo tres largos?, o el mayor perímetro entero. «Ahora tú» pide el conteo, el máximo,
+    // el mínimo, el isósceles y la diagonal.
     resuelve: {
+      pieza: GO,
       generar(s) {
-        const r = azar(s + 900), p = r.ent(3, 12), q = r.ent(3, 12);
-        const lo = Math.abs(p - q), hi = p + q, n = hi - lo - 1, m = Math.min(p, q), M = Math.max(p, q);
-        const x = { v: 'c-h', t: 'x' };
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          let a, b, c;
+          do { a = r.ent(2, 9); b = r.ent(a + 1, 12); c = r.ent(b + 1, 20); } while (c === a + b);
+          const si = a + b > c;
+          return {
+            enunciado: `¿Se puede armar un triángulo con palitos de ${a} cm, ${b} cm y ${c} cm?`,
+            datos: [D_DT_TRIO], dibujo: fig(palitos([c, b, a])),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden si los tres palitos se cierran en un triángulo.' },
+              { tipo: 'datos', texto: `Los largos son ${a}, ${b} y ${c} cm; el mayor es ${c} cm.` },
+              { tipo: 'regla', texto: 'Basta comparar el mayor con la suma de los otros dos: si la suma pasa al mayor, se cierra.' },
+              { tipo: 'cuentas', texto: 'Sumo los dos cortos y comparo.', ecuacion: junto(`${a} + ${b} = ${a + b} ${si ? '>' : '<'} ${c}`) },
+              { tipo: 'sentido', texto: si ? `Los otros dos casos también valen: ${a} + ${c} > ${b} y ${b} + ${c} > ${a}. Con el mayor alcanza.` : `Por más que los gires, ${a} y ${b} juntos no cubren ${c} cm.` },
+            ],
+            respuesta: si ? [dF('Sí'), ' se puede'] : [dF('No'), ' se puede'],
+          };
+        }
+        const [p, q] = dos(r), x = p + q - 1;
         return {
-          enunciado: [`Dos lados de un triángulo miden ${p} y ${q}. ¿Cuántos valores enteros puede tomar el tercer lado `, x, '?'],
-          dibujo: { datos: bisagraPQ(m, M), estado: {} },
+          enunciado: `Dos lados de un triángulo miden ${p} cm y ${q} cm, y el tercero mide un número entero de cm. ¿Cuál es el mayor perímetro posible?`,
+          datos: [D_DT, 'Perímetro: la suma de los tres lados.'], dibujo: fig(dosLados(p, q)),
           pasos: [
-            { tipo: 'pide', texto: ['Piden cuántos números enteros puede valer el tercer lado ', x, '.'] },
-            { tipo: 'datos', texto: `Los otros dos lados miden ${p} y ${q}. El ángulo entre ellos no lo dan: puede ser cualquiera.` },
-            { tipo: 'regla', texto: ['El tercer lado es más largo que la resta de los otros dos y más corto que su suma. Los bordes no valen.'],
-              ecuacion: [{ abs: ['a − b'] }, ' < ', x, ' < a + b'] },
-            { tipo: 'cuentas', texto: 'Calculo los dos bordes y cuento los enteros que quedan entre ellos, sin los bordes.',
-              ecuacion: [`${lo} < `, x, ` < ${hi}   →   de ${lo + 1} a ${hi - 1}: ${n} enteros`], dibujo: { datos: bisagraPQ(m, M, { extremos: true }), estado: {} } },
-            { tipo: 'sentido', texto: `Si x valiera ${hi}, el triángulo se aplastaría en un segmento: ${p} + ${q} = ${hi}. Por eso ${hi} no entra${lo > 0 ? `, ni ${lo}` : ''}.` },
+            { tipo: 'pide', texto: 'Piden el mayor perímetro: hay que hacer el tercer lado lo más largo posible.' },
+            { tipo: 'datos', texto: `Dos lados de ${p} cm y ${q} cm; el tercero, x, entero.` },
+            { tipo: 'regla', texto: 'El tercer lado es menor que la suma de los otros dos; el borde no cuenta.', ecuacion: junto(`x < ${p} + ${q} = ${p + q}`) },
+            { tipo: 'cuentas', texto: `El mayor entero menor que ${p + q} es ${x}.`, ecuacion: junto(['perímetro = ', `${p} + ${q} + ${x} = `, dF(`${p + q + x} cm`)]) },
+            { tipo: 'sentido', texto: `Con x = ${p + q} el perímetro sería mayor, pero los tres puntos quedarían alineados.` },
           ],
-          respuesta: [x, ` puede tomar ${n} valores enteros.`],
+          respuesta: ['Perímetro: ', dF(`${p + q + x} cm`)],
         };
       },
     },
     ahoraTu: {
-      voz: 'Primero los dos límites; después cuenta los enteros entre ellos.',
-      generar(s) {
-        const r = azar(s), p = r.ent(3, 12), q = r.ent(3, 12);
-        const lo = Math.abs(p - q), hi = p + q, n = hi - lo - 1;
-        return {
-          pregunta: [`Dos lados de un triángulo miden ${p} y ${q}. ¿Cuántos valores enteros puede tomar el tercer lado `, { v: 'c-h', t: 'x' }, '?'],
-          opciones: opciones(n, [
-            { id: 'cerrado', valor: n + 2, error: 'GE-DT3', siFuera: `Contar ${lo} y ${hi} sería cierto si los extremos dieran triángulo; ahí los puntos quedan alineados.` },
-            { id: 'solo-sup', valor: hi - 1, error: 'GE-DT2', siFuera: 'El límite de arriba está bien; también hay uno de abajo: la diferencia.' },
-            { id: 'uno', valor: n + 1, error: 'GE-DT3', siFuera: 'Eso incluye uno de los extremos; ninguno de los dos da triángulo.' },
-          ], n => `${f(n, 0)}`),
-          solucion: { texto: `x va de más de ${lo} a menos de ${hi}.`, ecuacion: [`${lo} < `, { v: 'c-h', t: 'x' }, ` < ${hi} → ${n} enteros`] },
-        };
-      },
+      pieza: GO,
+      voz: 'Primero los dos límites; después mira qué piden.',
+      generar(s) { return conCuatro([casoCuantos, casoMax, casoMin, casoIsoDT, casoDiagonal][s % 5], azar(s + 7)); },
     },
   };
 
-  // ---------- Idea 5 (antes 3, sin rehacer): altura, mediana, bisectriz y mediatriz ----------
-  // Cambia: la posición de A sobre BC · Permanece: la base BC · Progresa: dónde caen los pies de las tres cevianas ·
-  // Se reserva: el obtusángulo (altura fuera) · Debe verse: cada línea se define por su condición, no por su aspecto.
-  const notables = (ax, ay, o = {}) => {
-    const A = [ax, ay], B = [0, 0], C = [6, 0];
-    const H = [ax, 0], M = [3, 0];
-    const c = U.dist(A, B), b = U.dist(A, C), D = [6 * c / (b + c), 0];
-    const ve = o.ver || { h: 1, m: 1, b: 1 };
-    const pasos = o.pasos || {};
-    const P = [];
-    if (ax < 0) P.push({ id: 'Bx', x: ax - 0.6, y: 0, sinPunto: true });
-    return {
-      alt: o.alt || `Desde A salen la altura (pie en x = ${f(ax)}), la mediana (al punto medio) y la bisectriz${ax < 0 ? '; la altura cae fuera, en la prolongación de CB' : ''}`,
-      vista: { x: [-3, 7], y: [-1, 4.6] },
-      puntos: [{ id: 'A', x: ax, y: ay, rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: ax < 0 ? -60 : -120 }, { id: 'C', x: 6, y: 0, rotulo: 'C', lado: -60 },
-        { id: 'H', x: H[0], y: 0, rotulo: ve.h ? 'H' : undefined, sinPunto: !ve.h, color: 'h', lado: -90, desde: pasos.h || 0 },
-        { id: 'M', x: 3, y: 0, rotulo: ve.m ? 'M' : undefined, sinPunto: !ve.m, color: 'i', lado: -90, desde: pasos.m || 0 },
-        { id: 'D', x: D[0], y: 0, rotulo: ve.b ? 'D' : undefined, sinPunto: !ve.b, color: 'o', lado: -90, desde: pasos.b || 0 },
-        { id: 'Mz', x: 3, y: 4.2, sinPunto: true }, ...P],
-      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.06 }],
-      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C', marcas: 0 }, { de: 'C', a: 'A' },
-        ...(ax < 0 && ve.h ? [{ de: 'B', a: 'H', discontinua: true, grosor: 'fino', desde: pasos.h || 0 }] : []),
-        ...(ve.h ? [{ de: 'A', a: 'H', color: 'h', grosor: 'variable', desde: pasos.h || 0 }] : []),
-        ...(ve.m ? [{ de: 'A', a: 'M', color: 'i', grosor: 'variable', desde: pasos.m || 0 }, { de: 'B', a: 'M', marcas: 1, color: 'i', desde: pasos.m || 0 }, { de: 'M', a: 'C', marcas: 1, color: 'i', desde: pasos.m || 0 }] : []),
-        ...(ve.b ? [{ de: 'A', a: 'D', color: 'o', grosor: 'variable', desde: pasos.b || 0 }] : []),
-        ...(ve.z ? [{ de: 'M', a: 'Mz', color: 'd', discontinua: true, desde: pasos.z || 0 }] : [])],
-      angulos: [
-        ...(ve.h ? [{ en: 'H', de: ax < 0 ? 'C' : 'C', a: 'A', color: 'h', desde: pasos.h || 0 }] : []),
-        ...(ve.b ? [{ en: 'A', de: 'B', a: 'D', color: 'o', rayita: 1, radio: 30, desde: pasos.b || 0 }, { en: 'A', de: 'D', a: 'C', color: 'o', rayita: 1, radio: 30, desde: pasos.b || 0 }] : []),
-        ...(ve.z ? [{ en: 'M', de: 'C', a: 'Mz', color: 'd', desde: pasos.z || 0 }] : []),
-      ],
-    };
+  // ---------- Idea 5 (rehecha, 18 nov): líneas notables ----------
+  // Objeto de la primera pantalla: un caserío junto a una carretera recta con dos paraderos (geo-objeto, caserio; dibujo
+  // de prueba). Cambia: dónde queda el caserío, en paralelo a la carretera (de 0,5 km en 0,5 km). · Permanece: los
+  // paraderos B y C, a 6 km. · Progresa: los pies H, F y M de los tres caminos. · Se reserva: el caserío más allá de B, con
+  // el ángulo B obtuso (la predicción). · Debe verse: las tres líneas se juntan solo cuando AB = AC.
+  // Colores: altura naranja con su cuadradito, mediana turquesa con la rayita de sus dos mitades sobre llaves, bisectriz
+  // carmín con sus dos arcos, mediatriz en tinta discontinua (solo como definición). En los ejercicios, la línea que hay
+  // que reconocer, y toda ceviana, va en tinta: se lee por su marca, no por su color; lo dado en carmín.
+  // Errores: GE7 (la altura siempre cae dentro o es un lado) y GE8 (altura, mediana y bisectriz son la misma línea) tienen
+  // datos (docs/investigacion/geometria-ideas-erroneas.md); GE7 se parte en GE7-a (dentro, inclinada) y GE7-b (un lado
+  // como altura). Hipótesis nuevas (18 nov): GE-LN1 llama altura a cualquier línea que baja de un vértice, GE-LN2 llama
+  // bisectriz a cualquier línea que sale de un vértice, GE-LN3 llama mediatriz a la que forma 90° aunque salga de un
+  // vértice, GE-LN4 cree que en un rectángulo o un acutángulo la altura cae fuera, GE-LN5 copia el ángulo B en ∠BAH,
+  // GE-LN6 da ∠ABH (el suplemento) en vez de ∠BAH, GE-LN7 parte el ángulo en dos como si fuera bisectriz, GE-LN8 usa el
+  // ángulo A entero y no su mitad, GE-LN9 da el ángulo del otro lado del pie (∠AFB), GE-LN10 cree que la bisectriz forma
+  // 90° con el lado, GE-LN11 no divide entre dos la diferencia de B y C, GE-LN12 promedia B y C, GE-LN13 se queda en ∠BAH.
+  const AY5 = 3.6, VJ5 = { x: [-3.1, 7.6], y: [-1.95, 5.0] };
+  const LIN5 = { h: { color: 'o' }, m: { color: 'i' }, b: { color: 'h' } };
+  const figJ5 = ax => ({ objeto: 'caserio', ax, ay: AY5, lineas: LIN5, vista: VJ5, manija: 'A' });
+  const NOM5 = { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' };
+  // La figura de examen de un triángulo de base BC = 6 con ángulos b y c, con cevianas desde A (caserío sin carretera).
+  // La vista va justa al triángulo (y al pie de la altura, si cae fuera); más abajo si hay llaves o medidas bajo BC.
+  const vistaCev = (A, abajo) => { const xs = [A[0], 0, 6]; return { x: [Math.min(...xs) - 0.6, Math.max(...xs) + 0.6], y: [abajo ? -2.5 : -1.0, A[1] + 0.75] }; };
+  const CEV = (b, c, o = {}) => { const { A } = vert(b, c); return Object.assign({ objeto: 'caserio', examen: true, ax: A[0], ay: A[1], vista: vistaCev(A, o.ladosRot || (o.lineas && (o.lineas.m || o.lineas.z))) }, o); };
+  const D_ALT = 'Altura: va del vértice a la recta del lado opuesto y forma 90° con ella.';
+  const D_MED = 'Mediana: va del vértice al punto medio del lado opuesto.';
+  const D_BIS = 'Bisectriz: parte el ángulo del vértice en dos ángulos iguales.';
+  const D_MZ = 'Mediatriz de un segmento: la recta perpendicular a él que pasa por su punto medio.';
+  const D_MARCAS = 'Marcas: cuadradito = 90°; rayitas iguales = tramos iguales; arcos iguales = ángulos iguales.';
+
+  // Ejemplos resueltos de «Líneas notables». Cuentas rehechas aparte (scratchpad f3-geo/cuentas.js): 6 ÷ 2 = 3; 70 ÷ 2 =
+  // 35; 180 − 90 − 52 = 38; 6 ÷ 2 = 3; 3x − 1 = x + 7, x = 4, BC = 22; 2x + 5 = 3x − 10, x = 15, 70; 180 − 120 = 60,
+  // 90 − 60 = 30; B = C = 50, A = 80; A = 80, BAF = 40, AFC = 60 + 40 = 100; A = 70, BAF = 35, BAH = 10, HAF = 25;
+  // A = 40, ABF = 35, BFC = 75; (3x + 5 − x − 5) ÷ 2 = 25, x = 25, A = 180 − 80 − 30 = 70; B = 80 > C = 40: H, F y M desde
+  // B; ABH = 180 − 3x, 90 + 180 − 3x + x = 180, x = 45, B = 135.
+  const EJ5 = [];
+  EJ5.push({ nivel: 1, titulo: '¿Qué camino es?',
+    figura: fig({ objeto: 'caserio', ax: 4.2, ay: 3.4, lineas: { h: {} } }),
+    enunciado: 'Del caserío A sale un camino recto hasta la carretera BC. En su pie lleva un cuadradito. ¿Qué línea notable es ese camino?',
+    datos: [D_MARCAS, D_ALT, D_MED, D_BIS],
+    solucion: [{ texto: 'El cuadradito dice que el camino llega formando 90° con la carretera. Esa es la condición de la altura.' }],
+    respuesta: ['Es la ', dF('altura')] });
+  EJ5.push({ nivel: 1, titulo: 'Al punto medio',
+    figura: fig({ objeto: 'caserio', ax: 1.6, ay: 3.4, lineas: { m: {} } }),
+    enunciado: 'Los paraderos B y C están a 6 km uno del otro. El camino AM del caserío es la mediana. ¿A qué distancia de B está M?',
+    datos: [D_MED],
+    solucion: [{ texto: 'La mediana llega al punto medio: parte el tramo BC en dos mitades iguales.', ecuacion: junto(['BM = 6 ÷ 2 = ', dF('3 km')]) }],
+    respuesta: ['BM = ', dF('3 km')] });
+  EJ5.push({ nivel: 1, titulo: 'Partir el ángulo',
+    figura: fig(CEV(60, 50, { angulos: { A: t('70°', 'h', { radio: 46 }) }, lineas: { b: {} } })),
+    enunciado: 'En el triángulo ABC, m∠BAC = 70° y AF es la bisectriz del ángulo A. ¿Cuánto mide el ángulo BAF?',
+    datos: [D_BIS],
+    solucion: [{ texto: 'La bisectriz deja dos ángulos iguales: cada uno es la mitad.', ecuacion: junto(['m∠BAF = 70° ÷ 2 = ', dF('35°')]) }],
+    respuesta: ['m∠BAF = ', dF('35°')] });
+  EJ5.push({ nivel: 1, titulo: 'La altura y un ángulo',
+    figura: fig(CEV(52, 60, { angulos: { B: t('52°') }, lineas: { h: {} }, masAngulos: [{ en: 'A', de: 'B', a: 'H', texto: '?', radio: 30, holgura: 6, mide: 38 }] })),
+    enunciado: 'En el triángulo ABC, AH es la altura y m∠B = 52°. ¿Cuánto mide el ángulo BAH?',
+    datos: [D_ALT, D_SUMA_O],
+    solucion: [{ texto: 'El triángulo ABH tiene un ángulo de 90° en H. A 180° le quito 90° y 52°:', ecuacion: junto(['m∠BAH = 180° − 90° − 52° = ', dF('38°')]) }],
+    respuesta: ['m∠BAH = ', dF('38°')] });
+  EJ5.push({ nivel: 1, titulo: 'Donde corta la mediatriz',
+    figura: fig({ objeto: 'caserio', examen: true, ax: 1.1, ay: 3.2, lineas: { z: {} }, letras: { M: 'P' } }),
+    enunciado: 'En el triángulo ABC, el lado BC mide 6 cm. La mediatriz de BC corta a BC en el punto P. ¿A qué distancia de B está P?',
+    datos: [D_MZ],
+    solucion: [{ texto: 'La mediatriz pasa por el punto medio de BC: P lo parte en dos mitades iguales.', ecuacion: junto(['BP = 6 ÷ 2 = ', dF('3 cm')]) }],
+    respuesta: ['BP = ', dF('3 cm')] });
+  EJ5.push({ nivel: 2, titulo: 'Mediana con x',
+    figura: fig(CEV(55, 65, { lineas: { m: {} }, ladosRot: [{ de: 'B', a: 'M', texto: '3x − 1', ref: 'A', dist: 48 }, { de: 'M', a: 'C', texto: 'x + 7', ref: 'A', dist: 48 }] })),
+    enunciado: 'En el triángulo ABC, AM es la mediana del lado BC. BM = (3x − 1) cm y MC = (x + 7) cm. ¿Cuánto mide BC?',
+    datos: [D_MED],
+    solucion: [
+      { texto: 'M es el punto medio: las dos mitades son iguales.', ecuacion: [junto('3x − 1 = x + 7'), '   →   ', junto('2x = 8'), '   →   ', junto('x = 4')] },
+      { texto: 'Cada mitad mide 11 cm:', ecuacion: junto(['BC = 2 · 11 = ', dF('22 cm')]) },
+    ],
+    respuesta: ['BC = ', dF('22 cm')] });
+  EJ5.push({ nivel: 2, titulo: 'Bisectriz con x',
+    figura: fig(CEV(50, 60, { lineas: { b: { arcos: 'h' } } })),
+    enunciado: 'En el triángulo ABC, AF es la bisectriz del ángulo A. m∠BAF = 2x + 5° y m∠FAC = 3x − 10°. ¿Cuánto mide el ángulo BAC?',
+    datos: [D_BIS],
+    solucion: [
+      { texto: 'Las dos mitades son iguales:', ecuacion: [junto('2x + 5° = 3x − 10°'), '   →   ', junto('x = 15')] },
+      { texto: 'Cada mitad mide 35°; el ángulo entero, el doble:', ecuacion: junto(['m∠BAC = 2 · 35° = ', dF('70°')]) },
+    ],
+    respuesta: ['m∠BAC = ', dF('70°')] });
+  EJ5.push({ nivel: 2, titulo: 'La altura que cae fuera',
+    figura: fig(CEV(120, 25, { angulos: { B: t('120°', 'h', { radio: 14 }) }, lineas: { h: {} }, masAngulos: [{ en: 'A', de: 'H', a: 'B', texto: '?', radio: 40, holgura: 6, mide: 30 }] })),
+    enunciado: 'En el triángulo ABC, m∠B = 120°. La altura desde A cae en H, en la prolongación de CB. ¿Cuánto mide el ángulo BAH?',
+    datos: [D_ALT, D_ADY, D_SUMA_O],
+    solucion: [
+      { texto: 'En la recta CH, el ángulo ABH es vecino del de 120°:', ecuacion: junto('m∠ABH = 180° − 120° = 60°') },
+      { texto: 'En el triángulo ABH, con 90° en H:', ecuacion: junto(['m∠BAH = 180° − 90° − 60° = ', dF('30°')]) },
+    ],
+    respuesta: ['m∠BAH = ', dF('30°')] });
+  EJ5.push({ nivel: 2, titulo: 'Altura y bisectriz a la vez',
+    figura: fig(CEV(50, 50, { angulos: { B: t('50°') }, lineas: { h: {}, b: {} } })),
+    enunciado: 'En el triángulo ABC, la altura desde A también es la bisectriz del ángulo A. Si m∠B = 50°, ¿cuánto mide el ángulo BAC?',
+    datos: [D_ALT, D_BIS, D_SUMA_O],
+    solucion: [
+      { texto: 'Los triángulos ABH y ACH tienen 90° en H y la misma mitad de A: también B y C son iguales.', ecuacion: junto('m∠C = m∠B = 50°') },
+      { texto: 'Lo que queda para A:', ecuacion: junto(['m∠BAC = 180° − 50° − 50° = ', dF('80°')]) },
+    ],
+    respuesta: ['m∠BAC = ', dF('80°')] });
+  EJ5.push({ nivel: 2, titulo: 'El ángulo en el pie',
+    figura: fig(CEV(60, 40, { angulos: { B: t('60°'), C: t('40°', 'h', { radio: 26 }) }, lineas: { b: {} }, masAngulos: [{ en: 'F', de: 'C', a: 'A', texto: '?', radio: 18, holgura: 6, mide: 100 }] })),
+    enunciado: 'En el triángulo ABC, m∠B = 60°, m∠C = 40° y AF es la bisectriz del ángulo A. ¿Cuánto mide el ángulo AFC?',
+    datos: [D_SUMA, D_BIS, D_EXT],
+    solucion: [
+      { texto: 'm∠A = 180° − 60° − 40° = 80°; la bisectriz deja 40° a cada lado.', ecuacion: junto('m∠BAF = 40°') },
+      { texto: '∠AFC es exterior del triángulo ABF:', ecuacion: junto(['m∠AFC = 60° + 40° = ', dF('100°')]) },
+    ],
+    respuesta: ['m∠AFC = ', dF('100°')] });
+  EJ5.push({ nivel: 3, titulo: 'Entre la altura y la bisectriz',
+    figura: fig(CEV(80, 30, { angulos: { B: { radio: 14 }, C: t('30°', 'h', { radio: 30 }) }, lineas: { h: {}, b: {} }, masAngulos: [{ en: 'A', de: 'H', a: 'F', texto: '?', radio: 30, holgura: 4, mide: 25 }] })),
+    enunciado: 'En el triángulo ABC, m∠B = 80° y m∠C = 30°. AH es la altura y AF la bisectriz del ángulo A. ¿Cuánto mide el ángulo HAF?',
+    datos: [D_SUMA, D_ALT, D_BIS],
+    solucion: [
+      { texto: 'm∠A = 70°: la bisectriz deja ∠BAF = 35°. En el triángulo ABH:', ecuacion: junto('m∠BAH = 180° − 90° − 80° = 10°') },
+      { texto: 'La altura queda entre AB y la bisectriz:', ecuacion: junto(['m∠HAF = 35° − 10° = ', dF('25°')]) },
+    ],
+    respuesta: ['m∠HAF = ', dF('25°')] });
+  EJ5.push({ nivel: 3, titulo: 'La bisectriz en el isósceles',
+    figura: (() => { const { A } = vert(70, 70), F = U.corte([0, 0], U.polar([0, 0], 1, 35), A, [6, 0]);
+      return fig(TRI(70, 70, { llaves: LL_AB_AC, angulos: { A: null, B: null, C: null }, masPuntos: [{ id: 'F', x: F[0], y: F[1], rotulo: 'F', lado: 150, sinPunto: true }], masSegmentos: [{ de: 'B', a: 'F' }],
+        masAngulos: [{ en: 'B', de: 'C', a: 'F', radio: 32, rayita: 1, mide: 35 }, { en: 'B', de: 'F', a: 'A', radio: 32, rayita: 1, mide: 35 }, { en: 'B', de: 'C', a: 'A', color: 'h', radio: 48, holgura: 6, mide: 70 }, { en: 'F', de: 'C', a: 'B', texto: '?', radio: 18, holgura: 6, mide: 75 }] })); })(),
+    enunciado: 'En el triángulo ABC, AB = AC y m∠B = 70°. La bisectriz del ángulo B corta al lado AC en F. ¿Cuánto mide el ángulo BFC?',
+    datos: ['Frente a lados iguales hay ángulos iguales.', D_SUMA, D_BIS, D_EXT],
+    solucion: [
+      { texto: 'C mide lo mismo que B, 70°; queda m∠A = 40°. La bisectriz deja ∠ABF = 35°.' },
+      { texto: '∠BFC es exterior del triángulo ABF:', ecuacion: junto(['m∠BFC = 40° + 35° = ', dF('75°')]) },
+    ],
+    respuesta: ['m∠BFC = ', dF('75°')] });
+  EJ5.push({ nivel: 3, titulo: 'Altura, bisectriz y x',
+    figura: fig(CEV(80, 30, { angulos: { B: { radio: 14 }, C: t('x + 5°', 'h', { radio: 30, mide: 30 }) }, lineas: { h: {}, b: {} }, masAngulos: [{ en: 'A', de: 'H', a: 'F', color: 'h', radio: 30, holgura: 4, mide: 25 }] })),
+    enunciado: 'En el triángulo ABC, m∠B = 3x + 5° y m∠C = x + 5°. El ángulo entre la altura AH y la bisectriz AF mide 25°. ¿Cuánto mide el ángulo BAC?',
+    datos: [D_SUMA, D_ALT, D_BIS, 'Ángulo entre la altura y la bisectriz desde A: (m∠B − m∠C) ÷ 2, con B el mayor.'],
+    solucion: [
+      { texto: 'Uso la relación de la altura y la bisectriz:', ecuacion: [junto('(3x + 5° − x − 5°) ÷ 2 = 25°'), '   →   ', junto('x = 25')] },
+      { texto: 'm∠B = 80° y m∠C = 30°:', ecuacion: junto(['m∠BAC = 180° − 80° − 30° = ', dF('70°')]) },
+    ],
+    respuesta: ['m∠BAC = ', dF('70°')] });
+  EJ5.push({ nivel: 3, titulo: 'El orden de los tres pies',
+    figura: fig(CEV(80, 40, { angulos: { B: t('80°'), C: t('40°', 'h', { radio: 26 }) } })),
+    enunciado: 'En el triángulo ABC, m∠B = 80° y m∠C = 40°. Desde A se trazan la altura AH, la bisectriz AF y la mediana AM. ¿En qué orden quedan H, F y M, desde B?',
+    datos: [D_SUMA, D_ALT, D_BIS, D_MED],
+    solucion: [
+      { texto: 'm∠A = 60°. ∠BAH = 90° − 80° = 10° y la bisectriz deja ∠BAF = 30°: H queda más cerca de B que F.' },
+      { texto: 'AB es el lado corto (frente a C, de 40°); el pie de la bisectriz no llega al medio de BC: F antes que M.' },
+    ],
+    respuesta: ['Desde B: ', dF('H, F y M')] });
+  EJ5.push({ nivel: 3, titulo: 'Altura fuera, con x',
+    figura: fig(CEV(135, 25, { angulos: { B: t('3x', 'h', { mide: 135, radio: 16, holgura: 8 }) }, lineas: { h: {} }, masAngulos: [{ en: 'A', de: 'H', a: 'B', texto: 'x', color: 'h', radio: 40, holgura: 6, mide: 45 }] })),
+    enunciado: 'En el triángulo ABC, el ángulo B es obtuso y mide 3x. La altura desde A cae en H, fuera de BC, y m∠BAH = x. ¿Cuánto mide el ángulo B?',
+    datos: [D_ALT, D_ADY, D_SUMA_O],
+    solucion: [
+      { texto: 'En la recta CH, m∠ABH = 180° − 3x. En el triángulo ABH, con 90° en H:', ecuacion: [junto('90° + 180° − 3x + x = 180°'), '   →   ', junto('2x = 90'), '   →   ', junto('x = 45')] },
+      { texto: 'Reemplazo:', ecuacion: junto(['m∠B = 3 · 45° = ', dF('135°')]) },
+    ],
+    respuesta: ['m∠B = ', dF('135°')] });
+
+  // «Ahora tú» de la idea 5: cinco tipos (s % 5).
+  const NOMBRES5 = ['ABC', 'PQR', 'RST', 'MNP', 'JKL', 'UVW'];
+  const MAL5 = {
+    h: 'Sale de un vértice, como una altura; pero la altura lleva el cuadradito de 90° en su pie.',
+    m: 'Llega al lado de enfrente, como una mediana; pero la mediana lleva la misma rayita en sus dos mitades.',
+    b: 'Sale de un vértice, como una bisectriz; pero la bisectriz lleva dos arcos iguales en ese vértice.',
+    z: 'Forma 90°, como una mediatriz; pero la mediatriz nace en el punto medio, no en un vértice.',
   };
+  const COD5 = { h: 'GE-LN1', m: 'GE8', b: 'GE-LN2', z: 'GE-LN3' };
+  function casoReconocer(r) {
+    for (let i = 0; i < 400; i++) {
+      const tipo = r.de(['h', 'm', 'b', 'z']), nom = r.de(NOMBRES5), ax = r.de([-1.5, -1, 0.5, 1, 1.5, 2, 4, 4.5, 5, 6.5, 7]), ay = r.de([2.4, 3, 3.6]);
+      if (tipo === 'h' && Math.abs(ax - 3) < 0.6) continue;
+      if (tipo !== 'h' && (ax < 0 || ax > 6)) continue;
+      const letras = { A: nom[0], B: nom[1], C: nom[2], H: null, M: null, F: null };
+      const F = { objeto: 'caserio', examen: true, ax, ay, letras, lineas: { [tipo]: tipo === 'z' ? { solida: true } : {} }, vista: { x: [-2.4, 8.2], y: [-1.95, 4.3] } };
+      if (!sirve(F)) continue;
+      const ops = [{ id: 'c', texto: NOM5[tipo], correcta: true }].concat(['h', 'm', 'b', 'z'].filter(k => k !== tipo).map(k => ({ id: k, texto: NOM5[k], error: COD5[k],
+        siFuera: tipo === 'z' && k === 'h' ? 'Forma 90°, como una altura; pero no sale de un vértice: nace en el punto medio.' : tipo === 'h' && k === 'z' ? 'Forma 90°, como una mediatriz; pero sale de un vértice y no llega al punto medio.' : MAL5[k] })));
+      return { pregunta: `En el triángulo ${nom}, mira las marcas de la línea que se trazó. ¿Qué línea notable es?`, datos: [D_MARCAS], dibujo: fig(F), opciones: ops,
+        solucion: { texto: `Su marca: ${tipo === 'h' ? 'el cuadradito de 90° en su pie' : tipo === 'm' ? 'la misma rayita en las dos mitades del lado' : tipo === 'b' ? 'dos arcos iguales en el vértice' : 'el cuadradito en el punto medio del lado'}.`, ecuacion: [NOM5[tipo]] } };
+    }
+    throw new Error('casoReconocer');
+  }
+  function casoDonde(r) {
+    for (let i = 0; i < 400; i++) {
+      const k = r.ent(0, 2), b = k === 0 ? 5 * r.ent(20, 28) : k === 1 ? 90 : 5 * r.ent(8, 16), c = 5 * r.ent(5, Math.min(16, (175 - b) / 5 - 1));
+      if (180 - b - c < 20) continue;
+      const F = CEV(b, c, { angulos: { B: b === 90 ? {} : t(`${b}°`, 'h', { radio: 16, holgura: 4 }), C: t(`${c}°`, 'h', { radio: 26 }) } });
+      if (!sirve(F)) continue;
+      const O = { dentro: 'Dentro del lado BC', fuera: 'Fuera, en la prolongación de CB', enB: 'Justo en B: AB es la altura', medio: 'En el punto medio de BC' };
+      const bien = k === 0 ? 'fuera' : k === 1 ? 'enB' : 'dentro';
+      const SF = {
+        dentro: { error: 'GE7-a', siFuera: 'Dentro caería si B y C fueran agudos; la altura tiene que formar 90° con la recta BC.' },
+        fuera: { error: 'GE-LN4', siFuera: 'Fuera caería si B fuera obtuso; aquí la perpendicular llega al lado mismo.' },
+        enB: { error: 'GE7-b', siFuera: 'AB sería la altura si B midiera 90°; aquí no mide eso.' },
+        medio: { error: 'GE8', siFuera: 'El punto medio es el pie de la mediana; la altura busca el ángulo recto.' },
+      };
+      const ops = [{ id: 'c', texto: O[bien], correcta: true }].concat(['dentro', 'fuera', 'enB', 'medio'].filter(x => x !== bien).map(x => Object.assign({ id: x, texto: O[x] }, SF[x])));
+      return { pregunta: `En el triángulo ABC, m∠B = ${b}° y m∠C = ${c}°. ¿Dónde cae el pie de la altura trazada desde A?`, datos: [D_ALT, D_CLASES], dibujo: fig(F), opciones: ops,
+        solucion: { texto: k === 0 ? 'B es obtuso: la perpendicular desde A llega a la recta BC más allá de B.' : k === 1 ? 'B mide 90°: el lado AB ya es perpendicular a BC.' : 'B y C son agudos: la perpendicular cae entre B y C.', ecuacion: junto(`m∠B = ${b}°`) } };
+    }
+    throw new Error('casoDonde');
+  }
+  function casoBAH(r) {
+    for (let i = 0; i < 400; i++) {
+      const obt = r() < 0.4, b = obt ? 5 * r.ent(23, 27) : 5 * r.ent(7, 13), c = 5 * r.ent(5, 10), x = obt ? b - 90 : 90 - b;
+      if (180 - b - c < 15) continue;
+      const F = CEV(b, c, { angulos: { B: t(`${b}°`, 'h', { radio: 14, holgura: 3 }) }, lineas: { h: {} }, masAngulos: [{ en: 'A', de: obt ? 'H' : 'B', a: obt ? 'B' : 'H', texto: '?', radio: 36, holgura: 5, mide: x }] });
+      if (!sirve(F)) continue;
+      const ops = opciones(x, [
+        { id: 'copia', valor: b, error: 'GE-LN5', siFuera: `${b}° es el ángulo B; ∠BAH es otro ángulo del triángulo ABH.` },
+        { id: 'sup', valor: 180 - b, error: 'GE-LN6', siFuera: obt ? `${180 - b}° es ∠ABH; falta restarlo junto con los 90° de H.` : 'Restar de 180° está bien; también hay que quitar los 90° de H.' },
+        { id: 'mitad', valor: (180 - b) / 2, error: 'GE-LN7', siFuera: 'Partir en dos sirve con una bisectriz; la altura forma 90° en su pie.' },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, m∠B = ${b}° y AH es la altura desde A${obt ? ', que cae fuera de BC, más allá de B' : ''}. ¿Cuánto mide el ángulo BAH?`,
+        datos: [D_ALT, D_ADY, D_SUMA_O], dibujo: fig(F), opciones: ops,
+        solucion: { texto: obt ? `En la recta, m∠ABH = ${180 - b}°; en ABH, con 90° en H:` : 'En el triángulo ABH, con 90° en H:', ecuacion: junto(obt ? `m∠BAH = 180° − 90° − ${180 - b}° = ${x}°` : `m∠BAH = 180° − 90° − ${b}° = ${x}°`) } };
+    }
+    throw new Error('casoBAH');
+  }
+  function casoAFC(r) {
+    for (let i = 0; i < 400; i++) {
+      const b = 5 * r.ent(11, 16), c = 5 * r.ent(6, 10), a = 180 - b - c;
+      if (a < 30 || a % 2 || b < c + 10) continue;
+      const x = b + a / 2;
+      const F = CEV(b, c, { angulos: { B: t(`${b}°`, 'h', { radio: 16, holgura: 4 }), C: t(`${c}°`, 'h', { radio: 26 }) }, lineas: { b: {} }, masAngulos: [{ en: 'F', de: 'C', a: 'A', texto: '?', radio: 18, holgura: 5, mide: x }] });
+      if (!sirve(F)) continue;
+      const ops = opciones(x, [
+        { id: 'entero', valor: b + a, error: 'GE-LN8', siFuera: 'Usar el exterior de ABF está bien; ahí entra la mitad de A, no el ángulo entero.' },
+        { id: 'otro', valor: c + a / 2, error: 'GE-LN9', siFuera: `${c + a / 2}° mide ∠AFB, el del otro lado del pie; piden ∠AFC.` },
+        { id: 'recto', valor: 90, error: 'GE-LN10', siFuera: '90° sería si la bisectriz fuera también altura; eso pasa solo si AB = AC.' },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, m∠B = ${b}°, m∠C = ${c}° y AF es la bisectriz del ángulo A. ¿Cuánto mide el ángulo AFC?`,
+        datos: [D_SUMA, D_BIS, D_EXT], dibujo: fig(F), opciones: ops,
+        solucion: { texto: `m∠A = ${a}°; la bisectriz deja ${a / 2}°. ∠AFC es exterior de ABF.`, ecuacion: junto(`m∠AFC = ${b}° + ${a / 2}° = ${x}°`) } };
+    }
+    throw new Error('casoAFC');
+  }
+  function casoHAF(r) {
+    for (let i = 0; i < 400; i++) {
+      const b = 5 * r.ent(16, 17), c = 5 * r.ent(4, 7), a = 180 - b - c;
+      if (b - c < 50 || (b - c) % 10 || a < 20) continue;
+      const x = (b - c) / 2;
+      const F = CEV(b, c, { angulos: { B: { radio: 14 }, C: t(`${c}°`, 'h', { radio: 26 }) }, lineas: { h: {}, b: {} }, masAngulos: [{ en: 'A', de: 'H', a: 'F', texto: '?', radio: 30, holgura: 4, mide: x }] });
+      if (!sirve(F)) continue;
+      const ops = opciones(x, [
+        { id: 'sin', valor: b - c, error: 'GE-LN11', siFuera: 'Restar B y C es el camino; el resultado todavía se parte entre dos.' },
+        { id: 'prom', valor: (b + c) / 2, error: 'GE-LN12', siFuera: 'Partir entre dos está bien; pero lo que se parte es la diferencia de B y C.' },
+        { id: 'bah', valor: 90 - b, error: 'GE-LN13', siFuera: `${90 - b}° mide ∠BAH; falta compararlo con la mitad de A.` },
+      ], gr);
+      if (ops.length < 4) continue;
+      return { pregunta: `En el triángulo ABC, m∠B = ${b}° y m∠C = ${c}°. AH es la altura y AF la bisectriz del ángulo A. ¿Cuánto mide el ángulo HAF?`,
+        datos: [D_SUMA, D_ALT, D_BIS], dibujo: fig(F), opciones: ops,
+        solucion: { texto: `∠BAF = ${a / 2}° y ∠BAH = ${90 - b}°; HAF es lo que va de uno al otro.`, ecuacion: junto(`m∠HAF = ${a / 2}° − ${90 - b}° = ${x}°`) } };
+    }
+    throw new Error('casoHAF');
+  }
+
   const lineas = {
     id: 'lineas-notables',
-    titulo: 'Cada línea, por su condición',
+    titulo: 'Líneas notables',
+    pregunta: '¿Cómo se distingue la altura de la mediana y la bisectriz?',
     temas: ['Líneas notables'],
-    pieza: 'geo-figura',
-    // Lee (fase 2): vocabulario y marcas. No dice dónde cae la altura en un obtusángulo: eso es la predicción.
+    pieza: GO,
+    aprendizaje: 'Cada línea notable se reconoce por su condición: la altura es perpendicular y puede caer fuera; mediana, bisectriz y altura coinciden solo en el isósceles.',
+    actividad: 'Mover un caserío junto a la carretera y seguir dónde llegan sus tres caminos.',
+    // Lee: los caminos y sus nombres, las marcas y la mediatriz. No dice dónde cae la altura con un ángulo obtuso (la
+    // predicción) ni cuándo coinciden las tres (el juego).
     lee: {
       tarjetas: [
-        { titulo: 'Cuatro líneas con nombre', texto: 'En un triángulo se trazan cuatro líneas especiales: la altura, la mediana, la bisectriz y la mediatriz. Se llaman líneas notables, y cada una cumple una condición distinta.' },
-        { titulo: 'Las marcas', texto: 'En los dibujos de examen, dos rayitas iguales dicen «estos dos tramos miden lo mismo». Dos arcos iguales en un vértice dicen «estos ángulos son iguales». Un cuadradito marca un ángulo recto.' },
-        { titulo: 'Qué mirar', texto: 'Mueve A de un lado a otro y sigue los tres pies sobre BC: el rojo de la altura, el turquesa de la mediana y el naranja de la bisectriz. Busca cuándo se juntan.' },
+        { titulo: 'El caserío y la carretera', texto: 'El caserío A queda a un lado de una carretera recta con dos paraderos, B y C. Del caserío salen caminos rectos hasta la carretera. Donde cada camino llega a la carretera está su pie.',
+          pieza: GO, dibujo: fig({ objeto: 'caserio', ax: 1.5, ay: AY5 }) },
+        { titulo: 'Tres caminos con nombre', texto: 'La altura llega a la carretera formando 90°: es perpendicular a ella. La mediana llega al punto medio del tramo BC. La bisectriz parte el ángulo en A en dos ángulos iguales.',
+          pieza: GO, dibujo: fig(figJ5(1.5)) },
+        { titulo: 'Las marcas y la mediatriz', texto: 'Un cuadradito marca 90°; la misma rayita sobre dos llaves, dos tramos iguales; dos arcos iguales, dos ángulos iguales. La mediatriz de BC es la recta perpendicular a BC por su punto medio: no sale de A.',
+          pieza: GO, dibujo: fig({ objeto: 'caserio', ax: 1.5, ay: AY5, lineas: { z: {} } }) },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve el caserío a lo largo de su camino de arriba. Sigue los tres pies sobre la carretera y busca cuándo se juntan.' },
       ],
     },
+    ejemplos: EJ5,
     juega: {
-      consigna: 'Desde A salen tres líneas: altura (roja), mediana (turquesa) y bisectriz (naranja). Mueve A y mira dónde cae cada pie.',
-      voz: 'Mueve A. Busca cuándo las tres líneas coinciden.',
-      controles: [{ id: 'ax', etiqueta: 'A a lo ancho', min: 1, max: 5, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1 }],
-      dibujo: v => ({ datos: notables(v.ax, 3.6), estado: {} }),
-      // Se agarra A, que corre en una paralela a BC: la altura del triángulo no cambia.
-      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
-        donde: v => enPantalla(notables(v.ax, 3.6), [v.ax, 3.6]),
-        mover: (pt, v) => ({ ax: alPlano(notables(v.ax, 3.6), pt)[0] }) }],
-      lectura: v => [`Pies: H en ${f(v.ax)}   ·   M en 3   ·   D en ${f(6 * U.dist([v.ax, 3.6], [0, 0]) / (U.dist([v.ax, 3.6], [0, 0]) + U.dist([v.ax, 3.6], [6, 0])))}`],
+      pieza: GO,
+      consigna: 'Del caserío A salen tres caminos rectos a la carretera; los paraderos B y C están a 6 km uno del otro.',
+      mision: { texto: 'Mueve el caserío hasta que la altura y la mediana sean un solo camino.', logrado: v => v.ax === 3, bien: 'Un solo camino cuando AB = AC; la bisectriz también coincide.' },
+      voz: 'Mueve el caserío. ¿Cuándo se juntan los tres caminos?',
+      leyenda: [
+        { s: dO('altura'), t: 'llega a la carretera formando 90°, en H' },
+        { s: dI('mediana'), t: 'llega al punto medio M de BC' },
+        { s: dH('bisectriz'), t: 'parte el ángulo A; su pie es F' },
+        { s: 'B, C', t: 'los paraderos, a 6 km uno del otro' },
+      ],
+      controles: [{ id: 'ax', etiqueta: 'el caserío, a lo largo (km desde B)', min: 1, max: 5, paso: 0.5, inicio: 1.5, unidad: 'km', decimales: 1, color: 'c-o' }],
+      dibujo: v => ({ datos: figJ5(v.ax), estado: {} }),
+      // Gesto directo: se agarra el caserío, que corre en paralelo a la carretera.
+      arrastres: [{ id: 'caserio-a', etiqueta: 'el caserío A: se mueve en paralelo a la carretera', color: 'c-o',
+        donde: v => PO.aPantalla(figJ5(v.ax), [v.ax, AY5]),
+        mover: (pt, v) => ({ ax: PO.aPlano(figJ5(v.ax), pt)[0] }) }],
+      lectura: v => (Math.abs(v.ax - 3) < 1e-9 ? [junto('H, M y F en el mismo punto: AB = AC')] : [junto(`H a ${f(Math.abs(v.ax - 3))} km de M; F queda entre los dos`)]),
       minimo: 4,
     },
     predice: {
-      pregunta: 'Ahora A se corre a la izquierda de B: el ángulo B queda obtuso. ¿Dónde cae el pie de la altura trazada desde A?',
-      voz: 'Recuerda qué exige una altura. Luego decide.',
+      pregunta: 'Otro caserío queda más allá del paradero B, a un lado de la carretera, y el ángulo en B queda obtuso. ¿Dónde llega la altura trazada desde A?',
+      datos: ['La altura va de A a la recta BC y forma 90° con ella.', 'm∠B = 120°'],
+      voz: 'Recuerda qué pide una altura. Luego decide.',
       opciones: [
-        { id: 'c', texto: 'Fuera del triángulo, en la prolongación de CB', correcta: true },
-        { id: 'medio', texto: 'En el punto medio de BC', error: 'GE8', siFuera: 'El punto medio es el pie de la mediana. La altura busca el ángulo recto.' },
-        { id: 'dentro', texto: 'Dentro de BC, aunque quede inclinada', error: 'GE7', siFuera: 'Dentro caería si B y C fueran agudos. La altura debe formar 90° con la recta BC.' },
-        { id: 'en-b', texto: 'Justo en B: AB es la altura', error: 'GE7', siFuera: 'AB sería la altura si B midiera 90°. Aquí B es obtuso.' },
+        { id: 'c', texto: 'Fuera del tramo BC, en la carretera más allá de B', correcta: true },
+        { id: 'medio', texto: 'Al punto medio del tramo BC', error: 'GE8', siFuera: 'El punto medio es el pie de la mediana; la altura busca el ángulo recto.' },
+        { id: 'dentro', texto: 'Dentro del tramo BC, aunque quede inclinada', error: 'GE7-a', siFuera: 'Dentro caería si B y C fueran agudos; la altura tiene que formar 90° con la carretera.' },
+        { id: 'en-b', texto: 'Justo en B: el camino AB es la altura', error: 'GE7-b', siFuera: 'AB sería la altura si B midiera 90°; aquí B pasa de 90°.' },
       ],
-      dibujo: { datos: notables(-1.5, 3, { ver: {} }), estado: {} },
-      revelar: { datos: notables(-1.5, 3, { ver: { h: 1 } }), estado: {} },
-      coincide: 'Coincide: la altura llega perpendicular a la recta BC, fuera del lado.',
+      dibujo: fig({ objeto: 'caserio', ax: -3.6 / Math.tan(60 * RAD), ay: 3.6, angulos: { B: t('120°', 'h', { radio: 14 }) } }),
+      revelar: fig({ objeto: 'caserio', ax: -3.6 / Math.tan(60 * RAD), ay: 3.6, angulos: { B: t('120°', 'h', { radio: 14 }) }, lineas: { h: { color: 'o' } } }),
+      coincide: 'Coincide: la altura llega a la carretera formando 90°, pero fuera del tramo BC, más allá de B.',
+      noCoincide: 'Revisemos: para formar 90° con la carretera, el camino tiene que llegar más allá de B, fuera del tramo.',
     },
     mira: {
-      datos: notables(1.5, 3.6, { ver: { h: 1, m: 1, b: 1, z: 1 }, pasos: { h: 1, m: 2, b: 3, z: 4 }, alt: 'Altura, mediana y bisectriz desde A, y la mediatriz de BC: cuatro líneas distintas' }),
+      pieza: GO,
+      datos: { objeto: 'caserio', ax: 1.5, ay: AY5, lineas: { h: { color: 'o', desde: 1 }, m: { color: 'i', desde: 2 }, b: { color: 'h', desde: 3 }, z: { desde: 4 } } },
       voz: 'Una línea por paso. Cada una tiene su marca.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Altura: forma 90° con la recta BC.', ecuacion: ['AH ⟂ BC'] },
-        { estado: { corte: 2 }, texto: 'Mediana: llega al punto medio de BC.', ecuacion: ['BM = MC'] },
-        { estado: { corte: 3 }, texto: 'Bisectriz: parte el ángulo A en dos iguales.', ecuacion: ['∠BAD = ∠DAC'] },
-        { estado: { corte: 4 }, texto: 'Mediatriz: perpendicular a BC en su punto medio; no pasa por A.', ecuacion: ['mediatriz ⟂ BC en M'] },
+        { estado: { corte: 1 }, texto: 'Altura: el camino que forma 90° con la carretera. Llega a H.', ecuacion: junto([dO('AH'), ' ⟂ BC']) },
+        { estado: { corte: 2 }, texto: 'Mediana: llega al punto medio M del tramo BC.', ecuacion: junto('BM = MC = 3 km') },
+        { estado: { corte: 3 }, texto: 'Bisectriz: parte el ángulo en A en dos iguales. Llega a F.', ecuacion: junto([dH('m∠BAF'), ' = ', dH('m∠FAC')]) },
+        { estado: { corte: 4 }, texto: 'Mediatriz: perpendicular a BC en M. No sale del caserío.', ecuacion: junto('mediatriz ⟂ BC, por M') },
+        { estado: { corte: 4 }, texto: 'Las tres de A llegan a puntos distintos: H, F y M.', ecuacion: junto('AB ≠ AC') },
       ],
     },
     regla: {
-      texto: 'Altura: perpendicular a la recta del lado opuesto. Mediana: llega a su punto medio. Bisectriz: parte el ángulo en dos iguales. Mediatriz: perpendicular en el punto medio.',
-      condicion: 'cada altura llega a la recta de su lado: en el obtusángulo, dos caen fuera del triángulo.',
+      texto: 'La altura forma 90° con la recta del lado opuesto y puede caer fuera. La mediana llega al punto medio; la bisectriz parte el ángulo. Coinciden solo en el isósceles.',
+      ecuacion: [junto([dO('AH'), ' ⟂ BC']), SEP, junto([dI('BM'), ' = ', dI('MC')]), SEP, junto([dH('m∠BAF'), ' = ', dH('m∠FAC')])],
+      condicion: 'en el isósceles coinciden las tres que salen del vértice entre los lados iguales; la mediatriz no sale de un vértice.',
       voz: 'Nombra cada línea por su marca, no por cómo luce.',
     },
-    // Así se resuelve (fase 2): reconocer la línea por su marca, como en «Ahora tú», con la misma figura y otras semillas.
+    // Así se resuelve: la bisectriz con x y la mediana con x. «Ahora tú» pide reconocer la línea, dónde cae la altura,
+    // ∠BAH, ∠AFC y el ángulo entre la altura y la bisectriz.
     resuelve: {
+      pieza: GO,
       generar(s) {
-        const r = azar(s + 900), ax = r.de([-1.5, -1, 0.5, 1, 1.5, 2, 4, 4.5, 5, 6.5]), ay = r.de([2.5, 3, 3.5, 4]);
-        const tipos = ['h', 'm', 'b', 'z'], t = tipos[s % 4];
-        const nom = { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' };
-        const d = notables(ax, ay, { ver: { [t]: 1 } });
-        d.alt = `Triángulo con una línea marcada: ${t === 'h' ? 'forma 90° con la recta del lado opuesto' : t === 'm' ? 'llega al punto medio del lado opuesto' : t === 'b' ? 'parte el ángulo del vértice en dos iguales' : 'es perpendicular a un lado en su punto medio'}`;
-        if (t === 'h' && ax < 0) d.puntos.find(p => p.id === 'B').lado = -60;
-        const nombres = r.de(['ABC', 'PQR', 'RST', 'XYZ', 'JKL', 'UVW']);
-        d.puntos.forEach(p => { const k = 'ABC'.indexOf(p.id); if (k >= 0 && p.id.length === 1) p.rotulo = nombres[k]; });
-        const [V, P, Q] = nombres, lado = P + Q;
-        const fuera = t === 'h' && (ax < 0 || ax > 6);
-        const marca = { h: `un cuadradito de ángulo recto donde llega a la recta ${lado}`, m: 'una rayita igual a cada lado de su pie', b: `dos arcos iguales en el vértice ${V}`, z: `un cuadradito de ángulo recto en el punto medio de ${lado}` };
-        const descarte = {
-          h: `No llega al punto medio ni parte el ángulo en dos. Es la altura${fuera ? ', aunque su pie caiga fuera del lado' : ''}.`,
-          m: 'No forma un ángulo recto ni parte el ángulo del vértice: solo llega al punto medio. Es la mediana.',
-          b: 'Su pie no está en el punto medio ni forma 90°: solo reparte el ángulo. Es la bisectriz.',
-          z: `Forma 90° como una altura, pero no sale de ${V}: nace en el punto medio de ${lado}. Es la mediatriz.`,
-        }[t];
-        return {
-          enunciado: `En el triángulo ${nombres}, mira las marcas de la línea de color. ¿Qué línea notable es?`,
-          dibujo: { datos: d, estado: {} },
-          pasos: [
-            { tipo: 'pide', texto: 'Piden el nombre de la línea de color: altura, mediana, bisectriz o mediatriz.' },
-            { tipo: 'datos', texto: `En la figura, la línea tiene ${marca[t]}.` },
-            { tipo: 'regla', texto: 'Cada línea notable se reconoce por su condición, no por su aspecto. Por eso busco su marca: ángulo recto, rayitas iguales o arcos iguales.' },
-            { tipo: 'aplica', texto: `Esa marca dice que la línea ${t === 'h' ? `forma 90° con la recta ${lado}` : t === 'm' ? `llega al punto medio de ${lado}` : t === 'b' ? `parte el ángulo ${V} en dos iguales` : `es perpendicular a ${lado} en su punto medio`}.`,
-              ecuacion: [t === 'h' ? `altura ⟂ ${lado}` : t === 'm' ? `pie en el punto medio de ${lado}` : t === 'b' ? `dos ángulos iguales en ${V}` : `mediatriz ⟂ ${lado} en su punto medio`] },
-            { tipo: 'sentido', texto: descarte },
-          ],
-          respuesta: `Es la ${nom[t]}.`,
-        };
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          for (;;) {
+            const x = r.ent(8, 20), p = r.ent(2, 4), q = p + r.ent(1, 2), k = 5 * r.ent(1, 6), half = p * x + k, m = q * x - half;
+            if (half < 15 || half > 65 || m <= 0 || m % 5) continue;
+            const A = 2 * half, b = 5 * r.ent(6, Math.min(16, (175 - A) / 5)), c = 180 - A - b;
+            if (c < 20) continue;
+            const F = CEV(b, c, { lineas: { b: {} } });
+            return {
+              enunciado: `En el triángulo ABC, AF es la bisectriz del ángulo A. m∠BAF = ${exp(p, k)} y m∠FAC = ${exp(q, -m)}. ¿Cuánto mide el ángulo BAC?`,
+              datos: [D_BIS], dibujo: fig(F),
+              pasos: [
+                { tipo: 'pide', texto: 'Piden el ángulo A entero, el que la bisectriz parte en dos.' },
+                { tipo: 'datos', texto: 'Tengo las dos mitades escritas con x.' },
+                { tipo: 'regla', texto: 'La bisectriz deja dos ángulos iguales: igualo las dos mitades.', ecuacion: junto(`${exp(p, k)} = ${exp(q, -m)}`) },
+                { tipo: 'cuentas', texto: `Despejo x; cada mitad mide ${half}°.`, ecuacion: [junto(`x = ${x}`), SEP, junto(['m∠BAC = 2 · ', `${half}° = `, dF(`${A}°`)])] },
+                { tipo: 'sentido', texto: `Compruebo: ${q} · ${x} − ${m}° = ${half}°, igual que la otra mitad.` },
+              ],
+              respuesta: ['m∠BAC = ', dF(`${A}°`)],
+            };
+          }
+        }
+        for (;;) {
+          const x = r.ent(3, 12), p = r.ent(2, 4), q = r.ent(1, p - 1), k = r.ent(1, 6), half = p * x - k, m = half - q * x;
+          if (half < 6 || m < 1) continue;
+          const F = CEV(60, 50, { lineas: { m: {} }, ladosRot: [{ de: 'B', a: 'M', texto: `${p}x − ${k}`, ref: 'A', dist: 48 }, { de: 'M', a: 'C', texto: `${q === 1 ? '' : q}x + ${m}`, ref: 'A', dist: 48 }] });
+          return {
+            enunciado: `En el triángulo ABC, AM es la mediana del lado BC. BM = (${p}x − ${k}) cm y MC = (${q === 1 ? '' : q}x + ${m}) cm. ¿Cuánto mide BC?`,
+            datos: [D_MED], dibujo: fig(F),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el lado BC entero, el que la mediana parte por la mitad.' },
+              { tipo: 'datos', texto: 'Tengo las dos mitades, BM y MC, escritas con x.' },
+              { tipo: 'regla', texto: 'La mediana llega al punto medio: BM = MC.', ecuacion: junto(`${p}x − ${k} = ${q === 1 ? '' : q}x + ${m}`) },
+              { tipo: 'cuentas', texto: `Despejo x; cada mitad mide ${half} cm.`, ecuacion: [junto(`x = ${x}`), SEP, junto(['BC = 2 · ', `${half} = `, dF(`${2 * half} cm`)])] },
+              { tipo: 'sentido', texto: `Compruebo: ${q === 1 ? '' : `${q} · `}${x} + ${m} = ${half}, igual que BM.` },
+            ],
+            respuesta: ['BC = ', dF(`${2 * half} cm`)],
+          };
+        }
       },
     },
     ahoraTu: {
-      voz: 'Busca la marca: ángulo recto, rayitas o arcos iguales.',
-      generar(s) {
-        const r = azar(s), ax = r.de([-1.5, -1, 0.5, 1, 1.5, 2, 4, 4.5, 5, 6.5]), ay = r.de([2.5, 3, 3.5, 4]);
-        const tipos = ['h', 'm', 'b', 'z'], t = tipos[s % 4];
-        const nom = { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' };
-        const marca = { h: 'un ángulo recto con la recta del lado opuesto', m: 'rayitas iguales a cada lado del pie', b: 'dos arcos iguales en el vértice', z: 'un ángulo recto en el punto medio, sin pasar por el vértice' };
-        const d = notables(ax, ay, { ver: { [t]: 1 } });
-        d.alt = `Triángulo con una línea marcada: ${t === 'h' ? 'forma 90° con la recta del lado opuesto' : t === 'm' ? 'llega al punto medio del lado opuesto' : t === 'b' ? 'parte el ángulo del vértice en dos iguales' : 'es perpendicular a un lado en su punto medio'}`;
-        if (t === 'h' && ax < 0) d.puntos.find(p => p.id === 'B').lado = -60;
-        const nombres = r.de(['ABC', 'PQR', 'RST', 'XYZ', 'JKL', 'UVW']);
-        d.puntos.forEach(p => { const k = 'ABC'.indexOf(p.id); if (k >= 0 && p.id.length === 1) p.rotulo = nombres[k]; });
-        return {
-          pregunta: `En el triángulo ${nombres}, mira las marcas de la línea de color que sale de ${nombres[0]}. ¿Qué línea notable es?`,
-          dibujo: { datos: d, estado: {} },
-          opciones: [{ id: 'c', texto: nom[t], correcta: true }].concat(tipos.filter(k => k !== t).map(k => ({ id: k, texto: nom[k], error: t === 'h' || k === 'h' ? 'GE7' : 'GE8', siFuera: `Sería ${nom[k]} si tuviera ${marca[k]}.` }))),
-          solucion: { texto: `Su marca es ${t === 'h' ? 'el ángulo recto en el pie' : t === 'm' ? 'el punto medio del lado opuesto' : t === 'b' ? 'la de dos ángulos iguales en el vértice' : 'el ángulo recto en el punto medio'}.`, ecuacion: [nom[t]] },
-        };
-      },
+      pieza: GO,
+      voz: 'Busca la marca: cuadradito, rayitas o arcos iguales.',
+      generar(s) { return conCuatro([casoReconocer, casoDonde, casoBAH, casoAFC, casoHAF][s % 5], azar(s + 7)); },
     },
   };
 
-  // ---------- Idea 6 (antes 4, sin rehacer): ángulos formados por bisectrices ----------
-  // Cambia: los ángulos B y C · Permanece: la base BC · Progresa: ∠BIC y ∠BEC frente a A ·
-  // Se reserva: la bisectriz exterior en C · Debe verse: ∠BIC = 90° + A/2 y ∠BEC = A/2.
-  const bis = (b, c, o = {}) => {
-    const { A, B, C } = porAngulos(b, c, 6);
-    const la = U.dist(B, C), lb = U.dist(A, C), lc = U.dist(A, B), s = la + lb + lc;
-    const I = [(la * A[0] + lb * B[0] + lc * C[0]) / s, (la * A[1] + lb * B[1] + lc * C[1]) / s];
-    const ext = U.polar(C, 1, (180 - c) / 2); // bisectriz exterior en C: entre CA y la prolongación de BC
-    const E = U.corte(B, I, C, ext);
-    const a = 180 - b - c, k = o.pasos || {};
-    const conE = o.E && E && E[0] < 14;
-    return {
-      alt: o.alt || `Triángulo con A = ${a}°: las bisectrices interiores de B y C se cortan en I formando ${90 + a / 2}°${conE ? `; con la exterior en C forman ${a / 2}° en E` : ''}`,
-      vista: o.E ? { x: [-0.6, 12], y: [-0.8, 6.8] } : { x: [-1.6, 7.6], y: [-0.6, 8.6] },
-      puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: -120 }, { id: 'C', x: 6, y: 0, rotulo: 'C', lado: -60 },
-        { id: 'I', x: I[0], y: I[1], rotulo: 'I', color: 'h', lado: -90 }, { id: 'Cx', x: o.E ? 11.5 : 6.5, y: 0, sinPunto: true },
-        ...(conE ? [{ id: 'E', x: E[0], y: E[1], rotulo: 'E', color: 'h', lado: 60, desde: k.E || 0 }] : [])],
-      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.06 }],
-      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' },
-        { de: 'B', a: 'I', color: 'i', grosor: 'fino', desde: k.I || 0 }, ...(conE ? [{ de: 'I', a: 'E', color: 'i', grosor: 'fino', desde: k.E || 0 }] : []), { de: 'C', a: 'I', color: 'd', grosor: 'fino', desde: k.I || 0 },
-        ...(o.E ? [{ de: 'C', a: 'Cx', discontinua: true, grosor: 'fino' }] : []),
-        ...(conE ? [{ de: 'C', a: 'E', color: 'd', discontinua: true, desde: k.E || 0 }] : [])],
-      angulos: [
-        { en: 'A', de: 'B', a: 'C', color: 'o', texto: `${a}°` },
-        { en: 'B', de: 'C', a: 'I', color: 'i', rayita: 1, radio: 28, desde: k.I || 0 }, { en: 'B', de: 'I', a: 'A', color: 'i', rayita: 1, radio: 28, desde: k.I || 0 },
-        { en: 'C', de: 'I', a: 'B', color: 'd', rayita: 2, radio: 24, desde: k.I || 0 }, { en: 'C', de: 'A', a: 'I', color: 'd', rayita: 2, radio: 24, desde: k.I || 0 },
-        { en: 'I', de: 'B', a: 'C', color: 'h', texto: o.sinBIC ? undefined : `${90 + a / 2}°`, radio: 20, desde: k.BIC || 0 },
-        ...(conE ? [{ en: 'E', de: 'B', a: 'C', color: 'h', texto: o.sinE ? undefined : `${a / 2}°`, radio: 30, desde: k.E2 || k.E || 0 }, { en: 'C', de: 'I', a: 'E', color: 'h', desde: k.E || 0 }] : []),
-      ],
-    };
-  };
-  // El ángulo BIC medido en la figura, con el punto I que calcula bis() (no con la fórmula).
-  const anguloBIC = v => { const P = bis(v.b, v.c).puntos, I = P.find(p => p.id === 'I'); return U.angulo([I.x, I.y], [0, 0], [6, 0]); };
-  let BIC_MAX = 0;   // el mayor de la grilla del juego (B y C de 40° a 70°, de 10° en 10°)
-  for (let b = 40; b <= 70; b += 10) for (let c = 40; c <= 70; c += 10) BIC_MAX = Math.max(BIC_MAX, anguloBIC({ b, c }));
+  // ---------- Idea 6 (rehecha, 18 nov): ángulos entre bisectrices ----------
+  // Objeto de la primera pantalla: un parque triangular con dos caminos que se cruzan en la pileta (geo-objeto, parque;
+  // dibujo de prueba). I y E son cruces de caminos; sus nombres (incentro y excentro) se explican en Puntos notables.
+  // Cambia: la esquina A (los ángulos en B y C, de 10° en 10°). · Permanece: la base BC. · Progresa: m∠BIC, que solo
+  // sigue a m∠A. · Se reserva: el camino que parte el ángulo exterior en C (la predicción). · Debe verse: con el mismo
+  // m∠A, el mismo m∠BIC, aunque B y C se repartan distinto.
+  // Colores: m∠A y las bisectrices interiores de B y C, con sus mitades (una rayita en B, dos en C), en carmín; el
+  // exterior en C, su bisectriz y sus mitades (tres rayitas), en turquesa; ∠BIC y ∠BEC en tinta («?» en los ejercicios).
+  // Errores (hipótesis, sin medir): GE-BIS4 usa la regla de las dos interiores donde una es exterior (o al revés),
+  // GE-BIS5-a toma el ángulo A entero, GE-BIS5-b cree que dos bisectrices de C dan 90° en E (propuesta); nuevos (18 nov):
+  // GE-BIS6 suma 90° sin partir A, GE-BIS7 usa la regla de dos exteriores, GE-BIS8 no divide en la de dos exteriores,
+  // GE-BIS9 se queda en lo que suman las mitades de B y C, GE-BIS10 usa B y C en vez de A, GE-BIS11 olvida duplicar en el
+  // inverso, GE-BIS12 da el suplemento en el inverso, GE-BIS13 divide en vez de duplicar.
+  const VJ6 = { x: [-0.9, 6.9], y: [-1.15, 8.75] };
+  // En el juego, m∠A y m∠BIC se leen en la lectura, debajo: con A de 80°, su rótulo bajaba hasta la pileta.
+  const figJ6 = (b, c) => ({ objeto: 'parque', b, c, angulos: { A: {} }, BIC: {}, vista: VJ6, alto: 270, manija: 'A' });
+  const D_BIS2 = 'Cada bisectriz parte su ángulo en dos ángulos iguales.';
+  const D_BIC = 'Dos bisectrices interiores, de B y de C: m∠BIC = 90° + m∠A ÷ 2.';
+  const D_BEC = 'Interior de B con exterior de C: m∠BEC = m∠A ÷ 2.';
+  const D_BQC = 'Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − m∠A ÷ 2.';
+  const PQ = (b, c, o = {}) => Object.assign({ objeto: 'parque', examen: true, b, c }, o);
+  // Con B y C dados y sus bisectrices trazadas, la figura marca sus mitades (una rayita en B, dos en C) y los valores van
+  // en el enunciado: el rótulo del ángulo entero cae sobre su propia bisectriz (como las expresiones de la mariposa).
+  const enteros = () => [];
+  // Dos bisectrices exteriores, de B y de C, que se cortan en Q, debajo de BC (figura de examen).
+  function exteriores2(b, c, rot = {}) {
+    const { A } = vert(b, c), B = [0, 0], C = [6, 0], Q = U.corte(B, U.polar(B, 1, b / 2 - 90), C, U.polar(C, 1, -90 - c / 2));
+    const F = U.polar(B, 2.2, 180 + b), Gp = U.polar(C, 2.2, -c);
+    const pts = { A, B, C, Q, F, G: Gp }, lab = { A: 90, B: 180, C: 0, Q: -90 };
+    const xs = Object.values(pts).map(p => p[0]), ys = Object.values(pts).map(p => p[1]);
+    return { objeto: 'angulos', figura: PO.acomodarLetras({ alt: 'Triángulo ABC; las bisectrices de los ángulos exteriores en B y en C se cortan en Q, debajo de BC.',
+      vista: { x: [Math.min(...xs) - 0.8, Math.max(...xs) + 0.8], y: [Math.min(...ys) - 0.8, Math.max(...ys) + 0.8] }, alto: 262,
+      puntos: Object.entries(pts).map(([id, p]) => Object.assign({ id, x: p[0], y: p[1], sinPunto: true }, lab[id] !== undefined ? { rotulo: id, lado: lab[id] } : {})),
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'B', a: 'F', discontinua: true, grosor: 'fino' }, { de: 'C', a: 'G', discontinua: true, grosor: 'fino' }, { de: 'B', a: 'Q', color: 'i' }, { de: 'C', a: 'Q', color: 'i' }],
+      angulos: [Object.assign({ en: 'A', de: 'B', a: 'C', radio: 20, holgura: 6, mide: 180 - b - c }, rot.A || { color: 'h' }),
+        { en: 'B', de: 'C', a: 'Q', radio: 26, rayita: 1, color: 'i', mide: 90 - b / 2 }, { en: 'B', de: 'Q', a: 'F', radio: 26, rayita: 1, color: 'i', mide: 90 - b / 2 },
+        { en: 'C', de: 'G', a: 'Q', radio: 22, rayita: 2, color: 'i', mide: 90 - c / 2 }, { en: 'C', de: 'Q', a: 'B', radio: 22, rayita: 2, color: 'i', mide: 90 - c / 2 },
+        Object.assign({ en: 'Q', de: 'B', a: 'C', radio: 20, holgura: 6, mide: (b + c) / 2 }, rot.Q || {})] }, ['A', 'B', 'C', 'Q']) };
+  }
+
+  // Ejemplos resueltos de «Ángulos entre bisectrices». Cuentas rehechas aparte (scratchpad f3-geo/cuentas.js): 90 + 25 =
+  // 115; 70 ÷ 2 = 35; 90 − 35 = 55; las dos de C: 90; 64 ÷ 2 = 32; 180 − 40 − 30 = 110; 2(130 − 90) = 80; 2 · 27 = 54;
+  // A = 56, BEC = 28; 90 + x = 3x + 30, x = 30; ACD = 130, A = 60, BEC = 30; 90 − 2x = 2x + 50, x = 10, A = 40; A = 50,
+  // BIC = 115; A = 2(135 − 90) = 90; (90 + A/2) + A/2 = 150, A = 60.
+  const EJ6 = [];
+  EJ6.push({ nivel: 1, titulo: 'La pileta del parque',
+    figura: fig({ objeto: 'parque', b: 70, c: 60, angulos: { A: t('50°') }, BIC: pide() }),
+    enunciado: 'En un parque triangular ABC, m∠A = 50°. Los caminos que parten las esquinas B y C en mitades iguales se cruzan en la pileta I. ¿Cuánto mide el ángulo BIC?',
+    datos: [D_BIC],
+    solucion: [{ texto: 'Las dos son bisectrices interiores: 90° más la mitad de A.', ecuacion: junto(['m∠BIC = 90° + 50° ÷ 2 = ', dF('115°')]) }],
+    respuesta: ['m∠BIC = ', dF('115°')] });
+  EJ6.push({ nivel: 1, titulo: 'Una interior y una exterior',
+    figura: fig(PQ(60, 50, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: t('70°') }, BEC: pide() })),
+    enunciado: 'En el triángulo ABC, m∠A = 70°. La bisectriz interior de B y la bisectriz exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC?',
+    datos: [D_BEC],
+    solucion: [{ texto: 'Interior con exterior: la mitad de A.', ecuacion: junto(['m∠BEC = 70° ÷ 2 = ', dF('35°')]) }],
+    respuesta: ['m∠BEC = ', dF('35°')] });
+  EJ6.push({ nivel: 1, titulo: 'Dos exteriores',
+    figura: fig(exteriores2(55, 55, { A: t('70°'), Q: pide() })),
+    enunciado: 'En el triángulo ABC, m∠A = 70°. Las bisectrices de los ángulos exteriores en B y en C se cortan en Q. ¿Cuánto mide el ángulo BQC?',
+    datos: [D_BQC],
+    solucion: [{ texto: 'Dos exteriores: 90° menos la mitad de A.', ecuacion: junto(['m∠BQC = 90° − 70° ÷ 2 = ', dF('55°')]) }],
+    respuesta: ['m∠BQC = ', dF('55°')] });
+  EJ6.push({ nivel: 1, titulo: 'Las dos bisectrices de C',
+    figura: fig(PQ(70, 50, { E: 0, mitades: { C: true, Ce: true }, angulos: { A: null }, ICE: { texto: '?', arcoRecto: true } })),
+    enunciado: 'En C, la bisectriz interior parte el ángulo ACB y la exterior parte el ángulo ACD. ¿Qué ángulo forman entre ellas?',
+    datos: [D_BIS2, D_ADY],
+    solucion: [
+      { texto: 'El interior y el exterior en C suman 180°; cada bisectriz toma la mitad del suyo.', ecuacion: junto(['m∠ICE = 180° ÷ 2 = ', dF('90°')]) },
+    ],
+    respuesta: ['Forman ', dF('90°')] });
+  EJ6.push({ nivel: 1, titulo: 'La mitad de una esquina',
+    figura: fig({ objeto: 'parque', b: 64, c: 56, angulos: { A: null, B: t('64°', 'h', { radio: 46 }) }, mitades: { B: true }, BIC: undefined,
+      masAngulos: [] }),
+    enunciado: 'En el parque, la esquina B mide 64° y el camino que sale de B la parte en dos ángulos iguales. ¿Cuánto mide el ángulo IBC?',
+    datos: [D_BIS2],
+    solucion: [{ texto: 'El camino es la bisectriz de B: deja dos mitades iguales.', ecuacion: junto(['m∠IBC = 64° ÷ 2 = ', dF('32°')]) }],
+    respuesta: ['m∠IBC = ', dF('32°')] });
+  EJ6.push({ nivel: 2, titulo: 'Con B y C',
+    figura: fig(PQ(80, 60, { angulos: {}, BIC: pide(), masAngulos: enteros(80, 60) })),
+    enunciado: 'En el triángulo ABC, m∠B = 80° y m∠C = 60°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide el ángulo BIC?',
+    datos: [D_BIS2, D_SUMA_O],
+    solucion: [
+      { texto: 'En el triángulo BIC quedan las mitades: 40° en B y 30° en C.' },
+      { texto: 'Lo que falta para 180°:', ecuacion: junto(['m∠BIC = 180° − 40° − 30° = ', dF('110°')]) },
+    ],
+    respuesta: ['m∠BIC = ', dF('110°')] });
+  EJ6.push({ nivel: 2, titulo: 'Del cruce al ángulo A',
+    figura: fig(PQ(55, 45, { angulos: { A: pide() }, BIC: t('130°') })),
+    enunciado: 'En el triángulo ABC, las bisectrices interiores de B y C se cortan en I y m∠BIC = 130°. ¿Cuánto mide el ángulo A?',
+    datos: [D_BIC],
+    solucion: [
+      { texto: 'Uso la regla al revés: lo que pasa de 90° es la mitad de A.', ecuacion: junto('130° = 90° + m∠A ÷ 2   →   m∠A ÷ 2 = 40°') },
+      { texto: 'El ángulo entero:', ecuacion: junto(['m∠A = 2 · 40° = ', dF('80°')]) },
+    ],
+    respuesta: ['m∠A = ', dF('80°')] });
+  EJ6.push({ nivel: 2, titulo: 'De E al ángulo A',
+    figura: fig(PQ(66, 60, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: pide() }, BEC: { color: 'h' } })),
+    enunciado: 'En el triángulo ABC, la bisectriz interior de B y la exterior de C se cortan en E, con m∠BEC = 27°. ¿Cuánto mide el ángulo A?',
+    datos: [D_BEC],
+    solucion: [{ texto: 'El ángulo en E es la mitad de A: A es el doble.', ecuacion: junto(['m∠A = 2 · 27° = ', dF('54°')]) }],
+    respuesta: ['m∠A = ', dF('54°')] });
+  EJ6.push({ nivel: 2, titulo: 'De I a E',
+    figura: fig(PQ(66, 58, { E: 0, mitades: { B: true }, angulos: { A: null }, BIC: t('118°'), BEC: pide() })),
+    enunciado: 'En el triángulo ABC, I es el cruce de las bisectrices interiores de B y C, y m∠BIC = 118°. E es el cruce de la interior de B con la exterior de C. ¿Cuánto mide ∠BEC?',
+    datos: [D_BIC, D_BEC],
+    solucion: [
+      { texto: 'Primero A, con la regla de I al revés:', ecuacion: junto('118° = 90° + m∠A ÷ 2   →   m∠A = 56°') },
+      { texto: 'En E, la mitad de A:', ecuacion: junto(['m∠BEC = 56° ÷ 2 = ', dF('28°')]) },
+    ],
+    respuesta: ['m∠BEC = ', dF('28°')] });
+  EJ6.push({ nivel: 2, titulo: 'El cruce con x',
+    figura: fig(PQ(65, 55, { angulos: { A: t('2x', 'h', { mide: 60 }) }, BIC: t('3x + 30°', 'h', { mide: 120 }) })),
+    enunciado: 'En el triángulo ABC, m∠A = 2x. Las bisectrices interiores de B y C se cortan en I, y m∠BIC = 3x + 30°. ¿Cuánto vale x?',
+    datos: [D_BIC],
+    solucion: [
+      { texto: 'La mitad de A es x. Igualo:', ecuacion: [junto('90° + x = 3x + 30°'), '   →   ', junto('2x = 60'), '   →   ', junto(['x = ', dF('30')])] },
+      { texto: 'Compruebo: m∠A = 60° y m∠BIC = 120° = 90° + 30°.' },
+    ],
+    respuesta: ['x = ', dF('30')] });
+  EJ6.push({ nivel: 3, titulo: 'Un exterior y su bisectriz',
+    figura: fig(PQ(70, 50, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: null, B: t('70°', 'h', { radio: 46 }) }, BEC: pide(), masAngulos: [{ en: 'C', de: 'D', a: 'A', texto: '130°', color: 'h', radio: 44, holgura: 6, mide: 130, centro: true }] })),
+    enunciado: 'En el triángulo ABC, m∠B = 70° y el ángulo exterior ACD mide 130°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide ∠BEC?',
+    datos: [D_EXT, D_BEC],
+    solucion: [
+      { texto: 'El exterior en C suma A y B:', ecuacion: junto('130° = m∠A + 70°   →   m∠A = 60°') },
+      { texto: 'En E, la mitad de A:', ecuacion: junto(['m∠BEC = 60° ÷ 2 = ', dF('30°')]) },
+    ],
+    respuesta: ['m∠BEC = ', dF('30°')] });
+  EJ6.push({ nivel: 3, titulo: 'Dos exteriores con x',
+    figura: fig(exteriores2(70, 70, { A: t('4x', 'h', { mide: 40 }), Q: {} })),
+    enunciado: 'En el triángulo ABC, m∠A = 4x. Las bisectrices exteriores de B y de C se cortan en Q, y m∠BQC = 2x + 50°. ¿Cuánto mide el ángulo A?',
+    datos: [D_BQC],
+    solucion: [
+      { texto: 'La mitad de A es 2x. Igualo:', ecuacion: [junto('90° − 2x = 2x + 50°'), '   →   ', junto('4x = 40'), '   →   ', junto('x = 10')] },
+      { texto: 'Reemplazo:', ecuacion: junto(['m∠A = 4 · 10° = ', dF('40°')]) },
+    ],
+    respuesta: ['m∠A = ', dF('40°')] });
+  EJ6.push({ nivel: 3, titulo: 'Isósceles con su pileta',
+    figura: fig(PQ(65, 65, { llaves: LL_AB_AC, angulos: { A: null, B: { marcas: 2 } }, BIC: pide() })),
+    enunciado: 'En el triángulo ABC, AB = AC y m∠B = 65°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide el ángulo BIC?',
+    datos: ['Frente a lados iguales hay ángulos iguales.', D_SUMA, D_BIC],
+    solucion: [
+      { texto: 'C mide lo mismo que B, 65°; queda m∠A = 180° − 130° = 50°.' },
+      { texto: 'Dos interiores:', ecuacion: junto(['m∠BIC = 90° + 50° ÷ 2 = ', dF('115°')]) },
+    ],
+    respuesta: ['m∠BIC = ', dF('115°')] });
+  EJ6.push({ nivel: 3, titulo: 'El cruce y la clase',
+    figura: fig(PQ(45, 45, { angulos: { A: { arcoRecto: true } }, BIC: t('135°') })),
+    enunciado: 'En el triángulo ABC, las bisectrices interiores de B y C se cortan en I, y m∠BIC = 135°. ¿Qué clase de triángulo es ABC, por sus ángulos?',
+    datos: [D_BIC, D_CLASES],
+    solucion: [
+      { texto: 'La regla al revés:', ecuacion: junto('135° = 90° + m∠A ÷ 2   →   m∠A = 90°') },
+      { texto: 'Tiene un ángulo recto.' },
+    ],
+    respuesta: ['Es ', dF('rectángulo')] });
+  EJ6.push({ nivel: 3, titulo: 'La suma de dos cruces',
+    figura: fig(PQ(70, 50, { E: 0, mitades: { B: true }, angulos: { A: pide() }, BIC: {}, BEC: {} })),
+    enunciado: 'En el triángulo ABC, I es el cruce de las bisectrices interiores de B y C, y E el de la interior de B con la exterior de C. Si m∠BIC + m∠BEC = 150°, ¿cuánto mide el ángulo A?',
+    datos: [D_BIC, D_BEC],
+    solucion: [
+      { texto: 'Escribo los dos con A y sumo:', ecuacion: [junto('90° + m∠A ÷ 2 + m∠A ÷ 2 = 150°'), '   →   ', junto('m∠A = 60°')] },
+      { texto: 'Compruebo: 120° + 30° = 150°.' },
+    ],
+    respuesta: ['m∠A = ', dF('60°')] });
+
+  // «Ahora tú» de la idea 6: cinco tipos (s % 5).
+  function bc6(r, a) { for (;;) { const b = 10 * r.ent(3, 10); const c = 180 - a - b; if (c >= 30 && c <= 100 && b <= 100) return [b, c]; } }
+  function casoBIC(r) {
+    for (let i = 0; i < 400; i++) {
+      const a = 10 * r.ent(3, 10), [b, c] = bc6(r, a), F = PQ(b, c, { angulos: { A: t(`${a}°`) }, BIC: pide() });
+      if (!sirve(F)) continue;
+      return { pregunta: `En el triángulo ABC, m∠A = ${a}°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide el ángulo BIC?`, datos: [D_BIC, D_BEC], dibujo: fig(F),
+        opciones: opciones(90 + a / 2, [
+          { id: 'cambio', valor: a / 2, error: 'GE-BIS4', siFuera: 'La mitad de A vale con una bisectriz exterior; aquí las dos son interiores.' },
+          { id: 'entero', valor: 90 + a, error: 'GE-BIS6', siFuera: 'Sumar 90° está bien; cada bisectriz deja solo la mitad: va la mitad de A.' },
+          { id: 'menos', valor: 90 - a / 2, error: 'GE-BIS7', siFuera: '90° menos la mitad de A vale con dos bisectrices exteriores.' },
+        ], gr),
+        solucion: { texto: 'Dos interiores: 90° más la mitad de A.', ecuacion: junto(`m∠BIC = 90° + ${a}° ÷ 2 = ${90 + a / 2}°`) } };
+    }
+    throw new Error('casoBIC');
+  }
+  function casoBEC(r) {
+    for (let i = 0; i < 400; i++) {
+      const a = 10 * r.ent(3, 9), [b, c] = bc6(r, a), F = PQ(b, c, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: t(`${a}°`) }, BEC: pide() });
+      if (!sirve(F)) continue;
+      return { pregunta: `En el triángulo ABC, m∠A = ${a}°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC?`, datos: [D_BIC, D_BEC], dibujo: fig(F),
+        opciones: opciones(a / 2, [
+          { id: 'cambio', valor: 90 + a / 2, error: 'GE-BIS4', siFuera: 'Esa regla vale con dos bisectrices interiores; aquí la de C es exterior.' },
+          { id: 'entero', valor: a, error: 'GE-BIS5-a', siFuera: `${a}° sería si E viera el ángulo A completo; recibe solo su mitad.` },
+          { id: 'recto', valor: 90, error: 'GE-BIS5-b', siFuera: 'Las dos bisectrices de C sí forman 90° entre ellas; el ángulo en E es otro.' },
+        ], gr),
+        solucion: { texto: 'Interior con exterior: la mitad de A.', ecuacion: junto(`m∠BEC = ${a}° ÷ 2 = ${a / 2}°`) } };
+    }
+    throw new Error('casoBEC');
+  }
+  function casoBQC(r) {
+    for (let i = 0; i < 400; i++) {
+      const a = 10 * r.ent(3, 9), [b, c] = bc6(r, a), F = exteriores2(b, c, { A: t(`${a}°`), Q: pide() });
+      if (!sirve(F)) continue;
+      return { pregunta: `En el triángulo ABC, m∠A = ${a}°. Las bisectrices de los ángulos exteriores en B y en C se cortan en Q. ¿Cuánto mide el ángulo BQC?`, datos: [D_BIC, D_BQC], dibujo: fig(F),
+        opciones: opciones(90 - a / 2, [
+          { id: 'cambio', valor: 90 + a / 2, error: 'GE-BIS7', siFuera: '90° más la mitad de A vale con dos bisectrices interiores; aquí son exteriores.' },
+          { id: 'mitad', valor: a / 2, error: 'GE-BIS4', siFuera: 'La mitad de A vale con una interior y una exterior; aquí las dos son exteriores.' },
+          { id: 'sin', valor: 180 - a, error: 'GE-BIS8', siFuera: 'Restar de 180° es parecido; pero la regla es 90° menos la mitad de A.' },
+        ], gr),
+        solucion: { texto: 'Dos exteriores: 90° menos la mitad de A.', ecuacion: junto(`m∠BQC = 90° − ${a}° ÷ 2 = ${90 - a / 2}°`) } };
+    }
+    throw new Error('casoBQC');
+  }
+  function casoBICbc(r) {
+    for (let i = 0; i < 400; i++) {
+      const b = 10 * r.ent(5, 8), c = 10 * r.ent(5, 8);
+      if (b + c > 150 || b === c) continue;
+      const x = 180 - (b + c) / 2, F = PQ(b, c, { angulos: {}, BIC: pide(), masAngulos: enteros(b, c) });
+      if (!sirve(F)) continue;
+      return { pregunta: `En el triángulo ABC, m∠B = ${b}° y m∠C = ${c}°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide el ángulo BIC?`, datos: [D_BIS2, D_SUMA_O], dibujo: fig(F),
+        opciones: opciones(x, [
+          { id: 'mitades', valor: (b + c) / 2, error: 'GE-BIS9', siFuera: `${(b + c) / 2}° suman las dos mitades; ∠BIC es lo que les falta para 180°.` },
+          { id: 'a', valor: 180 - b - c, error: 'GE-BIS5-a', siFuera: `${180 - b - c}° mide el ángulo A; I ve otro ángulo.` },
+          { id: 'bc', valor: 90 + (b + c) / 2, error: 'GE-BIS10', siFuera: 'La regla de 90° va con la mitad de A, no con la mitad de B + C.' },
+        ], gr),
+        solucion: { texto: 'En BIC quedan las mitades de B y C; lo que falta para 180° es ∠BIC.', ecuacion: junto(`m∠BIC = 180° − ${b / 2}° − ${c / 2}° = ${x}°`) } };
+    }
+    throw new Error('casoBICbc');
+  }
+  function casoInverso(r) {
+    for (let i = 0; i < 400; i++) {
+      const a = 2 * r.ent(15, 50), th = 90 + a / 2, [b, c] = [(180 - a) / 2 + 5 * r.ent(-3, 3), 0];
+      const cc = 180 - a - b;
+      if (cc < 25 || b < 25) continue;
+      const F = PQ(b, cc, { angulos: { A: pide() }, BIC: t(`${th}°`) });
+      if (!sirve(F)) continue;
+      return { pregunta: `En el triángulo ABC, las bisectrices interiores de B y C se cortan en I, y m∠BIC = ${th}°. ¿Cuánto mide el ángulo A?`, datos: [D_BIC], dibujo: fig(F),
+        opciones: opciones(a, [
+          { id: 'mitad', valor: th - 90, error: 'GE-BIS11', siFuera: `${th - 90}° es la mitad de A; falta duplicarlo.` },
+          { id: 'sup', valor: 180 - th, error: 'GE-BIS12', siFuera: 'Restar de 180° daría el vecino de ∠BIC; la regla dice lo que pasa de 90°.' },
+          { id: 'divide', valor: (th - 90) / 2, error: 'GE-BIS13', siFuera: 'Lo que pasa de 90° ya es la mitad de A: se duplica, no se divide.' },
+        ], gr),
+        solucion: { texto: 'Lo que pasa de 90° es la mitad de A.', ecuacion: junto(`${th}° − 90° = ${th - 90}°   →   m∠A = ${a}°`) } };
+    }
+    throw new Error('casoInverso');
+  }
+
   const bisectrices = {
     id: 'angulo-de-bisectrices',
-    titulo: 'El ángulo entre dos bisectrices',
+    titulo: 'Ángulos entre bisectrices',
+    pregunta: '¿De qué depende el ángulo donde se cruzan dos bisectrices?',
     temas: ['Ángulos formados por bisectrices'],
-    pieza: 'geo-figura',
-    // Lee (fase 2): qué es una bisectriz y cuál es la exterior. No dice cuánto mide ∠BEC: eso es la predicción.
+    pieza: GO,
+    aprendizaje: 'Las bisectrices interiores de B y C forman 90° + m∠A/2; una interior y una exterior, m∠A/2: solo importa el ángulo A.',
+    actividad: 'Cambiar dos esquinas de un parque y medir el ángulo donde se cruzan sus caminos.',
+    // Lee: el parque, la bisectriz interior y la exterior, y los nombres que vienen después. No dice cuánto mide ∠BIC ni
+    // ∠BEC (el juego y la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Partir a la mitad', texto: 'Una bisectriz parte un ángulo en dos iguales. Si recortas un triángulo de papel y lo doblas juntando dos lados, el doblez marca la bisectriz del ángulo entre ellos.' },
-        { titulo: 'Dos bisectrices que se cruzan', texto: 'Si trazas la bisectriz de B y la de C, se cortan dentro del triángulo en un punto llamado I, el incentro. Entre ellas se forma el ángulo BIC.' },
-        { titulo: 'Adentro y afuera', texto: 'Cada vértice tiene dos bisectrices: la interior, que parte el ángulo de adentro, y la exterior, que parte el ángulo exterior, entre un lado y la prolongación del otro.' },
-        { titulo: 'Qué mirar', texto: 'Cambia B y C, y fíjate en tres números a la vez: el ángulo A, el ángulo BIC y cómo se mueve uno cuando cambia el otro.' },
+        { titulo: 'El parque y la pileta', texto: 'Un parque tiene forma de triángulo ABC. Desde las esquinas B y C sale un camino que parte esa esquina en dos ángulos iguales: cada camino es una bisectriz. Los dos caminos se cruzan en I, donde está la pileta.',
+          pieza: GO, dibujo: fig({ objeto: 'parque', b: 60, c: 50, angulos: { A: {} } }) },
+        { titulo: 'Adentro y afuera', texto: 'Cada esquina tiene dos bisectrices: la bisectriz interior parte el ángulo de adentro, y la bisectriz exterior, el ángulo exterior. Una interior y una exterior se cruzan fuera del parque.',
+          pieza: GO, dibujo: fig({ objeto: 'parque', b: 70, c: 50, I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: {} } }) },
+        { titulo: 'Nombres que vienen después', texto: 'El cruce I se llama incentro y el cruce E de la otra figura, excentro; los dos se explican en Puntos notables. Aquí son solo cruces de caminos, con sus ángulos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia las esquinas B y C. Fíjate en m∠A y en el ángulo BIC de la pileta, y en cómo cambia uno cuando cambia el otro.' },
       ],
     },
+    ejemplos: EJ6,
     juega: {
-      consigna: 'Las bisectrices de B y C se cortan en I. Cambia los ángulos B y C y compara el ángulo BIC con el ángulo A.',
-      voz: 'Cambia B y C. Busca una relación entre BIC y A.',
-      controles: [
-        { id: 'b', etiqueta: 'B', min: 40, max: 70, paso: 10, inicio: 60, unidad: '°', decimales: 0, color: 'c-i' },
-        { id: 'c', etiqueta: 'C', min: 40, max: 70, paso: 10, inicio: 50, unidad: '°', decimales: 0, color: 'c-d' },
+      pieza: GO,
+      consigna: 'Dos caminos parten las esquinas B y C del parque en mitades iguales y se cruzan en la pileta I.',
+      mision: { texto: 'Cambia las esquinas B y C hasta que los caminos se crucen formando 120°.', logrado: v => v.b + v.c === 120, bien: 'Listo: 120° = 90° + 60° ÷ 2. A mide 60°, sea cual sea B.' },
+      voz: 'Cambia B y C. ¿De qué depende el ángulo en la pileta?',
+      leyenda: [
+        { s: 'I', t: 'la pileta, donde se cruzan los caminos' },
+        { s: dH('m∠A'), t: 'el ángulo del parque en A' },
+        { s: 'rayitas', t: 'mitades iguales de B y de C' },
+        { s: 'm∠BIC', t: 'el ángulo entre los caminos, en I' },
       ],
-      dibujo: v => ({ datos: bis(v.b, v.c), estado: {} }),
-      // Se agarra A: su posición decide los ángulos B y C (de 10° en 10°).
-      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
-        donde: v => enPantalla(bis(v.b, v.c), porAngulos(v.b, v.c, 6).A),
-        mover: (pt, v) => { const q = alPlano(bis(v.b, v.c), pt); return { b: U.angulo([0, 0], [6, 0], q), c: U.angulo([6, 0], [0, 0], q) }; } }],
-      lectura: v => [cA, ` = ${180 - v.b - v.c}° · ∠BIC = ${90 + (180 - v.b - v.c) / 2}°`],
-      minimo: 4,
+      controles: [
+        { id: 'b', etiqueta: 'm∠B, la esquina B', min: 50, max: 70, paso: 10, inicio: 60, unidad: '°', decimales: 0, color: 'c-h' },
+        { id: 'c', etiqueta: 'm∠C, la esquina C', min: 50, max: 70, paso: 10, inicio: 50, unidad: '°', decimales: 0, color: 'c-h' },
+      ],
+      dibujo: v => ({ datos: figJ6(v.b, v.c), estado: {} }),
+      arrastres: [{ id: 'esquina-a', etiqueta: 'esquina A del parque: decide los ángulos en B y en C', color: 'c-h',
+        donde: v => PO.aPantalla(figJ6(v.b, v.c), vert(v.b, v.c).A),
+        mover: (pt, v) => { const q = PO.aPlano(figJ6(v.b, v.c), pt), p = [q[0], Math.max(q[1], 0.05)]; return { b: U.angulo([0, 0], [6, 0], p), c: U.angulo([6, 0], [0, 0], p) }; } }],
+      lectura: v => { const a = 180 - v.b - v.c; return [junto('m∠A = '), dH(`${a}°`), junto(`: se cruzan a 90° + ${a / 2}° = ${90 + a / 2}°`)]; },
+      minimo: 3,
     },
     predice: {
-      pregunta: ['Con ', cA, ' = 60°, cambiamos la bisectriz de C por la exterior: corta a la bisectriz de B en E. ¿Cuánto mide el ángulo BEC?'],
-      voz: 'La bisectriz cambió. Decide si la relación cambia también.',
+      pregunta: 'En otro parque, el camino de C parte el ángulo exterior en C, entre la calle CA y la prolongación de BC. Cruza al camino de B en E. ¿Qué ángulo forman en E?',
+      datos: ['m∠A = 60°', 'Cada camino parte su ángulo en dos ángulos iguales.'],
+      voz: 'Una bisectriz cambió. ¿Cambia también la relación?',
       opciones: [
         { id: 'c', texto: '30°', correcta: true },
-        { id: 'interior', texto: '120°', error: 'GE-BIS4', siFuera: '120° es ∠BIC, con las dos bisectrices interiores. En E una de ellas es exterior.' },
-        { id: 'resta', texto: '60°', error: 'GE-BIS5', siFuera: '60° sería cierto si E viera el ángulo A completo. Recibe solo su mitad.' },
-        { id: 'compl', texto: '90°', error: 'GE-BIS5', siFuera: 'Las bisectrices de C sí forman 90° entre sí; el ángulo en E es otro.' },
+        { id: 'interior', texto: '120°', error: 'GE-BIS4', siFuera: '120° es ∠BIC, con las dos bisectrices interiores. En E, una de ellas es exterior.' },
+        { id: 'entero', texto: '60°', error: 'GE-BIS5-a', siFuera: '60° sería si E viera el ángulo A entero; recibe solo su mitad.' },
+        { id: 'recto', texto: '90°', error: 'GE-BIS5-b', siFuera: 'Las dos bisectrices de C sí forman 90° entre ellas; el ángulo en E es otro.' },
       ],
-      dibujo: { datos: bis(70, 50, { E: true, sinE: true, sinBIC: true, alt: 'Triángulo con A = 60°: bisectriz interior de B y exterior de C se cortan en E' }), estado: {} },
-      revelar: { datos: bis(70, 50, { E: true }), estado: {} },
-      coincide: ['Coincide: ∠BEC = ', cA, '/2 = 30°.'],
+      dibujo: fig({ objeto: 'parque', b: 70, c: 50, I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: t('60°') }, BEC: pide() }),
+      revelar: fig({ objeto: 'parque', b: 70, c: 50, I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: t('60°') }, BEC: { color: 'h' } }),
+      coincide: 'Coincide: m∠BEC = m∠A ÷ 2 = 30°, sea cual sea la forma del parque.',
+      noCoincide: 'Revisemos: en E llega solo la mitad de A: 60° ÷ 2 = 30°.',
     },
     mira: {
-      datos: bis(70, 50, { E: true, pasos: { I: 1, BIC: 2, E: 3, E2: 4 } }),
-      voz: 'Primero el interior; luego el exterior se apoya en él.',
+      pieza: GO,
+      datos: { objeto: 'parque', b: 70, c: 50, I: 1, E: 3, mitades: { B: true, C: true, Ce: true }, angulos: { A: { color: 'h' } }, BIC: { texto: '120°', desde: 2 }, ICE: { desde: 3, arcoRecto: true }, BEC: { color: 'h', desde: 4 } },
+      voz: 'Primero la pileta; después, el cruce de afuera.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Las bisectrices toman la mitad de B y la mitad de C.', ecuacion: [{ frac: [cB, '2'] }, ' + ', { frac: [cC, '2'] }, ' = ', { frac: [['180° − ', cA], '2'] }] },
-        { estado: { corte: 2 }, texto: 'En el triángulo BIC, lo que falta para 180° es ∠BIC.', ecuacion: ['∠BIC = 180° − ', { frac: [[cB, ' + ', cC], '2'] }, ' = 90° + ', { frac: [cA, '2'] }] },
-        { estado: { corte: 3 }, texto: 'Las dos bisectrices de C forman 90°.', ecuacion: ['∠ICE = 90°'] },
-        { estado: { corte: 4 }, texto: 'En el triángulo ICE, el exterior en I es ∠BIC.', ecuacion: ['∠BEC = ∠BIC − 90° = ', { frac: [cA, '2'] }, ' = 30°'] },
+        { estado: { corte: 1 }, texto: 'Los caminos toman la mitad de B y la mitad de C.', ecuacion: [{ frac: ['m∠B', '2'] }, ' + ', { frac: ['m∠C', '2'] }, ' = ', { frac: ['180° − m∠A', '2'] }] },
+        { estado: { corte: 2 }, texto: 'En el triángulo BIC, lo que falta para 180° es m∠BIC.', ecuacion: [junto('m∠BIC = 180° − '), { frac: ['m∠B + m∠C', '2'] }, junto(' = 90° + '), { frac: ['m∠A', '2'] }] },
+        { estado: { corte: 3 }, texto: 'Las dos bisectrices de C, interior y exterior, forman 90°.', ecuacion: junto('m∠ICE = 90°') },
+        { estado: { corte: 4 }, texto: 'En el triángulo ICE, m∠BIC es exterior: suma 90° y m∠BEC.', ecuacion: [junto('m∠BEC = m∠BIC − 90° = '), { frac: ['m∠A', '2'] }] },
+        { estado: { corte: 4 }, texto: 'Con m∠A = 60°: 120° en la pileta y 30° en E.', ecuacion: junto(['m∠BIC = ', dH('120°'), '   ·   ', 'm∠BEC = 30°']) },
       ],
     },
     regla: {
-      texto: 'Las bisectrices interiores de B y C forman 90° + A/2. Si una es interior y la otra exterior, forman A/2.',
-      ecuacion: ['∠BIC = 90° + ', { llave: [{ frac: [cA, '2'] }], nota: 'mitad de A', color: 'c-o' }, '   ·   ∠BEC = ', { frac: [cA, '2'] }],
-      condicion: 'I está en las bisectrices interiores de B y C; E, en la interior de B y la exterior de C.',
-      voz: 'Antes de aplicar, revisa qué bisectrices se cortan.',
+      texto: 'Dos bisectrices interiores, de B y de C, forman 90° más la mitad de m∠A; interior con exterior, la mitad de m∠A; dos exteriores, 90° menos esa mitad.',
+      ecuacion: [junto('m∠BIC = 90° + '), { frac: [dH('m∠A'), '2'] }, SEP, junto('m∠BEC = '), { frac: [dH('m∠A'), '2'] }, SEP, junto('m∠BQC = 90° − '), { frac: [dH('m∠A'), '2'] }],
+      condicion: 'solo cuentan qué bisectrices se cruzan y cuánto mide A: no importa cómo se reparten B y C.',
+      voz: 'Antes de aplicar, revisa qué bisectrices se cruzan.',
     },
-    // Así se resuelve (fase 2): el mismo corte de bisectrices de «Ahora tú», con la misma figura y otras semillas.
+    // Así se resuelve: el inverso desde E (y después I) y el cruce con x. «Ahora tú» pide ∠BIC, ∠BEC, ∠BQC, ∠BIC desde B
+    // y C, y el inverso desde I.
     resuelve: {
+      pieza: GO,
       generar(s) {
-        const r = azar(s + 900), a = 10 * r.ent(3, 10), conE = s % 2 === 1;
-        const b = 10 * r.ent(3, Math.min(10, (170 - a) / 10 - 3)), c = 180 - a - b;
-        const d = bis(b, c, { E: conE, sinBIC: true, sinE: true });
-        if (conE) d.angulos = d.angulos.filter(an => !(an.en === 'I'));
-        const bien = conE ? a / 2 : 90 + a / 2, ang = conE ? '∠BEC' : '∠BIC';
-        return {
-          enunciado: conE ? ['En el triángulo ABC, ', cA, ` = ${a}°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide ∠BEC?`]
-            : ['En el triángulo ABC, ', cA, ` = ${a}°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide ∠BIC?`],
-          dibujo: { datos: d, estado: {} },
-          pasos: [
-            { tipo: 'pide', texto: conE ? 'Piden ∠BEC. E está en la bisectriz interior de B y en la exterior de C.' : 'Piden ∠BIC. I está en las dos bisectrices interiores, la de B y la de C.' },
-            { tipo: 'datos', texto: ['Solo conozco ', cA, ` = ${a}°. Los ángulos B y C no los dan.`] },
-            { tipo: 'regla', texto: conE ? 'Cuando se cruzan una bisectriz interior y una exterior, el ángulo entre ellas es la mitad de A.' : 'Cuando se cruzan las dos bisectrices interiores, el ángulo entre ellas es 90° más la mitad de A.',
-              ecuacion: conE ? ['∠BEC = ', { frac: [cA, '2'] }] : ['∠BIC = 90° + ', { frac: [cA, '2'] }] },
-            { tipo: 'cuentas', texto: conE ? ['Saco la mitad de ', cA, '.'] : ['Saco la mitad de ', cA, ' y le sumo 90°.'],
-              ecuacion: conE ? ['∠BEC = ', { frac: [`${a}°`, '2'] }, ` = ${bien}°`] : ['∠BIC = 90° + ', { frac: [`${a}°`, '2'] }, ` = 90° + ${a / 2}° = ${bien}°`] },
-            { tipo: 'sentido', texto: conE ? `Pruebo con un caso: B = ${b}° y C = ${c}°. En el triángulo BEC, B da ${b / 2}° y C da ${c}° + ${(180 - c) / 2}°: queda 180° − ${b / 2}° − ${c + (180 - c) / 2}° = ${bien}°.`
-              : `Pruebo con un caso: B = ${b}° y C = ${c}°. En el triángulo BIC quedan ${b / 2}° y ${c / 2}°: 180° − ${b / 2}° − ${c / 2}° = ${bien}°.` },
-          ],
-          respuesta: `${ang} = ${bien}°`,
-        };
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const e = r.ent(20, 32), a = 2 * e, b = (180 - a) / 2 + 5 * r.ent(-1, 1), cc = 180 - a - b;
+          const F = PQ(b, cc, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: pide() }, BEC: { color: 'h' } });
+          return {
+            enunciado: `En el triángulo ABC, la bisectriz interior de B y la exterior de C se cortan en E, con m∠BEC = ${e}°. ¿Cuánto mide el ángulo A? ¿Y el ángulo BIC, en el cruce de las dos interiores?`,
+            datos: [D_BIC, D_BEC], dibujo: fig(F),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden m∠A y, después, m∠BIC, el cruce de las dos bisectrices interiores.' },
+              { tipo: 'datos', texto: `Solo tengo m∠BEC = ${e}°, el cruce de una interior con una exterior.` },
+              { tipo: 'regla', texto: 'Los dos cruces dependen solo de A: en E llega la mitad de A; en I, 90° más esa mitad.' },
+              { tipo: 'cuentas', texto: `La mitad de A es ${e}°: A es el doble.`, ecuacion: [junto(['m∠A = 2 · ', `${e}° = `, dF(`${a}°`)]), SEP, junto(`m∠BIC = 90° + ${e}° = ${90 + e}°`)] },
+              { tipo: 'sentido', texto: `I y E están en la misma bisectriz de B: m∠BIC − m∠BEC = 90°, y ${90 + e}° − ${e}° = 90°.` },
+            ],
+            respuesta: ['m∠A = ', dF(`${a}°`), `; m∠BIC = ${90 + e}°`],
+          };
+        }
+        for (;;) {
+          const k = 1, x = r.ent(20, 35), a = 2 * k * x, q = 90 + k * x - (k + 1) * x;
+          if (a < 30 || a > 140 || q < 20) continue;
+          const b = (180 - a) / 2 + 5 * r.ent(-2, 2), cc = 180 - a - b;
+          if (b < 20 || cc < 20) continue;
+          const bic = 90 + a / 2, ea = exp(2 * k, 0), eb = exp(k + 1, q);
+          const F = PQ(b, cc, { angulos: { A: t(ea, 'h', { mide: a }) }, BIC: {} });
+          return {
+            enunciado: `En el triángulo ABC, m∠A = ${ea}. Las bisectrices interiores de B y C se cortan en I, y m∠BIC = ${eb}. ¿Cuánto mide el ángulo A?`,
+            datos: [D_BIC], dibujo: fig(F),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden m∠A; para eso hay que hallar x.' },
+              { tipo: 'datos', texto: `m∠A = ${ea} y m∠BIC = ${eb}.` },
+              { tipo: 'regla', texto: `Dos bisectrices interiores: m∠BIC = 90° + m∠A ÷ 2. La mitad de ${ea} es ${exp(k, 0)}.`, ecuacion: junto(`90° + ${exp(k, 0)} = ${eb}`) },
+              { tipo: 'cuentas', texto: 'Despejo x y reemplazo en A.', ecuacion: [junto(`x = ${x}`), SEP, junto(['m∠A = ', `${2 * k} · ${x}° = `, dF(`${a}°`)])] },
+              { tipo: 'sentido', texto: `Compruebo: m∠BIC = ${k + 1} · ${x} + ${q}° = ${bic}° = 90° + ${a / 2}°.` },
+            ],
+            respuesta: ['m∠A = ', dF(`${a}°`)],
+          };
+        }
       },
     },
     ahoraTu: {
-      voz: 'Mira qué bisectrices se cortan antes de elegir la fórmula.',
-      generar(s) {
-        const r = azar(s), a = 10 * r.ent(3, 10), conE = s % 2 === 1;
-        const b = 10 * r.ent(3, Math.min(10, (170 - a) / 10 - 3)), c = 180 - a - b;
-        const d = bis(b, c, { E: conE, sinBIC: true, sinE: true });
-        if (conE) d.angulos = d.angulos.filter(an => !(an.en === 'I'));
-        const bien = conE ? a / 2 : 90 + a / 2;
-        return {
-          pregunta: conE ? ['En el triángulo ABC, ', cA, ` = ${a}°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide ∠BEC?`]
-            : ['En el triángulo ABC, ', cA, ` = ${a}°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide ∠BIC?`],
-          dibujo: { datos: d, estado: {} },
-          opciones: opciones(bien, [
-            { id: 'cambio', valor: conE ? 90 + a / 2 : a / 2, error: 'GE-BIS4', siFuera: conE ? 'Esa fórmula vale con dos bisectrices interiores; aquí una es exterior.' : 'A/2 vale con una bisectriz exterior; aquí las dos son interiores.' },
-            { id: 'menos', valor: 90 - a / 2, error: 'GE-BIS5', siFuera: '90° − A/2 aparece con dos bisectrices exteriores, no en este corte.' },
-            { id: 'sin-mitad', valor: conE ? a : 90 + a, error: 'GE-BIS5', siFuera: 'Falta la mitad: cada bisectriz toma solo la mitad de su ángulo.' },
-          ], gr),
-          solucion: { texto: conE ? 'Interior con exterior: la mitad de A.' : 'Dos interiores: 90° más la mitad de A.', ecuacion: conE ? ['∠BEC = ', { frac: [`${a}°`, '2'] }, ` = ${a / 2}°`] : ['∠BIC = 90° + ', { frac: [`${a}°`, '2'] }, ` = ${90 + a / 2}°`] },
-        };
-      },
+      pieza: GO,
+      voz: 'Mira qué bisectrices se cortan antes de elegir la regla.',
+      generar(s) { return conCuatro([casoBIC, casoBEC, casoBQC, casoBICbc, casoInverso][s % 5], azar(s + 7)); },
     },
+  };
+
+  // La mesa «Ángulo entre bisectrices» del laboratorio: el parque del juego de la idea 6, sin la misión (en el laboratorio
+  // nada se califica). Conserva su id y los de sus controles (b y c).
+  const bicDe = v => 90 + (180 - v.b - v.c) / 2;
+  let BIC_MAX = 0;   // el mayor de la grilla de la mesa (B y C de 50° a 70°, de 10° en 10°)
+  for (let b = 50; b <= 70; b += 10) for (let c = 50; c <= 70; c += 10) BIC_MAX = Math.max(BIC_MAX, bicDe({ b, c }));
+  const mesaBisectrices = {
+    id: 'bisectrices', titulo: 'Ángulo entre bisectrices', pieza: GO,
+    consigna: bisectrices.juega.consigna, controles: bisectrices.juega.controles, dibujo: bisectrices.juega.dibujo,
+    arrastres: bisectrices.juega.arrastres, lectura: bisectrices.juega.lectura,
+    invitaciones: [
+      { texto: 'Haz que el ángulo BIC mida justo 120°.', logrado: v => bicDe(v) === 120, bien: 'BIC = 120° pide A = 60°. Hay varias parejas de B y C.' },
+      { texto: 'Busca el ángulo BIC más grande de la mesa.', logrado: v => bicDe(v) === BIC_MAX, bien: 'El mayor BIC sale con el mayor A: crecen juntos.' },
+      { texto: 'Haz que B y C sean iguales y mira dónde queda I.', logrado: v => v.b === v.c, bien: 'Con B = C, I cae en la bisectriz de A, que también es altura.' },
+      { texto: 'Guarda dos casos con el mismo ángulo A y distintos B y C.',
+        logrado: (v, gs) => gs.some(c => c.b !== v.b && 180 - c.b - c.c === 180 - v.b - v.c) && gs.some(c => c.b === v.b && c.c === v.c),
+        bien: 'Mismo A, mismo BIC: solo cuenta A, no cómo se reparten B y C.' },
+    ],
   };
 
   // ---------- Laboratorio: juego libre, sin preguntas ----------
@@ -1338,28 +2746,24 @@
     ],
   };
 
-  // Las ideas 4 a 6 conservan su contenido de antes (fase 3: se rehacen con sus objetos y la regla de colores). Aquí solo
-  // cambian el título (propuesta §1), la pregunta del Resumen y lo que el alumno debe poder decir.
-  Object.assign(desigualdad, { titulo: 'Desigualdad triangular', pregunta: '¿Con qué tres largos se puede armar un triángulo?',
-    aprendizaje: 'Cada lado es menor que la suma de los otros dos y mayor que su diferencia; en los extremos no hay triángulo, solo un segmento.' });
-  Object.assign(lineas, { titulo: 'Líneas notables', pregunta: '¿Cómo se distingue la altura de la mediana y la bisectriz?',
-    aprendizaje: 'Cada línea notable se reconoce por su condición: la altura es perpendicular y puede caer fuera; mediana, bisectriz y altura coinciden solo en el isósceles.' });
-  Object.assign(bisectrices, { titulo: 'Ángulos entre bisectrices', pregunta: '¿De qué depende el ángulo donde se cruzan dos bisectrices?',
-    aprendizaje: 'Las bisectrices interiores de B y C forman 90° + m∠A/2; una interior y una exterior, m∠A/2: solo importa el ángulo A.' });
-
   return {
     unidad: 'geometria.triangulos',
-    version: '0.3.0',
+    version: '0.4.0',
     estado: 'completa',
+    calidad: 2,
     requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-objeto.js'],
     historia: {
       texto: 'En la proposición I.32 de los Elementos, la suma de los ángulos de un triángulo no se obtiene midiendo muchos dibujos: se traza una paralela y se comparan ángulos. El mismo argumento da el ángulo exterior. Una figura auxiliar se vuelve parte de la demostración.',
       pregunta: '¿Qué línea convierte una regularidad en una prueba?',
       fuente: { titulo: 'Euclides, Elementos I.32 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI32.html' },
     },
-    // Glosario: las palabras que la unidad estrena (docs/teoria.md, 4d). Las de la idea 1 (triángulo, ángulo interior,
-    // acutángulo, rectángulo y obtusángulo) ya traen simple y tres ejemplos; las demás los ganan en la fase 3. Ningún
-    // simple ni ejemplo de la idea 1 dice cuánto suman los ángulos ni que solo uno puede ser obtuso (eso es la predicción).
+    // Glosario: las palabras que la unidad estrena (docs/teoria.md, 4d). Cada idea estrena de 2 a 4 con simple y tres
+    // ejemplos: la 1, triángulo, ángulo interior, acutángulo y obtusángulo; la 2, ángulo exterior y prolongación; la 3,
+    // escaleno, isósceles, equilátero y lado opuesto; la 4, desigualdad triangular y alineados; la 5, altura, mediana,
+    // mediatriz y pie; la 6, bisectriz interior y exterior. Ningún simple ni ejemplo dice la respuesta de una predicción
+    // (cuánto suman los ángulos o los giros, qué lado del techo queda más inclinado, los límites de AC, dónde cae la
+    // altura con un ángulo obtuso, cuánto mide ∠BEC). «incentro» (Proporcionalidad y semejanza) y «excentro» (Puntos
+    // notables) no se definen aquí: el lector los marca con «Se explica en…».
     glosario: [
       { termino: 'triángulo', simbolo: '△', def: 'Figura cerrada de tres lados rectos que se juntan de dos en dos en tres vértices.',
         simple: 'Una figura de tres lados rectos y tres puntas, como un tijeral.',
@@ -1372,9 +2776,31 @@
         ver: ['ángulo exterior'] },
       { termino: 'ángulo exterior', formas: ['ángulo exterior', 'ángulos exteriores'],
         def: 'El que forma un lado con la prolongación del lado vecino, por fuera de la figura.',
-        ejemplo: `Con interiores de 50° y 70°, el exterior del tercer vértice mide ${50 + 70}°.`, ver: ['ángulo interior'] },
-      { termino: 'desigualdad triangular', def: 'Cada lado es menor que la suma de los otros dos y mayor que su diferencia.',
-        ejemplo: `Con lados 5 y 8, el tercero está entre ${8 - 5} y ${8 + 5}, sin llegar a ellos.` },
+        simple: 'Lo que gira un mototaxi al doblar en una esquina de la plaza.',
+        ejemplos: ['En la plaza, el giro en la esquina C es ∠ACD.', 'Con 70° adentro en C, el de afuera mide 110°: juntos forman una recta.', 'En cada vértice se toma uno solo.'],
+        ver: ['ángulo interior', 'prolongación'] },
+      { termino: 'prolongación', def: 'Lo que sigue de un segmento más allá de sus extremos, sobre la misma recta.',
+        simple: 'La calle que sigue de largo después de la esquina.',
+        ejemplos: ['BC prolongado más allá de C llega a D.', 'Las líneas punteadas de la plaza son prolongaciones de sus lados.', 'Un lado y su prolongación forman una sola recta.'] },
+      { termino: 'escaleno', def: 'Triángulo con sus tres lados de medidas distintas.',
+        simple: 'Con tres lados de largos distintos: ninguno repite a otro.',
+        ejemplos: ['El techo de 3 m, 4 m y 6 m.', 'Un triángulo de 5 cm, 7 cm y 9 cm.', 'Sus tres ángulos también miden distinto.'] },
+      { termino: 'isósceles', def: 'Triángulo que tiene dos lados de igual medida.',
+        simple: 'Con dos lados del mismo largo, como las patas de un compás.',
+        ejemplos: ['El compás abierto: sus dos patas miden 12 cm.', 'Un triángulo de lados 9 cm, 9 cm y 4 cm.', 'Si AB = AC, el vértice A queda entre los lados iguales.'],
+        ver: ['equilátero', 'escaleno'] },
+      { termino: 'equilátero', def: 'Triángulo con sus tres lados de igual medida.',
+        simple: 'Con los tres lados del mismo largo, como una señal de tránsito.',
+        ejemplos: ['Un triángulo de lados 5 cm, 5 cm y 5 cm.', 'Una señal de «Ceda el paso».', 'Cada uno de sus tres ángulos mide 60°.'] },
+      { termino: 'lado opuesto', formas: ['lado opuesto', 'lados opuestos'], def: 'En un triángulo, el lado que no toca al vértice del que se habla.',
+        simple: 'El lado de enfrente de una esquina, el que no la toca.',
+        ejemplos: ['El lado opuesto a A es BC.', 'En △ABC, el lado opuesto a C es AB.', 'Cada vértice tiene uno: hay tres.'] },
+      { termino: 'desigualdad triangular', def: 'Cada lado de un triángulo es menor que la suma de los otros dos y mayor que su diferencia.',
+        simple: 'La regla que dice con qué tres largos se cierra un triángulo.',
+        ejemplos: ['Con palitos de 3 cm, 4 cm y 8 cm no se arma un triángulo.', 'Con 5 cm, 7 cm y 11 cm sí se arma.', 'Vale para los tres lados a la vez.'] },
+      { termino: 'alineados', formas: ['alineados', 'alineado', 'alineadas', 'alineada'], def: 'Puntos que están sobre una misma recta.',
+        simple: 'Puestos en fila, sobre una sola línea recta.',
+        ejemplos: ['Tres paraderos de una carretera recta.', 'B, C y D, con D en la prolongación de BC.', 'Los postes de luz de una avenida recta.'] },
       { termino: 'acutángulo', def: 'Triángulo con sus tres ángulos agudos, de menos de 90°.',
         simple: 'Con sus tres puntas cerradas, todas de menos de 90°.',
         ejemplos: ['Con ángulos de 50°, 60° y 70°, es acutángulo.', 'Con 30°, 70° y 80°, también.', 'La cartulina del juego, al empezar, es acutángulo.'] },
@@ -1384,38 +2810,43 @@
       { termino: 'obtusángulo', def: 'Triángulo con un ángulo obtuso, de más de 90° y menos de 180°.',
         simple: 'Tiene una punta muy abierta, de más de 90°.',
         ejemplos: ['Con ángulos de 30°, 40° y 110°, es obtusángulo.', 'Un tijeral de techo bajo es obtusángulo: arriba pasa de 90°.', 'Con 20°, 35° y 125°, también.'] },
-      { termino: 'escaleno', def: 'Triángulo con sus tres lados de medidas distintas.' },
-      { termino: 'isósceles', def: 'Triángulo con dos lados iguales. Los ángulos frente a esos lados también son iguales.' },
-      { termino: 'equilátero', def: 'Triángulo con sus tres lados iguales. Cada uno de sus ángulos mide 60°.' },
-      { termino: 'perpendicular', simbolo: '⟂', def: 'Que corta a otra línea formando ángulos de 90°.' },
-      { termino: 'altura', def: 'Segmento perpendicular que baja de un vértice o punto hasta la recta de enfrente. Mide la distancia a ella.',
+      { termino: 'perpendicular', simbolo: '⟂', def: 'Que corta a otra línea formando ángulos de 90°.',
+        ejemplos: ['AH ⟂ BC: AH corta a BC formando 90°.', 'Las esquinas de una hoja de cuaderno son de lados perpendiculares.', 'La mediatriz es perpendicular a su segmento.'] },
+      { termino: 'altura', def: 'Segmento que va de un vértice a la recta del lado opuesto y forma 90° con ella.',
+        simple: 'Camino derecho de una punta que llega en cruz a la recta de enfrente.',
+        ejemplos: ['El camino del caserío que llega a la carretera formando 90°.', 'Se marca con un cuadradito en su pie.', 'Un triángulo tiene tres, una desde cada vértice.'],
         ver: ['pie', 'línea notable'] },
-      { termino: 'mediana', def: 'Segmento que une un vértice del triángulo con el punto medio del lado opuesto.', ver: ['punto medio'] },
-      { termino: 'mediatriz', def: 'Recta perpendicular a un segmento que pasa por su punto medio.', ver: ['perpendicular', 'punto medio'] },
+      { termino: 'mediana', def: 'Segmento que une un vértice del triángulo con el punto medio del lado opuesto.',
+        simple: 'El camino desde una punta hasta la mitad del lado de enfrente.',
+        ejemplos: ['El camino del caserío al punto M, a 3 km de cada paradero.', 'Las dos mitades del lado llevan la misma rayita.', 'Un triángulo tiene tres medianas.'],
+        ver: ['punto medio'] },
+      { termino: 'mediatriz', def: 'Recta perpendicular a un segmento que pasa por su punto medio.',
+        simple: 'La línea que corta un tramo justo por la mitad, en cruz.',
+        ejemplos: ['La mediatriz de BC pasa por M y forma 90° con BC.', 'No tiene que pasar por ningún vértice.', 'En los dibujos de la teoría va punteada, en tinta.'],
+        ver: ['perpendicular', 'punto medio'] },
       { termino: 'línea notable', formas: ['líneas notables', 'línea notable'],
         def: 'Cada línea especial del triángulo: altura, mediana, bisectriz o mediatriz. Se reconoce por su condición.',
+        ejemplos: ['La altura se reconoce por su ángulo de 90°.', 'La mediana, por llegar al punto medio.', 'La bisectriz, por sus dos ángulos iguales.'],
         ver: ['altura', 'mediana', 'bisectriz', 'mediatriz', 'baricentro', 'incentro'] },
-      { termino: 'pie', formas: ['pie', 'pies'], def: 'Punto donde una línea trazada desde un vértice llega al lado de enfrente o a su prolongación.' },
-      { termino: 'prolongación', def: 'Lo que sigue de un segmento más allá de sus extremos, sobre la misma recta.' },
-      { termino: 'lado opuesto', formas: ['lado opuesto', 'lados opuestos'], def: 'En un triángulo, el lado que no toca al vértice del que se habla.' },
-      { termino: 'demostración', def: 'Razonamiento que prueba que algo vale en todos los casos, no solo en el dibujo.' },
-      { termino: 'proposición', def: 'En los Elementos de Euclides, cada afirmación numerada que se enuncia y después se prueba.' },
+      { termino: 'pie', formas: ['pie', 'pies'], def: 'Punto donde una línea trazada desde un vértice llega al lado de enfrente o a su prolongación.',
+        simple: 'El punto donde un camino toca la carretera.',
+        ejemplos: ['H es el pie de la altura.', 'M es el pie de la mediana.', 'F es el pie de la bisectriz.'] },
+      { termino: 'bisectriz interior', formas: ['bisectriz interior', 'bisectrices interiores'],
+        def: 'La que parte en dos ángulos iguales el ángulo de adentro de un vértice.',
+        simple: 'El camino que parte una esquina del parque por la mitad, hacia adentro.',
+        ejemplos: ['El camino de B a la pileta.', 'Las de B y de C se cruzan en I.', 'Deja la misma rayita en sus dos mitades.'],
+        ver: ['bisectriz', 'bisectriz exterior'] },
+      { termino: 'bisectriz exterior', formas: ['bisectriz exterior', 'bisectrices exteriores'],
+        def: 'La que parte en dos ángulos iguales el ángulo exterior de un vértice.',
+        simple: 'La que parte por la mitad el ángulo de afuera de una esquina.',
+        ejemplos: ['La de C parte el ángulo ACD.', 'Sale del vértice hacia fuera del triángulo.', 'Cada vértice tiene una.'],
+        ver: ['bisectriz interior', 'ángulo exterior'] },
+      { termino: 'demostración', def: 'Razonamiento que prueba que algo vale en todos los casos, no solo en el dibujo.',
+        ejemplos: ['Una figura auxiliar, como una paralela, puede ser parte de una prueba.', 'Medir cien triángulos no es una prueba; razonar sí.', 'Euclides prueba cada proposición con las anteriores.'] },
+      { termino: 'proposición', def: 'En los Elementos de Euclides, cada afirmación numerada que se enuncia y después se prueba.',
+        ejemplos: ['La proposición I.32 trata de los ángulos del triángulo.', 'Cada una se prueba con las que vienen antes.', 'El libro I de los Elementos tiene 48.'] },
     ],
-    laboratorio: [mesaLibre, mesaBisagra, Object.assign({ id: 'bisectrices', titulo: 'Ángulo entre bisectrices', pieza: 'geo-figura',
-      invitaciones: [
-        { texto: 'Haz que el ángulo BIC mida justo 120°.',
-          logrado: v => Math.abs(anguloBIC(v) - 120) < 1e-6,
-          bien: 'BIC = 120° pide A = 60°. Hay varias parejas de B y C.' },
-        { texto: 'Busca el ángulo BIC más grande de la mesa.',
-          logrado: v => Math.abs(anguloBIC(v) - BIC_MAX) < 1e-6,
-          bien: 'El mayor BIC sale con el mayor A: crecen juntos.' },
-        { texto: 'Haz que B y C sean iguales y mira dónde queda I.',
-          logrado: v => v.b === v.c,
-          bien: 'Con B = C, I cae en la bisectriz de A, que también es altura.' },
-        { texto: 'Guarda dos casos con el mismo ángulo A y distintos B y C.',
-          logrado: (v, gs) => gs.some(c => c.b !== v.b && 180 - c.b - c.c === 180 - v.b - v.c) && gs.some(c => c.b === v.b && c.c === v.c),
-          bien: 'Mismo A, mismo BIC: solo cuenta A, no cómo se reparten B y C.' },
-      ] }, bisectrices.juega)],
+    laboratorio: [mesaLibre, mesaBisagra, mesaBisectrices],
     // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). El triángulo libre
     // practica también la suma (su reto de comparar sumas; propuesta §7a). Una lista vacía: «Más mesas del tema».
     laboratorioIdeas: {

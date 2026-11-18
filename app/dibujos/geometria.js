@@ -28,11 +28,14 @@ D.registrar('geometria', {
     return P.l([[8, 84], [152, 84]], 'd') + P.l([[8, 40], [152, 40]], 'd') + paralela(P, 140, 40) + paralela(P, 140, 84)
       + cuña(P, ...a, 22, 0, g) + cuña(P, ...b, 22, 180, g + 180) + P.l([[38, 108], [122, 16]]);
   },
-  // El ángulo externo vale lo que suman los dos internos que no son sus vecinos.
+  // Los tres ángulos de un triángulo, juntos sobre una recta, llenan un ángulo llano: suman 180°.
   'geometria.triangulos': P => {
-    const A = [12, 100], B = [110, 100], C = [64, 14];
-    return P.l([[110, 100], [154, 100]], 'd') + poli(P, [A, B, C]) + cuña(P, ...A, 20, 0, dir(A, C), 'm')
-      + cuña(P, ...C, 18, dir(C, A) + 360, dir(C, B) + 360, 'm') + cuña(P, ...B, 24, 0, dir(B, C)) + poli(P, [A, B, C], '');
+    const A = [40, 12], B = [8, 66], C = [86, 66], O = [118, 108];
+    const ang = (V, p, q) => { const u = dir(V, p), w = dir(V, q); let d = w - u; while (d < 0) d += 360; return [u, u + d]; };
+    const [b1, b2] = ang(B, C, A), [c1, c2] = ang(C, A, B), [a1, a2] = ang(A, B, C);
+    const ga = a2 - a1, gb = b2 - b1, gc = c2 - c1;
+    return poli(P, [A, B, C], 'b') + cuña(P, ...B, 16, b1, b2, 'm') + cuña(P, ...C, 16, c1, c2, 'b') + cuña(P, ...A, 16, a1, a2, 'a') + poli(P, [A, B, C], '')
+      + cuña(P, ...O, 30, 0, gc, 'b') + cuña(P, ...O, 30, gc, gc + ga, 'a') + cuña(P, ...O, 30, gc + ga, gc + ga + gb, 'm') + P.l([[82, 108], [154, 108]], 'd') + P.c(...O, 3.5, 'tn');
   },
   // Dos triángulos con los mismos lados son iguales, aunque uno esté volteado.
   'geometria.congruencia': P => {

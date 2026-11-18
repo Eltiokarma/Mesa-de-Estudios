@@ -16,7 +16,7 @@
  *   alto: 240,                                     // alto máximo del lienzo (el ancho es 320)
  *   tresD: { giro: 30, alza: 20 },                 // si está, los puntos llevan z y se proyectan (ortogonal)
  *   cuadricula: { paso: 1 },  ejes: true,          // cuadrícula de 1 px y ejes x, y con punta
- *   puntos:    [{ id, x, y, z, rotulo, color, lado: grados, sinPunto, hueco, desde, hasta }],
+ *   puntos:    [{ id, x, y, z, rotulo, color, lado: grados, lejos: px de más hasta la letra, sinPunto, hueco, desde, hasta }],
  *   regiones:  [{ puntos: [id | [x, y(, z)]], color, opacidad, discontinua, sinBorde, fondo, desde, hasta }],  // fondo: tapa lo de atrás
  *   solidos:   [{ caras: [[id, …], …], color, desde, hasta }],   // caras en sentido antihorario vistas desde fuera:
  *                                                                // las aristas que solo tocan caras de atrás van discontinuas
@@ -272,7 +272,9 @@
       if (q.lado !== undefined) { ux = Math.cos(rad(q.lado)); uy = -Math.sin(rad(q.lado)); }
       else { const L = Math.hypot(x - g.centro[0], y - g.centro[1]) || 1; ux = (x - g.centro[0]) / L; uy = (y - g.centro[1]) / L; if (L < 2) { ux = 0; uy = -1; } }
       const dot = q.sinPunto ? '' : q.hueco ? `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="4" fill="none" stroke="${T.color(q.color)}" stroke-width="2"/>` : `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${q.color ? 4 : 3}" fill="${T.color(q.color)}"/>`;
-      return dot + (q.rotulo ? T.rotulo(x + ux * 15, y + uy * 15 + 5, q.rotulo, { ancla: 'middle', peso: 600, color: q.color }) : '');
+      // lejos: px de más entre el punto y su letra (la manija del juego tapaba la letra pegada a su vértice).
+      const dl = 15 + (+q.lejos || 0);
+      return dot + (q.rotulo ? T.rotulo(x + ux * dl, y + uy * dl + 5, q.rotulo, { ancla: 'middle', peso: 600, color: q.color }) : '');
     });
     s += capa(d.rotulos, r => { const p = g.S([r.x, r.y, r.z || 0]); return T.rotulo(p[0], p[1] + 5, r.texto, { color: r.color, ancla: r.ancla || 'middle', peso: 700 }); });
     return T.svg(W, g.alto, s, { alt: alt(d) });

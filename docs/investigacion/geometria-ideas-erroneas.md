@@ -175,6 +175,37 @@ Los verifiqué con `fractions.Fraction` en Python (`python3 -I`; sympy no está 
 - **Sin estudios:** ángulos entre paralelas, ángulos en la circunferencia (salvo GE12), relaciones métricas, el factor 1/3 y área lateral con apotema. Para estos conviene que el colegio responda primero preguntas abiertas y que los distractores salgan de esas respuestas.
 - **Modestou y Gagatsis (2007)**, *Educational Psychology* 27(1), 75–92: la ilusión de linealidad como obstáculo epistemológico, con porcentajes por ítem que no vi.
 
+## Triángulos (18 nov)
+
+Códigos de `contenido/teoria/geometria/triangulos.js` (etapa 4, `docs/etapa4/propuesta-geometria.md`). **Todos son
+hipótesis** sacadas del temario, de las preguntas de San Marcos clasificadas en la unidad y de la práctica de academia:
+no tienen datos de alumnos y se confirman con la medición del piloto. Solo GE7 y GE8 (arriba) tienen respaldo; aquí se
+parten para que dos opciones de una misma pregunta no lleven el mismo código.
+
+| Código | Hipótesis | Dónde aparece |
+| --- | --- | --- |
+| GE-TRI4 | Un tercer ángulo chico «arregla» dos ángulos obtusos | Idea 1, predicción |
+| GE-TRI5 | Los tres ángulos suman 360° (una vuelta) | Idea 1 |
+| GE-TRI6 a GE-TRI8 | Resta de 180° uno solo de los dos ángulos; da la suma de los dos; clasifica con los dos que ve | Idea 1, «Ahora tú» |
+| GE-TRI9 a GE-TRI12 | Llama rectángulo u obtusángulo a uno que no lo es; cree que falta un dato; reparte 180° en partes iguales | Idea 1 |
+| GE-TRI13 a GE-TRI15, GE-TRI19 | Da el ángulo en vez de x, se queda en x, pasa mal los números al despejar, olvida juntar los números sueltos | Ideas 1 y 2 |
+| GE-TRI16 a GE-TRI18 | En la mariposa: copia el ángulo de la misma posición, suma los cuatro, olvida el ángulo en O | Idea 1 |
+| GE-EXT1 a GE-EXT3 | La vuelta del mototaxi suma 180° como los ángulos de adentro, 540° (180° por esquina) o «depende de la forma» | Idea 2, predicción |
+| GE-EXT4 a GE-EXT7 | Da el interior del mismo vértice; resta de 180° un solo ángulo lejano; resta los dos lejanos; suma el exterior con un interior en vez de restar | Idea 2 |
+| GE-EXT8, GE-EXT9 | Iguala a 180° la suma de los dos lejanos y el exterior; da uno de los interiores en vez del exterior | Idea 2, con x |
+| GE-EXT10 a GE-EXT12 | En la punta de flecha suma solo dos ángulos, toma el de afuera (360° menos la suma) o suma B y C del triángulo grande | Idea 2, nivel examen |
+| GE-EXT13 | Reparte 360° en tres giros iguales | Idea 2 |
+| GE-ISO1 a GE-ISO3 | Toma el ángulo pegado al lado y no el de enfrente; supone el techo simétrico; cree que falta la altura del techo | Idea 3, predicción |
+| GE-ISO4 a GE-ISO8 | No divide entre los dos ángulos de la base; iguala la punta con la base; resta de 90° sin partir; resta un solo ángulo de la base; da lo que suman los dos de la base | Idea 3 |
+| GE-ISO9 a GE-ISO12 | Da x en vez del lado; iguala los lados que tocan a los ángulos iguales; da el tercer lado; invierte la relación lado mayor y ángulo mayor | Idea 3 |
+| GE-ISO13 a GE-ISO15 | En la cadena AB = BD = DC: copia el ángulo de C en A, toma el ángulo de D que no es del triángulo ABD, duplica dos veces | Idea 3, nivel examen |
+| GE-DT4 a GE-DT13 | Cuenta uno solo de los extremos; cruza máximo y mínimo; cree que el tercer lado no pasa del mayor; repite el lado corto del isósceles (4, 4 y 9); suma solo los dos lados dados; acepta las dos formas del isósceles; en la diagonal usa un solo triángulo o junta los dos rangos | Idea 4 |
+| GE7-a, GE7-b | La altura cae dentro, inclinada; un lado hace de altura (las dos formas de GE7) | Idea 5, predicción |
+| GE-LN1 a GE-LN3 | Llama altura o bisectriz a cualquier línea que sale de un vértice; llama mediatriz a la que forma 90° aunque salga de un vértice | Idea 5, reconocer por la marca |
+| GE-LN4 a GE-LN13 | Cree que en el rectángulo o el acutángulo la altura cae fuera; copia el ángulo B en ∠BAH; da ∠ABH; parte el ángulo como bisectriz; usa A entero en ∠AFC; da ∠AFB; cree que la bisectriz forma 90°; no divide (B − C); promedia B y C; se queda en ∠BAH | Idea 5 |
+| GE-BIS5-a, GE-BIS5-b | En E toma el ángulo A entero; cree que las dos bisectrices de C dan 90° en E | Idea 6, predicción |
+| GE-BIS6 a GE-BIS13 | Suma 90° sin partir A; usa la regla de dos exteriores; no divide en la de dos exteriores; se queda en la suma de las mitades; usa B y C en vez de A; en el inverso olvida duplicar, da el suplemento o divide | Idea 6 |
+
 ## Fuentes
 
 No pude leer ninguna completa; lo que digo de cada una viene de los resúmenes del buscador web (6 de noviembre de 2026), que citan el texto o las tablas.

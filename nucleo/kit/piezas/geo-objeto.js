@@ -1,5 +1,5 @@
 /*
- * Pieza «geo-objeto» (17 nov 2026): objetos de la vida real para la teoría de «Segmentos y ángulos»
+ * Pieza «geo-objeto» (17 nov 2026): objetos de la vida real para la teoría de «Segmentos y ángulos» y de «Triángulos»
  * (contenido/teoria/geometria/segmentos-y-angulos.js). Dibujos de prueba (data-prueba): Gerson decide después cuáles
  * reemplaza (docs/plan-calidad.md, M4). Las ideas siguientes de la unidad agregan aquí sus objetos (la soga, la tranquera,
  * los rieles, el pasaje entre avenidas; docs/etapa3/propuesta-geometria.md §2).
@@ -44,6 +44,20 @@
  *              rayo punteado de su vértice que pase por debajo); arcoRecto: true dibuja un recto con arco y no con el cuadradito.
  *              Dos ángulos consecutivos del mismo color (sin rayitas) nunca quedan con el mismo radio: el segundo va
  *              8 px más afuera. angulosListos(datos) da los ángulos como se dibujan (radios y sectores finales).
+ *              Un recto que se pide («?», una letra o una expresión como «9k») va con arco: el cuadradito diría su valor.
+ *   En toda escena, manija: id del punto que arrastra el juego; su letra se aleja 8 px (la manija la tapaba).
+ *   Triángulos (18 nov, fase 3), dibujos de prueba con el triángulo a escala de geo-figura (formato en cada función):
+ *   plaza      la plaza triangular vista desde arriba y el mototaxi que la rodea; exteriores en A, B y C (∠BAE, ∠CBF,
+ *              ∠ACD) con las calles prolongadas. examen: true, la misma figura sin calles (la figura de examen de las ideas 2 y 3)
+ *   compas     el compás abierto sobre la hoja: patas iguales con su rayita sobre una llave, la raya BC con su medida
+ *   tijeral    también el techo a dos aguas armado con sus tres lados (lados, letras, colores, medidas)
+ *   lampara    la lámpara de escritorio de costado: brazos CB y BA, el codo, AC punteado y los dos extremos (cerrado y estirado)
+ *   caserio    el caserío junto a la carretera con dos paraderos: altura, mediana, bisectriz y mediatriz, con sus marcas
+ *   parque     el parque triangular: bisectrices de B y C que se cruzan en la pileta I; la exterior de C y su cruce E
+ *   Comunes a estas y a «angulos»: llaves (marca de igualdad sobre una llave que une las puntas del tramo), ladosRot (la
+ *   medida de un lado), libres (un rótulo suelto junto a un punto) y masPuntos, masSegmentos, masAngulos. Lo que escriben
+ *   y lo que trazan (llaves, objetos) es obstáculo para los rótulos de los ángulos, y escenaCabe lo revisa; las letras de
+ *   los vértices van en el hueco más ancho entre los trazos de su punto (acomodarLetras).
  *
  * datos = {
  *   objeto: 'carretera' | 'recta',
@@ -93,7 +107,7 @@
   const LETRA = 162;                              // línea base de las letras de los paraderos
   const NIVEL = { 1: 88, 2: 58, 3: 28, '-1': 182, '-2': 212 };
   const CW = 30, CH = 15;                         // la combi
-  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos'];
+  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque'];
   const COLORES_DATO = ['o', 'i', 'd'];
   const n = T.n;
   const f = x => Kit.formatear(x, 2);
@@ -459,7 +473,8 @@
     for (const q of fig.puntos || []) {
       if (!q.rotulo || q.lado === undefined || !ve(q, corte)) continue;
       const [x, y] = g.S(q.id), w = T.ancho(q.rotulo, TAM, 600);
-      out.push(cajaDe(x + Math.cos(q.lado * RAD) * 15, y - Math.sin(q.lado * RAD) * 15 + 1, w, ALTO_T));
+      const dl = 15 + (+q.lejos || 0);
+      out.push(cajaDe(x + Math.cos(q.lado * RAD) * dl, y - Math.sin(q.lado * RAD) * dl + 1, w, ALTO_T));
     }
     for (const l of ls || []) out.push({ x0: l[0], x1: l[0] + 16, y0: l[1] - 13, y1: l[1] + 6 });
     return out;
@@ -846,8 +861,17 @@
   // El tijeral de un techo: dos vigas inclinadas (los pares) y una horizontal (el tirante), clavadas en sus puntas, con la
   // calamina encima y la pared debajo. Mismo triángulo que la cartulina (base 6, ángulos b y c); sin letras.
   //   { b, c, angulos: { A, B, C: { texto, color } }, alto }
+  // El techo a dos aguas (Triángulos, idea 3) es el mismo tijeral armado con sus tres lados (lados: [AB, AC, BC], en m),
+  // con sus letras (letras: true), los lados en color (colores: { AB, AC, BC }) y su medida (medidas: { AB, AC, BC }).
+  //   masPuntos, masSegmentos, masAngulos: lo que el texto de la teoría agrega (el punto D de «Mira»).
   function tijeral(d) {
-    const b = d.b, c = d.c, { A, B, C } = vertices(b, c), AN = d.angulos || {}, medida = { A: 180 - b - c, B: b, C: c };
+    let b = d.b, c = d.c, A, B, C;
+    if (Array.isArray(d.lados)) {
+      const [ab, ac, bc] = d.lados, x = (ab * ab - ac * ac + bc * bc) / (2 * bc);
+      A = [x, Math.sqrt(Math.max(0, ab * ab - x * x))]; B = [0, 0]; C = [bc, 0];
+      b = GF().util.angulo(B, C, A); c = GF().util.angulo(C, A, B);
+    } else ({ A, B, C } = vertices(b, c));
+    const AN = d.angulos || {}, medida = { A: 180 - b - c, B: b, C: c };
     const LADOS = { A: ['B', 'C'], B: ['C', 'A'], C: ['A', 'B'] }, angulos = [];
     for (const v of ['A', 'B', 'C']) {
       const x = AN[v];
@@ -856,9 +880,17 @@
     }
     const ab = Math.hypot(A[0], A[1]), ac = Math.hypot(C[0] - A[0], C[1] - A[1]);
     const alero = 0.55, EB = mas(B, [-A[0] / ab, -A[1] / ab], alero), EC = mas(C, [(C[0] - A[0]) / ac, (C[1] - A[1]) / ac], alero);
-    const fig = { alt: d.alt || `Tijeral de un techo: dos vigas inclinadas y una horizontal forman un triángulo, con ${Kit.formatear(b, 1)}° y ${Kit.formatear(c, 1)}° abajo y ${Kit.formatear(180 - b - c, 1)}° arriba; encima va la calamina.`,
-      vista: { x: [EB[0] - 0.3, EC[0] + 0.3], y: [-1.25, A[1] + 0.55] }, alto: d.alto || 230,
-      puntos: [pt('A', A), pt('B', B), pt('C', C)], segmentos: [], angulos };
+    const L = !!d.letras, cl = d.colores || {};
+    // Con letras (el techo), van como rótulos sueltos, más lejos que en geo-figura: la viga tiene ancho.
+    const puntos = [pt('A', A), pt('B', B), pt('C', C)];
+    if (L) for (const an of angulos) an.holgura = 7;
+    const segmentos = d.colores ? [{ de: 'A', a: 'B', color: cl.AB, grosor: 'variable' }, { de: 'A', a: 'C', color: cl.AC, grosor: 'variable' }, { de: 'B', a: 'C', color: cl.BC }] : [];
+    const fig = masFig(d, { alt: d.alt || (d.lados ? `Techo a dos aguas: un lado AB de ${Kit.formatear(d.lados[0], 1)} m y otro AC de ${Kit.formatear(d.lados[1], 1)} m sobre una viga BC de ${Kit.formatear(d.lados[2], 1)} m; encima va la calamina.`
+      : `Tijeral de un techo: dos vigas inclinadas y una horizontal forman un triángulo, con ${Kit.formatear(b, 1)}° y ${Kit.formatear(c, 1)}° abajo y ${Kit.formatear(180 - b - c, 1)}° arriba; encima va la calamina.`),
+      vista: d.vista || { x: [EB[0] - 0.3, EC[0] + 0.3], y: [-1.25, A[1] + 0.55 + (L ? 0.5 : 0)] }, alto: d.alto || 230,
+      puntos, segmentos, angulos });
+    const datos = Object.assign({}, d, { ladosRot: (d.ladosRot || []).concat(['AB', 'AC', 'BC'].filter(k => d.medidas && d.medidas[k]).map(k => ({ de: k[0], a: k[1], texto: d.medidas[k], color: cl[k], dist: k === 'BC' ? 22 : 13 }))),
+      libres: (d.libres || []).concat(L ? [{ en: 'A', dir: 90, dist: 9, texto: 'A' }, { en: 'B', dir: 290, dist: 9, texto: 'B' }, { en: 'C', dir: 250, dist: 9, texto: 'C' }] : []) });
     const deco = g => {
       const HW = 4.5;
       const tabla = (p, q, e0, e1) => {
@@ -881,7 +913,433 @@
       s += tabla(EB, A, 0, 4) + tabla(EC, A, 0, 4) + tabla(B, C, 3, 3);
       return s;
     };
-    return { fig, deco };
+    return { fig, deco, datos };
+  }
+
+  // ---------- Triángulos, ideas 2 a 6 (18 nov, fase 3): plaza, compás, techo, lámpara, caserío y parque ----------
+  // Dibujos de prueba (data-prueba), como la cartulina. Los trazos, los arcos y los puntos los dibuja geo-figura a escala;
+  // estas escenas ponen el objeto debajo y, encima, lo que la pieza escribe por su cuenta. Lo que escriben y lo que
+  // trazan (llaves, rótulos de lados, letras de los pies, el mototaxi, las casas, la pileta) también cuenta como
+  // obstáculo para los rótulos de los ángulos: ningún rótulo lo pisa (escenaCabe lo revisa).
+  // Comunes a estas escenas y a la figura de examen «angulos» (claves de los datos):
+  //   llaves:   [{ de, a, marcas: 1..3, color, ref, dist, desde, hasta }]   la marca de «miden igual» sobre una llave que
+  //             une las dos puntas del tramo, del lado contrario a ref (un id o [x, y]; si no va, el centro del
+  //             triángulo). Nunca sobre la línea misma (molde §3, 18 nov).
+  //   ladosRot: [{ de, a, texto, color, ref, dist, en, desde, hasta }]   la medida de un lado, junto a su mitad (en: otra
+  //             fracción del lado), del lado contrario a ref, con dist px de aire entre el lado y la caja del texto
+  //   libres:   [{ en, dir, dist, texto, color, desde, hasta }]   un rótulo suelto junto a un punto, hacia dir (grados del
+  //             plano, antihorario), con dist px de aire entre el punto y la caja
+  const mas2 = (p, u, k) => [p[0] + u[0] * k, p[1] + u[1] * k];
+  const angU = (V, P, Q) => GF().util.angulo(V, P, Q);
+  const unidad = (p, q) => { const l = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1; return [(q[0] - p[0]) / l, (q[1] - p[1]) / l]; };
+  const soporte = (w, h, u) => (w / 2) * Math.abs(u[0]) + (h / 2) * Math.abs(u[1]);
+  // Los lados de un polígono de pantalla, como obstáculos.
+  const bordes = (ps, cerrado = true) => ps.slice(0, cerrado ? ps.length : ps.length - 1).map((p, i) => [p, ps[(i + 1) % ps.length]]);
+  const circuloPs = (c, r, k = 12) => Array.from({ length: k }, (_, i) => [c[0] + r * Math.cos(2 * Math.PI * i / k), c[1] + r * Math.sin(2 * Math.PI * i / k)]);
+  const rutaPx = (ps, cerrado = true) => 'M' + ps.map(q => `${n(q[0])} ${n(q[1])}`).join('L') + (cerrado ? 'Z' : '');
+  function centroDe(g, fig) {
+    const ids = ['A', 'B', 'C'].filter(id => (fig.puntos || []).some(q => q.id === id));
+    const ps = (ids.length === 3 ? ids : (fig.puntos || []).map(q => q.id)).map(id => g.S(id)).filter(Boolean);
+    return ps.length ? [ps.reduce((s, p) => s + p[0], 0) / ps.length, ps.reduce((s, p) => s + p[1], 0) / ps.length] : [W / 2, g.alto / 2];
+  }
+  // La normal (en pantalla) del tramo p–q que se aleja de ref.
+  function normalFuera(p, q, ref) {
+    const u = unidad(p, q); let nx = -u[1], ny = u[0];
+    const m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
+    if ((m[0] - ref[0]) * nx + (m[1] - ref[1]) * ny < 0) { nx = -nx; ny = -ny; }
+    return [nx, ny];
+  }
+  // Un rótulo centrado en (x, y): su caja (encajada en el lienzo) y su texto.
+  const rotuloEn = (x, y, texto, color) => {
+    const w = T.ancho(String(texto), TAM, 700), caja = cajaDe(x, y, w, ALTO_T);
+    return { caja, svg: T.rotulo(x, y + TAM * 0.275, String(texto), { ancla: 'middle', peso: 700, color, min: M, max: W - M }) };
+  };
+  function comunes(d, g, corte, fig) {
+    let svg = ''; const cajas = [], lineas = [];
+    const cen = centroDe(g, fig), refDe = r => (r === undefined ? cen : g.S(r));
+    for (const l of d.llaves || []) {
+      if (!ve(l, corte)) continue;
+      const p = g.S(l.de), q = g.S(l.a);
+      if (!p || !q) continue;
+      const nv = normalFuera(p, q, refDe(l.ref)), u = unidad(p, q), L = Math.hypot(q[0] - p[0], q[1] - p[1]);
+      // Una punta que es un punto con letra deja más aire (hasta 20 px): la letra no toca la llave.
+      const conLetra = id => (fig.puntos || []).some(x => x.id === id && x.rotulo && ve(x, corte));
+      const o = l.dist || 11, e0 = conLetra(l.de) ? Math.min(20, L / 3) : Math.min(5, L / 6), e1 = conLetra(l.a) ? Math.min(20, L / 3) : Math.min(5, L / 6), c = T.color(l.color);
+      const P = (base, k, s) => [base[0] + u[0] * k + nv[0] * s, base[1] + u[1] * k + nv[1] * s];
+      const t0 = Math.max(4, o - 7), a0 = P(p, e0, t0), a1 = P(p, e0, o), b1 = P(q, -e1, o), b0 = P(q, -e1, t0);
+      svg += `<path d="${rutaPx([a0, a1, b1, b0], false)}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      lineas.push([a0, a1], [a1, b1], [b1, b0]);
+      const k = Math.max(1, Math.min(3, l.marcas || 1)), mid = [(a1[0] + b1[0]) / 2, (a1[1] + b1[1]) / 2];
+      for (let i = 0; i < k; i++) {
+        const cc = [mid[0] + u[0] * (i - (k - 1) / 2) * 5, mid[1] + u[1] * (i - (k - 1) / 2) * 5];
+        const r0 = [cc[0] - nv[0] * 5 - u[0] * 1.5, cc[1] - nv[1] * 5 - u[1] * 1.5], r1 = [cc[0] + nv[0] * 5 + u[0] * 1.5, cc[1] + nv[1] * 5 + u[1] * 1.5];
+        svg += `<line x1="${n(r0[0])}" y1="${n(r0[1])}" x2="${n(r1[0])}" y2="${n(r1[1])}" stroke="${c}" stroke-width="2" stroke-linecap="round"/>`;
+        lineas.push([r0, r1]);
+      }
+    }
+    for (const t of d.ladosRot || []) {
+      if (!ve(t, corte) || t.texto === undefined || t.texto === null || t.texto === '') continue;
+      const p = g.S(t.de), q = g.S(t.a);
+      if (!p || !q) continue;
+      const nv = normalFuera(p, q, refDe(t.ref)), w = T.ancho(String(t.texto), TAM, 700), en = t.en === undefined ? 0.5 : t.en;
+      const dd = (t.dist === undefined ? 7 : t.dist) + soporte(w, ALTO_T, nv);
+      const r = rotuloEn(p[0] + (q[0] - p[0]) * en + nv[0] * dd, p[1] + (q[1] - p[1]) * en + nv[1] * dd, t.texto, t.color);
+      svg += r.svg; cajas.push(r.caja);
+    }
+    for (const t of d.libres || []) {
+      if (!ve(t, corte)) continue;
+      const p = g.S(t.en);
+      if (!p) continue;
+      const u = [Math.cos((t.dir || 0) * RAD), -Math.sin((t.dir || 0) * RAD)], w = T.ancho(String(t.texto), TAM, 700);
+      const dd = (t.dist === undefined ? 6 : t.dist) + soporte(w, ALTO_T, u);
+      const r = rotuloEn(p[0] + u[0] * dd, p[1] + u[1] * dd, t.texto, t.color);
+      svg += r.svg; cajas.push(r.caja);
+    }
+    return { svg, cajas, lineas };
+  }
+  // Lo que una escena pone encima (y sus obstáculos): lo común de los datos más lo propio del objeto (extra).
+  function extraDe(d, e, g, corte) {
+    const c = comunes(d, g, corte, e.fig), o = e.extra ? e.extra(g, corte) : {};
+    return { svg: (o.svg || '') + c.svg, cajas: (o.cajas || []).concat(c.cajas), lineas: (o.lineas || []).concat(c.lineas) };
+  }
+  // Ángulos interiores de un triángulo ABC, como los de la cartulina: AN = { A, B, C: { texto, color, marcas, desde,
+  // hasta, radio } | null }; sin entrada, solo el arco en carmín; null, sin arco.
+  function interiores(AN, medida, o = {}) {
+    const LADOS = { A: ['B', 'C'], B: ['C', 'A'], C: ['A', 'B'] }, out = [];
+    for (const v of ['A', 'B', 'C']) {
+      if (AN[v] === null || (o.solo && AN[v] === undefined)) continue;
+      const x = AN[v] || {};
+      const an = ang(v, LADOS[v][0], LADOS[v][1], { radio: x.radio || o.radio || 20, holgura: x.holgura || 6, marcas: x.marcas || ARCOS_V[v], mide: medida[v],
+        color: x.color === undefined && x.texto === undefined ? 'h' : x.color, texto: x.texto });
+      if (x.desde !== undefined) an.desde = x.desde;
+      if (x.hasta !== undefined) an.hasta = x.hasta;
+      if (x.arcoRecto) an.arcoRecto = true;   // un recto que es la respuesta («¿qué clase es?») va con arco
+      out.push(an);
+    }
+    return out;
+  }
+  // Lo que el texto de la teoría puede agregar a cualquiera de estas escenas: puntos, segmentos y ángulos sueltos.
+  const masFig = (d, fig) => { fig.puntos.push(...(d.masPuntos || [])); fig.segmentos.push(...(d.masSegmentos || [])); fig.angulos.push(...(d.masAngulos || [])); return fig; };
+  const vistaDe = (ps, mx = 0.9, my = mx) => { const xs = ps.map(p => p[0]), ys = ps.map(p => p[1]); return { x: [Math.min(...xs) - mx, Math.max(...xs) + mx], y: [Math.min(...ys) - my, Math.max(...ys) + my] }; };
+
+  // Las letras de los vértices van en el hueco más ancho entre los trazos que llegan a su punto (los lados y las
+  // prolongaciones): así ninguna letra cruza una línea, tampoco la punteada (molde §3, 18 nov). Cambia el «lado» de los
+  // puntos ids que ya tienen rótulo; con evita: { id: [grados] }, también esquiva esas direcciones (un rótulo cercano).
+  function acomodarLetras(fig, ids, evita = {}) {
+    const P = {}; for (const q of fig.puntos) P[q.id] = [q.x, q.y];
+    for (const q of fig.puntos) {
+      if (!ids.includes(q.id) || !q.rotulo) continue;
+      const dirs = [];
+      for (const sg of fig.segmentos) {
+        const o = sg.de === q.id ? sg.a : sg.a === q.id ? sg.de : null;
+        if (o && P[o]) { const t = Math.atan2(P[o][1] - q.y, P[o][0] - q.x) / RAD; dirs.push(t); if (sg.recta) dirs.push(t + 180); }
+      }
+      dirs.push(...(evita[q.id] || []));
+      if (!dirs.length) continue;
+      const ds = dirs.map(t => ((t % 360) + 360) % 360).sort((x, y) => x - y);
+      let mejor = 0, lado = q.lado;
+      ds.forEach((t, i) => { const u = i + 1 < ds.length ? ds[i + 1] : ds[0] + 360, w = u - t; if (w > mejor + 1e-9) { mejor = w; lado = t + w / 2; } });
+      q.lado = lado;
+    }
+    return fig;
+  }
+
+  // La plaza triangular y el mototaxi que la rodea (vista desde arriba, idea 2). Afirmación: cuando el mototaxi dobla en
+  // una esquina, gira el ángulo exterior: el que forma la calle que toma con la prolongación de la que traía. Fidelidad:
+  // la base BC mide 6 y A sale de los ángulos b y c, a escala; los giros miden 180° menos su ángulo de adentro.
+  //   { b, c, angulos: { A, B, C }, exteriores: { A, B, C: { texto, color, marcas, desde, radio } },
+  //     mototaxi: true | { t },   el mototaxi en la calle BC, a esa fracción del camino de B a C, rumbo a C
+  //     letraD: false,            sin la letra D (los otros extremos, E y F, solo con letraE / letraF)
+  //     letras: false, vista, alto, radio, masPuntos, masSegmentos, masAngulos }
+  // Los extremos de las prolongaciones: D después de C (sobre BC), E después de A (sobre CA) y F después de B (sobre AB).
+  // El exterior en C es ∠ACD; en A, ∠BAE; en B, ∠CBF.
+  function plaza(d) {
+    const b = d.b, c = d.c, a = 180 - b - c, { A, B, C } = vertices(b, c), AN = d.angulos || {}, EX = d.exteriores || {};
+    const Lp = d.prolonga || 2.0, D = mas2(C, unidad(B, C), Lp), E = mas2(A, unidad(C, A), Lp), F = mas2(B, unidad(A, B), Lp);
+    const L = d.letras !== false, gr = (p, q) => Math.atan2(q[1] - p[1], q[0] - p[0]) / RAD, nom = Object.assign({ A: 'A', B: 'B', C: 'C' }, d.nombres || {});
+    const puntos = [pt('A', A, L ? { rotulo: nom.A, lado: (b - c) / 2 + 90, sinPunto: true } : undefined), pt('B', B, L ? { rotulo: nom.B, lado: b / 2 + 180, sinPunto: true } : undefined),
+      pt('C', C, L ? { rotulo: nom.C, lado: -c / 2, sinPunto: true } : undefined),
+      ...(EX.C ? [pt('D', D, d.letraD !== false ? { rotulo: 'D', lado: 0, sinPunto: true } : undefined)] : []),
+      ...(EX.A ? [pt('E', E, d.letraE ? { rotulo: 'E', lado: gr(C, A), sinPunto: true } : undefined)] : []),
+      ...(EX.B ? [pt('F', F, d.letraF ? { rotulo: 'F', lado: gr(A, B), sinPunto: true } : undefined)] : [])];
+    const segmentos = [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }];
+    const angs = interiores(AN, { A: a, B: b, C: c }, { radio: d.radio });
+    const EXT = { C: ['D', 'A', 180 - c], A: ['E', 'B', 180 - a], B: ['F', 'C', 180 - b] }, PROL = { C: 'D', A: 'E', B: 'F' };
+    for (const v of ['A', 'B', 'C']) {
+      const x = EX[v];
+      if (!x) continue;
+      segmentos.push(Object.assign({ de: v, a: PROL[v], discontinua: true, grosor: 'fino' }, x.desde !== undefined ? { desde: x.desde } : {}));
+      angs.push(ang(v, EXT[v][0], EXT[v][1], { radio: x.radio || 26, holgura: 6, marcas: x.marcas || 1, mide: EXT[v][2], color: x.color === undefined && x.texto === undefined ? 'i' : x.color, texto: x.texto, desde: x.desde || 0 }));
+    }
+    const ps = [A, B, C, ...['A', 'B', 'C'].filter(v => EX[v]).map(v => ({ A: E, B: F, C: D })[v])];
+    const fig = acomodarLetras(masFig(d, { alt: d.alt || `${d.examen ? 'Un triángulo' : 'Una plaza triangular vista desde arriba'}, con ángulos de ${Kit.formatear(a, 1)}° en A, ${Kit.formatear(b, 1)}° en B y ${Kit.formatear(c, 1)}° en C${EX.C ? `; la calle BC sigue de largo después de C, hasta D` : ''}${d.mototaxi ? '; un mototaxi la rodea' : ''}.`,
+      vista: d.vista || vistaDe(ps, 1.0), alto: d.alto || 262, puntos, segmentos, angulos: angs }), ['A', 'B', 'C'].concat(EX.C ? ['D'] : [], EX.A ? ['E'] : [], EX.B ? ['F'] : []));
+    // El mototaxi (dibujo de prueba), visto desde arriba, en el carril de la derecha de la calle BC, rumbo a C.
+    const moto = g => {
+      if (!d.mototaxi) return null;
+      const t = d.mototaxi.t === undefined ? 0.55 : d.mototaxi.t, p = g.S(B), q = g.S(C), u = unidad(p, q), nv = [-u[1], u[0]];
+      const c0 = [p[0] + (q[0] - p[0]) * t + nv[0] * 9, p[1] + (q[1] - p[1]) * t + nv[1] * 9];
+      const z = (k, e) => [c0[0] + u[0] * k * 1.25 + nv[0] * e * 1.25, c0[1] + u[1] * k * 1.25 + nv[1] * e * 1.25];
+      const cuerpo = [z(-13, -6), z(3, -6), z(12, -3), z(14, 0), z(12, 3), z(3, 6), z(-13, 6), z(-15, 4), z(-15, -4)];
+      const techo = [z(-12, -4.2), z(1, -4.2), z(1, 4.2), z(-12, 4.2)];
+      return { cuerpo, techo, rueda: [z(8, -1.6), z(12, -1.6), z(12, 1.6), z(8, 1.6)] };
+    };
+    const deco = g => {
+      let s = `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.04"/>`;
+      // Las calles: una franja a lo largo de cada lado, que sigue un poco más allá de las esquinas.
+      for (const [p, q] of [[B, C], [C, A], [A, B]]) {
+        const P0 = g.S(p), Q0 = g.S(q), u = unidad(P0, Q0), x0 = [P0[0] - u[0] * 18, P0[1] - u[1] * 18], x1 = [Q0[0] + u[0] * 18, Q0[1] + u[1] * 18];
+        s += `<path d="${rutaPx([x0, x1], false)}" fill="none" stroke="currentColor" stroke-opacity="0.09" stroke-width="22"/>`;
+      }
+      s += `<path d="${rutaPx([A, B, C].map(x => g.S(x)))}" fill="currentColor" fill-opacity="0.07"/>`;
+      const m = moto(g);
+      if (m) s += `<g data-objeto="mototaxi" data-prueba="si"><path d="${rutaPx(m.cuerpo)}" fill="var(--card)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>`
+        + `<path d="${rutaPx(m.techo)}" fill="currentColor" fill-opacity="0.3"/><path d="${rutaPx(m.rueda)}" fill="currentColor"/></g>`;
+      return s;
+    };
+    const extra = g => { const m = moto(g); return { lineas: m ? bordes(m.cuerpo) : [] }; };
+    if (d.examen) return { fig };
+    return { fig, deco, extra };
+  }
+
+  // El compás abierto sobre la hoja (idea 3). Afirmación: las dos patas miden lo mismo, y los ángulos que forman con la
+  // raya entre sus puntas también. Fidelidad: patas de L (cm) a escala y abertura t en la bisagra A.
+  //   { t, L: 12, angulos: { A, B, C }, raya: { texto } | false, patas: { texto } (la medida, junto a AC), llaves: false,
+  //     vista, alto }
+  function compas(d) {
+    const t = d.t, L = d.L || 12, A = [0, 0], B = pol(A, L, -90 - t / 2), C = pol(A, L, -90 + t / 2), al = (180 - t) / 2, AN = d.angulos || {};
+    const puntos = [pt('A', A, { rotulo: 'A', lado: 150, sinPunto: true }), pt('B', B, { rotulo: 'B', lado: -90 - t / 2, sinPunto: true }), pt('C', C, { rotulo: 'C', lado: -90 + t / 2, sinPunto: true })];
+    const segmentos = [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'A', a: 'C', color: 'o', grosor: 'variable' }];
+    if (d.raya !== false) segmentos.push({ de: 'B', a: 'C' });
+    const AN2 = { A: AN.A === null ? null : Object.assign({ radio: 30, marcas: 1 }, AN.A || {}), B: AN.B === null ? null : Object.assign({ marcas: 2 }, AN.B || {}), C: AN.C === null ? null : Object.assign({ marcas: 2 }, AN.C || {}) };
+    const angs = interiores(AN2, { A: t, B: al, C: al });
+    const fig = { alt: d.alt || `Un compás abierto ${Kit.formatear(t, 1)}° sobre la hoja: sus dos patas miden ${Kit.formatear(L, 1)} cm y la raya entre sus puntas mide ${Kit.formatear(2 * L * Math.sin(t / 2 * RAD), 1)} cm.`,
+      vista: d.vista || { x: [-9.2, 9.2], y: [-13.5, 2.6] }, alto: d.alto || 262, puntos, segmentos, angulos: angs };
+    const datos = Object.assign({}, d);
+    // La raya y las patas: rótulos de lado (comunes); las marcas de igualdad de las patas, sobre llaves.
+    const extraLados = [];
+    if (d.raya && d.raya.texto) extraLados.push({ de: 'B', a: 'C', texto: d.raya.texto, ref: 'A', dist: 6 });
+    if (d.patas && d.patas.texto) extraLados.push({ de: 'A', a: 'C', texto: d.patas.texto, color: 'o', dist: 20 });
+    datos.ladosRot = (d.ladosRot || []).concat(extraLados);
+    if (d.llaves !== false && !d.llaves) datos.llaves = [{ de: 'A', a: 'B', marcas: 1, color: 'o' }, { de: 'A', a: 'C', marcas: 1, color: 'o' }];
+    const cabeza = g => {
+      const s = g.s, a = g.S(A), x0 = a[0] - 0.42 * s, x1 = a[0] + 0.42 * s, y0 = a[1] - 2.2 * s, y1 = a[1] - 0.45 * s;
+      return { mango: [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], eje: circuloPs(a, 0.42 * s, 10) };
+    };
+    const deco = g => {
+      const p0 = g.S([-9, -9.6]), p1 = g.S([9, -13.3]);
+      let s = `<rect x="${n(p0[0])}" y="${n(p0[1])}" width="${n(p1[0] - p0[0])}" height="${n(p1[1] - p0[1])}" rx="3" fill="currentColor" fill-opacity="0.06"/>`;
+      const k = cabeza(g);
+      s += `<path d="${rutaPx(k.mango)}" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
+      for (let i = 1; i < 5; i++) { const y = k.mango[0][1] + (k.mango[2][1] - k.mango[0][1]) * i / 5; s += `<line x1="${n(k.mango[0][0] + 1.5)}" y1="${n(y)}" x2="${n(k.mango[1][0] - 1.5)}" y2="${n(y)}" stroke="currentColor" stroke-width="1" stroke-opacity="0.5"/>`; }
+      // La aguja en B y la mina del lápiz en C: la punta de cada pata, más oscura.
+      for (const [P, w] of [[B, 1.6], [C, 3]]) {
+        const p = g.S(P), q = g.S(mas2(P, unidad(P, A), 1.1)), u = unidad(p, q), nv = [-u[1], u[0]];
+        s += `<path d="${rutaPx([p, [q[0] + nv[0] * w, q[1] + nv[1] * w], [q[0] - nv[0] * w, q[1] - nv[1] * w]])}" fill="currentColor"/>`;
+      }
+      return s;
+    };
+    const encima = g => `<path d="${rutaPx(cabeza(g).eje)}" fill="var(--card)" stroke="currentColor" stroke-width="1.8"/>`;
+    const extra = g => { const k = cabeza(g); return { svg: encima(g), lineas: bordes(k.mango).concat(bordes(k.eje)) }; };
+    return { fig: masFig(d, fig), deco, extra, datos };
+  }
+
+  // La lámpara de escritorio de brazo articulado, de costado (idea 4). Afirmación: la cabeza nunca llega más lejos de la
+  // base que los dos brazos estirados en línea, ni más cerca que los dos doblados uno sobre otro. Fidelidad: brazos de
+  // CB y BA (cm) a escala; el brazo de abajo sube con inclinación fija (inc) y el codo abre g.
+  //   { g, CB: 40, BA: 25, inc: 65, angulos: { B }, lados: { CB, BA, AC: { texto, color, dist, en } }, ac: false,
+  //     extremos: corte (desde ahí, la cabeza cerrada del todo y estirada del todo, punteadas, con su AC),
+  //     textoExtremos: [texto cerrado, texto estirado], vista, alto }
+  function lampara(d) {
+    const g0 = d.g, CB = d.CB || 40, BA = d.BA || 25, inc = d.inc || 65;
+    const C = [0, 0], B = pol(C, CB, inc), A = pol(B, BA, inc + 180 + g0), dirA = inc + 180 + g0;
+    const cen = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
+    const ladoA = [dirA + 90, dirA - 90].map(t => ({ t, k: Math.cos(t * RAD) * (A[0] - cen[0]) + Math.sin(t * RAD) * (A[1] - cen[1]) })).sort((x, y) => y.k - x.k)[0].t;
+    // La letra A va a un costado de la cabeza, un poco más lejos que las otras: la pantalla sigue de largo después de A.
+        const puntos = [pt('C', C, { rotulo: 'C', lado: 135, sinPunto: true }), pt('B', B, { rotulo: 'B', lado: inc + g0 / 2, sinPunto: true }), pt('A', A)];
+    const segmentos = [{ de: 'C', a: 'B', color: 'o', grosor: 'variable' }, { de: 'B', a: 'A', color: 'i', grosor: 'variable' }];
+    if (d.ac !== false) segmentos.push({ de: 'C', a: 'A', discontinua: true });
+    const angs = [];
+    const xb = (d.angulos || {}).B;
+    if (xb !== null) angs.push(ang('B', 'C', 'A', { radio: (xb && xb.radio) || 20, holgura: 6, marcas: 1, mide: g0, color: xb && (xb.color !== undefined || xb.texto !== undefined) ? xb.color : 'h', texto: xb && xb.texto, desde: (xb && xb.desde) || 0 }));
+    const ps = [A, B, C];
+    if (d.extremos !== undefined) {
+      const A0 = pol(C, CB - BA, inc), A1 = pol(C, CB + BA, inc);
+      puntos.push(pt('A0', A0, { hueco: true, color: 'i', desde: d.extremos }), pt('A1', A1, { hueco: true, color: 'i', desde: d.extremos }));
+      segmentos.push({ de: 'B', a: 'A0', color: 'i', discontinua: true, grosor: 'fino', desde: d.extremos }, { de: 'B', a: 'A1', color: 'i', discontinua: true, grosor: 'fino', desde: d.extremos });
+      ps.push(A1);
+    }
+    const fig = masFig(d, { alt: d.alt || `Una lámpara de escritorio de costado: el brazo de abajo, CB, mide ${Kit.formatear(CB, 1)} cm; el de arriba, BA, ${Kit.formatear(BA, 1)} cm; el codo B abre ${Kit.formatear(g0, 1)}° y AC une la base con la cabeza${d.extremos !== undefined ? '. Punteadas, la cabeza con el codo cerrado del todo y estirado del todo' : ''}.`,
+      vista: d.vista || { x: [-9.5, 47.5], y: [-5.5, 67.5] }, alto: d.alto || 262, puntos, segmentos, angulos: angs });
+    const datos = Object.assign({}, d), lados = d.lados || {}, lr = [];
+    if (lados.CB) lr.push(Object.assign({ de: 'C', a: 'B', color: 'o', ref: 'A' }, lados.CB));
+    if (lados.BA) lr.push(Object.assign({ de: 'B', a: 'A', color: 'i', ref: 'C' }, lados.BA));
+    if (lados.AC) lr.push(Object.assign({ de: 'C', a: 'A', ref: 'B' }, lados.AC));
+    datos.ladosRot = (d.ladosRot || []).concat(lr);
+    datos.libres = (d.libres || []).concat([{ en: 'A', dir: ladoA, dist: 10, texto: 'A' }]);
+    if (d.extremos !== undefined && d.textoExtremos) {
+      datos.libres = datos.libres.concat([{ en: 'A0', dir: d.ac === false ? inc - 90 : inc + 90, dist: 12, texto: d.textoExtremos[0], desde: d.extremos },
+        { en: 'A1', dir: inc + 90, dist: 12, texto: d.textoExtremos[1], desde: d.extremos }]);
+    }
+    const piezas = g => {
+      const s = g.s, cab = g.S(A), w = [Math.cos(dirA * RAD), -Math.sin(dirA * RAD)], nn = [-w[1], w[0]];
+      const z = (k, e) => [cab[0] + w[0] * k * s + nn[0] * e * s, cab[1] + w[1] * k * s + nn[1] * e * s];
+      const pantalla = [z(0.6, -1.3), z(0.6, 1.3), z(6.4, 4.4), z(6.4, -4.4)];
+      const c = g.S(C), base = [[c[0] - 4.2 * s, c[1] + 2.4 * s], [c[0] - 2.2 * s, c[1]], [c[0] + 2.2 * s, c[1]], [c[0] + 4.2 * s, c[1] + 2.4 * s]];
+      return { pantalla, base, codo: circuloPs(g.S(B), 4, 10), pie: circuloPs(c, 3.2, 10) };
+    };
+    const deco = g => {
+      const c = g.S(C), y0 = c[1] + 2.4 * g.s;
+      let s = `<rect x="8" y="${n(y0)}" width="${W - 16}" height="${n(Math.max(0, g.alto - 8 - y0))}" fill="currentColor" fill-opacity="0.08"/>`;
+      const k = piezas(g);
+      s += `<path d="${rutaPx(k.base)}" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>`;
+      return s;
+    };
+    const extra = g => {
+      const k = piezas(g);
+      const svg = `<g data-objeto="lampara" data-prueba="si"><path d="${rutaPx(k.pantalla)}" fill="var(--card)" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>`
+        + `<path d="${rutaPx(k.codo)}" fill="var(--card)" stroke="currentColor" stroke-width="1.6"/><path d="${rutaPx(k.pie)}" fill="var(--card)" stroke="currentColor" stroke-width="1.6"/></g>`;
+      return { svg, lineas: bordes(k.pantalla).concat(bordes(k.base, false), bordes(k.codo), bordes(k.pie)) };
+    };
+    return { fig, deco, extra, datos };
+  }
+
+  // El caserío junto a la carretera recta con dos paraderos (como mapa, idea 5). Afirmación: cada camino recto del
+  // caserío a la carretera se reconoce por lo que cumple, no por cómo luce: la altura llega formando 90°, la mediana al
+  // punto medio del tramo BC y la bisectriz parte el ángulo en A. Fidelidad: los km a escala; el pie de la bisectriz
+  // parte BC en la razón de AB y AC (se calcula aquí; la teoría no lo enseña).
+  //   { ax, ay, BC: 6, lineas: { h, m, b, z: { color, desde, hasta, solida } }, angulos (interiores: A, B, C),
+  //     llavesMedia: false, letras: { A: 'A', B: 'B', C: 'C', H: 'H', M: 'M', F: 'F' }, vista, alto }
+  function caserio(d) {
+    const ax = d.ax, ay = d.ay, Lc = d.BC || 6, A = [ax, ay], B = [0, 0], C = [Lc, 0];
+    const lb = Math.hypot(ax - Lc, ay), lc = Math.hypot(ax, ay), H = [ax, 0], Mm = [Lc / 2, 0], F = [Lc * lc / (lb + lc), 0];
+    const Li = d.lineas || {}, nom = Object.assign({ A: 'A', B: 'B', C: 'C', H: 'H', M: 'M', F: 'F' }, d.letras || {});
+    const Z = [Lc / 2, Math.max(ay, 1) + 0.7];
+    const puntos = [pt('A', A, { rotulo: nom.A, lado: 0, sinPunto: true }), pt('B', B), pt('C', C), pt('H', H), pt('M', Mm), pt('F', F), pt('Z', Z), pt('Bi', [-50, 0]), pt('Bd', [50, 0])];
+    const segmentos = [{ de: 'Bi', a: 'Bd', recta: true, grosor: 'fino' }, { de: 'A', a: 'B' }, { de: 'C', a: 'A' }, { de: 'B', a: 'C' }];
+    const angs = interiores(d.angulos || {}, { A: angU(A, B, C), B: angU(B, C, A), C: angU(C, A, B) }, { solo: true });
+    const cuadrito = (en, a2, de2, l) => ang(en, de2, a2, { radio: 12, mide: 90, color: l.color, desde: l.desde || 0, hasta: l.hasta });
+    if (Li.h) {
+      const l = Li.h, fuera = ax < -1e-9 || ax > Lc + 1e-9;
+      segmentos.push(Object.assign({ de: 'A', a: 'H', color: l.color, grosor: 'variable', desde: l.desde || 0 }, l.hasta !== undefined ? { hasta: l.hasta } : {}));
+      if (fuera) segmentos.push({ de: ax < 0 ? 'B' : 'C', a: 'H', discontinua: true, grosor: 'fino', desde: l.desde || 0 });
+      if (Math.abs(ay) > 1e-9) angs.push(cuadrito('H', 'A', ax < Lc / 2 ? 'C' : 'B', l));
+    }
+    if (Li.m) segmentos.push(Object.assign({ de: 'A', a: 'M', color: Li.m.color, grosor: 'variable', desde: Li.m.desde || 0 }, Li.m.hasta !== undefined ? { hasta: Li.m.hasta } : {}));
+    if (Li.b) {
+      const l = Li.b;
+      segmentos.push(Object.assign({ de: 'A', a: 'F', color: l.color, grosor: 'variable', desde: l.desde || 0 }, l.hasta !== undefined ? { hasta: l.hasta } : {}));
+      const m = angU(A, B, C) / 2;
+      // arcos: el color de los dos arcos (si no, el de la línea); texto1 y texto2, sus rótulos (las mitades con x).
+      const ca = l.arcos !== undefined ? l.arcos : l.color;
+      angs.push(ang('A', 'B', 'F', { radio: l.radio || 30, rayita: 1, mide: m, color: ca, texto: l.texto1, desde: l.desde || 0, hasta: l.hasta }), ang('A', 'F', 'C', { radio: l.radio || 30, rayita: 1, mide: m, color: ca, texto: l.texto2, desde: l.desde || 0, hasta: l.hasta }));
+    }
+    if (Li.z) {
+      const l = Li.z;
+      segmentos.push(Object.assign({ de: 'M', a: 'Z', color: l.color, discontinua: !l.solida, desde: l.desde || 0 }, l.hasta !== undefined ? { hasta: l.hasta } : {}));
+      angs.push(cuadrito('M', 'Z', 'C', l));
+    }
+    const fig = acomodarLetras(masFig(d, { alt: d.alt || `${d.examen ? 'Un triángulo con el lado BC' : `Un caserío A junto a una carretera recta con los paraderos B y C, a ${Kit.formatear(Lc, 1)} km uno del otro`}${Li.h ? '; la altura llega a la carretera formando 90°' : ''}${Li.m ? '; la mediana llega al punto medio de BC' : ''}${Li.b ? '; la bisectriz parte el ángulo en A' : ''}${Li.z ? '; la mediatriz de BC pasa por su punto medio' : ''}.`,
+      vista: d.vista || { x: [-3.1, 7.6], y: [-1.95, 5.0] }, alto: d.alto || 262, puntos, segmentos, angulos: angs }), ['A'], { A: d.examen ? [] : [150, 165] });
+    const datos = Object.assign({}, d);
+    // Las mitades de BC (mediana o mediatriz): la misma rayita sobre una llave, debajo de las letras.
+    if (d.llavesMedia !== false && (Li.m || Li.z)) {
+      const l = Li.m || Li.z, c = Li.m ? Li.m.color : undefined;
+      datos.llaves = (d.llaves || []).concat([{ de: 'B', a: 'M', marcas: 1, color: c, ref: 'A', dist: 38, desde: l.desde || 0, hasta: l.hasta }, { de: 'M', a: 'C', marcas: 1, color: c, ref: 'A', dist: 38, desde: l.desde || 0, hasta: l.hasta }]);
+    }
+    // Las casas del caserío (dibujo de prueba), encima de A.
+    const casas = g => {
+      const a = g.S(A), out = [];
+      for (const [dx, dy, k] of [[-26, -6, 1], [-16, -22, 0.9], [-38, -22, 0.8]]) {
+        const x = a[0] + dx, y = a[1] + dy, w = 9 * k, h = 7 * k;
+        out.push([[x - w, y], [x - w, y - h], [x, y - h - 6 * k], [x + w, y - h], [x + w, y]]);
+      }
+      return out;
+    };
+    // Las letras de los paraderos y de los pies, debajo de la carretera: las que caen juntas se reparten, y las que caen
+    // en el mismo punto van juntas («H = M = F»).
+    const letrasPie = (g, corte) => {
+      const ids = ['B', 'C'].concat(Li.h && ve(Li.h, corte) ? ['H'] : [], (Li.m && ve(Li.m, corte)) || (Li.z && ve(Li.z, corte)) ? ['M'] : [], Li.b && ve(Li.b, corte) ? ['F'] : []);
+      const es = ids.map(id => ({ id, x: g.S(id)[0] })).sort((p, q) => p.x - q.x || ids.indexOf(p.id) - ids.indexOf(q.id));
+      const grupos = [];
+      for (const e of es) { const u = grupos[grupos.length - 1]; if (u && Math.abs(e.x - u[u.length - 1].x) < 0.5) u.push(e); else grupos.push([e]); }
+      const y = g.S(B)[1] + 15, out = [];
+      for (const gr of grupos) { const ts = gr.map(e => nom[e.id]).filter(Boolean); if (ts.length) out.push({ x: gr[0].x, texto: ts.join(' = ') }); }
+      // Repartir: si dos cajas se tocan, se separan desde el medio.
+      for (let k = 0; k < 20; k++) {
+        let movio = false;
+        for (let i = 0; i + 1 < out.length; i++) {
+          const wa = T.ancho(out[i].texto, TAM, 700), wb = T.ancho(out[i + 1].texto, TAM, 700), falta = (wa + wb) / 2 + 5 - (out[i + 1].x - out[i].x);
+          if (falta > 0) { out[i].x -= falta / 2; out[i + 1].x += falta / 2; movio = true; }
+        }
+        if (!movio) break;
+      }
+      return out.map(o => rotuloEn(o.x, y + ALTO_T / 2 - 4, o.texto));
+    };
+    const deco = g => {
+      const y0 = g.S(B)[1];
+      let s = `<rect x="8" y="${n(y0)}" width="${W - 16}" height="22" fill="currentColor" fill-opacity="0.1"/>`;
+      return s;
+    };
+    const extra = (g, corte) => {
+      const cs = d.examen ? [] : casas(g), ls = letrasPie(g, corte);
+      const svg = (cs.length ? `<g data-objeto="caserio" data-prueba="si">${cs.map(p => `<path d="${rutaPx(p)}" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`).join('')}</g>` : '') + ls.map(r => r.svg).join('');
+      return { svg, cajas: ls.map(r => r.caja), lineas: cs.flatMap(p => bordes(p)) };
+    };
+    return { fig, deco: d.examen ? undefined : deco, extra, datos };
+  }
+
+  // El parque triangular con dos caminos que se cruzan en la pileta (idea 6). Afirmación: el ángulo donde se cruzan las
+  // bisectrices de B y C solo depende del ángulo A. Fidelidad: base BC de 6 y A de los ángulos b y c, a escala; I es el
+  // cruce de las bisectrices interiores; E, el de la interior de B con la exterior de C (la que parte ∠ACD).
+  //   { b, c, angulos: { A, B, C }, I: corte | false, E: corte (desde ahí, la exterior de C, D y E), mitades: { B, C, Ce },
+  //     BIC: { texto, color, desde }, BEC: { texto, color, desde }, ICE: { texto, color, desde }, pileta: false,
+  //     vista, alto }
+  function parque(d) {
+    const b = d.b, c = d.c, a = 180 - b - c, { A, B, C } = vertices(b, c);
+    const la = TRI_L, lb = Math.hypot(A[0] - C[0], A[1] - C[1]), lc = Math.hypot(A[0], A[1]), s = la + lb + lc;
+    const I = [(la * A[0] + lb * B[0] + lc * C[0]) / s, (la * A[1] + lb * B[1] + lc * C[1]) / s];
+    const conE = d.E !== undefined && d.E !== false, kE = conE ? d.E : 0, kI = d.I === undefined ? 0 : d.I;
+    const D = [C[0] + 2.4, 0], dirE = pol([0, 0], 1, (180 - c) / 2);
+    const E = conE ? GF().util.corte(B, I, C, mas2(C, dirE, 1)) : null;
+    const MI = d.mitades || { B: true, C: true };
+    const puntos = [pt('A', A, { rotulo: 'A', lado: (b - c) / 2 + 90, sinPunto: true }), pt('B', B, { rotulo: 'B', lado: b / 2 + 180, sinPunto: true }), pt('C', C, { rotulo: 'C', lado: conE ? -90 : -c / 2, sinPunto: true })];
+    const vI = d.I !== false;
+    // La letra I va junto al camino que llega de B, del lado de A (lejos de la línea AI, donde baja el rótulo de A).
+    const dirIB = Math.atan2(B[1] - I[1], B[0] - I[0]) / RAD, dirIA = Math.atan2(A[1] - I[1], A[0] - I[0]) / RAD;
+    if (vI) puntos.push(pt('I', I, { rotulo: 'I', lado: dirIB - 62, sinPunto: true, desde: kI }));
+    const segmentos = [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }];
+    if (vI) segmentos.push({ de: 'B', a: 'I', color: 'h', desde: kI }, { de: 'C', a: 'I', color: 'h', desde: kI });
+    const angs = interiores(d.angulos || { A: {} }, { A: a, B: b, C: c }, { solo: true });
+    const k = (x, def) => (x && x.desde !== undefined ? x.desde : def);
+    if (vI && MI.B) angs.push(ang('B', 'C', 'I', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kI }), ang('B', 'I', 'A', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kI }));
+    if (vI && MI.C) angs.push(ang('C', 'I', 'B', { radio: 28, rayita: 2, mide: c / 2, color: 'h', desde: kI }), ang('C', 'A', 'I', { radio: 28, rayita: 2, mide: c / 2, color: 'h', desde: kI }));
+    if (vI && d.BIC) angs.push(ang('I', 'B', 'C', { radio: 12, holgura: 4, mide: 90 + a / 2, color: d.BIC.color, texto: d.BIC.texto, desde: k(d.BIC, kI) }));
+    if (conE) {
+      puntos.push(pt('D', D, { rotulo: 'D', lado: -90, sinPunto: true, desde: kE }), pt('E', E, { rotulo: 'E', lado: 30, sinPunto: true, desde: kE }));
+      segmentos.push({ de: 'C', a: 'D', discontinua: true, grosor: 'fino', desde: kE }, { de: 'I', a: 'E', color: 'h', desde: kE }, { de: 'C', a: 'E', color: 'i', desde: kE });
+      if (!vI) segmentos.push({ de: 'B', a: 'E', color: 'h', desde: kE });
+      if (MI.Ce) angs.push(ang('C', 'D', 'E', { radio: 22, rayita: 3, mide: (180 - c) / 2, color: 'i', desde: kE }), ang('C', 'E', 'A', { radio: 22, rayita: 3, mide: (180 - c) / 2, color: 'i', desde: kE }));
+      if (!vI && MI.B) angs.push(ang('B', 'C', 'E', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kE }), ang('B', 'E', 'A', { radio: 32, rayita: 1, mide: b / 2, color: 'h', desde: kE }));
+      if (d.BEC) angs.push(ang('E', 'B', 'C', { radio: 24, holgura: 6, mide: a / 2, color: d.BEC.color, texto: d.BEC.texto, desde: k(d.BEC, kE) }));
+      if (d.ICE && vI) angs.push(ang('C', 'I', 'E', { radio: 14, mide: 90, color: d.ICE.color, texto: d.ICE.texto, desde: k(d.ICE, kE), arcoRecto: d.ICE.arcoRecto }));
+    }
+    const ps = [A, B, C].concat(conE ? [D, E] : []);
+    const fig = acomodarLetras(masFig(d, { alt: d.alt || `${d.examen ? 'Un triángulo' : 'Un parque triangular'} con ${Kit.formatear(a, 1)}° en A, ${Kit.formatear(b, 1)}° en B y ${Kit.formatear(c, 1)}° en C; ${d.examen ? 'las bisectrices de B y C se cortan en I' : 'los caminos que parten B y C en mitades iguales se cruzan en la pileta I'}${conE ? `; ${d.examen ? 'la bisectriz' : 'el camino'} que parte el ángulo exterior en C cruza ${d.examen ? 'a la de B' : 'al de B'} en E` : ''}.`,
+      vista: d.vista || vistaDe(ps, 1.0, 1.05), alto: d.alto || 262, puntos, segmentos, angulos: angs }), ['A', 'B', 'C'].concat(conE ? ['D', 'E'] : []));
+    const pileta = g => (vI && d.pileta !== false ? circuloPs(g.S(I), 4.5, 12) : null);
+    const deco = g => {
+      let s = `<path d="${rutaPx([A, B, C].map(x => g.S(x)))}" fill="currentColor" fill-opacity="0.08"/>`;
+      return s;
+    };
+    const extra = (g, corte) => {
+      const p = pileta(g);
+      if (!p || corte < kI) return {};
+      const q = g.S(I);
+      if (d.examen) return {};
+      return { svg: `<g data-objeto="pileta" data-prueba="si"><path d="${rutaPx(p)}" fill="var(--card)" stroke="currentColor" stroke-width="1.6"/><circle cx="${n(q[0])}" cy="${n(q[1])}" r="1.6" fill="currentColor" fill-opacity="0.45"/></g>`, lineas: bordes(p) };
+    };
+    return { fig, deco: d.examen ? undefined : deco, extra };
   }
 
   // Los ángulos de una escena, listos para dibujar: (1) el rótulo de un ángulo que tiene otros rayos adentro (∠AOC con
@@ -958,9 +1416,14 @@
     return angs;
   }
 
-  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral,
+  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
-  const escena = d => ESCENAS[d.objeto](d);
+  // manija: el id del punto que el juego arrastra; su letra se aleja 8 px más (la manija, de radio 13, la tapaba).
+  const escena = d => {
+    const e = ESCENAS[d.objeto](d);
+    if (d.manija && e.fig) e.fig = Object.assign({}, e.fig, { puntos: (e.fig.puntos || []).map(q => (q.id === d.manija && q.rotulo ? Object.assign({}, q, { lejos: 8 }) : q)) });
+    return e;
+  };
   // Un trazo punteado que pasa por el vértice de un rótulo «centro» (la bisectriz, o la paralela auxiliar por V) y cruza
   // su caja: dónde se corta. Devuelve { S, E, c0, c1, t0, t1 } en pantalla (S y E, sus puntas; la recta, hasta 4 px del
   // borde como la dibuja geo-figura) o null.
@@ -999,15 +1462,21 @@
     const extra = [];
     const conArcoRecto = angs.map((a, k) => {
       // (arcoRecto: el recto entre dos bisectrices también va con arco, para que se vea de dónde a dónde va; auditoría.)
-      const pedido = a.arcoRecto || (a.texto !== undefined && !a.color && (/\?$/.test(String(a.texto)) || /^[a-zθ]$/.test(String(a.texto))));
-      const { dt } = sectorEn(g, a);
-      if (!pedido || a._sec || Math.abs(Math.abs(dt) - Math.PI / 2) > 1e-3) return a;
+      // También un recto rotulado con una expresión («9k», «3x», «x + 30°»): el cuadradito diría cuánto vale x. Solo un
+      // rótulo en grados («90°») o ninguno (el recto que da el enunciado) lleva el cuadradito.
+      const tx = a.texto === undefined || a.texto === null ? '' : String(a.texto).trim();
+      const pedido = a.arcoRecto || (tx !== '' && !/^\d+([.,]\d+)?°$/.test(tx));
+      // (Con otro rayo adentro, su rótulo va en un hueco (_sec), pero el arco es el del ángulo entero: también se mira
+      // el entero, o ∠BAD = 90° con AC adentro salía con el cuadradito.)
+      const { dt } = sectorEn(g, Object.assign({}, a, { _sec: undefined, sector: undefined }));
+      if (!pedido || Math.abs(Math.abs(dt) - Math.PI / 2) > 1e-3) return a;
       const V = g.P(a.en), D = g.P(a.de), t = Math.atan2(D[1] - V[1], D[0] - V[0]) + (dt < 0 ? 1 : -1) * 0.02 * RAD;
       extra.push({ id: `~${k}`, x: V[0] + Math.cos(t), y: V[1] + Math.sin(t), sinPunto: true });
       return Object.assign({}, a, { de: `~${k}` });
     });
-    let enc = '';
-    const puestos = letras(g, fig, corte, e.ls ? e.ls(g) : []), lineas = trazos(g, fig, corte), centrados = [];
+    const ex = extraDe(e.datos || d, e, g, corte);
+    let enc = ex.svg;
+    const puestos = letras(g, fig, corte, e.ls ? e.ls(g) : []).concat(ex.cajas), lineas = trazos(g, fig, corte).concat(ex.lineas), centrados = [];
     for (const an of angs) if (an.texto !== undefined && an.texto !== null && an.texto !== '' && ve(an, corte)) {
       const z = separar(g, an, puestos, lineas); puestos.push(z.caja); enc += rotuloAngulo(g, an, z);
       if (an.centro) centrados.push({ en: an.en, caja: z.caja });
@@ -1039,14 +1508,40 @@
   // preparados (angs) y las letras (fijos). Lo usan escenaCabe y las pruebas («cada rótulo dentro de su ángulo»).
   function rotulos(d, corte = Infinity) {
     const G = GF(), e = escena(d), fig = e.fig, g = G.geometria(fig), angs = prepararAngulos(g, fig, corte);
-    const puestos = letras(g, fig, corte, e.ls ? e.ls(g) : []), fijos = puestos.slice(), lineas = trazos(g, fig, corte), rot = [];
+    const ex = extraDe(e.datos || d, e, g, corte), letrasC = letras(g, fig, corte, e.ls ? e.ls(g) : []);
+    const puestos = letrasC.concat(ex.cajas), fijos = puestos.slice(), lineas = trazos(g, fig, corte).concat(ex.lineas), rot = [];
     for (const an of angs) if (an.texto !== undefined && an.texto !== null && an.texto !== '' && ve(an, corte)) {
       const z = separar(g, an, puestos, lineas); puestos.push(z.caja); rot.push({ an, x: z.x, y: z.y, caja: z.caja });
     }
-    return { g, fig, angs, fijos, rot, vertice: id => g.S(id) };
+    return { g, fig, angs, fijos, rot, ex, letrasC, lineas, vertice: id => g.S(id) };
   }
   function escenaCabe(d, corte = Infinity) {
-    const { g, fig, angs, fijos, rot } = rotulos(d, corte);
+    const { g, fig, angs, fijos, rot, ex, letrasC, lineas } = rotulos(d, corte);
+    // Lo que la escena escribe por su cuenta (medidas de lados, letras de los pies, rótulos sueltos): dentro del lienzo,
+    // sin pisar letras ni otro rótulo suyo, sin tocar un trazo (también las llaves y los objetos) ni un arco.
+    // Las rayitas de «ángulos iguales» sobre los arcos (geo-figura las pone a ±6 px del arco): también son trazos.
+    const rayitas = [];
+    for (const a of angs) {
+      if (!ve(a, corte) || !a.rayita) continue;
+      const { c, t1, dt } = sectorEn(g, Object.assign({}, a, { _sec: undefined, sector: undefined })), r = a.radio || 26;
+      for (let k = 0; k < a.rayita; k++) { const t = t1 + dt / 2 + (k - (a.rayita - 1) / 2) * (7 / r); rayitas.push([[c[0] + (r - 6) * Math.cos(t), c[1] + (r - 6) * Math.sin(t)], [c[0] + (r + 6) * Math.cos(t), c[1] + (r + 6) * Math.sin(t)]]); }
+    }
+    const rayitaToca = b => rayitas.some(([p, q]) => tocaCaja(p, q, { x0: b.x0 - 1.5, x1: b.x1 + 1.5, y0: b.y0 - 1.5, y1: b.y1 + 1.5 }));
+    const arcoToca = b => rayitaToca(b) || angs.some(a => {
+      if (!ve(a, corte)) return false;
+      const { c, t1, dt } = sectorEn(g, Object.assign({}, a, { _sec: undefined, sector: undefined }));
+      for (let k = 0; k <= extraArcos(a); k += 5) {
+        const r = (a.radio || 26) + k;
+        for (let i = 0; i <= 24; i++) { const t = t1 + dt * i / 24, x = c[0] + r * Math.cos(t), y = c[1] + r * Math.sin(t); if (x > b.x0 - 1.5 && x < b.x1 + 1.5 && y > b.y0 - 1.5 && y < b.y1 + 1.5) return true; }
+      }
+      return false;
+    });
+    for (const [k, b] of ex.cajas.entries()) {
+      if (b.x0 < M || b.x1 > W - M || b.y0 < M || b.y1 > g.alto - M) return false;
+      if (letrasC.some(q => chocan(b, q, 0)) || ex.cajas.some((o, j) => j !== k && chocan(b, o, 0))) return false;
+      if (lineas.some(([p, q]) => tocaCaja(p, q, { x0: b.x0 - 2, x1: b.x1 + 2, y0: b.y0 - 2, y1: b.y1 + 2 }))) return false;
+      if (arcoToca(b)) return false;
+    }
     for (const [k, { an, caja: b }] of rot.entries()) {
       if (b.x0 < M || b.x1 > W - M || b.y0 < M || b.y1 > g.alto - M) return false;
       if (fijos.some(q => chocan(b, q, 0)) || rot.some((o, j) => j !== k && chocan(b, o.caja, 0))) return false;
@@ -1055,6 +1550,8 @@
         const [p, q] = trazos(g, { segmentos: [l] }, corte)[0] || [];
         if (p && tocaCaja(p, q, { x0: b.x0 - 2, x1: b.x1 + 2, y0: b.y0 - 2, y1: b.y1 + 2 })) return false;
       }
+      if (ex.lineas.some(([p, q]) => tocaCaja(p, q, { x0: b.x0 - 2, x1: b.x1 + 2, y0: b.y0 - 2, y1: b.y1 + 2 }))) return false;
+      if (rayitaToca(b)) return false;
       // El rótulo queda más cerca de su arco que del arco de un ángulo entero («centro») del mismo vértice que pase por ahí.
       if (!an.sector && !an._sec) {
         const c = g.S(an.en), cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2, dd = Math.hypot(cx - c[0], cy - c[1]), t = Math.atan2(cy - c[1], cx - c[0]), propio = Math.abs(dd - (an.radio || 26));
@@ -1088,5 +1585,5 @@
     return `${que} ${pts || 'sin puntos'}${ts ? `. Tramos ${ts}` : ''}${d.combi !== undefined && d.objeto !== 'recta' ? '. Una combi en la pista' : ''}.`;
   }
 
-  return { id: 'geo-objeto', dibujar, alt, geometria, marco, colores, colorDe, marcas, marcasCaben, HOLGURA_MARCA, ALTO_ARCO, PASO_ARCO, escenaCabe, rotulos, angulosListos: (d, corte = Infinity) => { const fg = escena(d).fig; return prepararAngulos(GF().geometria(fg), fg, corte); }, OBJETOS, ESCENAS: Object.keys(ESCENAS), escena, lugarRotulo, aPantalla, aPlano, constantes: { W, H, M, TOP, BOT, CENTRO, LETRA, NIVEL, X0, X1 } };
+  return { id: 'geo-objeto', dibujar, alt, geometria, marco, colores, colorDe, marcas, marcasCaben, HOLGURA_MARCA, ALTO_ARCO, PASO_ARCO, escenaCabe, rotulos, angulosListos: (d, corte = Infinity) => { const fg = escena(d).fig; return prepararAngulos(GF().geometria(fg), fg, corte); }, OBJETOS, ESCENAS: Object.keys(ESCENAS), escena, lugarRotulo, aPantalla, aPlano, acomodarLetras, constantes: { W, H, M, TOP, BOT, CENTRO, LETRA, NIVEL, X0, X1 } };
 });
