@@ -111,3 +111,25 @@ test('soloUltimo: una sola línea, la del último bloque, en el lugar de la prim
     assert.ok(!/1 a 9|10 a 99/.test(s), 'sin las cuentas de los bloques de una y dos cifras (el texto alternativo sí los nombra)');
   }
 });
+
+// Ronda 2 del lector en frío (18 nov): el primer boleto dado va en violeta, como el último; y cuando se pide el último
+// boleto, la figura ya no repite el enunciado: dibuja la barra de las cifras impresas, partida por bloques.
+test('ronda 2: el primer boleto, si es un dato (no el 1), en violeta como el último', () => {
+  const violetas = s => [...s.matchAll(/fill="var\(--c-f\)"[^>]*>(\d)<\/text>/g)].map(m => m[1]).join('');
+  assert.equal(violetas(P.dibujar({ desde: 100, N: 150, total: '?' })), '100150');
+  assert.equal(violetas(P.dibujar({ N: 150 })), '150', 'el 1 no es un dato: en tinta');
+});
+
+test('ronda 2: con el último boleto pedido, la barra de cifras partida por bloques, sin repetir el enunciado', () => {
+  for (const C of [234, 492, 1500]) {
+    const d = { pide: 'N', impresas: C }, s = P.dibujar(d).replace(/aria-label="[^"]*"/, ''), g = P.geometria(d);
+    assert.ok(!/¿Hasta|desde el boleto|imprimió/.test(s), `${C}: repite el enunciado`);
+    assert.match(s, new RegExp(`cifras impresas: </tspan><tspan fill="var\\(--c-o\\)" font-weight="700">${String(C).replace(/\B(?=(\d{3})+(?!\d))/g, '.')}<`));
+    // Los tramos: 9 y 180 cifras los bloques llenos; el resto, el último, que termina en «?».
+    const usa = g.tramos.map(t => t.b.cifras);
+    assert.deepEqual(usa, [9, 180, C - 189]);
+    assert.ok(Math.abs(g.tramos.reduce((a, t) => a + t.w2, 0) - (P.constantes.X1 - P.constantes.X0)) < 1e-9, 'la barra entera son las cifras impresas');
+    assert.match(s, /100 a \?: /); assert.match(s, /10 a 99: /);
+    assert.ok(!/>\d+ a \d{3,}: /.test(s.replace(/10 a 99/, '')), 'el último boleto no aparece');
+  }
+});

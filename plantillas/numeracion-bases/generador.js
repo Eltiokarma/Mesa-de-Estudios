@@ -106,7 +106,7 @@
     f4: 'a̅b̅c̅d̅₍ₙ₎ = a × n³ + b × n² + c × n + d',
     fk: k => (k <= 2 ? D.f2 : k === 3 ? D.f3 : D.f4),
     pot: (n, k) => [`${n}² = ${n} × ${n}`, `${n}³ = ${n} × ${n} × ${n}`].slice(0, Math.max(1, k - 2)).join('; '),
-    div: n => `N = q × ${n} + r, con 0 ≤ r < ${n} (q: cociente; r: resto)`,
+    div: n => `D = q × ${n} + r, con 0 ≤ r < ${n} (D: el número; q: cociente; r: resto)`,
     hasta: 'Del primero, p, al último, u, hay u − p + 1 números',
     bloques10: 'Del 1 al 9, una cifra; del 10 al 99, dos; del 100 al 999, tres',
     etiqueta: 'Etiqueta: primero lo más grande (cajas, bolsitas), al final los sueltos; abajo, la base',
@@ -589,7 +589,7 @@
     const t = `${d1}${d0}`, N = d1 * n + d0;
     const puesto = rng.moneda();
     return {
-      enunciado: puesto ? ['Una bolsa de un puesto vecino dice ', ...nv(t, 'n'), ' y tiene ', Q(`${N} caramelos`), '.'] : ['Se sabe que ', ...nv(t, 'n'), ' = ', Q(N), '.'],
+      enunciado: puesto ? ['Un paquete de un puesto vecino dice ', ...nv(t, 'n'), ' y tiene ', Q(`${N} caramelos`), '.'] : ['Se sabe que ', ...nv(t, 'n'), ' = ', Q(N), '.'],
       pregunta: [puesto ? '¿De cuántos caramelos es cada bolsita?' : '¿Cuánto vale la base n?'],
       datos: [D.f2, D.cifras],
       correcta: n, texto: x => `n = ${x}`,
@@ -635,8 +635,8 @@
     const n = rng.entero(5, 9), d1 = rng.entero(2, n - 1), d0 = rng.entero(1, d1 - 1), A = `${d1}${d0}`, Bt = `${d0}${d1}`;
     const N1 = d1 * n + d0, V2 = d0 * n + d1, inv = alReves(String(N1));
     return {
-      enunciado: ['En un puesto, la bolsa con etiqueta ', ...nv(A, 'n'), ' tiene ', Q(`${N1} caramelos`), '.'],
-      pregunta: ['¿Cuántos caramelos tiene la bolsa ', ...nv(Bt, 'n'), ' del mismo puesto?'],
+      enunciado: ['En un puesto, el paquete con etiqueta ', ...nv(A, 'n'), ' tiene ', Q(`${N1} caramelos`), '.'],
+      pregunta: ['¿Cuántos caramelos tiene el paquete ', ...nv(Bt, 'n'), ' del mismo puesto?'],
       datos: [D.f2, 'Las dos etiquetas son del mismo puesto: la misma base'],
       correcta: V2,
       errores: [

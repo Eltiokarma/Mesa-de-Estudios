@@ -23,13 +23,15 @@
  *                           quedan en las barras, sin su cuenta (el juego no da hechos los bloques de la predicción)
  *   total: true | '?' | false,   el total de cifras en el rótulo de la barra de cifras (naranja) o «?»
  *   hasta: 2,               cuántos bloques se ven (Mira: los demás quedan como hueco punteado)
- *   impresas: 492,          sin barras: las cifras que cobró la imprenta (cuando se pide el último boleto)
+ *   impresas: 492,          sin barras de boletos: las cifras que cobró la imprenta (cuando se pide el último boleto),
+ *                           en la barra de cifras partida por bloques; el último bloque termina en «?»
  *   pide: 'N' | null,
  *   pasos: [{ …datos }, …], para «Mira»: estado.paso elige qué cambia
  * }
  * estado = { paso }. Función pura de (datos, estado): sin ids, sin azar, sin reloj. Lienzo de 320 × 280 con las líneas de
  * los bloques; sin ellas, más bajo (hasta donde llega lo dibujado), para que el ejemplo no deje una franja vacía.
- * Colores: tinta (currentColor) y var(--c-*): el último boleto, si se da, en violeta (f); las cifras (casillas, barra de
+ * Colores: tinta (currentColor) y var(--c-*): el último boleto, si se da, en violeta (f), y el primero si no es el 1
+ * (también es un dato; ronda 2 del lector, 18 nov); las cifras (casillas, barra de
  * cifras y su total) en naranja (o). Nunca carmín. geometria(datos, estado) da las cajas de todo lo dibujado.
  */
 (function (root, fabrica) {
@@ -121,12 +123,24 @@
         rot.push(tx(`bloque ${i + 1}`, X0, L0 + (d.soloUltimo ? 0 : i) * LP, segs));
       });
     } else if (d.impresas !== undefined) {
-      rot.push(tx('impresas', 160, 150, [['La imprenta imprimió '], [fmt(entero(d.impresas)), 'o', 700], [' cifras']], { ancla: 'middle' }));
-      rot.push(tx('pregunta', 160, 176, [['desde el boleto '], [fmt(a)], ['. ¿Hasta cuál llegó?']], { ancla: 'middle' }));
+      // Se pide el último boleto: la barra de las cifras impresas (el dato), partida en lo que gasta cada bloque lleno y
+      // lo que queda para el último, que termina en «?» (ronda 2 del lector: antes se repetía el enunciado). Los anchos
+      // salen de las cifras, no del último boleto: la figura no lo sabe.
+      const C = entero(d.impresas), lim = Math.max(1, C);
+      rot.push(tx('rótulo cifras', X0, B2.y - 6, [['cifras impresas: '], [fmt(C), 'o', 700]]));
+      let x2 = X0, quedan = C;
+      for (let k = 1; quedan > 0 && k <= 6; k++) {
+        const lleno = 9 * 10 ** (k - 1) * k, usa = Math.min(quedan, lleno), w2 = usa * (X1 - X0) / lim, ultimo = usa === quedan;
+        tramos.push({ b: { k, a: 10 ** (k - 1), cifras: usa }, i: k - 1, ve: true, x1: x2, w1: 0, x2, w2, soloCifras: true });
+        const fin = ultimo ? '?' : fmt(10 ** k - 1);
+        rot.push(tx(`bloque ${k}`, X0, L0 + (k - 1) * LP, [[`${fmt(10 ** (k - 1))} a ${fin}: `, null, 600], [`boletos de ${k} ${k === 1 ? 'cifra' : 'cifras'}`]]));
+        x2 += w2; quedan -= usa;
+      }
+      if (C > 0) caja('barra de cifras', X0, B2.y, Math.max(X0 + 1, x2), B2.y + B2.h);
     }
     // Alto: el lienzo entero con las líneas de los bloques; sin ellas, se corta donde termina lo dibujado (las figuras de
     // los ejemplos no dejan una franja vacía). Dentro de un juego o de «Mira» las líneas van siempre: el alto no salta.
-    const alto = d.lineas && conBarras ? H : conBarras ? (d.cifras === false ? B1.y + B1.h + 12 : B2.y + B2.h + 12) : d.impresas !== undefined ? 192 : 112;
+    const alto = (d.lineas && conBarras) || d.impresas !== undefined ? H : conBarras ? (d.cifras === false ? B1.y + B1.h + 12 : B2.y + B2.h + 12) : 112;
     return { W, H: alto, M, d, N, a, bl, total, max, sx, hasta, tramos, rot, objetos, textos, conBarras };
   }
 
@@ -161,13 +175,15 @@
     // El talonario: tres hojas de atrás asomando y, al frente, el primer boleto.
     for (let k = 3; k >= 1; k--) s += `<rect x="${12 + k * 3}" y="${12 + k * 3}" width="138" height="78" rx="4" fill="var(--card)" stroke="currentColor" stroke-width="1.2" stroke-opacity="${0.35 + 0.1 * (3 - k)}"/>`;
     s += `<rect x="10" y="10" width="140" height="10" rx="2" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1.5"/>`;
-    s += boleto(10, 18, 140, 74, String(g.a));
+    // El primer boleto, si es un dato (no empieza en el 1), en violeta como el último: los dos extremos que se dan.
+    s += boleto(10, 18, 140, 74, String(g.a), g.a > 1 ? { color: 'f' } : {});
     // El último boleto, recién impreso.
     const ult = d.pide === 'N' || d.N === undefined ? '?' : String(g.N);
     s += boleto(176, 30, 132, 74, ult, { color: ult === '?' ? null : 'f', cw: ult.length > 3 ? 15 : 17, tam: ult.length > 3 ? 16 : 18 });
     // Barras a la misma escala.
     for (const t of g.tramos) {
       const r = RELLENO[Math.min(3, t.b.k - 1)];
+      if (t.soloCifras) { s += `<rect x="${n2(t.x2)}" y="${B2.y}" width="${n2(t.w2)}" height="${B2.h}" fill="var(--c-o)" fill-opacity="${r}" stroke="var(--c-o)" stroke-width="1.5"/>`; continue; }
       if (t.ve) {
         s += `<rect x="${n2(t.x1)}" y="${B1.y}" width="${n2(t.w1)}" height="${B1.h}" fill="currentColor" fill-opacity="${r}" stroke="currentColor" stroke-width="1.5"/>`;
         if (d.cifras !== false) s += `<rect x="${n2(t.x2)}" y="${B2.y}" width="${n2(t.w2)}" height="${B2.h}" fill="var(--c-o)" fill-opacity="${r}" stroke="var(--c-o)" stroke-width="1.5"/>`;
@@ -185,7 +201,7 @@
     let t = `Talonario de una rifa: el primer boleto es el ${g.a}`;
     t += d.pide === 'N' || d.N === undefined ? ' y no se sabe cuál es el último.' : ` y el último, el ${g.N}.`;
     if (g.conBarras) t += ` Abajo, los boletos por bloques (${g.bl.map(b => `${b.a} a ${b.z}, de ${b.k} ${b.k === 1 ? 'cifra' : 'cifras'}`).join('; ')}) y, a la misma escala, las cifras que gasta cada bloque.`;
-    if (d.impresas !== undefined) t += ` La imprenta imprimió ${entero(d.impresas)} cifras.`;
+    if (d.impresas !== undefined) t += ` Abajo, la barra de las ${entero(d.impresas)} cifras que imprimió la imprenta, partida en lo que gasta cada bloque; el último bloque termina en un boleto que no se sabe.`;
     return t;
   }
 

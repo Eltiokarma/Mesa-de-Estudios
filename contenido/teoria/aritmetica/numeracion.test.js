@@ -334,7 +334,7 @@ test('«Ahora tú» de la idea 5 (conteo): la respuesta cuadra con un cálculo a
 });
 
 test('«Así se resuelve» no hace la pregunta de «Ahora tú», y su respuesta cuadra con un cálculo aparte', () => {
-  const plantilla = { agrupar: /caramelos sueltos\. Los empaca/, descomposicion: /^Dos puestos anotan/, 'cambio-base': /^Pasa \d+\(\d\) a base/, 'base-desconocida': /^Una bolsa cerrada dice/, 'conteo-cifras': /imprime los boletos del/ };
+  const plantilla = { agrupar: /caramelos sueltos\. Los empaca/, descomposicion: /^Dos puestos anotan/, 'cambio-base': /^Pasa \d+\(\d\) a base/, 'base-desconocida': /^Un paquete cerrado dice/, 'conteo-cifras': /imprime los boletos del/ };
   for (const id of IDEAS) {
     const i = idea(id);
     for (let s = 0; s < SEMILLAS; s++) {
@@ -533,4 +533,138 @@ test('M5: el distractor D de «Una suma con base oculta» es el valor que da su 
 
 test('«muestra» (el verbo) no se marca como el término de Estadística', () => {
   assert.ok(def.glosarioSin.includes('muestra'));
+});
+
+// ---------- Ronda 2 del lector en frío (18 nov): rutinas/frio/aritmetica.numeracion.md, sección «Ronda 2» ----------
+const ej = (id, titulo) => { const e = idea(id).ejemplos.find(x => x.titulo === titulo); assert.ok(e, `${id}: falta «${titulo}»`); return e; };
+const textoSol = e => e.solucion.map(x => textoDe([x.texto, ' ', x.ecuacion || ''])).join(' | ');
+
+test('R2 huecos 1: «Solo ceros y unos» dice por qué los restos van del último al primero, y lo da en Datos', () => {
+  const e = ej('cambio-base', 'Solo ceros y unos'), d = (e.datos || []).map(textoDe).join(' | ');
+  assert.match(d, /primer resto es la cifra de la derecha/);
+  assert.match(d, /2 × 2 × 2 = 8/, 'los lugares de la base 2');
+  assert.match(textoSol(e), /va a la derecha/);
+  assert.match(textoSol(e), /1 × 8 \+ 1 × 4 \+ 0 × 2 \+ 1/);
+  // Todo ejemplo de la idea 3 que lee los restos «del último al primero» trae esa regla en Datos.
+  for (const x of idea('cambio-base').ejemplos) if (/del último/i.test(textoSol(x)))
+    assert.ok((x.datos || []).map(textoDe).some(t => /primer resto es la cifra de la derecha/.test(t)), `«${x.titulo}» sin el orden de los restos en Datos`);
+});
+
+test('R2 huecos 2: «Una cifra repetida» escribe el «×», dice 36 = 6 × 6 y hace la división; ningún ejemplo pega un número a una letra', () => {
+  const e = ej('descomposicion', 'Una cifra repetida'), s = textoSol(e);
+  assert.match(s, /6 × 6 = 36/); assert.match(s, /185 ÷ 37 = 5/); assert.match(s, /37 × a/);
+  assert.ok((e.datos || []).map(textoDe).some(t => /6(²| al cuadrado) = 6 × 6/.test(t)));
+  // «36a», «5n», «10a»: un número pegado a una letra (fuera de un numeral, que va con su raya).
+  const pegados = [];
+  const ir = (x, donde) => { if (Array.isArray(x)) { x.forEach((y, k) => {
+      if (typeof y === 'string' && /\d$/.test(y) && x[k + 1] && x[k + 1].m && /^[a-z]$/.test(x[k + 1].t)) pegados.push(`${donde}: «${y}${x[k + 1].t}»`);
+      ir(y, donde); }); return; }
+    if (typeof x === 'string') { const m = x.match(/(^|[\s=+−,:;])\d+[a-z](?![\p{L}\d])/u); if (m) pegados.push(`${donde}: «${m[0].trim()}»`); return; }
+    if (x && typeof x === 'object' && !x.sub && !x.raya) Object.values(x).forEach(y => ir(y, donde)); };
+  for (const id of IDEAS) for (const x of idea(id).ejemplos) ir([x.enunciado, x.datos, x.solucion.map(y => [y.texto, y.ecuacion])], `${id} «${x.titulo}»`);
+  assert.deepEqual(pegados, []);
+});
+
+test('R2 huecos 3: «Cifras con un parámetro» dice en Datos que cada paréntesis bajo la raya es una sola cifra', () => {
+  assert.ok(ej('base-desconocida', 'Cifras con un parámetro').datos.map(textoDe).some(t => /cada paréntesis es una sola cifra/.test(t)));
+});
+
+test('R2 huecos 4: «Hasta que dé 0» escribe el número en base 4; «¿Hasta qué boleto?» hace la cuenta antes de decir dónde termina', () => {
+  const e = ej('cambio-base', 'Hasta que dé 0');
+  assert.match(textoDe(e.respuesta), /50 = 302\(4\)/); assert.match(textoSol(e), /302\(4\)/);
+  const h = ej('conteo-cifras', '¿Hasta qué boleto?'), k = h.solucion.findIndex(x => /99 \+ 15/.test(textoDe(x.ecuacion || '')));
+  assert.ok(k >= 0);
+  for (const x of h.solucion.slice(0, k + 1)) assert.ok(!/114/.test(textoDe(x.texto)), `«114» antes de la cuenta: ${textoDe(x.texto)}`);
+});
+
+test('R2 huecos 5: «Leer la etiqueta» dice en Datos que la base es lo que lleva cada bolsita, y no dibuja la bolsa cerrada', () => {
+  const e = ej('agrupar', 'Leer la etiqueta');
+  assert.ok(e.datos.map(textoDe).some(t => /la base: los caramelos de cada bolsita/.test(t)));
+  assert.equal(e.figura, undefined, 'el dibujo solo repetía el enunciado');
+  assert.equal(ej('descomposicion', 'La cifra del medio').figura, undefined, 'el paquete cerrado solo repetía los datos');
+});
+
+test('R2 símbolos: la raya, N junto a n, caja y cajón, «acota», la primera cifra, la escala, «puntas», la base n y «bolsa»', () => {
+  // La raya se dice en la regla de las ideas 2 y 4 (donde está a̅b̅c̅ o a̅b̅).
+  for (const id of ['descomposicion', 'base-desconocida']) assert.match(idea(id).regla.condicion, /raya/, id);
+  // N mayúscula no queda al lado de n: ninguna regla ni dato de las ideas 1 a 4 la usa (va en palabras).
+  for (const id of IDEAS.slice(0, 4)) {
+    const i = idea(id), ts = [[i.regla.texto, i.regla.ecuacion, i.regla.condicion, i.aprendizaje]];
+    for (const x of i.ejemplos) ts.push(x.datos || []);
+    for (let s = 0; s < 40; s++) { ts.push(i.ahoraTu.generar(s).datos || []); ts.push(i.resuelve.generar(s).datos || []); }
+    for (const t of ts) assert.ok(!/\bN\b/.test(textoDe(t)), `${id}: N en «${textoDe(t)}»`);
+  }
+  assert.ok(!/\bN\b/.test(idea('conteo-cifras').regla.condicion), 'la regla de la idea 5 no dice N junto a n');
+  // La caja llega dicha en Predice 1; el cajón, en «Lee» de la idea 3.
+  assert.match(textoDe(idea('agrupar').predice.pregunta), /bolsitas llenan una caja/);
+  assert.match(textoDe(idea('cambio-base').lee.tarjetas[0].texto), /4 cajas en un cajón/);
+  // «acota» con lo que quiere decir; la primera cifra con un ejemplo; la regla de la idea 1 sin la frase que no se entendió.
+  assert.match(idea('base-desconocida').regla.texto, /acota las cifras ocultas: cada una es menor que n/);
+  assert.match(idea('agrupar').regla.condicion, /05 es 5/);
+  // Idea 5: sin «a la misma escala» ni «puntas»; la base n con un ejemplo de verdad; n = 10 en los boletos.
+  const r5 = idea('conteo-cifras');
+  assert.ok(!/misma escala/.test(textoDe(r5.juega.leyenda.map(x => [x.s, ' ', x.t]))));
+  assert.match(textoDe(r5.regla.ecuacion), /en base 5, tres cifras: de 100\(5\) = 25 a 444\(5\) = 124/);
+  assert.match(r5.regla.condicion, /En los boletos, n = 10/);
+  for (const id of IDEAS) for (const { donde, x } of lecturas(idea(id))) {
+    const t = textoDe(x);
+    assert.ok(!/puntas/.test(t), `${id} ${donde}: «puntas»`);
+    // El paquete cerrado no se llama «bolsa» (se confundía con la bolsita).
+    assert.ok(!/\b[Bb]olsas?\b/.test(t), `${id} ${donde}: «bolsa» en «${t.slice(0, 80)}»`);
+  }
+  for (const id of IDEAS) for (const f of todasLasFiguras(idea(id))) assert.ok(!/\b[Bb]olsas?\b/.test(svgDe(f.pieza, f.dib).replace(/aria-label="[^"]*"/, '')), `${id} ${f.nombre}: «bolsa» en la figura`);
+});
+
+test('R2 colores: la segunda base con un solo verde (también en la tabla) y dicha; los dos extremos de un bloque en violeta; la a en naranja; el 6 de 6 × 6 en turquesa', () => {
+  // La regla de la idea 3 trae un ejemplo con la segunda base en verde y dice que va en verde.
+  assert.ok(fichas(idea('cambio-base').regla.ecuacion).some(f => f.m === 'segunda base'));
+  assert.match(idea('cambio-base').regla.condicion, /verde/);
+  // En «Así se resuelve» de la idea 3, la tabla divide entre la segunda base: su columna «entre» va en verde, como el texto.
+  for (let s = 0; s < 40; s++) {
+    const r = idea('cambio-base').resuelve.generar(s), tb = r.pasos.find(x => x.dibujo).dibujo.datos;
+    assert.equal(tb.columnas[1].color, 'd', `resuelve ${s}`);
+    assert.ok(tb.filas.every(f => f[1].color === 'd'), `resuelve ${s}: el divisor`);
+    assert.match(textoDe(r.pasos[0].texto), /en verde, la base nueva/);
+  }
+  // «Del X al Y» en los ejemplos y en «Así se resuelve» de la idea 5: los dos extremos dados, en violeta (salvo el 1).
+  const enunciados = idea('conteo-cifras').ejemplos.map(e => [e.titulo, e.enunciado]);
+  for (let s = 0; s < 40; s++) enunciados.push([`resuelve ${s}`, idea('conteo-cifras').resuelve.generar(s).enunciado]);
+  for (const [donde, q] of enunciados) {
+    const violetas = fichas(q).filter(f => f.m === 'cantidad').map(f => sinEsp(f.t));
+    for (const m of textoDe(q).matchAll(/del (\d+) al (\d[\d\s]*)/g)) {
+      if (m[1] !== '1') assert.ok(violetas.includes(m[1]), `${donde}: el ${m[1]} sin color`);
+      assert.ok(violetas.includes(sinEsp(m[2])), `${donde}: el ${m[2]} sin color`);
+    }
+  }
+  // La cifra a que se pide o se nombra en un enunciado va en naranja (como después en la solución).
+  for (const id of IDEAS) for (const e of idea(id).ejemplos) {
+    const sueltas = (Array.isArray(e.enunciado) ? e.enunciado : [e.enunciado]).filter(x => typeof x === 'string').join('|');
+    assert.ok(!/\b(cifra|tener|vale|de|en) a\b(?=[?,.|]| (cajas|sueltos|quedó|está))/.test(sueltas), `${id} «${e.titulo}»: la a en tinta`);
+  }
+  // «Una caja para 30»: el 6 de «bolsitas de 6» y de «6 × 6» es la base, en turquesa, como el 5.
+  const c30 = ej('agrupar', 'Una caja para 30');
+  assert.ok(fichas(c30.solucion).filter(f => f.m === 'base' && f.t === '6').length >= 3);
+  // Ningún título de ejemplo se repite en la unidad.
+  const titulos = def.ideas.flatMap(i => i.ejemplos.map(e => e.titulo));
+  assert.equal(new Set(titulos).size, titulos.length, titulos.filter((t, k) => titulos.indexOf(t) !== k).join(', '));
+});
+
+test('R2 dibujos y controles: el deslizador dice por qué empieza donde empieza; «va en» se llena con su fila; la regla de la idea 2 dice n', () => {
+  const desde = (id, c) => idea(id).juega.controles.find(x => x.id === c);
+  for (const id of ['descomposicion', 'base-desconocida']) {
+    assert.equal(desde(id, 'b').min, 4); assert.match(idea(id).juega.consigna, /desde 4: con 3, no existiría la cifra 3/, id);
+  }
+  const b1 = desde('agrupar', 'b');
+  assert.match(idea('agrupar').juega.consigna, new RegExp(`de ${b1.min} a ${b1.max} caramelos`));
+  // «Mira» de la idea 3: en el paso 1, la columna «va en» ya dice adónde va el primer resto.
+  const mira = idea('cambio-base').mira, tb = mira.datos;
+  assert.equal(tb.columnas[4].t, 'va en');
+  assert.ok((tb.filas[0][4].paso || 0) <= mira.pasos[0].estado.paso, 'la fila 1 de «va en» se ve en el paso 1');
+  assert.ok(tb.filas.every((f, i) => f[4].paso === f[0].paso), 'cada «va en» con su fila');
+  // La figura de «La regla» de la idea 2 (el último paso de «Mira»): letrero con n y ningún lugar vacío bajo «b × n».
+  const m2 = idea('descomposicion').mira, ult = m2.pasos[m2.pasos.length - 1].estado;
+  const ts = textosSVG(P.dibujar(m2.datos, ult)).join(' | ');
+  assert.match(ts, /1 bolsita = n caramelos/); assert.ok(!/= 5 caramelos/.test(ts));
+  const g = P.geometria(m2.datos, ult);
+  assert.ok(['cajas', 'bolsitas', 'sueltos'].every(o => g.d[o] > 0), 'cada lugar con algo dibujado');
 });

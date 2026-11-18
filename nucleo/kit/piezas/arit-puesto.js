@@ -14,7 +14,8 @@
  *   n: 5,                                   caramelos por bolsita (y bolsitas por caja, cajas por cajón): la base
  *   cajones: 0, cajas: 0, bolsitas: 2, sueltos: 3,   cuántos hay de cada uno sobre el mostrador
  *   ceros: true,                            dibuja también los órdenes vacíos, del mayor que hay hasta los sueltos
- *   cerrado: true,                          en vez del pedido, una bolsa de papel cerrada (no se ve qué hay adentro)
+ *   cerrado: true,                          en vez del pedido, un paquete de papel cerrado (no se ve qué hay adentro;
+ *                                           la unidad lo llama «paquete», para no confundirlo con la bolsita)
  *   llega: 1,                               caramelos que llegan: a la derecha del pedido, con un «+» y borde punteado
  *   juntar: 'sueltos' | 'bolsitas' | 'cajas',   aro punteado alrededor de los primeros n de ese orden (se van a juntar)
  *   etiqueta: { cifras: '23', base: '5', color: true },   la etiqueta colgada: cifras naranja y base turquesa; con
@@ -149,7 +150,7 @@
     if (!k) return `<ellipse cx="${n2(x + m.w / 2)}" cy="-3" rx="13" ry="3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3" stroke-opacity="0.6" vector-effect="non-scaling-stroke"/>`;
     return trazoCaramelos(puntosMonton(x, k).map(([cx, cy]) => caramelo(cx, cy, 0.85)).join(''));
   }
-  // Bolsa de papel cerrada, con la boca doblada dos veces y los fuelles de los costados: no se ve qué hay adentro.
+  // Paquete de papel cerrado, con la boca doblada dos veces y los fuelles de los costados: no se ve qué hay adentro.
   const CERRADO = { w: 58, h: 76 };
   function cerrado(x) {
     const { w, h } = CERRADO, x1 = x + w, top = -h + 14;
@@ -353,7 +354,7 @@
   function alt(datos, estado = {}) {
     const d = mezcla(datos, estado), n = d.n;
     const partes = [];
-    if (d.cerrado) partes.push('una bolsa de papel cerrada');
+    if (d.cerrado) partes.push('un paquete de papel cerrado');
     else for (const o of ordenes(d).slice()) { const k = entero(d[o]); partes.push(`${k} ${o === 'sueltos' ? (k === 1 ? 'caramelo suelto' : 'caramelos sueltos') : (k === 1 ? SING[o] : PLUR[o])}`); }
     let t = `Puesto de caramelos de doña Juana, con bolsitas de ${n === undefined ? '?' : n} caramelos. Sobre el mostrador: ${partes.join(', ')}.`;
     if (!d.cerrado && entero(d.llega)) t += ` Llegan ${entero(d.llega)} caramelos más.`;

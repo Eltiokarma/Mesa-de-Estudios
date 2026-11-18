@@ -204,7 +204,7 @@ test('datos: una lista de líneas cortas, sin la respuesta y con la fórmula de 
   const FORMULA = {
     etiqueta: /^1 bolsita = \d caramelos/, 'mal-escrito': /n − 1/, 'menor-base': /n − 1/, sucesor: /^1 bolsita = /,
     valor: /a̅b̅c̅(d̅)?₍ₙ₎ = a × n/, ordenar: /a̅b̅c̅₍ₙ₎ = a × n²/, 'mayor-k': /a̅b̅(c̅)?(d̅)?₍ₙ₎ = a × n/, cruzados: /a̅b̅₍ₙ₎ = a × n \+ b/,
-    'de-10': /N = q × \d \+ r/, 'entre-bases': /N = q × \d \+ r/, 'suma-cifras': /N = q × \d \+ r/, paquetes: /N = q × \d \+ r/,
+    'de-10': /D = q × \d \+ r/, 'entre-bases': /D = q × \d \+ r/, 'suma-cifras': /D = q × \d \+ r/, paquetes: /D = q × \d \+ r/,
     lineal: /a̅b̅₍ₙ₎ = a × n \+ b/, cuadratica: /a̅b̅c̅₍ₙ₎ = a × n²/, 'otra-etiqueta': /a̅b̅₍ₙ₎ = a × n \+ b/, 'mayor-suma': /₍ₙ₎ = a × n/,
     cifras: /u − p \+ 1/, hasta: /u − p \+ 1/, 'cuantos-k': /u − p \+ 1/, 'cifras-base': /u − p \+ 1/, 'bases-tres': /n² a n³ − 1/,
   };

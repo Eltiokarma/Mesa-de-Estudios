@@ -193,3 +193,55 @@ no resta en base 7) y B13 (185 y 154 en violeta).
 - **Bajas sin hacer:** B1 (papel por idea), B10 (un código por distractor), B11 (separar los caramelos en `arit-puesto`),
   B12 (36a sin «×»), B14 (códigos AT en el informe de investigación), B15 (arreglo de `herramientas/papel-generador.js`)
   y B16 (`ordenar` del generador).
+
+## Correcciones de la ronda 2 del lector (18 nov)
+
+Fuente: `rutinas/frio/aritmetica.numeracion.md`, sección «Ronda 2». Método: `docs/metodo/unidad/6-correcciones.md`.
+Alcance: la unidad y su test, `arit-puesto`, `arit-talonario` (con su test) y `plantillas/numeracion-bases/` (generador,
+test y `papel.json` regenerado). No se tocaron `app/` ni `nucleo/teoria.js`. No son hallazgos: que la captura muestre
+solo el primer paso (en el código los pasos siguientes sí lo resuelven), el número del circulito y el subrayado del
+glosario. Cada corrección tiene su prueba: bloque «Ronda 2» de `numeracion.test.js` (8 pruebas) y dos en
+`arit-talonario.test.js`. Corridas contra la versión anterior (copia en el scratchpad, `numeracion-r2/antes/`), fallan
+las 10. Las cuentas nuevas o cambiadas se rehicieron sin el código de la unidad (`numeracion-r2/scripts/cuentas-r2.js`):
+30 de 30 cuadran.
+
+| Hallazgo del lector | Qué se hizo | Prueba |
+|---|---|---|
+| «Solo ceros y unos»: no dice por qué los restos van del último al primero ni que en base 2 los lugares valen 1, 2, 4, 8 | Dato nuevo `DD.restos` («el primer resto es la cifra de la derecha (lo que quedó suelto); el último resto, la de la izquierda») y los lugares 4 = 2 × 2 y 8 = 2 × 2 × 2. La solución dice por qué: el primer resto quedó suelto y va a la derecha; el último es el orden más grande. Cierra con 1 × 8 + 1 × 4 + 0 × 2 + 1 = 13. `DD.restos` va también en los demás ejemplos de la idea 3 que escriben el número leyendo los restos. | R2 huecos 1 |
+| «Una cifra repetida»: «36a» sin «×», 36 = 6² sin decir y salto a a = 5 | «En base 6 los lugares valen 6 × 6 = 36, 6 y 1»; a0a₍₆₎ = a × 36 + 0 × 6 + a = 37 × a; 37 × a = 185, a = 185 ÷ 37 = 5. En Datos, 6² = 6 × 6. De paso (B12 del auditor), ningún ejemplo pega un número a una letra: «Cifras cruzadas», «Al revés en otra base», «Juntar de 8 en 8» (y 195 ÷ 65), «Una suma con base oculta», «Menos de 30» y «Cifras con un parámetro» escriben el «×». | R2 huecos 2 |
+| «(a − 1)(2a)₍₇₎»: nada dice que cada paréntesis es una sola cifra | Dato: «Bajo la raya, cada paréntesis es una sola cifra: (2a) es la cifra 2 × a». | R2 huecos 3 |
+| «Hasta que dé 0» no escribe el número en base 4 | Paso nuevo: los restos del último al primero, 3, 0 y 2, con la vuelta 3 × 16 + 0 × 4 + 2 = 50; la respuesta dice 50 = 302₍₄₎. La frase de caramelos sin caramelos («junta de a 4…») pasa a «Se divide 50 entre 4; después, el cociente 12…». | R2 huecos 4 |
+| «¿Hasta qué boleto?» dice «del 100 al 114» antes de la cuenta | Primero 99 + 15 = 114 («el último es 99 + 15»), después la comprobación 114 − 100 + 1 = 15. | R2 huecos 4 |
+| «Leer la etiqueta»: Datos no dice que la base es lo que lleva cada bolsita | `DN.etiqueta` termina en «la base: los caramelos de cada bolsita» (también en «Anotar la etiqueta» y «Dos puestos, un pedido»). | R2 huecos 5 |
+| La raya sobre a̅b̅c̅ sin explicar en la regla | La condición de la regla de la idea 2 empieza «La raya: a, b y c son cifras, no un producto»; la de la idea 4, «Con raya, a y b son cifras». («Lee» de la idea 2 ya la explicaba en la tarjeta 3.) | R2 símbolos |
+| N mayúscula junto a n | Otra letra, dicha en palabras: la regla de la idea 3 dice «Para pasar un número D a base n» y «D = q × n + r»; los datos, «D = q × n + r … (D: el número; q: cociente; r: resto)», también `D.div` del generador. Con la palabra «número» la fórmula no cabía en una línea a 390 px. La regla de la idea 4 dice «= número conocido». N queda solo como último boleto en la idea 5, y su regla ya no la nombra. | R2 símbolos |
+| «caja» y «cajón» de golpe | Predice 1: «En su puesto, 5 bolsitas llenan una caja». «Lee» 1 de la idea 3: «junta 4 bolsitas en una caja, y 4 cajas en un cajón» (antes «y así»). Leyenda del juego de la idea 3: el aro punteado («los que se juntan en la ronda siguiente»), que el lector vio como «algo verde». | R2 símbolos |
+| «acota» | Regla de la idea 4: «la base acota las cifras ocultas: cada una es menor que n». Ejemplo de una letra en dos bases en la ecuación de la regla: 3a₍₄₎ y a2₍₆₎ dan a < 4 y a < 6. | R2 símbolos |
+| «la primera cifra de un numeral no es 0» | Regla de la idea 1: «Con varias cifras, no se empieza con 0: 05 es 5». `DN.primera` lleva el mismo ejemplo. | R2 símbolos |
+| «a la misma escala», «boletos: un tramo por bloque: igual cantidad de cifras» | Leyenda: «boletos: cada tramo, los boletos de un bloque» y «cifras impresas: cada tramo, las cifras que gasta ese bloque». «Lee» 1 de la idea 5 dice qué es cada tramo de la barra (el lector no lo sabía). | R2 símbolos |
+| «puntas» | En toda la unidad, «el primero y el último» (Luma, «Lee», un `siFuera`, «Así se resuelve» y un ejemplo). | R2 símbolos |
+| «en base n» en la regla de la idea 5, sin ejemplo | Línea nueva en la ecuación: «en base 5, tres cifras: de 100₍₅₎ = 25 a 444₍₅₎ = 124»; la condición dice «En los boletos, n = 10» y «El último bloque puede quedar incompleto». | R2 símbolos |
+| «bolsa» contra «bolsita» | El envase cerrado se llama **paquete** en toda la unidad (idea 4 entera, «Leer la etiqueta», «Juntar de 8 en 8»), en el texto alternativo de `arit-puesto` y en el generador. «Lee» 1 de la idea 4 dice que adentro van bolsitas y sueltos. | R2 símbolos |
+| La segunda base en dos verdes; el verde sin leyenda | Un solo verde (`c-d`) para la segunda base, también en la tabla: en «Así se resuelve» de la idea 3 la columna «entre» y el divisor van en verde (`tablaDiv(…, { segunda: true })`; antes, turquesa). Se dice dónde se ve: ejemplo en la regla, 21₍₅₎ = 11 = 23₍₄₎ con el (4) en verde, y la condición «la nueva, en verde»; el paso «¿Qué me piden?» y los cuatro ejemplos entre dos bases lo repiten. | R2 colores |
+| «Del 100 al 150»: el 100 sin color y el 150 en violeta | Los dos extremos dados van en violeta, en el texto y en el dibujo: el primer boleto del talonario se pinta como el último cuando no es el 1. Igual en «De un boleto a otro», «Desde el boleto 45» y «Así se resuelve». | R2 colores; ronda 2 del talonario |
+| La «a» en tinta en el enunciado y naranja después | Todos los enunciados de ejemplos nombran la cifra con su naranja (`cif('a')`): «La cifra del medio», «Dos bases a la vez», las dos «borrosas», «Juntar de 8 en 8», «Cifras con un parámetro», «Cifras cruzadas». | R2 colores |
+| El 6 de «6 × 6» sin color | En «Una caja para 30» y «Bolsitas para 45», la base (6, 5, 7) en turquesa en «bolsitas de 6» y en «6 × 6». | R2 colores |
+| Dos ejemplos «La cifra borrosa» | El de nivel 2 (2a3₍₅₎) se llama «La cifra del medio». Ningún título se repite. | R2 colores |
+| Dibujos que solo repetían el enunciado | «Leer la etiqueta» y «La cifra del medio» quedan sin dibujo. Con el último boleto pedido, `arit-talonario` ya no escribe el enunciado bajo el dibujo: dibuja la barra de las cifras impresas (el dato, en naranja) partida en 9, 180 y lo que queda, con «1 a 9», «10 a 99» y «100 a ?». Los anchos salen de las cifras, no del último boleto. Vale para «¿Hasta qué boleto?», «Con 1500 cifras» y «Ahora tú». | R2 huecos 5; ronda 2 del talonario |
+| El deslizador que arranca en 4 | Consignas de las ideas 2 y 4: «desde 4: con 3, no existiría la cifra 3». Idea 1: «bolsitas iguales, de 5 a 9 caramelos». | R2 dibujos y controles |
+| La columna «va en» vacía en Mira | Cada «va en» se llena con su fila: en el paso 1 ya dice «sueltos». El paso 4 dice «El primer resto va a los sueltos; el último, a las cajas». | R2 dibujos y controles |
+| Regla de la idea 2: letrero «1 bolsita = 5» con etiquetas en n, y «b × n» bajo un lugar vacío | El último paso de «Mira» (la figura de la regla) dice «1 bolsita = n caramelos» y «1 caja = n bolsitas» y dibuja una caja, una bolsita y un suelto con a × n², b × n y c × 1. La ecuación agrega n² = n × n. | R2 dibujos y controles |
+| Otros, de una línea | «Lee» 1 de la idea 1 dice qué es n («Lo que lleva cada bolsita se llama n; aquí, n = 5»). El juego de la idea 2 escribe la caja como 1 × 4 × 4. «Cifras en base 3» trae a̅b̅₍ₙ₎ en Datos (usaba 10₍₃₎). 40₍₆₎ va como numeral en «La cifra borrosa». | (validador y pruebas de siempre) |
+
+**Pendiente, con la razón:**
+- **App (`app/`):** «Prueba 3 casos distintos» no dice qué cuenta como caso distinto (el lector preguntó si basta mover un
+  poco el control). Es texto de `app/teoria.js`.
+- **Decisión de Gerson, el verde:** el lector llama «verde azulado» al turquesa de la base y «verde oliva» al de la segunda
+  base. Ahora la segunda base tiene un solo verde y se dice dónde va, pero los dos colores siguen pareciéndose de nombre.
+  Si vuelve a confundir, la salida es otra marca para la segunda base (subrayado o un rótulo «base nueva»), no otro color:
+  la paleta de §5b no tiene otro libre junto al naranja.
+- **Predice de la idea 4** dibuja un solo paquete aunque habla de dos (el lector lo notó). Dibujar dos paquetes pide
+  cambiar `arit-puesto` (hoy dibuja un solo `cerrado`); queda para cuando se rehaga la pieza.
+- **«Primera y última cifra»** (idea 3) no lleva `DD.restos` a propósito: el dato respondería la pregunta. La solución
+  explica por qué con «lo que queda suelto».
+- Quedan las bajas sin hacer de la primera ronda (B1, B10, B11, B14, B15, B16).

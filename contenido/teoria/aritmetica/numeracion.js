@@ -12,15 +12,16 @@
  * Hilo de la unidad: el puesto de caramelos de doña Juana en el mercado de Juliaca (pieza arit-puesto, dibujo de
  * prueba): n caramelos sueltos llenan una bolsita, n bolsitas una caja, n cajas un cajón; la etiqueta es el numeral.
  *
- * Letras: la base se llama n (en a̅b̅c̅₍ₙ₎, b es una cifra); N, la cantidad en base 10 (caramelos), siempre con su
- * color y su leyenda. Los ids de los controles siguen siendo n (la cantidad) y b (la base): solo cambian sus rótulos.
+ * Letras: la base se llama n (en a̅b̅c̅₍ₙ₎, b es una cifra). El número que se divide se llama D en la regla y los datos
+ * de la idea 3 («D = q × n + r», con «D: el número»), para que N no quede al lado de n (ronda 2 del lector, 18 nov); N queda solo como el
+ * último boleto de la idea 5, con su leyenda. Los ids de los controles siguen siendo n (la cantidad) y b (la base).
  * Notación: 342₍₆₎, con la base de subíndice entre paréntesis (num en las ecuaciones, numT en el texto plano; num2 si
  * es la segunda base, al pasar entre dos bases), y a̅b̅c̅₍ₙ₎ con raya cuando lleva letras ({ raya } de nucleo/ecuacion.js). Sin base escrita, la base es 10. Se usa «×»
  * para multiplicar (el «·» separa relaciones en la regla).
  *
  * REGLA DE COLORES DE LA UNIDAD: un color fijo por magnitud (docs/molde-unidad.md §5b; decisiones, 17 nov), en la
  * tabla COLORES (def.colores), la misma en el juego, la figura, la fórmula, los datos, los ejemplos y «Ahora tú»:
- *   - violeta (c-f): la cantidad en base 10 (N): los caramelos de un pedido, la bolsa, el último boleto. Es lo que más
+ *   - violeta (c-f): la cantidad en base 10 (N): los caramelos de un pedido, el paquete cerrado, el último boleto. Es lo que más
  *     pide el examen. En una figura, solo si se da (el rótulo «38 caramelos»), nunca si se pide;
  *   - turquesa (c-i): la base n: el contorno de la bolsita, la caja y el cajón, el subíndice ₍ₙ₎ y el divisor;
  *   - naranja (c-o): las cifras: el numeral, cuántas bolsitas o sueltos hay, cada resto (es una cifra);
@@ -112,7 +113,10 @@
     fk: (k, n) => (k <= 2 ? DD.f2(n) : k === 3 ? DD.f3(n) : DD.f4(n)),
     pot: (n, k = 4) => [pot(n, '2'), ' = ', bas(n), ' × ', bas(n)].concat(k >= 4 ? [';  ', pot(n, '3'), ' = ', bas(n), ' × ', bas(n), ' × ', bas(n)] : []),
     f10: [numL('ab'), ' = ', cif('a'), ' × 10 + ', cif('b')],
-    div: n => [cant('N'), ' = q × ', bas(n), ' + ', cif('r'), ', con 0 ≤ ', cif('r'), ' < ', bas(n), ' (q: cociente; ', cif('r'), ': resto)'],
+    div: n => ['D = q × ', bas(n), ' + ', cif('r'), ', con 0 ≤ ', cif('r'), ' < ', bas(n), ' (D: el número; q: cociente; ', cif('r'), ': resto)'],
+    // El orden de los restos (la regla de la idea 3), para los ejemplos que escriben el número en otra base (ronda 2 del
+    // lector: «Solo ceros y unos» lo usaba sin decirlo). No es el paso hecho: no dice cuáles son los restos.
+    restos: 'El primer resto es la cifra de la derecha (lo que quedó suelto); el último resto, la de la izquierda',
     hasta: 'Del primero, p, al último, u, hay u − p + 1 números',
   };
   // La menor escala con que caben varios dibujos del puesto: la misma en todos (el dibujo no salta de tamaño).
@@ -151,8 +155,8 @@
   const DN = {
     cifras: ['En base ', bas('n'), ', las cifras van de 0 a ', bas('n'), ' − 1'],
     sinBase: 'Un numeral sin base escrita está en base 10',
-    primera: 'La primera cifra de un numeral de varias cifras no es 0',
-    etiqueta: 'Etiqueta: primero las bolsitas, después los sueltos; abajo y entre paréntesis, la base',
+    primera: 'Un numeral de varias cifras no empieza con 0: 05 se escribe 5',
+    etiqueta: 'Etiqueta: primero las bolsitas, después los sueltos; abajo, entre paréntesis, la base: los caramelos de cada bolsita',
     bolsita: n => ['1 bolsita = ', bas(n), ' caramelos'],
     caja: n => ['1 caja = ', bas(n), ' bolsitas'],
     todo: n => ['1 bolsita = ', bas(n), ' caramelos; 1 caja = ', bas(n), ' bolsitas; 1 cajón = ', bas(n), ' cajas'],
@@ -345,9 +349,8 @@
       ],
       respuesta: ['La etiqueta es ', num('35', 6)] },
     { nivel: 1, titulo: 'Leer la etiqueta',
-      enunciado: ['La etiqueta de una bolsa cerrada dice ', num('42', 7), '. ¿Cuántas bolsitas hay adentro, de cuántos caramelos cada una, y cuántos sueltos?'],
+      enunciado: ['La etiqueta de un paquete cerrado dice ', num('42', 7), '. ¿Cuántas bolsitas hay adentro, de cuántos caramelos cada una, y cuántos sueltos?'],
       datos: [DN.etiqueta],
-      figura: fig({ n: 7, cerrado: true, etiqueta: { cifras: '42' } }),
       solucion: [
         { texto: ['La base, abajo y entre paréntesis, es ', bas(7), ': cada bolsita lleva 7 caramelos.'] },
         { texto: ['Primero se anotan las bolsitas: el ', cif(4), '. Después los sueltos: el ', cif(2), '. Está bien anotada: 2 sueltos son menos que 7.'] },
@@ -455,7 +458,7 @@
       figura: fig({ sueltos: 30, rotulos: { sueltos: [['30 caramelos', 'f', 700]] }, regla: [[['1 bolsita = '], ['?', 'i', 700], [' caramelos']]], etiqueta: { cifras: '?', base: '?' } }),
       solucion: [
         { texto: ['Para llenar una caja hacen falta ', bas('n'), ' × ', bas('n'), ' caramelos, y tienen que alcanzar con 30.'] },
-        { texto: ['Con bolsitas de 6 no: 6 × 6 = 36, más que 30. Con bolsitas de ', bas(5), ' sí: 5 × 5 = 25.'] },
+        { texto: ['Con bolsitas de ', bas(6), ' no: ', bas(6), ' × ', bas(6), ' = 36, más que 30. Con bolsitas de ', bas(5), ' sí: ', bas(5), ' × ', bas(5), ' = 25.'] },
         { texto: 'Dos rondas: 30 caramelos llenan 6 bolsitas y no sobra ninguno; 6 bolsitas llenan 1 caja y sobra 1 bolsita.', ecuacion: [cant(30), ' = 6 × ', bas(5), ' + ', cif(0), SEP, '6 = ', cif(1), ' × ', bas(5), ' + ', cif(1)] },
       ],
       respuesta: ['Bolsitas de ', bas(5), '; etiqueta ', num('110', 5)] },
@@ -465,7 +468,7 @@
       figura: fig({ sueltos: 45, rotulos: { sueltos: [['45 caramelos', 'f', 700]] }, regla: [[['1 bolsita = '], ['?', 'i', 700], [' caramelos']]], etiqueta: { cifras: '?', base: '?' } }),
       solucion: [
         { texto: ['Con dos cifras hay a lo más ', bas('n'), ' − 1 bolsitas: para no llenar una caja, 45 tiene que ser menos que ', bas('n'), ' × ', bas('n'), '.'] },
-        { texto: ['Con bolsitas de 6 no: 6 × 6 = 36, y 45 llenaría una caja. Con bolsitas de ', bas(7), ' sí: 7 × 7 = 49, más que 45.'] },
+        { texto: ['Con bolsitas de ', bas(6), ' no: ', bas(6), ' × ', bas(6), ' = 36, y 45 llenaría una caja. Con bolsitas de ', bas(7), ' sí: ', bas(7), ' × ', bas(7), ' = 49, más que 45.'] },
         { texto: '45 caramelos en bolsitas de 7 dan 6 bolsitas y sobran 3.', ecuacion: [cant(45), ' = ', cif(6), ' × ', bas(7), ' + ', cif(3), '   →   ', num('63', 7)] },
       ],
       respuesta: ['Bolsitas de ', bas(7), '; etiqueta ', num('63', 7)] },
@@ -483,7 +486,7 @@
     // cuando las bolsitas llegan a n (eso lo pregunta Predice).
     lee: {
       tarjetas: [
-        { titulo: 'El puesto de doña Juana', texto: ['En el mercado de Juliaca, doña Juana vende caramelos. No los cuenta uno por uno: los junta en bolsitas iguales, aquí de ', bas(5), '. Nunca deja ', bas(5), ' sueltos: con ', bas(5), ' llena otra bolsita.'],
+        { titulo: 'El puesto de doña Juana', texto: ['En el mercado de Juliaca, doña Juana vende caramelos. No los cuenta uno por uno: los junta en bolsitas iguales. Lo que lleva cada bolsita se llama ', bas('n'), '; aquí, ', bas('n'), ' = ', bas(5), '. Nunca deja ', bas(5), ' sueltos: con ', bas(5), ' llena otra bolsita.'],
           pieza: PU, dibujo: { datos: { n: 5, bolsitas: 2, sueltos: 3, regla: 1, rotulos: true, colorCifras: false }, estado: {} } },
         { titulo: 'La etiqueta', texto: ['Cada pedido lleva una etiqueta. 2 bolsitas y 3 sueltos se anota 23₍₅₎ y se lee «dos, tres en base cinco». El 2 y el 3 son cifras; todo lo escrito, un numeral. El 5 de abajo es la base de numeración.'],
           ecuacion: [cif(2), ' bolsitas y ', cif(3), ' sueltos   →   ', num('23', 5)],
@@ -495,7 +498,7 @@
     ejemplos: EJEMPLOS_AGRUPAR,
     juega: {
       pieza: PU,
-      consigna: 'Doña Juana junta los caramelos en bolsitas iguales y anota cada pedido en su etiqueta.',
+      consigna: 'Doña Juana junta los caramelos en bolsitas iguales, de 5 a 9 caramelos, y anota cada pedido en su etiqueta.',
       mision: {
         texto: ['Con bolsitas de ', bas(6), ', arma un pedido que se anote ', num('40', 6), '.'],
         logrado: val => val.b === 6 && val.n === 24,
@@ -522,7 +525,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: ['Doña Juana tiene un pedido anotado ', num('44', 5), ': ', cif(4), ' bolsitas y ', cif(4), ' sueltos. Le llega un caramelo más. ¿Cómo queda la etiqueta?'],
+      pregunta: ['Doña Juana tiene un pedido anotado ', num('44', 5), ': ', cif(4), ' bolsitas y ', cif(4), ' sueltos. En su puesto, ', bas(5), ' bolsitas llenan una caja. Le llega un caramelo más. ¿Cómo queda la etiqueta?'],
       datos: [DN.bolsita(5), DN.caja(5)],
       voz: 'Piensa qué hace doña Juana con el caramelo nuevo.',
       opciones: [
@@ -551,7 +554,7 @@
     regla: {
       texto: 'En base n, cada n de un orden se juntan en 1 del orden siguiente. Por eso ninguna cifra llega a n: van de 0 a n − 1.',
       ecuacion: [bas('n'), ' de un orden = 1 del siguiente', SEP, '0 ≤ ', cif('cifra'), ' ≤ ', bas('n'), ' − 1'],
-      condicion: 'n es un entero de 2 o más; la primera cifra de un numeral no es 0. Sin base escrita, es 10.',
+      condicion: 'n es 2 o más. Con varias cifras, no se empieza con 0: 05 es 5. Sin base escrita, es 10.',
       voz: 'Junta hasta que ningún orden llegue a n.',
     },
     // Así se resuelve: empacar un montón en bolsitas y cajas (dos rondas) y escribir la etiqueta. «Ahora tú» pide otra
@@ -617,7 +620,10 @@
     { rotulos: Object.assign({}, R203, { cajas: '2 × 25 = 50', bolsitas: '0 × 5 = 0' }) },
     { rotulos: { cajas: '2 × 25 = 50', bolsitas: '0 × 5 = 0', sueltos: '3 × 1 = 3' } },
     { rotulos: { cajas: '2 × 25 = 50', bolsitas: '0 × 5 = 0', sueltos: '3 × 1 = 3' }, regla: [[['1 caja = 25 caramelos']], [['Total: 50 + 0 + 3 = '], ['53', 'f', 700]]] },
-    { rotulos: { cajas: [['a', 'o', 700], [' × n²']], bolsitas: [['b', 'o', 700], [' × n']], sueltos: [['c', 'o', 700], [' × 1']] }, etiqueta: { cifras: 'abc', base: 'n' } },
+    // Con letras (paso 6 y figura de «La regla»): el letrero dice n y cada lugar tiene algo dibujado, para que «b × n» no
+    // quede bajo un lugar vacío (ronda 2 del lector, 18 nov).
+    { cajas: 1, bolsitas: 1, sueltos: 1, rotulos: { cajas: [['a', 'o', 700], [' × n²']], bolsitas: [['b', 'o', 700], [' × n']], sueltos: [['c', 'o', 700], [' × 1']] },
+      regla: [[['1 bolsita = '], ['n', 'i', 700], [' caramelos']], [['1 caja = '], ['n', 'i', 700], [' bolsitas']]], etiqueta: { cifras: 'abc', base: 'n' } },
   ] });
   // Opción: la descomposición escrita (para «Ahora tú», tipo 2).
   const descOp = (letras, pesos) => letras.flatMap((l, i) => [i ? ' + ' : '', cif(l)].concat(pesos[i] === '1' ? [] : [' × ', pesos[i]])).filter(x => x !== '');
@@ -789,12 +795,11 @@
         { texto: ['El de base 6 empieza con una cifra menor que ', num('312', 4), ', y aun así es el mayor: sus cajas guardan 36.'] },
       ],
       respuesta: [num('215', 6), ' > ', num('312', 4), ' > ', num('141', 5)] },
-    { nivel: 2, titulo: 'La cifra borrosa',
-      enunciado: ['Un pedido de bolsitas de ', bas(5), ' tiene ', cant(68), ' caramelos, y su etiqueta dice ', num('2a3', 5), '. ¿Cuánto vale la cifra a?'],
+    { nivel: 2, titulo: 'La cifra del medio',
+      enunciado: ['Un pedido de bolsitas de ', bas(5), ' tiene ', cant(68), ' caramelos, y su etiqueta dice ', num('2a3', 5), '. ¿Cuánto vale la cifra ', cif('a'), '?'],
       datos: [DD.f3('n'), DN.cifras],
-      figura: fig({ n: 5, cerrado: true, regla: [[['En la bolsa: '], ['68 caramelos', 'f', 700]], [['1 bolsita = '], ['5', 'i', 700], [' caramelos']]], etiqueta: { cifras: '2a3' } }),
       solucion: [
-        { texto: 'Se descompone la etiqueta con la letra en su lugar.', ecuacion: [num('2a3', 5), ' = 2 × 25 + ', cif('a'), ' × 5 + 3 = 53 + 5 × ', cif('a')] },
+        { texto: ['Se descompone la etiqueta con la letra en su lugar: 2 cajas de 25, ', cif('a'), ' bolsitas de 5 y 3 sueltos.'], ecuacion: [num('2a3', 5), ' = 2 × 25 + ', cif('a'), ' × 5 + 3 = 53 + 5 × ', cif('a')] },
         { texto: 'Eso son los 68 caramelos.', ecuacion: ['53 + 5 × ', cif('a'), ' = 68', SEP, '5 × ', cif('a'), ' = 15', SEP, cif('a'), ' = ', cif(3)] },
         { texto: ['Sirve: 3 es menor que ', bas(5), '.'] },
       ],
@@ -817,11 +822,11 @@
       ],
       respuesta: ['Sí: los dos tienen ', cant(19), ' caramelos'] },
     { nivel: 3, titulo: 'Cifras cruzadas',
-      enunciado: ['Si ', numL('ab'), ' + ', numL('ba'), ' = ', cant(154), ', ¿cuánto vale a + b?'],
+      enunciado: ['Si ', numL('ab'), ' + ', numL('ba'), ' = ', cant(154), ', ¿cuánto vale ', cif('a'), ' + ', cif('b'), '?'],
       alternativas: ['7', '11', '14', '15'],
       datos: [DD.f10, 'a y b son cifras distintas de 0'],
       solucion: [
-        { texto: 'Se descompone cada numeral y se juntan las a con las a y las b con las b.', ecuacion: ['(10', cif('a'), ' + ', cif('b'), ') + (10', cif('b'), ' + ', cif('a'), ') = 11', cif('a'), ' + 11', cif('b'), ' = 11 × (', cif('a'), ' + ', cif('b'), ')'] },
+        { texto: 'Se descompone cada numeral y se juntan las a con las a y las b con las b.', ecuacion: ['(10 × ', cif('a'), ' + ', cif('b'), ') + (10 × ', cif('b'), ' + ', cif('a'), ') = 11 × ', cif('a'), ' + 11 × ', cif('b'), ' = 11 × (', cif('a'), ' + ', cif('b'), ')'] },
         { texto: 'Eso vale 154.', ecuacion: ['11 × (', cif('a'), ' + ', cif('b'), ') = 154', SEP, cif('a'), ' + ', cif('b'), ' = ', cif(14)] },
         { texto: ['La trampa es leer ', numL('ab'), ' como a × b: la raya dice que son cifras, y pide descomponer.'] },
       ],
@@ -848,9 +853,10 @@
     { nivel: 3, titulo: 'Una cifra repetida',
       enunciado: ['Si ', num('a0a', 6), ' = ', cant(185), ', ¿cuánto vale ', num('aa', 6), '?'],
       alternativas: ['5', '35', '55', '30'],
-      datos: [DD.f3('n'), DN.cifras],
+      datos: [DD.f3('n'), DD.pot(6, 3), DN.cifras],
       solucion: [
-        { texto: 'Se descompone con la letra en sus dos lugares.', ecuacion: [num('a0a', 6), ' = 36', cif('a'), ' + 0 + ', cif('a'), ' = 37', cif('a'), ' = 185', SEP, cif('a'), ' = ', cif(5)] },
+        { texto: ['En base ', bas(6), ', los lugares valen 6 × 6 = 36, 6 y 1. Se descompone con la letra en sus dos lugares.'], ecuacion: [num('a0a', 6), ' = ', cif('a'), ' × 36 + 0 × 6 + ', cif('a'), ' = 37 × ', cif('a')] },
+        { texto: 'Eso vale 185: se divide entre 37.', ecuacion: ['37 × ', cif('a'), ' = ', cant(185), SEP, cif('a'), ' = 185 ÷ 37 = ', cif(5)] },
         { texto: ['Sirve: 5 es menor que ', bas(6), '. Entonces ', num('aa', 6), ' = ', num('55', 6), '.'], ecuacion: [num('55', 6), ' = 5 × 6 + 5 = ', cant(35)] },
         { texto: 'Responder 5 es dar la cifra y no lo que piden; 55 es leer el numeral en base 10; 30 es 5 × 6, sin la cifra de la derecha.' },
       ],
@@ -859,8 +865,8 @@
       enunciado: ['Si ', num('ab', 7), ' = ', num('ba', 5), ', ¿cuánto vale ese número en base 10?'],
       datos: [DD.f2('n'), DN.cifras, DN.primera],
       solucion: [
-        { texto: 'Se descomponen los dos y se igualan.', ecuacion: ['7', cif('a'), ' + ', cif('b'), ' = 5', cif('b'), ' + ', cif('a'), SEP, '6', cif('a'), ' = 4', cif('b'), SEP, '3', cif('a'), ' = 2', cif('b')] },
-        { texto: ['Las dos son cifras de base 5, menores que 5, y ninguna es 0. Con 3a = 2b solo queda a = 2 y b = 3; con a = 4, b sería 6.'] },
+        { texto: 'Se descomponen los dos y se igualan.', ecuacion: ['7 × ', cif('a'), ' + ', cif('b'), ' = 5 × ', cif('b'), ' + ', cif('a'), SEP, '6 × ', cif('a'), ' = 4 × ', cif('b'), SEP, '3 × ', cif('a'), ' = 2 × ', cif('b')] },
+        { texto: ['Son cifras de base 5 distintas de 0. Con 3 × a = 2 × b solo queda a = 2 y b = 3; con a = 4, b sería 6.'] },
         { texto: 'Se comprueba con los dos numerales.', ecuacion: [num('23', 7), ' = 14 + 3 = ', cant(17), SEP, num('32', 5), ' = 15 + 2 = ', cant(17)] },
       ],
       respuesta: ['Vale ', cant(17)] },
@@ -890,7 +896,7 @@
     ejemplos: EJEMPLOS_DESCOMPOSICION,
     juega: {
       pieza: PU,
-      consigna: 'La etiqueta dice 132₍ₙ₎: 1 caja, 3 bolsitas y 2 sueltos. Doña Juana puede usar bolsitas de distinto tamaño, n.',
+      consigna: 'La etiqueta dice 132₍ₙ₎: 1 caja, 3 bolsitas y 2 sueltos. La bolsita, n, va desde 4: con 3, no existiría la cifra 3.',
       mision: {
         texto: ['Con la bolsita más chica posible, haz que el pedido tenga más de ', cant(50), ' caramelos.'],
         logrado: val => val.b === 6,
@@ -906,7 +912,7 @@
       controles: [{ id: 'b', etiqueta: 'Caramelos por bolsita, n', color: 'c-i', min: 4, max: 9, paso: 1, inicio: 4, decimales: 0 }],
       dibujo: v => ({ datos: Object.assign(ped132(v.b), { escala: escalaD() }), estado: {} }),
       // La relación: la caja guarda n × n, las bolsitas n cada una y los sueltos 1; todo suma el pedido.
-      lectura: v => [num('132', v.b), ' = 1 caja de ', String(v.b * v.b), ' + 3 × ', bas(v.b), ' + 2 = ', cant(valor('132', v.b)), ' caramelos'],
+      lectura: v => [num('132', v.b), ' = 1 × ', bas(v.b), ' × ', bas(v.b), ' + 3 × ', bas(v.b), ' + 2 = ', cant(valor('132', v.b)), ' caramelos'],
       minimo: 3,
     },
     predice: {
@@ -939,8 +945,8 @@
     },
     regla: {
       texto: 'Un numeral vale la suma de cada cifra por lo que vale su lugar: 1, n, n², n³…, desde la derecha. Las mismas cifras valen más en una base mayor.',
-      ecuacion: [num('abc', 'n'), ' = ', cif('a'), ' × ', pot('n', '2'), ' + ', cif('b'), ' × ', bas('n'), ' + ', cif('c')],
-      condicion: 'Cifras menores que n; la primera no es 0. Un 0 no suma, pero ocupa su lugar. n² = n × n.',
+      ecuacion: [num('abc', 'n'), ' = ', cif('a'), ' × ', pot('n', '2'), ' + ', cif('b'), ' × ', bas('n'), ' + ', cif('c'), SEP, pot('n', '2'), ' = ', bas('n'), ' × ', bas('n')],
+      condicion: 'La raya: a, b y c son cifras, no un producto. La primera no es 0; un 0 ocupa su lugar.',
       voz: 'Cada cifra por lo que vale su lugar, y se suma todo.',
     },
     // Así se resuelve: la misma etiqueta en dos puestos (cuánto más tiene el de bolsitas grandes). «Ahora tú» pide otra
@@ -1019,14 +1025,17 @@
     const ds = divisiones(N, n);
     const filas = ds.map((x, i) => {
       const p = o.pasos ? i + 1 : 0;
-      const fila = [{ t: String(x.x), color: i === 0 ? 'f' : null, paso: p }, { t: String(n), color: 'i', paso: p }, { t: String(x.q), paso: p }, { t: String(x.r), color: 'o', paso: p }];
-      if (o.lugar) fila.push({ t: ORD[i] || '…', paso: o.lugarPaso || p });
+      const cb = o.segunda ? 'd' : 'i';
+      const fila = [{ t: String(x.x), color: i === 0 ? 'f' : null, paso: p }, { t: String(n), color: cb, paso: p }, { t: String(x.q), paso: p }, { t: String(x.r), color: 'o', paso: p }];
+      if (o.lugar) fila.push({ t: ORD[i] || '…', paso: p });
       return fila;
     });
-    const columnas = [{ t: 'número' }, { t: 'entre', color: 'i' }, { t: 'cociente' }, { t: 'resto', color: 'o' }].concat(o.lugar ? [{ t: 'va en' }] : []);
+    // «va en» se llena con su fila (ronda 2 del lector: vacía en el paso 1 no decía nada). Con la segunda base (pasar
+    // entre dos bases), el divisor y su columna van en verde, como en el texto: la segunda base tiene un solo color.
+    const columnas = [{ t: 'número' }, { t: 'entre', color: o.segunda ? 'd' : 'i' }, { t: 'cociente' }, { t: 'resto', color: 'o' }].concat(o.lugar ? [{ t: 'va en' }] : []);
     return { columnas, filas, filasMax: ds.length, alt: `Divisiones de ${N} entre ${n}: ` + ds.map(x => `${x.x} = ${x.q} × ${n} + ${x.r}`).join('; ') };
   }
-  const T19 = tablaDiv(19, 3), T19L = tablaDiv(19, 3, { lugar: true, lugarPaso: 4, pasos: true });
+  const T19 = tablaDiv(19, 3), T19L = tablaDiv(19, 3, { lugar: true, pasos: true });
   // Las divisiones escritas, una relación por línea.
   const cuentasDiv = (N, n, colorN = true) => divisiones(N, n).flatMap((x, i) => [i ? SEP : '', i === 0 && colorN ? cant(x.x) : String(x.x), ` = ${x.q} × `, bas(n), ' + ', cif(x.r)]).filter(x => x !== '');
   const cuentasDiv2 = (N, n) => divisiones(N, n).flatMap((x, i) => [i ? SEP : '', i === 0 ? cant(x.x) : String(x.x), ` = ${x.q} × `, bas2(n), ' + ', cif(x.r)]).filter(x => x !== '');
@@ -1060,7 +1069,7 @@
         { id: 'orden', texto: [num2(nc.split('').reverse().join(''), c)], error: 'AT-ORDEN', siFuera: 'Los restos son las cifras, bien. Pero el primero va a la derecha: es lo que quedó suelto.' },
         { id: 'diez', texto: [num2(String(N), c)], error: 'AT-DECIMAL', siFuera: `Bien: el pedido tiene ${N} caramelos. Pero falta empacarlos de ${c} en ${c}.` },
       ]),
-      solucion: { texto: `Primero cuántos caramelos son: ${N}. Después, divisiones entre ${c}.`,
+      solucion: { texto: `Primero cuántos caramelos son: ${N}. Después, divisiones entre ${c}, la base nueva (en verde).`,
         ecuacion: [num(na, a), ' = ', cant(N), ' = ', num2(nc, c)] },
     };
   }
@@ -1114,7 +1123,7 @@
       respuesta: ['Cociente 4 y resto ', cif(3)] },
     { nivel: 1, titulo: 'Dos divisiones',
       enunciado: ['Escribe ', cant(17), ' en base ', bas(6), '.'],
-      datos: [DD.div(6)],
+      datos: [DD.div(6), DD.restos],
       solucion: [
         { texto: 'Se divide entre 6 hasta que el cociente es 0.', ecuacion: cuentasDiv(17, 6) },
         { texto: 'El primer resto, 5, es la cifra de la derecha; el último, 2, la de la izquierda.' },
@@ -1122,12 +1131,13 @@
       respuesta: [cant(17), ' = ', num('25', 6)] },
     { nivel: 1, titulo: 'Hasta que dé 0',
       enunciado: ['Para pasar ', cant(50), ' a base ', bas(4), ', doña Juana divide entre 4, y cada cociente otra vez. ¿Cuántas divisiones hace hasta que el cociente es 0?'],
-      datos: [DD.div(4)],
+      datos: [DD.div(4), DD.restos],
       solucion: [
-        { texto: 'Cada división junta de a 4 lo que salió de la anterior.', ecuacion: cuentasDiv(50, 4) },
+        { texto: 'Se divide 50 entre 4; después, el cociente 12 entre 4; después, el cociente 3.', ecuacion: cuentasDiv(50, 4) },
         { texto: 'En la tercera, el cociente ya es 0: no queda nada que juntar. Cada división deja un resto, una cifra.' },
+        { texto: 'Los restos, del último al primero: 3, 0 y 2. De vuelta: 3 × 16 + 0 × 4 + 2 = 50.', ecuacion: [cant(50), ' = ', num('302', 4)] },
       ],
-      respuesta: [cif(3), ' divisiones: ', cant(50), ' tiene tres cifras en base 4'] },
+      respuesta: [cif(3), ' divisiones: ', cant(50), ' = ', num('302', 4)] },
     { nivel: 1, titulo: 'Los restos posibles',
       enunciado: ['Al dividir entre ', bas(7), ', ¿qué restos pueden salir? ¿Por qué son justo las cifras de la base 7?'],
       datos: [DD.div(7)],
@@ -1146,7 +1156,7 @@
       respuesta: ['Sí: ', num('142', 5), ' vale ', cant(47)] },
     { nivel: 2, titulo: 'Cinco divisiones',
       enunciado: ['Escribe ', cant(100), ' en base ', bas(3), '.'],
-      datos: [DD.div(3)],
+      datos: [DD.div(3), DD.restos],
       solucion: [
         { texto: 'Se divide entre 3 una y otra vez, hasta que el cociente es 0.', ecuacion: cuentasDiv(100, 3) },
         { texto: 'Los restos salen 1, 0, 2, 0 y 1. Del último al primero: 1, 0, 2, 0, 1.', ecuacion: [cant(100), ' = ', num('10201', 3)] },
@@ -1155,27 +1165,29 @@
       respuesta: [num('10201', 3)] },
     { nivel: 2, titulo: 'De base 5 a base 7',
       enunciado: ['Escribe ', num('243', 5), ' en base ', bas2(7), '.'],
-      datos: [DD.f3('n'), DD.div('n')],
+      datos: [DD.f3('n'), DD.div('n'), DD.restos],
       solucion: [
-        { texto: 'Entre dos bases que no son 10, primero se pasa a base 10.', ecuacion: [num('243', 5), ' = 2 × 25 + 4 × 5 + 3 = ', cant(73)] },
+        { texto: 'Entre dos bases que no son 10, primero se pasa a base 10. La base nueva va en verde.', ecuacion: [num('243', 5), ' = 2 × 25 + 4 × 5 + 3 = ', cant(73)] },
         { texto: 'Después, divisiones entre 7.', ecuacion: cuentasDiv2(73, 7) },
         { texto: 'Los restos, del último al primero.', ecuacion: [num('243', 5), ' = ', cant(73), ' = ', num2('133', 7)] },
       ],
       respuesta: [num2('133', 7)] },
     { nivel: 2, titulo: 'Solo ceros y unos',
       enunciado: ['Escribe ', cant(13), ' en base ', bas(2), '.'],
-      datos: [DD.div(2)],
+      datos: [DD.div(2), DD.restos, ['En base ', bas(2), ', los lugares valen 1, 2, 2 × 2 = 4 y 2 × 2 × 2 = 8']],
       solucion: [
-        { texto: 'Con base 2, cada resto es 0 o 1.', ecuacion: cuentasDiv(13, 2) },
-        { texto: 'Del último resto al primero: 1, 1, 0, 1.', ecuacion: [cant(13), ' = ', num('1101', 2), ' = 8 + 4 + 0 + 1'] },
+        { texto: 'Se divide entre 2 hasta que el cociente es 0. Cada resto es 0 o 1.', ecuacion: cuentasDiv(13, 2) },
+        { texto: 'El primer resto, 1, es lo que quedó suelto: va a la derecha. El último, 1, es el orden más grande: va a la izquierda.' },
+        { texto: 'Del último resto al primero: 1, 1, 0, 1.', ecuacion: [cant(13), ' = ', num('1101', 2)] },
+        { texto: 'De vuelta, con los lugares 8, 4, 2 y 1.', ecuacion: [num('1101', 2), ' = 1 × 8 + 1 × 4 + 0 × 2 + 1 = ', cant(13)] },
       ],
       respuesta: [num('1101', 2)] },
     { nivel: 2, titulo: 'Empacar otra vez',
       enunciado: ['Un pedido del puesto de bolsitas de ', bas(6), ' se anota ', num('52', 6), '. Doña Juana lo empaca de nuevo en bolsitas de ', bas2(4), '. ¿Qué etiqueta lleva?'],
-      datos: [DD.f2('n'), DD.div('n')],
+      datos: [DD.f2('n'), DD.div('n'), DD.restos],
       figura: fig({ n: 6, bolsitas: 5, sueltos: 2, regla: 1, rotulos: true, etiqueta: { cifras: '52' } }),
       solucion: [
-        { texto: 'Primero, cuántos caramelos son.', ecuacion: [num('52', 6), ' = 5 × 6 + 2 = ', cant(32)] },
+        { texto: 'Primero, cuántos caramelos son. La base nueva, 4, va en verde.', ecuacion: [num('52', 6), ' = 5 × 6 + 2 = ', cant(32)] },
         { texto: 'Después, se empacan de a 4.', ecuacion: cuentasDiv2(32, 4) },
         { texto: 'Los restos, del último al primero: 2, 0, 0. Son 2 cajas de 16, justas.' },
       ],
@@ -1192,7 +1204,7 @@
     { nivel: 3, titulo: 'La suma de las cifras',
       enunciado: ['Al escribir ', cant(250), ' en base ', bas(6), ', ¿cuánto suman sus cifras?'],
       alternativas: ['7', '9', '10', '48'],
-      datos: [DD.div(6)],
+      datos: [DD.div(6), DD.restos],
       solucion: [
         { texto: 'Se divide entre 6 hasta que el cociente es 0.', ecuacion: cuentasDiv(250, 6) },
         { texto: 'Los restos, del último al primero: 250 = 1054₍₆₎. Sus cifras suman 1 + 0 + 5 + 4.', ecuacion: [num('1054', 6), ':  1 + 0 + 5 + 4 = ', cif(10)] },
@@ -1201,7 +1213,7 @@
       respuesta: [letra('C'), ': suman ', cif(10)] },
     { nivel: 3, titulo: 'Paquetes que crecen de a 4',
       enunciado: ['Doña Juana guarda ', cant(150), ' caramelos en paquetes llenos de 1, 4, 16 y 64 caramelos. ¿Cuál es la menor cantidad de paquetes que puede usar?'],
-      datos: [['', bas(4), ' paquetes de un tamaño llenan uno del tamaño siguiente'], DD.div(4)],
+      datos: [['', bas(4), ' paquetes de un tamaño llenan uno del tamaño siguiente'], DD.div(4), DD.restos],
       figura: montonF(4, 150, { regla: [[['Paquetes de 1, '], ['4', 'i', 700], [', 16 y 64']]] }),
       solucion: [
         { texto: ['Para usar pocos, nunca deben quedar ', bas(4), ' paquetes iguales: se juntan en uno mayor. Es escribir 150 en base 4.'], ecuacion: cuentasDiv(150, 4) },
@@ -1211,25 +1223,25 @@
       respuesta: [cif(6), ' paquetes'] },
     { nivel: 3, titulo: 'De base 3 a base 5',
       enunciado: ['¿Cómo se escribe en base ', bas2(5), ' el menor numeral de cuatro cifras de base ', bas(3), '?'],
-      datos: [DN.primera, DD.f4('n'), DD.div('n')],
+      datos: [DN.primera, DD.f4('n'), DD.div('n'), DD.restos],
       solucion: [
-        { texto: ['El menor de cuatro cifras empieza en 1 y sigue con ceros: ', num('1000', 3), ' = 3 × 3 × 3 = ', cant(27), '.'] },
+        { texto: ['El menor de cuatro cifras empieza en 1 y sigue con ceros: ', num('1000', 3), ' = 3 × 3 × 3 = ', cant(27), '. La base nueva, 5, va en verde.'] },
         { texto: 'Ahora, 27 entre 5 hasta que el cociente es 0.', ecuacion: cuentasDiv2(27, 5) },
         { texto: 'Los restos, del último al primero.', ecuacion: [num('1000', 3), ' = ', cant(27), ' = ', num2('102', 5)] },
       ],
       respuesta: [num2('102', 5)] },
     { nivel: 3, titulo: 'De base 4 a base 7',
       enunciado: ['El mayor numeral de tres cifras de base ', bas(4), ', ¿cómo se escribe en base ', bas2(7), '?'],
-      datos: [DN.cifras, DD.f3('n'), DD.div('n')],
+      datos: [DN.cifras, DD.f3('n'), DD.div('n'), DD.restos],
       solucion: [
-        { texto: ['En base 4 la cifra mayor es 3: el numeral es ', num('333', 4), '.'], ecuacion: [num('333', 4), ' = 3 × 16 + 3 × 4 + 3 = ', cant(63)] },
+        { texto: ['En base 4 la cifra mayor es 3: el numeral es ', num('333', 4), '. La base nueva, 7, va en verde.'], ecuacion: [num('333', 4), ' = 3 × 16 + 3 × 4 + 3 = ', cant(63)] },
         { texto: 'Después, 63 entre 7.', ecuacion: cuentasDiv2(63, 7) },
         { texto: 'Del último resto al primero: 1, 2, 0. De vuelta: 49 + 14 + 0 = 63.' },
       ],
       respuesta: [num2('120', 7)] },
     { nivel: 3, titulo: 'Todas las cifras iguales',
       enunciado: ['Escribe ', cant(124), ' en base ', bas(5), '. ¿Por qué salen todas sus cifras iguales?'],
-      datos: [DD.div(5), [pot(5, '3'), ' = 5 × 5 × 5']],
+      datos: [DD.div(5), DD.restos, [pot(5, '3'), ' = 5 × 5 × 5']],
       solucion: [
         { texto: 'Se divide entre 5 hasta que el cociente es 0.', ecuacion: cuentasDiv(124, 5) },
         { texto: ['Los tres restos son 4: ', cant(124), ' = ', num('444', 5), '.'] },
@@ -1244,13 +1256,13 @@
     pregunta: '¿Cómo se escribe un número en otra base?',
     temas: ['Cambio de base'],
     pieza: PU,
-    aprendizaje: 'Para pasar N a base n se divide entre n hasta que el cociente sea 0; el primer resto es la última cifra.',
+    aprendizaje: 'Para pasar un número a base n se divide entre n hasta que el cociente sea 0; el primer resto es la última cifra.',
     actividad: 'Empacar 75 caramelos ronda por ronda hasta no poder juntar más.',
     // Lee: el montón, la división con resto y la ronda como división. No dice en qué orden se escriben los restos sin
     // caramelos (eso lo pregunta Predice).
     lee: {
       tarjetas: [
-        { titulo: 'Un montón por empacar', texto: ['A doña Juana le llegan ', cant(75), ' caramelos sueltos y tiene bolsitas de ', bas(4), '. Los empaca por rondas: primero llena bolsitas; después junta las bolsitas en cajas, y así.'],
+        { titulo: 'Un montón por empacar', texto: ['A doña Juana le llegan ', cant(75), ' caramelos sueltos y tiene bolsitas de ', bas(4), '. Los empaca por rondas: primero llena bolsitas; después junta 4 bolsitas en una caja, y 4 cajas en un cajón.'],
           pieza: PU, dibujo: { datos: montonF(4, 75).datos, estado: {} } },
         { titulo: 'Dividir con resto', texto: ['Llenar bolsitas es dividir. 17 caramelos en bolsitas de ', bas(5), ' llenan 3 bolsitas y sobran 2: el 3 es el cociente y el 2, el resto. El resto siempre es menor que 5.'],
           ecuacion: [cant(17), ' = 3 × ', bas(5), ' + ', cif(2)] },
@@ -1273,6 +1285,7 @@
         { s: bas('n'), t: 'de cuántos se junta cada vez: la base' },
         { s: 'cociente', t: 'lo que se juntó en la ronda' },
         { s: cif('resto'), t: 'lo que no alcanzó: una cifra' },
+        { s: 'aro punteado', t: 'los que se juntan en la ronda siguiente' },
         { s: num('abc', 'n'), t: 'la etiqueta, cuando ya no se junta nada' },
       ],
       controles: [
@@ -1316,15 +1329,16 @@
         { estado: { paso: 1, fila: 0 }, texto: '19 entre 3: 6 bolsitas y sobra 1 suelto.', ecuacion: [cant(19), ' = 6 × ', bas(3), ' + ', cif(1)] },
         { estado: { paso: 2, fila: 1 }, texto: 'Las 6 bolsitas, de a 3: 2 cajas y sobran 0 bolsitas.', ecuacion: ['6 = 2 × ', bas(3), ' + ', cif(0)] },
         { estado: { paso: 3, fila: 2 }, texto: '2 cajas no llenan un cajón: el cociente ya es 0.', ecuacion: ['2 = 0 × ', bas(3), ' + ', cif(2)] },
-        { estado: { paso: 4, columna: 4 }, texto: 'Cada resto va a su lugar: el primero, a los sueltos.', ecuacion: [cif(2), ' cajas, ', cif(0), ' bolsitas, ', cif(1), ' suelto'] },
+        { estado: { paso: 4, columna: 4 }, texto: 'El primer resto va a los sueltos; el último, a las cajas.', ecuacion: [cif(2), ' cajas, ', cif(0), ' bolsitas, ', cif(1), ' suelto'] },
         { estado: { paso: 4, columna: 3 }, texto: 'Se escribe del último resto al primero: es el cambio de base.', ecuacion: [cant(19), ' = ', num('201', 3)] },
         { estado: { paso: 4 }, texto: 'De vuelta, la descomposición da 19 otra vez.', ecuacion: [num('201', 3), ' = 2 × 9 + 0 × 3 + 1 = ', cant(19)] },
       ],
     },
     regla: {
-      texto: 'Para pasar N a base n, se divide entre n y cada cociente otra vez, hasta que dé 0. El primer resto es la última cifra; el último, la primera.',
-      ecuacion: [cant('N'), ' = ', { llave: ['q'], nota: 'cociente' }, ' × ', bas('n'), ' + ', { llave: [cif('r')], nota: 'resto: una cifra', color: 'c-o' }, SEP, '0 ≤ ', cif('r'), ' < ', bas('n')],
-      condicion: 'El número no cambia, solo su escritura. Entre dos bases que no son 10, se pasa por base 10 (verde: la nueva).',
+      texto: 'Para pasar un número D a base n, se divide entre n y cada cociente, hasta llegar a 0. El primer resto es la última cifra; el último, la primera.',
+      ecuacion: ['D = ', { llave: ['q'], nota: 'cociente' }, ' × ', bas('n'), ' + ', { llave: [cif('r')], nota: 'resto: una cifra', color: 'c-o' }, SEP, '0 ≤ ', cif('r'), ' < ', bas('n'),
+        SEP, num('21', 5), ' = 2 × ', bas(5), ' + 1 = ', cant(11), ' = 2 × ', bas2(4), ' + 3 = ', num2('23', 4)],
+      condicion: 'El número no cambia, su escritura sí. Entre bases que no son 10, se pasa por base 10; la nueva, en verde.',
       voz: 'Divide hasta llegar a 0 y lee los restos desde el último.',
     },
     // Así se resuelve: un cambio de base entre dos bases que no son 10, pasando por base 10 (la segunda base en verde).
@@ -1338,11 +1352,11 @@
           enunciado: ['Pasa ', num(na, a), ' a base ', bas2(c), '.'],
           datos: [DD.f3('n'), DD.div('n')],
           pasos: [
-            { tipo: 'pide', texto: ['Piden el mismo número escrito en base ', bas2(c), '. Ninguna de las dos bases es 10.'] },
+            { tipo: 'pide', texto: ['Piden el mismo número escrito en base ', bas2(c), ' (en verde, la base nueva). Ninguna es 10.'] },
             { tipo: 'regla', texto: 'Entre dos bases que no son 10, primero paso a base 10 con la descomposición. Después divido entre la nueva base.' },
             { tipo: 'cuentas', texto: ['A base 10: cada cifra por lo que vale su lugar en base ', bas(a), '.'], ecuacion: [num(na, a), ' = ', descT(na, a), ' = ', cant(N)] },
             { tipo: 'cuentas', texto: ['Divido ', cant(N), ' entre ', bas2(c), ' hasta que el cociente es 0, y leo los restos desde el último.'], ecuacion: cuentasDiv2(N, c),
-              dibujo: { datos: tablaDiv(N, c, { pasos: true }), estado: { paso: divisiones(N, c).length, columna: 3 } } },
+              dibujo: { datos: tablaDiv(N, c, { pasos: true, segunda: true }), estado: { paso: divisiones(N, c).length, columna: 3 } } },
             { tipo: 'sentido', texto: `De vuelta: ${descT(nc, c)} = ${N}. Las dos escrituras valen lo mismo.` },
           ],
           respuesta: [num(na, a), ' = ', num2(nc, c)],
@@ -1363,7 +1377,7 @@
   };
 
   // ---------- Idea 4 (nueva, 17 nov): la base que no se ve (base desconocida y cifras ocultas) ----------
-  // Objeto: una bolsa cerrada de un puesto vecino; la etiqueta dice 23 y adentro hay 17 caramelos, pero nadie anotó de
+  // Objeto: un paquete cerrado de un puesto vecino; la etiqueta dice 23 y adentro hay 17 caramelos, pero nadie anotó de
   // cuántos es cada bolsita. Es lo que más pregunta San Marcos (5 de 9 preguntas de la unidad, propuesta §0).
   // Cambia: el tamaño de bolsita que se prueba. · Permanece: la etiqueta 23 y los 17 caramelos. · Progresa: cuánto daría
   // la etiqueta con cada base, hasta que cuadra. · Se reserva: usar la base hallada para leer otra etiqueta del mismo
@@ -1373,20 +1387,20 @@
   // base y no lo que se pide · AT-INVIERTE cree que invertir las cifras invierte el valor · AT-MENOR da la menor base
   // posible y no la que cumple · AT-SIGNO suma en vez de restar al despejar · AT-SIN-SUELTOS olvida la cifra de la
   // derecha · AT-UNO-SOLO acota con un solo numeral · AT-CIFRA-B toma la cifra mayor como base.
-  const BOLSA = [['En la bolsa: '], ['17 caramelos', 'f', 700]];
+  const BOLSA = [['En el paquete: '], ['17 caramelos', 'f', 700]];
   const pedJ4 = b => ({ n: b, bolsitas: 2, sueltos: 3, rotulos: true, regla: [BOLSA, [['1 bolsita = '], [String(b), 'i', 700], [' caramelos']]], etiqueta: { cifras: '23' } });
   let esc4 = null;
   const escala4 = () => esc4 || (esc4 = escalaDe([4, 5, 6, 7, 8, 9].map(pedJ4)));
-  // Una bolsa cerrada con su etiqueta de base desconocida, 23₍ₙ₎ como en el texto (auditoría, B7), y lo que tiene adentro
+  // Un paquete cerrado con su etiqueta de base desconocida, 23₍ₙ₎ como en el texto (auditoría, B7), y lo que tiene adentro
   // (o «?»).
   const bolsaF = (cifras, N, otra) => fig({ cerrado: true, etiqueta: { cifras, base: 'n' },
-    regla: [[['En la bolsa: '], [N === undefined ? '?' : `${N} caramelos`, N === undefined ? null : 'f', 700]], [['1 bolsita = '], ['?', null, 700], [' caramelos']]].concat(otra ? [otra] : []) });
-  const P31 = [['Bolsa 31: '], ['25 caramelos', 'f', 700]];
+    regla: [[['En el paquete: '], [N === undefined ? '?' : `${N} caramelos`, N === undefined ? null : 'f', 700]], [['1 bolsita = '], ['?', null, 700], [' caramelos']]].concat(otra ? [otra] : []) });
+  const P31 = [['Paquete 31: '], ['25 caramelos', 'f', 700]];
   const MIRA4 = { pasos: [
     { cerrado: true, etiqueta: { cifras: '31', base: 'n' }, regla: [P31, [['1 bolsita = '], ['?', null, 700], [' caramelos']]] },
     { cerrado: true, etiqueta: { cifras: '31', base: 'n' }, regla: [P31, [['3 × '], ['n', 'i', 700], [' + 1 = 25']]] },
     { cerrado: false, n: 8, bolsitas: 3, sueltos: 1, rotulos: true, etiqueta: { cifras: '31' }, regla: [P31, [['1 bolsita = '], ['8', 'i', 700], [' caramelos']]] },
-    { cerrado: false, n: 8, bolsitas: 1, sueltos: 3, rotulos: true, etiqueta: { cifras: '13' }, regla: [[['1 bolsita = '], ['8', 'i', 700], [' caramelos']], [['Bolsa 13: 8 + 3 = '], ['11', 'f', 700]]] },
+    { cerrado: false, n: 8, bolsitas: 1, sueltos: 3, rotulos: true, etiqueta: { cifras: '13' }, regla: [[['1 bolsita = '], ['8', 'i', 700], [' caramelos']], [['Paquete 13: 8 + 3 = '], ['11', 'f', 700]]] },
     { cerrado: true, etiqueta: { cifras: '31', base: 'n' }, regla: [[['Sin saber cuántos hay:']], [['3 < '], ['n', 'i', 700], [', así que '], ['n ≥ 4', 'i', 700]]] },
   ] };
   MIRA4.escala = 1.23;   // fija, como ESC203: numeracion.test.js comprueba que es la que da escalaDe(MIRA4.pasos)
@@ -1399,7 +1413,7 @@
       if (d0 > n - 2) continue;
       const t = `${d1}${d0}`, N = d1 * n + d0;
       const pregunta = sem % 2 === 0
-        ? ['Una bolsa de un puesto vecino dice ', num(t, 'n'), ' y tiene ', cant(N), ' caramelos. ¿De cuántos caramelos es cada bolsita?']
+        ? ['Un paquete de un puesto vecino dice ', num(t, 'n'), ' y tiene ', cant(N), ' caramelos. ¿De cuántos caramelos es cada bolsita?']
         : ['Si ', num(t, 'n'), ' = ', cant(N), ', ¿cuánto vale la base ', bas('n'), '?'];
       return {
         pregunta,
@@ -1473,8 +1487,8 @@
   // reemplazan a 13₍ₙ₎ = 11 y a «Dos etiquetas, un puesto», que eran la predicción (31₍ₙ₎ = 25 → 13₍ₙ₎ = 11) con otros
   // números (auditoría, M2). Ninguna figura muestra la base que se pide: la etiqueta va con «(n)».
   const EJEMPLOS_BASE = [
-    { nivel: 1, titulo: 'La bolsa del vecino',
-      enunciado: ['Una bolsa cerrada dice ', num('24', 'n'), ' y tiene ', cant(18), ' caramelos. ¿De cuántos caramelos es cada bolsita?'],
+    { nivel: 1, titulo: 'El paquete del vecino',
+      enunciado: ['Un paquete cerrado dice ', num('24', 'n'), ' y tiene ', cant(18), ' caramelos. ¿De cuántos caramelos es cada bolsita?'],
       datos: [DD.f2('n')],
       figura: bolsaF('24', 18),
       solucion: [
@@ -1492,16 +1506,16 @@
       ],
       respuesta: [bas('n'), ' = ', bas(7)] },
     { nivel: 1, titulo: 'La cifra borrosa',
-      enunciado: ['En la etiqueta ', num('4a', 6), ', la cifra a quedó borrosa. ¿Qué valores puede tener?'],
+      enunciado: ['En la etiqueta ', num('4a', 6), ', la cifra ', cif('a'), ' quedó borrosa. ¿Qué valores puede tener?'],
       datos: [DN.cifras],
       figura: fig({ n: 6, cerrado: true, regla: 1, etiqueta: { cifras: '4a' } }),
       solucion: [
         { texto: ['a es una cifra de base ', bas(6), ': va de 0 a 5.'] },
-        { texto: 'Puede ser 0, porque no es la primera cifra: 40₍₆₎ son 4 bolsitas y ningún suelto.' },
+        { texto: ['Puede ser 0, porque no es la primera cifra: ', num('40', 6), ' son 4 bolsitas y ningún suelto.'] },
       ],
       respuesta: [cif('a'), ' puede ser ', cif('0, 1, 2, 3, 4 o 5')] },
     { nivel: 1, titulo: 'La primera, borrosa',
-      enunciado: ['En la etiqueta ', num('a2', 5), ', la cifra a quedó borrosa. ¿Qué valores puede tener?'],
+      enunciado: ['En la etiqueta ', num('a2', 5), ', la cifra ', cif('a'), ' quedó borrosa. ¿Qué valores puede tener?'],
       datos: [DN.cifras, DN.primera],
       figura: fig({ n: 5, cerrado: true, regla: 1, etiqueta: { cifras: 'a2' } }),
       solucion: [
@@ -1510,7 +1524,7 @@
       ],
       respuesta: [cif('a'), ' puede ser ', cif('1, 2, 3 o 4')] },
     { nivel: 1, titulo: '¿Sirve esta base?',
-      enunciado: ['Una bolsa dice ', num('32', 'n'), ' y tiene ', cant(20), ' caramelos. ¿Puede ser de bolsitas de ', bas(6), '?'],
+      enunciado: ['Un paquete dice ', num('32', 'n'), ' y tiene ', cant(20), ' caramelos. ¿Puede ser de bolsitas de ', bas(6), '?'],
       datos: [DD.f2('n'), DN.cifras],
       figura: bolsaF('32', 20),
       solucion: [
@@ -1528,7 +1542,7 @@
       ],
       respuesta: [bas('n'), ' = ', bas(6)] },
     { nivel: 2, titulo: 'Una caja y dos sueltos',
-      enunciado: ['Una bolsa dice ', num('102', 'n'), ' y tiene ', cant(27), ' caramelos. ¿De cuántos caramelos es cada bolsita?'],
+      enunciado: ['Un paquete dice ', num('102', 'n'), ' y tiene ', cant(27), ' caramelos. ¿De cuántos caramelos es cada bolsita?'],
       datos: [DD.f3('n'), DN.cifras],
       figura: bolsaF('102', 27),
       solucion: [
@@ -1538,7 +1552,7 @@
       ],
       respuesta: ['Bolsitas de ', bas(5), ' caramelos'] },
     { nivel: 2, titulo: 'Dos bases a la vez',
-      enunciado: ['Si ', num('2a', 4), ' y ', num('a1', 3), ' están bien escritos, ¿qué valores puede tener a?'],
+      enunciado: ['Si ', num('2a', 4), ' y ', num('a1', 3), ' están bien escritos, ¿qué valores puede tener ', cif('a'), '?'],
       datos: [DN.cifras, DN.primera],
       solucion: [
         { texto: ['En ', num('2a', 4), ', a es menor que 4. En ', num('a1', 3), ', a es menor que 3 y no es 0, porque va primera.'] },
@@ -1555,12 +1569,12 @@
       ],
       respuesta: [bas('n'), ' = ', bas(4)] },
     { nivel: 2, titulo: 'Menos de 30',
-      enunciado: ['Una bolsa dice ', num('34', 'n'), ' y tiene menos de ', cant(30), ' caramelos. ¿De cuántos caramelos pueden ser sus bolsitas?'],
+      enunciado: ['Un paquete dice ', num('34', 'n'), ' y tiene menos de ', cant(30), ' caramelos. ¿De cuántos caramelos pueden ser sus bolsitas?'],
       datos: [DD.f2('n'), DN.cifras],
       figura: fig({ cerrado: true, etiqueta: { cifras: '34', base: 'n' }, regla: [[['Hay menos de '], ['30 caramelos', 'f', 700]], [['1 bolsita = '], ['?', null, 700], [' caramelos']]] }),
       solucion: [
         { texto: ['Por las cifras: hay un 4, así que la base pasa al 4: ', bas('n'), ' ≥ 5.'] },
-        { texto: 'Por la cantidad: 3n + 4 tiene que ser menor que 30.', ecuacion: ['3 × ', bas('n'), ' + 4 < 30', SEP, '3 × ', bas('n'), ' < 26', SEP, bas('n'), ' ≤ 8'] },
+        { texto: 'Por la cantidad: 3 × n + 4 tiene que ser menor que 30.', ecuacion: ['3 × ', bas('n'), ' + 4 < 30', SEP, '3 × ', bas('n'), ' < 26', SEP, bas('n'), ' ≤ 8'] },
         { texto: 'Las dos cotas a la vez: de 5 a 8.' },
       ],
       respuesta: ['Bolsitas de ', bas(5), ', ', bas(6), ', ', bas(7), ' u ', bas(8)] },
@@ -1585,25 +1599,25 @@
       ],
       respuesta: [letra('D', 'cantidad'), ': ', cant(29)] },
     { nivel: 3, titulo: 'Juntar de 8 en 8',
-      enunciado: ['Un pedido de bolsitas de ', bas(8), ' queda en a cajas, 3 bolsitas y a sueltos, y tiene ', cant(219), ' caramelos. ¿Cuánto vale a?'],
+      enunciado: ['Un pedido de bolsitas de ', bas(8), ' queda en ', cif('a'), ' cajas, 3 bolsitas y ', cif('a'), ' sueltos, y tiene ', cant(219), ' caramelos. ¿Cuánto vale ', cif('a'), '?'],
       alternativas: ['2', '4', '5', '3'],
       datos: [DN.todo(8), DD.f3('n')],
-      figura: fig({ n: 8, cerrado: true, regla: [[['En la bolsa: '], ['219 caramelos', 'f', 700]], [['1 bolsita = '], ['8', 'i', 700], [' caramelos']]], etiqueta: { cifras: 'a3a' } }),
+      figura: fig({ n: 8, cerrado: true, regla: [[['En el paquete: '], ['219 caramelos', 'f', 700]], [['1 bolsita = '], ['8', 'i', 700], [' caramelos']]], etiqueta: { cifras: 'a3a' } }),
       solucion: [
-        { texto: 'La etiqueta lleva la letra en dos lugares: en las cajas y en los sueltos.', ecuacion: [num('a3a', 8), ' = 64', cif('a'), ' + 24 + ', cif('a'), ' = 65', cif('a'), ' + 24'] },
-        { texto: 'Eso son los 219 caramelos.', ecuacion: ['65', cif('a'), ' + 24 = ', cant(219), SEP, '65', cif('a'), ' = 195', SEP, cif('a'), ' = ', cif(3)] },
+        { texto: 'La etiqueta lleva la letra en dos lugares: en las cajas y en los sueltos.', ecuacion: [num('a3a', 8), ' = ', cif('a'), ' × 64 + 3 × 8 + ', cif('a'), ' = 65 × ', cif('a'), ' + 24'] },
+        { texto: 'Eso son los 219 caramelos.', ecuacion: ['65 × ', cif('a'), ' + 24 = ', cant(219), SEP, '65 × ', cif('a'), ' = 195', SEP, cif('a'), ' = 195 ÷ 65 = ', cif(3)] },
         { texto: ['Sirve: 3 es menor que ', bas(8), '. Las otras no dan 219: con 2 salen 154; con 4, 284; con 5, 349.'] },
       ],
       respuesta: [letra('D'), ': ', cif('a'), ' = ', cif(3)] },
     { nivel: 3, titulo: 'Cifras con un parámetro',
-      enunciado: ['¿Para cuántos valores de a está bien escrito el numeral ', num('(a − 1)(2a)', 7), '?'],
+      enunciado: ['¿Para cuántos valores de ', cif('a'), ' está bien escrito el numeral ', num('(a − 1)(2a)', 7), '?'],
       alternativas: ['1', '3', '2', '4'],
-      datos: [DN.cifras, DN.primera],
+      datos: [DN.cifras, DN.primera, 'Bajo la raya, cada paréntesis es una sola cifra: (2a) es la cifra 2 × a'],
       solucion: [
         { texto: 'La primera cifra, a − 1, no puede ser 0.', ecuacion: [cif('a'), ' − 1 ≥ 1   →   ', cif('a'), ' ≥ 2'] },
-        { texto: ['La segunda, 2a, es una cifra de base ', bas(7), ': a lo más 6.'], ecuacion: ['2', cif('a'), ' ≤ 6   →   ', cif('a'), ' ≤ 3'] },
+        { texto: ['La segunda, 2 × a, es una cifra de base ', bas(7), ': a lo más 6.'], ecuacion: ['2 × ', cif('a'), ' ≤ 6   →   ', cif('a'), ' ≤ 3'] },
         { texto: 'Quedan a = 2 (el numeral 14₍₇₎) y a = 3 (el 26₍₇₎).' },
-        { texto: ['Las trampas: ', letra('B', 'cantidad'), ' acepta a = 1 (primera cifra 0); ', letra('D', 'cantidad'), ' mira solo la segunda y cuenta desde 0; ', letra('A', 'cantidad'), ' cree que 2a no llega a 6.'] },
+        { texto: ['Las trampas: ', letra('B', 'cantidad'), ' acepta a = 1 (primera cifra 0); ', letra('D', 'cantidad'), ' mira solo la segunda y cuenta desde 0; ', letra('A', 'cantidad'), ' cree que 2 × a no llega a 6.'] },
       ],
       respuesta: [letra('C', 'cantidad'), ': dos valores'] },
     { nivel: 3, titulo: 'Una suma con base oculta',
@@ -1611,9 +1625,9 @@
       alternativas: ['9', '7', '8', '10'],
       datos: [DD.f2('n'), DN.cifras],
       solucion: [
-        { texto: 'Se descompone cada numeral con la misma base.', ecuacion: ['(2', bas('n'), ' + 3) + (3', bas('n'), ' + 2) = 5', bas('n'), ' + 5'] },
-        { texto: 'Eso vale 45.', ecuacion: ['5', bas('n'), ' + 5 = ', cant(45), SEP, '5', bas('n'), ' = 40', SEP, bas('n'), ' = ', bas(8)] },
-        { texto: ['Sirve: 2 y 3 son menores que 8. ', letra('D', 'base'), ' sale de pasar el 5 sumando: 5n = 50; con ', letra('B', 'base'), ', la suma daría 40, y con ', letra('A', 'base'), ', 50.'] },
+        { texto: 'Se descompone cada numeral con la misma base.', ecuacion: ['(2 × ', bas('n'), ' + 3) + (3 × ', bas('n'), ' + 2) = 5 × ', bas('n'), ' + 5'] },
+        { texto: 'Eso vale 45.', ecuacion: ['5 × ', bas('n'), ' + 5 = ', cant(45), SEP, '5 × ', bas('n'), ' = 40', SEP, bas('n'), ' = ', bas(8)] },
+        { texto: ['Sirve: 2 y 3 son menores que 8. ', letra('D', 'base'), ' sale de pasar el 5 sumando: 5 × n = 50; con ', letra('B', 'base'), ', la suma daría 40, y con ', letra('A', 'base'), ', 50.'] },
       ],
       respuesta: [letra('C', 'base'), ': base ', bas(8)] },
   ];
@@ -1625,12 +1639,12 @@
     temas: ['Base desconocida y cifras ocultas'],
     pieza: PU,
     aprendizaje: 'Si un numeral vale un número conocido, la descomposición da una ecuación en n; la base es mayor que cada cifra y acota las ocultas.',
-    actividad: 'Probar tamaños de bolsita hasta que la etiqueta cuadre con la bolsa.',
-    // Lee: la bolsa cerrada, probar una base y lo que dicen las cifras. No usa una base hallada para leer otra etiqueta
+    actividad: 'Probar tamaños de bolsita hasta que la etiqueta cuadre con el paquete.',
+    // Lee: el paquete cerrado, probar una base y lo que dicen las cifras. No usa una base hallada para leer otra etiqueta
     // (eso lo pregunta Predice).
     lee: {
       tarjetas: [
-        { titulo: 'Una bolsa del vecino', texto: ['Al puesto llega una bolsa cerrada de un puesto vecino. La etiqueta dice ', num('23', 'n'), ' y adentro hay ', cant(17), ' caramelos. Nadie anotó de cuántos es cada bolsita: la base, ', bas('n'), ', no se ve.'],
+        { titulo: 'Un paquete del vecino', texto: ['Al puesto llega un paquete cerrado de un puesto vecino, con bolsitas y sueltos adentro. La etiqueta dice ', num('23', 'n'), ' y adentro hay ', cant(17), ' caramelos. Nadie anotó de cuántos es cada bolsita: la base, ', bas('n'), ', no se ve.'],
           pieza: PU, dibujo: { datos: bolsaF('23', 17).datos, estado: {} } },
         { titulo: 'Probar una base', texto: ['Si las bolsitas fueran de ', bas(6), ', la etiqueta ', num('23', 'n'), ' serían 2 bolsitas de 6 y 3 sueltos: 15 caramelos, no 17. Con bolsitas de 6 no cuadra.'],
           ecuacion: [num('23', 6), ' = 2 × ', bas(6), ' + 3 = 15'] },
@@ -1641,7 +1655,7 @@
     ejemplos: EJEMPLOS_BASE,
     juega: {
       pieza: PU,
-      consigna: 'La etiqueta de la bolsa vecina dice 23₍ₙ₎, y adentro hay 17 caramelos. Abre la bolsa probando tamaños de bolsita, n.',
+      consigna: 'La etiqueta del paquete vecino dice 23₍ₙ₎ y trae 17 caramelos. Prueba bolsitas de n desde 4: con 3, no existiría la cifra 3.',
       mision: {
         texto: ['Encuentra el tamaño de bolsita con el que ', num('23', 'n'), ' vale ', cant(17), '.'],
         logrado: val => val.b === 7,
@@ -1651,11 +1665,11 @@
       leyenda: [
         { s: num('23', 'n'), t: 'la etiqueta, sin saber la base' },
         { s: bas('n'), t: 'caramelos por bolsita: la base que falta' },
-        { s: cant('17'), t: 'caramelos que hay en la bolsa' },
+        { s: cant('17'), t: 'caramelos que hay en el paquete' },
       ],
       controles: [{ id: 'b', etiqueta: 'Caramelos por bolsita, n', color: 'c-i', min: 4, max: 9, paso: 1, inicio: 4, decimales: 0 }],
       dibujo: v => ({ datos: Object.assign(pedJ4(v.b), { escala: escala4() }), estado: {} }),
-      // La relación: lo que daría la etiqueta con esa base, contra los 17 de la bolsa.
+      // La relación: lo que daría la etiqueta con esa base, contra los 17 del paquete.
       lectura: v => {
         const x = 2 * v.b + 3;
         return [num('23', v.b), ' = 2 × ', bas(v.b), ' + 3 = ', cant(x), x === 17 ? ': justo 17' : x < 17 ? `: faltan ${17 - x} para 17` : `: sobran ${x - 17}`];
@@ -1663,19 +1677,19 @@
       minimo: 3,
     },
     predice: {
-      pregunta: ['En otro puesto, una bolsa con etiqueta ', num('31', 'n'), ' tiene ', cant(25), ' caramelos. Otra bolsa del mismo puesto dice ', num('13', 'n'), '. ¿Cuántos caramelos tiene?'],
-      datos: ['Las dos bolsas son del mismo puesto: sus bolsitas son del mismo tamaño'],
-      voz: 'Piensa qué puedes saber primero con la bolsa de 25.',
+      pregunta: ['En otro puesto, un paquete con etiqueta ', num('31', 'n'), ' tiene ', cant(25), ' caramelos. Otro paquete del mismo puesto dice ', num('13', 'n'), '. ¿Cuántos caramelos tiene?'],
+      datos: ['Los dos paquetes son del mismo puesto: sus bolsitas son del mismo tamaño'],
+      voz: 'Piensa qué puedes saber primero con el paquete de 25.',
       opciones: [
         { id: 'c', texto: '11 caramelos', correcta: true },
         { id: 'decimal', texto: '13 caramelos', error: 'AT-DECIMAL', siFuera: 'Bien que leas la etiqueta. Pero 13 de este puesto no es trece: la bolsita no es de 10.' },
-        { id: 'base', texto: '8 caramelos', error: 'AT-PIDE-BASE', siFuera: 'Hallar que la bolsita es de 8 está muy bien. Pero piden los caramelos de la otra bolsa.' },
+        { id: 'base', texto: '8 caramelos', error: 'AT-PIDE-BASE', siFuera: 'Hallar que la bolsita es de 8 está muy bien. Pero piden los caramelos del otro paquete.' },
         { id: 'invierte', texto: '52 caramelos', error: 'AT-INVIERTE', siFuera: 'Bien que 13 sea 31 al revés. Pero el valor no se invierte: 25 al revés no sirve.' },
       ],
-      dibujo: fig({ cerrado: true, escala: MIRA4.escala, etiqueta: { cifras: '31', base: 'n' }, regla: [P31, [['Bolsa 13: '], ['?', null, 700], [' caramelos']]] }),
+      dibujo: fig({ cerrado: true, escala: MIRA4.escala, etiqueta: { cifras: '31', base: 'n' }, regla: [P31, [['Paquete 13: '], ['?', null, 700], [' caramelos']]] }),
       revelar: fig(Object.assign({ escala: MIRA4.escala }, MIRA4.pasos[3])),
       coincide: 'Coincide: 3 × 8 + 1 = 25, así que la bolsita es de 8, y 13₍₈₎ = 8 + 3 = 11.',
-      noCoincide: 'Revisemos: con la bolsa de 25 sale primero el tamaño de la bolsita.',
+      noCoincide: 'Revisemos: con el paquete de 25 sale primero el tamaño de la bolsita.',
     },
     mira: {
       pieza: PU,
@@ -1683,16 +1697,17 @@
       voz: 'Primero la base; después, todo lo demás.',
       pasos: [
         { estado: { paso: 0 }, texto: 'La etiqueta 31 son 3 bolsitas de n y 1 suelto.', ecuacion: [num('31', 'n'), ' = 3 × ', bas('n'), ' + 1'] },
-        { estado: { paso: 1 }, texto: 'Eso tiene que dar los 25 caramelos de la bolsa.', ecuacion: ['3 × ', bas('n'), ' + 1 = ', cant(25), SEP, '3 × ', bas('n'), ' = 24', SEP, bas('n'), ' = ', bas(8)] },
+        { estado: { paso: 1 }, texto: 'Eso tiene que dar los 25 caramelos del paquete.', ecuacion: ['3 × ', bas('n'), ' + 1 = ', cant(25), SEP, '3 × ', bas('n'), ' = 24', SEP, bas('n'), ' = ', bas(8)] },
         { estado: { paso: 2 }, texto: '¿Sirve? Las cifras 3 y 1 son menores que 8.', ecuacion: [cif(3), ' < ', bas(8), ',  ', cif(1), ' < ', bas(8)] },
-        { estado: { paso: 3 }, texto: 'Con bolsitas de 8, la otra bolsa ya se puede contar.', ecuacion: [num('13', 8), ' = 1 × ', bas(8), ' + 3 = ', cant(11)] },
+        { estado: { paso: 3 }, texto: 'Con bolsitas de 8, el otro paquete ya se puede contar.', ecuacion: [num('13', 8), ' = 1 × ', bas(8), ' + 3 = ', cant(11)] },
         { estado: { paso: 4 }, texto: 'Sin saber cuántos hay, las cifras solo dan un piso.', ecuacion: [num('31', 'n'), ':  ', cif(3), ' < ', bas('n'), ', así que ', bas('n'), ' ≥ ', bas(4)] },
       ],
     },
     regla: {
-      texto: 'Si un numeral de base desconocida vale un número conocido, su descomposición da una ecuación en n. La base es mayor que cada cifra; eso acota las cifras ocultas.',
-      ecuacion: [num('ab', 'n'), ' = ', cif('a'), ' × ', bas('n'), ' + ', cif('b'), ' = ', cant('N'), SEP, '0 < ', cif('a'), ' < ', bas('n'), ',  0 ≤ ', cif('b'), ' < ', bas('n')],
-      condicion: 'a va primero: no es 0; b sí puede ser 0. Una cifra en dos numerales es menor que las dos bases.',
+      texto: 'Si un numeral de base desconocida vale un número conocido, su descomposición da una ecuación en n. Además, la base acota las cifras ocultas: cada una es menor que n.',
+      ecuacion: [num('ab', 'n'), ' = ', cif('a'), ' × ', bas('n'), ' + ', cif('b'), ' = ', cant('número conocido'), SEP, '0 < ', cif('a'), ' < ', bas('n'), ',  0 ≤ ', cif('b'), ' < ', bas('n'),
+        SEP, num('3a', 4), ' y ', num('a2', 6), ':  ', cif('a'), ' < ', bas(4), ' y ', cif('a'), ' < ', bas(6)],
+      condicion: 'Con raya, a y b son cifras; a no es 0. Una letra de dos numerales es menor que sus dos bases.',
       voz: 'La ecuación da la base; las cifras dicen si sirve.',
     },
     // Así se resuelve: una etiqueta de tres cifras, probando bases desde la menor posible (con una base mayor vale más).
@@ -1708,16 +1723,16 @@
           const t = c.join(''), N = vale(t, n), prue = [];
           for (let b = m + 1; b <= n; b++) prue.push(b);
           return {
-            enunciado: ['Una bolsa cerrada dice ', num(t, 'n'), ' y tiene ', cant(N), ' caramelos. ¿De cuántos caramelos es cada bolsita?'],
+            enunciado: ['Un paquete cerrado dice ', num(t, 'n'), ' y tiene ', cant(N), ' caramelos. ¿De cuántos caramelos es cada bolsita?'],
             datos: [DD.f3('n'), DN.cifras],
             dibujo: bolsaF(t, N),
             pasos: [
               { tipo: 'pide', texto: ['Piden la base ', bas('n'), ': el tamaño de la bolsita.'] },
-              { tipo: 'datos', texto: ['La cifra mayor de la etiqueta es ', cif(m), ': la base es por lo menos ', bas(m + 1), '. La bolsa tiene ', cant(N), ' caramelos.'] },
+              { tipo: 'datos', texto: ['La cifra mayor de la etiqueta es ', cif(m), ': la base es por lo menos ', bas(m + 1), '. El paquete tiene ', cant(N), ' caramelos.'] },
               { tipo: 'regla', texto: ['La descomposición da una ecuación en n. Con una base mayor la etiqueta vale más: pruebo desde la menor posible hasta que dé ', cant(N), '.'],
                 ecuacion: [num(t, 'n'), ` = ${c[0]} × `, pot('n', '2'), ` + ${c[1]} × `, bas('n'), ` + ${c[2]} = `, cant(N)] },
               { tipo: 'cuentas', texto: 'Pruebo una base tras otra.', ecuacion: prue.flatMap((b, i) => [i ? SEP : '', num(t, b), ' = ', b === n ? cant(vale(t, b)) : String(vale(t, b))]).filter(x => x !== ''),
-                dibujo: fig({ n, cajas: c[0], bolsitas: c[1], sueltos: c[2], ceros: true, regla: [[['En la bolsa: '], [`${N} caramelos`, 'f', 700]], [['1 bolsita = '], [String(n), 'i', 700], [' caramelos']]], rotulos: true, etiqueta: { cifras: t } }) },
+                dibujo: fig({ n, cajas: c[0], bolsitas: c[1], sueltos: c[2], ceros: true, regla: [[['En el paquete: '], [`${N} caramelos`, 'f', 700]], [['1 bolsita = '], [String(n), 'i', 700], [' caramelos']]], rotulos: true, etiqueta: { cifras: t } }) },
               { tipo: 'sentido', texto: ['Con ', bas(n), ' da justo ', cant(N), ', y todas las cifras son menores que ', bas(n), '. Con una base más, ya pasaría.'] },
             ],
             respuesta: ['Bolsitas de ', bas(n), ' caramelos'],
@@ -1773,7 +1788,7 @@
       dibujo: talF({ N, total: '?' }),
       opciones: opciones(t, [
         { id: 'tres', valor: 3 * N, error: 'AT-BLOQUE', siFuera: `Tres cifras por boleto vale del 100 al ${N}. Los de antes gastan menos.` },
-        { id: 'conteo', valor: t - 3, error: 'AT-CONTEO', siFuera: `Bien que separes los bloques. Pero del 100 al ${N} hay ${N - 99} boletos: se cuentan las dos puntas.` },
+        { id: 'conteo', valor: t - 3, error: 'AT-CONTEO', siFuera: `Bien que separes los bloques. Pero del 100 al ${N} hay ${N - 99} boletos: cuentan el primero y el último.` },
         { id: 'sin-uno', valor: t - 9, error: 'AT-BLOQUE', siFuera: 'Los bloques de dos y tres cifras están bien. Falta el del 1 al 9.' },
       ], x => f(x, 0)),
       solucion: { texto: 'Bloque por bloque: cuántos boletos por cuántas cifras.', ecuacion: cuentaBloques(1, N) },
@@ -1842,12 +1857,12 @@
       datos: [DT.hasta],
       figura: talF({ N: 250, cifras: false }),
       solucion: [
-        { texto: 'Los de tres cifras van del 100 al 250: se cuentan los dos de las puntas.', ecuacion: ['250 − 100 + 1 = ', cant(151)] },
+        { texto: 'Los de tres cifras van del 100 al 250: se cuentan el primero y el último.', ecuacion: ['250 − 100 + 1 = ', cant(151)] },
         { texto: 'No son 150: el 100 y el 250 también cuentan.' },
       ],
       respuesta: [cant(151), ' boletos'] },
     { nivel: 1, titulo: 'De un boleto a otro',
-      enunciado: ['Una promoción vendió los boletos del 35 al ', cant(80), '. ¿Cuántos boletos vendió?'],
+      enunciado: ['Una promoción vendió los boletos del ', cant(35), ' al ', cant(80), '. ¿Cuántos boletos vendió?'],
       datos: [DT.hasta],
       figura: talF({ desde: 35, N: 80, cifras: false }),
       solucion: [
@@ -1855,7 +1870,7 @@
       ],
       respuesta: [cant(46), ' boletos'] },
     { nivel: 1, titulo: 'Un bloque de tres cifras',
-      enunciado: ['¿Cuántas cifras se imprimen en los boletos del 100 al ', cant(150), '?'],
+      enunciado: ['¿Cuántas cifras se imprimen en los boletos del ', cant(100), ' al ', cant(150), '?'],
       datos: [DT.hasta],
       figura: talF({ desde: 100, N: 150, total: '?' }),
       solucion: [
@@ -1903,11 +1918,12 @@
       figura: talF({ pide: 'N', impresas: 234 }),
       solucion: [
         { texto: 'Hasta el 99 se gastan 9 × 1 + 90 × 2 = 189 cifras: 9 boletos de una cifra y 90 de dos. Las que sobran son de boletos de tres cifras.', ecuacion: ['234 − 189 = 45', SEP, '45 ÷ 3 = 15 boletos'] },
-        { texto: 'Esos 15 boletos empiezan en el 100: van del 100 al 114.', ecuacion: ['99 + 15 = ', cant(114)] },
+        { texto: 'Esos 15 boletos empiezan en el 100, justo después del 99: el último es 99 + 15.', ecuacion: ['99 + 15 = ', cant(114)] },
+        { texto: 'Van del 100 al 114: 114 − 100 + 1 = 15. Cuadra.' },
       ],
       respuesta: ['Hasta el boleto ', cant(114)] },
     { nivel: 2, titulo: 'Desde el boleto 45',
-      enunciado: ['Una promoción imprime los boletos del 45 al ', cant(120), '. ¿Cuántas cifras gasta?'],
+      enunciado: ['Una promoción imprime los boletos del ', cant(45), ' al ', cant(120), '. ¿Cuántas cifras gasta?'],
       datos: [DT.hasta, DT.bloques],
       figura: talF({ desde: 45, N: 120, total: '?' }),
       solucion: [
@@ -1956,7 +1972,7 @@
       respuesta: [letra('B', 'cantidad'), ': el boleto ', cant(536)] },
     { nivel: 3, titulo: 'Cifras en base 3',
       enunciado: ['Si se escriben en base ', bas(3), ' todos los números del 1 al ', cant(26), ', ¿cuántas cifras se usan?'],
-      datos: [DT.hasta, DD.f3('n'), DN.primera],
+      datos: [DT.hasta, DD.f2('n'), DD.f3('n'), DN.primera],
       solucion: [
         { texto: ['En base 3: una cifra, del 1 al 2; dos cifras, de ', num('10', 3), ' = 3 a ', num('22', 3), ' = 8; tres, de ', num('100', 3), ' = 9 a ', num('222', 3), ' = 26.'] },
         { texto: 'Cuántos hay en cada bloque.', ecuacion: ['2 − 1 + 1 = 2', SEP, '8 − 3 + 1 = 6', SEP, '26 − 9 + 1 = 18'] },
@@ -1986,9 +2002,9 @@
     // Lee: la rifa, de a hasta z y los bloques. No suma los bloques del 1 al 100 (eso lo pregunta Predice).
     lee: {
       tarjetas: [
-        { titulo: 'La rifa de la promoción', texto: ['La promoción hace una rifa pro fondos, con boletos numerados del 1 al ', cant(150), '. La imprenta cobra por cada cifra que imprime: el boleto 7 gasta una cifra y el 45, dos.'],
+        { titulo: 'La rifa de la promoción', texto: ['La promoción hace una rifa pro fondos, con boletos del 1 al ', cant(150), '. La imprenta cobra por cifra impresa: el boleto 7 gasta una y el 45, dos. Abajo, la barra de boletos: un tramo por cada cantidad de cifras (una, dos y tres).'],
           pieza: TA, dibujo: { datos: { N: 150, cifras: false }, estado: {} } },
-        { titulo: 'Del primero al último', texto: ['Del boleto 20 al 30, ¿cuántos hay? No son 10 sino 11: se cuentan los dos de las puntas. Del primero, p, al último, u, hay u − p + 1.'],
+        { titulo: 'Del primero al último', texto: ['Del boleto 20 al 30, ¿cuántos hay? No son 10 sino 11: se cuentan el primero, el 20, y el último, el 30. Del primero, p, al último, u, hay u − p + 1.'],
           ecuacion: ['30 − 20 + 1 = 11 boletos'] },
         { titulo: 'Bloques', texto: ['Los boletos con la misma cantidad de cifras forman un bloque: del 1 al 9, del 10 al 99, del 100 al 999. Cada bloque gasta distinto por boleto.'] },
         { titulo: 'Qué mirar al jugar', texto: ['Vas a correr el último boleto. Mira las dos barras, la de boletos y la de cifras impresas: ¿cuánto se estira cada bloque abajo?'] },
@@ -2006,8 +2022,8 @@
       voz: 'Mira cuánto se estira cada tramo en la barra de cifras.',
       leyenda: [
         { s: cant('N'), t: 'el último boleto de la rifa' },
-        { s: 'boletos', t: 'un tramo por bloque: igual cantidad de cifras' },
-        { s: 'cifras impresas', t: 'lo de cada bloque, a la misma escala' },
+        { s: 'boletos', t: 'cada tramo: los boletos de un bloque' },
+        { s: 'cifras impresas', t: 'cada tramo: las cifras que gasta ese bloque' },
         { s: ['100 a ', cant('N')], t: 'el bloque de tres cifras' },
       ],
       controles: [{ id: 'P', etiqueta: 'Último boleto, N', color: 'c-f', min: 120, max: 400, paso: 10, inicio: 150, decimales: 0 }],
@@ -2048,9 +2064,10 @@
     },
     regla: {
       texto: 'Los números de k cifras van desde 1 seguido de k − 1 ceros hasta la cifra mayor repetida k veces. Cada bloque aporta cuántos números por sus cifras.',
-      ecuacion: ['de p hasta u hay u − p + 1 números', SEP, 'cifras del bloque = (u − p + 1) × ', cif('k'), SEP, 'en base ', bas('n'), ', de ', pot('n', [cif('k'), ' − 1']), ' a ', pot('n', cif('k')), ' − 1'],
-      condicion: 'p: el primero; u: el último; k: cifras de cada uno. El último bloque va hasta N, aunque no esté completo.',
-      voz: 'Separa los bloques y cuenta cada uno con sus puntas.',
+      ecuacion: ['de p hasta u hay u − p + 1 números', SEP, 'cifras del bloque = (u − p + 1) × ', cif('k'), SEP, 'en base ', bas('n'), ', de ', pot('n', [cif('k'), ' − 1']), ' a ', pot('n', cif('k')), ' − 1',
+        SEP, 'en base ', bas(5), ', tres cifras: de ', num('100', 5), ' = 25 a ', num('444', 5), ' = 124'],
+      condicion: 'p: el primero; u: el último; k: cifras de cada uno. En los boletos, n = 10. El último bloque puede quedar incompleto.',
+      voz: 'Separa los bloques y cuenta cada uno con el primero y el último.',
     },
     // Así se resuelve: boletos que no empiezan en el 1 (del a, de dos cifras, al z, de tres). «Ahora tú» pide otra cosa:
     // del 1 al N, al revés, cuántos de k cifras en base n y en cuántas bases N tiene tres cifras.
@@ -2059,13 +2076,13 @@
       generar(s) {
         const q = azar(s + 900), a = q.ent(12, 90), z = q.ent(110, 450), bl = bloquesT(a, z), t = cifrasT(a, z);
         return {
-          enunciado: ['Una promoción imprime los boletos del ', String(a), ' al ', cant(z), '. ¿Cuántas cifras gasta la imprenta?'],
+          enunciado: ['Una promoción imprime los boletos del ', cant(a), ' al ', cant(z), '. ¿Cuántas cifras gasta la imprenta?'],
           datos: [DT.hasta, DT.bloques],
           dibujo: talF({ desde: a, N: z, total: '?' }),
           pasos: [
             { tipo: 'pide', texto: `Piden cuántas cifras se imprimen del boleto ${a} al ${z}, no desde el 1.` },
             { tipo: 'datos', texto: `El ${a} tiene dos cifras y el ${z}, tres. Hay dos bloques: del ${a} al 99 y del 100 al ${z}.` },
-            { tipo: 'regla', texto: 'En cada bloque cuento los boletos con sus dos puntas, u − p + 1, y los multiplico por sus cifras.' },
+            { tipo: 'regla', texto: 'En cada bloque cuento los boletos, con el primero y el último (u − p + 1), y los multiplico por sus cifras.' },
             { tipo: 'cuentas', texto: bl.map(b => `del ${b.a} al ${b.z} hay ${b.cuantos}`).join('; ').replace(/^d/, 'D') + '.', ecuacion: cuentaBloques(a, z),
               dibujo: talF({ desde: a, N: z, lineas: 'cuenta' }) },
             { tipo: 'sentido', texto: `Son ${z - a + 1} boletos; con 2 cifras cada uno serían ${2 * (z - a + 1)} y con 3, ${3 * (z - a + 1)}. ${t} está entre los dos. Cuadra.` },
@@ -2076,7 +2093,7 @@
     },
     ahoraTu: {
       pieza: TA,
-      voz: 'Separa los bloques y cuenta cada uno con sus puntas.',
+      voz: 'Separa los bloques y cuenta cada uno con el primero y el último.',
       generar(sem) {
         const r = azar(sem + 71), tipo = sem % 4;
         if (tipo === 0) return conCuatro(casoCifras, r);

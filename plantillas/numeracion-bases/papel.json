@@ -26,7 +26,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Doña Juana tiene 56 caramelos para empacar en bolsitas de 7 y en cajas de 7 bolsitas. ¿Cómo se escribe 56 en base 7? Datos: N = q × 7 + r, con 0 ≤ r < 7 (q: cociente; r: resto). En base n, las cifras van de 0 a n − 1. Alternativas: A) 56₍₇₎   B) 80₍₇₎   C) 10₍₇₎   D) 110₍₇₎",
+      "enunciado": "Doña Juana tiene 56 caramelos para empacar en bolsitas de 7 y en cajas de 7 bolsitas. ¿Cómo se escribe 56 en base 7? Datos: D = q × 7 + r, con 0 ≤ r < 7 (D: el número; q: cociente; r: resto). En base n, las cifras van de 0 a n − 1. Alternativas: A) 56₍₇₎   B) 80₍₇₎   C) 10₍₇₎   D) 110₍₇₎",
       "respuesta": "D) 110₍₇₎",
       "pasos": [
         "Se divide entre 7 hasta que el cociente es 0:",
@@ -51,7 +51,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Un pedido del puesto de bolsitas de 4 se anota 300₍₄₎. Se vuelve a empacar en bolsitas de 7. ¿Qué etiqueta lleva ahora? Datos: a̅b̅c̅₍ₙ₎ = a × n² + b × n + c. N = q × 7 + r, con 0 ≤ r < 7 (q: cociente; r: resto). Alternativas: A) 300₍₇₎   B) 66₍₇₎   C) 6₍₇₎   D) 48₍₇₎",
+      "enunciado": "Un pedido del puesto de bolsitas de 4 se anota 300₍₄₎. Se vuelve a empacar en bolsitas de 7. ¿Qué etiqueta lleva ahora? Datos: a̅b̅c̅₍ₙ₎ = a × n² + b × n + c. D = q × 7 + r, con 0 ≤ r < 7 (D: el número; q: cociente; r: resto). Alternativas: A) 300₍₇₎   B) 66₍₇₎   C) 6₍₇₎   D) 48₍₇₎",
       "respuesta": "B) 66₍₇₎",
       "pasos": [
         "Primero, cuántos caramelos son: 300₍₄₎ = 3 × 16 + 0 × 4 + 0 × 1 = 48.",
@@ -64,7 +64,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "En un puesto, la bolsa con etiqueta 54₍ₙ₎ tiene 49 caramelos. ¿Cuántos caramelos tiene la bolsa 45₍ₙ₎ del mismo puesto? Datos: a̅b̅₍ₙ₎ = a × n + b. Las dos etiquetas son del mismo puesto: la misma base. Alternativas: A) 94   B) 41   C) 36   D) 9   E) 45",
+      "enunciado": "En un puesto, el paquete con etiqueta 54₍ₙ₎ tiene 49 caramelos. ¿Cuántos caramelos tiene el paquete 45₍ₙ₎ del mismo puesto? Datos: a̅b̅₍ₙ₎ = a × n + b. Las dos etiquetas son del mismo puesto: la misma base. Alternativas: A) 94   B) 41   C) 36   D) 9   E) 45",
       "respuesta": "B) 41",
       "pasos": [
         "Con la primera etiqueta sale la base: 5 × n + 4 = 49, así que 5 × n = 45 y n = 9.",
