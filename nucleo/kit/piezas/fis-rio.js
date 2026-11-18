@@ -16,6 +16,12 @@
  *   bote: 0.5,                              // dónde va el bote, como fracción del ancho (0 a 1)
  * }
  * estado = { corte }: la flecha `total` con `desde` aparece cuando corte ≥ desde («Mira»). Función pura de (datos, estado): sin ids, sin azar, sin reloj. Ancho 320, alto fijo.
+ *
+ * Largo de las flechas (auditoría de MRU, 18 nov, M7: la flecha «u − c» río arriba salía más larga que la de u). Las
+ * flechas comparten escala (docs/molde-unidad.md §6): si u y c son números en m/s, cada flecha (u, cada flechita de la
+ * corriente y la vista desde la orilla) mide su valor por los mismos px por m/s, y la de la orilla va hacia donde da
+ * la suma con signo (+ río abajo). Si son letras o «?», un largo de muestra: u = 56 px, c = 22 px y la de la orilla
+ * mide |±u + c| con esos largos (río arriba, más corta que u). Abajo a la derecha, el eje: «+» hacia río abajo.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -27,7 +33,7 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
   const W = 320, H = 182, TXT = 14, AGUA = 96, FONDO = 138, ORILLA = 58;
-  const Y = { TOTAL: 28, U: 56, CORRIENTE: 112, CORRIENTE_T: 132, COTA: 154, COTA_T: 172 };
+  const Y = { TOTAL: 28, U: 56, CORRIENTE: 112, CORRIENTE_T: 132, COTA: 154, COTA_T: 172, EJE: 127 };
   const n = T.n;
   const BASE = { sentido: 'abajo', u: '', c: '', bote: 0.55 };
   const caja = (x, y, texto, ancla, peso = 700) => {
@@ -37,23 +43,37 @@
   };
   const XR = f => ORILLA + 10 + (W - 14 - ORILLA - 10) * f;   // fracción del río → x
 
+  // Un rótulo «5 m/s» o «1,5 m/s» → 5 o 1,5; letras, «?» o vacío → null.
+  const valor = t => { const m = String(t || '').match(/^\s*(\d+(?:,\d+)?)\s*m\/s\s*$/); return m ? Number(m[1].replace(',', '.')) : null; };
+  const MUESTRA = { u: 56, c: 22 }, PXMAX = 12, LMAX = 100;   // px por m/s como mucho; la flecha más larga, 100 px
   function geometria(datos, estado = {}) {
     const d = Object.assign({}, BASE, datos || {}), g = { d, rotulos: [] }, corte = Number.isFinite(estado.corte) ? estado.corte : Infinity;
     const dir = d.sentido === 'arriba' ? -1 : 1, bx = XR(d.bote);
     g.bote = { x: bx, dir };
+    // La escala: con u y c en números, la misma para todas las flechas; si no, los largos de muestra.
+    const nu = valor(d.u), nc = valor(d.c);
+    const numeros = nu !== null && (nc !== null || !d.c);
+    const vu = numeros ? dir * nu : dir * MUESTRA.u, vc = numeros ? (nc || 0) : MUESTRA.c, vt = vu + vc;
+    const k = numeros ? Math.min(PXMAX, LMAX / Math.max(Math.abs(vu), Math.abs(vc), Math.abs(vt), 1e-9)) : 1;
+    g.escala = numeros ? k : null;
     // Cada flecha lleva su rótulo encima, centrado (el rótulo es largo: «5 m/s respecto al agua»).
-    const conRotulo = (y, texto, largo) => {
-      const x2 = bx + dir * largo, c = caja((bx + x2) / 2, y - 12, texto, 'middle');
+    const conRotulo = (y, texto, v) => {
+      const x2 = bx + v * k, c = caja((bx + x2) / 2, y - 12, texto, 'middle');
       g.rotulos.push(c);
-      return { x1: bx, x2, y, caja: c };
+      return { x1: bx, x2, y, caja: c, valor: numeros ? v : null };
     };
-    if (d.u) g.u = conRotulo(Y.U, `${d.u} respecto al agua`, 44);
-    if (d.total && (d.total.desde === undefined || corte >= d.total.desde)) g.total = conRotulo(Y.TOTAL, `${d.total.texto} desde la orilla`, 60);
-    // la corriente: tres flechitas en el agua, siempre río abajo (hacia la derecha), y su rótulo
-    g.corriente = [0.08, 0.42, 0.76].map(f => ({ x1: XR(f), x2: XR(f) + 26 }));
+    if (d.u) g.u = conRotulo(Y.U, `${d.u} respecto al agua`, vu);
+    if (d.total && (d.total.desde === undefined || corte >= d.total.desde)) g.total = conRotulo(Y.TOTAL, `${d.total.texto} desde la orilla`, vt);
+    // la corriente: tres flechitas en el agua, siempre río abajo (hacia la derecha), con el largo de su valor, y su rótulo
+    const Lc = vc * k;
+    g.corriente = [0.08, 0.42, 0.76].map(f => ({ x1: XR(f), x2: XR(f) + Lc }));
     if (d.c) { g.cc = caja(XR(0.08), Y.CORRIENTE_T, `corriente: ${d.c}`, 'start'); g.rotulos.push(g.cc); }
     g.orilla = caja(6, FONDO - 4, 'Orilla', 'start', 400);
     g.rotulos.push(g.orilla);
+    // el eje: «+» hacia río abajo, en el agua, abajo a la derecha (bajo la corriente y lejos de su rótulo)
+    g.eje = { x1: W - 32, x2: W - 12, y: Y.EJE };
+    g.mas = caja(W - 36, Y.EJE + 5, '+', 'end');
+    g.rotulos.push(g.mas);
     if (d.cota) {
       const a = XR(d.cota.de), b = XR(d.cota.a);
       g.cota = { a: Math.min(a, b), b: Math.max(a, b), caja: caja((a + b) / 2, Y.COTA_T, d.cota.texto, 'middle') };
@@ -94,6 +114,8 @@
       + ` <line x1="${n(g.total.x1)}" y1="${Y.TOTAL}" x2="${n(g.total.x1)}" y2="${Y.U - 22}" stroke="${co}" stroke-width="1.5" stroke-dasharray="3 3"/>` + rot(g.total.caja, 'o');
     if (g.cc) s += rot(g.cc, 'o');
     s += rot(g.orilla);
+    s += `<line x1="${n(g.eje.x1)}" y1="${g.eje.y}" x2="${n(g.eje.x2)}" y2="${g.eje.y}" stroke="currentColor" stroke-width="1.5"/>`
+      + `<path d="M${n(g.eje.x2 + 4)} ${g.eje.y}l-8 -4.5v9z" fill="currentColor"/>` + rot(g.mas);
     if (g.cota) {
       const k = T.color(d.cota.color);
       s += `<path d="M${n(g.cota.a)} ${Y.COTA - 6}V${Y.COTA}H${n(g.cota.b)}V${Y.COTA - 6}" fill="none" stroke="${k}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` + rot(g.cota.caja, d.cota.color);
@@ -108,6 +130,7 @@
     if (d.c) s += ` La corriente lleva ${d.c} hacia la derecha.`;
     if (d.total) s += ` Desde la orilla se ve a ${d.total.texto}.`;
     if (d.cota) s += ` Abajo, un tramo del río: ${d.cota.texto}.`;
+    s += ' El sentido + es río abajo, hacia la derecha.';
     return s;
   }
 

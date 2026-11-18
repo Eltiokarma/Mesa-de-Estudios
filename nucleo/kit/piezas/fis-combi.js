@@ -62,6 +62,10 @@
  *                          //   de la combi pasa arriba de la avenida y la del segundo, abajo. Las dos, del mismo color
  *                          //   (las dos son velocidades): las distinguen el vehículo y el carril.
  *   lugares: [{ en, texto, lado: 'izq' | 'der' }]   // lado del letrero respecto a su poste (sin lado, el que quepa)
+ * Sin la combi, con el segundo (18 nov, auditoría de MRU, M6: «el que salió antes»): con vehiculo: false y `segundo`, se
+ * dibuja solo el segundo vehículo, con su flecha (el que ya salió); la combi todavía no está.
+ *   nota: 'La combi sale 10 s después.'   // una línea arriba a la derecha, en tinta (lo que el dibujo no puede mostrar)
+ * Sin `nota` y sin esa combinación, la vista dibuja lo mismo que antes, byte por byte.
  * vehiculo(tipo, cx, y, { fantasma, izquierda }): la combi o el mototaxi con su centro en cx y las ruedas en y, para
  * las piezas que los dibujan en otra escena (fis-xt, fis-ventana).
  */
@@ -128,7 +132,7 @@
   }
 
   // ---------- Vista «avenida» ----------
-  const AV = { X0: 26, X1: 280, CAMINO: 58, BORDE: 98, CARRIL: 76, FLECHA: 89, ACEL: 47, TRAMO: 105, TIEMPO: 128, POS: 143, EJE: 150, NUM: 173,
+  const AV = { X0: 26, X1: 280, CAMINO: 58, BORDE: 98, CARRIL: 76, FLECHA: 89, ACEL: 47, TRAMO: 105, TIEMPO: 128, POS: 143, EJE: 150, NUM: 173, NOTA: 15,
     FILAS: [{ y: 44, texto: 38 }, { y: 22, texto: 16 }] };
   // Con dos vehículos: la flecha de la combi va arriba de la avenida, el segundo en el carril de abajo y su flecha debajo.
   const AV2 = { FLECHA: 47, CARRIL2: 96, FLECHA2: 108 };
@@ -241,6 +245,7 @@
       g.rotulos.push(caja);
       return { a: Math.min(a, b), b: Math.max(a, b), y: f.y, texto: l.texto, color: l.color, caja };
     });
+    if (d.nota) { g.nota = cajaTxt(W - 4, AV.NOTA, String(d.nota), 'end'); g.rotulos.push(g.nota); }
     g.numeros = [];
     for (let m = Math.ceil(d.min / d.paso - 1e-9) * d.paso; m <= d.max + 1e-9; m += d.paso) {
       const esN = Math.abs(m / d.numero - Math.round(m / d.numero)) < 1e-9;
@@ -345,6 +350,14 @@
           + txt(f.caja, { ancla: f.ancla, peso: 700, color: d.colorA });
       }
     }
+    // Sin la combi pero con el segundo (el que salió antes): solo él, con su flecha.
+    if (d.vehiculo === false && g.segundo) {
+      const q = g.segundo;
+      s += vehiculo(q.tipo, q.px, AV2.CARRIL2, { izquierda: q.izquierda });
+      if (q.flecha) s += T.flecha(q.flecha.x1, q.flecha.y, q.flecha.x2, q.flecha.y, { color: d.color, grosor: 3 })
+        + txt(q.flecha.caja, { ancla: q.flecha.ancla, peso: 700, color: d.color });
+    }
+    if (g.nota) s += txt(g.nota, { ancla: 'end' });
     return T.svg(W, H, s, { alt: altAv(d, g) });
   }
 
@@ -353,18 +366,17 @@
     g = g || geometriaAv(d);
     const lugar = (d.lugares || []).find(l => l.en === 0);
     let s = `Una avenida recta con una regla de metros${lugar ? ` que empieza en el ${lugar.texto.toLowerCase()}` : ''}.`;
-    if (d.vehiculo === false) return s;
+    const segundoAlt = q => ` En el otro carril, ${q.tipo === 'combi' ? 'otra combi' : 'un mototaxi'} sale de x = ${fmt(d.segundo.x0 || 0)} m y va ${q.v ? `a ${fmt(Math.abs(q.v))} m/s hacia la ${q.v > 0 ? 'derecha' : 'izquierda'}` : 'quieto'}.`;
+    const nota = d.nota ? ` Arriba dice: «${d.nota}»` : '';
+    if (d.vehiculo === false) return s + (g.segundo ? segundoAlt(g.segundo).replace('En el otro carril, ', 'En la avenida, ') : '') + nota;
     const hacia = d.v > 0 ? 'hacia la derecha' : d.v < 0 ? 'hacia la izquierda' : 'quieta';
     const acel = Number.isFinite(d.a) ? d.a : 0;
     if (acel && !d.v) s += ` La combi sale de x = ${fmt(d.x0)} m y arranca hacia la ${acel > 0 ? 'derecha' : 'izquierda'}.`;
     else s += ` La combi sale de x = ${fmt(d.x0)} m y va ${d.v ? `a ${fmt(Math.abs(d.v))} m/s ` : ''}${hacia}.`;
     if (acel) s += ` Su velocidad ${acel * d.v < 0 ? 'baja' : 'sube'} ${fmt(Math.abs(acel))} m/s en cada segundo${acel * d.v < 0 ? ', hasta detenerse si no se acaba el tramo' : ''}.`;
     if (g.kMax >= 1) s += ` Deja una marca en cada segundo, hasta los ${g.kMax} s.`;
-    if (g.segundo) {
-      const q = g.segundo, sg = d.segundo;
-      s += ` En el otro carril, ${q.tipo === 'combi' ? 'otra combi' : 'un mototaxi'} sale de x = ${fmt(sg.x0 || 0)} m y va ${q.v ? `a ${fmt(Math.abs(q.v))} m/s hacia la ${q.v > 0 ? 'derecha' : 'izquierda'}` : 'quieto'}.`;
-    }
-    return s;
+    if (g.segundo) s += segundoAlt(g.segundo);
+    return s + nota;
   }
 
   return { id: 'fis-combi', dibujar, alt: d => (d && d.vista === 'avenida' ? altAv(d) : alt(d)), escala: d => (d && d.vista === 'avenida' ? escalaAv(conBaseAv(d)) : escala(conBase(d))),

@@ -8,8 +8,11 @@
  * Objetos, como en la teoría: la combi y el mototaxi en la avenida con el paradero en x = 0 (A1, A4), la gráfica x–t
  * (A2), la recta de la pista atlética con la valla (A3), la ventana de tu combi y el río en una recta (A5). Valores de
  * problema, sin fuente y posibles (propuesta §8): combi de 8 a 16 m/s (o de 36 a 90 km/h), mototaxi de 4 a 9 m/s,
- * ciclista de 3 a 8 m/s, corredor de 2 a 7 m/s, bote de 2 a 6 m/s respecto al agua, corriente de 3 m/s o menos,
- * trenes de 10 a 30 m/s; el sonido en el aire a unos 340 m/s (valor de libro, «unos»).
+ * ciclista de 3 a 8 m/s (12 como mucho en «mitades»), corredor de 2 a 7 m/s, pastor de 1,5 a 3 m/s (corre), columna de
+ * llamas a 1,5 m/s o menos, bote de 2 a 6 m/s respecto al agua, corriente de 3 m/s o menos,
+ * trenes de 10 a 30 m/s; el sonido en el aire a unos 340 m/s (valor de libro, «unos»). Los topes por sujeto están en
+ * topes.js, que leen las pruebas de esta práctica, de la teoría y de los tipos de MRU de cinematica-medias y
+ * velocidad-relativa (auditoría de MRU, 18 nov, M1 y M2).
  *
  * Tipos por idea (TIPOS_POR_IDEA; nivel 1 un paso, 2 dos pasos, 3 de examen). generar(semilla, { idea }) da solo los
  * de esa idea; sin idea, las cinco con el mismo peso. La ficha cubre una sola unidad, así que { unidad } no filtra nada.
@@ -117,13 +120,13 @@
     min: '1 min = 60 s',
     hora: '1 h = 60 min',
     sonido: 'Rapidez del sonido en el aire: unos 340 m/s.',
-    eco: 'Eco: el sonido que rebota en el cerro y vuelve hasta quien lo produjo.',
+    eco: 'Eco: el sonido que se oye después de rebotar en el cerro.',   // sin el paso («va y vuelve»: auditoría de MRU, B3)
     luz: 'La luz del rayo llega casi de inmediato.',
     recorre: 'Lo que recorre algo con rapidez constante: rapidez · tiempo.',
     xt: 'Velocidad en la gráfica x–t: v = (x₂ − x₁)/(t₂ − t₁)',
     ejes: 'En la gráfica, x va en metros y t en segundos.',
     ejesKm: 'En la gráfica, x va en kilómetros y t en minutos.',
-    sinVuelta: 'Sin vuelta, la distancia recorrida es lo que avanzó.',
+    distancia: 'Distancia recorrida: todo el camino, sin signo.',   // la definición; «sin vuelta, es lo que avanzó» era el paso (B3)
     vm: 'Velocidad media: vₘ = Δx/Δt, con Δx = posición final − posición inicial',
     rm: 'Rapidez media = d/Δt, con d la distancia recorrida: todo el camino, sin signo',
     tramo: 'Tiempo de un tramo con rapidez constante: distancia ÷ rapidez.',
@@ -574,7 +577,7 @@
     const d = vv * T;
     return {
       enunciado, pregunta: ['Si sigue igual, ¿qué distancia recorre en los primeros ', Tt(`${T} s`), '?'],
-      datos: [D.xt, D.sinVuelta], correcta: d, fmt: M,
+      datos: [D.xt, D.distancia], correcta: d, fmt: M,
       errores: [
         E('XT-LEIDO', x1, T2 => `Bien leer el último punto dibujado. Pero es una posición, y la recta sigue después de los ${t1} s; ${T2} no es lo recorrido.`),
         E('XT-POSICION', x0 + d, T2 => `Bien seguir la recta hasta los ${T} s: ahí está en ${f(x0 + d)} m. Pero salió de ${x0} m; ${T2} es la posición, no lo recorrido.`),
@@ -851,9 +854,10 @@
   }
 
   function mitades(rng) {
-    const v1 = rng.entero(2, 8), v2 = rng.entero(4, 16), v3 = rng.entero(4, 16), w = (v2 + v3) / 2, vm = 2 * v1 * w / (v1 + w);
+    // Un ciclista va a 12 m/s como mucho (unos 43 km/h; auditoría de MRU, 18 nov, M1; tabla de topes.js).
+    const v1 = rng.entero(2, 8), v2 = rng.entero(3, 12), v3 = rng.entero(3, 12), w = (v2 + v3) / 2, vm = 2 * v1 * w / (v1 + w);
     if (v2 === v3 || !limpio(vm, 1) || v1 === w) return null;
-    if (v1 === 4 && w === 12) return null;   // el ejemplo de la idea 3
+    if (v1 === 3 && w === 6) return null;   // el ejemplo de la idea 3 (3 m/s; del resto, 4 y 8 m/s)
     return {
       enunciado: ['Un ciclista hace la mitad de su recorrido a ', Tv(`${v1} m/s`), '. Del resto, la mitad del tiempo va a ', Tv(`${v2} m/s`), ' y la otra mitad del tiempo, a ', Tv(`${v3} m/s`), '.'],
       pregunta: ['¿Cuál es su rapidez media en todo el recorrido?'],
@@ -876,7 +880,7 @@
   function cerro(rng) {
     const v1 = rng.entero(2, 5), v2 = rng.entero(v1 + 1, 12), L = rng.entero(2, 12), rm = 2 * v1 * v2 / (v1 + v2);
     if (!limpio(rm, 1) || !limpio(L / v1, 2) || !limpio(L / v2, 2)) return null;
-    if (v1 === 2 && v2 === 6) return null;   // el ejemplo (y los números de la predicción) de la idea 3
+    if (v1 === 2 && v2 === 6) return null;   // los números de la predicción de la idea 3
     return {
       enunciado: ['Subes a un cerro por un camino de ', `${L} km`, ' a ', Tv(`${v1} km/h`), ' y bajas por el mismo camino a ', Tv(`${v2} km/h`), '.'],
       pregunta: ['¿Cuál es tu rapidez media en todo el paseo?'],
@@ -1240,7 +1244,8 @@
 
   function idaVueltaRio(rng, forzado) {
     const sub = forzado || rng.elegir(['bote', 'columna']);
-    const u = sub === 'bote' ? rng.elegir(BOTE) : rng.elegir([2, 2.5, 3, 4]), c = sub === 'bote' ? rng.elegir(CORRIENTE) : rng.elegir([0.5, 1, 1.5]);
+    // El pastor corre a 3 m/s como mucho, en el altiplano (auditoría de MRU, B1); la columna, a 1,5 m/s.
+    const u = sub === 'bote' ? rng.elegir(BOTE) : rng.elegir([1.5, 2, 2.5, 3]), c = sub === 'bote' ? rng.elegir(CORRIENTE) : rng.elegir([0.5, 1, 1.5]);
     const L = sub === 'bote' ? 10 * rng.entero(4, 20) : 10 * rng.entero(2, 8);
     if (c >= u) return null;
     const t1 = L / (u - c), t2 = L / (u + c), t = t1 + t2;
@@ -1248,7 +1253,7 @@
     if ((sub === 'bote' && u === 5 && c === 3 && L === 80) || (sub === 'columna' && L === 40 && c === 1 && u === 3)) return null;   // los ejemplos de la idea 5
     const enunciado = sub === 'bote'
       ? ['Un bote rema a ', Tv(`${f(u)} m/s`), ' respecto al agua en un río que corre a ', Tv(`${f(c)} m/s`), '. Sube ', TL(`${L} m`), ' río arriba y vuelve al punto de partida.']
-      : ['Una columna de llamas de ', TL(`${L} m`), ' avanza a ', Tv(`${f(c)} m/s`), '. El pastor va de la cola a la cabeza a ', Tv(`${f(u)} m/s`), ' y vuelve a la cola, también a ', Tv(`${f(u)} m/s`), '.'];
+      : ['Una columna de llamas de ', TL(`${L} m`), ' avanza a ', Tv(`${f(c)} m/s`), '. El pastor corre de la cola a la cabeza a ', Tv(`${f(u)} m/s`), ' y vuelve a la cola, también a ', Tv(`${f(u)} m/s`), '.'];
     return {
       enunciado, pregunta: sub === 'bote' ? ['¿Cuánto ', Tt('tiempo'), ' dura el viaje de ida y vuelta?'] : ['¿Cuánto ', Tt('tiempo'), ' tarda en ir y volver?'],
       datos: sub === 'bote' ? [D.orilla, D.tramo, D.rio] : [D.rel, D.tramo, D.suelo], correcta: t, fmt: S,

@@ -41,3 +41,26 @@ test('rótulos que caben con 4 de margen y no se pisan; puro, alto fijo, sin NaN
     assert.ok(P.alt(d).length > 40 && !/NaN|undefined/.test(P.alt(d)));
   }
 });
+
+// Auditoría de MRU (18 nov, M7): las flechas tienen el largo de su valor, con una sola escala por figura; río arriba,
+// la vista desde la orilla es más corta que la del bote. Con letras, largos de muestra que cumplen lo mismo.
+test('las flechas miden su valor con la misma escala; la de la orilla va hacia donde da la suma con signo', () => {
+  const casos = [['abajo', 4, 1.5], ['arriba', 4, 1.5], ['abajo', 6, 3], ['arriba', 5, 3], ['arriba', 5, 1], ['abajo', 2, 0.5], ['arriba', 3, 2]];
+  for (const [sentido, u, c] of casos) {
+    const t = x => `${String(x).replace('.', ',')} m/s`, dir = sentido === 'abajo' ? 1 : -1, vt = dir * u + c;
+    const g = P.geometria({ sentido, u: t(u), c: t(c), total: { texto: t(Math.abs(vt)) } }), k = g.escala, donde = `${sentido} ${u} ${c}`;
+    assert.ok(k > 0 && k <= 12, donde);
+    assert.ok(Math.abs((g.u.x2 - g.u.x1) - dir * u * k) < 1e-9, `${donde}: u`);
+    assert.ok(Math.abs((g.total.x2 - g.total.x1) - vt * k) < 1e-9, `${donde}: desde la orilla`);
+    for (const f of g.corriente) assert.ok(Math.abs((f.x2 - f.x1) - c * k) < 1e-9, `${donde}: corriente`);
+    for (const x of [g.u.x2, g.total.x2, ...g.corriente.map(f => f.x2)]) assert.ok(x >= 4 && x <= W - 4, `${donde}: flecha fuera`);
+    if (sentido === 'arriba') assert.ok(Math.abs(g.total.x2 - g.total.x1) < Math.abs(g.u.x2 - g.u.x1), `${donde}: río arriba, más corta que u`);
+  }
+  for (const sentido of ['abajo', 'arriba']) {
+    const g = P.geometria({ sentido, u: 'u', c: 'c', total: { texto: 'u + c' } }), Lu = Math.abs(g.u.x2 - g.u.x1), Lt = Math.abs(g.total.x2 - g.total.x1);
+    assert.equal(g.escala, null);
+    assert.ok(sentido === 'abajo' ? Lt > Lu : Lt < Lu, `${sentido}: con letras, la de la orilla es ±u + c`);
+    assert.ok(Math.abs(Lt - Math.abs((sentido === 'abajo' ? 1 : -1) * Lu + (g.corriente[0].x2 - g.corriente[0].x1))) < 1e-9);
+  }
+  assert.match(P.dibujar({ u: '5 m/s', c: '2 m/s' }), />\+</, 'el eje lleva su «+»');
+});

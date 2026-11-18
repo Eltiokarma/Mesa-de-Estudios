@@ -415,9 +415,13 @@ function revisarAhoraTu(id, casos, esperados) {
 const N = '(−?[\\d ,]+)';
 test('A2 «Ahora tú»: velocidad con signo de dos puntos, la recta que sigue y dos rectas con signo, cuadran aparte', () => {
   revisarAhoraTu('grafica-xt', [
-    ['pendiente', new RegExp(`^La recta x–t de un mototaxi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. ¿Qué velocidad lleva, con su signo\\?$`), ([t1, x1, t2, x2]) => `${fmt((x2 - x1) / (t2 - t1))} m/s`],
+    ['pendiente', new RegExp(`^La recta x–t de un mototaxi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. ¿Qué velocidad lleva(, con su signo)?\\?$`), ([t1, x1, t2, x2], raw) => {
+      // «Con su signo» solo si la recta baja (lector en frío, 18 nov: si sube, ninguna opción lleva signo).
+      assert.equal(!!raw[4], x2 < x1, 'con su signo solo cuando baja');
+      return `${fmt((x2 - x1) / (t2 - t1))} m/s`;
+    }],
     ['sigue', new RegExp(`^La gráfica x–t de una combi es una recta de \\(0 s; ${N} m\\) a \\(${N} s; ${N} m\\), y ahí se corta\\. Si sigue igual, ¿dónde estará a los ${N} s\\?$`), ([x0, t1, x1, T]) => `En x = ${fmt(x0 + (x1 - x0) / t1 * T)} m`],
-    ['dos', new RegExp(`^En la gráfica x–t, la recta de A va de \\(0 s; 0 m\\) a \\(${N} s; ${N} m\\) y la de B, de \\(0 s; ${N} m\\) a \\(${N} s; ${N} m\\)\\. ¿Qué velocidades tienen\\?$`), ([t, xa, X, t2, xb]) => `A: ${fmt(xa / t)} m/s; B: ${fmt((xb - X) / t2)} m/s`],
+    ['dos', new RegExp(`^En la gráfica x–t, la recta de una combi va de \\(0 s; 0 m\\) a \\(${N} s; ${N} m\\) y la de un mototaxi, de \\(0 s; ${N} m\\) a \\(${N} s; ${N} m\\)\\. ¿Qué velocidades tienen\\?$`), ([t, xa, X, t2, xb]) => `Combi: ${fmt(xa / t)} m/s; mototaxi: ${fmt((xb - X) / t2)} m/s`],
   ], ['pendiente', 'sigue', 'dos']);
 });
 test('A3 «Ahora tú»: rapidez y velocidad media de ida y vuelta, dos tramos y la mitad del recorrido, cuadran aparte', () => {
@@ -481,4 +485,100 @@ test('«Así se resuelve» de A2 a A5 no pregunta lo de «Ahora tú» y cuadra c
     }
     assert.equal(vistos.size, casos[id].length, id);
   }
+});
+
+// ---------- Correcciones de la auditoría y del lector en frío (18 nov) ----------
+// A2: las reglas de A4 y A5 usan el eje con signo de la unidad (una sola fórmula, cada v con su signo) y traen la línea
+// que las traduce al «±» de la academia, como la idea 1.
+test('A2: las reglas de encuentros y del río son las del eje con signo y traducen al «±» de la academia, como la idea 1', () => {
+  const r = id => idea(id).regla, ec = id => plano(r(id).ecuacion);
+  assert.match(r('mru').texto, /academia escribe x = x₀ ± v · t/);
+  assert.match(ec('encuentro'), /te = D \/ \(vA − vB\)/);
+  assert.ok(!/vA \+ vB|v_A \+ v_B/.test(ec('encuentro')), 'de frente no se escriben las rapideces con letras de velocidad');
+  assert.match(r('encuentro').texto, /signo/);
+  assert.match(r('encuentro').texto, /academia/);
+  assert.match(ec('velocidad-relativa'), /v = u \+ c/);
+  assert.ok(!/u − c/.test(ec('velocidad-relativa')), 'río arriba no es otra fórmula: u lleva su signo');
+  assert.match(r('velocidad-relativa').texto, /academia escribe u ± c/);
+  assert.match(r('velocidad-relativa').condicion, /signo/);
+  // La cuenta con signo da lo mismo que la de la academia, de frente y al alcance, río abajo y río arriba.
+  const te = (D, vA, vB) => D / (vA - vB);
+  assert.equal(te(100, 6, -4), 100 / (6 + 4));
+  assert.equal(te(30, 8, 5), 30 / (8 - 5));
+  assert.equal(Math.abs(-4 + 1.5), 4 - 1.5);
+});
+
+// M5: los datos de una predicción no dicen el signo o el sentido que mide su distractor.
+test('M5: los datos de Predice no dan el signo ni el sentido que se predice', () => {
+  for (const i of def.ideas) for (const d of i.predice.datos || []) assert.ok(!/sentido negativo|van hacia el mismo lado|mismo lado/.test(plano(d)), `${i.id}: «${plano(d)}»`);
+  assert.deepEqual(idea('mru').predice.datos.map(plano), ['El paradero está en x = 0; + hacia la derecha y − hacia la izquierda.']);
+});
+
+// M10: la letra correcta de los ejemplos de examen se reparte entre la A y la E (ninguna pasa del 40 %).
+test('M10: la letra correcta de los 25 ejemplos de nivel 3 se reparte entre la A y la E', () => {
+  const cuenta = {};
+  let n = 0;
+  for (const i of def.ideas) for (const e of i.ejemplos.filter(x => x.nivel === 3)) {
+    const L = fichasNegrita(e.respuesta)[0];
+    assert.ok(/^[A-E]$/.test(L), `${i.id} ${e.titulo}: «${L}»`);
+    cuenta[L] = (cuenta[L] || 0) + 1; n++;
+  }
+  assert.equal(n, 25);
+  assert.deepEqual(Object.keys(cuenta).sort(), ['A', 'B', 'C', 'D', 'E'], JSON.stringify(cuenta));
+  for (const [L, k] of Object.entries(cuenta)) assert.ok(k <= 0.4 * n, `${L} en ${k} de ${n}`);
+});
+const fichasNegrita = x => (Array.isArray(x) ? x.flatMap(fichasNegrita) : x && typeof x === 'object' && x.negrita ? [plano(x.negrita)] : []);
+
+// M4: en un ejercicio con alternativas, los móviles no se llaman A ni B (son las letras de las alternativas).
+test('M4: los ejercicios con alternativas nombran los móviles con palabras, no con A y B', () => {
+  const conLetra = t => /\b(?:combi|placa|móvil|recta de|la de|el|la) [AB]\b|^[AB]:|; [AB]:/.test(t);
+  for (const i of def.ideas) {
+    for (const e of i.ejemplos.filter(x => x.alternativas)) {
+      for (const t of [plano(e.enunciado), ...e.alternativas]) assert.ok(!conLetra(t), `${i.id} ${e.titulo}: «${t}»`);
+    }
+    for (let s = 0; s < 60; s++) {
+      const a = i.ahoraTu.generar(s);
+      for (const t of [plano(a.pregunta), ...a.opciones.map(o => plano(o.texto))]) assert.ok(!conLetra(t), `${i.id} semilla ${s}: «${t}»`);
+    }
+  }
+});
+
+// M1, M2, B1: rapideces posibles por sujeto (ciclista, combi, columna, bote, niño…), en los ejemplos, la predicción,
+// «Así se resuelve» y «Ahora tú» (400 semillas). La tabla es la de la práctica (plantillas/fis-mru/topes.js).
+test('medidas posibles: ninguna rapidez pasa el tope de su sujeto (tabla común con la práctica, 400 semillas)', () => {
+  const Topes = require('../../../plantillas/fis-mru/topes.js');
+  const malas = [], ver = (donde, x) => { for (const m of Topes.revisar(plano(x))) malas.push(`${donde}: ${m.sujeto} a ${m.texto} (tope ${m.tope} m/s)`); };
+  for (const i of def.ideas) {
+    ver(`${i.id} predice`, i.predice.pregunta);
+    for (const e of i.ejemplos) ver(`${i.id} ${e.titulo}`, e.enunciado);
+    for (let s = 0; s < SEMILLAS; s++) { ver(`${i.id} ahora tú ${s}`, i.ahoraTu.generar(s).pregunta); ver(`${i.id} resuelve ${s}`, i.resuelve.generar(s).enunciado); }
+  }
+  assert.deepEqual(malas, []);
+  // La tabla sí atrapa lo que encontró la auditoría.
+  assert.equal(Topes.revisar('Un ciclista hace la mitad de su recorrido a 8 m/s y luego va a 28 m/s.').length, 1);
+  assert.equal(Topes.revisar('Una columna desfila a 11 m/s. Un ciclista va a 12 m/s.')[0].sujeto, 'columna');
+  assert.equal(Topes.revisar('la combi A va a 108 km/h')[0].sujeto, 'combi');
+  assert.deepEqual(Topes.revisar('Un mototaxi a 36 km/h va 100 m delante de una combi a 72 km/h.'), []);
+});
+
+// M6: «el que salió antes» dibuja solo al mototaxi en el paradero, con la nota de cuándo sale la combi.
+test('M6: el que salió antes se dibuja sin la combi (ese instante no existe) y con la nota', () => {
+  const e = idea('encuentro').ejemplos.find(x => x.titulo === 'El que salió antes');
+  const s = Kit.piezas['fis-combi'].dibujar(e.figura.datos);
+  assert.ok(!/data-objeto="combi"/.test(s) && /data-objeto="mototaxi"/.test(s));
+  assert.match(s, /La combi sale 10 s después/);
+  for (let k = 2; k < 40; k += 4) {
+    const a = idea('encuentro').ahoraTu.generar(k), d = a.dibujo.datos;
+    assert.equal(d.vehiculo, false, `semilla ${k}`);
+    assert.match(d.nota, /^La combi sale \d+ s después\.$/);
+  }
+});
+
+// M9 y (d): si el resuelto usa la rapidez de acercamiento («se acercan 6 + 4», «gana 8 − 5»), los datos la traen.
+test('M9: todo ejemplo y «Ahora tú» de A4 que usa lo que se cierra la separación lo trae en sus datos', () => {
+  const usa = x => /se acercan|gana|se separan|se alejan/.test(plano(x));
+  const trae = ds => (ds || []).some(d => /la separación cambia la suma de las rapideces/.test(plano(d)));
+  for (const e of idea('encuentro').ejemplos) if (usa(e.solucion.map(p => p.texto))) assert.ok(trae(e.datos), e.titulo);
+  for (let s = 0; s < 40; s++) { const a = idea('encuentro').ahoraTu.generar(s); if (usa(a.solucion.texto)) assert.ok(trae(a.datos), `semilla ${s}`); }
+  assert.match(plano(idea('encuentro').regla.condicion), /tₑ: instante del encuentro/);
 });

@@ -83,7 +83,10 @@
     const rng = Azar.crear('velocidad-relativa|' + semilla);
     const [tipo, sub] = rng.elegir(lista);
     for (let intento = 0; intento < 5000; intento++) {
-      const pr = construir(rng, semilla, tipo, sub);
+      const pr = construir(rng, semilla, tipo, sub, unidad);
+      // En MRU, solo rapideces posibles por sujeto (auditoría de MRU, 18 nov, M2: combis a 108 km/h, una columna que
+      // desfila a 11 m/s); la tabla es plantillas/fis-mru/topes.js, que leen las pruebas.
+      if (pr && unidad === MRU && !creibleMRU(pr._datos)) continue;
       // Se evita que la correcta sea la única «redonda» (las demás con más decimales).
       if (pr && pr.alternativas.length >= 4 && (intento > 300 || !soloRedonda(pr))) return unidad === MRU ? aMRU(pr) : pr;
     }
@@ -94,10 +97,19 @@
    * cruce) se ven con la notación y los colores de esa unidad: sin magnitudes vectoriales (v, Δx son números con
    * signo, sin flecha) y un color fijo por magnitud (tabla `colores` de contenido/teoria/fisica/movimiento-rectilineo.js):
    * toda velocidad o rapidez naranja, el tiempo turquesa, la posición, la separación y los largos violeta. Lo que se pide
-   * toma el color de la magnitud de su respuesta. El problema es el mismo (mismos números, alternativas y errores); en
-   * Vectores, sin unidad o en otra, sigue como antes.
+   * toma el color de la magnitud de su respuesta. En Vectores, sin unidad o en otra, sigue como antes.
+   * Correcciones de la auditoría de MRU (18 nov): en esta unidad las rapideces son posibles por sujeto (creibleMRU:
+   * combis y buses hasta 90 km/h, la columna que desfila hasta 2 m/s, quien camina o nada hasta 2 m/s, combi, camión y
+   * moto hasta 25 m/s) y las dos combis de «marco» son una combi y un bus (A y B son las letras de las alternativas).
    */
   const MRU = 'fisica.movimiento-rectilineo';
+  function creibleMRU(d) {
+    if (d.tipo === 'marco' && d.sub === 'combis') return d.vA <= 90 && Math.abs(d.vB) <= 90;
+    if (d.tipo === 'idavuelta' && d.sub === 'columna') return d.V <= 2 && d.u <= 12;
+    if (d.tipo === 'idavuelta' && (d.sub === 'tren' || d.sub === 'nadador')) return d.u === undefined ? true : d.u <= 2;
+    if (d.tipo === 'cruce' && (d.sub === 'encuentro' || d.sub === 'alcance')) return d.v1 <= 25 && Math.abs(d.v2) <= 25;
+    return true;
+  }
   const REL_MRU = 'Velocidad de un móvil vista desde otro: la suya menos la del que mira, cada una con su signo.';
   const RECORRE_MRU = 'Lo que recorre algo con rapidez constante: rapidez · tiempo.';
   const POR_UNIDAD = { 'm/s': 'o', s: 'i', m: 'f' };
@@ -118,8 +130,8 @@
     }
     return out;
   }
-  function construir(rng, semilla, tipo, sub) {
-    if (tipo === 'marco') return marco(rng, semilla, sub);
+  function construir(rng, semilla, tipo, sub, unidad) {
+    if (tipo === 'marco') return marco(rng, semilla, sub, unidad === MRU);
     if (tipo === 'idavuelta') return idaVuelta(rng, semilla, sub);
     if (tipo === 'cruce') return cruce(rng, semilla, sub);
     if (tipo === 'bote') return bote(rng, semilla, sub);
@@ -173,12 +185,12 @@
     return { escena: { pieza: 'recta', datos, alt: o.alt }, fantasmas, pasos: o.pasos.map(q => ({ ...q, texto: q.texto.map(nb), ecuacion: (q.ecuacion || []).map(nb) })) };
   }
   // Recta de velocidades: B y A con signo; la flecha de B hasta A es la velocidad de A respecto a B.
-  function lineaVel(vB, vA, u, pasos, alt) {
+  function lineaVel(vB, vA, u, pasos, alt, nombres = ['A', 'B']) {
     return alts => escena(alts, {
       variable: `v (${u})`, extra: [vA, vB, 0], alt,
       elementos: [
-        { tipo: 'punto', x: vB, color: 'i', rotulo: 'B', fila: 0, desde: 1 },
-        { tipo: 'punto', x: vA, color: 'o', rotulo: 'A', fila: 0, desde: 1 },
+        { tipo: 'punto', x: vB, color: 'i', rotulo: nombres[1], fila: 0, desde: 1 },
+        { tipo: 'punto', x: vA, color: 'o', rotulo: nombres[0], fila: 0, desde: 1 },
         { tipo: 'salto', a: vB, b: vA, color: 'f', rotulo: `${f(Math.abs(vA - vB))} ${u}`, fila: 1, desde: 2 },
       ],
       pasos,
@@ -187,31 +199,36 @@
 
   // ================= marco =================
   const VAR_M = { a: { nombre: 'velocidad del móvil observado', color: 'o' }, b: { nombre: 'velocidad del observador', color: 'i' }, t: { nombre: 'tiempo', color: 'd' }, x: { nombre: 'lo que se pide', color: 'f' } };
-  function marco(rng, semilla, sub) {
+  function marco(rng, semilla, sub, mru) {
     if (sub === 'combis') {
       const vA = 9 * rng.entero(3, 12), vB = 9 * rng.entero(2, 10), mismo = rng.moneda();
       if (vA === vB) return null;
       const rel = mismo ? Math.abs(vA - vB) : vA + vB, correcta = rel / 3.6, otra = mismo ? vA + vB : Math.abs(vA - vB);
       const vBs = mismo ? vB : -vB;
-      const enunciado = ['En carriles paralelos, la combi A va a ', v('a', `${vA} km/h`), ' y la combi B a ', v('b', `${vB} km/h`),
-        mismo ? ', las dos hacia el norte.' : ', A al norte y B al sur.'];
-      const pregunta = ['¿Con qué ', v('x', 'rapidez'), ', en m/s, ve moverse a A un pasajero de B?'];
+      // En MRU, una combi y un bus con nombre (A y B son las letras de las alternativas; auditoría de MRU, M4).
+      const N = mru ? { A: 'la combi', B: 'el bus', dB: 'del bus', vA: 'v (combi)', vB: 'v (bus)' } : { A: 'A', B: 'B', dB: 'de B', vA: 'vA', vB: 'vB' };
+      const enunciado = mru
+        ? ['En carriles paralelos, una combi va a ', v('a', `${vA} km/h`), ' y un bus a ', v('b', `${vB} km/h`), mismo ? ', los dos hacia el norte.' : ', la combi al norte y el bus al sur.']
+        : ['En carriles paralelos, la combi A va a ', v('a', `${vA} km/h`), ' y la combi B a ', v('b', `${vB} km/h`), mismo ? ', las dos hacia el norte.' : ', A al norte y B al sur.'];
+      const pregunta = ['¿Con qué ', v('x', 'rapidez'), `, en m/s, ve moverse a ${N.A} un pasajero ${N.dB}?`];
+      const ve = `${N.vA} − ${N.vB}`;
       const errores = [
-        h('REL-V-signo', otra / 3.6, mismo ? `Bien pasar a m/s. Pero van en el mismo sentido: para B, A solo gana la diferencia.` : `Bien pasar a m/s. Pero van en sentidos opuestos: para B, A se acerca con la suma.`),
-        h('REL-V-respecto-a-tierra', vA / 3.6, `Bien pasar a m/s. Pero esa es la rapidez de A desde la pista; B ve vA − vB.`),
-        h('REL-V-la-propia', vB / 3.6, `Bien pasar a m/s. Pero esa es la rapidez de B, el observador; él ve vA − vB.`),
-        h('U1-kmh', rel, `Bien la velocidad de A vista desde B. Pero está en km/h: en m/s se divide entre 3,6.`, TRV),
+        h('REL-V-signo', otra / 3.6, mismo ? `Bien pasar a m/s. Pero van en el mismo sentido: para ${N.B}, ${N.A} solo gana la diferencia.` : `Bien pasar a m/s. Pero van en sentidos opuestos: para ${N.B}, ${N.A} se acerca con la suma.`),
+        h('REL-V-respecto-a-tierra', vA / 3.6, `Bien pasar a m/s. Pero esa es la rapidez de ${N.A} desde la pista; ${N.B} ve ${ve}.`),
+        h('REL-V-la-propia', vB / 3.6, `Bien pasar a m/s. Pero esa es la rapidez ${N.dB}, el observador; él ve ${ve}.`),
+        h('U1-kmh', rel, `Bien la velocidad de ${N.A} vista desde ${N.B}. Pero está en km/h: en m/s se divide entre 3,6.`, TRV),
       ];
       const solucion = [
-        ['Norte positivo: ', v('a', `vA = ${vA}`), ' y ', v('b', `vB = ${f(vBs)}`), ' km/h.'],
-        ['A respecto a B: ', v('a', 'vA'), ' − ', v('b', 'vB'), ` = ${f(vA - vBs)} km/h.`],
+        ['Norte positivo: ', v('a', `${N.vA} = ${vA}`), ' y ', v('b', `${N.vB} = ${f(vBs)}`), ' km/h.'],
+        [`${mru ? 'La combi vista desde el bus' : 'A respecto a B'}: `, v('a', N.vA), ' − ', v('b', N.vB), ` = ${f(vA - vBs)} km/h.`],
         ['En m/s: ', `${rel}/3,6 = `, v('x', `${f(correcta)} m/s`), '.'],
       ];
       const viva = lineaVel(vBs, vA, 'km/h', [
-        paso(1, ['Norte positivo: ', v('a', `vA = ${vA}`), ' y ', v('b', `vB = ${f(vBs)}`), ' km/h.'], ['respecto a la pista']),
-        paso(2, ['El pasajero de B ve la velocidad de A menos la suya.'], [`vA − vB = ${vA} − ${vBs < 0 ? `(${f(vBs)})` : vBs} = ${f(vA - vBs)} km/h`]),
+        paso(1, ['Norte positivo: ', v('a', `${N.vA} = ${vA}`), ' y ', v('b', `${N.vB} = ${f(vBs)}`), ' km/h.'], ['respecto a la pista']),
+        paso(2, [`El pasajero ${N.dB} ve la velocidad de ${N.A} menos la suya.`], [`${ve} = ${vA} − ${vBs < 0 ? `(${f(vBs)})` : vBs} = ${f(vA - vBs)} km/h`]),
         paso(2, ['En m/s se divide entre 3,6.'], [`${rel}/3,6 = `, v('x', `${f(correcta)} m/s`)], true),
-      ], `Recta de velocidades: B en ${f(vBs)} km/h y A en ${vA} km/h; de B hasta A hay ${rel} km/h`);
+      ], mru ? `Recta de velocidades: el bus en ${f(vBs)} km/h y la combi en ${vA} km/h; del bus hasta la combi hay ${rel} km/h`
+        : `Recta de velocidades: B en ${f(vBs)} km/h y A en ${vA} km/h; de B hasta A hay ${rel} km/h`, mru ? ['combi', 'bus'] : ['A', 'B']);
       return cerrar(rng, semilla, { correcta, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_M, enunciado, pregunta, solucion, viva,
         datos: { tipo: 'marco', sub, vA, vB: vBs } });
     }

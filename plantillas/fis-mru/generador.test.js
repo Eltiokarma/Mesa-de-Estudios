@@ -367,3 +367,19 @@ test('medidas posibles: vehículos, botes, corrientes y combis en km/h', () => {
     if (d.tipo === 'frente' || d.tipo === 'alcance' || d.tipo === 'donde-cruzan' || d.tipo === 'salio-antes') assert.ok(d.v1 <= 15 && d.v2 <= 9, JSON.stringify(d));
   }
 });
+
+// Auditoría de MRU (18 nov, M1 y B1): ninguna rapidez del enunciado pasa el tope de su sujeto (la tabla común de topes.js,
+// la misma que leen la teoría y los tipos de MRU de cinematica-medias y velocidad-relativa), en 400 semillas por idea.
+test('medidas posibles por sujeto: ciclista, combi, columna, pastor, bote… con la tabla de topes.js (400 semillas por idea)', () => {
+  const Topes = require('./topes.js');
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? (x.t !== undefined ? String(x.t) : x.sub ? x.sub.map(plano).join('') : '') : String(x));
+  const malas = [];
+  for (const idea of IDEAS) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`t${s}`, { idea }), t = [p.enunciado, p.pregunta].map(plano).join(' ');
+    for (const m of Topes.revisar(t)) malas.push(`${idea} ${s}: ${m.sujeto} a ${m.texto} — ${t}`);
+    const d = p._datos;
+    if (d.tipo === 'mitades') assert.ok(Math.max(d.v1, d.v2, d.v3) <= 12, JSON.stringify(d));
+    if (d.tipo === 'ida-vuelta-rio' && d.sub === 'columna') assert.ok(d.u <= 3 && d.c <= 1.5 && /corre/.test(t), JSON.stringify(d));
+  }
+  assert.deepEqual(malas.slice(0, 5), []);
+});

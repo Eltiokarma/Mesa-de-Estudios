@@ -247,3 +247,21 @@ test('dos vehículos: rótulos que caben con 4 de margen y no se pisan, los dos 
     for (const cx of [P.escala(d)(g.x), g.segundo.px]) assert.ok(cx - P.constantes.CW / 2 >= 4 && cx + P.constantes.CW / 2 <= W - 4, `${donde}: un vehículo se sale`);
   }
 });
+
+// Auditoría de MRU (18 nov, M6): «el que salió antes» se dibuja con el mototaxi solo en el paradero y una nota; la combi
+// todavía no está (ese instante, los dos juntos en x = 0, no existe en el problema).
+test('avenida sin la combi y con el segundo: solo el mototaxi con su flecha, y la nota arriba, dentro y sin pisarse', () => {
+  const d = { vista: 'avenida', min: 0, max: 200, paso: 10, numero: 50, x0: 0, v: 10, t: 0, segundos: 0, rotulos: false, vehiculo: false,
+    lugares: [{ en: 0, texto: 'Paradero' }], segundo: { tipo: 'mototaxi', x0: 0, v: 6 }, nota: 'La combi sale 10 s después.' };
+  const s = P.dibujar(d), g = P.geometria(d), W = P.constantes.W;
+  assert.ok(!/data-objeto="combi"/.test(s), 'sin combi');
+  assert.match(s, /data-objeto="mototaxi"/);
+  assert.match(s, />6 m\/s</);
+  assert.match(s, />La combi sale 10 s después\.</);
+  assert.match(P.alt(d), /mototaxi sale de x = 0 m y va a 6 m\/s hacia la derecha\. Arriba dice: «La combi sale 10 s después\.»/);
+  for (const r of g.rotulos) assert.ok(r.x0 >= 4 - 1e-9 && r.x1 <= W - 4 + 1e-9 && r.y0 >= 4 && r.y1 <= 184 - 4, `«${r.texto}» se sale`);
+  const pisa = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  for (let a = 0; a < g.rotulos.length; a++) for (let b = a + 1; b < g.rotulos.length; b++) assert.ok(!pisa(g.rotulos[a], g.rotulos[b]), `«${g.rotulos[a].texto}» pisa «${g.rotulos[b].texto}»`);
+  assert.ok(g.nota.y1 < 20, 'la nota queda sobre los letreros');
+  assert.equal(s, P.dibujar(d));
+});

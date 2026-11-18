@@ -127,3 +127,106 @@ repite en 9 de los 15 de A4 (M9).
 | **Predice: una línea de datos no dice el signo o el sentido que mide un distractor de su error de signo** (MRU-SIGNO, REL-SENTIDO). | Semi: aviso si datos tiene «es el sentido negativo» o «van hacia el mismo lado». |
 | **«Así se resuelve» del mismo tipo que «Ahora tú»** (4e): cada rama debe tener su par en un `k` de «Ahora tú». | Semi: con un `tipo` declarado en las dos. |
 | **El dato que usa el resuelto está en Datos:** la rapidez de acercamiento, el ÷ 3,6. | No, a ojo (el auditor o el lector de ejemplos). |
+
+## Correcciones (18 nov)
+
+Agente de correcciones (`docs/metodo/unidad/6-correcciones.md`), sin commits. La unidad pasa a v0.5.0. Cuentas nuevas
+rehechas a mano con fracciones y en las pruebas, con fórmulas propias. Pruebas pedidas (teoría, unidad, avance, piezas
+fis-*, fis-mru, cinematica-medias, velocidad-relativa, catálogo, retos y regla de ejemplos): 490 de 490. `npm run catalogo`
+hecho. Capturas: antes en `/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/cor-mru-antes/`,
+después en `/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/cor-mru/` (momentos y ejemplos, `--entera`).
+
+### Alta
+- **A1 (predicciones viejas).** `nucleo/avance.js`, partición `partidoMRU`: nuevo campo `sinHuella` con su marca propia
+  `prediccionMRU`. Una vez, borra la predicción guardada **sin huella** (`prediccionDe`) de `mru`, `desplazamiento-distancia`
+  y `encuentro`, aunque fuera la «c» (la pregunta cambió). Las que traen huella las decide la app, que ya vuelve a preguntar.
+  Hecha, momento y casos se quedan. Prueba nueva en `nucleo/avance.test.js` (quien entró ayer, quien nunca entró y quien
+  llega de antes de la partición: las dos marcas corren juntas). Por esta migración, `herramientas/capturas-teoria.js` siembra
+  su estado con las marcas ya hechas (si no, borraba las predicciones que siembra para abrir «Ejemplos»). Es un cambio de una
+  línea fuera del alcance listado; sin él no salían las capturas.
+- **A2 (signos).** La regla de A4 es ahora la del eje con signo: xA = xB y tₑ = D/(vA − vB), con A a la izquierda y cada v
+  con su signo; una sola fórmula de frente y al alcance. El texto lleva la línea de la academia: «Con rapideces, la academia
+  suma de frente y resta al alcance». La condición dice qué es tₑ (t_alc sale: el alcance también es un encuentro). La regla
+  de A5 es v = u + c con signo (+ río abajo), con «La academia escribe u ± c». Su dibujo es río arriba con «u + c», más
+  corta que u. En «Mira», río arriba es −5 + 2 = −3 m/s. Donde un resuelto usa rapideces (u + c = 7, u − c = 3), sus datos
+  traen `DM.uc`: «u: rapidez del bote respecto al agua; c: la de la corriente. Con rapideces: río abajo, u + c; río arriba,
+  u − c». Prueba nueva: las dos reglas son las del eje con signo y traen la línea de la academia.
+
+### Media
+- **M1.** El ciclista va a 12 m/s como mucho: «Ahora tú» A3, tipo examen (lista nueva, sin el 28), el ejemplo «Mitad y
+  mitad» (ahora 3 m/s; del resto, 4 y 8 m/s, que da 4 m/s) y fis-mru `mitades` (v2 y v3 hasta 12; casos.json, semilla 2,
+  rehecha: 2·2·6/8 = 3 m/s). Hay una tabla de topes por sujeto, `plantillas/fis-mru/topes.js`: ciclista 12, combi, bus y
+  camión 25, mototaxi 15, columna 2, quien camina 2, pastor 4, bote 9 y corriente 3 m/s. La leen cuatro pruebas de 400
+  semillas: la de la teoría (ejemplos, Predice, «Así se resuelve» y «Ahora tú»), la de fis-mru (por idea), la de
+  velocidad-relativa y la de cinematica-medias (en MRU).
+- **M2.** velocidad-relativa, en MRU (`creibleMRU`): combis hasta 90 km/h, columna hasta 2 m/s, quien camina o nada hasta
+  2 m/s y combi, camión y moto hasta 25 m/s. Sin unidad y en Vectores todo sigue igual (prueba con 50 semillas), y
+  casos.json no cambia. cinematica-medias: los lugares del viaje no tienen nombre propio (Cusco–Sicuani, Lima–Huacho y
+  Juliaca–Puno pasan a «de una ciudad a otra…»), el ciclista va a 40 km/h como mucho y el que va y vuelve se elige entre los
+  que pueden ir así de rápido (con una sola tirada: los números de cada semilla no cambian). En la teoría, los botes «Ahora
+  tú» y «Así se resuelve» reman a 6 m/s como mucho.
+- **M3.** Cada problema de `velocidad-relativa/papel.json` y `cinematica-medias/papel.json` dice sus `unidades`. Desde MRU
+  se ven p1–p4 y p1–p3. En p1–p4 la velocidad vista desde otro va en palabras («la suya menos la del que mira…»), sin
+  «v⃗_AB» ni «×», y sirve igual para Vectores. Hay pruebas para los dos papeles. Pendiente: `plantillas/mruv/papel.json`, de
+  la escena mruv, que la unidad todavía lista. Queda fuera del alcance (MRUV lo trabaja otro agente).
+- **M4.** Los móviles van con nombre en los ejercicios con alternativas: «Dos rectas con signo» y «Ahora tú» A2 k=3
+  («Combi: 8 m/s; mototaxi: −6 m/s»), «La más inclinada», las placas («la del oeste» y «la del este») y «De frente en
+  km/h» («tu combi»). En velocidad-relativa, para MRU, una combi y un bus. A y B quedan en las fórmulas y en el juego de A5.
+  Hay una prueba nueva.
+- **M5.** Predice A1 trae solo `DM.eje` («El paradero está en x = 0; + hacia la derecha…»). Predice A5 va sin datos. Hay
+  una prueba nueva.
+- **M6.** «El que salió antes» dibuja solo el mototaxi en el paradero, con la nota «La combi sale 10 s después.». «Ahora
+  tú» k=2 se dibuja igual. fis-combi suma `nota` y deja dibujar el segundo vehículo con `vehiculo: false`: sin eso, todo
+  sale byte por byte como antes. Pruebas en la pieza y en la unidad.
+- **M7.** En fis-rio, las flechas miden lo que vale su número, con una sola escala por figura (u, cada flechita de la
+  corriente y la vista desde la orilla, hacia donde da la suma con signo). Con letras o «?» se usan largos de muestra, y río
+  arriba u + c sale más corta que u. El eje lleva su «+» hacia río abajo. Hay una prueba numérica.
+- **M8.** «Subir y bajar el cerro» sale y entra «Dos tramos y una parada»: 12 km a 24 km/h, 30 min de descanso y 18 km en
+  1 h. Da 30 km / 2 h = 15 km/h. Los distractores son 21 (el promedio), 20 (sin la parada) y 14 (la parada promediada).
+- **M9.** `DM.cierre` («Cada segundo, la separación cambia la suma de las rapideces si van de frente, y su diferencia si
+  van al mismo lado») va en los datos de todo ejemplo y «Ahora tú» de A4 que la usa, y la regla la dice con signo. Se quitó
+  `DM.pos` donde el resuelto no lo usa. Hay una prueba nueva.
+- **M10.** La correcta de los 25 ejemplos de nivel 3 se reparte en 5 A, 5 B, 5 C, 5 D y 5 E. El resuelto y la respuesta
+  nombran la letra con `letra()`, también en A1. Una prueba exige las cinco letras y que ninguna pase del 40 %.
+
+### Baja
+- **B1.** El niño camina a 1,5 m/s sobre un bote a 2 m/s: hacia la proa, 3,5 m/s. El pastor «corre», y en fis-mru va de
+  1,5 a 3 m/s.
+- **B2.** «Los 100 m planos» ya no da los km/h.
+- **B3.** `DM.eco` y `D.eco` de fis-mru quedan neutros («el sonido que se oye después de rebotar en el cerro»).
+  «Sin vuelta…» pasa a la definición de la distancia recorrida, en la teoría y en fis-mru (papel regenerado).
+- **B4.** El eco y el trueno traen la línea «D: la distancia…».
+- **B5.** El glosario dice «vₘ = Δx/Δt».
+- **B6.** cinematica-medias ya no tiene la línea «Atajo…». En la mixta, la cuenta va con 1 km por mitad, y la explicación
+  de MED-armonica no cita la fórmula.
+- **B7, pendiente.** La prueba de la unidad exige que «Así se resuelve» no haga la pregunta de «Ahora tú». Para que sean
+  «del mismo tipo» hay que declarar un `tipo` en los dos. Es una decisión del molde.
+- **B8, pendiente.** Las alternativas como gráficas chicas necesitan que `app/teoria.js` dibuje figuras en las
+  alternativas.
+- **B9, pendiente.** Es el de Vectores (M21; `herramientas/papel-generador.js` y `app/app.js`).
+
+### Lector en frío
+- La lectura del juego de A1 sigue al reloj: «A los 0,34 s está en 2,72 m: 0 + 8 · 0,34».
+- En la regla de A1, el texto ya no contradice al cuadro: «el signo de v dice hacia dónde va; la academia escribe x₀ ± v · t
+  con la rapidez». La llave dice «v · t = −60 m».
+- A2: la regla va sin la llave bajo el denominador; Δ se presenta en la regla («se lee «cambio de»») y en Mira, paso 2. «Con
+  su signo» solo aparece cuando la recta baja. «Leer en kilómetros» ya no trae 1 h = 3600 s.
+- A3: `r` está en la leyenda, y el cronómetro y la distancia salen del mismo tiempo con un decimal (3,6 s → 7,2 m). El
+  ejemplo 08 dibuja el descanso. El 09 queda sin figura, porque la que tenía era de otro problema.
+- A4: los números de la regla van cada 30 m (150 y 240 con número). En «Así se resuelve» y «Ahora tú», la salida del
+  mototaxi lleva su marca. tₑ está en la condición. El paradero que el enunciado no nombra se quitó. El 12 está reescrito
+  («ya se acercaron 200 m − 50 m = 150 m»…) y explica la D.
+- A5: u y c se dicen en palabras en «Mira». El 14 pasa a 7 y 3 m/s (u = 5 y c = 2), con `DM.uc`. La flecha u + c ya no es
+  más larga que u.
+- Pendiente: A5 sin dibujo en «Así se resuelve» par y en «Ahora tú» k = 0 y 1. Se puede dibujar con fis-ventana, pero
+  `app/teoria.js` dibuja con la pieza del momento (fis-rio) y no con `dib.pieza`. El cambio en la app es de una línea
+  (`dibujar(dib, dib.pieza || nombre)`).
+- Pendiente: el pastor y las llamas siguen sin figura, porque falta una pieza de la columna. Lo de menos peso (dónde cae
+  la marca 60 en la combi, la escala del Lee de A2, las etiquetas «Partida» y «Valla») queda como estaba.
+
+### Para Gerson
+- En A5, u se usa con dos sentidos. En la regla es la velocidad con signo (u = −5 río arriba). En la línea de la academia y
+  en `DM.uc` es la rapidez («con rapideces: u ± c»). Es el mismo trato que da la idea 1 a v, pero en un mismo ejercicio
+  se lee distinto.
+- La migración `prediccionMRU` vuelve a preguntar también a quien ya había respondido la pregunta nueva antes de la huella.
+  Es el costo de no poder distinguirlos.

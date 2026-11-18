@@ -301,3 +301,39 @@ test('Movimiento rectilíneo uniforme: tipos de una recta, sin vectores y con un
     if (sinUnidad._datos.tipo === d.tipo) assert.ok(sinUnidad.datos.some(l => l.includes('v⃗_AB')), 'en Vectores sigue la suma con flechas');
   }
 });
+
+// Auditoría de MRU (18 nov, M2, M3 y M4): en Movimiento rectilíneo uniforme, rapideces posibles por sujeto (la tabla de
+// plantillas/fis-mru/topes.js, común con la teoría y con fis-mru), una combi y un bus en vez de las combis A y B, y el
+// papel filtrado por unidad (cada problema dice a qué unidades sirve; app/app.js filtra por q.unidades).
+test('MRU: rapideces posibles por sujeto (400 semillas), móviles con nombre y nada que diga «combi A»', () => {
+  const Topes = require('../fis-mru/topes.js'), U = 'fisica.movimiento-rectilineo';
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? x.t : String(x));
+  const malas = [];
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`t${s}`, { unidad: U }), d = p._datos, t = [p.enunciado, p.pregunta].map(plano).join(' ');
+    for (const m of Topes.revisar(t)) malas.push(`${s}: ${m.sujeto} a ${m.texto} — ${t}`);
+    if (d.tipo === 'marco' && d.sub === 'combis') {
+      assert.ok(d.vA <= 90 && Math.abs(d.vB) <= 90, JSON.stringify(d));
+      assert.ok(!/combi [AB]\b|\b[AB] al (norte|sur)|a [AB] un|de [AB]\?/.test(t), `semilla ${s}: ${t}`);
+    }
+    if (d.tipo === 'idavuelta' && d.sub === 'columna') assert.ok(d.V <= 2, JSON.stringify(d));
+  }
+  assert.deepEqual(malas.slice(0, 5), []);
+  // Sin unidad, el problema de siempre (casos.json no cambia).
+  for (let s = 0; s < 50; s++) assert.deepEqual(gen.generar(s), gen.generar(s, {}));
+});
+
+test('papel.json: cada problema dice a qué unidades sirve; los de MRU, sin flechas y con v vista desde otro en palabras', () => {
+  const ficha = require('./plantilla.json');
+  for (const p of papel.problemas) {
+    assert.ok(Array.isArray(p.unidades) && p.unidades.length, `${p.id}: sin unidades`);
+    for (const u of p.unidades) assert.ok(ficha.unidades.includes(u), `${p.id}: ${u}`);
+    if (p.unidades.includes('fisica.movimiento-rectilineo')) {
+      assert.ok(!/⃗|_AB|×/.test(p.enunciado + p.pasos.join(' ')), `${p.id}: notación de Vectores en MRU`);
+      assert.match(p.enunciado, /la suya menos la del que mira/);
+    }
+  }
+  const de = u => papel.problemas.filter(p => p.unidades.includes(u)).map(p => p.id);
+  assert.deepEqual(de('fisica.movimiento-rectilineo'), ['p1', 'p2', 'p3', 'p4']);
+  assert.deepEqual(de('fisica.impulso-y-choques'), ['p7']);
+});

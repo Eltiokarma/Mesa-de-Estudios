@@ -5,7 +5,11 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Por una carretera recta, un bus va a 25 m/s hacia el sur y una moto a 15 m/s hacia el norte. ¿Con qué rapidez ve acercarse el bus un pasajero de la moto? ¿Y si los dos fueran hacia el sur? Datos: velocidad de A respecto a B, v⃗_AB = v⃗_A − v⃗_B; en una recta, cada velocidad lleva su signo según su sentido.",
+      "unidades": [
+        "fisica.movimiento-rectilineo",
+        "fisica.vectores"
+      ],
+      "enunciado": "Por una carretera recta, un bus va a 25 m/s hacia el sur y una moto a 15 m/s hacia el norte. ¿Con qué rapidez ve acercarse el bus un pasajero de la moto? ¿Y si los dos fueran hacia el sur? Datos: la velocidad de un móvil vista desde otro es la suya menos la del que mira; en una recta, cada velocidad es un número con su signo.",
       "respuesta": "40 m/s; 10 m/s.",
       "pasos": [
         "Con el sur positivo: bus +25 m/s, moto −15 m/s. Velocidad del bus respecto a la moto: 25 − (−15) = 40 m/s.",
@@ -33,7 +37,11 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Una combi y un mototaxi están a 450 m y avanzan uno hacia el otro: la combi a 20 m/s y el mototaxi a 10 m/s. ¿En cuánto tiempo se cruzan? Datos: v⃗_AB = v⃗_A − v⃗_B (velocidad de A vista desde B); con rapidez constante, distancia = rapidez × tiempo.",
+      "unidades": [
+        "fisica.movimiento-rectilineo",
+        "fisica.vectores"
+      ],
+      "enunciado": "Una combi y un mototaxi están a 450 m y avanzan uno hacia el otro: la combi a 20 m/s y el mototaxi a 10 m/s. ¿En cuánto tiempo se cruzan? Datos: la velocidad de un móvil vista desde otro es la suya menos la del que mira; en una recta, cada velocidad es un número con su signo; con rapidez constante, distancia = rapidez · tiempo.",
       "respuesta": "15 s",
       "pasos": [
         "Visto desde el mototaxi, la combi se le acerca a 20 + 10 = 30 m/s.",
@@ -54,7 +62,11 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Una fila de llamas de 90 m camina por un camino recto a 1 m/s. Un pastor que va de la cola a la cabeza y vuelve a la cola corre siempre a 4 m/s respecto al suelo. ¿Cuánto tarda en total? Datos: v⃗_AB = v⃗_A − v⃗_B (velocidad de A vista desde B); con rapidez constante, distancia = rapidez × tiempo.",
+      "unidades": [
+        "fisica.movimiento-rectilineo",
+        "fisica.vectores"
+      ],
+      "enunciado": "Una fila de llamas de 90 m camina por un camino recto a 1 m/s. Un pastor que va de la cola a la cabeza y vuelve a la cola corre siempre a 4 m/s respecto al suelo. ¿Cuánto tarda en total? Datos: la velocidad de un móvil vista desde otro es la suya menos la del que mira; en una recta, cada velocidad es un número con su signo; con rapidez constante, distancia = rapidez · tiempo.",
       "respuesta": "48 s",
       "pasos": [
         "Respecto a la fila, a la ida el pastor solo gana 4 − 1 = 3 m/s: 90/3 = 30 s.",
@@ -77,7 +89,11 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En un tren que va a 20 m/s, una vendedora camina a 1,5 m/s respecto al vagón, de un extremo a otro de un vagón de 18 m, y vuelve. ¿Cuánto tarda? Datos: v⃗_AB = v⃗_A − v⃗_B (velocidad de A vista desde B); con rapidez constante, distancia = rapidez × tiempo.",
+      "unidades": [
+        "fisica.movimiento-rectilineo",
+        "fisica.vectores"
+      ],
+      "enunciado": "En un tren que va a 20 m/s, una vendedora camina a 1,5 m/s respecto al vagón, de un extremo a otro de un vagón de 18 m, y vuelve. ¿Cuánto tarda? Datos: la velocidad de un móvil vista desde otro es la suya menos la del que mira; en una recta, cada velocidad es un número con su signo; con rapidez constante, distancia = rapidez · tiempo.",
       "respuesta": "24 s",
       "pasos": [
         "Dentro del vagón, la vendedora va a 1,5 m/s en los dos sentidos: el tren no cambia nada de lo que pasa dentro.",
@@ -99,6 +115,9 @@
     {
       "id": "p5",
       "nivel": "intermedio",
+      "unidades": [
+        "fisica.vectores"
+      ],
       "enunciado": "Un bote avanza a 5 m/s respecto al agua en un río de 60 m de ancho con una corriente de 4 m/s. a) Si apunta la proa perpendicular a la orilla, ¿cuánto tarda en cruzar y cuánto lo lleva la corriente río abajo? b) Si quiere llegar justo enfrente, ¿hacia dónde apunta y cuánto tarda? Datos: respecto a tierra, v⃗ = u⃗ + c⃗ (bote respecto al agua más corriente); con la proa a θ de la perpendicular, u·cos θ cruza el río y u·sen θ va a lo largo; sen 37° = 3/5 y sen 53° = 4/5; distancia = rapidez × tiempo.",
       "respuesta": "a) 12 s y 48 m río abajo. b) 53° río arriba de la perpendicular; 20 s.",
       "pasos": [
@@ -139,6 +158,9 @@
     {
       "id": "p6",
       "nivel": "avanzado",
+      "unidades": [
+        "fisica.vectores"
+      ],
       "enunciado": "Un bote avanza a 10 m/s respecto al agua en un río de 60 m de ancho con corriente de 2 m/s. El botero quiere llegar, en línea recta, a un muelle de la otra orilla que está 30 m río abajo del punto de enfrente. ¿Hacia dónde apunta la proa? (Pista: no apunta al muelle.) Datos: v⃗ = u⃗ + c⃗ (bote respecto al agua más corriente); con la proa a θ de la perpendicular, u·cos θ cruza y u·sen θ va a lo largo; sen 16° = 7/25, cos 16° = 24/25, sen 37° = 3/5 y cos 37° = 4/5.",
       "respuesta": "16° río abajo de la perpendicular.",
       "pasos": [
@@ -162,6 +184,9 @@
     {
       "id": "p7",
       "nivel": "intermedio",
+      "unidades": [
+        "fisica.impulso-y-choques"
+      ],
       "enunciado": "En una laguna quieta, una pescadora en su bote (180 kg en total) lanza hacia la orilla una caja de 20 kg con una rapidez de 5 m/s respecto al bote. ¿Con qué rapidez retrocede el bote? Otro bote en reposo, de 80 kg con su tripulante, atrapa la caja: ¿con qué rapidez sale? Datos: cantidad de movimiento p = m·v; sin fuerzas de afuera, la total se conserva; la rapidez de la caja se mide respecto al bote, después de lanzarla.",
       "respuesta": "0,5 m/s; 0,9 m/s.",
       "pasos": [

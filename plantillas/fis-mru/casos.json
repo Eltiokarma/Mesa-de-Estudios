@@ -1,7 +1,7 @@
 {
   "plantilla": "fis-mru",
   "nota": "entrada es _datos del generador (idea, tipo, nivel y los números del enunciado). respuesta: el valor de la alternativa correcta (un número, o el texto tal cual en ecuacion-recta y dos-rectas); texto: lo que ve el alumno. Posiciones con signo desde el paradero (+ hacia la derecha); v con signo; en donde-cruzan, frente y dos-veces, D es la separación inicial; en eco/bocina, v es la rapidez de la combi y T el tiempo hasta oír el eco; en placas, a y b son las rapideces de A y B en cm por año y N los años; en tabla, xs son las posiciones cada dt segundos; en frente-kmh y carril, vA y kA son de tu combi.",
-  "verificacion": "Script aparte (18 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: calcula cada respuesta con fracciones exactas a partir de la entrada y la definición de la situación (dos posiciones que se igualan en los encuentros y el adelanto, todo el camino entre todo el tiempo en las medias, la ida del sonido al cerro y su vuelta hasta la combi que sigue avanzando en el eco, la recta por dos puntos en las gráficas), y escribe el texto con su propia función de formato (coma decimal, «−», miles con espacio que no se parte). Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta. Además, generador.test.js recalcula 600 problemas por otro camino (paso a paso en el tiempo y bisección).",
+  "verificacion": "Script aparte (18 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: calcula cada respuesta con fracciones exactas a partir de la entrada y la definición de la situación (dos posiciones que se igualan en los encuentros y el adelanto, todo el camino entre todo el tiempo en las medias, la ida del sonido al cerro y su vuelta hasta la combi que sigue avanzando en el eco, la recta por dos puntos en las gráficas), y escribe el texto con su propia función de formato (coma decimal, «−», miles con espacio que no se parte). Los 20 casos cuadran con el generador en el valor y en el texto de la alternativa correcta. Además, generador.test.js recalcula 600 problemas por otro camino (paso a paso en el tiempo y bisección). 18 nov 2026 (correcciones de la auditoría de MRU): el ciclista de «mitades» va a 12 m/s como mucho; el caso de la semilla 2 cambió y se rehízo a mano con fracciones (mitad del camino a 2 m/s; del resto, tiempos iguales a 3 y 9 m/s, que dan 6 m/s; 2·2·6/(2 + 6) = 3 m/s).",
   "casos": [
     {
       "semilla": 0,
@@ -40,13 +40,13 @@
         "idea": "desplazamiento-distancia",
         "tipo": "mitades",
         "nivel": 3,
-        "v1": 3,
-        "v2": 14,
-        "v3": 16
+        "v1": 2,
+        "v2": 3,
+        "v3": 9
       },
       "esperado": {
-        "respuesta": 5,
-        "texto": "5 m/s"
+        "respuesta": 3,
+        "texto": "3 m/s"
       }
     },
     {

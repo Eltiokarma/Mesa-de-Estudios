@@ -36,7 +36,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "La gráfica x–t de un mototaxi es una recta de (0 s; 10 m) a (3 s; 25 m), y ahí se corta. Si sigue igual, ¿qué distancia recorre en los primeros 8 s? Datos: Velocidad en la gráfica x–t: v = (x₂ − x₁)/(t₂ − t₁). Sin vuelta, la distancia recorrida es lo que avanzó. Alternativas: A) 40 m   B) 25 m   C) 120 m   D) 50 m",
+      "enunciado": "La gráfica x–t de un mototaxi es una recta de (0 s; 10 m) a (3 s; 25 m), y ahí se corta. Si sigue igual, ¿qué distancia recorre en los primeros 8 s? Datos: Velocidad en la gráfica x–t: v = (x₂ − x₁)/(t₂ − t₁). Distancia recorrida: todo el camino, sin signo. Alternativas: A) 40 m   B) 25 m   C) 120 m   D) 50 m",
       "respuesta": "A) 40 m",
       "pasos": [
         "Pendiente: v = (25 − 10) ÷ 3 = 5 m/s.",
@@ -66,17 +66,17 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Un ciclista hace la mitad de su recorrido a 5 m/s. Del resto, la mitad del tiempo va a 5 m/s y la otra mitad del tiempo, a 10 m/s. ¿Cuál es su rapidez media en todo el recorrido? Datos: Rapidez media = d/Δt, con d la distancia recorrida: todo el camino, sin signo. Tiempo de un tramo con rapidez constante: distancia ÷ rapidez. Distancia de un tramo con rapidez constante: rapidez · tiempo. Alternativas: A) 6 m/s   B) 12,5 m/s   C) 5 m/s   D) 6,25 m/s   E) 7,5 m/s",
-      "respuesta": "A) 6 m/s",
+      "enunciado": "Un ciclista hace la mitad de su recorrido a 3 m/s. Del resto, la mitad del tiempo va a 12 m/s y la otra mitad del tiempo, a 6 m/s. ¿Cuál es su rapidez media en todo el recorrido? Datos: Rapidez media = d/Δt, con d la distancia recorrida: todo el camino, sin signo. Tiempo de un tramo con rapidez constante: distancia ÷ rapidez. Distancia de un tramo con rapidez constante: rapidez · tiempo. Alternativas: A) 3 m/s   B) 4,5 m/s   C) 7 m/s   D) 12 m/s   E) 6 m/s",
+      "respuesta": "B) 4,5 m/s",
       "pasos": [
-        "Segunda mitad: dos tiempos iguales, así que va a (5 + 10) ÷ 2 = 7,5 m/s.",
-        "Si cada mitad mide 1, los tiempos son 1/5 y 1/7,5: rapidez media = 2 ÷ (1/5 + 1/7,5) = 6 m/s."
+        "Segunda mitad: dos tiempos iguales, así que va a (12 + 6) ÷ 2 = 9 m/s.",
+        "Si cada mitad mide 1, los tiempos son 1/3 y 1/9: rapidez media = 2 ÷ (1/3 + 1/9) = 4,5 m/s."
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Una combi va hacia un cerro a 20 m/s, por una carretera recta y sin frenar. Toca la bocina y oye el eco 3 s después. ¿A qué distancia del cerro estaba cuando tocó la bocina? Datos: Rapidez del sonido en el aire: unos 340 m/s. Eco: el sonido que rebota en el cerro y vuelve hasta quien lo produjo. Lo que recorre algo con rapidez constante: rapidez · tiempo. Alternativas: A) 570 m   B) 540 m   C) 1 080 m   D) 480 m   E) 510 m",
+      "enunciado": "Una combi va hacia un cerro a 20 m/s, por una carretera recta y sin frenar. Toca la bocina y oye el eco 3 s después. ¿A qué distancia del cerro estaba cuando tocó la bocina? Datos: Rapidez del sonido en el aire: unos 340 m/s. Eco: el sonido que se oye después de rebotar en el cerro. Lo que recorre algo con rapidez constante: rapidez · tiempo. Alternativas: A) 570 m   B) 540 m   C) 1 080 m   D) 480 m   E) 510 m",
       "respuesta": "B) 540 m",
       "pasos": [
         "En 3 s, el sonido recorre 340 · 3 = 1 020 m y la combi, 20 · 3 = 60 m.",
