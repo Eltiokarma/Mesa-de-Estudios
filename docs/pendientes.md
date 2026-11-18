@@ -1,6 +1,23 @@
 # Pendientes y traspaso
 
-Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 18 nov, tarde: Álgebra con el método completo y Etapa 4 propuesta
+
+**Lo primero:** leer la mesa. Esperan a Gerson las cuatro propuestas de la Etapa 4 (`docs/etapa4/`: Movimiento
+rectilíneo —partido en MRU y MRUV y caída libre—, Estructura atómica, Cuatro operaciones y Triángulos) y la escena
+vieja `cuadrado-crece` (¿a «Más mesas del tema» en las tres unidades?).
+
+- **Hecho y en main (v244, 9762 pruebas):** «Exponentes y radicales» con dos rondas de lector, auditor y correcciones;
+  «Productos notables» con sus 5 ideas, práctica (`productos-notables`), lector (ronda 1), auditor y correcciones.
+  Molde §3 con dos reglas nuevas (qué muestra el dibujo de un ejemplo; marcas de igualdad con llave). Ecuaciones: no se
+  parten antes de < > ≤ ≥ ni después del «=» de una igualdad corta.
+- **Siguiente:**
+  1. Con las propuestas aprobadas, fase 2 de las cuatro unidades de la Etapa 4 (idea 1 de cada una para el visto
+     bueno; Movimiento rectilíneo se parte primero, con migración del avance como en Vectores).
+  2. Productos notables: lector en frío ronda 2.
+  3. Pendientes de app: práctica por idea (`app/practica.js` debe pasar `{ idea }`); prueba con Playwright de que
+     ninguna ecuación se corte a 390 px en ninguna unidad (propuesta del auditor de Productos notables).
 
 ## Estado al 18 nov, mañana: tres unidades con dos rondas de lector; Álgebra al día
 
