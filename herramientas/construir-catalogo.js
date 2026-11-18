@@ -132,7 +132,8 @@ function construir() {
       url: formato === 'escena' ? url(f.escena) : `#/practica/${f.id}`, ...(ideasPr && ideasPr.length ? { ideas: ideasPr } : {}),
       papel: f.papel ? url(f.papel) : null, archivos,
       // "rehacer": true (18 nov): la escena espera rehacerse; Ejercicios la pone al final, en «Más mesas del tema».
-      ...(f.rehacer ? { rehacer: true } : {}) };
+      // También una lista de unidades: solo en esas va al final (la escena compartida que una unidad ya reemplazó).
+      ...(f.rehacer === true ? { rehacer: true } : Array.isArray(f.rehacer) && f.rehacer.length ? { rehacer: f.rehacer.slice() } : {}) };
   }
   const nombresUni = Object.fromEntries(Object.entries(universidades).map(([k, v]) => [k, { nombre: v.nombre, ubicacion: v.ubicacion }]));
   return { universidades: nombresUni, cursos, plantillas };

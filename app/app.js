@@ -608,7 +608,9 @@ function vEjercicios(c, u) {
     </article>`;
   // Escenas que esperan rehacerse ("rehacer": true en su plantilla.json; Gerson, mesa del 18 nov): van al final, después
   // de las prácticas y la lectura, bajo «Más mesas del tema». Siguen abiertas; solo dejan de ir primero.
-  const hoy = pl.filter(p => !p.rehacer), mas = pl.filter(p => p.rehacer);
+  // "rehacer" puede ser una lista de unidades (18 nov): la escena va a «Más mesas del tema» solo en esas.
+  const porRehacer = p => p.rehacer === true || (Array.isArray(p.rehacer) && p.rehacer.includes(u.id));
+  const hoy = pl.filter(p => !porRehacer(p)), mas = pl.filter(porRehacer);
   $app.innerHTML = `${cabUnidad(c, u, 'Ejercicios')}
     ${pl.length ? `${hoy.length ? `<div class="lista ejercicios aparece">${hoy.map(fila).join('')}</div>` : ''}
       ${mas.length ? `<h2 class="ej-mas">Más mesas del tema</h2><div class="lista ejercicios aparece">${mas.map(fila).join('')}</div>` : ''}`

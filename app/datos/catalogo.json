@@ -8020,6 +8020,9 @@
     "/plantillas/atomo-y-tabla/index.html",
     "/plantillas/atomo-y-tabla/motor.js",
     "/plantillas/atomo-y-tabla/papel.json"
+   ],
+   "rehacer": [
+    "quimica.estructura-atomica"
    ]
   },
   "balance-reacciones": {
