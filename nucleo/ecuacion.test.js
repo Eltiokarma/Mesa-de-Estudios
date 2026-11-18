@@ -13,7 +13,7 @@ test('ecuación: variables con su color, fracciones y potencias', () => {
   assert.deepEqual([...E.colores([v, { frac: [t, '2'] }])].sort(), ['c-h', 'c-o']);
 });
 test('ecuación: escapa el texto y escribe el menos tipográfico', () => {
-  assert.equal(E.html('a < -3'), 'a &lt; −3');
+  assert.equal(E.html('a < -3').replace(/\u00a0/g, ' '), 'a &lt; −3');
   assert.equal(E.html('x-y'), 'x-y');
 });
 test('ecuación: revisar rechaza colores y partes desconocidas', () => {
@@ -49,6 +49,15 @@ test('una cuenta solo se parte después de un «=»: nunca junto a + − × ÷',
   const h = E.html(['AC = 13 + 5 = 18 cm   ·   ', { v: 'c-o', t: 'a' }, ' ÷ 2 − 9']);
   assert.ok(!/ [+−×÷]|[+−×÷] /.test(h), h);
   assert.ok(/ = /.test(h), 'se puede partir después de «=»');
+});
+
+test('no se parte antes de < > ≤ ≥ ni después del «=» de una igualdad corta', () => {
+  assert.ok(!/ &gt;/.test(E.html(['a⁶ > b⁶'])), 'antes de >');
+  assert.ok(!/ <span class="ec-op">≥/.test(E.html(['x ≥ 3'])), 'antes de ≥');
+  const h = E.html([{ v: 'c-o', t: 'a' }, ' = ', { v: 'c-o', t: 'x' }, ' y ', { v: 'c-i', t: 'b' }, ' = 2']);
+  assert.ok(!/= </.test(h) && !/= 2/.test(h), h);
+  // Una igualdad larga se sigue pudiendo partir después del «=».
+  assert.match(E.html(['AC = 13 + 5 = 18 cm']), /= 13/);
 });
 
 test('raya: un numeral con letras lleva raya encima, sin cambiar las demás partes', () => {

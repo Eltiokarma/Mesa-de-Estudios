@@ -79,15 +79,25 @@
     lista(p[k]).forEach(x => revisar(x, donde));
   }
 
+  // Texto plano de una parte, para medir lo que viene después de un «=».
+  const corto = p => { try { return String(texto(p)).trim().length <= 3; } catch (e) { return false; } };
   function html(partes) {
-    return lista(partes).map(p => {
+    const ps = lista(partes);
+    return ps.map((p, k) => {
       // Un separador suelto con espacios a los dos lados ('   ·   ') junta dos relaciones: en la regla grande, cada una va en su línea.
       if (typeof p === 'string' && /^\s{2,}[·;]\s{2,}$/.test(p)) return '<span class="ec-sep"> · </span>';
       // Los miles no se parten en dos renglones («10 000» quedaba como «10» y «000», lector en frío, 16 nov).
       // Una cuenta solo se parte después de un «=»: nunca junto a + − × ÷ · (lector en frío, 17 nov: «− 9» abría un renglón
-      // y se leía como negativo).
-      if (typeof p === 'string' || typeof p === 'number') return signos(esc(menos(p))).replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u00a0')
-        .replace(/ ([+\-−×÷·]) /g, '\u00a0$1\u00a0').replace(/ =/g, '\u00a0=');
+      // y se leía como negativo). Tampoco antes de < > ≤ ≥ ≠ ≈, ni después del «=» de una igualdad corta como «a = x»
+      // (lector en frío, 18 nov: «> b⁶» y «x y b = 2» abrían renglón).
+      if (typeof p === 'string' || typeof p === 'number') {
+        let h = signos(esc(menos(p))).replace(/(\d) (?=\d{3}(?!\d))/g, '$1 ')
+          .replace(/ ([+\-−×÷·]) /g, ' $1 ').replace(/ =/g, ' =')
+          .replace(/ (&lt;|&gt;|<span class="ec-op">[≤≥≠≈]<\/span>)/g, ' $1')
+          .replace(/= ([^\s <&]{1,3})(?=$|[,.;)]|[\s ]+(?:y|o|e|con|si)[\s ])/g, '= $1');
+        if (/= $/.test(h) && k + 1 < ps.length && corto(ps[k + 1])) h = h.replace(/= $/, '= ');
+        return h;
+      }
       if (Array.isArray(p)) return html(p);
       if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}${LETRA.test(p.t) ? ' ec-letra' : ''}">${esc(p.t)}</span>`;
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;
