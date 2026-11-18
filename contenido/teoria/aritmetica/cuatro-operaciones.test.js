@@ -32,6 +32,9 @@ const fichas = x => (x === null || x === undefined || typeof x !== 'object' ? []
   : typeof x.v === 'string' && /^c-/.test(x.v) ? [x] : Object.values(x).flatMap(fichas));
 const limpio = x => (Array.isArray(x) ? x.filter(y => y !== undefined && y !== null).map(limpio) : x);
 const plano = x => E.texto(x === undefined || x === null ? '' : limpio(Array.isArray(x) ? x : [x]));
+// La letra de una alternativa: { negrita: ['B'] } (en tinta, sin color de variable; auditoría, M7).
+const negritas = x => (x === null || x === undefined || typeof x !== 'object' ? [] : Array.isArray(x) ? x.flatMap(negritas)
+  : x.negrita ? [x] : Object.values(x).flatMap(negritas));
 const sinEsp = t => String(t).replace(/[\s  ]/g, '');
 const textoSVG = s => s.replace(/<title>.*?<\/title>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 const svgDe = (dib, pz) => PZ((dib && dib.pieza) || pz).dibujar(dib.datos, dib.estado || {});
@@ -188,6 +191,46 @@ test('Predice: la figura no delata, los datos no traen fórmulas y ningún códi
   assert.equal(op('complemento', 'nueve'), String(9999 - 4073)); assert.equal(op('complemento', 'k'), String(100000 - 4073));
 });
 
+test('ninguna letra de alternativa (A–D) lleva color: todas van en negrita y en tinta, también la de la respuesta', () => {
+  let n = 0;
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) {
+    for (const f of fichas(x)) assert.ok(!/^[A-E]\u2060?$/.test(f.t), `${i.id} ${donde}: la letra «${f.t}» en ${f.v}`);
+    for (const b of negritas(x)) { n++; assert.match(plano(b.negrita), /^[A-D]$/, `${i.id} ${donde}`); assert.equal(fichas(b.negrita).length, 0, `${i.id} ${donde}`); }
+  }
+  assert.ok(n >= 100, `${n} letras en negrita`);
+});
+
+// Toda cuenta manchada de la teoría da el dato «la primera cifra de un numeral no es 0» (auditoría, M1: sin él,
+// 7☐8 − 6☐9 = ☐89 tenía 10 soluciones con 089).
+test('cuentas manchadas: con la mancha va el dato de la primera cifra, y hace falta', () => {
+  const conMancha = [];
+  for (const i of def.ideas) {
+    for (const e of i.ejemplos) if (/☐/.test(plano(e.enunciado))) conMancha.push([`${i.id} ${e.titulo}`, e.datos]);
+    for (let s = 0; s < 40; s++) { const a = i.ahoraTu.generar(s); if (/☐/.test(plano(a.pregunta))) conMancha.push([`${i.id} ahora tú ${s}`, a.datos]); }
+    for (let s = 0; s < 12; s++) { const r = i.resuelve.generar(s); if (/☐/.test(plano(r.enunciado))) conMancha.push([`${i.id} resuelve ${s}`, r.datos]); }
+  }
+  assert.ok(conMancha.length > 40, `${conMancha.length}`);
+  for (const [donde, ds] of conMancha) assert.ok(ds.some(x => /primera cifra de un numeral no es 0/.test(plano(x))), donde);
+  // Sin el dato, la resta de tres manchas tendría otras soluciones (089, 189…): por eso va.
+  const conCeros = []; for (let a = 0; a < 10; a++) for (let b = 0; b < 10; b++) for (let c = 0; c < 10; c++) if (700 + 10 * a + 8 - (600 + 10 * b + 9) === 100 * c + 89) conCeros.push([a, b, c]);
+  assert.equal(conCeros.length, 10); assert.deepEqual(manchas('7☐8 − 6☐9 = ☐89'), [[9, 0, 1]]);
+});
+
+// Los datos de los dos repartos sirven para el caso que se pregunta (auditoría, A1 y M3): ni «uno más por persona»
+// (q + 1) ni «0 ≤ r < d» cuando el segundo reparto da 2 o 3 más o sobran más que las personas.
+test('dos repartos: los datos no traen q + 1 ni r < d, y cada línea con letras las dice', () => {
+  const casos = [];
+  const i = idea('defecto-exceso');
+  for (let s = 0; s < SEMILLAS; s++) { const a = i.ahoraTu.generar(s); if (/si les da/.test(plano(a.pregunta))) casos.push(a.datos); }
+  for (const e of i.ejemplos.filter(x => /repartos|Uno más y faltan/.test(x.titulo))) casos.push(e.datos);
+  assert.ok(casos.length > 50);
+  for (const ds of casos) {
+    const t = ds.map(plano).join(' | ');
+    assert.ok(!/q \+ 1|0 ≤ r/.test(t), t);
+    assert.match(t, /D = d × q₁ \+ r/); assert.match(t, /D = d × q₂ − f/); assert.match(t, /d: los (sobrinos|nietos)/);
+  }
+});
+
 // ---------- «Ahora tú»: la respuesta, con un cálculo aparte ----------
 const RESP = {
   'otras-bases': null, // la comprueba la prueba de la fase 2 (abajo, «la idea 1 sigue»)
@@ -232,13 +275,13 @@ const RESP = {
   },
   'defecto-exceso': (q, b) => {
     let m;
-    if ((m = q.match(/bolsitas de (\d+): llena (\d+) y le sobran (\d+)\./))) return [b, String(+m[1] - +m[3])];
+    if ((m = q.match(/bolsitas de (\d+): llena (\d+) y le sobran? (\d+)\./))) return [b, String(+m[1] - +m[3])];
     if ((m = q.match(/divisor es (\d+), el cociente por defecto es (\d+) y el resto por exceso es (\d+)/))) return [b, String(+m[1] * +m[2] + +m[1] - +m[3])];
     if ((m = q.match(/división entre (\d+), el resto por exceso es el (doble|triple|cuádruple)/))) { const k = { doble: 2, triple: 3, 'cuádruple': 4 }[m[2]]; return [b, String(+m[1] / (k + 1))]; }
-    if ((m = q.match(/da (\d+) caramelos a cada sobrino, le sobran (\d+); si les da (\d+), le faltan (\d+)/))) {
+    if ((m = q.match(/da (\d+) caramelos a cada sobrino, le sobran? (\d+); si les da (\d+), le faltan (\d+)/))) {
       const xs = []; for (let x = 1; x < 100; x++) if (+m[1] * x + +m[2] === +m[3] * x - +m[4]) xs.push(x); return [b, String(xs[0])];
     }
-    if ((m = q.match(/da (\d+) caramelos a cada nieto y le sobran (\d+)\. Para darles (\d+) a cada uno, le faltarían (\d+)/))) {
+    if ((m = q.match(/da (\d+) caramelos a cada nieto y le sobran? (\d+)\. Para darles (\d+) a cada uno, le faltarían? (\d+)/))) {
       const xs = []; for (let x = 1; x < 100; x++) if (+m[1] * x + +m[2] === +m[3] * x - +m[4]) xs.push(+m[1] * x + +m[2]); return [b, String(xs[0])];
     }
     return null;
@@ -300,7 +343,10 @@ test('«Así se resuelve»: no es la pregunta de «Ahora tú» y su respuesta cu
 test('ejemplos: 15 por idea que suben de nivel, con datos; la figura no muestra el resultado; respuesta con color', () => {
   // Respuestas en tinta a propósito: lo que se pide es un número que se opera (el número desde su complemento, las
   // bolsas, el dividendo), que en el mapa de colores va en tinta.
-  const tinta = new Set(['Del complemento al número', 'El factor que falta', 'Armar el dividendo', 'Desde el exceso']);
+  // (Desde M7 la letra va en tinta: las de nivel 3 cuya respuesta es un número que se opera ya no traen color.)
+  const tinta = new Set(['Del complemento al número', 'El factor que falta', 'Armar el dividendo', 'Desde el exceso',
+    'Un número y su complemento', 'Un tercio de sí mismo', 'Dos repartos', 'Uno más y faltan', 'El exceso es el doble',
+    'El mayor resto posible', 'Restos que suman']);
   for (const i of def.ideas) {
     const EJ = i.ejemplos;
     assert.equal(EJ.length, 15, i.id);
@@ -310,7 +356,7 @@ test('ejemplos: 15 por idea que suben de nivel, con datos; la figura no muestra 
       if (!tinta.has(e.titulo)) assert.ok(fichas(e.respuesta).length, `${i.id} ejemplo ${k + 1}: la respuesta lleva color`);
       if (e.nivel === 3) {
         assert.ok(e.alternativas && e.alternativas.length === 4, `${i.id} ${e.titulo}`);
-        assert.ok(fichas(e.respuesta).some(f => /^[A-D]⁠$/.test(f.t)), `${i.id} ${e.titulo}: la letra va en negrita`);
+        assert.equal(negritas(e.respuesta).length, 1, `${i.id} ${e.titulo}: la letra va en negrita`);
       }
       if (!e.figura) continue;
       const svg = sinEsp(textoSVG(svgDe(e.figura, e.figura.pieza)));
@@ -326,7 +372,7 @@ test('ejemplos: 15 por idea que suben de nivel, con datos; la figura no muestra 
 });
 
 test('las cuentas de los ejemplos de nivel 3 cuadran con un cálculo aparte (la letra de la respuesta es la correcta)', () => {
-  const letraDe = e => fichas(e.respuesta).find(f => /^[A-D]⁠$/.test(f.t)).t[0];
+  const letraDe = e => plano(negritas(e.respuesta)[0].negrita);
   const alt = e => sinEsp(plano(e.alternativas['ABCD'.indexOf(letraDe(e))]));
   const ej = (id, t) => idea(id).ejemplos.find(e => e.titulo === t);
   assert.equal(alt(ej('prestamo', 'Tres ceros seguidos')), String(6000 - 2347));
@@ -337,17 +383,27 @@ test('las cuentas de los ejemplos de nivel 3 cuadran con un cálculo aparte (la 
   assert.equal(alt(ej('complemento', 'Las cifras del complemento')), String([...String(1e7 - 7040600)].reduce((a, b) => a + +b, 0)));
   assert.equal(alt(ej('cifras-ocultas', 'Una resta con tres manchas')), String(manchas('7☐8 − 6☐9 = ☐89')[0].reduce((a, b) => a + b, 0)));
   assert.equal(alt(ej('cifras-ocultas', 'Una suma con tres manchas')), String(manchas('☐12 + 7☐7 = 17☐9')[0].reduce((a, b) => a + b, 0)));
+  // El reverso con manchas: las del medio pueden ser cualquier cifra (iguales), pero la del resultado siempre es 2.
+  const rev = manchas('5☐2 − 2☐5 = ☐97');
+  assert.equal(rev.length, 10); assert.deepEqual([...new Set(rev.map(x => x[2]))], [2]); assert.ok(rev.every(x => x[0] === x[1]));
+  assert.equal(alt(ej('cifras-ocultas', 'El reverso con manchas')), '2');
+  assert.equal(alt(ej('cifras-producto', 'Cifras que no se ven')), `siempre${cifrasDe(1000 * 100)}`);
+  assert.equal(cifrasDe(1999 * 199), 6);
   assert.equal(alt(ej('multiplicar-partes', 'Cifras ocultas en un producto')), String(manchas('☐3 × 8 = 7☐4')[0].reduce((a, b) => a + b, 0)));
   assert.equal(alt(ej('multiplicar-partes', 'Multiplicar en base 7')), `${aBase(val('356', 7) * 4, 7)}(7)`);
   assert.equal(alt(ej('multiplicar-partes', 'Dos aumentos')), String((140 / 5) * (102 / 3)));
   assert.equal(alt(ej('defecto-exceso', 'Dos repartos')), String(9 * 6 + 7));
+  assert.equal(9 * 6 + 7, 11 * 6 - 5);
   assert.equal(alt(ej('cifras-producto', 'Tres factores')), `de${cifrasDe(100 ** 3)}a${cifrasDe(999 ** 3)}`);
 });
 
 test('cada idea estrena sus palabras, con simple y tres ejemplos; Las cuatro operaciones estrena llevada, reverso, factor, producto y múltiplo', () => {
   const es = Glosario.porIdea(def).map(x => x.filter(e => e.simple).map(e => e.termino));
   assert.deepEqual(es, [['sumandos', 'llevada'], ['minuendo', 'sustraendo', 'diferencia', 'préstamo'], ['complemento aritmético', 'última cifra significativa'],
-    ['reverso', 'consecutivo'], ['factor', 'producto', 'propiedad distributiva'], ['dividendo', 'divisor', 'múltiplo', 'resto por exceso'], ['cota', 'estimar']]);
+    ['reverso', 'consecutivo'], ['factor', 'producto', 'propiedad distributiva'], ['dividendo', 'divisor', 'resto por exceso', 'resto por defecto'], ['cota', 'estimar']]);
+  // «múltiplo» y «cociente entero» (como «cociente por defecto») también se estrenan en la idea 6, sin simple.
+  const enSeis = Glosario.porIdea(def)[5].map(e => e.termino);
+  assert.ok(enSeis.includes('múltiplo') && enSeis.includes('cociente entero'), enSeis.join(', '));
   for (const g of def.glosario) assert.ok(!g.local, `${g.termino}: ya no es local`);
   for (const [archivo, t] of [['razonamiento-numerico', 'llevada'], ['razonamiento-numerico', 'reverso'], ['razones-y-proporciones', 'factor'], ['razones-y-proporciones', 'producto'], ['conjuntos', 'múltiplo']])
     assert.ok(!require(`./${archivo}.js`).glosario.some(g => g.termino === t), `${archivo} ya no define «${t}»`);

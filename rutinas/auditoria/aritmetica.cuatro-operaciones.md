@@ -123,3 +123,70 @@ Pruebas: `node --test` de la unidad, las dos piezas, el generador y el avance da
 | **Toda letra de una línea de `datos` lleva su significado en el mismo recuadro.** | Sí: letras sueltas de los datos frente a una lista de definiciones o frente a la leyenda. |
 | **La práctica respeta la idea** (M8): una prueba de la app que llame a `generar` con `{ idea }`. | Sí. |
 | **Una escena con `rehacer` no muestra su papel sin datos.** | Sí: en `construir-catalogo`, `rehacer && papel sin datos` es un error. |
+
+## Correcciones (18 nov)
+
+Fase 8 del método (`docs/metodo/unidad/6-correcciones.md`), con las notas de la sesión. La teoría pasa a v0.4.1. Las
+respuestas que cambiaron se recalcularon con un script propio, que no usa la unidad
+(`/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/cuentas-cor.py`): cuadran todas. Las pruebas nuevas van en `cuatro-operaciones.test.js`,
+`nucleo/avance.test.js` y `plantillas/cuatro-operaciones/motor.test.js`. Pruebas: 459 de 459 en la lista del encargo,
+más `herramientas/papel-generador.test.js` y `papel-opciones.test.js`. No se corrió `npm test` completo, porque otras
+sesiones estaban trabajando en física y geometría. Capturas: `scratchpad/cor-ari/antes/` y `scratchpad/cor-ari/`.
+
+### Hallazgos del auditor
+
+| # | Qué se hizo |
+|---|---|
+| A1 | Se cambiaron los datos de `casoDosRepartos` por los del generador: «Si al dar q₁ a cada uno sobran r: D = d × q₁ + r» y «Si al dar q₂ a cada uno faltan f: D = d × q₂ − f». Se agregó una línea con las letras: «D: los caramelos; d: los sobrinos; q₁ y q₂: lo que recibe cada uno». Una prueba nueva, en 400 semillas, comprueba que los datos no traen q + 1 ni r < d. Las respuestas no cambian. |
+| M1 | Se agregó el dato `DR.primera`, «La primera cifra de un numeral no es 0», a toda cuenta manchada: ejemplos, «Ahora tú», «Así se resuelve» y la predicción de la idea 4. El resuelto de «Una resta con tres manchas» ahora descarta el segundo préstamo (7 − 1 − 6 = 0). Una prueba comprueba que el dato está siempre y que hace falta: sin él, la cuenta tiene 10 soluciones. |
+| M2 | Se cambió «Consecutivas que suman» por «El reverso con manchas»: 5☐2 − 2☐5 = ☐97. Usa números y el reverso en una resta. La respuesta es 2: hay 10 soluciones por fuerza bruta y en todas la cifra del resultado es 2. Las trampas son 3 (no descuenta), 1 (descuenta dos veces) y «No se puede saber». |
+| M3 | Los ejemplos «Dos repartos» y «Uno más y faltan», y el tipo `uno-mas` de «Ahora tú», usan los datos de A1. |
+| M4 | Se agregó la línea `DR.letrasDiv` («D: los caramelos; d: lo que lleva una bolsita; q: bolsitas llenas; r: sobran; rₑ: faltan») a todo ejercicio de la idea 6. La tarjeta 2 de Lee dice q, r, q + 1 y rₑ con sus nombres. «Cociente entero» tiene ahora la forma «cociente por defecto» y se estrena en la idea 6. |
+| M5 | Se cambiaron los ejemplos del glosario que resolvían una predicción: préstamo, minuendo, llevada, sumandos, complemento aritmético, factor y resto por exceso. Ninguno nuevo usa un 0 que presta, otra base, una meta de 10 000, una subida de un producto ni r + rₑ. |
+| M6 | La predicción de la idea 3 da tres potencias: 10³, 10⁴ y 10⁵, sin «4 073 tiene 4 cifras». El ejemplo «Base 5 con un cero» da 5³, 5⁴ y 5⁵. |
+| M7 | `letra` usa ahora `{ negrita }` de `nucleo/ecuacion.js`, como Estructura atómica: todas las letras van en tinta, también la de la respuesta, y solo el valor lleva color. Una prueba nueva lo comprueba en 155 letras. |
+| M8 | No se tocó, por la nota de la sesión: es de `app/`. Falta pasar `{ idea }` a `gen.generar` en `app/practica.js:138` y `:168`. |
+| M9 | En `plantillas/cuatro-operaciones/papel.json`, p6 y p7 (sumatorias) y p9 (XY + YX) se cambiaron por tres problemas nuevos verificados con el motor:<br>• p6, cifras de A × B con 4 y 3 cifras: 6 o 7;<br>• p7, el mayor a̅b̅c̅ con a̅b̅c̅ − c̅b̅a̅ = 594: 993;<br>• p9, la división entre 12 con rₑ = 2r y q = 7: 88.<br>Además:<br>• los 10 problemas llevan «Datos:» al final, también en sus `preguntas`;<br>• «·» pasa a ×, «residuo» a «resto», y la `indicacion` ya no define el CA;<br>• `motor.test.js` exige los datos y que no vuelvan «·», «residuo», sumatorias ni letras.<br>No hizo falta filtrar el papel por unidad. |
+| M10 | No se tocó, por la nota de la sesión: lo decidió la sesión. |
+| B1 | Se cambiaron las letras que chocaban con la tabla de letras:<br>• m̅n̅p̅ pasa a x̅y̅z̅ en «La diferencia suma 18»;<br>• «B tiene q cifras» pasa a «k cifras», en «Ahora tú» y en el ejemplo;<br>• el generador escribe 10ˣ ÷ 10ʸ;<br>• la mesa `dos-productos` se dice en palabras (consigna, etiquetas y retos). Los id de sus controles no cambian. |
+| B2 | Los datos de `casoCifrasPot` definen las dos potencias que se preguntan, por ejemplo A² y B³. |
+| B3 | Si la trampa de la base 10 da cifras que la base no tiene, se cambia por otra:<br>• en el generador (`enLaBase`): `suma-base` y `por-cifra-base` usan AT-LLEVA-DOBLE, `resta-base` usa AT-DOBLE-DESCUENTO y `ca-base` usa AT-CA-DIEZ. En 3000 semillas no queda ningún numeral inválido;<br>• en la teoría, `casoTres` usa la trampa del motor, que ya está validada, o AT-LLEVA-OLVIDA;<br>• en el ejemplo «Tres sumandos en base 6», 754₍₆₎ pasa a 1022₍₆₎ (sin sumar las llevadas que llegan, recalculado aparte). |
+| B4 | Se concordó el número en «sobra/sobran», «falta/faltan», «faltaría/faltarían» y «suelto/sueltos», en las ideas 6 de «Ahora tú». |
+| B5 | «Seis por tres cifras» pasa a «Producto y cociente a la vez», de nivel 2: 5 o 6 y 2 o 3. «Un cociente grande» pasa a «Cifras que no se ven», de nivel 3: 1☐☐☐ × 1☐☐ tiene siempre 6 cifras. «Estimar no es adivinar» se queda. |
+| B6 | Se quitó «sumatoria» del `ver` de «sumandos». |
+| B7 | Ahora tiene `simple` «resto por defecto». Una idea lleva como mucho 4 palabras con `simple`, así que «múltiplo» lo perdió: sigue estrenándose aquí, con su definición y sus ejemplos. «División exacta» y «cociente entero» siguen sin `simple` por el mismo tope. |
+| B8 | Se usa la política del generador. r + rₑ = d sale de los datos en «Ahora tú» (`casoRestosRelacion`), en «Así se resuelve» y en los ejemplos «Los dos restos», «Restos iguales», «El exceso es el doble» y «Restos que suman». El resuelto iguala las dos formas de D. |
+| B9 | Se arregló en `nucleo/avance.js` con `conservaEstudio`. La partición `mudadoSum` trae `estudiada`, con su propia marca, `estudiadaSum`. Quien había terminado las 6 ideas viejas queda con «Ya la estudié» en `est.marcadas`, con la fecha de su visita o la del 18 nov. Así conserva el nivel 1, y Divisibilidad, Combinatoria, Razonamiento numérico y Polinomios no se le cierran. La visita se queda, y prestamo y cifras-ocultas quedan por hacer. Como `mudadoSum` ya había corrido en `main`, también recupera a quien ya había migrado: busca la sumatoria en Sucesiones, como `suma-rectangulo`. La prueba cubre cuatro casos: el que no había migrado, el que ya migró, el que no la tenía completa y el que ya la había marcado. No hizo falta tocar `app/`. |
+| B10 | En el papel, «− 1 que prestó» ahora se distingue de la cifra del sustraendo: `lineasResta` del generador, que se regeneró con `papel-generador.js`. Las semillas repetidas de `los-dos` no se tocaron: hacerlo cambia los `casos.json` del generador. |
+
+### Lo que marcó el lector en frío (veredicto, momentos y ejemplos)
+
+| Dónde | Qué se hizo |
+|---|---|
+| Idea 1 | Una tarjeta de Lee nueva, «Otros puestos, otras bases», presenta 21₍₅₎ con su dibujo, sin decir qué pasa al sumar. La regla empieza por «en base n, cada n (en base 10, cada 10)». |
+| Idea 2 | La ecuación de la regla dice «la columna que prestó queda en arriba − 1». Los datos dicen qué es «envase»: «bolsita, caja o cajón». |
+| Idea 3 | La condición del atajo dice «cada cifra se resta de 9, y la última que no es 0, de 10». El «complemento aritmético» ya se presentaba en la tarjeta 2 de Lee. |
+| Idea 4 | La condición de la regla ahora es cierta para todo k (nota e de la sesión): «La diferencia es 099, 198, 297… hasta 891: 9 en medio y extremos que suman 9». Se comprobó para k de 1 a 9. El ejemplo 11 («Un número menos su reverso») explica el doble préstamo y de dónde sale 99 × 5, con la descomposición. |
+| Idea 5 | La voz de Juega ya no nombra una «fila violeta» que no está al empezar. La leyenda dice «lo que pasa de 24 en cada bolsa». La regla trae su propio dibujo, las 7 bolsas con 3 más, y su condición dice qué pasa si sube G: s × G + F × t + s × t. |
+| Idea 6 | El último paso de Mira, y con él la regla, pasa a «39 en bolsitas de 7»: el divisor ya no cambia de objeto en el dibujo. La regla dice «0 ≤ r < d», igual que los datos. La misión de 47 tiene una sola respuesta, como dijo el auditor: no hubo que cambiarla. |
+| Idea 7 | La regla dice «cifras de A + cifras de B», no «la suma de cifras». |
+| Juegos | Las misiones de las ideas 1, 2, 3, 5, 6 y 7 empiezan por «Pon…» o «Lleva…»: dicen que hay que llevar los controles al caso. |
+| Datos | La n va escrita en `DO.columna(n)`, `DO.producto(n)` y `DR.resta(n)`. F, G, H, s y t van con su línea de letras, y q, r y rₑ con `DR.letrasDiv`. |
+| Ejemplos | Se corrigieron los peores que marcó el lector:<br>• 17, «Restos iguales»: ahora dice qué se empaca y qué son los dos restos;<br>• 06: la línea cortada se partió en tres, y el dato pasa a «minuendo − sustraendo = diferencia» (ya no regala el paso);<br>• 21: se cambió por otro (B5);<br>• 11: se explicó (ver idea 4). |
+
+### Pendiente
+
+- **M8** (`{ idea }` en la práctica) y **M10**: los lleva la sesión.
+- **Fuera de alcance**, de `app/`:
+  - «Prueba 3 casos…: llevas 1» se confunde con la llevada. Es un texto común de `app/teoria.js`.
+  - Los iconos de la bolsita, que parece una botella, y las 5 cajitas sobre el cajón son dibujos de prueba de `arit-puesto`: los decide Gerson.
+- **La escena vieja**: `plantillas/cuatro-operaciones/index.html` sigue enseñando la escalera de las sumatorias y la criptoaritmética. Solo se arregló su papel. La escena espera rehacerse (`"rehacer": true`).
+- **Que se quedó igual a propósito**:
+  - La predicción de la idea 7 es de un cociente, aunque la idea se titule con el producto: el título está fijado en la prueba y aprobado.
+  - Los «1000» sin espacio en los dibujos del cuaderno.
+  - «Estimar no es adivinar» sigue en nivel 2 con un paso.
+  - Las semillas repetidas del generador (B10).
+- **Reglas que faltan en el contrato**: no se agregaron al validador común (`nucleo/teoria.js`). Las de esta unidad quedan en sus pruebas:
+  - las letras en tinta;
+  - el dato de la primera cifra;
+  - los datos de los repartos.

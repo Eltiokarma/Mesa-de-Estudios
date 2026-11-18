@@ -336,7 +336,11 @@ test('papel.json: entre 8 y 10 problemas, con respuesta, pasos y verificación',
   }
   const todo = papel.problemas.map(p => p.enunciado).join(' ');
   assert.ok(/complemento/i.test(todo), 'hay un problema de complemento aritmético');
-  assert.ok(/residuo/i.test(todo), 'hay un problema de división por exceso');
+  assert.ok(/resto por exceso/i.test(todo), 'hay un problema de división por exceso');
+  // Desde el 18 nov (auditoría de Las cuatro operaciones, M9): cada problema trae sus datos al final, sin «·» ni «residuo»,
+  // y ya no hay sumatorias (se mudaron a Sucesiones y series) ni criptoaritmética con letras (es de Razonamiento numérico).
+  for (const p of papel.problemas) assert.match(p.enunciado, / Datos: .+/, p.id);
+  assert.ok(!/·|residuo|sumatoria|impares|XY/i.test(JSON.stringify(papel)), 'notación vieja o temas mudados');
   assert.ok(/base/i.test(todo), 'hay operaciones en otra base');
 });
 for (const p of (papel && papel.problemas) || []) test(`papel ${p.id}: la respuesta coincide con el motor`, () => {

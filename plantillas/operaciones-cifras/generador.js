@@ -151,6 +151,9 @@
     return { texto: deDig(out), cols, abiertos };
   }
   const restaTexto = (Ms, Ss, n, modo) => { const r = restar(Ms, Ss, n, modo); return r && r.texto; };
+  // ¿Se puede escribir en base n? (auditoría, B3: «89₍₄₎» como trampa se descarta sin pensar). Si la trampa de la base 10
+  // da cifras que la base no tiene, va otra trampa en su lugar.
+  const enLaBase = (c, n) => (c !== undefined && [...c].every(x => Number(x) < n) ? c : undefined);
 
   // ---- Líneas de solución (lo que pasa en cada columna) ----
   function lineasSuma(nums, n, factor = 1) {
@@ -171,7 +174,8 @@
     return R.cols.map((c, i) => {
       const l = [`${COL[i]}: ${c.a}`];
       if (c.bout) l.push(' + ', Ev(n));
-      if (c.bin) l.push(' − ', Mv(1));
+      // El 1 que prestó se dice, para no confundirlo con una cifra del sustraendo (auditoría, B10: «0 + 10 − 1 = 9»).
+      if (c.bin) l.push(' − ', Mv(1), ' que prestó');
       l.push(` − ${c.b} = `, Bv(c.cifra));
       l.push(c.bout ? `; se abre 1 de la columna de la izquierda.` : '.');
       return l;
@@ -215,8 +219,9 @@
     reparto: 'Si al dar q a cada uno de d sobran r: D = d × q + r',
     repartoFalta: 'Si al dar q a cada uno de d faltan f: D = d × q − f',
     rango: 'Un número de k cifras va de 10ᵏ⁻¹ a 10ᵏ − 1',
-    potProd: '10ᵃ × 10ᵇ = 10ᵃ⁺ᵇ',
-    potDiv: '10ᵃ ÷ 10ᵇ = 10ᵃ⁻ᵇ',
+    // x e y en los exponentes: a y b son cifras ocultas en esta unidad (auditoría, B1).
+    potProd: '10ˣ × 10ʸ = 10ˣ⁺ʸ',
+    potDiv: '10ˣ ÷ 10ʸ = 10ˣ⁻ʸ',
     cuadradoCubo: 'A² = A × A; B³ = B × B × B',
   };
 
@@ -340,7 +345,8 @@
     const n = rng.entero(4, 9), A = numeroBase(rng, rng.elegir([2, 3]), n), B = numeroBase(rng, rng.elegir([2, 3]), n);
     const R = columnas([A, B], n);
     if (!R.cols.some(c => c.cout)) return null;
-    const dec = sumaTexto([A, B], n, 'decimal'), olv = sumaTexto([A, B], n, 'olvida'), fin = R.final ? sumaTexto([A, B], n, 'final') : undefined;
+    const dec = enLaBase(sumaTexto([A, B], n, 'decimal'), n), olv = sumaTexto([A, B], n, 'olvida'), fin = R.final ? sumaTexto([A, B], n, 'final') : undefined;
+    const dob = dec === undefined ? sumaTexto([A, B], n, 'doble') : undefined;
     return {
       enunciado: ['En el puesto de bolsitas de ', Ev(n), ', doña Juana junta dos pedidos: ', ...opN(A, n), ' y ', ...opN(B, n), '.'],
       pregunta: ['¿Cómo queda la etiqueta del total?'],
@@ -350,6 +356,7 @@
         htN('AT-DECIMAL', dec, n, `Bien sumar por columnas. Pero ${numT(dec, n)} lleva al llegar a 10; en base ${n}, ${n} de una columna ya llenan 1 de la siguiente.`),
         htN('AT-LLEVA-OLVIDA', olv, n, `Bien cada columna. Pero ${numT(olv, n)} no suma la llevada en la columna siguiente.`, T),
         htN('AT-LLEVA-FINAL', fin, n, `Bien las columnas. Pero ${numT(fin, n)} olvida anotar la última llevada.`),
+        htN('AT-LLEVA-DOBLE', dob, n, `Bien sumar la llevada. Pero se suma una sola vez: ${numT(dob, n)} la cuenta dos veces.`),
       ],
       solucion: [...lineasSuma([A, B], n), ['La etiqueta es ', ...resN(R.texto, n), '.']],
       _datos: { sumandos: [A, B], n },
@@ -459,7 +466,8 @@
     const n = rng.entero(4, 9), M = `${rng.entero(2, n - 1)}0${rng.entero(0, n - 2)}`;
     const vS = rng.entero(n * n, valor(M, n) - 1), S = enBase(vS, n), R = restar(M, S, n);
     if (!R || R.abiertos < 2) return null;
-    const dec = restaTexto(M, S, n, 'decimal'), sin = restaTexto(M, S, n, 'sin'), c10 = restaTexto(M, S, n, 'cero10'), men = restaTexto(M, S, n, 'menor');
+    const dec = enLaBase(restaTexto(M, S, n, 'decimal'), n), sin = restaTexto(M, S, n, 'sin'), c10 = restaTexto(M, S, n, 'cero10'), men = restaTexto(M, S, n, 'menor');
+    const dob = dec === undefined ? restaTexto(M, S, n, 'doble') : undefined;
     return {
       enunciado: ['En el puesto de bolsitas de ', Ev(n), ', doña Juana tiene ', ...opN(M, n), ' caramelos y despacha ', ...opN(S, n), '.'],
       pregunta: ['¿Cómo queda la etiqueta de lo que le queda?'],
@@ -470,6 +478,7 @@
         htN('AT-SIN-DESCONTAR', sin, n, `Bien abrir envases. Pero ${numT(sin, n)} no le quita 1 a la columna que prestó.`, T),
         htN('AT-CERO-DIEZ', c10, n, `Bien la cadena de préstamos. Pero ${numT(c10, n)} deja el 0 que presta en ${n}; queda en ${n - 1}.`),
         htN('AT-MENOR-MAYOR', men, n, `Bien restar por columnas. Pero ${numT(men, n)} resta el menor del mayor; es arriba menos abajo.`),
+        htN('AT-DOBLE-DESCUENTO', dob, n, `Bien descontar el préstamo. Pero se descuenta una sola vez: ${numT(dob, n)} le quita 2 a la columna que prestó.`),
       ],
       solucion: [...lineasResta(M, S, n), ['Le quedan ', ...resN(R.texto, n), '.']],
       _datos: { minuendo: M, sustraendo: S, n },
@@ -584,8 +593,9 @@
     const n = rng.entero(4, 8), N = numeroBase(rng, 3, n);
     if (N[2] === '0') return null;
     const ok = caTexto(N, n), V = valor(N, n), n3 = n ** 3;
-    const dec = [...N].map((d, i) => (i < 2 ? 9 - d : 10 - d)).join('').replace(/^0+(?=\d)/, '');
+    const dec = enLaBase([...N].map((d, i) => (i < 2 ? 9 - d : 10 - d)).join('').replace(/^0+(?=\d)/, ''), n);
     const nueve = enBase(n3 - 1 - V, n), k4 = enBase(n ** 4 - V, n);
+    const diez = dec === undefined ? enLaBase([...N].map(d => n - Number(d)).join(''), n) : undefined;
     return {
       enunciado: ['En el puesto de bolsitas de ', Ev(n), ', un pedido se anota ', ...opN(N, n), '.'],
       pregunta: ['¿Cuál es su complemento aritmético, en base ', Ev(n), '?'],
@@ -595,6 +605,7 @@
         htN('AT-CA-DECIMAL', dec, n, `Bien restar cifra por cifra. Pero ${numT(dec, n)} resta de 9 y de 10, como en base 10; en base ${n} la meta es ${n}³.`),
         htN('AT-CA9', nueve, n, `Bien restar de ${n - 1}, la mayor cifra. Pero falta llegar a la meta: ${numT(nueve, n)} se queda a 1.`, T),
         htN('AT-CA-K', k4, n, `Bien restar desde una potencia de ${n}. Pero el pedido tiene 3 cifras: la meta es ${n}³, no ${n}⁴; así sale ${numT(k4, n)}.`),
+        htN('AT-CA-DIEZ', diez, n, `Bien restar la última de ${n}. Pero las demás se restan de ${n - 1}: ${numT(diez, n)} las resta todas de ${n}.`),
       ],
       solucion: [
         [...opN(N, n), ` = ${N[0]} × ${n * n} + ${N[1]} × ${n} + ${N[2]} = ${V}; la meta es `, Ev(`${n}³ = ${n3}`), '.'],
@@ -825,7 +836,8 @@
   function porCifraBase(rng) {
     const n = rng.entero(4, 9), N = numeroBase(rng, rng.elegir([2, 3]), n), m = rng.entero(2, n - 1), R = columnas([N], n, 'ok', m);
     if (!R.cols.some(c => c.cout)) return null;
-    const dec = porCifraTexto(N, m, n, 'decimal'), uno = porCifraTexto(N, m, n, 'uno'), olv = porCifraTexto(N, m, n, 'olvida');
+    const dec = enLaBase(porCifraTexto(N, m, n, 'decimal'), n), uno = porCifraTexto(N, m, n, 'uno'), olv = porCifraTexto(N, m, n, 'olvida');
+    const dob = dec === undefined ? porCifraTexto(N, m, n, 'doble') : undefined;
     return {
       enunciado: ['En el puesto de bolsitas de ', Ev(n), ', doña Juana arma ', String(m), ' pedidos iguales de ', ...opN(N, n), '.'],
       pregunta: ['¿Cómo queda la etiqueta del total?'],
@@ -835,6 +847,7 @@
         htN('AT-DECIMAL', dec, n, `Bien multiplicar cifra por cifra. Pero ${numT(dec, n)} lleva de 10 en 10; en base ${n} se lleva de ${n} en ${n}.`),
         htN('AT-LLEVA-UNO', uno, n, `Bien multiplicar por columnas. Pero ${numT(uno, n)} lleva 1 donde van 2 o más.`),
         htN('AT-LLEVA-OLVIDA', olv, n, `Bien cada producto. Pero ${numT(olv, n)} no suma la llevada en la columna siguiente.`, T),
+        htN('AT-LLEVA-DOBLE', dob, n, `Bien sumar la llevada. Pero se suma una sola vez: ${numT(dob, n)} la cuenta dos veces.`),
       ],
       solucion: [...lineasSuma([N], n, m), ['La etiqueta es ', ...resN(R.texto, n), '.']],
       _datos: { N, m, n },

@@ -14,8 +14,10 @@
  * Letras (propuesta §6): n es la base, como en Numeración; sin base escrita, es 10. 34₍₅₎ y a̅b̅c̅ con raya ({ raya } de
  * nucleo/ecuacion.js). × para multiplicar; nunca «·» (el «   ·   » solo separa dos relaciones en una regla, cada una
  * en su línea). a, b y c son cifras ocultas; ☐ es una mancha. N es el número del complemento y k sus cifras (10ᵏ). D, d,
- * q, r y rₑ en la división (q + 1 es el cociente por exceso). A y B en la idea 7, con sus cifras dichas en palabras. Lo
- * que sube un factor va en palabras; en la regla, F y G son los factores y s lo que sube F.
+ * q, r y rₑ en la división (q + 1 es el cociente por exceso). A y B en la idea 7, con sus cifras dichas en palabras (k
+ * si hace falta una letra). Lo que sube un factor va en palabras; en la regla, F y G son los factores y s lo que sube F.
+ * x̅y̅z̅ para una diferencia de cifras desconocidas (a, b y c ya son las del número). Toda letra de un dato se dice en el
+ * mismo recuadro (correcciones del 18 nov: n, p, F, G, H, s, q, r y rₑ).
  *
  * REGLA DE COLORES DE LA UNIDAD: un color fijo por magnitud (docs/molde-unidad.md §5b; propuesta §7, aprobada), en la
  * tabla COLORES (def.colores). El criterio es lo que cada cosa es en el puesto:
@@ -28,8 +30,9 @@
  *   - tinta: los números que se operan (sumandos, minuendo, sustraendo, factores, N, D), el cociente q, las bolsas, los
  *     caramelos dibujados, «?» y las manchas;
  *   - ni verde ni carmín.
- *   La respuesta lleva el color de su magnitud; la letra de una alternativa va en negrita con ese color. Cada ficha de
- *   color dice su magnitud (m); contenido/teoria/aritmetica/cuatro-operaciones.test.js falla si una cambia de color.
+ *   La respuesta lleva el color de su magnitud; la letra de una alternativa va en negrita y en tinta ({ negrita }), la
+ *   de la respuesta también. Cada ficha de color dice su magnitud (m); contenido/teoria/aritmetica/cuatro-operaciones.test.js
+ *   falla si una cambia de color o si una letra A–D lleva color.
  * Errores: los AT-* son hipótesis de aula (el informe de aritmética no trae cifras de las cuatro operaciones); ver el
  * bloque de cada idea. Las trampas 18 y 29 de docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md respaldan
  * las del resto por exceso y las del préstamo olvidado y el complemento.
@@ -86,9 +89,11 @@
   const conBase = (c, base) => (base === 10 || base === undefined ? null : bas(`(${base})`));
   const sumN = (c, base) => (conBase(c, base) ? { sub: [String(c), conBase(c, base)] } : String(c));
   const resN = (c, base) => (conBase(c, base) ? { sub: [res(c), conBase(c, base)] } : res(c));
-  // La letra de una alternativa, en negrita (Gerson, mesa de revisión, 17 nov), con el color de lo que nombra. El U+2060
-  // (invisible) evita que la letra sola salga en cursiva como una variable.
-  const letra = (L, m = 'busca') => ({ v: `c-${COLORES[m]}`, t: `${L}⁠`, m });
+  // La letra de una alternativa, en negrita y en tinta ({ negrita } de nucleo/ecuacion.js; Gerson, mesa de revisión,
+  // 17 nov; auditoría, M7): sin color, porque el violeta es de lo que se busca y una trampa en violeta se lee como la
+  // respuesta. Solo el valor de la respuesta lleva el color de su magnitud. (El segundo argumento, que antes daba el
+  // color, ya no se usa.)
+  const letra = L => ({ negrita: [L] });
   // El resto por exceso: rₑ, con subíndice de verdad y en violeta (lo que se busca). El resto por defecto r, en naranja.
   const RE = { sub: [res('r'), 'e'] }, R_ = lleva('r'), D_ = bas('d');
   // Entre dos relaciones de una misma ecuación (en la regla, cada una en su línea).
@@ -129,7 +134,9 @@
     caja: n => ['1 caja = ', bas(n), ' bolsitas'],
     todo: n => ['1 bolsita = ', bas(n), ' caramelos; 1 caja = ', bas(n), ' bolsitas; 1 cajón = ', bas(n), ' cajas'],
     base: n => ['En base ', bas(n), ', ', bas(n), ' de una columna forman 1 de la columna siguiente'],
-    columna: ['suma de una columna = ', lleva('llevada'), ' × ', bas('n'), ' + ', res('cifra que se anota')],
+    // La base va escrita (lector en frío: «la n de los datos nunca se define»); con n desconocida, otra línea dice qué es.
+    columna: n => ['suma de una columna = ', lleva('llevada'), ' × ', bas(n), ' + ', res('cifra que se anota')],
+    producto: n => ['cifra × factor + llevada que llega = ', lleva('llevada nueva'), ' × ', bas(n), ' + ', res('cifra que se anota')],
     cifras: ['En base ', bas('n'), ', las cifras van de 0 a ', bas('n'), ' − 1'],
     ordenes: 'Unidades, decenas y centenas: sueltos, bolsitas y cajas',
     f2: n => [{ sub: [{ raya: ['ab'] }, bas(`(${n})`)] }, ' = a × ', bas(n), ' + b'],
@@ -224,7 +231,7 @@
     if (L < 2 || w === 1 || w === L) return null;
     return {
       pregunta: ['Doña Juana suma en su cuaderno ', xs.join(' + '), '. ¿Cuántas bolsitas lleva de la columna de los sueltos a la de las bolsitas?'],
-      datos: [DO.bolsita(10), DO.columna],
+      datos: [DO.bolsita(10), DO.columna(10)],
       dibujo: cuaderno(xs, { foco: 0 }),
       opciones: opciones(L, [
         { id: 'cifra', valor: w, error: 'AT-LLEVA-CIFRA', siFuera: `Sumar la columna está bien. Pero el ${w} se anota; lo que sube son las bolsitas llenas.` },
@@ -239,13 +246,16 @@
     const n = r.ent(4, 9), xs = [0, 1, 2].map(() => numeralAzar(r, 3, n));
     const C = MCO.sumaColumnas(xs, n);
     if (!C.columnas.some(c => c.llevadaSale >= 2) || C.texto.length <= 3) return null;
-    const dec10 = String(suma(xs.map(Number)));
+    // La trampa de la base 10 solo si da un numeral que se puede escribir en base n (auditoría, B3; la del motor ya lo
+    // comprueba); si no, la de quien no suma las llevadas.
+    const dec10 = C.errores.comoDecimal, sinLl = dec10 === undefined ? C.errores.sinLlevar : undefined;
     return {
       pregunta: ['¿Cuánto es ', sumN(xs[0], n), ' + ', sumN(xs[1], n), ' + ', sumN(xs[2], n), '?'],
-      datos: [DO.base(n), DO.columna],
+      datos: [DO.base(n), DO.columna(n)],
       dibujo: cuaderno(xs, { base: String(n) }),
       opciones: opcionesNum([resN(C.texto, n)], [
-        { id: 'decimal', texto: [resN(dec10, n)], error: 'AT-DECIMAL', siFuera: `Sumar por columnas está bien. Pero así se suma en base 10; en base ${n} se lleva al juntar ${n}.` },
+        ...(dec10 ? [{ id: 'decimal', texto: [resN(dec10, n)], error: 'AT-DECIMAL', siFuera: `Sumar por columnas está bien. Pero así se suma en base 10; en base ${n} se lleva al juntar ${n}.` }] : []),
+        ...(sinLl ? [{ id: 'olvida', texto: [resN(sinLl, n)], error: 'AT-LLEVA-OLVIDA', siFuera: 'Anotar lo que sobra está bien. Pero cada llevada se suma en la columna siguiente.' }] : []),
         { id: 'uno', texto: [resN(sumaLlevaUno(xs, n), n)], error: 'AT-LLEVA-UNO', siFuera: `Anotar lo que sobra está bien. Pero si la columna junta dos veces ${n}, se llevan 2, no 1.` },
         { id: 'final', texto: [resN(C.texto.slice(1), n)], error: 'AT-LLEVA-FINAL', siFuera: 'Las columnas están bien. Pero la última llevada también se anota: abre una columna nueva.' },
       ]),
@@ -264,7 +274,7 @@
     const N_ = sumNL => sumN(sumNL, 'n');
     return {
       pregunta: ['En cierta base ', bas('n'), ' se cumple ', N_(a), ' + ', N_(b), ' = ', resN(z, 'n'), '. ¿Cuál es ', bas('n'), '?'],
-      datos: [DO.columna, DO.cifras],
+      datos: [DO.columna('n'), DO.cifras],
       dibujo: cuaderno([a, b], { base: 'n', resultado: z }),
       opciones: opciones(n, [
         { id: 'menor', valor: mayor + 1, error: 'AT-MENOR', siFuera: 'Mirar la cifra mayor está bien: la base tiene que pasarla. Pero con esa base la cuenta no cuadra.' },
@@ -282,7 +292,7 @@
     if (ll < 2 || new Set([c2.cifra, olvida, unoV, c2.llevadaSale]).size < 4) return null;
     return {
       pregunta: ['Doña Juana suma ', xs.join(' + '), '. ¿Qué cifra anota en la columna de las centenas?'],
-      datos: [DO.ordenes, DO.columna],
+      datos: [DO.ordenes, DO.columna(10)],
       dibujo: cuaderno(xs, { foco: 2 }),
       opciones: opciones(c2.cifra, [
         { id: 'olvida', valor: olvida, error: 'AT-LLEVA-OLVIDA', siFuera: 'Sumar la columna de las centenas está bien. Pero falta lo que llega llevado de las decenas.' },
@@ -300,7 +310,7 @@
     if (L < 2 || final === null || new Set([L, cadena, decimal, final]).size < 4) return null;
     return {
       pregunta: ['Al sumar ', sumN(a, n), ' + ', sumN(b, n), ', ¿en cuántas columnas se lleva algo a la columna siguiente?'],
-      datos: [DO.base(n), DO.columna],
+      datos: [DO.base(n), DO.columna(n)],
       dibujo: cuaderno([a, b], { base: String(n) }),
       opciones: opciones(L, [
         { id: 'cadena', valor: cadena, error: 'AT-CADENA', siFuera: 'Mirar si las cifras pasan de la base está bien. Pero la llevada que llega también suma.' },
@@ -317,7 +327,7 @@
   // propio código): 6 + 7 = 13; 52 + 36 = 88 sin llevadas; 29 + 45 = 74; 4 + 5 = 9 = 1 × 6 + 3; 6 + 8 = 14 bolsitas;
   // 478 + 356 = 834; 58 + 67 + 49 = 174 (llevada 2); 123₍₄₎ + 213₍₄₎ = 1002₍₄₎ (27 + 39 = 66); 45₍₇₎ + 36₍₇₎ = 114₍₇₎
   // (33 + 27 = 60); 386 + 475 + 299: llegan 2 a las centenas; 35₍ₙ₎ + 24₍ₙ₎ = 62₍ₙ₎ solo con n = 7; 245₍₆₎ + 354₍₆₎ +
-  // 155₍₆₎ = 1242₍₆₎ (101 + 142 + 71 = 314), con las trampas 754, 1132 y 242; 3 × 777₍₈₎ = 2775₍₈₎ (3 × 511 = 1533),
+  // 155₍₆₎ = 1242₍₆₎ (101 + 142 + 71 = 314), con las trampas 1022 (sin sumar las llevadas que llegan), 1132 y 242; 3 × 777₍₈₎ = 2775₍₈₎ (3 × 511 = 1533),
   // cifras 21, con las trampas 18, 19 y 9; cuatro cifras de 9 dan 36: se llevan 3; 4999 + 5001 = 10 000 con 4 llevadas.
   // La figura muestra lo que cada dato marca por sí solo (los sumandos escritos, el montón que se da), nunca el
   // resultado: lo que se pide va con «?» en tinta. Ningún ejemplo usa los números de la predicción ni de la misión.
@@ -369,7 +379,7 @@
       respuesta: ['Se anota ', res(4), ' y se lleva ', lleva(1), ' caja'] },
     { nivel: 2, titulo: 'Dos llevadas seguidas',
       enunciado: '¿Cuánto es 478 + 356?',
-      datos: [DO.ordenes, DO.columna],
+      datos: [DO.ordenes, DO.columna(10)],
       figura: cuaderno(['478', '356']),
       solucion: [
         { texto: 'Unidades: 8 + 6 = 14. Se anota 4 y se lleva 1.', ecuacion: ['8 + 6 = 14 = ', lleva(1), ' × ', bas(10), ' + ', res(4)] },
@@ -379,7 +389,7 @@
       respuesta: ['478 + 356 = ', res(834)] },
     { nivel: 2, titulo: 'Se llevan 2',
       enunciado: 'Doña Juana suma tres pedidos: 58, 67 y 49 caramelos. ¿Cuántos caramelos son en total?',
-      datos: [DO.bolsita(10), DO.columna],
+      datos: [DO.bolsita(10), DO.columna(10)],
       figura: cuaderno(['58', '67', '49']),
       solucion: [
         { texto: 'Sueltos: 8 + 7 + 9 = 24. Llenan 2 bolsitas y sobran 4: esta vez la llevada es 2.', ecuacion: ['8 + 7 + 9 = 24 = ', lleva(2), ' × ', bas(10), ' + ', res(4)] },
@@ -389,7 +399,7 @@
       respuesta: [res(174), ' caramelos'] },
     { nivel: 2, titulo: 'Una suma en base 4',
       enunciado: ['¿Cuánto es ', sumN('123', 4), ' + ', sumN('213', 4), '?'],
-      datos: [DO.base(4), DO.columna],
+      datos: [DO.base(4), DO.columna(4)],
       figura: cuaderno(['123', '213'], { base: '4' }),
       solucion: [
         { texto: 'Sueltos: 3 + 3 = 6. Se anota 2 y se lleva 1.', ecuacion: ['3 + 3 = 6 = ', lleva(1), ' × ', bas(4), ' + ', res(2)] },
@@ -409,7 +419,7 @@
       respuesta: [resN('114', 7), ', que vale ', res(60)] },
     { nivel: 2, titulo: '¿Cuánto llega a las centenas?',
       enunciado: 'Doña Juana suma 386 + 475 + 299 en su cuaderno. ¿Cuánto lleva a la columna de las centenas?',
-      datos: [DO.ordenes, DO.columna],
+      datos: [DO.ordenes, DO.columna(10)],
       figura: cuaderno(['386', '475', '299']),
       solucion: [
         { texto: 'Unidades: 6 + 5 + 9 = 20. Se anota 0 y se llevan 2.', ecuacion: ['6 + 5 + 9 = 20 = ', lleva(2), ' × ', bas(10), ' + ', res(0)] },
@@ -419,30 +429,31 @@
     { nivel: 3, titulo: 'La base que hace cuadrar',
       enunciado: ['En cierta base ', bas('n') , ' se cumple ', sumN('35', 'n'), ' + ', sumN('24', 'n'), ' = ', resN('62', 'n'), '. ¿Cuál es ', bas('n'), '?'],
       alternativas: ['6', '7', '8', '9'],
-      datos: [DO.columna, DO.cifras],
+      datos: [DO.columna('n'), DO.cifras],
       figura: cuaderno(['35', '24'], { base: 'n', resultado: '62' }),
       solucion: [
         { texto: 'Sueltos: 5 + 4 = 9, pero se anota 2: subió una bolsita de n y sobraron 2.', ecuacion: ['9 = ', lleva(1), ' × ', bas('n'), ' + ', res(2), '   →   ', bas('n'), ' = ', bas(7)] },
         { texto: 'Compruebo la otra columna: 3 + 2 más la que llega da 6, menos que 7. Se anota 6, como dice la cuenta.', ecuacion: ['3 + 2 + ', lleva(1), ' = ', res(6)] },
         { texto: ['Con 6 no sirve: 9 = 1 × 6 + 3 y se anotaría 3. Con 8 o con 9 se anotaría 1 o 0.'] },
       ],
-      respuesta: [letra('B', 'envase'), ': ', bas('n'), ' = ', bas(7)] },
+      respuesta: [letra('B'), ': ', bas('n'), ' = ', bas(7)] },
     { nivel: 3, titulo: 'Tres sumandos en base 6',
       enunciado: ['¿Cuánto es ', sumN('245', 6), ' + ', sumN('354', 6), ' + ', sumN('155', 6), '?'],
-      alternativas: [[sumN('754', 6)], [sumN('1132', 6)], [sumN('242', 6)], [sumN('1242', 6)]],
-      datos: [DO.base(6), DO.columna],
+      // A: no suma las llevadas que llegan (antes, 754₍₆₎: la suma en base 10, que no se puede escribir en base 6; B3).
+      alternativas: [[sumN('1022', 6)], [sumN('1132', 6)], [sumN('242', 6)], [sumN('1242', 6)]],
+      datos: [DO.base(6), DO.columna(6)],
       figura: cuaderno(['245', '354', '155'], { base: '6' }),
       solucion: [
         { texto: 'Sueltos: 5 + 4 + 5 = 14. Se anota 2 y se llevan 2.', ecuacion: ['5 + 4 + 5 = 14 = ', lleva(2), ' × ', bas(6), ' + ', res(2)] },
         { texto: 'Bolsitas: 4 + 5 + 5 más las 2 que llegan = 16. Se anota 4 y se llevan 2.', ecuacion: ['4 + 5 + 5 + ', lleva(2), ' = 16 = ', lleva(2), ' × ', bas(6), ' + ', res(4)] },
         { texto: 'Cajas: 2 + 3 + 1 más las 2 = 8. Se anota 2 y se lleva 1, que abre otra columna.', ecuacion: ['2 + 3 + 1 + ', lleva(2), ' = 8 = ', lleva(1), ' × ', bas(6), ' + ', res(2)] },
-        { texto: ['Las trampas: ', letra('A'), ' suma en base 10; ', letra('B'), ' lleva 1 donde van 2; ', letra('C'), ' olvida la última llevada.'] },
+        { texto: ['Las trampas: ', letra('A'), ' no suma las llevadas que llegan; ', letra('B'), ' lleva 1 donde van 2; ', letra('C'), ' olvida la última llevada.'] },
       ],
       respuesta: [letra('D'), ': ', resN('1242', 6)] },
     { nivel: 3, titulo: 'Las cifras del total',
       enunciado: ['Si ', sumN('777', 8), ' + ', sumN('777', 8), ' + ', sumN('777', 8), ' = ', { sub: [{ raya: [res('abcd')] }, bas('(8)')] }, ', ¿cuánto vale a + b + c + d?'],
       alternativas: ['18', '21', '19', '9'],
-      datos: [DO.base(8), DO.columna, [{ raya: ['abcd'] }, ': numeral de cifras a, b, c y d']],
+      datos: [DO.base(8), DO.columna(8), [{ raya: ['abcd'] }, ': numeral de cifras a, b, c y d']],
       figura: cuaderno(['777', '777', '777'], { base: '8' }),
       solucion: [
         { texto: 'Sueltos: 7 + 7 + 7 = 21. Se anota 5 y se llevan 2.', ecuacion: ['21 = ', lleva(2), ' × ', bas(8), ' + ', res(5)] },
@@ -454,13 +465,13 @@
     { nivel: 3, titulo: 'La mayor llevada',
       enunciado: 'Doña Juana suma cuatro números de dos cifras. ¿Cuál es la mayor llevada que puede pasar de la columna de las unidades a la de las decenas?',
       alternativas: ['1', '2', '3', '4'],
-      datos: [DO.columna, 'La mayor cifra en base 10 es 9'],
+      datos: [DO.columna(10), 'La mayor cifra en base 10 es 9'],
       figura: cuaderno(['??', '??', '??', '??'], { foco: 0 }),
       solucion: [
         { texto: 'La columna de las unidades junta cuatro cifras. Lo más que puede juntar es 9 + 9 + 9 + 9 = 36.' },
         { texto: 'Con 36 se llenan 3 bolsitas de 10 y sobran 6. Para llevar 4 harían falta 40, y no alcanza.', ecuacion: ['36 = ', lleva(3), ' × ', bas(10), ' + ', res(6)] },
       ],
-      respuesta: [letra('C', 'muda'), ': ', lleva(3)] },
+      respuesta: [letra('C'), ': ', lleva(3)] },
     { nivel: 3, titulo: 'Llevadas en cadena',
       enunciado: '¿En cuántas columnas se lleva algo al sumar 4999 + 5001?',
       alternativas: ['1', '3', '4', '5'],
@@ -491,6 +502,10 @@
           pieza: PU, dibujo: { datos: { n: 10, bolsitas: 2, sueltos: 6, regla: 2, rotulos: true, colorCifras: false }, estado: {} } },
         { titulo: 'Sumar es juntar', texto: 'Si le llegan dos pedidos, los junta: suma. Cada pedido es uno de los sumandos. En su cuaderno los escribe uno debajo del otro, sueltos bajo sueltos y bolsitas bajo bolsitas, y suma cada columna.',
           pieza: PU, dibujo: { datos: { n: 10, bolsitas: 3, sueltos: 9, ceros: true, regla: 1, rotulos: { bolsitas: '2 + 1 bolsitas', sueltos: '6 + 3 sueltos' }, cuenta: { sumandos: ['26', '13'], resultado: '39' } }, estado: {} } },
+        // La notación de la base, presentada antes de que la use Predice (lector en frío: «el (5) aparece sin presentar»).
+        // Solo dice cómo se lee un numeral; no dice qué pasa al sumar en otra base, que es lo que pregunta Predice.
+        { titulo: 'Otros puestos, otras bases', texto: ['Hay puestos que empacan de ', bas(5), ' en ', bas(5), ': cuentan en base 5. La base se escribe abajo y entre paréntesis: ', sumN('21', 5), ' se lee «21 en base 5»: son 2 bolsitas de 5 y 1 suelto.'],
+          pieza: PU, dibujo: { datos: { n: 5, bolsitas: 2, sueltos: 1, regla: 1, colorCifras: false, rotulos: { bolsitas: '2 bolsitas', sueltos: '1 suelto' } }, estado: {} } },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a juntar dos pedidos. Mira la columna de los sueltos: si junta 10 o más, toca el montón y doña Juana llena una bolsita. Fíjate a qué columna se va esa bolsita.' },
       ],
     },
@@ -499,7 +514,7 @@
       pieza: PU,
       consigna: 'A doña Juana le llegaron dos pedidos y los junta en el mostrador. Empaca de 10 en 10 y anota la cuenta en su cuaderno.',
       mision: {
-        texto: 'Junta los pedidos de 47 y 38, y empaca hasta poder anotar el total.',
+        texto: 'Lleva los pedidos a 47 y 38, júntalos y empaca hasta poder anotar el total.',
         logrado: v => [v.p1, v.p2].sort((x, y) => x - y).join() === '38,47' && manoJ(v).m.listo,
         bien: '15 sueltos llenaron una bolsita que subió: 4 + 3 + 1 = 8 bolsitas y 5 sueltos.',
       },
@@ -554,7 +569,7 @@
       ],
     },
     regla: {
-      texto: 'Se suma por columnas, desde las unidades. Cada 10 de una columna forman 1 de la siguiente: se lleva y se anota lo que sobra. En base n, cada n.',
+      texto: 'Desde las unidades: en base n, cada n de una columna forman 1 de la siguiente (en base 10, cada 10). Se lleva eso y se anota lo que sobra.',
       // Cada relación en su línea y corta, para que quepa a 360 px: la suma de una columna se parte en lo que sube y lo
       // que se anota; lo que se anota es una cifra de la base.
       // (L y c, dichas en las llaves: lo que se lleva y la cifra que se anota.)
@@ -656,17 +671,32 @@
   // Datos que se repiten en las ideas 2 a 7 (punto 13: herramientas, no el paso hecho).
   const DR = {
     abrir: n => ['Abrir 1 de una columna da ', bas(n), ' de la columna de su derecha'],
-    resta: ['cifra = arriba + ', lleva('p'), ' × ', bas('n'), ' − abajo, con ', lleva('p'), ' = 1 si se abrió un envase'],
-    prueba: 'minuendo = sustraendo + diferencia',
+    resta: n => ['cifra = arriba + ', lleva('p'), ' × ', bas(n), ' − abajo; ', lleva('p'), ' = 1 si se abrió una bolsita, caja o cajón'],
+    // Como el generador (tipo suma-tres): la definición, no el paso despejado (auditoría: regalaba el ejemplo 29).
+    prueba: 'minuendo − sustraendo = diferencia',
     ca: ['CA(N) = ', { sup: [bas('10'), 'k'] }, ' − N, con k las cifras de N'],
     caBase: ['En base n: CA(N) = ', { sup: [bas('n'), 'k'] }, ' − N, con k las cifras de N'],
     mancha: 'Bajo cada mancha ☐ hay una cifra de 0 a 9',
+    // Como el generador (ca-oculto): sin esta línea, 7☐8 − 6☐9 = ☐89 tenía 10 soluciones con 089 (auditoría, M1).
+    primera: 'La primera cifra de un numeral no es 0',
     bien: 'La cuenta del cuaderno está bien hecha',
     abc: [{ raya: ['abc'] }, ' = 100 × a + 10 × b + c'],
     reverso: [{ raya: ['cba'] }, ' es el reverso de ', { raya: ['abc'] }, ': las mismas cifras al revés'],
     distrib: '(F + s) × G = F × G + s × G',
+    // Toda letra de un dato se dice en el mismo recuadro (lector en frío: F, G, H y s sin definir).
+    fgsBolsa: 'F: caramelos de cada bolsa; G: bolsas; s: caramelos que se agregan a cada bolsa',
+    fgs: 'F y G: los factores; s: lo que sube F; t: lo que sube G',
+    fs: 'F y G: los factores; s: lo que sube F',
     div: ['D = ', D_, ' × q + ', R_, ', con 0 ≤ ', R_, ' < ', D_],
     exceso: ['D = ', D_, ' × (q + 1) − ', RE],
+    // Las letras de la división, dichas en el mismo recuadro (auditoría, M4; como el generador). El atajo r + rₑ = d no
+    // va en los datos: sale de igualar las dos formas de D (auditoría, B8; la política del generador).
+    letrasDiv: ['D: los caramelos; ', D_, ': lo que lleva una bolsita; q: bolsitas llenas; ', R_, ': sobran; ', RE, ': faltan'],
+    // Dos repartos entre personas (auditoría, A1 y M3): d son las personas y cada reparto tiene su q. «Uno más a cada uno»
+    // (q + 1, rₑ) solo vale si el segundo reparto da 1 más; aquí puede dar 2 o 3 más, y sobrar más que las personas.
+    repSobra: ['Si al dar q₁ a cada uno sobran ', R_, ': D = ', D_, ' × q₁ + ', R_],
+    repFalta: ['Si al dar q₂ a cada uno faltan f: D = ', D_, ' × q₂ − f'],
+    repLetras: quienes => ['D: los caramelos; ', D_, `: los ${quienes}; q₁ y q₂: lo que recibe cada uno`],
     cifrasK: ['Un número de k cifras va de ', { sup: ['10', 'k − 1'] }, ' a ', { sup: ['10', 'k'] }, ' − 1'],
   };
 
@@ -746,7 +776,7 @@
     if (R.prestamos.every(p => p.desde === p.para + 1)) return null;
     return {
       pregunta: `Doña Juana tiene ${f(+M, 0)} caramelos y despacha ${f(+S, 0)}. ¿Cuántos le quedan?`,
-      datos: [['1 bolsita = ', bas(10), ' caramelos; 1 caja = ', bas(10), ' bolsitas; 1 cajón = ', bas(10), ' cajas'], DR.resta],
+      datos: [['1 bolsita = ', bas(10), ' caramelos; 1 caja = ', bas(10), ' bolsitas; 1 cajón = ', bas(10), ' cajas'], DR.resta(10)],
       dibujo: cuaderno([M, S], { op: '−' }),
       opciones: opciones(+R.texto, [
         { id: 'menor', valor: e.menorDelMayor === undefined ? null : +e.menorDelMayor, error: 'AT-MENOR-MAYOR', siFuera: 'Restar por columnas está bien. Pero arriba menos abajo: si no alcanza, se abre un envase, no se da vuelta.' },
@@ -766,7 +796,7 @@
     const op = t => [resN(t, n)];
     return {
       pregunta: ['¿Cuánto es ', sumN(M, n), ' − ', sumN(S, n), '?'],
-      datos: [DR.abrir(n), DR.resta],
+      datos: [DR.abrir(n), DR.resta(n)],
       dibujo: cuaderno([M, S], { op: '−', base: String(n) }),
       opciones: opcionesNum(op(R.texto), [
         { id: 'decimal', texto: e.comoDecimal === undefined ? [] : op(e.comoDecimal), error: 'AT-DECIMAL', siFuera: `Restar por columnas está bien. Pero así se resta en base 10; en base ${n} un envase abierto da ${n}.` },
@@ -805,7 +835,7 @@
     const nombre = ['unidades', 'decenas', 'centenas'][k];
     return {
       pregunta: `Al restar ${f(+M, 0)} − ${f(+S, 0)}, ¿qué cifra se anota en la columna de las ${nombre}?`,
-      datos: [['1 bolsita = ', bas(10), ' caramelos; 1 caja = ', bas(10), ' bolsitas; 1 cajón = ', bas(10), ' cajas'], DR.resta],
+      datos: [['1 bolsita = ', bas(10), ' caramelos; 1 caja = ', bas(10), ' bolsitas; 1 cajón = ', bas(10), ' cajas'], DR.resta(10)],
       dibujo: cuaderno([M, S], { op: '−', foco: k }),
       opciones: opciones(bien, [
         { id: 'sin', valor: cif(e.sinDescontar), error: 'AT-SIN-DESCONTAR', siFuera: 'Abrir un envase está bien. Pero la columna que prestó queda con uno menos.' },
@@ -845,7 +875,7 @@
       respuesta: ['No; la diferencia es ', res(52)] },
     { nivel: 1, titulo: 'Un préstamo',
       enunciado: '¿Cuánto es 62 − 27?',
-      datos: [DO.bolsita(10), DR.resta],
+      datos: [DO.bolsita(10), DR.resta(10)],
       figura: cuaderno(['62', '27'], { op: '−' }),
       solucion: [
         { texto: 'Sueltos: 2 no alcanza para 7. Se abre una bolsita: 12 − 7 = 5.', ecuacion: ['2 + ', bas(10), ' − 7 = ', res(5)] },
@@ -872,7 +902,7 @@
       respuesta: ['Queda con ', lleva(4), ' bolsitas'] },
     { nivel: 2, titulo: 'Dos préstamos seguidos',
       enunciado: '¿Cuánto es 623 − 357?',
-      datos: [DO.ordenes, DR.resta],
+      datos: [DO.ordenes, DR.resta(10)],
       figura: cuaderno(['623', '357'], { op: '−' }),
       solucion: [
         { texto: 'Unidades: 3 no alcanza para 7; se abre una bolsita.', ecuacion: ['3 + ', bas(10), ' − 7 = ', res(6)] },
@@ -882,7 +912,7 @@
       respuesta: ['623 − 357 = ', res(266)] },
     { nivel: 2, titulo: 'Un cero en medio',
       enunciado: '¿Cuánto es 405 − 128?',
-      datos: [DO.ordenes, DR.resta],
+      datos: [DO.ordenes, DR.resta(10)],
       figura: cuaderno(['405', '128'], { op: '−' }),
       solucion: [
         { texto: 'Unidades: 5 no alcanza para 8, y las decenas están en 0: no tienen qué prestar.' },
@@ -892,7 +922,7 @@
       respuesta: ['405 − 128 = ', res(277)] },
     { nivel: 2, titulo: 'Una resta en base 6',
       enunciado: ['¿Cuánto es ', sumN('312', 6), ' − ', sumN('145', 6), '?'],
-      datos: [DR.abrir(6), DR.resta],
+      datos: [DR.abrir(6), DR.resta(6)],
       figura: cuaderno(['312', '145'], { op: '−', base: '6' }),
       solucion: [
         { texto: ['Sueltos: 2 no alcanza para 5. Se abre una bolsita de ', bas(6), '.'], ecuacion: ['2 + ', bas(6), ' − 5 = ', res(3)] },
@@ -902,7 +932,7 @@
       respuesta: [sumN('312', 6), ' − ', sumN('145', 6), ' = ', resN('123', 6)] },
     { nivel: 2, titulo: 'Comprobar con una suma',
       enunciado: 'Resta 800 − 365 y comprueba el resultado con una suma.',
-      datos: [DR.resta, DR.prueba],
+      datos: [DR.resta(10), DR.prueba],
       figura: cuaderno(['800', '365'], { op: '−' }),
       solucion: [
         { texto: 'Unidades: 0 no alcanza para 5 y las decenas están en 0. Se abre una caja y después una bolsita.', ecuacion: ['0 + ', bas(10), ' − 5 = ', res(5)] },
@@ -922,7 +952,7 @@
     { nivel: 3, titulo: 'Tres ceros seguidos',
       enunciado: '¿Cuánto es 6 000 − 2 347?',
       alternativas: ['4 347', '4 763', '3 763', '3 653'],
-      datos: [DO.todo(10), DR.resta],
+      datos: [DO.todo(10), DR.resta(10)],
       figura: cuaderno(['6000', '2347'], { op: '−' }),
       solucion: [
         { texto: 'Unidades: 0 no alcanza para 7 y los tres ceros de la izquierda no tienen qué prestar. Se abre un cajón: los millares quedan en 5.' },
@@ -933,7 +963,7 @@
     { nivel: 3, titulo: 'Una resta en base 7',
       enunciado: ['¿Cuánto es ', sumN('1003', 7), ' − ', sumN('256', 7), '?'],
       alternativas: [[sumN('1253', 7)], [sumN('414', 7)], [sumN('1524', 7)], [sumN('524', 7)]],
-      datos: [DR.abrir(7), DR.resta],
+      datos: [DR.abrir(7), DR.resta(7)],
       figura: cuaderno(['1003', '256'], { op: '−', base: '7' }),
       solucion: [
         { texto: ['Sueltos: 3 no alcanza para 6, y al lado hay dos ceros. Se abre un cajón, una caja y una bolsita: cada 0 queda en ', bas(7), ' − 1 = 6.'] },
@@ -944,7 +974,7 @@
     { nivel: 3, titulo: 'La cifra de las centenas',
       enunciado: 'Al restar 7 004 − 2 386, ¿qué cifra se anota en la columna de las centenas?',
       alternativas: ['3', '5', '6', '7'],
-      datos: [DO.todo(10), DR.resta],
+      datos: [DO.todo(10), DR.resta(10)],
       figura: cuaderno(['7004', '2386'], { op: '−', foco: 2 }),
       solucion: [
         { texto: 'Unidades: 4 no alcanza para 6, y decenas y centenas están en 0. Se abre un cajón (millares en 6), una caja y una bolsita.' },
@@ -957,7 +987,8 @@
       alternativas: ['616', '924', '462', '1 848'],
       datos: [DR.prueba],
       solucion: [
-        { texto: 'El sustraendo más la diferencia dan el minuendo. Entonces la suma de los tres es dos veces el minuendo.', ecuacion: ['minuendo + (sustraendo + diferencia) = 2 × minuendo'] },
+        { texto: 'Si al minuendo se le quita el sustraendo queda la diferencia, entonces el sustraendo más la diferencia dan el minuendo.', ecuacion: ['sustraendo + diferencia = minuendo'] },
+        { texto: 'La suma de los tres es el minuendo dos veces.', ecuacion: ['2 × minuendo = 1 848'] },
         { texto: 'Divido entre 2.', ecuacion: ['1 848 ÷ 2 = ', res(924)] },
         { texto: ['Las trampas: ', letra('A'), ' divide entre 3, como si los tres términos fueran iguales; ', letra('C'), ' divide entre 4; ', letra('D'), ' toma la suma entera.'] },
       ],
@@ -965,14 +996,14 @@
     { nivel: 3, titulo: 'La base de una resta',
       enunciado: ['En cierta base ', bas('n'), ' se cumple ', sumN('53', 'n'), ' − ', sumN('26', 'n'), ' = ', resN('24', 'n'), '. ¿Cuál es ', bas('n'), '?'],
       alternativas: ['6', '7', '8', '9'],
-      datos: [DR.resta, DO.cifras],
+      datos: [DR.resta('n'), DO.cifras],
       figura: cuaderno(['53', '26'], { op: '−', base: 'n', resultado: '24' }),
       solucion: [
         { texto: ['La cifra 6 obliga a que ', bas('n'), ' sea 7 o más. Unidades: 3 no alcanza para 6, así que se abrió una bolsita de ', bas('n'), '.'], ecuacion: ['3 + ', bas('n'), ' − 6 = ', res(4), '   →   ', bas('n'), ' = ', bas(7)] },
         { texto: 'Compruebo las bolsitas: quedaron en 4, y 4 − 2 = 2, como dice la cuenta.', ecuacion: [lleva(4), ' − 2 = ', res(2)] },
         { texto: ['Con 8 o 9 las unidades darían 5 o 6, no 4; con 6 no se puede escribir la cifra 6.'] },
       ],
-      respuesta: [letra('B', 'envase'), ': ', bas('n'), ' = ', bas(7)] },
+      respuesta: [letra('B'), ': ', bas('n'), ' = ', bas(7)] },
   ];
 
   const prestamo = {
@@ -998,7 +1029,7 @@
       pieza: PU,
       consigna: 'Doña Juana despacha pedidos de su puesto. Si una columna no alcanza, abre una bolsita o una caja y anota lo que le queda.',
       mision: {
-        texto: 'Con 432 caramelos, despacha 178 abriendo solo lo que haga falta.',
+        texto: 'Pon 432 caramelos y despacha 178, abriendo solo lo que haga falta.',
         logrado: v => v.M === 432 && v.S === 178 && manoR(v).listo,
         bien: 'Abrió una bolsita y una caja: quedan 254, y cada columna que prestó tiene uno menos.',
       },
@@ -1053,7 +1084,7 @@
     },
     regla: {
       texto: 'Por columnas, desde las unidades. Si arriba no alcanza, se abre 1 de la columna izquierda en 10 (n en base n); esa columna queda con uno menos.',
-      ecuacion: [res('cifra'), ' = arriba + ', { llave: [lleva('p'), ' × ', bas('n')], nota: 'p = 1 si se abrió', color: 'c-o' }, ' − abajo', SEP, 'la de la izquierda: arriba − ', lleva('p')],
+      ecuacion: [res('cifra'), ' = arriba + ', { llave: [lleva('p'), ' × ', bas('n')], nota: 'p = 1 si se abrió', color: 'c-o' }, ' − abajo', SEP, 'la columna que prestó queda en arriba − ', lleva('1')],
       condicion: 'Un 0 no presta: se abre lo de su izquierda y ese 0 queda en 9 (n − 1 en base n).',
       voz: 'Lo que no alcanza se abre; el que presta queda con uno menos.',
     },
@@ -1072,7 +1103,7 @@
         const cu = (o = {}) => cuaderno([M, S], Object.assign({ op: '−', base: String(n) }, o));
         return {
           enunciado: ['En el puesto de bolsitas de ', bas(n), ', doña Juana tiene ', sumN(M, n), ' caramelos y despacha ', sumN(S, n), '. ¿Cuántos le quedan?'],
-          datos: [DR.abrir(n), DR.resta, DO.f3(n)],
+          datos: [DR.abrir(n), DR.resta(n), DO.f3(n)],
           dibujo: cu(),
           pasos: [
             { tipo: 'pide', texto: ['Piden la diferencia, escrita en base ', bas(n), '.'] },
@@ -1298,7 +1329,7 @@
     { nivel: 3, titulo: 'Base 5 con un cero',
       enunciado: ['¿Cuál es el complemento aritmético de ', sumN('1030', 5), '?'],
       alternativas: [[sumN('3414', 5)], [sumN('3020', 5)], [sumN('3420', 5)], [sumN('43420', 5)]],
-      datos: [DR.caBase, ['En base 5: ', { sup: ['5', '4'] }, ' = 625']],
+      datos: [DR.caBase, ['En base 5: ', { sup: ['5', '3'] }, ' = 125; ', { sup: ['5', '4'] }, ' = 625; ', { sup: ['5', '5'] }, ' = 3 125']],
       figura: cuaderno(['10000', '1030'], { op: '−', base: '5' }),
       solucion: [
         { texto: ['Tiene 4 cifras: la meta es ', { sup: [bas(5), '4'] }, ' = 625. El número vale 125 + 15 = 140.'], ecuacion: ['625 − 140 = 485 = 3 × 125 + 4 × 25 + 2 × 5'] },
@@ -1360,7 +1391,7 @@
       pieza: PU,
       consigna: 'Doña Juana quiere llenar justo un cajón, que lleva 1 000 caramelos. Elige cuántos tiene y cuántos agrega.',
       mision: {
-        texto: 'Tiene 740 caramelos: agrega los que faltan para llenar justo el cajón.',
+        texto: 'Pon 740 caramelos y agrega los que faltan para llenar justo el cajón.',
         logrado: v => v.N === 740 && v.ag === 260,
         bien: 'Con 260 más, las bolsitas llenaron una caja y las cajas, el cajón.',
       },
@@ -1381,7 +1412,8 @@
     },
     predice: {
       pregunta: '¿Cuál es el complemento aritmético de 4 073?',
-      datos: ['4 073 tiene 4 cifras', [{ sup: ['10', '4'] }, ' = 10 000']],
+      // Varias potencias, para que el alumno elija la meta (auditoría, M6: «4 073 tiene 4 cifras · 10⁴» le daba la meta).
+      datos: [[{ sup: ['10', '3'] }, ' = 1 000'], [{ sup: ['10', '4'] }, ' = 10 000'], [{ sup: ['10', '5'] }, ' = 100 000']],
       voz: 'Piensa cuál es la meta y qué pasa con el 0.',
       opciones: [
         { id: 'c', texto: [res('5 927')], correcta: true },
@@ -1417,7 +1449,7 @@
     regla: {
       texto: 'CA(N) es lo que le falta a N para llegar a un 1 con tantos ceros como cifras tiene N. En base n, la meta es nᵏ.',
       ecuacion: [res('CA(N)'), ' = ', { llave: [{ sup: [bas('10'), 'k'] }], nota: 'k: cifras de N', color: 'c-i' }, ' − N', SEP, 'N + ', res('CA(N)'), ' = ', { sup: [bas('10'), 'k'] }],
-      condicion: 'Atajo: de 9 cada cifra y de 10 la última que no es 0; los ceros del final se quedan.',
+      condicion: 'Atajo: cada cifra se resta de 9, y la última que no es 0, de 10; los ceros del final se quedan.',
       voz: 'Lo que falta para llenar la meta.',
     },
     // Así se resuelve: el complemento de un número con ceros al final (3 740 → 6 260 es el caso de la escena), con el
@@ -1541,7 +1573,7 @@
     const bien = ok[0][1];
     return {
       pregunta: ['En el cuaderno, ', `${m[0]}☐${m[2]} − ☐${s.slice(1)} = ${total}`, '. ¿Qué cifra está bajo la mancha del sustraendo?'],
-      datos: [DR.mancha, DR.bien, DR.resta],
+      datos: [DR.mancha, DR.primera, DR.bien, DR.resta(10)],
       dibujo: cuaderno(filas, { op: '−', resultado: total }),
       opciones: opciones(bien, [
         { id: 'sin', valor: sin[0][1], error: 'AT-SIN-DESCONTAR', siFuera: 'Ver el préstamo de las unidades está bien. Pero las centenas también prestaron: quedan con uno menos.' },
@@ -1562,7 +1594,7 @@
     const doble = (bien + 9) % 10;
     return {
       pregunta: ['En el cuaderno, ', `☐${a.slice(1)} + ${b[0]}☐${b[2]} = ${f(C, 0)}`, '. ¿Qué cifra está bajo la mancha del segundo sumando?'],
-      datos: [DR.mancha, DR.bien, DO.columna],
+      datos: [DR.mancha, DR.primera, DR.bien, DO.columna(10)],
       dibujo: cuaderno(filas, { resultado: total }),
       opciones: opciones(bien, [
         { id: 'olvida', valor: olvida, error: 'AT-LLEVA-OLVIDA', siFuera: 'Ir por columnas está bien. Pero las unidades llevan 1 a las decenas.' },
@@ -1606,12 +1638,13 @@
   // 4☐ + 25 = 72 → 7; 36 + 47 = 8☐ → 3; 9☐ − 34 = 58 → 2; 726 − 627 = 99; 456; ☐7 + 5☐ = 112 → 5 y 5; 5☐0 − ☐27 = 373
   // → 0 y 1; 732 − 237 = 495 = 99 × 5; 854 − 458 = 396; c̅b̅a̅ − a̅b̅c̅ = 198; 7☐8 − 6☐9 = ☐89 → 9, 0, 1 (suma 10; sin
   // descontar salen 9 u 11); a̅b̅c̅ − c̅b̅a̅ = 396 → 995; a − c = 6 → 594, cifras 18; ☐12 + 7☐7 = 17☐9 → 9, 9, 0 (suma 18; sin
-  // llevar no cuadra ninguna; anotando 1 en vez de 0, 19); a̅b̅c̅ + c̅b̅a̅ = 1 332 con cifras consecutivas → 567.
+  // llevar no cuadra ninguna; anotando 1 en vez de 0, 19); 5☐2 − 2☐5 = ☐97 → la del resultado es 2 (sin descontar, 3;
+  // descontando dos veces, 1). Con «la primera cifra no es 0», cada cuenta manchada tiene una sola solución.
   const cuO = (filas, o = {}) => cuaderno(filas, o);
   const EJEMPLOS_OCULTAS = [
     { nivel: 1, titulo: 'Una mancha en las unidades',
       enunciado: 'En el cuaderno se lee 4☐ + 25 = 72. ¿Qué cifra está bajo la mancha?',
-      datos: [DR.mancha, DR.bien],
+      datos: [DR.mancha, DR.primera, DR.bien],
       figura: cuO(['4#', '25'], { resultado: '72' }),
       solucion: [
         { texto: 'Unidades: ☐ + 5 termina en 2. Solo puede ser 12: ☐ = 7, y se lleva 1.', ecuacion: ['7 + 5 = 12 = ', lleva(1), ' × ', bas(10), ' + 2'] },
@@ -1620,13 +1653,13 @@
       respuesta: ['☐ = ', res(7)] },
     { nivel: 1, titulo: 'Una mancha en el resultado',
       enunciado: 'En el cuaderno se lee 36 + 47 = 8☐. ¿Qué cifra está bajo la mancha?',
-      datos: [DR.mancha, DR.bien],
+      datos: [DR.mancha, DR.primera, DR.bien],
       figura: cuO(['36', '47'], { resultado: '8#' }),
       solucion: [{ texto: 'Unidades: 6 + 7 = 13. Se anota 3 y se lleva 1; las decenas dan 3 + 4 + 1 = 8, como dice el cuaderno.', ecuacion: ['6 + 7 = 13 = ', lleva(1), ' × ', bas(10), ' + ', res(3)] }],
       respuesta: ['☐ = ', res(3)] },
     { nivel: 1, titulo: 'Una mancha en una resta',
       enunciado: 'En el cuaderno se lee 9☐ − 34 = 58. ¿Qué cifra está bajo la mancha?',
-      datos: [DR.mancha, DR.bien, DR.resta],
+      datos: [DR.mancha, DR.primera, DR.bien, DR.resta(10)],
       figura: cuO(['9#', '34'], { op: '−', resultado: '58' }),
       solucion: [
         { texto: 'Decenas: 9 − 3 da 6, pero el cuaderno dice 5: las decenas prestaron 1.' },
@@ -1645,7 +1678,7 @@
       respuesta: ['El número es ', res(456)] },
     { nivel: 2, titulo: 'Dos manchas en una suma',
       enunciado: 'En el cuaderno se lee ☐7 + 5☐ = 112. ¿Qué cifras están bajo las manchas?',
-      datos: [DR.mancha, DR.bien, DO.columna],
+      datos: [DR.mancha, DR.primera, DR.bien, DO.columna(10)],
       figura: cuO(['#7', '5#'], { resultado: '112' }),
       solucion: [
         { texto: 'Unidades: 7 + ☐ termina en 2: solo 12. La mancha de abajo es 5, y se lleva 1.', ecuacion: ['7 + 5 = 12 = ', lleva(1), ' × ', bas(10), ' + 2'] },
@@ -1654,7 +1687,7 @@
       respuesta: [res(57), ' + ', res(55), ' = 112'] },
     { nivel: 2, titulo: 'Una resta con un cero',
       enunciado: 'En el cuaderno se lee 5☐0 − ☐27 = 373. ¿Qué cifras están bajo las manchas?',
-      datos: [DR.mancha, DR.bien, DR.resta],
+      datos: [DR.mancha, DR.primera, DR.bien, DR.resta(10)],
       figura: cuO(['5#0', '#27'], { op: '−', resultado: '373' }),
       solucion: [
         { texto: 'Unidades: 0 no alcanza para 7; con el préstamo, 10 − 7 = 3, como dice el cuaderno.' },
@@ -1667,8 +1700,9 @@
       datos: [DR.abc, DR.reverso],
       figura: cuO(['732', '237'], { op: '−' }),
       solucion: [
-        { texto: 'Por columnas: 12 − 7 = 5, 12 − 3 = 9 y 6 − 2 = 4.', ecuacion: ['732 − 237 = ', res(495)] },
-        { texto: 'Y 7 − 2 = 5: la diferencia es 99 × 5.', ecuacion: ['99 × 5 = 495'] },
+        { texto: 'Unidades: 2 no alcanza para 7; se abre una bolsita: 12 − 7 = 5. Decenas: el 3 prestó y quedó en 2; se abre una caja: 12 − 3 = 9.' },
+        { texto: 'Centenas: el 7 prestó y quedó en 6: 6 − 2 = 4.', ecuacion: ['732 − 237 = ', res(495)] },
+        { texto: 'Con la descomposición, los 30 de las decenas se anulan: quedan 700 + 2 − 200 − 7, que es 100 × 5 − 5.', ecuacion: ['100 × (7 − 2) − (7 − 2) = 99 × 5 = 495'] },
       ],
       respuesta: ['732 − 237 = ', res(495), ' = 99 × 5'] },
     { nivel: 2, titulo: 'La cifra del medio',
@@ -1691,12 +1725,12 @@
     { nivel: 3, titulo: 'Una resta con tres manchas',
       enunciado: 'En el cuaderno se lee 7☐8 − 6☐9 = ☐89. ¿Cuánto suman las tres cifras manchadas?',
       alternativas: ['9', '10', '11', 'No se puede saber'],
-      datos: [DR.mancha, DR.bien, DR.resta],
+      datos: [DR.mancha, DR.primera, DR.bien, DR.resta(10)],
       figura: cuO(['7#8', '6#9'], { op: '−', resultado: '#89' }),
       solucion: [
         { texto: 'Unidades: 8 no alcanza para 9; con el préstamo, 18 − 9 = 9, como dice el cuaderno.' },
         { texto: 'Decenas: la mancha de arriba prestó 1 y tiene que dar 8. Si no presta otra vez, ☐ − 1 − ☐ = 8: arriba 9 y abajo 0.', ecuacion: ['9 − 1 − 0 = 8'] },
-        { texto: 'Centenas: 7 − 6 = 1. Las manchas son 9, 0 y 1.', ecuacion: ['9 + 0 + 1 = ', res(10)] },
+        { texto: 'Centenas: si las decenas prestaran otra vez, quedaría 7 − 1 − 6 = 0, y un numeral no empieza con 0. Así, 7 − 6 = 1: las manchas son 9, 0 y 1.', ecuacion: ['9 + 0 + 1 = ', res(10)] },
         { texto: ['Las trampas: ', letra('A'), ' y ', letra('C'), ' olvidan que las decenas prestaron (8 − 0 o 9 − 1); ', letra('D'), ' cree que faltan datos.'] },
       ],
       respuesta: [letra('B'), ': ', res(10)] },
@@ -1711,7 +1745,7 @@
       ],
       respuesta: [letra('C'), ': ', res(995)] },
     { nivel: 3, titulo: 'La diferencia suma 18',
-      enunciado: ['Si ', { raya: ['abc'] }, ' − ', { raya: ['cba'] }, ' = ', { raya: [res('mnp')] }, ' y a − c = 6, ¿cuánto vale m + n + p?'],
+      enunciado: ['Si ', { raya: ['abc'] }, ' − ', { raya: ['cba'] }, ' = ', { raya: [res('xyz')] }, ' y a − c = 6, ¿cuánto vale x + y + z?'],
       alternativas: ['9', '18', '6', '27'],
       datos: [DR.abc, DR.reverso],
       solucion: [
@@ -1723,7 +1757,7 @@
     { nivel: 3, titulo: 'Una suma con tres manchas',
       enunciado: 'En el cuaderno se lee ☐12 + 7☐7 = 17☐9. ¿Cuánto suman las tres cifras manchadas?',
       alternativas: ['9', '18', '19', 'No se puede saber'],
-      datos: [DR.mancha, DR.bien, DO.columna],
+      datos: [DR.mancha, DR.primera, DR.bien, DO.columna(10)],
       figura: cuO(['#12', '7#7'], { resultado: '17#9' }),
       solucion: [
         { texto: 'Unidades: 2 + 7 = 9, sin llevada. Centenas: ☐ + 7, más lo que llegue de las decenas, tiene que dar 17.' },
@@ -1732,16 +1766,21 @@
         { texto: ['Las trampas: ', letra('A'), ' cuenta una sola mancha; ', letra('C'), ' anota 1 en el total en vez de 0; ', letra('D'), ' olvida la llevada y no le cuadra nada.'] },
       ],
       respuesta: [letra('B'), ': ', res(18)] },
-    { nivel: 3, titulo: 'Consecutivas que suman',
-      enunciado: ['Las cifras de ', { raya: ['abc'] }, ' son consecutivas y crecientes, y ', { raya: ['abc'] }, ' + ', { raya: ['cba'] }, ' = 1 332. ¿Cuál es ', { raya: ['abc'] }, '?'],
-      alternativas: ['456', '567', '678', '666'],
-      datos: [DR.abc, DR.reverso],
+    // Cifras ocultas con números y el reverso en una resta (decisiones: la suma con el reverso y las letras son de
+    // Razonamiento numérico; auditoría, M2). 5☐2 − 2☐5 = ☐97: con las manchas del medio iguales o no, la del resultado
+    // siempre es 2 (fuerza bruta en cuatro-operaciones.test.js: 10 soluciones, todas con 2), porque 99 × (5 − 2) = 297.
+    { nivel: 3, titulo: 'El reverso con manchas',
+      enunciado: 'Doña Juana le restó a un número su reverso, pero se mancharon cifras: 5☐2 − 2☐5 = ☐97. ¿Qué cifra está bajo la mancha del resultado?',
+      alternativas: ['3', '2', '1', 'No se puede saber'],
+      datos: [DR.mancha, DR.primera, DR.bien, DR.resta(10), DR.reverso],
+      figura: cuO(['5#2', '2#5'], { op: '−', resultado: '#97' }),
       solucion: [
-        { texto: 'Con b = a + 1 y c = a + 2, la suma es 101 × (a + c) + 20 × b.', ecuacion: ['101 × (2a + 2) + 20 × (a + 1) = 222 × a + 222'] },
-        { texto: '222 × a + 222 = 1 332, así que 222 × a = 1 110 y a = 5.', ecuacion: ['567 + 765 = 1 332'] },
-        { texto: ['Las trampas: ', letra('A'), ' y ', letra('C'), ' dan 1 110 y 1 554; ', letra('D'), ' divide 1 332 entre 2.'] },
+        { texto: 'Unidades: 2 no alcanza para 5; con el préstamo, 12 − 5 = 7, como dice el cuaderno.' },
+        { texto: 'Decenas: es el reverso, así que arriba y abajo hay la misma cifra. Arriba quedó con 1 menos: no alcanza, presta otra vez y da 9.', ecuacion: ['☐ − 1 + 10 − ☐ = 9'] },
+        { texto: 'Centenas: el 5 prestó y quedó en 4.', ecuacion: [lleva(4), ' − 2 = ', res(2), '   →   99 × (5 − 2) = 297'] },
+        { texto: ['Las trampas: ', letra('A'), ' olvida que las centenas prestaron; ', letra('C'), ' descuenta dos veces; ', letra('D'), ' cree que hace falta la cifra del medio.'] },
       ],
-      respuesta: [letra('B'), ': ', res(567)] },
+      respuesta: [letra('B'), ': ', res(2)] },
   ];
 
   const cifrasOcultas = {
@@ -1791,7 +1830,7 @@
     },
     predice: {
       pregunta: 'En el cuaderno hay una resta manchada: 8☐2 − ☐57 = 375. ¿Qué cifra está bajo la mancha del 57?',
-      datos: ['La resta está bien hecha', 'Bajo cada mancha hay una cifra de 0 a 9'],
+      datos: ['La resta está bien hecha', 'Bajo cada mancha hay una cifra de 0 a 9', 'La primera cifra de un numeral no es 0'],
       voz: 'Columna por columna, desde las unidades.',
       opciones: [
         { id: 'c', texto: '4', correcta: true },
@@ -1829,7 +1868,9 @@
     regla: {
       texto: 'Se empieza por las unidades. En cada columna, la llevada o el préstamo que viene de la anterior decide qué cifra cabe. Una letra que se repite vale lo mismo.',
       ecuacion: [{ raya: ['abc'] }, ' − ', { raya: ['cba'] }, ' = ', res('99 × (a − c)'), SEP, { raya: ['abc'] }, ' = 100 × a + 10 × b + c'],
-      condicion: 'Con a mayor que c. Si a − c = 1, la diferencia es 99; si no, sus cifras suman 18.',
+      // Antes: «si a − c = 1 es 99; si no, sus cifras suman 18», y 099 también suma 18 (lector en frío y auditoría). Con
+      // a − c = k, 99 × k = (k − 1) 9 (10 − k): el 9 del medio y los extremos que suman 9 valen para todo k de 1 a 9.
+      condicion: 'Con a mayor que c. La diferencia es 099, 198, 297… hasta 891: 9 en medio y extremos que suman 9.',
       voz: 'Columna por columna: cada una le deja algo a la siguiente.',
     },
     // Así se resuelve: una suma con dos manchas (una en cada sumando), columna por columna. «Ahora tú» pide restas
@@ -1846,7 +1887,7 @@
           const u = +b[2], ll = 1, t1 = +a[1] + +b[1] + ll;
           return {
             enunciado: ['En el cuaderno se lee ', `${a[0]}☐${a[2]} + ${b[0]}${b[1]}☐ = ${f(C, 0)}`, '. ¿Qué cifras están bajo las manchas?'],
-            datos: [DR.mancha, DR.bien, DO.columna],
+            datos: [DR.mancha, DR.primera, DR.bien, DO.columna(10)],
             dibujo: cuO(filas, { resultado: c }),
             pasos: [
               { tipo: 'pide', texto: 'Piden las dos cifras manchadas: una en las decenas de arriba y otra en las unidades de abajo.' },
@@ -1918,7 +1959,7 @@
     if (s === 4 && S === 52) return null;
     return {
       pregunta: `Doña Juana agrega ${s} caramelos a cada bolsa de un pedido, y el pedido sube ${S} caramelos. ¿Cuántas bolsas hay?`,
-      datos: ['Todas las bolsas llevan lo mismo', DR.distrib],
+      datos: ['Todas las bolsas llevan lo mismo', DR.distrib, DR.fgsBolsa],
       opciones: opciones(x, [
         { id: 'resta', valor: S - s, error: 'AT-RESTA-AUMENTO', siFuera: `Usar el aumento está bien. Pero ${S} es ${s} por cada bolsa: se divide.` },
         { id: 'suma', valor: S + s, error: 'AT-SUMA-AUMENTO', siFuera: `Usar el aumento está bien. Pero ${S} es ${s} por cada bolsa: se divide.` },
@@ -1931,7 +1972,7 @@
     const F = r.ent(12, 60), G = r.ent(4, 15), s = r.ent(2, 9);
     return {
       pregunta: ['En ', `${F} × ${G}`, `, el primer factor sube ${s}. ¿Cuánto sube el producto?`],
-      datos: [DR.distrib],
+      datos: [DR.distrib, DR.fs],
       opciones: opciones(s * G, [
         { id: 'solo', valor: s, error: 'AT-SUBE-SOLO', siFuera: `Ver que el factor sube ${s} está bien. Pero cada uno de los ${G} grupos recibe ${s}.` },
         { id: 'mismo', valor: s * F, error: 'AT-SUBE-MISMO', siFuera: `Multiplicar el aumento está bien. Pero por el otro factor, ${G}, no por ${F}.` },
@@ -1945,7 +1986,7 @@
     const F = r.ent(12, 40), G = r.ent(12, 40), s = r.ent(2, 9), t = r.ent(2, 9), P1 = s * G, P2 = t * F;
     return {
       pregunta: `Si el primer factor de un producto sube ${s}, el producto sube ${P1}; si en cambio el segundo sube ${t}, el producto sube ${P2}. ¿Cuál es el producto?`,
-      datos: [DR.distrib, 'F × (G + t) = F × G + F × t'],
+      datos: [DR.distrib, 'F × (G + t) = F × G + F × t', DR.fgs],
       opciones: opciones(F * G, [
         { id: 'suma', valor: P1 + P2, error: 'AT-SUMA-AUMENTOS', siFuera: 'Usar los dos aumentos está bien. Pero de cada uno sale un factor, y el producto los multiplica.' },
         { id: 'fact', valor: F + G, error: 'AT-SUMA-FACTORES', siFuera: `Hallar los factores está bien: ${F} y ${G}. Pero el producto los multiplica.` },
@@ -1961,7 +2002,7 @@
     const op = t => [resN(t, n)];
     return {
       pregunta: ['¿Cuánto es ', sumN(X, n), ` × ${m}?`],
-      datos: [DO.base(n), DO.columna],
+      datos: [DO.base(n), DO.producto(n)],
       dibujo: cuaderno([X, String(m)], { op: '×', base: String(n) }),
       opciones: opcionesNum(op(P.texto), [
         ...(P.decimal ? [{ id: 'decimal', texto: op(P.decimal), error: 'AT-DECIMAL', siFuera: `Multiplicar cada cifra está bien. Pero se lleva de ${n} en ${n}, no de 10 en 10.` }] : []),
@@ -1991,7 +2032,7 @@
     const s = xs => xs[0] + xs[1];
     return {
       pregunta: ['En el cuaderno se lee ', `☐${x[1]} × ${m} = ${p[0]}☐${p[2]}`, '. ¿Cuánto suman las dos cifras manchadas?'],
-      datos: [DR.mancha, DR.bien, DO.columna],
+      datos: [DR.mancha, DR.primera, DR.bien, DO.producto(10)],
       dibujo: cuaderno(pat, { op: '×', resultado: tot }),
       opciones: opciones(s(ok[0]), [
         { id: 'olvida', valor: ol.length === 1 ? s(ol[0]) : null, error: 'AT-LLEVA-OLVIDA', siFuera: `${x[1]} × ${m} = ${+x[1] * m}: esa llevada se suma en las decenas.` },
@@ -2018,12 +2059,12 @@
       respuesta: [res(90), ' caramelos'] },
     { nivel: 1, titulo: 'Lo que se lleva',
       enunciado: 'Al multiplicar en columnas, en una columna sale 8 × 7. ¿Qué se anota en esa columna y cuánto se lleva?',
-      datos: [DO.columna],
+      datos: [DO.producto(10)],
       solucion: [{ texto: '8 × 7 = 56: se llenan 5 bolsitas de 10 y sobran 6.', ecuacion: ['56 = ', lleva(5), ' × ', bas(10), ' + ', res(6)] }],
       respuesta: ['Se anota ', res(6), ' y se lleva ', lleva(5)] },
     { nivel: 1, titulo: '¿Cuánto sube?',
       enunciado: 'Hay 12 bolsas y cada una recibe 2 caramelos más. ¿Cuánto sube el pedido?',
-      datos: [DR.distrib],
+      datos: [DR.distrib, DR.fgsBolsa],
       figura: bolsas(10, 12, { extra: 2, rotulos: { bolsitas: '12 bolsas, 2 más en cada una' } }),
       solucion: [{ texto: 'Lo agregado son 12 grupos de 2.', ecuacion: ['2 × 12 = ', res(24)] }],
       respuesta: ['Sube ', res(24), ' caramelos'] },
@@ -2034,12 +2075,12 @@
       respuesta: ['37 × 10 = ', res(370)] },
     { nivel: 1, titulo: 'Por partes',
       enunciado: '¿Cuánto es 23 × 4, multiplicando por partes?',
-      datos: ['(F + s) × G = F × G + s × G'],
+      datos: ['(F + s) × G = F × G + s × G', 'F y s: las dos partes del primer factor; G: el otro factor'],
       solucion: [{ texto: '23 es 20 + 3: multiplico cada parte por 4 y junto.', ecuacion: ['20 × 4 + 3 × 4 = 80 + 12 = ', res(92)] }],
       respuesta: ['23 × 4 = ', res(92)] },
     { nivel: 2, titulo: 'Se llevan 4',
       enunciado: '¿Cuánto es 47 × 6?',
-      datos: [DO.columna],
+      datos: [DO.producto(10)],
       figura: cuaderno(['47', '6'], { op: '×' }),
       solucion: [
         { texto: 'Unidades: 7 × 6 = 42. Se anota 2 y se llevan 4.', ecuacion: ['42 = ', lleva(4), ' × ', bas(10), ' + ', res(2)] },
@@ -2048,7 +2089,7 @@
       respuesta: ['47 × 6 = ', res(282)] },
     { nivel: 2, titulo: 'En base 5',
       enunciado: ['¿Cuánto es ', sumN('32', 5), ' × 3?'],
-      datos: [DO.base(5), DO.columna],
+      datos: [DO.base(5), DO.producto(5)],
       figura: cuaderno(['32', '3'], { op: '×', base: '5' }),
       solucion: [
         { texto: ['Sueltos: 2 × 3 = 6 = 1 × ', bas(5), ' + 1. Se anota 1 y se lleva 1.'], ecuacion: ['6 = ', lleva(1), ' × ', bas(5), ' + ', res(1)] },
@@ -2058,7 +2099,7 @@
       respuesta: [sumN('32', 5), ' × 3 = ', resN('201', 5)] },
     { nivel: 2, titulo: 'El factor que falta',
       enunciado: 'Cada bolsa de un pedido recibe 6 caramelos más y el pedido sube 84. ¿Cuántas bolsas hay?',
-      datos: ['Todas las bolsas llevan lo mismo', DR.distrib],
+      datos: ['Todas las bolsas llevan lo mismo', DR.distrib, DR.fgsBolsa],
       solucion: [
         { texto: 'La subida son 6 por cada bolsa: 6 × bolsas = 84.' },
         { texto: 'Divido la subida entre lo que recibe cada una.', ecuacion: ['84 ÷ 6 = 14'] },
@@ -2066,7 +2107,7 @@
       respuesta: ['Hay 14 bolsas'] },
     { nivel: 2, titulo: 'Un factor que baja',
       enunciado: '35 × 8 = 280. Si el 35 baja a 30, ¿cuánto vale el producto?',
-      datos: ['(F − s) × G = F × G − s × G'],
+      datos: ['(F − s) × G = F × G − s × G', 'F: el factor que baja; s: lo que baja; G: el otro factor'],
       solucion: [
         { texto: 'Baja 5 en cada uno de los 8 grupos: el producto baja 5 × 8 = 40.' },
         { texto: 'Lo quito del producto de antes.', ecuacion: ['280 − 40 = ', res(240)] },
@@ -2074,7 +2115,7 @@
       respuesta: ['30 × 8 = ', res(240)] },
     { nivel: 2, titulo: 'Los dos factores suben',
       enunciado: '15 × 8 = 120. Si el 15 sube 2 y el 8 sube 3, ¿cuánto vale el producto?',
-      datos: ['(F + s) × (G + t) = F × G + s × G + F × t + s × t'],
+      datos: ['(F + s) × (G + t) = F × G + s × G + F × t + s × t', DR.fgs],
       solucion: [
         { texto: 'Se agregan tres partes: 2 × 8 por subir el 15, 15 × 3 por subir el 8, y 2 × 3 de las dos subidas juntas.' },
         { texto: 'Las sumo al producto de antes.', ecuacion: ['120 + 16 + 45 + 6 = ', res(187), ' = 17 × 11'] },
@@ -2083,7 +2124,7 @@
     { nivel: 3, titulo: 'Dos aumentos',
       enunciado: 'Si el primer factor de un producto sube 5, el producto sube 140; si en cambio el segundo sube 3, el producto sube 102. ¿Cuál es el producto?',
       alternativas: ['242', '62', '952', '1 209'],
-      datos: [DR.distrib, 'F × (G + t) = F × G + F × t'],
+      datos: [DR.distrib, 'F × (G + t) = F × G + F × t', DR.fgs],
       solucion: [
         { texto: 'Si el primero sube 5, el producto sube 5 por el segundo: el segundo es 140 ÷ 5 = 28.' },
         { texto: 'Si el segundo sube 3, sube 3 por el primero: el primero es 102 ÷ 3 = 34.', ecuacion: ['34 × 28 = ', res(952)] },
@@ -2093,7 +2134,7 @@
     { nivel: 3, titulo: 'Cifras ocultas en un producto',
       enunciado: 'En el cuaderno se lee ☐3 × 8 = 7☐4. ¿Cuánto suman las dos cifras manchadas?',
       alternativas: ['11', '12', '13', 'No se puede saber'],
-      datos: [DR.mancha, DR.bien, DO.columna],
+      datos: [DR.mancha, DR.primera, DR.bien, DO.producto(10)],
       figura: cuaderno(['#3', '8'], { op: '×', resultado: '7#4' }),
       solucion: [
         { texto: 'Unidades: 3 × 8 = 24. Se anota 4, como dice el cuaderno, y se llevan 2.', ecuacion: ['24 = ', lleva(2), ' × ', bas(10), ' + 4'] },
@@ -2104,7 +2145,7 @@
     { nivel: 3, titulo: 'Multiplicar en base 7',
       enunciado: ['¿Cuánto es ', sumN('356', 7), ' × 4?'],
       alternativas: [[sumN('1424', 7)], [sumN('1603', 7)], [sumN('1563', 7)], [sumN('2123', 7)]],
-      datos: [DO.base(7), DO.columna],
+      datos: [DO.base(7), DO.producto(7)],
       figura: cuaderno(['356', '4'], { op: '×', base: '7' }),
       solucion: [
         { texto: ['Sueltos: 6 × 4 = 24 = 3 × ', bas(7), ' + 3. Bolsitas: 5 × 4 + 3 = 23 = 3 × 7 + 2.'], ecuacion: ['24 = ', lleva(3), ' × ', bas(7), ' + ', res(3), ' ; 23 = ', lleva(3), ' × ', bas(7), ' + ', res(2)] },
@@ -2115,7 +2156,7 @@
     { nivel: 3, titulo: 'Se equivocó de factor',
       enunciado: 'Doña Juana debía multiplicar 48 por 73, pero multiplicó 48 por 37. ¿Cuánto le faltó?',
       alternativas: ['36', '1 728', '3 504', '1 776'],
-      datos: ['F × G − F × H = F × (G − H)'],
+      datos: ['F × G − F × H = F × (G − H)', 'F: el factor que no cambia; G y H: los otros dos factores'],
       solucion: [
         { texto: 'Le faltaron 73 − 37 = 36 grupos de 48.' },
         { texto: 'Multiplico la diferencia de factores por 48.', ecuacion: ['48 × 36 = ', res('1 728')] },
@@ -2125,7 +2166,7 @@
     { nivel: 3, titulo: 'Más bolsas y más caramelos',
       enunciado: 'Una caja trae 25 bolsas de 18 caramelos. Si cada bolsa trae 2 más y la caja trae 3 bolsas más, ¿cuántos caramelos más trae la caja?',
       alternativas: ['6', '104', '110', '560'],
-      datos: ['(F + s) × (G + t) = F × G + s × G + F × t + s × t'],
+      datos: ['(F + s) × (G + t) = F × G + s × G + F × t + s × t', DR.fgs],
       solucion: [
         { texto: 'Antes: 25 × 18 = 450. Ahora: 28 bolsas de 20.', ecuacion: ['28 × 20 = 560'] },
         { texto: 'Lo que sube: 2 × 25 + 18 × 3 + 2 × 3.', ecuacion: ['50 + 54 + 6 = ', res(110), ' = 560 − 450'] },
@@ -2156,15 +2197,15 @@
       pieza: PU,
       consigna: 'Doña Juana arma bolsas de sorpresa para una promoción: cada bolsa empieza con 24 caramelos. Elige cuántas bolsas arma y cuántos caramelos lleva cada una.',
       mision: {
-        texto: 'Con 7 bolsas, agrega a cada una lo justo para que el pedido suba 21.',
+        texto: 'Pon 7 bolsas y agrega a cada una lo justo para que el pedido suba 21.',
         logrado: v => v.b === 7 && v.a === 27,
         bien: '3 más en cada bolsa, por 7 bolsas: el pedido subió 21.',
       },
-      voz: 'Mira la fila violeta de cada bolsa.',
+      voz: 'Sube los caramelos de cada bolsa: lo agregado sale en violeta.',
       leyenda: [
         { s: bas('bolsa'), t: 'una bolsa de sorpresa' },
         { s: '24', t: 'caramelos con que empieza cada bolsa' },
-        { s: res('agregados'), t: 'los caramelos que agregas a cada bolsa' },
+        { s: res('agregados'), t: 'lo que pasa de 24 en cada bolsa' },
       ],
       controles: CTRL_M,
       dibujo: v => ({ datos: puestoM(v, escalaM()), estado: {} }),
@@ -2213,7 +2254,10 @@
     regla: {
       texto: 'Si un factor sube, el producto sube eso por el otro factor. En columnas se lleva de 10 en 10 (de n en n), aunque la llevada pase de 1.',
       ecuacion: ['(F + s) × G = F × G + ', { llave: [res('s × G')], nota: 'lo que sube', color: 'c-f' }, SEP, 'columna = ', lleva('L'), ' × ', bas('n'), ' + ', res('c')],
-      condicion: 'F y G: los factores; s: lo que sube F. Si también sube G, se suman todas las partes nuevas.',
+      condicion: 'F y G: los factores; s: lo que sube F. Si G sube t, sube además F × t + s × t.',
+      // La regla dibuja lo que dice su fórmula grande: las 7 bolsas con 3 más en cada una (la llevada en columnas ya se
+      // vio en «Mira»). Lector en frío: «el dibujo muestra la llevada y la fórmula, lo que sube».
+      dibujo: { pieza: PU, datos: { n: 27, bolsitas: 7, extra: 3, colorCifras: false, escala: ESC_M5, regla: [[['Cada bolsa: 24'], [' + '], ['3', 'f', 700], [' caramelos']]], rotulos: { bolsitas: '7 bolsas: sube 3 × 7' } }, estado: {} },
       voz: 'Cada bolsa recibe lo mismo: se multiplica.',
     },
     // Así se resuelve: multiplicar por una cifra en base n (34₍₅₎ × 3 = 212₍₅₎ es el caso de la escena), columna por
@@ -2233,7 +2277,7 @@
             dibujo: cuaderno([X, String(m)], { op: '×', base: String(n), llevadas: Object.fromEntries(P.cols.slice(0, k + 1).filter(x => x.sale).map(x => [x.k + 1, x.sale])), resultado: k === P.cols.length - 1 ? P.texto : P.texto.slice(-(k + 1)) }) });
           return {
             enunciado: ['En el puesto de bolsitas de ', bas(n), ', doña Juana arma ', String(m), ' pedidos iguales de ', sumN(X, n), ' caramelos. ¿Cuántos caramelos son en total?'],
-            datos: [DO.base(n), DO.columna, DO.f3(n)],
+            datos: [DO.base(n), DO.producto(n), DO.f3(n)],
             dibujo: cuaderno([X, String(m)], { op: '×', base: String(n) }),
             pasos: [
               { tipo: 'pide', texto: ['Piden ', sumN(X, n), ` × ${m}, escrito en base `, bas(n), '.'] },
@@ -2288,12 +2332,12 @@
     const d = r.ent(4, 9), q = r.ent(4, 9), rr = r.ent(1, d - 1), D = d * q + rr;
     if (2 * rr === d) return null;
     return {
-      pregunta: `Doña Juana empaca ${D} caramelos en bolsitas de ${d}: llena ${q} y le sobran ${rr}. ¿Cuántos le faltan para llenar otra bolsita?`,
-      datos: [DR.div, DR.exceso],
+      pregunta: `Doña Juana empaca ${D} caramelos en bolsitas de ${d}: llena ${q} y le ${rr === 1 ? 'sobra' : 'sobran'} ${rr}. ¿Cuántos le faltan para llenar otra bolsita?`,
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       dibujo: bolsitasD(d, q, rr),
       opciones: opciones(d - rr, [
         { id: 'igual', valor: rr, error: 'AT-EXCESO-IGUAL', siFuera: `${rr} es lo que sobra. Lo que falta es lo que necesita la bolsita para llegar a ${d}.` },
-        { id: 'div', valor: d, error: 'AT-EXCESO-DIVISOR', siFuera: `${d} lleva una bolsita entera, pero ya tiene ${rr} sueltos para empezarla.` },
+        { id: 'div', valor: d, error: 'AT-EXCESO-DIVISOR', siFuera: `${d} lleva una bolsita entera, pero ya tiene ${rr} ${rr === 1 ? 'suelto' : 'sueltos'} para empezarla.` },
         { id: 'suma', valor: d + rr, error: 'AT-EXCESO-SUMA', siFuera: 'Los sueltos y lo que falta llenan juntos una bolsita: se restan, no se suman.' },
       ]),
       solucion: { texto: 'Sueltos y huecos llenan una bolsita.', ecuacion: [D_, ' − ', R_, ' = ', `${d} − ${rr} = `, res(d - rr)] },
@@ -2303,7 +2347,7 @@
     const d = r.ent(12, 30), q = r.ent(6, 25), re = r.ent(1, d - 1), D = d * q + (d - re);
     return {
       pregunta: `En una división, el divisor es ${d}, el cociente por defecto es ${q} y el resto por exceso es ${re}. ¿Cuál es el dividendo?`,
-      datos: [DR.div, DR.exceso],
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       opciones: opciones(D, [
         { id: 'resta', valor: d * q - re, error: 'AT-EXCESO-RESTA', siFuera: `Restar el resto por exceso está bien, pero desde ${d} × ${q + 1}: el cociente por exceso es q + 1.` },
         { id: 'mas', valor: d * (q + 1) + re, error: 'AT-EXCESO-MAS', siFuera: 'Usar q + 1 está bien. Pero el resto por exceso falta: se resta.' },
@@ -2317,14 +2361,14 @@
     const veces = ['', '', 'el doble', 'el triple', 'el cuádruple'][k];
     return {
       pregunta: `En una división entre ${d}, el resto por exceso es ${veces} del resto por defecto. ¿Cuál es el resto por defecto?`,
-      datos: [[R_, ' + ', RE, ' = ', D_]],
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       opciones: opciones(rr, [
         { id: 'cambia', valor: re, error: 'AT-EXCESO-CAMBIA', siFuera: 'Ese es el resto por exceso. Se pide el que sobra.' },
         { id: 'max', valor: d - 1, error: 'AT-RESTO-MAX', siFuera: `${d - 1} es el mayor resto posible, pero aquí los restos guardan una relación.` },
         { id: 'mitad', valor: d % 2 ? null : d / 2, error: 'AT-RESTO-MITAD', siFuera: 'La mitad sería si los dos restos fueran iguales.' },
         { id: 'k', valor: d % k ? null : d / k, error: 'AT-RESTO-MITAD', siFuera: `Las partes son ${k} + 1: el divisor se reparte en ${k + 1}.` },
       ]),
-      solucion: { texto: `Los dos restos suman ${d}: el de defecto es 1 parte y el de exceso ${k}.`, ecuacion: [`${d} ÷ ${k + 1} = `, lleva(rr)] },
+      solucion: { texto: `Igualando las dos formas de D, los restos suman ${d}: 1 parte de defecto y ${k} de exceso.`, ecuacion: [`${d} ÷ ${k + 1} = `, lleva(rr)] },
     };
   }
   // Dos repartos del mismo dividendo (San Marcos 2023-II, nivel examen).
@@ -2332,8 +2376,8 @@
     const x = r.ent(4, 12), p = r.ent(3, 9), e = r.ent(2, 3), rr = r.ent(1, x - 1), fa = e * x - rr, D = p * x + rr;
     const sinDiv = rr + fa, resta = Math.abs(fa - rr);
     return {
-      pregunta: `Si doña Juana da ${p} caramelos a cada sobrino, le sobran ${rr}; si les da ${p + e}, le faltan ${fa}. ¿Cuántos sobrinos son?`,
-      datos: ['Los caramelos son los mismos en los dos repartos', [D_, ' × q + ', R_, ' = ', D_, ' × (q + 1) − ', RE]],
+      pregunta: `Si doña Juana da ${p} caramelos a cada sobrino, le ${rr === 1 ? 'sobra' : 'sobran'} ${rr}; si les da ${p + e}, le faltan ${fa}. ¿Cuántos sobrinos son?`,
+      datos: ['Los caramelos son los mismos en los dos repartos', DR.repSobra, DR.repFalta, DR.repLetras('sobrinos')],
       opciones: opciones(x, [
         { id: 'sin', valor: e > 1 ? sinDiv : null, error: 'AT-REPARTO-SIN-DIVIDIR', siFuera: `Juntar lo que sobra y lo que falta está bien: ${sinDiv}. Pero cada sobrino recibe ${e} más, no 1.` },
         { id: 'total', valor: D, error: 'AT-REPARTO-TOTAL', siFuera: 'Esos son los caramelos. Se pide cuántos sobrinos son.' },
@@ -2347,12 +2391,12 @@
   function casoUnoMas(r) {
     const x = r.ent(5, 12), p = r.ent(3, 9), rr = r.ent(1, x - 1), fa = x - rr, D = p * x + rr;
     return {
-      pregunta: `Doña Juana da ${p} caramelos a cada nieto y le sobran ${rr}. Para darles ${p + 1} a cada uno, le faltarían ${fa}. ¿Cuántos caramelos tiene?`,
-      datos: ['Los caramelos son los mismos en los dos repartos', DR.div],
+      pregunta: `Doña Juana da ${p} caramelos a cada nieto y le ${rr === 1 ? 'sobra' : 'sobran'} ${rr}. Para darles ${p + 1} a cada uno, le ${fa === 1 ? 'faltaría' : 'faltarían'} ${fa}. ¿Cuántos caramelos tiene?`,
+      datos: ['Los caramelos son los mismos en los dos repartos', DR.repSobra, DR.repFalta, DR.repLetras('nietos')],
       opciones: opciones(D, [
         { id: 'nietos', valor: x, error: 'AT-REPARTO-CUENTA', siFuera: `${x} son los nietos. Se piden los caramelos.` },
-        { id: 'nuevo', valor: (p + 1) * x, error: 'AT-REPARTO-NUEVO', siFuera: `${(p + 1) * x} los tendría si alcanzara para ${p + 1} a cada uno, pero le faltan ${fa}.` },
-        { id: 'sinr', valor: p * x, error: 'AT-REPARTO-SIN-RESTO', siFuera: `Repartir ${p} a cada uno está bien. Pero falta sumar los ${rr} que sobran.` },
+        { id: 'nuevo', valor: (p + 1) * x, error: 'AT-REPARTO-NUEVO', siFuera: `${(p + 1) * x} los tendría si alcanzara para ${p + 1} a cada uno, pero le ${fa === 1 ? 'falta' : 'faltan'} ${fa}.` },
+        { id: 'sinr', valor: p * x, error: 'AT-REPARTO-SIN-RESTO', siFuera: `Repartir ${p} a cada uno está bien. Pero falta sumar ${rr === 1 ? 'el que sobra' : `los ${rr} que sobran`}.` },
       ], x => String(x)),
       solucion: { texto: `Dar 1 más a cada uno pide ${rr} + ${fa} = ${x} caramelos: son ${x} nietos.`, ecuacion: [`D = ${p} × ${x} + ${rr} = `, `${D}`] },
     };
@@ -2365,13 +2409,13 @@
   const EJEMPLOS_RESTOS = [
     { nivel: 1, titulo: 'Sobran sueltos',
       enunciado: 'Doña Juana empaca 38 caramelos en bolsitas de 6. ¿Cuántas bolsitas llena y cuántos caramelos sobran?',
-      datos: [DR.div],
+      datos: [DR.div, DR.letrasDiv],
       figura: fig({ n: 6, sueltos: 38, regla: 1, rotulos: { sueltos: '38 caramelos' } }),
       solucion: [{ texto: 'El múltiplo de 6 que queda justo debajo de 38 es 36: llena 6 bolsitas.', ecuacion: ['38 = ', bas(6), ' × 6 + ', lleva(2)] }],
       respuesta: ['Llena 6 bolsitas y sobran ', lleva(2)] },
     { nivel: 1, titulo: 'Faltan para otra',
       enunciado: 'Doña Juana empaca 29 caramelos en bolsitas de 4. ¿Cuántos le faltan para llenar otra bolsita?',
-      datos: [DR.div, DR.exceso],
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       figura: fig({ n: 4, sueltos: 29, regla: 1, rotulos: { sueltos: '29 caramelos' } }),
       solucion: [
         { texto: 'Llena 7 bolsitas (28) y sobra 1.', ecuacion: ['29 = ', bas(4), ' × 7 + ', lleva(1)] },
@@ -2380,44 +2424,47 @@
       respuesta: ['Le faltan ', res(3)] },
     { nivel: 1, titulo: 'Una división exacta',
       enunciado: '¿Sobra o falta algo al empacar 42 caramelos en bolsitas de 7?',
-      datos: [DR.div],
+      datos: [DR.div, DR.letrasDiv],
       figura: fig({ n: 7, sueltos: 42, regla: 1, rotulos: { sueltos: '42 caramelos' } }),
       solucion: [{ texto: '42 es un múltiplo de 7: llena 6 bolsitas justas.', ecuacion: ['42 = ', bas(7), ' × 6 + ', lleva(0)] }],
       respuesta: ['No sobra nada: el resto es ', lleva(0)] },
     { nivel: 1, titulo: 'Los dos restos',
       enunciado: 'Al dividir un número entre 9, el resto por defecto es 4. ¿Cuál es el resto por exceso?',
       datos: [[R_, ' + ', RE, ' = ', D_, ', si la división no es exacta']],
-      solucion: [{ texto: 'Lo que sobra y lo que falta llenan una bolsita de 9.', ecuacion: [RE, ' = ', bas(9), ' − ', lleva(4), ' = ', res(5)] }],
+      solucion: [
+        { texto: 'Por exceso se cuenta una bolsita más: 9 × (q + 1) − rₑ es lo mismo que 9 × q + 9 − rₑ, y eso es 9 × q + 4.' },
+        { texto: 'Lo que falta completa la bolsita de 9 con los 4 que sobran.', ecuacion: [RE, ' = ', bas(9), ' − ', lleva(4), ' = ', res(5)] },
+      ],
       respuesta: [RE, ' = ', res(5)] },
     { nivel: 1, titulo: 'El mayor resto',
       enunciado: 'Al empacar en bolsitas de 8, ¿cuál es la mayor cantidad de caramelos que puede sobrar?',
-      datos: [DR.div],
+      datos: [DR.div, DR.letrasDiv],
       solucion: [{ texto: 'Con 8 sueltos se llenaría otra bolsita: lo que sobra es menos que 8.', ecuacion: [R_, ' ≤ ', bas(8), ' − 1 = ', lleva(7)] }],
       respuesta: ['Pueden sobrar hasta ', lleva(7)] },
     { nivel: 2, titulo: 'Armar el dividendo',
       enunciado: 'En una división, el divisor es 12, el cociente por defecto 7 y el resto por defecto 5. ¿Cuál es el dividendo?',
-      datos: [DR.div],
+      datos: [DR.div, DR.letrasDiv],
       solucion: [{ texto: '7 bolsitas de 12 y 5 sueltos.', ecuacion: ['D = ', bas(12), ' × 7 + ', lleva(5), ' = 84 + 5 = 89'] }],
       respuesta: ['El dividendo es 89'] },
     { nivel: 2, titulo: 'Desde el exceso',
       enunciado: 'En una división, el divisor es 15, el cociente por exceso es 9 y el resto por exceso es 4. ¿Cuál es el dividendo?',
-      datos: [DR.exceso],
+      datos: [DR.exceso, DR.letrasDiv],
       solucion: [
         { texto: '9 bolsitas de 15 serían 135, pero a la última le faltan 4.', ecuacion: ['D = ', bas(15), ' × 9 − ', res(4), ' = 131'] },
         { texto: 'Compruebo por defecto: 131 = 15 × 8 + 11, y 11 + 4 = 15.' },
       ],
       respuesta: ['El dividendo es 131'] },
     { nivel: 2, titulo: 'Restos iguales',
-      enunciado: 'Al dividir entre 10, ¿cuánto deben valer los dos restos para que sean iguales?',
-      datos: [[R_, ' + ', RE, ' = ', D_]],
+      enunciado: 'Doña Juana empaca caramelos en bolsitas de 10. ¿Cuántos deben sobrar para que lo que sobra sea igual a lo que falta para llenar otra bolsita?',
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       solucion: [
-        { texto: 'Los dos suman 10 y son iguales: cada uno es la mitad.', ecuacion: [R_, ' = ', RE, ' = 10 ÷ 2 = ', res(5)] },
-        { texto: 'Solo pasa con un divisor par: con 9, la mitad no es entera.' },
+        { texto: 'Lo que sobra y lo que falta llenan juntos una bolsita: suman 10. Si son iguales, cada uno es la mitad.', ecuacion: [R_, ' = ', RE, ' = 10 ÷ 2 = ', res(5)] },
+        { texto: 'Con bolsitas de 9 no se podría: la mitad de 9 no es un número entero.' },
       ],
-      respuesta: ['Los dos valen ', res(5)] },
+      respuesta: ['Deben sobrar ', lleva(5), ', y faltan ', res(5)] },
     { nivel: 2, titulo: 'Uno más a cada uno',
       enunciado: 'Doña Juana reparte 50 caramelos entre sus 6 sobrinos, lo más que pueda a cada uno. ¿Cuántos le faltan para darles uno más a cada uno?',
-      datos: [DR.div, DR.exceso],
+      datos: [DR.div, DR.exceso, ['D: los caramelos; ', D_, ': los sobrinos; q: lo que recibe cada uno']],
       figura: fig({ n: 6, sueltos: 50, regla: [[['Son '], ['6', 'i', 700], [' sobrinos']]], rotulos: { sueltos: '50 caramelos' } }),
       solucion: [
         { texto: 'A cada uno le da 8 (48) y sobran 2.', ecuacion: ['50 = ', bas(6), ' × 8 + ', lleva(2)] },
@@ -2426,7 +2473,7 @@
       respuesta: ['Le faltan ', res(4)] },
     { nivel: 2, titulo: 'Los dos cocientes',
       enunciado: '¿Cuáles son los cocientes y los restos, por defecto y por exceso, de 75 entre 8?',
-      datos: [DR.div, DR.exceso],
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       solucion: [
         { texto: 'Los múltiplos de 8 vecinos de 75 son 72 y 80.', ecuacion: ['75 = ', bas(8), ' × 9 + ', lleva(3), ' ; 75 = ', bas(8), ' × 10 − ', res(5)] },
         { texto: 'Compruebo: 3 + 5 = 8.' },
@@ -2435,7 +2482,7 @@
     { nivel: 3, titulo: 'Dos repartos',
       enunciado: 'Si doña Juana da 9 caramelos a cada nieto, le sobran 7; si les da 11 a cada uno, le faltan 5. ¿Cuántos caramelos tiene?',
       alternativas: ['6', '12', '61', '66'],
-      datos: ['Los caramelos son los mismos en los dos repartos', DR.div],
+      datos: ['Los caramelos son los mismos en los dos repartos', DR.repSobra, DR.repFalta, DR.repLetras('nietos')],
       solucion: [
         { texto: 'Pasar de 9 a 11 por nieto pide los 7 que sobran más los 5 que faltan: 12 caramelos, 2 por nieto.', ecuacion: ['12 ÷ 2 = 6 nietos'] },
         { texto: 'Con 6 nietos, cuento los caramelos.', ecuacion: ['9 × 6 + 7 = 61 = 11 × 6 − 5'] },
@@ -2445,7 +2492,7 @@
     { nivel: 3, titulo: 'Uno más y faltan',
       enunciado: 'Doña Juana da 4 caramelos a cada nieto y le sobran 5; para darles 5 a cada uno le faltarían 3. ¿Cuántos caramelos tiene?',
       alternativas: ['8', '32', '37', '40'],
-      datos: ['Los caramelos son los mismos en los dos repartos', DR.div],
+      datos: ['Los caramelos son los mismos en los dos repartos', DR.repSobra, DR.repFalta, DR.repLetras('nietos')],
       solucion: [
         { texto: 'Dar 1 más a cada nieto pide los 5 que sobran y los 3 que faltan: 8 caramelos, uno por nieto. Son 8 nietos.' },
         { texto: 'Cuento los caramelos.', ecuacion: ['4 × 8 + 5 = 37 = 5 × 8 − 3'] },
@@ -2455,9 +2502,9 @@
     { nivel: 3, titulo: 'El exceso es el doble',
       enunciado: 'En una división entre 15, el resto por exceso es el doble del resto por defecto, y el cociente por defecto es 6. ¿Cuál es el dividendo?',
       alternativas: ['95', '100', '85', '90'],
-      datos: [DR.div, [R_, ' + ', RE, ' = ', D_]],
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       solucion: [
-        { texto: 'Los dos restos suman 15 y uno es el doble del otro: 1 parte más 2 partes.', ecuacion: [R_, ' = 15 ÷ 3 = ', lleva(5), ' ; ', RE, ' = ', res(10)] },
+        { texto: 'Igualando las dos formas de D, los restos suman 15; y uno es el doble del otro: 1 parte más 2 partes.', ecuacion: [R_, ' = 15 ÷ 3 = ', lleva(5), ' ; ', RE, ' = ', res(10)] },
         { texto: 'Armo el dividendo con el resto por defecto.', ecuacion: ['D = ', bas(15), ' × 6 + ', lleva(5), ' = 95'] },
         { texto: ['Las trampas: ', letra('B'), ' suma el resto por exceso; ', letra('C'), ' lo resta de 90; ', letra('D'), ' olvida el resto.'] },
       ],
@@ -2465,7 +2512,7 @@
     { nivel: 3, titulo: 'El mayor resto posible',
       enunciado: 'En una división entre 17, el cociente es 9 y el resto es el mayor posible. ¿Cuál es el dividendo?',
       alternativas: ['153', '169', '170', '161'],
-      datos: [DR.div],
+      datos: [DR.div, DR.letrasDiv],
       solucion: [
         { texto: 'El resto es menor que el divisor: el mayor es 17 − 1 = 16.', ecuacion: [R_, ' = ', lleva(16)] },
         { texto: 'Armo el dividendo.', ecuacion: ['D = ', bas(17), ' × 9 + ', lleva(16), ' = 169'] },
@@ -2475,9 +2522,10 @@
     { nivel: 3, titulo: 'Restos que suman',
       enunciado: 'Al dividir D entre d, los dos restos suman 13 y el cociente por exceso es 8. Si el resto por defecto es 6, ¿cuánto vale D?',
       alternativas: ['97', '110', '104', '91'],
-      datos: [DR.div, DR.exceso, [R_, ' + ', RE, ' = ', D_]],
+      datos: [DR.div, DR.exceso, DR.letrasDiv],
       solucion: [
-        { texto: 'Los dos restos suman el divisor: d = 13. El cociente por defecto es 8 − 1 = 7.' },
+        { texto: 'Igualo las dos formas de D: d × q + r = d × q + d − rₑ. Entonces los restos suman el divisor: d = 13.' },
+        { texto: 'El cociente por defecto es uno menos que el de exceso: 8 − 1 = 7.' },
         { texto: 'Armo el dividendo.', ecuacion: ['D = ', bas(13), ' × 7 + ', lleva(6), ' = 97'] },
         { texto: ['Las trampas: ', letra('B'), ' usa el cociente por exceso con el resto por defecto; ', letra('C'), ' es 13 × 8; ', letra('D'), ' olvida el resto.'] },
       ],
@@ -2494,9 +2542,10 @@
     actividad: 'Cambiar el tamaño de la bolsita y ver cuánto sobra y cuánto falta.',
     lee: {
       tarjetas: [
-        { titulo: 'Empacar es dividir', texto: 'Doña Juana empaca 26 caramelos en bolsitas de 5: llena 5 y le sobra 1. Repartir así es dividir: 26 es el dividendo y 5, el divisor.',
+        { titulo: 'Empacar es dividir', texto: 'Doña Juana empaca 26 caramelos en bolsitas de 5: llena 5 y le sobra 1. Repartir así es dividir: 26 es el dividendo y 5, el divisor. Los 25 de las bolsitas llenas son un múltiplo de 5.',
           pieza: PU, dibujo: { datos: { n: 5, bolsitas: 5, sueltos: 1, regla: 1, colorCifras: false, rotulos: { bolsitas: '5 bolsitas', sueltos: '1 suelto' } }, estado: {} } },
-        { titulo: 'Sobran o faltan', texto: 'Lo que sobra es el resto por defecto. Si cuenta una bolsita más, la que no se llena, lo que le falta es el resto por exceso. Las bolsitas llenas forman un múltiplo de 5.' },
+        // q, r, rₑ y los dos cocientes, dichos en palabras antes de usarlos (auditoría, M4).
+        { titulo: 'Sobran o faltan', texto: 'Las bolsitas llenas, q, son el cociente por defecto, y lo que sobra, r, el resto por defecto. Si cuenta una bolsita más, q + 1 es el cociente por exceso, y lo que le falta, rₑ, el resto por exceso.' },
         { titulo: 'Qué mirar al jugar', texto: 'Cambia el tamaño de la bolsita. Mira cuántos sueltos sobran y cuántos huecos quedan en la bolsita que no se llena.' },
       ],
     },
@@ -2505,7 +2554,7 @@
       pieza: PU,
       consigna: 'Doña Juana empaca sus caramelos en bolsitas iguales. Elige cuántos tiene y cuántos lleva cada bolsita.',
       mision: {
-        texto: 'Con 47 caramelos, elige la bolsita con la que faltan justo 3 para llenar otra.',
+        texto: 'Pon 47 caramelos y elige la bolsita con la que faltan justo 3 para llenar otra.',
         logrado: v => v.a === 47 && v.d === 5,
         bien: 'Con bolsitas de 5 llena 9, le sobran 2 y la décima espera 3 más.',
       },
@@ -2546,7 +2595,9 @@
         { sueltos: 0, incompleta: { de: 7, tiene: 4 }, rotulos: { bolsitas: '7 sobrinos, 5 a cada uno', incompleta: 'uno más para cada uno' } },
         { sueltos: 0, incompleta: { de: 7, tiene: 4 }, rotulos: { bolsitas: '7 sobrinos, 5 a cada uno', incompleta: [['4 sueltos, '], ['3', 'f', 700], [' huecos']] } },
         { sueltos: 0, incompleta: { de: 7, tiene: 4 }, rotulos: { bolsitas: '7 sobrinos, 5 a cada uno', incompleta: [['4', 'o', 700], [' + '], ['3', 'f', 700], [' = '], ['7', 'i', 700]] } },
-        { sueltos: 0, incompleta: { de: 7, tiene: 4 }, rotulos: { bolsitas: '7 sobrinos, 5 a cada uno', incompleta: [['4', 'o', 700], [' + '], ['3', 'f', 700], [' = '], ['7', 'i', 700]] } },
+        // El último paso (y la regla, que dibuja el último paso) pasa a las bolsitas de 7: el divisor es lo que lleva una
+        // bolsita (lector en frío: «las bolsas llevan 5 y la incompleta se llena con 7»).
+        { n: 7, bolsitas: 5, sueltos: 0, incompleta: { de: 7, tiene: 4 }, rotulos: { bolsitas: '39 en bolsitas de 7: 5 llenas', incompleta: [['4', 'o', 700], [' + '], ['3', 'f', 700], [' = '], ['7', 'i', 700]] } },
       ] },
       voz: 'Lo que sobra y lo que falta, juntos.',
       pasos: [
@@ -2554,13 +2605,13 @@
         { estado: { paso: 1 }, texto: 'Darles 1 más a cada uno pide 7 caramelos: una bolsita de 7.', ecuacion: ['1 × ', bas(7), ' = 7'] },
         { estado: { paso: 2 }, texto: 'Tiene 4 sueltos: le faltan 7 − 4.', ecuacion: [bas(7), ' − ', lleva(4), ' = ', res(3)] },
         { estado: { paso: 3 }, texto: 'Lo que sobra y lo que falta llenan una bolsita.', ecuacion: [R_, ' + ', RE, ' = ', D_] },
-        { estado: { paso: 4 }, texto: 'Por defecto, 39 = 7 × 5 + 4; por exceso, 39 = 7 × 6 − 3.', ecuacion: ['39 = ', bas(7), ' × 6 − ', res(3)] },
+        { estado: { paso: 4 }, texto: 'Es como empacar 39 en bolsitas de 7: llena 5 y faltan 3.', ecuacion: ['39 = ', bas(7), ' × 5 + ', lleva(4), ' = ', bas(7), ' × 6 − ', res(3)] },
       ],
     },
     regla: {
-      texto: 'Por defecto se llenan q bolsitas y sobran r; por exceso se cuenta una bolsita más y faltan rₑ. Los dos restos suman lo que lleva una bolsita.',
+      texto: 'Con D caramelos en bolsitas de d: por defecto se llenan q y sobran r; por exceso se cuenta una más y faltan rₑ. Los dos restos suman d.',
       ecuacion: ['D = ', D_, ' × q + ', R_, SEP, 'D = ', D_, ' × (q + 1) − ', RE, SEP, R_, ' + ', RE, ' = ', D_],
-      condicion: 'Con 0 < r < d. El mayor resto es d − 1; si no sobra nada, la división es exacta.',
+      condicion: 'Siempre 0 ≤ r < d: el mayor resto es d − 1. Si r = 0, la división es exacta, sin resto por exceso.',
       voz: 'Sueltos y huecos llenan una bolsita.',
     },
     // Así se resuelve: el dividendo desde el cociente por defecto y el resto por exceso (23 × 15 + 14 = 359 es el caso de
@@ -2570,11 +2621,11 @@
         const r = azar(s + 900), d = r.ent(12, 30), q = r.ent(8, 25), re = r.ent(1, d - 1), rr = d - re, D = d * q + rr;
         return {
           enunciado: `Doña Juana empaca caramelos en bolsitas de ${d}: llena ${q} y, para llenar otra, le faltarían ${re}. ¿Cuántos caramelos tiene?`,
-          datos: [DR.div, DR.exceso, [R_, ' + ', RE, ' = ', D_]],
+          datos: [DR.div, DR.exceso, DR.letrasDiv],
           pasos: [
             { tipo: 'pide', texto: 'Piden el dividendo: todos los caramelos.' },
             { tipo: 'datos', texto: ['Divisor ', D_, ` = ${d}; cociente por defecto q = ${q}; resto por exceso `, RE, ` = ${re}.`] },
-            { tipo: 'regla', texto: ['Los dos restos suman el divisor. Con el resto por defecto, D = ', D_, ' × q + ', R_, '.'] },
+            { tipo: 'regla', texto: ['Igualo las dos formas de D: ', D_, ' × q + ', R_, ' = ', D_, ' × q + ', D_, ' − ', RE, '. Los dos restos suman el divisor.'] },
             { tipo: 'cuentas', texto: `Sueltos que sobran: ${d} − ${re}.`, ecuacion: [R_, ` = ${d} − ${re} = `, lleva(rr)] },
             { tipo: 'cuentas', texto: `Bolsitas llenas y sueltos: ${d} × ${q} + ${rr}.`, ecuacion: [`D = ${d} × ${q} + `, lleva(rr), ` = ${f(D, 0)}`] },
             { tipo: 'sentido', texto: `Compruebo por exceso: ${d} × ${q + 1} − ${re} = ${f(d * (q + 1) - re, 0)}. Cuadra.` },
@@ -2651,7 +2702,8 @@
     const A = { sup: ['A', String(e1)] }, B = { sup: ['B', String(e2)] };
     return {
       pregunta: ['A tiene ', String(p), ' cifras y B tiene ', String(q), '. ¿Cuántas cifras puede tener ', A, ' × ', B, '?'],
-      datos: [DR.cifrasK, [{ sup: ['A', '2'] }, ' = A × A; ', { sup: ['A', '3'] }, ' = A × A × A']],
+      // Las dos potencias que pregunta, cada una con su letra (auditoría, B2: definía A³ y no B³).
+      datos: [DR.cifrasK, [A, ' = ', Array(e1).fill('A').join(' × '), '; ', B, ' = ', Array(e2).fill('B').join(' × ')]],
       opciones: opciones(`de ${lo} a ${hi} cifras`, [
         { id: 'una', valor: `${hi - 1} o ${hi} cifras`, error: 'AT-COTA-UNA', siFuera: `Al juntar ${e1 + e2} factores, el menor puede tener hasta ${e1 + e2 - 1} cifras menos.` },
         { id: 'max', valor: `siempre ${hi}`, error: 'AT-COTA-MAX', siFuera: `${hi} sale con los mayores. Con los menores salen menos.` },
@@ -2671,7 +2723,7 @@
         { id: 'max', valor: `siempre ${c - p + 1}`, error: 'AT-COTA-MAX', siFuera: `Con ${c - p + 1} cifras puede ser; pero si el producto tuvo justo la suma, B tiene ${c - p}.` },
         { id: 'suma', valor: `${c + p - 1} o ${c + p} cifras`, error: 'AT-COTA-SUMA', siFuera: 'Sumar las cifras es para el producto. Aquí se busca un factor: se restan.' },
       ]),
-      solucion: { texto: `Si B tiene q cifras, el producto tiene ${p} + q o una menos.`, ecuacion: [`${p} + q = ${c}  o  ${p} + q − 1 = ${c}`] },
+      solucion: { texto: `Si B tiene k cifras, el producto tiene ${p} + k o una menos.`, ecuacion: [`${p} + k = ${c}  o  ${p} + k − 1 = ${c}`] },
     };
   }
 
@@ -2718,14 +2770,15 @@
         { texto: 'El mayor: 9 999 × 9 999 = 99 980 001, con 8. Los dos caben.' },
       ],
       respuesta: ['Sí: ocupa ', res('7 u 8'), ' casillas'] },
-    { nivel: 2, titulo: 'Seis por tres cifras',
-      enunciado: 'A tiene 6 cifras y B tiene 3. ¿Cuántas cifras puede tener A × B?',
+    // Producto y cociente juntos (auditoría, B5: antes repetía «Dos números de dos cifras» con otros números).
+    { nivel: 2, titulo: 'Producto y cociente a la vez',
+      enunciado: 'A tiene 4 cifras y B tiene 2. ¿Cuántas cifras puede tener A × B? ¿Y el cociente entero de A entre B?',
       datos: [DR.cifrasK],
       solucion: [
-        { texto: 'El menor: 100 000 × 100 = 10 000 000, con 8 cifras.' },
-        { texto: 'El mayor no llega a 1 000 000 × 1 000 = 1 000 000 000: tiene 9 cifras como mucho.' },
+        { texto: 'Producto: el menor es 1 000 × 10 = 10 000, con 5 cifras; el mayor, 9 999 × 99 = 989 901, con 6.' },
+        { texto: 'Cociente: el menor es 1 000 ÷ 99, que da 10, con 2 cifras; el mayor, 9 999 ÷ 10, que da 999, con 3.' },
       ],
-      respuesta: [res('8 o 9'), ' cifras'] },
+      respuesta: ['A × B: ', res('5 o 6'), ' cifras; A ÷ B: ', res('2 o 3')] },
     { nivel: 2, titulo: 'Un cociente de 8 entre 3',
       enunciado: 'A tiene 8 cifras y B tiene 3. ¿Cuántas cifras puede tener el cociente entero de A entre B?',
       datos: [DR.cifrasK],
@@ -2765,8 +2818,8 @@
       alternativas: ['siempre 4', '4 o 5', 'siempre 5', '15 o 16'],
       datos: [DR.cifrasK, 'Un producto tiene las cifras de sus factores sumadas, o una menos'],
       solucion: [
-        { texto: 'Si B tiene q cifras, A × B tiene 6 + q o 6 + q − 1.' },
-        { texto: '6 + q = 10 da q = 4; 6 + q − 1 = 10 da q = 5. Las dos pueden pasar.' },
+        { texto: 'Si B tiene k cifras, A × B tiene 6 + k o 6 + k − 1.' },
+        { texto: '6 + k = 10 da k = 4; 6 + k − 1 = 10 da k = 5. Las dos pueden pasar.' },
         { texto: ['Las trampas: ', letra('A'), ' y ', letra('C'), ' miran un solo caso; ', letra('D'), ' suma las cifras.'] },
       ],
       respuesta: [letra('B'), ': ', res('4 o 5'), ' cifras'] },
@@ -2780,16 +2833,18 @@
         { texto: ['Las trampas: ', letra('B'), ' resta una sola cifra; ', letra('C'), ' es A × A; ', letra('D'), ' mira solo el mayor.'] },
       ],
       respuesta: [letra('A'), ': de ', res(10), ' a ', res(12), ' cifras'] },
-    { nivel: 3, titulo: 'Un cociente grande',
-      enunciado: 'A tiene 9 cifras y B tiene 4. ¿Cuántas cifras puede tener el cociente entero de A entre B?',
-      alternativas: ['siempre 5', '5 o 6', '12 o 13', 'siempre 6'],
-      datos: [DR.cifrasK],
+    // Cifras que no se ven (auditoría, B5; lector en frío: la 21 repetía la 20): la primera cifra acota más que la regla.
+    { nivel: 3, titulo: 'Cifras que no se ven',
+      enunciado: 'En la calculadora se lee 1☐☐☐ × 1☐☐: se borraron las cifras de las manchas. ¿Cuántas cifras tiene el producto?',
+      alternativas: ['siempre 6', 'siempre 7', '6 o 7', 'No se puede saber'],
+      datos: [DR.cifrasK, DR.mancha, DR.primera, 'Un número de 4 cifras que empieza con 1 va de 1 000 a 1 999'],
+      figura: calcU('1☐☐☐ × 1☐☐', '?'),
       solucion: [
-        { texto: 'El menor: 100 000 000 ÷ 9 999 da 10 001, con 5 cifras.' },
-        { texto: 'El mayor: 999 999 999 ÷ 1 000 da 999 999, con 6.' },
-        { texto: ['Las trampas: ', letra('A'), ' resta las cifras; ', letra('C'), ' usa la regla del producto; ', letra('D'), ' mira solo el mayor.'] },
+        { texto: 'El menor: 1 000 × 100 = 100 000, con 6 cifras.' },
+        { texto: 'El mayor no llega a 2 000 × 200 = 400 000: también tiene 6 cifras. Como los dos empiezan con 1, nunca llega a 7.' },
+        { texto: ['Las trampas: ', letra('B'), ' toma la suma de cifras sin mirar el mayor; ', letra('C'), ' usa la regla sin la primera cifra; ', letra('D'), ' cree que faltan datos.'] },
       ],
-      respuesta: [letra('B'), ': ', res('5 o 6'), ' cifras'] },
+      respuesta: [letra('A'), ': siempre ', res(6), ' cifras'] },
     { nivel: 3, titulo: 'Tres factores',
       enunciado: 'A, B y C tienen 3 cifras cada uno. ¿Cuántas cifras puede tener A × B × C?',
       alternativas: ['siempre 9', '8 o 9', 'de 7 a 9', '27'],
@@ -2823,7 +2878,7 @@
       pieza: CALC,
       consigna: 'La calculadora de doña Juana tiene una pantalla de 8 casillas. A la izquierda, el producto menor de A × B; a la derecha, el mayor.',
       mision: {
-        texto: 'A tiene 5 cifras: ¿cuántas puede tener B, como mucho, para que A × B quepa siempre?',
+        texto: 'Pon A en 5 cifras. ¿Hasta cuántas puede tener B para que A × B quepa siempre?',
         logrado: v => v.m === 5 && v.n === 3,
         bien: 'Con B de 3 cifras, hasta el mayor producto llena justo las 8 casillas.',
       },
@@ -2881,8 +2936,9 @@
       ],
     },
     regla: {
-      texto: 'Un producto tiene las cifras de sus factores sumadas, o una menos. Un cociente entero, la resta de las cifras, o una más. Deciden el caso menor y el mayor.',
-      ecuacion: ['A × B: ', res('la suma de cifras'), ' o una menos', SEP, 'A ÷ B: ', res('la resta de cifras'), ' o una más'],
+      // «La suma de cifras» se leía como 9 + 1 + 4 (lector en frío): se dice la cantidad de cifras.
+      texto: 'Producto: cifras de A más cifras de B, o una menos. Cociente entero: las de A menos las de B, o una más. Lo deciden el menor y el mayor.',
+      ecuacion: ['A × B: ', res('cifras de A + cifras de B'), ' o una menos', SEP, 'A ÷ B: ', res('cifras de A − cifras de B'), ' o una más'],
       condicion: 'Con potencias: A² es A × A; se aplica la regla a cada producto o se miran los extremos.',
       voz: 'Sin hacer la cuenta: el menor y el mayor.',
     },
@@ -2957,7 +3013,7 @@
 
   return {
     unidad: 'aritmetica.cuatro-operaciones',
-    version: '0.4.0',
+    version: '0.4.1',
     // Las siete ideas rehechas contra el contrato (18 nov): calidad 2, y el validador común lo exige.
     calidad: 2,
     septimaIdea: 'La resta y las cifras ocultas son 4 de las 6 preguntas de San Marcos de esta unidad (2019-II a 2026-I).',
@@ -2978,16 +3034,16 @@
       // «sumandos» va en plural a propósito: «sumando» suelto es el gerundio en razones y estadística.
       { termino: 'sumandos', def: 'Los números que se juntan en una suma.',
         simple: 'Cada pedido que se junta: el de la mañana y el de la tarde.',
-        ver: ['llevada', 'sumatoria'],
-        ejemplos: ['En 26 + 13 hay dos: 26 y 13.', 'En 3 + 4 + 5 = 12 son tres: 3, 4 y 5.', 'En 52₍₇₎ + 14₍₇₎ los dos están en base 7.'] },
+        ver: ['llevada'],
+        ejemplos: ['En 26 + 13 hay dos: 26 y 13.', 'En 3 + 4 + 5 = 12 son tres: 3, 4 y 5.', 'En 125 + 40 + 7 también son tres.'] },
       { termino: 'llevada', formas: ['llevada', 'llevadas'],
         def: 'Lo que pasa a la columna de la izquierda cuando una columna junta la base o más.',
         simple: 'La bolsita llena que sube a la columna de al lado.',
         ver: ['sumandos', 'base de numeración'],
-        ejemplos: ['9 + 6 = 15: se anota 5 y la llevada es 1.', 'En base 4, 3 + 2 = 5 = 1 × 4 + 1: se lleva 1.', '9 + 8 + 7 = 24: la llevada es 2.'] },
+        ejemplos: ['9 + 6 = 15: se anota 5 y la llevada es 1.', 'En 28 + 36, 8 + 6 = 14: se anota 4 y se lleva 1.', '9 + 8 + 7 = 24: la llevada es 2.'] },
       { termino: 'minuendo', def: 'En una resta, el número del que se quita: el que va arriba.',
         simple: 'Lo que doña Juana tiene antes de despachar.', ver: ['sustraendo', 'diferencia'],
-        ejemplos: ['En 85 − 32 = 53, es 85.', 'En 700 − 1 = 699, es 700.', 'En 41₍₅₎ − 13₍₅₎, es 41₍₅₎.'] },
+        ejemplos: ['En 85 − 32 = 53, es 85.', 'En 64 − 29 = 35, es 64.', 'Si tenías 20 y regalas 6, es 20.'] },
       { termino: 'sustraendo', def: 'En una resta, el número que se quita: el que va abajo.',
         simple: 'Lo que se lleva el cliente.', ver: ['minuendo', 'diferencia'],
         ejemplos: ['En 85 − 32 = 53, es 32.', 'En 900 − 125, es 125.', 'Si tienes 20 y regalas 6, es 6.'] },
@@ -2996,11 +3052,11 @@
         ejemplos: ['85 − 32 = 53: es 53.', 'De 64 a 100 hay una de 36.', 'Sumada al sustraendo da el minuendo: 53 + 32 = 85.'] },
       { termino: 'préstamo', formas: ['préstamo', 'préstamos'], def: 'Abrir 1 de la columna de la izquierda en 10 (en n, en base n) cuando arriba no alcanza.',
         simple: 'Abrir una bolsita para tener más sueltos.', ver: ['llevada', 'minuendo'],
-        ejemplos: ['62 − 27: 2 no alcanza para 7; abriendo una bolsita, 12 − 7 = 5.', 'En 40 − 13, el 4 presta y queda en 3.', 'En 100 − 1 prestan dos columnas: da 99.'] },
+        ejemplos: ['62 − 27: 2 no alcanza para 7; abriendo una bolsita, 12 − 7 = 5.', 'En 53 − 18, el 5 presta y queda en 4.', 'En 71 − 46, el 7 presta: 11 − 6 = 5.'] },
       { termino: 'complemento aritmético', simbolo: 'CA', formas: ['complemento aritmético', 'complementos aritméticos'],
         def: 'Lo que le falta a un número para llegar a un 1 seguido de tantos ceros como cifras tiene.',
         simple: 'El vuelto: lo que falta para completar 10, 100 o 1 000.', ver: ['última cifra significativa', 'potencia'],
-        ejemplos: ['CA(37) = 100 − 37 = 63.', 'CA(306) = 1 000 − 306 = 694.', 'CA(5 800) = 10 000 − 5 800 = 4 200.'] },
+        ejemplos: ['CA(37) = 100 − 37 = 63.', 'CA(85) = 100 − 85 = 15.', 'CA(640) = 1 000 − 640 = 360.'] },
       { termino: 'última cifra significativa', def: 'La última cifra que no es 0, leyendo el número de izquierda a derecha.',
         simple: 'La última cifra antes de los ceros del final.', ver: ['complemento aritmético'],
         ejemplos: ['En 6 120 es el 2.', 'En 506 es el 6.', 'En 9 000 es el 9.'] },
@@ -3013,7 +3069,7 @@
         ejemplos: ['7, 8 y 9 lo son; 7, 9 y 11 no.', 'Las cifras de 345 lo son.', 'Dos así suman un impar: 12 + 13 = 25.'] },
       { termino: 'factor', formas: ['factor', 'factores'], def: 'Cada uno de los números que se multiplican.',
         simple: 'Cada número que se multiplica: las bolsas o lo que lleva cada una.', ver: ['producto', 'propiedad distributiva'],
-        ejemplos: ['En 6 × 15 = 90, son 6 y 15.', 'En 24 × 7, el 7 dice cuántas bolsas hay.', 'Si uno sube 2 y el otro es 9, el producto sube 18.'] },
+        ejemplos: ['En 6 × 15 = 90, son 6 y 15.', 'En 24 × 7, el 7 dice cuántas bolsas hay.', 'En 3 × 4 × 5 hay tres: 3, 4 y 5.'] },
       { termino: 'producto', formas: ['producto', 'productos'], def: 'Resultado de una multiplicación.',
         simple: 'El pedido completo: todo lo de las bolsas junto.', ver: ['factor'],
         ejemplos: ['6 × 15 = 90: es 90.', 'El de 4 por 25 es 100.', 'Si un factor es 0, da 0.'] },
@@ -3026,22 +3082,26 @@
       { termino: 'divisor', simbolo: 'd', def: 'El número entre el que se divide. Si no sobra nada, se dice que divide al otro.',
         simple: 'Entre cuántos se reparte, o cuántos caramelos lleva cada bolsita.', ver: ['dividendo', 'múltiplo'],
         ejemplos: ['En 53 ÷ 6, es 6.', 'Bolsitas de 5: es 5.', '7 divide a 42, porque 42 = 7 × 6.'] },
+      // Sin simple: el Resumen de la idea 6 lleva cuatro palabras, y «resto por defecto» es la mitad de la idea (auditoría,
+      // B7). «múltiplo» sigue estrenándose aquí, con su definición y sus ejemplos.
       { termino: 'múltiplo', formas: ['múltiplo', 'múltiplos'], def: 'Resultado de multiplicar un número por un entero.',
-        simple: 'Lo que dan varias bolsitas llenas: 5, 10, 15…', ver: ['divisor'],
+        ver: ['divisor'],
         ejemplos: ['42 lo es de 6, porque 6 × 7 = 42.', 'Los de 5: 0, 5, 10, 15, 20…', '35 lo es de 5 y de 7.'] },
       { termino: 'resto por exceso', simbolo: 'rₑ', formas: ['resto por exceso', 'restos por exceso'],
         def: 'Lo que le falta al dividendo para llegar al múltiplo del divisor que queda justo encima.',
         simple: 'Los huecos que faltan para llenar una bolsita más.', ver: ['resto por defecto'],
-        ejemplos: ['53 = 6 × 9 − 1: es 1.', '29 en bolsitas de 4: faltan 3.', 'Con divisor 9 y resto por defecto 4, es 5.'] },
+        ejemplos: ['53 = 6 × 9 − 1: es 1.', '29 en bolsitas de 4: faltan 3.', 'Con 30 caramelos llena 3 bolsitas de 8; a la cuarta le faltan 2.'] },
       { termino: 'resto por defecto', simbolo: 'r', formas: ['resto por defecto', 'restos por defecto'],
-        def: 'Lo que pasa el dividendo del múltiplo del divisor que queda justo debajo.', ver: ['resto por exceso', 'resto'],
+        def: 'Lo que pasa el dividendo del múltiplo del divisor que queda justo debajo.',
+        simple: 'Los sueltos que sobran: no alcanzan para otra bolsita.', ver: ['resto por exceso', 'resto'],
         ejemplos: ['53 = 6 × 8 + 5: es 5.', '38 en bolsitas de 6: sobran 2.', 'Es menor que el divisor: con 8, como mucho 7.'] },
       { termino: 'división exacta', formas: ['división es exacta', 'división exacta', 'divisiones exactas'],
         def: 'La que no deja nada sobrante: el dividendo es un múltiplo del divisor.', ver: ['divisor'],
         ejemplos: ['48 ÷ 6 = 8 y no sobra nada.', '42 en bolsitas de 7: 6 justas.', 'Con resto 0 no hay resto por exceso.'] },
-      { termino: 'cociente entero', simbolo: 'q', formas: ['cociente entero', 'cocientes enteros'],
-        def: 'Cuántas veces cabe completo el divisor en el dividendo, sin contar lo que sobra.', ver: ['resto por defecto', 'divisor'],
-        ejemplos: ['53 ÷ 6: cabe 8 veces, porque 6 × 8 = 48.', '9 999 ÷ 100 da 99.', 'El de 75 entre 8 es 9.'] },
+      // Con «cociente por defecto» entre sus formas, se estrena en la idea 6, donde se usa primero (auditoría, M4).
+      { termino: 'cociente entero', simbolo: 'q', formas: ['cociente entero', 'cocientes enteros', 'cociente por defecto'],
+        def: 'Cuántas veces cabe completo el divisor en el dividendo, sin lo que sobra: es el de la división por defecto.', ver: ['resto por defecto', 'divisor'],
+        ejemplos: ['53 ÷ 6: cabe 8 veces, porque 6 × 8 = 48.', '9 999 ÷ 100 da 99.', 'El de 75 entre 8 es 9; el cociente por exceso, uno más: 10.'] },
       { termino: 'cota', formas: ['cota', 'cotas'], def: 'Valor que algo desconocido no puede pasar: uno por abajo y otro por arriba.',
         simple: 'El tope: lo más chico o lo más grande que puede salir.', ver: ['estimar'],
         ejemplos: ['Un número de 3 cifras está entre 100 y 999.', 'Dos números de 2 cifras dan como mucho 99 × 99 = 9 801.', 'Si 8 ≤ x ≤ 15, son 8 y 15.'] },
@@ -3087,33 +3147,35 @@
       },
       {
         id: 'dos-productos', titulo: 'Dos productos', pieza: 'arit-tiras',
-        consigna: 'Arriba a × b; abajo, el primer factor sube k: (a + k) × b, con la misma escala. Arrastra el final de cada tira.',
+        // En palabras, sin letras sueltas (auditoría, B1: a y b son cifras ocultas y k las cifras de N en esta unidad). Los
+        // id de los controles (a, b, k) no cambian: los casos guardados siguen abriendo.
+        consigna: 'Arriba, un producto; abajo, el mismo con el primer factor más grande o más chico, a la misma escala. Arrastra el final de cada tira.',
         controles: [
-          { id: 'a', etiqueta: 'Primer factor, a', min: 10, max: 39, paso: 1, inicio: 24, decimales: 0 },
-          { id: 'b', etiqueta: 'Segundo factor, b', min: 2, max: 9, paso: 1, inicio: 7, decimales: 0 },
-          { id: 'k', etiqueta: 'Lo que sube el primero, k', min: -9, max: 9, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'a', etiqueta: 'Primer factor', min: 10, max: 39, paso: 1, inicio: 24, decimales: 0 },
+          { id: 'b', etiqueta: 'Segundo factor', min: 2, max: 9, paso: 1, inicio: 7, decimales: 0 },
+          { id: 'k', etiqueta: 'Lo que sube el primer factor', min: -9, max: 9, paso: 1, inicio: 3, decimales: 0 },
         ],
         dibujo: v => ({ datos: dosProductos(v.a, v.b, v.k), estado: {} }),
         lectura: v => [`${v.a + v.k} × ${v.b} − ${v.a} × ${v.b} = ${v.k} × ${v.b} = `, res(f(sube(v)))],
         invitaciones: [
           { texto: 'Haz que el producto baje justo 24.',
             logrado: v => sube(v) === -24,
-            bien: 'Bajar 24 es quitar grupos de b: 4 de 6, o 3 de 8.' },
+            bien: 'Bajar 24 es quitar grupos del segundo factor: 4 de 6, o 3 de 8.' },
           { texto: 'Haz que las dos tiras midan lo mismo.',
             logrado: v => sube(v) === 0,
-            bien: 'Con k = 0 no se agrega ni se quita ningún grupo.' },
+            bien: 'Si el primer factor no sube, no se agrega ni se quita ningún grupo.' },
           { texto: 'Consigue la mayor subida que dejan los controles.',
             logrado: v => sube(v) === MAX_SUBE,
-            bien: 'Nueve grupos de 9: 81, sin importar cuánto vale a.' },
-          { texto: 'Guarda dos casos con distinto a y la misma subida.',
+            bien: 'Nueve grupos de 9: 81, sin importar cuánto vale el primer factor.' },
+          { texto: 'Guarda dos casos con distinto primer factor y la misma subida.',
             logrado: (v, guardados) => sube(v) !== 0 && guardados.some(g => g.a !== v.a && sube(g) === sube(v)),
-            bien: 'Cambió a y la subida no: solo cuentan k y b.' },
+            bien: 'Cambió el primer factor y la subida no: cuentan lo que sube y el segundo factor.' },
         ],
         arrastres: [
-          { id: 'fin-a', etiqueta: 'final de la tira de arriba (a)',
+          { id: 'fin-a', etiqueta: 'final de la tira de arriba (primer factor)',
             donde: v => { const g = TIRAS().geometria(dosProductos(v.a, v.b, v.k)); return { x: g.x(v.a * v.b), y: g.tiraY(0) }; },
             mover: (pt, v) => ({ a: TIRAS().geometria(dosProductos(v.a, v.b, v.k)).deX(pt.x) / v.b }) },
-          { id: 'fin-k', etiqueta: 'final de la tira de abajo (k)', color: 'c-f',
+          { id: 'fin-k', etiqueta: 'final de la tira de abajo (lo que sube)', color: 'c-f',
             donde: v => { const g = TIRAS().geometria(dosProductos(v.a, v.b, v.k)); return { x: g.x((v.a + v.k) * v.b), y: g.tiraY(1) }; },
             mover: (pt, v) => ({ k: TIRAS().geometria(dosProductos(v.a, v.b, v.k)).deX(pt.x) / v.b - v.a }) },
         ],

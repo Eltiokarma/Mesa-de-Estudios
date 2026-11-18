@@ -44,15 +44,15 @@
       "pasos": [
         "Sueltos: 9 − 5 = 4.",
         "Bolsitas: 0 + 10 − 1 = 9; se abre 1 de la columna de la izquierda.",
-        "Cajas: 0 + 10 − 1 − 3 = 6; se abre 1 de la columna de la izquierda.",
-        "Cajones: 7 − 1 − 4 = 2.",
+        "Cajas: 0 + 10 − 1 que prestó − 3 = 6; se abre 1 de la columna de la izquierda.",
+        "Cajones: 7 − 1 que prestó − 4 = 2.",
         "Le quedan 2 694 caramelos."
       ]
     },
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "En su calculadora, doña Juana divide un número A de 7 cifras entre un número B de 4 cifras y se queda con el cociente entero. ¿Cuántas cifras puede tener ese cociente? Datos: Un número de k cifras va de 10ᵏ⁻¹ a 10ᵏ − 1. 10ᵃ ÷ 10ᵇ = 10ᵃ⁻ᵇ. Alternativas: A) 10 o 11 cifras   B) siempre 3 cifras   C) 3 o 4 cifras   D) siempre 4 cifras",
+      "enunciado": "En su calculadora, doña Juana divide un número A de 7 cifras entre un número B de 4 cifras y se queda con el cociente entero. ¿Cuántas cifras puede tener ese cociente? Datos: Un número de k cifras va de 10ᵏ⁻¹ a 10ᵏ − 1. 10ˣ ÷ 10ʸ = 10ˣ⁻ʸ. Alternativas: A) 10 o 11 cifras   B) siempre 3 cifras   C) 3 o 4 cifras   D) siempre 4 cifras",
       "respuesta": "C) 3 o 4 cifras",
       "pasos": [
         "El menor cociente: A lo más chico y B lo más grande, 1 000 000 ÷ 9 999, da 3 cifras.",
