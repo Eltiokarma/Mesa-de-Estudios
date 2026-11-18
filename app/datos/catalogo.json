@@ -3910,6 +3910,8 @@
      "temas": [
       "Clasificación",
       "Suma de ángulos internos y ángulo externo",
+      "Triángulo isósceles y equilátero",
+      "Relación entre lados y ángulos",
       "Desigualdad triangular",
       "Líneas notables",
       "Ángulos formados por bisectrices"
@@ -3939,10 +3941,11 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/triangulos.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-objeto.js"
       ],
-      "ideas": 4,
-      "terminos": 38
+      "ideas": 6,
+      "terminos": 41
      }
     },
     {
@@ -10422,7 +10425,8 @@
     "/plantillas/triangulo-estira/index.html",
     "/plantillas/triangulo-estira/motor.js",
     "/plantillas/triangulo-estira/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "trig-angulos-verticales": {
    "id": "trig-angulos-verticales",

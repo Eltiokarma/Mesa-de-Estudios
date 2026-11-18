@@ -93,7 +93,7 @@
   const LETRA = 162;                              // línea base de las letras de los paraderos
   const NIVEL = { 1: 88, 2: 58, 3: 28, '-1': 182, '-2': 212 };
   const CW = 30, CH = 15;                         // la combi
-  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'angulos'];
+  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos'];
   const COLORES_DATO = ['o', 'i', 'd'];
   const n = T.n;
   const f = x => Kit.formatear(x, 2);
@@ -409,6 +409,9 @@
   const dir = gr => [Math.cos(gr * RAD), Math.sin(gr * RAD)];
   const ve = (x, corte) => (x.desde || 0) <= corte && !(x.hasta < corte);
   const pt = (id, p, o) => Object.assign({ id, x: p[0], y: p[1] }, o || { sinPunto: true });
+  // Un ángulo con 2 o 3 arcos (marcas, de geo-figura: cada arco 5 px más afuera; Triángulos, 18 nov) ocupa más: su rótulo
+  // y los arcos vecinos cuentan desde el arco de afuera.
+  const extraArcos = an => 5 * Math.max(0, Math.min(3, an.marcas || 1) - 1);
 
   // El sector de un ángulo en pantalla (radianes, y hacia abajo), igual que lo dibuja geo-figura: del lado «de» al lado
   // «a» por el camino corto, o por el largo si es mayor. sector: [a1, a2] en grados del plano (antihorario) lo reemplaza.
@@ -428,7 +431,7 @@
   function lugarRotulo(g, an) {
     const { c, t1, dt } = sectorEn(g, an), texto = String(an.texto);
     const w = T.ancho(texto, TAM, 700), h = ALTO_T, half = Math.abs(dt) / 2, bis = t1 + dt / 2;
-    const r0 = (an.radio || 26) + 4, hol = an.holgura === undefined ? 5 : an.holgura;
+    const r0 = (an.radio || 26) + extraArcos(an) + 4, hol = an.holgura === undefined ? 5 : an.holgura;
     const sop = t => (w / 2) * Math.abs(Math.cos(t)) + (h / 2) * Math.abs(Math.sin(t));
     let d = r0 + 3 + sop(bis);
     if (half < Math.PI / 2 - 1e-6) for (const t of [t1, t1 + dt]) d = Math.max(d, (sop(t + Math.PI / 2) + hol) / Math.sin(half));
@@ -441,7 +444,7 @@
     if (!an.texto || an.sector || an._sec || an.ajusta === false) return an;
     const { dt } = sectorEn(g, an);
     if (Math.abs(Math.abs(dt) - Math.PI / 2) < 1e-4) return an;
-    const q = lugarRotulo(g, an), r = an.radio || 26, r2 = q.d - q.sb - 5;
+    const q = lugarRotulo(g, an), r = an.radio || 26, r2 = q.d - q.sb - 5 - extraArcos(an);
     return r2 > r + 6 ? Object.assign({}, an, { radio: Math.round(r2) }) : an;
   }
   function rotuloAngulo(g, an, q = lugarRotulo(g, an)) {
@@ -689,6 +692,198 @@
     return { fig, deco, encima, ls: g => [[10, g.Y(3) + 20], [10, g.Y(0) - 8]] };
   }
 
+  // ---------- Triángulos (geometria.triangulos, 18 nov): la cartulina y el tijeral (dibujos de prueba) ----------
+  // Afirmación de la cartulina: los tres ángulos de un triángulo son las tres esquinas de una cartulina; recortadas y
+  // juntas sobre el borde recto de una regla, no dejan hueco ni se montan. Fidelidad: la base BC mide 6 (horizontal, B a
+  // la izquierda) y A sale de los ángulos b (en B) y c (en C), a escala (ley de senos); las esquinas recortadas son las
+  // mismas de la cartulina (mismo tamaño R, mismos ángulos).
+  const TRI_L = 6;
+  // Arcos de cada vértice (regla de la unidad: 1 en A, 2 en B, 3 en C; sus copias y sus esquinas llevan los mismos).
+  const ARCOS_V = { A: 1, B: 2, C: 3 };
+  function vertices(b, c, L = TRI_L) {
+    const ab = L * Math.sin(c * RAD) / Math.sin((b + c) * RAD);
+    return { A: pol([0, 0], ab, b), B: [0, 0], C: [L, 0] };
+  }
+  // Lo que se ve en una ventana de cortes [desde, hasta]: la intersección con el desde/hasta propio (null si no se ve).
+  function ventana(x, w) {
+    const de = Math.max(x.desde || 0, w[0]), ha = Math.min(x.hasta === undefined ? Infinity : x.hasta, w[1]);
+    if (de > ha) return null;
+    const y = Object.assign({}, x, { desde: de });
+    if (ha === Infinity) delete y.hasta; else y.hasta = ha;
+    return y;
+  }
+  const ruta = (g, ps) => 'M' + ps.map(q => { const z = g.S(q); return `${n(z[0])} ${n(z[1])}`; }).join('L') + 'Z';
+  const enCorte = (ws, corte) => ws.some(w => corte >= w[0] && corte <= w[1]);
+  // La cartulina sobre la mesa, con la regla al lado.
+  //   { b, c,                        ángulos en B y C (grados); sin triángulo: triangulo: false
+  //     angulos: { A, B, C: { texto, color, desde, hasta } | null },   los tres ángulos interiores (null: sin arco)
+  //     letras: true,                las letras A, B y C (letraA: la de A, tantas unidades más lejos)
+  //     cortes: k,                   desde qué corte se ven las líneas punteadas por donde se cortan las esquinas
+  //     recorte: k, restaura: k2,    de k a k2 − 1 las esquinas están recortadas y juntas sobre el borde de la regla;
+  //                                  desde k2, la cartulina entera otra vez (las esquinas siguen en la regla)
+  //     R: 2,                        cuánto se corta de cada lado en cada esquina (mientras se ven las líneas de corte,
+  //                                  los ángulos de la cartulina quedan solo con sus arcos: el rótulo pisaría el corte)
+  //     paralela: k, copias: k,      la paralela a BC por A (punteada) y las copias de B y C arriba (alternos internos)
+  //     copiasTexto: { B, C },       sus rótulos (si no, los de B y C)
+  //     piezas: [{ en: [x, y] | 'regla', dx, de, a, texto, color, marcas, desde, hasta }],   esquinas sueltas (grados del
+  //                                  plano, antihorario); en: 'regla' las apoya en el borde de la regla (dx: corrimiento)
+  //     regla: true | false, reglaY, vista: { x, y } (fija, para el juego), alto }
+  function cartulina(d) {
+    const tri = d.triangulo !== false, b = d.b, c = d.c, R = d.R || 2;
+    const { A, B, C } = tri ? vertices(b, c) : { A: [TRI_L / 2, 2], B: [0, 0], C: [TRI_L, 0] };
+    const K = d.recorte, K2 = d.restaura;
+    const llena = K === undefined ? [[0, Infinity]] : [[0, K - 1], ...(K2 !== undefined ? [[K2, Infinity]] : [])];
+    const cortada = K === undefined ? [] : [[K, K2 !== undefined ? K2 - 1 : Infinity]];
+    const enV = (x, ws) => ws.map(w => ventana(x, w)).filter(Boolean);
+    const AN = d.angulos || {}, medida = { A: 180 - b - c, B: b, C: c };
+    // Las esquinas (sueltas o en la regla) y, con recorte, las tres de la cartulina sobre la regla: B a la izquierda, A en
+    // medio y C a la derecha, en el mismo orden que la paralela por A.
+    const piezas = (d.piezas || []).map(q => Object.assign({}, q));
+    if (tri && K !== undefined) {
+      const tx = v => (AN[v] && AN[v].texto !== undefined ? AN[v].texto : v);
+      piezas.push({ en: 'regla', de: 180 - b, a: 180, texto: tx('B'), marcas: 2, desde: K, v: 'B' },
+        { en: 'regla', de: c, a: 180 - b, texto: tx('A'), marcas: 1, desde: K, v: 'A' }, { en: 'regla', de: 0, a: c, texto: tx('C'), marcas: 3, desde: K, v: 'C' });
+    }
+    const enRegla = piezas.some(q => q.en === 'regla');
+    const yR = d.reglaY !== undefined ? d.reglaY : enRegla ? (tri ? -(R + 2.3) : -(R + 1.6)) : -1.0, hR = 0.5, conRegla = d.regla !== false || enRegla;
+    const xR = [-0.45, TRI_L + 0.45];
+    piezas.forEach(q => { q.V = q.en === 'regla' ? [TRI_L / 2 + (q.dx || 0), yR] : q.en; });
+
+    const puntos = [], segmentos = [], angulos = [];
+    if (tri) {
+      const L = d.letras !== false, ladoA = (b - c) / 2 + 90, ladoB = b / 2 + 180, ladoC = -c / 2;
+      // letraA: cuántas unidades se aleja la letra A de su vértice (en el juego, la manija de A la tapaba).
+      const lejosA = d.letraA || 0, Aq = pol(A, lejosA, ladoA);
+      puntos.push(pt('A', A, L && !lejosA ? { rotulo: 'A', lado: ladoA, sinPunto: true } : undefined), pt('B', B, L ? { rotulo: 'B', lado: ladoB, sinPunto: true } : undefined),
+        pt('C', C, L ? { rotulo: 'C', lado: ladoC, sinPunto: true } : undefined));
+      if (L && lejosA) puntos.push(pt('Aletra', Aq, { rotulo: 'A', lado: ladoA, sinPunto: true }));
+      const u = (p, q) => { const l = Math.hypot(q[0] - p[0], q[1] - p[1]); return [(q[0] - p[0]) / l, (q[1] - p[1]) / l]; };
+      const corte = (p, q, id) => puntos.push(pt(id, mas(p, u(p, q), R)));
+      corte(A, B, 'aB'); corte(A, C, 'aC'); corte(B, A, 'bA'); corte(B, C, 'bC'); corte(C, A, 'cA'); corte(C, B, 'cB');
+      for (const [p, q] of [['A', 'B'], ['B', 'C'], ['C', 'A']]) segmentos.push(...enV({ de: p, a: q }, llena));
+      // Las líneas por donde se corta cada esquina: punteadas antes del recorte; recortadas, el borde de lo que queda.
+      const cuerdas = [['aB', 'aC'], ['bA', 'bC'], ['cB', 'cA']];
+      if (d.cortes !== undefined) for (const [p, q] of cuerdas) segmentos.push(...enV({ de: p, a: q, discontinua: true, desde: d.cortes }, [[0, K === undefined ? Infinity : K - 1]]));
+      for (const [p, q] of [...cuerdas, ['aB', 'bA'], ['bC', 'cB'], ['cA', 'aC']]) segmentos.push(...enV({ de: p, a: q }, cortada));
+      // Donde estaban las esquinas queda su contorno, fino y punteado.
+      for (const [p, q] of [['A', 'aB'], ['A', 'aC'], ['B', 'bA'], ['B', 'bC'], ['C', 'cA'], ['C', 'cB']]) segmentos.push(...enV({ de: p, a: q, discontinua: true, grosor: 'fino' }, cortada));
+      const LADOS = { A: ['B', 'C'], B: ['C', 'A'], C: ['A', 'B'] };
+      for (const v of ['A', 'B', 'C']) {
+        if (AN[v] === null) continue;
+        const x = AN[v] || {};
+        const an = ang(v, LADOS[v][0], LADOS[v][1], { radio: d.radio || 20, holgura: 6, marcas: x.marcas || ARCOS_V[v], mide: medida[v], color: x.color === undefined && x.texto === undefined ? 'h' : x.color, texto: x.texto });
+        if (x.desde !== undefined) an.desde = x.desde;
+        if (x.hasta !== undefined) an.hasta = x.hasta;
+        const conRotulo = d.cortes === undefined || K === undefined ? llena : [[0, d.cortes - 1], ...llena.slice(1)];
+        angulos.push(...enV(an, conRotulo));
+        if (conRotulo !== llena && an.texto !== undefined) angulos.push(...enV(Object.assign({}, an, { texto: undefined }), [[d.cortes, K - 1]]));
+      }
+      if (d.paralela !== undefined) {
+        puntos.push(pt('Pi', [A[0] - 3, A[1]]), pt('Pd', [A[0] + 3, A[1]]));
+        segmentos.push({ de: 'Pi', a: 'Pd', recta: true, discontinua: true, grosor: 'fino', desde: d.paralela });
+        const ct = d.copiasTexto || {}, k = d.copias === undefined ? d.paralela : d.copias;
+        const cp = (v, de, a) => ang('A', de, a, { radio: d.radio || 20, holgura: 6, marcas: ARCOS_V[v], mide: medida[v], color: 'h', texto: ct[v] !== undefined ? ct[v] : (AN[v] || {}).texto, desde: k });
+        angulos.push(cp('B', 'Pi', 'B'), cp('C', 'C', 'Pd'));
+      }
+    }
+    piezas.forEach((q, k) => {
+      const id = `e${k}`, V = q.V;
+      puntos.push(pt(`${id}v`, V), pt(`${id}1`, pol(V, R, q.de)), pt(`${id}2`, pol(V, R, q.a)));
+      // Los bordes de la esquina son trazos de la figura: así ningún rótulo los pisa (la pieza los revisa).
+      for (const [u, w] of [['v', '1'], ['1', '2'], ['2', 'v']]) segmentos.push(Object.assign({ de: `${id}${u}`, a: `${id}${w}`, grosor: 'fino' }, q.desde !== undefined ? { desde: q.desde } : {}, q.hasta !== undefined ? { hasta: q.hasta } : {}));
+      // El rótulo de una esquina va afuera de su corte, en su bisectriz (adentro no cabe con sus arcos).
+      const an = ang(`${id}v`, `${id}1`, `${id}2`, { radio: 17, holgura: 4, marcas: q.marcas || 1, mide: q.a - q.de, color: q.color === undefined ? 'h' : q.color, texto: q.texto, lejos: 0, afuera: R, ajusta: false, fijo: true });
+      if (q.desde !== undefined) an.desde = q.desde;
+      if (q.hasta !== undefined) an.hasta = q.hasta;
+      angulos.push(an);
+    });
+
+    let vista = d.vista;
+    if (!vista) {
+      const xs = [], ys = [];
+      const mete = p => { xs.push(p[0]); ys.push(p[1]); };
+      if (tri) { [A, B, C].forEach(mete); ys.push(A[1] + 0.8, -0.8); }
+      if (d.paralela !== undefined) { xs.push(A[0] - 3, A[0] + 3); }
+      for (const q of piezas) { mete(q.V); for (const t of [q.de, (q.de + q.a) / 2, q.a]) mete(pol(q.V, R + 1.0, t)); }
+      if (conRegla) { mete([xR[0], yR - hR - 0.25]); mete([xR[1], yR]); }
+      vista = { x: [Math.min(...xs) - 0.55, Math.max(...xs) + 0.55], y: [Math.min(...ys) - 0.1, Math.max(...ys) + 0.1] };
+    }
+    const qt = piezas.map(q => q.texto).filter(t => t !== undefined && t !== null && t !== '');
+    const fig = {
+      alt: tri ? `Un triángulo de cartulina sobre la mesa, con ángulos de ${Kit.formatear(180 - b - c, 1)}° en A, ${Kit.formatear(b, 1)}° en B y ${Kit.formatear(c, 1)}° en C, y una regla al lado${K !== undefined ? '; sus tres esquinas, recortadas, se juntan sobre el borde recto de la regla' : ''}${d.paralela !== undefined ? '; por A pasa una paralela a BC' : ''}.`
+        : `Esquinas recortadas de cartulina${enRegla ? ', juntas sobre el borde de una regla' : ' sobre la mesa'}${qt.length ? `: ${qt.join(', ')}` : ''}.`,
+      vista, alto: d.alto || 270, puntos, segmentos, angulos };
+    const deco = (g, corte) => {
+      // La mesa (y unas vetas), la regla y la cartulina con su sombra; las esquinas sueltas o en la regla.
+      let s = `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.05"/>`;
+      for (const y of [0.22, 0.47, 0.78]) s += `<path d="M14 ${n(g.alto * y)}Q${W / 2} ${n(g.alto * y + 7)} ${W - 14} ${n(g.alto * y - 3)}" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="1.5"/>`;
+      if (conRegla) {
+        const p0 = g.S([xR[0], yR]), p1 = g.S([xR[1], yR - hR]);
+        s += `<rect x="${n(p0[0])}" y="${n(p0[1])}" width="${n(p1[0] - p0[0])}" height="${n(p1[1] - p0[1])}" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>`;
+        for (let k = 0; k <= (xR[1] - xR[0] - 0.3) / 0.5; k++) {
+          const x = g.S([xR[0] + 0.15 + k * 0.5, yR])[0], largo = k % 2 ? 4 : 8;
+          s += `<line x1="${n(x)}" y1="${n(p0[1] + 1)}" x2="${n(x)}" y2="${n(p0[1] + 1 + largo)}" stroke="currentColor" stroke-width="1.2"/>`;
+        }
+      }
+      if (tri) {
+        const en = id => { const q = puntos.find(z => z.id === id); return [q.x, q.y]; };
+        const forma = enCorte(cortada, corte) ? ['aB', 'bA', 'bC', 'cB', 'cA', 'aC'].map(en) : [A, B, C];
+        if (enCorte(llena, corte) || enCorte(cortada, corte)) {
+          const sombra = ruta(g, forma).replace(/(-?[\d.]+) (-?[\d.]+)/g, (m, x, y) => `${n(+x + 2.5)} ${n(+y + 2.5)}`);
+          s += `<path d="${sombra}" fill="currentColor" fill-opacity="0.12"/><path d="${ruta(g, forma)}" fill="var(--card)"/>`;
+        }
+      }
+      for (const q of piezas) {
+        if (!ve(q, corte)) continue;
+        const ps = [q.V, pol(q.V, R, q.de), pol(q.V, R, q.a)];
+        const sombra = ruta(g, ps).replace(/(-?[\d.]+) (-?[\d.]+)/g, (m, x, y) => `${n(+x + 2)} ${n(+y + 2)}`);
+        s += `<path d="${sombra}" fill="currentColor" fill-opacity="0.12"/><path d="${ruta(g, ps)}" fill="var(--card)" fill-opacity="0.72"/>`;
+      }
+      return s;
+    };
+    return { fig, deco };
+  }
+  // El tijeral de un techo: dos vigas inclinadas (los pares) y una horizontal (el tirante), clavadas en sus puntas, con la
+  // calamina encima y la pared debajo. Mismo triángulo que la cartulina (base 6, ángulos b y c); sin letras.
+  //   { b, c, angulos: { A, B, C: { texto, color } }, alto }
+  function tijeral(d) {
+    const b = d.b, c = d.c, { A, B, C } = vertices(b, c), AN = d.angulos || {}, medida = { A: 180 - b - c, B: b, C: c };
+    const LADOS = { A: ['B', 'C'], B: ['C', 'A'], C: ['A', 'B'] }, angulos = [];
+    for (const v of ['A', 'B', 'C']) {
+      const x = AN[v];
+      if (!x) continue;
+      angulos.push(ang(v, LADOS[v][0], LADOS[v][1], { radio: 24, holgura: 11, marcas: x.marcas || ARCOS_V[v], mide: medida[v], color: x.color, texto: x.texto, desde: x.desde || 0 }));
+    }
+    const ab = Math.hypot(A[0], A[1]), ac = Math.hypot(C[0] - A[0], C[1] - A[1]);
+    const alero = 0.55, EB = mas(B, [-A[0] / ab, -A[1] / ab], alero), EC = mas(C, [(C[0] - A[0]) / ac, (C[1] - A[1]) / ac], alero);
+    const fig = { alt: d.alt || `Tijeral de un techo: dos vigas inclinadas y una horizontal forman un triángulo, con ${Kit.formatear(b, 1)}° y ${Kit.formatear(c, 1)}° abajo y ${Kit.formatear(180 - b - c, 1)}° arriba; encima va la calamina.`,
+      vista: { x: [EB[0] - 0.3, EC[0] + 0.3], y: [-1.25, A[1] + 0.55] }, alto: d.alto || 230,
+      puntos: [pt('A', A), pt('B', B), pt('C', C)], segmentos: [], angulos };
+    const deco = g => {
+      const HW = 4.5;
+      const tabla = (p, q, e0, e1) => {
+        const P = g.S(p), Q = g.S(q), L = Math.hypot(Q[0] - P[0], Q[1] - P[1]), u = [(Q[0] - P[0]) / L, (Q[1] - P[1]) / L], nn = [-u[1], u[0]];
+        const z = (o, k, e) => [o[0] + u[0] * k + nn[0] * e, o[1] + u[1] * k + nn[1] * e];
+        const ps = [z(P, -e0, -HW), z(Q, e1, -HW), z(Q, e1, HW), z(P, -e0, HW)];
+        return `<path d="M${ps.map(q => `${n(q[0])} ${n(q[1])}`).join('L')}Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`
+          + `<path d="M${z(P, -e0 + 3, 0).map(n).join(' ')}L${z(Q, e1 - 3, 0).map(n).join(' ')}" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="1"/>`;
+      };
+      // La calamina: una franja sobre cada par, del alero hasta cerca de la cumbrera.
+      const calamina = (p, q, lado) => {
+        const P = g.S(p), Q = g.S(q), L = Math.hypot(Q[0] - P[0], Q[1] - P[1]), u = [(Q[0] - P[0]) / L, (Q[1] - P[1]) / L], nn = [-u[1] * lado, u[0] * lado];
+        const z = (k, e) => [P[0] + u[0] * k + nn[0] * e, P[1] + u[1] * k + nn[1] * e];
+        const ps = [z(-2, HW + 2), z(L * 0.9, HW + 2), z(L * 0.9, HW + 6), z(-2, HW + 6)];
+        return `<path d="M${ps.map(q => `${n(q[0])} ${n(q[1])}`).join('L')}Z" fill="currentColor" fill-opacity="0.35"/>`;
+      };
+      const p0 = g.S([B[0] - 0.15, 0]), p1 = g.S([C[0] + 0.15, -1.15]);
+      let s = `<rect x="${n(p0[0])}" y="${n(p0[1])}" width="${n(p1[0] - p0[0])}" height="${n(p1[1] - p0[1])}" fill="currentColor" fill-opacity="0.07"/>`;
+      s += calamina(EB, A, -1) + calamina(EC, A, 1);
+      s += tabla(EB, A, 0, 4) + tabla(EC, A, 0, 4) + tabla(B, C, 3, 3);
+      return s;
+    };
+    return { fig, deco };
+  }
+
   // Los ángulos de una escena, listos para dibujar: (1) el rótulo de un ángulo que tiene otros rayos adentro (∠AOC con
   // OB en medio) va en el hueco más ancho entre esos rayos, no sobre OB; (2) un arco que contiene a otros ángulos del
   // mismo vértice pasa por fuera de sus rótulos; (3) en un ángulo chico, el arco crece hasta su rótulo (conArco). Se
@@ -724,16 +919,20 @@
       // quedaba a medio camino entre los dos arcos y no se sabía de cuál era).
       const franjas = orden.filter(j => j !== i && lejos[j] !== undefined && angs[j].en === a.en && juntos(a, angs[j]) && (contiene(iv[i], iv[j]) || (dirR[j] !== undefined && dentro(dirR[j], iv[i], angR[j] ? -angR[j] : 0.03))))
         .map(j => [cerca[j], lejos[j], cerca[j] > 0 && contiene(iv[i], iv[j]) ? 14 : 6]).sort((x, y) => x[0] - y[0]);
-      let rr = a.radio || 26;
-      for (const [c0, c1, aire] of franjas) if (rr + 5 > c0 && rr - aire < c1) rr = Math.ceil(c1 + aire);
-      a.radio = rr;
-      a = angs[i] = conArco(g, a);
-      if (a.texto) { const q = lugarRotulo(g, a), sc = sectorEn(g, a), md = Math.hypot(q.w, q.h) / 2; lejos[i] = q.d + md; cerca[i] = q.d - md; dirR[i] = norm(sc.t1 + sc.dt / 2); if (a.centro) angR[i] = Math.atan2(md, q.d); } else { lejos[i] = (a.radio || 26) + (a.rayita ? 6 : 2); cerca[i] = 0; }
+      // fijo: true (las esquinas recortadas de la cartulina, Triángulos): su arco no se mueve; cada esquina es otra pieza.
+      if (!a.fijo) {
+        let rr = a.radio || 26;
+        for (const [c0, c1, aire] of franjas) if (rr + 5 > c0 && rr - aire < c1) rr = Math.ceil(c1 + aire);
+        a.radio = rr;
+        a = angs[i] = conArco(g, a);
+      }
+      if (a.texto) { const q = lugarRotulo(g, a), sc = sectorEn(g, a), md = Math.hypot(q.w, q.h) / 2; lejos[i] = q.d + md; cerca[i] = q.d - md; dirR[i] = norm(sc.t1 + sc.dt / 2); if (a.centro) angR[i] = Math.atan2(md, q.d); } else { lejos[i] = (a.radio || 26) + extraArcos(a) + (a.rayita ? 6 : 2); cerca[i] = 0; }
     }
     // El rótulo «centro» de un ángulo más grande puede caer sobre el lado de uno más chico (la bisectriz de ∠AOB es lado
     // de ∠DOE): el arco del más chico pasa por fuera de ese rótulo.
     orden.forEach((i, pos) => {
       const a = angs[i];
+      if (a.fijo) return;
       for (const j of orden.slice(pos + 1)) {
         if (angR[j] === undefined || angs[j].en !== a.en || !juntos(a, angs[j]) || !dentro(dirR[j], iv[i], -angR[j])) continue;
         const rr = a.radio || 26;
@@ -749,8 +948,8 @@
     for (let vuelta = 0; vuelta < 4; vuelta++) {
       let cambio = false;
       angs.forEach((a, i) => {
-        if (a.rayita) return;
-        const tope = angs.find((b, j) => j !== i && !b.rayita && juntos(a, b) && consecutivos(i, j) && Math.abs((b.radio || 26) - (a.radio || 26)) < 6 && ((b.radio || 26) < (a.radio || 26) || ((b.radio || 26) === (a.radio || 26) && j < i)));
+        if (a.rayita || a.fijo) return;
+        const tope = angs.find((b, j) => j !== i && !b.rayita && !b.fijo && juntos(a, b) && consecutivos(i, j) && Math.abs((b.radio || 26) - (a.radio || 26)) < 6 && ((b.radio || 26) < (a.radio || 26) || ((b.radio || 26) === (a.radio || 26) && j < i)));
         if (tope) { a.radio = (tope.radio || 26) + 8; cambio = true; }
       });
       if (!cambio) break;
@@ -759,7 +958,7 @@
     return angs;
   }
 
-  const ESCENAS = { reloj, tranquera, rieles, pasaje,
+  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
   const escena = d => ESCENAS[d.objeto](d);
   // Un trazo punteado que pasa por el vértice de un rótulo «centro» (la bisectriz, o la paralela auxiliar por V) y cruza
@@ -867,8 +1066,11 @@
       }
       for (const a of angs) {
         if (!ve(a, corte)) continue;
-        const { c, t1, dt } = sectorEn(g, Object.assign({}, a, { _sec: undefined, sector: undefined })), r = a.radio || 26;
-        for (let i = 0; i <= 24; i++) { const t = t1 + dt * i / 24, x = c[0] + r * Math.cos(t), y = c[1] + r * Math.sin(t); if (x > b.x0 - 1.5 && x < b.x1 + 1.5 && y > b.y0 - 1.5 && y < b.y1 + 1.5) return false; }
+        const { c, t1, dt } = sectorEn(g, Object.assign({}, a, { _sec: undefined, sector: undefined }));
+        for (let k = 0; k <= extraArcos(a); k += 5) {
+          const r = (a.radio || 26) + k;
+          for (let i = 0; i <= 24; i++) { const t = t1 + dt * i / 24, x = c[0] + r * Math.cos(t), y = c[1] + r * Math.sin(t); if (x > b.x0 - 1.5 && x < b.x1 + 1.5 && y > b.y0 - 1.5 && y < b.y1 + 1.5) return false; }
+        }
       }
     }
     return true;

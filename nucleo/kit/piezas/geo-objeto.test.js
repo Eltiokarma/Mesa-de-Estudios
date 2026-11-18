@@ -30,7 +30,7 @@ const MUESTRAS = [
     tramos: [{ de: 'A', a: 'B', texto: '6,5 m' }, { de: 'B', a: 'C', texto: '3,5 m' }, { de: 'A', a: 'C', papel: 'todo', texto: '10 m', nivel: 2 },
       { de: 'B', a: 'M', papel: 'otro', texto: '1,5 m', nivel: -1 }, { de: 'A', a: 'M', papel: 'igual', nivel: 0, marcas: 1 }, { de: 'M', a: 'C', papel: 'igual', nivel: 0, marcas: 1 }] },
 ];
-// Escenas con ángulos (ideas 3 a 6): los trazos los pone geo-figura; la pieza, el objeto y los rótulos.
+// Escenas con ángulos (Segmentos, ideas 3 a 6; Triángulos): los trazos los pone geo-figura; la pieza, el objeto y los rótulos.
 const ESCENAS = [
   { objeto: 'reloj', relojes: [{ hora: 3, tam: 'plaza', O: true, arco: { texto: '90°', color: 'h' } }] },
   { objeto: 'reloj', relojes: [{ hora: 8, tam: 'plaza', arco: { texto: '240°', color: 'h' } }] },
@@ -41,6 +41,13 @@ const ESCENAS = [
   { objeto: 'rieles', theta: 60, giro: 8, letras: true, angulos: [{ cruce: 'P', cuad: 'ad', texto: '60°', color: 'h' }, { cruce: 'Q', cuad: 'ad', texto: '52°' }] },
   { objeto: 'pasaje', a: 40, b: 30, aux: 0, angulos: { a: { texto: '40°', color: 'h' }, b: { texto: '30°', color: 'h' }, a2: { texto: '40°', color: 'h' }, b2: { texto: '30°', color: 'h' }, x: { texto: 'x' } } },
   { objeto: 'pasaje', a: 35, b: 45, examen: true, angulos: { afP: { texto: '145°', color: 'h' }, b: { texto: '45°', color: 'h' }, x: { texto: 'x' } } },
+  // Triángulos (18 nov): la cartulina en el juego, con los cortes y las esquinas en la regla («Mira»), esquinas sueltas
+  // (la predicción) y el tijeral.
+  { objeto: 'cartulina', b: 60, c: 50, angulos: { A: { texto: '70°', color: 'h' }, B: { texto: '60°', color: 'h' }, C: { texto: '50°', color: 'h' } }, vista: { x: [-0.9, 6.9], y: [-1.75, 5.95] }, alto: 270, radio: 16 },
+  { objeto: 'cartulina', b: 60, c: 50, angulos: { A: { texto: '70°', color: 'h' }, B: { texto: '60°', color: 'h' }, C: { texto: '50°', color: 'h' } }, cortes: 1, recorte: 2, restaura: 3, paralela: 3, copias: 4 },
+  { objeto: 'cartulina', triangulo: false, piezas: [{ en: [0.3, 0.3], de: 15, a: 115, texto: '100°', marcas: 1 }, { en: [4.2, 0.1], de: 40, a: 135, texto: '95°', marcas: 2 }] },
+  { objeto: 'cartulina', triangulo: false, piezas: [{ en: 'regla', de: 80, a: 180, texto: '100°', marcas: 1 }, { en: 'regla', de: 0, a: 95, texto: '95°', marcas: 2 }] },
+  { objeto: 'tijeral', b: 35, c: 35, angulos: { A: { texto: '?' }, B: { texto: '35°', color: 'h', marcas: 2 }, C: { texto: '35°', color: 'h', marcas: 2 } } },
   { objeto: 'angulos', figura: { vista: { x: [-3, 3], y: [-0.8, 3] }, puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'O', lado: -90 }, { id: 'A', x: 2.5, y: 0, rotulo: 'A', lado: 0 }, { id: 'B', x: 2.5 * Math.cos(0.5), y: 2.5 * Math.sin(0.5), rotulo: 'B', lado: 28.6 }],
     segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '2x + 10°', color: 'h', mide: 28.65 }] } },
 ];
@@ -261,11 +268,12 @@ test('escenas: escena() da la figura de geo-figura que se dibuja; cada ángulo m
 });
 
 test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no se pisan', () => {
-  const U = require(path.join(__dirname, '../../../contenido/teoria/geometria/segmentos-y-angulos.js'));
   const Teoria = require('../../teoria.js');
   const mal = [], figs = [];
   const toma = (nombre, dib, pieza) => { if (dib && pieza === 'geo-objeto') figs.push([nombre, dib.datos, dib.estado || {}]); };
-  for (const idea of U.ideas) {
+  // Segmentos y ángulos, y Triángulos (18 nov: la idea 1, con la cartulina, el tijeral y las figuras de examen).
+  const ideas = ['segmentos-y-angulos', 'triangulos'].flatMap(u => require(path.join(__dirname, `../../../contenido/teoria/geometria/${u}.js`)).ideas);
+  for (const idea of ideas) {
     const pz = idea.pieza;
     if (idea.juega) {
       const j = idea.juega, base = Teoria.inicio(j);
