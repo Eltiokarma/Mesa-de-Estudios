@@ -51,6 +51,19 @@
  *   flechaA: { texto: 'a' },   // la flecha de la aceleración sobre el techo de la combi firme, en carmín y con la punta
  *                          //   abierta (otra punta que la de v), con su rótulo; estado.flechaA = false la esconde
  *   colorA: 'h',           // aceleración: carmín
+ *
+ * Dos vehículos (18 nov, Movimiento rectilíneo uniforme, ideas 4 y 5 «Encuentros y alcances»; propuesta §2, A4): la combi
+ * y un mototaxi (o una segunda combi) en la misma avenida, cada uno en su carril. Solo con `segundo`; sin él, la vista
+ * dibuja lo mismo que antes, byte por byte (lo comprueba fis-combi.test.js). Todo lo nuevo es dibujo de prueba.
+ * Afirmación: los dos se mueven con el mismo reloj; donde coinciden sus marcas en la regla, se encuentran.
+ *   segundo: { tipo: 'mototaxi' | 'combi', x0: 240, v: -6, flecha: true, flechaTexto: '6 m/s' }
+ *                          // el segundo vehículo, en el carril de abajo, en x0 + v·t (velocidad constante). Con él la
+ *                          //   vista no deja marcas de cada segundo (dos rastros no se leen) ni flecha de a; la flecha
+ *                          //   de la combi pasa arriba de la avenida y la del segundo, abajo. Las dos, del mismo color
+ *                          //   (las dos son velocidades): las distinguen el vehículo y el carril.
+ *   lugares: [{ en, texto, lado: 'izq' | 'der' }]   // lado del letrero respecto a su poste (sin lado, el que quepa)
+ * vehiculo(tipo, cx, y, { fantasma, izquierda }): la combi o el mototaxi con su centro en cx y las ruedas en y, para
+ * las piezas que los dibujan en otra escena (fis-xt, fis-ventana).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -117,6 +130,8 @@
   // ---------- Vista «avenida» ----------
   const AV = { X0: 26, X1: 280, CAMINO: 58, BORDE: 98, CARRIL: 76, FLECHA: 89, ACEL: 47, TRAMO: 105, TIEMPO: 128, POS: 143, EJE: 150, NUM: 173,
     FILAS: [{ y: 44, texto: 38 }, { y: 22, texto: 16 }] };
+  // Con dos vehículos: la flecha de la combi va arriba de la avenida, el segundo en el carril de abajo y su flecha debajo.
+  const AV2 = { FLECHA: 47, CARRIL2: 96, FLECHA2: 108 };
   const BASE_AV = { x0: 0, v: 10, segundos: 0, min: 0, max: 100, paso: 10, numero: 20, color: 'o', colorT: 'i', rotulos: true,
     fantasmas: true, flecha: true, signo: false, vehiculo: true, kFlecha: 0.8, colorA: 'h' };
   const conBaseAv = d => Object.assign({}, BASE_AV, d || {});
@@ -134,7 +149,10 @@
     const d = conBaseAv(datos), X = escalaAv(d);
     const tope = Number.isFinite(estado.corte) ? estado.corte : Infinity;
     const t = Math.max(0, Math.min(Number.isFinite(d.t) ? d.t : d.segundos, tope));
-    const kMax = Math.floor(Math.min(t, d.segundos) + 1e-9);
+    const seg = d.segundo && typeof d.segundo === 'object' ? d.segundo : null;
+    // Con dos vehículos no hay marcas de cada segundo ni flecha de a (ver cabecera).
+    if (seg) Object.assign(d, { rotulos: false, fantasmas: false, crece: false, flechaA: undefined, a: 0 });
+    const kMax = seg ? 0 : Math.floor(Math.min(t, d.segundos) + 1e-9);
     // Con aceleración: x = x₀ + v·t + ½·a·t²; si a va contra v, se detiene en tAlto y se queda ahí (no retrocede).
     const acel = Number.isFinite(d.a) ? d.a : 0;
     const tAlto = acel && d.v && acel * d.v < 0 ? -d.v / acel : Infinity;
@@ -160,8 +178,23 @@
       let lx = dir > 0 ? x2 + 6 : x2 - 6, ancla = dir > 0 ? 'start' : 'end';
       if (dir > 0 && lx + w > W - 4) { lx = cx - 6; ancla = 'end'; }
       if (dir < 0 && lx - w < 4) { lx = cx + 6; ancla = 'start'; }
-      g.flecha = { x1: cx, x2, y: AV.FLECHA, txt, caja: cajaTxt(lx, AV.FLECHA + 5, txt, ancla, alto14, 700), ancla, lx };
+      const fy = seg ? AV2.FLECHA : AV.FLECHA;
+      g.flecha = { x1: cx, x2, y: fy, txt, caja: cajaTxt(lx, fy + 5, txt, ancla, alto14, 700), ancla, lx };
       g.rotulos.push(g.flecha.caja);
+    }
+    // El segundo vehículo, en el carril de abajo, con su flecha bajo la avenida.
+    if (seg) {
+      const s2 = Object.assign({ tipo: 'mototaxi', x0: 0, v: 0, flecha: true }, seg), x2t = s2.x0 + s2.v * t, cx2 = X(x2t);
+      g.segundo = { tipo: s2.tipo === 'combi' ? 'combi' : 'mototaxi', x: x2t, px: cx2, v: s2.v, izquierda: s2.v < 0 };
+      if (s2.flecha && s2.v) {
+        const dir = s2.v > 0 ? 1 : -1, x2 = cx2 + dir * 30;
+        const txt = s2.flechaTexto || `${fmt(Math.abs(s2.v))} m/s`, w = T.ancho(txt, alto14, 700);
+        let lx = dir > 0 ? x2 + 6 : x2 - 6, ancla = dir > 0 ? 'start' : 'end';
+        if (dir > 0 && lx + w > W - 4) { lx = cx2 - 6; ancla = 'end'; }
+        if (dir < 0 && lx - w < 4) { lx = cx2 + 6; ancla = 'start'; }
+        g.segundo.flecha = { x1: cx2, x2, y: AV2.FLECHA2, txt, ancla, caja: cajaTxt(lx, AV2.FLECHA2 + 5, txt, ancla, alto14, 700) };
+        g.rotulos.push(g.segundo.flecha.caja);
+      }
     }
     // Con `crece`, cada combi tenue lleva la flecha de su velocidad en ese segundo, tenue y sin rótulo.
     g.tenues = [];
@@ -192,7 +225,7 @@
       g.rotulos.push(g.flechaA.caja);
     }
     g.lugares = (d.lugares || []).map(l => {
-      const px = X(l.en), w = T.ancho(l.texto, alto14), der = px + 10 + w <= W - 4;
+      const px = X(l.en), w = T.ancho(l.texto, alto14), der = l.lado ? l.lado === 'der' : px + 10 + w <= W - 4;
       const caja = cajaTxt(der ? px + 10 : px - 10, 34, l.texto, der ? 'start' : 'end');
       g.rotulos.push(caja);
       return { px, texto: l.texto, caja, ancla: der ? 'start' : 'end' };
@@ -227,6 +260,23 @@
   function combiAv(cx, y, fantasma, izquierda) {
     const c = combi(cx + CW / 2, y, fantasma);
     return izquierda ? `<g transform="translate(${n(2 * cx)} 0) scale(-1 1)">${c}</g>` : c;
+  }
+
+  // El mototaxi (dibujo de prueba): la cabina con su toldo atrás, la moto adelante; su frente mira hacia la derecha.
+  const MW = 34;
+  function mototaxi(cx, y, fantasma) {
+    const a = cx - MW / 2, b = cx + MW / 2;
+    let s = `<path d="M${n(a + 1)} ${n(y - 7)}L${n(a + 1)} ${n(y - 22)}Q${n(a + 1)} ${n(y - 26)} ${n(a + 5)} ${n(y - 26)}L${n(b - 13)} ${n(y - 26)}Q${n(b - 10)} ${n(y - 26)} ${n(b - 10)} ${n(y - 22)}L${n(b - 10)} ${n(y - 12)}L${n(b - 4)} ${n(y - 10)}L${n(b - 6)} ${n(y - 7)}Z" fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`;
+    s += `<rect x="${n(a + 4)}" y="${n(y - 22)}" width="11" height="8" rx="1.5" fill="currentColor" fill-opacity="0.25"/>`
+      + `<path d="M${n(b - 10)} ${n(y - 18)}L${n(b - 4)} ${n(y - 21)}M${n(b - 6)} ${n(y - 12)}L${n(b - 3)} ${n(y - 5)}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    for (const [x, r] of [[a + 8, 4.5], [b - 3, 4]]) s += `<circle cx="${n(x)}" cy="${n(y - r + 0.5)}" r="${r}" fill="currentColor"/>`;
+    return `<g class="kit-objeto${fantasma ? ' kit-fantasma' : ''}" data-objeto="mototaxi" data-prueba="si"${fantasma ? ' opacity="0.35"' : ''}>${s}</g>`;
+  }
+  // Un vehículo con su centro en cx y las ruedas en y; con izquierda, mira hacia la izquierda (se refleja sobre cx).
+  function vehiculo(tipo, cx, y, o = {}) {
+    if (tipo !== 'mototaxi') return combiAv(cx, y, !!o.fantasma, !!o.izquierda);
+    const m = mototaxi(cx, y, !!o.fantasma);
+    return o.izquierda ? `<g transform="translate(${n(2 * cx)} 0) scale(-1 1)">${m}</g>` : m;
   }
 
   function avenida(datos, estado = {}) {
@@ -277,8 +327,15 @@
       // combis: las de cada segundo, tenues; la del instante t, firme
       if (d.fantasmas) for (let k = 0; k <= g.kMax; k++) if (Math.abs(k - g.t) > 1e-9) s += combiAv(X(g.pos(k)), AV.CARRIL, true, g.vel(k) ? g.vel(k) < 0 : izq);
       s += combiAv(X(g.x), AV.CARRIL, false, g.vt ? g.vt < 0 : izq);
+      // el segundo vehículo, en el carril de abajo (más cerca: se dibuja encima), con su flecha bajo la avenida
+      if (g.segundo) {
+        const q = g.segundo;
+        s += vehiculo(q.tipo, q.px, AV2.CARRIL2, { izquierda: q.izquierda });
+        if (q.flecha) s += T.flecha(q.flecha.x1, q.flecha.y, q.flecha.x2, q.flecha.y, { color: d.color, grosor: 3 })
+          + txt(q.flecha.caja, { ancla: q.flecha.ancla, peso: 700, color: d.color });
+      }
       for (const f of g.tenues) s += `<g class="kit-fantasma" opacity="0.35">${T.flecha(f.x1, AV.FLECHA, f.x2, AV.FLECHA, { color: d.color, grosor: 3 })}</g>`;
-      if (g.flecha) s += T.flecha(g.flecha.x1, AV.FLECHA, g.flecha.x2, AV.FLECHA, { color: d.color, grosor: 3 })
+      if (g.flecha) s += T.flecha(g.flecha.x1, g.flecha.y, g.flecha.x2, g.flecha.y, { color: d.color, grosor: 3 })
         + txt(g.flecha.caja, { ancla: g.flecha.ancla, peso: 700, color: d.color });
       // La aceleración: línea y punta abierta (dos trazos), para que no se confunda con la flecha llena de v.
       if (g.flechaA) {
@@ -303,9 +360,13 @@
     else s += ` La combi sale de x = ${fmt(d.x0)} m y va ${d.v ? `a ${fmt(Math.abs(d.v))} m/s ` : ''}${hacia}.`;
     if (acel) s += ` Su velocidad ${acel * d.v < 0 ? 'baja' : 'sube'} ${fmt(Math.abs(acel))} m/s en cada segundo${acel * d.v < 0 ? ', hasta detenerse si no se acaba el tramo' : ''}.`;
     if (g.kMax >= 1) s += ` Deja una marca en cada segundo, hasta los ${g.kMax} s.`;
+    if (g.segundo) {
+      const q = g.segundo, sg = d.segundo;
+      s += ` En el otro carril, ${q.tipo === 'combi' ? 'otra combi' : 'un mototaxi'} sale de x = ${fmt(sg.x0 || 0)} m y va ${q.v ? `a ${fmt(Math.abs(q.v))} m/s hacia la ${q.v > 0 ? 'derecha' : 'izquierda'}` : 'quieto'}.`;
+    }
     return s;
   }
 
   return { id: 'fis-combi', dibujar, alt: d => (d && d.vista === 'avenida' ? altAv(d) : alt(d)), escala: d => (d && d.vista === 'avenida' ? escalaAv(conBaseAv(d)) : escala(conBase(d))),
-    geometria: (d, e) => geometriaAv(d, e), constantes: { W, H, X0, X1, CW, AV } };
+    geometria: (d, e) => geometriaAv(d, e), vehiculo, constantes: { W, H, X0, X1, CW, MW, AV, AV2 } };
 });

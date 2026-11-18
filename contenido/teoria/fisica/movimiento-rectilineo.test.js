@@ -1,15 +1,16 @@
 // Pruebas propias de «Movimiento rectilíneo uniforme» y de su partición (además del validador común de
-// contenido/teoria/teoria.test.js). La idea A1 (`mru`) es la única rehecha contra el contrato (fase 2 del método, 18 nov);
-// cada idea que se rehaga se suma a IDEAS_REHECHAS.
+// contenido/teoria/teoria.test.js). Las cinco ideas (A1 `mru`, A2 `grafica-xt`, A3 `desplazamiento-distancia`, A4
+// `encuentro` y A5 `velocidad-relativa`) están rehechas contra el contrato (fases 2 y 3 del método, 18 nov) y la unidad
+// declara calidad: 2.
 //   - la partición (18 nov, Gerson; docs/etapa4/decisiones.md): esta unidad conserva el id con `mru`,
 //     `desplazamiento-distancia` y `encuentro`; la aceleración, la gráfica v–t y la caída libre viven en
 //     fisica.mruv-y-caida-libre, con sus mesas y sus palabras; el catálogo, la prueba del curso y el repaso lo dicen
 //     igual, y Avance.migrar lo mueve todo (nada queda en la unidad vieja ni se pierde);
 //   - un color fijo por magnitud (cabecera del archivo): v naranja, t turquesa, x, x₀, Δx y D violeta; sin verde;
 //   - sin magnitudes vectoriales: en una recta, v y Δx son números con signo (ningún «⃗» en la idea);
-//   - la idea cumple el contrato de calidad 2 aunque la unidad entera todavía no;
-//   - ninguna figura de Predice ni de un ejemplo delata la respuesta, los rótulos no se pisan, y el juego no muestra la
-//     velocidad negativa que se predice;
+//   - la unidad cumple el contrato de calidad 2 (validador común con los temas del catálogo);
+//   - ninguna figura de Predice ni de un ejemplo delata la respuesta, los rótulos no se pisan, y ningún juego muestra lo
+//     que su predicción pregunta (la velocidad negativa, la recta fuera del cero, la vuelta más rápida, el alcance, el río);
 //   - «Ahora tú» y «Así se resuelve» cuadran con un cálculo aparte (400 semillas) y no hacen la misma pregunta.
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -25,7 +26,7 @@ const def = require('./movimiento-rectilineo.js');
 const mruv = require('./mruv-y-caida-libre.js');
 for (const r of [...def.requiere, ...mruv.requiere]) require(path.join(__dirname, '..', '..', '..', r));
 const RAIZ = path.join(__dirname, '..', '..', '..');
-const IDEAS_REHECHAS = ['mru'];
+const IDEAS_REHECHAS = ['mru', 'grafica-xt', 'desplazamiento-distancia', 'encuentro', 'velocidad-relativa'];
 const idea = id => def.ideas.find(i => i.id === id);
 const SEMILLAS = 400;
 // Sin huecos: una opción correcta no trae siFuera, un ejemplo de nivel 1 no trae alternativas.
@@ -36,7 +37,7 @@ const leer = f => JSON.parse(fs.readFileSync(path.join(RAIZ, f), 'utf8'));
 // ---------- La partición ----------
 test('partición: cada unidad con sus ideas, sus mesas y sus palabras, sin repetir ninguna', () => {
   assert.equal(def.unidad, 'fisica.movimiento-rectilineo', 'la unidad vieja conserva el id');
-  assert.deepEqual(def.ideas.map(i => i.id), ['mru', 'desplazamiento-distancia', 'encuentro']);
+  assert.deepEqual(def.ideas.map(i => i.id), ['mru', 'grafica-xt', 'desplazamiento-distancia', 'encuentro', 'velocidad-relativa']);
   assert.deepEqual(mruv.ideas.map(i => i.id), ['aceleracion', 'ecuaciones-mruv', 'pendiente-aceleracion', 'graficas-xt-at', 'caida-reposo', 'caida-libre']);
   assert.deepEqual(def.laboratorio.map(m => m.id), ['encuentro-libre']);
   assert.deepEqual(mruv.laboratorio.map(m => m.id).sort(), ['ida-vuelta', 'pista-libre', 'recta-vt']);
@@ -113,8 +114,8 @@ function lecturas(i) {
   return out;
 }
 
-test('la tabla de colores: velocidad naranja, tiempo turquesa, posición y desplazamiento violeta, aceleración carmín; sin verde', () => {
-  assert.deepEqual(def.colores, { velocidad: 'o', tiempo: 'i', posición: 'f', desplazamiento: 'f', separación: 'f', aceleración: 'h' });
+test('la tabla de colores: velocidad naranja, tiempo turquesa, posición, desplazamiento y largo violeta, aceleración carmín; sin verde', () => {
+  assert.deepEqual(def.colores, { velocidad: 'o', tiempo: 'i', posición: 'f', desplazamiento: 'f', separación: 'f', largo: 'f', aceleración: 'h' });
   assert.ok(!Object.values(def.colores).includes('d'), 'sin verde: iría junto al naranja de v');
 });
 
@@ -127,34 +128,44 @@ test('un color por magnitud: cada ficha de las ideas rehechas dice su magnitud y
     assert.equal(f.v, `c-${def.colores[f.m]}`, `${id} ${donde}: «${f.t}» (${f.m}) en ${f.v}`);
     if (f.t in LETRA) assert.equal(f.v, LETRA[f.t], `${donde}: la letra ${f.t}`);
   }
-  assert.ok(n > 2000, `${n} fichas`);
+  assert.ok(n > 8000, `${n} fichas`);
   const c = idea('mru').juega.controles, a = idea('mru').juega.arrastres;
   assert.deepEqual([c.find(x => x.id === 'x0').color, c.find(x => x.id === 'v').color, c.find(x => x.id === 't').color], ['c-f', 'c-o', 'c-i']);
   assert.deepEqual(a.map(x => x.color), ['c-f', 'c-o']);
 });
 
-test('sin magnitudes vectoriales: la unidad lo declara con su motivo y la idea no escribe ninguna flecha «⃗»', () => {
+test('sin magnitudes vectoriales: la unidad lo declara con su motivo y ninguna idea escribe una flecha «⃗»', () => {
   assert.equal(def.notacion.vectores, false);
   assert.ok(def.notacion.motivo.length > 30 && /signo/.test(def.notacion.motivo));
-  for (const { donde, x } of lecturas(idea('mru'))) {
+  for (const id of IDEAS_REHECHAS) for (const { donde, x } of lecturas(idea(id))) {
     assert.ok(!/⃗/.test(plano(x)), `${donde}: «⃗» en una recta`);
     assert.ok(!JSON.stringify(x === undefined ? null : x).includes('"vec"'), `${donde}: { vec } en una recta`);
   }
 });
 
-test('la idea A1 cumple el contrato de calidad 2 (validador común con calidad: 2, sola)', () => {
-  const i = idea('mru'), glos = Glosario.porIdea(def)[0];
-  assert.deepEqual(glos.map(g => g.termino).sort(), ['MRU', 'posición', 'rapidez', 'velocidad']);
-  for (const g of glos) assert.ok(g.simple && g.ejemplos.length >= 3, g.termino);
-  const sub = Object.assign({}, def, { calidad: 2, estado: 'borrador', ideas: [i], glosario: glos, laboratorio: undefined, laboratorioIdeas: undefined });
-  const p = Teoria.problemas(sub, { semillas: 60 });
+test('la unidad entera cumple el contrato de calidad 2, con los temas del catálogo', () => {
+  assert.equal(def.calidad, 2);
+  const temas = leer('catalogo/cursos/fisica.json').unidades.find(u => u.id === def.unidad).temas;
+  const p = Teoria.problemas(def, { temas, semillas: 60 });
   assert.deepEqual(p, [], p.join('\n'));
-  assert.equal(i.ejemplos.length, 15);
-  // Los ejemplos de nivel 3 son de examen: con alternativas, y la letra de la respuesta en negrita.
-  for (const e of i.ejemplos.filter(x => x.nivel === 3)) {
-    assert.ok(e.alternativas && e.alternativas.length >= 4, e.titulo);
-    assert.ok(e.respuesta.some(x => x && x.negrita), `${e.titulo}: la letra en negrita`);
+  const glos = Glosario.porIdea(def);
+  assert.deepEqual(glos[0].map(g => g.termino).sort(), ['MRU', 'posición', 'rapidez', 'velocidad']);
+  assert.deepEqual(glos.slice(1).map(l => l.map(g => g.termino)), [['gráfica x–t', 'pendiente', 'instante'], ['velocidad media', 'rapidez media'],
+    ['encuentro', 'alcance'], ['velocidad relativa', 'sistema de referencia']]);
+  for (const g of def.glosario) assert.ok(g.simple && g.ejemplos.length >= 3, g.termino);
+  for (const i of def.ideas) {
+    assert.equal(i.ejemplos.length, 15, i.id);
+    // Los ejemplos de nivel 3 son de examen: con alternativas, y la letra de la respuesta en negrita.
+    for (const e of i.ejemplos.filter(x => x.nivel === 3)) {
+      assert.ok(e.alternativas && e.alternativas.length >= 4, `${i.id}: ${e.titulo}`);
+      assert.ok(e.respuesta.some(x => x && x.negrita), `${i.id} ${e.titulo}: la letra en negrita`);
+      assert.equal(new Set(e.alternativas).size, e.alternativas.length, e.titulo);
+    }
   }
+  // Los ids que guardan avance se conservan (propuesta §1): las ideas y la mesa del encuentro.
+  for (const id of ['mru', 'desplazamiento-distancia', 'encuentro']) assert.ok(idea(id), id);
+  assert.deepEqual(def.laboratorio.map(m => m.id), ['encuentro-libre']);
+  assert.deepEqual(def.laboratorio[0].controles.map(c => c.id).slice(0, 3), ['d', 'va', 'vb']);
 });
 
 // Todas las figuras de A1 con la pieza que las dibuja.
@@ -283,4 +294,191 @@ test('ejemplos: las cuentas de las respuestas, rehechas aparte, y la letra de ca
   letra(13, `En x = ${pos(pos(0, 12, 10), -8, 5)} m`);
   letra(14, `En x = ${fmt(40 - 8 * 7)} m, hacia la izquierda`);
   for (const e of ej.filter(x => x.alternativas)) assert.equal(new Set(e.alternativas).size, e.alternativas.length, e.titulo);
+});
+
+// ---------- Las ideas A2 a A5 ----------
+// Todas las figuras de una idea, con la pieza con que las dibuja el lector (app/teoria.js): la del momento o la de la idea.
+function figurasDe(i) {
+  const out = [], P = (...ps) => ps.find(Boolean) || i.pieza, j = i.juega;
+  for (const v of Teoria.grilla(j.controles).filter((_, k) => k % 5 === 0)) out.push([`juego ${JSON.stringify(v)}`, j.dibujo(v), P(j.pieza)]);
+  for (const [k, t] of i.lee.tarjetas.entries()) if (t.dibujo) out.push([`lee ${k + 1}`, t.dibujo, P(t.pieza)]);
+  out.push(['predice', i.predice.dibujo, P(i.predice.pieza)], ['revelar', i.predice.revelar, P(i.predice.pieza)]);
+  const fr = Teoria.figuraRegla(i);
+  out.push(['regla', { datos: fr.datos, estado: fr.estado }, fr.pieza]);
+  i.mira.pasos.forEach((p, k) => out.push([`mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }, P(i.mira.pieza)]));
+  i.ejemplos.forEach((e, k) => { if (e.figura) out.push([`ejemplo ${k + 1}`, e.figura, e.figura.pieza]); });
+  for (let s = 0; s < 80; s++) {
+    const a = i.ahoraTu.generar(s), r = i.resuelve.generar(s);
+    if (a.dibujo) out.push([`ahora tú ${s}`, a.dibujo, P(i.ahoraTu.pieza)]);
+    if (r.dibujo) out.push([`resuelve ${s}`, r.dibujo, P(i.resuelve.pieza)]);
+  }
+  return out;
+}
+const NUEVAS = ['grafica-xt', 'desplazamiento-distancia', 'encuentro', 'velocidad-relativa'];
+const caja = s => s.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/).slice(1).map(Number);
+
+test('las figuras de A2 a A5: la pieza que nombra el dibujo es la que lo dibuja, dibujos de prueba, y rótulos que caben y no se pisan', () => {
+  let n = 0;
+  for (const id of NUEVAS) for (const [donde, f, pieza] of figurasDe(idea(id))) {
+    n++;
+    if (f.pieza) assert.equal(f.pieza, pieza, `${id} ${donde}: el dibujo pide ${f.pieza} y el lector usa ${pieza}`);
+    const P = Kit.piezas[pieza], s = P.dibujar(f.datos, f.estado || {}), [W, H] = caja(s);
+    assert.match(s, /data-prueba="si"/, `${id} ${donde}`);
+    assert.ok(!/var\(--c-d\)/.test(s), `${id} ${donde}: verde`);
+    assert.ok(!/var\(--c-h\)/.test(s), `${id} ${donde}: carmín (aquí no hay aceleración)`);
+    const g = P.geometria(f.datos, f.estado || {});
+    for (const r of g.rotulos) assert.ok(r.x0 >= 4 - 1e-9 && r.x1 <= W - 4 + 1e-9 && r.y0 >= 4 - 1e-9 && r.y1 <= H - 4 + 1e-9, `${id} ${donde}: «${r.texto}» se sale`);
+    for (let a = 0; a < g.rotulos.length; a++) for (let b = a + 1; b < g.rotulos.length; b++) {
+      assert.ok(!pisa(g.rotulos[a], g.rotulos[b]), `${id} ${donde}: «${g.rotulos[a].texto}» pisa «${g.rotulos[b].texto}»`);
+    }
+  }
+  assert.ok(n > 500, `${n} figuras`);
+});
+
+// Los números que una figura escribe, sin los de la regla ni los de los ejes (que son la escala, no un dato).
+function numerosFigura(f) {
+  const P = Kit.piezas[f.pieza], g = P.geometria(f.datos, f.estado || {});
+  const fuera = new Set([...(g.numeros || []), ...(g.numT || []), ...(g.numX || []), g.unidad, g.nombreX, g.nombreT].filter(Boolean));
+  return g.rotulos.filter(r => !fuera.has(r)).map(r => r.texto).join(' | ');
+}
+test('ninguna figura de Predice ni de un ejemplo de A2 a A5 delata la respuesta', () => {
+  // Predice: la figura no trae lo que se pide.
+  const tx = id => numerosFigura(Object.assign({ pieza: idea(id).predice.pieza || idea(id).pieza }, idea(id).predice.dibujo));
+  assert.ok(!/4 m\/s|Δx|Δt/.test(tx('grafica-xt')), 'A2: ni la pendiente ni el escalón');
+  assert.ok(!/3 m\/s|40 s|t =/.test(tx('desplazamiento-distancia')), 'A3: ni la rapidez media ni el tiempo total');
+  assert.ok(!/alcance|150/.test(tx('encuentro')), 'A4: ni el lugar del alcance');
+  assert.ok(!/7 m\/s|orilla/.test(tx('velocidad-relativa').replace('respecto al agua', '')), 'A5: ni la rapidez desde la orilla');
+  assert.equal(COMBI_G(idea('encuentro').predice.dibujo).t, 0, 'A4: los dos al empezar el reloj');
+  for (const id of NUEVAS) for (const [k, e] of idea(id).ejemplos.entries()) {
+    if (!e.figura) continue;
+    const rot = numerosFigura(e.figura).replace(/\s/g, '');
+    for (const x of fichas(e.respuesta)) {
+      const nn = (x.t.match(/−?\d[\d ,]*/) || [''])[0].replace(/\s/g, '');
+      if (nn && !/^(0|1)$/.test(nn)) assert.ok(!rot.includes(nn) || DATO(e, nn), `${id} ejemplo ${k + 1}: la figura muestra «${x.t}» (${rot})`);
+    }
+    // Lo que se pide de la otra combi en la ventana va con «?» y sin flecha.
+    if (e.figura.pieza === 'fis-ventana' && e.figura.datos.rotuloRel) assert.equal(e.figura.datos.rotuloRel, '?');
+  }
+});
+const COMBI_G = f => Kit.piezas['fis-combi'].geometria(f.datos, f.estado || {});
+// Un número de la respuesta que ya es un dato del enunciado puede estar en la figura (la rapidez dada, por ejemplo).
+const DATO = (e, nn) => plano(e.enunciado).replace(/\s/g, '').includes(nn);
+
+test('ningún juego muestra lo que su predicción pregunta, y cada misión la cumplen solo los casos que debe', () => {
+  const G = id => Teoria.grilla(idea(id).juega.controles), j = id => idea(id).juega;
+  // A2: todas las rectas del juego salen del cero (la predicción es una que no sale de ahí); la misión, solo v = 15 m/s.
+  for (const v of G('grafica-xt')) assert.deepEqual(j('grafica-xt').dibujo(v).datos.lineas[0].puntos[0], [0, 0]);
+  assert.deepEqual([...new Set(G('grafica-xt').filter(v => j('grafica-xt').mision.logrado(v)).map(v => v.v))], [15]);
+  // A3: la vuelta va igual de rápido que la ida (la predicción vuelve a 6 m/s); la misión, solo volviendo 20 m.
+  for (const v of G('desplazamiento-distancia').filter((_, k) => k % 13 === 0)) {
+    const ts = j('desplazamiento-distancia').dibujo(v).datos.tramos.filter(Boolean);
+    assert.ok(ts.every(x => x.texto === '2 m/s'), JSON.stringify(v));
+  }
+  assert.deepEqual([...new Set(G('desplazamiento-distancia').filter(v => j('desplazamiento-distancia').mision.logrado(v)).map(v => v.r))], [20]);
+  // A4: siempre de frente (la predicción es un alcance); la misión, con 5 y 3 o 10 y 6 m/s.
+  for (const v of G('encuentro').filter((_, k) => k % 17 === 0)) assert.ok(j('encuentro').dibujo(v).datos.segundo.v < 0, JSON.stringify(v));
+  assert.deepEqual([...new Set(G('encuentro').filter(v => j('encuentro').mision.logrado(v)).map(v => `${v.va}:${v.vb}`))].sort(), ['10:6', '5:3']);
+  // A5: dos combis en la carretera, ningún río; la misión, solo con B a 15 m/s.
+  assert.equal(j('velocidad-relativa').pieza, 'fis-ventana');
+  assert.deepEqual([...new Set(G('velocidad-relativa').filter(v => j('velocidad-relativa').mision.logrado(v)).map(v => v.vb))], [15]);
+  for (const id of NUEVAS) assert.ok(!j(id).mision.logrado(Teoria.inicio(j(id))), `${id}: cumplida al abrir`);
+  // «Lee» no adelanta las respuestas de las predicciones.
+  const lee = id => idea(id).lee.tarjetas.map(t => plano(t.texto)).join(' ');
+  assert.ok(!/4 m\/s|12 m/.test(lee('grafica-xt')));
+  assert.ok(!/3 m\/s|6 m\/s|promedio/.test(lee('desplazamiento-distancia')));
+  assert.ok(!/15 s|resta/.test(lee('encuentro')));
+  assert.ok(!/río|7 m\/s|suma/.test(lee('velocidad-relativa')));
+});
+
+// ---------- Cálculo aparte (sin el código de la unidad), A2 a A5 ----------
+const n2 = s => num(String(s).replace(/\s/g, ''));
+function revisarAhoraTu(id, casos, esperados) {
+  const i = idea(id), vistos = new Set();
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = i.ahoraTu.generar(s), q = plano(a.pregunta), bien = plano(a.opciones.find(o => o.correcta).texto);
+    assert.equal(a.opciones.length, 4, `${id} semilla ${s}: ${a.opciones.length} opciones`);
+    assert.equal(new Set(a.opciones.map(o => plano(o.texto))).size, 4, `${id} semilla ${s}: opciones repetidas`);
+    assert.equal(a.opciones.filter(o => o.correcta).length, 1);
+    for (const o of a.opciones.filter(y => !y.correcta)) assert.ok(o.error && o.siFuera, `${id} semilla ${s}: ${o.id}`);
+    let hecho = false;
+    for (const [nombre, re, calc] of casos) {
+      const m = q.match(re);
+      if (!m) continue;
+      assert.equal(bien, calc(m.slice(1).map(n2), m.slice(1)), `${id} semilla ${s}: ${q}`);
+      vistos.add(nombre); hecho = true; break;
+    }
+    if (!hecho) assert.fail(`${id} semilla ${s}: no reconozco «${q}»`);
+    assert.ok(a.datos && a.datos.length, `${id} semilla ${s}: sin datos`);
+  }
+  assert.deepEqual([...vistos].sort(), esperados.sort(), `${id}: todas las variantes, hasta la de examen`);
+}
+const N = '(−?[\\d ,]+)';
+test('A2 «Ahora tú»: velocidad con signo de dos puntos, la recta que sigue y dos rectas con signo, cuadran aparte', () => {
+  revisarAhoraTu('grafica-xt', [
+    ['pendiente', new RegExp(`^La recta x–t de un mototaxi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. ¿Qué velocidad lleva, con su signo\\?$`), ([t1, x1, t2, x2]) => `${fmt((x2 - x1) / (t2 - t1))} m/s`],
+    ['sigue', new RegExp(`^La gráfica x–t de una combi es una recta de \\(0 s; ${N} m\\) a \\(${N} s; ${N} m\\), y ahí se corta\\. Si sigue igual, ¿dónde estará a los ${N} s\\?$`), ([x0, t1, x1, T]) => `En x = ${fmt(x0 + (x1 - x0) / t1 * T)} m`],
+    ['dos', new RegExp(`^En la gráfica x–t, la recta de A va de \\(0 s; 0 m\\) a \\(${N} s; ${N} m\\) y la de B, de \\(0 s; ${N} m\\) a \\(${N} s; ${N} m\\)\\. ¿Qué velocidades tienen\\?$`), ([t, xa, X, t2, xb]) => `A: ${fmt(xa / t)} m/s; B: ${fmt((xb - X) / t2)} m/s`],
+  ], ['pendiente', 'sigue', 'dos']);
+});
+test('A3 «Ahora tú»: rapidez y velocidad media de ida y vuelta, dos tramos y la mitad del recorrido, cuadran aparte', () => {
+  revisarAhoraTu('desplazamiento-distancia', [
+    ['rapidez', new RegExp(`^Corres ${N} m hasta la valla a ${N} m/s y vuelves ${N} m a ${N} m/s, por el mismo carril\\. ¿Cuál es tu rapidez media\\?$`), ([L, v1, L2, v2]) => `${fmt((L + L2) / (L / v1 + L2 / v2))} m/s`],
+    ['velocidad', new RegExp(`^Corres ${N} m hasta la valla a ${N} m/s y vuelves ${N} m a ${N} m/s, por el mismo carril\\. ¿Cuál es tu velocidad media\\?$`), ([L, v1, L2, v2]) => `${fmt((L - L2) / (L / v1 + L2 / v2))} m/s`],
+    ['tramos', new RegExp(`^Una combi va ${N} s a ${N} m/s y después ${N} s a ${N} m/s, hacia el mismo lado\\. ¿Cuál es su rapidez media en todo el viaje\\?$`), ([t1, v1, t2, v2]) => `${fmt((v1 * t1 + v2 * t2) / (t1 + t2))} m/s`],
+    // La mitad del camino D a v1 (tiempo D/v1); la otra mitad, en dos tiempos iguales τ: D = (v2 + v3)·τ.
+    ['mitad', new RegExp(`^Un ciclista hace la mitad de su recorrido a ${N} m/s\\. Del resto, la mitad del tiempo va a ${N} m/s y la otra mitad a ${N} m/s\\. ¿Cuál es su rapidez media\\?$`), ([v1, v2, v3]) => { const D = 1, tau = D / (v2 + v3); return `${fmt(2 * D / (D / v1 + 2 * tau))} m/s`; }],
+  ], ['rapidez', 'velocidad', 'tramos', 'mitad']);
+});
+test('A4 «Ahora tú»: cruce, alcance, el que salió antes y el alcance en km/h, cuadran aparte', () => {
+  revisarAhoraTu('encuentro', [
+    ['cruce', new RegExp(`^Una combi sale del paradero a ${N} m/s y, a la vez, un mototaxi viene de frente desde ${N} m a ${N} m/s\\. ¿Cuándo se cruzan\\?$`), ([va, D, vb]) => `A los ${fmt(D / (va + vb))} s`],
+    ['alcance', new RegExp(`^Un mototaxi va ${N} m delante de una combi, a ${N} m/s; la combi lo sigue a ${N} m/s, hacia el mismo lado\\. ¿Cuándo lo alcanza\\?$`), ([D, vb, va]) => `A los ${fmt(D / (va - vb))} s`],
+    ['antes', new RegExp(`^Un mototaxi sale del paradero a ${N} m/s\\. ${N} s después sale una combi del mismo paradero, a ${N} m/s, por el mismo camino\\. ¿Cuánto tarda la combi en alcanzarlo\\?$`), ([vb, dt, va]) => `Tarda ${fmt(vb * dt / (va - vb))} s`],
+    ['kmh', new RegExp(`^Un mototaxi a ${N} km/h va ${N} m delante de una combi a ${N} km/h, hacia el mismo lado\\. ¿Cuánto tarda la combi en alcanzarlo\\?$`), ([kb, D, ka]) => `Tarda ${fmt(D / ((ka - kb) * 1000 / 3600))} s`],
+  ], ['cruce', 'alcance', 'antes', 'kmh']);
+});
+test('A5 «Ahora tú»: dos combis, de frente, el río y el bote de ida y vuelta, cuadran aparte', () => {
+  revisarAhoraTu('velocidad-relativa', [
+    ['mismo', new RegExp(`^Tu combi va a ${N} m/s y la del carril de al lado, a ${N} m/s, las dos hacia el lado \\+\\. ¿Con qué velocidad la ves desde tu ventana\\?$`), ([a, b]) => `${fmt(b - a)} m/s`],
+    ['frente', new RegExp(`^Tu combi va a ${N} m/s hacia el lado \\+ y otra viene de frente a ${N} m/s\\. ¿Con qué velocidad la ves desde tu ventana\\?$`), ([a, w]) => `${fmt(-w - a)} m/s`],
+    ['rio', new RegExp(`^Un bote rema río (arriba|abajo) a ${N} m/s respecto al agua; la corriente va a ${N} m/s\\. ¿Cuánto tarda en recorrer ${N} m de orilla\\?$`),
+      ([, u, c, L], raw) => `${fmt(L / (raw[0] === 'arriba' ? u - c : u + c))} s`],
+    ['ida', new RegExp(`^Un bote rema a ${N} m/s respecto al agua en un río que corre a ${N} m/s\\. Sube ${N} m río arriba y vuelve\\. ¿Cuánto dura todo el viaje\\?$`), ([u, c, L]) => `${fmt(L / (u - c) + L / (u + c))} s`],
+  ], ['mismo', 'frente', 'rio', 'ida']);
+});
+
+test('«Así se resuelve» de A2 a A5 no pregunta lo de «Ahora tú» y cuadra con un cálculo aparte (400 semillas)', () => {
+  const casos = {
+    'grafica-xt': [
+      [new RegExp(`^La recta x–t de una combi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. ¿Dónde estaba a los 0 s\\?$`), ([t1, x1, t2, x2]) => `Estaba en x₀ = ${fmt(x1 - (x2 - x1) / (t2 - t1) * t1)} m`],
+      [new RegExp(`^La recta x–t de una combi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. Si sigue igual, ¿a qué instante pasa por x = ${N} m\\?$`), ([t1, x1, t2, x2, X]) => `A los ${fmt(t1 + (X - x1) / ((x2 - x1) / (t2 - t1)))} s`],
+    ],
+    'desplazamiento-distancia': [
+      [new RegExp(`^Una combi va y vuelve por una avenida recta, con velocidad constante entre lectura y lectura\\. A los 0, ${N}, ${N} y ${N} s está en 0, ${N}, ${N} y ${N} m\\. ¿Su rapidez media y su velocidad media\\?$`),
+        ([, , T3, a, b, c]) => `${fmt((a + (b - a) + (b - c)) / T3)} m/s y ${fmt(c / T3)} m/s`],
+    ],
+    encuentro: [
+      [new RegExp(`^Una combi sale del paradero a ${N} m/s y, a la vez, un mototaxi viene de frente desde ${N} m a ${N} m/s\\. ¿A qué distancia del paradero se cruzan\\?$`), ([va, D, vb]) => `A ${fmt(va * D / (va + vb))} m del paradero`],
+      [new RegExp(`^Un mototaxi va ${N} m delante de una combi, a ${N} m/s; la combi lo sigue a ${N} m/s\\. ¿A qué distancia de donde salió la combi lo alcanza\\?$`), ([D, vb, va]) => `A ${fmt(va * D / (va - vb))} m de donde salió`],
+    ],
+    'velocidad-relativa': [
+      [new RegExp(`^Desde tu combi, que va a ${N} m/s, la del carril de al lado parece ir hacia (atrás|adelante) a ${N} m/s\\. ¿Cuál es su velocidad, medida desde la carretera\\?$`),
+        ([vA, , w], raw) => `${fmt(vA + (raw[1] === 'atrás' ? -w : w))} m/s, hacia el mismo lado que tú`],
+      [new RegExp(`^Remando igual, un bote recorre ${N} m de orilla río abajo en ${N} s y los mismos ${N} m río arriba en ${N} s\\. ¿Cuánto vale la corriente\\?$`), ([L, t1, , t2]) => `La corriente va a ${fmt((L / t1 - L / t2) / 2)} m/s`],
+    ],
+  };
+  for (const id of NUEVAS) {
+    const vistos = new Set(), preguntas = new Set();
+    for (let s = 0; s < 60; s++) preguntas.add(plano(idea(id).ahoraTu.generar(s).pregunta).replace(/−?\d[\d ,]*/g, '#'));
+    for (let s = 0; s < SEMILLAS; s++) {
+      const r = idea(id).resuelve.generar(s), q = plano(r.enunciado), resp = plano(r.respuesta);
+      const k = casos[id].findIndex(([re]) => re.test(q));
+      assert.ok(k >= 0, `${id} resuelve ${s}: no reconozco «${q}»`);
+      const m = q.match(casos[id][k][0]);
+      assert.equal(resp, casos[id][k][1](m.slice(1).map(n2), m.slice(1)), `${id} resuelve ${s}: ${q}`);
+      assert.ok(!preguntas.has(q.replace(/−?\d[\d ,]*/g, '#')), `${id} resuelve ${s}: la misma pregunta que «Ahora tú»`);
+      vistos.add(k);
+    }
+    assert.equal(vistos.size, casos[id].length, id);
+  }
 });

@@ -196,3 +196,54 @@ test('aceleración: sin NaN, pura, alto fijo, rótulos que caben y flechas que n
     if (g.flechaA) assert.ok(g.flechaA.caja.y1 < AV.CAMINO, `${donde}: el rótulo de a pisa la avenida`);
   }
 });
+
+// ---------- Dos vehículos (18 nov, Movimiento rectilíneo uniforme, ideas 4 y 5) ----------
+test('dos vehículos: sin `segundo` ni `lado`, la vista avenida dibuja lo mismo que antes, byte por byte', () => {
+  // Huellas del SVG que daba la pieza antes de las opciones de dos vehículos (la del 18 nov, con la aceleración).
+  const ANTES = [
+    [av({ x0: 20, v: 16, segundos: 5, t: 2.5, max: 140, lugares: [{ en: 0, texto: 'Paradero' }], posiciones: [{ en: 20, texto: 'x₀', color: 'f' }] }), {}, 'a878ac5bec74d971'],
+    [av({ x0: 80, v: -12, segundos: 5, max: 100, signo: true, lugares: [{ en: 0, texto: 'Paradero' }, { en: 60, texto: 'Grifo' }] }), { corte: 2 }, '7bf7801cd83b9525'],
+    [av({ x0: 0, v: 10, a: -2, segundos: 8, max: 40, crece: true, flechaA: { texto: 'a' } }), { corte: 2 }, 'c4e79a4a0f0442b9'],
+    [av({ vehiculo: false, min: -40, max: 60, signo: true, llaves: [{ de: 0, a: 20, texto: 'x₀', color: 'f' }] }), {}, 'fddddbb488c3a5f5'],
+  ];
+  for (const [d, e, h] of ANTES) assert.equal(huella(P.dibujar(d, e)), h, JSON.stringify(d));
+});
+
+const DOS = [];
+for (const va of [2, 6, 12]) for (const vb of [-12, -6, -2, 4, 10]) for (const t of [0, 3, 10, 20]) for (const max of [100, 240, 3000]) {
+  DOS.push(av({ x0: 0, v: va, t, min: 0, max, paso: max > 600 ? 250 : 10, numero: max > 600 ? 500 : 50, segundos: 0, rotulos: false,
+    lugares: [{ en: 0, texto: 'Paradero', lado: 'der' }, { en: max * 0.62, texto: 'Colegio', lado: 'izq' }, { en: max, texto: 'Mercado', lado: 'izq' }],
+    segundo: { tipo: t % 2 ? 'combi' : 'mototaxi', x0: vb < 0 ? max : max / 4, v: vb }, posiciones: t === 10 ? [{ en: max / 2, texto: 'cruce', color: 'f' }] : [] }));
+}
+test('dos vehículos: el segundo está en x₀ + v·t, en el carril de abajo, mirando hacia donde va, con su flecha bajo la avenida', () => {
+  const d = av({ x0: 0, v: 10, t: 15, max: 240, segundo: { tipo: 'mototaxi', x0: 240, v: -6 } }), g = P.geometria(d);
+  assert.ok(Math.abs(g.x - 150) < 1e-9 && Math.abs(g.segundo.x - 150) < 1e-9, 'se cruzan en 150 m a los 15 s');
+  assert.equal(g.kMax, 0, 'sin marcas de cada segundo');
+  assert.equal(g.flecha.y, P.constantes.AV2.FLECHA, 'la flecha de la combi, arriba de la avenida');
+  assert.equal(g.segundo.flecha.y, P.constantes.AV2.FLECHA2, 'la del mototaxi, debajo');
+  assert.ok(g.segundo.flecha.x2 < g.segundo.flecha.x1, 'el mototaxi va hacia la izquierda');
+  const s = P.dibujar(d);
+  assert.match(s, /data-objeto="mototaxi" data-prueba="si"/);
+  assert.equal((s.match(/<line[^>]*stroke="var\(--c-o\)" stroke-width="3"/g) || []).length, 2, 'dos flechas, del mismo color (las dos son velocidades)');
+  assert.ok(s.indexOf('data-objeto="combi"') < s.indexOf('data-objeto="mototaxi"'), 'el carril de abajo, más cerca, se dibuja encima');
+  assert.match(P.alt(d), /un mototaxi sale de x = 240 m y va a 6 m\/s hacia la izquierda/);
+  assert.match(P.dibujar(av({ max: 240, segundo: { tipo: 'combi', x0: 100, v: 5 } })), /data-objeto="combi"[^]*data-objeto="combi"/);
+  assert.ok(!/fis-aceleracion/.test(P.dibujar(av({ v: 5, a: 2, flechaA: true, segundo: { x0: 50, v: 3 } }))), 'con dos vehículos no hay flecha de a');
+  // El letrero de un lugar va del lado pedido.
+  const L = P.geometria(av({ max: 240, lugares: [{ en: 150, texto: 'Colegio', lado: 'izq' }] })).lugares[0];
+  assert.ok(L.caja.x1 <= L.px - 9);
+  assert.equal(typeof P.vehiculo, 'function');
+  assert.match(P.vehiculo('mototaxi', 100, 90, { izquierda: true }), /scale\(-1 1\)[^]*mototaxi/);
+});
+test('dos vehículos: rótulos que caben con 4 de margen y no se pisan, los dos vehículos dentro del lienzo, puro y sin NaN', () => {
+  for (const d of DOS) {
+    const g = P.geometria(d), s = P.dibujar(d), donde = JSON.stringify(d);
+    assert.ok(!/NaN|undefined|Infinity/.test(s), donde);
+    assert.equal(s, P.dibujar(d));
+    assert.equal(s.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)[2], String(H));
+    for (const r of g.rotulos) assert.ok(r.x0 >= 4 - 1e-9 && r.x1 <= W - 4 + 1e-9 && r.y0 >= 4 && r.y1 <= H - 4, `${donde}: «${r.texto}» se sale`);
+    for (let i = 0; i < g.rotulos.length; i++) for (let j = i + 1; j < g.rotulos.length; j++) assert.ok(!pisa(g.rotulos[i], g.rotulos[j]), `${donde}: «${g.rotulos[i].texto}» pisa «${g.rotulos[j].texto}»`);
+    for (const r of g.rotulos) assert.ok(!(r.y0 < AV.BORDE && r.y1 > AV.CAMINO), `${donde}: «${r.texto}» pisa la avenida`);
+    for (const cx of [P.escala(d)(g.x), g.segundo.px]) assert.ok(cx - P.constantes.CW / 2 >= 4 && cx + P.constantes.CW / 2 <= W - 4, `${donde}: un vehículo se sale`);
+  }
+});

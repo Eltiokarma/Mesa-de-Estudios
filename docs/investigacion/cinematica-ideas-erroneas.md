@@ -134,6 +134,50 @@ El caso horizontal sirve también para P1: una esfera soltada desde 80 m tarda l
 - **C1 está medido como fuerza, no como aceleración.** Las preguntas de la moneda del FMCE piden la fuerza sobre la moneda. Para la moneda en vuelo es lo mismo (F = mg), pero vale confirmar la versión cinemática con postulantes.
 - **Qué sigue.** En la tarea 4 quedan dinámica y estequiometría. Con tres temas investigados, ya alcanza para empezar la tarea 1: extraer el motor de la lente a un módulo y correr los casos de prueba.
 
+## MRU (18 nov)
+
+Códigos de las ideas A2 a A5 de «Movimiento rectilíneo uniforme» (`contenido/teoria/fisica/movimiento-rectilineo.js`;
+propuesta aprobada en `docs/etapa4/propuesta-fisica.md`, pregunta 11). Los de A1 (MRU-X0, MRU-SIGNO, MRU-CONTEO,
+MRU-SUMA, MRU-ECUACION) están en la cabecera de la unidad. Salvo donde se dice, **son hipótesis de diseño, sin dato
+propio**: errores que suponemos por la forma de las alternativas de examen y de academia, para confirmar con lo que
+midan las predicciones y el «Ahora tú» en el colegio.
+
+| Código | Idea errónea (lo que hace el alumno) | Dónde aparece | Respaldo |
+| --- | --- | --- | --- |
+| G2-altura-entre-tiempo | Divide la altura de un punto entre su tiempo, como si la recta x–t saliera del cero | A2: Predice, «Ahora tú» | G2 de Beichner (1994): con la recta fuera del origen, 21–25 % acierta |
+| G2-ultimo-punto | Lo mismo con el último punto de la gráfica (38 m ÷ 5 s) | A2 | Variante de G2; hipótesis |
+| G2-pendiente-es-altura | Da la altura del punto (la posición) como velocidad | A2 | G2 de Beichner (1994): 1 de cada 4 confunde pendiente con altura |
+| XT-SIN-DIVIDIR | Da el cambio de x (Δx) sin dividir entre el tiempo | A2 «Ahora tú» | Hipótesis (versión x–t de K-SINDIV de MRUV) |
+| XT-SIGNO | Pierde el signo de la pendiente de una recta que baja, o cambia los signos de dos rectas | A2 (San Marcos 2019-I) | Hipótesis |
+| XT-INVERSA | Divide el tiempo entre el cambio de x | A2 «Ahora tú» | Hipótesis |
+| XT-LEIDO | Toma la última posición dibujada como respuesta cuando la recta sigue | A2 (San Marcos 2024-II, trampa de la clave) | Hipótesis |
+| DX-RAPIDEZ | Da la velocidad media (0, si volvió) cuando se pide la rapidez media | A3 Predice y «Ahora tú» | Hipótesis (ya en la unidad vieja) |
+| DX-DISTANCIA | Lo contrario: da la rapidez media cuando se pide la velocidad media | A3 «Ahora tú» | Hipótesis |
+| DX-IDA | Solo el tramo de ida, sin lo que regresó | A3 «Ahora tú» | Hipótesis (ya en la unidad vieja) |
+| MED-PROMEDIO | Promedia las rapideces de tramos que no duran lo mismo | A3 | Trampa 10 de San Marcos (2019-II y 2022, en las alternativas) |
+| MED-SUMA | Suma las rapideces de los tramos | A3 | Hipótesis |
+| MED-UN-TIEMPO | Divide todo el camino entre el tiempo de un solo tramo | A3 «Ahora tú» | Hipótesis |
+| MED-CRUZADO | Cruza los tiempos: cada rapidez con el tiempo del otro tramo | A3 «Ahora tú» | Hipótesis |
+| MED-TRAMO | Da la rapidez media de un solo tramo (la del último, o la de la segunda mitad) | A3 «Ahora tú» | Hipótesis |
+| MED-PROMEDIO-MITADES | Promedia las dos mitades del camino como si duraran lo mismo (San Marcos 2022) | A3 «Ahora tú» | Hipótesis |
+| K1 | «Lo alcanza cuando vayan igual de rápido» | A4 Predice | K1 de Trowbridge y McDermott (1980), sin porcentaje |
+| VR-SUMA / VR-RESTA | Suma las rapideces cuando se persiguen, o las resta cuando van de frente | A4 Predice y «Ahora tú» | Hipótesis (ya en la unidad vieja) |
+| VR-UNO | Trata al otro móvil como si estuviera quieto | A4 | Hipótesis (ya en la unidad vieja) |
+| VR-POSICION | Da el lugar del encuentro (en metros) cuando se pide el instante | A4 «Ahora tú» | Hipótesis (ya en la unidad vieja) |
+| VR-RELOJ | Cuenta el alcance desde que salió el primero, no desde que salió el que alcanza (San Marcos 2021) | A4 «Ahora tú» | Hipótesis |
+| VR-VENTAJA | Da cuánto salió antes el primero como tiempo de alcance | A4 «Ahora tú» | Hipótesis |
+| REL-SENTIDO | Resta donde se suma (o al revés), o invierte la resta v_B − v_A | A5 | Trampa 12 de San Marcos (2020-I y 2021) |
+| REL-SIN-MARCO | Usa la velocidad medida desde otro sistema (la del bote respecto al agua, la de B desde la carretera) | A5 | Hipótesis |
+| REL-PITAGORAS | Usa Pitágoras con dos velocidades sobre la misma recta, como el bote que cruza en Vectores | A5 Predice | Hipótesis |
+| REL-SUMA | Suma las velocidades de dos combis que van hacia el mismo lado | A5 «Ahora tú» | Hipótesis |
+| REL-SIGNO | Olvida el signo de la que viene de frente antes de restar | A5 «Ahora tú» | Hipótesis |
+| REL-SOLO-A | Da la velocidad de los postes (−v_A) como la de la otra combi | A5 «Ahora tú» | Hipótesis |
+| REL-SOLO-RIO | Usa solo la corriente, como un bote que no rema | A5 «Ahora tú» | Hipótesis |
+| REL-IDA | En el bote que sube y baja, da solo el tiempo de un tramo | A5 «Ahora tú» | Hipótesis |
+
+Se confirman como los demás de este informe: con el registro de opciones elegidas en las predicciones y en «Ahora tú»
+(evento `teoria` de la medición), y con preguntas abiertas en la prueba del pase 2.
+
 ## Fuentes
 
 - [Beichner (1994), *Testing student interpretation of kinematics graphs*, American Journal of Physics 62(8), 750–762](https://moodle2.units.it/pluginfile.php/732257/mod_resource/content/1/Testing%20student%20understanding%20kinematics%20graphs.pdf). 895 estudiantes; test TUG-K con porcentajes por objetivo y por pregunta.

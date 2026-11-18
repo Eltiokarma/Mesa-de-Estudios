@@ -4,16 +4,20 @@
  * (unidad 2) y docs/etapa4/propuesta-fisica.md (aprobada por Gerson con todas sus recomendaciones; docs/etapa4/decisiones.md).
  *
  * Partición (18 nov, Gerson; propuesta §1 y §9, pregunta 1): «MRU, MRUV y caída libre» se partió en dos, como
- * Magnitudes y Vectores. Esta unidad conserva el id (el avance de los alumnos se guarda con él) y se queda con `mru` (A1),
- * `desplazamiento-distancia` (A3) y `encuentro` (A4); vendrán `grafica-xt` (A2) y `velocidad-relativa` (A5), nuevas.
- * La aceleración, la gráfica v–t y la caída libre pasaron tal cual a contenido/teoria/fisica/mruv-y-caida-libre.js
- * (fisica.mruv-y-caida-libre), con las mesas `pista-libre`, `ida-vuelta` y `recta-vt` y la historia de Galileo;
- * Avance.migrar (nucleo/avance.js) mueve el avance de esas ideas, mesas y palabras.
+ * Magnitudes y Vectores. Esta unidad conserva el id (el avance de los alumnos se guarda con él) y sus ideas `mru` (A1),
+ * `desplazamiento-distancia` (A3) y `encuentro` (A4), con la mesa `encuentro-libre`; estrena `grafica-xt` (A2) y
+ * `velocidad-relativa` (A5). La aceleración, la gráfica v–t y la caída libre pasaron tal cual a
+ * contenido/teoria/fisica/mruv-y-caida-libre.js (fisica.mruv-y-caida-libre), con las mesas `pista-libre`, `ida-vuelta` y
+ * `recta-vt` y la historia de Galileo; Avance.migrar (nucleo/avance.js) mueve el avance de esas ideas, mesas y palabras.
  *
- * Etapa 4 del plan de calidad, fase 2 del método: por ahora está rehecha SOLO la idea A1, «Velocidad constante: el MRU»
- * (`mru`), para el visto bueno de Gerson; `desplazamiento-distancia`, `encuentro` y la mesa `encuentro-libre` siguen
- * como estaban, con sus colores viejos (x turquesa, a verde, t rojo), hasta que les toque. Por eso la unidad no declara
- * todavía calidad: 2; movimiento-rectilineo.test.js corre la idea A1 sola con calidad 2.
+ * Etapa 4 del plan de calidad: la idea A1 tuvo el visto bueno de Gerson (fase 2, 18 nov) y las ideas A2 a A5 se
+ * escribieron con su mismo estilo (fase 3, 18 nov). Con las cinco rehechas, la unidad declara calidad: 2.
+ *   A1 `mru` «Velocidad constante: el MRU» ............ la combi en la avenida (fis-combi, vista avenida).
+ *   A2 `grafica-xt` «La gráfica posición–tiempo» ...... la gráfica x–t que se dibuja junto a la combi (fis-xt).
+ *   A3 `desplazamiento-distancia` «Velocidad media y rapidez media» ... la recta de la pista atlética (fis-pista).
+ *   A4 `encuentro` «Encuentros y alcances» ............ la combi y el mototaxi entre el paradero y el mercado
+ *                                                       (fis-combi con `segundo`); «Mira» con la gráfica x–t (fis-xt).
+ *   A5 `velocidad-relativa` «Velocidad relativa» ...... la ventana de tu combi (fis-ventana) y el río en una recta (fis-rio).
  *
  * Ficha de tarea (diseno-y-animacion), idea A1:
  *   Promesa: la combi avanza lo mismo en cada segundo, y el signo de v dice hacia dónde.
@@ -45,8 +49,18 @@
  *   segundo de más (la marca de t = 0) · MRU-SUMA suma los datos sueltos · MRU-ECUACION (nuevo) multiplica también x₀
  *   por t · U1-kmh usa km/h como m/s · U1-inversa multiplica por 3,6 (docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md).
  *   Límites de velocidad del reglamento: no se usan (no se pudieron confirmar; propuesta, pregunta 10).
- *
- * Ideas viejas (sin rehacer): colores de la regla vieja: x turquesa (c-i, el de la pista), v naranja (c-o), t rojo (c-h).
+ * Errores de A2 a A5: G2 (Beichner 1994) partido en G2-altura-entre-tiempo, G2-ultimo-punto y G2-pendiente-es-altura;
+ *   K1 (Trowbridge y McDermott 1980); MED-PROMEDIO (trampa 10) y REL-SENTIDO (trampa 12) de las alternativas de San
+ *   Marcos; los demás son hipótesis de diseño, en la sección «MRU (18 nov)» del informe de cinemática: XT-SIN-DIVIDIR,
+ *   XT-SIGNO, XT-INVERSA, XT-LEIDO · DX-RAPIDEZ, DX-DISTANCIA, DX-IDA, MED-SUMA, MED-UN-TIEMPO, MED-CRUZADO, MED-TRAMO,
+ *   MED-PROMEDIO-MITADES · VR-SUMA, VR-RESTA, VR-UNO, VR-POSICION, VR-RELOJ, VR-VENTAJA · REL-SIN-MARCO, REL-PITAGORAS,
+ *   REL-SUMA, REL-SIGNO, REL-SOLO-A, REL-SOLO-RIO, REL-IDA.
+ * Letras de A2 a A5 (propuesta §5): Δx el desplazamiento y Δt el intervalo; d la distancia recorrida, en tinta, con su
+ *   aviso en «Lee» de A3 (en Vectores, la d con flecha era el desplazamiento en el plano); v_m la velocidad media y la
+ *   rapidez media en palabras; x_A, x_B, v_A, v_B de cada móvil (A y B solo nombran móviles); D la separación; tₑ y t_alc
+ *   el encuentro y el alcance; v_B/A la velocidad de B vista desde A; u y c el bote respecto al agua y la corriente; L el
+ *   largo de una combi o de una columna (violeta, como toda longitud sobre la recta). Dos móviles en la gráfica x–t: el
+ *   mismo violeta, trazo continuo y discontinuo (Gerson, 18 nov).
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -55,9 +69,6 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
-  const x = { v: 'c-i', t: 'x' }, v = { v: 'c-o', t: 'v' }, a = { v: 'c-d', t: 'a' }, t = { v: 'c-h', t: 't' };
-  const x0 = { sub: [x, '0'] }, v0 = { sub: [v, '0'] };
-  const dx = ['Δ', x], dv = ['Δ', v], dt = ['Δ', t];
   // Azar con semilla para «Ahora tú» (el mismo de nucleo/azar.js, en corto).
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
@@ -81,8 +92,6 @@
   // Gesto directo (docs/teoria.md §4): la manija vive en las coordenadas de la figura; mover la convierte en valores
   // con la inversa lineal de la escala de la pieza, y el lector los ajusta al paso y al rango de su control.
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
-  const PISTA = () => Kit.piezas.pista, EJES = () => Kit.piezas.ejes, TORRE = () => Kit.piezas.torre;
-  const MARCA_Y = 56;   // las marcas de la pista van 6 px bajo el piso del primer carril (pista.js)
 
   // ---------- Idea 1 (A1): velocidad constante, el MRU (18 nov, contrato «se entiende sin profesor») ----------
   // Pieza fis-combi, vista «avenida»: la combi en una avenida recta con la regla de metros desde el paradero.
@@ -456,262 +465,1454 @@
     },
   };
 
-  // ---------- Idea 2: desplazamiento no es distancia ----------
-  const EJE_VT = (vmin, vmax, tmax) => ({
-    x: { min: 0, max: tmax, paso: 1, nombre: 't', unidad: 's', decimales: 0, color: 'h' },
-    y: { min: vmin, max: vmax, paso: 2, nombre: 'v', unidad: 'm/s', decimales: 0, color: 'o' },
+  // ---------- Fichas y datos de las ideas A2 a A5 (un color fijo por magnitud, como en A1) ----------
+  const sub = (b, i) => ({ sub: [b, i] });
+  const MDx = { v: 'c-f', t: 'Δx', m: 'desplazamiento' }, MDt = { v: 'c-i', t: 'Δt', m: 'tiempo' };
+  const Mx1 = sub(Mx, '1'), Mx2 = sub(Mx, '2'), Mt1 = sub(Mt, '1'), Mt2 = sub(Mt, '2');
+  const Mvm = sub(Mv, 'm'), Mrm = { v: 'c-o', t: 'rapidez media', m: 'velocidad' };
+  const MxA = sub(Mx, 'A'), MxB = sub(Mx, 'B'), MvA = sub(Mv, 'A'), MvB = sub(Mv, 'B'), MvBA = sub(Mv, 'B/A');
+  const Mte = sub(Mt, 'e'), Mtalc = sub(Mt, 'alc');
+  const Mu = { v: 'c-o', t: 'u', m: 'velocidad' }, Mc = { v: 'c-o', t: 'c', m: 'velocidad' }, ML = { v: 'c-f', t: 'L', m: 'largo' };
+  const pL = s => ({ v: 'c-f', t: String(s), m: 'largo' });
+  const frac = (a, b) => ({ frac: [a, b] });
+  Object.assign(DM, {
+    xt: ['Velocidad en la gráfica x–t: ', Mv, ' = ', frac([Mx2, ' − ', Mx1], [Mt2, ' − ', Mt1])],
+    ejes: 'En la gráfica, x va en metros y t en segundos.',
+    vm: ['Velocidad media: ', Mvm, ' = ', frac(MDx, MDt), ', con ', MDx, ' = posición final − posición inicial'],
+    rm: ['Rapidez media = ', frac('d', MDt), ', con d la distancia recorrida: todo el camino, sin signo'],
+    tramo: 'Tiempo de un tramo con rapidez constante: distancia ÷ rapidez.',
+    encuentro: 'Dos móviles se encuentran cuando están en la misma posición en el mismo instante.',
+    rel: ['Velocidad de B vista desde A: ', MvBA, ' = ', MvB, ' − ', MvA, ', cada una con su signo'],
+    orilla: 'Velocidad desde la orilla = velocidad respecto al agua + velocidad del agua, con su signo.',
+    rio: 'Río abajo es el sentido +; la corriente va río abajo.',
+    ejeCarretera: 'En la carretera, + hacia la derecha y − hacia la izquierda.',
   });
-  // Dos tramos: avanza a v1 durante t1 y retrocede a v2 durante t2.
-  function idaVuelta(v1, t1, v2, t2, rotulos = true, corte = {}) {
-    const A1 = v1 * t1, A2 = v2 * t2, T = t1 + t2;
-    return Object.assign(EJE_VT(-6, 6, Math.max(6, T)), {
-      curvas: [{ puntos: [[0, v1], [t1, v1], null, [t1, -v2], [T, -v2]], color: 'o' }],
-      areas: [
-        { puntos: [[0, v1], [t1, v1]], color: 'i', rotulo: rotulos ? `+${f(A1)} m` : undefined, desde: corte.a1 },
-        { puntos: [[t1, -v2], [T, -v2]], color: 'i', rotulo: rotulos ? `−${f(A2)} m` : undefined, desde: corte.a2 },
+  // Un ejercicio de nivel examen nombra su alternativa con la letra en negrita (molde §3).
+  const letra = (alts, alt) => neg('ABCDE'[alts.indexOf(alt)]);
+
+  // ---------- Idea 2 (A2): la gráfica posición–tiempo (18 nov, contrato «se entiende sin profesor») ----------
+  // Pieza fis-xt: la combi en la avenida y, debajo, su gráfica x–t que se dibuja sola, un punto por segundo.
+  // Cambia: la velocidad de la combi (también negativa) · Permanece: la salida en el paradero (x₀ = 0) y el grifo
+  // (4 s; 60 m) · Progresa: el reloj, que deja un punto por segundo · Se reserva: la recta que no sale del cero (solo en
+  // Predice) · Debe verse: lo que sube la recta en cada segundo es lo que avanza la combi.
+  const XT = () => Kit.piezas['fis-xt'];
+  const xt = (d, estado = {}) => ({ pieza: 'fis-xt', datos: d, estado });
+  // El plano de una figura: el eje del tiempo hasta tmax y el de la posición de lo a hi, con números legibles.
+  const plano = (tmax, lo, hi) => {
+    const R = hi - lo, numero = [5, 10, 20, 25, 50, 100, 200, 250, 500, 1000].find(k => R / k <= 5) || 2000;
+    const tp = tmax <= 10 ? 1 : tmax <= 30 ? 5 : 10;
+    return { t: { max: tmax, paso: tp }, x: { min: lo, max: hi, paso: numero / 2, numero } };
+  };
+  const T_A2 = 5, PLANO_A2 = { t: { max: 5, paso: 1 }, x: { min: -100, max: 100, paso: 25, numero: 50 } };
+  const AV_A2 = Object.assign(regla(-100, 100), { signo: true, segundos: 0, rotulos: false, fantasmas: false,
+    lugares: [{ en: 0, texto: 'Paradero', lado: 'izq' }, { en: 60, texto: 'Grifo' }] });
+  const GRIFO = { t: 4, x: 60, texto: 'Grifo', marca: 'aro', lado: 'izq' };
+  const juegoA2 = val => xt(Object.assign({ avenida: Object.assign({}, AV_A2, { x0: 0, v: val.v }) }, PLANO_A2, {
+    lineas: [{ puntos: [[0, 0], [T_A2, T_A2 * val.v]], segundos: true }], puntos: [GRIFO], instante: Math.max(0, Math.min(val.t, T_A2)) }));
+  // Predice y Mira: un ciclista cuya recta pasa por (2 s; 26 m) y (5 s; 38 m): no sale del cero (el juego no lo mostró).
+  const CICLISTA = Object.assign({ t: { max: 7, paso: 1 }, x: { min: 0, max: 60, paso: 10, numero: 20 } }, {
+    lineas: [{ puntos: [[0, 18], [7, 46]] }],
+    puntos: [{ t: 2, x: 26, texto: '(2 s; 26 m)', lado: 'abajoDer' }, { t: 5, x: 38, texto: '(5 s; 38 m)', lado: 'arribaIzq' }],
+  });
+  // Con el escalón, los nombres de los dos puntos se van (en «Mira», después del primer paso): quedan Δt y Δx.
+  const conEscalon = (d, desde = 0, desdeX = 0) => Object.assign({}, d, {
+    puntos: [...d.puntos.map(p => ({ t: p.t, x: p.x })), ...(desde ? d.puntos.map(p => Object.assign({}, p, { hasta: 0 })) : [])],
+    escalon: { de: [2, 26], a: [5, 38], dt: 'Δt = 3 s', dx: 'Δx = 12 m', desde, desdeX } });
+
+  // Ejemplos resueltos de A2. Cuentas rehechas con un script aparte que no usa este archivo (scratchpad f3w/cuentas.js,
+  // 18 nov): 48/4; (10 − 60)/5; (30 − 30)/6; 20 + 5·4; 20/2 y 30/5; (26 − 14)/3; (50 − 30)/4 y 30 − 5·2; 6000/600;
+  // 40/4 y (10 − 40)/6; (34 − 10)/3 y (90 − 10)/8; 40/5 y (70 − 100)/5; (30 − 10)/4 y 5·10; (30 + 20)/5;
+  // 300/20 y 15·3,6. Las figuras muestran lo que cada dato marca (los puntos dados, el tramo dado), nunca la recta
+  // extendida hasta lo que se pide ni la pendiente calculada (molde §3, 18 nov).
+  const ALT_A2 = {
+    dos: ['A: 8 m/s; B: 6 m/s', 'A: 8 m/s; B: −6 m/s', 'A: 8 m/s; B: 14 m/s', 'A: 40 m/s; B: 70 m/s', 'A: −8 m/s; B: 6 m/s'],
+    sigue: ['30 m', '50 m', '60 m', '75 m', '20 m'],
+    forma: ['Sube, queda horizontal y baja hasta x = 0', 'Sube, queda horizontal y sube más', 'Una cuesta: sube y baja sin parar', 'Horizontal y después baja hasta x = 0', 'Baja, queda horizontal y sube'],
+    ecuacion: ['x = 30 + 10t', 'x = −20 + 6t', 'x = −20 + 10t', 'x = 20 + 10t', 'x = −20 − 10t'],
+    kmh: ['15 km/h', '54 km/h', '4,17 km/h', '300 km/h', '1080 km/h'],
+  };
+  const EJEMPLOS_XT = [
+    { nivel: 1, titulo: 'Desde el paradero',
+      figura: xt(Object.assign(plano(5, 0, 60), { lineas: [{ puntos: [[0, 0], [4, 48]] }], puntos: [{ t: 4, x: 48, texto: '(4 s; 48 m)', lado: 'arribaIzq' }] })),
+      enunciado: ['La gráfica x–t de una combi es una recta que sale de (0 s; 0 m) y pasa por (4 s; 48 m). ¿Qué velocidad lleva?'],
+      datos: [DM.xt, DM.ejes],
+      solucion: [{ texto: 'En 4 s la posición sube 48 m: lo que sube entre lo que tarda.', ecuacion: [Mv, ' = ', frac([px('48'), ' − ', px('0')], [pt('4'), ' − ', pt('0')]), ' = ', pv('12 m/s')] }],
+      respuesta: [pv('v = 12 m/s')] },
+    { nivel: 1, titulo: 'Una recta que baja',
+      figura: xt(Object.assign(plano(5, 0, 80), { lineas: [{ puntos: [[0, 60], [5, 10]] }], puntos: [{ t: 0, x: 60, texto: '(0 s; 60 m)', lado: 'arribaDer' }, { t: 5, x: 10, texto: '(5 s; 10 m)', lado: 'abajoIzq' }] })),
+      enunciado: ['La gráfica x–t de una combi baja en línea recta de (0 s; 60 m) a (5 s; 10 m). ¿Qué velocidad lleva, con su signo?'],
+      datos: [DM.xt, DM.ejes],
+      solucion: [{ texto: 'La posición baja: el cambio de x es negativo, y la velocidad también.', ecuacion: [Mv, ' = ', frac([px('10'), ' − ', px('60')], [pt('5'), ' − ', pt('0')]), ' = ', pv('−10 m/s')] }],
+      respuesta: [pv('v = −10 m/s'), ': va hacia el paradero'] },
+    { nivel: 1, titulo: 'Una recta horizontal',
+      figura: xt(Object.assign(plano(6, 0, 60), { lineas: [{ puntos: [[0, 30], [6, 30]] }], puntos: [{ t: 0, x: 30, texto: '(0 s; 30 m)', lado: 'arribaDer' }, { t: 6, x: 30, texto: '(6 s; 30 m)', lado: 'arribaIzq' }] })),
+      enunciado: ['La gráfica x–t de un mototaxi es una recta horizontal: a los 0 s y a los 6 s está en x = 30 m. ¿Qué velocidad tiene?'],
+      datos: [DM.xt, DM.ejes],
+      solucion: [{ texto: 'La recta no sube ni baja: en 6 s, x no cambia.', ecuacion: [Mv, ' = ', frac([px('30'), ' − ', px('30')], [pt('6'), ' − ', pt('0')]), ' = ', pv('0 m/s')] }],
+      respuesta: [pv('v = 0 m/s'), ': está quieto en 30 m'] },
+    { nivel: 1, titulo: 'Un escalón por segundo',
+      figura: xt(Object.assign(plano(5, 0, 60), { puntos: [{ t: 0, x: 20, texto: 'x₀', color: 'f', lado: 'arribaDer' }], escalon: { de: [0, 20], a: [1, 25], dt: '1 s', dx: '5 m' } })),
+      enunciado: ['La gráfica x–t de una combi sale de x₀ = 20 m y sube 5 m en cada segundo. ¿Dónde está a los 4 s?'],
+      datos: [DM.pos, DM.ejes],
+      solucion: [{ texto: 'Sube 5 m por segundo: su velocidad es 5 m/s. En 4 s sube 20 m desde 20 m.', ecuacion: [Mx, ' = ', px('20'), ' + ', pv('5'), ' · ', pt('4'), ' = ', px('40 m')] }],
+      respuesta: ['En ', px('x = 40 m')] },
+    { nivel: 1, titulo: 'La más inclinada',
+      figura: xt(Object.assign(plano(5, 0, 40), { lineas: [{ puntos: [[0, 0], [2, 20]], rotulo: 'A' }, { puntos: [[0, 0], [5, 30]], trazo: 'discontinua', rotulo: 'B' }] })),
+      enunciado: ['Dos combis salen del paradero. La recta de A pasa por (2 s; 20 m) y la de B, por (5 s; 30 m). ¿Cuál va más rápido?'],
+      datos: [DM.xt, DM.ejes],
+      solucion: [{ texto: 'La pendiente de cada recta es su velocidad.', ecuacion: [MvA, ' = ', frac(px('20'), pt('2')), ' = ', pv('10 m/s'), ';   ', MvB, ' = ', frac(px('30'), pt('5')), ' = ', pv('6 m/s')] },
+        { texto: 'La recta de A está más inclinada: sube más por cada segundo.' }],
+      respuesta: ['La combi A, a ', pv('10 m/s')] },
+    { nivel: 2, titulo: 'No sale del cero',
+      figura: xt(Object.assign(plano(5, 0, 40), { lineas: [{ puntos: [[0, 10], [5, 30]] }], puntos: [{ t: 1, x: 14, texto: '(1 s; 14 m)', lado: 'abajoDer' }, { t: 4, x: 26, texto: '(4 s; 26 m)', lado: 'abajoDer' }] })),
+      enunciado: ['La recta x–t de un mototaxi pasa por (1 s; 14 m) y (4 s; 26 m). ¿Qué velocidad lleva?'],
+      datos: [DM.xt, DM.ejes],
+      solucion: [
+        { texto: 'Entre los dos puntos pasan 3 s y la posición sube 12 m.', ecuacion: [MDt, ' = ', pt('4'), ' − ', pt('1'), ' = ', pt('3 s'), ';   ', MDx, ' = ', px('26'), ' − ', px('14'), ' = ', pdx('12 m')] },
+        { texto: 'La pendiente es lo que sube entre lo que tarda. 26 ÷ 4 no sirve: la recta no sale del cero.', ecuacion: [Mv, ' = ', frac(pdx('12 m'), pt('3 s')), ' = ', pv('4 m/s')] },
       ],
-    });
-  }
-  // Animación: el reloj recorre la ida y la vuelta a velocidad real. El punto naranja va sobre la gráfica y las dos
-  // áreas se llenan hasta t; Δx y d del momento salen de esas mismas áreas (regla 1). Al terminar se queda quieto.
-  const IDA_V = 4, IDA_T = 3;
-  const tramo = (v2, t2, tt) => {
-    const T = IDA_T + t2, tm = Math.max(0, Math.min(tt, T));
-    const a1 = IDA_V * Math.min(tm, IDA_T), a2 = v2 * Math.max(0, tm - IDA_T);
-    return { tm, a1, a2, vt: tm < IDA_T ? IDA_V : -v2 };
-  };
-  const idaVueltaT = (v2, t2, tt) => {
-    const d = idaVuelta(IDA_V, IDA_T, v2, t2, false), q = tramo(v2, t2, tt);
-    const ar = [];
-    if (q.tm > 0) ar.push({ puntos: [[0, IDA_V], [Math.min(q.tm, IDA_T), IDA_V]], color: 'i', rotulo: q.tm >= 0.8 ? `+${f(q.a1, 1)} m` : undefined });
-    if (q.tm > IDA_T) ar.push({ puntos: [[IDA_T, -v2], [q.tm, -v2]], color: 'i', rotulo: q.tm - IDA_T >= 0.8 ? `−${f(q.a2, 1)} m` : undefined });
-    return Object.assign(d, { areas: ar, puntos: [{ x: q.tm, y: q.vt, color: 'o', guias: true }] });
-  };
-  const distancia = {
-    id: 'desplazamiento-distancia',
-    titulo: 'Desplazamiento no es distancia',
-    temas: ['Posición, desplazamiento y distancia', 'Velocidad y rapidez media'],
-    pieza: 'ejes',
+      respuesta: [pv('v = 4 m/s')] },
+    { nivel: 2, titulo: '¿Dónde empezó?',
+      figura: xt(Object.assign(plano(7, 0, 60), { lineas: [{ puntos: [[2, 30], [6, 50]] }], puntos: [{ t: 2, x: 30, texto: '(2 s; 30 m)', lado: 'abajoDer' }, { t: 6, x: 50, texto: '(6 s; 50 m)', lado: 'abajoDer' }] })),
+      enunciado: ['La recta x–t de una combi pasa por (2 s; 30 m) y (6 s; 50 m). ¿Dónde estaba a los 0 s?'],
+      datos: [DM.xt, DM.pos],
+      solucion: [
+        { texto: 'Primero la velocidad: en 4 s sube 20 m.', ecuacion: [Mv, ' = ', frac([px('50'), ' − ', px('30')], [pt('6'), ' − ', pt('2')]), ' = ', pv('5 m/s')] },
+        { texto: 'Desde los 2 s hasta los 0 s se retroceden 2 s de recta: 10 m menos.', ecuacion: [px('30'), ' = ', Mx0, ' + ', pv('5'), ' · ', pt('2'), '  →  ', Mx0, ' = ', px('20 m')] },
+      ],
+      respuesta: [px('x₀ = 20 m')] },
+    { nivel: 2, titulo: 'Leer en kilómetros',
+      figura: xt({ t: { max: 11, paso: 2, nombre: 't (min)' }, x: { min: 0, max: 8, paso: 1, numero: 2, nombre: 'x (km)' }, lineas: [{ puntos: [[0, 0], [10, 6]] }], puntos: [{ t: 10, x: 6, texto: '(10 min; 6 km)', lado: 'arribaIzq' }] }),
+      enunciado: ['La recta x–t de una combi sale de (0 min; 0 km) y pasa por (10 min; 6 km). ¿Qué velocidad lleva, en m/s?'],
+      datos: [DM.xt, DM.kmh, DM.min],
+      solucion: [
+        { texto: 'A metros y segundos: 6 km = 6000 m y 10 min = 600 s.' },
+        { texto: 'La pendiente:', ecuacion: [Mv, ' = ', frac(pdx('6000 m'), pt('600 s')), ' = ', pv('10 m/s')] },
+      ],
+      respuesta: [pv('v = 10 m/s')] },
+    { nivel: 2, titulo: 'Dos tramos en la gráfica',
+      figura: xt(Object.assign(plano(10, 0, 50), { lineas: [{ puntos: [[0, 0], [4, 40], [10, 10]] }], puntos: [{ t: 4, x: 40, texto: '(4 s; 40 m)', lado: 'arriba' }, { t: 10, x: 10, texto: '(10 s; 10 m)', lado: 'abajo' }] })),
+      enunciado: ['La gráfica x–t de un mototaxi sube en recta de (0 s; 0 m) a (4 s; 40 m) y baja en recta hasta (10 s; 10 m). ¿Su velocidad en cada tramo?'],
+      datos: [DM.xt, DM.ejes],
+      solucion: [
+        { texto: 'Primer tramo: sube 40 m en 4 s.', ecuacion: [Mv, ' = ', frac(px('40'), pt('4')), ' = ', pv('10 m/s')] },
+        { texto: 'Segundo tramo: baja 30 m en 6 s; la velocidad es negativa, regresa.', ecuacion: [Mv, ' = ', frac([px('10'), ' − ', px('40')], [pt('10'), ' − ', pt('4')]), ' = ', pv('−5 m/s')] },
+      ],
+      respuesta: [pv('10 m/s'), ' y después ', pv('−5 m/s')] },
+    { nivel: 2, titulo: '¿Cuándo llega?',
+      figura: xt(Object.assign(plano(12, 0, 100), { lineas: [{ puntos: [[0, 10], [3, 34]] }], puntos: [{ t: 0, x: 10 }, { t: 3, x: 34, texto: '(3 s; 34 m)', lado: 'abajoDer' }] })),
+      enunciado: ['La recta x–t de una combi pasa por (0 s; 10 m) y (3 s; 34 m). Si sigue igual, ¿a qué instante llega a x = 90 m?'],
+      datos: [DM.xt, DM.pos],
+      solucion: [
+        { texto: 'La pendiente: sube 24 m en 3 s.', ecuacion: [Mv, ' = ', frac([px('34'), ' − ', px('10')], pt('3')), ' = ', pv('8 m/s')] },
+        { texto: 'Con la regla de la posición, se despeja t.', ecuacion: [px('90'), ' = ', px('10'), ' + ', pv('8'), Mt, '  →  ', Mt, ' = ', frac(pdx('80'), pv('8')), ' = ', pt('10 s')] },
+      ],
+      respuesta: ['A los ', pt('10 s')] },
+    { nivel: 3, titulo: 'Dos rectas con signo',
+      figura: xt(Object.assign(plano(5, 0, 100), { lineas: [{ puntos: [[0, 0], [5, 40]], rotulo: 'A' }, { puntos: [[0, 100], [5, 70]], trazo: 'discontinua', rotulo: 'B' }] })),
+      enunciado: ['En la gráfica x–t, la recta de A va de (0 s; 0 m) a (5 s; 40 m) y la de B, de (0 s; 100 m) a (5 s; 70 m). ¿Qué velocidades tienen?'],
+      alternativas: ALT_A2.dos,
+      datos: [DM.xt, DM.ejes],
+      solucion: [
+        { texto: 'Cada pendiente, con su signo.', ecuacion: [MvA, ' = ', frac(px('40'), pt('5')), ' = ', pv('8 m/s'), ';   ', MvB, ' = ', frac([px('70'), ' − ', px('100')], pt('5')), ' = ', pv('−6 m/s')] },
+        { texto: ['La recta de B baja: B va hacia el lado −. La ', letra(ALT_A2.dos, ALT_A2.dos[0]), ' pierde ese signo; la ', letra(ALT_A2.dos, ALT_A2.dos[3]), ' lee las alturas.'] },
+      ],
+      respuesta: [letra(ALT_A2.dos, ALT_A2.dos[1]), ', ', pv('8 m/s'), ' y ', pv('−6 m/s')] },
+    { nivel: 3, titulo: 'Si la recta sigue',
+      figura: xt(Object.assign(plano(10, 0, 80), { lineas: [{ puntos: [[0, 10], [4, 30]] }], puntos: [{ t: 0, x: 10 }, { t: 4, x: 30, texto: '(4 s; 30 m)', lado: 'abajoDer' }] })),
+      enunciado: ['La gráfica x–t de un mototaxi solo llega hasta (4 s; 30 m); empieza en (0 s; 10 m). Si sigue igual, ¿qué distancia recorre en los primeros 10 s?'],
+      alternativas: ALT_A2.sigue,
+      datos: [DM.xt, 'Sin vuelta, la distancia recorrida es lo que avanzó.'],
+      solucion: [
+        { texto: 'La pendiente: sube 20 m en 4 s.', ecuacion: [Mv, ' = ', frac([px('30'), ' − ', px('10')], pt('4')), ' = ', pv('5 m/s')] },
+        { texto: 'En 10 s avanza 5 m cada segundo:', ecuacion: [pv('5 m/s'), ' · ', pt('10 s'), ' = 50 m'] },
+        { texto: ['La ', letra(ALT_A2.sigue, '30 m'), ' es el último punto de la gráfica; la ', letra(ALT_A2.sigue, '60 m'), ' es su posición, no lo recorrido.'] },
+      ],
+      respuesta: [letra(ALT_A2.sigue, '50 m'), ', 50 m'] },
+    { nivel: 3, titulo: 'Elegir la gráfica',
+      figura: avenida(Object.assign(regla(0, 100), { x0: 0, v: 10, segundos: 0, rotulos: false, lugares: PARADERO })),
+      enunciado: ['Una combi sale del paradero hacia la derecha a 10 m/s durante 6 s, se detiene 4 s y regresa al paradero a 15 m/s. ¿Cómo es su gráfica x–t?'],
+      alternativas: ALT_A2.forma,
+      datos: ['En la gráfica x–t, x va hacia arriba y t hacia la derecha.', DM.eje],
+      solucion: [
+        { texto: 'Mientras va hacia +, x crece: la recta sube. Quieta, x no cambia: tramo horizontal.' },
+        { texto: 'Al regresar, x baja hasta 0, el paradero. La avenida es plana: la gráfica no es el camino.' },
+        { texto: ['La ', letra(ALT_A2.forma, ALT_A2.forma[2]), ' dibuja una cuesta; la ', letra(ALT_A2.forma, ALT_A2.forma[1]), ' no regresa.'] },
+      ],
+      respuesta: [letra(ALT_A2.forma, ALT_A2.forma[0]), ': sube, horizontal y baja hasta ', px('x = 0')] },
+    { nivel: 3, titulo: 'La ecuación de la recta',
+      figura: xt(Object.assign(plano(6, -40, 40), { lineas: [{ puntos: [[0, -20], [5, 30]] }], puntos: [{ t: 0, x: -20, texto: '(0 s; −20 m)', lado: 'abajoDer' }, { t: 5, x: 30, texto: '(5 s; 30 m)', lado: 'arribaIzq' }] })),
+      enunciado: ['La recta x–t de una combi pasa por (0 s; −20 m) y (5 s; 30 m). ¿Cuál es su ecuación de posición?'],
+      alternativas: ALT_A2.ecuacion,
+      datos: [DM.xt, DM.pos],
+      solucion: [
+        { texto: 'A los 0 s está en −20 m: esa es su salida.', ecuacion: [Mx0, ' = ', px('−20 m')] },
+        { texto: 'La pendiente: sube 50 m en 5 s.', ecuacion: [Mv, ' = ', frac([px('30'), ' − (', px('−20'), ')'], pt('5')), ' = ', pv('10 m/s')] },
+        { texto: ['La ', letra(ALT_A2.ecuacion, ALT_A2.ecuacion[1]), ' divide 30 entre 5; la ', letra(ALT_A2.ecuacion, ALT_A2.ecuacion[0]), ' toma el último punto como salida.'] },
+      ],
+      respuesta: [letra(ALT_A2.ecuacion, ALT_A2.ecuacion[2]), ', ', Mx, ' = ', px('−20'), ' + ', pv('10'), Mt] },
+    { nivel: 3, titulo: 'De la gráfica a km/h',
+      figura: xt(Object.assign(plano(25, 0, 400), { lineas: [{ puntos: [[0, 0], [20, 300]] }], puntos: [{ t: 20, x: 300, texto: '(20 s; 300 m)', lado: 'arribaIzq' }] })),
+      enunciado: ['La recta x–t de una combi sale de (0 s; 0 m) y pasa por (20 s; 300 m). ¿Cuál es su velocidad en km/h?'],
+      alternativas: ALT_A2.kmh,
+      datos: [DM.xt, DM.kmh],
+      solucion: [
+        { texto: 'La pendiente, en m/s:', ecuacion: [Mv, ' = ', frac(pdx('300 m'), pt('20 s')), ' = ', pv('15 m/s')] },
+        { texto: 'En una hora hay 3600 s: 15 m cada segundo son 54 000 m por hora.', ecuacion: [pv('15 m/s'), ' = ', frac('15 · 3600 m', '1000 · 1 h'), ' = ', pv('54 km/h')] },
+        { texto: ['La ', letra(ALT_A2.kmh, ALT_A2.kmh[0]), ' no convierte; la ', letra(ALT_A2.kmh, ALT_A2.kmh[2]), ' divide entre 3,6 en vez de multiplicar.'] },
+      ],
+      respuesta: [letra(ALT_A2.kmh, '54 km/h'), ', ', pv('54 km/h')] },
+  ];
+
+  const graficaXt = {
+    id: 'grafica-xt',
+    titulo: 'La gráfica posición–tiempo',
+    pregunta: '¿Qué dice la inclinación de la gráfica x–t?',
+    temas: ['MRU y velocidad relativa', 'Posición, desplazamiento y distancia'],
+    pieza: 'fis-xt',
+    aprendizaje: 'En la gráfica x–t, la pendiente Δx/Δt es la velocidad, aunque la recta no salga del origen; si baja, v es negativa.',
+    actividad: 'Inclinar la gráfica de la combi para que pase por el grifo.',
+    lee: {
+      tarjetas: [
+        { titulo: 'La tabla hecha puntos', texto: ['Anota dónde está la combi en cada segundo: a los 0 s, a los 1 s, a los 2 s… Cada par (', Mt, '; ', Mx, ') es un punto de la gráfica x–t: el tiempo va hacia la derecha y la posición, hacia arriba.'],
+          dibujo: xt(Object.assign({}, PLANO_A2, { lineas: [{ puntos: [[0, 0], [3, 30]], segundos: true }] })) },
+        { titulo: 'La pendiente', texto: 'Si unes los puntos, sale una recta. Su pendiente es cuánto sube la recta por cada segundo que pasa. Una recta que baja tiene pendiente negativa: la posición disminuye.' },
+        { titulo: 'La gráfica no es el camino', texto: 'La avenida es recta y plana aunque la gráfica suba. Subir en la gráfica quiere decir que x crece: la combi se aleja del paradero hacia el lado +.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar la velocidad de la combi. Mira cómo se inclina la recta y cuánto sube en cada segundo.' },
+      ],
+    },
+    ejemplos: EJEMPLOS_XT,
     juega: {
-      consigna: 'El carrito avanza a 4 m/s durante 3 s y después retrocede. Mira cómo se llenan las dos áreas mientras corre el reloj.',
-      voz: 'La parte bajo el eje es cuando va hacia atrás.',
-      controles: [
-        { id: 'v2', etiqueta: 'Retrocede a', min: 1, max: 6, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
-        { id: 't2', etiqueta: 'Durante', min: 1, max: 3, paso: 1, inicio: 2, unidad: 's', decimales: 0 },
-        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 7, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
+      pieza: 'fis-xt',
+      consigna: 'La gráfica se dibuja sola, un punto por segundo, mientras la combi sale del paradero.',
+      mision: {
+        texto: 'Inclina la recta para que pase por el grifo: 60 m a los 4 s.',
+        logrado: val => val.v === 15,
+        bien: 'Listo: sube 15 m cada segundo; a los 4 s, 60 m.',
+      },
+      voz: 'Mira cuánto sube la recta en cada segundo.',
+      leyenda: [
+        { s: [Mx], t: 'posición, en el eje vertical' },
+        { s: [Mt], t: 'tiempo, en el eje horizontal' },
+        { s: 'punto', t: 'dónde estaba la combi en cada segundo' },
+        { s: 'recta', t: 'los puntos, unidos' },
+        { s: [Mv], t: 'metros que avanza en cada segundo' },
       ],
-      dibujo: val => ({ datos: idaVueltaT(val.v2, val.t2, val.t), estado: {} }),
-      lectura: val => { const q = tramo(val.v2, val.t2, val.t); return [t, ` = ${f(q.tm, 1)} s · `, dx, ` = ${f(q.a1 - q.a2, 1)} m · d = ${f(q.a1 + q.a2, 1)} m`]; },
+      controles: [
+        { id: 'v', etiqueta: 'Velocidad, v', color: 'c-o', min: -20, max: 20, paso: 5, inicio: 5, unidad: 'm/s', decimales: 0 },
+        { id: 't', etiqueta: 'Reloj, t', color: 'c-i', min: 0, max: T_A2 + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
+      ],
+      dibujo: juegoA2,
+      lectura: val => (val.v > 0 ? ['La recta sube ', pv(`${fm(val.v)} m`), ' por cada segundo: ', Mv, ' = ', pv(`${fm(val.v)} m/s`)]
+        : val.v < 0 ? ['La recta baja ', pv(`${fm(-val.v)} m`), ' por cada segundo: ', Mv, ' = ', pv(`${fm(val.v)} m/s`)]
+          : ['La recta no sube ni baja: ', Mv, ' = ', pv('0 m/s')]),
+      resumen: { v: 10, t: 5 },
       minimo: 3,
-      // Arrastra el tramo de abajo hacia arriba o abajo (qué tan rápido retrocede) y su borde derecho (cuánto tiempo).
+      // Gesto directo: se arrastra el punto de los 4 s de la recta, hacia arriba o hacia abajo.
       arrastres: [
-        { id: 'retroceso', etiqueta: 'rapidez de retroceso', color: 'c-o',
-          donde: val => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { x: g.X(3 + val.t2 / 2), y: g.Y(-val.v2) }; },
-          mover: (pt, val) => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { v2: -inversa(g.Y, -6, 6)(pt.y) }; } },
-        { id: 'duracion', etiqueta: 'fin del retroceso', color: 'c-h',
-          donde: val => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { x: g.X(3 + val.t2), y: g.Y(-val.v2) }; },
-          mover: (pt, val) => { const g = EJES().geometria(idaVuelta(4, 3, val.v2, val.t2)); return { t2: inversa(g.X, 0, 6)(pt.x) - 3 }; } },
+        { id: 'punto-4', etiqueta: 'punto de los 4 segundos', color: 'c-o',
+          donde: val => { const g = XT().geometria(juegoA2(val).datos); return { x: g.X(4), y: g.Y(4 * val.v) }; },
+          mover: (p, val) => ({ v: XT().geometria(juegoA2(val).datos).Yi(p.y) / 4 }) },
       ],
     },
     predice: {
-      pregunta: 'Un carrito avanza 12 m en 3 s y regresa los mismos 12 m en otros 3 s. ¿Cuál es su velocidad media en los 6 s?',
+      pregunta: 'La gráfica x–t de un ciclista es una recta que pasa por (2 s; 26 m) y (5 s; 38 m). ¿Qué velocidad lleva?',
+      datos: [DM.ejes],
       opciones: [
-        { id: 'c', texto: '0 m/s', correcta: true },
-        { id: 'rapidez', texto: '4 m/s', error: 'DX-RAPIDEZ', siFuera: '4 m/s es la rapidez media: distancia entre tiempo. La velocidad media usa el desplazamiento.' },
-        { id: 'tramo', texto: '2 m/s', error: 'DX-TRAMO', siFuera: '2 m/s sería cierto si avanzara 12 m en 6 s sin volver.' },
-        { id: 'ida', texto: '8 m/s', error: 'DX-SUMA', siFuera: '8 m/s suma las rapideces de ida y vuelta; la media no se obtiene así.' },
+        { id: 'c', texto: '4 m/s', correcta: true },
+        { id: 'altura', texto: '13 m/s', error: 'G2-altura-entre-tiempo', siFuera: '26 ÷ 2 sería cierto si la recta saliera del cero. Aquí no sale de ahí.' },
+        { id: 'ultimo', texto: '7,6 m/s', error: 'G2-ultimo-punto', siFuera: 'Bien que dividas posición entre tiempo. Pero 38 ÷ 5 supone que salió del cero.' },
+        { id: 'eje', texto: '38 m/s', error: 'G2-pendiente-es-altura', siFuera: '38 m es una posición, la altura del punto. La velocidad es lo que sube por segundo.' },
       ],
-      dibujo: { datos: idaVuelta(4, 3, 4, 3, false), estado: {} },
-      revelar: { datos: idaVuelta(4, 3, 4, 3, true), estado: {} },
-      coincide: 'Coincide: terminó donde empezó, así que su desplazamiento es 0.',
+      dibujo: xt(CICLISTA),
+      revelar: xt(conEscalon(CICLISTA)),
+      coincide: 'Coincide: entre los dos puntos sube 12 m en 3 s, 4 m cada segundo.',
     },
     mira: {
-      datos: idaVuelta(4, 3, 2, 3, true, { a1: 1, a2: 2 }),
+      pieza: 'fis-xt',
+      datos: (e => Object.assign(e, { puntos: [...e.puntos, { t: 0, x: 18, texto: 'x₀ = 18 m', color: 'f', lado: 'abajoDer', desde: 3 }] }))(conEscalon(CICLISTA, 1, 2)),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Área sobre el eje: avanzó 4 · 3 = 12 m.', ecuacion: [{ sub: ['A', '+'] }, ' = 12 m'] },
-        { estado: { corte: 2 }, texto: 'Área bajo el eje: retrocedió 2 · 3 = 6 m.', ecuacion: [{ sub: ['A', '−'] }, ' = 6 m'] },
-        { estado: { corte: 2 }, texto: 'Desplazamiento: lo de arriba menos lo de abajo.', ecuacion: [dx, ' = 12 − 6 = 6 m'] },
-        { estado: { corte: 2 }, texto: 'Distancia recorrida: todo el camino, sumado.', ecuacion: ['d = 12 + 6 = 18 m'] },
-        { estado: { corte: 2 }, texto: 'En 6 s: velocidad media 1 m/s; rapidez media 3 m/s.', ecuacion: [{ frac: [dx, dt] }, ' = 1 m/s', '   ·   ', { frac: ['d', dt] }, ' = 3 m/s'] },
+        { estado: { corte: 0 }, texto: 'Dos puntos de la recta: (2 s; 26 m) y (5 s; 38 m).' },
+        { estado: { corte: 1 }, texto: 'Del primer punto al segundo pasan 3 s.', ecuacion: [MDt, ' = ', pt('5'), ' − ', pt('2'), ' = ', pt('3 s')] },
+        { estado: { corte: 2 }, texto: 'En esos 3 s, la posición sube 12 m.', ecuacion: [MDx, ' = ', px('38'), ' − ', px('26'), ' = ', pdx('12 m')] },
+        { estado: { corte: 2 }, texto: 'La pendiente: lo que sube entre lo que tarda.', ecuacion: [Mv, ' = ', frac(pdx('12 m'), pt('3 s')), ' = ', pv('4 m/s')] },
+        { estado: { corte: 3 }, texto: 'A los 0 s estaba en 18 m: la recta no sale del cero.', ecuacion: [Mx0, ' = ', px('26'), ' − ', pv('4'), ' · ', pt('2'), ' = ', px('18 m')] },
+        { estado: { corte: 3 }, texto: 'Por eso 26 ÷ 2 no da la velocidad: supone que salió del cero.' },
       ],
     },
     regla: {
-      texto: 'En la gráfica v–t, el área sobre el eje suma y la de abajo resta: eso es el desplazamiento. La distancia suma ambas.',
-      ecuacion: [dx, ' = ', { llave: [{ sub: ['A', '+'] }], nota: 'sobre el eje', color: 'c-i' }, ' − ', { llave: [{ sub: ['A', '−'] }], nota: 'bajo el eje', color: 'c-i' }, '   ·   ', 'd = ', { sub: ['A', '+'] }, ' + ', { sub: ['A', '−'] }],
-      condicion: 'se separa el área en cada cambio de sentido. Velocidad media = Δx/Δt; rapidez media = d/Δt.',
+      texto: 'En la gráfica x–t, la velocidad es la pendiente de la recta: cuánto cambia x entre dos puntos, entre el tiempo que pasa. Si baja, v es negativa.',
+      ecuacion: [Mv, ' = ', { llave: [frac([Mx2, ' − ', Mx1], [Mt2, ' − ', Mt1])], nota: 'la pendiente', color: 'c-o' }],
+      condicion: 'la gráfica es una recta (velocidad constante); sirve cualquier par de sus puntos. Horizontal: v = 0, está quieta.',
+      dibujo: xt(conEscalon(CICLISTA)),
+    },
+    resuelve: {
+      pieza: 'fis-xt',
+      generar(s) {
+        const r = azar(s + 900), t1 = r.ent(1, 3), dt = r.ent(2, 4), vv = r.ent(3, 8), x0 = r.ent(2, 8) * 5;
+        const t2 = t1 + dt, x1 = x0 + vv * t1, x2 = x0 + vv * t2, hi = Math.ceil((x2 + 15) / 20) * 20;
+        const fig = xt(Object.assign(plano(t2 + 2, 0, hi), { lineas: [{ puntos: [[t1, x1], [t2, x2]] }], puntos: [{ t: t1, x: x1 }, { t: t2, x: x2 }] }));
+        const puntos = ['La recta x–t de una combi pasa por (', pt(`${t1} s`), '; ', px(`${x1} m`), ') y (', pt(`${t2} s`), '; ', px(`${x2} m`), ').'];
+        const vCuenta = { tipo: 'cuentas', texto: 'Primero la pendiente: lo que sube entre lo que tarda.', ecuacion: [Mv, ' = ', frac([px(x2), ' − ', px(x1)], [pt(t2), ' − ', pt(t1)]), ' = ', frac(pdx(x2 - x1), pt(dt)), ' = ', pv(`${vv} m/s`)] };
+        if (s % 2 === 0) {
+          return {
+            enunciado: [...puntos, ' ¿Dónde estaba a los 0 s?'],
+            datos: [DM.xt, DM.pos],
+            dibujo: fig,
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Mx0, ': dónde estaba cuando el reloj marcaba 0.'] },
+              { tipo: 'datos', texto: ['Dos puntos de la recta: a los ', pt(`${t1} s`), ', ', px(`${x1} m`), '; a los ', pt(`${t2} s`), ', ', px(`${x2} m`), '.'] },
+              { tipo: 'regla', texto: ['La pendiente da la velocidad; con ella, la regla de la posición ', Mx, ' = ', Mx0, ' + ', Mv, ' · ', Mt, ' da la salida.'] },
+              vCuenta,
+              { tipo: 'cuentas', texto: `Del punto de los ${t1} s se retroceden ${t1} s de recta.`, ecuacion: [px(x1), ' = ', Mx0, ' + ', pv(vv), ' · ', pt(t1), '  →  ', Mx0, ' = ', px(`${x0} m`)] },
+              { tipo: 'sentido', texto: `Comprobación: ${x0} + ${vv} · ${t2} = ${x2} m, el otro punto. 0 no era la salida.` },
+            ],
+            respuesta: ['Estaba en ', px(`x₀ = ${x0} m`)],
+          };
+        }
+        const X = x2 + vv * r.ent(2, 5), T = (X - x0) / vv;
+        return {
+          enunciado: [...puntos, ' Si sigue igual, ¿a qué instante pasa por ', px(`x = ${X} m`), '?'],
+          datos: [DM.xt, DM.pos],
+          dibujo: fig,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el instante ', Mt, ' en que la combi llega a ', px(`${X} m`), '.'] },
+            { tipo: 'datos', texto: ['Dos puntos de la recta: (', pt(`${t1} s`), '; ', px(`${x1} m`), ') y (', pt(`${t2} s`), '; ', px(`${x2} m`), ').'] },
+            { tipo: 'regla', texto: ['La pendiente es la velocidad; con ella y la salida, ', Mx, ' = ', Mx0, ' + ', Mv, ' · ', Mt, ' da el instante.'] },
+            vCuenta,
+            { tipo: 'cuentas', texto: `La salida: ${x1} − ${vv} · ${t1} = ${x0} m. Se despeja t.`, ecuacion: [px(X), ' = ', px(x0), ' + ', pv(vv), Mt, '  →  ', Mt, ' = ', frac(pdx(X - x0), pv(vv)), ' = ', pt(`${f(T)} s`)] },
+            { tipo: 'sentido', texto: `Comprobación: a los ${f(T)} s, ${x1} + ${vv} · ${f(T - t1)} = ${X} m.` },
+          ],
+          respuesta: ['A los ', pt(`${f(T)} s`)],
+        };
+      },
     },
     ahoraTu: {
+      pieza: 'fis-xt',
       generar(s) {
-        const r = azar(s), v1 = r.ent(2, 5), t1 = r.ent(2, 3), v2 = r.ent(1, 5), t2 = r.ent(1, 3);
-        const A1 = v1 * t1, A2 = v2 * t2, pide = s % 2 ? 'distancia' : 'desplazamiento';
-        const bien = pide === 'distancia' ? A1 + A2 : A1 - A2;
-        const otro = pide === 'distancia' ? A1 - A2 : A1 + A2;
+        const r = azar(s + 37), k = s % 4, ms = n => `${fm(n)} m/s`;
+        const cuatro = (bien, ds, fmt = ms) => opciones(bien, ds, fmt).slice(0, 4);
+        if (k === 0 || k === 1) {
+          const t1 = r.ent(1, 3), dt = r.ent(2, 5), vv = (k === 0 ? 1 : -1) * r.ent(2, 9), x1a = k === 0 ? r.ent(2, 6) * 5 : r.ent(10, 16) * 5;
+          const x1 = x1a === vv * t1 ? x1a + 5 : x1a;   // la recta nunca sale del cero: así se ve el error G2
+          const t2 = t1 + dt, x2 = x1 + vv * dt, lo = Math.min(0, Math.floor(Math.min(x1, x2) / 20) * 20), hi = Math.ceil((Math.max(x1, x2) + 10) / 20) * 20;
+          const ds = k === 0 ? [
+            { id: 'ultimo', valor: x2 / t2, error: 'G2-ultimo-punto', siFuera: `Bien que dividas posición entre tiempo. Pero ${fm(x2)} ÷ ${t2} supone que salió del cero.` },
+            { id: 'altura', valor: x1 / t1, error: 'G2-altura-entre-tiempo', siFuera: 'Eso sería si la recta saliera del cero. Usa lo que sube entre los dos puntos.' },
+            { id: 'eje', valor: x2, error: 'G2-pendiente-es-altura', siFuera: `${fm(x2)} m es la altura de un punto. La velocidad es lo que sube por segundo.` },
+            { id: 'delta', valor: x2 - x1, error: 'XT-SIN-DIVIDIR', siFuera: `Bien: sube ${fm(x2 - x1)} m. Pero en ${dt} s; falta dividir entre el tiempo.` },
+          ] : [
+            { id: 'signo', valor: -vv, error: 'XT-SIGNO', siFuera: 'Bien la cuenta. Pero la recta baja: x disminuye y la velocidad es negativa.' },
+            { id: 'ultimo', valor: x2 / t2, error: 'G2-ultimo-punto', siFuera: 'Eso divide una posición entre su tiempo. Usa el cambio entre los dos puntos.' },
+            { id: 'inversa', valor: dt / (x2 - x1), error: 'XT-INVERSA', siFuera: 'Eso divide el tiempo entre lo que cambió x. Es al revés: x entre t.' },
+            { id: 'delta', valor: x2 - x1, error: 'XT-SIN-DIVIDIR', siFuera: `Bien: x cambia ${fm(x2 - x1)} m. Pero en ${dt} s; falta dividir.` },
+          ];
+          return {
+            pregunta: ['La recta x–t de un mototaxi pasa por (', pt(`${t1} s`), '; ', px(`${x1} m`), ') y (', pt(`${t2} s`), '; ', px(`${x2} m`), '). ¿Qué velocidad lleva, con su signo?'],
+            datos: [DM.xt, DM.ejes],
+            dibujo: xt(Object.assign(plano(t2 + 1, lo, hi), { lineas: [{ puntos: [[t1, x1], [t2, x2]] }], puntos: [{ t: t1, x: x1 }, { t: t2, x: x2 }] })),
+            opciones: cuatro(vv, ds),
+            solucion: { texto: k === 0 ? 'La pendiente entre los dos puntos.' : 'La recta baja: la pendiente es negativa.', ecuacion: [Mv, ' = ', frac([px(fm(x2)), ' − ', px(fm(x1))], [pt(t2), ' − ', pt(t1)]), ' = ', pv(ms(vv))] },
+          };
+        }
+        if (k === 2) {
+          const x0 = r.ent(1, 4) * 10, vv = r.ent(2, 6), t1 = r.ent(3, 5), T = t1 + r.ent(3, 6), x1 = x0 + vv * t1, xf = x0 + vv * T;
+          return {
+            pregunta: ['La gráfica x–t de una combi es una recta de (0 s; ', px(`${x0} m`), ') a (', pt(`${t1} s`), '; ', px(`${x1} m`), '), y ahí se corta. Si sigue igual, ¿dónde estará a los ', pt(`${T} s`), '?'],
+            datos: [DM.xt, DM.pos],
+            dibujo: xt(Object.assign(plano(T + 1, 0, Math.ceil((xf + 10) / 20) * 20), { lineas: [{ puntos: [[0, x0], [t1, x1]] }], puntos: [{ t: 0, x: x0 }, { t: t1, x: x1 }] })),
+            opciones: cuatro(xf, [
+              { id: 'leido', valor: x1, error: 'XT-LEIDO', siFuera: `${fm(x1)} m es el último punto dibujado. Pero la combi sigue avanzando después.` },
+              { id: 'sin-x0', valor: vv * T, error: 'MRU-X0', siFuera: `Bien: avanza ${fm(vv * T)} m. Pero salió de ${fm(x0)} m: falta sumar esa salida.` },
+              { id: 'altura', valor: x1 / t1 * T, error: 'G2-altura-entre-tiempo', siFuera: 'Eso divide la altura entre el tiempo, como si saliera del cero. No sale de ahí.' },
+              { id: 'uno-mas', valor: x0 + vv * (T + 1), error: 'MRU-CONTEO', siFuera: `Eso cuenta ${T + 1} segundos. Reemplaza t = ${T} s.` },
+            ], n => `En x = ${fm(n)} m`),
+            solucion: { texto: `Pendiente: ${fm(x1 - x0)} m en ${t1} s, ${vv} m/s. Salida: ${x0} m.`, ecuacion: [Mx, ' = ', px(x0), ' + ', pv(vv), ' · ', pt(T), ' = ', px(`${fm(xf)} m`)] },
+          };
+        }
+        // Nivel examen (San Marcos 2019-I): dos móviles en sentidos opuestos, leídos como dos pendientes con signo.
+        const T = r.ent(4, 6), a = r.ent(3, 8), b = r.ent(2, 7), X = Math.ceil((b * T + 20) / 10) * 10;
+        const par = (va, vb) => `A: ${ms(va)}; B: ${ms(vb)}`;
+        const ops = [{ id: 'c', texto: par(a, -b), correcta: true }];
+        for (const d of [
+          { id: 'signo', texto: par(a, b), error: 'XT-SIGNO', siFuera: 'Bien las dos pendientes. Pero la recta de B baja: su velocidad es negativa.' },
+          { id: 'alturas', texto: par(a, (X - b * T) / T), error: 'G2-ultimo-punto', siFuera: 'La de A está bien. La de B divide su última altura entre el tiempo.' },
+          { id: 'cambio', texto: par(-a, b), error: 'XT-SIGNO', siFuera: 'Los signos van al revés: la recta de A sube y la de B baja.' },
+          { id: 'alturas-ab', texto: par(a * T, X - b * T), error: 'G2-pendiente-es-altura', siFuera: 'Esas son las alturas de los puntos finales. La velocidad es lo que sube por segundo.' },
+        ]) if (ops.length < 4 && !ops.some(o => o.texto === d.texto)) ops.push(d);
         return {
-          pregunta: `Con esta gráfica v–t, ¿cuál es ${pide === 'distancia' ? 'la distancia recorrida' : 'el desplazamiento'} en los ${f(t1 + t2)} s?`,
-          dibujo: { datos: idaVuelta(v1, t1, v2, t2, false), estado: {} },
-          opciones: opciones(bien, [
-            { id: 'cambio', valor: otro, error: pide === 'distancia' ? 'DX-RESTA' : 'DX-SUMA', siFuera: pide === 'distancia' ? 'Eso es el desplazamiento: la distancia no resta lo que retrocede.' : 'Eso es la distancia: el desplazamiento resta lo que retrocede.' },
-            { id: 'solo-ida', valor: A1, error: 'DX-IDA', siFuera: 'Eso es solo el primer tramo. Falta el área bajo el eje.' },
-            { id: 'alturas', valor: v1 + v2, error: 'DX-ALTURA', siFuera: 'Eso suma alturas de la gráfica, no áreas.' },
-            { id: 'negativo', valor: A2 - A1, error: 'DX-SIGNO', siFuera: 'Eso invierte el signo: lo de arriba es avanzar.' },
-          ], n => `${f(n)} m`).slice(0, 4),
-          solucion: {
-            texto: pide === 'distancia' ? 'Las dos áreas suman.' : 'El área de arriba menos la de abajo.',
-            ecuacion: pide === 'distancia' ? [`d = ${f(A1)} + ${f(A2)} = ${f(A1 + A2)} m`] : [dx, ` = ${f(A1)} − ${f(A2)} = ${f(A1 - A2)} m`],
-            dibujo: { datos: idaVuelta(v1, t1, v2, t2, true), estado: {} },
-          },
+          pregunta: ['En la gráfica x–t, la recta de A va de (0 s; 0 m) a (', pt(`${T} s`), '; ', px(`${a * T} m`), ') y la de B, de (0 s; ', px(`${X} m`), ') a (', pt(`${T} s`), '; ', px(`${X - b * T} m`), '). ¿Qué velocidades tienen?'],
+          datos: [DM.xt, DM.ejes],
+          dibujo: xt(Object.assign(plano(T + 1, 0, Math.max(X, a * T) + 10), { lineas: [{ puntos: [[0, 0], [T, a * T]], rotulo: 'A' }, { puntos: [[0, X], [T, X - b * T]], trazo: 'discontinua', rotulo: 'B' }] })),
+          opciones: ops,
+          solucion: { texto: 'Cada pendiente, con su signo: A sube y B baja.', ecuacion: [MvA, ' = ', frac(px(a * T), pt(T)), ' = ', pv(ms(a)), ';   ', MvB, ' = ', frac([px(X - b * T), ' − ', px(X)], pt(T)), ' = ', pv(ms(-b))] },
         };
       },
     },
   };
 
-  // ---------- Idea 5: encuentros y velocidad relativa ----------
-  // Cambia: las rapideces de A y B · Permanece: la separación inicial (24 m) y el reloj común ·
-  // Progresa: las marcas de cada segundo, que cierran la brecha · Se reserva: el cruce de las dos rectas x–t ·
-  // Debe verse: en el encuentro coinciden las posiciones, no las velocidades.
-  const SEP = 24, LARGO_E = 30;
-  const vA = { v: 'c-o', t: 'v_A' };
-  const tEnc = (va, vb, d = SEP) => (va - vb > 0 ? d / (va - vb) : Infinity);
-  const pistaEnc = (va, vb, conEnc = true, d = SEP, largo = LARGO_E) => {
-    const te = tEnc(va, vb, d), tm = Number.isFinite(te) ? Math.min(te, 6) : 6;
-    const ks = Array.from({ length: Math.floor(tm + 1e-9) + 1 }, (_, k) => k);
-    const ma = ks.map(k => va * k).filter(m => m >= 0 && m <= largo), mb = ks.map(k => d + vb * k).filter(m => m >= 0 && m <= largo);
-    const xa = Math.min(largo, va * tm), xb = Math.max(0, Math.min(largo, d + vb * tm));
-    return {
-      datos: {
-        largo, cada: 6,
-        carriles: [{ x: xa, variante: 'a', marcas: ma, rotulo: 'A' }, { x: xb, variante: 'b', marcas: mb, rotulo: 'B' }],
-        encuentro: conEnc && Number.isFinite(te) && va * te <= largo ? { x: va * te, rotulo: `${f(te, 2)} s` } : null,
-      }, estado: {},
-    };
+  // ---------- Idea 3 (A3): velocidad media y rapidez media (18 nov, contrato «se entiende sin profesor») ----------
+  // Pieza fis-pista: la recta de la pista atlética, con la ida hasta la valla y la vuelta por el mismo carril.
+  // Cambia: cuánto vuelves · Permanece: la valla a 60 m y la rapidez de 2 m/s, a la ida y a la vuelta · Progresa: el
+  // cronómetro, que alarga el camino · Se reserva: volver más rápido de lo que fuiste (solo en Predice) · Debe verse: la
+  // distancia recorrida crece siempre; el desplazamiento crece a la ida y se achica a la vuelta.
+  const PISTA_A3 = () => Kit.piezas['fis-pista'];
+  const pista = (d, estado = {}) => ({ pieza: 'fis-pista', datos: d, estado });
+  const VALLA = 60, V_A3 = 2;
+  // El paseo del juego a los t segundos: lo recorrido, dónde estás y si ya diste la vuelta.
+  const paseo = (r, t) => {
+    const T = (VALLA + r) / V_A3, tt = Math.max(0, Math.min(t, T)), s = V_A3 * tt;
+    const vuelta = Math.max(0, s - VALLA), pos = s <= VALLA ? s : VALLA - vuelta;
+    return { T, tt, s, vuelta, pos };
   };
-  // Animación: el reloj corre de 0 a 6 s a velocidad real. Cada carrito está en x = x₀ + v·t y deja la marca de cada
-  // segundo; la línea del encuentro aparece cuando t llega a tₑ. Fuera de la pista, el carrito se queda en el borde.
-  const T_ENC = 6;
-  const momentoEnc = (va, vb, tt) => {
-    const tm = Math.max(0, Math.min(tt, T_ENC)), xa = va * tm, xb = SEP + vb * tm;
-    return { tm, xa, xb, te: tEnc(va, vb) };
+  const juegoA3 = val => {
+    const q = paseo(val.r, val.t);
+    return pista({ largo: VALLA, valla: VALLA, corredor: q.pos, mira: q.vuelta > 0 ? 'izq' : 'der',
+      tramos: [{ de: 0, a: Math.min(q.s, VALLA), texto: `${V_A3} m/s`, color: 'o' }, q.vuelta > 0 ? { de: VALLA, a: q.pos, texto: `${V_A3} m/s`, color: 'o' } : null],
+      dx: q.pos > 0 ? { a: q.pos, texto: 'Δx', color: 'f' } : null, reloj: { texto: `t = ${f(q.tt, 1)} s`, color: 'i' } });
   };
-  const pistaEncT = (va, vb, tt) => {
-    const q = momentoEnc(va, vb, tt), en = m => m >= 0 && m <= LARGO_E;
-    const ks = Array.from({ length: Math.floor(q.tm + 1e-9) + 1 }, (_, k) => k);
-    const llega = Number.isFinite(q.te) && q.te <= q.tm + 1e-9 && va * q.te <= LARGO_E;
-    return {
-      datos: {
-        largo: LARGO_E, cada: 6,
-        carriles: [
-          { x: Math.max(0, Math.min(LARGO_E, q.xa)), variante: 'a', marcas: ks.map(k => va * k).filter(en), rotulo: 'A' },
-          { x: Math.max(0, Math.min(LARGO_E, q.xb)), variante: 'b', marcas: ks.map(k => SEP + vb * k).filter(en), rotulo: 'B' },
-        ],
-        encuentro: llega ? { x: va * q.te, rotulo: `${f(q.te, 2)} s` } : null,
-      }, estado: {},
-    };
+  const XP = m => PISTA_A3().geometria({ largo: VALLA }).X(m);
+  // Predice y Mira: ida a 2 m/s y vuelta a la partida a 6 m/s (el juego solo volvía igual de rápido).
+  const PRED_A3 = { largo: VALLA, valla: VALLA, corredor: 0, mira: 'der', tramos: [{ de: 0, a: VALLA, texto: '2 m/s', color: 'o' }, { de: VALLA, a: 0, texto: '6 m/s', color: 'o' }] };
+
+  // Ejemplos resueltos de A3. Cuentas rehechas con un script aparte que no usa este archivo (scratchpad f3w/cuentas.js,
+  // 18 nov): 50 + 20 y 50 − 20; 100/9,58; 120/48; (0 − 60)/15; 0/40; 60/3 + 60/6 y 120/30; 6 km/0,5 h; 150/40;
+  // (100 − 0)/50 y (300 + 200)/50; 120/4; 12/(6/2 + 6/6) con el camino de 6 km; 1/(1/(2·4) + 1/(2·12)) con 12 = (10 + 14)/2;
+  // (24 + 16)/8 y 8/8; 36·(20/60) + 54·(10/60) y 21/0,5; 60/30 y (120 + 60)/30. Las figuras muestran cada tramo dado
+  // (su rapidez o su tiempo), nunca la llave del desplazamiento ni el tiempo total cuando se piden (molde §3, 18 nov).
+  const ALT_A3 = {
+    cerro: ['4 km/h', '3 km/h', '0 km/h', '8 km/h', '2,5 km/h'],
+    mitad: ['9,33 m/s', '6 m/s', '8 m/s', '12 m/s', '7 m/s'],
+    tabla: ['5 m/s y 1 m/s', '1 m/s y 5 m/s', '3 m/s y 1 m/s', '5 m/s y 5 m/s', '7,5 m/s y 1 m/s'],
+    combi: ['45 km/h', '42 km/h', '90 km/h', '21 km/h', '40 km/h'],
+    ciclista: ['2 m/s y 6 m/s', '6 m/s y 2 m/s', '4 m/s y 6 m/s', '2 m/s y 2 m/s', '1,33 m/s y 6 m/s'],
   };
+  const EJEMPLOS_MEDIAS = [
+    { nivel: 1, titulo: 'Ida y vuelta corta',
+      figura: pista({ largo: 50, valla: 50, corredor: 0, tramos: [{ de: 0, a: 50 }, { de: 50, a: 30 }] }),
+      enunciado: ['Corres 50 m hasta la valla y vuelves 20 m por el mismo carril. ¿Qué distancia recorriste? ¿Cuál fue tu desplazamiento?'],
+      datos: ['Distancia recorrida d: todo el camino, sin signo.', ['Desplazamiento: ', MDx, ' = posición final − posición inicial']],
+      solucion: [
+        { texto: 'La distancia suma los dos tramos, sin mirar hacia dónde.', ecuacion: ['d = 50 m + 20 m = 70 m'] },
+        { texto: 'Terminaste en la marca de 30 m; empezaste en 0.', ecuacion: [MDx, ' = ', px('30'), ' − ', px('0'), ' = ', pdx('30 m')] },
+      ],
+      respuesta: ['d = 70 m y ', pdx('Δx = 30 m')] },
+    { nivel: 1, titulo: 'Los 100 m planos',
+      figura: pista({ largo: 100, paso: 10, numero: 20, valla: null, corredor: 0, tramos: [{ de: 0, a: 100, texto: '9,58 s', color: 'i' }] }),
+      enunciado: ['El récord mundial de los 100 m planos es 9,58 s. ¿Cuál fue la velocidad media del recordista?'],
+      datos: [DM.vm],
+      fuente: 'World Athletics, récord mundial de 100 m: Usain Bolt, Berlín, 2009.',
+      solucion: [{ texto: 'Corre en línea recta hacia la meta: su desplazamiento es 100 m.', ecuacion: [Mvm, ' = ', frac(pdx('100 m'), pt('9,58 s')), ' = ', pv('10,44 m/s')] }],
+      respuesta: [pv('10,44 m/s'), ', unos 37,6 km/h'] },
+    { nivel: 1, titulo: 'Rapidez de una vuelta',
+      figura: pista({ largo: 60, valla: 60, corredor: 0, tramos: [{ de: 0, a: 60 }, { de: 60, a: 0 }] }),
+      enunciado: ['Corres los 60 m hasta la valla y vuelves a la partida. Todo el paseo te toma 48 s. ¿Cuál es tu rapidez media?'],
+      datos: [DM.rm],
+      solucion: [{ texto: 'Todo el camino: 60 m de ida y 60 m de vuelta, en 48 s.', ecuacion: [Mrm, ' = ', frac('120 m', pt('48 s')), ' = ', pv('2,5 m/s')] }],
+      respuesta: [pv('2,5 m/s')] },
+    { nivel: 1, titulo: 'Hacia la partida',
+      figura: pista({ largo: 60, valla: 60, corredor: 60, mira: 'izq', tramos: [{ de: 60, a: 0, texto: '15 s', color: 'i' }] }),
+      enunciado: ['Sales de la valla, en x = 60 m, y corres hasta la partida, en x = 0, en 15 s. ¿Cuál es tu velocidad media, con su signo?'],
+      datos: [DM.vm, DM.eje.replace('El paradero', 'La partida')],
+      solucion: [{ texto: 'Vas hacia el lado −: el desplazamiento es negativo.', ecuacion: [Mvm, ' = ', frac([px('0'), ' − ', px('60')], pt('15')), ' = ', pv('−4 m/s')] }],
+      respuesta: [pv('−4 m/s'), ': 4 m/s hacia la partida'] },
+    { nivel: 1, titulo: 'Volver al mismo sitio',
+      figura: pista({ largo: 60, valla: 60, corredor: 0, mira: 'izq', tramos: [{ de: 0, a: 60 }, { de: 60, a: 0 }], reloj: { texto: 't = 40 s', color: 'i' } }),
+      enunciado: ['Corres hasta la valla y vuelves a la partida en 40 s en total. ¿Cuál es tu velocidad media en el paseo?'],
+      datos: [DM.vm],
+      solucion: [{ texto: 'Terminas donde empezaste: el desplazamiento es 0.', ecuacion: [Mvm, ' = ', frac(pdx('0 m'), pt('40 s')), ' = ', pv('0 m/s')] }],
+      respuesta: [pv('0 m/s')] },
+    { nivel: 2, titulo: 'Dos tramos hacia adelante',
+      figura: pista({ largo: 120, paso: 10, numero: 20, valla: null, corredor: 0, tramos: [{ de: 0, a: 60, texto: '3 m/s', color: 'o' }, { de: 60, a: 120, texto: '6 m/s', color: 'o' }] }),
+      enunciado: ['En la pista corres 60 m a 3 m/s y después otros 60 m a 6 m/s, siempre hacia adelante. ¿Cuál es tu rapidez media?'],
+      datos: [DM.rm, DM.tramo],
+      solucion: [
+        { texto: 'El tiempo de cada tramo: el primero dura el doble.', ecuacion: [frac('60 m', pv('3 m/s')), ' = ', pt('20 s'), ';   ', frac('60 m', pv('6 m/s')), ' = ', pt('10 s')] },
+        { texto: 'Todo el camino entre todo el tiempo. No es (3 + 6) ÷ 2.', ecuacion: [Mrm, ' = ', frac('120 m', pt('30 s')), ' = ', pv('4 m/s')] },
+      ],
+      respuesta: [pv('4 m/s')] },
+    { nivel: 2, titulo: 'La combi al mercado',
+      figura: avenida(Object.assign({ min: 0, max: 3000, paso: 250, numero: 1000 }, { x0: 0, v: 5, flecha: false, segundos: 0, rotulos: false, lugares: [{ en: 0, texto: 'Paradero', lado: 'der' }, { en: 3000, texto: 'Mercado', lado: 'izq' }] })),
+      enunciado: ['Una combi va 3 km del paradero al mercado en 10 min, espera 5 min y regresa en 15 min. ¿Cuál es su rapidez media en todo el viaje, en km/h?'],
+      datos: [DM.rm, '1 h = 60 min'],
+      solucion: [
+        { texto: 'Todo el camino: 3 km de ida y 3 km de vuelta. Todo el tiempo, con la espera: 30 min = 0,5 h.' },
+        { texto: 'Rapidez media:', ecuacion: [Mrm, ' = ', frac('6 km', pt('0,5 h')), ' = ', pv('12 km/h')] },
+      ],
+      respuesta: [pv('12 km/h')] },
+    { nivel: 2, titulo: 'Con un descanso',
+      figura: pista({ largo: 150, paso: 10, numero: 50, valla: null, corredor: 0, tramos: [{ de: 0, a: 100, texto: '20 s', color: 'i' }, { de: 100, a: 150, texto: '10 s', color: 'i' }] }),
+      enunciado: ['Corres 100 m en 20 s, descansas 10 s y corres 50 m más en 10 s, hacia el mismo lado. ¿Cuál es tu rapidez media en los 40 s?'],
+      datos: [DM.rm],
+      solucion: [
+        { texto: 'El descanso también cuenta en el tiempo: 20 s + 10 s + 10 s = 40 s.' },
+        { texto: 'Todo el camino, 150 m, entre los 40 s.', ecuacion: [Mrm, ' = ', frac('150 m', pt('40 s')), ' = ', pv('3,75 m/s')] },
+      ],
+      respuesta: [pv('3,75 m/s')] },
+    { nivel: 2, titulo: 'Ida, vuelta y signo',
+      figura: avenida(Object.assign(regla(0, 300), { x0: 0, v: 10, flecha: false, segundos: 0, rotulos: false, lugares: PARADERO })),
+      enunciado: ['Una combi va del paradero, en x = 0, hasta x = 300 m y vuelve hasta x = 100 m. Todo le toma 50 s. ¿Su velocidad media y su rapidez media?'],
+      datos: [DM.vm, DM.rm],
+      solucion: [
+        { texto: 'Desplazamiento: de 0 a 100 m. Distancia: 300 m de ida y 200 m de vuelta.', ecuacion: [MDx, ' = ', pdx('100 m'), ';   d = 300 m + 200 m = 500 m'] },
+        { texto: 'Las dos medias, con el mismo tiempo:', ecuacion: [Mvm, ' = ', frac(pdx('100 m'), pt('50 s')), ' = ', pv('2 m/s'), ';   ', Mrm, ' = ', frac('500 m', pt('50 s')), ' = ', pv('10 m/s')] },
+      ],
+      respuesta: [pv('2 m/s'), ' y ', pv('10 m/s')] },
+    { nivel: 2, titulo: '¿Cuánto tardaste?',
+      figura: pista({ largo: 60, valla: 60, corredor: 0, tramos: [{ de: 0, a: 60 }, { de: 60, a: 0 }] }),
+      enunciado: ['Corres hasta la valla, a 60 m, y vuelves a la partida con una rapidez media de 4 m/s. ¿Cuánto tardaste?'],
+      datos: [DM.rm],
+      solucion: [
+        { texto: 'Todo el camino: 60 m + 60 m = 120 m.' },
+        { texto: 'Se despeja el tiempo de la rapidez media.', ecuacion: [MDt, ' = ', frac('120 m', pv('4 m/s')), ' = ', pt('30 s')] },
+      ],
+      respuesta: ['Tardaste ', pt('30 s')] },
+    { nivel: 3, titulo: 'Subir y bajar el cerro',
+      enunciado: ['Subes a un cerro a 2 km/h y bajas por el mismo camino a 6 km/h. El camino mide 6 km. ¿Cuál es tu rapidez media en todo el paseo?'],
+      alternativas: ALT_A3.cerro,
+      datos: [DM.rm, DM.tramo],
+      solucion: [
+        { texto: 'Subir toma 6 km ÷ 2 km/h = 3 h; bajar, 6 km ÷ 6 km/h = 1 h.' },
+        { texto: 'Todo el camino, 12 km, entre todo el tiempo, 4 h.', ecuacion: [Mrm, ' = ', frac('12 km', pt('4 h')), ' = ', pv('3 km/h')] },
+        { texto: ['La ', letra(ALT_A3.cerro, '4 km/h'), ' promedia las rapideces: la subida dura más y pesa más. La ', letra(ALT_A3.cerro, '0 km/h'), ' es la velocidad media.'] },
+      ],
+      respuesta: [letra(ALT_A3.cerro, '3 km/h'), ', ', pv('3 km/h')] },
+    { nivel: 3, titulo: 'Mitad y mitad',
+      enunciado: ['Un ciclista hace la mitad de su recorrido a 4 m/s. Del resto, la mitad del tiempo va a 10 m/s y la otra mitad, a 14 m/s. ¿Cuál es su rapidez media?'],
+      alternativas: ALT_A3.mitad,
+      datos: [DM.rm, DM.tramo, 'Distancia de un tramo con rapidez constante: rapidez · tiempo.'],
+      solucion: [
+        { texto: 'En la segunda mitad, los dos tramos duran lo mismo: ahí sí vale el promedio, 12 m/s.', ecuacion: [frac([pv('10'), ' + ', pv('14')], '2'), ' = ', pv('12 m/s')] },
+        { texto: 'Sirve cualquier largo: con 24 m, cada mitad mide 12 m y dura 12 ÷ 4 = 3 s y 12 ÷ 12 = 1 s.', ecuacion: [Mrm, ' = ', frac('24 m', [pt('3 s'), ' + ', pt('1 s')]), ' = ', pv('6 m/s')] },
+        { texto: ['La ', letra(ALT_A3.mitad, '9,33 m/s'), ' promedia las tres; la ', letra(ALT_A3.mitad, '8 m/s'), ' promedia 4 y 12 sin ver los tiempos.'] },
+      ],
+      respuesta: [letra(ALT_A3.mitad, '6 m/s'), ', ', pv('6 m/s')] },
+    { nivel: 3, titulo: 'La tabla de posiciones',
+      figura: xt(Object.assign(plano(8, 0, 30), { puntos: [0, 12, 24, 16, 8].map((x, k) => ({ t: 2 * k, x })) })),
+      enunciado: ['Un mototaxi va y vuelve por una avenida recta, con velocidad constante entre lectura y lectura. Cada 2 s, desde t = 0, está en 0, 12, 24, 16 y 8 m. ¿Rapidez media y velocidad media?'],
+      alternativas: ALT_A3.tabla,
+      datos: [DM.rm, DM.vm],
+      solucion: [
+        { texto: 'Hasta los 4 s avanza 24 m; después regresa 16 m. Todo el camino: 40 m.', ecuacion: ['d = 24 m + 16 m = 40 m;   ', MDx, ' = ', px('8'), ' − ', px('0'), ' = ', pdx('8 m')] },
+        { texto: 'Las dos medias, en 8 s:', ecuacion: [Mrm, ' = ', frac('40 m', pt('8 s')), ' = ', pv('5 m/s'), ';   ', Mvm, ' = ', frac(pdx('8 m'), pt('8 s')), ' = ', pv('1 m/s')] },
+        { texto: ['La ', letra(ALT_A3.tabla, '3 m/s y 1 m/s'), ' divide entre 8 solo lo más lejos que llegó, sin la vuelta.'] },
+      ],
+      respuesta: [letra(ALT_A3.tabla, '5 m/s y 1 m/s'), ', ', pv('5 m/s'), ' y ', pv('1 m/s')] },
+    { nivel: 3, titulo: 'Dos tramos de tiempo',
+      figura: avenida(Object.assign(regla(0, 100), { x0: 0, v: 10, flechaTexto: '36 km/h', segundos: 0, rotulos: false, lugares: PARADERO })),
+      enunciado: ['Una combi va 20 min a 36 km/h y después 10 min a 54 km/h, por la misma avenida y hacia el mismo lado. ¿Cuál es su rapidez media en los 30 min?'],
+      alternativas: ALT_A3.combi,
+      datos: [DM.rm, 'Distancia de un tramo con rapidez constante: rapidez · tiempo.', '1 h = 60 min'],
+      solucion: [
+        { texto: 'Lo recorrido en cada tramo: 20 min es 1/3 h y 10 min, 1/6 h.', ecuacion: [pv('36 km/h'), ' · ', frac('1', '3'), ' h = 12 km;   ', pv('54 km/h'), ' · ', frac('1', '6'), ' h = 9 km'] },
+        { texto: '21 km en media hora:', ecuacion: [Mrm, ' = ', frac('21 km', pt('0,5 h')), ' = ', pv('42 km/h')] },
+        { texto: ['La ', letra(ALT_A3.combi, '45 km/h'), ' promedia 36 y 54: el primer tramo dura el doble y pesa más.'] },
+      ],
+      respuesta: [letra(ALT_A3.combi, '42 km/h'), ', ', pv('42 km/h')] },
+    { nivel: 3, titulo: 'Velocidad y rapidez con signo',
+      enunciado: ['Un ciclista va de x = −20 m a x = 100 m en 20 s y vuelve hasta x = 40 m en 10 s. ¿Cuáles son su velocidad media y su rapidez media?'],
+      alternativas: ALT_A3.ciclista,
+      datos: [DM.vm, DM.rm],
+      solucion: [
+        { texto: 'Desplazamiento: de −20 m a 40 m. Distancia: 120 m de ida y 60 m de vuelta.', ecuacion: [MDx, ' = ', px('40'), ' − (', px('−20'), ') = ', pdx('60 m'), ';   d = 120 m + 60 m = 180 m'] },
+        { texto: 'Las dos medias, en 30 s:', ecuacion: [Mvm, ' = ', frac(pdx('60 m'), pt('30 s')), ' = ', pv('2 m/s'), ';   ', Mrm, ' = ', frac('180 m', pt('30 s')), ' = ', pv('6 m/s')] },
+        { texto: ['La ', letra(ALT_A3.ciclista, '1,33 m/s y 6 m/s'), ' toma la posición final, 40 m, como desplazamiento.'] },
+      ],
+      respuesta: [letra(ALT_A3.ciclista, '2 m/s y 6 m/s'), ', ', pv('2 m/s'), ' y ', pv('6 m/s')] },
+  ];
+
+  const medias = {
+    id: 'desplazamiento-distancia',
+    titulo: 'Velocidad media y rapidez media',
+    pregunta: 'Si das la vuelta y regresas al mismo sitio, ¿cuál fue tu velocidad media?',
+    temas: ['Posición, desplazamiento y distancia', 'Velocidad y rapidez media'],
+    pieza: 'fis-pista',
+    aprendizaje: 'La velocidad media es el desplazamiento entre el tiempo; la rapidez media, la distancia recorrida entre el tiempo. No es el promedio de las rapideces.',
+    actividad: 'Correr por la recta de la pista, volver y medir el paseo.',
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos maneras de medir', texto: ['Como en Vectores, el desplazamiento ', MDx, ' va de donde empezaste a donde terminaste. La distancia recorrida es todo el camino: la ida más la vuelta.'],
+          dibujo: pista({ largo: VALLA, valla: VALLA, corredor: 20, mira: 'izq', tramos: [{ de: 0, a: VALLA, texto: 'ida' }, { de: VALLA, a: 20, texto: 'vuelta' }], dx: { a: 20, texto: 'Δx', color: 'f' } }) },
+        { titulo: 'La letra d', texto: ['Aquí la distancia recorrida se escribe d, sin flecha: es todo el camino y nunca es negativa. En Vectores, la d con flecha era el desplazamiento en el plano; en una recta, el desplazamiento es ', MDx, '.'] },
+        { titulo: 'Dos medias', texto: 'La velocidad media es el desplazamiento entre el tiempo. La rapidez media es la distancia recorrida entre el tiempo.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a correr hasta la valla y volver un tramo. Mira cuánto recorres y a qué distancia de la partida quedas.' },
+      ],
+    },
+    ejemplos: EJEMPLOS_MEDIAS,
+    juega: {
+      pieza: 'fis-pista',
+      consigna: 'Corres 60 m hasta la valla a 2 m/s y vuelves por el mismo carril, igual de rápido.',
+      mision: {
+        texto: 'Vuelve hasta que tu rapidez media sea el doble de tu velocidad media.',
+        // Con lo que vuelves, r: rapidez media (60 + r)/T y velocidad media (60 − r)/T; el doble solo con r = 20 m.
+        logrado: val => val.r === 20,
+        bien: 'Listo: rapidez media 2 m/s y velocidad media 1 m/s.',
+      },
+      voz: 'Mira lo que recorres y a qué distancia quedas.',
+      leyenda: [
+        { s: 'flecha de arriba', t: 'la ida, hasta la valla' },
+        { s: 'flecha de abajo', t: 'la vuelta, por el mismo carril' },
+        { s: 'd', t: 'todo el camino: ida más vuelta' },
+        { s: [MDx], t: 'de la partida a donde quedaste' },
+        { s: [Mt], t: 'el cronómetro, desde que sales' },
+      ],
+      controles: [
+        { id: 'r', etiqueta: 'Vuelves, r', min: 0, max: VALLA, paso: 10, inicio: 0, unidad: 'm', decimales: 0 },
+        { id: 't', etiqueta: 'Cronómetro, t', color: 'c-i', min: 0, max: VALLA + 1, paso: 0.05, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 6, modo: 'repite' } },
+      ],
+      dibujo: juegoA3,
+      lectura: val => { const q = paseo(val.r, val.t); return ['En ', pt(`${f(q.tt, 1)} s`), ' recorriste ', `${f(q.s, 1)} m`, ' y quedaste a ', pdx(`${f(q.pos, 1)} m`)]; },
+      resumen: { r: 20, t: VALLA + 1 },
+      minimo: 3,
+      // Gesto directo: se arrastra hasta dónde vuelves, sobre la flecha de la vuelta.
+      arrastres: [
+        { id: 'vuelta', etiqueta: 'hasta dónde vuelves',
+          donde: val => ({ x: XP(VALLA - val.r), y: PISTA_A3().constantes.Y.VUELTA }),
+          mover: p => ({ r: VALLA - inversa(XP, 0, VALLA)(p.x) }) },
+      ],
+    },
+    predice: {
+      pregunta: 'Corres los 60 m hasta la valla a 2 m/s y vuelves a la partida a 6 m/s, por el mismo carril. ¿Cuál es tu rapidez media en todo el paseo?',
+      datos: ['La ida y la vuelta miden lo mismo: 60 m cada una.'],
+      opciones: [
+        { id: 'c', texto: '3 m/s', correcta: true },
+        { id: 'promedio', texto: '4 m/s', error: 'MED-PROMEDIO', siFuera: '(2 + 6) ÷ 2 serviría si los dos tramos duraran lo mismo. La ida dura más.' },
+        { id: 'velocidad', texto: '0 m/s', error: 'DX-RAPIDEZ', siFuera: 'Bien: volviste a la partida, la velocidad media es 0. La rapidez media usa todo el camino.' },
+        { id: 'suma', texto: '8 m/s', error: 'MED-SUMA', siFuera: 'Sumar las rapideces da algo que nunca llevaste: corriste a 2 y a 6 m/s.' },
+      ],
+      dibujo: pista(PRED_A3),
+      revelar: pista(Object.assign({}, PRED_A3, { mira: 'izq', reloj: { texto: 't = 30 s + 10 s = 40 s', color: 'i' } })),
+      coincide: 'Coincide: 120 m en 30 s + 10 s = 40 s. La ida, más lenta, dura más.',
+    },
+    mira: {
+      pieza: 'fis-pista',
+      datos: Object.assign({}, PRED_A3, { mira: 'izq', tramos: PRED_A3.tramos.map((x, k) => Object.assign({}, x, { desde: k + 1 })), reloj: { texto: 'Δt = 40 s', color: 'i', desde: 3 } }),
+      pasos: [
+        { estado: { corte: 1 }, texto: 'La ida: 60 m a 2 m/s toman 30 s.', ecuacion: [sub(MDt, '1'), ' = ', frac('60 m', pv('2 m/s')), ' = ', pt('30 s')] },
+        { estado: { corte: 2 }, texto: 'La vuelta: los mismos 60 m a 6 m/s toman 10 s.', ecuacion: [sub(MDt, '2'), ' = ', frac('60 m', pv('6 m/s')), ' = ', pt('10 s')] },
+        { estado: { corte: 3 }, texto: 'Todo el camino: 120 m, en 40 s.', ecuacion: ['d = 60 m + 60 m = 120 m;   ', MDt, ' = ', pt('30 s'), ' + ', pt('10 s'), ' = ', pt('40 s')] },
+        { estado: { corte: 3 }, texto: 'La rapidez media: todo el camino entre todo el tiempo.', ecuacion: [Mrm, ' = ', frac('120 m', pt('40 s')), ' = ', pv('3 m/s')] },
+        { estado: { corte: 3 }, texto: 'Volviste a la partida: el desplazamiento y la velocidad media son 0.', ecuacion: [Mvm, ' = ', frac(pdx('0 m'), pt('40 s')), ' = ', pv('0 m/s')] },
+        { estado: { corte: 3 }, texto: 'No es (2 + 6) ÷ 2 = 4: la ida dura más.' },
+      ],
+    },
+    regla: {
+      texto: 'La velocidad media es el desplazamiento entre el tiempo; la rapidez media, la distancia recorrida entre el tiempo. Solo con tramos de igual duración es el promedio.',
+      ecuacion: [Mvm, ' = ', frac(MDx, MDt), '   ;   ', Mrm, ' = ', frac('d', MDt)],
+      condicion: 'Δt es el tiempo de todo el paseo, con las paradas; d suma cada tramo y Δx resta lo que regresas.',
+      dibujo: pista({ largo: VALLA, valla: VALLA, corredor: 20, mira: 'izq', tramos: [{ de: 0, a: VALLA, texto: 'ida' }, { de: VALLA, a: 20, texto: 'vuelta' }], dx: { a: 20, texto: 'Δx', color: 'f' }, reloj: { texto: 'Δt: todo el paseo', color: 'i' } }),
+    },
+    resuelve: {
+      pieza: 'fis-xt',
+      generar(s) {
+        const r = azar(s + 900), T = [2, 4, 5, 10][r.ent(0, 3)], a = T * r.ent(3, 6), b = a + T * r.ent(1, 4), c = b - T * r.ent(1, 6);
+        const xs = [0, a, b, c], d = b + (b - c), dt = 3 * T, rm = d / dt, vm = c / dt;
+        const hi = Math.ceil((b + 5) / 10) * 10, lo = Math.min(0, Math.floor(c / 10) * 10);
+        return {
+          enunciado: ['Una combi va y vuelve por una avenida recta, con velocidad constante entre lectura y lectura. A los 0, ', `${T}, ${2 * T} y ${3 * T} s`, ' está en 0, ', `${a}, ${b} y ${fm(c)} m`, '. ¿Su rapidez media y su velocidad media?'],
+          datos: [DM.rm, DM.vm],
+          dibujo: xt(Object.assign(plano(3 * T, lo, hi), { puntos: xs.map((x, k) => ({ t: k * T, x })) })),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la ', Mrm, ' y la velocidad media ', Mvm, ' en los ', pt(`${dt} s`), '.'] },
+            { tipo: 'datos', texto: `Avanza hasta ${b} m y después regresa hasta ${fm(c)} m: la vuelta empieza a los ${2 * T} s.` },
+            { tipo: 'regla', texto: ['Rapidez media: todo el camino d entre el tiempo. Velocidad media: ', MDx, ' entre el tiempo.'] },
+            { tipo: 'cuentas', texto: `Camino: ${b} m de ida y ${b - c} m de vuelta. Desplazamiento: de 0 a ${fm(c)} m.`, ecuacion: [`d = ${b} m + ${b - c} m = ${d} m;   `, MDx, ' = ', pdx(`${fm(c)} m`)] },
+            { tipo: 'cuentas', texto: 'Las dos medias, con el mismo tiempo:', ecuacion: [Mrm, ' = ', frac(`${d} m`, pt(`${dt} s`)), ' = ', pv(`${fm(rm)} m/s`), ';   ', Mvm, ' = ', frac(pdx(`${fm(c)} m`), pt(`${dt} s`)), ' = ', pv(`${fm(vm)} m/s`)] },
+            { tipo: 'sentido', texto: 'La rapidez media sale mayor: la vuelta suma al camino y resta al desplazamiento.' },
+          ],
+          respuesta: [pv(`${fm(rm)} m/s`), ' y ', pv(`${fm(vm)} m/s`)],
+        };
+      },
+    },
+    ahoraTu: {
+      pieza: 'fis-pista',
+      generar(s) {
+        const r = azar(s + 53), k = s % 4, ms = n => `${fm(n)} m/s`;
+        const cuatro = (bien, ds) => opciones(bien, ds, ms).slice(0, 4);
+        if (k === 0 || k === 1) {
+          const v1 = r.ent(2, 5), t1 = r.ent(4, 10) * 2, L = v1 * t1;
+          const v2 = r.ent(v1 + 1, 8), t2 = r.ent(1, Math.floor(L / v2)), L2 = v2 * t2, T = t1 + t2, largo = Math.ceil(L / 10) * 10;
+          const dib = pista({ largo, paso: 10, numero: largo > 60 ? 20 : 10, valla: L, corredor: 0, tramos: [{ de: 0, a: L, texto: ms(v1), color: 'o' }, { de: L, a: L - L2, texto: ms(v2), color: 'o' }] });
+          const preg = ['Corres ', `${L} m`, ' hasta la valla a ', pv(ms(v1)), ' y vuelves ', `${L2} m`, ' a ', pv(ms(v2)), ', por el mismo carril. '];
+          if (k === 0) return {
+            pregunta: [...preg, '¿Cuál es tu rapidez media?'],
+            datos: [DM.rm, DM.tramo],
+            dibujo: dib,
+            opciones: cuatro((L + L2) / T, [
+              { id: 'promedio', valor: (v1 + v2) / 2, error: 'MED-PROMEDIO', siFuera: 'Promediar las rapideces serviría si los tramos duraran lo mismo. Aquí no.' },
+              { id: 'velocidad', valor: (L - L2) / T, error: 'DX-RAPIDEZ', siFuera: 'Eso es la velocidad media: resta la vuelta. La rapidez media la suma.' },
+              { id: 'suma', valor: v1 + v2, error: 'MED-SUMA', siFuera: 'Sumar las rapideces da algo que nunca llevaste.' },
+              { id: 'un-tiempo', valor: (L + L2) / t1, error: 'MED-UN-TIEMPO', siFuera: `Bien el camino, ${L + L2} m. Pero el tiempo es el de todo el paseo.` },
+            ]),
+            solucion: { texto: `Tiempos: ${t1} s y ${t2} s. Todo el camino entre todo el tiempo.`, ecuacion: [Mrm, ' = ', frac(`${L} m + ${L2} m`, pt(`${T} s`)), ' = ', pv(ms((L + L2) / T))] },
+          };
+          return {
+            pregunta: [...preg, '¿Cuál es tu velocidad media?'],
+            datos: [DM.vm, DM.tramo],
+            dibujo: dib,
+            opciones: cuatro((L - L2) / T, [
+              { id: 'rapidez', valor: (L + L2) / T, error: 'DX-DISTANCIA', siFuera: 'Eso es la rapidez media: suma la vuelta. La velocidad media usa el desplazamiento.' },
+              { id: 'promedio', valor: (v1 - v2) / 2, error: 'MED-PROMEDIO', siFuera: 'Promediar velocidades no da la media: los tramos no duran lo mismo.' },
+              { id: 'ida', valor: L / T, error: 'DX-IDA', siFuera: `Bien el tiempo total. Pero volviste ${L2} m: el desplazamiento es menor.` },
+              { id: 'un-tiempo', valor: (L - L2) / t1, error: 'MED-UN-TIEMPO', siFuera: 'Bien el desplazamiento. Pero el tiempo es el de todo el paseo.' },
+            ]),
+            solucion: { texto: `Quedaste a ${L - L2} m de la partida, en ${T} s.`, ecuacion: [Mvm, ' = ', frac(pdx(`${L - L2} m`), pt(`${T} s`)), ' = ', pv(ms((L - L2) / T))] },
+          };
+        }
+        if (k === 2) {
+          const v1 = r.ent(4, 10), v2 = r.ent(11, 20), t1 = r.ent(2, 6) * 10, t2 = [10, 15, 25, 35][r.ent(0, 3)];   // nunca igual a t1: con tiempos iguales, el promedio sí valdría
+          const rm = (v1 * t1 + v2 * t2) / (t1 + t2);
+          return {
+            pregunta: ['Una combi va ', pt(`${t1} s`), ' a ', pv(ms(v1)), ' y después ', pt(`${t2} s`), ' a ', pv(ms(v2)), ', hacia el mismo lado. ¿Cuál es su rapidez media en todo el viaje?'],
+            datos: [DM.rm, 'Distancia de un tramo con rapidez constante: rapidez · tiempo.'],
+            opciones: cuatro(rm, [
+              { id: 'promedio', valor: (v1 + v2) / 2, error: 'MED-PROMEDIO', siFuera: 'Eso valdría con tramos de igual duración. Aquí duran distinto.' },
+              { id: 'suma', valor: v1 + v2, error: 'MED-SUMA', siFuera: 'Sumar las rapideces da algo que la combi nunca llevó.' },
+              { id: 'un-tiempo', valor: (v1 * t1 + v2 * t2) / t1, error: 'MED-UN-TIEMPO', siFuera: 'Bien el camino. Pero el tiempo es el de los dos tramos.' },
+              { id: 'tiempos', valor: (v1 * t2 + v2 * t1) / (t1 + t2), error: 'MED-CRUZADO', siFuera: 'Bien la idea, pero cruzaste los tiempos: cada rapidez va con el suyo.' },
+              { id: 'tramo', valor: v2, error: 'MED-TRAMO', siFuera: `${fm(v2)} m/s es la rapidez del segundo tramo solo, no la de todo el viaje.` },
+            ]),
+            solucion: { texto: `Camino: ${v1 * t1} m + ${v2 * t2} m, en ${t1 + t2} s.`, ecuacion: [Mrm, ' = ', frac(`${v1 * t1 + v2 * t2} m`, pt(`${t1 + t2} s`)), ' = ', pv(ms(rm))] },
+          };
+        }
+        // Nivel examen (San Marcos 2022): mitad del recorrido a v1; del resto, mitad del tiempo a v2 y mitad a v3.
+        const [v1, v2, v3] = [[4, 10, 14], [3, 4, 8], [6, 8, 16], [10, 12, 18], [12, 4, 8], [6, 2, 4], [15, 6, 14], [8, 20, 28]][r.ent(0, 7)];
+        const w = (v2 + v3) / 2, rm = 2 * v1 * w / (v1 + w);
+        return {
+          pregunta: ['Un ciclista hace la mitad de su recorrido a ', pv(ms(v1)), '. Del resto, la mitad del tiempo va a ', pv(ms(v2)), ' y la otra mitad a ', pv(ms(v3)), '. ¿Cuál es su rapidez media?'],
+          datos: [DM.rm, DM.tramo, 'Distancia de un tramo con rapidez constante: rapidez · tiempo.'],
+          opciones: cuatro(rm, [
+            { id: 'promedio', valor: (v1 + v2 + v3) / 3, error: 'MED-PROMEDIO', siFuera: 'Promediar las tres no sirve: los tramos no duran lo mismo.' },
+            { id: 'parcial', valor: (v1 + w) / 2, error: 'MED-PROMEDIO-MITADES', siFuera: `Bien los ${fm(w)} m/s del resto. Pero las dos mitades del camino no duran lo mismo.` },
+            { id: 'tramo', valor: w, error: 'MED-TRAMO', siFuera: `${fm(w)} m/s es la rapidez media de la segunda mitad sola.` },
+            { id: 'suma', valor: v1 + w, error: 'MED-SUMA', siFuera: 'Sumar rapideces da algo que el ciclista nunca llevó.' },
+          ]),
+          solucion: { texto: `El resto va a ${fm(w)} m/s. Con mitades de ${fm(v1 * w)} m, duran ${fm(w)} s y ${fm(v1)} s.`, ecuacion: [Mrm, ' = ', frac(`${fm(2 * v1 * w)} m`, [pt(`${fm(w)} s`), ' + ', pt(`${fm(v1)} s`)]), ' = ', pv(ms(rm))] },
+        };
+      },
+    },
+  };
+
+  // ---------- Idea 4 (A4): encuentros y alcances (18 nov, contrato «se entiende sin profesor») ----------
+  // Pieza fis-combi, vista «avenida» con `segundo`: la combi sale del paradero y el mototaxi del mercado, de frente.
+  // Cambia: las dos rapideces · Permanece: la separación de 240 m y el colegio a 150 m · Progresa: el reloj, que los
+  // acerca hasta que se cruzan · Se reserva: los dos hacia el mismo lado (el alcance, solo en Predice) · Debe verse: en el
+  // cruce coinciden las posiciones, no las velocidades.
+  const D_A4 = 240, COLEGIO = 150, T_A4 = 60;
+  const AV_A4 = { min: 0, max: D_A4, paso: 10, numero: 50, segundos: 0, rotulos: false,
+    lugares: [{ en: 0, texto: 'Paradero', lado: 'der' }, { en: COLEGIO, texto: 'Colegio', lado: 'izq' }, { en: D_A4, texto: 'Mercado', lado: 'izq' }] };
+  const cruceA4 = val => { const te = D_A4 / (val.va + val.vb); return { te, xe: val.va * te }; };
+  const juegoA4 = val => {
+    const { te, xe } = cruceA4(val), tt = Math.max(0, Math.min(val.t, te));
+    return avenida(Object.assign({}, AV_A4, { x0: 0, v: val.va, t: tt, segundo: { tipo: 'mototaxi', x0: D_A4, v: -val.vb },
+      posiciones: val.t >= te ? [{ en: xe, texto: 'cruce', color: 'f' }] : [] }));
+  };
+  const escA4 = () => COMBI().escala(Object.assign({ vista: 'avenida' }, AV_A4));
+  // Una figura de dos vehículos al empezar el reloj (los ejemplos, «Así se resuelve» y «Ahora tú»).
+  const dos = (min, max, combi, moto, extra = {}) => avenida(Object.assign(regla(min, max), { x0: combi[0], v: combi[1], t: 0, segundos: 0, rotulos: false,
+    segundo: Object.assign({ tipo: 'mototaxi', x0: moto[0], v: moto[1] }, moto[2] ? { flechaTexto: moto[2] } : {}) }, combi[2] ? { flechaTexto: combi[2] } : {}, extra));
+  const PRED_A4 = { combi: [0, 10], moto: [60, 6] };
+
+  // Ejemplos resueltos de A4. Cuentas rehechas con un script aparte que no usa este archivo (scratchpad f3w/cuentas.js,
+  // 18 nov): 100/(6 + 4); 30/(8 − 5); (12 + 8)·5; 9·12; 40 − 8·t constante; 180/18 y 10·10; 54/3,6 − 36/3,6 y 100/5;
+  // 3000/(15 + 10) y 120/60; 120/16; 40/4 y 10·10; 6·10 y 60/4; 80/4 y 5·20; 1500/(20 + 10) y 1500/(72 + 36);
+  // (200 ∓ 50)/10; (40 + 20)/5. Las figuras muestran a los dos al empezar el reloj (dónde sale cada uno y su flecha),
+  // nunca el lugar del encuentro (molde §3, 18 nov).
+  const ALT_A4 = {
+    antes: ['6 s', '15 s', '25 s', '3,75 s', '10 s'],
+    huye: ['180 m', '80 m', '100 m', '20 m', '28,6 m'],
+    kmh: ['13,9 s', '50 s', '150 s', '83,3 s', '25 s'],
+    dosVeces: ['15 s', '25 s', '15 s y 25 s', '5 s y 25 s', '20 s'],
+    ventaja: ['8 s', '4 s', '12 s', '3,16 s', '5 s'],
+  };
+  const EJEMPLOS_ENCUENTRO = [
+    { nivel: 1, titulo: 'De frente',
+      figura: dos(0, 100, [0, 6], [100, -4], { lugares: PARADERO }),
+      enunciado: ['Una combi sale del paradero a 6 m/s y, a la vez, un mototaxi viene de frente desde 100 m a 4 m/s. ¿Cuándo se cruzan?'],
+      datos: [DM.encuentro, DM.pos],
+      solucion: [{ texto: 'Van uno hacia el otro: la separación baja 6 + 4 = 10 m cada segundo.', ecuacion: [Mte, ' = ', frac(pD('100 m'), [pv('6'), ' + ', pv('4 m/s')]), ' = ', pt('10 s')] }],
+      respuesta: ['A los ', pt('10 s')] },
+    { nivel: 1, titulo: 'Persiguiéndose',
+      figura: dos(0, 100, [0, 8], [30, 5], { lugares: PARADERO }),
+      enunciado: ['Un mototaxi va 30 m delante de una combi, a 5 m/s; la combi lo sigue a 8 m/s, hacia el mismo lado. ¿Cuándo lo alcanza?'],
+      datos: [DM.encuentro, DM.pos],
+      solucion: [{ texto: 'Van al mismo lado: cada segundo la combi gana 8 − 5 = 3 m.', ecuacion: [Mtalc, ' = ', frac(pD('30 m'), [pv('8'), ' − ', pv('5 m/s')]), ' = ', pt('10 s')] }],
+      respuesta: ['A los ', pt('10 s')] },
+    { nivel: 1, titulo: '¿Cuánto se acercan?',
+      figura: dos(0, 300, [0, 12], [300, -8], { lugares: PARADERO }),
+      enunciado: ['Una combi a 12 m/s y un mototaxi a 8 m/s van de frente, separados 300 m. ¿Cuánto se achica su separación en 5 s?'],
+      datos: ['Cada uno avanza rapidez · tiempo.'],
+      solucion: [{ texto: 'Cada segundo se acercan 12 + 8 = 20 m; en 5 s, cinco veces eso.', ecuacion: ['(', pv('12'), ' + ', pv('8 m/s'), ') · ', pt('5 s'), ' = ', pD('100 m')] }],
+      respuesta: ['Se acercan ', pD('100 m'), ': quedan a 200 m'] },
+    { nivel: 1, titulo: '¿Dónde se cruzan?',
+      figura: avenida(Object.assign(regla(0, 200), { x0: 0, v: 9, segundos: 0, rotulos: false, lugares: PARADERO })),
+      enunciado: ['Una combi sale del paradero a 9 m/s y se cruza con un mototaxi a los 12 s. ¿A qué distancia del paradero se cruzan?'],
+      datos: [DM.pos],
+      solucion: [{ texto: 'En el cruce, la combi está donde la deja su regla de posición.', ecuacion: [MxA, ' = 0 + ', pv('9'), ' · ', pt('12'), ' = ', px('108 m')] }],
+      respuesta: ['A ', px('108 m'), ' del paradero'] },
+    { nivel: 1, titulo: 'Igual de rápido',
+      figura: dos(0, 100, [0, 8], [40, 8], { lugares: PARADERO }),
+      enunciado: ['Un mototaxi va 40 m delante de una combi. Los dos van a 8 m/s hacia el mismo lado. ¿Cuándo lo alcanza la combi?'],
+      datos: [DM.encuentro, DM.pos],
+      solucion: [{ texto: 'Cada segundo los dos avanzan 8 m: la combi gana 8 − 8 = 0 m. La separación no cambia.', ecuacion: [MD, ' = ', pD('40 m'), ' siempre'] }],
+      respuesta: ['Nunca: siguen a ', pD('40 m')] },
+    { nivel: 2, titulo: 'El punto de cruce',
+      figura: dos(0, 180, [0, 10], [180, -8], { lugares: PARADERO }),
+      enunciado: ['Una combi sale del paradero a 10 m/s y un mototaxi, a la vez, viene de frente desde 180 m a 8 m/s. ¿Cuándo y dónde se cruzan?'],
+      datos: [DM.encuentro, DM.pos],
+      solucion: [
+        { texto: 'Se acercan 10 + 8 = 18 m cada segundo.', ecuacion: [Mte, ' = ', frac(pD('180 m'), pv('18 m/s')), ' = ', pt('10 s')] },
+        { texto: 'Dónde: lo que avanzó la combi desde el paradero.', ecuacion: [MxA, ' = ', pv('10'), ' · ', pt('10'), ' = ', px('100 m')] },
+      ],
+      respuesta: ['A los ', pt('10 s'), ', en ', px('x = 100 m')] },
+    { nivel: 2, titulo: 'Alcance en km/h',
+      figura: dos(0, 200, [0, 15, '54 km/h'], [100, 10, '36 km/h'], { lugares: PARADERO }),
+      enunciado: ['Un mototaxi a 36 km/h va 100 m delante de una combi a 54 km/h, los dos hacia el mismo lado. ¿Cuánto tarda la combi en alcanzarlo?'],
+      datos: [DM.encuentro, DM.pos, DM.kmh],
+      solucion: [
+        { texto: 'A m/s: 54 km/h = 15 m/s y 36 km/h = 10 m/s.' },
+        { texto: 'Cada segundo la combi gana 5 m.', ecuacion: [Mtalc, ' = ', frac(pD('100 m'), [pv('15'), ' − ', pv('10 m/s')]), ' = ', pt('20 s')] },
+      ],
+      respuesta: ['Tarda ', pt('20 s')] },
+    { nivel: 2, titulo: 'En minutos',
+      figura: dos(0, 3000, [0, 15], [3000, -10], { lugares: PARADERO, numero: 1000 }),
+      enunciado: ['Una combi y un mototaxi van de frente por una carretera recta, separados 3 km, a 15 m/s y 10 m/s. ¿En cuántos minutos se cruzan?'],
+      datos: [DM.encuentro, DM.pos, '1 km = 1000 m y 1 min = 60 s'],
+      solucion: [
+        { texto: 'Se acercan 25 m cada segundo; la separación es 3000 m.', ecuacion: [Mte, ' = ', frac(pD('3000 m'), pv('25 m/s')), ' = ', pt('120 s')] },
+        { texto: '120 s son 2 min.' },
+      ],
+      respuesta: ['En ', pt('2 min')] },
+    { nivel: 2, titulo: 'Después de cruzarse',
+      figura: dos(0, 200, [100, 10], [100, -6]),
+      enunciado: ['Una combi a 10 m/s y un mototaxi a 6 m/s van de frente y se cruzan. ¿Cuánto tiempo después del cruce estarán a 120 m uno del otro?'],
+      datos: ['Cada uno avanza rapidez · tiempo.'],
+      solucion: [
+        { texto: 'Después del cruce siguen de frente y se separan 10 + 6 = 16 m cada segundo.' },
+        { texto: 'Para separarse 120 m:', ecuacion: [Mt, ' = ', frac(pD('120 m'), pv('16 m/s')), ' = ', pt('7,5 s')] },
+      ],
+      respuesta: [pt('7,5 s'), ' después del cruce'] },
+    { nivel: 2, titulo: 'Alcance y lugar',
+      figura: dos(0, 120, [0, 10], [40, 6], { lugares: PARADERO }),
+      enunciado: ['Un mototaxi va 40 m delante de una combi, a 6 m/s; la combi lo sigue a 10 m/s. ¿Cuándo lo alcanza y a qué distancia de donde salió la combi?'],
+      datos: [DM.encuentro, DM.pos],
+      solucion: [
+        { texto: 'La combi gana 4 m cada segundo.', ecuacion: [Mtalc, ' = ', frac(pD('40 m'), [pv('10'), ' − ', pv('6 m/s')]), ' = ', pt('10 s')] },
+        { texto: 'En 10 s la combi avanza 100 m; el mototaxi, 60 m desde 40 m: los dos en 100 m.', ecuacion: [MxA, ' = ', pv('10'), ' · ', pt('10'), ' = ', px('100 m')] },
+      ],
+      respuesta: ['A los ', pt('10 s'), ', a ', px('100 m')] },
+    { nivel: 3, titulo: 'El que salió antes',
+      figura: dos(0, 200, [0, 10], [0, 6], { lugares: PARADERO }),
+      enunciado: ['Un mototaxi sale del paradero a 6 m/s. 10 s después sale la combi del mismo paradero, a 10 m/s, por el mismo camino. ¿Cuánto tarda la combi en alcanzarlo?'],
+      alternativas: ALT_A4.antes,
+      datos: [DM.encuentro, DM.pos],
+      solucion: [
+        { texto: 'Cuando sale la combi, el mototaxi ya avanzó 6 · 10 = 60 m: esa es la separación.', ecuacion: [MD, ' = ', pv('6 m/s'), ' · ', pt('10 s'), ' = ', pD('60 m')] },
+        { texto: 'Desde ahí, la combi gana 4 m cada segundo.', ecuacion: [Mtalc, ' = ', frac(pD('60 m'), [pv('10'), ' − ', pv('6 m/s')]), ' = ', pt('15 s')] },
+        { texto: ['La ', letra(ALT_A4.antes, '25 s'), ' cuenta desde que salió el mototaxi; la ', letra(ALT_A4.antes, '6 s'), ' supone que el mototaxi se detiene.'] },
+      ],
+      respuesta: [letra(ALT_A4.antes, '15 s'), ', ', pt('15 s')] },
+    { nivel: 3, titulo: 'Lo que avanza el que huye',
+      figura: dos(0, 200, [0, 9], [80, 5], { lugares: PARADERO }),
+      enunciado: ['Un mototaxi a 5 m/s va 80 m delante de una combi a 9 m/s, hacia el mismo lado. ¿Qué distancia recorre el mototaxi hasta que la combi lo alcanza?'],
+      alternativas: ALT_A4.huye,
+      datos: [DM.encuentro, DM.pos],
+      solucion: [
+        { texto: 'La combi gana 4 m cada segundo.', ecuacion: [Mtalc, ' = ', frac(pD('80 m'), [pv('9'), ' − ', pv('5 m/s')]), ' = ', pt('20 s')] },
+        { texto: 'En esos 20 s, el mototaxi recorre:', ecuacion: [pv('5 m/s'), ' · ', pt('20 s'), ' = 100 m'] },
+        { texto: ['La ', letra(ALT_A4.huye, '180 m'), ' es lo que recorre la combi, el perseguidor.'] },
+      ],
+      respuesta: [letra(ALT_A4.huye, '100 m'), ', 100 m'] },
+    { nivel: 3, titulo: 'De frente en km/h',
+      figura: dos(0, 1500, [0, 20, '72 km/h'], [1500, -10, '36 km/h'], { lugares: PARADERO }),
+      enunciado: ['Una combi a 72 km/h y un mototaxi a 36 km/h van de frente por una carretera recta, separados 1,5 km. ¿Cuándo se cruzan?'],
+      alternativas: ALT_A4.kmh,
+      datos: [DM.encuentro, DM.pos, DM.kmh],
+      solucion: [
+        { texto: 'Todo a metros y segundos: 20 m/s y 10 m/s; la separación, 1500 m.' },
+        { texto: 'Se acercan 30 m cada segundo.', ecuacion: [Mte, ' = ', frac(pD('1500 m'), [pv('20'), ' + ', pv('10 m/s')]), ' = ', pt('50 s')] },
+        { texto: ['La ', letra(ALT_A4.kmh, '13,9 s'), ' divide 1500 entre 108 sin pasar a m/s; la ', letra(ALT_A4.kmh, '150 s'), ' resta las rapideces.'] },
+      ],
+      respuesta: [letra(ALT_A4.kmh, '50 s'), ', ', pt('50 s')] },
+    { nivel: 3, titulo: 'Dos veces a 50 m',
+      figura: dos(0, 200, [0, 6], [200, -4], { lugares: PARADERO }),
+      enunciado: ['Una combi a 6 m/s y un mototaxi a 4 m/s van de frente, separados 200 m. ¿En qué instantes están a 50 m uno del otro?'],
+      alternativas: ALT_A4.dosVeces,
+      datos: [DM.pos, 'Separación: la distancia entre los dos, sin signo.'],
+      solucion: [
+        { texto: 'Se acercan 10 m cada segundo. Antes del cruce faltan 50 m cuando se acercaron 150 m.', ecuacion: [Mt, ' = ', frac(pD('150 m'), pv('10 m/s')), ' = ', pt('15 s')] },
+        { texto: 'Después del cruce se alejan; a 50 m del otro lado, cuando se movieron 250 m entre los dos.', ecuacion: [Mt, ' = ', frac(pD('250 m'), pv('10 m/s')), ' = ', pt('25 s')] },
+        { texto: ['La ', letra(ALT_A4.dosVeces, '15 s'), ' olvida que, tras cruzarse, vuelven a estar a 50 m.'] },
+      ],
+      respuesta: [letra(ALT_A4.dosVeces, '15 s y 25 s'), ', a los ', pt('15 s'), ' y a los ', pt('25 s')] },
+    { nivel: 3, titulo: 'Le saca ventaja',
+      figura: dos(0, 120, [0, 12], [40, 7], { lugares: PARADERO }),
+      enunciado: ['Una combi a 12 m/s va 40 m detrás de un mototaxi a 7 m/s, hacia el mismo lado. ¿A los cuántos segundos la combi le lleva 20 m de ventaja?'],
+      alternativas: ALT_A4.ventaja,
+      datos: [DM.pos, 'Ventaja: cuánto va delante la combi del mototaxi.'],
+      solucion: [
+        { texto: 'La combi gana 5 m cada segundo. Tiene que descontar 40 m y sacar 20 m: 60 m en total.' },
+        { texto: 'El tiempo:', ecuacion: [Mt, ' = ', frac(pD('60 m'), [pv('12'), ' − ', pv('7 m/s')]), ' = ', pt('12 s')] },
+        { texto: ['La ', letra(ALT_A4.ventaja, '8 s'), ' es el alcance: ahí van juntos, sin ventaja.'] },
+      ],
+      respuesta: [letra(ALT_A4.ventaja, '12 s'), ', a los ', pt('12 s')] },
+  ];
+
   const encuentro = {
     id: 'encuentro',
-    titulo: 'Encontrarse es estar juntos',
-    temas: ['MRU y velocidad relativa', 'Posición, desplazamiento y distancia'],
-    pieza: 'pista',
-    juega: {
-      consigna: 'A sale de 0 y B de 24 m a la vez. Elige sus velocidades (negativa: a la izquierda) y mira cerrarse la brecha.',
-      voz: 'Mira cuánto se acorta la distancia entre ellos cada segundo.',
-      controles: [
-        { id: 'va', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
-        { id: 'vb', etiqueta: 'v de B', min: -4, max: 4, paso: 1, inicio: -1, unidad: 'm/s', decimales: 0 },
-        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_ENC + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
+    titulo: 'Encuentros y alcances',
+    pregunta: '¿Cuándo se cruzan una combi y un mototaxi que van de frente?',
+    temas: ['MRU y velocidad relativa'],
+    pieza: 'fis-combi',
+    aprendizaje: 'Se encuentran si están en el mismo lugar a la vez. De frente, D se cierra con la suma de rapideces; persiguiéndose, con la resta.',
+    actividad: 'Elegir las rapideces de la combi y del mototaxi para que se crucen.',
+    lee: {
+      tarjetas: [
+        { titulo: 'Encontrarse', texto: 'Dos móviles se encuentran cuando están en la misma posición en el mismo instante: los dos en la misma marca de la regla, cuando el reloj marca lo mismo.',
+          dibujo: juegoA4({ va: 6, vb: 6, t: 0 }) },
+        { titulo: 'La separación D', texto: ['Al empezar, entre los dos hay una separación ', MD, '. Si se acercan, ', MD, ' se achica; cuando llega a 0, es el encuentro.'] },
+        { titulo: 'Dos reglas, un reloj', texto: ['Cada uno tiene su regla ', Mx, ' = ', Mx0, ' + ', Mv, ' · ', Mt, ', con el mismo reloj. El que va hacia el lado − lleva su velocidad negativa.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir qué tan rápido va cada uno. Mira cuánto se achica la separación en cada segundo.' },
       ],
-      dibujo: val => pistaEncT(val.va, val.vb, val.t),
-      lectura: val => {
-        const vr = val.va - val.vb, q = momentoEnc(val.va, val.vb, val.t), reloj = [t, ` = ${f(q.tm, 1)} s · `];
-        if (vr <= 0) return [...reloj, `brecha ${f(Math.abs(q.xb - q.xa), 1)} m: no se acercan`];
-        if (q.tm >= q.te) return [...reloj, `se cruzaron en ${f(q.te, 2)} s`];
-        return [...reloj, `brecha ${f(q.xb - q.xa, 1)} m · se acercan ${f(vr)} m/s`];
+    },
+    ejemplos: EJEMPLOS_ENCUENTRO,
+    juega: {
+      pieza: 'fis-combi',
+      consigna: 'La combi sale del paradero y el mototaxi del mercado, a 240 m, a la vez y de frente.',
+      mision: {
+        texto: 'Haz que se crucen justo frente al colegio, a 150 m del paradero.',
+        // Se cruzan en x = 240·va/(va + vb): frente al colegio si va : vb = 5 : 3 (5 y 3, o 10 y 6 m/s).
+        logrado: val => COLEGIO * (val.va + val.vb) === D_A4 * val.va,
+        bien: 'Listo: se cruzan frente al colegio. ¿Hay otra pareja de rapideces?',
       },
+      voz: 'Mira cuánto se achica la separación en cada segundo.',
+      leyenda: [
+        { s: 'combi', t: 'sale del paradero hacia el lado +' },
+        { s: 'mototaxi', t: 'sale del mercado hacia el lado −' },
+        { s: [Mt], t: 'segundos desde que salen los dos' },
+        { s: 'm', t: 'metros de la regla, desde el paradero' },
+      ],
+      controles: [
+        { id: 'va', etiqueta: 'Rapidez de la combi', color: 'c-o', min: 2, max: 12, paso: 1, inicio: 6, unidad: 'm/s', decimales: 0 },
+        { id: 'vb', etiqueta: 'Rapidez del mototaxi', color: 'c-o', min: 2, max: 12, paso: 1, inicio: 6, unidad: 'm/s', decimales: 0 },
+        { id: 't', etiqueta: 'Reloj, t', color: 'c-i', min: 0, max: T_A4, paso: 0.05, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 5, modo: 'repite' } },
+      ],
+      dibujo: juegoA4,
+      lectura: val => {
+        const { te, xe } = cruceA4(val);
+        if (val.t >= te) return ['Se cruzaron a los ', pt(`${f(te, 2)} s`), ', en ', px(`x = ${f(xe, 2)} m`)];
+        return ['Se acercan ', pv(fm(val.va)), ' + ', pv(fm(val.vb)), ' = ', pv(`${fm(val.va + val.vb)} m`), ' cada segundo'];
+      },
+      resumen: { va: 6, vb: 6, t: 0 },
       minimo: 3,
-      // Arrastra la marca de 1 s de cada carrito: lo que avanzó en ese segundo es su velocidad.
+      // Gesto directo: se arrastra dónde estará cada uno al primer segundo (lo que avanza en 1 s es su rapidez).
       arrastres: [
-        { id: 'marca-a', etiqueta: 'marca de 1 s de A', color: 'c-o',
-          donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb).datos, val.va), y: PISTA().geometria(pistaEnc(val.va, val.vb).datos).piso(0) + 6 }),
-          mover: (pt, val) => ({ va: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb).datos, m), 0, LARGO_E)(pt.x) }) },
-        { id: 'marca-b', etiqueta: 'marca de 1 s de B',
-          donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb).datos, SEP + val.vb), y: PISTA().geometria(pistaEnc(val.va, val.vb).datos).piso(1) + 6 }),
-          mover: (pt, val) => ({ vb: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb).datos, m), 0, LARGO_E)(pt.x) - SEP }) },
+        { id: 'marca-combi', etiqueta: 'combi al primer segundo', color: 'c-o',
+          donde: val => ({ x: escA4()(val.va), y: COMBI().constantes.AV.CARRIL - 10 }),
+          mover: p => ({ va: inversa(escA4(), 0, D_A4)(p.x) }) },
+        { id: 'marca-moto', etiqueta: 'mototaxi al primer segundo', color: 'c-o',
+          donde: val => ({ x: escA4()(D_A4 - val.vb), y: COMBI().constantes.AV2.CARRIL2 - 10 }),
+          mover: p => ({ vb: D_A4 - inversa(escA4(), 0, D_A4)(p.x) }) },
       ],
     },
     predice: {
-      pregunta: 'A sale de x = 0 a 4 m/s hacia la derecha. B sale a la vez de x = 18 m a 2 m/s hacia la izquierda. ¿En qué instante se encuentran?',
+      pregunta: 'Ahora el mototaxi va 60 m delante de la combi y los dos van hacia el lado +: el mototaxi a 6 m/s y la combi a 10 m/s. ¿Cuándo lo alcanza?',
+      datos: ['Salen a la vez.'],
       opciones: [
-        { id: 'c', texto: '3 s', correcta: true },
-        { id: 'resta', texto: '9 s', error: 'VR-RESTA', siFuera: 'Restar 4 − 2 sería cierto si fueran al mismo lado. Aquí van uno hacia el otro.' },
-        { id: 'solo-a', texto: '4,5 s', error: 'VR-UNO', siFuera: 'Ese es el tiempo de A si B se quedara quieto en 18 m.' },
-        { id: 'velocidad', texto: 'Cuando tengan la misma velocidad', error: 'K1', siFuera: 'Igual velocidad dice que no se acercan más. Encontrarse es tener la misma posición.' },
+        { id: 'c', texto: 'A los 15 s', correcta: true },
+        { id: 'suma', texto: 'A los 3,75 s', error: 'VR-SUMA', siFuera: 'Sumar las rapideces sirve si van de frente. Aquí el mototaxi también se aleja.' },
+        { id: 'quieto', texto: 'A los 6 s', error: 'VR-UNO', siFuera: 'Eso sería si el mototaxi estuviera quieto. También avanza, 6 m cada segundo.' },
+        { id: 'igual', texto: 'Cuando los dos vayan igual de rápido', error: 'K1', siFuera: 'Ir igual de rápido no los junta. Alcanzarlo es estar en el mismo lugar.' },
       ],
-      dibujo: pistaEnc(4, -2, false, 18, 20),
-      revelar: pistaEnc(4, -2, true, 18, 20),
-      coincide: 'Coincide: se acercan 4 + 2 = 6 m cada segundo, y había 18 m entre ellos.',
+      dibujo: dos(0, 200, PRED_A4.combi, PRED_A4.moto, { lugares: PARADERO }),
+      revelar: dos(0, 200, PRED_A4.combi, PRED_A4.moto, { lugares: PARADERO, t: 15, posiciones: [{ en: 150, texto: 'alcance', color: 'f' }] }),
+      coincide: 'Coincide: la combi gana 10 − 6 = 4 m cada segundo, y había 60 m.',
     },
-    // Hallazgo 9: el juego usa la pista y «Mira» la gráfica x–t: cada carrito es una recta y el encuentro de la pista es
-    // el cruce; lo que en la pista se ve como marcas que se acercan, aquí se ve como la brecha entre las rectas.
+    // «Mira» con la gráfica x–t de A2: cada vehículo es una recta (el mismo violeta, trazo distinto) y el alcance es el
+    // cruce; en el cruce las pendientes son distintas.
     mira: {
-      pieza: 'ejes',
-      datos: {
-        x: { min: 0, max: 5, paso: 1, nombre: 't', unidad: 's', decimales: 0, color: 'h' },
-        y: { min: 0, max: 20, paso: 6, nombre: 'x', unidad: 'm', decimales: 0, color: 'i' },
-        curvas: [{ puntos: [[0, 0], [5, 20]], color: 'o', rotulo: 'A', desde: 1 }, { puntos: [[0, 18], [5, 8]], color: 'h', rotulo: 'B', desde: 1 }],
-        puntos: [{ x: 0, y: 18, color: 'h', rotulo: '18 m', desde: 1 }, { x: 3, y: 12, color: 'i', rotulo: '(3 s; 12 m)', guias: true, desde: 3 }],
-      },
+      pieza: 'fis-xt',
+      datos: Object.assign(plano(20, 0, 200), {
+        lineas: [{ puntos: [[0, 0], [20, 200]], rotulo: 'combi', rotuloEn: 6, rotuloLado: 'abajo' }, { puntos: [[0, 60], [20, 180]], trazo: 'discontinua', rotulo: 'mototaxi', rotuloEn: 6 }],
+        puntos: [{ t: 0, x: 60, color: 'f', desde: 1 }, { t: 15, x: 150, texto: '(15 s; 150 m)', color: 'f', lado: 'arribaIzq', desde: 2 }],
+      }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cada recta es la posición de un carrito en el tiempo.', ecuacion: [{ sub: [x, 'A'] }, ' = 4', t, '   ·   ', { sub: [x, 'B'] }, ' = 18 − 2', t] },
-        { estado: { corte: 2 }, texto: 'Cada segundo la brecha baja 4 + 2 = 6 m.', ecuacion: [{ sub: [v, 'A/B'] }, ' = 4 − (−2) = 6 m/s'] },
-        { estado: { corte: 3 }, texto: 'Se encuentran donde las rectas se cruzan: misma x, mismo t.', ecuacion: [t, ' = ', { frac: ['18', '6'] }, ' = 3 s', '   ·   ', x, ' = 12 m'] },
-        { estado: { corte: 3 }, texto: 'En el cruce las pendientes son distintas: sus velocidades no son iguales.', ecuacion: [{ sub: [v, 'A'] }, ' = 4 m/s ≠ ', { sub: [v, 'B'] }, ' = −2 m/s'] },
+        { estado: { corte: 0 }, texto: 'La combi es A; el mototaxi, B. Cada recta es la posición de uno.', ecuacion: [MxA, ' = ', pv('10'), Mt, ';   ', MxB, ' = ', px('60'), ' + ', pv('6'), Mt] },
+        { estado: { corte: 1 }, texto: 'Al salir, el mototaxi está 60 m delante.', ecuacion: [MD, ' = ', pD('60 m')] },
+        { estado: { corte: 1 }, texto: 'Cada segundo la combi gana 10 − 6 = 4 m.', ecuacion: [pv('10'), ' − ', pv('6'), ' = ', pv('4 m/s')] },
+        { estado: { corte: 2 }, texto: 'La alcanza donde las rectas se cruzan: misma x, mismo t.', ecuacion: [pv('10'), Mt, ' = ', px('60'), ' + ', pv('6'), Mt, '  →  ', Mt, ' = ', frac(pD('60'), pv('4')), ' = ', pt('15 s')] },
+        { estado: { corte: 2 }, texto: 'Los dos están en 150 m, pero no van igual de rápido.', ecuacion: [MxA, ' = ', pv('10'), ' · ', pt('15'), ' = ', px('150 m')] },
       ],
     },
     regla: {
-      texto: 'Dos móviles se encuentran cuando están en la misma posición en el mismo instante. La brecha se cierra con la velocidad relativa.',
-      ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: ['d', { sub: [v, 'A/B'] }] }, '   ·   ', { sub: [v, 'A/B'] }, ' = ', { llave: [{ sub: [v, 'A'] }, ' − ', { sub: [v, 'B'] }], nota: 'con su signo', color: 'c-o' }],
-      condicion: 'los dos salen a la vez, en MRU y sobre el mismo eje. Si la brecha no se achica, no se encuentran.',
+      texto: 'Se encuentran cuando están en la misma posición en el mismo instante. De frente, la separación D se cierra con la suma de las rapideces; persiguiéndose, con la resta.',
+      ecuacion: [MxA, ' = ', MxB, '   ;   ', Mte, ' = ', frac(MD, [MvA, ' + ', MvB]), '   ;   ', Mtalc, ' = ', frac(MD, [MvA, ' − ', MvB])],
+      condicion: 'los dos en MRU sobre la misma recta; si uno sale antes, D es la separación cuando sale el otro.',
+    },
+    resuelve: {
+      pieza: 'fis-combi',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const va = r.ent(6, 14), vb = r.ent(3, 9), te = r.ent(4, 12), D = (va + vb) * te, xe = va * te;
+          return {
+            enunciado: ['Una combi sale del paradero a ', pv(`${va} m/s`), ' y, a la vez, un mototaxi viene de frente desde ', pD(`${D} m`), ' a ', pv(`${vb} m/s`), '. ¿A qué distancia del paradero se cruzan?'],
+            datos: [DM.encuentro, DM.pos, DM.eje],
+            dibujo: dos(0, D, [0, va], [D, -vb], { lugares: PARADERO }),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la posición del cruce, ', Mx, ', medida desde el paradero.'] },
+              { tipo: 'datos', texto: ['La combi sale de 0 a ', pv(`${va} m/s`), '; el mototaxi sale de ', px(`${D} m`), ' hacia el lado −, a ', pv(`${vb} m/s`), '.'] },
+              { tipo: 'regla', texto: ['Se cruzan cuando ', MxA, ' = ', MxB, ': las dos reglas de posición dan lo mismo en el mismo instante.'] },
+              { tipo: 'cuentas', texto: 'Se igualan las posiciones y se despeja el instante.', ecuacion: [pv(va), Mt, ' = ', px(D), ' − ', pv(vb), Mt, '  →  ', Mt, ' = ', frac(pD(D), pv(va + vb)), ' = ', pt(`${te} s`)] },
+              { tipo: 'cuentas', texto: 'Se reemplaza en la posición de la combi.', ecuacion: [MxA, ' = ', pv(va), ' · ', pt(te), ' = ', px(`${xe} m`)] },
+              { tipo: 'sentido', texto: `Comprobación: el mototaxi está en ${D} − ${vb} · ${te} = ${D - vb * te} m. Coinciden.` },
+            ],
+            respuesta: ['A ', px(`${xe} m`), ' del paradero'],
+          };
+        }
+        const vb = r.ent(3, 8), va = vb + r.ent(2, 5), t = r.ent(5, 15), D = (va - vb) * t, xe = va * t;
+        return {
+          enunciado: ['Un mototaxi va ', pD(`${D} m`), ' delante de una combi, a ', pv(`${vb} m/s`), '; la combi lo sigue a ', pv(`${va} m/s`), '. ¿A qué distancia de donde salió la combi lo alcanza?'],
+          datos: [DM.encuentro, DM.pos],
+          dibujo: dos(0, Math.ceil((xe + 20) / 50) * 50, [0, va], [D, vb]),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden dónde la combi alcanza al mototaxi, ', Mx, ', medido desde donde salió la combi.'] },
+            { tipo: 'datos', texto: ['La combi sale de 0 a ', pv(`${va} m/s`), '; el mototaxi, de ', px(`${D} m`), ' a ', pv(`${vb} m/s`), ', hacia el mismo lado.'] },
+            { tipo: 'regla', texto: ['Lo alcanza cuando ', MxA, ' = ', MxB, ', en el mismo instante.'] },
+            { tipo: 'cuentas', texto: 'Se igualan las posiciones y se despeja el instante.', ecuacion: [pv(va), Mt, ' = ', px(D), ' + ', pv(vb), Mt, '  →  ', Mt, ' = ', frac(pD(D), pv(va - vb)), ' = ', pt(`${t} s`)] },
+            { tipo: 'cuentas', texto: 'Se reemplaza en la posición de la combi.', ecuacion: [MxA, ' = ', pv(va), ' · ', pt(t), ' = ', px(`${xe} m`)] },
+            { tipo: 'sentido', texto: `Comprobación: el mototaxi está en ${D} + ${vb} · ${t} = ${D + vb * t} m. Coinciden.` },
+          ],
+          respuesta: ['A ', px(`${xe} m`), ' de donde salió'],
+        };
+      },
     },
     ahoraTu: {
-      pieza: 'pista',
+      pieza: 'fis-combi',
       generar(s) {
-        const r = azar(s), opuesto = s % 2 === 0;
-        const va = r.ent(3, 7), vb = (opuesto ? -1 : 1) * r.ent(1, Math.min(4, va - 1));
-        const vr = va - vb, te = r.ent(2, 5), d = vr * te, xe = va * te;
-        const largo = Math.ceil(Math.max(d, xe) / 10) * 10 + 10;
-        const cuenta = opuesto ? `${f(va)} + ${f(-vb)}` : `${f(va)} − ${f(vb)}`;
+        const r = azar(s + 71), k = s % 4, en = n => `A los ${fm(n)} s`, tarda = n => `Tarda ${fm(n)} s`;
+        const cuatro = (bien, ds) => opciones(bien, ds, en).slice(0, 4);
+        if (k === 0) {
+          const va = r.ent(5, 12), vb0 = r.ent(3, 9), vb = vb0 === va ? vb0 - 1 : vb0, te = r.ent(4, 12), D = (va + vb) * te;
+          return {
+            pregunta: ['Una combi sale del paradero a ', pv(`${va} m/s`), ' y, a la vez, un mototaxi viene de frente desde ', pD(`${D} m`), ' a ', pv(`${vb} m/s`), '. ¿Cuándo se cruzan?'],
+            datos: [DM.encuentro, DM.pos, DM.eje],
+            dibujo: dos(0, D, [0, va], [D, -vb], { lugares: PARADERO }),
+            opciones: cuatro(te, [
+              { id: 'resta', valor: va !== vb ? D / Math.abs(va - vb) : NaN, error: 'VR-RESTA', siFuera: 'Restar las rapideces sirve si van al mismo lado. Aquí van uno hacia el otro.' },
+              { id: 'uno', valor: D / va, error: 'VR-UNO', siFuera: 'Eso sería si el mototaxi se quedara quieto. Él también se acerca.' },
+              { id: 'pos', valor: va * te, error: 'VR-POSICION', siFuera: `${fm(va * te)} es dónde se cruzan, en metros, no cuándo.` },
+              { id: 'otro', valor: D / vb, error: 'VR-UNO', siFuera: 'Eso sería si la combi se quedara quieta. Las dos se acercan.' },
+            ]),
+            solucion: { texto: `Se acercan ${va} + ${vb} = ${va + vb} m cada segundo.`, ecuacion: [Mte, ' = ', frac(pD(`${D} m`), pv(`${va + vb} m/s`)), ' = ', pt(`${te} s`)] },
+          };
+        }
+        if (k === 1) {
+          const vb = r.ent(3, 8), va = vb + r.ent(1, 5), t = r.ent(5, 15), D = (va - vb) * t;
+          return {
+            pregunta: ['Un mototaxi va ', pD(`${D} m`), ' delante de una combi, a ', pv(`${vb} m/s`), '; la combi lo sigue a ', pv(`${va} m/s`), ', hacia el mismo lado. ¿Cuándo lo alcanza?'],
+            datos: [DM.encuentro, DM.pos],
+            dibujo: dos(0, Math.ceil((va * t + 20) / 50) * 50, [0, va], [D, vb]),
+            opciones: cuatro(t, [
+              { id: 'suma', valor: D / (va + vb), error: 'VR-SUMA', siFuera: 'Sumar las rapideces sirve si van de frente. Aquí el mototaxi también se aleja.' },
+              { id: 'uno', valor: D / va, error: 'VR-UNO', siFuera: 'Eso sería si el mototaxi estuviera quieto. También avanza.' },
+              { id: 'pos', valor: va * t, error: 'VR-POSICION', siFuera: `${fm(va * t)} es dónde lo alcanza, en metros, no cuándo.` },
+            ]),
+            solucion: { texto: `La combi gana ${va} − ${vb} = ${va - vb} m cada segundo.`, ecuacion: [Mtalc, ' = ', frac(pD(`${D} m`), pv(`${va - vb} m/s`)), ' = ', pt(`${t} s`)] },
+          };
+        }
+        if (k === 2) {
+          // San Marcos 2021: el que salió antes.
+          const vb = r.ent(3, 8), va = vb + r.ent(2, 6), dt = r.ent(2, 6) * 5, D = vb * dt;
+          const t = D / (va - vb);
+          return {
+            pregunta: ['Un mototaxi sale del paradero a ', pv(`${vb} m/s`), '. ', pt(`${dt} s`), ' después sale una combi del mismo paradero, a ', pv(`${va} m/s`), ', por el mismo camino. ¿Cuánto tarda la combi en alcanzarlo?'],
+            datos: [DM.encuentro, DM.pos],
+            dibujo: dos(0, Math.ceil((D + vb * t + 20) / 50) * 50, [0, va], [D, vb], { lugares: PARADERO }),
+            opciones: opciones(t, [
+              { id: 'reloj', valor: t + dt, error: 'VR-RELOJ', siFuera: `Bien el alcance. Pero eso cuenta desde que salió el mototaxi; la combi tarda ${dt} s menos.` },
+              { id: 'uno', valor: D / va, error: 'VR-UNO', siFuera: `Bien los ${fm(D)} m de ventaja. Pero el mototaxi sigue avanzando.` },
+              { id: 'suma', valor: D / (va + vb), error: 'VR-SUMA', siFuera: 'Sumar las rapideces sirve si van de frente. Aquí van al mismo lado.' },
+              { id: 'sin-ventaja', valor: dt, error: 'VR-VENTAJA', siFuera: `${dt} s es cuánto salió antes el mototaxi, no lo que tarda el alcance.` },
+            ], tarda).slice(0, 4),
+            solucion: { texto: `Al salir la combi, el mototaxi lleva ${vb} · ${dt} = ${D} m de ventaja.`, ecuacion: [Mtalc, ' = ', frac(pD(`${D} m`), pv(`${va - vb} m/s`)), ' = ', pt(`${fm(t)} s`)] },
+          };
+        }
+        // Nivel examen: el alcance con las rapideces en km/h.
+        const kb = [18, 36][r.ent(0, 1)], ka = kb + [18, 36, 54][r.ent(0, 2)], va = ka / 3.6, vb = kb / 3.6, t = r.ent(4, 12) * 2, D = (va - vb) * t;
         return {
-          pregunta: `A sale de x = 0 a ${f(va)} m/s hacia la derecha. B sale a la vez de x = ${f(d)} m a ${f(Math.abs(vb))} m/s hacia ${opuesto ? 'la izquierda' : 'la derecha'}. ¿Cuándo se encuentran?`,
-          dibujo: { datos: { largo, cada: 10, carriles: [{ x: 0, variante: 'a', marcas: [], rotulo: 'A' }, { x: d, variante: 'b', marcas: [], rotulo: 'B' }] }, estado: {} },
-          opciones: opciones(te, [
-            { id: 'cambio', valor: d / (va + vb), error: opuesto ? 'VR-RESTA' : 'VR-SUMA', siFuera: opuesto ? 'Restar rapideces sirve si van al mismo lado.' : 'Sumar rapideces sirve si van uno hacia el otro.' },
-            { id: 'solo-a', valor: d / va, error: 'VR-UNO', siFuera: 'Ese sería el tiempo si B se quedara quieto.' },
-            { id: 'pos', valor: xe, error: 'VR-POSICION', siFuera: 'Ese número es la posición del encuentro, en metros.' },
-          ], n => `${f(n, 2)} s`),
-          solucion: {
-            texto: opuesto ? 'Van uno hacia el otro: la brecha se cierra con la suma.' : 'Van al mismo lado: la brecha se cierra con la diferencia.',
-            ecuacion: [{ sub: [t, 'e'] }, ` = ${f(d)} / (${cuenta}) = ${f(te)} s`],
-            dibujo: { datos: { largo, cada: 10, carriles: [{ x: xe, variante: 'a', marcas: [], rotulo: 'A' }, { x: xe, variante: 'b', marcas: [], rotulo: 'B' }], encuentro: { x: xe, rotulo: `${f(xe)} m` } }, estado: {} },
-          },
+          pregunta: ['Un mototaxi a ', pv(`${kb} km/h`), ' va ', pD(`${fm(D)} m`), ' delante de una combi a ', pv(`${ka} km/h`), ', hacia el mismo lado. ¿Cuánto tarda la combi en alcanzarlo?'],
+          datos: [DM.encuentro, DM.pos, DM.kmh],
+          dibujo: dos(0, Math.ceil((va * t + 20) / 50) * 50, [0, va, `${ka} km/h`], [D, vb, `${kb} km/h`]),
+          opciones: opciones(t, [
+            { id: 'kmh', valor: D / (ka - kb), error: 'U1-kmh', siFuera: 'Bien la resta. Pero en km/h: pasa las rapideces a m/s antes de dividir.' },
+            { id: 'suma', valor: D / (va + vb), error: 'VR-SUMA', siFuera: 'Bien que pases a m/s. Pero van al mismo lado: se restan.' },
+            { id: 'uno', valor: D / va, error: 'VR-UNO', siFuera: 'Eso sería si el mototaxi estuviera quieto. También avanza.' },
+          ], tarda).slice(0, 4),
+          solucion: { texto: `A m/s: ${fm(va)} y ${fm(vb)} m/s. La combi gana ${fm(va - vb)} m cada segundo.`, ecuacion: [Mtalc, ' = ', frac(pD(`${fm(D)} m`), pv(`${fm(va - vb)} m/s`)), ' = ', pt(`${t} s`)] },
         };
       },
     },
   };
 
-  // Un color fijo por magnitud en las dos unidades del movimiento rectilíneo (cabecera; propuesta §6).
-  const COLORES = { velocidad: 'o', tiempo: 'i', posición: 'f', desplazamiento: 'f', separación: 'f', aceleración: 'h' };
+  // ---------- Idea 5 (A5): velocidad relativa (18 nov, contrato «se entiende sin profesor») ----------
+  // Pieza fis-ventana: tu combi A y la combi B en carriles vecinos, vistas desde la orilla de la carretera y desde tu
+  // ventana. Cambia: la velocidad de B (también de frente) · Permanece: tu combi a 15 m/s · Progresa: el reloj, que mueve
+  // los postes y a B · Se reserva: el río, que suma la corriente (solo en Predice) · Debe verse: desde A, B se mueve con la
+  // diferencia de las velocidades; si es 0, parece quieta.
+  const VA_A5 = 15, T_A5 = 4;
+  const ventana = (d, estado = {}) => ({ pieza: 'fis-ventana', datos: d, estado });
+  const rio = (d, estado = {}) => ({ pieza: 'fis-rio', datos: d, estado });
+  const juegoA5 = val => ventana({ vA: VA_A5, vB: val.vb, t: Math.max(0, Math.min(val.t, T_A5)) });
+  const PRED_A5 = { sentido: 'abajo', u: '5 m/s', c: '2 m/s' };
+
+  // Ejemplos resueltos de A5. Cuentas rehechas con un script aparte que no usa este archivo (scratchpad f3w/cuentas.js,
+  // 18 nov): 15 − 10; −8 − 12; 4 + 1,5; 4 − 1,5; 0 − 15; 120/(4 + 2); 72/3,6 − 54/3,6 y 100/5; (9 + 5)/2 y (9 − 5)/2;
+  // 12 + (−4); 12/(15 − 10); 80/(5 + 3) + 80/(5 − 3); (4 + 6)·50 cm; 60/20 y 3 + 3; 40/(3 − 1) + 40/(3 + 1);
+  // 54/3,6 + 36/3,6. Las figuras muestran las velocidades dadas; lo que se pide va con «?» y sin flecha (su sentido es
+  // parte de la respuesta).
+  const ALT_A5 = {
+    ida: ['32 s', '50 s', '20 s', '10 s', '26,7 s'],
+    placas: ['1 m', '5 m', '2 m', '3 m', '50 cm'],
+    nino: ['3 m/s', '6 m/s', '0 m/s', '4,5 m/s', '1,5 m/s'],
+    llamas: ['26,7 s', '30 s', '20 s', '40 s', '13,3 s'],
+    frente: ['5 m/s', '18 m/s', '25 m/s', '90 m/s', '324 m/s'],
+  };
+  const EJEMPLOS_RELATIVA = [
+    { nivel: 1, titulo: 'Se adelanta despacio',
+      figura: ventana({ vA: 10, vB: 15, t: 0, rotuloRel: '?' }),
+      enunciado: ['Tu combi va a 10 m/s y la del carril de al lado, a 15 m/s, hacia el mismo lado. ¿Con qué velocidad la ves desde tu ventana?'],
+      datos: [DM.rel, DM.ejeCarretera],
+      solucion: [{ texto: 'Tú eres A y la otra es B; las dos van hacia el lado +.', ecuacion: [MvBA, ' = ', pv('15'), ' − ', pv('10'), ' = ', pv('5 m/s')] }],
+      respuesta: [pv('5 m/s'), ': se adelanta, hacia el lado +'] },
+    { nivel: 1, titulo: 'Otra que viene de frente',
+      figura: ventana({ vA: 12, vB: -8, t: 0, rotuloRel: '?' }),
+      enunciado: ['Tu combi va a 12 m/s hacia el lado + y otra viene de frente a 8 m/s. ¿Con qué velocidad la ves desde tu ventana?'],
+      datos: [DM.rel, DM.ejeCarretera],
+      solucion: [{ texto: 'La otra va hacia el lado −: su velocidad es −8 m/s.', ecuacion: [MvBA, ' = ', pv('−8'), ' − ', pv('12'), ' = ', pv('−20 m/s')] }],
+      respuesta: [pv('−20 m/s'), ': se te acerca a 20 m/s'] },
+    { nivel: 1, titulo: 'Río abajo',
+      figura: rio({ sentido: 'abajo', u: '4 m/s', c: '1,5 m/s' }),
+      enunciado: ['Un bote avanza a 4 m/s respecto al agua, río abajo; la corriente va a 1,5 m/s. ¿Con qué rapidez lo ve pasar alguien en la orilla?'],
+      datos: [DM.orilla, DM.rio],
+      solucion: [{ texto: 'El agua lleva al bote hacia el mismo lado al que rema: se suman.', ecuacion: [Mv, ' = ', pv('4'), ' + ', pv('1,5'), ' = ', pv('5,5 m/s')] }],
+      respuesta: [pv('5,5 m/s')] },
+    { nivel: 1, titulo: 'Río arriba',
+      figura: rio({ sentido: 'arriba', u: '4 m/s', c: '1,5 m/s' }),
+      enunciado: ['El mismo bote rema río arriba, a 4 m/s respecto al agua; la corriente va a 1,5 m/s. ¿Con qué rapidez lo ve avanzar alguien en la orilla?'],
+      datos: [DM.orilla, DM.rio],
+      solucion: [{ texto: 'Ahora el bote va hacia el lado −, contra el agua que lo lleva hacia +.', ecuacion: [Mv, ' = ', pv('−4'), ' + ', pv('1,5'), ' = ', pv('−2,5 m/s')] }],
+      respuesta: [pv('2,5 m/s'), ', río arriba'] },
+    { nivel: 1, titulo: 'Los postes de la carretera',
+      figura: ventana({ vA: 15, vB: 0, t: 0, sinB: true }),
+      enunciado: ['Vas en una combi a 15 m/s por la carretera. ¿Con qué velocidad ves pasar los postes desde tu ventana?'],
+      datos: [DM.rel, DM.ejeCarretera, 'Los postes están quietos en la carretera.'],
+      solucion: [{ texto: 'Los postes son B, con velocidad 0 en la carretera.', ecuacion: [MvBA, ' = ', pv('0'), ' − ', pv('15'), ' = ', pv('−15 m/s')] }],
+      respuesta: [pv('−15 m/s'), ': pasan hacia atrás, igual de rápido que tú'] },
+    { nivel: 2, titulo: 'Un tramo río abajo',
+      figura: rio({ sentido: 'abajo', u: '4 m/s', c: '2 m/s', cota: { de: 0.1, a: 0.9, texto: 'L = 120 m', color: 'f' } }),
+      enunciado: ['Un bote rema río abajo a 4 m/s respecto al agua; la corriente va a 2 m/s. ¿Cuánto tarda en recorrer un tramo de 120 m de orilla?'],
+      datos: [DM.orilla, DM.tramo, DM.rio],
+      solucion: [
+        { texto: 'Desde la orilla, la rapidez del bote:', ecuacion: [Mv, ' = ', pv('4'), ' + ', pv('2'), ' = ', pv('6 m/s')] },
+        { texto: 'El tiempo del tramo:', ecuacion: [Mt, ' = ', frac(pL('120 m'), pv('6 m/s')), ' = ', pt('20 s')] },
+      ],
+      respuesta: ['Tarda ', pt('20 s')] },
+    { nivel: 2, titulo: 'Sacar ventaja en km/h',
+      figura: ventana({ vA: 15, vB: 20, t: 0, textoA: '54 km/h', textoB: '72 km/h', rotuloRel: '?' }),
+      enunciado: ['Tu combi va a 54 km/h y la de al lado, a 72 km/h, hacia el mismo lado. ¿Cuánto tarda la otra en sacarte 100 m de ventaja?'],
+      datos: [DM.rel, DM.kmh, DM.tramo],
+      solucion: [
+        { texto: 'A m/s: 54 km/h = 15 m/s y 72 km/h = 20 m/s. Desde tu ventana, la otra se adelanta:', ecuacion: [MvBA, ' = ', pv('20'), ' − ', pv('15'), ' = ', pv('5 m/s')] },
+        { texto: 'Para alejarse 100 m a 5 m/s:', ecuacion: [Mt, ' = ', frac('100 m', pv('5 m/s')), ' = ', pt('20 s')] },
+      ],
+      respuesta: ['Tarda ', pt('20 s')] },
+    { nivel: 2, titulo: 'La corriente desde dos viajes',
+      figura: rio({ sentido: 'abajo', u: '?', c: '?' }),
+      enunciado: ['Desde la orilla, un bote avanza a 9 m/s río abajo y a 5 m/s río arriba, remando siempre igual. ¿Cuánto valen su rapidez respecto al agua y la corriente?'],
+      datos: [DM.orilla, DM.rio],
+      solucion: [
+        { texto: 'Río abajo se suman y río arriba se restan.', ecuacion: [Mu, ' + ', Mc, ' = ', pv('9'), ';   ', Mu, ' − ', Mc, ' = ', pv('5')] },
+        { texto: 'Sumando las dos, 2u = 14; restándolas, 2c = 4.', ecuacion: [Mu, ' = ', pv('7 m/s'), ';   ', Mc, ' = ', pv('2 m/s')] },
+      ],
+      respuesta: [pv('u = 7 m/s'), ' y ', pv('c = 2 m/s')] },
+    { nivel: 2, titulo: 'Desde la combi rápida',
+      figura: ventana({ vA: 12, vB: 8, t: 0, textoB: '?' }),
+      enunciado: ['Desde tu combi, que va a 12 m/s, la del carril de al lado parece ir hacia atrás a 4 m/s. ¿Cuál es su velocidad, medida desde la carretera?'],
+      datos: [DM.rel, DM.ejeCarretera],
+      solucion: [
+        { texto: 'Hacia atrás, desde ti, es el lado −:', ecuacion: [MvBA, ' = ', pv('−4 m/s')] },
+        { texto: 'Se despeja la velocidad de B.', ecuacion: [MvB, ' = ', MvBA, ' + ', MvA, ' = ', pv('−4'), ' + ', pv('12'), ' = ', pv('8 m/s')] },
+      ],
+      respuesta: [pv('8 m/s'), ', hacia el mismo lado que tú'] },
+    { nivel: 2, titulo: 'Pasar a otra combi',
+      figura: ventana({ vA: 15, vB: 10, t: 0, rotuloRel: '?' }),
+      enunciado: ['Tu combi, de 6 m, va a 15 m/s y pasa a otra de 6 m que va a 10 m/s. ¿Cuánto dura el adelanto, de tu frente en su cola a tu cola en su frente?'],
+      datos: [DM.rel, DM.tramo],
+      solucion: [
+        { texto: 'Desde la otra combi, tú avanzas a 15 − 10 = 5 m/s y tienes que recorrer los dos largos.', ecuacion: [ML, ' = ', pL('6 m'), ' + ', pL('6 m'), ' = ', pL('12 m')] },
+        { texto: 'El tiempo, con la velocidad vista desde ella:', ecuacion: [Mt, ' = ', frac(pL('12 m'), pv('5 m/s')), ' = ', pt('2,4 s')] },
+      ],
+      respuesta: ['Dura ', pt('2,4 s')] },
+    { nivel: 3, titulo: 'El bote de ida y vuelta',
+      figura: rio({ sentido: 'arriba', u: '5 m/s', c: '3 m/s', cota: { de: 0.1, a: 0.9, texto: 'L = 80 m', color: 'f' } }),
+      enunciado: ['Un bote rema a 5 m/s respecto al agua en un río que corre a 3 m/s. Sube 80 m río arriba y vuelve. ¿Cuánto dura el viaje?'],
+      alternativas: ALT_A5.ida,
+      datos: [DM.orilla, DM.tramo, DM.rio],
+      solucion: [
+        { texto: 'Río arriba avanza 5 − 3 = 2 m/s; río abajo, 5 + 3 = 8 m/s.' },
+        { texto: 'El tiempo de cada tramo, y la suma:', ecuacion: [frac(pL('80 m'), pv('2 m/s')), ' + ', frac(pL('80 m'), pv('8 m/s')), ' = ', pt('40 s'), ' + ', pt('10 s'), ' = ', pt('50 s')] },
+        { texto: ['La ', letra(ALT_A5.ida, '32 s'), ' ignora la corriente: lo que gana a favor no compensa lo que pierde en contra.'] },
+      ],
+      respuesta: [letra(ALT_A5.ida, '50 s'), ', ', pt('50 s')] },
+    { nivel: 3, titulo: 'Las placas que se acercan',
+      enunciado: ['Respecto a una tercera placa, la placa A avanza 4 cm por año hacia el este y la placa B, 6 cm por año hacia el oeste, una hacia la otra. ¿Cuánto se acercan en 50 años?'],
+      alternativas: ALT_A5.placas,
+      datos: [DM.rel, 'Este es el sentido +; oeste, el −.', '1 m = 100 cm'],
+      solucion: [
+        { texto: 'Desde A, la placa B se mueve con la diferencia de velocidades:', ecuacion: [MvBA, ' = ', pv('−6'), ' − ', pv('4'), ' = ', pv('−10 cm/año')] },
+        { texto: 'En 50 años: 10 · 50 = 500 cm = 5 m.' },
+        { texto: ['La ', letra(ALT_A5.placas, '1 m'), ' resta las rapideces: eso sería si fueran hacia el mismo lado.'] },
+      ],
+      respuesta: [letra(ALT_A5.placas, '5 m'), ', ', pD('5 m')] },
+    { nivel: 3, titulo: 'Caminar sobre el bote',
+      enunciado: ['Un bote de 30 m va río abajo a 3 m/s. Un niño camina de popa a proa y vuelve en 20 s, igual de rápido respecto al bote. ¿Su rapidez vista desde la orilla, hacia la proa?'],
+      alternativas: ALT_A5.nino,
+      datos: ['Proa: la punta de adelante; popa: la de atrás.', 'Los 3 m/s del bote se miden desde la orilla.', DM.orilla.replace('respecto al agua', 'respecto al bote').replace('del agua', 'del bote')],
+      solucion: [
+        { texto: 'Respecto al bote camina 60 m en 20 s:', ecuacion: [frac(pL('60 m'), pt('20 s')), ' = ', pv('3 m/s')] },
+        { texto: 'Hacia la proa camina hacia donde va el bote: desde la orilla se suman.', ecuacion: [Mv, ' = ', pv('3'), ' + ', pv('3'), ' = ', pv('6 m/s')] },
+        { texto: ['La ', letra(ALT_A5.nino, '3 m/s'), ' es su rapidez respecto al bote; la ', letra(ALT_A5.nino, '0 m/s'), ' sería al volver.'] },
+      ],
+      respuesta: [letra(ALT_A5.nino, '6 m/s'), ', ', pv('6 m/s')] },
+    { nivel: 3, titulo: 'El pastor y las llamas',
+      enunciado: ['Una columna de llamas de 40 m avanza a 1 m/s. El pastor va de la cola a la cabeza a 3 m/s y vuelve a la cola, también a 3 m/s. ¿Cuánto tarda?'],
+      alternativas: ALT_A5.llamas,
+      datos: [DM.rel, DM.tramo, 'Las rapideces se miden desde el suelo.'],
+      solucion: [
+        { texto: 'Desde la columna, a la ida el pastor avanza 3 − 1 = 2 m/s; a la vuelta, 3 + 1 = 4 m/s.' },
+        { texto: 'Recorre los 40 m de la columna dos veces:', ecuacion: [frac(pL('40 m'), pv('2 m/s')), ' + ', frac(pL('40 m'), pv('4 m/s')), ' = ', pt('20 s'), ' + ', pt('10 s'), ' = ', pt('30 s')] },
+        { texto: ['La ', letra(ALT_A5.llamas, '26,7 s'), ' olvida que la columna también avanza.'] },
+      ],
+      respuesta: [letra(ALT_A5.llamas, '30 s'), ', ', pt('30 s')] },
+    { nivel: 3, titulo: 'De frente en km/h',
+      figura: ventana({ vA: 15, vB: -10, t: 0, textoA: '54 km/h', textoB: '36 km/h', rotuloRel: '?' }),
+      enunciado: ['Dos combis van de frente, una a 54 km/h y la otra a 36 km/h. ¿Con qué rapidez ve una a la otra, en m/s?'],
+      alternativas: ALT_A5.frente,
+      datos: [DM.rel, DM.kmh],
+      solucion: [
+        { texto: 'A m/s: 15 m/s y −10 m/s, porque van en sentidos contrarios.' },
+        { texto: 'Desde la primera:', ecuacion: [MvBA, ' = ', pv('−10'), ' − ', pv('15'), ' = ', pv('−25 m/s')] },
+        { texto: ['Se acercan a 25 m/s. La ', letra(ALT_A5.frente, '5 m/s'), ' resta las rapideces; la ', letra(ALT_A5.frente, '90 m/s'), ' no pasa 90 km/h a m/s.'] },
+      ],
+      respuesta: [letra(ALT_A5.frente, '25 m/s'), ', ', pv('25 m/s')] },
+  ];
+
+  const relativa = {
+    id: 'velocidad-relativa',
+    titulo: 'Velocidad relativa',
+    pregunta: '¿Qué tan rápido ves pasar otra combi desde tu ventana?',
+    temas: ['MRU y velocidad relativa'],
+    pieza: 'fis-ventana',
+    aprendizaje: 'Un móvil ve a otro con la diferencia de velocidades: v_B/A = v_B − v_A. Desde la orilla, el bote suma la corriente.',
+    actividad: 'Mirar desde tu combi otra que va por el carril de al lado.',
+    lee: {
+      tarjetas: [
+        { titulo: 'Desde dónde se mira', texto: 'Una velocidad siempre se mide desde algo: desde la carretera, desde la orilla, desde tu asiento. Eso que tomas como quieto es el sistema de referencia.' },
+        { titulo: 'Tu ventana', texto: 'Desde tu asiento, tu combi está quieta: no te alejas de ella. Los postes de la carretera, que están quietos, los ves pasar hacia atrás.',
+          dibujo: ventana({ vA: VA_A5, vB: 0, t: 1, sinB: true }) },
+        { titulo: 'Cómo se escribe', texto: [MvBA, ' se lee «velocidad de B vista desde A»: es la velocidad relativa de B respecto a A. Cada velocidad lleva su signo, con + hacia la derecha.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Tú vas en la combi A a 15 m/s. Cambia la velocidad de la combi B y mira cómo la ves desde tu ventana.' },
+      ],
+    },
+    ejemplos: EJEMPLOS_RELATIVA,
+    juega: {
+      pieza: 'fis-ventana',
+      consigna: 'Vas en la combi A a 15 m/s por la carretera; por el carril de al lado va otra combi, B.',
+      mision: {
+        texto: 'Haz que, desde tu ventana, la combi B parezca quieta.',
+        logrado: val => val.vb === VA_A5,
+        bien: 'Listo: van igual de rápido y al mismo lado. Ninguna se aleja.',
+      },
+      voz: 'Compara las dos franjas: la de arriba y la de tu ventana.',
+      leyenda: [
+        { s: 'A', t: 'tu combi, la que te lleva' },
+        { s: 'B', t: 'la otra combi, en el carril vecino' },
+        { s: 'poste', t: 'quieto al borde de la carretera' },
+        { s: [MvB], t: 'velocidad de B, medida desde la carretera' },
+        { s: [MvBA], t: 'velocidad de B vista desde A' },
+      ],
+      controles: [
+        { id: 'vb', etiqueta: 'Velocidad de B', color: 'c-o', min: -20, max: 20, paso: 5, inicio: 5, unidad: 'm/s', decimales: 0 },
+        { id: 't', etiqueta: 'Reloj, t', color: 'c-i', min: 0, max: T_A5 + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
+      ],
+      dibujo: juegoA5,
+      lectura: val => ['Desde tu ventana: ', MvBA, ' = ', pv(fm(val.vb)), ' − ', pv(fm(VA_A5)), ' = ', pv(`${fm(val.vb - VA_A5)} m/s`)],
+      resumen: { vb: 5, t: 2 },
+      minimo: 3,
+    },
+    predice: {
+      pieza: 'fis-rio',
+      pregunta: 'Un bote va río abajo a 5 m/s respecto al agua; el río corre a 2 m/s. ¿Con qué rapidez lo ve pasar alguien parado en la orilla?',
+      datos: ['Río abajo: el bote y la corriente van hacia el mismo lado.'],
+      opciones: [
+        { id: 'c', texto: '7 m/s', correcta: true },
+        { id: 'sentido', texto: '3 m/s', error: 'REL-SENTIDO', siFuera: 'Restar serviría río arriba, contra la corriente. Aquí van hacia el mismo lado.' },
+        { id: 'sin-marco', texto: '5 m/s', error: 'REL-SIN-MARCO', siFuera: 'Bien: el bote rema a 5 m/s. Pero eso es respecto al agua, y el agua también avanza.' },
+        { id: 'pitagoras', texto: 'Unos 5,4 m/s', error: 'REL-PITAGORAS', siFuera: 'Pitágoras sirve si el bote cruza el río. Aquí todo va por la misma recta.' },
+      ],
+      dibujo: rio(PRED_A5),
+      revelar: rio(Object.assign({}, PRED_A5, { total: { texto: '7 m/s' } })),
+      coincide: 'Coincide: el agua lo lleva 2 m cada segundo, además de sus 5 m.',
+    },
+    mira: {
+      pieza: 'fis-rio',
+      datos: Object.assign({}, PRED_A5, { total: { texto: '7 m/s', desde: 2 } }),
+      pasos: [
+        { estado: { corte: 0 }, texto: 'Desde el agua, el bote avanza 5 m cada segundo.', ecuacion: [Mu, ' = ', pv('5 m/s'), ', respecto al agua'] },
+        { estado: { corte: 1 }, texto: 'El agua, con todo lo que flota, avanza 2 m cada segundo.', ecuacion: [Mc, ' = ', pv('2 m/s')] },
+        { estado: { corte: 2 }, texto: 'Desde la orilla se suman: van hacia el mismo lado.', ecuacion: [Mv, ' = ', Mu, ' + ', Mc, ' = ', pv('5'), ' + ', pv('2'), ' = ', pv('7 m/s')] },
+        { estado: { corte: 2 }, texto: 'Río arriba, la corriente lo frenaría: 5 − 2 = 3 m/s.', ecuacion: [Mv, ' = ', Mu, ' − ', Mc, ' = ', pv('3 m/s')] },
+        { estado: { corte: 2 }, texto: 'Aquí no va Pitágoras: las dos velocidades están en la misma recta.' },
+      ],
+    },
+    regla: {
+      texto: 'Visto desde A, el móvil B tiene la diferencia de las velocidades, con su signo. Desde la orilla, el bote tiene su velocidad respecto al agua más la del río.',
+      ecuacion: [MvBA, ' = ', MvB, ' − ', MvA, '   ;   ', 'río abajo: ', Mv, ' = ', Mu, ' + ', Mc, '   ;   ', 'río arriba: ', Mv, ' = ', Mu, ' − ', Mc],
+      condicion: 'todo en una misma recta, cada velocidad con su signo y medida desde el suelo; u se mide desde el agua.',
+      dibujo: rio({ sentido: 'arriba', u: 'u', c: 'c', total: { texto: 'u − c' } }),
+    },
+    resuelve: {
+      pieza: 'fis-rio',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const vA = r.ent(8, 18), w = r.ent(2, 6), atras = r.ent(0, 1) === 1, vB = atras ? vA - w : vA + w;
+          return {
+            enunciado: ['Desde tu combi, que va a ', pv(`${vA} m/s`), ', la del carril de al lado parece ir hacia ', atras ? 'atrás' : 'adelante', ' a ', pv(`${w} m/s`), '. ¿Cuál es su velocidad, medida desde la carretera?'],
+            datos: [DM.rel, DM.ejeCarretera],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', MvB, ': la velocidad de la otra combi medida desde la carretera.'] },
+              { tipo: 'datos', texto: ['Tú eres A: ', MvA, ' = ', pv(`${vA} m/s`), '. Desde ti, la otra va hacia ', atras ? 'atrás, el lado −' : 'adelante, el lado +', ': ', MvBA, ' = ', pv(`${fm(atras ? -w : w)} m/s`), '.'] },
+              { tipo: 'regla', texto: ['La velocidad vista desde A: ', MvBA, ' = ', MvB, ' − ', MvA, '. Se despeja ', MvB, '.'] },
+              { tipo: 'cuentas', texto: 'Se suma tu velocidad a lo que ves.', ecuacion: [MvB, ' = ', MvBA, ' + ', MvA, ' = ', pv(fm(atras ? -w : w)), ' + ', pv(vA), ' = ', pv(`${vB} m/s`)] },
+              { tipo: 'sentido', texto: atras ? 'Va más lenta que tú, hacia el mismo lado: por eso la ves quedarse atrás.' : 'Va más rápido que tú: por eso la ves adelantarse.' },
+            ],
+            respuesta: [pv(`${vB} m/s`), ', hacia el mismo lado que tú'],
+          };
+        }
+        const c = r.ent(1, 3), u = c + r.ent(2, 5), t1 = r.ent(2, 5) * 5, L = (u + c) * t1, t2 = L / (u - c);
+        return {
+          enunciado: ['Remando igual, un bote recorre ', pL(`${L} m`), ' de orilla río abajo en ', pt(`${t1} s`), ' y los mismos ', pL(`${L} m`), ' río arriba en ', pt(`${fm(t2)} s`), '. ¿Cuánto vale la corriente?'],
+          datos: [DM.orilla, DM.rio, DM.tramo],
+          dibujo: rio({ sentido: 'abajo', u: '?', c: '?', cota: { de: 0.1, a: 0.9, texto: `L = ${L} m`, color: 'f' } }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la rapidez de la corriente, ', Mc, '.'] },
+            { tipo: 'datos', texto: ['Río abajo: ', pL(`${L} m`), ' en ', pt(`${t1} s`), '. Río arriba: lo mismo en ', pt(`${fm(t2)} s`), '.'] },
+            { tipo: 'regla', texto: ['Desde la orilla, río abajo el bote va a ', Mu, ' + ', Mc, ' y río arriba a ', Mu, ' − ', Mc, '.'] },
+            { tipo: 'cuentas', texto: 'Las dos rapideces vistas desde la orilla:', ecuacion: [Mu, ' + ', Mc, ' = ', frac(pL(L), pt(t1)), ' = ', pv(u + c), ';   ', Mu, ' − ', Mc, ' = ', frac(pL(L), pt(fm(t2))), ' = ', pv(u - c)] },
+            { tipo: 'cuentas', texto: 'Restando una de otra, 2c es la diferencia.', ecuacion: [Mc, ' = ', frac([pv(u + c), ' − ', pv(u - c)], '2'), ' = ', pv(`${c} m/s`)] },
+            { tipo: 'sentido', texto: `Comprobación: el bote rema a ${u} m/s; ${u} + ${c} y ${u} − ${c} dan los dos viajes.` },
+          ],
+          respuesta: ['La corriente va a ', pv(`${c} m/s`)],
+        };
+      },
+    },
+    ahoraTu: {
+      pieza: 'fis-rio',
+      generar(s) {
+        const r = azar(s + 89), k = s % 4, ms = n => `${fm(n)} m/s`, seg = n => `${fm(n)} s`;
+        const cuatro = (bien, ds, fmt = ms) => opciones(bien, ds, fmt).slice(0, 4);
+        if (k === 0) {
+          const vA = r.ent(6, 18), vB = r.ent(4, 20);
+          const vB2 = vB === vA ? vB + 3 : vB;
+          return {
+            pregunta: ['Tu combi va a ', pv(ms(vA)), ' y la del carril de al lado, a ', pv(ms(vB2)), ', las dos hacia el lado +. ¿Con qué velocidad la ves desde tu ventana?'],
+            datos: [DM.rel, DM.ejeCarretera],
+            opciones: cuatro(vB2 - vA, [
+              { id: 'sentido', valor: vA - vB2, error: 'REL-SENTIDO', siFuera: 'Bien la resta. Pero al revés: es la velocidad de B menos la tuya.' },
+              { id: 'suma', valor: vA + vB2, error: 'REL-SUMA', siFuera: 'Sumar sirve si van de frente. Aquí van hacia el mismo lado.' },
+              { id: 'sin-marco', valor: vB2, error: 'REL-SIN-MARCO', siFuera: `Bien: B va a ${ms(vB2)}, pero medida desde la carretera, no desde ti.` },
+              { id: 'solo-a', valor: -vA, error: 'REL-SOLO-A', siFuera: 'Así verías un poste, que está quieto. La otra combi también avanza.' },
+            ]),
+            solucion: { texto: vB2 > vA ? 'Va más rápido que tú: la ves adelantarse.' : 'Va más lenta que tú: la ves quedarse atrás.', ecuacion: [MvBA, ' = ', pv(vB2), ' − ', pv(vA), ' = ', pv(ms(vB2 - vA))] },
+          };
+        }
+        if (k === 1) {
+          const vA = r.ent(6, 16), w = r.ent(4, 16);
+          return {
+            pregunta: ['Tu combi va a ', pv(ms(vA)), ' hacia el lado + y otra viene de frente a ', pv(ms(w)), '. ¿Con qué velocidad la ves desde tu ventana?'],
+            datos: [DM.rel, DM.ejeCarretera],
+            opciones: cuatro(-w - vA, [
+              { id: 'signo', valor: w - vA, error: 'REL-SIGNO', siFuera: 'La otra va hacia el lado −: su velocidad es negativa antes de restar.' },
+              { id: 'positivo', valor: w + vA, error: 'REL-SENTIDO', siFuera: `Bien: se acercan a ${ms(w + vA)}. Pero hacia ti es el lado −: lleva signo.` },
+              { id: 'sin-marco', valor: -w, error: 'REL-SIN-MARCO', siFuera: 'Esa es su velocidad desde la carretera. Desde ti, se le resta la tuya.' },
+              { id: 'solo-a', valor: -vA, error: 'REL-SOLO-A', siFuera: 'Así se verían los postes, que están quietos. La otra combi también se mueve.' },
+            ]),
+            solucion: { texto: `La otra va a −${fm(w)} m/s. Desde ti, se acerca más rápido.`, ecuacion: [MvBA, ' = ', pv(fm(-w)), ' − ', pv(vA), ' = ', pv(ms(-w - vA))] },
+          };
+        }
+        const [u, c] = [[5, 3], [6, 2], [7, 3], [5, 1], [9, 3], [7, 2], [8, 3]][r.ent(0, 6)];   // u − c ≠ c: si no, dos errores dan lo mismo
+        if (k === 2) {
+          const arriba = r.ent(0, 1) === 1, rap = arriba ? u - c : u + c, t = r.ent(2, 6) * 5, L = rap * t;
+          return {
+            pregunta: ['Un bote rema río ', arriba ? 'arriba' : 'abajo', ' a ', pv(ms(u)), ' respecto al agua; la corriente va a ', pv(ms(c)), '. ¿Cuánto tarda en recorrer ', pL(`${L} m`), ' de orilla?'],
+            datos: [DM.orilla, DM.tramo, DM.rio],
+            dibujo: rio({ sentido: arriba ? 'arriba' : 'abajo', u: ms(u), c: ms(c), cota: { de: 0.1, a: 0.9, texto: `L = ${L} m`, color: 'f' } }),
+            opciones: cuatro(t, [
+              { id: 'sin-marco', valor: L / u, error: 'REL-SIN-MARCO', siFuera: `Bien el tramo. Pero ${u} m/s es respecto al agua, y el agua también se mueve.` },
+              { id: 'sentido', valor: L / (arriba ? u + c : u - c), error: 'REL-SENTIDO', siFuera: arriba ? 'Río arriba la corriente frena: se resta, no se suma.' : 'Río abajo la corriente ayuda: se suma, no se resta.' },
+              { id: 'corriente', valor: L / c, error: 'REL-SOLO-RIO', siFuera: 'Eso sería un bote sin remar, llevado solo por el agua.' },
+            ], seg),
+            solucion: { texto: `Desde la orilla, el bote va a ${u} ${arriba ? '−' : '+'} ${c} = ${rap} m/s.`, ecuacion: [Mt, ' = ', frac(pL(`${L} m`), pv(ms(rap))), ' = ', pt(seg(t))] },
+          };
+        }
+        // Nivel examen: el bote sube un tramo y vuelve (la ida y la vuelta no se compensan).
+        const L = (u + c) * (u - c) * r.ent(1, 3) * 2, t = L / (u - c) + L / (u + c);
+        return {
+          pregunta: ['Un bote rema a ', pv(ms(u)), ' respecto al agua en un río que corre a ', pv(ms(c)), '. Sube ', pL(`${L} m`), ' río arriba y vuelve. ¿Cuánto dura todo el viaje?'],
+          datos: [DM.orilla, DM.tramo, DM.rio],
+          dibujo: rio({ sentido: 'arriba', u: ms(u), c: ms(c), cota: { de: 0.1, a: 0.9, texto: `L = ${L} m`, color: 'f' } }),
+          opciones: cuatro(t, [
+            { id: 'sin-marco', valor: 2 * L / u, error: 'REL-SIN-MARCO', siFuera: 'Eso ignora la corriente: lo que gana a favor no compensa lo que pierde.' },
+            { id: 'ida', valor: L / (u - c), error: 'REL-IDA', siFuera: 'Bien la subida. Falta sumar el tiempo de la vuelta, río abajo.' },
+            { id: 'abajo', valor: 2 * L / (u + c), error: 'REL-SENTIDO', siFuera: 'Río abajo se suma, pero río arriba la corriente resta.' },
+            { id: 'vuelta', valor: L / (u + c), error: 'REL-IDA', siFuera: 'Bien la bajada. Falta sumar el tiempo de la subida, contra la corriente.' },
+          ], seg),
+          solucion: { texto: `Sube a ${u - c} m/s y baja a ${u + c} m/s.`, ecuacion: [frac(pL(L), pv(u - c)), ' + ', frac(pL(L), pv(u + c)), ' = ', pt(seg(t))] },
+        };
+      },
+    },
+  };
+
+  // Un color fijo por magnitud en las dos unidades del movimiento rectilíneo (cabecera; propuesta §6). L, el largo de
+  // una combi o de una columna, es una longitud sobre la recta: violeta, como x y Δx.
+  const COLORES = { velocidad: 'o', tiempo: 'i', posición: 'f', desplazamiento: 'f', separación: 'f', largo: 'f', aceleración: 'h' };
+
+  // Laboratorio: el encuentro con todo libre (la separación, las dos rapideces y el sentido del mototaxi). Se queda el id
+  // `encuentro-libre` (el avance de los alumnos lo guarda) y sus controles d, va y vb; ahora con la combi y el mototaxi.
+  const D_MAX = 240;
+  const libre = val => {
+    const vr = val.va - val.vb, te = vr > 0 ? val.d / vr : Infinity, tt = Math.max(0, Math.min(val.t, te));
+    return avenida(Object.assign(regla(0, D_MAX), { x0: 0, v: val.va, t: tt, segundos: 0, rotulos: false, lugares: PARADERO,
+      segundo: { tipo: 'mototaxi', x0: val.d, v: val.vb }, posiciones: Number.isFinite(te) && val.t >= te ? [{ en: val.va * te, texto: 'encuentro', color: 'f' }] : [] }));
+  };
+  const escLibre = () => COMBI().escala(Object.assign({ vista: 'avenida' }, regla(0, D_MAX)));
 
   return {
     unidad: 'fisica.movimiento-rectilineo',
-    version: '0.3.0',
+    version: '0.4.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/pista.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-sonido.js'],
+    calidad: 2,
+    requiere: ['/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-sonido.js', '/nucleo/kit/piezas/fis-xt.js', '/nucleo/kit/piezas/fis-pista.js',
+      '/nucleo/kit/piezas/fis-rio.js', '/nucleo/kit/piezas/fis-ventana.js'],
     colores: COLORES,
     // En una recta, las magnitudes con dirección son números con signo (decisiones, 18 nov): la unidad no escribe «⃗».
     notacion: { vectores: false, motivo: 'En una recta, v, a y Δx son números con signo sobre el eje: el signo hace de flecha. La flecha se dibuja sobre la combi y el eje lleva su «+».' },
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «desplazamiento» y
     // «distancia recorrida» se estrenan en Vectores; aquí el lector las marca igual, con «Viene de Vectores».
-    // «aceleración», «caída libre» y «gravedad» se fueron con MRUV y caída libre.
+    // «aceleración», «caída libre» y «gravedad» se fueron con MRUV y caída libre. Ningún `simple` ni ejemplo afirma lo
+    // que afirma un distractor de la idea que lo estrena.
     glosario: [
       { termino: 'posición', simbolo: 'x', medida: 'm', def: 'Dónde está el móvil sobre la recta, contado desde el cero, con su signo.',
         simple: 'En qué marca de la regla está, contando desde el cero.',
@@ -729,39 +1930,69 @@
         simple: 'Ir en línea recta sin acelerar ni frenar.',
         ejemplos: ['Una combi que va siempre a 15 m/s por una avenida recta.', 'Un ciclista que hace 5 m en cada segundo, sin parar.', 'No es MRU: una combi que frena al llegar al paradero.'],
         ver: ['velocidad'] },
-      { termino: 'pendiente', def: 'Cuánto sube una recta por cada paso hacia la derecha. En la gráfica v–t es la aceleración.',
-        ver: ['aceleración'] },
-      { termino: 'instante', simbolo: 't', medida: 's', def: 'Un momento preciso del tiempo, como «a los 3 s».' },
-      { termino: 'velocidad relativa', def: 'Cómo se mueve un móvil visto desde el otro: la diferencia de sus velocidades.',
-        formas: ['velocidad relativa', 'velocidades relativas'], ver: ['velocidad'] },
+      { termino: 'gráfica x–t', def: 'La gráfica de la posición x, hacia arriba, contra el tiempo t, hacia la derecha: un punto por cada instante.',
+        simple: 'Un dibujo de dónde estaba en cada segundo, con el tiempo a lo ancho.',
+        ejemplos: ['Una recta que sube: se aleja del cero hacia el lado +.', 'Una recta horizontal: está quieto.', 'Una recta que baja: va hacia el lado −.'],
+        formas: ['gráfica x–t', 'gráficas x–t'], ver: ['pendiente', 'posición'] },
+      { termino: 'pendiente', def: 'Cuánto sube una recta por cada paso hacia la derecha. En la gráfica x–t, es la velocidad.',
+        simple: 'Cuánto sube una recta por cada paso hacia la derecha.',
+        ejemplos: ['Una recta que sube 10 m por cada segundo tiene pendiente 10 m/s.', 'Una recta que baja tiene pendiente negativa.', 'Una recta horizontal tiene pendiente 0.'],
+        formas: ['pendiente', 'pendientes'], ver: ['gráfica x–t'] },
+      { termino: 'velocidad media', def: 'El desplazamiento dividido entre el tiempo que tomó: v_m = Δx/Δt, con su signo.',
+        simple: 'Cuánto te alejaste de donde empezaste, repartido en cada segundo.',
+        ejemplos: ['Avanzar 100 m en 20 s: 5 m/s.', 'Retroceder 60 m en 15 s: −4 m/s.', 'Ir y volver al mismo sitio: velocidad media 0.'],
+        formas: ['velocidad media', 'velocidades medias'], ver: ['rapidez media', 'velocidad'] },
+      { termino: 'rapidez media', def: 'La distancia recorrida, todo el camino, dividida entre el tiempo que tomó. Nunca es negativa.',
+        simple: 'Todo el camino que hiciste, repartido en cada segundo.',
+        ejemplos: ['Correr 100 m en 20 s: 5 m/s.', 'Una combi que hace 30 km en media hora: 60 km/h.', 'Ir 60 m y volver 60 m en 30 s: 4 m/s.'],
+        formas: ['rapidez media', 'rapideces medias'], ver: ['velocidad media', 'rapidez'] },
+      { termino: 'encuentro', def: 'Cuando dos móviles están en la misma posición en el mismo instante.',
+        simple: 'Cuando los dos están en el mismo lugar a la vez.',
+        ejemplos: ['Una combi y un mototaxi que van de frente se encuentran al cruzarse.', 'En la gráfica x–t, el encuentro es donde se cortan las rectas.', 'Pasar por el mismo sitio a distinta hora no es encontrarse.'],
+        formas: ['encuentro', 'encuentros'], ver: ['alcance'] },
+      { termino: 'alcance', def: 'El encuentro de dos móviles que van hacia el mismo lado: el de atrás llega al de adelante.',
+        simple: 'Cuando el que viene detrás llega al de adelante.',
+        ejemplos: ['La combi a 10 m/s alcanza al mototaxi que va a 6 m/s.', 'Un atleta que llega al que corre delante de él.', 'Si el de atrás va más lento, la separación crece.'],
+        formas: ['alcance', 'alcances'], ver: ['encuentro'] },
+      { termino: 'instante', simbolo: 't', medida: 's', def: 'Un momento preciso del tiempo, como «a los 3 s».',
+        simple: 'Un momento exacto: lo que marca el reloj.',
+        ejemplos: ['A los 15 s: el instante del cruce.', 't = 0: el instante en que empezamos a contar.', 'Un intervalo, en cambio, va de un instante a otro.'],
+        formas: ['instante', 'instantes'] },
+      { termino: 'velocidad relativa', def: 'La velocidad de un móvil vista desde otro: la diferencia de sus velocidades, con signo.',
+        simple: 'Qué tan rápido ves moverse algo desde donde tú estás.',
+        ejemplos: ['Desde tu combi a 15 m/s, los postes pasan hacia atrás a 15 m/s.', 'Dos combis de frente se ven acercarse con la suma de sus rapideces.', 'Desde un bote, la orilla pasa hacia atrás.'],
+        formas: ['velocidad relativa', 'velocidades relativas'], ver: ['sistema de referencia'] },
+      { termino: 'sistema de referencia', def: 'Lo que se toma como quieto para medir posiciones y velocidades.',
+        simple: 'Desde dónde miras: lo que tomas como quieto.',
+        ejemplos: ['La carretera, para quien espera en el paradero.', 'Tu asiento, si vas dentro de la combi.', 'La orilla, para medir la velocidad de un bote.'],
+        formas: ['sistema de referencia', 'sistemas de referencia'], ver: ['velocidad relativa'] },
     ],
     // Laboratorio: juego libre, sin preguntas. La pista con acelerador, «Ida y vuelta en v–t» y «La recta v–t» se fueron
-    // con MRUV y caída libre (son de la aceleración y de la gráfica v–t).
+    // con MRUV y caída libre (son de la aceleración y de la gráfica v–t). Las ideas sin mesa propia aportan su juego.
     laboratorio: [
       {
-        // Encuentro libre: además de las dos velocidades, la brecha inicial; las tres se arrastran sobre la pista.
-        id: 'encuentro-libre', titulo: 'Encuentro con brecha libre', pieza: 'pista',
-        consigna: 'Arrastra la salida de B (sobre la regla) y la marca de 1 s de cada carrito. Busca un encuentro a los 4 s.',
+        id: 'encuentro-libre', titulo: 'Encuentro con todo libre', pieza: 'fis-combi',
+        consigna: 'Elige dónde sale el mototaxi, qué tan rápido va cada uno y hacia dónde. Busca un encuentro a los 10 s.',
         controles: [
-          { id: 'd', etiqueta: 'B sale de', min: 12, max: 26, paso: 2, inicio: 24, unidad: 'm', decimales: 0 },
-          { id: 'va', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
-          { id: 'vb', etiqueta: 'v de B', min: -4, max: 4, paso: 1, inicio: -1, unidad: 'm/s', decimales: 0 },
+          { id: 'd', etiqueta: 'El mototaxi sale de', color: 'c-f', min: 60, max: D_MAX, paso: 20, inicio: 200, unidad: 'm', decimales: 0 },
+          { id: 'va', etiqueta: 'Velocidad de la combi', color: 'c-o', min: 2, max: 12, paso: 1, inicio: 6, unidad: 'm/s', decimales: 0 },
+          { id: 'vb', etiqueta: 'Velocidad del mototaxi', color: 'c-o', min: -12, max: 12, paso: 2, inicio: -4, unidad: 'm/s', decimales: 0 },
+          { id: 't', etiqueta: 'Reloj, t', color: 'c-i', min: 0, max: 60, paso: 0.05, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 5, modo: 'repite' } },
         ],
-        dibujo: val => pistaEnc(val.va, val.vb, true, val.d),
+        dibujo: libre,
         lectura: val => {
           const vr = val.va - val.vb;
-          return vr > 0 ? [`Brecha ${f(val.d)}\u00a0m, cierra ${f(vr)}\u00a0m/s: ${f(val.d / vr, 2)}\u00a0s, `, x, ` = ${f(val.va * val.d / vr, 2)}\u00a0m`] : [`Brecha ${f(val.d)}\u00a0m: no se acercan`];
+          return vr > 0 ? ['Se acercan ', pv(`${fm(vr)} m`), ' cada segundo: encuentro a los ', pt(`${f(val.d / vr, 2)} s`)] : ['La separación no se achica: no se encuentran'];
         },
+        invitaciones: [
+          { texto: 'Haz que se encuentren justo a los 10 s.', logrado: val => val.va - val.vb > 0 && Math.abs(val.d / (val.va - val.vb) - 10) < 1e-9 },
+          { texto: 'Haz que la combi alcance al mototaxi, que va hacia el mismo lado.', logrado: val => val.vb > 0 && val.va > val.vb },
+          { texto: 'Haz que nunca se encuentren.', logrado: val => val.va <= val.vb },
+        ],
         arrastres: [
-          { id: 'salida-b', etiqueta: 'salida de B', color: 'c-i',
-            donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, val.d), y: PISTA().geometria(pistaEnc(val.va, val.vb, true, val.d).datos).regla }),
-            mover: (pt, val) => ({ d: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, m), 0, LARGO_E)(pt.x) }) },
-          { id: 'marca-a', etiqueta: 'marca de 1 s de A', color: 'c-o',
-            donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, val.va), y: PISTA().geometria(pistaEnc(val.va, val.vb, true, val.d).datos).piso(0) + 6 }),
-            mover: (pt, val) => ({ va: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, m), 0, LARGO_E)(pt.x) }) },
-          { id: 'marca-b', etiqueta: 'marca de 1 s de B',
-            donde: val => ({ x: PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, val.d + val.vb), y: PISTA().geometria(pistaEnc(val.va, val.vb, true, val.d).datos).piso(1) + 6 }),
-            mover: (pt, val) => ({ vb: inversa(m => PISTA().escala(pistaEnc(val.va, val.vb, true, val.d).datos, m), 0, LARGO_E)(pt.x) - val.d }) },
+          { id: 'salida-moto', etiqueta: 'salida del mototaxi', color: 'c-f',
+            donde: val => ({ x: escLibre()(val.d), y: COMBI().constantes.AV.EJE }),
+            mover: p => ({ d: inversa(escLibre(), 0, D_MAX)(p.x) }) },
         ],
       },
     ],
@@ -769,6 +2000,6 @@
     laboratorioIdeas: {
       'encuentro-libre': ['encuentro'],
     },
-    ideas: [mru, distancia, encuentro],
+    ideas: [mru, graficaXt, medias, encuentro, relativa],
   };
 });
