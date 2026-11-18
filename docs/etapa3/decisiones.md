@@ -77,5 +77,15 @@ Predice con `orden: 'fijo'` cuando sus letras se ven en la figura; zonas `data-t
   como dato; la tabla completa de nombres de parentesco en Datos; el contrafáctico se lee como la teoría («si p, q») en
   toda la unidad y su práctica; puntajes y edades pasan a Ordenamiento de información.
 
+## Quinta ronda (mesa, 18 nov, mañana)
+- **Productos notables:** visto bueno de las ideas 2 a 5 y de su práctica; la pregunta del Resumen de la idea 3 pasa a
+  «¿Qué piezas forman el cubo de una suma?»; las piezas ab² en tinta (violeta solo para 2ab y 3a²b); la figura del
+  juego se reajusta de escala al mover a y b; el índice de la raíz cúbica en turquesa; los distractores que juntan dos
+  errores se quedan como hipótesis.
+- **Segmentos y ángulos:** las marcas de igualdad van siempre sobre una llave que une las puntas de su tramo.
+- **Razonamiento deductivo:** en la tabla de 8 casos, r va en tinta (la paleta no tiene tercer color).
+- **Molde (todas las unidades):** el dibujo de un ejemplo muestra lo que cada dato marca por sí solo, nunca lo que sale
+  de juntarlos (`docs/molde-unidad.md` §3).
+
 ## Orden de trabajo
 Fase 2 del método: la idea 1 de cada unidad completa, para el visto bueno de Gerson en la mesa, antes del resto.

@@ -75,6 +75,12 @@ El alumno puede volver al momento anterior con «‹ Atrás»; adelante solo con
   «Respuesta: **C**»), para que se distinga del texto (Gerson, mesa de revisión, 17 nov).
 - **Ninguna figura de Predice ni de un ejemplo delata la respuesta por su color**: lo que se pide va con «?» o en tinta
   hasta comprobar, nunca en violeta antes (trigonometría, idea 1, 17 nov).
+- **Qué muestra el dibujo de un ejemplo** (Gerson, mesa, 18 nov): lo que cada dato marca por sí solo (la primera línea
+  del resuelto: la × de una pista, el aro de una premisa, el tramo dado), nunca lo que sale de juntarlos (la ✓ deducida,
+  el reparto que queda, la medida pedida). Si la pregunta es justo dónde va la marca, el dibujo va sin ella. Una
+  figura vacía mientras el resuelto habla de marcas confunde (lector en frío, dos rondas de Razonamiento deductivo).
+- **Una marca de igualdad no se puede leer como otro tramo**: en geometría va sobre una llave que une las dos puntas de
+  su tramo (Segmentos y ángulos, 18 nov), y un rótulo nunca toca una línea, punteada incluida.
 - Cuentas comprobadas con un **script aparte que no usa el código de la unidad**; el comentario de la constante dice
   qué cuentas se revisaron.
 
