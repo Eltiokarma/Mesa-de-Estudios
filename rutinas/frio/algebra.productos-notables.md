@@ -424,3 +424,56 @@ Le sigue de cerca la 10, por el «A y x · y» que confunde.
 - Una vez confunde, por la redacción «A y x · y» (10).
 
 **Cuentas:** revisé todas y todas las respuestas son correctas. No encontré números imposibles. Los problemas son de explicación y de forma: dibujos que se mencionan y no están, el «3» sin color en 05, resaltado incompleto en 07, cortes de línea en medio de una igualdad, alternativas sin explicar y espacios en blanco grandes en 05 y 12.
+
+---
+
+# Ronda 2 (18 nov, tarde)
+
+Tres lectores nuevos, sobre la unidad ya corregida (commit 76898aba), con el mismo método y capturas `--entera --lector`
+(primer estado de cada momento: solo la tarjeta 1 de Lee y el paso 1 de Mira y de Así se resuelve). Resumen de la
+sesión; los informes completos quedaron en la carpeta de la sesión.
+
+## Momentos: veredicto por idea
+
+En las cinco ideas la frase de aprendizaje del lector coincide con el `aprendizaje`, resolvió «Ahora tú» y un ejercicio
+inventado. Pasan con estas observaciones (las **negritas** se corrigen):
+
+- **cuadrado-suma.** Predice es una resta, (7 − 2)², en una idea que se llama «El cuadrado de una suma»: dudó al
+  principio (es el caso nuevo que se predice; la duda es razonable, no un error). «La esquina se devuelve» lo entendió
+  solo con el dibujo.
+- **suma-por-diferencia.**
+  - **La regla trae (x + p)(x + q) = x² + (p + q)x + pq de la nada**, con letras nuevas, y «si q = −p, el término del
+    medio se anula» no se entiende. En el dibujo de la regla la tira de 1 casi no se ve.
+  - **La pista de «Ahora tú» («¿qué términos se repiten en los dos factores?») no sirve para 64 · 56**: el 60 está
+    escondido; en Predice sí se daba 31 = 30 + 1.
+  - Juega: la misión habla de 10 dm y el control arranca en 8 (pensó que algo estaba mal). Predice: el 31 × 29 parece
+    un cuadrado, sin esquina a la vista.
+- **cubo-binomio.**
+  - **Las piezas ab² (en tinta, por decisión de Gerson) no se encuentran en el dibujo** ni en la cuenta; en el dibujo
+    de la regla las piezas del medio son blancas y no moradas como en Juega.
+  - **La regla trae ocho fórmulas de golpe**; a³ − b³ y (a² − ab + b²) no se presentaron antes.
+  - Así se resuelve pide «las seis piezas del medio» y solo dos llevan «?». La misión «a 3 cm de una esquina» no dice
+    si 3 es a o b.
+- **radicales-dobles.** La regla da «x > y, los dos positivos» sin el porqué; √40 = 2√10 en una sola línea, sin
+  ejemplo; Nox dice «lo de afuera y lo de adentro» (¿de qué raíz?). En Juega solo un rectángulo lleva √14.
+- **racionalizar.** **1/∛a = ∛a²/a aparece en la regla sin ejemplo ni porqué.** «Conjugado» aparece en Mira por
+  primera vez (está en el glosario, subrayado).
+
+## Ejemplos (n.º 3, 8 y 14 de cada idea)
+
+Las cuentas están todas bien y los niveles suben. Mejor: 01, 04, 13. Peor: 07, 12, 05.
+
+- **05** «Un rectángulo de piezas»: el resuelto dice **«(q va sin color)»**, una nota para quien escribe; «las dos
+  piezas del medio» no coincide con el dibujo (las moradas están en esquinas opuestas); el 3 va en tinta y el 5 en
+  verde sin explicación.
+- **07** «¿Bastan las esquinas?»: **el título y el dibujo de 8 piezas regalan el «no»**; las piezas se tapan; el
+  rótulo «1 cm» queda junto a una losa morada y no junto al cubito; **la respuesta «18» va sin unidad**; solo
+  3·2²·1 lleva color.
+- **12** «El perímetro de la mesa»: **el resuelto no dice que el área es x + y + 2√(xy)** ni de dónde sale x + y = 12;
+  la explicación de la B («reparte la raíz») es imprecisa; las opciones van sin unidad.
+- **15**: **«con el conjugado» no muestra la multiplicación**; la C repite la frase de la 06 («cree que todo se anula»).
+- **03, 09 y 15 tienen el mismo título**, «Un número y su inverso».
+- 09: el segundo dato da el atajo completo, (a + b)³ − 3ab(a + b). 11: «√(11 + 2√24) = √8 + √3» se parte en dos
+  líneas. 10: no dice cómo se hallan 5 y 4.
+- En toda la unidad, el violeta sirve a la vez para la pieza clave y para las letras A–E de las alternativas (es la
+  regla de la app: negrita, no color; revisar si las letras salen en violeta).
