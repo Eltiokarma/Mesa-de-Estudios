@@ -1,17 +1,21 @@
-// Pruebas propias de «Estructura atómica» (además del validador común de contenido/teoria/teoria.test.js). Fase 2 del
-// método (18 nov): la idea 1 `nucleo-identidad` está rehecha contra el contrato; las otras cinco se rehacen en la fase 3,
-// así que la unidad todavía no declara calidad: 2 y estas pruebas miran la idea 1:
-//   - las seis ideas en el orden aprobado (docs/etapa4/propuesta-quimica.md §3), con sus id;
-//   - la idea 1 cumple sola el contrato de calidad 2 y estrena sus palabras (tres con `simple`);
-//   - un color fijo por magnitud (def.colores): Z naranja, N turquesa, electrones violeta, carga carmín, A en tinta; sin
-//     verde en las figuras de la idea 1;
-//   - el control de la carga salió del juego y la misión la cumple solo el carbono-14;
-//   - nada antes de Predice delata su respuesta (título, pregunta del Resumen, Lee, glosario de la idea, juego);
+// Pruebas propias de «Estructura atómica» (además del validador común de contenido/teoria/teoria.test.js). Fase 3 del
+// método (18 nov): las seis ideas están rehechas contra el contrato y la unidad declara calidad: 2.
+//   - las seis ideas en el orden aprobado (docs/etapa4/propuesta-quimica.md §3), con sus id y los id de las mesas;
+//   - la unidad entera cumple el contrato de calidad 2 (validador con los temas del catálogo) y cada idea estrena sus
+//     palabras con `simple`;
+//   - un color fijo por magnitud (def.colores): Z naranja, N turquesa, electrones violeta, carga carmín, orbitales
+//     turquesa; A y los números cuánticos en tinta; sin verde ni paleta de elementos en ninguna figura;
+//   - la idea 1: el control de la carga salió del juego y la misión la cumple solo el carbono-14;
+//   - las ideas 2 a 6: la misión no está cumplida al abrir; el juego de la idea 4 llega a Z = 36 con Cr y Cu;
+//   - nada antes de Predice delata su respuesta, en ninguna idea;
 //   - N son los neutrones: el nitrógeno nunca sale como «N» suelto (decisiones del 18 nov, pregunta 7);
-//   - «Ahora tú» trae datos y cuatro opciones distintas en 400 semillas, y su respuesta cuadra con una cuenta hecha aquí
-//     a partir del enunciado; «Así se resuelve» pide otra cosa;
-//   - los 15 ejemplos: 5 por nivel, datos en todos, respuesta con color, figura sin la respuesta, alternativas con la
-//     letra que dice el resuelto (cuentas rehechas aparte en el scratchpad: e4-qui/cuentas-idea1.py).
+//   - «Ahora tú» trae datos y cuatro opciones distintas en 400 semillas (la idea 1, además, con su respuesta rehecha
+//     aquí); las cuentas de las ideas 2 a 6 se rehicieron aparte, contra una tabla de configuraciones escrita a mano
+//     (scratchpad, f3/cuentas.py: 2227 comprobaciones, 0 diferencias);
+//   - los 15 ejemplos de cada idea: 5 por nivel, datos en todos, figura sin la respuesta, alternativas con la letra que
+//     dice el resuelto (cuentas de la idea 1 en e4-qui/cuentas-idea1.py; de las otras, en f3/cuentas.py);
+//   - la convención de mₗ y mₛ: la misma en «Lee», en la regla, en los datos y en la tarjeta de nucleo/convencion.js;
+//   - la comparación de radios de los isoelectrónicos salió de la unidad (va a Tabla periódica).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -32,7 +36,31 @@ const fichas = x => (x === null || x === undefined || typeof x !== 'object' ? []
 test('las seis ideas en el orden aprobado, con los id que guardan el avance', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ['nucleo-identidad', 'modelos-atomicos', 'numeros-cuanticos', 'configuracion-electronica', 'configuracion-iones', 'desapareados-isoelectronicos']);
   assert.deepEqual(def.ideas.map(i => i.titulo), ['Partículas, isótopos e iones', 'Modelos atómicos', 'Niveles, subniveles y orbitales', 'Configuración electrónica', 'Configuración de los iones', 'Hund y el último electrón']);
-  assert.deepEqual(def.laboratorioIdeas['arma-ion'], ['nucleo-identidad']);
+  assert.deepEqual(def.laboratorioIdeas, { 'nube-orbital': ['numeros-cuanticos'], 'arma-ion': ['nucleo-identidad'], 'cajas-ion': ['configuracion-iones', 'desapareados-isoelectronicos'] });
+  assert.equal(def.calidad, 2);
+});
+
+test('la unidad entera cumple el contrato de calidad 2, con los temas del catálogo', () => {
+  const cat = require('../../../catalogo/cursos/quimica.json').unidades.find(u => u.id === def.unidad);
+  const p = Teoria.problemas(def, { temas: cat.temas, semillas: 80 });
+  assert.deepEqual(p, [], p.join('\n'));
+  const porIdea = Glosario.porIdea(def);
+  assert.deepEqual(porIdea.map(l => l.filter(g => g.simple).map(g => g.termino)), [
+    ['número atómico', 'número de masa', 'isótopo'],
+    ['modelo atómico', 'partícula alfa', 'nivel de energía', 'orbital'],
+    ['subnivel', 'números cuánticos', 'espín'],
+    ['configuración electrónica', 'capa de valencia'],
+    ['catión', 'anión'],
+    ['regla de Hund', 'electrón desapareado', 'paramagnético', 'diamagnético'],
+  ]);
+  // Primera pantalla con un objeto de prueba (data-prueba): hueso, retablo, hotel, hotel con precios, salero, combi.
+  const OBJ = ['hueso', 'retablo', 'hotel', 'hotel', 'salero', 'combi'];
+  def.ideas.forEach((i, k) => {
+    const t = i.lee.tarjetas[0], svg = Kit.piezas[t.pieza].dibujar(t.dibujo.datos, t.dibujo.estado || {});
+    assert.match(svg, new RegExp(`data-objeto="${OBJ[k]}" data-prueba="si"`), i.id);
+    const j = Kit.piezas[i.juega.pieza || i.pieza].dibujar(i.juega.dibujo(Teoria.inicio(i.juega)).datos);
+    assert.match(j, new RegExp(`data-objeto="${OBJ[k]}"`), `${i.id}: el juego abre con el objeto`);
+  });
 });
 
 test('idea 1: cumple sola el contrato de calidad 2 y estrena sus palabras', () => {
@@ -75,7 +103,10 @@ function figuras(i) {
   con('predice', i.predice.dibujo, i.predice.pieza); con('revelar', i.predice.revelar, i.predice.pieza);
   i.mira.pasos.forEach((p, k) => con(`mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }, i.mira.pieza));
   i.ejemplos.forEach((e, k) => con(`ejemplo ${k + 1}`, e.figura));
+  if (i.regla.dibujo) con('regla', i.regla.dibujo, i.regla.dibujo.pieza || i.mira.pieza);
   for (let s = 0; s < 60; s++) {
+    const a = i.ahoraTu.generar(s);
+    if (a.dibujo) con(`ahora tú ${s}`, a.dibujo, i.ahoraTu.pieza);
     const r = i.resuelve.generar(s);
     con(`resuelve ${s}`, r.dibujo, i.resuelve.pieza);
     r.pasos.forEach((p, k) => con(`resuelve ${s} paso ${k + 1}`, p.dibujo, i.resuelve.pieza));
@@ -83,26 +114,28 @@ function figuras(i) {
   return out;
 }
 
-test('colores: un color por magnitud en la idea 1 (Z naranja, N turquesa, electrones violeta, carga carmín, A en tinta)', () => {
-  assert.deepEqual(def.colores, { protones: 'o', neutrones: 'i', electrones: 'f', carga: 'h' });
+test('colores: un color por magnitud en toda la unidad (Z naranja, N turquesa, electrones violeta, carga carmín, A en tinta)', () => {
+  assert.deepEqual(def.colores, { protones: 'o', neutrones: 'i', electrones: 'f', carga: 'h', orbitales: 'i' });
   let n = 0;
-  for (const { donde, x } of lecturas(I1)) for (const f of fichas(x)) {
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) for (const f of fichas(x)) {
     if (f.color && f.llave) continue;
     n++;
-    assert.ok(f.m in def.colores, `${donde}: «${f.t}» sin magnitud (m = ${f.m})`);
+    assert.ok(f.m in def.colores, `${i.id} ${donde}: «${f.t}» sin magnitud (m = ${f.m})`);
     assert.equal(f.v, `c-${def.colores[f.m]}`, `${donde}: «${f.t}» (${f.m}) en ${f.v}`);
     if (f.t === 'Z') assert.equal(f.v, 'c-o', donde);
     if (f.t === 'N') assert.equal(f.v, 'c-i', donde);
     if (f.t === 'A') assert.fail(`${donde}: A va en tinta`);
   }
-  assert.ok(n > 300, `${n} fichas`);
+  assert.ok(n > 1500, `${n} fichas`);
+  // Orbitales y neutrones comparten el turquesa: nunca en la misma idea (la de los neutrones es la 1).
+  for (const i of def.ideas) { const ms = new Set(lecturas(i).flatMap(({ x }) => fichas(x).map(f => f.m))); assert.ok(!(ms.has('orbitales') && ms.has('neutrones')), i.id); }
   const ctl = id => I1.juega.controles.find(c => c.id === id).color;
   assert.equal(ctl('z'), 'c-o'); assert.equal(ctl('n'), 'c-i');
   const mesa = def.laboratorio.find(m => m.id === 'arma-ion');
   assert.deepEqual(mesa.controles.map(c => c.color), ['c-o', 'c-i', 'c-h']);
-  for (const fg of figuras(I1)) {
+  for (const i of def.ideas) for (const fg of figuras(i)) {
     const s = Kit.piezas[fg.pieza].dibujar(fg.datos, fg.estado);
-    assert.ok(!/var\(--c-d\)/.test(s), `${fg.donde}: verde`);
+    assert.ok(!/var\(--c-d\)/.test(s), `${i.id} ${fg.donde}: verde`);
     assert.ok(!/var\(--el-/.test(s), `${fg.donde}: paleta de elementos en un dibujo de variables`);
   }
 });
@@ -137,11 +170,11 @@ test('nada antes de Predice delata su respuesta', () => {
 
 test('N son los neutrones: el nitrógeno nunca sale como «N» suelto', () => {
   // Un «N» con una carga pegada (N³⁻) sin número de masa delante es el nitrógeno escrito como «N» suelto.
-  for (const { donde, x } of lecturas(I1)) {
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) {
     const t = plano(x);
-    assert.ok(!/(^|[^⁰¹²³⁴⁵⁶⁷⁸⁹\p{L}])N[⁺⁻]/u.test(t), `${donde}: «N» con carga: ${t}`);
+    assert.ok(!/(^|[^⁰¹²³⁴⁵⁶⁷⁸⁹\p{L}])N[⁺⁻]/u.test(t), `${i.id} ${donde}: «N» con carga: ${t}`);
   }
-  for (const fg of figuras(I1)) {
+  for (const i of def.ideas) for (const fg of figuras(i)) {
     const s = Kit.piezas[fg.pieza].dibujar(fg.datos, fg.estado);
     for (const m of s.matchAll(/<text[^>]*>(.*?)<\/text>/g)) {
       const t = m[1].replace(/<[^>]+>/g, '');
@@ -240,10 +273,139 @@ const negritas = x => (x === null || x === undefined || typeof x !== 'object' ? 
   : x.negrita ? [x] : Object.values(x).flatMap(negritas));
 test('ninguna letra de alternativa (A–E) lleva color de variable; todas van con { negrita }', () => {
   let n = 0;
-  for (const { donde, x } of lecturas(I1)) {
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) {
     for (const f of fichas(x)) assert.ok(!/^[A-E]\u2060?$/.test(f.t), `${donde}: la letra «${f.t}» en ${f.v}`);
     for (const b of negritas(x)) { n++; assert.match(plano(b.negrita), /^[A-E]$/, donde); assert.equal(fichas(b.negrita).length, 0, donde); }
   }
-  assert.ok(n >= 20, `${n} letras en negrita`);
-  for (const e of I1.ejemplos.filter(x => x.alternativas)) assert.equal(negritas(e.respuesta).length, 1, e.titulo);
+  assert.ok(n >= 100, `${n} letras en negrita`);
+  for (const i of def.ideas) for (const e of i.ejemplos.filter(x => x.alternativas)) assert.equal(negritas(e.respuesta).length, 1, `${i.id}: ${e.titulo}`);
+});
+
+// ---------- Ideas 2 a 6 (fase 3) ----------
+const I = id => def.ideas.find(i => i.id === id);
+test('ideas 2 a 6: la misión no está cumplida al abrir y la cumplen justo los casos que dice', () => {
+  const cumplen = id => Teoria.grilla(I(id).juega.controles).filter(v => I(id).juega.mision.logrado(v));
+  for (const i of def.ideas) assert.equal(i.juega.mision.logrado(Teoria.inicio(i.juega)), false, i.id);
+  assert.deepEqual(cumplen('modelos-atomicos'), [{ k: 'thomson', b: 0 }]);
+  assert.deepEqual(cumplen('numeros-cuanticos').map(v => v.n), [3, 3, 3]);
+  assert.deepEqual(cumplen('configuracion-electronica'), [{ z: 21 }]);
+  assert.deepEqual(cumplen('configuracion-iones'), [{ z: 11, q: 1 }]);
+  assert.deepEqual(cumplen('desapareados-isoelectronicos').map(v => `${v.c1}${v.c2}${v.c3}`).sort(), ['112', '121', '211']);
+  // Idea 4: el juego llega al kriptón, con el cromo y el cobre como excepción (decisiones del 18 nov).
+  const c = I('configuracion-electronica').juega.controles[0];
+  assert.deepEqual([c.id, c.min, c.max], ['z', 1, 36]);
+  const lect = z => plano(I('configuracion-electronica').juega.lectura({ z }));
+  assert.match(lect(24), /excepción.*4s¹ 3d⁵/); assert.match(lect(29), /excepción.*4s¹ 3d¹⁰/);
+  assert.match(lect(19), /4s/); assert.match(lect(21), /3d \(S\/ 5\)/);
+  // Idea 2: con Thomson la alfa casi no se desvía; con Dalton, choca y se desvía.
+  assert.match(plano(I('modelos-atomicos').juega.lectura({ k: 'thomson', b: 0.5 })), /casi nada/);
+  assert.match(plano(I('modelos-atomicos').juega.lectura({ k: 'dalton', b: 0.5 })), /se desvía 120°/);
+  // Idea 5: Na⁺ con la lectura del neón.
+  assert.match(plano(I('configuracion-iones').juega.lectura({ z: 11, q: 1 })), /10 e⁻ → 1s² 2s² 2p⁶, como el neón/);
+});
+
+// Lo que delataría cada predicción (y qué se ve antes de ella).
+const DELATA_IDEA = {
+  'modelos-atomicos': /núcleo|diminut|casi vac|concentrad/i,
+  'numeros-cuanticos': /\b32\b|treinta y dos/,
+  'configuracion-electronica': /5s|S\/ 6|electrón 37/,
+  'configuracion-iones': /salen (primero )?(los )?(del|dos del) 4s|pierde.*4s|4s antes|\[Ar\] 3d⁶|mayor n/,
+  'desapareados-isoelectronicos': /\b4 (solos|desapareados|electrones solos)|cuatro (solos|desapareados)/,
+};
+test('ideas 2 a 6: nada antes de Predice delata su respuesta', () => {
+  const porIdea = Glosario.porIdea(def);
+  def.ideas.forEach((i, k) => {
+    const re = DELATA_IDEA[i.id];
+    if (!re) return;
+    const antes = [i.titulo, i.pregunta, i.actividad, i.juega.consigna, i.juega.mision.texto, i.juega.mision.bien,
+      ...i.lee.tarjetas.map(t => `${t.titulo} ${plano(t.texto)}`), ...i.juega.leyenda.map(x => plano(x.t)), ...porIdea[k].map(g => g.simple || ''),
+      ...i.juega.controles.map(c => c.etiqueta)];
+    for (const t of antes) assert.ok(!re.test(t), `${i.id}: delata «${t}»`);
+    for (const v of Teoria.grilla(i.juega.controles)) assert.ok(!re.test(plano(i.juega.lectura(v))), `${i.id}: lectura ${JSON.stringify(v)}`);
+    // La figura de Predice no muestra la respuesta: «?» en lo que se pide.
+    const fig = Kit.piezas[i.predice.pieza || i.pieza].dibujar(i.predice.dibujo.datos, i.predice.dibujo.estado || {});
+    // En la idea 4 el pasillo 5s se ve (es una de las opciones); lo que no se ve es su precio.
+    assert.ok(!(i.id === 'configuracion-electronica' ? /S\/ [67]/ : re).test(Teoria.textoSVG(fig)), `${i.id}: la figura de Predice delata`);
+  });
+});
+
+test('Ahora tú de las ideas 2 a 6: datos, cuatro opciones distintas con su error en 400 semillas, y llega a examen', () => {
+  for (const i of def.ideas.slice(1)) {
+    const preguntas = new Set();
+    for (let s = 0; s < SEMILLAS; s++) {
+      const a = i.ahoraTu.generar(s), txt = a.opciones.map(o => plano(o.texto));
+      assert.ok(Array.isArray(a.datos) && a.datos.length >= 1, `${i.id} ${s}: sin datos`);
+      assert.equal(a.opciones.length, 4, `${i.id} ${s}: ${txt}`);
+      assert.equal(new Set(txt).size, 4, `${i.id} ${s}: repetidas ${txt}`);
+      assert.equal(a.opciones.filter(o => o.correcta).length, 1);
+      for (const o of a.opciones.filter(x => !x.correcta)) assert.ok(/^(QM-|AT\d)/.test(o.error) && o.siFuera, `${i.id} ${s}: ${o.id}`);
+      // Los datos no traen la respuesta (el paso hecho).
+      const bien = plano(a.opciones.find(o => o.correcta).texto);
+      if (/\d/.test(bien) && bien.length > 3) for (const d of a.datos) assert.ok(!plano(d).includes(bien), `${i.id} ${s}: el dato «${plano(d)}» trae «${bien}»`);
+      preguntas.add(plano(a.pregunta).replace(/[\d⁰-⁹¹²³⁺⁻]+/gu, '#').replace(/ (del|de) (ion |átomo de )?[\p{L}#]+/gu, '').slice(0, 50));
+    }
+    assert.ok(preguntas.size >= 4, `${i.id}: ${preguntas.size} tipos`);
+  }
+  // Nivel examen: el orden de llenado en datos hasta Z = 54 (ideas 4 a 6).
+  const llega = id => [...Array(SEMILLAS).keys()].map(s => I(id).ahoraTu.generar(s)).filter(a => /Z = (3[7-9]|4\d|5[0-4])/.test(plano(a.pregunta)));
+  for (const id of ['configuracion-electronica', 'configuracion-iones', 'desapareados-isoelectronicos']) {
+    const casos = llega(id);
+    assert.ok(casos.length > 20, id);
+    for (const a of casos) assert.ok(a.datos.some(d => /Orden de llenado: .*5s 4d 5p/.test(plano(d))), `${id}: ${plano(a.pregunta)}`);
+  }
+  // Las excepciones de la quinta fila (Nb, Mo, Ru, Rh, Pd, Ag) no salen en ningún caso.
+  for (const i of def.ideas) for (let s = 0; s < SEMILLAS; s++) assert.ok(!/Z = (41|42|44|45|46|47)\b|\b(niobio|molibdeno|rutenio|rodio|paladio|plata)\b|Ag⁺/.test(plano(i.ahoraTu.generar(s).pregunta)), `${i.id} ${s}`);
+});
+
+test('los 15 ejemplos de las ideas 2 a 6: niveles, datos, figura sin la respuesta, color y letra', () => {
+  for (const i of def.ideas.slice(1)) {
+    const ej = i.ejemplos;
+    assert.equal(ej.length, 15, i.id);
+    for (const nv of [1, 2, 3]) assert.equal(ej.filter(e => e.nivel === nv).length, 5, `${i.id} nivel ${nv}`);
+    ej.forEach((e, k) => {
+      const d = `${i.id} ejemplo ${k + 1}`, resp = Array.isArray(e.respuesta) ? e.respuesta : [e.respuesta], r = plano(resp);
+      assert.ok(Array.isArray(e.datos) && e.datos.length >= 1, `${d}: sin datos`);
+      // Un número de electrones o de orbitales en la respuesta lleva su color.
+      if (/\d+ (electr|desapare)/.test(r)) assert.ok(fichas(resp).some(f => f.m === 'electrones'), `${d}: «${r}» sin el violeta de los electrones`);
+      if (/\d+ orbitales/.test(r)) assert.ok(fichas(resp).some(f => f.m === 'orbitales'), `${d}: «${r}» sin el turquesa de los orbitales`);
+      if (e.alternativas) {
+        assert.equal(e.alternativas.length, 5, d);
+        const L = r.replace(/⁠/g, '').slice(0, 1), alt = e.alternativas['ABCDE'.indexOf(L)], despues = r.replace(/⁠/g, '').replace(/^[A-E], /, '');
+        assert.ok(despues.includes(alt) || despues.toLowerCase().includes(alt.toLowerCase()), `${d}: la letra ${L} («${alt}») no es «${despues}»`);
+        assert.ok(e.nivel === 3, `${d}: alternativas solo en nivel examen`);
+      }
+      if (e.figura) {
+        const s = Kit.piezas[e.figura.pieza].dibujar(e.figura.datos, e.figura.estado || {});
+        const conMl = e.figura.datos.ml || (e.figura.datos.cajas && e.figura.datos.cajas.ml);
+        const textos = [...s.matchAll(/<text[^>]*>(.*?)<\/text>/g)].map(m => m[1].replace(/<[^>]+>/g, '')).filter(t => !(conMl && /^[+−]?\d$/.test(t)));
+        const enun = plano(e.enunciado) + ' ' + e.datos.map(plano).join(' ');
+        for (const num of r.match(/\d+/g) || []) if (!enun.includes(num)) for (const t of textos) assert.ok(!new RegExp(`(^|\\D)${num}(\\D|$)`).test(t), `${d}: la figura muestra ${num} («${t}»)`);
+        // Las figuras de las cajas no traen las flechas de lo que se pide: o vacías, o el átomo neutro del planteamiento.
+        assert.ok(!/kit-ultimo/.test(s), `${d}: la figura marca el último electrón`);
+      }
+    });
+  }
+});
+
+test('convención de mₗ y mₛ: la misma en Lee, la regla, los datos y la tarjeta del examen', () => {
+  const C = require('../../../nucleo/convencion.js');
+  const c = C.LISTA['ultimo-electron'];
+  assert.ok(c && /−ℓ.*\+ℓ/.test(c.examen) && /↑.*\+½/.test(c.examen) && /↓.*−½/.test(c.examen));
+  const i6 = I('desapareados-isoelectronicos');
+  const lee = i6.lee.tarjetas.find(t => t.titulo === 'Convención del examen');
+  assert.ok(lee && /−ℓ.*\+ℓ/.test(lee.texto) && /\+½/.test(lee.texto));
+  assert.match(i6.regla.condicion, /−ℓ a \+ℓ.*↑ \(\+½\).*↓ \(−½\)/);
+  // Todo «Ahora tú» que pide el último electrón trae la convención en datos.
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = i6.ahoraTu.generar(s);
+    if (/números cuánticos/.test(plano(a.pregunta))) assert.ok(a.datos.some(d => /Convención: las cajas van de mₗ = −ℓ/.test(plano(d))) && a.datos.some(d => /mₛ = \+½/.test(plano(d))), `semilla ${s}`);
+  }
+  // El oxígeno y el Fe²⁺ de «Mira», con la convención.
+  assert.match(c.examen, /\(2; 1; −1; −½\)/);
+  assert.ok(i6.mira.pasos.some(p => /\(3; 2; −2; −½\)/.test(plano(p.ecuacion || p.texto))));
+});
+
+test('la comparación de radios de los isoelectrónicos salió de la unidad (va a Tabla periódica)', () => {
+  for (const i of def.ideas) for (const { donde, x } of lecturas(i)) assert.ok(!/\bpm\b|\bradios?\b/.test(plano(x)), `${i.id} ${donde}: ${plano(x)}`);
+  assert.ok(!def.requiere.some(r => /recta\.js/.test(r)));
 });

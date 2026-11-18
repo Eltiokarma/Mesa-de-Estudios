@@ -12,6 +12,40 @@ const Teoria = require('../../teoria.js');
 const P = require('./quim-objeto.js');
 const QA = require('./quim-atomo.js');
 
+// Todas las figuras de «Estructura atómica» que usan una pieza (juego en toda su grilla, Lee, Predice, Mira, la regla,
+// los ejemplos, «Así se resuelve», «Ahora tú» y las mesas del laboratorio).
+function figurasUnidad(pieza) {
+  const def = require('../../../contenido/teoria/quimica/estructura-atomica.js');
+  for (const r of def.requiere) require(path.join(__dirname, '..', '..', '..', r));
+  const out = [], con = (donde, f, pz) => { const p = f && (f.pieza || pz); if (f && f.datos && p === pieza) out.push({ donde, datos: f.datos, estado: f.estado || {} }); };
+  for (const i of def.ideas) {
+    const d = i.id;
+    for (const v of Teoria.grilla(i.juega.controles)) con(`${d} juego ${JSON.stringify(v)}`, i.juega.dibujo(v), i.juega.pieza || i.pieza);
+    i.lee.tarjetas.forEach((t, k) => con(`${d} lee ${k + 1}`, t.dibujo, t.pieza));
+    con(`${d} predice`, i.predice.dibujo, i.predice.pieza || i.pieza); con(`${d} revelar`, i.predice.revelar, i.predice.pieza || i.pieza);
+    for (let c = 0; c <= 6; c++) con(`${d} mira corte ${c}`, { datos: i.mira.datos, estado: { corte: c } }, i.mira.pieza || i.pieza);
+    if (i.regla.dibujo) con(`${d} regla`, i.regla.dibujo, i.regla.dibujo.pieza || i.mira.pieza || i.pieza);
+    i.ejemplos.forEach((e, k) => con(`${d} ejemplo ${k + 1}`, e.figura));
+    for (let s = 0; s < 40; s++) {
+      const r = i.resuelve.generar(s), a = i.ahoraTu.generar(s);
+      con(`${d} resuelve ${s}`, r.dibujo, i.resuelve.pieza || i.pieza); r.pasos.forEach((p, k) => con(`${d} resuelve ${s} paso ${k + 1}`, p.dibujo, i.resuelve.pieza || i.pieza));
+      con(`${d} ahora tú ${s}`, a.dibujo, i.ahoraTu.pieza || i.pieza); if (a.solucion) con(`${d} solución ${s}`, a.solucion.dibujo, i.ahoraTu.pieza || i.pieza);
+    }
+  }
+  for (const m of def.laboratorio) if (m.pieza === pieza) for (const v of Teoria.grilla(m.controles)) con(`mesa ${m.id} ${JSON.stringify(v)}`, m.dibujo(v), m.pieza);
+  return out;
+}
+const solapan2 = (a, b, e = 0) => a.x0 < b.x1 + e && b.x0 < a.x1 + e && a.y0 < b.y1 + e && b.y0 < a.y1 + e;
+// Encuadre (todo dentro con 4 de margen) y rótulos que no se pisan entre sí ni pisan las cajas o los objetos.
+function revisarCajas(g, nombre, mal, { dentroDe = () => false } = {}) {
+  const { W, H, M } = g;
+  for (const c of [...g.objetos.filter(o => !o.marco), ...g.textos]) if (!(c.x0 >= M - 1e-9 && c.y0 >= M - 1e-9 && c.x1 <= W - M + 1e-9 && c.y1 <= H - M + 1e-9))
+    mal.push(`${nombre}: se sale «${c.txt || c.que}» (${c.x0.toFixed(1)}, ${c.y0.toFixed(1)}) – (${c.x1.toFixed(1)}, ${c.y1.toFixed(1)}) de ${W} × ${H}`);
+  const t = g.textos;
+  for (let i = 0; i < t.length; i++) for (let j = i + 1; j < t.length; j++) if (solapan2(t[i], t[j], 1)) mal.push(`${nombre}: se pisan «${t[i].txt}» y «${t[j].txt}»`);
+  for (const x of t) for (const o of g.objetos) if (!o.marco && !dentroDe(x, o) && solapan2(x, o)) mal.push(`${nombre}: «${x.txt}» pisa ${o.que}`);
+}
+
 const C12 = { Z: 6, N: 6, titulo: 'carbono-12', rotulo: 'A = 12' }, C14 = { Z: 6, N: 8, titulo: 'carbono-14', rotulo: 'A = 14' };
 const MUESTRAS = [
   { objeto: 'hueso', atomos: [C12, C14] },
@@ -113,4 +147,32 @@ test('fiel: los puntos violetas son los electrones de los datos; los números de
   assert.match(P.dibujar(m, { corte: 1 }), /carbono-12/); assert.ok(!/kit-flecha/.test(P.dibujar(m, { corte: 2 })));
   assert.match(P.dibujar(m, { corte: 3 }), /nitrógeno-14/); assert.match(P.dibujar(m, { corte: 3 }), /kit-flecha/);
   assert.ok(!/>carbono-12</.test(P.dibujar(m, { corte: 3 })));
+});
+
+// Salero, frasco y combi (ideas 5 y 6): el objeto arriba y las cajas debajo.
+const OTROS = [
+  { objeto: 'salero', cajas: { filas: [{ nombre: '3s', e: 2, cajas: 1 }, { nombre: '3p', e: 6, cajas: 3, llega: 1 }], rotulo: 'Cl⁻: [Ne] 3s² 3p⁶' } },
+  { objeto: 'frasco', cajas: { ml: true, desapareados: true, filas: [{ nombre: '3d', e: 6, cajas: 5 }], rotulo: 'Fe²⁺: 4 electrones solos' } },
+  { objeto: 'combi', cajas: { ml: true, desapareados: true, filas: [{ nombre: '2p', cajas: 3, flechas: [[1, 1], [1, 0], [1, 0]] }] } },
+];
+test('salero, frasco y combi: sanos, puros, de prueba; la combi lleva un pasajero por flecha, alineado con su caja', () => {
+  for (const d of OTROS) {
+    const s = P.dibujar(d);
+    sano(s, d.objeto); assert.equal(s, P.dibujar(d));
+    assert.match(s, new RegExp(`data-objeto="${d.objeto}" data-prueba="si"`));
+    assert.ok(P.alt(d).length > 60, P.alt(d));
+  }
+  const s = P.dibujar(OTROS[2]), pas = [...s.matchAll(/class="kit-pasajero" cx="([\d.]+)" cy="([\d.]+)"/g)].map(m => [+m[1], +m[2]]);
+  assert.equal(pas.length, 4);
+  const C = Kit.piezas['quim-cajas'], g = C.geometria(Object.assign({ paleta: 'zne' }, OTROS[2].cajas));
+  for (const [x] of pas) assert.ok([0, 1, 2].some(k => Math.abs(g.caja(0, k).cx - x) < 1e-6), `pasajero en x = ${x} sin su caja`);
+  assert.equal(pas.filter(([x]) => Math.abs(x - g.caja(0, 0).cx) < 1e-6).length, 2, 'la primera fila va con pareja');
+});
+test('salero, frasco y combi: encuadre y rótulos, con números, en las muestras y en toda la unidad', () => {
+  const mal = [];
+  OTROS.forEach((d, k) => revisarCajas(P.geometria(d), `muestra ${k}`, mal));
+  const figs = figurasUnidad('quim-objeto').filter(f => f.datos.objeto !== 'hueso');
+  assert.ok(figs.length > 200, `${figs.length} figuras`);
+  for (const f of figs) { sano(P.dibujar(f.datos, f.estado), f.donde); revisarCajas(P.geometria(f.datos, f.estado), f.donde, mal); }
+  assert.deepEqual(mal.slice(0, 20), [], `${mal.length} problemas`);
 });

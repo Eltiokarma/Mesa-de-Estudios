@@ -1195,15 +1195,15 @@
       "archivo": "/contenido/teoria/quimica/estructura-atomica.js",
       "requiere": [
        "/nucleo/kit/piezas/quim-atomo.js",
-       "/nucleo/kit/piezas/quim-objeto.js",
-       "/nucleo/kit/piezas/quim-cadena.js",
        "/nucleo/kit/piezas/quim-cajas.js",
-       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/quim-objeto.js",
+       "/nucleo/kit/piezas/quim-hotel.js",
+       "/nucleo/kit/piezas/quim-lamina.js",
        "/plantillas/atomo-y-tabla/motor.js",
        "/nucleo/kit/piezas/quim-orbital-3d.js"
       ],
       "ideas": 6,
-      "terminos": 37
+      "terminos": 38
      }
     },
     {
@@ -1248,7 +1248,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 5,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {

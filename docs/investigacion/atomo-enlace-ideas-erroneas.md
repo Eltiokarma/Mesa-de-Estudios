@@ -273,6 +273,51 @@ Los números se verificaron con Python y fracciones exactas (`python3 -I`). Las 
 
 **Excepciones y convenciones que el motor debe declarar.** (1) Cr y Cu son las únicas excepciones que pide el CEPRE en el período 4; Mo, Ag y Au siguen el mismo patrón en los períodos 5 y 6. El motor no debe generalizar la "excepción" a otros elementos (Ni, V). (2) En los cationes de transición, los 4s salen antes que los 3d aunque se llenen antes. (3) El número cuántico ml del último electrón depende de la convención de llenado (de −l a +l o al revés); varía entre academias, así que el motor debe fijar una y decirla. (4) Para SO₂ y SO₃ la geometría no depende de si se dibuja octeto expandido o cargas formales; la hibridación por conteo de dominios sí es la que pide el examen (sp²).
 
+## Estructura atómica (18 nov)
+
+Códigos de error que usa la teoría rehecha de `quimica.estructura-atomica` (`contenido/teoria/quimica/estructura-atomica.js`,
+ideas 1 a 6; propuesta en `docs/etapa4/propuesta-quimica.md`). **Todos son hipótesis**: salen de la trampa que anota el
+solucionario de San Marcos o del error que se espera al aplicar mal la regla de la idea; ninguno tiene porcentaje medido.
+Se confirman o descartan con los datos del piloto. Los que tienen respaldo vecino lo dicen; los AT siguen con el respaldo
+de la tabla de arriba.
+
+| Código | Idea | Qué hace el alumno | Respaldo |
+| --- | --- | --- | --- |
+| QM-ION-ELEMENTO-E | 1 | Nombra el elemento por los electrones (Na⁺ sería neón) | Parte el QM-ION-ELEMENTO viejo |
+| QM-ION-ELEMENTO-Q | 1 | Suma la carga a Z (Na⁺ sería magnesio) | — |
+| QM-ION-ISOTOPO | 1 | Llama isótopo a un ion | AT4 es vecino, sin porcentaje |
+| QM-CARGA-N, QM-NEUTRONES, QM-CARGA-E, QM-CARGA-SIGNO, QM-CARGA-A, QM-SUMA-TODO | 1 y 5 | Resta la carga en el núcleo; da A por N; escribe el ion con los electrones del neutro (San Marcos 2019-II); aplica la carga al revés o a A; suma los electrones a A | QM-CARGA-E: trampa de San Marcos 2019-II |
+| QM-ISOTOPO-N, QM-ISOTOPO-A, QM-ISOTOPO-ELEMENTO, QM-ISOTOPO-REACCIONA, QM-ISOTOPO-UNO; QM-NUCLIDO-ISOTOPO, QM-NUCLIDO-ISOBARO, QM-NUCLIDO-ISOTONO, QM-NUCLIDO-NADA; QM-ISO-Z, QM-ISO-NEUTRO | 1 y 5 | Confunde qué comparten isótopos, isóbaros e isótonos; cree que los isótopos reaccionan distinto (San Marcos 2022); toma Z igual a los electrones de un ion | San Marcos 2022 anota la confusión de los isótopos |
+| QM-MODELO-DALTON | 2 | Explica la lámina de oro con esferas macizas | — |
+| QM-MODELO-THOMSON | 2 | Explica el rebote con la carga repartida; le da el núcleo a Thomson | San Marcos 2026-II anota la confusión Thomson–Rutherford |
+| QM-MODELO | 2 | Relaciona una evidencia con otro modelo | — |
+| QM-VF-NIEGA, QM-VF-ACEPTA | 2 | En un verdadero o falso de modelos, marca F una verdadera o V una falsa | San Marcos 2023-II y 2027-I (V/F de Dalton y de la lámina) |
+| QM-BOHR-SUBE, QM-BOHR-CONTINUO, QM-BOHR-ENTRE | 2 | Cree que al bajar de nivel se absorbe energía; que la luz puede ser de cualquier color; que el electrón queda entre dos niveles | — |
+| QM-ESCALA-POCO, QM-ESCALA-UNIDAD | 2 | Hace el átomo solo 1000 veces más ancho que el núcleo; no convierte la unidad | AT2 es el error medido de escala |
+| QM-ORBITAL-ELECTRON | 3 | Cuenta orbitales (cuartos) y no electrones (huéspedes) | — |
+| QM-SIN-F | 3 | Se queda con lo del nivel anterior, sin el subnivel nuevo (el 4f) | — |
+| QM-OCHO-POR-NIVEL | 3 y 4 | Cree que todo nivel se llena con 8 | Vecino de TP1 (el octeto) |
+| QM-2N, QM-N-L, QM-L-DESDE-UNO, QM-SOLO-ULTIMO, QM-L-IGUAL-N | 3 | Multiplica 2 · n; usa n donde va ℓ; cuenta s = 1, p = 2; toma solo el último subnivel; deja que ℓ llegue a n | — |
+| QM-ML-POSITIVO, QM-L-CERO, QM-L-MENOR | 3 | En «¿qué juego no puede existir?», marca como imposible uno que sí existe: rechaza un mₗ negativo, un ℓ = 0 o un ℓ = n − 1 | El informe viejo anota «mₗ de 0 a ℓ, sin negativos» sin dato |
+| QM-PISO-ANTES | 4 | Llena por pisos (3d antes que 4s; 4d antes que 5s) y no por n + ℓ | Reemplaza a QM-3D-ANTES |
+| QM-PASILLO-NUEVO, QM-LLENO-NO-ENTRA, QM-TOPE, QM-5P-ANTES, QM-CUENTA | 4 | Salta al subnivel nuevo; cree que un gas noble no admite más electrones; pasa el tope de un subnivel; pone el 5p antes que el 4d; cuenta mal | — |
+| QM-ANOMALIA, QM-TODO-3D | 4 | Ignora la excepción del cromo y del cobre; pasa al 3d los dos electrones 4s | San Marcos 2021 y 2026-I anotan «ignorar la anomalía» |
+| QM-VALENCIA-D, QM-VALENCIA-SUB, QM-VALENCIA-N, QM-VALENCIA-TODO, QM-NIVEL-OCUPADO, QM-NIVEL-8 | 4 | Cuenta el 3d en el último nivel; cuenta solo el último subnivel; da el número del nivel; da todos los electrones; cuenta como lleno un nivel con electrones; cree el nivel 3 lleno con 8 | San Marcos 2026-II anota «contar como lleno el último nivel» |
+| QM-ULTIMO | 5 y 6 | El último en entrar sale primero: quita los 3d antes que los 4s | San Marcos 2024-II y 2027-I anotan esta trampa |
+| QM-REPARTE, QM-S-PRIMERO | 5 | Saca un electrón de cada subnivel; a igual n, saca el s antes que el p | — |
+| QM-HUND, QM-HUND-TODOS, QM-DESAP-RESTA | 6 | Aparea antes de llenar las cajas vacías; cuenta todos los electrones del subnivel como solos; resta electrones menos cajas | — |
+| QM-ML-CERO, QM-ML-AL-REVES, QM-MS-AL-REVES, QM-SIN-HUND, QM-N-MENOS, QM-ULTIMO-4S | 6 | Numera las cajas desde 0 o de +ℓ a −ℓ; invierte el espín; llena cada caja con dos antes de pasar; usa el nivel anterior; toma el 4s del átomo neutro como último electrón del catión | Equivalen a los AQ-cuanticos-* del generador `configuracion-ubicacion` |
+| QM-PARA-DIA | 6 | Llama diamagnética a una especie con electrones solos | — |
+
+La convención de mₗ y mₛ (cajas de −ℓ a +ℓ, primero las ↑ con +½) es la del examen y va en `datos` y en la tarjeta
+«ultimo-electron» de `nucleo/convencion.js`. **No se pudo confirmar con un libro de `fuentes/`**: la carpeta no tiene libros
+todavía (18 nov). Es la misma del motor de `plantillas/atomo-y-tabla` y del generador `configuracion-ubicacion`. El
+solucionario de San Marcos 2026-I (n.º 86) tomó el 4s como último electrón del cromo (clave dudosa en
+`docs/datos/admision-unmsm.csv`); por eso los casos generados no piden el último electrón del cromo ni del cobre.
+
+La comparación de radios de los isoelectrónicos (QM-ISO-RADIO, QM-ISO-ORDEN) salió de esta unidad: va a «Radio atómico e
+iónico» de Tabla periódica.
+
 ## Huecos y siguientes pasos
 
 - **Fuentes en español.** No pude abrir ninguna. Riboldi, Pliego y Odetti (2004, *Enseñanza de las Ciencias*) compara ideas de enlace de ingresantes y universitarios argentinos; según su resumen (leído en un buscador), las de los dos grupos son las mismas en la mayoría de los casos. raco.cat dio 403; ddd.uab.cat, revistas.unam.mx (*Educación Química*), revistas.uam.es y redalyc.org pidieron verificación anti-bots; ensciencias.uab.cat falló por certificado. Si Gerson las descarga desde un navegador, completo las cifras.

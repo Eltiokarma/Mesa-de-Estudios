@@ -40,6 +40,14 @@
       examen: 'La etapa lenta es la de mayor energía de activación, y cada Ea se mide desde el valle donde empieza su etapa: Ea₂ = cima 2 − valle.',
       universidad: 'lo que decide la rapidez es la distancia entre la cima más alta y el punto más bajo que la reacción visita antes de ella. Si el valle queda por debajo de los reactivos, eso coincide con la regla del examen; si el valle queda por encima, manda la cima más alta medida desde los reactivos.',
     },
+    // Estructura atómica (18 nov 2026, ideas 3 y 6): la convención de mₗ y mₛ para el último electrón. Es la del motor de
+    // plantillas/atomo-y-tabla y del generador configuracion-ubicacion. No se pudo confirmar con un libro de fuentes/
+    // (la carpeta no tiene libros todavía): queda como decisión del examen, avisada a Gerson.
+    'ultimo-electron': {
+      titulo: 'Los signos del último electrón',
+      examen: 'Las cajas de un subnivel van de mₗ = −ℓ, a la izquierda, a mₗ = +ℓ, a la derecha. Primero se pone una flecha ↑ en cada caja, de izquierda a derecha, con mₛ = +½; después, las flechas ↓, con mₛ = −½. Así, el último electrón del oxígeno (2p⁴) es (2; 1; −1; −½).',
+      universidad: 'los signos de mₗ y mₛ son una convención: otros libros llenan de +ℓ a −ℓ o empiezan por −½, y el mismo electrón sale con otros signos. Lo que no depende de la convención es cuántos electrones quedan solos en el subnivel.',
+    },
   };
   const ids = Object.keys(LISTA);
 
