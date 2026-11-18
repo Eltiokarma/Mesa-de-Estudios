@@ -97,3 +97,29 @@ test('al partir «Exponentes, radicales y productos notables», el avance de los
   assert.equal(nuevo.partidoExp, 1);
   assert.equal(nuevo.teoria, undefined);
 });
+
+test('al partir «MRU, MRUV y caída libre», el avance del MRUV y la caída libre pasa a fisica.mruv-y-caida-libre', () => {
+  const V = 'fisica.movimiento-rectilineo', N = 'fisica.mruv-y-caida-libre';
+  const est = { avanceV: 1, partidoV: 1, partidoExp: 1, vistas: { [V]: '2026-11-12' }, marcadas: { [V]: '2026-11-13' },
+    teoria: { [V]: { idea: 'caida-libre', ideas: { mru: { hecha: true }, 'desplazamiento-distancia': { casos: 2 }, encuentro: { casos: 1 },
+      'pendiente-aceleracion': { hecha: true, prediccion: 'c' }, 'caida-libre': { casos: 3 } } } },
+    coleccion: [{ id: 'c1', unidad: V, mesa: 'pista-libre' }, { id: 'c2', unidad: V, mesa: 'ida-vuelta' }, { id: 'c3', unidad: V, mesa: 'recta-vt' },
+      { id: 'c4', unidad: V, mesa: 'encuentro-libre' }],
+    glosario: { [V]: { posicion: 'sabe', aceleracion: 'repasa', 'caida libre': 'sabe', gravedad: 'sabe', 'velocidad relativa': 'repasa' } } };
+  assert.equal(A.migrar(est), true);
+  assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), ['desplazamiento-distancia', 'encuentro', 'mru']);
+  assert.deepEqual(est.teoria[N].ideas, { 'pendiente-aceleracion': { hecha: true, prediccion: 'c' }, 'caida-libre': { casos: 3 } });
+  assert.equal(est.teoria[N].idea, 'caida-libre', 'la idea en curso se va con su unidad');
+  assert.equal(est.teoria[V].idea, undefined);
+  assert.deepEqual(est.coleccion.map(c => c.unidad), [N, N, N, V], 'la pista, la ida y vuelta en v–t y la recta v–t se van; el encuentro se queda');
+  assert.deepEqual(est.glosario[V], { posicion: 'sabe', 'velocidad relativa': 'repasa' });
+  assert.deepEqual(est.glosario[N], { aceleracion: 'repasa', 'caida libre': 'sabe', gravedad: 'sabe' });
+  assert.equal(est.vistas[N], '2026-11-12');
+  assert.equal(est.marcadas[N], '2026-11-13', '«Ya la estudié» incluía el MRUV y la caída libre');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+  // Quien nunca abrió la unidad: solo queda la marca.
+  const nuevo = { avanceV: 1, partidoV: 1, partidoExp: 1 };
+  assert.equal(A.migrar(nuevo), true);
+  assert.equal(nuevo.partidoMRU, 1);
+  assert.equal(nuevo.teoria, undefined);
+});

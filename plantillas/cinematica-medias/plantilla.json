@@ -4,6 +4,7 @@
   "formato": "predicciones",
   "unidades": [
     "fisica.movimiento-rectilineo",
+    "fisica.mruv-y-caida-libre",
     "fisica.movimiento-parabolico-y-circular"
   ],
   "estado": "borrador",

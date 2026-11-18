@@ -98,7 +98,7 @@ header h1{font-size:18px;margin:0;flex:1}
 <script>
 'use strict';
 const L = window.LeccionMRUV, M = window.MotorMRUV, Pista = Kit.piezas.pista, Ejes = Kit.piezas.ejes, F = Kit.formatear;
-const PLANTILLA = { id: 'mruv', unidad: 'fisica.movimiento-rectilineo', version: '0.2.0-a' };
+const PLANTILLA = { id: 'mruv', unidad: 'fisica.mruv-y-caida-libre', version: '0.2.0-a' };
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = id => document.getElementById(id);
 if (new URLSearchParams(location.search).get('desde') === 'app') $('volver').hidden = false;

@@ -96,6 +96,12 @@
       ideas: ['cuadrado-suma', 'radicales-dobles', 'racionalizar'], mesas: ['cubo-se-abre', 'rectangulo-x-p-q'],
       glosario: ['producto notable', 'diferencia de cuadrados', 'arista', 'volumen', 'identidad', 'distributiva', 'radical doble',
         'denominador', 'racionalizar', 'conjugado'] },
+    // 18 nov: «MRU, MRUV y caída libre» → «Movimiento rectilíneo uniforme» (conserva el id) + fisica.mruv-y-caida-libre
+    // (docs/etapa4/decisiones.md). Las mesas ida-vuelta (área bajo v–t) y recta-vt son de la gráfica v–t; la pista con
+    // acelerador, de la aceleración. Las palabras van con su clave del glosario (sin tildes: Glosario.clave).
+    { marca: 'partidoMRU', de: 'fisica.movimiento-rectilineo', a: 'fisica.mruv-y-caida-libre',
+      ideas: ['pendiente-aceleracion', 'caida-libre'], mesas: ['pista-libre', 'ida-vuelta', 'recta-vt'],
+      glosario: ['aceleracion', 'caida libre', 'gravedad'] },
   ];
   function partir(est, { marca, de, a, ideas, mesas, glosario }) {
     if (est[marca] >= 1) return false;

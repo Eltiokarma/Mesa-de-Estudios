@@ -255,6 +255,8 @@ test('generar(semilla, { unidad }): Vectores y MRU no sacan botes con sacos; Imp
     for (const u of ['fisica.vectores', 'fisica.movimiento-rectilineo']) assert.notEqual(gen.generar(s, { unidad: u })._datos.tipo, 'botes', `semilla ${s} en ${u}`);
     assert.equal(gen.generar(s, 'fisica.impulso-y-choques')._datos.tipo, 'botes', `semilla ${s}`);
   }
+  // 18 nov: el bote que cruza con ángulo (suma de vectores en el plano) no sale en Movimiento rectilíneo uniforme.
+  for (let s = 0; s < 600; s++) assert.notEqual(gen.generar(s, { unidad: 'fisica.movimiento-rectilineo' })._datos.tipo, 'bote', `semilla ${s}`);
   assert.deepEqual(gen.generar(7), gen.generar(7, {}), 'sin unidad, todo sigue como antes');
   assert.deepEqual(Object.keys(gen.tiposPorUnidad).sort(), ['fisica.impulso-y-choques', 'fisica.movimiento-rectilineo', 'fisica.vectores']);
 });

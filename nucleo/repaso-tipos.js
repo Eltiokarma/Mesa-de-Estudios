@@ -21,7 +21,9 @@
   const F = 'fisica.', Q = 'quimica.', AL = 'algebra.', AR = 'aritmetica.', G = 'geometria.', T = 'trigonometria.', RM = 'razonamiento-matematico.';
   const todo = (u, ks) => Object.fromEntries(ks.map(k => [k, u]));
   const TABLA = {
-    'cinematica-medias': { vt: F + 'movimiento-rectilineo', ecuacion: F + 'movimiento-rectilineo', idavuelta: F + 'movimiento-rectilineo', media: F + 'movimiento-rectilineo',
+    // 18 nov: «MRU, MRUV y caída libre» se partió (docs/etapa4/decisiones.md): las medias y la ida y vuelta son de
+    // Movimiento rectilíneo uniforme; la gráfica v–t y la ecuación horaria, de MRUV y caída libre.
+    'cinematica-medias': { vt: F + 'mruv-y-caida-libre', ecuacion: F + 'mruv-y-caida-libre', idavuelta: F + 'movimiento-rectilineo', media: F + 'movimiento-rectilineo',
       xy: F + 'movimiento-parabolico-y-circular', latitud: F + 'movimiento-parabolico-y-circular' },
     'clasificar-reacciones': todo(Q + 'reacciones-y-balance', ['aguaDura', 'redoxSet', 'aLaVez', 'rol', 'vf', 'calor', 'tipoEnergia', 'tipo', 'relacionar', 'dismutacion']),
     // 'vida-media' ya no va a Materia y energía (17 nov: esa unidad tiene su plantilla vida-media y salió de esta ficha);
@@ -126,6 +128,9 @@
     'papel-doblado': lista(RM + 'transformaciones-de-figuras', ps(1, 2, 3, 4, 5, 6, 7, 10)),
     'orden-informacion': { ...lista(RM + 'ordenamiento-de-informacion', ps(1, 2, 3, 4, 5)), p6: RM + 'razonamiento-deductivo',
       ...lista(RM + 'verdades-y-mentiras', ps(7, 8)), ...lista(RM + 'certezas', ps(9, 10)) },
+    // 18 nov: la escena del MRUV sirve a las dos mitades de «MRU, MRUV y caída libre». p1 (encuentro de dos combis) y
+    // p6 (pendiente de una recta x–t) son de Movimiento rectilíneo uniforme; los demás, de MRUV y caída libre.
+    mruv: { ...lista(F + 'movimiento-rectilineo', ps(1, 6)), ...lista(F + 'mruv-y-caida-libre', ps(2, 3, 4, 5, 7, 8, 9, 10)) },
     'ondas-electromagneticas': { ...lista(F + 'ondas-electromagneticas', ps(1, 3, 4, 6, 7, 8, 9, 10)), ...lista(F + 'optica-geometrica', ps(11, 12)) },
   };
   // Unidades de un problema de papel (lista vacía si no se sabe).

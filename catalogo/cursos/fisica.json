@@ -4,7 +4,7 @@
   "area": "ciencias",
   "formato_principal": "escena",
   "ramas": [
-    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.vectores", "fisica.movimiento-rectilineo", "fisica.movimiento-parabolico-y-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
+    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.vectores", "fisica.movimiento-rectilineo", "fisica.mruv-y-caida-libre", "fisica.movimiento-parabolico-y-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
     {"nombre": "Fluidos y calor", "unidades": ["fisica.fluidos", "fisica.temperatura-y-calor", "fisica.termodinamica"]},
     {"nombre": "Electricidad y magnetismo", "unidades": ["fisica.electrostatica", "fisica.corriente-y-circuitos", "fisica.magnetismo", "fisica.induccion-electromagnetica"]},
     {"nombre": "Ondas y luz", "unidades": ["fisica.ondas-mecanicas", "fisica.ondas-electromagneticas", "fisica.optica-geometrica", "fisica.fisica-moderna"]}
@@ -44,21 +44,33 @@
     },
     {
       "id": "fisica.movimiento-rectilineo",
-      "nombre": "MRU, MRUV y caída libre",
+      "nombre": "Movimiento rectilíneo uniforme",
       "temas": [
         "Posición, desplazamiento y distancia",
         "Velocidad y rapidez media",
-        "MRU y velocidad relativa",
+        "MRU y velocidad relativa"
+      ],
+      "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2]}},
+      "potencial_visual": "alto",
+      "grado": 3,
+      "requiere": ["fisica.vectores"],
+      "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
+      "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.mruv-y-caida-libre",
+      "nombre": "MRUV y caída libre",
+      "temas": [
         "MRUV",
         "Caída libre",
         "Gráficas x-t, v-t y a-t",
         "La recta y la parábola como gráficas"
       ],
-      "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
+      "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "requiere": ["fisica.vectores"],
-      "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
+      "requiere": ["fisica.movimiento-rectilineo", "algebra.ecuaciones-lineales-y-cuadraticas"],
+      "plantillas": ["mruv", "cinematica-medias"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -75,7 +87,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "requiere": ["fisica.movimiento-rectilineo"],
+      "requiere": ["fisica.mruv-y-caida-libre"],
       "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado", "cinematica-medias"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
@@ -113,7 +125,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "requiere": ["fisica.estatica", "fisica.movimiento-rectilineo"],
+      "requiere": ["fisica.estatica", "fisica.mruv-y-caida-libre"],
       "plantillas": ["dinamica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },

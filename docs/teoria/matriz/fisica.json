@@ -104,16 +104,12 @@
    "curso": "Física",
    "curso_id": "fisica",
    "numero": 2,
-   "titulo": "MRU, MRUV y caída libre",
+   "titulo": "Movimiento rectilíneo uniforme",
    "grado": 3,
    "temas_catalogo": [
     "Posición, desplazamiento y distancia",
     "Velocidad y rapidez media",
-    "MRU y velocidad relativa",
-    "MRUV",
-    "Caída libre",
-    "Gráficas x-t, v-t y a-t",
-    "La recta y la parábola como gráficas"
+    "MRU y velocidad relativa"
    ],
    "modulos_actuales": [
     "mruv",
@@ -172,7 +168,7 @@
    "historia": {
     "id": "fisica.movimiento-rectilineo",
     "numero": 2,
-    "titulo": "MRU, MRUV y caída libre",
+    "titulo": "Movimiento rectilíneo uniforme",
     "historia": "La caída de un objeto ocurre demasiado rápido para medirla cómodamente con los instrumentos del siglo XVII. Los planos inclinados permitieron estudiar movimientos más lentos y comparar recorridos con intervalos de tiempo. Galileo reunió su investigación del movimiento en los Discorsi de 1638, combinando razonamiento matemático y experimentación. La relación entre distancia recorrida desde el reposo y tiempo al cuadrado sustituyó explicaciones que no separaban claramente duración, rapidez y aceleración. Los aparatos históricos que hoy exhiben los museos también incluyen reconstrucciones posteriores: no deben presentarse automáticamente como instrumentos originales de Galileo. Nuestra gráfica con ejes y nuestras ecuaciones son traducciones modernas de aquellas preguntas sobre cómo cambia el movimiento.",
     "puente_escena": "Recuperar el problema de medir intervalos iguales: el carrito deja marcas cada segundo. Se conservan dos corridas y se pide anticipar la siguiente marca. Después se vincula cada intervalo con una porción de la gráfica, distinguiendo la posición final, el desplazamiento y todo el camino recorrido.",
     "ecuaciones": [
@@ -203,7 +199,111 @@
      }
     ],
     "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
-   }
+   },
+   "particion": "Partida en dos el 18 nov 2026 (Gerson; docs/etapa4/decisiones.md y docs/etapa4/propuesta-fisica.md): esta ficha queda para «Movimiento rectilíneo uniforme» (conserva el id) y el MRUV, la caída libre y las gráficas v–t y a–t pasan a fisica.mruv-y-caida-libre. La historia de Galileo se fue con la caída libre."
+  },
+  {
+   "id": "fisica.mruv-y-caida-libre",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 2,
+   "titulo": "MRUV y caída libre",
+   "grado": 3,
+   "temas_catalogo": [
+    "MRUV",
+    "Caída libre",
+    "Gráficas x-t, v-t y a-t",
+    "La recta y la parábola como gráficas"
+   ],
+   "modulos_actuales": [
+    "mruv",
+    "cinematica-medias"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "Posición x depende del origen; desplazamiento Δx=xf−xi y distancia recorrida no son equivalentes.",
+    "Velocidad media=Δx/Δt; rapidez media=distancia/Δt. MRU: x=x0+vΔt. MRUV: v=v0+aΔt y x=x0+v0Δt+aΔt²/2.",
+    "Pendiente de x–t da v; pendiente de v–t da a; área firmada de v–t da Δx; área firmada de a–t da Δv.",
+    "Encuentro significa posiciones iguales, no velocidades iguales; vA/B=vA/S−vB/S. Caída libre ideal: ay=−g con eje hacia arriba, incluso en la cima."
+   ],
+   "condiciones": "Las fórmulas MRUV exigen aceleración constante en el tramo. Distancia exige separar los cambios de sentido. Dos masas caen igual con mismas condiciones iniciales y resistencia despreciable.",
+   "prerrequisitos": [
+    "Restar números con signo y leer un eje",
+    "Interpretar razón y unidades m/s",
+    "Calcular áreas de rectángulo y triángulo"
+   ],
+   "desempeno": "Ante una v–t inédita, obtener por separado desplazamiento, distancia y aceleración de cada tramo, justificando signos.",
+   "escena_propuesta": "Soltar carrito, guardar marcas iguales en tiempo, comparar corridas; superponer un fantasma del error. Pintar primero áreas positivas y luego una negativa; conservar una regla de desplazamiento y un contador de distancia.",
+   "otra_representacion": "Tiras de posiciones, tabla t/x/v y gráfica quieta; botones suave/medio/fuerte y controles de intervalo.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Leer la gráfica como camino",
+    "Confundir altura con pendiente",
+    "Usar v/t sin restar v0",
+    "Confundir v=0 con a=0"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "3.1–3.5; 4.5",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/3-4-motion-with-constant-acceleration",
+     "titulo": "University Physics 1",
+     "localizador": "3.1–3.5; 4.5"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "3.1",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/3-1-position-displacement-and-average-velocity",
+     "titulo": "University Physics 1",
+     "localizador": "3.1"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "4.5",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/4-5-relative-motion-in-one-and-two-dimensions",
+     "titulo": "University Physics 1",
+     "localizador": "4.5"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.mruv-y-caida-libre",
+    "numero": 2,
+    "titulo": "MRUV y caída libre",
+    "historia": "La caída de un objeto ocurre demasiado rápido para medirla cómodamente con los instrumentos del siglo XVII. Los planos inclinados permitieron estudiar movimientos más lentos y comparar recorridos con intervalos de tiempo. Galileo reunió su investigación del movimiento en los Discorsi de 1638, combinando razonamiento matemático y experimentación. La relación entre distancia recorrida desde el reposo y tiempo al cuadrado sustituyó explicaciones que no separaban claramente duración, rapidez y aceleración. Los aparatos históricos que hoy exhiben los museos también incluyen reconstrucciones posteriores: no deben presentarse automáticamente como instrumentos originales de Galileo. Nuestra gráfica con ejes y nuestras ecuaciones son traducciones modernas de aquellas preguntas sobre cómo cambia el movimiento.",
+    "puente_escena": "Recuperar el problema de medir intervalos iguales: el carrito deja marcas cada segundo. Se conservan dos corridas y se pide anticipar la siguiente marca. Después se vincula cada intervalo con una porción de la gráfica, distinguiendo la posición final, el desplazamiento y todo el camino recorrido.",
+    "ecuaciones": [
+     {
+      "latex": "\\bar v=\\frac{x_f-x_i}{t_f-t_i}",
+      "lectura": "La velocidad media compara cambio de posición con tiempo transcurrido.",
+      "condiciones": "Intervalo de duración positiva y un mismo sistema de referencia."
+     },
+     {
+      "latex": "x=x_0+v_0\\,\\Delta t+\\frac12a(\\Delta t)^2",
+      "lectura": "La posición suma el aporte inicial y el cambio producido por una aceleración constante.",
+      "condiciones": "Aceleración constante durante el tramo; Δt se cuenta desde su estado inicial."
+     },
+     {
+      "latex": "\\Delta x=A_+-A_-,\\qquad d=A_++A_-",
+      "lectura": "En velocidad frente a tiempo, las áreas con signo dan desplazamiento y sus magnitudes dan distancia.",
+      "condiciones": "A+ y A− son magnitudes de las áreas por encima y debajo del eje; separar cada cambio de signo."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Museo Galileo — Science of Motion",
+      "url": "https://catalogue.museogalileo.it/section/ScienceOfMotion.html"
+     },
+     {
+      "titulo": "Museo Galileo — Inclined plane, demostración de la ley de caída",
+      "url": "https://catalogue.museogalileo.it/multimedia/InclinedPlaneBis.html"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   },
+   "particion": "Nace el 18 nov 2026 de partir fisica.movimiento-rectilineo (Gerson; docs/etapa4/decisiones.md). La teoría y la historia de abajo son las de la ficha original, que se repartirán al rehacer la unidad."
   },
   {
    "id": "fisica.movimiento-parabolico-y-circular",

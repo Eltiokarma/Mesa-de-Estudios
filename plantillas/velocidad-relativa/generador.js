@@ -68,7 +68,9 @@
   // sacos, que piden cantidad de movimiento, dos unidades antes de tiempo). generar(semilla, { unidad }) elige solo
   // entre los tipos de esa unidad; sin unidad (o con una que no está aquí), entre todos, como antes.
   const TIPOS_POR_UNIDAD = {
-    'fisica.movimiento-rectilineo': ['marco', 'idavuelta', 'cruce', 'bote'],
+    // 18 nov (Gerson, docs/etapa4/decisiones.md): el bote que cruza el río con ángulo es suma de vectores en el plano;
+    // sale de la práctica de Movimiento rectilíneo uniforme y se queda en Vectores.
+    'fisica.movimiento-rectilineo': ['marco', 'idavuelta', 'cruce'],
     'fisica.vectores': ['marco', 'idavuelta', 'cruce', 'bote'],
     'fisica.impulso-y-choques': ['botes'],
   };

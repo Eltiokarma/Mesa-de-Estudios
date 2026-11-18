@@ -352,7 +352,7 @@
     {
       "par": "fis-02",
       "plantilla": "mruv",
-      "unidad": "fisica.movimiento-rectilineo",
+      "unidad": "fisica.mruv-y-caida-libre",
       "mide": "La aceleración no cambia en la cima: la velocidad sigue bajando después del punto más alto",
       "A": {
         "enunciado": "Se lanza una piedra verticalmente hacia arriba con 35 m/s. Sin contar el aire, ¿qué velocidad tiene 4 s después del lanzamiento? (g = 10 m/s²)",

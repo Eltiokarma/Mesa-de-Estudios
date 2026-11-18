@@ -3,9 +3,11 @@
   "titulo": "MRUV y gráficas",
   "formato": "escena",
   "unidades": [
-    "fisica.movimiento-rectilineo"
+    "fisica.movimiento-rectilineo",
+    "fisica.mruv-y-caida-libre"
   ],
   "estado": "borrador",
+  "rehacer": true,
   "version": "0.1.0",
   "escena": "index.html",
   "motor": "motor.js",

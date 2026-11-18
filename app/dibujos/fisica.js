@@ -24,8 +24,14 @@ D.registrar('fisica', {
     P.l([[22, 98], [86, 98]]) + P.punta(92, 98, 0) + P.l([[92, 98], [128, 40]]) + P.punta(132, 34, ang(92, 98, 132, 34))
     + P.ac('M22 98L124 38') + P.punta(132, 34, ang(22, 98, 132, 34)) + P.c(22, 98, 5, 'tn')
     + P.t(56, 116, 'A', 16) + P.t(124, 76, 'B', 16) + P.t(64, 56, 'R', 16),
-  // En el MRUV el móvil recorre cada segundo más: las marcas se separan.
+  // En el MRU el móvil avanza lo mismo en cada segundo: marcas igual de separadas (18 nov, al partir la unidad).
   'fisica.movimiento-rectilineo': P => {
+    const xs = [0, 1, 2, 3, 4].map(k => 14 + 24 * k), salto = k => P.p(`M${P.n(xs[k])} 96Q${P.n(xs[k] + 12)} 72 ${P.n(xs[k + 1])} 96`, 'd');
+    return P.l([[4, 100], [156, 100]], 'd') + [0, 1, 2].map(salto).join('') + P.ac(`M${P.n(xs[3])} 96Q${P.n(xs[3] + 12)} 72 ${P.n(xs[4])} 96`)
+      + xs.map(x => P.c(x, 96, 4.5, 'tn')).join('') + carro(P, 116, 32, 100, 'b');
+  },
+  // En el MRUV el móvil recorre cada segundo más: las marcas se separan.
+  'fisica.mruv-y-caida-libre': P => {
     const xs = [0, 1, 2, 3, 4].map(k => 12 + 10 * k + 5 * k * k), salto = (k, c) => P.p(`M${P.n(xs[k])} 96Q${P.n((xs[k] + xs[k + 1]) / 2)} ${P.n(96 - (xs[k + 1] - xs[k]) * 1.7)} ${P.n(xs[k + 1])} 96`, c);
     return P.l([[4, 100], [156, 100]], 'd') + [0, 1, 2].map(k => salto(k, 'd')).join('') + salto(3, 'caja') + salto(3, 'acl')
       + xs.map(x => P.c(x, 96, 4.5, 'tn')).join('') + carro(P, 122, 32, 100, 'b');

@@ -2,7 +2,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const T = require('../nucleo/teoria.js');
-const fisica = require('../contenido/teoria/fisica/movimiento-rectilineo.js');
+// La mesa «pista-libre» y la idea sin dibujo propio en la regla viven desde el 18 nov en MRUV y caída libre.
+const fisica = require('../contenido/teoria/fisica/mruv-y-caida-libre.js');
 for (const r of fisica.requiere) require('..' + r);
 
 // La mesa «pista-libre» de la unidad de referencia, con otros retos.

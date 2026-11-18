@@ -26,19 +26,21 @@ Por unidad del catálogo:
 | fisica.temperatura-y-calor | 22 | 13 | 22 / 0 / 0 | calorimetria, calor-escalas |
 | fisica.fluidos | 21 | 10 | 21 / 0 / 0 | fluidos, fluidos-hidrodinamica |
 | fisica.dinamica | 20 | 13 | 20 / 0 / 0 | dinamica, dinamica-fuerzas |
-| fisica.movimiento-rectilineo | 20 | 10 | 20 / 0 / 0 | mruv, cinematica-medias, velocidad-relativa |
 | fisica.electrostatica | 16 | 12 | 16 / 0 / 0 | condensadores, electrostatica, cargas-sistema |
 | fisica.fisica-moderna | 16 | 11 | 16 / 0 / 0 | fisica-moderna, relatividad |
 | fisica.ondas-mecanicas | 16 | 8 | 16 / 0 / 0 | ondas, ondas-llegadas |
 | fisica.magnetismo | 14 | 10 | 14 / 0 / 0 | carga-en-campo, magnetismo |
 | fisica.magnitudes-y-vectores | 12 | 8 | 12 / 0 / 0 | vectores-componentes, vectores, analisis-dimensional |
+| fisica.mruv-y-caida-libre | 11 | 8 | 11 / 0 / 0 | mruv, cinematica-medias |
 | fisica.impulso-y-choques | 10 | 8 | 10 / 0 / 0 | choques, impulso-grafica, velocidad-relativa |
 | fisica.movimiento-parabolico-y-circular | 10 | 9 | 10 / 0 / 0 | circular-mcuv, tiro-parabolico, cinematica-medias |
 | fisica.induccion-electromagnetica | 8 | 6 | 8 / 0 / 0 | induccion, induccion-flujo |
+| fisica.movimiento-rectilineo | 8 | 6 | 8 / 0 / 0 | mruv, cinematica-medias, velocidad-relativa |
 | fisica.optica-geometrica | 8 | 6 | 8 / 0 / 0 | refraccion-snell, optica-espejo-esferico |
 | fisica.estatica | 7 | 6 | 7 / 0 / 0 | estatica, dinamica-fuerzas |
 | fisica.gravitacion | 3 | 3 | 3 / 0 / 0 | gravitacion, dinamica-fuerzas |
 | fisica.ondas-electromagneticas | 3 | 3 | 3 / 0 / 0 | ondas-electromagneticas |
+| fisica.vectores | 1 | 1 | 1 / 0 / 0 | velocidad-relativa |
 | fuera-del-catalogo:propiedades de la materia | 1 | 1 | 1 / 0 / 0 | calor-escalas |
 
 Por tema (en razonamiento matemático y verbal, por familia de temas):
@@ -72,7 +74,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Choque plástico y conservación del momento | 2 | 2 | fisica.impulso-y-choques | choques | 2 / 0 / 0 |
 | Conservación de la energía con resorte | 2 | 2 | fisica.trabajo-y-energia | energia-potencia | 2 / 0 / 0 |
 | Dilatación lineal | 2 | 2 | fisica.temperatura-y-calor | calorimetria | 2 / 0 / 0 |
-| Ecuación horaria del MRUV | 2 | 2 | fisica.movimiento-rectilineo | cinematica-medias | 2 / 0 / 0 |
+| Ecuación horaria del MRUV | 2 | 2 | fisica.mruv-y-caida-libre | cinematica-medias | 2 / 0 / 0 |
 | Efecto fotoeléctrico | 2 | 2 | fisica.fisica-moderna | fisica-moderna | 2 / 0 / 0 |
 | Efecto fotoeléctrico con dos longitudes de onda | 2 | 2 | fisica.fisica-moderna | fisica-moderna | 2 / 0 / 0 |
 | Escalas termométricas | 2 | 2 | fisica.temperatura-y-calor | calor-escalas | 2 / 0 / 0 |
@@ -89,11 +91,11 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Suma de vectores en componentes | 2 | 2 | fisica.magnitudes-y-vectores | vectores-componentes | 2 / 0 / 0 |
 | Trabajo del rozamiento y energía | 2 | 2 | fisica.trabajo-y-energia | energia | 2 / 0 / 0 |
 | Ecuación de espejos y aumento | 2 | 1 | fisica.optica-geometrica | optica-espejo-esferico | 2 / 0 / 0 |
-| Gráfica v-t: área y pendiente | 2 | 1 | fisica.movimiento-rectilineo | mruv | 2 / 0 / 0 |
+| Gráfica v-t: área y pendiente | 2 | 1 | fisica.mruv-y-caida-libre | mruv | 2 / 0 / 0 |
 | Impulso como área de F-t | 2 | 1 | fisica.impulso-y-choques | impulso-grafica | 2 / 0 / 0 |
 | Péndulo simple: periodo y longitud | 2 | 1 | fisica.oscilaciones | mas | 2 / 0 / 0 |
 | Aceleración en el MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
-| Aceleración media | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
+| Aceleración media | 1 | 1 | fisica.mruv-y-caida-libre | mruv | 1 / 0 / 0 |
 | Barómetro y presión atmosférica | 1 | 1 | fisica.fluidos | fluidos-hidrodinamica | 1 / 0 / 0 |
 | Calor latente de vaporización | 1 | 1 | fisica.temperatura-y-calor | calor-escalas | 1 / 0 / 0 |
 | Calor sensible proporcional a ΔT | 1 | 1 | fisica.temperatura-y-calor | calorimetria | 1 / 0 / 0 |
@@ -104,7 +106,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Carga acelerada que entra a un campo magnético | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
 | Carga en campo magnético: hélice | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
 | Carga en campo magnético: radio de giro | 1 | 1 | fisica.magnetismo | carga-en-campo | 1 / 0 / 0 |
-| Caída libre | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
+| Caída libre | 1 | 1 | fisica.mruv-y-caida-libre | mruv | 1 / 0 / 0 |
 | Coeficiente de restitución con pérdidas | 1 | 1 | fisica.impulso-y-choques | impulso-grafica | 1 / 0 / 0 |
 | Coeficiente de restitución y energía disipada | 1 | 1 | fisica.impulso-y-choques | choques | 1 / 0 / 0 |
 | Conservación de la cantidad de movimiento | 1 | 1 | fisica.impulso-y-choques | velocidad-relativa | 1 / 0 / 0 |
@@ -119,7 +121,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Efecto Joule y calorimetría | 1 | 1 | fisica.corriente-y-circuitos | circuitos-joule | 1 / 0 / 0 |
 | Electrización por contacto | 1 | 1 | fisica.electrostatica | electrostatica | 1 / 0 / 0 |
 | Empuje y peso aparente | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
-| Encuentro MRU-MRUV | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
+| Encuentro MRU-MRUV | 1 | 1 | fisica.mruv-y-caida-libre | mruv | 1 / 0 / 0 |
 | Encuentro y alcance en MRU | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
 | Energía con pérdidas porcentuales en rebotes | 1 | 1 | fisica.trabajo-y-energia | energia-potencia | 1 / 0 / 0 |
 | Energía de un condensador | 1 | 1 | fisica.electrostatica | condensadores | 1 / 0 / 0 |
@@ -142,8 +144,8 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Fuerza magnética sobre una carga cerca de un hilo | 1 | 1 | fisica.magnetismo | magnetismo | 1 / 0 / 0 |
 | Función de onda | 1 | 1 | fisica.ondas-mecanicas | ondas-llegadas | 1 / 0 / 0 |
 | Función trabajo y longitud de onda umbral | 1 | 1 | fisica.fisica-moderna | fisica-moderna | 1 / 0 / 0 |
-| Gráfica a-t | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
-| Gráfica v-t: área y tiempo mínimo | 1 | 1 | fisica.movimiento-rectilineo | cinematica-medias | 1 / 0 / 0 |
+| Gráfica a-t | 1 | 1 | fisica.mruv-y-caida-libre | mruv | 1 / 0 / 0 |
+| Gráfica v-t: área y tiempo mínimo | 1 | 1 | fisica.mruv-y-caida-libre | cinematica-medias | 1 / 0 / 0 |
 | Gráfica x-t del MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Gráfica x-t del MAS y energía | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Imagen en espejo convexo | 1 | 1 | fisica.optica-geometrica | optica-espejo-esferico | 1 / 0 / 0 |
@@ -163,8 +165,8 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | MCUV: aceleración angular | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcuv | 1 / 0 / 0 |
 | MCUV: frenado con número de vueltas | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcuv | 1 / 0 / 0 |
 | MCUV: gráfica θ-t y rodadura | 1 | 1 | fisica.movimiento-parabolico-y-circular | circular-mcuv | 1 / 0 / 0 |
-| MRUV: distancia de frenado | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
-| MRUV: distancia de frenado y rapidez | 1 | 1 | fisica.movimiento-rectilineo | mruv | 1 / 0 / 0 |
+| MRUV: distancia de frenado | 1 | 1 | fisica.mruv-y-caida-libre | mruv | 1 / 0 / 0 |
+| MRUV: distancia de frenado y rapidez | 1 | 1 | fisica.mruv-y-caida-libre | mruv | 1 / 0 / 0 |
 | Manómetro en U | 1 | 1 | fisica.fluidos | fluidos | 1 / 0 / 0 |
 | Masa e inercia frente a cambios de volumen | 1 | 1 | fuera-del-catalogo:propiedades de la materia | calor-escalas | 1 / 0 / 0 |
 | Movimiento en el plano con ecuaciones horarias | 1 | 1 | fisica.movimiento-parabolico-y-circular | cinematica-medias | 1 / 0 / 0 |
@@ -227,7 +229,7 @@ Por tema (en razonamiento matemático y verbal, por familia de temas):
 | Velocidad en función de la posición en el MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Velocidad instantánea como vector | 1 | 1 | fisica.movimiento-parabolico-y-circular | movimiento-circular | 1 / 0 / 0 |
 | Velocidad relativa | 1 | 1 | fisica.movimiento-rectilineo | velocidad-relativa | 1 / 0 / 0 |
-| Velocidad relativa: bote y río | 1 | 1 | fisica.movimiento-rectilineo | velocidad-relativa | 1 / 0 / 0 |
+| Velocidad relativa: bote y río | 1 | 1 | fisica.vectores | velocidad-relativa | 1 / 0 / 0 |
 | Velocidad relativa: ida y vuelta junto a un bote | 1 | 1 | fisica.movimiento-rectilineo | velocidad-relativa | 1 / 0 / 0 |
 | Velocidad y aceleración máximas en el MAS | 1 | 1 | fisica.oscilaciones | mas | 1 / 0 / 0 |
 | Ángulo límite y reflexión total | 1 | 1 | fisica.optica-geometrica | refraccion-snell | 1 / 0 / 0 |
@@ -751,14 +753,14 @@ Por unidad del catálogo:
 | algebra.programacion-lineal | 10 | 6 | 10 / 0 / 0 | programacion-lineal, inecuaciones-planteo |
 | algebra.division-de-polinomios | 9 | 8 | 9 / 0 / 0 | division-polinomios, polinomios |
 | algebra.tipos-de-funciones-e-inversa | 7 | 4 | 7 / 0 / 0 | grafica-perillas, funciones-dominio-rango |
-| algebra.productos-notables | 5 | 3 | 5 / 0 / 0 | cuadrado-crece |
-| algebra.exponentes-y-productos-notables | 1 | 1 | 1 / 0 / 0 | sistemas-ecuaciones |
 | algebra.valor-absoluto-y-radicales | 6 | 5 | 6 / 0 / 0 | grafica-perillas, sistemas-ecuaciones, inecuaciones-planteo |
 | algebra.polinomios | 5 | 5 | 5 / 0 / 0 | polinomios |
+| algebra.productos-notables | 5 | 3 | 5 / 0 / 0 | cuadrado-crece |
 | algebra.numeros-complejos | 4 | 2 | 4 / 0 / 0 | numeros-complejos |
 | algebra.factorizacion | 3 | 2 | 3 / 0 / 0 | division-polinomios, ecuaciones-polinomiales |
 | trigonometria.conicas | 2 | 2 | 2 / 0 / 0 | conicas |
 | algebra.binomio-de-newton | 1 | 1 | 1 / 0 / 0 | binomio-newton |
+| algebra.exponentes-y-productos-notables | 1 | 1 | 1 / 0 / 0 | sistemas-ecuaciones |
 | algebra.matrices-y-determinantes | 1 | 1 | 1 / 0 / 0 | sistemas-ecuaciones |
 | algebra.numeros-reales | 1 | 1 | 1 / 0 / 0 | inecuaciones-planteo |
 
