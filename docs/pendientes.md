@@ -4,8 +4,9 @@ Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 
 ## Estado al 18 nov, cierre: Etapa 4 con el método completo (una ronda de lector)
 
-**Lo primero:** leer la mesa (ronda 9): cinco tarjetas de unidades completas para revisar, y dos decisiones (la
-convención de mₗ y mₛ sin libro, y cómo quedaron las pruebas de aritmética y geometría con el tope de 10 pares).
+**Mesa leída (rondas 9 y 10, todo con la recomendada):** visto bueno de las cinco unidades; la convención de mₗ y mₛ
+se queda hasta tener libro; geo-05 volvió a la prueba de geometría (banco 2.2.0, v264); queda el título «Cifras del
+producto y del cociente». Anotado en `docs/etapa4/decisiones.md` («Tercera ronda»). Etapa 4 cerrada.
 
 - **Hecho y en main (v260, 10216 pruebas):** Movimiento rectilíneo uniforme, MRUV y caída libre, Estructura atómica,
   Las cuatro operaciones (7 ideas, con `septimaIdea`) y Triángulos: todas sus ideas con 15 ejemplos, `calidad: 2`,
