@@ -4,7 +4,8 @@
   "formato": "predicciones",
   "unidades": [
     "geometria.triangulos",
-    "geometria.puntos-notables"
+    "geometria.puntos-notables",
+    "geometria.relaciones-metricas"
   ],
   "estado": "borrador",
   "version": "0.2.0",

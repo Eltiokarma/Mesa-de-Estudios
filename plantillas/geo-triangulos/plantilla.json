@@ -1,0 +1,23 @@
+{
+  "id": "geo-triangulos",
+  "titulo": "Triángulos y líneas notables",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.triangulos"
+  ],
+  "temas": [
+    "Suma de ángulos internos y ángulo externo",
+    "Clasificación",
+    "Triángulo isósceles y equilátero",
+    "Relación entre lados y ángulos",
+    "Desigualdad triangular",
+    "Líneas notables",
+    "Ángulos formados por bisectrices"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

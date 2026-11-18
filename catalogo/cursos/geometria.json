@@ -45,7 +45,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["geometria.segmentos-y-angulos"],
-      "plantillas": ["triangulo-estira", "geo-triangulos-notables"],
+      "plantillas": ["geo-triangulos", "geo-triangulos-notables", "triangulo-estira"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -146,7 +146,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["geometria.proporcionalidad-y-semejanza"],
-      "plantillas": ["triangulo-estira", "geo-circunferencia-metrica", "geo-relaciones-metricas"],
+      "plantillas": ["triangulo-estira", "geo-circunferencia-metrica", "geo-relaciones-metricas", "geo-triangulos-notables"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

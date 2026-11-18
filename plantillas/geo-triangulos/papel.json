@@ -1,0 +1,87 @@
+{
+  "titulo": "Triángulos y líneas notables: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el triángulo ABC, m∠A = 50° y m∠B = 95°. ¿Cuánto mide el ángulo C? Datos: En todo triángulo: m∠A + m∠B + m∠C = 180°. Alternativas: A) 35°   B) 145°   C) 130°   D) 60°   E) 215°",
+      "respuesta": "A) 35°",
+      "pasos": [
+        "Los tres suman 180°: el ángulo C es lo que les falta a los otros dos.",
+        "m∠C = 180° − 50° − 95° = 35°."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En el triángulo ABC, m∠A = 70° y m∠B = 80°. Se prolonga BC más allá de C, hasta D. ¿Cuánto mide el ángulo ACD? Datos: Un ángulo exterior mide lo que suman los dos ángulos interiores que no están a su lado. Dos ángulos adyacentes en una recta suman 180°. Alternativas: A) 150°   B) 100°   C) 10°   D) 110°   E) 30°",
+      "respuesta": "A) 150°",
+      "pasos": [
+        "El exterior en C mide lo que suman los interiores A y B.",
+        "m∠ACD = 70° + 80° = 150°."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En el triángulo ABC, AB = AC y m∠A = 84°. ¿Cuánto mide el ángulo B? Datos: En todo triángulo: m∠A + m∠B + m∠C = 180°. Frente a lados iguales hay ángulos iguales, y frente a ángulos iguales, lados iguales. Alternativas: A) 84°   B) 48°   C) 6°   D) 96°",
+      "respuesta": "B) 48°",
+      "pasos": [
+        "Frente a AB y AC, iguales, están C y B: miden igual y se reparten lo que deja A.",
+        "m∠B = (180° − 84°) ÷ 2 = 48°."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, m∠A = 70°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC? Datos: Dos bisectrices interiores, de B y de C: m∠BIC = 90° + m∠A ÷ 2. Interior de B con exterior de C: m∠BEC = m∠A ÷ 2. Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − m∠A ÷ 2. Alternativas: A) 70°   B) 90°   C) 17,5°   D) 125°   E) 35°",
+      "respuesta": "E) 35°",
+      "pasos": [
+        "Interior con exterior: la mitad de A.",
+        "m∠BEC = 70° ÷ 2 = 35°."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, AB = 8 cm y BC = 13 cm. ¿Cuántos valores enteros, en cm, puede tomar AC? Datos: Desigualdad triangular: cada lado es menor que la suma de los otros dos y mayor que su diferencia. Alternativas: A) 16   B) 17   C) 20   D) 15   E) 6",
+      "respuesta": "D) 15",
+      "pasos": [
+        "13 − 8 = 5 y 8 + 13 = 21 son los extremos, que no cuentan: 5 < AC < 21.",
+        "De 6 a 20 hay 15 enteros."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, m∠B = 55° y AH es la altura desde A. ¿Cuánto mide el ángulo BAH? Datos: Altura: va del vértice a la recta del lado opuesto y forma 90° con ella. Dos ángulos adyacentes en una recta suman 180°. En todo triángulo, los tres ángulos interiores suman 180°. Alternativas: A) 35°   B) 125°   C) 55°   D) 62,5°",
+      "respuesta": "A) 35°",
+      "pasos": [
+        "En el triángulo ABH, con 90° en H:",
+        "m∠BAH = 180° − 90° − 55° = 35°."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, D está en el lado AC y AB = BD = DC. m∠C = 25°. ¿Cuánto mide el ángulo A? Datos: Frente a lados iguales hay ángulos iguales, y frente a ángulos iguales, lados iguales. Un ángulo exterior mide lo que suman los dos ángulos interiores que no están a su lado. En todo triángulo: m∠A + m∠B + m∠C = 180°. Alternativas: A) 25°   B) 100°   C) 130°   D) 50°",
+      "respuesta": "D) 50°",
+      "pasos": [
+        "BD = DC: m∠DBC = 25°. ∠ADB es exterior de BDC: 25° + 25° = 50°. AB = BD: m∠A = m∠ADB.",
+        "m∠A = 50°."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "P está dentro del triángulo ABC, con PB = 12 cm y PC = 6 cm. El perímetro de ABC mide un número entero de cm. ¿Cuál es su menor valor? Datos: Desigualdad triangular: cada lado es menor que la suma de los otros dos y mayor que su diferencia. Con P dentro del triángulo ABC: AB + AC > PB + PC. Perímetro: la suma de los tres lados. Alternativas: A) 26 cm   B) 25 cm   C) 19 cm   D) 24 cm",
+      "respuesta": "B) 25 cm",
+      "pasos": [
+        "AB + AC > 12 + 6 = 18 y BC > 12 − 6 = 6: el perímetro pasa de 24 cm.",
+        "El menor entero: 25 cm."
+      ]
+    }
+  ]
+}

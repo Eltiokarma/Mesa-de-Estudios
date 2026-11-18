@@ -4523,8 +4523,9 @@
       "geometria.segmentos-y-angulos"
      ],
      "plantillas": [
-      "triangulo-estira",
-      "geo-triangulos-notables"
+      "geo-triangulos",
+      "geo-triangulos-notables",
+      "triangulo-estira"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/triangulos.js",
@@ -4814,7 +4815,8 @@
      "plantillas": [
       "triangulo-estira",
       "geo-circunferencia-metrica",
-      "geo-relaciones-metricas"
+      "geo-relaciones-metricas",
+      "geo-triangulos-notables"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/relaciones-metricas.js",
@@ -9427,6 +9429,22 @@
     "/plantillas/geo-segmentos-angulos/papel.json"
    ]
   },
+  "geo-triangulos": {
+   "id": "geo-triangulos",
+   "titulo": "Triángulos y líneas notables",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.triangulos"
+   ],
+   "url": "#/practica/geo-triangulos",
+   "papel": "/plantillas/geo-triangulos/papel.json",
+   "archivos": [
+    "/plantillas/geo-triangulos/generador.js",
+    "/plantillas/geo-triangulos/papel.json"
+   ]
+  },
   "geo-triangulos-notables": {
    "id": "geo-triangulos-notables",
    "titulo": "Lados posibles y ángulos en los puntos notables",
@@ -9435,7 +9453,8 @@
    "version": "0.2.0",
    "unidades": [
     "geometria.triangulos",
-    "geometria.puntos-notables"
+    "geometria.puntos-notables",
+    "geometria.relaciones-metricas"
    ],
    "url": "#/practica/geo-triangulos-notables",
    "papel": "/plantillas/geo-triangulos-notables/papel.json",

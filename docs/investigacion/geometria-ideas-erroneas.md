@@ -205,6 +205,10 @@ parten para que dos opciones de una misma pregunta no lleven el mismo código.
 | GE-LN4 a GE-LN13 | Cree que en el rectángulo o el acutángulo la altura cae fuera; copia el ángulo B en ∠BAH; da ∠ABH; parte el ángulo como bisectriz; usa A entero en ∠AFC; da ∠AFB; cree que la bisectriz forma 90°; no divide (B − C); promedia B y C; se queda en ∠BAH | Idea 5 |
 | GE-BIS5-a, GE-BIS5-b | En E toma el ángulo A entero; cree que las dos bisectrices de C dan 90° en E | Idea 6, predicción |
 | GE-BIS6 a GE-BIS13 | Suma 90° sin partir A; usa la regla de dos exteriores; no divide en la de dos exteriores; se queda en la suma de las mitades; usa B y C en vez de A; en el inverso olvida duplicar, da el suplemento o divide | Idea 6 |
+| GE-EXT14, GE-EXT15 | En la antena (San Marcos 2024-I) da el ángulo del cable lejano con la antena, o copia su ángulo con el techo | Práctica `geo-triangulos`, idea 2, nivel examen |
+| GE-ISO16 a GE-ISO18 | En la bisectriz con una paralela (el recíproco, San Marcos 2025-II): busca el isósceles en el triángulo de arriba (DE = AE), toma E como punto medio de AB, da el lado entero AB | Práctica `geo-triangulos`, idea 3, nivel examen |
+| GE-DT14 a GE-DT16 | Da el menor valor del lado en vez de contar cuántos; en el punto interior (San Marcos 2026-I) olvida el límite de BC y usa solo PB + PC; redondea cada parte del perímetro por separado | Práctica `geo-triangulos`, idea 4 |
+| GE-BIS14 | Interior con exterior: parte A entre cuatro (una mitad por cada bisectriz) | Práctica `geo-triangulos`, idea 6 |
 
 ## Fuentes
 

@@ -259,3 +259,22 @@ probarViva(gen, {
     assert.ok(Math.abs(Math.min(ang, 360 - ang) - p.respuesta.valor) < 1e-6, `semilla ${s}: el ángulo dibujado mide ${ang}`);
   },
 });
+
+// Tipos por unidad (docs/etapa4/decisiones.md, Triángulos, 18 nov): la práctica de cada unidad solo saca sus tipos; sin
+// unidad, todos, como antes (el papel, casos.json y la cola de repaso no cambian).
+test('tipos por unidad: Triángulos solo desigualdad, Puntos notables sus ángulos, Relaciones métricas el obtusángulo', () => {
+  const ficha = require('./plantilla.json');
+  assert.deepEqual(Object.keys(gen.tiposPorUnidad).sort(), ficha.unidades.slice().sort());
+  for (const [u, tipos] of Object.entries(gen.tiposPorUnidad)) {
+    const vistos = new Set();
+    for (let s = 0; s < 300; s++) {
+      const p = gen.generar(s, { unidad: u });
+      assert.ok(tipos.includes(p._datos.tipo), `${u}, semilla ${s}: ${p._datos.tipo}`);
+      vistos.add(p._datos.tipo);
+    }
+    assert.deepEqual([...vistos].sort(), tipos.slice().sort(), `${u}: no salen todos sus tipos`);
+  }
+  for (let s = 0; s < 50; s++) assert.deepEqual(gen.generar(s, { unidad: 'geometria.no-existe' }), gen.generar(s));
+  const todos = new Set(); for (let s = 0; s < 400; s++) todos.add(gen.generar(s)._datos.tipo);
+  assert.equal(todos.size, 6, 'sin unidad, salen los seis tipos');
+});

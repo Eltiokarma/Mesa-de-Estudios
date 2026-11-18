@@ -123,9 +123,24 @@
   };
   const PIDES = { diagonal: ['max', 'min', 'cuantos'], 'doble-angulo': ['max', 'min'], 'pies-alturas': ['AEF', 'AFE', 'OAB', 'AO-EF'], ortocentro: ['CF', 'AC'], arco: ['AE', 'IE'] };
 
-  function generar(semilla) {
+  // Qué tipos sirve a cada unidad del catálogo (docs/etapa4/decisiones.md, Triángulos, 18 nov; modelo:
+  // plantillas/velocidad-relativa/). generar(semilla, { unidad }) elige solo entre los tipos de esa unidad; sin unidad (o
+  // con una que no está aquí), entre todos, como antes: el papel, casos.json y la cola de repaso no cambian.
+  //   Triángulos: la desigualdad con lados enteros (la práctica de la unidad es geo-triangulos, que llama a calc).
+  //   Puntos notables: los ángulos con incentro, excentro, ortocentro y circuncentro, el ortocentro con Pitágoras, las
+  //     bisectrices con 37°/2 y 53°/2 y el punto medio del arco.
+  //   Relaciones métricas: la condición de obtusángulo (x² frente a a² + b², con Pitágoras), que sale de Triángulos.
+  const TIPOS_POR_UNIDAD = {
+    'geometria.triangulos': ['desigualdad'],
+    'geometria.puntos-notables': ['angulos', 'ortocentro', 'mitades', 'arco'],
+    'geometria.relaciones-metricas': ['obtusangulo'],
+  };
+  const SORTEO = ['desigualdad', 'desigualdad', 'obtusangulo', 'obtusangulo', 'angulos', 'angulos', 'ortocentro', 'mitades', 'arco'];
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear('geo-triangulos-notables|' + semilla);
-    const tipo = rng.elegir(['desigualdad', 'desigualdad', 'obtusangulo', 'obtusangulo', 'angulos', 'angulos', 'ortocentro', 'mitades', 'arco']);
+    const tipo = rng.elegir(permitidos ? SORTEO.filter(t => permitidos.includes(t)) : SORTEO);
     // El subtipo (y lo que se pide) se eligen una sola vez: así los reintentos no sesgan el reparto.
     const sub = SUBS[tipo] ? rng.elegir(SUBS[tipo]) : null;
     const clave = sub || tipo;
@@ -816,5 +831,5 @@
     return { correcta: pide === 'AE' ? AE : IE, unidad: u, errores, variables, enunciado, pregunta, solucion, datos: { tipo: 'arco', pide, p, q, u } };
   }
 
-  return { id: 'geo-triangulos-notables', titulo: 'Lados posibles y ángulos en los puntos notables', generar, calc };
+  return { id: 'geo-triangulos-notables', titulo: 'Lados posibles y ángulos en los puntos notables', generar, calc, tiposPorUnidad: TIPOS_POR_UNIDAD };
 });

@@ -1,0 +1,364 @@
+{
+  "plantilla": "geo-triangulos",
+  "tolerancia": 1e-9,
+  "nota": "Entrada = _datos del generador (sin valor); enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales). esperado.valor es el número (o el texto, en los tipos de respuesta escrita) y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (18 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: p-geo/casos/verificar_casos.py), que no usa el generador, el núcleo ni calc de geo-triangulos-notables: resuelve cada problema leyendo solo el enunciado, como el alumno (la suma de 180°, los opuestos por el vértice de la mariposa, el exterior medido con coordenadas, la ecuación del exterior con x con fracciones exactas, la prolongación de BD en la punta de flecha, la antena con tangentes, el isósceles con fracciones, la cadena AB = BD = DC, la paralela que deja DE = EB, los lados enteros contados por fuerza bruta con la desigualdad estricta lado por lado, el menor perímetro entero con un punto interior, el pie de la altura, la altura y la bisectriz con cortes de rectas, las bisectrices interior y exterior con cortes de rectas y el inverso buscando A de 1° en 1°), escribe el resultado como la alternativa y lo compara con la correcta del generador. Los 20 casos cuadran.",
+  "casos": [
+    {
+      "semilla": 0,
+      "enunciado": "En el cuadrilátero ABCD, AB = 4 cm, BC = 5 cm, CD = 10 cm y DA = 12 cm. ¿Cuántos valores enteros, en cm, puede tomar la diagonal AC?",
+      "entrada": {
+        "tipo": "diagonal",
+        "idea": "desigualdad",
+        "nivel": 3,
+        "a": 4,
+        "b": 5,
+        "c": 10,
+        "d": 12,
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "valor": 6,
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 7,
+      "enunciado": "En el triángulo ABC, m∠B = 80° y m∠C = 30°. AH es la altura y AF la bisectriz del ángulo A. ¿Cuánto mide el ángulo HAF?",
+      "entrada": {
+        "tipo": "altura-bisectriz",
+        "idea": "lineas-notables",
+        "nivel": 3,
+        "B": 80,
+        "C": 30,
+        "pide": "HAF"
+      },
+      "esperado": {
+        "valor": 25,
+        "texto": "25°"
+      }
+    },
+    {
+      "semilla": 8,
+      "enunciado": "En el triángulo ABC, m∠B = m∠C. AB = (2x − 1) cm, AC = (x + 2) cm y BC = (x + 3) cm. ¿Cuánto mide AB?",
+      "entrada": {
+        "tipo": "lados-x",
+        "idea": "isosceles",
+        "nivel": 2,
+        "x": 3,
+        "AB": [
+          2,
+          -1
+        ],
+        "AC": [
+          1,
+          2
+        ],
+        "BC": [
+          1,
+          3
+        ],
+        "pide": "AB"
+      },
+      "esperado": {
+        "valor": 5,
+        "texto": "5 cm"
+      }
+    },
+    {
+      "semilla": 13,
+      "enunciado": "En el triángulo ABC, AB = 9 cm y BC = 12 cm. ¿Cuántos valores enteros, en cm, puede tomar AC?",
+      "entrada": {
+        "tipo": "cuantos",
+        "idea": "desigualdad",
+        "nivel": 2,
+        "p": 9,
+        "q": 12,
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "valor": 17,
+        "texto": "17"
+      }
+    },
+    {
+      "semilla": 17,
+      "enunciado": "En el triángulo ABC, m∠A = 80°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC?",
+      "entrada": {
+        "tipo": "int-ext",
+        "idea": "angulo-de-bisectrices",
+        "nivel": 2,
+        "A": 80,
+        "B": 40,
+        "C": 60,
+        "pide": "BEC"
+      },
+      "esperado": {
+        "valor": 40,
+        "texto": "40°"
+      }
+    },
+    {
+      "semilla": 18,
+      "enunciado": "D está dentro del triángulo ABC. m∠BAC = 55°, m∠ABD = 40° y m∠ACD = 25°. ¿Cuánto mide el ángulo BDC?",
+      "entrada": {
+        "tipo": "flecha",
+        "idea": "angulo-exterior",
+        "nivel": 3,
+        "a": 55,
+        "p": 40,
+        "q": 25,
+        "b": 70,
+        "c": 55,
+        "pide": "BDC"
+      },
+      "esperado": {
+        "valor": 120,
+        "texto": "120°"
+      }
+    },
+    {
+      "semilla": 19,
+      "enunciado": "La antena AB está sobre un techo plano. Un cable va de A a C y forma 72° con el techo; otro va de A a D, más lejos, y forma 16°. ¿Qué ángulo forman los dos cables en A?",
+      "entrada": {
+        "tipo": "antena",
+        "idea": "angulo-exterior",
+        "nivel": 3,
+        "al": 72,
+        "be": 16,
+        "pide": "CAD"
+      },
+      "esperado": {
+        "valor": 56,
+        "texto": "56°"
+      }
+    },
+    {
+      "semilla": 23,
+      "enunciado": "En el triángulo ABC, AB = AC y m∠A = 84°. ¿Cuánto mide el ángulo B?",
+      "entrada": {
+        "tipo": "base",
+        "idea": "isosceles",
+        "nivel": 1,
+        "th": 84,
+        "pide": "B"
+      },
+      "esperado": {
+        "valor": 48,
+        "texto": "48°"
+      }
+    },
+    {
+      "semilla": 24,
+      "enunciado": "En el triángulo ABC, la bisectriz del ángulo B corta a AC en D. Por D pasa DE, paralela a BC, con E en AB. AB = 16 cm y AE = 7 cm. ¿Cuánto mide DE?",
+      "entrada": {
+        "tipo": "paralela",
+        "idea": "isosceles",
+        "nivel": 3,
+        "AB": 16,
+        "AE": 7,
+        "pide": "DE"
+      },
+      "esperado": {
+        "valor": 9,
+        "texto": "9 cm"
+      }
+    },
+    {
+      "semilla": 25,
+      "enunciado": "En el triángulo ABC, m∠A = 45° y m∠C = 95°. ¿Cuánto mide el ángulo B?",
+      "entrada": {
+        "tipo": "tercero",
+        "idea": "suma-de-angulos",
+        "nivel": 1,
+        "angulos": {
+          "A": 45,
+          "B": 40,
+          "C": 95
+        },
+        "pide": "B"
+      },
+      "esperado": {
+        "valor": 40,
+        "texto": "40°"
+      }
+    },
+    {
+      "semilla": 27,
+      "enunciado": "En el triángulo ABC, D está en la prolongación de BC. m∠A = 2x + 20°, m∠B = 2x + 10° y m∠ACD = 6x − 20°. ¿Cuánto vale x?",
+      "entrada": {
+        "tipo": "ext-x",
+        "idea": "angulo-exterior",
+        "nivel": 2,
+        "aA": 2,
+        "bA": 20,
+        "aB": 2,
+        "bB": 10,
+        "aE": 6,
+        "bE": -20,
+        "pide": "x"
+      },
+      "esperado": {
+        "valor": 25,
+        "texto": "25"
+      }
+    },
+    {
+      "semilla": 28,
+      "enunciado": "En el triángulo ABC, m∠A = 75° y m∠B = 45°. Se prolonga BC más allá de C, hasta D. ¿Cuánto mide el ángulo ACD?",
+      "entrada": {
+        "tipo": "exterior",
+        "idea": "angulo-exterior",
+        "nivel": 1,
+        "angulos": {
+          "A": 75,
+          "B": 45,
+          "C": 60
+        },
+        "pide": "ACD"
+      },
+      "esperado": {
+        "valor": 120,
+        "texto": "120°"
+      }
+    },
+    {
+      "semilla": 32,
+      "enunciado": "Un triángulo isósceles tiene un lado de 2 cm y otro de 10 cm. ¿Cuánto mide su perímetro?",
+      "entrada": {
+        "tipo": "iso-dt",
+        "idea": "desigualdad",
+        "nivel": 2,
+        "a": 2,
+        "b": 10,
+        "pide": "perimetro"
+      },
+      "esperado": {
+        "valor": 22,
+        "texto": "22 cm"
+      }
+    },
+    {
+      "semilla": 33,
+      "enunciado": "P está dentro del triángulo ABC, con PB = 7 cm y PC = 5 cm. El perímetro de ABC mide un número entero de cm. ¿Cuál es su menor valor?",
+      "entrada": {
+        "tipo": "punto",
+        "idea": "desigualdad",
+        "nivel": 3,
+        "p": 7,
+        "q": 5,
+        "pide": "perimetro"
+      },
+      "esperado": {
+        "valor": 15,
+        "texto": "15 cm"
+      }
+    },
+    {
+      "semilla": 38,
+      "enunciado": "En el triángulo ABC, D está en el lado AC y AB = BD = DC. m∠C = 25°. ¿Cuánto mide el ángulo ABC?",
+      "entrada": {
+        "tipo": "cadena",
+        "idea": "isosceles",
+        "nivel": 3,
+        "c": 25,
+        "pide": "ABC"
+      },
+      "esperado": {
+        "valor": 105,
+        "texto": "105°"
+      }
+    },
+    {
+      "semilla": 41,
+      "enunciado": "En el triángulo ABC, las bisectrices interiores de B y C se cortan en I, y m∠BIC = 110°. ¿Cuánto mide el ángulo A?",
+      "entrada": {
+        "tipo": "inverso",
+        "idea": "angulo-de-bisectrices",
+        "nivel": 3,
+        "conE": false,
+        "X": 110,
+        "B": 80,
+        "C": 60,
+        "pide": "A"
+      },
+      "esperado": {
+        "valor": 40,
+        "texto": "40°"
+      }
+    },
+    {
+      "semilla": 49,
+      "enunciado": "En el triángulo ABC, m∠B = 125° y AH es la altura desde A, que cae fuera de BC, más allá de B. ¿Cuánto mide el ángulo BAH?",
+      "entrada": {
+        "tipo": "ang-altura",
+        "idea": "lineas-notables",
+        "nivel": 2,
+        "B": 125,
+        "C": 25,
+        "obtuso": true,
+        "pide": "BAH"
+      },
+      "esperado": {
+        "valor": 35,
+        "texto": "35°"
+      }
+    },
+    {
+      "semilla": 52,
+      "enunciado": "Los segmentos AD y BC se cortan en O. En los triángulos AOB y COD, m∠A = 80°, m∠B = 50° y m∠C = 75°. ¿Cuánto mide el ángulo D?",
+      "entrada": {
+        "tipo": "mariposa",
+        "idea": "suma-de-angulos",
+        "nivel": 3,
+        "angulos": {
+          "A": 80,
+          "B": 50,
+          "C": 75,
+          "D": 55
+        },
+        "pide": "D"
+      },
+      "esperado": {
+        "valor": 55,
+        "texto": "55°"
+      }
+    },
+    {
+      "semilla": 56,
+      "enunciado": "En el triángulo ABC, m∠A = 47° y m∠B = 35°. ¿Qué clase de triángulo es, por sus ángulos?",
+      "entrada": {
+        "tipo": "clase",
+        "idea": "suma-de-angulos",
+        "nivel": 1,
+        "angulos": {
+          "A": 47,
+          "B": 35
+        },
+        "pide": "clase"
+      },
+      "esperado": {
+        "valor": "Obtusángulo",
+        "texto": "Obtusángulo"
+      }
+    },
+    {
+      "semilla": 74,
+      "enunciado": "En el triángulo ABC, m∠B = 65° y m∠C = 55°. ¿Dónde cae el pie de la altura trazada desde A?",
+      "entrada": {
+        "tipo": "donde",
+        "idea": "lineas-notables",
+        "nivel": 1,
+        "angulos": {
+          "B": 65,
+          "C": 55
+        },
+        "pide": "pie"
+      },
+      "esperado": {
+        "valor": "Dentro del lado BC",
+        "texto": "Dentro del lado BC"
+      }
+    }
+  ]
+}

@@ -93,11 +93,11 @@ práctica de academia; no tienen datos de alumnos y se confirman con la medició
 | GE-SEG1–5, GE-ANG1–3, GE-CS1–4, GE-BIS1–3, GE-QB1–2 | segmentos-y-angulos | sumar tramos sin colinealidad, complemento/suplemento cruzados, bisectrices, quiebre entre paralelas |
 | GE-TRI1–3, GE-DT1–3, GE-BIS4–5 | triangulos (hasta el 17 nov) | suma de ángulos, desigualdad triangular, ángulo entre bisectrices |
 | GE-TRI4–19, GE-RAZ1–2 | triangulos, idea 1 (18 nov) | dos obtusos, la vuelta de 360°, restar uno solo, clase sin el tercero, falta un dato, partes iguales, x por ángulo, signo al despejar, la mariposa |
-| GE-EXT1–13 | triangulos, idea 2 (18 nov) | la suma de los exteriores como 180°, 540° o «depende», interior por exterior, restar o sumar al revés, la punta de flecha, partes iguales |
-| GE-ISO1–15 | triangulos, idea 3 (18 nov) | ángulo pegado y no el de enfrente, techo simétrico, falta un dato, no dividir la base, punta y base iguales, x por lado, lados que tocan, la cadena de isósceles |
-| GE-DT1–13 | triangulos, idea 4 (18 nov) | extremos incluidos, sin el límite de abajo, máximo y mínimo cruzados, el isósceles de 4 y 9, la diagonal con un solo triángulo |
+| GE-EXT1–15 | triangulos, idea 2 (18 nov; 14 y 15 de la práctica geo-triangulos) | la suma de los exteriores como 180°, 540° o «depende», interior por exterior, restar o sumar al revés, la punta de flecha, partes iguales |
+| GE-ISO1–18 | triangulos, idea 3 (18 nov; 16 a 18 de la práctica geo-triangulos) | ángulo pegado y no el de enfrente, techo simétrico, falta un dato, no dividir la base, punta y base iguales, x por lado, lados que tocan, la cadena de isósceles |
+| GE-DT1–16 | triangulos, idea 4 (18 nov; 14 a 16 de la práctica geo-triangulos) | extremos incluidos, sin el límite de abajo, máximo y mínimo cruzados, el isósceles de 4 y 9, la diagonal con un solo triángulo |
 | GE7-a, GE7-b, GE8, GE-LN1–13 | triangulos, idea 5 (18 nov) | la altura dentro o un lado (GE7 partido), la mediana como altura (GE8), reconocer por el aspecto, ∠BAH, ∠AFC, ángulo entre altura y bisectriz |
-| GE-BIS4, GE-BIS5-a, GE-BIS5-b, GE-BIS6–13 | triangulos, idea 6 (18 nov) | interior con exterior, A entero, 90° en E, sin la mitad, la de dos exteriores, el inverso |
+| GE-BIS4, GE-BIS5-a, GE-BIS5-b, GE-BIS6–14 | triangulos, idea 6 (18 nov; 14 de la práctica geo-triangulos) | interior con exterior, A entero, 90° en E, sin la mitad, la de dos exteriores, el inverso |
 | GE-CON1–3, GE-CON6–15 | congruencia | LLA, AAA, correspondencia de lados, base media, mediana a la hipotenusa, notables |
 | GE-POL1–5, GE-TRP1–2, GE-VAR1–2 | poligonos-y-cuadrilateros | diagonales, ángulos interiores y exteriores, trapecios, Varignon |
 | GE-TAN1–2, GE-POS1–2, GE-CIC1–2, GE-PON1–3 | circunferencia | tangentes, posiciones relativas, cuadrilátero inscrito, Poncelet y Pitot |

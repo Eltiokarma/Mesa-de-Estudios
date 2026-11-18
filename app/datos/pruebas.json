@@ -2063,7 +2063,7 @@
   },
   "geometria": {
    "curso": "geometria",
-   "version": "2.0.0",
+   "version": "2.1.0",
    "minutos": 15,
    "errores": {
     "GE1-area-como-lado": {
@@ -2249,6 +2249,46 @@
     "cuenta-vertices-y-lados-aparte": {
      "respaldo": "hipotesis",
      "describe": "Cuenta dos veces cada eje: uno por el vértice y otro por el lado que corta"
+    },
+    "GE-EXT8": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala a 180° la suma de los dos ángulos lejanos y el exterior"
+    },
+    "GE-TRI15": {
+     "respaldo": "hipotesis",
+     "describe": "Pasa mal los números al despejar (no les cambia el signo)"
+    },
+    "GE-TRI13": {
+     "respaldo": "hipotesis",
+     "describe": "Da la medida del ángulo en vez del valor de x"
+    },
+    "GE-ISO4": {
+     "respaldo": "hipotesis",
+     "describe": "Da lo que suman los dos ángulos de la base, sin partirlo entre los dos"
+    },
+    "GE-ISO5": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala el ángulo entre los lados iguales con los de la base"
+    },
+    "GE-ISO6": {
+     "respaldo": "hipotesis",
+     "describe": "Resta de 90° el ángulo entre los lados iguales sin partirlo"
+    },
+    "GE-DT2": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el límite de abajo: la diferencia de los otros dos lados"
+    },
+    "GE-DT3": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los extremos, donde los tres puntos quedan alineados"
+    },
+    "GE-DT4": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta uno solo de los extremos"
+    },
+    "GE-DT14": {
+     "respaldo": "hipotesis",
+     "describe": "Da el menor valor del lado en vez de contar cuántos valores hay"
     }
    },
    "pares": [
@@ -2331,45 +2371,135 @@
      }
     },
     {
-     "par": "geo-05",
-     "plantilla": "triangulo-estira",
-     "unidad": "geometria.relaciones-metricas",
-     "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
+     "par": "geo-12",
+     "plantilla": "geo-triangulos",
+     "unidad": "geometria.triangulos",
+     "mide": "El ángulo exterior es la suma de los dos interiores lejanos, con x: se igualan las expresiones y se despeja x",
      "A": {
-      "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
+      "enunciado": "En el triángulo PQR, el lado QR sigue de largo más allá de R hasta el punto S. El ángulo PRS mide 4x + 5°, m∠P = 2x + 10° y m∠Q = x + 25°. ¿Cuánto vale x?",
       "opciones": [
        {
-        "texto": "35 m"
+        "texto": "20"
        },
        {
-        "texto": "25 m"
+        "texto": "40"
        },
        {
-        "texto": "24 m"
+        "texto": "30"
        },
        {
-        "texto": "18 m"
+        "texto": "125"
        }
       ],
-      "k": "c9d64bb5b7c0d5da31eea9d12f88e7d1fac410d70eb7fb8273916d589bfe644bfeb152495ef81b37ff61a27c7c979b8c93c6a493e321be2c7e75c65ab5796426a180b026b9a03f3f5d1518b6ae5022435d16f6"
+      "k": "16d0f8ec745e8438f2bb80f8d07244794f1127ce3e0409728152cc2d62210a33b8fa081e71ab5973"
      },
      "B": {
-      "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
+      "enunciado": "En el triángulo PQR, el lado QR sigue de largo más allá de R hasta el punto S. El ángulo PRS mide 5x + 10°, m∠P = 2x + 10° y m∠Q = x + 40°. ¿Cuánto vale x?",
       "opciones": [
        {
-        "texto": "21 cm"
+        "texto": "15"
        },
        {
-        "texto": "15 cm"
+        "texto": "20"
        },
        {
-        "texto": "10,8 cm"
+        "texto": "110"
        },
        {
-        "texto": "14,4 cm"
+        "texto": "30"
        }
       ],
-      "k": "22e92a49179a6beaa6539b2cbe297c328aaba1bd36277d9cceb7955bb86c23357aa35a9597eddf7b5db6a67b122beed2cc5ff48a7b88f641a9b6d27adaf80c87ab373c1b309dfe7c6b642629110460e0af0f52"
+      "k": "f2b69208a7a3c565e65b242bdb7947826a04c724553b31a657307475521ae66df734ca73382664c9"
+     }
+    },
+    {
+     "par": "geo-13",
+     "plantilla": "geo-triangulos",
+     "unidad": "geometria.triangulos",
+     "mide": "Isósceles: frente a lados iguales hay ángulos iguales, y los dos de la base se reparten lo que deja el ángulo entre los lados iguales",
+     "A": {
+      "enunciado": "Las dos vigas inclinadas de un tijeral miden lo mismo y en la cumbrera forman un ángulo de 80°. ¿Qué ángulo forma cada una con la viga horizontal de la base?",
+      "opciones": [
+       {
+        "texto": "100°"
+       },
+       {
+        "texto": "50°"
+       },
+       {
+        "texto": "10°"
+       },
+       {
+        "texto": "80°"
+       }
+      ],
+      "k": "e3f66758155ac88e6b9f32114938d5f67addececd1378398879797fbe430904e682597ed3204"
+     },
+     "B": {
+      "enunciado": "Las dos vigas inclinadas de un tijeral miden lo mismo y en la cumbrera forman un ángulo de 64°. ¿Qué ángulo forma cada una con la viga horizontal de la base?",
+      "opciones": [
+       {
+        "texto": "64°"
+       },
+       {
+        "texto": "26°"
+       },
+       {
+        "texto": "116°"
+       },
+       {
+        "texto": "58°"
+       }
+      ],
+      "k": "5b9be41bc5607aed1bd05f13bc28f66352a42cef088a36ef8d756c8990e3db24ac2ef62f490b"
+     }
+    },
+    {
+     "par": "geo-14",
+     "plantilla": "geo-triangulos-notables",
+     "unidad": "geometria.triangulos",
+     "mide": "Desigualdad triangular con lados enteros: el tercer lado está estrictamente entre la diferencia y la suma de los otros dos",
+     "A": {
+      "enunciado": "Los dos brazos de una lámpara de escritorio miden 32 cm y 20 cm. La distancia del pie a la cabeza mide un número entero de cm, y los brazos nunca quedan en línea. ¿Cuántos valores puede tomar esa distancia?",
+      "opciones": [
+       {
+        "texto": "41"
+       },
+       {
+        "texto": "13"
+       },
+       {
+        "texto": "39"
+       },
+       {
+        "texto": "51"
+       },
+       {
+        "texto": "40"
+       }
+      ],
+      "k": "cc15a012c96a4911539c18edae9c6b7eda423a78016d8c80d86eade0c18bffde66837252fc3cb5f6e191ff6428"
+     },
+     "B": {
+      "enunciado": "Los dos brazos de una lámpara de escritorio miden 28 cm y 17 cm. La distancia del pie a la cabeza mide un número entero de cm, y los brazos nunca quedan en línea. ¿Cuántos valores puede tomar esa distancia?",
+      "opciones": [
+       {
+        "texto": "33"
+       },
+       {
+        "texto": "44"
+       },
+       {
+        "texto": "34"
+       },
+       {
+        "texto": "12"
+       },
+       {
+        "texto": "35"
+       }
+      ],
+      "k": "2e71535de83d2004ee69d3818c56abcd91b2f0d903cf6d440a8eb3743cfc6c08731d862a222b7e6b406c305cf5"
      }
     },
     {
@@ -2454,48 +2584,6 @@
        }
       ],
       "k": "86996e2ba24136e03888c3ada9d662fa25709a581be44391b2711ae98bb4e9b1cddbebc4c8d490c2a7f78306429e0a2e4fa050ef49d5fcded64d349eeecdcd86e3dc18caf62e2bf1e81b0b4997bed330bb2fd3ea6ac6bd92ab192b2fa56652"
-     }
-    },
-    {
-     "par": "geo-11",
-     "plantilla": "poligonos",
-     "unidad": "geometria.poligonos-y-cuadrilateros",
-     "mide": "Suma de ángulos interiores: 180°(n − 2)",
-     "A": {
-      "enunciado": "Un heptágono convexo tiene 7 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
-      "opciones": [
-       {
-        "texto": "1260°"
-       },
-       {
-        "texto": "900°"
-       },
-       {
-        "texto": "360°"
-       },
-       {
-        "texto": "1080°"
-       }
-      ],
-      "k": "2ed2841c2cda66df7edd1934cbff5ffbcf8ca90e8815dca9f2955ed6bf86f6089bac309585bba692db48f10bef9ff7a39da523a1e663ad73a1981bc8daace208ef028d6da89f7aad"
-     },
-     "B": {
-      "enunciado": "Un eneágono convexo tiene 9 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
-      "opciones": [
-       {
-        "texto": "1620°"
-       },
-       {
-        "texto": "1260°"
-       },
-       {
-        "texto": "360°"
-       },
-       {
-        "texto": "1440°"
-       }
-      ],
-      "k": "a4d4d6c0650446730896442c37471754948c3ef29ed767d0913c7d47e72ecfabe02100dec109a13064c1d0f6d5765a492d1840508a13d99005893c51074f44dd67a81d280f758ec4"
      }
     },
     {
@@ -2622,48 +2710,6 @@
        }
       ],
       "k": "0c55cfcd8e36476f58aad7fff6a0fd1051a386f4788dc15465160c35a5d483731e1105f92b1b7b2f8be080134b8dda1e2b2295ad0b925985a2e4715d8fb13a037094a8d5982f90ffce3fea3446"
-     }
-    },
-    {
-     "par": "ga-02",
-     "plantilla": "geometria-analitica",
-     "unidad": "geometria.geometria-analitica",
-     "mide": "Distancia de un punto a una recta: |Ax₀ + By₀ + C| / √(A² + B²)",
-     "A": {
-      "enunciado": "¿Cuál es la distancia del punto P(6; 2) a la recta 3x + 4y + 1 = 0?",
-      "opciones": [
-       {
-        "texto": "1,08"
-       },
-       {
-        "texto": "27"
-       },
-       {
-        "texto": "5,4"
-       },
-       {
-        "texto": "5,2"
-       }
-      ],
-      "k": "10ec54711e84a02cf119bf0f975600f775d1adcad5e165836b5123f924239c64c8095844468c8ec8869216a2dd3d24905e4dc3220eeb39c7f32791b3095bfd28064192a23d4f26f546ca877087a86dd8668071766d95eb6a68"
-     },
-     "B": {
-      "enunciado": "¿Cuál es la distancia del punto Q(2; 5) a la recta 8x + 6y − 3 = 0?",
-      "opciones": [
-       {
-        "texto": "0,43"
-       },
-       {
-        "texto": "43"
-       },
-       {
-        "texto": "4,3"
-       },
-       {
-        "texto": "4,6"
-       }
-      ],
-      "k": "6a144033b8dce7ace0839aeba01a28e20cdbb1ad3d12d52dafad55e7591fa374be6f8713ce56c30bcdcfaa40ac71b0f532959727382471c3da1643d0cc1405c4cc946c40b62ef7b6df420bb196b27b433a5aa54aaa5c29f591"
      }
     }
    ]

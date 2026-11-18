@@ -1,7 +1,7 @@
 {
   "curso": "geometria",
-  "version": "2.0.0",
-  "fecha": "2026-11-06",
+  "version": "2.1.0",
+  "fecha": "2026-11-18",
   "minutos": 15,
   "informes": [
     "docs/investigacion/geometria-ideas-erroneas.md"
@@ -190,6 +190,46 @@
     "cuenta-vertices-y-lados-aparte": {
       "respaldo": "hipotesis",
       "describe": "Cuenta dos veces cada eje: uno por el vértice y otro por el lado que corta"
+    },
+    "GE-EXT8": {
+      "respaldo": "hipotesis",
+      "describe": "Iguala a 180° la suma de los dos ángulos lejanos y el exterior"
+    },
+    "GE-TRI15": {
+      "respaldo": "hipotesis",
+      "describe": "Pasa mal los números al despejar (no les cambia el signo)"
+    },
+    "GE-TRI13": {
+      "respaldo": "hipotesis",
+      "describe": "Da la medida del ángulo en vez del valor de x"
+    },
+    "GE-ISO4": {
+      "respaldo": "hipotesis",
+      "describe": "Da lo que suman los dos ángulos de la base, sin partirlo entre los dos"
+    },
+    "GE-ISO5": {
+      "respaldo": "hipotesis",
+      "describe": "Iguala el ángulo entre los lados iguales con los de la base"
+    },
+    "GE-ISO6": {
+      "respaldo": "hipotesis",
+      "describe": "Resta de 90° el ángulo entre los lados iguales sin partirlo"
+    },
+    "GE-DT2": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el límite de abajo: la diferencia de los otros dos lados"
+    },
+    "GE-DT3": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta los extremos, donde los tres puntos quedan alineados"
+    },
+    "GE-DT4": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta uno solo de los extremos"
+    },
+    "GE-DT14": {
+      "respaldo": "hipotesis",
+      "describe": "Da el menor valor del lado en vez de contar cuántos valores hay"
     }
   },
   "pares": [
@@ -318,65 +358,209 @@
       }
     },
     {
-      "par": "geo-05",
-      "plantilla": "triangulo-estira",
-      "unidad": "geometria.relaciones-metricas",
-      "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
+      "par": "geo-12",
+      "plantilla": "geo-triangulos",
+      "unidad": "geometria.triangulos",
+      "mide": "El ángulo exterior es la suma de los dos interiores lejanos, con x: se igualan las expresiones y se despeja x",
       "A": {
-        "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
+        "enunciado": "En el triángulo PQR, el lado QR sigue de largo más allá de R hasta el punto S. El ángulo PRS mide 4x + 5°, m∠P = 2x + 10° y m∠Q = x + 25°. ¿Cuánto vale x?",
         "datos": {
-          "c1": 30,
-          "c2": 40
+          "aP": 2,
+          "bP": 10,
+          "aQ": 1,
+          "bQ": 25,
+          "aE": 4,
+          "bE": 5
         },
         "opciones": [
           {
-            "texto": "35 m",
-            "valor": 35,
-            "error": "GE18-promedio-catetos"
+            "texto": "20",
+            "valor": 20,
+            "error": "GE-EXT8"
           },
           {
-            "texto": "25 m",
-            "valor": 25,
-            "error": "GE8-altura-como-mediana"
+            "texto": "40",
+            "valor": 40,
+            "error": "GE-TRI15"
           },
           {
-            "texto": "24 m",
-            "valor": 24,
+            "texto": "30",
+            "valor": 30,
             "correcta": true
           },
           {
-            "texto": "18 m",
-            "valor": 18,
-            "error": "proyeccion-como-altura"
+            "texto": "125",
+            "valor": 125,
+            "error": "GE-TRI13"
           }
         ]
       },
       "B": {
-        "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
+        "enunciado": "En el triángulo PQR, el lado QR sigue de largo más allá de R hasta el punto S. El ángulo PRS mide 5x + 10°, m∠P = 2x + 10° y m∠Q = x + 40°. ¿Cuánto vale x?",
         "datos": {
-          "c1": 18,
-          "c2": 24
+          "aP": 2,
+          "bP": 10,
+          "aQ": 1,
+          "bQ": 40,
+          "aE": 5,
+          "bE": 10
         },
         "opciones": [
           {
-            "texto": "21 cm",
-            "valor": 21,
-            "error": "GE18-promedio-catetos"
-          },
-          {
-            "texto": "15 cm",
+            "texto": "15",
             "valor": 15,
-            "error": "GE8-altura-como-mediana"
+            "error": "GE-EXT8"
           },
           {
-            "texto": "10,8 cm",
-            "valor": 10.8,
-            "error": "proyeccion-como-altura"
-          },
-          {
-            "texto": "14,4 cm",
-            "valor": 14.4,
+            "texto": "20",
+            "valor": 20,
             "correcta": true
+          },
+          {
+            "texto": "110",
+            "valor": 110,
+            "error": "GE-TRI13"
+          },
+          {
+            "texto": "30",
+            "valor": 30,
+            "error": "GE-TRI15"
+          }
+        ]
+      }
+    },
+    {
+      "par": "geo-13",
+      "plantilla": "geo-triangulos",
+      "unidad": "geometria.triangulos",
+      "mide": "Isósceles: frente a lados iguales hay ángulos iguales, y los dos de la base se reparten lo que deja el ángulo entre los lados iguales",
+      "A": {
+        "enunciado": "Las dos vigas inclinadas de un tijeral miden lo mismo y en la cumbrera forman un ángulo de 80°. ¿Qué ángulo forma cada una con la viga horizontal de la base?",
+        "datos": {
+          "cumbrera": 80
+        },
+        "opciones": [
+          {
+            "texto": "100°",
+            "valor": 100,
+            "error": "GE-ISO4"
+          },
+          {
+            "texto": "50°",
+            "valor": 50,
+            "correcta": true
+          },
+          {
+            "texto": "10°",
+            "valor": 10,
+            "error": "GE-ISO6"
+          },
+          {
+            "texto": "80°",
+            "valor": 80,
+            "error": "GE-ISO5"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Las dos vigas inclinadas de un tijeral miden lo mismo y en la cumbrera forman un ángulo de 64°. ¿Qué ángulo forma cada una con la viga horizontal de la base?",
+        "datos": {
+          "cumbrera": 64
+        },
+        "opciones": [
+          {
+            "texto": "64°",
+            "valor": 64,
+            "error": "GE-ISO5"
+          },
+          {
+            "texto": "26°",
+            "valor": 26,
+            "error": "GE-ISO6"
+          },
+          {
+            "texto": "116°",
+            "valor": 116,
+            "error": "GE-ISO4"
+          },
+          {
+            "texto": "58°",
+            "valor": 58,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "geo-14",
+      "plantilla": "geo-triangulos-notables",
+      "unidad": "geometria.triangulos",
+      "mide": "Desigualdad triangular con lados enteros: el tercer lado está estrictamente entre la diferencia y la suma de los otros dos",
+      "A": {
+        "enunciado": "Los dos brazos de una lámpara de escritorio miden 32 cm y 20 cm. La distancia del pie a la cabeza mide un número entero de cm, y los brazos nunca quedan en línea. ¿Cuántos valores puede tomar esa distancia?",
+        "datos": {
+          "brazo1": 32,
+          "brazo2": 20
+        },
+        "opciones": [
+          {
+            "texto": "41",
+            "valor": 41,
+            "error": "GE-DT3"
+          },
+          {
+            "texto": "13",
+            "valor": 13,
+            "error": "GE-DT14"
+          },
+          {
+            "texto": "39",
+            "valor": 39,
+            "correcta": true
+          },
+          {
+            "texto": "51",
+            "valor": 51,
+            "error": "GE-DT2"
+          },
+          {
+            "texto": "40",
+            "valor": 40,
+            "error": "GE-DT4"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Los dos brazos de una lámpara de escritorio miden 28 cm y 17 cm. La distancia del pie a la cabeza mide un número entero de cm, y los brazos nunca quedan en línea. ¿Cuántos valores puede tomar esa distancia?",
+        "datos": {
+          "brazo1": 28,
+          "brazo2": 17
+        },
+        "opciones": [
+          {
+            "texto": "33",
+            "valor": 33,
+            "correcta": true
+          },
+          {
+            "texto": "44",
+            "valor": 44,
+            "error": "GE-DT2"
+          },
+          {
+            "texto": "34",
+            "valor": 34,
+            "error": "GE-DT4"
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "GE-DT14"
+          },
+          {
+            "texto": "35",
+            "valor": 35,
+            "error": "GE-DT3"
           }
         ]
       }
@@ -503,68 +687,6 @@
             "texto": "8",
             "valor": 8,
             "error": "diagonales-de-un-vertice"
-          }
-        ]
-      }
-    },
-    {
-      "par": "geo-11",
-      "plantilla": "poligonos",
-      "unidad": "geometria.poligonos-y-cuadrilateros",
-      "mide": "Suma de ángulos interiores: 180°(n − 2)",
-      "A": {
-        "enunciado": "Un heptágono convexo tiene 7 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
-        "datos": {
-          "n": 7
-        },
-        "opciones": [
-          {
-            "texto": "1260°",
-            "valor": 1260,
-            "error": "GE23-suma-180n"
-          },
-          {
-            "texto": "900°",
-            "valor": 900,
-            "correcta": true
-          },
-          {
-            "texto": "360°",
-            "valor": 360,
-            "error": "suma-siempre-360"
-          },
-          {
-            "texto": "1080°",
-            "valor": 1080,
-            "error": "suma-n-menos-1-triangulos"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Un eneágono convexo tiene 9 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
-        "datos": {
-          "n": 9
-        },
-        "opciones": [
-          {
-            "texto": "1620°",
-            "valor": 1620,
-            "error": "GE23-suma-180n"
-          },
-          {
-            "texto": "1260°",
-            "valor": 1260,
-            "correcta": true
-          },
-          {
-            "texto": "360°",
-            "valor": 360,
-            "error": "suma-siempre-360"
-          },
-          {
-            "texto": "1440°",
-            "valor": 1440,
-            "error": "suma-n-menos-1-triangulos"
           }
         ]
       }
@@ -771,88 +893,6 @@
             "texto": "10,9",
             "valor": 10.9087,
             "error": "GE11-resta-cuadrados"
-          }
-        ]
-      }
-    },
-    {
-      "par": "ga-02",
-      "plantilla": "geometria-analitica",
-      "unidad": "geometria.geometria-analitica",
-      "mide": "Distancia de un punto a una recta: |Ax₀ + By₀ + C| / √(A² + B²)",
-      "A": {
-        "enunciado": "¿Cuál es la distancia del punto P(6; 2) a la recta 3x + 4y + 1 = 0?",
-        "datos": {
-          "modelo": {
-            "P": [
-              6,
-              2
-            ],
-            "L": [
-              3,
-              4,
-              1
-            ]
-          }
-        },
-        "opciones": [
-          {
-            "texto": "1,08",
-            "valor": 1.08,
-            "error": "distancia-recta-sin-raiz"
-          },
-          {
-            "texto": "27",
-            "valor": 27,
-            "error": "distancia-recta-sin-dividir"
-          },
-          {
-            "texto": "5,4",
-            "valor": 5.4,
-            "correcta": true
-          },
-          {
-            "texto": "5,2",
-            "valor": 5.2,
-            "error": "distancia-recta-sin-c"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "¿Cuál es la distancia del punto Q(2; 5) a la recta 8x + 6y − 3 = 0?",
-        "datos": {
-          "modelo": {
-            "P": [
-              2,
-              5
-            ],
-            "L": [
-              8,
-              6,
-              -3
-            ]
-          }
-        },
-        "opciones": [
-          {
-            "texto": "0,43",
-            "valor": 0.43,
-            "error": "distancia-recta-sin-raiz"
-          },
-          {
-            "texto": "43",
-            "valor": 43,
-            "error": "distancia-recta-sin-dividir"
-          },
-          {
-            "texto": "4,3",
-            "valor": 4.3,
-            "correcta": true
-          },
-          {
-            "texto": "4,6",
-            "valor": 4.6,
-            "error": "distancia-recta-sin-c"
           }
         ]
       }
@@ -1251,6 +1291,214 @@
             "texto": "1 eje",
             "valor": 1,
             "error": "solo-el-eje-vertical"
+          }
+        ]
+      }
+    },
+    {
+      "par": "geo-05",
+      "plantilla": "triangulo-estira",
+      "unidad": "geometria.relaciones-metricas",
+      "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
+      "A": {
+        "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
+        "datos": {
+          "c1": 30,
+          "c2": 40
+        },
+        "opciones": [
+          {
+            "texto": "35 m",
+            "valor": 35,
+            "error": "GE18-promedio-catetos"
+          },
+          {
+            "texto": "25 m",
+            "valor": 25,
+            "error": "GE8-altura-como-mediana"
+          },
+          {
+            "texto": "24 m",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "18 m",
+            "valor": 18,
+            "error": "proyeccion-como-altura"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
+        "datos": {
+          "c1": 18,
+          "c2": 24
+        },
+        "opciones": [
+          {
+            "texto": "21 cm",
+            "valor": 21,
+            "error": "GE18-promedio-catetos"
+          },
+          {
+            "texto": "15 cm",
+            "valor": 15,
+            "error": "GE8-altura-como-mediana"
+          },
+          {
+            "texto": "10,8 cm",
+            "valor": 10.8,
+            "error": "proyeccion-como-altura"
+          },
+          {
+            "texto": "14,4 cm",
+            "valor": 14.4,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "geo-11",
+      "plantilla": "poligonos",
+      "unidad": "geometria.poligonos-y-cuadrilateros",
+      "mide": "Suma de ángulos interiores: 180°(n − 2)",
+      "A": {
+        "enunciado": "Un heptágono convexo tiene 7 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
+        "datos": {
+          "n": 7
+        },
+        "opciones": [
+          {
+            "texto": "1260°",
+            "valor": 1260,
+            "error": "GE23-suma-180n"
+          },
+          {
+            "texto": "900°",
+            "valor": 900,
+            "correcta": true
+          },
+          {
+            "texto": "360°",
+            "valor": 360,
+            "error": "suma-siempre-360"
+          },
+          {
+            "texto": "1080°",
+            "valor": 1080,
+            "error": "suma-n-menos-1-triangulos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un eneágono convexo tiene 9 lados. ¿Cuál es la suma de las medidas de todos sus ángulos internos?",
+        "datos": {
+          "n": 9
+        },
+        "opciones": [
+          {
+            "texto": "1620°",
+            "valor": 1620,
+            "error": "GE23-suma-180n"
+          },
+          {
+            "texto": "1260°",
+            "valor": 1260,
+            "correcta": true
+          },
+          {
+            "texto": "360°",
+            "valor": 360,
+            "error": "suma-siempre-360"
+          },
+          {
+            "texto": "1440°",
+            "valor": 1440,
+            "error": "suma-n-menos-1-triangulos"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ga-02",
+      "plantilla": "geometria-analitica",
+      "unidad": "geometria.geometria-analitica",
+      "mide": "Distancia de un punto a una recta: |Ax₀ + By₀ + C| / √(A² + B²)",
+      "A": {
+        "enunciado": "¿Cuál es la distancia del punto P(6; 2) a la recta 3x + 4y + 1 = 0?",
+        "datos": {
+          "modelo": {
+            "P": [
+              6,
+              2
+            ],
+            "L": [
+              3,
+              4,
+              1
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1,08",
+            "valor": 1.08,
+            "error": "distancia-recta-sin-raiz"
+          },
+          {
+            "texto": "27",
+            "valor": 27,
+            "error": "distancia-recta-sin-dividir"
+          },
+          {
+            "texto": "5,4",
+            "valor": 5.4,
+            "correcta": true
+          },
+          {
+            "texto": "5,2",
+            "valor": 5.2,
+            "error": "distancia-recta-sin-c"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuál es la distancia del punto Q(2; 5) a la recta 8x + 6y − 3 = 0?",
+        "datos": {
+          "modelo": {
+            "P": [
+              2,
+              5
+            ],
+            "L": [
+              8,
+              6,
+              -3
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "0,43",
+            "valor": 0.43,
+            "error": "distancia-recta-sin-raiz"
+          },
+          {
+            "texto": "43",
+            "valor": 43,
+            "error": "distancia-recta-sin-dividir"
+          },
+          {
+            "texto": "4,3",
+            "valor": 4.3,
+            "correcta": true
+          },
+          {
+            "texto": "4,6",
+            "valor": 4.6,
+            "error": "distancia-recta-sin-c"
           }
         ]
       }
