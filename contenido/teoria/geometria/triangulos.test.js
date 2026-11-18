@@ -106,7 +106,8 @@ test('colores: todo ángulo en carmín; en los ejercicios, lo dado en carmín y 
 
 test('fidelidad: cada ángulo mide en el dibujo lo que dice su rótulo o su valor (±0,5°)', () => {
   const mal = [];
-  for (const it of FIGS) for (const z of angulosDe(it.figura)) {
+  // Las figuras sin escala (sinEscala, ronda 2 del lector) tienen su propia prueba, al final.
+  for (const it of FIGS) if (!it.figura.sinEscala) for (const z of angulosDe(it.figura)) {
     const num = /^(\d+)°$/.exec(z.texto), esp = num ? +num[1] : z.an.mide;
     if (esp === undefined) { mal.push(`${it.donde}: «${z.texto}» sin medida`); continue; }
     if (Math.abs(z.m - esp) > 0.5) mal.push(`${it.donde}: «${z.texto || '(arco)'}» mide ${z.m.toFixed(2)}° y debería medir ${esp}°`);
@@ -314,7 +315,7 @@ test('ideas 2 a 6, colores: en los ejercicios lo dado en carmín y lo pedido («
 
 test('ideas 2 a 6, fidelidad: cada ángulo mide en el dibujo lo que dice su rótulo o su valor (±0,5°)', () => {
   const mal = [];
-  for (const [i, figs] of FIGS2) for (const it of figs) for (const z of angulosDe2(it.figura)) {
+  for (const [i, figs] of FIGS2) for (const it of figs) if (!it.figura.sinEscala) for (const z of angulosDe2(it.figura)) {
     const num = /^(\d+)°$/.exec(z.texto), esp = num ? +num[1] : z.an.mide;
     if (esp === undefined) { mal.push(`${i.id} ${it.donde}: «${z.texto}» sin medida`); continue; }
     if (Math.abs(z.m - esp) > 0.5) mal.push(`${i.id} ${it.donde}: «${z.texto || '(arco)'}» mide ${z.m.toFixed(2)}° y debería medir ${esp}°`);
@@ -464,4 +465,62 @@ test('correcciones, arcos: en los ejercicios, carmín sin rótulo solo si es dat
     }
   });
   assert.deepEqual([...new Set(mal)].slice(0, 20), []);
+});
+
+// ---------- Correcciones de la ronda 2 del lector en frío (18 nov, noche) ----------
+// Las figuras a escala de los ejemplos se medían con transportador y daban la respuesta (tarjetas 01, 07 y 13). Una
+// figura con sinEscala: true dice «El dibujo no está a escala.» en el enunciado, y ningún ángulo dibujado mide la
+// respuesta (más de 7° de diferencia), para que el transportador no la dé. Las que eran el problema (el tijeral, la señal
+// y «Partir el ángulo», y «La mediana que mide la mitad», que estrena figura) van así.
+test('ronda 2: las figuras sin escala lo dicen y no dejan medir la respuesta con transportador', () => {
+  const ej = (i, titulo) => def.ideas[i].ejemplos.find(e => e.titulo === titulo);
+  for (const [i, ti] of [[0, 'La punta del tijeral'], [2, 'La señal de tránsito'], [4, 'Partir el ángulo'], [4, 'La mediana que mide la mitad']]) {
+    const e = ej(i, ti);
+    assert.ok(e && e.figura && e.figura.datos.sinEscala, `${ti}: sin escala`);
+  }
+  let n = 0;
+  for (const i of def.ideas) for (const e of i.ejemplos) {
+    if (!e.figura || !e.figura.datos.sinEscala) continue;
+    n++;
+    assert.match(plano(e.enunciado), /El dibujo no está a escala\.$/, `${e.titulo}: el enunciado no lo dice`);
+    const r = /(\d+)°/.exec(plano(e.respuesta)), medidos = angulosDe2(e.figura.datos).map(z => z.m);
+    if (r) for (const m of medidos) assert.ok(Math.abs(m - +r[1]) > 7, `${e.titulo}: un ángulo dibujado mide ${m.toFixed(1)}°, casi la respuesta (${r[1]}°)`);
+    // Y el texto alternativo no da medidas del dibujo que contradigan el enunciado: dice que es sin escala.
+    assert.match(P.escena(e.figura.datos).fig.alt, /sin escala/, `${e.titulo}: el alt no dice «sin escala»`);
+  }
+  assert.ok(n >= 4);
+});
+
+// Idea 6: el alumno elige la regla, así que un ejercicio que usa una trae las tres, y cada cruce dicho en palabras (I, E
+// y Q; tarjetas 16 y 17: «I y E sin definir»). Vale en todos los ejemplos, «Así se resuelve» y «Ahora tú» (400 semillas).
+test('ronda 2: en la idea 6, si los datos traen una regla de cruce, traen las tres, con I, E y Q dichos en palabras', () => {
+  const id = def.ideas[5], REGLA = /m∠B[IEQ]C = .*÷ 2/;
+  const CRUCES = [/^I es el cruce de las bisectrices interiores de B y de C: m∠BIC = 90° \+ \(m∠A ÷ 2\)\.$/,
+    /^E es el cruce de la bisectriz interior de B con la exterior de C: m∠BEC = m∠A ÷ 2\.$/,
+    /^Q es el cruce de las bisectrices exteriores de B y de C: m∠BQC = 90° − \(m∠A ÷ 2\)\.$/];
+  const revisar = (donde, datos) => {
+    const ls = datos.map(plano);
+    if (!ls.some(l => REGLA.test(l))) return 0;
+    for (const re of CRUCES) assert.ok(ls.some(l => re.test(l)), `${donde}: falta ${re}`);
+    assert.equal(ls.filter(l => REGLA.test(l)).length, 3, `${donde}: reglas de cruce de más`);
+    return 1;
+  };
+  let con = 0;
+  id.ejemplos.forEach((e, k) => { con += revisar(`ejemplo ${k + 1} «${e.titulo}»`, e.datos); });
+  for (let s = 0; s < SEMILLAS; s++) { revisar(`ahora tú ${s}`, id.ahoraTu.generar(s).datos); revisar(`resuelve ${s}`, id.resuelve.generar(s).datos); }
+  assert.ok(con >= 8, `${con} ejemplos con reglas`);
+  for (const ti of ['Dos exteriores', 'De E al ángulo A']) assert.equal(revisar(ti, id.ejemplos.find(e => e.titulo === ti).datos), 1, ti);
+  // Q se presenta antes de la regla: en «Lee» y en «Mira».
+  assert.match(id.lee.tarjetas.map(x => plano(x.texto)).join(' '), /en Q/);
+  assert.ok(id.mira.pasos.some(ps => /Q/.test(plano(ps.texto))), '«Mira» no llega a Q');
+});
+
+// Ideas 1, 2 y 6: A se mueve arrastrando la punta o con los controles de B y C; la consigna y la misión lo dicen.
+test('ronda 2: la consigna y la misión dicen cómo se mueve A (arrastrar o controles)', () => {
+  for (const k of [0, 1, 5]) {
+    const j = def.ideas[k].juega;
+    assert.ok(j.arrastres && j.arrastres.length && j.controles.length, def.ideas[k].id);
+    assert.match(plano(j.mision.texto), /^Arrastra la (punta|esquina) A, o usa los controles/, def.ideas[k].id);
+    assert.match(plano(j.consigna), /A se arrastra o se mueve con los controles/, def.ideas[k].id);
+  }
 });

@@ -295,6 +295,19 @@ test('datos: lista de líneas cortas, con la herramienta de cada tipo, sin la re
   }
 });
 
+// Ronda 2 del lector en frío (18 nov, noche): con una regla de cruce en los datos van las tres, y cada cruce dicho en
+// palabras (I, E y Q), igual que en la teoría.
+test('bisectrices: si los datos traen una regla de cruce, traen las tres, con I, E y Q dichos en palabras (400 semillas)', () => {
+  let n = 0;
+  for (const [s, p] of muestras) {
+    const ls = p.datos.map(plano);
+    if (!ls.some(l => /m∠B[IEQ]C = .*÷ 2/.test(l))) continue;
+    n++;
+    for (const L of ['I', 'E', 'Q']) assert.ok(ls.some(l => new RegExp(`^${L} es el cruce de la`).test(l) && new RegExp(`m∠B${L}C = `).test(l)), `${s}: falta el cruce ${L} en palabras`);
+  }
+  assert.ok(n > 20, `${n}`);
+});
+
 // ---- Colores (regla de la unidad; molde §5b) ----
 test('colores: ángulos dados en carmín y lo pedido en tinta; lados dados naranja y turquesa (idea 4), igual en el texto; la idea 5 en tinta; sin violeta en figura ni enunciado', () => {
   let conFig = 0;

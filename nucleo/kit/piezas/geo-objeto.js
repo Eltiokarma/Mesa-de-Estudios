@@ -1183,8 +1183,10 @@
     datos.ladosRot = (d.ladosRot || []).concat(lr);
     datos.libres = (d.libres || []).concat([{ en: 'A', dir: ladoA, dist: 10, texto: 'A' }]);
     if (d.extremos !== undefined && d.textoExtremos) {
-      datos.libres = datos.libres.concat([{ en: 'A0', dir: d.ac === false ? inc - 90 : inc + 90, dist: 12, texto: d.textoExtremos[0], desde: d.extremos },
-        { en: 'A1', dir: inc + 90, dist: 12, texto: d.textoExtremos[1], desde: d.extremos }]);
+      // En turquesa, como el punto hueco y la línea punteada de la cabeza: en tinta, «AC = 15 cm» junto al brazo naranja
+      // se leía como la medida del brazo (lector en frío de Triángulos, ronda 2).
+      datos.libres = datos.libres.concat([{ en: 'A0', dir: d.ac === false ? inc - 90 : inc + 90, dist: 12, texto: d.textoExtremos[0], color: 'i', desde: d.extremos },
+        { en: 'A1', dir: inc + 90, dist: 12, texto: d.textoExtremos[1], color: 'i', desde: d.extremos }]);
     }
     const piezas = g => {
       const s = g.s, cab = g.S(A), w = [Math.cos(dirA * RAD), -Math.sin(dirA * RAD)], nn = [-w[1], w[0]];

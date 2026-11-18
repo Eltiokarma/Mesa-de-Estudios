@@ -137,9 +137,9 @@
     paralelas: 'Entre paralelas, los alternos internos son iguales.',
     bis2: 'Cada bisectriz parte su ángulo en dos ángulos iguales.',
     // Con paréntesis, iguales a la teoría («90° − m∠A ÷ 2» se leía como (90° − m∠A) ÷ 2; lector en frío, 18 nov).
-    BIC: 'Dos bisectrices interiores, de B y de C: m∠BIC = 90° + (m∠A ÷ 2).',
-    BEC: 'Interior de B con exterior de C: m∠BEC = m∠A ÷ 2.',
-    BQC: 'Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − (m∠A ÷ 2).',
+    BIC: 'I es el cruce de las bisectrices interiores de B y de C: m∠BIC = 90° + (m∠A ÷ 2).',
+    BEC: 'E es el cruce de la bisectriz interior de B con la exterior de C: m∠BEC = m∠A ÷ 2.',
+    BQC: 'Q es el cruce de las bisectrices exteriores de B y de C: m∠BQC = 90° − (m∠A ÷ 2).',
   };
   const kT = p => (p === 1 ? 'k' : `${p}k`);
 

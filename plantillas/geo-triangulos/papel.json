@@ -36,7 +36,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "En el triángulo ABC, m∠A = 70°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC? Datos: Dos bisectrices interiores, de B y de C: m∠BIC = 90° + (m∠A ÷ 2). Interior de B con exterior de C: m∠BEC = m∠A ÷ 2. Dos bisectrices exteriores, de B y de C: m∠BQC = 90° − (m∠A ÷ 2). Alternativas: A) 70°   B) 90°   C) 17,5°   D) 125°   E) 35°",
+      "enunciado": "En el triángulo ABC, m∠A = 70°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide el ángulo BEC? Datos: I es el cruce de las bisectrices interiores de B y de C: m∠BIC = 90° + (m∠A ÷ 2). E es el cruce de la bisectriz interior de B con la exterior de C: m∠BEC = m∠A ÷ 2. Q es el cruce de las bisectrices exteriores de B y de C: m∠BQC = 90° − (m∠A ÷ 2). Alternativas: A) 70°   B) 90°   C) 17,5°   D) 125°   E) 35°",
       "respuesta": "E) 35°",
       "pasos": [
         "Interior con exterior: la mitad de A.",

@@ -1142,3 +1142,77 @@ Nota general: el círculo de arriba solo lleva los números 3, 8 y 14, y cada un
 **Dibujos que regalan la respuesta:** todos están a escala. Con transportador se puede medir la respuesta antes del resuelto (sobre todo 01, 07 y 13). En 07 el equilátero se ve a simple vista.
 
 **Cuentas:** rehice las 18 y **todas cuadran**. No hay números imposibles: todos los triángulos suman 180°, los exteriores son coherentes y las medidas del dibujo coinciden con los datos.
+
+# Correcciones de la ronda 2
+
+Fase 8, ronda 2 (18 nov, noche; `docs/metodo/unidad/6-correcciones.md`). Archivos: `contenido/teoria/geometria/triangulos.js`
+y su prueba, `nucleo/kit/piezas/geo-objeto.js` (solo los rótulos de los extremos de la lámpara) y
+`plantillas/geo-triangulos/` (las tres reglas de la idea 6 en el generador, su prueba y el papel regenerado). Lo decidido
+en «Correcciones (18 nov)» de la auditoría se mantiene. Las respuestas no cambian; las figuras, pasos y cuentas nuevas se
+rehicieron por coordenadas, sin el código de la unidad: `scratchpad/cor2-geo-cuentas/cuentas.py` (19 de 19). Capturas
+después: `scratchpad/cor2-geo/` (antes: `scratchpad/frio2-geometria.triangulos/`). Pruebas: teoría, geometría (también
+Segmentos y ángulos), piezas geo-*, geo-triangulos y catálogo, 297 de 297; `npm run catalogo` al día.
+
+**Lo que se repetía de la ronda 1**
+- (a) «Mueve A» con controles de B y C (ideas 1, 2 y 6). A se mueve de las dos formas, así que lo dicen la consigna («La
+  punta A se arrastra o se mueve con los controles»), la misión («Arrastra la punta A, o usa los controles, hasta que
+  m∠A = m∠B + m∠C»; «Arrastra la esquina A, o usa los controles, hasta que…» en la plaza y el parque), la leyenda («A se
+  arrastra») y la tarjeta «Qué mirar al jugar». Prueba nueva para las tres ideas. Predice de la idea 1: la pregunta habla
+  ahora de lo que muestra el dibujo, dos esquinas recortadas («Rosa recortó dos esquinas de cartulina, una de 100° y otra
+  de 95°, para armar un triángulo con las dos. ¿Puede existir ese triángulo?»); al revelar, las dos sobre la regla.
+- (b) Ejemplos 16 y 17 (idea 6, «Dos exteriores» y «De E al ángulo A»). Revisado en el código: ya traían las tres reglas
+  (`R3`); lo que faltaba era decir qué es cada cruce. Ahora cada línea lo dice: «I es el cruce de las bisectrices
+  interiores de B y de C: m∠BIC = 90° + (m∠A ÷ 2).», «E es el cruce de la bisectriz interior de B con la exterior de C:
+  …» y «Q es el cruce de las bisectrices exteriores de B y de C: …» (20 palabras o menos). Igual en el generador
+  (`incentro`, `int-ext`, `dos-ext`, `inverso`) y su papel. Pruebas nuevas: en la teoría, todo ejemplo, «Así se resuelve» y
+  «Ahora tú» de la idea 6 (400 semillas) que trae una regla de cruce trae las tres, con I, E y Q en palabras, y los
+  ejemplos 3 y 8 las traen; en el generador, lo mismo en 400 semillas. Que 16 «regale» la fórmula es a propósito (la
+  idea enseña a elegir la regla; auditoría M2, Gerson 18 nov); ahora la regla tiene de dónde salir (ver Q, abajo).
+- (c) Figuras que se medían con transportador (01, 07, 13). Van sin escala, lo dicen al final del enunciado («El dibujo no
+  está a escala.») y en el texto alternativo, y se dibujan con otras medidas: el tijeral con 40° abajo y 100° arriba (pide
+  110°), la señal con 80°, 50° y 50° (pide 60°), «Partir el ángulo» con A de 100° (pide 35°) y el «m∠BAC = 70°» suelto,
+  fuera del ángulo (dentro caía en la mitad FAC y se leía como de esa mitad). Campo `sinEscala` en los datos de la
+  figura; prueba nueva: lo dicen, y ningún ángulo dibujado queda a 7° o menos de la respuesta. Las dos pruebas de
+  fidelidad (cada rótulo mide lo que dice) saltan solo esas figuras.
+
+**Resto del veredicto**
+- Por qué miden igual los ángulos sobre la paralela (regla 1): Neri lo dice en la regla («Junto a A se copian B y C: son
+  alternos internos entre paralelas.»); «en un plano» con ejemplo: «como una hoja, no en una pelota».
+- «En cada vértice se toma uno solo» (regla 2 y glosario): «Cada vértice tiene dos, iguales (opuestos por el vértice): se
+  cuenta uno.»
+- Predice del techo (idea 3): la pregunta dice qué ángulo forma cada lado con la viga («AB forma m∠B con la viga, y AC
+  forma m∠C. ¿Cuál de los dos sube más empinado?») y sigue «El dibujo no está a escala». α en el juego del compás: «α =
+  70°» no cabe en las cuñas de 40° a 60° (escenaCabe falla), así que la leyenda dice «α (en B y C)» y la lectura «α = 70° en
+  B y en C; θ = 40°; BC ≈ 8,2 cm»; la leyenda también dice cuál punta es la aguja (B) y cuál el lápiz (C).
+- «AC = 15 cm» parecía del brazo naranja (idea 4): los rótulos de los extremos van en turquesa, como el punto hueco y la
+  punteada de la cabeza (geo-objeto, lámpara), y «Mira» dice «la cabeza cae sobre CB, en el punto hueco».
+- «Mediatriz» sin explicar (idea 5): la condición de la regla la define («La mediatriz, perpendicular a BC por su punto
+  medio M, no sale de un vértice»); la voz que no se entendía pasa a «Reconoce cada línea por su marca: cuadradito, rayitas
+  o arcos iguales.». Las tres líneas juntas en el celular: el juego empieza con el caserío a 1 km de B (antes 1,5 km); H
+  queda a 2 km de M.
+- Q de golpe (idea 6): «Lee» (tarjeta 2) nombra E y Q; «Mira» llega a Q con dos pasos (las dos exteriores y el triángulo
+  BQC: m∠BQC = (m∠B + m∠C) ÷ 2 = 90° − m∠A ÷ 2) y cierra con 120°, 30° y 60°; la regla dice «cruce I», «cruce E» y «cruce
+  Q». Para que entre Q, la figura de «Mira» pasa a 65° y 55° (A sigue en 60°) y a alto 350. El valor en E (regla): va
+  como «m∠BEC = 30°» suelto, arriba de E; dentro de la cuña quedaba más cerca de I.
+
+**Ejemplos (lo barato de los informes)**
+- 15 sin dibujo y salto 2C = 110: «La mediana que mide la mitad» estrena figura sin escala (B de 35°, C de 75°, A se dibuja
+  de 70° y la respuesta es 90°; AM, BM y MC con la misma rayita) y el paso «2 · m∠C = 110°».
+- Rótulos encimados: 06, el 35° de BAD va solo en el enunciado (su arco queda en carmín; el rótulo bajaba hasta el 60° de
+  B); 09, la llave de AB va por dentro del triángulo (por fuera la tocaba el arco 4x); 18, en `exteriores2` los interiores
+  van a radio 14 y las mitades de los exteriores a 30 y 32 (también en «Dos exteriores» y en el tipo BQC de «Ahora tú»).
+- x sin «°» al despejar: 03 suma el paso 5x + 15° = x + 95° y 09 el paso 4x = 2x + 50°.
+- 12: «Con el 2 van dos de los otros cuatro: seis tríos», «no supera» en vez de «no pasa», y la lista ✓/✗ en dos tramos
+  que pueden bajar de renglón. 11: «Los enteros de 2 a 10, contando los dos extremos». 10: «Los límites de una lámpara».
+
+**Lo que quedó y por qué**
+- El exterior en carmín de «Así se resuelve» (idea 2): es la regla de Gerson para los ejercicios (todo ángulo dado en
+  carmín, `docs/etapa4/decisiones.md`); cambiarla es decisión suya.
+- El 75° de «Ahora tú» (idea 2) lejos de B: el rótulo ya queda bastante más cerca de B que de otro vértice (probé un
+  umbral más estricto, 0,7, y la semilla no cambia); acercarlo es tarea del acomodo de rótulos de geo-objeto, no de la unidad.
+- Rayitas en C del Predice 6: son las 3 rayitas de las mitades del exterior en C, la marca de toda la unidad; no las toqué.
+- 17 sin el 27° en E (el rótulo cae más cerca de otro vértice; pendiente ya anotado en la auditoría), 04 con el 100°
+  debajo de B, y el resto de ejemplos a escala (el lector marcó «sobre todo» 01, 07 y 13): sin cambio.
+- «Solo veo el paso 1» de «Mira» y «Así se resuelve», las fórmulas largas que bajan de renglón y los números 3, 8 y 14 de
+  las tarjetas son de la captura y de la app, fuera del alcance.
+- Sigue pendiente lo de `nucleo/repaso-tipos.js` que anotó la auditoría (fuera de alcance; no corrí `npm test`).
