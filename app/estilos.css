@@ -1215,7 +1215,7 @@ body.con-lupa{overflow:hidden}
 .te-mision-bien{margin:6px 0 0;font-size:15px;line-height:1.4}
 .te-leyenda{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 10px;font-size:14px}
 .te-leyenda>div{display:flex;align-items:baseline;gap:6px}
-.te-leyenda dt{font-weight:800;min-width:1.2em}
+.te-leyenda dt{font-weight:800;min-width:1.2em;flex:0 0 auto;max-width:48%}
 .te-leyenda dd{margin:0;color:var(--muted)}
 .glo-ejs{margin:4px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .glo-ejs li{line-height:1.4}
