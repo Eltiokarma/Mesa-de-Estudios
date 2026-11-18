@@ -856,3 +856,85 @@ Cuentas: 40/2 = 20 s; 40/4 = 10 s; 20 + 10 = 30 s. La E cuadra. La A = 40/3 + 40
 - Lo malo de forma: la fracción partida en dos líneas en 04, 05 y 06.
 
 **Cuentas:** rehice todas y las 15 cuadran. No encontré ningún número imposible.
+
+---
+
+# Correcciones de la ronda 2
+
+Agente de correcciones (fase 8, ronda 2), sin commits. La unidad pasa a v0.6.0. No cambió ninguna respuesta; las cuentas
+nuevas de los resueltos (el pastor con signos, las letras B y C de «Dos tramos de tiempo», 8 · 0,32 = 2,56) están
+rehechas aparte con fracciones (`scratchpad/r2fig/cuentas-r2.py`). Respeté lo decidido en «Correcciones (18 nov)» de la
+auditoría: eje con signo, una sola fórmula de encuentros, «u + c» con signo y la línea de la academia, `DM.cierre` y `DM.uc`.
+Pruebas pedidas: 421 de 421 (más las de ronda 2: cinco en la unidad, una en fis-pista, una en fis-rio y cambios en
+fis-ventana). `npm run catalogo` hecho. Capturas: `scratchpad/cor2-mru/` (momentos y ejemplos, `--entera`).
+
+## Veredicto, punto por punto
+- **Idea 1, círculo naranja sin leyenda.** La leyenda nombra las dos manijas: «círculo lila: arrástralo: cambia de dónde
+  sale» y «círculo naranja: arrástralo: dónde está a los 5 s».
+- **Idea 1, 2,56 que salía 2,57.** La lectura redondea primero el reloj a dos decimales y hace la cuenta con ese mismo
+  tiempo. Una prueba barre el reloj de 0 a 5,5 s y comprueba que el número que se ve cuadra con la cuenta que se ve.
+- **Idea 1, «x₀ ± v · t» junto a «x₀ + v · t».** Ahora la regla dice: «La academia escribe x = x₀ ± v · t: igual, con el
+  signo fuera de v.»
+- **Idea 1, rayitas de la regla sin rótulo.** El dibujo de la regla lleva «0 s… 5 s» bajo cada rayita.
+- **Idea 2, «pendiente» sin presentar y ninguna recta que baje.** La regla empieza «La pendiente es cuánto sube la recta
+  por cada segundo: Δx entre Δt, y es la velocidad». Su dibujo suma una recta discontinua que baja, con el rótulo «baja: v < 0».
+  La leyenda del juego nombra también su círculo naranja.
+- **Idea 3, la leyenda nombra dos flechas y se ve una.** Ahora dice «flecha de abajo: la vuelta: sale cuando regresas».
+- **Idea 3, círculo lila sin nombre.** Se agregó «círculo: arrástralo: hasta dónde vuelves». La lectura escribe la d («recorriste d = 6,8 m; quedaste a Δx = 6,8 m»).
+- **Idea 3, «solo con tramos de igual duración es el promedio».** Ahora dice: «No es el promedio de las rapideces, salvo
+  que los tramos duren lo mismo». El rótulo suelto «Δt: todo el paseo» pasa a «Δt: ida + vuelta», encima de las flechas
+  «ida» y «vuelta».
+- **Idea 3, el 70 de «Ahora tú» que no estaba en la regla.** fis-pista tiene ahora `numeros`, números de más en la regla, y
+  la valla lleva el suyo. Si pisa a un número de los de siempre, ese se quita.
+- **Idea 4, D sin decir qué es.** La condición dice «tₑ: instante del encuentro; D: separación al empezar». El texto
+  explica cómo cuadra la resta con la academia: «De frente, v de B es negativa: la resta suma».
+- **Idea 5, las combis A y B encimadas y sin letra.** En fis-ventana, B sale 46 px detrás de A. Cada combi lleva su letra
+  en la ventana de atrás, con un borde para que se lea, y la letra no sale al revés cuando la combi mira a la izquierda.
+  Lo que se ve desde la ventana no cambia: B se mueve con vB − vA (la prueba de la pieza lo sigue comprobando).
+- **Ejemplo 08, «Con un descanso».** El letrero suelto se fue. fis-pista tiene `parada`: una raya punteada turquesa en
+  100 m, de la punta del primer tramo al arranque del segundo, con «descansa 10 s» a su izquierda. Así «20 s», «10 s» y
+  el descanso ya no se pisan. Sin la llave Δx, «Partida» y «Valla» suben bajo los números (antes flotaban abajo, en 07 y 08).
+- **Ejemplo 15, «El pastor y las llamas».** Tiene figura: fis-pista con `columna`, cuatro llamas sobre un camino de tierra
+  (dibujo de prueba), el pastor en la cola, las dos flechas de 3 m/s, la flecha de 1 m/s delante de la cabeza, la llave
+  «L = 40 m» y «Cola» y «Cabeza». Datos dice «A: la columna; B: el pastor. + es hacia la cabeza». El resuelto hace la
+  cuenta con signos (vB/A = 3 − 1 = 2 m/s y vB/A = −3 − 1 = −4 m/s) y explica las cuatro incorrectas (A sin la columna,
+  B solo la ida, C con 2 m/s también al volver, D = 40 ÷ 3).
+- **Ejemplo 11, «En minutos».** `DM.encuentro` termina en «tₑ es ese instante»: presenta la tₑ, y el dato ya se usa.
+  «3000» pasa a «3 000», como en el eje.
+- **Fracciones de Datos partidas (04 a 06).** En `DM.xt`, `DM.vm` y `DM.rm`, el «=» va con espacios que no parten
+  («v = fracción» no se separa). Lo mismo vale para «Rapidez media = d/Δt» en la idea 3.
+- **x₀ con «o» (01).** Los enunciados, preguntas y respuestas escriben x₀ con subíndice de verdad (`x0v`), como los
+  Datos. Son diez lugares. Una prueba busca el «₀» suelto en las fichas.
+- **«200 / m» partido (12).** Las cantidades del resuelto llevan espacio que no parte entre el número y la unidad.
+
+## Lo barato de los informes
+- **A5, «Así se resuelve» par y «Ahora tú» k = 0 y 1 sin dibujo.** Con la app que dibuja con la pieza de cada dibujo
+  (3b6af625), ahora llevan las dos combis (fis-ventana), con lo que se pide en «?». Queda un hueco: la prueba del tema
+  (`app/teoria.js`, `pregunta()`, línea 1485) todavía dibuja con `ahoraTu.pieza`, que es fis-rio. Para no mostrar un río en
+  una pregunta de combis, fis-rio le pasa a fis-ventana todo dibujo con `vista: 'ventana'`. Hay una prueba de que el SVG
+  sale idéntico. **Pendiente fuera de alcance:** que esa línea use `q.caso.dibujo.pieza || …`, como el resto del lector.
+  Con eso, el puente sobra.
+- **A5, Lee: los postes sin flecha.** fis-ventana tiene `postes: true`, la flecha «postes: 15 m/s» hacia atrás en la franja
+  de la ventana.
+- **A5, la regla con u + c más corta que u.** El texto lo dice: «Río arriba, u es negativa y v se acorta».
+- **Ejemplo 09.** Ahora explica también la B (suma las rapideces) y la C (21 km es la distancia).
+- **Ejemplo 14.** Datos ya no trae «río abajo es el sentido +» (`DM.rio`): el resuelto trabaja con rapideces y `DM.uc` las define.
+- **Ejemplo 03.** El eje lleva sus «−» y «+», como 01 y 02 (la combi regresa hacia el lado −).
+- **Ejemplo 06.** El denominador dice «5 − 0», como el 04.
+- La prueba de la unidad (`figurasDe`) usa ahora la pieza de cada dibujo antes que la del momento, como la app.
+
+## Lo que quedó y por qué
+- **Los demás círculos de los juegos.** Los de la idea 4, uno sobre cada vehículo, no se nombran en la leyenda: el lector
+  no los marcó, y la leyenda ya tiene combi y mototaxi.
+- **Lo que el lector no veía por la captura.** Que «Mira» y «Así se resuelve» se vieran solo hasta el paso 1, o que en el
+  juego todavía no hubiera combis tenues, es efecto de la captura de un instante, no de la unidad.
+- **Las dudas que el texto ya respondía.** «Como en Vectores» sin haber visto esa unidad: Vectores está en `requiere`. En
+  Ahora tú A3 la duda era de lectura.
+- **Ejemplo 10.** Datos regala el método (`DM.cierre`). La auditoría lo decidió así (M9: lo que el resuelto usa va en los
+  datos). En el mismo ejemplo, «100 m» sale en violeta porque es una distancia sobre la recta (separación, violeta por la
+  tabla de colores).
+- **Ejemplo 07.** «d» y «120 m» van en tinta. La tabla de colores de la cabecera pone la distancia recorrida en tinta.
+- **Otros detalles del informe que quedan como están.** El hueco en blanco bajo el río (13 y 14), el viaje río arriba que
+  falta en 14, el «3 000 m» apretado contra el borde (11) y los puntos sueltos de «Así se resuelve» de A3. Son de poco
+  peso, y la figura de 14 enseña bien el planteamiento.
+- **La llama y el camino de tierra son dibujo de prueba** (`data-prueba`). Gerson decide si los reemplaza.

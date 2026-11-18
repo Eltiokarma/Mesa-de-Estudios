@@ -27,6 +27,7 @@
   const nodo = typeof module === 'object' && module.exports;
   const Kit = nodo ? require('../kit.js') : root.Kit;
   const T = nodo ? require('../trazo.js') : root.Kit.trazo;
+  if (nodo) require('./fis-ventana.js');
   const api = fabrica(Kit, T);
   Kit.registrar(api);
   if (nodo) module.exports = api;
@@ -97,7 +98,12 @@
     return `<g class="kit-objeto" data-objeto="persona" data-prueba="si">${s}</g>`;
   }
 
+  // Puente (ronda 2 del lector en frío, 18 nov): «Ahora tú» de Velocidad relativa mezcla casos del río y de las dos
+  // combis. El momento dibuja cada caso con su propia pieza (dib.pieza), pero la prueba del tema todavía dibuja con
+  // ahoraTu.pieza (app/teoria.js, «pregunta()»): un dibujo con vista: 'ventana' se lo pasa a fis-ventana.
+  const ventana = d => (d && d.vista === 'ventana' ? Kit.piezas['fis-ventana'] : null);
   function dibujar(datos, estado = {}) {
+    if (ventana(datos)) return ventana(datos).dibujar(datos, estado);
     const g = geometria(datos, estado), d = g.d, co = T.color('o');
     const rot = (b, color) => T.rotulo(b.x, b.y, b.texto, { ancla: b.ancla, peso: b.peso, color, tam: TXT, min: 4, max: W - 4 });
     // el agua, con la superficie ondulada, y la orilla de tierra a la izquierda
@@ -124,6 +130,7 @@
   }
 
   function alt(datos) {
+    if (ventana(datos)) return ventana(datos).alt(datos);
     const d = Object.assign({}, BASE, datos || {});
     let s = `Un río visto de costado, con una persona parada en la orilla. Un bote va río ${d.sentido === 'arriba' ? 'arriba, contra la corriente' : 'abajo, con la corriente'}.`;
     if (d.u) s += ` Respecto al agua, el bote va a ${d.u}.`;

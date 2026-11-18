@@ -64,3 +64,13 @@ test('las flechas miden su valor con la misma escala; la de la orilla va hacia d
   }
   assert.match(P.dibujar({ u: '5 m/s', c: '2 m/s' }), />\+</, 'el eje lleva su «+»');
 });
+
+// Ronda 2 del lector en frío (18 nov): «Ahora tú» de Velocidad relativa mezcla el río y las dos combis, y la prueba del
+// tema dibuja todos sus casos con fis-rio. Un dibujo con vista: 'ventana' sale igual que con fis-ventana.
+test('puente: un dibujo con vista «ventana» lo dibuja fis-ventana; sin ella, el río de siempre', () => {
+  const V = Kit.piezas['fis-ventana'], d = { vista: 'ventana', vA: 12, vB: -8, t: 0, rotuloRel: '?' };
+  assert.ok(V, 'fis-ventana registrada');
+  assert.equal(P.dibujar(d), V.dibujar(d));
+  assert.equal(P.alt(d), V.alt(d));
+  assert.ok(!/data-objeto="combi"/.test(P.dibujar({ u: '5 m/s', c: '2 m/s' })), 'sin vista, el río');
+});

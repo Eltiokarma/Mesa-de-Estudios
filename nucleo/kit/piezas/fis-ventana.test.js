@@ -5,11 +5,11 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const Kit = require('../kit.js');
 const P = require('./fis-ventana.js');
-const { W, H, CX, PXM } = P.constantes;
+const { W, H, CX, PXM, ATRAS_B } = P.constantes;
 const pisa = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
 const MUESTRAS = [];
 for (const vB of [-20, -10, -5, 0, 5, 10, 15, 20]) for (const t of [0, 0.5, 1.5, 3, 4]) MUESTRAS.push({ vA: 15, vB, t });
-MUESTRAS.push({ vA: 10, vB: 15, t: 0, rotuloRel: '?' }, { vA: 12, vB: -8, t: 0, rotuloRel: '?' }, { vA: 15, vB: 0, t: 1, sinB: true },
+MUESTRAS.push({ vA: 15, vB: 0, t: 1, sinB: true, postes: true }, { vA: 10, vB: 15, t: 0, rotuloRel: '?' }, { vA: 12, vB: -8, t: 0, rotuloRel: '?' }, { vA: 15, vB: 0, t: 1, sinB: true },
   { vA: 15, vB: 20, t: 0, textoA: '54 km/h', textoB: '72 km/h', rotuloRel: '?' }, { vA: 12, vB: 8, t: 0, textoB: '?' }, { vA: 15, vB: -10, t: 0, textoA: '54 km/h', textoB: '36 km/h', rotuloRel: '?' });
 
 test('registrada en el kit', () => assert.equal(Kit.piezas['fis-ventana'], P));
@@ -18,8 +18,9 @@ test('desde tu ventana, tu combi está quieta en el centro y la otra se mueve co
   for (const d of MUESTRAS.slice(0, 40)) {
     const [arriba, abajo] = P.geometria(d).franjas;
     assert.equal(abajo.xa, CX);
-    assert.ok(Math.abs(abajo.xb - (CX + (d.vB - d.vA) * d.t * PXM)) < 1e-9);
-    assert.ok(Math.abs(arriba.xa - arriba.xb - (d.vA - d.vB) * d.t * PXM) < 1e-9, 'arriba, la misma separación');
+    // B sale ATRAS_B px detrás de A (ronda 2: lado a lado, las dos combis se pisaban).
+    assert.ok(Math.abs(abajo.xb - (CX - ATRAS_B + (d.vB - d.vA) * d.t * PXM)) < 1e-9);
+    assert.ok(Math.abs(arriba.xa - arriba.xb - ATRAS_B - (d.vA - d.vB) * d.t * PXM) < 1e-9, 'arriba, la misma separación');
   }
   // Los postes: quietos desde la carretera; desde la ventana, corridos hacia atrás lo que avanzó tu combi.
   const p0 = P.geometria({ vA: 15, vB: 5, t: 0 }).franjas, p1 = P.geometria({ vA: 15, vB: 5, t: 0.5 }).franjas;
@@ -32,6 +33,13 @@ test('desde tu ventana, tu combi está quieta en el centro y la otra se mueve co
   assert.match(P.alt({ vA: 12, vB: 8, textoB: '?' }), /velocidad que se pide/);
   assert.ok(!/8 m\/s/.test(P.alt({ vA: 12, vB: 8, textoB: '?' })), 'el texto alternativo tampoco la dice');
   assert.equal((P.dibujar({ vA: 15, vB: 0, t: 1, sinB: true }).match(/data-objeto="combi"/g) || []).length, 2, 'solo tu combi, arriba y abajo');
+  // Ronda 2: cada combi lleva su letra, y sin B los postes pueden llevar su flecha hacia atrás.
+  const conAB = P.dibujar({ vA: 15, vB: 5, t: 0 });
+  assert.equal((conAB.match(/>A<\/text>/g) || []).length, 2, 'la letra A, arriba y abajo');
+  assert.equal((conAB.match(/>B<\/text>/g) || []).length, 2, 'la letra B, arriba y abajo');
+  const po = P.geometria({ vA: 15, vB: 0, t: 1, sinB: true, postes: true }).franjas[1].fb;
+  assert.ok(po && po.x2 < po.x1 && po.caja.texto === 'postes: 15 m/s', 'los postes, hacia atrás');
+  assert.ok(!P.geometria({ vA: 15, vB: 0, t: 1, sinB: true }).franjas[1].fb, 'sin postes: true, como antes');
 });
 
 test('rótulos que caben con 4 de margen y no se pisan; puro, alto fijo, sin NaN ni colores fijos y con texto alternativo', () => {

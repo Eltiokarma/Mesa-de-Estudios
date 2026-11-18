@@ -249,9 +249,9 @@ test('«Ahora tú»: cuatro opciones distintas, una correcta, y la posición cua
     assert.equal(new Set(a.opciones.map(o => plano(o.texto))).size, 4, `semilla ${s}: opciones repetidas`);
     assert.equal(a.opciones.filter(o => o.correcta).length, 1);
     let m, x;
-    if ((m = q.match(/^Una combi sale de x₀ = ([\d ,]+) m hacia la derecha a ([\d,]+) m\/s, sin cambiar de velocidad\. ¿Dónde está a los (\d+) s\?$/))) { x = num(m[1]) + num(m[2]) * num(m[3]); vistos.add('derecha'); }
-    else if ((m = q.match(/^Una combi está en x₀ = ([\d ,]+) m y va hacia el paradero a ([\d,]+) m\/s, sin cambiar de velocidad\. ¿Dónde está (\d+) s después\?$/))) { x = num(m[1]) - num(m[2]) * num(m[3]); vistos.add('paradero'); }
-    else if ((m = q.match(/^Una combi pasa por x₀ = ([\d ,]+) m a (\d+) km\/h hacia la derecha y no cambia de velocidad\. ¿Dónde está (\d+) s después\?$/))) { x = num(m[1]) + num(m[2]) * 1000 / 3600 * num(m[3]); vistos.add('km/h'); }
+    if ((m = q.match(/^Una combi sale de x[₀0] = ([\d ,]+) m hacia la derecha a ([\d,]+) m\/s, sin cambiar de velocidad\. ¿Dónde está a los (\d+) s\?$/))) { x = num(m[1]) + num(m[2]) * num(m[3]); vistos.add('derecha'); }
+    else if ((m = q.match(/^Una combi está en x[₀0] = ([\d ,]+) m y va hacia el paradero a ([\d,]+) m\/s, sin cambiar de velocidad\. ¿Dónde está (\d+) s después\?$/))) { x = num(m[1]) - num(m[2]) * num(m[3]); vistos.add('paradero'); }
+    else if ((m = q.match(/^Una combi pasa por x[₀0] = ([\d ,]+) m a (\d+) km\/h hacia la derecha y no cambia de velocidad\. ¿Dónde está (\d+) s después\?$/))) { x = num(m[1]) + num(m[2]) * 1000 / 3600 * num(m[3]); vistos.add('km/h'); }
     else if ((m = q.match(/^La posición de una combi en la avenida es x = (\d+) − (\d+) ?t, con x en metros y t en segundos\. ¿Dónde está a los (\d+) s\?$/))) { x = num(m[1]) - num(m[2]) * num(m[3]); vistos.add('ecuación'); }
     else assert.fail(`semilla ${s}: no reconozco «${q}»`);
     assert.equal(bien, `En x = ${fmt(x)} m`, `semilla ${s}: ${q}`);
@@ -265,7 +265,7 @@ test('«Así se resuelve» pide el tiempo o la velocidad (nunca la posición, qu
   for (let s = 0; s < SEMILLAS; s++) {
     const r = i.resuelve.generar(s), q = plano(r.enunciado), resp = plano(r.respuesta);
     let m;
-    if ((m = q.match(/^La combi sale de x₀ = ([\d ,]+) m hacia la derecha a ([\d,]+) m\/s, sin cambiar de velocidad\. El grifo está en x = ([\d ,]+) m\. ¿Cuánto tarda en llegar\?$/))) {
+    if ((m = q.match(/^La combi sale de x[₀0] = ([\d ,]+) m hacia la derecha a ([\d,]+) m\/s, sin cambiar de velocidad\. El grifo está en x = ([\d ,]+) m\. ¿Cuánto tarda en llegar\?$/))) {
       assert.equal(resp, `Tarda ${fmt((num(m[3]) - num(m[1])) / num(m[2]))} s`, `resuelve ${s}`);
     } else if ((m = q.match(/^Una combi pasa por x = (−?[\d ,]+) m y, (\d+) s después, por x = (−?[\d ,]+) m, sin cambiar de velocidad\. ¿Cuál es su velocidad\?$/))) {
       assert.equal(resp, `v = ${fmt((num(m[3]) - num(m[1])) / num(m[2]))} m/s, hacia el paradero`, `resuelve ${s}`);
@@ -301,7 +301,8 @@ test('ejemplos: las cuentas de las respuestas, rehechas aparte, y la letra de ca
 function figurasDe(i) {
   const out = [], P = (...ps) => ps.find(Boolean) || i.pieza, j = i.juega;
   for (const v of Teoria.grilla(j.controles).filter((_, k) => k % 5 === 0)) out.push([`juego ${JSON.stringify(v)}`, j.dibujo(v), P(j.pieza)]);
-  for (const [k, t] of i.lee.tarjetas.entries()) if (t.dibujo) out.push([`lee ${k + 1}`, t.dibujo, P(t.pieza)]);
+  // La app dibuja cada dibujo con su propia pieza (app/teoria.js, commit 3b6af625); si no trae una, con la del momento.
+  for (const [k, t] of i.lee.tarjetas.entries()) if (t.dibujo) out.push([`lee ${k + 1}`, t.dibujo, P(t.dibujo.pieza, t.pieza)]);
   out.push(['predice', i.predice.dibujo, P(i.predice.pieza)], ['revelar', i.predice.revelar, P(i.predice.pieza)]);
   const fr = Teoria.figuraRegla(i);
   out.push(['regla', { datos: fr.datos, estado: fr.estado }, fr.pieza]);
@@ -309,8 +310,8 @@ function figurasDe(i) {
   i.ejemplos.forEach((e, k) => { if (e.figura) out.push([`ejemplo ${k + 1}`, e.figura, e.figura.pieza]); });
   for (let s = 0; s < 80; s++) {
     const a = i.ahoraTu.generar(s), r = i.resuelve.generar(s);
-    if (a.dibujo) out.push([`ahora tú ${s}`, a.dibujo, P(i.ahoraTu.pieza)]);
-    if (r.dibujo) out.push([`resuelve ${s}`, r.dibujo, P(i.resuelve.pieza)]);
+    if (a.dibujo) out.push([`ahora tú ${s}`, a.dibujo, P(a.dibujo.pieza, i.ahoraTu.pieza)]);
+    if (r.dibujo) out.push([`resuelve ${s}`, r.dibujo, P(r.dibujo.pieza, i.resuelve.pieza)]);
   }
   return out;
 }
@@ -454,7 +455,7 @@ test('A5 «Ahora tú»: dos combis, de frente, el río y el bote de ida y vuelta
 test('«Así se resuelve» de A2 a A5 no pregunta lo de «Ahora tú» y cuadra con un cálculo aparte (400 semillas)', () => {
   const casos = {
     'grafica-xt': [
-      [new RegExp(`^La recta x–t de una combi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. ¿Dónde estaba a los 0 s\\?$`), ([t1, x1, t2, x2]) => `Estaba en x₀ = ${fmt(x1 - (x2 - x1) / (t2 - t1) * t1)} m`],
+      [new RegExp(`^La recta x–t de una combi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. ¿Dónde estaba a los 0 s\\?$`), ([t1, x1, t2, x2]) => `Estaba en x0 = ${fmt(x1 - (x2 - x1) / (t2 - t1) * t1)} m`],
       [new RegExp(`^La recta x–t de una combi pasa por \\(${N} s; ${N} m\\) y \\(${N} s; ${N} m\\)\\. Si sigue igual, ¿a qué instante pasa por x = ${N} m\\?$`), ([t1, x1, t2, x2, X]) => `A los ${fmt(t1 + (X - x1) / ((x2 - x1) / (t2 - t1)))} s`],
     ],
     'desplazamiento-distancia': [
@@ -582,3 +583,78 @@ test('M9: todo ejemplo y «Ahora tú» de A4 que usa lo que se cierra la separac
   for (let s = 0; s < 40; s++) { const a = idea('encuentro').ahoraTu.generar(s); if (usa(a.solucion.texto)) assert.ok(trae(a.datos), `semilla ${s}`); }
   assert.match(plano(idea('encuentro').regla.condicion), /tₑ: instante del encuentro/);
 });
+
+// ---------- Ronda 2 del lector en frío (18 nov, noche) ----------
+test('ronda 2: la lectura de A1 hace la cuenta con el tiempo que muestra (8 · 0,32 = 2,56, no 2,57)', () => {
+  const j = idea('mru').juega, num = t => Number(t.replace(/\s/g, '').replace('−', '-').replace(',', '.'));
+  for (const x0 of [0, 10, 40]) for (const v of [2, 8, 14, 20]) for (let t = 0; t <= 5.5; t += 0.0137) {
+    const m = plano(j.lectura({ x0, v, t })).match(/^A los ([\d,]+) s está en ([−\d, ]+) m: /);
+    assert.ok(m, plano(j.lectura({ x0, v, t })));
+    assert.ok(Math.abs(num(m[2]) - (x0 + v * num(m[1]))) < 1e-9, plano(j.lectura({ x0, v, t })));
+  }
+});
+
+test('ronda 2: cada leyenda nombra los círculos que se arrastran; la de A3, la flecha de la vuelta que sale al volver', () => {
+  for (const [id, n] of [['mru', 2], ['grafica-xt', 1], ['desplazamiento-distancia', 1]]) {
+    const ley = idea(id).juega.leyenda.filter(x => typeof x.s === 'string' && /^círculo/.test(x.s));
+    assert.equal(ley.length, n, id);
+    assert.equal(idea(id).juega.arrastres.length, n, `${id}: un círculo por manija`);
+  }
+  assert.match(idea('desplazamiento-distancia').juega.leyenda.find(x => x.s === 'flecha de abajo').t, /cuando regresas/);
+  assert.match(plano(idea('desplazamiento-distancia').juega.lectura({ r: 20, t: 10 })), /recorriste d = /);
+});
+
+test('ronda 2: las reglas dicen lo que el lector no encontraba (±, pendiente, recta que baja, promedio, D, u negativa)', () => {
+  const r = id => idea(id).regla;
+  assert.match(r('mru').texto, /igual, con el signo fuera de v/);
+  assert.ok(Kit.piezas['fis-combi'].geometria(r('mru').dibujo.datos).tiempos.length >= 2, 'A1: las rayitas con sus segundos');
+  assert.match(r('grafica-xt').texto, /^La pendiente es cuánto sube la recta por cada segundo/);
+  assert.ok(r('grafica-xt').dibujo.datos.lineas.some(l => l.puntos[1][1] < l.puntos[0][1] && l.trazo === 'discontinua'), 'A2: una recta que baja');
+  assert.match(r('desplazamiento-distancia').texto, /No es el promedio de las rapideces, salvo que los tramos duren lo mismo/);
+  assert.match(r('encuentro').condicion, /D: separación al empezar/);
+  assert.match(r('encuentro').texto, /De frente, v de B es negativa/);
+  assert.match(r('velocidad-relativa').texto, /Río arriba, u es negativa/);
+});
+
+test('ronda 2: A5 dibuja las dos combis en «Así se resuelve» y «Ahora tú», y la prueba del tema las dibuja igual', () => {
+  const i = idea('velocidad-relativa'), V = Kit.piezas['fis-ventana'], R = Kit.piezas[i.ahoraTu.pieza];
+  for (let s = 0; s < 40; s++) {
+    const r = i.resuelve.generar(s), a = i.ahoraTu.generar(s);
+    assert.ok(r.dibujo, `resuelve ${s} sin dibujo`);
+    assert.ok(a.dibujo, `ahora tú ${s} sin dibujo`);
+    if (s % 2 === 0) assert.equal(r.dibujo.pieza, 'fis-ventana');
+    if (s % 4 < 2) {
+      assert.equal(a.dibujo.pieza, 'fis-ventana');
+      assert.equal(a.dibujo.datos.rotuloRel, '?', 'lo que se pide, con «?»');
+      // La prueba del tema dibuja con ahoraTu.pieza (fis-rio): el puente lo pasa a fis-ventana.
+      assert.equal(R.dibujar(a.dibujo.datos), V.dibujar(a.dibujo.datos), `ahora tú ${s}`);
+    }
+  }
+  const g = V.geometria({ vA: 15, vB: 15, t: 0 }).franjas[0];
+  assert.ok(Math.abs(g.xa - g.xb) >= 40, 'A y B no salen encimadas');
+});
+
+test('ronda 2: ejemplos (x₀ con subíndice, el descanso, la valla con número, el pastor con figura y sus cinco letras)', () => {
+  // x₀ con subíndice de verdad en todo enunciado y pregunta: ninguna ficha escribe «x₀» con el carácter suelto.
+  const malX0 = x => fichas(x).some(f => /x₀/.test(f.t));
+  for (const i of def.ideas) {
+    for (const e of i.ejemplos) assert.ok(!malX0([e.enunciado, e.respuesta]), `${i.id} ${e.titulo}`);
+    for (let s = 0; s < 40; s++) { assert.ok(!malX0(i.ahoraTu.generar(s).pregunta), `${i.id} ${s}`); assert.ok(!malX0(i.resuelve.generar(s).enunciado), `${i.id} r${s}`); }
+  }
+  const ej = (id, t) => idea(id).ejemplos.find(e => e.titulo === t);
+  assert.equal(ej('desplazamiento-distancia', 'Con un descanso').figura.datos.parada.en, 100);
+  assert.ok(!ej('desplazamiento-distancia', 'Con un descanso').figura.datos.reloj, 'sin el letrero suelto');
+  for (let s = 0; s < 40; s += 4) {
+    const d = idea('desplazamiento-distancia').ahoraTu.generar(s).dibujo.datos, g = Kit.piezas['fis-pista'].geometria(d);
+    assert.ok(g.numeros.some(c => c.texto === String(d.valla)), `semilla ${s}: la valla en ${d.valla} sin número`);
+  }
+  const p = ej('velocidad-relativa', 'El pastor y las llamas');
+  assert.equal(p.figura.pieza, 'fis-pista');
+  assert.ok(p.datos.some(x => /A: la columna; B: el pastor/.test(plano(x))));
+  const letras = new Set(plano(p.solucion.map(x => x.texto)).match(/\bLa ([A-E])\b|la ([A-E])\b/g).map(x => x.slice(-1)));
+  assert.equal(letras.size, 4, 'explica las cuatro incorrectas');
+  assert.ok(plano(ej('encuentro', 'Dos veces a 50 m').solucion.map(x => x.texto)).length > 0);
+  assert.ok(ej('encuentro', 'Dos veces a 50 m').solucion.slice(0, 2).every(x => !/\d m/.test(x.texto)), 'número y unidad, sin partir');
+  assert.match(plano(DM_ENCUENTRO()), /tₑ es ese instante/);
+});
+const DM_ENCUENTRO = () => idea('encuentro').ejemplos.find(e => e.titulo === 'En minutos').datos[0];

@@ -13,8 +13,12 @@
  *   rotuloRel: '?',          // opcional: lo que se pide de B abajo, sin flecha (por omisión, su rapidez relativa en m/s)
  *   textoA, textoB: '54 km/h',   // opcional: los rótulos de arriba (textoB '?' quita la flecha de B: es lo que se pide)
  *   sinB: true,              // opcional: sin la otra combi (solo tu combi y los postes)
+ *   postes: true,            // opcional, con sinB: abajo, la flecha de los postes que pasan hacia atrás, con su rapidez
  *   titulos: true,
  * }
+ * Ronda 2 del lector en frío (18 nov): «las dos combis están casi una encima de la otra y no tienen letra». B sale
+ * ATRAS_B px detrás de A (los dos carriles se tocaban con las combis lado a lado) y cada combi lleva su letra en la
+ * ventana de atrás. La separación de salida no cambia lo que se ve: desde tu ventana, B se mueve con vB − vA.
  * estado = {}. Función pura de (datos, estado): sin ids, sin azar, sin reloj. Ancho 320, alto fijo. Lo que sale de la
  * franja se recorta (svg anidado, sin ids).
  */
@@ -28,7 +32,7 @@
   if (nodo) module.exports = api;
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
-  const W = 320, FRANJA = 110, H = 2 * FRANJA + 4, TXT = 14, PXM = 2, CX = 150, POSTE = 20;
+  const W = 320, FRANJA = 110, H = 2 * FRANJA + 4, TXT = 14, PXM = 2, CX = 150, POSTE = 20, ATRAS_B = 46, LETRA = 12;
   // Dentro de cada franja (y relativas): título, flecha de A, carretera, carril de A, carril de B, flecha de B.
   const F = { TITULO: 15, FLECHA_A: 27, CAMINO: 46, CARRIL_A: 65, CARRIL_B: 85, BORDE: 88, FLECHA_B: 98 };
   const n = T.n;
@@ -54,7 +58,7 @@
     const d = Object.assign({ vA: 15, vB: 10, t: 0, titulos: true }, datos || {}), t = Math.max(0, d.t || 0), g = { d, franjas: [], rotulos: [] };
     const rel = d.vB - d.vA;
     // arriba, desde la carretera: A sale de CX − 40 px y avanza; B sale a su lado
-    const a0 = CX - 40, xa = a0 + d.vA * t * PXM, xb = a0 + d.vB * t * PXM;
+    const a0 = CX - 40, xa = a0 + d.vA * t * PXM, xb = a0 - ATRAS_B + d.vB * t * PXM;
     const postesArriba = [];
     for (let k = -8; k <= 18; k++) postesArriba.push(a0 + k * POSTE * PXM / 2);
     // abajo, desde tu ventana: A quieta en CX; los postes y B se mueven con su velocidad menos la de A
@@ -65,12 +69,14 @@
       { y0: 0, titulo: 'Desde la orilla de la carretera', xa, xb, postes: postesArriba,
         fa: flecha(xa, F.FLECHA_A, d.vA, `A: ${d.textoA || (d.vA ? `${fmt(Math.abs(d.vA))} m/s` : 'quieta')}`),
         fb: flecha(xb, F.FLECHA_B, d.textoB === '?' ? 0 : d.vB, `B: ${d.textoB || (d.vB ? `${fmt(Math.abs(d.vB))} m/s` : 'quieta')}`) },
-      { y0: FRANJA, titulo: 'Desde tu ventana, en A', xa: CX, xb: CX + rel * t * PXM, postes: postesAbajo,
+      { y0: FRANJA, titulo: 'Desde tu ventana, en A', xa: CX, xb: CX - ATRAS_B + rel * t * PXM, postes: postesAbajo,
         fa: flecha(CX, FRANJA + F.FLECHA_A, 0, 'A: quieta'),
         // con rotuloRel ('?'), lo que se pide: sin flecha, para que su sentido no dé la respuesta
-        fb: flecha(CX + rel * t * PXM, FRANJA + F.FLECHA_B, d.rotuloRel ? 0 : rel, `B: ${d.rotuloRel || (rel ? `${fmt(Math.abs(rel))} m/s` : 'parece quieta')}`) },
+        fb: flecha(CX - ATRAS_B + rel * t * PXM, FRANJA + F.FLECHA_B, d.rotuloRel ? 0 : rel, `B: ${d.rotuloRel || (rel ? `${fmt(Math.abs(rel))} m/s` : 'parece quieta')}`) },
     ];
     if (d.sinB) for (const f of fr) f.fb = null;
+    // Los postes que pasan hacia atrás, abajo (Lee: «no hay ninguna flecha que lo diga»).
+    if (d.sinB && d.postes && d.vA) fr[1].fb = flecha(CX + 70, FRANJA + F.FLECHA_B, -d.vA, `postes: ${fmt(Math.abs(d.vA))} m/s`);
     for (const f of fr) {
       if (d.titulos) { f.ct = caja(4, f.y0 + F.TITULO, f.titulo, 'start', 400); g.rotulos.push(f.ct); }
       for (const fl of [f.fa, f.fb].filter(Boolean)) { fl.ve = vis(fl); if (fl.ve) g.rotulos.push(fl.caja); }
@@ -88,8 +94,11 @@
       let dentro = `<rect x="6" y="${y0 + F.CAMINO}" width="${W - 12}" height="${F.BORDE - F.CAMINO}" rx="6" fill="currentColor" fill-opacity="0.08"/>`
         + `<line x1="10" y1="${y0 + (F.CAMINO + F.BORDE) / 2}" x2="${W - 10}" y2="${y0 + (F.CAMINO + F.BORDE) / 2}" stroke="currentColor" stroke-width="1.5" stroke-dasharray="8 8" stroke-opacity="0.35"/>`;
       for (const p of f.postes.filter(x => x >= 8 && x <= W - 8)) dentro += `<line x1="${n(p)}" y1="${y0 + F.CAMINO}" x2="${n(p)}" y2="${y0 + F.CAMINO - 6}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-opacity="0.6"/><circle cx="${n(p)}" cy="${y0 + F.CAMINO - 7}" r="2" fill="currentColor" fill-opacity="0.6"/>`;
-      dentro += V('combi', f.xa, y0 + F.CARRIL_A, { izquierda: d.vA < 0 });
-      if (!d.sinB) dentro += V('combi', f.xb, y0 + F.CARRIL_B, { izquierda: d.vB < 0 });
+      // Cada combi con su letra pintada en la ventana de atrás (la cola: del lado contrario al que mira), con un borde del
+      // color de la tarjeta para que se lea sobre el vidrio. Fuera del grupo reflejado: la letra no sale al revés.
+      const letra = (x, y, v, txt) => `<text class="kit-txt" x="${n(x + (v < 0 ? 1 : -1) * 11.5)}" y="${n(y - 9)}" fill="currentColor" stroke="var(--card)" stroke-width="3" paint-order="stroke" font-size="${LETRA}" font-weight="800" text-anchor="middle">${txt}</text>`;
+      dentro += V('combi', f.xa, y0 + F.CARRIL_A, { izquierda: d.vA < 0 }) + letra(f.xa, y0 + F.CARRIL_A, d.vA, 'A');
+      if (!d.sinB) dentro += V('combi', f.xb, y0 + F.CARRIL_B, { izquierda: d.vB < 0 }) + letra(f.xb, y0 + F.CARRIL_B, d.vB, 'B');
       // lo que sale de la franja se recorta
       s += `<svg x="0" y="${y0 + F.CAMINO - 10}" width="${W}" height="${F.BORDE - F.CAMINO + 12}" viewBox="0 ${y0 + F.CAMINO - 10} ${W} ${F.BORDE - F.CAMINO + 12}">${dentro}</svg>`;
       for (const fl of [f.fa, f.fb].filter(Boolean)) {
@@ -108,10 +117,10 @@
     const hacia = v => (v > 0 ? 'hacia la derecha' : 'hacia la izquierda');
     const vel = (v, txt) => (txt === '?' ? 'con una velocidad que se pide' : txt ? `a ${txt}` : v ? `a ${fmt(Math.abs(v))} m/s ${hacia(v)}` : 'quieta');
     let s = `Una carretera vista dos veces. Desde la orilla, tu combi A va ${vel(d.vA, d.textoA)}`;
-    if (d.sinB) return `${s}. Desde tu ventana, tu combi está quieta y los postes pasan hacia atrás.`;
+    if (d.sinB) return `${s}. Desde tu ventana, tu combi está quieta y los postes pasan hacia atrás${d.postes && d.vA ? `, a ${fmt(Math.abs(d.vA))} m/s` : ''}.`;
     s += ` y otra combi, B, en el carril vecino, va ${vel(d.vB, d.textoB)}. Desde tu ventana, tu combi está quieta, los postes pasan hacia atrás y B `;
     return s + (d.rotuloRel ? 'se mueve con la velocidad que se pide.' : rel ? `se mueve a ${fmt(Math.abs(rel))} m/s ${hacia(rel)}.` : 'parece quieta.');
   }
 
-  return { id: 'fis-ventana', dibujar, alt, geometria, constantes: { W, H, FRANJA, F, CX, PXM } };
+  return { id: 'fis-ventana', dibujar, alt, geometria, constantes: { W, H, FRANJA, F, CX, PXM, ATRAS_B } };
 });

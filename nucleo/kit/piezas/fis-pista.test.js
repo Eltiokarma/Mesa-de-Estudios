@@ -51,3 +51,30 @@ test('rótulos que caben con 4 de margen y no se pisan; puro, alto fijo, sin NaN
     assert.ok(P.alt(d).length > 40 && !/NaN|undefined/.test(P.alt(d)));
   }
 });
+
+// Ronda 2 del lector en frío (18 nov): la marca de la valla con su número, la parada dibujada entre los dos tramos, la
+// columna de llamas sobre un camino de tierra y los nombres de los lugares, que sin la llave suben bajo los números.
+test('ronda 2: números de más, parada, columna de llamas y lugares con nombre', () => {
+  const v = P.geometria({ largo: 70, paso: 10, numero: 20, numeros: [70], valla: 70, tramos: [{ de: 0, a: 70 }, { de: 70, a: 35 }] });
+  assert.deepEqual(v.numeros.map(c => c.texto).sort(), ['0', '20', '40', '60', '70'].sort());
+  const p = P.geometria({ largo: 150, paso: 10, numero: 50, valla: null, tramos: [{ de: 0, a: 100, texto: '20 s' }, { de: 100, a: 150, texto: '10 s' }], parada: { en: 100, texto: 'descansa 10 s', color: 'i' } });
+  assert.equal(p.parada.x, p.tramos[0].x2, 'la parada, en la punta del primer tramo');
+  assert.equal(p.parada.x, p.tramos[1].x1, 'y en el arranque del segundo');
+  assert.ok(p.parada.caja.x1 < p.parada.x, 'el rótulo, a la izquierda de la raya');
+  const dc = { largo: 50, paso: 10, numero: 20, valla: null, corredor: 0, columna: { de: 0, a: 40, n: 4, v: '1 m/s' }, tramos: [{ de: 0, a: 40, texto: '3 m/s' }, { de: 40, a: 0, texto: '3 m/s' }],
+    dx: { a: 40, texto: 'L = 40 m', color: 'f' }, lugares: [{ en: 0, texto: 'Cola' }, { en: 40, texto: 'Cabeza' }] };
+  const c = P.geometria(dc), s = P.dibujar(dc);
+  assert.equal((s.match(/data-objeto="llama"/g) || []).length, 4);
+  assert.ok(c.columna.xs.every(x => x > c.X(0) + 12 && x < c.X(40)), 'las llamas, entre la cola y la cabeza, sin pisar al pastor');
+  assert.ok(c.columna.flecha.x1 > c.X(40), 'la flecha de la columna, delante de la cabeza');
+  assert.ok(!/stroke-dasharray="4 3"/.test(s), 'camino de tierra: sin la línea de partida');
+  assert.deepEqual(c.lugares.map(l => l.texto), ['Cola', 'Cabeza']);
+  const sinLlave = P.geometria({ largo: 60, valla: 60 }), conLlave = P.geometria({ largo: 60, valla: 60, dx: { a: 20, texto: 'Δx' } });
+  assert.ok(sinLlave.lugares[0].y < conLlave.lugares[0].y, 'sin la llave, «Partida» sube bajo los números');
+  for (const d of [dc, { largo: 150, paso: 10, numero: 50, valla: null, corredor: 0, tramos: [{ de: 0, a: 100, texto: '20 s', color: 'i' }, { de: 100, a: 150, texto: '10 s', color: 'i' }], parada: { en: 100, texto: 'descansa 10 s', color: 'i' } }]) {
+    const g = P.geometria(d);
+    for (const r of g.rotulos) assert.ok(r.x0 >= 4 - 1e-9 && r.x1 <= W - 4 + 1e-9 && r.y0 >= 4 && r.y1 <= H - 4, `«${r.texto}» se sale`);
+    for (let i = 0; i < g.rotulos.length; i++) for (let j = i + 1; j < g.rotulos.length; j++) assert.ok(!pisa(g.rotulos[i], g.rotulos[j]), `«${g.rotulos[i].texto}» pisa «${g.rotulos[j].texto}»`);
+    assert.ok(!/NaN|undefined/.test(P.dibujar(d)) && /llama|parada/.test(P.alt(d)));
+  }
+});

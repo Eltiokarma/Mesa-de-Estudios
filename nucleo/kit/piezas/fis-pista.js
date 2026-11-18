@@ -17,8 +17,16 @@
  *   tramos: [{ de, a, texto, color, desde }],             // en vez de ida y vuelta: dos tramos cualesquiera (2 filas)
  *   dx: { a: 20, texto: 'Δx = ?', color: 'f' },          // llave del desplazamiento: de la partida a `a`
  *   reloj: { texto: 't = 40 s', color: 'i' },            // el cronómetro, arriba a la izquierda
- *   lugares: true,                          // «Partida» y «Valla» escritos bajo la figura
+ *   lugares: true,                          // «Partida» y «Valla» escritos bajo la figura (sin la llave Δx, justo bajo los
+ *                                           //   números: lector en frío, ronda 2, «flotan muy abajo»); o [{ en, texto }]
+ *   numeros: [70],                          // números de más en la regla (la marca de la valla); quitan a los que pisan
+ *   parada: { en: 100, texto: 'descansa 10 s', color: 'i' },   // una parada entre el primer tramo y el segundo: una
+ *                                           //   raya punteada de la punta del primero al arranque del segundo, con su rótulo
+ *   columna: { de: 0, a: 40, n: 4, v: '1 m/s', color: 'o' },   // una columna de llamas sobre un camino de tierra (sin
+ *                                           //   carriles), con la flecha de su velocidad delante de la cabeza
  * }
+ * (Ronda 2 del lector en frío, 18 nov: numeros, parada, columna y lugares con nombre. Sin ellos, la figura sale igual,
+ * salvo «Partida» y «Valla», que sin la llave suben a 162.)
  * estado = { corte }: los tramos, la llave y el reloj con `desde` aparecen cuando corte ≥ desde («Mira»). Función pura: sin ids, sin azar, sin reloj. Ancho 320, alto fijo.
  */
 (function (root, fabrica) {
@@ -31,7 +39,7 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit, T) {
   'use strict';
   const W = 320, H = 200, X0 = 30, X1 = 286, TXT = 14;
-  const Y = { IDA: 30, VUELTA: 58, PISTA: 68, PISO: 108, EJE: 120, NUM: 140, LLAVE: 154, LLAVE_T: 172, LUGAR: 192 };
+  const Y = { IDA: 30, VUELTA: 58, PISTA: 68, PISO: 108, EJE: 120, NUM: 140, LLAVE: 154, LLAVE_T: 172, LUGAR: 192, LUGAR_ALTO: 162, COLUMNA: 90 };
   const n = T.n;
   const BASE = { largo: 60, paso: 10, numero: 20, valla: 60, corredor: 0, mira: 'der', lugares: true };
   const fmt = m => Kit.formatear(m, 2).replace(/^-/, '−');
@@ -66,10 +74,28 @@
       if (!f || !vis(f) || Math.abs((f.de || 0) - f.a) < 1e-9) return;
       g.tramos.push(tramo(f.de || 0, f.a, k ? Y.VUELTA : Y.IDA, f));
     });
-    g.numeros = [];
-    for (let m = 0; m <= d.largo + 1e-9; m += d.paso) {
-      if (Math.abs(m / d.numero - Math.round(m / d.numero)) < 1e-9) { const c = caja(X(m), Y.NUM, fmt(Math.round(m * 100) / 100), 'middle'); g.numeros.push(c); g.rotulos.push(c); }
+    if (d.parada && vis(d.parada)) {
+      const px = X(d.parada.en), c = d.parada.texto ? caja(px - 6, (Y.IDA + Y.VUELTA) / 2 + 5, d.parada.texto, 'end', 700) : null;
+      g.parada = { x: px, caja: c };
+      if (c) g.rotulos.push(c);
     }
+    if (d.columna) {
+      const q = Object.assign({ de: 0, a: d.largo, n: 4, color: 'o' }, d.columna), k = Math.max(1, (q.n || 4) - 1);
+      const xs = [];
+      for (let i = 0; i < Math.max(1, q.n || 4); i++) xs.push(X(q.de) + 22 + (X(q.a) - X(q.de) - 28) * i / k);
+      g.columna = { xs, cabeza: X(q.a), color: q.color };
+      if (q.v) {
+        const x1 = X(q.a) + 8, x2 = x1 + 22;
+        g.columna.flecha = { x1, x2, y: Y.COLUMNA, caja: caja(x2 + 5, Y.COLUMNA + 5, q.v, 'start', 700) };
+        g.rotulos.push(g.columna.flecha.caja);
+      }
+    }
+    g.numeros = [];
+    const extra = (d.numeros || []).filter(m => Number.isFinite(m) && m >= 0 && m <= d.largo).map(m => caja(X(m), Y.NUM, fmt(Math.round(m * 100) / 100), 'middle'));
+    for (let m = 0; m <= d.largo + 1e-9; m += d.paso) {
+      if (Math.abs(m / d.numero - Math.round(m / d.numero)) < 1e-9) { const c = caja(X(m), Y.NUM, fmt(Math.round(m * 100) / 100), 'middle'); if (separa(c, extra) && !extra.some(e => e.texto === c.texto)) { g.numeros.push(c); g.rotulos.push(c); } }
+    }
+    for (const c of extra) if (separa(c, g.numeros)) { g.numeros.push(c); g.rotulos.push(c); }
     g.unidad = caja(W - 4, Y.NUM, 'm', 'end', 700); g.rotulos.push(g.unidad);
     if (d.dx && vis(d.dx)) {
       const a = X(0), b = X(d.dx.a);
@@ -77,8 +103,12 @@
       if (g.dx.caja) g.rotulos.push(g.dx.caja);
     }
     if (d.lugares) {
-      g.lugares = [caja(X(0), Y.LUGAR, 'Partida', 'start')];
-      if (Number.isFinite(d.valla)) g.lugares.push(caja(X(d.valla), Y.LUGAR, 'Valla', 'end'));
+      const yl = g.dx ? Y.LUGAR : Y.LUGAR_ALTO;
+      if (Array.isArray(d.lugares)) g.lugares = d.lugares.map(l => caja(X(l.en), yl, l.texto, l.en <= 0 ? 'start' : 'end'));
+      else {
+        g.lugares = [caja(X(0), yl, 'Partida', 'start')];
+        if (Number.isFinite(d.valla)) g.lugares.push(caja(X(d.valla), yl, 'Valla', 'end'));
+      }
       g.rotulos.push(...g.lugares);
     }
     return g;
@@ -92,6 +122,14 @@
       + `M${X(1)} ${n(p - 23)}L${X(7)} ${n(p - 18)}L${X(11)} ${n(p - 22)}M${X(1)} ${n(p - 23)}L${X(-5)} ${n(p - 19)}L${X(-8)} ${n(p - 14)}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
     return `<g class="kit-objeto" data-objeto="corredor" data-prueba="si">${s}</g>`;
   }
+  // Una llama de costado, mirando a la derecha, con las patas en el piso (dibujo de prueba).
+  function llama(x) {
+    const p = Y.PISO;
+    const s = `<path d="M${n(x - 6)} ${n(p)}V${n(p - 10)}M${n(x - 3)} ${n(p)}V${n(p - 10)}M${n(x + 3)} ${n(p)}V${n(p - 10)}M${n(x + 6)} ${n(p)}V${n(p - 10)}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`
+      + `<path d="M${n(x - 8)} ${n(p - 12)}Q${n(x - 9)} ${n(p - 17)} ${n(x - 4)} ${n(p - 17)}L${n(x + 5)} ${n(p - 17)}L${n(x + 6)} ${n(p - 27)}Q${n(x + 7)} ${n(p - 30)} ${n(x + 10)} ${n(p - 29)}L${n(x + 13)} ${n(p - 27)}L${n(x + 9)} ${n(p - 25)}L${n(x + 9)} ${n(p - 13)}Q${n(x + 8)} ${n(p - 9)} ${n(x + 3)} ${n(p - 9)}L${n(x - 5)} ${n(p - 9)}Q${n(x - 8)} ${n(p - 9)} ${n(x - 8)} ${n(p - 12)}Z" fill="var(--card)" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>`
+      + `<path d="M${n(x + 8)} ${n(p - 29)}L${n(x + 8)} ${n(p - 33)}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`;
+    return `<g class="kit-objeto" data-objeto="llama" data-prueba="si">${s}</g>`;
+  }
   // La valla de atletismo vista de costado: dos patas en el piso y el travesaño arriba.
   function valla(x) {
     const p = Y.PISO;
@@ -104,8 +142,12 @@
     const rot = (b, color) => T.rotulo(b.x, b.y, b.texto, { ancla: b.ancla, peso: b.peso, color, tam: TXT, min: 4, max: W - 4 });
     // la pista: el carril con su línea de llegada en la partida y las líneas de los carriles
     let s = `<g data-prueba="si" class="fis-pista"><rect x="6" y="${Y.PISTA}" width="${W - 12}" height="${Y.PISO - Y.PISTA + 4}" rx="5" fill="currentColor" fill-opacity="0.08"/>`;
-    for (const y of [Y.PISTA + 13, Y.PISTA + 26]) s += `<line x1="10" y1="${y}" x2="${W - 10}" y2="${y}" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"/>`;
-    s += `<line x1="${n(X(0))}" y1="${Y.PISTA}" x2="${n(X(0))}" y2="${Y.PISO + 4}" stroke="currentColor" stroke-width="3" stroke-dasharray="4 3"/></g>`;
+    // Con la columna, un camino de tierra: sin carriles ni línea de partida.
+    if (!g.columna) {
+      for (const y of [Y.PISTA + 13, Y.PISTA + 26]) s += `<line x1="10" y1="${y}" x2="${W - 10}" y2="${y}" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"/>`;
+      s += `<line x1="${n(X(0))}" y1="${Y.PISTA}" x2="${n(X(0))}" y2="${Y.PISO + 4}" stroke="currentColor" stroke-width="3" stroke-dasharray="4 3"/>`;
+    }
+    s += '</g>';
     // la regla de metros desde la partida
     s += `<line x1="${n(X(0))}" y1="${Y.EJE}" x2="${n(X(d.largo))}" y2="${Y.EJE}" stroke="currentColor" stroke-width="1.5"/>`;
     for (let m = 0; m <= d.largo + 1e-9; m += d.paso) {
@@ -115,11 +157,20 @@
     for (const c of g.numeros) s += rot(c);
     s += rot(g.unidad);
     if (Number.isFinite(d.valla)) s += valla(X(d.valla));
+    if (g.columna) {
+      for (const x of g.columna.xs) s += llama(x);
+      const f = g.columna.flecha;
+      if (f) s += T.flecha(f.x1, f.y, f.x2, f.y, { color: g.columna.color, grosor: 3 }) + rot(f.caja, g.columna.color);
+    }
     if (Number.isFinite(d.corredor)) s += corredor(X(d.corredor), d.mira);
     // el camino: ida y vuelta
     for (const t of g.tramos) {
       s += T.flecha(t.x1, t.y, t.x2, t.y, { grosor: 3 });
       if (t.caja) s += rot(t.caja, t.f.color);
+    }
+    if (g.parada) {
+      s += `<line x1="${n(g.parada.x)}" y1="${Y.IDA + 4}" x2="${n(g.parada.x)}" y2="${Y.VUELTA - 4}" stroke="${T.color(d.parada.color)}" stroke-width="2" stroke-dasharray="3 3"/>`;
+      if (g.parada.caja) s += rot(g.parada.caja, d.parada.color);
     }
     if (g.dx) {
       const k = T.color(d.dx.color);
@@ -137,7 +188,9 @@
     s += Number.isFinite(d.valla) ? ` y una valla a ${fmt(d.valla)} m.` : '.';
     const tramos = d.tramos || [d.ida && Object.assign({ de: 0 }, d.ida), d.vuelta].filter(Boolean);
     tramos.slice(0, 2).forEach((f, k) => { if (f) s += ` ${k ? 'Debajo, otro tramo' : 'Arriba, un tramo'}: de ${fmt(f.de || 0)} m a ${fmt(f.a)} m${f.texto ? ` (${f.texto})` : ''}.`; });
-    if (d.dx) s += ` Bajo la regla, el desplazamiento desde la partida: ${d.dx.texto || ''}.`;
+    if (d.parada) s += ` Entre los dos tramos, una parada en ${fmt(d.parada.en)} m${d.parada.texto ? ` (${d.parada.texto})` : ''}.`;
+    if (d.columna) s += ` Una columna de llamas de ${fmt(d.columna.de || 0)} m a ${fmt(Number.isFinite(d.columna.a) ? d.columna.a : d.largo)} m${d.columna.v ? `, que avanza a ${d.columna.v}` : ''}.`;
+    if (d.dx) s += d.columna ? ` Bajo la regla, una llave con el largo de la columna: ${d.dx.texto || ''}.` : ` Bajo la regla, el desplazamiento desde la partida: ${d.dx.texto || ''}.`;
     return s;
   }
 
