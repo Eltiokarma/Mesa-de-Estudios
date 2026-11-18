@@ -1020,3 +1020,87 @@ Cuentas: 0 = v0 − 10·2 → v0 = 20 m/s. H = 400/20 = 20 m. A: con 4 s de subi
 - Resultados o ecuaciones que se parten en dos renglones: 05, 06, 08, 09, 14 y 18.
 - En la 15, una t sin color.
 - La 09 se ve más angosta que las demás.
+
+# Correcciones de la ronda 2
+
+Sesión de correcciones (fase 8, ronda 2) sobre el veredicto y los dos informes de la ronda 2. Archivos tocados:
+`contenido/teoria/fisica/mruv-y-caida-libre.js` y su `.test.js` (cuatro pruebas nuevas al final), y
+`nucleo/kit/piezas/fis-mruv.js`. No toqué `fis-combi` (solo la uso con sus opciones de hoy), `app/`, `nucleo/teoria.js`
+ni otras unidades, y `plantillas/fis-mruv/` no hizo falta. Lo decidido en «Correcciones (18 nov)» de la auditoría se
+mantiene: el pabellón de 5 m con la ventana a 3,2 m, d solo para la distancia recorrida, la línea del «±» en las cuatro
+reglas con signo, los datos sin consejos. Ninguna respuesta cambió; lo que sí cambió (rótulos, rayitas, explicaciones de
+las alternativas de 5.15) se rehízo aparte en el scratchpad (`cor2-mruv/cuentas.py`). Pruebas: `npm run catalogo` y la
+lista pedida, en verde salvo `geometria/triangulos.js` (otra unidad, de otro agente: topes de su idea 1 y 3).
+
+## Veredicto
+
+- **La línea de la academia.** Hecho en las cuatro reglas: ahora dicen que es la misma regla («La academia escribe
+  v = v₀ ± a·t: la misma regla, con a sin signo»; en B2, B5 y B6, «la misma», «la misma regla»). La condición de B1 dice
+  dónde va el signo: «Aquí el signo va dentro de a, no en un ±». Prueba nueva.
+- **Por qué m/s² lleva el cuadrado.** Hecho: la tarjeta 3 de Lee de B1 dice «m/s ÷ s, que se escribe m/s²», y la
+  leyenda, «m/s ÷ s: m/s en cada segundo».
+- **El «3 s» de Lee de B2.** Hecho sin tocar `fis-combi`: la tarjeta 1 dibuja hasta los 3 s (a los 4 s la combi paraba a
+  1,5 m de la del segundo 3 y la pieza saltaba ese rótulo). Prueba: los rótulos 0, 1, 2 y 3 s están todos.
+- **Qué deja fuera cada ecuación y x − x₀ = Δx.** Hecho: en la regla de B2 cada ecuación lleva debajo su llave «sin Δx»,
+  «sin a», «sin v», «sin t», y la tercera se escribe Δx = x − x₀ = v₀t + ½at² (la misma forma que la de la academia).
+- **Por segunda vez, la leyenda nombra marcas que no se ven.** Hecho, y ahora lo vigila una prueba: toda marca que nombra
+  la leyenda (una entrada con nombre, no una letra) tiene un detector en la tabla de la prueba y se dibuja en el juego al
+  abrirlo, con el reloj en su inicio, y en la figura del mapa (`juega.resumen`), donde la leyenda va debajo. Solo un
+  rastro que el reloj deja puede esperar, como mucho 1 s, y su texto lo dice («cada segundo», «cada 0,5 s»); una entrada
+  con nombre que no es una marca con detector tiene que leerse tal cual en la consigna, la misión, los controles o la
+  lectura. Para cumplirla:
+  - B3: el escalón carmín va siempre sobre la subida elegida, y las rayitas de la pista marcan por dónde pasa el atleta
+    en cada segundo de toda la carrera, desde que se elige (leyenda: «por dónde pasa en cada segundo»). De paso responde
+    la duda del lector («cómo me doy cuenta solo moviendo»): se ve cuántas rayitas caben hasta la meta.
+  - B5: la rayita del 0 s ya estaba al abrir, pero no se leía como rayita: las rayitas son más largas y oscuras, y la
+    leyenda dice «rayita con su tiempo: dónde estaba el 0; una cada 0,05 s».
+  - B1: la combi sale a 4 m/s al abrir (con 0 m/s, la flecha que nombra la leyenda no existía).
+  - B4: las dos x–t de los 12 s van tenues desde el inicio (la a elegida) y el reloj las repasa firmes; la leyenda nombra
+    lo tenue y el paradero.
+- **El trazo naranja «inclinación: v» y la salida de la idea 4.** Hecho: el paso 2 de Mira lo presenta («Recta naranja:
+  toca la curva a los 5 s, con la inclinación del mototaxi») y un punto naranja marca dónde toca. La consigna dice
+  «salen juntos de x = 0» y la leyenda, «Paradero: x = 0: de ahí salen los dos».
+- **La regla de Lee de B5 sin unidad.** Hecho en la pieza: la regla dice «cm» entre el 20 y el 30, en todas sus figuras.
+- **«Así se resuelve» y «Ahora tú» de B5 sin dibujo.** Hecho: el puente con el río (pieza nueva en la vista `pabellon`:
+  `puente` y `rio`) con la piedra en el borde y «h = ?» cuando se pide la altura; la pelota con su altura dada, y la
+  maceta en la azotea. Los de nivel examen (dos esferas, el pozo, el n-ésimo segundo) siguen sin dibujo.
+- **h hacia abajo en la 5 e y hacia arriba en la 6.** Hecho en la tarjeta 1 de Lee de B6: «En la caída, h se medía hacia
+  abajo; aquí la altura y se mide hacia arriba, desde donde sale».
+- **La Predice de B6 con 5 m/s en la cima.** Hecho: la pelota está en la cima (20 m, sin flecha de v), como dice la
+  pregunta. La flecha de g sigue apareciendo solo al revelar.
+- **El pabellón que cambia de tamaño.** Hecho: fuera de Lee, el juego, la Predice y la regla, `patea` ya no dibuja el
+  pabellón (con la regla hasta 35 o 50 m parecía otro edificio, y en 16 y 17 sobraba). Prueba: el pabellón de 5 m solo
+  se dibuja con su regla de 6 m (B5) o de 20 m (B6). Queda la diferencia entre B5 y B6 (dos reglas distintas para el
+  mismo pabellón): cada una mide lo que su idea necesita.
+- **Ejemplos.**
+  - 12: los ejes sin números (opción `numeros: false` de un eje en la pieza); el resuelto explica «se aplana» («su
+    inclinación, que es v, baja») y las cinco alternativas. Las gráficas siguen vacías después del resuelto a propósito:
+    lo que se pide es su forma, y la figura no trae la respuesta (molde §3); el resuelto la dice con palabras.
+  - 13: el borrador es un borrador (forma nueva en la pieza) y está en el alféizar de la ventana.
+  - 17: la altura de 15 m marcada con una línea discontinua violeta y su rótulo; 16 y 17 sin el pabellón.
+  - «−0» en el eje (13, 16, 17): el piso y sus rayas empiezan en la regla de alturas; prueba numérica de que ninguna
+    línea cruza la caja del «0».
+  - Datos de 10 a 12 (y de los demás ejemplos de B4 sin alcance): sin «Se alcanzan cuando…» (`DB4g`). Se queda en «La
+    misma velocidad», que contrapone misma posición y misma velocidad.
+  - 11: salió el párrafo que calculaba la velocidad que no se pedía.
+  - Los colores que soplan (03 y 05, y también el riel y la rampa de B2): los coeficientes del enunciado van en tinta;
+    solo x, v y t llevan su color. Prueba.
+  - 15: la t de (t − 1) y de t² − 2t + 1 con su color, y el resuelto explica también B (25 + 5) y D (2 · 25).
+
+## Lo barato de los informes
+
+- Predice de B2: «la combi que iba a 10 m/s» en lugar de «que llegó» (el lector entendió otra cosa).
+- Predice de B3: «¿A cuántos metros de donde empezó termina?» (con «distancia», chocaba con la d de la distancia recorrida).
+- Lee de B4: la regla llega a 100 m (el mototaxi de los 80 m quedaba en el borde).
+- Misión de B5: «Atrápala con la marca de 20 cm justo entre tus dedos» (no sabía cuál marca contaba).
+
+## Lo que quedó y por qué
+
+- Resultados partidos entre renglones (05, 06, 08, 09, 14, 18): es cómo la app parte las ecuaciones (`nucleo/ecuacion.js`
+  y `app/`), fuera de mi alcance. Haría falta que un «= resultado» no se separe de su número.
+- La barra de avance con 8 rayitas para 7 pasos, la tarjeta 09 más angosta y «Velocidad: Normal»: app.
+- El deslizador de freno de B2 con «−1» a la derecha (menos freno a la derecha): es el orden del control; cambiarlo es
+  decidir cómo se presenta un valor negativo en los controles (app o Gerson).
+- 18 y otros de nivel 3 que no explican todas las alternativas, y la pendiente −1,5 m/s² sin número en la regla de B3:
+  no los marcó el veredicto; quedan para otra pasada.
+- «Datos» como nombre del recuadro (el lector lo lee como valores del enunciado): decisión de Gerson, no de la unidad.

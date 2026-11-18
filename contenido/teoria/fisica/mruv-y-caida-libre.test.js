@@ -714,3 +714,95 @@ test('las reglas con signo traducen el eje al «±» de la academia, y d es siem
     for (const m of t.matchAll(/(?<![\p{L}Δ])d = ([^;.]+)/gu)) assert.ok(!/v₀t|v0t|½/.test(m[1]), `${i.id} ${donde}: d como desplazamiento («d = ${m[1]}»)`);
   }
 });
+
+// ---------- Correcciones de la ronda 2 del lector en frío (18 nov, noche) ----------
+// Por segunda vez, la leyenda nombraba marcas que no se veían (el escalón carmín y las rayitas en la pista de B3; las
+// rayitas de B5). Toda marca que nombra la leyenda se dibuja en el juego al abrirlo, con el reloj en su inicio, y en la
+// figura del mapa (juega.resumen), donde la leyenda va debajo. Solo un rastro que el reloj deja con el tiempo puede
+// esperar, y como mucho su primer intervalo (`al`, en s): su texto lo dice («cada segundo», «cada 0,5 s»). Una entrada de
+// la leyenda con nombre (no una letra) que no es una marca de esta tabla tiene que leerse tal cual en lo que se ve al
+// abrir: la consigna, la misión, los controles o la lectura. Así, una marca nueva sin detector hace fallar la prueba.
+test('toda marca que nombra la leyenda se dibuja al abrir el juego y en la figura del mapa', () => {
+  const svgDe = f => Kit.piezas[f.pieza].dibujar(f.datos, f.estado || {});
+  const flechaV = f => { const g = P.geometria(f.datos, f.estado || {}); return !!g.flecha && Math.abs(g.flecha.x2 - g.flecha.x1) >= 8; };
+  const tenue = { al: 1, ve: s => /kit-fantasma/.test(s) };
+  const MARCAS = {
+    aceleracion: { flecha: { ve: (s, f) => flechaV(f) }, 'combi tenue': tenue },
+    'ecuaciones-mruv': { 'combi tenue': tenue },
+    'pendiente-aceleracion': { 'zona violeta': { al: 0.05, ve: s => /<path class="kit-crece" d="[^"]+Z" fill="var\(--c-f\)"/.test(s) },
+      'escalón carmín': { ve: s => /class="fis-escalon"[^>]*stroke="var\(--c-h\)"/.test(s) }, 'rayitas en la pista': { ve: s => (s.match(/class="fis-rayita"/g) || []).length >= 3 } },
+    'graficas-xt-at': { Paradero: { ve: s => /data-objeto="lugar"/.test(s) && />Paradero</.test(s) },
+      'curva continua': { ve: s => /class="fis-plan" d="M[^"]+L[^"]+" fill="none" stroke="var\(--c-f\)"(?![^>]*dasharray)/.test(s) },
+      'recta discontinua': { ve: s => /class="fis-plan" d="[^"]+" fill="none" stroke="var\(--c-f\)"[^>]*stroke-dasharray/.test(s) },
+      tenue: { ve: s => /stroke-opacity="0.3"/.test(s) } },
+    'caida-reposo': { 'rayita con su tiempo': { ve: s => /class="fis-rastro"/.test(s) && />0 s</.test(s) } },
+    'caida-libre': { 'flecha naranja': { ve: s => /stroke="var\(--c-o\)"/.test(s) }, 'círculos tenues': { al: 0.5, ve: s => (s.match(/class="fis-tenue"/g) || []).length >= 2 } },
+  };
+  for (const i of def.ideas) {
+    const j = i.juega, base = Teoria.inicio(j), reloj = j.controles.find(c => c.auto);
+    const fig = v => Object.assign({ pieza: j.pieza }, j.dibujo(Object.assign({}, base, v)));
+    const visto = plano([j.consigna, j.mision.texto, j.controles.map(c => [c.etiqueta, c.unidad || '']), j.lectura(base)]);
+    for (const e of j.leyenda.filter(x => typeof x.s === 'string')) {
+      const m = (MARCAS[i.id] || {})[e.s];
+      if (!m) { assert.ok(visto.includes(e.s), `${i.id}: la leyenda nombra «${e.s}», que no es una marca con detector ni se lee al abrir`); continue; }
+      const al = m.al || 0;
+      if (al) {
+        // lo que crece desde el primer paso del reloj no espera; un rastro de más de un paso lo dice («cada…»)
+        assert.ok(reloj && (al <= reloj.paso + 1e-9 || /cada/.test(e.t)), `${i.id}: «${e.s}» espera al reloj y su texto no lo dice`);
+        assert.ok(al <= 1, `${i.id}: «${e.s}» tarda más de 1 s`);
+      }
+      const abrir = fig(al ? { [reloj.id]: al } : {});
+      assert.ok(m.ve(svgDe(abrir), abrir), `${i.id}: «${e.s}» no se ve al abrir el juego${al ? ` (ni a los ${al} s)` : ''}`);
+      const mapa = fig(j.resumen || {});
+      assert.ok(m.ve(svgDe(mapa), mapa), `${i.id}: «${e.s}» no se ve en la figura del mapa`);
+    }
+  }
+});
+
+test('ronda 2: la línea de la academia dice que es la misma regla, y la de B2 dice qué deja fuera cada ecuación', () => {
+  for (const id of ['aceleracion', 'ecuaciones-mruv', 'caida-reposo', 'caida-libre']) assert.match(idea(id).regla.texto, /academia escribe [^:]+: la misma/, id);
+  const notas = idea('ecuaciones-mruv').regla.ecuacion.filter(x => x && x.llave).map(x => plano(x.nota));
+  assert.deepEqual(notas, ['sin Δx', 'sin a', 'sin v', 'sin t']);
+  assert.match(plano(idea('ecuaciones-mruv').regla.ecuacion), /Δx = x − x0 = v0t/);
+  assert.match(plano(idea('aceleracion').lee.tarjetas.map(t => t.texto)), /m\/s ÷ s, que se escribe m\/s²/);
+  assert.match(plano(idea('caida-libre').lee.tarjetas[0].texto), /h se medía hacia abajo; aquí la altura y se mide hacia arriba/);
+});
+
+test('ronda 2: los rótulos de tiempo de Lee de B2 están todos, la Predice de B6 está en la cima y B5 tiene dibujos', () => {
+  const lee = idea('ecuaciones-mruv').lee.tarjetas[0].dibujo, g = P.geometria(lee.datos, lee.estado || {});
+  assert.deepEqual(g.tiempos.map(b => b.texto), ['0 s', '1 s', '2 s', '3 s']);
+  const pr = idea('caida-libre').predice.dibujo.datos.pelotas[0];
+  assert.ok(pr.y === 20 && !pr.v, 'la pelota de la Predice, en la cima y sin flecha de v');
+  const B5 = idea('caida-reposo');
+  for (let s = 0; s < 12; s++) {
+    const a = B5.ahoraTu.generar(s), r = B5.resuelve.generar(s);
+    assert.ok(r.dibujo, `resuelve ${s} sin dibujo`);
+    if (s % 4 < 3) assert.ok(a.dibujo, `ahora tú ${s} sin dibujo`);
+    for (const f of [a.dibujo, r.dibujo].filter(Boolean)) if (/altura|¿Desde qué altura/.test(plano(a.pregunta || r.enunciado)) && f.datos.cota && /\?/.test(f.datos.cota.texto)) assert.ok(!/\d/.test(f.datos.cota.texto), 'la altura que se pide va con «?»');
+  }
+});
+
+test('ronda 2: el piso no se lee como «−0», el pabellón no cambia de tamaño y los ejemplos 12, 13 y 17', () => {
+  // El piso y sus rayas empiezan en la regla de alturas: ninguna línea pasa por la caja del «0».
+  const d = { vista: 'pabellon', alto: 20, pelotas: [{ y: 0, v: 20 }] }, s = PM.dibujar(d), g = PM.geometria(d), cero = g.rotulos.find(r => r.texto === '0');
+  for (const m of s.matchAll(/<line x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"/g)) {
+    const [x1, y1, x2, y2] = m.slice(1).map(Number);
+    assert.ok(Math.max(x1, x2) < cero.x0 || Math.min(x1, x2) > cero.x1 || Math.max(y1, y2) < cero.y0 || Math.min(y1, y2) > cero.y1, `una línea cruza el «0»: ${m[0]}`);
+  }
+  // El pabellón de B6 se dibuja solo con su regla de 20 m (y el de B5, con la de 6 m): nunca a otra escala.
+  for (const [donde, f] of todasLasFiguras()) if (f.pieza === 'fis-mruv' && f.datos.vista === 'pabellon' && f.datos.edificio && f.datos.edificio.techo === 5)
+    assert.ok([6, 20].includes(f.datos.alto), `${donde}: el pabellón con la regla de ${f.datos.alto} m`);
+  const B4 = idea('graficas-xt-at'), e12 = B4.ejemplos.find(e => e.titulo === 'Las tres gráficas al frenar');
+  assert.ok(!PM.geometria(e12.figura.datos).rotulos.some(r => r.tipo === 'numero'), 'el 12, sin números en los ejes');
+  for (const e of B4.ejemplos) if (!(e.figura && e.figura.datos.vista === 'alcance') && !/alcan/i.test(plano(e.enunciado))) assert.ok(!/Se alcanzan/.test(plano(e.datos)), `${e.titulo}: la línea del alcance sobra`);
+  const e13 = idea('caida-reposo').ejemplos.find(e => e.titulo === '¿Cuánto tarda?');
+  assert.match(PM.dibujar(e13.figura.datos), /data-objeto="borrador"/);
+  const e17 = idea('caida-libre').ejemplos.find(e => e.titulo === 'Pasa por 15 m al bajar');
+  assert.match(PM.dibujar(e17.figura.datos), /class="fis-altura"/);
+  assert.ok(!e17.figura.datos.edificio && !idea('caida-libre').ejemplos.find(e => e.titulo === 'Después de la cima').figura.datos.edificio, 'sin el pabellón que no se usa');
+  // Los coeficientes del enunciado van en tinta: el color no sopla qué número es la velocidad o la aceleración.
+  for (const i of def.ideas) for (const e of i.ejemplos) {
+    const en = e.enunciado, k = Array.isArray(en) ? en.findIndex(x => x && x.t === 't' && x.v === 'c-i') : -1;
+    if (k > 0 && Array.isArray(en) && en[k - 1] && typeof en[k - 1] === 'object' && /^\d/.test(en[k - 1].t || '')) assert.fail(`${i.id} ${e.titulo}: un coeficiente con color pegado a t`);
+  }
+});

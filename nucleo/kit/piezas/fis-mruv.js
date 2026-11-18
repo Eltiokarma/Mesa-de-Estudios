@@ -12,7 +12,7 @@
  *            Afirmación: lo que se pide se lee en la gráfica: la inclinación, el área con su signo o un corte.
  *            datos = { x: { min, max, paso, cada, nombre: 't', unidad: 's', color: 'i' }, y: { … }, alto: 150,
  *                      curvas, areas, puntos, escalones, tangentes, textos, alt }
- *              curvas:     [{ puntos: [[x, y] | null, …], color, discontinua, rotulo, en: [x, y], ancla, dx, dy, desde, hasta }]
+ *              curvas:     [{ puntos: [[x, y] | null, …], color, discontinua, tenue, rotulo, en: [x, y], ancla, dx, dy, desde, hasta }]
  *              areas:      [{ puntos: [[x, y], …], color, rotulo, en, desde, hasta }]   región entre la poligonal y y = 0;
  *                          bajo el eje es más tenue y con borde discontinuo (el signo se ve)
  *              puntos:     [{ x, y, color, rotulo, ancla, dx, dy, guias, abierto, desde, hasta }]
@@ -39,7 +39,12 @@
  *   pabellon la pelota (o la canica y la piedra) junto al pabellón del colegio, con las alturas en metros.
  *            Afirmación: la flecha de g es la misma en cada punto; la de v cambia.
  *            datos = { alto: 20, paso: 1, numero: 5, regla: false, cota: { de, a, texto }, edificio: { techo: 5, pisos: 1, ventana }, pelotas: [{ y, v,
- *                      texto, marcas: [y, …], grande, chica, rotulo }], g: { texto } | false }
+ *                      texto, marcas: [y, …], grande, chica, rotulo, x, forma: 'borrador' }], g: { texto } | false,
+ *                      alturas: [{ y, texto }], puente: { y }, rio: true }   edificio: false, sin el pabellón; alturas: una
+ *            altura del enunciado; puente y rio: el puente con la piedra, sobre el agua
+ *            (línea discontinua violeta con su rótulo). Con la regla de alturas, el piso empieza en ella (sin «−0»).
+ * Marcas con clase, para que la unidad compruebe que lo que nombra su leyenda se dibuja: fis-escalon, fis-tangente,
+ * fis-rayita (pista), fis-rastro (regla), fis-tenue (pelotas), fis-altura. Un eje con numeros: false va sin números.
  * estado = { corte }: en grafica, tres y pista, cada elemento con desde/hasta aparece solo en esos pasos de «Mira».
  */
 (function (root, fabrica) {
@@ -97,8 +102,9 @@
     s += `<g class="kit-cuadricula">${grid}</g>`;
     const cero = Y(lim(0, ey.min, ey.max));
     s += `<g class="kit-eje">${T.flecha(R.x0, R.y1 + 4, R.x0, R.y0 - 12, { grosor: 2 })}${T.flecha(R.x0 - 4, cero, R.x1 + 12, cero, { grosor: 2 })}</g>`;
-    ry.vals.forEach(v => { if (Math.round(v / ry.paso) % ry.cada === 0) rot.push(caja(R.x0 - 7, Y(v) + 5, fmt(v), { ancla: 'end', tipo: 'numero' })); });
-    if (o.numerosX !== false) rx.vals.forEach(v => { if (Math.round(v / rx.paso) % rx.cada === 0) rot.push(caja(X(v), R.y1 + 18, fmt(v), { ancla: 'middle', tipo: 'numero' })); });
+    // numeros: false en un eje (lector en frío, ronda 2, ejemplo 12): sin números, cuando el enunciado no da ninguno.
+    if (ey.numeros !== false) ry.vals.forEach(v => { if (Math.round(v / ry.paso) % ry.cada === 0) rot.push(caja(R.x0 - 7, Y(v) + 5, fmt(v), { ancla: 'end', tipo: 'numero' })); });
+    if (o.numerosX !== false && ex.numeros !== false) rx.vals.forEach(v => { if (Math.round(v / rx.paso) % rx.cada === 0) rot.push(caja(X(v), R.y1 + 18, fmt(v), { ancla: 'middle', tipo: 'numero' })); });
     if (nombre(ey)) rot.push(caja(R.x0 + 10, R.y0 - 9, nombre(ey), { color: ey.color, peso: 700, tipo: 'nombre' }));
     if (o.nombreX !== false && nombre(ex)) rot.push(caja(W - M, R.y1 + 36, nombre(ex), { color: ex.color, peso: 700, ancla: 'end', tipo: 'nombre' }));
     const P = p => `${n(X(p[0]))} ${n(Y(p[1]))}`;
@@ -130,8 +136,9 @@
       let d = '', nuevo = true;
       for (const p of cv.puntos || []) { if (!p) { nuevo = true; continue; } d += (nuevo ? 'M' : 'L') + P(p); nuevo = false; lineas.push([X(p[0]), Y(p[1])]); }
       if (!d) continue;
-      s += `<path class="kit-crece" d="${d}" fill="none" stroke="${T.color(cv.color)}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${cv.discontinua ? ' stroke-dasharray="7 5"' : ''}/>`;
-      if (cv.rotulo) {
+      // tenue: la curva entera de lo que va a pasar, debajo de la que dibuja el reloj (sin rótulo)
+      s += `<path class="${cv.tenue ? 'fis-plan' : 'kit-crece'}" d="${d}" fill="none" stroke="${T.color(cv.color)}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"${cv.discontinua ? ' stroke-dasharray="7 5"' : ''}${cv.tenue ? ' stroke-opacity="0.3"' : ''}/>`;
+      if (cv.rotulo && !cv.tenue) {
         const ult = cv.en || [...cv.puntos].reverse().find(Boolean), x = X(ult[0]), y = Y(ult[1]);
         etiqueta(cv, x, y, { ancla: x > W * 0.6 ? 'end' : 'start', dx: 0, dy: -10 });
       }
@@ -210,7 +217,7 @@
     for (let m = 0; m <= L + 1e-9; m += 10) s += `<line x1="${n(X(m))}" y1="${Y1}" x2="${n(X(m))}" y2="${Y1 + (m % 50 ? 4 : 8)}" stroke="currentColor" stroke-width="1"/>`;
     for (const m of [0, L / 2, L]) rot.push(caja(X(m), Y1 + 22, m === L ? `${fmt(m)} m` : fmt(m), { ancla: 'middle', tipo: 'numero' }));
     // dónde estaba en cada segundo: rayitas en tinta sobre el carril (la pista y sus marcas no son una magnitud: sin color)
-    for (const m of d.marcas || []) s += `<line x1="${n(X(m))}" y1="${Y1 - 6}" x2="${n(X(m))}" y2="${Y1 + 2}" stroke="currentColor" stroke-opacity="0.7" stroke-width="2.5" stroke-linecap="round"/>`;
+    for (const m of d.marcas || []) s += `<line class="fis-rayita" x1="${n(X(m))}" y1="${Y1 - 6}" x2="${n(X(m))}" y2="${Y1 + 2}" stroke="currentColor" stroke-opacity="0.7" stroke-width="2.5" stroke-linecap="round"/>`;
     const ax = X(Number.isFinite(d.x) ? d.x : 0);
     s += atleta(ax, Y1 - 4);
     const R = { x0: 48, x1: 300, y0: 124, y1: 124 + (d.grafica && d.grafica.alto || 120) };
@@ -285,7 +292,8 @@
     let s = '';
     // rastros: dónde estaba la punta de abajo (el 0) en cada instante, a la derecha
     const marcas = (d.marcas || []).map(m => ({ y: DEDOS + m.cm * RK, texto: m.texto }));
-    for (const m of marcas) if (m.y < HR - 4) s += `<line x1="${RASTRO}" y1="${n(m.y)}" x2="${RASTRO + 14}" y2="${n(m.y)}" stroke="currentColor" stroke-opacity="0.6" stroke-width="2" stroke-linecap="round"/>`;
+    // (ronda 2 del lector: la del 0 s no se veía como rayita) más largas y más oscuras
+    for (const m of marcas) if (m.y < HR - 4) s += `<line class="fis-rastro" x1="${RASTRO - 2}" y1="${n(m.y)}" x2="${RASTRO + 14}" y2="${n(m.y)}" stroke="currentColor" stroke-opacity="0.85" stroke-width="2.5" stroke-linecap="round"/>`;
     const cajas = marcas.filter(m => m.y < HR - 8).map(m => caja(RASTRO + 20, m.y + 5, m.texto, { color: 'i' }));
     const quedan = [];
     for (let i = cajas.length - 1; i >= 0; i--) if (quedan.every(q => !choca(q, cajas[i]))) quedan.push(cajas[i]);
@@ -307,6 +315,9 @@
         if (y - 11 < y0 || y + 2 > y1 || y > HR - 6) continue;
         rot.push(caja(RX0 + 4, y, String(c), { tipo: 'numero', tam: 14 }));
       }
+      // la unidad, dentro de la regla entre el 20 y el 30 (lector en frío, ronda 2: «la regla no dice la unidad»)
+      const yu = bot - 91.5;
+      if (yu - 10 >= y0 && yu + 3 <= y1 && yu <= HR - 6) rot.push(caja(RX0 + 4, yu, 'cm', { tipo: 'numero', tam: 12 }));
     }
     // los pulgares y las palmas, adelante: arriba tu compañero (desde la derecha), abajo tú (desde la izquierda)
     s += `<g class="kit-objeto" data-objeto="mano" data-prueba="si">${manoAdelante(ys, 1, sep)}</g>`;
@@ -321,8 +332,21 @@
   const SUELO = 250, TECHO = 34, HP = 280, COL = [208, 262];
   function vPabellon(d, e = {}) {
     const alto = d.alto > 0 ? d.alto : 20, Y = m => SUELO - (SUELO - TECHO) * m / alto, rot = [], obj = [];
-    let s = `<line x1="8" y1="${SUELO}" x2="${W - 8}" y2="${SUELO}" stroke="currentColor" stroke-width="2"/>`;
-    for (let k = 0; k < 15; k++) s += `<line x1="${12 + k * 21}" y1="${SUELO + 2}" x2="${4 + k * 21}" y2="${SUELO + 10}" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>`;
+    // Con la regla de alturas, el piso empieza en la regla: si no, su línea y sus rayas cruzan el «0» y se lee «−0»
+    // (lector en frío, ronda 2, ejemplos 13, 16 y 17).
+    const conRegla = d.regla !== false;
+    let s = '';
+    if (d.rio) {
+      // rio: true, el agua en lugar del patio (dos líneas de olas), con su nombre
+      for (const [dy, op] of [[0, 0.8], [8, 0.45]]) {
+        let w = `M${conRegla ? 44 : 8} ${SUELO + dy}`;
+        for (let x = conRegla ? 44 : 8; x < W - 12; x += 16) w += `q4 -4 8 0t8 0`;
+        s += `<path class="fis-rio" d="${w}" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity="${op}" stroke-linecap="round"/>`;
+      }
+    } else {
+      s += `<line x1="${conRegla ? 40 : 8}" y1="${SUELO}" x2="${W - 8}" y2="${SUELO}" stroke="currentColor" stroke-width="2"/>`;
+      for (let k = conRegla ? 2 : 0; k < 15; k++) s += `<line x1="${12 + k * 21}" y1="${SUELO + 2}" x2="${4 + k * 21}" y2="${SUELO + 10}" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>`;
+    }
     // regla de alturas
     const paso = d.paso || (alto > 10 ? 1 : 0.5), num = d.numero || (alto > 10 ? 5 : 1);
     let r = `<line x1="40" y1="${SUELO}" x2="40" y2="${TECHO}" stroke="currentColor" stroke-width="2"/>`;
@@ -335,6 +359,7 @@
     // regla: false, cuando el problema no mide alturas desde el patio (el 0 está en otro lado): solo la cota que se da
     if (d.regla !== false) s += `<g class="kit-regla">${r}</g>`;
     else rot.splice(0, rot.length);
+    if (d.rio) rot.push(caja(W - M, SUELO + 22, 'río', { ancla: 'end' }));
     if (d.cota) {
       // x: dónde va (por defecto, junto a la regla de alturas); flecha: con punta en «a» (lo que cae, hacia abajo), y el
       // rótulo a su izquierda, a media altura.
@@ -347,8 +372,27 @@
         rot.push(caja(cx - 8, Math.min(ya, yb) - 10, d.cota.texto, { peso: 700, color: 'f', ancla: 'start' }));
       }
     }
-    // el pabellón del colegio (dibujo de prueba)
-    const ed = d.edificio || { techo: 5, pisos: 1 }, yt = Y(ed.techo), pisos = ed.pisos || 1, X0 = 56, X1 = 164;
+    // alturas: [{ y, texto }]: una altura que da el enunciado, con una línea discontinua y su rótulo a la derecha
+    for (const a of d.alturas || []) {
+      s += `<line class="fis-altura" x1="44" y1="${n(Y(a.y))}" x2="${W - 8}" y2="${n(Y(a.y))}" stroke="var(--c-f)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+      if (a.texto) rot.push(caja(W - M, Y(a.y) - 6, a.texto, { peso: 700, color: 'f', ancla: 'end' }));
+    }
+    // puente: { y }: el tablero de un puente a esa altura, con su baranda y un pilar hasta el agua (dibujo de prueba)
+    if (d.puente) {
+      const yp = Y(d.puente.y), PX0 = conRegla ? 50 : 16, PX1 = 190;
+      let q = `<rect x="${PX0}" y="${n(yp)}" width="${PX1 - PX0}" height="7" rx="1.5" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`
+        + `<line x1="${PX0}" y1="${n(yp - 14)}" x2="${PX1}" y2="${n(yp - 14)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+      for (let x = PX0 + 4; x <= PX1 - 4; x += 31) q += `<line x1="${x}" y1="${n(yp - 14)}" x2="${x}" y2="${n(yp)}" stroke="currentColor" stroke-width="1.5"/>`;
+      q += `<rect x="${PX0 + 40}" y="${n(yp + 7)}" width="18" height="${n(Math.max(0, SUELO - yp - 7))}" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.5"/>`;
+      s += `<g class="kit-objeto" data-objeto="puente" data-prueba="si">${q}</g>`;
+      obj.push({ nombre: 'puente', x0: PX0, x1: PX1, y0: yp - 15, y1: SUELO });
+      rot.push(caja(PX0 + 64, yp + 26, 'puente', { ancla: 'start' }));
+    }
+    // el pabellón del colegio (dibujo de prueba); edificio: false, sin él (ronda 2: el mismo pabellón no cambia de tamaño
+    // entre pantallas; donde la regla va hasta 35 o 50 m, o el problema no lo usa, no se dibuja)
+    const ed = d.edificio === false ? null : d.edificio || { techo: 5, pisos: 1 }, X0 = 56, X1 = 164;
+    if (ed) {
+    const yt = Y(ed.techo), pisos = ed.pisos || 1;
     let b = `<rect x="${X0}" y="${n(yt)}" width="${X1 - X0}" height="${n(SUELO - yt)}" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2"/>`
       + `<line x1="${X0 - 4}" y1="${n(yt)}" x2="${X1 + 4}" y2="${n(yt)}" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`;
     const hp = (SUELO - yt) / pisos, hpm = ed.techo / pisos;
@@ -364,6 +408,7 @@
     s += `<g class="kit-objeto" data-objeto="pabellon" data-prueba="si">${b}</g>`;
     obj.push({ nombre: 'pabellon', x0: X0 - 4, x1: X1 + 4, y0: yt - 2, y1: SUELO });
     if (ed.ventana !== undefined) s += `<line x1="${X1 - 22}" y1="${n(Y(ed.ventana))}" x2="${X1 + 6}" y2="${n(Y(ed.ventana))}" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`;
+    }
     // pelotas
     (d.pelotas || []).forEach((p0, k) => {
       // pasos (para «Mira»): la altura en cada paso; con estado.corte = k, la pelota va en pasos[k] y deja las anteriores
@@ -372,10 +417,12 @@
         const j = lim(Math.round(e.corte || 0), 0, p0.pasos.length - 1);
         p = Object.assign({}, p0, { y: p0.pasos[j], marcas: p0.pasos.slice(0, j), v: Array.isArray(p0.pasosV) ? p0.pasosV[j] : p0.v });
       }
-      const cx = COL[k] || COL[0], rr = p.grande ? 10 : p.chica ? 5 : 8, cy = Y(p.y) - rr;
-      for (const m of p.marcas || []) s += `<circle cx="${cx}" cy="${n(Y(m) - rr)}" r="${rr}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.32"/>`;
-      s += `<g class="kit-objeto" data-objeto="pelota" data-prueba="si"><circle cx="${cx}" cy="${n(cy)}" r="${rr}" fill="var(--card)" stroke="currentColor" stroke-width="2.5"/>${p.grande || p.chica ? '' : `<path d="M${cx - rr * 0.7} ${n(cy - rr * 0.3)}Q${cx} ${n(cy + rr * 0.4)} ${cx + rr * 0.7} ${n(cy - rr * 0.3)}" fill="none" stroke="currentColor" stroke-width="1.2"/>`}</g>`;
-      obj.push({ nombre: 'pelota', x0: cx - rr, x1: cx + rr, y0: cy - rr, y1: cy + rr });
+      // x (px): dónde va; forma: 'borrador', un borrador de pizarra (ronda 2, ejemplo 13: «parece una pelota»)
+      const cx = p.x !== undefined ? p.x : COL[k] || COL[0], borr = p.forma === 'borrador', rr = borr ? 5 : p.grande ? 10 : p.chica ? 5 : 8, cy = Y(p.y) - rr;
+      for (const m of p.marcas || []) s += `<circle class="fis-tenue" cx="${cx}" cy="${n(Y(m) - rr)}" r="${rr}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.32"/>`;
+      if (borr) s += `<g class="kit-objeto" data-objeto="borrador" data-prueba="si"><rect x="${cx - 11}" y="${n(cy - 5)}" width="22" height="10" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="2"/><rect x="${cx - 11}" y="${n(cy + 1)}" width="22" height="4" rx="1" fill="currentColor" fill-opacity="0.45"/></g>`;
+      else s += `<g class="kit-objeto" data-objeto="pelota" data-prueba="si"><circle cx="${cx}" cy="${n(cy)}" r="${rr}" fill="var(--card)" stroke="currentColor" stroke-width="2.5"/>${p.grande || p.chica ? '' : `<path d="M${cx - rr * 0.7} ${n(cy - rr * 0.3)}Q${cx} ${n(cy + rr * 0.4)} ${cx + rr * 0.7} ${n(cy - rr * 0.3)}" fill="none" stroke="currentColor" stroke-width="1.2"/>`}</g>`;
+      obj.push({ nombre: borr ? 'borrador' : 'pelota', x0: cx - (borr ? 11 : rr), x1: cx + (borr ? 11 : rr), y0: cy - rr, y1: cy + rr });
       if (p.v && p.flecha !== false) {
         const L = Math.min(84, Math.abs(p.v) * 3.2), dir = p.v > 0 ? -1 : 1, y1 = cy + dir * (rr + 2), y2 = y1 + dir * L;
         if (L >= 4) {
@@ -414,7 +461,7 @@
       case 'alcance': return 'La combi en el paradero y el mototaxi en la avenida, con sus gráficas de posición contra tiempo debajo.';
       case 'combi': return `Una combi en la avenida${d.lugar ? ` junto al ${String(d.lugar).toLowerCase()}` : ''}, con la flecha de su velocidad y la de su aceleración.`;
       case 'regla': return `Una regla de 30 cm entre tus dedos, que tu compañero suelta. ${d.cerrada ? `La atrapas después de que cayó ${fmt(d.cae || 0)} cm.` : 'Todavía no cierras los dedos.'}`;
-      case 'pabellon': return 'El pabellón del colegio con una regla de alturas en metros y una pelota en el patio.';
+      case 'pabellon': return d.puente ? 'Un puente sobre un río, con una piedra en el borde del puente a punto de soltarse.' : d.edificio === false ? 'Una regla de alturas en metros y una pelota en el patio.' : 'El pabellón del colegio con una regla de alturas en metros y una pelota en el patio.';
       default: return `Gráfica de ${nom(d.y)} contra ${nom(d.x)}.`;
     }
   }

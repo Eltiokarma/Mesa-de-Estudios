@@ -265,7 +265,7 @@
       ],
       respuesta: [neg('B'), ', ', pa('+3 m/s²'), ', a los ', pt('8,33 s')] },
     { nivel: 3, titulo: 'La velocidad en una ecuación',
-      enunciado: ['Un carrito sube por un riel inclinado y vuelve a bajar. Su velocidad es ', Mv, ' = ', pv('18'), ' − ', pa('3'), Mt, ', con ', Mv, ' en m/s y ', Mt, ' en segundos. ¿En qué instante va a ', pv('6 m/s'), ' riel abajo?'],
+      enunciado: ['Un carrito sube por un riel inclinado y vuelve a bajar. Su velocidad es ', Mv, ' = 18 − 3', Mt, ', con ', Mv, ' en m/s y ', Mt, ' en segundos. ¿En qué instante va a ', pv('6 m/s'), ' riel abajo?'],
       alternativas: ['4 s', '6 s', '2 s', '24 s', '8 s'],
       datos: [DA.vt, '+ riel arriba y − riel abajo.'],
       solucion: [
@@ -301,7 +301,8 @@
           dibujo: avenida(Object.assign(regla(0, 40), { x0: 0, v: 3, a: 2, segundos: 3, crece: true, lugares: PARADERO })) },
         { titulo: 'Cuánto cambió la velocidad', texto: [Mdv, ' (delta ve) es cuánto cambió la velocidad: la del final menos la del inicio, ', Mv0, '. Si pasa de 3 m/s a 9 m/s, cambió ', pv('6 m/s'), '.'],
           ecuacion: [Mdv, ' = ', Mv, ' − ', Mv0, ' = ', pv('9'), ' − ', pv('3'), ' = ', pv('6 m/s')] },
-        { titulo: 'Metros por segundo, cada segundo', texto: ['La aceleración ', Ma, ' dice cuántos m/s cambia la velocidad en cada segundo; se mide en m/s². Con ', pa('a = 2 m/s²'), ', la velocidad sube 2 m/s cada segundo. Si a no cambia, es un MRUV: movimiento rectilíneo uniformemente variado.'] },
+        // Por qué el cuadrado (lector en frío, ronda 2): m/s que cambian en cada segundo son m/s ÷ s.
+        { titulo: 'Metros por segundo, cada segundo', texto: ['La aceleración ', Ma, ' dice cuántos m/s cambia la velocidad en cada segundo: m/s ÷ s, que se escribe m/s². Con ', pa('a = 2 m/s²'), ', sube 2 m/s cada segundo. Si a no cambia, es un MRUV (movimiento rectilíneo uniformemente variado).'] },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir con qué velocidad pasa la combi por el paradero y cuánto acelera. El reloj corre solo: mira cuánto crece la flecha en cada segundo.' },
       ],
     },
@@ -322,10 +323,11 @@
         { s: [Mt], t: 'segundos desde que arranca el reloj' },
         { s: 'flecha', t: 'la velocidad: más larga, más rápido' },
         { s: 'combi tenue', t: 'dónde estaba en cada segundo' },
-        { s: 'm/s²', t: 'm/s que cambia en cada segundo' },
+        { s: 'm/s²', t: 'm/s ÷ s: m/s en cada segundo' },
       ],
       controles: [
-        { id: 'v0', etiqueta: 'Sale a, v₀', color: 'c-o', min: 0, max: 8, paso: 2, inicio: 0, unidad: 'm/s', decimales: 0 },
+        // Sale a 4 m/s al abrir: con 0, la flecha de v que nombra la leyenda no se veía (lector en frío, ronda 2).
+        { id: 'v0', etiqueta: 'Sale a, v₀', color: 'c-o', min: 0, max: 8, paso: 2, inicio: 4, unidad: 'm/s', decimales: 0 },
         { id: 'a', etiqueta: 'Acelera, a', color: 'c-h', min: 0.5, max: 3, paso: 0.5, inicio: 1, unidad: 'm/s²', decimales: 1 },
         { id: 't', etiqueta: 'Reloj, t', color: 'c-i', min: 0, max: T_B1 + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
@@ -359,9 +361,10 @@
       ],
     },
     regla: {
-      texto: 'La aceleración es cuánto cambia la velocidad en cada segundo. Al frenar, a y v tienen signos contrarios. La academia escribe v = v₀ ± a·t, con a sin signo.',
+      // La línea de la academia dice que es la misma regla, con el signo dentro de a o afuera (lector en frío, ronda 2).
+      texto: 'La aceleración es cuánto cambia v cada segundo; al frenar, a y v tienen signos contrarios. La academia escribe v = v₀ ± a·t: la misma regla, con a sin signo.',
       ecuacion: [Ma, ' = ', { frac: [Mdv, Mdt] }, ' = ', { frac: [[{ llave: [Mv], nota: 'al final', color: 'c-o' }, ' − ', { llave: [Mv0], nota: 'al inicio', color: 'c-o' }], Mdt] }, '   →   ', Mv, ' = ', Mv0, ' + ', Ma, ' · ', Mt],
-      condicion: 'a no cambia en el tramo (si cambia, da la media) y t cuenta desde v₀. Aquí a trae su signo.',
+      condicion: 'a no cambia (si cambia, da la media); t cuenta desde v₀. Aquí el signo va dentro de a, no en un ±.',
     },
     resuelve: {
       pieza: 'fis-combi',
@@ -698,7 +701,7 @@
       ],
       respuesta: [pa('a = −4 m/s²'), '; tarda ', pt('5 s')] },
     { nivel: 2, titulo: 'La ecuación horaria',
-      enunciado: ['La posición de una combi es ', Mx, ' = 10 + ', pv('8'), Mt, ' + ', Mt2, ', con ', Mx, ' en metros y ', Mt, ' en segundos. ¿Dónde está y qué velocidad tiene a los ', pt('3 s'), '?'],
+      enunciado: ['La posición de una combi es ', Mx, ' = 10 + 8', Mt, ' + ', Mt2, ', con ', Mx, ' en metros y ', Mt, ' en segundos. ¿Dónde está y qué velocidad tiene a los ', pt('3 s'), '?'],
       datos: DATOS_B2,
       solucion: [
         { texto: ['Se reemplaza ', Mt, ' = 3 en la ecuación:'], ecuacion: [Mx, ' = 10 + ', pv('8'), ' · ', pt('3'), ' + ', pt('3'), '² = ', px('43 m')] },
@@ -747,7 +750,7 @@
       ],
       respuesta: [neg('C'), ', ', pdx('50 m')] },
     { nivel: 3, titulo: 'Vuelve a pasar',
-      enunciado: ['Una canica sube rodando por una rampa y vuelve a bajar. Su posición es ', Mx, ' = 2 + ', pv('8'), Mt, ' − 2', Mt2, ' (en m y s). ¿Cuándo vuelve a pasar por donde estaba en ', pt('t = 0'), ', y con qué velocidad?'],
+      enunciado: ['Una canica sube rodando por una rampa y vuelve a bajar. Su posición es ', Mx, ' = 2 + 8', Mt, ' − 2', Mt2, ' (en m y s). ¿Cuándo vuelve a pasar por donde estaba en ', pt('t = 0'), ', y con qué velocidad?'],
       alternativas: ['A los 2 s, con 0', 'A los 4 s, con 8 m/s', 'A los 4 s, con 0', 'Nunca: siempre sube', 'A los 4 s, con −8 m/s'],
       datos: [DA.vt, DB.media, DB.horaria, DB.v2, '+ rampa arriba y − rampa abajo.'],
       solucion: [
@@ -757,7 +760,7 @@
       ],
       respuesta: [neg('E'), ', a los ', pt('4 s'), ', con ', pv('−8 m/s')] },
     { nivel: 3, titulo: 'Distancia en el riel',
-      enunciado: ['Un carrito sube por un riel inclinado y vuelve a bajar. Su posición es ', Mx, ' = 4 + ', pv('6'), Mt, ' − ', Mt2, ' (en m y s). ¿Qué distancia recorre entre ', pt('t = 1 s'), ' y ', pt('t = 4 s'), '?'],
+      enunciado: ['Un carrito sube por un riel inclinado y vuelve a bajar. Su posición es ', Mx, ' = 4 + 6', Mt, ' − ', Mt2, ' (en m y s). ¿Qué distancia recorre entre ', pt('t = 1 s'), ' y ', pt('t = 4 s'), '?'],
       alternativas: ['3 m', '5 m', '12 m', '8 m', '13 m'],
       datos: [DA.vt, DB.media, DB.horaria, DB.v2, '+ riel arriba y − riel abajo.', 'Distancia recorrida, d: lo que avanza en cada sentido, sumado sin signo.'],
       solucion: [
@@ -792,7 +795,8 @@
     lee: {
       tarjetas: [
         { titulo: 'Frenar parejo', texto: ['Una combi que frena parejo pierde la misma velocidad cada segundo: con el + hacia adelante, su ', Ma, ' es negativa. Las combis tenues muestran dónde estaba cada segundo: los tramos se achican.'],
-          dibujo: avenida(Object.assign(regla(0, 40), { x0: 0, v: 12, a: -3, segundos: 4, crece: true, lugares: [COLEGIO] })) },
+          // Hasta los 3 s: a los 4 s se detiene a 1,5 m del de 3 s y la pieza saltaba el rótulo «3 s» (lector, ronda 2).
+          dibujo: avenida(Object.assign(regla(0, 40), { x0: 0, v: 12, a: -3, segundos: 3, crece: true, lugares: [COLEGIO] })) },
         { titulo: 'Distancia de frenado', texto: ['La distancia de frenado es lo que avanza la combi desde que pisa el freno hasta que se detiene. Al detenerse, ', Mv, ' = 0 y se queda ahí: no retrocede.'] },
         { titulo: 'Qué mirar al jugar', texto: 'La combi llega a 10 m/s frente al colegio y tú eliges qué tan fuerte frena. Mira cuántos segundos tarda en parar y en qué marca de la regla se detiene.' },
       ],
@@ -826,7 +830,7 @@
     },
     predice: {
       pregunta: ['En la carretera, otra combi con el mismo freno del juego va al doble de rápido: ', pv('20 m/s'), '. ¿Cuánto recorre hasta parar?'],
-      datos: ['En el juego, con 2 m/s² de freno, la combi que llegó a 10 m/s paró en 25 m.'],
+      datos: ['En el juego, con 2 m/s² de freno, la combi que iba a 10 m/s paró en 25 m.'],
       opciones: [
         { id: 'c', texto: '100 m', correcta: true },
         { id: 'doble', texto: '50 m', error: 'PR1-frenado', siFuera: 'Bien que crezca: tarda el doble en parar. Pero en cada segundo también va más rápido.' },
@@ -850,9 +854,11 @@
       ],
     },
     regla: {
-      texto: 'Con aceleración constante valen cuatro ecuaciones; cada una deja fuera una magnitud. La academia escribe Δx = v₀t ± ½at², con a sin signo.',
-      ecuacion: [Mv, ' = ', Mv0, ' + ', Ma, Mt, '   ·   ', Mdx, ' = ', MEDIA, ' · ', Mt, '   ·   ', Mx, ' = ', Mx0, ' + ', Mv0, Mt, ' + ½', Ma, Mt2,
-        '   ·   ', { sup: [Mv, '2'] }, ' = ', { sup: [Mv0, '2'] }, ' + 2', Ma, Mdx],
+      // Cada ecuación dice debajo qué magnitud deja fuera, y la tercera muestra que x − x₀ es Δx (lector en frío, ronda 2).
+      texto: 'Con a constante valen cuatro ecuaciones; cada una deja fuera la magnitud que dice debajo. La academia escribe Δx = v₀t ± ½at²: la misma, con a sin signo.',
+      ecuacion: [{ llave: [Mv, ' = ', Mv0, ' + ', Ma, Mt], nota: ['sin ', Mdx] }, '   ·   ', { llave: [Mdx, ' = ', MEDIA, ' · ', Mt], nota: ['sin ', Ma] }, '   ·   ',
+        { llave: [Mdx, ' = ', Mx, ' − ', Mx0, ' = ', Mv0, Mt, ' + ½', Ma, Mt2], nota: ['sin ', Mv] },
+        '   ·   ', { llave: [{ sup: [Mv, '2'] }, ' = ', { sup: [Mv0, '2'] }, ' + 2', Ma, Mdx], nota: ['sin ', Mt] }],
       condicion: 'a no cambia en el tramo; aquí trae su signo. Al frenar hasta v = 0, la combi se detiene: no retrocede.',
     },
     resuelve: {
@@ -1024,11 +1030,15 @@
     if (q.t1 > 0) areas.push({ puntos: [[0, 0], [q.t1, v1]], color: 'f', rotulo: q.tt > val.ta && q.A1 >= 8 ? `${fm(q.A1)} m` : undefined });
     if (q.tt > val.ta) areas.push({ puntos: [[val.ta, val.vt], [q.tt, val.vt]], color: 'f', rotulo: q.tt - val.ta >= 2.5 ? `${fm(q.A2)} m` : undefined });
     // El escalón de la pendiente se ve mientras acelera; después, el rótulo del triángulo ocupa ese lugar.
-    const t0 = val.ta / 2 - 0.5, esc = val.ta >= 2 && q.tt >= t0 + 1 && q.tt <= val.ta + 1e-9;
-    const marcas = []; for (let k = 1; k <= Math.floor(q.tt + 1e-9); k++) marcas.push(atletaEn(val.ta, val.vt, k));
+    // Lector en frío, ronda 2 (por segunda vez, la leyenda nombraba marcas que no se veían al abrir): el escalón de la
+    // pendiente y las rayitas de la pista ya no esperan al reloj. El escalón va siempre sobre la subida que eligió el
+    // alumno (de t₀ a t₀ + 1 s, dentro de la subida); las rayitas marcan dónde pasa en cada segundo de toda la carrera,
+    // hasta la meta: se ven al elegir, y el atleta corre sobre ellas.
+    const t0 = Math.max(0, val.ta / 2 - 0.5), esc = true;
+    const marcas = []; for (let k = 1; k <= Math.floor(q.fin + 1e-9); k++) marcas.push(atletaEn(val.ta, val.vt, k));
     return mruv({ vista: 'pista', largo: META, x: atletaEn(val.ta, val.vt, q.tt), marcas,
       grafica: { x: ejT(T_B3, 1, { cada: 2 }), y: ejV(0, 12, 2), alto: 120, curvas: [{ puntos: curva, color: 'o' }], areas,
-        escalones: esc ? [{ t: t0, dt: 1, v: a * t0, a }] : [], textos: esc ? [{ en: [t0, a * t0 + a], texto: 'a', color: 'h', ancla: 'end', dx: -3, dy: -2 }] : [] } });
+        escalones: esc ? [{ t: t0, dt: 1, v: a * t0, a }] : [], textos: esc && t0 > 0 ? [{ en: [t0, a * t0 + a], texto: 'a', color: 'h', ancla: 'end', dx: -3, dy: -2 }] : [] } });
   };
   // El mototaxi que avanza y retrocede (la predicción): rectángulos sobre y bajo el eje.
   const idaVueltaB3 = (rot, desde = {}) => ({ x: ejT(8, 1), y: ejV(-2, 5, 1), alto: 150,
@@ -1221,7 +1231,7 @@
         { s: [Mt], t: 'segundos desde la salida' },
         { s: 'zona violeta', t: 'el área bajo la línea de v' },
         { s: 'escalón carmín', t: 'lo que sube v en 1 s' },
-        { s: 'rayitas en la pista', t: 'dónde estaba en cada segundo' },
+        { s: 'rayitas en la pista', t: 'por dónde pasa en cada segundo' },
       ],
       controles: [
         { id: 'ta', etiqueta: 'Acelera durante', color: 'c-i', min: 1, max: 6, paso: 0.5, inicio: 3, unidad: 's', decimales: 1 },
@@ -1239,7 +1249,8 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Un mototaxi avanza 3 s a 4 m/s y después retrocede 4 s a 1,5 m/s para estacionarse. ¿A qué distancia de donde empezó termina?',
+      // «¿A cuántos metros…?»: «distancia» es la d de la distancia recorrida, que aquí no se pide (lector, ronda 2).
+      pregunta: 'Un mototaxi avanza 3 s a 4 m/s y después retrocede 4 s a 1,5 m/s para estacionarse. ¿A cuántos metros de donde empezó termina?',
       datos: ['El área de un rectángulo es base por altura.', 'Hacia adelante es + y hacia atrás, −.'],
       opciones: [
         { id: 'c', texto: '6 m', correcta: true },
@@ -1424,16 +1435,20 @@
   const xtB4 = (a, t, o = {}) => ({ x: ejT(T_B4, 1, { cada: 2 }), y: ejX(0, XMAX_B4, 50), alto: o.alto || 110,
     curvas: [{ puntos: [[0, 0], [Math.min(t, XMAX_B4 / VM_B4), Math.min(VM_B4 * t, XMAX_B4)]], color: 'f', discontinua: true, rotulo: o.rotulos ? 'mototaxi' : undefined, en: [7.5, 75], ancla: 'end', dx: -4, dy: -6 },
       { puntos: parabola(a, 0, 0, t, XMAX_B4), color: 'f', rotulo: o.rotulos ? 'combi' : undefined, en: [6, a * 18], ancla: 'start', dx: 6, dy: 16 }] });
+  // Lector en frío, ronda 2 (la leyenda nombra la curva y la recta, y al abrir la gráfica estaba vacía): las dos x–t de
+  // los 12 s van tenues desde el inicio, según la a elegida, y el reloj las repasa firmes.
   const juegoB4 = val => {
-    const tt = Math.min(val.t, T_B4);
+    const tt = Math.min(val.t, T_B4), todo = xtB4(val.a, T_B4), firme = xtB4(val.a, tt);
+    const grafica = Object.assign({}, firme, { curvas: [...todo.curvas.map(c => Object.assign({}, c, { tenue: true })), ...firme.curvas] });
     return mruv({ vista: 'alcance', regla: { min: 0, max: XMAX_B4, paso: 25, numero: 50 }, lugares: [{ en: 0, texto: 'Paradero' }],
-      combi: { x: Math.min(XMAX_B4, val.a * tt * tt / 2) }, mototaxi: { x: Math.min(XMAX_B4, VM_B4 * tt) }, grafica: xtB4(val.a, tt) });
+      combi: { x: Math.min(XMAX_B4, val.a * tt * tt / 2) }, mototaxi: { x: Math.min(XMAX_B4, VM_B4 * tt) }, grafica });
   };
   // Las tres gráficas de la combi (continua) y el mototaxi (discontinua), con a = 2 m/s²: «Mira».
   const TRES_B4 = { vista: 'tres', x: ejT(T_B4, 1, { cada: 2 }), graficas: [
     { y: ejX(0, 150, 50), curvas: [{ puntos: [[0, 0], [12, 120]], color: 'f', discontinua: true, rotulo: 'mototaxi', en: [4, 40], ancla: 'end', dx: -4, dy: -8 },
       { puntos: parabola(2, 0, 0, 12, 150), color: 'f', rotulo: 'combi', en: [10, 100], ancla: 'start', dx: 8, dy: 14 }],
-      tangentes: [{ t: 5, y: 25, m: 10, ancho: 2.5, color: 'o', desde: 2, rotulo: 'inclinación: v', dy: 10 }], puntos: [{ x: 10, y: 100, color: 'f', guias: true, desde: 6 }] },
+      // El punto naranja dice dónde toca la recta a la curva (lector, ronda 2: «no se ve como una tangente clara»).
+      tangentes: [{ t: 5, y: 25, m: 10, ancho: 2.5, color: 'o', desde: 2, rotulo: 'inclinación: v', dy: 10 }], puntos: [{ x: 5, y: 25, color: 'o', desde: 2 }, { x: 10, y: 100, color: 'f', guias: true, desde: 6 }] },
     { y: ejV(0, 24, 8), curvas: [{ puntos: [[0, 10], [12, 10]], color: 'o', discontinua: true, desde: 3 }, { puntos: [[0, 0], [12, 24]], color: 'o', desde: 3 }],
       puntos: [{ x: 5, y: 10, color: 'o', guias: true, desde: 4 }] },
     { y: ejA(-1, 3, 1), curvas: [{ puntos: [[0, 0], [12, 0]], color: 'h', discontinua: true, desde: 5, rotulo: 'mototaxi', en: [12, 0], ancla: 'end', dx: 0, dy: 13 }, { puntos: [[0, 2], [12, 2]], color: 'h', desde: 5 }],
@@ -1445,6 +1460,8 @@
     ['Inclinación de x–t en un instante: ', Mv, '. Área bajo a–t: ', Mdv, '.'],
     'Se alcanzan cuando están en la misma posición a la vez.',
   ];
+  // Sin la línea del alcance, para los ejemplos que no tienen alcance (lector en frío, ronda 2: 10 a 12).
+  const DB4g = DB4.slice(0, 4);
   const DB4b = [...DB4.slice(0, 3), ['Área bajo v–t: ', Mdx, '. Área bajo a–t: ', Mdv, '.'], 'Rectángulo: base · altura. Triángulo: base · altura ÷ 2.'];
   const at = (tramos, o = {}) => {
     // tramos: [[a, dt], …] desde t = 0
@@ -1461,13 +1478,13 @@
     { nivel: 1, titulo: 'El área bajo a–t',
       figura: at([[3, 4]]),
       enunciado: ['La gráfica a–t de una combi es una horizontal en ', pa('3 m/s²'), ' durante ', pt('4 s'), '. ¿Cuánto cambió su velocidad?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [{ texto: 'El cambio de velocidad es el área bajo a–t: un rectángulo.', ecuacion: [Mdv, ' = ', pa('3'), ' · ', pt('4'), ' = ', pv('12 m/s')] }],
       respuesta: [pv('Δv = 12 m/s')] },
     { nivel: 1, titulo: 'La a–t sin acelerar',
       figura: graf({ x: ejT(6, 1), y: ejV(0, 20, 5), alto: 110, curvas: [{ puntos: [[0, 15], [6, 15]], color: 'o' }] }),
       enunciado: ['Una combi va siempre a ', pv('15 m/s'), ': su gráfica v–t es esta horizontal. ¿Cómo es su gráfica a–t?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [{ texto: ['La velocidad no cambia: la pendiente de v–t es 0 en todo instante.'], ecuacion: [Ma, ' = ', { frac: [Mdv, Mdt] }, ' = ', { frac: ['0', Mdt] }, ' = ', pa('0')] }],
       respuesta: [pa('a = 0'), ': una horizontal sobre el mismo eje t'] },
     { nivel: 1, titulo: 'La a–t al frenar',
@@ -1476,7 +1493,7 @@
         { y: ejA(-4, 4, 2), textos: [{ en: [2, 2], texto: '?' }] }],
         alt: 'Arriba, la gráfica v–t de la combi: una recta que baja de 12 m/s a 0 en 4 s. Abajo, los ejes de su gráfica a–t, vacíos, con un signo de pregunta.' }),
       enunciado: ['Una combi frena parejo: su velocidad baja en línea recta de ', pv('12 m/s'), ' a 0 en ', pt('4 s'), '. ¿Cómo es su gráfica a–t?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [{ texto: 'La pendiente de v–t es la misma en todo el tramo, y negativa:', ecuacion: [Ma, ' = ', { frac: [['0 − ', pv('12')], pt('4')] }, ' = ', pa('−3 m/s²')] }],
       respuesta: ['Una horizontal bajo el eje, en ', pa('−3 m/s²')] },
     { nivel: 1, titulo: 'La misma velocidad',
@@ -1488,13 +1505,13 @@
     { nivel: 1, titulo: 'La velocidad desde a–t',
       figura: at([[2, 5]]),
       enunciado: ['Una combi va a ', pv('4 m/s'), ' y su gráfica a–t es una horizontal en ', pa('2 m/s²'), ' durante ', pt('5 s'), '. ¿Qué velocidad tiene al final?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [{ texto: 'El área bajo a–t es lo que ganó; se suma a la que tenía.', ecuacion: [Mv, ' = ', pv('4'), ' + ', pa('2'), ' · ', pt('5'), ' = ', pv('14 m/s')] }],
       respuesta: [pv('v = 14 m/s')] },
     { nivel: 2, titulo: 'a–t en dos tramos',
       figura: at([[2, 3], [0, 4]]),
       enunciado: ['Una combi arranca del reposo. Su gráfica a–t vale ', pa('2 m/s²'), ' durante ', pt('3 s'), ' y después 0 durante ', pt('4 s'), '. ¿Qué velocidad tiene a los ', pt('7 s'), '?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [
         { texto: 'Primer tramo: el área es lo que gana.', ecuacion: [Mdv, ' = ', pa('2'), ' · ', pt('3'), ' = ', pv('6 m/s')] },
         { texto: 'Segundo tramo: a = 0, el área es 0 y la velocidad no cambia.', ecuacion: [Mv, ' = 0 + ', pv('6'), ' + 0 = ', pv('6 m/s')] },
@@ -1512,16 +1529,15 @@
     { nivel: 2, titulo: 'Leer la parábola',
       figura: graf({ x: ejT(6, 1), y: ejX(0, 50, 10), alto: 130, curvas: [{ puntos: parabola(3, 0, 0, 5.5, 50), color: 'f' }], puntos: [{ x: 4, y: 24, color: 'f', guias: true }] }),
       enunciado: ['La gráfica x–t de una combi que arranca del reposo en el paradero es una parábola que pasa por (', pt('4 s'), '; ', px('24 m'), '). ¿Cuál es su aceleración?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [
         { texto: ['Desde el reposo y el 0, ', Mx, ' = ½ · ', Ma, ' · ', Mt2, '. Se reemplaza el punto:'], ecuacion: [px('24'), ' = ½ · ', Ma, ' · ', pt('4'), '²   →   48 = ', Ma, ' · 16   →   ', Ma, ' = ', { frac: ['48', '16'] }, ' = ', pa('3 m/s²')] },
-        { texto: 'Con eso, su velocidad a los 4 s, que es la inclinación de la curva ahí, vale v = 3 · 4 = 12 m/s.' },
       ],
       respuesta: [pa('a = 3 m/s²')] },
     { nivel: 2, titulo: 'a–t al frenar',
       figura: at([[-2, 3]]),
       enunciado: ['Una combi va a ', pv('10 m/s'), ' y su gráfica a–t es una horizontal en ', pa('−2 m/s²'), ' durante ', pt('3 s'), '. ¿Qué velocidad tiene al final?'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [
         { texto: 'El área está bajo el eje: la velocidad baja.', ecuacion: [Mdv, ' = (', pa('−2'), ') · ', pt('3'), ' = ', pv('−6 m/s')] },
         { texto: 'Se suma a la que tenía:', ecuacion: [Mv, ' = ', pv('10'), ' + (', pv('−6'), ') = ', pv('4 m/s')] },
@@ -1571,22 +1587,23 @@
       ],
       respuesta: [neg('E'), ', ', { v: 'c-f', t: '36 m', m: 'separación' }] },
     { nivel: 3, titulo: 'Las tres gráficas al frenar',
-      figura: mruv({ vista: 'tres', x: ejT(4, 1, { nombre: 't' }), graficas: [{ y: ejX(0, 40, 20), textos: [{ en: [2, 20], texto: '?' }] },
-        { y: ejV(0, 12, 6), textos: [{ en: [2, 6], texto: '?' }] }, { y: ejA(-4, 4, 2), textos: [{ en: [2, 0], texto: '?', dy: -4 }] }],
+      // Los ejes sin números: el enunciado no da ninguno (lector en frío, ronda 2).
+      figura: mruv({ vista: 'tres', x: ejT(4, 1, { nombre: 't', numeros: false }), graficas: [{ y: ejX(0, 40, 20, { numeros: false }), textos: [{ en: [2, 20], texto: '?' }] },
+        { y: ejV(0, 12, 6, { numeros: false }), textos: [{ en: [2, 6], texto: '?' }] }, { y: ejA(-4, 4, 2, { numeros: false }), textos: [{ en: [2, 0], texto: '?', dy: -4 }] }],
         alt: 'Los ejes de las tres gráficas de la combi que frena, x–t, v–t y a–t, vacíos y con un signo de pregunta cada uno.' }),
       enunciado: 'Una combi frena parejo hasta detenerse, sin retroceder. ¿Cómo son sus gráficas x–t, v–t y a–t mientras frena?',
       alternativas: ['x–t se aplana; v–t baja; a–t horizontal bajo el eje', 'x–t se aplana; v–t horizontal; a–t baja', 'Las tres bajan', 'x–t se empina; v–t sube; a–t sobre el eje', 'x–t recta; v–t baja; a–t en cero'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [
-        { texto: 'Sigue avanzando cada vez menos: x sube, pero la curva x–t se aplana.' },
+        { texto: 'Sigue avanzando cada vez menos: x sube, pero la curva x–t se aplana: su inclinación, que es v, baja.' },
         { texto: 'v baja pareja: v–t es una recta que baja. Su pendiente, a, es la misma y negativa: a–t es una horizontal bajo el eje.' },
-        { texto: ['La ', neg('C'), ' dibuja las tres con la misma forma; la ', neg('D'), ' es la de una combi que acelera.'] },
+        { texto: ['La ', neg('B'), ' deja v fija; la ', neg('C'), ' dibuja las tres con la misma forma; la ', neg('D'), ' acelera; la ', neg('E'), ' pone a en 0 aunque v baja.'] },
       ],
       respuesta: [neg('A')] },
     { nivel: 3, titulo: 'De la ecuación a la gráfica',
       enunciado: ['La posición de una combi es ', Mx, ' = 2', Mt2, ', con ', Mx, ' en metros y ', Mt, ' en segundos. ¿Cuánto vale su aceleración y cómo es su gráfica a–t?'],
       alternativas: ['2 m/s², horizontal', '0, horizontal', '4 m/s², recta que sube', '4 m/s², horizontal', '2 m/s², parábola'],
-      datos: DB4,
+      datos: DB4g,
       solucion: [
         { texto: ['Se compara con ', Mx, ' = ', Mx0, ' + ', Mv0, Mt, ' + ½', Ma, Mt2, ': ½ · a = 2.'], ecuacion: [Ma, ' = ', pa('4 m/s²')] },
         { texto: 'a no cambia: la gráfica a–t es una horizontal en 4 m/s².' },
@@ -1619,7 +1636,8 @@
     lee: {
       tarjetas: [
         { titulo: 'La gráfica x–t', texto: ['En la gráfica x–t, debajo de la avenida, cada punto dice dónde está el mototaxi, ', Mx, ', en cada instante ', Mt, '. Si va parejo, dibuja una recta: su inclinación es la velocidad.'],
-          dibujo: mruv({ vista: 'alcance', regla: { min: 0, max: 80, paso: 10, numero: 20 }, lugares: [{ en: 0, texto: 'Paradero' }], mototaxi: { x: 80 },
+          // La regla hasta 100 m: en 80 el mototaxi quedaba en el borde, «pasando los 80 m» (lector, ronda 2).
+          dibujo: mruv({ vista: 'alcance', regla: { min: 0, max: 100, paso: 10, numero: 20 }, lugares: [{ en: 0, texto: 'Paradero' }], mototaxi: { x: 80 },
             grafica: { x: ejT(8, 1), y: ejX(0, 80, 20), alto: 110, curvas: [{ puntos: [[0, 0], [8, 80]], color: 'f', discontinua: true, rotulo: 'mototaxi', en: [6, 60], ancla: 'end', dx: -4, dy: -6 }] },
             alt: 'El mototaxi en la avenida, 80 m después del paradero; debajo, su gráfica x–t: una recta discontinua de 0 a 80 m en 8 s.' }) },
         { titulo: 'Una parábola', texto: 'Una parábola es la curva de un chorro de agua o de una pelota lanzada: se empina cada vez más (o se aplana). La de x = t² es una.' },
@@ -1630,7 +1648,7 @@
     ejemplos: EJEMPLOS_GR,
     juega: {
       pieza: 'fis-mruv',
-      consigna: 'El mototaxi pasa por el paradero a 10 m/s justo cuando la combi arranca de ahí. Elige cuánto acelera la combi.',
+      consigna: 'El mototaxi pasa por el paradero a 10 m/s justo cuando la combi arranca de ahí: salen juntos de x = 0.',
       mision: {
         texto: 'Haz que la combi alcance al mototaxi justo a los 10 s.',
         logrado: val => val.a === 2,
@@ -1641,8 +1659,10 @@
         { s: [Mx], t: 'la posición, desde el paradero' },
         { s: [Mt], t: 'segundos desde que la combi arranca' },
         { s: [Ma], t: 'cuánto acelera la combi' },
+        { s: 'Paradero', t: 'x = 0: de ahí salen los dos' },
         { s: 'curva continua', t: 'la gráfica x–t de la combi' },
         { s: 'recta discontinua', t: 'la gráfica x–t del mototaxi' },
+        { s: 'tenue', t: 'lo que harán en los 12 s' },
       ],
       controles: [
         { id: 'a', etiqueta: 'Acelera, a', color: 'c-h', min: 1, max: 4, paso: 0.5, inicio: 1, unidad: 'm/s²', decimales: 1 },
@@ -1675,7 +1695,7 @@
       datos: TRES_B4,
       pasos: [
         { estado: { corte: 1 }, texto: 'En x–t, la combi dibuja una parábola: cada segundo avanza más.', ecuacion: [Mx, ' = ½ · ', pa('2'), ' · ', Mt2, ' = ', Mt2] },
-        { estado: { corte: 2 }, texto: 'A los 5 s, la curva está igual de inclinada que la recta.', ecuacion: [Mv, ' = ', pa('2'), ' · ', pt('5'), ' = ', pv('10 m/s')] },
+        { estado: { corte: 2 }, texto: 'Recta naranja: toca la curva a los 5 s, con la inclinación del mototaxi.', ecuacion: [Mv, ' = ', pa('2'), ' · ', pt('5'), ' = ', pv('10 m/s')] },
         { estado: { corte: 3 }, texto: 'En v–t, la combi es una recta que sube; el mototaxi, una horizontal.', ecuacion: [Mv, ' = ', pa('2'), Mt, ';   ', Mv, ' = ', pv('10 m/s')] },
         { estado: { corte: 4 }, texto: 'Se cortan en v–t a los 5 s: misma velocidad, no mismo lugar.' },
         { estado: { corte: 5 }, texto: 'En a–t: la combi, horizontal en 2 m/s²; el mototaxi, en 0.', ecuacion: [Ma, ' = ', pa('2 m/s²'), ' y ', Ma, ' = 0'] },
@@ -1823,6 +1843,10 @@
   const PABELLON = { techo: 5, pisos: 2 }, VENTANA = 3.2;
   const PASOS_B5 = [0, 1, 2, 3, 4].map(k => VENTANA - G * (k * 0.2) ** 2 / 2), VEL_B5 = [0, -2, -4, -6, 0];
   const PAB_B5 = { vista: 'pabellon', alto: 6, paso: 0.5, numero: 1, edificio: Object.assign({ ventana: VENTANA }, PABELLON), g: false };
+  // Dibujos de «Así se resuelve» y «Ahora tú» (lector en frío, ronda 2: «me faltó un dibujo del puente»): sin regla de
+  // alturas (el dibujo no va a escala), con la altura que da el enunciado, o «h = ?» si es lo que se pide.
+  const caeDe = (texto, o = {}) => mruv({ vista: 'pabellon', alto: 10, regla: false, g: false, edificio: o.edificio || false, rio: !!o.puente,
+    puente: o.puente ? { y: 8 } : undefined, cota: { de: 8, a: 0, texto, x: 240 }, pelotas: [{ y: 8, x: o.x || 204, grande: !!o.puente }], alt: o.alt });
   const DB5 = [DG,
     ['Desde el reposo: ', Mv, ' = ', Mg, ' · ', Mt, ' y ', Mh, ' = ½ · ', Mg, ' · ', Mt2],
     ['Velocidad y lo que cayó: ', { sup: [Mv, '2'] }, ' = 2 · ', Mg, ' · ', Mh],
@@ -1846,7 +1870,8 @@
       solucion: [{ texto: 'Desde el reposo, gana 10 m/s en cada segundo.', ecuacion: [Mv, ' = ', pa('10'), ' · ', pt('1'), ' = ', pv('10 m/s')] }],
       respuesta: [pv('10 m/s'), ', hacia abajo'] },
     { nivel: 1, titulo: '¿Cuánto tarda?',
-      figura: mruv(Object.assign({}, PAB_B5, { pelotas: [{ y: VENTANA }] })),
+      // El borrador en el alféizar de la ventana, no una pelota flotando al lado del pabellón (lector, ronda 2).
+      figura: mruv(Object.assign({}, PAB_B5, { pelotas: [{ y: VENTANA, x: 166, forma: 'borrador' }] })),
       enunciado: ['Sueltas un borrador desde la ventana del segundo piso, a ', ph('3,2 m'), ' del patio. ¿Cuánto tarda en llegar?'],
       datos: DB5,
       solucion: [{ texto: 'Se despeja t de lo que cae:', ecuacion: [ph('3,2'), ' = ½ · ', pa('10'), ' · ', Mt2, '   →   ', Mt2, ' = 0,64   →   ', Mt, ' = ', pt('0,8 s')] }],
@@ -1942,10 +1967,10 @@
       datos: DB5,
       solucion: [
         { texto: ['Si cae durante ', Mt, ' segundos, en el último cae lo de ', Mt, ' segundos menos lo de (t − 1) segundos:'],
-          ecuacion: ['½ · ', pa('10'), ' · ', Mt2, ' − ½ · ', pa('10'), ' · ', { sup: ['(t − 1)', '2'] }] },
-        { texto: 'Se desarrolla el cuadrado, (t − 1)² = t² − 2t + 1:', ecuacion: ['5', Mt2, ' − 5(', Mt2, ' − 2t + 1) = 10', Mt, ' − 5'] },
+          ecuacion: ['½ · ', pa('10'), ' · ', Mt2, ' − ½ · ', pa('10'), ' · ', { sup: [['(', Mt, ' − 1)'], '2'] }] },
+        { texto: ['Se desarrolla el cuadrado, (', Mt, ' − 1)² = ', Mt2, ' − 2', Mt, ' + 1:'], ecuacion: ['5', Mt2, ' − 5(', Mt2, ' − 2', Mt, ' + 1) = 10', Mt, ' − 5'] },
         { texto: 'Eso mide 25 m:', ecuacion: ['10', Mt, ' − 5 = ', ph('25'), '   →   ', Mt, ' = ', pt('3 s'), ';   ', Mh, ' = ½ · ', pa('10'), ' · ', pt('3'), '² = ', ph('45 m')] },
-        { texto: ['La ', neg('A'), ' toma los 25 m del último segundo como toda la altura; la ', neg('E'), ' es lo que cae en los 2 primeros.'] },
+        { texto: ['La ', neg('A'), ' toma los 25 m como toda la altura; la ', neg('B'), ' les suma 5 m; la ', neg('D'), ' los duplica; la ', neg('E'), ' es lo que cae en los 2 primeros.'] },
       ],
       respuesta: [neg('C'), ', ', ph('45 m')] },
     { nivel: 3, titulo: 'Dos piedras, una tras otra',
@@ -1982,7 +2007,7 @@
       pieza: 'fis-mruv',
       consigna: 'Tu compañero suelta la regla de 30 cm y tú cierras los dedos. El reloj va en cámara lenta.',
       mision: {
-        texto: 'Atrápala justo en la marca de 20 cm.',
+        texto: 'Atrápala con la marca de 20 cm justo entre tus dedos.',
         logrado: val => val.tc === 0.2,
         bien: 'Listo: la atrapas en esa marca. Prueba la mitad de tiempo: ¿cae la mitad?',
       },
@@ -1990,7 +2015,7 @@
       leyenda: [
         { s: [Mh], t: 'lo que cae la regla, en cm' },
         { s: [Mt], t: 'segundos desde que la suelta' },
-        { s: 'rayitas', t: 'dónde estaba el 0 cada 0,05 s' },
+        { s: 'rayita con su tiempo', t: 'dónde estaba el 0; una cada 0,05 s' },
         { s: 'cm', t: 'centímetro: 100 caben en un metro' },
       ],
       controles: [
@@ -2033,7 +2058,7 @@
       ],
     },
     regla: {
-      texto: 'Sin aire, todo lo que se suelta cae con la misma g, pese lo que pese. La academia escribe h = v₀t ± ½gt², con g sin signo: + si baja.',
+      texto: 'Sin aire, todo lo que se suelta cae con la misma g, pese lo que pese. La academia escribe h = v₀t ± ½gt²: la misma, con g sin signo; + si baja.',
       ecuacion: [Mv, ' = ', Mg, Mt, '   ·   ', Mh, ' = ½', Mg, Mt2, '   ·   ', { sup: [Mv, '2'] }, ' = 2', Mg, Mh],
       condicion: 'desde el reposo y sin aire; h es lo que cae, medido hacia abajo desde donde se suelta. g = 10 m/s².',
       // h hacia abajo, con su flecha: el eje del dibujo es la altura sobre el patio, que sube (lector en frío, idea 5).
@@ -2049,7 +2074,7 @@
           const v = r.de([10, 20, 30, 40]), H = v * v / (2 * G);
           return {
             enunciado: ['Una piedra soltada desde un puente llega al río a ', pv(ms(v)), '. ¿Desde qué altura cayó?'],
-            datos: DB5,
+            datos: DB5, dibujo: caeDe('h = ?', { puente: true }),
             pasos: [
               { tipo: 'pide', texto: ['Piden la altura ', Mh, ' desde donde cayó.'] },
               { tipo: 'datos', texto: ['Sale del reposo y llega a ', pv(ms(v)), '. No dan el tiempo.'] },
@@ -2086,7 +2111,7 @@
           const ti = r.de([1.5, 2, 2.5, 3.5, 4]), H = G * ti * ti / 2;
           return {
             pregunta: ['Sueltas una piedra desde un puente y llega al río en ', pt(sg(ti)), '. ¿Desde qué altura cayó?'],
-            datos: DB5,
+            datos: DB5, dibujo: caeDe('h = ?', { puente: true }),
             opciones: cuatro(H, [
               { id: 'sin-medio', valor: 2 * H, error: 'C-MEDIO', siFuera: 'Bien g · t². Pero lo que cae lleva un ½: ½ · g · t².' },
               { id: 'v', valor: G * ti, error: 'C-VELOCIDAD', siFuera: `Ese número es la velocidad al llegar, ${fm(G * ti)} m/s. Piden la altura.` },
@@ -2099,7 +2124,7 @@
           const H = r.de([5, 20, 45, 80, 31.25, 1.25, 11.25]), ti = Math.sqrt(2 * H / G);
           return {
             pregunta: ['Sueltas una pelota desde ', ph(m(H)), ' de altura. ¿Cuánto tarda en llegar al suelo?'],
-            datos: DB5,
+            datos: DB5, dibujo: caeDe(m(H), { alt: `Una pelota a ${m(H)} del suelo, a punto de soltarse.` }),
             opciones: cuatro(ti, [
               { id: 'divide', valor: H / G, error: 'C-LINEAL', siFuera: 'Bien que uses h y g. Pero lo que cae va con t²: hay que sacar raíz.' },
               { id: 'sin-2', valor: Math.sqrt(H / G), error: 'C-MEDIO', siFuera: 'Bien la raíz. Pero h = ½ g t²: queda t² = 2h ÷ g.' },
@@ -2112,7 +2137,7 @@
           const H = r.de([5, 20, 45, 80, 31.25]), v = Math.sqrt(2 * G * H);
           return {
             pregunta: ['Una maceta cae desde una azotea a ', ph(m(H)), ' de la vereda. ¿Con qué rapidez llega a la vereda?'],
-            datos: DB5,
+            datos: DB5, dibujo: caeDe(m(H), { edificio: { techo: 8, pisos: 3 }, x: 160, alt: `Una maceta en el borde de una azotea, a ${m(H)} de la vereda.` }),
             opciones: cuatro(v, [
               { id: 'sin-raiz', valor: 2 * G * H, error: 'C-RAIZ', siFuera: 'Bien 2 · g · h. Pero eso es v²: falta sacar la raíz.' },
               { id: 'sin-2', valor: Math.sqrt(G * H), error: 'C-MEDIO', siFuera: 'Bien la raíz. Pero v² = 2 · g · h: falta el 2.' },
@@ -2190,7 +2215,9 @@
   // Cuando el 0 no está donde sale (la piedra que se suelta desde 40 m en el encuentro): la altura con y₀ (auditoría A3).
   const My0 = { sub: [My, '0'] };
   const DB6E = [...DB6, ['Si sale desde la altura ', My0, ': ', My, ' = ', My0, ' + ', Mv0, ' · ', Mt, ' − ½ · ', Mg, ' · ', Mt2]];
-  const patea = (v0, o = {}) => mruv(Object.assign({}, PAB_B6, { alto: o.alto || 20, numero: o.numero || 5, g: false, edificio: o.edificio || PAB_B6.edificio, alt: o.alt,
+  // Sin el pabellón, salvo que se pida (lector en frío, ronda 2: con la regla hasta 35 o 50 m se veía de otro tamaño, «otro
+  // edificio», y en los ejemplos 16 y 17 sobraba); alturas: una altura que da el enunciado (los 15 m del ejemplo 17).
+  const patea = (v0, o = {}) => mruv(Object.assign({}, PAB_B6, { alto: o.alto || 20, numero: o.numero || 5, g: false, edificio: o.edificio || false, alt: o.alt, alturas: o.alturas,
     pelotas: [{ y: o.y || 0, v: v0, texto: `${fm(v0)} m/s` }].concat(o.otra ? [o.otra] : []) }));
 
   // Ejemplos de B6. Cuentas rehechas aparte (scratchpad f3/cuentas.js, 18 nov): 15/10; 12²/20; 20 − 10·3; 2·8/10;
@@ -2217,7 +2244,7 @@
       solucion: [{ texto: 'Pierde 10 m/s cada segundo, también después de la cima:', ecuacion: [Mv, ' = ', pv('20'), ' − ', pa('10'), ' · ', pt('3'), ' = ', pv('−10 m/s')] }],
       respuesta: [pv('v = −10 m/s'), ': ya baja'] },
     { nivel: 1, titulo: 'Vuelve a tu mano',
-      figura: patea(8, { alto: 6, numero: 1, edificio: { techo: 5, pisos: 2 } }),
+      figura: patea(8, { alto: 6, numero: 1 }),
       enunciado: ['Lanzas una pelota hacia arriba con ', pv('8 m/s'), ' y la atrapas a la misma altura. ¿Cuánto tiempo estuvo en el aire?'],
       datos: DB6,
       solucion: [{ texto: ['Vuelve cuando ', My, ' = 0 otra vez:'], ecuacion: ['0 = ', pv('8'), Mt, ' − 5', Mt2, '   →   ', Mt, ' = ', { frac: [pv('8'), '5'] }, ' = ', pt('1,6 s')] }],
@@ -2247,7 +2274,7 @@
       ],
       respuesta: [ph('15 m'), ', bajando'] },
     { nivel: 2, titulo: 'Pasa por 15 m al bajar',
-      figura: patea(20),
+      figura: patea(20, { alturas: [{ y: 15, texto: '15 m' }] }),
       enunciado: ['Pateas una pelota hacia arriba con ', pv('20 m/s'), '. Con el eje hacia arriba, ¿qué velocidad tiene cuando pasa por ', ph('15 m'), ' al bajar?'],
       datos: DB6,
       solucion: [
@@ -2341,7 +2368,8 @@
     actividad: 'Patear una pelota hacia arriba junto al pabellón del colegio.',
     lee: {
       tarjetas: [
-        { titulo: 'Hacia arriba es +', texto: ['En un lanzamiento vertical, la pelota sube y baja por la misma recta. Ahora el eje apunta hacia arriba: subir es + y bajar es −. La altura ', My, ' se cuenta desde donde sale.'],
+        // h hacia abajo en la idea 5 e y hacia arriba aquí: se dice (lector en frío, ronda 2).
+        { titulo: 'Hacia arriba es +', texto: ['En un lanzamiento vertical, la pelota sube y baja por la misma recta. Ahora el eje apunta hacia arriba: subir es + y bajar es −. En la caída, ', Mh, ' se medía hacia abajo; aquí la altura ', My, ' se mide hacia arriba, desde donde sale.'],
           dibujo: pelotaB6(15, 0) },
         { titulo: 'La cima', texto: ['La pelota sube cada vez más lento, se detiene un instante y vuelve a bajar. Ese punto más alto es la cima; su altura, ', MH, ', es la mayor del viaje.'] },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir con qué rapidez pateas la pelota junto al pabellón. Mira la flecha de su velocidad: cómo se achica al subir y cómo crece al bajar.' },
@@ -2382,7 +2410,8 @@
         { id: 'arriba', texto: '10 m/s², hacia arriba', error: 'K3', siFuera: 'Bien el 10. Pero hacia arriba iba la velocidad; la gravedad tira hacia abajo.' },
         { id: 'masa', texto: 'Depende de la masa de la pelota', error: 'C2', siFuera: 'Bien que pienses en el aire: con aire, la forma y la masa importan. Sin aire, no.' },
       ],
-      dibujo: pelotaB6(20, 1.5, { marcas: false }),
+      // En la cima, como dice la pregunta (ronda 2: a los 1,5 s la flecha decía 5 m/s «en la cima»).
+      dibujo: pelotaB6(20, 2, { marcas: false }),
       revelar: pelotaB6(20, 2, { g: { texto: 'g' } }),
       coincide: 'Coincide: en la cima v = 0, pero la velocidad sigue cambiando 10 m/s cada segundo.',
     },
@@ -2401,7 +2430,7 @@
       ],
     },
     regla: {
-      texto: 'Sin aire, la única aceleración es g, hacia abajo, también en la cima; sube y baja en tiempos iguales. La academia escribe h = v₀t ± ½gt²: − si sube, + si baja.',
+      texto: 'Sin aire, g apunta hacia abajo siempre, también en la cima; sube y baja en tiempos iguales. La academia escribe h = v₀t ± ½gt²: la misma regla; − si sube, + si baja.',
       ecuacion: [Mv, ' = ', Mv0, ' − ', { llave: [Mg, Mt], nota: 'lo que pierde', color: 'c-h' }, '   ·   ', My, ' = ', Mv0, Mt, ' − ½', Mg, Mt2, '   ·   ', { sup: [Mv, '2'] }, ' = ', { sup: [Mv0, '2'] }, ' − 2', Mg, My],
       condicion: 'sin aire, cerca del suelo. Aquí y se mide hacia arriba desde donde sale: a = −g y el eje pone el signo.',
       dibujo: pelotaB6(20, 2, { g: { texto: 'g' } }),
