@@ -123,3 +123,40 @@ test('al partir «MRU, MRUV y caída libre», el avance del MRUV y la caída lib
   assert.equal(nuevo.partidoMRU, 1);
   assert.equal(nuevo.teoria, undefined);
 });
+
+test('al mudar las sumatorias a «Sucesiones y series», su idea y su mesa pasan allá; la visita y «Ya la estudié» no', () => {
+  const V = 'aritmetica.cuatro-operaciones', N = 'aritmetica.sucesiones-y-series';
+  const est = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, vistas: { [V]: '2026-11-12' }, marcadas: { [V]: '2026-11-13' },
+    teoria: { [V]: { idea: 'sumatorias', ideas: { 'otras-bases': { hecha: true, prediccion: 'c' }, complemento: { casos: 2, prediccion: 'nueves' }, 'defecto-exceso': { prediccion: 'igual' }, sumatorias: { hecha: true, prediccion: 'sin-mitad', momento: 'regla' } } } },
+    coleccion: [{ id: 'c1', unidad: V, mesa: 'escaleras-a-z' }, { id: 'c2', unidad: V, mesa: 'restos-grandes' }],
+    glosario: { [V]: { sumatoria: 'sabe', sumandos: 'repasa', llevada: 'sabe' } } };
+  assert.equal(A.migrar(est), true);
+  assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), ['complemento', 'defecto-exceso', 'otras-bases']);
+  // El complemento se rehízo con otras opciones: una predicción con una opción que ya no existe se borra; una que existe
+  // (la de la división, ya hecha con la versión nueva) y la de la llevada (la misma pregunta) se quedan.
+  assert.deepEqual(est.teoria[V].ideas.complemento, { casos: 2 });
+  assert.equal(est.teoria[V].ideas['defecto-exceso'].prediccion, 'igual');
+  assert.equal(est.teoria[V].ideas['otras-bases'].prediccion, 'c');
+  // La idea cambia de nombre y no lleva su predicción (era otra pregunta): las opciones de allá son otras.
+  assert.deepEqual(est.teoria[N].ideas, { 'suma-rectangulo': { hecha: true, momento: 'regla' } });
+  assert.equal(est.teoria[N].idea, 'suma-rectangulo', 'la idea en curso se va con su unidad');
+  assert.equal(est.teoria[V].idea, undefined);
+  assert.deepEqual(est.coleccion.map(c => c.unidad), [N, V], 'la mesa de las escaleras se va; la de los restos se queda');
+  assert.deepEqual(est.glosario[V], { sumandos: 'repasa', llevada: 'sabe' });
+  assert.deepEqual(est.glosario[N], { sumatoria: 'sabe' });
+  assert.equal(est.vistas[N], undefined, 'abrir Las cuatro operaciones no es visitar Sucesiones');
+  assert.equal(est.marcadas[N], undefined, '«Ya la estudié» de Las cuatro operaciones no vale para Sucesiones');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+  // Quien ya iba por Sucesiones: lo suyo se queda (la idea, su predicción y la idea en curso).
+  const ya = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1,
+    teoria: { [V]: { idea: 'sumatorias', ideas: { sumatorias: { hecha: true, prediccion: 'c' } } }, [N]: { idea: 'progresion-geometrica', ideas: { 'suma-rectangulo': { casos: 1, prediccion: 'entero' } } } } };
+  assert.equal(A.migrar(ya), true);
+  assert.deepEqual(ya.teoria[N].ideas, { 'suma-rectangulo': { casos: 1, prediccion: 'entero' } });
+  assert.equal(ya.teoria[N].idea, 'progresion-geometrica');
+  assert.deepEqual(ya.teoria[V].ideas, {});
+  // Quien nunca abrió la unidad: solo queda la marca.
+  const nuevo = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1 };
+  assert.equal(A.migrar(nuevo), true);
+  assert.equal(nuevo.mudadoSum, 1);
+  assert.equal(nuevo.teoria, undefined);
+});

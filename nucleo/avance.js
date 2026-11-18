@@ -85,7 +85,8 @@
   }
   // Unidades que se partieron en dos (Gerson): las ideas que se fueron, sus mesas del laboratorio, las marcas del glosario
   // de sus palabras y la visita pasan a la unidad nueva; quien ya había empezado no pierde nada ni encuentra la unidad
-  // nueva cerrada. Cada partición tiene su marca en est (una sola vez cada una).
+  // nueva cerrada. Cada partición tiene su marca en est (una sola vez cada una). Una mudanza (mudanza: true) lleva ideas
+  // a una unidad que ya existía: pueden cambiar de nombre (renombrar) y no copian la visita ni «Ya la estudié».
   const PARTICIONES = [
     // 16 nov: «Magnitudes y vectores» → «Magnitudes y unidades» (conserva el id) + fisica.vectores.
     { marca: 'partidoV', de: 'fisica.magnitudes-y-vectores', a: 'fisica.vectores',
@@ -102,17 +103,34 @@
     { marca: 'partidoMRU', de: 'fisica.movimiento-rectilineo', a: 'fisica.mruv-y-caida-libre',
       ideas: ['pendiente-aceleracion', 'caida-libre'], mesas: ['pista-libre', 'ida-vuelta', 'recta-vt'],
       glosario: ['aceleracion', 'caida libre', 'gravedad'] },
+    // 18 nov: las sumatorias de «Las cuatro operaciones» se mudan a «Sucesiones y series», que ya existía y tenía la misma
+    // idea con otro nombre (docs/etapa4/decisiones.md). Es una mudanza, no una partición:
+    //   - la idea `sumatorias` pasa a ser `suma-rectangulo` (renombrar); si el alumno ya la tenía allá, se queda la suya;
+    //   - su predicción no viaja (era otra pregunta, con otras opciones): se conserva lo demás (hecha, momento, casos);
+    //   - la idea en curso de Sucesiones no se toca si ya tenía una;
+    //   - «Ya la estudié» y la visita de Las cuatro operaciones no valen para Sucesiones (mudanza: true);
+    //   - las ideas que se quedan y se rehicieron con otra predicción (mismo id, otras opciones) pierden la predicción
+    //     guardada si era una opción que ya no existe (reiniciaPrediccion: idea → ids viejos): el lector la buscaría.
+    { marca: 'mudadoSum', de: 'aritmetica.cuatro-operaciones', a: 'aritmetica.sucesiones-y-series',
+      ideas: ['sumatorias'], renombrar: { sumatorias: 'suma-rectangulo' }, sinPrediccion: true, mudanza: true,
+      reiniciaPrediccion: { complemento: ['nueves', 'cada10'], 'multiplicar-partes': ['tres', 'diez', 'triple'],
+        'defecto-exceso': ['mismo', 'divisor'], 'cifras-producto': ['suma', 'menos'] },
+      mesas: ['escaleras-a-z'], glosario: ['sumatoria'] },
   ];
-  function partir(est, { marca, de, a, ideas, mesas, glosario }) {
+  function partir(est, { marca, de, a, ideas, mesas, glosario, renombrar, sinPrediccion, mudanza, reiniciaPrediccion }) {
     if (est[marca] >= 1) return false;
     est[marca] = 1;
     const t = est.teoria && est.teoria[de];
+    if (t && t.ideas) for (const [id, viejas] of Object.entries(reiniciaPrediccion || {})) if (t.ideas[id] && viejas.includes(t.ideas[id].prediccion)) delete t.ideas[id].prediccion;
     if (t && t.ideas) for (const id of ideas) if (t.ideas[id]) {
       const n = est.teoria[a] = est.teoria[a] || { ideas: {} };
       n.ideas = n.ideas || {};
-      if (!n.ideas[id]) n.ideas[id] = t.ideas[id];
+      const destino = (renombrar && renombrar[id]) || id;
+      const lleva = Object.assign({}, t.ideas[id]);
+      if (sinPrediccion) delete lleva.prediccion;
+      if (!n.ideas[destino]) n.ideas[destino] = sinPrediccion ? lleva : t.ideas[id];
       delete t.ideas[id];
-      if (t.idea === id) { t.idea = undefined; n.idea = id; }
+      if (t.idea === id) { t.idea = undefined; if (!mudanza || !n.idea) n.idea = destino; }
     }
     for (const c of Array.isArray(est.coleccion) ? est.coleccion : []) {
       if (c && c.unidad === de && mesas.includes(c.mesa)) c.unidad = a;
@@ -125,7 +143,7 @@
       delete g[k];
     }
     // «Ya la estudié» en la unidad vieja incluía lo que se fue: la marca y la visita también valen para la nueva.
-    for (const k of ['vistas', 'marcadas']) if (est[k] && est[k][de] && !est[k][a]) est[k][a] = est[k][de];
+    if (!mudanza) for (const k of ['vistas', 'marcadas']) if (est[k] && est[k][de] && !est[k][a]) est[k][a] = est[k][de];
     return true;
   }
 

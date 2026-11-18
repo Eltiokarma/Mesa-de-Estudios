@@ -564,11 +564,9 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js'],
-    // Glosario del tema (docs/teoria.md, 4d): lo que esta unidad estrena en aritmética.
+    // Glosario del tema (docs/teoria.md, 4d): lo que esta unidad estrena en aritmética. «factor» y «producto» se estrenan
+    // en Las cuatro operaciones (docs/etapa4/decisiones.md): el lector los marca aquí como «Se explica en…».
     glosario: [
-      { termino: 'producto', def: 'Resultado de una multiplicación.', ejemplo: '4 · 9 = 36.', ver: ['factor'] },
-      { termino: 'factor', formas: ['factor', 'factores'], def: 'Cada número que se multiplica en un producto.',
-        ejemplo: 'En 3 · 5 = 15, son 3 y 5.', ver: ['producto'] },
       { termino: 'cociente', def: 'Resultado de dividir un número entre otro: cuántas veces cabe el segundo en el primero.',
         ejemplo: '12 ÷ 4 = 3.', ver: ['razón geométrica'] },
       { termino: 'entero', formas: ['entero', 'enteros', 'número entero', 'números enteros'], def: 'Número sin parte decimal: …, −2, −1, 0, 1, 2, …',

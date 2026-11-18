@@ -332,8 +332,10 @@
       "id": "aritmetica.cuatro-operaciones",
       "nombre": "Las cuatro operaciones",
       "temas": [
-        "Adición y sumatorias",
-        "Sustracción y complemento aritmético",
+        "Adición con llevadas",
+        "Sustracción y préstamos",
+        "Complemento aritmético",
+        "Cifras ocultas en las operaciones",
         "Multiplicación",
         "Operaciones en otras bases",
         "División entera por defecto y por exceso",

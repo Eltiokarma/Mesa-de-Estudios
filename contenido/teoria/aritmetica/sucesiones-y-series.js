@@ -752,6 +752,53 @@
       alt: `Pirámide escalonada de ${v.n} capas cuadradas, de 1² arriba a ${v.n}² abajo: ${S} cubitos` + (v.cubo === 1 ? ` dentro de un cubo de ${v.n ** 3}.` : '.'),
     };
   }
+  // Mesa «Escaleras que no empiezan en 1» (18 nov): vino de Las cuatro operaciones con las sumatorias
+  // (docs/etapa4/decisiones.md; el avance de la mesa pasa con la partición `mudadoSum` de nucleo/avance.js). La escalera
+  // de a hasta z (naranja, como a₁ y aₙ) y su copia girada (turquesa) forman un rectángulo de z − a + 1 filas por a + z
+  // columnas. Ficha fija de 11. Los ids de la mesa y de sus controles (a, z) no cambian: los casos guardados siguen.
+  function escalerasAZ(a0, z0) {
+    const k = z0 - a0 + 1, c = a0 + z0;
+    const filas = Array.from({ length: k }, (_, i) => a0 + i);
+    const tramos = filas.map((x, i) => ({ de: i * c + x, a: i * c + c - 1, color: 'i' }));
+    return { bloques: [
+      { filas, color: 'o', rotulo: `${a0} + … + ${z0}` },
+      { n: k * c, columnas: c, color: 'o', tramos, rotulo: `${k} filas de ${c}` },
+    ], altoMax: 150, ficha: 11, alt: `Escalera de ${a0} a ${z0}; al lado, dos escaleras iguales forman un rectángulo de ${k} filas de ${c}` };
+  }
+  const sumaAZ = v => (v.z - v.a + 1) * (v.a + v.z) / 2;
+  let MIN_AZ = Infinity; for (let a0 = 1; a0 <= 4; a0++) for (let z0 = 5; z0 <= 10; z0++) MIN_AZ = Math.min(MIN_AZ, sumaAZ({ a: a0, z: z0 }));
+  // Bloques centrados con fichas de tamaño fijo: el borde derecho del último bloque y el ancho total que da un punto.
+  const bordeAZ = datos => { const g = FICHAS().geometria(datos), k = g.xs.length - 1, c = g.caja(k); return { x: c.x + c.ancho, y: g.piso - g.paso / 2 }; };
+  const anchoAZ = (datos, x) => { const g = FICHAS().geometria(datos); return 2 * (x - (g.caja(0).x + (bordeAZ(datos).x - g.caja(0).x) / 2)); };
+  const mesaEscalerasAZ = {
+    id: 'escaleras-a-z', titulo: 'Escaleras que no empiezan en 1', pieza: 'arit-fichas',
+    consigna: 'La sumatoria va de a hasta z, de 1 en 1. Dos escaleras iguales forman un rectángulo. Tira de su borde para cambiar z.',
+    controles: [
+      { id: 'a', etiqueta: 'primer término, a', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'z', etiqueta: 'último término, z', color: 'c-o', min: 5, max: 10, paso: 1, inicio: 7, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: escalerasAZ(v.a, v.z), estado: {} }),
+    lectura: v => { const k = v.z - v.a + 1; return [`${v.a} + … + ${v.z} = ${k} · ${v.a + v.z} ÷ 2 = `, { v: 'c-d', t: String(sumaAZ(v)) }]; },
+    invitaciones: [
+      { texto: 'Haz que la escalera sume justo 42.',
+        logrado: v => sumaAZ(v) === 42,
+        bien: '3 + … + 9: siete sumandos, (3 + 9) · 7 ÷ 2 = 42.' },
+      { texto: 'Busca el rectángulo más parecido a un cuadrado.',
+        logrado: v => (v.a + v.z) - (v.z - v.a + 1) === 1,
+        bien: 'Desde 1, las columnas son una más que las filas: n por n + 1.' },
+      { texto: 'Busca la escalera con la suma más chica.',
+        logrado: v => sumaAZ(v) === MIN_AZ,
+        bien: '4 + 5 = 9: dos sumandos, medio rectángulo de 2 por 9.' },
+      { texto: 'Guarda dos escaleras distintas que sumen 15.',
+        logrado: (v, guardados) => sumaAZ(v) === 15 && guardados.some(g => (g.a !== v.a || g.z !== v.z) && sumaAZ(g) === 15),
+        bien: '5 · 6 y 3 · 10: dos rectángulos de 30, la misma mitad.' },
+    ],
+    arrastres: [{ id: 'borde', etiqueta: 'borde derecho del rectángulo (z)', color: 'c-o',
+      donde: v => bordeAZ(escalerasAZ(v.a, v.z)),
+      // Ancho total: (z + (a + z)) · 11 + 18, de ahí z.
+      mover: (pt, v) => ({ z: ((anchoAZ(escalerasAZ(v.a, v.z), pt.x) - 18) / 11 - v.a) / 2 }) }],
+  };
+
   const mesaPiramide = {
     id: 'piramide-cuadrados', titulo: 'La pirámide de cuadrados', pieza: 'ari-cubitos-3d',
     consigna: 'Cada capa es un cuadrado: 1², 2², …, n². Gira la pirámide, sube n y métela en su cubo.',
@@ -805,6 +852,10 @@
       { termino: 'suma infinita', formas: ['suma geométrica infinita', 'suma infinita', 'sumas infinitas'],
         def: 'Suma que nunca termina. Puede acercarse cada vez más a un valor fijo o crecer sin tope.',
         ejemplo: '1 + 1/2 + 1/4 + … se acerca a 2; 1 + 1 + 1 + … no.', ver: ['progresión geométrica'] },
+      // «sumatoria» se mudó aquí desde Las cuatro operaciones con su idea (18 nov). «sumandos» y «consecutivo» siguen
+      // allá: esa unidad los estrena antes.
+      { termino: 'sumatoria', formas: ['sumatoria', 'sumatorias'], def: 'Suma de muchos términos que siguen una regla, como 1 + 2 + … + n.',
+        ejemplos: ['1 + 2 + … + 20 = 20 · 21 ÷ 2 = 210.', 'De 3 hasta 9: (3 + 9) · 7 ÷ 2 = 42.', '2 + 4 + … + 20 = 10 · 11 = 110.'], ver: ['serie', 'sumandos'] },
       { termino: 'sumas notables', formas: ['sumas notables', 'suma notable'],
         def: 'Fórmulas conocidas para sumar listas que aparecen mucho, como los primeros impares o los cuadrados.',
         ejemplo: '1 + 3 + 5 + 7 = 4² = 16.', ver: ['serie'] },
@@ -819,6 +870,7 @@
     // (también d = 0); la suma sin fin usa una sola escala para comparar razones; la tercera es el juego de la idea 3.
     laboratorio: [
       mesaPiramide,
+      mesaEscalerasAZ,
       {
         id: 'escalera-suma', titulo: 'Escalera y su copia', pieza: 'arit-fichas',
         consigna: 'Arma cualquier progresión aritmética, también con d = 0. Pon la copia al revés y cuenta el rectángulo.',
@@ -907,6 +959,7 @@
     laboratorioIdeas: {
       'piramide-cuadrados': [],
       'escalera-suma': ['progresion-aritmetica', 'suma-rectangulo'],
+      'escaleras-a-z': ['suma-rectangulo'],
       'suma-sin-fin': ['suma-infinita'],
       'tiras-geometricas': ['progresion-geometrica'],
     },

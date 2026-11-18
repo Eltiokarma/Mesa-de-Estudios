@@ -712,10 +712,9 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-venn.js', '/nucleo/kit/piezas/arit-tabla.js'],
-    // Glosario del tema (docs/teoria.md, 4d). «elemento» se estrena en lógica proposicional.
+    // Glosario del tema (docs/teoria.md, 4d). «elemento» se estrena en lógica proposicional; «múltiplo», en Las cuatro
+    // operaciones (docs/etapa4/decisiones.md): el lector lo marca aquí como «Se explica en…».
     glosario: [
-      { termino: 'múltiplo', formas: ['múltiplo', 'múltiplos'], def: 'Resultado de multiplicar un número por un entero.',
-        ejemplo: '42 lo es de 6, porque 6 · 7 = 42.' },
       { termino: 'conjunto', def: 'Colección bien definida: de cualquier objeto se puede decir si está o no está en ella.',
         ejemplo: 'Los múltiplos de 4 menores que 10: {4, 8}.', ver: ['elemento', 'universo'] },
       { termino: 'pertenencia', simbolo: '∈', formas: ['pertenencia', 'pertenece', 'pertenecen', 'pertenecer'],

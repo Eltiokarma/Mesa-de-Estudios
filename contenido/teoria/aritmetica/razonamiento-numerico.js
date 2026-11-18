@@ -810,6 +810,8 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/recta.js'],
+    // «llevada» y «reverso» se estrenan en Las cuatro operaciones (docs/etapa4/decisiones.md): aquí no se definen y el
+    // lector los marca como «Se explica en Las cuatro operaciones».
     glosario: [
       { termino: 'falsa suposición', formas: ['falsa suposición'],
         def: 'Suponer que todos los objetos son del mismo tipo y corregir con lo que cambia cada canje.',
@@ -840,9 +842,6 @@
       { termino: 'valor posicional', formas: ['valor posicional'],
         def: 'Lo que vale una cifra según el lugar que ocupa en el número.',
         ejemplo: 'En 47, el 4 vale 40 y el 7 vale 7: 47 = 10 · 4 + 7.', ver: ['cifra', 'reverso'] },
-      { termino: 'reverso', formas: ['reverso', 'reversos'],
-        def: 'El número que se forma con las mismas cifras escritas en orden contrario.',
-        ejemplo: 'El de 47 es 74; 47 + 74 = 121 = 11 · 11.', ver: ['valor posicional'] },
       { termino: 'canje', formas: ['canjes', 'canje'],
         def: 'Cambiar un objeto de un tipo por uno del otro tipo sin cambiar cuántos objetos hay.',
         ejemplo: 'Cambiar una entrada de S/ 5 por una de S/ 8: siguen siendo 12 entradas, pero el total sube 3.', ver: ['falsa suposición'] },
@@ -852,9 +851,6 @@
       { termino: 'suficiencia de datos', formas: ['suficiencia de datos'],
         def: 'Tipo de pregunta que no pide el valor, sino si los datos alcanzan para hallar una sola respuesta.',
         ejemplo: 'Solo x + y = 10 no basta para x; con x − y = 2, sí: x = 6.' },
-      { termino: 'llevada', formas: ['llevadas', 'llevada'],
-        def: 'Lo que pasa a la columna siguiente cuando las cifras de una columna suman 10 o más.',
-        ejemplo: '58 + 67: 8 + 7 = 15, se escribe 5 y se lleva 1.', ver: ['valor posicional'] },
     ],
     // Laboratorio: juego libre, sin preguntas. El canje libre deja probar precios iguales o al revés; la persecución pone
     // el tiempo en la mano (también B más rápido que A, que la idea no deja); la tercera es el juego de las edades.

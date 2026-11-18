@@ -95,19 +95,28 @@
     const c = n <= 4 ? 2 : 3, r = Math.ceil(n / c);
     return { c, r, w: c * 11.5 + 10, cuerpo: r * 8 + 12, h: r * 8 + 12 + 10 };
   }
-  function bolsita(x, n) {
+  // extra: los últimos caramelos de la bolsa (los de arriba) van en violeta: lo que se agregó (cuatro operaciones, idea 5).
+  // tiene: bolsita incompleta (idea 6): solo los primeros `tiene` caramelos; los demás lugares, huecos punteados en
+  // violeta (lo que falta), o en tinta si colorHuecos es false (lo que se pide, antes de comprobar).
+  function bolsita(x, n, extra = 0, tiene = null, colorHuecos = true) {
     const m = medidaBolsita(n), x1 = x + m.w, yt = -m.cuerpo, cx = x + m.w / 2, nw = m.w * 0.16;
-    let car = '';
+    let car = '', mas = '', hue = '';
     for (let k = 0; k < n; k++) {
       const fila = Math.floor(k / m.c), col = k % m.c, enFila = Math.min(m.c, n - fila * m.c);
       const x0 = cx - (enFila * 11.5) / 2 + 5.75;
-      car += caramelo(x0 + col * 11.5, -7 - fila * 8, 0.66);
+      const d = caramelo(x0 + col * 11.5, -7 - fila * 8, 0.66);
+      if (tiene !== null && k >= tiene) hue += `M${n2(x0 + col * 11.5 + 2.9)} ${n2(-7 - fila * 8)}A2.9 2.9 0 1 0 ${n2(x0 + col * 11.5 - 2.9)} ${n2(-7 - fila * 8)}A2.9 2.9 0 1 0 ${n2(x0 + col * 11.5 + 2.9)} ${n2(-7 - fila * 8)}Z`;
+      else if (k >= n - extra) mas += d; else car += d;
     }
     const cuerpo = `M${n2(x + 4)} 0L${n2(x1 - 4)} 0Q${n2(x1)} 0 ${n2(x1)} -4L${n2(x1 - 1)} ${n2(yt + 7)}Q${n2(x1 - 3)} ${n2(yt)} ${n2(cx + nw)} ${n2(yt - 1)}`
       + `L${n2(cx + nw + 4)} ${n2(yt - 9)}L${n2(cx)} ${n2(yt - 6)}L${n2(cx - nw - 4)} ${n2(yt - 9)}L${n2(cx - nw)} ${n2(yt - 1)}`
       + `Q${n2(x + 3)} ${n2(yt)} ${n2(x + 1)} ${n2(yt + 7)}L${n2(x)} -4Q${n2(x)} 0 ${n2(x + 4)} 0Z`;
-    return `<g class="ar-bolsita"><path d="${cuerpo}" fill="var(--c-i)" fill-opacity="0.08" stroke="var(--c-i)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
-      + `${trazoCaramelos(car)}<line x1="${n2(cx - nw - 1.5)}" y1="${n2(yt - 1)}" x2="${n2(cx + nw + 1.5)}" y2="${n2(yt - 1)}" stroke="var(--c-i)" stroke-width="2.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/></g>`;
+    const cHue = colorHuecos ? 'var(--c-f)' : 'currentColor';
+    return `<g class="ar-bolsita${tiene !== null ? ' ar-incompleta' : ''}"><path d="${cuerpo}" fill="var(--c-i)" fill-opacity="0.08" stroke="var(--c-i)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`
+      + `${trazoCaramelos(car)}`
+      + (mas ? `<path class="ar-extra" d="${mas}" fill="var(--c-f)" fill-opacity="0.45" stroke="var(--c-f)" stroke-width="1.2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>` : '')
+      + (hue ? `<path class="ar-hueco" d="${hue}" fill="none" stroke="${cHue}" stroke-width="1.3" stroke-dasharray="2 1.6" vector-effect="non-scaling-stroke"/>` : '')
+      + `<line x1="${n2(cx - nw - 1.5)}" y1="${n2(yt - 1)}" x2="${n2(cx + nw + 1.5)}" y2="${n2(yt - 1)}" stroke="var(--c-i)" stroke-width="2.5" stroke-linecap="round" vector-effect="non-scaling-stroke"/></g>`;
   }
   // Caja abierta con sus n bolsitas asomando (en una fila, o en dos si son más de 5).
   function medidaCaja(n) { const c = n <= 5 ? n : Math.ceil(n / 2), f = n <= 5 ? 1 : 2; return { c, f, w: c * 10 + 12, cuerpo: 28, h: 28 + 10 + (f - 1) * 6 }; }
@@ -186,6 +195,7 @@
     if (tipo === 'sueltos') { const m = medidaMonton(k); return { w: m.w, h: m.h }; }
     // Los que llegan: un montón con un «+» a la izquierda y un borde punteado (no son del pedido todavía).
     if (tipo === 'llega') { const m = medidaMonton(k); return { w: m.w + 26, h: m.h + 6, m }; }
+    if (tipo === 'incompleta') { const u = medidaBolsita(k); return { w: u.w, h: u.h, u }; }
     const u = tipo === 'bolsitas' ? medidaBolsita(n) : tipo === 'cajas' ? medidaCaja(n) : medidaCajon(n);
     if (!k) return { w: 60, h: 6, u, filas: 1, porFila: 0 };
     const f = Math.max(1, Math.min(filas, k)), porFila = Math.ceil(k / f);
@@ -199,8 +209,10 @@
         + `<rect x="${n2(xm - 2)}" y="${n2(-g.h)}" width="${n2(m.w + 4)}" height="${n2(g.h - 1)}" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>`
         + `${monton(xm, k)}</g>`;
     }
+    if (tipo === 'incompleta') return bolsita(x, g.de, 0, g.tiene, g.colorHuecos);
     if (!k) return monton(x, 0);
-    const dib = tipo === 'bolsitas' ? bolsita : tipo === 'cajas' ? caja : cajon;
+    const ex = tipo === 'bolsitas' ? Math.min(n, entero(g.extra)) : 0;
+    const dib = tipo === 'bolsitas' ? (x0, nn) => bolsita(x0, nn, ex) : tipo === 'cajas' ? caja : cajon;
     let s = '';
     // De arriba abajo (las de atrás primero), cada fila centrada.
     for (let f = g.filas - 1; f >= 0; f--) {
@@ -235,9 +247,15 @@
     const filas = (cu.sumandos || []).map(String), nf = filas.length;
     const res = cu.resultado === undefined || cu.resultado === null ? '?' : String(cu.resultado);
     const lleva = cu.llevadas || {}, kLl = Object.keys(lleva).map(Number).filter(k => lleva[k]);
-    const K = Math.max(1, ...filas.map(f => f.length), res === '?' ? 0 : res.length, ...kLl.map(k => k + 1));
+    // El préstamo (resta): lo que tiene la columna después de prestar o recibir, arriba y en naranja; la cifra de la
+    // primera fila, tachada en naranja.
+    const presta = cu.presta || {}, kPr = Object.keys(presta).map(Number).filter(k => presta[k] !== undefined && presta[k] !== null && presta[k] !== '');
+    const K = Math.max(1, ...filas.map(f => f.length), res === '?' ? 0 : res.length, ...kLl.map(k => k + 1), ...kPr.map(k => k + 1));
     const F = solo ? (nf >= 4 ? 24 : 30) : (nf >= 3 || K >= 4 ? 19 : 22);
-    const P = F * 0.64, TB = 13, TL = 15;
+    const TB = 13, TL = 15, TP = 13;
+    // Con préstamos de dos cifras («12») las columnas se separan lo justo para que no se toquen.
+    // Con los iconos de la cabecera (14 de ancho), las columnas no bajan de 15,5: con 4 columnas junto al pedido se pisaban.
+    const P = Math.max(F * 0.64, cu.iconos === false ? 0 : 15.5, ...kPr.map(k => T.ancho(String(presta[k]), TP, 700) + 3));
     const base = sinBase(cu.base) ? '' : String(cu.base);
     const subW = base ? T.ancho(`(${base})`, TB, 600) + 3 : 0;
     // Junto al pedido, la cuenta va contra el borde derecho; sola, centrada en el cuaderno.
@@ -255,20 +273,36 @@
     };
     const pon = (txt, x, y, o) => items.push(Object.assign({ txt, x, y, tam: F, peso: 400, ancla: 'middle', color: null }, o));
     for (const [k, v] of Object.entries(lleva)) if (v) pon(String(v), cx(+k), yL, { tam: TL, peso: 700, color: 'o', que: 'llevada' });
+    for (const k of kPr) pon(String(presta[k]), cx(k), yL, { tam: TP, peso: 700, color: 'o', que: 'préstamo' });
+    // '#': una mancha (la cifra no se ve). manchas: [[fila, columna]]: la mancha va detrás de una cifra ya hallada.
+    const manchas = [];
+    for (const [i, k] of Array.isArray(cu.manchas) ? cu.manchas : []) manchas.push({ i, k });
     filas.forEach((f, i) => {
       const cs = f.split('');
-      cs.forEach((ch, j) => { if (ch !== ' ') pon(ch, cx(cs.length - 1 - j), yF(i), { que: 'fila' }); });
+      cs.forEach((ch, j) => {
+        const k = cs.length - 1 - j;
+        if (ch === '#') { manchas.push({ i, k, sola: true }); pon('#', cx(k), yF(i), { que: 'mancha' }); }
+        else if (ch !== ' ') pon(ch, cx(k), yF(i), { que: 'fila' });
+      });
       if (base) pon(`(${base})`, xr + 3, yF(i) + 5, { tam: TB, peso: 600, ancla: 'start', color: base === '?' ? null : 'i', que: 'base' });
     });
     if (nf) pon(cu.op || '+', xOp, yF(nf - 1), { ancla: 'end', que: 'signo' });
     if (res === '?') pon('?', (cx(0) + cx(K - 1)) / 2, yR, { peso: 700, que: 'resultado' });
-    else res.split('').forEach((ch, j, cs) => { if (ch !== ' ') pon(ch, cx(cs.length - 1 - j), yR, { peso: 700, color: ch === '?' ? null : 'f', que: 'resultado' }); });
+    else res.split('').forEach((ch, j, cs) => {
+      const k = cs.length - 1 - j;
+      if (ch === '#') { manchas.push({ i: nf, k, sola: true }); pon('#', cx(k), yR, { peso: 700, que: 'mancha' }); }
+      else if (ch !== ' ') pon(ch, cx(k), yR, { peso: 700, color: ch === '?' ? null : 'f', que: 'resultado' });
+    });
     if (base) pon(`(${base})`, xr + 3, yR + 5, { tam: TB, peso: 600, ancla: 'start', color: base === '?' ? null : 'i', que: 'base' });
     const cajas = items.map(t => caja(t.txt, t.x, t.y, t.tam, t.peso, t.ancla, t.que));
     const iconos = cu.iconos === false ? [] : Array.from({ length: Math.min(K, 4) }, (_, k) => ({ k, tipo: ICONO[k], x: cx(k), y: yIcono }));
     for (const ic of iconos) cajas.push({ que: `icono ${ic.tipo}`, txt: ic.tipo, x0: ic.x - 7, x1: ic.x + 7, y0: ic.y - 7, y1: ic.y + 7, dentro: 'cuaderno' });
     const foco = Number.isInteger(cu.foco) && cu.foco >= 0 && cu.foco < K ? cu.foco : null;
-    return { C, solo, K, F, P, xr, cx, yL, yF, yRaya, yR, xOp, subW, items, cajas, iconos, foco, base, nf };
+    // Tachas del préstamo: sobre la cifra de la primera fila de esa columna (si la hay).
+    const tachas = nf ? kPr.filter(k => k < filas[0].length && filas[0][filas[0].length - 1 - k] !== ' ').map(k => ({ x: cx(k), y: yF(0) })) : [];
+    const yM = i => (i >= nf ? yR : yF(i));
+    return { C, solo, K, F, P, xr, cx, yL, yF, yRaya, yR, xOp, subW, items, cajas, iconos, foco, base, nf, tachas,
+      manchas: manchas.filter(m => m.i >= 0 && m.i <= nf && m.k >= 0 && m.k < K).map(m => Object.assign({ x: cx(m.k), y: yM(m.i) }, m)) };
   }
   // Los iconos de la cabecera del cuaderno: qué orden cuenta cada columna.
   function icono(tipo, cx, cy) {
@@ -278,6 +312,18 @@
     return `<rect x="${n2(cx - w / 2)}" y="${n2(cy - h / 2)}" width="${w}" height="${h}" rx="2" fill="var(--c-i)" fill-opacity="0.12" stroke="var(--c-i)" stroke-width="1.5"/>`
       + `<line x1="${n2(cx - w / 2 + 2)}" y1="${n2(cy - h / 2 + 3)}" x2="${n2(cx + w / 2 - 2)}" y2="${n2(cy - h / 2 + 3)}" stroke="var(--c-i)" stroke-width="1.2"/>`
       + (tipo === 'cajones' ? `<line x1="${n2(cx - w / 2 + 2)}" y1="${n2(cy + 1)}" x2="${n2(cx + w / 2 - 2)}" y2="${n2(cy + 1)}" stroke="var(--c-i)" stroke-width="1.2"/>` : '');
+  }
+  // Una mancha: curva cerrada suave por 7 nodos con radios fijos (sin azar: la misma mancha cada vez; `v` la rota).
+  const RADIOS = [1, 0.82, 0.95, 0.74, 0.9, 0.8, 0.97];
+  function mancha(cx, cy, rx, ry, v) {
+    const N = RADIOS.length, f = 4 * Math.tan(Math.PI / (2 * N)) / Math.sin(2 * Math.PI / N);
+    const pts = RADIOS.map((_, i) => { const r = RADIOS[(i + v) % N], a = (2 * Math.PI * i) / N + v * 0.4; return [cx + rx * r * Math.cos(a), cy + ry * r * Math.sin(a)]; });
+    let d = `M${n2(pts[0][0])} ${n2(pts[0][1])}`;
+    for (let i = 0; i < N; i++) {
+      const p0 = pts[(i - 1 + N) % N], p1 = pts[i], p2 = pts[(i + 1) % N], p3 = pts[(i + 2) % N];
+      d += `C${n2(p1[0] + (p2[0] - p0[0]) * f / 6)} ${n2(p1[1] + (p2[1] - p0[1]) * f / 6)} ${n2(p2[0] - (p3[0] - p1[0]) * f / 6)} ${n2(p2[1] - (p3[1] - p1[1]) * f / 6)} ${n2(p2[0])} ${n2(p2[1])}`;
+    }
+    return d + 'Z';
   }
   function dibujarCuenta(gc) {
     const { C } = gc;
@@ -290,7 +336,10 @@
     if (gc.foco !== null) s += `<rect class="ar-foco" x="${n2(gc.cx(gc.foco) - gc.P / 2 - 1)}" y="${n2(gc.yL - 15)}" width="${n2(gc.P + 2)}" height="${n2(gc.yR + 7 - (gc.yL - 15))}" rx="3" fill="currentColor" fill-opacity="0.09"/>`;
     for (const ic of gc.iconos) s += icono(ic.tipo, ic.x, ic.y);
     if (gc.nf) s += `<line x1="${n2(gc.xOp - T.ancho('+', gc.F) - 2)}" y1="${n2(gc.yRaya)}" x2="${n2(gc.xr + gc.subW)}" y2="${n2(gc.yRaya)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
-    for (const t of gc.items) s += `<text class="kit-txt" x="${n2(t.x)}" y="${n2(t.y)}" font-size="${t.tam}"${t.peso !== 400 ? ` font-weight="${t.peso}"` : ''}${t.ancla !== 'start' ? ` text-anchor="${t.ancla}"` : ''} fill="${T.color(t.color)}" style="font-variant-numeric:tabular-nums">${T.esc(t.txt)}</text>`;
+    // Manchas de chicha morada (en tinta: no delatan nada): sola, tapa la cifra; detrás de una cifra hallada, más tenue.
+    for (const m of gc.manchas) s += `<path class="ar-mancha" d="${mancha(m.x, m.y - gc.F * 0.3, gc.P * 0.5, gc.F * 0.5, m.k * 3 + m.i)}" fill="currentColor" fill-opacity="${m.sola ? 0.42 : 0.2}" stroke="currentColor" stroke-opacity="${m.sola ? 0.55 : 0.35}" stroke-width="1"/>`;
+    for (const t of gc.items) if (t.que !== 'mancha') s += `<text class="kit-txt" x="${n2(t.x)}" y="${n2(t.y)}" font-size="${t.tam}"${t.peso !== 400 ? ` font-weight="${t.peso}"` : ''}${t.ancla !== 'start' ? ` text-anchor="${t.ancla}"` : ''} fill="${T.color(t.color)}" style="font-variant-numeric:tabular-nums">${T.esc(t.txt)}</text>`;
+    for (const t of gc.tachas) s += `<line class="ar-tacha" x1="${n2(t.x - gc.P * 0.36)}" y1="${n2(t.y - gc.F * 0.02)}" x2="${n2(t.x + gc.P * 0.36)}" y2="${n2(t.y - gc.F * 0.62)}" stroke="var(--c-o)" stroke-width="2" stroke-linecap="round"/>`;
     return s + '</g>';
   }
 
@@ -344,7 +393,9 @@
     const cu = d.cuenta && typeof d.cuenta === 'object' ? d.cuenta : null, solo = !!(cu && cu.solo);
     const zona = cu ? ZONA_CU : ZONA;
     const ords = solo ? [] : ordenes(d), llega = d.cerrado || solo ? 0 : entero(d.llega);
-    const tipos = solo ? [] : d.cerrado ? ['cerrado'] : ords.concat(llega ? ['llega'] : []);
+    // La bolsita incompleta (cuatro operaciones, idea 6): va después de las llenas, con sus sueltos y sus huecos.
+    const inc = !solo && !d.cerrado && d.incompleta && entero(d.incompleta.de) > 0 ? d.incompleta : null;
+    const tipos = solo ? [] : d.cerrado ? ['cerrado'] : ords.concat(llega ? ['llega'] : [], inc ? ['incompleta'] : []);
     const reglas = solo ? [] : lineasRegla(d, ords);
     // Con tres líneas en el letrero, el pedido baja un poco más; el aro punteado de «juntar» sobresale 5 del grupo
     // (numeracion, idea 3: rondas con el letrero completo). Con el cuaderno no hay etiqueta: el pedido sube hasta el letrero.
@@ -357,8 +408,11 @@
     const tapa = d.escala > 0 ? d.escala : 1.7;
     const prueba = (i, elegidas) => {
       if (i === tipos.length) {
+        const kDe = t => (t === 'llega' ? llega : t === 'incompleta' ? entero(inc.de) : entero(d[t]));
         const gs = tipos.map((t, j) => (t === 'cerrado' ? { tipo: t, w: CERRADO.w, h: CERRADO.h }
-          : Object.assign({ tipo: t, k: t === 'llega' ? llega : entero(d[t]) }, medidaGrupo(t, t === 'llega' ? llega : entero(d[t]), n, elegidas[j]))));
+          : Object.assign({ tipo: t, k: kDe(t) }, medidaGrupo(t, kDe(t), n, elegidas[j]),
+            t === 'incompleta' ? { de: entero(inc.de), tiene: Math.min(entero(inc.de), entero(inc.tiene)), colorHuecos: inc.color !== false } : {},
+            t === 'bolsitas' ? { extra: entero(d.extra) } : {})));
         const W0 = gs.reduce((a, g) => a + g.w, 0) + SEP * Math.max(0, gs.length - 1), H0 = Math.max(1, ...gs.map(g => g.h));
         const sc = Math.min(AW / W0, AH / H0), filas = elegidas.reduce((a, f) => a + f, 0), se = Math.min(sc, tapa);
         if (!mejor || se > mejor.se + 1e-9 || (Math.abs(se - mejor.se) <= 1e-9 && filas < mejor.filas)) mejor = { sc, se, gs, W0, filas };
@@ -493,10 +547,16 @@
     let t = cu && cu.solo ? 'Puesto de caramelos de doña Juana, con su cuaderno de cuentas abierto sobre el mostrador.'
       : `Puesto de caramelos de doña Juana, con bolsitas de ${n === undefined ? '?' : n} caramelos. Sobre el mostrador: ${partes.join(', ')}.`;
     if (!d.cerrado && !(cu && cu.solo) && entero(d.llega)) t += ` Llegan ${entero(d.llega)} caramelos más.`;
+    if (!d.cerrado && !(cu && cu.solo) && d.incompleta && entero(d.incompleta.de)) { const de = entero(d.incompleta.de), ti = Math.min(de, entero(d.incompleta.tiene)); t += ` Una bolsita a medio llenar, de ${de}: tiene ${ti} ${ti === 1 ? 'caramelo' : 'caramelos'} y ${de - ti} ${de - ti === 1 ? 'hueco' : 'huecos'}.`; }
+    if (entero(d.extra) && entero(d.bolsitas)) t += ` En cada bolsita, los ${entero(d.extra)} caramelos de arriba son los que se agregaron.`;
     if (d.llevada) for (const o of ['bolsitas', 'cajas', 'cajones']) { const k = entero(d.llevada[o]); if (k) t += ` ${k === 1 ? `Acaba de subir 1 ${SING[o]}` : `Acaban de subir ${k} ${PLUR[o]}`}, marcada con un aro.`; }
     if (cu) {
       const b = sinBase(cu.base) ? '' : ` en base ${cu.base}`, ll = Object.entries(cu.llevadas || {}).filter(([, v]) => v);
-      t += ` En el cuaderno: ${(cu.sumandos || []).join(` ${cu.op || '+'} `)}${b} = ${cu.resultado === undefined ? '?' : cu.resultado}.`;
+      const sinM = x => String(x).replace(/#/g, '?');
+      t += ` En el cuaderno: ${(cu.sumandos || []).map(sinM).join(` ${cu.op || '+'} `)}${b} = ${cu.resultado === undefined ? '?' : sinM(cu.resultado)}.`;
+      if (/#/.test((cu.sumandos || []).join('') + String(cu.resultado))) t += ' Las cifras con «?» están tapadas por manchas.';
+      const pr = Object.entries(cu.presta || {}).filter(([, v]) => v !== undefined && v !== null && v !== '');
+      if (pr.length) t += ` Préstamos: la columna ${pr.map(([k, v]) => `${+k + 1} queda en ${v}`).join(', la ')}.`;
       if (ll.length) t += ` Llevadas: ${ll.map(([k, v]) => `${v} a la columna ${+k + 1}`).join(', ')}.`;
     } else if (d.etiqueta) { const e = d.etiqueta, b = e.base === undefined ? n : e.base; t += ` Etiqueta: ${e.cifras === undefined ? '?' : e.cifras}${b !== '' && b !== undefined ? ` en base ${b}` : ''}.`; }
     return t;
