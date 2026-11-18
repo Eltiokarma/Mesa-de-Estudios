@@ -143,8 +143,10 @@ test('ninguna figura de antes de responder delata la respuesta', () => {
     // Los ejemplos y los enunciados van sin ninguna marca ni caso tachado: el planteamiento, no la respuesta.
     if (/^(ejemplo|ahora tú \d+$|resuelve \d+$)/.test(f.donde)) assert.ok(!/data-marca|data-fila="fuera"/.test(s), donde);
   }
-  // Idea 3: la figura de un ejemplo o de un enunciado dibuja solo la primera premisa (dos aros como mucho).
-  for (const f of FIG['conclusion-necesaria'].filter(x => x.antes && /^(ejemplo|resuelve)/.test(x.donde))) assert.ok(f.datos.diagramas.every(d => d.aros.length <= 2), f.donde);
+  // Idea 3: el enunciado de «Así se resuelve» y los ejemplos de nivel 1 dibujan solo la primera premisa (dos aros como
+  // mucho); los de nivel 2 y 3 dibujan todas las premisas (se comprueba abajo, en los ejemplos de la idea 3).
+  const nivel1 = new Set(ID['conclusion-necesaria'].ejemplos.map((e, k) => (e.nivel === 1 ? `ejemplo ${k + 1}` : null)).filter(Boolean));
+  for (const f of FIG['conclusion-necesaria'].filter(x => x.antes && (/^resuelve/.test(x.donde) || nivel1.has(x.donde)))) assert.ok(f.datos.diagramas.every(d => d.aros.length <= 2), f.donde);
   // Idea 5: la persona pedida va como «?» o no va.
   for (const f of FIG.parentesco.filter(x => x.antes)) assert.ok(!f.datos.pedida, f.donde);
 });
@@ -372,7 +374,28 @@ test('idea 3, «Ahora tú»: la correcta es la única que vale en todos los dibu
         segura = modelos(grupos.length, L.prem).every(a);
       }
       assert.equal(segura, !!o.correcta, `semilla ${s}: «${o.texto}» (${plano(c.pregunta)})`);
+      // La explicación de cada distractor dice la verdad sobre los dibujos (auditoría A1): «pasa en un dibujo» solo si
+      // cabe en alguno; «no cabe en ningún dibujo» solo si no cabe en ninguno.
+      if (!o.correcta && a) {
+        const ms = modelos(grupos.length, L.prem), cabe = ms.some(a);
+        if (/pasa en un dibujo/i.test(o.siFuera)) assert.ok(cabe, `semilla ${s}: «${o.texto}» dice que pasa en un dibujo, y no cabe en ninguno`);
+        if (/ningún dibujo/.test(o.siFuera)) assert.ok(!cabe, `semilla ${s}: «${o.texto}» dice que no cabe, y cabe`);
+        assert.ok(/pasa en un dibujo|ningún dibujo/i.test(o.siFuera), `semilla ${s}: «${o.siFuera}» no dice si cabe`);
+      }
     }
+  }
+});
+
+test('idea 3, «Así se resuelve»: el distractor del paso «¿Tiene sentido?» se explica con lo que de verdad pasa en los dibujos', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const r = ID['conclusion-necesaria'].resuelve.generar(s), L = leer3(r.enunciado.replace(/ ¿.*$/, ''));
+    const m = plano(r.pasos[r.pasos.length - 1].texto).match(/^¿Y «(.+?)»\? (.+)$/);
+    assert.ok(m, `semilla ${s}`);
+    const g = L.grupos.slice(), a = afirmacion(m[1], g);
+    if (!a) { assert.match(m[2], /sí hay conclusión/, `semilla ${s}`); continue; }
+    const ms = modelos(g.length, L.prem);
+    assert.ok(!ms.every(a), `semilla ${s}: «${m[1]}» es segura`);
+    assert.equal(/pasa en un dibujo/i.test(m[2]), ms.some(a), `semilla ${s}: «${m[1]}»: ${m[2]}`);
   }
 });
 
@@ -396,6 +419,27 @@ test('idea 3, ejemplos: cada respuesta vale en todos los dibujos, y las otras al
     assert.equal(modelos(grupos.length, prem).every(a), segura, `ejemplo ${k + 1}`);
     assert.equal(/^(No es seguro)/.test(plano(I.ejemplos[k].respuesta)), !segura, `ejemplo ${k + 1}: ${plano(I.ejemplos[k].respuesta)}`);
   });
+  // Nivel 2 y 3: la figura dibuja un aro por cada grupo de las premisas, y cada dibujo cumple las premisas (auditoría M2).
+  const sing = t => t.replace(/(es|s)$/, '');
+  I.ejemplos.forEach((e, k) => {
+    if (e.nivel === 1) return;
+    const t = plano(e.enunciado).replace(/^En un aula, todos los (.+?) son (.+?), algunos (.+?) son (.+?) y ningún (.+?) es (.+?)\./, 'Todos los $1 son $2. Algunos $3 son $4. Ningún $5 es $6.')
+      .replace(/ de la banda/g, ' bandas').replace(/^(.*?)\. ¿.*$/, '$1.');
+    const L = leer3(t), nombres = L.grupos.map(x => (x === 'bandas' ? 'banda' : x));
+    for (const D of e.figura.datos.diagramas) {
+      const aros = D.aros.map(a => a.nombre);
+      assert.deepEqual(aros.slice().sort(), nombres.slice().sort(), `ejemplo ${k + 1} «${e.titulo}»: aros ${aros} y grupos ${nombres}`);
+      // El dibujo cumple las premisas: se lee qué zonas tienen a alguien (con el centro de cada zona, en una rejilla).
+      const idx = nombres.map(nm => D.aros.find(a => a.nombre === nm)), zonas = new Set();
+      for (let x = 0; x <= 10; x += 0.05) for (let y = 0; y <= 7.2; y += 0.05) {
+        let z = 0;
+        idx.forEach((a, gI) => { if (Math.hypot(x - a.x, y - a.y) < a.r) z |= 1 << gI; });
+        if (z) zonas.add(z);
+      }
+      assert.ok(L.prem.every(f => f([...zonas])), `ejemplo ${k + 1} «${e.titulo}»: el dibujo no cumple las premisas`);
+    }
+    void sing;
+  });
   // Nivel 3: las premisas salen del enunciado; «¿cuál no…?» pide la única que no vale.
   for (const e of I.ejemplos.filter(x => x.nivel === 3)) {
     const t = plano(e.enunciado).replace(/^En un aula, todos los (.+?) son (.+?), algunos (.+?) son (.+?) y ningún (.+?) es (.+?)\./, 'Todos los $1 son $2. Algunos $3 son $4. Ningún $5 es $6.');
@@ -418,6 +462,8 @@ test('idea 3: juego, misión, predicción y «Mira», comprobados con la geometr
     assert.equal(I.juega.mision.logrado(v), cumple && bailan === 0, v.c);
     const l = plano(I.juega.lectura(v));
     assert.match(l, cumple ? (bailan === 0 ? /ningún quenista/ : bailan === d.ninos.filter(p => pies(p, Q)).length ? /todos los quenistas/ : /algún quenista/) : /No cumple/, v.c);
+    // Nadie se para sobre la línea de un aro (auditoría M14): los pies, a 0,45 o más de cada borde.
+    for (const p of d.ninos) for (const a of d.aros) assert.ok(Math.abs(Math.hypot(p[0] - a.x, p[1] - a.y) - a.r) >= 0.45, `${v.c}: alumno en ${p} sobre el aro ${a.nombre}`);
     // Los nombres van en el piso del patio, y la manija cae en el aro.
     const pt = I.juega.arrastres[0].donde(v), piso = P.patioPiso(pt);
     assert.ok(Math.abs(piso.x - D.x) < 1e-9 && Math.abs(piso.y - D.y) < 1e-9);
@@ -470,6 +516,25 @@ test('idea 4, «Ahora tú»: la correcta es la única segura en los casos que qu
       const seguraDe = texto => { const x = texto.replace(/^Que /, ''), j = L.partes.findIndex(p => igual(p, x)); assert.ok(j >= 0, `«${texto}»`); return out.every(k => k[j] === !neg(x)); };
       const algoNuevo = L.partes.some((_, j) => j !== dj && new Set(out.map(k => k[j])).size === 1);
       for (const o of ops) assert.equal(/^Nada/.test(o.texto) ? !algoNuevo : seguraDe(o.texto), !!o.correcta, `semilla ${s}: «${o.texto}» (${plano(c.pregunta)})`);
+      // Cada explicación se comprueba con los casos que quedan (auditoría A2): «quedan N casos» con N de verdad; «contradice
+      // el dato» solo si choca con el dato; «la regla prohíbe» o «choca con las reglas» solo si ningún caso lo tiene;
+      // «pasa en un caso» o «en uno de los casos» solo si pasa en alguno y no en todos.
+      for (const o of ops.filter(x => !x.correcta)) {
+        const t = o.siFuera, donde = `semilla ${s}: «${o.texto}»: ${t}`;
+        if (/^Nada/.test(o.texto)) { assert.ok(algoNuevo && /un solo caso/.test(t), donde); continue; }
+        const x = o.texto.replace(/^Que /, ''), j = L.partes.findIndex(p => igual(p, x)), v = !neg(x);
+        const n = (t.match(/[Qq]uedan (\d+) casos/) || [])[1];
+        if (n) assert.equal(+n, out.length, donde);
+        const conDato = [], todos = [];
+        for (let b = 0; b < 1 << L.partes.length; b++) { const k = L.partes.map((_, i) => !!((b >> i) & 1)); todos.push(k); if (k[dj] === !neg(L.dato)) conDato.push(k); }
+        if (/Contradice el dato/.test(t)) assert.ok(j === dj && !conDato.some(k => k[j] === v), donde);
+        else if (/prohíbe|Choca con las reglas/.test(t)) assert.ok(conDato.some(k => k[j] === v) && !out.some(k => k[j] === v), donde);
+        else {
+          assert.match(t, /[Pp]asa en un caso|en uno de los|en uno no pasa|en uno pasa/, donde);
+          assert.ok(out.some(k => k[j] === v) && !out.every(k => k[j] === v), donde);
+        }
+        void todos;
+      }
     } else {
       tipos.add('reparto');
       const m = plano(c.pregunta).match(/^(.+?) se inscribieron[^:]*: (.+?)\. ¿Qué juega (\S+)\?$/), ps = m[1].split(/, | y /), cosas = m[2].split(/, | o /);
@@ -526,10 +591,20 @@ test('idea 4: juego, misión, predicción y ejemplos, contados aparte', () => {
   assert.ok(segura3([[0, 1], [1, 2]], [2, false], c => !c[1] && !c[0]) && elegida(I.ejemplos[10]) === 'No tiene canicas y no es rojo');
   assert.ok(!segura3([[0, 1], [1, 2]], [2, false], c => c[1]));
   assert.ok(segura3([[0, 1], [1, 2]], [2, false], c => !c[1] && !c[0]) && elegida(I.ejemplos[14]) === 'Rosa no faltó y no tiene fiebre');
-  assert.ok(segura3([[0, 1]], [1, false], c => !c[0]) && elegida(I.ejemplos[12]) === 'El pan no está en el horno');
-  // «¿Cuál no se concluye?»: con p, q y r son seguros; «si r, p» no (hay un caso con r y sin p que las reglas permiten).
-  assert.ok(segura3([[0, 1], [1, 2]], [0, true], c => c[1] && c[2]));
-  assert.ok(!segura3([[0, 1], [1, 2]], [2, true], c => c[0]) && elegida(I.ejemplos[13]) === 'Si Luis lleva buzo, es lunes');
+  // Ejemplo 13: la regla con dos «no» en un reparto de cuatro, por fuerza bruta; sin la regla, Beto no queda decidido.
+  const r13 = conRegla => repartos(['Ana', 'Beto', 'Ciro', 'Dina'], [['fútbol', 'vóley', 'ajedrez', 'básquet']])
+    .filter(r => (!conRegla || r.Ana[0] === 'fútbol' || r.Dina[0] !== 'básquet') && r.Dina[0] === 'básquet' && r.Beto[0] !== 'vóley');
+  assert.equal(unico(r13(true), r => r.Beto[0]), 'ajedrez');
+  assert.equal(unico(r13(false), r => r.Beto[0]), undefined);
+  assert.equal(elegida(I.ejemplos[12]), 'Ajedrez');
+  // Ejemplo 14 (sin «Hoy es lunes»): de las dos reglas solas, solo «si r, p» no vale en todos los casos que quedan.
+  const casos14 = [];
+  for (let b = 0; b < 8; b++) { const c = [0, 1, 2].map(i => !!((b >> i) & 1)); if (!(c[0] && !c[1]) && !(c[1] && !c[2])) casos14.push(c); }
+  assert.equal(casos14.length, 4);
+  const alt14 = [c => !c[0] || c[2], c => c[2] || !c[1], c => c[1] || !c[0], c => !c[2] || c[0], c => c[2] || !c[0]];
+  assert.deepEqual(alt14.map(f => casos14.every(f)), [true, true, true, false, true]);
+  assert.equal(letra(I.ejemplos[13]), 'D');
+  assert.ok(!/Hoy es lunes/.test(plano(I.ejemplos[13].enunciado)));
 });
 
 // ---------- Idea 5: caminos en el árbol ----------
@@ -587,7 +662,18 @@ test('idea 5: juego, misión, ejemplos y «Así se resuelve», con el árbol esc
   const pares = [['Luis', 'Tomás', 0], ['Luis', 'Sara', 1], ['Luis', 'Raúl', 0], ['Luis', 'Iván', 0], ['Luis', 'Elena', 1], ['Luis', 'Raúl', 0], ['Luis', 'Rosa', 1], ['Luis', 'Iván', 0], ['Tomás', 'Luis', 0], ['Luis', 'Marta', 1]];
   pares.forEach(([a, b, f], k) => assert.ok(plano(I.ejemplos[k].respuesta).toLowerCase().includes(rel(a, b, f)), `ejemplo ${k + 1}: ${rel(a, b, f)}`));
   // Nivel 3: la hija de la hermana de mi mamá (sube 2, baja 2), el hermano, el mínimo de 3, los 4 hijos y el padre.
-  assert.deepEqual(I.ejemplos.slice(10).map(e => elegida(e)), [NOMBRES['2,2'][1].replace(/^./, x => x.toUpperCase()), 'Su hermano', '3', '4', 'Padre']);
+  // Nivel 3 (auditoría M7): el hijo del único hijo del abuelo paterno de un hijo único es él mismo; la única hija de la
+  // abuela materna de Luis es su mamá; el almuerzo; los hijos de doña Rufina; y el hijo de la única hija de la abuela
+  // materna de la mamá de Nora, que es su tío. Árboles escritos aquí (hijo → padre o madre).
+  const P3 = { Papá: 'Abuelo', Óscar: 'Papá' };   // el abuelo paterno tiene un solo hijo y él, un solo hijo
+  const hijosDe = (PM, x) => Object.keys(PM).filter(h => PM[h] === x);
+  assert.deepEqual(hijosDe(P3, hijosDe(P3, 'Abuelo')[0]), ['Óscar']);
+  const PN = { Abuela: 'Bisabuela', Mamá: 'Abuela', Hugo: 'Abuela', Nora: 'Mamá' };   // la bisabuela tiene una sola hija
+  const unicaHija = hijosDe(PN, PN[PN.Mamá]), tio = hijosDe(PN, unicaHija[0]).find(x => x !== 'Mamá');
+  const subeN = x => { const o = [x]; while (PN[o[o.length - 1]]) o.push(PN[o[o.length - 1]]); return o; };
+  const sN = subeN('Nora'), sT = subeN(tio), cN = sN.find(x => sT.includes(x));
+  assert.equal(NOMBRES[`${sN.indexOf(cN)},${sT.indexOf(cN)}`][0], 'tío');
+  assert.deepEqual(I.ejemplos.slice(10).map(e => elegida(e)), ['Él mismo', 'Su hermano', '3', '4', 'Tío']);
   // Así se resuelve: la respuesta es la suma de los dos tramos de la frase.
   for (let s = 0; s < 60; s++) {
     const r = I.resuelve.generar(s), m = plano(r.enunciado).match(/«Ayer llamó (el|la) (\S+) de mi (\S+)»/);
@@ -622,6 +708,16 @@ test('idea 1: «Ahora tú» llega al examen y se resuelve aparte; juego y predic
         const r = o.texto.match(new RegExp(`^(\\S+) ${verbo} (.+)$`));
         assert.equal(rs.every(a => a[r[1]] === r[2]), !!o.correcta, `semilla ${s}: «${o.texto}»`);
       }
+      // La solución nombra todas las casillas seguras, no solo la de la correcta (auditoría A3).
+      if (/¿Qué es seguro\?/.test(m[3])) {
+        const seguras = nombres.filter(x => unico(rs, a => a[x]) !== undefined).map(x => `${x} ${rs[0][x]}`).sort();
+        const sol = plano(c.solucion.texto), dichas = [];
+        const r1 = sol.match(new RegExp(`en los dos, (\\S+) ${verbo} (.+?)\\.`)); dichas.push(`${r1[1]} ${r1[2]}`);
+        const r2 = sol.match(/También es seguro: (.+)\.$/);
+        if (r2) for (const x of r2[1].split(/, | y /)) dichas.push(x.replace(/^(\S+) /, '$1 '));
+        assert.deepEqual(dichas.sort(), seguras, `semilla ${s}: ${sol}`);
+        assert.ok(!/única/.test(sol), `semilla ${s}: ${sol}`);
+      }
     } else {
       const quien = nombres.find(x => m[3].includes(` ${x}?`));
       assert.equal(c.opciones.find(o => o.correcta).texto, unico(rs, a => a[quien]), `semilla ${s}`);
@@ -642,4 +738,41 @@ test('la mesa de marcar a mano: tocar cada casilla cambia su control, y los reto
   const sol = [0, 2, 1], lleno = Object.fromEntries(m.controles.map(c => [c.id, sol[+c.id[1]] === +c.id[2] ? 'si' : 'no']));
   assert.equal(m.invitaciones[2].logrado(lleno), true);
   assert.equal(m.invitaciones[2].logrado(Object.assign({}, lleno, { m00: 'no', m01: 'si' })), false);
+});
+
+// ---------- Correcciones del 17 nov (auditoría): datos sin consejo, notación en palabras, opciones completas ----------
+test('datos sin consejo: ningún ejercicio trae «se cuentan personas, no papeles» (auditoría M1)', () => {
+  for (const i of def.ideas) {
+    const ds = i.ejemplos.flatMap(e => e.datos || []);
+    for (let s = 0; s < SEMILLAS; s++) ds.push(...(i.ahoraTu.generar(s).datos || []), ...(i.resuelve.generar(s).datos || []));
+    for (const d of ds) assert.ok(!/papeles|se cuentan/i.test(plano(d)), `${i.id}: «${plano(d)}»`);
+  }
+});
+
+test('la regla de cada idea se escribe en palabras: sin «;» ni «:» como signos (auditoría M3)', () => {
+  for (const i of def.ideas) {
+    // «;» y «:» después de un símbolo («si p, q; p : q», «✓: …») son notación propia; «hermano: sube 1» es castellano.
+    assert.ok(!/;|(?:^|\s)(?:p|q|no p|no q|✓|✗)\s*:/.test(plano(i.regla.ecuacion)), `${i.id}: ${plano(i.regla.ecuacion)}`);
+    for (const p of i.mira.pasos) if (p.ecuacion) assert.ok(!/;/.test(plano(p.ecuacion)), `${i.id}: ${plano(p.ecuacion)}`);
+  }
+});
+
+test('idea 5, «Ahora tú»: siempre cuatro opciones o más (auditoría B6)', () => {
+  for (let s = 0; s < SEMILLAS; s++) assert.ok(ID.parentesco.ahoraTu.generar(s).opciones.length >= 4, `semilla ${s}`);
+});
+
+test('idea 5: los ejemplos sin árbol no usan los nombres del árbol (auditoría B3), y el del sobrino no trae la exclusión de otro acertijo (M6)', () => {
+  const arbol = ['Elena', 'Raúl', 'Marta', 'Pedro', 'Tomás', 'Iván', 'Sara'];
+  for (const e of ID.parentesco.ejemplos.filter(x => !x.figura)) for (const n of arbol) assert.ok(!plano(e.enunciado).includes(n), `«${e.titulo}»: ${n}`);
+  assert.ok(ID.parentesco.ejemplos.every(e => !/ni soy yo/.test(plano(e.enunciado))));
+});
+
+test('una definición que usan la teoría y la práctica se escribe igual en las dos (auditoría B4: «Hermanos»)', () => {
+  const gen = require('../../../plantillas/rm-parentesco/generador.js');
+  const deGen = new Set();
+  for (let s = 0; s < 200; s++) for (const l of gen.generar(s, { unidad: def.unidad }).datos) if (/^Hermanos:/.test(l)) deGen.add(l);
+  assert.equal(deGen.size, 1, [...deGen].join(' | '));
+  const deTeoria = new Set(def.ideas.flatMap(i => i.ejemplos.flatMap(e => e.datos || [])).map(plano).filter(l => /^Hermanos:/.test(l)));
+  assert.ok(deTeoria.size >= 1);
+  for (const l of deTeoria) assert.ok(deGen.has(l), `teoría: «${l}»; práctica: «${[...deGen][0]}»`);
 });

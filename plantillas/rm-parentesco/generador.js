@@ -305,6 +305,10 @@
         solucion.push([`«${tramo}» puede ser ${nombre(nd.def, ego).texto} o ${nombre(nd.gen, ego).texto}: no dice «único», así que la respuesta es `, v('x', nm.texto), '.']);
       } else solucion.push([`«${tramo}»: ${PASOS[pasos[i]].art} ${PASOS[pasos[i]].w} de ${prev} es `, i === n - 1 ? v('x', nm.texto) : nm.texto, '.']);
     }
+    // El mismo camino contado como en la teoría: cuántas líneas sube y cuántas baja (auditoría M12, 17 nov).
+    const fin = res.nodos[n - 1].pos;
+    const sb = !fin || fin.amb ? null : fin.k === 'D' ? [fin.s.length, 0] : fin.k === 'H' ? [0, fin.b] : [fin.d.length + 1, fin.b + 1];
+    if (sb && sb[0] + sb[1] > 0) solucion.push([`Contado en el árbol, desde ${d.nombre}: sube ${sb[0]} y baja ${sb[1]}.`]);
     return {
       id: `rm-parentesco#${semilla}`,
       variables: { a: { nombre: 'eslabón de partida', color: 'o' }, u: { nombre: 'único', color: 'i' }, x: { nombre: 'parentesco buscado', color: 'h' } },
@@ -1003,7 +1007,8 @@
   // edades; idea 2, nivel examen); en Ordenamiento de información, el orden por sumas de edades, que es lo suyo. Sin
   // unidad (o con otra), todos, como antes: las semillas de casos.json no cambian.
   const TIPOS_POR_UNIDAD = {
-    'razonamiento-matematico.razonamiento-deductivo': ['cadena', 'arbol', 'minimo', 'billetes', 'edades'],
+    // Sin «edades» (primos, pares y suma mínima): ninguna idea de la unidad lo enseña (auditoría M9, 17 nov).
+    'razonamiento-matematico.razonamiento-deductivo': ['cadena', 'arbol', 'minimo', 'billetes'],
     'razonamiento-matematico.ordenamiento-de-informacion': ['orden'],
   };
 
@@ -1011,8 +1016,10 @@
   const D_HERMANOS = 'Hermanos: hijos del mismo padre y de la misma madre.';
   const D_TIO = 'Tío: hermano del padre (paterno) o de la madre (materno); primo: hijo de un tío.';
   const D_OTROS = 'Sobrino: hijo de un hermano. Abuelo: padre del padre o de la madre. Nieto: hijo de un hijo.';
+  // La respuesta se elige entre todos los nombres: los de tres generaciones también van en los datos (auditoría M13).
+  const D_LEJOS = 'Bisabuelo: padre de un abuelo. Bisnieto: hijo de un nieto. Tío abuelo: hermano de un abuelo. Sobrino nieto: nieto de un hermano.';
   function lineasDatos(d) {
-    if (d.tipo === 'cadena') return [D_HERMANOS, D_TIO, D_OTROS, ...(d.unicos.some(Boolean) ? ['«Único»: no hay otro con ese parentesco.'] : [])];
+    if (d.tipo === 'cadena') return [D_HERMANOS, D_TIO, D_OTROS, D_LEJOS, ...(d.unicos.some(Boolean) ? ['«Único»: no hay otro con ese parentesco.'] : [])];
     if (d.tipo === 'arbol') return ['En el árbol, cada hijo cuelga de la línea que une a su padre y a su madre.', D_HERMANOS, D_TIO];
     if (d.tipo === 'minimo') return ['Cada persona cuenta en todos los parentescos que tiene con alguien de la reunión.', D_HERMANOS, 'Abuelo: padre del padre o de la madre. Nieto: hijo de un hijo o de una hija.'];
     if (d.tipo === 'billetes') return ['Cada uno recibe dos sobres, y ningún sobre se repite.', 'Lo que recibe cada uno: la suma de sus dos sobres.'];

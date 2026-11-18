@@ -10,7 +10,7 @@ const B = { nombre: 'banda', papel: 'medio', x: 4.0, y: 4.6, r: 3.7, en: [1.3, 1
 const MUESTRAS = [
   { escena: 'patio', aros: [B, Q], ninos: [[2, 5.6], [5.3, 2.4]] },
   { escena: 'patio', aros: [B, Q, { nombre: 'diablada', papel: 'segundo', x: 9, y: 1.6, r: 0.9, en: [9, 3.1], cumple: false }], ninos: [[9, 1.6]], nota: 'No cumple' },
-  { diagramas: [{ titulo: 'Dibujo 1', aros: [{ nombre: 'banda', papel: 'medio', x: 4.6, y: 3.2, r: 2.6, en: [4.6, 0.15] }] }, { titulo: 'Dibujo 2', desde: 2, cumple: false, aros: [] }], alto: 7, nota: [{ t: 'Uno', desde: 1 }] },
+  { diagramas: [{ titulo: 'Dibujo 1', aros: [{ nombre: 'banda', papel: 'medio', x: 4.6, y: 3.2, r: 2.6, en: [4.6, 6.4] }] }, { titulo: 'Dibujo 2', desde: 2, cumple: false, aros: [] }], alto: 7, nota: [{ t: 'Uno', desde: 1 }] },
   { diagramas: [{ aros: [{ nombre: 'ajedrecistas', papel: 'primero', x: 3, y: 3.2, r: 2, en: [3, 3.2] }, { nombre: 'nadadores', papel: 'segundo', x: 7.5, y: 3.2, r: 1.6, en: [7.5, 5.6] }] }], alto: 6.4 },
 ];
 const TODAS = MUESTRAS.map((d, k) => ({ donde: `muestra ${k + 1}`, datos: d, estado: {} })).concat(R.deLaTeoria('rm-aros'));
@@ -37,4 +37,25 @@ test('del piso del patio a la figura y de vuelta (la manija cae donde está el a
   }
   const d = MUESTRAS[3], q = P.vennPiso(d, 0, P.vennPx(d, 0, 7.5, 3.2));
   assert.ok(Math.abs(q.x - 7.5) < 1e-9 && Math.abs(q.y - 3.2) < 1e-9);
+});
+
+test('ningún nombre de aro queda montado sobre la línea de un aro (diagramas de Venn de la teoría; lector en frío, 17 nov)', () => {
+  const T = require('../trazo.js');
+  for (const { donde, datos } of TODAS) {
+    if (datos.escena) continue;
+    const g = P.geometria(datos);
+    (datos.diagramas || []).forEach((D, i) => {
+      const circ = (D.aros || []).map(a => { const c = P.vennPx(datos, i, a.x, a.y); return { a, x: c.x, y: c.y, r: a.r * g.esc }; });
+      for (const C of circ) {
+        if (!C.a.nombre || !C.a.en) continue;
+        const w = T.ancho(C.a.nombre, 14, 700), p = P.vennPx(datos, i, C.a.en[0], C.a.en[1]);
+        const b = { x0: p.x - w / 2, x1: p.x + w / 2, y0: p.y + 5 - 14 * 0.8, y1: p.y + 5 + 14 * 0.25 };
+        for (const K of circ) {
+          const nx = Math.max(b.x0, Math.min(K.x, b.x1)), ny = Math.max(b.y0, Math.min(K.y, b.y1)), dmin = Math.hypot(nx - K.x, ny - K.y);
+          const dmax = Math.max(...[[b.x0, b.y0], [b.x1, b.y0], [b.x0, b.y1], [b.x1, b.y1]].map(([x, y]) => Math.hypot(x - K.x, y - K.y)));
+          assert.ok(!(dmin < K.r + 2 && dmax > K.r - 2), `${donde}: «${C.a.nombre}» sobre la línea del aro ${K.a.nombre}`);
+        }
+      }
+    });
+  }
 });

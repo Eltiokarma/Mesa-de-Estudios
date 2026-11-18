@@ -330,7 +330,7 @@ test('condicional simple: una sola respuesta por fuerza bruta en 400 semillas, y
 test('generar(semilla, { unidad }): Razonamiento deductivo recibe sus cinco tipos; Certezas, solo «siempre cierto»; sin unidad, como antes', () => {
   const ded = new Set(), cert = new Set();
   for (let s = 0; s < 120; s++) { ded.add(gen.generar(s, { unidad: DED })._datos.tipo); cert.add(gen.generar(s, { unidad: CERT })._datos.tipo); }
-  assert.deepEqual([...ded].sort(), ['asignacion', 'condicional', 'puntajes', 'siempre-cierto', 'silogismo']);
+  assert.deepEqual([...ded].sort(), ['asignacion', 'condicional', 'siempre-cierto', 'silogismo']);
   assert.deepEqual([...cert], ['siempre-cierto']);
   for (let s = 0; s < 120; s++) assert.notEqual(gen.generar(s)._datos.tipo, 'condicional', `semilla ${s}: sin unidad no sale el tipo nuevo`);
   assert.equal(gen.generar(3, { unidad: CERT, tipo: 'condicional' })._datos.tipo, 'siempre-cierto', 'Certezas no recibe un tipo que no es suyo');
@@ -402,4 +402,15 @@ test('cada explicación empieza por lo que el alumno hizo bien y es hipótesis (
       assert.match(a.error.id, /^RMP\d+/);
     }
   });
+});
+
+// Papel escrito a mano (auditoría M10 y M11, 17 nov): cada problema trae sus datos y dice a qué unidades sirve (la app
+// muestra, desde una unidad, solo los suyos; una lista vacía: el tipo no es de ninguna unidad que use esta plantilla).
+test('papel.json: cada problema con «Datos:» y con su lista de unidades', () => {
+  const pap = require('./papel.json');
+  for (const q of pap.problemas) {
+    assert.match(q.enunciado, / Datos: \S/, q.id);
+    assert.ok(Array.isArray(q.unidades), `${q.id}: sin unidades`);
+    for (const u of q.unidades) assert.ok(gen.tiposPorUnidad[u], `${q.id}: ${u}`);
+  }
 });

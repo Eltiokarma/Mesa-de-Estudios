@@ -1067,7 +1067,8 @@
   // esa unidad recibía de este generador. Sin unidad (o con otra), todo sigue como antes: las semillas de casos.json no
   // cambian.
   const TIPOS_POR_UNIDAD = {
-    'razonamiento-matematico.razonamiento-deductivo': ['silogismo', 'siempre-cierto', 'asignacion', 'puntajes', 'condicional'],
+    // Sin «puntajes» (orden y máximos): ninguna idea de la unidad lo enseña (auditoría M9, 17 nov). Sigue sin unidad.
+    'razonamiento-matematico.razonamiento-deductivo': ['silogismo', 'siempre-cierto', 'asignacion', 'condicional'],
     'razonamiento-matematico.certezas': ['siempre-cierto'],
   };
   // Sorteo dentro de la unidad: el condicional simple y los silogismos (ideas 3 y 4, nivel de entrada) salen más.

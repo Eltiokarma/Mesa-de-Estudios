@@ -321,7 +321,7 @@ const MUESTRA = {};
 const muestra = u => MUESTRA[u] || (MUESTRA[u] = Array.from({ length: 400 }, (_, s) => gen.generar(`u-${s}`, { unidad: u })));
 
 test('generar(semilla, { unidad }): Razonamiento deductivo recibe parentesco y repartos; Ordenamiento, el orden por sumas', () => {
-  assert.deepEqual([...new Set(muestra(DED).map(p => p._datos.tipo))].sort(), ['arbol', 'billetes', 'cadena', 'edades', 'minimo']);
+  assert.deepEqual([...new Set(muestra(DED).map(p => p._datos.tipo))].sort(), ['arbol', 'billetes', 'cadena', 'minimo']);
   assert.deepEqual([...new Set(muestra(ORD).map(p => p._datos.tipo))], ['orden']);
   assert.deepEqual(gen.generar(9, { unidad: 'otra.unidad' }), gen.generar(9));
   // El recálculo de la cadena prueba familias al azar: con una respuesta doble puede no dar con la segunda (pocas
@@ -345,6 +345,16 @@ test('datos: una lista de líneas cortas con las definiciones de cada tipo y sin
     if (d.tipo === 'cadena' && d.unicos.some(Boolean)) assert.ok(todo.includes('«único»'), `${p.id}: falta qué es «único»`);
     if (d.tipo === 'edades') assert.ok(todo.includes('primo:') && todo.includes('par:'));
     if (d.tipo === 'billetes') assert.ok(todo.includes('dos sobres'));
+    // Toda respuesta que se elige por nombre está definida en los datos (auditoría M13): bisabuelo, tío abuelo, sobrino nieto…
+    if (d.tipo === 'cadena') for (const a of p.alternativas) {
+      const MASC = { madre: 'padre', abuela: 'abuelo', bisabuela: 'bisabuelo', hija: 'hijo', nieta: 'nieto', bisnieta: 'bisnieto', hermana: 'hermano', sobrina: 'sobrino', 'tía': 'tío', prima: 'primo', 'sobrina nieta': 'sobrino nieto', 'tía abuela': 'tío abuelo' };
+      for (const parte of String(a.texto).toLowerCase().split(' o ')) {
+        let t = parte.replace(/^su /, '').replace(/ (paterno|materno|paterna|materna)$/, '');
+        if (/^(él mismo|ella misma)$/.test(t)) continue;
+        t = MASC[t] || t;
+        assert.ok(todo.includes(t), `${p.id}: «${a.texto}» no está en los datos`);
+      }
+    }
   }
 });
 
@@ -373,4 +383,34 @@ test('cadena: «la hermana de la única hermana de la madre de mi madre» es la 
   assert.equal(gen.calc.cadena('v', ['madre', 'madre', 'hermana', 'hermana'], [false, false, true, false]).clave, 'D:M2m');
   // Sin el «única», sí quedan dos: la abuela u otra tía abuela.
   assert.equal(gen.calc.cadena('v', ['madre', 'madre', 'hermana', 'hermana'], [false, false, false, false]).clave, 'amb:D:M2m|C:3,1m');
+});
+
+// Papel escrito a mano (auditoría M10 y M11, 17 nov): cada problema trae sus datos y dice a qué unidades sirve (la app
+// muestra, desde una unidad, solo los suyos; una lista vacía: el tipo no es de ninguna unidad que use esta plantilla).
+test('papel.json: cada problema con «Datos:» y con su lista de unidades', () => {
+  const pap = require('./papel.json');
+  for (const q of pap.problemas) {
+    assert.match(q.enunciado, / Datos: \S/, q.id);
+    assert.ok(Array.isArray(q.unidades), `${q.id}: sin unidades`);
+    for (const u of q.unidades) assert.ok(gen.tiposPorUnidad[u], `${q.id}: ${u}`);
+  }
+});
+
+// La solución de una cadena cuenta el camino como la teoría (sube y baja; auditoría M12), y la cuenta da la respuesta.
+test('cadena: la solución dice cuánto sube y cuánto baja, y eso da el parentesco de la respuesta', () => {
+  const SB = { padre: '1,0', abuelo: '2,0', bisabuelo: '3,0', hijo: '0,1', nieto: '0,2', bisnieto: '0,3', hermano: '1,1', sobrino: '1,2', 'sobrino nieto': '1,3', 'tío': '2,1', primo: '2,2', 'tío abuelo': '3,1' };
+  const MASC = { madre: 'padre', abuela: 'abuelo', bisabuela: 'bisabuelo', hija: 'hijo', nieta: 'nieto', bisnieta: 'bisnieto', hermana: 'hermano', sobrina: 'sobrino', 'tía': 'tío', prima: 'primo', 'sobrina nieta': 'sobrino nieto', 'tía abuela': 'tío abuelo' };
+  let n = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { unidad: 'razonamiento-matematico.razonamiento-deductivo' });
+    if (p._datos.tipo !== 'cadena') continue;
+    const r = String(p.respuesta.texto).toLowerCase().replace(/^su /, '').replace(/ (paterno|materno|paterna|materna)$/, '');
+    if (/ o |mism/.test(r)) continue;
+    const linea = p.solucion.map(l => l.map(x => (typeof x === 'string' ? x : x.t)).join('')).find(l => /^Contado en el árbol/.test(l));
+    assert.ok(linea, `semilla ${s}`);
+    const [, u, b] = linea.match(/sube (\d+) y baja (\d+)/);
+    assert.equal(`${u},${b}`, SB[MASC[r] || r], `semilla ${s}: ${r}`);
+    n++;
+  }
+  assert.ok(n > 50, `${n}`);
 });

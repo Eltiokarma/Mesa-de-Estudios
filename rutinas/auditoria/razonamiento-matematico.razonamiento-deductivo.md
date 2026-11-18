@@ -134,3 +134,62 @@ completos. No van a la tabla.
 Nombres de columna girados 90° en el cuadro en L; «cada grupo tiene al menos un integrante» como dato; la tabla de
 nombres de parentesco en los datos (los subconjuntos que trae cada ejemplo de la idea 5 dejan elegir entre 3 o 4 nombres,
 lo que se decide con esa tabla).
+
+## Correcciones (17 nov)
+
+Fase 8 (`docs/metodo/unidad/6-correcciones.md`). Cada corrección lleva la prueba que la habría detectado. Las respuestas que
+cambiaron se recalcularon aparte en `razonamiento-deductivo.test.js` (repartos, dibujos, casos y árboles escritos en la
+prueba, sin el código de la unidad). Capturas en el scratchpad de la sesión (`correcciones-deductivo/`).
+
+### Alta
+
+| # | Qué se hizo | Prueba nueva |
+|---|---|---|
+| A1 | `opcionesVenn` clasifica cada candidata contando dibujos (`posible`): si no cabe en ninguno, «Choca con las premisas: no cabe en ningún dibujo» (RMP72, o RMP74 si cambia el cuantificador); si cabe, «pasa en un dibujo, pero no en todos». «Así se resuelve» elige para «¿Tiene sentido?», si la hay, una opción que pasa en algún dibujo. | Idea 3, «Ahora tú» (400 semillas): cada explicación se cruza con el Venn propio de la prueba («pasa en un dibujo» ⇒ cabe; «ningún dibujo» ⇒ no cabe). Prueba nueva para «Así se resuelve» (400 semillas). |
+| A2 | Idea 4, tipos 0 y 1: `opcionesSimple4` escribe cada explicación con los casos que de verdad quedan: «Contradice el dato», «“p sí, q no” es justo el caso que la regla prohíbe», «quedan N casos, y en uno no pasa p» (RMP70), «… en uno pasa q» (RMP71) o «pasa en uno de los N casos» (RMP77). Con B7: en la cadena, RMP70 solo si se afirma lo de antes desde el dato de después; RMP71 solo si se niega lo de después desde «no p»; si no, RMP77. En la asignación, ignorar la regla es RMP63. | Idea 4, «Ahora tú» (400 semillas): N de «quedan N casos» igual al conteo; «contradice el dato», «prohíbe» y «pasa en un caso» se comprueban con los casos de la prueba. |
+| A3 | Idea 1, tipo 0: «Quedan 2 repartos y en los dos, X.» y, si hay más ✓, «También es seguro: …». Sin «la única». | Idea 1 (400 semillas): la solución nombra exactamente las casillas seguras del resolvedor y no dice «única». |
+
+### Media
+
+| # | Qué se hizo | Prueba nueva |
+|---|---|---|
+| M1 | Fuera «Se cuentan personas, no papeles» de «Ahora tú» tipo 2 y de los ejemplos 13 y 14. Quedan las definiciones (padre, hijo y, si hay abuelos, abuelo y nieto). | Ningún dato de la unidad (ejemplos, «Ahora tú», «Así se resuelve») dice «papeles» ni «se cuentan». |
+| M2 | Ejemplos de nivel 2 y 3 de la idea 3: la figura dibuja todas las premisas en un dibujo que las cumple, o en dos que se contradicen (7 y 14), sin marcar la conclusión. Los nombres de los aros los ubica `rotularVenn` (dentro de su pedazo propio o pegados a su aro, sin cruzar ninguna línea), también en los dibujos de «Así se resuelve», «Ahora tú» y el laboratorio. Pedido aparte del lector: «lectores» montado sobre la línea. | Los aros de cada figura son los grupos de las premisas, y cada dibujo cumple las premisas (zonas leídas en una rejilla). `rm-aros.test.js`: ningún nombre cruza la línea de un aro en ninguna figura de la unidad. |
+| M3 | Reglas en palabras: «si p, q, y pasa p se concluye q», «… y no pasa q se concluye no p»; idea 1 «✓ si vale en todos los repartos»; Mira de las ideas 2 y 4 sin «:» ni «;» como signo. | Ninguna regla trae «;» ni «:» después de un símbolo; ningún paso de Mira trae «;». |
+| M4 | Fuera la línea «Regla: si Beto no es el profesor, Ciro es el médico» (el paso hecho). La lectura del contrafáctico **sigue pendiente de Gerson** (ver abajo); el ejemplo da «profesor» con las dos lecturas (comprobado en la prueba). | La prueba del ejemplo 12 ya lo resolvía con fuerza bruta. |
+| M5 | «¿Cuál no se concluye?» sin «Hoy es lunes»: se pregunta qué sale de las dos reglas; el resuelto usa la tabla (quedan 4 de 8 casos y «si r, p» falla en «no, sí, sí»). | Las 5 alternativas se comprueban en los 4 casos: solo la D falla. |
+| M6 | Ejemplo 8 de la idea 5: «Él es sobrino de mi papá», sin «ni es mi hermano ni soy yo». | Ningún ejemplo de la idea 5 trae «ni soy yo». |
+| M7 | Idea 4: el 13 pasa a «Una regla con dos “no”» (si Ana no juega fútbol, Dina no juega básquet; reparto de cuatro). Idea 5: el 11 pasa a «El hijo del único hijo» (es él mismo; la trampa da «primo») y el 15 a «La única hija de la bisabuela» (tío; la trampa da «tío abuelo»); el 14 cambia Elena por doña Rufina. | Ejemplo 13 por fuerza bruta (con la regla, Beto ajedrez; sin ella, no se decide); 11 y 15 con árboles escritos en la prueba. |
+| M8 | «Así se resuelve» de las ideas 1 y 2 muestra la cadena entera: idea 1, las ✓ en dos pasos con el cuadro hasta ahí; idea 2, un cruce (de preferencia una ✓) con su cuadro y después las ✓ que faltan. Sin «Las demás salen igual». | El validador (`teoria.test.js`) y la prueba de «Así se resuelve» (un solo reparto, la respuesta lo dice). |
+| M9 | Práctica de la unidad sin tipos que ninguna idea enseña: fuera «puntajes» (`rm-deduccion`) y «edades» (`rm-parentesco`); siguen sin unidad, como antes. Billetes se queda (lo enseña el ejemplo 15 de la idea 2). **Práctica por idea: necesita `app/practica.js`** (pasar `{ idea }` desde el avance); no se tocó. | Las pruebas de cada generador fijan los tipos de la unidad. |
+| M10 | `unidades` en cada problema de los papeles de `rm-deduccion` y `rm-parentesco` (frascos: también Certezas; orden: Ordenamiento; puntajes y edades: ninguna). **No se tocó** `orden-informacion` ni el catálogo (fuera de alcance): falta marcar sus problemas o sacar la escena de esta unidad. | Cada problema trae `unidades`, y cada una usa la plantilla. |
+| M11 | Los dos papeles escritos a mano llevan «Datos: …» al final del enunciado (las mismas líneas de `lineasDatos`). | Cada problema trae «Datos:». |
+| M12 | Parentesco: la solución de cada cadena termina con «Contado en el árbol: sube N y baja M». **Pendiente:** la solución del silogismo sigue con zonas tachadas; pasarla a aros pide rehacer la figura del generador. | La cuenta de sube y baja da el nombre de la respuesta (600 semillas). |
+| M13 | Datos de la cadena con bisabuelo, bisnieto, tío abuelo y sobrino nieto. | Toda alternativa de una cadena está definida en los datos. |
+| M14 | El quenista que baila se para en medio del pedazo común (3,8; 4,6); el de la banda que baila con el aro «lejos», en (7,0; 4,6); otros dos alumnos se corrieron lejos de los bordes. Sin las rayas del piso. | Nadie se para a menos de 0,45 del borde de un aro, en todos los lugares del juego. |
+
+### Baja
+
+- **Hecho:** B2 (kermés: «(la pista 2 tacha a Maru): ✓ Vilma, jugos»; cuatro amigos: ✓ con su caja y «Beto y Ciro, en
+  cualquier orden»; «el 2 y el 5»); B3 (sin nombres del árbol en los ejemplos sin árbol, con prueba); B4 («Hermanos» con
+  la definición de la práctica, con prueba que compara las dos); B5 (nota «Banda y quenistas; falta la diablada» y «los
+  de la diablada»); B6 (cuatro opciones siempre, con prueba); B7 (con A2); B9 (A y B en tinta; la condición de la idea 1
+  con el ejemplo de Ana); B1 en parte (los resueltos con la tabla de 8 casos dicen qué fila queda; el 14 la usa entera).
+- **No se hizo:** B8 (`simple` de «certeza»: con él la idea 3 pasa a 5 palabras en el Resumen y el validador lo
+  rechaza; habría que mover el término a otra idea); B10 (colores de `rm-parentesco`); B11 (`rm-cuadros`); B12
+  (tipografía de «Ilave»).
+
+### Para Gerson
+
+1. **Contrafáctico** (M4): la teoría lo lee como «si p, q»; la práctica (`rm-deduccion`, asignación y papel p8), como «X
+   no es así». Recomendación: la lectura de la teoría (no se equivoca nunca), en una sola línea de datos para las dos, y
+   que la solución del generador use la forma indirecta (sus repartos ya salen iguales con las dos lecturas).
+2. **Puntajes y edades** (M9): salieron de esta unidad. Recomendación: Ordenamiento de información, si se quieren
+   conservar.
+3. Siguen pendientes en la mesa: nombres de columna girados en el cuadro en L, «cada grupo tiene al menos un integrante»
+   como dato y la tabla de nombres de parentesco en Datos.
+
+### Fuera de alcance (descrito, no hecho)
+
+- `app/practica.js`: práctica por idea (`gen.generar(s, { unidad, idea })`) y que cada generador separe sus tipos por idea.
+- `catalogo/` y `plantillas/orden-informacion/`: marcar `unidades` en su papel o sacar la escena de esta unidad (M10).

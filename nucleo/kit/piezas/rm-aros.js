@@ -66,9 +66,8 @@
   }
   function patio(d, corte) {
     let s = T.rotulo(M + 4, 18, 'Patio del colegio', { peso: 700, tam: 14 });
-    // El piso: un rectángulo tenue con juntas de baldosa.
-    let piso = `<rect data-caja="si" x="${M + 2}" y="26" width="${W - 2 * M - 4}" height="${ALTO_PATIO - 30}" rx="6" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>`;
-    for (const y of [72, 116, 160]) piso += `<line data-caja="si" x1="${M + 6}" y1="${y}" x2="${W - M - 6}" y2="${y}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1"/>`;
+    // El piso: un rectángulo tenue, sin juntas (el lector en frío preguntó qué eran las rayas; auditoría M14, 17 nov).
+    const piso = `<rect data-caja="si" x="${M + 2}" y="26" width="${W - 2 * M - 4}" height="${ALTO_PATIO - 30}" rx="6" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>`;
     s += `<g data-piso="si">${piso}</g>`;
     // Primero los aros (en el piso) y encima los alumnos, de atrás hacia adelante.
     for (const a of (d.aros || []).filter(x => x.papel === 'medio')) s += aroPatio(a, corte);

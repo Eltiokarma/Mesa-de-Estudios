@@ -302,8 +302,8 @@
     },
     regla: {
       texto: 'Una casilla es segura (✓) si vale en todos los repartos que quedan; imposible (✗), si no vale en ninguno. Cada ✓ tacha el resto de su fila y columna.',
-      ecuacion: [{ llave: [F('✓')], nota: 'seguro' }, ': en todos los repartos', '   ·   ', { llave: ['✗'], nota: 'imposible' }, ': en ninguno'],
-      condicion: 'cada fila y cada columna lleva una sola ✓. Si una pista nombra a dos personas, son distintas: ahí va una ✗.',
+      ecuacion: [{ llave: [F('✓')], nota: 'seguro' }, ' si vale en todos los repartos', '   ·   ', { llave: ['✗'], nota: 'imposible' }, ' si no vale en ninguno'],
+      condicion: 'una sola ✓ por fila y columna. «Ana almuerza con quien juega vóley» nombra a dos personas distintas: ✗ Ana y vóley.',
       voz: 'Una ✓ no espera a que se sepa todo.',
     },
     ejemplos: null,   // se completa abajo (EJEMPLOS_CUADRO)
@@ -318,7 +318,15 @@
         const directas = Object.fromEntries(c.items.map(x => [`${x.q},${x.c}`, x.si ? 'si' : 'no']));
         const nX = c.items.filter(x => !x.si).length, nSi = c.items.filter(x => x.si).length;
         const cuenta = ({ q, c: x, por }) => (por === 'pista' ? `La pista da la ✓ de ${c.ps[q]} en ${co[x]}.` : por === 'fila' ? `En la fila de ${c.ps[q]} solo queda ${co[x]}: ✓.` : `En la columna de ${co[x]} solo queda ${c.ps[q]}: ✓.`);
-        const primeras = pr.orden.slice(0, 2).map(cuenta).join(' ');
+        // La cadena entera de ✓, en dos pasos con su cuadro (auditoría M8, 17 nov: antes saltaba a «Las demás salen
+        // igual»). Cada cuadro tiene las ✗ de las pistas y las ✓ puestas hasta ahí, con lo que cada ✓ tacha.
+        const mitad = Math.ceil(pr.orden.length / 2);
+        const hasta = n => {
+          const m = {};
+          for (const it of c.items) if (!it.si) m[`${it.q},${it.c}`] = 'no';
+          for (const { q, c: x } of pr.orden.slice(0, n)) { for (let y = 0; y < c.k; y++) { m[`${q},${y}`] = 'no'; m[`${y},${x}`] = 'no'; } m[`${q},${x}`] = 'si'; }
+          return m;
+        };
         const repartoTxt = c.ps.map((p, q) => `${p} ${co[c.sol[q]]}`).join(', ');
         return {
           enunciado: `${introDe(c)} ${c.ctx.todo}`,
@@ -326,10 +334,10 @@
           dibujo: figCuadro(c),
           pasos: [
             { tipo: 'pide', texto: `Piden el reparto completo: ${c.ctx.todo.replace(/[¿?]/g, '').toLowerCase()}.` },
-            { tipo: 'datos', texto: `Son ${c.k} personas y ${c.k} opciones, una para cada una. Las pistas ponen ${nX} ✗${nSi ? ` y ${nSi} ✓` : ''} directas.` },
             { tipo: 'regla', texto: 'Si una fila o una columna queda con una sola casilla libre, ahí va la ✓: vale en todos los repartos. Cada ✓ tacha su fila y su columna.' },
-            { tipo: 'aplica', texto: `Marco lo que dice cada pista${c.lineas.some(l => l.rel) ? ': si nombra a dos personas, son distintas' : ''}.`, dibujo: figCuadro(c, directas) },
-            { tipo: 'aplica', texto: `${primeras}${pr.orden.length > 2 ? ' Las demás salen igual.' : ''}`, ecuacion: [repartoTxt], dibujo: figCuadro(c, marcasDe(c.k, c.items)) },
+            { tipo: 'aplica', texto: `Marco lo que dice cada pista${c.lineas.some(l => l.rel) ? ' (si nombra a dos personas, son distintas)' : ''}: ${nX} ✗${nSi ? ` y ${nSi} ✓` : ''}.`, dibujo: figCuadro(c, directas) },
+            { tipo: 'aplica', texto: pr.orden.slice(0, mitad).map(cuenta).join(' '), dibujo: figCuadro(c, hasta(mitad)) },
+            { tipo: 'aplica', texto: `${pr.orden.slice(mitad).map(cuenta).join(' ')} Queda un solo reparto.`.trim(), ecuacion: [repartoTxt], dibujo: figCuadro(c, marcasDe(c.k, c.items)) },
             { tipo: 'sentido', texto: 'Compruebo cada pista con el reparto: ninguna se rompe y nadie repite.' },
           ],
           respuesta: [F(repartoTxt)],
@@ -354,7 +362,8 @@
           if (posibles.length) { const [a, b] = r.elegir(posibles); ops.push({ id: 'posible', texto: hace(c, a, b), error: 'RMP77', siFuera: `Pasa en uno de los ${c.quedan.length} repartos que quedan; en el otro, ${hace(c, a, c.quedan.find(p => p[a] !== b)[a])}.` }); }
           if (imposibles.length) { const [a, b] = r.elegir(imposibles); ops.push(Object.assign({ id: 'choca', texto: hace(c, a, b) }, porQueNo(c, a, b))); }
           return { pregunta: `${introDe(c)} ¿Qué es seguro?`, datos: datosDe(c), dibujo: figCuadro(c), opciones: ops,
-            solucion: { texto: `Quedan ${c.quedan.length} repartos y en los dos ${hace(c, q, x)}: es la única casilla que coincide.`, dibujo: figCuadro(c, marcasDe(c.k, c.items)) } };
+            // Se nombran todas las ✓, no solo la de la correcta (auditoría A3: a veces hay más de una).
+            solucion: { texto: `Quedan ${c.quedan.length} repartos y en los dos, ${hace(c, q, x)}.${seg.length > 1 ? ` También es seguro: ${lista(seg.filter(([a]) => a !== q).map(([a, b]) => `${c.ps[a]} ${co[b]}`))}.` : ''}`, dibujo: figCuadro(c, marcasDe(c.k, c.items)) } };
         }
         if (tipo === 1 || tipo === 2) {
           const k = tipo === 1 ? 3 : 4;
@@ -430,7 +439,7 @@
       enunciado: 'Ana, Beto y Ciro juegan cada uno fútbol, vóley o ajedrez, sin repetir. Se sabe que Ciro no juega vóley. ¿Cuántos repartos quedan?',
       datos: [R3, `Sin pistas hay ${PERM3.length} repartos: los ${PERM3.length} del panel.`],
       solucion: [
-        { texto: `En ${CON_CIRO_VOLEY.length} de los ${PERM3.length} repartos del panel, Ciro juega vóley: el ${lista(CON_CIRO_VOLEY.map(String))}.` },
+        { texto: `En ${CON_CIRO_VOLEY.length} de los ${PERM3.length} repartos del panel, Ciro juega vóley: el ${lista(CON_CIRO_VOLEY.map(String), 'y el')}.` },
         { texto: 'La pista descarta esos repartos; los demás la cumplen.', ecuacion: [`${PERM3.length} − ${CON_CIRO_VOLEY.length} = `, F(String(PERM3.length - CON_CIRO_VOLEY.length))] },
       ],
       respuesta: [F(`Quedan ${PERM3.length - CON_CIRO_VOLEY.length} repartos`)] },
@@ -467,9 +476,9 @@
       solucion: [
         { texto: ['La pista 1 es una ', F('✓'), ': tacha el resto de la fila de Dina y de la columna de básquet.'] },
         { texto: ['A Ana le quedan fútbol, vóley y ajedrez; las pistas 2 y 3 tachan dos: Ana juega fútbol, ', F('✓'), '.'] },
-        { texto: 'Beto y Ciro se reparten vóley y ajedrez de 2 maneras: en esas casillas no hay ✓.' },
+        { texto: ['Beto y Ciro se reparten vóley y ajedrez de 2 maneras: en esas casillas no hay ninguna ', F('✓'), ' segura.'] },
       ],
-      respuesta: [F('Seguro: Dina básquet y Ana fútbol'), '; Beto y Ciro, no'] },
+      respuesta: [F('Seguro: Dina básquet y Ana fútbol'), '; Beto y Ciro, en cualquier orden'] },
     { nivel: 2, titulo: 'Quien conversa no es', figura: figC(['Lucho', 'Maru', 'Teo'], K3),
       enunciado: 'En la kermés, Lucho, Maru y Teo venden cada uno algo distinto: picarones, emoliente o choclo. ¿Qué vende Lucho?',
       datos: [R_KERMES, D_DOS, ...PIS('Lucho conversa con quien vende emoliente.', 'Teo no vende emoliente.', 'Quien vende picarones es primo de Teo.')],
@@ -526,7 +535,7 @@
       datos: [R_KERMES, D_DOS, ...PIS('Quien vende jugos le presta su olla a Lucho y a Teo.', 'Maru no vende jugos ni queso.', 'Teo y Lucho le compran choclo a la misma persona.', 'Lucho no vende tamales.')],
       solucion: [
         { texto: 'Las pistas 1 y 3 nombran a dos personas: ✗ jugos y ✗ choclo para Lucho y para Teo.' },
-        { texto: ['En la columna de jugos solo queda Vilma, porque la pista 2 tacha a Maru: ', F('✓'), '.'] },
+        { texto: ['En la columna de jugos solo queda Vilma (la pista 2 tacha a Maru): ', F('✓'), ' Vilma, jugos.'] },
         { texto: ['A Lucho le quedan tamales y queso; la pista 4 tacha tamales: queso, ', F('✓'), '. Teo: tamales. Maru: choclo.'] },
       ],
       respuesta: [F('B'), ': Maru vende choclo'] },
@@ -861,12 +870,12 @@
         { estado: { corte: 2 }, texto: 'La pista 2 no nombra a nadie: va al cuadro de ciudades e instrumentos.' },
         { estado: { corte: 3 }, texto: `Beto vive en ${ciudadDe(PJ2.slice(0, 1), BETO)}, y el ${INS.items[X_CRUCE]} es de ${cosaCiudad(PJ2.slice(0, 2), X_CRUCE)}: Beto no toca ${INS.items[X_CRUCE]}.` },
         { estado: { corte: 4 }, texto: `Pista 3: le queda el ${tocaBeto()}, y el ${tocaBeto()} pasa a ser de ${ciudadDe(PJ2, BETO)}.` },
-        { estado: { corte: 5 }, texto: `Pista 4: Ana vive en ${ciudadDe(PP2, 0)}, y en ${ciudadDe(PP2, 0)} se toca ${ANA_P}.`, ecuacion: ['Ana ', F('✓'), ` ${ciudadDe(PP2, 0)}  y  ${ciudadDe(PP2, 0)} `, F('✓'), ` ${ANA_P}:  Ana `, F('✓'), ` ${ANA_P}`] },
+        { estado: { corte: 5 }, texto: `Pista 4: Ana vive en ${ciudadDe(PP2, 0)}, y en ${ciudadDe(PP2, 0)} se toca ${ANA_P}.`, ecuacion: ['Ana ', F('✓'), ` ${ciudadDe(PP2, 0)}  y  ${ciudadDe(PP2, 0)} `, F('✓'), ` ${ANA_P},  entonces Ana `, F('✓'), ` ${ANA_P}`] },
       ],
     },
     regla: {
       texto: 'Una pista que une dos listas sin nombrar a nadie va al cuadro de esas listas. Lo que se sabe de una cosa pasa a su dueño, y al revés.',
-      ecuacion: [{ llave: ['Beto ', F('✓'), ' Ilave'], nota: 'con nombre' }, '   y   ', { llave: ['Ilave ', F('✓'), ' bombo'], nota: 'sin nombre' }, '   ·   ', 'entonces Beto ', F('✓'), ' bombo'],
+      ecuacion: [{ llave: ['Beto ', F('✓'), ' Ilave'], nota: 'con nombre' }, '   y   ', { llave: ['Ilave ', F('✓'), ' bombo'], nota: 'sin nombre' }, ',   entonces Beto ', F('✓'), ' bombo'],
       condicion: 'cada uno tiene una sola cosa de cada lista; una pista que nombra dos cosas habla de una misma persona.',
       voz: 'Una pista sin nombre también tacha casillas de las personas.',
     },
@@ -880,7 +889,13 @@
         const c = armarL(r, { k: 3, m: 2, quedan: 1, tipos: ['no', 'si', 'cruce', 'cruce', 'cruceNo', 'rel'], max: 5 }) || respaldo2();
         const directas = {};
         for (const x of itemsL(c.lineas)) directas[claveL(x.a, x.b)] = x.si ? 'si' : 'no';
-        const cruces = c.pr.orden.filter(d => d.por === 'cruce');
+        // La cadena entera (auditoría M8): primero un cruce, de preferencia una ✓ (no un ✗ derivado que parezca pista), con
+        // el cuadro hasta ahí; después, las ✓ de las personas que faltan, con el cuadro completo.
+        const cruces = c.pr.orden.filter(d => d.por === 'cruce'), cruce = cruces.find(d => d.v === 'si') || cruces[0];
+        const iCruce = c.pr.orden.indexOf(cruce);
+        const hastaL = n => Object.fromEntries(c.pr.orden.slice(0, n).map(d => [claveL(d.a, d.b), d.v]));
+        const vistas = new Set(c.pr.orden.slice(0, iCruce + 1).filter(d => d.v === 'si').map(d => claveL(d.a, d.b)));
+        const restan = c.pr.orden.filter(d => d.v === 'si' && (d.a.startsWith('p:') || d.b.startsWith('p:')) && !vistas.has(claveL(d.a, d.b)) && d.por !== 'pista');
         const rep = c.quedan[0];
         const repTxt = c.ps.map((p, q) => `${p}: ${c.listas.map((_, L) => itemT(c, L, rep[L][q])).join(', ')}`).join('. ');
         const nC = c.lineas.filter(l => l.cruce).length;
@@ -890,10 +905,10 @@
           dibujo: figL(c),
           pasos: [
             { tipo: 'pide', texto: `Piden el reparto completo: ${c.listas[0].nombre} y ${c.listas[1].nombre} de cada uno.` },
-            { tipo: 'datos', texto: `Son ${c.k} personas y dos listas. ${nC === 1 ? 'Una pista no nombra' : `${nC} pistas no nombran`} a nadie: ${nC === 1 ? 'va' : 'van'} al cuadro de abajo.` },
             { tipo: 'regla', texto: 'Cada pista va al cuadro de las dos cosas que nombra. Lo que se sabe de una cosa pasa a su dueño; cada ✓ tacha su fila y su columna.' },
-            { tipo: 'aplica', texto: `Marco cada pista en su cuadro${c.lineas.some(l => l.rel) ? '; si nombra a dos personas, son distintas' : ''}.`, dibujo: figL(c, directas) },
-            { tipo: 'aplica', texto: `${cuentaCruce(c, cruces[0])}${cruces.length > 1 ? ' Lo demás sale igual, cuadro por cuadro.' : ' Lo demás sale con filas y columnas.'}`, ecuacion: [repTxt], dibujo: figL(c, marcasCaso(c)) },
+            { tipo: 'aplica', texto: `Marco cada pista en su cuadro${c.lineas.some(l => l.rel) ? ' (si nombra a dos personas, son distintas)' : ''}. ${nC === 1 ? 'La que no nombra' : `Las ${nC} que no nombran`} a nadie ${nC === 1 ? 'va' : 'van'} al cuadro de abajo.`, dibujo: figL(c, directas) },
+            { tipo: 'aplica', texto: cuentaCruce(c, cruce), dibujo: figL(c, hastaL(iCruce + 1)) },
+            { tipo: 'aplica', texto: restan.length ? `Con filas, columnas y cruces salen las ✓ que faltan: ${lista(restan.map(d => afirma(c, d.a, d.b, true)))}.` : 'Con eso ya está todo el reparto.', ecuacion: [repTxt], dibujo: figL(c, marcasCaso(c)) },
             { tipo: 'sentido', texto: 'Compruebo cada pista con el reparto: ninguna se rompe y nada se repite.' },
           ],
           respuesta: [F(repTxt)],
@@ -963,7 +978,9 @@
     lejos: { x: 7.9, y: 4.6, r: 1.6, en: [8.2, 6.9] },
     fuera: { x: 9.0, y: 2.3, r: 0.9, en: [9.0, 3.8] },
   };
-  const NINOS3 = [[2.0, 5.6], [3.5, 4.4], [5.3, 2.4], [6.9, 5.4], [5.2, 5.0], [9.0, 2.3]];
+  // Quien decide la lectura se para lejos del borde de los aros (auditoría M14, 17 nov): el quenista que baila con el aro
+  // en «cruza», en medio del pedazo común (a 0,5 o más de cada borde); el de la banda que baila con el aro «lejos», también.
+  const NINOS3 = [[2.0, 5.6], [3.8, 4.6], [5.4, 2.2], [7.0, 4.6], [6.6, 3.0], [9.0, 2.3]];
   const dentro = (p, a) => Math.hypot(p[0] - a.x, p[1] - a.y) < a.r - 1e-9;
   const tocanA = (a, b) => Math.hypot(a.x - b.x, a.y - b.y) < a.r + b.r - 1e-9;
   // Lo que pasa en el patio con la diablada en el lugar c: quiénes bailan, y si se cumple la premisa 2.
@@ -1046,9 +1063,62 @@
     [[ARO(0, 3.0, 3.2, 2.2, 'primero', [2.4, 0.6]), ARO(1, 4.8, 3.6, 1.5, 'medio', [5.2, 5.75]), ARO(2, 8.3, 3.2, 1.4, 'segundo', [8.3, 5.4])]],
     [[ARO(2, 3.4, 3.2, 2.8, 'medio', [3.4, 0.15]), ARO(1, 3.2, 3.6, 1.8, 'medio', [5.8, 5.95]), ARO(0, 3.0, 3.9, 0.85, 'primero', [3.0, 3.9]), ARO(3, 8.2, 3.2, 1.5, 'segundo', [8.2, 5.4])]],
   ];
+  // Dónde va el nombre de cada aro de un diagrama de Venn (auditoría, 17 nov: «lectores» quedaba montado sobre la línea
+  // del aro). Se busca en una rejilla: el nombre no cruza ninguna línea de aro ni pisa otro nombre; de preferencia va
+  // dentro de su aro y fuera de los que no lo contienen (su pedazo propio), y si no cabe, afuera, pegado a su aro y más
+  // cerca de él que de los otros. La escala es la de rm-aros (geometria): 30,4 px por unidad con un diagrama, 22 apilados.
+  // rm-aros.test.js comprueba, con números, que ningún nombre cruza una línea en ninguna figura de la unidad.
+  const T_ANCHO = t => { let w = 0; for (const ch of String(t)) w += /\s/.test(ch) ? 0.28 : /[ilI.,:;'|!]/.test(ch) ? 0.28 : /[mwMW%]/.test(ch) ? 0.82 : 0.55; return w * 14 * 1.05; };
+  const rotulosCache = new Map();
+  function rotularVenn(datos) {
+    const k = datos.diagramas.length, apilar = !!datos.apilar && k > 1, alto = datos.alto || 6, mx = datos.margen || 0;
+    const esc = apilar ? 22 : k === 1 ? 304 / (10 + 2 * mx) : ((320 - 8 - 8) / 2 - 8) / 10, m = 3 / esc;
+    const clave = JSON.stringify([k, apilar, alto, mx, datos.diagramas.map(D => D.aros.map(a => [a.nombre, a.x, a.y, a.r]))]);
+    if (rotulosCache.has(clave)) return rotulosCache.get(clave);
+    const caja = (u, v, w) => ({ x0: u - w / 2, x1: u + w / 2, y0: v - 6.2 / esc, y1: v + 8.5 / esc });
+    const dist = (b, K) => {
+      const nx = Math.max(b.x0, Math.min(K.x, b.x1)), ny = Math.max(b.y0, Math.min(K.y, b.y1));
+      return [Math.hypot(nx - K.x, ny - K.y), Math.max(...[[b.x0, b.y0], [b.x1, b.y0], [b.x0, b.y1], [b.x1, b.y1]].map(([x, y]) => Math.hypot(x - K.x, y - K.y)))];
+    };
+    const contiene = (K, A) => Math.hypot(K.x - A.x, K.y - A.y) + A.r <= K.r + 1e-9;
+    const out = datos.diagramas.map(D => {
+      // Primero los aros chicos (los que tienen menos lugar), después los grandes; el orden del dibujo no cambia.
+      const puestas = [], en = new Map();
+      D.aros.slice().sort((a, b) => a.r - b.r).forEach(A => {
+        const w = T_ANCHO(A.nombre) / esc;
+        let mejor = null;
+        for (let u = -mx; u <= 10 + mx + 0.001; u += 0.1) for (let v = 0; v <= alto + 0.001; v += 0.1) {
+          const b = caja(u, v, w);
+          if (b.x0 < -mx || b.x1 > 10 + mx || b.y0 < 0 || b.y1 > alto) continue;
+          if (puestas.some(q => b.x0 < q.x1 + m && q.x0 < b.x1 + m && b.y0 < q.y1 + m && q.y0 < b.y1 + m)) continue;
+          const ds = D.aros.map(K => dist(b, K));
+          if (D.aros.some((K, j) => ds[j][0] < K.r + m && ds[j][1] > K.r - m)) continue;
+          const holgura = Math.min(...D.aros.map((K, j) => (ds[j][1] <= K.r ? K.r - ds[j][1] : ds[j][0] - K.r)));
+          const i = D.aros.indexOf(A), adentro = ds[i][1] <= A.r - m && D.aros.every((K, j) => K === A || contiene(K, A) || ds[j][0] >= K.r + m);
+          let puntos;
+          if (adentro) puntos = 100 + Math.min(holgura, 0.6) * 10 - Math.hypot(u - A.x, v - A.y) * 0.01;
+          else {
+            // Afuera de su aro: si queda dentro de otro, ese otro contiene a su aro; de los demás, más lejos que del suyo.
+            const gap = ds[i][0] - A.r;
+            if (gap < m) continue;
+            // Si ningún lugar cumple (un aro chico que cruza a otros dos, en el laboratorio), el más cerca de su aro.
+            puntos = D.aros.some((K, j) => K !== A && (ds[j][1] <= K.r ? !contiene(K, A) : ds[j][0] - K.r < gap + 0.2)) ? 10 - gap : 50 - gap * 10;
+          }
+          if (!mejor || puntos > mejor.puntos + 1e-9) mejor = { puntos, u, v, b };
+        }
+        if (!mejor) return;
+        puestas.push(mejor.b);
+        en.set(A, [Math.round(mejor.u * 10) / 10, Math.round(mejor.v * 10) / 10]);
+      });
+      return Object.assign({}, D, { aros: D.aros.map(A => (en.has(A) ? Object.assign({}, A, { en: en.get(A) }) : A)) });
+    });
+    rotulosCache.set(clave, out);
+    return out;
+  }
+  const venn = d => Object.assign({}, d, { diagramas: rotularVenn(d) });
   const figVenn = (f, g, solo) => {
-    const ds = MUESTRA[f].map((aros, i) => ({ titulo: MUESTRA[f].length > 1 ? `Dibujo ${i + 1}` : undefined, aros: aros.filter(a => !solo || solo.includes(a.g)).map(a => ({ nombre: g[a.g][0], papel: a.papel, x: a.x, y: a.y, r: a.r, en: a.en })) }));
-    return { pieza: AR, datos: { diagramas: solo ? ds.slice(0, 1) : ds, alto: 6.4, apilar: !solo && ds.length > 1 }, estado: {} };
+    const ds = MUESTRA[f].map((aros, i) => ({ titulo: MUESTRA[f].length > 1 ? `Dibujo ${i + 1}` : undefined, aros: aros.filter(a => !solo || solo.includes(a.g)).map(a => ({ nombre: g[a.g][0], papel: a.papel, x: a.x, y: a.y, r: a.r })) }));
+    return { pieza: AR, datos: venn({ diagramas: solo ? ds.slice(0, 1) : ds, alto: 6.4, apilar: !solo && ds.length > 1 }), estado: {} };
   };
   // Las opciones de un silogismo: la conclusión (o «nada seguro») y afirmaciones entre los grupos de las puntas que no
   // son seguras, cada una con el error que la produce (hipótesis RMP de docs/investigacion/codigos-rm-procesos.md).
@@ -1056,17 +1126,22 @@
     const F_ = FORMAS[f], n = F_.n || 3, ms = modelosVenn(n, F_.p, `f${f}`), A = 0, Z = n - 1;
     const nada = `Nada seguro entre ${g[A][0]} y ${g[Z][0]}`;
     const ok = F_.c ? frase(g, F_.c) : nada;
+    // Cada candidata se clasifica contando dibujos (auditoría A1, 17 nov): si cabe en alguno, «pasa en un dibujo, pero no
+    // en todos»; si no cabe en ninguno, «choca con las premisas». La explicación nunca dice que pasa lo que no pasa.
     const cands = [T_('algunos', A, Z), T_('ningun', A, Z), T_('todos', A, Z), T_('todos', Z, A), T_('algunosNo', A, Z), T_('algunos', Z, 1)]
       .filter(a => !segura(ms, a)).map(a => {
-        const texto = frase(g, a);
-        const err = a.q === 'todos' && a.x === Z ? 'RMP73' : !F_.c ? 'RMP76' : (F_.c.q === 'ningun' && a.q === 'algunos') || (F_.c.q === 'algunos' && a.q !== 'algunos') ? 'RMP74' : 'RMP77';
-        const siFuera = err === 'RMP73' ? 'Es la frase al revés: «todos los X son Y» no dice que todos los Y sean X.'
-          : err === 'RMP76' ? 'Pasa en un dibujo, pero en otro no: el grupo del medio no amarra a los otros dos.'
-            : err === 'RMP74' ? `Cambia «${F_.c.q === 'ningun' ? 'ningún' : 'algunos'}» por otra palabra: hay un dibujo que cumple las premisas y la rompe.`
-              : 'Pasa en un dibujo posible, pero no en todos los que cumplen las premisas.';
-        return { id: `${a.q}${a.x}${a.y}`, texto, error: err, siFuera };
+        const texto = frase(g, a), cabe = posible(ms, a);
+        const cambia = F_.c && ((F_.c.q === 'ningun' && a.q === 'algunos') || (F_.c.q === 'algunos' && a.q !== 'algunos'));
+        const err = !cabe ? (cambia ? 'RMP74' : 'RMP72') : a.q === 'todos' && a.x === Z ? 'RMP73' : !F_.c ? 'RMP76' : cambia ? 'RMP74' : 'RMP77';
+        const siFuera = !cabe ? (cambia ? `Cambia «${F_.c.q === 'ningun' ? 'ningún' : 'algunos'}» por otra palabra, y choca con las premisas: no cabe en ningún dibujo.`
+          : 'Choca con las premisas: no cabe en ningún dibujo que las cumpla.')
+          : err === 'RMP73' ? 'Lee «todos» al revés: pasa en un dibujo, pero no en todos los que cumplen las premisas.'
+            : err === 'RMP76' ? 'Pasa en un dibujo, pero en otro no: el grupo del medio no amarra a los otros dos.'
+              : err === 'RMP74' ? `Cambia «${F_.c.q === 'ningun' ? 'ningún' : 'algunos'}» por otra palabra: pasa en un dibujo, pero otro que cumple las premisas la rompe.`
+                : 'Pasa en un dibujo posible, pero no en todos los que cumplen las premisas.';
+        return { id: `${a.q}${a.x}${a.y}`, texto, error: err, siFuera, cabe };
       });
-    const ops = [{ id: 'c', texto: ok, correcta: true }].concat(r.barajar(cands).slice(0, 3));
+    const ops = [{ id: 'c', texto: ok, correcta: true }].concat(r.barajar(cands).slice(0, 3).map(({ cabe, ...o }) => o));
     if (F_.c && ops.length < 5) ops.push({ id: 'nada', texto: nada, error: 'RMP78', siFuera: 'En todos los dibujos que cumplen las premisas pasa lo mismo: sí hay conclusión.' });
     return ops;
   }
@@ -1122,10 +1197,10 @@
       opciones: [
         { id: 'c', texto: 'Ningún quenista baila diablada', correcta: true },
         { id: 'algunos', texto: 'Algunos quenistas bailan diablada', error: 'RMP74', siFuera: 'Valdría si los aros pudieran tocarse. «Ningún» los separa, y los quenistas van dentro de la banda.' },
-        { id: 'nada', texto: 'Nada: no juntan a quenistas y danzantes', error: 'RMP78', siFuera: 'Es cierto que no los nombra juntos; pero los quenistas van dentro de la banda, lejos de la diablada.' },
+        { id: 'nada', texto: 'Nada: no juntan a quenistas y los de la diablada', error: 'RMP78', siFuera: 'Es cierto que no los nombra juntos; pero los quenistas van dentro de la banda, lejos de la diablada.' },
         { id: 'reves', texto: 'Todos los de la banda tocan quena', error: 'RMP73', siFuera: 'Es la premisa al revés: dice que los quenistas están en la banda, no que toda la banda toque quena.' },
       ],
-      dibujo: { datos: patio(null, { nota: '¿Dónde va el aro de la diablada?' }), estado: {} },
+      dibujo: { datos: patio(null, { nota: 'Banda y quenistas; falta la diablada' }), estado: {} },
       revelar: { datos: patio('fuera', { cumple: true, nota: 'Fuera de la banda: lejos de los quenistas' }), estado: {} },
       coincide: 'Coincide: la diablada no puede tocar a la banda, y los quenistas están dentro de la banda.',
       noCoincide: 'Revisemos: «ningún» deja la diablada fuera de la banda, y con ella, lejos de todo quenista.',
@@ -1143,7 +1218,8 @@
     },
     regla: {
       texto: 'Una conclusión es segura solo si se cumple en todos los dibujos que respetan las premisas. Basta un dibujo que la rompa para descartarla.',
-      ecuacion: [{ llave: ['todos los ', O('A'), ' son B'], nota: 'A adentro' }, '   ·   ', { llave: ['ningún ', O('A'), ' es B'], nota: 'no se tocan' }, '   ·   ', { llave: ['algunos ', O('A'), ' son B'], nota: 'comparten un pedazo' }],
+      // A y B en tinta: en la forma general ninguno es «el primero» ni «el segundo» (auditoría B9).
+      ecuacion: [{ llave: ['todos los A son B'], nota: 'A adentro' }, '   ·   ', { llave: ['ningún A es B'], nota: 'no se tocan' }, '   ·   ', { llave: ['algunos A son B'], nota: 'comparten un pedazo' }],
       condicion: 'cada premisa se dibuja tal como dice, sin agregar nada: «algunos» no dice cuáles ni cuántos.',
       voz: 'Una conclusión vale si resiste el dibujo que intenta romperla.',
     },
@@ -1154,7 +1230,9 @@
       pieza: AR,
       generar(s) {
         const r = azar(s + 900), f = (s + 3) % 6, F_ = FORMAS[f], g = r.barajar(CAT).slice(0, 3);
-        const ops = opcionesVenn(f, g, r), ok = ops.find(o => o.correcta), mal = ops.find(o => !o.correcta && o.id !== 'nada') || ops.find(o => !o.correcta);
+        // Para «¿Tiene sentido?» se elige, si la hay, una opción que pasa en algún dibujo (el error más tentador).
+        const ops = opcionesVenn(f, g, r), ok = ops.find(o => o.correcta), malas = ops.filter(o => !o.correcta && o.id !== 'nada');
+        const mal = malas.find(o => /^Pasa en un dibujo/.test(o.siFuera)) || malas.find(o => /pasa en un dibujo/.test(o.siFuera)) || malas[0] || ops.find(o => !o.correcta);
         const dos = MUESTRA[f].length > 1;
         return {
           enunciado: `${premisasT(g, F_)} ¿Qué se concluye con certeza sobre ${g[0][0]} y ${g[2][0]}?`,
@@ -1249,6 +1327,24 @@
     // Con p se concluye q (directa); con «no q», «no p» (indirecta); con q o con «no p», nada.
     const concl = q.length === 1 ? (q[0][0] ? `Que ${sit[3]}` : `Que ${sit[1]}`) : 'Nada con certeza';
     return { sit, tipo, dato, sabe, q, concl };
+  }
+  // Las opciones de un caso simple, cada una explicada con los casos que de verdad quedan (auditoría A2, 17 nov): si
+  // contradice el dato, si choca con la regla (es el caso que prohíbe) o si pasa en uno de los casos que quedan, y no en
+  // el otro. Cada opción afirma una parte: [j, v] (j = 0 es p, j = 1 es q; v: pasa o no pasa).
+  function opcionesSimple4(c) {
+    const enDato = CASOS4.filter(x => DATO4[c.dato](x)), quedan = c.q;
+    const textoDe = (j, v) => `Que ${c.sit[j === 0 ? (v ? 0 : 1) : (v ? 3 : 4)]}`;
+    const explica = (j, v) => {
+      if (!enDato.some(x => x[j] === v)) return { error: 'RMP72', siFuera: `Contradice el dato: se sabe que ${c.sabe}.` };
+      if (!quedan.some(x => x[j] === v)) return { error: 'RMP72', siFuera: '«p sí, q no» es justo el caso que la regla prohíbe: con el dato, no queda ningún caso así.' };
+      const n = quedan.length;
+      if (j === 0 && v) return { error: 'RMP70', siFuera: `Valdría si la regla también fuera al revés. Con este dato quedan ${n} casos, y en uno no pasa p.` };
+      if (j === 1 && !v) return { error: 'RMP71', siFuera: `Valdría si la regla dijera también «si no p, no q». Quedan ${n} casos, y en uno pasa q.` };
+      return { error: 'RMP77', siFuera: `Pasa en uno de los ${n} casos que quedan, pero no en el otro.` };
+    };
+    const ops = [{ id: 'nada', texto: 'Nada con certeza', error: 'RMP78', siFuera: 'La regla y el dato dejan un solo caso en pie: sí hay conclusión.' }];
+    for (const [id, j, v] of [['q', 1, true], ['p', 0, true], ['nq', 1, false], ['np', 0, false]]) ops.push(Object.assign({ id, texto: textoDe(j, v) }, explica(j, v)));
+    return ops;
   }
 
   // Cadena de dos reglas: «si p, q» y «si q, r», con un dato. 8 casos de p, q y r.
@@ -1347,13 +1443,14 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'La regla tacha el caso 2: llueve y la pista sigue seca.' },
         { estado: { corte: 1 }, texto: 'Con «seca», el dato tacha los casos con pista mojada.' },
-        { estado: { corte: 2 }, texto: 'Queda un solo caso: no llovió. Es la forma indirecta.', ecuacion: ['si ', O('p'), ', ', I('q'), ';  no ', I('q'), ':  ', F('no p')] },
+        { estado: { corte: 2 }, texto: 'Queda un solo caso: no llovió. Es la forma indirecta.', ecuacion: ['si ', O('p'), ', ', I('q'), ', y no pasa ', I('q'), ': se concluye ', F('no p')] },
         { estado: { corte: 3 }, texto: 'Con «mojada» quedan dos casos: lluvia o cisterna. No se sabe si llovió.' },
       ],
     },
     regla: {
       texto: '«Si p, entonces q» solo prohíbe un caso: p sin q. Si pasa p, pasa q. Si no pasa q, no pasó p. Saber q o «no p» no basta.',
-      ecuacion: [{ llave: ['si ', O('p'), ', ', I('q'), ';  ', O('p')], nota: 'forma directa' }, ':  ', F('q'), '   ·   ', { llave: ['si ', O('p'), ', ', I('q'), ';  no ', I('q')], nota: 'forma indirecta' }, ':  ', F('no p')],
+      // En palabras, sin «;» ni «:» como signos propios (auditoría M3, 17 nov).
+      ecuacion: [{ llave: ['si ', O('p'), ', ', I('q'), ', y pasa ', O('p')], nota: 'forma directa' }, ' se concluye ', F('q'), '   ·   ', { llave: ['si ', O('p'), ', ', I('q'), ', y no pasa ', I('q')], nota: 'forma indirecta' }, ' se concluye ', F('no p')],
       condicion: 'la regla vale siempre, sin excepciones, y p y q significan lo mismo en todo el razonamiento.',
       voz: 'Con q o con «no p» quedan dos casos: no se concluye.',
     },
@@ -1392,13 +1489,7 @@
           return {
             pregunta: `Regla: si ${c.sit[0]}, ${c.sit[2]}. Se sabe que ${c.sabe}. ¿Qué se concluye con certeza?`,
             datos: [D_SI],
-            opciones: opcionesTexto(c.concl, [
-              { id: 'nada', texto: 'Nada con certeza', error: 'RMP78', siFuera: 'La regla y el dato dejan un solo caso en pie: sí hay conclusión.' },
-              { id: 'q', texto: `Que ${c.sit[3]}`, error: 'RMP70', siFuera: 'Valdría si la regla también fuera al revés. Con este dato quedan dos casos.' },
-              { id: 'p', texto: `Que ${c.sit[0]}`, error: 'RMP70', siFuera: 'Valdría si la regla también fuera al revés. Con este dato quedan dos casos.' },
-              { id: 'nq', texto: `Que ${c.sit[4]}`, error: 'RMP71', siFuera: 'Sería cierto si la regla dijera también «si no p, no q». Quedan dos casos.' },
-              { id: 'np', texto: `Que ${c.sit[1]}`, error: 'RMP71', siFuera: 'Sería cierto si la regla dijera también «si no p, no q». Quedan dos casos.' },
-            ].filter(o => o.texto !== c.concl && o.texto !== `Que ${c.sabe}`)),
+            opciones: opcionesTexto(c.concl, opcionesSimple4(c).filter(o => o.texto !== c.concl && o.texto !== `Que ${c.sabe}`)),
             solucion: { texto: c.q.length === 1 ? 'La regla y el dato tachan todos los casos menos uno.' : 'Quedan dos casos que dicen cosas distintas: no se decide.', dibujo: tablaPQ(c.sit, c.dato) },
           };
         }
@@ -1413,9 +1504,11 @@
           if (k <= 1) ops.push({ id: 'nada', texto: 'Nada nuevo con certeza', error: 'RMP78', siFuera: 'Las dos reglas encadenadas dejan un solo caso para la otra punta: sí hay conclusión.' });
           for (const [j, v] of r.barajar([[0, true], [0, false], [1, true], [1, false], [2, true], [2, false]])) {
             if (ops.length >= 4 || j === dj || estado(j, v) === 'seguro') continue;
-            const pos = estado(j, v) === 'posible';
-            ops.push({ id: `x${j}${v ? 1 : 0}`, texto: `Que ${dice(j, v)}`, error: pos ? (v ? 'RMP70' : 'RMP71') : 'RMP72',
-              siFuera: pos ? (v ? 'Pasa en un caso posible, pero no en todos: las reglas no van al revés.' : 'Pasa en un caso posible, pero no en todos: las reglas no dicen qué pasa sin lo primero.') : 'Choca con las reglas: con el dato, ese caso queda tachado.' });
+            // Al revés: afirmar lo de antes desde lo de después (dato r). Negar las dos: negar lo de después desde «no p».
+            const pos = estado(j, v) === 'posible', reves = v && dv && j < dj, niega = !v && !dv && j > dj;
+            ops.push({ id: `x${j}${v ? 1 : 0}`, texto: `Que ${dice(j, v)}`, error: !pos ? 'RMP72' : reves ? 'RMP70' : niega ? 'RMP71' : 'RMP77',
+              siFuera: !pos ? 'Choca con las reglas: con el dato, ese caso queda tachado.' : reves ? 'Pasa en un caso posible, pero no en todos: las reglas no van al revés.'
+                : niega ? 'Pasa en un caso posible, pero no en todos: las reglas no dicen qué pasa sin lo primero.' : 'Pasa en un caso posible, pero no en todos los que quedan.' });
           }
           const v3 = [{ t: 'p', papel: 'primero', si: 'sí', no: 'no' }, { t: 'q', papel: 'segundo', si: 'sí', no: 'no' }, { t: 'r', papel: 'tercero', si: 'sí', no: 'no' }];
           return {
@@ -1430,7 +1523,7 @@
         if (!c) return this.generar(s + 4);
         const hace = (i, j) => `${c.ps[i]} ${c.ctx.hace} ${c.co[j]}`;
         const ops = c.co.map((t, j) => (j === c.sol[c.preg] ? { id: 'c', texto: mayus(t), correcta: true }
-          : { id: `x${j}`, texto: mayus(t), error: c.sinRegla.some(p => p[c.preg] === j) ? 'RMP70' : 'RMP72', siFuera: c.sinRegla.some(p => p[c.preg] === j) ? 'Valdría sin la regla. Como la segunda parte no pasa, la primera tampoco: eso tacha este reparto.' : 'Choca con una de las pistas: revisa cada una.' }));
+          : { id: `x${j}`, texto: mayus(t), error: c.sinRegla.some(p => p[c.preg] === j) ? 'RMP63' : 'RMP72', siFuera: c.sinRegla.some(p => p[c.preg] === j) ? 'Valdría sin la regla. Como la segunda parte no pasa, la primera tampoco: eso tacha este reparto.' : 'Choca con una de las pistas: revisa cada una.' }));
         ops.push({ id: 'nose', texto: 'Faltan datos', error: 'RMP78', siFuera: 'La regla también tacha: como su segunda parte no pasa, la primera tampoco.' });
         return {
           pregunta: `${lista(c.ps)} ${c.ctx.intro}: ${lista(c.co, 'o')}. ${c.ctx.que(c.ps[c.preg])}`,
@@ -1630,7 +1723,8 @@
           const roles = `${k} padres y ${k} hijos${conAbuelo ? `, entre ellos ${L - 2} ${L - 2 === 1 ? 'abuelo' : 'abuelos'} y ${L - 2} ${L - 2 === 1 ? 'nieto' : 'nietos'}` : ''}`;
           return {
             pregunta: `En el almuerzo del domingo hay ${roles}. ¿Cuántas personas hay, como mínimo?`,
-            datos: ['Se cuentan personas, no papeles: cada persona cuenta una sola vez.', 'Padre: tiene un hijo en el almuerzo. Hijo: su padre está en el almuerzo.'],
+            // Sin «se cuentan personas, no papeles»: es la trampa misma, no un dato (auditoría M1, 17 nov).
+            datos: ['Padre: tiene un hijo en el almuerzo. Hijo: su padre está en el almuerzo.', ...(conAbuelo ? ['Abuelo: tiene un nieto en el almuerzo. Nieto: su abuelo está en el almuerzo.'] : [])],
             opciones: [
               { id: 'c', texto: String(L), correcta: true },
               { id: 'suma', texto: String(2 * k), error: 'RMP62', siFuera: 'Contaste cada papel como una persona. Una misma persona puede ser hijo de uno y padre de otro.' },
@@ -1648,7 +1742,9 @@
         return {
           pregunta,
           datos: c.datos,
-          opciones: opcionesTexto(mayus(nombre), vecinos.map((t, k) => ({ id: 'v' + k, texto: mayus(t), error: k === 1 ? 'RMP64' : 'RMP61', siFuera: k === 1 ? 'Ese es el parentesco visto desde la otra persona: cambiaste el que sube por el que baja.' : 'Cuenta otra vez cuántas líneas sube y cuántas baja el camino.' }))),
+          // Si los vecinos no llegan a tres distractores, se completa con «No se puede saber» (auditoría B6).
+          opciones: (ops => (ops.length < 4 ? ops.concat([{ id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: 'Sí se puede: cada palabra de la frase es un tramo del camino, y se suman.' }]) : ops))(
+            opcionesTexto(mayus(nombre), vecinos.map((t, k) => ({ id: 'v' + k, texto: mayus(t), error: k === 1 ? 'RMP64' : 'RMP61', siFuera: k === 1 ? 'Ese es el parentesco visto desde la otra persona: cambiaste el que sube por el que baja.' : 'Cuenta otra vez cuántas líneas sube y cuántas baja el camino.' })))),
           solucion: { texto: `El camino sube ${inversa ? c.d : c.u} y baja ${inversa ? c.u : c.d} líneas: ${nombre}.`, dibujo: caminoFig(c, { camino: true, fin: c.nombre }) },
         };
       },
@@ -1802,12 +1898,16 @@
   ];
   ideaListas.ejemplos = EJEMPLOS_LISTAS;
 
-  // Idea 3: la figura dibuja solo la primera premisa (el planteamiento); los nombres de los grupos van en sus aros.
-  const aro = (nombre, papel, x, y, r, en) => ({ nombre, papel, x, y, r, en });
-  const figV = (...aros) => ({ pieza: AR, datos: { diagramas: [{ aros }], alto: 6.4 }, estado: {} });
+  // Idea 3: en nivel 1, la figura dibuja la premisa; en nivel 2 y 3, todas las premisas en un dibujo que las cumple (o en
+  // dos que se contradicen, cuando no hay conclusión), sin marcar la conclusión: cada aro que nombra el resuelto está en
+  // la figura (auditoría M2, 17 nov). El nombre de cada aro lo ubica rotularVenn, sin montarlo sobre ninguna línea.
+  const aro = (nombre, papel, x, y, r) => ({ nombre, papel, x, y, r });
+  const figV = (...aros) => ({ pieza: AR, datos: venn({ diagramas: [{ aros }], alto: 6.4 }), estado: {} });
+  const figVA = (alto, ...aros) => ({ pieza: AR, datos: venn({ diagramas: [{ aros }], alto }), estado: {} });
+  const figV2 = (a1, a2) => ({ pieza: AR, datos: venn({ diagramas: [{ titulo: 'Dibujo 1', aros: a1 }, { titulo: 'Dibujo 2', aros: a2 }], alto: 6.4, apilar: true }), estado: {} });
   const D_V = { todos: D_TODOS, algunos: D_ALG, ningun: D_NING, algunosNo: D_ALGNO, uno: D_UNO };
   const EJEMPLOS_VENN = [
-    { nivel: 1, titulo: 'Al revés no vale', figura: figV(aro('banda', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('quenistas', 'primero', 4.2, 3.6, 1.3, [4.2, 3.6])),
+    { nivel: 1, titulo: 'Al revés no vale', figura: figV(aro('banda', 'medio', 5, 3.2, 2.8), aro('quenistas', 'primero', 4.2, 3.6, 1.3)),
       enunciado: 'Todos los quenistas están en la banda. ¿Es seguro que todos los de la banda tocan quena?',
       datos: [D_V.todos],
       solucion: [
@@ -1815,7 +1915,7 @@
         { texto: 'Ese dibujo cumple la premisa y tiene un integrante de la banda que no toca quena: la conclusión se rompe.' },
       ],
       respuesta: [F('No es seguro')] },
-    { nivel: 1, titulo: '«Ningún» se lee igual al revés', figura: figV(aro('ciclistas', 'primero', 2.6, 3.2, 1.8, [2.6, 0.75]), aro('nadadores', 'segundo', 7.4, 3.2, 1.8, [7.4, 0.75])),
+    { nivel: 1, titulo: '«Ningún» se lee igual al revés', figura: figV(aro('ciclistas', 'primero', 2.6, 3.2, 1.8), aro('nadadores', 'segundo', 7.4, 3.2, 1.8)),
       enunciado: 'Ningún ciclista es nadador. ¿Es seguro que ningún nadador es ciclista?',
       datos: [D_V.ningun],
       solucion: [
@@ -1823,7 +1923,7 @@
         { texto: 'Si nadie es ciclista y nadador a la vez, tampoco hay un nadador que sea ciclista.' },
       ],
       respuesta: [F('Sí es seguro')] },
-    { nivel: 1, titulo: '«Algunos» también al revés', figura: figV(aro('músicos', 'primero', 3.6, 3.2, 2.1, [3.0, 0.45]), aro('pintores', 'segundo', 6.4, 3.2, 2.1, [7.0, 0.45])),
+    { nivel: 1, titulo: '«Algunos» también al revés', figura: figV(aro('músicos', 'primero', 3.6, 3.2, 2.1), aro('pintores', 'segundo', 6.4, 3.2, 2.1)),
       enunciado: 'Algunos músicos son pintores. ¿Es seguro que algunos pintores son músicos?',
       datos: [D_V.algunos],
       solucion: [
@@ -1831,7 +1931,7 @@
         { texto: 'Esa misma persona es un pintor que es músico. Vale en todo dibujo que cumple la premisa.' },
       ],
       respuesta: [F('Sí es seguro')] },
-    { nivel: 1, titulo: '«Algunos» no dice «solo algunos»', figura: figV(aro('lectores', 'primero', 3.6, 3.2, 2.1, [3.0, 0.45]), aro('nadadores', 'segundo', 6.4, 3.2, 2.1, [7.0, 0.45])),
+    { nivel: 1, titulo: '«Algunos» no dice «solo algunos»', figura: figV(aro('lectores', 'primero', 3.6, 3.2, 2.1), aro('nadadores', 'segundo', 6.4, 3.2, 2.1)),
       enunciado: 'Algunos lectores son nadadores. ¿Es seguro que algún lector no es nadador?',
       datos: [D_V.algunos],
       solucion: [
@@ -1839,7 +1939,7 @@
         { texto: 'El aro de lectores puede ir entero dentro del de nadadores: ese dibujo cumple la premisa y ahí todo lector nada.' },
       ],
       respuesta: [F('No es seguro')] },
-    { nivel: 1, titulo: 'Una persona del grupo', figura: figV(aro('músicos', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('coristas', 'primero', 5, 3.7, 1.5, [5, 3.7])),
+    { nivel: 1, titulo: 'Una persona del grupo', figura: figV(aro('músicos', 'medio', 5, 3.2, 2.8), aro('coristas', 'primero', 5, 3.7, 1.5)),
       enunciado: 'Todos los coristas son músicos. Lucía es corista. ¿Es seguro que Lucía es música?',
       datos: [D_V.todos],
       solucion: [
@@ -1847,7 +1947,7 @@
         { texto: 'Ese aro va entero dentro del de músicos: donde esté Lucía, también está dentro de músicos.' },
       ],
       respuesta: [F('Sí: Lucía es música')] },
-    { nivel: 2, titulo: 'La cadena de aros', figura: figV(aro('lectores', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('ajedrecistas', 'primero', 5, 3.7, 1.5, [5, 3.7])),
+    { nivel: 2, titulo: 'La cadena de aros', figura: figVA(7.2, aro('puntuales', 'segundo', 5.2, 3.6, 3.4), aro('lectores', 'medio', 4.9, 4.1, 2.55), aro('ajedrecistas', 'primero', 4.6, 4.6, 1.75)),
       enunciado: 'Todos los ajedrecistas son lectores. Todos los lectores son puntuales. ¿Qué se concluye con certeza sobre ajedrecistas y puntuales?',
       datos: [D_V.todos],
       solucion: [
@@ -1855,15 +1955,15 @@
         { texto: ['Un aro dentro de otro que está dentro de un tercero queda dentro del tercero, en todo dibujo: ', F('todos los ajedrecistas son puntuales'), '.'] },
       ],
       respuesta: [F('Todos los ajedrecistas son puntuales')] },
-    { nivel: 2, titulo: 'El grupo del medio no amarra', figura: figV(aro('deportistas', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('ciclistas', 'primero', 3.9, 3.6, 1.3, [3.9, 3.6])),
+    { nivel: 2, titulo: 'El grupo del medio no amarra', figura: figV2([aro('deportistas', 'medio', 4.4, 3.4, 2.6), aro('ciclistas', 'primero', 3.4, 3.8, 1.3), aro('nadadores', 'segundo', 5.6, 3.6, 1.3)], [aro('deportistas', 'medio', 4.0, 3.4, 2.6), aro('ciclistas', 'primero', 3.0, 3.8, 1.2), aro('nadadores', 'segundo', 7.2, 3.4, 1.4)]),
       enunciado: 'Todos los ciclistas son deportistas. Algunos deportistas son nadadores. ¿Es seguro que algún ciclista es nadador?',
       datos: [D_V.todos, D_V.algunos],
       solucion: [
-        { texto: 'El aro de nadadores tiene que compartir un pedazo con deportistas, pero puede hacerlo lejos de ciclistas.' },
-        { texto: 'Ese dibujo cumple las dos premisas y ningún ciclista nada: «algún ciclista es nadador» no es seguro.' },
+        { texto: 'El aro de nadadores tiene que compartir un pedazo con deportistas. En el dibujo 1 cruza a ciclistas; en el 2, lo hace lejos de ellos.' },
+        { texto: 'El dibujo 2 cumple las dos premisas y ningún ciclista nada: «algún ciclista es nadador» no es seguro.' },
       ],
       respuesta: [F('No es seguro')] },
-    { nivel: 2, titulo: 'Dentro de un aro separado', figura: figV(aro('lectores', 'medio', 4, 3.2, 2.6, [4, 0.35]), aro('delegados', 'primero', 4, 3.7, 1.3, [4, 3.7])),
+    { nivel: 2, titulo: 'Dentro, y lejos del otro', figura: figV(aro('lectores', 'medio', 3.6, 3.3, 2.7), aro('delegados', 'primero', 3.3, 3.9, 1.6), aro('impuntuales', 'segundo', 8.2, 3.3, 1.5)),
       enunciado: 'Todos los delegados son lectores. Ningún lector es impuntual. ¿Qué se concluye con certeza sobre delegados e impuntuales?',
       datos: [D_V.todos, D_V.ningun],
       solucion: [
@@ -1871,7 +1971,7 @@
         { texto: ['Lo que está dentro de lectores no toca a impuntuales, en ningún dibujo: ', F('ningún delegado es impuntual'), '.'] },
       ],
       respuesta: [F('Ningún delegado es impuntual')] },
-    { nivel: 2, titulo: 'El pedazo que queda adentro', figura: figV(aro('danzantes', 'primero', 3.4, 3.2, 2.0, [2.6, 0.55]), aro('músicos', 'medio', 6.4, 3.2, 1.8, [7.2, 0.75])),
+    { nivel: 2, titulo: 'El pedazo que queda adentro', figura: figV(aro('banda', 'segundo', 6.4, 3.3, 2.7), aro('músicos', 'medio', 6.6, 3.6, 1.5), aro('danzantes', 'primero', 3.4, 3.3, 2.1)),
       enunciado: 'Algunos danzantes son músicos. Todos los músicos son de la banda. ¿Qué se concluye con certeza sobre danzantes y la banda?',
       datos: [D_V.algunos, D_V.todos],
       solucion: [
@@ -1879,7 +1979,7 @@
         { texto: ['El aro de músicos va entero dentro del de la banda: ese alguien también está en la banda. ', F('Algunos danzantes son de la banda'), '.'] },
       ],
       respuesta: [F('Algunos danzantes son de la banda')] },
-    { nivel: 2, titulo: 'Un aro dentro, otro afuera', figura: figV(aro('pintores', 'primero', 2.4, 3.2, 1.7, [2.4, 0.95]), aro('ciclistas', 'medio', 7, 3.2, 2.4, [7, 0.55])),
+    { nivel: 2, titulo: 'Un aro dentro, otro afuera', figura: figV(aro('ciclistas', 'medio', 6.6, 3.3, 2.6), aro('nadadores', 'primero', 6.9, 3.7, 1.4), aro('pintores', 'segundo', 2.0, 3.3, 1.5)),
       enunciado: 'Ningún pintor es ciclista. Todos los nadadores son ciclistas. ¿Qué se concluye con certeza sobre nadadores y pintores?',
       datos: [D_V.ningun, D_V.todos],
       solucion: [
@@ -1887,7 +1987,7 @@
         { texto: ['Nadadores queda lejos de pintores en todo dibujo: ', F('ningún nadador es pintor'), '.'] },
       ],
       respuesta: [F('Ningún nadador es pintor')] },
-    { nivel: 3, titulo: 'Tres premisas en cadena', figura: figV(aro('lectores', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('ajedrecistas', 'primero', 5, 3.7, 1.5, [5, 3.7])),
+    { nivel: 3, titulo: 'Tres premisas en cadena', figura: figVA(7.2, aro('estudiosos', 'medio', 4.0, 3.7, 3.3), aro('lectores', 'medio', 3.7, 4.2, 2.5), aro('ajedrecistas', 'primero', 3.4, 4.7, 1.7), aro('impuntuales', 'segundo', 8.7, 2.0, 1.1)),
       enunciado: 'Todos los ajedrecistas son lectores. Todos los lectores son estudiosos. Ningún estudioso es impuntual. ¿Cuál es necesariamente verdadera?',
       alternativas: ['Algunos ajedrecistas son impuntuales', 'Todos los estudiosos son ajedrecistas', 'Ningún ajedrecista es impuntual', 'Algunos estudiosos son impuntuales', 'Nada se puede concluir'],
       datos: [D_V.todos, D_V.ningun, D_V.uno],
@@ -1897,7 +1997,7 @@
         { texto: '«Todos los estudiosos son ajedrecistas» es la cadena al revés: un dibujo con estudiosos fuera de ajedrecistas la rompe.' },
       ],
       respuesta: [F('C'), ': ningún ajedrecista es impuntual'] },
-    { nivel: 3, titulo: '¿Cuál no se puede concluir?', figura: figV(aro('puntuales', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('delegados', 'primero', 5, 3.7, 1.5, [5, 3.7])),
+    { nivel: 3, titulo: '¿Cuál no se puede concluir?', figura: figVA(7.2, aro('lectores', 'segundo', 5.2, 3.6, 3.4), aro('puntuales', 'medio', 4.9, 4.1, 2.55), aro('delegados', 'primero', 4.6, 4.6, 1.75)),
       enunciado: 'Todos los delegados son puntuales. Todos los puntuales son lectores. ¿Cuál no se puede concluir?',
       alternativas: ['Todos los delegados son lectores', 'Algunos delegados son lectores', 'Algunos lectores son delegados', 'Algunos puntuales son delegados', 'Todos los lectores son puntuales'],
       datos: [D_V.todos, D_V.algunos, D_V.uno],
@@ -1907,7 +2007,7 @@
         { texto: ['«Todos los lectores son puntuales» es la premisa 2 al revés: un lector fuera de puntuales la rompe. Esa ', F('no se concluye'), '.'] },
       ],
       respuesta: [F('E'), ': todos los lectores son puntuales'] },
-    { nivel: 3, titulo: '«Algunos» y «ningún» juntos', figura: figV(aro('ciclistas', 'primero', 3.6, 3.2, 2.1, [3.0, 0.45]), aro('nadadores', 'medio', 6.4, 3.2, 2.1, [7.0, 0.45])),
+    { nivel: 3, titulo: '«Algunos» y «ningún» juntos', figura: figV(aro('ciclistas', 'primero', 3.3, 3.0, 2.0), aro('nadadores', 'medio', 5.9, 3.0, 1.5), aro('fumadores', 'segundo', 2.0, 5.2, 1.0)),
       enunciado: 'Algunos ciclistas son nadadores. Ningún nadador es fumador. ¿Cuál es necesariamente verdadera?',
       alternativas: ['Ningún ciclista es fumador', 'Algunos ciclistas son fumadores', 'Algunos ciclistas no son fumadores', 'Algunos nadadores no son ciclistas', 'Nada se puede concluir'],
       datos: [D_V.algunos, D_V.ningun, D_V.algunosNo],
@@ -1917,17 +2017,17 @@
         { texto: 'Sobre los demás ciclistas no se sabe: pueden fumar o no. Por eso no vale «ningún ciclista es fumador».' },
       ],
       respuesta: [F('C'), ': algunos ciclistas no son fumadores'] },
-    { nivel: 3, titulo: 'La trampa del grupo del medio', figura: figV(aro('músicos', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('quenistas', 'primero', 3.9, 3.6, 1.3, [3.9, 3.6])),
+    { nivel: 3, titulo: 'La trampa del grupo del medio', figura: figV2([aro('músicos', 'medio', 4.4, 3.4, 2.6), aro('quenistas', 'primero', 3.4, 3.8, 1.3), aro('cantantes', 'segundo', 5.6, 3.6, 1.3)], [aro('músicos', 'medio', 4.0, 3.4, 2.6), aro('quenistas', 'primero', 3.0, 3.8, 1.2), aro('cantantes', 'segundo', 7.2, 3.4, 1.4)]),
       enunciado: 'Todos los quenistas son músicos. Algunos músicos son cantantes. ¿Cuál es necesariamente verdadera?',
       alternativas: ['Algunos quenistas son cantantes', 'Ningún quenista es cantante', 'Todos los músicos son quenistas', 'Algunos músicos son quenistas', 'Ningún cantante es quenista'],
       datos: [D_V.todos, D_V.algunos, D_V.uno],
       solucion: [
-        { texto: 'Cantantes comparte un pedazo con músicos, pero puede tocar o no a quenistas: las de cantantes no son seguras.' },
+        { texto: 'Cantantes comparte un pedazo con músicos: en el dibujo 1 cruza a quenistas; en el 2, no. Las alternativas con cantantes (A, B y E) no son seguras.' },
         { texto: ['Hay al menos un quenista, y está dentro de músicos: algunos músicos son quenistas, ', F('✓'), '.'] },
         { texto: '«Todos los músicos son quenistas» es la premisa 1 al revés.' },
       ],
       respuesta: [F('D'), ': algunos músicos son quenistas'] },
-    { nivel: 3, titulo: 'La encuesta del aula', figura: figV(aro('lectores', 'medio', 5, 3.2, 2.8, [5, 0.15]), aro('ajedrecistas', 'primero', 4.1, 3.7, 1.3, [4.1, 3.7])),
+    { nivel: 3, titulo: 'La encuesta del aula', figura: figV(aro('lectores', 'medio', 4.0, 3.3, 2.8), aro('ajedrecistas', 'primero', 3.2, 3.5, 1.7), aro('nadadores', 'segundo', 6.9, 3.3, 1.5)),
       enunciado: 'En un aula, todos los ajedrecistas son lectores, algunos lectores son nadadores y ningún nadador es ajedrecista. ¿Cuál es necesariamente verdadera?',
       alternativas: ['Algunos ajedrecistas son nadadores', 'Todos los lectores son ajedrecistas', 'Algunos lectores no son ajedrecistas', 'Ningún lector es nadador', 'Todos los nadadores son lectores'],
       datos: [D_V.todos, D_V.algunos, D_V.ningun, D_V.algunosNo],
@@ -1998,15 +2098,15 @@
       datos: [D_SI, 'p: Ana llega temprano. q: ayuda a ordenar. r: sale primero al recreo.'],
       solucion: [
         { texto: 'Sin r, la segunda regla dice que no hubo q (forma indirecta): no ayudó a ordenar.' },
-        { texto: ['Sin q, la primera regla dice que no hubo p: ', F('Ana no llegó temprano'), '.'] },
+        { texto: ['Sin q, la primera regla dice que no hubo p: ', F('Ana no llegó temprano'), '. En la tabla queda solo la última fila: p, q y r no.'] },
       ],
       respuesta: [F('Ana no llegó temprano')] },
     { nivel: 2, titulo: 'Una regla que empieza con «no»', figura: figT(VPQ, 2),
       enunciado: 'Si no hay examen, Beto juega fútbol en la tarde. Hoy Beto no jugó fútbol en la tarde. ¿Qué se concluye con certeza?',
       datos: [D_SI, 'p: no hay examen. q: Beto juega fútbol en la tarde.'],
       solucion: [
-        { texto: 'Lo primero de la regla es «no hay examen». El dato es «no q».' },
-        { texto: ['Forma indirecta: no pasó lo primero. Lo contrario de «no hay examen» es ', F('hay examen'), '.'] },
+        { texto: 'Aquí p es «no hay examen». La regla tacha «p sí, q no». El dato es «q no»: tacha los casos con q.' },
+        { texto: ['Queda un caso: p no, q no. Que p no pase quiere decir que no es cierto que «no hay examen»: ', F('hay examen'), '.'] },
       ],
       respuesta: [F('Hoy hay examen')] },
     { nivel: 2, titulo: '¿Cuántos casos quedan?', figura: figT(VPQ, 2),
@@ -2031,37 +2131,42 @@
       datos: [D_SI, 'p: el frasco es rojo. q: tiene canicas. r: pesa más de 1 kg.'],
       solucion: [
         { texto: 'No pasa r: por la segunda regla, no pasa q. No tiene canicas.' },
-        { texto: ['Sin q, por la primera regla, no pasa p: no es rojo. Las dos cosas son seguras, ', F('✓'), '.'] },
+        { texto: ['Sin q, por la primera regla, no pasa p: no es rojo. En la tabla queda solo la última fila (p, q y r no): las dos cosas son seguras, ', F('✓'), '.'] },
         { texto: '«No es rojo, pero puede tener canicas» falla: tener canicas lo haría pesar más de 1 kg.' },
       ],
       respuesta: [F('C'), ': no tiene canicas y no es rojo'] },
     { nivel: 3, titulo: 'Si fuera…, sería…', figura: { pieza: OB, datos: { filas: P3, columnas: ['médico', 'profesor', 'abogado'] }, estado: {} },
       enunciado: 'Ana, Beto y Ciro son médico, profesor y abogado, uno cada uno. Si Beto no fuera el profesor, Ciro sería el médico. Ciro es el abogado. ¿Qué es Beto?',
       alternativas: ['Médico', 'Abogado', 'Profesor', 'Médico o profesor', 'No se puede saber'],
-      datos: ['Cada uno tiene una sola profesión, y ninguna se repite.', '«Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.', 'Regla: si Beto no es el profesor, Ciro es el médico.'],
+      // Sin «Regla: si Beto no es el profesor, Ciro es el médico»: era el paso hecho (auditoría M4, 17 nov).
+      datos: ['Cada uno tiene una sola profesión, y ninguna se repite.', '«Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.'],
       solucion: [
         { texto: '«Beto no fuera el profesor» no es un dato: es lo primero de una regla.' },
         { texto: 'Ciro es el abogado, así que no es el médico: no pasa lo segundo. Forma indirecta: no pasa lo primero.' },
         { texto: ['Lo contrario de «Beto no es el profesor» es ', F('Beto es el profesor'), '. Ana queda de médica.'] },
       ],
       respuesta: [F('C'), ': Beto es el profesor'] },
-    { nivel: 3, titulo: 'El pan que no está caliente', figura: figT(VPQ, 2),
-      enunciado: 'Si el pan está en el horno, está caliente. El pan no está caliente. ¿Cuál es necesariamente verdadera?',
-      alternativas: ['El pan está en el horno', 'El pan no está en el horno', 'El pan estuvo en el horno y se enfrió', 'El horno está apagado', 'Nada se puede asegurar'],
-      datos: [D_SI, 'p: el pan está en el horno. q: el pan está caliente.'],
+    // Nivel 3 (auditoría M7, 17 nov): una regla con «no» en sus dos partes, escondida en un reparto de cuatro.
+    { nivel: 3, titulo: 'Una regla con dos «no»', figura: { pieza: OB, datos: { filas: ['Ana', 'Beto', 'Ciro', 'Dina'], columnas: CTX[0].cosas }, estado: {} },
+      enunciado: 'Ana, Beto, Ciro y Dina juegan cada uno fútbol, vóley, ajedrez o básquet, sin repetir. ¿Qué juega Beto?',
+      alternativas: ['Fútbol', 'Vóley', 'Ajedrez', 'Básquet', 'No se puede saber'],
+      datos: ['Cada uno juega un solo deporte, y ningún deporte se repite.', 'Regla: si Ana no juega fútbol, Dina no juega básquet.', ...PIS('Dina juega básquet.', 'Beto no juega vóley.')],
       solucion: [
-        { texto: 'El dato es «no q». La regla tacha «p sí, q no»; el dato, los casos con q.' },
-        { texto: ['Queda un caso: p no. ', F('El pan no está en el horno'), '.'] },
-        { texto: '«Estuvo en el horno y se enfrió» le agrega tiempo a la regla; del horno apagado, la regla no dice nada.' },
+        { texto: 'Lo segundo de la regla es «Dina no juega básquet», y la pista 1 dice lo contrario: lo segundo no pasa.' },
+        { texto: ['Forma indirecta: lo primero tampoco pasa. No es cierto que Ana no juegue fútbol: Ana juega fútbol, ', F('✓'), '.'] },
+        { texto: ['A Beto le tachan fútbol (Ana), básquet (Dina) y vóley (pista 2): le queda ajedrez, ', F('✓'), '.'] },
       ],
-      respuesta: [F('B'), ': el pan no está en el horno'] },
+      respuesta: [F('C'), ': Beto juega ajedrez'] },
+    // Sin «Hoy es lunes» (auditoría M5, 17 nov): con ese dato la tabla deja un solo caso y «si lleva buzo, es lunes» se
+    // cumple en él. Ahora se pregunta qué sale de las dos reglas solas, y la tabla decide.
     { nivel: 3, titulo: '¿Cuál no se concluye?', figura: figT(VPQR, 3),
-      enunciado: 'Si es lunes, hay educación física. Si hay educación física, Luis lleva buzo. Hoy es lunes. ¿Cuál no se puede concluir?',
-      alternativas: ['Hay educación física', 'Luis lleva buzo', 'Es lunes y Luis lleva buzo', 'Si Luis lleva buzo, es lunes', 'Hay educación física y Luis lleva buzo'],
-      datos: [D_SI, 'p: es lunes. q: hay educación física. r: Luis lleva buzo.'],
+      enunciado: 'Si es lunes, hay educación física. Si hay educación física, Luis lleva buzo. ¿Cuál no se puede concluir de estas dos reglas?',
+      alternativas: ['Si es lunes, Luis lleva buzo', 'Si Luis no lleva buzo, no hay educación física', 'Si no hay educación física, no es lunes', 'Si Luis lleva buzo, es lunes', 'Si Luis no lleva buzo, no es lunes'],
+      datos: [D_SI, 'p: es lunes. q: hay educación física. r: Luis lleva buzo.', 'Una regla se concluye si se cumple en todos los casos que dejan las reglas.'],
       solucion: [
-        { texto: 'Con p, la primera regla da q y la segunda da r: lo de «hay educación física» y «lleva buzo» es seguro.' },
-        { texto: ['«Si Luis lleva buzo, es lunes» es la regla al revés: Luis puede llevar buzo otro día. Esa ', F('no se concluye'), '.'] },
+        { texto: 'Las reglas tachan p sin q y q sin r. De los 8 casos quedan 4: sí, sí, sí; no, sí, sí; no, no, sí; no, no, no.' },
+        { texto: 'En esos 4 casos se cumplen «si p, r», «si no r, no q», «si no q, no p» y «si no r, no p».' },
+        { texto: ['«Si Luis lleva buzo, es lunes» falla en el caso no, sí, sí: educación física otro día. Esa ', F('no se concluye'), '.'] },
       ],
       respuesta: [F('D'), ': si Luis lleva buzo, es lunes'] },
     { nivel: 3, titulo: 'La llamada que no llegó', figura: figT(VPQR, 3),
@@ -2070,7 +2175,7 @@
       datos: [D_SI, 'p: Rosa tiene fiebre. q: Rosa falta. r: su mamá llama al colegio.'],
       solucion: [
         { texto: 'No pasa r: por la segunda regla, no pasa q. Rosa no faltó.' },
-        { texto: ['Sin q, por la primera regla, no pasa p: no tiene fiebre. Las dos son seguras, ', F('✓'), '.'] },
+        { texto: ['Sin q, por la primera regla, no pasa p: no tiene fiebre. En la tabla queda solo la última fila: las dos son seguras, ', F('✓'), '.'] },
       ],
       respuesta: [F('C'), ': Rosa no faltó y no tiene fiebre'] },
   ];
@@ -2147,7 +2252,7 @@
       ],
       respuesta: [F('Es su hermana')] },
     { nivel: 2, titulo: 'El sobrino de mi papá', figura: figF,
-      enunciado: 'Luis dice: «Él es sobrino de mi papá, pero no es mi hermano ni soy yo». ¿Qué es esa persona de Luis?',
+      enunciado: 'Luis dice: «Él es sobrino de mi papá». ¿Qué es esa persona de Luis?',
       datos: [D_SUBE, D_NOMB],
       solucion: [
         { texto: 'Los sobrinos de Pedro son los hijos de sus hermanos: el hijo de Tomás, Iván.' },
@@ -2170,15 +2275,18 @@
         { texto: ['En total sube 3 y baja 1: ', F('tía abuela'), '.'] },
       ],
       respuesta: [F('Es su tía abuela')] },
-    { nivel: 3, titulo: 'Una cadena de tres pasos',
-      enunciado: '¿Qué parentesco tiene conmigo la hija de la hermana de mi mamá?',
-      alternativas: ['Sobrina', 'Tía', 'Prima', 'Hermana', 'Nieta'],
-      datos: [D_SUBE, 'Hermana: sube 1, baja 1.', D_NOMB],
+    // Nivel 3 (auditoría M7, 17 nov): cadenas con «único», que hacen volver el camino por la misma línea, y conteos sin el
+    // consejo en los datos. Sin el árbol de Luis (otros nombres: auditoría B3).
+    { nivel: 3, titulo: 'El hijo del único hijo',
+      enunciado: 'Óscar es hijo único y dice: «Él es el hijo del único hijo de mi abuelo paterno». ¿Quién es esa persona para Óscar?',
+      alternativas: ['Su hermano', 'Su primo', 'Él mismo', 'Su sobrino', 'Su padre'],
+      datos: [D_SUBE, 'Abuelo paterno: el papá del papá.', 'Hijo único: no tiene hermanos ni hermanas.', D_NOMB],
       solucion: [
-        { texto: 'Se lee desde «mi»: «mi mamá» sube 1; «su hermana» sube 1 y baja 1; «su hija» baja 1.' },
-        { texto: ['Sube 1 + 1 = 2 y baja 1 + 1 = 2: ', F('prima'), '.'] },
+        { texto: '«Mi abuelo paterno» sube 2: al papá del papá de Óscar.' },
+        { texto: '«Su único hijo» baja 1. Como es el único, es el papá de Óscar: el camino vuelve por la línea por la que subió.' },
+        { texto: ['«El hijo» del papá de Óscar baja 1 más. Óscar es hijo único: es ', F('él mismo'), '. Contar sube 2 y baja 2 daría «primo».'] },
       ],
-      respuesta: [F('C'), ': es mi prima'] },
+      respuesta: [F('C'), ': es él mismo'] },
     { nivel: 3, titulo: 'La única hija de mi abuela',
       enunciado: 'Luis dice: «La mamá de Rosa es la única hija de mi abuela materna». ¿Qué es Luis de Rosa?',
       alternativas: ['Su primo', 'Su tío', 'Su sobrino', 'Su hermano', 'Su padre'],
@@ -2191,30 +2299,32 @@
     { nivel: 3, titulo: 'El almuerzo del domingo',
       enunciado: 'En el almuerzo del domingo hay 1 abuelo, 2 padres, 2 hijos y 1 nieto. ¿Cuántas personas hay, como mínimo?',
       alternativas: ['6', '4', '3', '5', '2'],
-      datos: ['Se cuentan personas, no papeles: cada persona cuenta una sola vez.', 'Abuelo: su nieto está en el almuerzo. Padre: su hijo está en el almuerzo.'],
+      datos: ['Abuelo: su nieto está en el almuerzo. Nieto: su abuelo está en el almuerzo.', 'Padre: su hijo está en el almuerzo. Hijo: su padre está en el almuerzo.'],
       solucion: [
         { texto: 'Hay 2 hijos: alguien tiene que estar arriba de los dos, así que hay al menos 3 personas.' },
         { texto: ['Con 3 alcanza: abuelo, padre e hijo. El del medio es hijo y padre; el abuelo es padre; el de abajo es hijo y nieto. ', F('Tres'), '.'] },
       ],
       respuesta: [F('C'), ': 3 personas'] },
-    { nivel: 3, titulo: 'Los hijos de Elena',
-      enunciado: 'Elena tiene tres hijos varones, y cada uno tiene una sola hermana. ¿Cuántos hijos tiene Elena en total?',
+    { nivel: 3, titulo: 'Los hijos de doña Rufina',
+      enunciado: 'Doña Rufina tiene tres hijos varones, y cada uno tiene una sola hermana. ¿Cuántos hijos tiene doña Rufina en total?',
       alternativas: ['4', '6', '3', '5', '7'],
-      datos: ['Hermanos: hijos de la misma madre.', 'Se cuentan personas, no papeles: cada persona cuenta una sola vez.'],
+      // «Hermanos» con la misma definición que la práctica (rm-parentesco; auditoría B4).
+      datos: ['Hermanos: hijos del mismo padre y de la misma madre.', 'Todos los hijos de doña Rufina son del mismo padre.'],
       solucion: [
-        { texto: 'La hermana de cada varón es hija de Elena. Como cada uno tiene una sola, es la misma para los tres.' },
+        { texto: 'La hermana de cada varón es hija de doña Rufina. Como cada uno tiene una sola, es la misma para los tres.' },
         { texto: ['Tres varones y una mujer: ', F('4 hijos'), '. Contar una hermana por varón daría 6.'] },
       ],
       respuesta: [F('A'), ': 4 hijos'] },
-    { nivel: 3, titulo: 'El hijo de Raúl',
-      enunciado: 'Raúl tuvo un solo hijo, Pedro, y ninguna hija. Ana es nieta de Raúl. ¿Qué es Pedro de Ana?',
-      alternativas: ['Tío', 'Abuelo', 'Padre', 'Hermano', 'No se puede saber'],
-      datos: [D_SUBE, 'Nieta: hija de un hijo o de una hija.'],
+    { nivel: 3, titulo: 'La única hija de la bisabuela',
+      enunciado: 'Nora dice: «Él es el hijo de la única hija de la abuela materna de mi mamá». ¿Qué es esa persona de Nora?',
+      alternativas: ['Tío abuelo', 'Primo', 'Tío', 'Abuelo', 'Sobrino'],
+      datos: [D_SUBE, 'Abuela materna: la mamá de la mamá.', 'Tío: sube 2, baja 1. Primo: sube 2, baja 2. Tío abuelo: sube 3, baja 1.'],
       solucion: [
-        { texto: 'Ana es hija de un hijo o de una hija de Raúl. Raúl solo tuvo a Pedro.' },
-        { texto: ['Entonces Ana es hija de Pedro: de Ana a Pedro sube 1. ', F('Padre'), '.'] },
+        { texto: '«Mi mamá» sube 1; «su abuela materna» sube 2 más. En total, Nora sube 3.' },
+        { texto: '«Su única hija» baja 1. Como es la única, es la abuela de Nora: el camino baja por la línea por la que subió, y queda en sube 2.' },
+        { texto: ['«El hijo» de esa abuela baja 1: sube 2 y baja 1. Es un hermano de la mamá de Nora: ', F('tío'), '.'] },
       ],
-      respuesta: [F('C'), ': Pedro es su padre'] },
+      respuesta: [F('C'), ': es su tío'] },
   ];
   ideaFamilia.ejemplos = EJEMPLOS_FAMILIA;
 
@@ -2226,8 +2336,8 @@
   const dLibre = val => ({ x: val.cx, y: 3.2, r: val.cr });
   const vennLibre = val => {
     const D = dLibre(val), ok = tocanA(VBL, D);
-    return { diagramas: [{ aros: [VBL, VQL, Object.assign({ nombre: 'diablada', papel: 'segundo', en: [val.cx, Math.min(6.1, 3.2 + val.cr + 0.55)] }, D, ok ? {} : { cumple: false })] }], alto: 6.4, margen: 1,
-      nota: ok ? 'Cumple: algún integrante de la banda baila' : 'No cumple: el aro no toca a la banda' };
+    return venn({ diagramas: [{ aros: [VBL, VQL, Object.assign({ nombre: 'diablada', papel: 'segundo', en: [val.cx, Math.min(6.1, 3.2 + val.cr + 0.55)] }, D, ok ? {} : { cumple: false })] }], alto: 6.4, margen: 1,
+      nota: ok ? 'Cumple: algún integrante de la banda baila' : 'No cumple: el aro no toca a la banda' });
   };
   const mesaVenn = {
     id: 'venn-libre', titulo: 'El aro donde quieras', pieza: AR,

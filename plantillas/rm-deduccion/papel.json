@@ -5,7 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En el elenco de un colegio de Puno, todos los quenistas son zampoñistas y ningún zampoñista es charanguista. ¿Qué se deduce sobre los quenistas y los charanguistas? ¿Se puede asegurar, además, que algunos quenistas no son charanguistas?",
+      "enunciado": "En el elenco de un colegio de Puno, todos los quenistas son zampoñistas y ningún zampoñista es charanguista. ¿Qué se deduce sobre los quenistas y los charanguistas? ¿Se puede asegurar, además, que algunos quenistas no son charanguistas? Datos: «Todos los A son B»: no hay ningún A fuera de B. «Ningún A es B»: no hay nadie que sea A y B a la vez. «Algunos A son B»: por lo menos un A es B; quizás todos. «Algunos A no son B»: por lo menos un A no es B. Se deduce: vale en todos los dibujos que cumplen las dos premisas.",
       "respuesta": "Ningún quenista es charanguista. Lo segundo solo se puede asegurar si se sabe que hay por lo menos un quenista.",
       "pasos": [
         "«Todos los quenistas son zampoñistas»: se tacha la parte del círculo de quenistas que queda fuera del de zampoñistas.",
@@ -14,13 +14,42 @@
         "«Algunos quenistas no son charanguistas» pide que exista al menos un quenista. Las premisas no lo dicen: si el elenco no tuviera quenistas, esa frase sería falsa."
       ],
       "verificar": [
-        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 0, "p": 1 }, { "f": "E", "s": 1, "p": 2 }]], "espera": { "booleanas": ["sil:E:0:2"], "existenciales": ["sil:E:0:2", "sil:O:0:2", "sil:O:2:0"] } }
+        {
+          "fn": "conclusionesValidas",
+          "args": [
+            [
+              {
+                "f": "A",
+                "s": 0,
+                "p": 1
+              },
+              {
+                "f": "E",
+                "s": 1,
+                "p": 2
+              }
+            ]
+          ],
+          "espera": {
+            "booleanas": [
+              "sil:E:0:2"
+            ],
+            "existenciales": [
+              "sil:E:0:2",
+              "sil:O:0:2",
+              "sil:O:2:0"
+            ]
+          }
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Todos los que ingresaron a Medicina resolvieron el simulacro del sábado. Algunos alumnos del taller de los martes resolvieron el simulacro del sábado. ¿Se deduce que algunos alumnos del taller ingresaron a Medicina?",
+      "enunciado": "Todos los que ingresaron a Medicina resolvieron el simulacro del sábado. Algunos alumnos del taller de los martes resolvieron el simulacro del sábado. ¿Se deduce que algunos alumnos del taller ingresaron a Medicina? Datos: «Todos los A son B»: no hay ningún A fuera de B. «Algunos A son B»: por lo menos un A es B; quizás todos. Se deduce: vale en todos los dibujos que cumplen las dos premisas.",
       "respuesta": "No. De estas dos premisas no se deduce ninguna conclusión sobre los alumnos del taller y los ingresantes.",
       "pasos": [
         "Las dos premisas ponen a los dos grupos dentro (o en parte dentro) de «los que resolvieron el simulacro», que es el término medio.",
@@ -29,13 +58,36 @@
         "Compartir un tercer grupo no obliga a dos grupos a tocarse."
       ],
       "verificar": [
-        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 2, "p": 1 }, { "f": "I", "s": 0, "p": 1 }]], "espera": { "booleanas": [], "existenciales": [] } }
+        {
+          "fn": "conclusionesValidas",
+          "args": [
+            [
+              {
+                "f": "A",
+                "s": 2,
+                "p": 1
+              },
+              {
+                "f": "I",
+                "s": 0,
+                "p": 1
+              }
+            ]
+          ],
+          "espera": {
+            "booleanas": [],
+            "existenciales": []
+          }
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     },
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Algunos danzantes de la diablada son músicos de la banda. Ningún músico de la banda es futbolista. ¿Cuál de estas conclusiones se deduce: (a) ningún danzante es futbolista; (b) algunos danzantes no son futbolistas; (c) algunos futbolistas no son danzantes?",
+      "enunciado": "Algunos danzantes de la diablada son músicos de la banda. Ningún músico de la banda es futbolista. ¿Cuál de estas conclusiones se deduce: (a) ningún danzante es futbolista; (b) algunos danzantes no son futbolistas; (c) algunos futbolistas no son danzantes? Datos: «Ningún A es B»: no hay nadie que sea A y B a la vez. «Algunos A son B»: por lo menos un A es B; quizás todos. «Algunos A no son B»: por lo menos un A no es B. Se deduce: vale en todos los dibujos que cumplen las dos premisas.",
       "respuesta": "Solo la (b): algunos danzantes no son futbolistas.",
       "pasos": [
         "Primero la premisa con «ningún»: se tacha la zona común de músicos y futbolistas.",
@@ -44,13 +96,40 @@
         "(a) no se deduce: puede haber danzantes que no son músicos y sí son futbolistas. (c) tampoco: puede que todos los futbolistas sean danzantes."
       ],
       "verificar": [
-        { "fn": "conclusionesValidas", "args": [[{ "f": "I", "s": 0, "p": 1 }, { "f": "E", "s": 1, "p": 2 }]], "espera": { "booleanas": ["sil:O:0:2"], "existenciales": ["sil:O:0:2"] } }
+        {
+          "fn": "conclusionesValidas",
+          "args": [
+            [
+              {
+                "f": "I",
+                "s": 0,
+                "p": 1
+              },
+              {
+                "f": "E",
+                "s": 1,
+                "p": 2
+              }
+            ]
+          ],
+          "espera": {
+            "booleanas": [
+              "sil:O:0:2"
+            ],
+            "existenciales": [
+              "sil:O:0:2"
+            ]
+          }
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Todos los socios del club de ajedrez son de quinto año. Algunos de los que fueron al paseo a Sillustani no son de quinto año. ¿Qué se deduce sobre los que fueron al paseo y los socios del club?",
+      "enunciado": "Todos los socios del club de ajedrez son de quinto año. Algunos de los que fueron al paseo a Sillustani no son de quinto año. ¿Qué se deduce sobre los que fueron al paseo y los socios del club? Datos: «Todos los A son B»: no hay ningún A fuera de B. «Algunos A son B»: por lo menos un A es B; quizás todos. «Algunos A no son B»: por lo menos un A no es B. Se deduce: vale en todos los dibujos que cumplen las dos premisas.",
       "respuesta": "Algunos de los que fueron al paseo no son socios del club de ajedrez.",
       "pasos": [
         "«Todos los socios son de quinto»: se tacha la parte de los socios que queda fuera de quinto.",
@@ -59,13 +138,40 @@
         "Ojo: leer «todos los socios son de quinto» como «todos los de quinto son socios» lleva a otra conclusión, que no se deduce."
       ],
       "verificar": [
-        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 2, "p": 1 }, { "f": "O", "s": 0, "p": 1 }]], "espera": { "booleanas": ["sil:O:0:2"], "existenciales": ["sil:O:0:2"] } }
+        {
+          "fn": "conclusionesValidas",
+          "args": [
+            [
+              {
+                "f": "A",
+                "s": 2,
+                "p": 1
+              },
+              {
+                "f": "O",
+                "s": 0,
+                "p": 1
+              }
+            ]
+          ],
+          "espera": {
+            "booleanas": [
+              "sil:O:0:2"
+            ],
+            "existenciales": [
+              "sil:O:0:2"
+            ]
+          }
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     },
     {
       "id": "p5",
       "nivel": "avanzado",
-      "enunciado": "En un concurso, todos los ganadores son de Juliaca y todos los ganadores son de quinto año. ¿Se puede asegurar que algunos de Juliaca son de quinto año?",
+      "enunciado": "En un concurso, todos los ganadores son de Juliaca y todos los ganadores son de quinto año. ¿Se puede asegurar que algunos de Juliaca son de quinto año? Datos: «Todos los A son B»: no hay ningún A fuera de B. «Algunos A son B»: por lo menos un A es B; quizás todos. Se deduce: vale en todos los dibujos que cumplen las dos premisas.",
       "respuesta": "Solo si hubo por lo menos un ganador. Con las dos premisas solas, no.",
       "pasos": [
         "Las dos premisas son «todos»: solo tachan zonas, no ponen ninguna ×.",
@@ -74,13 +180,38 @@
         "Moraleja: dos premisas con «todos» o «ningún» nunca aseguran un «algunos» si no se sabe que alguien existe."
       ],
       "verificar": [
-        { "fn": "conclusionesValidas", "args": [[{ "f": "A", "s": 1, "p": 0 }, { "f": "A", "s": 1, "p": 2 }]], "espera": { "booleanas": [], "existenciales": ["sil:I:0:2"] } }
+        {
+          "fn": "conclusionesValidas",
+          "args": [
+            [
+              {
+                "f": "A",
+                "s": 1,
+                "p": 0
+              },
+              {
+                "f": "A",
+                "s": 1,
+                "p": 2
+              }
+            ]
+          ],
+          "espera": {
+            "booleanas": [],
+            "existenciales": [
+              "sil:I:0:2"
+            ]
+          }
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     },
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Cuatro latas, A, B, C y D, tienen cada una té, café o cocoa (dos latas pueden tener lo mismo). Se sabe que: I. Si la lata A tiene té, entonces la lata B tiene café. II. La lata B no tiene café. III. Si la lata A no tiene té, entonces la lata C tiene cocoa. IV. Las latas C y D no tienen lo mismo. ¿Cuál de estas es siempre cierta: (a) la lata A tiene café; (b) la lata C tiene cocoa; (c) la lata D tiene té?",
+      "enunciado": "Cuatro latas, A, B, C y D, tienen cada una té, café o cocoa (dos latas pueden tener lo mismo). Se sabe que: I. Si la lata A tiene té, entonces la lata B tiene café. II. La lata B no tiene café. III. Si la lata A no tiene té, entonces la lata C tiene cocoa. IV. Las latas C y D no tienen lo mismo. ¿Cuál de estas es siempre cierta: (a) la lata A tiene café; (b) la lata C tiene cocoa; (c) la lata D tiene té? Datos: «Si p, q»: siempre que pasa p, también pasa q. Siempre cierto: se cumple en todos los casos que dejan las pistas.",
       "respuesta": "(b): la lata C tiene cocoa.",
       "pasos": [
         "Por II, B no tiene café. Si A tuviera té, por I, B tendría café: imposible. Entonces A no tiene té.",
@@ -89,14 +220,106 @@
         "(a) y (c) pueden pasar, pero no siempre: A puede tener café o cocoa, y D puede tener té o café. Quedan 8 casos y en todos C tiene cocoa."
       ],
       "verificar": [
-        { "fn": "necesaria", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "no", "o": 1, "c": 1 }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 2, "c": 2, "neg": false } }, { "t": "distintos", "o1": 2, "o2": 3 }], "sc:es:2:2"], "espera": true },
-        { "fn": "necesaria", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "no", "o": 1, "c": 1 }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 2, "c": 2, "neg": false } }, { "t": "distintos", "o1": 2, "o2": 3 }], "sc:es:0:1"], "espera": false }
+        {
+          "fn": "necesaria",
+          "args": [
+            [
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": false
+                },
+                "b": {
+                  "o": 1,
+                  "c": 1,
+                  "neg": false
+                }
+              },
+              {
+                "t": "no",
+                "o": 1,
+                "c": 1
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": true
+                },
+                "b": {
+                  "o": 2,
+                  "c": 2,
+                  "neg": false
+                }
+              },
+              {
+                "t": "distintos",
+                "o1": 2,
+                "o2": 3
+              }
+            ],
+            "sc:es:2:2"
+          ],
+          "espera": true
+        },
+        {
+          "fn": "necesaria",
+          "args": [
+            [
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": false
+                },
+                "b": {
+                  "o": 1,
+                  "c": 1,
+                  "neg": false
+                }
+              },
+              {
+                "t": "no",
+                "o": 1,
+                "c": 1
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": true
+                },
+                "b": {
+                  "o": 2,
+                  "c": 2,
+                  "neg": false
+                }
+              },
+              {
+                "t": "distintos",
+                "o1": 2,
+                "o2": 3
+              }
+            ],
+            "sc:es:0:1"
+          ],
+          "espera": false
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo",
+        "razonamiento-matematico.certezas"
       ]
     },
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "Tres cajas, A, B y C, guardan cada una un trompo, un yoyo o una pelota (pueden repetirse). Se sabe que: I. No es cierto que, si la caja A guarda un trompo, la caja B guarde un yoyo. II. Si la caja B guarda una pelota, entonces la caja C guarda un trompo. III. La caja C no guarda un trompo. ¿Qué guarda la caja B?",
+      "enunciado": "Tres cajas, A, B y C, guardan cada una un trompo, un yoyo o una pelota (pueden repetirse). Se sabe que: I. No es cierto que, si la caja A guarda un trompo, la caja B guarde un yoyo. II. Si la caja B guarda una pelota, entonces la caja C guarda un trompo. III. La caja C no guarda un trompo. ¿Qué guarda la caja B? Datos: «Si p, q»: siempre que pasa p, también pasa q. «Si p, q» solo es falso cuando pasa p y no pasa q. Siempre cierto: se cumple en todos los casos que dejan las pistas.",
       "respuesta": "Un trompo (lo mismo que la caja A).",
       "pasos": [
         "Un «si…, entonces…» solo es falso cuando la primera parte se cumple y la segunda no. Por I: A guarda un trompo y B no guarda un yoyo.",
@@ -105,14 +328,96 @@
         "Error típico: leer I como «A no guarda un trompo y B no guarda un yoyo». Esa no es la negación de un condicional."
       ],
       "verificar": [
-        { "fn": "necesaria", "args": [[{ "t": "nocond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 1, "c": 2, "neg": false }, "b": { "o": 2, "c": 0, "neg": false } }, { "t": "no", "o": 2, "c": 0 }], "sc:es:1:0"], "espera": true },
-        { "fn": "necesaria", "args": [[{ "t": "nocond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 1, "c": 2, "neg": false }, "b": { "o": 2, "c": 0, "neg": false } }, { "t": "no", "o": 2, "c": 0 }], "sc:igual:0:1"], "espera": true }
+        {
+          "fn": "necesaria",
+          "args": [
+            [
+              {
+                "t": "nocond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": false
+                },
+                "b": {
+                  "o": 1,
+                  "c": 1,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 1,
+                  "c": 2,
+                  "neg": false
+                },
+                "b": {
+                  "o": 2,
+                  "c": 0,
+                  "neg": false
+                }
+              },
+              {
+                "t": "no",
+                "o": 2,
+                "c": 0
+              }
+            ],
+            "sc:es:1:0"
+          ],
+          "espera": true
+        },
+        {
+          "fn": "necesaria",
+          "args": [
+            [
+              {
+                "t": "nocond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": false
+                },
+                "b": {
+                  "o": 1,
+                  "c": 1,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 1,
+                  "c": 2,
+                  "neg": false
+                },
+                "b": {
+                  "o": 2,
+                  "c": 0,
+                  "neg": false
+                }
+              },
+              {
+                "t": "no",
+                "o": 2,
+                "c": 0
+              }
+            ],
+            "sc:igual:0:1"
+          ],
+          "espera": true
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo",
+        "razonamiento-matematico.certezas"
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una?",
+      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una? Datos: Cada una toca un solo instrumento, y ninguno se repite. «Si p, q»: siempre que pasa p, también pasa q. «Si X fuera…, Y sería…»: habla de algo que no pasa; X no es así.",
       "respuesta": "Ana, el bombo; Bety, la zampoña; Ceci, el charango; Dora, la quena.",
       "pasos": [
         "«Si Ana tocara la quena…» habla de algo que no pasa: Ana no toca la quena.",
@@ -122,14 +427,149 @@
         "Comprobación: aunque se lea I como un «si…, entonces…» común, Ana no puede tocar la quena: Ceci tendría el bombo, no tendría el charango y, por IV, Dora tocaría la quena, que ya sería de Ana. El reparto es el mismo con las dos lecturas."
       ],
       "verificar": [
-        { "fn": "repartos", "args": [[{ "t": "contra", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 2, "c": 3, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 2, "neg": false }, "b": { "o": 1, "c": 0, "neg": false } }, { "t": "cond", "a": { "o": 2, "c": 2, "neg": true }, "b": { "o": 3, "c": 0, "neg": false } }]], "espera": [[3, 1, 2, 0]] },
-        { "fn": "repartos", "args": [[{ "t": "cond", "a": { "o": 0, "c": 0, "neg": false }, "b": { "o": 2, "c": 3, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 0, "neg": true }, "b": { "o": 1, "c": 1, "neg": false } }, { "t": "cond", "a": { "o": 0, "c": 2, "neg": false }, "b": { "o": 1, "c": 0, "neg": false } }, { "t": "cond", "a": { "o": 2, "c": 2, "neg": true }, "b": { "o": 3, "c": 0, "neg": false } }]], "espera": [[3, 1, 2, 0]] }
+        {
+          "fn": "repartos",
+          "args": [
+            [
+              {
+                "t": "contra",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": false
+                },
+                "b": {
+                  "o": 2,
+                  "c": 3,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": true
+                },
+                "b": {
+                  "o": 1,
+                  "c": 1,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 2,
+                  "neg": false
+                },
+                "b": {
+                  "o": 1,
+                  "c": 0,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 2,
+                  "c": 2,
+                  "neg": true
+                },
+                "b": {
+                  "o": 3,
+                  "c": 0,
+                  "neg": false
+                }
+              }
+            ]
+          ],
+          "espera": [
+            [
+              3,
+              1,
+              2,
+              0
+            ]
+          ]
+        },
+        {
+          "fn": "repartos",
+          "args": [
+            [
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": false
+                },
+                "b": {
+                  "o": 2,
+                  "c": 3,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 0,
+                  "neg": true
+                },
+                "b": {
+                  "o": 1,
+                  "c": 1,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 0,
+                  "c": 2,
+                  "neg": false
+                },
+                "b": {
+                  "o": 1,
+                  "c": 0,
+                  "neg": false
+                }
+              },
+              {
+                "t": "cond",
+                "a": {
+                  "o": 2,
+                  "c": 2,
+                  "neg": true
+                },
+                "b": {
+                  "o": 3,
+                  "c": 0,
+                  "neg": false
+                }
+              }
+            ]
+          ],
+          "espera": [
+            [
+              3,
+              1,
+              2,
+              0
+            ]
+          ]
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     },
     {
       "id": "p9",
       "nivel": "intermedio",
-      "enunciado": "Ana, Beto y Carla juegan con tres dados: uno azul, uno rojo y uno blanco. Cada una toma un dado distinto y lo lanza 4 veces; luego suma sus 4 resultados. Se sabe que: I. Beto obtuvo más puntos que quien usó el dado rojo. II. Quien usó el dado azul obtuvo el menor puntaje. III. Ninguno obtuvo un puntaje total par. IV. Carla no usó el dado azul. Cada uno obtuvo el mayor puntaje que permiten estas pistas. ¿Qué puntaje obtuvo Ana y con qué dado?",
+      "enunciado": "Ana, Beto y Carla juegan con tres dados: uno azul, uno rojo y uno blanco. Cada una toma un dado distinto y lo lanza 4 veces; luego suma sus 4 resultados. Se sabe que: I. Beto obtuvo más puntos que quien usó el dado rojo. II. Quien usó el dado azul obtuvo el menor puntaje. III. Ninguno obtuvo un puntaje total par. IV. Carla no usó el dado azul. Cada uno obtuvo el mayor puntaje que permiten estas pistas. ¿Qué puntaje obtuvo Ana y con qué dado? Datos: Un dado tiene caras del 1 al 6. Puntaje: la suma de los resultados de todos sus lanzamientos. Par: se divide entre 2 sin residuo; impar: no.",
       "respuesta": "19 puntos, con el dado azul.",
       "pasos": [
         "Beto no usó el rojo (obtuvo más que ese jugador). Tampoco el azul: ese es el menor y Beto es mayor que alguien. Beto usó el blanco.",
@@ -137,8 +577,42 @@
         "Orden: azul < rojo < blanco, es decir Ana < Carla < Beto.",
         "Con 4 lanzamientos el máximo es 24; sin pares, el mayor permitido es 23. Beto 23, Carla 21 y Ana 19."
       ],
-      "verificar": [ { "fn": "puntajeMaximo", "args": [ { "lanz": 4, "persona": 0, "pistas": [
-        { "t": "mayor", "p": 1, "c": 1 }, { "t": "menor-todos", "c": 0 }, { "t": "paridad", "par": "impar" }, { "t": "no", "p": 2, "c": 0 } ] } ], "espera": { "color": 0, "puntaje": 19 } } ]
+      "verificar": [
+        {
+          "fn": "puntajeMaximo",
+          "args": [
+            {
+              "lanz": 4,
+              "persona": 0,
+              "pistas": [
+                {
+                  "t": "mayor",
+                  "p": 1,
+                  "c": 1
+                },
+                {
+                  "t": "menor-todos",
+                  "c": 0
+                },
+                {
+                  "t": "paridad",
+                  "par": "impar"
+                },
+                {
+                  "t": "no",
+                  "p": 2,
+                  "c": 0
+                }
+              ]
+            }
+          ],
+          "espera": {
+            "color": 0,
+            "puntaje": 19
+          }
+        }
+      ],
+      "unidades": []
     },
     {
       "id": "p10",
@@ -152,9 +626,30 @@
         "Ana no tuvo fiebre: quedan «sin fiebre y en casa» y «sin fiebre y no en casa». La regla no dice qué pasa sin fiebre. No se sabe si se quedó en casa."
       ],
       "verificar": [
-        { "fn": "conclusionSi", "args": ["nq"], "espera": "np" },
-        { "fn": "conclusionSi", "args": ["q"], "espera": null },
-        { "fn": "conclusionSi", "args": ["np"], "espera": null }
+        {
+          "fn": "conclusionSi",
+          "args": [
+            "nq"
+          ],
+          "espera": "np"
+        },
+        {
+          "fn": "conclusionSi",
+          "args": [
+            "q"
+          ],
+          "espera": null
+        },
+        {
+          "fn": "conclusionSi",
+          "args": [
+            "np"
+          ],
+          "espera": null
+        }
+      ],
+      "unidades": [
+        "razonamiento-matematico.razonamiento-deductivo"
       ]
     }
   ]
