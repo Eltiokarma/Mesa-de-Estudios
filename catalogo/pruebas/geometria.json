@@ -1,6 +1,6 @@
 {
   "curso": "geometria",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "fecha": "2026-11-18",
   "minutos": 15,
   "informes": [
@@ -353,6 +353,70 @@
             "texto": "24 cm²",
             "valor": 24,
             "error": "base-prolongacion"
+          }
+        ]
+      }
+    },
+    {
+      "par": "geo-05",
+      "plantilla": "triangulo-estira",
+      "unidad": "geometria.relaciones-metricas",
+      "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
+      "A": {
+        "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
+        "datos": {
+          "c1": 30,
+          "c2": 40
+        },
+        "opciones": [
+          {
+            "texto": "35 m",
+            "valor": 35,
+            "error": "GE18-promedio-catetos"
+          },
+          {
+            "texto": "25 m",
+            "valor": 25,
+            "error": "GE8-altura-como-mediana"
+          },
+          {
+            "texto": "24 m",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "18 m",
+            "valor": 18,
+            "error": "proyeccion-como-altura"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
+        "datos": {
+          "c1": 18,
+          "c2": 24
+        },
+        "opciones": [
+          {
+            "texto": "21 cm",
+            "valor": 21,
+            "error": "GE18-promedio-catetos"
+          },
+          {
+            "texto": "15 cm",
+            "valor": 15,
+            "error": "GE8-altura-como-mediana"
+          },
+          {
+            "texto": "10,8 cm",
+            "valor": 10.8,
+            "error": "proyeccion-como-altura"
+          },
+          {
+            "texto": "14,4 cm",
+            "valor": 14.4,
+            "correcta": true
           }
         ]
       }
@@ -1229,70 +1293,6 @@
             "texto": "1 eje",
             "valor": 1,
             "error": "solo-el-eje-vertical"
-          }
-        ]
-      }
-    },
-    {
-      "par": "geo-05",
-      "plantilla": "triangulo-estira",
-      "unidad": "geometria.relaciones-metricas",
-      "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
-      "A": {
-        "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
-        "datos": {
-          "c1": 30,
-          "c2": 40
-        },
-        "opciones": [
-          {
-            "texto": "35 m",
-            "valor": 35,
-            "error": "GE18-promedio-catetos"
-          },
-          {
-            "texto": "25 m",
-            "valor": 25,
-            "error": "GE8-altura-como-mediana"
-          },
-          {
-            "texto": "24 m",
-            "valor": 24,
-            "correcta": true
-          },
-          {
-            "texto": "18 m",
-            "valor": 18,
-            "error": "proyeccion-como-altura"
-          }
-        ]
-      },
-      "B": {
-        "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
-        "datos": {
-          "c1": 18,
-          "c2": 24
-        },
-        "opciones": [
-          {
-            "texto": "21 cm",
-            "valor": 21,
-            "error": "GE18-promedio-catetos"
-          },
-          {
-            "texto": "15 cm",
-            "valor": 15,
-            "error": "GE8-altura-como-mediana"
-          },
-          {
-            "texto": "10,8 cm",
-            "valor": 10.8,
-            "error": "proyeccion-como-altura"
-          },
-          {
-            "texto": "14,4 cm",
-            "valor": 14.4,
-            "correcta": true
           }
         ]
       }

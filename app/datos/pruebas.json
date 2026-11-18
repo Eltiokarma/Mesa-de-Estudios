@@ -2063,7 +2063,7 @@
   },
   "geometria": {
    "curso": "geometria",
-   "version": "2.1.0",
+   "version": "2.2.0",
    "minutos": 15,
    "errores": {
     "GE1-area-como-lado": {
@@ -2368,6 +2368,48 @@
        }
       ],
       "k": "48481a31ba37aab9e7eef889efdd6544bd462b2ed948c2d6b66ad021872bccb5134cb8410900c46ba7590987e56d7460f0c7f4d8bb95d5edec40d560805f528f51b923873eebd278859beda1a0a0"
+     }
+    },
+    {
+     "par": "geo-05",
+     "plantilla": "triangulo-estira",
+     "unidad": "geometria.relaciones-metricas",
+     "mide": "Altura relativa a la hipotenusa: h = (cateto · cateto) / hipotenusa",
+     "A": {
+      "enunciado": "Un terreno tiene forma de triángulo rectángulo: sus dos lados menores miden 30 m y 40 m, y el lado mayor, 50 m. Desde la esquina del ángulo recto se quiere abrir un camino recto hasta el lado mayor, lo más corto posible. ¿Cuánto mide ese camino?",
+      "opciones": [
+       {
+        "texto": "35 m"
+       },
+       {
+        "texto": "25 m"
+       },
+       {
+        "texto": "24 m"
+       },
+       {
+        "texto": "18 m"
+       }
+      ],
+      "k": "c9d64bb5b7c0d5da31eea9d12f88e7d1fac410d70eb7fb8273916d589bfe644bfeb152495ef81b37ff61a27c7c979b8c93c6a493e321be2c7e75c65ab5796426a180b026b9a03f3f5d1518b6ae5022435d16f6"
+     },
+     "B": {
+      "enunciado": "Una repisa esquinera es un tablero con forma de triángulo rectángulo: los bordes pegados a las paredes miden 18 cm y 24 cm, y el borde delantero, 30 cm. Una hormiga parte de la esquina de las paredes y quiere llegar al borde delantero por el camino más corto. ¿Cuánto camina?",
+      "opciones": [
+       {
+        "texto": "21 cm"
+       },
+       {
+        "texto": "15 cm"
+       },
+       {
+        "texto": "10,8 cm"
+       },
+       {
+        "texto": "14,4 cm"
+       }
+      ],
+      "k": "22e92a49179a6beaa6539b2cbe297c328aaba1bd36277d9cceb7955bb86c23357aa35a9597eddf7b5db6a67b122beed2cc5ff48a7b88f641a9b6d27adaf80c87ab373c1b309dfe7c6b642629110460e0af0f52"
      }
     },
     {

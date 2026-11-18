@@ -671,7 +671,8 @@ const V = {
     return { correcta: r.optimoTexto, errores: { 'PL5-vertice-de-mayor-x': e.mayorX.texto, 'PL4-vertice-mas-lejano': e.masLejano.texto, 'PL7-solo-vertices-de-los-ejes': e.soloEjes.texto } }; },
 
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
-  // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares).
+  // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares;
+  // geo-05, de Relaciones métricas, volvió a las formas el 18 nov en el lugar que dejó geo-13).
   'cg-01': d => { const r = motor('congruencia').mediatriz({ A: [-d.AB / 2, 0], B: [d.AB / 2, 0], t: d.t }), e = r.errores;
     if (Math.abs(r.PA - r.PB) > 1e-9) throw new Error('P no equidista de A y B');
     return { correcta: r.PB, errores: { 'PM-como-PB': e.PMcomoPB, 'suma-de-segmentos': e.suma, 'GE11-resta-cuadrados': e.restaCuadrados } }; },
