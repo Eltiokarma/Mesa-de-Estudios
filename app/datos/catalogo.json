@@ -26,6 +26,7 @@
       "fisica.magnitudes-y-vectores",
       "fisica.vectores",
       "fisica.movimiento-rectilineo",
+      "fisica.mruv-y-caida-libre",
       "fisica.movimiento-parabolico-y-circular",
       "fisica.estatica",
       "fisica.dinamica",
@@ -160,15 +161,11 @@
     },
     {
      "id": "fisica.movimiento-rectilineo",
-     "nombre": "MRU, MRUV y caída libre",
+     "nombre": "Movimiento rectilíneo uniforme",
      "temas": [
       "Posición, desplazamiento y distancia",
       "Velocidad y rapidez media",
-      "MRU y velocidad relativa",
-      "MRUV",
-      "Caída libre",
-      "Gráficas x-t, v-t y a-t",
-      "La recta y la parábola como gráficas"
+      "MRU y velocidad relativa"
      ],
      "universidades": {
       "uni": {
@@ -179,8 +176,7 @@
       },
       "unmsm": {
        "temas": [
-        2,
-        3
+        2
        ]
       }
      },
@@ -199,10 +195,54 @@
       "requiere": [
        "/nucleo/kit/piezas/pista.js",
        "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/fis-combi.js",
+       "/nucleo/kit/piezas/fis-sonido.js"
+      ],
+      "ideas": 3,
+      "terminos": 13
+     }
+    },
+    {
+     "id": "fisica.mruv-y-caida-libre",
+     "nombre": "MRUV y caída libre",
+     "temas": [
+      "MRUV",
+      "Caída libre",
+      "Gráficas x-t, v-t y a-t",
+      "La recta y la parábola como gráficas"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        1,
+        2
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "grado": 3,
+     "requiere": [
+      "fisica.movimiento-rectilineo",
+      "algebra.ecuaciones-lineales-y-cuadraticas"
+     ],
+     "plantillas": [
+      "mruv",
+      "cinematica-medias"
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/mruv-y-caida-libre.js",
+      "requiere": [
+       "/nucleo/kit/piezas/pista.js",
+       "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/torre.js"
       ],
-      "ideas": 5,
-      "terminos": 19
+      "ideas": 2,
+      "terminos": 14
      }
     },
     {
@@ -231,7 +271,7 @@
      "potencial_visual": "alto",
      "grado": 4,
      "requiere": [
-      "fisica.movimiento-rectilineo"
+      "fisica.mruv-y-caida-libre"
      ],
      "plantillas": [
       "tiro-parabolico",
@@ -331,7 +371,7 @@
      "grado": 4,
      "requiere": [
       "fisica.estatica",
-      "fisica.movimiento-rectilineo"
+      "fisica.mruv-y-caida-libre"
      ],
      "plantillas": [
       "dinamica",
@@ -1154,14 +1194,15 @@
       "archivo": "/contenido/teoria/quimica/estructura-atomica.js",
       "requiere": [
        "/nucleo/kit/piezas/quim-atomo.js",
+       "/nucleo/kit/piezas/quim-objeto.js",
        "/nucleo/kit/piezas/quim-cadena.js",
        "/nucleo/kit/piezas/quim-cajas.js",
        "/nucleo/kit/piezas/recta.js",
        "/plantillas/atomo-y-tabla/motor.js",
        "/nucleo/kit/piezas/quim-orbital-3d.js"
       ],
-      "ideas": 5,
-      "terminos": 32
+      "ideas": 6,
+      "terminos": 37
      }
     },
     {
@@ -3448,13 +3489,15 @@
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/cuatro-operaciones.js",
       "requiere": [
+       "/plantillas/cuatro-operaciones/motor.js",
+       "/nucleo/kit/piezas/arit-puesto.js",
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/arit-tabla.js",
        "/nucleo/kit/piezas/arit-tiras.js"
       ],
       "ideas": 6,
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -7155,6 +7198,7 @@
    "version": "0.2.0",
    "unidades": [
     "fisica.movimiento-rectilineo",
+    "fisica.mruv-y-caida-libre",
     "fisica.movimiento-parabolico-y-circular"
    ],
    "url": "#/practica/cinematica-medias",
@@ -8905,7 +8949,8 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-rectilineo"
+    "fisica.movimiento-rectilineo",
+    "fisica.mruv-y-caida-libre"
    ],
    "url": "/plantillas/mruv/index.html",
    "papel": "/plantillas/mruv/papel.json",
@@ -8913,7 +8958,8 @@
     "/plantillas/mruv/index.html",
     "/plantillas/mruv/motor.js",
     "/plantillas/mruv/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "nombre-polifuncional": {
    "id": "nombre-polifuncional",

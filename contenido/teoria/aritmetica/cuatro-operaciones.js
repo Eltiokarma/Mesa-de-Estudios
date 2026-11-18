@@ -1,23 +1,51 @@
 /*
- * Teoría de «Cuatro operaciones» (aritmetica.cuatro-operaciones). Molde: docs/teoria.md; modelo de forma: porcentajes.js.
- * Fuente del contenido: docs/teoria/matriz/aritmetica.json (unidad 12) y docs/teoria/fuentes/historia-ecuaciones.pdf.
- * Errores: AR7 de docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md; los AT-* son hipótesis nuevas.
+ * Teoría de «Las cuatro operaciones» (aritmetica.cuatro-operaciones), para 5.º de secundaria y preuniversitario. Fuente
+ * del contenido: docs/teoria/matriz/aritmetica.json (unidad 12) y docs/teoria/fuentes/historia-ecuaciones.pdf.
+ *
+ * Etapa 4 del plan de calidad (18 nov): la propuesta aprobada por Gerson con todas sus recomendaciones
+ * (docs/etapa4/propuesta-aritmetica.md) y docs/etapa4/decisiones.md, que manda. Fase 2: la idea 1, «La llevada llena una
+ * bolsita» (id `otras-bases`, conservado), rehecha con el contrato completo y sus 15 ejemplos. Las ideas viejas
+ * (complemento, multiplicar-partes, defecto-exceso, cifras-producto y sumatorias) siguen como estaban, en el orden de la
+ * propuesta, hasta la fase 3; `sumatorias` va al final hasta mudarse a Sucesiones y series (con Avance.migrar), y
+ * `prestamo` y `cifras-ocultas` entran en la fase 3 (ver el arreglo de ideas, abajo, por el tope de 6 del validador).
+ * Hilo de la unidad: el puesto de caramelos de doña Juana en el mercado de Juliaca (pieza arit-puesto, dibujo de
+ * prueba), ahora en base 10, con su cuaderno de cuentas (opción cuenta de la pieza).
+ *
+ * Letras (propuesta §6): n es la base, como en Numeración; sin base escrita, es 10. 34₍₅₎ y a̅b̅c̅ con raya ({ raya } de
+ * nucleo/ecuacion.js). × para multiplicar; nunca «·» (el «   ·   » solo separa dos relaciones en una regla). Las letras de
+ * las ideas viejas (b, k, a, N) se ajustan en la fase 3.
+ *
+ * REGLA DE COLORES DE LA UNIDAD: un color fijo por magnitud (docs/molde-unidad.md §5b; propuesta §7, aprobada), en la
+ * tabla COLORES (def.colores). El criterio es lo que cada cosa es en el puesto:
+ *   - turquesa (c-i): el envase: la base (10, o n), lo que lleva una bolsita, el subíndice ₍ₙ₎;
+ *   - naranja (c-o): lo que se muda: la llevada (la bolsita llena que sube) y su aro en el mostrador;
+ *   - violeta (c-f): lo que se busca: el resultado de la cuenta (también cuando se da) y la cifra que se anota;
+ *   - tinta: los números que se operan (sumandos), los caramelos dibujados, «?» y lo que se pide antes de responder;
+ *   - ni verde ni carmín.
+ *   La respuesta lleva el color de su magnitud; la letra de una alternativa va en negrita con ese color. Cada ficha de
+ *   color dice su magnitud (m); contenido/teoria/aritmetica/cuatro-operaciones.test.js falla si una cambia de color en la
+ *   idea 1. Las ideas viejas conservan sus colores hasta la fase 3.
+ * Errores: los AT-* son hipótesis de aula (el informe de aritmética no trae cifras de las cuatro operaciones); ver el
+ * bloque de cada idea.
  *
  * Ficha de tarea (diseno-y-animacion):
- *   Promesa: ver por qué funcionan los atajos de las cuatro operaciones (sumatorias, complemento, llevadas, restos, cotas).
- *   Persona y condiciones: postulante de 3.º, celular de 360 px, sin audio, sin calculadora.
- *   Resultado observable: suma series de consecutivos, halla complementos y restos por exceso, opera en otra base y acota cifras.
- *   Orden de atención: 1.º la figura (fichas, recta o tabla) · 2.º lo que el paso agrega · acción: el botón fijo de abajo.
- *   Estados: juego sin tocar · casos probados · predicción · coincide / no coincide · paso a paso · caso nuevo · «No sé».
- *   Duda que resuelve: «¿por qué n(n + 1)/2, por qué el resto por exceso no es el mismo, por qué 9 y 10 en el complemento?».
- * Colores (regla 4): el primer dato (n, N, a) naranja (c-o), el divisor o la base turquesa (c-i), el resto rojo (c-h),
- * el resultado verde (c-d).
+ *   Promesa: llevar es mudar a la columna de al lado un envase lleno; lo mismo en cualquier base.
+ *   Persona y condiciones: postulante de 5.º o de academia, celular de 360 px de gama baja, sin audio, con lápiz al lado.
+ *   Resultado observable: suma por columnas en base 10 y en base n, con llevadas de 1, de 2 o más y la que abre una
+ *     columna nueva; halla la base que hace cuadrar una suma.
+ *   Orden de atención: 1.º el pedido sobre el mostrador · 2.º el cuaderno · acción: tocar el montón o el botón fijo.
+ *   Estados: juego sin tocar · casos probados · misión lograda · predicción · coincide / no coincide · paso a paso ·
+ *     caso nuevo · «No sé».
+ *   Duda que resuelve: «¿por qué se lleva 1 cuando la columna pasa de 9, y cuándo se lleva otra cosa?».
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/cuatro-operaciones junta y suma por columnas (el juego y la mesa de la idea 1; regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/cuatro-operaciones/motor.js'))
+    : fabrica(root.Kit, root.MotorCuatroOperaciones);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MCO) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const n_ = { v: 'c-o', t: 'n' }, N = { v: 'c-o', t: 'N' }, a = { v: 'c-o', t: 'a' }, dd = { v: 'c-i', t: 'd' };
@@ -46,6 +74,21 @@
     }
     return ops.slice(0, 4);
   }
+
+  // ---------- Colores de la unidad: un color fijo por magnitud (cabecera; lo comprueba cuatro-operaciones.test.js) ----------
+  const COLORES = { base: 'i', llevada: 'o', resultado: 'f' };
+  const ficha = m => t => ({ v: `c-${COLORES[m]}`, t: String(t), m });
+  const bas = ficha('base'), lleva = ficha('llevada'), res = ficha('resultado');
+  // Un numeral que se opera (tinta) y uno del resultado (violeta), con la base de subíndice entre paréntesis, en
+  // turquesa: 34₍₅₎. En base 10 no se escribe la base.
+  const conBase = (c, base) => (base === 10 || base === undefined ? null : bas(`(${base})`));
+  const sumN = (c, base) => (conBase(c, base) ? { sub: [String(c), conBase(c, base)] } : String(c));
+  const resN = (c, base) => (conBase(c, base) ? { sub: [res(c), conBase(c, base)] } : res(c));
+  // La letra de una alternativa, en negrita (Gerson, mesa de revisión, 17 nov), con el color de lo que nombra. El U+2060
+  // (invisible) evita que la letra sola salga en cursiva como una variable.
+  const letra = (L, m = 'resultado') => ({ v: `c-${COLORES[m]}`, t: `${L}\u2060`, m });
+  // Entre dos relaciones de una misma ecuación (en la regla, cada una en su línea).
+  const SEP = '   ·   ';
 
   // Gesto directo (docs/teoria.md §4b). Las manijas leen posiciones con escalas que no cambian mientras se arrastra:
   // fichas de tamaño fijo, rectas con tramo fijo y tiras con la misma escala. Si la escala cambiara con el valor, la
@@ -456,140 +499,556 @@
     },
   };
 
-  // ---------- Idea 4: llevar en base b (operaciones en otras bases) ----------
-  // Cambia: la base, con los mismos sumandos (34)_b + (23)_b. Permanece: la columna de unidades y la de grupos.
-  // Progresa: columna por columna, suma → escribe → lleva. Se reserva: la llevada que aparece cuando la suma llega a b.
-  // Debe verse: se lleva 1 cuando la columna llega a b, no a 10.
-  const sumaBase = (x, y, base, pasos) => {
-    const xs = x.split('').reverse(), ys = y.split('').reverse(), n = Math.max(xs.length, ys.length);
-    const filas = []; let lleva = 0, res = '';
-    const LUG = ['unidades', `grupos de ${base}`, `grupos de ${base * base}`];
-    for (let i = 0; i < n; i++) {
-      const sm = (+xs[i] || 0) + (+ys[i] || 0) + lleva, esc = sm % base, ll = Math.floor(sm / base);
-      filas.push([{ t: LUG[i], paso: pasos ? i + 1 : 0 }, { t: `${xs[i] || 0} + ${ys[i] || 0}${lleva ? ' + 1' : ''} = ${sm}`, paso: pasos ? i + 1 : 0 }, { t: String(esc), color: 'd', paso: pasos ? i + 1 : 0 }, { t: ll ? '1' : '—', color: 'h', paso: pasos ? i + 1 : 0 }]);
-      res = esc + res; lleva = ll;
-    }
-    if (lleva) res = '1' + res;
-    filas.push([{ t: 'resultado', paso: pasos ? n + 1 : 0 }, '', { t: nb(res, base), color: 'd', resalta: true, paso: pasos ? n + 1 : 0 }, '']);
-    return { datos: { columnas: [{ t: 'lugar' }, { t: 'suma' }, { t: 'escribe', color: 'd' }, { t: 'lleva', color: 'h' }], filas, filasMax: 4 }, res };
+  // ---------- Idea 1 (rehecha, 18 nov): la llevada llena una bolsita (adición con llevadas y otras bases) ----------
+  // Propuesta aprobada: docs/etapa4/propuesta-aritmetica.md (§1 a §7, con todas sus recomendaciones) y
+  // docs/etapa4/decisiones.md. Conserva el id `otras-bases` (no se pierde el avance de nadie); el control `b` del juego
+  // viejo pasa al laboratorio (mesa `juego-otras-bases`, el mismo id que tenía el juego como mesa: los casos guardados
+  // siguen abriendo).
+  // Objeto: el puesto de doña Juana (pieza arit-puesto, dibujo de prueba), ahora en base 10, con su cuaderno de cuentas
+  // (opción cuenta de la pieza: la cuenta escrita en columnas, con un icono de caramelo, bolsita y caja sobre cada una).
+  // Cambia: los dos pedidos y si los sueltos ya se juntaron. · Permanece: la regla del puesto (10 sueltos = 1 bolsita) y la
+  // escala del dibujo. · Progresa: sueltos de los dos pedidos → bolsita que sube → total anotado. · Se reserva: la segunda
+  // llevada (bolsitas que llenan una caja) y las otras bases: son de la predicción (34₍₅₎ + 23₍₅₎). · Debe verse: cuando
+  // una columna junta 10, la bolsita llena se muda a la columna de al lado; en la columna se anota lo que sobra.
+  // El juego llega a pedidos de 11 a 49 (no de 11 a 89, como decía la propuesta): con dos pedidos de hasta 49 nunca se
+  // llena una caja (4 + 4 + 1 = 9 bolsitas como mucho) y 9 bolsitas de 10 caben a una escala legible junto al cuaderno
+  // (0,73); con 89 + 89 harían falta 17 bolsitas y una caja. La caja es de la predicción.
+  // Errores (hipótesis de aula, sin medir: el informe de aritmética no trae cifras de las cuatro operaciones; la trampa 29
+  // de docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md respalda las de la llevada olvidada):
+  // AT-DECIMAL lleva al llegar a 10 en otra base · AT-LLEVA-OLVIDA no suma la llevada en la columna siguiente ·
+  // AT-LLEVA-FINAL no anota la última llevada · AT-LLEVA-UNO lleva 1 donde van 2 o más · AT-LLEVA-CIFRA confunde lo que
+  // se anota con lo que se lleva · AT-LLEVA-TODO lleva la suma entera de la columna · AT-CADENA no cuenta la llevada que
+  // forma otra · AT-MENOR toma la menor base posible sin comprobar la cuenta · AT-SUMA-COLUMNA toma la suma de las
+  // unidades como base.
+  const PU = 'arit-puesto';
+  const PUESTO = () => Kit.piezas[PU];
+  const fig = datos => ({ pieza: PU, datos, estado: {} });
+  // Solo el cuaderno, abierto sobre el mostrador: la cuenta como la dan los datos (lo que se pide, con «?»).
+  const cuaderno = (sumandos, o = {}) => fig({ cuenta: Object.assign({ solo: true, sumandos: sumandos.map(String), resultado: '?' }, o) });
+  // Datos que se repiten (punto 13: herramientas, no el paso hecho). La fórmula de una columna va en los ejemplos y en
+  // «Ahora tú», nunca en Predice.
+  const DO = {
+    bolsita: n => ['1 bolsita = ', bas(n), ' caramelos'],
+    caja: n => ['1 caja = ', bas(n), ' bolsitas'],
+    todo: n => ['1 bolsita = ', bas(n), ' caramelos; 1 caja = ', bas(n), ' bolsitas; 1 cajón = ', bas(n), ' cajas'],
+    base: n => ['En base ', bas(n), ', ', bas(n), ' de una columna forman 1 de la columna siguiente'],
+    columna: ['suma de una columna = ', lleva('llevada'), ' × ', bas('n'), ' + ', res('cifra que se anota')],
+    cifras: ['En base ', bas('n'), ', las cifras van de 0 a ', bas('n'), ' − 1'],
+    ordenes: 'Unidades, decenas y centenas: sueltos, bolsitas y cajas',
+    f2: n => [{ sub: [{ raya: ['ab'] }, bas(`(${n})`)] }, ' = a × ', bas(n), ' + b'],
+    f3: n => [{ sub: [{ raya: ['abc'] }, bas(`(${n})`)] }, ' = a × ', { sup: [bas(n), '2'] }, ' + b × ', bas(n), ' + c'],
   };
+  // Lo que pasa en cada columna, como ecuación: «8 + 7 + 9 = 24 = 2 × 10 + 4» (las cuentas, del motor de la escena).
+  const ecColumna = (c, n) => {
+    const partes = [c.entran.join(' + ')];
+    if (c.llevadaEntra) partes.push(' + ', lleva(c.llevadaEntra));
+    partes.push(` = ${c.total}`);
+    if (c.llevadaSale) partes.push(' = ', lleva(c.llevadaSale), ' × ', bas(n), ' + ', res(c.cifra));
+    return partes;
+  };
+  const NOMBRE_COL = ['Sueltos', 'Bolsitas', 'Cajas', 'Cajones'];
+  // Una base al azar para un numeral de k cifras (la primera no es 0).
+  const numeralAzar = (r, k, n) => [r.ent(1, n - 1)].concat(Array.from({ length: k - 1 }, () => r.ent(0, n - 1))).join('');
+  // Descomposición con números (la del sentido): 1242₍₆₎ = 1 × 216 + 2 × 36 + 4 × 6 + 2.
+  const poli = (c, n) => c.split('').map((d, i, xs) => { const e = xs.length - 1 - i; return e === 0 ? d : `${d} × ${n ** e}`; }).join(' + ');
+
+  // El juego: dos pedidos de base 10 juntos sobre el mostrador, columna por columna (aMano del motor de la escena), y
+  // tocar los sueltos junta 10 en una bolsita (juntarMano). La misión la comprueba el mismo motor (regla 1).
+  const manoJ = v => {
+    let m = MCO.aMano('suma', String(v.p1), String(v.p2), 10);
+    const lleno = m.cuentas[0] >= 10, junto = !!(v.ju && lleno);
+    if (junto) m = MCO.juntarMano(m, 0);
+    return { m, lleno, junto };
+  };
+  const uni = x => x % 10, dec = x => Math.floor(x / 10);
+  const puestoJ = (v, escala) => {
+    const { m, lleno, junto } = manoJ(v), [s, b] = m.cuentas;
+    return { n: 10, bolsitas: b, sueltos: s, ceros: true, regla: 1, escala, colorCifras: false,
+      juntar: lleno && !junto ? 'sueltos' : undefined,
+      llevada: junto ? { bolsitas: 1 } : undefined,
+      rotulos: { bolsitas: [[`${dec(v.p1)} + ${dec(v.p2)}`]].concat(junto ? [[' + '], ['1', 'o', 700]] : [], [[' bolsitas']]),
+        sueltos: junto ? `${s} ${s === 1 ? 'suelto' : 'sueltos'}` : `${uni(v.p1)} + ${uni(v.p2)} sueltos` },
+      toque: [{ orden: 'sueltos', control: 'ju', titulo: junto ? 'Tocar para soltar la bolsita otra vez' : 'Tocar para juntar 10 sueltos en una bolsita' }],
+      cuenta: { sumandos: [String(v.p1), String(v.p2)], op: '+', llevadas: junto ? { 1: 1 } : {}, resultado: m.listo ? m.texto : '?' } };
+  };
+  let escJ = null;
+  const escalaJ = () => {
+    if (escJ) return escJ;
+    let mn = 1.7;
+    for (let p1 = 11; p1 <= 49; p1++) for (let p2 = 11; p2 <= 49; p2++) for (const ju of [0, 1]) mn = Math.min(mn, PUESTO().geometria(puestoJ({ p1, p2, ju })).sCabe);
+    return (escJ = Math.floor(mn * 100) / 100);
+  };
+  // Predice, «Mira» y la regla: el puesto de bolsitas de 5 con 34₍₅₎ + 23₍₅₎, a una sola escala (la que hace caber el
+  // paso más ancho; cuatro-operaciones.test.js comprueba que ninguno la necesite menor).
+  const ESC5 = 0.85;
+  const P5 = { n: 5, ceros: true, regla: 2, colorCifras: false, escala: ESC5 };
+  const CU5 = o => Object.assign({ sumandos: ['34', '23'], base: '5', op: '+', resultado: '?' }, o);
+  const ROT5 = { bolsitas: '3 + 2 bolsitas', sueltos: '4 + 3 sueltos' };
+  const ROT5b = { bolsitas: [['3 + 2 + '], ['1', 'o', 700], [' bolsitas']], sueltos: '2 sueltos' };
+  const ROT5c = { cajas: [['1', 'o', 700], [' caja']], bolsitas: '1 bolsita', sueltos: '2 sueltos' };
+  const MIRA5 = Object.assign({}, P5, { pasos: [
+    { bolsitas: 5, sueltos: 7, rotulos: ROT5, cuenta: CU5() },
+    { bolsitas: 5, sueltos: 7, juntar: 'sueltos', rotulos: ROT5, cuenta: CU5({ foco: 0 }) },
+    { bolsitas: 6, sueltos: 2, llevada: { bolsitas: 1 }, rotulos: ROT5b, cuenta: CU5({ foco: 0, llevadas: { 1: 1 }, resultado: '2' }) },
+    { bolsitas: 6, sueltos: 2, juntar: 'bolsitas', rotulos: ROT5b, cuenta: CU5({ foco: 1, llevadas: { 1: 1 }, resultado: '2' }) },
+    { cajas: 1, bolsitas: 1, sueltos: 2, llevada: { cajas: 1 }, rotulos: ROT5c, cuenta: CU5({ foco: 2, llevadas: { 1: 1, 2: 1 }, resultado: '112' }) },
+    { cajas: 1, bolsitas: 1, sueltos: 2, rotulos: ROT5c, cuenta: CU5({ llevadas: { 1: 1, 2: 1 }, resultado: '112' }) },
+  ] });
+
+  // Cuatro opciones siempre en «Ahora tú»: si dos errores dan el mismo texto, se arma otro caso con el mismo azar.
+  function conCuatro(caso, r) {
+    for (let i = 0; i < 4000; i++) { const c = caso(r); if (c && c.opciones.length >= 4) return c; }
+    throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
+  }
+  const planoP = x => (Array.isArray(x) ? x.map(planoP).join('') : x && typeof x === 'object'
+    ? (x.t !== undefined ? String(x.t) : x.sub ? planoP(x.sub[0]) + planoP(x.sub[1]) : x.raya ? planoP(x.raya) : '') : String(x));
+  function opcionesNum(correcta, distractores) {
+    const ops = [{ id: 'c', texto: correcta, correcta: true }], vistos = new Set([planoP(correcta)]);
+    for (const x of distractores) {
+      const t = planoP(x.texto);
+      if (vistos.has(t)) continue;
+      vistos.add(t);
+      ops.push({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera });
+    }
+    return ops.slice(0, 4);
+  }
+  const suma = xs => xs.reduce((a, x) => a + x, 0);
+  // Suma con el error «lleva 1 donde van 2»: anota lo que sobra, pero nunca lleva más de 1.
+  const sumaLlevaUno = (xs, n) => {
+    const L = Math.max(...xs.map(x => x.length)), cs = xs.map(x => x.split('').reverse().map(Number));
+    let out = '', ll = 0;
+    for (let k = 0; k < L; k++) { const t = suma(cs.map(c => c[k] || 0)) + ll; out = String(t % n) + out; ll = t >= n ? 1 : 0; }
+    return (ll ? '1' : '') + out;
+  };
+
+  // Ahora tú · tipo 0: ¿cuánto se lleva de los sueltos a las bolsitas? (base 10, tres o cuatro sumandos).
+  function casoCuantoLleva(r, k) {
+    const xs = Array.from({ length: k }, () => r.ent(12, 98)), us = xs.map(uni), S = suma(us), L = Math.floor(S / 10), w = S % 10;
+    if (L < 2 || w === 1 || w === L) return null;
+    return {
+      pregunta: ['Doña Juana suma en su cuaderno ', xs.join(' + '), '. ¿Cuántas bolsitas lleva de la columna de los sueltos a la de las bolsitas?'],
+      datos: [DO.bolsita(10), DO.columna],
+      dibujo: cuaderno(xs, { foco: 0 }),
+      opciones: opciones(L, [
+        { id: 'cifra', valor: w, error: 'AT-LLEVA-CIFRA', siFuera: `Sumar la columna está bien. Pero el ${w} se anota; lo que sube son las bolsitas llenas.` },
+        { id: 'uno', valor: 1, error: 'AT-LLEVA-UNO', siFuera: 'Llevar está bien, pero no siempre se lleva 1: depende de cuántas bolsitas se llenan.' },
+        { id: 'todo', valor: S, error: 'AT-LLEVA-TODO', siFuera: 'Bien que sumes toda la columna. Pero solo suben las bolsitas llenas; los sueltos que sobran se anotan.' },
+      ]),
+      solucion: { texto: `La columna junta ${S} sueltos: llena ${L} bolsitas y sobran ${w}.`, ecuacion: [us.join(' + '), ` = ${S} = `, lleva(L), ' × ', bas(10), ' + ', res(w)] },
+    };
+  }
+  // Ahora tú · tipo 1 (nivel examen): tres sumandos en base n, con alguna columna que lleva 2.
+  function casoTres(r) {
+    const n = r.ent(4, 9), xs = [0, 1, 2].map(() => numeralAzar(r, 3, n));
+    const C = MCO.sumaColumnas(xs, n);
+    if (!C.columnas.some(c => c.llevadaSale >= 2) || C.texto.length <= 3) return null;
+    const dec10 = String(suma(xs.map(Number)));
+    return {
+      pregunta: ['¿Cuánto es ', sumN(xs[0], n), ' + ', sumN(xs[1], n), ' + ', sumN(xs[2], n), '?'],
+      datos: [DO.base(n), DO.columna],
+      dibujo: cuaderno(xs, { base: String(n) }),
+      opciones: opcionesNum([resN(C.texto, n)], [
+        { id: 'decimal', texto: [resN(dec10, n)], error: 'AT-DECIMAL', siFuera: `Sumar por columnas está bien. Pero así se suma en base 10; en base ${n} se lleva al juntar ${n}.` },
+        { id: 'uno', texto: [resN(sumaLlevaUno(xs, n), n)], error: 'AT-LLEVA-UNO', siFuera: `Anotar lo que sobra está bien. Pero si la columna junta dos veces ${n}, se llevan 2, no 1.` },
+        { id: 'final', texto: [resN(C.texto.slice(1), n)], error: 'AT-LLEVA-FINAL', siFuera: 'Las columnas están bien. Pero la última llevada también se anota: abre una columna nueva.' },
+      ]),
+      solucion: { texto: `Por columnas, desde los sueltos; si una columna junta dos veces ${n}, se llevan 2.`,
+        ecuacion: [sumN(xs[0], n), ' + ', sumN(xs[1], n), ' + ', sumN(xs[2], n), ' = ', resN(C.texto, n)] },
+    };
+  }
+  // Ahora tú · tipo 2 (nivel examen): la base que hace cuadrar una suma (base desconocida, de Numeración, con la llevada).
+  function casoBaseOculta(r) {
+    const n = r.ent(5, 9), a = numeralAzar(r, 2, n), b = numeralAzar(r, 2, n);
+    const C = MCO.sumaColumnas([a, b], n), z = C.texto, c0 = C.columnas[0];
+    if (c0.llevadaSale !== 1) return null;
+    const mayor = Math.max(...(a + b + z).split('').map(Number)), S = c0.total;
+    const sirven = []; for (let m = mayor + 1; m <= 20; m++) if (valor(a, m) + valor(b, m) === valor(z, m)) sirven.push(m);
+    if (sirven.length !== 1 || sirven[0] !== n || mayor + 1 === n) return null;
+    const N_ = sumNL => sumN(sumNL, 'n');
+    return {
+      pregunta: ['En cierta base ', bas('n'), ' se cumple ', N_(a), ' + ', N_(b), ' = ', resN(z, 'n'), '. ¿Cuál es ', bas('n'), '?'],
+      datos: [DO.columna, DO.cifras],
+      dibujo: cuaderno([a, b], { base: 'n', resultado: z }),
+      opciones: opciones(n, [
+        { id: 'menor', valor: mayor + 1, error: 'AT-MENOR', siFuera: 'Mirar la cifra mayor está bien: la base tiene que pasarla. Pero con esa base la cuenta no cuadra.' },
+        { id: 'columna', valor: S, error: 'AT-SUMA-COLUMNA', siFuera: 'Sumar las unidades está bien. Pero esa suma es una bolsita más lo que se anota, no solo la bolsita.' },
+        { id: 'diez', valor: 10, error: 'AT-DECIMAL', siFuera: 'Sin base escrita sería 10, es cierto. Pero en base 10 esa cuenta no cuadra.' },
+      ], x => `base ${x}`),
+      solucion: { texto: `Unidades: ${c0.entran.join(' + ')} = ${S}, y se anota ${c0.cifra}: la bolsita que subió tiene ${S} − ${c0.cifra} = ${n}.`,
+        ecuacion: [`${S} = `, lleva(1), ' × ', bas('n'), ' + ', res(c0.cifra), '   →   ', bas('n'), ' = ', bas(n)] },
+    };
+  }
+  // Ahora tú · tipo 3: la cifra de las centenas, con lo que le llega llevado de las decenas (2 o más).
+  function casoCentenas(r) {
+    const xs = [0, 1, 2].map(() => r.ent(100, 9999)), C = MCO.sumaColumnas(xs.map(String), 10), c2 = C.columnas[2];
+    const ll = c2.llevadaEntra, sin = suma(c2.entran), olvida = sin % 10, unoV = (sin + 1) % 10;
+    if (ll < 2 || new Set([c2.cifra, olvida, unoV, c2.llevadaSale]).size < 4) return null;
+    return {
+      pregunta: ['Doña Juana suma ', xs.join(' + '), '. ¿Qué cifra anota en la columna de las centenas?'],
+      datos: [DO.ordenes, DO.columna],
+      dibujo: cuaderno(xs, { foco: 2 }),
+      opciones: opciones(c2.cifra, [
+        { id: 'olvida', valor: olvida, error: 'AT-LLEVA-OLVIDA', siFuera: 'Sumar la columna de las centenas está bien. Pero falta lo que llega llevado de las decenas.' },
+        { id: 'uno', valor: unoV, error: 'AT-LLEVA-UNO', siFuera: `Sumar lo que llega llevado está bien. Pero de las decenas llegan ${ll}, no 1.` },
+        { id: 'sale', valor: c2.llevadaSale, error: 'AT-LLEVA-CIFRA', siFuera: 'Esa es la llevada que sale de las centenas. Se anota lo que sobra después de llevar.' },
+      ]),
+      solucion: { texto: `Las decenas le llevan ${ll}; la columna junta ${c2.total} y se anota ${c2.cifra}.`, ecuacion: ecColumna(c2, 10) },
+    };
+  }
+  // Ahora tú · tipo 4 (nivel examen): ¿en cuántas columnas se lleva? (base n, con una llevada que forma otra y la final).
+  function casoLlevadas(r) {
+    const n = r.ent(4, 8), a = numeralAzar(r, 3, n), b = numeralAzar(r, 3, n), C = MCO.sumaColumnas([a, b], n);
+    const L = C.llevadas, cadena = C.columnas.filter(c => suma(c.entran) >= n).length;
+    const decimal = MCO.sumaColumnas([a, b], 10).llevadas, final = C.texto.length > 3 ? L - 1 : null;
+    if (L < 2 || final === null || new Set([L, cadena, decimal, final]).size < 4) return null;
+    return {
+      pregunta: ['Al sumar ', sumN(a, n), ' + ', sumN(b, n), ', ¿en cuántas columnas se lleva algo a la columna siguiente?'],
+      datos: [DO.base(n), DO.columna],
+      dibujo: cuaderno([a, b], { base: String(n) }),
+      opciones: opciones(L, [
+        { id: 'cadena', valor: cadena, error: 'AT-CADENA', siFuera: 'Mirar si las cifras pasan de la base está bien. Pero la llevada que llega también suma.' },
+        { id: 'decimal', valor: decimal, error: 'AT-DECIMAL', siFuera: `Contar las llevadas está bien. Pero en base ${n} se lleva al juntar ${n}, no al pasar de 9.` },
+        { id: 'final', valor: final, error: 'AT-LLEVA-FINAL', siFuera: 'Las columnas de adentro están bien contadas. Pero la última también lleva: abre una columna nueva.' },
+      ], x => (x === 1 ? '1 columna' : `${x} columnas`)),
+      solucion: { texto: `Cuento las columnas que juntan ${n} o más, con lo que les llega llevado: ${L}.`,
+        ecuacion: [sumN(a, n), ' + ', sumN(b, n), ' = ', resN(C.texto, n)] },
+    };
+  }
+
+  // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h): 5 de nivel 1, 5 de nivel 2 y 5 de nivel 3. Cuentas
+  // rehechas aparte, sin este archivo (scratchpad de la sesión, cuentas-idea1.js, que suma en cualquier base con su
+  // propio código): 6 + 7 = 13; 52 + 36 = 88 sin llevadas; 29 + 45 = 74; 4 + 5 = 9 = 1 × 6 + 3; 6 + 8 = 14 bolsitas;
+  // 478 + 356 = 834; 58 + 67 + 49 = 174 (llevada 2); 123₍₄₎ + 213₍₄₎ = 1002₍₄₎ (27 + 39 = 66); 45₍₇₎ + 36₍₇₎ = 114₍₇₎
+  // (33 + 27 = 60); 386 + 475 + 299: llegan 2 a las centenas; 35₍ₙ₎ + 24₍ₙ₎ = 62₍ₙ₎ solo con n = 7; 245₍₆₎ + 354₍₆₎ +
+  // 155₍₆₎ = 1242₍₆₎ (101 + 142 + 71 = 314), con las trampas 754, 1132 y 242; 3 × 777₍₈₎ = 2775₍₈₎ (3 × 511 = 1533),
+  // cifras 21, con las trampas 18, 19 y 9; cuatro cifras de 9 dan 36: se llevan 3; 4999 + 5001 = 10 000 con 4 llevadas.
+  // La figura muestra lo que cada dato marca por sí solo (los sumandos escritos, el montón que se da), nunca el
+  // resultado: lo que se pide va con «?» en tinta. Ningún ejemplo usa los números de la predicción ni de la misión.
+  const EJEMPLOS_LLEVADA = [
+    { nivel: 1, titulo: 'Una columna que pasa de 9',
+      enunciado: 'En la columna de los sueltos, doña Juana junta 6 + 7 = 13 caramelos. ¿Qué anota en esa columna y qué lleva a la de las bolsitas?',
+      datos: [DO.bolsita(10)],
+      figura: fig({ n: 10, sueltos: 13, regla: 1, rotulos: { sueltos: '6 + 7 sueltos' } }),
+      solucion: [
+        { texto: ['Con ', bas(10), ' de los 13 se llena una bolsita; sobran 3, menos que 10.'], ecuacion: ['13 = ', lleva(1), ' × ', bas(10), ' + ', res(3)] },
+        { texto: 'Los 3 sueltos se anotan en su columna; la bolsita llena sube a la columna de las bolsitas.' },
+      ],
+      respuesta: ['Anota ', res(3), ' y lleva ', lleva(1)] },
+    { nivel: 1, titulo: '¿Hay algo que llevar?',
+      enunciado: 'Doña Juana suma 52 + 36 en su cuaderno. ¿Tiene que llevar algo a otra columna?',
+      datos: [DO.bolsita(10), DO.caja(10)],
+      figura: cuaderno(['52', '36']),
+      solucion: [
+        { texto: 'Sueltos: 2 + 6 = 8, menos que 10: no llenan una bolsita. Bolsitas: 5 + 3 = 8, tampoco llenan una caja.' },
+        { texto: 'Ninguna columna llega a 10: se anota cada suma tal cual.', ecuacion: ['52 + 36 = ', res(88)] },
+      ],
+      respuesta: ['No: ninguna columna llega a 10; da ', res(88)] },
+    { nivel: 1, titulo: 'Una sola llevada',
+      enunciado: 'Doña Juana junta un pedido de 29 caramelos y otro de 45. ¿Cuántos caramelos tiene ahora?',
+      datos: [DO.bolsita(10)],
+      figura: cuaderno(['29', '45']),
+      solucion: [
+        { texto: 'Sueltos: 9 + 5 = 14. Se llena una bolsita y sobran 4.', ecuacion: ['9 + 5 = 14 = ', lleva(1), ' × ', bas(10), ' + ', res(4)] },
+        { texto: 'Bolsitas: 2 + 4, más la que subió.', ecuacion: ['2 + 4 + ', lleva(1), ' = ', res(7)] },
+      ],
+      respuesta: [res(74), ' caramelos'] },
+    { nivel: 1, titulo: 'Una llevada en base 6',
+      enunciado: ['En el puesto de bolsitas de ', bas(6), ', la columna de los sueltos junta 4 + 5 = 9 caramelos. ¿Qué se anota en esa columna y qué se lleva?'],
+      datos: [DO.bolsita(6)],
+      figura: fig({ n: 6, sueltos: 9, regla: 1, rotulos: { sueltos: '4 + 5 sueltos' } }),
+      solucion: [
+        { texto: ['Con ', bas(6), ' se llena una bolsita; sobran 3, menos que 6.'], ecuacion: ['9 = ', lleva(1), ' × ', bas(6), ' + ', res(3)] },
+        { texto: 'En base 6 no se espera a juntar 10: la bolsita se llena con 6.' },
+      ],
+      respuesta: ['Se anota ', res(3), ' y se lleva ', lleva(1)] },
+    { nivel: 1, titulo: 'Bolsitas que llenan una caja',
+      enunciado: 'Al sumar dos pedidos, la columna de las bolsitas junta 6 + 8 = 14 bolsitas de 10. ¿Qué se anota en esa columna y qué se lleva a la de las cajas?',
+      datos: [DO.bolsita(10), DO.caja(10)],
+      figura: fig({ n: 10, bolsitas: 14, regla: 2, rotulos: { bolsitas: '6 + 8 bolsitas' } }),
+      solucion: [
+        { texto: ['Con ', bas(10), ' bolsitas se llena una caja; sobran 4 bolsitas.'], ecuacion: ['14 = ', lleva(1), ' × ', bas(10), ' + ', res(4)] },
+        { texto: 'Las 4 bolsitas se anotan en su columna; la caja sube a la columna de las cajas: es la llevada.' },
+      ],
+      respuesta: ['Se anota ', res(4), ' y se lleva ', lleva(1), ' caja'] },
+    { nivel: 2, titulo: 'Dos llevadas seguidas',
+      enunciado: '¿Cuánto es 478 + 356?',
+      datos: [DO.ordenes, DO.columna],
+      figura: cuaderno(['478', '356']),
+      solucion: [
+        { texto: 'Unidades: 8 + 6 = 14. Se anota 4 y se lleva 1.', ecuacion: ['8 + 6 = 14 = ', lleva(1), ' × ', bas(10), ' + ', res(4)] },
+        { texto: 'Decenas: 7 + 5 más la que llega. Se anota 3 y se lleva 1.', ecuacion: ['7 + 5 + ', lleva(1), ' = 13 = ', lleva(1), ' × ', bas(10), ' + ', res(3)] },
+        { texto: 'Centenas: 4 + 3 más la que llega.', ecuacion: ['4 + 3 + ', lleva(1), ' = ', res(8)] },
+      ],
+      respuesta: ['478 + 356 = ', res(834)] },
+    { nivel: 2, titulo: 'Se llevan 2',
+      enunciado: 'Doña Juana suma tres pedidos: 58, 67 y 49 caramelos. ¿Cuántos caramelos son en total?',
+      datos: [DO.bolsita(10), DO.columna],
+      figura: cuaderno(['58', '67', '49']),
+      solucion: [
+        { texto: 'Sueltos: 8 + 7 + 9 = 24. Llenan 2 bolsitas y sobran 4: esta vez la llevada es 2.', ecuacion: ['8 + 7 + 9 = 24 = ', lleva(2), ' × ', bas(10), ' + ', res(4)] },
+        { texto: 'Bolsitas: 5 + 6 + 4, más las 2 que suben. Llenan 1 caja y sobran 7.', ecuacion: ['5 + 6 + 4 + ', lleva(2), ' = 17 = ', lleva(1), ' × ', bas(10), ' + ', res(7)] },
+        { texto: 'La caja abre la columna de las cajas.', ecuacion: ['58 + 67 + 49 = ', res(174)] },
+      ],
+      respuesta: [res(174), ' caramelos'] },
+    { nivel: 2, titulo: 'Una suma en base 4',
+      enunciado: ['¿Cuánto es ', sumN('123', 4), ' + ', sumN('213', 4), '?'],
+      datos: [DO.base(4), DO.columna],
+      figura: cuaderno(['123', '213'], { base: '4' }),
+      solucion: [
+        { texto: 'Sueltos: 3 + 3 = 6. Se anota 2 y se lleva 1.', ecuacion: ['3 + 3 = 6 = ', lleva(1), ' × ', bas(4), ' + ', res(2)] },
+        { texto: 'Bolsitas: 2 + 1 más la que llega = 4. Se anota 0 y se lleva 1.', ecuacion: ['2 + 1 + ', lleva(1), ' = 4 = ', lleva(1), ' × ', bas(4), ' + ', res(0)] },
+        { texto: 'Cajas: 1 + 2 más la que llega = 4. Se anota 0, y la llevada abre otra columna.', ecuacion: ['1 + 2 + ', lleva(1), ' = 4 = ', lleva(1), ' × ', bas(4), ' + ', res(0)] },
+      ],
+      respuesta: [sumN('123', 4), ' + ', sumN('213', 4), ' = ', resN('1002', 4)] },
+    { nivel: 2, titulo: 'Comprobar en base 10',
+      enunciado: ['Suma ', sumN('45', 7), ' + ', sumN('36', 7), ' y comprueba el total pasando todo a base 10.'],
+      datos: [DO.base(7), DO.f2(7), DO.f3(7)],
+      figura: cuaderno(['45', '36'], { base: '7' }),
+      solucion: [
+        { texto: 'Sueltos: 5 + 6 = 11. Se anota 4 y se lleva 1.', ecuacion: ['5 + 6 = 11 = ', lleva(1), ' × ', bas(7), ' + ', res(4)] },
+        { texto: 'Bolsitas: 4 + 3 más la que llega = 8. Se anota 1 y se lleva 1, que abre otra columna.', ecuacion: ['4 + 3 + ', lleva(1), ' = 8 = ', lleva(1), ' × ', bas(7), ' + ', res(1)] },
+        { texto: ['En base 10: los sumandos valen 4 × 7 + 5 = 33 y 3 × 7 + 6 = 27, que suman 60.'], ecuacion: [resN('114', 7), ' = 1 × 49 + 1 × 7 + 4 = ', res(60)] },
+      ],
+      respuesta: [resN('114', 7), ', que vale ', res(60)] },
+    { nivel: 2, titulo: '¿Cuánto llega a las centenas?',
+      enunciado: 'Doña Juana suma 386 + 475 + 299 en su cuaderno. ¿Cuánto lleva a la columna de las centenas?',
+      datos: [DO.ordenes, DO.columna],
+      figura: cuaderno(['386', '475', '299']),
+      solucion: [
+        { texto: 'Unidades: 6 + 5 + 9 = 20. Se anota 0 y se llevan 2.', ecuacion: ['6 + 5 + 9 = 20 = ', lleva(2), ' × ', bas(10), ' + ', res(0)] },
+        { texto: 'Decenas: 8 + 7 + 9, más las 2 que llegan, da 26. Se anota 6 y se llevan 2.', ecuacion: ['8 + 7 + 9 + ', lleva(2), ' = 26 = ', lleva(2), ' × ', bas(10), ' + ', res(6)] },
+      ],
+      respuesta: ['Lleva ', lleva(2), ' a las centenas'] },
+    { nivel: 3, titulo: 'La base que hace cuadrar',
+      enunciado: ['En cierta base ', bas('n') , ' se cumple ', sumN('35', 'n'), ' + ', sumN('24', 'n'), ' = ', resN('62', 'n'), '. ¿Cuál es ', bas('n'), '?'],
+      alternativas: ['6', '7', '8', '9'],
+      datos: [DO.columna, DO.cifras],
+      figura: cuaderno(['35', '24'], { base: 'n', resultado: '62' }),
+      solucion: [
+        { texto: 'Sueltos: 5 + 4 = 9, pero se anota 2: subió una bolsita de n y sobraron 2.', ecuacion: ['9 = ', lleva(1), ' × ', bas('n'), ' + ', res(2), '   →   ', bas('n'), ' = ', bas(7)] },
+        { texto: 'Compruebo la otra columna: 3 + 2 más la que llega da 6, menos que 7. Se anota 6, como dice la cuenta.', ecuacion: ['3 + 2 + ', lleva(1), ' = ', res(6)] },
+        { texto: ['Con 6 no sirve: 9 = 1 × 6 + 3 y se anotaría 3. Con 8 o con 9 se anotaría 1 o 0.'] },
+      ],
+      respuesta: [letra('B', 'base'), ': ', bas('n'), ' = ', bas(7)] },
+    { nivel: 3, titulo: 'Tres sumandos en base 6',
+      enunciado: ['¿Cuánto es ', sumN('245', 6), ' + ', sumN('354', 6), ' + ', sumN('155', 6), '?'],
+      alternativas: [[sumN('754', 6)], [sumN('1132', 6)], [sumN('242', 6)], [sumN('1242', 6)]],
+      datos: [DO.base(6), DO.columna],
+      figura: cuaderno(['245', '354', '155'], { base: '6' }),
+      solucion: [
+        { texto: 'Sueltos: 5 + 4 + 5 = 14. Se anota 2 y se llevan 2.', ecuacion: ['5 + 4 + 5 = 14 = ', lleva(2), ' × ', bas(6), ' + ', res(2)] },
+        { texto: 'Bolsitas: 4 + 5 + 5 más las 2 que llegan = 16. Se anota 4 y se llevan 2.', ecuacion: ['4 + 5 + 5 + ', lleva(2), ' = 16 = ', lleva(2), ' × ', bas(6), ' + ', res(4)] },
+        { texto: 'Cajas: 2 + 3 + 1 más las 2 = 8. Se anota 2 y se lleva 1, que abre otra columna.', ecuacion: ['2 + 3 + 1 + ', lleva(2), ' = 8 = ', lleva(1), ' × ', bas(6), ' + ', res(2)] },
+        { texto: ['Las trampas: ', letra('A'), ' suma en base 10; ', letra('B'), ' lleva 1 donde van 2; ', letra('C'), ' olvida la última llevada.'] },
+      ],
+      respuesta: [letra('D'), ': ', resN('1242', 6)] },
+    { nivel: 3, titulo: 'Las cifras del total',
+      enunciado: ['Si ', sumN('777', 8), ' + ', sumN('777', 8), ' + ', sumN('777', 8), ' = ', { sub: [{ raya: [res('abcd')] }, bas('(8)')] }, ', ¿cuánto vale a + b + c + d?'],
+      alternativas: ['18', '21', '19', '9'],
+      datos: [DO.base(8), DO.columna, [{ raya: ['abcd'] }, ': numeral de cifras a, b, c y d']],
+      figura: cuaderno(['777', '777', '777'], { base: '8' }),
+      solucion: [
+        { texto: 'Sueltos: 7 + 7 + 7 = 21. Se anota 5 y se llevan 2.', ecuacion: ['21 = ', lleva(2), ' × ', bas(8), ' + ', res(5)] },
+        { texto: 'Las otras dos columnas reciben esas 2: 21 + 2 = 23. Se anota 7 y se llevan 2.', ecuacion: ['21 + ', lleva(2), ' = 23 = ', lleva(2), ' × ', bas(8), ' + ', res(7)] },
+        { texto: ['La última llevada, 2, abre otra columna: el total es ', resN('2775', 8), '.'], ecuacion: ['2 + 7 + 7 + 5 = ', res(21)] },
+        { texto: ['Las trampas: ', letra('A'), ' lleva 1 donde van 2; ', letra('C'), ' olvida la última llevada; ', letra('D'), ' suma en base 10.'] },
+      ],
+      respuesta: [letra('B'), ': ', res(21)] },
+    { nivel: 3, titulo: 'La mayor llevada',
+      enunciado: 'Doña Juana suma cuatro números de dos cifras. ¿Cuál es la mayor llevada que puede pasar de la columna de las unidades a la de las decenas?',
+      alternativas: ['1', '2', '3', '4'],
+      datos: [DO.columna, 'La mayor cifra en base 10 es 9'],
+      figura: cuaderno(['??', '??', '??', '??'], { foco: 0 }),
+      solucion: [
+        { texto: 'La columna de las unidades junta cuatro cifras. Lo más que puede juntar es 9 + 9 + 9 + 9 = 36.' },
+        { texto: 'Con 36 se llenan 3 bolsitas de 10 y sobran 6. Para llevar 4 harían falta 40, y no alcanza.', ecuacion: ['36 = ', lleva(3), ' × ', bas(10), ' + ', res(6)] },
+      ],
+      respuesta: [letra('C', 'llevada'), ': ', lleva(3)] },
+    { nivel: 3, titulo: 'Llevadas en cadena',
+      enunciado: '¿En cuántas columnas se lleva algo al sumar 4999 + 5001?',
+      alternativas: ['1', '3', '4', '5'],
+      datos: [DO.todo(10)],
+      figura: cuaderno(['4999', '5001']),
+      solucion: [
+        { texto: 'Unidades: 9 + 1 = 10. Se anota 0 y se lleva 1.', ecuacion: ['9 + 1 = 10 = ', lleva(1), ' × ', bas(10), ' + ', res(0)] },
+        { texto: 'Decenas y centenas: 9 + 0 más la que llega da 10 en cada una. Otra vez 0, y se lleva 1.', ecuacion: ['9 + 0 + ', lleva(1), ' = 10 = ', lleva(1), ' × ', bas(10), ' + ', res(0)] },
+        { texto: 'Millares: 4 + 5 más la que llega da 10. La última llevada abre otra columna.', ecuacion: ['4999 + 5001 = ', res('10 000')] },
+        { texto: ['Las cuatro columnas llevaron 1. ', letra('A'), ' solo mira las unidades; ', letra('B'), ' olvida la última; ', letra('D'), ' cuenta las cifras del total.'] },
+      ],
+      respuesta: [letra('C'), ': ', res(4), ' columnas'] },
+  ];
+
   const otrasBases = {
     id: 'otras-bases',
-    titulo: 'Llevar cuando se llega a b',
-    temas: ['Operaciones en otras bases'],
-    pieza: 'arit-tabla',
-    // Lee (fase 2): cómo se lee un número en otra base y qué columnas tiene la tabla; no dice cuándo se lleva.
+    titulo: 'La llevada llena una bolsita',
+    pregunta: '¿Por qué se lleva 1 cuando una columna pasa de 9?',
+    temas: ['Adición y sumatorias', 'Operaciones en otras bases'],
+    pieza: PU,
+    aprendizaje: 'Por columnas, cada 10 de una columna (n en base n) forman 1 de la siguiente: eso es llevar; se anota lo que sobra.',
+    actividad: 'Juntar dos pedidos y empacar de 10 en 10 hasta poder anotar el total.',
+    // Lee: el puesto en base 10, los sumandos y el cuaderno, y qué mirar. No dice qué pasa en otra base ni con una
+    // segunda llevada (eso lo pregunta Predice).
     lee: {
       tarjetas: [
-        { titulo: 'Otras maneras de agrupar', texto: 'En base 10 agrupamos de diez en diez. En base 5 se agrupa de cinco en cinco, como quien cuenta con los dedos de una mano.' },
-        { titulo: 'Cómo se escribe', texto: 'El número pequeño de abajo es la base: (34)₅ se lee «tres cuatro en base cinco». Si no lleva ese número, se entiende que está en base 10.' },
-        { titulo: 'Qué mirar', texto: 'La tabla suma columna por columna: el lugar, la suma, lo que se escribe y la llevada. Cambia la base y fíjate cuándo aparece un 1 en «lleva».' },
+        { titulo: 'El puesto en base 10', texto: ['Doña Juana ahora empaca de ', bas(10), ' en ', bas(10), ': 10 sueltos llenan una bolsita y 10 bolsitas, una caja. Es la base 10, la de todos los días: 26 caramelos son 2 bolsitas y 6 sueltos.'],
+          pieza: PU, dibujo: { datos: { n: 10, bolsitas: 2, sueltos: 6, regla: 2, rotulos: true, colorCifras: false }, estado: {} } },
+        { titulo: 'Sumar es juntar', texto: 'Si le llegan dos pedidos, los junta: suma. Cada pedido es uno de los sumandos. En su cuaderno los escribe uno debajo del otro, sueltos bajo sueltos y bolsitas bajo bolsitas, y suma cada columna.',
+          pieza: PU, dibujo: { datos: { n: 10, bolsitas: 3, sueltos: 9, ceros: true, regla: 1, rotulos: { bolsitas: '2 + 1 bolsitas', sueltos: '6 + 3 sueltos' }, cuenta: { sumandos: ['26', '13'], resultado: '39' } }, estado: {} } },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a juntar dos pedidos. Mira la columna de los sueltos: si junta 10 o más, toca el montón y doña Juana llena una bolsita. Fíjate a qué columna se va esa bolsita.' },
       ],
     },
+    ejemplos: EJEMPLOS_LLEVADA,
     juega: {
-      consigna: 'Se suman (34) y (23) en la base que elijas. La tabla suma columna por columna.',
-      voz: 'Fíjate cuándo aparece un 1 en la columna «lleva».',
-      controles: [{ id: 'b', etiqueta: 'b', color: 'c-i', min: 6, max: 9, paso: 1, inicio: 6, decimales: 0 }],
-      dibujo: v => ({ datos: sumaBase('34', '23', v.b).datos, estado: {} }),
-      lectura: v => [{ sub: ['(34)', String(v.b)] }, ' + ', { sub: ['(23)', String(v.b)] }, ' = ', { v: 'c-d', t: nb(sumaBase('34', '23', v.b).res, v.b) }],
+      pieza: PU,
+      consigna: 'A doña Juana le llegaron dos pedidos y los junta en el mostrador. Empaca de 10 en 10 y anota la cuenta en su cuaderno.',
+      mision: {
+        texto: 'Junta los pedidos de 47 y 38, y empaca hasta poder anotar el total.',
+        logrado: v => [v.p1, v.p2].sort((x, y) => x - y).join() === '38,47' && manoJ(v).m.listo,
+        bien: '15 sueltos llenaron una bolsita que subió: 4 + 3 + 1 = 8 bolsitas y 5 sueltos.',
+      },
+      voz: 'Toca el montón de sueltos cuando alcance para una bolsita.',
+      leyenda: [
+        { s: bas('10'), t: 'caramelos por bolsita: la base' },
+        { s: lleva('1'), t: 'la llevada: la bolsita llena que sube' },
+        { s: res('cifra'), t: 'lo que se anota en el cuaderno' },
+        { s: '?', t: 'lo que todavía no se puede anotar' },
+      ],
+      controles: [
+        { id: 'p1', etiqueta: 'Pedido de la mañana', min: 11, max: 49, paso: 1, inicio: 26, decimales: 0 },
+        { id: 'p2', etiqueta: 'Pedido de la tarde', min: 11, max: 49, paso: 1, inicio: 15, decimales: 0 },
+        { id: 'ju', etiqueta: 'Sueltos', opciones: [{ valor: 0, texto: 'Sin juntar' }, { valor: 1, texto: 'Juntar 10 en una bolsita' }] },
+      ],
+      dibujo: v => ({ datos: puestoJ(v, escalaJ()), estado: {} }),
+      // La relación: lo que junta la columna de los sueltos, y qué pasa con 10 de ellos.
+      lectura: v => {
+        const { m, lleno, junto } = manoJ(v), us = uni(v.p1) + uni(v.p2);
+        if (!lleno) return [`${uni(v.p1)} + ${uni(v.p2)} = `, res(us), ' sueltos: no llenan una bolsita'];
+        if (!junto) return [`${uni(v.p1)} + ${uni(v.p2)} = ${us} sueltos: alcanzan para `, lleva(1), ' bolsita'];
+        return [`${us} sueltos = `, lleva(1), ' bolsita + ', res(us - 10), `; ahora hay ${m.cuentas[1]} bolsitas`];
+      },
       minimo: 3,
     },
     predice: {
-      pregunta: ['¿Cuánto es ', { sub: ['(34)', { v: 'c-i', t: '5' }] }, ' + ', { sub: ['(23)', { v: 'c-i', t: '5' }] }, '?'],
+      pregunta: ['En otro puesto, doña Juana usa bolsitas de ', bas(5), ' y cajas de ', bas(5), ' bolsitas. Junta un pedido de ', sumN('34', 5), ' y otro de ', sumN('23', 5), '. ¿Qué total anota en su cuaderno?'],
+      datos: [DO.bolsita(5), DO.caja(5)],
+      voz: 'Piensa qué hace doña Juana cuando una columna se llena.',
       opciones: [
-        { id: 'c', texto: '(112)₅', correcta: true },
-        { id: 'decimal', texto: '(57)₅', error: 'AT-DECIMAL', siFuera: 'Así se suma en base 10. En base 5 la cifra 7 no existe.' },
-        { id: 'diez', texto: '(102)₅', error: 'AT-LLEVA', siFuera: 'Eso olvida el 1 que se lleva de las unidades a la otra columna.' },
-        { id: 'sin-lleva', texto: '(12)₅', error: 'AT-LLEVA', siFuera: 'Falta escribir lo que se lleva de la última columna.' },
+        { id: 'c', texto: [resN('112', 5)], correcta: true },
+        { id: 'decimal', texto: [resN('57', 5)], error: 'AT-DECIMAL', siFuera: 'Sumar por columnas está bien. Pero así se lleva al llegar a 10; aquí 5 sueltos ya llenan una bolsita.' },
+        { id: 'diez', texto: [resN('102', 5)], error: 'AT-LLEVA-OLVIDA', siFuera: 'Bien: los 7 sueltos llenan una bolsita y sobran 2. Pero esa bolsita se suma a las otras 3 + 2.' },
+        { id: 'sin-lleva', texto: [resN('12', 5)], error: 'AT-LLEVA-FINAL', siFuera: 'Las dos columnas están bien hechas. Pero la caja que se llenó también se anota: abre otra columna.' },
       ],
-      dibujo: { datos: { columnas: [{ t: 'lugar' }, { t: 'suma' }, { t: 'escribe', color: 'd' }, { t: 'lleva', color: 'h' }], filas: [], filasMax: 4 }, estado: {} },
-      revelar: { datos: sumaBase('34', '23', 5).datos, estado: {} },
-      coincide: 'Coincide: 19 + 13 = 32, y 32 = (112)₅.',
+      dibujo: fig(Object.assign({}, P5, { bolsitas: 5, sueltos: 7, rotulos: ROT5, cuenta: CU5() })),
+      revelar: fig(Object.assign({}, P5, { cajas: 1, bolsitas: 1, sueltos: 2, llevada: { cajas: 1 }, rotulos: ROT5c, cuenta: CU5({ llevadas: { 1: 1, 2: 1 }, resultado: '112' }) })),
+      coincide: 'Coincide: 7 sueltos dan 1 bolsita y sobran 2; 6 bolsitas dan 1 caja y sobra 1.',
+      noCoincide: 'Revisemos: con 5 sueltos ya se llena una bolsita, y con 5 bolsitas, una caja.',
     },
     mira: {
-      datos: sumaBase('34', '23', 5, true).datos,
+      pieza: PU,
+      datos: MIRA5,
+      voz: 'Columna por columna, desde los sueltos.',
       pasos: [
-        { estado: { paso: 1, fila: 0 }, texto: 'Unidades: 4 + 3 = 7. Es un grupo de 5 y sobran 2.', ecuacion: ['7 = 1 · 5 + ', { v: 'c-d', t: '2' }] },
-        { estado: { paso: 2, fila: 1 }, texto: 'Siguiente columna: 3 + 2 más el 1 que se lleva.', ecuacion: ['6 = 1 · 5 + ', { v: 'c-d', t: '1' }] },
-        { estado: { paso: 3, fila: 2 }, texto: 'El último 1 que se lleva abre una columna nueva.', ecuacion: [{ sub: ['(34)', '5'] }, ' + ', { sub: ['(23)', '5'] }, ' = ', { v: 'c-d', t: '(112)₅' }] },
+        { estado: { paso: 0 }, texto: 'Junto los dos pedidos: 3 + 2 bolsitas y 4 + 3 sueltos.', ecuacion: [sumN('34', 5), ' + ', sumN('23', 5)] },
+        { estado: { paso: 1 }, texto: 'Sueltos: 4 + 3 = 7. Con 5 se llena una bolsita y sobran 2.', ecuacion: ['4 + 3 = 7 = ', lleva(1), ' × ', bas(5), ' + ', res(2)] },
+        { estado: { paso: 2 }, texto: 'La bolsita sube a la otra columna: es la llevada. Se anota 2.', ecuacion: ['sube ', lleva(1), ', se anota ', res(2)] },
+        { estado: { paso: 3 }, texto: 'Bolsitas: 3 + 2 + 1 = 6. Con 5 se llena una caja y sobra 1.', ecuacion: ['3 + 2 + ', lleva(1), ' = 6 = ', lleva(1), ' × ', bas(5), ' + ', res(1)] },
+        { estado: { paso: 4 }, texto: ['La caja sube y abre una columna nueva: el total es ', resN('112', 5), '.'], ecuacion: [sumN('34', 5), ' + ', sumN('23', 5), ' = ', resN('112', 5)] },
+        { estado: { paso: 5 }, texto: ['En base 10 cuadra: 19 + 13 = 32, y ', resN('112', 5), ' vale 25 + 5 + 2.'], ecuacion: [resN('112', 5), ' = 1 × 25 + 1 × ', bas(5), ' + 2 = ', res(32)] },
       ],
     },
     regla: {
-      texto: 'En base b se opera columna por columna como en base 10, pero cada b unidades de una columna se llevan como 1 a la siguiente.',
-      ecuacion: ['suma de la columna = ', { llave: [bb, ' · lleva'], nota: 'a la siguiente', color: 'c-i' }, ' + escribe'],
-      condicion: 'todas las cifras son menores que b. Al restar, cada préstamo trae b unidades, no 10.',
+      texto: 'Se suma por columnas, desde las unidades. Cada 10 de una columna forman 1 de la siguiente: se lleva y se anota lo que sobra. En base n, cada n.',
+      // Cada relación en su línea y corta, para que quepa a 360 px: la suma de una columna se parte en lo que sube y lo
+      // que se anota; lo que se anota es una cifra de la base.
+      // (L y c, dichas en las llaves: lo que se lleva y la cifra que se anota.)
+      ecuacion: ['columna = ', { llave: [lleva('L'), ' × ', bas('n')], nota: 'L: se lleva', color: 'c-o' }, ' + ', { llave: [res('c')], nota: 'c: se anota', color: 'c-f' }, SEP, '0 ≤ ', res('c'), ' ≤ ', bas('n'), ' − 1'],
+      condicion: 'Con varios sumandos se puede llevar 2 o más. La última llevada también se anota: abre una columna nueva.',
+      voz: 'Lo que llena un envase sube; lo que sobra se anota.',
     },
-    // Así se resuelve (fase 2): la suma (con la tabla) o la resta (pasando por base 10), como «Ahora tú».
+    // Así se resuelve: juntar dos pedidos de otro puesto (dos sumandos de tres cifras en base n, con dos llevadas o más),
+    // columna por columna, y comprobar en base 10. «Ahora tú» pide otra cosa: cuánto se lleva, tres sumandos, la base
+    // que hace cuadrar, una cifra del total o cuántas llevadas hay.
     resuelve: {
+      pieza: PU,
       generar(s) {
-        const g = azar(s + 900), base = g.ent(3, 8);
-        const x = enBase(g.ent(base * base, base * base * base - 1), base), y = enBase(g.ent(base, base * base - 1), base);
-        const vx = valor(x, base), vy = valor(y, base), sm = vx + vy, res = enBase(sm, base);
-        const B = { v: 'c-i', t: String(base) }, num = c => ({ sub: [`(${c})`, B] });
-        // Descomposición por lugares, para mostrar el valor en base 10 de cada número.
-        const POT = ['', '', '²', '³'];
-        const poli = c => c.split('').map((d, i, xs) => { const e = xs.length - 1 - i; return e === 0 ? d : e === 1 ? `${d} · ${base}` : `${d} · ${base}${POT[e]}`; }).join(' + ');
-        const datos = { tipo: 'datos', texto: ['Los dos números están en base ', B, `: sus cifras van de 0 a ${base - 1}.`] };
-        if (s % 3 === 2 && vx > vy) {
-          const df = vx - vy, rd = enBase(df, base);
+        const r = azar(s + 900);
+        for (;;) {
+          const n = r.de([3, 4, 6, 7, 8, 9]), A = numeralAzar(r, 3, n), B = numeralAzar(r, 3, n), C = MCO.sumaColumnas([A, B], n);
+          if (C.llevadas < 2) continue;
+          const uso = C.columnas.slice(0, 3);                // las tres columnas de los sumandos
+          const extra = C.texto.length > 3;                  // la última llevada abre otra columna
+          const paso = (c, k) => {
+            const ll = Object.fromEntries(C.columnas.slice(0, k + 1).filter(x => x.llevadaSale).map(x => [x.orden + 1, x.llevadaSale]));
+            const parcial = C.texto.slice(C.texto.length - k - 1);
+            const ultimo = k === uso.length - 1;
+            return { tipo: 'cuentas',
+              texto: `${NOMBRE_COL[k]}: ${c.entran.join(' + ')}${c.llevadaEntra ? ` más ${c.llevadaEntra === 1 ? 'la que llega' : `las ${c.llevadaEntra} que llegan`}` : ''} = ${c.total}. Se anota ${c.cifra}${c.llevadaSale ? ` y se lleva ${c.llevadaSale}` : ''}.${ultimo && extra ? ' La llevada abre otra columna.' : ''}`,
+              ecuacion: ecColumna(c, n),
+              dibujo: cuaderno([A, B], { base: String(n), foco: k, llevadas: ll, resultado: ultimo && extra ? C.texto : parcial }) };
+          };
+          const T = C.texto, vA = valor(A, n), vB = valor(B, n);
           return {
-            enunciado: ['¿Cuánto es ', num(x), ' − ', num(y), '?'],
+            enunciado: ['En el puesto de bolsitas de ', bas(n), ', doña Juana junta un pedido de ', sumN(A, n), ' y otro de ', sumN(B, n), '. ¿Qué total anota en su cuaderno?'],
+            datos: [DO.base(n), DO.f3(n)],
+            dibujo: cuaderno([A, B], { base: String(n) }),
             pasos: [
-              { tipo: 'pide', texto: ['Piden la diferencia, escrita en base ', B, '.'] },
-              datos,
-              { tipo: 'regla', texto: ['El valor de un número no depende de cómo se escribe. Paso los dos a base 10, resto ahí y escribo el resultado en base ', B, '.'] },
-              { tipo: 'cuentas', texto: 'Cada cifra vale según su lugar. Después resto en base 10.', ecuacion: [num(x), ` = ${poli(x)} = ${vx}   ·   `, num(y), ` = ${poli(y)} = ${vy}   ·   ${vx} − ${vy} = ${df}`] },
-              { tipo: 'cuentas', texto: ['Escribo la diferencia en base ', B, ', agrupando de ', B, ' en ', B, '.'], ecuacion: [`${df} = ${poli(rd)} = `, { v: 'c-d', t: nb(rd, base) }] },
-              { tipo: 'sentido', texto: 'Compruebo al revés: la diferencia más el número que resté debe dar el primero.', ecuacion: [`${df} + ${vy} = ${df + vy} = `, num(x)] },
+              { tipo: 'pide', texto: ['Piden el total, escrito en base ', bas(n), ': lo que queda cuando ninguna columna llega a ', bas(n), '.'] },
+              { tipo: 'regla', texto: ['Sumo por columnas, desde los sueltos. Cada ', bas(n), ' de una columna forman 1 de la siguiente: se lleva y se anota lo que sobra.'] },
+              ...uso.map(paso),
+              { tipo: 'sentido', texto: `Compruebo en base 10: los pedidos valen ${vA} y ${vB}, que suman ${vA + vB}; el total también.`,
+                ecuacion: [resN(T, n), ` = ${poli(T, n)} = `, res(valor(T, n))] },
             ],
-            respuesta: [num(x), ' − ', num(y), ' = ', { v: 'c-d', t: nb(rd, base) }],
+            respuesta: ['Anota ', resN(T, n)],
           };
         }
-        return {
-          enunciado: ['¿Cuánto es ', num(x), ' + ', num(y), '?'],
-          dibujo: { datos: { columnas: [{ t: 'lugar' }, { t: 'suma' }, { t: 'escribe', color: 'd' }, { t: 'lleva', color: 'h' }], filas: [], filasMax: 4 }, estado: {} },
-          pasos: [
-            { tipo: 'pide', texto: ['Piden la suma, escrita en base ', B, '.'] },
-            datos,
-            { tipo: 'regla', texto: ['Sumo por columnas, de derecha a izquierda. Cuando una columna junta ', B, ' o más, cada grupo de ', B, ' pasa como 1 a la columna siguiente.'] },
-            { tipo: 'cuentas', texto: 'La tabla suma cada columna, escribe lo que sobra y lleva lo que forma grupo.', ecuacion: [num(x), ' + ', num(y), ' = ', { v: 'c-d', t: nb(res, base) }], dibujo: { datos: sumaBase(x, y, base).datos, estado: {} } },
-            { tipo: 'sentido', texto: 'Compruebo pasando todo a base 10: los dos sumandos y el resultado.', ecuacion: [`${vx} + ${vy} = ${sm}   ·   `, { v: 'c-d', t: nb(res, base) }, ` = ${poli(res)} = ${valor(res, base)}`] },
-          ],
-          respuesta: [num(x), ' + ', num(y), ' = ', { v: 'c-d', t: nb(res, base) }],
-        };
       },
     },
     ahoraTu: {
-      generar(s) {
-        const g = azar(s), base = g.ent(3, 8);
-        const x = enBase(g.ent(base * base, base * base * base - 1), base), y = enBase(g.ent(base, base * base - 1), base);
-        const sm = valor(x, base) + valor(y, base), res = enBase(sm, base);
-        if (s % 3 === 2 && valor(x, base) > valor(y, base)) {
-          const df = valor(x, base) - valor(y, base);
-          return {
-            pregunta: ['¿Cuánto es ', { sub: [`(${x})`, { v: 'c-i', t: String(base) }] }, ' − ', { sub: [`(${y})`, { v: 'c-i', t: String(base) }] }, '?'],
-            opciones: opciones(nb(enBase(df, base), base), [
-              { id: 'decimal', valor: nb(String(Math.abs(+x - +y)), base), error: 'AT-DECIMAL', siFuera: 'Eso resta como en base 10: el préstamo trae b, no 10.' },
-              { id: 'valor', valor: nb(String(df), base), error: 'AT-DECIMAL', siFuera: `${df} es la diferencia en base 10; falta escribirla en base ${base}.` },
-              { id: 'suma', valor: nb(res, base), error: 'AT-SENTIDO', siFuera: 'Esa es la suma, no la resta.' },
-            ]),
-            solucion: { texto: 'Se comprueba pasando por base 10.', ecuacion: [`${valor(x, base)} − ${valor(y, base)} = ${df} = `, { sub: [`(${enBase(df, base)})`, String(base)] }] },
-          };
-        }
-        const decimal = +x + +y;
-        return {
-          pregunta: ['¿Cuánto es ', { sub: [`(${x})`, { v: 'c-i', t: String(base) }] }, ' + ', { sub: [`(${y})`, { v: 'c-i', t: String(base) }] }, '?'],
-          opciones: opciones(nb(res, base), [
-            { id: 'decimal', valor: nb(String(decimal), base), error: 'AT-DECIMAL', siFuera: 'Eso suma como en base 10; se lleva al llegar a b.' },
-            { id: 'valor', valor: nb(String(sm), base), error: 'AT-DECIMAL', siFuera: `${sm} es la suma en base 10; falta escribirla en base ${base}.` },
-            { id: 'sin-lleva', valor: nb(res.length > 1 ? res.slice(1) : '0', base), error: 'AT-LLEVA', siFuera: 'Falta la cifra que se lleva al final.' },
-          ]),
-          solucion: { texto: 'Columna por columna, llevando al llegar a la base.', ecuacion: [`${valor(x, base)} + ${valor(y, base)} = ${sm} = `, { sub: [`(${res})`, String(base)] }], dibujo: { datos: sumaBase(x, y, base).datos, estado: {} } },
-        };
+      pieza: PU,
+      voz: 'Columna por columna: lo que llena un envase sube.',
+      generar(sem) {
+        const r = azar(sem + 31), tipo = sem % 5;
+        if (tipo === 0) return conCuatro(q => casoCuantoLleva(q, 3 + (Math.floor(sem / 5) % 2)), r);
+        if (tipo === 1) return conCuatro(casoTres, r);
+        if (tipo === 2) return conCuatro(casoBaseOculta, r);
+        if (tipo === 3) return conCuatro(casoCentenas, r);
+        return conCuatro(casoLlevadas, r);
       },
     },
   };
-  otrasBases.ahoraTu.pieza = 'arit-tabla';
+
+  // Mesa del laboratorio de la idea 1: cualquier suma de dos pedidos, en la base que elijas (de 6 a 10; la base 5 es de
+  // la predicción). Se llama `juego-otras-bases`, como se llamaba el juego viejo en el laboratorio, para que los casos
+  // guardados con su control `b` sigan abriendo. Las llevadas las cuenta el motor de la escena (sumaColumnas).
+  const sumaLab = v => MCO.sumaColumnas([enBase(v.x, v.b), enBase(v.y, v.b)], v.b);
+  const mesaBases = {
+    id: 'juego-otras-bases', titulo: 'Sumar en cualquier base', pieza: PU,
+    consigna: 'Dos pedidos de caramelos y el tamaño de la bolsita. El cuaderno los suma en esa base, con sus llevadas.',
+    controles: [
+      { id: 'b', etiqueta: 'Caramelos por bolsita, n', color: 'c-i', min: 6, max: 10, paso: 1, inicio: 6, decimales: 0 },
+      { id: 'x', etiqueta: 'Primer pedido (caramelos)', min: 6, max: 99, paso: 1, inicio: 16, decimales: 0 },
+      { id: 'y', etiqueta: 'Segundo pedido (caramelos)', min: 6, max: 99, paso: 1, inicio: 15, decimales: 0 },
+    ],
+    dibujo: v => {
+      const C = sumaLab(v), ll = Object.fromEntries(C.columnas.filter(c => c.llevadaSale).map(c => [c.orden + 1, c.llevadaSale]));
+      return { datos: { cuenta: { solo: true, sumandos: [enBase(v.x, v.b), enBase(v.y, v.b)], base: v.b === 10 ? '' : String(v.b), llevadas: ll, resultado: C.texto } }, estado: {} };
+    },
+    lectura: v => [`${v.x} + ${v.y} = `, res(v.x + v.y), ` caramelos; ${sumaLab(v).llevadas} llevadas en base `, bas(v.b)],
+    invitaciones: [
+      { texto: 'Haz que la suma no lleve nada en ninguna columna.',
+        logrado: v => sumaLab(v).llevadas === 0,
+        bien: 'Ninguna columna llegó a la base: cada suma se anota tal cual.' },
+      { texto: 'Consigue una suma con dos llevadas.',
+        logrado: v => sumaLab(v).llevadas === 2,
+        bien: 'Dos columnas llenaron un envase: dos llevadas.' },
+      { texto: 'Haz que el total tenga una cifra más que los dos pedidos.',
+        logrado: v => { const C = sumaLab(v); return C.texto.length > Math.max(...C.sumandos.map(x => x.length)); },
+        bien: 'La última llevada abrió una columna nueva.' },
+      { texto: 'Guarda dos casos con los mismos pedidos y distinta cantidad de llevadas.',
+        logrado: (v, guardados) => guardados.some(g => g.x === v.x && g.y === v.y && g.b !== v.b && sumaLab(g).llevadas !== sumaLab(v).llevadas),
+        bien: 'Los mismos caramelos: con otra bolsita, las columnas se llenan distinto.' },
+    ],
+  };
 
   // ---------- Idea 5: multiplicar es sumar por partes (multiplicación) ----------
   // Cambia: los dos factores. Permanece: la escala de las tiras (una unidad, el mismo largo).
@@ -896,15 +1355,29 @@
 
   return {
     unidad: 'aritmetica.cuatro-operaciones',
-    version: '0.2.0',
+    version: '0.3.0',
+    // Un color fijo por magnitud (cabecera); lo comprueba cuatro-operaciones.test.js en la idea 1. La unidad declara
+    // calidad: 2 recién en la fase 3, cuando sus siete ideas estén rehechas.
+    colores: COLORES,
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
-    // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). «cociente», «factor»,
-    // «producto» y «múltiplo» se estrenan antes en el curso (magnitudes, razones y conjuntos): aquí no se repiten.
+    // El motor de la escena va antes que las piezas (regla 1: el juego y la mesa de la idea 1 cuentan con él).
+    requiere: ['/plantillas/cuatro-operaciones/motor.js', '/nucleo/kit/piezas/arit-puesto.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). La idea 1 estrena «sumandos» y
+    // «llevada», cada una con su aproximación (simple) y tres ejemplos. «llevada» va local mientras Razonamiento numérico
+    // la siga definiendo (la propuesta, pregunta 8: se estrena aquí y allá se marca «se explica en…»; ese cambio es de la
+    // integración, fuera del alcance de esta fase). «acotar», «cociente», «resto», «potencia» y «cifra oculta» son de
+    // Numeración: aquí no se definen (el «acotar» de abajo es de la idea vieja de cifras de un producto; sale en la fase 3).
     glosario: [
       // «sumandos» va en plural a propósito: «sumando» suelto es el gerundio en razones y estadística.
       { termino: 'sumandos', def: 'Los números que se juntan en una suma.',
-        ejemplo: 'En 3 + 4 + 5 = 12 son tres: 3, 4 y 5.', ver: ['sumatoria'] },
+        simple: 'Cada pedido que se junta: el de la mañana y el de la tarde.',
+        ver: ['llevada', 'sumatoria'],
+        ejemplos: ['En 26 + 13 hay dos: 26 y 13.', 'En 3 + 4 + 5 = 12 son tres: 3, 4 y 5.', 'En 52₍₇₎ + 14₍₇₎ los dos están en base 7.'] },
+      { termino: 'llevada', local: true, formas: ['llevada', 'llevadas'],
+        def: 'Lo que pasa a la columna de la izquierda cuando una columna junta la base o más.',
+        simple: 'La bolsita llena que sube a la columna de al lado.',
+        ver: ['sumandos', 'base de numeración'],
+        ejemplos: ['9 + 6 = 15: se anota 5 y la llevada es 1.', 'En base 4, 3 + 2 = 5 = 1 × 4 + 1: se lleva 1.', '9 + 8 + 7 = 24: la llevada es 2.'] },
       { termino: 'sumatoria', def: 'Suma de muchos términos que siguen una regla, como 1 + 2 + … + n.',
         ejemplo: '1 + 2 + … + 20 = 20 · 21 / 2 = 210.', ver: ['sumandos', 'consecutivo'] },
       { termino: 'consecutivo', def: 'Números enteros que van uno detrás del otro, de 1 en 1, sin saltarse ninguno.',
@@ -923,8 +1396,7 @@
         formas: ['resto por exceso', 'restos por exceso', 'por exceso'], ejemplo: '47 = 6 · 8 − 1: es 1, y 5 + 1 = 6.', ver: ['resto por defecto'] },
       { termino: 'división exacta', def: 'La que no deja nada sobrante: el dividendo es un múltiplo del divisor.',
         formas: ['división es exacta', 'división exacta', 'divisiones exactas'], ejemplo: '48 ÷ 6 = 8 y no sobra nada.', ver: ['divisor'] },
-      { termino: 'préstamo', def: 'Al restar por columnas, la unidad que se pide a la columna de la izquierda cuando la cifra no alcanza.',
-        ejemplo: 'En base 10 trae 10 unidades; en base 5, trae 5.', ver: ['base de numeración'] },
+      // «préstamo» vuelve en la fase 3, con la idea `prestamo` (hoy ninguna idea lo usa).
       { termino: 'acotar', def: 'Encerrar un número desconocido entre un valor menor y otro mayor que sí se conocen.',
         formas: ['acotar', 'acoto', 'acotarlo', 'acota'], ejemplo: 'Si A tiene 3 cifras, 100 ≤ A ≤ 999.' },
       { termino: 'propiedad distributiva', def: 'Multiplicar una suma da lo mismo que multiplicar cada parte y sumar los resultados.',
@@ -934,6 +1406,7 @@
     // «Restos con números grandes» abre a hasta 100 y d hasta 12, con divisiones exactas; «Dos productos» pone a · b
     // y (a + k) · b en la misma escala, con k negativo también.
     laboratorio: [
+      mesaBases,
       {
         id: 'escaleras-a-z', titulo: 'Escaleras que no empiezan en 1', pieza: 'arit-fichas',
         consigna: 'La escalera va de a hasta z. Dos escaleras iguales forman un rectángulo. Tira de su borde para cambiar z.',
@@ -1035,10 +1508,16 @@
     // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
     // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
     laboratorioIdeas: {
+      'juego-otras-bases': ['otras-bases'],
       'escaleras-a-z': ['sumatorias'],
       'restos-grandes': ['defecto-exceso'],
       'dos-productos': ['multiplicar-partes'],
     },
-    ideas: [sumatorias, complemento, division, otrasBases, multiplicacion, cotas],
+    // Orden de la propuesta aprobada (docs/etapa4/propuesta-aritmetica.md §1): 1 otras-bases (la llevada), 2 prestamo,
+    // 3 complemento, 4 cifras-ocultas, 5 multiplicar-partes, 6 defecto-exceso, 7 cifras-producto. Fase 2: la idea 1 está
+    // completa; las demás siguen como estaban, en ese orden. `prestamo` y `cifras-ocultas` (nuevas) entran en la fase 3:
+    // el validador (nucleo/teoria.js) admite hasta 6 ideas y la unidad tendrá 7 (8 mientras `sumatorias` no se mude a
+    // Sucesiones y series con Avance.migrar). `sumatorias` va al final, tal cual, hasta esa migración.
+    ideas: [otrasBases, complemento, multiplicacion, division, cotas, sumatorias],
   };
 });

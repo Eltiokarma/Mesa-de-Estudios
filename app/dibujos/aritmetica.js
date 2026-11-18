@@ -69,9 +69,9 @@ D.registrar('aritmetica', {
     return P.l([[16, 100], [144, 100]]) + [40, 80, 120].map((x, i) => P.l([[x, 22], [x, 100]], 'd')
       + Array.from({ length: cuentas[i] }, (_, k) => `<ellipse class="${i === 0 ? 'a' : 'b'}" cx="${x}" cy="${92 - k * 13}" rx="14" ry="6"/>`).join('')).join('');
   },
-  // Sumar en columna: la cifra que se lleva.
+  // Sumar en columna: la cifra que se lleva. (No usa 47 + 38: es la misión del juego de la idea 1.)
   'aritmetica.cuatro-operaciones': P =>
-    P.c(84, 20, 9, 'a') + P.t(84, 26, '1', 15) + P.t(112, 52, '4 7', 24, 'end') + P.t(112, 80, '3 8', 24, 'end')
+    P.c(84, 20, 9, 'a') + P.t(84, 26, '1', 15) + P.t(112, 52, '2 6', 24, 'end') + P.t(112, 80, '5 9', 24, 'end')
     + P.t(52, 80, '+', 24) + P.l([[44, 90], [118, 90]]) + P.t(112, 114, '8 5', 24, 'end'),
   // Múltiplos: saltos iguales de 3 en 3 sobre la recta.
   'aritmetica.divisibilidad': P =>

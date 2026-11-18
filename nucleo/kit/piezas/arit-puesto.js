@@ -28,11 +28,32 @@
  *   colorCifras: false,                     con rotulos: true, las cantidades en tinta (cuando el color delataría)
  *   escala: 1.2,                            fija el tamaño (si cabe): el juego no cambia de escala al mover un control
  *   pasos: [{ …datos }, …],                 para «Mira»: estado.paso elige qué cambia (se mezcla con los datos)
+ *
+ *   Opciones de «Las cuatro operaciones» (18 nov; contenido/teoria/aritmetica/cuatro-operaciones.js, idea 1). Ninguna
+ *   cambia lo de arriba si no se pide:
+ *   cuenta: {                               el cuaderno de doña Juana, de pie sobre el mostrador a la derecha del pedido
+ *     sumandos: ['47', '38'],               las filas de la cuenta (en tinta: son los números que se operan)
+ *     op: '+',                              el signo, a la izquierda de la última fila
+ *     resultado: '?' | '85' | '5',          las cifras del resultado, en violeta (se escriben desde las unidades); '?', en
+ *                                           tinta y centrado (lo que se pide: no dice cuántas cifras tiene)
+ *     llevadas: { 1: 1 },                   columna (0 = unidades) → lo que le llega llevado: chiquito y naranja, arriba
+ *     base: '5' | 'n',                      el subíndice ₍₅₎ de cada fila, en turquesa (sin base, o '10', base 10)
+ *     foco: 0,                              una columna resaltada con un fondo tenue
+ *     iconos: false,                        sin los iconos de la cabecera (caramelo, bolsita, caja y cajón sobre cada
+ *                                           columna: dicen qué orden cuenta cada columna)
+ *     solo: true,                           solo el cuaderno, abierto y más grande sobre el mostrador, sin pedido
+ *   }
+ *   llevada: { bolsitas: 1, cajas: 1 },     cuántos de ese orden acaban de subir (los últimos del grupo): aro naranja
+ *   toque: [{ orden: 'sueltos', control: 'ju', titulo }],   zona data-toque sobre ese grupo (el lector de la teoría pasa
+ *                                           el control a su opción siguiente; los botones del control siguen ahí)
+ *   Con cuenta, no se dibuja la etiqueta (el cuaderno anota el total) y, con solo, tampoco el letrero ni el pedido.
  * }
  * estado = { paso }. Función pura de (datos, estado): sin ids, sin azar, sin reloj. Lienzo de 320 × 250.
  * Colores: tinta (currentColor) y var(--c-*): la base (bolsita, caja y cajón, y el subíndice) en turquesa (i), las
  * cifras de la etiqueta y las cantidades en naranja (o), un texto en violeta (f) solo si los datos lo piden (la
- * cantidad en base 10 que se da). Nunca carmín. El relleno opaco de las cajas usa var(--card), como los halos del kit.
+ * cantidad en base 10 que se da). Nunca carmín. En el cuaderno (cuenta): los números que se operan en tinta, la
+ * llevada y el aro de lo que subió en naranja, el resultado en violeta y la base en turquesa (el mapa de colores de «Las
+ * cuatro operaciones»: el envase turquesa, lo que se muda naranja, lo que se busca violeta). El relleno opaco de las cajas usa var(--card), como los halos del kit.
  * geometria(datos, estado) da las cajas de todo lo dibujado (objetos y textos), para la prueba numérica de encuadre.
  */
 (function (root, fabrica) {
@@ -190,6 +211,89 @@
     return s;
   }
 
+  // Dónde queda cada objeto de un grupo (en el mismo orden en que se cuentan: la fila de abajo primero, de izquierda a
+  // derecha), en coordenadas del grupo: { x, y } es la esquina de abajo a la izquierda. Lo usa el aro de la llevada.
+  function posicionesGrupo(x, k, g) {
+    const out = [];
+    for (let f = 0; f < g.filas; f++) {
+      const enFila = Math.min(g.porFila, k - f * g.porFila);
+      const x0 = x + (g.w - (enFila * (g.u.w + 3) - 3)) / 2;
+      for (let j = 0; j < enFila; j++) out.push({ x: x0 + j * (g.u.w + 3), y: -f * (g.u.h + 2) });
+    }
+    return out;
+  }
+
+  // ---------- El cuaderno de doña Juana (opción cuenta): la cuenta escrita en columnas ----------
+  // De pie sobre el mostrador, a la derecha del pedido; con solo: abierto en el medio, más grande y sin pedido.
+  const CU = { x0: 202, x1: 304, y0: 44, y1: PISO };
+  const CU_SOLO = { x0: 60, x1: 260, y0: 42, y1: H - M - 2 };
+  const ZONA_CU = { x0: 18, x1: 196 };
+  const ICONO = ['sueltos', 'bolsitas', 'cajas', 'cajones'];
+  const sinBase = b => b === undefined || b === null || b === '' || String(b) === '10';
+  function geoCuenta(cu) {
+    const solo = !!cu.solo, C = solo ? CU_SOLO : CU;
+    const filas = (cu.sumandos || []).map(String), nf = filas.length;
+    const res = cu.resultado === undefined || cu.resultado === null ? '?' : String(cu.resultado);
+    const lleva = cu.llevadas || {}, kLl = Object.keys(lleva).map(Number).filter(k => lleva[k]);
+    const K = Math.max(1, ...filas.map(f => f.length), res === '?' ? 0 : res.length, ...kLl.map(k => k + 1));
+    const F = solo ? (nf >= 4 ? 24 : 30) : (nf >= 3 || K >= 4 ? 19 : 22);
+    const P = F * 0.64, TB = 13, TL = 15;
+    const base = sinBase(cu.base) ? '' : String(cu.base);
+    const subW = base ? T.ancho(`(${base})`, TB, 600) + 3 : 0;
+    // Junto al pedido, la cuenta va contra el borde derecho; sola, centrada en el cuaderno.
+    const anchoBloque = P * K + (nf ? T.ancho('+', F) + 6 : 0) + subW;
+    const xr = solo ? C.x0 + (C.x1 - C.x0 + anchoBloque) / 2 - subW : C.x1 - 10 - subW;
+    const cx = k => xr - P * (k + 0.5);
+    const yIcono = C.y0 + 20, yL = C.y0 + 44, paso = F + (solo ? 4 : 3);
+    const yF = i => yL + 8 + F * 0.8 + i * paso;
+    const yRaya = yF(Math.max(0, nf - 1)) + F * 0.25 + 5, yR = yRaya + 6 + F * 0.8;
+    const xOp = cx(K - 1) - P / 2 - 3;
+    const items = [];
+    const caja = (txt, x, y, tam, peso, ancla, que) => {
+      const w = T.ancho(txt, tam, peso), x0 = ancla === 'middle' ? x - w / 2 : ancla === 'end' ? x - w : x;
+      return { que, txt, x0, x1: x0 + w, y0: y - tam * 0.8, y1: y + tam * 0.25, dentro: 'cuaderno' };
+    };
+    const pon = (txt, x, y, o) => items.push(Object.assign({ txt, x, y, tam: F, peso: 400, ancla: 'middle', color: null }, o));
+    for (const [k, v] of Object.entries(lleva)) if (v) pon(String(v), cx(+k), yL, { tam: TL, peso: 700, color: 'o', que: 'llevada' });
+    filas.forEach((f, i) => {
+      const cs = f.split('');
+      cs.forEach((ch, j) => { if (ch !== ' ') pon(ch, cx(cs.length - 1 - j), yF(i), { que: 'fila' }); });
+      if (base) pon(`(${base})`, xr + 3, yF(i) + 5, { tam: TB, peso: 600, ancla: 'start', color: base === '?' ? null : 'i', que: 'base' });
+    });
+    if (nf) pon(cu.op || '+', xOp, yF(nf - 1), { ancla: 'end', que: 'signo' });
+    if (res === '?') pon('?', (cx(0) + cx(K - 1)) / 2, yR, { peso: 700, que: 'resultado' });
+    else res.split('').forEach((ch, j, cs) => { if (ch !== ' ') pon(ch, cx(cs.length - 1 - j), yR, { peso: 700, color: ch === '?' ? null : 'f', que: 'resultado' }); });
+    if (base) pon(`(${base})`, xr + 3, yR + 5, { tam: TB, peso: 600, ancla: 'start', color: base === '?' ? null : 'i', que: 'base' });
+    const cajas = items.map(t => caja(t.txt, t.x, t.y, t.tam, t.peso, t.ancla, t.que));
+    const iconos = cu.iconos === false ? [] : Array.from({ length: Math.min(K, 4) }, (_, k) => ({ k, tipo: ICONO[k], x: cx(k), y: yIcono }));
+    for (const ic of iconos) cajas.push({ que: `icono ${ic.tipo}`, txt: ic.tipo, x0: ic.x - 7, x1: ic.x + 7, y0: ic.y - 7, y1: ic.y + 7, dentro: 'cuaderno' });
+    const foco = Number.isInteger(cu.foco) && cu.foco >= 0 && cu.foco < K ? cu.foco : null;
+    return { C, solo, K, F, P, xr, cx, yL, yF, yRaya, yR, xOp, subW, items, cajas, iconos, foco, base, nf };
+  }
+  // Los iconos de la cabecera del cuaderno: qué orden cuenta cada columna.
+  function icono(tipo, cx, cy) {
+    if (tipo === 'sueltos') return trazoCaramelos(caramelo(cx, cy, 0.85));
+    if (tipo === 'bolsitas') return `<path d="${miniBolsa(cx, cy + 7)}" fill="var(--c-i)" fill-opacity="0.14" stroke="var(--c-i)" stroke-width="1.5" stroke-linejoin="round"/>`;
+    const w = tipo === 'cajas' ? 13 : 15, h = tipo === 'cajas' ? 10 : 12;
+    return `<rect x="${n2(cx - w / 2)}" y="${n2(cy - h / 2)}" width="${w}" height="${h}" rx="2" fill="var(--c-i)" fill-opacity="0.12" stroke="var(--c-i)" stroke-width="1.5"/>`
+      + `<line x1="${n2(cx - w / 2 + 2)}" y1="${n2(cy - h / 2 + 3)}" x2="${n2(cx + w / 2 - 2)}" y2="${n2(cy - h / 2 + 3)}" stroke="var(--c-i)" stroke-width="1.2"/>`
+      + (tipo === 'cajones' ? `<line x1="${n2(cx - w / 2 + 2)}" y1="${n2(cy + 1)}" x2="${n2(cx + w / 2 - 2)}" y2="${n2(cy + 1)}" stroke="var(--c-i)" stroke-width="1.2"/>` : '');
+  }
+  function dibujarCuenta(gc) {
+    const { C } = gc;
+    let s = `<g class="ar-cuaderno"><rect x="${C.x0}" y="${C.y0}" width="${C.x1 - C.x0}" height="${C.y1 - C.y0}" rx="5" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
+    // Anillos del espiral, arriba.
+    for (let x = C.x0 + 10; x <= C.x1 - 8; x += 12) s += `<circle cx="${n2(x)}" cy="${C.y0}" r="2.6" fill="var(--card)" stroke="currentColor" stroke-width="1.4"/>`;
+    // Renglones tenues, bajo cada fila escrita.
+    const renglones = [gc.yL + 5].concat(Array.from({ length: gc.nf }, (_, i) => gc.yF(i) + 6), [gc.yR + 6]);
+    for (const y of renglones) if (y < C.y1 - 3) s += `<line x1="${C.x0 + 6}" y1="${n2(y)}" x2="${C.x1 - 6}" y2="${n2(y)}" stroke="currentColor" stroke-width="1" stroke-opacity="0.14"/>`;
+    if (gc.foco !== null) s += `<rect class="ar-foco" x="${n2(gc.cx(gc.foco) - gc.P / 2 - 1)}" y="${n2(gc.yL - 15)}" width="${n2(gc.P + 2)}" height="${n2(gc.yR + 7 - (gc.yL - 15))}" rx="3" fill="currentColor" fill-opacity="0.09"/>`;
+    for (const ic of gc.iconos) s += icono(ic.tipo, ic.x, ic.y);
+    if (gc.nf) s += `<line x1="${n2(gc.xOp - T.ancho('+', gc.F) - 2)}" y1="${n2(gc.yRaya)}" x2="${n2(gc.xr + gc.subW)}" y2="${n2(gc.yRaya)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    for (const t of gc.items) s += `<text class="kit-txt" x="${n2(t.x)}" y="${n2(t.y)}" font-size="${t.tam}"${t.peso !== 400 ? ` font-weight="${t.peso}"` : ''}${t.ancla !== 'start' ? ` text-anchor="${t.ancla}"` : ''} fill="${T.color(t.color)}" style="font-variant-numeric:tabular-nums">${T.esc(t.txt)}</text>`;
+    return s + '</g>';
+  }
+
   // Los órdenes que se dibujan, del mayor al suelto.
   function ordenes(d) {
     if (d.cerrado) return [];
@@ -236,13 +340,17 @@
   }
   function geometria(datos, estado = {}) {
     const d = mezcla(datos, estado), n = entero(d.n) || 1;
-    const ords = ordenes(d), llega = d.cerrado ? 0 : entero(d.llega);
-    const tipos = d.cerrado ? ['cerrado'] : ords.concat(llega ? ['llega'] : []);
-    const reglas = lineasRegla(d, ords);
+    // El cuaderno (cuatro operaciones): el pedido se corre a la izquierda; con solo, no hay pedido ni letrero.
+    const cu = d.cuenta && typeof d.cuenta === 'object' ? d.cuenta : null, solo = !!(cu && cu.solo);
+    const zona = cu ? ZONA_CU : ZONA;
+    const ords = solo ? [] : ordenes(d), llega = d.cerrado || solo ? 0 : entero(d.llega);
+    const tipos = solo ? [] : d.cerrado ? ['cerrado'] : ords.concat(llega ? ['llega'] : []);
+    const reglas = solo ? [] : lineasRegla(d, ords);
     // Con tres líneas en el letrero, el pedido baja un poco más; el aro punteado de «juntar» sobresale 5 del grupo
-    // (numeracion, idea 3: rondas con el letrero completo).
-    const tope = (reglas.length >= 3 ? 108 : TOPE) + (reglas.length || d.etiqueta ? 0 : -50);
-    const SEP = 12, AW = ZONA.x1 - ZONA.x0, AH = PISO - tope - (d.juntar && reglas.length >= 3 ? 6 : 0);
+    // (numeracion, idea 3: rondas con el letrero completo). Con el cuaderno no hay etiqueta: el pedido sube hasta el letrero.
+    const tope = cu ? (reglas.length ? 62 + 18 * (reglas.length - 1) + 14 : 48)
+      : (reglas.length >= 3 ? 108 : TOPE) + (reglas.length || d.etiqueta ? 0 : -50);
+    const SEP = 12, AW = zona.x1 - zona.x0, AH = PISO - tope - (d.juntar && reglas.length >= 3 ? 6 : 0);
     // Cuántas filas lleva cada grupo: la combinación que deja el pedido más grande (a igual tamaño, menos filas).
     const opciones = tipos.map(t => (['bolsitas', 'cajas', 'cajones'].includes(t) && entero(d[t]) > 1 ? [1, 2, 3].filter(f => f <= entero(d[t])) : [1]));
     let mejor = null;
@@ -263,21 +371,23 @@
     // Escala: la que hace caber el pedido, hasta 1,7 (o la que fijan los datos, para que el juego no salte de tamaño).
     const sCabe = mejor.sc;
     const s = Math.min(sCabe, tapa);
-    let x = ZONA.x0 + (AW - W0 * s) / 2;
+    let x = zona.x0 + (AW - W0 * s) / 2;
     const objetos = [], textos = [], cajas = [];
     grupos.forEach(g => {
       g.x = x; g.cx = x + g.w * s / 2; g.y0 = PISO - g.h * s;
       objetos.push({ que: g.tipo, x0: x, y0: g.y0, x1: x + g.w * s, y1: PISO });
       x += (g.w + SEP) * s;
     });
-    // Rótulos: en la primera línea; si pisan al de la izquierda, en la segunda.
+    // Rótulos: en la primera línea; si pisan al de la izquierda, en la segunda. Con el cuaderno, los rótulos dicen
+    // sumas («3 + 2 bolsitas») y dos seguidos se leerían como una sola: piden más aire entre ellos.
+    const aire = cu ? 20 : 6;
     const rotulos = [];
     for (const g of grupos) {
       const segs = rotuloDe(d, g.tipo === 'cerrado' ? 'cerrado' : g.tipo);
       if (!segs) continue;
       const w = anchoSegs(segs, TAM, 400), x0 = Math.min(W - 12 - w, Math.max(12, g.cx - w / 2));
       let fila = 0;
-      while (fila < ROT.length - 1 && rotulos.some(r => r.fila === fila && x0 < r.x1 + 6 && r.x0 < x0 + w + 6)) fila++;
+      while (fila < ROT.length - 1 && rotulos.some(r => r.fila === fila && x0 < r.x1 + aire && r.x0 < x0 + w + aire)) fila++;
       const r = { segs, x0, x1: x0 + w, fila, y: ROT[fila] };
       rotulos.push(r);
       textos.push({ que: 'rotulo', txt: segs.map(z => z[0]).join(''), x0, x1: x0 + w, y0: r.y - TAM * 0.8, y1: r.y + TAM * 0.25 });
@@ -288,9 +398,16 @@
       textos.push({ que: 'regla', txt: segs.map(z => z[0]).join(''), x0: 20, x1: 20 + w, y0: y - TAM * 0.8, y1: y + TAM * 0.25 });
       return { segs, y };
     });
-    // Etiqueta colgada.
+    // El cuaderno: un objeto más del puesto; sus textos van dentro (cajas con dentro: 'cuaderno').
+    let cuenta = null;
+    if (cu) {
+      cuenta = geoCuenta(cu);
+      objetos.push({ que: 'cuaderno', x0: cuenta.C.x0, y0: cuenta.C.y0, x1: cuenta.C.x1, y1: cuenta.C.y1 });
+      cajas.push(...cuenta.cajas);
+    }
+    // Etiqueta colgada (con el cuaderno no va: el cuaderno anota el total).
     let etq = null;
-    if (d.etiqueta) {
+    if (d.etiqueta && !cu) {
       const e = d.etiqueta, cif = String(e.cifras === undefined ? '?' : e.cifras), base = e.base === undefined ? String(d.n) : String(e.base);
       const pide = /\?/.test(cif), col = e.color !== false;
       const w = T.ancho(cif, 22, 700) + (base ? T.ancho(`(${base})`, TAM, 600) : 0);
@@ -298,7 +415,7 @@
       objetos.push({ que: 'etiqueta', x0: ETQ.x0, y0: ETQ.y0, x1: ETQ.x1, y1: ETQ.y1 });
       cajas.push({ que: 'texto de la etiqueta', x0: ETQ.cx - w / 2, x1: ETQ.cx + w / 2, y0: ETQ.base - 22 * 0.8, y1: ETQ.base + 5 + TAM * 0.25, dentro: 'etiqueta' });
     }
-    return { W, H, M, PISO, s, sCabe, n, d, grupos, rotulos, regla, etq, objetos, textos, cajas };
+    return { W, H, M, PISO, s, sCabe, n, d, grupos, rotulos, regla, etq, cuenta, objetos, textos, cajas };
   }
 
   // ---------- Dibujo ----------
@@ -318,6 +435,8 @@
     s += `<rect x="8" y="${PISO}" width="304" height="${H - M - PISO}" rx="3" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2"/>`;
     // El letrero de la regla del puesto.
     for (const r of g.regla) s += texto(20, r.y, r.segs);
+    // El cuaderno de doña Juana con la cuenta.
+    if (g.cuenta) s += dibujarCuenta(g.cuenta);
     // La etiqueta colgada del toldo.
     if (g.etq) {
       const e = g.etq;
@@ -332,12 +451,20 @@
     for (const gr of g.grupos) {
       const xl = (gr.x - g.grupos[0].x) / g.s;
       pedido += gr.tipo === 'cerrado' ? cerrado(xl) : grupo(gr.tipo, xl, gr.k, n, gr);
+      // Lo que acaba de subir (la llevada): los últimos del grupo, con un aro punteado naranja.
+      const sube = d.llevada && ['bolsitas', 'cajas', 'cajones'].includes(gr.tipo) ? Math.min(entero(d.llevada[gr.tipo]), gr.k) : 0;
+      if (sube) for (const p of posicionesGrupo(xl, gr.k, gr).slice(gr.k - sube))
+        pedido += `<rect class="ar-subio" x="${n2(p.x - 3)}" y="${n2(p.y - gr.u.h - 3)}" width="${n2(gr.u.w + 6)}" height="${n2(gr.u.h + 5)}" rx="6" fill="none" stroke="var(--c-o)" stroke-width="2.5" stroke-dasharray="5 3" vector-effect="non-scaling-stroke"/>`;
       if (d.juntar === gr.tipo && gr.k >= n) {
         // Aro punteado alrededor de los primeros n (los que se juntan).
         if (gr.tipo === 'sueltos') {
           const ps = puntosMonton(xl, gr.k).slice(0, n), xs = ps.map(p => p[0]), ys = ps.map(p => p[1]);
           const x0 = Math.min(...xs) - 10, x1 = Math.max(...xs) + 10, y0 = Math.min(...ys) - 6, y1 = Math.max(...ys) + 5;
           pedido += `<rect class="ar-juntar" x="${n2(x0)}" y="${n2(y0)}" width="${n2(x1 - x0)}" height="${n2(y1 - y0)}" rx="6" fill="none" stroke="var(--c-i)" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>`;
+        } else if (d.cuenta) {
+          // Con el cuaderno, un aro por cada uno de los primeros n: así se ve que se juntan n, no la fila entera.
+          for (const p of posicionesGrupo(xl, gr.k, gr).slice(0, n))
+            pedido += `<rect class="ar-juntar" x="${n2(p.x - 0.5)}" y="${n2(p.y - gr.u.h - 1)}" width="${n2(gr.u.w + 1)}" height="${n2(gr.u.h + 1.5)}" rx="6" fill="none" stroke="var(--c-i)" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>`;
         } else {
           const filasG = Math.ceil(n / gr.porFila), anchoG = Math.min(n, gr.porFila) * (gr.u.w + 3) + 3;
           const x0 = xl + (gr.w - (Math.min(gr.porFila, gr.k) * (gr.u.w + 3) - 3)) / 2 - 3;
@@ -348,17 +475,30 @@
     if (g.grupos.length) s += `<g class="ar-pedido" transform="translate(${n2(g.grupos[0].x)} ${PISO}) scale(${n2(g.s)})">${pedido}</g>`;
     // Rótulos del frente del mostrador.
     for (const r of g.rotulos) s += texto(r.x0, r.y, r.segs);
+    // Zonas para tocar un grupo (toque directo; el control sigue con sus botones).
+    for (const t of Array.isArray(d.toque) ? d.toque : []) {
+      const o = g.objetos.find(x => x.que === t.orden);
+      if (!o || !t.control) continue;
+      s += `<rect class="ar-toque" data-toque="${T.esc(t.control)}" x="${n2(o.x0 - 4)}" y="${n2(o.y0 - 4)}" width="${n2(o.x1 - o.x0 + 8)}" height="${n2(o.y1 - o.y0 + 6)}" fill="transparent"><title>${T.esc(t.titulo || 'Tocar')}</title></rect>`;
+    }
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="puesto" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
   }
 
   function alt(datos, estado = {}) {
     const d = mezcla(datos, estado), n = d.n;
+    const cu = d.cuenta && typeof d.cuenta === 'object' ? d.cuenta : null;
     const partes = [];
     if (d.cerrado) partes.push('un paquete de papel cerrado');
     else for (const o of ordenes(d).slice()) { const k = entero(d[o]); partes.push(`${k} ${o === 'sueltos' ? (k === 1 ? 'caramelo suelto' : 'caramelos sueltos') : (k === 1 ? SING[o] : PLUR[o])}`); }
-    let t = `Puesto de caramelos de doña Juana, con bolsitas de ${n === undefined ? '?' : n} caramelos. Sobre el mostrador: ${partes.join(', ')}.`;
-    if (!d.cerrado && entero(d.llega)) t += ` Llegan ${entero(d.llega)} caramelos más.`;
-    if (d.etiqueta) { const e = d.etiqueta, b = e.base === undefined ? n : e.base; t += ` Etiqueta: ${e.cifras === undefined ? '?' : e.cifras}${b !== '' && b !== undefined ? ` en base ${b}` : ''}.`; }
+    let t = cu && cu.solo ? 'Puesto de caramelos de doña Juana, con su cuaderno de cuentas abierto sobre el mostrador.'
+      : `Puesto de caramelos de doña Juana, con bolsitas de ${n === undefined ? '?' : n} caramelos. Sobre el mostrador: ${partes.join(', ')}.`;
+    if (!d.cerrado && !(cu && cu.solo) && entero(d.llega)) t += ` Llegan ${entero(d.llega)} caramelos más.`;
+    if (d.llevada) for (const o of ['bolsitas', 'cajas', 'cajones']) { const k = entero(d.llevada[o]); if (k) t += ` ${k === 1 ? `Acaba de subir 1 ${SING[o]}` : `Acaban de subir ${k} ${PLUR[o]}`}, marcada con un aro.`; }
+    if (cu) {
+      const b = sinBase(cu.base) ? '' : ` en base ${cu.base}`, ll = Object.entries(cu.llevadas || {}).filter(([, v]) => v);
+      t += ` En el cuaderno: ${(cu.sumandos || []).join(` ${cu.op || '+'} `)}${b} = ${cu.resultado === undefined ? '?' : cu.resultado}.`;
+      if (ll.length) t += ` Llevadas: ${ll.map(([k, v]) => `${v} a la columna ${+k + 1}`).join(', ')}.`;
+    } else if (d.etiqueta) { const e = d.etiqueta, b = e.base === undefined ? n : e.base; t += ` Etiqueta: ${e.cifras === undefined ? '?' : e.cifras}${b !== '' && b !== undefined ? ` en base ${b}` : ''}.`; }
     return t;
   }
 

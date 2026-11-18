@@ -5,6 +5,8 @@
 // otro ni a un objeto (el pedido, la etiqueta, los que llegan), y el número de la etiqueta queda dentro de la etiqueta.
 // Se revisan las muestras de abajo y todas las figuras de la teoría que usan la pieza (Lee, el juego en toda su grilla,
 // Predice, «Mira» paso a paso, ejemplos, «Así se resuelve» y «Ahora tú» en 120 semillas), de las cinco ideas.
+// Desde el 18 nov también el cuaderno de «Las cuatro operaciones» (opción cuenta): sus textos quedan dentro del cuaderno
+// y no se pisan entre sí, y las figuras de esa unidad que usan la pieza pasan las mismas revisiones.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -26,6 +28,14 @@ const MUESTRAS = [
   { sueltos: 45, rotulos: { sueltos: [['45 caramelos', 'f', 700]] }, regla: [[['1 bolsita = '], ['?', 'i', 700], [' caramelos']]], etiqueta: { cifras: '?', base: '?' } },
   { n: 4, cajas: 2, bolsitas: 3, sueltos: 3, llega: 10, regla: 2, rotulos: true, etiqueta: { cifras: '?' } },
   {},
+  // El cuaderno (cuatro operaciones): junto al pedido y solo, con base, llevadas, foco y cuatro filas.
+  { n: 10, bolsitas: 7, sueltos: 15, ceros: true, regla: 1, juntar: 'sueltos', rotulos: { bolsitas: '4 + 3 bolsitas', sueltos: '7 + 8 sueltos' }, toque: [{ orden: 'sueltos', control: 'ju', titulo: 'Juntar' }], cuenta: { sumandos: ['47', '38'], resultado: '?' } },
+  { n: 10, bolsitas: 9, sueltos: 8, ceros: true, regla: 1, llevada: { bolsitas: 1 }, rotulos: true, cuenta: { sumandos: ['49', '49'], llevadas: { 1: 1 }, resultado: '98' } },
+  { n: 5, cajas: 1, bolsitas: 1, sueltos: 2, regla: 2, llevada: { cajas: 1 }, rotulos: true, cuenta: { sumandos: ['34', '23'], base: '5', llevadas: { 1: 1, 2: 1 }, resultado: '112', foco: 2 } },
+  { cuenta: { solo: true, sumandos: ['68', '79', '57', '86'], resultado: '?', foco: 0 } },
+  { cuenta: { solo: true, sumandos: ['8446', '9686', '2899'], resultado: '21031', llevadas: { 1: 2, 2: 2, 3: 2, 4: 2 } } },
+  { cuenta: { solo: true, sumandos: ['245', '354', '155'], base: '6', resultado: '1242', llevadas: { 1: 2, 2: 2, 3: 1 } } },
+  { cuenta: { solo: true, sumandos: ['35', '24'], base: 'n', resultado: '62' } },
 ];
 
 // Caja de un texto: de y − 0,8·tam a y + 0,25·tam (y es la línea base).
@@ -38,6 +48,10 @@ function revisar(d, e, nombre, mal) {
   const t = g.textos;
   for (let i = 0; i < t.length; i++) for (let j = i + 1; j < t.length; j++) if (solapan(t[i], t[j], 1)) mal.push(`${nombre}: se pisan «${t[i].txt}» y «${t[j].txt}»`);
   for (const x of t) for (const o of g.objetos) if (solapan(x, o)) mal.push(`${nombre}: «${x.txt}» pisa ${o.que}`);
+  // El cuaderno: sus textos e iconos, dentro y sin pisarse.
+  const cu = g.objetos.find(o => o.que === 'cuaderno'), dentro = g.cajas.filter(x => x.dentro === 'cuaderno');
+  for (const c of dentro) if (!(cu && c.x0 >= cu.x0 + 3 && c.x1 <= cu.x1 - 3 && c.y0 >= cu.y0 + 3 && c.y1 <= cu.y1 - 2)) mal.push(`${nombre}: «${c.txt}» se sale del cuaderno`);
+  for (let i = 0; i < dentro.length; i++) for (let j = i + 1; j < dentro.length; j++) if (solapan(dentro[i], dentro[j], -0.5)) mal.push(`${nombre}: en el cuaderno se pisan «${dentro[i].txt}» y «${dentro[j].txt}»`);
   // Los objetos del pedido no se pisan entre sí (cada grupo en su lugar), salvo los que llegan, que van encima.
   const ob = g.objetos.filter(o => o.que !== 'etiqueta');
   for (let i = 0; i < ob.length; i++) for (let j = i + 1; j < ob.length; j++) if (solapan(ob[i], ob[j], -0.5)) mal.push(`${nombre}: se pisan ${ob[i].que} y ${ob[j].que}`);
@@ -45,7 +59,7 @@ function revisar(d, e, nombre, mal) {
   for (const c of g.cajas.filter(x => x.dentro === 'etiqueta')) if (!(etq && c.x0 >= etq.x0 + 3 && c.x1 <= etq.x1 - 3 && c.y0 >= etq.y0 + 3 && c.y1 <= etq.y1 - 2)) mal.push(`${nombre}: el número no cabe en la etiqueta`);
   // Nada del pedido sube hasta el letrero o la etiqueta.
   const arriba = Math.max(0, ...g.textos.filter(x => x.que === 'regla').map(x => x.y1), etq ? etq.y1 : 0);
-  for (const o of g.objetos.filter(x => x.que !== 'etiqueta')) if (o.y0 < arriba - 1e-9) mal.push(`${nombre}: ${o.que} sube hasta el letrero o la etiqueta`);
+  for (const o of g.objetos.filter(x => x.que !== 'etiqueta' && x.que !== 'cuaderno')) if (o.y0 < arriba - 1e-9) mal.push(`${nombre}: ${o.que} sube hasta el letrero o la etiqueta`);
 }
 
 test('registrada en el kit', () => assert.equal(Kit.piezas['arit-puesto'], P));
@@ -114,8 +128,10 @@ test('muestras: todo cabe con 4 de margen y ningún texto pisa a otro ni a un ob
 });
 
 test('todas las figuras de la teoría que usan la pieza: caben y sus textos no se pisan', () => {
-  const U = require(path.join(__dirname, '../../../contenido/teoria/aritmetica/numeracion.js'));
   const Teoria = require('../../teoria.js');
+  for (const archivo of ['numeracion.js', 'cuatro-operaciones.js']) {
+  const U = require(path.join(__dirname, '../../../contenido/teoria/aritmetica', archivo));
+  for (const r of U.requiere || []) require(path.join(__dirname, '../../..', r));
   const figs = [], mal = [];
   const toma = (nombre, dib, pieza) => { if (dib && dib.datos && pieza === 'arit-puesto') figs.push([nombre, dib.datos, dib.estado || {}]); };
   for (const idea of U.ideas) {
@@ -127,12 +143,13 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus textos no s
     toma(`${idea.id} revelar`, idea.predice.revelar, idea.predice.pieza || pz);
     idea.mira.pasos.forEach((ps, i) => toma(`${idea.id} mira ${i + 1}`, { datos: idea.mira.datos, estado: Object.assign({}, idea.mira.base || {}, ps.estado || {}) }, idea.mira.pieza || pz));
     for (const [k, e] of (idea.ejemplos || []).entries()) if (e.figura) toma(`${idea.id} ejemplo ${k + 1}`, e.figura, e.figura.pieza);
+    for (const m of (U.laboratorio || []).filter(x => x.pieza === 'arit-puesto')) for (const v of Teoria.grilla(m.controles).filter((_, k) => k % 7 === 0)) toma(`${m.id} mesa ${JSON.stringify(v)}`, m.dibujo(v), m.pieza);
     for (let s = 0; s < 120; s++) {
       if (idea.resuelve) { const c = idea.resuelve.generar(s); toma(`${idea.id} resuelve ${s}`, c.dibujo, idea.resuelve.pieza || pz); for (const x of c.pasos) toma(`${idea.id} resuelve ${s}`, x.dibujo, idea.resuelve.pieza || pz); }
       const a = idea.ahoraTu.generar(s); toma(`${idea.id} ahora tú ${s}`, a.dibujo, idea.ahoraTu.pieza || pz);
     }
   }
-  assert.ok(figs.length > 200, `${figs.length} figuras`);
+  assert.ok(figs.length > 200, `${archivo}: ${figs.length} figuras`);
   for (const [nombre, d, e] of figs) revisar(d, e, nombre, mal);
   assert.deepEqual(mal.slice(0, 20), []);
   // El juego no cambia de escala entre un caso y otro (la bolsita no salta de tamaño al mover un control). En la idea 3
@@ -144,6 +161,21 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus textos no s
     if (!grupos.has(k)) grupos.set(k, new Set());
     grupos.get(k).add(P.geometria(d, e).s);
   }
-  assert.ok(grupos.size > 4);
+  assert.ok(grupos.size >= (archivo === 'numeracion.js' ? 5 : 1), archivo);
   for (const [k, esc] of grupos) assert.equal(esc.size, 1, `${k}: ${[...esc].join(', ')}`);
+  }
+});
+
+test('el cuaderno: los números que se operan en tinta, la llevada naranja, el resultado violeta, la base turquesa', () => {
+  const s = P.dibujar({ cuenta: { solo: true, sumandos: ['34', '23'], base: '5', llevadas: { 1: 1 }, resultado: '112' } });
+  assert.match(s, /fill="currentColor"[^>]*>3</);
+  assert.match(s, /fill="var\(--c-o\)"[^>]*>1</);
+  assert.match(s, /fill="var\(--c-f\)"[^>]*>2</);
+  assert.match(s, /fill="var\(--c-i\)"[^>]*>\(5\)</);
+  const p = P.dibujar({ cuenta: { solo: true, sumandos: ['34', '23'], resultado: '?' } });
+  assert.ok(!/var\(--c-f\)/.test(p), 'lo que se pide, «?» en tinta');
+  // El aro de lo que subió es naranja y va alrededor de la última bolsita.
+  const a = P.dibujar({ n: 10, bolsitas: 3, sueltos: 2, llevada: { bolsitas: 1 }, cuenta: { sumandos: ['12', '19'] } });
+  assert.equal((a.match(/class="ar-subio"[^>]*stroke="var\(--c-o\)"/g) || []).length, 1);
+  assert.ok(!/class="ar-etiqueta"/.test(P.dibujar({ n: 5, bolsitas: 1, etiqueta: { cifras: '1' }, cuenta: { sumandos: ['1'] } })), 'con cuaderno no va la etiqueta');
 });
