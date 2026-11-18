@@ -393,8 +393,10 @@
     let lt = null, t0 = Date.now(), caso = null, semilla = 0;
 
     const pieza = nombre => Kit.piezas[nombre || idea.pieza];
+    // Un dibujo puede traer su propia pieza (dib.pieza): manda sobre la del momento (lector en frío y auditoría de
+    // Estructura atómica y MRU, 18 nov: «Así se resuelve» del Ni²⁺ salía con el hueso de la idea 1).
     const dibujar = (dib, nombre) => {
-      const P = pieza(nombre);
+      const P = pieza((dib && dib.pieza) || nombre);
       fig.innerHTML = P.dibujar(dib.datos, dib.estado || {});
       $('#te-alt').textContent = P.alt(dib.datos);
     };
