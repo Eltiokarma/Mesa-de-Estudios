@@ -174,33 +174,37 @@
     return true;
   }
 
-  // ¿Caben las rayitas de «miden igual»? La misma cuenta que geo-objeto (marcas): cada grupo de rayitas, lo más cerca
-  // posible del medio de su tramo, a 10 px o más de cada punto y de las rayitas de otro grupo, probando los órdenes
-  // posibles (auditoría de la teoría, 17 nov: en el medio, una rayita tachaba un punto en 81 de 300 casos de medio-entre).
-  // generador.test.js compara esta respuesta con la de la pieza.
-  const HOLGURA_MARCA = 10;
+  // ¿Caben las rayitas de «miden igual»? La misma cuenta que geo-objeto (marcas). Desde la ronda 2 del lector (18 nov), cada
+  // grupo de rayitas va en la cima de un arco (una llave de esquinas redondas) que une las puntas de su tramo, 22 px sobre
+  // la línea, y 20 px más arriba si su tramo contiene a otro marcado: con la rayita sobre la línea, un punto que partía el
+  // tramo cambiaba qué tramo se leía («AM = BC»). Se pide 10 px o más de cada punto, de las rayitas de otro grupo y de
+  // otro arco. generador.test.js compara esta respuesta con la de la pieza.
+  const HOLGURA_MARCA = 10, ALTO_ARCO = 22, PASO_ARCO = 20, DY = 5, RP = 5.5, BOT = 140;
   function marcasCaben(F) {
     const ts = F.tramos.filter(t => t.nivel === 0 && t.marcas > 0);
     if (!ts.length) return true;
     const kms = F.puntos.map(p => p.km), lo = Math.min(...kms), hi = Math.max(...kms), pad = Math.max(0.6, (hi - lo || 1) * 0.07);
     const s = 276 / (hi - lo + 2 * pad), X = km => 160 + (km - (lo + hi) / 2) * s, xDe = id => X(F.puntos.find(p => p.id === id).km);
     const xs = F.puntos.map(p => X(p.km)), hw = t => (t.marcas - 1) * 3 + 4;
-    const holgura = (t, c, puestas) => Math.min(...xs.map(x => Math.abs(c - x) - hw(t)), ...puestas.filter(z => z.t.marcas !== t.marcas).map(z => Math.abs(c - z.x) - hw(t) - hw(z.t)));
-    const colocar = orden => {
-      const puestas = [];
-      for (const t of orden) {
-        const a = Math.min(xDe(t.de), xDe(t.a)), b = Math.max(xDe(t.de), xDe(t.a)), medio = (a + b) / 2;
-        let x = null;
-        for (let k = 0; k <= 2 * Math.ceil((b - a) / 2) && x === null; k++) { const c = medio + (k % 2 ? 1 : -1) * Math.ceil(k / 2); if (c >= a && c <= b && holgura(t, c, puestas) >= HOLGURA_MARCA) x = c; }
-        if (x === null) return false;
-        puestas.push({ t, x });
+    const ext = t => [Math.min(xDe(t.de), xDe(t.a)), Math.max(xDe(t.de), xDe(t.a))];
+    const dentro = (u, t) => { const [a, b] = ext(t), [c, e] = ext(u); return u !== t && c >= a - 0.5 && e <= b + 0.5 && e - c < b - a - 0.5; };
+    const prof = t => Math.max(0, ...ts.filter(u => dentro(u, t)).map(u => prof(u) + 1));
+    const alto = k => ALTO_ARCO + PASO_ARCO * Math.max(...ts.filter(t => t.marcas === k).map(prof));
+    const ps = ts.map(t => {
+      const [a, b] = ext(t), al = alto(t.marcas), m = Math.min(4, (b - a) / 6), x0 = a + m, x1 = b - m, cima = BOT - al, r = Math.min(7, (x1 - x0) / 2, BOT - 6 - cima);
+      const yEn = x => { if (x < x0 || x > x1) return null; const dx = x < x0 + r ? x0 + r - x : x > x1 - r ? x - (x1 - r) : 0; return cima + r - Math.sqrt(Math.max(0, r * r - dx * dx)); };
+      return { t, x: (a + b) / 2, y: cima, hw: hw(t), yEn };
+    });
+    return ps.every(z => {
+      let h = Infinity;
+      for (const x of xs) h = Math.min(h, Math.max(Math.abs(z.x - x) - z.hw - RP, BOT - z.y - DY - RP));
+      for (const w of ps) {
+        if (w === z) continue;
+        if (w.t.marcas !== z.t.marcas) h = Math.min(h, Math.max(Math.abs(z.x - w.x) - z.hw - w.hw, Math.abs(z.y - w.y) - 2 * DY));
+        for (const x of [z.x - z.hw, z.x, z.x + z.hw]) { const y = w.yEn(x); if (y !== null) h = Math.min(h, Math.abs(y - z.y) - DY); }
       }
-      return true;
-    };
-    const ordenes = [];
-    const perm = (resto, hecho) => { if (!resto.length) { ordenes.push(hecho); return; } resto.forEach((t, i) => perm([...resto.slice(0, i), ...resto.slice(i + 1)], [...hecho, t])); };
-    perm(ts, []);
-    return ordenes.some(colocar);
+      return h >= HOLGURA_MARCA;
+    });
   }
 
   // Lugares: carretera en km, avenida en metros (de 100 en 100) o una recta de examen en cm.

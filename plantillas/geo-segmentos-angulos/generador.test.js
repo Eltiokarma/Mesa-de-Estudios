@@ -448,6 +448,13 @@ test('M6: las rayitas de «miden igual» caben a 10 px o más de cada punto y de
     const p = gen.generar(`marcas-${s}`, { tipo });
     if (!p.escena || p.escena.pieza !== 'geo-objeto') continue;
     for (const z of GO.marcas(p.escena.datos)) if (z.holgura < GO.HOLGURA_MARCA) mal.push(`${tipo} ${s}: rayitas de ${z.tramo.de}${z.tramo.a} a ${z.holgura.toFixed(1)} px`);
+    // Ronda 2 del lector (18 nov): la marca de un tramo va en el arco que une sus dos puntas, nunca sobre la línea, donde
+    // un punto que parte el tramo la haría leer como otro tramo («AM = BC»).
+    const g = GO.geometria(p.escena.datos);
+    for (const z of GO.marcas(p.escena.datos)) {
+      const [a, b] = [g.P[z.tramo.de][0], g.P[z.tramo.a][0]].sort((u, w) => u - w);
+      if (!z.arco || Math.abs(z.arco.a - a) > 1e-6 || Math.abs(z.arco.b - b) > 1e-6 || z.y > GO.constantes.BOT - GO.ALTO_ARCO + 1e-9) mal.push(`${tipo} ${s}: la marca de ${z.tramo.de}${z.tramo.a} no va en su arco`);
+    }
     assert.equal(gen.marcasCaben(p.escena.datos), GO.marcasCaben(p.escena.datos), `${tipo} ${s}: el generador y la pieza no coinciden`);
   }
   assert.deepEqual(mal.slice(0, 10), []);

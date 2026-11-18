@@ -290,21 +290,40 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
 
 // Auditoría de la teoría (17 nov): las rayitas no tachan un punto (M6), el rótulo de un ángulo entero va sobre su
 // bisectriz y la punteada se corta debajo (M4), y dos consecutivos del mismo color no comparten radio (M5).
-test('rayitas lejos de los puntos; rótulo «centro» sobre la bisectriz, con la punteada cortada; consecutivos con radios distintos', () => {
+test('rayitas en su arco; rótulo «centro» junto a la bisectriz, sin tocarla; consecutivos con radios distintos', () => {
   // Ejemplo 8 de la idea 2 tal como estaba: M en el 9, B en el 13 y C en el 18 (en el medio de MC, la rayita tachaba B).
   const d = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 9), pto('B', 13), pto('C', 18)],
     tramos: [{ de: 'A', a: 'M', papel: 'igual', nivel: 0, marcas: 1 }, { de: 'M', a: 'C', papel: 'igual', nivel: 0, marcas: 1 }] };
   for (const z of P.marcas(d)) assert.ok(z.holgura >= P.HOLGURA_MARCA, `${z.tramo.de}${z.tramo.a}: ${z.holgura}`);
-  const B = P.geometria(d).P.B[0], mc = P.marcas(d).find(z => z.tramo.de === 'M');
-  assert.ok(Math.abs(mc.x - B) >= 10 + mc.hw, 'la rayita de MC se corre lejos de B');
+  // Ronda 2 del lector (18 nov): corrida de lado, la rayita de MC caía entre B y C y se leía «AM = BC». Ahora cada marca va
+  // sobre el arco de su tramo, que une sus dos puntas por encima de la línea.
+  const g = P.geometria(d);
+  for (const z of P.marcas(d)) {
+    const [a, b] = [g.P[z.tramo.de][0], g.P[z.tramo.a][0]].sort((u, v) => u - v);
+    assert.ok(Math.abs(z.arco.a - a) < 1e-9 && Math.abs(z.arco.b - b) < 1e-9, `${z.tramo.de}${z.tramo.a}: el arco no va de punta a punta`);
+    assert.ok(z.x > a && z.x < b && z.y <= P.constantes.BOT - P.ALTO_ARCO + 1e-9, `${z.tramo.de}${z.tramo.a}: la rayita no va en la cima de su arco`);
+  }
+  assert.match(P.dibujar(d), /<path d="M[^"]*Q/, 'sin arco');
+  // Un tramo que contiene a otro marcado (AN sobre AM y MB) va más arriba, y su grupo (NC) a la misma altura.
+  const d2 = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 4), pto('B', 8), pto('N', 13), pto('C', 26)],
+    tramos: [{ de: 'A', a: 'M', papel: 'igual', nivel: 0, marcas: 1 }, { de: 'M', a: 'B', papel: 'igual', nivel: 0, marcas: 1 }, { de: 'A', a: 'N', papel: 'igual', nivel: 0, marcas: 2 }, { de: 'N', a: 'C', papel: 'igual', nivel: 0, marcas: 2 }] };
+  const m2 = P.marcas(d2), alto = id => m2.find(z => z.tramo.de + z.tramo.a === id).arco.alto;
+  assert.ok(alto('AN') > alto('AM') && alto('NC') === alto('AN') && alto('AM') === alto('MB'), 'alturas de los arcos');
+  for (const z of m2) assert.ok(z.holgura >= P.HOLGURA_MARCA, `${z.tramo.de}${z.tramo.a}: ${z.holgura}`);
   // ∠AOB = 76° con su bisectriz OD punteada: el rótulo va sobre OD y OD se corta debajo.
   const pol = (g, r = 2.5) => ({ x: r * Math.cos(g * Math.PI / 180), y: r * Math.sin(g * Math.PI / 180) });
   const fig = { vista: { x: [-0.8, 3.3], y: [-0.8, 3.3] }, puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'O', lado: 228 }, Object.assign({ id: 'A', rotulo: 'A', lado: 10, sinPunto: true }, pol(10)), Object.assign({ id: 'D', rotulo: 'D', lado: 48, sinPunto: true }, pol(48)), Object.assign({ id: 'B', rotulo: 'B', lado: 86, sinPunto: true }, pol(86))],
     segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'D', discontinua: true }, { de: 'O', a: 'B' }],
     angulos: [{ en: 'O', de: 'A', a: 'B', texto: '76°', color: 'h', mide: 76, radio: 46, centro: true }, { en: 'O', de: 'A', a: 'D', texto: '?', rayita: 1, radio: 26 }, { en: 'O', de: 'D', a: 'B', rayita: 1, radio: 26 }] };
-  const e = { objeto: 'angulos', figura: fig }, r = P.rotulos(e).rot.find(z => z.an.texto === '76°'), O = P.rotulos(e).vertice('O');
+  // Ronda 2 del lector (18 nov): sobre la bisectriz (con la punteada cortada debajo) se seguía leyendo «76°» encima de
+  // OD. Ahora va junto a la bisectriz, más afuera que su arco, sin tocar OD ni ningún lado.
+  const e = { objeto: 'angulos', figura: fig }, rr = P.rotulos(e), r = rr.rot.find(z => z.an.texto === '76°'), O = rr.vertice('O');
   const t = Math.atan2(-(r.y - O[1]), r.x - O[0]) * 180 / Math.PI;
-  assert.ok(Math.abs(t - 48) < 2, `el rótulo de 76° va a ${t.toFixed(1)}°, no sobre la bisectriz (48°)`);
+  assert.ok(t > 10 && t < 86 && Math.abs(t - 48) < 30, `el rótulo de 76° va a ${t.toFixed(1)}°, lejos de la bisectriz (48°)`);
+  assert.ok(Math.hypot(r.x - O[0], r.y - O[1]) > r.an.radio, 'el rótulo de 76° queda dentro de su arco');
+  const g0 = rr.g, D = g0.S('D');
+  const cruzaOD = cruza(O, [O[0] + (D[0] - O[0]) * 9, O[1] + (D[1] - O[1]) * 9], { x0: r.caja.x0, x1: r.caja.x1, y0: r.caja.y0, y1: r.caja.y1 }, 2);
+  assert.ok(!cruzaOD, 'el rótulo de 76° toca la bisectriz OD');
   const mal = []; revisar(e, {}, 'bisectriz cortada', mal); assert.deepEqual(mal, []);
   // Dos consecutivos carmín de radio 24: el segundo se aleja.
   const c = { objeto: 'angulos', figura: { vista: { x: [-0.8, 3.3], y: [-0.8, 3.3] }, puntos: [{ id: 'O', x: 0, y: 0 }, Object.assign({ id: 'A', sinPunto: true }, pol(0)), Object.assign({ id: 'B', sinPunto: true }, pol(50)), Object.assign({ id: 'C', sinPunto: true }, pol(120))],

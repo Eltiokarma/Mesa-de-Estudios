@@ -201,7 +201,7 @@ function angulosDe(d) {
 }
 // Lo pedido: «?» o una sola letra en tinta (la incógnita). Un ángulo dado puede llevar letra o expresión (2x, θ), en carmín.
 const PEDIDO = t => /^\?$|\?$/.test(t);
-const INCOGNITA = t => /^[a-zθ]$/.test(t);
+const INCOGNITA = t => /^[a-zθβ]$/.test(t);   // (β: un ángulo intermedio que se nombra para usarlo; ronda 2)
 
 test('fidelidad de los ángulos: cada uno mide en el dibujo lo que dice su rótulo o su valor (±0,5°)', () => {
   const mal = [];
@@ -371,7 +371,7 @@ function sectorDe(g, an) {
   return dt >= 0 ? [norm(t1), dt] : [norm(t1 + dt), -dt];
 }
 const enSector = (t, [lo, w], e = 0) => norm(t - lo) > -e && norm(t - lo) < w + e;
-test('M4: cada rótulo cae dentro de su ángulo, no en una de sus partes dibujadas; con una bisectriz punteada adentro, sobre la bisectriz del entero', () => {
+test('M4: cada rótulo cae dentro de su ángulo, no en una de sus partes dibujadas; con una bisectriz punteada adentro, más afuera que los arcos de sus partes', () => {
   const mal = [];
   for (const it of ANG) {
     if (it.figura.objeto === 'reloj') continue;
@@ -386,25 +386,30 @@ test('M4: cada rótulo cae dentro de su ángulo, no en una de sus partes dibujad
         const sb = sectorDe(g, b);
         if (sb[1] < sec[1] - 1e-6 && norm(sb[0] - sec[0]) <= sec[1] - sb[1] + 1e-6 && enSector(t, sb, -0.02) && !an.centro) mal.push(`${it.donde}: «${an.texto}» cae en la parte ${b.de}${an.en}${b.a}`);
       }
-      // Una bisectriz punteada adentro: el rótulo, sobre la bisectriz del ángulo entero.
+      // Una bisectriz punteada adentro: el rótulo del ángulo entero va más afuera que su arco y que los arcos de sus partes
+      // (así no se lee como una mitad), cerca de su bisectriz pero no encima de ella (ronda 2 del lector, 18 nov: sobre la
+      // punteada se leía mal; que no la toque lo prueba «ningún rótulo cruza una línea»).
       const fig = P.escena(it.figura).fig;
       const punteados = (fig.segmentos || []).filter(l => l.discontinua && !l.recta && (l.de === an.en || l.a === an.en)).map(l => polar(c, g.S(l.de === an.en ? l.a : l.de)));
       if (punteados.some(u => enSector(u, sec, -0.03))) {
-        const medio = norm(sec[0] + sec[1] / 2), dif = Math.abs(((t - medio + 3 * Math.PI) % (2 * Math.PI)) - Math.PI);
-        if (dif > 4 * RAD) mal.push(`${it.donde}: «${an.texto}» tiene una bisectriz punteada adentro y su rótulo no va sobre la bisectriz del entero`);
+        const medio = norm(sec[0] + sec[1] / 2), dif = Math.abs(((t - medio + 3 * Math.PI) % (2 * Math.PI)) - Math.PI), d = Math.hypot(x - c[0], y - c[1]);
+        if (dif > sec[1] / 2) mal.push(`${it.donde}: «${an.texto}» se aleja demasiado de la bisectriz del entero`);
+        const partes = angs.filter(b => b !== an && b.en === an.en && (b.rayita || b.texto === undefined) && enSector(t, sectorDe(g, b), 0.02));
+        for (const b of [an, ...partes]) if (d < (b.radio || 26)) mal.push(`${it.donde}: «${an.texto}» queda dentro del arco ${b.de}${b.en}${b.a}`);
       }
     }
   }
   assert.deepEqual([...new Set(mal)].slice(0, 20), []);
 });
 
-test('M5: dos ángulos consecutivos del mismo color (sin rayitas) nunca tienen el mismo radio', () => {
+test('M5: dos ángulos consecutivos (sin rayitas, de cualquier color) nunca tienen el mismo radio', () => {
   const mal = [];
   for (const it of ANG) {
     const angs = P.angulosListos(it.figura, 9), G2 = G.geometria(P.escena(it.figura).fig);
     for (let i = 0; i < angs.length; i++) for (let j = i + 1; j < angs.length; j++) {
       const a = angs[i], b = angs[j];
-      if (a.en !== b.en || a.rayita || b.rayita || (a.color || '') !== (b.color || '') || ![a.de, a.a].some(x => x === b.de || x === b.a)) continue;
+      // (Desde la ronda 2 del lector, 18 nov, de cualquier color: θ, «?» y θ se fundían en una S.)
+      if (a.en !== b.en || a.rayita || b.rayita || ![a.de, a.a].some(x => x === b.de || x === b.a)) continue;
       const sa = sectorDe(G2, a), sb = sectorDe(G2, b), dentro = (u, v) => v[1] < u[1] + 1e-6 && norm(v[0] - u[0]) <= u[1] - v[1] + 1e-6;
       if (dentro(sa, sb) || dentro(sb, sa)) continue;
       if (Math.abs((a.radio || 26) - (b.radio || 26)) < 6) mal.push(`${it.donde}: ${a.de}${a.en}${a.a} y ${b.de}${b.en}${b.a} con el mismo radio`);
@@ -413,15 +418,35 @@ test('M5: dos ángulos consecutivos del mismo color (sin rayitas) nunca tienen e
   assert.deepEqual([...new Set(mal)].slice(0, 20), []);
 });
 
-test('M6: ninguna rayita de «miden igual» a menos de 10 px de un punto ni de las rayitas de otro grupo', () => {
+test('M6: ninguna rayita de «miden igual» a menos de 10 px de un punto, de las rayitas de otro grupo o de otro arco', () => {
   const mal = [];
-  // Las figuras de la regla son fijas (no salen de un sorteo): ahí se pide más aire, 16 px. Con 10,1 px, la rayita de MC
-  // tachaba el punto B en la regla del punto medio (captura de la regla, 18 nov).
   assert.ok(RECTA.some(x => x.momento === 'regla' && x.figura), 'la prueba no ve el dibujo propio de la regla');
   for (const it of RECTA.filter(x => x.figura)) for (const z of P.marcas(it.figura)) {
-    const tope = it.momento === 'regla' ? 16 : P.HOLGURA_MARCA;
-    if (z.holgura < tope) mal.push(`${it.donde}: las rayitas de ${z.tramo.de}${z.tramo.a} quedan a ${z.holgura.toFixed(1)} px (tope ${tope})`);
+    if (z.holgura < P.HOLGURA_MARCA) mal.push(`${it.donde}: las rayitas de ${z.tramo.de}${z.tramo.a} quedan a ${z.holgura.toFixed(1)} px`);
   }
+  assert.deepEqual([...new Set(mal)].slice(0, 20), []);
+});
+
+// Ronda 2 del lector (18 nov): con B entre M y C, la rayita de la mitad MC caía entre B y C y se leía «AM = BC» (ejemplos
+// 8 y 14 de la idea 2 y la regla). La marca de un tramo no puede quedar sobre la línea si otro punto parte ese tramo:
+// va en la cima de un arco que une las dos puntas del tramo, por encima de la línea y de los puntos.
+test('ronda 2: la marca de un tramo no queda sobre un subtramo partido por otro punto (va en el arco de punta a punta)', () => {
+  const mal = [];
+  let partidos = 0;
+  for (const it of RECTA.filter(x => x.figura)) {
+    const g = P.geometria(it.figura), xs = (it.figura.puntos || []).filter(q => !(+q.alto > 0)).map(q => [q.id, g.P[q.id][0]]);
+    for (const z of P.marcas(it.figura)) {
+      const t = z.tramo, [a, b] = [g.P[t.de][0], g.P[t.a][0]].sort((u, v) => u - v), nom = t.de + t.a;
+      const dentro = xs.filter(([id, x]) => x > a + 1 && x < b - 1).map(([id]) => id);
+      if (dentro.length) partidos++;
+      // Sobre la línea solo podría ir si ningún punto parte el tramo; aquí nunca va sobre la línea.
+      if (!z.arco) { if (dentro.length) mal.push(`${it.donde}: la marca de ${nom} va sobre la línea, partida por ${dentro.join(', ')}`); continue; }
+      if (Math.abs(z.arco.a - a) > 1e-6 || Math.abs(z.arco.b - b) > 1e-6) mal.push(`${it.donde}: el arco de ${nom} no va de ${t.de} a ${t.a}`);
+      if (!(z.x > a && z.x < b)) mal.push(`${it.donde}: la marca de ${nom} cae fuera de su tramo`);
+      if (P.constantes.BOT - z.y < P.ALTO_ARCO - 1e-9) mal.push(`${it.donde}: la marca de ${nom} no sube sobre la línea`);
+    }
+  }
+  assert.ok(partidos >= 3, `la prueba no ve tramos marcados partidos por otro punto (${partidos})`);
   assert.deepEqual([...new Set(mal)].slice(0, 20), []);
 });
 
@@ -587,4 +612,106 @@ test('cada letra que nombra una Regla (puntos y ángulos) aparece en su dibujo',
     for (const L of letrasAng) if (!rotulos.some(t => new RegExp(`(^|[^A-Za-zÀ-ÿ])${L}([^A-Za-zÀ-ÿ]|$)`).test(t))) mal.push(`${idea.id}: la regla usa ${L} y ningún rótulo de su dibujo la muestra (${rotulos.join(', ')})`);
   }
   assert.deepEqual(mal, []);
+});
+
+// Ronda 2 del lector (18 nov): la regla de la idea 1 mostraba «5 km» y «≈ 6,7 km» (el último paso de «Mira»), largos de
+// los caminos AB y BC que salen de Pitágoras (√(4² + 3²) y √(6² + 3²)). La propuesta sacó Pitágoras de la idea: ningún
+// texto ni dibujo de la predicción, «Mira» o la regla da el largo de un camino fuera de la carretera; se compara con la
+// regla del mapa (AB > 4 km, BC > 6 km), y «frente al km 4» se ve rotulado.
+test('ronda 2: nada de la idea 1 usa Pitágoras (ni el largo de los caminos fuera de la carretera)', () => {
+  const plano = x => (x === null || x === undefined ? '' : typeof x === 'string' ? x : Array.isArray(x) ? x.map(plano).join('') : typeof x === 'object' ? [x.t, x.frac, x.sub, x.vec].map(plano).join(' ') : String(x));
+  const i = idea1, pr = i.predice, mi = i.mira, rg = i.regla;
+  const textos = [i.juega.consigna, i.juega.mision.texto, i.juega.voz, pr.pregunta, ...pr.datos, pr.voz, ...pr.opciones.map(o => o.texto + ' ' + (o.siFuera || '')), pr.coincide, pr.noCoincide,
+    mi.voz, ...mi.pasos.flatMap(p => [p.texto, p.ecuacion]), rg.texto, rg.ecuacion, rg.condicion, rg.voz, ...i.lee.tarjetas.map(t => t.texto)].map(x => plano(x).replace(/\u00a0/g, ' '));
+  const figs = [pr.dibujo, pr.revelar, ...mi.pasos.map(p => ({ datos: mi.datos, estado: p.estado })), rg.dibujo];
+  assert.ok(rg.dibujo, 'la regla de la idea 1 tiene su propio dibujo (sin el último paso de «Mira»)');
+  const svgs = figs.map(d => P.dibujar(d.datos, d.estado || {}).replace(/<[^>]*>/g, ' '));
+  // Los largos de los caminos: con B a 3 km frente al km 4, AB = 5 km y BC ≈ 6,7 km.
+  const prohibido = /√|Pit[aá]goras|hipotenusa|≈|6,7|11,7|\b5 km|\b5 \+/;
+  for (const t of [...textos, ...svgs]) assert.ok(!prohibido.test(t), `usa un largo de Pitágoras: «${t.slice(0, 120)}»`);
+  // El km 4 se ve en la figura de la predicción, y «Mira» compara cada camino con su tramo de carretera.
+  assert.match(P.dibujar(pr.dibujo.datos, {}), />km 4</);
+  assert.ok(textos.some(t => /AB\s*> 4 km/.test(t)) && textos.some(t => /BC\s*> 6 km/.test(t)), '«Mira» no compara los caminos con 4 km y 6 km');
+});
+
+// Ronda 2 del lector (18 nov): «pasa por B y termina en C» hacía ver imposible la misión de 14 km (entre A y C siempre
+// da 10). La consigna dice que B puede quedar antes de A o pasado C, sin decir cuál de los dos da los 14 km.
+test('ronda 2: la misión de 14 km de la idea 1 dice que B puede salir del tramo AC, y se puede lograr', () => {
+  const j = idea1.juega, txt = `${j.consigna} ${j.mision.texto}`;
+  assert.match(txt, /antes de A/); assert.match(txt, /pasado C/);
+  assert.ok(!/termina en C/.test(txt));
+  const logran = Teoria.grilla(j.controles).filter(v => j.mision.logrado(v)).map(v => v.bx);
+  assert.deepEqual(logran.sort((a, b) => a - b), [-2, 12]);
+});
+
+// Ronda 2 del lector (18 nov): «76°», «70°», «x» y «84°» quedaban encima de la línea punteada (bisectriz o paralela por
+// el vértice), aunque la punteada se cortara debajo; y el «?» de una mitad quedaba entre dos arcos, sin saber de cuál era.
+// Ningún rótulo de ángulo toca un trazo recto de su figura (lados, rectas, punteadas), con 2 px de aire; y el rótulo de un
+// ángulo queda más cerca de su propio arco que del arco de otro ángulo del mismo vértice que pase por ese lado.
+function trazosDe(g, fig, corte) {
+  return (fig.segmentos || []).filter(l => (l.desde || 0) <= corte && !(l.hasta < corte)).map(l => {
+    const a = g.S(l.de), b = g.S(l.a);
+    if (!a || !b) return null;
+    if (!l.recta) return { l, p: a, q: b };
+    const u = [b[0] - a[0], b[1] - a[1]], L = Math.hypot(...u) || 1;
+    return { l, p: [a[0] - u[0] / L * 900, a[1] - u[1] / L * 900], q: [a[0] + u[0] / L * 900, a[1] + u[1] / L * 900] };
+  }).filter(Boolean);
+}
+function tocaCaja(p, q, b) {
+  let t0 = 0, t1 = 1; const dx = q[0] - p[0], dy = q[1] - p[1];
+  for (const [pp, qq] of [[-dx, p[0] - b.x0], [dx, b.x1 - p[0]], [-dy, p[1] - b.y0], [dy, b.y1 - p[1]]]) {
+    if (pp === 0) { if (qq < 0) return false; continue; }
+    const r = qq / pp; if (pp < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+  }
+  return true;
+}
+test('ronda 2: ningún rótulo de ángulo cruza una línea (la punteada incluida), y cada rótulo queda junto a su propio arco', () => {
+  const mal = [];
+  let punteadas = 0;
+  for (const it of ANG) {
+    for (const corte of [0, 1, 2, 3, 4, 9]) {
+      const { g, fig, angs, rot } = P.rotulos(it.figura, corte), ts = trazosDe(g, fig, corte);
+      punteadas += ts.filter(t => t.l.discontinua).length;
+      for (const { an, caja } of rot) {
+        const b = { x0: caja.x0 - 2, x1: caja.x1 + 2, y0: caja.y0 - 2, y1: caja.y1 + 2 };
+        for (const t of ts) if (tocaCaja(t.p, t.q, b)) mal.push(`${it.donde}: «${an.texto}» cruza ${t.l.discontinua ? 'la punteada' : 'la línea'} ${t.l.de}${t.l.a}`);
+        // Junto a su arco: la distancia del rótulo a su arco es menor que a otro arco del mismo vértice en esa dirección.
+        if (an.sector || an._sec || an.texto === undefined) continue;
+        const c = g.S(an.en), cx = (caja.x0 + caja.x1) / 2, cy = (caja.y0 + caja.y1) / 2, dist = Math.hypot(cx - c[0], cy - c[1]), t = polar(c, [cx, cy]);
+        const propio = Math.abs(dist - (an.radio || 26));
+        for (const o of angs) {
+          // (Contra el arco de un ángulo entero dibujado con sus partes, «centro»: el caso del «?» entre dos arcos.)
+          if (o === an || !o.centro || o.en !== an.en || (o.desde || 0) > corte || o.hasta < corte || !enSector(t, sectorDe(g, o), -0.02)) continue;
+          if (Math.abs(dist - (o.radio || 26)) < propio - 1e-6) mal.push(`${it.donde}: «${an.texto}» queda más cerca del arco ${o.de}${o.en}${o.a} que del suyo`);
+        }
+      }
+    }
+  }
+  assert.ok(punteadas > 0, 'la prueba no ve líneas punteadas');
+  const u = [...new Set(mal)];
+  assert.deepEqual(u.slice(0, +(process.env.TOPE || 40)), [], `${u.length} rótulos mal`);
+});
+
+// Ronda 2 del lector (18 nov): los niveles no subían en paralelas (el 14, «Los cuatro agudos», rotulaba θ en los cuatro:
+// el dibujo ya decía que eran iguales) ni en el quiebre (el 14, 84° ÷ 2, más fácil que el 8). En las ideas 5 y 6, un
+// ejemplo de nivel 3 plantea una ecuación con letra y sigue después de despejarla, y su figura no repite una misma letra
+// en más de dos ángulos (no da hecha la igualdad que se practica).
+test('ronda 2: en paralelas y quiebre, el nivel 3 plantea una ecuación y sigue; la figura no da hechas las igualdades', () => {
+  for (const id of ['paralelas', 'quiebre']) {
+    const idea = def.ideas.find(i => i.id === id);
+    for (const [k, e] of idea.ejemplos.entries()) {
+      if (e.nivel !== 3) continue;
+      if (e.figura) {
+        const cuenta = {};
+        for (const z of angulosDe(e.figura.datos)) if (/^[a-zθα-ω]$/.test(z.texto)) cuenta[z.texto] = (cuenta[z.texto] || 0) + 1;
+        for (const [l, n] of Object.entries(cuenta)) assert.ok(n <= 2, `${id} ejemplo ${k + 1}: «${l}» en ${n} ángulos`);
+      }
+    }
+    for (const k of [13]) {
+      const e = idea.ejemplos[k], lineas = e.solucion.map(l => plano(l.texto) + ' ' + plano(l.ecuacion || '')).map(t => t.replace(/ /g, ' '));
+      const conEcuacion = lineas.findIndex(t => /\d?[a-zθ] [+−] \d+°? = \d?[a-zθ]? ?[+−]? ?\d*|[a-z] = \d|\d[a-z] = /.test(t) && /→/.test(t));
+      assert.ok(conEcuacion >= 0, `${id} ejemplo ${k + 1}: no plantea una ecuación con letra`);
+      assert.ok(conEcuacion < lineas.length - 1, `${id} ejemplo ${k + 1}: termina al despejar (no sigue)`);
+    }
+  }
 });

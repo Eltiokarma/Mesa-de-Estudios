@@ -225,3 +225,99 @@ el resto de la unidad (`SEP` = «·» separa igualdades en muchas ecuaciones; ca
 **Comprobación**: pruebas de la unidad (24), de geo-objeto (9), del generador (23) y de la escena (52) en verde; `npm run
 catalogo`; `npm test`: 9641 de 9642; la que falla es de Razonamiento deductivo (idea 3, «el alumno sobre el aro
 diablada»), que corrige otro agente.
+
+## Correcciones de la ronda 2 del lector (18 nov)
+
+Fase 8 con la ronda 2 del lector en frío (`rutinas/frio/geometria.segmentos-y-angulos.md`, «Ronda 2»). Archivos tocados:
+`contenido/teoria/geometria/segmentos-y-angulos.js` y su test, `nucleo/kit/piezas/geo-objeto.js` y su test, y
+`plantillas/geo-segmentos-angulos/generador.js` y su test (sin cambios de respuestas: `casos.json` y `papel.json` siguen
+igual). No se tocó `app/` (salvo lo que escribe `npm run catalogo`) ni `nucleo/teoria.js`. No se tomaron como hallazgos
+(decisiones de Gerson): x sin «°», el reloj propio con el no convexo, «solo se ve el paso 1» y el número del circulito.
+Cada prueba nueva se corrió contra la versión anterior de los tres archivos (`git show HEAD`) y falla en su hallazgo.
+Capturas `--entera` en el scratchpad, `segmentos-r2/` (`antes/` y `todas/`).
+
+**1. Pitágoras en la idea 1.** La regla mostraba el último paso de «Mira», con «5 km» y «≈ 6,7 km» (√(4² + 3²) y
+√(6² + 3²)). Ahora:
+- La regla tiene su dibujo propio: B fuera de la carretera con los caminos rotulados AB (naranja), BC (turquesa) y AC
+  (tinta), sin medidas. Su texto dice «sus dos tramos suman AC; si queda fuera, el camino por B es más largo».
+- «Mira» ya no mide los caminos: la regla del mapa, puesta en AB desde A, tiene su marca de 4 km antes de B (AB > 4 km);
+  puesta en BC desde C, su marca de 6 km antes de B (BC > 6 km); juntos, más de 4 + 6 = 10 km. La revelación de la
+  predicción y sus mensajes dicen lo mismo, sin números de los caminos. Pieza: `reglas[].marca` (la marca larga con
+  «4 km») y `kmRotulo` («km 4» debajo de la pista, con su marca: la predicción ya muestra «frente al km 4»).
+- Prueba: ningún texto ni dibujo de Lee, Juega, Predice, «Mira» o la regla de la idea 1 tiene √, «Pitágoras», «≈»,
+  «6,7», «11,7» ni «5 km»; la regla tiene dibujo; «km 4» se ve en la predicción; «Mira» compara con 4 km y 6 km.
+- Queda la mesa «B fuera de la recta» del laboratorio, que muestra AB + BC medido por la app (exploración libre, no se
+  pide calcular). Si Gerson la quiere sin decimales, es un cambio aparte.
+
+**2. Misión de 14 km.** Consigna: «La combi va de A hasta el paradero B, y de B hasta C»; misión: «Corre B, también
+antes de A o pasado C, hasta que la combi recorra 14 km». No dice cuál de los dos lugares da los 14 km. Prueba: la
+consigna nombra «antes de A» y «pasado C», ya no dice «termina en C», y la misión se cumple solo en B = −2 y B = 12.
+
+**3. Rayitas que se leían como otro tramo.** Las rayitas de «miden igual» sobre la línea (nivel 0) van ahora en la cima
+de un arco (una llave de esquinas redondas) que une las dos puntas de su tramo, 22 px sobre la línea; un tramo que
+contiene a otro marcado va 20 px más arriba, y todo su grupo a esa altura (AN y NC sobre AM y MB). Así B, que parte MC,
+queda debajo del arco de MC y no cambia qué tramo se lee. Va en la pieza, así que vale para teoría, ejemplos (05 y 06 del
+lector: punto medio 8 y 14), la regla, «Mira», «Ahora tú» y la práctica (el generador calcula igual que la pieza en
+`marcasCaben`). La tarjeta 2 de Lee de la idea 2 usa el arco y lo dice («Las mitades llevan arcos con la misma
+rayita»). Pruebas: en la unidad, toda marca va en un arco que va de punta a punta de su tramo, encima de la línea (y hay
+al menos tres tramos marcados partidos por otro punto); holgura de 10 px a puntos, a las rayitas de otro grupo y a otro
+arco; en la pieza, alturas de arcos anidados; en el generador, lo mismo en 300 semillas por tipo. También: «MN es lo
+que AN le saca a AM» pasa a «M y N están en orden desde A, así que MN = AN − AM».
+
+**4. Rótulos sobre la punteada y arcos.**
+- El rótulo de un ángulo entero con su bisectriz o paralela punteada (`centro`) ya no va sobre la punteada: se corre al
+  lado, más allá de su arco, al lugar más cercano donde su caja queda a 6 px de todo trazo recto y de las letras (si no
+  hay lugar, la teoría arma otro caso). «76°», «70°», «84°», «100°» y la «x» de los quiebres quedan junto a la punteada.
+- El quiebre simétrico (ejemplo 3 de la idea 6) pasa de 25° + 25° a 35° + 35° (x = 70, agudo): con 50° la «x» no cabía
+  fuera de la punteada.
+- El arco de un ángulo entero pasa 14 px más allá del rótulo de una parte que contiene (antes 6): el «?» de la mitad queda
+  junto a su arco y no a medio camino.
+- Dos ángulos consecutivos con el mismo radio se separan 8 px sea cual sea su color (antes solo del mismo color): θ, «?»
+  y θ ya no se funden.
+- Pruebas: ningún rótulo de ángulo de la unidad (juego, Lee, predicción, «Mira», regla, ejemplos y 400 semillas de
+  «Así se resuelve» y «Ahora tú», en cada corte) toca un trazo recto, punteadas incluidas; cada rótulo queda más cerca de
+  su arco que del arco de un ángulo entero del mismo vértice; M4 pide ahora que el rótulo del entero vaya más afuera que
+  sus partes (antes, sobre la bisectriz); M5, radios distintos de cualquier color. La práctica ya cumplía (su `rotular`
+  descarta todo rótulo sobre una línea).
+
+**5. Niveles.**
+- Paralelas, ejemplo 14: sale «Los cuatro agudos» (todos rotulados θ; arcos fundidos). Entra «Agudos y obtusos»: un
+  agudo de 2x + 15° y un obtuso de 5x + 25° en cruces distintos, sin par con nombre: hay que pasar por el opuesto por el
+  vértice, ver los conjugados, despejar y multiplicar. Cuentas aparte: 7x = 140 → x = 20; 55° + 125° = 180°; los cuatro
+  agudos suman 4 · 55° = 220°.
+- Quiebre, ejemplo 14: «La paralela como bisectriz» ya no es 84° ÷ 2. Los tramos forman 2y + 6° (a) y 3y − 12° (b) y la
+  paralela por V es bisectriz: 2y + 6 = 3y − 12 → y = 18; cada parte 42°; el quiebre 84°.
+- Prueba: en las ideas 5 y 6, el ejemplo 14 plantea una ecuación con letra y sigue después de despejarla, y ninguna
+  figura de nivel 3 repite una letra en más de dos ángulos.
+
+**6. Lo demás de la ronda 2.**
+- Regla de la idea 4: el «90°» entre bisectrices quedaba pegado al poste y C(x) no estaba dibujado. El dibujo de la regla
+  marca x, C(x) (con el poste) y S(x) (con la pista del otro lado); las bisectrices quedan en «Mira». El texto dice «las
+  bisectrices de dos consecutivos forman la mitad de su suma» y la condición, el caso de dos adyacentes (90°).
+- Regla de la idea 6: «Con varios quiebres, los de un lado suman igual que los del otro» (sin dibujo) pasa a «Con varios
+  quiebres, una paralela por vértice y la misma suma», como lo resuelven los serruchos.
+- Juego de la idea 3: la leyenda explica «30°: de un número al siguiente: 360° ÷ 12» y «m∠: la medida de un ángulo» (con
+  A y B en las agujas, a las 12:00 la B tapaba el 12); la voz ya no pregunta por el largo de las agujas.
+- «Ahora tú» de la idea 4: la voz dice «El complemento y el suplemento son restas; cada bisectriz toma una mitad».
+- Datos que daban el planteamiento: ejemplo 8 de la idea 1 (sale «AD = AB + BC + CD»; queda la regla general y la
+  solución la escribe) y ejemplo 8 de la idea 3 (sale «miden 2k y k»; la figura lo muestra y la solución lo dice). Los
+  demás que señaló el lector son la regla general del ejercicio y se quedan.
+- Lee de paralelas: «las flechas iguales (>) marcan las paralelas».
+- Ejemplos: el 14 de la idea 1 explica por qué A no va en medio; el 14 de la idea 3 escribe 3x + 150° = 360°; el 8 de la
+  idea 4 dice m∠AOD = m∠DOB = 35°; «el ángulo mide lo que vale x» pasa a «el ángulo mide x grados»; el 14 de la idea 4
+  ya no dice «de adentro hacia afuera»; el 8 de paralelas marca con β el vecino del de 112°; el 3 y el 8 del quiebre
+  dicen que la paralela por V parte el quiebre en dos alternos internos (sale «x junta las dos copias» y «aquí sí es
+  bisectriz»).
+
+**Pendientes y decisiones para Gerson**
+1. Las rayitas sobre arcos cambian todas las figuras de segmentos con marcas (unidad y práctica). Recomendación: dejarlo
+   así, una sola forma; la otra opción es arco solo cuando un punto parte el tramo (dos estilos en la unidad).
+2. La regla de la idea 4 ya no dibuja las bisectrices (sí «Mira»). Si la quiere con las dos cosas, haría falta una
+   segunda figura en la regla (`app/teoria.js`).
+3. No se tocó: la soga del juego de la idea 2 (el lector cree que se mueve la raya), las agujas chicas del reloj de
+   pulsera, el «?» chico de «Ahora tú» de la idea 2 con M y B juntos, los pares sin nombre en la regla de paralelas y el
+   «3 km» medido al borde de la pista (lo dicen la figura y el dato).
+
+**Comprobación**: pruebas de la unidad (31), de geo-objeto (9) y del generador (24) en verde; `npm run catalogo`;
+`npm test`: 9701 de 9702; la que falla es de Razonamiento deductivo («contrafáctico: la línea de datos es la misma en la
+teoría y en la práctica»), que corrige otro agente.
