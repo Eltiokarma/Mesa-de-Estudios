@@ -43,7 +43,12 @@
     // Estructura atómica (18 nov 2026, ideas 3 y 6): la convención de mₗ y mₛ para el último electrón. Es la del motor de
     // plantillas/atomo-y-tabla y del generador configuracion-ubicacion. No se pudo confirmar con un libro de fuentes/
     // (la carpeta no tiene libros todavía): queda como decisión del examen, avisada a Gerson.
+    // PENDIENTE (auditoría M3, correcciones del 18 nov): la decisión de Gerson pedía confirmarla con un libro de
+    // fuentes/ y fuentes/libros/ sigue vacía. No se inventa una cita: `fuente` queda en null y `pendiente` dice qué
+    // falta (lo revisa nucleo/convencion.test.js). Al confirmarla, se llena `fuente` y se borra `pendiente`.
     'ultimo-electron': {
+      fuente: null,
+      pendiente: 'Confirmar con un libro de fuentes/ o con un solucionario oficial (San Marcos o UNI) que el examen usa mₗ de −ℓ a +ℓ y primero mₛ = +½. Lo decide Gerson.',
       titulo: 'Los signos del último electrón',
       examen: 'Las cajas de un subnivel van de mₗ = −ℓ, a la izquierda, a mₗ = +ℓ, a la derecha. Primero se pone una flecha ↑ en cada caja, de izquierda a derecha, con mₛ = +½; después, las flechas ↓, con mₛ = −½. Así, el último electrón del oxígeno (2p⁴) es (2; 1; −1; −½).',
       universidad: 'los signos de mₗ y mₛ son una convención: otros libros llenan de +ℓ a −ℓ o empiezan por −½, y el mismo electrón sale con otros signos. Lo que no depende de la convención es cuántos electrones quedan solos en el subnivel.',

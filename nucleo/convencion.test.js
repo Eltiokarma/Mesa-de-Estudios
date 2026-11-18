@@ -32,3 +32,13 @@ test('contraste de al menos 7:1 en claro y en oscuro', () => {
     assert.ok(contraste(selloTinta, sello) >= 7, `${selloTinta} sobre ${sello}`);
   }
 });
+
+// Auditoría de Estructura atómica (M3, correcciones del 18 nov): la convención del último electrón no tiene libro que la
+// respalde todavía (fuentes/libros/ está vacía). Queda marcada como pendiente, sin una cita inventada; la tarjeta no lo
+// muestra al alumno. Cuando Gerson la confirme, `fuente` dice de dónde sale y `pendiente` se borra.
+test('la convención del último electrón sigue pendiente de fuente, sin cita inventada', () => {
+  const c = C.LISTA['ultimo-electron'];
+  if (c.fuente) assert.ok(typeof c.fuente === 'string' && !c.pendiente, 'con fuente, ya no está pendiente');
+  else assert.match(c.pendiente, /Gerson/);
+  assert.ok(!/pendiente|Gerson/i.test(C.html('ultimo-electron')), 'el alumno no ve la nota interna');
+});

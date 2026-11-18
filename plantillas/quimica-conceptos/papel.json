@@ -5,11 +5,11 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Sobre los modelos atómicos: I. En el modelo de Thomson, el átomo es neutro: la carga de los electrones compensa la carga positiva. II. Bohr propuso que el electrón no emite energía mientras gira en una órbita permitida. III. Rutherford descubrió el electrón. Datos: Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926. Electrón: descubierto en 1897.",
+      "enunciado": "Sobre los modelos atómicos: I. En el modelo de Thomson, el átomo es neutro: la carga de los electrones compensa la carga positiva. II. Bohr propuso que el electrón solo puede estar en ciertos niveles de energía. III. Rutherford descubrió el electrón. Datos: Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926. Electrón: descubierto en 1897.",
       "respuesta": "VVF",
       "pasos": [
         "I es V: los electrones incrustados compensan la esfera positiva; el átomo completo no tiene carga.",
-        "II es V: en el modelo de Bohr solo hay emisión o absorción cuando el electrón salta de una órbita a otra.",
+        "II es V: es la idea central de Bohr; al saltar de un nivel a otro, el electrón suelta o absorbe energía.",
         "III es F: el electrón lo descubrió Thomson (1897) con los rayos catódicos; Rutherford propuso el núcleo."
       ],
       "unidades": [

@@ -61,7 +61,7 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Escribe la configuración del ion Co³⁺ (Z = 27) y di cuántos electrones desapareados tiene. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. Orbitales: 1 en un s, 3 en un p, 5 en un d. carga = Z − e⁻.",
+      "enunciado": "Escribe la configuración del ion Co³⁺ (Z = 27) y di cuántos electrones desapareados tiene. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. Orbitales: 1 en un s, 3 en un p, 5 en un d. carga = Z − e⁻. Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Hund: una flecha en cada caja vacía antes de aparear.",
       "respuesta": "[Ar] 3d⁶, con 4 electrones desapareados.",
       "pasos": [
         "Átomo neutro: [Ar] 4s² 3d⁷.",
@@ -89,7 +89,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "La plata tiene Z = 47. Escribe la configuración del átomo y la del ion Ag⁺, y cuenta los desapareados de cada uno. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p. Caben: 2 en un s, 6 en un p, 10 en un d. Cromo, cobre, molibdeno y plata: un electrón del s de afuera pasa al d. [Kr]: los 36 electrones del kriptón. Orbitales: 1 en un s, 3 en un p, 5 en un d.",
+      "enunciado": "La plata tiene Z = 47. Escribe la configuración del átomo y la del ion Ag⁺, y cuenta los desapareados de cada uno. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p. Caben: 2 en un s, 6 en un p, 10 en un d. Cromo, cobre, molibdeno y plata: un electrón del s de afuera pasa al d. [Kr]: los 36 electrones del kriptón. Orbitales: 1 en un s, 3 en un p, 5 en un d. Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Hund: una flecha en cada caja vacía antes de aparear.",
       "respuesta": "Ag: [Kr] 5s¹ 4d¹⁰, 1 desapareado. Ag⁺: [Kr] 4d¹⁰, 0 desapareados.",
       "pasos": [
         "Por la regla saldría [Kr] 5s² 4d⁹, pero la plata es anómala, como el cobre: un electrón del 5s pasa al 4d, que queda lleno. Ag: [Kr] 5s¹ 4d¹⁰.",
@@ -168,7 +168,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Halla los números cuánticos (n; ℓ; mₗ; mₛ) del último electrón de un átomo con Z = 43. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p. Caben: 2 en un s, 6 en un p, 10 en un d. ℓ: s es 0, p es 1, d es 2, f es 3. Convención: las cajas van de mₗ = −ℓ (izquierda) a +ℓ (derecha). Convención: primero una ↑ (mₛ = +½) en cada caja; después las ↓ (mₛ = −½).",
+      "enunciado": "Halla los números cuánticos (n; ℓ; mₗ; mₛ) del último electrón de un átomo con Z = 43. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p. Caben: 2 en un s, 6 en un p, 10 en un d. ℓ: s es 0, p es 1, d es 2, f es 3. Convención: las cajas van de mₗ = −ℓ (izquierda) a +ℓ (derecha). Convención: primero una ↑ (mₛ = +½) en cada caja; después las ↓ (mₛ = −½). [Kr]: los 36 electrones del kriptón.",
       "respuesta": "(4; 2; +2; +½).",
       "pasos": [
         "Configuración: [Kr] 5s² 4d⁵. El último subnivel escrito es el 4d⁵: n = 4 y ℓ = 2.",
@@ -297,7 +297,7 @@
     {
       "id": "p12",
       "nivel": "básico",
-      "enunciado": "Un átomo neutro de estaño tiene Z = 50. ¿Cuántos electrones tiene en su último nivel? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p. Caben: 2 en un s, 6 en un p, 10 en un d. Último nivel (capa de valencia): el de mayor n. Alternativas: A) 2   B) 5   C) 4   D) 8   E) 14",
+      "enunciado": "Un átomo neutro de estaño tiene Z = 50. ¿Cuántos electrones tiene en su último nivel? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p. Caben: 2 en un s, 6 en un p, 10 en un d. Último nivel (capa de valencia): el de mayor n. [Kr]: los 36 electrones del kriptón. Alternativas: A) 2   B) 5   C) 4   D) 8   E) 14",
       "respuesta": "C) 4",
       "pasos": [
         "Configuración: [Kr] 5s² 4d¹⁰ 5p². El último nivel es el n = 5.",
@@ -374,7 +374,7 @@
     {
       "id": "p15",
       "nivel": "intermedio",
-      "enunciado": "El ion Cr³⁺ viene del cromo (Z = 24) y tiene carga 3+. ¿Cuál es su configuración abreviada? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. Cromo y cobre: un electrón del 4s pasa al 3d. carga = Z − e⁻. Alternativas: A) [Ar] 4s¹ 3d⁵   B) [Ar] 3d³   C) [Ar] 4s¹ 3d²   D) [Ar] 4s² 3d⁷",
+      "enunciado": "El ion Cr³⁺ viene del cromo (Z = 24) y tiene carga 3+. ¿Cuál es su configuración abreviada? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. Cromo y cobre: un electrón del 4s pasa al 3d. carga = Z − e⁻. Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Alternativas: A) [Ar] 4s¹ 3d⁵   B) [Ar] 3d³   C) [Ar] 4s¹ 3d²   D) [Ar] 4s² 3d⁷",
       "respuesta": "B) [Ar] 3d³",
       "pasos": [
         "Átomo neutro: Z = 24 → [Ar] 4s¹ 3d⁵.",
@@ -401,7 +401,7 @@
     {
       "id": "p16",
       "nivel": "intermedio",
-      "enunciado": "El ion Hg²⁺ viene del mercurio (Z = 80) y tiene carga 2+. ¿Cuál es su configuración abreviada? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. [Xe]: los 54 electrones del xenón. Cromo, cobre, molibdeno, plata y oro: un electrón del s de afuera pasa al d. carga = Z − e⁻. Alternativas: A) [Xe] 6s² 4f¹⁴ 5d¹⁰ 6p²   B) [Xe] 6s¹ 4f¹⁴ 5d⁹   C) [Xe] 6s² 4f¹⁴ 5d¹⁰   D) [Xe] 4f¹⁴ 5d¹⁰   E) [Xe] 6s² 4f¹⁴ 5d⁸",
+      "enunciado": "El ion Hg²⁺ viene del mercurio (Z = 80) y tiene carga 2+. ¿Cuál es su configuración abreviada? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. [Xe]: los 54 electrones del xenón. Cromo, cobre, molibdeno, plata y oro: un electrón del s de afuera pasa al d. carga = Z − e⁻. Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Alternativas: A) [Xe] 6s² 4f¹⁴ 5d¹⁰ 6p²   B) [Xe] 6s¹ 4f¹⁴ 5d⁹   C) [Xe] 6s² 4f¹⁴ 5d¹⁰   D) [Xe] 4f¹⁴ 5d¹⁰   E) [Xe] 6s² 4f¹⁴ 5d⁸",
       "respuesta": "D) [Xe] 4f¹⁴ 5d¹⁰",
       "pasos": [
         "Átomo neutro: Z = 80 → [Xe] 6s² 4f¹⁴ 5d¹⁰.",
@@ -455,7 +455,7 @@
     {
       "id": "p18",
       "nivel": "intermedio",
-      "enunciado": "El ion Cu⁺ viene del cobre (Z = 29) y tiene carga 1+. ¿Cuál es su configuración abreviada? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. Cromo y cobre: un electrón del 4s pasa al 3d. carga = Z − e⁻. Alternativas: A) [Ar] 4s² 3d¹⁰   B) [Ar] 4s¹ 3d¹⁰   C) [Ar] 4s¹ 3d⁹   D) [Ar] 3d¹⁰",
+      "enunciado": "El ion Cu⁺ viene del cobre (Z = 29) y tiene carga 1+. ¿Cuál es su configuración abreviada? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. Cromo y cobre: un electrón del 4s pasa al 3d. carga = Z − e⁻. Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Alternativas: A) [Ar] 4s² 3d¹⁰   B) [Ar] 4s¹ 3d¹⁰   C) [Ar] 4s¹ 3d⁹   D) [Ar] 3d¹⁰",
       "respuesta": "D) [Ar] 3d¹⁰",
       "pasos": [
         "Átomo neutro: Z = 29 → [Ar] 4s¹ 3d¹⁰.",
@@ -482,7 +482,7 @@
     {
       "id": "p19",
       "nivel": "intermedio",
-      "enunciado": "Un átomo de osmio (Z = 76) está en su estado fundamental. ¿Cuántos electrones desapareados tiene? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Cromo, cobre, molibdeno, plata y oro: un electrón del s de afuera pasa al d. Orbitales: 1 en un s, 3 en un p, 5 en un d, 7 en un f. Alternativas: A) 1   B) 6   C) 4   D) 0   E) 5",
+      "enunciado": "Un átomo de osmio (Z = 76) está en su estado fundamental. ¿Cuántos electrones desapareados tiene? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Cromo, cobre, molibdeno, plata y oro: un electrón del s de afuera pasa al d. Orbitales: 1 en un s, 3 en un p, 5 en un d, 7 en un f. Hund: una flecha en cada caja vacía antes de aparear. [Xe]: los 54 electrones del xenón. Alternativas: A) 1   B) 6   C) 4   D) 0   E) 5",
       "respuesta": "C) 4",
       "pasos": [
         "Configuración: [Xe] 6s² 4f¹⁴ 5d⁶.",
@@ -509,7 +509,7 @@
     {
       "id": "p20",
       "nivel": "avanzado",
-      "enunciado": "Se comparan cuatro especies en su estado fundamental. ¿Cuál de estas especies es diamagnética? Datos: Z: O 8, Ar 18, Sc 21, Cu 29. Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. Cromo y cobre: un electrón del 4s pasa al 3d. Orbitales: 1 en un s, 3 en un p, 5 en un d. carga = Z − e⁻. Paramagnética: con electrones desapareados; un imán la atrae. Diamagnética: sin ellos. Alternativas: A) Oxígeno   B) Sc⁺   C) Cu²⁺   D) Argón",
+      "enunciado": "Se comparan cuatro especies en su estado fundamental. ¿Cuál de estas especies es diamagnética? Datos: Z: O 8, Ar 18, Sc 21, Cu 29. Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. Cromo y cobre: un electrón del 4s pasa al 3d. Orbitales: 1 en un s, 3 en un p, 5 en un d. carga = Z − e⁻. Paramagnética: con electrones desapareados; un imán la atrae. Diamagnética: sin ellos. Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Hund: una flecha en cada caja vacía antes de aparear. [He]: los 2 electrones del helio. [Ne]: los 10 electrones del neón. [Ar]: los 18 electrones del argón. Alternativas: A) Oxígeno   B) Sc⁺   C) Cu²⁺   D) Argón",
       "respuesta": "D) Argón",
       "pasos": [
         "Argón: [Ne] 3s² 3p⁶ → 0 solos.",
@@ -568,7 +568,7 @@
     {
       "id": "p21",
       "nivel": "avanzado",
-      "enunciado": "El ion V²⁺ viene del vanadio (Z = 23) y tiene carga 2+. ¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) de su último electrón? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. carga = Z − e⁻. ℓ: s es 0, p es 1, d es 2, f es 3. Convención: las cajas van de mₗ = −ℓ (izquierda) a +ℓ (derecha). Convención: primero una ↑ (mₛ = +½) en cada caja; después las ↓ (mₛ = −½). Alternativas: A) (3; 2; 0; +½)   B) (3; 2; −1; +½)   C) (3; 3; 0; +½)   D) (3; 2; +2; +½)   E) (3; 2; −2; +½)",
+      "enunciado": "El ion V²⁺ viene del vanadio (Z = 23) y tiene carga 2+. ¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) de su último electrón? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. [Ar]: los 18 electrones del argón. carga = Z − e⁻. ℓ: s es 0, p es 1, d es 2, f es 3. Convención: las cajas van de mₗ = −ℓ (izquierda) a +ℓ (derecha). Convención: primero una ↑ (mₛ = +½) en cada caja; después las ↓ (mₛ = −½). Catión: salen primero los de mayor n; a igual n, los de mayor ℓ. Alternativas: A) (3; 2; 0; +½)   B) (3; 2; −1; +½)   C) (3; 3; 0; +½)   D) (3; 2; +2; +½)   E) (3; 2; −2; +½)",
       "respuesta": "A) (3; 2; 0; +½)",
       "pasos": [
         "V²⁺: primero el átomo, [Ar] 4s² 3d³; salen 2 electrones del nivel más alto: [Ar] 3d³.",
@@ -598,7 +598,7 @@
     {
       "id": "p22",
       "nivel": "intermedio",
-      "enunciado": "El ion Se²⁻ (Z = 34, carga 2−) está en su estado fundamental. ¿Cuántos electrones desapareados tiene? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. Cromo y cobre: un electrón del 4s pasa al 3d. Orbitales: 1 en un s, 3 en un p, 5 en un d. carga = Z − e⁻. Alternativas: A) 6   B) 2   C) 0   D) 3",
+      "enunciado": "El ion Se²⁻ (Z = 34, carga 2−) está en su estado fundamental. ¿Cuántos electrones desapareados tiene? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p. Caben: 2 en un s, 6 en un p, 10 en un d. Cromo y cobre: un electrón del 4s pasa al 3d. Orbitales: 1 en un s, 3 en un p, 5 en un d. carga = Z − e⁻. Hund: una flecha en cada caja vacía antes de aparear. [Ar]: los 18 electrones del argón. Alternativas: A) 6   B) 2   C) 0   D) 3",
       "respuesta": "C) 0",
       "pasos": [
         "Configuración: [Ar] 4s² 3d¹⁰ 4p⁶.",

@@ -16,6 +16,10 @@
 //     dice el resuelto (cuentas de la idea 1 en e4-qui/cuentas-idea1.py; de las otras, en f3/cuentas.py);
 //   - la convención de mₗ y mₛ: la misma en «Lee», en la regla, en los datos y en la tarjeta de nucleo/convencion.js;
 //   - la comparación de radios de los isoelectrónicos salió de la unidad (va a Tabla periódica).
+//   - correcciones del 18 nov (rutinas/auditoria/quimica.estructura-atomica.md, «Correcciones»): el electrón es de 1897
+//     (A1); la regla del catión y Hund en Datos donde se usan (A2); cada [Gas] con su línea (A3); la misma abreviada que
+//     el generador (M5); «Vale si» solo con condiciones (M4); el papel de atomo-y-tabla por unidad (M2) y los ejemplos
+//     corregidos (M1, M6, M7, B1, B3, B4).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -408,4 +412,148 @@ test('convención de mₗ y mₛ: la misma en Lee, la regla, los datos y la tarj
 test('la comparación de radios de los isoelectrónicos salió de la unidad (va a Tabla periódica)', () => {
   for (const i of def.ideas) for (const { donde, x } of lecturas(i)) assert.ok(!/\bpm\b|\bradios?\b/.test(plano(x)), `${i.id} ${donde}: ${plano(x)}`);
   assert.ok(!def.requiere.some(r => /recta\.js/.test(r)));
+});
+
+// ---------- Correcciones del 18 nov (auditoría y lector en frío) ----------
+const GEN_CU = require('../../../plantillas/configuracion-ubicacion/generador.js');
+const GEN_QC = require('../../../plantillas/quimica-conceptos/generador.js');
+const EA = 'quimica.estructura-atomica';
+const planoG = x => (Array.isArray(x) ? x.map(planoG).join(' ') : x && typeof x === 'object' ? String(x.t ?? x.texto ?? '') : String(x ?? ''));
+// Cada ejercicio de una idea, ya armado: ejemplos, «Ahora tú» y «Así se resuelve» (con sus textos y sus datos).
+function ejercicios(i, semillas = SEMILLAS) {
+  const out = [];
+  i.ejemplos.forEach((x, k) => out.push({ donde: `ejemplo ${k + 1} «${x.titulo}»`, pide: [x.enunciado, x.alternativas], todo: [x.enunciado, x.alternativas, x.solucion.map(y => [y.texto, y.ecuacion]), x.respuesta, x.figura && x.figura.datos], datos: x.datos }));
+  for (let s = 0; s < semillas; s++) {
+    const a = i.ahoraTu.generar(s);
+    out.push({ donde: `ahora tú ${s}`, pide: [a.pregunta, a.opciones.map(o => o.texto)], todo: [a.pregunta, a.opciones.map(o => [o.texto, o.siFuera]), a.solucion.texto, a.solucion.ecuacion], datos: a.datos });
+  }
+  for (let s = 0; s < 60; s++) {
+    const r = i.resuelve.generar(s);
+    out.push({ donde: `resuelve ${s}`, pide: [r.enunciado], todo: [r.enunciado, r.pasos.map(p => [p.texto, p.ecuacion, p.dibujo && p.dibujo.datos]), r.respuesta, r.dibujo && r.dibujo.datos], datos: r.datos });
+  }
+  return out;
+}
+
+// A1: una fecha por hecho. Thomson halló el electrón en 1897; 1904 es su modelo. Se revisa toda la unidad y su práctica.
+test('A1: el electrón es de 1897 en toda la unidad y en su práctica; 1904 es solo el modelo de Thomson', () => {
+  const textos = [];
+  for (const i of def.ideas) for (const { x } of lecturas(i)) textos.push(plano(x));
+  for (let s = 0; s < 300; s++) { const p = GEN_QC.generar(s, { unidad: EA }); textos.push(planoG([p.enunciado, p.pregunta, p.datos, p.solucion, p.alternativas.map(a => [a.texto, a.error && a.error.explicacion])])); }
+  for (const q of require('../../../plantillas/quimica-conceptos/papel.json').problemas) textos.push([q.enunciado, q.respuesta, ...q.pasos].join(' '));
+  textos.push(def.historia.texto);
+  const MAL = /(hall|descubr|lleg|identific)\w*[^.;]*electr[oó]n[^.;]*1904|electr[oó]n[^.;]*(hall|descubr|lleg)\w*[^.;]*1904|1904[^.;]*(hall|descubr)\w*[^.;]*electr[oó]n/i;
+  for (const t of textos) assert.ok(!MAL.test(t), `fecha del electrón: «${t.slice(0, 160)}»`);
+  assert.ok(textos.some(t => /electr[oó]n[^.;]*1897|1897[^.;]*electr[oó]n/.test(t)), 'la unidad dice que el electrón es de 1897');
+  // Lo que piden los ejercicios de la idea 2 (proporciones fijas, rayos catódicos, postulados de Dalton) se enseña antes.
+  const i2 = I('modelos-atomicos'), ense = plano([i2.lee.tarjetas.map(t => t.texto), i2.mira.pasos.map(p => p.texto), i2.regla.texto]);
+  for (const re of [/proporciones fijas/, /rayos catódicos/, /iguales dentro de cada elemento/, /solo se reordenan/, /números enteros sencillos/, /Thomson, 1897/]) assert.match(ense, re);
+});
+
+// A3 y nota (c): un gas abreviado en un ejercicio lleva su línea en «Datos» (teoría, práctica y papel).
+const GASES_RE = /\[(He|Ne|Ar|Kr|Xe)\]/g;
+test('A3: todo ejercicio que usa [He], [Ne], [Ar] o [Kr] trae su línea en Datos (teoría, práctica y papel)', () => {
+  for (const i of def.ideas) for (const x of ejercicios(i)) {
+    if (/Qué abrevia \[Ar\]/.test(x.donde)) continue;
+    const dt = x.datos.map(plano);
+    for (const g of new Set(plano(x.todo).match(GASES_RE) || [])) assert.ok(dt.some(d => d.startsWith(`${g}:`)), `${i.id} ${x.donde}: usa ${g} sin su línea`);
+  }
+  for (const i of def.ideas) if (i.predice.datos) for (const g of new Set(plano([i.predice.pregunta, i.predice.datos, i.predice.opciones.map(o => o.texto)]).match(GASES_RE) || []))
+    assert.ok(i.predice.datos.map(plano).some(d => d.startsWith(`${g}:`)), `${i.id} predice: ${g}`);
+  // La leyenda del juego de la idea 5 dice qué es [Ne] y [Ar] (auditoría M8).
+  assert.deepEqual(I('configuracion-iones').juega.leyenda.filter(l => typeof l.s === 'string' && /^\[/.test(l.s)).map(l => l.s), ['[Ne]', '[Ar]']);
+  for (let s = 0; s < SEMILLAS; s++) {
+    const p = GEN_CU.generar(s, { unidad: EA });
+    for (const g of new Set(planoG([p.enunciado, p.pregunta, p.solucion, p.alternativas.map(a => a.texto)]).match(GASES_RE) || []))
+      assert.ok(p.datos.some(d => d.startsWith(`${g}:`)), `práctica ${s} (${p._datos.tipo}): ${g}`);
+  }
+  for (const q of require('../../../plantillas/configuracion-ubicacion/papel.json').problemas.filter(x => (x.unidades || []).includes(EA))) {
+    const datos = q.enunciado.split(' Datos: ')[1];
+    for (const g of new Set([q.enunciado, q.respuesta, ...q.pasos].join(' ').match(GASES_RE) || [])) assert.ok(datos.includes(`${g}:`), `papel ${q.id}: ${g}`);
+  }
+});
+
+// A2: la salida del catión y Hund van en «Datos» de todo ejercicio de las ideas 5 y 6 que los usa (teoría y práctica).
+test('A2: la regla del catión y la de Hund están en Datos donde se usan (ideas 5 y 6, práctica y papel)', () => {
+  const CAT = /(?:^|[^A-Za-z])((?!X)[A-Z][a-z]?[²³⁴]?⁺)/g;
+  for (const id of ['configuracion-iones', 'desapareados-isoelectronicos']) for (const x of ejercicios(I(id))) {
+    const pide = plano(x.pide), dt = x.datos.map(plano);
+    const sinConfig = [...pide.matchAll(CAT)].map(m => m[1]).filter(c => !dt.some(d => d.startsWith(`${c}:`)));
+    if (sinConfig.length) assert.ok(dt.some(d => /^Catión: salen primero los de mayor n; a igual n, los de mayor ℓ$/.test(d)), `${id} ${x.donde}: ${sinConfig} sin la regla del catión`);
+    if (/desapareados|diamagn|paramagn|imán|solos/i.test(pide)) assert.ok(dt.some(d => /^Hund: /.test(d)), `${id} ${x.donde}: sin Hund`);
+  }
+  for (let s = 0; s < SEMILLAS; s++) {
+    const p = GEN_CU.generar(s, { unidad: EA }), d = p._datos;
+    const cat = d.tipo === 'magnetico' ? d.especies.some(([, q]) => q > 0) : d.carga > 0;
+    if (['cation', 'desapareados', 'magnetico', 'cuanticos'].includes(d.tipo) && cat) assert.ok(p.datos.some(l => /^Catión: /.test(l)), `práctica ${s} (${d.tipo})`);
+    if (['desapareados', 'magnetico'].includes(d.tipo)) assert.ok(p.datos.some(l => /^Hund: /.test(l)), `práctica ${s} (${d.tipo})`);
+  }
+  for (const q of require('../../../plantillas/configuracion-ubicacion/papel.json').problemas.filter(x => (x.unidades || []).includes(EA))) {
+    const [pide, datos] = q.enunciado.split(' Datos: ');
+    if (/desapareados|diamagn|paramagn/.test(pide)) assert.match(datos, /Hund: /, `papel ${q.id}`);
+    if (/(Ag|Co|Cr|Cu|Hg|V)[²³]?⁺/.test(pide)) assert.match(datos, /Catión: /, `papel ${q.id}`);
+  }
+});
+
+// M5: la misma especie se abrevia igual en la teoría y en la práctica (con el gas noble anterior).
+test('M5: la abreviada de la teoría es la del generador configuracion-ubicacion para la misma especie', () => {
+  const { abreviada, configEspecie } = def._quim, SUP = { '⁰': 0, '¹': 1, '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6, '⁷': 7, '⁸': 8, '⁹': 9 };
+  const baja = t => t.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, c => SUP[c]);
+  let n = 0;
+  for (let z = 1; z <= 54; z++) {
+    if (z >= 41 && z <= 47) continue;   // la teoría no usa Nb, Mo, Tc, Ru, Rh, Pd ni Ag
+    for (let q = -3; q <= 4; q++) {
+      if (z - q < 1 || z - q > 54) continue;
+      assert.equal(baja(abreviada(configEspecie(z, q))), GEN_CU.configuracion(z, q).abreviada, `Z = ${z}, carga ${q}`);
+      n++;
+    }
+  }
+  assert.ok(n > 300);
+  // Los casos que vio el auditor: Cl⁻ con [Ne], Br⁻ con [Ar].
+  assert.equal(abreviada(configEspecie(17, -1)), '[Ne] 3s² 3p⁶');
+  assert.equal(abreviada(configEspecie(35, -1)), '[Ar] 4s² 3d¹⁰ 4p⁶');
+});
+
+// M4: «Vale si» solo con condiciones (la regla que estaba en la condición pasó al texto).
+test('M4: cada condición de la regla es una condición, de una frase, y no una regla escondida', () => {
+  for (const i of def.ideas) {
+    const c = i.regla.condicion;
+    assert.ok(!/^(convención|a igual|átomos neutros)/i.test(c) && !/\. \S/.test(c), `${i.id}: «${c}»`);
+  }
+  assert.match(I('configuracion-iones').regla.texto, /a igual n, los de mayor ℓ/);
+  assert.match(I('desapareados-isoelectronicos').regla.texto, /un imán la atrae/);
+});
+
+// M2: desde esta unidad, el papel de la escena atomo-y-tabla no muestra problemas de Tabla periódica, ni sin datos, ni con «l».
+test('M2: el papel de atomo-y-tabla dice la unidad de cada problema; los de esta unidad traen Datos y ℓ', () => {
+  const fs = require('fs');
+  const pl = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../plantillas/atomo-y-tabla/plantilla.json'), 'utf8'));
+  assert.deepEqual(pl.rehacer, [EA]);
+  const RT = require('../../../nucleo/repaso-tipos.js'), papel = require('../../../plantillas/atomo-y-tabla/papel.json');
+  assert.ok(!/\bn \+ l\b|−l a \+l/.test(papel.indicacion));
+  for (const q of papel.problemas) {
+    assert.ok(Array.isArray(q.unidades) && q.unidades.length === 1, `${q.id}: sin unidades`);
+    assert.deepEqual(RT.unidadesPapel({ id: pl.id, papel: pl.papel, unidades: pl.unidades }, q.id), q.unidades, `${q.id}: repaso y papel no coinciden`);
+    if (q.unidades[0] !== EA) continue;
+    const t = [q.enunciado, q.respuesta, ...q.pasos].join(' ');
+    assert.match(q.enunciado, / Datos: \S/, `${q.id}: sin Datos`);
+    assert.ok(!/(^|[\s(,;])l( =|,|\))|n \+ l\b|[−+]1\/2/.test(t), `${q.id}: «l» o «1/2» en vez de ℓ y ½`);
+    assert.ok(!/período|periodo|grupo|radio|ionización/i.test(q.enunciado), `${q.id}: es de Tabla periódica`);
+  }
+});
+
+// M1, M6, B1, B3, B4 y M7: los ejemplos corregidos dicen lo que hace cada alternativa y no traen la respuesta en Datos.
+test('ejemplos corregidos: Co²⁺, Cu²⁺, isóbaros, la flecha ↓, isótopo e ion y el núcleo de 1 cm', () => {
+  const ej = (id, t) => I(id).ejemplos.find(x => x.titulo === t);
+  const co = ej('desapareados-isoelectronicos', 'El último del Co²⁺');
+  assert.deepEqual(co.alternativas, ['(4; 0; 0; −½)', '(3; 2; −1; −½)', '(3; 2; +1; +½)', '(3; 2; +1; −½)', '(3; 1; −1; −½)']);
+  assert.match(plano(co.solucion.map(x => x.texto)), /C llena cada caja con dos.*D numera las cajas desde 0.*E usa ℓ = 1/);
+  const cu = ej('desapareados-isoelectronicos', 'Un ion sin electrones solos');
+  assert.match(plano(cu.solucion.map(x => x.texto)), /pierde su único 4s y uno del 3d: 3d⁹/);
+  assert.ok(cu.datos.some(d => /^Paramagnética: /.test(plano(d))));
+  const fl = ej('desapareados-isoelectronicos', 'Una flecha hacia abajo');
+  assert.ok(!fl.datos.some(d => /↓ \(mₛ = −½\)|las ↓/.test(plano(d))), 'los datos regalan la ↓');
+  assert.ok(!def.ideas.some(i => i.ejemplos.some(x => /arándano|estadio/.test(plano([x.titulo, x.enunciado, x.respuesta])))));
+  const iso = ej('nucleo-identidad', 'Un isótopo y un ion');
+  assert.equal(iso.alternativas[2], 'Solo los protones');
+  assert.match(plano(ej('nucleo-identidad', 'Isóbaros e isótonos').solucion.map(x => x.texto)), /La E cruza los pares/);
 });

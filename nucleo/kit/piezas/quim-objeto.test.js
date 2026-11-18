@@ -172,7 +172,8 @@ test('salero, frasco y combi: encuadre y rótulos, con números, en las muestras
   const mal = [];
   OTROS.forEach((d, k) => revisarCajas(P.geometria(d), `muestra ${k}`, mal));
   const figs = figurasUnidad('quim-objeto').filter(f => f.datos.objeto !== 'hueso');
-  assert.ok(figs.length > 200, `${figs.length} figuras`);
+  // Desde las correcciones del 18 nov, «Así se resuelve» de la idea 5 dibuja el frasco solo con el hierro (los demás, quim-cajas).
+  assert.ok(figs.length > 150, `${figs.length} figuras`);
   for (const f of figs) { sano(P.dibujar(f.datos, f.estado), f.donde); revisarCajas(P.geometria(f.datos, f.estado), f.donde, mal); }
   assert.deepEqual(mal.slice(0, 20), [], `${mal.length} problemas`);
 });

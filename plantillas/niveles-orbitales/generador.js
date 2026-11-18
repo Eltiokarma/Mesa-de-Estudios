@@ -113,7 +113,9 @@
     const n = rng.entero(2, 5), l = rng.entero(0, Math.min(3, n - 1)), s = sub(n, l), k = eSub(l);
     const errores = [
       e(orbSub(l), 'QM-ORBITAL-ELECTRON', `Bien contar los orbitales del ${s}: ${orbSub(l)}. Pero en cada uno caben dos electrones.`),
-      e(eNivel(Math.min(n, 4)), 'QM-N-L', `Bien calcular lo que cabe en un nivel. Pero ${eNivel(Math.min(n, 4))} es todo el nivel ${Math.min(n, 4)}; aquí piden un solo subnivel.`),
+      // Con n = 5 el valor es el del nivel 4 entero (32; el 50 del nivel 5 sale de escala): el texto lo dice así (auditoría B2).
+      e(eNivel(Math.min(n, 4)), 'QM-N-L', n <= 4 ? `Bien calcular lo que cabe en un nivel. Pero ${eNivel(n)} es todo el nivel ${n}; aquí piden un solo subnivel.`
+        : `Bien calcular lo que cabe en un nivel entero. Pero ${eNivel(4)} es todo el nivel 4; aquí piden un solo subnivel, el ${s}.`),
       e(eSub(l + 1), 'QM-L-DESDE-UNO', `Bien el doble de los orbitales. Pero ${LETRA[l]} es ℓ = ${l}, no ${l + 1}: así salen ${eSub(l + 1)}.`),
       e(8, 'QM-OCHO-POR-NIVEL', 'Bien pensar en un tope. Pero 8 no es el tope de un subnivel: cada uno tiene 2ℓ + 1 orbitales de dos electrones. Así salen 8.'),
       e(2 * (l + 1), 'QM-ML-POSITIVO', `Bien dos electrones por orbital. Pero mₗ va de −${l} a +${l}: de 0 a ${l} contarías solo ${l + 1} orbitales y ${2 * (l + 1)} electrones.`),

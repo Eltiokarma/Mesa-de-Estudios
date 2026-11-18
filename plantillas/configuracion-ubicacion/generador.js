@@ -702,7 +702,22 @@
     conv1: 'Convención: las cajas van de mₗ = −ℓ (izquierda) a +ℓ (derecha)',
     conv2: 'Convención: primero una ↑ (mₛ = +½) en cada caja; después las ↓ (mₛ = −½)',
     magnetico: 'Paramagnética: con electrones desapareados; un imán la atrae. Diamagnética: sin ellos',
+    // Correcciones del 18 nov (auditoría A2): la salida del catión y Hund, las herramientas de las ideas 5 y 6, como el
+    // orden de llenado en la 4. Las mismas palabras que DC en la teoría.
+    cation: 'Catión: salen primero los de mayor n; a igual n, los de mayor ℓ',
+    hund: 'Hund: una flecha en cada caja vacía antes de aparear',
   };
+  // Un gas abreviado que se lee en el problema (enunciado, alternativas o solución) lleva su línea en «Datos»
+  // (auditoría A3): se agrega al final si falta. Así la solución de los desapareados, que abrevia, también la trae.
+  const planoEA = x => (Array.isArray(x) ? x.map(planoEA).join(' ') : x && typeof x === 'object' ? String(x.t ?? x.texto ?? '') : String(x ?? ''));
+  function conGasesEA(datos, ...partes) {
+    const leido = planoEA(partes), out = datos.slice();
+    for (const m of new Set(leido.match(/\[(He|Ne|Ar|Kr|Xe)\]/g) || [])) {
+      const g = gasDe(m);
+      if (g && !out.some(l => l.startsWith(`${m}:`))) out.push(DEA.gas(g));
+    }
+    return out;
+  }
   const gasDe = t => { const m = /^\[(\w+)\]/.exec(t); return m ? zDe(m[1]) : 0; };
   // Datos de configuración de una especie con e electrones: orden, lo que cabe y, si la respuesta va abreviada, su gas.
   const datosConf = (e, c, extra = []) => {
@@ -724,7 +739,7 @@
     const ids = alternativas.filter(a => a.error).map(a => a.error.id);
     if (new Set(ids).size !== ids.length) return null;   // un código por alternativa: nunca dos con el mismo error
     return { id: `configuracion-ubicacion#${semilla}`, unidadCatalogo: EA, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta,
-      datos: o.datos, alternativas, solucion: o.solucion, ...(o.convenciones ? { convenciones: o.convenciones } : {}),
+      datos: conGasesEA(o.datos, o.enunciado, o.pregunta, o.solucion, alternativas.map(a => a.texto)), alternativas, solucion: o.solucion, ...(o.convenciones ? { convenciones: o.convenciones } : {}),
       respuesta: { valor: o.numero ? o.correcta : o.correcta.clave, unidad: '' }, _datos: o._datos };
   }
 
@@ -895,7 +910,7 @@
     return cerrarEA(rng, semilla, { correcta: confEA(c), errores: rng.barajar(errores), variables: usaEA('Z', 'q', 'c'),
       enunciado: [`El ion ${esp(Z, q)} viene del ${NOMBRE_EA[Z]} (`, v('Z', `Z = ${Z}`), ') y tiene carga ', v('q', qTxtEA(q)), '.'],
       pregunta: ['¿Cuál es su ', v('c', 'configuración abreviada'), '?'],
-      datos: [...datosConf(Z, c), DEA.anomalia(Z), DEA.carga],
+      datos: [...datosConf(Z, c), DEA.anomalia(Z), DEA.carga, DEA.cation],
       solucion: [
         ['Átomo neutro: ', v('Z', `Z = ${Z}`), ` → ${bonito(abreviar(base))}.`],
         ['Carga ', v('q', qTxtEA(q)), `: ${q === 1 ? 'sale 1 electrón' : `salen ${q} electrones`}, primero del nivel de mayor n (n = ${afuera}) y, a igual n, del subnivel de mayor ℓ.`],
@@ -947,7 +962,7 @@
       enunciado: q === 0 ? ['Un átomo de ', NOMBRE_EA[Z], ' (', v('Z', `Z = ${Z}`), ') está en su estado fundamental.']
         : [`El ion ${esp(Z, q)} (`, v('Z', `Z = ${Z}`), ', carga ', v('q', qTxtEA(q)), ') está en su estado fundamental.'],
       pregunta: ['¿Cuántos ', v('d', 'electrones desapareados'), ' tiene?'],
-      datos: [DEA.orden(e), DEA.capacidad(tieneF(c) || e > 56), DEA.anomalia(Z), DEA.orbitales(tieneF(c)), ...(q ? [DEA.carga] : [])],
+      datos: [DEA.orden(e), DEA.capacidad(tieneF(c) || e > 56), DEA.anomalia(Z), DEA.orbitales(tieneF(c)), ...(q ? [DEA.carga] : []), ...(q > 0 ? [DEA.cation] : []), DEA.hund],
       solucion: [
         [`Configuración: ${bonito(abreviar(c))}.`],
         [detalle ? `Subniveles incompletos (Hund, una flecha por caja antes de aparear): ${detalle}.` : 'Todos los subniveles están llenos: cada caja tiene dos flechas.'],
@@ -989,7 +1004,7 @@
       enunciado: ['Se comparan cuatro especies en su estado fundamental.'],
       pregunta: [buscaDia ? '¿Cuál de estas especies es diamagnética?' : '¿Cuál de estas especies es paramagnética?'],
       datos: [`Z: ${zs.map(z => `${SIMBOLOS[z]} ${z}`).join(', ')}`, DEA.orden(maxE), DEA.capacidad(false), ...(hayAnom ? [DEA.anomalia(maxE)] : []),
-        DEA.orbitales(false), ...(hayIon ? [DEA.carga] : []), DEA.magnetico],
+        DEA.orbitales(false), ...(hayIon ? [DEA.carga] : []), ...(todas.some(([, q]) => q > 0) ? [DEA.cation] : []), DEA.hund, DEA.magnetico],
       solucion: [
         ...todas.map(([z, q]) => [`${q ? esp(z, q) : NomEA(z)}: ${bonito(abreviar(configDe(z, q)))} → `, v('d', `${desap(configDe(z, q))} solo${desap(configDe(z, q)) === 1 ? '' : 's'}`), '.']),
         [`Solo ${meta[1] ? `el ${esp(...meta)}` : `el ${NOMBRE_EA[meta[0]]}`} ${buscaDia ? 'tiene todos sus electrones en pareja: es la especie diamagnética' : 'tiene electrones solos: es la especie paramagnética'}.`],
@@ -1028,7 +1043,7 @@
       enunciado: q ? [`El ion ${esp(Z, q)} viene del ${NOMBRE_EA[Z]} (`, v('Z', `Z = ${Z}`), ') y tiene carga ', v('q', qTxtEA(q)), '.']
         : [`Un átomo neutro de ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), '.'],
       pregunta: ['¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) de su último electrón?'],
-      datos: [DEA.orden(Math.max(Z, e)), DEA.capacidad(tieneF(neutro(Z))), ...(g && e > 18 ? [DEA.gas(g)] : []), ...(q ? [DEA.carga] : []), DEA.letras, DEA.conv1, DEA.conv2],
+      datos: [DEA.orden(Math.max(Z, e)), DEA.capacidad(tieneF(neutro(Z))), ...(g && e > 18 ? [DEA.gas(g)] : []), ...(q ? [DEA.carga, DEA.cation] : []), DEA.letras, DEA.conv1, DEA.conv2],
       convenciones: ['ultimo-electron'],
       solucion: [
         [q ? `${esp(Z, q)}: primero el átomo, ${bonito(abreviar(neutro(Z)))}; salen ${electrones(q)} del nivel más alto: ${bonito(abreviar(c))}.` : `Configuración: ${bonito(abreviar(c))}.`],
