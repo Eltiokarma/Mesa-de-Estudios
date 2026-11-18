@@ -1,6 +1,35 @@
 # Pendientes y traspaso
 
-Actualizado el 17 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 18 nov, madrugada: tres unidades con el método casi completo
+
+**Lo primero:** leer la mesa de revisión (respuestas y notas) y aplicar lo que Gerson respondió. Quedaron tarjetas
+abiertas de las rondas 3 y 4.
+
+- **Hecho y en main (v240):**
+  - `aritmetica.numeracion`, `razonamiento-matematico.razonamiento-deductivo` y `geometria.segmentos-y-angulos`: todas
+    sus ideas con 15 ejemplos (calidad 2), práctica nueva por idea (`numeracion-bases`, `rm-cuadros`,
+    `geo-segmentos-angulos`; `numeros-sucesiones`, `rm-deduccion`, `rm-parentesco` y `sistemas-ecuaciones` separan sus
+    tipos por unidad), lector en frío ronda 1 (`rutinas/frio/`), auditoría (`rutinas/auditoria/`) y correcciones (al
+    final de cada auditoría, «Correcciones (17 nov)»).
+  - Álgebra partida: «Exponentes y radicales» (conserva `algebra.exponentes-y-productos-notables`) con sus 3 ideas y su
+    práctica `exponentes-radicales`; «Productos notables» (`algebra.productos-notables`, avance migrado) con la idea 1
+    `cuadrado-suma` esperando el visto bueno de Gerson.
+  - App: alternativas A–E en línea aparte en los ejemplos (campo `alternativas`); la retroalimentación no nombra la letra
+    («La correcta: …»); «\n» en un enunciado de generador abre línea (pistas una por renglón); ecuaciones sin raya
+    colgada ni cuentas partidas junto a un signo; la barra de botones de la teoría en el celular tapa limpio.
+- **Siguiente:**
+  1. Aplicar las respuestas de la mesa (decisiones abiertas: Ejemplos tras Predice en toda la app, dibujo propio de la
+     Regla, x sin «°» en geometría, contrafáctico, puntajes y edades, quipu, reloj, cuadro en L, «al menos un
+     integrante», tabla de parentesco, escena vieja de Numeración, «binomio», «valor absoluto», título de la idea 2 de
+     Exponentes, sistemas-ecuaciones, predicción nueva de la idea 1 de Segmentos).
+  2. Lector en frío **ronda 2** de las tres unidades, con lectores nuevos y capturas `--entera` (la ronda 1 se sacó sin
+     `--entera` y la barra tapaba; ese error no se repite).
+  3. Exponentes y radicales: lector en frío, auditor y correcciones. Productos notables: el resto de ideas cuando
+     Gerson dé el visto bueno a la idea 1.
+  4. Pendientes de app que repiten los informes: práctica por idea (`app/practica.js` debe pasar `{ idea }`),
+     `requiere` en `plantilla.json` para que un generador cargue otro archivo (rm-cuadros carga el motor a mano).
 
 ## Estado al 17 nov, cierre: Etapa 3 en marcha (fase 2 hecha en tres unidades)
 
