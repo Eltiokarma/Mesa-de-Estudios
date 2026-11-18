@@ -558,3 +558,594 @@ Cosas que se repiten en varias tarjetas (las pongo una vez aquí y en cada tarje
 **El recuadro «Datos»:** ayuda cuando da la equivalencia concreta (1 bolsita = 10; en base 4, 4 forman 1). Distrae cuando mete fórmulas con letras que no se definen (n, p, «envase», F, s, G, H, rₑ), sobre todo en el nivel 3. Regala la respuesta o la clave en la 06 (minuendo = sustraendo + diferencia), la 19 (la fórmula da la respuesta con k = 4) y en parte la 03 («la mayor cifra es 9»).
 
 **Cuentas:** rehíce todas, incluidas las trampas. **Todas cuadran.** Los problemas son de redacción, de líneas cortadas y de colores, no de números.
+
+---
+
+# Ronda 2 (18 nov, noche)
+
+Dos lectores nuevos, sobre la unidad corregida (v0.4.1), capturas `--entera --lector`.
+
+## Veredicto de la sesión
+
+Pasan las siete ideas (frase = `aprendizaje`). Se corrige: **por segunda vez**, el (5) de la base y la raya de a̅b̅c̅ sin
+presentar antes de Predice (idea 1), «complemento aritmético» de golpe en Predice (idea 3), la misión de 47 con dos
+respuestas (idea 6) y Predice de la idea 7 que pregunta por división; además: la misión pide 47 + 38 y el juego arranca
+en 26 + 15 (decirlo: «pon los pedidos de la misión»); «arriba» en la fórmula del préstamo es ambiguo (el original o el
+ya cambiado) y la leyenda nombra un naranja que no se ve (idea 2); el cajón de 1 000 en Lee y la meta 10 000, y más
+cifras que íconos de columna (idea 3); abc − cba = 99(a − c) sin conectar con la regla y el juego que arranca en «085»
+(idea 4); «columna = L × n + c» que vuelve sin explicar y Datos que se salen del cuadro (idea 5); los sobrinos dibujados
+como bolsitas (idea 6); la «E» de la leyenda que no aparece y 1001 sin decir que es el cociente entero (idea 7).
+Ejemplos: las cuentas cuadran; peores 20 (por qué el A menor entre el B mayor; 10 000 000 ÷ 999 redondeado sin avisar;
+el título «8 entre 3»), 08 y 07 (el atajo «restar de 9» sin explicar; 115 a base 6 sin mostrar), 21 (el «?» sobre la
+raya de las casillas; trampas B y C sin entender); la raya de abc pegada a «b + c» en Datos (11); el naranja de p y de
+«lo que quedó» (04, 05); respuestas sin morado (09, 14, 18) y un dato en morado (10); Datos que casi regalan (03, 21).
+
+## Momentos
+
+# Informe del alumno: "Las cuatro operaciones" (Teoría, pantallas de celular, tema claro)
+
+Soy alumno de 5.º de secundaria de Juliaca y me preparo para la admisión. Solo miré las capturas. Las revisé en el orden de la tira de ideas: 1 La llevada llena una bolsita, 2 Abrir una bolsita para restar, 3 Lo que falta para llenar, 4 Cifras que faltan columna por columna, 5 Multiplicar es juntar bolsas iguales, 6 Sobran o faltan para otra bolsita, 7 ¿Cabe el producto en la pantalla?
+
+Todas las pantallas comparten lo mismo: arriba una franja crema con un botón redondo "<", un dibujito de la suma 26 + 59 = 85 con un "1" naranja de llevada, "Teoría · 0 de 7 terminadas" y el título "Las cuatro operaciones". Debajo están las pestañas "Ideas" (marcada), "Ejemplos", "Glosario" y "Laboratorio", y la tira de ideas con círculos numerados. Hay también una barra de 7 rayitas que avanza (Lee, Juega, Predice, Mira, La regla, Así se resuelve, Ahora tú), una lupa para hacer zoom y a Luma, una tortuguita con chaleco que da consejos en un globo. Casi todos los dibujos pasan en el puesto "Caramelos de doña Juana", que tiene un toldo de ondas.
+
+Nota general: en cada "Lee" solo vi la tarjeta 1 de 3 (o de 4). Las demás tarjetas no las vi. En cada "Mira" solo vi el paso 1 (no los otros 5 o 6 pasos) y en cada "Así se resuelve" solo el paso 1, "¿Qué me piden?". Por eso lo que aprendí en Mira es poco.
+
+---
+
+## 1. La llevada llena una bolsita
+
+**1 Lee**
+1. Veo el puesto con el letrero "1 bolsita = 10 caramelos, 1 caja = 10 bolsitas". Hay 2 bolsitas verdes con caramelos dibujados y 6 caramelos sueltos a la derecha, con el rótulo "2 bolsitas / 6 sueltos". Arriba hay un enlace morado "¿De dónde sale esta idea?". La tarjeta 1/4 se titula "El puesto en base 10" y abajo están "Ir directo a jugar" y el botón verde "Siguiente tarjeta". En esta pantalla aparece el globo de Luma, pero no veo el dibujo de la tortuga (en las demás sí está).
+2. Leer la tarjeta y pasar a la siguiente.
+3. Los "10" están en verde con subrayado punteado: es lo que entra en un envase. La palabra "base 10" se explica como empacar de 10 en 10.
+5. Dice "Doña Juana **ahora** empaca de 10 en 10". ¿Ahora? ¿Antes cómo empacaba? Me suena a que hay algo antes que no vi.
+
+**2 Juega**
+1. Hay un recuadro con la historia (dos pedidos que se juntan) y otro de borde naranja punteado, "MISIÓN". El dibujo muestra 3 bolsitas llenas y una bolsita con borde punteado (como fantasma), con el rótulo "2 + 1 bolsitas / 6 + 5 sueltos". A la derecha hay un cuaderno con espiral y los íconos de bolsita y caramelo, donde se lee 26 + 15 = ?. Debajo dice "6 + 5 = 11 sueltos: alcanzan para 1 bolsita". Siguen una leyenda, dos deslizadores ("Pedido de la mañana" 26 y "Pedido de la tarde" 15, con botones − y +), los botones "Sin juntar" (marcado), "Juntar 10 en una bolsita" y "Volver al inicio", y el texto "Prueba 3 casos distintos: llevas 1". Luma dice "Toca el montón de sueltos cuando alcance para una bolsita".
+2. La misión: poner los pedidos en 47 y 38, juntarlos y empacar hasta poder anotar el total.
+3. El **10** verde es la base (caramelos por bolsita). El **1** naranja es la llevada, la bolsita llena que sube. La palabra **cifra** morada es lo que se anota en el cuaderno. El **?** es lo que todavía no se puede anotar.
+4. Aprendí que cuando los sueltos llegan a 10 forman una bolsita, y esa bolsita es el "1 que llevo".
+5. La misión pide 47 y 38, pero la pantalla está en 26 y 15. Entiendo que tengo que mover los deslizadores. Las bolsitas del dibujo se ven bien chiquitas y no se pueden contar los caramelos de adentro. No sé si "Juntar 10 en una bolsita" es un botón o lo mismo que tocar el montón.
+
+**3 Predice**
+1. Ahora el letrero dice "1 bolsita = 5 caramelos / 1 caja = 5 bolsitas". Veo 5 bolsitas (en pirámide) y unos sueltos, con el rótulo "3 + 2 bolsitas / 4 + 3 sueltos". En el cuaderno: 34₍₅₎ + 23₍₅₎ = ?₍₅₎. Hay 4 opciones: A 12₍₅₎, B 57₍₅₎, C 102₍₅₎, D 112₍₅₎, y el botón "Comprobar".
+2. Elegir qué total anota doña Juana si junta 34₍₅₎ y 23₍₅₎ en el puesto de bolsitas de 5.
+3. El **(5)** chiquito y verde, abajo a la derecha del número, indica que el número está en base 5. Lo saqué porque dice "bolsitas de 5".
+5. Es la primera vez que veo "(5)" y nadie me dijo cómo se lee. Lo adiviné por el letrero. Mi respuesta: 4 + 3 = 7 sueltos, o sea 1 bolsita y sobran 2. Luego 3 + 2 + 1 = 6 bolsitas, o sea 1 caja y sobra 1. Queda 112₍₅₎, la D. La B (57) me parece trampa porque en base 5 no puede haber un 7.
+
+**4 Mira**
+1. El mismo dibujo y el mismo cuaderno de Predice. Hay un botón morado de reproducir, una barra de avance con puntitos y "1/6". El texto dice "Junto los dos pedidos: 3 + 2 bolsitas y 4 + 3 sueltos. 34₍₅₎ + 23₍₅₎". Abajo, "Atrás" y "Paso 2 de 6".
+2. Mirar la explicación paso a paso (darle play o pasar de paso).
+3. Igual que en Predice.
+4. Aprendí que se empieza juntando columna por columna, desde los sueltos (lo dice Luma).
+5. Solo vi el paso 1, así que no supe si mi 112₍₅₎ estaba bien.
+
+**5 La regla**
+1. El puesto con 1 caja (con bolsitas encima), 1 bolsita y 2 sueltos, rotulado "1 caja / 1 bolsita / 2 sueltos". En el cuaderno, encima de la cuenta, hay "1 1" naranjas bajo los íconos de caja y bolsita, y la cuenta 34₍₅₎ + 23₍₅₎ = 112₍₅₎. Aparece la regla en texto y una fórmula en un cuadro.
+2. Leer la regla.
+3. columna = **L** × **n** + **c**. La **L** naranja es lo que se lleva, la **n** verde es la base y la **c** morada es lo que se anota. Además 0 ≤ c ≤ n − 1: lo que se anota nunca llega a la base. El "Vale si" dice que con varios sumandos se puede llevar 2 o más y que la última llevada también se anota.
+5. ¡Mi respuesta 112₍₅₎ estaba bien! Lo que no me queda claro es si "columna" significa la suma de la columna con la llevada que viene de antes. Yo creo que sí, pero no lo dice.
+
+**6 Así se resuelve**
+1. El cuaderno con 315₍₆₎ + 522₍₆₎ = ?₍₆₎. Hay un recuadro "ASÍ SE RESUELVE" con datos: "En base 6, 6 de una columna forman 1 de la siguiente" y "abc₍₆₎ = a × 6² + b × 6 + c" (abc con una raya encima). Debajo está el paso 1 "¿Qué me piden?" y los botones "Ver todos los pasos" y "Paso 2: ¿Qué regla uso?".
+2. Seguir los pasos para hallar el total en base 6.
+3. La raya encima de **abc** quiere decir que es un número de tres cifras a, b, c, no a por b por c. Lo deduje de la fórmula.
+5. La raya sobre abc no se explica. Mi cuenta: 5 + 2 = 7 = 1·6 + 1, anoto 1 y llevo 1. Luego 1 + 2 + 1 = 4. Luego 3 + 5 = 8 = 1·6 + 2, anoto 2 y llevo 1. Total 1241₍₆₎.
+
+**7 Ahora tú**
+1. El cuaderno con 18 + 17 + 18 = ?, con la columna de los sueltos sombreada en gris. Hay datos ("1 bolsita = 10", "suma de una columna = llevada × 10 + cifra que se anota"), 4 opciones (A 1, B 3, C 2, D 23), "No sé" y "Comprobar".
+2. Decir cuántas bolsitas se llevan de la columna de sueltos a la de bolsitas.
+3. **llevada** en naranja y **cifra que se anota** en morado, igual que en la regla.
+5. Nada. 8 + 7 + 8 = 23 = 2 × 10 + 3, así que llevo 2: la C. Ojo con la D (23), que es la suma y no la llevada.
+
+**Ejercicio inventado:** en el puesto de bolsitas de 4, doña Juana junta 23₍₄₎ y 31₍₄₎. ¿Qué anota?
+Unidades: 3 + 1 = 4 = 1·4 + 0, anoto 0 y llevo 1. Bolsitas: 2 + 3 + 1 = 6 = 1·4 + 2, anoto 2 y llevo 1. Total: **120₍₄₎**. Lo verifiqué en base 10: 11 + 13 = 24 y 1·16 + 2·4 + 0 = 24.
+
+---
+
+## 2. Abrir una bolsita para restar
+
+**1 Lee**
+1. El letrero dice "1 bolsita = 10 caramelos". Hay 3 bolsitas y 8 sueltos ("3 bolsitas / 8 sueltos") y un cuaderno con 38 − 15 = 23 (el 23 en morado). La tarjeta 1/3 se titula "Despachar es restar". Las palabras minuendo, sustraendo y diferencia tienen subrayado punteado.
+2. Leer.
+3. El minuendo es lo que tiene, el sustraendo lo que se lleva el cliente y la diferencia lo que le queda.
+5. Nada. El punteado parece significar "toca para ver qué es", pero no lo sé seguro.
+
+**2 Juega**
+1. El letrero "1 bolsita = 10 / 1 caja = 10 bolsitas". Veo 3 cajas, 2 bolsitas y 1 suelto ("3 cajas / 2 bolsitas / 1 suelto") y un cuaderno con 321 − 145 = ?. Dice "1 suelto no alcanza para quitar 5: falta abrir". Hay botones para elegir "Caramelos que tiene" (432, 312, 213, 321 marcado, 231), un deslizador "Caramelos que despacha" en 145, "Una bolsita: Cerrada / Abrirla en 10 sueltos", "Una caja: Cerrada / Abrirla en 10 bolsitas" y "Volver al inicio".
+2. La misión: poner 432 y despachar 178, abriendo solo lo que haga falta.
+3. El **10** verde es la base. **naranja** es lo que tiene la columna después del préstamo. La **cifra** morada es lo que queda, la diferencia. El **?** es lo que aún no se puede anotar.
+4. Aprendí que si una columna no alcanza, se abre un envase de la izquierda y se convierte en 10 de la columna de al lado.
+5. La leyenda habla de un número "naranja", pero en la pantalla no veo ninguno naranja todavía (supongo que sale al abrir). Otra vez la misión (432 − 178) no coincide con lo que está puesto (321 − 145).
+
+**3 Predice**
+1. El cuaderno con 4 íconos (cajón, caja, bolsita, caramelo) y 5003 − 1478 = ?. Datos: bolsita, caja y cajón de 10 cada uno. Opciones: A 3 635, B 4 635, C 4 475, D 3 525.
+2. Predecir cuántos caramelos le quedan.
+3. Los íconos de arriba dicen qué envase es cada columna.
+5. Luma dice "Piensa qué abre si al lado no hay nada". Aquí hay dos ceros seguidos y eso es lo difícil. Mi respuesta: 5003 − 1478 = 3525, la D.
+
+**4 Mira**
+1. La misma cuenta, el reproductor en "1/7" y el texto "Arriba, lo que tiene: 5 cajones y 3 sueltos. Abajo, el pedido. 5 003 − 1 478".
+2. Mirar paso a paso.
+4. Aprendí que el 5003 son 5 cajones y 3 sueltos, sin cajas ni bolsitas.
+5. Solo vi el paso 1 y no vi cómo se abren los ceros.
+
+**5 La regla**
+1. El cuaderno con números naranjas arriba (4, 9, 9, 13), el 5003 con sus cifras tachadas y la columna de las decenas sombreada. El resultado es 3525. Abajo, la regla y la fórmula.
+2. Leer la regla.
+3. **cifra** = arriba + **p** × **n** − abajo. La **p** naranja vale 1 si se abrió un envase, la **n** es la base y "la columna que prestó queda en arriba − **1**". El "Vale si" dice que un 0 no presta: se abre lo de su izquierda y ese 0 queda en 9.
+5. Con los ceros me confundí un poco. El 0 recibe 10 y a la vez presta 1, y por eso queda en 9. Pero en la fórmula no sé si "arriba" es el número original o el ya cambiado (el naranja). Con el dibujo sí lo entendí: 5 → 4, 0 → 9, 0 → 9, 3 → 13. Mi D (3525) estaba bien.
+
+**6 Así se resuelve**
+1. El cuaderno con 401₍₆₎ − 253₍₆₎ = ?₍₆₎. Datos: "Abrir 1 de una columna da 6 de la columna de su derecha", la fórmula de la cifra con p y 6, y abc₍₆₎ = a·6² + b·6 + c. Luego el paso 1 "¿Qué me piden?": la diferencia en base 6.
+2. Seguir los pasos.
+3. Igual que en la regla, pero con n = 6.
+5. Mi cuenta: 1 < 3 y al lado hay 0, así que abro una caja: 4 → 3, el 0 queda en 5 (n − 1 = 5) y los sueltos quedan en 1 + 6 = 7. Entonces 7 − 3 = 4, 5 − 5 = 0, 3 − 2 = 1. Resultado **104₍₆₎**. Lo comprobé en base 10: 145 − 105 = 40 = 36 + 4.
+
+**7 Ahora tú**
+1. El cuaderno con 8007 − 6548 = ?. Opciones: A 2 569, B 2 541, C 1 459, D 1 569, y "No sé".
+2. Hallar cuánto le queda.
+3. Igual que antes.
+5. Nada. 8007 − 6548 = 1459, la C.
+
+**Ejercicio inventado:** doña Juana tiene 6002 caramelos y despacha 2785. ¿Cuántos le quedan?
+2 < 5, así que abro un cajón: 6 → 5, cada 0 queda en 9 y las unidades quedan en 12. Entonces 12 − 5 = 7, 9 − 8 = 1, 9 − 7 = 2 y 5 − 2 = 3. Le quedan **3217**. Lo verifiqué: 3217 + 2785 = 6002.
+
+---
+
+## 3. Lo que falta para llenar
+
+**1 Lee**
+1. El letrero dice "1 bolsita = 10 caramelos, 1 caja = 10 bolsitas, 1 cajón = 10 cajas". En el dibujo hay un cajón grande con 5 cajitas encima y la barra dice "1 cajón = 1 000 caramelos". La tarjeta 1/3 se titula "El cajón de 1 000".
+2. Leer.
+3. Un cajón lleno tiene 1000 caramelos.
+5. No me queda claro por qué el dibujo del cajón tiene 5 cajitas encima si un cajón son 10 cajas.
+
+**2 Juega**
+1. Veo 3 cajas y 8 bolsitas y un cuaderno con 380 + 0 = 380 (el 380 en morado). Dice "380 + 0 = 380: menos de 1 000, no llena el cajón". Hay deslizadores "Caramelos que tiene" (380) y "Caramelos que agrega" (0).
+2. La misión: poner 740 y agregar lo que falta para llenar justo el cajón.
+3. El **1000** verde es la meta (un cajón lleno). **lleva** en naranja es la llevada (un envase lleno que sube). **total** en morado es lo que tiene después de agregar.
+4. Aprendí que lo que falta para llenar el cajón es 1000 menos lo que tengo. Para 740 faltan 260.
+5. No vi ninguna llevada naranja en la pantalla.
+
+**3 Predice**
+1. El dibujo muestra 4 cajones (parecen cajas con bolsitas encima), 7 bolsitas y 3 sueltos, y entre los cajones y las bolsitas un hueco punteado. Pregunta: "¿Cuál es el complemento aritmético de 4 073?". Datos: 10³ = 1 000, 10⁴ = 10 000, 10⁵ = 100 000. Opciones: A 5 927, B 5 926, C 5 027, D 95 927.
+2. Hallar el complemento aritmético de 4073.
+3. 10³, 10⁴, 10⁵ son potencias de 10 (un 1 con 3, 4 o 5 ceros).
+5. ¡Aquí aparece "complemento aritmético" de golpe y en la tarjeta 1 no lo explicaban! Quizá estaba en las tarjetas 2 o 3. El Lee hablaba de llenar un cajón de 1000, pero 4073 ya pasa de 1000. ¿La meta es entonces 10 000? Por los datos creo que sí: 10000 − 4073 = 5927, la A. Supongo que el hueco punteado son las 0 cajas, pero no estoy seguro.
+
+**4 Mira**
+1. El cuaderno con 10000 − 4073 = ?, el reproductor en 1/6 y el texto "4 073 tiene 4 cifras: la meta es un 1 con 4 ceros. CA(4 073) = 10 000 − 4 073".
+2. Mirar.
+3. **CA(...)** quiere decir complemento aritmético de ese número.
+4. Aprendí que la meta del complemento es un 1 con tantos ceros como cifras tiene el número.
+5. Encima del cuaderno hay solo 4 íconos y el 10000 tiene 5 cifras. La columna de más no tiene envase.
+
+**5 La regla**
+1. La suma 4073 + 5927 = 10000 con cuatro llevadas "1 1 1 1" en naranja.
+2. Leer.
+3. CA(**N**) = **10^k** − N, donde **k** es el número de cifras de N, y N + CA(N) = 10^k. En base n la meta es nᵏ. El "Vale si" da un atajo: cada cifra se resta de 9, la última que no es 0 se resta de 10 y los ceros del final se quedan.
+5. El atajo con "la última que no es 0" me costó. Lo probé con 6390: 9−6 = 3, 9−3 = 6, 10−9 = 1 y el 0 se queda, lo que da 3610. Funciona.
+
+**6 Así se resuelve**
+1. El cuaderno con 10000 − 6390 = ? y el problema "¿Cuál es el complemento aritmético de 6 390?". Debajo está el paso 1, "Piden lo que le falta a 6 390 para llegar a su meta".
+2. Seguir los pasos.
+5. Nada. CA(6390) = 3610.
+
+**7 Ahora tú**
+1. El cuaderno con 100000 − 64303 = ? y las opciones A 35 607, B 35 696, C 35 697, D 935 697.
+2. Hallar CA(64303).
+5. Nada. 100000 − 64303 = 35697, la C. La D tiene una cifra de más (usa la meta equivocada).
+
+**Ejercicio inventado:** ¿cuál es el CA de 25 800?
+Tiene 5 cifras, así que la meta es 100 000. Con el atajo: 9−2 = 7, 9−5 = 4, 10−8 = 2 y los dos ceros se quedan. Da **74 200**. Lo verifiqué: 25 800 + 74 200 = 100 000.
+
+---
+
+## 4. Cifras que faltan, columna por columna
+
+**1 Lee**
+1. El cuaderno con 5●3 + ●28 = 901. Las manchas son gotas grises (chicha morada). La tarjeta 1/3 se titula "El cuaderno manchado".
+2. Leer.
+3. Cada mancha tapa una cifra del 0 al 9 y la cuenta estaba bien hecha.
+5. Nada. (Mentalmente: 3 + 8 = 11, llevo 1. Luego x + 2 + 1 termina en 0, así que x = 7 y llevo 1. Luego 5 + y + 1 = 9, así que y = 3: 573 + 328 = 901.)
+
+**2 Juega**
+1. El texto dice "□85 + 6□□ = 1 282". El cuaderno muestra 085 + 600 = 1282 (con ceros donde iban las manchas) y la frase "Unidades: 5 + 0 = 5, no termina en 2". Hay 3 deslizadores: "Mancha de las centenas, arriba", "Mancha de las decenas, abajo" y "Mancha de las unidades, abajo", todos en 0.
+2. La misión: encontrar las tres cifras para que la cuenta cuadre.
+3. El **□** es una mancha (la cifra que se busca). **lleva** en naranja es lo que pasa a la columna siguiente. **total** en morado es el resultado (que está bien hecho).
+4. Aprendí que hay que empezar por las unidades: lo que da cada columna decide la siguiente. Aquí 5 + 7 = 12 (llevo 1), 8 + 9 + 1 = 18 (llevo 1) y 5 + 6 + 1 = 12, o sea 585 + 697 = 1282.
+5. En la pantalla aparece "085", con 0 adelante, aunque en otro lado dicen que la primera cifra no es 0. Supongo que es solo el inicio.
+
+**3 Predice**
+1. El cuaderno con 8●2 − ●57 = 375. Datos: la resta está bien hecha, cada mancha es una cifra del 0 al 9 y la primera cifra de un numeral no es 0. Opciones: A 5, B 4, C No se puede saber, D 3.
+2. Decir qué cifra está bajo la mancha del 57.
+5. "La mancha del 57" me hizo dudar un momento: es la que está delante del 57, en las centenas de abajo. Mi cálculo: 12 − 7 = 5 (abrí una bolsita), luego (x − 1) + 10 − 5 = 7, así que x = 3, y luego 8 − 1 − y = 3, así que y = 4. Elijo la B (832 − 457 = 375).
+
+**4 Mira**
+1. La misma cuenta, con la columna de unidades sombreada, el reproductor en 1/7 y el texto "Empiezo por las unidades: 2 no alcanza para quitar 7. 2 < 7".
+2. Mirar.
+4. Aprendí que si arriba no alcanza, hay que abrir de la izquierda, y eso cambia la columna siguiente.
+5. Solo vi el paso 1.
+
+**5 La regla**
+1. El cuaderno con 914 − 419 = 495. La regla en texto y la fórmula.
+2. Leer.
+3. La raya encima de **abc** significa el número de cifras a, b, c, y abc = 100a + 10b + c. Además abc − cba = 99 × (a − c). El "Vale si" dice "con a mayor que c" y que la diferencia es 099, 198, 297… hasta 891, con 9 en medio y extremos que suman 9.
+5. El texto habla de llevadas y préstamos en general, y de pronto la fórmula es de un número menos su número al revés. No vi la conexión, aunque el ejemplo 914 − 419 sí es eso. "Una letra que se repite vale lo mismo" lo entendí. ¿De dónde sale el 99? Lo saqué yo: (100a + c) − (100c + a) = 99a − 99c.
+
+**6 Así se resuelve**
+1. El cuaderno con 3●9 + 82● = 1184 y el problema "¿Qué cifras están bajo las manchas?". Datos: mancha 0–9, primera cifra no 0, cuenta bien hecha, "suma de una columna = llevada × 10 + cifra que se anota". Paso 1: una mancha está en las decenas de arriba y otra en las unidades de abajo.
+2. Seguir los pasos.
+5. Mi cálculo: 9 + u termina en 4, así que u = 5 y llevo 1. Luego x + 2 + 1 termina en 8, así que x = 5, sin llevada. Luego 3 + 8 = 11. Queda 359 + 825 = 1184.
+
+**7 Ahora tú**
+1. El cuaderno con 8●4 − ●18 = 396 y la pregunta por la mancha del sustraendo. Opciones: A 3, B 5, C 4, D No se puede saber.
+2. Hallar la cifra.
+5. 14 − 8 = 6 (abro), luego (x − 1) + 10 − 1 = 9, así que x = 1, y luego 8 − 1 − y = 3, así que y = 4. Es la C: 814 − 418 = 396. ¡Y 396 = 99 × 4, igual que la regla del número al revés!
+
+**Ejercicio inventado:** 4□7 + □6□ = 1 000. Halla las manchas.
+Unidades: 7 + u termina en 0, así que u = 3 y llevo 1. Decenas: x + 6 + 1 termina en 0, así que x = 3 y llevo 1. Centenas: 4 + y + 1 = 10, así que y = 5. Queda 437 + 563 = **1000**. (Es como un complemento: 563 = CA(437).)
+
+---
+
+## 5. Multiplicar es juntar bolsas iguales
+
+**1 Lee**
+1. Veo 3 bolsas altas llenas de caramelos ("3 bolsas de 24"). La tarjeta 1/3 se titula "Bolsas de sorpresa".
+2. Leer.
+3. Juntar bolsas iguales es multiplicar.
+5. Nada.
+
+**2 Juega**
+1. Hay 4 bolsas altas, el rótulo "Cada bolsa: 24 caramelos" y "4 bolsas de 24". Debajo dice "4 bolsas de 24: 24 × 4 = 96". Hay deslizadores "Bolsas" (4) y "Caramelos en cada bolsa" (24).
+2. La misión: poner 7 bolsas y agregar a cada una lo justo para que el pedido suba 21.
+3. **bolsa** en verde es una bolsa de sorpresa. **24** es lo que trae al empezar. **agregados** en morado es lo que pasa de 24 en cada bolsa.
+4. Aprendí que si a cada una de 7 bolsas le agrego 3, el pedido sube 3 × 7 = 21.
+5. El deslizador de caramelos está al mínimo en 24. Me pregunto si se puede bajar de 24.
+
+**3 Predice**
+1. Una bolsa con algunos caramelos morados (los agregados), el rótulo "El pedido sube 52 caramelos" y la barra "4 más en cada bolsa; ¿cuántas bolsas?". Opciones: A 13, B 48, C 208, D 56 bolsas.
+2. Predecir cuántas bolsas hay.
+5. Nada. 52 ÷ 4 = 13, la A.
+
+**4 Mira**
+1. 7 bolsas de 24, el reproductor en 1/6 y el texto "7 bolsas de 24 caramelos: el pedido es 24 × 7 = 168".
+2. Mirar.
+4. Aprendí que el pedido de 7 bolsas de 24 es 168.
+5. Luma dice "Lo agregado es igual en cada bolsa", pero en este paso todavía no se agregó nada.
+
+**5 La regla**
+1. 7 bolsas con una fila morada arriba, el rótulo "Cada bolsa: 24 + 3 caramelos" y "7 bolsas: sube 3 × 7". La regla y las fórmulas.
+2. Leer.
+3. (**F** + **s**) × **G** = F × G + **s × G**, donde s × G es lo que sube. Luego viene "columna = **L** × **n** + **c**". El "Vale si" explica: F y G son los factores, s es lo que sube F, y si G sube t, sube además F × t + s × t.
+5. La segunda fórmula (columna = L × n + c) aparece aquí sin que se explique otra vez qué es L, n y c (yo lo recuerdo del tema 1). El texto dice "aunque la llevada pase de 1", pero en el dibujo no se ve ninguna multiplicación en columnas. Lo de "si G sube t" me costó: lo entendí como que si suben las dos cosas, sube s × G + F × t + s × t.
+
+**6 Así se resuelve**
+1. El cuaderno con 32₍₆₎ × 5₍₆₎ = ?₍₆₎. Datos: base 6, "cifra × factor + llevada que llega = llevada nueva × 6 + cifra que se anota" y la fórmula de abc₍₆₎. Paso 1: piden 32₍₆₎ × 5 en base 6.
+2. Seguir los pasos.
+3. **llevada nueva** en naranja y **cifra que se anota** en morado.
+5. En los datos, el texto "cifra que se anota" se sale del borde del cuadro a la derecha (se ve cortado). Mi cuenta: 2 × 5 = 10 = 1·6 + 4, anoto 4 y llevo 1. Luego 3 × 5 + 1 = 16 = 2·6 + 4, anoto 4 y llevo 2. Total **244₍₆₎**. Verifiqué: 20 × 5 = 100 = 72 + 24 + 4.
+
+**7 Ahora tú**
+1. Aquí no hay dibujo, solo texto. "Agrega 8 caramelos a cada bolsa, el pedido sube 168. ¿Cuántas bolsas?" Datos: la fórmula (F + s) × G y qué significa F, G, s. Opciones: A 176, B 160, C 21, D 1344.
+2. Hallar el número de bolsas.
+5. Nada. 168 ÷ 8 = 21, la C. Extrañé el dibujo del puesto.
+
+**Ejercicio inventado:** doña Juana tiene 12 bolsas de 30 caramelos y agrega 5 a cada una. ¿Cuánto sube el pedido y cuál es el total?
+Sube s × G = 5 × 12 = 60. El total es 30 × 12 + 60 = 360 + 60 = **420**, lo mismo que 35 × 12 = 420.
+
+---
+
+## 6. Sobran o faltan para otra bolsita
+
+**1 Lee**
+1. El letrero dice "1 bolsita = 5 caramelos". Veo 5 bolsitas y 1 suelto ("5 bolsitas / 1 suelto"). La tarjeta 1/3 se titula "Empacar es dividir", con las palabras dividendo, divisor y múltiplo subrayadas.
+2. Leer.
+3. 26 es el dividendo, 5 el divisor y 25 un múltiplo de 5.
+5. Nada.
+
+**2 Juega**
+1. El letrero dice "1 bolsita = 4 caramelos". Hay 7 bolsitas llenas y una última con 2 caramelos y 2 huecos punteados, con el rótulo "7 bolsitas llenas / 2 sueltos, 2 huecos". Debajo dice "30 = 7 × 4 + 2; para otra bolsita faltan 2". Hay deslizadores "Caramelos que tiene" (30) y "Caramelos por bolsita" (4).
+2. La misión: poner 47 caramelos y elegir la bolsita con la que faltan justo 3 para llenar otra.
+3. **bolsita** en verde es una bolsita llena. **sueltos** en naranja son los que sobran y no llenan otra. **huecos** en morado son los que faltan para llenar otra.
+4. Aprendí que sueltos + huecos = lo que lleva una bolsita (2 + 2 = 4).
+5. La misión tiene más de una respuesta: con bolsitas de 5 (47 = 9·5 + 2, faltan 3) y con bolsitas de 10 (47 = 4·10 + 7, faltan 3). No sé cuál quieren o si cualquiera vale.
+
+**3 Predice**
+1. 7 bolsitas (aquí representan a los sobrinos) y 4 sueltos, con el rótulo "7 sobrinos, 5 a cada uno / sobran 4". Opciones: A 11, B 4, C 7, D 3.
+2. Decir cuántos faltarían para darles 6 a cada uno.
+5. Los sobrinos están dibujados como bolsitas y eso me confundió un poco. Mi cálculo: tiene 7 × 5 + 4 = 39 y necesita 7 × 6 = 42, así que faltan 3: la D.
+
+**4 Mira**
+1. El mismo dibujo, el reproductor en 1/5 y el texto "Dio 5 a cada uno de sus 7 sobrinos, le sobraron 4: tiene 39. 7 × 5 + 4 = 39" (el 7 en verde y el 4 en naranja).
+2. Mirar.
+4. Aprendí que primero se calcula cuánto tiene en total: divisor × cociente + resto.
+5. Solo vi el paso 1.
+
+**5 La regla**
+1. 5 bolsitas llenas y una con 4 caramelos y 3 huecos punteados. Rótulo: "39 en bolsitas de 7: 5 llenas / 4 + 3 = 7". La regla y las fórmulas.
+2. Leer.
+3. **D** son los caramelos (dividendo), **d** lo que lleva una bolsita (divisor), **q** las bolsitas llenas, **r** lo que sobra (resto por defecto) y **rₑ** lo que falta (resto por exceso). Las fórmulas: D = d × q + r, D = d × (q + 1) − rₑ y r + rₑ = d. El "Vale si" dice 0 ≤ r < d y que si r = 0 la división es exacta, sin resto por exceso.
+5. La "e" chiquita debajo de la r no se explica; supongo que es de "exceso". Las bolsitas de 7 del dibujo no parecen tener 7 caramelos cada una (se ven 5 o 6), pero es un dibujo.
+
+**6 Así se resuelve**
+1. No hay dibujo. Problema: "bolsitas de 19: llena 18 y para llenar otra le faltarían 6. ¿Cuántos caramelos tiene?". Datos: las fórmulas y qué es cada letra. Paso 1: piden el dividendo.
+2. Seguir los pasos.
+5. D = 19 × 19 − 6 = 361 − 6 = **355**. Comprobé: 19 × 18 = 342 y 342 + 13 = 355, con 13 + 6 = 19.
+
+**7 Ahora tú**
+1. El letrero dice "1 bolsita = 9 caramelos". Veo 8 bolsitas y 5 sueltos. Problema: 77 caramelos en bolsitas de 9, llena 8 y sobran 5. ¿Cuántos faltan para otra? Opciones: A 9, B 5, C 4, D 14.
+2. Hallar el resto por exceso.
+5. Nada. 9 − 5 = 4, la C.
+
+**Ejercicio inventado:** al empacar N caramelos en bolsitas de 12, sobran 7 y se llenan 15. ¿Cuántos caramelos son y cuántos faltan para otra bolsita?
+N = 12 × 15 + 7 = 187. Faltan rₑ = 12 − 7 = **5**. Comprobé: 12 × 16 − 5 = 192 − 5 = 187.
+
+---
+
+## 7. ¿Cabe el producto en la pantalla?
+
+**1 Lee**
+1. Una calculadora con 4 rayitas grises arriba a la izquierda, "24 × 7" arriba a la derecha, una pantalla de 8 casillas donde las 3 últimas muestran 1, 6, 8 en morado, y 16 teclas grises sin números. La tarjeta 1/3 se titula "La calculadora del puesto".
+2. Leer.
+3. Cada casilla guarda una cifra y la pantalla tiene 8.
+5. Las teclas no tienen números; supongo que es solo un dibujo. No sé qué son las 4 rayitas grises de arriba.
+
+**2 Juega**
+1. Dos calculadoras: "el menor" (10 × 10 = 100) y "el mayor" (99 × 99 = 9801). Debajo dice "El menor da 3 cifras y el mayor 4 cifras: cabe siempre". Hay deslizadores "Cifras de A" (2) y "Cifras de B" (2).
+2. La misión: poner A en 5 cifras y averiguar hasta cuántas cifras puede tener B para que A × B quepa siempre.
+3. **casilla** en verde: en cada una cabe una cifra. **cifras** en morado: el producto en la pantalla. **E**: no cabe, tiene más cifras que casillas.
+4. Aprendí que hay que mirar el producto más chico y el más grande. Con A de 5 cifras, B puede tener hasta 3 cifras (5 + 3 = 8 en el peor caso).
+5. La **E** solo sale en la leyenda; supongo que la calculadora muestra "E" cuando no cabe, pero no lo vi.
+
+**3 Predice**
+1. Una calculadora con "A ÷ B" y un "?" en la pantalla. Pregunta: "A tiene 7 cifras y B tiene 3. ¿Cuántas cifras puede tener el cociente entero?". Datos: A va de 1 000 000 a 9 999 999 y B de 100 a 999. Opciones: A siempre 4, B siempre 5, C 9 o 10 cifras, D 4 o 5 cifras.
+2. Predecir el número de cifras del cociente.
+3. El **÷** es dividir y "cociente entero" es sin decimales.
+5. Me sorprendió que el tema se llame "¿Cabe el producto?" y aquí pregunten por la división. Mi cálculo: el más chico es 1 000 000 ÷ 999 ≈ 1001 (4 cifras) y el más grande 9 999 999 ÷ 100 ≈ 99 999 (5 cifras). Elijo la D.
+
+**4 Mira**
+1. Dos calculadoras: "el menor" 10 000 × 100 y "el mayor" 99 999 × 999, ambas con "?". El reproductor en 1/6 y el texto "A tiene 5 cifras y B, 3: se miran el menor y el mayor. 10 000 ≤ A ≤ 99 999; 100 ≤ B ≤ 999".
+2. Mirar.
+3. El **≤** significa "menor o igual".
+4. Aprendí que el caso menor y el mayor encierran a todos los demás.
+5. Solo vi el paso 1 (yo calculo 7 cifras para el menor y 8 para el mayor).
+
+**5 La regla**
+1. Dos calculadoras: 1 000 000 ÷ 999 = 1001 ("el menor") y 9 999 999 ÷ 100 = 99999 ("el mayor"). La regla en texto y en el cuadro.
+2. Leer.
+3. En A × B, las cifras son las de A más las de B, o una menos. En A ÷ B (cociente entero), son las de A menos las de B, o una más. El "Vale si" dice que con potencias como A², se aplica la regla a cada producto o se miran los extremos.
+5. En la primera calculadora, el texto "1 000 000 ÷ 999" queda pegado a las rayitas grises de arriba y se ve apretado. La pantalla dice 1001, aunque la división exacta no da entero. Entiendo que muestra solo el cociente entero, pero no lo dice. Mi D en Predice estaba bien.
+
+**6 Así se resuelve**
+1. Una calculadora con "4 cifras × 4 cifras" y un "?". Problema: ¿cabe siempre en 8 casillas? Datos: "Un número de k cifras va de 10^(k−1) a 10^k − 1" y la pantalla de 8 casillas. Paso 1: piden si el producto entra, sea cual sea.
+2. Seguir los pasos.
+3. 10^(k−1) es el número más chico de k cifras y 10^k − 1 el más grande.
+5. Nada. Da 7 u 8 cifras, así que siempre cabe.
+
+**7 Ahora tú**
+1. Sin dibujo. "A tiene 5 cifras y B tiene 5. ¿Cuántas cifras puede tener A × B?" Opciones: A siempre 9, B siempre 10, C 9 o 10 cifras, D 25 cifras.
+2. Elegir.
+5. Nada. 5 + 5 = 10, o una menos, 9: la C. La D (25) es trampa por multiplicar 5 × 5.
+
+**Ejercicio inventado:** si A tiene 6 cifras, ¿cuántas cifras tiene A² y cabe en la calculadora de 8 casillas?
+El menor es 100 000² = 10 000 000 000 (11 cifras) y el mayor 999 999² ≈ 999 998 000 001 (12 cifras). A² tiene 11 o 12 cifras, así que **no cabe** en 8 casillas.
+
+---
+
+## Resumen rápido de mis dudas generales
+- Solo vi la tarjeta 1 de cada "Lee" y el paso 1 de cada "Mira" y "Así se resuelve". No pude confirmar mis respuestas hasta "La regla".
+- El "(5)" o "(6)" chiquito para la base, y la raya encima de "abc", se usan sin explicarlos antes.
+- En los Juega, la misión pide unos números y la pantalla muestra otros (hay que moverlos). En la leyenda salen colores o símbolos (naranja, lleva, E) que todavía no aparecen en el dibujo.
+- "Complemento aritmético" aparece en Predice sin que la tarjeta 1 lo nombre.
+- En el tema 7, el Predice y La regla hablan también de división, aunque el título habla de producto.
+
+## Ejemplos resueltos
+
+# Informe de lector: Aritmética, cuatro operaciones (ejemplos resueltos)
+
+Lector: alumno de 5.º de secundaria, Juliaca, preparando admisión. Solo miré las 21 imágenes PNG de `lector/`.
+Las tarjetas vienen en grupos de tres con niveles 3, 8 y 14: suma (01-03), resta (04-06), complemento aritmético (07-09), manchas y reverso (10-12), multiplicación (13-15), división (16-18) y cantidad de cifras (19-21).
+Rehice todas las cuentas. **Ninguna cuenta está mal**: todas las respuestas y todas las «trampas» cuadran.
+
+---
+
+## 01.png — «Una sola llevada» (nivel 3)
+1. **Qué piden:** 29 + 45 caramelos.
+2. **¿Tengo todo?** Sí. El dato «1 bolsita = 10 caramelos» explica la llevada.
+3. **¿Sigo el Resuelto?** Sí, todo. Lo único: «más la que subió». Aquí dice «subió», y en otras tarjetas dice «llevada». Se entiende igual.
+4. **Dibujo:** es la cuenta en columna con «?». No da la respuesta. Ayuda un poco, porque los íconos de bolsita y caramelo marcan las columnas.
+5. **Raro:** nada importante. El 7 y el 4 se juntan en 74 sin decirlo, pero es obvio.
+- **Cuentas:** 9+5=14=1×10+4; 2+4+1=7, así que 74. 29+45=74. Cuadra.
+
+## 02.png — «Una suma en base 4» (nivel 8)
+1. **Qué piden:** 123₍₄₎ + 213₍₄₎.
+2. **¿Tengo todo?** Sí. Datos trae la regla «4 de una columna forman 1 de la siguiente» y la fórmula llevada × 4 + cifra.
+3. **¿Sigo el Resuelto?** Sí. Dudé un segundo en «Sueltos: 3 + 3 = 6». El 6 no es una cifra de base 4, pero la línea siguiente lo aclara (6 = 1×4 + 2).
+4. **Dibujo:** la cuenta en columna con un (4) en cada fila. El título «Caramelos de doña Juana» y la tienda sobran en un problema sin caramelos. No da la respuesta.
+5. **Raro:** se habla de «bolsitas» y «cajas» de 4 caramelos, cuando en la tarjeta 01 una bolsita tenía 10. Puede confundir a alguien que venga de esa tarjeta.
+- **Cuentas:** 123₍₄₎=27 y 213₍₄₎=39; 27+39=66. Además 1002₍₄₎=64+2=66. Cuadra.
+
+## 03.png — «La mayor llevada» (nivel 14)
+1. **Qué piden:** la mayor llevada de las unidades a las decenas al sumar cuatro números de dos cifras.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí, entero. La frase «para llevar 4 harían falta 40, y no alcanza» está muy bien.
+4. **Dibujo:** cuatro filas «??» con la columna de las unidades sombreada. Ayuda porque muestra que solo importa esa columna. No da la respuesta.
+5. **Raro:** la respuesta «3» sale en naranja (el color de la llevada) y no en morado como las demás. Tiene lógica, pero es distinto.
+- **Datos:** «La mayor cifra en base 10 es 9» casi regala el primer paso.
+- **Cuentas:** 9×4=36=3×10+6, así que la respuesta es C (3). Cuadra.
+
+## 04.png — «Un préstamo» (nivel 3)
+1. **Qué piden:** 62 − 27.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí.
+4. **Dibujo:** la resta en columna con «?». Neutro, no da la respuesta.
+5. **Raro:** en Datos el naranja es la *p* (1 si se abrió una bolsita). En el Resuelto, el naranja marca el «5» (las bolsitas que quedan). El mismo color cambia de significado. Además, Datos habla de «caja o cajón», que aquí no aparecen y distraen.
+- **Cuentas:** 2+10−7=5; 5−2=3; 35. 62−27=35. Cuadra.
+
+## 05.png — «Una resta en base 6» (nivel 8)
+1. **Qué piden:** 312₍₆₎ − 145₍₆₎.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Casi. **Primer tropiezo:** «Bolsitas: quedaron en 0». No dice que el 1 prestó y bajó a 0. La tarjeta 11 sí lo dice («el 3 prestó y quedó en 2»).
+4. **Dibujo:** la resta en columna con (6). Neutro.
+5. **Raro:** pasa lo mismo que en 04: el naranja ya no es *p*, ahora marca lo que quedó (0 y 2).
+- **Cuentas:** 312₍₆₎=116 y 145₍₆₎=65; 116−65=51. Además 123₍₆₎=36+12+3=51. Cuadra.
+
+## 06.png — «Los tres términos de una resta» (nivel 14)
+1. **Qué piden:** el minuendo, si minuendo + sustraendo + diferencia = 1 848.
+2. **¿Tengo todo?** Sí. Datos trae la definición.
+3. **¿Sigo el Resuelto?** Sí, muy claro.
+4. **Dibujo:** no tiene, y no le hace falta.
+5. **Raro:** nada.
+- **Cuentas:** 1848÷2=924. Trampas: 1848÷3=616 (A), 1848÷4=462 (C), 1848 (D). Cuadra.
+
+## 07.png — «Un cero en medio» (nivel 3)
+1. **Qué piden:** CA(306).
+2. **¿Tengo todo?** Para la cuenta, sí (10³ − 306).
+3. **¿Sigo el Resuelto?** **Me pierdo en «El 0 del medio también se resta de 9».** ¿Qué es eso de «restar de 9», y por qué «también»? Es un atajo que nunca se explicó, ni en Datos ni en la tarjeta. La línea siguiente (1 000 − 306 = 694) sí la sigo.
+4. **Dibujo:** la resta 1000 − 306 en columna. Ayuda, porque convierte el CA en una resta normal. No da la respuesta.
+5. **Raro:** el dibujo pone «1000» y el texto «1 000», sin y con espacio.
+- **Cuentas:** 1000−306=694. Con el atajo: 9−3=6, 9−0=9, 10−6=4, también 694. Cuadra.
+
+## 08.png — «En base 6» (nivel 8)
+1. **Qué piden:** CA(245₍₆₎).
+2. **¿Tengo todo?** Para el camino largo, sí. Para el atajo, no.
+3. **¿Sigo el Resuelto?** La primera parte sí: 6³=216, 245₍₆₎=101, 216−101=115. El paso a 3×36+1×6+1 aparece hecho, sin mostrar cómo se pasa 115 a base 6. **Me pierdo en «Con el atajo en base 6: de 5 el 2 y el 4, de 6 el 5».** Ese atajo no se explica en ningún lado.
+4. **Dibujo:** 1000₍₆₎ − 245₍₆₎. Ayuda, pero no dice que 1000₍₆₎ es el mismo 216 del texto.
+5. **Raro:** en Datos la base sale como *n* (en cursiva y verde), y luego se usa 6. Se entiende.
+- **Cuentas:** 2×36+4×6+5=101; 216−101=115=3×36+1×6+1, o sea 311₍₆₎. Atajo: 5−2=3, 5−4=1, 6−5=1. Cuadra.
+
+## 09.png — «Un número y su complemento» (nivel 14)
+1. **Qué piden:** N de tres cifras con N − CA(N) = 286.
+2. **¿Tengo todo?** Sí. Con k=3, la fórmula de Datos da N + CA = 1000.
+3. **¿Sigo el Resuelto?** Sí, muy claro (dos ecuaciones que se suman).
+4. **Dibujo:** no tiene. No hace falta.
+5. **Raro:** la respuesta «643» no está resaltada en morado, como en casi todas las demás.
+- **Cuentas:** 2N=1286, N=643, CA=357, y 643−357=286. Trampas: 357 (A), 286 (C), 714 (D). Cuadra.
+
+## 10.png — «Una mancha en una resta» (nivel 3)
+1. **Qué piden:** la cifra □ en 9□ − 34 = 58.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí. La línea «□ + 10 − 4 = 8» sale dos veces seguidas, una en texto y otra en fórmula. Sobra una.
+4. **Dibujo:** la mancha gris tapa la cifra. Ayuda. El 58 sale en morado, el color de las respuestas, aunque aquí es un dato. Confunde un poco.
+5. **Raro:** Datos vuelve a mencionar «caja o cajón», que aquí no se usan.
+- **Cuentas:** 92−34=58. Cuadra.
+
+## 11.png — «Un número menos su reverso» (nivel 8)
+1. **Qué piden:** 732 − 237, y compararlo con 7 − 2.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí. La parte «los 30 de las decenas se anulan» la tuve que leer dos veces, pero se entiende.
+4. **Dibujo:** la resta en columna. Neutro.
+5. **Raro (encimado):** en Datos, la raya de arriba de «abc» (2.ª viñeta) queda pegada justo debajo de «b + c» de la 1.ª línea. Parece que «b + c» estuviera subrayado.
+- **Cuentas:** 12−7=5; 12−3=9; 6−2=4; 495. 100×5−5=99×5=495. Cuadra.
+
+## 12.png — «Una suma con tres manchas» (nivel 14)
+1. **Qué piden:** la suma de las tres cifras tapadas en □12 + 7□7 = 17□9.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí, aunque salta de unidades a centenas y recién después vuelve a decenas. **Me detuve en «tiene que dar 17»**: tuve que pensar por qué 17 (porque no hay millares arriba). Con eso, todo sigue.
+4. **Dibujo:** muy bueno. Las tres manchas están en su lugar y no dan la respuesta.
+5. **Raro:** esta imagen tiene la letra un poco más chica que las demás, por lo largo.
+- **Cuentas:** 912+797=1709, y 9+9+0=18. Trampas: 9 (A, una mancha), 19 (C, 9+9+1). Cuadra.
+
+## 13.png — «¿Cuánto sube?» (nivel 3)
+1. **Qué piden:** cuánto sube un pedido de 12 bolsas si cada una recibe 2 caramelos más.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí.
+4. **Dibujo:** 12 bolsas, cada una con 8 caramelos grises y 2 morados (los conté con zoom). Contando los morados sale la respuesta antes del resuelto. Para el nivel 3 está bien.
+5. **Raro:** Datos trae (F + s) × G, pero F no se da ni se usa. La letra F distrae.
+- **Cuentas:** 2×12=24. Cuadra.
+
+## 14.png — «El factor que falta» (nivel 8)
+1. **Qué piden:** cuántas bolsas hay, si cada una recibe 6 más y el pedido sube 84.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí.
+4. **Dibujo:** no tiene.
+5. **Raro:** «14» sin resaltar en morado. F sobra en Datos, igual que en 13. Para un nivel 8 es muy fácil, casi igual a la 13.
+- **Cuentas:** 84÷6=14 y 6×14=84. Cuadra.
+
+## 15.png — «Se equivocó de factor» (nivel 14)
+1. **Qué piden:** cuánto le faltó al multiplicar 48×37 en vez de 48×73.
+2. **¿Tengo todo?** Sí. La propiedad distributiva está en Datos.
+3. **¿Sigo el Resuelto?** Sí, muy claro.
+4. **Dibujo:** no tiene.
+5. **Raro:** nada.
+- **Cuentas:** 48×36=1728; 48×73=3504; 48×37=1776; 3504−1776=1728. Trampas: 36, 3504 y 1776. Cuadra.
+
+## 16.png — «Una división exacta» (nivel 3)
+1. **Qué piden:** si sobra o falta algo al empacar 42 caramelos en bolsitas de 7.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí.
+4. **Dibujo:** una pirámide de 3+4+5+6+7+8+9 = 42 caramelos (la conté con zoom). Está bien contada, pero no los agrupa de 7 en 7, así que no muestra las bolsitas. Sobra un poco.
+5. **Raro:** el título «Una división exacta» ya da la respuesta. Datos trae *r*ₑ (faltan), que aquí no se usa.
+- **Cuentas:** 7×6+0=42. Cuadra.
+
+## 17.png — «Restos iguales» (nivel 8)
+1. **Qué piden:** cuánto debe sobrar, en bolsitas de 10, para que lo que sobra sea igual a lo que falta.
+2. **¿Tengo todo?** Sí. Está la fórmula con *r*ₑ.
+3. **¿Sigo el Resuelto?** Sí. Lo de «con bolsitas de 9 no se podría» está muy bien.
+4. **Dibujo:** no tiene.
+5. **Raro:** nada.
+- **Cuentas:** r + rₑ = 10, y r = rₑ = 5. Cuadra.
+
+## 18.png — «El mayor resto posible» (nivel 14)
+1. **Qué piden:** el dividendo, con divisor 17, cociente 9 y el mayor resto posible.
+2. **¿Tengo todo?** Casi. Datos explica *d* como «lo que lleva una bolsita», y el problema dice «divisor». Hay que darse cuenta de que son lo mismo.
+3. **¿Sigo el Resuelto?** Sí.
+4. **Dibujo:** no tiene.
+5. **Raro:** respuesta 169 sin resaltar. Datos trae *r*ₑ, que no se usa.
+- **Cuentas:** 17×9+16=169. Trampas: 153 (A, sin resto), 170 (C, resto 17), 161 (D, resto 8, la mitad). Cuadra.
+
+## 19.png — «Las cotas de un número» (nivel 3)
+1. **Qué piden:** el menor y el mayor número de 4 cifras.
+2. **¿Tengo todo?** Sí.
+3. **¿Sigo el Resuelto?** Sí.
+4. **Dibujo:** no tiene.
+5. **Raro:** nada. Es muy fácil, casi solo leer Datos.
+- **Cuentas:** 10³=1000 y 10⁴−1=9999. Cuadra.
+
+## 20.png — «Un cociente de 8 entre 3» (nivel 8)
+1. **Qué piden:** cuántas cifras puede tener el cociente entero de A (8 cifras) entre B (3 cifras).
+2. **¿Tengo todo?** No del todo. Datos solo da las cotas. No dice que el cociente más chico sale del A más chico entre el B más grande, ni al revés.
+3. **¿Sigo el Resuelto?** **Me pierdo en la primera línea: «El menor: 10 000 000 ÷ 999».** ¿Por qué 999 y no 100? No se explica. Además, «da 10 010» no es exacto (sobra 10), y no se dice que se quitan los decimales.
+4. **Dibujo:** no tiene. Una tabla de menor/mayor ayudaría.
+5. **Raro:** el título «Un cociente de 8 entre 3» se puede leer como 8 ÷ 3.
+- **Cuentas:** 999×10010=9 999 990, sobra 10, así que el cociente es 10 010 (5 cifras). 99 999 999 ÷ 100 = 999 999,99, así que el cociente es 999 999 (6 cifras). Cuadra.
+
+## 21.png — «Cifras que no se ven» (nivel 14)
+1. **Qué piden:** cuántas cifras tiene 1□□□ × 1□□.
+2. **¿Tengo todo?** Sí. Datos incluso dice que 1□□□ va de 1 000 a 1 999. Para 1□□ (de 100 a 199) hay que deducirlo, pero es fácil.
+3. **¿Sigo el Resuelto?** Sí. Las trampas no: «B toma la suma de cifras» y «C usa la regla sin la primera cifra» son oscuras. ¿Qué regla? No se explica.
+4. **Dibujo:** confunde. La pantalla de la calculadora tiene **8 casillas** y la respuesta es 6. Parece que el resultado tuviera 8 cifras.
+5. **Raro (encimado):** el «?» está montado sobre la raya entre la casilla 4 y la 5.
+- **Datos:** la 4.ª viñeta casi regala el paso clave.
+- **Cuentas:** 1000×100=100 000 (6 cifras); 1999×199=397 801 < 400 000 (6 cifras). Respuesta A. Cuadra.
+
+---
+
+## Resumen
+
+**Las 3 mejores**
+1. **12.png**: problema de verdad, dibujo útil que no regala nada y trampas explicadas.
+2. **15.png**: corta, clara, con la propiedad justa en Datos y trampas que cuadran.
+3. **06.png / 09.png** (empate): sin dibujo y no lo necesitan; el razonamiento se sigue línea por línea.
+
+**Las 3 peores**
+1. **20.png**: el primer paso (A menor ÷ B mayor) no se explica, la división no exacta se redondea sin avisar y el título confunde.
+2. **08.png**: usa un atajo («de 5 el 2 y el 4, de 6 el 5») que nunca se enseñó y pasa 115 a base 6 sin mostrarlo.
+3. **21.png**: el dibujo con 8 casillas confunde (la respuesta es 6), el «?» está encimado y las trampas B y C no se entienden.
+   (Cerca: **07.png**, por el mismo atajo del 9 sin explicar.)
+
+**¿Suben los niveles?** En general sí: en cada grupo, 3 es fácil, 8 es medio y 14 es de examen. Excepciones:
+- 14.png (nivel 8) es casi igual de fácil que 13.png (nivel 3).
+- 21.png (nivel 14) no me pareció más difícil que 20.png (nivel 8). La 20 me costó más.
+- 19.png es solo leer el dato.
+
+**¿«Datos» ayuda, distrae o regala?**
+- **Ayuda** casi siempre: fórmulas de base, de CA, del algoritmo de la división, distributiva.
+- **Distrae** cuando trae cosas que no se usan: «caja o cajón» en 04 y 10; la F en 13 y 14; *r*ₑ en 16 y 18.
+- **Casi regala** en 03 («la mayor cifra es 9») y en 21 («de 1 000 a 1 999»). En 16 la respuesta la regala el título.
+
+**Colores:** el naranja es *p* o llevada en Datos, pero en 04 y 05 marca «lo que quedó». Las respuestas de 09, 14 y 18 no salen en morado, como sí salen las demás.
+
+**Cuentas:** todas cuadran (21 de 21), incluidas las trampas de las tarjetas de nivel 14.
