@@ -79,6 +79,15 @@ de igualdad van sobre una llave).
   hoy solo Las cuatro operaciones, que entra con `prestamo` y `cifras-ocultas`.
 - Visto bueno de la ronda 2 de correcciones de Productos notables.
 
+## Tercera ronda (mesa, 18 nov, cierre)
+- **Visto bueno de las cinco unidades completas** (MRU, MRUV y caída libre, Estructura atómica, Las cuatro operaciones,
+  Triángulos), de la práctica por idea en la app y de las correcciones de la ronda 2 del lector en frío.
+- **Convención de mₗ y mₛ:** se queda la de hoy (cajas de mₗ = −ℓ a +ℓ, primero ↑ en cada una, ↑ vale +½) hasta que
+  haya un libro en `fuentes/` que la confirme.
+- **Pruebas del curso:** aritmética queda como está (ari-17 y ari-30). En geometría vuelve geo-05 (Relaciones métricas)
+  al lugar que dejó geo-13; el banco pasa a 2.2.0.
+- **Idea 7 de Las cuatro operaciones:** queda el título «Cifras del producto y del cociente».
+
 ## Orden de trabajo
 Fase 2 del método: la idea 1 de cada unidad completa, para el visto bueno de Gerson en la mesa. Movimiento rectilíneo
 se parte primero, con la migración del avance.
