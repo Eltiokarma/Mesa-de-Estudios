@@ -1340,17 +1340,15 @@
       { termino: 'exponente', formas: ['exponente', 'exponentes'], def: 'El número chico de arriba en una potencia: cuántas veces se repite la base como factor.',
         simple: 'Cuántas veces se multiplica; en la hoja, cuántos dobleces.', ver: ['base', 'potencia'],
         ejemplos: ['En 2⁵ es el 5: cinco factores 2.', 'En 10³ es el 3: 10 · 10 · 10 = 1000.', 'Con exponente 0 queda 1: la hoja sin doblar es 1 capa.'] },
-      // Los que estrena la idea 2 (rehecha, 18 nov). «valor absoluto» se definía en valor-absoluto-y-radicales, pero esta
-      // unidad lo usa primero (√(x²) = |x|): la definición vive aquí desde el 18 nov.
+      // Los que estrena la idea 2 (rehecha, 18 nov). «valor absoluto» se define en «Valor absoluto y radicales» (Gerson,
+      // mesa del 18 nov, cuarta ronda): aquí no se repite; el lector lo marca igual, con «Se explica en…» esa unidad
+      // (nucleo/glosario.js: un término del curso vale en todas sus unidades).
       { termino: 'raíz cuadrada', formas: ['raíz cuadrada', 'raíces cuadradas'], simbolo: '√', def: 'El número no negativo que, multiplicado por sí mismo, da el número de adentro.',
         simple: 'El lado de un cuadrado cuando se conoce su área.', ver: ['radicando', 'radical'],
         ejemplos: ['√36 = 6, porque 6 · 6 = 36.', 'Un biohuerto cuadrado de 49 m² tiene 7 m de lado.', '√2 no es exacta: vale unos 1,41.'] },
       { termino: 'radicando', formas: ['radicando', 'radicandos'], def: 'Lo que está debajo del signo √.',
         simple: 'Lo que está adentro de la raíz.', ver: ['raíz cuadrada'],
         ejemplos: ['En √36, es 36.', 'En √(9 + 16), es 9 + 16 = 25.', 'En el biohuerto, el radicando es el área.'] },
-      { termino: 'valor absoluto', simbolo: '|x|', def: 'La distancia de un número al cero, sin signo: nunca es negativa.',
-        simple: 'Cuántos pasos hay del número al cero, sin importar el lado.', ver: ['distancia'],
-        ejemplos: ['|−4| = 4 y |4| = 4.', '|−7| = 7: el −7 está a 7 pasos del cero.', '|3 − π| = π − 3, porque 3 − π es negativo.'] },
       { termino: 'área', formas: ['área', 'áreas'], def: 'Cuánta superficie cubre una figura plana: en un rectángulo, largo por ancho.',
         simple: 'Cuánto piso cubre una figura.', ver: ['volumen'],
         ejemplos: ['Un cuadrado de 6 m de lado tiene 36 m² de área.', 'Dos biohuertos de 36 y 64 m² juntos cubren 100 m².', 'Una loseta de 8 dm de lado cubre 64 dm².'] },

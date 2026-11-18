@@ -36,7 +36,8 @@ const plano = x => E.texto(x === undefined || x === null ? '' : x);
 test('partición: cada unidad con sus ideas, sus mesas y sus palabras, sin repetir ninguna', () => {
   assert.equal(def.unidad, 'algebra.exponentes-y-productos-notables', 'la unidad vieja conserva el id');
   assert.deepEqual(def.ideas.map(i => i.id), ['leyes-exponentes', 'radicales', 'exponente-fraccionario']);
-  assert.deepEqual(prod.ideas.map(i => i.id), ['cuadrado-suma', 'radicales-dobles', 'racionalizar']);
+  // Las tres ideas que vinieron de la unidad vieja, más las dos nuevas de la propuesta (fase 3, 18 nov), en su orden.
+  assert.deepEqual(prod.ideas.map(i => i.id), ['cuadrado-suma', 'suma-por-diferencia', 'cubo-binomio', 'radicales-dobles', 'racionalizar']);
   assert.deepEqual(def.laboratorio.map(m => m.id).sort(), ['exponentes-con-signo', 'raiz-de-la-potencia']);
   assert.deepEqual(prod.laboratorio.map(m => m.id).sort(), ['cubo-se-abre', 'rectangulo-x-p-q']);
   const t1 = new Set(def.glosario.map(g => Glosario.clave(g.termino)));
@@ -65,18 +66,21 @@ test('partición: el catálogo pone «Productos notables» después de «Exponen
   assert.equal(par('cc-02').unidad, viejo.id);
 });
 
-// Palabras que Productos notables estrenó después de la partición (18 nov): no estaban en la unidad vieja.
-const NUEVAS = ['binomio', 'doble producto'];
+// Palabras e ideas que Productos notables estrenó después de la partición (18 nov): no estaban en la unidad vieja, así
+// que nadie puede tener marcas viejas de ellas. («binomio» volvió a Binomio de Newton: ya no es de ninguna de las dos.)
+const NUEVAS = ['doble producto', 'suma de cubos', 'radical simple'];
+const IDEAS_NUEVAS = ['suma-por-diferencia', 'cubo-binomio'];
 test('partición: Avance.migrar pasa a la unidad nueva todo lo de sus ideas, mesas y palabras, y nada de lo que se queda', () => {
   const V = def.unidad, N = prod.unidad;
-  const ideas = Object.fromEntries([...def.ideas, ...prod.ideas].map((i, k) => [i.id, { casos: k + 1 }]));
+  const viejas = prod.ideas.filter(i => !IDEAS_NUEVAS.includes(i.id));
+  const ideas = Object.fromEntries([...def.ideas, ...viejas].map((i, k) => [i.id, { casos: k + 1 }]));
   const est = { avanceV: 1, partidoV: 1, teoria: { [V]: { ideas: JSON.parse(JSON.stringify(ideas)) } },
     coleccion: [...def.laboratorio, ...prod.laboratorio].map((m, k) => ({ id: `c${k}`, unidad: V, mesa: m.id })),
     // Las palabras que la unidad vieja ya tenía (las nuevas de Productos notables no pueden tener marcas viejas).
     glosario: { [V]: Object.fromEntries([...def.glosario, ...prod.glosario.filter(g => !NUEVAS.includes(g.termino))].map(g => [Glosario.clave(g.termino), 'sabe'])) } };
   assert.equal(Avance.migrar(est), true);
   assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), def.ideas.map(i => i.id).sort());
-  assert.deepEqual(Object.keys(est.teoria[N].ideas).sort(), prod.ideas.map(i => i.id).sort());
+  assert.deepEqual(Object.keys(est.teoria[N].ideas).sort(), viejas.map(i => i.id).sort());
   for (const c of est.coleccion) assert.equal(c.unidad, prod.laboratorio.some(m => m.id === c.mesa) ? N : V, c.mesa);
   assert.deepEqual(Object.keys(est.glosario[V]).sort(), def.glosario.map(g => Glosario.clave(g.termino)).sort());
   assert.deepEqual(Object.keys(est.glosario[N]).sort(), prod.glosario.filter(g => !NUEVAS.includes(g.termino)).map(g => Glosario.clave(g.termino)).sort());
@@ -158,7 +162,7 @@ test('las figuras de las ideas rehechas: sin carmín ni verde; la hoja con m nar
 });
 
 test('cada idea rehecha cumple el contrato de calidad 2 (validador común con calidad: 2, sola) y estrena sus palabras', () => {
-  const ESPERA = [['base', 'exponente', 'potencia'], ['radicando', 'raíz cuadrada', 'valor absoluto', 'área'], ['exponente fraccionario', 'radical', 'índice']];
+  const ESPERA = [['base', 'exponente', 'potencia'], ['radicando', 'raíz cuadrada', 'área'], ['exponente fraccionario', 'radical', 'índice']];
   const porIdea = Glosario.porIdea(def);
   def.ideas.forEach((i, k) => {
     assert.deepEqual(porIdea[k].map(g => g.termino).sort(), ESPERA[k], i.id);

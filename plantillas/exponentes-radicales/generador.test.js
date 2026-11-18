@@ -1,7 +1,7 @@
 // Pruebas de «Exponentes y radicales»: casos.json (calculados aparte, con un script que no usa el generador), un
 // recálculo independiente en 600 problemas (logaritmos, Math.cbrt, Math.hypot, fuerza bruta y evaluar la expresión en
 // un x cualquiera), fugas, los tipos por idea, los colores de la unidad, los códigos de error, el recuadro «Datos» en
-// 400 semillas, el papel y que sistemas-ecuaciones, abierto desde esta unidad, solo dé su tipo exponencial.
+// 400 semillas, el papel y que sistemas-ecuaciones ya no es de esta unidad (su repaso sale de aquí).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -234,11 +234,18 @@ test('papel.json: 8 problemas de las tres ideas, con sus datos y su respuesta re
   assert.deepEqual([...niveles].sort(), [1, 2, 3]);
 });
 
-// sistemas-ecuaciones también cubre esta unidad (su tipo exponencial, San Marcos 2025-II): abierto desde aquí, no debe
-// dar Vandermonde ni matrices (propuesta §7; auditoría de Vectores, 17 nov).
-test('sistemas-ecuaciones, abierto desde esta unidad, solo da su tipo exponencial', () => {
-  const se = require('../sistemas-ecuaciones/generador.js');
-  for (let s = 0; s < 200; s++) assert.equal(se.generar(`u${s}`, { unidad: UNIDAD })._datos.tipo, 'exponencial', `semilla ${s}`);
+// sistemas-ecuaciones salió de esta unidad (Gerson, cuarta ronda, 18 nov): su práctica y su repaso son solo esta plantilla.
+test('sistemas-ecuaciones ya no es de esta unidad: ni en el catálogo, ni en su ficha, ni en el repaso', () => {
+  const raiz = path.join(__dirname, '..', '..');
+  const cat = JSON.parse(fs.readFileSync(path.join(raiz, 'catalogo', 'cursos', 'algebra.json'), 'utf8'));
+  assert.deepEqual(cat.unidades.find(u => u.id === UNIDAD).plantillas.filter(p => p !== 'cuadrado-crece'), ['exponentes-radicales']);
+  const se = JSON.parse(fs.readFileSync(path.join(raiz, 'plantillas', 'sistemas-ecuaciones', 'plantilla.json'), 'utf8'));
+  assert.ok(!se.unidades.includes(UNIDAD));
+  const RT = require('../../nucleo/repaso-tipos.js');
+  assert.ok(!Object.values(RT.TABLA['sistemas-ecuaciones']).includes(UNIDAD));
+  // El repaso de la unidad sale de esta plantilla, que es solo suya: todo tipo que da es de la unidad.
   const ficha = JSON.parse(fs.readFileSync(path.join(__dirname, 'plantilla.json'), 'utf8'));
   assert.deepEqual(ficha.unidades, [UNIDAD]);
+  assert.ok(RT.cubre(ficha, UNIDAD));
+  for (let s = 0; s < 50; s++) assert.equal(RT.unidadDe(ficha, gen.generar(`r${s}`)), UNIDAD, `semilla ${s}`);
 });

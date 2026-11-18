@@ -806,7 +806,7 @@
     laboratorio,
     // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
     glosario: [
-      // «binomio» se define en «Productos notables» (18 nov), que lo usa primero: (a + b)² es el cuadrado de un binomio.
+      { termino: 'binomio', formas: ['binomio', 'binomios'], def: 'Polinomio de dos términos.', ejemplo: 'x + 2 y a − b.', ver: ['binomio de Newton'] },
       { termino: 'binomio de Newton', def: 'La fórmula que desarrolla (a + b)ⁿ sin multiplicar paréntesis por paréntesis.',
         ejemplo: '(a + b)³ = a³ + 3a²b + 3ab² + b³.', ver: ['número combinatorio'] },
       { termino: 'factorial', formas: ['factorial', 'factoriales'], simbolo: 'n!', def: 'El producto de todos los enteros de 1 hasta n; 0! vale 1.', ejemplo: '4! = 4 · 3 · 2 · 1 = 24.' },

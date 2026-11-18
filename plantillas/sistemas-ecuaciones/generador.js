@@ -112,10 +112,10 @@
     vandermonde: ['variable', 'variable', 'determinante'], matriz: ['entrada', 'traza'] };
   const TIPOS = ['trabajo', 'enteros', 'parametro', 'parametro', 'vieta', 'vieta', 'franja', 'exponencial', 'vandermonde', 'matriz', 'valor-absoluto'];
 
-  // Abierto desde una unidad que solo usa algunos tipos, da solo esos (propuesta-algebra-exponentes.md §7 y §9, aprobada
-  // el 17 nov: «Exponentes y radicales» solo pide el exponencial, como San Marcos 2025-II). Las demás unidades siguen con
-  // todos los tipos, como antes; sin unidad, el mismo problema de siempre para cada semilla.
-  const TIPOS_POR_UNIDAD = { 'algebra.exponentes-y-productos-notables': ['exponencial'] };
+  // Abierto desde una unidad que solo usa algunos tipos, da solo esos. Hoy ninguna: «Exponentes y radicales» pedía solo
+  // el exponencial (17 nov), pero el 18 nov salió de la unidad (Gerson, cuarta ronda; su práctica es exponentes-radicales).
+  // Las unidades que quedan usan todos los tipos, como antes; sin unidad, el mismo problema de siempre para cada semilla.
+  const TIPOS_POR_UNIDAD = {};
   function generar(semilla, opciones) {
     const o = typeof opciones === 'string' ? { unidad: opciones } : opciones || {};
     const rng = Azar.crear(ID + '|' + semilla);

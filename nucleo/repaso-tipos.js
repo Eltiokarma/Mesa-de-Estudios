@@ -80,8 +80,10 @@
     'rm-movimientos': todo(RM + 'traslados-y-puntos-cardinales', ['bocas', 'tubo', 'salto', 'caballo', 'canoa', 'pares']),
     'rm-parentesco': { orden: RM + 'ordenamiento-de-informacion', ...todo(RM + 'razonamiento-deductivo', ['edades', 'arbol', 'minimo', 'cadena', 'billetes']) },
     'rm-planteo': { ...todo(RM + 'planteo-de-ecuaciones', ['pista', 'progresion', 'canje', 'diana', 'cortes']), torneo: RM + 'tablas-graficos-y-suficiencia' },
+    // 18 nov (Gerson, cuarta ronda): sistemas-ecuaciones salió de «Exponentes y radicales», que repasa con su propia
+    // plantilla (exponentes-radicales, de una sola unidad); el tipo exponencial queda sin fila, fuera del repaso.
     'sistemas-ecuaciones': { ...todo(AL + 'sistemas-de-ecuaciones', ['vandermonde', 'parametro', 'enteros', 'trabajo']), matriz: AL + 'matrices-y-determinantes',
-      ...todo(AL + 'ecuaciones-lineales-y-cuadraticas', ['vieta', 'franja']), 'valor-absoluto': AL + 'valor-absoluto-y-radicales', exponencial: AL + 'exponentes-y-productos-notables' },
+      ...todo(AL + 'ecuaciones-lineales-y-cuadraticas', ['vieta', 'franja']), 'valor-absoluto': AL + 'valor-absoluto-y-radicales' },
     'soluciones-meq-ppm': todo(Q + 'soluciones', ['meq', 'igualar', 'ppmGas', 'ppmMasa', 'mezcla', 'jarabe', 'preparar', 'precipitacion', 'masa', 'carbonato', 'volumen', 'volumen-pct']),
     'trig-angulos-verticales': todo(T + 'triangulos-rectangulos', ['entre-edificios', 'mismo-lado', 'puente-simbolico', 'mitad-cima', 'movimiento', 'condicion-angulo', 'ambos-lados', 'objeto-elevado', 'dron-camino']),
     'trig-extremos': { ...todo(T + 'funciones-trigonometricas', ['cuadratica', 'racional', 'puerta', 'senoide']), 'area-ct': T + 'circunferencia-trigonometrica' },
