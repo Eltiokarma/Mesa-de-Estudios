@@ -80,8 +80,46 @@
       est.avanceV = 1;
       cambio = true;
     }
-    for (const pt of PARTICIONES) if (partir(est, pt)) cambio = true;
+    for (const pt of PARTICIONES) {
+      // Antes de mudar (la idea que se va todavía está en la unidad vieja), o después para quien ya mudó.
+      if (pt.estudiada && conservaEstudio(est, pt)) cambio = true;
+      if (partir(est, pt)) cambio = true;
+      if (pt.sinHuella && sinHuella(est, pt.de, pt.sinHuella)) cambio = true;
+    }
+    // 18 nov (auditoría de MRUV, A1): pendiente-aceleracion conservó su id con otra Predice en la unidad nueva; después de
+    // la partición, una predicción suya sin huella es de la pregunta vieja (también la «c») y se vuelve a preguntar.
+    if (sinHuella(est, 'fisica.mruv-y-caida-libre', { marca: 'reinicioVT', ideas: ['pendiente-aceleracion'] })) cambio = true;
     return cambio;
+  }
+  // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
+  // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.
+  function sinHuella(est, de, { marca, ideas }) {
+    if (est[marca] >= 1) return false;
+    est[marca] = 1;
+    const t = est.teoria && est.teoria[de];
+    if (t && t.ideas) for (const id of ideas) {
+      const i = t.ideas[id];
+      if (i && i.prediccion !== undefined && !i.prediccionDe) delete i.prediccion;
+    }
+    return true;
+  }
+  // «La estudié» de una unidad que se queda con ideas nuevas (una mudanza que además agregó ideas): quien había terminado
+  // todas las ideas de antes (estudiada.ideas) la tenía estudiada, y con las nuevas por hacer ya no la tendría completa.
+  // Se le guarda como «Ya la estudié» (est.marcadas, con la fecha de su visita), una sola vez (estudiada.marca), para que
+  // no pierda el nivel ni se le cierren las unidades que la piden; las ideas nuevas le quedan por hacer. Cuenta una idea
+  // vieja como hecha si está hecha en la unidad, o en la de destino con su nombre nuevo (quien ya mudó, o quien la hizo
+  // allá). Nada de esto toca la teoría ni las respuestas.
+  function conservaEstudio(est, { de, a, renombrar, estudiada: { marca, ideas, fecha } }) {
+    if (est[marca] >= 1) return false;
+    est[marca] = 1;
+    const t = ((est.teoria || {})[de] || {}).ideas || {}, n = ((est.teoria || {})[a] || {}).ideas || {};
+    const hecha = id => !!((t[id] && t[id].hecha) || (renombrar && renombrar[id] && n[renombrar[id]] && n[renombrar[id]].hecha));
+    if (ideas.every(hecha) && !(est.marcadas || {})[de]) {
+      est.marcadas = est.marcadas && typeof est.marcadas === 'object' ? est.marcadas : {};
+      const v = (est.vistas || {})[de];
+      est.marcadas[de] = typeof v === 'string' && v ? v : fecha;
+    }
+    return true;
   }
   // Unidades que se partieron en dos (Gerson): las ideas que se fueron, sus mesas del laboratorio, las marcas del glosario
   // de sus palabras y la visita pasan a la unidad nueva; quien ya había empezado no pierde nada ni encuentra la unidad
@@ -102,7 +140,13 @@
     // acelerador, de la aceleración. Las palabras van con su clave del glosario (sin tildes: Glosario.clave).
     { marca: 'partidoMRU', de: 'fisica.movimiento-rectilineo', a: 'fisica.mruv-y-caida-libre',
       ideas: ['pendiente-aceleracion', 'caida-libre'], mesas: ['pista-libre', 'ida-vuelta', 'recta-vt'],
-      glosario: ['aceleracion', 'caida libre', 'gravedad'] },
+      glosario: ['aceleracion', 'caida libre', 'gravedad'],
+      // Las ideas que se quedaron (mru, desplazamiento-distancia y encuentro) conservan su id pero se rehicieron con
+      // otra predicción (auditoría de MRU, 18 nov, A1). La app ya vuelve a preguntar si la opción no existe o si la
+      // pregunta cambió desde que se respondió (huella prediccionDe). Una predicción guardada sin huella es de antes de
+      // la huella, y pudo responder la pregunta vieja: se borra una vez, con su propia marca (partidoMRU ya corrió para
+      // quien entró). Lo demás de la idea (hecha, momento, casos) se queda.
+      sinHuella: { marca: 'prediccionMRU', ideas: ['mru', 'desplazamiento-distancia', 'encuentro'] } },
     // 18 nov: las sumatorias de «Las cuatro operaciones» se mudan a «Sucesiones y series», que ya existía y tenía la misma
     // idea con otro nombre (docs/etapa4/decisiones.md). Es una mudanza, no una partición:
     //   - la idea `sumatorias` pasa a ser `suma-rectangulo` (renombrar); si el alumno ya la tenía allá, se queda la suya;
@@ -110,12 +154,18 @@
     //   - la idea en curso de Sucesiones no se toca si ya tenía una;
     //   - «Ya la estudié» y la visita de Las cuatro operaciones no valen para Sucesiones (mudanza: true);
     //   - las ideas que se quedan y se rehicieron con otra predicción (mismo id, otras opciones) pierden la predicción
-    //     guardada si era una opción que ya no existe (reiniciaPrediccion: idea → ids viejos): el lector la buscaría.
+    //     guardada si era una opción que ya no existe (reiniciaPrediccion: idea → ids viejos): el lector la buscaría;
+    //   - quien había terminado las 6 ideas de antes conserva «La estudié» (estudiada, con su propia marca, porque
+    //     mudadoSum ya corrió para quien entró entre el 18 nov y esta corrección): con las 2 ideas nuevas (prestamo y
+    //     cifras-ocultas) quedaba con 5 de 7, perdía el nivel y se le cerraban Divisibilidad, Combinatoria, Razonamiento
+    //     numérico y Polinomios si no los había abierto (auditoría de Las cuatro operaciones, B9). Las nuevas quedan por hacer.
     { marca: 'mudadoSum', de: 'aritmetica.cuatro-operaciones', a: 'aritmetica.sucesiones-y-series',
       ideas: ['sumatorias'], renombrar: { sumatorias: 'suma-rectangulo' }, sinPrediccion: true, mudanza: true,
       reiniciaPrediccion: { complemento: ['nueves', 'cada10'], 'multiplicar-partes': ['tres', 'diez', 'triple'],
         'defecto-exceso': ['mismo', 'divisor'], 'cifras-producto': ['suma', 'menos'] },
-      mesas: ['escaleras-a-z'], glosario: ['sumatoria'] },
+      mesas: ['escaleras-a-z'], glosario: ['sumatoria'],
+      estudiada: { marca: 'estudiadaSum', fecha: '2026-11-18',
+        ideas: ['otras-bases', 'sumatorias', 'complemento', 'multiplicar-partes', 'defecto-exceso', 'cifras-producto'] } },
   ];
   function partir(est, { marca, de, a, ideas, mesas, glosario, renombrar, sinPrediccion, mudanza, reiniciaPrediccion }) {
     if (est[marca] >= 1) return false;

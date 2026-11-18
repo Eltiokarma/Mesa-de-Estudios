@@ -108,7 +108,8 @@ test('al partir «MRU, MRUV y caída libre», el avance del MRUV y la caída lib
     glosario: { [V]: { posicion: 'sabe', aceleracion: 'repasa', 'caida libre': 'sabe', gravedad: 'sabe', 'velocidad relativa': 'repasa' } } };
   assert.equal(A.migrar(est), true);
   assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), ['desplazamiento-distancia', 'encuentro', 'mru']);
-  assert.deepEqual(est.teoria[N].ideas, { 'pendiente-aceleracion': { hecha: true, prediccion: 'c' }, 'caida-libre': { casos: 3 } });
+  // La predicción vieja de pendiente-aceleracion (sin huella) se borra: la idea cambió de Predice (marca reinicioVT).
+  assert.deepEqual(est.teoria[N].ideas, { 'pendiente-aceleracion': { hecha: true }, 'caida-libre': { casos: 3 } });
   assert.equal(est.teoria[N].idea, 'caida-libre', 'la idea en curso se va con su unidad');
   assert.equal(est.teoria[V].idea, undefined);
   assert.deepEqual(est.coleccion.map(c => c.unidad), [N, N, N, V], 'la pista, la ida y vuelta en v–t y la recta v–t se van; el encuentro se queda');
@@ -122,6 +123,39 @@ test('al partir «MRU, MRUV y caída libre», el avance del MRUV y la caída lib
   assert.equal(A.migrar(nuevo), true);
   assert.equal(nuevo.partidoMRU, 1);
   assert.equal(nuevo.teoria, undefined);
+});
+
+test('MRU: las predicciones guardadas sin huella de las ideas rehechas se borran una vez (marca prediccionMRU)', () => {
+  const V = 'fisica.movimiento-rectilineo';
+  // Quien entró ayer: partidoMRU ya corrió. Sus predicciones de mru y encuentro son de antes de la huella (sin
+  // prediccionDe): pudo responder la pregunta vieja. La de desplazamiento-distancia ya trae huella: la revisa la app.
+  const est = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, mudadoSum: 1,
+    teoria: { [V]: { idea: 'encuentro', ideas: {
+      mru: { hecha: true, prediccion: 'c', momento: 'regla' },
+      'desplazamiento-distancia': { prediccion: 'promedio', prediccionDe: 'abc123', casos: 2 },
+      encuentro: { prediccion: 'resta', casos: 1 },
+      'grafica-xt': { prediccion: 'c' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionMRU, 1);
+  const ideas = est.teoria[V].ideas;
+  assert.deepEqual(ideas.mru, { hecha: true, momento: 'regla' }, 'se borra aunque fuera la «c»: la pregunta cambió');
+  assert.deepEqual(ideas.encuentro, { casos: 1 }, 'una opción que ya no existe, también');
+  assert.deepEqual(ideas['desplazamiento-distancia'], { prediccion: 'promedio', prediccionDe: 'abc123', casos: 2 }, 'con huella: la app decide');
+  assert.deepEqual(ideas['grafica-xt'], { prediccion: 'c' }, 'una idea nueva no se toca');
+  assert.equal(est.teoria[V].idea, 'encuentro');
+  // Una sola vez: lo que responda después, sin huella o con ella, se queda.
+  ideas.mru.prediccion = 'c';
+  assert.equal(A.migrar(est), false);
+  assert.equal(ideas.mru.prediccion, 'c');
+  // Quien nunca abrió la unidad: solo quedan las marcas. Quien llega de antes de la partición: las dos corren juntas.
+  const nuevo = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, mudadoSum: 1 };
+  assert.equal(A.migrar(nuevo), true);
+  assert.equal(nuevo.prediccionMRU, 1);
+  assert.equal(nuevo.teoria, undefined);
+  const viejo = { avanceV: 1, partidoV: 1, partidoExp: 1, teoria: { [V]: { ideas: { mru: { prediccion: 'suma' }, 'caida-libre': { prediccion: 'c' } } } } };
+  assert.equal(A.migrar(viejo), true);
+  assert.deepEqual(viejo.teoria[V].ideas, { mru: {} });
+  assert.deepEqual(viejo.teoria['fisica.mruv-y-caida-libre'].ideas, { 'caida-libre': { prediccion: 'c' } }, 'lo que se fue no se toca');
 });
 
 test('al mudar las sumatorias a «Sucesiones y series», su idea y su mesa pasan allá; la visita y «Ya la estudié» no', () => {
@@ -159,4 +193,54 @@ test('al mudar las sumatorias a «Sucesiones y series», su idea y su mesa pasan
   assert.equal(A.migrar(nuevo), true);
   assert.equal(nuevo.mudadoSum, 1);
   assert.equal(nuevo.teoria, undefined);
+});
+
+// Auditoría de Las cuatro operaciones, B9: quien había terminado las 6 ideas de antes no pierde «La estudié» al pasar a
+// 7 ideas (sumatorias se fue; prestamo y cifras-ocultas son nuevas), ni se le cierran las unidades que la piden.
+test('mudanza de las sumatorias: quien terminó las 6 ideas viejas conserva la visita y «La estudié»; las nuevas quedan por hacer', () => {
+  const V = 'aritmetica.cuatro-operaciones', N = 'aritmetica.sucesiones-y-series';
+  const CO = { id: V, teoria: { ideas: 7 } };
+  const VIEJAS = ['otras-bases', 'sumatorias', 'complemento', 'multiplicar-partes', 'defecto-exceso', 'cifras-producto'];
+  const hechas = ids => Object.fromEntries(ids.map(id => [id, { hecha: true }]));
+  const antes = () => ({ avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, prediccionMRU: 1, vistas: { [V]: '2026-11-10' }, marcadas: {},
+    teoria: { [V]: { ideas: hechas(VIEJAS) } } });
+  // Antes de la mudanza: la tenía estudiada (6 de 6).
+  const e0 = antes();
+  assert.ok(A.teoriaCompleta(e0, { id: V, teoria: { ideas: 6 } }));
+  assert.equal(A.migrar(e0), true);
+  assert.deepEqual(Object.keys(e0.teoria[V].ideas).sort(), ['cifras-producto', 'complemento', 'defecto-exceso', 'multiplicar-partes', 'otras-bases']);
+  assert.equal(A.teoriaCompleta(e0, CO), false, 'las dos ideas nuevas quedan por hacer');
+  assert.equal(e0.marcadas[V], '2026-11-10', '«La estudié», con la fecha de su visita');
+  assert.equal(e0.vistas[V], '2026-11-10', 'la visita se queda');
+  assert.equal(A.nivel(e0, CO, {}).nivel, 1, 'sigue en «La estudié»: lo que la pide no se cierra');
+  assert.equal(e0.marcadas[N], undefined, 'no vale para Sucesiones');
+  assert.equal(A.migrar(e0), false, 'una sola vez');
+  // Quien ya había migrado con la versión de antes (mudadoSum sin estudiadaSum): la sumatoria está allá, con su nombre nuevo.
+  const e1 = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, prediccionMRU: 1, mudadoSum: 1, vistas: {}, marcadas: {},
+    teoria: { [V]: { ideas: hechas(VIEJAS.filter(x => x !== 'sumatorias')) }, [N]: { ideas: { 'suma-rectangulo': { hecha: true } } } } };
+  assert.equal(A.migrar(e1), true);
+  assert.equal(e1.marcadas[V], '2026-11-18');
+  assert.equal(A.nivel(e1, CO, {}).nivel, 1);
+  // A quien le faltaba una idea vieja no se le marca nada: no la tenía estudiada.
+  const e2 = antes(); delete e2.teoria[V].ideas.complemento;
+  A.migrar(e2);
+  assert.equal(e2.marcadas[V], undefined);
+  assert.equal(A.nivel(e2, CO, {}).nivel, 0, 'sigue visitada');
+  // Si ya la había marcado él mismo, su fecha se queda.
+  const e3 = antes(); e3.marcadas[V] = '2026-11-12';
+  A.migrar(e3);
+  assert.equal(e3.marcadas[V], '2026-11-12');
+});
+
+test('migrar: la predicción vieja de pendiente-aceleracion (sin huella) se borra una sola vez', () => {
+  const U = 'fisica.mruv-y-caida-libre';
+  const est = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, prediccionMRU: 1, mudadoSum: 1, estudiadaSum: 1,
+    teoria: { [U]: { ideas: { 'pendiente-aceleracion': { prediccion: 'c', hecha: true }, 'caida-libre': { prediccion: 'c' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].hecha, true);
+  assert.equal(est.teoria[U].ideas['caida-libre'].prediccion, 'c', 'caida-libre no cambió de pregunta');
+  est.teoria[U].ideas['pendiente-aceleracion'] = { prediccion: 'c', prediccionDe: 'x1' };
+  assert.equal(A.migrar(est), false);
+  assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].prediccion, 'c', 'la respuesta nueva, con huella, se queda');
 });

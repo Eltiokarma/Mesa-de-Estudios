@@ -32,7 +32,10 @@ const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora
 fs.mkdirSync(carpeta, { recursive: true });
 
 // La unidad abierta: con su propio estado de teoría empezado, el mapa la deja entrar aunque su requisito no esté hecho.
-const estado = teoria => ({ nombre: 'Ana', uni: 'unmsm', grado: '5', alumno: 'captura', vistas: {}, dias: [], teoria, pruebas: {}, prefs: { pistaGlo: 1 } });
+// El estado sembrado ya trae hechas las migraciones del avance (nucleo/avance.js): si no, una migración que borra
+// predicciones viejas (prediccionMRU, 18 nov) borraría también las que siembran las capturas de «Ejemplos».
+const MARCAS = (() => { const e = {}; require('../nucleo/avance.js').migrar(e); return Object.fromEntries(Object.entries(e).filter(([, v]) => typeof v === 'number')); })();
+const estado = teoria => Object.assign({}, MARCAS, { nombre: 'Ana', uni: 'unmsm', grado: '5', alumno: 'captura', vistas: {}, dias: [], teoria, pruebas: {}, prefs: { pistaGlo: 1 } });
 
 async function abrir(ctx, ruta, teoria) {
   const p = await ctx.newPage();
