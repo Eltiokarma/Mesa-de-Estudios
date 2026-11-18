@@ -17,7 +17,9 @@ convención de mₗ y mₛ sin libro, y cómo quedaron las pruebas de aritmétic
   no existe o si la pregunta cambió (huella `prediccionDe`); `"rehacer"` puede ser una lista de unidades; migraciones
   del avance `estudiadaSum`, `prediccionMRU` y `reinicioVT`.
 - **Siguiente:**
-  1. Ronda 2 del lector en frío de las cinco unidades (con lectores nuevos) y sus correcciones.
+  1. ~~Ronda 2 del lector en frío de las cinco unidades y sus correcciones~~: hecha (v263, 10240 pruebas; secciones
+     «Ronda 2» y «Correcciones de la ronda 2» en `rutinas/frio/`). La app dibuja con la pieza que trae cada dibujo, en
+     la teoría y en la prueba del tema.
   2. Pendientes que dejaron los agentes (en cada «Correcciones (18 nov)»): en MRU, u con dos sentidos en el río; el
      pastor sin figura; A5 sin dibujo en algunas semillas (la app dibuja con la pieza del momento: una línea en
      `app/teoria.js`); en Química, la convención de mₗ y mₛ sin libro y la tabla de núclidos reales (B5); en
