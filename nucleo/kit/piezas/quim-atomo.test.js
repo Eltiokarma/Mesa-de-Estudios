@@ -36,3 +36,23 @@ test('geometría: el centro y los radios de capa son los del dibujo', () => {
     for (let i = 0; i < a.capas; i++) assert.ok(s.includes(`<circle cx="${Kit.trazo.n(a.cx)}" cy="${a.cy}" r="${Kit.trazo.n(a.radio(i))}"`), `capa ${i}`);
   }
 });
+
+// Paleta 'zne' (18 nov, Estructura atómica rehecha): opción nueva; lo de arriba no cambia. El encuadre y los rótulos de
+// todas sus figuras se revisan con números en quim-objeto.test.js.
+test('zne: núcleo «Zp⁺ / Nn⁰», electrones violeta, carga carmín y «?» en tinta; sin los colores viejos', () => {
+  const d = { paleta: 'zne', atomos: [{ Z: 11, N: 12, titulo: 'sodio' }, { Z: 11, N: 12, e: 10, titulo: 'Na', carga: 1, sale: { n: 1 }, oculto: ['N'] }] };
+  const s = P.dibujar(d);
+  assert.equal((s.match(/class="kit-electron/g) || []).length, 21);
+  assert.match(s, />11p⁺</); assert.match(s, />12n⁰</); assert.match(s, /fill="currentColor"[^>]*>\?n⁰</);
+  assert.match(s, /<tspan fill="var\(--c-h\)">⁺<\/tspan>/);
+  assert.ok(!/var\(--c-d\)/.test(s) && !/kit-electron"><circle[^>]*var\(--c-i\)/.test(s));
+  assert.ok(!/stroke-dasharray="3 4"/.test(s), 'sin capas: los niveles se enseñan después');
+  assert.equal(s, P.dibujar(d)); assert.equal(alto(s), '220');
+  assert.match(P.alt(d), /no a escala/);
+  // Sin electrones cuando el dato no los da (e: null) y con «? e⁻» cuando se piden.
+  const sin = P.dibujar({ paleta: 'zne', atomos: [{ Z: 29, N: 34, e: null }] });
+  assert.equal((sin.match(/class="kit-electron/g) || []).length, 0); assert.ok(!/\? e⁻/.test(sin));
+  assert.match(P.dibujar({ paleta: 'zne', atomos: [{ Z: 20, N: null, e: 18, oculto: ['e'] }] }), /\? e⁻/);
+  // La vieja sigue igual: sin paleta, protones en carmín y capas discontinuas.
+  assert.match(P.dibujar(NA), /var\(--c-h\)[^>]*>11p</);
+});

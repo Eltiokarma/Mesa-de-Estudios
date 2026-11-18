@@ -16,7 +16,9 @@ const RAIZ = path.join(__dirname, '..', '..');
 // Unidades de esta parte. A medida que se animan, se agregan aquí.
 const UNIDADES = ['materia-y-energia', 'estructura-atomica', 'tabla-periodica', 'enlace-quimico', 'nomenclatura-inorganica', 'mol-y-composicion', 'reacciones-y-balance', 'estequiometria', 'gases', 'liquidos-y-solidos'];
 // Ideas que de verdad no se prestan a animación (explicadas en rutinas/teoria5-quimica-a.md).
-const SIN_ANIMAR = new Set([]);
+// Estructura atómica, idea 1 (18 nov, propuesta §5 aprobada): el juego espera al alumno, sin automático (la misión
+// pide armar el carbono-14 a mano).
+const SIN_ANIMAR = new Set(['estructura-atomica/nucleo-identidad']);
 
 function revisar(nombre, j, piezaPorDefecto) {
   const ctr = j.controles || [];
