@@ -948,7 +948,7 @@ const EXPS = [
       limitar: q => q.y < Q4[1].y - 0.4 && q.y > Q4[3].y + 0.4 && q.x > -1 && q.x < Math.min(Q4[1].x, Q4[3].x) - 0.4 }),
     desc:v => { const s = M.serrucho(v.puntos); return v.clases ? `Abren a la derecha A, P2 y B: suman ${gr(s.sumaDerecha, 1)}. Abren a la izquierda P1 y P3: suman ${gr(s.sumaIzquierda, 1)}.` : 'Dos paralelas y un serrucho que baja de A a B. P1 y P3 tienen la punta hacia la derecha y P2 hacia la izquierda.'; },
     vivo:v => { const s = M.serrucho(v.puntos), a = s.angulos; return `<div class="eqs"><div class="eq">${V('de', gr(a[0].medida, 1))} + ${V('de', gr(a[2].medida, 1))} + ${V('de', gr(a[4].medida, 1))} = ${V('de', gr(s.sumaDerecha, 1))}<span class="note">A + P2 + B</span></div><div class="eq">${V('iz', gr(a[1].medida, 1))} + ${V('iz', gr(a[3].medida, 1))} = ${V('iz', gr(s.sumaIzquierda, 1))}<span class="note">P1 + P3</span></div></div>`; },
-    exp:`<p>Los que ${V('de','abren hacia la derecha')} (A, P2 y B) suman lo mismo que los que ${V('iz','abren hacia la izquierda')} (P1 y P3): 30 + 40 + 35 = 60 + x, así que x = 45°.</p>
+    exp:`<p>Los que ${V('de','abren hacia la derecha')} (A, P2 y B) suman lo mismo que los que ${V('iz','abren hacia la izquierda')} (P1 y P3): 30 + 40 + 35 = 60 + x, así que x = 45: el ángulo en P3 mide 45°.</p>
       <p>¿Por qué? Por cada quiebre pasa una paralela punteada, que parte su ángulo en dos pedazos: cada pedazo es alterno interno de un pedazo del quiebre vecino (o del ángulo en A o en B). Arrastra P2 y mira que las dos sumas siguen iguales.</p>
       <p>La regla pide que cada quiebre sea una punta; por eso P2 solo se mueve sin dejar de serlo.</p>` + NOHAY },
   { id:'conjugados', corto:'Del mismo lado', leg:['t','su'], paralelas:true,

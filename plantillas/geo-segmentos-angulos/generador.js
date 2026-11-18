@@ -29,7 +29,11 @@
  * reglas de la teoría (D_ENTRE, la suma de tramos, la razón con k, el punto medio, consecutivos, clases, C(x), S(x),
  * bisectriz, los pares entre paralelas, la paralela auxiliar), nunca el paso hecho ni el atajo («MN es la semisuma»).
  * Notación (decisiones): m∠AOB para la medida; C(x) y S(x) para complemento y suplemento, sin puntos C ni S en esas
- * figuras; L₁ y L₂ (el subíndice de verdad, U+2081, igual en el texto, la figura y el papel).
+ * figuras; L₁ y L₂ (el subíndice de verdad, U+2081, igual en el texto, la figura y el papel). Letras y grados (cuarta
+ * ronda, 18 nov: «x sin °», como la teoría): x, y, k, a, b y m valen un número y van sin «°», ellas y su valor
+ * («m∠AOB = 3x + 29°», «x = 17»); el grado va en lo que se mide («m∠AOB = 80°»). El lado que queda solo con la letra
+ * deja al otro sin grado («4x = 160», «x < 25»), y al reemplazar la letra se cambia por su número («3 · 17 + 29°»). Si se
+ * pide x (o a), las alternativas son números (fmt: num); si se pide un ángulo, medidas con grado (fmt: gr).
  *
  * Colores: la regla de la unidad (comentario de cabecera de la teoría; molde §5b). Segmentos: el todo en tinta, los
  * tramos que se juntan naranja (o) el primero de izquierda a derecha y turquesa (i) el segundo, como los pinta la pieza
@@ -72,14 +76,18 @@
   const v = P.v;
   const f = x => P.formatear(x, 2);
   const gr = x => `${f(x)}°`;
+  // Lo que vale una letra es un número: sin «°» (decisiones, cuarta ronda).
+  const num = x => f(x);
   const RAD = Math.PI / 180;
   const er = (id, valor, explicacion) => ({ id, valor, explicacion, respaldo: 'hipotesis', fuente: /^GE17/.test(id) ? FUENTE : null });
   const erT = (id, texto, explicacion) => Object.assign(er(id, null, explicacion), { clave: texto, texto });
   const x2 = (a, b) => `${a === 1 ? '' : a}x`;
   // «2x + 10°», «x − 5°», «3x»: una expresión en x con grados.
   const exG = (a, b) => `${a === 1 ? '' : a}x${b ? ` ${b < 0 ? '−' : '+'} ${Math.abs(b)}°` : ''}`;
-  // «3 · 25° + 15°», «25° − 5°»: la expresión con x ya reemplazado.
-  const conX = (a, b, x) => `${a === 1 ? '' : `${a} · `}${x}°${b ? ` ${b < 0 ? '−' : '+'} ${Math.abs(b)}°` : ''}`;
+  // «3 · 25 + 15°», «25 − 5°»: la expresión con x ya reemplazado (x es un número; el grado, en el número que se suma).
+  const conX = (a, b, x) => `${a === 1 ? '' : `${a} · `}${x}${b ? ` ${b < 0 ? '−' : '+'} ${Math.abs(b)}°` : ''}`;
+  // «3x + 20° = 110°», o «3x = 110» si no queda número que sumar: el lado solo con la letra deja al otro sin grado.
+  const igualG = (a, b, t, op = '=') => `${exG(a, b)} ${op} ${t}${b ? '°' : ''}`;
   const exU = (a, b) => `${a === 1 ? '' : a}x${b ? ` ${b < 0 ? '−' : '+'} ${Math.abs(b)}` : ''}`;
 
   // ---------- Datos (una línea cada uno; las de la teoría) ----------
@@ -97,8 +105,8 @@
     vuelta: 'Una vuelta completa: 360°.',
     reloj: 'El reloj tiene 12 números a igual distancia.',
     convexo: 'El ángulo convexo de las agujas es el del lado corto: menos de 180°.',
-    C: 'Complemento: C(x) = 90° − x, si x < 90°.',
-    S: 'Suplemento: S(x) = 180° − x, si x < 180°.',
+    C: 'Complemento: C(x) = 90° − x, si x < 90.',
+    S: 'Suplemento: S(x) = 180° − x, si x < 180.',
     recto: 'Un ángulo recto mide 90°.',
     llano: 'Tres puntos en una recta, con O en medio: m∠AOE = 180°.',
     bis: 'La bisectriz parte un ángulo en dos ángulos iguales.',
@@ -737,7 +745,7 @@
           er('GE-ANG9', otro, `Bien la cuenta; pero ese es ∠${pideB ? 'AOB' : 'BOC'}, no el que se pide.`),
           er('GE-ANG14', t / 2, 'Bien usar ∠AOC; partirlo en dos serviría si OB fuera su bisectriz.'),
         ],
-        solucion: [[`${exG(a1, b1)} + ${exG(a2, b2)} = ${t}°: ${exG(a1 + a2, b1 + b2)} = ${t}°, así que x = ${xv}.`],
+        solucion: [[`${exG(a1, b1)} + ${exG(a2, b2)} = ${t}${b1 || b2 ? '°' : ''}: ${igualG(a1 + a2, b1 + b2, t)}, así que x = ${xv}.`],
           [`m∠${pideB ? 'BOC' : 'AOB'} = ${pideB ? conX(a2, b2, xv) : conX(a1, b1, xv)} = `, v('x', gr(bien)), '.']],
         fig, _datos: { tipo: 'consec-x', idea: 'abertura', nivel: 2, a1, b1, a2, b2, total: t, pide: pideB ? 'BOC' : 'AOB' },
       };
@@ -791,10 +799,10 @@
           er('GE-ANG10', mx / 2, 'Bien sumar los cuatro; pero alrededor de un punto suman 360°, no 180°.'),
           er('GE-ANG9', Math.min(...ks) * xv, 'Bien hallada la x; pero ese es el menor de los cuatro.'),
           // (Solo si da menos de una vuelta: un ángulo de 630° no engaña a nadie.)
-          ...(90 * Math.max(...ks) < 360 ? [er('GE-ANG15', 90 * Math.max(...ks), `Bien multiplicar por ${Math.max(...ks)}; pero x no es 360° ÷ 4: la vuelta tiene ${S} partes de x.`)] : []),
+          ...(90 * Math.max(...ks) < 360 ? [er('GE-ANG15', 90 * Math.max(...ks), `Bien multiplicar por ${Math.max(...ks)}; pero x no es 360 ÷ 4: la vuelta tiene ${S} partes de x.`)] : []),
           er('GE-ANG5', 360 - mx, 'Bien hallar x; pero eso es lo que queda de la vuelta, no el mayor de los cuatro.'),
         ],
-        solucion: [[`Los cuatro suman ${S}x = 360°, así que x = ${xv}°.`], [`El mayor es ${x2(Math.max(...ks))} = ${Math.max(...ks)} · ${xv}° = `, v('x', gr(mx)), '.']],
+        solucion: [[`Los cuatro dan la vuelta: ${S}x = 360, así que x = ${xv}.`], [`El mayor es ${x2(Math.max(...ks))}: m∠${'ABCD'[ks.indexOf(Math.max(...ks))]}O${'ABCD'[(ks.indexOf(Math.max(...ks)) + 1) % 4]} = ${Math.max(...ks)} · ${xv} = `, v('x', gr(mx)), '.']],
         fig, _datos: { tipo: 'vuelta', idea: 'abertura', nivel: 3, ks, pide: 'el mayor' },
       };
     }
@@ -840,7 +848,7 @@
         er('GE-CS5', otra / (m + 1), `Bien la cuenta con ${otra}°; pero el ${nom} es lo que falta para ${base}°.`),
         er('GE-CS6', base - val, `Bien: ${gr(base - val)} es el ${nom}. Pero se pide el ángulo.`),
       ],
-      solucion: [[`${F}(x) = ${base}° − x = ${m === 1 ? 'x' : `${m}x`}, así que ${m + 1}x = ${base}°.`], [`x = ${base}° ÷ ${m + 1} = `, v('x', gr(val)), '.']],
+      solucion: [[`Si el ángulo mide x: ${F}(x) = ${base}° − x = ${m === 1 ? 'x' : `${m}x`}, así que ${m + 1}x = ${base}.`], [`x = ${base} ÷ ${m + 1} = ${f(val)}: el ángulo mide `, v('x', gr(val)), '.']],
       _datos: { tipo: 'veces-x', idea: 'bisectrices', nivel: 2, sub: F, m, pide: 'x' },
     };
   }
@@ -849,31 +857,31 @@
     if (rng.moneda()) {
       const val = 5 * rng.entero(2, 16), k = 90 + val;
       return {
-        variables: {}, enunciado: [`El suplemento del complemento de un ángulo x mide ${k}°: S(C(x)) = ${k}°.`],
-        pregunta: ['¿Cuánto mide x?'],
+        variables: {}, enunciado: [`Un ángulo mide x, y el suplemento de su complemento mide ${k}°: S(C(x)) = ${k}°.`],
+        pregunta: ['¿Cuánto vale x?'],
         datos: [D.C, D.S],
-        correcta: val, fmt: gr,
+        correcta: val, fmt: num,
         errores: [
           er('GE-CS1', 180 - k, `Bien deshacer el suplemento: C(x) = ${180 - k}°. Falta deshacer el complemento.`),
           er('GE-CS2', k + 90, 'Bien deshacer las dos; pero en otro orden: primero se deshace el de afuera, S.'),
           er('GE-CS3', k / 2, 'Bien deshacer operaciones; pero aquí son dos restas, no una mitad.'),
         ],
-        solucion: [['S(C(x)) = 180° − (90° − x) = 90° + x.'], [`90° + x = ${k}°, así que x = `, v('x', gr(val)), '.']],
+        solucion: [['S(C(x)) = 180° − (90° − x) = 90° + x.'], [`90° + x = ${k}°, así que x = `, v('x', num(val)), '.']],
         _datos: { tipo: 'cadena', idea: 'bisectrices', nivel: 2, sub: 'SC', k, pide: 'x' },
       };
     }
     const val = 5 * rng.entero(20, 34), k = val - 90;
     return {
-      variables: {}, enunciado: [`El complemento del suplemento de un ángulo x mide ${k}°: C(S(x)) = ${k}°.`],
-      pregunta: ['¿Cuánto mide x?'],
+      variables: {}, enunciado: [`Un ángulo mide x, y el complemento de su suplemento mide ${k}°: C(S(x)) = ${k}°.`],
+      pregunta: ['¿Cuánto vale x?'],
       datos: [D.C, D.S],
-      correcta: val, fmt: gr,
+      correcta: val, fmt: num,
       errores: [
         er('GE-CS1', 90 - k, `Bien deshacer el complemento: S(x) = ${90 - k}°. Falta deshacer el suplemento.`),
         er('GE-CS9', 180 - k, 'Bien deshacer el suplemento; pero antes falta deshacer el complemento.'),
         er('GE-CS3', k / 2, 'Bien deshacer operaciones; pero aquí son dos restas, no una mitad.'),
       ],
-      solucion: [['C(S(x)) = 90° − (180° − x) = x − 90°.'], [`x − 90° = ${k}°, así que x = `, v('x', gr(val)), '.']],
+      solucion: [['C(S(x)) = 90° − (180° − x) = x − 90°.'], [`x − 90° = ${k}°, así que x = `, v('x', num(val)), '.']],
       _datos: { tipo: 'cadena', idea: 'bisectrices', nivel: 2, sub: 'CS', k, pide: 'x' },
     };
   }
@@ -918,7 +926,7 @@
     if (rng.entero(1, 3) === 1) {
       const k = rng.elegir([4, 7, 13, 16, 25]), val = 270 / (k + 2);
       return {
-        variables: {}, enunciado: [`El suplemento de un ángulo más su complemento es ${k} veces el ángulo: S(x) + C(x) = ${k}x.`],
+        variables: {}, enunciado: [`Un ángulo mide x. Su suplemento más su complemento es ${k} veces el ángulo: S(x) + C(x) = ${k}x.`],
         pregunta: ['¿Cuánto mide el ángulo?'],
         datos: [D.C, D.S],
         correcta: val, fmt: gr,
@@ -928,13 +936,13 @@
           er('GE-CS6', 90 - val, `Bien: ${gr(90 - val)} es su complemento. Pero se pide el ángulo.`),
           er('GE-CS9', 180 / (k + 1), 'Bien plantear con el suplemento; falta sumarle el complemento, 90° − x.'),
         ],
-        solucion: [[`(180° − x) + (90° − x) = ${k}x, así que 270° = ${k + 2}x.`], [`x = 270° ÷ ${k + 2} = `, v('x', gr(val)), '.']],
+        solucion: [[`(180° − x) + (90° − x) = ${k}x, así que ${k + 2}x = 270.`], [`x = 270 ÷ ${k + 2} = ${f(val)}: el ángulo mide `, v('x', gr(val)), '.']],
         _datos: { tipo: 'veces-cs', idea: 'bisectrices', nivel: 3, sub: 'suma', k, pide: 'x' },
       };
     }
     const m = rng.elegir([3, 4, 7, 10, 19]), val = (90 * m - 180) / (m - 1);
     return {
-      variables: {}, enunciado: [`El suplemento de un ángulo es ${m} veces su complemento: S(x) = ${m} · C(x).`],
+      variables: {}, enunciado: [`Un ángulo mide x, y su suplemento es ${m} veces su complemento: S(x) = ${m} · C(x).`],
       pregunta: ['¿Cuánto mide el ángulo?'],
       datos: [D.C, D.S],
       correcta: val, fmt: gr,
@@ -943,7 +951,7 @@
         er('GE-CS4', 180 / m, `Bien repartir 180° entre ${m}; pero el complemento también depende de x.`),
         er('GE-CS6', 90 - val, `Bien: ${gr(90 - val)} es el complemento. Pero se pide el ángulo.`),
       ],
-      solucion: [[`180° − x = ${m}(90° − x) = ${90 * m}° − ${m}x.`], [`${m - 1}x = ${90 * m - 180}°, así que x = `, v('x', gr(val)), '.']],
+      solucion: [[`180° − x = ${m}(90° − x) = ${90 * m}° − ${m}x.`], [`${m - 1}x = ${90 * m - 180}, así que x = ${f(val)}: el ángulo mide `, v('x', gr(val)), '.']],
       _datos: { tipo: 'veces-cs', idea: 'bisectrices', nivel: 3, sub: 'veces', m, pide: 'x' },
     };
   }
@@ -961,14 +969,14 @@
         variables: {}, enunciado: [`∠AOB y ∠BOD son consecutivos, con m∠AOB = ${ex(p, 0)} y m∠BOD = ${ex(q, c)}. ∠AOD es agudo.`],
         pregunta: ['¿Cuál es el mayor valor entero de x?'],
         datos: [D.consec('A', 'B', 'D'), D.agudo],
-        correcta: bien, fmt: gr,
+        correcta: bien, fmt: num,
         errores: [
           er('GE-ANG11', lim, `Bien plantear la desigualdad; pero con x = ${lim} el ángulo mide 90°: recto, no agudo.`),
           er('GE-ANG12', Math.ceil((180 - c) / (p + q)) - 1, 'Bien poner un tope; pero el tope del agudo es 90°, no 180°.'),
           er('GE-ANG8', (p + q) * bien + c, `Bien: con x = ${bien}, m∠AOD mide eso. Pero se pide x.`),
           er('GE-ANG16', Math.ceil(90 / (p + q) - c) - 1, `Bien despejar x; pero primero se resta ${c}° y después se divide.`),
         ],
-        solucion: [[`m∠AOD = ${p + q}x${c ? ` + ${c}°` : ''} < 90°, así que x < ${lim}. El límite no entra: con ${lim}, sería recto.`], ['El mayor entero es x = ', v('x', gr(bien)), '.']],
+        solucion: [[`∠AOD es agudo: ${igualG(p + q, c, 90, '<')}, así que x < ${lim}. El límite no entra: con ${lim}, sería recto.`], ['El mayor entero es x = ', v('x', num(bien)), '.']],
         fig, _datos: { tipo: 'maximo', idea: 'bisectrices', nivel: 3, p, q, c, pide: 'x' },
       };
     }
@@ -1022,15 +1030,15 @@
       const igual = x === val;
       return {
         variables: {}, enunciado: [nombrado ? `${L12} y una secante las corta. Dos ${pr.nombre}: uno mide ${val}° y el otro, x.` : `${L12} y una secante las corta. Uno de los ángulos mide ${val}°.`],
-        pregunta: ['¿Cuánto mide x?'],
+        pregunta: ['¿Cuánto vale x?'],
         datos: [D.iguales, D.suman, D.cruce],
-        correcta: x, fmt: gr,
+        correcta: x, fmt: num,
         errores: [
           er('GE17-a', 180 - x, igual ? 'Bien buscar la regla del par; pero estos dos ocupan lugares que miden igual.' : 'Bien buscar la regla del par; pero estos dos suman 180°, no son iguales.'),
           er('GE-PAR2', Math.abs(90 - val), 'Bien buscar lo que falta; pero entre paralelas se completa 180°, no 90°.'),
           er('GE-PAR3', 360 - val, 'Bien: una vuelta mide 360°. Pero estos dos no dan la vuelta entera.'),
         ],
-        solucion: [[igual ? 'Los dos ocupan lugares de igual medida.' : 'Los dos ocupan lugares que juntos suman 180°.'], [igual ? 'x = ' : `x = 180° − ${val}° = `, v('x', gr(x)), '.']],
+        solucion: [[igual ? 'Los dos ocupan lugares de igual medida.' : 'Los dos ocupan lugares que juntos suman 180°.'], [igual ? 'x = ' : `x + ${val}° = 180°, así que x = `, v('x', num(x)), '.']],
         fig, _datos: { tipo: 'par', idea: 'paralelas', nivel: 1, sub: nombrado ? 'nombrado' : 'figura', th, dado: { cruce: k1, cuad: c1 }, pedido: { cruce: k2, cuad: c2 }, pide: 'x' },
       };
     }
@@ -1051,7 +1059,7 @@
         variables: {}, enunciado: [nombra ? `${L12}. Dos ${pr.nombre} miden ${exG(a1, b1)} y ${exG(a2, b2)}.` : `${L12}. Dos ángulos de la figura miden ${exG(a1, b1)} y ${exG(a2, b2)}.`],
         pregunta: ['¿Cuánto vale x?'],
         datos: [D.iguales, D.suman, D.cruce],
-        correcta: xv, fmt: gr,
+        correcta: xv, fmt: num,
         errores: [
           er('GE17-a', otro, pr.igual ? 'Bien plantear una ecuación; pero estos dos son iguales: no suman 180°.' : 'Bien plantear una ecuación; pero estos dos suman 180°: no son iguales.'),
           er('GE-PAR4', m1, `Bien: ${m1}° es lo que mide un ángulo. Pero se pide x.`),
@@ -1059,7 +1067,7 @@
           er('GE-PAR2', (90 - b1 - b2) / (a1 + a2), 'Bien juntar las dos expresiones; pero entre paralelas no se completa 90°.'),
           er('GE-PAR7', pr.igual ? Math.abs((b1 + b2) / (a1 - a2)) : (180 + b1 + b2) / (a1 + a2), 'Bien la regla del par; pero al pasar un número al otro lado cambia de signo.'),
         ],
-        solucion: [[`Son ${pr.nombre}: ${pr.igual ? 'iguales' : 'suman 180°'}.`], [pr.igual ? `${exG(a1, b1)} = ${exG(a2, b2)}, así que x = ` : `${exG(a1, b1)} + ${exG(a2, b2)} = 180°, así que x = `, v('x', gr(xv)), '.']],
+        solucion: [[`Son ${pr.nombre}: ${pr.igual ? 'iguales' : 'suman 180°'}.`], [pr.igual ? `${exG(a1, b1)} = ${exG(a2, b2)}, así que x = ` : `${exG(a1, b1)} + ${exG(a2, b2)} = 180°, así que x = `, v('x', num(xv)), '.']],
         fig, _datos: { tipo: 'ecuacion', idea: 'paralelas', nivel: 2, sub: nombra ? 'nombra' : 'figura', par: pr.nombre, igual: pr.igual, a1, b1, a2, b2, th, cuadP: pr.p, cuadQ: pr.q, pide: 'x' },
       };
     }
@@ -1147,15 +1155,15 @@
         // Sin figura (papel-3) el texto tiene que dar un solo dibujo (auditoría, 17 nov: con P y Q a lados distintos de V,
         // x saldría 160°): P y Q a la izquierda de V y los ángulos medidos hacia V.
         variables: {}, enunciado: [`${L12}. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma ${a}° con L₁ y QV forma ${b}° con L₂, medidos del lado de V.`],
-        pregunta: ['¿Cuánto mide el quiebre x, en V?'],
+        pregunta: ['¿Cuánto vale x, el quiebre en V?'],
         datos: [D.quiebre, D.alt],
-        correcta: x, fmt: gr,
+        correcta: x, fmt: num,
         errores: [
           er('GE17-a', 180 - x, 'Bien usar la paralela por V; pero cada par es alterno: se iguala, no se resta de 180°.'),
           er('GE-QB1', x / 2, 'Bien sumar los dos; partir en mitades serviría si se pidiera una sola parte.'),
           er('GE-QB3', Math.abs(a - b), 'Bien comparar los dos tramos; pero la paralela por V los junta, no los resta.'),
         ],
-        solucion: [['La paralela por V parte x en dos: cada parte es alterna interna con el ángulo de su tramo.'], [`x = ${a}° + ${b}° = `, v('x', gr(x)), '.']],
+        solucion: [['La paralela por V parte x en dos: cada parte es alterna interna con el ángulo de su tramo.'], [`x = ${a} + ${b} = `, v('x', num(x)), '.']],
         fig, _datos: { tipo: 'quiebre', idea: 'quiebre', nivel: 1, a, b, pide: 'x' },
       };
     }
@@ -1168,16 +1176,16 @@
       if (!rotular(fig)) continue;
       return {
         variables: {}, enunciado: [`${L12}. El quiebre en V mide ${x}°, y el ángulo a de PV con L₁ es ${m} veces el ángulo b de QV con L₂.`],
-        pregunta: ['¿Cuánto mide a?'],
+        pregunta: ['¿Cuánto vale a?'],
         datos: [D.quiebre, D.alt],
-        correcta: a, fmt: gr,
+        correcta: a, fmt: num,
         errores: [
-          er('GE-QB4', b, `Bien hallar b = ${b}°; falta multiplicar por ${m} para tener a.`),
+          er('GE-QB4', b, `Bien hallar b = ${b}; falta multiplicar por ${m} para tener a.`),
           er('GE-QB1', x / 2, 'Bien usar el quiebre; partirlo en mitades serviría si a y b midieran igual.'),
           er('GE-QB4', x / m, `Bien repartir ${x}°; pero entre ${m + 1} partes, no entre ${m}.`),
           er('GE17-a', m * (180 - x) / (m + 1), 'Bien repartir en partes; pero el quiebre es la suma de a y b, no lo que les falta para 180°.'),
         ],
-        solucion: [[`a + b = ${x}° y a = ${m}b: ${m + 1}b = ${x}°, así que b = ${b}°.`], [`a = ${m} · ${b}° = `, v('x', gr(a)), '.']],
+        solucion: [[`a + b = ${x} y a = ${m}b: ${m + 1}b = ${x}, así que b = ${b}.`], [`a = ${m} · ${b} = `, v('x', num(a)), '.']],
         fig, _datos: { tipo: 'quiebre-veces', idea: 'quiebre', nivel: 2, a, b, m, pide: 'a' },
       };
     }
@@ -1190,15 +1198,15 @@
       if (!rotular(fig)) continue;
       return {
         variables: {}, enunciado: [`${L12}. Arriba, PV forma ${af}° con L₁, medido del lado de afuera; abajo, QV forma ${b}° con L₂.`],
-        pregunta: ['¿Cuánto mide el quiebre x, en V?'],
+        pregunta: ['¿Cuánto vale x, el quiebre en V?'],
         datos: [D.quiebre, D.alt, D.vecinos],
-        correcta: x, fmt: gr,
+        correcta: x, fmt: num,
         errores: [
           er('GE-QB5', af + b, 'Bien sumar los ángulos de los tramos; pero primero se pasa el de arriba al lado de V.'),
           er('GE17-a', 180 - x, 'Bien usar la paralela por V; pero cada par es alterno: se iguala, no se resta de 180°.'),
           er('GE-QB4', a, `Bien pasar ${af}° al lado de V: da ${a}°. Falta sumarle el de abajo.`),
         ],
-        solucion: [[`Del lado de V, PV forma 180° − ${af}° = ${a}° con L₁.`], [`x = ${a}° + ${b}° = `, v('x', gr(x)), '.']],
+        solucion: [[`Del lado de V, PV forma 180° − ${af}° = ${a}° con L₁.`], [`x = ${a} + ${b} = `, v('x', num(x)), '.']],
         fig, _datos: { tipo: 'quiebre-afuera', idea: 'quiebre', nivel: 2, a, b, pide: 'x' },
       };
     }
@@ -1237,8 +1245,8 @@
           er('GE-QB4', mm, `Bien hallar el ángulo del tramo del medio, ${mm}°; falta sumarle ${pideM ? `${a}°` : `${b}°`}.`),
         ],
         solucion: pideM
-          ? [[`En N: ${y}° = m + ${b}°, así que el tramo del medio forma m = ${mm}° con una paralela.`], [`El quiebre en M: ${a}° + ${mm}° = `, v('x', gr(x)), '.']]
-          : [[`En M: ${x}° = ${a}° + m, así que el tramo del medio forma m = ${mm}° con una paralela.`], [`El quiebre en N: ${mm}° + ${b}° = `, v('x', gr(y)), '.']],
+          ? [[`En N: ${y}° = m + ${b}°, así que m = ${mm}: el tramo del medio forma ${mm}° con una paralela.`], [`El quiebre en M: ${a}° + ${mm}° = `, v('x', gr(x)), '.']]
+          : [[`En M: ${x}° = ${a}° + m, así que m = ${mm}: el tramo del medio forma ${mm}° con una paralela.`], [`El quiebre en N: ${mm}° + ${b}° = `, v('x', gr(y)), '.']],
         fig, _datos: { tipo: 'serrucho', idea: 'quiebre', nivel: 3, a, m: mm, b, pide: pideM ? 'M' : 'N' },
       };
     }

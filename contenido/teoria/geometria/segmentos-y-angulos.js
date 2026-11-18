@@ -32,6 +32,12 @@
  *   si el texto lo pinta distinto que la figura o lo deja sin color, o si aparece violeta en una figura o un enunciado.
  * Notación: AB nombra el segmento y su medida (se dice en «Lee»); m∠AOB para la medida de un ángulo en enunciados y
  * datos, y C(x), S(x) para complemento y suplemento, sin puntos C ni S en esas figuras (lo comprueba la prueba).
+ * Letras y grados (decisiones, cuarta ronda, 18 nov: «x sin °»): una letra latina que vale un número (x, y, k, a, b, m)
+ * es un número y se escribe sin «°», ella y su valor: «m∠AOB = 3x + 29°» y «x = 17», nunca «x°» ni «x = 17°». El grado
+ * va en lo que se mide: «m∠AOB = 80°», «90° − x», los rótulos con números. Al despejar, el lado que queda solo con la
+ * letra deja al otro sin grado («4x = 160», «x < 25»); al reemplazar, la letra se cambia por su número («3 · 17 + 29° =
+ * 80°»). Si se pide x, la respuesta es «x = 17»; si se pide un ángulo, su medida con grado. Una letra griega (θ, α)
+ * nombra un ángulo, y su medida lleva grado («θ = 60°»). Lo comprueba la prueba «x sin °».
  * Códigos de error: GE17 (docs/investigacion/geometria-ideas-erroneas.md); los GE-SEG, GE-RAZ, GE-ANG, GE-CS, GE-BIS y
  * GE-QB son hipótesis de aula, sin medir (rutinas/teoria-geometria.md y el bloque de cada idea).
  *
@@ -55,6 +61,8 @@
   const U = G.util;
   const f = (n, d = 1) => Kit.formatear(n, d);
   const gr = n => `${f(n)}°`;
+  // Lo que vale una letra (x, y, k, a, b) es un número: sin «°» (decisiones, cuarta ronda).
+  const NUM = n => f(n);
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -1102,16 +1110,16 @@
     enunciado: '∠AOB y ∠BOC son consecutivos, m∠AOC = 150° y ∠AOB mide el doble que ∠BOC. ¿Cuánto mide cada uno?',
     datos: [D_CONSEC('A', 'B', 'C'), 'Si uno es el doble del otro: miden 2k y k.'],
     solucion: [
-      { texto: 'Juntos son 2k + k = 3k, y hacen los 150°:', ecuacion: [junto('3k = 150°'), '   →   ', junto('k = 50°')] },
-      { texto: 'Entonces:', ecuacion: [junto(['m∠BOC = ', dF('50°')]), SEP, junto(['m∠AOB = 2 · 50° = ', dF('100°')])] },
+      { texto: 'Juntos son 2k + k = 3k, y hacen los 150°:', ecuacion: [junto('3k = 150'), '   →   ', junto('k = 50')] },
+      { texto: 'Entonces:', ecuacion: [junto(['m∠BOC = ', dF('50°')]), SEP, junto(['m∠AOB = 2 · 50 = ', dF('100°')])] },
     ],
     respuesta: ['m∠AOB = ', dF('100°'), ' y m∠BOC = ', dF('50°')] });
   EJ3.push({ nivel: 2, titulo: 'Con una x', figura: figA(consec(50, 60, 20, { ta: 'x + 20°', tb: '2x', total: false })),
     enunciado: '∠AOB y ∠BOC son consecutivos. m∠AOB = x + 20°, m∠BOC = 2x y m∠AOC = 110°. ¿Cuánto mide ∠BOC?',
     datos: [D_CONSEC('A', 'B', 'C')],
     solucion: [
-      { texto: 'Sumo las dos expresiones e igualo a 110°:', ecuacion: [junto('x + 20° + 2x = 110°'), '   →   ', junto('3x = 90°'), '   →   ', junto('x = 30°')] },
-      { texto: 'Me piden ∠BOC, no x:', ecuacion: junto(['m∠BOC = 2 · 30° = ', dF('60°')]) },
+      { texto: 'Sumo las dos expresiones e igualo a 110°:', ecuacion: [junto('x + 20° + 2x = 110°'), '   →   ', junto('3x = 90'), '   →   ', junto('x = 30')] },
+      { texto: 'Me piden ∠BOC, no x:', ecuacion: junto(['m∠BOC = 2 · 30 = ', dF('60°')]) },
     ],
     respuesta: ['m∠BOC = ', dF('60°')] });
   EJ3.push({ nivel: 2, titulo: 'El ángulo no convexo', figura: figA(abanico([{ id: 'A', dir: 20 }, { id: 'B', dir: 160 }], [{ de: 'A', a: 'B', texto: '140°', color: 'h', mide: 140, radio: 24 }, { de: 'A', a: 'B', texto: '?', mide: 220, mayor: true, radio: 34 }], { alt: 'Los rayos OA y OB forman un ángulo convexo de 140°; el otro lado es el no convexo.' })),
@@ -1128,8 +1136,8 @@
       enunciado: 'Alrededor del punto O hay cuatro ángulos consecutivos que miden x, 2x, 3x y 4x, y cubren toda la vuelta. ¿Cuánto mide el mayor?',
       datos: [D_VUELTA, 'Consecutivos: sus medidas se suman.'],
       solucion: [
-        { texto: 'Los cuatro juntos dan una vuelta:', ecuacion: [junto('x + 2x + 3x + 4x = 360°'), '   →   ', junto('10x = 360°'), '   →   ', junto('x = 36°')] },
-        { texto: 'El mayor es 4x:', ecuacion: junto(['4 · 36° = ', dF('144°')]) },
+        { texto: 'Los cuatro juntos dan una vuelta:', ecuacion: [junto('x + 2x + 3x + 4x = 360'), '   →   ', junto('10x = 360'), '   →   ', junto('x = 36')] },
+        { texto: 'El mayor es 4x:', ecuacion: junto(['m∠DOA = 4 · 36 = ', dF('144°')]) },
         { texto: 'Con 180° en vez de 360° saldría 72°: alrededor de un punto se da la vuelta entera.' },
       ],
       respuesta: ['El mayor mide ', dF('144°')] });
@@ -1148,8 +1156,8 @@
     enunciado: 'A, O y D están en una recta, y OB sale de O. m∠AOB = 3x − 10° y m∠BOD = x + 30°. ¿Cuánto mide ∠AOB y qué clase es?',
     datos: ['Ángulo llano: 180°.', D_CONSEC('A', 'B', 'D'), D_CLASES],
     solucion: [
-      { texto: 'Los dos juntos forman el ángulo llano AOD:', ecuacion: [junto('3x − 10° + x + 30° = 180°'), '   →   ', junto('4x = 160°'), '   →   ', junto('x = 40°')] },
-      { texto: 'Reemplazo en ∠AOB:', ecuacion: junto(['m∠AOB = 3 · 40° − 10° = ', dF('110°')]) },
+      { texto: 'Los dos juntos forman el ángulo llano AOD:', ecuacion: [junto('3x − 10° + x + 30° = 180°'), '   →   ', junto('4x = 160'), '   →   ', junto('x = 40')] },
+      { texto: 'Reemplazo en ∠AOB:', ecuacion: junto(['m∠AOB = 3 · 40 − 10° = ', dF('110°')]) },
       { texto: 'Está entre 90° y 180°: es obtuso.' },
     ],
     respuesta: ['m∠AOB = ', dF('110°'), ', obtuso'] });
@@ -1158,8 +1166,8 @@
     enunciado: 'Alrededor de O hay tres ángulos consecutivos que dan la vuelta: m∠AOB = 120°, m∠BOD = 2x y m∠DOA = x + 30°. ¿Cuánto mide el mayor de los tres?',
     datos: [D_VUELTA, 'Consecutivos: sus medidas se suman.'],
     solucion: [
-      { texto: 'Los tres dan la vuelta:', ecuacion: [junto('120° + 2x + x + 30° = 360°'), '   →   ', junto('3x = 210°'), '   →   ', junto('x = 70°')] },
-      { texto: 'Reemplazo:', ecuacion: [junto(['m∠BOD = 2 · 70° = ', dF('140°')]), SEP, junto('m∠DOA = 70° + 30° = 100°')] },
+      { texto: 'Los tres dan la vuelta:', ecuacion: [junto('120° + 2x + x + 30° = 360°'), '   →   ', junto('3x = 210'), '   →   ', junto('x = 70')] },
+      { texto: 'Reemplazo:', ecuacion: [junto(['m∠BOD = 2 · 70 = ', dF('140°')]), SEP, junto('m∠DOA = 70 + 30° = 100°')] },
       { texto: 'El mayor es ∠BOD: 140° pasa a 120° y a 100°.' },
     ],
     respuesta: ['El mayor mide ', dF('140°')] });
@@ -1222,11 +1230,11 @@
       datos: [D_CONSEC('A', 'B', 'C')],
       dibujo: esc({ objeto: 'angulos', figura: consec(m1, m2, 10, { ta: ex(a1, b1), tb: ex(a2, b2), total: false }) }),
       opciones: opciones(m2, [
-        { id: 'x', valor: v, error: 'GE-ANG8', siFuera: `Hallar x = ${v}° está bien; falta reemplazarlo en ∠BOC.` },
+        { id: 'x', valor: v, error: 'GE-ANG8', siFuera: `Hallar x = ${v} está bien; falta reemplazarlo en ∠BOC.` },
         { id: 'otro', valor: m1, error: 'GE-ANG9', siFuera: 'La cuenta está bien hecha; pero ese es ∠AOB, no ∠BOC.' },
         { id: 'mitad', valor: t / 2, error: 'GE-ANG3', siFuera: 'Partir ∠AOC en dos iguales serviría si OB lo partiera por la mitad; aquí no.' },
       ], gr),
-      solucion: { texto: `Sumo e igualo a ${t}°: x = ${v}°.`, ecuacion: junto(`m∠BOC = ${ex(a2, b2).replace(/x/, ` · ${v}°`).replace(/^ · /, '')} = ${m2}°`) },
+      solucion: { texto: `Sumo e igualo a ${t}°: x = ${v}.`, ecuacion: junto(`m∠BOC = ${ex(a2, b2).replace(/x/, ` · ${v}`).replace(/^ · /, '')} = ${m2}°`) },
     };
   }
   // Tipo 3 (examen): cuatro ángulos alrededor de un punto, proporcionales a cuatro números.
@@ -1242,11 +1250,11 @@
       datos: [D_VUELTA, 'Consecutivos: sus medidas se suman.'],
       dibujo: esc({ objeto: 'angulos', figura: abanico(rayos, angs, { alt: 'Cuatro ángulos alrededor del punto O.' }) }),
       opciones: opciones(mx, [
-        { id: 'x', valor: x, error: 'GE-ANG8', siFuera: `Hallar x = ${x}° está bien; falta multiplicar por ${Math.max(...ks)}.` },
+        { id: 'x', valor: x, error: 'GE-ANG8', siFuera: `Hallar x = ${x} está bien; falta multiplicar por ${Math.max(...ks)}.` },
         { id: 'media', valor: mx / 2, error: 'GE-ANG10', siFuera: 'Sumar los cuatro va bien; pero alrededor de un punto suman 360°, no 180°.' },
         { id: 'menor', valor: Math.min(...ks) * x, error: 'GE-ANG9', siFuera: 'La x está bien hallada; pero ese es el menor de los cuatro.' },
       ], gr),
-      solucion: { texto: `Los cuatro suman ${S}x = 360°: x = ${x}°.`, ecuacion: junto(`${Math.max(...ks)} · ${x}° = ${mx}°`) },
+      solucion: { texto: `Los cuatro dan la vuelta: ${S}x = 360, así que x = ${x}.`, ecuacion: junto(`m∠${'ABCD'[ks.indexOf(Math.max(...ks))]}O${'ABCD'[(ks.indexOf(Math.max(...ks)) + 1) % 4]} = ${Math.max(...ks)} · ${x} = ${mx}°`) },
     };
   }
 
@@ -1381,8 +1389,8 @@
   // ∠AOD, el ángulo entero.
   const tranq = (a, o = {}) => Object.assign({ objeto: 'tranquera', alfa: a }, o);
   const tranqJuego = a => tranq(a, { pista: { texto: `${a}°`, color: 'h' }, poste: a < 90 ? { texto: `${90 - a}°`, color: 'i' } : null, otro: { texto: `${180 - a}°`, color: 'i' } });
-  const D_C = 'Complemento: C(x) = 90° − x, si x < 90°.';
-  const D_S = 'Suplemento: S(x) = 180° − x, si x < 180°.';
+  const D_C = 'Complemento: C(x) = 90° − x, si x < 90.';
+  const D_S = 'Suplemento: S(x) = 180° − x, si x < 180.';
   const D_BIS = 'La bisectriz parte un ángulo en dos ángulos iguales.';
   const D_ADY = 'Dos adyacentes sobre una recta suman 180°.';
   const lineaRayo = (t, extra, angs, alt) => abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: t }, { id: 'E', dir: 180 }, ...extra], angs, { alt });
@@ -1428,10 +1436,10 @@
   EJ4.push({ nivel: 2, titulo: 'El complemento es el doble', enunciado: 'El complemento de un ángulo mide el doble que el ángulo. ¿Cuánto mide el ángulo?',
     datos: [D_C],
     solucion: [
-      { texto: 'Llamo x al ángulo; su complemento es 90° − x, y eso vale 2x:', ecuacion: [junto('90° − x = 2x'), '   →   ', junto('90° = 3x')] },
-      { texto: 'Despejo:', ecuacion: junto(['x = ', dF('30°')]) },
+      { texto: 'Llamo x a lo que mide el ángulo; su complemento es 90° − x, y eso vale 2x:', ecuacion: [junto('90° − x = 2x'), '   →   ', junto('3x = 90')] },
+      { texto: 'Despejo: x = 30. Piden la medida del ángulo:', ecuacion: junto(['mide ', dF('30°')]) },
     ],
-    respuesta: ['x = ', dF('30°')] });
+    respuesta: ['El ángulo mide ', dF('30°')] });
   EJ4.push({ nivel: 2, titulo: 'Bisectriz y suplemento', figura: figA(lineaRayo(70, [{ id: 'D', dir: 35, discontinua: true }], [{ de: 'A', a: 'B', texto: '70°', color: 'h', mide: 70, radio: 40, centro: true }, { de: 'A', a: 'D', rayita: 1, mide: 35, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: 35, radio: 26 }, { de: 'D', a: 'E', texto: '?', mide: 145, radio: 64, centro: true }], 'A, O y E en una recta; OB forma 70° con OA y OD es su bisectriz.')),
     enunciado: 'A, O y E están en una recta. m∠AOB = 70° y OD es la bisectriz de ∠AOB. ¿Cuánto mide ∠DOE?',
     datos: [D_BIS, D_ADY],
@@ -1444,10 +1452,10 @@
   EJ4.push({ nivel: 2, titulo: 'Complemento más suplemento', enunciado: 'El complemento de un ángulo más su suplemento suman 200°. ¿Cuánto mide el ángulo?',
     datos: [D_C, D_S],
     solucion: [
-      { texto: 'Escribo cada uno como una resta y sumo: x aparece dos veces.', ecuacion: [junto('(90° − x) + (180° − x) = 200°'), '   →   ', junto('270° − 2x = 200°')] },
-      { texto: 'Despejo:', ecuacion: [junto('2x = 70°'), '   →   ', junto(['x = ', dF('35°')])] },
+      { texto: 'Si el ángulo mide x, escribo cada uno como una resta y sumo: x aparece dos veces.', ecuacion: [junto('(90° − x) + (180° − x) = 200°'), '   →   ', junto('270° − 2x = 200°')] },
+      { texto: 'Despejo x: el ángulo mide lo que vale x.', ecuacion: [junto('2x = 70'), '   →   ', junto('x = 35'), '   →   ', junto(['mide ', dF('35°')])] },
     ],
-    respuesta: ['x = ', dF('35°')] });
+    respuesta: ['El ángulo mide ', dF('35°')] });
   EJ4.push({ nivel: 2, titulo: 'La barra a 25°', figura: esc(tranq(25, { pista: { texto: '25°', color: 'h' }, poste: { texto: '?' }, otro: { texto: '?' } })),
     enunciado: 'La barra de la tranquera forma 25° con la pista. ¿Qué ángulo forma con el poste? ¿Y con la pista del otro lado?',
     datos: ['El poste forma 90° con la pista.', 'La pista es una recta: 180°.'],
@@ -1459,27 +1467,27 @@
   EJ4.push({ nivel: 3, titulo: 'Cuatro veces el complemento', enunciado: 'El suplemento de un ángulo es igual a cuatro veces su complemento. ¿Cuánto mide el ángulo?',
     datos: [D_C, D_S],
     solucion: [
-      { texto: 'Escribo las dos restas; el 4 multiplica al complemento entero:', ecuacion: junto('180° − x = 4(90° − x)') },
-      { texto: 'Reparto y junto las x:', ecuacion: [junto('180° − x = 360° − 4x'), '   →   ', junto('3x = 180°'), '   →   ', junto(['x = ', dF('60°')])] },
+      { texto: 'Si el ángulo mide x, escribo las dos restas; el 4 multiplica al complemento entero:', ecuacion: junto('180° − x = 4(90° − x)') },
+      { texto: 'Reparto y junto las x: el ángulo mide lo que vale x.', ecuacion: [junto('180° − x = 360° − 4x'), '   →   ', junto('3x = 180'), '   →   ', junto('x = 60'), '   →   ', junto(['mide ', dF('60°')])] },
       { texto: 'Compruebo: S(60°) = 120° y C(60°) = 30°; 4 · 30° = 120°.' },
     ],
-    respuesta: ['x = ', dF('60°')] });
-  // Dibujado con x = 24°, la respuesta (2x = 48° y x + 15° = 39°): los rótulos con x valen lo que se dibuja.
+    respuesta: ['El ángulo mide ', dF('60°')] });
+  // Dibujado con x = 24, la respuesta (2x mide 48° y x + 15°, 39°): los rótulos con x valen lo que se dibuja.
   EJ4.push({ nivel: 3, titulo: 'El mayor valor entero', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: 48 }, { id: 'D', dir: 87 }], [{ de: 'A', a: 'B', texto: '2x', color: 'h', mide: 48 }, { de: 'B', a: 'D', texto: 'x + 15°', color: 'h', mide: 39, radio: 34 }], { alt: '∠AOB y ∠BOD consecutivos.' })),
     enunciado: '∠AOB y ∠BOD son consecutivos, con m∠AOB = 2x y m∠BOD = x + 15°. Si ∠AOD es agudo, ¿cuál es el mayor valor entero de x?',
     datos: [D_CONSEC('A', 'B', 'D'), 'Agudo: más de 0° y menos de 90°.'],
     solucion: [
-      { texto: '∠AOD junta los dos y tiene que quedar por debajo de 90°:', ecuacion: [junto('2x + x + 15° < 90°'), '   →   ', junto('3x < 75°'), '   →   ', junto('x < 25°')] },
-      { texto: 'x = 25° no sirve: ∠AOD mediría justo 90°, recto. El mayor entero que queda es 24°.' },
+      { texto: '∠AOD junta los dos y tiene que quedar por debajo de 90°:', ecuacion: [junto('2x + x + 15° < 90°'), '   →   ', junto('3x < 75'), '   →   ', junto('x < 25')] },
+      { texto: 'x = 25 no sirve: ∠AOD mediría justo 90°, recto. El mayor entero que queda es 24.' },
     ],
-    respuesta: ['x = ', dF('24°')] });
+    respuesta: ['x = ', dF('24')] });
   EJ4.push({ nivel: 3, titulo: 'Las bisectrices de dos adyacentes', figura: figA(lineaRayo(105, [{ id: 'M', dir: 52.5, discontinua: true }, { id: 'N', dir: 142.5, discontinua: true }],
     [{ de: 'A', a: 'B', texto: '3x', color: 'h', mide: 105, radio: 26, centro: true }, { de: 'B', a: 'E', texto: 'x + 40°', color: 'h', mide: 75, radio: 26, centro: true }, { de: 'M', a: 'N', texto: '?', mide: 90, radio: 70, centro: true }],
     'A, O y E en una recta; OB entre ellos; OM y ON son las bisectrices de ∠AOB y ∠BOE.')),
     enunciado: 'A, O y E están en una recta. m∠AOB = 3x y m∠BOE = x + 40°. OM y ON son las bisectrices de ∠AOB y ∠BOE. ¿Cuánto mide ∠MON?',
     datos: [D_ADY, D_BIS],
     solucion: [
-      { texto: 'Los dos son adyacentes: 4x + 40° = 180°, x = 35°. Miden 105° y 75°.' },
+      { texto: 'Los dos son adyacentes: 4x + 40° = 180°, x = 35. Miden 105° y 75°.' },
       { texto: '∠MON junta una mitad de cada uno:', ecuacion: junto(['m∠MON = 52,5° + 37,5° = ', dF('90°')]) },
       { texto: 'Con cualquier x da 90°: es la mitad de los 180° de la recta. La x no hacía falta.' },
     ],
@@ -1487,10 +1495,10 @@
   EJ4.push({ nivel: 3, titulo: 'Cuatro veces el ángulo', enunciado: 'El suplemento del complemento de un ángulo es igual a cuatro veces el ángulo. ¿Cuánto mide el ángulo?',
     datos: [D_C, D_S],
     solucion: [
-      { texto: 'De adentro hacia afuera: el complemento dentro del suplemento.', ecuacion: junto('S(C(x)) = 180° − (90° − x) = 90° + x') },
-      { texto: 'Eso vale 4x:', ecuacion: [junto('90° + x = 4x'), '   →   ', junto('3x = 90°'), '   →   ', junto(['x = ', dF('30°')])] },
+      { texto: 'Si el ángulo mide x, de adentro hacia afuera: el complemento dentro del suplemento.', ecuacion: junto('S(C(x)) = 180° − (90° − x) = 90° + x') },
+      { texto: 'Eso vale 4x; el ángulo mide lo que vale x:', ecuacion: [junto('90° + x = 4x'), '   →   ', junto('3x = 90'), '   →   ', junto('x = 30'), '   →   ', junto(['mide ', dF('30°')])] },
     ],
-    respuesta: ['x = ', dF('30°')] });
+    respuesta: ['El ángulo mide ', dF('30°')] });
   EJ4.push({ nivel: 3, titulo: 'Bisectrices de dos consecutivos', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'M', dir: 30, discontinua: true }, { id: 'B', dir: 60 }, { id: 'N', dir: 110, discontinua: true }, { id: 'D', dir: 160 }],
     [{ de: 'A', a: 'M', rayita: 1, mide: 30, radio: 24 }, { de: 'M', a: 'B', rayita: 1, mide: 30, radio: 24 }, { de: 'B', a: 'N', rayita: 2, mide: 50, radio: 24 }, { de: 'N', a: 'D', rayita: 2, mide: 50, radio: 24 },
       { de: 'A', a: 'B', texto: '60°', color: 'h', mide: 60, radio: 34, centro: true }, { de: 'B', a: 'D', texto: '100°', color: 'h', mide: 100, radio: 34, centro: true }, { de: 'M', a: 'N', texto: '?', mide: 80, radio: 74, centro: true }],
@@ -1556,21 +1564,21 @@
         { id: 'cambia', valor: otra / (m + 1), error: 'GE-CS5', siFuera: `La cuenta va bien con ${otra}°; pero el ${nom} es lo que falta para ${base}°.` },
         { id: 'el-otro', valor: base - v, error: 'GE-CS6', siFuera: `${gr(base - v)} es el ${nom}; piden el ángulo.` },
       ], gr),
-      solucion: { texto: `${base}° − x = ${m === 1 ? 'x' : `${m}x`}, así que ${m + 1}x = ${base}°.`, ecuacion: junto(`x = ${base}° ÷ ${m + 1} = ${gr(v)}`) },
+      solucion: { texto: `Si el ángulo mide x: ${base}° − x = ${m === 1 ? 'x' : `${m}x`}, así que ${m + 1}x = ${base}.`, ecuacion: junto(`x = ${base} ÷ ${m + 1} = ${f(v)}: mide ${gr(v)}`) },
     };
   }
   // Tipo 1: el suplemento del complemento.
   function casoCadena(r) {
     const v = 5 * r.ent(2, 16), k = 90 + v;
     return {
-      pregunta: `El suplemento del complemento de un ángulo x mide ${k}°. ¿Cuánto mide x?`,
+      pregunta: `Un ángulo mide x, y el suplemento de su complemento mide ${k}°. ¿Cuánto vale x?`,
       datos: [D_C, D_S],
       opciones: opciones(v, [
         { id: 'solo-s', valor: 180 - k, error: 'GE-CS1', siFuera: `${180 - k}° deshace solo el suplemento: es C(x). Falta deshacer el complemento.` },
         { id: 'orden', valor: k + 90, error: 'GE-CS2', siFuera: 'Eso saldría si el complemento fuera la operación de afuera.' },
         { id: 'mitad', valor: k / 2, error: 'GE-CS3', siFuera: 'Dividir entre 2 serviría con una bisectriz; aquí hay dos restas.' },
-      ], gr),
-      solucion: { texto: 'S(C(x)) = 180° − (90° − x) = 90° + x.', ecuacion: junto(`90° + x = ${k}°  →  x = ${v}°`) },
+      ], NUM),
+      solucion: { texto: 'S(C(x)) = 180° − (90° − x) = 90° + x.', ecuacion: junto(`90° + x = ${k}°  →  x = ${v}`) },
     };
   }
   // Tipo 2: el suplemento es m veces el complemento.
@@ -1584,7 +1592,7 @@
         { id: 'dividir', valor: 180 / m, error: 'GE-CS4', siFuera: `Repartir 180° entre ${m} olvida que el complemento también depende de x.` },
         { id: 'el-otro', valor: 90 - v, error: 'GE-CS6', siFuera: `${gr(90 - v)} es el complemento; piden el ángulo.` },
       ], gr),
-      solucion: { texto: `180° − x = ${m}(90° − x): reparto y junto las x.`, ecuacion: junto(`${m - 1}x = ${90 * m - 180}°  →  x = ${gr(v)}`) },
+      solucion: { texto: `Si el ángulo mide x: 180° − x = ${m}(90° − x). Reparto y junto las x.`, ecuacion: junto(`${m - 1}x = ${90 * m - 180}  →  x = ${f(v)}: mide ${gr(v)}`) },
     };
   }
   // Tipo 3 (examen, como San Marcos 2026-I): el mayor valor entero con un ángulo agudo.
@@ -1602,11 +1610,11 @@
       datos: [D_CONSEC('A', 'B', 'D'), 'Agudo: más de 0° y menos de 90°.'],
       dibujo: esc({ objeto: 'angulos', figura: F }),
       opciones: opciones(bien, [
-        { id: 'limite', valor: lim, error: 'GE-ANG11', siFuera: `Plantear la desigualdad va bien; pero con x = ${lim}° el ángulo mide 90°: recto, no agudo.` },
+        { id: 'limite', valor: lim, error: 'GE-ANG11', siFuera: `Plantear la desigualdad va bien; pero con x = ${lim} el ángulo mide 90°: recto, no agudo.` },
         { id: 'llano', valor: Math.ceil((180 - c) / (p + q)) - 1, error: 'GE-ANG12', siFuera: 'Poner un tope está bien; pero el tope del agudo es 90°, no 180°.' },
-        { id: 'angulo', valor: (p + q) * bien + c, error: 'GE-ANG8', siFuera: `Ese es m∠AOD con x = ${bien}°; piden x.` },
-      ], gr),
-      solucion: { texto: `${p + q}x${c ? ` + ${c}°` : ''} < 90°, así que x < ${lim}°. El límite no entra.`, ecuacion: junto(`x = ${bien}°`) },
+        { id: 'angulo', valor: (p + q) * bien + c, error: 'GE-ANG8', siFuera: `Eso mide ∠AOD con x = ${bien}; piden x.` },
+      ], NUM),
+      solucion: { texto: `${c ? `${p + q}x + ${c}° < 90°` : `${p + q}x < 90`}, así que x < ${lim}. El límite no entra.`, ecuacion: junto(`x = ${bien}`) },
     };
   }
 
@@ -1622,7 +1630,7 @@
       tarjetas: [
         { titulo: 'La tranquera', texto: 'En la entrada de un estacionamiento hay una tranquera: un poste derecho junto a la pista y una barra que sube desde su pie, O. El poste forma 90° con la pista. La barra forma con la pista un ángulo α.',
           pieza: GO, dibujo: esc(tranq(35, { pista: { texto: 'α', color: 'h' } })) },
-        { titulo: 'Complemento y suplemento', texto: 'Lo que a un ángulo x le falta para llegar a 90° es su complemento, C(x). Lo que le falta para 180° es su suplemento, S(x). Dos ángulos son adyacentes si comparten un lado y los otros dos forman una recta.' },
+        { titulo: 'Complemento y suplemento', texto: 'Si un ángulo mide x, lo que le falta para llegar a 90° es su complemento, C(x). Lo que le falta para 180° es su suplemento, S(x). Dos ángulos son adyacentes si comparten un lado y los otros dos forman una recta.' },
         { titulo: 'Partir en dos', texto: 'La bisectriz de un ángulo es el rayo que lo parte en dos ángulos iguales. Al jugar, sube la barra y sigue a los dos turquesas: el ángulo con el poste y el de la pista del otro lado.' },
       ],
     },
@@ -1684,7 +1692,7 @@
     regla: {
       texto: 'C(x) es lo que a x le falta para 90°; S(x), lo que falta para 180°. Entre las bisectrices de dos consecutivos hay la mitad de su suma.',
       ecuacion: [junto(['C(x) = 90° − x']), SEP, junto(['S(x) = 180° − x']), SEP, junto([{ frac: [dH('α'), '2'] }, ' + ', { frac: [[dI('180° − α')], '2'] }, ' = 90°'])],
-      condicion: 'x < 90° para C(x) y x < 180° para S(x). Dos adyacentes suman 180°: sus bisectrices forman 90°.',
+      condicion: 'x < 90 para C(x) y x < 180 para S(x). Dos adyacentes suman 180°: sus bisectrices forman 90°.',
       voz: 'Primero el complemento, después el suplemento.',
     },
     // Así se resuelve: la bisectriz y el suplemento juntos (A, O y E en una recta). «Ahora tú» pide las bisectrices de dos
@@ -1776,38 +1784,38 @@
   const EJ5 = [];
   const ej5 = (nivel, titulo, th, marcas, enunciado, datos, solucion, respuesta, o) => EJ5.push({ nivel, titulo, figura: figPar(th, marcas, o), enunciado, datos, solucion, respuesta });
   ej5(1, 'Correspondientes', 70, [mk('P', 'ad', 70, '70°', 'h'), mk('Q', 'ad', 70, 'x')],
-    ['Las rectas ', L1, ' y ', L2, ' son paralelas. En la figura, x y el ángulo de 70° ocupan el mismo lugar en cada cruce. ¿Cuánto mide x?'], [D_IGUALES],
-    [{ texto: 'Ocupan el mismo lugar en los dos cruces: son correspondientes, y entre paralelas son iguales.', ecuacion: junto(['x = ', dF('70°')]) }], ['x = ', dF('70°')]);
+    ['Las rectas ', L1, ' y ', L2, ' son paralelas. En la figura, x y el ángulo de 70° ocupan el mismo lugar en cada cruce. ¿Cuánto vale x?'], [D_IGUALES],
+    [{ texto: 'Ocupan el mismo lugar en los dos cruces: son correspondientes, y entre paralelas son iguales.', ecuacion: junto(['x = ', dF('70')]) }], ['x = ', dF('70')]);
   ej5(1, 'Alternos internos', 65, [mk('P', 'ai', 65, '115°', 'h'), mk('Q', 'bd', 65, 'x')],
-    ['', L1, ' ∥ ', L2, '. x y el ángulo de 115° están entre las rectas y a distinto lado de la secante. ¿Cuánto mide x?'], [D_IGUALES],
-    [{ texto: 'Son alternos internos: entre paralelas, iguales.', ecuacion: junto(['x = ', dF('115°')]) }], ['x = ', dF('115°')]);
+    ['', L1, ' ∥ ', L2, '. x y el ángulo de 115° están entre las rectas y a distinto lado de la secante. ¿Cuánto vale x?'], [D_IGUALES],
+    [{ texto: 'Son alternos internos: entre paralelas, iguales.', ecuacion: junto(['x = ', dF('115')]) }], ['x = ', dF('115')]);
   ej5(1, 'Conjugados internos', 65, [mk('P', 'ad', 65, '65°', 'h'), mk('Q', 'bd', 65, 'x')],
-    ['', L1, ' ∥ ', L2, '. x y el ángulo de 65° están entre las rectas y del mismo lado de la secante. ¿Cuánto mide x?'], [D_SUMAN],
-    [{ texto: 'Son conjugados internos: suman 180°.', ecuacion: junto(['x = 180° − 65° = ', dF('115°')]) }], ['x = ', dF('115°')]);
+    ['', L1, ' ∥ ', L2, '. x y el ángulo de 65° están entre las rectas y del mismo lado de la secante. ¿Cuánto vale x?'], [D_SUMAN],
+    [{ texto: 'Son conjugados internos: suman 180°.', ecuacion: [junto('x + 65° = 180°'), '   →   ', junto(['x = ', dF('115')])] }], ['x = ', dF('115')]);
   ej5(1, 'Opuestos por el vértice', 40, [mk('P', 'ad', 40, '40°', 'h'), mk('P', 'bi', 40, 'x')],
-    ['', L1, ' ∥ ', L2, '. En el cruce de abajo, x queda frente a frente con el ángulo de 40°. ¿Cuánto mide x?'], [D_CRUCE],
-    [{ texto: 'Son opuestos por el vértice: los dos son suplemento del mismo vecino, así que miden igual.', ecuacion: junto(['x = ', dF('40°')]) }], ['x = ', dF('40°')]);
+    ['', L1, ' ∥ ', L2, '. En el cruce de abajo, x queda frente a frente con el ángulo de 40°. ¿Cuánto vale x?'], [D_CRUCE],
+    [{ texto: 'Son opuestos por el vértice: los dos son suplemento del mismo vecino, así que miden igual.', ecuacion: junto(['x = ', dF('40')]) }], ['x = ', dF('40')]);
   ej5(1, 'Alternos externos', 50, [mk('P', 'bd', 50, '130°', 'h'), mk('Q', 'ai', 50, 'x')],
-    ['', L1, ' ∥ ', L2, '. x y el ángulo de 130° están fuera de las rectas y a distinto lado de la secante. ¿Cuánto mide x?'], [D_IGUALES],
-    [{ texto: 'Son alternos externos: entre paralelas, iguales.', ecuacion: junto(['x = ', dF('130°')]) }], ['x = ', dF('130°')]);
+    ['', L1, ' ∥ ', L2, '. x y el ángulo de 130° están fuera de las rectas y a distinto lado de la secante. ¿Cuánto vale x?'], [D_IGUALES],
+    [{ texto: 'Son alternos externos: entre paralelas, iguales.', ecuacion: junto(['x = ', dF('130')]) }], ['x = ', dF('130')]);
   ej5(2, 'Con una ecuación', 70, [mk('P', 'ad', 70, '3x + 10°', 'h'), mk('Q', 'bi', 70, '5x − 30°', 'h')],
     ['', L1, ' ∥ ', L2, '. Los ángulos 3x + 10° y 5x − 30° de la figura son alternos internos. ¿Cuánto vale x y cuánto mide cada ángulo?'], [D_IGUALES],
-    [{ texto: 'Alternos internos: iguales. Igualo y junto las x.', ecuacion: [junto('3x + 10° = 5x − 30°'), '   →   ', junto('40° = 2x'), '   →   ', junto(['x = ', dF('20°')])] },
-      { texto: 'Cada ángulo:', ecuacion: [junto('3 · 20° + 10° = 70°'), ' y ', junto('5 · 20° − 30° = 70°')] }], ['x = ', dF('20°'), '; cada ángulo, 70°']);
-  // Dibujado con θ = 100°: con x = 30°, 2x + 20° = 80° (P, arriba a la izquierda) y 3x + 10° = 100° (Q, abajo a la
+    [{ texto: 'Alternos internos: iguales. Igualo y junto las x.', ecuacion: [junto('3x + 10° = 5x − 30°'), '   →   ', junto('2x = 40'), '   →   ', junto(['x = ', dF('20')])] },
+      { texto: 'Cada ángulo:', ecuacion: [junto('3 · 20 + 10° = 70°'), ' y ', junto('5 · 20 − 30° = 70°')] }], ['x = ', dF('20'), '; cada ángulo, 70°']);
+  // Dibujado con θ = 100°: con x = 30, 2x + 20° = 80° (P, arriba a la izquierda) y 3x + 10° = 100° (Q, abajo a la
   // izquierda). Con θ = 60° el rótulo que vale 80° caía en un obtuso (auditoría, 17 nov).
   ej5(2, 'Suman 180°', 100, [mk('P', 'ai', 100, '2x + 20°', 'h'), mk('Q', 'bi', 100, '3x + 10°', 'h')],
     ['', L1, ' ∥ ', L2, '. Los ángulos 2x + 20° y 3x + 10° son conjugados internos. ¿Cuánto vale x?'], [D_SUMAN],
-    [{ texto: 'Conjugados internos: suman 180°.', ecuacion: [junto('2x + 20° + 3x + 10° = 180°'), '   →   ', junto('5x = 150°'), '   →   ', junto(['x = ', dF('30°')])] },
-      { texto: 'Compruebo: 80° + 100° = 180°.' }], ['x = ', dF('30°')]);
+    [{ texto: 'Conjugados internos: suman 180°.', ecuacion: [junto('2x + 20° + 3x + 10° = 180°'), '   →   ', junto('5x = 150'), '   →   ', junto(['x = ', dF('30')])] },
+      { texto: 'Compruebo: 80° + 100° = 180°.' }], ['x = ', dF('30')]);
   ej5(2, 'En dos pasos', 68, [mk('P', 'ai', 68, '112°', 'h'), mk('Q', 'ad', 68, 'x')],
-    ['', L1, ' ∥ ', L2, '. En el cruce de abajo, un ángulo mide 112°. ¿Cuánto mide x, en el cruce de arriba?'], [D_IGUALES, D_CRUCE],
+    ['', L1, ' ∥ ', L2, '. En el cruce de abajo, un ángulo mide 112°. ¿Cuánto vale x, en el cruce de arriba?'], [D_IGUALES, D_CRUCE],
     [{ texto: 'En el cruce de abajo, el vecino del de 112° suma 180° con él:', ecuacion: junto('180° − 112° = 68°') },
-      { texto: 'Ese vecino y x ocupan el mismo lugar en los dos cruces: correspondientes.', ecuacion: junto(['x = ', dF('68°')]) }], ['x = ', dF('68°')]);
+      { texto: 'Ese vecino y x ocupan el mismo lugar en los dos cruces: correspondientes.', ecuacion: junto(['x = ', dF('68')]) }], ['x = ', dF('68')]);
   ej5(2, 'Conjugados externos', 80, [mk('P', 'bd', 80, '2x + 20°', 'h'), mk('Q', 'ad', 80, 'x + 40°', 'h')],
     ['', L1, ' ∥ ', L2, '. Los ángulos x + 40° y 2x + 20° son conjugados externos. ¿Cuánto vale x?'], [D_SUMAN],
-    [{ texto: 'Conjugados externos: suman 180°.', ecuacion: [junto('x + 40° + 2x + 20° = 180°'), '   →   ', junto('3x = 120°'), '   →   ', junto(['x = ', dF('40°')])] },
-      { texto: 'Compruebo: 80° + 100° = 180°.' }], ['x = ', dF('40°')]);
+    [{ texto: 'Conjugados externos: suman 180°.', ecuacion: [junto('x + 40° + 2x + 20° = 180°'), '   →   ', junto('3x = 120'), '   →   ', junto(['x = ', dF('40')])] },
+      { texto: 'Compruebo: 80° + 100° = 180°.' }], ['x = ', dF('40')]);
   ej5(2, '¿Son paralelas?', 72, [mk('P', 'ad', 72, '72°', 'h'), { cruce: 'Q', cuad: 'ad', texto: '70°', color: 'h', mide: 70 }],
     ['La secante corta a ', L1, ' y ', L2, '. Los dos ángulos correspondientes de la figura miden 72° y 70°. ¿', L1, ' y ', L2, ' son paralelas?'],
     [D_IGUALES, 'Al revés: si dos correspondientes son iguales, las rectas son paralelas.'],
@@ -1815,17 +1823,17 @@
       { texto: 'No son paralelas, aunque en el dibujo casi lo parezcan: se juntan lejos, a la derecha.' }], [dF('No'), ': los correspondientes no son iguales'], { abre: 2 });
   ej5(3, 'La figura girada', 85, [mk('P', 'bi', 85, '4x − 15°', 'h'), mk('Q', 'ad', 85, '2x + 35°', 'h')],
     ['', L1, ' ∥ ', L2, ', aunque la figura esté girada. Los ángulos 4x − 15° y 2x + 35° son alternos externos. ¿Cuánto mide cada uno?'], [D_IGUALES],
-    [{ texto: 'Girar la figura no cambia los ángulos. Alternos externos: iguales.', ecuacion: [junto('4x − 15° = 2x + 35°'), '   →   ', junto('2x = 50°'), '   →   ', junto('x = 25°')] },
-      { texto: 'Me piden los ángulos, no x:', ecuacion: junto(['4 · 25° − 15° = ', dF('85°')]) }], ['Cada uno mide ', dF('85°')], { giro: 35 });
+    [{ texto: 'Girar la figura no cambia los ángulos. Alternos externos: iguales.', ecuacion: [junto('4x − 15° = 2x + 35°'), '   →   ', junto('2x = 50'), '   →   ', junto('x = 25')] },
+      { texto: 'Me piden los ángulos, no x:', ecuacion: junto(['4 · 25 − 15° = ', dF('85°')]) }], ['Cada uno mide ', dF('85°')], { giro: 35 });
   ej5(3, '¿Paralelas con x?', 70, [mk('P', 'ad', 70, '2x + 30°', 'h'), mk('Q', 'bi', 70, '4x − 10°', 'h')],
-    ['Una secante corta a ', L1, ' y ', L2, '. Dos alternos internos miden 2x + 30° y 4x − 10°, con x = 20°. ¿', L1, ' y ', L2, ' son paralelas?'],
+    ['Una secante corta a ', L1, ' y ', L2, '. Dos alternos internos miden 2x + 30° y 4x − 10°, con x = 20. ¿', L1, ' y ', L2, ' son paralelas?'],
     [D_IGUALES, 'Al revés: si dos alternos internos son iguales, las rectas son paralelas.'],
-    [{ texto: 'Reemplazo x = 20° en los dos:', ecuacion: [junto('2 · 20° + 30° = 70°'), SEP, junto('4 · 20° − 10° = 70°')] },
+    [{ texto: 'Reemplazo x = 20 en los dos:', ecuacion: [junto('2 · 20 + 30° = 70°'), SEP, junto('4 · 20 − 10° = 70°')] },
       { texto: 'Los alternos internos miden igual: las rectas son paralelas.' }], [dF('Sí'), ': los dos miden 70°'], { marcarParalelas: false });
   ej5(3, 'Conjugados en razón', 72, [mk('P', 'ad', 72, '2k', 'h'), mk('Q', 'bd', 72, '3k', 'h')],
     ['', L1, ' ∥ ', L2, '. Dos conjugados internos están en razón 2 : 3. ¿Cuánto mide cada uno?'], [D_SUMAN, 'Razón 2 : 3: miden 2k y 3k.'],
-    [{ texto: 'Conjugados internos: suman 180°.', ecuacion: [junto('2k + 3k = 180°'), '   →   ', junto('k = 36°')] },
-      { texto: 'Cada uno:', ecuacion: [junto(['2 · 36° = ', dF('72°')]), SEP, junto(['3 · 36° = ', dF('108°')])] }], [dF('72°'), ' y ', dF('108°')]);
+    [{ texto: 'Conjugados internos: suman 180°.', ecuacion: [junto('2k + 3k = 180'), '   →   ', junto('k = 36')] },
+      { texto: 'Cada uno:', ecuacion: [junto(['2 · 36 = ', dF('72°')]), SEP, junto(['3 · 36 = ', dF('108°')])] }], [dF('72°'), ' y ', dF('108°')]);
   ej5(3, 'Los cuatro agudos', 55, ['ad', 'bi'].flatMap(c => ['P', 'Q'].map(k => mk(k, c, 55, 'θ', 'h'))).concat([mk('Q', 'ai', 55, '?')]),
     ['', L1, ' ∥ ', L2, '. Los cuatro ángulos agudos de la figura, marcados θ, suman 220°. ¿Cuánto mide cada ángulo obtuso?'], [D_IGUALES, D_CRUCE],
     [{ texto: 'Los cuatro agudos son iguales entre sí: miden θ.', ecuacion: [junto('4θ = 220°'), '   →   ', junto('θ = 55°')] },
@@ -1858,15 +1866,15 @@
     let c2 = r.de(CUADS), k2 = r.de(['P', 'Q']); if (c2 === c1 && k2 === k1) k2 = k1 === 'P' ? 'Q' : 'P';
     const v = medidaEn(th, c1), x = medidaEn(th, c2), otro = 180 - x, giro = r.de([0, 0, 15, -20]);
     return {
-      pregunta: ['', L1, ' ∥ ', L2, ` y una secante las corta. Uno de los ángulos mide ${v}°. ¿Cuánto mide x?`],
+      pregunta: ['', L1, ' ∥ ', L2, ` y una secante las corta. Uno de los ángulos mide ${v}°. ¿Cuánto vale x?`],
       datos: [D_IGUALES, D_SUMAN, D_CRUCE],
       dibujo: figPar(th, [mk(k1, c1, th, `${v}°`, 'h'), mk(k2, c2, th, 'x')], { giro }),
       opciones: opciones(x, [
         { id: 'cambio', valor: otro, error: 'GE17-a', siFuera: x === v ? 'Sumar 180° vale para conjugados y vecinos; estos dos ocupan lugares que miden igual.' : 'Igualar vale para correspondientes, alternos y opuestos; estos dos suman 180°.' },
         { id: 'comp', valor: Math.abs(90 - v), error: 'GE-PAR2', siFuera: 'Buscar lo que falta es buena idea; pero entre paralelas se completa 180°, no 90°.' },
         { id: 'vuelta', valor: 360 - v, error: 'GE-PAR3', siFuera: 'Una vuelta mide 360°, cierto; pero estos dos no dan la vuelta entera.' },
-      ], gr),
-      solucion: { texto: x === v ? 'Ocupan lugares de igual medida.' : 'Ocupan lugares que juntos suman 180°.', ecuacion: junto(`x = ${x}°`) },
+      ], NUM),
+      solucion: { texto: x === v ? 'Ocupan lugares de igual medida.' : 'Ocupan lugares que juntos suman 180°.', ecuacion: junto(x === v ? `x = ${x}` : `x + ${v}° = 180°  →  x = ${x}`) },
     };
   }
   // Tipo 1: dos expresiones con x en lugares de la figura (sin decir el par).
@@ -1884,8 +1892,8 @@
         { id: 'cambio', valor: otro, error: 'GE17-a', siFuera: par.igual ? 'Sumar 180° vale para conjugados; estos dos son iguales.' : 'Igualar vale para correspondientes y alternos; estos dos suman 180°.' },
         { id: 'angulo', valor: m1, error: 'GE-PAR4', siFuera: `${m1}° es lo que mide el ángulo; piden x.` },
         { id: 'otro-angulo', valor: m2 === m1 ? 180 - m1 : m2, error: 'GE-PAR4', siFuera: 'Ese valor es la medida de un ángulo de la figura; piden x.' },
-      ], gr),
-      solucion: { texto: `Son ${par.nombre}: ${par.igual ? 'iguales' : 'suman 180°'}.`, ecuacion: junto(par.igual ? `${ex(a1, b1)} = ${ex(a2, b2)}  →  x = ${v}°` : `${ex(a1, b1)} + ${ex(a2, b2)} = 180°  →  x = ${v}°`) },
+      ], NUM),
+      solucion: { texto: `Son ${par.nombre}: ${par.igual ? 'iguales' : 'suman 180°'}.`, ecuacion: junto(par.igual ? `${ex(a1, b1)} = ${ex(a2, b2)}  →  x = ${v}` : `${ex(a1, b1)} + ${ex(a2, b2)} = 180°  →  x = ${v}`) },
     };
   }
   // Tipo 2 (examen): ¿son paralelas? Dos ángulos de un par; las rectas se dibujan como de verdad son.
@@ -1927,7 +1935,7 @@
         { id: 'supl', valor: 180 - m1, error: 'GE17-a', siFuera: par.igual ? 'Ese es el vecino del ángulo; estos dos se igualan.' : 'Ese es el otro ángulo del par; piden este.' },
         { id: 'cambio', valor: par.igual ? a1 * ((180 - b1 - b2) / (a1 + a2)) + b1 : a1 * ((b2 - b1) / (a1 - a2)) + b1, error: 'GE17-a', siFuera: par.igual ? 'Sumar 180° vale para conjugados; los alternos externos son iguales.' : 'Igualar vale para alternos; los conjugados externos suman 180°.' },
       ], gr),
-      solucion: { texto: `Girar no cambia nada. Son ${par.nombre}: ${par.igual ? 'iguales' : 'suman 180°'}, y x = ${v}.`, ecuacion: junto(`${a1} · ${v}° ${b1 < 0 ? '−' : '+'} ${Math.abs(b1)}° = ${m1}°`) },
+      solucion: { texto: `Girar no cambia nada. Son ${par.nombre}: ${par.igual ? 'iguales' : 'suman 180°'}, y x = ${v}.`, ecuacion: junto(`${a1} · ${v} ${b1 < 0 ? '−' : '+'} ${Math.abs(b1)}° = ${m1}°`) },
     };
   }
 
@@ -2024,7 +2032,7 @@
         do { th = 5 * r.ent(10, 26); m1 = medidaEn(th, par.p); m2 = medidaEn(th, par.q); v = r.ent(5, 25); a1 = r.ent(2, 5); a2 = r.ent(1, a1 - 1); b1 = m1 - a1 * v; b2 = m2 - a2 * v; }
         while (Math.abs(b1) > 60 || Math.abs(b2) > 60 || !b1 || !b2);
         const ex = (a, b) => `${a === 1 ? '' : a}x ${b < 0 ? '−' : '+'} ${Math.abs(b)}°`, e1 = ex(a1, b1), e2 = ex(a2, b2);
-        const despeje = par.igual ? `${a1 - a2 === 1 ? '' : a1 - a2}x = ${b2 - b1}°` : `${a1 + a2}x = ${180 - b1 - b2}°`;
+        const despeje = par.igual ? `${a1 - a2 === 1 ? '' : a1 - a2}x = ${b2 - b1}` : `${a1 + a2}x = ${180 - b1 - b2}`;
         return {
           enunciado: ['', L1, ' ∥ ', L2, `. Los ángulos ${e1} y ${e2} de la figura son ${par.nombre}. ¿Cuánto vale x?`],
           datos: [par.igual ? D_IGUALES : D_SUMAN],
@@ -2059,7 +2067,7 @@
   // alternos, GE-QB3 (nuevo) mezcla un alterno con un conjugado, GE-QB4 (nuevo) da el otro tramo, GE-QB5 (nuevo) usa el
   // ángulo de afuera sin pasarlo, GE-QB6 (nuevo) suma todos los ángulos del serrucho, GE-QB7 (nuevo) ignora el quiebre del
   // medio.
-  const pasajeJ = (a, b) => ({ objeto: 'pasaje', a, b, angulos: { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: `x = ${a + b}°` } } });
+  const pasajeJ = (a, b) => ({ objeto: 'pasaje', a, b, angulos: { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: `x = ${a + b}` } } });
   const D_QUIEBRE = 'Por V se puede trazar una paralela a las dos rectas.';
   const D_ALT = 'Entre paralelas, los alternos internos son iguales.';
   const quiebreFig = (a, b, A, o = {}) => esc(Object.assign({ objeto: 'pasaje', a, b, examen: true, angulos: A }, o));
@@ -2093,54 +2101,54 @@
   const ej6 = (nivel, titulo, figura, enunciado, datos, solucion, respuesta) => EJ6.push({ nivel, titulo, figura, enunciado, datos, solucion, respuesta });
   const L12 = ['Las rectas ', L1, ' y ', L2, ' son paralelas. '];
   ej6(1, 'El quiebre con a y b', quiebreEj(35, 45, { a: { texto: '35°', color: 'h' }, b: { texto: '45°', color: 'h' }, x: { texto: 'x' } }),
-    [...L12, 'La línea PVQ dobla en V; sus tramos forman 35° y 45° con las rectas. ¿Cuánto mide el quiebre x?'], [D_QUIEBRE, D_ALT],
-    [{ texto: 'La paralela por V parte x en dos alternos internos: uno copia 35° y el otro, 45°.', ecuacion: junto(['x = 35° + 45° = ', dF('80°')]) }], ['x = ', dF('80°')]);
+    [...L12, 'La línea PVQ dobla en V; sus tramos forman 35° y 45° con las rectas. ¿Cuánto vale x, el quiebre en V?'], [D_QUIEBRE, D_ALT],
+    [{ texto: 'La paralela por V parte x en dos alternos internos: uno copia 35° y el otro, 45°.', ecuacion: junto(['x = 35 + 45 = ', dF('80')]) }], ['x = ', dF('80')]);
   ej6(1, 'Lo que falta del quiebre', quiebreEj(60, 40, { a: { texto: '60°', color: 'h' }, b: { texto: '?' }, x: { texto: '100°', color: 'h' } }),
     [...L12, 'El quiebre en V mide 100° y el tramo de arriba forma 60° con ', L1, '. ¿Qué ángulo forma el tramo de abajo con ', L2, '?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'El quiebre es la suma de los dos: al total le quito 60°.', ecuacion: junto(['100° − 60° = ', dF('40°')]) }], [dF('40°')]);
   ej6(1, 'Un quiebre simétrico', quiebreEj(25, 25, { a: { texto: '25°', color: 'h' }, b: { texto: '25°', color: 'h' }, x: { texto: 'x' } }),
-    [...L12, 'Los dos tramos de PVQ forman 25° con su recta. ¿Cuánto mide x y qué clase de ángulo es?'], [D_QUIEBRE, D_ALT, 'Agudo: menos de 90°.'],
-    [{ texto: 'x junta las dos copias:', ecuacion: junto(['x = 25° + 25° = ', dF('50°')]) }, { texto: 'Menos de 90°: agudo. Aquí la paralela por V sí es bisectriz, porque los dos tramos forman 25°.' }], ['x = ', dF('50°'), ', agudo']);
+    [...L12, 'Los dos tramos de PVQ forman 25° con su recta. ¿Cuánto vale x y qué clase de ángulo es el quiebre?'], [D_QUIEBRE, D_ALT, 'Agudo: menos de 90°.'],
+    [{ texto: 'x junta las dos copias:', ecuacion: junto(['x = 25 + 25 = ', dF('50')]) }, { texto: 'El quiebre mide 50°, menos de 90°: agudo. Aquí la paralela por V sí es bisectriz, porque los dos tramos forman 25°.' }], ['x = ', dF('50'), '; el quiebre es agudo']);
   ej6(1, 'Un quiebre recto', quiebreEj(55, 35, { a: { texto: '?' }, b: { texto: '35°', color: 'h' }, x: { texto: '90°', color: 'h' } }),
     [...L12, 'La línea PVQ dobla en ángulo recto en V. El tramo de abajo forma 35° con ', L2, '. ¿Qué ángulo forma el de arriba con ', L1, '?'], [D_QUIEBRE, D_ALT],
-    [{ texto: 'x = 90° es la suma de los dos ángulos de los tramos:', ecuacion: junto(['90° − 35° = ', dF('55°')]) }], [dF('55°')]);
+    [{ texto: 'El quiebre de 90° es la suma de los dos ángulos de los tramos:', ecuacion: junto(['90° − 35° = ', dF('55°')]) }], [dF('55°')]);
   ej6(1, 'Pasaje entre avenidas', esc({ objeto: 'pasaje', a: 20, b: 65, aux: 0, angulos: { a: { texto: '20°', color: 'h' }, b: { texto: '65°', color: 'h' }, x: { texto: 'x' } } }),
     'Un pasaje une dos avenidas paralelas y dobla en V. Sale de una formando 20° con ella y llega a la otra formando 65°. ¿Cuánto mide el quiebre?', [D_QUIEBRE, D_ALT],
-    [{ texto: 'El quiebre suma los dos ángulos de los tramos:', ecuacion: junto(['x = 20° + 65° = ', dF('85°')]) }], ['x = ', dF('85°')]);
+    [{ texto: 'El quiebre suma los dos ángulos de los tramos:', ecuacion: junto(['20° + 65° = ', dF('85°')]) }], ['El quiebre mide ', dF('85°')]);
   ej6(2, 'Con una letra', quiebreEj(30, 45, { a: { texto: '2y', color: 'h' }, b: { texto: '3y', color: 'h' }, x: { texto: '75°', color: 'h' } }),
     [...L12, 'Los tramos de PVQ forman 2y y 3y con las rectas, y el quiebre mide 75°. ¿Cuánto vale y?'], [D_QUIEBRE, D_ALT],
-    [{ texto: 'El quiebre es la suma:', ecuacion: [junto('2y + 3y = 75°'), '   →   ', junto('5y = 75°'), '   →   ', junto(['y = ', dF('15°')])] }], ['y = ', dF('15°')]);
+    [{ texto: 'El quiebre es la suma:', ecuacion: [junto('2y + 3y = 75'), '   →   ', junto('5y = 75'), '   →   ', junto(['y = ', dF('15')])] }], ['y = ', dF('15')]);
   ej6(2, 'El ángulo de afuera', quiebreEj(35, 40, { afP: { texto: '145°', color: 'h' }, b: { texto: '40°', color: 'h' }, x: { texto: 'x' } }),
-    [...L12, 'Arriba, el tramo PV forma 145° con ', L1, ', medido del otro lado. Abajo, VQ forma 40° con ', L2, '. ¿Cuánto mide x?'], [D_QUIEBRE, D_ALT, 'En P, los dos ángulos vecinos suman 180°.'],
-    [{ texto: 'Primero el ángulo del lado de V:', ecuacion: junto('180° − 145° = 35°') }, { texto: 'Ahora sí, la suma:', ecuacion: junto(['x = 35° + 40° = ', dF('75°')]) }], ['x = ', dF('75°')]);
+    [...L12, 'Arriba, el tramo PV forma 145° con ', L1, ', medido del otro lado. Abajo, VQ forma 40° con ', L2, '. ¿Cuánto vale x?'], [D_QUIEBRE, D_ALT, 'En P, los dos ángulos vecinos suman 180°.'],
+    [{ texto: 'Primero el ángulo del lado de V:', ecuacion: junto('180° − 145° = 35°') }, { texto: 'Ahora sí, la suma:', ecuacion: junto(['x = 35 + 40 = ', dF('75')]) }], ['x = ', dF('75')]);
   ej6(2, 'El triple de b', quiebreEj(40, 20, { a: { texto: '40°', color: 'h' }, b: { texto: 'b', color: 'h' }, x: { texto: '3b', color: 'h' } }),
     [...L12, 'El tramo de arriba forma 40° con ', L1, ', el de abajo forma b con ', L2, ', y el quiebre mide 3b. ¿Cuánto mide el quiebre?'], [D_QUIEBRE, D_ALT],
-    [{ texto: 'El quiebre es la suma de 40° y b:', ecuacion: [junto('3b = 40° + b'), '   →   ', junto('2b = 40°'), '   →   ', junto('b = 20°')] }, { texto: 'Piden el quiebre:', ecuacion: junto(['3 · 20° = ', dF('60°')]) }], ['El quiebre mide ', dF('60°')]);
+    [{ texto: 'El quiebre es la suma de 40° y b:', ecuacion: [junto('3b = 40° + b'), '   →   ', junto('2b = 40'), '   →   ', junto('b = 20')] }, { texto: 'Piden el quiebre:', ecuacion: junto(['3 · 20 = ', dF('60°')]) }], ['El quiebre mide ', dF('60°')]);
   ej6(2, 'En razón 2 : 3', quiebreEj(40, 60, { a: { texto: '2k', color: 'h' }, b: { texto: '3k', color: 'h' }, x: { texto: '100°', color: 'h' } }),
     [...L12, 'El quiebre mide 100°, y los ángulos de los tramos con las rectas están en razón 2 : 3. ¿Cuánto mide cada uno?'], [D_QUIEBRE, D_ALT, 'Razón 2 : 3: miden 2k y 3k.'],
-    [{ texto: 'Los dos suman el quiebre:', ecuacion: [junto('2k + 3k = 100°'), '   →   ', junto('k = 20°')] }, { texto: 'Entonces:', ecuacion: [junto(['2 · 20° = ', dF('40°')]), SEP, junto(['3 · 20° = ', dF('60°')])] }], [dF('40°'), ' y ', dF('60°')]);
+    [{ texto: 'Los dos suman el quiebre:', ecuacion: [junto('2k + 3k = 100'), '   →   ', junto('k = 20')] }, { texto: 'Entonces:', ecuacion: [junto(['2 · 20 = ', dF('40°')]), SEP, junto(['3 · 20 = ', dF('60°')])] }], [dF('40°'), ' y ', dF('60°')]);
   ej6(2, 'Los dos de afuera', quiebreEj(50, 30, { afP: { texto: '130°', color: 'h' }, afQ: { texto: '150°', color: 'h' }, x: { texto: 'x' } }),
-    [...L12, 'Los tramos de PVQ forman 130° con ', L1, ' y 150° con ', L2, ', medidos del lado contrario a V. ¿Cuánto mide x?'], [D_QUIEBRE, D_ALT, 'En P y en Q, los dos ángulos vecinos suman 180°.'],
-    [{ texto: 'Paso cada uno al lado de V:', ecuacion: [junto('180° − 130° = 50°'), SEP, junto('180° − 150° = 30°')] }, { texto: 'Sumo:', ecuacion: junto(['x = 50° + 30° = ', dF('80°')]) },
-      { texto: 'Sumar 130° + 150° daría 280°: el error típico de no pasar al lado de V.' }], ['x = ', dF('80°')]);
+    [...L12, 'Los tramos de PVQ forman 130° con ', L1, ' y 150° con ', L2, ', medidos del lado contrario a V. ¿Cuánto vale x?'], [D_QUIEBRE, D_ALT, 'En P y en Q, los dos ángulos vecinos suman 180°.'],
+    [{ texto: 'Paso cada uno al lado de V:', ecuacion: [junto('180° − 130° = 50°'), SEP, junto('180° − 150° = 30°')] }, { texto: 'Sumo:', ecuacion: junto(['x = 50 + 30 = ', dF('80')]) },
+      { texto: 'Sumar 130° + 150° daría 280°: el error típico de no pasar al lado de V.' }], ['x = ', dF('80')]);
   ej6(3, 'El serrucho', serruchoFig(30, 35, 40, { a: '30°', ca: 'h', x: '?', y: '75°', cy: 'h', b: '40°', cb: 'h' }, true),
     [...L12, 'La línea P–M–N–Q dobla dos veces. En P forma 30° con ', L1, ', en Q forma 40° con ', L2, ' y en N dobla 75°. ¿Cuánto mide el quiebre en M?'],
     ['Por M y por N se pueden trazar paralelas a las rectas.', 'Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.'],
-    [{ texto: 'Llamo m al ángulo del tramo MN con la horizontal. El quiebre en N:', ecuacion: [junto('75° = m + 40°'), '   →   ', junto('m = 35°')] },
+    [{ texto: 'Llamo m al ángulo del tramo MN con la horizontal. El quiebre en N:', ecuacion: [junto('75° = m + 40°'), '   →   ', junto('m = 35')] },
       { texto: 'El quiebre en M:', ecuacion: junto(['30° + 35° = ', dF('65°')]) },
       { texto: 'Los que abren a un lado suman lo que los del otro: 30° + 75° = 65° + 40°.' }], ['El quiebre en M mide ', dF('65°')]);
   ej6(3, 'Serrucho con letras', serruchoFig(50, 20, 50, { a: '2y + 10°', ca: 'h', x: '70°', cx: 'h', y: 'y + 50°', cy: 'h', b: '50°', cb: 'h' }, true),
     [...L12, 'La línea P–M–N–Q dobla dos veces. En P forma 2y + 10° con ', L1, ', en Q forma 50°, en M dobla 70° y en N, y + 50°. ¿Cuánto vale y?'],
     ['Por M y por N se pueden trazar paralelas a las rectas.', 'Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.'],
     [{ texto: 'Con las paralelas por M y N, lo que abre a la derecha suma lo que abre a la izquierda:', ecuacion: junto('(2y + 10°) + (y + 50°) = 70° + 50°') },
-      { texto: 'Despejo:', ecuacion: [junto('3y + 60° = 120°'), '   →   ', junto(['y = ', dF('20°')])] }], ['y = ', dF('20°')]);
+      { texto: 'Despejo:', ecuacion: [junto('3y + 60° = 120°'), '   →   ', junto(['y = ', dF('20')])] }], ['y = ', dF('20')]);
   ej6(3, 'El quiebre es el cuádruple', quiebreEj(60, 20, { a: { texto: '60°', color: 'h' }, b: { texto: '?' }, x: { texto: '4b', color: 'h' } }),
-    [...L12, 'El tramo de arriba forma 60° con ', L1, ' y el quiebre mide el cuádruple del ángulo b del tramo de abajo. ¿Cuánto mide b?'], [D_QUIEBRE, D_ALT],
-    [{ texto: 'El quiebre suma 60° y b:', ecuacion: [junto('4b = 60° + b'), '   →   ', junto('3b = 60°'), '   →   ', junto(['b = ', dF('20°')])] }, { texto: 'Compruebo: el quiebre mide 80° = 60° + 20°, y 80° = 4 · 20°.' }], ['b = ', dF('20°')]);
+    [...L12, 'El tramo de arriba forma 60° con ', L1, ' y el quiebre mide el cuádruple del ángulo b del tramo de abajo. ¿Cuánto vale b?'], [D_QUIEBRE, D_ALT],
+    [{ texto: 'El quiebre suma 60° y b:', ecuacion: [junto('4b = 60° + b'), '   →   ', junto('3b = 60'), '   →   ', junto(['b = ', dF('20')])] }, { texto: 'Compruebo: el quiebre mide 60° + 20° = 80°, y 4b = 4 · 20 = 80.' }], ['b = ', dF('20')]);
   ej6(3, 'La paralela como bisectriz', quiebreEj(42, 42, { a: { texto: 'a' }, b: { texto: 'b' }, x: { texto: '84°', color: 'h' } }),
-    [...L12, 'El quiebre en V mide 84°, y la paralela a las rectas trazada por V es su bisectriz. ¿Cuánto miden a y b?'], [D_ALT, 'La bisectriz parte un ángulo en dos ángulos iguales.'],
+    [...L12, 'El quiebre en V mide 84°, y la paralela a las rectas trazada por V es su bisectriz. ¿Cuánto valen a y b?'], [D_ALT, 'La bisectriz parte un ángulo en dos ángulos iguales.'],
     [{ texto: 'La paralela por V parte el quiebre en dos partes iguales:', ecuacion: junto('84° ÷ 2 = 42°') },
-      { texto: 'Cada parte es alterna interna con el ángulo de su tramo:', ecuacion: junto(['a = b = ', dF('42°')]) }], ['a = b = ', dF('42°')]);
+      { texto: 'Cada parte es alterna interna con el ángulo de su tramo:', ecuacion: junto(['a = b = ', dF('42')]) }], ['a = b = ', dF('42')]);
   ej6(3, 'Tres quiebres', (() => {
     // P, M, N, R, Q: a = 25 (en P), M abre a la izquierda, N a la derecha, R a la izquierda, b = 40 (en Q).
     const a = 25, m1 = 40, m2 = 25, b = 40, P = [0, 3.4], M1 = [P[0] + 0.9 / Math.tan(U.rad(a)), 2.5], N1 = [M1[0] - 0.8 / Math.tan(U.rad(m1)), 1.7], R1 = [N1[0] + 0.8 / Math.tan(U.rad(m2)), 0.9], Q = [R1[0] - 0.9 / Math.tan(U.rad(b)), 0];
@@ -2159,24 +2167,24 @@
         { en: 'N', de: 'M', a: 'R', texto: 'x', mide: m1 + m2, radio: 22, holgura: 6, centro: true }, { en: 'R', de: 'N', a: 'Q', texto: '65°', color: 'h', mide: m2 + b, radio: 22, holgura: 6, centro: true },
         { en: 'Q', de: 'Qd', a: 'R', texto: '40°', color: 'h', mide: b, radio: 22, holgura: 6 }] } } };
   })(),
-    [...L12, 'La línea P–M–N–R–Q dobla en M, N y R. Forma 25° con ', L1, ' y 40° con ', L2, '; M y R doblan 65° cada uno. ¿Cuánto mide x, en N?'],
+    [...L12, 'La línea P–M–N–R–Q dobla en M, N y R. Forma 25° con ', L1, ' y 40° con ', L2, '; M y R doblan 65° cada uno. ¿Cuánto vale x, en N?'],
     ['Por cada quiebre se puede trazar una paralela a las rectas.', 'Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.'],
     [{ texto: 'Con las paralelas por M, N y R, lo que abre a la derecha suma lo que abre a la izquierda.', ecuacion: junto('25° + x + 40° = 65° + 65°') },
-      { texto: 'Despejo:', ecuacion: [junto('x + 65° = 130°'), '   →   ', junto(['x = ', dF('65°')])] }], ['x = ', dF('65°')]);
+      { texto: 'Despejo:', ecuacion: [junto('x + 65° = 130°'), '   →   ', junto(['x = ', dF('65')])] }], ['x = ', dF('65')]);
 
   // «Ahora tú» de la idea 6. Tipo 0: el quiebre con a y b.
   function casoQuiebre(r) {
     const a = 5 * r.ent(4, 13), b = 5 * r.ent(4, 13), x = a + b;
     return {
-      pregunta: ['', L1, ' ∥ ', L2, `. Los tramos de PVQ forman ${a}° y ${b}° con las rectas. ¿Cuánto mide el quiebre x?`],
+      pregunta: ['', L1, ' ∥ ', L2, `. Los tramos de PVQ forman ${a}° y ${b}° con las rectas. ¿Cuánto vale x, el quiebre en V?`],
       datos: [D_QUIEBRE, D_ALT],
       dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }),
       opciones: opciones(x, [
         { id: 'supl', valor: 180 - x, error: 'GE17-a', siFuera: 'Restar de 180° vale para conjugados; con la paralela por V, cada par es alterno.' },
         { id: 'mitad', valor: x / 2, error: 'GE-QB1', siFuera: 'Partir en mitades serviría si la paralela fuera bisectriz; x es la suma entera.' },
         { id: 'resta', valor: Math.abs(a - b), error: 'GE-QB3', siFuera: 'Comparar los dos tramos no basta: la paralela por V los junta, no los resta.' },
-      ], gr),
-      solucion: { texto: 'La paralela por V parte x en a y b.', ecuacion: junto(`x = ${a}° + ${b}° = ${x}°`),
+      ], NUM),
+      solucion: { texto: `La paralela por V parte el quiebre en dos: ${a}° y ${b}°.`, ecuacion: junto(`x = ${a} + ${b} = ${x}`),
         dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, a2: { texto: `${a}°`, color: 'h' }, b2: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }, { aux: 0 }) },
     };
   }
@@ -2184,15 +2192,15 @@
   function casoQuiebreVeces(r) {
     const m = r.de([2, 3]), b = 5 * r.ent(4, Math.floor(70 / m / 5)), a = m * b, x = a + b;
     return {
-      pregunta: ['', L1, ' ∥ ', L2, `. El quiebre en V mide ${x}°, y el ángulo a del tramo de arriba es ${m} veces el ángulo b del de abajo. ¿Cuánto mide a?`],
+      pregunta: ['', L1, ' ∥ ', L2, `. El quiebre en V mide ${x}°, y el ángulo a del tramo de arriba es ${m} veces el ángulo b del de abajo. ¿Cuánto vale a?`],
       datos: [D_QUIEBRE, D_ALT],
       dibujo: quiebreFig(a, b, { a: { texto: '?' }, b: { texto: 'b', color: 'h' }, x: { texto: `${x}°`, color: 'h' } }),
       opciones: opciones(a, [
-        { id: 'b', valor: b, error: 'GE-QB4', siFuera: `Hallar b = ${b}° está bien; falta multiplicar por ${m} para tener a.` },
+        { id: 'b', valor: b, error: 'GE-QB4', siFuera: `Hallar b = ${b} está bien; falta multiplicar por ${m} para tener a.` },
         { id: 'mitad', valor: x / 2, error: 'GE-QB1', siFuera: 'Partir el quiebre en mitades serviría si a y b midieran igual.' },
         { id: 'reparte', valor: x / m, error: 'GE-QB4', siFuera: `Repartir ${x}° va bien, pero entre ${m + 1} partes, no entre ${m}.` },
-      ], gr),
-      solucion: { texto: `a + b = ${x}° y a = ${m}b: ${m + 1}b = ${x}°, b = ${b}°.`, ecuacion: junto(`a = ${m} · ${b}° = ${a}°`),
+      ], NUM),
+      solucion: { texto: `a + b = ${x} y a = ${m}b: ${m + 1}b = ${x}, b = ${b}.`, ecuacion: junto(`a = ${m} · ${b} = ${a}`),
         dibujo: quiebreFig(a, b, { a: { texto: '?' }, b: { texto: 'b', color: 'h' }, x: { texto: `${x}°`, color: 'h' } }, { aux: 0 }) },
     };
   }
@@ -2200,15 +2208,15 @@
   function casoAfuera6(r) {
     const a = 5 * r.ent(4, 13), b = 5 * r.ent(4, 13), af = 180 - a, x = a + b;
     return {
-      pregunta: ['', L1, ' ∥ ', L2, `. Arriba, el tramo PV forma ${af}° con `, L1, `, medido del otro lado; abajo, VQ forma ${b}° con `, L2, '. ¿Cuánto mide el quiebre x?'],
+      pregunta: ['', L1, ' ∥ ', L2, `. Arriba, el tramo PV forma ${af}° con `, L1, `, medido del otro lado; abajo, VQ forma ${b}° con `, L2, '. ¿Cuánto vale x, el quiebre en V?'],
       datos: [D_QUIEBRE, D_ALT, 'En P, los dos ángulos vecinos suman 180°.'],
       dibujo: quiebreFig(a, b, { afP: { texto: `${af}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }),
       opciones: opciones(x, [
         { id: 'directo', valor: af + b, error: 'GE-QB5', siFuera: 'Sumar los ángulos de los tramos es la idea; pero primero se pasa el de arriba al lado de V.' },
         { id: 'supl', valor: 180 - x, error: 'GE17-a', siFuera: 'Restar de 180° vale para conjugados; con la paralela por V, cada par es alterno.' },
         { id: 'a', valor: a, error: 'GE-QB4', siFuera: `Pasar ${af}° al lado de V va bien: da ${a}°. Falta sumarle el de abajo.` },
-      ], gr),
-      solucion: { texto: `Del lado de V, el tramo de arriba forma 180° − ${af}° = ${a}°.`, ecuacion: junto(`x = ${a}° + ${b}° = ${x}°`),
+      ], NUM),
+      solucion: { texto: `Del lado de V, el tramo de arriba forma 180° − ${af}° = ${a}°.`, ecuacion: junto(`x = ${a} + ${b} = ${x}`),
         // La solución, ya pasado al lado de V, con la paralela por V.
         dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }, { aux: 0 }) },
     };
@@ -2225,7 +2233,7 @@
         { id: 'sin-medio', valor: a + b, error: 'GE-QB7', siFuera: `Con un solo quiebre sería ${a}° + ${b}°; aquí el tramo del medio también cuenta.` },
         { id: 'resta', valor: Math.abs(y - b), error: 'GE-QB4', siFuera: `${Math.abs(y - b)}° es el ángulo del tramo del medio; falta sumarle ${a}°.` },
       ], gr),
-      solucion: { texto: `En N: ${y}° = m + ${b}°, así que el tramo del medio forma ${m}°.`, ecuacion: junto(`x = ${a}° + ${m}° = ${x}°`),
+      solucion: { texto: `En N: ${y}° = m + ${b}°, así que m = ${m}: el tramo del medio forma ${m}°.`, ecuacion: junto(`quiebre en M: ${a}° + ${m}° = ${x}°`),
         dibujo: serruchoFig(a, m, b, { a: `${a}°`, ca: 'h', x: '?', y: `${y}°`, cy: 'h', b: `${b}°`, cb: 'h' }, true) },
     };
   }
@@ -2254,7 +2262,7 @@
       mision: {
         texto: 'Haz que el pasaje doble en ángulo recto sin que a y b sean iguales.',
         logrado: v => v.a + v.b === 90 && v.a !== v.b,
-        bien: 'Listo: x = 90° = a + b, aunque a y b no sean iguales.',
+        bien: 'Listo: x = a + b = 90, aunque a y b no sean iguales.',
       },
       voz: 'Cambia a y b por separado. Mira cómo responde x.',
       leyenda: [
@@ -2277,12 +2285,12 @@
           donde: v => PO.aPantalla(pasajeJ(v.a, v.b), [2.9 - 1.5 / Math.tan(U.rad(v.b)), 0]),
           mover: (pt, v) => ({ b: U.grados(Math.atan2(1.5, Math.max(0.05, 2.9 - PO.aPlano(pasajeJ(v.a, v.b), pt)[0]))) }) },
       ],
-      lectura: v => [`x = ${v.a + v.b}° y `, dH('a'), ' + ', dH('b'), ` = ${v.a}° + ${v.b}°`],
+      lectura: v => [`x = ${v.a + v.b} y `, dH('a'), ' + ', dH('b'), ` = ${v.a} + ${v.b}`],
       minimo: 3,
     },
     predice: {
       pregunta: 'Para explicar el quiebre, se traza por V una tercera calle paralela a las avenidas. ¿En qué dos ángulos queda partido x?',
-      datos: ['a = 40°', 'b = 30°', 'Las tres calles son paralelas.'],
+      datos: ['a = 40', 'b = 30', 'Las tres calles son paralelas.'],
       voz: 'Piensa en la calle nueva antes de verla.',
       opciones: [
         { id: 'c', texto: 'Uno igual a a y otro igual a b', correcta: true },
@@ -2297,14 +2305,14 @@
     },
     mira: {
       pieza: GO,
-      datos: { objeto: 'pasaje', a: 40, b: 30, aux: 1, angulos: { a: { texto: '40°', color: 'h' }, b: { texto: '30°', color: 'h' }, a2: { texto: '40°', color: 'h', desde: 2 }, b2: { texto: '30°', color: 'h', desde: 3 }, x: { texto: 'x = 70°', desde: 4 } } },
+      datos: { objeto: 'pasaje', a: 40, b: 30, aux: 1, angulos: { a: { texto: '40°', color: 'h' }, b: { texto: '30°', color: 'h' }, a2: { texto: '40°', color: 'h', desde: 2 }, b2: { texto: '30°', color: 'h', desde: 3 }, x: { texto: 'x = 70', desde: 4 } } },
       voz: 'Sigue la paralela auxiliar: ella hace el trabajo.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Los tramos forman 40° y 30° con sus avenidas.', ecuacion: [junto([dH('a'), ' = 40°']), ' y ', junto([dH('b'), ' = 30°'])] },
+        { estado: { corte: 0 }, texto: 'Los tramos forman 40° y 30° con sus avenidas.', ecuacion: [junto([dH('a'), ' = 40']), ' y ', junto([dH('b'), ' = 30'])] },
         { estado: { corte: 1 }, texto: 'Por V trazamos una paralela a las dos avenidas.', ecuacion: junto(['tres paralelas']) },
-        { estado: { corte: 2 }, texto: 'Con la avenida de arriba, PV forma alternos internos: copia a.', ecuacion: junto([dH('a'), ' = 40°']) },
-        { estado: { corte: 3 }, texto: 'Con la de abajo, VQ forma alternos internos: copia b.', ecuacion: junto([dH('b'), ' = 30°']) },
-        { estado: { corte: 4 }, texto: 'El quiebre x reúne las dos partes.', ecuacion: junto(['x = ', dH('a'), ' + ', dH('b'), ' = 70°']) },
+        { estado: { corte: 2 }, texto: 'Con la avenida de arriba, PV forma alternos internos: copia a.', ecuacion: junto([dH('a'), ' = 40']) },
+        { estado: { corte: 3 }, texto: 'Con la de abajo, VQ forma alternos internos: copia b.', ecuacion: junto([dH('b'), ' = 30']) },
+        { estado: { corte: 4 }, texto: 'El quiebre x reúne las dos partes.', ecuacion: junto(['x = ', dH('a'), ' + ', dH('b'), ' = 70']) },
       ],
     },
     regla: {
@@ -2320,18 +2328,18 @@
       generar(s) {
         const r = azar(s + 900), a = 5 * r.ent(4, 13), b = 5 * r.ent(4, 13), x = a + b;
         return {
-          enunciado: ['', L1, ' ∥ ', L2, `. El quiebre en V mide ${x}° y el tramo de arriba forma ${a}° con `, L1, '. ¿Qué ángulo b forma el tramo de abajo con ', L2, '?'],
+          enunciado: ['', L1, ' ∥ ', L2, `. El quiebre en V mide ${x}° y el tramo de arriba forma ${a}° con `, L1, '. ¿Cuánto vale b, el ángulo del tramo de abajo con ', L2, '?'],
           datos: [D_QUIEBRE, D_ALT],
           dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: 'b' }, x: { texto: `${x}°`, color: 'h' } }),
           pasos: [
             { tipo: 'pide', texto: 'Piden b, el ángulo del tramo de abajo con su recta.' },
-            { tipo: 'datos', texto: `Las rectas son paralelas; arriba, a = ${a}°, y el quiebre completo mide ${x}°.` },
+            { tipo: 'datos', texto: `Las rectas son paralelas; arriba, a = ${a}, y el quiebre completo mide ${x}°.` },
             { tipo: 'regla', texto: 'Por V trazo una paralela: parte el quiebre en dos alternos internos, uno copia a y el otro copia b.', ecuacion: junto('x = a + b'),
               dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: 'b' }, a2: { texto: `${a}°`, color: 'h' }, b2: { texto: 'b' }, x: { texto: `${x}°`, color: 'h' } }, { aux: 0 }) },
-            { tipo: 'cuentas', texto: 'Como el quiebre es la suma, b es lo que queda al quitarle a.', ecuacion: junto(['b = ', `${x}° − ${a}° = `, dF(`${b}°`)]) },
+            { tipo: 'cuentas', texto: 'Como el quiebre es la suma, b es lo que queda al quitarle a.', ecuacion: junto(['b = ', `${x} − ${a} = `, dF(`${b}`)]) },
             { tipo: 'sentido', texto: `Compruebo: ${a}° + ${b}° = ${x}°, el quiebre completo.` },
           ],
-          respuesta: ['b = ', dF(`${b}°`)],
+          respuesta: ['b = ', dF(`${b}`)],
         };
       },
     },
@@ -2430,9 +2438,9 @@
   for (let a = quiebreIdea.juega.controles[0].min; a <= quiebreIdea.juega.controles[0].max; a += 5) for (let b = quiebreIdea.juega.controles[1].min; b <= quiebreIdea.juega.controles[1].max; b += 5) QUIEBRES.push(quiebreX({ a, b }));
   const mesaQuiebre = Object.assign({ id: 'quiebre', titulo: 'El quiebre entre paralelas', pieza: GO,
     invitaciones: [
-      { texto: 'Haz que el quiebre x mida justo 100°.',
+      { texto: 'Haz que el quiebre mida justo 100°.',
         logrado: v => quiebreX(v) === 100,
-        bien: 'Un quiebre de 100° con a + b = 100°. ¿Cuántas parejas lo logran?' },
+        bien: 'Un quiebre de 100°, con a + b = 100. ¿Cuántas parejas lo logran?' },
       { texto: 'Busca el quiebre más cerrado que permite la mesa.',
         logrado: v => quiebreX(v) === Math.min(...QUIEBRES),
         bien: 'Los dos tramos casi pegados a sus avenidas: x se cierra.' },

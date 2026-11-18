@@ -146,20 +146,20 @@
     {
       "id": "p4",
       "nivel": "básico",
-      "datos": ["Complemento: C(x) = 90° − x, si x < 90°.", "Suplemento: S(x) = 180° − x, si x < 180°."],
-      "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
+      "datos": ["Complemento: C(x) = 90° − x, si x < 90.", "Suplemento: S(x) = 180° − x, si x < 180."],
+      "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90. Suplemento: S(x) = 180° − x, si x < 180.",
       "respuesta": "45°.",
       "pasos": [
         "Llama x al ángulo. Se empieza por lo de adentro: su complemento es 90 − x.",
         "El suplemento de eso es 180 − (90 − x) = 90 + x.",
-        "90 + x = 3x, así que 90 = 2x y x = 45°.",
+        "90 + x = 3x, así que 90 = 2x y x = 45: el ángulo mide 45°.",
         "Comprobación: el complemento de 45° es 45° y su suplemento, 135°, que es el triple de 45°."
       ],
       "verificar": [ { "fn": "resolverAngulo", "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]], "espera": { "x": 45, "izquierda": 135 } } ],
       "preguntas": [
         {
           "id": "p4a",
-          "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
+          "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. Datos: Complemento: C(x) = 90° − x, si x < 90. Suplemento: S(x) = 180° − x, si x < 180.",
           "pregunta": "¿Cuánto mide el ángulo?",
           "unidad": "°",
           "decimales": 1,
@@ -168,7 +168,7 @@
             {
               "id": "GE-da-el-otro-lado",
               "respaldo": "hipotesis",
-              "explicacion": "135° es el suplemento del complemento, que vale el triple. La pregunta es el ángulo: 90 + x = 3x da x = 45°.",
+              "explicacion": "135° es el suplemento del complemento, que vale el triple. La pregunta es el ángulo: 90 + x = 3x da x = 45, y el ángulo mide 45°.",
               "fn": "resolverAngulo",
               "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]],
               "campo": "izquierda",
@@ -190,19 +190,19 @@
     {
       "id": "p5",
       "nivel": "básico",
-      "datos": ["Complemento: C(x) = 90° − x, si x < 90°.", "Suplemento: S(x) = 180° − x, si x < 180°."],
-      "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
+      "datos": ["Complemento: C(x) = 90° − x, si x < 90.", "Suplemento: S(x) = 180° − x, si x < 180."],
+      "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90. Suplemento: S(x) = 180° − x, si x < 180.",
       "respuesta": "30°.",
       "pasos": [
         "Complemento: 90 − x. Suplemento: 180 − x.",
         "(90 − x) + (180 − x) = 210, o sea 270 − 2x = 210.",
-        "Entonces 2x = 60 y x = 30°. Comprobación: 60° + 150° = 210°."
+        "Entonces 2x = 60 y x = 30: el ángulo mide 30°. Comprobación: 60° + 150° = 210°."
       ],
       "verificar": [ { "fn": "resolverAngulo", "args": [[{ "ops": ["complemento"] }, { "ops": ["suplemento"] }], [{ "valor": 210 }]], "espera": { "x": 30 } } ],
       "preguntas": [
         {
           "id": "p5a",
-          "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
+          "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. Datos: Complemento: C(x) = 90° − x, si x < 90. Suplemento: S(x) = 180° − x, si x < 180.",
           "pregunta": "¿Cuánto mide el ángulo?",
           "unidad": "°",
           "decimales": 1,
@@ -519,7 +519,7 @@
       "pasos": [
         "Llama a = m∠AOB y b = m∠BOC. Entre las bisectrices quedan la mitad de cada uno: a/2 + b/2 = 52, así que a + b = 104.",
         "Además a − b = 24.",
-        "Sumando: 2a = 128, de donde a = 64° y b = 40°.",
+        "Sumando: 2a = 128, de donde a = 64 y b = 40.",
         "Comprobación: 32° + 20° = 52°."
       ],
       "verificar": [ { "fn": "bisectrices", "args": [64, 40], "espera": { "entre": 52, "mitades": [32, 20] } } ],

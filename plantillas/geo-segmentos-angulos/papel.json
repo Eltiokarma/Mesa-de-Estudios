@@ -26,11 +26,11 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma 25° con L₁ y QV forma 45° con L₂, medidos del lado de V. ¿Cuánto mide el quiebre x, en V? Datos: Por V se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales. Alternativas: A) 70°   B) 110°   C) 20°   D) 35°",
-      "respuesta": "A) 70°",
+      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma 25° con L₁ y QV forma 45° con L₂, medidos del lado de V. ¿Cuánto vale x, el quiebre en V? Datos: Por V se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales. Alternativas: A) 70   B) 110   C) 20   D) 35",
+      "respuesta": "A) 70",
       "pasos": [
         "La paralela por V parte x en dos: cada parte es alterna interna con el ángulo de su tramo.",
-        "x = 25° + 45° = 70°."
+        "x = 25 + 45 = 70."
       ]
     },
     {
@@ -46,21 +46,21 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "El complemento del suplemento de un ángulo x mide 65°: C(S(x)) = 65°. ¿Cuánto mide x? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°. Alternativas: A) 25°   B) 155°   C) 115°   D) 32,5°",
-      "respuesta": "B) 155°",
+      "enunciado": "Un ángulo mide x, y el complemento de su suplemento mide 65°: C(S(x)) = 65°. ¿Cuánto vale x? Datos: Complemento: C(x) = 90° − x, si x < 90. Suplemento: S(x) = 180° − x, si x < 180. Alternativas: A) 25   B) 155   C) 115   D) 32,5",
+      "respuesta": "B) 155",
       "pasos": [
         "C(S(x)) = 90° − (180° − x) = x − 90°.",
-        "x − 90° = 65°, así que x = 155°."
+        "x − 90° = 65°, así que x = 155."
       ]
     },
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "L₁ ∥ L₂. Dos conjugados externos miden 5x − 40° y 4x − 5°. ¿Cuánto vale x? Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°. En un cruce: opuestos por el vértice iguales; vecinos, suman 180°. Alternativas: A) 25°   B) 35°   C) 15°   D) 95°   E) 85°",
-      "respuesta": "A) 25°",
+      "enunciado": "L₁ ∥ L₂. Dos conjugados externos miden 5x − 40° y 4x − 5°. ¿Cuánto vale x? Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°. En un cruce: opuestos por el vértice iguales; vecinos, suman 180°. Alternativas: A) 25   B) 35   C) 15   D) 95   E) 85",
+      "respuesta": "A) 25",
       "pasos": [
         "Son conjugados externos: suman 180°.",
-        "5x − 40° + 4x − 5° = 180°, así que x = 25°."
+        "5x − 40° + 4x − 5° = 180°, así que x = 25."
       ]
     },
     {
@@ -76,11 +76,11 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "El suplemento de un ángulo es 4 veces su complemento: S(x) = 4 · C(x). ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°. Alternativas: A) 210°   B) 45°   C) 30°   D) 60°",
+      "enunciado": "Un ángulo mide x, y su suplemento es 4 veces su complemento: S(x) = 4 · C(x). ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90. Suplemento: S(x) = 180° − x, si x < 180. Alternativas: A) 210°   B) 45°   C) 30°   D) 60°",
       "respuesta": "D) 60°",
       "pasos": [
         "180° − x = 4(90° − x) = 360° − 4x.",
-        "3x = 180°, así que x = 60°."
+        "3x = 180, así que x = 60: el ángulo mide 60°."
       ]
     }
   ]

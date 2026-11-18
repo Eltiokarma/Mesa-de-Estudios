@@ -215,7 +215,8 @@ test('datos: lista de líneas cortas, con la herramienta de cada tipo, sin la re
     const todo = p.datos.join('\n');
     for (const fo of FORMULA[d.tipo]) assert.ok(fo instanceof RegExp ? fo.test(todo) : todo.includes(fo), `${s} (${d.tipo}): falta «${fo}»`);
     const c = p.alternativas.find(a => a.correcta).texto;
-    if (/^\d/.test(c)) assert.ok(!new RegExp(`(^|[^\\d,])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(todo), `${s}: los datos traen ${c}`);
+    // (Una respuesta que es x va sin «°»: «18» no está en «x < 180».)
+    if (/^\d/.test(c)) assert.ok(!new RegExp(`(^|[^\\d,])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\d,])`).test(todo), `${s}: los datos traen ${c}`);
   }
 });
 
@@ -473,4 +474,58 @@ test('M10: los tipos del papel (sin figura) se resuelven con el texto: el quiebr
   }
   const papel = require('./papel.json');
   for (const p of papel.problemas) if (/quiebre/.test(p.enunciado)) assert.ok(/a la izquierda de V/.test(p.enunciado), `${p.id}: el papel no dice de qué lado de V quedan P y Q`);
+});
+
+// «x sin °» (decisiones, cuarta ronda, 18 nov; cabecera del generador y de la teoría): una letra latina vale un número
+// y va sin «°», ella y su valor («m∠AOB = 3x + 29°», «x = 17»). Falla con «x°», con una letra sola igualada a grados
+// («x = 17°», «3x = 90°», «x < 25°», «x = 35° + 45°»), con «¿Cuánto mide x?», si se pide x (o a) y una alternativa
+// lleva «°», o si se pide un ángulo y una alternativa no lo lleva. La misma lectura que la prueba de la teoría.
+const GRADO_LETRA = /^\d*[a-z]$/, GRADO_NUM = /^\d+(?:,\d+)?$/, GRADO_CON = /^\d+(?:,\d+)?°$/, GRADO_OP = /^[+−·-]$/;
+const gradoTermino = t => GRADO_LETRA.test(t) || GRADO_NUM.test(t) || GRADO_CON.test(t);
+function gradoExpresion(tokens) {
+  const out = [];
+  for (let i = 0; i < tokens.length; i += 2) {
+    if (!gradoTermino(tokens[i])) break;
+    out.push(tokens[i]);
+    if (!GRADO_OP.test(tokens[i + 1] || '') || !gradoTermino(tokens[i + 2] || '')) break;
+  }
+  return out;
+}
+function gradosMal(texto) {
+  const s = String(texto).replace(/[  ⁠]/g, ' '), mal = [];
+  const soloLetra = e => e.length > 0 && e.some(t => GRADO_LETRA.test(t)) && !e.some(t => GRADO_CON.test(t));
+  const soloGrados = e => e.length > 0 && e.every(t => GRADO_CON.test(t));
+  for (const m of s.matchAll(/(?<![A-Za-zÀ-ÿ])[a-z]°/g)) mal.push(`«${m[0]}» en «${s.slice(0, 90)}»`);
+  for (const m of s.matchAll(/¿Cuánto miden? (?:el quiebre )?[a-z]\b/g)) mal.push(`«${m[0]}» en «${s.slice(0, 90)}»`);
+  for (const trozo of s.split(/[:;?¿→()«»]|[,.](?=\s|$)|\s{2,}| y | o /)) {
+    const lados = trozo.split(/\s*[=<>≤≥]\s*/);
+    for (let i = 0; i + 1 < lados.length; i++) {
+      const L = gradoExpresion(lados[i].trim().split(/\s+/).filter(Boolean).reverse()), R = gradoExpresion(lados[i + 1].trim().split(/\s+/).filter(Boolean));
+      if ((soloLetra(L) && soloGrados(R)) || (soloGrados(L) && soloLetra(R))) mal.push(`una letra igualada a grados en «${trozo.trim().slice(0, 90)}»`);
+    }
+  }
+  return mal;
+}
+test('x sin «°»: una letra vale un número; el grado va en lo que se mide (400 semillas y 60 por tipo, y el papel)', () => {
+  const ANGULOS = new Set(['abertura', 'bisectrices', 'paralelas', 'quiebre']);
+  const mal = new Set();
+  let pideX = 0;
+  const revisa = (s, p) => {
+    const textos = [plano(p.enunciado), plano(p.pregunta), ...p.datos, ...p.solucion.map(plano), ...p.alternativas.flatMap(a => [a.texto, a.explicacion || ''])];
+    const fig = p.escena && p.escena.datos;
+    if (fig) textos.push(fig.alt || '', ...(fig.angulos || []).map(a => (a.etiqueta && a.etiqueta.texto) || ''), ...(fig.rotulos || []).map(r => r.texto || ''));
+    for (const t of textos) for (const m of gradosMal(t)) mal.add(`${s}: ${m}`);
+    const q = plano(p.pregunta), d = p._datos;
+    if (!ANGULOS.has(d.idea) || p.alternativas.some(a => !/^\d/.test(a.texto))) return;
+    if (/¿Cuánto valen? [a-z]\b|valor entero de [a-z]\b/.test(q)) { pideX++; for (const a of p.alternativas) assert.ok(!/°/.test(a.texto), `${s} (${d.tipo}): se pide una letra y la alternativa es «${a.texto}»`); }
+    if (/¿Cuánto miden? /.test(q)) for (const a of p.alternativas) assert.ok(/°$/.test(a.texto), `${s} (${d.tipo}): se pide un ángulo y la alternativa es «${a.texto}»`);
+  };
+  for (let s = 0; s < 400; s++) revisa(s, gen.generar(s));
+  for (const t of gen.TIPOS) for (let s = 0; s < 60; s++) revisa(`${t} ${s}`, gen.generar(s, { tipo: t }));
+  const papel = require('./papel.json');
+  for (const p of papel.problemas) for (const t of [p.enunciado, p.respuesta, ...p.pasos]) for (const m of gradosMal(t)) mal.add(`papel ${p.id}: ${m}`);
+  assert.ok(pideX > 50, `pocos problemas que piden una letra: ${pideX}`);
+  for (const t of ['x = 17°', 'x°', '3x = 90°', 'x < 25°', 'x = 35° + 45° = 80°', '¿Cuánto mide x?']) assert.ok(gradosMal(t).length, `no detecta «${t}»`);
+  for (const t of ['x = 17', 'm∠AOB = 3x + 29°', '3 · 17 + 29° = 80°', 'x + 20° + 2x = 110°', '75° = m + 40°']) assert.deepEqual(gradosMal(t), [], `«${t}» está bien`);
+  assert.deepEqual([...mal].slice(0, 20), []);
 });

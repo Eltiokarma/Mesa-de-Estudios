@@ -243,7 +243,8 @@ test('papel.json: entre 5 y 10 problemas, con respuesta, pasos y verificación',
     assert.ok(p.enunciado && p.respuesta && Array.isArray(p.pasos) && p.pasos.length, `${p.id}: falta texto`);
     assert.ok(Array.isArray(p.verificar) && p.verificar.length, `${p.id}: falta verificar`);
     assert.ok(!/<[a-z]/i.test(p.enunciado + p.respuesta + p.pasos.join('')), `${p.id}: la app muestra texto plano, sin HTML`);
-    assert.ok(!/\d\.\d/.test(p.enunciado + p.respuesta + p.pasos.join('')), `${p.id}: se escribe con coma decimal`);
+    // Separados por espacio: «… si x < 180.» seguido de «45°.» no es un número con punto decimal.
+    assert.ok(!/\d\.\d/.test([p.enunciado, p.respuesta, ...p.pasos].join(' ')), `${p.id}: se escribe con coma decimal`);
   }
 });
 for (const p of (papel && papel.problemas) || []) test(`papel ${p.id}: la respuesta coincide con el motor`, () => {

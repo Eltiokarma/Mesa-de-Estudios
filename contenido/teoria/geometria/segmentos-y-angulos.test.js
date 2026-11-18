@@ -459,3 +459,89 @@ test('M12 y M13: en «Lee» las letras de dos puntos no se juntan, y ningún eje
   }
   for (const idea of def.ideas) for (const e of idea.ejemplos) if (e.figura) assert.ok(!/¿Cuál es el mayor|¿Cuál es el menor|¿[^¿]*es el punto medio[^¿]*\?$/.test(plano(e.enunciado)), `${idea.id} «${e.titulo}»: la figura a escala ya responde`);
 });
+
+// «x sin °» (decisiones, cuarta ronda, 18 nov; comentario de cabecera de la unidad): una letra latina (x, y, k, a, b, m)
+// vale un número y se escribe sin «°», ella y su valor: «m∠AOB = 3x + 29°» y «x = 17». Falla con «x°», con una letra
+// sola igualada a grados («x = 17°», «3x = 90°», «x < 25°», «x = 35° + 45°»), con «¿Cuánto mide x?» (una letra vale, no
+// se mide), si lo que se pide es x y una opción lleva «°», o si se pide un ángulo y una opción no lo lleva. Una letra
+// griega (θ, α) nombra un ángulo: «θ = 55°» vale. Revisa toda la unidad (textos, figuras, glosario), el juego en sus
+// controles, «Así se resuelve» y «Ahora tú» en 400 semillas.
+const GRADO_LETRA = /^\d*[a-z]$/, GRADO_NUM = /^\d+(?:,\d+)?$/, GRADO_CON = /^\d+(?:,\d+)?°$/, GRADO_OP = /^[+−·-]$/;
+const gradoTermino = t => GRADO_LETRA.test(t) || GRADO_NUM.test(t) || GRADO_CON.test(t);
+// La expresión pegada al signo, leída hacia afuera de él: término (operación término)*.
+function gradoExpresion(tokens) {
+  const out = [];
+  for (let i = 0; i < tokens.length; i += 2) {
+    if (!gradoTermino(tokens[i])) break;
+    out.push(tokens[i]);
+    if (!GRADO_OP.test(tokens[i + 1] || '') || !gradoTermino(tokens[i + 2] || '')) break;
+  }
+  return out;
+}
+function gradosMal(texto) {
+  const s = String(texto).replace(/[  ⁠]/g, ' '), mal = [];
+  const soloLetra = e => e.length > 0 && e.some(t => GRADO_LETRA.test(t)) && !e.some(t => GRADO_CON.test(t));
+  const soloGrados = e => e.length > 0 && e.every(t => GRADO_CON.test(t));
+  for (const m of s.matchAll(/(?<![A-Za-zÀ-ÿ])[a-z]°/g)) mal.push(`«${m[0]}» en «${s.slice(0, 90)}»`);
+  for (const m of s.matchAll(/¿Cuánto miden? (?:el quiebre )?[a-z]\b/g)) mal.push(`«${m[0]}» en «${s.slice(0, 90)}»`);
+  for (const trozo of s.split(/[:;?¿→()«»]|[,.](?=\s|$)|\s{2,}| y | o /)) {
+    const lados = trozo.split(/\s*[=<>≤≥]\s*/);
+    for (let i = 0; i + 1 < lados.length; i++) {
+      const L = gradoExpresion(lados[i].trim().split(/\s+/).filter(Boolean).reverse()), R = gradoExpresion(lados[i + 1].trim().split(/\s+/).filter(Boolean));
+      if ((soloLetra(L) && soloGrados(R)) || (soloGrados(L) && soloLetra(R))) mal.push(`una letra igualada a grados en «${trozo.trim().slice(0, 90)}»`);
+    }
+  }
+  return mal;
+}
+// Todas las cadenas de un objeto; un texto armado en trozos ([«x = », { v, t }]) se lee de corrido, cada línea aparte.
+function cadenas(o, out = [], visto = new Set()) {
+  if (o === null || o === undefined || typeof o === 'function') return out;
+  if (typeof o === 'string') { out.push(o); return out; }
+  if (typeof o !== 'object' || visto.has(o)) return out;
+  visto.add(o);
+  if (Array.isArray(o) && !o.some(Array.isArray)) out.push(plano(o));
+  for (const v of Object.values(o)) cadenas(v, out, visto);
+  return out;
+}
+test('x sin «°»: una letra vale un número; el grado va en lo que se mide (toda la unidad, 400 semillas)', () => {
+  const mal = new Set();
+  const revisa = (donde, o) => { for (const t of cadenas(o)) for (const m of gradosMal(t)) mal.add(`${donde}: ${m}`); };
+  // Lo que se pide decide el formato: x (o a, b, y) sin «°»; un ángulo, con «°».
+  const pideLetra = t => /¿Cuánto valen? [a-z]\b|valor entero de [a-z]\b/.test(t), pideAngulo = t => /[Cc]uánto miden? /.test(t);
+  const ANGULOS = ['abertura', 'bisectrices', 'paralelas', 'quiebre'];
+  revisa('unidad', def);
+  let pideX = 0;
+  for (const idea of def.ideas) {
+    for (const e of idea.ejemplos) {
+      const q = plano(e.enunciado);
+      if (pideLetra(q) && !pideAngulo(q)) { pideX++; assert.ok(!/°/.test(plano(e.respuesta)), `${idea.id} «${e.titulo}»: se pide una letra y la respuesta lleva «°»: ${plano(e.respuesta)}`); }
+    }
+    for (let s = 0; s < SEMILLAS; s++) {
+      const c = idea.ahoraTu.generar(s), q = plano(c.pregunta);
+      revisa(`${idea.id} «Ahora tú» ${s}`, c);
+      if (ANGULOS.includes(idea.id) && pideLetra(q)) { pideX++; for (const op of c.opciones) assert.ok(!/°/.test(op.texto), `${idea.id} ${s}: se pide una letra y la opción es «${op.texto}»`); }
+      if (ANGULOS.includes(idea.id) && pideAngulo(q)) for (const op of c.opciones) if (/^\d/.test(op.texto)) assert.ok(/°$/.test(op.texto), `${idea.id} ${s}: se pide un ángulo y la opción es «${op.texto}»`);
+      if (idea.resuelve) {
+        const z = idea.resuelve.generar(s);
+        revisa(`${idea.id} «Así se resuelve» ${s}`, z);
+        if (pideLetra(plano(z.enunciado))) { pideX++; assert.ok(!/°/.test(plano(z.respuesta)), `${idea.id} «Así se resuelve» ${s}: ${plano(z.respuesta)}`); }
+      }
+    }
+    const j = idea.juega;
+    for (const k of ['min', 'inicio', 'max']) {
+      const v = Object.fromEntries(j.controles.map(c => [c.id, c[k]]));
+      if (j.lectura) revisa(`${idea.id} lectura`, j.lectura(v));
+      revisa(`${idea.id} juego`, j.dibujo(v));
+    }
+  }
+  for (const m of def.laboratorio) for (const k of ['min', 'inicio', 'max']) {
+    const v = Object.fromEntries(m.controles.map(c => [c.id, c[k]]));
+    if (m.lectura) revisa(`mesa ${m.id}`, m.lectura(v));
+    revisa(`mesa ${m.id}`, m.dibujo(v));
+  }
+  assert.ok(pideX > 100, `pocos ejercicios que piden una letra: ${pideX}`);
+  // La prueba sí detecta lo que prohíbe.
+  for (const t of ['x = 17°', 'x°', '3x = 90°', 'x < 25°', 'x = 35° + 45° = 80°', '40° = 2x', '¿Cuánto mide x?', 'a = b = 42°']) assert.ok(gradosMal(t).length, `no detecta «${t}»`);
+  for (const t of ['x = 17', 'm∠AOB = 3x + 29°', 'm∠AOB = 3 · 17 + 29° = 80°', 'x + 20° + 2x = 110°', 'θ = 55°', 'C(x) = 30°', '75° = m + 40°']) assert.deepEqual(gradosMal(t), [], `«${t}» está bien`);
+  assert.deepEqual([...mal].slice(0, 20), []);
+});

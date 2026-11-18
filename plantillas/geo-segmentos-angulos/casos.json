@@ -2,7 +2,7 @@
   "plantilla": "geo-segmentos-angulos",
   "tolerancia": 1e-9,
   "nota": "Entrada = _datos del generador (sin valor); enunciado = lo que lee el alumno (enunciado y pregunta). esperado.valor es el número (o el texto, en entre y son-paralelas) y esperado.texto, la alternativa correcta que ve el alumno.",
-  "verificacion": "Script aparte (17 nov 2026, python3 -I con fractions, en el scratchpad de la sesión, fuera del repo: segmentos-f5/verificar_casos.py), que no usa el generador, el núcleo ni el motor: resuelve cada problema leyendo solo el enunciado, como el alumno (suma y resta de tramos con los puntos en orden, la razón con k, el punto medio, consecutivos, la vuelta de 360°, C(x) = 90° − x y S(x) = 180° − x despejados con fracciones exactas, el mayor entero por búsqueda, la regla de cada par entre paralelas, la paralela auxiliar y la regla del serrucho), escribe el resultado como la alternativa y lo compara con la correcta del generador. Los 22 casos cuadran.",
+  "verificacion": "Script aparte (17 nov 2026, python3 -I con fractions, en el scratchpad de la sesión, fuera del repo: segmentos-f5/verificar_casos.py), que no usa el generador, el núcleo ni el motor: resuelve cada problema leyendo solo el enunciado, como el alumno (suma y resta de tramos con los puntos en orden, la razón con k, el punto medio, consecutivos, la vuelta de 360°, C(x) = 90° − x y S(x) = 180° − x despejados con fracciones exactas, el mayor entero por búsqueda, la regla de cada par entre paralelas, la paralela auxiliar y la regla del serrucho), escribe el resultado como la alternativa y lo compara con la correcta del generador. Los 22 casos cuadran. 18 nov (cuarta ronda, «x sin °»): cambian el texto de seis casos (30, 80, 17, 6, 38 y 7) y, cuando se pide x o a, la alternativa va sin «°»; ningún valor cambia (rehechos a mano: 90 + x = 145 → 55; 180 − x = 19(90 − x) → 85; 5x + 15 < 90 → 14; 5x + 35 = 2x + 53 → 6; 60 + 45 = 105; 180 − 130 + 45 = 95).",
   "casos": [
     {
       "semilla": 67,
@@ -293,7 +293,7 @@
     },
     {
       "semilla": 30,
-      "enunciado": "El suplemento del complemento de un ángulo x mide 145°: S(C(x)) = 145°. ¿Cuánto mide x?",
+      "enunciado": "Un ángulo mide x, y el suplemento de su complemento mide 145°: S(C(x)) = 145°. ¿Cuánto vale x?",
       "entrada": {
         "tipo": "cadena",
         "idea": "bisectrices",
@@ -304,12 +304,12 @@
       },
       "esperado": {
         "valor": 55,
-        "texto": "55°"
+        "texto": "55"
       }
     },
     {
       "semilla": 80,
-      "enunciado": "El suplemento de un ángulo es 19 veces su complemento: S(x) = 19 · C(x). ¿Cuánto mide el ángulo?",
+      "enunciado": "Un ángulo mide x, y su suplemento es 19 veces su complemento: S(x) = 19 · C(x). ¿Cuánto mide el ángulo?",
       "entrada": {
         "tipo": "veces-cs",
         "idea": "bisectrices",
@@ -337,7 +337,7 @@
       },
       "esperado": {
         "valor": 14,
-        "texto": "14°"
+        "texto": "14"
       }
     },
     {
@@ -361,7 +361,7 @@
       },
       "esperado": {
         "valor": 6,
-        "texto": "6°"
+        "texto": "6"
       }
     },
     {
@@ -385,7 +385,7 @@
     },
     {
       "semilla": 38,
-      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma 60° con L₁ y QV forma 45° con L₂, medidos del lado de V. ¿Cuánto mide el quiebre x, en V?",
+      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma 60° con L₁ y QV forma 45° con L₂, medidos del lado de V. ¿Cuánto vale x, el quiebre en V?",
       "entrada": {
         "tipo": "quiebre",
         "idea": "quiebre",
@@ -396,12 +396,12 @@
       },
       "esperado": {
         "valor": 105,
-        "texto": "105°"
+        "texto": "105"
       }
     },
     {
       "semilla": 7,
-      "enunciado": "L₁ ∥ L₂. Arriba, PV forma 130° con L₁, medido del lado de afuera; abajo, QV forma 45° con L₂. ¿Cuánto mide el quiebre x, en V?",
+      "enunciado": "L₁ ∥ L₂. Arriba, PV forma 130° con L₁, medido del lado de afuera; abajo, QV forma 45° con L₂. ¿Cuánto vale x, el quiebre en V?",
       "entrada": {
         "tipo": "quiebre-afuera",
         "idea": "quiebre",
@@ -412,7 +412,7 @@
       },
       "esperado": {
         "valor": 95,
-        "texto": "95°"
+        "texto": "95"
       }
     },
     {
