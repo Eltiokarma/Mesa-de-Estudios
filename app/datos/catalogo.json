@@ -1190,10 +1190,11 @@
       "quimica.materia-y-energia"
      ],
      "plantillas": [
-      "atomo-y-tabla",
-      "configuracion-ubicacion",
+      "particulas-nucleo",
       "quimica-conceptos",
-      "conversiones-quimica"
+      "niveles-orbitales",
+      "configuracion-ubicacion",
+      "atomo-y-tabla"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/estructura-atomica.js",
@@ -7595,8 +7596,7 @@
    "version": "0.1.0",
    "unidades": [
     "quimica.materia-y-energia",
-    "quimica.liquidos-y-solidos",
-    "quimica.estructura-atomica"
+    "quimica.liquidos-y-solidos"
    ],
    "url": "#/practica/conversiones-quimica",
    "papel": "/plantillas/conversiones-quimica/papel.json",
@@ -9004,6 +9004,22 @@
    ],
    "rehacer": true
   },
+  "niveles-orbitales": {
+   "id": "niveles-orbitales",
+   "titulo": "Pisos, pasillos y cuartos: niveles y orbitales",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estructura-atomica"
+   ],
+   "url": "#/practica/niveles-orbitales",
+   "papel": "/plantillas/niveles-orbitales/papel.json",
+   "archivos": [
+    "/plantillas/niveles-orbitales/generador.js",
+    "/plantillas/niveles-orbitales/papel.json"
+   ]
+  },
   "nombre-polifuncional": {
    "id": "nombre-polifuncional",
    "titulo": "Ponle nombre: moléculas con varios grupos",
@@ -9265,6 +9281,22 @@
     "/plantillas/papel-doblado/index.html",
     "/plantillas/papel-doblado/motor.js",
     "/plantillas/papel-doblado/papel.json"
+   ]
+  },
+  "particulas-nucleo": {
+   "id": "particulas-nucleo",
+   "titulo": "El núcleo y sus vecinos: isótopos, isóbaros e isoelectrónicos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.estructura-atomica"
+   ],
+   "url": "#/practica/particulas-nucleo",
+   "papel": "/plantillas/particulas-nucleo/papel.json",
+   "archivos": [
+    "/plantillas/particulas-nucleo/generador.js",
+    "/plantillas/particulas-nucleo/papel.json"
    ]
   },
   "poleas-giros": {

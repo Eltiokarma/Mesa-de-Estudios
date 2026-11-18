@@ -1,0 +1,331 @@
+{
+  "plantilla": "particulas-nucleo",
+  "nota": "donde: sub 'particula' (la partícula y su lugar por su carga o su masa, 'donde:p|n|e:si'), 'correcta' e 'incorrecta' (la única afirmación verdadera o falsa, 'donde:<id>'). nuclidos: sub 'que-son' (isótopos: mismo Z; isóbaros: mismo A; isótonos: mismo N = A − Z; o nada) y 'isotopos' (qué tienen igual dos isótopos neutros, o cómo reaccionan). isoelectronico: X con carga x tiene los electrones de Y = [Z, carga]: Z de X = (Z_Y − carga_Y) + x; sub 'elemento', 'el:<Z>'. vecinos: a = [Z, A] dado y b = [Z, A] del otro núclido: isóbaro, N = A − Z_b; isótono, A_b = Z_b + N_a; isótopo, N_b = A_b − Z. masa-ion: A = Z + N.",
+  "verificacion": "Script aparte (18 nov 2026, python3 -I, fuera del repo: verif/particulas.py), que no usa el generador ni el núcleo: cuenta las partículas desde Z, A y la carga, juzga las afirmaciones con su propia tabla, escribe los nombres de los elementos desde su propia lista y arma el texto de la correcta. Los 18 casos cuadran con el generador (respuesta y texto exacto). Las masas de los núclidos se contrastaron con una tabla de núclidos reales escrita en generador.test.js.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "nuclidos",
+        "nivel": 2,
+        "sub": "que-son",
+        "a": [
+          6,
+          12
+        ],
+        "b": [
+          5,
+          11
+        ]
+      },
+      "esperado": {
+        "respuesta": "nuc:isotonos",
+        "texto": "Isótonos"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "nuclidos",
+        "nivel": 2,
+        "sub": "que-son",
+        "a": [
+          12,
+          25
+        ],
+        "b": [
+          11,
+          23
+        ]
+      },
+      "esperado": {
+        "respuesta": "nuc:nada",
+        "texto": "Ninguna de las tres"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "isoelectronico",
+        "nivel": 2,
+        "sub": "z",
+        "x": -3,
+        "y": [
+          17,
+          -1
+        ]
+      },
+      "esperado": {
+        "respuesta": 15,
+        "texto": "15"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "isoelectronico",
+        "nivel": 2,
+        "sub": "z",
+        "x": 1,
+        "y": [
+          13,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": 11,
+        "texto": "11"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "vecinos",
+        "nivel": 3,
+        "sub": "isotopos",
+        "a": [
+          14,
+          28
+        ],
+        "b": [
+          14,
+          30
+        ]
+      },
+      "esperado": {
+        "respuesta": 16,
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "nuclidos",
+        "nivel": 1,
+        "sub": "isotopos",
+        "pide": "reacciona",
+        "a": [
+          29,
+          63
+        ],
+        "b": [
+          29,
+          65
+        ]
+      },
+      "esperado": {
+        "respuesta": "iso:reacciona:igual",
+        "texto": "Iguales: tienen los mismos electrones"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "donde",
+        "nivel": 1,
+        "sub": "particula",
+        "ids": [
+          "positiva"
+        ]
+      },
+      "esperado": {
+        "respuesta": "donde:p:si",
+        "texto": "Protón, en el núcleo"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "donde",
+        "nivel": 1,
+        "sub": "particula",
+        "ids": [
+          "negativa"
+        ]
+      },
+      "esperado": {
+        "respuesta": "donde:e:si",
+        "texto": "Electrón, fuera del núcleo"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "nuclidos",
+        "nivel": 1,
+        "sub": "isotopos",
+        "pide": "igual",
+        "a": [
+          17,
+          35
+        ],
+        "b": [
+          17,
+          37
+        ]
+      },
+      "esperado": {
+        "respuesta": "iso:igual:pe",
+        "texto": "Los protones y los electrones"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "masa-ion",
+        "nivel": 3,
+        "Z": 11,
+        "A": 23,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": 23,
+        "texto": "23"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "vecinos",
+        "nivel": 3,
+        "sub": "isotopos",
+        "a": [
+          3,
+          7
+        ],
+        "b": [
+          3,
+          6
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "isoelectronico",
+        "nivel": 3,
+        "sub": "elemento",
+        "x": 2,
+        "y": [
+          13,
+          3
+        ]
+      },
+      "esperado": {
+        "respuesta": "el:12",
+        "texto": "Magnesio (Z = 12)"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "masa-ion",
+        "nivel": 3,
+        "Z": 20,
+        "A": 40,
+        "carga": 2
+      },
+      "esperado": {
+        "respuesta": 40,
+        "texto": "40"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "isoelectronico",
+        "nivel": 3,
+        "sub": "elemento",
+        "x": -2,
+        "y": [
+          11,
+          1
+        ]
+      },
+      "esperado": {
+        "respuesta": "el:8",
+        "texto": "Oxígeno (Z = 8)"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "vecinos",
+        "nivel": 3,
+        "sub": "isotonos",
+        "a": [
+          26,
+          56
+        ],
+        "b": [
+          27,
+          57
+        ]
+      },
+      "esperado": {
+        "respuesta": 57,
+        "texto": "57"
+      }
+    },
+    {
+      "semilla": 28,
+      "entrada": {
+        "tipo": "donde",
+        "nivel": 1,
+        "sub": "correcta",
+        "ids": [
+          "neutro-e",
+          "n-fuera",
+          "neutro-n",
+          "masa-e"
+        ]
+      },
+      "esperado": {
+        "respuesta": "donde:neutro-e",
+        "texto": "Un átomo neutro tiene tantos electrones como protones."
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "vecinos",
+        "nivel": 3,
+        "sub": "isobaros",
+        "a": [
+          26,
+          58
+        ],
+        "b": [
+          28,
+          58
+        ]
+      },
+      "esperado": {
+        "respuesta": 30,
+        "texto": "30"
+      }
+    },
+    {
+      "semilla": 35,
+      "entrada": {
+        "tipo": "donde",
+        "nivel": 1,
+        "sub": "incorrecta",
+        "ids": [
+          "neutro-n",
+          "masa-nucleo",
+          "e-fuera",
+          "neutro-e"
+        ]
+      },
+      "esperado": {
+        "respuesta": "donde:neutro-n",
+        "texto": "Un átomo es neutro porque tiene tantos neutrones como protones."
+      }
+    }
+  ]
+}

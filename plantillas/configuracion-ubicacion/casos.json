@@ -343,5 +343,272 @@
         "exacta": "[Kr] 4d¹⁰"
       }
     }
+  ],
+  "notaEstructuraAtomica": "Estructura atómica (18 nov 2026): generar(semilla, { unidad: 'quimica.estructura-atomica' }). Tipos de las ideas 1, 4, 5 y 6: particulas ('part:<N>:<e⁻>'), atomo-ion ('ion:<e⁻>|<configuración completa>'), neutro (completa hasta Z = 20, abreviada después), anomala, cation y anion ('conf:<abreviada>'), valencia (electrones del mayor n), contar (electrones con ℓ dado), desapareados (Hund), magnetico ('esp:<Z>:<carga>', la única diamagnética o paramagnética de las cuatro) y cuanticos ('qn:n:ℓ:mₗ:+|-', último subnivel escrito, cajas de −ℓ a +ℓ, primero ↑).",
+  "verificacionEstructuraAtomica": "Script aparte (18 nov 2026, python3 -I, fuera del repo: verif/config_ea.py), que no usa el generador: parte de una tabla de configuraciones reales de los átomos neutros escrita a mano (la misma de estructura-atomica.test.js), saca los iones, los desapareados y el último electrón con sus propias reglas y escribe el texto de la correcta. Los 19 casos cuadran (respuesta y texto exacto), y también 400 semillas seguidas (0 a 399).",
+  "estructuraAtomica": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "anomala",
+        "Z": 42
+      },
+      "esperado": {
+        "respuesta": "conf:[Kr] 5s1 4d5",
+        "exacta": "[Kr] 5s¹ 4d⁵"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "cation",
+        "Z": 81,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": "conf:[Xe] 6s2 4f14 5d10",
+        "exacta": "[Xe] 6s² 4f¹⁴ 5d¹⁰"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "neutro",
+        "Z": 74
+      },
+      "esperado": {
+        "respuesta": "conf:[Xe] 6s2 4f14 5d4",
+        "exacta": "[Xe] 6s² 4f¹⁴ 5d⁴"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "cuanticos",
+        "sub": "neutro36",
+        "Z": 5,
+        "carga": 0
+      },
+      "esperado": {
+        "respuesta": "qn:2:1:-1:+",
+        "exacta": "(2; 1; −1; +½)"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "particulas",
+        "Z": 30,
+        "A": 65,
+        "carga": 2
+      },
+      "esperado": {
+        "respuesta": "part:35:28",
+        "exacta": "35 neutrones y 28 electrones"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "magnetico",
+        "busca": "dia",
+        "especies": [
+          [
+            18,
+            0
+          ],
+          [
+            26,
+            2
+          ],
+          [
+            23,
+            3
+          ],
+          [
+            13,
+            0
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "esp:18:0",
+        "exacta": "Argón"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "desapareados",
+        "Z": 53,
+        "carga": -1
+      },
+      "esperado": {
+        "respuesta": 0,
+        "exacta": "0"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "magnetico",
+        "busca": "dia",
+        "especies": [
+          [
+            12,
+            0
+          ],
+          [
+            28,
+            0
+          ],
+          [
+            22,
+            2
+          ],
+          [
+            17,
+            0
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "esp:12:0",
+        "exacta": "Magnesio"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "cation",
+        "Z": 50,
+        "carga": 2
+      },
+      "esperado": {
+        "respuesta": "conf:[Kr] 5s2 4d10",
+        "exacta": "[Kr] 5s² 4d¹⁰"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cuanticos",
+        "sub": "neutro36",
+        "Z": 14,
+        "carga": 0
+      },
+      "esperado": {
+        "respuesta": "qn:3:1:0:+",
+        "exacta": "(3; 1; 0; +½)"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "particulas",
+        "Z": 53,
+        "A": 127,
+        "carga": -1
+      },
+      "esperado": {
+        "respuesta": "part:74:54",
+        "exacta": "74 neutrones y 54 electrones"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "valencia",
+        "Z": 82
+      },
+      "esperado": {
+        "respuesta": 4,
+        "exacta": "4"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "neutro",
+        "Z": 37
+      },
+      "esperado": {
+        "respuesta": "conf:[Kr] 5s1",
+        "exacta": "[Kr] 5s¹"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "anion",
+        "Z": 53,
+        "carga": -1
+      },
+      "esperado": {
+        "respuesta": "conf:[Kr] 5s2 4d10 5p6",
+        "exacta": "[Kr] 5s² 4d¹⁰ 5p⁶"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "anomala",
+        "Z": 29
+      },
+      "esperado": {
+        "respuesta": "conf:[Ar] 4s1 3d10",
+        "exacta": "[Ar] 4s¹ 3d¹⁰"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "atomo-ion",
+        "Z": 19,
+        "carga": 1
+      },
+      "esperado": {
+        "respuesta": "ion:18|1s2 2s2 2p6 3s2 3p6",
+        "exacta": "18 electrones; 1s² 2s² 2p⁶ 3s² 3p⁶"
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "contar",
+        "Z": 54,
+        "l": 0
+      },
+      "esperado": {
+        "respuesta": 10,
+        "exacta": "10"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "tipo": "cuanticos",
+        "sub": "neutro86",
+        "Z": 54,
+        "carga": 0
+      },
+      "esperado": {
+        "respuesta": "qn:5:1:1:-",
+        "exacta": "(5; 1; +1; −½)"
+      }
+    },
+    {
+      "semilla": 33,
+      "entrada": {
+        "tipo": "cuanticos",
+        "sub": "cation",
+        "Z": 25,
+        "carga": 3
+      },
+      "esperado": {
+        "respuesta": "qn:3:2:1:+",
+        "exacta": "(3; 2; +1; +½)"
+      }
+    }
   ]
 }

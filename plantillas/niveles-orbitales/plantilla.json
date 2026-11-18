@@ -1,0 +1,17 @@
+{
+  "id": "niveles-orbitales",
+  "titulo": "Pisos, pasillos y cuartos: niveles y orbitales",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.estructura-atomica"
+  ],
+  "temas": [
+    "Números cuánticos y orbitales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

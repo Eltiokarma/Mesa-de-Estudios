@@ -1,0 +1,87 @@
+{
+  "titulo": "El núcleo y sus vecinos: isótopos, isóbaros e isoelectrónicos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El ⁵⁸Ni tiene Z = 28. Un núclido del hierro (Z = 26) es isóbaro del ⁵⁸Ni. ¿Cuántos neutrones tiene ese núclido del hierro? Datos: Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) 26   B) 58   C) 30   D) 32   E) 28",
+      "respuesta": "D) 32",
+      "pasos": [
+        "Isóbaros: el mismo A, 58.",
+        "N = 58 − 26 = 32 neutrones."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El ion X³⁺ es isoelectrónico con el Na⁺ (Z = 11). ¿Qué elemento es X? Datos: carga = Z − e⁻. Isoelectrónicos: la misma cantidad de electrones. Z: nitrógeno 7, neón 10, aluminio 13 y silicio 14. Alternativas: A) Nitrógeno (Z = 7)   B) Aluminio (Z = 13)   C) Neón (Z = 10)   D) Silicio (Z = 14)",
+      "respuesta": "B) Aluminio (Z = 13)",
+      "pasos": [
+        "El Na⁺ tiene 11 − (+1) = 10 electrones; X también tiene 10.",
+        "Z de X = 10 + (+3) = 13: es el aluminio."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una de las tres partículas del átomo tiene carga positiva. ¿Qué partícula es y dónde está? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Protón, en el núcleo   B) Neutrón, en el núcleo   C) Electrón, en el núcleo   D) Protón, fuera del núcleo",
+      "respuesta": "A) Protón, en el núcleo",
+      "pasos": [
+        "La que tiene carga positiva es el protón.",
+        "Protones y neutrones forman el núcleo; los electrones se mueven fuera de él: protón, en el núcleo."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El ⁴⁰K tiene Z = 19. Un núclido del argón (Z = 18) es isóbaro del ⁴⁰K. ¿Cuántos neutrones tiene ese núclido del argón? Datos: Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) 20   B) 18   C) 21   D) 40   E) 22",
+      "respuesta": "E) 22",
+      "pasos": [
+        "Isóbaros: el mismo A, 40.",
+        "N = 40 − 18 = 22 neutrones."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se dan varias afirmaciones sobre las partículas de un átomo. ¿Cuál de estas afirmaciones es incorrecta? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Los electrones se mueven fuera del núcleo.   B) Casi toda la masa del átomo está en el núcleo.   C) Casi toda la masa del átomo está en sus electrones.   D) Los protones y los neutrones están en el núcleo.",
+      "respuesta": "C) Casi toda la masa del átomo está en sus electrones.",
+      "pasos": [
+        "Casi toda la masa del átomo está en sus electrones. Es falsa: el electrón es el más liviano: la masa está en el núcleo.",
+        "Las otras son verdaderas."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El ¹¹B tiene Z = 5. Un núclido del carbono (Z = 6) es isótono del ¹¹B. ¿Cuál es el número de masa de ese núclido del carbono? Datos: Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) 10   B) 12   C) 6   D) 11",
+      "respuesta": "B) 12",
+      "pasos": [
+        "Isótonos: el mismo N. N del ¹¹B = 11 − 5 = 6.",
+        "A = 6 + 6 = 12."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una de las tres partículas del átomo no tiene carga. ¿Qué partícula es y dónde está? Datos: Protón: carga +1. Neutrón: sin carga, con casi la misma masa que el protón. Electrón: carga −1; el protón pesa unas 1836 veces más. Alternativas: A) Neutrón, fuera del núcleo   B) Neutrón, en el núcleo   C) Electrón, fuera del núcleo   D) Protón, fuera del núcleo",
+      "respuesta": "B) Neutrón, en el núcleo",
+      "pasos": [
+        "La que no tiene carga es el neutrón.",
+        "Protones y neutrones forman el núcleo; los electrones se mueven fuera de él: neutrón, en el núcleo."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se comparan los núclidos ¹⁶O y ¹⁸O. ¿Qué son entre sí? Datos: Z del oxígeno = 8. Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N. A = Z + N. Alternativas: A) Ninguna de las tres   B) Isóbaros   C) Isótonos   D) Isótopos",
+      "respuesta": "D) Isótopos",
+      "pasos": [
+        "Z: 8 y 8. A: 16 y 18. N = A − Z: 8 y 10.",
+        "Coincide Z (8 en los dos): son isótopos."
+      ]
+    }
+  ]
+}

@@ -37,7 +37,8 @@
  * quimica.materia-y-energia elige entre delta y densidad de masa y volumen (sin calor latente molar, sin vida media, que
  * tiene su plantilla vida-media, sin lecturas punto a punto ni longitudes atómicas); en las otras unidades, o sin unidad,
  * entre todos, como antes (TIPOS_POR_UNIDAD y SUBTIPOS_POR_UNIDAD, modelo plantillas/velocidad-relativa/). Vida media y
- * variaciones traen `datos` en lista.
+ * variaciones traen `datos` en lista. Desde el 18 nov (etapa 4) la ficha ya no sirve a Estructura atómica: sus longitudes
+ * atómicas en Å, nm y pm no las enseña ninguna idea de esa unidad (propuesta §2).
  * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los AQ-* y las trampas de unidades QU1 a QU3 (docs/investigacion/unidades-ideas-erroneas.md) son hipótesis nuestras (los de vida
  * media, AQ-vm-*, comparten id con configuracion-ubicacion). Rangos creíbles: cada objeto y cada lugar tiene su rango de
  * temperatura, y el dato se genera dentro de él; en lectura no salen kelvin negativos entre las alternativas.

@@ -117,6 +117,7 @@ test('errores: respaldo válido y fuente existente; todos los códigos se usan',
   for (const p of gen.BANCO) { if (p.error) usados.add(p.error); if (p.negar) usados.add(p.negar); }
   for (const c of gen.PARES) { usados.add(c.codigo); if (c.codigoFamilia) usados.add(c.codigoFamilia); }
   for (const k of gen.POURBAIX.codigos) usados.add(k);
+  for (const k of gen.CODIGOS_EA) usados.add(k);   // los de relacionar en Estructura atómica (aUnidadEA)
   for (const [k, e] of Object.entries(gen.ERRORES)) {
     assert.ok(['documentado', 'parcial', 'hipotesis'].includes(e.respaldo), k);
     if (k.startsWith('AQ-')) assert.equal(e.respaldo, 'hipotesis', `${k}: los códigos nuevos son hipótesis`);
@@ -177,7 +178,8 @@ test('600 problemas: los textos coinciden con el banco y aparecen todos los tipo
   }
   for (const t of ['vf', 'incorrecta', 'correcta', 'relacionar']) assert.ok(tipos[t] > 50, `${t}: ${tipos[t]}`);
   assert.ok(pb >= 20 && pb <= 80, `pourbaix: ${pb} de 600`);
-  for (const t of gen.TEMAS) assert.ok(temas.has(t.id), `el tema ${t.id} no salió`);
+  // Los temas que salen solo con su unidad (isotopos, de Estructura atómica) se prueban más abajo.
+  for (const t of gen.TEMAS) if (!gen.soloConUnidad.includes(t.id)) assert.ok(temas.has(t.id), `el tema ${t.id} no salió`);
   for (const c of gen.PARES) assert.ok(conjuntos.has(c.id), `el conjunto ${c.id} no salió`);
 });
 
@@ -259,7 +261,9 @@ test('respaldo: cada código de informe está en su fuente; documentado solo en 
   for (const [k, e] of Object.entries(gen.ERRORES)) {
     if (k.startsWith('AQ-')) { assert.equal(e.fuente, null, k); continue; }
     const texto = fs.readFileSync(path.join(__dirname, '../..', e.fuente), 'utf8');
-    assert.ok(texto.includes(`| ${k} |`), `${k} no aparece como «| ${k} |» en ${e.fuente}`);
+    // En una celda de tabla, solo o en una lista de códigos («| QM-ISOTOPO-N, QM-ISOTOPO-A |»).
+    const celda = new RegExp(`\\|[^|\\n]*(?<![\\w-])${k}(?![\\w-])[^|\\n]*\\|`);
+    assert.ok(texto.includes(`| ${k} |`) || celda.test(texto), `${k} no aparece en una celda de tabla de ${e.fuente}`);
   }
   for (const p of gen.BANCO) if (p.respaldo) {
     assert.ok(!p.verdad && !p.error.startsWith('AQ-'), `${p.id}: respaldo propio en una V o en un código nuevo`);
@@ -358,3 +362,38 @@ test('Materia y energía: datos con las definiciones de la unidad, sin «sustanc
   }
   assert.ok(ramas > 120 && ramas < 280, `ramas: ${ramas} de 800`);
 });
+
+// Estructura atómica (18 nov, etapa 4, propuesta §9): con su unidad, solo sus temas (Dalton, modelos, la lámina de oro,
+// isótopos) y los científicos de los modelos que enseña; datos en lista en todo problema; sin colores (la unidad reserva
+// naranja, turquesa, violeta y carmín para Z, N, los electrones y la carga, y no usa verde); explicaciones que empiezan
+// por lo que el alumno hizo bien; el problema dice su unidad para la cola de repaso. El recálculo es el de arriba.
+{
+  const EA = 'quimica.estructura-atomica';
+  probarGenerador({ id: 'quimica-conceptos (Estructura atómica)', generar: s => gen.generar(s, { unidad: EA }) }, { semillas: 400, recalcular, igual: (a, b) => a === b });
+  test('Estructura atómica: sus temas, datos en lista, sin colores, «Bien» al empezar y su unidad', () => {
+    const propios = new Set(gen.TEMAS.filter(t => t.unidad === EA).map(t => t.id)), vistos = new Set();
+    const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+    const conColor = x => (Array.isArray(x) ? x.some(conColor) : !!(x && typeof x === 'object' && x.v));
+    for (let s = 0; s < 400; s++) {
+      const p = gen.generar(s, { unidad: EA }), d = p._datos;
+      vistos.add(d.tema || d.conjunto);
+      if (d.tipo === 'relacionar') {
+        assert.equal(d.conjunto, 'cientificos');
+        for (const id of d.ids) assert.ok(['c-dalton', 'c-thomson', 'c-rutherford', 'c-bohr'].includes(id), `semilla ${s}: ${id}`);
+      } else assert.ok(propios.has(d.tema), `semilla ${s}: tema ${d.tema}`);
+      assert.equal(p.unidadCatalogo, EA);
+      assert.ok(Array.isArray(p.datos) && p.datos.length >= 2, `semilla ${s}: datos`);
+      for (const l of p.datos) assert.ok(typeof l === 'string' && palabras(l) <= 22 && !/^Dato:/.test(l), `semilla ${s}: «${l}»`);
+      assert.deepEqual(p.variables, {});
+      assert.ok(![p.enunciado, p.pregunta, p.solucion].some(conColor), `semilla ${s}: texto con color`);
+      for (const a of p.alternativas.filter(x => x.error)) assert.match(a.error.explicacion, /^Bien /, `semilla ${s}: ${a.error.explicacion}`);
+      const todo = p.datos.join('\n'), ok = p.alternativas.find(a => a.correcta).texto;
+      assert.ok(!todo.includes(ok), `semilla ${s}: los datos traen la respuesta`);
+    }
+    assert.deepEqual([...vistos].sort(), ['cientificos', 'dalton', 'isotopos', 'modelos', 'rutherford']);
+  });
+  test('Estructura atómica: el tema isotopos no sale sin la unidad, y las otras unidades no cambian', () => {
+    for (let s = 0; s < 600; s++) assert.notEqual(gen.generar(s)._datos.tema, 'isotopos', `semilla ${s}`);
+    for (let s = 0; s < 200; s++) assert.deepEqual(gen.generar(s, { unidad: 'quimica.tabla-periodica' }), gen.generar(s));
+  });
+}

@@ -48,6 +48,17 @@
  *    ubicacion(Z) → { periodo, grupo, grupoAB, bloque }; ultimoElectron(Z, carga) → { n, l, ml, ms };
  *    particulas(Z, A, carga) → { protones, neutrones, electrones }; contarL(Z, l); vidaQueda(m0, T, t) = m0/2^(t/T);
  *    vidaTiempo(T, fracción que queda) = T·log2(1/fracción).
+ *
+ * Por unidad (18 nov 2026, etapa 4, propuesta de Estructura atómica §9): con { unidad: 'quimica.tabla-periodica' } salen
+ * solo ubicar y familia; con { unidad: 'quimica.estructura-atomica' }, el armado propio de esa unidad (generarEA, más
+ * abajo), con los tipos de sus ideas 1 (particulas, atomo-ion), 4 (neutro: configuración de un átomo neutro, completa
+ * hasta Z = 20 y abreviada después; valencia: electrones del último nivel; anomala; contar), 5 (cation, anion) y 6
+ * (desapareados; magnetico: la única diamagnética o paramagnética de cuatro especies, clave 'esp:<Z>:<carga>';
+ * cuanticos, sub 'neutro36', 'neutro86' o 'cation', nunca del Cr, el Cu, el Mo, la Ag ni el Au, con texto «(3; 2; −2; −½)»).
+ * Ahí: datos en lista (una línea por dato), los colores de la unidad, los códigos QM- de su teoría, explicaciones que
+ * empiezan por lo que el alumno hizo bien, un código por alternativa y p.unidadCatalogo. Sus _datos: { tipo, Z, carga }
+ * (más l en contar, sub en cuanticos y { busca: 'dia' | 'para', especies: [[Z, carga] × 4] } en magnetico). Sus casos
+ * están en casos.json, bloque «estructuraAtomica». Sin unidad (o con otra), todo sigue como antes.
  * FIN DE LA CABECERA: con lo de arriba se recalcula cada caso de casos.json sin leer el código.
  */
 (function (root, fabrica) {
@@ -227,11 +238,17 @@
     'atomo-ion', 'vida-media', 'vida-media', 'vida-media'];
   // Qué tipos sirve a cada unidad del catálogo (modelo: plantillas/velocidad-relativa/). Hasta el 17 nov, Materia y
   // energía tomaba de aquí solo la vida media; desde la mesa de revisión (17 nov) tiene su plantilla propia
-  // (plantillas/vida-media/, la de su idea 6) y salió de las unidades de esta ficha. Las otras unidades, o sin unidad,
-  // eligen entre todos los tipos con el mismo azar de antes (casos.json no cambia).
-  const TIPOS_POR_UNIDAD = {};
+  // (plantillas/vida-media/, la de su idea 6) y salió de las unidades de esta ficha. Desde el 18 nov (etapa 4, propuesta
+  // de Estructura atómica §9): Estructura atómica toma solo los tipos de sus ideas 1, 4, 5 y 6, con su propio armado
+  // (generarEA, más abajo: datos en lista, sus colores, sus códigos QM-), y Tabla periódica solo ubicar y familia, con el
+  // azar de antes. La vida media ya no es de ninguna unidad de esta ficha: sale solo sin unidad (casos.json no cambia).
+  const TIPOS_POR_UNIDAD = {
+    'quimica.estructura-atomica': ['particulas', 'atomo-ion', 'neutro', 'valencia', 'anomala', 'contar', 'cation', 'anion', 'desapareados', 'magnetico', 'cuanticos'],
+    'quimica.tabla-periodica': ['ubicar', 'familia'],
+  };
   function generar(semilla, opciones) {
     const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    if (unidad === EA) return generarEA(semilla);
     const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear('configuracion-ubicacion|' + semilla);
     const tipo = rng.elegir(permitidos ? TIPOS.filter(t => permitidos.includes(t)) : TIPOS);
@@ -635,10 +652,412 @@
       ], datos: DATOS_VIDA, _datos: { tipo: 'vida-media', sub, A0, A1, A2, t1, t2, unidad: u } });
   }
 
+  // ======================================================================================================================
+  // Estructura atómica (quimica.estructura-atomica; etapa 4, propuesta §9, aprobada el 18 nov). La práctica de esta unidad
+  // sigue a su teoría (contenido/teoria/quimica/estructura-atomica.js): solo los tipos de las ideas 1, 4, 5 y 6, con un
+  // color fijo por magnitud (COLOR_EA, copia de `colores` de la teoría; lo compara colores.test.js), datos en lista (una
+  // línea por dato: el orden de llenado, lo que cabe, la regla de las anómalas, el gas noble de la abreviada, la
+  // convención de mₗ y mₛ), los códigos QM- de la teoría (docs/investigacion/atomo-enlace-ideas-erroneas.md, «Estructura
+  // atómica (18 nov)») y explicaciones que empiezan por lo que el alumno hizo bien. Los números cuánticos salen también
+  // con Z ≤ 36 y en cationes (San Marcos 2027-I), pero nunca de Cr, Cu, Mo, Ag ni Au, ni de sus iones (el solucionario
+  // de San Marcos 2026-I tomó el 4s como último electrón del cromo). El nitrógeno no sale como «N» (N son los neutrones):
+  // va por su nombre. Sin ubicar, familia ni vida media (Tabla periódica y Materia y energía). Cada problema trae
+  // unidadCatalogo, para la cola de repaso. Las mismas cuentas de arriba (Möller, cationes, Hund, último electrón).
+  // ======================================================================================================================
+  const EA = 'quimica.estructura-atomica';
+  const COLOR_EA = { protones: 'o', neutrones: 'i', electrones: 'f', carga: 'h', orbitales: 'i' };
+  const vaEA = (nombre, mag) => ({ nombre, mag, color: COLOR_EA[mag] });
+  const VEA = { Z: vaEA('número atómico', 'protones'), q: vaEA('carga', 'carga'), e: vaEA('electrones', 'electrones'),
+    c: vaEA('configuración electrónica', 'electrones'), d: vaEA('electrones desapareados', 'electrones'), N: vaEA('neutrones', 'neutrones') };
+  const usaEA = (...ks) => Object.fromEntries(ks.map(k => [k, VEA[k]]));
+  const qa = (id, extra, explicacion) => ({ id, ...extra, explicacion, respaldo: 'hipotesis', fuente: FUENTE });
+  const NOMBRE_EA = ['', 'hidrógeno', 'helio', 'litio', 'berilio', 'boro', 'carbono', 'nitrógeno', 'oxígeno', 'flúor', 'neón', 'sodio',
+    'magnesio', 'aluminio', 'silicio', 'fósforo', 'azufre', 'cloro', 'argón', 'potasio', 'calcio', 'escandio', 'titanio', 'vanadio',
+    'cromo', 'manganeso', 'hierro', 'cobalto', 'níquel', 'cobre', 'cinc', 'galio', 'germanio', 'arsénico', 'selenio', 'bromo', 'kriptón',
+    'rubidio', 'estroncio', 'itrio', 'circonio', 'niobio', 'molibdeno', 'tecnecio', 'rutenio', 'rodio', 'paladio', 'plata', 'cadmio',
+    'indio', 'estaño', 'antimonio', 'telurio', 'yodo', 'xenón', 'cesio', 'bario'];
+  Object.assign(NOMBRE_EA, { 72: 'hafnio', 73: 'tantalio', 74: 'tungsteno', 75: 'renio', 76: 'osmio', 77: 'iridio', 78: 'platino', 79: 'oro',
+    80: 'mercurio', 81: 'talio', 82: 'plomo', 83: 'bismuto', 84: 'polonio', 85: 'astato', 86: 'radón' });
+  const NomEA = z => NOMBRE_EA[z][0].toUpperCase() + NOMBRE_EA[z].slice(1);
+  const ANOMALOS_EA = Object.keys(EXCEPCIONES).map(Number);
+  const signoQ = q => (q > 0 ? `+${q}` : q < 0 ? `−${-q}` : '0');
+  const qTxtEA = q => (q > 0 ? `${q}+` : `${-q}−`);
+  const art = Z => (Z === 47 ? 'la' : 'el');
+  const confEA = c => { const t = abreviar(c); return { clave: 'conf:' + t, texto: bonito(t) }; };
+  const confCompleta = c => ({ clave: 'conf:' + plano(c), texto: bonito(plano(c)) });
+  const tieneF = c => c.some(s => s.l === 3);
+  // ---- Datos de la unidad: una línea por dato (las mismas palabras de la teoría) ----
+  const DEA = {
+    orden: e => `Orden de llenado: ${(e <= 36 ? '1s 2s 2p 3s 3p 4s 3d 4p' : e <= 54 ? '1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p' : '1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p')}`,
+    capacidad: f => `Caben: 2 en un s, 6 en un p, 10 en un d${f ? ', 14 en un f' : ''}`,
+    anomalia: e => (e <= 36 ? 'Cromo y cobre: un electrón del 4s pasa al 3d' : e <= 54 ? 'Cromo, cobre, molibdeno y plata: un electrón del s de afuera pasa al d'
+      : 'Cromo, cobre, molibdeno, plata y oro: un electrón del s de afuera pasa al d'),
+    gas: g => `[${SIMBOLOS[g]}]: los ${g} electrones del ${NOMBRE_EA[g]}`,
+    orbitales: f => `Orbitales: 1 en un s, 3 en un p, 5 en un d${f ? ', 7 en un f' : ''}`,
+    carga: 'carga = Z − e⁻',
+    masa: 'A = Z + N',
+    nota: 'Número de arriba a la izquierda: A; arriba a la derecha: la carga',
+    letras: 'ℓ: s es 0, p es 1, d es 2, f es 3',
+    valencia: 'Último nivel (capa de valencia): el de mayor n',
+    conv1: 'Convención: las cajas van de mₗ = −ℓ (izquierda) a +ℓ (derecha)',
+    conv2: 'Convención: primero una ↑ (mₛ = +½) en cada caja; después las ↓ (mₛ = −½)',
+    magnetico: 'Paramagnética: con electrones desapareados; un imán la atrae. Diamagnética: sin ellos',
+  };
+  const gasDe = t => { const m = /^\[(\w+)\]/.exec(t); return m ? zDe(m[1]) : 0; };
+  // Datos de configuración de una especie con e electrones: orden, lo que cabe y, si la respuesta va abreviada, su gas.
+  const datosConf = (e, c, extra = []) => {
+    const g = gasDe(abreviar(c));
+    return [DEA.orden(e), DEA.capacidad(tieneF(c) || e > 56), ...(g ? [DEA.gas(g)] : []), ...extra];
+  };
+  function cerrarEA(rng, semilla, o) {
+    let alternativas;
+    if (o.numero) {
+      // Cada distractor muestra el valor que produce su error: si la explicación no lo dice, se agrega al final.
+      const conValor = x => (/Así salen? \d+\.$/.test(x.explicacion) ? x
+        : { ...x, explicacion: `${x.explicacion} Así ${x.valor === 1 ? 'sale' : 'salen'} ${x.valor}.` });
+      const errores = o.errores.filter(x => Number.isInteger(x.valor) && x.valor >= 0 && x.valor !== o.correcta &&
+        (o.correcta === 0 ? x.valor <= 6 : P.enEscala(Math.max(x.valor, 0.5), o.correcta, x.id))).map(conValor);
+      alternativas = P.armar({ correcta: o.correcta, errores, rng, negativos: true, texto: x => String(x) });
+    } else {
+      alternativas = P.armarTexto({ correcta: o.correcta, errores: o.errores.filter(x => x.clave !== o.correcta.clave), rng });
+    }
+    const ids = alternativas.filter(a => a.error).map(a => a.error.id);
+    if (new Set(ids).size !== ids.length) return null;   // un código por alternativa: nunca dos con el mismo error
+    return { id: `configuracion-ubicacion#${semilla}`, unidadCatalogo: EA, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta,
+      datos: o.datos, alternativas, solucion: o.solucion, ...(o.convenciones ? { convenciones: o.convenciones } : {}),
+      respuesta: { valor: o.numero ? o.correcta : o.correcta.clave, unidad: '' }, _datos: o._datos };
+  }
+
+  // ---- particulas (idea 1): neutrones y electrones de un ion con su A ----
+  const NUCLIDOS_EA = [...NUCLIDOS, [8, 16, -2], [11, 23, 1], [12, 24, 2], [13, 27, 3], [16, 32, -2], [17, 37, -1], [19, 39, 1], [20, 40, 2],
+    [26, 56, 3], [26, 56, 2], [9, 19, -1], [29, 63, 2], [30, 65, 2], [15, 31, -3], [24, 52, 3]];
+  function eaParticulas(rng, semilla) {
+    const [Z, A, q] = rng.elegir(NUCLIDOS_EA), n = A - Z, e = Z - q;
+    const errores = [
+      qa('QM-CARGA-N', partTxt(A - Z - q, e), `Bien los ${e} electrones. Pero la carga es de los electrones: no se resta en el núcleo. Los neutrones son A − Z = ${A} − ${Z}.`),
+      qa('QM-CARGA-SIGNO', partTxt(n, Z + q), `Bien los ${n} neutrones. Pero la carga va al revés: ${q > 0 ? `un catión ${qTxtEA(q)} perdió ${q}` : `un anión ${qTxtEA(q)} ganó ${-q}`}, así que tiene ${Z} ${q > 0 ? '−' : '+'} ${Math.abs(q)} electrones.`),
+      qa('QM-CARGA-E', partTxt(n, Z), `Bien los ${n} neutrones. Pero ${Z} electrones tendría el átomo neutro; el ion ${q > 0 ? 'perdió' : 'ganó'} ${electrones(Math.abs(q))}.`),
+      qa('QM-CARGA-A', partTxt(A - e, e), `Bien los ${e} electrones. Pero para los neutrones restaste los electrones (A − e⁻): se restan los protones, A − Z.`),
+    ];
+    return cerrarEA(rng, semilla, { correcta: partTxt(n, e), errores, variables: usaEA('Z', 'N', 'e', 'q'),
+      enunciado: [`El ion ${sup(A)}${esp(Z, q)} tiene `, v('Z', `Z = ${Z}`), ' y carga ', v('q', qTxtEA(q)), '.'],
+      pregunta: ['¿Cuántos ', v('N', 'neutrones'), ' y cuántos ', v('e', 'electrones'), ' tiene?'],
+      datos: [DEA.masa, DEA.carga, DEA.nota],
+      solucion: [
+        [v('N', 'N'), ` = A − `, v('Z', 'Z'), ` = ${A} − ${Z} = `, v('N', `${n} neutrones`), '. La carga no toca el núcleo.'],
+        [v('e', 'e⁻'), ' = ', v('Z', 'Z'), ' − carga = ', `${Z} − (`, v('q', signoQ(q)), ') = ', v('e', `${e} electrones`), '.'],
+      ], _datos: { tipo: 'particulas', Z, A, carga: q } });
+  }
+
+  // ---- atomo-ion (idea 1): electrones y configuración completa de un ion del cuerpo ----
+  function eaAtomoIon(rng, semilla) {
+    const [Z, q, ctx] = rng.elegir(IONES_CUERPO), e = Z - q;
+    const cIon = plano(configDe(Z, q)), cAt = plano(neutro(Z)), cRev = plano(neutro(Z + q));
+    const errores = [
+      qa('QM-CARGA-E', ionTxt(Z, cAt), `Bien escrita la configuración del átomo de ${NOMBRE_EA[Z]}. Pero el ion ${q > 0 ? 'perdió' : 'ganó'} ${electrones(Math.abs(q))}.`),
+      qa('QM-CARGA-SIGNO', ionTxt(Z + q, cRev), `Bien usar la carga. Pero al revés: con carga positiva faltan electrones; con negativa, sobran.`),
+      qa('QM-CUENTA', ionTxt(e, cAt), `Bien contar ${e} electrones. Pero la configuración es la del átomo y suma ${Z}: tiene que sumar ${e}.`),
+    ];
+    return cerrarEA(rng, semilla, { correcta: ionTxt(e, cIon), errores, variables: usaEA('Z', 'q', 'e', 'c'),
+      enunciado: [`${ctx}, ${esp(Z, q)}. El ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), ' y el ion tiene carga ', v('q', qTxtEA(q)), '.'],
+      pregunta: ['¿Cuántos ', v('e', 'electrones'), ' tiene el ion y cuál es su ', v('c', 'configuración'), '?'],
+      datos: [DEA.carga, DEA.orden(20), DEA.capacidad(false)],
+      solucion: [
+        [`El ion: `, v('e', 'e⁻'), ` = ${Z} − (`, v('q', signoQ(q)), ') = ', v('e', `${e} electrones`), '.'],
+        [`Se reparten en el orden de llenado: `, v('c', bonito(cIon)), '. Tiene los mismos protones que el átomo, pero no es lo mismo.'],
+      ], _datos: { tipo: 'atomo-ion', Z, carga: q } });
+  }
+
+  // ---- neutro (idea 4): configuración de un átomo neutro ----
+  const NEUTROS_EA = [5, 6, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 21, 22, 23, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 37, 38, 39, 40, 43, 48, 49, 50, 51, 52, 53,
+    55, 56, 74, 80, 81, 82, 83];
+  const porPisosEA = e => { const o = []; let r = e; for (let n = 1; n <= 7 && r > 0; n++) for (let l = 0; l < Math.min(n, 4) && r > 0; l++) { const k = Math.min(cap(l), r); o.push({ n, l, e: k }); r -= k; } return o; };
+  const textoDe = (c, completa) => (completa ? confCompleta(c) : confEA(c));
+  function eaNeutro(rng, semilla) {
+    const Z = rng.elegir(NEUTROS_EA), c = neutro(Z), completa = Z <= 20, txt = x => textoDe(x, completa);
+    const tope = c.length > 2 ? ordenar([...clonar(c.slice(0, -2)), { ...c[c.length - 2], e: c[c.length - 2].e + c[c.length - 1].e }]) : null;
+    const errores = [
+      qa('QM-PISO-ANTES', txt(porPisosEA(Z)), 'Bien llenar subnivel por subnivel. Pero no se llena por pisos: se sigue el orden de llenado de los datos (por eso el 4s va antes que el 3d).'),
+      qa('QM-CUENTA', txt(moller(Z + rng.elegir([-1, 1]))), `Bien el orden de llenado. Pero esa configuración no suma ${Z} electrones, los del átomo neutro.`),
+      ...(tope && totalE(tope) === Z ? [qa('QM-TOPE', txt(tope), 'Bien el orden y la cuenta total. Pero un subnivel no pasa su tope: lo que cabe en cada uno está en los datos.')] : []),
+    ];
+    if (c.length >= 2 && c[c.length - 1].e < cap(c[c.length - 1].l)) {
+      const r = clonar(c); r[r.length - 2].e -= 1; r[r.length - 1].e += 1;
+      errores.push(qa('QM-PASILLO-NUEVO', txt(ordenar(r)), `Bien el total de ${Z} electrones. Pero pasaste al ${nom(c[c.length - 1])} antes de llenar el ${nom(c[c.length - 2])}: cada subnivel se llena antes de empezar el siguiente.`));
+    }
+    if (Z > 48 && Z <= 54) {
+      const r = clonar(c), d = r.find(s => s.n === 4 && s.l === 2), p = r.find(s => s.n === 5 && s.l === 1);
+      if (d && p) { const k = 6 - p.e; d.e -= k; p.e = 6; errores.push(qa('QM-5P-ANTES', txt(ordenar(r)), 'Bien llenar el nivel 5. Pero el 4d va antes que el 5p: se llena primero, hasta 10.')); }
+    }
+    const datos = completa ? [DEA.orden(Z), DEA.capacidad(false)] : datosConf(Z, c);
+    return cerrarEA(rng, semilla, { correcta: txt(c), errores, variables: usaEA('Z', 'c'),
+      enunciado: [`Un átomo neutro de ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), '.'],
+      pregunta: ['¿Cuál es su ', v('c', completa ? 'configuración electrónica' : 'configuración abreviada'), '?'], datos,
+      solucion: [
+        [`Neutro: ${Z} electrones, en el orden de llenado y sin pasar el tope de ningún subnivel.`],
+        [completa ? '' : `${bonito(plano(c))}, que se abrevia con el gas noble de adentro.`].filter(Boolean),
+        ['Configuración: ', v('c', txt(c).texto), '.'],
+      ].filter(l => l.length), _datos: { tipo: 'neutro', Z } });
+  }
+
+  // ---- valencia (idea 4): electrones del último nivel ----
+  const VALENCIA_EA = [11, 12, 13, 15, 16, 17, 19, 20, 31, 32, 33, 34, 35, 49, 50, 51, 52, 53, 81, 82, 83];
+  function eaValencia(rng, semilla) {
+    const Z = rng.elegir(VALENCIA_EA), c = neutro(Z), n = Math.max(...c.map(s => s.n)), val = c.filter(s => s.n === n).reduce((t, s) => t + s.e, 0);
+    const conD = val + c.filter(s => s.n === n - 1 && s.l === 2).reduce((t, s) => t + s.e, 0), ult = c[c.length - 1];
+    const errores = [
+      qa('QM-VALENCIA-D', { valor: conD }, `Bien la configuración. Pero el ${n - 1}d es del nivel ${n - 1}: no es el último. Así salen ${conD}.`),
+      qa('QM-VALENCIA-SUB', { valor: ult.e }, `Bien mirar el final de la configuración. Pero el nivel ${n} tiene también su ${n}s: se suman. Así salen ${ult.e}.`),
+      qa('QM-VALENCIA-N', { valor: n }, `Bien hallar el último nivel: el ${n}. Pero piden cuántos electrones tiene, no su número.`),
+      qa('QM-OCHO-POR-NIVEL', { valor: val === 8 ? 2 : 8 }, `Bien buscar el último nivel. Pero no siempre tiene 8: cuenta sus electrones.`),
+      qa('QM-VALENCIA-TODO', { valor: Z }, `Bien la configuración. Pero ${Z} son todos los electrones del átomo; piden solo los del último nivel.`),
+    ];
+    return cerrarEA(rng, semilla, { numero: true, correcta: val, errores, variables: usaEA('Z', 'e'),
+      enunciado: [`Un átomo neutro de ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), '.'],
+      pregunta: ['¿Cuántos ', v('e', 'electrones'), ' tiene en su último nivel?'],
+      datos: [DEA.orden(Z), DEA.capacidad(tieneF(c)), DEA.valencia],
+      solucion: [[`Configuración: ${bonito(abreviar(c))}. El último nivel es el n = ${n}.`],
+        [`Se suman sus subniveles: ${c.filter(s => s.n === n).map(s => bonito(nom(s) + s.e)).join(' + ')} → `, v('e', `${val} electrones`), '.']],
+      _datos: { tipo: 'valencia', Z } });
+  }
+
+  // ---- anomala (idea 4): Cr, Cu, Mo, Ag y Au, y los vecinos V y Ni, que no lo son ----
+  function eaAnomala(rng, semilla) {
+    const Z = rng.elegir(ANOMALA_Z), c = neutro(Z), sin = neutro(Z, true), es = !!EXCEPCIONES[Z];
+    const n = Math.max(...c.map(x => x.n)), d = c.find(x => x.l === 2 && x.n === n - 1);
+    const mismoN = x => { const t = abreviar(x).replace(new RegExp(`${n - 1}d`), `${n}d`); return { clave: 'conf:' + t, texto: bonito(t) }; };
+    const mover = (x, k) => { const y = clonar(x); y.find(s => s.l === 0 && s.n === n).e -= k; y.find(s => s.l === 2 && s.n === n - 1).e += k; return ordenar(y); };
+    const errores = es ? [
+      qa('QM-ANOMALIA', confEA(sin), `Bien el orden de llenado. Pero ${art(Z)} ${NOMBRE_EA[Z]} es una de las excepciones: un electrón del ${n}s pasa al ${n - 1}d, que queda ${d.e === 5 ? 'semilleno' : 'lleno'}.`),
+      qa('QM-D-MISMO-N', mismoN(c), `Bien la excepción. Pero el d que va junto al ${n}s es el ${n - 1}d (n − 1), no el ${n}d.`),
+      qa('QM-TODO-3D', confEA(mover(c, 1)), d.e === 5 ? `Bien mover electrones al d. Pero pasa uno solo: el ${n}s se queda con uno y el d, semilleno.`
+        : `Bien mover electrones al d. Pero pasa uno solo: el ${n}s se queda con uno, y un d no admite más de 10.`),
+    ] : [
+      qa('QM-ANOMALIA-EXTIENDE', confEA(mover(c, 1)), `Bien recordar la excepción del cromo y del cobre. Pero el ${NOMBRE_EA[Z]} no está entre ellos: sigue la regla de llenado.`),
+      qa('QM-D-MISMO-N', mismoN(c), `Bien el orden de llenado. Pero el d que va junto al ${n}s es el ${n - 1}d (n − 1), no el ${n}d.`),
+      ...(d.e < 9 ? [qa('QM-TODO-3D', confEA(mover(c, 2)), `Bien pensar en el d. Pero ningún electrón del ${n}s pasa al d en el ${NOMBRE_EA[Z]}: no es una excepción.`)] : []),
+    ];
+    const g = gasDe(abreviar(c));
+    return cerrarEA(rng, semilla, { correcta: confEA(c), errores, variables: usaEA('Z', 'c'),
+      enunciado: [`Un átomo neutro de ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), '.'],
+      pregunta: ['¿Cuál es su ', v('c', 'configuración abreviada'), '?'],
+      datos: [DEA.orden(Z), DEA.capacidad(tieneF(c)), DEA.anomalia(Z), DEA.gas(g)],
+      solucion: es ? [
+        [`Por el orden de llenado saldría ${bonito(abreviar(sin))}.`],
+        [`${art(Z) === 'la' ? 'La' : 'El'} ${NOMBRE_EA[Z]} es una excepción: un electrón del ${n}s pasa al ${n - 1}d, que queda ${d.e === 5 ? 'semilleno (d⁵)' : 'lleno (d¹⁰)'}.`],
+        ['Configuración: ', v('c', bonito(abreviar(c))), '.'],
+      ] : [
+        [`El ${NOMBRE_EA[Z]} no está entre las excepciones de los datos: sigue el orden de llenado.`],
+        [`El ${n}s se llena antes que el ${n - 1}d; ningún electrón cambia de subnivel.`],
+        ['Configuración: ', v('c', bonito(abreviar(c))), '.'],
+      ], _datos: { tipo: 'anomala', Z } });
+  }
+
+  // ---- contar (idea 4): electrones con un ℓ dado ----
+  function eaContar(rng, semilla) {
+    const el = rng.elegir(ELEMENTOS.filter(x => x.Z > 10 && conConfig(x.Z))), Z = el.Z, c = neutro(Z);
+    const ls = [0, 1, 2, ...(tieneF(c) ? [3] : [])].filter(l => c.some(s => s.l === l));
+    const l = rng.elegir(ls), correcta = contarL(Z, l), conL = c.filter(s => s.l === l);
+    const vecino = l === 3 || (l >= 1 && rng.moneda()) ? l - 1 : l + 1;
+    const errores = [
+      qa('QM-SOLO-ULTIMO', { valor: conL[conL.length - 1].e }, `Bien hallar el último subnivel ${LETRA[l]}. Pero piden todos los electrones con ℓ = ${l}, de todos los niveles. Así salen ${conL[conL.length - 1].e}.`),
+      qa('QM-ORBITAL-ELECTRON', { valor: conL.reduce((t, s) => t + Math.min(s.e, 2 * s.l + 1), 0) }, `Bien juntar los subniveles ${LETRA[l]}. Pero contaste cajas ocupadas, no electrones: en cada caja llena hay dos.`),
+      qa('QM-L-DESDE-UNO', { valor: contarL(Z, vecino) }, `Bien sumar subniveles de todos los niveles. Pero ℓ = ${l} es la letra ${LETRA[l]}: s es 0, p es 1, d es 2. Así salen los ${LETRA[vecino]}: ${contarL(Z, vecino)}.`),
+      ...(EXCEPCIONES[Z] ? [qa('QM-ANOMALIA', { valor: neutro(Z, true).filter(s => s.l === l).reduce((t, s) => t + s.e, 0) }, `Bien la suma por subniveles. Pero ${art(Z)} ${NOMBRE_EA[Z]} es una excepción: un electrón del s de afuera pasa al d.`)] : []),
+    ];
+    return cerrarEA(rng, semilla, { numero: true, correcta, errores, variables: usaEA('Z', 'e'),
+      enunciado: [`Un átomo neutro de ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), '.'],
+      pregunta: ['¿Cuántos ', v('e', 'electrones'), ` tienen número cuántico secundario ℓ = ${l}?`],
+      datos: [DEA.orden(Z), DEA.capacidad(tieneF(c)), DEA.anomalia(Z), DEA.letras],
+      solucion: [[`Configuración completa: ${bonito(plano(c))}.`],
+        [`ℓ = ${l} son los subniveles ${LETRA[l]}: ${conL.map(s => bonito(nom(s) + s.e)).join(' + ')} → `, v('e', `${correcta} electrones`), '.']],
+      _datos: { tipo: 'contar', Z, l } });
+  }
+
+  // ---- cation (idea 5): configuración abreviada de un catión ----
+  const CATIONES_EA = [...CATIONES, ['Mn', 3], ['Ni', 3], ['Ga', 3], ['In', 3]];
+  function eaCation(rng, semilla) {
+    const [s, q] = rng.elegir(CATIONES_EA), Z = zDe(s), base = neutro(Z), c = configDe(Z, q);
+    const afuera = Math.max(...base.map(x => x.n)), ult = base[base.length - 1];
+    const errores = [
+      qa('QM-ULTIMO', confEA(quitarUltimos(base, q)), `Bien quitar ${electrones(q)}. Pero no salen los últimos en entrar: salen primero los del nivel más alto, el ${afuera}.`),
+      qa('QM-CARGA-E', confEA(base), `Bien escrita la configuración del átomo neutro. Pero el ion ${esp(Z, q)} perdió ${electrones(q)}.`),
+      qa('QM-CARGA-SIGNO', confEA(agregar(base, q)), `Bien mover ${electrones(q)}. Pero la carga positiva dice que el ion los PERDIÓ, no que los ganó.`),
+    ];
+    if (q > 1) errores.push(qa('QM-REPARTE', confEA(quitarUltimos(quitarDeAfuera(base, 1), q - 1)), `Bien empezar por el nivel ${afuera}. Pero salen todos los del nivel más alto antes de tocar los de adentro.`));
+    if (EXCEPCIONES[Z]) errores.push(qa('QM-ANOMALIA', confEA(quitarDeAfuera(neutro(Z, true), q)), `Bien el orden de salida. Pero partiste del átomo sin su excepción: ${art(Z)} ${NOMBRE_EA[Z]} tiene un solo electrón en el ${afuera}s.`));
+    const pA = base.find(x => x.n === afuera && x.l === 1);
+    if (pA && ult.l === 1) {
+      const r = clonar(base), sA = r.find(x => x.n === afuera && x.l === 0), pr = r.find(x => x.n === afuera && x.l === 1);
+      const deS = Math.min(q, sA.e); sA.e -= deS; pr.e -= q - deS;
+      if (pr.e >= 0) errores.push(qa('QM-S-PRIMERO', confEA(ordenar(r)), `Bien sacarlos del nivel ${afuera}. Pero a igual n salen primero los de mayor ℓ: los ${afuera}p antes que los ${afuera}s.`));
+    }
+    return cerrarEA(rng, semilla, { correcta: confEA(c), errores: rng.barajar(errores), variables: usaEA('Z', 'q', 'c'),
+      enunciado: [`El ion ${esp(Z, q)} viene del ${NOMBRE_EA[Z]} (`, v('Z', `Z = ${Z}`), ') y tiene carga ', v('q', qTxtEA(q)), '.'],
+      pregunta: ['¿Cuál es su ', v('c', 'configuración abreviada'), '?'],
+      datos: [...datosConf(Z, c), DEA.anomalia(Z), DEA.carga],
+      solucion: [
+        ['Átomo neutro: ', v('Z', `Z = ${Z}`), ` → ${bonito(abreviar(base))}.`],
+        ['Carga ', v('q', qTxtEA(q)), `: ${q === 1 ? 'sale 1 electrón' : `salen ${q} electrones`}, primero del nivel de mayor n (n = ${afuera}) y, a igual n, del subnivel de mayor ℓ.`],
+        [`${esp(Z, q)}: `, v('c', bonito(abreviar(c))), '.'],
+      ], _datos: { tipo: 'cation', Z, carga: q } });
+  }
+
+  // ---- anion (idea 5): configuración de un anión ----
+  const ANIONES_EA = [...ANIONES, [8, -2], [9, -1], [16, -2], [17, -1], [15, -3], [34, -2], [35, -1]].map(([s, q]) => [typeof s === 'string' ? zDe(s) : s, q])
+    .filter((x, i, l) => l.findIndex(y => y[0] === x[0] && y[1] === x[1]) === i);
+  function eaAnion(rng, semilla) {
+    const [Z, q] = rng.elegir(ANIONES_EA), k = -q, base = neutro(Z), c = configDe(Z, q), ult = base[base.length - 1];
+    const nueva = clonar(base); nueva.push({ n: ult.n + 1, l: 0, e: k });
+    const errores = [
+      qa('QM-CARGA-E', confEA(base), `Bien escrita la configuración del átomo neutro. Pero el ion ${esp(Z, q)} ganó ${electrones(k)}.`),
+      qa('QM-CARGA-SIGNO', confEA(quitarDeAfuera(base, k)), `Bien mover ${electrones(k)}. Pero la carga negativa dice que el ion los GANÓ, no que los perdió.`),
+      qa('QM-PASILLO-NUEVO', confEA(ordenar(nueva)), `Bien agregar ${electrones(k)}. Pero todavía hay sitio en el ${nom(ult)}: entran ahí hasta llenarlo, no en el ${ult.n + 1}s.`),
+      ...(k > 1 ? [qa('QM-CUENTA', confEA(agregar(base, 1)), `Bien seguir el orden de llenado. Pero la carga ${qTxtEA(q)} dice que entran ${k}, no uno.`)] : []),
+    ];
+    return cerrarEA(rng, semilla, { correcta: confEA(c), errores, variables: usaEA('Z', 'q', 'c'),
+      enunciado: [`El ion ${esp(Z, q)} viene del ${NOMBRE_EA[Z]} (`, v('Z', `Z = ${Z}`), ') y tiene carga ', v('q', qTxtEA(q)), '.'],
+      pregunta: ['¿Cuál es su ', v('c', 'configuración abreviada'), '?'],
+      datos: [...datosConf(Z - q, c), DEA.carga],
+      solucion: [
+        ['Átomo neutro: ', v('Z', `Z = ${Z}`), ` → ${bonito(abreviar(base))}.`],
+        ['Carga ', v('q', qTxtEA(q)), `: ${k === 1 ? 'entra 1 electrón' : `entran ${k} electrones`} en el orden de llenado, al ${nom(ult)}, que queda lleno.`],
+        [`${esp(Z, q)}: `, v('c', bonito(abreviar(c))), `, con ${Z + k} electrones, como el ${NOMBRE_EA[Z + k]}.`],
+      ], _datos: { tipo: 'anion', Z, carga: q } });
+  }
+
+  // ---- desapareados (idea 6) ----
+  const ESPECIES_EA = [...ESPECIES_D.map(([s, q]) => [zDe(s), q]), [5, 0], [6, 0], [8, 0], [9, 0], [14, 0], [15, 0], [16, 0], [17, 0], [21, 0], [22, 0],
+    [23, 0], [26, 0], [27, 0], [28, 0], [33, 0], [34, 0]].filter((x, i, l) => l.findIndex(y => y[0] === x[0] && y[1] === x[1]) === i);
+  function eaDesapareados(rng, semilla) {
+    const [Z, q] = rng.elegir(ESPECIES_EA), base = neutro(Z), c = configDe(Z, q), correcta = desap(c);
+    const ref = c.filter(s => s.e < cap(s.l)).pop() || c[c.length - 1], k = 2 * ref.l + 1;
+    const errores = [
+      qa('QM-HUND', { valor: desapSinHund(c) }, 'Bien la configuración. Pero se aparean antes de llenar las cajas vacías: por Hund, primero una flecha en cada caja.'),
+      qa('QM-HUND-TODOS', { valor: ref.e }, `Bien mirar el ${nom(ref)}. Pero con ${ref.e} electrones en ${k} caja${k > 1 ? 's' : ''}, ${ref.e > k ? 'algunos ya van en pareja' : 'no todos cuentan así'}: solos son los que quedan sin pareja.`),
+      qa('QM-ORBITAL-ELECTRON', { valor: k }, `Bien contar las cajas del ${nom(ref)}: ${k}. Pero se piden los electrones solos, no las cajas.`),
+      ...(ref.e > k ? [qa('QM-DESAP-RESTA', { valor: ref.e - k }, `Bien que sobren ${ref.e - k} después de una flecha por caja. Pero esos se aparean: los solos son los otros.`)] : []),
+      ...(q > 0 ? [qa('QM-ULTIMO', { valor: desap(quitarUltimos(base, q)) }, `Bien usar Hund. Pero en el catión salieron primero los del nivel más alto, no los últimos en entrar.`),
+        qa('QM-CARGA-E', { valor: desap(base) }, `Bien contar con Hund. Pero esos son los del átomo neutro: el ion ${esp(Z, q)} perdió ${electrones(q)}.`)] : []),
+      ...(q < 0 ? [qa('QM-CARGA-E', { valor: desap(base) }, `Bien contar con Hund. Pero esos son los del átomo neutro: el ion ${esp(Z, q)} ganó ${electrones(-q)}.`)] : []),
+      ...(EXCEPCIONES[Z] ? [qa('QM-ANOMALIA', { valor: desap(quitarDeAfuera(neutro(Z, true), Math.max(q, 0))) }, `Bien usar Hund. Pero partiste del átomo sin su excepción: un electrón del s pasa al d.`)] : []),
+    ];
+    const e = Z - q, detalle = c.filter(x => x.e < cap(x.l)).map(x => `${bonito(nom(x) + x.e)} en ${2 * x.l + 1} caja${x.l ? 's' : ''} → ${desap([x])}`).join('; ');
+    return cerrarEA(rng, semilla, { numero: true, correcta, errores: rng.barajar(errores), variables: usaEA('Z', 'q', 'd'),
+      enunciado: q === 0 ? ['Un átomo de ', NOMBRE_EA[Z], ' (', v('Z', `Z = ${Z}`), ') está en su estado fundamental.']
+        : [`El ion ${esp(Z, q)} (`, v('Z', `Z = ${Z}`), ', carga ', v('q', qTxtEA(q)), ') está en su estado fundamental.'],
+      pregunta: ['¿Cuántos ', v('d', 'electrones desapareados'), ' tiene?'],
+      datos: [DEA.orden(e), DEA.capacidad(tieneF(c) || e > 56), DEA.anomalia(Z), DEA.orbitales(tieneF(c)), ...(q ? [DEA.carga] : [])],
+      solucion: [
+        [`Configuración: ${bonito(abreviar(c))}.`],
+        [detalle ? `Subniveles incompletos (Hund, una flecha por caja antes de aparear): ${detalle}.` : 'Todos los subniveles están llenos: cada caja tiene dos flechas.'],
+        ['Total: ', v('d', `${correcta} desapareado${correcta === 1 ? '' : 's'}`), correcta === 0 ? ' (diamagnética).' : ' (paramagnética).'],
+      ], _datos: { tipo: 'desapareados', Z, carga: q } });
+  }
+
+  // ---- magnetico (idea 6): ¿cuál es diamagnética? o ¿cuál es paramagnética? ----
+  // Cada distractor con su error: par de electrones con solos (Hund), catión que con «los últimos salen primero» quedaría
+  // sin solos, el ion cuyo átomo sí tiene solos, el subnivel lleno contado como solos, y el caso general.
+  const MAG = {
+    dia: [[30, 0], [12, 0], [20, 0], [10, 0], [18, 0], [30, 2], [4, 0], [36, 0], [48, 0], [20, 2], [12, 2]],
+    diaCarga: [[29, 1], [11, 1], [19, 1], [31, 3], [47, 1], [17, -1], [16, -2]],
+    diaLleno: [[30, 0], [10, 0], [18, 0], [36, 0], [48, 0], [30, 2]],
+    diaS: [[12, 0], [20, 0], [4, 0], [38, 0]],
+    paraPar: [[8, 0], [6, 0], [26, 0], [26, 2], [28, 2], [22, 0], [27, 3], [14, 0], [16, 0], [28, 0]],
+    paraUltimo: [[22, 2], [23, 3], [21, 1]],
+    paraImpar: [[9, 0], [17, 0], [11, 0], [19, 0], [29, 2], [26, 3], [27, 2], [13, 0], [25, 2], [24, 3]],
+  };
+  function eaMagnetico(rng, semilla) {
+    const buscaDia = rng.moneda(), de = k => rng.elegir(MAG[k]);
+    const meta = buscaDia ? de('dia') : rng.elegir([...MAG.paraPar, ...MAG.paraUltimo, ...MAG.paraImpar]);
+    const otros = buscaDia
+      ? [['QM-HUND', de('paraPar'), 'Bien: tiene un número par de electrones. Pero por Hund no todos se aparean: le quedan electrones solos, así que un imán la atrae.'],
+        ['QM-ULTIMO', de('paraUltimo'), 'Bien quitar los electrones de la carga. Pero salen primero los del 4s, no los del 3d: le quedan electrones solos en el 3d.'],
+        ['QM-PARA-DIA', de('paraImpar'), 'Bien mirar su configuración. Pero tiene electrones solos: es paramagnética.']]
+      : [['QM-CARGA-E', de('diaCarga'), 'Bien: el átomo neutro sí tiene un electrón solo. Pero este ion ya cambió sus electrones y los tiene todos en pareja.'],
+        ['QM-HUND-TODOS', de('diaLleno'), 'Bien mirar su último subnivel. Pero está lleno: todas sus cajas tienen dos flechas, ninguna sola.'],
+        ['QM-PARA-DIA', de('diaS'), 'Bien mirar su configuración. Pero termina en un s² lleno: no tiene electrones solos.']];
+    const todas = [meta, ...otros.map(x => x[1])];
+    if (new Set(todas.map(x => x.join(':'))).size < 4) return null;
+    if (todas.some(([z, q]) => z === 7)) return null;
+    const ok = ([z, q]) => (desap(configDe(z, q)) === 0) === buscaDia;
+    if (!ok(meta) || otros.some(([, x]) => ok(x))) return null;
+    const txt = ([z, q]) => ({ clave: `esp:${z}:${q}`, texto: q ? esp(z, q) : NomEA(z) });
+    const maxE = Math.max(...todas.map(([z, q]) => z - q)), hayIon = todas.some(([, q]) => q), hayAnom = todas.some(([z]) => EXCEPCIONES[z]);
+    const zs = [...new Set(todas.map(([z]) => z))].sort((a, b) => a - b);
+    return cerrarEA(rng, semilla, { correcta: txt(meta), errores: otros.map(([id, x, ex]) => qa(id, txt(x), ex)), variables: usaEA('d'),
+      enunciado: ['Se comparan cuatro especies en su estado fundamental.'],
+      pregunta: [buscaDia ? '¿Cuál de estas especies es diamagnética?' : '¿Cuál de estas especies es paramagnética?'],
+      datos: [`Z: ${zs.map(z => `${SIMBOLOS[z]} ${z}`).join(', ')}`, DEA.orden(maxE), DEA.capacidad(false), ...(hayAnom ? [DEA.anomalia(maxE)] : []),
+        DEA.orbitales(false), ...(hayIon ? [DEA.carga] : []), DEA.magnetico],
+      solucion: [
+        ...todas.map(([z, q]) => [`${q ? esp(z, q) : NomEA(z)}: ${bonito(abreviar(configDe(z, q)))} → `, v('d', `${desap(configDe(z, q))} solo${desap(configDe(z, q)) === 1 ? '' : 's'}`), '.']),
+        [`Solo ${meta[1] ? `el ${esp(...meta)}` : `el ${NOMBRE_EA[meta[0]]}`} ${buscaDia ? 'tiene todos sus electrones en pareja: es la especie diamagnética' : 'tiene electrones solos: es la especie paramagnética'}.`],
+      ], _datos: { tipo: 'magnetico', busca: buscaDia ? 'dia' : 'para', especies: todas } });
+  }
+
+  // ---- cuanticos (idea 6): (n; ℓ; mₗ; mₛ) del último electrón, de un átomo neutro o de un catión ----
+  const QN_EA36 = [3, 5, 6, 8, 9, 11, 13, 14, 15, 16, 17, 21, 22, 23, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35];
+  const QN_EA86 = ELEMENTOS.filter(x => x.Z > 36 && conConfig(x.Z) && !EXCEPCIONES[x.Z] && x.bloque !== 's').map(x => x.Z);
+  // Cationes cuyo último subnivel escrito es también el de afuera (sin un ns² delante de un d lleno, como el Pb²⁺).
+  const QN_EACAT = [[26, 2], [27, 2], [28, 2], [25, 2], [26, 3], [27, 3], [22, 2], [23, 3], [30, 2], [23, 2], [25, 3], [28, 3], [40, 2], [48, 2], [80, 2]];
+  const qnEA = q => ({ clave: `qn:${q.n}:${q.l}:${q.ml}:${q.ms > 0 ? '+' : '-'}`, texto: `(${q.n}; ${q.l}; ${q.ml < 0 ? '−' + -q.ml : q.ml > 0 ? '+' + q.ml : 0}; ${q.ms > 0 ? '+½' : '−½'})` });
+  function eaCuanticos(rng, semilla) {
+    const sub = rng.elegir(['neutro36', 'neutro36', 'neutro86', 'cation', 'cation']);
+    const [Z, q] = sub === 'cation' ? rng.elegir(QN_EACAT) : [rng.elegir(sub === 'neutro36' ? QN_EA36 : QN_EA86), 0];
+    if (ANOMALOS_EA.includes(Z)) return null;
+    const c = configDe(Z, q), s = c[c.length - 1], k = 2 * s.l + 1, qn = cuanticos(s, s.e);
+    const errores = [
+      qa('QM-ML-CERO', qnEA({ ...qn, ml: qn.ml + s.l }), `Bien n y ℓ. Pero las cajas no empiezan en 0: van de mₗ = −${s.l} a +${s.l}.`),
+      qa('QM-MS-AL-REVES', qnEA({ ...qn, ms: -qn.ms }), `Bien la caja. Pero ese electrón ${qn.ms > 0 ? 'está solo: flecha ↑, mₛ = +½' : 'se aparea con otro: flecha ↓, mₛ = −½'}.`),
+      ...(k > 1 ? [qa('QM-SIN-HUND', qnEA(cuanticosSinHund(s)), 'Bien la convención de los signos. Pero llenaste cada caja con dos flechas antes de pasar a la siguiente: Hund pide primero una ↑ en cada caja.')] : []),
+      qa('QM-L-DESDE-UNO', qnEA({ ...qn, l: qn.l + 1 }), `Bien la caja y el espín. Pero ℓ de un ${LETRA[s.l]} es ${s.l}: s es 0, p es 1, d es 2, f es 3.`),
+      s.l >= 2 ? qa('QM-N-DEL-PERIODO', qnEA({ ...qn, n: s.n + 1 }), `Bien ℓ, mₗ y mₛ. Pero el último electrón está en el ${nom(s)}: n = ${s.n}, no el nivel de afuera.`)
+        : qa('QM-N-MENOS', qnEA({ ...qn, n: s.n - 1 }), `Bien ℓ, mₗ y mₛ. Pero el último electrón está en el ${nom(s)}: n = ${s.n}.`),
+      ...(s.l > 0 ? [qa('QM-ML-AL-REVES', qnEA({ ...qn, ml: -qn.ml }), `Bien la cuenta de flechas. Pero en el examen las cajas van de −${s.l}, a la izquierda, a +${s.l}, a la derecha.`)] : []),
+    ];
+    if (q > 0) {
+      const b = neutro(Z), u = b[b.length - 1], m = quitarUltimos(b, q), w = m[m.length - 1];
+      errores.unshift(qa('QM-ULTIMO', qnEA(cuanticos(w, w.e)), `Bien la convención. Pero al formar el catión no salen los últimos en entrar: salen primero los del nivel más alto.`),
+        qa('QM-ULTIMO-4S', qnEA(cuanticos(u, u.e)), 'Bien la convención. Pero ese es el último electrón del átomo neutro; el ion ya perdió electrones.'));
+    }
+    const vistos = new Set([qnEA(qn).clave]), unicos = [];
+    for (const x of errores) if (!vistos.has(x.clave) && !unicos.some(y => y.id === x.id)) { vistos.add(x.clave); unicos.push(x); }
+    const e = Z - q, g = gasDe(abreviar(c));
+    return cerrarEA(rng, semilla, { correcta: qnEA(qn), errores: q > 0 ? [...unicos.slice(0, 2), ...rng.barajar(unicos.slice(2))] : rng.barajar(unicos), variables: usaEA('Z', 'q'),
+      enunciado: q ? [`El ion ${esp(Z, q)} viene del ${NOMBRE_EA[Z]} (`, v('Z', `Z = ${Z}`), ') y tiene carga ', v('q', qTxtEA(q)), '.']
+        : [`Un átomo neutro de ${NOMBRE_EA[Z]} tiene `, v('Z', `Z = ${Z}`), '.'],
+      pregunta: ['¿Cuáles son los números cuánticos (n; ℓ; mₗ; mₛ) de su último electrón?'],
+      datos: [DEA.orden(Math.max(Z, e)), DEA.capacidad(tieneF(neutro(Z))), ...(g && e > 18 ? [DEA.gas(g)] : []), ...(q ? [DEA.carga] : []), DEA.letras, DEA.conv1, DEA.conv2],
+      convenciones: ['ultimo-electron'],
+      solucion: [
+        [q ? `${esp(Z, q)}: primero el átomo, ${bonito(abreviar(neutro(Z)))}; salen ${electrones(q)} del nivel más alto: ${bonito(abreviar(c))}.` : `Configuración: ${bonito(abreviar(c))}.`],
+        [`El último subnivel escrito es el ${bonito(nom(s) + s.e)}: n = ${s.n}, ℓ = ${s.l}. Sus ${k} caja${k > 1 ? 's' : ''} van de mₗ = −${s.l} a +${s.l}; el electrón ${s.e} ${s.e <= k ? `es una ↑ en la caja ${s.e}` : `es una ↓ en la caja ${s.e - k}`}.`],
+        ['Último electrón: ', qnEA(qn).texto, '.'],
+      ], _datos: { tipo: 'cuanticos', sub, Z, carga: q } });
+  }
+
+  const TIPOS_EA = ['particulas', 'particulas', 'atomo-ion', 'neutro', 'neutro', 'valencia', 'anomala', 'anomala', 'contar', 'cation', 'cation', 'cation',
+    'anion', 'desapareados', 'desapareados', 'magnetico', 'cuanticos', 'cuanticos', 'cuanticos'];
+  const CONSTRUIR_EA = { particulas: eaParticulas, 'atomo-ion': eaAtomoIon, neutro: eaNeutro, valencia: eaValencia, anomala: eaAnomala,
+    contar: eaContar, cation: eaCation, anion: eaAnion, desapareados: eaDesapareados, magnetico: eaMagnetico, cuanticos: eaCuanticos };
+  function generarEA(semilla) {
+    const rng = Azar.crear(`configuracion-ubicacion|${EA}|${semilla}`);
+    const tipo = rng.elegir(TIPOS_EA);
+    for (let intento = 0; intento < 500; intento++) {
+      const p = CONSTRUIR_EA[tipo](rng, semilla);
+      if (p && p.alternativas.length >= 4) return p;
+    }
+    throw new Error(`No se pudo generar un problema de ${EA} con 4 alternativas distintas`);
+  }
+
   const CONSTRUIR = { ubicar, familia, cation, anion, desapareados, anomala, cuanticos: cuanticosP, contar,
     particulas: particulasP, 'atomo-ion': atomoIon, 'vida-media': vidaMediaP };
 
   return { id: 'configuracion-ubicacion', titulo: 'Configuración y lugar en la tabla, hasta Z = 86', generar, tiposPorUnidad: TIPOS_POR_UNIDAD,
-    configuracion, ubicacion, ultimoElectron, particulas, contarL, vidaQueda, vidaTiempo, SIMBOLOS, EXCEPCIONES, conConfig,
-    LISTAS: { CATIONES, ANIONES, ESPECIES_D, NUCLIDOS, IONES_CUERPO, ANOMALA_Z, UBICAR: CAND_UBICAR.map(x => x.Z) } };
+    configuracion, ubicacion, ultimoElectron, particulas, contarL, vidaQueda, vidaTiempo, SIMBOLOS, EXCEPCIONES, conConfig, COLOR: COLOR_EA,
+    TIPOS_EA: [...new Set(TIPOS_EA)], NOMBRE_EA,
+    LISTAS: { CATIONES, ANIONES, ESPECIES_D, NUCLIDOS, IONES_CUERPO, ANOMALA_Z, UBICAR: CAND_UBICAR.map(x => x.Z) },
+    LISTAS_EA: { NUCLIDOS: NUCLIDOS_EA, NEUTROS: NEUTROS_EA, VALENCIA: VALENCIA_EA, CATIONES: CATIONES_EA.map(([x, q]) => [zDe(x), q]), ANIONES: ANIONES_EA,
+      ESPECIES: ESPECIES_EA, MAG, QN36: QN_EA36, QN86: QN_EA86, QNCAT: QN_EACAT } };
 });

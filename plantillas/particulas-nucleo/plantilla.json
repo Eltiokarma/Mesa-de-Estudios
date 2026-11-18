@@ -1,0 +1,20 @@
+{
+  "id": "particulas-nucleo",
+  "titulo": "El núcleo y sus vecinos: isótopos, isóbaros e isoelectrónicos",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.estructura-atomica"
+  ],
+  "temas": [
+    "Partículas subatómicas",
+    "Número atómico y de masa",
+    "Isótopos",
+    "Paramagnetismo y especies isoelectrónicas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

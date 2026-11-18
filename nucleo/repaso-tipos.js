@@ -28,8 +28,13 @@
     'clasificar-reacciones': todo(Q + 'reacciones-y-balance', ['aguaDura', 'redoxSet', 'aLaVez', 'rol', 'vf', 'calor', 'tipoEnergia', 'tipo', 'relacionar', 'dismutacion']),
     // 'vida-media' ya no va a Materia y energía (17 nov: esa unidad tiene su plantilla vida-media y salió de esta ficha);
     // queda sin fila, fuera del repaso, como lo dudoso.
+    // 18 nov (etapa 4, propuesta de Estructura atómica §9): la ficha se separa por unidad. Tabla periódica: ubicar y
+    // familia. Estructura atómica: los tipos de sus ideas 1, 4, 5 y 6; con { unidad } el generador arma los suyos (también
+    // neutro, valencia y magnetico, que solo salen ahí) y los marca con p.unidadCatalogo. Esta fila clasifica los que salen
+    // sin unidad.
     'configuracion-ubicacion': { ubicar: Q + 'tabla-periodica', familia: Q + 'tabla-periodica',
       ...todo(Q + 'estructura-atomica', ['anomala', 'cuanticos', 'cation', 'atomo-ion', 'desapareados', 'particulas', 'anion', 'contar']) },
+    // 18 nov: conversiones-quimica ya no sirve a Estructura atómica (sus longitudes en Å salieron de esa unidad).
     'conversiones-quimica': todo(Q + 'materia-y-energia', ['latente', 'densidad', 'vida', 'delta', 'lectura']),
     'dinamica-fuerzas': { resorte: F + 'dinamica', motriz: F + 'dinamica', peralte: F + 'dinamica', tabla: F + 'dinamica', plataforma: F + 'dinamica',
       escalera: F + 'estatica', astro: F + 'gravitacion', gravitatoria: F + 'gravitacion' },
@@ -66,7 +71,9 @@
       ...todo(Q + 'biomoleculas-y-productos-naturales', ['cadenas-laterales', 'derivados-glucosa', 'aldosas-cetosas', 'proteinas', 'carotenoide', 'alimentos', 'vitaminas', 'coenzimas', 'precursores', 'funciones']),
       ...todo(Q + 'enlace-quimico', ['hidruros', 'ionicos']),
       ...todo(Q + 'hidrocarburos', ['isomeros-geometricos', 'hidrogenacion']),
-      ...todo(Q + 'estructura-atomica', ['ion-sodio', 'modelos', 'rutherford', 'dalton', 'cientificos']),
+      // 18 nov: con { unidad: Estructura atómica } salen solo sus temas (y el nuevo «isotopos», marcado con
+      // p.unidadCatalogo); «ion-sodio» es un tema de Tabla periódica (radio del ion y periodo) y va allá.
+      ...todo(Q + 'estructura-atomica', ['modelos', 'rutherford', 'dalton', 'cientificos']), 'ion-sodio': Q + 'tabla-periodica',
       'equilibrio-sangre': Q + 'equilibrio-quimico', 'lewis-bronsted': Q + 'acidos-y-bases',
       ...todo(Q + 'liquidos-y-solidos', ['liquidos', 'solidos', 'tipo-solido', 'solido-propiedad', 'solido-ejemplo']),
       ...todo(Q + 'ambiente-y-quimica-aplicada', ['esferas', 'contaminantes', 'tendencia', 'suelo-aire']),
@@ -132,6 +139,11 @@
     // p6 (pendiente de una recta x–t) son de Movimiento rectilíneo uniforme; los demás, de MRUV y caída libre.
     mruv: { ...lista(F + 'movimiento-rectilineo', ps(1, 6)), ...lista(F + 'mruv-y-caida-libre', ps(2, 3, 4, 5, 7, 8, 9, 10)) },
     'ondas-electromagneticas': { ...lista(F + 'ondas-electromagneticas', ps(1, 3, 4, 6, 7, 8, 9, 10)), ...lista(F + 'optica-geometrica', ps(11, 12)) },
+    // 18 nov (etapa 4, propuesta de Estructura atómica §9): el papel de la escena del átomo y la tabla (p1, p2: partículas;
+    // p3, p4 y p10: iones, cuánticos y desapareados; p5 a p9: tabla periódica) y el de configuracion-ubicacion, que dice
+    // la unidad de cada problema en su campo «unidades».
+    'atomo-y-tabla': { ...lista(Q + 'estructura-atomica', ps(1, 2, 3, 4, 10)), ...lista(Q + 'tabla-periodica', ps(5, 6, 7, 8, 9)) },
+    'configuracion-ubicacion': { ...lista(Q + 'tabla-periodica', ps(1, 2, 9)), ...lista(Q + 'estructura-atomica', ps(3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)) },
   };
   // Unidades de un problema de papel (lista vacía si no se sabe).
   function unidadesPapel(pl, id) {

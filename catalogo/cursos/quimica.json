@@ -74,7 +74,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": ["quimica.materia-y-energia"],
-      "plantillas": ["atomo-y-tabla", "configuracion-ubicacion", "quimica-conceptos", "conversiones-quimica"],
+      "plantillas": ["particulas-nucleo", "quimica-conceptos", "niveles-orbitales", "configuracion-ubicacion", "atomo-y-tabla"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {

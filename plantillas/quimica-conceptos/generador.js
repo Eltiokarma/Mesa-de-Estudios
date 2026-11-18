@@ -235,6 +235,17 @@
     'AQ-pourbaix-ph-poh': { nombre: 'Pourbaix: usar el pH como si fuera el pOH' },
     'AQ-pourbaix-signo-e': { nombre: 'Pourbaix: leer el potencial con el signo cambiado' },
     'AQ-pourbaix-lectura': { nombre: 'Pourbaix: ubicar mal el punto en el diagrama (pH en el eje horizontal, potencial en el vertical)' },
+    // Estructura atómica (18 nov): los códigos de la teoría de la unidad (docs/investigacion/atomo-enlace-ideas-erroneas.md,
+    // «Estructura atómica (18 nov)»), hipótesis, para el tema «isotopos».
+    'QM-ISOTOPO-ELEMENTO': { fuente: fA, nombre: 'Los isótopos son elementos distintos' },
+    'QM-ISOTOPO-N': { fuente: fA, nombre: 'Los isótopos tienen los mismos neutrones' },
+    'QM-ISOTOPO-A': { fuente: fA, nombre: 'Los isótopos tienen el mismo número de masa' },
+    'QM-ISOTOPO-REACCIONA': { fuente: fA, nombre: 'Los isótopos reaccionan distinto' },
+    'QM-NUCLIDO-ISOTOPO': { fuente: fA, nombre: 'Llamar isótopos a dos núclidos con el mismo A' },
+    'QM-NUCLIDO-ISOBARO': { fuente: fA, nombre: 'No reconocer dos isóbaros' },
+    'QM-ION-ISOTOPO': { fuente: fA, nombre: 'Llamar isótopo a un ion' },
+    'QM-MODELO-THOMSON': { fuente: fA, nombre: 'Darle a Thomson lo de Rutherford, o al revés' },
+    'QM-MODELO': { fuente: fA, nombre: 'Relacionar un aporte con otro modelo' },
   };
   for (const k of Object.keys(ERRORES)) {
     ERRORES[k].respaldo = ERRORES[k].respaldo || 'hipotesis';
@@ -278,6 +289,21 @@
       F('rut7', 'El experimento de la lámina de oro mostró que los electrones giran en órbitas de energía fija.', 'AT5', 'Las órbitas de energía fija las propuso Bohr en 1913, después. El experimento mostró el núcleo.', 'El experimento de la lámina de oro mostró que el átomo tiene un núcleo pequeño, denso y positivo.'),
       F('rut8', 'La mayoría de las partículas alfa rebotó en la lámina de oro.', 'AQ-rebote-mayoria', 'Solo una fracción muy pequeña rebotó; la mayoría pasó sin desviarse.', 'La mayoría de las partículas alfa atravesó la lámina; solo unas pocas rebotaron.'),
       F('rut10', 'Del experimento de la lámina de oro se dedujo que el núcleo contiene neutrones.', 'AQ-aporte-adelantado', 'El neutrón lo descubrió Chadwick en 1932, más de veinte años después.', 'Del experimento se dedujo que existe un núcleo positivo; los neutrones se descubrieron después.'),
+    ] },
+    // Isótopos (18 nov, etapa 4, propuesta §9; San Marcos 2022: qué comparten y en qué difieren los isótopos). Solo sale
+    // en la práctica de Estructura atómica (generarDe): no está en las bolsas de antes, así que ninguna semilla vieja cambia.
+    { id: 'isotopos', unidad: 'quimica.estructura-atomica', nombre: 'los isótopos, los isóbaros y los iones', props: [
+      V('iso1', 'Los isótopos de un mismo elemento tienen el mismo número de protones.', 'Es lo que los hace del mismo elemento: el mismo Z.', 'QM-ISOTOPO-ELEMENTO'),
+      V('iso2', 'Los isótopos de un elemento se diferencian en su número de neutrones.', 'Por eso tienen distinto número de masa, A = Z + N.', 'QM-ISOTOPO-N'),
+      V('iso3', 'El cloro-35 y el cloro-37, como átomos neutros, tienen las mismas propiedades químicas.', 'Tienen los mismos 17 electrones, y las reacciones dependen de los electrones.', 'QM-ISOTOPO-REACCIONA'),
+      V('iso4', 'El hidrógeno-1, el hidrógeno-2 y el hidrógeno-3 son isótopos del hidrógeno.', 'Los tres tienen un protón; cambian los neutrones: 0, 1 y 2.', 'QM-ISOTOPO-ELEMENTO'),
+      V('iso5', 'El carbono-14 y el nitrógeno-14 son isóbaros: tienen el mismo número de masa.', 'A = 14 en los dos, con 6 y 7 protones: son elementos distintos.', 'QM-NUCLIDO-ISOBARO'),
+      F('iso6', 'Los isótopos de un elemento tienen el mismo número de masa.', 'QM-ISOTOPO-A', 'El número de masa cambia, porque cambian los neutrones: el carbono-12 y el carbono-14.', 'Los isótopos de un elemento tienen distinto número de masa.'),
+      F('iso7', 'Los isótopos de un elemento tienen el mismo número de neutrones.', 'QM-ISOTOPO-N', 'Lo que comparten es el número de protones; los neutrones cambian.', 'Los isótopos de un elemento tienen distinto número de neutrones.'),
+      F('iso8', 'El carbono-14 reacciona con el oxígeno de otra forma que el carbono-12, porque tiene más neutrones.', 'QM-ISOTOPO-REACCIONA', 'Los dos tienen 6 electrones: forman los mismos compuestos, como el CO₂.', 'El carbono-14 y el carbono-12 reaccionan igual con el oxígeno.'),
+      F('iso9', 'El carbono-14 y el nitrógeno-14 son isótopos, porque tienen el mismo número de masa.', 'QM-NUCLIDO-ISOTOPO', 'Tienen distinto Z, 6 y 7: son elementos distintos. Con el mismo A son isóbaros.', 'El carbono-14 y el nitrógeno-14 son isóbaros.'),
+      F('iso10', 'Los isótopos de un elemento son elementos distintos, porque tienen distinta masa.', 'QM-ISOTOPO-ELEMENTO', 'El elemento lo decide Z, no la masa: todos los isótopos de un elemento tienen el mismo Z.', 'Los isótopos de un elemento son átomos del mismo elemento.'),
+      F('iso11', 'El ion Na⁺ es un isótopo del sodio, porque tiene otra cantidad de electrones.', 'QM-ION-ISOTOPO', 'Un isótopo tiene otros neutrones; el Na⁺ tiene otros electrones: es un ion.', 'El ion Na⁺ es un ion del sodio, no un isótopo.'),
     ] },
     // ===== Materia y energía =====
     { id: 'ramas', unidad: 'quimica.materia-y-energia', nombre: 'las ramas de la química', props: [
@@ -813,6 +839,7 @@
     dal7: ['dal2'], dal9: ['dal1'], dal8: ['dal1'],
     mod8: ['mod2'], mod9: ['mod3'], mod10: ['mod5'], mod11: ['mod5'],
     rut6: ['rut3'], rut8: ['rut1', 'rut4'],
+    iso7: ['iso2'], iso8: ['iso3'], iso9: ['iso5'], iso10: ['iso1'], iso6: ['iso2'],
     ram6: ['ram2'], ram8: ['ram1'], ram9: ['ram3'],
     sus7: ['sus1'], sus10: ['sus2'],
     sod7: ['sod2'], sod8: ['sod1', 'sod2'], sod9: ['sod4'], sod10: ['sod3'], sod12: ['sod1'], sol10: ['sol6', 'sod5'],
@@ -959,9 +986,12 @@
   // ---------- Armado ----------
   // Lo agregado en el cierre 100 (12 nov 2026) va en su propia bolsa; ver generar().
   const IDS_NUEVOS = new Set(['hidratacion-oxidacion', 'acido-nitroso', 'carotenoide', 'paba', 'derivados-glucosa', 'fenton-lewis', 'bilirrubina', 'nitroso']);
-  const BOLSA_VIEJA = { temas: TEMAS.filter(t => !IDS_NUEVOS.has(t.id)), pares: PARES.filter(c => !IDS_NUEVOS.has(c.id)) };
+  // Temas que salen solo con su unidad (generarDe): fuera de las dos bolsas, para que las semillas de antes no cambien.
+  const SOLO_CON_UNIDAD = new Set(['isotopos']);
+  const BOLSA_VIEJA = { temas: TEMAS.filter(t => !IDS_NUEVOS.has(t.id) && !SOLO_CON_UNIDAD.has(t.id)), pares: PARES.filter(c => !IDS_NUEVOS.has(c.id)) };
   const BOLSA_NUEVA = { temas: TEMAS.filter(t => IDS_NUEVOS.has(t.id)), pares: PARES.filter(c => IDS_NUEVOS.has(c.id)) };
   const ROM = ['I', 'II', 'III', 'IV', 'V'];
+  const ANIOS_EA = 'Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926';
   const LET = ['a', 'b', 'c', 'd', 'e'];
   const COLOR = ['o', 'i', 'h', 'd'];
   const v = P.v;
@@ -1003,7 +1033,10 @@
   // y energía salían V/F de otras unidades). generar(semilla, { unidad }) con una de estas unidades elige solo entre sus
   // temas y conjuntos, sin Pourbaix; con cualquier otra unidad, o sin unidad, todo sigue igual que antes (mismas semillas,
   // mismos problemas). Modelo: TIPOS_POR_UNIDAD de plantillas/velocidad-relativa/.
-  const SOLO_SUS_TEMAS = new Set(['quimica.materia-y-energia']);
+  // 18 nov: también Estructura atómica (etapa 4, propuesta §9), con datos en cada tema, el tema «isotopos», sin colores
+  // (la unidad reserva el naranja, el turquesa, el violeta y el carmín para Z, N, los electrones y la carga, y no usa el
+  // verde) y con explicaciones que empiezan por lo que el alumno hizo bien (ver aUnidadEA).
+  const SOLO_SUS_TEMAS = new Set(['quimica.materia-y-energia', 'quimica.estructura-atomica']);
   function generar(semilla, opciones) {
     const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
     if (SOLO_SUS_TEMAS.has(unidad)) return generarDe(semilla, unidad);
@@ -1041,24 +1074,59 @@
       'Fisicoquímica: la energía de los cambios químicos'],
     sustancias: ['Sustancia pura: una sola clase de partícula. Mezcla: varias clases', 'Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos',
       'Mezcla homogénea: una sola fase. Heterogénea: dos fases o más'],
+    // Estructura atómica (18 nov): las fechas entre las que se elige (las de la teoría) y las definiciones de la idea 1.
+    dalton: [ANIOS_EA, 'Electrón: descubierto en 1897. Neutrón: en 1932'],
+    modelos: [ANIOS_EA, 'Electrón: descubierto en 1897. Neutrón: en 1932'],
+    rutherford: [ANIOS_EA, 'Partícula alfa: partícula con carga, lanzada contra la lámina de oro', 'Neutrón: descubierto en 1932'],
+    isotopos: ['Isótopos: mismo Z. Isóbaros: mismo A. Isótonos: mismo N', 'A = Z + N', 'Una reacción química depende de los electrones'],
+    cientificos: [ANIOS_EA, 'Electrón: descubierto en 1897. Neutrón: en 1932'],
   };
-  const PESO_TEMA = { sustancias: 3 };
+  const PESO_TEMA = { sustancias: 3, isotopos: 2 };
   function generarDe(semilla, unidad) {
     const rng = Azar.crear(`quimica-conceptos|${unidad}|${semilla}`);
     const temas = TEMAS.filter(t => t.unidad === unidad).flatMap(t => Array(PESO_TEMA[t.id] || 1).fill(t));
-    const bolsa = { temas, pares: PARES.filter(c => c.unidad === unidad) };
+    // En Estructura atómica, solo los científicos cuyo modelo enseña la unidad (Dalton, Thomson, Rutherford y Bohr).
+    const SOLO_EA = ['c-dalton', 'c-thomson', 'c-rutherford', 'c-bohr'];
+    const bolsa = { temas, pares: PARES.filter(c => c.unidad === unidad).map(c => (unidad === 'quimica.estructura-atomica' ? { ...c, pares: c.pares.filter(x => SOLO_EA.includes(x.id)) } : c)) };
     const tipos = ['vf', 'vf', 'vf', 'vf', 'incorrecta', 'incorrecta', 'correcta', 'correcta', ...(bolsa.pares.length ? ['relacionar', 'relacionar'] : [])];
     const tipo = rng.elegir(tipos);
     for (let intento = 0; intento < 500; intento++) {
       const pr = tipo === 'vf' ? secuencia(rng, bolsa) : tipo === 'relacionar' ? relacionar(rng, bolsa) : unaSola(rng, tipo, bolsa);
       if (pr && pr.alternativas.length >= 4) {
         pr.id = `quimica-conceptos#${semilla}`;
-        const ds = DATOS_TEMA[pr._datos.tema];
+        const ds = DATOS_TEMA[pr._datos.tema || pr._datos.conjunto];
         if (ds) pr.datos = ds.slice();
-        return pr;
+        return unidad === EA ? aUnidadEA(pr) : pr;
       }
     }
     throw new Error(`No se pudo generar un problema de ${unidad} con 4 alternativas distintas`);
+  }
+
+  // Estructura atómica: sin colores (el texto queda en tinta), con la cola de repaso y explicaciones que empiezan por lo
+  // que el alumno hizo bien (las proposiciones que acertó, la búsqueda o los pares que juntó bien).
+  const EA = 'quimica.estructura-atomica';
+  const tinta = l => l.map(x => (x && typeof x === 'object' && x.v ? x.t : x));
+  const enLista = xs => (xs.length === 1 ? xs[0] : `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}`);
+  function aUnidadEA(pr) {
+    const d = pr._datos, ok = pr.alternativas.find(a => a.correcta).texto;
+    for (const a of pr.alternativas.filter(x => x.error)) {
+      let bien;
+      if (d.tipo === 'vf') {
+        const iguales = [...a.texto].map((c, k) => (c === ok[k] ? `la ${ROM[k]}` : null)).filter(Boolean);
+        bien = `Bien ${enLista(iguales)}.`;
+      } else if (d.tipo === 'relacionar') {
+        const b = ok.split(', '), mia = a.texto.split(', '), iguales = mia.map((x, k) => (x === b[k] ? `el ${ROM[k]}` : null)).filter(Boolean);
+        bien = iguales.length ? `Bien ${enLista(iguales)}. Pero` : 'Bien juntar cada uno con un aporte. Pero';
+        // El código, como en la teoría: Thomson y Rutherford cruzados, QM-MODELO-THOMSON; Rutherford y Bohr, AT5; otro, QM-MODELO.
+        const cruzados = new Set(mia.map((x, k) => (x === b[k] ? null : d.ids[k])).filter(Boolean));
+        const es = (...ids) => cruzados.size === ids.length && ids.every(x => cruzados.has(x));
+        const id = es('c-thomson', 'c-rutherford') ? 'QM-MODELO-THOMSON' : es('c-rutherford', 'c-bohr') ? 'AT5' : 'QM-MODELO';
+        a.error = { ...a.error, id, respaldo: ERRORES[id].respaldo, fuente: ERRORES[id].fuente };
+      } else bien = `Bien buscar la proposición ${d.tipo}. Pero`;
+      const resto = a.error.explicacion;
+      a.error = { ...a.error, explicacion: `${bien} ${/Pero$/.test(bien) ? resto[0].toLowerCase() + resto.slice(1) : resto}` };
+    }
+    return { ...pr, unidadCatalogo: EA, variables: {}, enunciado: tinta(pr.enunciado), pregunta: tinta(pr.pregunta), solucion: pr.solucion.map(tinta) };
   }
 
   // Convenciones de academia que la respuesta sigue (nucleo/convencion.js): se muestran en grande bajo la solución.
@@ -1361,5 +1429,5 @@
   }
   function pourbaix(rng) { return rng.sig() < 0.5 ? pourbaixEspecie(rng) : pourbaixVF(rng); }
 
-  return { id: 'quimica-conceptos', generar, soloSusTemas: [...SOLO_SUS_TEMAS], BANCO, TEMAS: TEMAS.map(({ props, ...t }) => ({ ...t, ids: props.map(p => p.id) })), PARES, ERRORES, POURBAIX: { DIAGRAMAS, especieEn, codigos: POURBAIX_CODIGOS } };
+  return { id: 'quimica-conceptos', generar, soloSusTemas: [...SOLO_SUS_TEMAS], soloConUnidad: [...SOLO_CON_UNIDAD], CODIGOS_EA: ['QM-MODELO-THOMSON', 'QM-MODELO', 'AT5'], BANCO, TEMAS: TEMAS.map(({ props, ...t }) => ({ ...t, ids: props.map(p => p.id) })), PARES, ERRORES, POURBAIX: { DIAGRAMAS, especieEn, codigos: POURBAIX_CODIGOS } };
 });

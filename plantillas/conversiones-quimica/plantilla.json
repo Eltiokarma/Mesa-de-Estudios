@@ -4,8 +4,7 @@
   "formato": "predicciones",
   "unidades": [
     "quimica.materia-y-energia",
-    "quimica.liquidos-y-solidos",
-    "quimica.estructura-atomica"
+    "quimica.liquidos-y-solidos"
   ],
   "estado": "borrador",
   "version": "0.1.0",

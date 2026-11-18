@@ -108,3 +108,20 @@ test('cobertura del repaso: todas las unidades del catálogo tienen de dónde sa
   assert.deepEqual(sin, []);
   assert.equal(Object.keys(fuente).length, cat.cursos.reduce((n, c) => n + c.unidades.length, 0));   // 153 desde que se partió magnitudes y vectores (16 nov)
 });
+
+// Química, Estructura atómica (18 nov, etapa 4): con { unidad } los generadores de la unidad dicen su unidad
+// (p.unidadCatalogo) y el repaso los cuenta como suyos; los dos nuevos son de una sola unidad; el papel de
+// configuracion-ubicacion y la fila PAPEL dicen lo mismo.
+test('química: Estructura atómica repasa con sus generadores y su papel por unidad', () => {
+  const EA = 'quimica.estructura-atomica', TP = 'quimica.tabla-periodica', fs = require('fs');
+  for (const id of ['configuracion-ubicacion', 'quimica-conceptos']) {
+    const pl = cat.plantillas[id], g = gen(pl);
+    for (let k = 0; k < 200; k++) assert.equal(RT.unidadDe(pl, g.generar('r' + k, { unidad: EA })), EA, `${id} r${k}`);
+  }
+  for (const id of ['particulas-nucleo', 'niveles-orbitales']) assert.deepEqual(cat.plantillas[id].unidades, [EA]);
+  const pl = cat.plantillas['configuracion-ubicacion'];
+  for (const q of JSON.parse(fs.readFileSync(path.join(RAIZ, pl.papel), 'utf8')).problemas)
+    assert.deepEqual(RT.unidadesPapel(pl, q.id), q.unidades, `configuracion-ubicacion ${q.id}`);
+  assert.ok(!cat.plantillas['conversiones-quimica'].unidades.includes(EA));
+  assert.equal(RT.unidadDe(cat.plantillas['quimica-conceptos'], { _datos: { tema: 'ion-sodio' } }), TP);
+});

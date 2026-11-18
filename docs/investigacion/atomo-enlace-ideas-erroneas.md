@@ -309,6 +309,19 @@ de la tabla de arriba.
 | QM-ML-CERO, QM-ML-AL-REVES, QM-MS-AL-REVES, QM-SIN-HUND, QM-N-MENOS, QM-ULTIMO-4S | 6 | Numera las cajas desde 0 o de +ℓ a −ℓ; invierte el espín; llena cada caja con dos antes de pasar; usa el nivel anterior; toma el 4s del átomo neutro como último electrón del catión | Equivalen a los AQ-cuanticos-* del generador `configuracion-ubicacion` |
 | QM-PARA-DIA | 6 | Llama diamagnética a una especie con electrones solos | — |
 
+Códigos nuevos de la práctica de la unidad (18 nov: generadores `particulas-nucleo`, `niveles-orbitales` y el armado de
+Estructura atómica de `configuracion-ubicacion`). También hipótesis:
+
+| Código | Idea | Qué hace el alumno | Respaldo |
+| --- | --- | --- | --- |
+| QM-ELECTRON-NUCLEO, QM-PROTON-AFUERA, QM-NEUTRON-AFUERA | 1 | Pone los electrones en el núcleo, o los protones o los neutrones fuera de él | Trampa de San Marcos 2020-I |
+| QM-PARTICULA-CARGA, QM-PARTICULA-MASA | 1 | Confunde la carga de las partículas; cree que la masa del átomo está en sus electrones | — |
+| QM-NEUTRO-NEUTRONES | 1 | Cree que el átomo es neutro porque tiene tantos neutrones como protones | Vecino de AT4 |
+| QM-NUCLIDO-SIGNO | 1 | Usa bien la diferencia de protones o de A entre dos núclidos, pero la aplica al revés | — |
+| QM-ML-FUERA, QM-MS-ENTERO, QM-CONDICION-IGNORA | 3 | Acepta un mₗ fuera de −ℓ…+ℓ (o lo cuenta en subniveles que no lo tienen); acepta mₛ = ±1; cuenta todo el nivel sin la segunda condición (mₗ o mₛ dados) | — |
+| QM-ANOMALIA-EXTIENDE, QM-D-MISMO-N | 4 | Extiende la excepción del cromo y del cobre al vanadio o al níquel; escribe el d con el mismo n que el s de afuera | Equivalen a AQ-generaliza-anomalia y AQ-d-mismo-n de `configuracion-ubicacion` |
+| QM-N-DEL-PERIODO | 6 | Da al último electrón de un subnivel d el n del nivel de afuera (4 en vez de 3 en el 3d) | Equivale a AQ-cuanticos-n-del-periodo |
+
 La convención de mₗ y mₛ (cajas de −ℓ a +ℓ, primero las ↑ con +½) es la del examen y va en `datos` y en la tarjeta
 «ultimo-electron» de `nucleo/convencion.js`. **No se pudo confirmar con un libro de `fuentes/`**: la carpeta no tiene libros
 todavía (18 nov). Es la misma del motor de `plantillas/atomo-y-tabla` y del generador `configuracion-ubicacion`. El

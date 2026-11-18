@@ -114,9 +114,11 @@ test('notación científica: tres cifras y potencia de diez', () => {
 
 // ---- Papel (regla 6) ----
 const papel = JSON.parse(fs.readFileSync(path.join(__dirname, 'papel.json'), 'utf8'));
-test('papel.json: entre 6 y 8 problemas, con respuesta, pasos y verificación', () => {
+// 18 nov: la ficha ya no sirve a Estructura atómica (las longitudes en Å y la vida media salieron de esa unidad): quedan
+// los problemas de Materia y energía y de Líquidos y sólidos.
+test('papel.json: entre 5 y 8 problemas, con respuesta, pasos y verificación', () => {
   assert.ok(papel.titulo && papel.indicacion);
-  assert.ok(papel.problemas.length >= 6 && papel.problemas.length <= 8);
+  assert.ok(papel.problemas.length >= 5 && papel.problemas.length <= 8);
   const ids = new Set();
   for (const p of papel.problemas) {
     assert.ok(p.id && !ids.has(p.id)); ids.add(p.id);
@@ -144,7 +146,7 @@ test('por unidad: Materia y energía solo con variaciones y densidad; las otras 
     assert.notEqual(p._datos.sub, 'longitud', `semilla ${s}: longitudes en Å en Materia y energía`);
     const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
     assert.ok(!/Å|\bnm\b|\bpm\b|\+ 273/.test(plano([p.enunciado, p.pregunta, p.datos, p.solucion])), `semilla ${s}: ${plano(p.pregunta)}`);
-    for (const u of ['quimica.liquidos-y-solidos', 'quimica.estructura-atomica', undefined])
+    for (const u of ['quimica.liquidos-y-solidos', undefined])
       assert.deepEqual(gen.generar(s, { unidad: u }), gen.generar(s), `semilla ${s}: cambió el problema de ${u}`);
   }
   assert.deepEqual([...vistos].sort(), ['delta', 'densidad']);

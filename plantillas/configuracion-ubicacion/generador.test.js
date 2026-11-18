@@ -188,9 +188,13 @@ test('ubicar: ningún distractor repite el periodo y el grupo A/B de la correcta
 });
 
 // ---------- papel.json ----------
-test('papel.json: de 5 a 10 problemas con respuesta, pasos y verificación, sin punto decimal', () => {
+// Desde el 18 nov el papel sirve a las dos unidades de la ficha y dice de cuál es cada problema (la app muestra solo los
+// de la unidad de la que se llegó): de 5 a 10 por idea en Estructura atómica (estructura-atomica.test.js) y los de Tabla
+// periódica de antes. La vida media salió (Materia y energía tiene su plantilla).
+test('papel.json: problemas con respuesta, pasos y verificación, sin punto decimal y sin vida media', () => {
   assert.ok(papel.titulo && papel.indicacion);
-  assert.ok(papel.problemas.length >= 5 && papel.problemas.length <= 10);
+  assert.ok(papel.problemas.length >= 5 && papel.problemas.length <= 25);
+  assert.ok(!papel.problemas.some(q => /vida media/.test(q.enunciado)));
   const ids = new Set();
   for (const q of papel.problemas) {
     assert.ok(q.id && !ids.has(q.id)); ids.add(q.id);
@@ -211,11 +215,17 @@ for (const q of papel.problemas) test(`papel ${q.id}`, () => {
 
 // Por unidad: Materia y energía ya no toma la vida media de aquí (desde el 17 nov tiene plantillas/vida-media/). Las
 // unidades de la ficha, y la llamada sin unidad, dan el mismo problema con la misma semilla.
-test('por unidad: Materia y energía ya no está en la ficha; las otras unidades dan lo mismo que sin unidad', () => {
+// 18 nov (etapa 4): Tabla periódica toma solo ubicar y familia; Estructura atómica, su propio armado (abajo); sin unidad
+// o con otra unidad, todo sigue igual que antes (casos.json no cambia). La vida media ya no es de ninguna unidad de la ficha.
+test('por unidad: Tabla periódica solo ubicar y familia; sin unidad, lo mismo de antes; Materia y energía fuera', () => {
   assert.ok(!require('./plantilla.json').unidades.includes('quimica.materia-y-energia'));
-  for (let s = 0; s < 400; s++)
-    for (const u of ['quimica.tabla-periodica', 'quimica.estructura-atomica', undefined])
-      assert.deepEqual(gen.generar(s, { unidad: u }), gen.generar(s), `semilla ${s}: cambió el problema de ${u}`);
+  const tp = new Set();
+  for (let s = 0; s < 400; s++) {
+    tp.add(gen.generar(s, { unidad: 'quimica.tabla-periodica' })._datos.tipo);
+    for (const u of ['quimica.enlace-quimico', undefined]) assert.deepEqual(gen.generar(s, { unidad: u }), gen.generar(s), `semilla ${s}: cambió el problema de ${u}`);
+  }
+  assert.deepEqual([...tp].sort(), ['familia', 'ubicar']);
+  assert.deepEqual(gen.tiposPorUnidad['quimica.tabla-periodica'], ['ubicar', 'familia']);
 });
 
 // Vida media: datos en lista con la fórmula y sin la respuesta, y explicaciones que empiezan por lo que el alumno hizo bien.

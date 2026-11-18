@@ -1,16 +1,19 @@
 {
   "titulo": "Verdadero o falso de química: proposiciones para lápiz y papel",
-  "indicacion": "Marca V o F en cada proposición antes de mirar la respuesta. Para cada F, escribe la versión verdadera: si no puedes corregirla, todavía no sabes por qué es falsa.",
+  "indicacion": "Marca V o F en cada proposición antes de mirar la respuesta. Para cada F, escribe la versión verdadera: si no puedes corregirla, todavía no sabes por qué es falsa. En los problemas de Estructura atómica, los datos van al final del enunciado.",
   "problemas": [
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Sobre los modelos atómicos: I. En el modelo de Thomson, el átomo es neutro: la carga de los electrones compensa la carga positiva. II. Bohr propuso que el electrón no emite energía mientras gira en una órbita permitida. III. Rutherford descubrió el electrón.",
+      "enunciado": "Sobre los modelos atómicos: I. En el modelo de Thomson, el átomo es neutro: la carga de los electrones compensa la carga positiva. II. Bohr propuso que el electrón no emite energía mientras gira en una órbita permitida. III. Rutherford descubrió el electrón. Datos: Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926. Electrón: descubierto en 1897.",
       "respuesta": "VVF",
       "pasos": [
         "I es V: los electrones incrustados compensan la esfera positiva; el átomo completo no tiene carga.",
         "II es V: en el modelo de Bohr solo hay emisión o absorción cuando el electrón salta de una órbita a otra.",
         "III es F: el electrón lo descubrió Thomson (1897) con los rayos catódicos; Rutherford propuso el núcleo."
+      ],
+      "unidades": [
+        "quimica.estructura-atomica"
       ]
     },
     {
@@ -22,6 +25,9 @@
         "I es F: el bronce es una aleación de cobre y estaño, es decir, una mezcla homogénea.",
         "II es V: los dos son solo carbono, con sus átomos ordenados de otra manera (alótropos).",
         "III es V: el CO₂ tiene dos elementos, carbono y oxígeno, en proporción fija."
+      ],
+      "unidades": [
+        "quimica.materia-y-energia"
       ]
     },
     {
@@ -33,6 +39,9 @@
         "I es V: un líquido hierve cuando su presión de vapor iguala a la presión externa; arriba la presión del aire es menor y basta menos temperatura.",
         "II es F: la viscosidad es la resistencia a fluir; un líquido muy viscoso, como la miel, fluye lento.",
         "III es V: la superficie del agua se comporta como una película tensa que sostiene objetos muy livianos."
+      ],
+      "unidades": [
+        "quimica.liquidos-y-solidos"
       ]
     },
     {
@@ -44,6 +53,9 @@
         "I es V: el cloro que liberan los CFC en la estratósfera destruye moléculas de ozono.",
         "II es V: el CO ocupa el lugar del oxígeno en la hemoglobina y la sangre transporta menos O₂.",
         "III es F: el ozono de la estratósfera nos protege de la radiación ultravioleta; el que irrita los pulmones es el ozono que se forma cerca del suelo."
+      ],
+      "unidades": [
+        "quimica.ambiente-y-quimica-aplicada"
       ]
     },
     {
@@ -56,6 +68,9 @@
         "II es F: el NO₃⁻ es el nitrato (del ácido nítrico); el nitrito es NO₂⁻ (del ácido nitroso).",
         "III es V: en el Fe₂O₃ el hierro tiene +3, su mayor estado común: férrico.",
         "IV es F: el fósforo es un no metal; su óxido forma ácido fosfórico con agua: es un óxido ácido."
+      ],
+      "unidades": [
+        "quimica.nomenclatura-inorganica"
       ]
     },
     {
@@ -67,6 +82,9 @@
         "I es F: los electrones salen del ánodo, donde se pierden en la oxidación, y llegan al cátodo, donde se ganan.",
         "II es V: por definición, el ánodo es el electrodo donde ocurre la oxidación.",
         "III es V: el Pb pierde electrones (pasa de 0 a +2): se oxida, y por eso es el agente reductor."
+      ],
+      "unidades": [
+        "quimica.electroquimica"
       ]
     },
     {
@@ -78,6 +96,9 @@
         "I es V: 5 del nitrógeno y 6 de cada oxígeno suman 17; queda un electrón desapareado: el NO₂ es un radical.",
         "II es F: el cuarzo es un sólido covalente de red: cada silicio está unido a cuatro oxígenos y la red no tiene moléculas sueltas.",
         "III es V: al fundirse, los iones K⁺ y Cl⁻ quedan libres para moverse y llevar la carga."
+      ],
+      "unidades": [
+        "quimica.enlace-quimico"
       ]
     },
     {
@@ -90,6 +111,9 @@
         "II es V: la maltosa conserva un extremo que puede abrirse y dar un grupo aldehído.",
         "III es F: la desnaturalización solo cambia la forma de la proteína; sus aminoácidos siguen unidos, y una proteína no tiene glucosa.",
         "IV es F: las vitaminas A, D, E y K son liposolubles."
+      ],
+      "unidades": [
+        "quimica.biomoleculas-y-productos-naturales"
       ]
     },
     {
@@ -101,6 +125,9 @@
         "I es V: es un ácido débil con su base conjugada (el ion acetato); cada uno neutraliza lo que se agrega del otro tipo.",
         "II es F: solo amortigua cantidades pequeñas; si el ácido agregado gasta todo el acetato, el pH cae.",
         "III es F: el HCl es un ácido fuerte y el Cl⁻ casi no acepta protones; hace falta un ácido débil con su base conjugada."
+      ],
+      "unidades": [
+        "quimica.acidos-y-bases"
       ]
     },
     {
@@ -112,6 +139,79 @@
         "I es F: la flotación solo separa la mena de la ganga; el sulfuro sigue siendo el mismo sulfuro.",
         "II es V: el azufre del sulfuro se une al oxígeno del aire y sale como dióxido de azufre; el metal queda como óxido.",
         "III es V: el carbono del coque se quema y forma CO, que le quita el oxígeno al óxido de hierro y deja hierro metálico."
+      ],
+      "unidades": [
+        "quimica.recursos-naturales"
+      ]
+    },
+    {
+      "id": "p11",
+      "nivel": "básico",
+      "enunciado": "Sobre la teoría atómica de Dalton: I. Los átomos de un mismo elemento son iguales entre sí. II. En una reacción química, los átomos solo se reordenan: no se crean ni se destruyen. III. Según Dalton, el átomo tiene electrones en su interior. Datos: Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926. Electrón: descubierto en 1897.",
+      "respuesta": "VVF",
+      "pasos": [
+        "I es V: es uno de sus postulados (los isótopos, de masas distintas, se conocieron un siglo después).",
+        "II es V: con ese postulado Dalton explicó la conservación de la masa.",
+        "III es F: para Dalton el átomo era una esfera maciza sin partes; el electrón se descubrió en 1897, después."
+      ],
+      "unidades": [
+        "quimica.estructura-atomica"
+      ]
+    },
+    {
+      "id": "p12",
+      "nivel": "intermedio",
+      "enunciado": "Sobre el experimento de la lámina de oro: I. La mayoría de las partículas alfa atravesó la lámina sin desviarse. II. Unas pocas alfas rebotaron al chocar con una zona diminuta, densa y positiva. III. El experimento mostró que los electrones giran en órbitas de energía fija. Datos: Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926. Partícula alfa: partícula con carga, lanzada contra la lámina de oro.",
+      "respuesta": "VVF",
+      "pasos": [
+        "I es V: por eso se concluyó que el átomo es casi vacío.",
+        "II es V: esa zona es el núcleo; las alfas, positivas, rebotan contra él.",
+        "III es F: los niveles de energía fijos los propuso Bohr en 1913; la lámina mostró el núcleo (1911)."
+      ],
+      "unidades": [
+        "quimica.estructura-atomica"
+      ]
+    },
+    {
+      "id": "p13",
+      "nivel": "intermedio",
+      "enunciado": "Relaciona cada científico con su aporte. I. Thomson II. Rutherford III. Bohr — a) el electrón solo ocupa ciertos niveles de energía b) electrones dentro de una esfera de carga positiva c) un núcleo diminuto y positivo. Datos: Dalton 1808; Thomson 1904; Rutherford 1911; Bohr 1913; modelo actual 1926.",
+      "respuesta": "Ib, IIc, IIIa",
+      "pasos": [
+        "Thomson (1904): electrones dentro de una esfera positiva → b.",
+        "Rutherford (1911), con la lámina de oro: el núcleo diminuto y positivo → c.",
+        "Bohr (1913): niveles de energía permitidos → a."
+      ],
+      "unidades": [
+        "quimica.estructura-atomica"
+      ]
+    },
+    {
+      "id": "p14",
+      "nivel": "intermedio",
+      "enunciado": "Según Bohr, un electrón del hidrógeno pasa del nivel 3 al nivel 2. ¿Absorbe o suelta energía? ¿Puede salir luz de cualquier color? Datos: Para Bohr, un nivel más alto tiene más energía. La luz lleva energía.",
+      "respuesta": "Suelta energía, como luz de un color fijo.",
+      "pasos": [
+        "El nivel 3 tiene más energía que el 2: al bajar, el electrón suelta la diferencia.",
+        "Esa energía sale como luz.",
+        "Como los dos niveles tienen energías fijas, la diferencia también es fija: la luz es siempre del mismo color."
+      ],
+      "unidades": [
+        "quimica.estructura-atomica"
+      ]
+    },
+    {
+      "id": "p15",
+      "nivel": "avanzado",
+      "enunciado": "Imagina que el núcleo de un átomo se agranda hasta medir lo que un granito de quinua, unos 2 mm. ¿Cuánto mediría, en metros, el átomo entero? Datos: El átomo es unas 100 000 veces más ancho que su núcleo. 1 m = 1000 mm.",
+      "respuesta": "Unos 200 m.",
+      "pasos": [
+        "El átomo es unas 100 000 veces más ancho: 2 mm × 100 000 = 200 000 mm.",
+        "200 000 mm ÷ 1000 = 200 m: el núcleo sería un granito en medio de una plaza de 200 m de ancho.",
+        "Casi todo el átomo es espacio casi vacío; por eso casi todas las alfas pasan."
+      ],
+      "unidades": [
+        "quimica.estructura-atomica"
       ]
     }
   ]

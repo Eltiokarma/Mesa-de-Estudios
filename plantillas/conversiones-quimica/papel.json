@@ -8,8 +8,7 @@
       "nivel": "básico",
       "unidades": [
         "quimica.materia-y-energia",
-        "quimica.liquidos-y-solidos",
-        "quimica.estructura-atomica"
+        "quimica.liquidos-y-solidos"
       ],
       "enunciado": "El agua de una olla pasa de 18 °C a 63 °C. ¿Cuánto subió su temperatura en °F? ¿Y en kelvin? Datos: en una variación, ΔK = Δ°C y Δ°F = 1,8 · Δ°C.",
       "respuesta": "81 °F y 45 K.",
@@ -47,8 +46,7 @@
       "id": "p2",
       "nivel": "básico",
       "unidades": [
-        "quimica.liquidos-y-solidos",
-        "quimica.estructura-atomica"
+        "quimica.liquidos-y-solidos"
       ],
       "enunciado": "Al final del problema anterior, el termómetro marca 63 °C. ¿Cuánto marcaría un termómetro en °F? ¿Y uno en kelvin? Datos: K = °C + 273; °F = 1,8 · °C + 32 (para leer un punto del termómetro).",
       "respuesta": "145,4 °F y 336 K.",
@@ -87,8 +85,7 @@
       "nivel": "intermedio",
       "unidades": [
         "quimica.materia-y-energia",
-        "quimica.liquidos-y-solidos",
-        "quimica.estructura-atomica"
+        "quimica.liquidos-y-solidos"
       ],
       "enunciado": "Al calentar un aceite se anota: a los 0 min, 20 °C; a los 5 min, 35 °C; a los 9 min, 50 °C. ¿Cuánto subió la temperatura, en °F, entre el minuto 5 y el minuto 9? Datos: en una variación, Δ°F = 1,8 · Δ°C.",
       "respuesta": "27 °F.",
@@ -141,44 +138,6 @@
       ]
     },
     {
-      "id": "p5",
-      "nivel": "básico",
-      "unidades": [
-        "quimica.estructura-atomica"
-      ],
-      "enunciado": "El radio de un átomo de sodio es 1,86 Å. Exprésalo en picómetros y en nanómetros. Datos: 1 Å = 10⁻¹⁰ m; 1 nm = 10⁻⁹ m; 1 pm = 10⁻¹² m.",
-      "respuesta": "186 pm y 0,186 nm.",
-      "pasos": [
-        "1 Å = 10⁻¹⁰ m, 1 pm = 10⁻¹² m y 1 nm = 10⁻⁹ m.",
-        "En pm: 1 Å = 100 pm, así que 1,86 × 100 = 186 pm.",
-        "En nm: 1 Å = 0,1 nm, así que 1,86 × 0,1 = 0,186 nm. En metros sería 1,86 × 10⁻¹⁰ m."
-      ],
-      "verificar": [
-        {
-          "fn": "longitud",
-          "args": [
-            1.86,
-            "A",
-            "pm"
-          ],
-          "espera": {
-            "valor": 186
-          }
-        },
-        {
-          "fn": "longitud",
-          "args": [
-            1.86,
-            "A",
-            "nm"
-          ],
-          "espera": {
-            "valor": 0.186
-          }
-        }
-      ]
-    },
-    {
       "id": "p6",
       "nivel": "intermedio",
       "unidades": [
@@ -216,78 +175,6 @@
           "espera": {
             "n": 2,
             "Q": 12.02
-          }
-        }
-      ]
-    },
-    {
-      "id": "p7",
-      "nivel": "básico",
-      "unidades": [
-        "quimica.estructura-atomica"
-      ],
-      "enunciado": "Una clínica recibe 80 mg de yodo-131, cuya vida media es 8 días. ¿Cuántos miligramos quedan después de 24 días? Datos: lo que queda, m₀ / 2ⁿ, con n = tiempo transcurrido ÷ vida media.",
-      "respuesta": "10 mg.",
-      "pasos": [
-        "24 días son 24 ÷ 8 = 3 vidas medias.",
-        "80 → 40 → 20 → 10 mg. Se desintegraron 70 mg."
-      ],
-      "verificar": [
-        {
-          "fn": "vidaMedia",
-          "args": [
-            {
-              "m0": 80,
-              "tMedia": 8,
-              "t": 24
-            }
-          ],
-          "espera": {
-            "vidas": 3,
-            "queda": 10,
-            "desintegrado": 70
-          }
-        }
-      ]
-    },
-    {
-      "id": "p8",
-      "nivel": "avanzado",
-      "unidades": [
-        "quimica.estructura-atomica"
-      ],
-      "enunciado": "En 15 horas, una muestra radiactiva se reduce a la octava parte. ¿Cuánto tiempo, desde el inicio, tarda en quedar 1/32 de la muestra? Datos: tras n vidas medias queda 1/2ⁿ de la muestra.",
-      "respuesta": "25 horas.",
-      "pasos": [
-        "1/8 = 1/2³: en 15 horas pasaron 3 vidas medias. La vida media es 15 ÷ 3 = 5 horas, no 15.",
-        "1/32 = 1/2⁵: hacen falta 5 vidas medias.",
-        "5 × 5 = 25 horas."
-      ],
-      "verificar": [
-        {
-          "fn": "tiempoPara",
-          "args": [
-            {
-              "tMedia": 5,
-              "fraccion": 0.125
-            }
-          ],
-          "espera": {
-            "vidas": 3,
-            "t": 15
-          }
-        },
-        {
-          "fn": "tiempoPara",
-          "args": [
-            {
-              "tMedia": 5,
-              "fraccion": 0.03125
-            }
-          ],
-          "espera": {
-            "vidas": 5,
-            "t": 25
           }
         }
       ]
