@@ -662,6 +662,11 @@ input[type=file]{font:inherit;max-width:100%}
 .ej-ir{font-weight:800;font-size:22px;white-space:nowrap}
 .ej-ir .v{display:none}
 .ej-papel{grid-column:2/-1;position:relative;z-index:1;justify-self:start;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;margin-top:6px;border-radius:999px;border:2px solid var(--line);font-weight:700;font-size:14px;text-decoration:none;color:var(--ink);background:var(--card)}
+/* Práctica por idea (18 nov): una fila de enlaces bajo la práctica, uno por idea de la unidad. */
+.ej-ideas{grid-column:2/-1;position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.ej-ideas .etq-f{width:100%}
+.ej-ideas a{display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border-radius:999px;border:2px solid var(--line);font-weight:700;font-size:13px;text-decoration:none;color:var(--ink);background:var(--card)}
+.ej-solo a{font-weight:700}
 
 /* Exámenes: simulacro de la unidad, sin corrección hasta el final. La barra de Anterior y Siguiente queda pegada abajo
    (sobre la barra de navegación en el celular), así el botón principal no cambia de lugar entre preguntas. */

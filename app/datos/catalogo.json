@@ -103,6 +103,11 @@
        "/nucleo/kit/piezas/fis-balanza-dim.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "unidades": "Cambiar de unidad",
+       "areas-volumenes": "Áreas y volúmenes",
+       "homogeneidad": "Análisis dimensional"
+      },
       "terminos": 31
      }
     },
@@ -156,6 +161,12 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "escalar-vector": "Escalar o vector",
+       "componentes": "Componentes",
+       "resultante": "Suma de vectores",
+       "productos": "Productos"
+      },
       "terminos": 33
      }
     },
@@ -202,6 +213,13 @@
        "/nucleo/kit/piezas/fis-ventana.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "mru": "Velocidad constante: el MRU",
+       "grafica-xt": "La gráfica posición–tiempo",
+       "desplazamiento-distancia": "Velocidad media y rapidez media",
+       "encuentro": "Encuentros y alcances",
+       "velocidad-relativa": "Velocidad relativa"
+      },
       "terminos": 21
      }
     },
@@ -247,6 +265,14 @@
        "/nucleo/kit/piezas/fis-mruv.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "aceleracion": "La aceleración",
+       "ecuaciones-mruv": "Las ecuaciones del MRUV",
+       "pendiente-aceleracion": "La gráfica velocidad–tiempo",
+       "graficas-xt-at": "Gráficas x–t y a–t",
+       "caida-reposo": "Caída libre desde el reposo",
+       "caida-libre": "Lanzamiento vertical"
+      },
       "terminos": 32
      }
     },
@@ -302,6 +328,12 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "un-reloj-dos-ejes": "Un reloj, dos movimientos",
+       "arco-y-radian": "El arco mide el ángulo",
+       "rapidez-constante-acelera": "Rapidez constante, velocidad que gira",
+       "dos-aceleraciones": "Dos aceleraciones a la vez"
+      },
       "terminos": 27
      }
     },
@@ -346,6 +378,14 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "diagrama-y-parejas": "Cada fuerza tiene su pareja",
+       "nudo-en-equilibrio": "El nudo que no se mueve",
+       "rozamiento-se-ajusta": "El rozamiento se ajusta",
+       "resorte-proporcional": "El resorte estira en proporción",
+       "torque-y-brazo": "El brazo decide el giro",
+       "polea-movil": "Menos fuerza, más cuerda"
+      },
       "terminos": 26
      }
     },
@@ -389,6 +429,14 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "fuerza-neta-acelera": "La aceleración sigue a la fuerza",
+       "masa-y-peso": "La masa viaja, el peso cambia",
+       "rozamiento-en-movimiento": "Acelera lo que sobra",
+       "plano-y-polea": "Planos y poleas",
+       "centripeta-es-resultante": "La centrípeta es una resultante",
+       "ascensor-y-marcos": "La balanza del ascensor"
+      },
       "terminos": 26
      }
     },
@@ -432,6 +480,12 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "cuadrado-inverso": "Doble distancia, cuarta parte",
+       "campo-gravitatorio": "El campo es del lugar",
+       "orbita-circular": "Más lejos, más lento",
+       "leyes-de-kepler": "Las tres leyes de Kepler"
+      },
       "terminos": 24
      }
     },
@@ -473,6 +527,13 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "trabajo-y-angulo": "Solo trabaja lo que acompaña",
+       "trabajo-energia-cinetica": "El trabajo neto se vuelve rapidez",
+       "energia-potencial": "Energía guardada en la posición",
+       "conservacion-energia": "La suma no cambia sin roce",
+       "potencia-y-eficiencia": "Potencia: trabajo por segundo"
+      },
       "terminos": 28
      }
     },
@@ -518,6 +579,13 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "impulso": "El área de F–t empuja",
+       "conservacion": "Lo que uno gana, otro pierde",
+       "elastico-inelastico": "La energía cinética puede perderse",
+       "restitucion": "e compara rapideces",
+       "centro-masa": "El centro de masa queda"
+      },
       "terminos": 24
      }
     },
@@ -561,6 +629,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "aceleracion-al-centro": "La aceleración apunta al centro",
+       "graficas-mas": "La posición sigue un coseno",
+       "periodo-resorte": "El período no depende de A",
+       "pendulo": "El péndulo no mira la masa",
+       "energia-mas": "La energía se reparte, no cambia"
+      },
       "terminos": 35
      }
     },
@@ -602,6 +677,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "la-cresta-avanza": "La forma viaja, la cuerda no",
+       "funcion-de-onda": "v = λf: el medio manda",
+       "rapidez-cuerda": "Tensión y masa deciden v",
+       "ondas-estacionarias": "Solo caben medias ondas",
+       "intensidad-decibeles": "Los decibeles no se suman"
+      },
       "terminos": 30
      }
     },
@@ -645,6 +727,14 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "presion-profundidad": "Igual profundidad, igual presión",
+       "vasos-comunicantes": "Misma altura, misma presión",
+       "prensa-hidraulica": "La prensa multiplica la fuerza",
+       "empuje": "El empuje es el líquido desalojado",
+       "tension-superficial": "La superficie tira como una piel",
+       "bernoulli": "Más rápido, menos presión"
+      },
       "terminos": 28
      }
     },
@@ -687,6 +777,14 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "escalas": "Dos reglas para lo mismo",
+       "equilibrio-mezcla": "Lo que uno pierde, otro gana",
+       "calor-especifico": "Mismo calor, distinto ΔT",
+       "cambio-de-fase": "En la meseta, T no sube",
+       "dilatacion": "Al calentarse, todo largo crece",
+       "transferencia": "Tres caminos del calor"
+      },
       "terminos": 31
      }
     },
@@ -726,6 +824,14 @@
        "/nucleo/kit/piezas/fis-cuentas.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "gas-ideal": "La temperatura va en kelvin",
+       "primera-ley": "Entra calor, sale trabajo",
+       "trabajo-area": "El trabajo es un área",
+       "cuatro-procesos": "Qué fija cada proceso",
+       "cp-cv": "A presión fija cuesta más",
+       "maquina-termica": "Ningún motor gana a Carnot"
+      },
       "terminos": 25
      }
     },
@@ -776,6 +882,14 @@
        "/nucleo/kit/piezas/fis-cuentas.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "electrizacion": "La carga se reparte",
+       "coulomb": "La misma fuerza sobre las dos",
+       "campo-potencial": "Campo cero no es potencial cero",
+       "campo-uniforme": "Entre placas, el campo es parejo",
+       "serie-paralelo": "En serie, la misma carga",
+       "energia-condensador": "Conectado o aislado cambia todo"
+      },
       "terminos": 26
      }
     },
@@ -822,6 +936,14 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "no-se-gasta": "La corriente no se gasta",
+       "ohm-resistividad": "La pendiente es la resistencia",
+       "fem-y-medidores": "La pila también se resiste",
+       "serie-paralelo": "En paralelo, toda la pila",
+       "kirchhoff": "Lo que entra al nudo sale",
+       "potencia-joule": "Qué foco brilla más"
+      },
       "terminos": 41
      }
     },
@@ -866,6 +988,13 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "oersted": "La corriente hace girar la brújula",
+       "espira-solenoide": "Vueltas por metro deciden B",
+       "fuerza-carga": "La fuerza va de costado",
+       "fuerza-cable": "Solo empuja lo perpendicular",
+       "cables-paralelos": "Mismo sentido, se atraen"
+      },
       "terminos": 28
      }
     },
@@ -912,6 +1041,14 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "flujo": "El flujo cuenta lo que cruza",
+       "faraday": "La fem nace del cambio",
+       "lenz": "La espira se opone al cambio",
+       "barra-movil": "La barra que barre área",
+       "generador": "Alterna: pico y eficaz",
+       "transformador": "Las vueltas fijan el voltaje"
+      },
       "terminos": 34
      }
     },
@@ -956,6 +1093,12 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "campos-cruzados": "E y B, juntos y cruzados",
+       "todas-a-c": "Todas viajan a c",
+       "espectro": "El espectro es una regla",
+       "cambio-de-medio": "Al entrar, f se queda"
+      },
       "terminos": 28
      }
     },
@@ -1000,6 +1143,14 @@
        "/nucleo/kit/piezas/fis-banco-optico.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "snell": "Snell: desde la normal",
+       "reflexion-total": "Luz atrapada: reflexión total",
+       "espejo-plano": "El espejo plano copia distancias",
+       "espejo-concavo": "Espejos curvos: 1/f",
+       "lente-delgada": "Lentes: todos llegan juntos",
+       "fabricante": "Curvatura, índice y dioptrías"
+      },
       "terminos": 21
      }
     },
@@ -1045,6 +1196,14 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "fotoelectrico": "El color arranca, el brillo cuenta",
+       "fotones": "La potencia es contar fotones",
+       "cuerpo-negro": "Más caliente, pico más corto",
+       "rayos-x-laser": "Un fotón por cada salto",
+       "relatividad": "Cada reloj mide su tiempo",
+       "incertidumbre": "Ubicar más es saber menos"
+      },
       "terminos": 40
      }
     }
@@ -1154,6 +1313,14 @@
        "/nucleo/kit/piezas/quim-cocina.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "sustancia-mezcla": "¿Sustancia pura o mezcla?",
+       "propiedades": "Lo que no cambia al partir",
+       "fisico-quimico-nuclear": "¿Siguen siendo las mismas partículas?",
+       "calor-sensible-latente": "Calor que no sube la temperatura",
+       "masa-energia": "Poca masa, muchísima energía",
+       "vida-media": "La mitad cada cierto tiempo"
+      },
       "terminos": 46
      }
     },
@@ -1208,6 +1375,14 @@
        "/nucleo/kit/piezas/quim-orbital-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "nucleo-identidad": "Partículas, isótopos e iones",
+       "modelos-atomicos": "Modelos atómicos",
+       "numeros-cuanticos": "Niveles, subniveles y orbitales",
+       "configuracion-electronica": "Configuración electrónica",
+       "configuracion-iones": "Configuración de los iones",
+       "desapareados-isoelectronicos": "Hund y el último electrón"
+      },
       "terminos": 38
      }
     },
@@ -1253,6 +1428,13 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "periodos-grupos-bloques": "Filas, columnas y bloques",
+       "ubicacion-lewis": "Del último nivel al lugar",
+       "radio-atomico-ionico": "Cuánto mide un átomo",
+       "energia-ionizacion": "Cuánto cuesta arrancar un electrón",
+       "electronegatividad": "Quién jala el par compartido"
+      },
       "terminos": 34
      }
     },
@@ -1302,6 +1484,13 @@
        "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "tres-enlaces": "Tres maneras de unirse",
+       "lewis-octeto": "Primero contar, después dibujar",
+       "resonancia": "Un dibujo no alcanza",
+       "forma-polaridad": "La forma decide la polaridad",
+       "fuerzas-intermoleculares": "Lo que une a las moléculas"
+      },
       "terminos": 41
      }
     },
@@ -1347,6 +1536,13 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "estados-oxidacion": "La suma da la carga",
+       "tres-nombres": "Un compuesto, tres nombres",
+       "arbol-funciones": "El árbol de las funciones",
+       "sales": "Fichas enteras hasta carga cero",
+       "sales-acidas-basicas-hidratadas": "Sales con H, OH o agua"
+      },
       "terminos": 35
      }
     },
@@ -1394,6 +1590,13 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "masa-atomica-promedio": "Masa atómica: un promedio",
+       "mol-masa-molar": "Un mol cuenta, no pesa",
+       "relaciones-en-formula": "Los subíndices son una receta",
+       "composicion-formula-empirica": "De porcentajes a fórmula",
+       "leyes-ponderales": "Lo que la balanza siempre cumple"
+      },
       "terminos": 29
      }
     },
@@ -1438,6 +1641,13 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "indicios": "Indicios, no pruebas",
+       "clasificar": "Juntar, separar, reemplazar",
+       "tanteo": "Coeficientes, nunca subíndices",
+       "oxida-reduce": "Quién se oxida, quién se reduce",
+       "ion-electron": "La carga también se balancea"
+      },
       "terminos": 33
      }
     },
@@ -1486,6 +1696,12 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "via-de-los-moles": "De gramos a gramos, por moles",
+       "reactivo-limitante": "El que se acaba primero",
+       "pureza-rendimiento": "Pureza y rendimiento recortan",
+       "masa-equivalente": "Equivalente: lo que se intercambia"
+      },
       "terminos": 25
      }
     },
@@ -1531,6 +1747,13 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "una-condicion": "Cambia una condición a la vez",
+       "ecuacion-estado": "Cuánto ocupa un mol",
+       "presiones-parciales": "Cada gas empuja por su cuenta",
+       "graham": "El más liviano escapa primero",
+       "gas-de-reaccion": "El gas de una reacción"
+      },
       "terminos": 26
      }
     },
@@ -1578,6 +1801,13 @@
        "/nucleo/kit/piezas/quim-red-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "orden-y-libertad": "Orden y libertad de las partículas",
+       "capilaridad": "La superficie que jala",
+       "presion-vapor": "Hervir es igualar la presión",
+       "diagrama-fases": "El mapa de las fases",
+       "gas-humedo": "Aire húmedo y rocío"
+      },
       "terminos": 30
      }
     },
@@ -1621,6 +1851,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "sistemas-dispersos": "Solución, coloide o suspensión",
+       "curva-solubilidad": "Cuánto cabe en el agua",
+       "concentracion": "Concentración: cantidad entre volumen",
+       "diluir-y-retirar": "Diluir no es retirar",
+       "estequiometria-solucion": "Reaccionar en solución: n = c·V"
+      },
       "terminos": 34
      }
     },
@@ -1662,6 +1899,13 @@
        "/nucleo/kit/piezas/quim-particulas.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "rapidez-pendiente": "La rapidez es una pendiente",
+       "perfil-energia": "La cima del perfil de energía",
+       "factores-velocidad": "Qué acelera una reacción",
+       "orden-reaccion": "El orden sale de los datos",
+       "vida-media": "La mitad en tiempos iguales"
+      },
       "terminos": 37
      }
     },
@@ -1704,6 +1948,12 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "equilibrio-dinamico": "Equilibrio: dos rapideces iguales",
+       "kc-kp": "La constante: Kc y Kp",
+       "grado-reaccion": "El grado de reacción α",
+       "le-chatelier": "Le Chatelier: compara Q con K"
+      },
       "terminos": 30
      }
     },
@@ -1748,6 +1998,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "acido-da-proton": "El ácido da, la base recibe",
+       "fuerte-no-es-concentrado": "Fuerte no es concentrado",
+       "ph-al-diluir": "El pH al diluir",
+       "neutralizacion": "Neutralizar no siempre da 7"
+      },
       "terminos": 33
      }
     },
@@ -1794,6 +2050,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "pila-galvanica": "Electrones por el alambre",
+       "espontaneidad": "Espontánea si E es positivo",
+       "electrolisis-faraday": "La carga decide la masa",
+       "pourbaix": "Potencial y pH en un mapa"
+      },
       "terminos": 39
      }
     },
@@ -1843,6 +2105,14 @@
        "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "carbono-enlaces": "Cuatro enlaces por carbono",
+       "formulas-cadenas": "Una molécula, varias fórmulas",
+       "aromaticos": "El benceno y sus dobles repartidos",
+       "isomeros-estructurales": "Mismos átomos, otras uniones",
+       "cis-trans-optica": "Cis, trans y el espejo",
+       "reacciones-organicas": "Qué enlace cambia en la reacción"
+      },
       "terminos": 44
      }
     },
@@ -1889,6 +2159,14 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "alcohol-fenol-eter": "El oxígeno y sus vecinos",
+       "aldehido-cetona": "El C=O: extremo o medio",
+       "acido-ester": "Ácido, éster y el agua",
+       "amina-amida-nitrilo": "El nitrógeno y su carbono",
+       "isomeria-funcion": "Misma fórmula, otra familia",
+       "nombrar-monofuncional": "Cadena, número y sufijo"
+      },
       "terminos": 37
      }
     },
@@ -1939,6 +2217,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "unir-azucares": "Cada unión de azúcares suelta agua",
+       "grasas-trigliceridos": "Una grasa: glicerol y tres ácidos",
+       "peptidos-plegado": "Desplegar no es cortar",
+       "vitaminas-solubilidad": "Vitaminas: en grasa o en agua",
+       "productos-naturales": "Familias por estructura, no por origen"
+      },
       "terminos": 35
      }
     },
@@ -1985,6 +2270,12 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "destilar-separa": "Destilar separa, craquear transforma",
+       "octanaje": "El octanaje es una comparación",
+       "combustion": "Con poco oxígeno sale CO",
+       "mena-ley-metal": "La ley no es la pureza"
+      },
       "terminos": 33
      }
     },
@@ -2033,6 +2324,14 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "cadenas-del-aire": "Cada problema, su cadena",
+       "filtrar-no-desinfecta": "Agua clara no es segura",
+       "eutrofizacion": "Más nutrientes, menos oxígeno",
+       "reciclaje-flujos": "Reciclar se mide con flujos",
+       "polimeros-adicion": "No toda unión suelta agua",
+       "superficie-nano-corrosion": "Más pedazos, más superficie"
+      },
       "terminos": 46
      }
     }
@@ -2122,6 +2421,14 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "condicional": "El condicional solo falla una vez",
+       "equivalencias": "Misma columna, misma proposición",
+       "operaciones": "Cada operación junta regiones",
+       "potencia": "Con o sin cada elemento",
+       "cuantificadores": "Un contraejemplo basta",
+       "certezas": "Seguro es en todos los casos"
+      },
       "terminos": 26
      }
     },
@@ -2164,6 +2471,12 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "orden": "Un negativo voltea el orden",
+       "intervalos": "Cada extremo se decide aparte",
+       "acotados": "Acotado no es tener máximo",
+       "tabla-operacion": "Una tabla se comprueba"
+      },
       "terminos": 29
      }
     },
@@ -2206,6 +2519,11 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "leyes-exponentes": "El exponente cuenta factores",
+       "radicales": "La raíz cuadrada es un lado",
+       "exponente-fraccionario": "La raíz es un exponente fraccionario"
+      },
       "terminos": 25
      }
     },
@@ -2250,6 +2568,13 @@
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "cuadrado-suma": "El cuadrado de una suma",
+       "suma-por-diferencia": "Suma por diferencia",
+       "cubo-binomio": "El cubo de una suma",
+       "radicales-dobles": "Dos números que suman y multiplican",
+       "racionalizar": "Racionalizar es multiplicar por uno"
+      },
       "terminos": 32
      }
     },
@@ -2293,6 +2618,13 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "balanza": "Lo mismo en los dos platillos",
+       "dividir-entre-x": "Antes de dividir, revisa x = 0",
+       "discriminante": "El discriminante cuenta los cortes",
+       "suma-producto": "Suma y producto sin resolver",
+       "planteo": "La letra es un número"
+      },
       "terminos": 31
      }
     },
@@ -2336,6 +2668,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "lineales": "Un negativo voltea el sentido",
+       "cuadraticas": "La parábola decide los signos",
+       "puntos-criticos": "Raíz impar cambia, raíz par no",
+       "fraccionarias": "El denominador nunca entra"
+      },
       "terminos": 26
      }
     },
@@ -2379,6 +2717,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "distancia": "Valor absoluto es distancia",
+       "casos-absoluto": "Cada candidato se comprueba",
+       "radical-ecuacion": "Cuadrar trae candidatos de más",
+       "radical-inecuacion": "Primero el dominio, después cuadrar"
+      },
       "terminos": 22
      }
     },
@@ -2420,6 +2764,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "grados": "El grado se suma por término",
+       "valor-numerico": "Evaluar es reemplazar cada x",
+       "completo-ordenado": "Una casilla por cada potencia",
+       "igualdad": "Iguales casilla por casilla",
+       "operaciones": "Cada término por cada término"
+      },
       "terminos": 26
      }
     },
@@ -2462,6 +2813,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "algoritmo": "Dividir es buscar D·Q + R",
+       "ruffini": "Bajar, multiplicar y sumar",
+       "divisor-k": "Con kx + b, divide entre k",
+       "teorema-resto": "El resto es P(a)",
+       "cocientes-notables": "Un exponente baja, otro sube"
+      },
       "terminos": 25
      }
     },
@@ -2506,6 +2864,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "factor-comun": "Primero el factor común",
+       "aspa-simple": "El aspa reconstruye el centro",
+       "aspa-doble": "Tres aspas para seis términos",
+       "teorema-factor": "Si P(a) = 0, hay factor",
+       "mcd-mcm": "Menor exponente, mayor exponente"
+      },
       "terminos": 38
      }
     },
@@ -2553,6 +2918,14 @@
        "/nucleo/kit/piezas/flechas.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "grado-raices": "Tantas raíces como el grado",
+       "viete": "Los coeficientes delatan las raíces",
+       "raices-racionales": "Candidatas racionales: p entre q",
+       "conjugadas": "La raíz no real viene acompañada",
+       "cambio-de-variable": "Un cambio de variable",
+       "binomica": "zⁿ = w: un polígono regular"
+      },
       "terminos": 41
      }
     },
@@ -2599,6 +2972,14 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "dominio-rango": "Entradas permitidas, salidas obtenidas",
+       "cuadratica": "El vértice, a mitad de camino",
+       "especiales": "El piso de un negativo",
+       "composicion": "Primero g, después f",
+       "traslaciones": "Restar adentro corre a la derecha",
+       "polinomial": "Raíces y extremos de un polinomio"
+      },
       "terminos": 35
      }
     },
@@ -2641,6 +3022,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "paridad": "Par, impar y su espejo",
+       "monotona": "Sube, baja y queda acotada",
+       "inyectiva": "Una recta horizontal decide",
+       "inversa": "La inversa deshace",
+       "modelacion": "Un modelo tiene su dominio"
+      },
       "terminos": 33
      }
     },
@@ -2683,6 +3071,14 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "exponencial": "Cada paso multiplica por b",
+       "logaritmo": "El logaritmo es un exponente",
+       "numero-e": "El número e aparece solo",
+       "logaritmica": "El logaritmo pide positivos",
+       "ecuaciones": "Resolver y revisar el argumento",
+       "inecuaciones": "Base menor que 1 invierte"
+      },
       "terminos": 32
      }
     },
@@ -2726,6 +3122,14 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "por-i-gira": "Multiplicar por i gira 90°",
+       "forma-binomica": "Sumar partes, multiplicar distribuyendo",
+       "conjugado-modulo": "Reflejo y largo de la flecha",
+       "polar": "Multiplicar estira y gira",
+       "raices": "n raíces en un polígono",
+       "regiones": "El módulo mide distancias"
+      },
       "terminos": 33
      }
     },
@@ -2772,6 +3176,13 @@
        "/nucleo/kit/piezas/alg-columnas-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "fila-por-columna": "Fila por columna",
+       "tipos-traza-transpuesta": "Filas que pasan a columnas",
+       "determinante-area": "El determinante es un área",
+       "inversa-adjunta": "La inversa deshace a A",
+       "rango": "Rango: filas que aportan"
+      },
       "terminos": 25
      }
     },
@@ -2818,6 +3229,13 @@
        "/nucleo/kit/piezas/alg-planos-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "dos-rectas": "Dos rectas, tres destinos",
+       "gauss": "Se opera la fila entera",
+       "cramer": "Cramer, solo si Δ ≠ 0",
+       "rouche": "Rangos que deciden",
+       "no-lineal": "Curvas que se cruzan"
+      },
       "terminos": 31
      }
     },
@@ -2862,6 +3280,12 @@
        "/nucleo/kit/piezas/alg-techo-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "semiplano": "Una desigualdad, medio plano",
+       "region-factible": "Lo que cumple todo junto",
+       "recta-de-nivel": "La recta de nivel se despide",
+       "casos-especiales": "Lado entero, sin tope o vacío"
+      },
       "terminos": 23
      }
     },
@@ -2901,6 +3325,14 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "progresiones": "Sumar lo mismo o multiplicar",
+       "limite": "Acercarse sin llegar",
+       "recurrencia": "Cada término sale de anteriores",
+       "gauss": "Al derecho y al revés",
+       "telescopica": "Lo de en medio se cancela",
+       "serie-geometrica": "La suma infinita es un límite"
+      },
       "terminos": 21
      }
     },
@@ -2943,6 +3375,12 @@
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "pascal-elecciones": "Cada coeficiente cuenta elecciones",
+       "termino-general": "El término k + 1 lleva bᵏ",
+       "exponente-no-natural": "Con exponente no natural, no termina",
+       "potencia-trinomio": "Un trinomio también cuenta órdenes"
+      },
       "terminos": 26
      }
     }
@@ -3026,6 +3464,13 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "conectivos": "Cada conectivo tiene su tabla",
+       "condicional": "El condicional solo falla una vez",
+       "tautologia": "Verdadera en todas las filas",
+       "de-morgan": "Equivalente es misma tabla",
+       "cuantificadores": "Para todo y existe"
+      },
       "terminos": 21
      }
     },
@@ -3065,6 +3510,13 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "pertenencia": "Pertenecer no es estar incluido",
+       "operaciones": "Cada operación es una zona",
+       "conteo": "La intersección se cuenta una vez",
+       "potencia": "Cada elemento duplica los subconjuntos",
+       "cartesiano": "Pares con orden"
+      },
       "terminos": 23
      }
     },
@@ -3106,6 +3558,12 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "restar-dividir": "Restar o dividir: dos comparaciones",
+       "proporcion": "Proporción: los productos cruzados",
+       "medias": "Tres medias para dos números",
+       "serie": "Razones iguales: la suma también"
+      },
       "terminos": 28
      }
     },
@@ -3148,6 +3606,12 @@
        "/nucleo/kit/piezas/arit-tiras.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "directa-inversa": "Cociente fijo o producto fijo",
+       "compuesta": "La obra se reparte en días",
+       "reparto": "Repartir según pesos",
+       "compania": "Capital por tiempo"
+      },
       "terminos": 23
      }
     },
@@ -3189,6 +3653,13 @@
        "/nucleo/kit/piezas/barra-porcentaje.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "base": "Cada porcentaje tiene una base",
+       "sucesivos": "El segundo muerde lo que quedó",
+       "variacion": "Subir y bajar no se anulan",
+       "costo-venta": "Costo, lista, venta y ganancia",
+       "igv": "El impuesto se quita dividiendo"
+      },
       "terminos": 23
      }
     },
@@ -3231,6 +3702,13 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "simple-compuesto": "El interés que gana interés",
+       "tasas": "Nominal, efectiva y continua",
+       "presente-futuro": "Traer el dinero al presente",
+       "descuento": "Descuento comercial y racional",
+       "vencimiento-comun": "Varias letras, una fecha"
+      },
       "terminos": 28
      }
     },
@@ -3271,6 +3749,12 @@
        "/nucleo/kit/piezas/arit-tiras.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "precio-medio": "El precio medio pesa",
+       "aspa": "El aspa: distancias cruzadas",
+       "alcohol": "Grados: litros de alcohol puro",
+       "quilates": "Quilates: oro de cada 24 partes"
+      },
       "terminos": 15
      }
     },
@@ -3317,6 +3801,14 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "tabla-frecuencias": "Contar, dividir, acumular",
+       "graficos": "Barras y sectores",
+       "centrales": "Media, mediana y moda",
+       "ponderada": "Cuando cada dato pesa distinto",
+       "cuartiles": "Cortar los datos en cuartos",
+       "dispersion": "Qué tan lejos de la media"
+      },
       "terminos": 32
      }
     },
@@ -3362,6 +3854,13 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "principios": "«Y» multiplica, «o» suma",
+       "variaciones": "Cada puesto, una opción menos",
+       "circular": "En ronda, girar no cambia nada",
+       "repeticion": "Letras iguales, palabras iguales",
+       "combinaciones": "Elegir no es ordenar"
+      },
       "terminos": 15
      }
     },
@@ -3409,6 +3908,13 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "espacio": "Contar en el espacio muestral",
+       "union": "Lo común se cuenta una vez",
+       "condicional": "Saber algo cambia el denominador",
+       "bayes": "De dónde viene un fallado",
+       "esperanza": "El promedio a la larga"
+      },
       "terminos": 25
      }
     },
@@ -3455,6 +3961,13 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "agrupar": "Agrupar de n en n",
+       "descomposicion": "Cada cifra vale según su lugar",
+       "cambio-base": "De base 10 a otra base",
+       "base-desconocida": "La base que no se ve",
+       "conteo-cifras": "Contar cifras por bloques"
+      },
       "terminos": 21
      }
     },
@@ -3505,6 +4018,15 @@
        "/nucleo/kit/piezas/arit-tiras.js"
       ],
       "ideas": 7,
+      "titulos": {
+       "otras-bases": "La llevada llena una bolsita",
+       "prestamo": "Abrir una bolsita para restar",
+       "complemento": "Lo que falta para llenar",
+       "cifras-ocultas": "Cifras que faltan, columna por columna",
+       "multiplicar-partes": "Multiplicar es juntar bolsas iguales",
+       "defecto-exceso": "Sobran o faltan para otra bolsita",
+       "cifras-producto": "¿Cabe el producto en la pantalla?"
+      },
       "terminos": 33
      }
     },
@@ -3547,6 +4069,13 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "filas-de-m": "Filas de m sin sobrante",
+       "restos-suman": "Los restos se suman y multiplican",
+       "restos-potenciales": "Los restos de potencias se repiten",
+       "criterios": "Los criterios salen de 10",
+       "diofanticas": "Soluciones enteras: manda el mcd"
+      },
       "terminos": 24
      }
     },
@@ -3593,6 +4122,14 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "rectangulos": "Primo: una sola fila",
+       "criba": "La criba tacha múltiplos",
+       "factorizacion": "Una sola factorización",
+       "divisores": "Elegir exponentes cuenta divisores",
+       "euler": "φ(n) cuenta los coprimos",
+       "fermat-wilson": "Fermat y Wilson con un primo"
+      },
       "terminos": 29
      }
     },
@@ -3638,6 +4175,13 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "mcd-cintas": "El trozo común más largo",
+       "mcm-coinciden": "La primera vez que coinciden",
+       "euclides": "Euclides: medir con el resto",
+       "mcd-por-mcm": "MCD por MCM, con dos números",
+       "fraccion-continua": "Los cocientes arman una fracción"
+      },
       "terminos": 26
      }
     },
@@ -3685,6 +4229,13 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "equivalentes": "Partir distinto, misma cantidad",
+       "orden-recta": "Dónde cae la fracción",
+       "exacto-periodico": "Exacto o periódico",
+       "generatriz": "Alinear las colas y restar",
+       "otras-bases": "Exacto según la base"
+      },
       "terminos": 32
      }
     },
@@ -3728,6 +4279,12 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "perfectos": "Los exponentes deciden",
+       "exclusion": "Descartar no es confirmar",
+       "raiz-entera": "El cuadrado más grande que cabe",
+       "aproximadas": "Encerrar la raíz por pasos"
+      },
       "terminos": 25
      }
     },
@@ -3774,6 +4331,13 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "progresion-aritmetica": "Cada fila agrega lo mismo",
+       "suma-rectangulo": "La suma es medio rectángulo",
+       "progresion-geometrica": "Cada término multiplica por r",
+       "diferencias": "Diferencias que se vuelven constantes",
+       "suma-infinita": "Sumar sin fin sin pasarse"
+      },
       "terminos": 21
      }
     },
@@ -3812,6 +4376,14 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "falsa-suposicion": "Suponer todo igual y corregir",
+       "regresivo": "Deshacer de atrás hacia adelante",
+       "edades": "La diferencia de edades no cambia",
+       "moviles": "Encuentro y alcance",
+       "criptoaritmetica": "Cada letra es una cifra",
+       "suficiencia": "¿Alcanza para una sola respuesta?"
+      },
       "terminos": 26
      }
     }
@@ -3909,6 +4481,14 @@
        "/nucleo/kit/piezas/geo-objeto.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "suma-de-segmentos": "Suma de segmentos",
+       "punto-medio": "El punto medio",
+       "abertura": "Clases de ángulos",
+       "bisectrices": "Complemento, suplemento y bisectriz",
+       "paralelas": "Paralelas cortadas por una secante",
+       "quiebre": "El quiebre entre paralelas"
+      },
       "terminos": 36
      }
     },
@@ -3953,6 +4533,14 @@
        "/nucleo/kit/piezas/geo-objeto.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "suma-de-angulos": "Suma de ángulos interiores",
+       "angulo-exterior": "El ángulo exterior",
+       "isosceles": "Triángulo isósceles y equilátero",
+       "desigualdad": "Desigualdad triangular",
+       "lineas-notables": "Líneas notables",
+       "angulo-de-bisectrices": "Ángulos entre bisectrices"
+      },
       "terminos": 49
      }
     },
@@ -3993,6 +4581,13 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "criterios": "Qué datos fijan un triángulo",
+       "mediatriz-bisectriz": "Puntos que equidistan",
+       "base-media": "La base media mide la mitad",
+       "mediana-hipotenusa": "La mediana a la hipotenusa",
+       "notables": "Los rectángulos notables"
+      },
       "terminos": 47
      }
     },
@@ -4034,6 +4629,13 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "suma-de-angulos": "Triángulos dentro del polígono",
+       "diagonales": "Cada diagonal se cuenta dos veces",
+       "paralelogramos": "Nombres que se ganan con condiciones",
+       "trapecios": "La mediana del trapecio",
+       "trapezoides": "Puntos medios de cualquier cuadrilátero"
+      },
       "terminos": 40
      }
     },
@@ -4076,6 +4678,14 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "tangentes": "El radio y la tangente",
+       "posiciones": "Dos circunferencias: compara d",
+       "inscrito": "Inscrito: la mitad del arco",
+       "interior-exterior": "Dentro se suma, fuera se resta",
+       "poncelet-pitot": "Tangentes iguales: Pitot y Poncelet",
+       "cuadrilatero-inscrito": "Opuestos que suman 180°"
+      },
       "terminos": 48
      }
     },
@@ -4116,6 +4726,13 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "thales": "Una paralela corta en proporción",
+       "bisectriz": "La bisectriz copia la razón",
+       "ceva-menelao": "Tres razones cuyo producto es 1",
+       "semejanza": "Emparejar lados por sus ángulos",
+       "area-y-escala": "El área crece con k²"
+      },
       "terminos": 45
      }
     },
@@ -4156,6 +4773,11 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "baricentro": "El baricentro parte en 2 : 1",
+       "centros": "Cada centro y sus líneas",
+       "euler": "Recta y círculo de Euler"
+      },
       "terminos": 51
      }
     },
@@ -4200,6 +4822,14 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "triangulo-rectangulo": "La altura y sus proyecciones",
+       "euclides": "Pitágoras corregido: la proyección",
+       "stewart": "Una ceviana: Stewart",
+       "heron": "Área con los tres lados",
+       "potencia": "Cuerdas, secantes y tangente",
+       "ptolomeo": "Diagonales del cuadrilátero inscrito"
+      },
       "terminos": 51
      }
     },
@@ -4242,6 +4872,12 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "central-y-apotema": "Radio, apotema y ángulo central",
+       "inscritos-notables": "Triángulo, cuadrado y hexágono inscritos",
+       "dos-n-lados": "De n lados a 2n lados",
+       "seccion-aurea": "La razón áurea del pentágono"
+      },
       "terminos": 45
      }
     },
@@ -4277,6 +4913,11 @@
        "/nucleo/kit/piezas/geo-simetria-3d.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "simetria-axial": "El eje es la mediatriz",
+       "simetria-central": "Simetría central: media vuelta",
+       "simetria-plano": "Reflejo en un plano"
+      },
       "terminos": 38
      }
     },
@@ -4321,6 +4962,13 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "area-del-triangulo": "Base por altura, sobre dos",
+       "razon-de-areas": "Misma altura, razón de bases",
+       "paralelogramos-y-rombos": "Paralelogramo y rombo",
+       "trapecios-y-trapezoides": "Trapecio y cuadrilátero cualquiera",
+       "relaciones-cuadrilateros": "Mitades escondidas en cuadriláteros"
+      },
       "terminos": 42
      }
     },
@@ -4364,6 +5012,13 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "pi": "π: la razón que no cambia",
+       "area-del-circulo": "El círculo hecho rectángulo",
+       "arco-y-sector": "Arco y sector: la misma fracción",
+       "segmento-y-corona": "Corona y segmento: restar regiones",
+       "trapecio-circular-y-lunulas": "Sumar y restar regiones curvas"
+      },
       "terminos": 37
      }
     },
@@ -4410,6 +5065,14 @@
        "/nucleo/kit/piezas/geo-espacio-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "recta-perpendicular": "Perpendicular a todo el plano",
+       "proyeccion-y-angulo": "La sombra que mide el ángulo",
+       "tres-perpendiculares": "Tres perpendiculares",
+       "diedro": "El diedro se mide de canto",
+       "rectas-cruzadas": "Rectas que se cruzan sin tocarse",
+       "triedro": "Tres caras que cierran"
+      },
       "terminos": 41
      }
     },
@@ -4451,6 +5114,11 @@
        "/nucleo/kit/piezas/geo-poliedro-3d.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "elementos": "Contar también lo oculto",
+       "euler": "Caras más vértices",
+       "regulares": "Solo cinco regulares"
+      },
       "terminos": 27
      }
     },
@@ -4500,6 +5168,14 @@
        "/nucleo/kit/piezas/geo-piramides-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "prisma": "La altura no es la arista",
+       "paralelepipedo": "Pitágoras dos veces",
+       "piramide": "La cara sube por la apotema",
+       "tronco-de-piramide": "El tronco del papiro",
+       "tronco-de-prisma": "Corte oblicuo: el promedio",
+       "semejanza-de-solidos": "Escala al cubo"
+      },
       "terminos": 48
      }
     },
@@ -4548,6 +5224,14 @@
        "/nucleo/kit/piezas/geo-revolucion-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "cilindro": "Cilindro cortado en diagonal",
+       "cono": "Altura adentro, generatriz afuera",
+       "desarrollo": "El cono abierto",
+       "esfera": "La esfera en su cilindro",
+       "zona-y-casquete": "Franjas de igual área",
+       "pappus": "Lo que recorre el centro"
+      },
       "terminos": 39
      }
     },
@@ -4588,6 +5272,14 @@
        "/nucleo/kit/piezas/geo-figura.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "distancia-y-division": "Distancia y reparto de un segmento",
+       "pendiente-y-recta": "Cuánto sube por cada paso",
+       "distancia-punto-recta": "El camino más corto",
+       "circunferencia": "Todos a la misma distancia",
+       "parabola": "Equidistante de foco y directriz",
+       "elipse": "La suma que no cambia"
+      },
       "terminos": 34
      }
     },
@@ -4624,6 +5316,14 @@
        "/nucleo/kit/piezas/geo-cubitos-3d.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "perimetro": "El perímetro recorre el borde",
+       "series-y-analogias": "Una regla por cada cambio",
+       "distribucion": "La regla debe cumplir en todas",
+       "conteo-de-triangulos": "Contar por pares de rayos",
+       "rutas": "Cada esquina suma dos caminos",
+       "cubos-ocultos": "Los cubitos que no se ven"
+      },
       "terminos": 22
      }
     }
@@ -4717,6 +5417,12 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "sentido-signo": "El sentido es el signo",
+       "tres-sistemas": "Una vuelta, tres escalas",
+       "radian": "Un radián: un radio de arco",
+       "minutos-decimales": "Minutos no son décimas"
+      },
       "terminos": 21
      }
     },
@@ -4756,6 +5462,13 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "arco": "El arco cuenta radios",
+       "sector": "El área lleva dos radios",
+       "trapecio-circular": "Sector grande menos sector chico",
+       "vueltas-rueda": "La rueda gira lo que avanza",
+       "faja-y-eje": "Mismo borde o mismo ángulo"
+      },
       "terminos": 20
      }
     },
@@ -4796,6 +5509,13 @@
        "/nucleo/kit/piezas/trig-objeto.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "lados-desde-angulo": "Los lados se nombran desde θ",
+       "razon-cociente": "Una razón es un cociente",
+       "notables": "Medio cuadrado, medio equilátero",
+       "aproximados": "Los ángulos de 37° y 53°",
+       "complementarias": "Complementarias y recíprocas"
+      },
       "terminos": 41
      }
     },
@@ -4837,6 +5557,11 @@
        "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "un-lado-un-angulo": "Un lado y un ángulo bastan",
+       "elevacion-depresion": "Desde la horizontal del ojo",
+       "angulo-observacion": "Lo que abarca la mirada"
+      },
       "terminos": 27
      }
     },
@@ -4873,6 +5598,14 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 6,
+      "titulos": {
+       "distancia": "La distancia es una hipotenusa",
+       "division": "Promedio con pesos cruzados",
+       "baricentro-area": "Caja menos esquinas",
+       "pendiente": "Lo que sube por paso",
+       "ecuaciones": "Tres ecuaciones, una recta",
+       "paralelas-perpendiculares": "Paralelas, perpendiculares y distancia"
+      },
       "terminos": 34
      }
     },
@@ -4912,6 +5645,12 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "razones-coordenadas": "Las razones salen de P",
+       "signos-cuadrante": "El signo sale de x, y",
+       "cuadrantales": "Cero no es «no definida»",
+       "coterminales-negativos": "Vueltas iguales, giros reflejados"
+      },
       "terminos": 30
      }
     },
@@ -4951,6 +5690,12 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "angulo-referencia": "Mismo tamaño, otro signo",
+       "cofuncion": "Un cuarto de vuelta intercambia",
+       "mayores-negativos": "Primero se quitan las vueltas",
+       "suplementarios-vuelta": "Suplementarios y de una vuelta"
+      },
       "terminos": 23
      }
     },
@@ -4994,6 +5739,13 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "arcos-reales": "Cada número es un arco",
+       "lineas-seno-coseno": "Seno y coseno con signo",
+       "lineas-tangente-cotangente": "Tangente y cotangente: dos rectas",
+       "lineas-secante-cosecante": "Secante y cosecante: los cortes",
+       "variacion-cuadrantes": "Crecer es subir con signo"
+      },
       "terminos": 38
      }
     },
@@ -5035,6 +5787,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "pitagoricas": "Pitágoras dentro de la circunferencia",
+       "reciprocas-division": "Recíprocas y cocientes, con dominio",
+       "auxiliares": "Al cuadrado aparece el doble",
+       "simplificar-demostrar": "Demostrar no es probar valores"
+      },
       "terminos": 34
      }
     },
@@ -5076,6 +5834,12 @@
        "/nucleo/kit/piezas/triangulo.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "seno-suma": "El seno no se reparte",
+       "tangente-suma": "La tangente y su denominador",
+       "una-sola-onda": "Dos ondas, una sola cresta",
+       "tres-angulos": "Tres ángulos que suman 180°"
+      },
       "terminos": 21
      }
     },
@@ -5117,6 +5881,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "angulo-doble": "El doble del ángulo",
+       "degradacion": "Bajar la potencia",
+       "angulo-mitad": "El signo de la mitad",
+       "angulo-triple": "El triple y su cubo"
+      },
       "terminos": 33
      }
     },
@@ -5157,6 +5927,12 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "flechas-rombo": "Dos flechas, un rombo",
+       "producto-suma": "Un producto, dos ondas",
+       "cadena-flechas": "Una cadena de flechas",
+       "doblar-y-doblar": "Doblar y doblar"
+      },
       "terminos": 28
      }
     },
@@ -5203,6 +5979,13 @@
        "/nucleo/kit/piezas/trig-helice-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "altura-desenrollada": "La altura, desenrollada",
+       "amplitud-periodo": "Alto y ancho de la onda",
+       "tangente-ramas": "Ramas entre asíntotas",
+       "secante-copas": "Copas fuera de la franja",
+       "periodo-general": "El periodo depende de la función"
+      },
       "terminos": 36
      }
     },
@@ -5245,6 +6028,13 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "rama-arcoseno": "Una inversa elige una rama",
+       "tres-ramas": "Cada inversa, su rama",
+       "componer": "Componer sin cancelar a ciegas",
+       "grafica-reflejo": "La gráfica se refleja",
+       "otras-tres": "arccot, arcsec y arccsc"
+      },
       "terminos": 35
      }
     },
@@ -5286,6 +6076,13 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "cortes-recta": "Cuántas veces corta la recta",
+       "solucion-general": "La calculadora da un valor",
+       "extremos": "Los extremos del intervalo cuentan",
+       "factorizar": "Factorizar, no dividir",
+       "sistemas": "Un sistema pide ambas"
+      },
       "terminos": 35
      }
     },
@@ -5329,6 +6126,13 @@
        "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "ley-de-senos": "Cada lado con su seno",
+       "caso-ambiguo": "Dos triángulos, mismos datos",
+       "ley-de-cosenos": "Pitágoras con corrección",
+       "proyecciones-tangentes": "La base, suma de dos sombras",
+       "rumbos": "Rumbo: desde norte o sur"
+      },
       "terminos": 37
      }
     },
@@ -5370,6 +6174,13 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "area-dos-lados": "El área sigue al seno",
+       "heron-semiangulos": "Herón: solo con los lados",
+       "area-y-radios": "Tres radios, una misma área",
+       "cevianas": "El largo de una ceviana",
+       "area-cuadrilatero": "Un cuadrilátero, dos diagonales"
+      },
       "terminos": 34
      }
     },
@@ -5410,6 +6221,13 @@
        "/nucleo/kit/piezas/trig-cono-3d.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "lugar-parabola": "Un lugar: PF = PD",
+       "elipse": "La cuerda del jardinero",
+       "hiperbola": "La diferencia que no cambia",
+       "recta-tangente": "Tocar una sola vez",
+       "rotacion-ecuacion-general": "Girar los ejes, no la curva"
+      },
       "terminos": 40
      }
     },
@@ -5445,6 +6263,13 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "polar-punto": "Un punto, muchos nombres",
+       "argumento": "El cuadrante decide el argumento",
+       "multiplicar": "Multiplicar es girar y estirar",
+       "de-moivre": "De Moivre: potencias que giran",
+       "exponencial": "La forma exponencial"
+      },
       "terminos": 34
      }
     }
@@ -5533,6 +6358,13 @@
        "/nucleo/kit/piezas/rm-familia.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "doble-entrada": "El cuadro que descarta",
+       "dos-atributos": "Pistas que cruzan dos listas",
+       "conclusion-necesaria": "Lo que vale en todo dibujo",
+       "si-entonces": "Si llueve, la pista se moja",
+       "parentesco": "Subir y bajar por el árbol"
+      },
       "terminos": 23
      }
     },
@@ -5570,6 +6402,12 @@
        "/nucleo/kit/piezas/rm-plano.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "un-solo-trazo": "Contar los vértices impares",
+       "recorrido-minimo": "Repetir lo menos posible",
+       "deslizar-lados": "Deslizar lados hasta el borde",
+       "arcos-que-suman": "Los arcos chicos suman igual"
+      },
       "terminos": 17
      }
     },
@@ -5605,6 +6443,11 @@
        "/nucleo/kit/piezas/rm-plano.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "orden-lineal": "Antes no es junto",
+       "orden-circular": "En la mesa redonda, una referencia",
+       "mesa-cuadrada": "Frente a frente, mesa cuadrada"
+      },
       "terminos": 12
      }
     },
@@ -5637,6 +6480,11 @@
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "suposicion": "Suponer y comprobar",
+       "contradictorias": "Dos frases que chocan",
+       "negar-bien": "Lo contrario de «todos»"
+      },
       "terminos": 15
      }
     },
@@ -5671,6 +6519,11 @@
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "camino-y-flecha": "Lo caminado y dónde terminas",
+       "torre-que-se-muda": "La torre que se muda",
+       "pasar-un-numero": "Pasar un número, mover el doble"
+      },
       "terminos": 16
      }
     },
@@ -5704,6 +6557,11 @@
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "suma-magica": "La suma mágica sale del total",
+       "vertices-dos-veces": "Los vértices cuentan dos veces",
+       "reparto-parejo": "Repartir en dos sumas iguales"
+      },
       "terminos": 12
      }
     },
@@ -5739,6 +6597,11 @@
        "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "figuras-que-crecen": "La regla sale de construir",
+       "tres-casos-no-prueban": "Tres casos no prueban",
+       "impares-y-cuadrados": "Impares que arman cuadrados"
+      },
       "terminos": 19
      }
     },
@@ -5776,6 +6639,11 @@
        "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "domino": "Un par sin orden por ficha",
+       "dados": "Una cara fija solo su opuesta",
+       "cerillas": "Cerillas y cuadrados de todo tamaño"
+      },
       "terminos": 12
      }
     },
@@ -5813,6 +6681,13 @@
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
       "ideas": 5,
+      "titulos": {
+       "angulo-agujas": "El horario también camina",
+       "adelantos": "El adelanto va por hora real",
+       "campanadas": "Campanadas: se cuentan intervalos",
+       "bisiestos": "Cuándo un año es bisiesto",
+       "dia-de-la-semana": "Las semanas completas no cuentan"
+      },
       "terminos": 17
      }
     },
@@ -5846,6 +6721,11 @@
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "peor-caso": "Prepara la peor suerte",
+       "palomar": "Más objetos que casilleros",
+       "llaves": "Identificar llaves en el peor caso"
+      },
       "terminos": 15
      }
     },
@@ -5878,6 +6758,11 @@
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "tomas-cada-t": "La primera toma también cuenta",
+       "turnos-mcm": "Turnos que vuelven a coincidir",
+       "campanadas-del-dia": "Sumar las campanadas del día"
+      },
       "terminos": 14
      }
     },
@@ -5910,6 +6795,11 @@
        "/nucleo/kit/piezas/rm-plano.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "engranajes": "Engranajes: pasan los mismos dientes",
+       "faja": "La faja lleva el mismo borde",
+       "mismo-eje": "En un mismo eje, mismas vueltas"
+      },
       "terminos": 19
      }
     },
@@ -5946,6 +6836,12 @@
        "/nucleo/kit/piezas/rm-plano.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "minimo-personas": "Menos personas, más papeles",
+       "precio-que-mas-recauda": "El precio que más recauda",
+       "regiones-con-rectas": "Cada recta nueva, más regiones",
+       "reflejo": "Reflejar para enderezar el camino"
+      },
       "terminos": 16
      }
     },
@@ -5984,6 +6880,12 @@
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "cortes": "Cortes y trozos no coinciden",
+       "sustituir": "Cambiar por lo que pesa igual",
+       "pesas-en-dos-platillos": "Pesas en los dos platillos",
+       "minimo-de-pesadas": "Cada pesada deja un tercio"
+      },
       "terminos": 14
      }
     },
@@ -6018,6 +6920,12 @@
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "traducir": "Quién es más grande",
+       "edades": "Pasan años para los dos",
+       "cuadratica": "Dos raíces, una respuesta",
+       "cabezas-y-patas": "Cabezas y patas"
+      },
       "terminos": 17
      }
     },
@@ -6060,6 +6968,12 @@
        "/nucleo/kit/piezas/rm-plano.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "mover-sin-deformar": "Mover sin deformar",
+       "semejanza": "Lados por k, área por k²",
+       "rodamiento": "Lo que recorre el centro",
+       "area-barrida": "El área que barre un giro"
+      },
       "terminos": 27
      }
     },
@@ -6103,6 +7017,11 @@
        "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "rutas-en-el-plano": "Sumar las rutas que llegan",
+       "rutas-en-el-espacio": "Rutas por las aristas",
+       "vistas": "Dos vistas, varias pilas"
+      },
       "terminos": 14
      }
     },
@@ -6135,6 +7054,11 @@
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "leer-con-escala": "La altura depende del eje",
+       "puntos-de-una-liga": "Cuántos puntos reparte una liga",
+       "suficiencia": "Bastan si todos coinciden"
+      },
       "terminos": 16
      }
     },
@@ -6166,6 +7090,11 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "seguir-un-bucle": "La tabla de estados",
+       "contador-y-acumulador": "Contar no es sumar",
+       "operadores": "El operador manda su regla"
+      },
       "terminos": 14
      }
     }
@@ -6245,6 +7174,10 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 2,
+      "titulos": {
+       "genero-diferencia": "Clase cercana y rasgo que separa",
+       "rasgo-necesario": "Necesario, no solo frecuente"
+      },
       "terminos": 8
      }
     },
@@ -6279,6 +7212,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "relacion-no-tema": "La relación, no el tema",
+       "clase-y-causa": "Clase y miembro, causa y efecto",
+       "sinonimo-antonimo": "Sinónimos y antónimos en un rasgo"
+      },
       "terminos": 14
      }
     },
@@ -6320,6 +7258,12 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "acepcion": "La oración elige la acepción",
+       "denota-connota": "Lo que dice y cómo valora",
+       "palabra-precisa": "La palabra precisa",
+       "inferir-significado": "El significado sale de las pistas"
+      },
       "terminos": 18
      }
     },
@@ -6350,6 +7294,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "relacion-primero": "Primero la relación, después el conector",
+       "clases": "Cada hueco pide una clase",
+       "locuciones": "Varias palabras, un conector"
+      },
       "terminos": 14
      }
     },
@@ -6382,6 +7331,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "redundancia": "Lo que repite sin aportar",
+       "impertinencia": "Lo que habla de otro asunto",
+       "incompatibilidad": "Contradecir no es contrastar"
+      },
       "terminos": 15
      }
     },
@@ -6415,6 +7369,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "abre-y-retoma": "Qué abre y qué retoma",
+       "tiempo-y-causa": "El tiempo y la causa ordenan",
+       "analizar-comparar": "Presentar antes de comparar"
+      },
       "terminos": 18
      }
     },
@@ -6456,6 +7415,12 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "referente": "A quién se refiere",
+       "repetir-sustituir-callar": "Repetir, sustituir o callar",
+       "conocido-y-nuevo": "Lo conocido trae lo nuevo",
+       "no-contradiccion": "Conectores no garantizan sentido"
+      },
       "terminos": 24
      }
     },
@@ -6495,6 +7460,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "proposito": "El propósito decide el tipo",
+       "normas-textualidad": "Qué hace que algo sea texto",
+       "niveles": "Tres niveles de lectura"
+      },
       "terminos": 31
      }
     },
@@ -6536,6 +7506,12 @@
        "/nucleo/kit/piezas/rv-arbol.js"
       ],
       "ideas": 4,
+      "titulos": {
+       "tema": "El tema y su medida",
+       "tema-e-idea": "Lo que el texto afirma",
+       "jerarquia": "Principal y secundarias",
+       "alternativas": "Elegir en el examen"
+      },
       "terminos": 25
      }
     },
@@ -6574,6 +7550,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "alcance": "Resumir sin cambiar el alcance",
+       "parafrasis": "Parafrasear no es inferir",
+       "sintesis": "Sintetizar sin borrar diferencias"
+      },
       "terminos": 23
      }
     },
@@ -6613,6 +7594,11 @@
        "/nucleo/kit/piezas/rv-barras.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "tabla": "Cada dato con su total",
+       "escala": "La escala cambia la imagen",
+       "texto-y-grafico": "Texto y gráfico se leen juntos"
+      },
       "terminos": 15
      }
     },
@@ -6652,6 +7638,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "necesaria-probable": "Necesaria, probable o sin respaldo",
+       "implicito": "Lo que se dice sin decir",
+       "intencion-global": "La intención sale del todo"
+      },
       "terminos": 17
      }
     },
@@ -6689,6 +7680,10 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 2,
+      "titulos": {
+       "cuatro-casillas": "Dice, deduce, contradice o no sabe",
+       "idea-principal": "Chocar con la idea principal"
+      },
       "terminos": 15
      }
     },
@@ -6726,6 +7721,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "caso-nuevo": "Llevar la relación a otro caso",
+       "condicional": "Si A, entonces B",
+       "mundos-posibles": "Qué queda en otro mundo"
+      },
       "terminos": 18
      }
     },
@@ -6768,6 +7768,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "tesis-razones": "La tesis y sus razones",
+       "cuestion-y-posturas": "Dos autores, una cuestión",
+       "tesis-antitesis-sintesis": "Tesis, antítesis y síntesis"
+      },
       "terminos": 21
      }
     },
@@ -6803,6 +7808,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "deicticos": "Aquí, mañana y nosotros",
+       "emisor-destinatario": "Quién habla y a quién",
+       "misma-frase": "La misma frase, otra acción"
+      },
       "terminos": 15
      }
     },
@@ -6834,6 +7844,10 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 2,
+      "titulos": {
+       "texto-cientifico": "Dato, método, explicación y límite",
+       "texto-filosofico": "Pregunta, término, tesis y objeción"
+      },
       "terminos": 21
      }
     },
@@ -6869,6 +7883,11 @@
        "/nucleo/kit/piezas/rv-texto.js"
       ],
       "ideas": 3,
+      "titulos": {
+       "palabras-que-enganan": "Palabras que engañan",
+       "main-idea": "Main idea y summary",
+       "stated-or-not": "Dicho, contradicho o no dicho"
+      },
       "terminos": 19
      }
     }
@@ -8047,6 +9066,11 @@
     "algebra.exponentes-y-productos-notables"
    ],
    "url": "#/practica/exponentes-radicales",
+   "ideas": [
+    "leyes-exponentes",
+    "radicales",
+    "exponente-fraccionario"
+   ],
    "papel": "/plantillas/exponentes-radicales/papel.json",
    "archivos": [
     "/plantillas/exponentes-radicales/generador.js",
@@ -8063,6 +9087,13 @@
     "fisica.movimiento-rectilineo"
    ],
    "url": "#/practica/fis-mru",
+   "ideas": [
+    "mru",
+    "grafica-xt",
+    "desplazamiento-distancia",
+    "encuentro",
+    "velocidad-relativa"
+   ],
    "papel": "/plantillas/fis-mru/papel.json",
    "archivos": [
     "/plantillas/fis-mru/generador.js",
@@ -8079,6 +9110,14 @@
     "fisica.mruv-y-caida-libre"
    ],
    "url": "#/practica/fis-mruv",
+   "ideas": [
+    "aceleracion",
+    "ecuaciones-mruv",
+    "pendiente-aceleracion",
+    "graficas-xt-at",
+    "caida-reposo",
+    "caida-libre"
+   ],
    "papel": "/plantillas/fis-mruv/papel.json",
    "archivos": [
     "/plantillas/fis-mruv/generador.js",
@@ -9083,6 +10122,13 @@
     "aritmetica.numeracion"
    ],
    "url": "#/practica/numeracion-bases",
+   "ideas": [
+    "agrupar",
+    "descomposicion",
+    "cambio-base",
+    "base-desconocida",
+    "conteo-cifras"
+   ],
    "papel": "/plantillas/numeracion-bases/papel.json",
    "archivos": [
     "/plantillas/numeracion-bases/generador.js",
@@ -9205,6 +10251,15 @@
     "aritmetica.cuatro-operaciones"
    ],
    "url": "#/practica/operaciones-cifras",
+   "ideas": [
+    "otras-bases",
+    "prestamo",
+    "complemento",
+    "cifras-ocultas",
+    "multiplicar-partes",
+    "defecto-exceso",
+    "cifras-producto"
+   ],
    "papel": "/plantillas/operaciones-cifras/papel.json",
    "archivos": [
     "/plantillas/operaciones-cifras/generador.js",
@@ -9451,6 +10506,13 @@
     "algebra.productos-notables"
    ],
    "url": "#/practica/productos-notables",
+   "ideas": [
+    "cuadrado-suma",
+    "suma-por-diferencia",
+    "cubo-binomio",
+    "radicales-dobles",
+    "racionalizar"
+   ],
    "papel": "/plantillas/productos-notables/papel.json",
    "archivos": [
     "/plantillas/productos-notables/generador.js",

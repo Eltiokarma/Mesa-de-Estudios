@@ -560,7 +560,12 @@
       const p = idea.predice;
       actuar('prediccion', p.voz || voz('prediccion'));
       dibujar(p.dibujo, p.pieza);
-      const ya = si.prediccion;
+      // Una predicción guardada vale solo para la pregunta que el alumno leyó (auditoría de MRU, 18 nov): si la opción ya
+      // no existe, o la pregunta cambió desde que respondió (huella guardada con la respuesta), se pregunta de nuevo.
+      const huellaP = [...E.texto(p.pregunta)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7).toString(36);
+      const vale = si.prediccion && p.opciones.some(x => x.id === si.prediccion) && (!si.prediccionDe || si.prediccionDe === huellaP);
+      if (si.prediccion && !vale) { delete si.prediccion; delete si.prediccionDe; ctx.guardar(); }
+      const ya = vale ? si.prediccion : null;
       // Las opciones van barajadas (auditoría, 17 nov: la correcta iba siempre primera en 633 de 689 predicciones y el
       // único bloqueo de la regla 3 se resolvía marcando la A). Orden fijo por alumno e idea: al volver, no cambia.
       // orden: 'fijo' cuando las letras tienen que coincidir con las de la figura (las alternativas de una hoja de
@@ -586,7 +591,7 @@
         const e = cual();
         if (!e) { decir('Elige una opción para comprobar.'); zona.querySelector('.alt').focus(); return; }
         const o = p.opciones.find(x => x.id === e);
-        si.prediccion = e; ctx.guardar();
+        si.prediccion = e; si.prediccionDe = huellaP; ctx.guardar();
         evento('prediccion', { opcion: e, correcta: !!o.correcta, error: o.error || null });
         resolver(e);
       };

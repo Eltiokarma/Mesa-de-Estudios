@@ -35,7 +35,9 @@ function leerTeoria(u) {
   delete require.cache[require.resolve(abs)];
   module.children = module.children.filter(m => m.id !== abs);
   // Del archivo solo se guarda lo que necesitan el catálogo y el glosario (no el módulo entero).
-  const x = { t, r: { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } },
+  // titulos (18 nov): id → título de cada idea, para que Ejercicios ofrezca practicar idea por idea.
+  const x = { t, r: { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length,
+    titulos: Object.fromEntries((def.ideas || []).map(i => [i.id, i.titulo])) } },
     glosario: def.glosario || [], glosarioSin: def.glosarioSin, texto: Glosario.texto(def) };
   teoriaLeida.set(abs, x);
   return x;
@@ -117,8 +119,17 @@ function construir() {
       }
     }
     const archivos = [...new Set([...(formato === 'escena' ? [f.escena, f.motor, ...locales] : [f.generador]), ...(f.papel ? [f.papel] : [])].map(url))];
+    // Práctica por idea (18 nov; auditorías de Numeración y de Las cuatro operaciones): un generador con TIPOS_POR_IDEA
+    // da solo los tipos de una idea con generar(semilla, { idea }); el catálogo guarda qué ideas trae.
+    let ideasPr = null;
+    if (formato === 'predicciones' && f.generador) {
+      try {
+        const abs = path.join(dirPl, d, f.generador), g = require(abs);
+        if (g && g.TIPOS_POR_IDEA && typeof g.TIPOS_POR_IDEA === 'object') ideasPr = Object.keys(g.TIPOS_POR_IDEA);
+      } catch (e) { ideasPr = null; }
+    }
     plantillas[f.id] = { id: f.id, titulo: f.titulo, formato, estado: f.estado, version: f.version, unidades: f.unidades,
-      url: formato === 'escena' ? url(f.escena) : `#/practica/${f.id}`,
+      url: formato === 'escena' ? url(f.escena) : `#/practica/${f.id}`, ...(ideasPr && ideasPr.length ? { ideas: ideasPr } : {}),
       papel: f.papel ? url(f.papel) : null, archivos,
       // "rehacer": true (18 nov): la escena espera rehacerse; Ejercicios la pone al final, en «Más mesas del tema».
       ...(f.rehacer ? { rehacer: true } : {}) };

@@ -588,6 +588,14 @@ const ICONO_FORMATO = {
   lectura: '<path d="M12 6c-3-2-6-2-9-1v13c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1zM12 6v13"/>',
 };
 function vEjercicios(c, u) {
+  // Práctica por idea (18 nov): si el generador trae tipos por idea y la unidad tiene teoría, un enlace por idea que la
+  // unidad enseña, con su título; abre #/practica/<id>/<unidad>/<idea>.
+  const titulos = (u.teoria && u.teoria.titulos) || {};
+  const porIdea = p => {
+    const ids = p.formato === 'predicciones' && Array.isArray(p.ideas) ? p.ideas.filter(i => titulos[i]) : [];
+    return ids.length > 1 ? `<span class="ej-ideas"><span class="etq-f">Por idea</span>${ids.map((i, k) =>
+      `<a href="${esc(enlace(p, u.id))}/${encodeURIComponent(i)}" data-abrir="${esc(u.id)}">${k + 1}. ${esc(titulos[i])}</a>`).join('')}</span>` : '';
+  };
   const pl = modulosDe(u).sort((a, b) => ORDEN_FORMATO[a.formato] - ORDEN_FORMATO[b.formato]);
   const fila = p => `<article class="ej" style="${Ilus.tinte(c.id)}">
       <span class="ej-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24">${ICONO_FORMATO[p.formato] || ICONO_FORMATO.predicciones}</svg></span>
@@ -596,6 +604,7 @@ function vEjercicios(c, u) {
         <span class="d">${esc(QUE_ES[p.formato] || '')}</span></span>
       <span class="ej-ir" aria-hidden="true"><span class="v">${esc(VERBO[p.formato] || "Abrir")}</span> ›</span>
       ${p.papel ? `<a class="ej-papel" href="#/papel/${esc(p.id)}">✎ Lápiz y papel<span class="lector">: ${esc(p.titulo)}</span></a>` : ''}
+      ${porIdea(p)}
     </article>`;
   // Escenas que esperan rehacerse ("rehacer": true en su plantilla.json; Gerson, mesa del 18 nov): van al final, después
   // de las prácticas y la lectura, bajo «Más mesas del tema». Siguen abiertas; solo dejan de ir primero.
@@ -1380,7 +1389,7 @@ function render() {
   if (ruta === 'cierre') return vCierre();
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
-    return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || '')));
+    return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || ''), decodeURIComponent(location.hash.split('/')[4] || '')));
   }
   if (ruta === 'repaso') {
     sembrarRepaso();

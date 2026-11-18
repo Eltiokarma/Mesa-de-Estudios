@@ -160,3 +160,14 @@ test('un módulo de lectura cubre justo las unidades de su banco', () => {
     for (const u of f.unidades) assert.ok(cubiertas.has(u), `plantillas/${d}/plantilla.json: ${u} no tiene ningún texto en el índice`);
   }
 });
+
+// Práctica por idea (18 nov): el catálogo guarda las ideas de cada generador con TIPOS_POR_IDEA y los títulos de las
+// ideas de la teoría; Ejercicios ofrece un enlace por idea que la unidad enseña.
+test('práctica por idea: ideas del generador y títulos de la teoría en el catálogo', () => {
+  const cat = JSON.parse(require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'app/datos/catalogo.json'), 'utf8'));
+  const p = cat.plantillas['operaciones-cifras'];
+  assert.deepEqual(p.ideas, Object.keys(require('../plantillas/operaciones-cifras/generador.js').TIPOS_POR_IDEA));
+  const u = cat.cursos.flatMap(c => c.unidades).find(x => x.id === 'aritmetica.cuatro-operaciones');
+  for (const i of p.ideas) assert.ok(u.teoria.titulos[i], `la idea ${i} tiene título en la teoría`);
+  for (const pl of Object.values(cat.plantillas)) if (pl.ideas) assert.equal(pl.formato, 'predicciones', pl.id);
+});

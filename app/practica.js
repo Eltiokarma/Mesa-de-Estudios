@@ -85,7 +85,7 @@ function cargarGenerador(pl) {
   });
 }
 
-async function vista(ctx, id, desde) {
+async function vista(ctx, id, desde, ideaPedida) {
   const { $app, cat, est, esc, guardar, registrar, marcarDia } = ctx;
   const pl = cat.plantillas[id];
   if (!pl || pl.formato !== 'predicciones') { location.hash = '#/cursos'; return; }
@@ -101,7 +101,14 @@ async function vista(ctx, id, desde) {
   const st = est.practica[id] = Object.assign({ hechos: 0, aciertos: 0, entrada: null, salida: null }, est.practica[id] || {});
   // Vuelve a la unidad (13 nov 2026: la página del curso ya no lista ejercicios; están en #/unidad/<id>/ejercicios).
   const volver = `<a class="volver" href="#/unidad/${esc(unidad)}/ejercicios" aria-label="Volver">‹</a>`;
-  const cabecera = sub => `${volver}<p class="sub">${esc(curso ? curso.nombre : '')}</p><h1>${esc(pl.titulo)}</h1><p class="sub">${sub}</p>`;
+  // Práctica por idea (#/practica/<id>/<unidad>/<idea>, 18 nov): solo si el generador trae esa idea. Las pruebas de
+  // entrada y salida no cambian (son de todo el módulo); la práctica pide generar(semilla, { unidad, idea }).
+  const uCat = curso ? curso.unidades.find(x => x.id === unidad) : null;
+  const titulos = (uCat && uCat.teoria && uCat.teoria.titulos) || {};
+  const idea = ideaPedida && Array.isArray(pl.ideas) && pl.ideas.includes(ideaPedida) ? ideaPedida : '';
+  const opcionesGen = idea ? { unidad, idea } : { unidad };
+  const soloIdea = idea ? `<p class="sub ej-solo">Solo la idea «${esc(titulos[idea] || idea)}» · <a href="#/practica/${esc(id)}/${esc(unidad)}">practicar todas</a></p>` : '';
+  const cabecera = sub => `${volver}<p class="sub">${esc(curso ? curso.nombre : '')}</p><h1>${esc(pl.titulo)}</h1>${soloIdea}<p class="sub">${sub}</p>`;
 
   function problemaHTML(p, n, total, etiqueta, conMascota) {
     return `<article class="card practica" style="margin-top:16px">
@@ -165,7 +172,7 @@ async function vista(ctx, id, desde) {
 
   async function practica() {
     const n = st.hechos + 1;
-    const p = gen.generar(`${est.alumno}-${n}`, { unidad });
+    const p = gen.generar(`${est.alumno}-${n}${idea ? '-' + idea : ''}`, opcionesGen);
     if (p.escena && p.escena.pieza) {
       const h = location.hash;
       let pieza = null;
