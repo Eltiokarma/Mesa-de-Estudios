@@ -1,7 +1,7 @@
 /*
  * Pieza «alg-objeto» (17 nov 2026): objetos de la vida real para la teoría de Álgebra, uno por idea, en una sola pieza
  * (como trig-objeto; docs/etapa3/propuesta-algebra-exponentes.md §2). Dibujo de prueba (data-prueba): Gerson decide
- * después si lo reemplaza (docs/plan-calidad.md, M4). Por ahora trae un objeto:
+ * después si lo reemplaza (docs/plan-calidad.md, M4). Objetos:
  *
  *   'hoja'     una hoja de cuaderno que se dobla por la mitad (o en tres, como una carta), idea «leyes-exponentes» de
  *              contenido/teoria/algebra/exponentes-y-productos-notables.js (datos abajo);
@@ -21,6 +21,13 @@
  *              comprar: true (franjas punteadas, todavía sin comprar), total: true | '?' | texto | false; en 'cede':
  *              costado, fondo: true, esquina: 'doble' | 'devuelta', resto: '?' | texto }. a² naranja, las franjas ab
  *              violeta (el doble producto), la esquina b² turquesa, el total y lo que queda en tinta.
+ *   'triplay'  la plancha cuadrada de triplay de la carpintería, sin su esquina, que se rearma en un tablero de a + b por
+ *              a − b, idea «suma-por-diferencia» (18 nov; datos en geoTriplay);
+ *   'taco'     el taco cúbico de madera cortado en ocho piezas, en proyección oblicua, idea «cubo-binomio» (18 nov; datos
+ *              en geoTaco): a³ naranja, a²b violeta, ab² en tinta, b³ turquesa;
+ *   'mesa'     la mesa cuadrada de cuatro planchas (dos cuadradas de x e y dm² y dos de √x por √y), idea
+ *              «radicales-dobles» (18 nov; datos en geoMesa);
+ *   'cometa'   una cometa cuadrada con su varilla diagonal d y su cola, idea «racionalizar» (18 nov; datos en geoCometa).
  *
  * Afirmación de la figura: cada doblez multiplica las capas por la base; por eso los dobleces se suman y las capas se
  * multiplican. m dobleces dan bᵐ capas (el paquete naranja); n dobleces más repiten ese paquete bⁿ veces.
@@ -490,12 +497,296 @@
     return `El terreno cuadrado de Juan, de ${d.ladoA === '?' ? 'lado por hallar' : `${fmt(a, 2)} m de lado`}, con una franja de ${fmt(b, 2)} m por el costado y otra por el fondo: un cuadrado más grande, con dos franjas y una esquina.`;
   }
 
+
+  // ---------- Objeto 'triplay': la plancha cuadrada de triplay de la carpintería (idea «suma-por-diferencia») ----------
+  // Afirmación: la plancha a² sin su esquina b² se rearma, sin perder ni ganar madera, en un tablero de (a + b) por (a − b).
+  // f = 0: la plancha con la esquina cortada (turquesa, punteada) y el corte que suelta la tira de abajo; f = 1: la tira
+  // girada y pegada al costado: el tablero, con sus lados en violeta; la esquina queda aparte, en su sitio, punteada.
+  // datos = { objeto: 'triplay', a, b, f: 0 | 1, escala, unidad: 'dm' | '', lados: false, ladoA | ladoB | largo | corto:
+  // true | '?' | false, area: texto | '?' | false (debajo), soloTablero: true (solo el rectángulo, sin plancha ni cortes),
+  // esquina: false (sin la esquina aparte), rot: { top, tira, esquina, tablero } (rótulos adentro), pasos }.
+  const TP = { x0: 52, y0: 34, alto: 170, ancho: 216 };
+  function geoTriplay(d) {
+    const a = Math.max(1, +d.a || 1), b = Math.min(Math.max(0, +d.b || 0), a - 0.5), f = d.f === 1 || d.f === true ? 1 : 0;
+    const k = d.escala > 0 ? d.escala : Math.min(TP.alto / a, TP.ancho / (a + b));
+    const x0 = TP.x0, y0 = TP.y0, A = a * k, B = b * k, C = A - B, u = d.unidad === undefined ? ' dm' : d.unidad ? ` ${d.unidad}` : '';
+    const solo = !!d.soloTablero, textos = [], objetos = [];
+    const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
+    const rot = (v, def) => (v === undefined || v === true ? def : v === false ? null : String(v));
+    const seg = (t, c) => [[t, t.startsWith('?') ? null : c, 700]];
+    if (f === 0 && !solo) {
+      objetos.push({ que: 'plancha', x0, y0, x1: x0 + A, y1: y0 + A });
+      if (d.lados !== false) {
+        const la = rot(d.ladoA, `${fmt(a, 2)}${u}`), lb = rot(d.ladoB, `${fmt(b, 2)}${u}`);
+        if (la) { pon('lado', x0 + A / 2, y0 - 10, seg(la, 'o')); pon('lado', x0 - 8, y0 + A / 2 + 5, seg(la, 'o'), 'end'); }
+        if (lb && B > 0) pon('lado', x0 + A + 6, y0 + C + B / 2 + 5, seg(lb, 'i'), 'start');
+      }
+    } else {
+      objetos.push({ que: 'tablero', x0, y0, x1: x0 + A + B, y1: y0 + C });
+      if (!solo && d.esquina !== false && B > 0) objetos.push({ que: 'esquina', x0: x0 + C, y0: y0 + C, x1: x0 + A, y1: y0 + A });
+      if (d.lados !== false) {
+        const L = rot(d.largo, `${fmt(a + b, 2)}${u}`), Cc = rot(d.corto, `${fmt(a - b, 2)}${u}`);
+        if (L) pon('lado', x0 + (A + B) / 2, y0 - 10, seg(L, 'f'));
+        if (Cc) pon('lado', x0 + A + B + 6, y0 + C / 2 + 5, seg(Cc, 'f'), 'start');
+        const lb = rot(d.ladoB, `${fmt(b, 2)}${u}`);
+        if (!solo && d.esquina !== false && lb && B > 0) pon('lado', x0 + A + 6, y0 + C + Math.max(B / 2 + 5, 15), seg(lb, 'i'), 'start');
+      }
+    }
+    // Rótulos adentro de las piezas (si caben).
+    const R = d.rot || {};
+    const adentro = (t, x, y, w, h, c) => { if (!t) return; const segs = [[t, t.startsWith('?') ? null : c, 700]]; if (T.ancho(t, 13, 700) + 6 <= w && h >= 18) pon('pieza', x + w / 2, y + h / 2 + 5, segs); };
+    if (solo) adentro(R.tablero, x0, y0, A + B, C, null);
+    else {
+      adentro(R.top, x0, y0, A, C, null);
+      if (f === 0) adentro(R.tira, x0, y0 + C, C, B, null); else adentro(R.tira, x0 + A, y0, B, C, null);
+      adentro(R.esquina, x0 + C, y0 + C, B, B, 'i');
+    }
+    const area = d.area === undefined || d.area === false ? null : d.area === '?' ? `? ${u.trim() ? `${u.trim()}²` : ''}`.trim() : String(d.area);
+    // Debajo de todo: de la plancha (o de la esquina que queda aparte) o del tablero solo.
+    if (area) pon('area', x0, Math.min(y0 + (solo ? C : A) + 24, 240), [[area, null, 700]], 'start');
+    return { W, H, M, d, a, b, f, k, x0, y0, A, B, C, solo, objetos, textos };
+  }
+  // Vetas de la madera: unas rayas finas a lo largo de un rectángulo.
+  function vetas(x, y, w, h, vertical) {
+    let p = '';
+    const n = Math.max(1, Math.floor((vertical ? w : h) / 9));
+    for (let i = 1; i <= n; i++) {
+      const t = (i / (n + 1)) * (vertical ? w : h);
+      p += vertical ? `M${n2(x + t)} ${n2(y + 3)}V${n2(y + h - 3)}` : `M${n2(x + 3)} ${n2(y + t)}H${n2(x + w - 3)}`;
+    }
+    return w > 6 && h > 6 ? `<path d="${p}" stroke="currentColor" stroke-opacity="0.16" stroke-width="1" fill="none"/>` : '';
+  }
+  function dibTriplay(datos, estado) {
+    const g = geometria(datos, estado), d = g.d, { x0, y0, A, B, C } = g;
+    const rect = (x, y, w, h, o) => `<rect x="${n2(x)}" y="${n2(y)}" width="${n2(w)}" height="${n2(h)}"${o}/>`;
+    let s = '';
+    if (g.solo) {
+      s += rect(x0, y0, A + B, C, ' class="alg-tablero" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2.5"');
+      s += `<path d="M${n2(x0)} ${n2(y0)}H${n2(x0 + A + B)}V${n2(y0 + C)}" stroke="var(--c-f)" stroke-width="4" fill="none"/>`;
+    } else if (g.f === 0) {
+      s += rect(x0, y0, A, C, ' class="alg-pieza" data-pieza="top" fill="currentColor" fill-opacity="0.06"') + vetas(x0, y0, A, C, false);
+      s += rect(x0, y0 + C, C, B, ' class="alg-pieza" data-pieza="tira" fill="currentColor" fill-opacity="0.06"') + vetas(x0, y0 + C, C, B, false);
+      if (B > 0) s += rect(x0 + C, y0 + C, B, B, ' class="alg-pieza" data-pieza="esquina" fill="var(--c-i)" fill-opacity="0.14" stroke="var(--c-i)" stroke-width="2" stroke-dasharray="5 4"');
+      // El contorno de la plancha (naranja) y el corte que suelta la tira (punteado).
+      s += `<path d="M${n2(x0)} ${n2(y0)}H${n2(x0 + A)}V${n2(y0 + C)}M${n2(x0 + C)} ${n2(y0 + A)}H${n2(x0)}Z" stroke="var(--c-o)" stroke-width="2.5" fill="none" stroke-linejoin="round"/>`;
+      if (B > 0) s += `<path d="M${n2(x0)} ${n2(y0 + C)}H${n2(x0 + C)}" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    } else {
+      // La plancha de antes, punteada y tenue; el tablero (lo de arriba y la tira girada) con sus lados en violeta.
+      s += rect(x0, y0, A, A, ' fill="none" stroke="var(--c-o)" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="5 4"');
+      s += rect(x0, y0, A, C, ' class="alg-pieza" data-pieza="top" fill="currentColor" fill-opacity="0.06"') + vetas(x0, y0, A, C, false);
+      s += rect(x0 + A, y0, B, C, ' class="alg-pieza" data-pieza="tira" fill="currentColor" fill-opacity="0.1"') + vetas(x0 + A, y0, B, C, true);
+      s += rect(x0, y0, A + B, C, ' class="alg-tablero" fill="none" stroke="currentColor" stroke-width="2.5"');
+      s += `<path d="M${n2(x0 + A)} ${n2(y0)}V${n2(y0 + C)}" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+      s += `<path d="M${n2(x0)} ${n2(y0)}H${n2(x0 + A + B)}V${n2(y0 + C)}" stroke="var(--c-f)" stroke-width="4" fill="none"/>`;
+      if (d.esquina !== false && B > 0) s += rect(x0 + C, y0 + C, B, B, ' class="alg-pieza" data-pieza="esquina" fill="var(--c-i)" fill-opacity="0.14" stroke="var(--c-i)" stroke-width="2" stroke-dasharray="5 4"');
+    }
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.ancla });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="triplay" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altTriplay(d) {
+    const a = +d.a || 1, b = +d.b || 0, u = d.unidad === undefined ? ' dm' : d.unidad ? ` ${d.unidad}` : '';
+    if (d.soloTablero) return `Un tablero rectangular de ${d.largo === '?' ? 'largo por hallar' : `${fmt(a + b, 2)}${u}`} por ${d.corto === '?' ? 'ancho por hallar' : `${fmt(a - b, 2)}${u}`}; se pide su área.`;
+    if (d.f === 1) return `El tablero rectangular que se arma con la plancha sin su esquina: la tira de abajo se giró y se pegó al costado. Mide ${d.largo === '?' ? 'un largo por hallar' : `${fmt(a + b, 2)}${u}`} por ${d.corto === '?' ? 'un ancho por hallar' : `${fmt(a - b, 2)}${u}`}; la esquina de ${fmt(b, 2)}${u} queda aparte.`;
+    return `Una plancha cuadrada de triplay de ${d.ladoA === '?' ? 'lado por hallar' : `${fmt(a, 2)}${u} de lado`}, con una esquina cuadrada de ${d.ladoB === '?' ? 'lado por hallar' : `${fmt(b, 2)}${u}`} cortada y la tira de abajo marcada para cortarla.`;
+  }
+
+  // ---------- Objeto 'taco': el taco cúbico de madera cortado en ocho piezas (idea «cubo-binomio») ----------
+  // Afirmación: tres cortes, uno en cada dirección, a a de una esquina, parten el taco de arista a + b en ocho piezas: a³,
+  // tres a²b, tres ab² y b³ (las del medio son seis). Proyección oblicua (la cara de adelante sin deformar, el fondo en
+  // diagonal), de atrás hacia adelante. Colores: a³ naranja, a²b violeta (las piezas del medio que se olvidan), ab² en
+  // tinta, b³ turquesa. datos = { objeto: 'taco', a, b, abrir: 0 | 1, cortes: false (el taco entero, sin cortar),
+  // escala, tramos: true | false (a y b junto a la arista de la izquierda), arista: true | '?' | texto | false (debajo),
+  // total: true | '?' | texto | false (debajo), rot: { a3, a2b, ab2, b3 } (en la cara de adelante; true: el volumen),
+  // solo: 'medio' | 'esquinas' (las demás tenues), pasos }.
+  const TA = { ox: 50, hueco: 1.2, dz: 0.433, dyz: 0.25, kMax: 30 };
+  const COLOR_TACO = { a3: 'o', a2b: 'f', ab2: null, b3: 'i' };
+  const NOMBRE_TACO = { a3: 'a³', a2b: 'a²b', ab2: 'ab²', b3: 'b³' };
+  function geoTaco(d) {
+    const a = Math.max(0.5, +d.a || 1), b = Math.max(0.5, +d.b || 1), ab = d.abrir === 1 || d.abrir === true ? 1 : 0;
+    // La escala se fija con el taco abierto (abrir no lo agranda ni lo achica); el bloque (taco y textos) va centrado.
+    const rot0 = (v, def) => (v === undefined || v === true ? def : v === false ? null : String(v));
+    const nTxt = (d.arista === undefined || d.arista === false ? 0 : 1) + (d.total === undefined || d.total === false ? 0 : 1), hTxt = nTxt ? 4 + 18 * nTxt : 0;
+    const Smax = a + b + TA.hueco, k = d.escala > 0 ? d.escala : Math.min(TA.kMax, (234 - hTxt) / (1.25 * Smax), 246 / (1 + TA.dz) / Smax);
+    const alto = 1.25 * Smax * k, ancho = (1 + TA.dz) * Smax * k;
+    const ox = Math.max(TA.ox, Math.round((W - ancho) / 2)), oy = Math.round(Math.max(8, (H - alto - hTxt) / 2) + alto), g = ab * TA.hueco;
+    const P = (x, y, z) => [ox + k * (x + TA.dz * z), oy - k * (y + TA.dyz * z)];
+    const piezas = [];
+    if (d.cortes === false) piezas.push({ tipo: 'entero', x: 0, y: 0, z: 0, w: a + b, h: a + b, p: a + b });
+    else for (const l of [1, 0]) for (const j of [0, 1]) for (const i of [0, 1]) {
+      const nb = i + j + l, tipo = ['a3', 'a2b', 'ab2', 'b3'][nb];
+      piezas.push({ tipo, i, j, l, x: i ? a + g : 0, y: j ? a + g : 0, z: l ? a + g : 0, w: i ? b : a, h: j ? b : a, p: l ? b : a, volumen: (i ? b : a) * (j ? b : a) * (l ? b : a) });
+    }
+    const S = a + b + g;
+    const [xa, yb] = P(0, 0, 0), [xc] = P(S, 0, S), [, yt] = P(0, S, S);
+    const objetos = [{ que: 'taco', x0: xa - 1, y0: yt - 1, x1: xc + 1, y1: yb + 1 }];
+    const textos = [];
+    const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
+    // Los tramos, junto a la arista de la izquierda (de abajo hacia arriba: a, después b).
+    if (d.tramos !== false && d.cortes !== false) {
+      pon('tramo', ox - 8, oy - (a / 2) * k + 5, [[`${fmt(a, 2)} dm`, 'o', 700]], 'end');
+      pon('tramo', ox - 8, oy - (a + g + b / 2) * k + 5, [[`${fmt(b, 2)} dm`, 'i', 700]], 'end');
+    }
+    const rot = rot0;
+    const ar = d.arista === undefined || d.arista === false ? null : rot(d.arista, `arista: ${fmt(a, 2)} + ${fmt(b, 2)} = ${fmt(a + b, 2)} dm`);
+    const tot = d.total === undefined || d.total === false ? null : d.total === '?' ? 'volumen: ? dm³' : rot(d.total, `(${fmt(a, 2)} + ${fmt(b, 2)})³ = ${fmt((a + b) ** 3, 2)} dm³`);
+    let yy = oy + 20;
+    if (ar) { pon('arista', ox, yy, [[ar, null, 700]], 'start'); yy += 18; }
+    if (tot) pon('total', ox, yy, [[tot, null, 700]], 'start');
+    // Rótulos en la cara de adelante de las piezas de adelante (l = 0), si caben.
+    const R = d.rot || {};
+    for (const p of piezas) {
+      if (p.tipo === 'entero' || p.l !== 0) continue;
+      const t = R[p.tipo] === undefined || R[p.tipo] === false ? null : R[p.tipo] === true ? `${fmt(p.volumen, 2)} dm³` : String(R[p.tipo]);
+      if (!t) continue;
+      if (p.tipo === 'a2b' && p.j === 1) continue;   // una sola a²b rotulada adelante (la de la derecha)
+      const [x1, y1] = P(p.x, p.y, 0), [x2, y2] = P(p.x + p.w, p.y + p.h, 0), w = x2 - x1, h = y1 - y2;
+      if (T.ancho(t, 12, 700) + 6 <= w && h >= 18) pon('pieza', (x1 + x2) / 2, (y1 + y2) / 2 + 5, [[t, t.startsWith('?') ? null : COLOR_TACO[p.tipo], 700]], 'middle', 12);
+    }
+    return { W, H, M, d, a, b, k, ox, oy, g, P, piezas, objetos, textos };
+  }
+  function dibTaco(datos, estado) {
+    const g = geometria(datos, estado), d = g.d, P = g.P;
+    const pts = l => l.map(([x, y]) => `${n2(x)},${n2(y)}`).join(' ');
+    let s = '';
+    for (const p of g.piezas) {
+      const c = p.tipo === 'entero' ? null : COLOR_TACO[p.tipo];
+      const tenue = d.solo && p.tipo !== 'entero' && (d.solo === 'medio' ? p.tipo === 'a3' || p.tipo === 'b3' : p.tipo === 'a2b' || p.tipo === 'ab2');
+      const col = c ? `var(--c-${c})` : 'currentColor', op = tenue ? [0.03, 0.04, 0.02] : c ? [0.22, 0.36, 0.14] : [0.08, 0.16, 0.04];
+      const { x, y, z, w, h, p: q } = p;
+      const frente = [P(x, y, z), P(x + w, y, z), P(x + w, y + h, z), P(x, y + h, z)];
+      const arriba = [P(x, y + h, z), P(x + w, y + h, z), P(x + w, y + h, z + q), P(x, y + h, z + q)];
+      const der = [P(x + w, y, z), P(x + w, y, z + q), P(x + w, y + h, z + q), P(x + w, y + h, z)];
+      const borde = `stroke="currentColor" stroke-opacity="${tenue ? 0.3 : 0.85}" stroke-width="1.4" stroke-linejoin="round"`;
+      s += `<g class="alg-pieza" data-pieza="${p.tipo}">`
+        + `<polygon points="${pts(frente)}" fill="var(--card)" ${borde}/><polygon points="${pts(frente)}" fill="${col}" fill-opacity="${op[0]}" stroke="none"/>`
+        + `<polygon points="${pts(arriba)}" fill="var(--card)" ${borde}/><polygon points="${pts(arriba)}" fill="${col}" fill-opacity="${op[1]}" stroke="none"/>`
+        + `<polygon points="${pts(der)}" fill="var(--card)" ${borde}/><polygon points="${pts(der)}" fill="${col}" fill-opacity="${op[2]}" stroke="none"/>`
+        + (c && !tenue ? `<polygon points="${pts(frente)}" fill="none" stroke="${col}" stroke-width="2"/>` : '') + '</g>';
+    }
+    // El taco entero: vetas en la cara de adelante, para que se lea como madera.
+    if (g.piezas.length === 1) { const [x1, y1] = P(0, 0, 0), [x2, y2] = P(g.a + g.b, g.a + g.b, 0); s += vetas(x1, y2, x2 - x1, y1 - y2, false); }
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.ancla });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="taco" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altTaco(d) {
+    const a = +d.a || 1, b = +d.b || 1;
+    if (d.cortes === false) return `Un taco de madera con forma de cubo, ${d.arista === '?' ? 'de arista por hallar' : `de ${fmt(a + b, 2)} dm de arista`}, todavía sin cortar.`;
+    const v = x => fmt(x, 2);
+    return `Un taco cúbico de madera de arista ${v(a)} + ${v(b)} dm, ${d.abrir === 1 ? 'abierto en sus ocho piezas' : 'cortado en ocho piezas'}: un cubo de ${v(a)} dm, tres piezas de ${v(a)} por ${v(a)} por ${v(b)}, tres de ${v(a)} por ${v(b)} por ${v(b)} y un cubo de ${v(b)} dm.${d.solo === 'medio' ? ' A la vista, las seis piezas del medio.' : d.solo === 'esquinas' ? ' A la vista, los dos cubos de las esquinas.' : ''}`;
+  }
+
+  // ---------- Objeto 'mesa': la mesa cuadrada armada con cuatro planchas (idea «radicales-dobles») ----------
+  // Afirmación: dos planchas cuadradas de x e y dm² y dos rectangulares de √x por √y arman una mesa cuadrada de lado
+  // √x + √y: su área es x + y + 2√(xy). Vista desde arriba, con su canto. x naranja, y turquesa, las dos rectangulares
+  // violeta (el doble producto), el lado de la mesa y su área en tinta.
+  // datos = { objeto: 'mesa', x, y (dm²), escala, lados: false, areas: true | false (rótulos de área en las planchas),
+  // rot: { x, y, xy } (rótulos propios o '?'), total: true | '?' | texto | false, lado: true | '?' | texto | false }.
+  const ME = { x0: 66, y0: 40, lado: 156 };
+  const raizDe = v => { const q = Math.sqrt(v); return Math.abs(q - Math.round(q)) < 1e-9 ? String(Math.round(q)) : `√${fmt(v, 2)}`; };
+  function geoMesa(d) {
+    const X = Math.max(0.25, +d.x || 1), Y = Math.max(0, +d.y || 0), sx = Math.sqrt(X), sy = Math.sqrt(Y);
+    const k = d.escala > 0 ? d.escala : ME.lado / (sx + sy);
+    const x0 = ME.x0, y0 = ME.y0, A = sx * k, B = sy * k, W2 = A + B;
+    const objetos = [{ que: 'mesa', x0: x0 - 2, y0: y0 - 2, x1: x0 + W2 + 7, y1: y0 + W2 + 7 }], textos = [];
+    const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
+    if (d.lados !== false) {
+      const la = `${raizDe(X)} dm`, lb = `${raizDe(Y)} dm`;
+      pon('lado', x0 + A / 2, y0 - 10, [[la, 'o', 700]]); pon('lado', x0 - 8, y0 + A / 2 + 5, [[la, 'o', 700]], 'end');
+      if (B > 0) { pon('lado', x0 + A + B / 2, y0 - 10 - (B < 40 ? 14 : 0), [[lb, 'i', 700]]); pon('lado', x0 - 8, y0 + A + B / 2 + 5 + (B < 26 ? 12 : 0), [[lb, 'i', 700]], 'end'); }
+    }
+    const R = d.rot || {}, piezas = [];
+    const pieza = (que, x, y, w, h, color, def) => {
+      piezas.push({ que, x, y, w, h, color });
+      const t = R[que] !== undefined ? (R[que] === false ? null : String(R[que])) : d.areas === false ? null : def;
+      if (t && T.ancho(t, 13, 700) + 6 <= w && h >= 18) pon('pieza', x + w / 2, y + h / 2 + 5, [[t, t.startsWith('?') ? null : color, 700]]);
+    };
+    pieza('x', x0, y0, A, A, 'o', `${fmt(X, 2)} dm²`);
+    if (B > 0) {
+      const xy = X * Y, txy = `${raizDe(xy)} dm²`;
+      pieza('xy', x0 + A, y0, B, A, 'f', txy);
+      pieza('xy', x0, y0 + A, A, B, 'f', txy);
+      pieza('y', x0 + A, y0 + A, B, B, 'i', `${fmt(Y, 2)} dm²`);
+    }
+    const sumaTxt = () => { const xy = X * Y, q = Math.sqrt(xy); return Math.abs(q - Math.round(q)) < 1e-9 ? `${fmt(X + Y + 2 * q, 2)} dm²` : `${fmt(X + Y, 2)} + 2√${fmt(xy, 2)} dm²`; };
+    const total = d.total === undefined || d.total === false ? null : d.total === '?' ? 'mesa: ? dm²' : d.total === true ? `mesa: ${sumaTxt()}` : String(d.total);
+    const lado = d.lado === undefined || d.lado === false ? null : d.lado === '?' ? 'lado: ? dm' : d.lado === true ? `lado: ${raizDe(X)} + ${raizDe(Y)} dm` : String(d.lado);
+    let yy = Math.min(y0 + W2 + 7 + 18, 222);
+    if (total) { pon('total', x0, yy, [[total, null, 700]], 'start'); yy += 18; }
+    if (lado) pon('total', x0, yy, [[lado, null, 700]], 'start');
+    return { W, H, M, d, X, Y, k, x0, y0, A, B, W2, piezas, objetos, textos };
+  }
+  function dibMesa(datos, estado) {
+    const g = geometria(datos, estado), { x0, y0, W2 } = g;
+    let s = `<rect x="${n2(x0 + 5)}" y="${n2(y0 + 5)}" width="${n2(W2)}" height="${n2(W2)}" rx="3" fill="currentColor" fill-opacity="0.18"/>`;
+    s += `<rect class="alg-mesa" x="${n2(x0)}" y="${n2(y0)}" width="${n2(W2)}" height="${n2(W2)}" rx="3" fill="var(--card)"/>`;
+    for (const p of g.piezas) {
+      const c = `var(--c-${p.color})`;
+      s += `<rect class="alg-pieza" data-pieza="${p.que}" x="${n2(p.x)}" y="${n2(p.y)}" width="${n2(p.w)}" height="${n2(p.h)}" fill="${c}" fill-opacity="${p.color === 'o' ? 0.1 : 0.18}" stroke="${c}" stroke-width="2"/>`;
+      s += vetas(p.x, p.y, p.w, p.h, p.w < p.h);
+    }
+    s += `<rect x="${n2(x0)}" y="${n2(y0)}" width="${n2(W2)}" height="${n2(W2)}" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/>`;
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.ancla });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="mesa" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altMesa(d) {
+    const X = +d.x || 1, Y = +d.y || 0;
+    return `Una mesa cuadrada vista desde arriba, armada con dos planchas cuadradas de ${fmt(X, 2)} y ${fmt(Y, 2)} dm² y dos planchas rectangulares iguales de ${raizDe(X)} por ${raizDe(Y)} dm.${d.lado === '?' ? ' Se pide el lado de la mesa.' : ''}${d.total === '?' ? ' Se pide el área de la mesa.' : ''}`;
+  }
+
+  // ---------- Objeto 'cometa': una cometa cuadrada con su varilla diagonal (idea «racionalizar») ----------
+  // Afirmación: la varilla larga va de punta a punta: es la diagonal del cuadrado, d = lado · √2, así que lado = d/√2. La
+  // cometa, su varilla y su cola en tinta. datos = { objeto: 'cometa', d (m), lado: texto | '?' | false (rótulo del lado de
+  // arriba a la derecha), diag: true | texto | false (la cota de la varilla, a la izquierda), otro: un lado en m (una
+  // cometa punteada de ese lado, para comparar), escala }.
+  const CO = { cx: 132, cy: 106, hMax: 80 };
+  function geoCometa(d) {
+    const D = Math.max(0.2, +d.d || 1), otro = +d.otro > 0 ? +d.otro : 0;
+    const k = d.escala > 0 ? d.escala : (2 * CO.hMax) / Math.max(D, otro * Math.SQRT2);
+    const h = (D * k) / 2, ho = (otro * Math.SQRT2 * k) / 2, { cx, cy } = CO;
+    const H2 = Math.max(h, ho);
+    const objetos = [{ que: 'cometa', x0: cx - H2 - 12, y0: cy - H2, x1: cx + H2, y1: cy + H2 }, { que: 'cola', x0: cx - 34, y0: cy + H2 + 0.5, x1: cx + 4, y1: Math.min(cy + h + 50, 242) }];
+    const textos = [];
+    const pon = (que, x, y, segs, ancla = 'middle', tam = 13) => textos.push(Object.assign(cajaTexto(que, x, y, segs, tam, ancla), { segs, x, y, tam, ancla }));
+    const dg = d.diag === undefined || d.diag === true ? `${fmt(D, 2)} m` : d.diag === false ? null : String(d.diag);
+    if (dg) pon('diag', cx - H2 - 18, cy + 5, [[dg, null, 700]], 'end');
+    // El lado de arriba a la derecha, con una línea que lo une a su rótulo, afuera de la cometa.
+    if (d.lado !== undefined && d.lado !== false) pon('lado', cx + H2 + 12, cy - h / 2 + 5, [[d.lado === '?' ? 'lado: ?' : String(d.lado), null, 700]], 'start');
+    return { W, H, M, d, D, k, h, ho, H2, cx, cy, objetos, textos };
+  }
+  function dibCometa(datos, estado) {
+    const g = geometria(datos, estado), { cx, cy, h, ho, H2 } = g;
+    const rombo = r => `M${n2(cx)} ${n2(cy - r)}L${n2(cx + r)} ${n2(cy)}L${n2(cx)} ${n2(cy + r)}L${n2(cx - r)} ${n2(cy)}Z`;
+    let s = '';
+    if (ho > 0) s += `<path d="${rombo(ho)}" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+    s += `<path class="alg-cometa" d="${rombo(h)}" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>`;
+    // Dos paños de otro tono (arriba a la izquierda y abajo a la derecha), como el papel de una cometa.
+    s += `<path d="M${n2(cx)} ${n2(cy - h)}L${n2(cx - h)} ${n2(cy)}L${n2(cx)} ${n2(cy)}ZM${n2(cx)} ${n2(cy)}L${n2(cx + h)} ${n2(cy)}L${n2(cx)} ${n2(cy + h)}Z" fill="currentColor" fill-opacity="0.1"/>`;
+    // La varilla larga (la diagonal) y la corta.
+    s += `<path class="alg-varilla" d="M${n2(cx)} ${n2(cy - h)}V${n2(cy + h)}" stroke="currentColor" stroke-width="3.5"/>`;
+    s += `<path d="M${n2(cx - h)} ${n2(cy)}H${n2(cx + h)}" stroke="currentColor" stroke-width="1.5" stroke-opacity="0.6"/>`;
+    // La línea que une el lado de arriba a la derecha con su rótulo.
+    if (g.textos.some(t => t.que === 'lado')) s += `<path d="M${n2(cx + h / 2)} ${n2(cy - h / 2)}H${n2(cx + H2 + 8)}" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3"/><circle cx="${n2(cx + h / 2)}" cy="${n2(cy - h / 2)}" r="2.5" fill="currentColor"/>`;
+    // La cota de la varilla, a la izquierda.
+    if (g.textos.some(t => t.que === 'diag')) { const xc = cx - H2 - 12; s += `<path d="M${n2(xc)} ${n2(cy - h)}V${n2(cy + h)}M${n2(xc - 4)} ${n2(cy - h)}h8M${n2(xc - 4)} ${n2(cy + h)}h8M${n2(xc)} ${n2(cy - h)}H${n2(cx - 2)}M${n2(xc)} ${n2(cy + h)}H${n2(cx - 2)}" stroke="currentColor" stroke-width="1" stroke-opacity="0.6" fill="none"/>`; }
+    // La cola, con tres lazos.
+    const y0 = cy + h, y1 = Math.min(y0 + 50, 242);
+    s += `<path d="M${n2(cx)} ${n2(y0)}C${n2(cx - 14)} ${n2(y0 + (y1 - y0) * 0.3)} ${n2(cx + 2)} ${n2(y0 + (y1 - y0) * 0.6)} ${n2(cx - 26)} ${n2(y1)}" stroke="currentColor" stroke-width="1.5" fill="none"/>`;
+    for (const t of [0.3, 0.55, 0.8]) { const yy = y0 + (y1 - y0) * t, xx = cx - 8 - 18 * t; s += `<path d="M${n2(xx - 5)} ${n2(yy - 3)}L${n2(xx + 5)} ${n2(yy + 3)}M${n2(xx - 5)} ${n2(yy + 3)}L${n2(xx + 5)} ${n2(yy - 3)}" stroke="currentColor" stroke-width="2"/>`; }
+    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.ancla });
+    return T.svg(W, H, `<g class="kit-objeto" data-objeto="cometa" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
+  }
+  function altCometa(d) {
+    const D = +d.d || 1;
+    return `Una cometa con forma de cuadrado, parada sobre una punta, con su cola. La varilla larga va de punta a punta y mide ${fmt(D, 2)} m: es la diagonal del cuadrado.${d.lado === '?' ? ' Se pide el lado.' : d.lado ? ` El lado mide ${d.lado}.` : ''}${+d.otro > 0 ? ` Punteada, una cometa de ${fmt(+d.otro, 2)} m de lado, para comparar.` : ''}`;
+  }
+
   // ---------- Elige el objeto ----------
-  const OBJ = { hoja: [geoHoja, dibHoja, altHoja], huertos: [geoHuertos, dibHuertos, altHuertos], caja: [geoCaja, dibCaja, altCaja], terreno: [geoTerreno, dibTerreno, altTerreno] };
+  const OBJ = { hoja: [geoHoja, dibHoja, altHoja], huertos: [geoHuertos, dibHuertos, altHuertos], caja: [geoCaja, dibCaja, altCaja], terreno: [geoTerreno, dibTerreno, altTerreno],
+    triplay: [geoTriplay, dibTriplay, altTriplay], taco: [geoTaco, dibTaco, altTaco], mesa: [geoMesa, dibMesa, altMesa], cometa: [geoCometa, dibCometa, altCometa] };
   const de = d => OBJ[d && OBJ[d.objeto] ? d.objeto : 'hoja'];
   function geometria(datos, estado = {}) { const d = mezcla(datos, estado); return de(d)[0](d); }
   function dibujar(datos, estado = {}) { return de(mezcla(datos, estado))[1](datos, estado); }
   function alt(datos, estado = {}) { const d = mezcla(datos, estado); return de(d)[2](d); }
 
-  return { id: 'alg-objeto', dibujar, alt, geometria, constantes: { W, H, M, HOJA, CANTO, HU, CA, TE } };
+  return { id: 'alg-objeto', dibujar, alt, geometria, constantes: { W, H, M, HOJA, CANTO, HU, CA, TE, TP, TA, ME, CO } };
 });

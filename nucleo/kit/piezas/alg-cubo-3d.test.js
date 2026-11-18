@@ -58,3 +58,10 @@ test('girar conserva el largo (la vista no cambia la figura)', () => {
   const otra = P.cuenta(Object.assign({}, C, { vista: { giro: 120, inclinacion: -40 } }));
   assert.equal(otra.suma, 27);
 });
+
+test('una unidad puede dar su paleta: Productos notables pinta a²b violeta y ab² en tinta, sin verde', () => {
+  const s = P.dibujar(Object.assign({}, C, { colores: { a3: 'c-o', a2b: 'c-f', ab2: 'ink', b3: 'c-i' } }));
+  assert.ok(!/var\(--c-[hd]\)/.test(s), 'sin carmín ni verde');
+  assert.match(s, /var\(--c-f\)/);
+  assert.match(s, /var\(--ink\)/);
+});

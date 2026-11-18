@@ -12,9 +12,11 @@
  *   abrir:  de 0 (cubo cerrado) a 1 (las piezas separadas),
  *   solo:   null | 'a3' | 'a2b' | 'ab2' | 'b3'   // deja a la vista un tipo de pieza; las otras quedan tenues
  *   vista:  { giro, inclinacion },                // opcional; sin ella, 35° y 25°
+ *   colores: { a3, a2b, ab2, b3 },                // opcional: el color de cada tipo ('c-o'…, o 'ink' para la tinta)
  *   alt,
  * }
- * Colores (regla 4, los de la unidad): a y a³ en c-o, b y b³ en c-i, a²b en c-d, ab² en c-f.
+ * Colores (regla 4, los de la unidad): por defecto a y a³ en c-o, b y b³ en c-i, a²b en c-d, ab² en c-f. Una unidad con
+ * otra paleta los da en datos.colores (Productos notables, 18 nov: a²b violeta y ab² en tinta, sin verde junto al naranja).
  *
  * Respaldo (dibujar): las piezas proyectadas en el plano desde datos.vista, de atrás hacia adelante. Se usa mientras
  * carga three.js, sin WebGL 2, en Node (pruebas) y en las miniaturas de la colección.
@@ -38,6 +40,8 @@
   const NOMBRE = { a3: 'a³', a2b: 'a²b', ab2: 'ab²', b3: 'b³' };
   const LADO = ['de ancho', 'de fondo', 'de alto'];
   const vistaDe = d => d.vista || { giro: 35, inclinacion: 25 };
+  const colorDe = (d, tipo) => (d.colores && d.colores[tipo]) || COLOR[tipo];
+  const varDe = c => (c === 'ink' ? '--ink' : `--${c}`);
   const cubo = d => motor().piezasCubo({ a: d.a, b: d.b, hueco: HUECO, f: d.abrir || 0 });
   // Cuántas piezas hay de cada tipo y cuánto mide cada una: lo que el motor arma, contado.
   function cuenta(d) {
@@ -88,7 +92,7 @@
   }
   function dibujar(d) {
     const pl = plano(d), n = x => Math.round(x * 100) / 100;
-    const cuerpo = pl.piezas.map(p => p.caras.map(c => `<polygon points="${c.puntos.map(q => `${n(q[0])},${n(q[1])}`).join(' ')}" fill="var(--${COLOR[p.tipo]})" fill-opacity="${p.tenue ? 0.08 : TONO[c.n]}" stroke="currentColor" stroke-opacity="${p.tenue ? 0.25 : 0.8}" stroke-width="1.2" stroke-linejoin="round"/>`).join('')).join('');
+    const cuerpo = pl.piezas.map(p => p.caras.map(c => `<polygon points="${c.puntos.map(q => `${n(q[0])},${n(q[1])}`).join(' ')}" fill="var(${varDe(colorDe(d, p.tipo))})" fill-opacity="${p.tenue ? 0.08 : TONO[c.n]}" stroke="currentColor" stroke-opacity="${p.tenue ? 0.25 : 0.8}" stroke-width="1.2" stroke-linejoin="round"/>`).join('')).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit"><g class="kit-piezas">${cuerpo}</g></svg>`;
   }
 
@@ -106,7 +110,7 @@
       for (const p of c.piezas) {
         const tenue = !!d.solo && d.solo !== p.tipo;
         const geo = new T.BoxGeometry(p.w * E, p.h * E, p.p * E);
-        const m = new T.Mesh(geo, h.material(h.varCss(`--${COLOR[p.tipo]}`, '#888'), tenue ? { transparent: true, opacity: 0.1, depthWrite: false } : {}));
+        const m = new T.Mesh(geo, h.material(h.varCss(varDe(colorDe(d, p.tipo)), '#888'), tenue ? { transparent: true, opacity: 0.1, depthWrite: false } : {}));
         const centro = escena(d, p.x + p.w / 2, p.y + p.p / 2, p.z + p.h / 2);
         m.position.set(...centro);
         m.userData.dice = dice(d, p);
@@ -116,7 +120,7 @@
         // Rótulos solo con el cubo abierto (cerrado, el de una pieza escondida caería sobre otra): uno por tipo, en la
         // pieza más cercana a la vista de partida, o uno por pieza si ese tipo está solo a la vista.
         if (!tenue && (d.abrir || 0) > 0 && (d.solo === p.tipo || rotulo[p.tipo] === p)) {
-          h.etiqueta(new T.Vector3(...centro), NOMBRE[p.tipo], { color: COLOR[p.tipo], letra: true });
+          h.etiqueta(new T.Vector3(...centro), NOMBRE[p.tipo], { color: colorDe(d, p.tipo) === 'ink' ? null : colorDe(d, p.tipo), letra: true });
         }
       }
       // Los largos a y b, bajo la arista de adelante: el lado del cubo es a + b.

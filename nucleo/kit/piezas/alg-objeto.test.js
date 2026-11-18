@@ -1,4 +1,5 @@
-// Pruebas de la pieza «alg-objeto» (objetos de Álgebra: la hoja, los biohuertos, la caja y el terreno): se dibuja sin NaN ni colores fijos,
+// Pruebas de la pieza «alg-objeto» (objetos de Álgebra: la hoja, los biohuertos, la caja, el terreno, el triplay, el taco,
+// la mesa y la cometa): se dibuja sin NaN ni colores fijos,
 // es pura, de alto fijo, marcada como dibujo de prueba y con su texto alternativo; es fiel (una línea por capa de canto:
 // bᵐ⁺ⁿ capas en bⁿ paquetes de bᵐ; abierta, bᵏ partes; en tres, a lo más 3 dobleces); nunca usa carmín ni verde. Con
 // números (no a ojo; docs/molde-unidad.md §6): todo cabe en el lienzo con 4 de margen y ningún texto pisa a otro ni a
@@ -78,7 +79,7 @@ function figurasTeoria() {
   for (const i of defs.flatMap(d => d.ideas)) {
     if (i.pieza === 'alg-objeto') for (const v of Teoria.grilla(i.juega.controles)) out.push([`${i.id} juego ${JSON.stringify(v)}`, i.juega.dibujo(v)]);
     for (const [k, t] of ((i.lee && i.lee.tarjetas) || []).entries()) if (t.dibujo && t.pieza === 'alg-objeto') out.push([`${i.id} lee ${k + 1}`, t.dibujo]);
-    if (i.pieza === 'alg-objeto') out.push([`${i.id} predice`, i.predice.dibujo], [`${i.id} revelar`, i.predice.revelar]);
+    if ((i.predice.pieza || i.pieza) === 'alg-objeto') out.push([`${i.id} predice`, i.predice.dibujo], [`${i.id} revelar`, i.predice.revelar]);
     if (i.mira && i.mira.pieza === 'alg-objeto') i.mira.pasos.forEach((p, k) => out.push([`${i.id} mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }]));
     for (const [k, e] of (i.ejemplos || []).entries()) if (e.figura && e.figura.pieza === 'alg-objeto') out.push([`${i.id} ejemplo ${k + 1}`, e.figura]);
     // «Ahora tú» y «Así se resuelve», en 40 semillas.
@@ -98,4 +99,54 @@ test('con números: todo cabe con 4 de margen y nada se pisa (muestras y figuras
   assert.ok(figs.length > 20, `${figs.length} figuras`);
   for (const [nombre, f] of figs) revisar(f.datos, f.estado || {}, nombre, mal);
   assert.deepEqual(mal, []);
+});
+
+// Los objetos de Productos notables (18 nov): el triplay, el taco, la mesa y la cometa, en muestras que recorren sus
+// rangos (los extremos de sus juegos y más), además de las figuras de la teoría de arriba.
+const NUEVOS = [];
+for (let a = 2; a <= 30; a += 2) for (const b of [1, 2, 4]) for (const f of [0, 1]) if (b < a) NUEVOS.push({ objeto: 'triplay', a, b, f, area: 'Tablero: 999 dm²', rot: { esquina: '?' } });
+NUEVOS.push({ objeto: 'triplay', a: 30, b: 1, unidad: '', soloTablero: true, rot: { tablero: '?' }, area: '31 · 29 = ?' }, { objeto: 'triplay', a: 12, b: 4, f: 1, escala: 11, ladoB: '?', largo: '?', corto: '?' });
+for (let a = 1; a <= 5; a++) for (let b = 1; b <= 4; b++) for (const abrir of [0, 1]) NUEVOS.push({ objeto: 'taco', a, b, abrir, total: true, arista: abrir ? false : true, rot: { a3: true, a2b: '?', ab2: true } });
+NUEVOS.push({ objeto: 'taco', a: 5, b: 2, cortes: false, arista: 'arista: a + b = 7', total: 'a³ + b³ = ?' }, { objeto: 'taco', a: 4, b: 2, abrir: 1, solo: 'medio' }, { objeto: 'taco', a: 4, b: 2, abrir: 1, solo: 'esquinas' });
+for (let x = 1; x <= 12; x++) for (let y = 1; y <= Math.min(x, 6); y++) NUEVOS.push({ objeto: 'mesa', x, y, total: true, lado: true, rot: x === y ? { xy: '?' } : undefined });
+for (const d of [1, 2, 3, 4, 8]) for (const otro of [undefined, d, 1]) NUEVOS.push({ objeto: 'cometa', d, lado: '?', otro }, { objeto: 'cometa', d, lado: '3√2/2 m', diag: false });
+
+test('los objetos de Productos notables: sin NaN ni colores fijos, sin carmín ni verde, puros, de prueba, con su alt', () => {
+  for (const d of NUEVOS) {
+    const s = P.dibujar(d), q = JSON.stringify(d);
+    assert.ok(!/NaN|undefined|Infinity/.test(s), q);
+    assert.ok(!/#[0-9a-f]{3,6}\b/i.test(s), `${q}: colores fijos`);
+    assert.ok(!/var\(--c-[hd]\)/.test(s), `${q}: carmín o verde`);
+    assert.ok(!/\sid="|filter|<image/.test(s), q);
+    assert.equal(s, P.dibujar(d), 'pura');
+    assert.match(s, new RegExp(`data-objeto="${d.objeto}" data-prueba="si"`));
+    assert.match(s, /viewBox="0 0 320 250"/);
+    assert.ok(P.alt(d).length > 30 && !/undefined|NaN/.test(P.alt(d)), P.alt(d));
+  }
+});
+
+test('los objetos de Productos notables, con números: todo cabe con 4 de margen y nada se pisa', () => {
+  const mal = [];
+  NUEVOS.forEach((d, k) => revisar(d, {}, `${d.objeto} ${k + 1} ${JSON.stringify(d).slice(0, 60)}`, mal));
+  assert.deepEqual(mal, []);
+});
+
+test('fieles: el tablero mide a + b por a − b; el taco son 8 piezas que suman (a + b)³; la mesa, x + y + 2√(xy)', () => {
+  for (const d of NUEVOS.filter(x => x.objeto === 'triplay' && x.f === 1)) {
+    const g = P.geometria(d), t = g.objetos.find(o => o.que === 'tablero');
+    assert.ok(Math.abs((t.x1 - t.x0) / g.k - (d.a + d.b)) < 1e-9 && Math.abs((t.y1 - t.y0) / g.k - (d.a - d.b)) < 1e-9, JSON.stringify(d));
+  }
+  for (const d of NUEVOS.filter(x => x.objeto === 'taco' && x.cortes !== false)) {
+    const g = P.geometria(d), cuenta = {};
+    for (const p of g.piezas) cuenta[p.tipo] = (cuenta[p.tipo] || 0) + 1;
+    assert.deepEqual(cuenta, { a3: 1, a2b: 3, ab2: 3, b3: 1 });
+    assert.ok(Math.abs(g.piezas.reduce((s, p) => s + p.w * p.h * p.p, 0) - (d.a + d.b) ** 3) < 1e-9);
+  }
+  for (const d of NUEVOS.filter(x => x.objeto === 'mesa')) {
+    const g = P.geometria(d), area = g.piezas.reduce((s, p) => s + p.w * p.h, 0) / g.k ** 2;
+    assert.ok(Math.abs(area - (d.x + d.y + 2 * Math.sqrt(d.x * d.y))) < 1e-9, JSON.stringify(d));
+  }
+  // La cometa: la varilla mide d, el lado d/√2.
+  const g = P.geometria({ objeto: 'cometa', d: 2 });
+  assert.ok(Math.abs((2 * g.h) / g.k - 2) < 1e-9 && Math.abs(Math.hypot(g.h, g.h) / g.k - 2 / Math.SQRT2) < 1e-9);
 });
