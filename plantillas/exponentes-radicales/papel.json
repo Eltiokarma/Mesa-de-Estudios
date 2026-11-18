@@ -29,7 +29,7 @@
       "enunciado": "Se tiene la raíz ⁵√(x²). ¿Cómo se escribe con un exponente fraccionario? Datos: aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ. Alternativas: A) x¹⁰   B) x⁵ᐟ²   C) x²ᐟ⁵   D) x⁻³",
       "respuesta": "C) x²ᐟ⁵",
       "pasos": [
-        "El exponente de adentro, 2, va arriba; el índice, 5, va abajo.",
+        "El exponente de adentro, 2, va de numerador; el índice, 5, de denominador.",
         "⁵√(x²) = x²ᐟ⁵."
       ]
     },
@@ -77,7 +77,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Se tiene la raíz √(x · ⁵√(x⁴)). ¿Cómo se escribe como una sola potencia de x? Datos: aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ. aᵐ · aⁿ = aᵐ⁺ⁿ. (aᵐ)ⁿ = aᵐⁿ, donde mn = m · n. Alternativas: A) x⁹ᐟ⁵   B) x⁹ᐟ¹⁰   C) x⁵ᐟ⁷   D) x¹³ᐟ¹⁰",
+      "enunciado": "Se tiene la raíz √(x · ⁵√(x⁴)). ¿Cómo se escribe como una sola potencia de x? Datos: aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ. aʳ · aˢ = aʳ⁺ˢ, también si r y s son fracciones. (aʳ)ˢ = aʳˢ, donde rs = r · s, también con fracciones. Alternativas: A) x⁹ᐟ⁵   B) x⁹ᐟ¹⁰   C) x⁵ᐟ⁷   D) x¹³ᐟ¹⁰",
       "respuesta": "B) x⁹ᐟ¹⁰",
       "pasos": [
         "De adentro hacia afuera. Adentro, el producto suma los exponentes: x · x⁴ᐟ⁵ = x⁹ᐟ⁵.",

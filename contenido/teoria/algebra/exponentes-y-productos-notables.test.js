@@ -109,7 +109,8 @@ function lecturas(i) {
 }
 
 test('la tabla de colores de la unidad: primer dato naranja, segundo turquesa, resultado violeta', () => {
-  assert.deepEqual(def.colores, { 'primer exponente': 'o', 'segundo exponente': 'i', resultado: 'f', 'primer radicando': 'o', 'segundo radicando': 'i' });
+  // El índice y el exponente de adentro, magnitudes propias desde la ronda 2 del lector (18 nov).
+  assert.deepEqual(def.colores, { 'primer exponente': 'o', 'segundo exponente': 'i', resultado: 'f', 'primer radicando': 'o', 'segundo radicando': 'i', 'exponente de adentro': 'o', 'índice': 'i' });
   assert.ok(!Object.values(def.colores).some(c => c === 'h' || c === 'd'), 'sin carmín ni verde');
 });
 
@@ -446,7 +447,7 @@ test('M2: el índice de una raíz lleva el color de n (turquesa), como en el exp
   for (const i of def.ideas) {
     const todo = [i.lee, i.mira, i.regla, i.ejemplos, i.predice.pregunta];
     for (let s = 0; s < 60; s++) todo.push(i.ahoraTu.generar(s), i.resuelve.generar(s));
-    for (const ind of indices(todo)) { n++; assert.ok(ind && ind.v === 'c-i' && ind.m === 'segundo exponente', `${i.id}: índice ${JSON.stringify(ind)}`); }
+    for (const ind of indices(todo)) { n++; assert.ok(ind && ind.v === 'c-i' && ind.m === 'índice', `${i.id}: índice ${JSON.stringify(ind)}`); }
   }
   assert.ok(n > 100, `${n} índices`);
 });
@@ -500,4 +501,100 @@ test('B12 y B13: «Cuál es mayor» ordena las alternativas como la pregunta, y 
   assert.deepEqual(e.alternativas.slice(0, 2), ['∛3', '√2']);
   const titulos = def.ideas.flatMap(i => i.ejemplos.map(x => x.titulo));
   assert.equal(new Set(titulos).size, titulos.length);
+});
+
+// ---------- Ronda 2 del lector en frío (18 nov; rutinas/frio/algebra.exponentes-y-productos-notables.md, «Ronda 2») ----------
+const ej = (id, t) => idea(id).ejemplos.find(e => e.titulo === t);
+const datosP = e => plano(e.datos);
+const resuelto = e => e.solucion.map(x => [x.texto, x.ecuacion || '']);
+const limpia = x => (Array.isArray(x) ? x.filter(y => y !== undefined && y !== null).map(limpia) : x);
+test('ronda 2, prioridad 1: en la idea 3, n es solo el índice; ninguna ficha de la idea 3 es un exponente de la idea 1', () => {
+  const i = idea('exponente-fraccionario');
+  for (const { donde, x } of lecturas(i)) for (const f of fichas(x)) {
+    assert.ok(!['primer exponente', 'segundo exponente'].includes(f.m), `${donde}: «${f.t}» es ${f.m}`);
+    if (f.t === 'n') assert.equal(f.m, 'índice', donde);
+    if (f.t === 'm') assert.equal(f.m, 'exponente de adentro', donde);
+  }
+  // Las leyes de exponentes de la idea 3 van con r y s (sin n), y la suma de fracciones, en palabras (sin p, q, r, s sueltas).
+  for (let s = 0; s < 60; s++) for (const c of [i.ahoraTu.generar(s), i.resuelve.generar(s)]) for (const d of c.datos) {
+    const t = plano(d);
+    if (/r \+ s|r · s/.test(t)) assert.ok(!/(^|[^\p{L}])n([^\p{L}]|$)/u.test(t), `semilla ${s}: ${t}`);
+    assert.ok(!/p\/q/.test(t), `semilla ${s}: ${t}`);
+  }
+  assert.match(plano(i.lee.tarjetas[2].texto), /siempre el índice/);
+  assert.match(i.regla.texto, /^Aquí n es el índice/);
+});
+
+test('ronda 2, prioridad 2: ningún texto de la idea 3 dice «arriba» o «abajo» de la fracción', () => {
+  const i = idea('exponente-fraccionario');
+  const re = /arriba|abajo/i;
+  for (const { donde, x } of lecturas(i)) assert.ok(!re.test(plano(limpia(x))), `${donde}: ${plano(limpia(x))}`);
+  for (const t of [i.regla.voz, i.ahoraTu.voz, i.predice.voz, i.mira.voz]) assert.ok(!re.test(t), t);
+  for (let s = 0; s < 60; s++) for (const o of i.ahoraTu.generar(s).opciones) assert.ok(!re.test(o.siFuera || ''), o.siFuera);
+  for (const o of i.predice.opciones) assert.ok(!re.test(o.siFuera || ''), o.siFuera);
+  for (const g of def.glosario.filter(x => /fraccionario|índice/.test(x.termino))) assert.ok(!re.test([g.def, g.simple].join(' ')), g.termino);
+  assert.match(i.regla.voz, /numerador/);
+  assert.match(plano(ej('exponente-fraccionario', 'De potencia a raíz').solucion[0].texto), /denominador, 7/);
+  // La práctica tampoco (sus explicaciones y soluciones de la idea 3).
+  const G = require('../../../plantillas/exponentes-radicales/generador.js');
+  for (let s = 0; s < 200; s++) {
+    const p = G.generar(s, { idea: 'exponente-fraccionario' });
+    if (!p) continue;
+    const t = plano(limpia([p.enunciado, p.pregunta, p.solucion || []])) + ' ' + p.alternativas.map(o => (o.error && o.error.explicacion) || '').join(' ');
+    assert.ok(p.solucion && p.alternativas.length >= 4, `práctica, semilla ${s}`);
+    assert.ok(!re.test(t), `práctica, semilla ${s}: ${t}`);
+  }
+});
+
+test('ronda 2, prioridad 3: los pasos que se daban por sabidos se dicen, y los datos no regalan la respuesta', () => {
+  const anid = ej('exponente-fraccionario', 'Una raíz dentro de otra');
+  assert.ok(datosP(anid).includes('x = x elevado a 1') || datosP(anid).includes('x = x¹'), datosP(anid));
+  assert.match(plano(resuelto(anid)), /x es x¹/);
+  const mayor = ej('exponente-fraccionario', 'Cuál es mayor'), rm = plano(resuelto(mayor));
+  assert.match(rm, /entre 3 y entre 2/); assert.match(rm, /1\/3 · 6 = 2/); assert.match(rm, /1\/2 · 6 = 3/);
+  const signo = ej('leyes-exponentes', 'El signo y la base');
+  assert.ok(!/toca|base/.test(datosP(signo)), `los datos explican la trampa: ${datosP(signo)}`);
+  assert.match(plano(resuelto(signo)), /toca solo su base/);
+  const cero = ej('leyes-exponentes', 'El exponente cero');
+  assert.ok(!/entre sí mismo|da 1/.test(datosP(cero)), datosP(cero));
+  assert.ok(fichas(cero.respuesta).some(f => f.t === '0' && f.m === 'resultado'), 'el 0 de 2⁰ con color en la respuesta');
+  // Ya no es la misma cuenta que «Juntar dos potencias»: dos leyes y la cuenta aparte.
+  assert.ok(cero.solucion.length >= 3 && /2⁷ = 128/.test(plano(resuelto(cero))));
+  assert.equal(2 ** 3 * 2 ** 4 / 2 ** 7, 1); assert.equal(3 + 4 - 7, 0);
+  // La regla de la idea 1 pone (−2)⁴ = 16 al lado de −2⁴ = −16.
+  assert.match(idea('leyes-exponentes').regla.condicion, /−2⁴ = −16; \(−2\)⁴ = 16/);
+  assert.equal(-(2 ** 4), -16); assert.equal((-2) ** 4, 16);
+});
+
+test('ronda 2, prioridad 4: los colores que se perdían', () => {
+  // «Ahora tú» 1: los tres exponentes con color (el del divisor es la n de aᵐ ÷ aⁿ).
+  for (let s = 0; s < 400; s += 5) {
+    const q = idea('leyes-exponentes').ahoraTu.generar(s).pregunta;
+    assert.equal(fichas(q).length, 3, `semilla ${s}: ${plano(q)}`);
+  }
+  const sinX = ej('radicales', 'Sin hallar x');
+  assert.ok(fichas(sinX.solucion).some(f => f.t === '4' && f.m === 'primer radicando') && fichas(sinX.solucion).some(f => f.t === '√x' && f.m === 'segundo radicando'));
+  const pr = ej('exponente-fraccionario', 'De potencia a raíz');
+  assert.deepEqual(fichas(pr.respuesta).map(f => [f.t, f.m]), [['4', 'exponente de adentro'], ['7', 'índice']]);
+  for (const t of ['Una raíz dentro de otra', 'Cuál es mayor']) {
+    const e = ej('exponente-fraccionario', t);
+    assert.ok(e.solucion.slice(0, 2).every(x => fichas(x.ecuacion).length >= 2), `${t}: pasos sin color`);
+  }
+});
+
+test('ronda 2, prioridad 5: lo demás del lector', () => {
+  const i1 = idea('leyes-exponentes'), i2 = idea('radicales'), i3 = idea('exponente-fraccionario');
+  assert.match(i1.lee.tarjetas[0].texto, /vista de lado: cada línea es una capa/);
+  assert.ok(i2.juega.leyenda.some(x => x.s === 'radicando'), 'radicando en la leyenda');
+  assert.match(i2.mira.pasos[0].texto, /punteada es y = x/);
+  assert.match(i2.regla.condicion, /para todo x/);
+  assert.ok(!/^a, b ≥ 0\.$|^a, b ≥ 0\. /.test(i2.regla.condicion));
+  assert.match(plano(i3.regla.ecuacion), /8 elevado a 2\/6 = .*8 elevado a 1\/3/);
+  assert.ok(Math.abs(8 ** (2 / 6) - 2) < 1e-12);
+  assert.match(i3.lee.tarjetas[0].texto, /fracción de exponente/);
+  // El juego de la idea 2 se reajusta de escala (el junto de 85 m² se ve más grande que el de 49 m²).
+  const g = P.geometria(i2.juega.dibujo({ a: 36, b: 49 }).datos), [, qb, qj] = g.cuad;
+  assert.ok((qj.x1 - qj.x0) - (qb.x1 - qb.x0) >= 20);
+  // El área del biohuerto de Lee va adentro, no pegada al borde de abajo.
+  assert.equal(P.geometria(i2.lee.tarjetas[0].dibujo.datos).textos.find(x => /36 m²/.test(x.txt)).que, 'dentro');
 });

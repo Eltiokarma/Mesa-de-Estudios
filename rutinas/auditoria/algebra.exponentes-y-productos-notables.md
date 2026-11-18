@@ -190,3 +190,45 @@ distractores de nivel 3 que ahora se explican (8, 15, 125, 13; 4, 2, 8, 10; 6, 1
 | B19 | Pendiente: es de `app/practica.js` (pasar `{ idea }` al generador), fuera de alcance. |
 
 Capturas `--entera`: `/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/correcciones-exponentes/`.
+
+## Correcciones de la ronda 2 del lector (18 nov)
+
+Hallazgos de `rutinas/frio/algebra.exponentes-y-productos-notables.md`, sección «Ronda 2» (momentos y ejemplos). Método:
+`docs/metodo/unidad/6-correcciones.md`. Cada corrección tiene su prueba en
+`contenido/teoria/algebra/exponentes-y-productos-notables.test.js` («Ronda 2 del lector en frío», cinco pruebas, una por
+prioridad) y en `nucleo/kit/piezas/alg-objeto.test.js` («ronda 2», dos pruebas). Cuentas nuevas rehechas aparte
+(scratchpad, `cuentas-r2.py`): 2³ · 2⁴ ÷ 2⁷ = 128 ÷ 128 = 1 = 2⁰; (−2)⁴ = 16 y −2⁴ = −16; 1/3 · 1/2 = 1/6; 1/3 · 6 = 2,
+1/2 · 6 = 3, 3² = 9 > 2³ = 8; 8 elevado a 2/6 = 8 elevado a 1/3 = 2. Ninguna otra respuesta cambió.
+
+| Hallazgo | Qué se hizo |
+|---|---|
+| **n con dos papeles** (idea 1, segundo exponente; idea 3, índice; y en los datos de «Así se resuelve» de la idea 3, índice en una fórmula y exponente en la otra) | En la idea 3, n es solo el índice y m el exponente de adentro, con magnitudes propias en `COLORES` ('índice' turquesa y 'exponente de adentro' naranja). Las leyes de exponentes que usa la idea 3 (datos de «Así se resuelve», `casoAnidado`, «Dos raíces cúbicas», «Una raíz dentro de otra», «Cuál es mayor», «Raíz de un producto»…) se escriben con r y s, en tinta, «también si r y s son fracciones»; lo mismo en la práctica (`D.productoRS`, `D.potenciaRS`; papel regenerado). La tarjeta 3 de «Lee» pasa a «Ojo: n cambia de papel» («n es siempre el índice…; en la idea 1 era el segundo exponente; aquí ya no; si hace falta otro exponente, se escribe r o s») y la regla empieza «Aquí n es el índice y m, el exponente de adentro». La suma de fracciones va en palabras (sin p, q, r, s). Prueba: ninguna ficha de la idea 3 es un exponente de la idea 1, y ningún dato con r y s trae n. |
+| **«Arriba el exponente, abajo el índice»** | Fuera de toda la idea 3 y de su práctica: numerador y denominador («El numerador va de exponente; el denominador, de índice», en la voz de la regla y de «Ahora tú»; «De potencia a raíz»: «El denominador, 7, es el índice…; el numerador, 4, el exponente de adentro»), también en los siFuera, el glosario («su denominador es el índice») y «arriba con arriba y abajo con abajo». Prueba: ningún texto, voz, siFuera ni explicación de la práctica de la idea 3 dice «arriba» o «abajo». |
+| **∛x = x^(1/3) sin decir que m = 1** («Una raíz dentro de otra») | Datos con «x = x¹» y primera línea «x es x¹, así que el exponente de adentro es 1 y el índice, 3». El dato de índice 2 se acortó («√a = a elevado a 1/2 (índice 2)») para que el 2 no quede solo en otro renglón. |
+| **Por qué elevar a 6 y 1/3 · 6 = 2** («Cuál es mayor») | «Para comparar conviene que los exponentes salgan enteros: elevo los dos a 6, el menor número que se divide entre 3 y entre 2», con 1/3 · 6 = 2 y 1/2 · 6 = 3 a la vista. |
+| **Datos que regalaban la trampa del signo** («El signo y la base») | Los datos quedan en la definición de potencia y la regla de signos; «el exponente toca solo su base» va en el resuelto (y en la regla, como pidió la orquesta). La razón de (−2)³ = −8 ya no llega una línea tarde. |
+| **(−2)⁴ = 16 al lado de −2⁴ = −16** | En la condición de la regla de la idea 1: «−2⁴ = −16; (−2)⁴ = 16». |
+| **Datos de 6⁵ ÷ 6⁵ con la respuesta, y niveles 3 y 8 casi iguales** | «El exponente cero» pasa a 2³ · 2⁴ ÷ 2⁷: con las leyes (3 + 4 − 7 = 0) y calculando cada potencia (8 · 16 ÷ 128 = 1); datos: las dos leyes y la definición. Ya no es la cuenta del ejemplo 3 y nada en datos dice «da 1». |
+| **Colores perdidos** | El exponente del divisor de «Ahora tú» 1 (el 1 de 5¹) en turquesa: es la n de aᵐ ÷ aⁿ (prueba: los tres exponentes con color en 80 semillas). La respuesta de «El exponente cero» con el 0 violeta. «Sin hallar x»: el 4 naranja y √x turquesa (a y b de √(a · b)); x sola sigue en tinta (tabla de letras). «De potencia a raíz»: la respuesta conserva el 4 naranja y el 7 turquesa (son las mismas magnitudes; ya no cambia solo el 4). «Una raíz dentro de otra» y «Cuál es mayor», con color en sus pasos. Mira de la idea 3, el 1/3 y el 1/2 con el índice turquesa y el «1/» en tinta; «Dos raíces cúbicas», los dos exponentes de adentro naranja. |
+| **El zigzag de «Lee» de la idea 1** | `alg-objeto` escribe «vista de lado» debajo del canto (opción `vista: false` para quitarlo), y la tarjeta 1 dice «A la derecha, la hoja vista de lado: cada línea es una capa». La leyenda del juego dice «vistas de lado». |
+| **«36 m²» pegado al borde** | El área de un biohuerto va adentro, sobre un recuadro claro, cuando cabe (`que: 'dentro'`); si el biohuerto es chico, debajo como antes. Prueba numérica: queda dentro de su cuadrado y una sola vez. |
+| **El de 85 m² se veía igual que el de 49 m²** | Sin escala dada, el biohuerto más grande llena su casilla (hasta 10 px por m; antes 6,7 fijo), y el juego usa esa escala: a 36 y 49 m², el junto mide 92 px contra 70. Prueba: ≥ 20 px de diferencia y nada se sale de su casilla en toda la grilla. |
+| **«Vale si a, b ≥ 0» debajo de √(x²) = \|x\|** | «Vale si a, b ≥ 0 en √(a · b) y √(a + b); √(x²) = \|x\| vale para todo x. La cúbica admite negativos: ∛(−8) = −2». La regla dice «\|x\|, su distancia al cero». |
+| **«radicando» sin explicar en Juega** | Línea propia en la leyenda: «radicando: lo de dentro de √: aquí, un área». |
+| **La parte punteada de la gráfica de Mira** | Paso 1: «La recta punteada es y = x. Con x ≥ 0, √(x²) va encima: es x». |
+| **«m/n se puede simplificar» sin ejemplo** | La regla de la idea 3 trae una tercera línea, 8 elevado a 2/6 = 8 elevado a 1/3 = ∛8 = 2, con la llave «m/n se simplifica»; la condición dice «Con a ≥ 0, m/n se simplifica» (y empieza en minúscula tras «Vale si»). |
+| **El título de la idea 3 sin fracción en su primera tarjeta** | La tarjeta 1 termina «Las dos medidas se escriben como potencias con una fracción de exponente», sin decir cuál (la misión pide hallar 1/3). |
+
+**Cortes de renglón** (regla del commit 7aa0f565): en las capturas nuevas no queda ningún «>» al empezar renglón ni «=» al final en
+ecuaciones. Quedaba uno en la **condición** de la regla, que es texto plano y no pasa por `Ecuacion`: «Con a ≥ / 0» se partía
+después del ≥. En esta unidad se arregló con espacios duros a los dos lados del signo («a ≥ 0» no se parte) en las tres condiciones; el arreglo
+general es de `app/teoria.js` (fuera de alcance): pasar la condición por la misma regla de no partir alrededor de < > ≤ ≥ =.
+
+**Para Gerson:** (1) el índice comparte el turquesa con el segundo exponente de la idea 1 (la paleta no tiene otro color libre
+sin carmín ni verde junto a naranja); quedan separados por magnitud y nunca juntos en un ejercicio; (2) el exponente del
+divisor pasa a turquesa (la n de aᵐ ÷ aⁿ), así que en «Ahora tú» 1 hay dos números turquesa; la otra opción era dejar los
+tres en tinta, como «Tres leyes juntas»; (3) «El exponente cero» cambió de cuenta (2³ · 2⁴ ÷ 2⁷) y la tarjeta 1 de la idea 1
+(aprobada) ganó una frase sobre la vista de lado.
+
+Capturas `--entera` (momentos, ejemplos y cada tarjeta de «Lee»):
+`/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scratchpad/exponentes-r2/`.

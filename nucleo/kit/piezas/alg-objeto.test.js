@@ -24,8 +24,9 @@ function revisar(d, e, nombre, mal) {
     mal.push(`${nombre}: se sale «${c.txt || c.que}» (${c.x0.toFixed(1)}, ${c.y0.toFixed(1)}) – (${c.x1.toFixed(1)}, ${c.y1.toFixed(1)})`);
   const t = g.textos;
   for (let i = 0; i < t.length; i++) for (let j = i + 1; j < t.length; j++) if (solapan(t[i], t[j], 1)) mal.push(`${nombre}: se pisan «${t[i].txt}» y «${t[j].txt}»`);
-  // Un texto no pisa un objeto, salvo los que van adentro a propósito: la parte de la hoja y el área de una pieza del terreno.
-  for (const x of t.filter(y => y.que !== 'parte' && y.que !== 'pieza')) for (const o of g.objetos) if (solapan(x, o)) mal.push(`${nombre}: «${x.txt}» pisa ${o.que}`);
+  // Un texto no pisa un objeto, salvo los que van adentro a propósito: la parte de la hoja, el área de una pieza del
+  // terreno y el área de un biohuerto (adentro, sobre su recuadro claro; ronda 2 del lector).
+  for (const x of t.filter(y => y.que !== 'parte' && y.que !== 'pieza' && y.que !== 'dentro')) for (const o of g.objetos) if (solapan(x, o)) mal.push(`${nombre}: «${x.txt}» pisa ${o.que}`);
   const ob = g.objetos.filter(o => o.que !== 'doblez');
   for (let i = 0; i < ob.length; i++) for (let j = i + 1; j < ob.length; j++) if (solapan(ob[i], ob[j])) mal.push(`${nombre}: se pisan ${ob[i].que} y ${ob[j].que}`);
 }
@@ -167,5 +168,35 @@ test('M8: con pocas capas, las líneas del canto van a 8 px o más (que 4 capas 
     const g = P.geometria({ objeto: 'hoja', base, m, n });
     if (g.L > 8 || g.L < 2) continue;
     for (let j = 1; j < g.ys.length; j++) assert.ok(g.ys[j] - g.ys[j - 1] >= 8, `base ${base}, m ${m}, n ${n}: ${g.ys[j] - g.ys[j - 1]} px`);
+  }
+});
+
+// Ronda 2 del lector en frío (18 nov; rutinas/frio/algebra.exponentes-y-productos-notables.md, «Ronda 2»).
+test('ronda 2: el canto dice «vista de lado»; el área de un biohuerto va adentro y no pisa a otro biohuerto', () => {
+  for (const d of MUESTRAS.filter(x => x.m !== undefined)) {
+    const g = P.geometria(d);
+    assert.equal(!!g.vista, d.canto !== false, JSON.stringify(d));
+    if (g.vista) assert.match(P.dibujar(d), />vista de lado</);
+  }
+  assert.equal(P.geometria({ objeto: 'hoja', m: 3, vista: false }).vista, null);
+  for (const [a, b] of [[36, 0], [36, 49], [49, 50], [100, 100], [1, 1], [81, 144]]) {
+    const g = P.geometria({ objeto: 'huertos', a, b, junto: b > 0 });
+    for (const t of g.textos.filter(x => x.que === 'dentro')) {
+      const q = g.cuad.find(c => c.cx === t.x);
+      assert.ok(q && t.x0 >= q.x0 && t.x1 <= q.x1 && t.y0 >= q.y0 && t.y1 <= q.y1, `${a}, ${b}: «${t.txt}» no queda adentro de su biohuerto`);
+    }
+    // Ningún área queda pegada debajo de un biohuerto que la tiene adentro (no se lee como la medida del borde).
+    for (const q of g.cuad) assert.ok(g.textos.filter(x => x.x === q.cx && (x.que === 'dentro' || x.que === 'area')).length === 1, `${a}, ${b}: ${q.que}`);
+  }
+  assert.equal(P.geometria({ objeto: 'huertos', a: 36, b: 0, junto: false }).textos.find(x => /36 m²/.test(x.txt)).que, 'dentro');
+});
+
+test('ronda 2: sin escala dada, el biohuerto más grande llena su casilla y el junto de 85 m² se ve más grande que el de 49', () => {
+  const g = P.geometria({ objeto: 'huertos', a: 36, b: 49 }), [, qb, qj] = g.cuad;
+  assert.ok(qj.x1 - qj.x0 >= 88, `el junto mide ${qj.x1 - qj.x0} px`);
+  assert.ok((qj.x1 - qj.x0) - (qb.x1 - qb.x0) >= 20, 'la diferencia de lado se ve');
+  for (let a = 1; a <= 100; a += 9) for (let b = 1; b <= 100; b += 9) {
+    const h = P.geometria({ objeto: 'huertos', a, b });
+    for (const q of h.cuad) { const [c0, c1] = P.constantes.HU.casillas[{ a: 0, b: 1, junto: 2 }[q.que]]; assert.ok(q.x0 >= c0 - 1e-9 && q.x1 <= c1 + 1e-9, `${a}, ${b}: ${q.que} se sale de su casilla`); }
   }
 });

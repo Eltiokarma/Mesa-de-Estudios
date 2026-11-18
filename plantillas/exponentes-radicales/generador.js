@@ -127,6 +127,9 @@
     semejantes: 'p√t + q√t = (p + q)√t',
     cuadrados: 'Cuadrados: 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144',
     mn: 'aᵐᐟⁿ = ⁿ√(aᵐ) = (ⁿ√a)ᵐ',
+    // En la idea 3, n es solo el índice: las leyes de exponentes van con r y s (ronda 2 del lector de la teoría, 18 nov).
+    productoRS: 'aʳ · aˢ = aʳ⁺ˢ, también si r y s son fracciones',
+    potenciaRS: '(aʳ)ˢ = aʳˢ, donde rs = r · s, también con fracciones',
     uno: 'a¹ᐟⁿ = ⁿ√a: el número que, elevado a n, da a',
     cubo: 'Volumen de un cubo = arista³',
     cuadrado: 'Área de un cuadrado = lado²',
@@ -250,7 +253,7 @@
     if (b === 2 && k === 3) return null;
     const den = b ** k, uno = Q(1, den);
     const neg = e('TAL-EXP-NEG', `=${z(-den)}`, z(-den), x => `Bien que llegues a ${pot(b, -k)}. Pero el exponente negativo no cambia el signo: indica dividir entre ${pot(b, k)}; ${x} es negativo.`);
-    const frac = e('TAL-EXP-FRAC', `=1/${b * k}`, `1/${b * k}`, x => `Bien: ${pot(b, -k)} es una fracción con 1 arriba. Pero abajo va ${b} multiplicado ${k} veces por sí mismo, no ${b} · ${k}; por eso ${x} no es.`);
+    const frac = e('TAL-EXP-FRAC', `=1/${b * k}`, `1/${b * k}`, x => `Bien: ${pot(b, -k)} es una fracción con 1 de numerador. Pero de denominador va ${b} multiplicado ${k} veces por sí mismo, no ${b} · ${k}; por eso ${x} no es.`);
     if (sub === 'producto') {
       const p = rng.entero(2, 6), q = -(p + k);
       return {
@@ -354,11 +357,11 @@
     const ans = sub === 'resta' ? bp - bq : bp + bq, fmt = x => f(x, 0);
     const errores = sub === 'resta' ? [
       en('TAL-EXP-RESTA', b ** (p - q), fmt, x => `Bien que saques ${pot(b, 'x')} y lo simplifiques. Pero ${pot(b, p)} − ${pot(b, q)} se resta con sus valores; restar los exponentes, como al dividir, da ${x}.`),
-      en('TAL-SIGNO', bp + bq, fmt, x => `Bien que saques el factor común ${pot(b, 'x')}. Pero arriba hay una resta: ${bp} − ${bq}; sumar da ${x}.`),
+      en('TAL-SIGNO', bp + bq, fmt, x => `Bien que saques el factor común ${pot(b, 'x')}. Pero en el numerador hay una resta: ${bp} − ${bq}; sumar da ${x}.`),
       en('TAL-EXP-SOLO-EXP', p - q, fmt, x => `Bien que llegues a ${pot(b, p)} − ${pot(b, q)}. Pero falta calcular las potencias; ${x} resta solo los exponentes.`),
     ] : [
       en('AL11', b ** (p + q), fmt, x => `Bien que saques el factor común ${pot(b, 'x')}. Pero ${pot(b, p)} + ${pot(b, q)} no es ${pot(b, p + q)}: los exponentes se suman en un producto, no en una suma; así sale ${x}.`),
-      en('TAL-SIGNO', bp - bq, fmt, x => `Bien que saques el factor común ${pot(b, 'x')}. Pero arriba hay una suma: ${bp} + ${bq}; restar da ${x}.`),
+      en('TAL-SIGNO', bp - bq, fmt, x => `Bien que saques el factor común ${pot(b, 'x')}. Pero en el numerador hay una suma: ${bp} + ${bq}; restar da ${x}.`),
       en('TAL-EXP-SOLO-EXP', p + q, fmt, x => `Bien que llegues a ${pot(b, p)} + ${pot(b, q)}. Pero falta calcular las potencias; ${x} suma solo los exponentes.`),
     ];
     return {
@@ -369,7 +372,7 @@
       errores,
       solucion: [
         ['Cada término trae ', pot(b, 'x'), ' como factor: ', pot(b, `x+${p}`), ` ${signo} `, pot(b, `x+${q}`), ' = ', pot(b, 'x'), ' · (', String(b), M(sup(p)), ` ${signo} `, String(b), N(sup(q)), ').'],
-        ['Se simplifica con el ', pot(b, 'x'), ` de abajo: ${bp} ${signo} ${bq} = `, R(fmt(ans)), '.'],
+        ['Se simplifica con el ', pot(b, 'x'), ` del denominador: ${bp} ${signo} ${bq} = `, R(fmt(ans)), '.'],
       ],
       _datos: { sub, b, p, q },
     };
@@ -669,12 +672,12 @@
         datos: [D.mn],
         correcta: cPot('x', Q(m, n)),
         errores: [
-          err('TAL-FRAC-INVIERTE', Q(n, m), x => `Bien que uses ${m} y ${n} en una fracción. Pero el índice ${n} va abajo, porque la raíz divide; ${x} los pone al revés.`),
+          err('TAL-FRAC-INVIERTE', Q(n, m), x => `Bien que uses ${m} y ${n} en una fracción. Pero el índice ${n} va de denominador, porque la raíz divide; ${x} los pone al revés.`),
           err('TAL-EXP-POR', Q(m * n), x => `Bien que juntes ${m} y ${n} en el exponente. Pero sacar raíz divide el exponente entre ${n}; ${x} lo multiplica.`),
           err('TAL-FRAC-SUMA', Q(m - n), x => `Bien: la raíz cambia el exponente. Pero lo divide entre ${n}, no le resta ${n}; ${x} le resta.`),
         ],
         solucion: [
-          ['El exponente de adentro, ', M(m), ', va arriba; el índice, ', N(n), ', va abajo.'],
+          ['El exponente de adentro, ', M(m), ', va de numerador; el índice, ', N(n), ', de denominador.'],
           [raizT(n, m), ' = x', R(sup(`${m}/${n}`)), '.'],
         ],
         _datos: { sub, m, n },
@@ -687,12 +690,12 @@
       datos: [D.mn],
       correcta: tx(raizT(n, m)),
       errores: [
-        e('TAL-FRAC-INVIERTE', raizT(m, n), raizT(m, n), x => `Bien que escribas una raíz con ${m} y ${n}. Pero el índice es el de abajo, ${n}; ${x} los pone al revés.`),
-        e('TAL-FRAC-MEDIO', raizT(n, 1), raizT(n, 1), x => `Bien el índice ${n} de la raíz. Pero falta el ${m} de arriba: ${x} es x elevado a 1/${n}.`),
+        e('TAL-FRAC-INVIERTE', raizT(m, n), raizT(m, n), x => `Bien que escribas una raíz con ${m} y ${n}. Pero el índice es el denominador, ${n}; ${x} los pone al revés.`),
+        e('TAL-FRAC-MEDIO', raizT(n, 1), raizT(n, 1), x => `Bien el índice ${n} de la raíz. Pero falta el numerador, ${m}: ${x} es x elevado a 1/${n}.`),
         e('TAL-EXP-POR', `${m} · ${raizT(n, 1)}`, `${m} · ${raizT(n, 1)}`, x => `Bien el índice ${n} de la raíz. Pero el ${m} es un exponente de x, no un factor; ${x} multiplica por ${m}.`),
       ],
       solucion: [
-        ['El de abajo, ', N(n), ', es el índice de la raíz; el de arriba, ', M(m), ', el exponente de adentro.'],
+        ['El denominador, ', N(n), ', es el índice de la raíz; el numerador, ', M(m), ', el exponente de adentro.'],
         [`x${sup(`${m}/${n}`)} = `, R(raizT(n, m)), '.'],
       ],
       _datos: { sub, m, n },
@@ -755,7 +758,7 @@
       errores: [
         e('TAL-EXP-POR', `=${qT(Q(b * m, n))}`, qT(Q(b * m, n)), x => `Bien que uses ${m}/${n}. Pero no se multiplica ${b} por ${m}/${n}; esa multiplicación da ${x}, y aquí se saca raíz y se eleva.`, b * m / n),
         e('TAL-FRAC-MEDIO', `=${r}`, String(r), x => `Bien la raíz: ${rad(n, b)} = ${r}. Pero falta elevarla a ${m}; ${x} se queda a medio camino.`, r),
-        e('TAL-FRAC-INVIERTE', otroE ? `=${Math.round(otro)}` : `≈${f(otro, 1)}`, otroT, x => `Bien que saques raíz y eleves. Pero el índice es ${n}, el de abajo; con la fracción al revés sale ${x}.`, otro),
+        e('TAL-FRAC-INVIERTE', otroE ? `=${Math.round(otro)}` : `≈${f(otro, 1)}`, otroT, x => `Bien que saques raíz y eleves. Pero el índice es ${n}, el denominador; con la fracción al revés sale ${x}.`, otro),
       ],
       solucion: [
         ['Primero la raíz de índice ', N(n), `, que sale exacta: ${rad(n, b)} = ${r}.`],
@@ -775,12 +778,12 @@
     return {
       enunciado: ['Se tiene el producto ', r1, ' · ', r2, '.'],
       pregunta: ['¿Cómo se escribe como una sola potencia de x?'],
-      datos: [D.mn, D.producto],
+      datos: [D.mn, D.productoRS],
       correcta: cPot('x', ok),
       errores: [
-        err('TAL-FRAC-SUMA', Q(a + b, n1 + n2), x => `Bien: en el producto se suman los exponentes ${a}/${n1} y ${b}/${n2}. Pero las fracciones no se suman arriba con arriba y abajo con abajo; así sale ${x}.`),
+        err('TAL-FRAC-SUMA', Q(a + b, n1 + n2), x => `Bien: en el producto se suman los exponentes ${a}/${n1} y ${b}/${n2}. Pero las fracciones no se suman numerador con numerador y denominador con denominador; así sale ${x}.`),
         err('TAL-EXP-PRODUCTO', Q(a * b, n1 * n2), x => `Bien que pases cada raíz a exponente: ${a}/${n1} y ${b}/${n2}. Pero en un producto los exponentes se suman; multiplicarlos da ${x}.`),
-        err('TAL-FRAC-INVIERTE', sumQ(Q(n1, a), Q(n2, b)), x => `Bien que sumes los exponentes del producto. Pero en cada raíz el índice va abajo, ${a}/${n1}; con las fracciones al revés sale ${x}.`),
+        err('TAL-FRAC-INVIERTE', sumQ(Q(n1, a), Q(n2, b)), x => `Bien que sumes los exponentes del producto. Pero en cada raíz el índice va de denominador, ${a}/${n1}; con las fracciones al revés sale ${x}.`),
       ],
       solucion: [
         ['Cada raíz como potencia: ', r1, ` = x${sup(`${a}/${n1}`)} y `, r2, ` = x${sup(`${b}/${n2}`)}.`],
@@ -811,7 +814,7 @@
         e('TAL-EXP-POR', `=${qT(por)}`, qT(por), x => `Bien que uses cada fracción. Pero no multiplica la base: es raíz y potencia; multiplicar da ${x}.`, qNum(por)),
       ],
       solucion: [
-        ['Cada potencia: primero su raíz, después su exponente de arriba.'],
+        ['Cada potencia: primero la raíz que dice el denominador; después, el numerador de exponente.'],
         [`${pt(x1)} = ${val(x1)}; ${pt(x2)} = ${val(x2)}; ${pt(x3)} = ${val(x3)}.`],
         [`${val(x1)} + ${val(x2)} − ${val(x3)} = `, R(String(ans)), '.'],
       ],
@@ -829,12 +832,12 @@
     return {
       enunciado: ['Se tiene la raíz ', expr, '.'],
       pregunta: ['¿Cómo se escribe como una sola potencia de x?'],
-      datos: [D.mn, D.producto, D.potencia],
+      datos: [D.mn, D.productoRS, D.potenciaRS],
       correcta: cPot('x', ok),
       errores: [
         err('TAL-FRAC-AFUERA', dentro, x => `Bien que juntes ${xPot(a)} con la raíz de adentro: ${a} + ${b}/${j}. Pero falta la raíz de afuera, que divide todo entre ${k}; sin ella queda ${x}.`),
         err('TAL-FRAC-ANIDA', sumQ(Q(a, k), Q(b, j)), x => `Bien ${xPot(a)} dividido entre ${k}. Pero la raíz de afuera también divide al ${b}/${j}; dejarlo igual da ${x}.`),
-        err('TAL-FRAC-SUMA', Q(a + b, k + j), x => `Bien que sumes exponentes en el producto. Pero las fracciones no se suman arriba con arriba y abajo con abajo; así sale ${x}.`),
+        err('TAL-FRAC-SUMA', Q(a + b, k + j), x => `Bien que sumes exponentes en el producto. Pero las fracciones no se suman numerador con numerador y denominador con denominador; así sale ${x}.`),
       ],
       solucion: [
         ['De adentro hacia afuera. Adentro, el producto suma los exponentes: ', `${xPot(a)} · x${sup(`${b}/${j}`)} = x${qS(dentro)}`, '.'],

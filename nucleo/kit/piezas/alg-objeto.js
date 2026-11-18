@@ -46,6 +46,7 @@
  *   tira: false,          sin la tira de dobleces de arriba (por defecto va)
  *   canto: false,         sin el canto ni el total (cuando se piden las capas: contar las líneas daría la respuesta)
  *   rotulos: false,       sin «8 capas» y «× 4» junto a los paquetes (con un solo paquete no van nunca)
+ *   vista: false,         sin el rótulo «vista de lado» debajo del canto (por defecto va: el zigzag es la hoja de lado)
  *   abierta: true,        a la izquierda, la hoja abierta con los pliegues de m + n dobleces (y no doblada)
  *   parte: '1/8' | '?',   rótulo de la cara de arriba (doblada) o de una parte (abierta): violeta, o «?» en tinta
  *   pasos: [{ …datos }, …]   para «Mira»: estado.paso elige qué cambia (se mezcla con los datos)
@@ -167,13 +168,19 @@
       parte = { t, pide, x, y };
       textos.push(cajaTexto('parte', x, y, [[t, null, 700]], 14, 'middle'));
     }
+    // Debajo del canto, qué es (lector en frío, ronda 2: el zigzag no se leía como la hoja vista de lado).
+    let vista = null;
+    if (canto && d.vista !== false) {
+      vista = { x: (CANTO.x0 + CANTO.x1) / 2, y: Math.min(224, paquetes[P - 1].y1 + 18), segs: [['vista de lado']] };
+      textos.push(cajaTexto('vista', vista.x, vista.y, vista.segs, 12, 'middle'));
+    }
     // Una hoja en tres no da para más.
     let aviso = null;
     if (D.topado) {
       aviso = [[b === 3 ? 'En tres, la hoja no da para más de 3 dobleces' : 'Por la mitad, aquí van a lo más 5 dobleces']];
-      textos.push(cajaTexto('aviso', 160, 236, aviso, 12, 'middle'));
+      textos.push(cajaTexto('aviso', 160, 240, aviso, 12, 'middle'));
     }
-    return { W, H, M, d, D, C, P, L, ys, canto, hx, paquetes, pieza, cols, filas, marcas, tira, total, rot, parte, aviso, objetos, textos };
+    return { W, H, M, d, D, C, P, L, ys, canto, hx, paquetes, pieza, cols, filas, marcas, tira, total, rot, parte, vista, aviso, objetos, textos };
   }
 
   // Rayas de cuaderno dentro de un rectángulo (las de la hoja que caen en el pedazo).
@@ -227,7 +234,8 @@
     if (g.canto && g.D.m > 0) for (const q of g.paquetes) s += `<rect class="alg-paquete" x="${x0 - 8}" y="${n2(q.y0)}" width="${x1 - x0 + 16}" height="${n2(q.y1 - q.y0)}" rx="4" fill="none" stroke="var(--c-o)" stroke-width="1.5"/>`;
     for (const r of g.rot) s += texto(r.x, r.y, r.segs, { ancla: 'end' });
     if (g.total) s += texto(g.total.cx, g.total.y, g.total.segs, { tam: 14, ancla: 'middle' });
-    if (g.aviso) s += texto(160, 236, g.aviso, { tam: 12, ancla: 'middle' });
+    if (g.vista) s += texto(g.vista.x, g.vista.y, g.vista.segs, { tam: 12, ancla: 'middle' });
+    if (g.aviso) s += texto(160, 240, g.aviso, { tam: 12, ancla: 'middle' });
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="hoja" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
   }
 
@@ -243,9 +251,10 @@
 
   // ---------- Objeto 'huertos': dos biohuertos cuadrados y el que junta sus áreas (idea «radicales») ----------
   // El área es el radicando; el lado del cerco, la raíz. Cada biohuerto va centrado en su casilla, con la misma escala
-  // para los tres (los lados se comparan de verdad). Abajo, dos barras a la misma escala: los dos lados seguidos y el
-  // lado del biohuerto junto.
-  const HU = { piso: 150, casillas: [[8, 102], [106, 200], [204, 312]], kMax: 6.7 };
+  // para los tres (los lados se comparan de verdad). Sin escala dada, el más grande llena su casilla (hasta 10 px por m;
+  // lector en frío, ronda 2: a 6,7 px por m, el junto de 85 m² se veía igual que el de 49 m²). El área va adentro de
+  // cada uno si cabe. Abajo, dos barras a la misma escala: los dos lados seguidos y el lado del biohuerto junto.
+  const HU = { piso: 150, casillas: [[8, 102], [106, 200], [204, 312]], kMax: 10 };
   const fmt = (x, d = 1) => (Math.abs(x - Math.round(x)) < 1e-9 ? String(Math.round(x)) : `≈ ${(Math.round(x * 10 ** d) / 10 ** d).toFixed(d).replace('.', ',')}`);
   const raizTxt = x => fmt(Math.sqrt(x));
   function geoHuertos(d) {
@@ -275,8 +284,11 @@
       }
       if (ar !== false) {
         const segs = ar === '?' ? [['? m²', null, 700]] : [[`${fmt(area, 2)} m²`, que === 'junto' ? null : col, 700]];
-        const ya = piso + 20;
-        textos.push(Object.assign(cajaTexto('area', cx, ya, segs, 13, 'middle'), { segs, x: cx, y: ya, tam: 13 }));
+        // El área va adentro del biohuerto, sobre un recuadro claro, cuando cabe (lector en frío, ronda 2: debajo del borde
+        // se leía como la medida de ese lado); si el biohuerto es chico, debajo.
+        const dentro = w >= anchoSegs(segs, 13) + 12 && w >= 24;
+        const ya = dentro ? (q.y0 + q.y1) / 2 + 4.5 : piso + 20;
+        textos.push(Object.assign(cajaTexto(dentro ? 'dentro' : 'area', cx, ya, segs, 13, 'middle'), { segs, x: cx, y: ya, tam: 13, fondo: dentro }));
       }
     });
     // Las barras: los dos lados seguidos y el lado del junto, a la misma escala de los biohuertos.
@@ -317,7 +329,10 @@
       s += '</g>';
     }
     for (const b of g.barras) for (const [x0, x1, c] of b.tramos) s += `<line class="alg-barra" x1="${n2(x0)}" y1="${b.y}" x2="${n2(x1)}" y2="${b.y}" stroke="${c ? `var(--c-${c})` : 'currentColor'}" stroke-width="6" stroke-linecap="butt"/>`;
-    for (const t of g.textos) s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.que === 'barra' ? 'start' : 'middle' });
+    for (const t of g.textos) {
+      if (t.fondo) s += `<rect x="${n2(t.x0 - 4)}" y="${n2(t.y0 - 2)}" width="${n2(t.x1 - t.x0 + 8)}" height="${n2(t.y1 - t.y0 + 4)}" rx="3" fill="var(--card)" fill-opacity="0.92"/>`;
+      s += texto(t.x, t.y, t.segs, { tam: t.tam, ancla: t.que === 'barra' ? 'start' : 'middle' });
+    }
     return T.svg(W, H, `<g class="kit-objeto" data-objeto="huertos" data-prueba="si">${s}</g>`, { alt: alt(datos, estado) });
   }
   function altHuertos(d) {
