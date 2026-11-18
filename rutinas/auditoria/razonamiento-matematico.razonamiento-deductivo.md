@@ -193,3 +193,21 @@ prueba, sin el código de la unidad). Capturas en el scratchpad de la sesión (`
 
 - `app/practica.js`: práctica por idea (`gen.generar(s, { unidad, idea })`) y que cada generador separe sus tipos por idea.
 - `catalogo/` y `plantillas/orden-informacion/`: marcar `unidades` en su papel o sacar la escena de esta unidad (M10).
+
+## Cuarta ronda (18 nov): contrafáctico, puntajes y edades
+
+Decisiones de Gerson (`docs/etapa3/decisiones.md`, «Cuarta ronda»).
+
+- **Contrafáctico** (Para Gerson 1): se lee como la teoría en toda la unidad y su práctica. Una sola línea de datos,
+  «“Si fuera p, sería q” se lee como “si p, q”: no dice que p pase.», en el ejemplo 12 de la idea 4 y en
+  `rm-deduccion` (`lineas.contrafactico`). El modelo del generador (`cumple`, `calc.repartos`), la solución (forma
+  indirecta: «no pasa lo segundo de la pista II. Forma indirecta: tampoco pasa lo primero, …») y los distractores
+  (RMP79 y «choca con la II: es una regla “si p, q”, y en ese reparto…») usan esa lectura; en la solución no pasa
+  ninguna parte del contrafáctico, así que leerlo como «X no es así» da el mismo reparto. Papel p8 reescrito a mano.
+  `casos.json`: cambiaron las alternativas de 3, 4 y salida-3 y el problema de 5 y entrada-3, recalculados aparte.
+  Prueba nueva en `razonamiento-deductivo.test.js`: compara las dos líneas y resuelve 400 repartos con «si p, q»,
+  con cada explicación y cada paso de forma indirecta comprobados.
+- **Puntajes y edades** (Para Gerson 2): pasan a Ordenamiento de información (`rm-deduccion` entra a esa unidad en el
+  catálogo; `TIPOS_POR_UNIDAD`: puntajes; `rm-parentesco`: orden y edades). Papeles p9 (dados) y p8 (edades) marcados
+  con esa unidad. Las demás unidades reciben los mismos tipos que antes, semilla por semilla (fijado en las pruebas de
+  cada generador); Certezas, el mismo contenido.

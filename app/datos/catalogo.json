@@ -5541,7 +5541,8 @@
      ],
      "plantillas": [
       "orden-informacion",
-      "rm-parentesco"
+      "rm-parentesco",
+      "rm-deduccion"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js",
@@ -9631,10 +9632,11 @@
    "titulo": "Lo que se deduce: clases, frascos y condicionales",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.3.0",
+   "version": "0.4.0",
    "unidades": [
     "razonamiento-matematico.razonamiento-deductivo",
-    "razonamiento-matematico.certezas"
+    "razonamiento-matematico.certezas",
+    "razonamiento-matematico.ordenamiento-de-informacion"
    ],
    "url": "#/practica/rm-deduccion",
    "papel": "/plantillas/rm-deduccion/papel.json",
@@ -9732,7 +9734,7 @@
    "titulo": "Parentescos, órdenes y repartos con pistas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "razonamiento-matematico.razonamiento-deductivo",
     "razonamiento-matematico.ordenamiento-de-informacion"

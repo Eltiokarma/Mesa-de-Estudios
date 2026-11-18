@@ -417,14 +417,15 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una? Datos: Cada una toca un solo instrumento, y ninguno se repite. «Si p, q»: siempre que pasa p, también pasa q. «Si X fuera…, Y sería…»: habla de algo que no pasa; X no es así.",
+      "enunciado": "Ana, Bety, Ceci y Dora tocan cada una un instrumento distinto: quena, zampoña, charango y bombo. Se sabe que: I. Si Ana tocara la quena, Ceci tocaría el bombo. II. Si Ana no toca la quena, entonces Bety toca la zampoña. III. Si Ana toca el charango, entonces Bety toca la quena. IV. Si Ceci no toca el charango, entonces Dora toca la quena. ¿Qué instrumento toca cada una? Datos: Cada una toca un solo instrumento, y ninguno se repite. «Si p, q»: siempre que pasa p, también pasa q. «Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.",
       "respuesta": "Ana, el bombo; Bety, la zampoña; Ceci, el charango; Dora, la quena.",
       "pasos": [
-        "«Si Ana tocara la quena…» habla de algo que no pasa: Ana no toca la quena.",
+        "«Si Ana tocara la quena, Ceci tocaría el bombo» es una regla «si p, q»: no dice si Ana toca la quena.",
+        "Si Ana tocara la quena, por I Ceci tocaría el bombo; entonces Ceci no tocaría el charango y, por IV, Dora tocaría la quena, que ya sería de Ana: imposible. Ana no toca la quena.",
         "Como Ana no toca la quena, por II, Bety toca la zampoña.",
-        "Bety no toca la quena; si Ana tocara el charango, por III, Bety tocaría la quena: imposible. Ana no toca el charango, así que toca el bombo.",
+        "Bety no toca la quena: no pasa lo segundo de III. Forma indirecta: tampoco pasa lo primero, Ana no toca el charango. A Ana solo le queda el bombo.",
         "Quedan quena y charango para Ceci y Dora. Si Ceci no tocara el charango, tocaría la quena, y por IV Dora también tocaría la quena: imposible. Ceci toca el charango y Dora la quena.",
-        "Comprobación: aunque se lea I como un «si…, entonces…» común, Ana no puede tocar la quena: Ceci tendría el bombo, no tendría el charango y, por IV, Dora tocaría la quena, que ya sería de Ana. El reparto es el mismo con las dos lecturas."
+        "Comprobación: el reparto cumple las cuatro pistas; en I no pasa ninguna de sus dos partes (Ana no toca la quena y Ceci no toca el bombo)."
       ],
       "verificar": [
         {
@@ -612,7 +613,9 @@
           }
         }
       ],
-      "unidades": []
+      "unidades": [
+        "razonamiento-matematico.ordenamiento-de-informacion"
+      ]
     },
     {
       "id": "p10",

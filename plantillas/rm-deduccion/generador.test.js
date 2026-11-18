@@ -7,7 +7,7 @@
 //   siempre-cierto  12 variables booleanas «el frasco o tiene la cosa c» (4096 filas, solo las que
 //                   tienen exactamente una cosa por frasco), con las pistas evaluadas aparte.
 //   asignacion      búsqueda con vuelta atrás, persona por persona, en vez de recorrer las 24
-//                   permutaciones.
+//                   permutaciones; el contrafáctico, como una regla «si p, q» (la lectura de la teoría).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const gen = require('./generador.js');
@@ -109,8 +109,10 @@ function resolver(pistas, n = 4) {
   const litV = l => (sol[l.o] === l.c) !== !!l.neg;
   const bien = q => {
     if (q.t === 'no') return !conocida(q) || sol[q.o] !== q.c;
-    if (q.t === 'contra') return !conocida(q.a) || !litV(q.a);
-    if (q.t === 'cond') return !(conocida(q.a) && conocida(q.b)) || !litV(q.a) || litV(q.b);
+    // El contrafáctico se lee como la teoría (Gerson, cuarta ronda, 18 nov): una regla «si p, q», igual que el condicional.
+    if (q.t === 'cond' || q.t === 'contra') return !(conocida(q.a) && conocida(q.b)) || !litV(q.a) || litV(q.b);
+    // Solo para comparar: el contrafáctico leído como «X no es así».
+    if (q.t === 'falso') return !conocida(q.a) || !litV(q.a);
     throw new Error(q.t);
   };
   (function rec() {
@@ -238,21 +240,25 @@ test('siempre cierto: cada pista hace falta, la correcta usa un condicional y la
   }
 });
 
-test('asignación: cada pista hace falta, hay un contrafáctico y su segunda parte tampoco se cumple', () => {
+test('asignación: cada pista hace falta, hay un contrafáctico y en la solución no pasa ninguna de sus dos partes', () => {
   for (let s = 0; s < 600; s++) {
     const p = gen.generar(s), d = p._datos;
     if (d.tipo !== 'asignacion') continue;
-    const sol = resolver(d.pistas)[0];
+    // Con la lectura de la teoría («si p, q»), un solo reparto, y cada pista hace falta.
+    const sols = resolver(d.pistas), sol = sols[0];
+    assert.equal(sols.length, 1, `semilla ${s}`);
     d.pistas.forEach((q, i) => assert.ok(resolver(d.pistas.filter((_, j) => j !== i)).length > 1, `semilla ${s}: la pista ${i + 1} sobra`));
     const contras = d.pistas.filter(q => q.t === 'contra');
     assert.ok(contras.length >= 1 && d.pistas.some(q => q.t === 'cond'));
-    for (const q of contras) assert.ok((sol[q.b.o] === q.b.c) === !!q.b.neg, `semilla ${s}: la segunda parte del contrafáctico se cumple`);
-    // Con la lectura fuerte del contrafáctico (tampoco pasa lo segundo) la solución es la misma.
-    for (const q of contras) assert.equal(!!q.b.neg, false);
-    const fuerte = d.pistas.concat(contras.map(q => ({ t: 'no', o: q.b.o, c: q.b.c })));
+    for (const q of contras) {
+      assert.ok((sol[q.a.o] === q.a.c) === !!q.a.neg, `semilla ${s}: la primera parte del contrafáctico se cumple`);
+      assert.ok((sol[q.b.o] === q.b.c) === !!q.b.neg, `semilla ${s}: la segunda parte del contrafáctico se cumple`);
+      assert.equal(!!q.b.neg, false);
+    }
+    // Quien lo lea como «X no es así» (o «ni X ni Y») llega al mismo reparto: nadie sale perjudicado.
+    assert.deepEqual(resolver(d.pistas.map(q => (q.t === 'contra' ? { t: 'falso', a: q.a } : q))), [sol], `semilla ${s}: depende de cómo se lea el contrafáctico`);
+    const fuerte = d.pistas.map(q => (q.t === 'contra' ? { t: 'falso', a: q.a } : q)).concat(contras.map(q => ({ t: 'no', o: q.b.o, c: q.b.c })));
     assert.deepEqual(resolver(fuerte), [sol]);
-    // Leyendo cada contrafáctico como un «si…, entonces…» común, la respuesta es la misma.
-    assert.deepEqual(resolver(d.pistas.map(q => (q.t === 'contra' ? { t: 'cond', a: q.a, b: q.b } : q))), [sol], `semilla ${s}: depende de cómo se lea el contrafáctico`);
     if (d.modo === 'quien') assert.ok(!contras.some(q => q.a.o === d.persona), `semilla ${s}: se pregunta por la persona del contrafáctico`);
   }
 });
@@ -290,7 +296,7 @@ test('papel.json: entre 5 y 10 problemas y cada verificación da lo esperado', (
 });
 
 // ---------------------------------------------------------------- fase 5 de Razonamiento deductivo (17 nov)
-const DED = 'razonamiento-matematico.razonamiento-deductivo', CERT = 'razonamiento-matematico.certezas';
+const DED = 'razonamiento-matematico.razonamiento-deductivo', CERT = 'razonamiento-matematico.certezas', ORD = 'razonamiento-matematico.ordenamiento-de-informacion';
 const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
 // 400 problemas de cada unidad, generados una sola vez para las pruebas de abajo (puntajes tarda hasta 0,3 s).
 const MUESTRA = {};
@@ -341,8 +347,34 @@ test('generar(semilla, { unidad }): Razonamiento deductivo recibe sus cinco tipo
   assert.deepEqual(gen.tiposPorUnidad[CERT], ['siempre-cierto']);
 });
 
+// Cuarta ronda (Gerson, 18 nov): «puntajes» pasa a Ordenamiento de información. Las otras dos unidades (y la práctica
+// sin unidad) reciben exactamente lo mismo que antes: los tipos de las semillas 0 a 119 y de las pruebas de entrada y
+// salida quedan fijados aquí, copiados del generador antes del cambio (s silogismo, c siempre cierto, a asignación,
+// n condicional, p puntajes).
+test('Ordenamiento de información recibe «puntajes»; las demás unidades, los mismos tipos que antes, semilla por semilla', () => {
+  assert.deepEqual(gen.tiposPorUnidad, { [DED]: ['silogismo', 'siempre-cierto', 'asignacion', 'condicional'], [CERT]: ['siempre-cierto'], [ORD]: ['puntajes'] });
+  const K = { silogismo: 's', 'siempre-cierto': 'c', asignacion: 'a', condicional: 'n', puntajes: 'p' };
+  const antes = {
+    [DED]: ['cccnnnscsccanaansccscaacncnnsannssacancansnasncscnnsanssnncnaananscncssncnancnacscanssssancanacnscacnnanscnnanncannncncs', 'nsansa'],
+    [CERT]: ['c'.repeat(120), 'cccccc'],
+    sin: ['ccsaaassssccaccassssscccacaascaasscscascasacsacssaascassaacaccacassacssacacacaccsccasssscascaccascccaacassaacaaccaaacass', 'scasca'],
+  };
+  const pruebas = ['entrada-1', 'entrada-2', 'entrada-3', 'salida-1', 'salida-2', 'salida-3'];
+  for (const [u, [semillas, entradaSalida]] of Object.entries(antes)) {
+    const tipo = x => K[(u === 'sin' ? gen.generar(x) : gen.generar(x, { unidad: u }))._datos.tipo];
+    assert.equal(Array.from({ length: 120 }, (_, x) => tipo(x)).join(''), semillas, u);
+    assert.equal(pruebas.map(tipo).join(''), entradaSalida, u);
+  }
+  assert.ok(muestra(ORD).every(p => p._datos.tipo === 'puntajes'));
+  for (const x of pruebas) assert.equal(gen.generar(x, { unidad: ORD })._datos.tipo, 'puntajes');
+  assert.equal(gen.generar(3, { unidad: ORD, tipo: 'asignacion' })._datos.tipo, 'puntajes', 'Ordenamiento no recibe un tipo que no es suyo');
+  assert.ok(!muestra(DED).some(p => p._datos.tipo === 'puntajes'));
+  // El papel: el problema de puntajes es de Ordenamiento; ninguno más lo es.
+  for (const q of papel.problemas) assert.equal(q.unidades.includes(ORD), /dados/.test(q.enunciado), q.id);
+});
+
 test('con la unidad: problemas bien armados y la respuesta recalculada aparte, en 400 semillas de cada unidad', () => {
-  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+  for (const u of [DED, CERT, ORD]) muestra(u).forEach((p, s) => {
     const alt = p.alternativas;
     assert.ok(alt.length >= 4 && alt.length <= 5, `u-${s}`);
     assert.equal(alt.filter(a => a.correcta).length, 1);
@@ -357,7 +389,7 @@ test('con la unidad: problemas bien armados y la respuesta recalculada aparte, e
 // Recuadro «Datos» (contrato, punto 13; molde §4 y §7): definiciones y reglas, una por línea; nunca la respuesta.
 test('datos: una lista de líneas cortas con la regla de cada tipo y sin la respuesta, en 400 semillas de cada unidad', () => {
   const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
-  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+  for (const u of [DED, CERT, ORD]) muestra(u).forEach((p, s) => {
     const d = p._datos;
     assert.ok(Array.isArray(p.datos) && p.datos.length, `d-${s}: datos debe ser una lista no vacía`);
     for (const l of p.datos) {
@@ -372,7 +404,7 @@ test('datos: una lista de líneas cortas con la regla de cada tipo y sin la resp
     if (d.tipo === 'condicional' || d.tipo === 'siempre-cierto' || d.tipo === 'asignacion') assert.ok(todo.includes('«Si p, q»'), `d-${s}: falta qué dice «si p, q»`);
     if (d.tipo === 'condicional') assert.ok(todo.includes('Seguro:'));
     if (d.tipo === 'siempre-cierto') assert.ok(todo.includes('Siempre cierto:'));
-    if (d.tipo === 'asignacion' && d.pistas.some(q => q.t === 'contra')) assert.ok(todo.includes('«Si X fuera…'));
+    if (d.tipo === 'asignacion' && d.pistas.some(q => q.t === 'contra')) assert.ok(p.datos.includes(gen.lineas.contrafactico));
     if (d.tipo === 'puntajes') assert.ok(todo.includes('Par:') && todo.includes('1 al 6'));
   });
 });
@@ -380,7 +412,7 @@ test('datos: una lista de líneas cortas con la regla de cada tipo y sin la resp
 // Paleta de deducción (Gerson, 17 nov): naranja lo primero, turquesa lo segundo, tinta lo que amarra, violeta lo seguro;
 // sin verde ni carmín. Silogismo: X naranja, Z turquesa, el medio en tinta; condicional: p naranja, q turquesa.
 test('paleta de deducción: solo naranja, turquesa y violeta, cada papel con su color, y la respuesta en violeta', () => {
-  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+  for (const u of [DED, CERT, ORD]) muestra(u).forEach((p, s) => {
     const V = p.variables, t = p._datos.tipo;
     for (const [k, x] of Object.entries(V)) assert.ok(['o', 'i', 'f'].includes(x.color), `c-${s}: ${k} en ${x.color}`);
     assert.equal(V.C.color, 'f');
@@ -394,8 +426,8 @@ test('paleta de deducción: solo naranja, turquesa y violeta, cada papel con su 
   });
 });
 
-test('cada explicación empieza por lo que el alumno hizo bien y es hipótesis (las dos unidades)', () => {
-  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+test('cada explicación empieza por lo que el alumno hizo bien y es hipótesis (las tres unidades)', () => {
+  for (const u of [DED, CERT, ORD]) muestra(u).forEach((p, s) => {
     for (const a of p.alternativas.filter(x => x.error)) {
       assert.match(a.error.explicacion, /^Bien\b/, `e-${s}: ${a.error.explicacion}`);
       assert.equal(a.error.respaldo, 'hipotesis');

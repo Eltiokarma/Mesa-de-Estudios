@@ -50,7 +50,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["razonamiento-matematico.razonamiento-deductivo"],
-      "plantillas": ["orden-informacion", "rm-parentesco"],
+      "plantillas": ["orden-informacion", "rm-parentesco", "rm-deduccion"],
       "investigacion": null
     },
     {

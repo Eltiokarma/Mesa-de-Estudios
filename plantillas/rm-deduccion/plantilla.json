@@ -4,10 +4,11 @@
   "formato": "predicciones",
   "unidades": [
     "razonamiento-matematico.razonamiento-deductivo",
-    "razonamiento-matematico.certezas"
+    "razonamiento-matematico.certezas",
+    "razonamiento-matematico.ordenamiento-de-informacion"
   ],
   "estado": "borrador",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "generador": "generador.js",
   "casos": "casos.json",
   "pruebas": "generador.test.js",

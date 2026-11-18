@@ -320,10 +320,11 @@ const DED = 'razonamiento-matematico.razonamiento-deductivo', ORD = 'razonamient
 const MUESTRA = {};
 const muestra = u => MUESTRA[u] || (MUESTRA[u] = Array.from({ length: 400 }, (_, s) => gen.generar(`u-${s}`, { unidad: u })));
 
-test('generar(semilla, { unidad }): Razonamiento deductivo recibe parentesco y repartos; Ordenamiento, el orden por sumas', () => {
+test('generar(semilla, { unidad }): Razonamiento deductivo recibe parentesco y repartos; Ordenamiento, el orden por sumas y las edades', () => {
   assert.deepEqual([...new Set(muestra(DED).map(p => p._datos.tipo))].sort(), ['arbol', 'billetes', 'cadena', 'minimo']);
-  assert.deepEqual([...new Set(muestra(ORD).map(p => p._datos.tipo))], ['orden']);
+  assert.deepEqual([...new Set(muestra(ORD).map(p => p._datos.tipo))].sort(), ['edades', 'orden']);
   assert.deepEqual(gen.generar(9, { unidad: 'otra.unidad' }), gen.generar(9));
+  for (const p of muestra(ORD)) assert.ok(igual(recalcular(p), p.respuesta.valor), `${p.id}: el recálculo da ${JSON.stringify(recalcular(p))}, el generador ${p.respuesta.valor}`);
   // El recálculo de la cadena prueba familias al azar: con una respuesta doble puede no dar con la segunda (pocas
   // familias con tres hermanos), así que ahí basta con que lo que encuentra esté entre las dos.
   for (const p of muestra(DED)) {
@@ -331,6 +332,29 @@ test('generar(semilla, { unidad }): Razonamiento deductivo recibe parentesco y r
     if (typeof val === 'string' && val.startsWith('amb:')) assert.ok([].concat(r).every(x => claveCadena(val).includes(x)), `${p.id}: el recálculo da ${r}`);
     else assert.ok(igual(r, val), `${p.id}: el recálculo da ${JSON.stringify(r)}, el generador ${val}`);
   }
+});
+
+// Cuarta ronda (Gerson, 18 nov): «edades» pasa a Ordenamiento de información, una vez de cada tres (el sorteo trae dos
+// «orden» y una «edades»). Las demás unidades (y la práctica sin unidad) reciben exactamente lo mismo que antes: los
+// tipos de las semillas 0 a 119 quedan fijados aquí, copiados del generador antes del cambio (c cadena, a árbol,
+// m mínimo, o orden, b billetes, e edades).
+test('Ordenamiento de información recibe «orden» y «edades»; las demás unidades, los mismos tipos que antes, semilla por semilla', () => {
+  assert.deepEqual(gen.tiposPorUnidad, { [DED]: ['cadena', 'arbol', 'minimo', 'billetes'], [ORD]: ['orden', 'edades'] });
+  const K = { cadena: 'c', arbol: 'a', minimo: 'm', orden: 'o', billetes: 'b', edades: 'e' };
+  const antes = {
+    [DED]: ['mabcbcmbamccmmmmcbcmammmaccmmcabamcbcbccmcbacaacccccacmamcbmmcccccccmacmmccccacmaccccaccabmcccamccamaaccaaammmbmmabambcc', 'mcmmcc'],
+    sin: ['oaecbcoeaoacbbboaecomobomccooamemocbabccbcbacmmccacaacoaoceobccccccaomaboacccmcomaaccmccaeocccaoccmoamcammmoooboomemoecc', 'ocooac'],
+  };
+  const pruebas = ['entrada-1', 'entrada-2', 'entrada-3', 'salida-1', 'salida-2', 'salida-3'];
+  for (const [u, [semillas, entradaSalida]] of Object.entries(antes)) {
+    const tipo = x => K[(u === 'sin' ? gen.generar(x) : gen.generar(x, { unidad: u }))._datos.tipo];
+    assert.equal(Array.from({ length: 120 }, (_, x) => tipo(x)).join(''), semillas, u);
+    assert.equal(pruebas.map(tipo).join(''), entradaSalida, u);
+  }
+  const e = muestra(ORD).filter(p => p._datos.tipo === 'edades').length;
+  assert.ok(e > 90 && e < 180, `edades en ${e} de 400`);
+  // El papel: el problema de edades con primos es de Ordenamiento, como el del orden por sumas.
+  for (const q of papel.problemas) if (/edades/.test(q.enunciado)) assert.deepEqual(q.unidades, [ORD], q.id);
 });
 
 test('datos: una lista de líneas cortas con las definiciones de cada tipo y sin la respuesta, en 400 semillas de cada unidad', () => {

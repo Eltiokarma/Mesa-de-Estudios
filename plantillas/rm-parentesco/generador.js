@@ -49,8 +49,8 @@
  *   RMP2-primera            quedarse con la primera familia o el primer reparto que cumple, sin minimizar
  *
  * Por unidad (fase 5 de Razonamiento deductivo, 17 nov; modelo plantillas/velocidad-relativa/): generar(semilla,
- * { unidad }) da en Razonamiento deductivo cadena, árbol, mínimo, billetes y edades, y en Ordenamiento de información
- * solo orden. Sin unidad, todos, como antes. Datos: lista de definiciones (hermanos, tío, primo, «único», primo y par).
+ * { unidad }) da en Razonamiento deductivo cadena, árbol, mínimo y billetes, y en Ordenamiento de información orden y
+ * edades (Gerson, cuarta ronda, 18 nov). Sin unidad, todos, como antes. Datos: lista de definiciones (hermanos, tío, primo, «único», primo y par).
  * Paleta de deducción (Gerson, 17 nov): naranja quien habla («mi …»), violeta lo pedido ya comprobado, el resto en tinta
  * («único» también); sin verde ni carmín. Cada explicación empieza por lo que el alumno hizo bien.
  */
@@ -1003,13 +1003,15 @@
   const TIPOS = { cadena: construirCadena, arbol: construirArbol, minimo: construirMinimo, orden: construirOrden, billetes: construirBilletes, edades: construirEdades };
   const SORTEO = ['cadena', 'cadena', 'cadena', 'arbol', 'arbol', 'minimo', 'minimo', 'orden', 'orden', 'billetes', 'edades'];
   // Qué tipos sirve a cada unidad (fase 5 de Razonamiento deductivo, 17 nov; modelo plantillas/velocidad-relativa/):
-  // en Razonamiento deductivo, el parentesco (cadena, árbol, mínimo; idea 5) y los repartos con números (billetes y
-  // edades; idea 2, nivel examen); en Ordenamiento de información, el orden por sumas de edades, que es lo suyo. Sin
+  // en Razonamiento deductivo, el parentesco (cadena, árbol, mínimo; idea 5) y el reparto con números (billetes; idea 2,
+  // nivel examen); en Ordenamiento de información, el orden por sumas de edades y las edades con primos y pares. Sin
   // unidad (o con otra), todos, como antes: las semillas de casos.json no cambian.
   const TIPOS_POR_UNIDAD = {
     // Sin «edades» (primos, pares y suma mínima): ninguna idea de la unidad lo enseña (auditoría M9, 17 nov).
     'razonamiento-matematico.razonamiento-deductivo': ['cadena', 'arbol', 'minimo', 'billetes'],
-    'razonamiento-matematico.ordenamiento-de-informacion': ['orden'],
+    // «Edades» (ordenar edades por sus sumas y condiciones) pasa a Ordenamiento de información (Gerson, cuarta ronda,
+    // 18 nov): sale una vez de cada tres; el orden, dos.
+    'razonamiento-matematico.ordenamiento-de-informacion': ['orden', 'edades'],
   };
 
   // Recuadro «Datos» (contrato, punto 13; molde §4 y §7): definiciones, una por línea; nunca la respuesta.

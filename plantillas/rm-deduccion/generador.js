@@ -27,9 +27,12 @@
  *                           'sc:alguno:c', 'sc:ninguno:c'.
  *   asignacion      cuatro personas y cuatro talleres (deportes, ciudades) distintos, con pistas
  *                   «si… entonces…», negaciones y al menos un contrafáctico («si X llevara…, Y
- *                   llevaría…», que dice que X no lleva eso; en la solución tampoco se cumple lo
- *                   segundo, así que la lectura fuerte da lo mismo; y leído como «si…, entonces…» común el reparto
- *                   también es único). Una sola asignación posible con cualquier lectura.
+ *                   llevaría…»). El contrafáctico se lee como la teoría (Gerson, cuarta ronda, 18 nov):
+ *                   es una regla «si p, q» y no dice que p pase (D_CONTRA, la misma línea de datos que el
+ *                   ejemplo 12 de la idea 4); con su forma indirecta, si no pasa q, no pasa p. Así lo
+ *                   leen el modelo (cumple, repartos), la solución y los distractores. Para que nadie
+ *                   salga perjudicado por leerlo de otro modo, en la solución tampoco pasa ninguna de
+ *                   sus dos partes, y el reparto único es el mismo si se lo lee como «X no es así».
  *                   _datos: { tipo, piel, personas, cosas, pistas, modo: 'afirmacion'|'quien',
  *                             persona (solo en 'quien'), opciones: [claves] }
  *                   Pistas: { t: 'cond', a: lit, b: lit } · { t: 'contra', a: lit, b: lit } ·
@@ -43,7 +46,8 @@
  *                   _datos: { tipo, personas, colores, lanz, pistas, persona, opciones }
  *                   Pistas: { t: 'mayor', p, c } · { t: 'menor-todos', c } · { t: 'mayor-todos', c } · { t: 'no', p, c } ·
  *                           { t: 'paridad', par: 'impar' | 'par' }. Claves: 'pt:puntaje:color' (índice de color).
- *                   Solo con semillas de práctica y numéricas desde 400 (ver «generar»).
+ *                   Sin unidad, solo con semillas de práctica y numéricas desde 400 (ver «generar»); con la unidad de
+ *                   Ordenamiento de información, siempre (cuarta ronda, 18 nov).
  *
  *   condicional     (nuevo, fase 5 de Razonamiento deductivo, 17 nov; idea 4 «si-entonces») una regla general «si p, q»
  *                   (simulacro, lluvia y plaza, fiebre, concierto, celular, número que termina en 0) y un dato por sujeto
@@ -53,10 +57,12 @@
  *                   Claves: 'si:i:lit' (lit: p, np, q, nq o excusa, «p y no q» con una razón agregada) y 'si:nada'.
  *
  * Por unidad (fase 5, 17 nov; modelo plantillas/velocidad-relativa/): generar(semilla, { unidad }) da en Razonamiento
- * deductivo los cinco tipos (con más peso el condicional y los silogismos) y en Certezas solo «siempre cierto», que es
- * lo que esa unidad tomaba de aquí. Sin unidad, todo como antes (casos.json no cambia). { tipo } pide un tipo, si la
+ * deductivo silogismo, siempre cierto, asignación y condicional (con más peso el condicional y los silogismos), en
+ * Certezas solo «siempre cierto», que es lo que esa unidad tomaba de aquí, y en Ordenamiento de información solo
+ * «puntajes» (Gerson, cuarta ronda, 18 nov). Sin unidad, todo como antes (casos.json no cambia). { tipo } pide un tipo, si la
  * unidad lo tiene (pruebas).
  * Datos: lista de líneas (definiciones de «todos», «algunos», «ningún», «si p, q», «seguro», el contrafáctico, par).
+ * La del contrafáctico (D_CONTRA) es la misma de la teoría y sale en lineas.contrafactico.
  * Paleta de deducción (Gerson, 17 nov; la de la teoría): silogismo, el primer grupo (X) naranja, el segundo (Z) turquesa
  * y el del medio en tinta; condicional, p naranja y q turquesa; personas, frascos y cosas en tinta; lo que se concluye,
  * violeta (variable C), solo en la solución. Sin verde ni carmín. Cada explicación empieza por lo que el alumno hizo bien.
@@ -78,7 +84,8 @@
  *   («todos los A son B» leído como «todos los B son A») · RMP74 cuantificador cambiado («algunos»
  *   en vez de «ninguno», o generalizar un «algunos») · RMP75 «algunos son» leído como «solo algunos»
  *   · RMP76 encadenar por un término medio que no conecta · RMP77 posible pero no necesaria ·
- *   RMP78 creer que no se deduce nada · RMP79 contrafáctico con su primera parte tomada como dato.
+ *   RMP78 creer que no se deduce nada · RMP79 contrafáctico con su primera parte tomada como dato (es una
+ *   regla «si p, q»: no dice que p pase).
  *   Condicional simple: RMP70-al-reves (concluir p de q), RMP71-negar-las-dos (concluir «no q» de «no p»),
  *   RMP72-choca-con-la-regla, RMP78-nada y RMP87-agrega-a-la-regla («estudió, pero el simulacro estuvo difícil»).
  *   Tipo puntajes (cierre-100): RMP72-… (una pista sin revisar o dado cruzado) y RMP2-sin-maximizar (puntaje posible, no el mayor).
@@ -361,7 +368,10 @@
   function cumple(asig, q) {
     if (q.t === 'cond') return !lit(asig, q.a) || lit(asig, q.b);
     if (q.t === 'bicond') return lit(asig, q.a) === lit(asig, q.b);
-    if (q.t === 'contra') return !lit(asig, q.a);
+    // El contrafáctico es una regla «si p, q» (D_CONTRA): solo lo rompe que pase p y no pase q.
+    if (q.t === 'contra') return !lit(asig, q.a) || lit(asig, q.b);
+    // Solo para armar el problema: el contrafáctico leído como «X no es así» (ver construirAsignacion).
+    if (q.t === 'falso') return !lit(asig, q.a);
     if (q.t === 'hecho') return lit(asig, q.a) && lit(asig, q.b);
     if (q.t === 'nocond') return lit(asig, q.a) && !lit(asig, q.b);
     if (q.t === 'ninguna') return !lit(asig, q.a) && !lit(asig, q.b);
@@ -486,9 +496,9 @@
       } else if (q.t === 'nocond') {
         out.push({ id: 'RMP71-negacion', pistas: cambia({ t: 'ninguna', a: q.a, b: q.b }), como: `Negaste mal la pista ${dicha}: la leíste como «${plano(segPista({ t: 'ninguna', a: q.a, b: q.b }, false))}». Un «si…, entonces…» solo es falso cuando la primera parte se cumple y la segunda no; así que la pista dice que la primera parte sí se cumple.`, i });
       } else if (q.t === 'contra') {
-        // Leer la primera parte como un dato («si Ana fuera de Puno…» → «Ana es de Puno»). Tomarlo entero
-        // como hecho (las dos partes) no sirve de distractor: con la otra lectura del contrafáctico no deja casos.
-        out.push({ id: 'RMP79-contrafactico', pistas: cambia({ t: 'hecho', a: q.a, b: q.a }), como: `Tomaste la primera parte de ${dicha} como un dato. «Si… fuera…, sería…» habla de algo que no pasa: dice que la primera parte no se cumple.`, i });
+        // Leer la primera parte como un dato («si Ana fuera de Puno…» → «Ana es de Puno»). El contrafáctico es una
+        // regla «si p, q» (D_CONTRA): no dice que pase la primera parte.
+        out.push({ id: 'RMP79-contrafactico', pistas: cambia({ t: 'hecho', a: q.a, b: q.a }), como: `Tomaste la primera parte de ${dicha} como un dato. «Si fuera p, sería q» es una regla «si p, q»: no dice que p pase.`, i });
       }
     });
     return out;
@@ -522,7 +532,6 @@
     if (!ini) pistas.forEach(q => {
       if (q.t === 'no' && poner(q.o, q.c, false)) directos.push(nombreLit({ o: q.o, c: q.c, neg: true }));
       if (q.t === 'es' && poner(q.o, q.c, true)) directos.push(nombreLit({ o: q.o, c: q.c, neg: false }));
-      if (q.t === 'contra' && ponerLit(q.a, false)) directos.push(nombreLit({ ...q.a, neg: !q.a.neg }) + ' (lo dice el «si… fuera»)');
       if (q.t === 'nocond') { ponerLit(q.a, true); ponerLit(q.b, false); directos.push(nombreLit(q.a) + ' y ' + nombreLit({ ...q.b, neg: !q.b.neg }) + ' (es lo único que hace falso un «si…, entonces…»)'); }
     });
     if (directos.length) pasos.push('Lo que las pistas dicen directamente: ' + directos.join('; ') + '.');
@@ -548,8 +557,10 @@
         }
       }
       pistas.forEach((q, i) => {
-        if (q.t === 'cond') {
+        if (q.t === 'cond' || q.t === 'contra') {
           if (valorLit(q.a) === true && valorLit(q.b) === null) { ponerLit(q.b, true); cambio = true; pasos.push(`Como ${hecho(q.a)}, la pista ${ROMANOS[i]} da: ${nombreLit(q.b)}.`); }
+          // El contrafáctico, con la forma indirecta de «si p, q» (como el ejemplo 12 de la idea 4).
+          else if (valorLit(q.b) === false && valorLit(q.a) === null && q.t === 'contra') { ponerLit(q.a, false); cambio = true; pasos.push(`Como ${hecho({ ...q.b, neg: !q.b.neg })}, no pasa lo segundo de la pista ${ROMANOS[i]}. Forma indirecta: tampoco pasa lo primero, ${nombreLit({ ...q.a, neg: !q.a.neg })}.`); }
           else if (valorLit(q.b) === false && valorLit(q.a) === null) { ponerLit(q.a, false); cambio = true; pasos.push(`Como ${hecho({ ...q.b, neg: !q.b.neg })}, la primera parte de la pista ${ROMANOS[i]} no puede cumplirse: ${nombreLit({ ...q.a, neg: !q.a.neg })}.`); }
         } else if (q.t === 'distintos') {
           for (const [x, y] of [[q.o1, q.o2], [q.o2, q.o1]]) { const c = celda[x].indexOf(true); if (c >= 0 && celda[y][c] === true) chocar(`Pero eso choca con la pista ${ROMANOS[i]}: ${nombreLit({ o: x, c, neg: false })} y ${nombreLit({ o: y, c, neg: false })}.`); if (c >= 0 && celda[y][c] === null) { poner(y, c, false); cambio = true; pasos.push(`Por la pista ${ROMANOS[i]}, ${nombreLit({ o: y, c, neg: true })}.`); } }
@@ -560,7 +571,7 @@
             if (abiertos.length === 1 && celda[abiertos[0]][c] === null) { poner(abiertos[0], c, true); cambio = true; pasos.push(`Por la pista ${ROMANOS[i]}, ${tx.columna(c)}: ${nombreLit({ o: abiertos[0], c, neg: false })}.`); }
           }
         }
-        if (q.t === 'cond' && valorLit(q.a) === true && valorLit(q.b) === false) chocar(`Pero eso choca con la pista ${ROMANOS[i]}: ${hecho(q.a)}, y sin embargo ${hecho({ ...q.b, neg: !q.b.neg })}.`);
+        if ((q.t === 'cond' || q.t === 'contra') && valorLit(q.a) === true && valorLit(q.b) === false) chocar(`Pero eso choca con la pista ${ROMANOS[i]}: ${hecho(q.a)}, y sin embargo ${hecho({ ...q.b, neg: !q.b.neg })}.`);
       });
       if (!cambio) break;
     }
@@ -721,25 +732,31 @@
     const cs = rng.barajar(pa.cosas).slice(0, 4);
     let pistas = [pistaAlAzarAS(rng, 'contra'), pistaAlAzarAS(rng, 'cond')];
     for (let i = 0; i < 6; i++) pistas.push(pistaAlAzarAS(rng, rng.sig() < 0.55 ? 'cond' : (rng.sig() < 0.6 ? 'no' : 'contra')));
-    if (repartos(pistas).length !== 1) return null;
+    // Para armar el problema se buscan pistas con un solo reparto aunque el contrafáctico se lea como «X no es así»
+    // (es más fuerte que «si p, q»: cada pista sigue haciendo falta con la lectura de la teoría), y se quitan las que
+    // sobran; así salen los mismos problemas que antes de la cuarta ronda. Después, el reparto tiene que ser único con
+    // la lectura de la teoría («si p, q», D_CONTRA), que es la que usan la solución y los distractores.
+    const comoNo = ps => ps.map(q => (q.t === 'contra' ? { t: 'falso', a: q.a } : q));
+    if (repartos(comoNo(pistas)).length !== 1) return null;
     // Quitar las pistas que sobran, en orden al azar.
     for (const q of rng.barajar(pistas.slice())) {
       const sin = pistas.filter(x => x !== q);
-      if (repartos(sin).length === 1) pistas = sin;
+      if (repartos(comoNo(sin)).length === 1) pistas = sin;
     }
     pistas = rng.barajar(pistas);
     if (!pistas.some(q => q.t === 'cond') || !pistas.some(q => q.t === 'contra') || pistas.length < 3 || pistas.length > 6) return null;
+    // Con la lectura de la teoría, un solo reparto (y es el mismo: cumple «si p, q» porque no pasa p).
+    if (repartos(pistas).length !== 1) return null;
     const sol = repartos(pistas)[0];
-    // La respuesta no depende de la convención: leyendo cada contrafáctico como un «si…, entonces…»
-    // común, el reparto también es único (y es el mismo, porque la solución cumple ese condicional).
-    if (repartos(pistas.map(q => (q.t === 'contra' ? { t: 'cond', a: q.a, b: q.b } : q))).length !== 1) return null;
-    // El contrafáctico, leído fuerte (tampoco se cumple lo segundo), da la misma solución.
-    if (!pistas.filter(q => q.t === 'contra').every(q => !lit(sol, q.b))) return null;
+    // En la solución no pasa ninguna parte del contrafáctico: habla de algo que no pasa, y leerlo como «X no es así»
+    // (o como «ni X ni Y») tampoco cambia el reparto.
+    if (!pistas.filter(q => q.t === 'contra').every(q => !lit(sol, q.a) && !lit(sol, q.b))) return null;
     // Ningún condicional repite a otra pista con las mismas personas y cosas.
     const firmas = pistas.map(q => JSON.stringify(q));
     if (new Set(firmas).size !== firmas.length) return null;
 
-    // En «quien» no se pregunta por la persona del antecedente de un contrafáctico (eso lo da la pista sola).
+    // En «quien» no se pregunta por la persona del antecedente de un contrafáctico (quien lo lea como «X no es así»
+    // la tendría casi resuelta con la pista sola).
     const libres = [0, 1, 2, 3].filter(o => !pistas.some(q => q.t === 'contra' && q.a.o === o));
     const modo = rng.sig() < 0.4 && libres.length ? 'quien' : 'afirmacion';
     const segP = (q, color = true) => segPistaAS(q, pa, ps, cs, color);
@@ -750,7 +767,8 @@
     const solTexto = a => a.map((c, o) => `${ps[o]}: ${cs[c]}`).join(', ');
     const sinRevisar = (a, i) => {
       const q = pistas[i], dicha = `«${plano(segP(q, false))}»`;
-      if (q.t === 'contra') return `El reparto ${solTexto(a)} cumple las demás pistas, pero choca con la ${ROMANOS[i]}: ${dicha} dice que ${nombreLit({ ...q.a, neg: !q.a.neg })}, y en ese reparto no es así. Hay que comprobar todas las pistas.`;
+      // Con la lectura de la teoría, lo único que rompe el contrafáctico es que pase lo primero y no lo segundo.
+      if (q.t === 'contra') return `El reparto ${solTexto(a)} cumple las demás pistas, pero choca con la ${ROMANOS[i]}: ${dicha} es una regla «si p, q», y en ese reparto ${nombreLit(q.a)} y ${nombreLit({ ...q.b, neg: !q.b.neg })}. Hay que comprobar todas las pistas.`;
       return `El reparto ${solTexto(a)} cumple las demás pistas, pero no cumple la ${ROMANOS[i]}: ${dicha}. Hay que comprobar todas las pistas.`;
     };
     if (modo === 'quien') {
@@ -1002,6 +1020,10 @@
       excusa: null },
   ];
   const D_SI = '«Si p, q»: siempre que pasa p, también pasa q.';
+  // El contrafáctico se lee como en la teoría (Gerson, cuarta ronda, 18 nov): la misma línea que el ejemplo 12 de la
+  // idea 4 de Razonamiento deductivo (contenido/teoria/razonamiento-matematico/razonamiento-deductivo.js); una prueba
+  // de la teoría compara las dos.
+  const D_CONTRA = '«Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.';
   const D_SEGURO_SI = 'Seguro: se cumple en todos los casos que dejan la regla y el dato.';
 
   function construirCondicional(rng, semilla, nivelFijo) {
@@ -1067,9 +1089,12 @@
   // esa unidad recibía de este generador. Sin unidad (o con otra), todo sigue como antes: las semillas de casos.json no
   // cambian.
   const TIPOS_POR_UNIDAD = {
-    // Sin «puntajes» (orden y máximos): ninguna idea de la unidad lo enseña (auditoría M9, 17 nov). Sigue sin unidad.
+    // Sin «puntajes» (orden y máximos): ninguna idea de la unidad lo enseña (auditoría M9, 17 nov).
     'razonamiento-matematico.razonamiento-deductivo': ['silogismo', 'siempre-cierto', 'asignacion', 'condicional'],
     'razonamiento-matematico.certezas': ['siempre-cierto'],
+    // «Puntajes» (ordenar puntajes por las pistas y tomar el mayor) pasa a Ordenamiento de información (Gerson, cuarta
+    // ronda, 18 nov). Las otras dos unidades reciben lo mismo que antes.
+    'razonamiento-matematico.ordenamiento-de-informacion': ['puntajes'],
   };
   // Sorteo dentro de la unidad: el condicional simple y los silogismos (ideas 3 y 4, nivel de entrada) salen más.
   const PESOS = { condicional: 3, silogismo: 2, 'siempre-cierto': 2, asignacion: 2, puntajes: 1 };
@@ -1096,7 +1121,7 @@
     }
     if (d.tipo === 'asignacion') {
       const out = [`${mayus(PIELES_AS[d.piel].unico)}.`, D_SI];
-      if (d.pistas.some(q => q.t === 'contra')) out.push('«Si X fuera…, Y sería…»: habla de algo que no pasa; X no es así.');
+      if (d.pistas.some(q => q.t === 'contra')) out.push(D_CONTRA);
       return out;
     }
     if (d.tipo === 'puntajes') return ['Un dado tiene caras del 1 al 6.', 'Puntaje: la suma de los resultados de todos sus lanzamientos.', 'Par: se divide entre 2 sin residuo; impar: no.'];
@@ -1192,5 +1217,5 @@
   }
 
   const calc = { proposicion, modelosSilogismo, validaSilogismo, conclusionesValidas, casosFrascos, necesaria, repartos, puntajes, puntajeMaximo, casosSi, seguroSi, conclusionSi };
-  return { id: ID, titulo: 'Lo que se deduce: clases, frascos y condicionales', generar, calc, tiposPorUnidad: TIPOS_POR_UNIDAD };
+  return { id: ID, titulo: 'Lo que se deduce: clases, frascos y condicionales', generar, calc, tiposPorUnidad: TIPOS_POR_UNIDAD, lineas: { contrafactico: D_CONTRA } };
 });

@@ -776,3 +776,99 @@ test('una definición que usan la teoría y la práctica se escribe igual en las
   assert.ok(deTeoria.size >= 1);
   for (const l of deTeoria) assert.ok(deGen.has(l), `teoría: «${l}»; práctica: «${[...deGen][0]}»`);
 });
+
+// Contrafáctico (Gerson, cuarta ronda, 18 nov): «Si Ana fuera profesora, sería de Puno» se lee como la teoría, una regla
+// «si p, q» (y su forma indirecta: si no es de Puno, no es profesora), en toda la unidad y su práctica. La línea de datos
+// es una sola, la misma en el ejemplo 12 de la idea 4 y en rm-deduccion; los repartos de la práctica se resuelven aquí
+// con esa lectura (24 repartos escritos en la prueba, sin el código del generador), y cada explicación y cada paso de la
+// solución que nombra el contrafáctico se comprueban con esos repartos.
+test('contrafáctico: la línea de datos es la misma en la teoría y en la práctica, y la práctica lo lee como «si p, q» (400 semillas)', () => {
+  const gen = require('../../../plantillas/rm-deduccion/generador.js');
+  const linea = gen.lineas.contrafactico;
+  const e12 = ID['si-entonces'].ejemplos.find(e => /fuera/.test(plano(e.enunciado)));
+  assert.ok(e12 && /Si fuera…, sería…/.test(e12.titulo));
+  const deTeoria = (e12.datos || []).map(plano).filter(l => /Si fuera/.test(l));
+  assert.deepEqual(deTeoria, [linea], `teoría: «${deTeoria}»; práctica: «${linea}»`);
+  // Ningún otro dato de la unidad describe el contrafáctico de otra manera.
+  for (const i of def.ideas) for (const e of i.ejemplos) for (const l of (e.datos || []).map(plano)) if (/Si fuera|sería/.test(l)) assert.equal(l, linea, e.titulo);
+
+  // Verbos de cada piel, escritos aquí: presente, «si … fuera» y «… sería».
+  const VERBO = { talleres: ['lleva', 'llevara', 'llevaría', ''], deportes: ['practica', 'practicara', 'practicaría', ''], ciudades: ['es', 'fuera', 'sería', 'de '] };
+  const PERMS = permutaciones([0, 1, 2, 3]);
+  const ROM = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+  const litV = (r, l) => (r[l.o] === l.c) !== !!l.neg;
+  // La lectura de la teoría: el contrafáctico, como el condicional, solo prohíbe «p sí, q no».
+  const vale = (r, q) => q.t === 'no' ? r[q.o] !== q.c : q.t === 'cond' || q.t === 'contra' ? !litV(r, q.a) || litV(r, q.b) : assert.fail(q.t);
+  const quedan = pistas => PERMS.filter(r => pistas.every(q => vale(r, q)));
+  let indirectas = 0, rmp79 = 0, chocaContra = 0;
+  for (let s = 0; s < SEMILLAS; s++) {
+    const p = gen.generar(`cf-${s}`, { unidad: def.unidad, tipo: 'asignacion' }), d = p._datos, donde = `semilla cf-${s}`;
+    assert.equal(d.tipo, 'asignacion');
+    const [pres, subj, cond, pre] = VERBO[d.piel], ps = d.personas, cs = d.cosas;
+    const lit = l => `${ps[l.o]} ${l.neg ? 'no ' : ''}${pres} ${pre}${cs[l.c]}`;
+    const neg = l => ({ ...l, neg: !l.neg });
+    // El enunciado escribe cada contrafáctico en subjuntivo, y los datos traen la línea común.
+    const enun = plano(p.enunciado);
+    d.pistas.forEach((q, i) => { if (q.t === 'contra') assert.ok(enun.includes(`${ROM[i]}. Si ${ps[q.a.o]} ${q.a.neg ? 'no ' : ''}${subj} ${pre}${cs[q.a.c]}, ${ps[q.b.o]} ${cond} ${pre}${cs[q.b.c]}.`), `${donde}: ${enun}`); });
+    assert.ok(d.pistas.some(q => q.t === 'contra'));
+    assert.ok(p.datos.includes(linea), donde);
+    // Un solo reparto con esa lectura, y la respuesta es la de ese reparto.
+    const sols = quedan(d.pistas);
+    assert.equal(sols.length, 1, `${donde}: ${sols.length} repartos`);
+    const sol = sols[0];
+    const tiene = (r, k) => { const [t, x, y] = k.split(':'); return t === 'cosa' ? r[d.persona] === +x : r[+x] === +y; };
+    assert.ok(tiene(sol, p.respuesta.valor), donde);
+    for (const a of p.alternativas) if (!a.correcta) assert.ok(!tiene(sol, a.valor), `${donde}: «${a.texto}» también vale`);
+    const solTexto = r => r.map((c, o) => `${ps[o]}: ${cs[c]}`).join(', ');
+    // Cada explicación, con los repartos de la prueba.
+    for (const a of p.alternativas.filter(x => x.error)) {
+      const t = a.error.explicacion, id = a.error.id;
+      if (id === 'RMP72-pista-sin-revisar') {
+        const m = /[Ee]l reparto (.+?) cumple las demás pistas, pero (no cumple|choca con) la ([IVX]+)/.exec(t);
+        assert.ok(m, `${donde}: ${t}`);
+        const r = m[1].split(', ').map(x => cs.indexOf(x.split(': ')[1])), i = ROM.indexOf(m[3]);
+        assert.equal(solTexto(r), m[1]);
+        assert.ok(d.pistas.every((q, j) => j === i || vale(r, q)) && !vale(r, d.pistas[i]), `${donde}: ${t}`);
+        assert.ok(tiene(r, a.valor), `${donde}: el reparto no da «${a.texto}»`);
+        if (d.pistas[i].t === 'contra') {
+          chocaContra++;
+          const q = d.pistas[i];
+          assert.ok(t.includes(`es una regla «si p, q», y en ese reparto ${lit(q.a)} y ${lit(neg(q.b))}.`), `${donde}: ${t}`);
+        } else assert.ok(!/regla «si p, q»/.test(t));
+      } else if (id === 'RMP79-contrafactico') {
+        // Tomar lo primero como dato: con eso y las demás pistas (el contrafáctico, otra vez «si p, q»), sale la opción.
+        rmp79++;
+        assert.ok(t.includes('«Si fuera p, sería q» es una regla «si p, q»: no dice que p pase.'), t);
+        const ok = d.pistas.some((q, i) => q.t === 'contra' && (() => {
+          const mal = PERMS.filter(r => litV(r, q.a) && d.pistas.every((x, j) => j === i || vale(r, x)));
+          return mal.length && mal.every(r => tiene(r, a.valor));
+        })());
+        assert.ok(ok, `${donde}: «${a.texto}» no sale de tomar lo primero como dato`);
+      }
+      if (/el único reparto que cumple todas las pistas es /.test(t)) assert.ok(t.includes(`el único reparto que cumple todas las pistas es ${solTexto(sol)}.`), `${donde}: ${t}`);
+      assert.ok(!/habla de algo que no pasa|no es así\b/.test(t), `${donde}: ${t}`);
+    }
+    // La solución usa la lectura de la teoría: el contrafáctico nunca se da como un dato («X no es así»), y cuando no
+    // pasa lo segundo, la forma indirecta da que tampoco pasa lo primero.
+    const sl = p.solucion.map(plano);
+    assert.ok(!sl.some(l => /lo dice el «si… fuera»|habla de algo que no pasa/.test(l)), `${donde}: ${sl.join(' / ')}`);
+    const directo = sl.find(l => /^Lo que las pistas dicen directamente/.test(l)) || '';
+    for (const q of d.pistas.filter(x => x.t === 'contra')) assert.ok(!directo.includes(lit(neg(q.a))), `${donde}: ${directo}`);
+    for (const l of sl) {
+      const re = /Como ([^.]+?)(?: \(porque [^)]*\))?, no pasa lo segundo de la pista ([IVX]+)\. Forma indirecta: tampoco pasa lo primero, ([^.]+)\./g;
+      let m;
+      while ((m = re.exec(l))) {
+        indirectas++;
+        const q = d.pistas[ROM.indexOf(m[2])];
+        assert.equal(q.t, 'contra', `${donde}: ${m[0]}`);
+        assert.equal(m[1], lit(neg(q.b)), `${donde}: ${m[0]}`);
+        assert.equal(m[3], lit(neg(q.a)), `${donde}: ${m[0]}`);
+        assert.ok(litV(sol, neg(q.b)) && litV(sol, neg(q.a)), `${donde}: ${m[0]}`);
+      }
+    }
+    assert.ok(sl.some(l => l.includes(`El único reparto que cumple todas las pistas es`)));
+  }
+  // La forma indirecta y los dos distractores del contrafáctico salen de verdad.
+  assert.ok(indirectas > SEMILLAS / 4, `forma indirecta en ${indirectas}`);
+  assert.ok(rmp79 > 20 && chocaContra > 20, `RMP79: ${rmp79}; choca con el contrafáctico: ${chocaContra}`);
+});

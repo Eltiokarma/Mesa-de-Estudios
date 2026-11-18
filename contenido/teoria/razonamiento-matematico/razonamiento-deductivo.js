@@ -2139,6 +2139,8 @@
       enunciado: 'Ana, Beto y Ciro son médico, profesor y abogado, uno cada uno. Si Beto no fuera el profesor, Ciro sería el médico. Ciro es el abogado. ¿Qué es Beto?',
       alternativas: ['Médico', 'Abogado', 'Profesor', 'Médico o profesor', 'No se puede saber'],
       // Sin «Regla: si Beto no es el profesor, Ciro es el médico»: era el paso hecho (auditoría M4, 17 nov).
+      // El contrafáctico se lee así en toda la unidad y su práctica (Gerson, cuarta ronda, 18 nov): esta línea es la misma
+      // que usa plantillas/rm-deduccion/ (lineas.contrafactico); la prueba de la unidad compara las dos.
       datos: ['Cada uno tiene una sola profesión, y ninguna se repite.', '«Si fuera p, sería q» se lee como «si p, q»: no dice que p pase.'],
       solucion: [
         { texto: '«Beto no fuera el profesor» no es un dato: es lo primero de una regla.' },

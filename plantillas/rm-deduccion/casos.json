@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-deduccion",
   "tolerancia": 0,
-  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Silogismos: clave sil:F:s:p (s y p son índices de entrada.terminos; M = terminos[1] es el término medio; sil:nada = ninguna de las otras se deduce). Frascos: sc:… (o = frasco 0–3 = A–D, c = índice de entrada.cosas; pueden repetirse). Asignación: as:o:c o cosa:c (índices de personas y cosas; cada cosa la tiene una sola persona). Un contrafáctico «si X fuera…, Y sería…» se lee como «X no es…». Condicional simple (fase 5, 17 nov 2026; solo con la unidad de Razonamiento deductivo, por eso el caso trae «opciones»): un dato por sujeto (p, np, q o nq, con la regla «si p, q»); clave si:i:lit (lit: p, np, q, nq o excusa, que es «p y no q» con una razón agregada) o si:nada.",
-  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (todos los repartos de dados y puntajes con todas las pistas): 3/3 coinciden, con reparto único. Fase 5 (17 nov 2026): los 4 casos del condicional simple se resolvieron con un script aparte (python3, sin el generador): para cada sujeto, los 4 casos de p y q, menos el que la regla prohíbe y los que el dato tacha; coinciden los 4, con una sola afirmación segura (o ninguna, y entonces «Ninguna»).",
+  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Silogismos: clave sil:F:s:p (s y p son índices de entrada.terminos; M = terminos[1] es el término medio; sil:nada = ninguna de las otras se deduce). Frascos: sc:… (o = frasco 0–3 = A–D, c = índice de entrada.cosas; pueden repetirse). Asignación: as:o:c o cosa:c (índices de personas y cosas; cada cosa la tiene una sola persona). Un contrafáctico «si X fuera…, Y sería…» se lee como la teoría, una regla «si p, q» (Gerson, cuarta ronda, 18 nov 2026); en la solución no pasa ninguna de sus dos partes, así que leerlo como «X no es…» da el mismo reparto. Condicional simple (fase 5, 17 nov 2026; solo con la unidad de Razonamiento deductivo, por eso el caso trae «opciones»): un dato por sujeto (p, np, q o nq, con la regla «si p, q»); clave si:i:lit (lit: p, np, q, nq o excusa, que es «p y no q» con una razón agregada) o si:nada.",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (todos los repartos de dados y puntajes con todas las pistas): 3/3 coinciden, con reparto único. Fase 5 (17 nov 2026): los 4 casos del condicional simple se resolvieron con un script aparte (python3, sin el generador): para cada sujeto, los 4 casos de p y q, menos el que la regla prohíbe y los que el dato tacha; coinciden los 4, con una sola afirmación segura (o ninguna, y entonces «Ninguna»). Cuarta ronda (18 nov 2026): con el contrafáctico leído como «si p, q», cambiaron las alternativas de las semillas 3, 4 y salida-3 (mismas pistas y misma respuesta) y el problema de las semillas 5 y entrada-3 (la solución nueva no cerraba en pocos pasos y el generador pasó al siguiente). Los cinco se resolvieron con un script aparte (las 24 permutaciones, sin el generador, el contrafáctico como «si p, q»): reparto único y la misma respuesta que el generador (5: Arte; entrada-3: De Cusco).",
   "casos": [
     {
       "semilla": 1,
@@ -178,9 +178,9 @@
         "modo": "afirmacion",
         "opciones": [
           "as:0:0",
-          "as:2:3",
+          "as:0:2",
           "as:3:0",
-          "as:2:2",
+          "as:1:3",
           "as:0:1"
         ]
       },
@@ -258,9 +258,9 @@
         "persona": 0,
         "opciones": [
           "cosa:3",
-          "cosa:0",
           "cosa:2",
-          "cosa:1"
+          "cosa:1",
+          "cosa:0"
         ]
       },
       "esperado": {
@@ -272,68 +272,34 @@
       "semilla": 5,
       "entrada": {
         "tipo": "asignacion",
-        "piel": "deportes",
+        "piel": "talleres",
         "personas": [
-          "Carla",
-          "Inés",
-          "Julio",
-          "Saúl"
+          "Ana",
+          "Fito",
+          "Gaby",
+          "Wilber"
         ],
         "cosas": [
-          "ajedrez",
-          "fútbol",
-          "vóley",
-          "básquet"
+          "Inglés",
+          "Música",
+          "Química",
+          "Arte"
         ],
         "pistas": [
           {
-            "t": "cond",
-            "a": {
-              "o": 0,
-              "c": 0,
-              "neg": false
-            },
-            "b": {
-              "o": 3,
-              "c": 1,
-              "neg": false
-            }
-          },
-          {
-            "t": "cond",
-            "a": {
-              "o": 1,
-              "c": 0,
-              "neg": false
-            },
-            "b": {
-              "o": 3,
-              "c": 1,
-              "neg": false
-            }
-          },
-          {
-            "t": "cond",
-            "a": {
-              "o": 3,
-              "c": 0,
-              "neg": false
-            },
-            "b": {
-              "o": 1,
-              "c": 3,
-              "neg": false
-            }
+            "t": "no",
+            "o": 0,
+            "c": 3
           },
           {
             "t": "contra",
             "a": {
               "o": 2,
-              "c": 0,
+              "c": 3,
               "neg": false
             },
             "b": {
-              "o": 3,
+              "o": 0,
               "c": 1,
               "neg": false
             }
@@ -341,34 +307,34 @@
           {
             "t": "cond",
             "a": {
-              "o": 0,
-              "c": 2,
-              "neg": false
+              "o": 3,
+              "c": 1,
+              "neg": true
             },
             "b": {
               "o": 2,
-              "c": 3,
+              "c": 2,
               "neg": false
             }
           },
           {
             "t": "no",
-            "o": 3,
-            "c": 1
+            "o": 2,
+            "c": 2
           }
         ],
         "modo": "quien",
-        "persona": 0,
+        "persona": 1,
         "opciones": [
-          "cosa:0",
           "cosa:3",
           "cosa:1",
-          "cosa:2"
+          "cosa:2",
+          "cosa:0"
         ]
       },
       "esperado": {
-        "respuesta": "Fútbol",
-        "clave": "cosa:1"
+        "respuesta": "Arte",
+        "clave": "cosa:3"
       }
     },
     {
@@ -679,69 +645,58 @@
       "semilla": "entrada-3",
       "entrada": {
         "tipo": "asignacion",
-        "piel": "deportes",
+        "piel": "ciudades",
         "personas": [
-          "Dante",
-          "Elsa",
-          "Kelly",
-          "Tania"
+          "Ana",
+          "Beto",
+          "Hugo",
+          "Wilber"
         ],
         "cosas": [
-          "ajedrez",
-          "fútbol",
-          "vóley",
-          "básquet"
+          "Tacna",
+          "Arequipa",
+          "Ilave",
+          "Cusco"
         ],
         "pistas": [
+          {
+            "t": "no",
+            "o": 0,
+            "c": 3
+          },
           {
             "t": "no",
             "o": 2,
             "c": 3
           },
           {
+            "t": "no",
+            "o": 2,
+            "c": 1
+          },
+          {
             "t": "cond",
             "a": {
-              "o": 3,
+              "o": 0,
               "c": 1,
-              "neg": true
+              "neg": false
             },
             "b": {
-              "o": 1,
-              "c": 0,
+              "o": 3,
+              "c": 2,
               "neg": false
             }
+          },
+          {
+            "t": "no",
+            "o": 0,
+            "c": 0
           },
           {
             "t": "contra",
             "a": {
-              "o": 0,
-              "c": 2,
-              "neg": false
-            },
-            "b": {
-              "o": 2,
-              "c": 1,
-              "neg": false
-            }
-          },
-          {
-            "t": "cond",
-            "a": {
-              "o": 0,
-              "c": 0,
-              "neg": true
-            },
-            "b": {
-              "o": 3,
-              "c": 1,
-              "neg": false
-            }
-          },
-          {
-            "t": "cond",
-            "a": {
-              "o": 2,
-              "c": 2,
+              "o": 1,
+              "c": 3,
               "neg": false
             },
             "b": {
@@ -751,18 +706,18 @@
             }
           }
         ],
-        "modo": "afirmacion",
+        "modo": "quien",
+        "persona": 3,
         "opciones": [
-          "as:1:3",
-          "as:2:1",
-          "as:3:1",
-          "as:0:0",
-          "as:3:3"
+          "cosa:2",
+          "cosa:1",
+          "cosa:3",
+          "cosa:0"
         ]
       },
       "esperado": {
-        "respuesta": "Tania practica fútbol",
-        "clave": "as:3:1"
+        "respuesta": "De Cusco",
+        "clave": "cosa:3"
       }
     },
     {
@@ -920,9 +875,9 @@
         ],
         "modo": "afirmacion",
         "opciones": [
-          "as:0:2",
-          "as:1:1",
           "as:3:3",
+          "as:1:1",
+          "as:3:0",
           "as:3:1"
         ]
       },
