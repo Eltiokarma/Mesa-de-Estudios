@@ -5,7 +5,8 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Sobre una recta se ubican, en ese orden, los puntos A, B, C y D. Si AC = 17 cm, BD = 21 cm y AD = 30 cm, ¿cuánto mide BC?",
+      "datos": ["Con puntos en orden, cada medida es la suma de sus tramos: AD = AB + BC + CD."],
+      "enunciado": "Sobre una recta se ubican, en ese orden, los puntos A, B, C y D. Si AC = 17 cm, BD = 21 cm y AD = 30 cm, ¿cuánto mide BC? Datos: Con puntos en orden, cada medida es la suma de sus tramos: AD = AB + BC + CD.",
       "respuesta": "BC = 8 cm.",
       "pasos": [
         "AC va de A a C y BD va de B a D: los dos pasan por el tramo BC.",
@@ -17,7 +18,7 @@
       "preguntas": [
         {
           "id": "p1a",
-          "enunciado": "Sobre una recta se ubican, en ese orden, los puntos A, B, C y D. AC = 17 cm, BD = 21 cm y AD = 30 cm.",
+          "enunciado": "Sobre una recta se ubican, en ese orden, los puntos A, B, C y D. AC = 17 cm, BD = 21 cm y AD = 30 cm. Datos: Con puntos en orden, cada medida es la suma de sus tramos: AD = AB + BC + CD.",
           "pregunta": "¿Cuánto mide BC?",
           "unidad": "cm",
           "decimales": 1,
@@ -57,7 +58,8 @@
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "En una recta están, en ese orden, los puntos A, B y C, y M es el punto medio de AC. Si AB − BC = 12 cm, ¿cuánto mide BM?",
+      "datos": ["M es el punto medio de AC: está entre A y C, y AM = MC.", "Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman."],
+      "enunciado": "En una recta están, en ese orden, los puntos A, B y C, y M es el punto medio de AC. Si AB − BC = 12 cm, ¿cuánto mide BM? Datos: M es el punto medio de AC: está entre A y C, y AM = MC. Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman.",
       "respuesta": "BM = 6 cm.",
       "pasos": [
         "Llama a = AB y b = BC. Entonces AC = a + b y AM = (a + b)/2.",
@@ -69,7 +71,7 @@
       "preguntas": [
         {
           "id": "p2a",
-          "enunciado": "En una recta están, en ese orden, los puntos A, B y C, y M es el punto medio de AC. AB − BC = 12 cm.",
+          "enunciado": "En una recta están, en ese orden, los puntos A, B y C, y M es el punto medio de AC. AB − BC = 12 cm. Datos: M es el punto medio de AC: está entre A y C, y AM = MC. Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman.",
           "pregunta": "¿Cuánto mide BM?",
           "unidad": "cm",
           "decimales": 1,
@@ -100,7 +102,8 @@
     {
       "id": "p3",
       "nivel": "intermedio",
-      "enunciado": "Los puntos A, B, C y D están en una recta, en ese orden. M es el punto medio de AB y N, el de CD. Si AD = 26 cm y BC = 8 cm, ¿cuánto mide MN?",
+      "datos": ["M es el punto medio de AB: AM = MB. N es el punto medio de CD: CN = ND.", "Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman."],
+      "enunciado": "Los puntos A, B, C y D están en una recta, en ese orden. M es el punto medio de AB y N, el de CD. Si AD = 26 cm y BC = 8 cm, ¿cuánto mide MN? Datos: M es el punto medio de AB: AM = MB. N es el punto medio de CD: CN = ND. Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman.",
       "respuesta": "MN = 17 cm.",
       "pasos": [
         "MN = MB + BC + CN = AB/2 + BC + CD/2.",
@@ -112,7 +115,7 @@
       "preguntas": [
         {
           "id": "p3a",
-          "enunciado": "Los puntos A, B, C y D están en una recta, en ese orden. M es el punto medio de AB y N, el de CD. AD = 26 cm y BC = 8 cm.",
+          "enunciado": "Los puntos A, B, C y D están en una recta, en ese orden. M es el punto medio de AB y N, el de CD. AD = 26 cm y BC = 8 cm. Datos: M es el punto medio de AB: AM = MB. N es el punto medio de CD: CN = ND. Con puntos en orden, cada tramo largo es la suma de los tramos que lo forman.",
           "pregunta": "¿Cuánto mide MN?",
           "unidad": "cm",
           "decimales": 1,
@@ -143,7 +146,8 @@
     {
       "id": "p4",
       "nivel": "básico",
-      "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. ¿Cuánto mide el ángulo?",
+      "datos": ["Complemento: C(x) = 90° − x, si x < 90°.", "Suplemento: S(x) = 180° − x, si x < 180°."],
+      "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
       "respuesta": "45°.",
       "pasos": [
         "Llama x al ángulo. Se empieza por lo de adentro: su complemento es 90 − x.",
@@ -155,7 +159,7 @@
       "preguntas": [
         {
           "id": "p4a",
-          "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo.",
+          "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo. Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
           "pregunta": "¿Cuánto mide el ángulo?",
           "unidad": "°",
           "decimales": 1,
@@ -186,7 +190,8 @@
     {
       "id": "p5",
       "nivel": "básico",
-      "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. ¿Cuánto mide el ángulo?",
+      "datos": ["Complemento: C(x) = 90° − x, si x < 90°.", "Suplemento: S(x) = 180° − x, si x < 180°."],
+      "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. ¿Cuánto mide el ángulo? Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
       "respuesta": "30°.",
       "pasos": [
         "Complemento: 90 − x. Suplemento: 180 − x.",
@@ -197,7 +202,7 @@
       "preguntas": [
         {
           "id": "p5a",
-          "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°.",
+          "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°. Datos: Complemento: C(x) = 90° − x, si x < 90°. Suplemento: S(x) = 180° − x, si x < 180°.",
           "pregunta": "¿Cuánto mide el ángulo?",
           "unidad": "°",
           "decimales": 1,
@@ -228,7 +233,8 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20 y 2x + 40. ¿Cuánto vale x y cuánto mide cada ángulo?",
+      "datos": ["Entre paralelas: correspondientes, alternos internos y alternos externos son iguales.", "Entre paralelas: conjugados internos y conjugados externos suman 180°."],
+      "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20° y 2x + 40°. ¿Cuánto vale x y cuánto mide cada ángulo? Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°.",
       "respuesta": "x = 30; cada ángulo mide 100°.",
       "pasos": [
         "Los alternos externos están fuera de las paralelas y en lados opuestos de la secante. Como L₁ y L₂ son paralelas, son iguales.",
@@ -240,7 +246,7 @@
       "preguntas": [
         {
           "id": "p6a",
-          "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20 y 2x + 40.",
+          "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20° y 2x + 40°. Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°.",
           "pregunta": "¿Cuánto vale x?",
           "decimales": 2,
           "correcta": { "fn": "ecuacionPar", "args": ["alternos externos", [4, -20], [2, 40]], "campo": "x", "valor": 30 },
@@ -276,7 +282,7 @@
         },
         {
           "id": "p6b",
-          "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20 y 2x + 40.",
+          "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20° y 2x + 40°. Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°.",
           "pregunta": "¿Cuánto mide cada uno de esos ángulos?",
           "unidad": "°",
           "decimales": 1,
@@ -307,7 +313,8 @@
     {
       "id": "p7",
       "nivel": "intermedio",
-      "enunciado": "L₁ ∥ L₂. Una secante forma con ellas dos ángulos conjugados externos que miden 2x + 30 y 3x + 50. ¿Cuánto mide el menor de los dos?",
+      "datos": ["Entre paralelas: correspondientes, alternos internos y alternos externos son iguales.", "Entre paralelas: conjugados internos y conjugados externos suman 180°."],
+      "enunciado": "L₁ ∥ L₂. Una secante forma con ellas dos ángulos conjugados externos que miden 2x + 30° y 3x + 50°. ¿Cuánto mide el menor de los dos? Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°.",
       "respuesta": "70°.",
       "pasos": [
         "Los conjugados externos están fuera de las paralelas y del mismo lado de la secante: suman 180°.",
@@ -318,7 +325,7 @@
       "preguntas": [
         {
           "id": "p7a",
-          "enunciado": "L₁ ∥ L₂. Una secante forma con ellas dos ángulos conjugados externos que miden 2x + 30 y 3x + 50.",
+          "enunciado": "L₁ ∥ L₂. Una secante forma con ellas dos ángulos conjugados externos que miden 2x + 30° y 3x + 50°. Datos: Entre paralelas: correspondientes, alternos internos y alternos externos son iguales. Entre paralelas: conjugados internos y conjugados externos suman 180°.",
           "pregunta": "¿Cuánto mide el menor de los dos?",
           "unidad": "°",
           "decimales": 1,
@@ -358,7 +365,8 @@
     {
       "id": "p8",
       "nivel": "intermedio",
-      "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha (el ángulo APB abre hacia la izquierda). En A forma 48° con L₁, en B forma 3x con L₂ y m∠APB = 5x + 2. Halla x y m∠APB.",
+      "datos": ["Por P se puede trazar una paralela a las dos rectas.", "Entre paralelas, los alternos internos son iguales."],
+      "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha (el ángulo APB abre hacia la izquierda). En A forma 48° con L₁, en B forma 3x con L₂ y m∠APB = 5x + 2°. Halla x y m∠APB. Datos: Por P se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales.",
       "respuesta": "x = 23 y m∠APB = 117°.",
       "pasos": [
         "Por P traza una paralela a L₁ y L₂. Parte el ángulo APB en dos: arriba, un alterno interno del ángulo en A; abajo, uno del ángulo en B.",
@@ -370,7 +378,7 @@
       "preguntas": [
         {
           "id": "p8a",
-          "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha (el ángulo APB abre hacia la izquierda). En A forma 48° con L₁, en B forma 3x con L₂ y m∠APB = 5x + 2.",
+          "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha (el ángulo APB abre hacia la izquierda). En A forma 48° con L₁, en B forma 3x con L₂ y m∠APB = 5x + 2°. Datos: Por P se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales.",
           "pregunta": "¿Cuánto vale x?",
           "decimales": 2,
           "correcta": { "fn": "resolverLineal", "args": [5, 2, 3, 48], "campo": "valor", "valor": 23 },
@@ -406,7 +414,7 @@
         },
         {
           "id": "p8b",
-          "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha. En A forma 48° con L₁ y en B forma 69° con L₂.",
+          "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha. En A forma 48° con L₁ y en B forma 69° con L₂. Datos: Por P se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales.",
           "pregunta": "¿Cuánto mide el ángulo APB?",
           "unidad": "°",
           "decimales": 1,
@@ -446,12 +454,13 @@
     {
       "id": "p9",
       "nivel": "avanzado",
-      "enunciado": "L₁ ∥ L₂. Entre ellas baja un serrucho de A (en L₁) a B (en L₂) con tres quiebres P1, P2 y P3. Los ángulos que abren hacia la derecha miden 25° (en A), 55° (en P2) y 40° (en B). Los que abren hacia la izquierda son los de P1 y P3, y el de P3 es el doble del de P1. ¿Cuánto mide el ángulo en P3?",
+      "datos": ["Por cada quiebre se puede trazar una paralela a las rectas.", "Cada quiebre mide la suma de los ángulos de sus tramos con una paralela."],
+      "enunciado": "L₁ ∥ L₂. Entre ellas baja un serrucho de A (en L₁) a B (en L₂) con tres quiebres P₁, P₂ y P₃. Los ángulos que abren hacia la derecha miden 25° (en A), 55° (en P₂) y 40° (en B). Los que abren hacia la izquierda son los de P₁ y P₃, y el de P₃ es el doble del de P₁. ¿Cuánto mide el ángulo en P₃? Datos: Por cada quiebre se puede trazar una paralela a las rectas. Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.",
       "respuesta": "80°.",
       "pasos": [
         "Regla del serrucho: entre paralelas, y si cada quiebre es una punta, los ángulos que abren hacia un lado suman lo mismo que los que abren hacia el otro.",
         "A la derecha: 25 + 55 + 40 = 120. A la izquierda: x + 2x = 3x.",
-        "3x = 120, así que x = 40: el ángulo en P1 mide 40° y el de P3, 80°.",
+        "3x = 120, así que x = 40: el ángulo en P₁ mide 40° y el de P₃, 80°.",
         "La regla sale de trazar una paralela por cada quiebre: cada ángulo se parte en dos alternos internos."
       ],
       "verificar": [ { "fn": "reglaSerrucho", "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda" }], "espera": { "x": 120 } },
@@ -459,8 +468,8 @@
       "preguntas": [
         {
           "id": "p9a",
-          "enunciado": "L₁ ∥ L₂. Entre ellas baja un serrucho de A (en L₁) a B (en L₂) con tres quiebres P1, P2 y P3. Los ángulos que abren hacia la derecha miden 25° (en A), 55° (en P2) y 40° (en B). Los que abren hacia la izquierda son los de P1 y P3, y el de P3 es el doble del de P1.",
-          "pregunta": "¿Cuánto mide el ángulo en P3?",
+          "enunciado": "L₁ ∥ L₂. Entre ellas baja un serrucho de A (en L₁) a B (en L₂) con tres quiebres P₁, P₂ y P₃. Los ángulos que abren hacia la derecha miden 25° (en A), 55° (en P₂) y 40° (en B). Los que abren hacia la izquierda son los de P₁ y P₃, y el de P₃ es el doble del de P₁. Datos: Por cada quiebre se puede trazar una paralela a las rectas. Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.",
+          "pregunta": "¿Cuánto mide el ángulo en P₃?",
           "unidad": "°",
           "decimales": 1,
           "correcta": {
@@ -473,7 +482,7 @@
             {
               "id": "GE-da-el-otro-angulo",
               "respaldo": "hipotesis",
-              "explicacion": "40° es el ángulo en P1. El de P3 es el doble: 80°.",
+              "explicacion": "40° es el ángulo en P₁. El de P₃ es el doble: 80°.",
               "fn": "reglaSerrucho",
               "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
               "campo": "partes.0",
@@ -482,7 +491,7 @@
             {
               "id": "GE-no-reparte-la-suma",
               "respaldo": "hipotesis",
-              "explicacion": "120° es lo que suman P1 y P3 juntos. Falta repartirlo: x + 2x = 120.",
+              "explicacion": "120° es lo que suman P₁ y P₃ juntos. Falta repartirlo: x + 2x = 120.",
               "fn": "reglaSerrucho",
               "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
               "campo": "x",
@@ -504,7 +513,8 @@
     {
       "id": "p10",
       "nivel": "avanzado",
-      "enunciado": "Los ángulos AOB y BOC son consecutivos (comparten el lado OB). Sus bisectrices forman un ángulo de 52°, y m∠AOB excede en 24° a m∠BOC. ¿Cuánto mide m∠AOB?",
+      "datos": ["La bisectriz parte un ángulo en dos ángulos iguales.", "Consecutivos: sus medidas se suman."],
+      "enunciado": "Los ángulos AOB y BOC son consecutivos (comparten el lado OB). Sus bisectrices forman un ángulo de 52°, y m∠AOB excede en 24° a m∠BOC. ¿Cuánto mide ∠AOB? Datos: La bisectriz parte un ángulo en dos ángulos iguales. Consecutivos: sus medidas se suman.",
       "respuesta": "m∠AOB = 64°.",
       "pasos": [
         "Llama a = m∠AOB y b = m∠BOC. Entre las bisectrices quedan la mitad de cada uno: a/2 + b/2 = 52, así que a + b = 104.",
@@ -516,7 +526,7 @@
       "preguntas": [
         {
           "id": "p10a",
-          "enunciado": "Los ángulos AOB y BOC son consecutivos (comparten el lado OB). Sus bisectrices forman un ángulo de 52°, y m∠AOB excede en 24° a m∠BOC.",
+          "enunciado": "Los ángulos AOB y BOC son consecutivos (comparten el lado OB). Sus bisectrices forman un ángulo de 52°, y m∠AOB excede en 24° a m∠BOC. Datos: La bisectriz parte un ángulo en dos ángulos iguales. Consecutivos: sus medidas se suman.",
           "pregunta": "¿Cuánto mide el ángulo AOB?",
           "unidad": "°",
           "decimales": 1,

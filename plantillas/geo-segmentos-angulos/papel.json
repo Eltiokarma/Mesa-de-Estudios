@@ -26,7 +26,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂. PV forma 25° con L₁ y QV forma 45° con L₂. ¿Cuánto mide el quiebre x, en V? Datos: Por V se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales. Alternativas: A) 70°   B) 110°   C) 20°   D) 35°",
+      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma 25° con L₁ y QV forma 45° con L₂, medidos del lado de V. ¿Cuánto mide el quiebre x, en V? Datos: Por V se puede trazar una paralela a las dos rectas. Entre paralelas, los alternos internos son iguales. Alternativas: A) 70°   B) 110°   C) 20°   D) 35°",
       "respuesta": "A) 70°",
       "pasos": [
         "La paralela por V parte x en dos: cada parte es alterna interna con el ángulo de su tramo.",

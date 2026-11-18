@@ -142,3 +142,86 @@ unidad (158 de 158).
    de `.te-ec` contra su caja.
 10. **La pregunta de un ejemplo a escala no es una comparación visual.** «¿Cuál es el mayor?», «¿es el punto medio?»
     (M13). *Manual*, en el encargo del lector en frío de ejemplos.
+
+## Correcciones (17 nov)
+
+Fase 8 (`docs/metodo/unidad/6-correcciones.md`). Archivos tocados: `contenido/teoria/geometria/segmentos-y-angulos.js`
+y su test, `nucleo/kit/piezas/geo-objeto.js` y su test, `plantillas/geo-segmentos-angulos/` (generador, test,
+`casos.json` y `papel.json` regenerado) y `plantillas/segmentos-angulos/` (`papel.json`, `index.html`, `motor.test.js`).
+No se tocó `app/` (salvo lo que escribe `npm run catalogo`) ni `nucleo/teoria.js`. Cada hallazgo corregido tiene su prueba;
+las nuevas pruebas de la unidad se corrieron contra la versión anterior del archivo (`git show HEAD`) y fallan en cada
+hallazgo (A1, A2, A3, M1, M2, M3, M4, M6, M7, M8, M9, M12; M5 falla con la pieza anterior). Capturas `--entera` en el
+scratchpad, `correcciones-segmentos/`.
+
+**Altas**
+- **A1.** `casoClase` limita a + b ≤ 180°, como el generador. Prueba: en 600 semillas, toda pregunta con «OB queda entre
+  OA y OC» suma 180° o menos y su correcta es la clase de la suma.
+- **A2.** El ejemplo 7 de la idea 5 se dibuja con θ = 100° (P: 2x + 20° = 80°; Q: 3x + 10° = 100°). El ejemplo 12 de la
+  idea 4 se dibuja con x = 24°, la respuesta (antes con un «valor posible», x = 20°). Prueba: en toda figura (ángulos y
+  segmentos), los rótulos con una letra dan un solo valor de la letra con lo que se dibuja, y en los ejemplos ese valor es
+  el de la solución.
+- **A3.** Opciones sin el tope de 13: «Más de 10 km: el rodeo alarga el viaje» (correcta), «Exactamente 10 km»,
+  «Menos de 10 km» y «Depende del lado de la carretera en que esté B» (GE-SEG19, hipótesis nueva). Sale el paso 5 de
+  «Mira» («El 13 suma los 3 km aparte…») y el «no llega a 13» de `coincide`. El «3 km» va sobre la punteada, justo encima
+  de la pista, y la punteada se corta debajo (a media altura no cabe entre los dos caminos sin pisarlos). Prueba: la
+  correcta vale para B a 3 km frente a cualquier km de −5 a 15, y «Mira» no nombra 13.
+
+**Medias**
+- **M1.** Tipo 0 nuevo de «Ahora tú» de la idea 4, `casoBisectriz`: bisectrices de dos consecutivos, se pide ∠MON o
+  ∠BOD (errores GE-BIS2, GE-BIS4, GE-BIS5 y nuevos GE-BIS6, GE-BIS7, GE-BIS8). Sale `casoVecesX` (su caso sigue en los
+  ejemplos 7 y 11 y en el generador). La regla dice ahora «entre las bisectrices de dos consecutivos hay la mitad de su
+  suma». Prueba: cada parte de la regla aparece en al menos 1/8 de las 400 preguntas.
+- **M2.** La regla de la idea 2 usa las letras de su figura (las bancas): AM = MB = AB/2 y MN = (AC + BD)/2; lo del punto
+  entre los extremos va en palabras, sin letras. Prueba: toda letra de la regla es un punto de la figura y sus igualdades
+  se cumplen en ella. Lo ideal sería que la regla tenga su propia figura: hoy `app/teoria.js` usa el último paso de
+  «Mira». **Fuera de alcance**: un campo `regla.dibujo` en `app/teoria.js` y en el validador de `nucleo/teoria.js`.
+- **M3.** Los 15 ejemplos de la idea 6 llevan la paralela auxiliar (y las de M, N y R en los serruchos); «Así se
+  resuelve» la dibuja en su paso «regla»; «Ahora tú» la muestra en la solución (`solucion.dibujo`), no en la pregunta.
+  Prueba: si la solución traza una paralela, la figura del resuelto la tiene.
+- **M4.** En la pieza: `centro: true` pone el rótulo de un ángulo entero sobre su bisectriz, más afuera que sus partes, y
+  corta debajo la punteada que pase por su vértice (bisectriz o paralela auxiliar); `arcoRecto` dibuja con arco el recto
+  entre bisectrices (predicción y regla de la idea 4). Se usó en los ejemplos 3, 8, 13 y 15 de la idea 4, en «Así se
+  resuelve» de la idea 4, en el ejemplo 7 de la idea 3, en el 15 de la idea 5, en el quiebre con paralela y en la
+  tranquera con bisectrices. L₂ va debajo de su recta, fuera de la franja. Prueba: cada rótulo cae dentro de su ángulo y
+  no en una parte dibujada, y con una bisectriz punteada adentro va sobre la bisectriz del entero.
+- **M5.** La pieza separa 8 px dos consecutivos del mismo color (sin rayitas); el generador usa radios 26/36 en
+  `consecFig` y 36/46 alternados en `vuelta`. Pruebas en la unidad, la pieza y el generador.
+- **M6.** La pieza pone las rayitas lo más cerca del medio, a 10 px o más de cada punto y de otro grupo (`marcas`,
+  `marcasCaben`); la teoría y el generador arman otro caso si no caben. Las bancas pasan a B en el 6 (AC = 12, BD = 18 y
+  MN = 15 siguen); los ejemplos 11 y 14 de la idea 2 cambian sus puntos sin cambiar respuestas (AC = 20, BD = 26, MN = 23;
+  BC = 18, MN = 9). Pruebas en la unidad, la pieza y el generador (que compara su cuenta con la de la pieza).
+- **M7.** La ecuación de la regla de la idea 4 ya no lleva la frase larga: α/2 + (180° − α)/2 = 90° (la condición lo
+  dice en palabras). Prueba: ningún tramo sin corte de una regla pasa de 280 px.
+- **M8.** Lee (tarjeta 2 de la idea 3): «Se escribe m∠AOB = 120°: “la medida del ángulo AOB”», con A y B en las agujas
+  (opción `letras` del reloj); la leyenda del juego y el glosario («ángulo») dicen m∠.
+- **M9.** La tarjeta 4 de Lee de la idea 5 tiene los rieles con dos correspondientes (c) y dos alternos internos (a).
+- **M10.** El tipo `quiebre` dice «los dos a la izquierda de V» y «medidos del lado de V»; `papel.json` regenerado
+  (p3) y `casos.json` (semilla 38, solo el texto: la respuesta sigue en 105°). Prueba en el generador.
+- **M11.** `papel.json` de la escena: cada problema con `datos` y «Datos: …» al final del enunciado y de cada pregunta,
+  «°» en las expresiones, P₁/P₂/P₃ y «¿Cuánto mide ∠AOB?». `index.html` usa los tokens de §5b: θ, sus iguales, lo que
+  abre a la derecha y α en carmín; el suplemento, lo que abre a la izquierda y β en turquesa; el complemento y AC en
+  naranja; BD en turquesa; AD en tinta; BC y MN (lo que se busca, que aparece después de responder) en violeta. Prueba
+  en `motor.test.js` (datos y notación). Los colores de la escena no tienen prueba automática: **no se capturó la escena**
+  (la herramienta de capturas es de la teoría); conviene mirarla en el celular.
+- **M12.** La primera tarjeta de Lee de la idea 2 tiene la raya y el pañuelo separados (AB = 7). Prueba: en «Lee» dos
+  puntos no quedan a menos de 16 px.
+- **M13.** Ejemplo 14 de la idea 3: «¿Cuánto mide el mayor de los tres?». Ejemplo 3 de la idea 2, rehecho: A, P y B
+  (AP = 4, PB = 6), «¿A cuántos centímetros de A queda M?» (5 cm; 4 + 6 = 10, 10 ÷ 2 = 5). Prueba: ningún ejemplo con
+  figura pregunta «¿cuál es el mayor?» ni «¿es el punto medio?».
+
+**Bajas hechas**: B1 (condiciones de las ideas 1 y 4 sin «Vale si … cuando»), B3 (los cuatro «·» señalados), B4, B5,
+B6 (a y b rotulados en el ejemplo 14 de la idea 6, θ presentado en el 14 de la idea 5, el ejemplo 3 de la idea 6 sin
+«a = b»), B12 y B13. **Pendientes**: B2 (x con o sin «°»: decisión de notación para toda la unidad y el generador), B3 en
+el resto de la unidad (`SEP` = «·» separa igualdades en muchas ecuaciones; cambiarlo es una pasada aparte), B7, B8 (con
+«a = 40°» el rótulo del juego no cabe en el borde), B9, B10, B11 (`requiere` de inecuaciones: catálogo) y B14.
+
+**Para Gerson**
+1. A3 cambia la predicción de la idea 1, que tuvo su visto bueno: sale «Exactamente 13 km» (GE-SEG2) y entra «Depende
+   del lado…». Recomendación: aceptarlo; la otra opción es volver a «13 km» como distractor, pero con la correcta «Más de
+   10 km» el alumno que piensa en 13 también ve verdadera la correcta.
+2. M2: que la regla tenga su propia figura (cambio en `app/teoria.js`). Recomendación: sí, también sirve a otras unidades.
+3. B2: x sin «°» en «3x + 29°» (x es un número), en toda la unidad y el generador. Recomendación: sí.
+
+**Comprobación**: pruebas de la unidad (24), de geo-objeto (9), del generador (23) y de la escena (52) en verde; `npm run
+catalogo`; `npm test`: 9641 de 9642; la que falla es de Razonamiento deductivo (idea 3, «el alumno sobre el aro
+diablada»), que corrige otro agente.

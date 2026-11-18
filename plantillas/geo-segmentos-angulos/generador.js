@@ -166,6 +166,35 @@
     return true;
   }
 
+  // ¿Caben las rayitas de «miden igual»? La misma cuenta que geo-objeto (marcas): cada grupo de rayitas, lo más cerca
+  // posible del medio de su tramo, a 10 px o más de cada punto y de las rayitas de otro grupo, probando los órdenes
+  // posibles (auditoría de la teoría, 17 nov: en el medio, una rayita tachaba un punto en 81 de 300 casos de medio-entre).
+  // generador.test.js compara esta respuesta con la de la pieza.
+  const HOLGURA_MARCA = 10;
+  function marcasCaben(F) {
+    const ts = F.tramos.filter(t => t.nivel === 0 && t.marcas > 0);
+    if (!ts.length) return true;
+    const kms = F.puntos.map(p => p.km), lo = Math.min(...kms), hi = Math.max(...kms), pad = Math.max(0.6, (hi - lo || 1) * 0.07);
+    const s = 276 / (hi - lo + 2 * pad), X = km => 160 + (km - (lo + hi) / 2) * s, xDe = id => X(F.puntos.find(p => p.id === id).km);
+    const xs = F.puntos.map(p => X(p.km)), hw = t => (t.marcas - 1) * 3 + 4;
+    const holgura = (t, c, puestas) => Math.min(...xs.map(x => Math.abs(c - x) - hw(t)), ...puestas.filter(z => z.t.marcas !== t.marcas).map(z => Math.abs(c - z.x) - hw(t) - hw(z.t)));
+    const colocar = orden => {
+      const puestas = [];
+      for (const t of orden) {
+        const a = Math.min(xDe(t.de), xDe(t.a)), b = Math.max(xDe(t.de), xDe(t.a)), medio = (a + b) / 2;
+        let x = null;
+        for (let k = 0; k <= 2 * Math.ceil((b - a) / 2) && x === null; k++) { const c = medio + (k % 2 ? 1 : -1) * Math.ceil(k / 2); if (c >= a && c <= b && holgura(t, c, puestas) >= HOLGURA_MARCA) x = c; }
+        if (x === null) return false;
+        puestas.push({ t, x });
+      }
+      return true;
+    };
+    const ordenes = [];
+    const perm = (resto, hecho) => { if (!resto.length) { ordenes.push(hecho); return; } resto.forEach((t, i) => perm([...resto.slice(0, i), ...resto.slice(i + 1)], [...hecho, t])); };
+    perm(ts, []);
+    return ordenes.some(colocar);
+  }
+
   // Lugares: carretera en km, avenida en metros (de 100 en 100) o una recta de examen en cm.
   const LUG = [
     { objeto: 'carretera', lugar: 'una carretera recta', cosa: 'paradero', cosas: 'paraderos', u: 'km', k: 1 },
@@ -629,9 +658,11 @@
   const CLASE = g => (g < 90 ? 'agudo' : g === 90 ? 'recto' : g < 180 ? 'obtuso' : g === 180 ? 'llano' : 'no convexo');
   const CLASES = ['agudo', 'recto', 'obtuso', 'llano', 'no convexo'];
   const RANGO = { agudo: 'fuera menor que 90°', recto: 'fuera justo 90°', obtuso: 'estuviera entre 90° y 180°', llano: 'fuera justo 180°', 'no convexo': 'pasara de 180°' };
+  // Dos consecutivos del mismo color con el mismo radio se ven como un solo arco (auditoría de la teoría, 17 nov): radios
+  // de 26 y 36, sin crecer hasta el rótulo.
   function consecFig(a, b, giro, ta, tb, alt) {
     return abanico([{ id: 'A', dir: giro }, { id: 'B', dir: giro + a }, { id: 'C', dir: giro + a + b }],
-      [Object.assign(dado(ta), { de: 'A', a: 'B', mide: a }), Object.assign(dado(tb), { de: 'B', a: 'C', mide: b })], { alt });
+      [Object.assign(dado(ta), { de: 'A', a: 'B', mide: a, radio: 26, crece: false }), Object.assign(dado(tb), { de: 'B', a: 'C', mide: b, radio: 36, crece: false })], { alt });
   }
   function clase(rng) {
     for (const sigue = tope(); sigue();) {
@@ -746,7 +777,8 @@
       const [xv, ks0] = rng.elegir(VUELTAS), ks = rng.barajar(ks0), S = ks.reduce((s, k) => s + k, 0), mx = Math.max(...ks) * xv, giro = 10 * rng.entero(0, 8);
       let d = giro; const rayos = [], angs = [];
       ks.forEach((k, i) => { rayos.push({ id: 'ABCD'[i], dir: d }); d += k * xv; });
-      ks.forEach((k, i) => angs.push(Object.assign(dado(x2(k)), { de: 'ABCD'[i], a: 'ABCD'[(i + 1) % 4], mide: k * xv, mayor: k * xv > 180, radio: 40 })));
+      // Radios alternados (36 y 46): cuatro arcos carmín del mismo radio se veían como un círculo entero.
+      ks.forEach((k, i) => angs.push(Object.assign(dado(x2(k)), { de: 'ABCD'[i], a: 'ABCD'[(i + 1) % 4], mide: k * xv, mayor: k * xv > 180, radio: i % 2 ? 46 : 36, crece: false })));
       const fig = abanico(rayos, angs, { alt: 'Cuatro ángulos alrededor del punto O que dan la vuelta entera.' });
       if (!rotular(fig)) continue;
       return {
@@ -1112,7 +1144,9 @@
       const fig = quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }, ALT_Q);
       if (!rotular(fig)) continue;
       return {
-        variables: {}, enunciado: [`${L12}. P está en L₁ y Q en L₂. PV forma ${a}° con L₁ y QV forma ${b}° con L₂.`],
+        // Sin figura (papel-3) el texto tiene que dar un solo dibujo (auditoría, 17 nov: con P y Q a lados distintos de V,
+        // x saldría 160°): P y Q a la izquierda de V y los ángulos medidos hacia V.
+        variables: {}, enunciado: [`${L12}. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma ${a}° con L₁ y QV forma ${b}° con L₂, medidos del lado de V.`],
         pregunta: ['¿Cuánto mide el quiebre x, en V?'],
         datos: [D.quiebre, D.alt],
         correcta: x, fmt: gr,
@@ -1240,7 +1274,7 @@
     const tipo = fijo || rng.elegir(IDEAS[idea]);
     for (let intento = 0; intento < 200; intento++) {
       const pr = TIPOS[tipo](rng, PAPEL_OP[String(semilla)] || {});
-      if (pr.F && !cotasCaben(pr.F)) continue;
+      if (pr.F && (!cotasCaben(pr.F) || !marcasCaben(pr.F))) continue;
       let alternativas, valor;
       if (pr.texto) {
         alternativas = P.armarTexto({ correcta: pr.texto.correcta, errores: pr.texto.errores, rng });
@@ -1262,5 +1296,5 @@
     throw new Error(`${ID}: no se pudo generar un problema con 4 alternativas distintas (${tipo})`);
   }
 
-  return { id: ID, titulo: 'Segmentos y ángulos', generar, TIPOS: Object.keys(TIPOS), IDEAS, marco, colores, diag };
+  return { id: ID, titulo: 'Segmentos y ángulos', generar, TIPOS: Object.keys(TIPOS), IDEAS, marco, colores, marcasCaben, diag };
 });

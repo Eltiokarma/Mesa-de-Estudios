@@ -6,19 +6,20 @@
 <title>La escuadra y las paralelas</title>
 <style>
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
-   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4):
-   en la recta, AC azul, BD verde, AD naranja, BC fucsia y MN turquesa; en los ángulos, θ celeste, el complemento ámbar
-   y el suplemento morado (también las dos familias de los ocho ángulos entre paralelas); en el serrucho, los ángulos que
-   abren a la derecha magenta y los que abren a la izquierda oliva; en las bisectrices, α mostaza y β petróleo.
-   Pares de colores cercanos que nunca comparten vista (por eso se permiten): AD–complemento, BD–izquierda, AC–θ y
-   BC–suplemento. Entre los que salen juntos, ΔE00 ≥ 23. */
+   Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4), con los tokens de la unidad
+   (docs/molde-unidad.md §5b; auditoría de la teoría, 17 nov: antes θ iba en azul y su suplemento en violeta, el color
+   de lo que se pide): en la recta, los dos tramos que se juntan, AC naranja y BD turquesa; AD, el de punta a punta, en
+   tinta; lo que se busca (BC, MN), en violeta, que solo aparece después de responder. En los ángulos, θ y sus iguales en
+   carmín, su suplemento en turquesa y el complemento en naranja; en el serrucho, los que abren a la derecha en carmín y
+   los que abren a la izquierda en turquesa; en las bisectrices, α carmín y β turquesa. Naranja y carmín salen juntos
+   solo en «la escuadra y la recta» (θ y su complemento), cada uno con su arco y su nombre en la leyenda. */
 [hidden]{display:none!important}
 :root{
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-AC:#1f5fbf; --c-BD:#466d14; --c-AD:#a05200; --c-BC:#a10fbf; --c-MN:#0f766e;
-  --c-t:#086a96; --c-co:#8f5800; --c-su:#6b3dbd; --c-de:#b3246b; --c-iz:#5f6f00; --c-al:#7d6a00; --c-be:#1c4954;
+  --c-AC:#a95300; --c-BD:#07746e; --c-AD:#2d2340; --c-BC:#6b3dbd; --c-MN:#6b3dbd;
+  --c-t:#c02a5c; --c-co:#a95300; --c-su:#07746e; --c-de:#c02a5c; --c-iz:#07746e; --c-al:#c02a5c; --c-be:#07746e;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
   color-scheme:light;
@@ -27,15 +28,15 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-AC:#7cb0ff; --c-BD:#a3d65e; --c-AD:#f0a04a; --c-BC:#cf6bfa; --c-MN:#5ed9c8;
-  --c-t:#25caf4; --c-co:#ffc04d; --c-su:#ab8cf2; --c-de:#ff86bd; --c-iz:#c8dc3c; --c-al:#e3c84a; --c-be:#6a9daf;
+  --c-AC:#f0a04a; --c-BD:#3dcdc3; --c-AD:#f1ebf7; --c-BC:#ab8cf2; --c-MN:#ab8cf2;
+  --c-t:#f17384; --c-co:#f0a04a; --c-su:#3dcdc3; --c-de:#f17384; --c-iz:#3dcdc3; --c-al:#f17384; --c-be:#3dcdc3;
   color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-AC:#7cb0ff; --c-BD:#a3d65e; --c-AD:#f0a04a; --c-BC:#cf6bfa; --c-MN:#5ed9c8;
-  --c-t:#25caf4; --c-co:#ffc04d; --c-su:#ab8cf2; --c-de:#ff86bd; --c-iz:#c8dc3c; --c-al:#e3c84a; --c-be:#6a9daf;
+  --c-AC:#f0a04a; --c-BD:#3dcdc3; --c-AD:#f1ebf7; --c-BC:#ab8cf2; --c-MN:#ab8cf2;
+  --c-t:#f17384; --c-co:#f0a04a; --c-su:#3dcdc3; --c-de:#f17384; --c-iz:#3dcdc3; --c-al:#f17384; --c-be:#3dcdc3;
   color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -249,7 +250,7 @@ function colores(hl){
 }
 const LEYENDA = { AC:'AC', BD:'BD', AD:'AD', BC:'BC', MN:'MN y los puntos medios', t:'θ, el ángulo', co:'complemento (hasta 90°)',
   su:'suplemento (hasta 180°)', de:'abren hacia la derecha', iz:'abren hacia la izquierda', al:'α, mitad de AOB', be:'β, mitad de BOC' };
-// En las paralelas, θ es el ángulo 2 (arriba a la derecha) y los iguales a él; el morado, su suplemento.
+// En las paralelas, θ es el ángulo 2 (arriba a la derecha) y los iguales a él, en carmín; el turquesa, su suplemento.
 const LEY_PARALELAS = { t:'θ y los ángulos iguales a θ', su:'180° − θ, su suplemento' };
 function leyenda(el, claves, textos){ el.innerHTML = claves.map(k => `<span><i style="background:var(--c-${k})"></i>${(textos && textos[k]) || LEYENDA[k]}</span>`).join(''); }
 

@@ -249,3 +249,19 @@ test('papel.json: entre 5 y 10 problemas, con respuesta, pasos y verificación',
 for (const p of (papel && papel.problemas) || []) test(`papel ${p.id}: la respuesta coincide con el motor`, () => {
   for (const v of p.verificar) comprobar(v.fn, v.args, v.espera, p.id);
 });
+
+// Auditoría de la teoría (17 nov, M11): el papel de la escena también lleva sus datos (contrato, punto 13) y la notación
+// de la unidad: los ángulos con «°», subíndices de verdad (P₁) y «¿Cuánto mide ∠AOB?», no «¿cuánto mide m∠AOB?».
+test('papel.json: cada problema trae sus datos y la notación de la unidad', () => {
+  for (const p of papel.problemas) {
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `${p.id}: sin datos`);
+    const textos = [p.enunciado, ...(p.preguntas || []).flatMap(q => [q.enunciado || '', q.pregunta || ''])];
+    assert.ok(p.enunciado.includes(`Datos: ${p.datos.join(' ')}`), `${p.id}: el enunciado no muestra sus datos`);
+    for (const q of p.preguntas || []) if (q.enunciado) assert.ok(q.enunciado.includes('Datos: '), `${p.id}.${q.id}: la pregunta no muestra los datos`);
+    for (const t of textos) {
+      assert.ok(!/\d?x [+−-] \d+(?![\d°,])/.test(t.replace(/Datos: .*/, '')), `${p.id}: un ángulo sin «°» en «${t.slice(0, 80)}»`);
+      assert.ok(!/\bP\d\b/.test(t), `${p.id}: subíndice sin escribir en «${t.slice(0, 80)}»`);
+      assert.ok(!/mide m∠/.test(t), `${p.id}: «mide m∠» en «${t.slice(0, 80)}»`);
+    }
+  }
+});

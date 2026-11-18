@@ -89,12 +89,13 @@
   // Colores (regla de la unidad, arriba): la pieza los pone por el papel de cada tramo y el texto los toma de la figura
   // (pinta), así que un tramo no puede llevar en el texto otro color que en el dibujo.
   // Errores (hipótesis, sin medir; rutinas/teoria-geometria.md y la propuesta): GE-SEG1 suma los tramos sin mirar si B
-  // está entre A y C, GE-SEG2 suma el desvío a AC, GE-SEG6 (nuevo) cree que el rodeo acorta, GE-SEG4 cuenta dos veces el
+  // está entre A y C, GE-SEG2 suma el desvío a AC (ya no es opción de la predicción: auditoría, 17 nov), GE-SEG6 (nuevo) cree que el rodeo acorta, GE-SEG4 cuenta dos veces el
   // tramo que se pisa, GE-SEG5 hace una resta válida que da otro tramo, GE-SEG7 (nuevo) toma por punto del medio una punta
   // del tramo más largo, GE-SEG8 (nuevo) cree que la letra del medio es el punto del medio, GE-SEG9 (nuevo) cree que, sin
   // el orden dicho, ninguno está entre los otros, GE-SEG11 (nuevo) parte una suma entre dos, GE-SEG12 (nuevo) parte entre
   // dos lo que ya era el tramo, GE-SEG14 (nuevo) quita el tramo equivocado, GE-RAZ1 (nuevo) da la otra parte de la razón,
-  // GE-RAZ2 (nuevo) se queda en k, GE-RAZ3 (nuevo) resta los números de la razón a una medida.
+  // GE-RAZ2 (nuevo) se queda en k, GE-RAZ3 (nuevo) resta los números de la razón a una medida, GE-SEG19 (nuevo, 17 nov)
+  // cree que el lado de la recta en que queda el punto cambia la suma.
   const GO = 'geo-objeto';
   const dO = t => ({ v: 'c-o', t }), dI = t => ({ v: 'c-i', t }), dF = t => ({ v: 'c-f', t });
   // Una letra sola en violeta, derecha (el U+2060 invisible evita la cursiva de variable de nucleo/ecuacion.js).
@@ -479,15 +480,17 @@
       pregunta: 'Otro día, el paradero B queda fuera de la carretera, y la combi va de A a B y de B a C por caminos rectos. ¿Cuánto recorre de A a C pasando por B?',
       datos: ['De A a C por la carretera: 10 km', 'B está a 3 km de la carretera, frente al kilómetro 4'],
       voz: 'Piensa en el camino de la combi, no solo en los 3 km.',
+      // Sin el tope de 13 km (auditoría, 17 nov): «menos de 13» solo vale por dónde está B y no se sabe sin Pitágoras (con B
+      // frente al km 0, el camino mide 3 + √109 ≈ 13,4 km). Lo que el alumno puede decidir es que el rodeo alarga.
       opciones: [
-        { id: 'c', texto: 'Más de 10 km, pero menos de 13 km', correcta: true },
+        { id: 'c', texto: 'Más de 10 km: el rodeo alarga el viaje', correcta: true },
         { id: 'igual', texto: 'Exactamente 10 km: B sigue entre A y C', error: 'GE-SEG1', siFuera: '10 km sería cierto con B en la carretera, entre A y C. Fuera de ella, el camino rodea.' },
-        { id: 'suma', texto: 'Exactamente 13 km: los 10 km más los 3 del desvío', error: 'GE-SEG2', siFuera: 'Que el desvío alarga el viaje está bien. Pero cada camino va inclinado: los 3 km no se suben aparte.' },
         { id: 'atajo', texto: 'Menos de 10 km: el desvío acorta', error: 'GE-SEG6', siFuera: 'Un desvío puede ahorrar tráfico, pero no distancia: el camino directo de A a C es el más corto.' },
+        { id: 'lado', texto: 'Depende del lado de la carretera en que esté B', error: 'GE-SEG19', siFuera: 'El lado cambia el dibujo, es cierto; pero de cualquier lado B queda fuera y el camino rodea.' },
       ],
       dibujo: { datos: figP(), estado: {} },
       revelar: { datos: figP({ ab: largo(dAB), bc: largo(dBC), nota: `${f(dAB, 1)} + ${f(dBC, 1)} ≈ ${f(dAB + dBC, 1)} km` }), estado: {} },
-      coincide: `Coincide: ${f(dAB, 1)} + ${f(dBC, 1)} ≈ ${f(dAB + dBC, 1)} km. El rodeo pasa de los 10 km de AC, pero no llega a 13.`,
+      coincide: `Coincide: ${f(dAB, 1)} + ${f(dBC, 1)} ≈ ${f(dAB + dBC, 1)} km. El rodeo pasa de los 10 km de AC.`,
       noCoincide: `Revisemos: medidos con la regla del mapa, los dos caminos suman unos ${f(dAB + dBC, 1)} km.`,
     },
     mira: {
@@ -499,15 +502,14 @@
         { estado: { paso: 1 }, texto: 'La regla del mapa mide el primer camino.', ecuacion: junto([AB1, ` = ${largo(dAB)}`]) },
         { estado: { paso: 2 }, texto: 'Y el segundo, un poco más largo.', ecuacion: junto([BC1, ` ${largo(dBC)}`]) },
         { estado: { paso: 2 }, texto: 'Juntos pasan de los 10 km de AC: el rodeo alarga el viaje.', ecuacion: [junto([AB1, ' + ', BC1, ` ≈ ${f(dAB, 1)} + ${f(dBC, 1)} = ${f(dAB + dBC, 1)} km`]), ' ', junto('> 10 km = AC')] },
-        { estado: { paso: 2 }, texto: 'El 13 suma los 3 km aparte; pero cada camino sube mientras avanza.', ecuacion: junto([`${f(dAB + dBC, 1)} km < 13 km = 10 km + 3 km`]) },
         { estado: { paso: 2 }, texto: 'Solo con B en la carretera, entre A y C, desaparece el rodeo.', ecuacion: junto([AB1, ' + ', BC1, ' = AC']) },
       ],
     },
     regla: {
       texto: 'Si B está en el segmento AC, AB + BC = AC; fuera de él, AB + BC es mayor. Con puntos en orden, cada medida suma sus tramos.',
       ecuacion: [junto(['B entre A y C: ', AB1, ' + ', BC1, ' = AC']), SEP, junto(['B fuera: ', AB1, ' + ', BC1, ' > AC'])],
-      condicion: 'B está entre A y C cuando está en la recta AC y en el tramo de A a C.',
-      voz: 'El dibujo sugiere; «entre A y C» lo garantiza.',
+      condicion: 'B está en la recta AC y en el tramo de A a C.',
+      voz: 'Que se vea en medio no basta: tiene que estar entre A y C.',
     },
     // Así se resuelve: cuatro paraderos en orden y el tramo del medio con dos restas. «Ahora tú» pide otras cosas: qué
     // punto está entre los otros, tramos que se pisan, la razón con k y dos de examen.
@@ -585,7 +587,9 @@
   const dMedio = (M, X, Y, F) => { const p = nom => (F ? pinta(F, nom) : nom); return [`${M} es el punto medio de `, p(X + Y), `: está entre ${X} y ${Y}, y `, p(X + M), ' = ', p(M + Y), '.']; };
   const dSumaMedio = (M, X, Y, F) => { const p = nom => (F ? pinta(F, nom) : nom); return [p(X + Y), ' = ', p(X + M), ' + ', p(M + Y)]; };
   // La predicción y «Mira»: los paraderos A, B, C y D de una avenida, con las bancas M (medio de AB) y N (medio de CD).
-  const PA = 0, PB = 4, PC = 12, PD = 22, PM = (PA + PB) / 2, PN = (PC + PD) / 2;
+  // B en el 6 (antes en el 4): con AB = 4 m, las rayitas de AM y MB no cabían lejos de los puntos (auditoría, 17 nov).
+  // AC = 12 m y BD = 18 m siguen igual, y MN = 15 m.
+  const PA = 0, PB = 6, PC = 12, PD = 24, PM = (PA + PB) / 2, PN = (PC + PD) / 2;
   const figBancas = o => ({ objeto: 'carretera',
     puntos: [pto('A', PA), pto('M', PM), pto('B', PB), pto('C', PC), pto('N', PN), pto('D', PD)],
     tramos: [tr('A', 'C', mt(PC - PA), 1), tr('B', 'D', mt(PD - PB), 2), tr('M', 'N', o.mn, -1, o.papel || 'pide'),
@@ -618,16 +622,19 @@
       respuesta: ['AB = ', dF('5 km')] });
   }
   {
-    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 4), pto('B', 10)], tramos: [tr('A', 'M', '4 cm', 1), tr('M', 'B', '6 cm', 1)] };
-    const AM = pinta(F, 'AM'), MB = pinta(F, 'MB');
-    EJ2.push({ nivel: 1, titulo: '¿Es el punto medio?', figura: fig(F),
-      enunciado: ['A, M y B están en ese orden sobre una recta. ', AM, ' = 4 cm y ', MB, ' = 6 cm. ¿M es el punto medio de AB?'],
-      datos: [dMedio('M', 'A', 'B', F)],
+    // Antes: «¿M es el punto medio?», con AM = 4 y MB = 6 a escala: se veía a ojo (auditoría, 17 nov). Ahora se pide dónde
+    // queda el punto medio, que no está dibujado con su medida.
+    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('P', 4), pto('M', 5), pto('B', 10)], tramos: [tr('A', 'P', '4 cm', 1), tr('P', 'B', '6 cm', 1), tr('A', 'M', '?', -1, 'pide')] };
+    const AP = pinta(F, 'AP'), PB = pinta(F, 'PB');
+    EJ2.push({ nivel: 1, titulo: '¿Dónde queda el punto medio?', figura: fig(F),
+      enunciado: ['A, P y B están en ese orden sobre una recta, con ', AP, ' = 4 cm y ', PB, ' = 6 cm. M es el punto medio de AB. ¿A cuántos centímetros de A queda M?'],
+      datos: [dMedio('M', 'A', 'B'), D_SUMA],
       solucion: [
-        { texto: ['Para ser el punto medio, ', AM, ' y ', MB, ' tendrían que medir igual, y no miden igual.'], ecuacion: junto(['4 cm ≠ 6 cm']) },
-        { texto: 'El punto medio está a la mitad de AB = 10 cm, a 5 cm de A.', ecuacion: junto('10 ÷ 2 = 5 cm') },
+        { texto: ['Primero AB, que junta ', AP, ' y ', PB, ':'], ecuacion: junto(['AB = 4 + 6 = 10 cm']) },
+        { texto: 'M está a la mitad de AB:', ecuacion: junto(['AM = 10 ÷ 2 = ', dF('5 cm')]) },
+        { texto: 'P no es el punto medio: queda a 4 cm de A, y 4 cm ≠ 5 cm.' },
       ],
-      respuesta: ['No: el punto medio está a ', dF('5 cm'), ' de A'] });
+      respuesta: ['AM = ', dF('5 cm')] });
   }
   {
     const F = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 11), pto('B', 22)], tramos: [Object.assign(tr('A', 'M', 'x + 3', 1), { marcas: 1 }), Object.assign(tr('M', 'B', '11 cm', 1), { marcas: 1 })] };
@@ -712,7 +719,8 @@
       respuesta: ['AB = ', dF('22 cm')] });
   }
   {
-    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 3), pto('B', 6), pto('C', 20), pto('N', 26), pto('D', 32)],
+    // AB = 8, BC = 12 y CD = 14 (antes 6, 14 y 12): AC = 20 y BD = 26 siguen, y las rayitas de AM y MB caben.
+    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 4), pto('B', 8), pto('C', 20), pto('N', 27), pto('D', 34)],
       tramos: [tr('A', 'C', '20 cm', 1), tr('B', 'D', '26 cm', 2), igual('A', 'M', 1), igual('M', 'B', 1), igual('C', 'N', 2), igual('N', 'D', 2), tr('M', 'N', '?', -1, 'pide')] };
     const AC = pinta(F, 'AC'), BD = pinta(F, 'BD');
     EJ2.push({ nivel: 3, titulo: 'Dos puntos medios', figura: fig(F),
@@ -754,7 +762,8 @@
       respuesta: ['OM = ', dF('13 cm')] });
   }
   {
-    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 6), pto('B', 12), pto('N', 15), pto('C', 30)],
+    // AB = 8 (antes 12): con AB = 12, la «/» de MB y las «//» de AN se juntaban. BC = 18 y MN = 9 siguen.
+    const F = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 4), pto('B', 8), pto('N', 13), pto('C', 26)],
       tramos: [tr('B', 'C', '18 cm', 1), igual('A', 'M', 1), igual('M', 'B', 1), igual('A', 'N', 2), igual('N', 'C', 2), tr('M', 'N', '?', -1, 'pide')] };
     const BC = pinta(F, 'BC');
     EJ2.push({ nivel: 3, titulo: 'Sin saber cuánto mide AB', figura: fig(F),
@@ -868,7 +877,8 @@
     lee: {
       tarjetas: [
         { titulo: 'El tira y afloja', texto: 'En el aniversario del colegio, dos equipos jalan una soga de 10 m. Sus puntas son A y C. Un pañuelo atado a la mitad de la soga marca el punto M, y en el patio hay una raya pintada: el punto B.',
-          pieza: GO, dibujo: { datos: figSoga(5), estado: {} } },
+          // La raya y el pañuelo separados (auditoría, 17 nov: con la soga pareja, B y M caían en el mismo punto y se leía «BM»).
+          pieza: GO, dibujo: { datos: { objeto: 'soga', vista: [-9, 9], soga: ['A', 'C'], panuelo: 'M', raya: 'B', puntos: [pto('A', -7), pto('B', 0), pto('M', -2), pto('C', 3)], tramos: [tr('A', 'C', '10 m', 1, 'todo')] }, estado: {} } },
         { titulo: 'El punto medio', texto: 'M es el punto medio de AC: está entre A y C y parte la soga en dos mitades iguales, AM = MC = 5 m. Por eso M es equidistante de A y de C. Las rayitas iguales dicen «miden lo mismo».',
           pieza: GO, dibujo: { datos: { objeto: 'soga', vista: [-9, 9], soga: ['A', 'C'], panuelo: 'M', puntos: [pto('A', -5), pto('M', 0), pto('C', 5)], tramos: [Object.assign(tr('A', 'M', '5 m', 1, 'igual'), { marcas: 1 }), Object.assign(tr('M', 'C', '5 m', 1, 'igual'), { marcas: 1 })] }, estado: {} } },
         { titulo: 'Qué mirar al jugar', texto: ['Tu equipo jala de la punta A. Mira ', AB2, ', la soga de tu lado de la raya, y ', BC2, ', la del otro lado. Compara cuánto se diferencian con BM, lo que el pañuelo se alejó de la raya.'] },
@@ -935,10 +945,13 @@
         { estado: { paso: 3 }, texto: 'Entre 4 se partiría también BC: por eso 7,5 m no cuadra.', ecuacion: junto('30 ÷ 4 = 7,5 m ≠ MN') },
       ],
     },
+    // La figura de la regla es la del último paso de «Mira» (app/teoria.js): las bancas, con M el medio de AB y N el de CD.
+    // La regla usa esas mismas letras y colores (auditoría, 17 nov: decía «M parte AC» y «BM = (AB − BC)/2» junto a un
+    // dibujo en que M es el medio de AB). Lo del punto entre los extremos (el juego de la soga) va en palabras, sin letras.
     regla: {
-      texto: 'El punto medio M parte AC en dos mitades iguales: AM = MC. Con B entre A y C, BM es la mitad de AB − BC.',
-      ecuacion: [junto(['AM = MC = ', { frac: ['AC', '2'] }]), SEP, junto(['BM = ', { frac: [[AB2, ' − ', BC2], '2'] }])],
-      condicion: 'M está entre A y C. Con dos puntos medios, MN se arma con sus mitades y lo de en medio.',
+      texto: 'Cada punto medio parte su segmento en mitades iguales. Si otro punto queda entre los extremos, su distancia al medio es la mitad de la diferencia de sus dos tramos.',
+      ecuacion: [junto(['AM = MB = ', { frac: ['AB', '2'] }]), SEP, junto(['MN = ', { frac: [[dO('AC'), ' + ', dI('BD')], '2'] }])],
+      condicion: 'M está entre A y B, y N entre C y D. MN junta media AB, todo BC y media CD.',
       voz: 'El punto medio reparte en mitades; las diferencias también se reparten.',
     },
     // Así se resuelve: las dos mitades con expresiones (se igualan). «Ahora tú» pide otras cosas: BM con B entre los
@@ -970,7 +983,8 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Marca las mitades iguales antes de sumar o restar.',
-      generar(s) { return conCuatro([casoMedio, casoDosMedios, casoEquidistante, casoAfuera][s % 4], azar(s + 57)); },
+      // Si las rayitas de «miden igual» no caben lejos de los puntos (M6 de la auditoría), otro caso con el mismo azar.
+      generar(s) { const caso = [casoMedio, casoDosMedios, casoEquidistante, casoAfuera][s % 4]; return conCuatro(r => { for (let k = 0; ; k++) { const c = caso(r); if (!c.dibujo || PO.marcasCaben(c.dibujo.datos) || k > 200) return c; } }, azar(s + 57)); },
     },
   };
 
@@ -1073,7 +1087,7 @@
     respuesta: [dF('60°'), ': agudo'] });
   {
     const F = abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: 25 }, { id: 'C', dir: 65 }, { id: 'D', dir: 120 }],
-      [{ de: 'A', a: 'B', texto: '25°', color: 'h', mide: 25, radio: 24 }, { de: 'B', a: 'C', texto: '40°', color: 'h', mide: 40, radio: 24 }, { de: 'C', a: 'D', texto: '55°', color: 'h', mide: 55, radio: 24 }, { de: 'A', a: 'D', texto: '?', mide: 120, radio: 50 }],
+      [{ de: 'A', a: 'B', texto: '25°', color: 'h', mide: 25, radio: 24 }, { de: 'B', a: 'C', texto: '40°', color: 'h', mide: 40, radio: 24 }, { de: 'C', a: 'D', texto: '55°', color: 'h', mide: 55, radio: 24 }, { de: 'A', a: 'D', texto: '?', mide: 120, radio: 50, centro: true }],
       { alt: 'Cuatro rayos OA, OB, OC y OD, en ese orden.' });
     EJ3.push({ nivel: 2, titulo: 'Tres consecutivos', figura: figA(F),
       enunciado: 'Los rayos OA, OB, OC y OD salen de O en ese orden. m∠AOB = 25°, m∠BOC = 40° y m∠COD = 55°. ¿Cuánto mide ∠AOD y qué clase es?',
@@ -1125,7 +1139,8 @@
     datos: [D_VUELTA, D_RELOJ],
     solucion: [
       { texto: 'Contar desde las 12 hasta el 7 da 7 × 30° = 210°: pasa de 180°, es el arco no convexo.' },
-      { texto: 'Por el otro lado, del 7 al 12, hay 5 espacios:', ecuacion: junto(['5 × 30° = ', dF('150°'), '   ·   210° + 150° = 360°']) },
+      { texto: 'Por el otro lado, del 7 al 12, hay 5 espacios:', ecuacion: junto(['5 × 30° = ', dF('150°')]) },
+      { texto: 'Los dos arcos dan la vuelta:', ecuacion: junto('210° + 150° = 360°') },
     ],
     respuesta: [dF('150°')] });
   EJ3.push({ nivel: 3, titulo: 'Consecutivos sobre una recta', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: 110 }, { id: 'D', dir: 180 }],
@@ -1140,14 +1155,14 @@
     respuesta: ['m∠AOB = ', dF('110°'), ', obtuso'] });
   EJ3.push({ nivel: 3, titulo: 'Tres ángulos y una vuelta', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: 120 }, { id: 'D', dir: 260 }],
     [{ de: 'A', a: 'B', texto: '120°', color: 'h', mide: 120 }, { de: 'B', a: 'D', texto: '2x', color: 'h', mide: 140 }, { de: 'D', a: 'A', texto: 'x + 30°', color: 'h', mide: 100 }], { alt: 'Tres ángulos alrededor del punto O.' })),
-    enunciado: 'Alrededor de O hay tres ángulos consecutivos que dan la vuelta: m∠AOB = 120°, m∠BOD = 2x y m∠DOA = x + 30°. ¿Cuál es el mayor de los tres?',
+    enunciado: 'Alrededor de O hay tres ángulos consecutivos que dan la vuelta: m∠AOB = 120°, m∠BOD = 2x y m∠DOA = x + 30°. ¿Cuánto mide el mayor de los tres?',
     datos: [D_VUELTA, 'Consecutivos: sus medidas se suman.'],
     solucion: [
       { texto: 'Los tres dan la vuelta:', ecuacion: [junto('120° + 2x + x + 30° = 360°'), '   →   ', junto('3x = 210°'), '   →   ', junto('x = 70°')] },
       { texto: 'Reemplazo:', ecuacion: [junto(['m∠BOD = 2 · 70° = ', dF('140°')]), SEP, junto('m∠DOA = 70° + 30° = 100°')] },
       { texto: 'El mayor es ∠BOD: 140° pasa a 120° y a 100°.' },
     ],
-    respuesta: ['∠BOD, que mide ', dF('140°')] });
+    respuesta: ['El mayor mide ', dF('140°')] });
   {
     const F = abanico([{ id: 'A', dir: 10 }, { id: 'B', dir: 60 }, { id: 'C', dir: 90 }, { id: 'D', dir: 160 }],
       [{ de: 'A', a: 'C', texto: '80°', color: 'h', mide: 80, radio: 26 }, { de: 'B', a: 'D', texto: '100°', color: 'h', mide: 100, radio: 40 }, { de: 'B', a: 'C', texto: '?', mide: 30, radio: 56 }],
@@ -1162,9 +1177,13 @@
       respuesta: ['m∠BOC = ', dF('30°')] });
   }
 
-  // «Ahora tú» de la idea 3. Tipo 0: la clase de la suma de dos consecutivos.
+  // «Ahora tú» de la idea 3. Tipo 0: la clase de la suma de dos consecutivos. Con OB entre OA y OC, ∠AOC es el convexo
+  // que contiene a OB: la suma no pasa de 180° (auditoría, 17 nov: con 80° + 105° se daba por buena «no convexo», y ∠AOC
+  // sin más es el convexo, de 175°, obtuso). Como en el generador, la suma se queda en 180° o menos.
   function casoClase(r) {
-    const a = 5 * r.ent(6, 20), b = 5 * r.ent(6, 22), giro = 15 * r.ent(0, 6), t = a + b, bien = clase(t);
+    let a, b, t;
+    do { a = 5 * r.ent(6, 20); b = 5 * r.ent(6, 22); t = a + b; } while (t > 180);
+    const giro = 15 * r.ent(0, 6), bien = clase(t);
     const rango = { agudo: 'fuera menor que 90°', recto: 'fuera justo 90°', obtuso: 'estuviera entre 90° y 180°', llano: 'fuera justo 180°', 'no convexo': 'pasara de 180°' };
     const ops = [{ id: 'c', texto: bien, correcta: true }];
     const cerca = CLASES.filter(n => n !== bien).sort((x, y) => Math.abs(CLASES.indexOf(x) - CLASES.indexOf(bien)) - Math.abs(CLASES.indexOf(y) - CLASES.indexOf(bien)));
@@ -1243,8 +1262,9 @@
       tarjetas: [
         { titulo: 'Dos agujas y un vértice', texto: 'En el reloj de la plaza, las dos agujas salen del mismo eje, como dos rayos que salen de un punto. Ese punto es el vértice, O. Entre las agujas se forma un ángulo, y las agujas son sus lados.',
           pieza: GO, dibujo: esc(Object.assign(reloj1(2), { relojes: [{ hora: 2, tam: 'plaza', O: true, arco: { color: 'h' } }] })) },
-        { titulo: 'Se mide en grados', texto: 'Una vuelta completa mide 360°. El reloj tiene 12 números a igual distancia: de uno al siguiente hay 360° ÷ 12 = 30°. A las 4:00 hay 4 espacios: 4 × 30° = 120°. Se escribe m∠AOB = 120°.',
-          pieza: GO, dibujo: esc(reloj1(4)) },
+        // m∠ dicho en palabras, con A y B en las agujas (auditoría, 17 nov: «“m∠” no sé qué significa»).
+        { titulo: 'Se mide en grados', texto: 'Una vuelta mide 360°, y el reloj tiene 12 números a igual distancia: de uno al siguiente hay 30°. A las 4:00 hay 4 espacios: 4 × 30° = 120°. Se escribe m∠AOB = 120°: «la medida del ángulo AOB».',
+          pieza: GO, dibujo: esc(reloj1(4, { letras: ['A', 'B'] })) },
         { titulo: 'Cada medida, un nombre', texto: 'Un ángulo es agudo si mide menos de 90°, recto si mide 90°, obtuso entre 90° y 180°, llano si mide 180° y no convexo si pasa de 180°: rodea por el otro lado.' },
         { titulo: 'Ángulos consecutivos', texto: '∠AOB y ∠BOC son consecutivos: comparten el vértice O y el lado OB, uno al lado del otro. Al jugar, mueve el horario y fíjate en qué medida cambia el nombre del ángulo.',
           pieza: GO, dibujo: figA(consec(50, 40, 15, { total: false, ta: '', tb: '' })) },
@@ -1265,6 +1285,7 @@
         { s: 'agujas', t: 'los lados del ángulo' },
         { s: dH('carmín'), t: 'el ángulo, del minutero al horario' },
         { s: '°', t: 'grado: una vuelta tiene 360°' },
+        { s: 'm∠AOB', t: 'la medida del ángulo AOB' },
       ],
       controles: [{ id: 'g', etiqueta: 'Giro del horario desde las 12', min: 0, max: 330, paso: 30, inicio: 60, unidad: '°', decimales: 0, color: 'c-h' }],
       dibujo: v => ({ datos: reloj1(v.g / 30), estado: {} }),
@@ -1354,7 +1375,10 @@
   // GE-BIS2 suma los ángulos completos, GE-BIS3 toma las bisectrices por los lados, GE-CS1 deshace solo una operación,
   // GE-CS2 cambia el orden, GE-CS3 reparte en mitades, GE-CS4 olvida que el otro también depende de x, GE-CS5 (nuevo)
   // confunde complemento con suplemento, GE-CS6 (nuevo) da el complemento o el suplemento en vez del ángulo, GE-ANG11
-  // (nuevo) incluye el valor límite que la desigualdad estricta excluye, GE-ANG12 (nuevo) usa 180° donde va 90°.
+  // (nuevo) incluye el valor límite que la desigualdad estricta excluye, GE-ANG12 (nuevo) usa 180° donde va 90°; y, del
+  // generador, GE-BIS4 toma la mitad de uno solo y GE-BIS5 cree que entre bisectrices siempre hay 90°; nuevos (17 nov):
+  // GE-BIS6 se queda en la mitad del ángulo pedido, GE-BIS7 le quita a ∠MON el ángulo entero y no su mitad, GE-BIS8 da
+  // ∠AOD, el ángulo entero.
   const tranq = (a, o = {}) => Object.assign({ objeto: 'tranquera', alfa: a }, o);
   const tranqJuego = a => tranq(a, { pista: { texto: `${a}°`, color: 'h' }, poste: a < 90 ? { texto: `${90 - a}°`, color: 'i' } : null, otro: { texto: `${180 - a}°`, color: 'i' } });
   const D_C = 'Complemento: C(x) = 90° − x, si x < 90°.';
@@ -1377,7 +1401,7 @@
     datos: [D_S],
     solucion: [{ texto: 'Lo que le falta a 48° para llegar a 180°:', ecuacion: junto(['S(48°) = 180° − 48° = ', dF('132°')]) }],
     respuesta: ['S(48°) = ', dF('132°')] });
-  EJ4.push({ nivel: 1, titulo: 'La bisectriz de 76°', figura: figA(abanico([{ id: 'A', dir: 10 }, { id: 'D', dir: 48, discontinua: true }, { id: 'B', dir: 86 }], [{ de: 'A', a: 'B', texto: '76°', color: 'h', mide: 76, radio: 46 }, { de: 'A', a: 'D', texto: '?', rayita: 1, mide: 38, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: 38, radio: 26 }], { alt: 'Ángulo AOB de 76° con su bisectriz OD.' })),
+  EJ4.push({ nivel: 1, titulo: 'La bisectriz de 76°', figura: figA(abanico([{ id: 'A', dir: 10 }, { id: 'D', dir: 48, discontinua: true }, { id: 'B', dir: 86 }], [{ de: 'A', a: 'B', texto: '76°', color: 'h', mide: 76, radio: 46, centro: true }, { de: 'A', a: 'D', texto: '?', rayita: 1, mide: 38, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: 38, radio: 26 }], { alt: 'Ángulo AOB de 76° con su bisectriz OD.' })),
     enunciado: 'OD es la bisectriz del ángulo AOB, que mide 76°. ¿Cuánto mide ∠AOD?',
     datos: [D_BIS],
     solucion: [{ texto: 'La bisectriz deja dos ángulos iguales:', ecuacion: junto(['m∠AOD = 76° ÷ 2 = ', dF('38°')]) }],
@@ -1408,11 +1432,12 @@
       { texto: 'Despejo:', ecuacion: junto(['x = ', dF('30°')]) },
     ],
     respuesta: ['x = ', dF('30°')] });
-  EJ4.push({ nivel: 2, titulo: 'Bisectriz y suplemento', figura: figA(lineaRayo(70, [{ id: 'D', dir: 35, discontinua: true }], [{ de: 'A', a: 'B', texto: '70°', color: 'h', mide: 70, radio: 40, sector: [0, 35] }, { de: 'A', a: 'D', rayita: 1, mide: 35, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: 35, radio: 26 }, { de: 'D', a: 'E', texto: '?', mide: 145, radio: 56 }], 'A, O y E en una recta; OB forma 70° con OA y OD es su bisectriz.')),
+  EJ4.push({ nivel: 2, titulo: 'Bisectriz y suplemento', figura: figA(lineaRayo(70, [{ id: 'D', dir: 35, discontinua: true }], [{ de: 'A', a: 'B', texto: '70°', color: 'h', mide: 70, radio: 40, centro: true }, { de: 'A', a: 'D', rayita: 1, mide: 35, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: 35, radio: 26 }, { de: 'D', a: 'E', texto: '?', mide: 145, radio: 64, centro: true }], 'A, O y E en una recta; OB forma 70° con OA y OD es su bisectriz.')),
     enunciado: 'A, O y E están en una recta. m∠AOB = 70° y OD es la bisectriz de ∠AOB. ¿Cuánto mide ∠DOE?',
     datos: [D_BIS, D_ADY],
     solucion: [
-      { texto: 'La bisectriz deja dos de 35°. Del otro lado de OB queda el suplemento:', ecuacion: [junto('70° ÷ 2 = 35°'), SEP, junto('m∠BOE = 180° − 70° = 110°')] },
+      { texto: 'La bisectriz deja dos mitades iguales:', ecuacion: junto('70° ÷ 2 = 35°') },
+      { texto: 'Del otro lado de OB queda el suplemento:', ecuacion: junto('m∠BOE = 180° − 70° = 110°') },
       { texto: '∠DOE junta una mitad y ∠BOE:', ecuacion: junto(['m∠DOE = 35° + 110° = ', dF('145°')]) },
     ],
     respuesta: ['m∠DOE = ', dF('145°')] });
@@ -1439,7 +1464,8 @@
       { texto: 'Compruebo: S(60°) = 120° y C(60°) = 30°; 4 · 30° = 120°.' },
     ],
     respuesta: ['x = ', dF('60°')] });
-  EJ4.push({ nivel: 3, titulo: 'El mayor valor entero', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: 40 }, { id: 'D', dir: 75 }], [{ de: 'A', a: 'B', texto: '2x', color: 'h', mide: 40 }, { de: 'B', a: 'D', texto: 'x + 15°', color: 'h', mide: 35, radio: 34 }], { alt: '∠AOB y ∠BOD consecutivos, dibujados con un valor posible de x.' })),
+  // Dibujado con x = 24°, la respuesta (2x = 48° y x + 15° = 39°): los rótulos con x valen lo que se dibuja.
+  EJ4.push({ nivel: 3, titulo: 'El mayor valor entero', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'B', dir: 48 }, { id: 'D', dir: 87 }], [{ de: 'A', a: 'B', texto: '2x', color: 'h', mide: 48 }, { de: 'B', a: 'D', texto: 'x + 15°', color: 'h', mide: 39, radio: 34 }], { alt: '∠AOB y ∠BOD consecutivos.' })),
     enunciado: '∠AOB y ∠BOD son consecutivos, con m∠AOB = 2x y m∠BOD = x + 15°. Si ∠AOD es agudo, ¿cuál es el mayor valor entero de x?',
     datos: [D_CONSEC('A', 'B', 'D'), 'Agudo: más de 0° y menos de 90°.'],
     solucion: [
@@ -1448,7 +1474,7 @@
     ],
     respuesta: ['x = ', dF('24°')] });
   EJ4.push({ nivel: 3, titulo: 'Las bisectrices de dos adyacentes', figura: figA(lineaRayo(105, [{ id: 'M', dir: 52.5, discontinua: true }, { id: 'N', dir: 142.5, discontinua: true }],
-    [{ de: 'A', a: 'B', texto: '3x', color: 'h', mide: 105, radio: 26 }, { de: 'B', a: 'E', texto: 'x + 40°', color: 'h', mide: 75, radio: 26 }, { de: 'M', a: 'N', texto: '?', mide: 90, radio: 56 }],
+    [{ de: 'A', a: 'B', texto: '3x', color: 'h', mide: 105, radio: 26, centro: true }, { de: 'B', a: 'E', texto: 'x + 40°', color: 'h', mide: 75, radio: 26, centro: true }, { de: 'M', a: 'N', texto: '?', mide: 90, radio: 70, centro: true }],
     'A, O y E en una recta; OB entre ellos; OM y ON son las bisectrices de ∠AOB y ∠BOE.')),
     enunciado: 'A, O y E están en una recta. m∠AOB = 3x y m∠BOE = x + 40°. OM y ON son las bisectrices de ∠AOB y ∠BOE. ¿Cuánto mide ∠MON?',
     datos: [D_ADY, D_BIS],
@@ -1466,7 +1492,8 @@
     ],
     respuesta: ['x = ', dF('30°')] });
   EJ4.push({ nivel: 3, titulo: 'Bisectrices de dos consecutivos', figura: figA(abanico([{ id: 'A', dir: 0 }, { id: 'M', dir: 30, discontinua: true }, { id: 'B', dir: 60 }, { id: 'N', dir: 110, discontinua: true }, { id: 'D', dir: 160 }],
-    [{ de: 'A', a: 'B', texto: '60°', color: 'h', mide: 60, radio: 28 }, { de: 'B', a: 'D', texto: '100°', color: 'h', mide: 100, radio: 28, sector: [110, 160] }, { de: 'M', a: 'N', texto: '?', mide: 80, radio: 62 }],
+    [{ de: 'A', a: 'M', rayita: 1, mide: 30, radio: 24 }, { de: 'M', a: 'B', rayita: 1, mide: 30, radio: 24 }, { de: 'B', a: 'N', rayita: 2, mide: 50, radio: 24 }, { de: 'N', a: 'D', rayita: 2, mide: 50, radio: 24 },
+      { de: 'A', a: 'B', texto: '60°', color: 'h', mide: 60, radio: 34, centro: true }, { de: 'B', a: 'D', texto: '100°', color: 'h', mide: 100, radio: 34, centro: true }, { de: 'M', a: 'N', texto: '?', mide: 80, radio: 74, centro: true }],
     { alt: '∠AOB y ∠BOD consecutivos, con sus bisectrices OM y ON.' })),
     enunciado: '∠AOB = 60° y ∠BOD = 100° son consecutivos. OM y ON son sus bisectrices. ¿Cuánto mide ∠MON?',
     datos: [D_BIS, 'Consecutivos: sus medidas se suman.'],
@@ -1477,7 +1504,47 @@
     ],
     respuesta: ['m∠MON = ', dF('80°')] });
 
-  // «Ahora tú» de la idea 4. Tipo 0: el complemento o el suplemento es m veces el ángulo.
+  // «Ahora tú» de la idea 4. Tipo 0 (17 nov, auditoría: la idea se llama «… y bisectriz» y ningún tipo pedía una):
+  // bisectrices de dos consecutivos; se pide ∠MON con los dos ángulos, o ∠BOD con ∠AOB y ∠MON. Cuentas: m∠MON =
+  // (a + b) ÷ 2 y m∠BOD = 2 · m∠MON − a (a y b de 10 en 10, así que las mitades y ∠MON salen enteros de 5 en 5).
+  function casoBisectriz(r) {
+    let a, b, giro, m, pideMON, F;
+    for (let k = 0; ; k++) {
+      do { a = 10 * r.ent(3, 11); b = 10 * r.ent(3, 11); } while (a === b || a + b >= 170 || a + b < 90);
+      giro = 5 * r.ent(0, 4); m = (a + b) / 2; pideMON = r() < 0.5;
+      F = abanico([{ id: 'A', dir: giro }, { id: 'M', dir: giro + a / 2, discontinua: true }, { id: 'B', dir: giro + a }, { id: 'N', dir: giro + a + b / 2, discontinua: true }, { id: 'D', dir: giro + a + b }],
+      [{ de: 'A', a: 'M', rayita: 1, mide: a / 2, radio: 24 }, { de: 'M', a: 'B', rayita: 1, mide: a / 2, radio: 24 }, { de: 'B', a: 'N', rayita: 2, mide: b / 2, radio: 24 }, { de: 'N', a: 'D', rayita: 2, mide: b / 2, radio: 24 },
+        { de: 'A', a: 'B', texto: `${a}°`, color: 'h', mide: a, radio: 34, centro: true },
+        Object.assign({ de: 'B', a: 'D', mide: b, radio: 34, centro: true }, pideMON ? { texto: `${b}°`, color: 'h' } : { texto: '?' }),
+        Object.assign({ de: 'M', a: 'N', mide: m, radio: 74, centro: true }, pideMON ? { texto: '?' } : { texto: `${m}°`, color: 'h' })],
+      { alt: '∠AOB y ∠BOD consecutivos, con sus bisectrices OM y ON.' });
+      // Si los rótulos no caben (ángulos chicos), otro caso.
+      if (PO.escenaCabe({ objeto: 'angulos', figura: F }) || k > 200) break;
+    }
+    const comun = { datos: [D_BIS, 'Consecutivos: sus medidas se suman.'], dibujo: esc({ objeto: 'angulos', figura: F }) };
+    if (pideMON) return Object.assign(comun, {
+      pregunta: `∠AOB y ∠BOD son consecutivos, con m∠AOB = ${a}° y m∠BOD = ${b}°. OM y ON son sus bisectrices. ¿Cuánto mide ∠MON?`,
+      opciones: opciones(m, [
+        { id: 'suma', valor: a + b, error: 'GE-BIS2', siFuera: 'Juntar los dos ángulos va bien; pero OM y ON toman solo la mitad de cada uno.' },
+        { id: 'recta', valor: 90, error: 'GE-BIS5', siFuera: 'Recordar los 90° de dos adyacentes va bien; aquí los dos no forman una recta.' },
+        { id: 'uno', valor: a / 2 + b, error: 'GE-BIS4', siFuera: 'Tomar la mitad de ∠AOB va bien; falta tomar también la mitad de ∠BOD.' },
+        { id: 'mitad', valor: a / 2, error: 'GE-BIS4', siFuera: 'Tomar la mitad de ∠AOB va bien; falta sumarle la mitad de ∠BOD.' },
+      ], gr),
+      solucion: { texto: `Cada bisectriz toma la mitad de su ángulo: ${f(a / 2)}° y ${f(b / 2)}°.`, ecuacion: junto(`m∠MON = ${f(a / 2)}° + ${f(b / 2)}° = ${f(m)}°`) },
+    });
+    return Object.assign(comun, {
+      pregunta: `∠AOB y ∠BOD son consecutivos, con m∠AOB = ${a}°. OM y ON son sus bisectrices, y m∠MON = ${m}°. ¿Cuánto mide ∠BOD?`,
+      opciones: opciones(b, [
+        { id: 'mitad', valor: b / 2, error: 'GE-BIS6', siFuera: `Quitarle a ∠MON la mitad de ∠AOB va bien: da ∠BON = ${f(b / 2)}°. ∠BOD es el doble.` },
+        { id: 'todo', valor: 2 * m, error: 'GE-BIS8', siFuera: 'Doblar ∠MON va bien: da ∠AOD. Falta quitarle ∠AOB.' },
+        { id: 'entero', valor: m - a, error: 'GE-BIS7', siFuera: `A ∠MON se le quita la mitad de ∠AOB, ${f(a / 2)}°, no el ángulo entero.` },
+        { id: 'recta', valor: 180 - a, error: 'GE-BIS5', siFuera: 'Eso valdría si los dos formaran una recta; aquí ∠MON no mide 90°.' },
+      ], gr),
+      solucion: { texto: `∠MON junta la mitad de ∠AOB, ${f(a / 2)}°, y la mitad de ∠BOD.`, ecuacion: [junto(`m∠BON = ${f(m)}° − ${f(a / 2)}° = ${f(b / 2)}°`), '   →   ', junto(`m∠BOD = 2 · ${f(b / 2)}° = ${b}°`)] },
+    });
+  }
+  // Antes, tipo 0: el complemento o el suplemento es m veces el ángulo (sigue en los ejemplos 7 y 11 y en el generador,
+  // veces-x).
   function casoVecesX(r) {
     const esS = r() < 0.5, m = r.de(esS ? [1, 2, 3, 4, 5, 8] : [1, 2, 4, 5, 8]), base = esS ? 180 : 90, v = base / (m + 1), otra = esS ? 90 : 180;
     const nom = esS ? 'suplemento' : 'complemento', veces = m === 1 ? 'mide lo mismo que' : `es ${m} veces`;
@@ -1500,7 +1567,7 @@
       datos: [D_C, D_S],
       opciones: opciones(v, [
         { id: 'solo-s', valor: 180 - k, error: 'GE-CS1', siFuera: `${180 - k}° deshace solo el suplemento: es C(x). Falta deshacer el complemento.` },
-        { id: 'orden', valor: k - 180 + 90 + 90 === v ? k + 90 : k + 90, error: 'GE-CS2', siFuera: 'Eso saldría si el complemento fuera la operación de afuera.' },
+        { id: 'orden', valor: k + 90, error: 'GE-CS2', siFuera: 'Eso saldría si el complemento fuera la operación de afuera.' },
         { id: 'mitad', valor: k / 2, error: 'GE-CS3', siFuera: 'Dividir entre 2 serviría con una bisectriz; aquí hay dos restas.' },
       ], gr),
       solucion: { texto: 'S(C(x)) = 180° − (90° − x) = 90° + x.', ecuacion: junto(`90° + x = ${k}°  →  x = ${v}°`) },
@@ -1611,19 +1678,22 @@
         { estado: { corte: 4 }, texto: 'Con cualquier barra da 90°: la mitad de 180°.', ecuacion: junto([{ frac: [dH('α'), '2'] }, ' + ', { frac: [[dI('180° − α')], '2'] }, ' = ', { frac: ['180°', '2'] }, ' = 90°']) },
       ],
     },
+    // La regla dice también lo que pide «Ahora tú» de las bisectrices (dos consecutivos: la mitad de su suma) y su
+    // ecuación no lleva frases largas sin corte (auditoría, 17 nov: «bisectrices de dos adyacentes: 90°» se cortaba a
+    // 390 px; la prueba mide cada tramo que no se parte).
     regla: {
-      texto: 'El complemento de x es lo que le falta para 90°; el suplemento, lo que le falta para 180°. La bisectriz parte un ángulo en dos iguales.',
-      ecuacion: [junto(['C(x) = 90° − x']), SEP, junto(['S(x) = 180° − x']), SEP, junto('bisectrices de dos adyacentes: 90°')],
-      condicion: 'C(x) existe si x < 90°, y S(x) si x < 180°. Dos adyacentes sobre una recta suman 180°.',
-      voz: 'Escribe cada operación como una resta y despeja de adentro hacia afuera.',
+      texto: 'C(x) es lo que a x le falta para 90°; S(x), lo que falta para 180°. Entre las bisectrices de dos consecutivos hay la mitad de su suma.',
+      ecuacion: [junto(['C(x) = 90° − x']), SEP, junto(['S(x) = 180° − x']), SEP, junto([{ frac: [dH('α'), '2'] }, ' + ', { frac: [[dI('180° − α')], '2'] }, ' = 90°'])],
+      condicion: 'x < 90° para C(x) y x < 180° para S(x). Dos adyacentes suman 180°: sus bisectrices forman 90°.',
+      voz: 'Primero el complemento, después el suplemento.',
     },
-    // Así se resuelve: la bisectriz y el suplemento juntos (A, O y E en una recta). «Ahora tú» pide ecuaciones con C(x) y
-    // S(x) y el mayor entero.
+    // Así se resuelve: la bisectriz y el suplemento juntos (A, O y E en una recta). «Ahora tú» pide las bisectrices de dos
+    // consecutivos, ecuaciones con C(x) y S(x) y el mayor entero.
     resuelve: {
       pieza: GO,
       generar(s) {
         const r = azar(s + 900), t = 10 * r.ent(6, 15), h = t / 2, de = h + 180 - t;
-        const F = lineaRayo(t, [{ id: 'D', dir: h, discontinua: true }], [{ de: 'A', a: 'B', texto: `${t}°`, color: 'h', mide: t, radio: 40, sector: [0, h] }, { de: 'A', a: 'D', rayita: 1, mide: h, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: h, radio: 26 }, { de: 'D', a: 'E', texto: '?', mide: de, radio: 58 }],
+        const F = lineaRayo(t, [{ id: 'D', dir: h, discontinua: true }], [{ de: 'A', a: 'B', texto: `${t}°`, color: 'h', mide: t, radio: 40, centro: true }, { de: 'A', a: 'D', rayita: 1, mide: h, radio: 26 }, { de: 'D', a: 'B', rayita: 1, mide: h, radio: 26 }, { de: 'D', a: 'E', texto: '?', mide: de, radio: 64, centro: true }],
           'A, O y E en una recta; OB sale de O y OD es la bisectriz de ∠AOB.');
         return {
           enunciado: `A, O y E están en una recta. m∠AOB = ${t}° y OD es la bisectriz de ∠AOB. ¿Cuánto mide ∠DOE?`,
@@ -1642,8 +1712,8 @@
     },
     ahoraTu: {
       pieza: GO,
-      voz: 'Escribe cada operación como una resta y despeja.',
-      generar(s) { return conCuatro([casoVecesX, casoCadena, casoVeces, casoMaximo][s % 4], azar(s + 7)); },
+      voz: 'Escribe cada operación como una resta, y cada bisectriz como una mitad.',
+      generar(s) { return conCuatro([casoBisectriz, casoCadena, casoVeces, casoMaximo][s % 4], azar(s + 7)); },
     },
   };
 
@@ -1688,9 +1758,11 @@
     return {
       fig: { alt: o.alt || 'Dos rectas cortadas por una secante.', vista: { x: [Math.min(...xs) - 0.7, Math.max(...xs) + 0.7], y: [Math.min(...ys) - (giro ? 2.1 : 1.6), Math.max(...ys) + (giro ? 2.1 : 1.6)] }, alto: 260,
         puntos: pts, segmentos: [{ de: 'Pi', a: 'Pd', recta: true, paralela: o.marcarParalelas === false || abre ? 0 : 1 }, { de: 'Qi', a: 'Qd', recta: true, paralela: o.marcarParalelas === false || abre ? 0 : 1 }, { de: 'Pb', a: 'Qu', recta: true }],
-        angulos: marcas.map(m => { const [l1, l2] = LADOS[m.cuad]; return Object.assign({ en: m.cruce, de: m.cruce + l1, a: m.cruce + l2, texto: m.texto, color: m.color, mide: m.mide, radio: 22, holgura: 6 }, m.sector ? { sector: m.sector.map(x => x + giro) } : {}); }) },
-      // L₁ y L₂ van en la punta de su recta más lejana de su cruce con la secante (ahí no hay ángulos ni la secante).
-      ls: [{ p: rot([P[0] < 0 ? R - 0.75 : -R + 0.35, 0.6]), k: 2 }, (() => { const x = Q[0] < 0 ? R - 0.75 : -R + 0.35; return { p: rot([x, h + (x - Q[0]) * Math.tan(U.rad(abre)) + 0.6]), k: 1 }; })()],
+        angulos: marcas.map(m => { const [l1, l2] = LADOS[m.cuad]; return Object.assign({ en: m.cruce, de: m.cruce + l1, a: m.cruce + l2, texto: m.texto, color: m.color, mide: m.mide, radio: m.radio || 22, holgura: 6 }, m.sector ? { sector: m.sector.map(x => x + giro) } : {}, m.centro ? { centro: true } : {}); }) },
+      // L₁ y L₂ van en la punta de su recta más lejana de su cruce con la secante (ahí no hay ángulos ni la secante), y
+      // afuera de la franja entre las dos: L₁ encima de la de arriba, L₂ debajo de la de abajo (auditoría, 17 nov: L₂
+      // encima de su recta quedaba pegado a un ángulo del cruce de arriba).
+      ls: [{ p: rot([P[0] < 0 ? R - 0.75 : -R + 0.35, -0.95]), k: 2 }, (() => { const x = Q[0] < 0 ? R - 0.75 : -R + 0.35; return { p: rot([x, h + (x - Q[0]) * Math.tan(U.rad(abre)) + 0.6]), k: 1 }; })()],
     };
   }
   const medidaEn = (th, cuad) => (IGUAL_TH(cuad) ? th : 180 - th);
@@ -1721,8 +1793,10 @@
   ej5(2, 'Con una ecuación', 70, [mk('P', 'ad', 70, '3x + 10°', 'h'), mk('Q', 'bi', 70, '5x − 30°', 'h')],
     ['', L1, ' ∥ ', L2, '. Los ángulos 3x + 10° y 5x − 30° de la figura son alternos internos. ¿Cuánto vale x y cuánto mide cada ángulo?'], [D_IGUALES],
     [{ texto: 'Alternos internos: iguales. Igualo y junto las x.', ecuacion: [junto('3x + 10° = 5x − 30°'), '   →   ', junto('40° = 2x'), '   →   ', junto(['x = ', dF('20°')])] },
-      { texto: 'Cada ángulo:', ecuacion: junto('3 · 20° + 10° = 70°   ·   5 · 20° − 30° = 70°') }], ['x = ', dF('20°'), '; cada ángulo, 70°']);
-  ej5(2, 'Suman 180°', 60, [mk('P', 'ai', 60, '2x + 20°', 'h'), mk('Q', 'bi', 60, '3x + 10°', 'h')],
+      { texto: 'Cada ángulo:', ecuacion: [junto('3 · 20° + 10° = 70°'), ' y ', junto('5 · 20° − 30° = 70°')] }], ['x = ', dF('20°'), '; cada ángulo, 70°']);
+  // Dibujado con θ = 100°: con x = 30°, 2x + 20° = 80° (P, arriba a la izquierda) y 3x + 10° = 100° (Q, abajo a la
+  // izquierda). Con θ = 60° el rótulo que vale 80° caía en un obtuso (auditoría, 17 nov).
+  ej5(2, 'Suman 180°', 100, [mk('P', 'ai', 100, '2x + 20°', 'h'), mk('Q', 'bi', 100, '3x + 10°', 'h')],
     ['', L1, ' ∥ ', L2, '. Los ángulos 2x + 20° y 3x + 10° son conjugados internos. ¿Cuánto vale x?'], [D_SUMAN],
     [{ texto: 'Conjugados internos: suman 180°.', ecuacion: [junto('2x + 20° + 3x + 10° = 180°'), '   →   ', junto('5x = 150°'), '   →   ', junto(['x = ', dF('30°')])] },
       { texto: 'Compruebo: 80° + 100° = 180°.' }], ['x = ', dF('30°')]);
@@ -1753,7 +1827,7 @@
     [{ texto: 'Conjugados internos: suman 180°.', ecuacion: [junto('2k + 3k = 180°'), '   →   ', junto('k = 36°')] },
       { texto: 'Cada uno:', ecuacion: [junto(['2 · 36° = ', dF('72°')]), SEP, junto(['3 · 36° = ', dF('108°')])] }], [dF('72°'), ' y ', dF('108°')]);
   ej5(3, 'Los cuatro agudos', 55, ['ad', 'bi'].flatMap(c => ['P', 'Q'].map(k => mk(k, c, 55, 'θ', 'h'))).concat([mk('Q', 'ai', 55, '?')]),
-    ['', L1, ' ∥ ', L2, '. Los cuatro ángulos agudos de la figura suman 220°. ¿Cuánto mide cada ángulo obtuso?'], [D_IGUALES, D_CRUCE],
+    ['', L1, ' ∥ ', L2, '. Los cuatro ángulos agudos de la figura, marcados θ, suman 220°. ¿Cuánto mide cada ángulo obtuso?'], [D_IGUALES, D_CRUCE],
     [{ texto: 'Los cuatro agudos son iguales entre sí: miden θ.', ecuacion: [junto('4θ = 220°'), '   →   ', junto('θ = 55°')] },
       { texto: 'Cada obtuso es vecino de un agudo en su cruce:', ecuacion: junto(['180° − 55° = ', dF('125°')]) }], ['Cada obtuso mide ', dF('125°')]);
   {
@@ -1761,7 +1835,7 @@
     const th = 64, h = 3.6, t = Math.tan(U.rad(th)), P = [-h / 2 / t, 0], Q = [h / 2 / t, h];
     const bP = U.polar(P, 1, th / 2), bQ = U.polar(Q, 1, 180 + th + (180 - th) / 2);
     const K = U.corte(P, bP, Q, bQ);
-    const z = paralelasFig(th, [Object.assign(mk('P', 'ad', th, '64°', 'h'), { sector: [0, th / 2] })]);
+    const z = paralelasFig(th, [Object.assign(mk('P', 'ad', th, '64°', 'h'), { centro: true, radio: 30 })]);
     z.fig.puntos.push({ id: 'K', x: K[0], y: K[1], rotulo: 'K', lado: 0 });
     z.fig.segmentos.push({ de: 'P', a: 'K', discontinua: true }, { de: 'Q', a: 'K', discontinua: true });
     z.fig.angulos.push({ en: 'K', de: 'P', a: 'Q', texto: '?', mide: 90, radio: 14, holgura: 6 });
@@ -1873,7 +1947,10 @@
           pieza: GO, dibujo: esc({ objeto: 'rieles', theta: 60, letras: true }) },
         { titulo: 'Opuestos por el vértice', texto: 'En un cruce, dos ángulos vecinos forman una recta: suman 180°. Los que quedan frente a frente son opuestos por el vértice: los dos son suplemento del mismo vecino, así que miden igual.',
           pieza: GO, dibujo: esc({ objeto: 'rieles', theta: 60, letras: true, angulos: [{ cruce: 'P', cuad: 'ad', texto: '60°', color: 'h' }, { cruce: 'P', cuad: 'bi', texto: '60°', color: 'h' }, { cruce: 'P', cuad: 'ai', texto: '120°', color: 'i' }, { cruce: 'P', cuad: 'bd', texto: '120°', color: 'i' }] }) },
-        { titulo: 'Los nombres de cada par', texto: 'Correspondientes: el mismo lugar en cada cruce. Alternos internos: entre los rieles, a distinto lado de la calle. Conjugados internos: entre los rieles, del mismo lado. Afuera de los rieles están los alternos externos y los conjugados externos.' },
+        // Con dibujo (auditoría, 17 nov: sin él, «alternos internos» no se ubicaba en ninguna figura antes de resolver):
+        // dos correspondientes con c y dos alternos internos con a.
+        { titulo: 'Los nombres de cada par', texto: 'Correspondientes (c en el dibujo): el mismo lugar en cada cruce. Alternos internos (a): entre los rieles, a distinto lado de la calle. Conjugados internos: entre los rieles, del mismo lado. Afuera están los alternos y los conjugados externos.',
+          pieza: GO, dibujo: esc({ objeto: 'rieles', theta: 60, letras: true, angulos: [{ cruce: 'P', cuad: 'ad', texto: 'c', color: 'h' }, { cruce: 'Q', cuad: 'ad', texto: 'c', color: 'h' }, { cruce: 'P', cuad: 'ai', texto: 'a', color: 'i' }, { cruce: 'Q', cuad: 'bd', texto: 'a', color: 'i' }] }) },
       ],
     },
     ejemplos: EJ5,
@@ -1926,7 +2003,7 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'En P, la calle forma 60° con el riel de abajo.', ecuacion: junto(['θ = ', dH('60°')]) },
         { estado: { corte: 1 }, texto: 'Correspondientes: en Q, la calle cruza con la misma inclinación.', ecuacion: junto(['correspondientes: ', dH('60°'), ' = ', dH('60°')]) },
-        { estado: { corte: 2 }, texto: 'En Q, el opuesto por el vértice también mide 60°.', ecuacion: junto(['alternos internos: ', dH('60°'), ' = ', dH('60°')]) },
+        { estado: { corte: 2 }, texto: 'Su opuesto en Q mide 60°: es alterno interno con el de P.', ecuacion: junto(['alternos internos: ', dH('60°'), ' = ', dH('60°')]) },
         { estado: { corte: 3 }, texto: 'Los vecinos de un cruce suman 180°: así salen los conjugados.', ecuacion: junto(['conjugados internos: ', dH('60°'), ' + ', dI('120°'), ' = 180°']) },
         { estado: { corte: 4 }, texto: 'Afuera pasa lo mismo: los ocho tienen solo dos medidas.', ecuacion: junto([dH('60°'), ' y ', dI('120°')]) },
       ],
@@ -1986,19 +2063,26 @@
   const D_QUIEBRE = 'Por V se puede trazar una paralela a las dos rectas.';
   const D_ALT = 'Entre paralelas, los alternos internos son iguales.';
   const quiebreFig = (a, b, A, o = {}) => esc(Object.assign({ objeto: 'pasaje', a, b, examen: true, angulos: A }, o));
+  // En los resueltos, la paralela por V que la solución dice trazar se ve trazada (auditoría, 17 nov; molde §3: lo que el
+  // resuelto dice que hace, se ve hecho). No delata nada: el dato «Por V se puede trazar una paralela» ya la nombra.
+  const quiebreEj = (a, b, A, o = {}) => quiebreFig(a, b, A, Object.assign({ aux: 0 }, o));
   // El serrucho: P en L₁, V₁ (abre a la izquierda), V₂ (abre a la derecha), Q en L₂. a, m, b: los ángulos de cada tramo
   // con la horizontal; x = a + m en V₁ e y = m + b en V₂ (cada quiebre, con su paralela auxiliar).
-  function serruchoFig(a, m, b, textos) {
+  // aux: las paralelas punteadas por M y por N (las que la solución dice trazar); los rótulos de los quiebres van sobre su
+  // bisectriz y la paralela se corta debajo.
+  function serruchoFig(a, m, b, textos, aux = false) {
     const P = [0, 3.6], V1 = [P[0] + 1.6 / Math.tan(U.rad(a)), 2.0], V2 = [V1[0] - 1.0 / Math.tan(U.rad(m)), 1.0], Q = [V2[0] + 1.0 / Math.tan(U.rad(b)), 0];
     const xs = [P[0], V1[0], V2[0], Q[0]], cx = (Math.min(...xs) + Math.max(...xs)) / 2, sh = p => [p[0] - cx, p[1]];
     const [p, v1, v2, q] = [P, V1, V2, Q].map(sh);
-    const puntos = [{ id: 'P', x: p[0], y: p[1], rotulo: 'P', lado: 120 }, { id: 'V1', x: v1[0], y: v1[1], rotulo: 'M', lado: 0 }, { id: 'V2', x: v2[0], y: v2[1], rotulo: 'N', lado: 180 }, { id: 'Q', x: q[0], y: q[1], rotulo: 'Q', lado: -60 },
-      { id: 'Pd', x: p[0] + 1, y: 3.6, sinPunto: true }, { id: 'Qi', x: q[0] - 1, y: 0, sinPunto: true }, { id: 'Ti', x: -3.2, y: 3.6, sinPunto: true }, { id: 'Td', x: 3.2, y: 3.6, sinPunto: true }, { id: 'Bi', x: -3.2, y: 0, sinPunto: true }, { id: 'Bd', x: 3.2, y: 0, sinPunto: true }];
+    const puntos = [{ id: 'P', x: p[0], y: p[1], rotulo: 'P', lado: 120 }, { id: 'V1', x: v1[0], y: v1[1], rotulo: 'M', lado: aux ? 62 : 0 }, { id: 'V2', x: v2[0], y: v2[1], rotulo: 'N', lado: aux ? 118 : 180 }, { id: 'Q', x: q[0], y: q[1], rotulo: 'Q', lado: -60 },
+      { id: 'Pd', x: p[0] + 1, y: 3.6, sinPunto: true }, { id: 'Qi', x: q[0] - 1, y: 0, sinPunto: true }, { id: 'Ti', x: -3.2, y: 3.6, sinPunto: true }, { id: 'Td', x: 3.2, y: 3.6, sinPunto: true }, { id: 'Bi', x: -3.2, y: 0, sinPunto: true }, { id: 'Bd', x: 3.2, y: 0, sinPunto: true },
+      { id: 'm1', x: v1[0] - 1, y: v1[1], sinPunto: true }, { id: 'm2', x: v1[0] + 1, y: v1[1], sinPunto: true }, { id: 'n1', x: v2[0] - 1, y: v2[1], sinPunto: true }, { id: 'n2', x: v2[0] + 1, y: v2[1], sinPunto: true }];
+    const auxs = aux ? [{ de: 'm1', a: 'm2', recta: true, discontinua: true, grosor: 'fino' }, { de: 'n1', a: 'n2', recta: true, discontinua: true, grosor: 'fino' }] : [];
     return { pieza: GO, estado: {}, datos: { objeto: 'angulos', ls: [{ p: [-3.1, 3.9], k: 1 }, { p: [-3.1, 0.3], k: 2 }], figura: {
       alt: 'Una línea quebrada P–M–N–Q entre dos paralelas: dobla en M y en N.', vista: { x: [-3.3, 3.3], y: [-0.8, 4.4] }, alto: 250, puntos,
-      segmentos: [{ de: 'Ti', a: 'Td', recta: true, paralela: 1 }, { de: 'Bi', a: 'Bd', recta: true, paralela: 1 }, { de: 'P', a: 'V1', grosor: 'variable' }, { de: 'V1', a: 'V2', grosor: 'variable' }, { de: 'V2', a: 'Q', grosor: 'variable' }],
-      angulos: [{ en: 'P', de: 'Pd', a: 'V1', texto: textos.a, color: textos.ca, mide: a, radio: 22, holgura: 6 }, { en: 'V1', de: 'P', a: 'V2', texto: textos.x, color: textos.cx, mide: a + m, radio: 22, holgura: 6 },
-        { en: 'V2', de: 'V1', a: 'Q', texto: textos.y, color: textos.cy, mide: m + b, radio: 22, holgura: 6 }, { en: 'Q', de: 'Qi', a: 'V2', texto: textos.b, color: textos.cb, mide: b, radio: 22, holgura: 6 }] } } };
+      segmentos: [{ de: 'Ti', a: 'Td', recta: true, paralela: 1 }, { de: 'Bi', a: 'Bd', recta: true, paralela: 1 }, ...auxs, { de: 'P', a: 'V1', grosor: 'variable' }, { de: 'V1', a: 'V2', grosor: 'variable' }, { de: 'V2', a: 'Q', grosor: 'variable' }],
+      angulos: [{ en: 'P', de: 'Pd', a: 'V1', texto: textos.a, color: textos.ca, mide: a, radio: 22, holgura: 6 }, { en: 'V1', de: 'P', a: 'V2', texto: textos.x, color: textos.cx, mide: a + m, radio: 22, holgura: 6, centro: aux },
+        { en: 'V2', de: 'V1', a: 'Q', texto: textos.y, color: textos.cy, mide: m + b, radio: 22, holgura: 6, centro: aux }, { en: 'Q', de: 'Qi', a: 'V2', texto: textos.b, color: textos.cb, mide: b, radio: 22, holgura: 6 }] } } };
   }
 
   // Ejemplos de «El quiebre entre paralelas». Cuentas rehechas aparte (cuentas.js): 35 + 45 = 80; 100 − 60 = 40; 25 + 25
@@ -2008,52 +2092,52 @@
   const EJ6 = [];
   const ej6 = (nivel, titulo, figura, enunciado, datos, solucion, respuesta) => EJ6.push({ nivel, titulo, figura, enunciado, datos, solucion, respuesta });
   const L12 = ['Las rectas ', L1, ' y ', L2, ' son paralelas. '];
-  ej6(1, 'El quiebre con a y b', quiebreFig(35, 45, { a: { texto: '35°', color: 'h' }, b: { texto: '45°', color: 'h' }, x: { texto: 'x' } }),
+  ej6(1, 'El quiebre con a y b', quiebreEj(35, 45, { a: { texto: '35°', color: 'h' }, b: { texto: '45°', color: 'h' }, x: { texto: 'x' } }),
     [...L12, 'La línea PVQ dobla en V; sus tramos forman 35° y 45° con las rectas. ¿Cuánto mide el quiebre x?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'La paralela por V parte x en dos alternos internos: uno copia 35° y el otro, 45°.', ecuacion: junto(['x = 35° + 45° = ', dF('80°')]) }], ['x = ', dF('80°')]);
-  ej6(1, 'Lo que falta del quiebre', quiebreFig(60, 40, { a: { texto: '60°', color: 'h' }, b: { texto: '?' }, x: { texto: '100°', color: 'h' } }),
+  ej6(1, 'Lo que falta del quiebre', quiebreEj(60, 40, { a: { texto: '60°', color: 'h' }, b: { texto: '?' }, x: { texto: '100°', color: 'h' } }),
     [...L12, 'El quiebre en V mide 100° y el tramo de arriba forma 60° con ', L1, '. ¿Qué ángulo forma el tramo de abajo con ', L2, '?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'El quiebre es la suma de los dos: al total le quito 60°.', ecuacion: junto(['100° − 60° = ', dF('40°')]) }], [dF('40°')]);
-  ej6(1, 'Un quiebre simétrico', quiebreFig(25, 25, { a: { texto: '25°', color: 'h' }, b: { texto: '25°', color: 'h' }, x: { texto: 'x' } }),
+  ej6(1, 'Un quiebre simétrico', quiebreEj(25, 25, { a: { texto: '25°', color: 'h' }, b: { texto: '25°', color: 'h' }, x: { texto: 'x' } }),
     [...L12, 'Los dos tramos de PVQ forman 25° con su recta. ¿Cuánto mide x y qué clase de ángulo es?'], [D_QUIEBRE, D_ALT, 'Agudo: menos de 90°.'],
-    [{ texto: 'x junta las dos copias:', ecuacion: junto(['x = 25° + 25° = ', dF('50°')]) }, { texto: 'Menos de 90°: agudo. Aquí la paralela por V sí es bisectriz, porque a = b.' }], ['x = ', dF('50°'), ', agudo']);
-  ej6(1, 'Un quiebre recto', quiebreFig(55, 35, { a: { texto: '?' }, b: { texto: '35°', color: 'h' }, x: { texto: '90°', color: 'h' } }),
+    [{ texto: 'x junta las dos copias:', ecuacion: junto(['x = 25° + 25° = ', dF('50°')]) }, { texto: 'Menos de 90°: agudo. Aquí la paralela por V sí es bisectriz, porque los dos tramos forman 25°.' }], ['x = ', dF('50°'), ', agudo']);
+  ej6(1, 'Un quiebre recto', quiebreEj(55, 35, { a: { texto: '?' }, b: { texto: '35°', color: 'h' }, x: { texto: '90°', color: 'h' } }),
     [...L12, 'La línea PVQ dobla en ángulo recto en V. El tramo de abajo forma 35° con ', L2, '. ¿Qué ángulo forma el de arriba con ', L1, '?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'x = 90° es la suma de los dos ángulos de los tramos:', ecuacion: junto(['90° − 35° = ', dF('55°')]) }], [dF('55°')]);
-  ej6(1, 'Pasaje entre avenidas', esc({ objeto: 'pasaje', a: 20, b: 65, angulos: { a: { texto: '20°', color: 'h' }, b: { texto: '65°', color: 'h' }, x: { texto: 'x' } } }),
+  ej6(1, 'Pasaje entre avenidas', esc({ objeto: 'pasaje', a: 20, b: 65, aux: 0, angulos: { a: { texto: '20°', color: 'h' }, b: { texto: '65°', color: 'h' }, x: { texto: 'x' } } }),
     'Un pasaje une dos avenidas paralelas y dobla en V. Sale de una formando 20° con ella y llega a la otra formando 65°. ¿Cuánto mide el quiebre?', [D_QUIEBRE, D_ALT],
     [{ texto: 'El quiebre suma los dos ángulos de los tramos:', ecuacion: junto(['x = 20° + 65° = ', dF('85°')]) }], ['x = ', dF('85°')]);
-  ej6(2, 'Con una letra', quiebreFig(30, 45, { a: { texto: '2y', color: 'h' }, b: { texto: '3y', color: 'h' }, x: { texto: '75°', color: 'h' } }),
+  ej6(2, 'Con una letra', quiebreEj(30, 45, { a: { texto: '2y', color: 'h' }, b: { texto: '3y', color: 'h' }, x: { texto: '75°', color: 'h' } }),
     [...L12, 'Los tramos de PVQ forman 2y y 3y con las rectas, y el quiebre mide 75°. ¿Cuánto vale y?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'El quiebre es la suma:', ecuacion: [junto('2y + 3y = 75°'), '   →   ', junto('5y = 75°'), '   →   ', junto(['y = ', dF('15°')])] }], ['y = ', dF('15°')]);
-  ej6(2, 'El ángulo de afuera', quiebreFig(35, 40, { afP: { texto: '145°', color: 'h' }, b: { texto: '40°', color: 'h' }, x: { texto: 'x' } }),
+  ej6(2, 'El ángulo de afuera', quiebreEj(35, 40, { afP: { texto: '145°', color: 'h' }, b: { texto: '40°', color: 'h' }, x: { texto: 'x' } }),
     [...L12, 'Arriba, el tramo PV forma 145° con ', L1, ', medido del otro lado. Abajo, VQ forma 40° con ', L2, '. ¿Cuánto mide x?'], [D_QUIEBRE, D_ALT, 'En P, los dos ángulos vecinos suman 180°.'],
     [{ texto: 'Primero el ángulo del lado de V:', ecuacion: junto('180° − 145° = 35°') }, { texto: 'Ahora sí, la suma:', ecuacion: junto(['x = 35° + 40° = ', dF('75°')]) }], ['x = ', dF('75°')]);
-  ej6(2, 'El triple de b', quiebreFig(40, 20, { a: { texto: '40°', color: 'h' }, b: { texto: 'b', color: 'h' }, x: { texto: '3b', color: 'h' } }),
+  ej6(2, 'El triple de b', quiebreEj(40, 20, { a: { texto: '40°', color: 'h' }, b: { texto: 'b', color: 'h' }, x: { texto: '3b', color: 'h' } }),
     [...L12, 'El tramo de arriba forma 40° con ', L1, ', el de abajo forma b con ', L2, ', y el quiebre mide 3b. ¿Cuánto mide el quiebre?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'El quiebre es la suma de 40° y b:', ecuacion: [junto('3b = 40° + b'), '   →   ', junto('2b = 40°'), '   →   ', junto('b = 20°')] }, { texto: 'Piden el quiebre:', ecuacion: junto(['3 · 20° = ', dF('60°')]) }], ['El quiebre mide ', dF('60°')]);
-  ej6(2, 'En razón 2 : 3', quiebreFig(40, 60, { a: { texto: '2k', color: 'h' }, b: { texto: '3k', color: 'h' }, x: { texto: '100°', color: 'h' } }),
+  ej6(2, 'En razón 2 : 3', quiebreEj(40, 60, { a: { texto: '2k', color: 'h' }, b: { texto: '3k', color: 'h' }, x: { texto: '100°', color: 'h' } }),
     [...L12, 'El quiebre mide 100°, y los ángulos de los tramos con las rectas están en razón 2 : 3. ¿Cuánto mide cada uno?'], [D_QUIEBRE, D_ALT, 'Razón 2 : 3: miden 2k y 3k.'],
     [{ texto: 'Los dos suman el quiebre:', ecuacion: [junto('2k + 3k = 100°'), '   →   ', junto('k = 20°')] }, { texto: 'Entonces:', ecuacion: [junto(['2 · 20° = ', dF('40°')]), SEP, junto(['3 · 20° = ', dF('60°')])] }], [dF('40°'), ' y ', dF('60°')]);
-  ej6(2, 'Los dos de afuera', quiebreFig(50, 30, { afP: { texto: '130°', color: 'h' }, afQ: { texto: '150°', color: 'h' }, x: { texto: 'x' } }),
+  ej6(2, 'Los dos de afuera', quiebreEj(50, 30, { afP: { texto: '130°', color: 'h' }, afQ: { texto: '150°', color: 'h' }, x: { texto: 'x' } }),
     [...L12, 'Los tramos de PVQ forman 130° con ', L1, ' y 150° con ', L2, ', medidos del lado contrario a V. ¿Cuánto mide x?'], [D_QUIEBRE, D_ALT, 'En P y en Q, los dos ángulos vecinos suman 180°.'],
     [{ texto: 'Paso cada uno al lado de V:', ecuacion: [junto('180° − 130° = 50°'), SEP, junto('180° − 150° = 30°')] }, { texto: 'Sumo:', ecuacion: junto(['x = 50° + 30° = ', dF('80°')]) },
       { texto: 'Sumar 130° + 150° daría 280°: el error típico de no pasar al lado de V.' }], ['x = ', dF('80°')]);
-  ej6(3, 'El serrucho', serruchoFig(30, 35, 40, { a: '30°', ca: 'h', x: '?', y: '75°', cy: 'h', b: '40°', cb: 'h' }),
+  ej6(3, 'El serrucho', serruchoFig(30, 35, 40, { a: '30°', ca: 'h', x: '?', y: '75°', cy: 'h', b: '40°', cb: 'h' }, true),
     [...L12, 'La línea P–M–N–Q dobla dos veces. En P forma 30° con ', L1, ', en Q forma 40° con ', L2, ' y en N dobla 75°. ¿Cuánto mide el quiebre en M?'],
     ['Por M y por N se pueden trazar paralelas a las rectas.', 'Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.'],
     [{ texto: 'Llamo m al ángulo del tramo MN con la horizontal. El quiebre en N:', ecuacion: [junto('75° = m + 40°'), '   →   ', junto('m = 35°')] },
       { texto: 'El quiebre en M:', ecuacion: junto(['30° + 35° = ', dF('65°')]) },
       { texto: 'Los que abren a un lado suman lo que los del otro: 30° + 75° = 65° + 40°.' }], ['El quiebre en M mide ', dF('65°')]);
-  ej6(3, 'Serrucho con letras', serruchoFig(50, 20, 50, { a: '2y + 10°', ca: 'h', x: '70°', cx: 'h', y: 'y + 50°', cy: 'h', b: '50°', cb: 'h' }),
+  ej6(3, 'Serrucho con letras', serruchoFig(50, 20, 50, { a: '2y + 10°', ca: 'h', x: '70°', cx: 'h', y: 'y + 50°', cy: 'h', b: '50°', cb: 'h' }, true),
     [...L12, 'La línea P–M–N–Q dobla dos veces. En P forma 2y + 10° con ', L1, ', en Q forma 50°, en M dobla 70° y en N, y + 50°. ¿Cuánto vale y?'],
     ['Por M y por N se pueden trazar paralelas a las rectas.', 'Cada quiebre mide la suma de los ángulos de sus tramos con una paralela.'],
     [{ texto: 'Con las paralelas por M y N, lo que abre a la derecha suma lo que abre a la izquierda:', ecuacion: junto('(2y + 10°) + (y + 50°) = 70° + 50°') },
       { texto: 'Despejo:', ecuacion: [junto('3y + 60° = 120°'), '   →   ', junto(['y = ', dF('20°')])] }], ['y = ', dF('20°')]);
-  ej6(3, 'El quiebre es el cuádruple', quiebreFig(60, 20, { a: { texto: '60°', color: 'h' }, b: { texto: '?' }, x: { texto: '4b', color: 'h' } }),
+  ej6(3, 'El quiebre es el cuádruple', quiebreEj(60, 20, { a: { texto: '60°', color: 'h' }, b: { texto: '?' }, x: { texto: '4b', color: 'h' } }),
     [...L12, 'El tramo de arriba forma 60° con ', L1, ' y el quiebre mide el cuádruple del ángulo b del tramo de abajo. ¿Cuánto mide b?'], [D_QUIEBRE, D_ALT],
     [{ texto: 'El quiebre suma 60° y b:', ecuacion: [junto('4b = 60° + b'), '   →   ', junto('3b = 60°'), '   →   ', junto(['b = ', dF('20°')])] }, { texto: 'Compruebo: el quiebre mide 80° = 60° + 20°, y 80° = 4 · 20°.' }], ['b = ', dF('20°')]);
-  ej6(3, 'La paralela como bisectriz', quiebreFig(42, 42, { a: { texto: '?' }, b: { texto: '?' }, x: { texto: '84°', color: 'h' } }, { aux: 0 }),
+  ej6(3, 'La paralela como bisectriz', quiebreEj(42, 42, { a: { texto: 'a' }, b: { texto: 'b' }, x: { texto: '84°', color: 'h' } }),
     [...L12, 'El quiebre en V mide 84°, y la paralela a las rectas trazada por V es su bisectriz. ¿Cuánto miden a y b?'], [D_ALT, 'La bisectriz parte un ángulo en dos ángulos iguales.'],
     [{ texto: 'La paralela por V parte el quiebre en dos partes iguales:', ecuacion: junto('84° ÷ 2 = 42°') },
       { texto: 'Cada parte es alterna interna con el ángulo de su tramo:', ecuacion: junto(['a = b = ', dF('42°')]) }], ['a = b = ', dF('42°')]);
@@ -2064,12 +2148,15 @@
     const pt2 = (id, p, rot, lado) => ({ id, x: sh(p)[0], y: sh(p)[1], rotulo: rot, lado });
     return { pieza: GO, estado: {}, datos: { objeto: 'angulos', ls: [{ p: [-3.1, 3.7], k: 1 }, { p: [-3.1, 0.3], k: 2 }], figura: {
       alt: 'Una línea quebrada P–M–N–R–Q entre dos paralelas: dobla en M, en N y en R.', vista: { x: [-3.3, 3.3], y: [-0.8, 4.2] }, alto: 250,
-      puntos: [pt2('P', P, 'P', 120), pt2('M', M1, 'M', 0), pt2('N', N1, 'N', 180), pt2('R', R1, 'R', 0), pt2('Q', Q, 'Q', -120),
+      puntos: [pt2('P', P, 'P', 120), pt2('M', M1, 'M', 62), pt2('N', N1, 'N', 242), pt2('R', R1, 'R', 62), pt2('Q', Q, 'Q', -120),
         { id: 'Pd', x: sh(P)[0] + 1, y: 3.4, sinPunto: true }, { id: 'Qd', x: sh(Q)[0] + 1, y: 0, sinPunto: true },
-        { id: 'Ti', x: -3.2, y: 3.4, sinPunto: true }, { id: 'Td', x: 3.2, y: 3.4, sinPunto: true }, { id: 'Bi', x: -3.2, y: 0, sinPunto: true }, { id: 'Bd', x: 3.2, y: 0, sinPunto: true }],
-      segmentos: [{ de: 'Ti', a: 'Td', recta: true, paralela: 1 }, { de: 'Bi', a: 'Bd', recta: true, paralela: 1 }, { de: 'P', a: 'M', grosor: 'variable' }, { de: 'M', a: 'N', grosor: 'variable' }, { de: 'N', a: 'R', grosor: 'variable' }, { de: 'R', a: 'Q', grosor: 'variable' }],
-      angulos: [{ en: 'P', de: 'Pd', a: 'M', texto: '25°', color: 'h', mide: a, radio: 22, holgura: 6 }, { en: 'M', de: 'P', a: 'N', texto: '65°', color: 'h', mide: a + m1, radio: 22, holgura: 6 },
-        { en: 'N', de: 'M', a: 'R', texto: 'x', mide: m1 + m2, radio: 22, holgura: 6 }, { en: 'R', de: 'N', a: 'Q', texto: '65°', color: 'h', mide: m2 + b, radio: 22, holgura: 6 },
+        { id: 'Ti', x: -3.2, y: 3.4, sinPunto: true }, { id: 'Td', x: 3.2, y: 3.4, sinPunto: true }, { id: 'Bi', x: -3.2, y: 0, sinPunto: true }, { id: 'Bd', x: 3.2, y: 0, sinPunto: true },
+        ...[['M', M1], ['N', N1], ['R', R1]].flatMap(([k, q]) => [{ id: `${k}1`, x: sh(q)[0] - 1, y: q[1], sinPunto: true }, { id: `${k}2`, x: sh(q)[0] + 1, y: q[1], sinPunto: true }])],
+      segmentos: [{ de: 'Ti', a: 'Td', recta: true, paralela: 1 }, { de: 'Bi', a: 'Bd', recta: true, paralela: 1 },
+        ...['M', 'N', 'R'].map(k => ({ de: `${k}1`, a: `${k}2`, recta: true, discontinua: true, grosor: 'fino' })),
+        { de: 'P', a: 'M', grosor: 'variable' }, { de: 'M', a: 'N', grosor: 'variable' }, { de: 'N', a: 'R', grosor: 'variable' }, { de: 'R', a: 'Q', grosor: 'variable' }],
+      angulos: [{ en: 'P', de: 'Pd', a: 'M', texto: '25°', color: 'h', mide: a, radio: 22, holgura: 6 }, { en: 'M', de: 'P', a: 'N', texto: '65°', color: 'h', mide: a + m1, radio: 22, holgura: 6, centro: true },
+        { en: 'N', de: 'M', a: 'R', texto: 'x', mide: m1 + m2, radio: 22, holgura: 6, centro: true }, { en: 'R', de: 'N', a: 'Q', texto: '65°', color: 'h', mide: m2 + b, radio: 22, holgura: 6, centro: true },
         { en: 'Q', de: 'Qd', a: 'R', texto: '40°', color: 'h', mide: b, radio: 22, holgura: 6 }] } } };
   })(),
     [...L12, 'La línea P–M–N–R–Q dobla en M, N y R. Forma 25° con ', L1, ' y 40° con ', L2, '; M y R doblan 65° cada uno. ¿Cuánto mide x, en N?'],
@@ -2089,7 +2176,8 @@
         { id: 'mitad', valor: x / 2, error: 'GE-QB1', siFuera: 'Partir en mitades serviría si la paralela fuera bisectriz; x es la suma entera.' },
         { id: 'resta', valor: Math.abs(a - b), error: 'GE-QB3', siFuera: 'Comparar los dos tramos no basta: la paralela por V los junta, no los resta.' },
       ], gr),
-      solucion: { texto: 'La paralela por V parte x en a y b.', ecuacion: junto(`x = ${a}° + ${b}° = ${x}°`) },
+      solucion: { texto: 'La paralela por V parte x en a y b.', ecuacion: junto(`x = ${a}° + ${b}° = ${x}°`),
+        dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, a2: { texto: `${a}°`, color: 'h' }, b2: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }, { aux: 0 }) },
     };
   }
   // Tipo 1: un tramo es m veces el otro y se conoce el quiebre.
@@ -2104,7 +2192,8 @@
         { id: 'mitad', valor: x / 2, error: 'GE-QB1', siFuera: 'Partir el quiebre en mitades serviría si a y b midieran igual.' },
         { id: 'reparte', valor: x / m, error: 'GE-QB4', siFuera: `Repartir ${x}° va bien, pero entre ${m + 1} partes, no entre ${m}.` },
       ], gr),
-      solucion: { texto: `a + b = ${x}° y a = ${m}b: ${m + 1}b = ${x}°, b = ${b}°.`, ecuacion: junto(`a = ${m} · ${b}° = ${a}°`) },
+      solucion: { texto: `a + b = ${x}° y a = ${m}b: ${m + 1}b = ${x}°, b = ${b}°.`, ecuacion: junto(`a = ${m} · ${b}° = ${a}°`),
+        dibujo: quiebreFig(a, b, { a: { texto: '?' }, b: { texto: 'b', color: 'h' }, x: { texto: `${x}°`, color: 'h' } }, { aux: 0 }) },
     };
   }
   // Tipo 2: el ángulo de arriba, medido del otro lado.
@@ -2119,7 +2208,9 @@
         { id: 'supl', valor: 180 - x, error: 'GE17-a', siFuera: 'Restar de 180° vale para conjugados; con la paralela por V, cada par es alterno.' },
         { id: 'a', valor: a, error: 'GE-QB4', siFuera: `Pasar ${af}° al lado de V va bien: da ${a}°. Falta sumarle el de abajo.` },
       ], gr),
-      solucion: { texto: `Del lado de V, el tramo de arriba forma 180° − ${af}° = ${a}°.`, ecuacion: junto(`x = ${a}° + ${b}° = ${x}°`) },
+      solucion: { texto: `Del lado de V, el tramo de arriba forma 180° − ${af}° = ${a}°.`, ecuacion: junto(`x = ${a}° + ${b}° = ${x}°`),
+        // La solución, ya pasado al lado de V, con la paralela por V.
+        dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: `${b}°`, color: 'h' }, x: { texto: 'x' } }, { aux: 0 }) },
     };
   }
   // Tipo 3 (examen): el serrucho con dos quiebres; se pide el quiebre en M.
@@ -2134,7 +2225,8 @@
         { id: 'sin-medio', valor: a + b, error: 'GE-QB7', siFuera: `Con un solo quiebre sería ${a}° + ${b}°; aquí el tramo del medio también cuenta.` },
         { id: 'resta', valor: Math.abs(y - b), error: 'GE-QB4', siFuera: `${Math.abs(y - b)}° es el ángulo del tramo del medio; falta sumarle ${a}°.` },
       ], gr),
-      solucion: { texto: `En N: ${y}° = m + ${b}°, así que el tramo del medio forma ${m}°.`, ecuacion: junto(`x = ${a}° + ${m}° = ${x}°`) },
+      solucion: { texto: `En N: ${y}° = m + ${b}°, así que el tramo del medio forma ${m}°.`, ecuacion: junto(`x = ${a}° + ${m}° = ${x}°`),
+        dibujo: serruchoFig(a, m, b, { a: `${a}°`, ca: 'h', x: '?', y: `${y}°`, cy: 'h', b: `${b}°`, cb: 'h' }, true) },
     };
   }
 
@@ -2208,7 +2300,7 @@
       datos: { objeto: 'pasaje', a: 40, b: 30, aux: 1, angulos: { a: { texto: '40°', color: 'h' }, b: { texto: '30°', color: 'h' }, a2: { texto: '40°', color: 'h', desde: 2 }, b2: { texto: '30°', color: 'h', desde: 3 }, x: { texto: 'x = 70°', desde: 4 } } },
       voz: 'Sigue la paralela auxiliar: ella hace el trabajo.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Los tramos forman 40° y 30° con sus avenidas.', ecuacion: junto([dH('a'), ' = 40°   ·   ', dH('b'), ' = 30°']) },
+        { estado: { corte: 0 }, texto: 'Los tramos forman 40° y 30° con sus avenidas.', ecuacion: [junto([dH('a'), ' = 40°']), ' y ', junto([dH('b'), ' = 30°'])] },
         { estado: { corte: 1 }, texto: 'Por V trazamos una paralela a las dos avenidas.', ecuacion: junto(['tres paralelas']) },
         { estado: { corte: 2 }, texto: 'Con la avenida de arriba, PV forma alternos internos: copia a.', ecuacion: junto([dH('a'), ' = 40°']) },
         { estado: { corte: 3 }, texto: 'Con la de abajo, VQ forma alternos internos: copia b.', ecuacion: junto([dH('b'), ' = 30°']) },
@@ -2234,7 +2326,8 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden b, el ángulo del tramo de abajo con su recta.' },
             { tipo: 'datos', texto: `Las rectas son paralelas; arriba, a = ${a}°, y el quiebre completo mide ${x}°.` },
-            { tipo: 'regla', texto: 'Por V trazo una paralela: parte el quiebre en dos alternos internos, uno copia a y el otro copia b.', ecuacion: junto('x = a + b') },
+            { tipo: 'regla', texto: 'Por V trazo una paralela: parte el quiebre en dos alternos internos, uno copia a y el otro copia b.', ecuacion: junto('x = a + b'),
+              dibujo: quiebreFig(a, b, { a: { texto: `${a}°`, color: 'h' }, b: { texto: 'b' }, a2: { texto: `${a}°`, color: 'h' }, b2: { texto: 'b' }, x: { texto: `${x}°`, color: 'h' } }, { aux: 0 }) },
             { tipo: 'cuentas', texto: 'Como el quiebre es la suma, b es lo que queda al quitarle a.', ecuacion: junto(['b = ', `${x}° − ${a}° = `, dF(`${b}°`)]) },
             { tipo: 'sentido', texto: `Compruebo: ${a}° + ${b}° = ${x}°, el quiebre completo.` },
           ],
@@ -2315,7 +2408,7 @@
     arrastres: [{ id: 'punto-b', etiqueta: 'punto B', color: 'c-o',
       donde: v => enPantalla(tramosLibre(v.bx, v.by), [v.bx, v.by]),
       mover: (pt, v) => { const q = alPlano(tramosLibre(v.bx, v.by), pt); return { bx: q[0], by: q[1] }; } }],
-    lectura: v => { const s = camino(v); return [AB, ' + ', BC, ` ≈ ${f(s)} cm   ·   rodeo ${f(s - 10)} cm`]; },
+    lectura: v => { const s = camino(v); return [AB, ' + ', BC, ` ≈ ${f(s)} cm: un rodeo de ${f(s - 10)} cm sobre AC`]; },
     invitaciones: [
       { texto: 'Deja el rodeo en cero: que el camino por B mida igual que AC.',
         logrado: v => Math.abs(camino(v) - 10) < 1e-9,
@@ -2393,7 +2486,7 @@
       { termino: 'rayo', def: 'Parte de una recta que empieza en un punto y sigue sin fin hacia un solo lado.', ver: ['ángulo'],
         simple: 'Una línea derecha que sale de un punto y sigue sin fin.',
         ejemplos: ['Cada aguja del reloj, si la alargas sin fin desde el eje.', 'La luz de una linterna, que sale de ella y sigue.', 'OA en ∠AOB: empieza en O y pasa por A.'] },
-      { termino: 'ángulo', simbolo: '∠', medida: '°', def: 'Abertura entre dos rayos que salen del mismo punto. Se mide en grados.', ver: ['vértice', 'bisectriz'],
+      { termino: 'ángulo', simbolo: '∠', medida: '°', def: 'Abertura entre dos rayos que salen del mismo punto. Se mide en grados; m∠AOB es su medida.', ver: ['vértice', 'bisectriz'],
         simple: 'Cuánto se abren dos líneas que salen del mismo punto.',
         ejemplos: ['Las agujas del reloj a las 3:00 forman un ángulo de 90°.', '∠AOB: el vértice es O y los lados son OA y OB.', 'Lo que gira una puerta al abrirse, desde cerrada.'] },
       { termino: 'vértice', def: 'Punto donde se juntan los lados de un ángulo o de una figura.',

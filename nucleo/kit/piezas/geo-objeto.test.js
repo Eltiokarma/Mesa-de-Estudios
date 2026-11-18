@@ -276,8 +276,8 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
     if (idea.mira) idea.mira.pasos.forEach((ps, i) => toma(`${idea.id} mira ${i + 1}`, { datos: idea.mira.datos, estado: Object.assign({}, idea.mira.base || {}, ps.estado || {}) }, idea.mira.pieza || pz));
     for (const [k, ej] of (idea.ejemplos || []).entries()) if (ej.figura) toma(`${idea.id} ejemplo ${k + 1}`, ej.figura, ej.figura.pieza);
     for (let s = 0; s < 120; s++) {
-      if (idea.resuelve) { const c = idea.resuelve.generar(s); toma(`${idea.id} resuelve ${s}`, c.dibujo, idea.resuelve.pieza || pz); }
-      if (idea.ahoraTu) { const c = idea.ahoraTu.generar(s); toma(`${idea.id} ahora tú ${s}`, c.dibujo, idea.ahoraTu.pieza || pz); }
+      if (idea.resuelve) { const c = idea.resuelve.generar(s); toma(`${idea.id} resuelve ${s}`, c.dibujo, idea.resuelve.pieza || pz); c.pasos.forEach((x, k) => toma(`${idea.id} resuelve ${s} paso ${k + 1}`, x.dibujo, idea.resuelve.pieza || pz)); }
+      if (idea.ahoraTu) { const c = idea.ahoraTu.generar(s); toma(`${idea.id} ahora tú ${s}`, c.dibujo, idea.ahoraTu.pieza || pz); toma(`${idea.id} ahora tú ${s} solución`, c.solucion && c.solucion.dibujo, idea.ahoraTu.pieza || pz); }
     }
   }
   assert.ok(figs.length > 100, `${figs.length} figuras`);
@@ -286,4 +286,29 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
     else revisar(d, e, nombre, mal);
   }
   assert.deepEqual([...new Set(mal)].slice(0, 30), []);
+});
+
+// Auditoría de la teoría (17 nov): las rayitas no tachan un punto (M6), el rótulo de un ángulo entero va sobre su
+// bisectriz y la punteada se corta debajo (M4), y dos consecutivos del mismo color no comparten radio (M5).
+test('rayitas lejos de los puntos; rótulo «centro» sobre la bisectriz, con la punteada cortada; consecutivos con radios distintos', () => {
+  // Ejemplo 8 de la idea 2 tal como estaba: M en el 9, B en el 13 y C en el 18 (en el medio de MC, la rayita tachaba B).
+  const d = { objeto: 'recta', puntos: [pto('A', 0), pto('M', 9), pto('B', 13), pto('C', 18)],
+    tramos: [{ de: 'A', a: 'M', papel: 'igual', nivel: 0, marcas: 1 }, { de: 'M', a: 'C', papel: 'igual', nivel: 0, marcas: 1 }] };
+  for (const z of P.marcas(d)) assert.ok(z.holgura >= P.HOLGURA_MARCA, `${z.tramo.de}${z.tramo.a}: ${z.holgura}`);
+  const B = P.geometria(d).P.B[0], mc = P.marcas(d).find(z => z.tramo.de === 'M');
+  assert.ok(Math.abs(mc.x - B) >= 10 + mc.hw, 'la rayita de MC se corre lejos de B');
+  // ∠AOB = 76° con su bisectriz OD punteada: el rótulo va sobre OD y OD se corta debajo.
+  const pol = (g, r = 2.5) => ({ x: r * Math.cos(g * Math.PI / 180), y: r * Math.sin(g * Math.PI / 180) });
+  const fig = { vista: { x: [-0.8, 3.3], y: [-0.8, 3.3] }, puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'O', lado: 228 }, Object.assign({ id: 'A', rotulo: 'A', lado: 10, sinPunto: true }, pol(10)), Object.assign({ id: 'D', rotulo: 'D', lado: 48, sinPunto: true }, pol(48)), Object.assign({ id: 'B', rotulo: 'B', lado: 86, sinPunto: true }, pol(86))],
+    segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'D', discontinua: true }, { de: 'O', a: 'B' }],
+    angulos: [{ en: 'O', de: 'A', a: 'B', texto: '76°', color: 'h', mide: 76, radio: 46, centro: true }, { en: 'O', de: 'A', a: 'D', texto: '?', rayita: 1, radio: 26 }, { en: 'O', de: 'D', a: 'B', rayita: 1, radio: 26 }] };
+  const e = { objeto: 'angulos', figura: fig }, r = P.rotulos(e).rot.find(z => z.an.texto === '76°'), O = P.rotulos(e).vertice('O');
+  const t = Math.atan2(-(r.y - O[1]), r.x - O[0]) * 180 / Math.PI;
+  assert.ok(Math.abs(t - 48) < 2, `el rótulo de 76° va a ${t.toFixed(1)}°, no sobre la bisectriz (48°)`);
+  const mal = []; revisar(e, {}, 'bisectriz cortada', mal); assert.deepEqual(mal, []);
+  // Dos consecutivos carmín de radio 24: el segundo se aleja.
+  const c = { objeto: 'angulos', figura: { vista: { x: [-0.8, 3.3], y: [-0.8, 3.3] }, puntos: [{ id: 'O', x: 0, y: 0 }, Object.assign({ id: 'A', sinPunto: true }, pol(0)), Object.assign({ id: 'B', sinPunto: true }, pol(50)), Object.assign({ id: 'C', sinPunto: true }, pol(120))],
+    segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }, { de: 'O', a: 'C' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '50°', color: 'h', radio: 24 }, { en: 'O', de: 'B', a: 'C', texto: '70°', color: 'h', radio: 24 }] } };
+  const [a1, a2] = P.angulosListos(c);
+  assert.ok(Math.abs(a1.radio - a2.radio) >= 6, `radios ${a1.radio} y ${a2.radio}`);
 });

@@ -439,3 +439,38 @@ test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', ()
   for (const s of ['entrada-1', 'entrada-2', 'entrada-3', 'salida-1', 'salida-3', 'papel-1', 'papel-8', 'alumno-7']) gen.generar(s);
   for (const t of gen.TIPOS) for (let s = 0; s < 50; s++) assert.equal(gen.generar(`t${s}`, { tipo: t })._datos.tipo, t);
 });
+
+// ---- Correcciones de la auditoría de la teoría (17 nov): la prueba que habría detectado cada una ----
+test('M6: las rayitas de «miden igual» caben a 10 px o más de cada punto y de otro grupo (geo-objeto), 300 semillas por tipo', () => {
+  const mal = [];
+  for (const tipo of ['medio-entre', 'equidistante', 'dos-medios', 'afuera', 'mitad']) for (let s = 0; s < 300; s++) {
+    const p = gen.generar(`marcas-${s}`, { tipo });
+    if (!p.escena || p.escena.pieza !== 'geo-objeto') continue;
+    for (const z of GO.marcas(p.escena.datos)) if (z.holgura < GO.HOLGURA_MARCA) mal.push(`${tipo} ${s}: rayitas de ${z.tramo.de}${z.tramo.a} a ${z.holgura.toFixed(1)} px`);
+    assert.equal(gen.marcasCaben(p.escena.datos), GO.marcasCaben(p.escena.datos), `${tipo} ${s}: el generador y la pieza no coinciden`);
+  }
+  assert.deepEqual(mal.slice(0, 10), []);
+});
+
+test('M5: dos ángulos consecutivos dados (carmín) no tienen el mismo radio: se verían como un solo arco', () => {
+  const mal = [];
+  for (const tipo of ['clase', 'consec-x', 'vuelta', 'pisan-ang']) for (let s = 0; s < 200; s++) {
+    const p = gen.generar(`arcos-${s}`, { tipo }), fig = p.escena.datos, an = fig.angulos.filter(a => !a.rayita && !a.marcas);
+    for (let i = 0; i < an.length; i++) for (let j = i + 1; j < an.length; j++) {
+      const a = an[i], b = an[j];
+      if (a.en !== b.en || (a.color || '') !== (b.color || '') || ![a.de, a.a].some(x => x === b.de || x === b.a)) continue;
+      if (a.hueco || b.hueco) continue; // ángulos que se pisan (∠AOC y ∠BOD): ya van con radios distintos
+      if (Math.abs((a.radio || 26) - (b.radio || 26)) < 6) mal.push(`${tipo} ${s}: ${a.de}${a.en}${a.a} y ${b.de}${b.en}${b.a} con radio ${a.radio}`);
+    }
+  }
+  assert.deepEqual(mal.slice(0, 10), []);
+});
+
+test('M10: los tipos del papel (sin figura) se resuelven con el texto: el quiebre dice de qué lado de V quedan P y Q', () => {
+  for (let s = 0; s < 100; s++) {
+    const q = sinDuros(plano(gen.generar(`papel-q-${s}`, { tipo: 'quiebre' }).enunciado));
+    assert.ok(/a la izquierda de V/.test(q) && /del lado de V/.test(q), q);
+  }
+  const papel = require('./papel.json');
+  for (const p of papel.problemas) if (/quiebre/.test(p.enunciado)) assert.ok(/a la izquierda de V/.test(p.enunciado), `${p.id}: el papel no dice de qué lado de V quedan P y Q`);
+});

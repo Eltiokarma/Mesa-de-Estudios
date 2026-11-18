@@ -385,7 +385,7 @@
     },
     {
       "semilla": 38,
-      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂. PV forma 60° con L₁ y QV forma 45° con L₂. ¿Cuánto mide el quiebre x, en V?",
+      "enunciado": "L₁ ∥ L₂. P está en L₁ y Q en L₂, los dos a la izquierda de V. PV forma 60° con L₁ y QV forma 45° con L₂, medidos del lado de V. ¿Cuánto mide el quiebre x, en V?",
       "entrada": {
         "tipo": "quiebre",
         "idea": "quiebre",

@@ -23,7 +23,7 @@
  * chicos caen sobre un lado). escena(datos) devuelve los datos de geo-figura que se dibujan (las pruebas miden ahí cada
  * ángulo contra su rótulo). Estado: { corte } de geo-figura (se ve lo que tiene desde ≤ corte).
  *   reloj      { relojes: [{ hora: 0..11, tam: 'plaza' | 'pulsera', arco: { texto, color, desde } | null, alarga: corte,
- *              rotulo }] }: uno o dos relojes a una hora en punto; el arco va del minutero (en las 12) al horario, en el
+ *              letras: ['A', 'B'] }] }: uno o dos relojes a una hora en punto; el arco va del minutero (en las 12) al horario, en el
  *              sentido del reloj (más de 180°: el ángulo no convexo). alarga: desde qué corte se ven las agujas alargadas
  *   tranquera  { alfa, O: true, pista, poste, otro: { texto, color, desde } | null, bisectrices: corte, mitades: { texto1,
  *              texto2, color1, color2 }, entre: { texto, desde } }: la barra que sube desde el pie O del poste, junto a la
@@ -39,7 +39,11 @@
  *   (reloj: arco.corto pide el ángulo convexo aunque el horario pase de las 6)
  *   angulos    { figura: <datos de geo-figura>, ls: [{ p: [x, y], k: 1 }] }: una figura de examen (ls: rótulos L₁, L₂); los rótulos de sus ángulos los pone esta pieza.
  *              En un ángulo, sector: [desde°, hasta°] (antihorario, en el plano) dice dónde va su rótulo si no es en su
- *              propio arco; mide (opcional) es el valor que el rótulo representa cuando es una expresión (2x + 10°)
+ *              propio arco; mide (opcional) es el valor que el rótulo representa cuando es una expresión (2x + 10°);
+ *              centro: true pone el rótulo de un ángulo entero sobre su bisectriz, más afuera que sus partes (y corta el
+ *              rayo punteado de su vértice que pase por debajo); arcoRecto: true dibuja un recto con arco y no con el cuadradito.
+ *              Dos ángulos consecutivos del mismo color (sin rayitas) nunca quedan con el mismo radio: el segundo va
+ *              8 px más afuera. angulosListos(datos) da los ángulos como se dibujan (radios y sectores finales).
  *
  * datos = {
  *   objeto: 'carretera' | 'recta',
@@ -59,7 +63,7 @@
  *            nivel: 1, 2 o 3 (cotas encima de la pista, de abajo hacia arriba) o −1, −2 (debajo de las letras); si un
  *            extremo está fuera de la carretera, el tramo es un camino recto y nivel no se usa
  *            paso: desde qué paso de «Mira» se ve el tramo
- *   alturas: [{ punto: 'B', texto: '3 km', paso }],   la distancia de un punto de afuera a la carretera, punteada, con su medida al pie (debajo de la pista)
+ *   alturas: [{ punto: 'B', texto: '3 km', paso }],   la distancia de un punto de afuera a la carretera, punteada, con su medida sobre ella, justo encima de la pista
  *   reglas: [{ de: 'A', a: 'B', texto: '5 km', paso }],   la regla del mapa apoyada en un tramo, con su lectura
  *   combi: 2,                       opcional: la combi en el carril de arriba, con su frente en ese km (solo carretera)
  *   hitos: 1,                       opcional: una marca en el borde de la pista cada tantos km
@@ -176,6 +180,52 @@
     if (texto) s += T.rotulo((a + b) / 2, nivel < 0 ? y + 19 : y - 10, texto, { ancla: 'middle', peso: 700, color, min: M, max: W - M });
     return s;
   }
+  // Dónde van las rayitas de «miden igual» de los tramos sobre la carretera (nivel 0): lo más cerca posible del medio de su
+  // tramo, pero a HOLGURA_MARCA px o más de cada punto y de las rayitas de otro grupo (otro número de rayitas). Auditoría
+  // (17 nov): en el medio, la de MC tachaba el punto B y la «/» de MB se juntaba con las «//» de AN en «///». Se prueban
+  // los órdenes posibles (son pocos tramos) y se queda el primero en que todas caben; si ninguno, el de más holgura.
+  // Devuelve [{ tramo, x, hw, holgura }]: hw, medio ancho de las rayitas; holgura, la menor distancia a un punto o a otro grupo.
+  const HOLGURA_MARCA = 10;
+  function marcas(d = {}, g = geometria(d)) {
+    const ts = (d.tramos || []).filter(t => t.nivel === 0 && t.marcas > 0 && g.P[t.de] && g.P[t.a] && !fuera(d, t.de) && !fuera(d, t.a));
+    if (!ts.length) return [];
+    const xs = (d.puntos || []).filter(q => !(+q.alto > 0)).map(q => g.P[q.id][0]);
+    const hwDe = t => (t.marcas - 1) * 3 + 4;
+    const holguraEn = (t, c, puestas) => {
+      let h = Infinity;
+      for (const x of xs) h = Math.min(h, Math.abs(c - x) - hwDe(t));
+      for (const z of puestas) if (z.tramo.marcas !== t.marcas) h = Math.min(h, Math.abs(c - z.x) - hwDe(t) - z.hw);
+      return h;
+    };
+    const colocar = orden => {
+      const puestas = [];
+      let peor = Infinity;
+      for (const t of orden) {
+        const a = Math.min(g.P[t.de][0], g.P[t.a][0]), b = Math.max(g.P[t.de][0], g.P[t.a][0]), medio = (a + b) / 2;
+        let mejor = null;
+        for (let k = 0; k <= 2 * Math.ceil((b - a) / 2); k++) {
+          const c = medio + (k % 2 ? 1 : -1) * Math.ceil(k / 2);
+          if (c < a || c > b) continue;
+          const h = holguraEn(t, c, puestas);
+          if (!mejor || h > mejor.h + 1e-9 && mejor.h < HOLGURA_MARCA) mejor = { c, h };
+          if (h >= HOLGURA_MARCA) { mejor = { c, h }; break; }
+        }
+        puestas.push({ tramo: t, x: mejor.c, hw: hwDe(t), holgura: mejor.h });
+        peor = Math.min(peor, mejor.h);
+      }
+      return { puestas, peor };
+    };
+    const ordenes = [];
+    const perm = (resto, hecho) => { if (!resto.length) { ordenes.push(hecho); return; } resto.forEach((t, i) => perm([...resto.slice(0, i), ...resto.slice(i + 1)], [...hecho, t])); };
+    if (ts.length <= 5) perm(ts, []); else ordenes.push(ts);
+    let mejor = null;
+    for (const o of ordenes) { const r = colocar(o); if (!mejor || r.peor > mejor.peor) mejor = r; if (r.peor >= HOLGURA_MARCA) break; }
+    // La holgura final de cada una, ya con todas puestas.
+    return mejor.puestas.map(z => Object.assign(z, { holgura: holguraEn(z.tramo, z.x, mejor.puestas.filter(w => w !== z)) }));
+  }
+  // ¿Caben las rayitas con su holgura? (la teoría y el generador arman otro caso si no).
+  const marcasCaben = (d, min = HOLGURA_MARCA) => marcas(d).every(z => z.holgura >= min);
+
   // La soga del tira y afloja (dibujo de prueba): el patio, la soga trenzada entre sus puntas, la raya pintada y el
   // pañuelo atado. La soga va sobre el borde de abajo del patio, donde están los puntos.
   function soga(d, g) {
@@ -244,19 +294,36 @@
       if (!visible(al, p)) continue;
       const q = g.P[al.punto];
       if (!q) continue;
-      s += `<line x1="${n(q[0])}" y1="${n(q[1] + 6)}" x2="${n(q[0])}" y2="${BOT}" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/>`;
-      // La medida va al pie, debajo de la pista, donde no la cruza ningún camino (a la altura de las letras).
-      const t = textoEn(al.texto, p);
-      if (t) s += T.rotulo(q[0], LETRA, t, { ancla: 'middle', peso: 700, min: M, max: W - M });
+      // La medida va sobre la punteada, justo encima de la pista, y la punteada se corta debajo del rótulo (auditoría, 17
+      // nov: al pie, debajo de la pista, se leía como un tramo de la carretera; a media altura no cabe entre los caminos).
+      const t = textoEn(al.texto, p), base = TOP - 6, alto = 16 * 0.8;
+      const linea = (y1, y2) => (y2 - y1 > 2 ? `<line x1="${n(q[0])}" y1="${n(y1)}" x2="${n(q[0])}" y2="${n(y2)}" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/>` : '');
+      // El rótulo se corre a lo ancho (sin dejar la punteada) hasta quedar lo más lejos posible de los caminos.
+      const w = T.ancho(t || '', 16, 700), y0 = base - alto, y1 = base + 4;
+      const caminos = (d.tramos || []).filter(tt => fuera(d, tt.de) || fuera(d, tt.a)).map(tt => [g.P[tt.de], g.P[tt.a]]).filter(([u, v]) => u && v);
+      const xEn = ([u, v], y) => (Math.abs(v[1] - u[1]) < 1e-9 ? null : u[0] + (v[0] - u[0]) * (y - u[1]) / (v[1] - u[1]));
+      let cx = q[0], mejor = -Infinity;
+      for (let dx = -w / 2 + 5; dx <= w / 2 - 5; dx += 1) {
+        let h = Infinity;
+        for (const c of caminos) for (const y of [y0, y1]) { const x = xEn(c, y); if (x !== null) h = Math.min(h, Math.max(q[0] + dx - w / 2 - x, x - (q[0] + dx + w / 2))); }
+        if (h > mejor + 1e-9) { mejor = h; cx = q[0] + dx; }
+      }
+      if (t) s += linea(q[1] + 6, base - alto - 3) + linea(TOP, BOT) + T.rotulo(cx, base, t, { ancla: 'middle', peso: 700, min: M, max: W - M });
+      else s += linea(q[1] + 6, BOT);
     }
 
-    // Tramos: cota en la carretera o camino recto si sale de ella.
+    // Tramos: cota en la carretera o camino recto si sale de ella. Las rayitas de «miden igual» van donde no tocan un
+    // punto ni las rayitas de otro grupo (marcas).
+    const marcasEn = marcas(d, g).filter(z => visible(z.tramo, p));
     for (const t of d.tramos || []) {
       if (!visible(t, p)) continue;
       const a = g.P[t.de], b = g.P[t.a];
       if (!a || !b) continue;
       const color = cs[nombre(t)] || undefined, texto = textoEn(t.texto, p);
-      if (!fuera(d, t.de) && !fuera(d, t.a)) { s += cota(a[0], b[0], t.nivel === 0 ? 0 : t.nivel || 1, texto, color, t.marcas); continue; }
+      if (!fuera(d, t.de) && !fuera(d, t.a)) {
+        if (t.nivel === 0) { const mk = marcasEn.find(z => z.tramo === t); if (mk) s += rayitas(mk.x, BOT, t.marcas, 7); continue; }
+        s += cota(a[0], b[0], t.nivel || 1, texto, color, t.marcas); continue;
+      }
       s += `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}" stroke="${T.color(color)}" stroke-width="${color ? 3 : 2}" stroke-linecap="round"/>`;
       if (texto) {
         const nv = normalArriba(a, b), mid = [(a[0] + b[0]) / 2 + nv[0] * 10, (a[1] + b[1]) / 2 + nv[1] * 10];
@@ -446,7 +513,10 @@
       // La O va lejos de las dos agujas: del lado libre si el arco marcado es convexo; si es el no convexo, adentro de su
       // arco (que entonces va más afuera), en su bisectriz.
       const mayor = h > 6 && !(r.arco && r.arco.corto), libre = !r.arco || !h ? 180 : mayor ? 15 * h : h > 6 ? 15 * h : (30 * h + 360) / 2;
-      puntos.push(pt(O, c, r.O ? { rotulo: 'O', lado: 90 - libre, sinPunto: true } : undefined), pt(Mk, Mi), pt(Hk, Ho));
+      // letras: [A, B] nombra las puntas del minutero y del horario (para leer m∠AOB en «Lee»).
+      const ls = r.letras || [];
+      puntos.push(pt(O, c, r.O ? { rotulo: 'O', lado: 90 - libre, sinPunto: true } : undefined),
+        pt(Mk, Mi, ls[0] ? { rotulo: ls[0], lado: 180, sinPunto: true } : undefined), pt(Hk, Ho, ls[1] ? { rotulo: ls[1], lado: gH, sinPunto: true } : undefined));
       segmentos.push({ de: O, a: Mk, grosor: 'variable' }, { de: O, a: Hk, grosor: 'variable' });
       if (r.alarga !== undefined) {
         puntos.push(pt(`m${k}`, [c[0], c[1] + 0.6]), pt(`h${k}`, pol(c, 0.4, gH)));
@@ -489,7 +559,7 @@
     const angulos = [];
     const bis = d.bisectrices;
     if (bis !== undefined) segmentos.push({ de: 'O', a: 'M1', discontinua: true, desde: typeof bis === 'object' ? bis.primera : bis }, { de: 'O', a: 'M2', discontinua: true, desde: typeof bis === 'object' ? bis.segunda : bis });
-    if (d.pista) angulos.push(conTexto(ang('O', 'A', 'B', { radio: 30, holgura: 8, lejos: 2.4, afuera: 2.62, mide: a, ajusta: false }), d.pista));
+    if (d.pista) angulos.push(conTexto(ang('O', 'A', 'B', { radio: 30, holgura: 8, lejos: 2.4, afuera: 2.62, mide: a, ajusta: false, centro: bis !== undefined }), d.pista));
     if (d.poste && a < 90) angulos.push(conTexto(ang('O', 'B', 'T', { radio: 36, holgura: 8, lejos: 1.4, afuera: 2.62, mide: 90 - a, ajusta: false }), d.poste));
     if (d.otro) angulos.push(conTexto(ang('O', 'B', 'D', { radio: 84, holgura: 8, sector: a < 90 ? [96, 178] : undefined, mide: 180 - a }), d.otro));
     const mi = d.mitades;
@@ -499,7 +569,9 @@
       angulos.push(conTexto(ang('O', 'B', 'M2', { radio: 30, rayita: 2, mide: 90 - a / 2 }), { color: mi.color2, desde: mi.desde2 }));
       angulos.push(conTexto(ang('O', 'M2', 'D', { radio: 30, rayita: 2, holgura: 6, mide: 90 - a / 2 }), { texto: mi.texto2, color: mi.color2, desde: mi.desde2 }));
     }
-    if (d.entre) angulos.push(conTexto(ang('O', 'M1', 'M2', { radio: 64, holgura: 6, mide: 90, ajusta: false }), d.entre));
+    // El ángulo entre las bisectrices lleva su arco (no el cuadradito) y su rótulo sobre su propia bisectriz (auditoría,
+    // 17 nov: el «?» sin arco, entre el poste y la barra, parecía pedir esos 40°).
+    if (d.entre) angulos.push(conTexto(ang('O', 'M1', 'M2', { radio: 64, holgura: 6, mide: 90, ajusta: false, centro: true, arcoRecto: true }), d.entre));
     const fig = { alt: `Tranquera: la barra sube desde el pie O del poste y forma ${Kit.formatear(a, 1)}° con la pista${d.bisectrices !== undefined ? ', con las bisectrices de los dos ángulos que forma con la pista' : ''}.`,
       vista: { x: [-3.05, 3.05], y: [-0.62, 3.25] }, alto: 250, puntos, segmentos, angulos: angulos.filter(Boolean) };
     const deco = g => {
@@ -556,10 +628,10 @@
     if (A.b) angulos.push(conTexto(ang('Q', 'Qd', 'V', { radio: 24, holgura: 8, mide: b }), A.b));
     if (A.a2) angulos.push(conTexto(ang('V', 'P', 'Vi', { radio: 26, holgura: 6, mide: a }), A.a2));
     if (A.b2) angulos.push(conTexto(ang('V', 'Vi', 'Q', { radio: 26, holgura: 6, mide: b }), A.b2));
-    // Con la paralela auxiliar a la vista, el rótulo de x va arriba de ella (no sobre la línea); si ya están las copias
-    // de a y b, x lleva solo su arco mientras la paralela se vea.
+    // Con la paralela auxiliar a la vista, el rótulo de x va sobre su bisectriz y la paralela se corta debajo (en la parte
+    // de arriba se leía como la copia de a); si ya están las copias de a y b, x lleva solo su arco mientras se vea.
     const conAux = d.aux !== undefined, copias = A.a2 || A.b2;
-    if (A.x) angulos.push(conTexto(ang('V', 'P', 'Q', Object.assign({ radio: copias ? 18 : 30, holgura: 6, mide: a + b }, conAux && !copias ? { sector: [180 - a, 180] } : {})),
+    if (A.x) angulos.push(conTexto(ang('V', 'P', 'Q', Object.assign({ radio: copias ? 18 : 30, holgura: 6, mide: a + b }, conAux && !copias ? { centro: true } : {})),
       conAux && copias && d.auxHasta === undefined ? Object.assign({}, A.x, { texto: undefined }) : A.x));
     if (A.afP) angulos.push(conTexto(ang('P', 'V', 'Pi', { radio: 24, holgura: 8, mide: 180 - a }), A.afP));
     if (A.afQ) angulos.push(conTexto(ang('Q', 'V', 'Qi', { radio: 24, holgura: 8, mide: 180 - b }), A.afQ));
@@ -589,12 +661,14 @@
     const dentro = (t, [lo, w], e = 1e-3) => { const x = norm(t - lo); return x > e && x < w - e; };
     const contiene = ([lo, w], [lo2, w2]) => { const x = norm(lo2 - lo); return w2 < w - 1e-6 && x <= w - w2 + 1e-6; };
     const orden = angs.map((_, i) => i).sort((i, j) => iv[i][1] - iv[j][1]);
-    const lejos = {}, cerca = {}, dirR = {};
     // Dos ángulos se estorban solo si se ven a la vez (sus intervalos desde–hasta se tocan).
     const juntos = (a, b) => Math.max(a.desde || 0, b.desde || 0) <= Math.min(a.hasta === undefined ? Infinity : a.hasta, b.hasta === undefined ? Infinity : b.hasta);
+    // angR: medio ancho angular del rótulo de un ángulo «centro» (su rótulo cae sobre un lado de los vecinos: el arco de
+    // un vecino que lo toca pasa por fuera).
+    const lejos = {}, cerca = {}, dirR = {}, angR = {};
     for (const i of orden) {
       let a = angs[i];
-      if (a.texto && !a.sector) {
+      if (a.texto && !a.sector && !a.centro) {
         const ts = rayos(a.en).filter(t => dentro(t, iv[i])).map(t => norm(t - iv[i][0])).sort((x, y) => x - y);
         if (ts.length) {
           const cs = [0, ...ts, iv[i][1]]; let k = 0;
@@ -605,20 +679,74 @@
       // Su arco pasa por fuera de los rótulos (y arcos) de los ángulos más chicos del mismo vértice que caen en su abertura.
       // (Un rótulo que queda más allá del arco no estorba: el arco pasa por dentro. Las franjas se recorren de adentro
       // hacia afuera, porque al crecer el arco puede tocar la siguiente.)
-      const franjas = orden.filter(j => j !== i && lejos[j] !== undefined && angs[j].en === a.en && juntos(a, angs[j]) && (contiene(iv[i], iv[j]) || (dirR[j] !== undefined && dentro(dirR[j], iv[i], 0.03))))
+      const franjas = orden.filter(j => j !== i && lejos[j] !== undefined && angs[j].en === a.en && juntos(a, angs[j]) && (contiene(iv[i], iv[j]) || (dirR[j] !== undefined && dentro(dirR[j], iv[i], angR[j] ? -angR[j] : 0.03))))
         .map(j => [cerca[j], lejos[j]]).sort((x, y) => x[0] - y[0]);
       let rr = a.radio || 26;
       for (const [c0, c1] of franjas) if (rr + 5 > c0 && rr - 5 < c1) rr = Math.ceil(c1 + 6);
       a.radio = rr;
       a = angs[i] = conArco(g, a);
-      if (a.texto) { const q = lugarRotulo(g, a), sc = sectorEn(g, a), md = Math.hypot(q.w, q.h) / 2; lejos[i] = q.d + md; cerca[i] = q.d - md; dirR[i] = norm(sc.t1 + sc.dt / 2); } else { lejos[i] = (a.radio || 26) + (a.rayita ? 6 : 2); cerca[i] = 0; }
+      if (a.texto) { const q = lugarRotulo(g, a), sc = sectorEn(g, a), md = Math.hypot(q.w, q.h) / 2; lejos[i] = q.d + md; cerca[i] = q.d - md; dirR[i] = norm(sc.t1 + sc.dt / 2); if (a.centro) angR[i] = Math.atan2(md, q.d); } else { lejos[i] = (a.radio || 26) + (a.rayita ? 6 : 2); cerca[i] = 0; }
     }
+    // El rótulo «centro» de un ángulo más grande puede caer sobre el lado de uno más chico (la bisectriz de ∠AOB es lado
+    // de ∠DOE): el arco del más chico pasa por fuera de ese rótulo.
+    orden.forEach((i, pos) => {
+      const a = angs[i];
+      for (const j of orden.slice(pos + 1)) {
+        if (angR[j] === undefined || angs[j].en !== a.en || !juntos(a, angs[j]) || !dentro(dirR[j], iv[i], -angR[j])) continue;
+        const rr = a.radio || 26;
+        if (rr + 5 > cerca[j] && rr - 5 < lejos[j]) angs[i] = Object.assign(a, { radio: Math.ceil(lejos[j] + 6) });
+      }
+    });
+    // Dos ángulos consecutivos (comparten un lado, ninguno contiene al otro) del mismo color y con el mismo radio se ven
+    // como un solo arco (auditoría, 17 nov: 80° y 105°, o k y 2k): el segundo va 8 px más afuera. Las mitades con rayitas
+    // (bisectriz) quedan iguales a propósito: las rayitas ya marcan dónde termina cada una.
+    const consecutivos = (i, j) => { const a = angs[i], b = angs[j]; return a.en === b.en && [a.de, a.a].some(x => x === b.de || x === b.a) && !contiene(iv[i], iv[j]) && !contiene(iv[j], iv[i]); };
+    // (Al final, con los radios ya crecidos: el rótulo del que se aleja se aleja con él.)
+    for (let vuelta = 0; vuelta < 4; vuelta++) {
+      let cambio = false;
+      angs.forEach((a, i) => {
+        if (a.rayita) return;
+        const tope = angs.find((b, j) => j !== i && !b.rayita && (b.color || '') === (a.color || '') && juntos(a, b) && consecutivos(i, j) && Math.abs((b.radio || 26) - (a.radio || 26)) < 6 && ((b.radio || 26) < (a.radio || 26) || ((b.radio || 26) === (a.radio || 26) && j < i)));
+        if (tope) { a.radio = (tope.radio || 26) + 8; cambio = true; }
+      });
+      if (!cambio) break;
+    }
+
     return angs;
   }
 
   const ESCENAS = { reloj, tranquera, rieles, pasaje,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
   const escena = d => ESCENAS[d.objeto](d);
+  // Un trazo punteado que pasa por el vértice de un rótulo «centro» (la bisectriz, o la paralela auxiliar por V) y cruza
+  // su caja: dónde se corta. Devuelve { S, E, c0, c1, t0, t1 } en pantalla (S y E, sus puntas; la recta, hasta 4 px del
+  // borde como la dibuja geo-figura) o null.
+  function cortePunteado(g, l, centrados) {
+    let S = g.S(l.de), E = g.S(l.a);
+    if (!S || !E) return null;
+    if (l.recta) {
+      const d = [E[0] - S[0], E[1] - S[1]];
+      let t0 = -Infinity, t1 = Infinity;
+      for (const [k, hi] of [[0, W], [1, g.alto]]) {
+        if (Math.abs(d[k]) < 1e-12) continue;
+        let u = (4 - S[k]) / d[k], v = (hi - 4 - S[k]) / d[k]; if (u > v) [u, v] = [v, u];
+        t0 = Math.max(t0, u); t1 = Math.min(t1, v);
+      }
+      if (!(t0 < t1)) return null;
+      [S, E] = [[S[0] + d[0] * t0, S[1] + d[1] * t0], [S[0] + d[0] * t1, S[1] + d[1] * t1]];
+    }
+    const u = [E[0] - S[0], E[1] - S[1]], L = Math.hypot(...u) || 1;
+    for (const c of centrados) {
+      const V = g.S(c.en), dist = Math.abs((V[0] - S[0]) * u[1] - (V[1] - S[1]) * u[0]) / L;
+      if (dist > 1) continue;
+      const b = { x0: c.caja.x0 - 3, x1: c.caja.x1 + 3, y0: c.caja.y0 - 3, y1: c.caja.y1 + 3 };
+      let t0 = null, t1 = null;
+      for (let k = 0; k <= 2 * L; k++) { const t = k / (2 * L), x = S[0] + u[0] * t, y = S[1] + u[1] * t; if (x > b.x0 && x < b.x1 && y > b.y0 && y < b.y1) { if (t0 === null) t0 = t; t1 = t; } }
+      if (t0 === null) continue;
+      return { S, E, t0, t1, c0: [S[0] + u[0] * t0, S[1] + u[1] * t0], c1: [S[0] + u[0] * t1, S[1] + u[1] * t1] };
+    }
+    return null;
+  }
   function dibujarEscena(d, estado = {}) {
     const G = GF(), e = escena(d), fig = e.fig, g = G.geometria(fig);
     const corte = Math.max(0, (estado && estado.corte) || 0);
@@ -627,22 +755,72 @@
     // diría la respuesta. Su lado «de» se gira 0,02° (no se ve; la medida no cambia a la vista).
     const extra = [];
     const conArcoRecto = angs.map((a, k) => {
-      const pedido = a.texto !== undefined && !a.color && (/\?$/.test(String(a.texto)) || /^[a-zθ]$/.test(String(a.texto)));
+      // (arcoRecto: el recto entre dos bisectrices también va con arco, para que se vea de dónde a dónde va; auditoría.)
+      const pedido = a.arcoRecto || (a.texto !== undefined && !a.color && (/\?$/.test(String(a.texto)) || /^[a-zθ]$/.test(String(a.texto))));
       const { dt } = sectorEn(g, a);
       if (!pedido || a._sec || Math.abs(Math.abs(dt) - Math.PI / 2) > 1e-3) return a;
       const V = g.P(a.en), D = g.P(a.de), t = Math.atan2(D[1] - V[1], D[0] - V[0]) + (dt < 0 ? 1 : -1) * 0.02 * RAD;
       extra.push({ id: `~${k}`, x: V[0] + Math.cos(t), y: V[1] + Math.sin(t), sinPunto: true });
       return Object.assign({}, a, { de: `~${k}` });
     });
-    const sin = Object.assign({}, fig, { puntos: [...(fig.puntos || []), ...extra], angulos: conArcoRecto.map(a => Object.assign({}, a, { texto: undefined })) });
-    const svg = G.dibujar(sin, { corte });
     let enc = '';
-    const puestos = letras(g, fig, corte, e.ls ? e.ls(g) : []), lineas = trazos(g, fig, corte);
-    for (const an of angs) if (an.texto !== undefined && an.texto !== null && an.texto !== '' && ve(an, corte)) { const z = separar(g, an, puestos, lineas); puestos.push(z.caja); enc += rotuloAngulo(g, an, z); }
+    const puestos = letras(g, fig, corte, e.ls ? e.ls(g) : []), lineas = trazos(g, fig, corte), centrados = [];
+    for (const an of angs) if (an.texto !== undefined && an.texto !== null && an.texto !== '' && ve(an, corte)) {
+      const z = separar(g, an, puestos, lineas); puestos.push(z.caja); enc += rotuloAngulo(g, an, z);
+      if (an.centro) centrados.push({ en: an.en, caja: z.caja });
+    }
+    // El rótulo de un ángulo entero va sobre su bisectriz (centro: true), más afuera que sus partes (auditoría, 17 nov:
+    // en el hueco de una mitad, «76°» se leía como la mitad). Si un rayo punteado de su vértice (la bisectriz) pasa por
+    // debajo del rótulo, se corta ahí y sigue después.
+    const segs = [], cortes = [];
+    for (const l of fig.segmentos || []) {
+      const cortar = l.discontinua && ve(l, corte) ? cortePunteado(g, l, centrados) : null;
+      if (!cortar) { segs.push(l); continue; }
+      const k = cortes.length / 4, pl = q => G.aPlano(fig, { x: q[0], y: q[1] });
+      const ids = ['s', 'a', 'b', 'e'].map(x => `~c${k}${x}`);
+      [cortar.S, cortar.c0, cortar.c1, cortar.E].forEach((q, i) => { const r = pl(q); cortes.push({ id: ids[i], x: r[0], y: r[1], sinPunto: true }); });
+      const base = Object.assign({}, l); delete base.recta;
+      if (cortar.t0 > 0.02) segs.push(Object.assign({}, base, { de: ids[0], a: ids[1] }));
+      if (cortar.t1 < 0.98) segs.push(Object.assign({}, base, { de: ids[2], a: ids[3] }));
+    }
+    const sin = Object.assign({}, fig, { puntos: [...(fig.puntos || []), ...extra, ...cortes], segmentos: segs, angulos: conArcoRecto.map(a => Object.assign({}, a, { texto: undefined })) });
+    const svg = G.dibujar(sin, { corte });
     if (e.encima) enc += e.encima(g, corte);
     const deco = e.deco ? `<g class="kit-objeto" data-objeto="${d.objeto}" data-prueba="si">${e.deco(g, corte)}</g>` : '';
     return svg.replace(/^(<svg[^>]*>)/, m => m + deco).replace(/<\/svg>$/, () => `${enc}</svg>`);
   }
+  // ¿Caben los rótulos de una escena? Los pone como dibujarEscena y revisa que ninguno salga del lienzo ni pise otro
+  // rótulo, una letra, un lado (salvo el rayo que se corta bajo un rótulo «centro») o un arco. La teoría arma otro caso si
+  // no caben (como el generador con rotular).
+  // Los rótulos de los ángulos de una escena, como se dibujan: [{ an, x, y, caja }] (en pantalla), con los ángulos ya
+  // preparados (angs) y las letras (fijos). Lo usan escenaCabe y las pruebas («cada rótulo dentro de su ángulo»).
+  function rotulos(d, corte = Infinity) {
+    const G = GF(), e = escena(d), fig = e.fig, g = G.geometria(fig), angs = prepararAngulos(g, fig, corte);
+    const puestos = letras(g, fig, corte, e.ls ? e.ls(g) : []), fijos = puestos.slice(), lineas = trazos(g, fig, corte), rot = [];
+    for (const an of angs) if (an.texto !== undefined && an.texto !== null && an.texto !== '' && ve(an, corte)) {
+      const z = separar(g, an, puestos, lineas); puestos.push(z.caja); rot.push({ an, x: z.x, y: z.y, caja: z.caja });
+    }
+    return { g, fig, angs, fijos, rot, vertice: id => g.S(id) };
+  }
+  function escenaCabe(d, corte = Infinity) {
+    const { g, fig, angs, fijos, rot } = rotulos(d, corte);
+    for (const [k, { an, caja: b }] of rot.entries()) {
+      if (b.x0 < M || b.x1 > W - M || b.y0 < M || b.y1 > g.alto - M) return false;
+      if (fijos.some(q => chocan(b, q, 0)) || rot.some((o, j) => j !== k && chocan(b, o.caja, 0))) return false;
+      for (const l of (fig.segmentos || []).filter(x => ve(x, corte))) {
+        if (an.centro && l.discontinua && cortePunteado(g, l, [{ en: an.en, caja: b }])) continue;
+        const [p, q] = trazos(g, { segmentos: [l] }, corte)[0] || [];
+        if (p && tocaCaja(p, q, { x0: b.x0 - 1, x1: b.x1 + 1, y0: b.y0 - 1, y1: b.y1 + 1 })) return false;
+      }
+      for (const a of angs) {
+        if (!ve(a, corte)) continue;
+        const { c, t1, dt } = sectorEn(g, Object.assign({}, a, { _sec: undefined, sector: undefined })), r = a.radio || 26;
+        for (let i = 0; i <= 24; i++) { const t = t1 + dt * i / 24, x = c[0] + r * Math.cos(t), y = c[1] + r * Math.sin(t); if (x > b.x0 - 1.5 && x < b.x1 + 1.5 && y > b.y0 - 1.5 && y < b.y1 + 1.5) return false; }
+      }
+    }
+    return true;
+  }
+
   // Gesto directo en una escena: del plano a la pantalla y de vuelta (las coordenadas de geo-figura).
   const aPantalla = (d, p) => GF().aPantalla(escena(d).fig, p);
   const aPlano = (d, q) => GF().aPlano(escena(d).fig, q);
@@ -655,5 +833,5 @@
     return `${que} ${pts || 'sin puntos'}${ts ? `. Tramos ${ts}` : ''}${d.combi !== undefined && d.objeto !== 'recta' ? '. Una combi en la pista' : ''}.`;
   }
 
-  return { id: 'geo-objeto', dibujar, alt, geometria, marco, colores, colorDe, OBJETOS, ESCENAS: Object.keys(ESCENAS), escena, lugarRotulo, aPantalla, aPlano, constantes: { W, H, M, TOP, BOT, CENTRO, LETRA, NIVEL, X0, X1 } };
+  return { id: 'geo-objeto', dibujar, alt, geometria, marco, colores, colorDe, marcas, marcasCaben, HOLGURA_MARCA, escenaCabe, rotulos, angulosListos: (d, corte = Infinity) => { const fg = escena(d).fig; return prepararAngulos(GF().geometria(fg), fg, corte); }, OBJETOS, ESCENAS: Object.keys(ESCENAS), escena, lugarRotulo, aPantalla, aPlano, constantes: { W, H, M, TOP, BOT, CENTRO, LETRA, NIVEL, X0, X1 } };
 });
