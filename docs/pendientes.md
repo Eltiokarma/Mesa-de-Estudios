@@ -1,6 +1,33 @@
 # Pendientes y traspaso
 
-Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 18 nov, cierre: Etapa 4 con el método completo (una ronda de lector)
+
+**Lo primero:** leer la mesa (ronda 9): cinco tarjetas de unidades completas para revisar, y dos decisiones (la
+convención de mₗ y mₛ sin libro, y cómo quedaron las pruebas de aritmética y geometría con el tope de 10 pares).
+
+- **Hecho y en main (v260, 10216 pruebas):** Movimiento rectilíneo uniforme, MRUV y caída libre, Estructura atómica,
+  Las cuatro operaciones (7 ideas, con `septimaIdea`) y Triángulos: todas sus ideas con 15 ejemplos, `calidad: 2`,
+  práctica nueva por idea (fis-mru, fis-mruv, particulas-nucleo, niveles-orbitales, operaciones-cifras,
+  geo-triangulos), lector en frío ronda 1 (`rutinas/frio/`), auditor (`rutinas/auditoria/`) y correcciones (sección
+  «Correcciones (18 nov)» de cada auditoría).
+- **App:** práctica por idea desde Ejercicios (`#/practica/<id>/<unidad>/<idea>`, el catálogo guarda las ideas de cada
+  generador con `TIPOS_POR_IDEA` y los títulos de la teoría); una predicción guardada se vuelve a preguntar si su opción
+  no existe o si la pregunta cambió (huella `prediccionDe`); `"rehacer"` puede ser una lista de unidades; migraciones
+  del avance `estudiadaSum`, `prediccionMRU` y `reinicioVT`.
+- **Siguiente:**
+  1. Ronda 2 del lector en frío de las cinco unidades (con lectores nuevos) y sus correcciones.
+  2. Pendientes que dejaron los agentes (en cada «Correcciones (18 nov)»): en MRU, u con dos sentidos en el río; el
+     pastor sin figura; A5 sin dibujo en algunas semillas (la app dibuja con la pieza del momento: una línea en
+     `app/teoria.js`); en Química, la convención de mₗ y mₛ sin libro y la tabla de núclidos reales (B5); en
+     Triángulos, rótulos que solo van en el enunciado en cuñas angostas; Tabla periódica tiene que rehacer su práctica
+     (`ubicar`, `familia`) y recordar que la configuración se enseña ahora en Estructura atómica.
+  3. Pendientes de app: «Prueba N casos distintos: llevas 1» se confunde (sobre todo en aritmética, con la llevada);
+     prueba de que ninguna ecuación se corte a 390 px; el violeta de `--brand` en la letra elegida choca con el violeta
+     de la posición o los electrones.
+  4. Reglas nuevas para el validador que proponen los auditores (cada auditoría trae su tabla): el glosario no usa lo
+     que guarda la predicción, toda letra de los datos está definida, la letra correcta repartida, papel con su unidad.
 
 ## Estado al 18 nov, noche: Etapa 4 en fase 2 (las cuatro ideas 1 en la mesa)
 
