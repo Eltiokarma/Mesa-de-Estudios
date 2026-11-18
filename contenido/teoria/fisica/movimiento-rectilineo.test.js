@@ -37,7 +37,7 @@ const leer = f => JSON.parse(fs.readFileSync(path.join(RAIZ, f), 'utf8'));
 test('partición: cada unidad con sus ideas, sus mesas y sus palabras, sin repetir ninguna', () => {
   assert.equal(def.unidad, 'fisica.movimiento-rectilineo', 'la unidad vieja conserva el id');
   assert.deepEqual(def.ideas.map(i => i.id), ['mru', 'desplazamiento-distancia', 'encuentro']);
-  assert.deepEqual(mruv.ideas.map(i => i.id), ['pendiente-aceleracion', 'caida-libre']);
+  assert.deepEqual(mruv.ideas.map(i => i.id), ['aceleracion', 'ecuaciones-mruv', 'pendiente-aceleracion', 'graficas-xt-at', 'caida-reposo', 'caida-libre']);
   assert.deepEqual(def.laboratorio.map(m => m.id), ['encuentro-libre']);
   assert.deepEqual(mruv.laboratorio.map(m => m.id).sort(), ['ida-vuelta', 'pista-libre', 'recta-vt']);
   const t1 = new Set(def.glosario.map(g => Glosario.clave(g.termino)));
@@ -74,16 +74,21 @@ test('partición: el catálogo pone «MRUV y caída libre» después y la piden 
 
 test('partición: Avance.migrar pasa a la unidad nueva todo lo de sus ideas, mesas y palabras, y nada de lo que se queda', () => {
   const V = def.unidad, N = mruv.unidad;
-  const ideas = Object.fromEntries([...def.ideas, ...mruv.ideas].map((i, k) => [i.id, { casos: k + 1 }]));
+  // Lo que la unidad vieja tenía de MRUV (18 nov): dos ideas y tres palabras; las ideas y palabras nuevas de MRUV
+  // (aceleracion, ecuaciones-mruv…, «MRUV», «frenar») nunca estuvieron en la unidad vieja.
+  const IDEAS_IDAS = ['pendiente-aceleracion', 'caida-libre'], PALABRAS_IDAS = ['aceleración', 'caída libre', 'gravedad'].map(Glosario.clave);
+  const viejasN = mruv.ideas.filter(i => IDEAS_IDAS.includes(i.id));
+  const glosN = mruv.glosario.filter(g => PALABRAS_IDAS.includes(Glosario.clave(g.termino)));
+  const ideas = Object.fromEntries([...def.ideas, ...viejasN].map((i, k) => [i.id, { casos: k + 1 }]));
   const est = { avanceV: 1, partidoV: 1, partidoExp: 1, teoria: { [V]: { ideas: JSON.parse(JSON.stringify(ideas)) } },
     coleccion: [...def.laboratorio, ...mruv.laboratorio].map((m, k) => ({ id: `c${k}`, unidad: V, mesa: m.id })),
-    glosario: { [V]: Object.fromEntries([...def.glosario, ...mruv.glosario].map(g => [Glosario.clave(g.termino), 'sabe'])) } };
+    glosario: { [V]: Object.fromEntries([...def.glosario, ...glosN].map(g => [Glosario.clave(g.termino), 'sabe'])) } };
   assert.equal(Avance.migrar(est), true);
   assert.deepEqual(Object.keys(est.teoria[V].ideas).sort(), def.ideas.map(i => i.id).sort());
-  assert.deepEqual(Object.keys(est.teoria[N].ideas).sort(), mruv.ideas.map(i => i.id).sort());
+  assert.deepEqual(Object.keys(est.teoria[N].ideas).sort(), [...IDEAS_IDAS].sort());
   for (const c of est.coleccion) assert.equal(c.unidad, mruv.laboratorio.some(m => m.id === c.mesa) ? N : V, c.mesa);
   assert.deepEqual(Object.keys(est.glosario[V]).sort(), def.glosario.map(g => Glosario.clave(g.termino)).sort());
-  assert.deepEqual(Object.keys(est.glosario[N]).sort(), mruv.glosario.map(g => Glosario.clave(g.termino)).sort());
+  assert.deepEqual(Object.keys(est.glosario[N]).sort(), [...PALABRAS_IDAS].sort());
 });
 
 // ---------- La idea A1 ----------

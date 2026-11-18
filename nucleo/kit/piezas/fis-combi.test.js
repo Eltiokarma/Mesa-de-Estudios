@@ -137,3 +137,62 @@ test('avenida: sin NaN ni colores fijos, alto fijo, pura y con texto alternativo
     if (d.vehiculo !== false) assert.match(P.alt(d), new RegExp(`sale de x = ${String(d.x0).replace('-', '−')} m`));
   }
 });
+
+// ---------- Aceleración (18 nov, MRUV y caída libre, idea 1 «La aceleración») ----------
+test('aceleración: la combi firme en x₀ + v·t + ½·a·t², tramos que se abren y la flecha de v que crece cada segundo', () => {
+  const d = av({ x0: 0, v: 2, a: 2, segundos: 4, max: 80, crece: true }), g = P.geometria(d), X = P.escala(d);
+  assert.ok(Math.abs(g.x - (2 * 4 + 2 * 16 / 2)) < 1e-9 && Math.abs(g.vt - 10) < 1e-9);
+  const s = P.dibujar(d);
+  const tramos = [...s.matchAll(new RegExp(`<line x1="([\\d.]+)" y1="${AV.TRAMO}" x2="([\\d.]+)" y2="${AV.TRAMO}" stroke="var\\(--c-o\\)" stroke-width="3"`, 'g'))].map(m => +m[2] - +m[1]);
+  assert.equal(tramos.length, 4);
+  for (let k = 1; k < 4; k++) assert.ok(tramos[k] > tramos[k - 1] + 1, 'cada segundo avanza más');
+  // La flecha mide lo que avanzaría en 0,8 s a esa velocidad: crece lo mismo cada segundo.
+  const px = 0.8 * (AV.X1 - AV.X0) / 80;
+  assert.ok(Math.abs(g.flecha.x2 - g.flecha.x1 - px * 10) < 1e-9);
+  assert.equal(g.tenues.length, 4, 'una flecha tenue por cada combi tenue');
+  const largos = g.tenues.map(f => f.x2 - f.x1);
+  for (let k = 1; k < largos.length; k++) assert.ok(Math.abs(largos[k] - largos[k - 1] - 2 * px) < 1e-9, 'crece 2 m/s por segundo');
+  assert.equal((s.match(/class="kit-fantasma" opacity="0.35"><g><line/g) || []).length, 4);
+  assert.ok(Math.abs(X(g.pos(3)) - X(2 * 3 + 9)) < 1e-9);
+});
+
+test('aceleración: si frena, se detiene y no retrocede; la flecha de a va contra la de v, con otra punta', () => {
+  const d = av({ x0: 0, v: 10, a: -2, segundos: 8, max: 40, crece: true, flechaA: { texto: 'a' } });
+  const g = P.geometria(d);
+  assert.ok(Math.abs(g.x - 25) < 1e-9 && g.vt === 0, 'para en 25 m a los 5 s y se queda');
+  assert.ok(Math.abs(g.pos(7) - 25) < 1e-9);
+  assert.ok(!g.flecha && !g.flechaA, 'quieta: sin flecha de v ni de a');
+  const andando = P.geometria(d, { corte: 2 });
+  assert.ok(andando.flechaA.x2 < andando.flechaA.x1 && andando.flecha.x2 > andando.flecha.x1);
+  const s = P.dibujar(d, { corte: 2 });
+  assert.match(s, /class="fis-aceleracion"/);
+  assert.match(s, /<path d="M[\d.]+ \d+L[\d.]+ \d+L[\d.]+ \d+" fill="none" stroke="var\(--c-h\)"/, 'punta abierta, en carmín');
+  assert.match(s, /fill="var\(--c-h\)"[^>]*>a</);
+  assert.ok(!/fis-aceleracion/.test(P.dibujar(d, { corte: 2, flechaA: false })), 'estado.flechaA = false la esconde');
+  // Cerca del borde izquierdo, la flecha de a se corre sin salirse del lienzo ni dejar de estar sobre la combi.
+  const borde = P.geometria(av({ x0: 0, v: 10, a: -2, max: 40, flechaA: true }));
+  assert.ok(Math.min(borde.flechaA.x1, borde.flechaA.x2) >= 8 && Math.abs(borde.flechaA.x1 - P.escala(av({ max: 40 }))(0)) <= P.constantes.CW / 2);
+  assert.match(P.alt(d), /baja 2 m\/s en cada segundo/);
+  assert.match(P.alt(av({ v: 0, a: 1.5 })), /arranca hacia la derecha. Su velocidad sube 1,5 m\/s/);
+});
+
+test('aceleración: sin NaN, pura, alto fijo, rótulos que caben y flechas que no se montan', () => {
+  const casos = [];
+  for (const v of [0, 2, 8, 20]) for (const a of [-3, 0.5, 3]) for (const t of [0, 0.4, 1, 2.5, 4]) {
+    casos.push([av({ x0: 0, v, a, t, segundos: 4, max: 80, crece: true, signo: true, flechaA: { texto: 'a' }, lugares: [{ en: 0, texto: 'Paradero' }] }), {}]);
+  }
+  for (const [d, e] of casos) {
+    const s = P.dibujar(d, e), g = P.geometria(d, e), donde = JSON.stringify(d);
+    assert.ok(!/NaN|undefined|Infinity/.test(s), donde);
+    assert.equal(s, P.dibujar(d, e));
+    assert.equal(s.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)[2], String(H));
+    for (const r of g.rotulos) assert.ok(r.x0 >= 4 - 1e-9 && r.x1 <= W - 4 + 1e-9 && r.y0 >= 4 && r.y1 <= H - 4, `${donde}: «${r.texto}» se sale`);
+    for (let i = 0; i < g.rotulos.length; i++) for (let j = i + 1; j < g.rotulos.length; j++) assert.ok(!pisa(g.rotulos[i], g.rotulos[j]), `${donde}: «${g.rotulos[i].texto}» pisa «${g.rotulos[j].texto}»`);
+    const fs = [...g.tenues, g.flecha].filter(Boolean);
+    for (let k = 1; k < fs.length; k++) {
+      const dir = fs[k - 1].x2 > fs[k - 1].x1 ? 1 : -1;
+      assert.ok(dir > 0 ? fs[k - 1].x2 <= fs[k].x1 + 1e-9 : fs[k - 1].x2 >= fs[k].x1 - 1e-9, `${donde}: dos flechas de v se montan`);
+    }
+    if (g.flechaA) assert.ok(g.flechaA.caja.y1 < AV.CAMINO, `${donde}: el rótulo de a pisa la avenida`);
+  }
+});

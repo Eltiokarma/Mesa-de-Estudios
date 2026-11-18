@@ -38,6 +38,19 @@
  *   signo: true,           // la regla con signo: «−» a la izquierda, «+» y la punta a la derecha
  *   vehiculo: false,       // false: sin combi (solo la avenida y la regla)
  * estado = { corte }: no pasa de ese instante.
+ *
+ * Aceleración (18 nov, MRUV y caída libre, idea 1 «La aceleración»; docs/etapa4/propuesta-fisica.md §2, B1): la combi
+ * que arranca del paradero con la flecha de su velocidad que crece cada segundo. Solo con `a` distinto de 0 o con
+ * `crece`; sin ellos la vista dibuja lo mismo que antes, byte por byte (lo comprueba fis-combi.test.js).
+ * Afirmación: con aceleración, la flecha de la velocidad cambia lo mismo en cada segundo y los tramos se abren o se juntan.
+ *   a: 2,                  // m/s², con signo: x = x₀ + v·t + ½·a·t² y la velocidad v + a·t. Si a va contra v, la combi
+ *                          //   frena hasta detenerse y se queda ahí: no retrocede
+ *   crece: true,           // la flecha de la velocidad mide lo que la combi avanzaría en kFlecha segundos a esa velocidad
+ *                          //   (más larga, más rápido), y cada combi tenue lleva la suya, tenue
+ *   kFlecha: 0.8,          // s: con 0,8 la flecha de un segundo nunca llega a la combi del segundo siguiente si acelera
+ *   flechaA: { texto: 'a' },   // la flecha de la aceleración sobre el techo de la combi firme, en carmín y con la punta
+ *                          //   abierta (otra punta que la de v), con su rótulo; estado.flechaA = false la esconde
+ *   colorA: 'h',           // aceleración: carmín
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -102,10 +115,10 @@
   }
 
   // ---------- Vista «avenida» ----------
-  const AV = { X0: 26, X1: 280, CAMINO: 58, BORDE: 98, CARRIL: 76, FLECHA: 89, TRAMO: 105, TIEMPO: 128, POS: 143, EJE: 150, NUM: 173,
+  const AV = { X0: 26, X1: 280, CAMINO: 58, BORDE: 98, CARRIL: 76, FLECHA: 89, ACEL: 47, TRAMO: 105, TIEMPO: 128, POS: 143, EJE: 150, NUM: 173,
     FILAS: [{ y: 44, texto: 38 }, { y: 22, texto: 16 }] };
   const BASE_AV = { x0: 0, v: 10, segundos: 0, min: 0, max: 100, paso: 10, numero: 20, color: 'o', colorT: 'i', rotulos: true,
-    fantasmas: true, flecha: true, signo: false, vehiculo: true };
+    fantasmas: true, flecha: true, signo: false, vehiculo: true, kFlecha: 0.8, colorA: 'h' };
   const conBaseAv = d => Object.assign({}, BASE_AV, d || {});
   const escalaAv = d => m => AV.X0 + (AV.X1 - AV.X0) * (Math.max(d.min, Math.min(d.max, m)) - d.min) / (d.max - d.min);
   const fmt = m => Kit.formatear(m, 2).replace(/^-/, '−');
@@ -122,8 +135,13 @@
     const tope = Number.isFinite(estado.corte) ? estado.corte : Infinity;
     const t = Math.max(0, Math.min(Number.isFinite(d.t) ? d.t : d.segundos, tope));
     const kMax = Math.floor(Math.min(t, d.segundos) + 1e-9);
-    const pos = k => d.x0 + d.v * k;
-    const g = { d, X, t, kMax, x: pos(t), rotulos: [], cuerpos: [] };
+    // Con aceleración: x = x₀ + v·t + ½·a·t²; si a va contra v, se detiene en tAlto y se queda ahí (no retrocede).
+    const acel = Number.isFinite(d.a) ? d.a : 0;
+    const tAlto = acel && d.v && acel * d.v < 0 ? -d.v / acel : Infinity;
+    const pos = acel ? k => { const q = Math.min(k, tAlto); return d.x0 + d.v * q + acel * q * q / 2; } : k => d.x0 + d.v * k;
+    const vel = acel ? k => (k >= tAlto - 1e-9 ? 0 : d.v + acel * k) : () => d.v;
+    const pxv = d.crece ? d.kFlecha * (AV.X1 - AV.X0) / (d.max - d.min) : 0;   // px por m/s de la flecha que crece
+    const g = { d, X, t, kMax, x: pos(t), vt: vel(t), acel, tAlto, pos, vel, pxv, rotulos: [], cuerpos: [] };
     // Rótulos de tiempo: uno por segundo, sin pisarse; el del último segundo siempre queda.
     const tiempos = [];
     if (d.rotulos && d.vehiculo !== false) for (let k = 0; k <= kMax; k++) tiempos.push(cajaTxt(X(pos(k)), AV.TIEMPO, `${k} s`, 'middle'));
@@ -135,14 +153,43 @@
     g.tiempos = quedan.reverse();
     g.rotulos.push(...g.tiempos);
     // Flecha de la velocidad, bajo la combi firme, con su rapidez; el rótulo va del lado de la punta si cabe.
-    if (d.vehiculo !== false && d.flecha && d.v) {
-      const cx = X(g.x), dir = d.v > 0 ? 1 : -1, L = 30, x2 = cx + dir * L;
-      const txt = d.flechaTexto || `${fmt(Math.abs(d.v))} m/s`, w = T.ancho(txt, alto14, 700);
+    const vt = g.vt, L = d.crece ? pxv * Math.abs(vt) : 30;
+    if (d.vehiculo !== false && d.flecha && vt && L >= 2) {
+      const cx = X(g.x), dir = vt > 0 ? 1 : -1, x2 = cx + dir * L;
+      const txt = d.flechaTexto || `${fmt(Math.abs(vt))} m/s`, w = T.ancho(txt, alto14, 700);
       let lx = dir > 0 ? x2 + 6 : x2 - 6, ancla = dir > 0 ? 'start' : 'end';
       if (dir > 0 && lx + w > W - 4) { lx = cx - 6; ancla = 'end'; }
       if (dir < 0 && lx - w < 4) { lx = cx + 6; ancla = 'start'; }
       g.flecha = { x1: cx, x2, y: AV.FLECHA, txt, caja: cajaTxt(lx, AV.FLECHA + 5, txt, ancla, alto14, 700), ancla, lx };
       g.rotulos.push(g.flecha.caja);
+    }
+    // Con `crece`, cada combi tenue lleva la flecha de su velocidad en ese segundo, tenue y sin rótulo.
+    g.tenues = [];
+    if (d.crece && d.vehiculo !== false && d.flecha && d.fantasmas) for (let k = 0; k <= kMax; k++) {
+      const vk = vel(k), Lk = pxv * Math.abs(vk);
+      if (Math.abs(k - t) > 1e-9 && vk && Lk >= 2) g.tenues.push({ k, x1: X(pos(k)), x2: X(pos(k)) + (vk > 0 ? 1 : -1) * Lk });
+    }
+    // Una flecha tenue que se montaría en la siguiente (la combi firme recién salió de ahí, o frena fuerte) no se dibuja:
+    // de la última hacia atrás, cada una tiene que terminar antes de donde empieza la que sigue.
+    for (let i = g.tenues.length - 1, sig = g.flecha; i >= 0; i--) {
+      const fl = g.tenues[i], dir = fl.x2 > fl.x1 ? 1 : -1;
+      if (sig && (dir > 0 ? fl.x2 > sig.x1 : fl.x2 < sig.x1)) g.tenues.splice(i, 1);
+      else sig = fl;
+    }
+    // La flecha de la aceleración, sobre el techo de la combi firme (mientras no se detuvo). Si se saldría del lienzo,
+    // se corre sin dejar de estar sobre la combi.
+    if (d.vehiculo !== false && d.flechaA && estado.flechaA !== false && acel && t < tAlto - 1e-9) {
+      const cx = X(g.x), dir = acel > 0 ? 1 : -1, LA = 26;
+      // Sale 5 px corrida del centro de la combi, para no cruzar el poste de un lugar donde está la combi.
+      let x1 = cx + dir * 5, x2 = cx + dir * (5 + LA);
+      const lo = Math.min(x1, x2), hi = Math.max(x1, x2), corre = lo < 8 ? 8 - lo : hi > W - 8 ? W - 8 - hi : 0;
+      x1 += corre; x2 += corre;
+      const txt = (typeof d.flechaA === 'object' && d.flechaA.texto) || 'a', w = T.ancho(txt, alto14, 700);
+      let lx = dir > 0 ? x2 + 6 : x2 - 6, ancla = dir > 0 ? 'start' : 'end';
+      if (dir > 0 && lx + w > W - 4) { lx = x1 - 6; ancla = 'end'; }
+      if (dir < 0 && lx - w < 4) { lx = x1 + 6; ancla = 'start'; }
+      g.flechaA = { x1, x2, y: AV.ACEL, dir, txt, ancla, caja: cajaTxt(lx, AV.ACEL + 5, txt, ancla, alto14, 700) };
+      g.rotulos.push(g.flechaA.caja);
     }
     g.lugares = (d.lugares || []).map(l => {
       const px = X(l.en), w = T.ancho(l.texto, alto14), der = px + 10 + w <= W - 4;
@@ -222,16 +269,24 @@
       // un tramo por segundo, en el color de la velocidad, con su marca al final; y la marca de la salida
       if (d.rotulos || g.kMax >= 1) s += `<line x1="${n(X(d.x0))}" y1="${AV.TRAMO - 6}" x2="${n(X(d.x0))}" y2="${AV.TRAMO + 6}" stroke="${c}" stroke-width="2"/>`;
       for (let k = 1; k <= g.kMax; k++) {
-        const a = X(d.x0 + d.v * (k - 1)), b = X(d.x0 + d.v * k);
+        const a = X(g.pos(k - 1)), b = X(g.pos(k));
         s += `<line x1="${n(a)}" y1="${AV.TRAMO}" x2="${n(b)}" y2="${AV.TRAMO}" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`
           + `<line x1="${n(b)}" y1="${AV.TRAMO - 6}" x2="${n(b)}" y2="${AV.TRAMO + 6}" stroke="${c}" stroke-width="2"/>`;
       }
       for (const b of g.tiempos) s += txt(b, { ancla: 'middle', color: d.colorT });
       // combis: las de cada segundo, tenues; la del instante t, firme
-      if (d.fantasmas) for (let k = 0; k <= g.kMax; k++) if (Math.abs(k - g.t) > 1e-9) s += combiAv(X(d.x0 + d.v * k), AV.CARRIL, true, izq);
-      s += combiAv(X(g.x), AV.CARRIL, false, izq);
+      if (d.fantasmas) for (let k = 0; k <= g.kMax; k++) if (Math.abs(k - g.t) > 1e-9) s += combiAv(X(g.pos(k)), AV.CARRIL, true, g.vel(k) ? g.vel(k) < 0 : izq);
+      s += combiAv(X(g.x), AV.CARRIL, false, g.vt ? g.vt < 0 : izq);
+      for (const f of g.tenues) s += `<g class="kit-fantasma" opacity="0.35">${T.flecha(f.x1, AV.FLECHA, f.x2, AV.FLECHA, { color: d.color, grosor: 3 })}</g>`;
       if (g.flecha) s += T.flecha(g.flecha.x1, AV.FLECHA, g.flecha.x2, AV.FLECHA, { color: d.color, grosor: 3 })
         + txt(g.flecha.caja, { ancla: g.flecha.ancla, peso: 700, color: d.color });
+      // La aceleración: línea y punta abierta (dos trazos), para que no se confunda con la flecha llena de v.
+      if (g.flechaA) {
+        const f = g.flechaA, k = T.color(d.colorA), y = f.y;
+        s += `<g class="fis-aceleracion"><line x1="${n(f.x1)}" y1="${y}" x2="${n(f.x2 - f.dir * 1.5)}" y2="${y}" stroke="${k}" stroke-width="3" stroke-linecap="round"/>`
+          + `<path d="M${n(f.x2 - f.dir * 9)} ${y - 6}L${n(f.x2)} ${y}L${n(f.x2 - f.dir * 9)} ${y + 6}" fill="none" stroke="${k}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>`
+          + txt(f.caja, { ancla: f.ancla, peso: 700, color: d.colorA });
+      }
     }
     return T.svg(W, H, s, { alt: altAv(d, g) });
   }
@@ -243,7 +298,10 @@
     let s = `Una avenida recta con una regla de metros${lugar ? ` que empieza en el ${lugar.texto.toLowerCase()}` : ''}.`;
     if (d.vehiculo === false) return s;
     const hacia = d.v > 0 ? 'hacia la derecha' : d.v < 0 ? 'hacia la izquierda' : 'quieta';
-    s += ` La combi sale de x = ${fmt(d.x0)} m y va ${d.v ? `a ${fmt(Math.abs(d.v))} m/s ` : ''}${hacia}.`;
+    const acel = Number.isFinite(d.a) ? d.a : 0;
+    if (acel && !d.v) s += ` La combi sale de x = ${fmt(d.x0)} m y arranca hacia la ${acel > 0 ? 'derecha' : 'izquierda'}.`;
+    else s += ` La combi sale de x = ${fmt(d.x0)} m y va ${d.v ? `a ${fmt(Math.abs(d.v))} m/s ` : ''}${hacia}.`;
+    if (acel) s += ` Su velocidad ${acel * d.v < 0 ? 'baja' : 'sube'} ${fmt(Math.abs(acel))} m/s en cada segundo${acel * d.v < 0 ? ', hasta detenerse si no se acaba el tramo' : ''}.`;
     if (g.kMax >= 1) s += ` Deja una marca en cada segundo, hasta los ${g.kMax} s.`;
     return s;
   }

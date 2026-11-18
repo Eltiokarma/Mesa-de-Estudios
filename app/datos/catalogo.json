@@ -103,7 +103,7 @@
        "/nucleo/kit/piezas/fis-balanza-dim.js"
       ],
       "ideas": 3,
-      "terminos": 29
+      "terminos": 31
      }
     },
     {
@@ -239,10 +239,11 @@
       "requiere": [
        "/nucleo/kit/piezas/pista.js",
        "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/torre.js"
+       "/nucleo/kit/piezas/torre.js",
+       "/nucleo/kit/piezas/fis-combi.js"
       ],
-      "ideas": 2,
-      "terminos": 14
+      "ideas": 6,
+      "terminos": 18
      }
     },
     {
@@ -341,7 +342,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -384,7 +385,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -468,7 +469,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -556,7 +557,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -597,7 +598,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -817,7 +818,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 39
+      "terminos": 40
      }
     },
     {
@@ -861,7 +862,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -907,7 +908,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 6,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -951,7 +952,7 @@
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -1040,7 +1041,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
-      "terminos": 39
+      "terminos": 40
      }
     }
    ]
