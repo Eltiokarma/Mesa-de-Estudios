@@ -8,7 +8,7 @@
  * nueva), 2 «Hibridación y enlaces sigma y pi» (`hibridacion`, nueva), 3 «Polaridad de la molécula» (`forma-polaridad`,
  * viene de Enlace químico con otra predicción) y 4 «Fuerzas entre moléculas» (`fuerzas-intermoleculares`, viene de Enlace
  * químico). El avance de esas dos ideas, de las mesas `molecula-gira` y `dos-dipolos` y de sus palabras se migra con la
- * partición partidoEN (nucleo/avance.js). No declara calidad: 2; su prueba simula la marca.
+ * partición partidoEN (nucleo/avance.js). Lleva calidad: 2 desde el 19 nov (lector en frío y auditor).
  *
  * Mapa de colores (propuesta §8B, un color fijo por magnitud): el dipolo (la flecha) naranja (c-o; así lo dibujan
  * quim-molecula y quim-molecula-3d), el ángulo turquesa (c-i), los pares libres y los electrones violeta (c-f), la carga
@@ -84,6 +84,10 @@
     estado: { dipolos: !!o.dipolos, pares: o.pares !== false } };
   }
   const FORMA = k => M.vsepr(k).geometria;
+  // Predice se dibuja quieta (una sola pieza para la pregunta y la respuesta): la respuesta es la molécula en 3D vista en
+  // perspectiva, con la proyección de quim-molecula-3d (se pide al revelar, cuando ya están cargadas las piezas).
+  // Sin la pieza cargada (al armar el catálogo) queda la molécula en 3D, que la app también dibuja quieta.
+  const proyeccion = m => { const P = Kit.piezas && Kit.piezas['quim-molecula-3d']; return P ? { pieza: 'quim-molecula', datos: Object.assign(P.plano(m.datos, m.estado), { alt: m.datos.alt }), estado: {} } : m; };
 
   // ---------- Idea 1 (nueva, 19 nov): forma por repulsión de pares ----------
   // Propuesta B1. Objeto de la primera pantalla: globos amarrados por el nudo (quim-enlace, de prueba; analogía).
@@ -96,7 +100,14 @@
   const JUEGO_N = { 2: 'BeCl2', 3: 'BF3', 4: 'CH4', 5: 'PCl5', 6: 'SF6' };
   const angTxt = k => M.vsepr(k).angulos.filter(a => a < 179.9).map(grad).join(' y ') || '180°';
   const D1 = { region: 'Región de electrones: cada enlace (simple, doble o triple) o par libre del átomo central',
-    formas: 'Con 2 regiones, lineal; con 3, trigonal plana; con 4, tetraédrica (las regiones; la forma se nombra por los átomos)' };
+    formas: 'Con 2 regiones, lineal; con 3, trigonal plana; con 4, tetraédrica (las regiones; la forma se nombra por los átomos)',
+    // Auditoría (19 nov, A1 y M3): los nombres con pares libres y las formas de 5 y 6 regiones van en Datos.
+    nombres: 'Con pares libres: 4 regiones y 1 par, piramidal trigonal; 4 regiones y 2 pares, o 3 y 1, angular',
+    reg56: 'Con 5 regiones, bipirámide trigonal; con 6, octaédrica (las regiones)',
+    exp5: 'Con 5 regiones (pares al ecuador): 1 par, balancín; 2 pares, forma de T; 3 pares, lineal',
+    exp6: 'Con 6 regiones (pares opuestos): 1 par, pirámide cuadrada; 2 pares, cuadrada plana',
+    lewis: 'Pares libres del central: arma la estructura de Lewis (completa octetos; el H con 2) y cuenta lo que sobra' };
+  const datosForma = (n, m) => (n + m >= 5 ? [D1.region, D1.reg56, D1.exp5, D1.exp6] : m ? [D1.region, D1.formas, D1.nombres] : [D1.region, D1.formas]);
   const FORMAS_TODAS = ['lineal', 'angular', 'trigonal plana', 'piramidal trigonal', 'tetraédrica', 'bipirámide trigonal', 'balancín', 'forma de T', 'octaédrica', 'pirámide cuadrada', 'cuadrada plana'];
   const FORMA_A = ['H2O', 'PCl3', 'SO2', 'CH2O', 'CCl4', 'H2S', 'NF3', 'BCl3', 'HCN', 'SCl2', 'SF4', 'ClF3', 'XeF4', 'BrF5', 'XeF2'];
   const FORMA_R = ['H2O', 'PCl3', 'SO2', 'XeF4'];
@@ -107,7 +118,7 @@
     const dom = v.geometriaDominios, plano = { 2: 'lineal', 3: 'trigonal plana', 4: 'cuadrada plana', 5: 'bipirámide trigonal', 6: 'octaédrica' }[n];
     return {
       pregunta: `El átomo central del ${L.formula} está unido a ${n} átomos y ${m === 0 ? 'no tiene pares libres' : `tiene ${m} par${m > 1 ? 'es' : ''} libre${m > 1 ? 's' : ''}`}. ¿Qué forma tiene la molécula?`,
-      datos: [D1.region, D1.formas],
+      datos: datosForma(n, m),
       opciones: ops(fm, [dom, 'QM-FORMA-DOMINIOS', `Esa es la forma de las ${n + m} regiones. La molécula se nombra solo por los átomos.`],
         [plano, 'EN8', 'Así se ve en el papel. En 3D, las regiones se alejan más.'], [FORMA({ 2: 'CO2', 3: 'BF3', 4: 'CH4', 5: 'PCl5', 6: 'SF6' }[n]), 'QM-FORMA-LIGANDOS', 'Bien contar los átomos. Pero los pares libres también ocupan lugar.'],
         ...r.baraja(FORMAS_TODAS.filter(x => x !== fm)).slice(0, 3).map(x => [x, 'EN9', 'Sería así con otro número de regiones o de pares libres.'])),
@@ -118,7 +129,7 @@
     const k = r.de(['H2O', 'PCl3', 'CO2', 'CH2O', 'HCN', 'SO2', 'SF4', 'XeF2', 'CCl4', 'BF3']), L = M.lewis(k), n = L.ligandos.length, m = L.paresLibres, multi = L.ligandos.some(x => x.orden > 1);
     return {
       pregunta: `¿Cuántas regiones de electrones tiene el átomo central del ${L.formula}?`,
-      datos: [valTxt(ligTxt(L)), D1.region],
+      datos: [valTxt(ligTxt(L)), D1.region, D1.lewis],
       opciones: ops(String(n + m), [String(n), 'QM-FORMA-LIGANDOS', 'Bien contar los enlaces. Pero cada par libre también es una región.'],
         multi ? [String(L.paresEnlazantes + m), 'QM-REGION-DOBLE', 'Un enlace doble o triple cuenta como una sola región.'] : [String(n + 2 * m), 'QM-REGION-PARES', 'Un par libre es una región, no dos.'],
         [String(4), 'QM-REGION-OCTETO', 'Bien pensar en el octeto. Pero se cuentan enlaces y pares, sin importar cuántos electrones.'],
@@ -186,7 +197,7 @@
       respuesta: ['3 regiones; trigonal plana'] },
     { nivel: 2, titulo: 'El fósforo con tres cloros',
       enunciado: 'En el PCl₃, el fósforo forma tres enlaces y tiene un par libre. ¿Qué forma tiene la molécula?',
-      datos: [D1.region, D1.formas],
+      datos: [D1.region, D1.formas, D1.nombres],
       solucion: [
         { texto: 'Cuatro regiones: se ordenan como un tetraedro.', ecuacion: ['3 + 1 = 4'] },
         { texto: 'Sin contar el par, los átomos forman una pirámide de base triangular.' },
@@ -194,7 +205,7 @@
       respuesta: ['Piramidal trigonal'] },
     { nivel: 2, titulo: 'Un gas de los volcanes',
       enunciado: 'El azufre del SO₂ tiene dos enlaces dobles con oxígeno y un par libre. ¿Qué forma tiene la molécula?',
-      datos: [D1.region, D1.formas],
+      datos: [D1.region, D1.formas, D1.nombres],
       solucion: [
         { texto: 'Cada doble es una región y el par, otra: 3 regiones, en un plano.' },
         { texto: 'Sin contar el par, los tres átomos no quedan en línea: forma angular.' },
@@ -202,7 +213,7 @@
       respuesta: ['Angular'] },
     { nivel: 2, titulo: 'Dos moléculas de tres átomos',
       enunciado: 'El BeCl₂ y el H₂O tienen tres átomos cada una. El Be no tiene pares libres; el O tiene dos. ¿Qué forma tiene cada una?',
-      datos: [D1.region, D1.formas],
+      datos: [D1.region, D1.formas, D1.nombres],
       solucion: [
         { texto: 'BeCl₂: 2 regiones, opuestas: lineal.' },
         { texto: 'H₂O: 4 regiones, como un tetraedro; sin los pares, los tres átomos quedan en ángulo.' },
@@ -229,11 +240,11 @@
     { nivel: 3, titulo: 'Tres moléculas, tres formas',
       enunciado: '¿Qué forma tienen el BF₃, el NH₃ y el H₂O, en ese orden?',
       alternativas: ['Las tres trigonales planas', 'Trigonal plana, piramidal y angular', 'Piramidal, trigonal plana y lineal', 'Trigonal plana, tetraédrica y lineal', 'Tetraédrica, piramidal y angular'],
-      datos: [D1.region, D1.formas, 'Pares libres del central: B 0; N 1; O 2'],
+      datos: [D1.region, D1.formas, D1.nombres, 'Pares libres del central: B 0; N 1; O 2'],
       solucion: [
         { texto: 'BF₃: 3 regiones, todas átomos. NH₃: 4 regiones, una es par libre. H₂O: 4 regiones, dos son pares.' },
         { texto: ['La ', letra('A'), ' las lee planas, como en el papel. La ', letra('C'), ' invierte las dos primeras.'] },
-        { texto: ['La ', letra('D'), ' nombra la forma de las regiones del NH₃ y alinea el agua. La ', letra('E'), ' le da al BF₃ un par que no tiene.'] },
+        { texto: ['La ', letra('D'), ' nombra la forma de las regiones del NH₃ y alinea el agua. La ', letra('E'), ' le da al BF₃ cuatro regiones, como si tuviera un par libre.'] },
       ],
       respuesta: [letra('B'), ', trigonal plana, piramidal y angular'] },
     { nivel: 3, titulo: 'Un ángulo que se cierra',
@@ -251,8 +262,9 @@
       alternativas: ['Trigonal plana', 'Piramidal trigonal', 'Forma de T', 'Bipirámide trigonal', 'Angular'],
       datos: [D1.region, 'Con 5 regiones: bipirámide trigonal; dos pares libres van al ecuador'],
       solucion: [
-        { texto: 'Cinco regiones. Los dos pares van al ecuador; los tres F quedan en una T: dos arriba y abajo, uno al costado.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' olvidan los pares. La ', letra('B'), ' cuenta un solo par. La ', letra('D'), ' nombra las regiones.'] },
+        { texto: 'Cinco regiones. Los dos pares van al ecuador; los tres F quedan en una T: uno arriba, uno abajo y uno al costado.' },
+        { texto: ['La ', letra('A'), ' olvida los pares. La ', letra('B'), ' cuenta un solo par. La ', letra('D'), ' nombra las regiones.'] },
+        { texto: ['La ', letra('E'), ' es la forma de una molécula de tres átomos; aquí hay cuatro.'] },
       ],
       respuesta: [letra('C'), ', forma de T'] },
     { nivel: 3, titulo: 'Verdadero o falso',
@@ -279,7 +291,7 @@
       tarjetas: [
         { titulo: 'Globos amarrados', texto: 'Amarra dos, tres o cuatro globos por el nudo: se acomodan solos, lo más lejos que pueden uno de otro. Los globos son solo una comparación: no tienen carga.',
           pieza: 'quim-enlace', dibujo: { pieza: 'quim-enlace', datos: { vista: 'objeto', objeto: 'globos', n: 4, nombre: 'Cuatro globos amarrados' }, estado: {} } },
-        { titulo: 'Regiones de electrones', texto: 'Alrededor del átomo central, cada enlace (simple, doble o triple) y cada par libre es una región de electrones. Las regiones se repelen, como los globos se empujan.' },
+        { titulo: 'Regiones de electrones', texto: 'Alrededor del átomo central, cada enlace (simple, doble o triple) y cada par libre es una región de electrones. Un par libre son dos electrones sin enlace, de la estructura de Lewis (Enlace químico). Las regiones se repelen, como los globos.' },
         { titulo: 'En tres dimensiones', texto: 'Una molécula no es plana como su dibujo de Lewis: sus átomos ocupan el espacio. En el juego la puedes girar con el dedo para verla de costado.' },
         { titulo: 'Qué mirar', texto: 'Cambia cuántas regiones rodean al átomo central y lee el ángulo de enlace entre dos vecinos. Gira la molécula para comprobarlo.' },
       ],
@@ -295,8 +307,8 @@
       },
       voz: 'Mira cómo se alejan los enlaces al sumar uno.',
       leyenda: [
-        { s: 'región', t: 'un enlace del átomo central' },
-        { s: An('°'), t: 'ángulo entre dos enlaces vecinos' },
+        { s: 'región', t: 'un enlace; un par libre también lo es' },
+        { s: An('109,5°'), t: 'ángulo entre dos enlaces vecinos' },
         { s: 'esfera', t: 'un átomo, con el color de su elemento' },
       ],
       controles: [{ id: 'n', etiqueta: 'Regiones', opciones: [2, 3, 4, 5, 6].map(n => ({ valor: n, texto: String(n) })), inicio: 4 }],
@@ -305,7 +317,7 @@
       minimo: 4,
     },
     predice: {
-      pieza: 'quim-molecula-3d',
+      pieza: 'quim-molecula',
       pregunta: 'El nitrógeno del NH₃ forma tres enlaces con hidrógeno y tiene además un par libre. ¿Qué forma tiene la molécula?',
       datos: ['Nitrógeno del NH₃: 3 enlaces y 1 par libre', 'En el papel se dibuja con los tres H alrededor del N'],
       voz: 'Piensa qué hace el par libre con los tres enlaces.',
@@ -315,8 +327,9 @@
         { id: 'tetra', texto: 'Tetraédrica, porque hay cuatro regiones', error: 'QM-FORMA-DOMINIOS', siFuera: 'Las cuatro regiones sí van en tetraedro. Pero la forma se nombra solo por los átomos.' },
         { id: 'angular', texto: 'Angular: el par libre dobla la molécula', error: 'EN9', siFuera: 'El par empuja, cierto. Pero hay tres H, no dos: no puede ser angular.' },
       ],
-      dibujo: mol3d('NH3', { soloCentral: true, alt: 'El átomo de nitrógeno solo: dónde quedan sus tres hidrógenos y su par libre es lo que se pregunta.' }),
-      revelar: mol3d('NH3'),
+      dibujo: { pieza: 'quim-molecula', datos: { atomos: [{ id: 'n', t: 'N', x: 0, y: 0 }, { id: 'h1', t: 'H', x: -1.1, y: 0 }, { id: 'h2', t: 'H', x: 1.1, y: 0 }, { id: 'h3', t: 'H', x: 0, y: 1.1 }],
+        enlaces: [{ a: 'n', b: 'h1' }, { a: 'n', b: 'h2' }, { a: 'n', b: 'h3' }], pares: [{ en: 'n', ang: -90, color: 'f' }], escala: 60, alto: 170, alt: 'El NH₃ como se dibuja en el papel: el N con sus tres H alrededor y un par libre. Su forma en el espacio es lo que se pregunta.' }, estado: {} },
+      get revelar() { return proyeccion(mol3d('NH3')); },
       coincide: 'Coincide: piramidal, con el par libre en la punta.',
       noCoincide: 'Es piramidal: el par libre ocupa la cuarta punta del tetraedro.',
     },
@@ -334,8 +347,8 @@
     },
     regla: {
       texto: 'Las regiones de electrones del átomo central, enlaces y pares libres, se alejan lo más posible. La forma molecular se nombra solo por los átomos.',
-      ecuacion: ['2 regiones: lineal, ', An('180°'), SEP, '3: trigonal plana, ', An('120°'), SEP, '4: tetraédrica, ', An('109,5°'), SEP, 'con pares libres: angular o piramidal'],
-      condicion: 'un enlace doble o triple cuenta como una región; con 5 o 6 regiones salen bipirámide, balancín, T, octaedro o cuadrada plana.',
+      ecuacion: ['2 regiones: lineal, ', An('180°'), SEP, '3: trigonal plana, ', An('120°'), SEP, '4: tetraédrica, ', An('109,5°'), SEP, '4 con 1 par: piramidal', SEP, '4 con 2 pares, o 3 con 1: angular'],
+      condicion: 'doble o triple: una región. Con 5: bipirámide, balancín, forma de T o lineal; con 6: octaédrica, pirámide cuadrada o cuadrada plana.',
       voz: 'Cuenta regiones; nombra por átomos.',
       dibujo: mol3d('H2O'),
     },
@@ -345,7 +358,7 @@
         const k = FORMA_R[s % FORMA_R.length], v = M.vsepr(k), L = M.lewis(k), n = L.ligandos.length, m = L.paresLibres;
         return {
           enunciado: `El átomo central del ${L.formula} está unido a ${n} átomos y tiene ${m} par${m > 1 ? 'es' : ''} libre${m > 1 ? 's' : ''}. ¿Qué forma tiene la molécula?`,
-          datos: [D1.region, D1.formas],
+          datos: datosForma(n, m),
           pasos: [
             { tipo: 'pide', texto: 'Piden la forma de la molécula: dónde quedan los átomos.' },
             { tipo: 'datos', texto: `El ${L.central} tiene ${n} enlaces y ${m} par${m > 1 ? 'es' : ''} libre${m > 1 ? 's' : ''}.` },
@@ -383,7 +396,7 @@
     CH4: { t: 'CH₄', atomos: [Ah('c', 'C', 0, 0), Ah('h1', 'H', 0, -1.1), Ah('h2', 'H', 0, 1.1), Ah('h3', 'H', -1.1, 0), Ah('h4', 'H', 1.1, 0)], enlaces: [Bh('c', 'h1'), Bh('c', 'h2'), Bh('c', 'h3'), Bh('c', 'h4')], pares: [], hib: 'sp3' },
     C2H6: { t: 'C₂H₆', atomos: [Ah('c1', 'C', -0.7, 0), Ah('c2', 'C', 0.7, 0), Ah('h1', 'H', -0.7, -1.1), Ah('h2', 'H', -0.7, 1.1), Ah('h3', 'H', -1.8, 0), Ah('h4', 'H', 0.7, -1.1), Ah('h5', 'H', 0.7, 1.1), Ah('h6', 'H', 1.8, 0)],
       enlaces: [Bh('c1', 'c2'), Bh('c1', 'h1'), Bh('c1', 'h2'), Bh('c1', 'h3'), Bh('c2', 'h4'), Bh('c2', 'h5'), Bh('c2', 'h6')], pares: [], hib: 'sp3' },
-    C2H4: { t: 'C₂H₄', atomos: [Ah('c1', 'C', -0.65, 0), Ah('c2', 'C', 0.65, 0), Ah('h1', 'H', -1.4, -0.85), Ah('h2', 'H', -1.4, 0.85), Ah('h3', 'H', 1.4, -0.85), Ah('h4', 'H', 1.4, 0.85)],
+    C2H4: { t: 'C₂H₄', atomos: [Ah('c1', 'C', -0.65, 0), Ah('c2', 'C', 0.65, 0), Ah('h1', 'H', -1.15, -0.866), Ah('h2', 'H', -1.15, 0.866), Ah('h3', 'H', 1.15, -0.866), Ah('h4', 'H', 1.15, 0.866)],
       enlaces: [Bh('c1', 'c2', 2), Bh('c1', 'h1'), Bh('c1', 'h2'), Bh('c2', 'h3'), Bh('c2', 'h4')], pares: [], hib: 'sp2' },
     CH2O: { t: 'CH₂O', atomos: [Ah('c', 'C', 0, 0.2), Ah('o', 'O', 0, -1.0), Ah('h1', 'H', -1, 0.9), Ah('h2', 'H', 1, 0.9)], enlaces: [Bh('c', 'o', 2), Bh('c', 'h1'), Bh('c', 'h2')],
       pares: [{ en: 'o', ang: -135, color: 'f' }, { en: 'o', ang: -45, color: 'f' }], hib: 'sp2' },
@@ -397,7 +410,8 @@
   const JUEGO_H = ['CH4', 'C2H6', 'C2H4', 'CH2O', 'CO2'];
   const MAX_PI = Math.max(...JUEGO_H.map(pi));
   const D2 = { hib: 'Hibridación por regiones del átomo: 2, sp; 3, sp²; 4, sp³; 5, sp³d; 6, sp³d²', sp: 'Enlace simple: 1 sigma (σ); doble: 1 σ y 1 pi (π); triple: 1 σ y 2 π',
-    epi: 'Cada enlace pi tiene 2 electrones' };
+    epi: 'Cada enlace pi tiene 2 electrones',
+    rayas: 'Cada raya es un enlace; cada H escrito junto a un C (CH₃, H₂C) es un enlace C–H más' };
   // Moléculas escritas: [fórmula, σ, π].
   const SP_A = [['H₂C=CH₂', 5, 1, 4], ['H₂C=CH–CH₃', 8, 1, 6], ['O=C=O', 2, 2, 0], ['H–C≡N', 2, 2, 1], ['H₂C=O', 3, 1, 2], ['CH₃–CH₃', 7, 0, 6], ['N≡N', 1, 2, 0], ['H₂C=C=CH₂', 6, 2, 4]];
   const SP_R = [['H₂C=CH–CH=CH₂', 9, 2], ['HC≡C–CH₃', 6, 2], ['CH₃–C≡N', 5, 2]];
@@ -406,7 +420,7 @@
     const k = r.de(['CH4', 'BF3', 'H2O', 'NH3', 'CO2', 'BeCl2', 'CH2O', 'PCl5', 'SF6', 'SO2', 'HCN', 'XeF4']), v = M.vsepr(k), L = M.lewis(k), n = L.ligandos.length, m = L.paresLibres;
     const porLig = M.vsepr({ n, m: 0 }).hibridacion, porPares = L.paresEnlazantes + m;
     return {
-      pregunta: `¿Qué hibridación tiene el átomo central del ${L.formula}, con ${n} enlaces y ${m === 0 ? 'ningún' : m} par${m === 1 ? '' : 'es'} libre${m === 1 ? '' : 's'}?`,
+      pregunta: `¿Qué hibridación tiene el átomo central del ${L.formula}, con ${n} enlaces y ${m === 0 ? 'ningún par libre' : `${m} par${m === 1 ? '' : 'es'} libre${m === 1 ? '' : 's'}`}?`,
       datos: [D2.hib, 'Región: cada enlace (simple, doble o triple) o par libre'],
       opciones: ops(hTxt(v.hibridacion), m ? [hTxt(porLig), 'QM-FORMA-LIGANDOS', 'Bien contar los enlaces. Pero los pares libres también son regiones.'] : ['sp³', 'QM-HIB-SIEMPRE-SP3', 'Bien pensar en el carbono del metano. Pero aquí son otras regiones.'],
         porPares !== n + m && porPares <= 6 ? [hTxt(M.vsepr({ n: porPares, m: 0 }).hibridacion), 'QM-HIB-ENLACES', 'Un enlace doble o triple es una sola región, no dos o tres.'] : ['sp²', 'QM-HIB-CUENTA', 'Sería sp² con tres regiones.'],
@@ -419,7 +433,7 @@
     const tx = (a, b) => `${a} σ y ${b} π`;
     return {
       pregunta: `¿Cuántos enlaces sigma (σ) y cuántos pi (π) tiene el ${fo}?`,
-      datos: [D2.sp, 'Cada raya de la fórmula es un enlace'],
+      datos: [D2.sp, D2.rayas],
       opciones: ops(tx(s, p), [tx(s + p, 0), 'QM-PI-SIGMA', 'Bien contar los pares. Pero el segundo y el tercero de un múltiple son pi.'],
         [tx(s, 2 * p), 'QM-PI-ELECTRONES', 'Bien los sigma. Pero contaste electrones pi; se piden enlaces.'],
         nH ? [tx(s - nH, p), 'QM-SIGMA-SOLO-CC', 'Faltan los enlaces con los H: también son sigma.'] : [tx(s, p + 1), 'QM-PI-CUENTA', 'Sobra un pi: revisa cuántos dobles y triples hay.'],
@@ -492,7 +506,7 @@
       respuesta: ['sp²'] },
     { nivel: 2, titulo: 'Tres carbonos y un doble',
       enunciado: '¿Cuántos enlaces sigma y pi tiene el H₂C=CH–CH₃?',
-      datos: [D2.sp, 'Cada raya de la fórmula es un enlace'],
+      datos: [D2.sp, D2.rayas],
       solucion: [
         { texto: 'Cuento los enlaces: seis C–H, un C=C y un C–C.', ecuacion: ['6 + 1 + 1 = 8 σ'] },
         { texto: 'El doble suma un pi.', ecuacion: ['1 π'] },
@@ -543,7 +557,7 @@
     { nivel: 3, titulo: 'Una cadena con dos dobles',
       enunciado: '¿Cuántos enlaces sigma y electrones pi tiene el H₂C=CH–CH=CH₂?',
       alternativas: ['9 σ y 2 electrones pi', '9 σ y 4 electrones pi', '11 σ y 0 electrones pi', '7 σ y 4 electrones pi', '9 σ y 8 electrones pi'],
-      datos: [D2.sp, D2.epi, 'Cada raya de la fórmula es un enlace'],
+      datos: [D2.sp, D2.epi, D2.rayas],
       solucion: [
         { texto: 'Seis C–H y tres C–C: nueve sigma. Dos dobles: dos pi, con 2 electrones cada uno.', ecuacion: ['6 + 3 = 9 σ', SEP, '2 · 2 = ', El('4 e⁻ π')] },
         { texto: ['La ', letra('A'), ' cuenta enlaces pi, no electrones. La ', letra('C'), ' toma cada doble como dos sigma.'] },
@@ -556,17 +570,17 @@
       datos: [D2.hib, 'Formas: 4 regiones tetraédrica; 5 bipirámide trigonal; 6 octaédrica'],
       solucion: [
         { texto: 'Seis regiones, todas con átomos.', ecuacion: ['6 regiones → sp³d², octaédrica'] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' creen que el S cumple el octeto. La ', letra('B'), ' cuenta una región menos.'] },
+        { texto: ['La ', letra('A'), ' cree que el S cumple el octeto (4 regiones). La ', letra('D'), ' cuenta la mitad de las regiones. La ', letra('B'), ' cuenta una región menos.'] },
         { texto: ['La ', letra('E'), ' es la forma del XeF₄, con dos pares libres.'] },
       ],
       respuesta: [letra('C'), ', sp³d² y octaédrica'] },
     { nivel: 3, titulo: 'Tres carbonos seguidos',
       enunciado: 'En el H₂C=C=CH₂, ¿qué hibridación tiene cada carbono, de izquierda a derecha?',
-      alternativas: ['sp², sp y sp²', 'sp³, sp² y sp³', 'sp², sp² y sp²', 'sp, sp y sp', 'sp², sp³ y sp²'],
+      alternativas: ['sp², sp y sp²', 'sp³, sp³ y sp³', 'sp², sp² y sp²', 'sp, sp y sp', 'sp², sp³ y sp²'],
       datos: [D2.hib, 'Región: cada enlace (simple, doble o triple) o par libre'],
       solucion: [
         { texto: 'Los de las puntas tienen dos C–H y un doble: 3 regiones. El del medio tiene dos dobles: 2 regiones.', ecuacion: ['sp²', SEP, 'sp', SEP, 'sp²'] },
-        { texto: ['La ', letra('B'), ' y la ', letra('E'), ' cuentan los pares compartidos como regiones. La ', letra('C'), ' olvida que el del medio tiene dos dobles.'] },
+        { texto: ['La ', letra('B'), ' cuenta cada par compartido como región. La ', letra('E'), ', solo en el del medio. La ', letra('C'), ' olvida que el del medio tiene dos dobles.'] },
         { texto: ['La ', letra('D'), ' le da a todos lo del medio.'] },
       ],
       respuesta: [letra('A'), ', sp², sp y sp²'] },
@@ -592,9 +606,9 @@
     actividad: 'Contar regiones y enlaces sigma y pi en cinco moléculas.',
     lee: {
       tarjetas: [
-        { titulo: 'El soplete', texto: 'Un soplete de soldar quema un gas de carbono e hidrógeno con oxígeno: su llama llega a unos 3000 °C. Sus dos carbonos están unidos por un enlace múltiple.',
+        { titulo: 'El soplete', texto: 'Un soplete de soldar quema acetileno, un gas de carbono e hidrógeno, con oxígeno: su llama llega a unos 3000 °C. Sus dos carbonos están unidos por un enlace múltiple.',
           pieza: 'quim-enlace', dibujo: { pieza: 'quim-enlace', datos: { vista: 'objeto', objeto: 'soplete', nombre: 'Un soplete de soldar' }, estado: {} } },
-        { titulo: 'Orbitales que se mezclan', texto: 'Para apuntar hacia sus regiones de electrones, un átomo mezcla sus orbitales s y p: eso es la hibridación. Su nombre dice cuántos se mezclaron: sp, sp² o sp³.' },
+        { titulo: 'Orbitales que se mezclan', texto: 'Para apuntar hacia sus regiones de electrones, un átomo mezcla sus orbitales s y p: eso es la hibridación. Su nombre cuenta los orbitales mezclados, uno por región: sp³ junta un s y tres p (cuatro); sp², un s y dos p (tres).' },
         { titulo: 'Sigma y pi', texto: 'El primer par que comparten dos átomos va justo entre ellos: es el enlace sigma (σ). El segundo y el tercero, en un doble o un triple, van por los costados: son enlaces pi (π).' },
         { titulo: 'Qué mirar', texto: 'En el juego eliges una molécula. Cuenta las regiones de cada carbono y cuántos enlaces sigma y pi tiene en total.' },
       ],
@@ -602,7 +616,7 @@
     ejemplos: EJEMPLOS_HIB,
     juega: {
       pieza: 'quim-molecula',
-      consigna: 'Cada carbono apunta hacia sus regiones de electrones. Recorre las cinco moléculas y cuenta los enlaces sigma y pi.',
+      consigna: 'Recorre las cinco moléculas. Cuenta las regiones de cada carbono y los enlaces sigma y pi de toda la molécula.',
       mision: {
         texto: 'Encuentra la molécula que tiene dos enlaces pi.',
         logrado: v => pi(v.k) === MAX_PI,
@@ -611,7 +625,7 @@
       voz: 'Todo enlace trae un sigma; el doble, además un pi.',
       leyenda: [
         { s: 'σ', t: 'enlace sigma: hay uno en todo enlace' },
-        { s: 'π', t: 'enlace pi: el segundo de un doble' },
+        { s: 'π', t: 'enlace pi: extra del doble y del triple' },
         { s: 'sp³', t: 'hibridación: orbitales mezclados del átomo' },
       ],
       controles: [{ id: 'k', etiqueta: 'Molécula', opciones: JUEGO_H.map(k => ({ valor: k, texto: HC[k].t })), inicio: 'CH4' }],
@@ -650,7 +664,7 @@
     },
     regla: {
       texto: 'Las regiones de un átomo dan su hibridación: 2, sp; 3, sp²; 4, sp³. Todo enlace tiene un sigma; el doble suma un pi y el triple, dos.',
-      ecuacion: ['2: sp', SEP, '3: sp²', SEP, '4: sp³', SEP, '5: sp³d; 6: sp³d²', SEP, 'doble: 1 σ + 1 π; triple: 1 σ + 2 π'],
+      ecuacion: ['2: sp', SEP, '3: sp²', SEP, '4: sp³', SEP, '5: sp³d; 6: sp³d²', SEP, 'doble:\u00a01\u00a0σ\u00a0+\u00a01\u00a0π; triple:\u00a01\u00a0σ\u00a0+\u00a02\u00a0π'],
       condicion: 'los pares libres cuentan como regiones; un enlace doble o triple, como una sola. Cada pi tiene 2 electrones.',
       voz: 'Regiones para la hibridación; rayas para sigma y pi.',
       dibujo: hcDib('C2H4'),
@@ -661,7 +675,7 @@
         const [fo, sg, p] = SP_R[s % SP_R.length];
         return {
           enunciado: `¿Cuántos enlaces sigma (σ) y pi (π) tiene el ${fo}?`,
-          datos: [D2.sp, 'Cada raya de la fórmula es un enlace'],
+          datos: [D2.sp, D2.rayas],
           pasos: [
             { tipo: 'pide', texto: `Piden cuántos enlaces sigma y cuántos pi tiene el ${fo}.` },
             { tipo: 'datos', texto: 'La fórmula muestra cada enlace: los CH₃ y CH₂ esconden sus enlaces C–H, uno por cada H.' },
@@ -675,7 +689,7 @@
     },
     ahoraTu: {
       pieza: 'quim-molecula',
-      voz: 'Primero las regiones; después cuenta sigma y pi.',
+      voz: 'Regiones para la hibridación; enlaces para sigma y pi.',
       generar(sem) {
         const r = azar(sem * 67 + 29), tipo = sem % 5;
         if (tipo === 4) return vfDe(r, AFIRMA_H, [D2.hib, D2.sp]);
@@ -701,20 +715,22 @@
   function casoPolar(r) {
     const k = r.de(POL_A), x = M.molecula(k), pol = x.polaridad.polar, fm = x.vsepr.geometria;
     return {
-      pregunta: `El ${x.formula} tiene forma ${fm} y enlaces polares. ¿La molécula es polar?`,
+      // El S–H (ΔEN 0,38) es apenas polar, como el C–H (0,35) que la unidad llama «casi no polar»: se dice «algo polares».
+      pregunta: `El ${x.formula} tiene forma ${fm} y enlaces ${k === 'H2S' ? 'algo ' : ''}polares. ¿La molécula es polar?`,
       datos: [D3.dipolo, D3.suma],
       opciones: ops(POL_TXT[pol ? 'si' : 'no'], pol ? [POL_TXT.no, 'EN10', 'Se anularían en una forma simétrica con átomos iguales. Aquí no lo es.'] : [POL_TXT.si, 'EN11', 'Sus enlaces son polares, cierto. Pero la forma reparte las flechas por igual.'],
         ['Apolar: sus enlaces no son polares', 'QM-POL-ENLACE', 'Sus enlaces sí son polares: el enunciado lo dice.'],
-        pol ? ['Apolar: sus átomos están en orden', 'EN11', 'El orden no basta: hay pares libres o átomos distintos.'] : ['Polar: tiene átomos distintos', 'EN11', 'Tener átomos distintos no basta: la forma anula las flechas.']),
+        pol ? (new Set(x.ligandos).size === 1 ? ['Apolar: sus átomos de alrededor son iguales', 'EN11', 'Son iguales, cierto. Pero los pares libres del central dejan una flecha total.']
+          : ['Apolar: su forma es simétrica', 'EN11', 'La forma es simétrica, cierto. Pero sus átomos de alrededor no son iguales.']) : ['Polar: tiene átomos distintos', 'EN11', 'Tener átomos distintos no basta: la forma anula las flechas.']),
       solucion: { texto: pol ? 'La forma no reparte las flechas por igual: queda una total.' : 'Forma simétrica con átomos iguales alrededor: suman cero.', ecuacion: [mu, pol ? ' ≠ 0' : ' = 0'] },
     };
   }
   function casoCualPolar(r) {
     const si = r.de(['H2O', 'NH3', 'SO2', 'PCl3', 'CHCl3', 'H2S', 'HCN']), no = r.baraja(['CO2', 'BF3', 'CCl4', 'CH4', 'BeCl2', 'SF6', 'SO3']).slice(0, 3);
-    const t = k => M.molecula(k).formula;
+    const t = k => M.molecula(k).formula, lista = r.baraja([si, ...no]);
     return {
-      pregunta: `¿Cuál de estas moléculas es polar: ${r.baraja([si, ...no]).map(t).join(', ')}?`,
-      datos: [D3.suma, 'Formas: CO₂ lineal; BF₃ y SO₃ trigonal plana; CCl₄ y CH₄ tetraédrica; BeCl₂ lineal; SF₆ octaédrica', `${t(si)}: forma ${FORMA(si)}`],
+      pregunta: `¿Cuál de estas moléculas es polar: ${lista.map(t).join(', ')}?`,
+      datos: [D3.suma, `Formas: ${lista.map(k => `${t(k)} ${FORMA(k)}`).join('; ')}`],
       opciones: ops(t(si), ...no.map(k => [t(k), enlacesPolares(k) ? 'EN11' : 'QM-POL-ENLACE', enlacesPolares(k) ? `${t(k)}: enlaces polares, pero su forma ${FORMA(k)} los anula.` : `${t(k)}: sus enlaces casi no son polares.`])),
       solucion: { texto: `El ${t(si)}, de forma ${FORMA(si)}: sus flechas no se anulan.`, ecuacion: [t(si), ': ', mu, ' ≠ 0'] },
     };
@@ -732,7 +748,7 @@
   const Am = (id, t, x, y, o) => Object.assign({ id, t, x, y }, o || {});
   const MIRA_P = {
     atomos: [Am('ao1', 'O', -3.2, 0, { desde: 1 }), Am('ac', 'C', -1.7, 0, { desde: 1 }), Am('ao2', 'O', -0.2, 0, { desde: 1 }),
-      Am('bo', 'O', 1.9, -0.45, { desde: 3 }), Am('bh1', 'H', 0.85, 0.5, { desde: 3 }), Am('bh2', 'H', 2.95, 0.5, { desde: 3 })],
+      Am('bo', 'O', 1.9, -0.45, { desde: 3 }), Am('bh1', 'H', 0.79, 0.41, { desde: 3 }), Am('bh2', 'H', 3.01, 0.41, { desde: 3 })],
     enlaces: [{ a: 'ao1', b: 'ac', orden: 2, dipolo: 'a', desde: 1 }, { a: 'ac', b: 'ao2', orden: 2, dipolo: 'b', desde: 1 },
       { a: 'bo', b: 'bh1', dipolo: 'a', desde: 3 }, { a: 'bo', b: 'bh2', dipolo: 'a', desde: 3 }],
     pares: [{ en: 'bo', ang: -125, color: 'f', desde: 4 }, { en: 'bo', ang: -55, color: 'f', desde: 4 }],
@@ -790,7 +806,7 @@
       ],
       respuesta: ['Angular y polar'] },
     { nivel: 2, titulo: 'Dos moléculas de tres átomos',
-      enunciado: 'El BeCl₂ es lineal y el H₂S es angular. Los dos tienen enlaces polares. ¿Cuál es polar?',
+      enunciado: 'El BeCl₂ es lineal y el H₂S es angular. Los dos tienen enlaces polares (los S–H, apenas). ¿Cuál es polar?',
       datos: [D3.dipolo, D3.suma],
       solucion: [
         { texto: 'BeCl₂: dos flechas opuestas, se anulan. H₂S: dos flechas en ángulo, queda una total.' },
@@ -874,7 +890,7 @@
       tarjetas: [
         { titulo: 'El chorro y el peine', texto: 'Frota un peine de plástico con el pelo y acércalo a un chorrito delgado de agua: el chorro se dobla hacia el peine. Con un chorrito de aceite casi no pasa nada.',
           pieza: 'quim-enlace', dibujo: { pieza: 'quim-enlace', datos: { vista: 'objeto', objeto: 'chorro', nombre: 'El chorro se dobla hacia el peine' }, estado: {} } },
-        { titulo: 'Flechas de dipolo', texto: 'En un enlace polar, el par se corre hacia el átomo que jala más. Eso se dibuja con una flecha naranja hacia ese átomo, con una cruz en la cola.' },
+        { titulo: 'Flechas de dipolo', texto: 'En un enlace polar, el par se corre hacia el átomo que jala más. Eso se dibuja con una flecha naranja hacia ese átomo; la cola, con una cruz, marca el lado algo positivo. El dipolo se escribe μ.' },
         { titulo: 'Varias flechas', texto: 'Una molécula tiene una flecha por cada enlace polar. En el juego verás si, juntas en el espacio, dejan una flecha total.' },
         { titulo: 'Qué mirar', texto: 'Gira cada molécula con el dedo. Busca la flecha gruesa del centro: si está, la molécula es polar; si no aparece, las flechas se anularon.' },
       ],
@@ -900,7 +916,7 @@
       minimo: 4,
     },
     predice: {
-      pieza: 'quim-molecula-3d',
+      pieza: 'quim-molecula',
       pregunta: 'El CH₂Cl₂ tiene un carbono al centro, unido a dos H y a dos Cl, en forma de tetraedro. ¿La molécula es polar?',
       datos: ['EN: C 2,55; H 2,20; Cl 3,16', 'Forma: tetraédrica, como la del CH₄'],
       voz: 'Piensa en las flechas en el espacio, no en el papel.',
@@ -910,8 +926,10 @@
         { id: 'tetra', texto: 'Apolar: es tetraédrica, como el CH₄', error: 'EN11', siFuera: 'Tiene la forma del CH₄, cierto. Pero sus átomos de alrededor no son iguales.' },
         { id: 'distintos', texto: 'Polar: tiene átomos distintos', error: 'EN11', siFuera: 'Acierta en polar, pero la razón no basta: el CO₂ tiene átomos distintos y es apolar.' },
       ],
-      dibujo: mol3d('CH2Cl2', { dipolos: false, alt: 'El CH₂Cl₂ en 3D, sin flechas: si es polar es lo que se pregunta.' }),
-      revelar: mol3d('CH2Cl2', { dipolos: true, conPolar: true }),
+      dibujo: { pieza: 'quim-molecula', datos: { atomos: [Am('c', 'C', 0, 0), Am('h1', 'H', 0, -1.1), Am('h2', 'H', 0, 1.1), Am('cl1', 'Cl', -1.25, 0), Am('cl2', 'Cl', 1.25, 0)],
+        enlaces: [{ a: 'c', b: 'h1' }, { a: 'c', b: 'h2' }, { a: 'c', b: 'cl1' }, { a: 'c', b: 'cl2' }], escala: 56, alto: 170,
+        alt: 'El CH₂Cl₂ como se dibuja en el papel, en cruz, con los dos Cl opuestos. Si en 3D es polar es lo que se pregunta.' }, estado: {} },
+      get revelar() { return proyeccion(mol3d('CH2Cl2', { dipolos: true, conPolar: true })); },
       coincide: 'Coincide: los dos Cl quedan del mismo lado en 3D; hay flecha total.',
       noCoincide: 'Es polar: en el tetraedro los dos Cl quedan del mismo lado.',
     },
@@ -930,7 +948,7 @@
     regla: {
       texto: 'Una molécula es polar si tiene enlaces polares y su forma no anula los dipolos. Una forma simétrica con átomos iguales alrededor los anula.',
       ecuacion: ['polar: enlaces polares y suma en 3D ≠ 0', SEP, 'apolar: lineal, trigonal plana o tetraédrica con átomos iguales'],
-      condicion: 'se mira en 3D: un par libre en el central o un átomo distinto alrededor suelen dejar una flecha total.',
+      condicion: 'se mira en 3D. Un par libre o un átomo distinto alrededor dejan flecha total, salvo pares opuestos (XeF₂, XeF₄).',
       voz: 'Primero la forma; después suma las flechas.',
       dibujo: mol3d('H2O', { dipolos: true, conPolar: true }),
     },
@@ -1004,23 +1022,27 @@
   }
   const HIDRUROS = [[2, 100, 'H₂O'], [3, -60, 'H₂S'], [4, -41, 'H₂Se'], [5, -2, 'H₂Te']];
   const ejesEb = (extra = {}) => ({ pieza: 'ejes', datos: Object.assign({
-    x: { min: 1.5, max: 5.5, paso: 1, nombre: 'periodo', decimales: 0 },
-    y: { min: -100, max: 120, paso: 20, nombre: 'Tₑ', unidad: '°C', decimales: 0, color: 'h' },
+    x: { min: 1.5, max: 6, paso: 1, nombre: 'periodo', decimales: 0 },
+    y: { min: -100, max: 120, paso: 20, nombre: 'ebullición', unidad: '°C', decimales: 0, color: 'h' },
     alt: 'Temperatura de ebullición de los hidruros del grupo 16 contra su periodo.',
   }, extra), estado: {} });
   const D4 = { atr: 'Atracciones entre moléculas: puente de hidrógeno > dipolo-dipolo > London', puente: 'Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino',
     london: 'London: la tienen todas; crece con el tamaño y con la superficie de contacto', mismaP: 'Temperaturas de ebullición a 1 atm' };
   // Pares [mayor, Tₑ, menor, Tₑ, razón]; sin el H₂O con el H₂S de la predicción. Unos para «Ahora tú», otros para «Así se resuelve».
-  const EB_A = [['NH₃', -33, 'PH₃', -88, 'forma puentes de hidrógeno'], ['HF', 20, 'HCl', -85, 'forma puentes de hidrógeno'], ['CH₃OH', 65, 'CH₄', -162, 'forma puentes de hidrógeno'],
-    ['Br₂', 59, 'Cl₂', -34, 'es más grande: más fuerzas de London'], ['n-pentano', 36, 'neopentano', 10, 'es alargado: más contacto y más London']];
+  // Masas molares (g/mol), para que la opción «es más pesado» (EN16) solo salga cuando el otro lo es de verdad.
+  const EB_A = [['NH₃', -33, 'PH₃', -88, 'forma puentes de hidrógeno', 17, 34], ['HF', 20, 'HCl', -85, 'forma puentes de hidrógeno', 20, 36.5], ['CH₃OH', 65, 'CH₄', -162, 'forma puentes de hidrógeno', 32, 16],
+    ['Br₂', 59, 'Cl₂', -34, 'es más grande: más fuerzas de London', 160, 71], ['n-pentano', 36, 'neopentano', 10, 'es alargado: más contacto y más London', 72, 72]];
   const EB_R = [['etanol (C₂H₅OH)', 78, 'CH₃OCH₃', -24, 'forma puentes de hidrógeno; el CH₃OCH₃ no'], ['HCl', -85, 'F₂', -188, 'es polar: tiene dipolo-dipolo'], ['NH₃', -33, 'CH₄', -162, 'forma puentes de hidrógeno']];
   const tC = x => `${x < 0 ? '−' : ''}${Math.abs(x)} °C`;
   function casoEb(r) {
-    const [a, ea, b, eb, razon] = r.de(EB_A), [x, y] = r.baraja([a, b]);
+    const [a, ea, b, eb, razon, ma, mb] = r.de(EB_A), [x, y] = r.baraja([a, b]);
+    const masa = mb > ma ? [`El ${b}: es más pesado`, 'EN16', 'Más masa suele dar más London, cierto. Aquí pesa más la otra atracción.']
+      : mb === ma ? ['Los dos igual: tienen la misma masa', 'EN16', 'La masa es la misma, cierto. Pero la forma cambia cuánto se tocan y se atraen.']
+        : [`El ${b}: sus moléculas se atraen más`, 'QM-FUERZA-ORDEN', `Al revés: el ${a} ${razon}.`];
     return {
       pregunta: `¿Cuál hierve a mayor temperatura, a 1 atm: el ${x} o el ${y}?`,
       datos: [D4.atr, D4.puente, D4.london],
-      opciones: ops(`El ${a}: ${razon}`, [`El ${b}: es más pesado`, 'EN16', 'Más masa suele dar más London, cierto. Aquí pesa más la otra atracción.'],
+      opciones: ops(`El ${a}: ${razon}`, masa,
         [`El ${a}: sus enlaces internos son más fuertes`, 'EN14', 'Bien elegido, pero no por eso: al hervir no se rompen enlaces internos.'],
         ['Los dos igual: son parecidos', 'QM-GRUPO-EB', 'Se parecen, cierto. Pero sus moléculas se atraen distinto.']),
       solucion: { texto: `El ${a} ${razon}: sus moléculas se atraen más.`, ecuacion: [`${a}: `, Te(tC(ea)), SEP, `${b}: `, Te(tC(eb))] },
@@ -1048,7 +1070,8 @@
     return {
       pregunta: `¿Cuál de estas sustancias forma puentes de hidrógeno entre sus moléculas: ${r.baraja([si, ...no]).join(', ')}?`,
       datos: [D4.puente, 'En las fórmulas, un H escrito junto a O o N (OH, NH) está unido a ese átomo; en CH, al carbono'],
-      opciones: ops(si, ...no.map(x => [x, /O|F/.test(x) ? 'EN15' : 'QM-PUENTE-POLAR', /O|F/.test(x) ? `Tiene O o F, cierto. Pero sus H están unidos a ${x === 'HCl' ? 'Cl' : 'C'}.` : 'Es polar, cierto. Pero su H no está unido a N, O ni F.'])),
+      opciones: ops(si, ...no.map(x => [x, /O|F/.test(x) ? 'EN15' : 'QM-PUENTE-POLAR', /O|F/.test(x) ? 'Tiene O o F, cierto. Pero sus H están unidos a C.'
+        : x === 'CH₄' ? 'Es apolar y sus H están unidos a C: solo tiene London.' : 'Es polar, cierto. Pero su H no está unido a N, O ni F.'])),
       solucion: { texto: `El ${si} tiene un H unido a ${/F/.test(si) ? 'F' : /N/.test(si) ? 'N' : 'O'}.`, ecuacion: [`${si}: puente de hidrógeno`] },
     };
   }
@@ -1109,7 +1132,7 @@
       ],
       respuesta: ['Es más grande: más fuerzas de London'] },
     { nivel: 2, titulo: 'Alargado o ramificado',
-      enunciado: 'El n-pentano y el neopentano tienen la misma fórmula, C₅H₁₂. El primero es una cadena alargada; el segundo, una bola. ¿Cuál hierve más alto?',
+      enunciado: 'El n-pentano y el neopentano tienen la misma fórmula, C₅H₁₂. El primero es una cadena alargada; el segundo, una bola. Los dos son apolares. ¿Cuál hierve más alto?',
       datos: [D4.london],
       solucion: [
         { texto: 'Los dos son apolares: solo London. La cadena alargada toca más a sus vecinas.' },
@@ -1167,9 +1190,9 @@
       enunciado: 'El etanol, C₂H₅OH, y el CH₃OCH₃ tienen la misma fórmula, C₂H₆O. ¿Qué afirmación es correcta?',
       alternativas: ['Hierven igual: tienen la misma masa.', 'El CH₃OCH₃ hierve más alto: tiene un O al centro.', 'Los dos forman puentes de hidrógeno.', 'Ninguno es polar.',
         'El etanol hierve más alto: tiene un H unido a O.'],
-      datos: [D4.puente, D4.atr, 'Etanol: 78 °C; CH₃OCH₃: −24 °C (a 1 atm)'],
+      datos: [D4.puente, D4.atr],
       solucion: [
-        { texto: 'El etanol tiene un O–H: forma puentes de hidrógeno. En el CH₃OCH₃ todos los H están unidos a C.', ecuacion: ['78 − (−24) = ', Te('102 °C')] },
+        { texto: 'El etanol tiene un O–H: forma puentes de hidrógeno. En el CH₃OCH₃ todos los H están unidos a C. Medido a 1 atm:', ecuacion: ['etanol ', Te('78 °C'), ' > CH₃OCH₃ ', Te('−24 °C')] },
         { texto: ['La ', letra('A'), ' mira solo la masa. La ', letra('B'), ' y la ', letra('C'), ' creen que basta tener oxígeno.'] },
         { texto: ['La ', letra('D'), ' olvida que los dos tienen un O que hace polar la molécula.'] },
       ],
@@ -1216,7 +1239,7 @@
       leyenda: [
         { s: '- - -', t: 'atracción entre moléculas' },
         { s: '—', t: 'enlace dentro de una molécula' },
-        { s: Te('T'), t: 'temperatura del líquido, en °C' },
+        { s: Te('T'), t: 'temperatura de la sustancia, en °C' },
       ],
       controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(SUST).map(k => ({ valor: k, texto: SUST[k].t })), inicio: 'hcl' },
         { id: 'T', etiqueta: 'T', color: 'c-h', min: -180, max: 120, paso: 5, inicio: -120, unidad: '°C', decimales: 0 }],
@@ -1226,7 +1249,7 @@
     },
     predice: {
       pieza: 'ejes',
-      pregunta: 'El H₂S es más pesado que el H₂O y está debajo del oxígeno en la tabla. ¿Cuál hierve a mayor temperatura?',
+      pregunta: 'El H₂S es más pesado que el H₂O, y su azufre está debajo del oxígeno en la tabla. ¿Cuál hierve a mayor temperatura?',
       datos: ['H₂O: 18 g por cada mol; H₂S: 34 g por cada mol', 'H₂Se: −41 °C; H₂Te: −2 °C (a 1 atm)'],
       voz: 'Piensa en lo que une a las moléculas, no en su masa.',
       opciones: [
@@ -1236,7 +1259,7 @@
         { id: 'enlace', texto: 'El H₂O, porque su enlace O–H es más fuerte', error: 'EN14', siFuera: 'El O–H es fuerte, bien visto. Pero al hervir no se rompe: se separan moléculas.' },
       ],
       dibujo: ejesEb({ puntos: HIDRUROS.slice(2).map(([x, y, t]) => ({ x, y, color: 'h', rotulo: t })), alt: 'Ebullición del H₂Se (−41 °C) y del H₂Te (−2 °C); el H₂S y el H₂O todavía no están: es lo que se pregunta.' }),
-      revelar: ejesEb({ puntos: HIDRUROS.map(([x, y, t]) => ({ x, y, color: 'h', rotulo: x === 4 ? undefined : `${t} ${tC(y)}` })), curvas: [{ puntos: HIDRUROS.slice(1).map(([x, y]) => [x, y]), color: 'h' }],
+      revelar: ejesEb({ puntos: HIDRUROS.map(([x, y, t]) => ({ x, y, color: 'h', rotulo: x === 2 ? `${t} ${tC(y)}` : t })), curvas: [{ puntos: HIDRUROS.slice(1).map(([x, y]) => [x, y]), color: 'h' }],
         alt: 'Ebullición de los hidruros del grupo 16: H₂Te −2 °C, H₂Se −41 °C, H₂S −60 °C y H₂O 100 °C, muy por encima de la tendencia.' }),
       coincide: 'Coincide: el agua hierve 160 °C por encima del H₂S.',
       noCoincide: 'El agua hierve a 100 °C y el H₂S a −60 °C: pesan los puentes de hidrógeno.',
@@ -1245,7 +1268,7 @@
       pieza: 'ejes',
       datos: ejesEb({
         curvas: [{ puntos: HIDRUROS.slice(1).map(([x, y]) => [x, y]), color: 'h', desde: 1 }, { puntos: [[3, -60], [2, -80]], color: 'h', discontinua: true, desde: 2 }],
-        puntos: [...HIDRUROS.slice(1).map(([x, y, t]) => ({ x, y, color: 'h', rotulo: x === 4 ? undefined : t, desde: 1 })), { x: 2, y: 100, color: 'h', rotulo: 'H₂O 100 °C', guias: true, desde: 3 }],
+        puntos: [...HIDRUROS.slice(1).map(([x, y, t]) => ({ x, y, color: 'h', rotulo: t, desde: 1 })), { x: 2, y: 100, color: 'h', rotulo: 'H₂O 100 °C', guias: true, desde: 3 }],
         alt: 'Ebullición de los hidruros del grupo 16: del H₂Te al H₂S baja con el tamaño; el agua, a 100 °C, se sale de la tendencia.',
       }).datos,
       voz: 'Sigamos la tendencia y veamos quién se sale.',
@@ -1269,15 +1292,15 @@
         const [a, ea, b, eb, razon] = EB_R[s % EB_R.length], [x, y] = s % 2 ? [b, a] : [a, b];
         return {
           enunciado: `¿Cuál hierve a mayor temperatura, a 1 atm: el ${x} o el ${y}?`,
-          datos: [D4.atr, D4.puente, D4.london, `${a}: ${tC(ea)}; ${b}: ${tC(eb)}`],
+          datos: [D4.atr, D4.puente, D4.london],
           pasos: [
             { tipo: 'pide', texto: 'Piden cuál necesita más temperatura para hervir, a la misma presión.' },
-            { tipo: 'datos', texto: 'Tengo el orden de las atracciones, cuándo hay puente de hidrógeno y las dos temperaturas.' },
+            { tipo: 'datos', texto: 'Tengo el orden de las atracciones y cuándo hay puente de hidrógeno.' },
             { tipo: 'regla', texto: 'Al hervir se separan moléculas. Hierve más alto la de más atracción entre ellas.' },
-            { tipo: 'cuentas', texto: `El ${a} ${razon}.`, ecuacion: [`${tC(ea)} − (${tC(eb)}) = `, Te(tC(ea - eb))] },
-            { tipo: 'sentido', texto: `Cuadra: los ${tC(ea - eb)} de diferencia vienen de la atracción entre moléculas, no de sus enlaces internos.` },
+            { tipo: 'aplica', texto: `El ${a} ${razon}: sus moléculas se atraen más.` },
+            { tipo: 'sentido', texto: 'Cuadra con lo medido a 1 atm:', ecuacion: [`${a} `, Te(tC(ea)), SEP, `${b} `, Te(tC(eb))] },
           ],
-          respuesta: [`El ${a}: `, Te(tC(ea))],
+          respuesta: [`El ${a}`],
         };
       },
     },
@@ -1315,7 +1338,8 @@
 
   return {
     unidad: 'quimica.geometria-molecular',
-    version: '0.1.0',
+    version: '0.1.2',
+    calidad: 2,  // 19 nov: correcciones de la auditoría y del lector en frío (rutinas/auditoria/quimica.geometria-molecular.md)
     colores: COLORES,
     estado: 'completa',
     requiere: ['/nucleo/elementos.js', '/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/quim-molecula-3d.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/quim-enlace.js', '/plantillas/enlace/motor.js'],
@@ -1323,7 +1347,7 @@
     letras: { A: 'átomo central (en AXₙEₘ)', X: 'átomo unido al central (en AXₙEₘ)', E: 'par libre del central (en AXₙEₘ)', 'σ': 'enlace sigma', 'π': 'enlace pi', 'μ': 'dipolo', T: 'temperatura', 'δ': 'carga parcial', e: 'electrón' },
     historia: {
       texto: 'En 1957, Ronald Gillespie y Ronald Nyholm ordenaron una idea sencilla: los pares de electrones de un átomo se repelen y se alejan lo más posible. Con eso se predice la forma de muchas moléculas sin ningún cálculo. La forma decide si una molécula es polar, y eso, cómo se atraen y a qué temperatura hierven.',
-      pregunta: '¿Por qué el agua hierve a 100 °C y el H₂S, a −60 °C?',
+      pregunta: '¿Cómo se sabe la forma de una molécula que nadie puede ver?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §7.6 y §10.1', url: 'https://openstax.org/books/chemistry-2e/pages/7-6-molecular-structure-and-polarity' },
     },
     glosario: [

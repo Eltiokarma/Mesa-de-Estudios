@@ -77,3 +77,32 @@ test('por idea; datos sin la respuesta; colores; puente de hidrógeno solo con H
     if (p._datos.tipo === 'forma' || p._datos.tipo === 'polar') assert.ok(!/NH₃|CH₂Cl₂/.test(plano(p.enunciado)) || p._datos.tipo === 'polar', `${s}: repite la predicción`);
   }
 });
+
+// Auditoría (19 nov, rutinas/auditoria/quimica.geometria-molecular.md): cada error da el valor que produce de verdad, la
+// masa es la de verdad y los datos no ponen primero a la respuesta. Fallan con el generador de antes.
+test('auditoría: regiones, cual-hierve, cual-polar y polar con explicaciones verdaderas (400 semillas por idea)', () => {
+  const MASA = { 'H₂O': 18, 'H₂S': 34, 'NH₃': 17, 'PH₃': 34, HF: 20, HCl: 36.5, 'CH₃OH': 32, 'CH₄': 16, 'Br₂': 160, 'Cl₂': 71, 'n-pentano': 72, neopentano: 72, 'etanol (C₂H₅OH)': 46, 'CH₃OCH₃': 46, 'F₂': 38 };
+  let primera = 0, cualPolar = 0;
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea }), d = p._datos;
+    if (d.tipo === 'regiones') {
+      const m = Mot.molecula(clave(d.k));
+      for (const a of p.alternativas) {
+        if (!a.error) continue;
+        if (a.error.explicacion === 'Un par libre es una región, no dos.') assert.ok(m.lewis.paresLibres > 0, `${s} ${d.k}: no tiene pares libres`);
+        if (a.error.id === 'QM-REGION-DOBLE') assert.equal(+a.texto, m.lewis.paresEnlazantes + m.lewis.paresLibres, `${s} ${d.k}: contar cada par compartido`);
+      }
+    }
+    if (d.tipo === 'cual-hierve') for (const a of p.alternativas) {
+      const x = a.texto.match(/^El (.+): es más pesado$/); if (x) assert.ok(MASA[x[1]] > MASA[x[1] === d.a ? d.b : d.a], `${s}: ${a.texto}`);
+    }
+    if (d.tipo === 'cual-polar') {
+      cualPolar++;
+      const orden = plano(p.enunciado).match(/Las moléculas (.+)\./)[1].split(', '), f = p.datos.find(l => l.startsWith('Formas:')).slice(8).split('; ').map(x => x.split(' ')[0]);
+      assert.deepEqual(f, orden, `${s}: las formas en el orden del enunciado`);
+      if (f[0] === p.respuesta.valor) primera++;
+    }
+    if (d.tipo === 'polar') assert.ok(!p.alternativas.some(a => /en orden/.test(a.texto)), `${s}`);
+  }
+  assert.ok(primera < cualPolar / 2, `la respuesta va primera en ${primera} de ${cualPolar}`);
+});

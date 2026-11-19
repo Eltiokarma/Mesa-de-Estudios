@@ -6,8 +6,8 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "El CH₃OCH₃ y el etanol (C₂H₅OH), a 1 atm. ¿Cuál hierve a mayor temperatura? Datos: Atracciones entre moléculas: puente de hidrógeno > dipolo-dipolo > London. Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino. London: la tienen todas; crece con el tamaño y con la superficie de contacto. Alternativas: A) Los dos igual: son parecidos   B) El CH₃OCH₃: sus moléculas se atraen más   C) El CH₃OCH₃: es más pesado   D) El etanol (C₂H₅OH): sus enlaces internos son más fuertes   E) El etanol (C₂H₅OH): forma puentes de hidrógeno",
-      "respuesta": "E) El etanol (C₂H₅OH): forma puentes de hidrógeno",
+      "enunciado": "El CH₃OCH₃ y el etanol (C₂H₅OH), a 1 atm. ¿Cuál hierve a mayor temperatura? Datos: Atracciones entre moléculas: puente de hidrógeno > dipolo-dipolo > London. Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino. London: la tienen todas; crece con el tamaño y con la superficie de contacto. Alternativas: A) El etanol (C₂H₅OH): sus enlaces internos son más fuertes   B) Los dos igual: tienen la misma masa   C) Los dos igual: son parecidos   D) El etanol (C₂H₅OH): forma puentes de hidrógeno",
+      "respuesta": "D) El etanol (C₂H₅OH): forma puentes de hidrógeno",
       "pasos": [
         "El etanol (C₂H₅OH) forma puentes de hidrógeno.",
         "etanol (C₂H₅OH): 78 °C; CH₃OCH₃: −24 °C"
@@ -35,7 +35,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Las moléculas BeCl₂, CO₂, SO₃, HCN. ¿Cuál es polar? Datos: Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Formas: HCN lineal; CO₂ lineal; SO₃ trigonal plana; BeCl₂ lineal. Alternativas: A) SO₃   B) BeCl₂   C) CO₂   D) HCN",
+      "enunciado": "Las moléculas BeCl₂, CO₂, SO₃, HCN. ¿Cuál es polar? Datos: Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Formas: BeCl₂ lineal; CO₂ lineal; SO₃ trigonal plana; HCN lineal. Alternativas: A) SO₃   B) BeCl₂   C) CO₂   D) HCN",
       "respuesta": "D) HCN",
       "pasos": [
         "El HCN, de forma lineal: sus flechas no se anulan."
@@ -54,7 +54,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Las moléculas SO₂, CO₂, BF₃, PCl₅. ¿Cuál es polar? Datos: Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Formas: SO₂ angular; PCl₅ bipirámide trigonal; CO₂ lineal; BF₃ trigonal plana. Alternativas: A) BF₃   B) SO₂   C) CO₂   D) PCl₅",
+      "enunciado": "Las moléculas SO₂, CO₂, BF₃, PCl₅. ¿Cuál es polar? Datos: Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Formas: SO₂ angular; CO₂ lineal; BF₃ trigonal plana; PCl₅ bipirámide trigonal. Alternativas: A) BF₃   B) SO₂   C) CO₂   D) PCl₅",
       "respuesta": "B) SO₂",
       "pasos": [
         "El SO₂, de forma angular: sus flechas no se anulan."
@@ -63,7 +63,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "El PCl₃ tiene forma piramidal trigonal y enlaces polares. ¿La molécula es polar? Datos: Dipolo de enlace: flecha hacia el átomo de mayor electronegatividad. Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Alternativas: A) Apolar: sus dipolos se anulan   B) Apolar: sus enlaces no son polares   C) Polar: sus dipolos no se anulan   D) Apolar: sus átomos están en orden",
+      "enunciado": "El PCl₃ tiene forma piramidal trigonal y enlaces polares. ¿La molécula es polar? Datos: Dipolo de enlace: flecha hacia el átomo de mayor electronegatividad. Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Alternativas: A) Apolar: sus dipolos se anulan   B) Apolar: sus enlaces no son polares   C) Polar: sus dipolos no se anulan   D) Apolar: sus átomos de alrededor son iguales",
       "respuesta": "C) Polar: sus dipolos no se anulan",
       "pasos": [
         "La forma no reparte las flechas por igual.",

@@ -1631,7 +1631,7 @@
        "forma-polaridad": "Polaridad de la molécula",
        "fuerzas-intermoleculares": "Fuerzas entre moléculas"
       },
-      "terminos": 37
+      "terminos": 38
      }
     },
     {
@@ -9955,7 +9955,7 @@
    "titulo": "Forma, hibridación, polaridad y fuerzas entre moléculas",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.1.0",
+   "version": "0.1.1",
    "unidades": [
     "quimica.geometria-molecular"
    ],

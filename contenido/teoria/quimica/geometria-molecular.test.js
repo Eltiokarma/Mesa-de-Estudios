@@ -63,7 +63,7 @@ function esperado(a) {
   if ((m = q.match(/¿Cuántos enlaces sigma \(σ\) y cuántos pi \(π\) tiene el (\S+)\?$/))) return `${SP[m[1]][0]} σ y ${SP[m[1]][1]} π`;
   if ((m = q.match(/^En el (\S+), ¿qué hibridación tiene (.+)\?$/))) return HIB[CARB[`${m[1]}|${m[2]}`]];
   if ((m = q.match(/¿Cuántos electrones pi tiene el (\S+)\?$/))) return String(2 * SP[m[1]][1]);
-  if ((m = q.match(/^El (\S+) tiene forma .+ y enlaces polares\. ¿La molécula es polar\?$/))) return POLARES.has(m[1]) ? 'Polar: sus dipolos no se anulan' : 'Apolar: sus dipolos se anulan';
+  if ((m = q.match(/^El (\S+) tiene forma .+ y enlaces (?:algo )?polares\. ¿La molécula es polar\?$/))) return POLARES.has(m[1]) ? 'Polar: sus dipolos no se anulan' : 'Apolar: sus dipolos se anulan';
   if ((m = q.match(/moléculas es polar: (.+)\?$/))) { const l = m[1].split(', ').filter(x => POLARES.has(x)); assert.equal(l.length, 1, q); return l[0]; }
   if ((m = q.match(/hierve a mayor temperatura, a 1 atm: el (.+) o el (.+)\?$/))) {
     const a1 = EB[m[1]] > EB[m[2]] ? m[1] : m[2]; const c = a.opciones.find(o => o.correcta).texto; assert.ok(c.startsWith(`El ${a1}:`), q); return c;
@@ -104,6 +104,7 @@ function lecturas(i) {
 }
 
 test('las cuatro ideas en el orden de la propuesta; pasaría el validador con calidad 2; cada idea estrena sus palabras', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.ideas.map(i => i.id), ['forma-repulsion', 'hibridacion', 'forma-polaridad', 'fuerzas-intermoleculares']);
   const cat = require('../../../catalogo/cursos/quimica.json').unidades.find(u => u.id === def.unidad);
   assert.deepEqual(cat.requiere, ['quimica.enlace-quimico']);
@@ -207,4 +208,80 @@ test('las figuras de quim-enlace caben con 4 de margen y sus rótulos no se pisa
     for (const c of [...g.textos, ...g.objetos]) assert.ok(c.x0 >= g.M && c.x1 <= g.W - g.M && c.y0 >= g.M && c.y1 <= g.H - g.M, `${i.id}: se sale «${c.txt || c.que}»`);
     for (const x of g.textos) for (const o of g.objetos) assert.ok(!solapan(x, o), `${i.id}: «${x.txt}» pisa ${o.que}`);
   }
+});
+
+// ---------- Auditoría y lector en frío (19 nov, rutinas/auditoria/quimica.geometria-molecular.md) ----------
+// Cada prueba falla con la versión de antes (copia en el scratchpad de la auditoría, e6-cierre-geo-mol/antes/).
+const [I1, I2, I3, I4] = def.ideas;
+const angulo2D = (d, en, de, a) => {
+  const p = Object.fromEntries(d.atomos.map(x => [x.id, x])), u = [p[de].x - p[en].x, p[de].y - p[en].y], v = [p[a].x - p[en].x, p[a].y - p[en].y];
+  return Math.acos((u[0] * v[0] + u[1] * v[1]) / Math.hypot(...u) / Math.hypot(...v)) * 180 / Math.PI;
+};
+test('A1: la forma con pares libres o con 5 y 6 regiones tiene sus nombres en Datos y en La regla', () => {
+  for (let s = 0; s < 400; s++) {
+    const a = I1.ahoraTu.generar(s), q = plano(a.pregunta), d = plano(a.datos), c = a.opciones.find(o => o.correcta).texto;
+    if (!/¿Qué forma tiene la molécula\?/.test(q)) continue;
+    if (!['lineal', 'trigonal plana', 'tetraédrica'].includes(c) || /par(es)? libres?\./.test(q.replace('no tiene pares libres', ''))) assert.ok(d.includes(c), `${s}: «${c}» no está en Datos: ${q}`);
+  }
+  for (let s = 0; s < 8; s++) { const r = I1.resuelve.generar(s); assert.ok(plano(r.datos).includes(plano(r.respuesta).toLowerCase()), `resuelve ${s}`); }
+  for (const f of ['balancín', 'forma de T', 'pirámide cuadrada', 'cuadrada plana']) assert.ok(I1.regla.condicion.includes(f), f);
+  assert.ok(/piramidal/.test(plano(I1.regla.ecuacion)) && /angular/.test(plano(I1.regla.ecuacion)));
+});
+test('A2: ningún dato de «¿Cuál es polar?» nombra solo a la respuesta; las formas van en el orden de la pregunta', () => {
+  for (let s = 0; s < 400; s++) {
+    const a = I3.ahoraTu.generar(s), q = plano(a.pregunta); if (!/Cuál de estas moléculas es polar/.test(q)) continue;
+    const c = a.opciones.find(o => o.correcta).texto, lista = q.match(/polar: (.+)\?/)[1].split(', ');
+    for (const l of a.datos.map(plano)) assert.ok(!l.startsWith(`${c}:`), `${s}: ${l}`);
+    const f = a.datos.map(plano).find(l => l.startsWith('Formas:'));
+    assert.deepEqual(f.slice(8).split('; ').map(x => x.split(' ')[0]), lista, `${s}`);
+  }
+});
+test('distractores con su valor verdadero: «es más pesado» solo si lo es; el CH₄ no «es polar»', () => {
+  const MASA = { 'NH₃': 17, 'PH₃': 34, HF: 20, HCl: 36.5, 'CH₃OH': 32, 'CH₄': 16, 'Br₂': 160, 'Cl₂': 71, 'n-pentano': 72, neopentano: 72 };
+  for (let s = 0; s < 400; s++) {
+    const a = I4.ahoraTu.generar(s), q = plano(a.pregunta);
+    let m = q.match(/1 atm: el (.+) o el (.+)\?/);
+    if (m) for (const o of a.opciones) { const p = o.texto.match(/^El (.+): es más pesado$/); if (p) { const otro = p[1] === m[1] ? m[2] : m[1]; assert.ok(MASA[p[1]] > MASA[otro], `${s}: ${o.texto}`); } }
+    if (/forma puentes de hidrógeno entre sus moléculas/.test(q)) for (const o of a.opciones) if (o.texto === 'CH₄') assert.ok(!/Es polar/.test(o.siFuera), `${s}: ${o.siFuera}`);
+  }
+});
+test('los dibujos miden lo que dicen: el agua de Mira 3 a 104,5° y el eteno de Mira 2 a 120°', () => {
+  const m3 = I3.mira.datos;
+  assert.ok(Math.abs(angulo2D(m3, 'bo', 'bh1', 'bh2') - 104.5) < 1, `agua: ${angulo2D(m3, 'bo', 'bh1', 'bh2')}`);
+  const m2 = I2.mira.datos;
+  for (const [en, de, a] of [['c1', 'h1', 'h2'], ['c1', 'h1', 'c2'], ['c2', 'h3', 'h4'], ['c2', 'h4', 'c1']]) assert.ok(Math.abs(angulo2D(m2, en, de, a) - 120) < 2, `eteno ${en}: ${angulo2D(m2, en, de, a)}`);
+});
+test('Predice: el dibujo es el del papel que nombran los Datos y las opciones, sin la forma en 3D', () => {
+  const d1 = I1.predice.dibujo;
+  assert.equal(d1.pieza, 'quim-molecula'); assert.equal(d1.datos.atomos.filter(x => x.t === 'H').length, 3, 'los tres H del papel');
+  const d3 = I3.predice.dibujo;
+  assert.equal(d3.pieza, 'quim-molecula');
+  assert.ok(Math.abs(angulo2D(d3.datos, 'c', 'cl1', 'cl2') - 180) < 0.5, 'en el papel los Cl quedan opuestos, como dice la opción');
+  assert.ok(I3.predice.opciones.some(o => /en el dibujo los Cl quedan opuestos/.test(o.texto)));
+  // La predicción 4 no se adelanta en la historia (se abre en la idea 1).
+  assert.ok(!/H₂S|100 °C/.test(def.historia.pregunta + def.historia.texto));
+});
+test('Datos que sirven y no regalan: la fórmula con sus C–H, Lewis para los pares, sin temperaturas en el resuelto de ebullición', () => {
+  const todo = [];
+  for (const i of def.ideas) for (const l of lecturas(i)) todo.push(plano(l.x));
+  assert.ok(!todo.some(t => /Cada raya de la fórmula es un enlace/.test(t)), 'raya = enlace, sin los C–H escondidos');
+  assert.ok(!todo.some(t => /ningún pares/.test(t)), '«ningún pares libres»');
+  for (let s = 0; s < 400; s++) { const a = I1.ahoraTu.generar(s); if (/regiones de electrones tiene/.test(plano(a.pregunta))) assert.ok(/estructura de Lewis/.test(plano(a.datos)), `${s}`); }
+  assert.ok(/estructura de Lewis/.test(I1.lee.tarjetas[1].texto));
+  for (let s = 0; s < 6; s++) assert.ok(!/°C/.test(plano(I4.resuelve.generar(s).datos)), `resuelve ${s}`);
+  const et = I4.ejemplos.find(e => e.titulo === 'Dos líquidos de la misma fórmula');
+  assert.ok(!/°C/.test(plano(et.datos)) && !/102/.test(plano(et.solucion)));
+});
+test('ejes de ebullición: cada hidruro con su nombre y el eje sin «Tₑ» (se leía telurio junto a H₂Te)', () => {
+  const rot = I4.mira.datos.puntos.map(p => p.rotulo).filter(Boolean).join(' ');
+  for (const t of ['H₂S', 'H₂Se', 'H₂Te', 'H₂O']) assert.ok(rot.includes(t), t);
+  assert.notEqual(I4.mira.datos.y.nombre, 'Tₑ');
+  assert.ok(!/H₂S [^,]*está debajo del oxígeno/.test(I4.predice.pregunta));
+});
+test('explicaciones de las alternativas de nivel 3 que dan su valor (lector B)', () => {
+  const t = I2.ejemplos.find(e => e.titulo === 'Tres carbonos seguidos');
+  assert.equal(t.alternativas[1], 'sp³, sp³ y sp³', 'contar cada par compartido da sp³ en los tres');
+  const c = I1.ejemplos.find(e => e.titulo === 'Dos pares en forma de T');
+  assert.ok(!/dos arriba y abajo/.test(plano(c.solucion)) && !/La A y la E olvidan/.test(plano(c.solucion)));
+  for (let s = 0; s < 400; s++) assert.ok(!I3.ahoraTu.generar(s).opciones.some(o => /en orden/.test(o.texto)), `${s}`);
 });
