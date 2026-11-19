@@ -669,9 +669,14 @@
     for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; }
     return x;
   }
+  // El orden de las alternativas de «Ahora tú» (19 nov, auditor de Longitud de arco): la semilla del caso sola daba el
+  // mismo orden en todas las ideas (el primer caso con la correcta siempre en la misma letra si el generador la pone
+  // primero). Ahora también depende del id de la idea, como el orden de Predice.
+  const ordenAhoraTu = (ops, ideaId, semilla) =>
+    barajar(ops, (semilla * 31 + [...String(ideaId || '')].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7)) >>> 0);
 
   // Las faltas de una unidad con calidad 2 que una excepción con fecha deja pasar (la lista de pendientes de la unidad).
   const pendientes = (def, o = {}) => (def && def.calidad >= 2 && Reglas ? Reglas.aplicar(def, o, api).pendientes.map(h => `${h.donde}: [${h.regla}] ${h.que} (pendiente desde ${h.fecha}: ${h.motivo})`) : []);
-  const api = { unidad, unidades, problemas, pendientes, plano, inicio, ajustar, grilla, barajar, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
+  const api = { unidad, unidades, problemas, pendientes, plano, inicio, ajustar, grilla, barajar, ordenAhoraTu, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
   return api;
 });

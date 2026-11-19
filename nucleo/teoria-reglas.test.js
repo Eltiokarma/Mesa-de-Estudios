@@ -85,9 +85,9 @@ test('letra-repartida: en los ejemplos de nivel 3 y en «Ahora tú», ninguna le
   assert.match(de('letra-repartida', con('ABCDABCDAB')).map(h => h.que).join('\n'), /la E nunca es la correcta en 10 casos/);
   assert.deepEqual(de('letra-repartida', con('ABCDEEDCBA')), []);
   assert.deepEqual(de('letra-repartida', con('BBBBB')), [], 'con menos de 10 casos no se mide');
-  // «Ahora tú»: la letra es la que deja la app al barajar (T.barajar con semilla + 7).
+  // «Ahora tú»: la letra es la que deja la app al barajar (T.ordenAhoraTu con la idea y la semilla).
   const ops = s => ['a', 'b', 'c', 'd'].map(id => ({ id, texto: `opción ${id} del caso ${s}`, siFuera: 'si…' }));
-  const siempreA = s => { const o = ops(s); T.barajar(o, s + 7)[0].correcta = true; return { pregunta: `Caso ${s}`, opciones: o }; };
+  const siempreA = s => { const o = ops(s); T.ordenAhoraTu(o, 'uno', s)[0].correcta = true; return { pregunta: `Caso ${s}`, opciones: o }; };
   const pareja = s => { const o = ops(s); o[0].correcta = true; return { pregunta: `Caso ${s}`, opciones: o }; };
   assert.match(de('letra-repartida', unidad(idea({ ahoraTu: { generar: siempreA } })))[0].que, /«Ahora tú»: la A es la correcta en 60 de 60/);
   assert.deepEqual(de('letra-repartida', unidad(idea({ ahoraTu: { generar: pareja } }))), []);

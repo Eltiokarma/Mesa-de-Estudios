@@ -877,9 +877,9 @@
         }
       });
 
-      // «Ahora tú»: la letra en que la app deja la correcta (T.barajar con semilla + 7, app/teoria.js).
+      // «Ahora tú»: la letra en que la app deja la correcta (T.ordenAhoraTu con la idea y la semilla, app/teoria.js).
       for (const [s, c] of casosAT) {
-        const ops = T.barajar(c.opciones, s + 7), i = ops.findIndex(x => x && x.correcta);
+        const ops = T.ordenAhoraTu(c.opciones, idea.id, s), i = ops.findIndex(x => x && x.correcta);
         if (i >= 0) letrasAT.push({ letra: 'ABCDE'[i], n: ops.length });
       }
 

@@ -705,7 +705,7 @@
       semilla = (si.semilla || 0);
       const nuevo = () => {
         caso = a.generar(semilla);
-        const ops = T.barajar(caso.opciones, semilla + 7);
+        const ops = T.ordenAhoraTu(caso.opciones, idea.id, semilla);
         actuar('ahora-tu', a.voz || voz('ahora'));
         if (caso.dibujo) dibujar(caso.dibujo, a.pieza); else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
         zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(caso.pregunta)}</h3>${datosHTML(E, caso.datos)}${opcionesHTML(ops, true)}<div class="te-fb" aria-live="polite"></div>`;
