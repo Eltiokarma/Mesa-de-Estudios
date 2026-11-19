@@ -93,7 +93,8 @@
   // sin unidad (o con una que no está aquí), entre todos, como antes. Modelo: plantillas/velocidad-relativa.
   const TIPOS_POR_UNIDAD = {
     'aritmetica.sucesiones-y-series': ['intercalada', 'pa-pg', 'fracciones', 'comunes', 'sumatoria', 'primos-pa'],
-    'aritmetica.divisibilidad': ['grupos', 'divisores'],
+    // Divisibilidad (19 nov, propuesta de Divisibilidad §8): solo «grupos»; la cantidad de divisores es de Números primos.
+    'aritmetica.divisibilidad': ['grupos'],
     'aritmetica.numeros-primos-y-divisores': ['divisores', 'primos-pa'],
     'aritmetica.numeracion': ['cifras'],
     'aritmetica.potenciacion-y-radicacion': ['cubos'],

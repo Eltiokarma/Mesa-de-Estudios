@@ -306,8 +306,8 @@ Códigos AT de la unidad `aritmetica.divisibilidad` (teoría `contenido/teoria/a
 `docs/etapa5/propuesta-aritmetica.md` §4). **Todos son hipótesis**: no encontramos estudios con cifras de errores en
 múltiplos, restos ni criterios, y la matriz del curso marca el error objetivo de la unidad como «hipótesis de diseño». Solo
 la trampa 18 de los solucionarios de San Marcos (resto por exceso leído como por defecto) respalda una de la idea 2. Se
-confirman con las predicciones y la práctica, como en los otros temas. Por ahora la tabla trae la idea 1 (hecha) y la
-predicción de las ideas 2 a 6 (propuestas); las demás se agregan al rehacer cada idea.
+confirman con las predicciones y la práctica, como en los otros temas. La tabla trae los códigos de las seis ideas
+(teoría y práctica `plantillas/divisibilidad-restos`, fase 3 del 19 nov).
 
 | Código | Idea | Qué hace el alumno | Ejemplo (correcto → error) | Respaldo |
 | --- | --- | --- | --- | --- |
@@ -338,6 +338,28 @@ predicción de las ideas 2 a 6 (propuestas); las demás se agregan al rehacer ca
 | AT-DIOF-TODAS | 6 | Cuenta toda cantidad de una moneda sin ver si la otra cuadra | pagar S/ 40 con monedas de 2 y de 5: 5 maneras → 9 | Hipótesis |
 | AT-DIOF-CERO | 6 | Deja fuera las maneras con cero monedas de una clase | → 3 | Hipótesis |
 | AT-DIOF-DIVIDE | 6 | Divide el total entre una moneda | → 8 | Hipótesis |
+| AT-RESTO-IGUAL | 2 | Responde el resto de un solo número: no opera | 5 pedidos que dejan 4 entre 7: 6 → 4 | Hipótesis |
+| AT-RESTO-OPERA | 2 | Hace la otra operación con los restos (suma donde se resta, multiplica donde se suma) | pedido que deja 10 menos otro que deja 11, entre 12: 11 → 9 | Hipótesis |
+| AT-RESTO-INVIERTE | 2 | Resta los restos al revés cuando el primero es menor (no abre una bolsita) | → 1 | Hipótesis |
+| AT-RESTO-OLVIDA | 2 | Se olvida del número que se suma al final | resto de 2 × N + 9 con N = 8̊ + 4: 1 → 0 | Hipótesis |
+| AT-CUADRADO-DOBLE | 2 | En N × N suma los restos en vez de multiplicarlos | N = 9̊ + 5, resto de N²: 7 → 1 | Hipótesis |
+| AT-EXCESO-IGUAL, AT-EXCESO-DIVISOR, AT-EXCESO-CERO | 2 | Lee «le faltan f» como resto f, responde el divisor o cree que no sobra nada | le faltan 3 para bolsitas de 12: 9 → 3, 12 o 0 | Hipótesis (trampa 18 de San Marcos) |
+| AT-CRITERIO-NUEVE | 3 | Reduce la suma de cifras entre 9 cuando el divisor es 3 | 7 756 entre 3: 1 → 7 | Hipótesis |
+| AT-CRITERIO-RESTO | 3, 5 | Responde lo que sobra en vez de la cifra que lo completa | 5a59 múltiplo de 9: 8 → 1 | Hipótesis |
+| AT-CRITERIO-TRES | 3 | Elige una cifra que hace la suma múltiplo de 3 y no de 9 | → 2 | Hipótesis |
+| AT-CRITERIO-DECENA | 3 | Completa la suma a una decena (o mira dos cifras donde van tres) | → 1 | Hipótesis |
+| AT-CRITERIO-PARIDAD | 3 | Cree que basta con que la última cifra sea par para el 4 | cifras a de 11a0 múltiplo de 4: 20 → 25 | Hipótesis |
+| AT-CRITERIO-CERO | 3 | Toma b = 0 aunque el enunciado lo excluya | 4a3b múltiplo de 5 y de 9: 6 → 2 | Hipótesis |
+| AT-EXP-DIVISOR | 4 | Reduce el exponente entre el divisor y no entre el largo del ciclo | 2³³, última cifra: 2 → 8 | Hipótesis |
+| AT-CICLO-PRIMERO | 4 | Responde el resto de la primera potencia | 5³⁸ entre 13: 12 → 5 | Hipótesis |
+| AT-POTENCIA-MULTIPLO | 4 | Trata la potencia como si fuera múltiplo del divisor | 3⁷¹ + 3 entre 5: 0 → 3 | Hipótesis |
+| AT-POTENCIA-PRODUCTO | 4 | Multiplica la base por el exponente en vez de elevar | 2⁴ entre 5: 1 → 3 | Hipótesis |
+| AT-PESO-SIGNO, AT-PESO-SIN-SIGNO, AT-PESO-NEGATIVO | 5 | Alterna los signos al revés, quita los signos de los pesos o no pasa un total negativo a resto | 9 593 entre 11: 1 → 10 | Hipótesis |
+| AT-PESO-ORDEN | 5 | Cuenta los pesos desde la izquierda | 274 entre 7: 1 → 3 | Hipótesis |
+| AT-PESO-OTRO | 5 | Usa los pesos de otro divisor (los del 7 con el 13) | 3a1 múltiplo de 13: 5 → 2 | Hipótesis |
+| AT-DIOF-PRIMERA, AT-DIOF-MAXIMO | 6 | Se queda con la primera manera que encuentra, o con la de más monedas | S/ 54 con monedas de 2 y 5, la de menos monedas: 12 → 15 o 27 | Hipótesis |
+| AT-DIOF-UNA | 6 | Cree que una cantidad se paga de una sola manera, o se pasa de la cuenta | → 11 | Hipótesis |
+| AT-RESPONDE-OTRA, AT-CONTEO | 1 a 6 | Responde otra cantidad del problema (las cajas por las bolsas, cuántas cifras por su suma) o cuenta mal la lista | → 8 | Hipótesis |
 
 ## Huecos y siguientes pasos
 

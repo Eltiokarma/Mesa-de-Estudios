@@ -943,6 +943,30 @@
     "cree-que-faltan-datos": {
      "respaldo": "hipotesis",
      "describe": "Cree que con dos cifras ocultas faltan datos, aunque cada columna deja una sola (AT-SUFICIENCIA)"
+    },
+    "redondea-el-cociente-hacia-arriba": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta un múltiplo de más al redondear el cociente hacia arriba (AT-CONTEO-ARRIBA)"
+    },
+    "multiplos-desde-1": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los múltiplos desde 1, también los de antes del tramo (AT-CONTEO-SIN-QUITAR)"
+    },
+    "resta-extremos-sin-sumar-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Resta los extremos, divide y no suma 1 (AT-CONTEO-POSTE)"
+    },
+    "responde-lo-que-sobra": {
+     "respaldo": "hipotesis",
+     "describe": "Responde lo que sobra de la suma de cifras, no la cifra que completa el múltiplo (AT-CRITERIO-RESTO)"
+    },
+    "multiplo-de-3-no-de-9": {
+     "respaldo": "hipotesis",
+     "describe": "Elige la cifra que hace la suma múltiplo de 3, no de 9 (AT-CRITERIO-TRES)"
+    },
+    "completa-la-decena": {
+     "respaldo": "hipotesis",
+     "describe": "Completa la suma de cifras hasta una decena en vez de un múltiplo de 9 (AT-CRITERIO-DECENA)"
     }
    },
    "pares": [

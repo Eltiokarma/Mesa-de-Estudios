@@ -1,0 +1,401 @@
+{
+  "plantilla": "divisibilidad-restos",
+  "nota": "entrada es _datos del generador; un caso por tipo (26). respuesta: la clave de la correcta, como texto (un resto puede ser 0): el resto, la cantidad, la cifra, las monedas o el día.",
+  "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: lee solo los parámetros de cada caso y recalcula con el operador % y pow(b, e, d) de Python, cuenta múltiplos en un rango, llena las cifras ocultas por fuerza bruta y lista los pagos x, y probando cada cantidad. Los 26 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "diofanticas",
+        "tipo": "maneras",
+        "nivel": 2,
+        "p": 2,
+        "q": 5,
+        "c": 50
+      },
+      "esperado": {
+        "respuesta": "6",
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "criterios",
+        "tipo": "cifra-9",
+        "nivel": 2,
+        "patron": "73a",
+        "d": 9
+      },
+      "esperado": {
+        "respuesta": "8",
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "restos-suman",
+        "tipo": "suma",
+        "nivel": 1,
+        "d": 8,
+        "rs": [
+          6,
+          2
+        ],
+        "op": "+"
+      },
+      "esperado": {
+        "respuesta": "0",
+        "texto": "0"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "filas-de-m",
+        "tipo": "razon",
+        "nivel": 3,
+        "d": 9,
+        "p": 3,
+        "L": 103,
+        "U": 112
+      },
+      "esperado": {
+        "respuesta": "36",
+        "texto": "36"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "filas-de-m",
+        "tipo": "cuantos-hasta",
+        "nivel": 1,
+        "d": 9,
+        "N": 149
+      },
+      "esperado": {
+        "respuesta": "16",
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "restos-potenciales",
+        "tipo": "ultima-cifra",
+        "nivel": 2,
+        "b": 2,
+        "e": 63,
+        "d": 10
+      },
+      "esperado": {
+        "respuesta": "8",
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "idea": "restos-potenciales",
+        "tipo": "primeros",
+        "nivel": 1,
+        "b": 3,
+        "e": 3,
+        "d": 11
+      },
+      "esperado": {
+        "respuesta": "5",
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "restos-suman",
+        "tipo": "expresion",
+        "nivel": 3,
+        "d": 9,
+        "r": 5,
+        "a": 5,
+        "b": 3
+      },
+      "esperado": {
+        "respuesta": "1",
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "restos-potenciales",
+        "tipo": "potencia-mas",
+        "nivel": 3,
+        "b": 3,
+        "e": 23,
+        "d": 11,
+        "c": 7
+      },
+      "esperado": {
+        "respuesta": "1",
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "idea": "criterios-pesos",
+        "tipo": "oculta-7-13",
+        "nivel": 3,
+        "patron": "9a0",
+        "d": 13
+      },
+      "esperado": {
+        "respuesta": "1",
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "idea": "diofanticas",
+        "tipo": "completar",
+        "nivel": 1,
+        "p": 2,
+        "q": 5,
+        "c": 19,
+        "y": 1
+      },
+      "esperado": {
+        "respuesta": "7",
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "criterios",
+        "tipo": "ultimas",
+        "nivel": 1,
+        "d": 4,
+        "N": 12755
+      },
+      "esperado": {
+        "respuesta": "3",
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "idea": "criterios",
+        "tipo": "ocultas",
+        "nivel": 3,
+        "patron": "6a0b",
+        "m": 5,
+        "m2": 9
+      },
+      "esperado": {
+        "respuesta": "7",
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "idea": "restos-suman",
+        "tipo": "triple",
+        "nivel": 3,
+        "d": 10,
+        "f": 2,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": "4",
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "idea": "diofanticas",
+        "tipo": "menos-monedas",
+        "nivel": 2,
+        "c": 24
+      },
+      "esperado": {
+        "respuesta": "6",
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "idea": "criterios-pesos",
+        "tipo": "siete",
+        "nivel": 2,
+        "d": 7,
+        "N": 8197
+      },
+      "esperado": {
+        "respuesta": "0",
+        "texto": "0"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "idea": "criterios-pesos",
+        "tipo": "boleto-11",
+        "nivel": 2,
+        "patron": "5a24",
+        "d": 11
+      },
+      "esperado": {
+        "respuesta": "3",
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "idea": "criterios",
+        "tipo": "nueve-tres",
+        "nivel": 1,
+        "d": 9,
+        "N": 33491
+      },
+      "esperado": {
+        "respuesta": "2",
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "idea": "filas-de-m",
+        "tipo": "tramo",
+        "nivel": 2,
+        "d": 10,
+        "lo": 100,
+        "hi": 999
+      },
+      "esperado": {
+        "respuesta": "90",
+        "texto": "90"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "idea": "restos-suman",
+        "tipo": "faltan",
+        "nivel": 2,
+        "d": 10,
+        "f": 3
+      },
+      "esperado": {
+        "respuesta": "7",
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 39,
+      "entrada": {
+        "idea": "restos-potenciales",
+        "tipo": "resto-potencia",
+        "nivel": 2,
+        "b": 3,
+        "e": 32,
+        "d": 13
+      },
+      "esperado": {
+        "respuesta": "9",
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": 54,
+      "entrada": {
+        "idea": "restos-potenciales",
+        "tipo": "dia",
+        "nivel": 2,
+        "b": 3,
+        "e": 45,
+        "hoy": 4
+      },
+      "esperado": {
+        "respuesta": "jueves",
+        "texto": "jueves"
+      }
+    },
+    {
+      "semilla": 59,
+      "entrada": {
+        "idea": "diofanticas",
+        "tipo": "articulos",
+        "nivel": 3,
+        "p": 4,
+        "q": 7,
+        "c": 87
+      },
+      "esperado": {
+        "respuesta": "6",
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 61,
+      "entrada": {
+        "idea": "filas-de-m",
+        "tipo": "es-multiplo",
+        "nivel": 1,
+        "d": 8,
+        "opciones": [
+          64,
+          68,
+          65,
+          26
+        ]
+      },
+      "esperado": {
+        "respuesta": "64",
+        "texto": "64"
+      }
+    },
+    {
+      "semilla": 92,
+      "entrada": {
+        "idea": "criterios-pesos",
+        "tipo": "once",
+        "nivel": 1,
+        "d": 11,
+        "N": 9749
+      },
+      "esperado": {
+        "respuesta": "3",
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 122,
+      "entrada": {
+        "idea": "restos-suman",
+        "tipo": "veces",
+        "nivel": 1,
+        "d": 9,
+        "rs": [
+          6,
+          6,
+          6
+        ],
+        "op": "+"
+      },
+      "esperado": {
+        "respuesta": "0",
+        "texto": "0"
+      }
+    }
+  ]
+}

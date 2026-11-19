@@ -1,0 +1,87 @@
+{
+  "titulo": "El puesto de los restos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "La promoción vende los boletos del 1 al 69. Hay premio para cada boleto cuyo número es múltiplo de 6. ¿Cuántos premios se entregan? Datos: Del 1 al N hay tantos múltiplos de d como el cociente entero de N ÷ d. Los boletos van del 1 al 69, sin saltarse ninguno. Alternativas: A) 3   B) 10   C) 11   D) 12",
+      "respuesta": "C) 11",
+      "pasos": [
+        "69 = 6 × 11 + 3: hay 11 grupos completos de 6 boletos.",
+        "Cada grupo completo termina en un premio: hay 11 premios."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un pedido deja 3 sueltos al empacarlo en bolsitas de 7. Doña Juana prepara 6 pedidos iguales y los junta. ¿Cuántos sueltos quedan? Datos: d̊: un múltiplo de d; r y s: los restos de cada número entre d. (d̊ + r) × (d̊ + s) = d̊ + r × s. Un resto es menor que d: si llega a d, se divide otra vez. Alternativas: A) 4   B) No se puede saber   C) 3   D) 18   E) 2",
+      "respuesta": "A) 4",
+      "pasos": [
+        "Cada pedido aporta 3 sueltos: son 6 × 3 = 18.",
+        "18 = 7 × 2 + 4: quedan 4 sueltos."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Doña Juana reempaca 77 487 caramelos en bolsitas de 3. ¿Cuántos sueltos quedan? Datos: Entre 9 y entre 3: N deja el mismo resto que la suma de sus cifras. Un resto es menor que d: si llega a d, se divide otra vez. Alternativas: A) 6   B) 0   C) 1   D) 33",
+      "respuesta": "B) 0",
+      "pasos": [
+        "Cada envase deja 1 por cifra: las cifras suman 7 + 7 + 4 + 8 + 7 = 33.",
+        "33 = 3 × 11 + 0: quedan 0 sueltos."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "N = 4⁶³: un número de muchas cifras. ¿Qué resto deja N al dividirlo entre 13? Datos: Los restos de las potencias de un número se repiten en ciclo: se calculan hasta que uno se repite. Cada resto sale de multiplicar el anterior por la base y volver a dividir. Dos potencias cuyos exponentes dejan el mismo resto entre el largo del ciclo dejan el mismo resto. Alternativas: A) 3   B) 10   C) 4   D) 12   E) 1",
+      "respuesta": "D) 12",
+      "pasos": [
+        "Los restos de las potencias de 4 entre 13 son 4, 3, 12, 9, 10, 1: el ciclo mide 6.",
+        "63 = 6 × 10 + 3: toca el lugar 3. Deja resto 12."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El boleto ganador de la rifa es el 1 639. ¿Qué resto deja al dividirlo entre 7? Datos: Resto de N = resto de la suma de cada cifra por el peso de su lugar. Pesos entre 7, desde las unidades: 1, 3, 2, −1, −3, −2. Si el total sale negativo, se le suma el divisor hasta que deje de serlo. Alternativas: A) 29   B) 5   C) 1   D) 2   E) 4",
+      "respuesta": "C) 1",
+      "pasos": [
+        "Cada cifra por el peso de su lugar, desde las unidades: 9 × 1 + 3 × 3 + 6 × 2 − 1 × 1 = 29.",
+        "29 = 7 × 4 + 1: deja resto 1."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "¿De cuántas maneras se pueden gastar S/ 55 justos en bolsas de S/ 3 y cajas de S/ 5? También vale usar una sola clase. Datos: 3 × x + 5 × y = 55, con x e y enteros que no son negativos. x: las bolsas; y: las cajas. Alternativas: A) 12   B) 4   C) 11   D) 3",
+      "respuesta": "B) 4",
+      "pasos": [
+        "Con cada cantidad de S/ 5, lo que falta tiene que ser múltiplo de 3.",
+        "Sirven (15, 2), (10, 5), (5, 8), (0, 11): son 4 maneras."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El número 5̅a̅0̅b̅ es múltiplo de 5 y de 9, y b no es 0. ¿Cuánto vale a? Datos: Entre 2 y entre 5: N deja el mismo resto que su última cifra. Entre 9 y entre 3: N deja el mismo resto que la suma de sus cifras. 5̅a̅0̅b̅: numeral de cifras 5, a, 0 y b. Alternativas: A) 1   B) 8   C) 4   D) 5",
+      "respuesta": "B) 8",
+      "pasos": [
+        "Por el 5, la última cifra es 0 o 5; no es 0: b = 5.",
+        "Por el 9, las cifras suman 10 + a, múltiplo de 9: a = 8."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En una rifa, 4 de cada 9 boletos vendidos los compraron alumnos de quinto. Se vendieron más de 50 y menos de 59 boletos. ¿Cuántos boletos compraron los de quinto? Datos: «4 de cada 9»: por cada grupo de 9, 4 son de quinto. N es múltiplo de d si N = d × k, con k un entero; d es la bolsita. Alternativas: A) 24   B) 6   C) 30   D) 54",
+      "respuesta": "A) 24",
+      "pasos": [
+        "El total va en grupos de 9: es múltiplo de 9. Entre 50 y 59 solo está 54 = 9 × 6.",
+        "En cada grupo hay 4 de quinto: 4 × 6 = 24."
+      ]
+    }
+  ]
+}

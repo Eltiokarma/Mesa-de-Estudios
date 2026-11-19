@@ -3968,7 +3968,7 @@
        "base-desconocida": "La base que no se ve",
        "conteo-cifras": "Contar cifras por bloques"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -4035,7 +4035,7 @@
      "nombre": "Divisibilidad",
      "temas": [
       "Múltiplos y divisores",
-      "Teoremas de la divisibilidad",
+      "Principios de la divisibilidad",
       "Restos potenciales",
       "Criterios de divisibilidad",
       "Ecuaciones diofánticas lineales"
@@ -4059,24 +4059,30 @@
       "aritmetica.cuatro-operaciones"
      ],
      "plantillas": [
-      "divisores",
-      "numeros-sucesiones"
+      "divisibilidad-restos",
+      "numeros-sucesiones",
+      "divisores"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/divisibilidad.js",
       "requiere": [
+       "/nucleo/kit/piezas/arit-puesto.js",
+       "/nucleo/kit/piezas/arit-boletos.js",
+       "/nucleo/kit/piezas/arit-boleto.js",
+       "/nucleo/kit/piezas/arit-monedas.js",
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "filas-de-m": "Filas de m sin sobrante",
-       "restos-suman": "Los restos se suman y multiplican",
+       "filas-de-m": "Múltiplo: bolsitas llenas, ningún suelto",
+       "restos-suman": "Al operar, mandan los sueltos",
+       "criterios": "Criterios: lo que deja cada envase",
        "restos-potenciales": "Los restos de potencias se repiten",
-       "criterios": "Los criterios salen de 10",
-       "diofanticas": "Soluciones enteras: manda el mcd"
+       "criterios-pesos": "Criterios del 11, 7 y 13",
+       "diofanticas": "Pagar justo con dos monedas"
       },
-      "terminos": 24
+      "terminos": 34
      }
     },
     {
@@ -4384,7 +4390,7 @@
        "criptoaritmetica": "Cada letra es una cifra",
        "suficiencia": "¿Alcanza para una sola respuesta?"
       },
-      "terminos": 26
+      "terminos": 27
      }
     }
    ]
@@ -8836,6 +8842,30 @@
     "/plantillas/dinamica-fuerzas/papel.json"
    ]
   },
+  "divisibilidad-restos": {
+   "id": "divisibilidad-restos",
+   "titulo": "El puesto de los restos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.divisibilidad"
+   ],
+   "url": "#/practica/divisibilidad-restos",
+   "ideas": [
+    "filas-de-m",
+    "restos-suman",
+    "criterios",
+    "restos-potenciales",
+    "criterios-pesos",
+    "diofanticas"
+   ],
+   "papel": "/plantillas/divisibilidad-restos/papel.json",
+   "archivos": [
+    "/plantillas/divisibilidad-restos/generador.js",
+    "/plantillas/divisibilidad-restos/papel.json"
+   ]
+  },
   "division-polinomios": {
    "id": "division-polinomios",
    "titulo": "División de polinomios, cocientes notables, MCD y MCM",
@@ -8869,6 +8899,9 @@
     "/plantillas/divisores/index.html",
     "/plantillas/divisores/motor.js",
     "/plantillas/divisores/papel.json"
+   ],
+   "rehacer": [
+    "aritmetica.divisibilidad"
    ]
   },
   "ecuaciones-polinomiales": {

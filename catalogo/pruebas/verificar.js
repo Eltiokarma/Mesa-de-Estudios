@@ -618,6 +618,19 @@ const V = {
     if (!presto) throw new Error('las centenas deben haber prestado');
     return { correcta: c, errores: { 'presta-sin-descontar': c + presto, 'descuenta-dos-veces': c - presto } };
   },
+  // ari-31 y ari-32 (19 nov): ítems de la práctica divisibilidad-restos (sin motor), verificados aquí por fuerza bruta.
+  'ari-31': d => {
+    const en = (lo, hi) => { let c = 0; for (let x = lo; x <= hi; x++) if (x % d.d === 0) c++; return c; };
+    return { correcta: en(d.a, d.b), errores: { 'multiplos-desde-1': en(1, d.b), 'resta-extremos-sin-sumar-uno': Math.floor((d.b - d.a) / d.d),
+      'redondea-el-cociente-hacia-arriba': Math.ceil(d.b / d.d) - Math.floor(d.a / d.d) } };
+  },
+  'ari-32': d => {
+    const sirve = []; for (let a = 0; a <= 9; a++) if (Number(d.patron.replace('a', a)) % d.d === 0) sirve.push(a);
+    if (sirve.length !== 1) throw new Error('la cifra oculta debe ser única');
+    const S = [...d.patron.replace('a', '')].reduce((x, c) => x + Number(c), 0), a = sirve[0];
+    const tres = [a + 3, a - 3].find(t => t >= 0 && t <= 9 && (S + t) % 3 === 0 && t !== S % 9);
+    return { correcta: a, errores: { 'responde-lo-que-sobra': S % 9, 'multiplo-de-3-no-de-9': tres, 'completa-la-decena': 10 * (Math.floor(S / 10) + 1) - S } };
+  },
   'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
     return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
   'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;

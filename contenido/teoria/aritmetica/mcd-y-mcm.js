@@ -884,6 +884,9 @@
     // Laboratorio: juego libre, sin preguntas. «Cintas libres» deja elegir los largos (también dos que solo comparten el
     // 1); «Tres combis» agrega una tercera y el caso en que el encuentro cae fuera de la recta; Euclides es el juego de la idea 3.
     glosario: [
+      // «máximo común divisor» se estrenaba en Divisibilidad; se mudó aquí el 19 nov (docs/etapa5/propuesta-aritmetica.md §10).
+      { termino: 'máximo común divisor', simbolo: 'MCD', formas: ['máximo común divisor', 'MCD'],
+        def: 'El mayor número que divide exacto a la vez a dos o más números.', ejemplo: 'MCD(6, 9) = 3.', ver: ['divisor común'] },
       { termino: 'MCM', formas: ['MCM', 'mínimo común múltiplo'],
         def: 'El menor número positivo que es múltiplo de todos los dados. Dice cuándo vuelven a coincidir dos ciclos.',
         ejemplo: 'Alarmas cada 12 y 18 min: suenan juntas a los 36 min, porque MCM(12, 18) = 36.', ver: ['múltiplo común', 'máximo común divisor'] },

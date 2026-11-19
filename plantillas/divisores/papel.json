@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["aritmetica.numeros-primos-y-divisores"],
       "nivel": "básico",
       "enunciado": "¿Cuántos divisores tiene 1200?",
       "respuesta": "30.",
@@ -16,6 +17,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["aritmetica.numeros-primos-y-divisores"],
       "nivel": "intermedio",
       "enunciado": "¿Cuántos divisores de 1200 son múltiplos de 15?",
       "respuesta": "10.",
@@ -28,6 +30,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["aritmetica.divisibilidad"],
       "nivel": "intermedio",
       "enunciado": "¿Qué resto se obtiene al dividir 2¹⁰⁰ entre 7?",
       "respuesta": "2.",
@@ -40,6 +43,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["aritmetica.divisibilidad"],
       "nivel": "básico",
       "enunciado": "Halla la cifra a para que el número de cuatro cifras 7a42, donde a es la cifra de las centenas, sea divisible entre 11.",
       "respuesta": "a = 9 (el número es 7942).",
@@ -52,6 +56,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["aritmetica.numeros-primos-y-divisores"],
       "nivel": "intermedio",
       "enunciado": "Un número de la forma 2ⁿ · 3 tiene 12 divisores. ¿Cuál es ese número?",
       "respuesta": "96.",
@@ -64,6 +69,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["aritmetica.numeros-primos-y-divisores"],
       "nivel": "intermedio",
       "enunciado": "¿Cuánto suman todos los divisores de 72?",
       "respuesta": "195.",
@@ -76,6 +82,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["aritmetica.divisibilidad"],
       "nivel": "básico",
       "enunciado": "¿En qué cifra termina 3²⁰²⁷?",
       "respuesta": "En 7.",
@@ -88,6 +95,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["aritmetica.divisibilidad"],
       "nivel": "avanzado",
       "enunciado": "Una librería vende lapiceros a 4 soles y cuadernos a 7 soles. Ana gastó exactamente 100 soles y compró al menos un lapicero y al menos un cuaderno. ¿De cuántas maneras pudo hacer su compra?",
       "respuesta": "De 3 maneras: 4 lapiceros y 12 cuadernos, 11 y 8, o 18 y 4.",
@@ -100,6 +108,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["aritmetica.numeros-primos-y-divisores"],
       "nivel": "intermedio",
       "enunciado": "¿Cuántos enteros positivos menores que 36 son primos entre sí (PESI) con 36?",
       "respuesta": "12.",
@@ -112,6 +121,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["aritmetica.numeros-primos-y-divisores"],
       "nivel": "avanzado",
       "enunciado": "¿Qué resto se obtiene al dividir 10! = 1 · 2 · 3 · … · 10 entre 11?",
       "respuesta": "10.",

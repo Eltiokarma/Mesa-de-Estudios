@@ -1,0 +1,21 @@
+{
+  "id": "divisibilidad-restos",
+  "titulo": "El puesto de los restos",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.divisibilidad"
+  ],
+  "temas": [
+    "Múltiplos y divisores",
+    "Principios de la divisibilidad",
+    "Criterios de divisibilidad",
+    "Restos potenciales",
+    "Ecuaciones diofánticas lineales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

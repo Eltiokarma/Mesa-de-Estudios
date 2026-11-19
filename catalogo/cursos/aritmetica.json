@@ -367,7 +367,7 @@
       "nombre": "Divisibilidad",
       "temas": [
         "Múltiplos y divisores",
-        "Teoremas de la divisibilidad",
+        "Principios de la divisibilidad",
         "Restos potenciales",
         "Criterios de divisibilidad",
         "Ecuaciones diofánticas lineales"
@@ -388,8 +388,8 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": ["aritmetica.cuatro-operaciones"],
-      "plantillas": ["divisores", "numeros-sucesiones"],
-      "investigacion": null
+      "plantillas": ["divisibilidad-restos", "numeros-sucesiones", "divisores"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.numeros-primos-y-divisores",
