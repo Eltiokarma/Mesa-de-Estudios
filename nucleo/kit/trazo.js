@@ -18,6 +18,9 @@
   const TEXTO = 16;                 // tamaño base del texto en el lienzo de 320
   const ANCHO = 320;                // ancho de lienzo recomendado
   const COLORES = ['o', 'i', 'h', 'd', 'f'];
+  // La serif de las ecuaciones (app/estilos.css, .te-ec): para los símbolos de los átomos, que en la sin serif se leen mal
+  // («Cl» parece «CI»; auditoría de la Etapa 6). Comillas simples: va dentro del atributo style.
+  const SERIF = "'Cambria Math',Cambria,'Noto Serif','Source Serif Pro',Georgia,serif";
 
   const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const n = x => { const r = Math.round(x * 100) / 100; return Object.is(r, -0) ? '0' : String(r); };
@@ -40,12 +43,12 @@
     return x + dx;
   }
 
-  /* rotulo(x, y, texto, { color, ancla, peso, tam, clase, min, max }) → <text> pegado a lo que nombra.
-     y es la línea base. Se encaja dentro de [min, max] para no salirse del lienzo. */
+  /* rotulo(x, y, texto, { color, ancla, peso, tam, clase, min, max, familia }) → <text> pegado a lo que nombra.
+     y es la línea base. Se encaja dentro de [min, max] para no salirse del lienzo. familia: otra fuente (p. ej. SERIF). */
   function rotulo(x, y, texto, o = {}) {
     const ancla = o.ancla || 'start', tam = Math.max(14, o.tam || TEXTO), peso = o.peso || 400;
     const xx = encajar(x, texto, ancla, { tam, peso, min: o.min === undefined ? 2 : o.min, max: o.max === undefined ? ANCHO - 2 : o.max });
-    return `<text${clase('kit-txt' + (o.clase ? ' ' + o.clase : ''))} x="${n(xx)}" y="${n(y)}" fill="${color(o.color)}" font-size="${tam}"${peso !== 400 ? ` font-weight="${peso}"` : ''}${ancla !== 'start' ? ` text-anchor="${ancla}"` : ''} style="font-variant-numeric:tabular-nums">${esc(texto)}</text>`;
+    return `<text${clase('kit-txt' + (o.clase ? ' ' + o.clase : ''))} x="${n(xx)}" y="${n(y)}" fill="${color(o.color)}" font-size="${tam}"${peso !== 400 ? ` font-weight="${peso}"` : ''}${ancla !== 'start' ? ` text-anchor="${ancla}"` : ''} style="${o.familia ? `font-family:${esc(o.familia)};` : ''}font-variant-numeric:tabular-nums">${esc(texto)}</text>`;
   }
 
   // Punta única del kit: triángulo de 10 de largo y 5 de semiancho, relleno, con unión redonda.
@@ -105,5 +108,5 @@
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n(w)} ${n(h)}" width="${n(w)}" height="${n(h)}"${a} class="kit-svg${o.clase ? ' ' + esc(o.clase) : ''}" font-family="inherit">${contenido}</svg>`;
   }
 
-  return { GROSOR, TEXTO, ANCHO, COLORES, esc, n, color, ancho, encajar, rotulo, flecha, cota, eje, resaltado, barra, linea, svg };
+  return { GROSOR, TEXTO, ANCHO, COLORES, SERIF, esc, n, color, ancho, encajar, rotulo, flecha, cota, eje, resaltado, barra, linea, svg };
 });

@@ -32,3 +32,11 @@ test('comunes: sana, pura, alto fijo y alt', () => {
   const s0 = P.dibujar(CO2, { corte: 0 }), s2 = P.dibujar(CO2, { corte: 2 });
   sana(s0); sana(s2); assert.equal(alto(s0), alto(s2)); assert.match(P.alt(CO2), /C=O/);
 });
+test('el símbolo del átomo va en la serif de las ecuaciones («Cl» no se lee «CI»); cargas y textos, no', () => {
+  const T = require('../trazo.js');
+  const HCl = { atomos: [{ id: 'h', t: 'H', x: 0, y: 0 }, { id: 'cl', t: 'Cl', x: 1, y: 0, color: 'h' }], enlaces: [{ a: 'h', b: 'cl' }],
+    cargas: [{ en: 'cl', t: 'δ−' }], textos: [{ x: 0.5, y: 1, t: 'polar' }] };
+  const svg = P.dibujar(HCl, {});
+  const textos = Object.fromEntries([...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map(([t, s]) => [s, t.includes(`style="font-family:${T.SERIF};`)]));
+  assert.deepEqual(textos, { H: true, Cl: true, 'δ−': false, polar: false });
+});

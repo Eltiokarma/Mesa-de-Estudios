@@ -161,7 +161,10 @@
         s.position.copy(P.get(a.id)); s.userData = { t: a.t }; grupo.add(s); tocables.push(s); grupo.userData.esferas.set(a.id, s);
         if (d.simbolos && a.t !== 'C') {                                     // símbolo encima del átomo (texto real)
           const base = P.get(a.id).clone();
-          grupo.userData.rotulos.push({ el: h.etiqueta(base.clone().applyAxisAngle(Y, giro), a.t), base, id: a.id });
+          const el = h.etiqueta(base.clone().applyAxisAngle(Y, giro), a.t);
+          // En la serif de las ecuaciones, como en el plano (Etapa 6: en la sin serif «Cl» se leía «CI»).
+          if (el && el.style && Kit.trazo) el.style.fontFamily = Kit.trazo.SERIF;
+          grupo.userData.rotulos.push({ el, base, id: a.id });
         }
       }
       for (const x of d.enlaces) {

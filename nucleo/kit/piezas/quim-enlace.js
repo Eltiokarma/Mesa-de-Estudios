@@ -221,7 +221,8 @@
       return s;
     }
     const cx = m.x0 + m.wc + m.pad + m.ws / 2, top = base - 0.74 * TAM, bot = base + 0.06 * TAM, mid = (top + bot) / 2;
-    s += `<g class="kit-simbolo">${T.rotulo(cx, base, f.s, { ancla: 'middle', tam: TAM, peso: 700 })}`;
+    // El símbolo, en la serif de las ecuaciones (Etapa 6: en la sin serif «Cl» se leía «CI»).
+    s += `<g class="kit-simbolo">${T.rotulo(cx, base, f.s, { ancla: 'middle', tam: TAM, peso: 700, familia: T.SERIF })}`;
     cajas.textos.push(cajaTexto(f.s, cx, base, TAM, 700));
     if (f.oculto) {
       // Lo que se pide (sus puntos) va con «?», arriba del símbolo y lejos de la carga.

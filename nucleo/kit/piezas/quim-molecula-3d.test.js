@@ -105,3 +105,16 @@ test('forma y mover: la conformación que gira se mueve sin rearmar y queda como
   const otra = Object.assign({}, AGUA, { atomos: AGUA.atomos.map(a => (a.id === 'H1' ? Object.assign({}, a, { pos: [0.9, -0.5, 0] }) : a)) });
   assert.equal(P.spec.mover(T, agua, otra, { pares: true }, h), false);
 });
+
+test('los símbolos sobre los átomos (simbolos: true) van en la serif de las ecuaciones', () => {
+  const fs = require('fs'), vm = require('vm'), path = require('path');
+  const T = vm.runInNewContext(`${fs.readFileSync(path.join(__dirname, '../../../app/vendor/three/three-mesa.min.js'), 'utf8')};THREE`, {});
+  const etiquetas = [];
+  const h = {
+    SEG: 8, material: () => new T.MeshBasicMaterial(), etiqueta: (p, t) => { const el = { t, style: {} }; etiquetas.push(el); return el; }, moverEtiqueta: () => {},
+    barra: () => new T.Group(), flecha: () => new T.Group(), oscuro: () => false, varCss: (n, x) => x,
+  };
+  const HCl = { atomos: [{ id: 'H', t: 'H', pos: [0, 0, 0] }, { id: 'Cl', t: 'Cl', pos: [1.3, 0, 0] }], enlaces: [{ a: 'H', b: 'Cl', orden: 1 }], simbolos: true };
+  P.spec.construir(T, new T.Group(), HCl, {}, h);
+  assert.deepEqual(etiquetas.map(e => [e.t, e.style.fontFamily]), [['H', Kit.trazo.SERIF], ['Cl', Kit.trazo.SERIF]]);
+});

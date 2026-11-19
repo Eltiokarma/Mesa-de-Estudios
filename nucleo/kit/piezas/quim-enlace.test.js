@@ -56,3 +56,12 @@ test('enlace químico: N₂ y O₂ distintos en la ventana, la tiza se ve, sin r
   const ini = svg.match(/kit-transfiere" d="M([\d.]+) ([\d.]+)/);
   assert.ok(+ini[2] < punto[1] - 6, `la flecha (y = ${ini[2]}) nace encima del punto del Na (y = ${punto[1]})`);
 });
+
+test('el símbolo del átomo va en la serif de las ecuaciones («Cl» no se lee «CI»); lo demás, en la letra de siempre', () => {
+  const T = require('../trazo.js');
+  assert.match(T.SERIF, /Cambria Math.*serif$/);
+  const svg = P.dibujar(SIMB[0]);
+  const textos = [...svg.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map(([t, s]) => ({ s, serif: t.includes(`style="font-family:${T.SERIF};`) }));
+  for (const t of textos) assert.equal(t.serif, ['Na', 'Cl'].includes(t.s), `«${t.s}»`);
+  assert.equal(textos.filter(t => t.serif).length, 4, 'Na, Cl, [Na]⁺ y [Cl]⁻');
+});

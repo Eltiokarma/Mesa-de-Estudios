@@ -108,7 +108,8 @@
       const x = g.X(a.x), y = g.Y(a.y), c = caja(a);
       let q = '';
       if (!a.sinMarco && a.color) q += `<rect x="${T.n(x - c.w)}" y="${T.n(y - c.h - 2)}" width="${T.n(2 * c.w)}" height="${T.n(2 * c.h + 4)}" rx="${T.n(Math.min(c.w, c.h + 2))}" fill="var(--card)" stroke="${T.color(a.color)}" stroke-width="2"/>`;
-      q += T.rotulo(x, y + 6, a.t, { ancla: 'middle', peso: 700, color: a.color, tam: TAM });
+      // El símbolo, en la serif de las ecuaciones (Etapa 6: en la sin serif «Cl» se leía «CI»).
+      q += T.rotulo(x, y + 6, a.t, { ancla: 'middle', peso: 700, color: a.color, tam: TAM, familia: T.SERIF });
       s += `<g class="kit-atomo${nuevo(a)}">${q}</g>`;
     }
     for (const p of d.pares || []) {
