@@ -102,7 +102,14 @@
   const pv = s => ({ v: 'c-o', t: String(s), m: 'velocidad' }), pt = s => ({ v: 'c-i', t: String(s), m: 'tiempo' });
   const ps = s => ({ v: 'c-f', t: String(s), m: 'giro' }), pa = s => ({ v: 'c-h', t: String(s), m: 'aceleración' });
   const neg = l => ({ negrita: [l] });
-  const cuad = q => ({ sup: [q, '2'] });
+  // Al cuadrado. Una base que no es un solo número ni una sola letra va entre paréntesis: (2π)², no «2π²», que se lee
+  // 2 · π² (igualdad-falsa, Etapa 6, 19 nov: «2π² · 0,25 = π²» era falsa). Con { par }, { frac } u otra pieza, la
+  // llamada decide.
+  const BASE_SOLA = /^(\d+(,\d+)?|\p{L})$/u;
+  const cuad = q => {
+    const t = typeof q === 'string' ? q : q && typeof q.t === 'string' ? q.t : null;
+    return { sup: [t !== null && !BASE_SOLA.test(t) ? { par: [q] } : q, '2'] };
+  };
   const sub = (x, i) => ({ sub: [x, i] });
   const COLORES = { velocidad: 'o', tiempo: 'i', giro: 'f', aceleración: 'h' };
   // «a_c» y «a_T» escritos en un texto pasan a ser fichas con subíndice de verdad (molde §5): sx('… a_c …').

@@ -730,3 +730,32 @@ test('lectores en frío: en las reglas, cada relación va en su renglón (no se 
   }
   assert.ok(!/sen θ|cos θ/.test(JSON.stringify(ideaN(3).regla.ecuacion)), 'sen y θ con espacio duro');
 });
+
+// ---------- igualdad-falsa (Etapa 6, 19 nov) ----------
+// Falla con la versión de antes: «R = 5 · 1,73 = 8,66 m» (5 · 1,73 da 8,65) en el ejemplo 15 y en «Ahora tú» (semillas
+// 61 y 77: «10 · 3,46 = 34,64 m»), y «R = 3 · 3 · 12,47 = 112,24 m» en «Así se resuelve» (semilla 151). La cuenta que se
+// escribe da el resultado con los números que se ven: el factor que no es exacto con dos decimales va con tres (√3 ≈
+// 1,732) y el dato redondeado del enunciado entra tal como se ve.
+test('igualdad-falsa: en «Altura máxima y alcance», cada producto escrito da su resultado con los números que se ven', () => {
+  const i = I('A4');
+  const productos = t => [...t.matchAll(/(\d[\d,]*(?: · \d[\d,]*)+) = (\d[\d,]*) m\b/g)];
+  const revisar = (t, que) => {
+    const ps = productos(t);
+    for (const [, cuenta, res] of ps) {
+      const d = (res.split(',')[1] || '').length, v = cuenta.split(' · ').reduce((a, x) => a * num(x), 1);
+      assert.ok(Math.abs(v - num(res)) <= 0.5 * 10 ** -d + 1e-9, `${que}: «${cuenta} = ${res} m» (la cuenta da ${v})`);
+    }
+    return ps.length;
+  };
+  assert.ok(revisar(plano(i.ejemplos[14].solucion.map(p => p.ecuacion)), 'ejemplo 15') >= 3, 'ejemplo 15: los tres alcances');
+  let vistos = 0, con3 = 0;
+  for (let s = 0; s < 400; s++) {
+    const a = i.ahoraTu.generar(s), r = i.resuelve.generar(s);
+    if (s % 4 === 1) { const t = plano(a.solucion.ecuacion); vistos += revisar(t, `ahoraTu ${s}`); if (/,\d{3} =/.test(t)) con3++; }
+    if (s % 2 === 1) vistos += revisar(plano(r.pasos.map(p => p.ecuacion)), `resuelve ${s}`);
+  }
+  assert.ok(vistos >= 250 && con3 > 0, `${vistos} cuentas, ${con3} con tres decimales`);
+  assert.match(plano(i.resuelve.generar(151).respuesta), /112,23 m/, 'semilla 151: 3 · 3 · 12,47, con el 12,47 del enunciado');
+  const falsas = Teoria.pendientes(def, { semillas: 200 }).concat(Teoria.problemas(def, { semillas: 200 })).filter(x => /\[igualdad-falsa\]/.test(x));
+  assert.deepEqual(falsas, []);
+});

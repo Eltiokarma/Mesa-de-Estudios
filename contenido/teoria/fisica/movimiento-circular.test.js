@@ -655,3 +655,21 @@ test('auditoría M2 y M3: la práctica usa los colores y los nombres de la unida
   assert.deepEqual([claro.v, claro.w, claro.t, claro.th, claro.a, claro.at, claro.alfa], ['#a95300', '#a95300', '#07746e', '#6b3dbd', '#c02a5c', '#c02a5c', '#c02a5c']);
   assert.ok(!/flechas? (ocres?|verdes?|moradas?)|cursor naranja/.test(html), 'la escena no nombra los colores de antes');
 });
+
+// ---------- igualdad-falsa (Etapa 6, 19 nov) ----------
+// Falla con la versión de antes: cuad(pv('2π')) ponía el ² sobre «2π» sin paréntesis, y «2π² · 0,25 = π² m/s²» se lee
+// 2 · π² · 0,25 (también «40π² · 0,25 = 400π² m/s²»).
+test('igualdad-falsa: una base de varios signos va entre paréntesis al cuadrado: (2π)² y (40π)² en los ejemplos 7 y 13', () => {
+  const R = require('../../../nucleo/teoria-reglas.js'), i = idea('rapidez-constante-acelera');
+  for (const [n, base] of [[7, '2π'], [13, '40π']]) {
+    const e = i.ejemplos[n - 1], pasos = e.solucion.filter(Boolean);
+    const cuadrados = [];
+    const buscar = x => { if (Array.isArray(x)) x.forEach(buscar); else if (x && typeof x === 'object') { if (x.sup && x.sup[1] === '2') cuadrados.push(x.sup[0]); Object.values(x).forEach(buscar); } };
+    pasos.forEach(p => buscar(p.ecuacion));
+    assert.ok(cuadrados.some(b => b && b.par && b.par[0].t === base), `ejemplo ${n}: (${base})² con paréntesis`);
+    assert.ok(!cuadrados.some(b => b && b.t === base), `ejemplo ${n}: ${base}² sin paréntesis`);
+    for (const p of pasos) assert.deepEqual(R.igualdadesDe(R.textoCuenta(p.ecuacion)).filter(h => h.falsa).map(h => h.texto), [], `ejemplo ${n}: ${plano(p.ecuacion)}`);
+  }
+  const falsas = Teoria.pendientes(def, { semillas: 200 }).concat(Teoria.problemas(def, { semillas: 200 })).filter(x => /\[igualdad-falsa\]/.test(x));
+  assert.deepEqual(falsas, []);
+});

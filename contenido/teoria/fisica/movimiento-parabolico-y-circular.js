@@ -110,6 +110,11 @@
   // marca violeta en cada regla cada medio segundo · Se reserva: la piedra que se suelta a la vez (solo en Predice y
   // Mira) · Debe verse: las marcas del agua, igual de separadas; las de la peña, cada vez más.
   const fm = n => f(n, 2);
+  // Las cuentas que se escriben se hacen con los números que se ven (igualdad-falsa, Etapa 6, 19 nov: «5 · 1,73 = 8,66 m»
+  // era falsa, porque 5 · 1,73 da 8,65). Un factor que no es exacto con dos decimales va con tres (√3 ≈ 1,732), y un dato
+  // del enunciado que se muestra redondeado entra a la cuenta tal como se ve (visto).
+  const fmFactor = n => (Math.abs(n * 100 - Math.round(n * 100)) < 1e-6 ? fm(n) : f(n, 3));
+  const visto = n => Number(fm(n).replace(/\s/g, '').replace(',', '.').replace('−', '-'));
   const tCae = h => Math.sqrt(2 * h / G);                 // s: lo que tarda en caer h metros desde el reposo
   const tiroH = (d, estado = {}) => ({ pieza: 'fis-tiro', datos: d, estado });
   // La peña del juego, de Predice y de «Mira»: 45 m (3 s de caída con g = 10 m/s²) y hasta 47 m de lado; la figura, grande.
@@ -1417,7 +1422,7 @@
       alternativas: ['A 60° llega más lejos, porque sube más', 'A 30° llega más lejos, porque va más de lado', 'A 45° llega más lejos; 30° y 60° caen en el mismo sitio', 'Los tres caen en el mismo sitio', 'A 45° y a 60° caen en el mismo sitio'],
       datos: [DB.comp, DB.trig30, DB.trig45, DB.x, DB.y, DA.g],
       solucion: [
-        { texto: 'Los tres alcances, de lado por el tiempo de vuelo:', ecuacion: [{ sub: [MR, '30'] }, ' = ', pv('8,66'), ' · ', pt('1'), ' = ', px('8,66 m'), ';   ', { sub: [MR, '45'] }, ' = ', pv('7,07'), ' · ', pt('1,41'), ' = ', px('10 m'), ';   ', { sub: [MR, '60'] }, ' = ', pv('5'), ' · ', pt('1,73'), ' = ', px('8,66 m')] },
+        { texto: 'Los tres alcances, de lado por el tiempo de vuelo:', ecuacion: [{ sub: [MR, '30'] }, ' = ', pv('8,66'), ' · ', pt('1'), ' = ', px('8,66 m'), ';   ', { sub: [MR, '45'] }, ' = ', pv('7,07'), ' · ', pt('1,41'), ' = ', px('10 m'), ';   ', { sub: [MR, '60'] }, ' = ', pv('5'), ' · ', pt('1,732'), ' = ', px('8,66 m')] },
         { texto: [neg('A'), ' confunde subir más con llegar más lejos; ', neg('B'), ' olvida que a 30° vuela poco; ', neg('D'), ' y ', neg('E'), ' no miran el ángulo.'] },
       ],
       respuesta: [neg('C'), ': a 45° llega a ', px('10 m')] },
@@ -1527,7 +1532,7 @@
             respuesta: ['Salió a ', pv(ms(v0)), '; a 53° cae en el mismo sitio'],
           };
         }
-        const [v0, a] = r.de([[10, 53], [20, 37], [12, 30], [10, 60], [20, 53], [15, 37]]), [k, cuanto] = r.de(VECES), m = medidas(v0, a), R2 = m.R * k * k;
+        const [v0, a] = r.de([[10, 53], [20, 37], [12, 30], [10, 60], [20, 53], [15, 37]]), [k, cuanto] = r.de(VECES), m = medidas(v0, a), R2 = visto(m.R) * k * k;
         return {
           enunciado: ['A ', pv(ms(v0)), ' con ', `${a}°`, ', una pelota cae a ', px(`${fm(m.R)} m`), '. Con el mismo ángulo y ', cuanto, ', ¿a qué distancia cae?'],
           datos: [DB.comp, DB.x, DB.y, DA.g],
@@ -1570,7 +1575,7 @@
             { id: 'sube', valor: m.vy * m.tv, error: 'TP-SENCOS', siFuera: 'Bien el tiempo de vuelo. Pero de lado va el coseno, no la parte que sube.' },
             { id: 'altura', valor: m.H, error: 'TP-ALTURA', siFuera: 'Esa es la altura máxima. El alcance se mide por el piso.' },
           ], q => `${fm(q)} m`),
-          solucion: { texto: `Vuela ${fm(m.tv)} s, avanzando ${ms(m.vx)} de lado.`, ecuacion: [MR, ' = ', pv(fm(m.vx)), ' · ', pt(fm(m.tv)), ' = ', px(`${fm(m.R)} m`)] },
+          solucion: { texto: `Vuela ${fmFactor(m.tv)} s, avanzando ${ms(m.vx)} de lado.`, ecuacion: [MR, ' = ', pv(fm(m.vx)), ' · ', pt(fmFactor(m.tv)), ' = ', px(`${fm(m.R)} m`)] },
         };
         if (k === 2) {
           const b = r.de(COMPLEMENTOS), w = r.de([10, 20]), mb = medidas(w, b);

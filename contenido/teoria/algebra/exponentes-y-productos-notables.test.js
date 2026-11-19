@@ -598,3 +598,20 @@ test('ronda 2, prioridad 5: lo demás del lector', () => {
   // El área del biohuerto de Lee va adentro, no pegada al borde de abajo.
   assert.equal(P.geometria(i2.lee.tarjetas[0].dibujo.datos).textos.find(x => /36 m²/.test(x.txt)).que, 'dentro');
 });
+
+// ---------- igualdad-falsa (Etapa 6, 19 nov) ----------
+// Falla con la versión de antes: SUPI[2] es '' y `SUPI[n] || n` escribía el índice 2 delante de la raíz.
+test('igualdad-falsa: el siFuera de TAL-FRAC-MEDIO escribe la raíz cuadrada sin un 2 delante («√9 = 3», no «2√9 = 3»)', () => {
+  const i = idea('exponente-fraccionario'), EXP = { '': 2, '³': 3, '⁴': 4, '⁵': 5 };
+  let cuadradas = 0;
+  for (let s = 1; s < SEMILLAS; s += 5) {
+    const o = i.ahoraTu.generar(s).opciones.find(x => x.error === 'TAL-FRAC-MEDIO');
+    const m = o.siFuera.match(/^Bien la raíz: ([³⁴⁵]?)√(\d+) = (\d+)\./);
+    assert.ok(m, `semilla ${s}: ${o.siFuera}`);
+    assert.equal(Number(m[3]) ** EXP[m[1]], Number(m[2]), `semilla ${s}: ${o.siFuera}`);
+    if (m[1] === '') cuadradas++;
+  }
+  assert.ok(cuadradas > 0, 'alguna semilla saca una raíz cuadrada');
+  const falsas = Teoria.pendientes(def, { semillas: 200 }).concat(Teoria.problemas(def, { semillas: 200 })).filter(x => /\[igualdad-falsa\]/.test(x));
+  assert.deepEqual(falsas, []);
+});

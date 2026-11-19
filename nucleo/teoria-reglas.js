@@ -94,11 +94,6 @@
     { regla: 'resuelve-repite', unidad: 'quimica.materia-y-energia', idea: 'sustancia-mezcla', motivo: 'resuelve semilla 0 es el caso de «Ahora tú» (semilla 5): «Esta es la lupa de una muestra. ¿Cómo se clasifica?»', fecha: '2026-11-19' },
     { regla: 'resuelve-repite', unidad: 'quimica.materia-y-energia', idea: 'vida-media', motivo: 'resuelve semilla 3 es el caso de «Ahora tú» (semilla 8): «Una fuente de cobalto-60 pasa de 48 g a 12 g en 10,6 años. ¿Cuál es su vida media?»', fecha: '2026-11-19' },
     { regla: 'resuelve-repite', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'si-entonces', motivo: 'resuelve semilla 0 es el caso de «Ahora tú» (semilla 1): «Regla: si un número termina en 0, es par. Se sabe que el número es par. ¿Qué se concluye ', fecha: '2026-11-19' },
-    // igualdad-falsa (Etapa 6, 19 nov)
-    { regla: 'igualdad-falsa', unidad: 'algebra.exponentes-y-productos-notables', idea: 'exponente-fraccionario', en: 'ahoraTu', motivo: 'el siFuera de TAL-FRAC-MEDIO (casoValorFrac) escribe el índice 2 como un número delante de la raíz: «Bien la raíz: 2√9 = 3» se lee 2 · √9 = 6 (también 2√4 = 2 y 2√25 = 5). SUPI[2] es \'\' y `SUPI[n] || n` cae en n; va «√9 = 3»', fecha: '2026-11-19' },
-    { regla: 'igualdad-falsa', unidad: 'fisica.movimiento-circular', idea: 'rapidez-constante-acelera', en: 'ejemplo 7 resuelto', motivo: '(2π)² · 0,25 = π² se ve «2π² · 0,25 = π² m/s²»: cuad(pv(\'2π\')) pone el ² sobre «2π» sin paréntesis, y 2π² · 0,25 es π²/2. Va (2π)²', fecha: '2026-11-19' },
-    { regla: 'igualdad-falsa', unidad: 'fisica.movimiento-circular', idea: 'rapidez-constante-acelera', en: 'ejemplo 13 resuelto', motivo: '(40π)² · 0,25 = 400π² se ve «40π² · 0,25 = 400π² m/s²»: el ² va sobre «40π» sin paréntesis (40π² · 0,25 es 10π²). Va (40π)²', fecha: '2026-11-19' },
-    { regla: 'igualdad-falsa', unidad: 'fisica.movimiento-parabolico-y-circular', idea: 'altura-y-alcance', en: 'ejemplo 15 resuelto', motivo: '«R = 5 · 1,73 = 8,66 m»: con el 1,73 que se ve da 8,65 (8,66 sale de √3). Con más semillas pasa lo mismo en «Ahora tú» (61: «5 · 1,73 = 8,66 m»; 77: «10 · 3,46 = 34,64 m») y en «Así se resuelve» (151: «3 · 3 · 12,47 = 112,24 m»): «≈» o la cuenta con lo que se muestra', fecha: '2026-11-19' },
   ];
 
   // ---------- Texto ----------

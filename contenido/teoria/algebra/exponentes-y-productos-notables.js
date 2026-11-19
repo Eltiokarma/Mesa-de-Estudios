@@ -966,7 +966,8 @@
   const fq = (p, q) => { const g = mcdN(p, q) || 1, a1 = p / g, b1 = q / g; return b1 === 1 ? String(a1) : `${a1}/${b1}`; };
   // Una raíz de índice n escrita en el texto: ⁵√(x³).
   const SUPI = { 2: '', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' };
-  const raizI = (n, dentro) => `${SUPI[n] || n}√${dentro}`;
+  // El índice 2 no se escribe: SUPI[2] es '' y `SUPI[n] || n` lo ponía como un número delante («2√9 = 3»).
+  const raizI = (n, dentro) => `${n in SUPI ? SUPI[n] : n}√${dentro}`;
   const DF = {
     def: [pw('a', ['1/', nI]), ' = ', { raiz: ['a'], indice: nI }, ': el número que, elevado a ', nI, ', da a'],
     // Corta, para que quepa en un renglón (ronda 2 del lector: el «2» quedaba solo en otro renglón).
