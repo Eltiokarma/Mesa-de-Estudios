@@ -228,3 +228,19 @@ paréntesis en 90° ± (m∠A ÷ 2) (teoría y generador); sin la D del ejemplo 
   quedan más cerca de otro vértice (prueba de la unidad). Igual «3x + 5°» en B del ejemplo 13 de la idea 5.
 - Sin tocar: «60° y 70° pegados» en el centro (ideas 1 y 2), los 35° del tijeral junto a la punta, la regla de la idea 3
   con dibujo isósceles (AC > AB no se ve), el incentro definido en Puntos notables (decisión de Gerson; es otra unidad).
+
+## Cabos de la Etapa 4 (19 nov)
+
+- **Rótulos que solo iban en el enunciado.** Con una línea guía (`conGuia`, en la unidad: una línea fina del color del
+  rótulo, que nace 3 px más allá del arco y no cruza ningún trazo) van ahora en la figura: «x + 25°» en D de «La
+  mariposa» (y «2x» junto a su arco, que sí cabe), el 35° de BAD en «Dos triángulos encadenados», «x + 25°» en B de
+  «Isósceles con x afuera» y el 27° de E en «De E al ángulo A». La prueba mide cada guía (nace en su arco, no cruza ni
+  toca otro trazo, su rótulo cabe y es un dato del enunciado). v0.4.1.
+- **Se quedan en el enunciado, y por qué:** «La mariposa: el ángulo en O» (dos expresiones largas en un triángulo de
+  100 px: se enciman con el «?» de O); la punta de flecha (la cuña de C la corta la prolongación DP y el rótulo cae
+  sobre la letra D; rotular solo B sería peor); «3x + 5°» en B de «Altura, bisectriz y x» (la altura cae a 20 px de B: la
+  cuña queda encerrada entre AB, AH y BC, y una guía tendría que cruzar uno); ∠HAF y los ángulos B y C enteros junto a
+  sus bisectrices (el hueco libre es una de sus mitades); y las figuras de «Así se resuelve» y «Ahora tú», que cambian
+  con la semilla y no se pueden mirar una por una.
+- **El dibujo de la unidad en el mapa** (`app/dibujos/geometria.js`) ya muestra los tres ángulos juntos en un ángulo
+  llano (la suma de 180°), sin el exterior.

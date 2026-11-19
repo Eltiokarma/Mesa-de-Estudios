@@ -524,3 +524,90 @@ test('ronda 2: la consigna y la misión dicen cómo se mueve A (arrastrar o cont
     assert.match(plano(j.consigna), /A se arrastra o se mueve con los controles/, def.ideas[k].id);
   }
 });
+
+// ---------- Cabos de la Etapa 4 (19 nov): líneas guía ----------
+// Pendiente de la auditoría y del lector en frío: «rótulos que solo van en el enunciado en cuñas angostas». Donde hay un
+// hueco libre y la guía no cruza ningún trazo, el rótulo va en la figura unido a su arco (conGuia, en la unidad). La
+// prueba mide cada guía en pantalla: nace junto a su propio arco (no en el vértice), no cruza ni toca ningún otro trazo,
+// su rótulo está pegado a su punta, cabe con todo lo demás (escenaCabe) y dice un dato del enunciado, nunca la respuesta.
+test('cabos: cada línea guía nace en su arco, no cruza ningún trazo, lleva su rótulo en la punta y dice un dato del enunciado', () => {
+  const cruza = (p, q, r, s) => {   // ¿se cortan los tramos pq y rs? (con 1 px de aire)
+    const o = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+    const d1 = o(p, q, r), d2 = o(p, q, s), d3 = o(r, s, p), d4 = o(r, s, q);
+    if (d1 * d2 < 0 && d3 * d4 < 0) return true;
+    const dist = (a, b, c) => { const L = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1, t = Math.max(0, Math.min(1, ((c[0] - a[0]) * (b[0] - a[0]) + (c[1] - a[1]) * (b[1] - a[1])) / (L * L))); return Math.hypot(c[0] - a[0] - t * (b[0] - a[0]), c[1] - a[1] - t * (b[1] - a[1])); };
+    return Math.min(dist(p, q, r), dist(p, q, s), dist(r, s, p), dist(r, s, q)) < 1;
+  };
+  const con = [];
+  for (const i of def.ideas) for (const e of i.ejemplos) if (e.figura && e.figura.datos.guias) con.push([i, e]);
+  assert.deepEqual(con.map(([, e]) => e.titulo), ['La mariposa', 'Dos triángulos encadenados', 'Isósceles con x afuera', 'De E al ángulo A']);
+  for (const [i, e] of con) {
+    const d = e.figura.datos, donde = `${i.id} «${e.titulo}»`;
+    assert.ok(P.escenaCabe(d, Infinity), `${donde}: con la guía, un rótulo no cabe o pisa algo`);
+    const { g, fig, ex, rot, letrasC, lineas } = P.rotulos(d, Infinity);
+    const libres = (d.libres || []).map((l, k) => ({ l, caja: ex.cajas[ex.cajas.length - d.libres.length + k] }));
+    for (const gu of d.guias) {
+      const [p1, p2] = gu.puntas.map(id => g.S(id)), V = g.S(gu.en);
+      // Nace 3 px más allá de su arco, dentro de su ángulo, y más cerca de su vértice que de cualquier otro punto con letra.
+      assert.ok(Math.abs(Math.hypot(p1[0] - V[0], p1[1] - V[1]) - (gu.radio + 3)) < 0.6, `${donde}: la guía de «${gu.texto}» no nace junto a su arco`);
+      const arco = (fig.angulos || []).find(a => a.en === gu.en && a.de === gu.de && a.a === gu.a);
+      // El radio de la guía es el del arco de más afuera (cada arco de más va 5 px más allá).
+      const listo = P.angulosListos(d).find(a => a.en === gu.en && a.de === gu.de && a.a === gu.a);
+      assert.ok(arco && listo && (listo.radio || 26) + 5 * (Math.min(3, listo.marcas || 1) - 1) === gu.radio && !arco.texto, `${donde}: el ángulo de la guía lleva su arco, con ese radio y sin otro rótulo`);
+      const abre = G.util.angulo(V, g.S(gu.de), g.S(gu.a)), a1 = G.util.angulo(V, g.S(gu.de), p1), a2 = G.util.angulo(V, p1, g.S(gu.a));
+      assert.ok(Math.abs(a1 + a2 - abre) < 0.5, `${donde}: la guía de «${gu.texto}» nace fuera de su ángulo`);
+      for (const q of fig.puntos) if (q.rotulo && q.id !== gu.en) { const s = g.S(q.id); assert.ok(Math.hypot(p1[0] - V[0], p1[1] - V[1]) < Math.hypot(p1[0] - s[0], p1[1] - s[1]), `${donde}: la guía nace más cerca de ${q.id}`); }
+      // No cruza ni toca ningún otro trazo de la figura (lados, cevianas, punteadas, llaves).
+      // `lineas` son todos los trazos de la escena en pantalla (los de geo-figura y los que pone geo-objeto); la guía
+      // misma es el que va de p1 a p2.
+      const igual = (u, v) => Math.hypot(u[0] - v[0], u[1] - v[1]) < 0.01;
+      const otros = lineas.filter(([r, s]) => !((igual(r, p1) && igual(s, p2)) || (igual(r, p2) && igual(s, p1))));
+      assert.equal(otros.length, lineas.length - 1, `${donde}: la guía es un trazo de la figura`);
+      for (const [r, s] of otros) assert.ok(!cruza(p1, p2, r, s), `${donde}: la guía de «${gu.texto}» cruza o toca un trazo`);
+      // Tampoco pasa por encima de una letra ni de otro rótulo.
+      const enCaja = (c, p) => p[0] > c.x0 - 1 && p[0] < c.x1 + 1 && p[1] > c.y0 - 1 && p[1] < c.y1 + 1;
+      const cajas = letrasC.concat(rot.map(z => z.caja), ex.cajas);
+      for (let k = 0; k <= 20; k++) { const p = [p1[0] + (p2[0] - p1[0]) * k / 20, p1[1] + (p2[1] - p1[1]) * k / 20]; assert.ok(!cajas.some(c => enCaja(c, p)), `${donde}: la guía de «${gu.texto}» pasa sobre un rótulo`); }
+      // Su rótulo: el suelto que cuelga de la punta, a 4 px, en carmín y con el mismo texto.
+      const suyo = libres.find(x => x.l.en === gu.puntas[1]);
+      assert.ok(suyo && suyo.l.texto === gu.texto && suyo.l.color === 'h' && suyo.l.dist === 4, `${donde}: la guía de «${gu.texto}» sin su rótulo`);
+      const c = suyo.caja, dx = Math.max(c.x0 - p2[0], 0, p2[0] - c.x1), dy = Math.max(c.y0 - p2[1], 0, p2[1] - c.y1);
+      // (geo-objeto deja 4 px de aire en la dirección del rótulo; con una caja ancha y una guía en diagonal, la esquina
+      // más cercana queda algo más lejos.)
+      assert.ok(Math.hypot(dx, dy) >= 2.5 && Math.hypot(dx, dy) <= 16, `${donde}: el rótulo «${gu.texto}» a ${Math.hypot(dx, dy).toFixed(1)} px de la punta de su guía`);
+      // Es un dato del enunciado y no la respuesta.
+      assert.ok(plano(e.enunciado).includes(gu.texto), `${donde}: «${gu.texto}» no está en el enunciado`);
+      assert.ok(!plano(e.respuesta).includes(gu.texto), `${donde}: «${gu.texto}» es la respuesta`);
+      // La guía es fina y del color del rótulo; se dibuja de verdad.
+      const seg = fig.segmentos.find(l => l.de === gu.puntas[0] && l.a === gu.puntas[1]);
+      assert.ok(seg && seg.grosor === 'fino' && seg.color === 'h' && !seg.discontinua);
+    }
+    assert.ok(Teoria.textoSVG(P.dibujar(d, {})).includes(d.guias[0].texto), `${donde}: el rótulo se dibuja`);
+  }
+  // «2x» de la mariposa va junto a su arco, sin guía, más cerca de C que de cualquier otro vértice.
+  const m = def.ideas[0].ejemplos.find(e => e.titulo === 'La mariposa').figura.datos, r = P.rotulos(m, Infinity), z = r.rot.find(x => x.an.texto === '2x');
+  assert.ok(z && z.an.en === 'C');
+});
+
+// Cabos de la Etapa 4 (19 nov): los códigos de error (hipótesis) de la unidad están en su informe de docs/investigacion/,
+// que trae la sección «Hipótesis de la Etapa 4 (sin estudio)» con el índice de los que estrenó la etapa.
+test('cabos: todo código de error de la unidad está en su informe, con la sección «Hipótesis de la Etapa 4 (sin estudio)»', () => {
+  const fsI = require('node:fs'), pathI = require('node:path');
+  const leeInforme = n => fsI.readFileSync(pathI.join(__dirname, '..', '..', '..', 'docs', 'investigacion', n), 'utf8');
+  // «GE-TRI6 a GE-TRI8» nombra también GE-TRI7: los rangos se expanden.
+  const expande = t => t.replace(/([A-Z][A-Za-z0-9-]*?[A-Z-])(\d+) a \1(\d+)/g, (m, pre, x, y) => { const l = []; for (let k = +x; k <= +y; k++) l.push(pre + k); return l.join(', '); });
+  const informe = expande(leeInforme('geometria-ideas-erroneas.md')), transversal = leeInforme('fisica-calculo-transversal-ideas-erroneas.md');
+  const nombra = (t, c) => new RegExp(`(^|[^A-Za-z0-9-])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Za-z0-9-]|$)`).test(t);
+  assert.match(informe, /^## Hipótesis de la Etapa 4 \(sin estudio\)$/m);
+  const seccion = informe.slice(informe.indexOf('## Hipótesis de la Etapa 4 (sin estudio)'));
+  assert.ok(seccion.includes('contenido/teoria/geometria/triangulos.js'), 'la sección nombra esta unidad');
+  assert.ok(!/\(\d{4}\)|et al\.|doi/i.test(seccion.slice(0, seccion.indexOf('\n## ', 5))), 'la sección no trae citas');
+  const codigos = new Set();
+  for (const u of [def]) for (const i of u.ideas) {
+    for (const o of i.predice.opciones) if (o.error) codigos.add(o.error);
+    for (let s = 0; s < 400; s++) for (const o of i.ahoraTu.generar(s).opciones) if (o.error) codigos.add(o.error);
+  }
+  assert.ok(codigos.size >= 30, `${codigos.size} códigos`);
+  const faltan = [...codigos].filter(c => !nombra(informe, c) && !nombra(transversal, c)).sort();
+  assert.deepEqual(faltan, [], `códigos sin describir en geometria-ideas-erroneas.md: ${faltan.join(', ')}`);
+});

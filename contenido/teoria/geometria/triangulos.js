@@ -23,6 +23,15 @@
  * Ángulos en cuñas angostas (las de ABD y ACD en la punta de flecha, ∠BEC, ∠HAF dado, los ángulos B y C enteros junto a
  * sus bisectrices): llevan su arco y su valor va en el enunciado, como las expresiones de la mariposa de la idea 1 (un
  * rótulo en una cuña angosta queda lejos de su vértice y se lee como de otro).
+ * Línea guía (cabos de la Etapa 4, 19 nov; `conGuia`): donde el rótulo cabe en un hueco libre sin que la guía cruce un
+ * trazo, va en la figura unido a su arco por una línea fina: «x + 25°» en D de «La mariposa», el 35° de BAD en «Dos
+ * triángulos encadenados», «x + 25°» en B de «Isósceles con x afuera» y el 27° de E en «De E al ángulo A». Siguen solo
+ * en el enunciado, porque no hay hueco o la guía tendría que cruzar un lado: las tres expresiones de «La mariposa: el
+ * ángulo en O» (dos expresiones largas en un triángulo de 100 px), los ángulos ABD y ACD de la punta de flecha (la cuña
+ * de C la corta la prolongación DP y su rótulo cae sobre la letra D; rotular solo uno de los dos sería peor), «3x + 5°»
+ * en B de «Altura, bisectriz y x» (la altura cae a 20 px de B: la cuña queda encerrada entre AB, AH y BC), ∠HAF y los
+ * ángulos B y C enteros junto a sus bisectrices (el hueco libre es una de sus mitades: se leería como la mitad), y las
+ * figuras de «Así se resuelve» y «Ahora tú», que cambian con la semilla y no se pueden mirar una por una.
  * Controles de la idea 1 (decisión 6 de la propuesta): el juego mueve A con los ángulos b y c (de 5° en 5°), así los tres
  * rótulos suman siempre 180° exactos; ax y ay salen del juego. El avance guardado no se toca (el lector ignora los
  * valores de controles que ya no existen).
@@ -115,6 +124,35 @@
   const junto = x => (typeof x === 'string' ? x.replace(/ /g, ' ') : Array.isArray(x) ? x.map(junto) : x);
   const fig = datos => ({ pieza: GO, datos, estado: {} });
   const RAD = Math.PI / 180;
+  // Línea guía (cabos de la Etapa 4, 19 nov; pendiente de la auditoría y del lector en frío: «rótulos que solo van en el
+  // enunciado en cuñas angostas»). Donde el valor de un ángulo dado no cabe junto a su arco, el rótulo va en el hueco
+  // libre más cercano y una línea fina, del color del rótulo, lo une a su arco: así no se lee como de otro vértice. La
+  // guía nace 3 px más allá del arco (no en el vértice: no es un rayo ni una bisectriz), nunca cruza un trazo y su
+  // rótulo cumple lo de todo rótulo suelto de geo-objeto (escenaCabe: dentro del lienzo, sin pisar nada, a 2 px de toda
+  // línea). Solo en ejemplos fijos, mirados uno por uno; triangulos.test.js comprueba cada guía con números.
+  //   o = { en, de, a: el ángulo · radio: el de su arco de más afuera (px; con dos arcos, 5 más) · texto · largo: px de la guía · giro: grados que se
+  //         aparta de la bisectriz al nacer · rumbo: hacia dónde va (grados del plano; sin él, sigue la bisectriz) ·
+  //         dir: de qué lado de la punta va el texto (grados; sin él, el rumbo) }
+  function conGuia(datos, o) {
+    const fg = PO.escena(datos).fig, g = G.geometria(fg), V = g.P(o.en), A = g.P(o.de), B = g.P(o.a);
+    const esc = Math.hypot(g.S(o.de)[0] - g.S(o.en)[0], g.S(o.de)[1] - g.S(o.en)[1]) / Math.hypot(A[0] - V[0], A[1] - V[1]);
+    const t1 = Math.atan2(A[1] - V[1], A[0] - V[0]);
+    let dt = Math.atan2(B[1] - V[1], B[0] - V[0]) - t1;
+    while (dt > Math.PI) dt -= 2 * Math.PI;
+    while (dt < -Math.PI) dt += 2 * Math.PI;
+    const tb = t1 + dt / 2 + (o.giro || 0) * RAD, td = o.rumbo === undefined ? tb : o.rumbo * RAD;
+    const p1 = [V[0] + (o.radio + 3) / esc * Math.cos(tb), V[1] + (o.radio + 3) / esc * Math.sin(tb)];
+    const p2 = [p1[0] + o.largo / esc * Math.cos(td), p1[1] + o.largo / esc * Math.sin(td)];
+    const d = Object.assign({}, datos), k = (datos.guias || []).length, ids = [`~g${2 * k}`, `~g${2 * k + 1}`];
+    const puntos = [{ id: ids[0], x: p1[0], y: p1[1], sinPunto: true }, { id: ids[1], x: p2[0], y: p2[1], sinPunto: true }];
+    const segmento = { de: ids[0], a: ids[1], grosor: 'fino', color: 'h' };
+    if (datos.figura) d.figura = Object.assign({}, datos.figura, { puntos: datos.figura.puntos.concat(puntos), segmentos: datos.figura.segmentos.concat([segmento]) });
+    else { d.masPuntos = (datos.masPuntos || []).concat(puntos); d.masSegmentos = (datos.masSegmentos || []).concat([segmento]); }
+    d.libres = (datos.libres || []).concat([{ en: ids[1], dir: o.dir === undefined ? td / RAD : o.dir, dist: 4, texto: o.texto, color: 'h' }]);
+    // Lo que la prueba necesita para medir la guía: de qué ángulo es, sus dos puntas y su texto.
+    d.guias = (datos.guias || []).concat([{ en: o.en, de: o.de, a: o.a, radio: o.radio, texto: o.texto, puntas: ids }]);
+    return d;
+  }
   // Los vértices del triángulo de base BC = 6 con ángulos b en B y c en C (ley de senos; sirve también con 90° u obtusos).
   const vert = (b, c, L = 6) => ({ A: U.polar([0, 0], L * Math.sin(c * RAD) / Math.sin((b + c) * RAD), b), B: [0, 0], C: [L, 0] });
   // Una expresión con x: «2x + 10°», «x − 5°», «3x».
@@ -292,7 +330,9 @@
     respuesta: ['Es ', dF('obtusángulo')] });
   // Nivel 3: tipo examen.
   EJ1.push({ nivel: 3, titulo: 'La mariposa',
-    figura: fig(figM(65, 50, 60, 55, { A: { texto: '65°', color: 'h' }, B: { texto: '50°', color: 'h' }, C: { color: 'h' }, D: { color: 'h' } })),
+    // Cabos (19 nov): «2x» cabe junto a su arco, como el 65°; «x + 25°» es más ancho que su cuña y va con línea guía.
+    figura: fig(conGuia(figM(65, 50, 60, 55, { A: { texto: '65°', color: 'h' }, B: { texto: '50°', color: 'h' }, C: { texto: '2x', color: 'h' }, D: { color: 'h' } }),
+      { en: 'D', de: 'C', a: 'O', radio: 20, largo: 26, texto: 'x + 25°' })),
     enunciado: 'Los segmentos AD y BC se cortan en O. m∠A = 65°, m∠B = 50°, m∠C = 2x y m∠D = x + 25°. ¿Cuánto vale x?',
     datos: [D_SUMA_O, D_OPUESTOS],
     solucion: [
@@ -811,9 +851,11 @@
     ],
     respuesta: ['El interior en C mide ', dF('75°')] });
   EJ2.push({ nivel: 3, titulo: 'Dos triángulos encadenados',
-    figura: (() => { const cv = conCeviana(60, 45, 35); return fig(TRI(60, 45, { angulos: { A: null, B: t('60°'), C: t('45°') }, masPuntos: cv.puntos, masSegmentos: cv.segmentos,
-      // El 35° de BAD va solo en el enunciado (cuña angosta: su rótulo bajaba hasta el 60° de B; lector en frío, ronda 2).
-      masAngulos: [{ en: 'A', de: 'B', a: 'D', color: 'h', radio: 26, holgura: 6, mide: 35 }, { en: 'A', de: 'D', a: 'C', texto: '?', radio: 36, holgura: 6, mide: 40 }] })); })(),
+    figura: (() => { const cv = conCeviana(60, 45, 35); return fig(conGuia(TRI(60, 45, { angulos: { A: null, B: t('60°'), C: t('45°') }, masPuntos: cv.puntos, masSegmentos: cv.segmentos,
+      // El 35° de BAD no cabe junto a su arco (cuña angosta: el rótulo bajaba hasta el 60° de B; lector en frío, ronda
+      // 2). Cabos (19 nov): va más abajo, en el hueco del triángulo ABD, con una línea guía hasta su arco.
+      masAngulos: [{ en: 'A', de: 'B', a: 'D', color: 'h', radio: 26, holgura: 6, mide: 35 }, { en: 'A', de: 'D', a: 'C', texto: '?', radio: 36, holgura: 6, mide: 40 }] }),
+      { en: 'A', de: 'B', a: 'D', radio: 26, largo: 24, texto: '35°' })); })(),
     enunciado: 'En el triángulo ABC, D está en el lado BC. m∠B = 60°, m∠BAD = 35° y m∠C = 45°. ¿Cuánto mide el ángulo DAC?',
     datos: [D_EXT, D_SUMA_O],
     solucion: [
@@ -1242,7 +1284,9 @@
     respuesta: ['m∠BAD = ', dF('90°')] });
   EJ3.push({ nivel: 3, titulo: 'Isósceles con x afuera',
     // La llave de AB va por dentro: por fuera, el arco del exterior 4x la tocaba (lector en frío, ronda 2).
-    figura: fig(ISO(50, { prolonga: 2.2, llaves: [{ de: 'A', a: 'B', marcas: 1, ref: 'E', dist: 10 }, { de: 'A', a: 'C', marcas: 1 }], angulos: { A: pide(), B: { marcas: 2, color: 'h' }, C: { marcas: 2 } }, exteriores: { A: t('4x', 'h', { mide: 100 }) }, letraE: true })),
+    // Cabos (19 nov): «x + 25°» no cabe junto al arco de B (la llave de AB pasa por ahí): va a la derecha, con línea guía.
+    figura: fig(conGuia(ISO(50, { prolonga: 2.2, llaves: [{ de: 'A', a: 'B', marcas: 1, ref: 'E', dist: 10 }, { de: 'A', a: 'C', marcas: 1 }], angulos: { A: pide(), B: { marcas: 2, color: 'h' }, C: { marcas: 2 } }, exteriores: { A: t('4x', 'h', { mide: 100 }) }, letraE: true }),
+      { en: 'B', de: 'C', a: 'A', radio: 25, largo: 31, giro: -10, rumbo: 6, dir: 0, texto: 'x + 25°' })),
     enunciado: 'En el triángulo ABC, AB = AC. Se prolonga CA más allá de A, hasta E; m∠BAE = 4x y m∠B = x + 25°. ¿Cuánto mide el ángulo BAC?',
     datos: [D_EXT, 'Frente a lados iguales hay ángulos iguales.', D_ADY],
     solucion: [
@@ -2389,7 +2433,10 @@
     ],
     respuesta: ['m∠A = ', dF('80°')] });
   EJ6.push({ nivel: 2, titulo: 'De E al ángulo A',
-    figura: fig(PQ(66, 60, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: pide() }, BEC: { color: 'h' } })),
+    // Cabos (19 nov): el 27° de E no cabe junto a su arco (quedaba más cerca de C): va entre las dos bisectrices, donde
+    // la cuña ya es ancha, con una línea guía hasta su arco.
+    figura: fig(conGuia(PQ(66, 60, { I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: pide() }, BEC: { color: 'h' } }),
+      { en: 'E', de: 'B', a: 'C', radio: 24, largo: 42, texto: '27°' })),
     enunciado: 'En el triángulo ABC, la bisectriz interior de B y la exterior de C se cortan en E, con m∠BEC = 27°. ¿Cuánto mide el ángulo A?',
     datos: R3,
     solucion: [
@@ -2861,7 +2908,7 @@
 
   return {
     unidad: 'geometria.triangulos',
-    version: '0.4.0',
+    version: '0.4.1',
     estado: 'completa',
     calidad: 2,
     requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-objeto.js'],
