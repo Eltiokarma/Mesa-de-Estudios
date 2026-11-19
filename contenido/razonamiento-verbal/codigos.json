@@ -403,5 +403,45 @@
   "nombre": "Se toma por definición otra oración del texto que habla del término",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RVA1": {
+  "nombre": "Se toma una sucesión por causa",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA2": {
+  "nombre": "Se lee «es un tipo de» donde la relación es de parte o de grupo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA3": {
+  "nombre": "Un grado se toma por el opuesto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA4": {
+  "nombre": "Se cambia la categoría gramatical",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA5": {
+  "nombre": "La oración puente queda muy amplia",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA6": {
+  "nombre": "Se lee «es una pieza de» donde la relación es de clase o de grupo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA7": {
+  "nombre": "Se lee «es uno del grupo» donde la relación es de clase o de parte",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVA8": {
+  "nombre": "Se elige por la herramienta, sin la persona",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

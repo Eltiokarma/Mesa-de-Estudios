@@ -24,12 +24,12 @@
     {
       "id": "razonamiento-verbal.analogias",
       "nombre": "Analogías",
-      "temas": ["Sinonimia y antonimia", "Género y especie", "Causa y efecto", "Parte y todo", "Agente e instrumento"],
+      "temas": ["Sinonimia y antonimia", "Género y especie", "Causa y efecto", "Parte y todo", "Agente e instrumento", "Elemento y conjunto", "Intensidad", "Rasgos de la relación"],
       "universidades": {"uni": {"semanas": [2]}},
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": ["razonamiento-verbal.definiciones"],
-      "plantillas": ["lectura-verbal"],
+      "plantillas": ["analogias", "lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

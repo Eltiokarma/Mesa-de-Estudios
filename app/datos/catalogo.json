@@ -6537,7 +6537,7 @@
        "si-entonces": "Si llueve, la pista se moja",
        "parentesco": "Subir y bajar por el árbol"
       },
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -6580,7 +6580,7 @@
        "deslizar-lados": "Deslizar lados hasta el borde",
        "arcos-que-suman": "Los arcos chicos suman igual"
       },
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -6625,7 +6625,7 @@
        "orden-circular": "La mesa redonda",
        "mesa-cuadrada": "Frente a frente"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -6649,20 +6649,24 @@
       "razonamiento-matematico.razonamiento-deductivo"
      ],
      "plantillas": [
+      "rm-verdades",
       "orden-informacion"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/verdades-y-mentiras.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-tablero.js"
+       "/nucleo/kit/piezas/rm-veraz.js"
       ],
-      "ideas": 3,
+      "ideas": 6,
       "titulos": {
        "suposicion": "Suponer y comprobar",
-       "contradictorias": "Dos frases que chocan",
-       "negar-bien": "Lo contrario de «todos»"
+       "negar-bien": "Lo contrario de «todos»",
+       "contradictorias": "Dos frases que se contradicen",
+       "solo-uno-veraz": "Cuando solo uno dice la verdad",
+       "verdad-y-mentira": "Una verdad y una mentira",
+       "cuantos-mienten": "¿Cuántos mienten?"
       },
-      "terminos": 15
+      "terminos": 22
      }
     },
     {
@@ -6779,7 +6783,7 @@
        "tres-casos-no-prueban": "Tres casos no prueban",
        "impares-y-cuadrados": "Impares que arman cuadrados"
       },
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -6821,7 +6825,7 @@
        "dados": "Una cara fija solo su opuesta",
        "cerillas": "Cerillas y cuadrados de todo tamaño"
       },
-      "terminos": 13
+      "terminos": 14
      }
     },
     {
@@ -6865,7 +6869,7 @@
        "bisiestos": "Cuándo un año es bisiesto",
        "dia-de-la-semana": "Las semanas completas no cuentan"
       },
-      "terminos": 17
+      "terminos": 16
      }
     },
     {
@@ -6903,7 +6907,7 @@
        "palomar": "Más objetos que casilleros",
        "llaves": "Identificar llaves en el peor caso"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -6940,7 +6944,7 @@
        "turnos-mcm": "Turnos que vuelven a coincidir",
        "campanadas-del-dia": "Sumar las campanadas del día"
       },
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -6977,7 +6981,7 @@
        "faja": "La faja lleva el mismo borde",
        "mismo-eje": "En un mismo eje, mismas vueltas"
       },
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -7063,7 +7067,7 @@
        "pesas-en-dos-platillos": "Pesas en los dos platillos",
        "minimo-de-pesadas": "Cada pesada deja un tercio"
       },
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -7151,7 +7155,7 @@
        "rodamiento": "Lo que recorre el centro",
        "area-barrida": "El área que barre un giro"
       },
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -7199,7 +7203,7 @@
        "rutas-en-el-espacio": "Rutas por las aristas",
        "vistas": "Dos vistas, varias pilas"
       },
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -7236,7 +7240,7 @@
        "puntos-de-una-liga": "Cuántos puntos reparte una liga",
        "suficiencia": "Bastan si todos coinciden"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -7375,7 +7379,10 @@
       "Género y especie",
       "Causa y efecto",
       "Parte y todo",
-      "Agente e instrumento"
+      "Agente e instrumento",
+      "Elemento y conjunto",
+      "Intensidad",
+      "Rasgos de la relación"
      ],
      "universidades": {
       "uni": {
@@ -7390,20 +7397,25 @@
       "razonamiento-verbal.definiciones"
      ],
      "plantillas": [
+      "analogias",
       "lectura-verbal"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-verbal/analogias.js",
       "requiere": [
-       "/nucleo/kit/piezas/rv-texto.js"
+       "/nucleo/kit/piezas/rv-texto.js",
+       "/nucleo/kit/piezas/rv-soporte.js",
+       "/nucleo/kit/piezas/rv-definicion.js"
       ],
-      "ideas": 3,
+      "ideas": 5,
       "titulos": {
        "relacion-no-tema": "La relación, no el tema",
-       "clase-y-causa": "Clase y miembro, causa y efecto",
-       "sinonimo-antonimo": "Sinónimos y antónimos en un rasgo"
+       "parte-o-clase": "Clase o parte",
+       "clase-y-causa": "El orden de la relación",
+       "sinonimo-antonimo": "Sinónimos y antónimos en un rasgo",
+       "puente-justa": "La oración puente justa"
       },
-      "terminos": 15
+      "terminos": 27
      }
     },
     {
@@ -7607,7 +7619,7 @@
        "conocido-y-nuevo": "Lo conocido trae lo nuevo",
        "no-contradiccion": "Conectores no garantizan sentido"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -8134,6 +8146,29 @@
    "archivos": [
     "/plantillas/analisis-dimensional/generador.js",
     "/plantillas/analisis-dimensional/papel.json"
+   ]
+  },
+  "analogias": {
+   "id": "analogias",
+   "titulo": "Analogías: la relación, el orden y el rasgo",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.analogias"
+   ],
+   "url": "#/practica/analogias",
+   "ideas": [
+    "relacion-no-tema",
+    "parte-o-clase",
+    "clase-y-causa",
+    "sinonimo-antonimo",
+    "puente-justa"
+   ],
+   "papel": "/plantillas/analogias/papel.json",
+   "archivos": [
+    "/plantillas/analogias/generador.js",
+    "/plantillas/analogias/papel.json"
    ]
   },
   "angulo-inscrito": {
@@ -10798,7 +10833,8 @@
     "/plantillas/orden-informacion/papel.json"
    ],
    "rehacer": [
-    "razonamiento-matematico.ordenamiento-de-informacion"
+    "razonamiento-matematico.ordenamiento-de-informacion",
+    "razonamiento-matematico.verdades-y-mentiras"
    ]
   },
   "papel-doblado": {
@@ -11609,6 +11645,30 @@
    "archivos": [
     "/plantillas/rm-trasvases/generador.js",
     "/plantillas/rm-trasvases/papel.json"
+   ]
+  },
+  "rm-verdades": {
+   "id": "rm-verdades",
+   "titulo": "Veraces, culpables y mentiras",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.verdades-y-mentiras"
+   ],
+   "url": "#/practica/rm-verdades",
+   "ideas": [
+    "suposicion",
+    "negar-bien",
+    "contradictorias",
+    "solo-uno-veraz",
+    "verdad-y-mentira",
+    "cuantos-mienten"
+   ],
+   "papel": "/plantillas/rm-verdades/papel.json",
+   "archivos": [
+    "/plantillas/rm-verdades/generador.js",
+    "/plantillas/rm-verdades/papel.json"
    ]
   },
   "rodamientos": {

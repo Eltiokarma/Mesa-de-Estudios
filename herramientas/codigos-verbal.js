@@ -19,8 +19,9 @@ function normalizarRespaldo(s) {
 }
 
 function construir(md = fs.readFileSync(INFORME, 'utf8')) {
-  // RVn y, desde la etapa 5, RVDn (los de la unidad «Definiciones»: van después de los RV).
-  const filas = [...md.matchAll(/^\| (RVD?\d+) \|(.*)\|\s*$/gm)];
+  // RVn y, desde la etapa 5, RVDn (los de la unidad «Definiciones»: van después de los RV); desde la etapa 6, RVAn
+  // (los de «Analogías», después de los RVD).
+  const filas = [...md.matchAll(/^\| (RV[DA]?\d+) \|(.*)\|\s*$/gm)];
   const out = {};
   for (const [, id, resto] of filas) {
     const celdas = resto.split(' | ').map(x => x.trim());
@@ -31,7 +32,7 @@ function construir(md = fs.readFileSync(INFORME, 'utf8')) {
     const nombre = (negrita ? negrita[1] : idea).replace(/\.$/, '').trim();
     out[id] = { nombre, respaldo: normalizarRespaldo(resp), por_verificar: /por verificar/i.test(resp) };
   }
-  const clave = k => (k.startsWith('RVD') ? 10000 : 0) + Number(k.replace(/^RVD?/, ''));
+  const clave = k => (k.startsWith('RVD') ? 10000 : k.startsWith('RVA') ? 20000 : 0) + Number(k.replace(/^RV[DA]?/, ''));
   const orden = Object.keys(out).sort((a, b) => clave(a) - clave(b));
   return Object.fromEntries(orden.map(k => [k, out[k]]));
 }

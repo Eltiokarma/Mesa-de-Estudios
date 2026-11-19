@@ -1,0 +1,549 @@
+{
+ "descripcion": "Casos de plantillas/analogias, calculados aparte con un léxico propio (scratchpad e6-rv/casos-gen.js): la relación de cada par, la correcta y el código de cada incorrecta.",
+ "casos": [
+  {
+   "semilla": "caso-0",
+   "idea": "relacion-no-tema",
+   "entrada": {
+    "tipo": "herramienta",
+    "item": "estetoscopio"
+   },
+   "esperado": {
+    "texto": "herrero : tenaza",
+    "errores": [
+     [
+      "enfermo : jarabe",
+      "RVA5"
+     ],
+     [
+      "jeringa : brazo",
+      "RVA8"
+     ],
+     [
+      "receta : farmacia",
+      "RV15"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-1",
+   "idea": "parte-o-clase",
+   "entrada": {
+    "tipo": "inclusion",
+    "item": "promocion"
+   },
+   "esperado": {
+    "texto": "cerro : cordillera",
+    "errores": [
+     [
+      "tapa : cuaderno",
+      "RVA6"
+     ],
+     [
+      "tiza : pizarra",
+      "RV15"
+     ],
+     [
+      "profesora : pizarra acrílica",
+      "RV17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-2",
+   "idea": "clase-y-causa",
+   "entrada": {
+    "tipo": "orden-examen",
+    "item": "contaminacion"
+   },
+   "esperado": {
+    "texto": "erosión : derrumbe",
+    "errores": [
+     [
+      "tos : gripe",
+      "RV16"
+     ],
+     [
+      "basura : río",
+      "RV15"
+     ],
+     [
+      "médico : estetoscopio",
+      "RV17"
+     ],
+     [
+      "agosto : setiembre",
+      "RVA1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-3",
+   "idea": "sinonimo-antonimo",
+   "entrada": {
+    "tipo": "rasgo",
+    "item": "triste"
+   },
+   "esperado": {
+    "texto": "lindo : bonito",
+    "errores": [
+     [
+      "bueno : buenísimo",
+      "RVA3"
+     ],
+     [
+      "feo : bello",
+      "RV17"
+     ],
+     [
+      "lágrima : pañuelo",
+      "RV15"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-4",
+   "idea": "puente-justa",
+   "entrada": {
+    "tipo": "justa",
+    "item": "aguja"
+   },
+   "esperado": {
+    "texto": "regadera : regar",
+    "errores": [
+     [
+      "planchar : plancha",
+      "RV16"
+     ],
+     [
+      "escoba : limpieza",
+      "RVA4"
+     ],
+     [
+      "tela : botón",
+      "RV15"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-5",
+   "idea": "relacion-no-tema",
+   "entrada": {
+    "tipo": "herramienta",
+    "item": "sierra"
+   },
+   "esperado": {
+    "texto": "relojero : pinza",
+    "errores": [
+     [
+      "leña : estufa",
+      "RV15"
+     ],
+     [
+      "tijera : tela",
+      "RVA8"
+     ],
+     [
+      "maderero : aserradero",
+      "RV17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-6",
+   "idea": "parte-o-clase",
+   "entrada": {
+    "tipo": "inclusion-examen",
+    "item": "iguana"
+   },
+   "esperado": {
+    "texto": "vicuña : camélido",
+    "errores": [
+     [
+      "estrella : galaxia",
+      "RVA7"
+     ],
+     [
+      "caparazón : tortuga",
+      "RVA6"
+     ],
+     [
+      "sol : desierto",
+      "RV15"
+     ],
+     [
+      "cazador : trampa",
+      "RV17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-7",
+   "idea": "clase-y-causa",
+   "entrada": {
+    "tipo": "orden-examen",
+    "item": "sudor"
+   },
+   "esperado": {
+    "texto": "risa : cosquillas",
+    "errores": [
+     [
+      "zapatilla : pista atlética",
+      "RV15"
+     ],
+     [
+      "lonche : cena",
+      "RVA1"
+     ],
+     [
+      "atleta : medalla",
+      "RV17"
+     ],
+     [
+      "calor : sed",
+      "RV16"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-8",
+   "idea": "sinonimo-antonimo",
+   "entrada": {
+    "tipo": "rasgo",
+    "item": "triste"
+   },
+   "esperado": {
+    "texto": "lindo : bonito",
+    "errores": [
+     [
+      "lágrima : pañuelo",
+      "RV15"
+     ],
+     [
+      "feo : bello",
+      "RV17"
+     ],
+     [
+      "bueno : buenísimo",
+      "RVA3"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-9",
+   "idea": "puente-justa",
+   "entrada": {
+    "tipo": "justa-examen",
+    "item": "aguja"
+   },
+   "esperado": {
+    "texto": "regadera : regar",
+    "errores": [
+     [
+      "libro : estante",
+      "RV17"
+     ],
+     [
+      "escoba : limpieza",
+      "RVA4"
+     ],
+     [
+      "tela : botón",
+      "RV15"
+     ],
+     [
+      "planchar : plancha",
+      "RV16"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-10",
+   "idea": "relacion-no-tema",
+   "entrada": {
+    "tipo": "herramienta-examen",
+    "item": "sierra"
+   },
+   "esperado": {
+    "texto": "relojero : pinza",
+    "errores": [
+     [
+      "maderero : aserradero",
+      "RV17"
+     ],
+     [
+      "niño : columpio",
+      "RVA5"
+     ],
+     [
+      "leña : estufa",
+      "RV15"
+     ],
+     [
+      "tijera : tela",
+      "RVA8"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-11",
+   "idea": "parte-o-clase",
+   "entrada": {
+    "tipo": "inclusion",
+    "item": "teclado"
+   },
+   "esperado": {
+    "texto": "puerta : ropero",
+    "errores": [
+     [
+      "laptop : aparato",
+      "RVA2"
+     ],
+     [
+      "cable : luz",
+      "RV15"
+     ],
+     [
+      "técnico : destornillador",
+      "RV17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-12",
+   "idea": "clase-y-causa",
+   "entrada": {
+    "tipo": "orden-examen",
+    "item": "contaminacion"
+   },
+   "esperado": {
+    "texto": "erosión : derrumbe",
+    "errores": [
+     [
+      "médico : estetoscopio",
+      "RV17"
+     ],
+     [
+      "agosto : setiembre",
+      "RVA1"
+     ],
+     [
+      "tos : gripe",
+      "RV16"
+     ],
+     [
+      "basura : río",
+      "RV15"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-13",
+   "idea": "sinonimo-antonimo",
+   "entrada": {
+    "tipo": "rasgo",
+    "item": "comico"
+   },
+   "esperado": {
+    "texto": "viejo : anciano",
+    "errores": [
+     [
+      "nuevo : usado",
+      "RV17"
+     ],
+     [
+      "grande : inmenso",
+      "RVA3"
+     ],
+     [
+      "joven : azul",
+      "RV21"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-14",
+   "idea": "puente-justa",
+   "entrada": {
+    "tipo": "justa-examen",
+    "item": "enfermera"
+   },
+   "esperado": {
+    "texto": "cuidadora : ancianos",
+    "errores": [
+     [
+      "vigilar : guardián",
+      "RV16"
+     ],
+     [
+      "paciente : hospital",
+      "RVA5"
+     ],
+     [
+      "jeringa : vacuna",
+      "RV15"
+     ],
+     [
+      "médico : estetoscopio",
+      "RV17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-15",
+   "idea": "relacion-no-tema",
+   "entrada": {
+    "tipo": "herramienta-examen",
+    "item": "anzuelo"
+   },
+   "esperado": {
+    "texto": "músico : violín",
+    "errores": [
+     [
+      "cocinero : sopa",
+      "RV17"
+     ],
+     [
+      "cuchillo : pan",
+      "RVA8"
+     ],
+     [
+      "muelle : bote",
+      "RV15"
+     ],
+     [
+      "bañista : flotador",
+      "RVA5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-16",
+   "idea": "parte-o-clase",
+   "entrada": {
+    "tipo": "inclusion-examen",
+    "item": "teclado"
+   },
+   "esperado": {
+    "texto": "puerta : ropero",
+    "errores": [
+     [
+      "cable : luz",
+      "RV15"
+     ],
+     [
+      "técnico : destornillador",
+      "RV17"
+     ],
+     [
+      "laptop : aparato",
+      "RVA2"
+     ],
+     [
+      "isla : archipiélago",
+      "RVA7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-17",
+   "idea": "clase-y-causa",
+   "entrada": {
+    "tipo": "orden-examen",
+    "item": "bostezo"
+   },
+   "esperado": {
+    "texto": "temblor : frío",
+    "errores": [
+     [
+      "cama : sábana",
+      "RV15"
+     ],
+     [
+      "tejedor : telar",
+      "RV17"
+     ],
+     [
+      "susto : grito",
+      "RV16"
+     ],
+     [
+      "abril : mayo",
+      "RVA1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-18",
+   "idea": "sinonimo-antonimo",
+   "entrada": {
+    "tipo": "rasgo-examen",
+    "item": "aterrado"
+   },
+   "esperado": {
+    "texto": "diluvio : lluvia",
+    "errores": [
+     [
+      "valiente : miedoso",
+      "RVA3"
+     ],
+     [
+      "miedo : pánico",
+      "RV16"
+     ],
+     [
+      "película : terror",
+      "RV15"
+     ],
+     [
+      "susto : temor",
+      "RV17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-19",
+   "idea": "puente-justa",
+   "entrada": {
+    "tipo": "justa",
+    "item": "escritor"
+   },
+   "esperado": {
+    "texto": "jugador : jugar",
+    "errores": [
+     [
+      "pintor : pintura",
+      "RVA4"
+     ],
+     [
+      "tinta : hoja",
+      "RV15"
+     ],
+     [
+      "dibujar : dibujante",
+      "RV16"
+     ]
+    ]
+   }
+  }
+ ]
+}

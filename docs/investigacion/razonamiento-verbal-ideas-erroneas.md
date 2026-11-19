@@ -202,6 +202,21 @@ Agregados en la etapa 5 (19 nov 2026) para la unidad «Definiciones» (`contenid
 | RVD14 | **Se acepta una definición figurada**: compara la cosa con otra en vez de decir qué es. | «Cóndor: el rey de los cielos andinos». | Sin estudio encontrado. | Hipótesis | — |
 | RVD15 | **Se toma por definición otra oración del texto que habla del término**: un dato, una consecuencia o un consejo. | El texto define «soroche»; el alumno elige «lo que sienten muchos visitantes el primer día». | Trampa de San Marcos 2019-I («definición clínica»: un dato en lugar del rasgo). Sin estudio con alumnos. Vecino de RV56. | Hipótesis (ligada a RV56) | — |
 
+### Analogías (códigos RVA, etapa 6)
+
+Agregados en la etapa 6 (19 nov 2026) para la unidad «Analogías» (`contenido/teoria/razonamiento-verbal/analogias.js`, propuesta en `docs/etapa6/propuesta-verbal.md`) y su práctica (`plantillas/analogias/`). Llevan prefijo propio (RVA) para no correr la numeración RV; se usan junto con RV15, RV16, RV17 y RV21. Ninguno tiene estudio con alumnos: salen de la lógica de la oración puente (la relación del par base dicha como una definición, con su clase y su rasgo), de las relaciones que más se confunden en los manuales (clase, parte y grupo; causa y sucesión; antónimo e intensidad) y de la única analogía de San Marcos (2025-I, área A, pregunta 12: un par de la misma red semántica con otra relación, que es RV17).
+
+| # | Idea errónea | Ejemplo tipo examen | Dato | Respaldo | Fuente |
+| --- | --- | --- | --- | --- | --- |
+| RVA1 | **Se toma una sucesión por causa**: lo segundo viene después de lo primero, pero lo primero no lo produce. | INCENDIO : CENIZAS :: lunes : martes. | Sin estudio encontrado; las relaciones causales son de las más difíciles (Jones y otros, 2022). | Hipótesis (ligada a RV17) | — |
+| RVA2 | **Se lee «es un tipo de» donde la relación es de parte o de grupo**: se elige un par de especie y género. | ÁRBOL : BOSQUE :: pino : árbol. | Sin estudio encontrado. | Hipótesis (ligada a RV17) | — |
+| RVA3 | **Un grado se toma por el opuesto**: dos palabras del mismo rasgo, una más fuerte, se leen como antónimos. | TIBIO : CALIENTE :: frío : caliente. | Sin estudio encontrado; vecino de RV21. | Hipótesis (ligada a RV21) | — |
+| RVA4 | **Se cambia la categoría gramatical**: el par se une parecido, pero una palabra es de otra clase (un sustantivo donde va un verbo). | CANTANTE : CANTAR :: bailarín : baile. | Sin estudio encontrado; criterio de los manuales peruanos de razonamiento verbal. | Hipótesis | — |
+| RVA5 | **La oración puente queda muy amplia**: con «usa» o «tiene que ver con» pasa un par que no se une como el par base. | PESCADOR : RED :: cliente : mesa (el cliente usa la mesa, pero no trabaja con ella). | Sin estudio encontrado; es el defecto «muy amplia» de la definición (Definiciones, RVD2). | Hipótesis (ligada a RVD2) | — |
+| RVA6 | **Se lee «es una pieza de» donde la relación es de clase o de grupo**: se elige un par de parte y todo. | ÁRBOL : BOSQUE :: rama : árbol. | Sin estudio encontrado. | Hipótesis (ligada a RV17) | — |
+| RVA7 | **Se lee «es uno del grupo» donde la relación es de clase o de parte**: se elige un par de elemento y conjunto. | PÉTALO : FLOR :: oveja : rebaño. | Sin estudio encontrado. | Hipótesis (ligada a RV17) | — |
+| RVA8 | **Se elige por la herramienta, sin la persona**: el par tiene un instrumento, pero no a quien trabaja con él. | CARPINTERO : SERRUCHO :: martillo : clavo. | Sin estudio encontrado; vecino de RV15 (asociación con la segunda palabra). | Hipótesis (ligada a RV15) | — |
+
 ## Lo que no tiene respaldo (todavía)
 
 Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada uno se liga a un error con algo de respaldo:

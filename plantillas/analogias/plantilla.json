@@ -1,0 +1,24 @@
+{
+  "id": "analogias",
+  "titulo": "Analogías: la relación, el orden y el rasgo",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-verbal.analogias"
+  ],
+  "temas": [
+    "Sinonimia y antonimia",
+    "Género y especie",
+    "Causa y efecto",
+    "Parte y todo",
+    "Agente e instrumento",
+    "Elemento y conjunto",
+    "Intensidad",
+    "Rasgos de la relación"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

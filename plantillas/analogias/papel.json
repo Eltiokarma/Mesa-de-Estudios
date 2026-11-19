@@ -1,0 +1,87 @@
+{
+  "titulo": "Analogías: la relación, el orden y el rasgo: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Analogía. Par base: «MÉDICO : ESTETOSCOPIO». ¿Qué par guarda la misma relación? Datos: Oración puente: frase corta que dice cómo se une el par base; vale también para el otro par. Agente e instrumento: una persona y la herramienta con que hace su trabajo. Mismo tema: dos pares que hablan de lo mismo pueden unirse de otra manera. Oración muy amplia: «usa» o «tiene que ver con» valen para casi cualquier par. Alternativas: A) receta : farmacia   B) dentista : consultorio   C) herrero : tenaza   D) jeringa : brazo",
+      "respuesta": "C) herrero : tenaza",
+      "pasos": [
+        "«herrero : tenaza» cumple la oración del par base: una persona y la herramienta con que trabaja.",
+        "Las otras hablan del mismo tema, unen a la persona con otra cosa, solo usan algo o no tienen persona."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Analogía. Par base: «ASPA : MOLINO». ¿Qué par guarda la misma relación? Datos: Género y especie: todo lo que nombra una palabra es lo que nombra la otra (todo gato es un animal). Parte y todo: una palabra nombra una pieza que, con otras distintas, forma lo que nombra la otra. Elemento y conjunto: la otra palabra nombra muchos iguales a la primera, juntos. Trigal: campo sembrado con mucho trigo. Alternativas: A) trigo : trigal   B) molinero : harina   C) cuello : camisa   D) blusa : prenda",
+      "respuesta": "C) cuello : camisa",
+      "pasos": [
+        "«cuello : camisa» se une como el par base: se prueban «todo… es un…», «… es una pieza de…» y «muchos… forman…».",
+        "Las otras son de otra de esas tres relaciones, del mismo tema o de otra relación."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Analogía. Par base: «SUDOR : EJERCICIO». ¿Qué par guarda la misma relación? Datos: Causa y efecto: una cosa produce la otra; la que produce es la causa. Mismo orden: lo que va primero en el par base va primero en el otro par. Sucesión: una cosa viene después de otra sin que la primera la produzca. Alternativas: A) calor : sed   B) atleta : medalla   C) zapatilla : pista atlética   D) risa : cosquillas",
+      "respuesta": "D) risa : cosquillas",
+      "pasos": [
+        "«risa : cosquillas» es causa y efecto en el mismo orden que el par base.",
+        "Las otras van al revés, solo vienen después, son del mismo tema o se unen de otra manera."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Analogía. Par base: «RUIDOSO : SILENCIOSO». ¿Qué par guarda la misma relación? Datos: Sinónimos: dicen casi lo mismo del mismo rasgo. Antónimos: dicen lo opuesto del mismo rasgo. Otro rasgo: dos palabras que hablan de cosas distintas no son sinónimos ni antónimos. Intensidad: las dos dicen lo mismo del rasgo, pero una con más fuerza que la otra. Alternativas: A) alto : elevado   B) murmullo : grito   C) duro : blando   D) dulce : frío",
+      "respuesta": "C) duro : blando",
+      "pasos": [
+        "«duro : blando» habla de un mismo rasgo y se une como el par base.",
+        "Las otras son de otra relación del rasgo, hablan de rasgos distintos o son del mismo tema."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Analogía. Par base: «ENFERMERA : PACIENTES». ¿Qué par guarda la misma relación? Datos: Oración puente justa: vale para el par base y para un solo par de las alternativas. Muy amplia: la oración puente deja pasar a más de un par. Categoría gramatical: sustantivo (nombra algo), verbo (dice una acción) o adjetivo (dice cómo es algo). Mismo orden: lo que va primero en el par base va primero en el otro par. Alternativas: A) paciente : hospital   B) cuidadora : ancianos   C) vigilar : guardián   D) médico : estetoscopio",
+      "respuesta": "B) cuidadora : ancianos",
+      "pasos": [
+        "«cuidadora : ancianos» cumple una oración puente justa del par base: no pasa ningún otro par.",
+        "Las otras van al revés, cambian la categoría gramatical, pasan solo una oración muy amplia o son del mismo tema."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Pregunta de analogías del simulacro. Par base: «BUS : FLOTA». ¿Qué par guarda la misma relación? Datos: Género y especie: todo lo que nombra una palabra es lo que nombra la otra (todo gato es un animal). Parte y todo: una palabra nombra una pieza que, con otras distintas, forma lo que nombra la otra. Elemento y conjunto: la otra palabra nombra muchos iguales a la primera, juntos. Caravana: fila de muchos carros que viajan juntos. Alternativas: A) carro : caravana   B) camioneta : vehículo   C) llanta : camión   D) pasaje : boleto   E) piloto : timón",
+      "respuesta": "A) carro : caravana",
+      "pasos": [
+        "«carro : caravana» se une como el par base: se prueban «todo… es un…», «… es una pieza de…» y «muchos… forman…».",
+        "Las otras son de otra de esas tres relaciones, del mismo tema o de otra relación."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta de analogías del simulacro. Par base: «APLAUSO : GOL». ¿Qué par guarda la misma relación? Datos: Causa y efecto: una cosa produce la otra; la que produce es la causa. Mismo orden: lo que va primero en el par base va primero en el otro par. Sucesión: una cosa viene después de otra sin que la primera la produzca. Alternativas: A) árbitro : silbato   B) arco : red   C) lluvia : arcoíris   D) llanto : cebolla   E) junio : julio",
+      "respuesta": "D) llanto : cebolla",
+      "pasos": [
+        "«llanto : cebolla» es causa y efecto en el mismo orden que el par base.",
+        "Las otras van al revés, solo vienen después, son del mismo tema o se unen de otra manera."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta de analogías del simulacro. Par base: «PILOTO : AVIONETA». ¿Qué par guarda la misma relación? Datos: Oración puente justa: vale para el par base y para un solo par de las alternativas. Muy amplia: la oración puente deja pasar a más de un par. Categoría gramatical: sustantivo (nombra algo), verbo (dice una acción) o adjetivo (dice cómo es algo). Mismo orden: lo que va primero en el par base va primero en el otro par. Alternativas: A) tren : maquinista   B) turista : lancha   C) manejar : volante   D) aeropuerto : torre de control   E) conductora : micro",
+      "respuesta": "E) conductora : micro",
+      "pasos": [
+        "«conductora : micro» cumple una oración puente justa del par base: no pasa ningún otro par.",
+        "Las otras van al revés, cambian la categoría gramatical, pasan solo una oración muy amplia o son del mismo tema."
+      ]
+    }
+  ]
+}

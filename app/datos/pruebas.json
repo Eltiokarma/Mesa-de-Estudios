@@ -3817,6 +3817,18 @@
     "RMP140-lado": {
      "respaldo": "hipotesis",
      "describe": "Cambia la izquierda por la derecha de quien mira al centro"
+    },
+    "RMP49-cree": {
+     "respaldo": "hipotesis",
+     "describe": "Le cree a quien miente: toma por cierto lo que dice la frase falsa"
+    },
+    "RMP148-par": {
+     "respaldo": "hipotesis",
+     "describe": "No usa el par de frases que se contradicen: toma al que miente por el culpable"
+    },
+    "RMP149-fuera": {
+     "respaldo": "hipotesis",
+     "describe": "Con «solo uno dice la verdad», le cree a quien está fuera del par que se contradice"
     }
    },
    "pares": [
