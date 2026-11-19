@@ -104,6 +104,11 @@
   // Un número con π: p·π/q escrito como fracción, con su unidad («10π cm», «8π/3 cm²»). El valor, para comparar.
   const conPi = (p, q, u) => `${piFrac(p, q)} ${u}`;
   // La letra de una alternativa, en negrita (molde §3): la de `alt` en su lista.
+  // Una figura que deja medir lo que se pide (un ángulo dibujado con su medida, un largo con otro largo de la misma figura)
+  // va con este aviso (auditoría del cierre, 19 nov; etapa-delegada.md, «Lo que encontraron los auditores», 5).
+  const NO_ESC = ' El dibujo no está a escala.';
+  // Un ángulo que se pide, dibujado con otra abertura: lejos de la que se pide (cierre, 19 nov).
+  const otraAbertura = g => (Math.abs(g - 100) >= 25 ? 100 : 55);
   const letra = (alts, alt) => { const k = alts.indexOf(alt); if (k < 0) throw new Error(`«${alt}» no es alternativa`); return neg('ABCDE'[k]); };
 
   // Figuras: los objetos de la pieza trig-arco.
@@ -161,8 +166,8 @@
       datos: [D1.arco],
       solucion: [{ texto: 'El ángulo ya está en radianes: se multiplica por el radio. π queda escrito.', ecuacion: junto([s, ' = ', dH('π/3'), ' · ', dO('9 cm'), ' = ', dI('3π cm')]) }],
       respuesta: [s, ' = ', dI('3π cm')] },
-    { nivel: 1, titulo: 'El ángulo, desde el arco', figura: sec(171.9, { r: 'r = 4 cm', t: 'θ = ?', s: 's = 12 cm' }),
-      enunciado: 'Un arco de 12 cm está en una circunferencia de 4 cm de radio. ¿Cuánto mide su ángulo central, en radianes?',
+    { nivel: 1, titulo: 'El ángulo, desde el arco', figura: sec(140, { r: 'r = 4 cm', t: 'θ = ?', s: 's = 12 cm' }),
+      enunciado: 'Un arco de 12 cm está en una circunferencia de 4 cm de radio. ¿Cuánto mide su ángulo central, en radianes?' + NO_ESC,
       datos: [D1.arco],
       solucion: [{ texto: 'Se cuenta cuántos radios caben en el arco: se divide.', ecuacion: junto([th, ' = ', { frac: [s, r] }, ' = ', { frac: [dI('12 cm'), dO('4 cm')] }, ' = ', dH('3 rad')]) }],
       respuesta: [th, ' = ', dH('3 rad')] },
@@ -187,16 +192,16 @@
         { texto: 'Por el largo del péndulo, que es el radio:', ecuacion: junto([s, ' = ', dH('π/9'), ' · ', dO('45 cm'), ' = ', dI('5π cm'), ' ≈ ', dI('15,7 cm')]) },
       ],
       respuesta: [s, ' = ', dI('5π cm'), ' ≈ ', dI('15,7 cm')] },
-    { nivel: 2, titulo: 'El ángulo, en grados', figura: sec(75, { r: 'r = 12 cm', t: 'θ = ?', s: 's = 5π cm' }),
-      enunciado: 'Un arco de 5π cm está en una circunferencia de 12 cm de radio. ¿Cuánto mide su ángulo central, en grados?',
+    { nivel: 2, titulo: 'El ángulo, en grados', figura: sec(110, { r: 'r = 12 cm', t: 'θ = ?', s: 's = 5π cm' }),
+      enunciado: 'Un arco de 5π cm está en una circunferencia de 12 cm de radio. ¿Cuánto mide su ángulo central, en grados?' + NO_ESC,
       datos: [D1.arco, D1.pi],
       solucion: [
         { texto: 'Primero en radianes: los radios que caben en el arco.', ecuacion: junto([th, ' = ', { frac: [dI('5π'), dO('12')] }, ' = ', dH('5π/12 rad')]) },
-        { texto: 'Después, a grados: π rad son 180°.', ecuacion: junto([{ frac: ['5', '12'] }, ' · 180° = ', dH('75°')]) },
+        { texto: 'Después, a grados: π rad son 180°, así que π se cambia por 180°.', ecuacion: junto([dH('5π/12 rad'), ' = ', { frac: ['5', '12'] }, ' · 180° = ', dH('75°')]) },
       ],
       respuesta: [th, ' = ', dH('75°')] },
-    { nivel: 2, titulo: 'Metros y centímetros', figura: fig(columpio(1.8, 0.5, { r: 'r = 1,8 m', t: 'θ = ?', s: 's = 90 cm' })),
-      enunciado: 'La cadena de un columpio mide 1,8 m, y el asiento recorre un arco de 90 cm. ¿Qué ángulo giró la cadena, en radianes?',
+    { nivel: 2, titulo: 'Metros y centímetros', figura: fig(columpio(1.8, 0.9, { r: 'r = 1,8 m', t: 'θ = ?', s: 's = 90 cm' })),
+      enunciado: 'La cadena de un columpio mide 1,8 m, y el asiento recorre un arco de 90 cm. ¿Qué ángulo giró la cadena, en radianes?' + NO_ESC,
       datos: [D1.arco, D1.cm],
       solucion: [
         { texto: 'El arco y el radio van en la misma unidad: 90 cm son 0,9 m.' },
@@ -253,7 +258,9 @@
         { texto: ['La ', letra(ALT1.radios, '18 cm'), ' y la ', letra(ALT1.radios, '24 cm'), ' son un solo radio; la ', letra(ALT1.radios, '0,73 cm'), ' divide 6π entre 60 y entre 45, en grados, y suma; la ', letra(ALT1.radios, '84 cm'), ' suma los diámetros.'] },
       ],
       respuesta: [letra(ALT1.radios, '42 cm'), ', ', dO('42 cm')] },
-    { nivel: 3, titulo: 'De un extremo al otro', figura: fig(columpio(2, PI / 8, { r: 'r = ?', t: '22,5°', s: '' })),
+    // Sin figura: el columpio solo dibuja el arco desde donde cuelga quieto, y aquí el asiento va de un extremo al otro
+    // (medio vaivén dibujado lleva a la alternativa de 4 m; cierre, 19 nov).
+    { nivel: 3, titulo: 'De un extremo al otro',
       enunciado: ['Un columpio se mueve de un extremo al otro: su cadena se aleja ', dH('22,5°'), ' a cada lado de donde cuelga quieta, y el asiento recorre 0,5π m. ¿Cuánto mide la cadena?'],
       alternativas: ALT1.cadena,
       datos: [D1.arco, D1.pi],
@@ -292,9 +299,9 @@
     const g = rr.uno(GRADOS), rv = rr.uno([4, 6, 8, 9, 10, 12, 15, 18, 20]), sT = piFrac(g * rv, 180), th0 = g * RAD;
     const fmtG = v => `${f(v, 2)}°`;
     return {
-      pregunta: ['En una circunferencia de ', dO(`${rv} cm`), ' de radio, un arco mide ', dI(`${sT} cm`), '. ¿Cuánto mide su ángulo central, en grados?'],
+      pregunta: ['En una circunferencia de ', dO(`${rv} cm`), ' de radio, un arco mide ', dI(`${sT} cm`), '. ¿Cuánto mide su ángulo central, en grados?' + NO_ESC],
       datos: [D1.arco, D1.pi],
-      dibujo: sec(g, { r: `r = ${rv} cm`, t: 'θ = ?', s: `s = ${sT} cm` }),
+      dibujo: sec(otraAbertura(g), { r: `r = ${rv} cm`, t: 'θ = ?', s: `s = ${sT} cm` }),
       opciones: opciones(g, [
         { id: 'tr3', valor: Math.round(th0 * 100) / 100, error: 'TR3', siFuera: `Dividir el arco entre el radio está bien: da ${piTxt(g)} rad. Falta pasar los radianes a grados.` },
         { id: 'inv', valor: Math.round(1 / th0 * 180 / PI * 100) / 100, error: 'ARCO-INV', siFuera: 'Pasar a grados está bien; pero el ángulo es el arco entre el radio, no al revés.' },
@@ -308,7 +315,8 @@
   // centesimales (la conversión de la unidad anterior, antes de multiplicar).
   function casoExamen1(rr) {
     if (rr.ent(0, 1)) {
-      const L = rr.uno([6, 9, 12, 15, 18, 24]), m = rr.uno([5, 10, 15, 20, 25, 40, 45, 50]);
+      let L, m;
+      do { L = rr.uno([6, 9, 12, 15, 18, 24]); m = rr.uno([5, 10, 15, 20, 25, 40, 45, 50]); } while (L === 15 && m === 20);   // el ejemplo del minutero
       return {
         pregunta: ['El minutero de un reloj mide ', dO(`${L} cm`), `. ¿Cuánto recorre su punta en ${m} minutos?`],
         datos: [D1.arco, D1.minutero, D1.vuelta],
@@ -321,7 +329,8 @@
         solucion: { texto: `${m} de los 60 minutos de una vuelta: ${piFrac(m, 30)} rad. Por el radio:`, ecuacion: junto([s, ' = ', dH(piFrac(m, 30)), ' · ', dO(`${L} cm`), ' = ', dI(conPi(m * L, 30, 'cm'))]) },
       };
     }
-    const C = rr.uno([10, 20, 25, 40, 50, 75, 80, 100, 120, 150]), rv = rr.uno([4, 6, 8, 10, 12, 16, 20]);
+    let C, rv;
+    do { C = rr.uno([10, 20, 25, 40, 50, 75, 80, 100, 120, 150]); rv = rr.uno([4, 6, 8, 10, 12, 16, 20]); } while (C === 50 && rv === 16);   // el ejemplo
     return {
       pregunta: ['En una circunferencia de ', dO(`${rv} cm`), ' de radio, un ángulo central mide ', dH(`${C}ᵍ`), '. ¿Cuánto mide su arco?'],
       datos: [D1.arco, D1.piC],
@@ -371,13 +380,15 @@
         { s: s, t: 'longitud de arco: lo que recorre el asiento' },
         { s: 'rad', t: 'radián: un arco del largo del radio' },
         { s: 'línea punteada', t: 'la cadena quieta: el lado inicial' },
+        { s: 'curva punteada', t: 'el camino que puede seguir el asiento' },
       ],
       controles: [
         { id: 't', etiqueta: 'θ, cuánto gira la cadena', color: 'c-h', min: 0.25, max: 1.25, paso: 0.25, inicio: 0.5, unidad: 'rad', decimales: 2 },
         { id: 'r', etiqueta: 'r, el largo de la cadena', color: 'c-o', min: 1.5, max: 2.5, paso: 0.5, inicio: 1.5, unidad: 'm', decimales: 1 },
       ],
       dibujo: val => ({ datos: columpio(val.r, val.t, { r: `r = ${f(val.r)} m`, t: `θ = ${f(val.t)} rad`, s: `s = ${f(val.t * val.r, 3)} m` }), estado: {} }),
-      lectura: val => jN([th, ` = ${f(val.t)} rad, ${f(val.t)} ${val.t === 1 ? 'cadena' : 'cadenas'}: `, s, ` = ${f(val.t)} · ${f(val.r)} m = ${f(val.t * val.r, 3)} m`]),
+      // «s = 0,5 cadenas»: el arco medido con la cadena (el lector en frío A no entendió «0,5 cadenas» suelto).
+      lectura: val => jN([th, ` = ${f(val.t)} rad: `, s, ` = ${f(val.t)} ${val.t === 1 ? 'cadena' : 'cadenas'} = ${f(val.t)} · ${f(val.r)} m = ${f(val.t * val.r, 3)} m`]),
       minimo: 3,
     },
     predice: {
@@ -525,8 +536,8 @@
         { texto: 'El radio es el número que, al cuadrado, da 25:', ecuacion: junto([r, ' = ', dO('5 cm')]) },
       ],
       respuesta: [r, ' = ', dO('5 cm')] },
-    { nivel: 2, titulo: 'El ángulo, desde el área', figura: sec(85.9, { r: 'r = 6 cm', t: 'θ = ?', A: 'A = 27 cm²' }, { area: true }),
-      enunciado: 'Un sector circular de 6 cm de radio tiene un área de 27 cm². ¿Cuánto mide su ángulo central, en radianes?',
+    { nivel: 2, titulo: 'El ángulo, desde el área', figura: sec(120, { r: 'r = 6 cm', t: 'θ = ?', A: 'A = 27 cm²' }, { area: true }),
+      enunciado: 'Un sector circular de 6 cm de radio tiene un área de 27 cm². ¿Cuánto mide su ángulo central, en radianes?' + NO_ESC,
       datos: [D2.area],
       solucion: [
         { texto: 'Se reemplaza:', ecuacion: junto([dF('27'), ' = ', { frac: [[th, ' · ', cuad(dO('6'))], '2'] }, FL, '54 = ', th, ' · 36']) },
@@ -550,7 +561,7 @@
       solucion: [
         { texto: 'Primero el radio:', ecuacion: [junto([dF('75'), ' = ', { frac: [[dH('1,5'), ' · ', cuad(r)], '2'] }]), FL, junto([cuad(r), ' = 100']), FL, junto([r, ' = ', dO('10 m')])] },
         { texto: 'El arco y el borde entero:', ecuacion: [junto([s, ' = ', dH('1,5'), ' · ', dO('10'), ' = ', dI('15 m')]), SEP, junto(['2 · ', dO('10'), ' + ', dI('15'), ' = 35 m'])] },
-        { texto: ['La ', letra(ALT2.cerco, '15 m'), ' es solo el arco; la ', letra(ALT2.cerco, '20 m'), ', solo los dos radios; la ', letra(ALT2.cerco, '25 m'), ' cuenta un solo radio; la ', letra(ALT2.cerco, '175 m'), ' toma 75 ÷ 1,5 = 50 por el radio.'] },
+        { texto: ['La ', letra(ALT2.cerco, '15 m'), ' es solo el arco; la ', letra(ALT2.cerco, '20 m'), ', solo los dos radios; la ', letra(ALT2.cerco, '25 m'), ' cuenta un solo radio; la ', letra(ALT2.cerco, '175 m'), ' usa r = 50, sin el 2 ni la raíz.'] },
       ],
       respuesta: [letra(ALT2.cerco, '35 m'), ', 35 m'] },
     { nivel: 3, titulo: 'Tres veces el radio',
@@ -598,7 +609,7 @@
   // «Ahora tú» de la idea 2. Tipo 0: el área con el arco y el radio.
   function casoAreaArco(rr) {
     let sv, rv;
-    do { sv = rr.uno([6, 8, 9, 10, 12, 15, 16, 18, 20, 24]); rv = rr.uno([4, 5, 6, 8, 10, 12]); } while (sv >= 6 * rv || (sv * rv) % 2);
+    do { sv = rr.uno([6, 8, 9, 10, 12, 15, 16, 18, 20, 24]); rv = rr.uno([4, 5, 6, 8, 10, 12]); } while (sv >= 6 * rv || (sv * rv) % 2 || (sv === 10 && rv === 6));   // 10 y 6: el ejemplo 1
     const cosa = rr.uno(['Una tajada de torta tiene', 'Un pedazo de pizza tiene', 'Un sector circular tiene']);
     return {
       pregunta: [`${cosa} un borde curvo de `, dI(`${sv} cm`), ' y lados rectos de ', dO(`${rv} cm`), ', como un sector circular. ¿Cuánto mide su área?'],
@@ -623,7 +634,7 @@
         dibujo: sec(g, { r: 'r = ?', t: `${g}°`, A: `A = ${aT} cm²` }, { area: true }),
         opciones: opciones(rv, [
           { id: 'raiz', valor: rv * rv, error: 'SEC-SIN-RAIZ', siFuera: `Despejar está bien: r² = ${rv * rv}. Falta la raíz cuadrada para llegar a r.` },
-          { id: 'mitad', valor: Math.round(Math.sqrt(rv * rv / 2) * 100) / 100, error: 'SEC-MITAD', siFuera: 'Despejar r² es la idea; pero la mitad de la fórmula pasa multiplicando, no dividiendo.' },
+          { id: 'mitad', valor: Math.round(Math.sqrt(rv * rv / 2) * 100) / 100, error: 'SEC-MITAD', siFuera: `Despejar r² es la idea; pero falta el 2: r² = 2 · A ÷ θ = ${rv * rv}, no A ÷ θ.` },
           { id: 'grados', valor: Math.round(Math.sqrt(2 * g * RAD * rv * rv / 2 / g) * 100) / 100, error: 'TR4', siFuera: `Despejar r² está bien, con θ en radianes: ${g}° son ${piTxt(g)} rad, no ${g}.` },
           { id: 'diam', valor: 2 * rv, error: 'ARCO-DIAM', siFuera: `r² = ${rv * rv} está bien; su raíz es el radio, no el diámetro.` },
         ], v => `${f(v)} cm`),
@@ -632,9 +643,9 @@
     }
     const fmt = v => `${f(v)}°`;
     return {
-      pregunta: ['Un sector circular de ', dO(`${rv} cm`), ' de radio tiene un área de ', dF(`${aT} cm²`), '. ¿Cuánto mide su ángulo central, en grados?'],
+      pregunta: ['Un sector circular de ', dO(`${rv} cm`), ' de radio tiene un área de ', dF(`${aT} cm²`), '. ¿Cuánto mide su ángulo central, en grados?' + NO_ESC],
       datos: [D2.area, D2.pi],
-      dibujo: sec(g, { r: `r = ${rv} cm`, t: 'θ = ?', A: `A = ${aT} cm²` }, { area: true }),
+      dibujo: sec(otraAbertura(g), { r: `r = ${rv} cm`, t: 'θ = ?', A: `A = ${aT} cm²` }, { area: true }),
       opciones: opciones(g, [
         { id: 'mitad', valor: g / 2, error: 'SEC-MITAD', siFuera: 'Despejar θ es la idea; pero el 2 de la fórmula pasa multiplicando al área.' },
         { id: 'radio', valor: g * rv, error: 'SEC-LINEAL', siFuera: `Pasar a grados está bien; pero se divide entre r² = ${rv * rv}, no entre ${rv}.` },
@@ -649,7 +660,7 @@
   function casoPerimetro(rr) {
     if (rr.ent(0, 1)) {
       let rv, t;
-      do { rv = rr.uno([4, 6, 8, 10, 12, 20]); t = rr.uno([0.5, 1, 1.5, 2, 2.5, 3]); } while (!Number.isInteger(t * rv * rv / 2) || !Number.isInteger(t * rv));
+      do { rv = rr.uno([4, 6, 8, 10, 12, 20]); t = rr.uno([0.5, 1, 1.5, 2, 2.5, 3]); } while (!Number.isInteger(t * rv * rv / 2) || !Number.isInteger(t * rv) || (rv === 10 && t === 1.5));   // el ejemplo del cerco
       const av = t * rv * rv / 2, sv = t * rv, P = 2 * rv + sv, fmt = v => `${f(v)} m`;
       return {
         pregunta: ['Un terreno con forma de sector circular tiene ', dF(`${f(av)} m²`), ' de área y un ángulo central de ', dH(`${f(t)} rad`), '. ¿Cuántos metros de cerco rodean todo su borde?'],
@@ -663,7 +674,7 @@
         solucion: { texto: `Del área, r² = ${rv * rv} y r = ${rv} m. El arco es θ · r; el cerco, dos radios y el arco.`, ecuacion: junto([s, ' = ', dH(f(t)), ' · ', dO(`${rv}`), ' = ', dI(`${f(sv)} m`), FL, '2 · ', dO(`${rv}`), ' + ', dI(f(sv)), ` = ${f(P)} m`]) },
       };
     }
-    const k = rr.uno([2.5, 3, 3.5, 4, 4.5, 5]), t = k - 2;
+    const k = rr.uno([2.5, 3.5, 4, 4.5, 5]), t = k - 2;                   // sin el triple: es el ejemplo «Tres veces el radio»
     const vec = ['', '', 'el doble', 'el triple', 'el cuádruple', 'el quíntuple'];
     const veces = Number.isInteger(k) ? vec[k] : `${f(k)} veces`;
     return {
@@ -735,8 +746,8 @@
     },
     mira: {
       pieza: OB,
-      datos: abanico(90, { r: 'r = 20 cm', t: [{ t: '90°' }, { t: 'π/2 rad', paso: 2 }], s: [{ t: '' }, { t: 's = 10π cm', paso: 2 }], A: [{ t: 'A = ?' }, { t: 'A = 100π cm²', paso: 1 }] },
-        { otro: [{ v: null }, { v: { r: 40, rot: { r: '40 cm', A: '400π cm²' } }, paso: 4 }] }),
+      datos: abanico(90, { r: 'r = 20 cm', t: [{ t: '90°' }, { t: 'π/2 rad', paso: 2 }, { t: 'θ', paso: 4 }], s: [{ t: '' }, { t: 's = 10π cm', paso: 2 }, { t: '10π cm', paso: 4 }], A: [{ t: 'A = ?' }, { t: 'A = 100π cm²', paso: 1 }, { t: '100π cm²', paso: 4 }] },
+        { otro: [{ v: null }, { v: { r: 40, rot: { r: '40 cm', s: '20π cm', A: '400π cm²' } }, paso: 4 }] }),
       voz: 'Una tajada fina es casi un triángulo.',
       pasos: [
         { estado: { paso: 0 }, texto: 'Abierto 90°, el abanico cubre la cuarta parte de la vuelta.', ecuacion: [th, ' = ', dH('90°')] },
@@ -748,9 +759,12 @@
     },
     regla: {
       texto: 'El área del sector es medio arco por radio; con el ángulo en radianes, el radio entra dos veces. Su perímetro son los dos radios y el arco.',
-      ecuacion: [junto([A, ' = ', { frac: [[{ llave: [th], nota: 'en radianes', color: 'c-h' }, ' · ', cuad(r)], '2'] }]), SEP, junto([A, ' = ', { frac: [[s, ' · ', r], '2'] }]), SEP, junto(['perímetro = 2', r, ' + ', s])],
+      // Sin llave bajo θ (lector en frío A: separaba θ de su r²); «en radianes» lo dice la condición.
+      ecuacion: [junto([A, ' = ', { frac: [[th, ' · ', cuad(r)], '2'] }]), SEP, junto([A, ' = ', { frac: [[s, ' · ', r], '2'] }]), SEP, junto(['perímetro = 2', r, ' + ', s])],
       condicion: 'θ en radianes; si r va en cm, A va en cm². Con doble radio, el área se multiplica por 4.',
       voz: 'El arco lleva un radio; el área, dos.',
+      // Figura propia (cierre, 19 nov): la del último paso de Mira, con los dos abanicos, quedaba encimada en la regla.
+      dibujo: { pieza: OB, datos: { objeto: 'figura', g: 70, area: true, rot: { r: 'r', t: 'θ', s: 's', A: 'A = s · r/2' } }, estado: {} },
     },
     // Así se resuelve: el área de un terreno con el ángulo en grados. «Ahora tú» pide el área con el arco, el radio o el
     // ángulo desde el área, y el perímetro.
@@ -857,8 +871,8 @@
         { texto: 'El área:', ecuacion: junto([A, ' = ', { frac: [[dH('π/4'), ' · (', cuad(dO('8')), ' − ', cuad(dO('4')), ')'], '2'] }, ' = ', dF('6π m²')]) },
       ],
       respuesta: [A, ' = ', dF('6π m²')] },
-    { nivel: 2, titulo: 'El ángulo, desde los arcos', figura: banda(90, 2 / 3, { s: 's₂ = 6π cm', s1: 's₁ = 4π cm', h: 'h = 4 cm', t: 'θ = ?' }),
-      enunciado: ['Los arcos de un trapecio circular miden ', s1, ' = 4π cm y ', s2, ' = 6π cm, y su ancho es h = 4 cm. ¿Cuánto mide su ángulo central?'],
+    { nivel: 2, titulo: 'El ángulo, desde los arcos', figura: banda(65, 2 / 3, { s: 's₂ = 6π cm', s1: 's₁ = 4π cm', h: 'h = 4 cm', t: 'θ = ?' }),
+      enunciado: ['Los arcos de un trapecio circular miden ', s1, ' = 4π cm y ', s2, ' = 6π cm, y su ancho es h = 4 cm. ¿Cuánto mide su ángulo central?' + NO_ESC],
       datos: [D3.arcos, 'Ancho: h = r₂ − r₁.'],
       solucion: [
         { texto: 'Se restan los arcos: con el mismo ángulo, la diferencia es el ángulo por el ancho.', ecuacion: junto([s2, ' − ', s1, ' = ', th, ' · (', r2, ' − ', r1, ') = ', th, ' · h']) },
@@ -873,8 +887,8 @@
         { texto: 'Se simplifica:', ecuacion: junto([A, ' = ', dF('525π cm²')]) },
       ],
       respuesta: [A, ' = ', dF('525π cm²')] },
-    { nivel: 2, titulo: 'El ancho, desde el área', figura: banda(57.3, 2 / 3, { r1: 'r₁ = 4 cm', h: 'h = ?', t: 'θ = 1 rad', A: 'A = 10 cm²' }),
-      enunciado: ['Un trapecio circular de ', dH('1 rad'), ' tiene 10 cm² de área y su radio de adentro mide ', r1, ' = 4 cm. ¿Cuánto mide su ancho h?'],
+    { nivel: 2, titulo: 'El ancho, desde el área', figura: banda(57.3, 0.5, { r1: 'r₁ = 4 cm', h: 'h = ?', t: 'θ = 1 rad', A: 'A = 10 cm²' }),
+      enunciado: ['Un trapecio circular de ', dH('1 rad'), ' tiene 10 cm² de área y su radio de adentro mide ', r1, ' = 4 cm. ¿Cuánto mide su ancho h?' + NO_ESC],
       datos: [D3.resta, 'Ancho: h = r₂ − r₁.'],
       solucion: [
         { texto: 'Se reemplaza:', ecuacion: junto([dF('10'), ' = ', { frac: [[dH('1'), ' · (', cuad(r2), ' − 16)'], '2'] }, FL, cuad(r2), ' = 36', FL, r2, ' = ', dO('6 cm')]) },
@@ -902,7 +916,7 @@
       ],
       respuesta: [letra(ALT3.limpia, '3200π/3 cm²'), ', ', dF('3200π/3 cm²')] },
     { nivel: 3, titulo: 'Sector y banda iguales', figura: banda(80, 0.6, { r1: 'r₁ = 4 cm', r: 'r₂ = ?', t: 'θ' }),
-      enunciado: ['Un sector de radio ', r1, ' = 4 cm y el trapecio circular que lo rodea hasta ', r2, ', con el mismo ángulo, tienen la misma área. ¿Cuánto mide ', r2, '?'],
+      enunciado: ['Un sector de radio ', r1, ' = 4 cm y el trapecio circular que lo rodea hasta ', r2, ', con el mismo ángulo, tienen la misma área. ¿Cuánto mide ', r2, '?' + NO_ESC],
       alternativas: ALT3.iguales,
       datos: [D2.area, D3.resta, '√32 = 4√2'],
       solucion: [
@@ -934,7 +948,7 @@
   // «Ahora tú» de la idea 3. Tipo 0: el área con los dos arcos y el ancho.
   function casoBandaArcos(rr) {
     let t, a, hv;
-    do { t = rr.uno([0.5, 1, 1.5, 2]); a = rr.uno([4, 6, 8, 10]); hv = rr.uno([2, 3, 4, 5, 6]); } while (!Number.isInteger(t * a) || !Number.isInteger(t * (a + hv)));
+    do { t = rr.uno([0.5, 1, 1.5, 2]); a = rr.uno([4, 6, 8, 10]); hv = rr.uno([2, 3, 4, 5, 6]); } while (!Number.isInteger(t * a) || !Number.isInteger(t * (a + hv)) || (t === 1 && a === 6 && hv === 4));   // 6, 10 y 4: el ejemplo 2
     const sv1 = t * a, sv2 = t * (a + hv), av = (sv1 + sv2) / 2 * hv;
     return {
       pregunta: ['Los arcos de un trapecio circular miden ', s1, ` = ${sv1} cm y `, s2, ` = ${sv2} cm, y su ancho es h = ${hv} cm. ¿Cuánto mide su área?`],
@@ -955,9 +969,9 @@
     do { t = rr.uno([0.5, 1, 1.5, 2, 2.5]); a = rr.uno([2, 4, 6, 8, 10]); hv = rr.uno([2, 3, 4, 5, 6]); } while (!Number.isInteger(t * a) || !Number.isInteger(t * (a + hv)));
     const sv1 = t * a, sv2 = t * (a + hv);
     return {
-      pregunta: ['Los arcos de un trapecio circular miden ', s1, ` = ${sv1} cm y `, s2, ` = ${sv2} cm, y su ancho es h = ${hv} cm. ¿Cuánto mide su ángulo central, en radianes?`],
+      pregunta: ['Los arcos de un trapecio circular miden ', s1, ` = ${sv1} cm y `, s2, ` = ${sv2} cm, y su ancho es h = ${hv} cm. ¿Cuánto mide su ángulo central, en radianes?` + NO_ESC],
       datos: [D3.arcos, 'Ancho: h = r₂ − r₁.'],
-      dibujo: banda(t / RAD, a / (a + hv), { s: `s₂ = ${sv2} cm`, s1: `s₁ = ${sv1} cm`, h: `h = ${hv} cm`, t: 'θ = ?' }),
+      dibujo: banda(otraAbertura(t / RAD), a / (a + hv), { s: `s₂ = ${sv2} cm`, s1: `s₁ = ${sv1} cm`, h: `h = ${hv} cm`, t: 'θ = ?' }),
       opciones: opciones(t, [
         { id: 'suma', valor: (sv1 + sv2) / hv, error: 'TRAP-SUMA', siFuera: 'Dividir entre el ancho va bien; pero se restan los arcos: la diferencia es θ · h.' },
         { id: 'grande', valor: sv2 / hv, error: 'TRAP-GRANDE', siFuera: 'Dividir un arco entre un largo es la idea; pero s₂ se divide entre r₂, no entre h.' },
@@ -971,7 +985,7 @@
   // limpiaparabrisas con su brazo y su jebe (San Marcos 2020-I).
   function casoBandaExamen(rr) {
     if (rr.ent(0, 1)) {
-      const k = rr.uno([2, 3, 4, 5]), nom = ['', '', 'el doble', 'el triple', 'el cuádruple', 'el quíntuple'][k];
+      const k = rr.uno([2, 4, 5]), nom = ['', '', 'el doble', 'el triple', 'el cuádruple', 'el quíntuple'][k];   // sin el triple: es el ejemplo «Dos áreas en razón»
       return {
         pregunta: ['Un sector de radio ', r1, ' y el trapecio circular que lo rodea hasta ', r2, ` tienen el mismo ángulo central. Si `, r2, ` es ${nom} de `, r1, ', ¿cuántas veces el área del sector cabe en la del trapecio?'],
         datos: [D2.area, D3.resta],
@@ -985,7 +999,9 @@
         solucion: { texto: `Con r₁ = k y r₂ = ${k}k, el trapecio mide θ(${k * k}k² − k²)/2: ${k * k - 1} veces el sector chico.`, ecuacion: junto([{ frac: [[th, ` · (${k * k}`, cuad('k'), ' − ', cuad('k'), ')'], '2'] }, ` = ${k * k - 1} · `, { frac: [[th, ' · ', cuad('k')], '2'] }]) },
       };
     }
-    const r2v = rr.uno([45, 50, 60]), hv = rr.uno([20, 25, 30, 35]), g = rr.uno([90, 100, 120, 135, 150]), r1v = r2v - hv;
+    let r2v, hv, g;
+    do { r2v = rr.uno([45, 50, 60]); hv = rr.uno([20, 25, 30, 35]); g = rr.uno([90, 100, 120, 135, 150]); } while (r2v === 50 && hv === 30 && g === 90);   // el ejemplo «El brazo y el jebe»
+    const r1v = r2v - hv;
     const aT = piFrac(g * (r2v * r2v - r1v * r1v), 360);
     return {
       pregunta: ['El brazo de un limpiaparabrisas mide ', dO(`${r2v} cm`), `, y su jebe, de ${hv} cm, va al final del brazo. Si barre `, dH(`${g}°`), ', ¿qué área limpia el jebe?'],
@@ -1053,15 +1069,15 @@
         { id: 'brazo', texto: '1600π/3 cm²', error: 'TRAP-GRANDE', siFuera: 'Ese es el sector de todo el brazo; falta quitar el pedazo sin jebe.' },
         { id: 'mitad', texto: '800π cm²', error: 'TRAP-MITAD', siFuera: 'Restar los dos sectores es la idea; falta la mitad de la fórmula del sector.' },
       ],
-      dibujo: { datos: limpia(40, 20, { r1: 'r₁ = 20 cm', r2: 'r₂ = 40 cm', t: '120°', A: 'A = ?' }), estado: {} },
-      revelar: { datos: limpia(40, 20, { r1: 'r₁ = 20 cm', r2: 'r₂ = 40 cm', t: '120°', A: 'A = 400π cm²' }), estado: {} },
+      dibujo: { datos: limpia(40, 20, { r1: 'r₁ = 20 cm', r2: 'r₂ = 40 cm', t: '120°', A: 'A = ?' }, { k: 3.6 }), estado: {} },
+      revelar: { datos: limpia(40, 20, { r1: 'r₁ = 20 cm', r2: 'r₂ = 40 cm', t: '120°', A: 'A = 400π cm²' }, { k: 3.6 }), estado: {} },
       coincide: 'Coincide: el sector del brazo, 1600π/3, menos el que no limpia, 400π/3: quedan 400π cm².',
       noCoincide: 'Revisemos: al sector de todo el brazo se le quita el pedazo donde no hay jebe.',
     },
     mira: {
       pieza: OB,
       datos: limpia(40, 20, { r1: 'r₁ = 20 cm', r2: 'r₂ = 40 cm', t: '120°', A: [{ t: 'A = ?' }, { t: 'A = 400π cm²', paso: 3 }],
-        s1: [{ t: '' }, { t: 's₁ = 40π/3', paso: 4 }], s2: [{ t: '' }, { t: 's₂ = 80π/3', paso: 4 }], h: [{ t: '' }, { t: 'h = 20 cm', paso: 4 }] }),
+        s1: [{ t: '' }, { t: 's₁ = 40π/3 cm', paso: 4 }], s2: [{ t: '' }, { t: 's₂ = 80π/3 cm', paso: 4 }], h: [{ t: '' }, { t: 'h = 20 cm', paso: 4 }] }, { k: 3.6 }),
       voz: 'El jebe limpia lo que el brazo barre, menos el centro.',
       pasos: [
         { estado: { paso: 0 }, texto: 'El ángulo, en radianes:', ecuacion: junto([dH('120°'), ' = ', dH('2π/3 rad')]) },
@@ -1076,6 +1092,8 @@
       ecuacion: [junto([A, ' = ', { frac: [[th, ' · (', cuad(r2), ' − ', cuad(r1), ')'], '2'] }]), SEP, junto([A, ' = ', { frac: [[s1, ' + ', s2], '2'] }, ' · h']), SEP, junto([s2, ' − ', s1, ' = ', th, ' · h'])],
       condicion: 'θ en radianes; r₁ y r₂ se miden desde el centro, y el ancho es h = r₂ − r₁.',
       voz: 'Se restan los cuadrados, no los radios.',
+      // Figura propia (cierre, 19 nov): la del último paso de Mira apilaba tres rótulos sobre el arco de afuera.
+      dibujo: { pieza: OB, datos: { objeto: 'figura', g: 80, r1: 0.5, area: true, rot: { r: 'r₂', r1: 'r₁', h: 'h', s: 's₂', s1: 's₁', t: 'θ' } }, estado: {} },
     },
     // Así se resuelve: el área de un jardín con el ángulo en grados y los dos radios. «Ahora tú» pide el área con los
     // arcos, el ángulo desde los arcos, y la razón de áreas o el limpiaparabrisas de examen.
@@ -1105,7 +1123,8 @@
     },
     ahoraTu: {
       pieza: OB,
-      voz: 'Se restan los cuadrados, no los radios.',
+      // Sin «se restan los cuadrados»: dos de los tres tipos se hacen con los arcos (lector en frío A).
+      voz: 'Mira qué te dan: los radios o los arcos.',
       generar(sem) { return conCuatro([casoBandaArcos, casoBandaAngulo, casoBandaExamen][sem % 3], azar(sem + 31)); },
     },
   };
@@ -1144,9 +1163,25 @@
     km: ['1,1 km', '0,7 km', '4,4 km', '2,2 km', '0,35 km'],
     gira: ['10 rad', '10π rad', '5π rad', '5 rad'],
   };
+  // Una rueda de radio rv junto a una fija de radio Rv (por fuera o por dentro), al empezar: la fija, la que rueda con su
+  // radio y el camino de su centro, punteado, sin decir su radio (eso se calcula). Dibujo en trig-plano, a escala 1 : 2.
+  function aroFig(lado, Rv, rv) {
+    const k = 0.5, Rk = Rv * k, rk = rv * k, rc = lado === 'fuera' ? Rk + rk : Rk - rk, L = lado === 'fuera' ? rc + rk + 1.8 : Rk + 0.9;
+    const fuera = lado === 'fuera';
+    return {
+      ventana: { x: [-L, L], y: [-L, L] }, ejes: false,
+      circulos: [{ r: Rk }, { r: rc, color: 'i', discontinua: true }, { cx: rc, cy: 0, r: rk }],
+      rayos: [{ cx: rc, cy: 0, ang: 90, largo: rk, color: 'o', punta: false }],
+      puntos: [{ x: rc, y: 0 }],
+      // La fija se rotula adentro (por fuera) o encima del aro (por dentro); el camino, junto a su circunferencia punteada.
+      rotulos: [{ x: 0, y: fuera ? 0 : Rk + 0.42, texto: fuera ? `fija: ${Rv} cm` : `aro: ${Rv} cm` }, fuera ? { x: rc + rk + 0.15, y: -0.1, texto: `${rv} cm`, color: 'o', ancla: 'start' } : { x: rc, y: -rk - 0.45, texto: `${rv} cm`, color: 'o' },
+        { x: 0, y: fuera ? -rc - 0.8 : -Rk - 0.45, texto: 'camino del centro (punteado)', color: 'i' }],
+      alt: `Una rueda de ${rv} cm que rueda por ${lado} de ${lado === 'fuera' ? 'otra fija' : 'un aro fijo'} de ${Rv} cm; punteado, el camino de su centro.`,
+    };
+  }
   const EJEMPLOS_VUELTAS = [
     { nivel: 1, titulo: 'Una vuelta, un borde', figura: fig(ruedaD(0.3, 1, { r: 'r = 0,3 m', d: 'd = ?' })),
-      enunciado: 'La rueda de una bicicleta tiene 0,3 m de radio y rueda sin deslizar. ¿Cuánto avanza la bici cuando la rueda da una vuelta?',
+      enunciado: ['La rueda de una bicicleta tiene 0,3 m de radio y rueda sin deslizar. ¿Cuánto avanza la bici cuando la rueda da ', dF('una vuelta'), '?' + NO_ESC],
       datos: [D4.borde],
       solucion: [{ texto: 'En una vuelta, la huella mide el borde entero de la llanta.', ecuacion: junto([dd, ' = 2π · ', dO('0,3 m'), ' = ', dI('0,6π m'), ' ≈ ', dI('1,88 m')]) }],
       respuesta: [dd, ' = ', dI('0,6π m'), ' ≈ ', dI('1,88 m')] },
@@ -1161,12 +1196,12 @@
       solucion: [{ texto: 'La huella mide lo que avanzó el centro:', ecuacion: junto([nv, ' = ', { frac: [dI('4π'), ['2π · ', dO('0,4')]] }, ' = ', dF('5')]) }],
       respuesta: [nv, ' = ', dF('5 vueltas')] },
     { nivel: 1, titulo: 'El ángulo que gira',
-      enunciado: 'Una rueda da 3 vueltas completas. ¿Qué ángulo gira, en radianes?',
+      enunciado: ['Una rueda da ', dF('3 vueltas'), ' completas. ¿Qué ángulo gira, en radianes?'],
       datos: [D4.vuelta],
       solucion: [{ texto: 'Cada vuelta son 2π rad:', ecuacion: junto([th, ' = 3 · ', dH('2π rad'), ' = ', dH('6π rad')]) }],
       respuesta: [th, ' = ', dH('6π rad')] },
     { nivel: 1, titulo: 'El radio, desde la huella',
-      enunciado: 'Una rueda da 8 vueltas y su huella mide 4,8π m. ¿Cuánto mide su radio?',
+      enunciado: ['Una rueda da ', dF('8 vueltas'), ' y su huella mide 4,8π m. ¿Cuánto mide su radio?'],
       datos: [D4.vueltas],
       solucion: [{ texto: 'Cada vuelta avanzó 4,8π ÷ 8 = 0,6π m, que es 2π · r:', ecuacion: junto([r, ' = ', { frac: [dI('0,6π'), '2π'] }, ' = ', dO('0,3 m')]) }],
       respuesta: [r, ' = ', dO('0,3 m')] },
@@ -1186,7 +1221,7 @@
         { texto: 'Cada vuelta avanza 2π · 0,2 = 0,4π m:', ecuacion: junto([dd, ' = ', dF('2,5'), ' · 0,4π = ', dI('π m'), ' ≈ ', dI('3,14 m')]) },
       ],
       respuesta: [dd, ' = ', dI('π m'), ' ≈ ', dI('3,14 m')] },
-    { nivel: 2, titulo: 'Por fuera de otra',
+    { nivel: 2, titulo: 'Por fuera de otra', figura: { pieza: 'trig-plano', datos: aroFig('fuera', 6, 2), estado: {} },
       enunciado: 'Una rueda de 2 cm de radio rueda sin deslizar por fuera de otra fija, de 6 cm, hasta volver a su lugar. ¿Cuántas vueltas da?',
       datos: [D4.vueltas, D4.rodea],
       solucion: [
@@ -1194,7 +1229,7 @@
         { texto: 'Las vueltas:', ecuacion: junto([nv, ' = ', { frac: [dI('16π'), ['2π · ', dO('2')]] }, ' = ', dF('4')]) },
       ],
       respuesta: [nv, ' = ', dF('4 vueltas')] },
-    { nivel: 2, titulo: 'Por dentro de un aro',
+    { nivel: 2, titulo: 'Por dentro de un aro', figura: { pieza: 'trig-plano', datos: aroFig('dentro', 6, 2), estado: {} },
       enunciado: 'Una rueda de 2 cm de radio rueda sin deslizar por dentro de un aro fijo de 6 cm, hasta volver a su lugar. ¿Cuántas vueltas da?',
       datos: [D4.vueltas, D4.rodea],
       solucion: [
@@ -1212,7 +1247,7 @@
       respuesta: [dd, ' = ', dI('20 m')] },
     // Nivel 3, tipo examen. Letras de las correctas: C, D, A, D, B.
     { nivel: 3, titulo: 'Dos ruedas, distintas vueltas',
-      enunciado: 'Las ruedas de adelante de un tractor tienen 0,4 m de radio y las de atrás, 0,6 m. En un tramo, cada rueda de adelante da 10 vueltas más que cada una de atrás. ¿Cuánto avanzó el tractor?',
+      enunciado: ['Las ruedas de adelante de un tractor tienen 0,4 m de radio y las de atrás, 0,6 m. En un tramo, cada rueda de adelante da ', dF('10 vueltas'), ' más que cada una de atrás. ¿Cuánto avanzó el tractor?'],
       alternativas: ALT4.tractor,
       datos: [D4.vueltas],
       solucion: [
@@ -1240,7 +1275,7 @@
       ],
       respuesta: [letra(ALT4.aro, '3'), ', ', dF('3 vueltas')] },
     { nivel: 3, titulo: 'Mil vueltas, en kilómetros',
-      enunciado: 'Una rueda de 0,35 m de radio da 1000 vueltas sin deslizar. ¿Cuántos kilómetros avanza, aproximadamente?',
+      enunciado: ['Una rueda de 0,35 m de radio da ', dF('1000 vueltas'), ' sin deslizar. ¿Cuántos kilómetros avanza, aproximadamente?'],
       alternativas: ALT4.km,
       datos: [D4.vueltas, D4.km, D4.piNum],
       solucion: [
@@ -1262,7 +1297,9 @@
 
   // «Ahora tú» de la idea 4. Tipo 0: cuánto avanza una rueda con sus vueltas, o su radio con lo que avanza.
   function casoAvance(rr) {
-    const rv = rr.uno([0.2, 0.25, 0.3, 0.35, 0.4, 0.5]), n0 = rr.uno([3, 4, 5, 6, 8, 10, 12, 15, 20]), dT = `${f(2 * rv * n0)}π m`;
+    let rv, n0;
+    do { rv = rr.uno([0.2, 0.25, 0.3, 0.35, 0.4, 0.5]); n0 = rr.uno([3, 4, 5, 6, 8, 10, 12, 15, 20]); } while (rv === 0.3 && n0 === 8);   // el ejemplo 5
+    const dT = `${f(2 * rv * n0)}π m`;
     if (rr.ent(0, 1)) {
       return {
         pregunta: ['Una rueda de ', dO(`${f(rv)} m`), ' de radio da ', dF(`${n0} vueltas`), ' rodando sin deslizar. ¿Cuánto avanza su centro?'],
@@ -1290,7 +1327,9 @@
   }
   // Tipo 1: una rueda que rueda alrededor de otra fija, por fuera o por dentro.
   function casoRodea(rr) {
-    const a = rr.uno([1, 2, 3, 4]), k = rr.uno([2, 3, 4, 5]), b = k * a, fuera = rr.ent(0, 1) === 1, nb = fuera ? k + 1 : k - 1;
+    let a, k;
+    do { a = rr.uno([1, 2, 3, 4]); k = rr.uno([2, 3, 4, 5]); } while (a === 2 && k === 3);   // 2 y 6 cm: los ejemplos «Por fuera» y «Por dentro»
+    const b = k * a, fuera = rr.ent(0, 1) === 1, nb = fuera ? k + 1 : k - 1;
     return {
       pregunta: `Una rueda de ${a} cm de radio rueda sin deslizar por ${fuera ? 'fuera de otra rueda fija' : 'dentro de un aro fijo'} de ${b} cm, hasta volver a su lugar. ¿Cuántas vueltas da sobre sí misma?`,
       datos: [D4.vueltas, D4.rodea],
@@ -1305,10 +1344,13 @@
   }
   // Tipo 2 (examen): dos ruedas de radios distintos que avanzan lo mismo y dan distintas vueltas.
   function casoTractor(rr) {
-    const [a, b] = rr.uno([[0.3, 0.6], [0.4, 0.6], [0.4, 0.8], [0.5, 1], [0.2, 0.3]]), D = rr.uno([5, 10, 15, 20]), q = a * b / (b - a);
+    let a, b, D;
+    do { [a, b] = rr.uno([[0.3, 0.6], [0.4, 0.6], [0.4, 0.8], [0.5, 1], [0.2, 0.3]]); D = rr.uno([5, 10, 15, 20]); } while (a === 0.4 && b === 0.6 && D === 10);   // el ejemplo del tractor
+    const q = a * b / (b - a);
     const dT = `${f(2 * q * D)}π m`;
     return {
-      pregunta: `Las ruedas de adelante de un carro tienen ${f(a)} m de radio y las de atrás, ${f(b)} m. En un tramo, cada rueda de adelante da ${D} vueltas más que cada una de atrás. ¿Cuánto avanzó el carro?`,
+      // Un tractor (cierre, 19 nov): un carro no tiene las ruedas de atrás de 1 m de radio.
+      pregunta: ['Las ruedas de adelante de un tractor tienen ', dO(`${f(a)} m`), ' de radio y las de atrás, ', dO(`${f(b)} m`), '. En un tramo, cada rueda de adelante da ', dF(`${D} vueltas`), ' más que cada una de atrás. ¿Cuánto avanzó el tractor?'],
       datos: [D4.vueltas],
       opciones: opciones(dT, [
         { id: 'resta', valor: `${f(2 * D * (b - a))}π m`, error: 'VUEL-RESTA-RADIOS', siFuera: `Usar las ${D} vueltas de diferencia va bien; pero no se restan los radios: se restan las vueltas.` },
@@ -1342,7 +1384,7 @@
       pieza: OB,
       consigna: ['La llanta pintada deja su huella al rodar sin deslizar. ', dd, ' es lo que avanza la bici; ', nv, ', las vueltas de su rueda.'],
       mision: {
-        texto: 'Haz que la bici avance justo 0,8π m.',
+        texto: 'Con una sola vuelta de la rueda, haz que la bici avance justo 0,8π m.',
         logrado: val => Math.abs(val.n * 2 * val.r - 0.8) < 1e-9,
         bien: 'Listo: una vuelta de la rueda de 0,4 m avanza 2π · 0,4 = 0,8π m.',
       },
@@ -1357,8 +1399,9 @@
         { id: 'r', etiqueta: 'r, el radio de la rueda', color: 'c-o', min: 0.3, max: 0.4, paso: 0.05, inicio: 0.3, unidad: 'm', decimales: 2 },
         { id: 'n', etiqueta: 'n, vueltas que da la rueda', color: 'c-f', min: 0.25, max: 1.5, paso: 0.25, inicio: 0.5, decimales: 2 },
       ],
-      dibujo: val => ({ datos: ruedaD(val.r, val.n, { r: `r = ${f(val.r)} m`, d: `d = ${f(val.n * 2 * val.r)}π m` }), estado: {} }),
-      lectura: val => jN([`${vueltasT(val.n)} de ${f(2 * val.r)}π m: `, dd, ` = ${f(val.n * 2 * val.r)}π m ≈ ${f(val.n * 2 * PI * val.r)} m`]),
+      // El número que acompaña a π va exacto (0,175π, no 0,18π: auditoría del cierre, 19 nov).
+      dibujo: val => ({ datos: ruedaD(val.r, val.n, { r: `r = ${f(val.r)} m`, d: `d = ${f(val.n * 2 * val.r, 3)}π m` }), estado: {} }),
+      lectura: val => jN([`${vueltasT(val.n)}, de ${f(2 * val.r)}π m cada una: `, dd, ` = ${f(val.n * 2 * val.r, 3)}π m`]),
       minimo: 3,
     },
     predice: {
@@ -1390,9 +1433,9 @@
       ],
     },
     regla: {
-      texto: 'Una rueda que rueda sin deslizar da una vuelta cada vez que su centro avanza el largo de su borde, 2πr. Las vueltas son el camino del centro entre 2πr.',
+      texto: 'Sin deslizar, la rueda da una vuelta cada vez que su centro avanza su borde, 2πr. Si gira un ángulo θ, en radianes, su centro avanza θ · r.',
       ecuacion: [junto([nv, ' = ', { frac: [dd, ['2π', r]] }]), SEP, junto([dd, ' = ', th, ' · ', r]), SEP, junto([th, ' = 2π', nv])],
-      condicion: 'd: el camino del centro. Alrededor de una rueda fija, de radio suma de los radios por fuera y resta por dentro.',
+      condicion: 'no desliza. Por fuera de una rueda fija, el camino del centro tiene radio suma de los radios; por dentro, resta.',
       voz: 'Sigue al centro, no al borde que toca.',
     },
     // Así se resuelve: las vueltas en una recta. «Ahora tú» pide lo que avanza o el radio, la rueda alrededor de otra y
@@ -1405,7 +1448,7 @@
         return {
           enunciado: [`${cap(cosa)} tiene `, dO(`${f(rv)} m`), ' de radio y avanza ', dI(dT), ' sin deslizar. ¿Cuántas vueltas da?'],
           datos: [D4.vueltas],
-          dibujo: { datos: ruedaD(rv, 1, { r: `r = ${f(rv)} m`, d: 'una vuelta' }, { k: undefined }), estado: {} },
+          dibujo: { datos: ruedaD(rv, 1, { r: `r = ${f(rv)} m`, d: '2π · r en 1 vuelta' }, { k: undefined }), estado: {} },
           pasos: [
             { tipo: 'pide', texto: ['Piden el número de vueltas ', nv, '.'] },
             { tipo: 'datos', texto: ['El radio es ', r, ` = ${f(rv)} m y lo que avanza el centro, `, dd, ` = ${dT}.`] },
@@ -1458,20 +1501,20 @@
   };
   const EJEMPLOS_FAJA = [
     { nivel: 1, titulo: 'La cadena: el mismo arco', figura: fig(bici(0, 4, { r1: 'r₁ = 10 cm', r2: 'r₂ = 4 cm', n1: 'n₁ = 1', n2: 'n₂ = ?' })),
-      enunciado: ['Una bicicleta tiene un plato de ', r1, ' = 10 cm y un piñón de ', r2, ' = 4 cm, unidos por la cadena. Si los pedales dan 1 vuelta, ¿cuántas da el piñón?'],
+      enunciado: ['Una bicicleta tiene un plato de ', r1, ' = 10 cm y un piñón de ', r2, ' = 4 cm, unidos por la cadena. Si los pedales dan ', dF('1 vuelta'), ', ¿cuántas da el piñón?'],
       datos: [D5.faja],
       solucion: [{ texto: 'La cadena corre lo mismo en las dos ruedas:', ecuacion: junto(['1 · ', dO('10'), ' = ', n2, ' · ', dO('4'), FL, n2, ' = ', dF('2,5')]) }],
       respuesta: [n2, ' = ', dF('2,5 vueltas')] },
     { nivel: 1, titulo: 'Dos poleas con faja',
-      enunciado: ['Una faja une una polea de ', r1, ' = 6 cm con otra de ', r2, ' = 15 cm. Si la chica da 20 vueltas, ¿cuántas da la grande?'],
+      enunciado: ['Una faja une una polea de ', r1, ' = 6 cm con otra de ', r2, ' = 15 cm. Si la chica da ', dF('20 vueltas'), ', ¿cuántas da la grande?'],
       datos: [D5.faja],
       solucion: [{ texto: 'Los bordes recorren lo mismo:', ecuacion: junto(['20 · ', dO('6'), ' = ', n2, ' · ', dO('15'), FL, n2, ' = ', dF('8')]) }],
       respuesta: [n2, ' = ', dF('8 vueltas')] },
     { nivel: 1, titulo: 'En un mismo eje',
-      enunciado: ['Dos ruedas de 5 cm y 20 cm de radio están soldadas en un eje común. Si la chica gira ', dH('90°'), ', ¿cuánto gira la grande?'],
-      datos: [D5.eje],
-      solucion: [{ texto: 'En un eje común giran juntas: el mismo ángulo, aunque el borde grande recorra más.', ecuacion: [dH('90°')] }],
-      respuesta: [dH('90°')] },
+      enunciado: ['Dos ruedas de 5 cm y 20 cm de radio están soldadas en un eje común. Si la chica gira ', dH('90°'), ', ¿qué parte de una vuelta da la grande?'],
+      datos: [D5.eje, D5.vuelta],
+      solucion: [{ texto: 'En un eje común giran juntas: la grande también gira 90°, aunque su borde recorra más.', ecuacion: junto([{ frac: ['90°', '360°'] }, ' = ', dF('1/4')]) }],
+      respuesta: [n2, ' = ', dF('1/4 de vuelta')] },
     { nivel: 1, titulo: 'Engranajes al revés', figura: fig({ objeto: 'engranajes', r1: 3, r2: 2, g1: 0, rot: {} }),
       enunciado: 'Dos engranajes se tocan. Si el primero gira en sentido horario, ¿en qué sentido gira el segundo?',
       datos: [D5.sentido],
@@ -1483,7 +1526,7 @@
       solucion: [{ texto: 'El arco del borde es el mismo:', ecuacion: junto([dH('60°'), ' · ', dO('12'), ' = ', th2, ' · ', dO('4'), FL, th2, ' = ', dH('180°')]) }],
       respuesta: [th2, ' = ', dH('180°')] },
     { nivel: 2, titulo: 'Cuánto corre la faja',
-      enunciado: ['Una polea de ', r1, ' = 8 cm da 5 vueltas y mueve, con una faja, a otra de ', r2, ' = 20 cm. ¿Cuánto corre la faja y cuántas vueltas da la segunda?'],
+      enunciado: ['Una polea de ', r1, ' = 8 cm da ', dF('5 vueltas'), ' y mueve, con una faja, a otra de ', r2, ' = 20 cm. ¿Cuánto corre la faja y cuántas vueltas da la segunda?'],
       datos: [D4.borde, D5.faja],
       solucion: [
         { texto: 'La faja corre lo que recorre el borde de la primera:', ecuacion: junto([s, ' = 5 · 2π · ', dO('8'), ' = ', dI('80π cm')]) },
@@ -1499,7 +1542,7 @@
       ],
       respuesta: [n2, ' = ', dF('1 vuelta')] },
     { nivel: 2, titulo: 'Faja y después eje',
-      enunciado: ['La rueda 1 (', r1, ' = 10 cm) mueve con una faja a la rueda 2 (', r2, ' = 5 cm); la rueda 3, de 15 cm, va en el eje de la 2. Si la 1 da una vuelta, ¿cuántas da la 3?'],
+      enunciado: ['La rueda 1 (', r1, ' = 10 cm) mueve con una faja a la rueda 2 (', r2, ' = 5 cm); la rueda 3 va en el eje de la 2. Si la 1 da ', dF('una vuelta'), ', ¿cuántas da la 3?'],
       datos: [D5.faja, D5.eje],
       solucion: [
         { texto: 'Entre 1 y 2 hay faja:', ecuacion: junto(['1 · ', dO('10'), ' = ', n2, ' · ', dO('5'), FL, n2, ' = 2']) },
@@ -1515,7 +1558,7 @@
       ],
       respuesta: [s, ' = ', dI('18π cm')] },
     { nivel: 2, titulo: 'La soga que se enrolla',
-      enunciado: 'El tambor de un pozo, de 5 cm de radio, enrolla la soga de un balde. Si da 3 vueltas, ¿cuánto sube el balde?',
+      enunciado: ['El tambor de un pozo, de 5 cm de radio, enrolla la soga de un balde. Si da ', dF('3 vueltas'), ', ¿cuánto sube el balde?'],
       datos: [D4.borde],
       solucion: [
         { texto: 'En cada vuelta se enrolla el borde del tambor:', ecuacion: junto([s, ' = 3 · 2π · ', dO('5'), ' = ', dI('30π cm'), ' ≈ ', dI('94,2 cm')]) },
@@ -1523,7 +1566,7 @@
       respuesta: [s, ' = ', dI('30π cm'), ' ≈ ', dI('94,2 cm')] },
     // Nivel 3, tipo examen. Letras de las correctas: D, A, C, E, E.
     { nivel: 3, titulo: 'Dientes que pasan',
-      enunciado: 'Un engranaje de 30 dientes da 4 vueltas y mueve a otro de 12 dientes. ¿Cuántas vueltas da el segundo?',
+      enunciado: ['Un engranaje de 30 dientes da ', dF('4 vueltas'), ' y mueve a otro de 12 dientes. ¿Cuántas vueltas da el segundo?'],
       alternativas: ALT5.dientes,
       datos: [D5.dientes],
       solucion: [
@@ -1538,11 +1581,11 @@
       solucion: [
         { texto: 'Todos los bordes recorren el mismo arco, así que el del medio no cambia la cuenta:', ecuacion: junto([dH('120°'), ' · ', dO('6'), ' = ', sub(th, '3'), ' · ', dO('4'), FL, sub(th, '3'), ' = ', dH('180°')]) },
         { texto: 'El sentido se invierte dos veces: horario, antihorario y otra vez horario.' },
-        { texto: ['La ', letra(ALT5.fila, '180°, antihorario'), ' invierte una sola vez; la ', letra(ALT5.fila, '240°, horario'), ' se queda en el segundo; la ', letra(ALT5.fila, '80°, horario'), ' usa la razón al revés; la ', letra(ALT5.fila, '120°, horario'), ' copia el ángulo.'] },
+        { texto: ['La ', letra(ALT5.fila, '180°, antihorario'), ' invierte una sola vez; la ', letra(ALT5.fila, '240°, horario'), ' da el giro del segundo, que va antihorario; la ', letra(ALT5.fila, '80°, horario'), ' usa la razón al revés; la ', letra(ALT5.fila, '120°, horario'), ' copia el ángulo.'] },
       ],
       respuesta: [letra(ALT5.fila, '180°, horario'), ', ', dH('180°'), ', horario'] },
     { nivel: 3, titulo: 'El balde del pozo',
-      enunciado: 'Una manivela gira una rueda de 30 cm que, con una faja, mueve otra de 60 cm; en su eje, un tambor de 10 cm enrolla la soga de un balde. Con 2 vueltas de la manivela, ¿cuánto sube?',
+      enunciado: ['Una manivela gira una rueda de 30 cm que, con una faja, mueve otra de 60 cm; en su eje, un tambor de 10 cm enrolla la soga de un balde. Con ', dF('2 vueltas'), ' de la manivela, ¿cuánto sube?'],
       alternativas: ALT5.balde,
       datos: [D5.faja, D5.eje, D4.borde],
       solucion: [
@@ -1552,7 +1595,7 @@
       ],
       respuesta: [letra(ALT5.balde, '20π cm'), ', ', dI('20π cm')] },
     { nivel: 3, titulo: 'Cuánto avanza la bici', figura: fig(bici(0, 4, { r1: 'r₁ = 10 cm', r2: 'r₂ = 4 cm', r3: 'r₃ = 30 cm' }, { rueda: 'punteada', r3: 30 })),
-      enunciado: ['El plato de una bicicleta mide ', r1, ' = 10 cm, su piñón ', r2, ' = 4 cm, y su rueda de atrás, en el eje del piñón, ', r3, ' = 30 cm. Si los pedales dan una vuelta, ¿cuánto avanza la bici?'],
+      enunciado: ['El plato de una bicicleta mide ', r1, ' = 10 cm, su piñón ', r2, ' = 4 cm, y su rueda de atrás, en el eje del piñón, ', r3, ' = 30 cm. Si los pedales dan ', dF('una vuelta'), ', ¿cuánto avanza la bici?'],
       alternativas: ALT5.avanza,
       datos: [D5.faja, D5.eje, D4.vueltas, D1.cm],
       solucion: [
@@ -1610,7 +1653,7 @@
   // Tipo 2 (examen): una manivela mueve con una faja a una rueda cuyo eje tiene un tambor que enrolla la soga de un balde.
   function casoBalde(rr) {
     let a, b, c, m;
-    do { a = rr.uno([10, 15, 20, 30]); b = rr.uno([20, 30, 40, 60]); c = rr.uno([4, 5, 6, 8, 10]); m = rr.uno([1, 2, 3, 4, 6]); } while (a === b || !Number.isInteger(2 * m * a / b) || c >= b);
+    do { a = rr.uno([10, 15, 20, 30]); b = rr.uno([20, 30, 40, 60]); c = rr.uno([4, 5, 6, 8, 10]); m = rr.uno([1, 2, 3, 4, 6]); } while (a === b || !Number.isInteger(2 * m * a / b) || c >= b || (a === 30 && b === 60 && c === 10 && m === 2));   // el ejemplo del balde
     const nb = m * a / b, sv = 2 * nb * c;
     return {
       pregunta: `Una manivela gira una rueda de ${a} cm que, con una faja, mueve otra de ${b} cm; en su eje, un tambor de ${c} cm enrolla la soga de un balde. Con ${vueltasT(m)} de la manivela, ¿cuánto sube?`,
@@ -1664,14 +1707,16 @@
         { id: 'n1', etiqueta: 'n₁, vueltas de los pedales', color: 'c-f', min: 0.5, max: 2, paso: 0.5, inicio: 0.5, decimales: 1 },
         { id: 'r2', etiqueta: 'Piñón', opciones: [{ valor: 4, texto: '4 cm' }, { valor: 5, texto: '5 cm' }, { valor: 8, texto: '8 cm' }, { valor: 10, texto: '10 cm' }], inicio: 4 },
       ],
-      dibujo: val => ({ datos: bici(val.n1, val.r2, { r1: 'r₁ = 10 cm', r2: `r₂ = ${val.r2} cm`, n1: `n₁ = ${f(val.n1)}`, n2: `n₂ = ${f(val.n1 * 10 / val.r2)}` }), estado: {} }),
-      lectura: val => jN(['la cadena corre ', s, ` = ${f(20 * val.n1)}π cm: `, n2, ` = ${f(val.n1 * 10 / val.r2)}`]),
+      // n₂ con tres decimales: 0,625 y 1,875 son exactos (antes «= 0,63»).
+      dibujo: val => ({ datos: bici(val.n1, val.r2, { r1: 'r₁ = 10 cm', r2: `r₂ = ${val.r2} cm`, n1: `n₁ = ${f(val.n1)}`, n2: `n₂ = ${f(val.n1 * 10 / val.r2, 3)}` }), estado: {} }),
+      lectura: val => jN(['la cadena corre ', s, ` = ${f(20 * val.n1)}π cm: `, n2, ` = ${f(val.n1 * 10 / val.r2, 3)}`]),
       minimo: 3,
     },
     predice: {
       pregunta: 'El piñón de 5 cm dio 2 vueltas. La rueda de atrás, de 30 cm de radio, va en el mismo eje que el piñón. ¿Cuántas vueltas da la rueda?',
       datos: ['Piñón: 5 cm de radio. Rueda de atrás: 30 cm de radio.'],
-      voz: 'La rueda y el piñón van fijos a la misma barra.',
+      // Sin «van fijos a la misma barra»: casi decía que giran juntos (lector en frío B).
+      voz: 'Mira qué une al piñón con la rueda de atrás.',
       opciones: [
         { id: 'c', texto: '2 vueltas', correcta: true },
         { id: 'faja', texto: '1/3 de vuelta', error: 'POL-FAJA-EJE', siFuera: 'Repartir según los radios vale con una cadena; en un mismo eje, giran juntas.' },
@@ -1726,7 +1771,7 @@
     },
     ahoraTu: {
       pieza: OB,
-      voz: 'Cadena o faja: mismo arco. Eje: mismo ángulo.',
+      voz: 'Cadena, faja o engranaje: mismo arco. Eje: mismo ángulo.',
       generar(sem) { return conCuatro([casoEngranajes, casoTresRuedas, casoBalde][sem % 3], azar(sem + 53)); },
     },
   };
@@ -1842,9 +1887,18 @@
     },
   ];
 
+  // En los ejemplos, un número no se separa de su unidad al partir el renglón («4π / m» y «0,3 / m» en dos renglones: lector
+  // en frío B, tarjetas 10 y 15).
+  const jNd = x => (typeof x === 'string' ? jN(x) : Array.isArray(x) ? x.map(jNd) : x && typeof x === 'object' && typeof x.t === 'string' ? Object.assign({}, x, { t: jN(x.t) }) : x);
+  for (const I of [arco, sectorIdea, trapecio, vueltasIdea, fajaIdea]) for (const e of I.ejemplos) {
+    e.enunciado = jNd(e.enunciado);
+    for (const p of e.solucion) if (p.texto) p.texto = jNd(p.texto);
+  }
+
   return {
     unidad: 'trigonometria.longitud-de-arco-y-sector',
-    version: '0.2.0',
+    version: '0.2.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-arco.js', '/nucleo/kit/piezas/trig-plano.js'],
     historia: {
@@ -1893,7 +1947,7 @@
       { termino: 'número de vueltas', simbolo: 'n', formas: ['número de vueltas'],
         simple: 'Cuántas veces gira algo completo sobre sí mismo.',
         def: 'Cuántas veces algo gira completo sobre sí mismo; cada giro de 360° cuenta uno. Puede no ser entero.',
-        ejemplos: ['Una rueda que gira 720° da 2 vueltas.', 'El minutero da 24 vueltas en un día.', 'Una rueda que gira 540° da 1,5 vueltas.'],
+        ejemplos: ['Una rueda que gira 1080° da 3 vueltas.', 'El minutero da 24 vueltas en un día.', 'Una rueda que gira 540° da 1,5 vueltas.'],
         ver: ['rodar sin deslizar'] },
       { termino: 'rodar sin deslizar', formas: ['rodar sin deslizar', 'rueda sin deslizar', 'ruedan sin deslizar', 'rodando sin deslizar'],
         simple: 'Rodar sin patinar: el borde que toca el piso no resbala.',

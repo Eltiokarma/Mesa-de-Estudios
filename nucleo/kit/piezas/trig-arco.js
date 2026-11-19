@@ -162,7 +162,8 @@
   const CA = [160, 268];
   function abanico(d, e) {
     const r = num(enPaso(d.r, e), 20), g = Math.min(180, Math.max(15, num(enPaso(d.g, e), 90))), otro = enPaso(d.otro, e), ro = rots(d, e), cajas = [];
-    const rmax = otro ? Math.max(r, num(otro.r, r)) : r, K = 150 / rmax, R = r * K, a0 = 90 - g / 2, a1 = 90 + g / 2;
+    // Con otro abanico detrás (cierre, 19 nov): más grande, para que los rótulos del chico quepan dentro de su papel.
+    const rmax = otro ? Math.max(r, num(otro.r, r)) : r, K = Math.min(otro ? 200 : 150, 150 / Math.sin(Math.min(g, 160) / 2 * RAD)) / rmax, R = r * K, a0 = 90 - g / 2, a1 = 90 + g / 2;
     let s = '';
     if (otro) {
       const R2 = num(otro.r, r) * K;
@@ -176,17 +177,17 @@
     s += linea(CA, pt(CA, R + 4, a0), trazo('o', 4)) + linea(CA, pt(CA, R + 4, a1), trazo('o', 4));
     s += circulo(CA, 5, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5"');
     s += arcoAngulo(CA, 28, a0, a1, 'h', false);
-    coloca(cajas, [pt(CA, 46, 90), pt(CA, 50, 90 + Math.min(30, g / 4))], ro.t, { color: 'h' });
-    const pr = pt(CA, R * 0.55, a1), nr = [Math.cos((a1 + 90) * RAD), -Math.sin((a1 + 90) * RAD)];
-    coloca(cajas, [[pr[0] + nr[0] * 20, pr[1] + nr[1] * 20], [pr[0] + nr[0] * 20, pr[1] + nr[1] * 20 + 16], [pr[0] - 6, pr[1] + 22]], ro.r, { color: 'o' });
-    coloca(cajas, [pt(CA, R + 20, 90), pt(CA, R + 22, 90 - g / 4), pt(CA, R - 22, 90)], ro.s, { color: 'i' });
-    coloca(cajas, [pt(CA, R * 0.66, 90), pt(CA, R * 0.55, 90 - g / 6)], ro.A, { color: 'f' });
+    coloca(cajas, [pt(CA, otro ? 40 : 46, 90), pt(CA, 50, 90 + Math.min(30, g / 4))], ro.t, { color: 'h' });
+    // El radio, junto a la varilla de la izquierda y sin tocarla (el lector en frío lo vio montado sobre ella).
+    coloca(cajas, [junto(pt(CA, R * 0.55, a1), dir(a1 + 90), ro.r, 10), junto(pt(CA, R * 0.75, a1), dir(a1 + 90), ro.r, 10)], ro.r, { color: 'o' });
+    // Con otro abanico detrás, el arco y el área del chico van dentro de su papel: afuera serían del grande.
+    coloca(cajas, otro ? [pt(CA, R - 17, 90)] : [pt(CA, R + 20, 90), pt(CA, R + 22, 90 - g / 4), pt(CA, R - 22, 90)], ro.s, { color: 'i' });
+    coloca(cajas, otro ? [pt(CA, R * 0.6, 90)] : [pt(CA, R * 0.66, 90), pt(CA, R * 0.55, 90 - g / 6)], ro.A, { color: 'f' });
     if (otro && otro.rot) {
       const R2 = num(otro.r, r) * K, o2 = {};
       for (const [kk, vv] of Object.entries(otro.rot)) o2[kk] = enPaso(vv, e);
       coloca(cajas, [pt(CA, R2 + 18, 90), pt(CA, R2 + 18, 90 - g / 4)], o2.s, { color: 'i' });
-      const p2 = pt(CA, R2 * 0.8, a0), n2 = [Math.cos((a0 - 90) * RAD), -Math.sin((a0 - 90) * RAD)];
-      coloca(cajas, [[p2[0] + n2[0] * 20, p2[1] + n2[1] * 20], [p2[0] + n2[0] * 20, p2[1] + n2[1] * 20 + 16]], o2.r, { color: 'o' });
+      coloca(cajas, [junto(pt(CA, R2 * 0.75, a0), dir(a0 - 90), o2.r, 8), junto(pt(CA, R2 * 0.9, a0), dir(a0 - 90), o2.r, 8)], o2.r, { color: 'o' });
       coloca(cajas, [pt(CA, (R + R2) / 2, 90), pt(CA, (R + R2) / 2, 90 + g / 5)], o2.A, { color: 'f' });
     }
     return { s, cajas, centro: CA, R, borde: pt(CA, R, a1) };
@@ -197,8 +198,11 @@
   function limpia(d, e) {
     const r2 = num(enPaso(d.r2, e), 60), h = Math.min(r2, num(enPaso(d.h, e), 30)), g = Math.min(160, Math.max(20, num(enPaso(d.g, e), 120))), ro = rots(d, e), cajas = [];
     const K = num(d.k, 150 / Math.max(r2, 60)), R2 = r2 * K, R1 = (r2 - h) * K, a0 = 90 - g / 2, a1 = 90 + g / 2;
-    // El vidrio: un trapecio redondeado, más ancho abajo.
-    let s = poli([[14, 292], [306, 292], [272, 30], [48, 30]], 'fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="2" stroke-opacity="0.45" stroke-linejoin="round"');
+    // El vidrio: un parabrisas, con los bordes de arriba y de abajo curvos y las esquinas redondeadas (el lector en frío leyó
+    // como «el trapecio» el trapecio gris de antes: el trapecio circular es la banda violeta).
+    const q = (p0, c, p1) => Array.from({ length: 9 }, (_, i) => { const t = i / 8; return [(1 - t) ** 2 * p0[0] + 2 * t * (1 - t) * c[0] + t * t * p1[0], (1 - t) ** 2 * p0[1] + 2 * t * (1 - t) * c[1] + t * t * p1[1]]; });
+    const vidrio = [].concat(q([30, 287], [160, 294], [290, 287]), q([290, 287], [306, 286], [304, 271]), q([276, 46], [273, 30], [258, 31]), q([258, 31], [160, 20], [62, 31]), q([62, 31], [47, 30], [44, 46]), q([16, 271], [14, 286], [30, 287]));
+    let s = poli(vidrio, 'fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="2" stroke-opacity="0.45" stroke-linejoin="round"');
     s += sector(CL, R1, R2, a0, a1);
     s += poli(arcoPs(CL, R1, a0, a1), trazo('i', 3.5), false) + poli(arcoPs(CL, R2, a0, a1), trazo('i', 3.5), false);
     // Donde empieza (a la derecha), punteado; el brazo, al final del barrido, en naranja, con el jebe negro al final.
@@ -208,15 +212,29 @@
     s += linea(pt(CL, R1, a1), pt(CL, R2, a1), tinta(7));
     s += circulo(CL, 6, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5"');
     s += arcoAngulo(CL, 26, a0, a1);
-    coloca(cajas, [pt(CL, 44, 90), pt(CL, 46, 100)], ro.t, { color: 'h' });
-    // r₁ junto al borde donde empieza (a la derecha); r₂ junto al brazo y h junto al jebe, del lado de afuera de la banda.
-    coloca(cajas, [junto(pt(CL, R1 * 0.6, a0), dir(a0 - 90), ro.r1, 6), junto(pt(CL, R1 * 0.85, a0), dir(a0 - 90), ro.r1, 6)], ro.r1, { color: 'o' });
-    coloca(cajas, [junto(pt(CL, R1 * 0.6, a1), dir(a1 + 90), ro.r2, 6), junto(pt(CL, R1 * 0.8, a1), dir(a1 + 90), ro.r2, 6)], ro.r2, { color: 'o' });
-    coloca(cajas, [junto(pt(CL, (R1 + R2) / 2, a1), dir(a1 + 90), ro.h, 8), junto(pt(CL, R2, a1), dir(a1 + 90), ro.h, 8)], ro.h, {});
+    // r₂ es el brazo entero: una cota naranja, paralela al brazo y por fuera, del eje a la punta (cierre, 19 nov: el
+    // rótulo iba junto al primer tramo, que mide r₁). El rótulo, en la mitad de la cota.
+    if (ro.r2) {
+      const u = dir(a1 + 90), q0 = [CL[0] + u[0] * 15, CL[1] + u[1] * 15], q1 = [pt(CL, R2, a1)[0] + u[0] * 15, pt(CL, R2, a1)[1] + u[1] * 15];
+      const tic = q => linea([q[0] - u[0] * 5, q[1] - u[1] * 5], [q[0] + u[0] * 5, q[1] + u[1] * 5], trazo('o', 1.8));
+      s += linea(q0, q1, trazo('o', 1.8)) + tic(q0) + tic(q1);
+      coloca(cajas, [junto([(q0[0] + q1[0]) / 2, (q0[1] + q1[1]) / 2], u, ro.r2, 6), junto([q0[0] * 0.4 + q1[0] * 0.6, q0[1] * 0.4 + q1[1] * 0.6], u, ro.r2, 6)], ro.r2, { color: 'o' });
+    }
+    // Primero los arcos: s₂ encima del de afuera; s₁ debajo del de adentro si cabe, si no encima, dentro de la banda.
     coloca(cajas, [junto(pt(CL, R2 + 2, 90), [0, -1], ro.s2, 6), junto(pt(CL, R2 + 2, 90 - g / 5), dir(90 - g / 5), ro.s2, 6)], ro.s2, { color: 'i' });
-    // s₁ va dentro de la banda, justo encima del arco de adentro (abajo, junto al eje, va el ángulo).
-    coloca(cajas, [junto(pt(CL, R1 + 3, 90 - g / 6), dir(90 - g / 6), ro.s1, 4), junto(pt(CL, R1 + 3, 90 + g / 6), dir(90 + g / 6), ro.s1, 4), junto(pt(CL, R1 - 3, 90), [0, 1], ro.s1, 6)], ro.s1, { color: 'i' });
-    coloca(cajas, [pt(CL, (R1 + R2) / 2, 90 - g / 4), pt(CL, (R1 + R2) / 2, 90 + g / 4), pt(CL, (R1 + R2) / 2, 90)], ro.A, { color: 'f' });
+    // Debajo del arco de adentro, tan abajo que sus esquinas no toquen el arco (el arco baja hacia los lados).
+    const w1 = ro.s1 ? T.ancho(String(ro.s1), 15, 600) : 0, yDebajo = R1 > w1 / 2 + 6 ? CL[1] - Math.sqrt(R1 * R1 - (w1 / 2 + 6) ** 2) + 12 : Infinity;
+    coloca(cajas, yDebajo < CL[1] - 30 ? [[CL[0], yDebajo], junto(pt(CL, R1 + 3, 90), [0, -1], ro.s1, 5)] : [junto(pt(CL, R1 + 3, 90), [0, -1], ro.s1, 5)], ro.s1, { color: 'i' });
+    // h junto al jebe, del lado de la banda; r₁ junto al tramo naranja de la derecha, por fuera.
+    // (si la banda es angosta, h va por fuera, más allá de la cota de r₂: adentro pisaría el arco de adentro)
+    const hFuera = [junto(pt(CL, R1 + (R2 - R1) * 0.75, a1), dir(a1 + 90), ro.h, ro.r2 ? 26 : 8), junto(pt(CL, R2, a1), dir(a1 + 90), ro.h, ro.r2 ? 26 : 8)];
+    coloca(cajas, R2 - R1 >= 60 ? [junto(pt(CL, (R1 + R2) / 2, a1), dir(a1 - 90), ro.h, 8), junto(pt(CL, R1 + (R2 - R1) * 0.7, a1), dir(a1 - 90), ro.h, 8)].concat(hFuera) : hFuera, ro.h, {});
+    coloca(cajas, [junto(pt(CL, R1 * 0.6, a0), dir(a0 - 90), ro.r1, 6), junto(pt(CL, R1 * 0.85, a0), dir(a0 - 90), ro.r1, 6)], ro.r1, { color: 'o' });
+    // El ángulo, adentro del arco chico si cabe; si no, debajo del eje. s₁, debajo de su arco (del lado del eje) si cabe;
+    // si no, encima, dentro de la banda. s₂, encima del arco de afuera.
+    const tAdentro = R1 >= 66 && !ro.s1;
+    coloca(cajas, tAdentro ? [pt(CL, 40, 90)] : [[CL[0], CL[1] + 22], [CL[0] + 34, CL[1] + 20]], ro.t, { color: 'h' });
+    coloca(cajas, [pt(CL, (R1 + R2) / 2, 90 - g / 4), pt(CL, (R1 + R2) / 2, 90 + g / 6), pt(CL, (R1 + R2) / 2, 90)], ro.A, { color: 'f' });
     return { s, cajas, centro: CL, R1, R2, K, punta: pt(CL, R2, a1) };
   }
 
@@ -295,10 +313,11 @@
     coloca(cajas, [[c1[0], c1[1] + R1 + 26], [c1[0] + 30, c1[1] + R1 + 26]], ro.r1, { color: 'o' });
     coloca(cajas, [[c2[0], c2[1] + (conRueda ? R2 + 22 : R1 + 26)], [c2[0], c2[1] - R2 - 22]], ro.r2, { color: 'o' });
     coloca(cajas, [[c1[0], c1[1] - R1 - 22], [c1[0] + 34, c1[1] - R1 - 22]], ro.n1, { color: 'f' });
-    coloca(cajas, [[c2[0], c2[1] - (conRueda ? R3 + 18 : R1 + 22)], [c2[0] - 50, c2[1] - R2 - 24], [c2[0], c2[1] - R2 - 24]], ro.n2, { color: 'f' });
+    // Con la rueda de atrás, n₂ va junto al piñón y n₃ arriba de la rueda (el lector en frío los leyó cambiados).
+    coloca(cajas, conRueda ? [[c2[0], c2[1] - R2 - 22], [c2[0] + 40, c2[1] - R2 - 24]] : [[c2[0], c2[1] - R1 - 22], [c2[0] - 50, c2[1] - R2 - 24], [c2[0], c2[1] - R2 - 24]], ro.n2, { color: 'f' });
     if (conRueda) {
       coloca(cajas, [[c2[0], c2[1] + R3 + 18], [c2[0] - 40, c2[1] + R3 + 18]], ro.r3, { color: 'o' });
-      coloca(cajas, [[c2[0] + R3 * 0.5, c2[1] - R3 * 0.62], [c2[0], c2[1] - R3 * 0.62]], ro.n3, { color: 'f' });
+      coloca(cajas, [[c2[0], c2[1] - R3 - 18], [c2[0] + R3 * 0.5, c2[1] - R3 * 0.62]], ro.n3, { color: 'f' });
     }
     return { s, cajas, c1, c2, R1, R2, K, g1, g2 };
   }
@@ -339,14 +358,18 @@
     // El borde derecho es el radio entero (r, o r₂ en un trapecio); en un trapecio, el izquierdo se parte en r₁ (naranja,
     // hasta el arco de adentro) y el ancho h (tinta, de un arco al otro).
     s += linea(C, pt(C, R, a0), trazo('o', 3));
-    // Sin rótulo de ancho, el borde izquierdo es otro radio entero (dos circunferencias con el mismo centro).
-    if (R1 > 0) s += poli(arcoPs(C, R1, a0, a1), trazo('i', 3.5), false) + linea(C, pt(C, R1, a1), trazo('o', 3)) + linea(pt(C, R1, a1), pt(C, R, a1), ro.h ? tinta(3) : trazo('o', 3));
+    // Sin rótulo de ancho, el borde izquierdo es otro radio entero (dos circunferencias con el mismo centro); si r₁ lleva
+    // rótulo, el tramo de afuera va fino, en tinta, para que se vea dónde termina r₁ (lector en frío A).
+    if (R1 > 0) s += poli(arcoPs(C, R1, a0, a1), trazo('i', 3.5), false) + linea(C, pt(C, R1, a1), trazo('o', 3)) + linea(pt(C, R1, a1), pt(C, R, a1), ro.h ? tinta(3) : ro.r1 ? tinta(1.5, 0.55) : trazo('o', 3));
     else s += linea(C, pt(C, R, a1), trazo('o', 3));
     s += circulo(C, 3.5, 'fill="currentColor" stroke="none"');
     const ra0 = ancho ? 24 : R1 > 0 ? Math.min(30, R1 * 0.5) : 30;
     s += arcoAngulo(C, ra0, a0, a1, 'h', false);
     coloca(cajas, [junto(C, [0, 1], ro.O, 6), junto(C, [-1, 0.6], ro.O, 6)], ro.O, {});
     const lugT = ancho ? [junto(pt(C, 26, 270), [0, 1], ro.t, 4)] : [junto(pt(C, ra0 + 2, 90), [0, -1], ro.t, 4), junto(pt(C, ra0 + 2, 90 + g / 4), dir(90 + g / 4), ro.t, 4)];
+    // Un rótulo ancho en un ángulo estrecho cruzaría los radios: se sube hasta donde la abertura le alcanza.
+    const wT = ro.t ? T.ancho(String(ro.t), 15, 600) : 0, rhoT = (wT + 12) / (2 * Math.sin(Math.min(g, 170) / 2 * RAD)) + 9;
+    if (!ancho && rhoT > ra0 + 12 && rhoT < (R1 > 0 ? R1 - 12 : R * 0.72)) lugT.unshift(pt(C, rhoT, 90));
     if (R1 > 0) lugT.unshift(...lugT.splice(0, lugT.length).filter(q => Math.hypot(q[0] - C[0], q[1] - C[1]) < R1 - 12));
     lugT.push(junto(C, [1, -0.15], ro.t, 12), junto(C, [-1, -0.15], ro.t, 12));
     coloca(cajas, lugT, ro.t, { color: 'h' });

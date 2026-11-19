@@ -47,6 +47,7 @@ function fichas(x, acc = []) {
 }
 
 test('cinco ideas con sus id de siempre, temas del catálogo y una mesa por idea', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.ideas.map(i => i.id), ['arco', 'sector', 'trapecio-circular', 'vueltas-rueda', 'faja-y-eje']);
   const cat = JSON.parse(fs.readFileSync(path.join(RAIZ, 'catalogo/cursos/trigonometria.json'), 'utf8')).unidades.find(u => u.id === def.unidad);
   for (const i of def.ideas) for (const t of i.temas) assert.ok(cat.temas.includes(t), `${i.id}: «${t}» no es un tema del catálogo`);
@@ -233,7 +234,7 @@ function resolver(idId, q0) {
       const a = +m[1], b = +m[3], fuera = /fuera/.test(m[2]), v = (fuera ? b + a : b - a) / a;
       return { bien: v, err: { 'VUEL-CONTACTO': b / a, 'VUEL-DENTRO': (b - a) / a, 'VUEL-FUERA': (b + a) / a, 'VUEL-DIAMETRO': 2 * v, 'VUEL-TRASLADA': 1 } };
     }
-    if ((m = /adelante de un carro tienen ([\d,]+) m de radio y las de atrás, ([\d,]+) m\. .* da (\d+) vueltas más/.exec(q))) {
+    if ((m = /adelante de un (?:carro|tractor) tienen ([\d,]+) m de radio y las de atrás, ([\d,]+) m\. .* da (\d+) vueltas más/.exec(q))) {
       const a = n(m[1]), b = n(m[2]), D = +m[3], d = 2 * PI * D * a * b / (b - a);
       return { bien: d, err: { 'VUEL-RESTA-RADIOS': 2 * PI * D * (b - a), 'VUEL-UNA-RUEDA': 2 * PI * D * a } };
     }
@@ -309,7 +310,7 @@ const RESPUESTAS = {
     9 - 1, 2 * PI / 3 * (3600 - 400) / 2, Math.sqrt(32), 2 * 3 + 2 * 7 + 2 * 4, (5 * PI - 2 * PI) / 6 * 180 / PI],
   'vueltas-rueda': [2 * PI * 0.3, 10 * PI / (2 * PI * 0.25), 4 * PI / (2 * PI * 0.4), 3 * 2 * PI, 4.8 * PI / 8 / (2 * PI), 70 * PI / (2 * PI * 0.35), 900 / 360 * 2 * PI * 0.2, (6 + 2) / 2, (6 - 2) / 2, 40 * 0.5,
     10 / (1 / (2 * PI * 0.4) - 1 / (2 * PI * 0.6)), (3 + 1) / 1, (1 - 0.25) / 0.25, 2.2, 3 * PI / 0.3],
-  'faja-y-eje': [10 / 4, 20 * 6 / 15, 90, null, 60 * 12 / 4, 80 * PI, 240 * 9 / 6 / 360, 10 / 5, 6 * PI / 4 * 12, 3 * 2 * PI * 5,
+  'faja-y-eje': [10 / 4, 20 * 6 / 15, 90 / 360, null, 60 * 12 / 4, 80 * PI, 240 * 9 / 6 / 360, 10 / 5, 6 * PI / 4 * 12, 3 * 2 * PI * 5,
     4 * 30 / 12, 120 * 6 / 4, 2 * 30 / 60 * 2 * PI * 10, 10 / 4 * 2 * PI * 0.3, 50 * PI / 10 * 25],
 };
 // El valor de cada alternativa equivocada de nivel 3, rehecho por su error (en el orden de los ejemplos 11 a 15).
@@ -323,7 +324,7 @@ const ALTERNATIVAS = {
   'faja-y-eje': [[4 * 12 / 30, 4, 4 * 30], null, [2 * 2 * PI * 10, 1 * 2 * PI * 60, PI * 10, 4 * 2 * PI * 10], [0.6 * PI, 0.4 * 2 * PI * 0.3, 2.5 * 2 * PI * 0.6, 2.5 * PI * 0.3], [50 * PI, 50 * PI * 10 / 25, 5 * PI, 5 * PI * 50]],
 };
 // La parte numérica del valor de una alternativa (sin «S/», unidades ni palabras).
-const valorAlt = t => numDe(String(t).replace(/^≈\s*/, '').replace(/^S\/\s*/, '').replace(/\s(?=\d{3}\b)/g, '').replace(/,\s?(horario|antihorario)$/, '').replace(/ vueltas?$/, ''));
+const valorAlt = t => numDe(String(t).replace(/^≈\s*/, '').replace(/^S\/\s*/, '').replace(/\s(?=\d{3}\b)/g, '').replace(/,\s?(horario|antihorario)$/, '').replace(/ de vuelta$/, '').replace(/ vueltas?$/, ''));
 
 test('ejemplos: 5 por nivel con datos; la respuesta cuadra con la cuenta aparte; la figura no trae el resultado', () => {
   for (const i of def.ideas) {
@@ -385,4 +386,116 @@ test('glosario: «eje común» sin simple (la predicción del eje); los término
   assert.ok(eje && !eje.simple && !/mismo ángulo|giran juntas/.test(eje.def + eje.ejemplos.join(' ')));
   const por = Glosario.porIdea(def).map(es => es.filter(e => e.simple).map(e => e.termino));
   assert.deepEqual(por, [['longitud de arco', 'ángulo central'], ['sector circular', 'centímetro cuadrado'], ['trapecio circular', 'semisuma'], ['número de vueltas', 'rodar sin deslizar'], ['faja', 'engranaje']]);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Correcciones del cierre (auditoría y lectores en frío, 19 nov; rutinas/auditoria/trigonometria.longitud-de-arco-y-sector.md).
+// Cada prueba falla con la versión de antes.
+// ---------------------------------------------------------------------------------------------------------------------
+const NO_ESC = /El dibujo no está a escala\./;
+const datosFig = f => (f && (f.datos || f)) || null;
+const rotDe = f => (datosFig(f) && datosFig(f).rot) || {};
+// El ángulo pedido en grados, desde la respuesta («135°», «1,5 rad», «π/2 rad»).
+const gradosDe = t => (/rad/.test(t) ? num(t.replace(/\s*rad$/, '')) * 180 / PI : num(t.replace('°', '')));
+
+test('cierre: una figura que deja medir lo que se pide no lo dibuja con su medida, y dice «El dibujo no está a escala»', () => {
+  // Ejemplos: un ángulo con «?», un ancho h con «?» o lo que avanza una rueda con «?» llevan el aviso.
+  for (const i of def.ideas) i.ejemplos.forEach((e, k) => {
+    if (!e.figura) return;
+    const ro = rotDe(e.figura), d = datosFig(e.figura), nombre = `${i.id} ejemplo ${k + 1}`;
+    const pide = Object.entries(ro).filter(([, v]) => typeof v === 'string' && /\?/.test(v)).map(([c]) => c);
+    if (pide.some(c => c === 't' || c === 'h' || (d.objeto === 'rueda' && c === 'd'))) assert.match(plano(e.enunciado), NO_ESC, `${nombre}: sin el aviso`);
+    if (pide.includes('t')) {
+      const r = plano(e.respuesta).replace(/^.*= /, ''), g = gradosDe(r), dib = d.objeto === 'columpio' ? d.t * 180 / PI : d.g;
+      assert.ok(Math.abs(dib - g) >= 15, `${nombre}: el ángulo pedido (${g}°) está dibujado con ${dib}°`);
+    }
+  });
+  // «Ahora tú»: el ángulo que se pide, dibujado lejos de su medida, y con el aviso.
+  for (const i of def.ideas) for (let sem = 0; sem < SEMILLAS; sem++) {
+    const c = i.ahoraTu.generar(sem);
+    if (!c.dibujo || !/\?/.test(String(rotDe(c.dibujo).t || ''))) continue;
+    const g = gradosDe(c.opciones.find(o => o.correcta).texto);
+    assert.match(plano(c.pregunta), NO_ESC, `${i.id} #${sem}`);
+    assert.ok(Math.abs(datosFig(c.dibujo).g - g) >= 15, `${i.id} #${sem}: ${g}° dibujado con ${datosFig(c.dibujo).g}°`);
+  }
+  // «De un extremo al otro»: el columpio dibujaba solo un lado del vaivén (la alternativa de 4 m).
+  assert.ok(!idea('arco').ejemplos.find(e => e.titulo === 'De un extremo al otro').figura);
+});
+
+test('cierre: las lecturas del juego no escriben con «=» un número redondeado (con π, o las vueltas del piñón)', () => {
+  for (const v of Teoria.grilla(idea('vueltas-rueda').juega.controles)) {
+    const t = plano(idea('vueltas-rueda').juega.lectura(v)), m = /d = ([\d,]+)π m/.exec(t);
+    assert.ok(m && cerca(num(m[1]), v.n * 2 * v.r, 1e-12), `rueda ${JSON.stringify(v)}: ${t}`);
+  }
+  for (const v of Teoria.grilla(idea('faja-y-eje').juega.controles)) {
+    const t = plano(idea('faja-y-eje').juega.lectura(v)), m = /= ([\d,]+)$/.exec(t);
+    assert.ok(m && cerca(num(m[1]), v.n1 * 10 / v.r2, 1e-12), `faja ${JSON.stringify(v)}: ${t}`);
+  }
+});
+
+test('cierre: rótulos en su sitio (limpiaparabrisas, abanicos juntos y rueda de atrás)', () => {
+  const P = Kit.piezas['trig-arco'], dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  const caja = (g, re) => g.cajas.find(c => re.test(c.texto));
+  // El limpiaparabrisas: r₂ mide el brazo entero (una cota, con su rótulo hacia la mitad del brazo); s₁ junto al arco de
+  // adentro, no al de afuera.
+  const lim = [idea('trapecio-circular').predice.dibujo, { datos: idea('trapecio-circular').mira.datos, estado: { final: true } }]
+    .concat(Teoria.grilla(idea('trapecio-circular').juega.controles).map(v => idea('trapecio-circular').juega.dibujo(v)));
+  for (const f of lim) {
+    const g = P.geometria(f.datos, f.estado || {}), r2 = caja(g, /^r₂/), s1 = caja(g, /^s₁/);
+    if (r2) {
+      const a1 = 90 + (f.datos.g || 120) / 2, u = [Math.cos(a1 * PI / 180), -Math.sin(a1 * PI / 180)];
+      const largo = (r2.x - g.centro[0]) * u[0] + (r2.y - g.centro[1]) * u[1];
+      assert.ok(largo >= 0.4 * g.R2, `r₂ junto al primer tramo del brazo (a ${largo.toFixed(0)} de ${g.R2.toFixed(0)})`);
+    }
+    if (s1) { const d = dist([s1.x, s1.y], g.centro); assert.ok(Math.abs(d - g.R1) < Math.abs(d - g.R2), `s₁ más cerca del arco de afuera (${d.toFixed(0)}; R1 ${g.R1}, R2 ${g.R2})`); }
+  }
+  // Los dos abanicos de Predice y Mira: el arco y el área del chico van dentro de su papel.
+  for (const f of [idea('sector').predice.revelar, { datos: idea('sector').mira.datos, estado: { final: true } }]) {
+    const g = P.geometria(f.datos, f.estado || {});
+    for (const c of g.cajas.filter(c => /^(s = )?10π cm$|^(A = )?100π cm²$/.test(c.texto))) assert.ok(dist([c.x, c.y], g.centro) < g.R, `«${c.texto}» fuera del abanico chico`);
+  }
+  // La bici con la rueda de atrás: n₂ junto al piñón, n₃ arriba de la rueda.
+  const b = P.geometria(idea('faja-y-eje').predice.revelar.datos, {}), n2 = caja(b, /^n₂/), n3 = caja(b, /^n₃/);
+  assert.ok(n3.y < n2.y, 'n₃ debajo de n₂');
+  // La regla del sector y la del trapecio tienen figura propia (la de Mira apilaba los rótulos).
+  assert.ok(idea('sector').regla.dibujo && idea('trapecio-circular').regla.dibujo);
+});
+
+test('cierre: «Ahora tú» no repite un ejemplo, ni con otro objeto (400 semillas)', () => {
+  const ya = {
+    arco: [/minutero de un reloj mide 15 cm\. ¿Cuánto recorre su punta en 20 minutos/, /de 16 cm de radio, un ángulo central mide 50ᵍ/],
+    sector: [/borde curvo de 10 cm y lados rectos de 6 cm/, /tiene 75 m² de área y un ángulo central de 1,5 rad/, /es el triple de su radio/],
+    'trapecio-circular': [/miden s[₁1] = 6 cm y s[₂2] = 10 cm, y su ancho es h = 4 cm\. ¿Cuánto mide su área/, /r[₂2] es el triple de r[₁1]/, /mide 50 cm, y su jebe, de 30 cm, va al final del brazo\. Si barre 90°/],
+    'vueltas-rueda': [/rueda de 2 cm de radio rueda sin deslizar por (fuera|dentro) de (otra rueda fija|un aro fijo) de 6 cm/, /tienen 0,4 m de radio y las de atrás, 0,6 m\. En un tramo, cada rueda de adelante da 10 vueltas/, /da 8 vueltas sin deslizar, y su centro avanza 4,8π m/],
+    'faja-y-eje': [/rueda de 30 cm que, con una faja, mueve otra de 60 cm; en su eje, un tambor de 10 cm .* Con 2 vueltas/],
+  };
+  for (const i of def.ideas) for (let sem = 0; sem < SEMILLAS; sem++) {
+    const q = plano(i.ahoraTu.generar(sem).pregunta);
+    for (const re of ya[i.id]) assert.ok(!re.test(q), `${i.id} #${sem} repite un ejemplo: ${q}`);
+    assert.ok(!/\bcarro\b/.test(q), `${i.id} #${sem}: un carro con ruedas de 1 m de radio`);
+  }
+});
+
+test('cierre: textos que el lector en frío o el auditor señalaron', () => {
+  // SEC-MITAD (radio desde el área) vale √(r²/2): el error es olvidar el 2, no «pasarlo dividiendo».
+  for (let sem = 1; sem < SEMILLAS; sem += 3) {
+    const c = idea('sector').ahoraTu.generar(sem), o = c.opciones.find(x => x.id === 'mitad');
+    if (o && /radio\?/.test(plano(c.pregunta))) assert.ok(!/dividiendo/.test(o.siFuera), o.siFuera);
+  }
+  assert.ok(!/cuadrados/.test(idea('trapecio-circular').ahoraTu.voz), 'la voz de «Ahora tú» habla de cuadrados en problemas de arcos');
+  assert.ok(!/fij|barra|junt/.test(idea('faja-y-eje').predice.voz), 'la voz de Predice casi da la respuesta');
+  assert.ok(/engranaje/.test(idea('faja-y-eje').ahoraTu.voz));
+  const nv = def.glosario.find(g => g.termino === 'número de vueltas');
+  assert.ok(!/\b2 vueltas\b/.test(nv.def + nv.ejemplos.join(' ')), 'el glosario dice «2 vueltas», la respuesta de la moneda');
+  const ej3 = idea('faja-y-eje').ejemplos[2];
+  assert.ok(!/90°/.test(plano(ej3.respuesta)), 'el dato del eje común era la respuesta');
+  assert.match(plano(idea('vueltas-rueda').juega.mision.texto), /una sola vuelta/);
+  assert.match(plano(idea('vueltas-rueda').regla.texto), /ángulo θ/);
+  assert.ok(!/\buna vuelta\b/.test(plano(idea('vueltas-rueda').resuelve.generar(0).dibujo.datos.rot.d)), 'la huella (d, turquesa) se rotulaba como una vuelta (n)');
+  // Ningún número de un ejemplo se separa de su unidad al partir el renglón.
+  for (const i of def.ideas) for (const e of i.ejemplos) {
+    const crudo = x => (typeof x === 'string' ? x : Array.isArray(x) ? x.map(crudo).join('') : x && typeof x.t === 'string' ? x.t : '');
+    const t = crudo([e.enunciado, e.solucion.map(p => p.texto || '')]);
+    assert.ok(!/[\dπ] (cm²|m²|cm|m|rad)(?![a-zñ])/.test(t), `${i.id} «${e.titulo}»: número y unidad separables`);
+  }
 });

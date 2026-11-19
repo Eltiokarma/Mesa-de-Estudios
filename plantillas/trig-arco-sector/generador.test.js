@@ -39,7 +39,7 @@ function recalcular(p) {
   if ((m = /brazo de un limpiaparabrisas mide (\d+) cm, y su jebe, de (\d+) cm, .* barre (\d+)°/.exec(q))) { const R2 = +m[1], R1 = R2 - +m[2]; return +m[3] * PI / 360 * (R2 * R2 - R1 * R1); }
   if ((m = /tiene ([\d,]+) m de radio y avanza ([\d,π]+) m sin deslizar/.exec(q))) return num(m[2]) / (2 * PI * num(m[1]));
   if ((m = /rueda de (\d+) cm de radio rueda sin deslizar por (fuera|dentro) .* de (\d+) cm/.exec(q))) return (m[2] === 'fuera' ? +m[3] + +m[1] : +m[3] - +m[1]) / +m[1];
-  if ((m = /adelante de un carro tienen ([\d,]+) m de radio y las de atrás, ([\d,]+) m\. .* da (\d+) vueltas más/.exec(q))) { const a = num(m[1]), b = num(m[2]); return 2 * PI * +m[3] * a * b / (b - a); }
+  if ((m = /adelante de un (?:carro|tractor) tienen ([\d,]+) m de radio y las de atrás, ([\d,]+) m\. .* da (\d+) vueltas más/.exec(q))) { const a = num(m[1]), b = num(m[2]); return 2 * PI * +m[3] * a * b / (b - a); }
   if ((m = /polea de r1 = (\d+) cm con otra de r2 = (\d+) cm\. La primera da (\d+) vueltas/.exec(q))) return +m[3] * +m[1] / +m[2];
   if ((m = /r1 = (\d+) cm\) mueve con una faja a la rueda 2 \(r2 = (\d+) cm\); la rueda 3 \(r3 = (\d+) cm\) va en el eje de la 2\. La rueda 1 da (\d+) vueltas?/.exec(q))) return +m[4] * +m[1] / +m[2];
   if ((m = /rueda de (\d+) cm que, con una faja, mueve otra de (\d+) cm; en su eje, un tambor de (\d+) cm .* La manivela da (\d+) vueltas?/.exec(q))) return +m[4] * +m[1] / +m[2] * 2 * PI * +m[3];

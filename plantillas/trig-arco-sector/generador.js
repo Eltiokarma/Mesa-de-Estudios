@@ -177,7 +177,8 @@
           en('ARCO-POR', s * g * PI / 180, fmt, x => `Bien el ángulo en radianes. Pero el radio es el arco entre el ángulo; multiplicar da ${x}.`),
           en('RAD-SIN-PI', r * PI, fmt, x => `Bien que dividas entre ${g}/180. Pero falta π: ${g}° son ${piG(g)} rad; sin π sale ${x}.`),
         ],
-        solucion: [[`${g}° son ${piG(g)} rad.`], ['r = ', ARCO(sT.replace(' cm', '')), ` ÷ ${piG(g)} = `, RAD(`${r} cm`), '.']],
+        // Con paréntesis si un lado es una fracción: «(4π/3) ÷ (2π/9)», no «4π/3 ÷ 2π/9» (cierre, 19 nov).
+        solucion: [[`${g}° son ${piG(g)} rad.`], ['r = ', ARCO(/\//.test(sT) ? `(${sT.replace(' cm', '')})` : sT.replace(' cm', '')), ` ÷ ${/\//.test(piG(g)) ? `(${piG(g)})` : piG(g)} = `, RAD(`${r} cm`), '.']],
         _datos: { sub: 'radio', g, r },
       };
     }
@@ -281,7 +282,7 @@
         correcta: r, fmt: fr,
         errores: [
           en('SEC-SIN-RAIZ', r * r, fr, x => `Bien el despeje de r². Pero falta la raíz: r² vale ${x.replace(' m', '')}.`),
-          en('SEC-MITAD', r / Math.SQRT2, fr, x => `Bien el ángulo en radianes. Pero el 2 de la fórmula pasa multiplicando; así sale ${x}.`),
+          en('SEC-MITAD', r / Math.SQRT2, fr, x => `Bien el ángulo en radianes. Pero falta el 2: r² = 2A ÷ θ; sin él sale ${x}.`),
           en('TR4', Math.sqrt(2 * A / g), fr, x => `Bien el despeje. Pero con ${g} en vez de ${piG(g)} rad sale ${x}.`),
           en('ARCO-DIAM', 2 * r, fr, x => `Bien el despeje y la raíz. Pero ${x} es el diámetro.`),
         ],
@@ -481,8 +482,9 @@
     const fmt = x => `${piC(x / PI, true) || f(x)} m`;
     if (!Number.isInteger(Math.round(2 * q * D0 * 100) / 100 * 100)) return null;
     return {
-      enunciado: [`Las ruedas de adelante de un carro tienen `, RAD(`${f(a)} m`), ' de radio y las de atrás, ', RAD(`${f(b)} m`), `. En un tramo, cada rueda de adelante da ${D0} vueltas más que cada una de atrás.`],
-      pregunta: ['¿Cuánto avanzó el carro?'],
+      // Un tractor (auditoría del cierre, 19 nov): un carro no tiene ruedas de atrás de 1 m de radio.
+      enunciado: [`Las ruedas de adelante de un tractor tienen `, RAD(`${f(a)} m`), ' de radio y las de atrás, ', RAD(`${f(b)} m`), `. En un tramo, cada rueda de adelante da ${D0} vueltas más que cada una de atrás.`],
+      pregunta: ['¿Cuánto avanzó el tractor?'],
       datos: [D.vueltas],
       correcta: d, fmt,
       errores: [
