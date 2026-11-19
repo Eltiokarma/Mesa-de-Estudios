@@ -1473,7 +1473,8 @@
         <output for="te-c-${esc(c.id)}"></output></div>`;
     }
     // Los símbolos de ángulo van pegados al número («60°», «45′», «100ᵍ»); las demás unidades, con su espacio («5 m»).
-    const sepUnidad = u => (/^[°′″ᵍᵐˢ]/.test(u) ? '' : ' ');
+    // Declaración de función (no const): se llama al montar el juego, antes de que esta línea corra.
+    function sepUnidad(u) { return /^[°′″ᵍᵐˢ]/.test(u) ? '' : ' '; }
     function valorControl(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? `${sepUnidad(c.unidad)}${esc(c.unidad)}` : ''}`; }
     function valorPlano(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? `${sepUnidad(c.unidad)}${c.unidad}` : ''}`; }
 
