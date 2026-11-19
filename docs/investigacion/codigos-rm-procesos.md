@@ -219,3 +219,25 @@ Nota: RMP41-tramo-invertido y RMP41-suma-de-posiciones son ids nuevos dentro de 
 Códigos ya existentes que reutilizan los tipos nuevos (no se crean):
 - RMP1-estados (n + 1), RMP2-todos-menos-uno (subir todos los bolos menos el de abajo), RMP45-vuelta-doble (lecturas que vuelven, contadas dos veces), RMP82-casillas, RMP83-suma-opciones, RMP84-solo-abajo (solo las lecturas que bajan).
 - RMP35-pieza-por-pieza (N − 1 cortes), RMP35-por-lineas (tablero: cada línea en tramos de la sierra, sin apilar), RMP35-sin-reacomodar y RMP35-punto-por-punto (alambre), RMP36-log-abajo, RMP36-ignora-sierra (tablero: como si la sierra cortara cualquier largo).
+
+## Ordenamiento de información (teoría de la unidad, etapa 5, 19 nov 2026)
+
+Códigos nuevos de `contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js` (propuesta:
+`docs/etapa5/propuesta-razonamiento-matematico.md`, §7). Todos son **hipótesis**: salen de las trampas de los
+solucionarios de San Marcos y de la matriz del curso, sin dato de alumnos. La idea 1 («Ordenar en una fila») usa RMP88,
+RMP89 y RMP140, además de RMP63, RMP72, RMP77 y RMP78; RMP141 entra con la idea 3, RMP143 con la 4 y RMP142 con la 6
+(fase 3, 19 nov). Reemplazan a los RMT-ORD-1 a 10 de la teoría vieja, que no estaban en ningún informe. Reutilizan
+códigos existentes: RMP1 (la diferencia de pisos, puestos o sillas tomada por los lugares de en medio), RMP61 (el extremo
+de la cadena en vez del k-ésimo) y RMP64 (contar desde el otro extremo o dar vuelta una comparación). El generador
+`plantillas/rm-ordenamiento/` y los ítems rm-20 y rm-21 de la reserva de la prueba del curso usan los mismos códigos con
+un sufijo (RMP1-salto, RMP64-reves, RMP64-el-otro, RMP140-lado, RMP141-empate, RMP142-frente, RMP72-pista, RMP63-dos,
+RMP77-posible, RMP78-nada).
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP88 | Leer «a la izquierda de», «antes de» o «más arriba que» como «inmediatamente»: pegar lo que la pista solo ordena | variante «inmediata» de `orden-informacion`; matriz del curso («confundir orden relativo con posiciones consecutivas») |
+| RMP89 | Leer «junto a» o «entre» con un lado fijo: ordenar lo que la pista solo pega | nueva |
+| RMP140 | Tomar la izquierda o la derecha del dibujo por la de la persona (en la mesa redonda, o de quien habla de frente) | rm-a #10 |
+| RMP141 | Leer «no es mayor que» como «es menor que»: olvidar el empate | UNMSM 2020-I p. 30 |
+| RMP142 | En una mesa con lados, tomar por «frente» la media vuelta, la silla del mismo lado o la de la esquina | RMT-ORD-9 y 10 de la teoría vieja |
+| RMP143 | En dos sumas iguales, llevar la comparación en el mismo sentido al otro par | UNMSM 2021 p. 29 |

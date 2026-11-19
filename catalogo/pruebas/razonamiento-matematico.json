@@ -220,6 +220,22 @@
     "catetos-y-vuelta-da-la-ida": {
       "respaldo": "hipotesis",
       "describe": "Suma lo que se alejó en cada eje y además da la dirección de ida en vez de la de regreso"
+    },
+    "RMP64-el-otro": {
+      "respaldo": "hipotesis",
+      "describe": "Da el piso del otro integrante del bloque"
+    },
+    "RMP1-salto": {
+      "respaldo": "hipotesis",
+      "describe": "Toma la diferencia de pisos o de sillas como los lugares de en medio (uno de más)"
+    },
+    "RMP78-nada": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que faltan datos cuando las pistas alcanzan"
+    },
+    "RMP140-lado": {
+      "respaldo": "hipotesis",
+      "describe": "Cambia la izquierda por la derecha de quien mira al centro"
     }
   },
   "pares": [
@@ -1632,6 +1648,222 @@
             "texto": "6 veces",
             "valor": 6,
             "error": "coincidencias-sin-la-primera"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-20",
+      "plantilla": "rm-ordenamiento",
+      "unidad": "razonamiento-matematico.ordenamiento-de-informacion",
+      "nombreUnidad": "Ordenamiento de información",
+      "mide": "«Dos pisos más arriba» amarra a dos en un bloque: se prueba dónde cabe sin pisar a nadie (con un piso en medio, no dos)",
+      "A": {
+        "enunciado": "Marco, Lucía y Nadia viven en un edificio de cinco pisos; el piso 1 da a la calle y en cada piso vive una sola familia. Lucía vive dos pisos más arriba que Marco. Nadia vive en el piso 3. Marco no vive en el piso 1. ¿En qué piso vive Lucía?",
+        "datos": {
+          "personas": [
+            "Marco",
+            "Lucía",
+            "Nadia"
+          ],
+          "x": "Lucía",
+          "pistas": [
+            {
+              "tipo": "izquierda",
+              "a": "Marco",
+              "b": "Lucía"
+            },
+            {
+              "tipo": "separados",
+              "a": "Marco",
+              "b": "Lucía",
+              "k": 1
+            },
+            {
+              "tipo": "lugar",
+              "a": "Nadia",
+              "k": 3
+            },
+            {
+              "tipo": "noLugar",
+              "a": "Marco",
+              "k": 1
+            }
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "Piso 2",
+            "error": "RMP64-el-otro"
+          },
+          {
+            "texto": "Piso 4",
+            "correcta": true
+          },
+          {
+            "texto": "Piso 5",
+            "error": "RMP1-salto"
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Rosa, Iván y Teo viven en un edificio de cinco pisos; el piso 1 da a la calle y en cada piso vive una sola familia. Iván vive dos pisos más abajo que Rosa. Teo vive en el piso 3. Rosa no vive en el piso 5. ¿En qué piso vive Iván?",
+        "datos": {
+          "personas": [
+            "Rosa",
+            "Iván",
+            "Teo"
+          ],
+          "x": "Iván",
+          "pistas": [
+            {
+              "tipo": "izquierda",
+              "a": "Iván",
+              "b": "Rosa"
+            },
+            {
+              "tipo": "separados",
+              "a": "Iván",
+              "b": "Rosa",
+              "k": 1
+            },
+            {
+              "tipo": "lugar",
+              "a": "Teo",
+              "k": 3
+            },
+            {
+              "tipo": "noLugar",
+              "a": "Rosa",
+              "k": 5
+            }
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "Piso 1",
+            "error": "RMP1-salto"
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          },
+          {
+            "texto": "Piso 4",
+            "error": "RMP64-el-otro"
+          },
+          {
+            "texto": "Piso 2",
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-21",
+      "plantilla": "rm-ordenamiento",
+      "unidad": "razonamiento-matematico.ordenamiento-de-informacion",
+      "nombreUnidad": "Ordenamiento de información",
+      "mide": "En la mesa redonda, mirando al centro, la izquierda de cada uno es la silla que sigue con el reloj (no la del dibujo)",
+      "A": {
+        "enunciado": "Sonia, Tomás, Ulises, Vera y Wilma almuerzan en una mesa redonda, mirando al centro. Tomás se sienta a la derecha de Sonia. Vera no se sienta junto a Sonia. Wilma se sienta a la izquierda de Ulises. ¿Quién se sienta a la izquierda de Sonia?",
+        "datos": {
+          "personas": [
+            "Sonia",
+            "Tomás",
+            "Ulises",
+            "Vera",
+            "Wilma"
+          ],
+          "x": "Sonia",
+          "lado": "izquierda",
+          "pistas": [
+            {
+              "tipo": "inmDerecha",
+              "a": "Tomás",
+              "b": "Sonia"
+            },
+            {
+              "tipo": "noJuntos",
+              "a": "Vera",
+              "b": "Sonia"
+            },
+            {
+              "tipo": "inmIzquierda",
+              "a": "Wilma",
+              "b": "Ulises"
+            }
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "Tomás",
+            "error": "RMP140-lado"
+          },
+          {
+            "texto": "Wilma",
+            "error": "RMP1-salto"
+          },
+          {
+            "texto": "Ulises",
+            "correcta": true
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Paola, Quique, Raúl, Silvia y Tito almuerzan en una mesa redonda, mirando al centro. Quique se sienta a la izquierda de Paola. Silvia no se sienta junto a Paola. Tito se sienta a la derecha de Raúl. ¿Quién se sienta a la izquierda de Raúl?",
+        "datos": {
+          "personas": [
+            "Paola",
+            "Quique",
+            "Raúl",
+            "Silvia",
+            "Tito"
+          ],
+          "x": "Raúl",
+          "lado": "izquierda",
+          "pistas": [
+            {
+              "tipo": "inmIzquierda",
+              "a": "Quique",
+              "b": "Paola"
+            },
+            {
+              "tipo": "noJuntos",
+              "a": "Silvia",
+              "b": "Paola"
+            },
+            {
+              "tipo": "inmDerecha",
+              "a": "Tito",
+              "b": "Raúl"
+            }
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "Paola",
+            "correcta": true
+          },
+          {
+            "texto": "Tito",
+            "error": "RMP140-lado"
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          },
+          {
+            "texto": "Quique",
+            "error": "RMP1-salto"
           }
         ]
       }

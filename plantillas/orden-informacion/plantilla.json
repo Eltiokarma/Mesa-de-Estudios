@@ -8,6 +8,7 @@
     "razonamiento-matematico.certezas",
     "razonamiento-matematico.razonamiento-deductivo"
   ],
+  "rehacer": ["razonamiento-matematico.ordenamiento-de-informacion"],
   "estado": "borrador",
   "version": "0.1.0",
   "escena": "index.html",

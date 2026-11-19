@@ -595,6 +595,23 @@ const V = {
       'coincidencia-mcm-de-dos': T.vecesCoinciden({ intervalos: I.slice(0, 2), inicio: 0, fin }).veces, 'coincidencia-suma-de-intervalos': r.errores.conSuma } };
   },
 
+  // rm-20 y rm-21 (reserva, 19 nov, etapa 5: «Ordenamiento de información»; las formas ya tienen 10 pares). Los resuelve
+  // el motor de orden-informacion: los pisos como butacas de una fila con lugares vacíos («dos pisos más arriba» =
+  // antes en la fila y con una butaca en medio) y la mesa en modo circular. Los errores salen del mismo motor: el bloque
+  // con dos pisos en medio (RMP1), el piso del otro del bloque, y el otro vecino o el de dos sillas más allá en la mesa.
+  'rm-20': d => {
+    const M = motor('orden-informacion'), uno = ps => { const r = M.resolver({ forma: 'lineal', personas: d.personas, asientos: 5, pistas: ps }); if (!r.unica) throw new Error('rm-20: no queda un solo arreglo'); return r.soluciones[0]; };
+    const sol = uno(d.pistas), piso = (o, x) => `Piso ${o.indexOf(x) + 1}`, bl = d.pistas.find(q => q.tipo === 'separados'), otro = bl.a === d.x ? bl.b : bl.a;
+    const hueco = uno(d.pistas.map(q => (q.tipo === 'separados' ? Object.assign({}, q, { k: q.k + 1 }) : q)));
+    return { correcta: piso(sol, d.x), errores: { 'RMP1-salto': piso(hueco, d.x), 'RMP64-el-otro': piso(sol, otro) } };
+  },
+  'rm-21': d => {
+    const r = motor('orden-informacion').resolver({ forma: 'circular', personas: d.personas, pistas: d.pistas });
+    if (!r.unica) throw new Error('rm-21: no queda una sola mesa');
+    const o = r.soluciones[0], n = o.length, i = o.indexOf(d.x), paso = d.lado === 'derecha' ? 1 : n - 1;
+    return { correcta: o[(i + paso) % n], errores: { 'RMP140-lado': o[(i + n - paso) % n], 'RMP1-salto': o[(i + 2 * paso) % n] } };
+  },
+
   // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
   'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
     return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },

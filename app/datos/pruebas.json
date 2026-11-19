@@ -3621,6 +3621,22 @@
     "catetos-y-vuelta-da-la-ida": {
      "respaldo": "hipotesis",
      "describe": "Suma lo que se alejó en cada eje y además da la dirección de ida en vez de la de regreso"
+    },
+    "RMP64-el-otro": {
+     "respaldo": "hipotesis",
+     "describe": "Da el piso del otro integrante del bloque"
+    },
+    "RMP1-salto": {
+     "respaldo": "hipotesis",
+     "describe": "Toma la diferencia de pisos o de sillas como los lugares de en medio (uno de más)"
+    },
+    "RMP78-nada": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que faltan datos cuando las pistas alcanzan"
+    },
+    "RMP140-lado": {
+     "respaldo": "hipotesis",
+     "describe": "Cambia la izquierda por la derecha de quien mira al centro"
     }
    },
    "pares": [

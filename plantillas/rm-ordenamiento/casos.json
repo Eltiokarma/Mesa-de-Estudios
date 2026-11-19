@@ -1,0 +1,697 @@
+{
+  "plantilla": "rm-ordenamiento",
+  "tolerancia": 0,
+  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Claves: p:<persona o piso>, n:<cuántos en medio>, a:<afirmación>, s:<monto o silla desde 0>, e:<edad>. entrada: el _datos del problema, con las pistas tal como las lee el alumno.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con itertools, fuera del repo: scratchpad e5-rm/f3/v-casos.py), que no usa el generador ni el motor de orden-informacion: lee cada pista del texto, arma todos los arreglos (filas, pisos con huecos, llegadas, mesas con una persona fija, tallas o edades, con o sin empates, y repartos de valores), se queda con los que cumplen todo y calcula la clave; en la cuadrada busca la silla de enfrente con coordenadas. Los 22 casos cuadran.",
+  "casos": [
+    {
+      "semilla": "caso-0",
+      "idea": "orden-lineal",
+      "entrada": {
+        "idea": "orden-lineal",
+        "tipo": "fila",
+        "nivel": 1,
+        "forma": "fila",
+        "gente": [
+          "Ana",
+          "Dina",
+          "Eva",
+          "Fito",
+          "Rosa"
+        ],
+        "n": 5,
+        "pistas": [
+          "Eva está a la izquierda de Ana.",
+          "Fito está inmediatamente a la derecha de Ana.",
+          "Dina está a la derecha de Ana.",
+          "Ana está inmediatamente a la derecha de Rosa."
+        ],
+        "pide": {
+          "t": "puesto",
+          "k": 1
+        }
+      },
+      "esperado": {
+        "clave": "p:Eva",
+        "texto": "Eva"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "orden-lineal",
+      "entrada": {
+        "idea": "orden-lineal",
+        "tipo": "fila",
+        "nivel": 1,
+        "forma": "fila",
+        "gente": [
+          "Ana",
+          "Eva",
+          "Fito",
+          "Iván",
+          "Leo"
+        ],
+        "n": 5,
+        "pistas": [
+          "Iván está a la izquierda de Leo.",
+          "Eva no está junto a Leo.",
+          "Ana está a la izquierda de Eva.",
+          "Leo está inmediatamente a la derecha de Ana."
+        ],
+        "pide": {
+          "t": "puesto",
+          "k": 1
+        }
+      },
+      "esperado": {
+        "clave": "p:Iván",
+        "texto": "Iván"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "idea": "orden-lineal",
+      "entrada": {
+        "idea": "orden-lineal",
+        "tipo": "fila-segura",
+        "nivel": 3,
+        "forma": "fila",
+        "gente": [
+          "Beto",
+          "Ciro",
+          "Dina",
+          "Eva",
+          "Leo"
+        ],
+        "n": 5,
+        "pistas": [
+          "Ciro está junto a Leo.",
+          "Beto está en el puesto 5.",
+          "Leo está a la derecha de Ciro.",
+          "Beto está junto a Dina."
+        ],
+        "pide": {
+          "t": "segura",
+          "opciones": [
+            "Dina está en el puesto 4",
+            "Eva está junto a Leo",
+            "Leo está en el puesto 2",
+            "Ciro está en el puesto 4",
+            "Ninguna: faltan pistas"
+          ]
+        }
+      },
+      "esperado": {
+        "clave": "a:Dina está en el puesto 4",
+        "texto": "Dina está en el puesto 4"
+      }
+    },
+    {
+      "semilla": "caso-6",
+      "idea": "orden-lineal",
+      "entrada": {
+        "idea": "orden-lineal",
+        "tipo": "fila-segura",
+        "nivel": 3,
+        "forma": "fila",
+        "gente": [
+          "Dina",
+          "Eva",
+          "Fito",
+          "Iván",
+          "Leo"
+        ],
+        "n": 5,
+        "pistas": [
+          "Dina está a la derecha de Eva.",
+          "Eva no está junto a Fito.",
+          "Dina está inmediatamente a la derecha de Iván.",
+          "Eva no está junto a Leo."
+        ],
+        "pide": {
+          "t": "segura",
+          "opciones": [
+            "Dina está en el puesto 3",
+            "Fito está en el puesto 4",
+            "Leo está en el puesto 4",
+            "Eva está en el puesto 2",
+            "Ninguna: faltan pistas"
+          ]
+        }
+      },
+      "esperado": {
+        "clave": "a:Dina está en el puesto 3",
+        "texto": "Dina está en el puesto 3"
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "idea": "posiciones",
+      "entrada": {
+        "idea": "posiciones",
+        "tipo": "pisos",
+        "nivel": 2,
+        "forma": "pisos",
+        "gente": [
+          "Ciro",
+          "Iván",
+          "Rosa"
+        ],
+        "n": 5,
+        "pistas": [
+          "Rosa vive tres pisos más arriba que Iván.",
+          "Ciro vive en el piso 3.",
+          "Rosa no vive en el piso 5."
+        ],
+        "pide": {
+          "t": "lugar",
+          "x": "Iván"
+        }
+      },
+      "esperado": {
+        "clave": "p:1",
+        "texto": "En el piso 1"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "posiciones",
+      "entrada": {
+        "idea": "posiciones",
+        "tipo": "pisos",
+        "nivel": 2,
+        "forma": "pisos",
+        "gente": [
+          "Beto",
+          "Ciro",
+          "Fito"
+        ],
+        "n": 5,
+        "pistas": [
+          "Fito vive tres pisos más abajo que Ciro.",
+          "Beto no vive en el piso 3.",
+          "Ciro vive más arriba que Beto.",
+          "Ciro no vive en el piso 5."
+        ],
+        "pide": {
+          "t": "lugar",
+          "x": "Ciro"
+        }
+      },
+      "esperado": {
+        "clave": "p:4",
+        "texto": "En el piso 4"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "idea": "posiciones",
+      "entrada": {
+        "idea": "posiciones",
+        "tipo": "llegada",
+        "nivel": 2,
+        "forma": "llegada",
+        "gente": [
+          "Ana",
+          "Beto",
+          "Fito",
+          "Leo",
+          "Rosa"
+        ],
+        "n": 5,
+        "pistas": [
+          "Rosa no llegó primero.",
+          "Beto llegó justo después de Rosa.",
+          "Ana llegó tres puestos después que Rosa."
+        ],
+        "pide": {
+          "t": "entre",
+          "a": "Ana",
+          "b": "Beto"
+        }
+      },
+      "esperado": {
+        "clave": "n:1",
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": "caso-6",
+      "idea": "posiciones",
+      "entrada": {
+        "idea": "posiciones",
+        "tipo": "llegada",
+        "nivel": 2,
+        "forma": "llegada",
+        "gente": [
+          "Ana",
+          "Beto",
+          "Ciro",
+          "Fito",
+          "Iván",
+          "Leo"
+        ],
+        "n": 6,
+        "pistas": [
+          "Ana llegó justo después de Ciro.",
+          "Iván llegó justo después de Leo.",
+          "Fito llegó antes que Beto.",
+          "Fito llegó justo después de Iván."
+        ],
+        "pide": {
+          "t": "entre",
+          "a": "Fito",
+          "b": "Leo"
+        }
+      },
+      "esperado": {
+        "clave": "n:1",
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "idea": "comparaciones",
+      "entrada": {
+        "idea": "comparaciones",
+        "tipo": "cadena",
+        "nivel": 1,
+        "forma": "edades",
+        "gente": [
+          "Beto",
+          "Eva",
+          "Fito",
+          "Rosa"
+        ],
+        "pistas": [
+          "Eva es menor que Beto.",
+          "Beto es menor que Rosa.",
+          "Fito es mayor que Rosa."
+        ],
+        "pide": {
+          "t": "kesimo",
+          "k": 2,
+          "desdeMayor": true
+        }
+      },
+      "esperado": {
+        "clave": "p:Beto",
+        "texto": "Beto"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "comparaciones",
+      "entrada": {
+        "idea": "comparaciones",
+        "tipo": "cadena",
+        "nivel": 1,
+        "forma": "edades",
+        "gente": [
+          "Ana",
+          "Eva",
+          "Iván",
+          "Leo"
+        ],
+        "pistas": [
+          "Eva es mayor que Leo.",
+          "Ana es mayor que Iván.",
+          "Eva es menor que Iván."
+        ],
+        "pide": {
+          "t": "kesimo",
+          "k": 1,
+          "desdeMayor": true
+        }
+      },
+      "esperado": {
+        "clave": "p:Iván",
+        "texto": "Iván"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "idea": "comparaciones",
+      "entrada": {
+        "idea": "comparaciones",
+        "tipo": "no-mayor",
+        "nivel": 3,
+        "forma": "empates",
+        "gente": [
+          "Ana",
+          "Eva",
+          "Rosa"
+        ],
+        "pistas": [
+          "Eva no es mayor que Rosa.",
+          "Ana es mayor que Rosa."
+        ],
+        "pide": {
+          "t": "segura",
+          "opciones": [
+            "Eva es menor que Ana",
+            "Eva es menor que Rosa",
+            "Eva y Rosa tienen la misma edad",
+            "Rosa es menor que Eva",
+            "Nada: faltan las edades"
+          ]
+        }
+      },
+      "esperado": {
+        "clave": "a:0",
+        "texto": "Eva es menor que Ana"
+      }
+    },
+    {
+      "semilla": "caso-6",
+      "idea": "comparaciones",
+      "entrada": {
+        "idea": "comparaciones",
+        "tipo": "no-mayor",
+        "nivel": 3,
+        "forma": "empates",
+        "gente": [
+          "Eva",
+          "Fito",
+          "Leo"
+        ],
+        "pistas": [
+          "Eva no es menor que Fito.",
+          "Leo es menor que Fito."
+        ],
+        "pide": {
+          "t": "segura",
+          "opciones": [
+            "Eva es mayor que Leo",
+            "Eva es mayor que Fito",
+            "Eva y Fito tienen la misma edad",
+            "Fito es mayor que Eva",
+            "Nada: faltan las edades"
+          ]
+        }
+      },
+      "esperado": {
+        "clave": "a:0",
+        "texto": "Eva es mayor que Leo"
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "idea": "con-numeros",
+      "entrada": {
+        "idea": "con-numeros",
+        "tipo": "montos",
+        "nivel": 2,
+        "forma": "montos",
+        "gente": [
+          "Eva",
+          "Iván",
+          "Rosa"
+        ],
+        "valores": [
+          10,
+          20,
+          100
+        ],
+        "pistas": [
+          "Iván y Rosa juntos recibieron 110 soles.",
+          "Rosa recibió más que Iván."
+        ],
+        "pide": {
+          "t": "valor",
+          "x": "Iván"
+        }
+      },
+      "esperado": {
+        "clave": "s:10",
+        "texto": "10 soles"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "con-numeros",
+      "entrada": {
+        "idea": "con-numeros",
+        "tipo": "montos",
+        "nivel": 2,
+        "forma": "montos",
+        "gente": [
+          "Ciro",
+          "Dina",
+          "Leo"
+        ],
+        "valores": [
+          10,
+          20,
+          50
+        ],
+        "pistas": [
+          "Dina y Ciro juntos recibieron 30 soles.",
+          "Dina recibió más que Ciro."
+        ],
+        "pide": {
+          "t": "valor",
+          "x": "Dina"
+        }
+      },
+      "esperado": {
+        "clave": "s:20",
+        "texto": "20 soles"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "idea": "con-numeros",
+      "entrada": {
+        "idea": "con-numeros",
+        "tipo": "seguidas",
+        "nivel": 3,
+        "forma": "montos",
+        "gente": [
+          "Beto",
+          "Ciro",
+          "Fito",
+          "Rosa"
+        ],
+        "valores": [
+          14,
+          15,
+          16,
+          17
+        ],
+        "pistas": [
+          "Las edades de Beto y Fito suman 32 años.",
+          "Ciro es mayor que Rosa."
+        ],
+        "pide": {
+          "t": "valor",
+          "x": "Rosa"
+        }
+      },
+      "esperado": {
+        "clave": "e:14",
+        "texto": "14 años"
+      }
+    },
+    {
+      "semilla": "caso-6",
+      "idea": "con-numeros",
+      "entrada": {
+        "idea": "con-numeros",
+        "tipo": "seguidas",
+        "nivel": 3,
+        "forma": "montos",
+        "gente": [
+          "Ciro",
+          "Eva",
+          "Leo",
+          "Rosa"
+        ],
+        "valores": [
+          13,
+          14,
+          15,
+          16
+        ],
+        "pistas": [
+          "Las edades de Leo y Eva suman 28 años.",
+          "Ciro es mayor que Rosa."
+        ],
+        "pide": {
+          "t": "valor",
+          "x": "Rosa"
+        }
+      },
+      "esperado": {
+        "clave": "e:14",
+        "texto": "14 años"
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "idea": "orden-circular",
+      "entrada": {
+        "idea": "orden-circular",
+        "tipo": "mesa",
+        "nivel": 2,
+        "forma": "mesa",
+        "gente": [
+          "Ana",
+          "Ciro",
+          "Fito",
+          "Iván",
+          "Leo",
+          "Rosa"
+        ],
+        "n": 6,
+        "pistas": [
+          "Ciro no se sienta junto a Fito.",
+          "Leo se sienta a la izquierda de Ana.",
+          "Leo se sienta junto a Rosa.",
+          "Fito se sienta a la izquierda de Rosa."
+        ],
+        "pide": {
+          "t": "izquierda",
+          "x": "Iván"
+        }
+      },
+      "esperado": {
+        "clave": "p:Ciro",
+        "texto": "Ciro"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "orden-circular",
+      "entrada": {
+        "idea": "orden-circular",
+        "tipo": "mesa",
+        "nivel": 2,
+        "forma": "mesa",
+        "gente": [
+          "Ana",
+          "Ciro",
+          "Dina",
+          "Fito",
+          "Leo"
+        ],
+        "n": 5,
+        "pistas": [
+          "Dina se sienta a la izquierda de Fito.",
+          "Fito se sienta a la izquierda de Ana.",
+          "Ciro se sienta a la derecha de Leo."
+        ],
+        "pide": {
+          "t": "derecha",
+          "x": "Dina"
+        }
+      },
+      "esperado": {
+        "clave": "p:Fito",
+        "texto": "Fito"
+      }
+    },
+    {
+      "semilla": "caso-0",
+      "idea": "mesa-cuadrada",
+      "entrada": {
+        "idea": "mesa-cuadrada",
+        "tipo": "frente",
+        "nivel": 3,
+        "forma": "mesa",
+        "gente": [
+          "Beto",
+          "Ciro",
+          "Eva",
+          "Fito",
+          "Iván",
+          "Rosa"
+        ],
+        "n": 6,
+        "pistas": [
+          "Eva se sienta a la izquierda de Rosa.",
+          "Beto se sienta frente a Eva.",
+          "Ciro se sienta a la izquierda de Fito."
+        ],
+        "pide": {
+          "t": "frente",
+          "x": "Fito"
+        }
+      },
+      "esperado": {
+        "clave": "p:Iván",
+        "texto": "Iván"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "mesa-cuadrada",
+      "entrada": {
+        "idea": "mesa-cuadrada",
+        "tipo": "frente",
+        "nivel": 3,
+        "forma": "mesa",
+        "gente": [
+          "Ana",
+          "Beto",
+          "Eva",
+          "Fito",
+          "Leo",
+          "Rosa"
+        ],
+        "n": 6,
+        "pistas": [
+          "Ana se sienta frente a Leo.",
+          "Rosa se sienta a la derecha de Eva.",
+          "Ana se sienta a la izquierda de Beto."
+        ],
+        "pide": {
+          "t": "frente",
+          "x": "Fito"
+        }
+      },
+      "esperado": {
+        "clave": "p:Rosa",
+        "texto": "Rosa"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "idea": "mesa-cuadrada",
+      "entrada": {
+        "idea": "mesa-cuadrada",
+        "tipo": "cuadrada",
+        "nivel": 1,
+        "forma": "cuadrada",
+        "k": 2,
+        "pide": {
+          "t": "frente",
+          "i": 1
+        }
+      },
+      "esperado": {
+        "clave": "s:4",
+        "texto": "La 5"
+      }
+    },
+    {
+      "semilla": "caso-6",
+      "idea": "mesa-cuadrada",
+      "entrada": {
+        "idea": "mesa-cuadrada",
+        "tipo": "cuadrada",
+        "nivel": 1,
+        "forma": "cuadrada",
+        "k": 3,
+        "pide": {
+          "t": "frente",
+          "i": 3
+        }
+      },
+      "esperado": {
+        "clave": "s:11",
+        "texto": "La 12"
+      }
+    }
+  ]
+}

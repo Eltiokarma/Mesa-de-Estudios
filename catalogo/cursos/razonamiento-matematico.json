@@ -45,13 +45,13 @@
     {
       "id": "razonamiento-matematico.ordenamiento-de-informacion",
       "nombre": "Ordenamiento de información",
-      "temas": ["Ordenamiento lineal", "Ordenamiento circular", "Ordenamiento poligonal"],
+      "temas": ["Ordenamiento lineal", "Ordenamiento por comparación", "Ordenamiento circular", "Ordenamiento poligonal"],
       "universidades": {"unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["razonamiento-matematico.razonamiento-deductivo"],
-      "plantillas": ["orden-informacion", "rm-parentesco", "rm-deduccion"],
-      "investigacion": null
+      "plantillas": ["rm-ordenamiento", "rm-parentesco", "rm-deduccion", "orden-informacion"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
     },
     {
       "id": "razonamiento-matematico.verdades-y-mentiras",

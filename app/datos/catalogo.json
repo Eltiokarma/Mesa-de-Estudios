@@ -1479,7 +1479,7 @@
        "energia-ionizacion": "Energía de ionización y afinidad electrónica",
        "electronegatividad": "Electronegatividad y carácter metálico"
       },
-      "terminos": 43
+      "terminos": 42
      }
     },
     {
@@ -6470,7 +6470,7 @@
        "deslizar-lados": "Deslizar lados hasta el borde",
        "arcos-que-suman": "Los arcos chicos suman igual"
       },
-      "terminos": 17
+      "terminos": 18
      }
     },
     {
@@ -6478,6 +6478,7 @@
      "nombre": "Ordenamiento de información",
      "temas": [
       "Ordenamiento lineal",
+      "Ordenamiento por comparación",
       "Ordenamiento circular",
       "Ordenamiento poligonal"
      ],
@@ -6494,23 +6495,27 @@
       "razonamiento-matematico.razonamiento-deductivo"
      ],
      "plantillas": [
-      "orden-informacion",
+      "rm-ordenamiento",
       "rm-parentesco",
-      "rm-deduccion"
+      "rm-deduccion",
+      "orden-informacion"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-tablero.js",
-       "/nucleo/kit/piezas/rm-plano.js"
+       "/nucleo/kit/piezas/rm-orden.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 3,
+      "ideas": 6,
       "titulos": {
-       "orden-lineal": "Antes no es junto",
-       "orden-circular": "En la mesa redonda, una referencia",
-       "mesa-cuadrada": "Frente a frente, mesa cuadrada"
+       "orden-lineal": "Ordenar en una fila",
+       "posiciones": "Pisos y puestos de llegada",
+       "comparaciones": "Más que, menos que",
+       "con-numeros": "Ordenar con sumas y diferencias",
+       "orden-circular": "La mesa redonda",
+       "mesa-cuadrada": "Frente a frente"
       },
-      "terminos": 12
+      "terminos": 32
      }
     },
     {
@@ -6624,7 +6629,7 @@
        "vertices-dos-veces": "Los vértices cuentan dos veces",
        "reparto-parejo": "Repartir en dos sumas iguales"
       },
-      "terminos": 12
+      "terminos": 13
      }
     },
     {
@@ -6706,7 +6711,7 @@
        "dados": "Una cara fija solo su opuesta",
        "cerillas": "Cerillas y cuadrados de todo tamaño"
       },
-      "terminos": 12
+      "terminos": 13
      }
     },
     {
@@ -7036,7 +7041,7 @@
        "rodamiento": "Lo que recorre el centro",
        "area-barrida": "El área que barre un giro"
       },
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -10497,6 +10502,9 @@
     "/plantillas/orden-informacion/index.html",
     "/plantillas/orden-informacion/motor.js",
     "/plantillas/orden-informacion/papel.json"
+   ],
+   "rehacer": [
+    "razonamiento-matematico.ordenamiento-de-informacion"
    ]
   },
   "papel-doblado": {
@@ -11171,6 +11179,30 @@
    "archivos": [
     "/plantillas/rm-movimientos/generador.js",
     "/plantillas/rm-movimientos/papel.json"
+   ]
+  },
+  "rm-ordenamiento": {
+   "id": "rm-ordenamiento",
+   "titulo": "Filas, pisos y mesas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.ordenamiento-de-informacion"
+   ],
+   "url": "#/practica/rm-ordenamiento",
+   "ideas": [
+    "orden-lineal",
+    "posiciones",
+    "comparaciones",
+    "con-numeros",
+    "orden-circular",
+    "mesa-cuadrada"
+   ],
+   "papel": "/plantillas/rm-ordenamiento/papel.json",
+   "archivos": [
+    "/plantillas/rm-ordenamiento/generador.js",
+    "/plantillas/rm-ordenamiento/papel.json"
    ]
   },
   "rm-parentesco": {

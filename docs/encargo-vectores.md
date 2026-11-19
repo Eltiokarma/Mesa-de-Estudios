@@ -191,3 +191,19 @@ Dos dibujos de prueba de la etapa 5 (`contenido/teoria/razonamiento-verbal/defin
 | --- | --- | --- | --- | --- |
 | **Ficha de diccionario** | `nucleo/kit/piezas/rv-definicion.js` (la ficha con la palabra, la fila «Clase» y las filas «Rasgo») | `lomo` y `pagina` | 298 px de ancho; el alto lo da el número de filas | Las casillas de clase y rasgo van sin color propio: el color de la paleta de lectura lo pone el kit (entra, se cuela, justa) |
 | **Página de diccionario** | Soporte `diccionario` de `nucleo/kit/piezas/rv-soporte.js` (las entradas con su palabra en negrita) | `lomo`, `pagina` y `uneros` (las tres muescas del índice en el canto) | 290 px de ancho | Los uñeros no pueden tapar el final de los renglones |
+
+## 12. Ordenamiento de información: seis objetos de prueba
+
+19 de noviembre de 2026. La unidad (`contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js`) dibuja
+sus objetos de prueba con el trazo del kit, en la pieza `nucleo/kit/piezas/rm-orden.js` (`data-prueba`, plan de calidad
+M4). Gerson decide cuáles reemplaza. Todos van en tinta (`currentColor`) sobre la tarjeta: el color lo pone la pieza
+según el papel (violeta para lo seguro; en la mesa, naranja para la referencia y turquesa para la flecha y la línea).
+
+| Escena | Objeto | Qué no puede cambiar |
+| --- | --- | --- |
+| `banca` | La banca frente a la cancha del campeonato, vista desde atrás: cada persona se distingue por su peinado, sentada o de pie | Los puestos se ven de izquierda a derecha y todos miran hacia la cancha, igual que el alumno |
+| `edificio` | Edificio de 4 a 7 pisos con una ventana por piso y tanque de agua en el techo | Una ventana por piso, a la misma altura que su número |
+| `talla` | Cuatro o cinco alumnos en uniforme, del mismo alto, con un tallímetro sin números | Nadie se ve más alto que otro hasta que la cadena lo dice |
+| `sobres` | Tres o cuatro sobres de la rifa con su monto escrito | El monto se lee en el sobre |
+| `mesa` (redonda) | Mesa vista desde arriba, con platos de chairo y una cuchara junto a la mano derecha de cada uno | La cuchara va del lado derecho de quien mira al centro |
+| `mesa` (cuadrada) | Carpetas juntas en cuadrado, con un cartel de número en cada silla | Los carteles de dos lados no se tocan en las esquinas |

@@ -1,0 +1,87 @@
+{
+  "titulo": "Filas, pisos y mesas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Eva, Fito, Leo y Rosa son primos. ¿Quién es el segundo contando desde el menor? Datos: Las edades son distintas: no hay dos de la misma edad. Pista 1: Fito es menor que Leo. Pista 2: Fito es mayor que Eva. Pista 3: Leo es menor que Rosa. Alternativas: A) Eva   B) No se puede saber   C) Rosa   D) Leo   E) Fito",
+      "respuesta": "E) Fito",
+      "pasos": [
+        "Cada pista es una flecha del menor al mayor; las tres se encadenan.",
+        "Del menor al mayor: Eva, Fito, Leo, Rosa. El segundo desde el menor es Fito."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En el compartir del aula juntan carpetas en una mesa cuadrada, con dos sillas por lado, numeradas del 1 al 8. ¿Qué silla queda frente a la 3? Datos: Sillas numeradas contra el reloj desde la de abajo a la izquierda. «Frente a»: la silla que se mira al cruzar la mesa. Alternativas: A) La 4   B) La 8   C) Ninguna: depende de cómo se sienten   D) La 2   E) La 7",
+      "respuesta": "B) La 8",
+      "pasos": [
+        "La 3 está en el lado derecho. Frente a ella, el lado izquierdo, alineada.",
+        "Frente a la 3 está la 8."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Beto, Ciro, Eva, Fito y Iván miran el partido desde una banca de 5 puestos. ¿Quién va en el puesto 5? Datos: Fila de 5 puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú. A la izquierda de: no obliga a ir pegados. Junto a: al lado, por cualquier lado. Inmediatamente: justo al lado. Pista 1: Eva está a la derecha de Fito. Pista 2: Beto está junto a Iván. Pista 3: Ciro está junto a Iván. Pista 4: Beto está inmediatamente a la derecha de Eva. Alternativas: A) Eva   B) Iván   C) Ciro   D) Faltan datos   E) Fito",
+      "respuesta": "C) Ciro",
+      "pasos": [
+        "Se prueban los puestos de quien sale en más pistas, y se tacha el que rompe alguna. Queda un solo orden: Fito, Eva, Beto, Iván, Ciro.",
+        "En el puesto 5 va Ciro."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Ciro, Eva y Leo viven en un edificio de 5 pisos. ¿En qué piso vive Ciro? Datos: Edificio de 5 pisos, contados desde abajo: el piso 1 da a la calle. En cada piso vive una sola persona, o ninguna: puede haber pisos vacíos. Pista 1: Ciro vive tres pisos más abajo que Eva. Pista 2: Leo no vive en el piso 3. Pista 3: Eva no vive en el piso 5. Pista 4: Eva vive más arriba que Leo. Alternativas: A) Faltan datos   B) En el piso 3   C) En el piso 4   D) En el piso 2   E) En el piso 1",
+      "respuesta": "E) En el piso 1",
+      "pasos": [
+        "El bloque de Ciro y Eva se prueba en cada lugar donde cabe; las otras pistas dejan uno solo.",
+        "Ciro vive en el 1, Eva vive en el 4 y Leo vive en el 2. Ciro, en el piso 1."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Tres sobres de la rifa del aniversario, con 50, 100 y 200 soles, uno para cada uno: Beto, Ciro y Iván. ¿Cuánto recibió Iván? Datos: Cada persona recibe un solo sobre. Pista 1: Ciro y Iván juntos recibieron 300 soles. Pista 2: Iván recibió más que Ciro. Alternativas: A) 200 soles   B) No se puede saber   C) 50 soles   D) 100 soles",
+      "respuesta": "A) 200 soles",
+      "pasos": [
+        "De las sumas de dos sobres, solo 100 + 200 da 300: son de Ciro y Iván.",
+        "Iván recibió más: Iván recibió 200 soles."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Ana, Dina, Eva, Fito, Leo y Rosa almuerzan en una mesa redonda. ¿Quién se sienta a la derecha de Dina? Datos: Mesa redonda de 6 sillas, sin numerar; todos miran al centro. A la derecha de: en la silla de al lado, del lado de su mano derecha. Pista 1: Leo se sienta a la derecha de Eva. Pista 2: Fito se sienta a la derecha de Rosa. Pista 3: Dina se sienta junto a Rosa. Pista 4: Ana no se sienta junto a Fito. Alternativas: A) Ana   B) Rosa   C) Leo   D) Eva   E) Faltan datos",
+      "respuesta": "B) Rosa",
+      "pasos": [
+        "Se fija a Ana y se sienta a cada uno desde ahí. Contra el reloj, queda una sola mesa: Ana, Dina, Rosa, Fito, Eva, Leo.",
+        "A la derecha de Dina se sienta Rosa."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Beto, Ciro, Dina, Eva y Leo se sientan en la primera fila del auditorio, de 5 puestos. ¿Cuál es necesariamente verdadera? Datos: Fila de 5 puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú. A la izquierda de: no obliga a ir pegados. Junto a: al lado, por cualquier lado. Inmediatamente: justo al lado. Pista 1: Eva está a la izquierda de Leo. Pista 2: Leo está a la izquierda de Ciro. Pista 3: Beto no está junto a Eva. Pista 4: Dina está inmediatamente a la derecha de Leo. Alternativas: A) Beto está en el puesto 4   B) Leo está en el puesto 1   C) Ciro está junto a Dina   D) Ninguna: faltan pistas   E) Beto está junto a Ciro",
+      "respuesta": "E) Beto está junto a Ciro",
+      "pasos": [
+        "Quedan 2 órdenes: Eva, Leo, Dina, Beto, Ciro y Eva, Leo, Dina, Ciro, Beto.",
+        "En los dos, beto está junto a Ciro."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Ana, Eva, Fito y Leo tienen 13, 14, 15 y 16 años, no se sabe quién cuántos. ¿Cuántos años tiene Fito? Datos: Cada uno tiene una de esas edades, y no se repiten. Pista 1: Las edades de Leo y Ana suman 31 años. Pista 2: Fito es mayor que Eva. Alternativas: A) 16 años   B) No se puede saber   C) 14 años   D) 13 años   E) 15 años",
+      "respuesta": "C) 14 años",
+      "pasos": [
+        "Solo 15 + 16 da 31: son de Leo y Ana.",
+        "A los otros dos les quedan las otras edades, y la pista 2 las ordena: Fito tiene 14 años."
+      ]
+    }
+  ]
+}
