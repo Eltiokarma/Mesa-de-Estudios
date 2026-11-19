@@ -25,6 +25,8 @@
  *                                   en línea (text-decoration: overline), así no depende de una regla de app/estilos.css.
  *   { negrita: partes }             en negrita y en tinta, sin color de variable: la letra de una alternativa («la B»)
  *                                   donde el violeta ya tiene otro papel (Productos notables, 18 nov). Estilo en línea.
+ *   { mult: partes }                «múltiplo de»: un circulito encima del número, como en el examen (7̊ + 3; divisibilidad,
+ *                                   19 nov). El circulito es de tinta; va con estilo en línea. Se lee «múltiplo de 7».
  *   { llave: partes, nota, color? } llave horizontal («}» girada) debajo de un trozo, con su nota: explica qué es cada
  *                                   símbolo sin depender solo del color. nota es texto (o partes); color, el de la variable.
  *                                   Con arriba: true, la llave va encima.
@@ -47,6 +49,11 @@
   const signos = t => t.replace(SIGNOS, c => `<span class="ec-op">${c}</span>`);
   // Signo menos tipográfico en los números escritos con guion: «-3» → «−3» (no toca los guiones entre letras).
   const menos = t => String(t).replace(/(^|[\s(=+×·÷/])-(?=[\d.,])/g, '$1−');
+  // Superíndices de Unicode («3d¹⁰», «10⁻³», «Fe³⁺»): se pintan como <sup> con cifras normales. Varias serif del sistema
+  // traen ¹ ² ³ y no ⁰ ni ⁻; cada cifra salía de una fuente distinta y «¹⁰» se leía «1o» (lector en frío, 18 nov).
+  // El texto plano (texto) no cambia.
+  const SUPS = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁺': '+', '⁻': '−', 'ⁿ': 'n' };
+  const sups = h => h.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁿ]+/g, m => `<sup class="ec-sup">${[...m].map(c => SUPS[c]).join('')}</sup>`);
   // El signo de raíz: gancho, bajada y subida hasta la raya de arriba (la raya es el borde de .ec-bajo). Se estira sin
   // deformar el grosor del trazo (vector-effect), así sirve igual para una línea que para una fracción o una raíz anidada.
   const conInd = p => p.indice !== undefined && p.indice !== null && p.indice !== '';
@@ -68,7 +75,7 @@
       lista(p.llave).forEach(x => revisar(x, donde)); lista(p.nota).forEach(x => revisar(x, donde));
       return;
     }
-    const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'raya', 'negrita'].includes(c));
+    const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'raya', 'negrita', 'mult'].includes(c));
     if (!k) throw new Error(`${donde}: parte desconocida ${JSON.stringify(p)}`);
     if (['frac', 'sup', 'sub'].includes(k) && !(Array.isArray(p[k]) && p[k].length === 2)) throw new Error(`${donde}: ${k} lleva dos partes`);
     if (k === 'raiz' && p.indice !== undefined) {
@@ -98,10 +105,10 @@
           .replace(/ (&lt;|&gt;|<span class="ec-op">[≤≥≠≈]<\/span>)/g, ' $1')
           .replace(/= ([^\s <&]{1,3})(?=$|[,.;)]|[\s ]+(?:y|o|e|con|si)[\s ])/g, '= $1');
         if (/= $/.test(h) && k + 1 < ps.length && corto(ps[k + 1])) h = h.replace(/= $/, '= ');
-        return h;
+        return sups(h);
       }
       if (Array.isArray(p)) return html(p);
-      if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}${LETRA.test(p.t) ? ' ec-letra' : ''}">${esc(p.t)}</span>`;
+      if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}${LETRA.test(p.t) ? ' ec-letra' : ''}">${sups(esc(p.t))}</span>`;
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;
       if (p.sup) return `${html(p.sup[0])}<sup class="ec-sup">${html(p.sup[1])}</sup>`;
       if (p.sub) return `${html(p.sub[0])}<sub class="ec-sub">${html(p.sub[1])}</sub>`;
@@ -115,6 +122,10 @@
       if (p.par) return `<span class="ec-par">(${html(p.par)})</span>`;
       if (p.raya) return `<span class="ec-raya" style="text-decoration:overline;text-decoration-thickness:.08em">${html(p.raya)}</span>`;
       if (p.negrita) return `<b class="ec-negrita" style="font-weight:800">${html(p.negrita)}</b>`;
+      // «Múltiplo de»: el número con un circulito centrado encima (divisibilidad, 19 nov). Todo con estilo en línea.
+      if (p.mult) return `<span class="ec-mult" style="position:relative;display:inline-block;padding-top:.36em;line-height:1.1;white-space:nowrap">`
+        + '<span aria-hidden="true" style="position:absolute;top:0;left:50%;width:.3em;height:.3em;margin-left:-.21em;border:.075em solid currentColor;border-radius:50%"></span>'
+        + `${html(p.mult)}</span>`;
       if ('llave' in p) {
         // La llave es un trazo de tres piezas (dos tramos y la punta), para que su curva no se deforme al estirarse.
         const tono = p.color ? ` style="--llave:var(--${esc(p.color)})"` : '';
@@ -143,6 +154,7 @@
       if (p.par) return `(${texto(p.par)})`;
       if (p.raya) return texto(p.raya);
       if (p.negrita) return texto(p.negrita);
+      if (p.mult) return `múltiplo de ${texto(p.mult)}`;
       if ('llave' in p) return `${texto(p.llave)} (${texto(p.nota)})`;
       return '';
     }).join('').replace(/\s+/g, ' ').trim();
@@ -154,7 +166,7 @@
       if (!p || typeof p !== 'object') continue;
       if (Array.isArray(p)) { colores(p, acc); continue; }
       if ('v' in p) { acc.add(p.v); continue; }
-      for (const k of ['frac', 'sup', 'sub', 'raiz', 'indice', 'vec', 'tacha', 'abs', 'par', 'raya', 'negrita', 'llave']) if (p[k]) colores(p[k], acc);
+      for (const k of ['frac', 'sup', 'sub', 'raiz', 'indice', 'vec', 'tacha', 'abs', 'par', 'raya', 'negrita', 'mult', 'llave']) if (p[k]) colores(p[k], acc);
     }
     return acc;
   }

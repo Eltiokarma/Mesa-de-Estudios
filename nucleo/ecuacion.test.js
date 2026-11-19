@@ -107,3 +107,19 @@ test('negrita: en tinta, sin color de variable, y se lee tal cual', () => {
   assert.equal(E.colores(p).size, 0);
   assert.throws(() => E.revisar([{ negrita: [{ v: 'rojo', t: 'a' }] }]), /color/);
 });
+
+// «¹⁰» se leía «1o» (lector en frío de Estructura atómica, 18 nov): varias serif del sistema traen ¹ ² ³ y no ⁰ ni ⁻,
+// y cada cifra salía de una fuente distinta. Los superíndices de Unicode se pintan como <sup>, con cifras normales.
+test('los superíndices de Unicode se pintan como <sup> con cifras normales', () => {
+  const h = E.html(['[Kr] 5s² 4d¹⁰ 5p⁵']);
+  assert.doesNotMatch(h, /[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻ⁿ]/, h);
+  assert.equal(h, '[Kr] 5s<sup class="ec-sup">2</sup> 4d<sup class="ec-sup">10</sup> 5p<sup class="ec-sup">5</sup>');
+  assert.equal(E.html(['6,02 × 10⁻²³']).replace(/ /g, ' '), '6,02 × 10<sup class="ec-sup">−23</sup>', 'el menos del exponente es el tipográfico');
+  assert.equal(E.html(['Fe³⁺ y xⁿ']), 'Fe<sup class="ec-sup">3+</sup> y x<sup class="ec-sup">n</sup>');
+  // También dentro de una ficha de color, y sin tocar lo que se lee en voz alta ni el texto plano.
+  assert.equal(E.html([{ v: 'c-o', t: 'x²' }]), '<span class="var c-o ec-v">x<sup class="ec-sup">2</sup></span>');
+  assert.equal(E.texto(['4d¹⁰ ', { v: 'c-o', t: 'x²' }]), '4d¹⁰ x²');
+  // Lo que ya iba con { sup } sigue igual, y no se parte antes de «>» aunque la potencia vaya en Unicode.
+  assert.equal(E.html([{ sup: ['x', '2'] }]), 'x<sup class="ec-sup">2</sup>');
+  assert.ok(!/ &gt;/.test(E.html(['a⁶ > b⁶'])));
+});
