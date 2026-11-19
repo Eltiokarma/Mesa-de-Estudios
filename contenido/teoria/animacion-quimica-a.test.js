@@ -30,10 +30,16 @@ const SIN_ANIMAR = new Set(['estructura-atomica/nucleo-identidad', 'estructura-a
   // opciones; con un control que se mueve solo, la misión se cumpliría sin el alumno. La mesa que giraba sola se fue con
   // Geometría molecular (unidad nueva, fuera de esta ronda).
   'enlace-quimico/tres-enlaces', 'enlace-quimico/enlace-ionico', 'enlace-quimico/lewis-octeto',
-  'enlace-quimico/dativo-excepciones', 'enlace-quimico/resonancia']);
+  'enlace-quimico/dativo-excepciones', 'enlace-quimico/resonancia',
+  // Nomenclatura inorgánica (19 nov, etapa 7): las seis misiones son de buscar o armar un compuesto entre opciones (el EO
+  // del N en el NH₄⁺, el óxido -oso, el H con −1, el oxácido con un H, la sal sin carga suelta, la sal con OH⁻); con un
+  // control que se mueve solo, la misión se cumpliría sin el alumno.
+  'nomenclatura-inorganica/estados-oxidacion', 'nomenclatura-inorganica/tres-nombres', 'nomenclatura-inorganica/peroxidos-hidruros',
+  'nomenclatura-inorganica/arbol-funciones', 'nomenclatura-inorganica/sales', 'nomenclatura-inorganica/sales-acidas-basicas-hidratadas']);
 // Unidades cuya primera mesa es de elegir entre opciones (sin un valor que recorrer). Enlace químico (etapa 6): sus dos
 // mesas eligen átomos o la posición del doble enlace; la mesa que gira se fue con Geometría molecular.
-const LAB_SIN_ANIMAR = new Set(['enlace-quimico']);
+// Nomenclatura inorgánica (etapa 7): sus dos mesas arman sales y eligen especies.
+const LAB_SIN_ANIMAR = new Set(['enlace-quimico', 'nomenclatura-inorganica']);
 
 function revisar(nombre, j, piezaPorDefecto) {
   const ctr = j.controles || [];
