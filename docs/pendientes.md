@@ -1,6 +1,32 @@
 # Pendientes y traspaso
 
-Actualizado el 19 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 19 nov: Etapa 5», después «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 19 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 19 nov, noche: Etapa 6», después «Estado al 19 nov: Etapa 5», después «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 19 nov, noche: Etapa 6 cerrada (nueve unidades con calidad 2)
+
+Mismo criterio delegado que la Etapa 5. Desde aquí el método vive en `docs/metodo/unidad/`: `etapa-delegada.md` (un
+agente escribe la unidad entera, con las doce lecciones de los auditores), `cierre-delegado.md` (auditor) y
+`lector-delegado.md` (dos lectores en frío, solo PNG). Todos los agentes en Opus 5.5 (`model: "opus"`).
+
+- **Hecho y en main (v296, unas 11 520 pruebas):** Números primos y divisores, División de polinomios, Polígonos y
+  cuadriláteros, Estática, Enlace químico (partido), Geometría molecular (nueva), Longitud de arco y sector, Verdades y
+  mentiras y Analogías, todas con `calidad: 2`. Resumen y decisiones para Gerson en `docs/etapa6/decisiones.md`;
+  informes en `rutinas/auditoria/` y `rutinas/frio/`; tarjetas en la mesa (ronda 12).
+- **Avance:** `partidoEN` (Enlace), `prediccionES`/`estudiadaES` (Estática) y `REHECHAS_E6` para las otras seis unidades
+  que conservaron ids con otra Predice (`nucleo/avance.js`).
+- **Herramientas y app:** `capturas-teoria.js` comprueba el catálogo y para ante «No se pudo cargar el catálogo»; el
+  validador dibuja con la pieza del dibujo, como la app; los símbolos de los átomos en la letra con serifa (el Cl ya no se
+  lee «CI»); el orden de «Ahora tú» depende de la idea (`ordenAhoraTu`: antes el primer caso dejaba la correcta en la
+  misma letra en toda la app).
+- **Integración:** cada unidad en su worktree, apilando commits cuando varias terminan juntas, y una sola `npm test`
+  sobre la pila. No correr más de dos suites a la vez (se frenan). Ojo: si un agente deja una unidad a medio escribir,
+  `npm run catalogo` falla y el servidor devuelve 500; las capturas de esa hora salen con el aviso (ahora la herramienta
+  lo detecta).
+- **Siguiente:**
+  1. Lo que dejó la etapa (`docs/etapa6/decisiones.md`, «Pendientes»): `geo-objeto` con rótulos junto a otro vértice,
+     la flechita de ΣF en `nucleo/ecuacion.js` y los cortes dentro de un paréntesis en `ecuaciones-ancho.js`, el aire de
+     Predice en verbal y las voces de verbal que hablan de «el texto», la pieza de la caja de cartulina.
+  2. Etapa 7: la unidad siguiente de cada rama, con el mismo método.
 
 ## Estado al 19 nov: Etapa 5 cerrada (diez unidades con calidad 2)
 

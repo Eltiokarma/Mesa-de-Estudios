@@ -19,7 +19,7 @@ corrieron en Opus 5.5 (Gerson, 19 nov).
 | fisica.estatica | 6 | fis-estatica | calidad 2 |
 | quimica.enlace-quimico (partida) | 5 | enlace-lewis | calidad 2 |
 | quimica.geometria-molecular (nueva) | 4 | geometria-fuerzas | calidad 2 |
-| trigonometria.longitud-de-arco-y-sector | 5 | trig-arco-sector | ver abajo |
+| trigonometria.longitud-de-arco-y-sector | 5 | trig-arco-sector | calidad 2 |
 | razonamiento-matematico.verdades-y-mentiras | 6 | rm-verdades | calidad 2 |
 | razonamiento-verbal.analogias | 5 | analogias | calidad 2 |
 
@@ -36,6 +36,8 @@ Informes en `rutinas/auditoria/<unidad>.md` y `rutinas/frio/<unidad>.md`.
 - **Herramientas:** `capturas-teoria.js` comprueba el catálogo antes de capturar y para si una pantalla muestra «No se
   pudo cargar el catálogo» (en esta etapa salieron 35 capturas del aviso); el validador dibuja con la pieza del dibujo,
   como la app; los símbolos de los átomos van en la letra con serifa de las ecuaciones (el cloro se leía «CI»).
+  El orden de las alternativas de «Ahora tú» depende de la idea (antes el primer caso dejaba la correcta en la misma
+  letra en toda la app; lo encontró el auditor de Longitud de arco).
 - **Prueba del curso:** todas las formas ya tenían 10 pares; los ítems nuevos van a la reserva (qui-20/21, tri-12/13,
   rm-22/23, y los de cada propuesta).
 - **Práctica de División:** MCD y MCM de polinomios salen de su práctica y su examen (son de Factorización).
