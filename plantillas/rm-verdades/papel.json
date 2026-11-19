@@ -1,0 +1,87 @@
+{
+  "titulo": "Veraces, culpables y mentiras: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Beto siempre miente. Beto dice: «Ninguna de las cajas del aula está llena». ¿Qué es seguro? Datos: Lo que dice quien siempre miente es falso. Al menos uno: uno o más. A lo más 5: 5 o menos. Alternativas: A) Al menos una de las cajas del aula está llena   B) Ninguna de las cajas del aula está llena   C) No se puede saber nada   D) Todas las cajas del aula están llenas   E) Algunas están llenas y otras no",
+      "respuesta": "A) Al menos una de las cajas del aula está llena",
+      "pasos": [
+        "La frase es falsa. Una frase con «todos» o «ninguno» se rompe con un solo caso.",
+        "Es seguro: Al menos una de las cajas del aula está llena."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En el juego de las tarjetas hablan Ana, Hugo y Rosa. ¿Quiénes dicen la verdad? Datos: Veraz: siempre dice la verdad; mentiroso: siempre miente. Ana dice: «Hugo y yo mentimos». Hugo dice: «Ana miente». Rosa dice: «Hugo miente». Alternativas: A) Nadie   B) No se puede saber   C) Solo Hugo   D) Ana y Hugo   E) Hugo y Rosa",
+      "respuesta": "C) Solo Hugo",
+      "pasos": [
+        "Se supone la tarjeta de cada uno y se revisa cada frase: la suposición que no choca es una sola.",
+        "Dicen la verdad: Solo Hugo."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Uno de los cuatro sospechosos dejó la puerta abierta. ¿Quién fue? Datos: Solo una de las frases es falsa: solo uno miente. Eva dice: «Fito miente». Ciro dice: «No fue Eva». Ana dice: «Fui yo». Fito dice: «Fue Ana». Alternativas: A) Ciro   B) Ana   C) Fito   D) No se puede saber   E) Eva",
+      "respuesta": "B) Ana",
+      "pasos": [
+        "Eva y Ana se contradicen: ahí está el que miente. Los demás dicen la verdad.",
+        "Con eso, solo con Ana queda una frase falsa."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La pelota está en una de las mochilas de Dina, Nora, Beto y Ana. ¿En qué mochila está la pelota? Datos: Solo una de las frases es cierta: solo uno dice la verdad. Dina dice: «Está en la de Ana». Nora dice: «No está en la de Ana». Beto dice: «Nora miente». Ana dice: «No está en la de Dina». Alternativas: A) En la de Beto   B) En la de Ana   C) No se puede saber   D) En la de Dina   E) En la de Nora",
+      "respuesta": "D) En la de Dina",
+      "pasos": [
+        "Dina y Nora se contradicen: ahí está el único veraz. Los demás mienten.",
+        "Con eso, solo en la de Dina queda una frase cierta."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Rosa, Ana y Eva llegaron en los tres primeros puestos de la carrera del aniversario. ¿Quién ganó? Datos: Cada uno dice dos frases: una es cierta y la otra, falsa. Rosa dice: «Eva llegó tercera» y «Llegué segunda». Ana dice: «Eva llegó primera» y «Llegué segunda». Eva dice: «Ana llegó tercera» y «Llegué segunda». Alternativas: A) No se puede saber   B) Rosa   C) Eva   D) Ana",
+      "respuesta": "C) Eva",
+      "pasos": [
+        "Se supone cierta una frase de alguien: la otra queda falsa. Si algo choca, la cierta era la otra.",
+        "Queda un solo orden: Eva, Rosa, Ana. Ganó Eva."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En la última ronda del juego de las tarjetas hablan Ana, Ciro, Dina y Nora. ¿Cuántos de ellos mienten? Datos: Veraz: siempre dice la verdad; mentiroso: siempre miente. Cada frase cuenta a todos, también a quien habla. Ana dice: «Aquí mienten exactamente dos». Ciro dice: «Aquí miente exactamente uno». Dina dice: «Aquí mienten exactamente tres». Nora dice: «Aquí mienten exactamente tres». Alternativas: A) Uno   B) Los cuatro   C) Tres   D) Ninguno   E) Dos",
+      "respuesta": "B) Los cuatro",
+      "pasos": [
+        "Se supone cuántos mienten: las frases que salen ciertas tienen que ser justo las de los veraces.",
+        "Solo cuadra con 4 mintiendo."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Uno de los cinco sospechosos rompió una maceta del patio. ¿Quién miente? Datos: Solo una de las frases es falsa: solo uno miente. Fito dice: «Fue Rosa». Hugo dice: «No fue Rosa». Rosa dice: «Fue Eva». Beto dice: «Yo no fui». Eva dice: «No fue Beto». Alternativas: A) Eva   B) Hugo   C) Beto   D) Rosa   E) Fito",
+      "respuesta": "E) Fito",
+      "pasos": [
+        "Fito y Hugo se contradicen: la frase falsa es una de las dos. Los demás dicen la verdad.",
+        "Con lo que dicen, fue Eva, y miente Fito."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Ana siempre miente. Dice tres frases sobre su edad. ¿Cuántos años tiene? Datos: Lo que dice quien siempre miente es falso. Al menos uno: uno o más. A lo más 5: 5 o menos. Frase 1: «Tengo menos de 17 años». Frase 2: «Tengo más de 18 años». Frase 3: «Tengo 18 años». Alternativas: A) 19 años   B) 18 años   C) 16 años   D) 17 años   E) No se puede saber",
+      "respuesta": "D) 17 años",
+      "pasos": [
+        "Lo contrario de cada frase: 17 o más, 18 o menos, y no 18.",
+        "Tiene 17 años."
+      ]
+    }
+  ]
+}

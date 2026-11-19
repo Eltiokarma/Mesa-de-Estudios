@@ -241,3 +241,24 @@ RMP77-posible, RMP78-nada).
 | RMP141 | Leer «no es mayor que» como «es menor que»: olvidar el empate | UNMSM 2020-I p. 30 |
 | RMP142 | En una mesa con lados, tomar por «frente» la media vuelta, la silla del mismo lado o la de la esquina | RMT-ORD-9 y 10 de la teoría vieja |
 | RMP143 | En dos sumas iguales, llevar la comparación en el mismo sentido al otro par | UNMSM 2021 p. 29 |
+
+## Verdades y mentiras (teoría de la unidad y `rm-verdades`, etapa 6, 19 nov 2026)
+
+Códigos nuevos de `contenido/teoria/razonamiento-matematico/verdades-y-mentiras.js` y de `plantillas/rm-verdades/`
+(propuesta: `docs/etapa6/propuesta-razonamiento-matematico.md`, §7). Todos son **hipótesis**: salen de las trampas de los
+solucionarios de San Marcos (26 preguntas de la unidad en `docs/datos/admision-unmsm.csv`) y de la matriz del curso, sin
+dato de alumnos. Reemplazan a los RMT-VYM-1 a 7 de la teoría vieja (1 y 5 → RMP72; 2 y 4 → RMP78; 3 → RMP148; 6 → RMP146;
+7 → RMP77). Reutilizan RMP49 (creerle a quien miente), RMP72, RMP77 y RMP78. El generador y los ítems rm-22 y rm-23 de la
+reserva de la prueba del curso los usan con un sufijo (RMP72-choca, RMP49-cree, RMP146-ninguno, RMP147-borde, RMP148-par,
+RMP149-fuera, RMP150-una, RMP151-cuenta).
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP144 | Creerle a una frase que cualquiera diría («Yo digo la verdad»), o creer que si todos coinciden, todos dicen la verdad | matriz del curso («premiar intuiciones sobre las personalidades») |
+| RMP145 | Confundir «Yo digo la verdad» con «Yo miento»: creer que ninguna frase sobre uno mismo se puede decir | nueva |
+| RMP146 | Negar «todos» con «ninguno» (o «ninguno» con «todos»): cambiar una sola palabra | matriz («negar una proposición compuesta cambiando una sola palabra») |
+| RMP147 | Negar «más de k» como «menos de k» y no como «k o menos» (lo mismo con «menos de») | rm-a #22 (UNMSM 2023-II p. 17 y 29) |
+| RMP148 | No ver el par que se contradice, o tomar por contradictorias dos frases que solo son distintas («Fue Ana» y «Fue Beto») | «no partir de las dos afirmaciones que se contradicen» (6 preguntas) |
+| RMP149 | Con «solo uno dice la verdad», creerle a quien está fuera del par | ídem |
+| RMP150 | Con «una verdad y una mentira», creerle las dos frases a alguien, su primera frase, o negarle las dos | UNMSM 2026-I p. 29, al revés |
+| RMP151 | Creerle a la frase sobre cuántos mienten sin contar a quien la dice | UNMSM 2024-II p. 19 («suponer que todos mienten sin ver que alguno debe ser veraz») |

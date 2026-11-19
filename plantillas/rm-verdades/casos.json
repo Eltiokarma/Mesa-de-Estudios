@@ -1,0 +1,483 @@
+{
+  "plantilla": "rm-verdades",
+  "tolerancia": 0,
+  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Claves: t:<quiénes>, k:<cuántos mienten>, p:<persona o mochila>, e:<edad>, ok (la contraria exacta). entrada: el _datos del problema.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con itertools, fuera del repo: scratchpad e6-rm/v-casos.py), que no usa el generador: lee cada frase de los datos, prueba todas las tarjetas, todos los culpables o lugares, todos los órdenes de llegada o todas las edades, se queda con lo que encaja y calcula la clave. Los 18 casos cuadran.",
+  "casos": [
+    {
+      "semilla": "caso-0",
+      "idea": "suposicion",
+      "entrada": {
+        "idea": "suposicion",
+        "tipo": "cuatro",
+        "nivel": 3,
+        "forma": "tarjetas",
+        "gente": [
+          "Ciro",
+          "Gaby",
+          "Rosa",
+          "Nora"
+        ],
+        "frases": [
+          "Gaby y Rosa dicen la verdad",
+          "Rosa miente",
+          "Gaby y Nora dicen la verdad",
+          "Gaby miente"
+        ],
+        "pide": "mienten"
+      },
+      "esperado": {
+        "clave": "t:Ciro, Rosa y Nora",
+        "texto": "Ciro, Rosa y Nora"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "idea": "negar-bien",
+      "entrada": {
+        "idea": "negar-bien",
+        "tipo": "negar",
+        "nivel": 1,
+        "forma": "grupo",
+        "dice": "Ninguno de mis primos es de Puno",
+        "pide": "seguro"
+      },
+      "esperado": {
+        "clave": "ok",
+        "texto": "Al menos uno de sus primos es de Puno"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "idea": "contradictorias",
+      "entrada": {
+        "idea": "contradictorias",
+        "tipo": "quien-miente",
+        "nivel": 3,
+        "forma": "culpa",
+        "ctx": "fue",
+        "gente": [
+          "Ciro",
+          "Ana",
+          "Dina",
+          "Rosa",
+          "Eva"
+        ],
+        "frases": [
+          "Ciro dice: «Fue Ana».",
+          "Ana dice: «Fue Dina».",
+          "Dina dice: «Ciro miente».",
+          "Rosa dice: «No fue Eva».",
+          "Eva dice: «No fue Rosa»."
+        ],
+        "falsas": 1,
+        "pide": "miente"
+      },
+      "esperado": {
+        "clave": "p:Ciro",
+        "texto": "Ciro"
+      }
+    },
+    {
+      "semilla": "caso-3",
+      "idea": "solo-uno-veraz",
+      "entrada": {
+        "idea": "solo-uno-veraz",
+        "tipo": "veraz5",
+        "nivel": 3,
+        "forma": "culpa",
+        "ctx": "fue",
+        "gente": [
+          "Eva",
+          "Nora",
+          "Fito",
+          "Rosa",
+          "Dina"
+        ],
+        "frases": [
+          "Eva dice: «Fue Rosa».",
+          "Nora dice: «Dina miente».",
+          "Fito dice: «No fue Dina».",
+          "Rosa dice: «Fue Eva».",
+          "Dina dice: «No fue Fito»."
+        ],
+        "falsas": 4,
+        "pide": "quien"
+      },
+      "esperado": {
+        "clave": "p:Dina",
+        "texto": "Dina"
+      }
+    },
+    {
+      "semilla": "caso-4",
+      "idea": "verdad-y-mentira",
+      "entrada": {
+        "idea": "verdad-y-mentira",
+        "tipo": "podio4",
+        "nivel": 3,
+        "forma": "podio",
+        "gente": [
+          "Nora",
+          "Dina",
+          "Rosa",
+          "Ciro"
+        ],
+        "frases": [
+          "Nora dice: «Llegué primera» y «Rosa llegó cuarta».",
+          "Dina dice: «Ciro llegó cuarto» y «Llegué segunda».",
+          "Rosa dice: «Llegué segunda» y «Nora llegó cuarta».",
+          "Ciro dice: «Dina llegó tercera» y «Llegué primero»."
+        ],
+        "pide": "gana"
+      },
+      "esperado": {
+        "clave": "p:Nora",
+        "texto": "Nora"
+      }
+    },
+    {
+      "semilla": "caso-5",
+      "idea": "cuantos-mienten",
+      "entrada": {
+        "idea": "cuantos-mienten",
+        "tipo": "cuantos",
+        "nivel": 2,
+        "forma": "tarjetas",
+        "gente": [
+          "Beto",
+          "Ciro",
+          "Eva",
+          "Rosa"
+        ],
+        "frases": [
+          "Aquí miente exactamente uno",
+          "Aquí mentimos los cuatro",
+          "Aquí miente exactamente uno",
+          "Aquí miente exactamente uno"
+        ],
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "clave": "k:1",
+        "texto": "Uno"
+      }
+    },
+    {
+      "semilla": "caso-6",
+      "idea": "suposicion",
+      "entrada": {
+        "idea": "suposicion",
+        "tipo": "tarjetas",
+        "nivel": 2,
+        "forma": "tarjetas",
+        "gente": [
+          "Ana",
+          "Dina",
+          "Nora"
+        ],
+        "frases": [
+          "Dina y Nora dicen la verdad",
+          "Nora miente",
+          "Ana miente"
+        ],
+        "pide": "veraces"
+      },
+      "esperado": {
+        "clave": "t:Solo Nora",
+        "texto": "Solo Nora"
+      }
+    },
+    {
+      "semilla": "caso-7",
+      "idea": "negar-bien",
+      "entrada": {
+        "idea": "negar-bien",
+        "tipo": "negar",
+        "nivel": 1,
+        "forma": "cantidad",
+        "dice": "Tengo más de 50 soles",
+        "pide": "seguro"
+      },
+      "esperado": {
+        "clave": "ok",
+        "texto": "Hugo tiene 50 soles o menos"
+      }
+    },
+    {
+      "semilla": "caso-8",
+      "idea": "contradictorias",
+      "entrada": {
+        "idea": "contradictorias",
+        "tipo": "quien-miente",
+        "nivel": 3,
+        "forma": "culpa",
+        "ctx": "fue",
+        "gente": [
+          "Fito",
+          "Ciro",
+          "Beto",
+          "Dina",
+          "Gaby"
+        ],
+        "frases": [
+          "Fito dice: «Fue Dina».",
+          "Ciro dice: «No fue Gaby».",
+          "Beto dice: «Yo no fui».",
+          "Dina dice: «Fue Gaby».",
+          "Gaby dice: «Dina miente»."
+        ],
+        "falsas": 1,
+        "pide": "miente"
+      },
+      "esperado": {
+        "clave": "p:Dina",
+        "texto": "Dina"
+      }
+    },
+    {
+      "semilla": "caso-9",
+      "idea": "solo-uno-veraz",
+      "entrada": {
+        "idea": "solo-uno-veraz",
+        "tipo": "escondido",
+        "nivel": 2,
+        "forma": "culpa",
+        "ctx": "mochila",
+        "gente": [
+          "Ciro",
+          "Dina",
+          "Hugo",
+          "Rosa"
+        ],
+        "frases": [
+          "Ciro dice: «Está en la de Rosa».",
+          "Dina dice: «Hugo miente».",
+          "Hugo dice: «No está en la de Ciro».",
+          "Rosa dice: «No está en la de Dina»."
+        ],
+        "falsas": 3,
+        "pide": "quien"
+      },
+      "esperado": {
+        "clave": "p:Dina",
+        "texto": "En la de Dina"
+      }
+    },
+    {
+      "semilla": "caso-10",
+      "idea": "verdad-y-mentira",
+      "entrada": {
+        "idea": "verdad-y-mentira",
+        "tipo": "podio4",
+        "nivel": 3,
+        "forma": "podio",
+        "gente": [
+          "Rosa",
+          "Gaby",
+          "Dina",
+          "Beto"
+        ],
+        "frases": [
+          "Rosa dice: «Llegué tercera» y «Beto llegó segundo».",
+          "Gaby dice: «Llegué cuarta» y «Dina llegó segunda».",
+          "Dina dice: «Beto llegó cuarto» y «Llegué cuarta».",
+          "Beto dice: «Llegué tercero» y «Gaby llegó primera»."
+        ],
+        "pide": "gana"
+      },
+      "esperado": {
+        "clave": "p:Gaby",
+        "texto": "Gaby"
+      }
+    },
+    {
+      "semilla": "caso-11",
+      "idea": "cuantos-mienten",
+      "entrada": {
+        "idea": "cuantos-mienten",
+        "tipo": "cuantos",
+        "nivel": 2,
+        "forma": "tarjetas",
+        "gente": [
+          "Beto",
+          "Fito",
+          "Gaby",
+          "Nora"
+        ],
+        "frases": [
+          "Aquí mienten exactamente tres",
+          "Aquí mentimos los cuatro",
+          "Aquí miente exactamente uno",
+          "Aquí miente exactamente uno"
+        ],
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "clave": "k:3",
+        "texto": "Tres"
+      }
+    },
+    {
+      "semilla": "caso-12",
+      "idea": "suposicion",
+      "entrada": {
+        "idea": "suposicion",
+        "tipo": "cuatro",
+        "nivel": 3,
+        "forma": "tarjetas",
+        "gente": [
+          "Ana",
+          "Gaby",
+          "Rosa",
+          "Nora"
+        ],
+        "frases": [
+          "Rosa dice la verdad",
+          "Rosa miente",
+          "Ana y Gaby dicen la verdad",
+          "Ana y yo decimos la verdad"
+        ],
+        "pide": "mienten"
+      },
+      "esperado": {
+        "clave": "t:Ana, Rosa y Nora",
+        "texto": "Ana, Rosa y Nora"
+      }
+    },
+    {
+      "semilla": "caso-13",
+      "idea": "negar-bien",
+      "entrada": {
+        "idea": "negar-bien",
+        "tipo": "edad",
+        "nivel": 3,
+        "forma": "edad",
+        "frases": [
+          "Tengo menos de 15 años",
+          "Tengo más de 16 años",
+          "Tengo 16 años"
+        ],
+        "pide": "edad"
+      },
+      "esperado": {
+        "clave": "e:15",
+        "texto": "15 años"
+      }
+    },
+    {
+      "semilla": "caso-14",
+      "idea": "contradictorias",
+      "entrada": {
+        "idea": "contradictorias",
+        "tipo": "quien-miente",
+        "nivel": 3,
+        "forma": "culpa",
+        "ctx": "fue",
+        "gente": [
+          "Eva",
+          "Beto",
+          "Dina",
+          "Fito",
+          "Gaby"
+        ],
+        "frases": [
+          "Eva dice: «No fue Gaby».",
+          "Beto dice: «Fue Fito».",
+          "Dina dice: «Yo no fui».",
+          "Fito dice: «Eva miente».",
+          "Gaby dice: «No fue Eva»."
+        ],
+        "falsas": 1,
+        "pide": "miente"
+      },
+      "esperado": {
+        "clave": "p:Fito",
+        "texto": "Fito"
+      }
+    },
+    {
+      "semilla": "caso-15",
+      "idea": "solo-uno-veraz",
+      "entrada": {
+        "idea": "solo-uno-veraz",
+        "tipo": "veraz5",
+        "nivel": 3,
+        "forma": "culpa",
+        "ctx": "fue",
+        "gente": [
+          "Beto",
+          "Ana",
+          "Nora",
+          "Hugo",
+          "Fito"
+        ],
+        "frases": [
+          "Beto dice: «Fue Ana».",
+          "Ana dice: «Hugo miente».",
+          "Nora dice: «No fue Hugo».",
+          "Hugo dice: «Fue Fito».",
+          "Fito dice: «Fue Beto»."
+        ],
+        "falsas": 4,
+        "pide": "quien"
+      },
+      "esperado": {
+        "clave": "p:Hugo",
+        "texto": "Hugo"
+      }
+    },
+    {
+      "semilla": "caso-16",
+      "idea": "verdad-y-mentira",
+      "entrada": {
+        "idea": "verdad-y-mentira",
+        "tipo": "podio",
+        "nivel": 2,
+        "forma": "podio",
+        "gente": [
+          "Eva",
+          "Fito",
+          "Gaby"
+        ],
+        "frases": [
+          "Eva dice: «Llegué primera» y «Fito llegó primero».",
+          "Fito dice: «Llegué segundo» y «Eva llegó tercera».",
+          "Gaby dice: «Eva llegó segunda» y «Llegué tercera»."
+        ],
+        "pide": "gana"
+      },
+      "esperado": {
+        "clave": "p:Eva",
+        "texto": "Eva"
+      }
+    },
+    {
+      "semilla": "caso-17",
+      "idea": "cuantos-mienten",
+      "entrada": {
+        "idea": "cuantos-mienten",
+        "tipo": "por-lo-menos",
+        "nivel": 3,
+        "forma": "tarjetas",
+        "gente": [
+          "Beto",
+          "Ciro",
+          "Eva",
+          "Fito"
+        ],
+        "frases": [
+          "Ciro miente",
+          "Aquí miente por lo menos uno",
+          "Ciro dice la verdad",
+          "Aquí mienten por lo menos cuatro"
+        ],
+        "pide": "cuantos"
+      },
+      "esperado": {
+        "clave": "k:2",
+        "texto": "Dos"
+      }
+    }
+  ]
+}

@@ -236,6 +236,18 @@
     "RMP140-lado": {
       "respaldo": "hipotesis",
       "describe": "Cambia la izquierda por la derecha de quien mira al centro"
+    },
+    "RMP49-cree": {
+      "respaldo": "hipotesis",
+      "describe": "Le cree a quien miente: toma por cierto lo que dice la frase falsa"
+    },
+    "RMP148-par": {
+      "respaldo": "hipotesis",
+      "describe": "No usa el par de frases que se contradicen: toma al que miente por el culpable"
+    },
+    "RMP149-fuera": {
+      "respaldo": "hipotesis",
+      "describe": "Con «solo uno dice la verdad», le cree a quien está fuera del par que se contradice"
     }
   },
   "pares": [
@@ -1864,6 +1876,276 @@
           {
             "texto": "Quique",
             "error": "RMP1-salto"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-22",
+      "plantilla": "rm-verdades",
+      "unidad": "razonamiento-matematico.verdades-y-mentiras",
+      "nombreUnidad": "Verdades y mentiras",
+      "mide": "Si solo uno miente y dos frases se contradicen, el que miente está en ese par: los demás dicen la verdad",
+      "A": {
+        "enunciado": "En el recreo, uno de cuatro amigos rompió el vidrio de una ventana. Solo uno de ellos miente. Ana dice: «Fue Ciro». Beto dice: «Yo no fui». Ciro dice: «Dina miente». Dina dice: «Fue Beto». ¿Quién rompió el vidrio?",
+        "datos": {
+          "personas": [
+            "Ana",
+            "Beto",
+            "Ciro",
+            "Dina"
+          ],
+          "frases": [
+            {
+              "de": "Ana",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Ciro"
+              }
+            },
+            {
+              "de": "Beto",
+              "dice": {
+                "tipo": "noCulpable",
+                "x": "Beto"
+              }
+            },
+            {
+              "de": "Ciro",
+              "dice": {
+                "tipo": "miente",
+                "x": "Dina"
+              }
+            },
+            {
+              "de": "Dina",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Beto"
+              }
+            }
+          ],
+          "mienten": {
+            "exactamente": 1
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Beto",
+            "clave": "Beto",
+            "error": "RMP49-cree"
+          },
+          {
+            "texto": "Ciro",
+            "correcta": true
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          },
+          {
+            "texto": "Dina",
+            "clave": "Dina",
+            "error": "RMP148-par"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En el recreo, uno de cuatro amigos pisó el jardín del patio. Solo uno de ellos miente. Rosa dice: «Fue Teo». Nora dice: «Yo no fui». Teo dice: «Leo miente». Leo dice: «Fue Nora». ¿Quién pisó el jardín?",
+        "datos": {
+          "personas": [
+            "Rosa",
+            "Nora",
+            "Teo",
+            "Leo"
+          ],
+          "frases": [
+            {
+              "de": "Rosa",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Teo"
+              }
+            },
+            {
+              "de": "Nora",
+              "dice": {
+                "tipo": "noCulpable",
+                "x": "Nora"
+              }
+            },
+            {
+              "de": "Teo",
+              "dice": {
+                "tipo": "miente",
+                "x": "Leo"
+              }
+            },
+            {
+              "de": "Leo",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Nora"
+              }
+            }
+          ],
+          "mienten": {
+            "exactamente": 1
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Leo",
+            "clave": "Leo",
+            "error": "RMP148-par"
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          },
+          {
+            "texto": "Teo",
+            "correcta": true
+          },
+          {
+            "texto": "Nora",
+            "clave": "Nora",
+            "error": "RMP49-cree"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-23",
+      "plantilla": "rm-verdades",
+      "unidad": "razonamiento-matematico.verdades-y-mentiras",
+      "nombreUnidad": "Verdades y mentiras",
+      "mide": "Si solo uno dice la verdad, el veraz está en el par que se contradice: los demás mienten y lo contrario de lo que dicen es cierto",
+      "A": {
+        "enunciado": "La pelota está en una de las mochilas de Ana, Beto, Ciro y Dina. Solo uno de ellos dice la verdad. Ana dice: «Está en la de Dina». Beto dice: «No está en la de Dina». Ciro dice: «Está en la mía». Dina dice: «No está en la de Ana». ¿En qué mochila está la pelota?",
+        "datos": {
+          "personas": [
+            "Ana",
+            "Beto",
+            "Ciro",
+            "Dina"
+          ],
+          "frases": [
+            {
+              "de": "Ana",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Dina"
+              }
+            },
+            {
+              "de": "Beto",
+              "dice": {
+                "tipo": "noCulpable",
+                "x": "Dina"
+              }
+            },
+            {
+              "de": "Ciro",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Ciro"
+              }
+            },
+            {
+              "de": "Dina",
+              "dice": {
+                "tipo": "noCulpable",
+                "x": "Ana"
+              }
+            }
+          ],
+          "mienten": {
+            "exactamente": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "En la de Ciro",
+            "clave": "En la de Ciro",
+            "error": "RMP149-fuera"
+          },
+          {
+            "texto": "En la de Dina",
+            "clave": "En la de Dina",
+            "error": "RMP49-cree"
+          },
+          {
+            "texto": "En la de Ana",
+            "correcta": true
+          },
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "La pelota está en una de las mochilas de Rosa, Nora, Leo y Teo. Solo uno de ellos dice la verdad. Rosa dice: «Está en la de Teo». Nora dice: «No está en la de Teo». Leo dice: «Está en la mía». Teo dice: «No está en la de Rosa». ¿En qué mochila está la pelota?",
+        "datos": {
+          "personas": [
+            "Rosa",
+            "Nora",
+            "Leo",
+            "Teo"
+          ],
+          "frases": [
+            {
+              "de": "Rosa",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Teo"
+              }
+            },
+            {
+              "de": "Nora",
+              "dice": {
+                "tipo": "noCulpable",
+                "x": "Teo"
+              }
+            },
+            {
+              "de": "Leo",
+              "dice": {
+                "tipo": "culpable",
+                "x": "Leo"
+              }
+            },
+            {
+              "de": "Teo",
+              "dice": {
+                "tipo": "noCulpable",
+                "x": "Rosa"
+              }
+            }
+          ],
+          "mienten": {
+            "exactamente": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "Faltan datos",
+            "error": "RMP78-nada"
+          },
+          {
+            "texto": "En la de Leo",
+            "clave": "En la de Leo",
+            "error": "RMP149-fuera"
+          },
+          {
+            "texto": "En la de Teo",
+            "clave": "En la de Teo",
+            "error": "RMP49-cree"
+          },
+          {
+            "texto": "En la de Rosa",
+            "correcta": true
           }
         ]
       }

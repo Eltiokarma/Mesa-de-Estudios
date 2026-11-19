@@ -1,0 +1,19 @@
+{
+  "id": "rm-verdades",
+  "titulo": "Veraces, culpables y mentiras",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.verdades-y-mentiras"
+  ],
+  "temas": [
+    "Método de suposición",
+    "Afirmaciones contradictorias",
+    "Personajes que siempre mienten o dicen la verdad"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

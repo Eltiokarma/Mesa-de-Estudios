@@ -612,6 +612,21 @@ const V = {
     return { correcta: o[(i + paso) % n], errores: { 'RMP140-lado': o[(i + n - paso) % n], 'RMP1-salto': o[(i + 2 * paso) % n] } };
   },
 
+  // rm-22 y rm-23 (reserva, 19 nov, etapa 6: «Verdades y mentiras»; las formas ya tienen 10 pares). Los resuelve el motor
+  // de orden-informacion (verdades: prueba todos los culpables y todos los grupos de mentirosos); la mochila es el
+  // «culpable». Los errores salen del mismo motor: creerle a quien miente, el mentiroso tomado por culpable y creerle a
+  // quien está fuera del par.
+  'rm-22': d => {
+    const r = motor('orden-informacion').verdades(d);
+    if (!r.unica || r.pares.length < 1) throw new Error('rm-22: debe quedar un solo caso, con un par que se contradice');
+    return { correcta: r.culpable, errores: { 'RMP49-cree': r.erroresCulpable.creeAlMentiroso, 'RMP148-par': r.erroresCulpable.mentirosoEsCulpable } };
+  },
+  'rm-23': d => {
+    const r = motor('orden-informacion').verdades(d), e = r.erroresCulpable, en = x => `En la de ${x}`;
+    if (!r.unica || r.pares.length !== 1) throw new Error('rm-23: debe quedar un solo caso, con un solo par que se contradice');
+    return { correcta: en(r.culpable), errores: { 'RMP49-cree': en(e.creeAlMentiroso), 'RMP149-fuera': en(e.creeAlQueConfiesa) } };
+  },
+
   // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
   'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
     return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },

@@ -65,8 +65,8 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": ["razonamiento-matematico.razonamiento-deductivo"],
-      "plantillas": ["orden-informacion"],
-      "investigacion": null
+      "plantillas": ["rm-verdades", "orden-informacion"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
     },
     {
       "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
