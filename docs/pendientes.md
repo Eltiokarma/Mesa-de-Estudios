@@ -1,6 +1,38 @@
 # Pendientes y traspaso
 
-Actualizado el 18 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 19 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 19 nov: Etapa 5», después «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+
+## Estado al 19 nov: Etapa 5 cerrada (diez unidades con calidad 2)
+
+**Cambio de método (Gerson, 19 nov):** delegó el criterio. Las propuestas ya no esperan su visto bueno: cada una
+termina en «Decisiones tomadas (Gerson revisa después)» y la sesión sigue con la recomendada. Gerson revisa después
+todas las ideas, ejercicios y exámenes, como control de calidad. Solo se le consulta un choque grave con algo publicado o
+con una decisión suya escrita. **Modelos:** los agentes se lanzan con el modelo fijado (`model: "opus"`); un agente
+retomado con un mensaje conserva el modelo con que nació (el 19 nov once agentes siguieron en Fable sin querer).
+
+- **Hecho y en main (v281, unas 10 950 pruebas):** Divisibilidad, Ángulo trigonométrico, Tabla periódica, Propiedades
+  periódicas (nueva), Definiciones, Polinomios, Congruencia, Ordenamiento de información, Movimiento parabólico y
+  Movimiento circular (nueva), todas con `calidad: 2`: propuesta, ideas con 15 ejemplos, práctica por idea, dos lectores
+  en frío, auditor que rehízo las cuentas por otro camino y correcciones con su prueba. Resumen y decisiones para Gerson
+  en `docs/etapa5/decisiones.md`; informes en `rutinas/auditoria/` y `rutinas/frio/`.
+- **Validador de calidad 2** (`nucleo/teoria-reglas.js`, `herramientas/papel-reglas.js`,
+  `docs/metodo/unidad/reglas-validador.md`), con 46 excepciones con fecha del contenido viejo.
+- **App:** contador de «Juega» sin «llevas», alternativa elegida en tinta, superíndices con `<sup>`, comilla pegada al
+  término, `herramientas/ecuaciones-ancho.js`.
+- **Cabos de la Etapa 4:** u y c con signo en el río, tabla de núclidos reales, rótulos de Triángulos.
+- **Método de la etapa** (encargos en el scratchpad de la sesión, copiar a `docs/metodo/unidad/` si se reusa): propuesta e
+  idea 1 → la sesión mira capturas → resto de ideas y práctica → un auditor por unidad saca las capturas → dos lectores en
+  frío (solo PNG) → el auditor corrige todo → la sesión integra en una copia limpia (worktree), marca `calidad: 2` y
+  corre `npm test`.
+- **Siguiente:**
+  1. Mesa de revisión: tarjetas de las diez unidades para Gerson (ronda 11).
+  2. Lo que los auditores dejaron para Gerson o para la app (cada «Para Gerson» de `rutinas/auditoria/` y la lista de
+     `docs/etapa5/decisiones.md`): dibujos de prueba flojos, `herramientas/papel-generador.js` sin problemas por idea, el asa
+     de arrastre en el violeta de la app, «usa – y +» sin botones, los glosarios de geometría que hay que mudar, los tipos
+     heredados de parentesco en Ordenamiento, la fuente del subíndice ω₀.
+  3. Regla nueva para el validador que encontraron todos los auditores: evaluar toda igualdad escrita y toda explicación
+     de distractor (los cuatro primeros auditores de la etapa encontraron una grave así).
+  4. Etapa 6: la unidad siguiente de cada rama, con el mismo método.
 
 ## Estado al 18 nov, cierre: Etapa 4 con el método completo (una ronda de lector)
 
