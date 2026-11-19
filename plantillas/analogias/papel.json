@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Analogía. Par base: «ASPA : MOLINO». ¿Qué par guarda la misma relación? Datos: Género y especie: todo lo que nombra una palabra es lo que nombra la otra (todo gato es un animal). Parte y todo: una palabra nombra una pieza que, con otras distintas, forma lo que nombra la otra. Elemento y conjunto: la otra palabra nombra muchos iguales a la primera, juntos. Trigal: campo sembrado con mucho trigo. Alternativas: A) trigo : trigal   B) molinero : harina   C) cuello : camisa   D) blusa : prenda",
+      "enunciado": "Analogía. Par base: «ASPA : MOLINO». ¿Qué par guarda la misma relación? Datos: Clase (género y especie): todo lo que nombra la primera palabra es lo que nombra la segunda (todo gato es un animal). Parte (parte y todo): la primera es una pieza que, con piezas de otro tipo, forma la segunda. Grupo (elemento y conjunto): la segunda nombra un conjunto hecho solo de muchos iguales a la primera. Trigal: campo sembrado con mucho trigo. Alternativas: A) trigo : trigal   B) molinero : harina   C) cuello : camisa   D) blusa : prenda",
       "respuesta": "C) cuello : camisa",
       "pasos": [
         "«cuello : camisa» se une como el par base: se prueban «todo… es un…», «… es una pieza de…» y «muchos… forman…».",
@@ -36,7 +36,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Analogía. Par base: «RUIDOSO : SILENCIOSO». ¿Qué par guarda la misma relación? Datos: Sinónimos: dicen casi lo mismo del mismo rasgo. Antónimos: dicen lo opuesto del mismo rasgo. Otro rasgo: dos palabras que hablan de cosas distintas no son sinónimos ni antónimos. Intensidad: las dos dicen lo mismo del rasgo, pero una con más fuerza que la otra. Alternativas: A) alto : elevado   B) murmullo : grito   C) duro : blando   D) dulce : frío",
+      "enunciado": "Analogía. Par base: «RUIDOSO : SILENCIOSO». ¿Qué par guarda la misma relación? Datos: Sinónimos: dicen casi lo mismo del mismo rasgo. Antónimos: dicen lo opuesto del mismo rasgo. Otro rasgo: dos palabras que hablan de cosas distintas no son sinónimos ni antónimos. Intensidad: las dos dicen lo mismo de un rasgo, pero una en mayor grado (más fuerte, más grande). Alternativas: A) alto : elevado   B) murmullo : grito   C) duro : blando   D) dulce : frío",
       "respuesta": "C) duro : blando",
       "pasos": [
         "«duro : blando» habla de un mismo rasgo y se une como el par base.",
@@ -46,7 +46,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Analogía. Par base: «ENFERMERA : PACIENTES». ¿Qué par guarda la misma relación? Datos: Oración puente justa: vale para el par base y para un solo par de las alternativas. Muy amplia: la oración puente deja pasar a más de un par. Categoría gramatical: sustantivo (nombra algo), verbo (dice una acción) o adjetivo (dice cómo es algo). Mismo orden: lo que va primero en el par base va primero en el otro par. Alternativas: A) paciente : hospital   B) cuidadora : ancianos   C) vigilar : guardián   D) médico : estetoscopio",
+      "enunciado": "Analogía. Par base: «ENFERMERA : PACIENTES». ¿Qué par guarda la misma relación? Datos: Oración puente justa: vale para el par base y para un solo par de las alternativas. Muy amplia: la oración puente deja pasar a más de un par. Categoría gramatical: sustantivo (nombra algo), verbo (dice una acción) o adjetivo (dice cómo es algo). Mismo orden: lo que va primero en el par base va primero en el otro par. Alternativas: A) paciente : hospital   B) cuidadora : ancianos   C) niños : niñera   D) médico : estetoscopio",
       "respuesta": "B) cuidadora : ancianos",
       "pasos": [
         "«cuidadora : ancianos» cumple una oración puente justa del par base: no pasa ningún otro par.",
@@ -56,7 +56,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Pregunta de analogías del simulacro. Par base: «BUS : FLOTA». ¿Qué par guarda la misma relación? Datos: Género y especie: todo lo que nombra una palabra es lo que nombra la otra (todo gato es un animal). Parte y todo: una palabra nombra una pieza que, con otras distintas, forma lo que nombra la otra. Elemento y conjunto: la otra palabra nombra muchos iguales a la primera, juntos. Caravana: fila de muchos carros que viajan juntos. Alternativas: A) carro : caravana   B) camioneta : vehículo   C) llanta : camión   D) pasaje : boleto   E) piloto : timón",
+      "enunciado": "Pregunta de analogías del simulacro. Par base: «BUS : FLOTA». ¿Qué par guarda la misma relación? Datos: Clase (género y especie): todo lo que nombra la primera palabra es lo que nombra la segunda (todo gato es un animal). Parte (parte y todo): la primera es una pieza que, con piezas de otro tipo, forma la segunda. Grupo (elemento y conjunto): la segunda nombra un conjunto hecho solo de muchos iguales a la primera. Caravana: fila de vehículos que viajan juntos. Alternativas: A) carro : caravana   B) camioneta : vehículo   C) llanta : camión   D) paradero : boleto   E) piloto : timón",
       "respuesta": "A) carro : caravana",
       "pasos": [
         "«carro : caravana» se une como el par base: se prueban «todo… es un…», «… es una pieza de…» y «muchos… forman…».",

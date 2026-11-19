@@ -113,7 +113,7 @@
   };
 
   // La predicción: el alumno arma solo la oración puente de «pescador : red». Letras en la hoja: orden fijo.
-  const HOJA_PESCA = hoja(8, ['pescador', 'red'], ['tejedora : chompa', 'trucha : lago', 'tejedora : telar', 'cliente : mesa']);
+  const HOJA_PESCA = hoja(8, ['pescador', 'red'], ['costurera : vestido', 'trucha : lago', 'tejedora : telar', 'cliente : mesa']);
 
   // «Así se resuelve»: cuatro hojas con cinco pares; ningún par repite una palabra del par base. Cada incorrecta cae por
   // una sola razón: el tema (RV15), otra relación (RV17), una oración muy amplia (RVA5) o la falta de persona (RVA8). La
@@ -190,7 +190,7 @@
       figura: fig(papel('cartel', 'Cartel en un taller de Juliaca', 'Se busca ayudante', 'el taller Ramos', 'mecánicos con experiencia', ['Buscamos ayudante de mecánico.', 'Debe traer su propia llave de ruedas.'])),
       solucion: [
         { texto: ['El mecánico es una persona que trabaja, y la llave es aquello con que trabaja: ', cubre('su herramienta'), '.'] },
-        { texto: ['La oración dice la clase de la relación, ', cubre('«trabaja con»'), ', y su rasgo, ', cubre('«como herramienta»'), '.'] }],
+        { texto: ['La oración dice la unión, ', cubre('«trabaja con»'), ', y el rasgo, ', cubre('«como herramienta»'), '.'] }],
       respuesta: [justo('El mecánico trabaja con la llave'), ' como herramienta'] },
     { nivel: 1, titulo: 'La visita a la panadería',
       enunciado: '¿El par «panadero : panadería» cumple la oración «el panadero trabaja con la panadería como herramienta»?',
@@ -226,7 +226,7 @@
       respuesta: [justo('No'), ': lo usa, pero no trabaja con él'] },
 
     { nivel: 2, titulo: 'La herramienta del jardinero',
-      enunciado: 'Par base: «jardinero : rastrillo». ¿Qué par guarda su relación: «escoba : hojas secas», «enfermera : jeringa» o «jardinero : parque»?',
+      enunciado: 'Par base: «jardinero : rastrillo». ¿Qué par guarda su relación: «enfermera : jeringa», «escoba : hojas secas» o «jardinero : parque»?',
       datos: [D_PUENTE, D_AGENTE],
       figura: fig(cuaderno('Cuaderno de Rosa', 'Analogías de la semana', 'Rosa', 'la práctica de Comunicación', ['jardinero : rastrillo'])),
       solucion: [
@@ -234,7 +234,7 @@
         { texto: ['La enfermera ', cubre('trabaja con la jeringa como herramienta'), ', como el jardinero con el rastrillo.'] }],
       respuesta: [justo('«Enfermera : jeringa»')] },
     { nivel: 2, titulo: 'La lista del albañil',
-      enunciado: 'Par base: «albañil : badilejo». ¿Qué par guarda su relación: «albañil : ladrillo», «cal : arena» o «sastre : tijera»?',
+      enunciado: 'Par base: «albañil : badilejo». ¿Qué par guarda su relación: «albañil : ladrillo», «sastre : tijera» o «cal : arena»?',
       datos: [D_PUENTE, D_AGENTE, 'Badilejo: herramienta plana con mango, para poner la mezcla.'],
       figura: fig(papel('mensaje', 'Obra de la calle Lima', null, 'el maestro de obra', 'los ayudantes', ['Mañana traigan su badilejo.', 'El ladrillo y la cal ya están en la obra.'])),
       solucion: [
@@ -242,7 +242,7 @@
         { texto: ['El sastre ', cubre('trabaja con la tijera como herramienta'), '.'] }],
       respuesta: [justo('«Sastre : tijera»')] },
     { nivel: 2, titulo: 'Usar no es trabajar con',
-      enunciado: 'Par base: «dibujante : lápiz». ¿Qué par guarda su relación: «turista : mochila de viaje», «peluquera : peine» o «papel : borrador»?',
+      enunciado: 'Par base: «dibujante : lápiz». ¿Qué par guarda su relación: «turista : mochila de viaje», «papel : borrador» o «peluquera : peine»?',
       datos: [D_PUENTE, D_AGENTE],
       figura: fig(cuaderno('Cuaderno de Mateo', 'Analogías', 'Mateo', 'el simulacro del sábado', ['dibujante : lápiz'])),
       solucion: [
@@ -250,7 +250,7 @@
         { texto: ['La peluquera ', cubre('trabaja con el peine como herramienta'), '.'] }],
       respuesta: [justo('«Peluquera : peine»')] },
     { nivel: 2, titulo: 'Tres pares de la chacra',
-      enunciado: 'Par base: «agricultor : hoz». ¿Qué par guarda su relación: «agricultor : cosecha», «cocinera : cucharón» o «trigo : cebada»?',
+      enunciado: 'Par base: «agricultor : hoz». ¿Qué par guarda su relación: «cocinera : cucharón», «agricultor : cosecha» o «trigo : cebada»?',
       datos: [D_PUENTE, D_AGENTE, 'Hoz: herramienta curva con filo, para cortar trigo o cebada.'],
       figura: fig(papel('cartel', 'Cartel de la feria de Ayaviri', 'Concurso de cosecha', 'la comunidad', 'los agricultores', ['Traiga su mejor trigo.', 'Se premia la cosecha más grande.'])),
       solucion: [
@@ -258,7 +258,7 @@
         { texto: ['La cocinera ', cubre('trabaja con el cucharón como herramienta'), '.'] }],
       respuesta: [justo('«Cocinera : cucharón»')] },
     { nivel: 2, titulo: 'El taller de zapatos',
-      enunciado: 'Par base: «zapatero : martillo». ¿Qué par guarda su relación: «sastre : dedal», «cliente : silla» o «cuero : suela»?',
+      enunciado: 'Par base: «zapatero : martillo». ¿Qué par guarda su relación: «cliente : silla», «sastre : dedal» o «cuero : suela»?',
       datos: [D_PUENTE, D_AGENTE, 'Dedal: capucha de metal que protege el dedo al coser.'],
       figura: fig(papel('cartel', 'Cartel de una zapatería', 'Arreglo de calzado', 'don Julio', 'los vecinos', ['Cambio de suela en el día.', 'Siéntese en la silla mientras espera.'])),
       solucion: [
@@ -296,7 +296,7 @@
     { nivel: 3, titulo: 'La tijera del peluquero',
       enunciado: 'Pregunta 34 del simulacro, de analogías. ¿Qué par guarda la misma relación que el par base?',
       datos: [D_PUENTE, D_AGENTE],
-      figura: fig(hoja(34, ['peluquero', 'tijera'], ['champú : cabello', 'cliente : sillón', 'costurera : vestido', 'remero : remo', 'peine : pelo'])),
+      figura: fig(hoja(34, ['peluquero', 'tijera'], ['toalla : champú', 'cliente : sillón', 'costurera : vestido', 'remero : remo', 'peine : pelo'])),
       solucion: [
         { texto: [mala('A'), ' es del ', prop('mismo tema'), '. ', mala('B'), ': el cliente usa el sillón, no trabaja con él.'] },
         { texto: [mala('C'), ': el vestido es su obra, ', prop('otra relación'), '. ', mala('E'), ' tiene la herramienta, ', prop('sin persona'), '.'] },
@@ -323,7 +323,7 @@
       tarjetas: [
         { titulo: 'Una pregunta de analogías', texto: 'En el simulacro, una analogía empieza con un par base en mayúsculas: CARPINTERO : SERRUCHO. Los dos puntos se leen «se relaciona con». Debajo hay cinco pares, y uno solo se une igual que el par base.',
           pieza: 'rv-soporte', dibujo: { datos: HOJA_CARP, estado: { marcas: { frase: 'i' } } } },
-        { titulo: 'La oración puente', texto: 'Cómo se unen dos palabras se dice en una oración corta: la oración puente. Funciona como una definición de la relación: su clase dice cómo se unen («trabaja con») y su rasgo, de qué manera («como herramienta»).' },
+        { titulo: 'La oración puente', texto: 'Cómo se unen dos palabras se dice en una oración corta: la oración puente. Se arma con dos pedazos: la unión dice cómo se juntan las dos palabras («trabaja con») y el rasgo, de qué manera («como herramienta»).' },
         { titulo: 'Agente e instrumento', texto: 'El carpintero y el serrucho se unen así: el agente es la persona que hace un trabajo, y el instrumento, la herramienta con que lo hace. Es una relación entre muchas: hay otras maneras de unir dos palabras.' },
         { titulo: 'Qué mirar al jugar', texto: 'Debajo de la hoja está la oración puente del par base. Pon cada par en ella, en tu cabeza. Si la oración deja de ser verdadera, toca ese par en la hoja para tacharlo. Tócalo otra vez para dejarlo.' },
       ],
@@ -357,7 +357,7 @@
       datos: ['Telar: armazón de palos y cuerdas en el que se teje.'],
       orden: 'fijo',
       opciones: [
-        { id: 'A', texto: 'tejedora : chompa', error: 'RV17', siFuera: 'Hay una persona, bien visto; pero la chompa es lo que hace, no su herramienta.' },
+        { id: 'A', texto: 'costurera : vestido', error: 'RV17', siFuera: 'Hay una persona, bien visto; pero el vestido es lo que hace, no su herramienta.' },
         { id: 'B', texto: 'trucha : lago', error: 'RV15', siFuera: 'Son de la pesca, como el par base, pero ninguno trabaja con el otro.' },
         { id: 'c', texto: 'tejedora : telar', correcta: true },
         { id: 'D', texto: 'cliente : mesa', error: 'RVA5', siFuera: 'El cliente sí usa la mesa; pero no trabaja con ella. «Usa» queda muy amplia.' },
@@ -374,7 +374,7 @@
           ecuacion: [cubre('trabaja con'), ' + ', cubre('como herramienta')] },
         { estado: { tachar: ['B'], nuevo: ['B'] }, texto: 'Trucha y lago son de la pesca, pero ninguno trabaja con el otro.',
           ecuacion: [mala('B'), ': ', prop('mismo tema')] },
-        { estado: { tachar: ['B', 'A'], nuevo: ['A'] }, texto: 'La chompa no es la herramienta de la tejedora: es lo que hace.',
+        { estado: { tachar: ['B', 'A'], nuevo: ['A'] }, texto: 'El vestido no es la herramienta de la costurera: es lo que hace.',
           ecuacion: [mala('A'), ': ', prop('otra relación')] },
         { estado: { tachar: ['B', 'A', 'D'], nuevo: ['D'] }, texto: 'El cliente usa la mesa, pero no trabaja con ella.',
           ecuacion: [mala('D'), ': ', prop('«usa» es muy amplia')] },
@@ -383,8 +383,8 @@
       ],
     },
     regla: {
-      texto: 'Un par es análogo si cumple la misma oración puente que el par base. Esa oración dice la clase de la relación y su rasgo; el mismo tema no basta.',
-      ecuacion: ['puente = ', { llave: [{ negrita: 'clase' }], nota: 'trabaja con' }, ' + ', { llave: [{ negrita: 'rasgo' }], nota: 'como herramienta' }],
+      texto: 'Un par es análogo si cumple la misma oración puente que el par base. Esa oración dice cómo se unen y su rasgo; el mismo tema no basta.',
+      ecuacion: ['puente = ', { llave: [{ negrita: 'unión' }], nota: 'trabaja con' }, ' + ', { llave: [{ negrita: 'rasgo' }], nota: 'como herramienta' }],
       voz: 'Vuelve a esta regla cuando dudes con un par.',
       condicion: 'la oración es verdadera con el par base y con el otro par, y dice más que «usa» o «tiene que ver».',
     },
@@ -409,6 +409,7 @@
     },
     ahoraTu: {
       pieza: 'rv-soporte',
+      voz: 'Otra hoja. Arma primero la oración puente del par base.',
       generar(s) {
         const A = AHORA_1[s % AHORA_1.length], sop = hoja(13 + (s % AHORA_1.length), A.b);
         return {
@@ -429,8 +430,8 @@
   const RV = () => Kit.piezas['rv-texto'];
   const RELS = {
     herramienta: { texto: 'Herramienta', partes: ['', 'trabaja con', ''] },
-    parte: { texto: 'Parte y todo', partes: ['', 'es una parte de', ''] },
-    especie: { texto: 'Especie y clase', partes: ['', 'es un tipo de', ''] },
+    parte: { texto: 'Parte', partes: ['', 'es una parte de', ''] },
+    especie: { texto: 'Clase', partes: ['', 'es un tipo de', ''] },
     causa: { texto: 'Causa', partes: ['', 'produce', ''] },
     sinonimo: { texto: 'Sinónimos', partes: ['', 'significa casi lo mismo que', ''] },
     antonimo: { texto: 'Antónimos', partes: ['', 'es lo contrario de', ''] },
@@ -477,7 +478,7 @@
       { texto: 'Haz que la oración puente se cumpla con la relación de causa.',
         logrado: val => val.r === 'causa' && veredicto(val.r, val.p) === 'si',
         bien: 'La chispa produce el incendio.' },
-      { texto: 'Encuentra una ficha que cumpla «parte y todo», pero solo al revés.',
+      { texto: 'Encuentra una ficha que cumpla «parte», pero solo al revés.',
         logrado: val => veredicto(val.r, val.p) === 'reves',
         bien: 'Las mismas palabras, en otro orden: la dirección también cuenta.' },
       { texto: 'Busca la ficha que no cumple ninguna de las seis relaciones.',
@@ -499,9 +500,9 @@
   // Definiciones (género próximo): «todo cóndor es un ave».
   // Códigos: RVA2 (se lee «es un tipo de» donde es parte o grupo), RVA6 (se lee «es una pieza de» donde es clase o grupo),
   // RVA7 (se lee «es uno del grupo» donde es clase o parte), RV15 (mismo tema) y RV17 (otra relación).
-  const D_CLASE = 'Género y especie: todo lo que nombra una palabra es lo que nombra la otra (todo gato es un animal).';
-  const D_PARTE = 'Parte y todo: una palabra nombra una pieza que, con otras distintas, forma lo que nombra la otra.';
-  const D_GRUPO = 'Elemento y conjunto: la otra palabra nombra muchos iguales a la primera, juntos.';
+  const D_CLASE = 'Clase (género y especie): todo lo que nombra la primera palabra es lo que nombra la segunda (todo gato es un animal).';
+  const D_PARTE = 'Parte (parte y todo): la primera es una pieza que, con piezas de otro tipo, forma la segunda.';
+  const D_GRUPO = 'Grupo (elemento y conjunto): la segunda nombra un conjunto hecho solo de muchos iguales a la primera.';
   const D_OTRAREL = 'Otra relación: el par se une de otra manera, como una persona y su herramienta.';
   const ETQ2 = ['¿…?', 'es un tipo de', 'es una parte de'];
   const PARES2 = [
@@ -524,28 +525,28 @@
     const n = PARES2.filter(p => val[c2(p)] === p.rel).length;
     return n ? [cubre(`${n} de 5 bien`), '; faltan pares por probar'] : ['Lee cada par con las dos oraciones'];
   };
-  const HOJA_BOSQUE = hoja(36, ['árbol', 'bosque'], ['eucalipto : planta', 'hoja : rama', 'abeja : enjambre', 'leña : fogata']);
+  const HOJA_BOSQUE = hoja(36, ['árbol', 'bosque'], ['eucalipto : planta', 'abeja : enjambre', 'hoja : rama', 'leña : fogata']);
 
   // «Así se resuelve»: cuatro hojas; ningún par repite una palabra del par base. Cada incorrecta cae por una razón: otra
   // relación de «estar dentro» (clase, parte o grupo), el mismo tema u otra relación. La buena va en E, B, D y A.
   const RESUELVE_2 = [
-    { sop: hoja(37, ['página', 'libro'], ['soldado : regimiento', 'rosa : flor', 'sastre : tijera', 'tinta : papel', 'escalón : escalera']), buena: 'E',
-      datos: [D_CLASE, D_PARTE, D_GRUPO], tengo: 'La página es una pieza del libro, distinta de la tapa y del lomo: es de parte y todo.',
+    { sop: hoja(37, ['tapa', 'libro'], ['soldado : regimiento', 'rosa : flor', 'sastre : tijera', 'tinta : papel', 'hélice : ventilador']), buena: 'E',
+      datos: [D_CLASE, D_PARTE, D_GRUPO], tengo: 'La tapa es una pieza del libro, distinta de las páginas y del lomo: es de parte.',
       malas: [mala('A'), ': muchos soldados iguales forman el regimiento, es de ', prop('grupo'), '. ', mala('B'), ': toda rosa es una flor, es de ', prop('clase'), '. ', mala('C'), ' es ', prop('otra relación'), '. ', mala('D'), ' es del ', prop('mismo tema'), '.'],
-      bien: [buena('E'), ': el escalón ', cubre('es una pieza de la escalera'), ', como la página del libro.'],
-      sentido: 'Una escalera sin un escalón está incompleta, como un libro sin una página.' },
-    { sop: hoja(38, ['trucha', 'pez'], ['soldado : batallón', 'papa : tubérculo', 'aleta : tiburón', 'lago : orilla', 'panadera : harina']), buena: 'B',
-      datos: [D_CLASE, D_PARTE, D_GRUPO, 'Tubérculo: tallo grueso bajo tierra que guarda alimento.'], tengo: 'Toda trucha es un pez: «pez» es su clase. Es de género y especie.',
+      bien: [buena('E'), ': la hélice ', cubre('es una pieza del ventilador'), ', como la tapa del libro.'],
+      sentido: 'Un ventilador sin hélice está incompleto, como un libro sin tapa.' },
+    { sop: hoja(38, ['trucha', 'pez'], ['soldado : batallón', 'papa : tubérculo', 'aleta : tiburón', 'red : lago', 'panadera : harina']), buena: 'B',
+      datos: [D_CLASE, D_PARTE, D_GRUPO, 'Tubérculo: tallo grueso bajo tierra que guarda alimento.'], tengo: 'Toda trucha es un pez: «pez» es su clase.',
       malas: [mala('A'), ': muchos soldados forman el batallón, es de ', prop('grupo'), '. ', mala('C'), ': la aleta es una pieza del tiburón, es de ', prop('parte'), '. ', mala('D'), ' es del ', prop('mismo tema'), '. ', mala('E'), ' es ', prop('otra relación'), '.'],
       bien: [buena('B'), ': ', cubre('toda papa es un tubérculo'), ', como toda trucha es un pez.'],
       sentido: 'Al revés no vale: no todo pez es una trucha, ni todo tubérculo una papa.' },
     { sop: hoja(39, ['lobo', 'manada'], ['cuy : roedor', 'motor : auto', 'aullido : luna', 'soldado : ejército', 'entrenador : silbato']), buena: 'D',
-      datos: [D_CLASE, D_PARTE, D_GRUPO], tengo: 'Muchos lobos iguales, juntos, forman la manada: es de elemento y conjunto.',
+      datos: [D_CLASE, D_PARTE, D_GRUPO], tengo: 'Muchos lobos iguales, juntos, forman la manada: es de grupo.',
       malas: [mala('A'), ': todo cuy es un roedor, es de ', prop('clase'), '. ', mala('B'), ': el motor es una pieza del auto, es de ', prop('parte'), '. ', mala('C'), ' es del ', prop('mismo tema'), '. ', mala('E'), ' es ', prop('otra relación'), '.'],
       bien: [buena('D'), ': muchos soldados iguales ', cubre('forman el ejército'), ', como los lobos la manada.'],
       sentido: 'Un lobo no es un tipo de manada ni una pieza distinta: es uno de muchos iguales.' },
     { sop: hoja(40, ['mango', 'fruta'], ['quena : instrumento', 'cuerda : guitarra', 'barco : flota', 'cáscara : pepa', 'agricultor : cosecha']), buena: 'A',
-      datos: [D_CLASE, D_PARTE, D_GRUPO], tengo: 'Todo mango es una fruta: «fruta» es su clase. Es de género y especie.',
+      datos: [D_CLASE, D_PARTE, D_GRUPO], tengo: 'Todo mango es una fruta: «fruta» es su clase.',
       malas: [mala('B'), ': la cuerda es una pieza de la guitarra, es de ', prop('parte'), '. ', mala('C'), ': muchos barcos forman la flota, es de ', prop('grupo'), '. ', mala('D'), ' es del ', prop('mismo tema'), '. ', mala('E'), ' es ', prop('otra relación'), '.'],
       bien: [buena('A'), ': ', cubre('toda quena es un instrumento'), ', como todo mango es una fruta.'],
       sentido: 'La quena no es del tema de la fruta, y sirve igual: lo que se repite es la relación.' },
@@ -583,11 +584,11 @@
   // Nivel 3: la hoja con cinco pares; las correctas son A, B, C, D y E. Ninguno tiene un par al revés (idea 3).
   const EJEMPLOS_2 = [
     { nivel: 1, titulo: 'La prueba del «todo»',
-      enunciado: 'Mateo anotó el par «loro : ave». ¿Es de género y especie? Haz la prueba con la oración «todo loro es un ave».',
+      enunciado: 'Mateo anotó el par «loro : ave». ¿Es de clase? Haz la prueba con la oración «todo loro es un ave».',
       datos: [D_CLASE],
       figura: fig(cuaderno('Cuaderno de Mateo', 'Pares de la práctica', 'Mateo', 'la clase de Comunicación', ['loro : ave'])),
       solucion: [{ texto: ['La oración es verdadera: ', cubre('todo loro es un ave'), '. El ave es la clase del loro.'] }],
-      respuesta: [justo('Sí'), ': es de género y especie'] },
+      respuesta: [justo('Sí'), ': es de clase'] },
     { nivel: 1, titulo: 'La pieza de la casa',
       enunciado: '¿El par «techo : casa» es de clase o de parte?',
       datos: [D_CLASE, D_PARTE],
@@ -598,14 +599,14 @@
       enunciado: '¿Es verdadera la oración «toda uña es un dedo»?',
       datos: [D_CLASE, D_PARTE],
       figura: fig(papel('mural', 'Mural del puesto de salud', 'Cuide sus manos', 'el puesto de salud', 'los vecinos', ['Lávese las manos y las uñas antes de comer.'])),
-      solucion: [{ texto: ['Es falsa: la uña no es un tipo de dedo. La uña ', cubre('es una pieza del dedo'), ': es de parte y todo.'] }],
+      solucion: [{ texto: ['Es falsa: la uña no es un tipo de dedo. La uña ', cubre('es una pieza del dedo'), ': es de parte.'] }],
       respuesta: [justo('No'), ': la uña es una parte del dedo'] },
     { nivel: 1, titulo: 'Muchos iguales',
-      enunciado: '¿El par «pato : bandada» es de parte y todo?',
+      enunciado: '¿El par «pato : bandada» es de parte?',
       datos: [D_PARTE, D_GRUPO],
       figura: fig(papel('mensaje', 'Club de Ciencias', null, 'el profesor de Ciencia', 'el club', ['Mañana vamos al lago a ver la bandada de patos.'])),
       solucion: [{ texto: ['No: la bandada no se arma con piezas distintas. ', cubre('Muchos patos iguales'), ', juntos, forman la bandada: es de ', prop('grupo'), '.'] }],
-      respuesta: [justo('No'), ': es de elemento y conjunto'] },
+      respuesta: [justo('No'), ': es de grupo'] },
     { nivel: 1, titulo: 'Las tres pruebas',
       enunciado: '¿Qué relación hay en «pino : árbol»: de clase, de parte o de grupo?',
       datos: [D_CLASE, D_PARTE, D_GRUPO],
@@ -613,28 +614,28 @@
       solucion: [{ texto: ['Es verdadera ', cubre('«todo pino es un árbol»'), '. El pino no es una pieza del árbol, ni el árbol un grupo de pinos.'] }],
       respuesta: [justo('De clase'), ': todo pino es un árbol'] },
 
-    { nivel: 2, titulo: 'La hoja del cuaderno',
-      enunciado: 'Par base: «hoja : cuaderno». ¿Qué par guarda su relación: «uva : racimo», «cuerda : arpa» o «cuaderno : útil escolar»?',
+    { nivel: 2, titulo: 'La pantalla del celular',
+      enunciado: 'Par base: «pantalla : celular». ¿Qué par guarda su relación: «uva : racimo», «cuerda : arpa» o «cuaderno : útil escolar»?',
       datos: [D_CLASE, D_PARTE, D_GRUPO],
-      figura: fig(cuaderno('Cuaderno de Diego', 'Analogías', 'Diego', 'el simulacro del sábado', ['hoja : cuaderno'])),
+      figura: fig(cuaderno('Cuaderno de Diego', 'Analogías', 'Diego', 'el simulacro del sábado', ['pantalla : celular'])),
       solucion: [
         { texto: ['Muchas uvas forman el racimo: es de ', prop('grupo'), '. Todo cuaderno es un útil escolar: es de ', prop('clase'), '.'] },
-        { texto: ['La cuerda ', cubre('es una pieza del arpa'), ', como la hoja del cuaderno.'] }],
+        { texto: ['La cuerda ', cubre('es una pieza del arpa'), ', como la pantalla del celular.'] }],
       respuesta: [justo('«Cuerda : arpa»')] },
     { nivel: 2, titulo: 'El gato y su clase',
-      enunciado: 'Par base: «gato : felino». ¿Qué par guarda su relación: «cebra : manada», «alpaca : camélido» o «bigote : león marino»?',
-      datos: [D_CLASE, D_PARTE, D_GRUPO, 'Camélido: animal como la llama, la alpaca o la vicuña.'],
+      enunciado: 'Par base: «gato : felino». ¿Qué par guarda su relación: «cebra : manada», «bigote : león marino» o «alpaca : camélido»?',
+      datos: [D_CLASE, D_PARTE, D_GRUPO, 'Camélido: animal andino de cuello largo, como la llama.'],
       figura: fig(papel('mural', 'Mural de la feria de ciencias', 'Animales y sus grupos', '2.º A', 'los visitantes', ['Todo gato es un felino, como el puma.'])),
       solucion: [
         { texto: ['Muchas cebras forman la manada: es de ', prop('grupo'), '. El bigote es una pieza del león marino: es de ', prop('parte'), '.'] },
         { texto: [cubre('Toda alpaca es un camélido'), ', como todo gato es un felino.'] }],
       respuesta: [justo('«Alpaca : camélido»')] },
     { nivel: 2, titulo: 'Las uvas del racimo',
-      enunciado: 'Par base: «uva : racimo». ¿Qué par guarda su relación: «diente : peine», «soldado : tropa» o «trucha arcoíris : pez»?',
+      enunciado: 'Par base: «uva : racimo». ¿Qué par guarda su relación: «soldado : tropa», «asa : taza» o «trucha arcoíris : pez»?',
       datos: [D_CLASE, D_PARTE, D_GRUPO],
       figura: fig(papel('cartel', 'Cartel de un puesto del mercado', 'Uvas de Ica', 'doña Carmen', 'los clientes', ['Se vende el racimo entero.'])),
       solucion: [
-        { texto: ['El diente es una pieza del peine: es de ', prop('parte'), '. Toda trucha arcoíris es un pez: es de ', prop('clase'), '.'] },
+        { texto: ['El asa es una pieza de la taza: es de ', prop('parte'), '. Toda trucha arcoíris es un pez: es de ', prop('clase'), '.'] },
         { texto: [cubre('Muchos soldados iguales forman la tropa'), ', como muchas uvas el racimo.'] }],
       respuesta: [justo('«Soldado : tropa»')] },
     { nivel: 2, titulo: 'El motor y el auto',
@@ -646,7 +647,7 @@
         { texto: ['La hélice ', cubre('es una pieza del avión'), ', como el motor del auto.'] }],
       respuesta: [justo('«Hélice : avión»')] },
     { nivel: 2, titulo: 'La tortuga y su clase',
-      enunciado: 'Par base: «tortuga : reptil». ¿Qué par guarda su relación: «pata : silla», «quinua : grano» o «hormiga : colonia»?',
+      enunciado: 'Par base: «tortuga : reptil». ¿Qué par guarda su relación: «pata : silla», «hormiga : colonia» o «quinua : grano»?',
       datos: [D_CLASE, D_PARTE, D_GRUPO],
       figura: fig(cuaderno('Cuaderno de Rosa', 'Analogías', 'Rosa', 'el simulacro del domingo', ['tortuga : reptil'])),
       solucion: [
@@ -692,7 +693,7 @@
       respuesta: [buena('D'), ': cuerda : guitarra'] },
     { nivel: 3, titulo: 'El durazno',
       enunciado: 'Pregunta 45 del simulacro, de analogías. ¿Qué par guarda la misma relación que el par base?',
-      datos: [D_CLASE, D_PARTE, D_GRUPO, 'Olluco: tubérculo andino, como la papa.'],
+      datos: [D_CLASE, D_PARTE, D_GRUPO, 'Olluco: planta andina que se come, como la papa.'],
       figura: fig(hoja(45, ['durazno', 'fruta'], ['pepa : palta', 'uva : racimo', 'cocinero : olla', 'mermelada : desayuno', 'olluco : tubérculo'])),
       solucion: [
         { texto: [mala('A'), ': la pepa es una pieza de la palta, es de ', prop('parte'), '. ', mala('B'), ': muchas uvas forman el racimo, es de ', prop('grupo'), '.'] },
@@ -711,7 +712,7 @@
       tarjetas: [
         { titulo: 'El cuaderno de Mateo', texto: 'Mateo copió cinco pares de su práctica de Comunicación. A cada uno le tiene que poner la oración puente que lo hace verdadero: si la primera palabra es un tipo de la segunda o una parte de ella.',
           pieza: 'rv-soporte', dibujo: { datos: cuad2(INI2), estado: {} } },
-        { titulo: 'Un tipo de: la clase', texto: 'Todo gato es un animal: «animal» es la clase del gato, como el género próximo de una definición. Si la oración «todo… es un…» es verdadera, el par es de género y especie.' },
+        { titulo: 'Un tipo de: la clase', texto: 'Todo gato es un animal: «animal» es la clase del gato, como el género próximo de una definición. Si la oración «todo… es un…» es verdadera, el par es de clase (género y especie).' },
         { titulo: 'Una parte de: la pieza', texto: 'La rueda no es una bicicleta: es una pieza de ella. La bicicleta tiene piezas distintas, como el timón, el asiento y las ruedas, que juntas la forman.' },
         { titulo: 'Qué mirar al jugar', texto: 'Toca un par en el cuaderno para cambiar su oración puente: «es un tipo de» o «es una parte de». Lee la oración entera y mira si es verdadera.' },
       ],
@@ -741,15 +742,16 @@
     predice: {
       pregunta: 'Par base: «ÁRBOL : BOSQUE». ¿Qué par guarda la misma relación? Las letras son las de la hoja.',
       voz: 'Elige antes de ver: después lo comprobamos con la oración puente.',
+      datos: [D_CLASE, D_PARTE],
       orden: 'fijo',
       opciones: [
         { id: 'A', texto: 'eucalipto : planta', error: 'RVA2', siFuera: 'Todo eucalipto es una planta, bien; pero ningún árbol es un bosque: no es de clase.' },
-        { id: 'B', texto: 'hoja : rama', error: 'RVA6', siFuera: 'La hoja es una pieza de la rama; pero el bosque no se arma con piezas distintas.' },
-        { id: 'c', texto: 'abeja : enjambre', correcta: true },
+        { id: 'b', texto: 'abeja : enjambre', correcta: true },
+        { id: 'C', texto: 'hoja : rama', error: 'RVA6', siFuera: 'La hoja es una pieza de la rama; pero el bosque no tiene piezas de otro tipo: son puros árboles.' },
         { id: 'D', texto: 'leña : fogata', error: 'RV15', siFuera: 'Leña y fogata tienen que ver con el bosque, pero no se unen como árbol y bosque.' },
       ],
       dibujo: { datos: HOJA_BOSQUE, estado: {} },
-      revelar: { datos: HOJA_BOSQUE, estado: estHoja(HOJA_BOSQUE, 'C') },
+      revelar: { datos: HOJA_BOSQUE, estado: estHoja(HOJA_BOSQUE, 'B') },
       coincide: 'Coincide: muchas abejas iguales forman el enjambre, como muchos árboles forman el bosque.',
     },
     mira: {
@@ -758,16 +760,16 @@
       pasos: [
         { estado: { senal: ['h1'], tachar: ['A'], nuevo: ['A'] }, texto: 'Todo eucalipto es una planta, pero ningún árbol es un bosque.',
           ecuacion: [mala('A'), ': ', prop('es de clase')] },
-        { estado: { tachar: ['A', 'B'], nuevo: ['B'] }, texto: 'La hoja es una pieza de la rama; un bosque no tiene piezas distintas.',
-          ecuacion: [mala('B'), ': ', prop('es de parte')] },
-        { estado: { tachar: ['A', 'B', 'D'], nuevo: ['D'] }, texto: 'Leña y fogata son del tema del bosque, pero no se unen así.',
+        { estado: { tachar: ['A', 'C'], nuevo: ['C'] }, texto: 'La hoja es una pieza de la rama; el bosque son puros árboles.',
+          ecuacion: [mala('C'), ': ', prop('es de parte')] },
+        { estado: { tachar: ['A', 'C', 'D'], nuevo: ['D'] }, texto: 'Leña y fogata son del tema del bosque, pero no se unen así.',
           ecuacion: [mala('D'), ': ', prop('mismo tema')] },
-        { estado: Object.assign(estHoja(HOJA_BOSQUE, 'C'), { nuevo: ['C'] }), texto: 'Muchos árboles iguales forman el bosque; muchas abejas, el enjambre.',
-          ecuacion: [buena('C'), ': ', cubre('uno de muchos iguales')] },
+        { estado: Object.assign(estHoja(HOJA_BOSQUE, 'B'), { nuevo: ['B'] }), texto: 'Muchos árboles iguales forman el bosque; muchas abejas, el enjambre.',
+          ecuacion: [buena('B'), ': ', cubre('uno de muchos iguales')] },
       ],
     },
     regla: {
-      texto: 'Clase: todo cóndor es un ave. Parte: el pétalo es una pieza de la flor, distinta de las otras. Grupo: muchos árboles iguales, juntos, forman el bosque.',
+      texto: 'Clase: todo cóndor es un ave. Parte: el pétalo es una pieza de la flor, que también tiene tallo y hojas. Grupo: el bosque está hecho solo de muchos árboles.',
       ecuacion: ['clase: ', { negrita: 'todo … es un …' }, '   ·   ', 'parte: ', { negrita: '… es una pieza de …' }, '   ·   ', 'grupo: ', { negrita: 'muchos … forman …' }],
       voz: 'Vuelve a esta regla cuando dudes con un par.',
       condicion: 'la oración puente se lee entera y es verdadera: «todo pétalo es una flor» es falsa.',
@@ -793,6 +795,7 @@
     },
     ahoraTu: {
       pieza: 'rv-soporte',
+      voz: 'Otra hoja. Prueba las tres oraciones con el par base.',
       generar(s) {
         const A = AHORA_2[s % AHORA_2.length], sop = hoja(46 + (s % AHORA_2.length), A.b);
         return {
@@ -857,7 +860,7 @@
   const HOJA_HUMO = hoja(51, ['humo', 'fuego'], ['lluvia : barro', 'barro : lluvia', 'noche : día', 'leña : chimenea']);
   const RESUELVE_3 = [
     { sop: hoja(52, ['incendio', 'ceniza'], ['tos : resfrío', 'martes : miércoles', 'golpe : chichón', 'bombero : manguera', 'fósforo : leña']), buena: 'C',
-      datos: [D_CAUSA, D_ORDEN, D_SUCESION, 'Chichón: bulto que sale en la cabeza después de un golpe.'], tengo: 'El incendio produce la ceniza: el par base pone primero la causa.',
+      datos: [D_CAUSA, D_ORDEN, D_SUCESION, 'Chichón: bulto que se forma en la cabeza.'], tengo: 'El incendio produce la ceniza: el par base pone primero la causa.',
       malas: [mala('A'), ': el resfrío produce la tos, ', prop('al revés'), '. ', mala('B'), ': el martes no produce el miércoles, es ', prop('sucesión'), '. ', mala('D'), ' es ', prop('otra relación'), '. ', mala('E'), ' es del ', prop('mismo tema'), '.'],
       bien: [buena('C'), ': el golpe ', cubre('produce el chichón'), ': causa primero, como el par base.'],
       sentido: 'La oración «el primero produce el segundo» se lee igual con el par base y con el golpe.' },
@@ -938,7 +941,7 @@
       respuesta: [justo('El apagón produce la oscuridad')] },
 
     { nivel: 2, titulo: 'El terremoto',
-      enunciado: 'Par base: «terremoto : grieta». ¿Qué par guarda su relación: «sed : calor», «choque : abolladura» o «víspera : fiesta patronal»?',
+      enunciado: 'Par base: «terremoto : grieta». ¿Qué par guarda su relación: «sed : calor», «víspera : fiesta patronal» o «choque : abolladura»?',
       datos: [D_CAUSA, D_ORDEN, D_SUCESION],
       figura: fig(cuaderno('Cuaderno de Rosa', 'Analogías', 'Rosa', 'la práctica de Comunicación', ['terremoto : grieta'])),
       solucion: [
@@ -946,7 +949,7 @@
         { texto: ['El choque ', cubre('produce la abolladura'), ': causa primero, como el par base.'] }],
       respuesta: [justo('«Choque : abolladura»')] },
     { nivel: 2, titulo: 'El fuego quema',
-      enunciado: 'Par base: «moho : humedad». ¿Qué par guarda su relación: «calor : sudor», «quemadura : fuego» o «toalla : ropa mojada»?',
+      enunciado: 'Par base: «moho : humedad». ¿Qué par guarda su relación: «quemadura : fuego», «calor : sudor» o «toalla : ropa mojada»?',
       datos: [D_CAUSA, D_ORDEN],
       figura: fig(papel('cartel', 'Cartel de la cocina del comedor', 'Cuidado en la cocina', 'el comedor escolar', 'las cocineras', ['Seque bien las paredes: la humedad trae moho.'])),
       solucion: [
@@ -954,7 +957,7 @@
         { texto: ['El fuego ', cubre('produce la quemadura'), ': efecto primero, como el moho y la humedad.'] }],
       respuesta: [justo('«Quemadura : fuego»')] },
     { nivel: 2, titulo: 'La caminata',
-      enunciado: 'Par base: «esfuerzo : cansancio». ¿Qué par guarda su relación: «mañana : tarde», «ampolla : zapato apretado» o «caminata : ampolla»?',
+      enunciado: 'Par base: «esfuerzo : cansancio». ¿Qué par guarda su relación: «mañana : tarde», «caminata : ampolla» o «ampolla : zapato apretado»?',
       datos: [D_CAUSA, D_ORDEN, D_SUCESION],
       figura: fig(papel('mensaje', 'Promoción 2027', null, 'el delegado', 'la promoción', ['El sábado subimos al mirador: traigan zapatillas cómodas.'])),
       solucion: [
@@ -962,20 +965,20 @@
         { texto: ['La caminata ', cubre('produce la ampolla'), ': causa primero, como el par base.'] }],
       respuesta: [justo('«Caminata : ampolla»')] },
     { nivel: 2, titulo: 'La picadura',
-      enunciado: 'Par base: «virus : resfrío». ¿Qué par guarda su relación: «ola : viento», «zancudo : picadura» o «termómetro : sala de espera»?',
+      enunciado: 'Par base: «virus : resfrío». ¿Qué par guarda su relación: «ola : viento», «termómetro : sala de espera» o «zancudo : picadura»?',
       datos: [D_CAUSA, D_ORDEN],
       figura: fig(papel('mural', 'Mural del puesto de salud', 'Cuide su salud', 'el puesto de salud', 'los vecinos', ['El resfrío lo causa un virus.'])),
       solucion: [
         { texto: ['El viento produce la ola: efecto primero, ', prop('al revés'), '. Termómetro y sala de espera son del ', prop('mismo tema'), '.'] },
         { texto: ['El zancudo ', cubre('produce la picadura'), ': causa primero, como el par base.'] }],
       respuesta: [justo('«Zancudo : picadura»')] },
-    { nivel: 2, titulo: 'El hielo y el frío',
-      enunciado: 'Par base: «hielo : frío». ¿Qué par guarda su relación: «charco : lluvia», «sol : sombra» o «noche : amanecer»?',
+    { nivel: 2, titulo: 'La cicatriz',
+      enunciado: 'Par base: «cicatriz : herida». ¿Qué par guarda su relación: «charco : lluvia», «sol : sombra» o «noche : amanecer»?',
       datos: [D_CAUSA, D_ORDEN, D_SUCESION],
-      figura: fig(cuaderno('Cuaderno de Mateo', 'Analogías', 'Mateo', 'el simulacro del sábado', ['hielo : frío'])),
+      figura: fig(cuaderno('Cuaderno de Mateo', 'Analogías', 'Mateo', 'el simulacro del sábado', ['cicatriz : herida'])),
       solucion: [
         { texto: ['El sol produce la sombra: causa primero, ', prop('al revés'), '. La noche no produce el amanecer: es ', prop('sucesión'), '.'] },
-        { texto: ['La lluvia ', cubre('produce el charco'), ': efecto primero, como el hielo y el frío.'] }],
+        { texto: ['La lluvia ', cubre('produce el charco'), ': efecto primero, como la cicatriz y la herida.'] }],
       respuesta: [justo('«Charco : lluvia»')] },
 
     { nivel: 3, titulo: 'La mentira',
@@ -1057,7 +1060,7 @@
         { s: prop('naranja'), t: 'ficha que no la cumple así' },
         { s: 'tachado', t: 'ficha que descartaste' },
       ],
-      controles: FICHAS3.map((x, k) => ({ id: x.id, etiqueta: `Ficha ${k + 1}`, opciones: [{ valor: 0, texto: 'así' }, { valor: 1, texto: 'al revés' }, { valor: 2, texto: 'tachar' }] })),
+      controles: FICHAS3.map((x, k) => ({ id: x.id, etiqueta: `Ficha ${k + 2}`, opciones: [{ valor: 0, texto: 'así' }, { valor: 1, texto: 'al revés' }, { valor: 2, texto: 'tachar' }] })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(FICHAS3.map(x => [x.id, x.id])) }, mural3(val)), estado: est3(val) }),
       lectura: lectura3,
       minimo: 3,
@@ -1119,6 +1122,7 @@
     },
     ahoraTu: {
       pieza: 'rv-soporte',
+      voz: 'Otra hoja. Mira qué produce a qué, y en qué orden.',
       generar(s) {
         const A = AHORA_3[s % AHORA_3.length], sop = hoja(61 + (s % AHORA_3.length), A.b);
         return {
@@ -1155,7 +1159,7 @@
   const D_SIN = 'Sinónimos: dicen casi lo mismo del mismo rasgo.';
   const D_ANT = 'Antónimos: dicen lo opuesto del mismo rasgo.';
   const D_OTRO = 'Otro rasgo: dos palabras que hablan de cosas distintas no son sinónimos ni antónimos.';
-  const D_GRADO = 'Intensidad: las dos dicen lo mismo del rasgo, pero una con más fuerza que la otra.';
+  const D_GRADO = 'Intensidad: las dos dicen lo mismo de un rasgo, pero una en mayor grado (más fuerte, más grande).';
   const ETQ4 = ['¿…?', 'sinónimos', 'antónimos', 'otro rasgo'];
   const W4 = [
     { id: 'w1', w: 'contento', rel: 1, por: { 2: '«contento» dice lo mismo del ánimo, no lo contrario', 3: '«contento» habla del ánimo, como «alegre»' } },
@@ -1175,9 +1179,9 @@
     if (m) return [prop(`alegre : ${m.w}`), ': ', m.por[val[c4(m)]]];
     return ['Piensa de qué rasgo habla cada palabra'];
   };
-  const HOJA_TIBIO = hoja(71, ['tibio', 'caliente'], ['pobre : rico', 'aguacero : llovizna', 'llovizna : aguacero', 'termómetro : enfermera']);
+  const HOJA_TIBIO = hoja(71, ['tibio', 'caliente'], ['pobre : rico', 'aguacero : llovizna', 'termómetro : enfermera', 'llovizna : aguacero']);
   const RESUELVE_4 = [
-    { sop: hoja(72, ['valiente', 'cobarde'], ['veloz : rápido', 'generoso : tacaño', 'fuerte : cansado', 'temor : pánico', 'héroe : batalla final']), buena: 'B',
+    { sop: hoja(72, ['valiente', 'cobarde'], ['veloz : rápido', 'generoso : tacaño', 'fuerte : callado', 'temor : pánico', 'héroe : batalla final']), buena: 'B',
       datos: [D_SIN, D_ANT, D_OTRO, D_GRADO], tengo: 'Valiente y cobarde hablan del mismo rasgo, el valor, y dicen lo opuesto: son antónimos.',
       malas: [mala('A'), ' son ', prop('sinónimos'), '. ', mala('C'), ' hablan de ', prop('otro rasgo'), '. ', mala('D'), ': pánico dice más que temor, es ', prop('intensidad'), '. ', mala('E'), ' es del ', prop('mismo tema'), '.'],
       bien: [buena('B'), ': generoso y tacaño ', cubre('dicen lo opuesto del mismo rasgo'), '.'],
@@ -1192,8 +1196,8 @@
       malas: [mala('B'), ' son ', prop('antónimos'), '. ', mala('C'), ' va de más a menos: ', prop('al revés'), '. ', mala('D'), ' es del ', prop('mismo tema'), '. ', mala('E'), ' hablan de ', prop('otro rasgo'), '.'],
       bien: [buena('A'), ': la laguna ', cubre('es mucho más grande que el charco'), ': de menos a más.'],
       sentido: 'La brisa y el ventarrón no son opuestos: los dos son viento, uno con más fuerza.' },
-    { sop: hoja(75, ['helado', 'frío'], ['tibio : caliente', 'seco : mojado', 'hielo : invierno andino', 'alto : pesado', 'furioso : enojado']), buena: 'E',
-      datos: [D_SIN, D_ANT, D_OTRO, D_GRADO, D_ORDEN], tengo: 'Helado dice más que frío: es intensidad, de más a menos.',
+    { sop: hoja(75, ['ardiente', 'caliente'], ['tibio : hirviendo', 'seco : mojado', 'fogón : cocina de leña', 'alto : pesado', 'furioso : enojado']), buena: 'E',
+      datos: [D_SIN, D_ANT, D_OTRO, D_GRADO, D_ORDEN], tengo: 'Ardiente dice más que caliente: es intensidad, de más a menos.',
       malas: [mala('A'), ' va de menos a más: ', prop('al revés'), '. ', mala('B'), ' son ', prop('antónimos'), '. ', mala('C'), ' es del ', prop('mismo tema'), '. ', mala('D'), ' hablan de ', prop('otro rasgo'), '.'],
       bien: [buena('E'), ': furioso ', cubre('dice más que enojado'), ': de más a menos, como el par base.'],
       sentido: 'También en la intensidad manda el orden: primero el más fuerte, como en el par base.' },
@@ -1259,23 +1263,23 @@
       respuesta: [justo('Más'), ': va de menos a más'] },
 
     { nivel: 2, titulo: 'Limpio y sucio',
-      enunciado: 'Par base: «limpio : sucio». ¿Qué par guarda su relación: «aseado : pulcro», «claro : oscuro» o «gris : tibio»?',
+      enunciado: 'Par base: «limpio : sucio». ¿Qué par guarda su relación: «claro : oscuro», «aseado : pulcro» o «gris : tibio»?',
       datos: [D_SIN, D_ANT, D_OTRO],
       figura: fig(papel('cartel', 'Cartel del baño del colegio', 'Baño limpio', 'el municipio escolar', 'los estudiantes', ['Deja el baño limpio para el que viene.'])),
       solucion: [
         { texto: ['«Aseado : pulcro» son ', prop('sinónimos'), '. «Gris : tibio» hablan de ', prop('otro rasgo'), ': color y temperatura.'] },
         { texto: ['«Claro : oscuro» ', cubre('dicen lo opuesto del mismo rasgo'), ', como limpio y sucio.'] }],
       respuesta: [justo('«Claro : oscuro»')] },
-    { nivel: 2, titulo: 'Enojado y molesto',
-      enunciado: 'Par base: «enojado : molesto». ¿Qué par guarda su relación: «bravo : rabioso», «calmado : enfurecido» o «tranquilo : sereno»?',
+    { nivel: 2, titulo: 'Asustado y temeroso',
+      enunciado: 'Par base: «asustado : temeroso». ¿Qué par guarda su relación: «bravo : rabioso», «tranquilo : sereno» o «calmado : enfurecido»?',
       datos: [D_SIN, D_ANT, D_GRADO],
-      figura: fig(cuaderno('Cuaderno de Rosa', 'Sinónimos', 'Rosa', 'el simulacro del domingo', ['enojado : molesto'])),
+      figura: fig(cuaderno('Cuaderno de Rosa', 'Sinónimos', 'Rosa', 'el simulacro del domingo', ['asustado : temeroso'])),
       solucion: [
         { texto: ['«Rabioso» dice más que «bravo»: es ', prop('intensidad'), '. «Calmado : enfurecido» son ', prop('antónimos'), '.'] },
-        { texto: ['«Tranquilo : sereno» ', cubre('dicen casi lo mismo'), ', como enojado y molesto.'] }],
+        { texto: ['«Tranquilo : sereno» ', cubre('dicen casi lo mismo'), ', como asustado y temeroso.'] }],
       respuesta: [justo('«Tranquilo : sereno»')] },
     { nivel: 2, titulo: 'La colina',
-      enunciado: 'Par base: «charco : lago». ¿Qué par guarda su relación: «río : riachuelo», «colina : montaña» o «sequía : inundación»?',
+      enunciado: 'Par base: «charco : lago». ¿Qué par guarda su relación: «río : riachuelo», «sequía : inundación» o «colina : montaña»?',
       datos: [D_ANT, D_GRADO, D_ORDEN],
       figura: fig(papel('mural', 'Mural de la feria de ciencias', 'El agua del altiplano', '5.º B', 'los visitantes', ['Del charco al lago Titicaca, el agua se junta.'])),
       solucion: [
@@ -1328,22 +1332,22 @@
       respuesta: [buena('C'), ': tibio : ardiente'] },
     { nivel: 3, titulo: 'Hablar y gritar',
       enunciado: 'Pregunta 79 del simulacro, de analogías. ¿Qué par guarda la misma relación que el par base?',
-      datos: [D_ANT, D_OTRO, D_GRADO, D_ORDEN, 'Contemplar: mirar algo con atención y por un buen rato.'],
-      figura: fig(hoja(79, ['hablar', 'gritar'], ['reír : llorar', 'correr : caminar', 'oír : comer', 'mirar : contemplar', 'altavoz : discurso largo'])),
+      datos: [D_ANT, D_OTRO, D_GRADO, D_ORDEN],
+      figura: fig(hoja(79, ['hablar', 'gritar'], ['reír : llorar', 'correr : caminar', 'oír : comer', 'tocar : golpear', 'altavoz : discurso largo'])),
       solucion: [
         { texto: [mala('A'), ' son ', prop('antónimos'), '. ', mala('B'), ' va de más a menos: ', prop('al revés'), '.'] },
         { texto: [mala('C'), ' hablan de ', prop('otro rasgo'), '. ', mala('E'), ' es del ', prop('mismo tema'), '.'] },
-        { texto: [buena('D'), ': contemplar ', cubre('es mirar con más fuerza'), ': de menos a más, como hablar y gritar.'] }],
-      respuesta: [buena('D'), ': mirar : contemplar'] },
+        { texto: [buena('D'), ': golpear ', cubre('es tocar con mucha más fuerza'), ': de menos a más, como hablar y gritar.'] }],
+      respuesta: [buena('D'), ': tocar : golpear'] },
     { nivel: 3, titulo: 'Escaso',
       enunciado: 'Pregunta 80 del simulacro, de analogías. ¿Qué par guarda la misma relación que el par base?',
       datos: [D_SIN, D_ANT, D_OTRO, D_GRADO],
-      figura: fig(hoja(80, ['escaso', 'abundante'], ['mucho : demasiado', 'raro : extraño', 'mercado : venta', 'veloz : salado', 'frecuente : raro'])),
+      figura: fig(hoja(80, ['escaso', 'abundante'], ['mucho : demasiado', 'raro : extraño', 'mercado : venta', 'veloz : salado', 'fácil : difícil'])),
       solucion: [
         { texto: [mala('A'), ': demasiado dice más que mucho, es ', prop('intensidad'), '. ', mala('B'), ' son ', prop('sinónimos'), '.'] },
         { texto: [mala('C'), ' es del ', prop('mismo tema'), '. ', mala('D'), ' hablan de ', prop('otro rasgo'), '.'] },
-        { texto: [buena('E'), ': frecuente y raro ', cubre('dicen lo opuesto del mismo rasgo'), ', como escaso y abundante.'] }],
-      respuesta: [buena('E'), ': frecuente : raro'] },
+        { texto: [buena('E'), ': fácil y difícil ', cubre('dicen lo opuesto del mismo rasgo'), ', como escaso y abundante.'] }],
+      respuesta: [buena('E'), ': fácil : difícil'] },
   ];
 
   const sinAnt = {
@@ -1391,11 +1395,11 @@
       opciones: [
         { id: 'A', texto: 'pobre : rico', error: 'RVA3', siFuera: 'Tibio y caliente hablan de la temperatura, bien; pero no son opuestos: caliente dice más.' },
         { id: 'B', texto: 'aguacero : llovizna', error: 'RV16', siFuera: 'Es un grado del mismo rasgo, bien; pero va de más a menos: al revés.' },
-        { id: 'c', texto: 'llovizna : aguacero', correcta: true },
-        { id: 'D', texto: 'termómetro : enfermera', error: 'RV15', siFuera: 'Van con la temperatura, como el par base, pero no dicen más o menos de nada.' },
+        { id: 'C', texto: 'termómetro : enfermera', error: 'RV15', siFuera: 'Van con la temperatura, como el par base, pero no dicen más o menos de nada.' },
+        { id: 'd', texto: 'llovizna : aguacero', correcta: true },
       ],
       dibujo: { datos: HOJA_TIBIO, estado: {} },
-      revelar: { datos: HOJA_TIBIO, estado: estHoja(HOJA_TIBIO, 'C') },
+      revelar: { datos: HOJA_TIBIO, estado: estHoja(HOJA_TIBIO, 'D') },
       coincide: 'Coincide: la llovizna y el aguacero son lluvia, una con más fuerza, como tibio y caliente.',
     },
     mira: {
@@ -1403,20 +1407,20 @@
       voz: 'Volvamos a la hoja, par por par.',
       pasos: [
         { estado: { senal: ['h1'], nuevo: ['h1'] }, texto: 'Tibio y caliente hablan del mismo rasgo: la temperatura.',
-          ecuacion: [cubre('mismo rasgo'), ', ', cubre('mismo lado')] },
-        { estado: { tachar: ['A'], nuevo: ['A'] }, texto: 'No son opuestos: caliente dice más que tibio, del mismo lado.',
+          ecuacion: [cubre('mismo rasgo'), ', ', cubre('distinto grado')] },
+        { estado: { tachar: ['A'], nuevo: ['A'] }, texto: 'No son opuestos: los dos dicen calor, y caliente dice más que tibio.',
           ecuacion: [mala('A'), ': ', prop('antónimos')] },
-        { estado: { tachar: ['A', 'D'], nuevo: ['D'] }, texto: 'Termómetro y enfermera van con la temperatura, pero no son un grado.',
-          ecuacion: [mala('D'), ': ', prop('mismo tema')] },
-        { estado: { tachar: ['A', 'D', 'B'], nuevo: ['B'] }, texto: 'Aguacero y llovizna van de más a menos: al revés.',
+        { estado: { tachar: ['A', 'C'], nuevo: ['C'] }, texto: 'Termómetro y enfermera van con la temperatura, pero no son un grado.',
+          ecuacion: [mala('C'), ': ', prop('mismo tema')] },
+        { estado: { tachar: ['A', 'C', 'B'], nuevo: ['B'] }, texto: 'Aguacero y llovizna van de más a menos: al revés.',
           ecuacion: [mala('B'), ': ', prop('al revés')] },
-        { estado: Object.assign(estHoja(HOJA_TIBIO, 'C'), { nuevo: ['C'] }), texto: 'Llovizna y aguacero: el mismo rasgo, de menos a más.',
-          ecuacion: [buena('C'), ': ', cubre('intensidad')] },
+        { estado: Object.assign(estHoja(HOJA_TIBIO, 'D'), { nuevo: ['D'] }), texto: 'Llovizna y aguacero: el mismo rasgo, de menos a más.',
+          ecuacion: [buena('D'), ': ', cubre('intensidad')] },
       ],
     },
     regla: {
-      texto: 'Los sinónimos dicen casi lo mismo de un rasgo; los antónimos, lo opuesto del mismo rasgo. Si una dice lo mismo con más fuerza, la relación es de intensidad.',
-      ecuacion: ['sinónimos: ', { negrita: 'mismo lado' }, '   ·   ', 'antónimos: ', { negrita: 'lados opuestos' }, '   ·   ', 'intensidad: ', { negrita: 'más fuerza' }],
+      texto: 'Los sinónimos dicen casi lo mismo de un rasgo; los antónimos, lo opuesto del mismo rasgo. Si una dice lo mismo en mayor grado, la relación es de intensidad.',
+      ecuacion: ['sinónimos: ', { negrita: 'mismo lado' }, '   ·   ', 'antónimos: ', { negrita: 'lados opuestos' }, '   ·   ', 'intensidad: ', { negrita: 'mayor grado' }],
       voz: 'Vuelve a esta regla cuando dudes con un par.',
       condicion: 'las dos palabras hablan del mismo rasgo (ánimo, temperatura, tamaño); si hablan de rasgos distintos, no son antónimos.',
     },
@@ -1430,7 +1434,7 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden el par que se une como el par base: sinónimos, antónimos o intensidad.' },
             { tipo: 'datos', texto: R.tengo },
-            { tipo: 'regla', texto: 'Primero, de qué rasgo habla cada palabra. Después, si dicen lo mismo, lo opuesto o lo mismo con más fuerza.' },
+            { tipo: 'regla', texto: 'Primero, de qué rasgo habla cada palabra. Después, si dicen lo mismo, lo opuesto o lo mismo en mayor grado.' },
             { tipo: 'aplica', texto: R.malas },
             { tipo: 'aplica', texto: R.bien, dibujo: { datos: R.sop, estado: estHoja(R.sop, R.buena) } },
             { tipo: 'sentido', texto: R.sentido },
@@ -1441,6 +1445,7 @@
     },
     ahoraTu: {
       pieza: 'rv-soporte',
+      voz: 'Otra hoja. Primero, de qué rasgo habla el par base.',
       generar(s) {
         const A = AHORA_4[s % AHORA_4.length], sop = hoja(81 + (s % AHORA_4.length), A.b);
         return {
@@ -1495,7 +1500,7 @@
   const TABLA5 = { titulo: 'Los pares de la hoja', cols: ['Par', 'El segundo', 'Trabaja'], anchos: [142, 104, 48],
     filas: PARES5.map(p => ({ id: p.id, celdas: [p.t, p.es, p.trabaja ? 'sí' : 'no'] })) };
   const FIG5 = { soporte: HOJA_MINA, toques: { g: 'g', r: 'r' }, casos: TABLA5,
-    entrada: { termino: 'minero : mina', rotulo: 'Oración puente', partes: [{ id: 'g', papel: 'Clase' }, { id: 'r', papel: 'Rasgo', casilla: true, hueco: R_LUGAR }] } };
+    entrada: { termino: 'minero : mina', rotulo: 'Oración puente', partes: [{ id: 'g', papel: 'Unión' }, { id: 'r', papel: 'Rasgo', casilla: true, hueco: R_LUGAR }] } };
   const est5 = val => {
     const m = medir5(val), justa = m.dentro.length === 1 && !m.cuelan.length;
     return { partes: { g: CLASES5[val.g].t, r: val.r ? R_LUGAR : '' }, color: justa ? 'f' : 'o',
@@ -1506,18 +1511,18 @@
     const m = medir5(val);
     if (m.dentro.length === 1 && !m.cuelan.length) return [justo('Justa'), ': pasa solo ', cubre('profesor : colegio')];
     if (m.cuelan.length === 1) return [prop('Muy amplia'), ': pasa también ', prop(m.cuelan[0].corto)];
-    return [prop('Muy amplia'), `: pasan ${m.dentro.length} pares`];
+    return ['Se cuelan ', prop(`${m.cuelan.length} pares`), ' junto a ', cubre('profesor : colegio')];
   };
   const INI5 = { g: 'tiene', r: 0 };
   const HOJA_CANTA = hoja(92, ['cantante', 'cantar'], ['correr : corredor', 'guitarrista : guitarra', 'pescador : pescar', 'bailarín : baile']);
   const RESUELVE_5 = [
-    { sop: hoja(93, ['panadero', 'pan'], ['tejer : tejedora', 'sastre : coser', 'comprador : tienda', 'harina : trigo', 'zapatero : zapato']), buena: 'E',
+    { sop: hoja(93, ['panadero', 'pan'], ['chompa : tejedora', 'sastre : coser', 'comprador : tienda', 'harina : trigo', 'zapatero : zapato']), buena: 'E',
       datos: [D_JUSTA, D_AMPLIA5, D_CAT], tengo: 'El panadero hace el pan: una persona y la cosa que hace, nombrada con un sustantivo.',
       puente: 'El primero hace el segundo, que es una cosa.',
       malas: [mala('A'), ' va ', prop('al revés'), '. ', mala('B'), ': «coser» es una acción, ', prop('otra categoría'), '. ', mala('C'), ' es ', prop('otra relación'), '. ', mala('D'), ' es del ', prop('mismo tema'), '.'],
       bien: [buena('E'), ': el zapatero ', cubre('hace el zapato, que es una cosa'), '.'],
       sentido: 'Con «el primero tiene que ver con el segundo» pasaban casi todos: esa oración es muy amplia.' },
-    { sop: hoja(94, ['piloto', 'avión'], ['pasajero : bus', 'manejar : chofer', 'maquinista : tren', 'aeropuerto : pista', 'mecánico : motor']), buena: 'C',
+    { sop: hoja(94, ['piloto', 'avión'], ['pasajero : bus', 'camión : camionero', 'maquinista : tren', 'aeropuerto : pista', 'mecánico : motor']), buena: 'C',
       datos: [D_JUSTA, D_AMPLIA5, D_CAT], tengo: 'El piloto conduce el avión: una persona y el vehículo que conduce.',
       puente: 'El primero conduce el segundo.',
       malas: [mala('A'), ': el pasajero va en el bus, no lo conduce: ', prop('muy amplia'), '. ', mala('B'), ' va ', prop('al revés'), '. ', mala('D'), ' es del ', prop('mismo tema'), '. ', mala('E'), ': el mecánico no conduce el motor.'],
@@ -1578,7 +1583,7 @@
       solucion: [{ texto: ['Sí: el turista tiene que ver con la playa. La oración deja pasar a los dos: es ', prop('muy amplia'), '.'] }],
       respuesta: [justo('Sí'), ': por eso es muy amplia'] },
     { nivel: 1, titulo: 'El rasgo que falta',
-      enunciado: '«El primero está en el segundo» vale para «minero : mina» y para «turista : playa». ¿Qué rasgo deja fuera al turista?',
+      enunciado: '«El primero está en el segundo» vale para «minero : mina» y para «turista : playa». ¿Qué le falta decir a la oración para dejar fuera al turista?',
       datos: [D_JUSTA, D_AMPLIA5],
       figura: fig(cuaderno('Cuaderno de Rosa', 'Oraciones puente', 'Rosa', 'la práctica de Comunicación', ['minero : mina', 'turista : playa'])),
       solucion: [{ texto: ['El minero está en la mina ', cubre('porque trabaja ahí'), '; el turista está en la playa, pero no trabaja ahí.'] }],
@@ -1597,15 +1602,15 @@
       respuesta: [justo('No'), ': sustantivo y verbo'] },
 
     { nivel: 2, titulo: 'El guía del museo',
-      enunciado: 'Par base: «guía : museo». ¿Qué par guarda su relación: «bus : conductor», «portero : colegio» o «visitante : parque»?',
+      enunciado: 'Par base: «guía : museo». ¿Qué par guarda su relación: «oficina : jefe», «portero : colegio» o «visitante : parque»?',
       datos: [D_JUSTA, D_AMPLIA5, D_ORDEN],
       figura: fig(papel('cartel', 'Cartel del museo de Lampa', 'Visitas guiadas', 'el museo', 'los visitantes', ['El guía lo espera en la entrada.'])),
       solucion: [
-        { texto: ['«Bus : conductor» va ', prop('al revés'), '. El visitante está en el parque, pero no trabaja ahí: «está en» es ', prop('muy amplia'), '.'] },
+        { texto: ['«Oficina : jefe» va ', prop('al revés'), '. El visitante está en el parque, pero no trabaja ahí: «está en» es ', prop('muy amplia'), '.'] },
         { texto: ['El portero ', cubre('trabaja en el colegio'), ', como el guía en el museo.'] }],
       respuesta: [justo('«Portero : colegio»')] },
     { nivel: 2, titulo: 'Lavar con jabón',
-      enunciado: 'Par base: «lavar : jabón». ¿Qué par guarda su relación: «escoba : barrer», «cortar : cuchillo» o «limpieza : trapo viejo»?',
+      enunciado: 'Par base: «lavar : jabón». ¿Qué par guarda su relación: «escoba : barrer», «limpieza : trapo viejo» o «cortar : cuchillo»?',
       datos: [D_JUSTA, D_CAT, D_ORDEN],
       figura: fig(cuaderno('Cuaderno de Mateo', 'Analogías', 'Mateo', 'la práctica de Comunicación', ['lavar : jabón'])),
       solucion: [
@@ -1613,7 +1618,7 @@
         { texto: ['Cortar ', cubre('se hace con el cuchillo'), ': la acción y su herramienta, como lavar y jabón.'] }],
       respuesta: [justo('«Cortar : cuchillo»')] },
     { nivel: 2, titulo: 'El lector',
-      enunciado: 'Par base: «lector : leer». ¿Qué par guarda su relación: «correr : atleta», «escritor : novela» o «viajero : viajar»?',
+      enunciado: 'Par base: «lector : leer». ¿Qué par guarda su relación: «viajero : viajar», «correr : atleta» o «escritor : novela»?',
       datos: [D_JUSTA, D_CAT, D_ORDEN],
       figura: fig(papel('cartel', 'Cartel de la biblioteca', 'Club de lectura', 'la biblioteca', 'los estudiantes', ['Cada lector elige un libro al mes.'])),
       solucion: [
@@ -1629,12 +1634,12 @@
         { texto: ['La lupa ', cubre('sirve para ampliar'), ': un instrumento y su acción, como la balanza y pesar.'] }],
       respuesta: [justo('«Lupa : ampliar»')] },
     { nivel: 2, titulo: 'El vigilante',
-      enunciado: 'Par base: «vigilante : puerta». ¿Qué par guarda su relación: «cliente : tienda», «mozo : restaurante» o «colegio : directora»?',
+      enunciado: 'Par base: «vigilante : fábrica». ¿Qué par guarda su relación: «cliente : tienda», «colegio : directora» o «mozo : restaurante»?',
       datos: [D_JUSTA, D_AMPLIA5, D_ORDEN],
-      figura: fig(papel('cartel', 'Cartel de la entrada del colegio', 'Ingreso', 'la Dirección', 'estudiantes y familias', ['El vigilante pide el carné en la puerta.'])),
+      figura: fig(papel('cartel', 'Cartel de la entrada de una fábrica', 'Ingreso del personal', 'la gerencia', 'los trabajadores', ['El vigilante pide el fotocheck en la puerta.'])),
       solucion: [
         { texto: ['El cliente está en la tienda, pero no trabaja ahí: ', prop('muy amplia'), '. «Colegio : directora» va ', prop('al revés'), '.'] },
-        { texto: ['El mozo ', cubre('trabaja en el restaurante'), ', como el vigilante en la puerta.'] }],
+        { texto: ['El mozo ', cubre('trabaja en el restaurante'), ', como el vigilante en la fábrica.'] }],
       respuesta: [justo('«Mozo : restaurante»')] },
 
     { nivel: 3, titulo: 'El atleta',
@@ -1658,7 +1663,7 @@
     { nivel: 3, titulo: 'La brújula',
       enunciado: 'Pregunta 99 del simulacro, de analogías. ¿Qué par guarda la misma relación que el par base?',
       datos: [D_JUSTA, D_AMPLIA5, D_CAT],
-      figura: fig(hoja(99, ['brújula', 'orientar'], ['reloj : hora', 'medir : metro', 'linterna : alumbrar', 'mapa : viajero', 'montaña : camino de herradura'])),
+      figura: fig(hoja(99, ['brújula', 'orientar'], ['reloj : hora', 'medir : regla', 'linterna : alumbrar', 'mapa : viajero', 'montaña : camino de herradura'])),
       solucion: [
         { texto: [mala('A'), ': «hora» nombra una cosa, ', prop('otra categoría'), '. ', mala('B'), ' va ', prop('al revés'), '.'] },
         { texto: [mala('D'), ' es ', prop('otra relación'), '. ', mala('E'), ' es del ', prop('mismo tema'), '.'] },
@@ -1676,7 +1681,7 @@
     { nivel: 3, titulo: 'El pastor',
       enunciado: 'Pregunta 101 del simulacro, de analogías. ¿Qué par guarda la misma relación que el par base?',
       datos: [D_JUSTA, D_AMPLIA5, D_ORDEN],
-      figura: fig(hoja(101, ['pastor', 'rebaño'], ['oveja : lana', 'cuidar : niñera', 'lana : chompa', 'turista : grupo', 'niñera : niños'])),
+      figura: fig(hoja(101, ['pastor', 'rebaño'], ['oveja : lana', 'plantas : jardinero', 'lana : chompa', 'turista : grupo', 'niñera : niños'])),
       solucion: [
         { texto: [mala('A'), ' es del ', prop('mismo tema'), '. ', mala('B'), ' va ', prop('al revés'), '. ', mala('C'), ' es ', prop('otra relación'), '.'] },
         { texto: [mala('D'), ': el turista va en un grupo, pero no lo cuida: ', prop('muy amplia'), '.'] },
@@ -1692,10 +1697,10 @@
     pieza: 'rv-definicion',
     lee: {
       tarjetas: [
-        { titulo: 'Una oración por armar', texto: 'En esta pregunta del simulacro, la oración puente no viene escrita: hay que armarla. Debajo de la hoja van la ficha de la oración, con su clase y su rasgo, y la tabla de los cinco pares.',
+        { titulo: 'Una oración por armar', texto: 'En esta pregunta del simulacro, la oración puente no viene escrita: hay que armarla. Debajo de la hoja van la ficha de la oración, con su unión y su rasgo, y la tabla de los cinco pares.',
           pieza: 'rv-soporte', dibujo: { datos: HOJA_MINA, estado: {} } },
-        { titulo: 'Como una definición', texto: 'La oración puente hace con la relación lo que una definición con una cosa: da su clase y su rasgo. Si deja pasar a dos pares, es muy amplia, como una definición en la que se cuela un vecino.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Toca la clase de la ficha para cambiarla, y la casilla del rasgo para ponerlo o quitarlo. En la tabla, mira qué pares pasan con cada oración.' },
+        { titulo: 'Como una definición', texto: 'La oración puente se parece a una definición: dice cómo se unen las dos palabras y un rasgo que deja fuera a los otros pares. Si deja pasar a dos pares, es muy amplia, como una definición en la que se cuela un vecino.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Toca la unión de la ficha para cambiarla, y la casilla del rasgo para ponerlo o quitarlo. En la tabla, mira qué pares pasan con cada oración.' },
       ],
     },
     actividad: 'Armar la oración puente de un par base hasta que deje pasar un solo par.',
@@ -1708,16 +1713,16 @@
         logrado: val => { const m = medir5(val); return m.dentro.length === 1 && !m.cuelan.length; },
         bien: 'Listo: con «trabaja en» y «que es un lugar» pasa un solo par.',
       },
-      voz: 'Toca la clase o la casilla del rasgo, y mira la tabla.',
+      voz: 'Toca la unión o la casilla del rasgo, y mira la tabla.',
       leyenda: [
-        { s: 'Clase', t: 'cómo se unen las dos palabras' },
+        { s: 'Unión', t: 'cómo se juntan las dos palabras' },
         { s: 'Rasgo', t: 'lo que deja fuera a otros pares' },
         { s: cubre('turquesa'), t: 'par que pasa y se une igual' },
         { s: prop('naranja'), t: 'par que se cuela, o la oración amplia' },
         { s: justo('violeta'), t: 'la oración puente justa' },
       ],
       controles: [
-        { id: 'g', etiqueta: 'Clase', opciones: Object.entries(CLASES5).map(([valor, c]) => ({ valor, texto: c.t })) },
+        { id: 'g', etiqueta: 'Unión', opciones: Object.entries(CLASES5).map(([valor, c]) => ({ valor, texto: c.t })) },
         { id: 'r', etiqueta: 'Rasgo', opciones: [{ valor: 0, texto: 'sin él' }, { valor: 1, texto: R_LUGAR }] },
       ],
       dibujo: val => ({ datos: FIG5, estado: est5(val) }),
@@ -1755,8 +1760,8 @@
       ],
     },
     regla: {
-      texto: 'Si dos pares cumplen la oración puente, es muy amplia: se le agrega un rasgo del par base, como qué es el segundo (lugar, acción) o su categoría gramatical.',
-      ecuacion: [{ llave: [{ negrita: 'clase' }], nota: 'trabaja en' }, ' + ', { llave: [{ negrita: 'rasgo' }], nota: 'es un lugar' }, '   ·   ', { llave: [{ negrita: 'justa' }], nota: 'pasa un solo par' }],
+      texto: 'Si dos pares cumplen la oración puente, es muy amplia: se le agrega un rasgo del par base, como qué nombra la segunda palabra o de qué categoría gramatical es.',
+      ecuacion: [{ llave: [{ negrita: 'unión' }], nota: 'es el que' }, ' + ', { llave: [{ negrita: 'rasgo' }], nota: 'es un verbo' }, '   ·   ', { llave: [{ negrita: 'justa' }], nota: 'pasa un solo par' }],
       voz: 'Vuelve a esta regla cuando dudes con un par.',
       condicion: 'la oración vale para el par base y para un solo par; si vale para dos, le falta un rasgo.',
     },
@@ -1770,7 +1775,7 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden el par que cumple una oración puente justa del par base.' },
             { tipo: 'datos', texto: [R.tengo, ' Oración puente: ', cubre(`«${R.puente}»`)] },
-            { tipo: 'regla', texto: 'Si pasan dos pares, la oración es muy amplia: se le agrega un rasgo del par base, como qué es el segundo o su categoría.' },
+            { tipo: 'regla', texto: 'Si pasan dos pares, la oración es muy amplia: se le agrega un rasgo del par base, como qué es la segunda palabra o su categoría.' },
             { tipo: 'aplica', texto: R.malas },
             { tipo: 'aplica', texto: R.bien, dibujo: { datos: R.sop, estado: estHoja(R.sop, R.buena) } },
             { tipo: 'sentido', texto: R.sentido },
@@ -1781,6 +1786,7 @@
     },
     ahoraTu: {
       pieza: 'rv-soporte',
+      voz: 'Otra hoja. Arma una oración puente que deje pasar uno.',
       generar(s) {
         const A = AHORA_5[s % AHORA_5.length], sop = hoja(102 + (s % AHORA_5.length), A.b);
         return {
@@ -1831,7 +1837,8 @@
 
   return {
     unidad: 'razonamiento-verbal.analogias',
-    version: '0.3.0',
+    version: '0.3.2',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js', '/nucleo/kit/piezas/rv-soporte.js', '/nucleo/kit/piezas/rv-definicion.js'],
     historia: {
@@ -1872,11 +1879,11 @@
         simple: 'Un grupo grande y uno de sus tipos.',
         ejemplos: ['Toda lagartija es un reptil: «reptil» es su género.', 'Todo clavel es una planta, pero no toda planta es un clavel.', 'Todo martes es un día de la semana.'],
         ver: ['género próximo', 'especie'] },
-      { termino: 'parte y todo', def: 'Relación entre una cosa entera y una de las piezas distintas que la forman.',
+      { termino: 'parte y todo', def: 'Relación entre una cosa entera y una de sus piezas, que la forma junto con piezas de otro tipo.',
         simple: 'Una pieza y la cosa entera que ayuda a formar.',
         ejemplos: ['«Tecla : teclado»: la tecla es una pieza del teclado.', '«Rueda : carretilla».', 'La pieza no es un tipo de la cosa: la tecla no es un teclado.'],
         ver: ['relación'] },
-      { termino: 'elemento y conjunto', def: 'Relación entre uno de muchos iguales y el grupo que forman juntos.',
+      { termino: 'elemento y conjunto', def: 'Relación entre uno de muchos iguales y el grupo hecho solo de ellos.',
         ejemplos: ['«Músico : orquesta».', '«Estrella : constelación».', '«Isla : archipiélago».'],
         ver: ['parte y todo'] },
       { termino: 'causa y efecto', def: 'Relación en que una cosa produce la otra; que venga antes no basta.',

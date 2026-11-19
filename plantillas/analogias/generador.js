@@ -44,21 +44,21 @@
   }
   const partes = t => t.split(' : ');
 
-  // Las líneas de datos, las mismas de la teoría.
+  // Las líneas de datos, las mismas de la teoría (19 nov: clase, parte y grupo con el nombre que usa la explicación).
   const D_PUENTE = 'Oración puente: frase corta que dice cómo se une el par base; vale también para el otro par.';
   const D_AGENTE = 'Agente e instrumento: una persona y la herramienta con que hace su trabajo.';
   const D_TEMA = 'Mismo tema: dos pares que hablan de lo mismo pueden unirse de otra manera.';
   const D_VAGA = 'Oración muy amplia: «usa» o «tiene que ver con» valen para casi cualquier par.';
-  const D_CLASE = 'Género y especie: todo lo que nombra una palabra es lo que nombra la otra (todo gato es un animal).';
-  const D_PARTE = 'Parte y todo: una palabra nombra una pieza que, con otras distintas, forma lo que nombra la otra.';
-  const D_GRUPO = 'Elemento y conjunto: la otra palabra nombra muchos iguales a la primera, juntos.';
+  const D_CLASE = 'Clase (género y especie): todo lo que nombra la primera palabra es lo que nombra la segunda (todo gato es un animal).';
+  const D_PARTE = 'Parte (parte y todo): la primera es una pieza que, con piezas de otro tipo, forma la segunda.';
+  const D_GRUPO = 'Grupo (elemento y conjunto): la segunda nombra un conjunto hecho solo de muchos iguales a la primera.';
   const D_CAUSA = 'Causa y efecto: una cosa produce la otra; la que produce es la causa.';
   const D_ORDEN = 'Mismo orden: lo que va primero en el par base va primero en el otro par.';
   const D_SUCESION = 'Sucesión: una cosa viene después de otra sin que la primera la produzca.';
   const D_SIN = 'Sinónimos: dicen casi lo mismo del mismo rasgo.';
   const D_ANT = 'Antónimos: dicen lo opuesto del mismo rasgo.';
   const D_OTRO = 'Otro rasgo: dos palabras que hablan de cosas distintas no son sinónimos ni antónimos.';
-  const D_GRADO = 'Intensidad: las dos dicen lo mismo del rasgo, pero una con más fuerza que la otra.';
+  const D_GRADO = 'Intensidad: las dos dicen lo mismo de un rasgo, pero una en mayor grado (más fuerte, más grande).';
   const D_JUSTA = 'Oración puente justa: vale para el par base y para un solo par de las alternativas.';
   const D_AMPLIA = 'Muy amplia: la oración puente deja pasar a más de un par.';
   const D_CAT = 'Categoría gramatical: sustantivo (nombra algo), verbo (dice una acción) o adjetivo (dice cómo es algo).';
@@ -72,7 +72,7 @@
   //   idea 4: SIN · ANT · MAS mismo rasgo, de menos a más · MENOS de más a menos · OTRO rasgos distintos · TEMA
   //   idea 5: PLUGAR persona y lugar donde trabaja · PVEH persona y vehículo que conduce · PACC persona y su acción ·
   //           IACC instrumento y su acción · IMIDE instrumento y lo que mide · CUIDA persona y lo que cuida, y sus
-  //           vueltas (LUGARP, VEHP, ACCP, ACCI, MIDEI); PESTA, PVA, IUSO (pasan una oración vaga); PSUSTACC, ISUST
+  //           vueltas (LUGARP, VEHP, ACCP, ACCI, MIDEI, CUIDAP); PESTA, PVA, IUSO (pasan una oración vaga); PSUSTACC, ISUST
   //           (la acción dicha con un sustantivo); TEMA; H, LLEVA, OTRA (otra relación). En la idea 5, la nota dice el
   //           motivo de cada incorrecta.
   const HERR = [
@@ -80,24 +80,24 @@
     { id: 'anzuelo', base: ['pescador : anzuelo', 'H'], alts: [['músico : violín', 'H'], ['muelle : bote', 'TEMA'], ['cocinero : sopa', 'OBR'], ['bañista : flotador', 'USA'], ['cuchillo : pan', 'SINP']] },
     { id: 'sierra', base: ['leñador : sierra', 'H'], alts: [['relojero : pinza', 'H'], ['leña : estufa', 'TEMA'], ['maderero : aserradero', 'LUG'], ['niño : columpio', 'USA'], ['tijera : tela', 'SINP']] },
     { id: 'lazo', base: ['ganadero : lazo', 'H'], alts: [['pintora : rodillo', 'H'], ['vaca : pasto', 'TEMA'], ['quesera : queso', 'OBR'], ['turista : sombrero', 'USA'], ['pala : tierra', 'SINP']] },
-    { id: 'computadora', base: ['secretaria : computadora', 'H'], alts: [['bombero : hacha', 'H'], ['tinta : hoja', 'TEMA'], ['escritora : novela', 'OBR'], ['estudiante : celular', 'USA'], ['grapadora : papel', 'SINP']] },
+    { id: 'computadora', base: ['secretaria : computadora', 'H'], alts: [['bombero : hacha', 'H'], ['tinta : hoja', 'TEMA'], ['escritora : novela', 'OBR'], ['estudiante : celular', 'USA'], ['engrapadora : papel', 'SINP']] },
     { id: 'manguera', base: ['jardinera : manguera', 'H'], alts: [['cocinero : batidora', 'H'], ['flor : maceta', 'TEMA'], ['florista : ramo', 'OBR'], ['peatón : paraguas de colores', 'USA'], ['escoba : polvo', 'SINP']] },
   ];
   const INCL = [
     { id: 'iguana', base: ['iguana : reptil', 'CLASE'], alts: [['vicuña : camélido', 'CLASE'], ['caparazón : tortuga', 'PARTE'], ['estrella : galaxia', 'GRUPO'], ['sol : desierto', 'TEMA'], ['cazador : trampa', 'H']],
-      datos: ['Camélido: animal como la llama, la alpaca o la vicuña.'] },
+      datos: ['Camélido: animal andino de cuello largo, como la llama.'] },
     { id: 'teclado', base: ['teclado : computadora', 'PARTE'], alts: [['puerta : ropero', 'PARTE'], ['laptop : aparato', 'CLASE'], ['isla : archipiélago', 'GRUPO'], ['cable : luz', 'TEMA'], ['técnico : destornillador', 'H']] },
     { id: 'roble', base: ['roble : árbol', 'CLASE'], alts: [['margarita : flor', 'CLASE'], ['raíz : planta', 'PARTE'], ['pino : pinar', 'GRUPO'], ['hacha : bosque', 'TEMA'], ['leñador : motosierra', 'H']],
       datos: ['Pinar: terreno con muchos pinos.'] },
     { id: 'promocion', base: ['estudiante : promoción', 'GRUPO'], alts: [['cerro : cordillera', 'GRUPO'], ['carpeta : mueble', 'CLASE'], ['tapa : cuaderno', 'PARTE'], ['tiza : pizarra', 'TEMA'], ['profesora : pizarra acrílica', 'H']] },
     { id: 'aspa', base: ['aspa : molino', 'PARTE'], alts: [['cuello : camisa', 'PARTE'], ['blusa : prenda', 'CLASE'], ['trigo : trigal', 'GRUPO'], ['viento : cometa', 'TEMA'], ['molinero : harina', 'OBR']],
       datos: ['Trigal: campo sembrado con mucho trigo.'] },
-    { id: 'flota', base: ['bus : flota', 'GRUPO'], alts: [['carro : caravana', 'GRUPO'], ['camioneta : vehículo', 'CLASE'], ['llanta : camión', 'PARTE'], ['pasaje : boleto', 'TEMA'], ['piloto : timón', 'H']],
-      datos: ['Caravana: fila de muchos carros que viajan juntos.'] },
+    { id: 'flota', base: ['bus : flota', 'GRUPO'], alts: [['carro : caravana', 'GRUPO'], ['camioneta : vehículo', 'CLASE'], ['llanta : camión', 'PARTE'], ['paradero : boleto', 'TEMA'], ['piloto : timón', 'H']],
+      datos: ['Caravana: fila de vehículos que viajan juntos.'] },
   ];
   const ORDEN = [
     { id: 'contaminacion', base: ['contaminación : enfermedad', 'CE'], alts: [['erosión : derrumbe', 'CE'], ['tos : gripe', 'EC'], ['agosto : setiembre', 'SUC'], ['basura : río', 'TEMA'], ['médico : estetoscopio', 'H']] },
-    { id: 'bostezo', base: ['bostezo : sueño', 'EC'], alts: [['temblor : frío', 'EC'], ['susto : grito', 'CE'], ['abril : mayo', 'SUC'], ['cama : sábana', 'TEMA'], ['tejedor : telar', 'H']] },
+    { id: 'bostezo', base: ['bostezo : sueño', 'EC'], alts: [['llanto : dolor', 'EC'], ['susto : grito', 'CE'], ['abril : mayo', 'SUC'], ['cama : sábana', 'TEMA'], ['tejedor : telar', 'H']] },
     { id: 'ceniza', base: ['fuego : ceniza', 'CE'], alts: [['rayo : apagón', 'CE'], ['charco : aguacero', 'EC'], ['noche : alba', 'SUC'], ['fogón : olla', 'TEMA'], ['bombero : casco', 'LLEVA']] },
     { id: 'sudor', base: ['sudor : ejercicio', 'EC'], alts: [['risa : cosquillas', 'EC'], ['calor : sed', 'CE'], ['lonche : cena', 'SUC'], ['zapatilla : pista atlética', 'TEMA'], ['atleta : medalla', 'OBR']] },
     { id: 'hongo', base: ['humedad : hongo', 'CE'], alts: [['vacuna : defensa', 'CE'], ['vómito : indigestión', 'EC'], ['sábado : domingo', 'SUC'], ['pared : pintura', 'TEMA'], ['pintor : rodillo', 'H']] },
@@ -106,13 +106,13 @@
   const RASGO = [
     { id: 'comico', base: ['cómico : gracioso', 'SIN'], alts: [['viejo : anciano', 'SIN'], ['nuevo : usado', 'ANT'], ['joven : azul', 'OTRO'], ['grande : inmenso', 'MAS'], ['bufón : chiste', 'TEMA']] },
     { id: 'ruidoso', base: ['ruidoso : silencioso', 'ANT'], alts: [['duro : blando', 'ANT'], ['alto : elevado', 'SIN'], ['murmullo : grito', 'MAS'], ['dulce : frío', 'OTRO'], ['bocina : tráfico', 'TEMA']] },
-    { id: 'fresco', base: ['fresco : helado', 'MAS'], alts: [['molesto : furioso', 'MAS'], ['enfurecido : enojado', 'MENOS'], ['frío : caliente', 'ANT'], ['nevado : cumbre', 'TEMA'], ['calvo : azul', 'OTRO']] },
+    { id: 'tibio', base: ['tibio : ardiente', 'MAS'], alts: [['molesto : furioso', 'MAS'], ['enfurecido : enojado', 'MENOS'], ['frío : caliente', 'ANT'], ['nevado : cumbre', 'TEMA'], ['calvo : azul', 'OTRO']] },
     { id: 'aterrado', base: ['aterrado : asustado', 'MENOS'], alts: [['diluvio : lluvia', 'MENOS'], ['miedo : pánico', 'MAS'], ['valiente : miedoso', 'ANT'], ['susto : temor', 'SIN'], ['película : terror', 'TEMA']] },
     { id: 'triste', base: ['triste : apenado', 'SIN'], alts: [['lindo : bonito', 'SIN'], ['feo : bello', 'ANT'], ['grande : verde', 'OTRO'], ['bueno : buenísimo', 'MAS'], ['lágrima : pañuelo', 'TEMA']] },
     { id: 'subir', base: ['subir : bajar', 'ANT'], alts: [['entrar : salir', 'ANT'], ['empezar : iniciar', 'SIN'], ['caminar : correr', 'MAS'], ['oír : leer', 'OTRO'], ['escalera : piso', 'TEMA']] },
   ];
   const JUSTA = [
-    { id: 'carpintero', base: ['carpintero : taller', 'PLUGAR'], alts: [['cocinera : comedor', 'PLUGAR'], ['estudio : fotógrafo', 'LUGARP', 'Es un lugar y quien trabaja ahí, bien; pero al revés.'],
+    { id: 'carpintero', base: ['carpintero : taller', 'PLUGAR'], alts: [['cocinera : comedor', 'PLUGAR'], ['consultorio : dentista', 'LUGARP', 'Es un lugar y quien trabaja ahí, bien; pero al revés.'],
       ['paciente : clínica', 'PESTA', 'El paciente está en la clínica, pero no trabaja ahí: «está en» es muy amplia.'], ['vendedor : vender', 'PACC', '«Vender» es una acción, no un lugar: otra categoría gramatical.'],
       ['madera : aserrín', 'TEMA', 'Son del mismo tema que el carpintero, pero no son una persona y su lugar.']] },
     { id: 'avioneta', base: ['piloto : avioneta', 'PVEH'], alts: [['conductora : micro', 'PVEH'], ['tren : maquinista', 'VEHP', 'Es un vehículo y quien lo conduce, bien; pero al revés.'],
@@ -124,16 +124,16 @@
     { id: 'aguja', base: ['aguja : coser', 'IACC'], alts: [['regadera : regar', 'IACC'], ['planchar : plancha', 'ACCI', 'Es una herramienta y su acción, bien; pero al revés.'],
       ['escoba : limpieza', 'ISUST', 'La escoba sirve para limpiar, bien; pero «limpieza» nombra una cosa, no una acción.'], ['tela : botón', 'TEMA', 'Son del mismo tema que la aguja, pero no son una herramienta y su acción.'],
       ['libro : estante', 'OTRA', 'El libro va en el estante: otra relación.']] },
-    { id: 'reloj', base: ['reloj : tiempo', 'IMIDE'], alts: [['metro : longitud', 'IMIDE'], ['temperatura : termómetro', 'MIDEI', 'Es un instrumento y lo que mide, bien; pero al revés.'],
+    { id: 'reloj', base: ['reloj : tiempo', 'IMIDE'], alts: [['regla : longitud', 'IMIDE'], ['temperatura : termómetro', 'MIDEI', 'Es un instrumento y lo que mide, bien; pero al revés.'],
       ['cronómetro : contar', 'IACC', '«Contar» es una acción: otra categoría gramatical, no lo que se mide.'], ['mochila : viaje', 'IUSO', 'La mochila sirve en un viaje, pero no lo mide: «sirve para» es muy amplia.'],
       ['pulsera : muñeca', 'TEMA', 'Son del mismo tema que el reloj, pero no son un instrumento y lo que mide.']] },
-    { id: 'enfermera', base: ['enfermera : pacientes', 'CUIDA'], alts: [['cuidadora : ancianos', 'CUIDA'], ['vigilar : guardián', 'ACCP', 'Es una persona que cuida, bien; pero al revés: la acción va primero.'],
-      ['paciente : hospital', 'PESTA', 'El paciente está en el hospital, pero no cuida a nadie ahí: «está en» es muy amplia.'], ['jeringa : vacuna', 'TEMA', 'Son del mismo tema que la enfermera, pero no son alguien y lo que cuida.'],
+    { id: 'enfermera', base: ['enfermera : pacientes', 'CUIDA'], alts: [['cuidadora : ancianos', 'CUIDA'], ['niños : niñera', 'CUIDAP', 'Es alguien y lo que cuida, bien; pero al revés: lo cuidado va primero.'],
+      ['paciente : hospital', 'PESTA', 'El paciente está en el hospital, pero no cuida a nadie ahí: «está en» es muy amplia.'], ['algodón : venda', 'TEMA', 'Son del mismo tema que la enfermera, pero no son alguien y lo que cuida.'],
       ['médico : estetoscopio', 'H', 'Es una persona y su herramienta: otra relación.']] },
   ];
 
   // ---------------- El código y la explicación de cada incorrecta, por su relación ----------------
-  const VUELTA = { CE: 'EC', EC: 'CE', MAS: 'MENOS', MENOS: 'MAS', PLUGAR: 'LUGARP', PVEH: 'VEHP', PACC: 'ACCP', IACC: 'ACCI', IMIDE: 'MIDEI', CUIDA: 'ACCP' };
+  const VUELTA = { CE: 'EC', EC: 'CE', MAS: 'MENOS', MENOS: 'MAS', PLUGAR: 'LUGARP', PVEH: 'VEHP', PACC: 'ACCP', IACC: 'ACCI', IMIDE: 'MIDEI', CUIDA: 'CUIDAP' };
   const NOMBRE2 = { CLASE: 'clase', PARTE: 'parte', GRUPO: 'grupo' };
   function codigo(tb, t) {
     if (VUELTA[tb] === t) return 'RV16';

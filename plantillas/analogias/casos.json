@@ -386,7 +386,7 @@
     "texto": "cuidadora : ancianos",
     "errores": [
      [
-      "vigilar : guardián",
+      "niños : niñera",
       "RV16"
      ],
      [
@@ -394,7 +394,7 @@
       "RVA5"
      ],
      [
-      "jeringa : vacuna",
+      "algodón : venda",
       "RV15"
      ],
      [
@@ -470,7 +470,7 @@
     "item": "bostezo"
    },
    "esperado": {
-    "texto": "temblor : frío",
+    "texto": "llanto : dolor",
     "errores": [
      [
       "cama : sábana",

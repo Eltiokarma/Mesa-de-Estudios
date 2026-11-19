@@ -87,7 +87,8 @@ test('la unidad tiene las cinco ideas en orden, y cada término del glosario tra
   for (const g of def.glosario) assert.ok((g.ejemplos || []).length >= 3, `«${g.termino}»: tres ejemplos`);
 });
 
-test('la unidad pasaría el validador con calidad 2', () => {
+test('la unidad lleva calidad 2 y pasa el validador', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { semillas: SEMILLAS }), []);
 });
 
@@ -214,4 +215,113 @@ test('las listas de candidatas de los ejemplos no ponen la correcta al final má
     n++; if (r.includes(items[items.length - 1].toLowerCase())) ultima++;
   }
   assert.ok(n >= 5 && ultima / n <= 0.4, `al final en ${ultima} de ${n}`);
+});
+
+// ---------- Correcciones de la auditoría y del lector en frío (19 nov; rutinas/auditoria/razonamiento-verbal.analogias.md) ----------
+// Cada prueba falla con la versión de antes de las correcciones.
+const idea = id => IDEAS.find(i => i.id === id);
+// Todos los pares que ve el alumno: bases y alternativas de las preguntas, y las fichas de los juegos.
+const todosLosPares = () => {
+  const out = new Set();
+  for (const i of IDEAS) for (const p of preguntas(i)) { out.add(p.base.join(' : ')); for (const o of p.ops) out.add(o.t.toLowerCase()); }
+  for (const i of IDEAS) for (const e of i.ejemplos) {
+    const m = plano(e.enunciado).match(/«([^»]+ : [^»]+)»/g) || [];
+    for (const x of m) out.add(x.slice(1, -1).toLowerCase());
+  }
+  return out;
+};
+// La explicación de cada incorrecta: su `siFuera` o, en una hoja, el trozo del resuelto que empieza con su letra.
+function explicaciones(i) {
+  const out = [];
+  const corta = (txt, L) => (txt.split(/(?:^|(?<=\.)\s?)(?=[A-E](?:\s|:))/).find(x => x.startsWith(L)) || '');
+  out.push(...i.predice.opciones.filter(o => !o.correcta).map(o => ({ base: baseDe(i.predice.dibujo.datos), t: o.texto, e: o.siFuera })));
+  for (let s = 0; s < 12; s++) {
+    const R = i.resuelve.generar(s), d = sopDe(R.dibujo.datos), sol = plano(R.pasos.filter(p => p.tipo === 'aplica').map(p => p.texto));
+    for (const a of d.alternativas || []) out.push({ base: baseDe(R.dibujo.datos), t: a.t, e: corta(sol, a.id) });
+    const A = i.ahoraTu.generar(s);
+    out.push(...A.opciones.filter(o => !o.correcta).map(o => ({ base: baseDe(A.dibujo.datos), t: o.texto, e: o.siFuera })));
+  }
+  for (const e of i.ejemplos) {
+    const sol = plano(e.solucion.map(x => x.texto)), d = sopDe(e.figura.datos);
+    if (d.alternativas && d.alternativas.length) for (const a of d.alternativas) out.push({ base: baseDe(e.figura.datos), t: a.t, e: corta(sol, a.id) });
+    const m = plano(e.enunciado).match(/Par base: «([^»]+)»\. ¿Qué par guarda su relación: (.*)\?$/);
+    if (m) for (const [, t] of m[2].matchAll(/«([^»]+)»/g)) out.push({ base: m[1].split(' : '), t, e: sol.split(/(?<=\.)\s?/).find(x => x.toLowerCase().includes(`«${t.toLowerCase()}»`)) || '' });
+  }
+  return out;
+}
+// Un verbo en infinitivo (salvo los sustantivos que terminan igual).
+const NO_VERBO = new Set(['taller', 'collar', 'celular', 'azúcar', 'militar', 'chofer', 'lugar', 'hogar', 'mar', 'altar', 'alfiler', 'mujer', 'telar', 'escolar', 'lunar', 'familiar']);
+const verbo = w => /(ar|er|ir)$/.test(w) && !w.includes(' ') && !NO_VERBO.has(w);
+
+test('A1 · Predice de la idea 2 da con qué descartar «parte»: las pruebas de clase y de parte, sin la de grupo', () => {
+  const d = (idea('parte-o-clase').predice.datos || []).join(' ');
+  assert.match(d, /Clase/);
+  assert.match(d, /Parte.*piezas de otro tipo/);
+  assert.doesNotMatch(d, /Grupo|conjunto|muchos iguales/);
+});
+
+test('M1 · un solo nombre por relación: los Datos de la idea 2 dicen «Clase», «Parte» y «Grupo», como el resuelto; «clase» no nombra la unión de la oración puente', () => {
+  const D = idea('parte-o-clase').ejemplos.flatMap(e => e.datos).filter(l => /forma|nombra/.test(l) && /:/.test(l));
+  assert.ok(D.length > 10);
+  for (const l of D) assert.match(l, /^(Clase|Parte|Grupo) \(/, l);
+  for (const i of [idea('relacion-no-tema'), idea('puente-justa')]) {
+    const t = JSON.stringify([i.lee, i.juega.leyenda, i.juega.controles.map(c => c.etiqueta), i.regla, i.ejemplos.map(e => e.solucion), i.juega.dibujo(Teoria.inicio(i.juega)).datos]);
+    assert.doesNotMatch(t, /"Clase"|negrita":"clase"|su clase dice|la clase de la relación|da su clase/, `${i.id}: «clase» para la unión de la oración puente`);
+  }
+});
+
+test('M2 · la correcta cambia de lugar: en las predicciones ninguna letra va más de 2 veces, y en las listas de nivel 2 ningún lugar pasa de la mitad', () => {
+  const L = IDEAS.map(i => i.predice.opciones.findIndex(o => o.correcta));
+  for (const k of new Set(L)) assert.ok(L.filter(x => x === k).length <= 2, `predicciones: ${L.map(x => 'ABCD'[x])}`);
+  const lugar = [0, 0, 0];
+  for (const i of IDEAS) for (const e of i.ejemplos.filter(x => x.nivel === 2)) {
+    const m = plano(e.enunciado).match(/((?:«[^»]+»,? )+(?:o|u) «[^»]+»)/), items = [...m[1].matchAll(/«([^»]+)»/g)].map(x => x[1].toLowerCase());
+    lugar[items.findIndex(x => plano(e.respuesta).toLowerCase().includes(x))]++;
+  }
+  assert.ok(Math.max(...lugar) <= 13, `primera, segunda y tercera: ${lugar}`);
+});
+
+test('M3 · «al revés» es de verdad el revés: dado vuelta, el par tiene la categoría del par base (un verbo donde el par base tiene un verbo)', () => {
+  let n = 0;
+  for (const i of IDEAS) for (const x of explicaciones(i).filter(y => /al revés/.test(y.e))) {
+    const [a, b] = x.t.toLowerCase().split(' : '), [a0, b0] = x.base;
+    n++;
+    assert.equal(verbo(b), verbo(a0), `${i.id}: «${x.t}» dado vuelta no se une como «${x.base.join(' : ')}»`);
+    assert.equal(verbo(a), verbo(b0), `${i.id}: «${x.t}» dado vuelta no se une como «${x.base.join(' : ')}»`);
+  }
+  assert.ok(n > 30, `la prueba no corre en vacío (${n})`);
+});
+
+test('M4 · ningún par se lee de dos maneras: sin «helado», «fresco», «temblor» ni «metro», y sin piezas que también se leen como «muchos iguales»', () => {
+  const MALOS = [/\bhelado\b/, /\bfresco\b/, /\btemblor\b/, /(^|[\s:])metro\b/, /contemplar/, /frecuente : raro/, /hielo : frío/, /fuerte : cansado/, /enojado : molesto/,
+    /página : libro/, /escalón : escalera/, /hoja : cuaderno/, /diente : peine/, /vigilante : puerta/];
+  const malos = [...todosLosPares()].filter(p => MALOS.some(re => re.test(p)));
+  assert.deepEqual(malos, []);
+});
+
+test('M5 · los Datos no regalan la correcta: la glosa de una palabra no nombra la otra palabra de la correcta', () => {
+  const raiz = w => w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').slice(0, 5);
+  const casos = [];
+  for (const i of IDEAS) {
+    for (const e of i.ejemplos) { const r = plano(e.respuesta).replace(/^[A-E]: /, ''); casos.push({ q: e.titulo, datos: e.datos, ok: r }); }
+    for (let s = 0; s < 4; s++) { const R = i.resuelve.generar(s); casos.push({ q: `resuelve ${s}`, datos: R.datos, ok: plano(R.respuesta).replace(/^[A-E]: /, '') }); }
+  }
+  let n = 0;
+  for (const c of casos.filter(x => / : /.test(x.ok))) for (const l of c.datos) {
+    const m = l.match(/^([A-Za-zÁÉÍÓÚáéíóúñÑ]+): (.*)$/); if (!m || /[A-Z][a-z]+ [a-z]/.test(m[1])) continue;
+    const def2 = m[2].toLowerCase().split(/[^a-záéíóúñ]+/).filter(w => w.length >= 4).map(raiz);
+    const otras = c.ok.toLowerCase().split(/[^a-záéíóúñ]+/).filter(w => w.length >= 4 && raiz(w) !== raiz(m[1]));
+    n++;
+    for (const w of otras) assert.ok(!def2.includes(raiz(w)), `${c.q}: «${l}» nombra «${w}», de la correcta «${c.ok}»`);
+  }
+  assert.ok(n > 10, `la prueba no corre en vacío (${n})`);
+});
+
+test('M6 · la voz de «Ahora tú» habla de la hoja, no de un texto', () => {
+  for (const i of IDEAS) { assert.ok(i.ahoraTu.voz, `${i.id}: sin voz propia`); assert.doesNotMatch(i.ahoraTu.voz, /texto/i); }
+});
+
+test('M7 · en el mural de la idea 3, cada botón lleva el número del renglón de su ficha', () => {
+  const j = idea('clase-y-causa').juega, d = sopDe(j.dibujo(Teoria.inicio(j)).datos), filas = d.hojas[0].oraciones.map(o => o.id);
+  for (const c of j.controles) assert.equal(c.etiqueta, `Ficha ${filas.indexOf(c.id) + 1}`);
 });

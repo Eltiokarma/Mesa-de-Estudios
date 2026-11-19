@@ -51,7 +51,7 @@ test('cada idea tiene sus tipos, salen los dos niveles y todos los códigos', ()
 });
 
 // Tabla propia: qué código toca a cada relación de una incorrecta, según la del par base.
-const VUELTA = [['CE', 'EC'], ['MAS', 'MENOS'], ['PLUGAR', 'LUGARP'], ['PVEH', 'VEHP'], ['PACC', 'ACCP'], ['IACC', 'ACCI'], ['IMIDE', 'MIDEI'], ['CUIDA', 'ACCP']];
+const VUELTA = [['CE', 'EC'], ['MAS', 'MENOS'], ['PLUGAR', 'LUGARP'], ['PVEH', 'VEHP'], ['PACC', 'ACCP'], ['IACC', 'ACCI'], ['IMIDE', 'MIDEI'], ['CUIDA', 'CUIDAP']];
 const ESPERA = (b, a) => {
   if (VUELTA.some(([x, y]) => (x === b && y === a) || (x === a && y === b))) return 'RV16';
   if (a === 'TEMA') return 'RV15';
@@ -113,4 +113,45 @@ test('la letra de la correcta se reparte entre las cuatro o cinco', () => {
   const cuenta = {};
   for (let s = 0; s < 1000; s++) { const p = gen.generar(s); const L = p.alternativas.find(a => a.correcta).letra; cuenta[L] = (cuenta[L] || 0) + 1; }
   for (const L of 'ABCD') assert.ok(cuenta[L] > 120 && cuenta[L] < 350, JSON.stringify(cuenta));
+});
+
+// ---------- Correcciones de la auditoría (19 nov; rutinas/auditoria/razonamiento-verbal.analogias.md) ----------
+// Cada prueba falla con el generador de antes de las correcciones.
+const NO_VERBO = new Set(['taller', 'collar', 'celular', 'azúcar', 'militar', 'chofer', 'lugar', 'hogar', 'mar', 'altar', 'telar', 'escolar']);
+const verbo = w => /(ar|er|ir)$/.test(w) && !w.includes(' ') && !NO_VERBO.has(w);
+
+test('ningún par del banco se lee de dos maneras para un alumno peruano', () => {
+  // «temblor» es un sismo; «helado», el postre; «fresco», también «descarado»; «metro», la unidad; «grapadora» no se dice;
+  // «pasaje» es el boleto (sinónimos, no del mismo tema); «estudio» es también «estudiar».
+  const MALOS = [/\btemblor\b/, /\bhelado\b/, /\bfresco\b/, /(^|\s)metro\b/, /^grapadora/, /^pasaje : boleto$/, /^estudio : /];
+  for (const it of items) for (const t of [it.base[0], ...it.alts.map(x => x[0])]) assert.ok(!MALOS.some(re => re.test(t)), `${it.id}: «${t}»`);
+});
+
+test('la glosa de Datos no nombra la otra palabra de la correcta', () => {
+  const raiz = w => w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').slice(0, 5);
+  for (const it of items) {
+    const ok = it.alts.find(x => x[1] === it.base[1])[0];
+    for (const l of it.datos || []) {
+      const [cab, def] = l.split(/: (.*)/), dw = def.toLowerCase().split(/[^a-záéíóúñ]+/).filter(w => w.length >= 4).map(raiz);
+      for (const w of ok.split(' : ').filter(x => raiz(x) !== raiz(cab))) assert.ok(!dw.includes(raiz(w)), `${it.id}: «${l}» nombra «${w}» de «${ok}»`);
+    }
+  }
+});
+
+test('una incorrecta «al revés» (RV16), dada vuelta, se une con la categoría del par base', () => {
+  let n = 0;
+  for (const it of items) {
+    const [a0, b0] = it.base[0].split(' : ');
+    for (const [t, r] of it.alts) {
+      if (gen.codigo(it.base[1], r) !== 'RV16') continue;
+      const [a, b] = t.split(' : '); n++;
+      assert.deepEqual([verbo(b), verbo(a)], [verbo(a0), verbo(b0)], `${it.id}: «${t}» dado vuelta no se une como «${it.base[0]}»`);
+    }
+  }
+  assert.ok(n >= 12, `la prueba no corre en vacío (${n})`);
+});
+
+test('los Datos de la idea 2 nombran clase, parte y grupo como la explicación de las incorrectas', () => {
+  const p = gen.generar('nombres', { idea: 'parte-o-clase' });
+  assert.deepEqual(p.datos.slice(0, 3).map(l => l.split(' ')[0]), ['Clase', 'Parte', 'Grupo']);
 });
