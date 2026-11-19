@@ -1,5 +1,5 @@
 // La medición de herramientas/ecuaciones-ancho.js en una página armada a mano, sin servidor: con app/estilos.css a
-// 390 px, encuentra la ecuación que no cabe y no acusa a las que caben. Y lo que arregla la app: una cuenta larga sin
+// 390 px, encuentra la ecuación que no cabe y no acusa a las que caben; y la que cabe pero se parte en mal sitio. Y lo que arregla la app: una cuenta larga sin
 // «=» donde partir se parte después de un signo en vez de quedar cortada. Usa el Chromium de Playwright; si no hay,
 // se salta. El barrido de las unidades de verdad tarda minutos y se corre a mano (ver la cabecera de la herramienta).
 const test = require('node:test');
@@ -70,7 +70,11 @@ test('el renglón que no cabe se parte después de un signo en vez de cortarse',
     const cortaAntes = await p.evaluate(() => document.getElementById('corta').innerHTML);
     await p.evaluate(`(${partirLargas})(document.querySelector('.te-zona'))`);
     const { fuera } = await medirPagina(p);
-    assert.deepEqual(fuera.map(f => f.texto), [], 'ninguna queda cortada');
+    assert.deepEqual(fuera.filter(f => !f.corte).map(f => f.texto), [], 'ninguna queda cortada');
+    // Las tres cuentas que la app partió se leen, pero salen como partidas después de un signo: el arreglo es del
+    // contenido (dos pasos o una cuenta más corta). La ficha larga parte entre palabras: eso no cuenta.
+    // Después del «=» de la igualdad baja «m∠AOD + m∠BOC», que no es un resto corto: eso tampoco cuenta.
+    assert.deepEqual(fuera.map(f => f.tipo), ['partida después de «+»', 'partida después de «+»'], JSON.stringify(fuera));
     assert.equal(await p.evaluate(() => document.getElementById('corta').innerHTML), cortaAntes, 'lo que cabe no se toca');
     // La igualdad se parte después del «=» y deja pegados los + (no hizo falta más).
     assert.match(await p.evaluate(() => document.getElementById('igualdad').textContent), /^m∠AOC\u00a0\+\u00a0m∠BOD\u00a0= m∠AOD\u00a0\+\u00a0m∠BOC/);
@@ -108,5 +112,63 @@ test('la etiqueta larga de un control con color parte en dos renglones', { skip:
     const { total, fuera } = await medirPagina(p);
     assert.ok(total >= 1);
     assert.deepEqual(fuera.map(f => `${f.texto}: ${f.tipo}, sobran ${f.sobra} px`), []);
+  });
+});
+
+// Lo que vieron las revisiones de la Etapa 7 a 390 px: una fórmula que cabe pero se parte dentro de un paréntesis
+// («lo que no sirve + (lo ⏎ pedido − 1)») o después de una flecha con el resto abajo («pista → acepción → ⏎
+// reemplazo»). Cada renglón se angosta justo hasta donde se quiere el corte, así no depende de la fuente.
+test('la medición marca la fórmula partida dentro de un paréntesis o después de un signo', { skip: !chromium && 'sin Playwright' }, async t => {
+  await conPagina(t, async p => {
+    await p.setContent(pagina(`
+      <p class="te-ec" id="par">${E.html(['lo que no sirve + (lo pedido − 1)'])}</p>
+      <p class="te-ec" id="flecha">${E.html([v('c-h', 'pista'), ' → ', { negrita: 'acepción' }, ' → ', v('c-f', 'reemplazo')])}</p>
+      <p class="te-ec" id="pc">${E.html(['x = 3; y = 4'])}</p>
+      <p id="prosa">Se mezcla con ${E.html([v('c-o', 'agua')])} (como la que corre por el canal) y se espera.</p>
+      <p id="prosa-pc">Cuenta las ${E.html([v('c-o', 'rojas')])}; después, las verdes.</p>
+      <p class="te-ec te-ec-grande" id="grande">${E.html([v('c-f', 'x'), ' = 2', '   ·   ', v('c-o', 'y'), ' = 3'])}</p>
+      <p class="te-ec" id="entera">${E.html(['a + (b − c) = 7'])}</p>
+      <p class="te-ec" id="cadena">${E.html(['R² = 25 + 9 + 30 · cos 120° = 25 + 9 − 15 = 19'])}</p>
+      <p id="valor">La fuerza total mide ${E.html([v('c-f', 'R'), ' = 40 N'])}.</p>
+      <p class="te-ec" id="pasos">${E.html(['3x + 10° = 5x − 30° → 2x = 40 → x = 20'])}</p>
+      <p id="ion">Cada ${E.html(['K⁺ atrae a todos los Cl⁻'])} que lo rodean.</p>`));
+    // Angosta cada renglón hasta el borde derecho de la letra que debe cerrar el primer renglón (la n-ésima vez que
+    // aparece ese texto), más 3 px (o los que se pidan): lo que sigue baja al renglón de abajo.
+    const angostar = (id, hasta, vez = 1, mas = 3) => p.evaluate(([i, h, n, m]) => {
+      const el = document.getElementById(i), w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), r = document.createRange();
+      let cuenta = 0;
+      for (let x = w.nextNode(); x; x = w.nextNode()) {
+        let k = -1;
+        while ((k = x.nodeValue.indexOf(h, k + 1)) >= 0) if (++cuenta === n) {
+          r.setStart(x, k); r.setEnd(x, k + h.length);
+          el.style.width = `${Math.ceil(r.getBoundingClientRect().right - el.getBoundingClientRect().left) + m}px`;
+          return;
+        }
+      }
+      throw new Error(`no está «${h}» en #${i}`);
+    }, [id, hasta, vez, mas]);
+    await angostar('par', '(lo');
+    await angostar('flecha', '→', 2);
+    await angostar('pc', ';');
+    await angostar('prosa', '(como la que');
+    await angostar('prosa-pc', ';');
+    await angostar('grande', '2');
+    await angostar('cadena', '=', 2);
+    await angostar('valor', '=');
+    await angostar('pasos', '→', 2);
+    await angostar('ion', 'los Cl', 1, 12);   // la carga va en <sup>: 12 px para que quepa pegada al Cl
+    const lineas = id => p.evaluate(i => { const e = document.getElementById(i); return Math.round(e.getBoundingClientRect().height / parseFloat(getComputedStyle(e).lineHeight)); }, id);
+    for (const id of ['par', 'flecha', 'pc', 'prosa', 'prosa-pc', 'cadena', 'valor', 'pasos', 'ion']) assert.ok(await lineas(id) >= 2, `#${id} quedó en dos renglones`);
+    const { fuera } = await medirPagina(p);
+    const de = re => fuera.filter(f => re.test(f.texto));
+    const [par] = de(/no sirve/), [flecha] = de(/acepción/), [pc] = de(/y = 4/), [valor] = de(/fuerza total/);
+    assert.ok(par && par.tipo === 'partida dentro de un paréntesis' && /\(lo ⏎ pedido/.test(par.corte), JSON.stringify(par));
+    assert.ok(flecha && flecha.tipo === 'partida después de «→»' && /→ ⏎ reemplazo/.test(flecha.corte), JSON.stringify(flecha));
+    assert.ok(pc && pc.tipo === 'partida después de «;»', JSON.stringify(pc));
+    assert.ok(valor && valor.tipo === 'partida después de «=»' && /= ⏎ 40 N/.test(valor.corte), JSON.stringify(valor));
+    // Lo que no es un mal corte: el paréntesis y el «;» de la prosa, el separador de la regla grande (va en su renglón a
+    // propósito), la cadena larga partida después de un «=», la flecha entre dos pasos, la carga de un ion (Cl⁻) al
+    // final del renglón y la fórmula que cabe en un renglón.
+    assert.equal(fuera.length, 4, `solo las cuatro partidas: ${JSON.stringify(fuera.map(f => [f.texto, f.tipo, f.corte]))}`);
   });
 });

@@ -7,7 +7,14 @@
  * (.te-ec), la lectura en vivo (.te-lectura) y todo renglón que lleve una fracción, una raíz, una llave o una ficha de
  * color. Lista cada una cuyo contenido es más ancho que su caja (scrollWidth > clientWidth), que se sale de la
  * pantalla o que queda recortada por una caja de más arriba. Una fórmula que no cabe y se puede deslizar también
- * cuenta: en el celular no se ve la barra y el alumno no sabe que sigue.
+ * cuenta: en el celular no se ve la barra y el alumno no sabe que sigue. Y la que cabe pero se parte en mal sitio
+ * (revisiones de la Etapa 7, 19 nov: «lo que no sirve + (lo ⏎ pedido − 1)» y «pista → acepción → ⏎ reemplazo»): un
+ * renglón que termina con un paréntesis abierto sin cerrar, con + − × ÷ · y el resto abajo, con una flecha que
+ * encadena términos (no pasos: «3x = 90 → ⏎ x = 30» está bien), o con «=» (o «;» en una fórmula) y abajo solo un resto
+ * corto, de hasta 8 letras («R = ⏎ 40 N»; partir una cadena larga después de un «=» está bien). Los
+ * renglones se leen de las cajas de las letras; en la prosa con fichas, un paréntesis partido solo cuenta si adentro
+ * hay una cuenta. También salen las que partió la app (partirLargas, abajo) porque no cabían: se leen, pero el
+ * arreglo es del contenido (partir la cuenta en dos pasos o acortarla).
  *
  * Necesita el servidor local (`npm run dev`, puerto 4173; otro con MESA_URL) y el Chromium de Playwright. Tarda unos
  * minutos (cientos de pantallas), por eso no entra en `npm test`: se corre a mano antes de dar por buena una unidad.
@@ -31,7 +38,8 @@
 const path = require('path');
 const fs = require('fs');
 
-// Corre dentro de la página. Devuelve las ecuaciones que no caben: [{ donde, texto, tipo, contenido, caja, sobra }].
+// Corre dentro de la página. Devuelve las ecuaciones que no caben o se parten en mal sitio: [{ donde, texto, tipo,
+// contenido, caja, sobra, corte? }]; corte, en las partidas, es el final del renglón ⏎ el comienzo del siguiente.
 function medirEnPagina() {
   const TOL = 1;   // px de holgura: los anchos se redondean
   const raiz = document.querySelector('#app') || document.body;
@@ -106,12 +114,93 @@ function medirEnPagina() {
     }
     const sale = Math.max(r.right - document.documentElement.clientWidth, -r.left);
     if (sale > TOL && !enCarrusel) problemas.push({ tipo: 'se sale de la pantalla', contenido: Math.round(r.width), caja: document.documentElement.clientWidth, sobra: Math.round(sale) });
+    // 3. Cabe, pero el renglón se parte en mal sitio (revisiones de la Etapa 7): dentro de un paréntesis, o después de
+    // un signo o una flecha con el resto abajo. Solo si no hay algo peor (lo que no cabe se anota primero).
+    if (!problemas.length) { const p = partida(el); if (p) problemas.push(p); }
     if (!problemas.length) continue;
     const peor = problemas.sort((a, b) => b.sobra - a.sobra)[0];
     el.setAttribute('data-ec-ancho', String(fuera.length));
     fuera.push(Object.assign({ donde: donde(el), texto: texto(el), linea: lineas.has(el) }, peor));
   }
   return { total: [...candidatas].filter(visible).length, fuera };
+
+  // Los renglones como se ven: cada letra con su caja, y cada pieza que no se parte (fracción, raíz, llave, ficha en
+  // inline-block, dibujo) como una sola. Un renglón nuevo empieza cuando la pieza siguiente vuelve a la izquierda y
+  // queda debajo de la anterior. Un bloque adentro (el separador de la regla grande, un <br>) es un corte a propósito:
+  // no cuenta. La letra va con { l, r, t, b, c, sep, sup }; sep marca el « · » que separa dos relaciones (.ec-sep) y
+  // sup, lo que va arriba o abajo (la carga de un ion, Cl⁻, no es un signo menos).
+  function piezas(el) {
+    const out = [], rg = document.createRange();
+    let forz = false;
+    const poner = (c, x) => { if (c && c.width > 0) { out.push(Object.assign({ l: c.left, r: c.right, t: c.top, b: c.bottom, forz }, x)); forz = false; } };
+    const recorrer = (nodo, sep, sup) => {
+      for (const n of nodo.childNodes) {
+        if (n.nodeType === 3) {
+          let i = 0;
+          for (const ch of n.nodeValue) {
+            if (!/\s/.test(ch)) { rg.setStart(n, i); rg.setEnd(n, i + ch.length); poner(rg.getClientRects()[0], { c: ch, sep, sup }); }
+            i += ch.length;
+          }
+        } else if (n.nodeType === 1) {
+          const d = estilo(n).display;
+          if (d === 'none') continue;
+          if (n.tagName === 'BR') { forz = true; continue; }
+          if (/^(svg|img)$/i.test(n.tagName) || /^inline-/.test(d)) poner(n.getBoundingClientRect(), { c: '', atomo: (n.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 14) || '▭', sep });
+          else if (/^(inline|contents|ruby)$/.test(d)) recorrer(n, sep || n.classList.contains('ec-sep'), sup || /^(SUP|SUB)$/.test(n.tagName));
+          else forz = true;
+        }
+      }
+    };
+    recorrer(el, false, false);
+    return out;
+  }
+  function partida(el) {
+    const formula = !!el.closest('.te-ec, .te-lectura');
+    // Dentro de una cuenta (+ − × ÷ ·) el corte siempre cuenta: la app los deja pegados y solo los suelta cuando el
+    // renglón no cabe. Después de un «=» (o de un «;» en una fórmula) se parte una cadena larga, y está bien; cuenta si
+    // lo que baja es un resto corto (hasta 8 letras antes de una coma, un punto, dos puntos o el final): «R = ⏎ 40 N»,
+    // «A = ⏎ 50 N a 37°, …», «x = 3; ⏎ y = 4». El «;» de la prosa es puntuación. La flecha que encadena pasos
+    // («3x = 90 → ⏎ x = 30») es buen sitio para partir; la que encadena términos («pista → acepción → ⏎ reemplazo»), no:
+    // cuenta si lo que baja, hasta la flecha siguiente, no trae un =, <, >.
+    const SIGNO = /^[+−×÷·]$/, FLECHA = /^[→⇒]$/, RELACION = formula ? /^[=;]$/ : /^=$/;
+    const ps = piezas(el);
+    if (ps.length < 2) return null;
+    const termino = k => {
+      for (let i = k; i < ps.length; i++) {
+        const x = ps[i];
+        if (i > k && (x.forz || x.sep)) break;
+        if (!x.atomo && FLECHA.test(x.c)) break;
+        if (!x.atomo && /^[=<>≤≥≠≈]$/.test(x.c)) return false;
+      }
+      return true;
+    };
+    const corto = k => {
+      let n = 0;
+      for (let i = k; i < ps.length; i++) {
+        const x = ps[i], sig = ps[i + 1];
+        if (i > k && (x.forz || x.sep)) break;
+        if (!x.atomo && /^[,.;:]$/.test(x.c) && (!sig || sig.forz || sig.l - x.r > 2)) break;
+        n += x.atomo ? 3 : 1;
+        if (n > 8) return false;
+      }
+      return true;
+    };
+    const trozo = (a, b) => ps.slice(Math.max(0, a), b).map((p, k, xs) => (k && p.l - xs[k - 1].r > 2 ? ' ' : '') + (p.atomo ? `[${p.atomo}]` : p.c)).join('');
+    const abiertos = [];   // índices de los ( y [ sin cerrar
+    for (let k = 1; k < ps.length; k++) {
+      const a = ps[k - 1], p = ps[k];
+      if (!a.atomo && !a.sep) { if (/[([]/.test(a.c)) abiertos.push(k - 1); else if (/[)\]]/.test(a.c)) abiertos.pop(); }
+      if (p.forz || !(p.l < a.r - 2 && p.t >= a.b - 4)) continue;
+      // Hay corte de renglón entre a y p.
+      const corte = `${trozo(k - 24, k)} ⏎ ${trozo(k, k + 16)}`;
+      // En la prosa, un paréntesis que se parte es normal («(como el agua)»): solo cuenta si adentro hay una cuenta.
+      const ab = abiertos[abiertos.length - 1];
+      if (ab !== undefined && (formula || ps.slice(ab + 1, k).some(x => x.atomo || /[=+−×÷·/→]/.test(x.c))))
+        return { tipo: 'partida dentro de un paréntesis', corte, contenido: el.scrollWidth, caja: el.clientWidth, sobra: 0 };
+      if (!a.atomo && !a.sep && !a.sup && (SIGNO.test(a.c) || FLECHA.test(a.c) && termino(k) || RELACION.test(a.c) && corto(k))) return { tipo: `partida después de «${a.c}»`, corte, contenido: el.scrollWidth, caja: el.clientWidth, sobra: 0 };
+    }
+    return null;
+  }
 }
 
 // Mide la página abierta. Devuelve { total, fuera }.
@@ -260,7 +349,7 @@ if (require.main === module) (async () => {
       await revisar(u).catch(e => avisos.push(`${u}: no se pudo revisar (${e.message.split('\n')[0]})`));
       // «Todo cabe» solo si se pudo mirar todo: una pantalla que no abrió no es una pantalla que cabe.
       const n = hallazgos.filter(h => h.unidad === u).length, sin = new Set(avisos.filter(a => a.startsWith(u + ' ') || a.startsWith(u + ':'))).size;
-      console.error(`· ${u}: ${n ? `${n} que no caben` : sin ? 'sin hallazgos' : 'todo cabe'}${sin ? `, pero ${sin} ${sin === 1 ? 'aviso' : 'avisos'}: no se revisó completa` : ''}`);
+      console.error(`· ${u}: ${n ? `${n} que no caben o se parten mal` : sin ? 'sin hallazgos' : 'todo cabe'}${sin ? `, pero ${sin} ${sin === 1 ? 'aviso' : 'avisos'}: no se revisó completa` : ''}`);
     }
   }));
   await navegador.close();
@@ -268,10 +357,16 @@ if (require.main === module) (async () => {
   hallazgos.sort((a, b) => (a.unidad + a.idea + a.momento).localeCompare(b.unidad + b.idea + b.momento));
   const NOMBRE = { lee: 'Lee', juega: 'Juega', predice: 'Predice', mira: 'Mira', regla: 'La regla', resuelve: 'Así se resuelve', 'ahora-tu': 'Ahora tú', ejemplos: 'Ejemplos' };
   console.log(`Ecuaciones a ${ANCHO} px: ${unidades.length} unidades, ${pantallas} pantallas, ${medidas} renglones medidos en ${Math.round((Date.now() - t0) / 1000)} s.`);
-  if (!hallazgos.length) console.log(avisos.length ? 'No se encontró ninguna que no quepa, pero el barrido no está completo (ver los avisos).' : 'Ninguna ecuación se corta ni se sale del ancho.');
+  if (!hallazgos.length) console.log(avisos.length ? 'No se encontró ninguna que no quepa ni que se parta mal, pero el barrido no está completo (ver los avisos).' : 'Ninguna ecuación se corta, se sale del ancho ni se parte en mal sitio.');
   else {
-    console.log(`${hallazgos.length} no caben:\n`);
-    for (const h of hallazgos) console.log(`- ${h.unidad} · ${h.idea} · ${NOMBRE[h.momento] || h.momento}${h.detalle ? ` (${h.detalle})` : ''}\n    «${h.texto}»\n    ${h.tipo}: ${h.contenido} px en ${h.caja} px (sobran ${h.sobra} px)${h.captura ? `\n    ${h.captura}` : ''}`);
+    const partidas = hallazgos.filter(h => h.corte).length;
+    console.log(`${hallazgos.length - partidas} no caben y ${partidas} se parten en mal sitio:\n`);
+    for (const h of hallazgos) console.log(`- ${h.unidad} · ${h.idea} · ${NOMBRE[h.momento] || h.momento}${h.detalle ? ` (${h.detalle})` : ''}\n    «${h.texto}»\n    ${h.corte ? `${h.tipo}: «${h.corte}»` : `${h.tipo}: ${h.contenido} px en ${h.caja} px (sobran ${h.sobra} px)`}${h.captura ? `\n    ${h.captura}` : ''}`);
+  }
+  if (hallazgos.length) {
+    const porTipo = {};
+    for (const h of hallazgos) porTipo[h.tipo] = (porTipo[h.tipo] || 0) + 1;
+    console.log(`\nPor tipo: ${Object.entries(porTipo).sort((a, b) => b[1] - a[1]).map(([t, n]) => `${t}: ${n}`).join(' · ')}`);
   }
   if (avisos.length) console.log(`\nAvisos (lo que no se pudo revisar; mientras haya, el barrido no vale como completo):\n- ${[...new Set(avisos)].join('\n- ')}`);
   const json = op('json', '');
