@@ -76,3 +76,20 @@ test('por idea: cada idea da solo sus tipos; los Datos no traen la respuesta; lo
     assert.deepEqual([...vistos].sort(), [...tipos].sort(), idea);
   }
 });
+
+// Cierre (19 nov 2026, rutinas/auditoria/quimica.nomenclatura-inorganica.md): el papel cubre las seis ideas con el nivel
+// de su rótulo, el −2 del H no se llama «signo cambiado» y el guion no se separa de su terminación.
+test('cierre: papel con las seis ideas y niveles 1, 1, 1, 2, 2, 2, 3, 3', () => {
+  const G = require('./generador.js'), ps = Array.from({ length: 8 }, (_, i) => G.generar(`papel-${i + 1}`));
+  assert.equal(new Set(ps.map(p => p._datos.idea)).size, 6);
+  assert.deepEqual(ps.map(p => p._datos.nivel), [1, 1, 1, 2, 2, 2, 3, 3]);
+  const papel = require('./papel.json').problemas;
+  ps.forEach((p, i) => assert.ok(papel[i].enunciado.startsWith(p.enunciado.join('').slice(0, 20)), `papel p${i + 1} al día`));
+});
+test('cierre: el −2 del H en un hidruro no lleva el código del signo, y el guion va pegado a -oso, -ico, -uro…', () => {
+  const G = require('./generador.js');
+  for (let s = 0; s < 400; s++) { const p = G.generar(s, { idea: 'peroxidos-hidruros' });
+    for (const a of p.alternativas) if (a.error && a.error.id === 'QM-OX-SIGNO') assert.equal(a.texto, '+1', JSON.stringify(p._datos)); // el signo cambiado del −1 del O; en un hidruro, +1 es QM-OX-H
+    const t = [...p.datos, ...p.alternativas.map(a => a.error ? a.error.explicacion : '')].join(' ');
+    assert.ok(!/(^|[^A-Za-z0-9_\-])-(oso|ico|uro|ito|ato|hídrico)\b/.test(t), t); }
+});

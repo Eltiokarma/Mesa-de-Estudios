@@ -19,7 +19,7 @@
  * Objetos de la primera pantalla (quim-nomenclatura, de prueba): el permanganato (1), el clavo con herrumbre (2), el
  * agua oxigenada (3), la leche de magnesia (4), el salero y el saco de abono (5) y la caja de bicarbonato (6).
  * Convenciones de academia (tarjeta «nomenclatura-examen» de nucleo/convencion.js): los tres sistemas en los óxidos;
- * «anhídrido» para el óxido de un no metal; -oso e -ico para un metal con dos EO; los oxácidos y las sales, solo por la
+ * «anhídrido» para el óxido de un no metal; -⁠oso e -⁠ico para un metal con dos EO; los oxácidos y las sales, solo por la
  * tradicional (sin la forma con «oxo»).
  * Errores: docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md (NO1 a NO4); los QM- son hipótesis.
  * Cuentas rehechas aparte en scratchpad (e7-quimica/cuentas.js), por otro camino que el de este archivo.
@@ -196,7 +196,7 @@
         { texto: 'Sacar un promedio de los dos nitrógenos daría +1, que no es el de ninguno.' }],
       respuesta: [Eo('−3'), ' en el NH₄⁺ y ', Eo('+5'), ' en el NO₃⁻'] },
     { nivel: 3, titulo: 'Cuál tiene el azufre a +4', enunciado: '¿En cuál de estas sustancias el azufre tiene EO +4?',
-      alternativas: ['H₂SO₄', 'SO₂', 'H₂S', 'S₈', 'K₂S₂O₃'], datos: [FIJO_TXT.H, FIJO_TXT.O, FIJO_TXT.K, FORMULA_EO, 'En un elemento solo, el EO es 0'],
+      alternativas: ['H₂SO₄', 'SO₂', 'H₂S', 'S₈', 'K₂S₂O₃'], datos: [FIJO_TXT.H, FIJO_TXT.O, FIJO_TXT.K, FORMULA_EO, 'En un elemento sin combinar, el EO es 0'],
       solucion: [{ texto: 'Cuento en cada una: H₂SO₄, +6; SO₂, +4; H₂S, −2; S₈, 0; K₂S₂O₃, +2.' },
         { texto: ['La ', letra('A'), ' es el S más alto; la ', letra('C'), ' tiene el S con −2 junto al H; la ', letra('D'), ' es azufre solo, con 0; la ', letra('E'), ', +2 en cada azufre.'] }],
       respuesta: [letra('B'), ', SO₂'] },
@@ -214,12 +214,13 @@
     { nivel: 3, titulo: 'El combustible de los cohetes', enunciado: 'La hidracina, N₂H₄, es un combustible de cohetes. ¿Qué EO tiene cada nitrógeno?',
       alternativas: ['−4', '+2', '−2', '+4', '−3'], datos: datosEO('N2H4', 'N'),
       solucion: [{ texto: 'Cuatro H suman +4 y la molécula es neutra: los dos N aportan −4.', ecuacion: cuentaEO('N2H4', 'N', false) },
+        { texto: 'Cada N, la mitad de −4.', ecuacion: [EOf, ' = −2'] },
         { texto: ['La ', letra('A'), ' es el total de los dos N; la ', letra('B'), ' toma el subíndice 2 como EO.'] },
-        { texto: ['La ', letra('D'), ' cambia el signo del total; la ', letra('E'), ' copia el N del NH₃.'] }],
+        { texto: ['La ', letra('D'), ' cambia el signo del total; la ', letra('E'), ' sería un N con tres H, como en el amoníaco, NH₃.'] }],
       respuesta: [letra('C'), ', ', Eo('−2')] },
     { nivel: 3, titulo: 'Cuatro cloros en orden', enunciado: 'Ordena de mayor a menor el EO del cloro en HClO₄, Cl₂, HClO₂ y KCl.',
       alternativas: ['HClO₂ > HClO₄ > Cl₂ > KCl', 'Cl₂ > HClO₄ > HClO₂ > KCl', 'KCl > Cl₂ > HClO₂ > HClO₄', 'HClO₄ > HClO₂ > KCl > Cl₂', 'HClO₄ > HClO₂ > Cl₂ > KCl'],
-      datos: [FIJO_TXT.H, FIJO_TXT.O, FIJO_TXT.K, FORMULA_EO, 'En un elemento solo, el EO es 0'],
+      datos: [FIJO_TXT.H, FIJO_TXT.O, FIJO_TXT.K, FORMULA_EO, 'En un elemento sin combinar, el EO es 0'],
       solucion: [{ texto: 'HClO₄, +7; HClO₂, +3; Cl₂, 0; KCl, −1.', ecuacion: ['+7 > +3 > 0 > −1'] },
         { texto: ['La ', letra('A'), ' pone al HClO₂ (+3) antes que al HClO₄ (+7); la ', letra('B'), ' pone primero al cloro solo.'] },
         { texto: ['La ', letra('C'), ' da el orden al revés; la ', letra('D'), ' pone el 0 por debajo del −1.'] }],
@@ -239,19 +240,19 @@
         { titulo: 'El permanganato', texto: 'En la farmacia venden permanganato de potasio, KMnO₄: cristales oscuros que se disuelven en agua para desinfectar. La fórmula dice qué átomos hay; cada subíndice, cuántos: un K, un Mn y cuatro O.',
           pieza: 'quim-nomenclatura', dibujo: OBJ('permanganato', { etiqueta: 'KMnO₄', nombre: 'Permanganato de potasio' }) },
         { titulo: 'Lo que aporta cada átomo', texto: 'Al unirse, los átomos ceden o ganan electrones, del todo o en parte. El estado de oxidación (EO) lleva esa cuenta como si todos fueran iones: +1 si cedió uno, −2 si ganó dos.' },
-        { titulo: 'Los que casi no cambian', texto: 'El O suele tener −2; el H, +1 junto a un no metal; los del grupo 1, +1; los del grupo 2, +2; el F, −1. Un elemento solo, como el O₂ del aire o el hierro de un clavo, tiene 0.' },
+        { titulo: 'Los que casi no cambian', texto: 'El O suele tener −2; el H, +1 junto a un no metal; los del grupo 1, +1; los del grupo 2, +2; el F, −1. Un elemento sin combinar, como el O₂ del aire o el hierro de un clavo, tiene 0.' },
         { titulo: 'Qué mirar', texto: 'En el juego, cada +1 de EO es un cuadrito lleno y cada −1, uno hueco. Cambia el EO del átomo violeta y mira cuándo la suma iguala la carga: 0 en un compuesto y +1 en un ion poliatómico como el NH₄⁺.' },
       ],
     },
     ejemplos: EJEMPLOS_EO,
     juega: {
       consigna: 'Cada átomo aporta cuadritos: llenos si su EO es positivo y huecos si es negativo. Los EO de todos suman la carga de la especie.',
-      mision: { texto: 'Encuentra el EO del nitrógeno en el ion amonio, NH₄⁺.', logrado: v => v.k === 'NH4' && v.eo === eoDe('NH4^+', 'N'),
+      mision: { texto: 'Elige el ion amonio, NH₄⁺, y encuentra el EO de su nitrógeno.', logrado: v => v.k === 'NH4' && v.eo === eoDe('NH4^+', 'N'),
         bien: 'El N tiene −3: los cuatro H aportan +4 y la suma debe dar +1.' },
       voz: 'Primero los que casi no cambian; el que falta cierra la cuenta.',
       leyenda: [
         { s: EOf, t: 'estado de oxidación de un átomo' },
-        { s: 'cuadritos', t: 'lleno: +1 de EO; hueco: −1 de EO' },
+        { s: 'cuadritos', t: 'lleno +1; hueco −1; punteado: sin pareja' },
         { s: Cq('carga'), t: 'la carga de toda la especie' },
       ],
       controles: [
@@ -292,7 +293,7 @@
     regla: {
       texto: 'Pon los EO que casi no cambian: O −2, H +1, grupo 1 +1, grupo 2 +2, F −1. El que falta sale de que la suma iguale la carga.',
       ecuacion: ['Σ n · ', { llave: [EOf], nota: 'de cada átomo', color: 'c-f' }, ' = ', { llave: [Cq('z')], nota: 'carga de la especie', color: 'c-h' }],
-      condicion: 'z es 0 en una especie neutra. Un elemento solo tiene EO 0. El O y el H tienen excepciones (más adelante).',
+      condicion: 'z es 0 en una especie neutra. Un elemento sin combinar (O₂) tiene EO 0. El O y el H tienen excepciones.',
       voz: 'Los conocidos primero; el que falta cierra la cuenta.',
       dibujo: fichas([{ t: 'Cr +6', carga: 6, n: 2, color: 'f' }, { t: 'O₇ 7·(−2)', carga: -14, n: 1 }], { neta: 'suma de los EO',
         alt: 'Fichas del ion Cr₂O₇²⁻: dos cromos con +6 y siete oxígenos con −2; la suma de los EO es −2, la carga del ion.' }),
@@ -303,7 +304,7 @@
         const [f, x] = RES1[(s % RES1.length + RES1.length) % RES1.length], n = nAt(f, x), z = cargaDe(f), s0 = sumaConocidos(f, x), bien = (z - s0) / n;
         return { enunciado: ['¿Qué estado de oxidación ', EOf, ` tiene el ${x} en el ${bonita(f)}?`], dibujo: fichasPregunta(f, x), datos: datosEO(f, x),
           pasos: [
-            { tipo: 'pide', texto: ['El EO de ', n > 1 ? `cada uno de los ${n} átomos` : 'el átomo', ` de ${x}.`] },
+            { tipo: 'pide', texto: [n > 1 ? `El EO de cada uno de los ${n} átomos de ${x}.` : `El EO del átomo de ${x}.`] },
             { tipo: 'datos', texto: `${datosEO(f, x).slice(0, -1).join('; ')}. ${z === 0 ? 'La sustancia es neutra.' : `La carga del ion es ${sg(z)}.`}` },
             { tipo: 'regla', texto: 'La suma de los EO, cada uno por su número de átomos, es la carga.', ecuacion: ['Σ n · ', EOf, ' = ', Cq('z')] },
             { tipo: 'cuentas', texto: `Los demás aportan ${sg(s0)}.`, ecuacion: cuentaEO(f, x) },
@@ -328,10 +329,10 @@
   // ---------- Idea 2 (rehecha, 19 nov): óxidos y sus tres nombres ----------
   // Propuesta §3 idea 2. Objeto de la primera pantalla: un clavo con herrumbre (quim-nomenclatura).
   // Cambia: el elemento y su EO · Permanece: la tarjeta con la fórmula arriba y los tres nombres debajo · Progresa: de
-  // contar átomos (prefijos) a leer el EO (romano) y a elegir la terminación (-oso, -ico) · Se reserva: el plomo (PbO₂ de
+  // contar átomos (prefijos) a leer el EO (romano) y a elegir la terminación (-⁠oso, -⁠ico) · Se reserva: el plomo (PbO₂ de
   // Predice) · Debe verse: que los tres nombres son de la misma fórmula.
   // Errores: QM-ROMANO (el romano cuenta átomos), QM-ROMANO-O (cuenta oxígenos), NO3 (sistemas distintos = sustancias
-  // distintas), QM-OSO-ICO (-oso al mayor; trampa 42 de San Marcos), QM-SISTEMA (el nombre de otro sistema), QM-ROMANO-UNO
+  // distintas), QM-OSO-ICO (-⁠oso al mayor; trampa 42 de San Marcos), QM-SISTEMA (el nombre de otro sistema), QM-ROMANO-UNO
   // (romano con un solo EO), QM-PREFIJO (prefijo en el elemento equivocado), QM-CLASE-OXIDO (básico con un no metal),
   // QM-FORM-CRUCE (la fórmula sin juntar las cargas).
   const NOMBRE_EL = { Na: 'sodio', K: 'potasio', Ca: 'calcio', Mg: 'magnesio', Al: 'aluminio', Fe: 'hierro', Cu: 'cobre', Pb: 'plomo', Sn: 'estaño', Au: 'oro',
@@ -358,17 +359,20 @@
   }
   // Datos de un ejercicio de óxidos (herramientas, no el nombre hecho).
   const D2 = {
-    prefijos: 'Prefijos: mono 1, di 2, tri 3, tetra 4, penta 5, hexa 6, hepta 7 (delante de «óxido», mon-, pent-, hept-)',
+    prefijos: 'Prefijos: mono 1, di 2, tri 3, tetra 4, penta 5, hexa 6, hepta 7; con «óxido»: monóxido, pentóxido, heptóxido',
     romanos: 'Romanos: I 1, II 2, III 3, IV 4, V 5, VI 6, VII 7',
     stock: 'Stock: «óxido de» + elemento + su EO en romanos entre paréntesis; sin romano si el elemento tiene un solo EO',
-    trad: 'Tradicional, elemento con dos EO: -oso para el menor e -ico para el mayor',
+    trad: 'Tradicional, elemento con dos EO: -⁠oso para el menor e -⁠ico para el mayor',
     clase: 'Metal con oxígeno: óxido básico. No metal con oxígeno: óxido ácido',
     o: 'EO del O: −2',
     cero: 'La fórmula junta los átomos hasta carga 0, con los números más chicos',
   };
   const RAIZ_TRAD = { Fe: 'hierro: ferroso / férrico', Cu: 'cobre: cuproso / cúprico', Pb: 'plomo: plumboso / plúmbico', Sn: 'estaño: estannoso / estánnico',
     Au: 'oro: auroso / áurico', Co: 'cobalto: cobaltoso / cobáltico', Ni: 'níquel: niqueloso / niquélico', Hg: 'mercurio: mercurioso / mercúrico', Cr: 'cromo: cromoso / crómico' };
-  const estadosTxt = e => `EO del ${NOMBRE_EL[e]}: ${(esMetal(e) ? estadosMetal(e) : M.ESTADOS[e].nm).map(sg).join(' y ')}`;
+  const listaY = l => (l.length < 2 ? l.join('') : `${l.slice(0, -1).join(', ')} y ${l[l.length - 1]}`);
+  const estadosDe = e => (esMetal(e) ? estadosMetal(e) : M.ESTADOS[e].nm);
+  const CUANTOS = ['ninguno', 'uno', 'dos', 'tres', 'cuatro'];
+  const estadosTxt = e => `EO del ${NOMBRE_EL[e]}: ${listaY(estadosDe(e).map(sg))}`;
   // Ahora tú: los metales y no metales que no salen en el juego, en Predice, en Mira ni en los ejemplos.
   const AT2 = { metal: [['Co', 2], ['Co', 3], ['Ni', 2], ['Ni', 3], ['Hg', 1], ['Hg', 2]], noMetal: [['N', 3], ['N', 5], ['I', 5], ['Br', 3], ['Se', 6]] };
   const RES2 = [['Co', 3], ['Ni', 2], ['Hg', 2], ['Se', 4], ['N', 3], ['I', 5]];
@@ -382,7 +386,7 @@
         [ne > 1 ? `óxido de ${NOMBRE_EL[e]}(${ROM[ne]})` : null, 'QM-ROMANO', `Bien usar el romano. Pero el ${ROM[ne]} contaría los ${ne} átomos de ${NOMBRE_EL[e]}; el romano es su EO, ${sg(v)}.`],
         [no > 1 && no !== v ? `óxido de ${NOMBRE_EL[e]}(${ROM[no]})` : null, 'QM-ROMANO-O', `El ${ROM[no]} contaría los ${no} oxígenos. El romano es el EO del ${NOMBRE_EL[e]}: ${sg(v)}.`],
         [ne * v <= 7 && ne > 1 ? `óxido de ${NOMBRE_EL[e]}(${ROM[ne * v]})` : null, 'QM-OX-TOTAL', `Los ${ne} átomos juntos aportan ${sg(ne * v)}; el romano es el EO de cada uno.`],
-        [`óxido de ${NOMBRE_EL[e]}`, 'QM-ROMANO-UNO', `Sin romano sirve si el elemento tiene un solo EO. El ${NOMBRE_EL[e]} tiene dos.`],
+        [`óxido de ${NOMBRE_EL[e]}`, 'QM-ROMANO-UNO', `Sin romano sirve si el elemento tiene un solo EO. El ${NOMBRE_EL[e]} tiene ${CUANTOS[estadosDe(e).length]}.`],
         [n.tradicional, 'QM-SISTEMA', 'Ese es el nombre tradicional: es la misma sustancia, pero no es el de Stock.'],
         [n.sistematica, 'QM-SISTEMA', 'Ese es el nombre sistemático, con prefijos: es la misma sustancia, pero no es el de Stock.'],
       ]),
@@ -392,11 +396,11 @@
     const f = oxidoDe(e, v), n = M.nombrar(f), [menor, mayor] = estadosMetal(e), alReves = n.errores.tradicionalAlReves;
     return { pregunta: `¿Cuál es el nombre tradicional del ${bonita(f)}?`, datos: [estadosTxt(e), D2.o, D2.trad, `Raíces: ${RAIZ_TRAD[e]}`],
       opciones: opsTexto(n.tradicional, [
-        [alReves, 'QM-OSO-ICO', `Bien la raíz. Pero ${v === mayor ? '-oso es para el EO menor' : '-ico es para el EO mayor'}: aquí el ${NOMBRE_EL[e]} tiene ${sg(v)}.`],
+        [alReves, 'QM-OSO-ICO', `Bien la raíz. Pero ${v === mayor ? '-⁠oso es para el EO menor' : '-⁠ico es para el EO mayor'}: aquí el ${NOMBRE_EL[e]} tiene ${sg(v)}.`],
         [n.stock, 'QM-SISTEMA', 'Ese es el nombre Stock: la misma sustancia, otro sistema.'],
         [n.sistematica, 'QM-SISTEMA', 'Ese es el nombre sistemático: la misma sustancia, otro sistema.'],
       ]),
-      solucion: { texto: `El ${NOMBRE_EL[e]} tiene ${sg(v)}, el ${v === mayor ? 'mayor' : 'menor'} de sus dos EO: lleva ${v === mayor ? '-ico' : '-oso'}.`, ecuacion: [bonita(f), `: ${n.tradicional}`] } };
+      solucion: { texto: `El ${NOMBRE_EL[e]} tiene ${sg(v)}, el ${v === mayor ? 'mayor' : 'menor'} de sus dos EO: lleva ${v === mayor ? '-⁠ico' : '-⁠oso'}.`, ecuacion: [bonita(f), `: ${n.tradicional}`] } };
   }
   function casoFormula2(e, v) {
     const f = oxidoDe(e, v), n = M.nombrar(f), at = M.atomos(f), g = (a, b) => (b ? g(b, a % b) : a);
@@ -406,7 +410,7 @@
       opciones: opsTexto(bien, [
         [sin, 'QM-SIMPLIFICA', `Bien juntar las cargas: ${sin} es neutra, pero se simplifica a los números más chicos.`],
         [cruzada, 'QM-FORM-CRUCE', `Con esa fórmula la carga queda en ${carga(v / g(v, 2), 2 / g(v, 2))}, no en 0: los números van al revés.`],
-        [uno, 'QM-FORM-UNO', `Un ${e} con ${v} oxígenos deja carga ${carga(1, v)}, no 0.`],
+        [uno, 'QM-FORM-UNO', `Un ${e} con ${v === 1 ? 'un oxígeno' : `${v} oxígenos`} deja carga ${carga(1, v)}, no 0.`],
         [bonita(`${e}O`), 'NO2', `Uno de cada sirve si el ${NOMBRE_EL[e]} tiene +2; con ${sg(v)} queda carga ${carga(1, 1)}.`],
       ]),
       solucion: { texto: `${at[e]} ${e} con ${sg(v)} y ${at.O} O con −2 dan carga 0.`, ecuacion: [`${at[e]} · (${sg(v)}) + ${at.O} · (−2) = `, Cq('0'), `   →   ${bonita(f)}`] } };
@@ -432,9 +436,9 @@
     { nivel: 1, titulo: 'Contar con prefijos', enunciado: '¿Cuál es el nombre sistemático del Cl₂O₅?', datos: [D2.prefijos],
       solucion: [{ texto: 'Cinco O: pentóxido. Dos Cl: dicloro.', ecuacion: ['Cl₂O₅ → pent-óxido de di-cloro'] }], respuesta: [nombre('Cl2O5', 'sistematica')] },
     { nivel: 1, titulo: 'Un polvo blanco', enunciado: 'El MgO es un polvo blanco que se forma al quemar una cinta de magnesio. ¿Es un óxido básico o ácido?',
-      datos: [D2.clase], solucion: [{ texto: 'El magnesio es un metal del grupo 2: con oxígeno da un óxido básico.' }], respuesta: ['Óxido básico'] },
+      datos: [D2.clase, 'El magnesio es un metal del grupo 2'], solucion: [{ texto: 'El magnesio es un metal del grupo 2: con oxígeno da un óxido básico.' }], respuesta: ['Óxido básico'] },
     { nivel: 1, titulo: 'El óxido del plomo menor', enunciado: 'El plomo tiene EO +2 y +4. ¿Cuál es el nombre tradicional del PbO?',
-      datos: [D2.o, D2.trad, `Raíces: ${RAIZ_TRAD.Pb}`], solucion: [{ texto: 'Un O aporta −2: el plomo tiene +2, el menor de sus dos EO. Lleva -oso.' }],
+      datos: [D2.o, D2.trad, `Raíces: ${RAIZ_TRAD.Pb}`], solucion: [{ texto: 'Un O aporta −2: el plomo tiene +2, el menor de sus dos EO. Lleva -⁠oso.' }],
       respuesta: [nombre('PbO', 'tradicional')] },
     { nivel: 1, titulo: 'Del nombre a la fórmula', enunciado: '¿Cuál es la fórmula del óxido de potasio?', datos: ['EO del K: +1 (grupo 1)', D2.o, D2.cero],
       solucion: [{ texto: 'Cada K aporta +1 y el O, −2: hacen falta dos K.', ecuacion: ['2 · (+1) + 1 · (−2) = ', Cq('0'), '   →   K₂O'] }], respuesta: ['K₂O'] },
@@ -443,20 +447,20 @@
       solucion: [{ texto: 'Tres O aportan −6; los dos Cr, +6: cada uno +3.', ecuacion: cuentaEO('Cr2O3', 'Cr', false) }, { texto: 'El cromo tiene más de un EO: va el romano.' }],
       respuesta: [Eo('+3'), '; ', ...conRomano(nombre('Cr2O3', 'stock'))] },
     { nivel: 2, titulo: 'El otro óxido del estaño', enunciado: '¿Cuál es la fórmula del óxido de estaño(II) y su nombre tradicional?', datos: [D2.o, D2.cero, D2.trad, `Raíces: ${RAIZ_TRAD.Sn}`, estadosTxt('Sn')],
-      solucion: [{ texto: 'El (II) es el EO: Sn con +2 y O con −2, uno de cada.', ecuacion: ['(+2) + (−2) = ', Cq('0'), '   →   SnO'] }, { texto: '+2 es el menor de los dos EO del estaño: -oso.' }],
+      solucion: [{ texto: 'El (II) es el EO: Sn con +2 y O con −2, uno de cada.', ecuacion: ['(+2) + (−2) = ', Cq('0'), '   →   SnO'] }, { texto: '+2 es el menor de los dos EO del estaño: -⁠oso.' }],
       respuesta: ['SnO, ', nombre('SnO', 'tradicional')] },
-    { nivel: 2, titulo: 'Dos nombres de un óxido ácido', enunciado: 'Escribe el nombre sistemático y el Stock del Cl₂O₃.', datos: [D2.prefijos, D2.o, D2.stock, D2.romanos],
+    { nivel: 2, titulo: 'Dos nombres de un óxido ácido', enunciado: 'Escribe el nombre sistemático y el Stock del Cl₂O₃.', datos: [D2.prefijos, D2.o, D2.stock, D2.romanos, 'EO del cloro: +1, +3, +5 y +7'],
       solucion: [{ texto: 'Sistemática: tres O y dos Cl.', ecuacion: ['Cl₂O₃ → tri-óxido de di-cloro'] }, { texto: 'Stock: los tres O aportan −6; cada Cl, +3.', ecuacion: cuentaEO('Cl2O3', 'Cl', false) }],
       respuesta: [nombre('Cl2O3', 'sistematica'), ' y ', ...conRomano(nombre('Cl2O3', 'stock'))] },
     { nivel: 2, titulo: 'Del tradicional a la fórmula', enunciado: 'El oro tiene EO +1 y +3. ¿Cuál es la fórmula del óxido auroso?', datos: [D2.o, D2.cero, D2.trad],
-      solucion: [{ texto: '-oso es el EO menor: el oro con +1.' }, { texto: 'Dos Au con +1 compensan un O con −2.', ecuacion: ['2 · (+1) + (−2) = ', Cq('0'), '   →   Au₂O'] }], respuesta: ['Au₂O'] },
+      solucion: [{ texto: '-⁠oso es el EO menor: el oro con +1.' }, { texto: 'Dos Au con +1 compensan un O con −2.', ecuacion: ['2 · (+1) + (−2) = ', Cq('0'), '   →   Au₂O'] }], respuesta: ['Au₂O'] },
     { nivel: 2, titulo: 'El óxido del boro', enunciado: 'El boro es un no metal con EO +3. ¿Qué clase de óxido forma y cuál es su nombre sistemático?', datos: [D2.clase, D2.o, D2.cero, D2.prefijos],
       solucion: [{ texto: 'Un no metal con oxígeno: óxido ácido. Dos B con +3 y tres O con −2.', ecuacion: ['2 · (+3) + 3 · (−2) = ', Cq('0'), '   →   B₂O₃'] }, { texto: 'Tres O y dos B: trióxido de diboro.' }],
       respuesta: ['Óxido ácido, ', nombre('B2O3', 'sistematica')] },
     { nivel: 3, titulo: 'El mayor del oro', enunciado: 'El oro tiene EO +1 y +3. ¿Cuál es el nombre tradicional del óxido del oro con su mayor EO?',
       alternativas: [nombre('Au2O3', 'tradicional'), nombre('Au2O', 'tradicional'), nombre('Au2O3', 'stock'), nombre('Au2O3', 'sistematica'), nombre('Au2O', 'stock')],
       datos: [D2.o, D2.trad, D2.stock],
-      solucion: [{ texto: 'El mayor EO es +3: el óxido es Au₂O₃ y en la tradicional lleva -ico.' },
+      solucion: [{ texto: 'El mayor EO es +3: el óxido es Au₂O₃ y en la tradicional lleva -⁠ico.' },
         { texto: ['La ', letra('B'), ' es el EO menor; la ', letra('C'), ' es el nombre Stock y la ', letra('D'), ', el sistemático: la misma sustancia, otro sistema.'] },
         { texto: ['La ', letra('E'), ' es el Stock del otro óxido, el Au₂O.'] }],
       respuesta: [letra('A'), `, ${nombre('Au2O3', 'tradicional')}`] },
@@ -474,7 +478,7 @@
       respuesta: [letra('A'), ', FVF'] },
     { nivel: 3, titulo: 'Los oxígenos del óxido estánnico', enunciado: 'El estaño tiene EO +2 y +4. ¿Cuántos oxígenos hay por cada estaño en el óxido estánnico?',
       alternativas: ['1', '4', '3', '2'], datos: [D2.o, D2.trad, D2.cero],
-      solucion: [{ texto: '-ico es el EO mayor: el estaño con +4. Hacen falta dos O de −2.', ecuacion: ['(+4) + 2 · (−2) = ', Cq('0'), '   →   SnO₂'] },
+      solucion: [{ texto: '-⁠ico es el EO mayor: el estaño con +4. Hacen falta dos O de −2.', ecuacion: ['(+4) + 2 · (−2) = ', Cq('0'), '   →   SnO₂'] },
         { texto: ['La ', letra('A'), ' es el óxido estannoso (SnO); la ', letra('B'), ' pone un O por cada unidad de EO; la ', letra('C'), ' no deja la carga en 0.'] }],
       respuesta: [letra('D'), ', 2'] },
     { nivel: 3, titulo: 'Un óxido del bromo', enunciado: '¿Cuál es la fórmula del óxido de bromo(VII)?',
@@ -490,21 +494,21 @@
     pregunta: '¿Cómo se nombra un óxido?',
     temas: ['Tipos de nomenclatura', 'Óxidos e hidruros'],
     pieza: 'quim-nomenclatura',
-    aprendizaje: 'Metal con oxígeno da óxido básico; no metal, óxido ácido. Se nombran contando átomos, con el EO en romanos o con -oso e -ico.',
+    aprendizaje: 'Metal con oxígeno da óxido básico; no metal, óxido ácido. Se nombran contando átomos, con el EO en romanos o con -⁠oso e -⁠ico.',
     actividad: 'Elegir un elemento con su EO y leer su óxido y sus tres nombres.',
     lee: {
       tarjetas: [
         { titulo: 'La herrumbre', texto: 'La herrumbre de un clavo es un óxido: hierro unido al oxígeno. Un mismo óxido tiene hasta tres nombres, y el examen te puede pedir cualquiera de ellos.',
           pieza: 'quim-nomenclatura', dibujo: OBJ('clavo', { nombre: 'Un clavo con herrumbre' }) },
         { titulo: 'Prefijos y romanos', texto: 'Prefijos: mono 1, di 2, tri 3, tetra 4, penta 5, hexa 6, hepta 7. Números romanos: I 1, II 2, III 3, IV 4, V 5, VI 6, VII 7. Cada sistema de nombres usa uno de los dos, o ninguno.' },
-        { titulo: 'Convención del examen', texto: 'En el examen el óxido de un no metal también se llama anhídrido (SO₃: anhídrido sulfúrico), y un metal con dos EO lleva -oso o -ico. En la universidad verás que la IUPAC ya no recomienda esos nombres.' },
+        { titulo: 'Convención del examen', texto: 'En el examen el óxido de un no metal también se llama anhídrido (SO₃: anhídrido sulfúrico), y un metal con dos EO lleva -⁠oso o -⁠ico. En la universidad verás que la IUPAC ya no recomienda esos nombres.' },
         { titulo: 'Qué mirar', texto: 'El elemento con su EO y el O con −2 se juntan hasta carga 0. En el juego, compara los tres nombres: cuál cuenta átomos y cuál dice el EO.' },
       ],
     },
     ejemplos: EJEMPLOS_NOMBRES,
     juega: {
-      consigna: 'Un elemento con su EO y el oxígeno con −2 forman un óxido. Cada óxido tiene tres nombres.',
-      mision: { texto: 'Arma el óxido cuyo nombre tradicional termina en -oso y lleva dos átomos del metal.', logrado: v => v.k === 'Cu1',
+      consigna: 'Un elemento con su EO y el oxígeno con −2 forman un óxido, con tres nombres. Con un solo EO, sin romano.',
+      mision: { texto: 'Arma el óxido cuyo nombre tradicional termina en -⁠oso y lleva dos átomos del metal.', logrado: v => v.k === 'Cu1',
         bien: 'Cu₂O, óxido cuproso: dos cobres con +1, el menor de sus dos EO.' },
       voz: 'Mira qué número dice cada nombre.',
       leyenda: [
@@ -512,6 +516,7 @@
         { s: An('O'), t: 'el oxígeno, con EO −2' },
         { s: Eo('(II)'), t: 'el EO del elemento, en romanos' },
         { s: 'di-, tri-', t: 'cuántos átomos: 2, 3' },
+        { s: '-⁠oso', t: 'el menor de dos EO (-⁠ico, el mayor)' },
       ],
       controles: [{ id: 'k', etiqueta: 'Elemento y su EO', opciones: OX2.map(x => ({ valor: kOx(x), texto: `${NOMBRE_EL[x[0]]} ${sg(x[1])}` })) }],
       dibujo: v => tarjetaOxido(...OX2K[v.k]),
@@ -541,13 +546,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Sistemática: prefijos que cuentan átomos. Tres O y dos Fe.', ecuacion: ['Fe₂O₃ → tri-óxido de di-hierro'] },
         { estado: { corte: 2 }, texto: 'Stock: el EO del hierro, en romanos.', ecuacion: ['2 · ', EOf, ' + 3 · (−2) = ', Cq('0'), SEP, EOf, ' = +3   →   ', Eo('(III)')] },
-        { estado: { corte: 3 }, texto: 'Tradicional: el hierro tiene +2 y +3; el mayor lleva -ico.', ecuacion: ['+3 → férrico', SEP, '+2 → ferroso'] },
+        { estado: { corte: 3 }, texto: 'Tradicional: el hierro tiene +2 y +3; el mayor lleva -⁠ico.', ecuacion: ['+3 → férrico', SEP, '+2 → ferroso'] },
       ],
     },
     regla: {
-      texto: 'Sistemática: prefijos que cuentan cada átomo. Stock: el EO en romanos, si el elemento tiene más de uno. Tradicional: -oso para el EO menor e -ico para el mayor.',
+      texto: 'Sistemática: prefijos que cuentan cada átomo. Stock: el EO en romanos, si el elemento tiene más de uno. Tradicional: -⁠oso para el EO menor e -⁠ico para el mayor.',
       ecuacion: ['Fe₂O₃', SEP, 'trióxido de dihierro', SEP, 'óxido de hierro', { llave: [Eo('(III)')], nota: 'EO +3', color: 'c-f' }, SEP, 'óxido férrico'],
-      condicion: 'Metal con O: óxido básico. No metal con O: óxido ácido, «anhídrido» en la tradicional. Un solo EO: óxido de sodio.',
+      condicion: 'es un elemento con oxígeno: de metal, básico; de no metal, ácido («anhídrido»). Con un solo EO, sin romano ni terminación.',
       voz: 'Antes de nombrar, mira qué sistema te piden.',
     },
     resuelve: {
@@ -558,7 +563,7 @@
           pasos: [
             { tipo: 'pide', texto: 'Los nombres sistemático, Stock y tradicional.' },
             { tipo: 'datos', texto: `${at[e]} ${e} y ${at.O} O; ${estadosTxt(e)}.` },
-            { tipo: 'regla', texto: 'Sistemática cuenta átomos; Stock pone el EO en romanos; tradicional, -oso o -ico.' },
+            { tipo: 'regla', texto: 'Sistemática cuenta átomos; Stock pone el EO en romanos; tradicional, -⁠oso o -⁠ico.' },
             { tipo: 'cuentas', texto: `El ${NOMBRE_EL[e]} tiene ${sg(v)}.`, ecuacion: cuentaEO(f, e) },
             { tipo: 'aplica', texto: `${n.sistematica}; ${n.stock}; ${n.tradicional}.` },
             { tipo: 'sentido', texto: `El romano ${ROM[v]} es el EO, no un número de átomos.` },
@@ -594,7 +599,7 @@
     return fichas(Object.keys(at).map(s => ({ t: `${s} ${sg(ox[s])}`, carga: ox[s], n: at[s], color: s === 'H' ? 'f' : esMetal(s) ? 'o' : 'i' })),
       Object.assign({ neta: 'suma de los EO', alt: `${bonita(f)}: ${Object.keys(at).map(s => `${at[s]} ${s} con EO ${sg(ox[s])}`).join(', ')}.` }, o));
   }
-  const nombreH = f => (f === 'H2O' ? 'agua' : M.nombrar(f).tradicional);
+  const nombreH = f => (f === 'H2O' ? 'agua' : f === 'NH3' ? 'amoníaco' : M.nombrar(f).tradicional);
   function lectura3(k) {
     const f = H3[k], h = M.oxidacion(f).valor.H, metal = Object.keys(M.atomos(f)).some(esMetal);
     if (k === 'HCl' || k === 'H2S') return [`${bonita(f)}: ${nombreH(f)}; ${bonita(f)}(ac): ${M.nombrar(`${f}(ac)`).tradicional}.`];
@@ -605,11 +610,12 @@
     simpl: 'Un ion de varios átomos no se parte: el O₂²⁻ va entero',
     hidruro: 'Hidruro de metal: el H tiene EO −1',
     hNoMetal: 'Junto a un no metal, el H tiene EO +1',
-    hidracido: 'Hidrácido: HCl, HBr, HI, HF o H₂S disueltos en agua, (ac); su nombre: ácido + raíz del no metal + -hídrico',
+    hidracido: 'Hidrácido: HCl, HBr, HI, HF o H₂S disueltos en agua, (ac); su nombre: ácido + raíz del no metal + -⁠hídrico',
     gas: 'Sin agua, el HCl es un gas: cloruro de hidrógeno',
+    orden: 'En la fórmula va primero el elemento con EO positivo',
   };
   // Ahora tú: especies que no salen en el juego, en Predice, en Mira ni en los ejemplos.
-  const AT3 = { perox: ['K', 'Ca', 'Mg', 'Zn'], dioxidos: ['SnO2', 'SiO2', 'SeO2', 'CO2', 'MnO2'], hidruros: ['AlH3', 'KH', 'BaH2', 'LiH'], hidracidos: ['HBr', 'HI', 'H2Se'] };
+  const AT3 = { perox: ['K', 'Ca', 'Mg', 'Zn'], dioxidos: ['SnO2', 'SiO2', 'SeO2', 'CO2'], hidruros: ['AlH3', 'KH', 'BaH2', 'LiH'], hidracidos: ['HBr', 'HI', 'H2Se'] };
   const RES3 = ['Li', 'Mg', 'Zn', 'K'];
   const qCat = e => estadosMetal(e)[0] || (e === 'Zn' ? 2 : 0);
   const peroxido = e => (qCat(e) === 1 ? `${e}2O2` : `${e}O2`);
@@ -620,7 +626,7 @@
         siFuera: `Bien mirar los dos O. Pero en el ${bonita(f)} el ${elementos(f)[0]} tiene +4 y cada O, −2: es un óxido.` }))],
       solucion: { texto: `El ${NOMBRE_EL[e]} solo tiene ${sg(qCat(e))}: sus O no pueden tener −2. Tienen −1: el ion O₂²⁻.`, ecuacion: [bonita(bien), `: ${nombre(bien, 'stock')}`] } };
   }
-  function estadoTxtDe(f) { const x = elementos(f).find(s => s !== 'O'); return `EO del ${x}: ${(esMetal(x) ? estadosMetal(x) : M.ESTADOS[x].nm).filter(v => v > 0).map(sg).join(' y ')}`; }
+  function estadoTxtDe(f) { const x = elementos(f).find(s => s !== 'O'); return `EO del ${x}: ${listaY((esMetal(x) ? estadosMetal(x) : M.ESTADOS[x].nm).filter(v => v > 0).map(sg))}`; }
   function casoFormulaPerox(e) {
     const q = qCat(e), bien = bonita(peroxido(e)), N = NOMBRE_EL[e];
     const malas = q === 1
@@ -638,8 +644,8 @@
     return { pregunta: ['¿Qué estado de oxidación ', EOf, ` tiene el ${x} en el ${bonita(f)}?`], datos: datosEO(f, x).filter(l => !l.startsWith(`EO del ${x}`)),
       opciones: opsTexto(sg(v), [
         [x === 'H' ? '+1' : '−2', x === 'H' ? 'QM-OX-H' : 'QM-OX-O', `Ese es el valor de siempre. Con él la suma daría ${sg(sumaConocidos(f, x) + nAt(f, x) * (x === 'H' ? 1 : -2))}, no 0.`],
-        ['0', 'QM-OX-CERO', `0 es el EO de un elemento solo. Aquí está unido: la suma daría ${sg(sumaConocidos(f, x))}.`],
-        [x === 'H' ? '−2' : '+1', 'QM-OX-SIGNO', `Con ${x === 'H' ? '−2' : '+1'} la suma daría ${sg(sumaConocidos(f, x) + nAt(f, x) * (x === 'H' ? -2 : 1))}, no 0.`],
+        ['0', 'QM-OX-CERO', `0 es el EO de un elemento sin combinar. Aquí está unido: la suma daría ${sg(sumaConocidos(f, x))}.`],
+        [x === 'H' ? '−2' : '+1', x === 'H' ? 'QM-OX-SUMA' : 'QM-OX-SIGNO', `Con ${x === 'H' ? '−2' : '+1'} la suma daría ${sg(sumaConocidos(f, x) + nAt(f, x) * (x === 'H' ? -2 : 1))}, no 0.`],
       ]),
       solucion: { texto: `Los demás aportan ${sg(sumaConocidos(f, x))}; el compuesto es neutro.`, ecuacion: cuentaEO(f, x) } };
   }
@@ -648,14 +654,14 @@
     return { pregunta: `¿Cómo se llama el ${bonita(f)} disuelto en agua, ${bonita(f)}(ac)?`, datos: [D3.hidracido, D3.gas, `Raíz del ${NOMBRE_EL[x]}: ${raiz}-`],
       opciones: opsTexto(ac, [
         [gas, 'QM-HIDRACIDO-GAS', 'Ese es el nombre del gas, sin agua. Disuelto en agua es un ácido.'],
-        [`ácido ${({ brom: 'bróm', yod: 'yód', selen: 'selén', clor: 'clór', fluor: 'fluór', sulf: 'sulfúr' })[raiz] || raiz}ico`, 'QM-HIDR-ICO', 'La terminación -ico es de un ácido con oxígeno. Este no tiene oxígeno.'],
-        [`ácido ${raiz === 'sulf' ? 'sulfur' : raiz}oso`, 'QM-HIDR-ICO', 'La terminación -oso es de un ácido con oxígeno. Este no tiene oxígeno.'],
+        [`ácido ${({ brom: 'bróm', yod: 'yód', selen: 'selén', clor: 'clór', fluor: 'fluór', sulf: 'sulfúr' })[raiz] || raiz}ico`, 'QM-HIDR-ICO', 'La terminación -⁠ico es de un ácido con oxígeno. Este no tiene oxígeno.'],
+        [`ácido ${raiz === 'sulf' ? 'sulfur' : raiz}oso`, 'QM-HIDR-ICO', 'La terminación -⁠oso es de un ácido con oxígeno. Este no tiene oxígeno.'],
       ]),
-      solucion: { texto: 'Un ácido sin oxígeno: ácido + la raíz del no metal + -hídrico.', ecuacion: [`${bonita(f)}(ac): ${ac}`] } };
+      solucion: { texto: 'Un ácido sin oxígeno: ácido + la raíz del no metal + -⁠hídrico.', ecuacion: [`${bonita(f)}(ac): ${ac}`] } };
   }
   function casoHidruro(f) {
     const at = M.atomos(f), e = elementos(f).find(s => s !== 'H'), q = at.H, N = NOMBRE_EL[e];
-    return { pregunta: `¿Cuál es la fórmula del hidruro de ${N}?`, datos: [D3.hidruro, `EO del ${e}: ${sg(q)}`, D2.cero],
+    return { pregunta: `¿Cuál es la fórmula del hidruro de ${N}?`, datos: [D3.hidruro, `EO del ${e}: ${sg(q)}`, D2.cero, D3.orden],
       opciones: opsTexto(bonita(f), [
         [bonita(`H${q === 1 ? '' : q}${e}`), 'QM-HIDRURO-ORDEN', 'Así se escriben los del H con un no metal. Con un metal, el metal va primero.'],
         [q > 1 ? bonita(`${e}H`) : bonita(`${e}H2`), 'NO2', q > 1 ? `Un H con −1 no compensa +${q}: la carga queda en ${sg(q - 1)}.` : `Dos H con −1 dejan carga −1, no 0.`],
@@ -674,7 +680,7 @@
     { nivel: 1, titulo: 'Sodio con hidrógeno', enunciado: '¿Cómo se llama el NaH?', datos: [D3.hidruro, 'Nombre: hidruro de + el metal'],
       solucion: [{ texto: 'Un metal con hidrógeno: un hidruro. El sodio tiene un solo EO, va sin romano.' }], respuesta: [nombre('NaH', 'stock')] },
     { nivel: 1, titulo: 'Un ácido que graba vidrio', enunciado: 'El HF disuelto en agua graba el vidrio. ¿Cómo se llama el HF(ac)?', datos: [D3.hidracido, 'Raíz del flúor: fluor-'],
-      solucion: [{ texto: 'Un ácido sin oxígeno: ácido + fluor + -hídrico.' }], respuesta: [M.nombrar('HF(ac)').tradicional] },
+      solucion: [{ texto: 'Un ácido sin oxígeno: ácido + fluor + -⁠hídrico.' }], respuesta: [M.nombrar('HF(ac)').tradicional] },
     { nivel: 1, titulo: 'El hidrógeno junto al calcio', enunciado: '¿Qué EO tiene el hidrógeno en el CaH₂?', datos: [FIJO_TXT.Ca, FORMULA_EO],
       solucion: [{ texto: 'El calcio aporta +2; los dos H deben aportar −2.', ecuacion: cuentaEO('CaH2', 'H', false) }], respuesta: ['H: ', Eo('−1')] },
     { nivel: 1, titulo: 'El peróxido del litio', enunciado: '¿Cuál es la fórmula del peróxido de litio?', datos: [D3.perox, D3.simpl, FIJO_TXT.Li],
@@ -684,7 +690,7 @@
       respuesta: [Eo('−2'), ' en el K₂O y ', Eo('−1'), ' en el K₂O₂'] },
     { nivel: 2, titulo: 'El hidruro del magnesio', enunciado: '¿Cuál es la fórmula del hidruro de magnesio y qué EO tiene su hidrógeno?', datos: [D3.hidruro, FIJO_TXT.Mg, D2.cero],
       solucion: [{ texto: 'El Mg aporta +2 y cada H, −1: van dos H.', ecuacion: ['(+2) + 2 · (−1) = ', Cq('0'), '   →   MgH₂'] }], respuesta: ['MgH₂; H: ', Eo('−1')] },
-    { nivel: 2, titulo: 'El gas y el ácido', enunciado: 'El ácido muriático de la ferretería es HCl disuelto en agua. ¿Cómo se llama el HCl como gas y cómo disuelto?', datos: [D3.hidracido, 'Sin agua: el no metal con -uro + «de hidrógeno»'],
+    { nivel: 2, titulo: 'El gas y el ácido', enunciado: 'El ácido muriático de la ferretería es HCl disuelto en agua. ¿Cómo se llama el HCl como gas y cómo disuelto?', datos: [D3.hidracido, 'Sin agua: el no metal con -⁠uro + «de hidrógeno»', 'Raíz del cloro: clor-'],
       solucion: [{ texto: 'El gas, sin agua: cloruro de hidrógeno.' }, { texto: 'Disuelto en agua es un ácido sin oxígeno: ácido clorhídrico.' }],
       respuesta: [`${M.nombrar('HCl').sistematica}; ${M.nombrar('HCl(ac)').tradicional}`] },
     { nivel: 2, titulo: 'Por qué no se simplifica', enunciado: 'El Na₂O₂ tiene sodio y oxígeno uno a uno. ¿Por qué no se escribe NaO?', datos: [D3.perox, D3.simpl, FIJO_TXT.Na],
@@ -735,7 +741,7 @@
       tarjetas: [
         { titulo: 'El agua oxigenada', texto: 'En el botiquín hay agua oxigenada para limpiar heridas: es H₂O₂ disuelto en agua. Tiene dos oxígenos unidos entre sí, algo que el agua no tiene.',
           pieza: 'quim-nomenclatura', dibujo: OBJ('agua-oxigenada', { etiqueta: 'H₂O₂', nombre: 'Agua oxigenada' }) },
-        { titulo: 'Cuando la costumbre falla', texto: 'El O casi siempre tiene −2 y el H, +1. Pero no siempre: si la suma de los EO no cuadra con esos valores, manda la suma.' },
+        { titulo: 'Cuando los valores de siempre fallan', texto: 'El O casi siempre tiene −2 y el H, +1. Pero no siempre: si la suma de los EO no cuadra con esos valores, manda la suma.' },
         { titulo: 'El hidrógeno y sus vecinos', texto: 'El H se une a metales, como el sodio, y a no metales, como el cloro o el nitrógeno. Algunos de esos compuestos tienen nombre propio: el NH₃ es el amoníaco y el CH₄, el metano.' },
         { titulo: 'En agua', texto: 'El HCl es un gas. Disuelto en agua se escribe HCl(ac), por acuoso, y se vuelve un ácido: el ácido muriático de las ferreterías.' },
       ],
@@ -768,8 +774,8 @@
         { id: 'los-dos', texto: 'Los dos: los dos tienen dos oxígenos', error: 'QM-PEROX-FORMA', siFuera: 'La forma de la fórmula no basta: hay que ver qué EO puede tener el metal.' },
         { id: 'ninguno', texto: 'Ninguno: el oxígeno siempre tiene −2', error: 'QM-OX-O', siFuera: 'Casi siempre, sí. Pero con el bario a +2, dos O a −2 no cuadran.' },
       ],
-      dibujo: NOMS({ formula: 'BaO₂   PbO₂', filas: [{ sistema: 'BaO₂', oculto: true }, { sistema: 'PbO₂', oculto: true }] }),
-      revelar: NOMS({ formula: 'BaO₂   PbO₂', filas: [{ sistema: 'BaO₂', nombre: ['peróxido: Ba +2 y cada O ', Eo('−1')] }, { sistema: 'PbO₂', nombre: ['óxido: Pb +4 y cada O ', Eo('−2')] }] }),
+      dibujo: NOMS({ titulo: 'Dos compuestos distintos', formula: 'BaO₂   y   PbO₂', filas: [{ sistema: 'BaO₂', oculto: true }, { sistema: 'PbO₂', oculto: true }] }),
+      revelar: NOMS({ titulo: 'Dos compuestos distintos', formula: 'BaO₂   y   PbO₂', filas: [{ sistema: 'BaO₂', nombre: ['peróxido: Ba +2 y cada O ', Eo('−1')] }, { sistema: 'PbO₂', nombre: ['óxido: Pb +4 y cada O ', Eo('−2')] }] }),
       coincide: 'Coincide: el Ba solo llega a +2, así que cada O tiene −1.',
       noCoincide: 'El Ba solo tiene +2: sus dos O suman −2, −1 cada uno. Es un peróxido.',
     },
@@ -785,17 +791,17 @@
       ],
     },
     regla: {
-      texto: 'Peróxido: dos O unidos (O₂²⁻), cada uno con EO −1; no se simplifica. Hidruro: un metal con H, que tiene −1. HCl y H₂S disueltos en agua son hidrácidos.',
+      texto: 'Peróxido: el ion O₂²⁻, cada O con −1; va entero (Na₂O₂, no NaO). Hidruro: metal con H, y el H con −1. HCl(ac): ácido clorhídrico; H₂S(ac): ácido sulfhídrico.',
       ecuacion: ['Na₂O₂: 2 · (+1) + 2 · ', Eo('(−1)'), ' = ', Cq('0'), SEP, 'NaH: (+1) + ', Eo('(−1)'), ' = ', Cq('0')],
-      condicion: 'Forman peróxidos el H y los metales de los grupos 1 y 2. El hidrácido se nombra con -hídrico: ácido clorhídrico.',
-      voz: 'La suma de los EO manda sobre la costumbre.',
+      condicion: 'con O −2 y H +1 la suma no da la carga: hay un peróxido (O₂²⁻) o un hidruro de metal.',
+      voz: 'La suma de los EO manda sobre los valores de siempre.',
     },
     resuelve: {
       pieza: 'quim-fichas',
       generar(s) {
         const e = RES3[((s % RES3.length) + RES3.length) % RES3.length], f = peroxido(e), q = qCat(e);
         return { enunciado: `Escribe la fórmula y el nombre del peróxido de ${NOMBRE_EL[e]}.`, datos: [D3.perox, D3.simpl, `EO del ${e}: ${sg(q)}`],
-          dibujo: fichas([{ t: `${e}${q > 1 ? '²⁺' : '⁺'}`, carga: q, n: 1, color: 'o' }, { t: 'O₂²⁻', carga: -2, n: 1, color: 'i' }], { alt: `Fichas: un ${e} con +${q} y un ion O₂²⁻.` }),
+          dibujo: fichas([{ t: `${e} ${sg(q)}`, carga: q, n: 1, color: 'o' }, { t: 'O₂ 2·(−1)', carga: -2, n: 1, color: 'i' }], { cuenta: false, alt: `Fichas: un ${e} con EO ${sg(q)} y dos O unidos con −1 cada uno.` }),
           pasos: [
             { tipo: 'pide', texto: `La fórmula y el nombre del compuesto del ${NOMBRE_EL[e]} con el ion O₂²⁻.` },
             { tipo: 'datos', texto: `El ${e} aporta ${sg(q)}; el ion O₂²⁻, −2, y no se parte.` },
@@ -808,7 +814,7 @@
     },
     ahoraTu: {
       pieza: 'quim-fichas',
-      voz: 'Haz la cuenta antes de aplicar la costumbre.',
+      voz: 'Haz la cuenta antes de usar los valores de siempre.',
       generar(s) {
         const r = azar(s + 37), t = ((s % 5) + 5) % 5;
         if (t === 0) return casoCualPerox(r);
@@ -838,12 +844,12 @@
     const nodos = [{ texto: `${NOMBRE_EL[e]} (${sg(v)}) + oxígeno`, color: 'o', desde: desde[0] },
       { texto: `${bonita(ox)}: óxido ${met ? 'básico' : 'ácido'}`, desde: desde[1] },
       { texto: `${bonita(prod)}: ${nprod}`, color: met ? 'o' : 'i', desde: desde[2] }];
-    return { pieza: 'quim-cadena', datos: { columnas: [{ titulo: met ? 'Un metal' : 'Un no metal', nodos, flechas: [{ de: 0, a: 1, desde: desde[1] }, { de: 1, a: 2, texto: '+ H₂O', desde: desde[2] }] }],
+    return { pieza: 'quim-cadena', datos: { columnas: [{ titulo: met ? 'Un metal' : 'Un no metal', nodos, flechas: [{ de: 0, a: 1, desde: desde[1] }, { de: 1, a: 2, texto: met ? 'con agua' : '+ H₂O', desde: desde[2] }] }],
       alt: `${NOMBRE_EL[e]} con EO ${sg(v)} y oxígeno dan ${bonita(ox)}; con agua, ${bonita(prod)} (${nprod}).` }, estado: {} };
   }
   function lectura4(k) {
     const [e, v] = J4K[k], met = esMetal(e), ox = bonita(oxidoDe(e, v));
-    if (met) return [`${ox} + H₂O da ${bonita(hidroxido(e, v))}: un OH⁻ por unidad de EO.`];
+    if (met) return [`${ox} con agua da ${bonita(hidroxido(e, v))}: ${['', 'un', 'dos', 'tres'][v]} OH⁻ por el ${sg(v)}.`];
     const o = oxacido(e, v), s = bonita(sinSimpl(e, v));
     return [`${ox} + H₂O da ${s === bonita(o.formula) ? '' : `${s}, que se simplifica a `}${bonita(o.formula)}.`];
   }
@@ -851,8 +857,8 @@
     oh: 'Hidróxido: un OH⁻ (carga −1) por cada unidad de EO del metal, entre paréntesis si se repite',
     suma: 'Oxácido: óxido ácido + H₂O; se suman todos los átomos y se simplifica si se puede',
     orto: 'El P y el B suman tres moléculas de agua a su óxido',
-    nombres4: 'Con cuatro EO (+1, +3, +5, +7): hipo-…-oso, -oso, -ico, per-…-ico',
-    nombres2: 'Con dos EO: -oso para el menor e -ico para el mayor',
+    nombres4: 'Con cuatro EO (+1, +3, +5, +7): hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico',
+    nombres2: 'Con dos EO: -⁠oso para el menor e -⁠ico para el mayor',
   };
   const RAIZ_ACIDO = { Cl: 'clor', Br: 'brom', I: 'yod', N: 'nitr', S: 'sulfur', Se: 'seleni', C: 'carbón', P: 'fosfor', B: 'bór' };
   const estadosNM = e => M.ESTADOS[e].nm.filter(v => !((e === 'N' || e === 'P') && v === 1) && !(e === 'S' && v === 2) && !(e === 'C' && v === 2));
@@ -878,7 +884,8 @@
         [er.sinSimplificar && o.agua === 1 ? bonita(er.sinSimplificar) : null, 'QM-SIMPLIFICA', `Bien sumar los átomos del óxido y el agua. Falta simplificar entre 2.`],
         [er.dosH ? bonita(er.dosH) : null, 'QM-OXACIDO-H', `No todo oxácido lleva 2 H: con esa fórmula la suma de los EO da ${sg(2 + v - 2 * M.atomos(o.formula).O)}.`],
         [er.unSoloH ? bonita(er.unSoloH) : null, 'QM-OXACIDO-H', `Con un solo H la suma de los EO da ${sg(1 + v - 2 * M.atomos(o.formula).O)}, no 0.`],
-        [er.otroEstado ? bonita(er.otroEstado) : null, 'QM-OSO-ICO', `Ese es el oxácido de otro EO del ${NOMBRE_EL[e]}: ${nombre(er.otroEstado || o.formula, 'tradicional')}.`],
+        // Sin el ácido del P con +1 (hipofosforoso): la unidad usa solo +3 y +5 para el P (propuesta §12, 5).
+        [er.otroEstado && !(e === 'P' && /hipo/.test(nombre(er.otroEstado, 'tradicional'))) ? bonita(er.otroEstado) : null, 'QM-OSO-ICO', `Ese es el oxácido de otro EO del ${NOMBRE_EL[e]}: ${nombre(er.otroEstado || o.formula, 'tradicional')}.`],
         [bonita(o.oxido), 'QM-FUNCION', 'Ese es el óxido ácido. Falta sumarle el agua.'],
       ]),
       solucion: { texto: `${bonita(o.oxido)} + ${o.agua === 3 ? '3 ' : ''}H₂O; se simplifica si se puede.`, ecuacion: [`${bonita(o.oxido)} + ${o.agua === 3 ? '3 ' : ''}H₂O → ${bonita(sinSimpl(e, v))}${bonita(sinSimpl(e, v)) === bien ? '' : `   →   ${bien}`}`] } };
@@ -887,7 +894,7 @@
   function casoNombreAcido(e, v) {
     const f = oxacido(e, v).formula, bien = nombre(f, 'tradicional'), otros = estadosNM(e).filter(x => x !== v);
     const raiz = RAIZ_ACIDO[e], malas = otros.map(x => [nombre(oxacido(e, x).formula, 'tradicional'), 'QM-OSO-ICO', `Ese es el oxácido con EO ${sg(x)}. Aquí el ${NOMBRE_EL[e]} tiene ${sg(v)}.`]);
-    if (estadosNM(e).length === 4) malas.push([v === 7 ? `ácido hipo${raiz}ico` : v === 1 ? `ácido per${raiz}oso` : null, 'QM-HIPO-PER', 'Esa mezcla de prefijo y terminación no existe: hipo va con -oso y per con -ico.']);
+    if (estadosNM(e).length === 4) malas.push([v === 7 ? `ácido hipo${raiz}ico` : v === 1 ? `ácido per${raiz}oso` : null, 'QM-HIPO-PER', 'Esa mezcla de prefijo y terminación no existe: hipo va con -⁠oso y per con -⁠ico.']);
     return { pregunta: ['¿Cómo se llama el ', bonita(f), '?'], datos: [...datosNombreAcido(e), D2.o, FIJO_TXT.H],
       opciones: opsTexto(bien, malas),
       solucion: { texto: `El ${NOMBRE_EL[e]} tiene ${sg(v)}.`, ecuacion: [...cuentaEO(f, e), `   →   ${bien}`] } };
@@ -913,14 +920,15 @@
       solucion: [{ texto: 'Dos OH⁻ compensan el +2; el OH se repite y va entre paréntesis.', ecuacion: ['(+2) + 2 · (−1) = ', Cq('0'), '   →   Ca(OH)₂'] }], respuesta: ['Ca(OH)₂'] },
     { nivel: 1, titulo: 'La soda cáustica', enunciado: 'La soda cáustica para destapar cañerías es NaOH. ¿Cuál es su nombre Stock?', datos: [FIJO_TXT.Na, D2.stock],
       solucion: [{ texto: 'Un metal con OH⁻: hidróxido. El sodio tiene un solo EO, va sin romano.' }], respuesta: [nombre('NaOH', 'stock')] },
-    { nivel: 1, titulo: 'El ácido de la gaseosa', enunciado: 'El CO₂ de una gaseosa se junta con agua. ¿Qué oxácido forma?', datos: [D4.suma],
+    { nivel: 1, titulo: 'El ácido de la gaseosa', enunciado: 'El CO₂ de una gaseosa se junta con agua. ¿Qué oxácido forma y cómo se llama?',
+      datos: [D4.suma, 'El carbono forma un solo oxácido, con EO +4: su nombre termina en -⁠ico', 'Raíz: carbón-'],
       solucion: [{ texto: 'Se suman los átomos del óxido y del agua.', ecuacion: ['CO₂ + H₂O → H₂CO₃'] }], respuesta: ['H₂CO₃, ', nombre('H2CO3', 'tradicional')] },
     { nivel: 1, titulo: 'El azufre con +4', enunciado: '¿Cómo se llama el H₂SO₃, en el que el azufre tiene EO +4?', datos: [...datosNombreAcido('S')],
-      solucion: [{ texto: 'El azufre tiene +4 y +6 en sus oxácidos; +4 es el menor: -oso.' }], respuesta: [nombre('H2SO3', 'tradicional')] },
+      solucion: [{ texto: 'El azufre tiene +4 y +6 en sus oxácidos; +4 es el menor: -⁠oso.' }], respuesta: [nombre('H2SO3', 'tradicional')] },
     { nivel: 1, titulo: 'El hidróxido del aluminio', enunciado: '¿Cuál es la fórmula del hidróxido de aluminio?', datos: [D4.oh, FIJO_TXT.Al],
       solucion: [{ texto: 'Tres OH⁻ compensan el +3.', ecuacion: ['(+3) + 3 · (−1) = ', Cq('0'), '   →   Al(OH)₃'] }], respuesta: ['Al(OH)₃'] },
     { nivel: 2, titulo: 'Dos nombres de un hidróxido', enunciado: 'Escribe el nombre Stock y el tradicional del Fe(OH)₂.', datos: [estadosTxt('Fe'), 'EO del OH: −1', D2.stock, D2.trad, `Raíces: ${RAIZ_TRAD.Fe}`],
-      solucion: [{ texto: 'Dos OH⁻ aportan −2: el hierro tiene +2, el menor de sus dos EO.' }, { texto: 'Stock con (II); tradicional con -oso.' }],
+      solucion: [{ texto: 'Dos OH⁻ aportan −2: el hierro tiene +2, el menor de sus dos EO.' }, { texto: 'Stock con (II); tradicional con -⁠oso.' }],
       respuesta: [...conRomano(nombre('Fe(OH)2', 'stock')), ' y ', nombre('Fe(OH)2', 'tradicional')] },
     { nivel: 2, titulo: 'Sumar y simplificar', enunciado: 'El N₂O₅ se junta con agua. ¿Qué oxácido forma?', datos: [D4.suma],
       solucion: [{ texto: 'Se suman los átomos: 2 H, 2 N y 6 O.', ecuacion: ['N₂O₅ + H₂O → H₂N₂O₆'] }, { texto: 'Todos los números se dividen entre 2.', ecuacion: ['H₂N₂O₆ → HNO₃'] }],
@@ -929,10 +937,10 @@
       solucion: [{ texto: 'El P suma tres aguas: 6 H, 2 P y 8 O.', ecuacion: ['P₂O₅ + 3 H₂O → H₆P₂O₈'] }, { texto: 'Se divide entre 2.', ecuacion: ['H₆P₂O₈ → H₃PO₄'] }],
       respuesta: ['H₃PO₄, ', nombre('H3PO4', 'tradicional')] },
     { nivel: 2, titulo: 'El ácido de la lejía', enunciado: 'En la lejía se forma HClO. ¿Qué EO tiene el cloro y cómo se llama el ácido?', datos: datosNombreAcido('Cl').concat([FIJO_TXT.H, D2.o]),
-      solucion: [{ texto: 'H +1 y O −2: el cloro tiene +1.', ecuacion: cuentaEO('HClO', 'Cl', false) }, { texto: '+1 es el menor de los cuatro: hipo-…-oso.' }],
+      solucion: [{ texto: 'H +1 y O −2: el cloro tiene +1.', ecuacion: cuentaEO('HClO', 'Cl', false) }, { texto: '+1 es el menor de los cuatro: hipo-⁠…-⁠oso.' }],
       respuesta: [Eo('+1'), ', ', nombre('HClO', 'tradicional')] },
     { nivel: 2, titulo: 'El hidróxido azul', enunciado: 'El Cu(OH)₂ es un sólido azul. ¿Cuál es su nombre tradicional?', datos: [estadosTxt('Cu'), 'EO del OH: −1', D2.trad, `Raíces: ${RAIZ_TRAD.Cu}`],
-      solucion: [{ texto: 'Dos OH⁻ aportan −2: el cobre tiene +2, el mayor de sus dos EO. Lleva -ico.' }], respuesta: [nombre('Cu(OH)2', 'tradicional')] },
+      solucion: [{ texto: 'Dos OH⁻ aportan −2: el cobre tiene +2, el mayor de sus dos EO. Lleva -⁠ico.' }], respuesta: [nombre('Cu(OH)2', 'tradicional')] },
     { nivel: 3, titulo: 'El nombre Stock pedido', enunciado: '¿Cuál es el nombre Stock del Pb(OH)₂?',
       alternativas: ['hidróxido plumboso', 'dihidróxido de plomo', 'hidróxido de plomo(II)', 'hidróxido de plomo(IV)', 'hidróxido de plomo'],
       datos: [estadosTxt('Pb'), 'EO del OH: −1', D2.stock],
@@ -941,17 +949,17 @@
       respuesta: [letra('C'), ', hidróxido de plomo(II)'] },
     { nivel: 3, titulo: 'El ácido bromoso', enunciado: 'El bromo forma oxácidos con EO +1, +3, +5 y +7. ¿Cuál es la fórmula del ácido bromoso?',
       alternativas: ['HBrO', 'HBrO₃', 'HBrO₄', 'H₂BrO₂', 'HBrO₂'], datos: [D4.nombres4, D4.suma, FIJO_TXT.H, D2.o],
-      solucion: [{ texto: '-oso sin prefijo es el segundo EO: +3. Br₂O₃ + H₂O → H₂Br₂O₄, que se simplifica.', ecuacion: ['H₂Br₂O₄ → HBrO₂'] },
+      solucion: [{ texto: '-⁠oso sin prefijo es el segundo EO: +3. Br₂O₃ + H₂O → H₂Br₂O₄, que se simplifica.', ecuacion: ['H₂Br₂O₄ → HBrO₂'] },
         { texto: ['La ', letra('A'), ' es el hipobromoso (+1); la ', letra('B'), ', el brómico (+5); la ', letra('C'), ', el perbrómico (+7); la ', letra('D'), ' pone 2 H y la suma da −1.'] }],
       respuesta: [letra('E'), ', HBrO₂'] },
     { nivel: 3, titulo: 'El yodo con +5', enunciado: 'El yodo con EO +5 forma un oxácido. ¿Cuál es su fórmula y su nombre?',
       alternativas: ['HIO₃, ácido yodoso', 'HIO₃, ácido yódico', 'H₂IO₃, ácido yódico', 'HIO₄, ácido peryódico', 'HI₂O₆, ácido yódico'], datos: [D4.nombres4, D4.suma, 'Raíz: yod-'],
-      solucion: [{ texto: 'I₂O₅ + H₂O → H₂I₂O₆, que se simplifica a HIO₃. +5 es el tercero de los cuatro: -ico.' },
-        { texto: ['La ', letra('A'), ' le da -oso; la ', letra('C'), ' pone 2 H; la ', letra('D'), ' es el de +7; la ', letra('E'), ' no simplifica.'] }],
+      solucion: [{ texto: 'I₂O₅ + H₂O → H₂I₂O₆, que se simplifica a HIO₃. +5 es el tercero de los cuatro: -⁠ico.' },
+        { texto: ['La ', letra('A'), ' le da -⁠oso; la ', letra('C'), ' pone 2 H; la ', letra('D'), ' es el de +7; la ', letra('E'), ' no simplifica.'] }],
       respuesta: [letra('B'), ', HIO₃, ácido yódico'] },
     { nivel: 3, titulo: 'Verdadero o falso', enunciado: 'Indica verdadero (V) o falso (F). I. El Ca(OH)₂ es un hidróxido. II. El HNO₂ es el ácido nítrico. III. En el ácido hipocloroso, el cloro tiene EO +1.',
-      alternativas: ['VVV', 'FFV', 'VFF', 'VFV', 'VVF'], datos: [D4.oh, ...datosNombreAcido('N').slice(0, 2), D4.nombres4],
-      solucion: [{ texto: 'I es V. II es F: en el HNO₂ el N tiene +3, el menor: ácido nitroso. III es V: hipo-…-oso es el EO +1.', ecuacion: ['VFV'] },
+      alternativas: ['VVV', 'FFV', 'VFF', 'VFV', 'VVF'], datos: [D4.oh, ...datosNombreAcido('N').slice(0, 2), D4.nombres4, FIJO_TXT.H, D2.o],
+      solucion: [{ texto: 'I es V. II es F: el N del HNO₂ tiene +3, el menor: ácido nitroso. III es V: hipo-⁠…-⁠oso es el EO +1.', ecuacion: ['HNO₂: 1 + ', EOf, ' − 4 = 0   →   ', EOf, ' = +3'] },
         { texto: ['La ', letra('A'), ' y la ', letra('E'), ' llaman nítrico al HNO₂; la ', letra('B'), ' niega la I; la ', letra('C'), ' y la ', letra('E'), ' niegan la III.'] }],
       respuesta: [letra('D'), ', VFV'] },
     { nivel: 3, titulo: 'Sulfúrico más nitroso', enunciado: 'Halla la suma del EO del azufre en el ácido sulfúrico y el del nitrógeno en el ácido nitroso.',
@@ -967,7 +975,7 @@
     pregunta: '¿Qué sale cuando un óxido se junta con agua?',
     temas: ['Hidróxidos', 'Ácidos oxácidos e hidrácidos'],
     pieza: 'quim-cadena',
-    aprendizaje: 'Óxido básico con agua: hidróxido, un OH⁻ por unidad de EO. Óxido ácido con agua: oxácido, nombrado con hipo-, -oso, -ico o per-.',
+    aprendizaje: 'Óxido básico con agua: hidróxido, un OH⁻ por unidad de EO. Óxido ácido con agua: oxácido, nombrado con hipo-, -⁠oso, -⁠ico o per-.',
     actividad: 'Elegir un elemento con su EO y seguir su óxido hasta el producto con agua.',
     lee: {
       tarjetas: [
@@ -1003,22 +1011,22 @@
       opciones: [
         { id: 'c', texto: 'Ácido perclórico', correcta: true },
         { id: 'hipo', texto: 'Ácido hipoclórico', error: 'QM-HIPO-PER', siFuera: 'Bien que hace falta un prefijo. Pero hipo- es «por debajo»: va con el EO menor, +1.' },
-        { id: 'oso', texto: 'Ácido cloroso', error: 'QM-OSO-ICO', siFuera: '-oso es para un EO menor que el del clórico (+3). Aquí el cloro tiene más: +7.' },
+        { id: 'oso', texto: 'Ácido cloroso', error: 'QM-OSO-ICO', siFuera: '-⁠oso es para un EO menor que el del clórico (+3). Aquí el cloro tiene más: +7.' },
         { id: 'igual', texto: 'Ácido clórico, igual que el HClO₃', error: 'QM-UN-NOMBRE', siFuera: 'Son dos sustancias distintas: cada EO lleva su propio nombre.' },
       ],
       dibujo: { pieza: 'quim-cadena', datos: { columnas: [{ titulo: 'Oxácidos del cloro', nodos: [{ texto: 'HClO₃: ácido clórico (+5)' }, { texto: 'HClO₄: ? (+7)', color: 'f' }], flechas: [{ de: 0, a: 1, texto: 'un O más' }] }],
         alt: 'El HClO₃, ácido clórico, con el cloro a +5, y el HClO₄, con el cloro a +7 y el nombre que se pregunta.' }, estado: {} },
       revelar: { pieza: 'quim-cadena', datos: { columnas: [{ titulo: 'Oxácidos del cloro', nodos: [{ texto: 'HClO₃: ácido clórico (+5)' }, { texto: 'HClO₄: ácido perclórico (+7)', color: 'f' }], flechas: [{ de: 0, a: 1, texto: 'un O más' }] }],
         alt: 'El HClO₃, ácido clórico, con +5, y el HClO₄, ácido perclórico, con +7.' }, estado: {} },
-      coincide: 'Coincide: per-…-ico es el más alto de los cuatro.',
-      noCoincide: 'Con cuatro EO: hipo-…-oso, -oso, -ico y per-…-ico. El +7 es perclórico.',
+      coincide: 'Coincide: per-…-⁠ico es el más alto de los cuatro.',
+      noCoincide: 'Con cuatro EO: hipo-⁠…-⁠oso, -⁠oso, -⁠ico y per-…-⁠ico. El +7 es perclórico.',
     },
     mira: {
       pieza: 'quim-cadena',
       datos: { columnas: [{ titulo: 'Cloro (+7)', nodos: [{ texto: 'Cl₂O₇: óxido ácido', desde: 1 }, { texto: 'H₂Cl₂O₈', desde: 2 }, { texto: 'HClO₄: ácido perclórico', color: 'i', desde: 3 }],
         flechas: [{ de: 0, a: 1, texto: '+ H₂O', desde: 2 }, { de: 1, a: 2, texto: 'entre 2', desde: 3 }] },
-        { titulo: 'Hierro (+3)', nodos: [{ texto: 'Fe₂O₃: óxido básico', desde: 5 }, { texto: 'Fe(OH)₃: hidróxido de hierro(III)', color: 'o', desde: 5 }], flechas: [{ de: 0, a: 1, texto: '+ H₂O', desde: 5 }] }],
-        alt: 'El Cl₂O₇ con agua da H₂Cl₂O₈, que se simplifica a HClO₄; el Fe₂O₃ con agua da Fe(OH)₃.' },
+        { titulo: 'Hierro (+3)', nodos: [{ texto: 'Fe₂O₃: óxido básico', desde: 5 }, { texto: 'Fe(OH)₃: hidróxido de hierro(III)', color: 'o', desde: 5 }], flechas: [{ de: 0, a: 1, texto: 'con agua', desde: 5 }] }],
+        alt: 'El Cl₂O₇ con agua da H₂Cl₂O₈, que se simplifica a HClO₄; el hierro con +3, con agua, da Fe(OH)₃.' },
       voz: 'Sumemos átomos enteros y simplifiquemos.',
       pasos: [
         { estado: { corte: 1 }, texto: 'El óxido del cloro con +7 es Cl₂O₇.', ecuacion: ['2 · (+7) + 7 · (−2) = ', Cq('0')] },
@@ -1031,7 +1039,7 @@
     regla: {
       texto: 'Óxido básico + agua: hidróxido, con un OH⁻ por cada unidad de EO del metal. Óxido ácido + agua: oxácido; se suman los átomos y se simplifica.',
       ecuacion: ['Cl₂O₇ + H₂O → H₂Cl₂O₈', SEP, 'H₂Cl₂O₈ → HClO₄', SEP, 'Fe³⁺ + 3 OH⁻ → Fe(OH)₃'],
-      condicion: 'Nombres, del EO menor al mayor: hipo-…-oso, -oso, -ico, per-…-ico. El P y el B suman tres aguas: H₃PO₄.',
+      condicion: 'Nombres, del EO menor al mayor: hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico. El P y el B suman tres aguas: H₃PO₄.',
       voz: 'El EO no cambia: solo se suman átomos.',
     },
     resuelve: {
@@ -1075,9 +1083,9 @@
   // ---------- Idea 5 (rehecha, 19 nov): sales haloideas y oxisales ----------
   // Propuesta §3 idea 5. Objeto de la primera pantalla: el salero y el saco de abono (quim-nomenclatura).
   // Cambia: el catión, el anión y cuántas fichas de cada uno · Permanece: la cuenta de cargas bajo las fichas · Progresa:
-  // de la carga suelta a la sal neutra y simplificada · Se reserva: los aniones de ácidos -oso (el nitrito de Predice) ·
+  // de la carga suelta a la sal neutra y simplificada · Se reserva: los aniones de ácidos -⁠oso (el nitrito de Predice) ·
   // Debe verse: carga 0 con fichas enteras, y el nombre que sale del ácido.
-  // Errores: QM-ITO-ATO (ito por ato; trampa 42 de San Marcos), QM-URO (-uro con un anión con oxígeno), QM-SIN-CAMBIO (el
+  // Errores: QM-ITO-ATO (ito por ato; trampa 42 de San Marcos), QM-URO (-⁠uro con un anión con oxígeno), QM-SIN-CAMBIO (el
   // adjetivo del ácido sin cambiar), QM-HIPO (hipo- de más), QM-POLI (el ion se rompe o pierde el paréntesis), NO1, NO2.
   // Los iones de la tabla vieja (CAT, AN) siguen siendo los de la mesa «La sal armada a mano»; el NO₃⁻ con el Na⁺ no va
   // en ningún texto (el validador lee «NaN» en NaNO₃).
@@ -1100,15 +1108,17 @@
     if (v.nc !== x.nc) return [`Carga `, Cq('0'), `, pero se simplifica a ${x.fo}.`];
     return [`Carga `, Cq('0'), `: ${x.fo}, ${x.nombre}.`];
   }
-  const filaFin = (q, n, signo) => PF().geometria({ fichas: [] }).cuadrito(q * n - 1, signo);
+  // La manija va en el lugar siguiente al último cuadrito de su fila, no encima (lector en frío, 19 nov: con una sola ficha
+  // el círculo tapaba el único cuadrito y la leyenda «lleno / hueco» no se podía ver). Inversa: n = (x − 47)/17 ÷ carga.
+  const filaFin = (q, n, signo) => PF().geometria({ fichas: [] }).cuadrito(q * n, signo);
   const arrastresSal = [
     { id: 'cation', etiqueta: 'final de las cargas del catión', color: 'c-o',
-      donde: v => filaFin(CAT[v.c][2], v.nc, '+'), mover: (pt, v) => ({ nc: Math.round(((pt.x - 47) / 17 + 1) / CAT[v.c][2]) }) },
+      donde: v => filaFin(CAT[v.c][2], v.nc, '+'), mover: (pt, v) => ({ nc: Math.round((pt.x - 47) / 17 / CAT[v.c][2]) }) },
     { id: 'anion', etiqueta: 'final de las cargas del anión', color: 'c-i',
-      donde: v => filaFin(AN[v.a][2], v.na, '−'), mover: (pt, v) => ({ na: Math.round(((pt.x - 47) / 17 + 1) / AN[v.a][2]) }) },
+      donde: v => filaFin(AN[v.a][2], v.na, '−'), mover: (pt, v) => ({ na: Math.round((pt.x - 47) / 17 / AN[v.a][2]) }) },
   ];
   const D5 = {
-    aniones: 'Anión de un ácido: -hídrico → -uro; -oso → -ito; -ico → -ato (hipo- y per- se quedan)',
+    aniones: 'Anión de un ácido: -⁠hídrico → -⁠uro; -⁠oso → -⁠ito; -⁠ico → -⁠ato (hipo- y per- se quedan)',
     nombre: 'Nombre de la sal: el anión + «de» + el catión (con su EO en romanos si tiene dos)',
     cero: 'La sal junta fichas enteras de catión y anión hasta carga 0, con los números más chicos',
     paren: 'Un ion de varios átomos va entre paréntesis si se repite',
@@ -1125,12 +1135,12 @@
     const bien = M.nombreIon(anion), er = M.nombrar(M.formulaDeIones('K^+', anion).formula).errores, quita = t => (t ? t.replace(' de potasio', '') : null);
     return { pregunta: `El ${nomAc}, ${bonita(ac)}, suelta sus H⁺ y deja un anión. ¿Cómo se llama ese anión?`, datos: [D5.aniones],
       opciones: opsTexto(bien, [
-        [quita(er.terminacionAlReves), 'QM-ITO-ATO', `Bien cambiar la terminación. Pero ${nomAc.endsWith('oso') ? '-oso pasa a -ito' : '-ico pasa a -ato'}.`],
-        [quita(er.terminacionUro), 'QM-URO', '-uro es para los aniones sin oxígeno, de un hidrácido. Este tiene oxígeno.'],
+        [quita(er.terminacionAlReves), 'QM-ITO-ATO', `Bien cambiar la terminación. Pero ${nomAc.endsWith('oso') ? '-⁠oso pasa a -⁠ito' : '-⁠ico pasa a -⁠ato'}.`],
+        [quita(er.terminacionUro), 'QM-URO', '-⁠uro es para los aniones sin oxígeno, de un hidrácido. Este tiene oxígeno.'],
         [quita(er.sinCambiar), 'QM-SIN-CAMBIO', 'Ese es el adjetivo del ácido. El anión cambia su terminación.'],
         [quita(er.hipoEnVezDeOso), 'QM-HIPO', 'El hipo- solo va si el ácido ya lo tiene.'],
       ]),
-      solucion: { texto: `${nomAc}: ${nomAc.endsWith('oso') ? '-oso → -ito' : '-ico → -ato'}.`, ecuacion: [`${bonita(ac)} → ${bonita(anion)}, ${bien}`] } };
+      solucion: { texto: `${nomAc}: ${nomAc.endsWith('oso') ? '-⁠oso → -⁠ito' : '-⁠ico → -⁠ato'}.`, ecuacion: [`${bonita(ac)} → ${bonita(anion)}, ${bien}`] } };
   }
   function casoFormulaSal(c, a) {
     const f = salDe(c, a), n = M.nombrar(f), d = M.formulaDeIones(c, a), C = M.ion(c), A = M.ion(a);
@@ -1150,9 +1160,9 @@
     const f = salDe(c, a), n = M.nombrar(f), er = n.errores;
     return { pregunta: `¿Cuál es el nombre Stock del ${bonita(f)}?`, datos: [D5.aniones, D5.nombre, `Iones: ${ionTxt(c)} y ${ionTxt(a)}`, `El ${ionTxt(a)} sale del ${nombre(acidoDe(a), 'tradicional')}`],
       opciones: opsTexto(n.stock, [
-        [er.terminacionAlReves, 'QM-ITO-ATO', 'Bien la raíz del anión. Pero la terminación va al revés: -oso → -ito y -ico → -ato.'],
-        [er.terminacionUro, 'QM-URO', '-uro es para aniones sin oxígeno. Este anión tiene oxígeno.'],
-        [er.conOxigeno, 'QM-URO', 'Ese anión llevaría oxígeno. El de esta sal no tiene: termina en -uro.'],
+        [er.terminacionAlReves, 'QM-ITO-ATO', 'Bien la raíz del anión. Pero la terminación va al revés: -⁠oso → -⁠ito y -⁠ico → -⁠ato.'],
+        [er.terminacionUro, 'QM-URO', '-⁠uro es para aniones sin oxígeno. Este anión tiene oxígeno.'],
+        [er.conOxigeno, 'QM-URO', 'Ese anión llevaría oxígeno. El de esta sal no tiene: termina en -⁠uro.'],
         [er.sinCambiar, 'QM-SIN-CAMBIO', 'Ese es el adjetivo del ácido. En la sal, el anión cambia su terminación.'],
         [er.hipoEnVezDeOso, 'QM-HIPO', 'El hipo- solo va si el ácido ya lo tiene.'],
         [n.tradicional !== n.stock ? n.tradicional : null, 'QM-SISTEMA', 'Ese es el nombre tradicional: la misma sal, otro sistema.'],
@@ -1167,24 +1177,24 @@
   // átomos · CuSO₄, Ca(NO₃)₂, Na₂CO₃ · Fe(NO₃)₂ nitrato ferroso · ClO₂⁻ clorito · FVV · KClO₂ clorito de potasio.
   const EJEMPLOS_SALES = [
     { nivel: 1, titulo: 'La sal de cocina', enunciado: '¿Cómo se llama el NaCl, la sal de cocina?', datos: [D5.aniones, D5.nombre, 'Viene del ácido clorhídrico, HCl'],
-      solucion: [{ texto: '-hídrico pasa a -uro: el anión Cl⁻ es cloruro. El catión es el sodio.' }], respuesta: [nombre('NaCl', 'stock')] },
+      solucion: [{ texto: '-⁠hídrico pasa a -⁠uro: el anión Cl⁻ es cloruro. El catión es el sodio.' }], respuesta: [nombre('NaCl', 'stock')] },
     { nivel: 1, titulo: 'El anión de la tiza', enunciado: 'El ácido carbónico, H₂CO₃, suelta sus dos H⁺. ¿Qué anión queda y cómo se llama?', datos: [D5.aniones],
-      solucion: [{ texto: 'Se van dos H⁺: el anión queda con carga −2. -ico pasa a -ato.', ecuacion: ['H₂CO₃ → 2 H⁺ + CO₃²⁻'] }], respuesta: ['CO₃²⁻, ', M.nombreIon('CO3^2-')] },
+      solucion: [{ texto: 'Se van dos H⁺: el anión queda con carga −2. -⁠ico pasa a -⁠ato.', ecuacion: ['H₂CO₃ → 2 H⁺ + CO₃²⁻'] }], respuesta: ['CO₃²⁻, ', M.nombreIon('CO3^2-')] },
     { nivel: 1, titulo: 'Calcio con cloro', enunciado: '¿Cuál es la fórmula del cloruro de calcio?', datos: [D5.cero, 'Iones: Ca²⁺ y Cl⁻'],
       solucion: [{ texto: 'Un Ca²⁺ necesita dos Cl⁻.', ecuacion: ['(+2) + 2 · (−1) = ', Cq('0'), '   →   CaCl₂'] }], respuesta: ['CaCl₂'] },
     { nivel: 1, titulo: 'Con o sin oxígeno', enunciado: 'El K₂SO₄ se usa como abono. ¿Es una sal haloidea o una oxisal?', datos: ['Sal haloidea: su anión no tiene oxígeno. Oxisal: su anión tiene oxígeno'],
       solucion: [{ texto: 'Su anión es el SO₄²⁻, sulfato, que lleva oxígeno.' }], respuesta: ['Oxisal'] },
     { nivel: 1, titulo: 'Potasio con bromo', enunciado: '¿Cómo se llama el KBr?', datos: [D5.aniones, D5.nombre, 'Viene del ácido bromhídrico, HBr'],
-      solucion: [{ texto: '-hídrico pasa a -uro: bromuro. El catión es el potasio.' }], respuesta: [nombre('KBr', 'stock')] },
+      solucion: [{ texto: '-⁠hídrico pasa a -⁠uro: bromuro. El catión es el potasio.' }], respuesta: [nombre('KBr', 'stock')] },
     { nivel: 2, titulo: 'Un cloruro de hierro', enunciado: 'Escribe el nombre Stock y el tradicional del FeCl₃.', datos: [estadosTxt('Fe'), 'EO del Cl en un cloruro: −1', D5.nombre, D2.trad, `Raíces: ${RAIZ_TRAD.Fe}`],
-      solucion: [{ texto: 'Tres Cl⁻ aportan −3: el hierro tiene +3, el mayor de sus dos EO.' }, { texto: 'Stock con (III); tradicional con -ico.' }],
+      solucion: [{ texto: 'Tres Cl⁻ aportan −3: el hierro tiene +3, el mayor de sus dos EO.' }, { texto: 'Stock con (III); tradicional con -⁠ico.' }],
       respuesta: [...conRomano(nombre('FeCl3', 'stock')), ' y ', nombre('FeCl3', 'tradicional')] },
     { nivel: 2, titulo: 'El fosfato de los huesos', enunciado: 'Los huesos tienen fosfato de calcio. ¿Cuál es su fórmula?', datos: [D5.cero, D5.paren, 'Iones: Ca²⁺ y PO₄³⁻'],
       figura: salFichas('Ca', 'PO4', 1, 1, { cuenta: false }),
       solucion: [{ texto: 'Las cargas +2 y −3 se igualan en 6: tres Ca²⁺ y dos PO₄³⁻.', ecuacion: ['3 · (+2) + 2 · (−3) = ', Cq('0')] }, { texto: 'El fosfato se repite: va entre paréntesis.', ecuacion: ['Ca₃(PO₄)₂'] }],
       respuesta: ['Ca₃(PO₄)₂'] },
     { nivel: 2, titulo: 'La sal de la lejía', enunciado: 'La lejía tiene NaClO. El HClO es el ácido hipocloroso. ¿Cómo se llama la sal?', datos: [D5.aniones, D5.nombre],
-      solucion: [{ texto: '-oso pasa a -ito y el hipo- se queda: hipoclorito.' }], respuesta: [nombre('NaClO', 'stock')] },
+      solucion: [{ texto: '-⁠oso pasa a -⁠ito y el hipo- se queda: hipoclorito.' }], respuesta: [nombre('NaClO', 'stock')] },
     { nivel: 2, titulo: 'El abono del saco', enunciado: '¿Cuál es la fórmula del nitrato de amonio, el abono del saco?', datos: [D5.cero, 'Iones: NH₄⁺ y NO₃⁻'],
       solucion: [{ texto: 'Las dos cargas son de tamaño 1: uno de cada. Ninguno se repite: sin paréntesis.', ecuacion: ['(+1) + (−1) = ', Cq('0'), '   →   NH₄NO₃'] }], respuesta: ['NH₄NO₃'] },
     { nivel: 2, titulo: 'Contar los átomos', enunciado: '¿Cuántos átomos en total tiene una unidad de Al₂(SO₄)₃?', datos: ['El subíndice de afuera multiplica todo lo que está dentro del paréntesis'],
@@ -1199,22 +1209,22 @@
       alternativas: [nombre('Fe(NO3)2', 'tradicional'), 'nitrato férrico', 'nitrito ferroso', 'nitruro ferroso', nombre('Fe(NO3)2', 'stock')],
       datos: [D5.aniones, D2.trad, `Raíces: ${RAIZ_TRAD.Fe}`, 'Iones: NO₃⁻, del ácido nítrico'],
       solucion: [{ texto: 'Dos NO₃⁻ aportan −2: el hierro tiene +2, el menor: ferroso. El anión del ácido nítrico es nitrato.' },
-        { texto: ['La ', letra('B'), ' usa el EO mayor; la ', letra('C'), ' cambia -ico a -ito; la ', letra('D'), ' usa -uro con un anión con oxígeno; la ', letra('E'), ' es el nombre Stock.'] }],
+        { texto: ['La ', letra('B'), ' usa el EO mayor; la ', letra('C'), ' cambia -⁠ico a -⁠ito; la ', letra('D'), ' usa -⁠uro con un anión con oxígeno; la ', letra('E'), ' es el nombre Stock.'] }],
       respuesta: [letra('A'), `, ${nombre('Fe(NO3)2', 'tradicional')}`] },
     { nivel: 3, titulo: 'Los aniones del cloro', enunciado: 'El cloro forma los aniones hipoclorito, clorito, clorato y perclorato. ¿Cuál es el clorito?',
       alternativas: ['ClO⁻', 'ClO₃⁻', 'ClO₄⁻', 'ClO₂⁻', 'Cl⁻'], datos: [D5.aniones, D4.nombres4, 'Oxácidos del cloro: HClO, HClO₂, HClO₃ y HClO₄'],
-      solucion: [{ texto: 'Clorito viene de -oso sin prefijo: el ácido cloroso, HClO₂ (+3). Sin su H queda ClO₂⁻.' },
+      solucion: [{ texto: 'Clorito viene de -⁠oso sin prefijo: el ácido cloroso, HClO₂ (+3). Sin su H queda ClO₂⁻.' },
         { texto: ['La ', letra('A'), ' es el hipoclorito; la ', letra('B'), ', el clorato; la ', letra('C'), ', el perclorato; la ', letra('E'), ', el cloruro.'] }],
       respuesta: [letra('D'), ', ClO₂⁻'] },
     { nivel: 3, titulo: 'Verdadero o falso', enunciado: 'Indica verdadero (V) o falso (F). I. El NaCl es una oxisal. II. El KNO₃ se llama nitrato de potasio. III. En el CaCO₃ hay un ion poliatómico.',
-      alternativas: ['VVV', 'FVV', 'FFV', 'VVF', 'FVF'], datos: ['Sal haloidea: su anión no tiene oxígeno. Oxisal: su anión tiene oxígeno', D5.aniones, 'Ion poliatómico: un ion de varios átomos'],
+      alternativas: ['VVV', 'FVV', 'FFV', 'VVF', 'FVF'], datos: ['Sal haloidea: su anión no tiene oxígeno. Oxisal: su anión tiene oxígeno', D5.aniones, 'Ion poliatómico: un ion de varios átomos', 'HNO₃: ácido nítrico'],
       solucion: [{ texto: 'I es F: el cloruro no tiene oxígeno, es haloidea. II es V: nítrico → nitrato. III es V: el CO₃²⁻ tiene cuatro átomos.', ecuacion: ['FVV'] },
         { texto: ['La ', letra('A'), ' y la ', letra('D'), ' llaman oxisal al NaCl; la ', letra('C'), ' niega la II; la ', letra('D'), ' y la ', letra('E'), ' niegan la III.'] }],
       respuesta: [letra('B'), ', FVV'] },
     { nivel: 3, titulo: 'Una sal del ácido cloroso', enunciado: 'El HClO₂ es el ácido cloroso. ¿Cómo se llama la sal KClO₂?',
       alternativas: ['hipoclorito de potasio', 'clorato de potasio', 'clorito de potasio', 'cloruro de potasio', 'perclorato de potasio'], datos: [D5.aniones, D5.nombre],
-      solucion: [{ texto: '-oso pasa a -ito: clorito. No lleva prefijo, porque el ácido no lo tiene.' },
-        { texto: ['La ', letra('A'), ' le agrega hipo-; la ', letra('B'), ' cambia -oso a -ato; la ', letra('D'), ' usa -uro, que es sin oxígeno; la ', letra('E'), ' es el de +7.'] }],
+      solucion: [{ texto: '-⁠oso pasa a -⁠ito: clorito. No lleva prefijo, porque el ácido no lo tiene.' },
+        { texto: ['La ', letra('A'), ' le agrega hipo-; la ', letra('B'), ' cambia -⁠oso a -⁠ato; la ', letra('D'), ' usa -⁠uro, que es sin oxígeno; la ', letra('E'), ' es el de +7.'] }],
       respuesta: [letra('C'), ', clorito de potasio'] },
   ];
 
@@ -1224,7 +1234,7 @@
     pregunta: '¿Cómo se arma y se nombra una sal?',
     temas: ['Sales oxisales y haloideas'],
     pieza: 'quim-fichas',
-    aprendizaje: 'La sal junta catión y anión de un ácido hasta carga cero; el anión pasa de -hídrico a -uro, -oso a -ito, -ico a -ato.',
+    aprendizaje: 'La sal junta catión y anión de un ácido hasta carga cero; el anión pasa de -⁠hídrico a -⁠uro, -⁠oso a -⁠ito, -⁠ico a -⁠ato.',
     actividad: 'Juntar fichas enteras de un catión y un anión hasta que la carga quede en cero.',
     lee: {
       tarjetas: [
@@ -1265,14 +1275,14 @@
       voz: 'Recuerda cómo el ácido sulfúrico dio el sulfato.',
       opciones: [
         { id: 'c', texto: 'Nitrito de potasio', correcta: true },
-        { id: 'ato', texto: 'Nitrato de potasio', error: 'QM-ITO-ATO', siFuera: 'Bien cambiar la terminación del ácido. Pero -ato sale de un ácido -ico, el nítrico.' },
-        { id: 'uro', texto: 'Nitruro de potasio', error: 'QM-URO', siFuera: '-uro es de los aniones sin oxígeno. El NO₂⁻ tiene dos oxígenos.' },
+        { id: 'ato', texto: 'Nitrato de potasio', error: 'QM-ITO-ATO', siFuera: 'Bien cambiar la terminación del ácido. Pero -⁠ato sale de un ácido -⁠ico, el nítrico.' },
+        { id: 'uro', texto: 'Nitruro de potasio', error: 'QM-URO', siFuera: '-⁠uro es de los aniones sin oxígeno. El NO₂⁻ tiene dos oxígenos.' },
         { id: 'oso', texto: 'Nitroso de potasio', error: 'QM-SIN-CAMBIO', siFuera: 'Ese es el adjetivo del ácido. En la sal, el anión cambia su terminación.' },
       ],
-      dibujo: NOMS({ formula: [Ca_('K'), An('NO₂')], filas: [{ sistema: 'Viene del', nombre: 'ácido nitroso, HNO₂' }, { sistema: 'Nombre de la sal', oculto: true }] }),
-      revelar: NOMS({ formula: [Ca_('K'), An('NO₂')], filas: [{ sistema: 'Viene del', nombre: 'ácido nitroso, HNO₂' }, { sistema: 'Nombre de la sal', nombre: nombre('KNO2', 'stock') }] }),
-      coincide: 'Coincide: -oso pasa a -ito. Nitroso, nitrito.',
-      noCoincide: 'Del ácido -oso sale el anión -ito: nitrito de potasio.',
+      dibujo: NOMS({ formula: [Ca_('K'), An('NO₂')], filas: [{ sistema: 'Sale del ácido', nombre: 'ácido nitroso, HNO₂' }, { sistema: 'Nombre de la sal', oculto: true }] }),
+      revelar: NOMS({ formula: [Ca_('K'), An('NO₂')], filas: [{ sistema: 'Sale del ácido', nombre: 'ácido nitroso, HNO₂' }, { sistema: 'Nombre de la sal', nombre: nombre('KNO2', 'stock') }] }),
+      coincide: 'Coincide: -⁠oso pasa a -⁠ito. Nitroso, nitrito.',
+      noCoincide: 'Del ácido -⁠oso sale el anión -⁠ito: nitrito de potasio.',
     },
     mira: {
       datos: { serif: true, fichas: [{ t: 'Fe³⁺', carga: 3, n: 2, color: 'o', desde: 1 }, { t: 'SO₄²⁻', carga: -2, n: 3, color: 'i', desde: 1 }],
@@ -1282,13 +1292,13 @@
         { estado: { corte: 1 }, texto: 'Fe³⁺ y SO₄²⁻: +3 y −2 se igualan en 6.', ecuacion: ['2 · (+3) + 3 · (−2) = ', Cq('0')] },
         { estado: { corte: 1 }, texto: 'El sulfato se repite: va entre paréntesis.', ecuacion: ['Fe₂(SO₄)₃'] },
         { estado: { corte: 1 }, texto: 'Nombre: el anión, «de», el catión con su romano.', ecuacion: conRomano(nombre('Fe2(SO4)3', 'stock')) },
-        { estado: { corte: 1 }, texto: 'En la tradicional: +3 es el mayor del hierro, -ico.', ecuacion: [nombre('Fe2(SO4)3', 'tradicional')] },
+        { estado: { corte: 1 }, texto: 'En la tradicional: +3 es el mayor del hierro, -⁠ico.', ecuacion: [nombre('Fe2(SO4)3', 'tradicional')] },
       ],
     },
     regla: {
-      texto: 'El anión cambia la terminación del ácido: -hídrico → -uro, -oso → -ito, -ico → -ato; hipo- y per- se quedan. Fichas enteras hasta carga 0. Nombre: anión + de + catión.',
-      ecuacion: ['H₂SO₄ → SO₄²⁻ (sulfato)', SEP, '2 · (+3) + 3 · (−2) = ', Cq('0'), SEP, 'Al₂(SO₄)₃'],
-      condicion: 'Un ion de varios átomos va entre paréntesis si se repite. Sin oxígeno: haloidea (cloruro); con oxígeno: oxisal (sulfato).',
+      texto: 'El anión cambia la terminación del ácido: -⁠hídrico → -⁠uro, -⁠oso → -⁠ito, -⁠ico → -⁠ato; hipo- y per- se quedan. Fichas enteras hasta carga 0. Nombre: anión + de + catión.',
+      ecuacion: ['H₂SO₄ → SO₄²⁻ (sulfato)', SEP, '2 · (+3) + 3 · (−2) = ', Cq('0'), SEP, 'Fe₂(SO₄)₃'],
+      condicion: 'cada ion va entero: si uno de varios átomos se repite, va entre paréntesis. Sin oxígeno, haloidea (cloruro); con oxígeno, oxisal (sulfato).',
       voz: 'Primero los iones y sus cargas; después la proporción.',
     },
     resuelve: {
@@ -1337,7 +1347,7 @@
   const lectura6 = k => [`${bonita(ESP6[k].f)}: sal ${clase6(ESP6[k].f)}; ${ESP6[k].lee}.`];
   const D6 = {
     clases: 'Sal ácida: su anión conserva H. Sal básica: lleva OH⁻ además del anión. Sal hidratada: agua tras un punto (·nH₂O)',
-    neutra: 'Sal neutra: solo un catión y un anión, sin H en el anión, sin OH⁻ y sin agua',
+    neutra: 'Sal neutra: una clase de catión y una de anión, sin H en el anión, sin OH⁻ ni agua',
     hidrogeno: 'Anión con H: «hidrogeno» + el anión (dihidrogeno si guarda dos); en la cocina, «bi-» si el ácido tenía dos H',
     agua: 'El ·nH₂O son n moléculas de agua enteras, sin carga, por cada unidad de la sal',
     multiplica: 'El número delante del H₂O multiplica sus dos H y su O',
@@ -1345,7 +1355,11 @@
   // Ahora tú: sales que no salen en el juego, en Predice, en Mira ni en los ejemplos.
   const AT6 = { clase: ['KHCO3', 'Ba(OH)Cl', 'FeSO4·7H2O', 'K2SO4', 'CaHPO4', 'BaCl2·2H2O', 'Na2SO4·10H2O', 'KHSO3', 'CoCl2·6H2O'],
     hidratos: ['FeSO4·7H2O', 'BaCl2·2H2O', 'CoCl2·6H2O', 'Na2SO4·10H2O'] };
-  const RES6 = ['KHSO3', 'CaHPO4', 'Ba(OH)Cl', 'CoCl2·6H2O'];
+  // Así se resuelve (cierre, 19 nov): sales ácidas con el ácido de su anión en Datos y un hidrato de un metal de un solo EO
+  // con su prefijo; sin la sal básica, que la unidad solo reconoce (Lee 3), y sin las sales de «Ahora tú».
+  const RES6 = ['NaHSeO4', 'Ca(HSO4)2', 'LiHSO3', 'ZnSO4·7H2O'];
+  const DATO_RES6 = { NaHSeO4: 'El HSeO₄⁻ sale del ácido selénico, H₂SeO₄', 'Ca(HSO4)2': 'El HSO₄⁻ sale del ácido sulfúrico, H₂SO₄',
+    LiHSO3: 'El HSO₃⁻ sale del ácido sulfuroso, H₂SO₃', 'ZnSO4·7H2O': 'Hidrato: nombre de la sal + prefijo de las aguas + «hidratado» (hepta 7)' };
   const POR_CLASE = { ácida: 'Su anión conserva un H del ácido.', básica: 'Lleva OH⁻ además del anión.', hidratada: 'Tiene agua tras el punto.', neutra: 'Solo catión y anión.' };
   const SI_CLASE = { ácida: 'Sería ácida si su anión conservara un H, como el HCO₃⁻.', básica: 'Sería básica si llevara OH⁻ además del anión.',
     hidratada: 'Sería hidratada si tuviera agua tras el punto (·nH₂O).', neutra: 'Sería neutra si solo tuviera catión y anión.' };
@@ -1402,8 +1416,9 @@
       solucion: [{ texto: 'Su anión, HSO₄⁻, conserva un H del ácido sulfúrico.' }], respuesta: ['Sal ácida'] },
     { nivel: 1, titulo: 'Los cristales azules', enunciado: 'Los cristales azules del CuSO₄·5H₂O, ¿qué clase de sal son?', datos: [D6.clases, D6.neutra],
       solucion: [{ texto: 'Tiene agua tras el punto: cinco moléculas por cada CuSO₄.' }], respuesta: ['Sal hidratada'] },
-    { nivel: 1, titulo: 'Otro bicarbonato', enunciado: '¿Cuál es el nombre del KHCO₃?', datos: [D6.hidrogeno, 'Anión HCO₃⁻, del ácido carbónico: hidrogenocarbonato'],
-      solucion: [{ texto: 'El anión guarda un H: hidrogenocarbonato. El catión es el potasio.' }], respuesta: [nombre('KHCO3', 'stock')] },
+    { nivel: 1, titulo: 'Otro bicarbonato', enunciado: '¿Cuál es el nombre del KHCO₃?', datos: [D6.hidrogeno, D5.aniones, 'El HCO₃⁻ sale del ácido carbónico, H₂CO₃'],
+      solucion: [{ texto: 'Carbónico pasa a carbonato; el anión guarda un H: hidrogenocarbonato. El catión es el potasio.' }],
+      respuesta: [nombre('KHCO3', 'stock'), ' (en la cocina, bicarbonato de potasio)'] },
     { nivel: 1, titulo: 'La sal de Epsom', enunciado: 'La sal de Epsom es MgSO₄·7H₂O. ¿Cuántas moléculas de agua hay por cada MgSO₄?', datos: [D6.agua],
       solucion: [{ texto: 'El número delante del H₂O cuenta las moléculas de agua.' }], respuesta: ['7'] },
     { nivel: 1, titulo: 'Un OH de más', enunciado: '¿Qué clase de sal es el Ca(OH)Cl?', datos: [D6.clases, D6.neutra],
@@ -1428,7 +1443,7 @@
       alternativas: ['hidrogenosulfato de sodio', 'hidrogenosulfito de sodio', 'sulfito de sodio', 'hidrogenosulfuro de sodio', 'bisulfato de sodio'],
       datos: [D6.hidrogeno, D5.aniones, 'El anión HSO₃⁻ viene del ácido sulfuroso, H₂SO₃'],
       solucion: [{ texto: 'Del ácido sulfuroso sale el sulfito; con un H en el anión: hidrogenosulfito.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' usan -ato, que es del ácido sulfúrico; la ', letra('C'), ' olvida el H; la ', letra('D'), ' usa -uro, sin oxígeno.'] }],
+        { texto: ['La ', letra('A'), ' y la ', letra('E'), ' usan -⁠ato, que es del ácido sulfúrico; la ', letra('C'), ' olvida el H; la ', letra('D'), ' usa -⁠uro, sin oxígeno.'] }],
       respuesta: [letra('B'), ', hidrogenosulfito de sodio'] },
     { nivel: 3, titulo: 'Todos los átomos del hidrato', enunciado: '¿Cuántos átomos en total hay en una unidad de Na₂CO₃·10H₂O?', alternativas: ['36', '9', '6', '30', '26'],
       datos: [D6.agua, D6.multiplica],
@@ -1469,7 +1484,7 @@
       consigna: 'Algunas sales traen algo más que un catión y un anión. Compara las fichas de cada una.',
       mision: { texto: 'Encuentra la sal que lleva un ion hidróxido, OH⁻.', logrado: v => v.k === 'MgOHCl',
         bien: 'Mg(OH)Cl: el Mg²⁺ se compensa con un OH⁻ y un Cl⁻; sal básica.' },
-      voz: 'Busca la ficha que no tiene una sal común.',
+      voz: 'Busca la ficha que no está en una sal de solo catión y anión.',
       leyenda: [
         { s: Ca_('catión'), t: 'el ion positivo' },
         { s: An('anión'), t: 'el ion que deja el ácido' },
@@ -1484,13 +1499,13 @@
     predice: {
       pieza: 'quim-fichas',
       pregunta: 'El yeso es CaSO₄·2H₂O. ¿Qué es el «·2H₂O»?',
-      datos: ['Iones del yeso: Ca²⁺ y SO₄²⁻', 'OH⁻: carga −1'],
+      datos: ['Iones del yeso: Ca²⁺ y SO₄²⁻'],
       voz: 'Mira la carga de esa parte.',
       opciones: [
-        { id: 'c', texto: 'Dos moléculas de agua enteras, sin carga, dentro del cristal', correcta: true },
-        { id: 'oh', texto: 'Dos grupos OH⁻: es una sal básica', error: 'QM-HIDRATO', siFuera: 'Un OH⁻ tiene carga −1: dos dejarían la sal con −2. El agua del cristal es neutra.' },
-        { id: 'h', texto: 'Hidrógenos que conserva el anión: es una sal ácida', error: 'QM-HIDRATO', siFuera: 'En una sal ácida el H está dentro del anión, como en el HCO₃⁻. Aquí va tras el punto.' },
-        { id: 'parte', texto: 'Una parte del ion sulfato', error: 'QM-POLI', siFuera: 'El sulfato es SO₄²⁻, completo. El agua va aparte, tras el punto.' },
+        { id: 'c', texto: 'Dos moléculas de agua, sin carga', correcta: true },
+        { id: 'oh', texto: 'Dos iones OH⁻: es una sal básica', error: 'QM-HIDRATO', siFuera: 'Un OH⁻ tiene carga −1: dos dejarían la sal con −2. El agua del cristal es neutra.' },
+        { id: 'h', texto: 'Dos H del anión: es una sal ácida', error: 'QM-HIDRATO', siFuera: 'En una sal ácida el H está dentro del anión, como en el HCO₃⁻. Aquí va tras el punto.' },
+        { id: 'parte', texto: 'Una parte del ion sulfato, SO₄²⁻', error: 'QM-POLI', siFuera: 'El sulfato es SO₄²⁻, completo. El agua va aparte, tras el punto.' },
       ],
       dibujo: fichas([{ t: 'Ca²⁺', carga: 2, color: 'o' }, { t: 'SO₄²⁻', carga: -2, color: 'i' }, { t: '?', carga: 0, n: 2, oculta: true }], { cuenta: false, alt: 'Fichas del yeso: Ca²⁺, SO₄²⁻ y dos fichas «?», lo que se pregunta.' }),
       revelar: fichas([{ t: 'Ca²⁺', carga: 2, color: 'o' }, { t: 'SO₄²⁻', carga: -2, color: 'i' }, { t: 'H₂O', carga: 0, n: 2 }], { alt: 'Fichas del yeso: Ca²⁺, SO₄²⁻ y dos H₂O sin carga; carga neta 0.' }),
@@ -1510,14 +1525,14 @@
     regla: {
       texto: 'Sal ácida: el anión conserva H (HCO₃⁻, hidrogenocarbonato). Sal básica: lleva OH⁻ además del anión. Sal hidratada: moléculas de agua enteras en el cristal, tras un punto.',
       ecuacion: [{ llave: ['NaHCO₃'], nota: 'ácida' }, SEP, { llave: ['Mg(OH)Cl'], nota: 'básica' }, SEP, { llave: ['CuSO₄·5H₂O'], nota: 'hidratada' }],
-      condicion: 'El agua del hidrato no tiene carga: no cambia la cuenta de cargas. Se nombra con prefijos: pentahidratado.',
+      condicion: 'el agua del hidrato no tiene carga: no cambia la cuenta de cargas. Con prefijo: CuSO₄·5H₂O, sulfato de cobre(II) pentahidratado.',
       voz: 'Una ficha distinta decide la clase.',
     },
     resuelve: {
       pieza: 'quim-fichas',
       generar(s) {
         const f = RES6[((s % RES6.length) + RES6.length) % RES6.length], cl = clase6(f), n = M.nombrar(f);
-        return { enunciado: `¿Qué clase de sal es el ${bonita(f)} y cómo se llama?`, datos: [D6.clases, D6.hidrogeno, D6.agua],
+        return { enunciado: `¿Qué clase de sal es el ${bonita(f)} y cómo se llama?`, datos: [D6.clases, cl === 'hidratada' ? D6.agua : D6.hidrogeno, D5.aniones, DATO_RES6[f]],
           pasos: [
             { tipo: 'pide', texto: 'La clase de la sal y su nombre.' },
             { tipo: 'datos', texto: `La fórmula: ${bonita(f)}.` },
@@ -1560,7 +1575,8 @@
 
   return {
     unidad: 'quimica.nomenclatura-inorganica',
-    version: '0.2.0',
+    version: '0.2.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/plantillas/nomenclatura-inorganica/motor.js', '/nucleo/kit/piezas/quim-fichas.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-nomenclatura.js'],
     // Tabla de letras (molde §0.4): cada letra con un solo significado en la unidad.
@@ -1607,8 +1623,8 @@
         def: 'Nombra con el estado de oxidación del elemento en números romanos, entre paréntesis; se omite si tiene uno solo.',
         ejemplos: ['FeO: óxido de hierro(II).', 'CuO: óxido de cobre(II).', 'CaO: óxido de calcio, sin romano: el calcio solo tiene +2.'], ver: ['estado de oxidación'] },
       { termino: 'nomenclatura tradicional', formas: ['nomenclatura tradicional', 'tradicional'],
-        simple: 'El nombre antiguo, con terminaciones como -oso e -ico.',
-        def: 'Nombra con terminaciones: -oso para el EO menor e -ico para el mayor; con cuatro, también hipo- y per-.',
+        simple: 'El nombre antiguo, con terminaciones como -⁠oso e -⁠ico.',
+        def: 'Nombra con terminaciones: -⁠oso para el EO menor e -⁠ico para el mayor; con cuatro, también hipo- y per-.',
         ejemplos: ['FeO: óxido ferroso.', 'CuO: óxido cúprico.', 'SO₃: anhídrido sulfúrico.'], ver: ['nomenclatura Stock'] },
       { termino: 'peróxido', formas: ['peróxido', 'peróxidos'],
         simple: 'Un compuesto con dos oxígenos pegados entre sí.',
@@ -1620,7 +1636,7 @@
         ejemplos: ['NaH: hidruro de sodio.', 'CaH₂: hidruro de calcio.', 'LiH: +1 − 1 = 0.'], ver: ['estado de oxidación'] },
       { termino: 'hidrácido', formas: ['hidrácido', 'hidrácidos'],
         simple: 'Un ácido sin oxígeno: hidrógeno con un no metal, en agua.',
-        def: 'Ácido sin oxígeno: hidrógeno con un no metal de los grupos 16 o 17, disuelto en agua. Termina en -hídrico.',
+        def: 'Ácido sin oxígeno: hidrógeno con un no metal de los grupos 16 o 17, disuelto en agua. Termina en -⁠hídrico.',
         ejemplos: ['HCl(ac): ácido clorhídrico, el ácido muriático.', 'HBr(ac): ácido bromhídrico.', 'HF(ac): ácido fluorhídrico.'], ver: ['oxácido'] },
       { termino: 'ácido', formas: ['ácido', 'ácidos'], local: true,
         def: 'Sustancia que, en agua, suelta iones H⁺. En esta unidad: los hidrácidos y los oxácidos.',
@@ -1639,11 +1655,11 @@
         ejemplos: ['NaCl, la sal de cocina, del HCl.', 'CaCO₃, la tiza, del H₂CO₃.', 'K₂SO₄, del H₂SO₄.'], ver: ['oxisal', 'sal haloidea'] },
       { termino: 'sal haloidea', formas: ['sal haloidea', 'sales haloideas', 'haloidea', 'haloideas'],
         simple: 'Una sal sin oxígeno, como la sal de cocina.',
-        def: 'Sal cuyo anión no tiene oxígeno; viene de un hidrácido y su anión termina en -uro.',
+        def: 'Sal cuyo anión no tiene oxígeno; viene de un hidrácido y su anión termina en -⁠uro.',
         ejemplos: ['NaCl: cloruro de sodio.', 'CaF₂: fluoruro de calcio.', 'FeS: sulfuro de hierro(II).'], ver: ['sal', 'hidrácido'] },
       { termino: 'oxisal', formas: ['oxisal', 'oxisales'],
         simple: 'Una sal con oxígeno en su anión, como la tiza.',
-        def: 'Sal cuyo anión lleva oxígeno; viene de un oxácido y su anión termina en -ito o -ato.',
+        def: 'Sal cuyo anión lleva oxígeno; viene de un oxácido y su anión termina en -⁠ito o -⁠ato.',
         ejemplos: ['CaCO₃: carbonato de calcio.', 'K₂SO₄: sulfato de potasio.', 'KClO: hipoclorito de potasio.'], ver: ['oxácido', 'sal'] },
       { termino: 'sal ácida', formas: ['sal ácida', 'sales ácidas'],
         simple: 'Una sal que se quedó con algún hidrógeno del ácido.',

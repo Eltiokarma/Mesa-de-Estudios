@@ -159,8 +159,8 @@
     const o = rng.elegir(OXIDOS), [f, el, w, ws, st, tr] = o, ot = otro(o);
     return { correcta: tr, _datos: { f },
       enunciado: [`El óxido ${bonita(f)}. El ${el} tiene EO ${ws.map(sg).join(' y ')}.`], pregunta: ['¿Cuál es su nombre tradicional?'],
-      datos: ['EO del O: −2', 'Tradicional, elemento con dos EO: -oso para el menor e -ico para el mayor'],
-      errores: [ot ? err('QM-OSO-ICO', ot[5], `Bien la raíz. Pero ${w === Math.max(...ws) ? '-oso es del EO menor' : '-ico es del EO mayor'}; aquí el ${el} tiene ${sg(w)}.`) : null,
+      datos: ['EO del O: −2', 'Tradicional, elemento con dos EO: -⁠oso para el menor e -⁠ico para el mayor'],
+      errores: [ot ? err('QM-OSO-ICO', ot[5], `Bien la raíz. Pero ${w === Math.max(...ws) ? '-⁠oso es del EO menor' : '-⁠ico es del EO mayor'}; aquí el ${el} tiene ${sg(w)}.`) : null,
         err('QM-SISTEMA', st, 'Ese es el nombre Stock: la misma sustancia, otro sistema.'),
         err('QM-ROMANO-UNO', `óxido de ${el}`, 'Sin terminación ni romano no se sabe cuál de los dos óxidos es.')],
       solucion: [[`El ${el} tiene ${sg(w)}, el ${w === Math.max(...ws) ? 'mayor' : 'menor'} de sus dos EO.`], [`${bonita(f)}: ${tr}`]] };
@@ -196,10 +196,10 @@
     const [f, raiz, uro] = rng.elegir(HIDRA), bien = `ácido ${raiz}hídrico`;
     return { correcta: bien, _datos: { f },
       enunciado: [`El ${bonita(f)} disuelto en agua, ${bonita(f)}(ac).`], pregunta: ['¿Cómo se llama?'],
-      datos: ['Hidrácido: ácido + raíz del no metal + -hídrico', `Raíz: ${raiz}-`, 'Sin agua, el gas: el no metal con -uro + «de hidrógeno»'],
+      datos: ['Hidrácido: ácido + raíz del no metal + -⁠hídrico', `Raíz: ${raiz}-`, 'Sin agua, el gas: el no metal con -⁠uro + «de hidrógeno»'],
       errores: [err('QM-HIDRACIDO-GAS', `${uro} de hidrógeno`, 'Ese es el nombre del gas, sin agua. Disuelto es un ácido.'),
-        err('QM-HIDR-ICO', `ácido ${TILDE[raiz]}ico`, '-ico es de un ácido con oxígeno. Este no tiene oxígeno.'), err('QM-HIDR-ICO', `ácido ${raiz === 'sulf' ? 'sulfur' : raiz}oso`, '-oso es de un ácido con oxígeno. Este no tiene oxígeno.')],
-      solucion: [['Ácido sin oxígeno: ácido + raíz + -hídrico.'], [`${bonita(f)}(ac): ${bien}`]] };
+        err('QM-HIDR-ICO', `ácido ${TILDE[raiz]}ico`, '-⁠ico es de un ácido con oxígeno. Este no tiene oxígeno.'), err('QM-HIDR-ICO', `ácido ${raiz === 'sulf' ? 'sulfur' : raiz}oso`, '-⁠oso es de un ácido con oxígeno. Este no tiene oxígeno.')],
+      solucion: [['Ácido sin oxígeno: ácido + raíz + -⁠hídrico.'], [`${bonita(f)}(ac): ${bien}`]] };
   }
   const RAROS = [['LiH', 'H', -1], ['KH', 'H', -1], ['AlH3', 'H', -1], ['BaH2', 'H', -1], ['K2O2', 'O', -1], ['CaO2', 'O', -1], ['Li2O2', 'O', -1], ['MgO2', 'O', -1]];
   function eoRaro(rng) {
@@ -207,7 +207,7 @@
     return { correcta: sg(bien), _datos: { f, x },
       enunciado: [`El compuesto ${bonita(f)}.`], pregunta: ['¿Qué ', v('EO', 'EO'), ` tiene cada ${x}?`], datos: [FIJO_TXT[otroEl], FORMULA_EO],
       errores: [err(x === 'H' ? 'QM-OX-H' : 'QM-OX-O', x === 'H' ? '+1' : '−2', `Ese es el valor de siempre. Con él la suma daría ${sg(aporta + nx * (x === 'H' ? 1 : -2))}, no 0.`),
-        err('QM-OX-CERO', '0', `0 es de un elemento solo. Aquí la suma daría ${sg(aporta)}.`), err('QM-OX-SIGNO', x === 'H' ? '−2' : '+1', `Con ese valor la suma daría ${sg(aporta + nx * (x === 'H' ? -2 : 1))}, no 0.`),
+        err('QM-OX-CERO', '0', `0 es de un elemento solo. Aquí la suma daría ${sg(aporta)}.`), err(x === 'H' ? 'QM-OX-SUMA' : 'QM-OX-SIGNO', x === 'H' ? '−2' : '+1', `Con ese valor la suma daría ${sg(aporta + nx * (x === 'H' ? -2 : 1))}, no 0.`),
         ...[-3, 2, 3].map(w => err('QM-OX-SUMA', sg(w), `Con ${sg(w)} la suma daría ${sg(aporta + nx * w)}, no 0.`))],
       solucion: [[`El ${otroEl} aporta ${sg(aporta)}; ${nx > 1 ? `los ${nx} ${x}` : `el ${x}`} deben aportar ${sg(-aporta)}.`], [v('EO', 'EO'), ` = ${sg(bien)}`]] };
   }
@@ -250,7 +250,7 @@
     const [e, w, f, nom] = rng.elegir(OXAC), otros = ESTADOS_NM[e].filter(x => x !== w);
     return { correcta: nom, _datos: { f, w, e },
       enunciado: [`El oxácido ${bonita(f)}.`], pregunta: ['¿Cómo se llama?'],
-      datos: [`EO del ${e} en sus oxácidos: ${ESTADOS_NM[e].map(sg).join(', ')}`, ESTADOS_NM[e].length === 4 ? 'Con cuatro EO: hipo-…-oso, -oso, -ico, per-…-ico' : 'Con dos EO: -oso el menor e -ico el mayor', 'EO del O: −2; del H: +1'],
+      datos: [`EO del ${e} en sus oxácidos: ${ESTADOS_NM[e].map(sg).join(', ')}`, ESTADOS_NM[e].length === 4 ? 'Con cuatro EO: hipo-⁠…-⁠oso, -⁠oso, -⁠ico, per-…-⁠ico' : 'Con dos EO: -⁠oso el menor e -⁠ico el mayor', 'EO del O: −2; del H: +1'],
       errores: otros.map(x => err('QM-OSO-ICO', nombreDe(e, x), `Ese es el oxácido con EO ${sg(x)}. Aquí el ${e} tiene ${sg(w)}.`)),
       solucion: [[`El ${e} tiene ${sg(w)}: la suma de los EO da 0.`], [`${bonita(f)}: ${nom}`]] };
   }
@@ -264,10 +264,10 @@
     const [a, n, ac, nac, rev] = rng.elegir(ANIONES), raiz = nac.replace('ácido ', '');
     return { correcta: n, _datos: { a },
       enunciado: [`El ${nac}, ${bonita(ac)}, suelta sus H⁺ y deja el anión ${bonita(a)}.`], pregunta: ['¿Cómo se llama ese anión?'],
-      datos: ['Anión de un ácido: -hídrico → -uro; -oso → -ito; -ico → -ato (hipo- y per- se quedan)'],
-      errores: [err('QM-ITO-ATO', rev, 'Bien cambiar la terminación, pero va al revés: -oso → -ito y -ico → -ato.'),
-        err('QM-URO', n.replace(/(ito|ato)$/, 'uro'), '-uro es de los aniones sin oxígeno. Este tiene oxígeno.'), err('QM-SIN-CAMBIO', raiz, 'Ese es el adjetivo del ácido: el anión cambia su terminación.')],
-      solucion: [[`${nac}: ${raiz.endsWith('oso') ? '-oso → -ito' : '-ico → -ato'}.`], [`${bonita(a)}: ${n}`]] };
+      datos: ['Anión de un ácido: -⁠hídrico → -⁠uro; -⁠oso → -⁠ito; -⁠ico → -⁠ato (hipo- y per- se quedan)'],
+      errores: [err('QM-ITO-ATO', rev, 'Bien cambiar la terminación, pero va al revés: -⁠oso → -⁠ito y -⁠ico → -⁠ato.'),
+        err('QM-URO', n.replace(/(ito|ato)$/, 'uro'), '-⁠uro es de los aniones sin oxígeno. Este tiene oxígeno.'), err('QM-SIN-CAMBIO', raiz, 'Ese es el adjetivo del ácido: el anión cambia su terminación.')],
+      solucion: [[`${nac}: ${raiz.endsWith('oso') ? '-⁠oso → -⁠ito' : '-⁠ico → -⁠ato'}.`], [`${bonita(a)}: ${n}`]] };
   }
   // Cationes: [fórmula, nombre Stock del catión, carga]
   const CATIONES = [['Mg', 'magnesio', 2], ['Ba', 'bario', 2], ['Zn', 'zinc', 2], ['Cu', 'cobre(II)', 2], ['Fe', 'hierro(II)', 2], ['K', 'potasio', 1], ['Al', 'aluminio', 3]];
@@ -295,9 +295,9 @@
     const c = rng.elegir(CATIONES), A = rng.elegir(ANIONES), s = sal(c, A[0]);
     return { correcta: s.nombre, _datos: { c: c[0], a: A[0] },
       enunciado: [`La sal ${bonita(s.f)}. Su anión, ${bonita(A[0])}, viene del ${A[3]}.`], pregunta: ['¿Cuál es su nombre Stock?'],
-      datos: ['Anión de un ácido: -hídrico → -uro; -oso → -ito; -ico → -ato (hipo- y per- se quedan)', 'Nombre de la sal: el anión + «de» + el catión (con su EO en romanos si tiene dos)'],
-      errores: [err('QM-ITO-ATO', `${A[4]} de ${c[1]}`, 'Bien la raíz. Pero la terminación va al revés: -oso → -ito y -ico → -ato.'),
-        err('QM-URO', `${A[1].replace(/(ito|ato)$/, 'uro')} de ${c[1]}`, '-uro es de los aniones sin oxígeno.'),
+      datos: ['Anión de un ácido: -⁠hídrico → -⁠uro; -⁠oso → -⁠ito; -⁠ico → -⁠ato (hipo- y per- se quedan)', 'Nombre de la sal: el anión + «de» + el catión (con su EO en romanos si tiene dos)'],
+      errores: [err('QM-ITO-ATO', `${A[4]} de ${c[1]}`, 'Bien la raíz. Pero la terminación va al revés: -⁠oso → -⁠ito y -⁠ico → -⁠ato.'),
+        err('QM-URO', `${A[1].replace(/(ito|ato)$/, 'uro')} de ${c[1]}`, '-⁠uro es de los aniones sin oxígeno.'),
         err('QM-SIN-CAMBIO', `${A[3].replace('ácido ', '')} de ${c[1]}`, 'Ese es el adjetivo del ácido: en la sal, el anión cambia su terminación.')],
       solucion: [[`El anión es ${A[1]}; el catión, ${c[1]}.`], [`${bonita(s.f)}: ${s.nombre}`]] };
   }
@@ -334,9 +334,15 @@
     'formula-hidroxido': formulaHidroxido, 'formula-oxacido': formulaOxacido, 'nombre-oxacido': nombreOxacido,
     anion, 'formula-sal': formulaSal, 'nombre-sal': nombreSal, 'clase-sal': claseSal, 'oxigenos-hidrato': oxigenosHidrato,
   };
+  // Papel (regla 6; herramientas/papel-generador.js toma «papel-1» a «papel-8» y rotula 3 básicos, 3 intermedios y 2
+  // avanzados): las seis ideas, con el nivel de cada tipo igual al rótulo (cierre, 19 nov: antes salían 4 de sales y
+  // ninguno de las ideas 1 y 3).
+  const PAPEL = { 'papel-1': 'eo-neutro', 'papel-2': 'formula-peroxido', 'papel-3': 'formula-hidroxido', 'papel-4': 'trad-oxido',
+    'papel-5': 'formula-sal', 'papel-6': 'eo-dos', 'papel-7': 'nombre-oxacido', 'papel-8': 'oxigenos-hidrato' };
   function generar(semilla, opciones = {}) {
     const rng = Azar.crear(`${ID}|${semilla}`);
-    const idea = TIPOS_POR_IDEA[opciones.idea] ? opciones.idea : rng.elegir(IDEAS), tipo = rng.elegir(TIPOS_POR_IDEA[idea]);
+    const fijo = PAPEL[semilla] && !opciones.idea ? PAPEL[semilla] : null;
+    const idea = fijo ? IDEA_DE[fijo] : TIPOS_POR_IDEA[opciones.idea] ? opciones.idea : rng.elegir(IDEAS), tipo = fijo || rng.elegir(TIPOS_POR_IDEA[idea]);
     for (let intento = 0; intento < 500; intento++) {
       const o = CONSTRUIR[tipo](rng);
       o.errores = o.errores.filter(Boolean);

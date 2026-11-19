@@ -14,6 +14,10 @@ const idea = id => def.ideas.find(i => i.id === id);
 const casos = i => { const ctrl = i.juega.controles; const lista = [{}]; for (const c of ctrl) { const vals = c.opciones ? c.opciones.map(o => o.valor) : Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
   const nueva = []; for (const v of lista) for (const x of vals) nueva.push(Object.assign({}, v, { [c.id]: x })); lista.splice(0, lista.length, ...nueva); } return lista; };
 
+test('cerrada con calidad 2 (19 nov, tras el lector en frío y el auditor)', () => {
+  assert.equal(def.calidad, 2);
+});
+
 test('colores del mapa: EO violeta, carga carmín, catión naranja, anión turquesa; nada en verde', () => {
   const visto = { 'c-f': new Set(), 'c-h': new Set(), 'c-o': new Set(), 'c-i': new Set() }, verde = [];
   const ir = (x, seen = new Set()) => { if (!x || typeof x !== 'object' || seen.has(x)) return; seen.add(x);
@@ -86,4 +90,84 @@ test('letras de nivel 3 repartidas y el ícono de la unidad sin la respuesta de 
   assert.deepEqual(n, { A: 6, B: 6, C: 6, D: 6, E: 6 });
   const icono = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', '..', '..', 'app', 'dibujos', 'quimica.js'), 'utf8').match(/'quimica\.nomenclatura-inorganica'[\s\S]*?\n  \/\/ El mol/)[0];
   assert.ok(!/'Fe|Fe₂O₃/.test(icono.split('\n').filter(l => !/^\s*\/\//.test(l)).join('\n')), 'el ícono no muestra Fe₂O₃');
+});
+
+// ---------- Cierre (19 nov 2026): auditoría y lectores en frío (rutinas/auditoria y rutinas/frio de la unidad) ----------
+// Cada prueba falla con la versión anterior a las correcciones.
+const todosLosTextos = () => { const out = []; const ir = (x, seen = new Set()) => { if (x == null) return; if (typeof x === 'string') { out.push(x); return; } if (typeof x !== 'object' || seen.has(x)) return; seen.add(x); for (const v of Object.values(x)) if (typeof v !== 'function') ir(v, seen); };
+  ir(def); for (const i of def.ideas) for (let s = 0; s < 60; s++) { ir(i.ahoraTu.generar(s)); ir(i.resuelve.generar(s)); for (const v of casos(i).slice(0, 40)) ir([plano(i.juega.lectura(v))]); } return out; };
+
+test('A1: con los Datos de «¿cuál es un peróxido?», cada dióxido puede tener el EO que pide (una sola correcta)', () => {
+  for (let s = 0; s < 400; s += 5) {
+    const c = idea('peroxidos-hidruros').ahoraTu.generar(s);
+    for (const o of c.opciones.filter(o => !o.correcta)) {
+      const f = asc(o.texto), at = atomos(f), x = Object.keys(at).find(e => e !== 'O'), pide = 2 * at.O / at[x];
+      const d = c.datos.find(l => l.startsWith(`EO del ${x}:`));
+      assert.ok(d && d.match(/[+−]\d+/g).map(t => +t.replace('−', '-')).includes(pide), `semilla ${s}: ${o.texto} pide ${pide} y los datos dicen «${d}»`);
+    }
+  }
+});
+
+test('M: las explicaciones cuentan bien los EO del elemento y las listas se escriben con comas', () => {
+  const nums = { uno: 1, dos: 2, tres: 3, cuatro: 4 };
+  for (let s = 0; s < 400; s++) {
+    const c = idea('tres-nombres').ahoraTu.generar(s), d = c.datos.find(l => /^EO del [a-zíé]+:/.test(l));
+    if (d) assert.ok(!/ y .* y /.test(d), `«${d}»`);
+    for (const o of c.opciones) { const m = (o.siFuera || '').match(/tiene (uno|dos|tres|cuatro)\.$/); if (m && d) assert.equal(d.match(/[+−]\d+/g).length, nums[m[1]], `${o.siFuera} / ${d}`);
+      assert.ok(!/\b1 oxígenos\b/.test(o.siFuera || ''), o.siFuera); }
+  }
+});
+
+test('M: «Así se resuelve» de la idea 6 no nombra sales básicas y da de qué ácido sale el anión (o cómo se nombra el hidrato)', () => {
+  for (let s = 0; s < 8; s++) {
+    const c = idea('sales-acidas-basicas-hidratadas').resuelve.generar(s), e = plano(c.enunciado);
+    assert.ok(!/OH/.test(e), e);
+    assert.ok(c.datos.some(l => /sale del ácido|hidratado/.test(l)), `${e}: ${c.datos.join(' | ')}`);
+  }
+});
+
+test('M: las igualdades químicas cuadran o no se escriben (lector B): metal + agua sin «+ H₂O», y la regla de sales es el caso de su dibujo', () => {
+  const i4 = idea('arbol-funciones');
+  for (const v of casos(i4)) { const t = plano(i4.juega.lectura(v)); assert.ok(!/O[₀-₉]* \+ H₂O da [A-Z][a-z]?(\(OH\)|OH)/.test(t), t);
+    const fl = i4.juega.dibujo(v).datos.columnas[0].flechas[1].texto; if (/hidróxido/.test(JSON.stringify(i4.juega.dibujo(v).datos))) assert.equal(fl, 'con agua'); }
+  assert.ok(!JSON.stringify(i4.mira.datos.columnas[1]).includes('+ H₂O'));
+  const s5 = idea('sales'); assert.ok(plano(s5.regla.ecuacion).includes('Fe₂(SO₄)₃'), 'La regla con el Fe³⁺ y el SO₄²⁻ del dibujo de Mira');
+});
+
+test('M: Predice del yeso: la correcta no es la más larga ni los Datos traen el OH⁻', () => {
+  const p = idea('sales-acidas-basicas-hidratadas').predice, ok = p.opciones.find(o => o.correcta).texto.length;
+  assert.ok(p.opciones.some(o => !o.correcta && o.texto.length >= ok));
+  assert.ok(!p.datos.some(d => /OH/.test(d)));
+});
+
+test('M: datos que faltaban en los ejemplos y que no regalan la respuesta (lector B)', () => {
+  const ej = (i, t) => idea(i).ejemplos.find(e => e.titulo === t);
+  assert.ok(ej('arbol-funciones', 'El ácido de la gaseosa').datos.some(d => /carbón-/.test(d)));
+  assert.ok(ej('arbol-funciones', 'Verdadero o falso').datos.some(d => /EO del H/.test(d)));
+  assert.ok(ej('sales', 'Verdadero o falso').datos.some(d => /HNO₃: ácido nítrico/.test(d)));
+  assert.ok(ej('tres-nombres', 'Un polvo blanco').datos.some(d => /metal/.test(d)));
+  assert.ok(ej('tres-nombres', 'Dos nombres de un óxido ácido').datos.some(d => /EO del cloro/.test(d)));
+  assert.ok(ej('peroxidos-hidruros', 'El gas y el ácido').datos.some(d => /clor-/.test(d)));
+  assert.ok(!ej('sales-acidas-basicas-hidratadas', 'Otro bicarbonato').datos.some(d => /hidrogenocarbonato/.test(d)));
+  assert.ok(ej('estados-oxidacion', 'El combustible de los cohetes').solucion.some(p => plano(p.ecuacion || '').includes('= −2')));
+});
+
+test('B: guion pegado a su terminación (-⁠oso, -⁠ico…) y palabras que el lector no entendió', () => {
+  const t = todosLosTextos().join('\n');
+  assert.ok(!/(^|[^A-Za-z0-9_\-])-(oso|ico|uro|ito|ato|hídrico)\b/m.test(t), (t.match(/.{0,30}(^|[^A-Za-z0-9_\-])-(oso|ico|uro|ito|ato|hídrico)\b.{0,10}/m) || [''])[0]);
+  assert.ok(!/elemento solo|costumbre|\bde el átomo|sal común|1 oxígenos/.test(t), (t.match(/.{0,30}(elemento solo|costumbre|\bde el átomo|sal común|1 oxígenos).{0,10}/) || [''])[0]);
+});
+
+test('B: la manija de las sales no tapa el último cuadrito de su fila', () => {
+  const j = idea('sales').juega, PFi = require('../../../nucleo/kit/piezas/quim-fichas.js'), g = PFi.geometria({ fichas: [] });
+  for (const v of casos(j === undefined ? null : idea('sales')).slice(0, 60)) for (const [a, signo, k] of [[j.arrastres[0], '+', 'nc'], [j.arrastres[1], '−', 'na']]) {
+    const q = (a.id === 'cation' ? { Na: 1, Ca: 2, Al: 3 }[v.c] : { Cl: 1, S: 2, CO3: 2, SO4: 2, PO4: 3 }[v.a]) * v[k], p = a.donde(v);
+    assert.ok(Math.abs(p.x - g.cuadrito(q - 1, signo).x) > 10, `${JSON.stringify(v)} ${a.id}`);
+    assert.equal(a.mover(p, v)[k], v[k]);
+  }
+});
+
+test('M: la fórmula del hidruro: los Datos dicen qué va primero (la alternativa «H₃Al» tiene los mismos átomos)', () => {
+  for (let s = 4; s < 400; s += 5) { const c = idea('peroxidos-hidruros').ahoraTu.generar(s);
+    if (/hidruro de/.test(plano(c.pregunta))) assert.ok(c.datos.some(d => /va primero/.test(d)), `semilla ${s}`); }
 });
