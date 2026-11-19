@@ -438,3 +438,29 @@ test('cadena: la solución dice cuánto sube y cuánto baja, y eso da el parente
   }
   assert.ok(n > 50, `${n}`);
 });
+
+// Auditoría de Ordenamiento (19 nov): «Sumando…» y «Restando…» (la primera menos la segunda) dan de verdad lo que dice el
+// paso. Antes se escribía la pista como se dio («<») y la cuenta se hacía con ella dada vuelta: 436 de 778 pasos mentían.
+test('orden: cada «Sumando/Restando X y Y … queda A > B» sale de esa suma o resta', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? plano(x.t) : String(x || ''));
+  const lee = e => e.match(/^(\S+) \+ (\S+) (>|=|<) (\S+) \+ (\S+)$/);
+  let n = 0;
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { unidad: 'razonamiento-matematico.ordenamiento-de-informacion' });
+    for (const t of p.solucion.map(plano)) {
+      const m = t.match(/^(Sumando|Restando) (.+?) y (.+?), se cancelan .* queda (\S+) > (\S+)\.$/);
+      if (!m) continue;
+      const a = lee(m[2]), b = lee(m[3]);
+      assert.ok(a && b && a[3] !== '<' && b[3] !== '<', `semilla ${s}: ${t}`);
+      const vec = r => { const v = {}; [r[1], r[2]].forEach(x => { v[x] = (v[x] || 0) + 1; }); [r[4], r[5]].forEach(x => { v[x] = (v[x] || 0) - 1; }); return v; };
+      const sg = m[1] === 'Sumando' ? 1 : -1, va = vec(a), vb = vec(b), v = {};
+      for (const k of new Set([...Object.keys(va), ...Object.keys(vb)])) v[k] = (va[k] || 0) + sg * (vb[k] || 0);
+      const rel = a[3] === '>' && b[3] === '>' ? (sg === 1 ? '>' : null) : a[3] === '>' ? '>' : b[3] === '>' ? (sg === 1 ? '>' : '<') : '=';
+      const ks = Object.keys(v).filter(k => v[k]), pos = ks.find(k => v[k] > 0), neg = ks.find(k => v[k] < 0);
+      assert.equal(rel, '>', `semilla ${s}: ${t}`);
+      assert.deepEqual([m[4], m[5]], [pos, neg], `semilla ${s}: ${t}`);
+      n++;
+    }
+  }
+  assert.ok(n > 500, `${n}`);
+});

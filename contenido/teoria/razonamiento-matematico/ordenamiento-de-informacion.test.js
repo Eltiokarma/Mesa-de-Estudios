@@ -679,9 +679,9 @@ test('ideas 2 a 4 solo con violeta; ideas 5 y 6 con naranja (desde quién) y tur
   }
 });
 
-test('la unidad cumpliría el contrato de calidad 2 (aunque todavía no lo declara) y conserva sus ids', () => {
+test('la unidad cumple el contrato de calidad 2, lo declara y conserva sus ids', () => {
   const cat = require('../../../catalogo/cursos/razonamiento-matematico.json').unidades.find(u => u.id === def.unidad);
-  assert.equal(def.calidad, undefined, 'la sesión marca calidad 2 después del lector en frío y el auditor');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas: cat.temas, semillas: 40 }), []);
   assert.deepEqual(Teoria.problemas(def, { temas: cat.temas }), []);
   assert.deepEqual(def.ideas.map(i => i.id), ['orden-lineal', 'posiciones', 'comparaciones', 'con-numeros', 'orden-circular', 'mesa-cuadrada']);
@@ -693,4 +693,155 @@ test('la unidad cumpliría el contrato de calidad 2 (aunque todavía no lo decla
     assert.ok(c.datos && c.datos.length <= 6, `${I.id} semilla ${s}`);
     assert.ok(!/Pista \d/.test(plano(c.pregunta || c.enunciado)), `${I.id} semilla ${s}`);
   }
+});
+
+// ---------- 10. Auditoría del 19 nov (rutinas/auditoria/razonamiento-matematico.ordenamiento-de-informacion.md) ----------
+// Cada prueba falla con la versión de antes de las correcciones.
+const NOMBRES_U = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Gaby', 'Hugo', 'Rosa', 'Iván', 'Nora', 'Leo', 'Maru', 'Teo', 'Gino', 'Lucho', 'Vilma', 'Sara', 'Pía', 'Omar'];
+const MUJERES_U = new Set(['Ana', 'Dina', 'Eva', 'Rosa', 'Nora', 'Maru', 'Sara', 'Pía', 'Vilma', 'Gaby']);
+
+test('auditoría A2: el ejemplo 15 de «Frente a frente» deja 3 mesas, y el resuelto lo dice', () => {
+  const e = IDEA('mesa-cuadrada').ejemplos[14], n = 8, ps = pistasDe(e.datos);
+  const gente = ['Eva', 'Fito', 'Gino', 'Hugo', 'Iván', 'Ana'];
+  const fs = ps.map(t => leerCon(LEER5(n), t));
+  const q = mesasFijas(gente, n, 'Eva').filter(o => fs.every(f => f(o)));
+  assert.equal(q.length, 3);
+  assert.ok(q.every(o => o[(o.indexOf('Fito') + 1) % n] === 'Hugo'), 'E vale en las 3');
+  const sol = e.solucion.map(l => plano(l.texto)).join(' ');
+  assert.match(sol, /quedan 3 mesas/);
+  assert.ok(!/dos sillas posibles/.test(sol));
+});
+
+test('auditoría M1: la regla de los pisos dice la distancia que dibuja, y los pisos de en medio son uno menos', () => {
+  const R2 = IDEA('posiciones').regla, eds = R2.dibujo.datos.edificios;
+  const PAL = { dos: 2, tres: 3, cuatro: 4 };
+  const [, w0, m] = plano(R2.texto).match(/«(\w+) pisos más arriba» amarra a dos en un bloque, con (\w+) pisos? en medio/);
+  const w = w0.toLowerCase();
+  for (const ed of eds) {
+    assert.equal(ed.bloque.texto, `+${PAL[w]}`);
+    assert.equal(ed.enMedio.length, PAL[m]);
+    assert.equal(PAL[m], PAL[w] - 1);
+  }
+});
+
+test('auditoría M2: ningún nombre de persona sale en minúscula (200 semillas de «Ahora tú» y «Así se resuelve»)', () => {
+  const re = new RegExp(`\\b(${NOMBRES_U.map(x => x.toLowerCase()).join('|')})\\b`);
+  for (const I of def.ideas) for (let s = 0; s < 200; s++) for (const c of [I.ahoraTu.generar(s), I.resuelve.generar(s)]) {
+    const t = JSON.stringify([c.pregunta, c.enunciado, c.solucion && c.solucion.texto, (c.pasos || []).map(p => p.texto), (c.opciones || []).map(o => [o.texto, o.siFuera]), c.respuesta].map(x => (Array.isArray(x) && x.length && Array.isArray(x[0]) ? x.map(y => y.map(plano)) : plano(x))));
+    assert.ok(!re.test(t), `${I.id} semilla ${s}: ${(t.match(re) || [])[0]}`);
+  }
+});
+
+test('auditoría M3: cada «¿Qué silla…?» de la cuadrada tiene una sola silla que responde', () => {
+  for (let s = 0; s < 400; s += 4) {
+    const c = IDEA('mesa-cuadrada').ahoraTu.generar(s), preg = plano(c.pregunta);
+    if (/comparte el lado/.test(preg)) assert.match(preg, /dos sillas por lado/, `semilla ${s}: con tres por lado hay dos sillas en su lado`);
+  }
+});
+
+test('auditoría M4: si se alternan mujeres y varones, Datos dice quién es cada uno', () => {
+  const todos = [];
+  for (const I of def.ideas) {
+    for (const e of I.ejemplos) todos.push([`${I.id} ${e.titulo}`, e.datos, e.enunciado]);
+    for (let s = 0; s < 200; s++) { const c = I.ahoraTu.generar(s); todos.push([`${I.id} ${s}`, c.datos, c.pregunta]); }
+  }
+  for (const [d, datos, texto] of todos) {
+    const ls = datos.map(plano);
+    if (!ls.some(l => /alternad/i.test(l))) continue;
+    const linea = ls.find(l => /^Mujeres \(/.test(l));
+    assert.ok(linea, `${d}: no dice quién es mujer y quién varón`);
+    const [, muj, var_] = linea.match(/^Mujeres \(([^)]*)\) y varones \(([^)]*)\)/);
+    for (const x of muj.split(/, | y /)) assert.ok(MUJERES_U.has(x), `${d}: ${x}`);
+    for (const x of var_.split(/, | y /)) assert.ok(!MUJERES_U.has(x), `${d}: ${x}`);
+    assert.ok(!/mujeres y varones, comparten/.test(plano(texto)), d);
+  }
+});
+
+test('auditoría M5: el glosario no da la clave de las predicciones 4 y 5, y «frente a» lo estrena «Frente a frente»', () => {
+  const G = require('../../../nucleo/glosario.js');
+  const por = G.porIdea(def), k6 = def.ideas.findIndex(i => i.id === 'mesa-cuadrada'), k5 = def.ideas.findIndex(i => i.id === 'orden-circular');
+  assert.ok(por[k6].some(e => (e.termino || e) === 'frente a'), '«frente a» en la idea 6');
+  assert.ok(!por[k5].some(e => (e.termino || e) === 'frente a'), '«frente a» no en la idea 5');
+  const ej = t => def.glosario.find(g => g.termino === t).ejemplos.join(' ');
+  assert.ok(!/crece.*se achica|gana.*pierde/.test(ej('suman lo mismo')), 'suman lo mismo: la compensación es la predicción de la idea 4');
+  assert.ok(!/las 12, contra el reloj se pasa por las 11/.test(ej('sentido antihorario')), 'desde arriba (las 12), contra el reloj: la predicción de la idea 5');
+});
+
+test('auditoría M6: en la mesa redonda, nadie de pie a un lado ni cucharas cuando se pregunta de qué lado va', () => {
+  const I5 = IDEA('orden-circular');
+  const P = Kit.piezas['rm-orden'];
+  for (const f of [I5.predice.dibujo].concat(I5.ejemplos.map(e => e.figura))) {
+    if (!(f.datos.espera || []).length) continue;
+    const svg = P.dibujar(f.datos, f.estado || {});
+    const m = svg.match(/<text[^>]*x="([\d.]+)"[^>]*>De pie: /);
+    assert.ok(m, 'quien espera se escribe «De pie: …»');
+    assert.ok(Math.abs(+m[1] - 160) < 1, `centrado (x = ${m[1]})`);
+  }
+  for (const e of I5.ejemplos) if (/¿En qué silla del dibujo/.test(plano(e.enunciado))) assert.ok(!e.figura.datos.cucharas, e.titulo);
+});
+
+test('auditoría M7: ningún asa de arrastre lleva el violeta de lo seguro', () => {
+  for (const I of def.ideas) for (const a of I.juega.arrastres || []) assert.notEqual(a.color, 'c-f', `${I.id} ${a.id}`);
+  for (const m of def.laboratorio) for (const a of m.arrastres || []) assert.notEqual(a.color, 'c-f', `${m.id} ${a.id}`);
+  const fl = IDEA('orden-circular').juega.leyenda.find(x => /flecha/.test(plano(x.s)));
+  assert.match(plano(fl.t), /al acertar/);
+});
+
+test('auditoría M8: sin pistas, la formación no se rotula «del más bajo al más alto»', () => {
+  const j = IDEA('comparaciones').juega, d = j.dibujo(Object.assign(Teoria.inicio(j), { n: 0 })).datos;
+  assert.ok(!/más bajo al más alto/.test(d.casos[0].titulo));
+  assert.match(plano(j.leyenda.find(x => plano(x.s) === 'columnas').t), /sin comparar/);
+});
+
+test('auditoría M9: el dibujo es lo que nombra el texto (dados, tarjetas de edad, sin tallímetro para edades y puntos)', () => {
+  for (const I of def.ideas) for (const e of I.ejemplos) {
+    const t = plano(e.enunciado), d = e.figura && e.figura.datos;
+    if (!d) continue;
+    if (/dado/.test(t)) assert.equal(d.forma, 'dado', e.titulo);
+    if (d.escena === 'sobres' && (d.sobres || []).some(x => /años/.test(x))) assert.equal(d.forma, 'tarjeta', e.titulo);
+    if (d.escena === 'talla' && /(años|puntos|primos|hermanos|edad)/.test(t)) assert.equal(d.tallimetro, false, e.titulo);
+  }
+  const I3 = IDEA('comparaciones');
+  for (let s = 0; s < 40; s++) for (const c of [I3.ahoraTu.generar(s), I3.resuelve.generar(s)]) assert.equal(c.dibujo.datos.tallimetro, false, `semilla ${s}`);
+});
+
+test('auditoría M10 y M11: el resuelto escribe las flechas que nombra, y los datos dicen lo que el resuelto usa', () => {
+  for (const e of IDEA('comparaciones').ejemplos) {
+    const sol = e.solucion.map(l => plano(l.texto)).join(' ');
+    if (/flechas? (salen|que comparten)/.test(sol)) assert.match(sol, /→/, e.titulo);
+  }
+  for (const e of IDEA('posiciones').ejemplos) {
+    const gente = new Set(pistasDe(e.datos).flatMap(t => t.match(new RegExp(N, 'g')).filter(x => NOMBRES_U.includes(x))));
+    if (/edificio/.test(plano(e.enunciado)) && gente.size >= 3) assert.ok(e.datos.map(plano).some(l => /una sola persona/.test(l)), e.titulo);
+  }
+  for (const e of IDEA('orden-lineal').ejemplos) {
+    if (e.nivel === 3 || !pistasDe(e.datos).some(t => /está a la (izquierda|derecha) de/.test(t))) continue;   // en nivel examen ya se sabe
+    assert.ok(e.datos.map(plano).some(l => /^A la izquierda de: /.test(l)), e.titulo);
+  }
+});
+
+test('auditoría M12: el papel de la escena que se ve en «Más mesas del tema» dice de qué unidad es cada problema', () => {
+  const papel = require('../../../plantillas/orden-informacion/papel.json');
+  for (const p of papel.problemas) assert.ok(Array.isArray(p.unidades) && p.unidades.length, p.id);
+  const deAqui = papel.problemas.filter(p => p.unidades.includes(def.unidad));
+  for (const p of deAqui) assert.ok(!/miente|verdad|con seguridad|sin ver/.test(p.enunciado), `${p.id}: es de otra unidad`);
+});
+
+test('auditoría A1 (texto), M14 a M16 y bajas: redacción', () => {
+  assert.ok(!/sillas redondas/.test(plano(IDEA('mesa-cuadrada').regla.condicion)));
+  assert.ok(!/cercanas a la 6/.test(plano(IDEA('mesa-cuadrada').mira.voz)));
+  assert.ok(!/Con los valores a la vista|si Ana gana, Beto pierde/.test(plano(IDEA('con-numeros').regla.texto) + JSON.stringify(IDEA('con-numeros').regla.ecuacion)));
+  assert.ok(!/franja/.test(IDEA('con-numeros').mira.voz.split(';')[0]), 'la voz no nombra la franja antes de que se vea');
+  const e11 = IDEA('orden-circular').ejemplos[10].solucion.map(l => plano(l.texto)).join(' ');
+  assert.match(e11, /no va en la última/);
+  for (const I of def.ideas) for (const e of I.ejemplos) assert.ok(!/\bchoca\b/.test(e.solucion.map(l => plano(l.texto)).join(' ')), `${I.id} ${e.titulo}`);
+  for (let s = 0; s < 200; s++) {
+    const t = JSON.stringify(IDEA('posiciones').ahoraTu.generar(s).opciones.map(o => o.siFuera));
+    assert.ok(!/Quedan 1 orden/.test(t) && !/Quedan 2 órdenes, pero en todos/.test(t), `semilla ${s}`);
+  }
+  // El ejemplo 11 de la idea 4: dos alternativas no dicen lo mismo con otras palabras.
+  const alts = IDEA('con-numeros').ejemplos[10].alternativas;
+  const rel = t => { const m = t.match(new RegExp(`^${N} es (mayor|menor) que ${N}$`)); return m && (m[2] === 'mayor' ? `${m[3]}<${m[1]}` : `${m[1]}<${m[3]}`); };
+  const rs = alts.map(rel).filter(Boolean);
+  assert.equal(new Set(rs).size, rs.length);
 });

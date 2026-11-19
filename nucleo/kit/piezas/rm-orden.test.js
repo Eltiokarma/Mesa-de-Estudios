@@ -136,3 +136,42 @@ test('la escena de la banca: quien tiene puesto está sentado; quien no, espera 
   assert.match(P.alt(MUESTRAS[7]), /Fila de 4 puestos.*Lucho en el puesto 2/);
   assert.match(P.alt(MUESTRAS[11]), /junto a Beto: puesto 1, Beto \(posible\); puesto 2, Ana; puesto 3, Beto \(posible\)/);
 });
+
+// ---------- Auditoría del 19 nov (rutinas/auditoria/razonamiento-matematico.ordenamiento-de-informacion.md) ----------
+test('auditoría A1: cada línea «frente a» va de su silla a la de enfrente y cruza la mesa', () => {
+  let n = 0;
+  for (const f of deLaTeoria(40)) {
+    if (f.datos.escena !== 'mesa' || !(f.datos.frente || []).length) continue;
+    const g = P.geometria(f.datos), svg = P.dibujar(f.datos, f.estado);
+    const lineas = [...svg.matchAll(/<line[^>]*data-frente="si"[^>]*x1="([-\d.]+)" y1="([-\d.]+)" x2="([-\d.]+)" y2="([-\d.]+)"/g)].map(m => m.slice(1).map(Number));
+    const vistas = f.datos.frente.filter(x => (x.desde || 0) <= (f.estado.corte === undefined ? Infinity : f.estado.corte));
+    assert.equal(lineas.length, vistas.length, f.donde);
+    const cerca = (x, y) => [...Array(g.N).keys()].sort((a, b) => Math.hypot(g.silla(a).x - x, g.silla(a).y - y) - Math.hypot(g.silla(b).x - x, g.silla(b).y - y))[0];
+    lineas.forEach(([x1, y1, x2, y2], i) => {
+      const fr = vistas[i];
+      assert.deepEqual([cerca(x1, y1), cerca(x2, y2)].sort(), [fr.de, fr.a].sort(), `${f.donde}: la línea ${i + 1} no llega a sus sillas`);
+      if (g.cuad) assert.ok(Math.hypot(x2 - x1, y2 - y1) > 2 * g.L, `${f.donde}: la línea ${i + 1} no cruza la mesa`);
+      n++;
+    });
+  }
+  assert.ok(n >= 10, `${n}`);
+});
+
+test('auditoría M6: quien espera de pie va centrado sobre la mesa, no a un lado', () => {
+  const d = { escena: 'mesa', forma: 'redonda', sillas: 6, sentados: [{ s: 3, t: 'Dina', ref: true }], espera: ['Eva'] };
+  const m = P.dibujar(d, {}).match(/<text[^>]*x="([\d.]+)"[^>]*>De pie: Eva</);
+  assert.ok(m);
+  assert.ok(Math.abs(+m[1] - 160) < 1);
+});
+
+test('auditoría M9: los dados muestran sus puntos y las tarjetas no llevan solapa de sobre; sin tallímetro si se pide', () => {
+  const dado = P.dibujar({ escena: 'sobres', forma: 'dado', sobres: ['2', '4', '6'], columnas: ['Rosa', 'Iván', 'Nora'] }, {});
+  assert.equal((dado.match(/<circle[^>]*r="4"/g) || []).length, 12);
+  assert.match(dado, /data-objeto="dados"/);
+  const tarj = P.dibujar({ escena: 'sobres', forma: 'tarjeta', sobres: ['14 años', '17 años'], columnas: ['Sara', 'Gino'] }, {});
+  assert.ok(!/<path d="M[^"]*L[^"]*L[^"]*" fill="none"/.test(tarj), 'sin la solapa');
+  assert.match(tarj, /data-objeto="tarjetas"/);
+  const con = P.dibujar({ escena: 'talla', nombres: ['Ana', 'Beto'], casos: [] }, {}), sin = P.dibujar({ escena: 'talla', tallimetro: false, nombres: ['Ana', 'Beto'], casos: [] }, {});
+  assert.ok(sin.length < con.length);
+  assert.match(P.alt({ escena: 'talla', tallimetro: false, nombres: ['Ana', 'Beto'], casos: [] }), /^Personas que se comparan/);
+});

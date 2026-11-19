@@ -98,7 +98,7 @@
 
   // ======================= Idea 1: la fila (motor, modo lineal) =======================
   const D_FILA = k => `Fila de ${k} puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú.`;
-  const D_PALABRAS = 'A la izquierda de: no obliga a ir pegados. Junto a: al lado, por cualquier lado. Inmediatamente: justo al lado.';
+  const D_PALABRAS = 'A la izquierda de: no obliga a ir pegados. Junto a: vale por ambos lados. Inmediatamente: en el puesto de al lado.';   // la misma línea que la teoría
   const TXT_FILA = {
     izquierda: q => `${q.a} está a la izquierda de ${q.b}.`, derecha: q => `${q.a} está a la derecha de ${q.b}.`,
     inmDerecha: q => `${q.a} está inmediatamente a la derecha de ${q.b}.`, juntos: q => `${q.a} está junto a ${q.b}.`,
@@ -161,10 +161,10 @@
     for (const x of rng.barajar(posibles).slice(0, 2)) errores.push(err('RMP77-posible', `a:${x.t}`, x.t, `Bien: pasa en uno de los 2 órdenes que quedan. Pero en el otro no pasa: es posible, no necesario.`));
     const x = rng.elegir(nunca), e = porQueNo(c.base, c.ps, x.ok, 'ningún orden lo cumple');
     errores.push(err(e.id, `a:${x.t}`, x.t, e.ex));
-    errores.push(nada('Ninguna: faltan pistas', `Bien: las pistas no dicen todo el orden. Pero en los 2 órdenes que quedan, ${ok.t.charAt(0).toLowerCase() + ok.t.slice(1)}.`));
+    errores.push(nada('Ninguna: faltan pistas', `Bien: las pistas no dicen todo el orden. Pero en los 2 órdenes que quedan, ${ok.t}.`));
     return { enunciado: [`${lista(c.gente)} se sientan en la primera fila del auditorio, de 5 puestos.`], pregunta: ['¿Cuál es necesariamente verdadera?'],
       datos: [D_FILA(5), D_PALABRAS, ...PIS(c.ps)], correcta: { clave: `a:${ok.t}`, texto: ok.t }, errores,
-      solucion: [[`Quedan 2 órdenes: ${c.q.map(o => o.join(', ')).join(' y ')}.`], ['En los dos, ', v('x', ok.t.charAt(0).toLowerCase() + ok.t.slice(1)), '.']],
+      solucion: [[`Quedan 2 órdenes: ${c.q.map(o => o.join(', ')).join(' y ')}.`], ['En los dos, ', v('x', ok.t), '.']],
       _datos: { forma: 'fila', gente: c.gente, n: 5, pistas: c.ps.map(p => p.t), pide: { t: 'segura', opciones: [ok.t].concat(errores.map(z => z.texto)) } } };
   }
 
@@ -235,9 +235,9 @@
     const desdeMayor = rng.sig() < 0.5, k = rng.entero(1, 2), x = desdeMayor ? sol[3 - k] : sol[k], otro = desdeMayor ? sol[k] : sol[3 - k];
     const extremo = desdeMayor ? sol[3] : sol[0];
     const errores = [err('RMP64-reves', `p:${otro}`, otro, `Bien: armaste la cadena. Pero contaste desde el ${desdeMayor ? 'menor' : 'mayor'}: piden contar desde el ${desdeMayor ? 'mayor' : 'menor'}.`),
-      err('RMP61-extremo', `p:${extremo}`, extremo, `Bien: ${extremo} es el ${desdeMayor ? 'mayor' : 'menor'} de todos. Pero ahí empieza la cuenta: piden el ${ORD[k]}.`)];
+      err('RMP61-extremo', `p:${extremo}`, extremo, `Bien: ${extremo} es ${FEM.has(extremo) ? 'la' : 'el'} ${desdeMayor ? 'mayor' : 'menor'} de todos. Pero ahí empieza la cuenta: piden el ${ORD[k]}.`)];
     const resto = gente.find(y => ![x, otro, extremo].includes(y));
-    if (resto) errores.push(err('RMP72-pista', `p:${resto}`, resto, `Bien: lo ubicaste en la cadena. Pero cuenta otra vez los lugares desde el ${desdeMayor ? 'mayor' : 'menor'}.`));
+    if (resto) errores.push(err('RMP1-salto', `p:${resto}`, resto, `Bien: lo ubicaste en la cadena. Pero cuenta otra vez los lugares desde el ${desdeMayor ? 'mayor' : 'menor'}.`));
     errores.push(nada('No se puede saber', 'Bien: ninguna pista lo dice sola. Pero las tres forman una sola cadena de cuatro: sí se sabe.'));
     return { enunciado: [`${lista(gente)} son primos.`], pregunta: [`¿Quién es el ${ORD[k]} contando desde el ${desdeMayor ? 'mayor' : 'menor'}?`],
       datos: ['Las edades son distintas: no hay dos de la misma edad.', ...PIS(ps)], correcta: { clave: `p:${x}`, texto: x }, errores,

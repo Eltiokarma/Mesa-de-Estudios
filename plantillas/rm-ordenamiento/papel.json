@@ -26,7 +26,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Beto, Ciro, Eva, Fito y Iván miran el partido desde una banca de 5 puestos. ¿Quién va en el puesto 5? Datos: Fila de 5 puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú. A la izquierda de: no obliga a ir pegados. Junto a: al lado, por cualquier lado. Inmediatamente: justo al lado. Pista 1: Eva está a la derecha de Fito. Pista 2: Beto está junto a Iván. Pista 3: Ciro está junto a Iván. Pista 4: Beto está inmediatamente a la derecha de Eva. Alternativas: A) Eva   B) Iván   C) Ciro   D) Faltan datos   E) Fito",
+      "enunciado": "Beto, Ciro, Eva, Fito y Iván miran el partido desde una banca de 5 puestos. ¿Quién va en el puesto 5? Datos: Fila de 5 puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú. A la izquierda de: no obliga a ir pegados. Junto a: vale por ambos lados. Inmediatamente: en el puesto de al lado. Pista 1: Eva está a la derecha de Fito. Pista 2: Beto está junto a Iván. Pista 3: Ciro está junto a Iván. Pista 4: Beto está inmediatamente a la derecha de Eva. Alternativas: A) Eva   B) Iván   C) Ciro   D) Faltan datos   E) Fito",
       "respuesta": "C) Ciro",
       "pasos": [
         "Se prueban los puestos de quien sale en más pistas, y se tacha el que rompe alguna. Queda un solo orden: Fito, Eva, Beto, Iván, Ciro.",
@@ -66,11 +66,11 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Beto, Ciro, Dina, Eva y Leo se sientan en la primera fila del auditorio, de 5 puestos. ¿Cuál es necesariamente verdadera? Datos: Fila de 5 puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú. A la izquierda de: no obliga a ir pegados. Junto a: al lado, por cualquier lado. Inmediatamente: justo al lado. Pista 1: Eva está a la izquierda de Leo. Pista 2: Leo está a la izquierda de Ciro. Pista 3: Beto no está junto a Eva. Pista 4: Dina está inmediatamente a la derecha de Leo. Alternativas: A) Beto está en el puesto 4   B) Leo está en el puesto 1   C) Ciro está junto a Dina   D) Ninguna: faltan pistas   E) Beto está junto a Ciro",
+      "enunciado": "Beto, Ciro, Dina, Eva y Leo se sientan en la primera fila del auditorio, de 5 puestos. ¿Cuál es necesariamente verdadera? Datos: Fila de 5 puestos, numerados de izquierda a derecha; todos miran hacia donde miras tú. A la izquierda de: no obliga a ir pegados. Junto a: vale por ambos lados. Inmediatamente: en el puesto de al lado. Pista 1: Eva está a la izquierda de Leo. Pista 2: Leo está a la izquierda de Ciro. Pista 3: Beto no está junto a Eva. Pista 4: Dina está inmediatamente a la derecha de Leo. Alternativas: A) Beto está en el puesto 4   B) Leo está en el puesto 1   C) Ciro está junto a Dina   D) Ninguna: faltan pistas   E) Beto está junto a Ciro",
       "respuesta": "E) Beto está junto a Ciro",
       "pasos": [
         "Quedan 2 órdenes: Eva, Leo, Dina, Beto, Ciro y Eva, Leo, Dina, Ciro, Beto.",
-        "En los dos, beto está junto a Ciro."
+        "En los dos, Beto está junto a Ciro."
       ]
     },
     {

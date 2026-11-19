@@ -6,7 +6,7 @@
  * de llegada» (el edificio) · 3. comparaciones «Más que, menos que» (la formación por talla) · 4. con-numeros «Ordenar con
  * sumas y diferencias» (los sobres de la rifa) · 5. orden-circular «La mesa redonda» (el almuerzo, con cucharas) ·
  * 6. mesa-cuadrada «Frente a frente» (la mesa del compartir). Las ideas 2 a 6 se escribieron en la fase 3 (19 nov). Los
- * ids publicados no cambian. La unidad todavía NO declara calidad: 2 (lo marca la sesión después del lector en frío y
+ * ids publicados no cambian. La unidad declara calidad: 2 desde el 19 nov (la marcó la sesión después del lector en frío y
  * el auditor); su prueba propia comprueba que pasaría.
  * Público: 5.º de secundaria y preuniversitario.
  *
@@ -111,6 +111,7 @@
   const fijosDe = ords => (ords.length ? ords[0].map((_, k) => k).filter(k => ords.every(o => o[k] === ords[0][k])) : []);
   // Recuadro «Datos» de los ejercicios de la fila: las reglas del problema y lo que dice cada palabra (una línea por dato).
   const D_FILA = k => `Fila de ${k} puestos, numerados de izquierda a derecha, uno por persona. Todos miran hacia donde miras tú.`;
+  const D_IZQ = 'A la izquierda de: en un puesto de número menor.';   // auditoría, 19 nov: lo que el resuelto usa va en los datos
   const D_PISTAS = 'A la izquierda de: no obliga a ir pegados. Junto a: vale por ambos lados. Inmediatamente: en el puesto de al lado.';
   const PIS = (...xs) => xs.map((t, i) => `Pista ${i + 1}: ${t}`);
 
@@ -516,7 +517,7 @@
     { nivel: 1, titulo: 'El puesto que sobra',
       figura: { pieza: OR, datos: { escena: 'banca', puestos: 3, nombres: G3, sentados: [{ p: 2, t: 'Beto' }] }, estado: {} },
       enunciado: 'Ana, Beto y Ciro miran el partido desde una banca de tres puestos. ¿En qué orden se sientan?',
-      datos: [D_FILA(3), ...PIS('Beto está en el puesto 3.', 'Ana está a la izquierda de Ciro.')],
+      datos: [D_FILA(3), D_IZQ, ...PIS('Beto está en el puesto 3.', 'Ana está a la izquierda de Ciro.')],
       solucion: [
         { texto: 'La pista 1 sienta a Beto en el puesto 3. Para Ana y Ciro quedan los puestos 1 y 2.' },
         { texto: ['«A la izquierda de» ordena: Ana va antes que Ciro. Ana en el 1 y Ciro en el 2: ', F('un solo orden'), '.'] },
@@ -524,7 +525,7 @@
       respuesta: [F('Ana, Ciro, Beto')] },
     { nivel: 1, titulo: '¿Juntos o no?', figura: tira(R4, [null, null, null, null]),
       enunciado: 'Rosa, Iván, Nora y Leo se sientan en una fila de cuatro puestos. Iván dice: «Entonces Rosa está junto a mí». ¿Es seguro?',
-      datos: [D_FILA(4), 'Pista: Rosa está a la izquierda de Iván.'],
+      datos: [D_FILA(4), D_IZQ, 'Pista: Rosa está a la izquierda de Iván.'],
       solucion: [
         { texto: '«A la izquierda de» solo ordena: Rosa va en un puesto de número menor que el de Iván.' },
         { texto: 'Rosa en el 1 e Iván en el 4 cumple la pista, y no están juntos. Rosa en el 1 e Iván en el 2 también la cumple.' },
@@ -559,7 +560,7 @@
     { nivel: 2, titulo: 'Dos pistas en cadena',
       figura: { pieza: OR, datos: { escena: 'banca', puestos: 4, nombres: G4, sentados: [{ p: 1, t: 'Dina' }] }, estado: {} },
       enunciado: 'Ana, Beto, Ciro y Dina miran el partido desde una banca de cuatro puestos. ¿Quién está en el puesto 3?',
-      datos: [D_FILA(4), ...PIS('Ana está a la izquierda de Beto.', 'Beto está a la izquierda de Ciro.', 'Dina está en el puesto 2.')],
+      datos: [D_FILA(4), D_IZQ, ...PIS('Ana está a la izquierda de Beto.', 'Beto está a la izquierda de Ciro.', 'Dina está en el puesto 2.')],
       solucion: [
         { texto: 'Las pistas 1 y 2 hacen una cadena: Ana, después Beto, después Ciro, sin decir si van pegados.' },
         { texto: 'Dina ocupa el puesto 2. Los otros tres llenan los puestos 1, 3 y 4 en el orden de la cadena.' },
@@ -577,7 +578,7 @@
       respuesta: [F('Iván'), ': el orden es Leo, Nora, Iván, Rosa'] },
     { nivel: 2, titulo: '¿Qué es seguro y qué no?', figura: tira(L4, [null, Q('Vilma'), Q('Vilma'), null]),
       enunciado: 'Lucho, Maru, Teo y Vilma se sientan en una fila de cuatro puestos. ¿Qué puestos son seguros?',
-      datos: [D_FILA(4), ...PIS('Lucho está a la izquierda de Maru.', 'Maru está a la izquierda de Teo.', 'Vilma no está en un extremo.')],
+      datos: [D_FILA(4), D_PISTAS, ...PIS('Lucho está a la izquierda de Maru.', 'Maru está a la izquierda de Teo.', 'Vilma no está en un extremo.')],
       solucion: [
         { texto: 'Cadena: Lucho, después Maru, después Teo. Vilma va en el puesto 2 o en el 3.' },
         { texto: 'Con Vilma en el 2: Lucho, Vilma, Maru, Teo. Con Vilma en el 3: Lucho, Maru, Vilma, Teo. Los dos órdenes cumplen todo.' },
@@ -595,7 +596,7 @@
       respuesta: [F('Omar'), ': el orden es Sara, Pía, Gino, Omar'] },
     { nivel: 2, titulo: 'Una pista con «no»', figura: tira(G4, [null, 'Beto', null, null]),
       enunciado: 'Ana, Beto, Ciro y Dina se sientan en una fila de cuatro puestos. ¿Quién se sienta junto a Ana?',
-      datos: [D_FILA(4), ...PIS('Beto está en el puesto 2.', 'Ana no está junto a Beto.', 'Ciro está a la izquierda de Dina.')],
+      datos: [D_FILA(4), D_IZQ, ...PIS('Beto está en el puesto 2.', 'Ana no está junto a Beto.', 'Ciro está a la izquierda de Dina.')],
       solucion: [
         { texto: 'Beto está en el puesto 2: sus vecinos son el 1 y el 3. Ana no puede ir ahí: va en el 4.' },
         { texto: 'Quedan los puestos 1 y 3 para Ciro y Dina. Ciro va a la izquierda: Ciro en el 1 y Dina en el 3.' },
@@ -641,11 +642,11 @@
       enunciado: 'Tres parejas se sientan en una fila de seis puestos, alternando varón y mujer. ¿Quién ocupa el puesto 4?',
       alternativas: ['Ana', 'Eva', 'Fito', 'Beto', 'Ciro'],
       datos: [D_FILA(6), 'Parejas: Ana y Beto, Dina y Ciro, Eva y Fito. Cada persona se sienta junto a su pareja.',
-        'Varones y mujeres van alternados: nunca dos varones ni dos mujeres juntos.',
+        'Mujeres (Ana, Dina y Eva) y varones (Beto, Ciro y Fito), alternados: nunca dos varones ni dos mujeres juntos.',
         ...PIS('Beto está a la izquierda de Fito.', 'Dina está en un extremo.', 'Ana no está junto a Ciro.')],
       solucion: [
         { texto: 'Cada pareja ocupa dos puestos seguidos: 1 y 2, 3 y 4, 5 y 6. Dina va en el 1 o en el 6, con Ciro al lado.' },
-        { texto: 'Con Dina en el 1 empieza una mujer: Ana iría en el 3, junto a Ciro, o Beto en el 6, a la derecha de Fito. No vale.' },
+        { texto: 'Con Dina en el 1, Ana y Beto irían en el 3 y el 4 (Ana toca a Ciro) o al final (Beto, a la derecha de Fito): no vale.' },
         { texto: 'Dina va en el 6 y Ciro en el 5; la fila empieza con varón. Beto va antes que Fito: Beto 1, Ana 2, Fito 3.' },
         { texto: ['En el puesto 4 va la pareja de Fito: ', F('Eva'), '. Ana, en el 2, no queda junto a Ciro.'] },
       ],
@@ -769,7 +770,8 @@
       tarjetas: [
         { titulo: 'El edificio del barrio', texto: 'Ana, Beto y Ciro viven en un edificio de cinco pisos. Cada uno vive en un piso distinto, y hay pisos donde no vive ninguno de ellos.',
           pieza: OR, dibujo: { datos: Object.assign(edificioJ(1, { sinPistas: true }), { ocupa: [], bloque: undefined, sobre: 0 }), estado: {} } },
-        { titulo: 'Contar desde abajo', texto: 'Los pisos se cuentan desde la calle: el 1 es el de abajo. «Más arriba que» dice quién vive en un piso de número mayor. En una carrera, el puesto 1 es de quien llegó primero.' },
+        { titulo: 'Contar desde abajo', texto: 'Los pisos se cuentan desde la calle: el 1 es el de abajo. «Más arriba que» dice quién vive en un piso de número mayor. En una carrera, el puesto 1 es de quien llegó primero.',
+          pieza: OR, dibujo: figLlegada(5, [], [null, null, null, null, null]) },
         { titulo: 'Pistas con distancia', texto: '«Beto vive dos pisos más arriba que Ana» dice cuánto: del piso de Ana al de Beto se suben dos pisos. Ana y Beto quedan amarrados en un bloque.' },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a mover a Ana de piso. Beto sube y baja con ella. Mira dónde cae Beto y qué pista se rompe en cada lugar.' },
       ],
@@ -787,14 +789,14 @@
         { s: '1 a 5', t: 'los pisos, contados desde abajo' },
         { s: '+2', t: 'el bloque: dos pisos más arriba' },
         { s: 'gris tachado', t: 'quien cae en un piso ocupado' },
-        { s: F('violeta'), t: 'el lugar que no rompe ninguna pista' },
+        { s: F('violeta'), t: 'los nombres, si no rompen ninguna pista' },
       ],
       controles: [{ id: 'a', etiqueta: 'Piso de Ana', min: 1, max: J2_PISOS, paso: 1, inicio: 1, decimales: 0 }],
       dibujo: v => ({ datos: edificioJ(v.a), estado: {} }),
       lectura: v => lecturaJ2(v.a),
       minimo: 3,
       // Se arrastra a Ana a otro piso: el bloque la sigue.
-      arrastres: [{ id: 'ana', etiqueta: 'piso de Ana (Beto sube con ella)', color: 'c-f',
+      arrastres: [{ id: 'ana', etiqueta: 'piso de Ana (Beto sube con ella)',   // sin c-f: el violeta es lo seguro
         donde: v => { const g = Kit.piezas[OR].geometria(edificioJ(v.a)); return { x: g.bx(0) + 20, y: g.yPiso(v.a) + PH2 / 2 }; },
         mover: (pt, v) => { const g = Kit.piezas[OR].geometria(edificioJ(v.a)); const a = Math.max(1, Math.min(J2_PISOS, Math.floor((g.ySuelo - pt.y) / PH2) + 1)); return a === v.a ? {} : { a }; } }],
     },
@@ -826,7 +828,7 @@
       ],
     },
     regla: {
-      texto: '«Dos pisos más arriba» amarra a dos en un bloque, con un piso en medio. Se prueba cada lugar donde cabe y se tacha el que rompe otra pista.',
+      texto: '«Tres pisos más arriba» amarra a dos en un bloque, con dos pisos en medio (en gris). Se prueba dónde cabe y se tacha lo que rompe otra pista.',
       ecuacion: [{ llave: ['pisos en medio'], nota: 'la diferencia, menos 1' }],
       condicion: 'los pisos se cuentan desde abajo y en cada piso vive una persona o ninguna.',
       voz: 'Antes de ubicar a alguien, prueba dónde cabe el bloque.',
@@ -998,12 +1000,12 @@
       const [a, b, m] = r.elegir(pares);
       const ops = [{ id: 'c', texto: String(m), correcta: true },
         { id: 'salto', texto: String(m + 1), error: 'RMP1', siFuera: `${m + 1} es la diferencia de puestos entre ${a} y ${b}. En medio quedan uno menos.` },
-        { id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: `Quedan ${plural(c.q.length, 'orden', 'órdenes')}, pero en ${c.q.length === 1 ? 'él' : 'todos'} hay ${m} en medio.` }];
+        { id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: `${c.q.length === 1 ? 'Queda 1 orden' : `Quedan ${c.q.length} órdenes`}, pero en ${c.q.length === 1 ? 'él' : c.q.length === 2 ? 'los dos' : 'todos'} hay ${m} en medio.` }];
       if (m > 1) ops.push({ id: 'menos', texto: String(m - 1), error: 'RMP1', siFuera: `Con ${m - 1} en medio, la diferencia de puestos sería ${m}. Aquí es ${m + 1}.` });
       else ops.push({ id: 'cero', texto: String(m + 2), error: 'RMP1', siFuera: `Sería así si se contaran también ${a} y ${b}. En medio solo van los de entre ellos.` });
       return { pregunta: `${lista(c.gente)} corren la carrera del aniversario. ¿Cuántos llegaron entre ${a} y ${b}?`, datos: c.datos,
         dibujo: figLlegada(k, c.gente, Array(k).fill(null).map((_, i) => (c.ps.find(p => p.tipo === 'puesto' && p.k === i + 1) || {}).a || null)), opciones: ops,
-        solucion: { texto: `${c.q.length === 1 ? 'Queda un orden' : `Quedan ${c.q.length} órdenes`}; en ${c.q.length === 1 ? 'él' : 'todos'}, entre ${a} y ${b} llegan ${m}.`,
+        solucion: { texto: `${c.q.length === 1 ? 'Queda un orden' : `Quedan ${c.q.length} órdenes`}; en ${c.q.length === 1 ? 'él' : c.q.length === 2 ? 'los dos' : 'todos'}, entre ${a} y ${b} llegan ${m}.`,
           dibujo: figLlegada(k, c.gente, Array(k).fill(null), { ordenes: c.q.map(o => ({ a: o })), rotuloOrden: 'Orden' }) } };
     }
     if (tipo === 2) {
@@ -1036,7 +1038,8 @@
     return { pregunta: `${lista(c.gente)} viven en un edificio de ${c.k} pisos. ¿Cuál es necesariamente verdadera?`, datos: c.datos, dibujo: figEd(c.k, directasPisos(c)), opciones: ops,
       solucion: { texto: quedan === 1 ? `Queda un solo arreglo, el de la figura: ${minus(bien.t)}.` : `Quedan 2 arreglos y en los dos, ${minus(bien.t)}.`, dibujo: figEd(c.k, ocupaDe(c.sol)) } };
   }
-  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Solo «El piso…» baja a minúscula; una afirmación que empieza por un nombre lo conserva (auditoría, 19 nov).
+  const minus = t => (/^(El|La|Los|Las) /.test(t) ? t.charAt(0).toLowerCase() + t.slice(1) : t);
 
   // ---------- Ejemplos resueltos de «Pisos y puestos de llegada» ----------
   // Cada uno se resolvió aparte, por fuerza bruta, con un script que no usa el código de la unidad (scratchpad
@@ -1104,7 +1107,7 @@
       respuesta: [F('Hugo'), ': el orden es Iván, Eva, Hugo, Fito, Gino'] },
     { nivel: 2, titulo: 'Dos pisos en medio', figura: ED(5, [{ piso: 2, t: 'Nora' }]),
       enunciado: 'Rosa, Leo y Nora viven en un edificio de cinco pisos. ¿En qué piso vive Leo?',
-      datos: [D_EDIF(5), ...PIS('Entre los pisos de Rosa y Leo hay dos pisos.', 'Nora vive en el piso 2.', 'Leo vive más arriba que Rosa.')],
+      datos: [D_EDIF(5), D_FAMILIA, ...PIS('Entre los pisos de Rosa y Leo hay dos pisos.', 'Nora vive en el piso 2.', 'Leo vive más arriba que Rosa.')],
       solucion: [
         { texto: 'Dos pisos en medio son tres de diferencia. Con Rosa abajo y Leo arriba: 1 y 4, o 2 y 5.' },
         { texto: ['El piso 2 es de Nora: Rosa no va ahí. Rosa vive en el 1 y Leo, en el ', F('4'), '.'] },
@@ -1121,7 +1124,7 @@
       respuesta: [F('Gino y Teo')] },
     { nivel: 2, titulo: 'Dos pisos vacíos', figura: ED(6, [{ piso: 6, t: 'Teo' }, { piso: 1, t: 'Maru' }]),
       enunciado: 'Lucho, Maru, Teo y Vilma viven en un edificio de seis pisos. ¿Qué pisos están vacíos?',
-      datos: [D_EDIF(6), D_VECINOS, ...PIS('Lucho y Maru viven en pisos vecinos.', 'Teo vive en el piso 6.', 'Vilma vive tres pisos más arriba que Lucho.', 'Maru vive en el piso 1.')],
+      datos: [D_EDIF(6), 'En cada piso vive una sola persona, o ninguna. Pisos vecinos: uno justo encima del otro.', ...PIS('Lucho y Maru viven en pisos vecinos.', 'Teo vive en el piso 6.', 'Vilma vive tres pisos más arriba que Lucho.', 'Maru vive en el piso 1.')],
       solucion: [
         { texto: 'Maru vive en el 1: su único piso vecino es el 2, para Lucho.' },
         { texto: 'Vilma vive tres pisos más arriba que Lucho.', ecuacion: ['2 + 3 = 5'] },
@@ -1231,7 +1234,7 @@
   function tallaJ(n, o = {}) {
     const c = cadenaDe(G3J, PJ3.slice(0, n).map(p => [p.menor, p.mayor])), b = masBajoJ3(n);
     c.flechas.forEach((f, k) => { f.nueva = k === n - 1; });
-    return { escena: 'talla', nombres: G3J, casos: [Object.assign(c, { titulo: 'Del más bajo al más alto', seguros: b ? [b] : [] })],
+    return { escena: 'talla', nombres: G3J, casos: [Object.assign(c, { titulo: n ? 'Del más bajo al más alto' : 'Todavía sin flechas', seguros: b ? [b] : [] })],
       pistas: o.sinPistas ? undefined : PJ3.slice(0, n).map((p, k) => ({ t: p.t, nueva: k === n - 1 })), lineas: o.sinPistas ? 0 : PJ3.length,
       nota: `Órdenes de talla posibles: ${quedanJ3(n).length}` };
   }
@@ -1276,7 +1279,7 @@
       voz: 'Sigue las flechas: cada una sube del más bajo al más alto.',
       leyenda: [
         { s: 'flecha', t: 'va del más bajo al más alto' },
-        { s: 'columnas', t: 'de izquierda a derecha, más altos' },
+        { s: 'columnas', t: 'en la misma: todavía sin comparar' },
         { s: 'marco cortado', t: 'sin flechas todavía' },
         { s: F('marco violeta'), t: 'su lugar ya es seguro' },
       ],
@@ -1341,7 +1344,7 @@
           usadas.push(i);
           tramos.push(`la ${i + 1} pone a ${cad[0] === p.menor ? `${p.menor} antes de ${p.mayor}` : `${p.mayor} después de ${p.menor}`}`);
         }
-        const fig = (rel, seg) => ({ datos: { escena: 'talla', nombres: gente, casos: [Object.assign(cadenaDe(gente, rel), { titulo: 'Del menor al mayor', seguros: seg || [] })] }, estado: {} });
+        const fig = (rel, seg) => ({ datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [Object.assign(cadenaDe(gente, rel), { titulo: 'Del menor al mayor', seguros: seg || [] })] }, estado: {} });
         const rel = ps.map(p => [p.menor, p.mayor]);
         const mitad = Math.ceil(tramos.length / 2);
         pasos.push({ tipo: 'aplica', texto: `Empiezo con la pista 1: ${ps[0].menor} es menor que ${ps[0].mayor}. Después, ${lista(tramos.slice(0, mitad))}.`, dibujo: fig(rel.filter((_, j) => usadas.slice(0, mitad + 1).includes(j))) });
@@ -1379,9 +1382,9 @@
         { id: 'reves', texto: otroLado, error: 'RMP64', siFuera: `${otroLado} es el ${ORD[k]} contando desde el ${desdeMayor ? 'menor' : 'mayor'}. Piden contar desde el ${desdeMayor ? 'mayor' : 'menor'}.` },
         { id: 'extremo', texto: extremo, error: 'RMP61', siFuera: `${extremo} es el ${desdeMayor ? 'mayor' : 'menor'} de todos: ahí empieza a contarse.` },
         { id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: 'Las tres pistas forman una sola cadena de cuatro: sí se sabe.' }];
-      const fig = { datos: { escena: 'talla', nombres: gente, casos: [Object.assign(cadenaDe(gente, ps.map(p => [p.menor, p.mayor])), { titulo: 'Del menor al mayor', seguros: [x] })] }, estado: {} };
+      const fig = { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [Object.assign(cadenaDe(gente, ps.map(p => [p.menor, p.mayor])), { titulo: 'Del menor al mayor', seguros: [x] })] }, estado: {} };
       return { pregunta: `${lista(gente)} son primos. ¿Quién es el ${ORD[k]} contando desde el ${desdeMayor ? 'mayor' : 'menor'}?`, datos: [D_EDADES, ...PIS(...ps.map(p => p.t))],
-        dibujo: { datos: { escena: 'talla', nombres: gente, casos: [] }, estado: {} }, opciones: ops,
+        dibujo: { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [] }, estado: {} }, opciones: ops,
         solucion: { texto: `Del menor al mayor: ${sol.join(', ')}. Desde el ${desdeMayor ? 'mayor' : 'menor'}, el ${ORD[k]} es ${x}.`, dibujo: fig } };
     }
     if (tipo === 1) {
@@ -1407,9 +1410,9 @@
             siFuera: dados.has(`${u}|${v}`) ? 'Esa la dice una pista: es segura.' : `Sí se asegura: una cadena de flechas va de ${u} a ${v}.` });
         }
         if (ops.length < 4) continue;
-        const fig = { datos: { escena: 'talla', nombres: gente, casos: [Object.assign(cadenaDe(gente, ps.map(p => [p.menor, p.mayor])), { titulo: 'Del menor al mayor' })] }, estado: {} };
+        const fig = { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [Object.assign(cadenaDe(gente, ps.map(p => [p.menor, p.mayor])), { titulo: 'Del menor al mayor' })] }, estado: {} };
         return { pregunta: `${lista(gente)} son primos. ¿Cuál no se puede asegurar?`, datos: [D_EDADES, ...PIS(...ps.map(p => p.t))],
-          dibujo: { datos: { escena: 'talla', nombres: gente, casos: [] }, estado: {} }, opciones: ops,
+          dibujo: { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [] }, estado: {} }, opciones: ops,
           solucion: { texto: `Quedan ${q.length} órdenes. Entre ${a} y ${b} no hay cadena de flechas: no se sabe quién es mayor.`, dibujo: fig } };
       }
       throw new Error('ahoraComp: no se armó un caso de «no se puede asegurar»');
@@ -1429,11 +1432,11 @@
         { id: 'igual', texto: `${a} y ${b} tienen la misma edad`, error: 'RMP77', siFuera: 'Puede pasar, pero también puede no pasar: es posible, no seguro.' },
         { id: 'reves', texto: arriba ? `${b} es menor que ${a}` : `${b} es mayor que ${a}`, error: 'RMP64', siFuera: `Eso es al revés: la pista 1 dice que ${a} no es ${arriba ? 'mayor' : 'menor'} que ${b}.` }];
       if (vale(e => (arriba ? e[a] < e[b] : e[a] > e[b])) !== 'aveces' || vale(e => e[a] === e[b]) !== 'aveces' || vale(e => (arriba ? e[b] < e[a] : e[b] > e[a])) !== 'nunca') throw new Error('comparaciones: las opciones no cuadran');
-      const fig = { datos: { escena: 'talla', nombres: gente, casos: [
+      const fig = { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [
         { titulo: `Si ${a} y ${b} no empatan`, cadena: arriba ? [[a], [b], [c]] : [[c], [b], [a]], flechas: arriba ? [{ de: a, a: b, tipo: 'menor' }, { de: b, a: c, tipo: 'menor' }] : [{ de: c, a: b, tipo: 'menor' }, { de: b, a, tipo: 'menor' }] },
         { titulo: `Si ${a} y ${b} empatan`, cadena: arriba ? [[a, b], [c]] : [[c], [a, b]], flechas: [{ de: a, a: b, tipo: 'igual' }, arriba ? { de: b, a: c, tipo: 'menor' } : { de: c, a: b, tipo: 'menor' }] }] }, estado: {} };
       return { pregunta: `${lista(gente)} son hermanos; puede haber mellizos. ¿Qué es seguro?`, datos: ['Mellizos: hermanos de la misma edad.', ...PIS(...ps.map(p => p.t))],
-        dibujo: { datos: { escena: 'talla', nombres: gente, casos: [] }, estado: {} }, opciones: ops,
+        dibujo: { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [] }, estado: {} }, opciones: ops,
         solucion: { texto: arriba ? `${a} no supera a ${b}, y ${c} sí supera a ${b}: en todos los casos, ${bien}.` : `${b} no supera a ${a}, y ${b} supera a ${c}: en todos los casos, ${bien}.`, dibujo: fig } };
     }
     // Nivel examen: cinco primos y cuatro pistas; ¿cuántos son, con seguridad, mayores que alguien?
@@ -1453,10 +1456,10 @@
         { id: 'directos', texto: String(directos), error: 'RMP63', siFuera: `${directos} son los que una pista compara con ${x} directamente. Las cadenas de flechas suman más.` },
         { id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: 'No se sabe el orden completo, pero sí cuántos quedan con seguridad por encima.' }];
       if (new Set(ops.map(o => o.texto)).size < 4) continue;
-      const fig = { datos: { escena: 'talla', nombres: gente, casos: [Object.assign(cadenaDe(gente, ps.map(p => [p.menor, p.mayor])), { titulo: 'Del menor al mayor' })] }, estado: {} };
+      const fig = { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [Object.assign(cadenaDe(gente, ps.map(p => [p.menor, p.mayor])), { titulo: 'Del menor al mayor' })] }, estado: {} };
       return { pregunta: `${lista(gente)} son primos. ¿Cuántos son, con seguridad, mayores que ${x}?`, datos: [D_EDADES, ...PIS(...ps.map(p => p.t))],
-        dibujo: { datos: { escena: 'talla', nombres: gente, casos: [] }, estado: {} }, opciones: ops,
-        solucion: { texto: `Una cadena de flechas sube desde ${x} hasta ${seguros === 1 ? 'uno' : seguros}: ${seguros === 1 ? 'ese es mayor' : 'esos son mayores'} con seguridad.`, dibujo: fig } };
+        dibujo: { datos: { escena: 'talla', tallimetro: false, nombres: gente, casos: [] }, estado: {} }, opciones: ops,
+        solucion: { texto: `Desde ${x}, las flechas suben hasta ${lista(gente.filter(y => y !== x && q.every(o => o.indexOf(y) > o.indexOf(x))))}: ${seguros === 1 ? '1 mayor' : `${seguros} mayores`} con seguridad.`, dibujo: fig } };
     }
     throw new Error('ahoraComp: no se armó un caso');
   }
@@ -1467,13 +1470,14 @@
   // (3 órdenes) · 8 Iván · 9 la misma talla · 10 solo Ciro (3 órdenes) · 11 «Ana es menor que Ciro» (las otras: dos
   // posibles por el empate y dos que nunca pasan) · 12 Nora · 13 «Maru es más alta que Lucho» (3 órdenes) · 14 quedan 6 ·
   // 15 tres. La figura es el planteamiento: los alumnos de la formación, sin cadena; la cadena va en el resuelto.
-  const TA = nombres => ({ pieza: OR, datos: { escena: 'talla', nombres, casos: [] }, estado: {} });
+  // Sin tallímetro cuando se comparan edades o puntajes (auditoría, 19 nov: el dibujo es lo que nombra el texto).
+  const TA = (nombres, sinTalla) => ({ pieza: OR, datos: Object.assign({ escena: 'talla', nombres, casos: [] }, sinTalla ? { tallimetro: false } : {}), estado: {} });
   const D_EMPATE = 'Puede haber empates: dos con la misma talla.';
   const EJEMPLOS_COMP = [
-    { nivel: 1, titulo: 'Una cadena de tres', figura: TA(['Ana', 'Beto', 'Ciro']),
+    { nivel: 1, titulo: 'Una cadena de tres', figura: TA(['Ana', 'Beto', 'Ciro'], true),
       enunciado: 'Ana, Beto y Ciro son hermanos. ¿Quién es el menor?',
       datos: [D_EDADES, ...PIS('Ana es mayor que Beto.', 'Beto es mayor que Ciro.')],
-      solucion: [{ texto: ['Dos flechas que comparten a Beto: Ciro, después Beto, después Ana. El menor es ', F('Ciro'), '.'] }],
+      solucion: [{ texto: ['Dos flechas, Ciro → Beto y Beto → Ana, comparten a Beto: Ciro, después Beto, después Ana. El menor es ', F('Ciro'), '.'] }],
       respuesta: [F('Ciro')] },
     { nivel: 1, titulo: 'Dicho al revés', figura: TA(['Rosa', 'Leo']),
       enunciado: 'La pista dice: «Rosa es más baja que Leo». ¿Cuál de estas frases dice lo mismo: «Leo es más alto que Rosa» o «Rosa es más alta que Leo»?',
@@ -1484,11 +1488,11 @@
       enunciado: 'Ana, Beto y Ciro se forman por talla. ¿Se sabe quién es más alto entre Ana y Ciro?',
       datos: [D_TALLA.replace('las cuatro', 'las tres'), ...PIS('Ana es más alta que Beto.', 'Ciro es más alto que Beto.')],
       solucion: [
-        { texto: 'Las dos flechas salen de Beto: una va a Ana y otra a Ciro.' },
+        { texto: 'Cada pista es una flecha del más bajo al más alto: Beto → Ana y Beto → Ciro. Las dos salen de Beto.' },
         { texto: ['Ninguna cadena une a Ana con Ciro: Beto, Ana, Ciro y Beto, Ciro, Ana cumplen las dos pistas. ', F('No se sabe'), '.'] },
       ],
       respuesta: [F('No se sabe'), ': solo que los dos son más altos que Beto'] },
-    { nivel: 1, titulo: 'No mayor, sin empates', figura: TA(['Eva', 'Fito']),
+    { nivel: 1, titulo: 'No mayor, sin empates', figura: TA(['Eva', 'Fito'], true),
       enunciado: 'Eva y Fito son primos. ¿Qué se sabe de sus edades?',
       datos: ['Eva y Fito no tienen la misma edad.', 'Pista: Eva no es mayor que Fito.'],
       solucion: [{ texto: ['«No es mayor» deja dos casos: menor o de la misma edad. Las edades son distintas: queda ', F('Eva es menor que Fito'), '.'] }],
@@ -1518,7 +1522,7 @@
         { texto: ['El más alto es Sara en dos de ellos y Omar en el otro: ', F('Sara u Omar'), '. Pía es siempre la más baja.'] },
       ],
       respuesta: [F('Sara u Omar')] },
-    { nivel: 2, titulo: 'Los puntos del concurso', figura: TA(['Iván', 'Nora', 'Rosa']),
+    { nivel: 2, titulo: 'Los puntos del concurso', figura: TA(['Iván', 'Nora', 'Rosa'], true),
       enunciado: 'Iván, Nora y Rosa participan en el concurso de matemática del aniversario. ¿Quién sacó más puntos?',
       datos: ['Los tres puntajes son distintos.', ...PIS('Iván sacó más puntos que Nora.', 'Nora sacó menos puntos que Rosa.', 'Rosa sacó menos puntos que Iván.')],
       solucion: [
@@ -1534,7 +1538,7 @@
         { texto: ['El único caso que cumple las dos: ', F('miden lo mismo'), '.'] },
       ],
       respuesta: [F('Eva y Fito tienen la misma talla')] },
-    { nivel: 2, titulo: 'Mayores con seguridad', figura: TA(['Ana', 'Beto', 'Ciro', 'Dina']),
+    { nivel: 2, titulo: 'Mayores con seguridad', figura: TA(['Ana', 'Beto', 'Ciro', 'Dina'], true),
       enunciado: 'Ana, Beto, Ciro y Dina son primos. ¿Quiénes son, con seguridad, mayores que Beto?',
       datos: [D_EDADES, ...PIS('Beto es menor que Ciro.', 'Dina es menor que Beto.', 'Ana es mayor que Dina.')],
       solucion: [
@@ -1543,7 +1547,7 @@
         { texto: ['Mayor que Beto en los 3: solo ', F('Ciro'), '.'] },
       ],
       respuesta: [F('Solo Ciro')] },
-    { nivel: 3, titulo: 'Mellizos en la familia', figura: TA(['Ana', 'Beto', 'Ciro', 'Dina']),
+    { nivel: 3, titulo: 'Mellizos en la familia', figura: TA(['Ana', 'Beto', 'Ciro', 'Dina'], true),
       enunciado: 'Ana, Beto, Ciro y Dina son hermanos; en la familia hay mellizos. ¿Cuál es necesariamente verdadera?',
       alternativas: ['Ana es menor que Beto', 'Dina es mayor que Ciro', 'Beto es menor que Ana', 'Ciro es mayor que Dina', 'Ana es menor que Ciro'],
       datos: ['Mellizos: hermanos de la misma edad.', ...PIS('Ana no es mayor que Beto.', 'Ciro es mayor que Beto.', 'Dina no es menor que Ciro.')],
@@ -1553,7 +1557,7 @@
         { texto: 'A y B olvidan el empate: Ana y Beto, o Ciro y Dina, pueden ser mellizos. C y D dan vuelta una pista: nunca pasan.' },
       ],
       respuesta: [F('E'), ': Ana es menor que Ciro'] },
-    { nivel: 3, titulo: 'El segundo puesto', figura: TA(['Rosa', 'Iván', 'Nora', 'Leo', 'Maru']),
+    { nivel: 3, titulo: 'El segundo puesto', figura: TA(['Rosa', 'Iván', 'Nora', 'Leo', 'Maru'], true),
       enunciado: 'Rosa, Iván, Nora, Leo y Maru participan en el concurso de oratoria. ¿Quién quedó segundo, contando desde el que sacó más puntos?',
       alternativas: ['Nora', 'Iván', 'Maru', 'Rosa', 'Leo'],
       datos: ['Los cinco puntajes son distintos.', ...PIS('Rosa sacó más puntos que Iván, pero menos que Nora.', 'Leo sacó menos puntos que Iván.', 'Maru sacó más puntos que Nora.')],
@@ -1573,17 +1577,17 @@
         { texto: 'Las otras se aseguran: A sale de la cadena, B también (Vilma queda debajo de todos), y C y E las dicen las pistas.' },
       ],
       respuesta: [F('D'), ': Maru es más alta que Lucho'] },
-    { nivel: 3, titulo: 'Dos pistas sueltas', figura: TA(['Ana', 'Beto', 'Ciro', 'Dina']),
+    { nivel: 3, titulo: 'Dos pistas sueltas', figura: TA(['Ana', 'Beto', 'Ciro', 'Dina'], true),
       enunciado: 'Ana, Beto, Ciro y Dina son primos. ¿Cuántos órdenes de edad, del menor al mayor, cumplen las dos pistas?',
       alternativas: ['4', '6', '8', '12', '24'],
       datos: [D_EDADES, 'Sin pistas, cuatro personas se ordenan de 24 maneras.', ...PIS('Ana es mayor que Beto.', 'Ciro es mayor que Dina.')],
       solucion: [
-        { texto: 'Cada pista se queda con la mitad de los órdenes: en la mitad, Beto va antes que Ana; en la otra mitad, después.' },
+        { texto: 'Cada pista se queda con la mitad de los órdenes: en la mitad, Beto es menor que Ana; en la otra mitad, mayor.' },
         { texto: ['Las dos pistas no comparten a nadie: cada una corta a la mitad lo que deja la otra. ', F('6'), ' órdenes.'], ecuacion: ['24 ÷ 2 ÷ 2 = ', F('6')] },
         { texto: '24 son los órdenes sin pistas, y 12, con una sola. 8 y 4 no salen de partir en mitades.' },
       ],
       respuesta: [F('B'), ': 6'] },
-    { nivel: 3, titulo: 'Los menores que Teo', figura: TA(['Lucho', 'Maru', 'Teo', 'Vilma', 'Ana']),
+    { nivel: 3, titulo: 'Los menores que Teo', figura: TA(['Lucho', 'Maru', 'Teo', 'Vilma', 'Ana'], true),
       enunciado: 'Lucho, Maru, Teo, Vilma y Ana son hermanos. ¿Cuántos de ellos son menores que Teo?',
       alternativas: ['1', '2', '3', '4', '5'],
       datos: [D_EDADES, ...PIS('Lucho es mayor que Maru y menor que Teo.', 'Vilma es menor que Maru.', 'Ana es mayor que Teo.')],
@@ -1686,7 +1690,7 @@
     mira: {
       pieza: OR,
       datos: barrasP({ mira: true }),
-      voz: 'Mira la franja: es lo que gana uno y pierde el otro.',
+      voz: 'Compara las barras; después, la franja.',
       pasos: [
         { estado: { corte: 0 }, texto: 'Las dos barras miden lo mismo: las sumas son iguales.' },
         { estado: { corte: 1 }, texto: `Un caso: Ana ${EP.Ana} y Beto ${EP.Beto}; Ciro ${EP.Ciro} y Dina ${EP.Dina}.` },
@@ -1696,8 +1700,8 @@
       ],
     },
     regla: {
-      texto: 'Con los valores a la vista, una suma dice qué par es. Si dos pares suman lo mismo, lo que uno gana de un lado, se pierde del otro.',
-      ecuacion: [{ llave: ['Ana + Beto = Ciro + Dina'], nota: 'si Ana gana, Beto pierde' }],
+      texto: 'Si sabes qué valores hay, una suma dice cuáles dos la forman. Con dos sumas iguales, lo que uno le gana a alguien del otro par, su compañero lo pierde.',
+      ecuacion: [{ llave: ['Ana + Beto = Ciro + Dina'], nota: 'si Ana supera a Ciro, Dina supera a Beto' }],
       condicion: 'cada persona tiene un solo valor y los valores son distintos, salvo que los datos digan otra cosa.',
       voz: 'Busca primero qué par da la suma.',
       dibujo: { pieza: OR, datos: barrasP(), estado: {} },
@@ -1801,10 +1805,10 @@
         if (ops.length < 4) continue;
         return { pregunta: `${lista(gente)} tienen ${lista(vals.map(String))} años, no se sabe quién cuántos. ¿Cuántos años tiene ${gente[x]}?`,
           datos: ['Cada uno tiene una de esas edades, y no se repiten.', ...PIS(...ps.map(p => p.t))],
-          dibujo: { datos: { escena: 'sobres', sobres: vals.map(v => `${v} años`), columnas: gente, rotuloOrden: 'Reparto' }, estado: {} },
+          dibujo: { datos: { escena: 'sobres', forma: 'tarjeta', sobres: vals.map(v => `${v} años`), columnas: gente, rotuloOrden: 'Reparto' }, estado: {} },
           opciones: ops.slice(0, 4).concat({ id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: 'La suma fija qué par es; la comparación ordena el otro.' }),
           solucion: { texto: `Solo ${Math.min(rep[a], rep[b])} + ${Math.max(rep[a], rep[b])} dan ${suma}. De las otras dos edades, a ${gente[x]} le toca ${rep[x]}.`,
-            dibujo: { datos: { escena: 'sobres', sobres: vals.map(v => `${v} años`), columnas: gente, rotuloOrden: 'Reparto', ordenes: q.map(y => ({ a: y.map(v => `${v}`) })), fijos: [{ c: x }] }, estado: {} } } };
+            dibujo: { datos: { escena: 'sobres', forma: 'tarjeta', sobres: vals.map(v => `${v} años`), columnas: gente, rotuloOrden: 'Reparto', ordenes: q.map(y => ({ a: y.map(v => `${v}`) })), fijos: [{ c: x }] }, estado: {} } } };
       }
     }
     // Nivel examen: cuatro sobres, dos pistas de suma y una comparación; ¿quién recibió un monto?
@@ -1839,7 +1843,7 @@
   // 8 Vilma · 9 Gino 5 · 10 Ciro 17 · 11 «Ana es la mayor» siempre (Dina mayor que Ciro, a veces; las otras, nunca) ·
   // 12 Leo 17 · 13 Teo y Vilma, 110 (quedan 2 repartos) · 14 Pía 13 · 15 Ana. La figura: los sobres (o las edades) a la
   // vista, sin ningún reparto.
-  const SB = (vals, gente, fmt = soles) => ({ pieza: OR, datos: { escena: 'sobres', sobres: vals.map(fmt), columnas: gente }, estado: {} });
+  const SB = (vals, gente, fmt = soles, forma) => ({ pieza: OR, datos: Object.assign({ escena: 'sobres', sobres: vals.map(fmt), columnas: gente }, forma ? { forma } : {}), estado: {} });
   const anios = v => `${v} años`;
   const D_SOBRE = 'Cada persona recibe un solo sobre.';
   const D_EDAD1 = 'Cada uno tiene una de esas edades, y no se repiten.';
@@ -1857,17 +1861,17 @@
         { texto: ['Cuál es de Beto y cuál de Ciro, la pista no lo dice: Beto recibió ', F('20 o 100'), '.'] },
       ],
       respuesta: [F('20 o 100 soles'), ': falta otra pista'] },
-    { nivel: 1, titulo: 'Tres dados', figura: SB([2, 4, 6], ['Rosa', 'Iván', 'Nora'], String),
+    { nivel: 1, titulo: 'Tres dados', figura: SB([2, 4, 6], ['Rosa', 'Iván', 'Nora'], String, 'dado'),
       enunciado: 'Rosa, Iván y Nora lanzan un dado cada uno y salen 2, 4 y 6, uno por persona. ¿Cuánto sacó Nora?',
       datos: ['Cada uno sacó uno de esos puntajes, sin repetir.', 'Pista: Rosa e Iván suman 10 puntos.'],
       solucion: [{ texto: ['2 + 4 = 6, 2 + 6 = 8 y 4 + 6 = 10. Rosa e Iván tienen el 4 y el 6: Nora sacó ', F('2'), '.'] }],
       respuesta: [F('Nora sacó 2')] },
-    { nivel: 1, titulo: 'Edades en cadena', figura: SB([15, 16, 17], ['Leo', 'Maru', 'Teo'], anios),
+    { nivel: 1, titulo: 'Edades en cadena', figura: SB([15, 16, 17], ['Leo', 'Maru', 'Teo'], anios, 'tarjeta'),
       enunciado: 'Leo, Maru y Teo tienen 15, 16 y 17 años, no se sabe quién cuántos. ¿Cuántos años tiene Maru?',
       datos: [D_EDAD1, ...PIS('Leo es mayor que Maru.', 'Maru es mayor que Teo.')],
       solucion: [{ texto: ['Cadena: Teo, Maru, Leo, del menor al mayor. Con 15, 16 y 17 en ese orden, Maru tiene ', F('16'), '.'] }],
       respuesta: [F('16 años')] },
-    { nivel: 1, titulo: 'Le lleva tres años', figura: SB([14, 17], ['Sara', 'Gino'], anios),
+    { nivel: 1, titulo: 'Le lleva tres años', figura: SB([14, 17], ['Sara', 'Gino'], anios, 'tarjeta'),
       enunciado: 'Sara y Gino tienen 14 y 17 años, no se sabe quién cuántos. ¿Cuántos años tiene Gino?',
       datos: [D_EDAD1, 'Pista: Sara le lleva 3 años a Gino.', 'Le lleva 3 años: es 3 años mayor.'],
       solucion: [{ texto: ['Sara es la mayor de los dos: 17. Gino tiene ', F('14'), ', y 17 − 14 = 3 cumple la pista.'] }],
@@ -1880,7 +1884,7 @@
         { texto: ['Ciro recibió más: Ciro 100 y Dina ', F('20'), '.'] },
       ],
       respuesta: [F('Dina recibió 20 soles')] },
-    { nivel: 2, titulo: 'Dos pares que empatan', figura: SB([14, 15, 16, 17], ['Rosa', 'Iván', 'Nora', 'Leo'], anios),
+    { nivel: 2, titulo: 'Dos pares que empatan', figura: SB([14, 15, 16, 17], ['Rosa', 'Iván', 'Nora', 'Leo'], anios, 'tarjeta'),
       enunciado: 'Rosa, Iván, Nora y Leo tienen 14, 15, 16 y 17 años. ¿Cuántos años tiene Iván?',
       datos: [D_EDAD1, ...PIS('Las edades de Rosa e Iván suman lo mismo que las de Nora y Leo.', 'Rosa es la menor.')],
       solucion: [
@@ -1892,11 +1896,11 @@
       enunciado: 'Las edades de Maru y Teo suman lo mismo que las de Lucho y Vilma. ¿Quién es mayor: Teo o Vilma?',
       datos: ['Las cuatro edades son distintas.', 'Pista: Maru es mayor que Lucho.'],
       solucion: [
-        { texto: 'Las dos sumas son dos barras del mismo largo. Maru le gana a Lucho: su parte de arriba es más larga.' },
-        { texto: ['Para que las barras sigan iguales, Teo tiene que ser más corto que Vilma: ', F('Vilma'), ' es mayor que Teo.'] },
+        { texto: 'Las dos sumas son dos barras del mismo largo: una de Maru y Teo, otra de Lucho y Vilma. Maru es mayor que Lucho: su trozo es más largo.' },
+        { texto: ['Para que las barras sigan iguales, el trozo de Teo tiene que ser más corto que el de Vilma: ', F('Vilma'), ' es mayor que Teo.'] },
       ],
       respuesta: [F('Vilma')] },
-    { nivel: 2, titulo: 'Los dados de la kermés', figura: SB([3, 5, 6], ['Sara', 'Gino', 'Pía'], String),
+    { nivel: 2, titulo: 'Los dados de la kermés', figura: SB([3, 5, 6], ['Sara', 'Gino', 'Pía'], String, 'dado'),
       enunciado: 'En la kermés, Sara, Gino y Pía lanzan un dado cada uno y salen 3, 5 y 6. ¿Cuánto sacó Gino?',
       datos: ['Cada uno sacó uno de esos puntajes, sin repetir.', ...PIS('Sara y Gino suman 11 puntos.', 'Sara sacó más que Gino.')],
       solucion: [
@@ -1904,7 +1908,7 @@
         { texto: ['Sara sacó más: Sara 6 y Gino ', F('5'), '.'] },
       ],
       respuesta: [F('Gino sacó 5')] },
-    { nivel: 2, titulo: 'Cuatro edades seguidas', figura: SB([14, 15, 16, 17], ['Ana', 'Beto', 'Ciro', 'Dina'], anios),
+    { nivel: 2, titulo: 'Cuatro edades seguidas', figura: SB([14, 15, 16, 17], ['Ana', 'Beto', 'Ciro', 'Dina'], anios, 'tarjeta'),
       enunciado: 'Ana, Beto, Ciro y Dina tienen 14, 15, 16 y 17 años. ¿Cuántos años tiene Ciro?',
       datos: [D_EDAD1, ...PIS('Las edades de Ana y Beto suman 29.', 'Ciro es mayor que Dina.', 'Beto es mayor que Ana.')],
       solucion: [
@@ -1914,16 +1918,16 @@
       respuesta: [F('Ciro tiene 17 años')] },
     { nivel: 3, titulo: 'Dos parejas que suman igual', figura: { pieza: OR, datos: { barras: [{ rotulo: 'Edades de Ana y Beto, juntas', partes: [{ t: 'Ana + Beto', v: 31, texto: '?' }] }, { rotulo: 'Edades de Ciro y Dina, juntas', partes: [{ t: 'Ciro + Dina', v: 31, texto: '?' }] }] }, estado: {} },
       enunciado: 'Las edades de Ana y Beto suman lo mismo que las de Ciro y Dina. ¿Cuál es necesariamente verdadera?',
-      alternativas: ['Ana es la mayor de los cuatro', 'Dina es mayor que Ciro', 'Dina es menor que Beto', 'Dina es mayor que Ana', 'Beto es mayor que Dina'],
+      alternativas: ['Ana es la mayor de los cuatro', 'Dina es mayor que Ciro', 'Dina es menor que Beto', 'Dina es mayor que Ana', 'Beto es mayor que Ciro'],
       datos: ['Las cuatro edades son distintas.', 'Pista: Ana es mayor que Ciro, y Ciro es mayor que Beto.'],
       solucion: [
         { texto: 'Ana le gana a Ciro: en las barras iguales, Dina le gana lo mismo a Beto. Dina es mayor que Beto.' },
         { texto: 'Y Ciro le gana a Beto: del mismo modo, Ana le gana a Dina. Ana supera a Ciro, a Beto y a Dina.' },
         { texto: ['Seguro: ', F('Ana es la mayor'), '. «Dina es mayor que Ciro» depende de las edades: posible.'] },
-        { texto: 'C y E llevan la comparación en el mismo sentido al otro par. D choca con el paso 2.' },
+        { texto: 'C lleva la comparación en el mismo sentido al otro par. D va contra el paso 2, y E, contra la pista.' },
       ],
       respuesta: [F('A'), ': Ana es la mayor de los cuatro'] },
-    { nivel: 3, titulo: 'Edades consecutivas', figura: SB([15, 16, 17, 18], ['Rosa', 'Iván', 'Nora', 'Leo'], anios),
+    { nivel: 3, titulo: 'Edades consecutivas', figura: SB([15, 16, 17, 18], ['Rosa', 'Iván', 'Nora', 'Leo'], anios, 'tarjeta'),
       enunciado: 'Rosa, Iván, Nora y Leo tienen edades consecutivas: 15, 16, 17 y 18 años. ¿Cuántos años tiene Leo?',
       alternativas: ['14', '15', '16', '17', '18'],
       datos: [D_EDAD1, ...PIS('Rosa es la mayor.', 'Las edades de Iván y Nora suman 31.')],
@@ -1944,7 +1948,7 @@
         { texto: '70 es lo de Lucho y Maru; 30 y 60 sumarían el sobre de 10 con el de 20 o el de 50; 90 resta en vez de sumar.' },
       ],
       respuesta: [F('E'), ': S/ 110'] },
-    { nivel: 3, titulo: 'Par e impar', figura: SB([13, 14, 15], ['Omar', 'Pía', 'Gino'], anios),
+    { nivel: 3, titulo: 'Par e impar', figura: SB([13, 14, 15], ['Omar', 'Pía', 'Gino'], anios, 'tarjeta'),
       enunciado: 'Omar, Pía y Gino tienen 13, 14 y 15 años, no se sabe quién cuántos. ¿Cuántos años tiene Pía?',
       alternativas: ['13', '14', '15', '16', 'No se puede saber'],
       datos: [D_EDAD1, 'Par: se divide entre 2 sin que sobre nada.', ...PIS('La edad de Omar es un número par.', 'Gino es mayor que Pía.')],
@@ -1954,7 +1958,7 @@
         { texto: '14 es de Omar y 15, de Gino; 16 no es ninguna de las edades. «No se puede saber» no vale: queda un solo reparto.' },
       ],
       respuesta: [F('A'), ': 13 años'] },
-    { nivel: 3, titulo: '¿Quién es el mayor?', figura: SB([14, 16, 19], TRES, anios),
+    { nivel: 3, titulo: '¿Quién es el mayor?', figura: SB([14, 16, 19], TRES, anios, 'tarjeta'),
       enunciado: 'Ana, Beto y Ciro tienen 14, 16 y 19 años, no se sabe en qué orden. ¿Quién es el mayor?',
       alternativas: ['Ciro', 'Ana', 'Beto', 'Ana y Ciro tienen la misma edad', 'No se puede saber'],
       datos: [D_EDAD1, ...PIS('Las edades de Ana y Beto suman 33.', 'Beto es menor que Ciro.')],
@@ -2037,14 +2041,14 @@
       leyenda: [
         { s: 'cuchara', t: 'junto a la mano derecha de cada uno' },
         { s: { v: 'c-o', t: 'naranja' }, t: 'Ana: desde ella se mide' },
-        { s: { v: 'c-i', t: 'flecha turquesa' }, t: 'hacia su derecha: contra el reloj' },
+        { s: { v: 'c-i', t: 'flecha turquesa' }, t: 'al acertar: su derecha, contra el reloj' },
         { s: F('violeta'), t: 'la silla pedida, ya comprobada' },
       ],
       controles: [{ id: 'b', etiqueta: 'Silla de Beto', min: 1, max: N5 - 1, paso: 1, inicio: 2, decimales: 0 }],
       dibujo: v => ({ datos: mesaJ(v.b), estado: {} }),
       lectura: v => lecturaJ5(v.b),
       minimo: 3,
-      arrastres: [{ id: 'beto', etiqueta: 'silla de Beto', color: 'c-f',
+      arrastres: [{ id: 'beto', etiqueta: 'silla de Beto',
         donde: v => { const g = Kit.piezas[OR].geometria(mesaJ(v.b)), p = g.silla(v.b); return { x: p.x, y: p.y }; },
         mover: (pt, v) => { const s = sillaCerca(mesaJ(v.b), pt, 0); return s === v.b ? {} : { b: s }; } }],
     },
@@ -2220,16 +2224,16 @@
   const D_ENTRE = 'Entre dos: junto a los dos, uno de cada lado.';
   const MS = (n, sentados, extra) => figMesa(n, sentados, extra);
   const EJEMPLOS_CIRC = [
-    { nivel: 1, titulo: 'La derecha de Ana', figura: MS(4, [{ s: 0, t: 'Ana' }], { cucharas: true, espera: ['Beto'] }),
+    { nivel: 1, titulo: 'La derecha de Ana', figura: MS(4, [{ s: 0, t: 'Ana' }], { espera: ['Beto'] }),
       enunciado: 'Ana almuerza en una mesa redonda de cuatro sillas; está abajo, de espaldas a ti. Beto se sienta a su derecha. ¿En qué silla del dibujo va Beto?',
       datos: ['Todos miran al centro de la mesa.', D_DER],
-      solucion: [{ texto: ['Ana mira hacia donde miras tú: su mano derecha, la de la cuchara, es la tuya. Beto va en la silla de la ', F('derecha del dibujo'), '.'] }],
+      solucion: [{ texto: ['Ana mira hacia donde miras tú: su mano derecha es la tuya. Beto va en la silla de la ', F('derecha del dibujo'), '.'] }],
       respuesta: [F('En la de la derecha del dibujo')] },
-    { nivel: 1, titulo: 'De cara a ti', figura: MS(4, [{ s: 2, t: 'Ciro' }], { cucharas: true, espera: ['Dina'] }),
+    { nivel: 1, titulo: 'De cara a ti', figura: MS(4, [{ s: 2, t: 'Ciro' }], { espera: ['Dina'] }),
       enunciado: 'Ciro almuerza en una mesa redonda de cuatro sillas; está arriba, de cara a ti. Dina se sienta a su derecha. ¿En qué silla del dibujo va Dina?',
       datos: ['Todos miran al centro de la mesa.', D_DER],
       solucion: [
-        { texto: 'Ciro te mira de frente: su mano derecha queda frente a tu mano izquierda. Su cuchara lo muestra.' },
+        { texto: 'Ciro te mira de cara: su mano derecha queda del lado de tu mano izquierda.' },
         { texto: ['Dina va en la silla de la ', F('izquierda del dibujo'), ': la que sigue a Ciro contra el reloj.'] },
       ],
       respuesta: [F('En la de la izquierda del dibujo')] },
@@ -2299,8 +2303,8 @@
       alternativas: ['Maru', 'Rosa', 'Nora', 'Teo', 'Faltan datos'],
       datos: [D_MESA(6), D_DER, ...PIS('Leo se sienta a la derecha de Rosa.', 'Iván no se sienta junto a Rosa ni junto a Leo.', 'Maru se sienta a la izquierda de Iván.', 'Nora se sienta a la derecha de Leo.')],
       solucion: [
-        { texto: 'Contra el reloj desde Rosa: Leo y después Nora. Quedan tres sillas; Iván no toca a Rosa: va en la del medio.' },
-        { texto: 'Maru va a la izquierda de Iván, la silla de antes. La última, junto a Rosa, es de Teo: Rosa, Leo, Nora, Maru, Iván, Teo.' },
+        { texto: 'Contra el reloj desde Rosa: Leo y Nora; quedan tres sillas. Iván no toca a Rosa: no va en la última. En la primera, Maru caería donde Nora.' },
+        { texto: 'Iván va en la del medio y Maru, a su izquierda, en la de antes. La última, junto a Rosa, es de Teo: Rosa, Leo, Nora, Maru, Iván, Teo.' },
         { texto: ['A la derecha de Iván se sienta ', F('Teo'), '. Maru es su izquierda; Rosa y Nora no lo tocan; y no faltan datos.'] },
       ],
       respuesta: [F('D'), ': Teo'] },
@@ -2435,7 +2439,7 @@
       pieza: OR,
       datos: { escena: 'mesa', forma: 'cuadrada', porLado: 2, numeros: numeros(8), sentados: [{ s: 0, t: 'Ana', ref: true }],
         marcas: [{ s: 1, desde: 1 }, { s: 7, desde: 2 }, { s: 4, desde: 3 }, { s: frQ(0, 2), seguro: true, desde: 4 }], frente: [{ de: 0, a: frQ(0, 2), desde: 4 }] },
-      voz: 'Compara las sillas cercanas a la 6 con la 6.',
+      voz: 'Desde la 1, mira cuál de estas sillas te queda al cruzar.',
       pasos: [
         { estado: { corte: 1 }, texto: 'La 2 comparte con la 1 el lado de abajo.' },
         { estado: { corte: 2 }, texto: 'La 8 está en el lado izquierdo, al doblar la esquina.' },
@@ -2447,9 +2451,10 @@
     regla: {
       texto: '«Frente a» es la silla que se mira al cruzar la mesa. En la redonda con sillas pares, a media vuelta; en la cuadrada, en el lado opuesto, alineada.',
       ecuacion: [{ llave: ['media vuelta'], nota: 'la mitad de las sillas más allá' }],
-      condicion: 'todos miran a la mesa. Con un número impar de sillas redondas, nadie queda justo enfrente.',
+      condicion: 'todos miran a la mesa. En la mesa redonda con un número impar de sillas, nadie queda justo enfrente.',
       voz: 'Antes de contar sillas, mira qué forma tiene la mesa.',
-      dibujo: figCuad(2, { frente: [0, 1, 2, 3].map(i => ({ de: i, a: frQ(i, 2) })) }),
+      // Dos pares, uno de arriba a abajo y otro de lado a lado (con los cuatro, las líneas formaban un cuadrado en el centro).
+      dibujo: figCuad(2, { frente: [0, 2].map(i => ({ de: i, a: frQ(i, 2) })), marcas: [0, 2].flatMap(i => [{ s: i }, { s: frQ(i, 2) }]) }),
     },
     ejemplos: null,   // EJEMPLOS_FRENTE, abajo
     // Así se resuelve: la mesa cuadrada numerada, con cuatro personas; se sienta a cada uno desde el anterior (frente a,
@@ -2490,7 +2495,7 @@
     if (tipo === 0) {
       // La cuadrada: frente a una silla, o la que comparte su lado.
       for (let intento = 0; intento < 50; intento++) {
-        const k = 2 + (Math.floor(s / 4) % 2), N = 4 * k, i = r.ent(0, N - 1), pide = Math.floor(s / 8) % 2 ? 'lado' : 'frente';
+        const k = 2 + (Math.floor(s / 4) % 2), N = 4 * k, i = r.ent(0, N - 1), pide = k === 2 && Math.floor(s / 8) % 2 ? 'lado' : 'frente';   // con tres por lado, «comparte el lado» tendría dos respuestas
         const fr = frQ(i, k), mv = (i + N / 2) % N, lado = Math.floor(i / k), mismo = [0, 1, 2].map(j => lado * k + j).filter(j => j < (lado + 1) * k && j !== i)[0];
         const esq = i % k === 0 ? (i + N - 1) % N : i % k === k - 1 ? (i + 1) % N : null;
         const bien = pide === 'frente' ? fr : mismo;
@@ -2532,8 +2537,8 @@
         for (const y of lados) ops.push({ id: `v${ops.length}`, texto: y, error: 'RMP1', siFuera: `${y} está junto a quien queda frente a ${x}: una silla de más o de menos.` });
         for (const y of r.barajar(gente.filter(y => ![x, bien, ...lados].includes(y)))) { if (ops.length >= 4) break; ops.push(Object.assign({ id: `g${gente.indexOf(y)}`, texto: y }, porQueNoEn(todos, ps, o => o[frR(o.indexOf(x), n)] === y, `${y} no queda frente a ${x}`))); }
         ops.push({ id: 'nose', texto: 'Faltan datos', error: 'RMP78', siFuera: 'Parece que faltan, pero al probar cada silla queda una sola mesa.' });
-        return { pregunta: `${lista(gente)} ${tipo === 1 ? 'almuerzan' : 'mujeres y varones, comparten'} en una mesa redonda de ${n} sillas. ¿Quién se sienta frente a ${x}?`,
-          datos: [D_MESA(n), D_DER].concat(alt ? ['Mujeres y varones alternados: nunca dos mujeres ni dos varones juntos.'] : [], PIS(...ps.map(p => p.t))), dibujo: figMesa(n, [{ s: 0, t: ref }]), opciones: ops,
+        return { pregunta: `${lista(gente)} ${tipo === 1 ? 'almuerzan en' : 'comparten un almuerzo en'} una mesa redonda de ${n} sillas. ¿Quién se sienta frente a ${x}?`,
+          datos: [D_MESA(n), D_DER].concat(alt ? [`Mujeres (${lista(gente.filter(y => FEM.has(y)))}) y varones (${lista(gente.filter(y => !FEM.has(y)))}), alternados: nunca dos mujeres ni dos varones juntos.`] : [], PIS(...ps.map(p => p.t))), dibujo: figMesa(n, [{ s: 0, t: ref }]), opciones: ops,
           solucion: { texto: `Dando la vuelta contra el reloj: ${lista(sol)}. A media vuelta de ${x} está ${bien}.`,
             dibujo: figMesa(n, sentar(sol, { [x]: { ref: true }, [bien]: { seguro: true } }), { frente: [{ de: sol.indexOf(x), a: frR(sol.indexOf(x), n) }] }) } };
       }
@@ -2567,8 +2572,8 @@
   // coordenadas (la misma x del otro borde, o la misma y del otro costado) y coincide con la fórmula de la unidad para 1, 2
   // y 3 sillas por lado; después cada ejemplo por fuerza bruta. 1 la 5 · 2 la 8 · 3 ninguna · 4 la 3 · 5 la 9 · 6 Dina ·
   // 7 la 3 · 8 la 2 · 9 Maru · 10 la 4 · 11 Fito · 12 Omar · 13 la 6 (con la derecha al revés, la 4; media vuelta de la
-  // 1, la 5) · 14 la 8 (media vuelta 7 y su izquierda 6; derecha de Iván, 10) · 15 «Hugo a la derecha de Fito», en las 2
-  // mesas. La figura: la mesa con sus números y quien tiene silla dada; nunca lo que se deduce.
+  // 1, la 5) · 14 la 8 (media vuelta 7 y su izquierda 6; derecha de Iván, 10) · 15 «Hugo a la derecha de Fito», en las 3
+  // mesas (auditoría, 19 nov: Ana cabe junto a Iván, junto a Hugo o junto a Eva). La figura: la mesa con sus números y quien tiene silla dada; nunca lo que se deduce.
   const RD = (n, sentados) => figRonda(n, sentados ? { sentados } : {});
   const CQ = (k, sentados) => figCuad(k, sentados ? { sentados } : {});
   const D_FRENTE = '«Frente a»: la silla que se mira al cruzar la mesa.';
@@ -2621,7 +2626,7 @@
       datos: [D_NUM(8), D_DER, ...PIS('Ana se sienta en la silla 1.', 'Beto se sienta frente a Ana.', 'Ciro se sienta a la derecha de Beto.', 'Dina se sienta frente a Ciro.')],
       solucion: [
         { texto: 'Frente a la 1, a media vuelta, está la 5: ahí va Beto. A su derecha, la 6, va Ciro.' },
-        { texto: ['Frente a la 6 está la ', F('2'), ': ahí se sienta Dina.'], ecuacion: ['6 − 4 = ', F('2')] },
+        { texto: ['Media vuelta son 4 sillas: contando 4 hacia atrás desde la 6 se llega a la ', F('2'), ', la de Dina.'], ecuacion: ['6 − 4 = ', F('2')] },
       ],
       respuesta: [F('En la silla 2')] },
     { nivel: 2, titulo: 'Parejas frente a frente', figura: figMesa(6, [{ s: 0, t: 'Rosa' }]),
@@ -2644,7 +2649,7 @@
     { nivel: 3, titulo: 'Varones y mujeres', figura: figMesa(6, [{ s: 0, t: 'Ana' }]),
       enunciado: 'Ana, Dina y Eva, y Beto, Ciro y Fito almuerzan en una mesa redonda de 6 sillas, alternando mujer y varón. ¿Quién se sienta frente a Eva?',
       alternativas: ['Beto', 'Ciro', 'Dina', 'Fito', 'Ana'],
-      datos: [D_MESA(6), D_DER, 'Alternados: nunca dos mujeres ni dos varones juntos.', ...PIS('Beto se sienta frente a Ana.', 'Ciro se sienta a la derecha de Ana.', 'Dina no se sienta junto a Ciro.')],
+      datos: [D_MESA(6), D_DER, 'Mujeres (Ana, Dina y Eva) y varones (Beto, Ciro y Fito), alternados: nunca dos mujeres ni dos varones juntos.', ...PIS('Beto se sienta frente a Ana.', 'Ciro se sienta a la derecha de Ana.', 'Dina no se sienta junto a Ciro.')],
       solucion: [
         { texto: 'Con Ana abajo, Ciro a su derecha y Beto enfrente. Las otras dos sillas de mujer están junto a Ciro y junto a Beto, del otro lado.' },
         { texto: 'Dina no toca a Ciro: va después de Beto. Eva va junto a Ciro, y Fito cierra la vuelta: Ana, Ciro, Eva, Beto, Dina, Fito.' },
@@ -2688,7 +2693,7 @@
       solucion: [
         { texto: 'Con Eva abajo: Fito a media vuelta y Gino a la derecha de Eva. Frente a Gino, la silla que sigue a Fito: la de Hugo.' },
         { texto: ['Hugo queda justo después de Fito, contra el reloj: ', F('Hugo se sienta a la derecha de Fito'), ', siempre.'] },
-        { texto: 'Iván va antes de Fito. Ana tiene dos sillas posibles: junto a Iván o junto a Hugo. A y D pasan en una sola: posibles.' },
+        { texto: 'Iván va justo antes de Fito. Ana puede ir junto a Iván, junto a Hugo o junto a Eva: quedan 3 mesas, y A y D pasan en una sola.' },
         { texto: 'B y C nunca: frente a Gino está Hugo, y frente a Eva, Fito.' },
       ],
       respuesta: [F('E'), ': Hugo se sienta a la derecha de Fito'] },
@@ -2846,7 +2851,9 @@
 
   return {
     unidad: 'razonamiento-matematico.ordenamiento-de-informacion',
-    version: '0.4.0',
+    version: '0.5.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-orden.js', '/nucleo/kit/piezas/rm-tablero.js'],
     // La tabla de letras de la unidad (molde §0.4): aquí casi no hay letras de fórmula; las personas van por su nombre.
@@ -2938,7 +2945,7 @@
         formas: ['suman lo mismo', 'suma lo mismo'], ejemplos: [
           '20 + 10 y 18 + 12 suman lo mismo: 30.',
           'Dos barras del mismo largo, partidas en dos trozos cada una.',
-          'Si un trozo de una barra crece, el otro trozo de esa barra se achica.'] },
+          'Si dos pares suman lo mismo, los cuatro juntos suman el doble de un par.'] },
       // Idea 5
       { termino: 'ordenamiento circular', def: 'Ubicar personas alrededor de una mesa redonda, donde no hay primer ni último lugar.',
         simple: 'Poner a todos alrededor de una mesa redonda siguiendo pistas.',
@@ -2955,7 +2962,7 @@
       { termino: 'sentido antihorario', def: 'Giro contrario al de las agujas del reloj.',
         simple: 'Al revés de como giran las agujas del reloj.',
         formas: ['sentido antihorario', 'antihorario', 'contra el reloj'], ejemplos: [
-          'Desde las 12, contra el reloj se pasa por las 11, las 10, las 9…',
+          'Desde las 3, contra el reloj se pasa por las 2, la 1 y las 12…',
           'Visto desde arriba, quien sale de abajo contra el reloj va primero hacia la derecha.',
           'Con el reloj es el otro sentido: desde las 12, a la 1 y a las 2.'], ver: ['a la derecha de'] },
       { termino: 'giro', def: 'Vuelta de una ronda o de una figura alrededor de su centro, sin cambiar su forma.',

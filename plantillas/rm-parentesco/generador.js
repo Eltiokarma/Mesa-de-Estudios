@@ -705,7 +705,7 @@
         if (A.rel === '=' && B.rel === '=') rel = '=';
         else if (A.rel === '>' && B.rel === '>' && sg === 1) rel = '>';
         else if (A.rel === '>' && B.rel === '=') rel = '>';
-        else if (A.rel === '=' && B.rel === '>') { if (sg === 1) rel = '>'; else { mirar(c.map(z => -z), '>', [A.de[0], B.de[0]], 'resta'); continue; } }
+        else if (A.rel === '=' && B.rel === '>') { if (sg === 1) rel = '>'; else { mirar(c.map(z => -z), '>', [B.de[0], A.de[0]], 'resta'); continue; } }   // la segunda menos la primera: se nombran en ese orden
         if (rel) mirar(c, rel, [A.de[0], B.de[0]], sg === 1 ? 'suma' : 'resta');
       }
     }
@@ -783,10 +783,13 @@
     }
     const ini = nom.map(n => n[0]);
     const formula = p => p.t === 'simple' ? `${ini[p.a]} > ${ini[p.b]}` : `${ini[p.a[0]]} + ${ini[p.a[1]]} ${p.rel} ${ini[p.b[0]]} + ${ini[p.b[1]]}`;
+    // En la suma o la resta, cada pista se escribe como se usa: con «>» (la de «<» dada vuelta). Así «Sumando…» y
+    // «Restando…» (la primera menos la segunda) dan de verdad lo que dice el paso (auditoría de Ordenamiento, 19 nov).
+    const usada = p => (p.t !== 'simple' && p.rel === '<' ? `${ini[p.b[0]]} + ${ini[p.b[1]]} > ${ini[p.a[0]]} + ${ini[p.a[1]]}` : formula(p));
     const solucion = [['Escribe cada pista con las iniciales: ', pistas.map(formula).join(' ; '), '.']];
     for (const x of necesarias) {
       if (x.de.length === 1) solucion.push([`De ${formula(x.de[0])} sale directo `, v('c', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
-      else solucion.push([`${x.op === 'suma' ? 'Sumando' : 'Restando'} ${formula(x.de[0])} y ${formula(x.de[1])}, se cancelan los que aparecen a los dos lados y queda `, v('c', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
+      else solucion.push([`${x.op === 'suma' ? 'Sumando' : 'Restando'} ${usada(x.de[0])} y ${usada(x.de[1])}, se cancelan los que aparecen a los dos lados y queda `, v('c', `${ini[x.mayor]} > ${ini[x.menor]}`), '.']);
     }
     if (necesarias.length < 3) solucion.push(['Juntando lo anterior (si A > B y B > C, entonces A > C) queda un solo orden.']);
     solucion.push(['De mayor a menor: ', v('x', txt(o)), '.']);

@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["razonamiento-matematico.ordenamiento-de-informacion"],
       "nivel": "básico",
       "enunciado": "Ana, Beto, Caro, Dani y Eva se sientan en una fila de 5 butacas, numeradas del 1 al 5 de izquierda a derecha. Caro está inmediatamente a la derecha de Ana; Dani se sienta en un extremo, pero no en la butaca 1; Beto está a la izquierda de Ana; y Eva no se sienta junto a Caro. ¿Quién ocupa la butaca 3? ¿Se puede saber quién ocupa la butaca 1?",
       "respuesta": "Ana ocupa la butaca 3. No se puede saber quién ocupa la 1: puede ser Beto o Eva.",
@@ -209,6 +210,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["razonamiento-matematico.ordenamiento-de-informacion"],
       "nivel": "básico",
       "enunciado": "En una fila de 6 butacas, numeradas del 1 al 6 de izquierda a derecha, se sientan 5 amigos y queda una butaca vacía. Beto se sienta en la butaca 2 y Ana está a la derecha de Beto. ¿En qué butacas puede estar Ana? ¿Y si la pista dijera «Ana está inmediatamente a la derecha de Beto»?",
       "respuesta": "Ana puede estar en la 3, la 4, la 5 o la 6. Con «inmediatamente», solo en la 3.",
@@ -262,6 +264,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["razonamiento-matematico.ordenamiento-de-informacion"],
       "nivel": "intermedio",
       "enunciado": "Cinco amigos se comparan por estatura (no hay dos que midan lo mismo). Ana mide menos que Beto; Caro mide menos que Ana; Eva mide menos que Beto; y Beto mide menos que Dani. ¿Cuál de estas afirmaciones es necesariamente cierta? I. Dani es quien más mide. II. Caro es quien menos mide. III. Eva mide menos que Ana.",
       "respuesta": "Solo la I.",
@@ -339,6 +342,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["razonamiento-matematico.ordenamiento-de-informacion"],
       "nivel": "intermedio",
       "enunciado": "Ana, Beto, Caro, Dani, Eva y Fito se sientan alrededor de una mesa redonda con 6 sillas distribuidas simétricamente, mirando al centro. Ana se sienta frente a Beto; Ana no se sienta junto a Caro; Dani está inmediatamente a la izquierda de Caro; y Eva está inmediatamente a la izquierda de Fito. ¿Quién se sienta inmediatamente a la izquierda de Ana?",
       "respuesta": "Fito.",
@@ -517,6 +521,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["razonamiento-matematico.ordenamiento-de-informacion"],
       "nivel": "avanzado",
       "enunciado": "Seis amigos (Ana, Beto, Caro, Dani, Eva y Fito) se sientan alrededor de una mesa redonda con 6 sillas distribuidas simétricamente, mirando al centro. Ana se sienta frente a Dani; Beto está inmediatamente a la derecha de Ana; Eva se sienta junto a Dani; y Eva no se sienta frente a Beto. ¿Quién está inmediatamente a la derecha de Beto? ¿Se puede saber quién se sienta frente a Beto?",
       "respuesta": "A la derecha de Beto está Eva. Frente a Beto puede estar Caro o Fito: no se puede saber.",
@@ -716,6 +721,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["razonamiento-matematico.razonamiento-deductivo"],
       "nivel": "intermedio",
       "enunciado": "Ana, Beto y Caro practican cada uno un deporte distinto (fútbol, vóley y básquet) y tienen cada uno una mascota distinta (perro, gato y loro). Ana no tiene gato; quien juega vóley tiene loro; Beto tiene perro; y Caro no juega básquet. ¿Qué deporte practica Beto y qué mascota tiene Caro?",
       "respuesta": "Beto juega básquet y Caro tiene gato.",
@@ -851,6 +857,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["razonamiento-matematico.verdades-y-mentiras"],
       "nivel": "avanzado",
       "enunciado": "Alguien se comió el último chocolate de la caja. Ana dice: «Fue Beto». Beto dice: «Fue Dani». Caro dice: «Yo no fui». Dani dice: «Beto miente». Si solo uno de los cuatro dice la verdad, ¿quién se comió el chocolate?",
       "respuesta": "Caro.",
@@ -1001,6 +1008,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["razonamiento-matematico.verdades-y-mentiras"],
       "nivel": "intermedio",
       "enunciado": "En una isla, cada habitante siempre dice la verdad o siempre miente. Ana dice: «Beto y yo mentimos». Beto dice: «Ana miente». ¿Quién dice la verdad y quién miente?",
       "respuesta": "Ana miente y Beto dice la verdad.",
@@ -1058,6 +1066,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["razonamiento-matematico.certezas"],
       "nivel": "básico",
       "enunciado": "En un cajón oscuro hay 10 medias negras y 6 medias blancas, sueltas. ¿Cuántas hay que sacar, sin ver, para tener con seguridad dos medias del mismo color? ¿Y para tener con seguridad dos medias blancas?",
       "respuesta": "3 para tener dos del mismo color; 12 para tener dos blancas.",
@@ -1196,6 +1205,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["razonamiento-matematico.certezas"],
       "nivel": "intermedio",
       "enunciado": "Hay 5 candados y 5 llaves mezcladas; cada llave abre un solo candado. ¿Cuántos intentos hacen falta, como mínimo, para saber con seguridad qué llave abre cada candado?",
       "respuesta": "10 intentos.",

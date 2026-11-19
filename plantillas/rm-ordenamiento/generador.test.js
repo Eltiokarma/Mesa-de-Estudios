@@ -147,3 +147,21 @@ test('papel: 8 problemas al día con el generador, con sus datos', () => {
   assert.equal(papel.problemas.length, 8);
   for (const pr of papel.problemas) assert.match(pr.enunciado, / Datos: /);
 });
+
+// Auditoría de Ordenamiento (19 nov): nombres con mayúscula, «la menor» para ellas y la misma línea de palabras que la teoría.
+test('auditoría: ningún nombre en minúscula, el artículo concuerda y la línea de palabras es la de la teoría', () => {
+  const NOM = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Rosa', 'Iván', 'Leo'], ELLAS = new Set(['Ana', 'Dina', 'Eva', 'Rosa']);
+  const re = new RegExp(`\\b(${NOM.map(x => x.toLowerCase()).join('|')})\\b`);
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? plano(x.t) : String(x || ''));
+  const teoria = require('../../contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js');
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 200; s++) {
+    const p = gen.generar(s, { idea });
+    const t = plano(p.solucion) + p.alternativas.map(a => (a.error ? a.error.explicacion : '')).join(' ');
+    assert.ok(!re.test(t), `${idea} semilla ${s}: ${(t.match(re) || [])[0]}`);
+    for (const x of ELLAS) assert.ok(!new RegExp(`${x} es el (mayor|menor)`).test(t), `${idea} semilla ${s}`);
+    for (const d of p.datos) if (/^A la izquierda de: no obliga/.test(d)) {
+      const linea = teoria.ideas[0].ahoraTu.generar(0).datos.find(x => /^A la izquierda de: no obliga/.test(x));
+      assert.equal(d, linea, 'la misma línea que la teoría');
+    }
+  }
+});

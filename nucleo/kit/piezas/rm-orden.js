@@ -364,8 +364,8 @@
   function talla(d, g, corte) {
     const ns = d.formados || d.nombres, paso = (W - 2 * M - 34) / ns.length;
     let s = `<line x1="${n(M + 1)}" y1="${NINO - 20}" x2="${n(W - M - 1)}" y2="${NINO - 20}" stroke="currentColor" stroke-width="1" stroke-opacity="0.45"/>`;
-    // El tallímetro: sin números, porque nadie sabe cuánto mide cada uno.
-    s += `<line x1="${M + 10}" y1="${M + 10}" x2="${M + 10}" y2="${NINO - 21}" ${tinta()}/>` + [0, 1, 2, 3, 4].map(k => `<line x1="${M + 10}" y1="${n(M + 14 + k * 14)}" x2="${M + 16}" y2="${n(M + 14 + k * 14)}" stroke="currentColor" stroke-width="1.5"/>`).join('');
+    // El tallímetro: sin números, porque nadie sabe cuánto mide cada uno. Con tallimetro: false (edades o puntajes) no va.
+    if (d.tallimetro !== false) s += `<line x1="${M + 10}" y1="${M + 10}" x2="${M + 10}" y2="${NINO - 21}" ${tinta()}/>` + [0, 1, 2, 3, 4].map(k => `<line x1="${M + 10}" y1="${n(M + 14 + k * 14)}" x2="${M + 16}" y2="${n(M + 14 + k * 14)}" stroke="currentColor" stroke-width="1.5"/>`).join('');
     const seg = new Set((g.casos[0] || {}).seguros || []);
     ns.forEach((t, k) => { s += nino(M + 34 + (k + 0.5) * paso, k, d.formados ? 34 + k * 5 : 44, t, { seguro: d.formados && seg.has(t) }); });
     s = `<g class="kit-objeto" data-objeto="formacion" data-prueba="si">${s}</g>`;
@@ -408,9 +408,10 @@
     return s;
   }
   function altTalla(d) {
-    const partes = [`Formación por talla para el desfile: ${d.formados ? `ya ordenados, del más bajo al más alto: ${d.formados.join(', ')}` : `${lista(d.nombres)}, todavía sin ordenar`}`];
+    const sinTalla = d.tallimetro === false, menos = sinTalla ? 'es menor que' : 'es más bajo que', igual = sinTalla ? 'es igual a' : 'mide lo mismo que';
+    const partes = [`${sinTalla ? 'Personas que se comparan' : 'Formación por talla para el desfile'}: ${d.formados ? `ya ordenados, del más bajo al más alto: ${d.formados.join(', ')}` : `${lista(d.nombres)}, todavía sin ordenar`}`];
     for (const c of d.casos || []) {
-      const fl = (c.flechas || []).map(f => (f.tipo === 'igual' ? `${f.de} mide lo mismo que ${f.a}` : f.tipo === 'menorIgual' ? `${f.de} mide menos que ${f.a} o lo mismo` : `${f.de} es más bajo que ${f.a}`));
+      const fl = (c.flechas || []).map(f => (f.tipo === 'igual' ? `${f.de} ${igual} ${f.a}` : f.tipo === 'menorIgual' ? (sinTalla ? `${f.de} ${menos} ${f.a} o igual` : `${f.de} mide menos que ${f.a} o lo mismo`) : `${f.de} ${menos} ${f.a}`));
       partes.push(`${c.titulo || d.eje || 'Cadena'}: ${fl.length ? fl.join('; ') : 'sin flechas'}${(c.aparte || []).length ? `; sin comparar: ${lista(c.aparte)}` : ''}${(c.seguros || []).length ? `; seguro: ${lista(c.seguros)}` : ''}`);
     }
     return partes.join('. ') + '.';
@@ -419,16 +420,23 @@
   // ---------- Escena «sobres» (idea 4): los sobres de la rifa y la lista de repartos ----------
   // datos: { escena: 'sobres', sobres: ['S/ 20', …], columnas: ['Ana', …], ordenes, fijos, rotuloOrden: 'Reparto', pistas, nota }
   const SOBRE_Y = M + 2;
+  // forma: 'sobre' (por omisión), 'dado' (una cara con sus puntos; el rótulo es el número de 1 a 6) o 'tarjeta' (una ficha
+  // lisa, para edades: sin solapa de sobre). Auditoría, 19 nov: el dibujo es el objeto que nombra el texto.
+  const PUNTOS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]],
+    5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
   function sobres(d, g) {
-    const k = d.sobres.length, paso = (W - 2 * M) / k, ew = Math.min(70, paso - 12);
+    const k = d.sobres.length, paso = (W - 2 * M) / k, forma = d.forma || 'sobre', ew = forma === 'dado' ? 42 : Math.min(70, paso - 12);
     let s = '';
     d.sobres.forEach((t, i) => {
       const x = M + i * paso + (paso - ew) / 2, y = SOBRE_Y + 4;
-      s += `<rect${CAJA} x="${n(x)}" y="${n(y)}" width="${n(ew)}" height="42" rx="3" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
-      s += `<path d="M${n(x + 1)} ${n(y + 1)}L${n(x + ew / 2)} ${n(y + 17)}L${n(x + ew - 1)} ${n(y + 1)}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
-      s += T.rotulo(x + ew / 2, y + 36, t, { ancla: 'middle', tam: 14, peso: 700, min: x, max: x + ew });
+      s += `<rect${CAJA} x="${n(x)}" y="${n(y)}" width="${n(ew)}" height="42" rx="${forma === 'dado' ? 8 : 3}" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
+      if (forma === 'dado' && PUNTOS[+t]) PUNTOS[+t].forEach(([a, b]) => { s += `<circle cx="${n(x + 21 + a * 11)}" cy="${n(y + 21 + b * 11)}" r="4" fill="currentColor"/>`; });
+      else {
+        if (forma === 'sobre') s += `<path d="M${n(x + 1)} ${n(y + 1)}L${n(x + ew / 2)} ${n(y + 17)}L${n(x + ew - 1)} ${n(y + 1)}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
+        s += T.rotulo(x + ew / 2, y + (forma === 'sobre' ? 36 : 26), t, { ancla: 'middle', tam: 14, peso: 700, min: x, max: x + ew });
+      }
     });
-    s = `<g class="kit-objeto" data-objeto="sobres" data-prueba="si">${s}</g>`;
+    s = `<g class="kit-objeto" data-objeto="${forma === 'dado' ? 'dados' : forma === 'tarjeta' ? 'tarjetas' : 'sobres'}" data-prueba="si">${s}</g>`;
     if (d.columnas && d.ordenes && d.ordenes.length) d.columnas.forEach((t, k) => { s += T.rotulo(g.centro(k), g.yNum, t, { ancla: 'middle', tam: 14, peso: 700, min: M, max: W - M }); });
     return s;
   }
@@ -479,7 +487,7 @@
   function geoMesa(d) {
     const cuad = d.forma === 'cuadrada', k = d.porLado || 2, N = cuad ? 4 * k : d.sillas;
     const L = cuad && k >= 3 ? 60 : 50;
-    const cx = W / 2, cy = M + L + 52 + (d.titulo ? 20 : 0);
+    const cx = W / 2, cy = M + L + 52 + (d.titulo ? 20 : (d.espera || []).length ? 30 : 0);
     const silla = s => {
       if (!cuad) { const a = 2 * Math.PI * s / N; return { x: cx + RS * Math.sin(a), y: cy + RS * Math.cos(a), fx: -Math.sin(a), fy: -Math.cos(a) }; }
       const lado = Math.floor(s / k), j = s % k, t = (j + 0.5) / k;
@@ -512,6 +520,13 @@
       + (g.k >= 3 ? [-14, 14] : g.k === 2 ? [0] : []).map(q => `<line x1="${n(cx + q)}" y1="${n(cy - g.L + 1)}" x2="${n(cx + q)}" y2="${n(cy + g.L - 1)}" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>`).join('');   // las carpetas juntas, entre los carteles
     else s += `<circle${CAJA} cx="${n(cx)}" cy="${n(cy)}" r="${RT}" fill="var(--card)" stroke="currentColor" stroke-width="2"/>`;
     const sent = (d.sentados || []).filter(x => ve(x, corte)), ocup = new Map(sent.map(x => [x.s, x]));
+    // La línea «frente a». En la cuadrada cruza toda la mesa, de una silla a la otra, y pasa por debajo de los carteles
+    // (se dibuja antes; data-caja: los cruza a propósito). Auditoría, 19 nov: cortada cerca del centro, las cuatro líneas
+    // de «La regla» formaban un cuadradito y se leían como sillas del mismo lado.
+    for (const fr of (d.frente || []).filter(x => ve(x, corte))) {
+      const a = g.silla(fr.de), b = g.silla(fr.a), r0 = g.cuad ? 13 : RS - RT + 30;
+      s += `<line class="kit-aparece" data-frente="si"${g.cuad ? CAJA : ''} x1="${n(a.x + a.fx * r0)}" y1="${n(a.y + a.fy * r0)}" x2="${n(b.x + b.fx * r0)}" y2="${n(b.y + b.fy * r0)}" stroke="var(--c-i)" stroke-width="3" stroke-linecap="round"/>`;
+    }
     // Las sillas: vacías se ven; con alguien, la persona vista desde arriba (hombros y pelo).
     for (let k = 0; k < g.N; k++) {
       const p = g.silla(k);
@@ -546,12 +561,9 @@
       const p1 = P(a1), p2 = P(a2), tan = Math.atan2(-Math.sin(a2) * sg, Math.cos(a2) * sg);
       s += `<g class="kit-aparece" data-flecha="${f.sentido || 'derecha'}"><path d="M${n(p1.x)} ${n(p1.y)}A${R} ${R} 0 0 ${sg > 0 ? 0 : 1} ${n(p2.x - Math.cos(tan) * 6)} ${n(p2.y - Math.sin(tan) * 6)}" fill="none" stroke="var(--c-i)" stroke-width="3" stroke-linecap="round"/>${puntaEn(p2.x + Math.cos(tan) * 3, p2.y + Math.sin(tan) * 3, tan, 'i', 2)}</g>`;
     }
-    for (const fr of (d.frente || []).filter(x => ve(x, corte))) {
-      const a = g.silla(fr.de), b = g.silla(fr.a), r0 = g.cuad ? 52 : RS - RT + 30;
-      s += `<line class="kit-aparece" data-frente="si" x1="${n(a.x + a.fx * r0)}" y1="${n(a.y + a.fy * r0)}" x2="${n(b.x + b.fx * r0)}" y2="${n(b.y + b.fy * r0)}" stroke="var(--c-i)" stroke-width="3" stroke-linecap="round"/>`;
-    }
-    // Quienes todavía esperan, de pie, en la esquina de abajo a la izquierda (vistos desde arriba: solo el nombre).
-    (d.espera || []).forEach((t, i) => { s += T.rotulo(M + 4, g.yFin - 10 - ((d.espera.length - 1 - i) * 18), t, { tam: 14, peso: 400 }); });
+    // Quienes todavía esperan, de pie: centrados sobre la mesa, para que su nombre no quede de un lado (auditoría, 19 nov:
+    // en la esquina de la izquierda, «Eva» señalaba la respuesta de la predicción).
+    if ((d.espera || []).length && !d.titulo) s += T.rotulo(cx, M + 16, `De pie: ${d.espera.join(', ')}`, { ancla: 'middle', tam: 14, peso: 400, min: M, max: W - M });
     return `<g class="kit-objeto" data-objeto="mesa" data-prueba="si">${s}</g>`;
   }
   function altMesa(d) {
@@ -589,7 +601,7 @@
     if (d.barras) return altBarras(d);
     if (d.tiras) return `${d.titulo ? `${d.titulo} ` : ''}${d.tiras.map(t => `${t.rotulo}: ${t.celdas.map((x, k) => { const c = celdaDe(x); return c ? `puesto ${k + 1}, ${c.t}${c.posible ? ' (posible)' : c.seguro ? ' (seguro)' : ''}` : null; }).filter(Boolean).join('; ')}`).join('. ')}.`;
     const g = geometria(d), partes = [];
-    if (d.escena === 'sobres') partes.push(`Sobres de la rifa: ${lista(d.sobres)}${d.columnas ? `; una columna por persona: ${lista(d.columnas)}` : ''}`);
+    if (d.escena === 'sobres') partes.push(`${d.forma === 'dado' ? 'Dados' : d.forma === 'tarjeta' ? 'Tarjetas' : 'Sobres de la rifa'}: ${lista(d.sobres)}${d.columnas ? `; una columna por persona: ${lista(d.columnas)}` : ''}`);
     else if (d.escena === 'banca') {
       const sent = d.sentados || [], ya = new Set(sent.map(x => x.t)), espera = (d.nombres || []).filter(t => !ya.has(t));
       partes.push(`Banca de ${g.N} puestos frente a la cancha del campeonato, vista desde atrás${sent.length ? `: ${sent.map(x => `${x.t} en el puesto ${x.p + 1}`).join(', ')}` : ', vacía'}${espera.length ? `; esperan de pie ${lista(espera)}` : ''}`);

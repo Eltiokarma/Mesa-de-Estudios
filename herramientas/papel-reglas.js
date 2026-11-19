@@ -32,7 +32,6 @@ const EXCEPCIONES = [
   { regla: 'papel-unidades', plantilla: 'cuadrado-crece', problema: '*', unidad: 'algebra.productos-notables y algebra.exponentes-y-productos-notables', motivo: 'sirve a 3 unidades y ningún problema dice de cuál es (escena con rehacer)', fecha: '2026-11-19' },
   { regla: 'papel-unidades', plantilla: 'mruv', problema: '*', unidad: 'fisica.movimiento-rectilineo y fisica.mruv-y-caida-libre', motivo: 'sirve a 2 unidades y ningún problema dice de cuál es (escena con rehacer)', fecha: '2026-11-19' },
   { regla: 'papel-unidades', plantilla: 'numeros-sucesiones', problema: '*', unidad: 'aritmetica.numeracion', motivo: 'sirve a 6 unidades y ningún problema dice de cuál es', fecha: '2026-11-19' },
-  { regla: 'papel-unidades', plantilla: 'orden-informacion', problema: '*', unidad: 'razonamiento-matematico.razonamiento-deductivo', motivo: 'sirve a 4 unidades y ningún problema dice de cuál es', fecha: '2026-11-19' },
   { regla: 'papel-unidades', plantilla: 'triangulo-estira', problema: '*', unidad: 'geometria.triangulos', motivo: 'sirve a 4 unidades y ningún problema dice de cuál es (escena con rehacer)', fecha: '2026-11-19' },
 ];
 
