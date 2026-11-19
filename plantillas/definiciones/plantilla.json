@@ -1,0 +1,22 @@
+{
+  "id": "definiciones",
+  "titulo": "Definiciones: clase, rasgo y palabra",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-verbal.definiciones"
+  ],
+  "temas": [
+    "Género próximo",
+    "Diferencia específica",
+    "Rasgos mínimos de significado",
+    "Definición y palabra definida",
+    "Defectos de la definición",
+    "Definición en el texto"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

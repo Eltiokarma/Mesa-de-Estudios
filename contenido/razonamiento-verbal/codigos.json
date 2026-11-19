@@ -328,5 +328,80 @@
   "nombre": "El tema o la idea agregan un aspecto que el texto no trata",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RVD1": {
+  "nombre": "Se toma un rasgo frecuente por necesario",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD2": {
+  "nombre": "Falta el rasgo que separa",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD3": {
+  "nombre": "Un rasgo necesario se toma por suficiente",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD4": {
+  "nombre": "Se agrega un rasgo de más",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD5": {
+  "nombre": "Se da por cumplido un rasgo que el caso no tiene",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD6": {
+  "nombre": "La clase queda lejos",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD7": {
+  "nombre": "Se elige la definición del vecino",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD8": {
+  "nombre": "Se acepta una definición sin clase",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD9": {
+  "nombre": "Se elige la palabra más general",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD10": {
+  "nombre": "Se elige la palabra más específica",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD11": {
+  "nombre": "Se cambia la clase por otra del mismo tema",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD12": {
+  "nombre": "Se acepta una definición circular",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD13": {
+  "nombre": "Se acepta una definición negativa",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD14": {
+  "nombre": "Se acepta una definición figurada",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVD15": {
+  "nombre": "Se toma por definición otra oración del texto que habla del término",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

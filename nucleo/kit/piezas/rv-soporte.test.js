@@ -18,6 +18,8 @@ const CASOS = {
   bandeja: { soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', bandeja: true, hojas: [{ id: 'a', titulo: 'Ciencias Sociales', de: 'el libro', para: 'estudiar', oraciones: ors('o', 5) }] },
   cuaderno: { soporte: 'cuaderno', lugar: 'Cuaderno de Rosa', hojas: [{ id: 'a', titulo: 'Útiles', oraciones: ors('o', 3) }], frase: { etiqueta: 'Frase', t: 'Los útiles para dibujar y para pintar en la clase de arte' } },
   mensaje: { soporte: 'mensaje', lugar: 'Familias de 5.º B', hojas: [{ id: 'a', de: 'la tutora', para: 'familias', oraciones: ors('o', 3) }] },
+  // Etapa 5 (Definiciones): la página de diccionario, con el lema de cada entrada en negrita.
+  diccionario: { soporte: 'diccionario', lugar: 'Diccionario escolar', hojas: [{ id: 'a', titulo: 'P', oraciones: ors('o', 3).map((o, k) => Object.assign(o, { lema: ['puente', 'puerta', 'pupitre'][k] })) }] },
   simulacro: { soporte: 'simulacro', numero: 12, hojas: [{ id: 'a', titulo: 'Texto A', oraciones: ors('o', 3), barras }, { id: 'b', titulo: 'Texto B', oraciones: ors('p', 2), tabla }],
     pregunta: 'El texto y el gráfico giran, principalmente, en torno a', alternativas: ['A', 'B', 'C', 'D', 'E'].map(id => ({ id, t: `alternativa ${id}, larga como en el examen de admisión de San Marcos` })) },
 };
@@ -222,4 +224,19 @@ test('aire bajo el marco para la lupa de la app, y sin halo sobre un fondo teñi
   }
   assert.match(P.dibujar(CASOS.mensaje, {}), /class="rv-sin-halo"[^>]*>Familias de 5.º B</);
   assert.match(P.dibujar(CASOS.cartel, {}), /class="rv-sin-halo"[^>]*>Comunicado/);
+});
+
+// Etapa 5 (Definiciones): el soporte «diccionario».
+test('diccionario: el lema va en negrita al inicio de su entrada, el lomo y los uñeros son dibujos de prueba y caben', () => {
+  const d = CASOS.diccionario, s = P.dibujar(d, {}), L = P.disponer(d);
+  for (const lema of ['puente', 'puerta', 'pupitre']) assert.match(s, new RegExp(`<tspan font-weight="700">${lema}\\.</tspan> Oración`), lema);
+  assert.match(s, /data-objeto="diccionario" data-prueba="si"/);
+  assert.match(s, /data-objeto="uneros" data-prueba="si"/);
+  assert.match(P.alt(d), /Página de diccionario \(Diccionario escolar\).*1\. puente\. Oración/);
+  const papel = L.papeles.find(p => p.w);
+  assert.ok(papel.x - 12 >= 4 && papel.x + papel.w <= 316, 'el lomo y la página caben con 4 de margen');
+  // Los uñeros (radio 9) no llegan al texto: el renglón termina 12 antes del canto.
+  for (const it of L.items.filter(i => i.tipo === 'linea')) assert.ok(it.x + it.w <= papel.x + papel.w - 9 - 1, `«${it.texto}» toca un uñero`);
+  // Una entrada sin lema se dibuja como siempre.
+  assert.ok(!/<tspan/.test(P.dibujar(CASOS.mural, {})));
 });

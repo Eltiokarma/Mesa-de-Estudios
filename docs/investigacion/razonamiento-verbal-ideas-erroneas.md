@@ -179,6 +179,29 @@ Agregados por la rutina verbal A/B (8 nov 2026) con las trampas inferidas de los
 | RV65 | **Se responde con el tema cuando se pide la idea principal**: la respuesta nombra el asunto y no afirma nada de él. | Ante «¿cuál es la idea principal?», el alumno elige «La totora del lago», que solo nombra el asunto. | Trampas de idea principal de San Marcos; antes se codificaba como RV2. Sin estudio con alumnos. Agregado en la etapa 2 (17 nov 2026). | Hipótesis (ligada a RV2) | — |
 | RV66 | **El tema o la idea agregan un aspecto que el texto no trata**: una causa, una solución o un asunto vecino que no está en ninguna oración. | El texto trata de cómo un colegio junta agua de lluvia; el alumno elige «Las enfermedades que causa el agua guardada en tanques». | Trampas de tema central de San Marcos («curación, prevención», «una propuesta cuando solo describe»); hoy caía entre RV8 y RV33. Sin estudio con alumnos. Agregado en la etapa 2 (17 nov 2026). | Hipótesis (ligada a RV8) | — |
 
+
+### Definiciones (códigos RVD, etapa 5)
+
+Agregados en la etapa 5 (19 nov 2026) para la unidad «Definiciones» (`contenido/teoria/razonamiento-verbal/definiciones.js`, propuesta en `docs/etapa5/propuesta-verbal.md`) y su práctica (`plantillas/definiciones/`). Llevan prefijo propio (RVD) para no correr la numeración RV. Ninguno tiene estudio con alumnos: salen de la lógica de la definición (clase y rasgo, muy amplia y muy estrecha, como en los Tópicos de Aristóteles, libro VI), del formato de la pregunta de definiciones de la UNI (hipótesis: no hay examen de verbal de la UNI en el repo) y de las cuatro preguntas de San Marcos que piden el sentido de un término definido en la lectura (2019-I, 2023-I y 2026-I; `docs/datos/admision-unmsm.csv`). RV11 y RV56 se usan también aquí.
+
+| # | Idea errónea | Ejemplo tipo examen | Dato | Respaldo | Fuente |
+| --- | --- | --- | --- | --- | --- |
+| RVD1 | **Se toma un rasgo frecuente por necesario**: la definición pide algo que tienen muchos casos, no todos, y queda muy estrecha. | «Ave: animal que vuela» deja fuera al suri y al zambullidor del Titicaca. | Sin estudio encontrado; es el defecto «demasiado estrecha» de la definición. | Hipótesis | — |
+| RVD2 | **Falta el rasgo que separa**: la definición da solo la clase y deja entrar a los vecinos (muy amplia). | «Termómetro: instrumento de medida» deja entrar a la balanza. | Sin estudio encontrado. | Hipótesis | — |
+| RVD3 | **Un rasgo necesario se toma por suficiente**: está en todos los casos, pero también en un vecino. | «Ave: animal que pone huevos» deja entrar a la rana. | Sin estudio encontrado. | Hipótesis | — |
+| RVD4 | **Se agrega un rasgo de más**: la definición pide algo que no está en todos los casos y queda muy estrecha. | «Instrumento de viento: suena al soplar y tiene varios tubos» deja fuera a la quena. | Sin estudio encontrado; vecino de RVD1. | Hipótesis (ligada a RVD1) | — |
+| RVD5 | **Se da por cumplido un rasgo que el caso no tiene**: no se mira la tabla o el caso, y se lo deja entrar. | Con «animal que pone huevos», el alumno cree que entra también el murciélago. | Sin estudio encontrado. | Hipótesis | — |
+| RVD6 | **La clase queda lejos**: se elige una clase demasiado general y entran cosas de otras clases (muy amplia). | «Poncho: objeto de lana para abrigarse» deja entrar a la frazada. | Sin estudio encontrado. | Hipótesis | — |
+| RVD7 | **Se elige la definición del vecino**: tiene clase y rasgo, pero el rasgo es de otra cosa de la misma clase. | Para «motocarga», «vehículo de tres ruedas, con motor, que lleva pasajeros»; en la UNI, la palabra vecina (agricultor por ganadero). | Sin estudio encontrado. | Hipótesis | — |
+| RVD8 | **Se acepta una definición sin clase**: da un rasgo, pero no dice qué es la cosa. | «Brújula: lo que señala siempre hacia el norte». | Sin estudio encontrado. | Hipótesis | — |
+| RVD9 | **Se elige la palabra más general**: cumple la clase de la definición, pero no sus rasgos. | «Persona que cría y cuida ganado»: el alumno elige «trabajador». | Formato de la UNI (hipótesis). Sin estudio encontrado. | Hipótesis | — |
+| RVD10 | **Se elige la palabra más específica**: cumple todo y agrega un rasgo que la definición no dice. | «Persona que cría y cuida ganado»: el alumno elige «pastor de alpacas». | Formato de la UNI (hipótesis). Sin estudio encontrado. | Hipótesis | — |
+| RVD11 | **Se cambia la clase por otra del mismo tema**: la palabra o la paráfrasis nombra la acción, la causa, el lugar o el producto, y no la cosa. | «Persona que cría ganado»: «ganado»; «el friaje es…»: «viento frío del sur». | Sin estudio encontrado. | Hipótesis | — |
+| RVD12 | **Se acepta una definición circular**: usa la misma palabra que define. | «Sequía: tiempo en que hay sequía». | Sin estudio encontrado; defecto clásico de la definición. | Hipótesis | — |
+| RVD13 | **Se acepta una definición negativa**: solo dice lo que la cosa no es, cuando la palabra no nombra una falta. | «Pescador: persona que no trabaja en la chacra». | Sin estudio encontrado. | Hipótesis | — |
+| RVD14 | **Se acepta una definición figurada**: compara la cosa con otra en vez de decir qué es. | «Cóndor: el rey de los cielos andinos». | Sin estudio encontrado. | Hipótesis | — |
+| RVD15 | **Se toma por definición otra oración del texto que habla del término**: un dato, una consecuencia o un consejo. | El texto define «soroche»; el alumno elige «lo que sienten muchos visitantes el primer día». | Trampa de San Marcos 2019-I («definición clínica»: un dato en lugar del rasgo). Sin estudio con alumnos. Vecino de RV56. | Hipótesis (ligada a RV56) | — |
+
 ## Lo que no tiene respaldo (todavía)
 
 Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada uno se liga a un error con algo de respaldo:

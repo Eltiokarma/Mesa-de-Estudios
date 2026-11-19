@@ -182,3 +182,12 @@ Para todos: solo los colores de marca y de la cáscara (`docs/diseno.md`), nunca
 **Dónde va:** `plantillas/magnetismo/utileria/` y `plantillas/calorimetria/utileria/`, un SVG por objeto (y por vista o estado), menos de 4 KB cada uno. Mientras no llegue, la escena usa el trazo provisional del kit y lo dice en el reporte.
 
 **Orden sugerido:** la mano derecha primero, que es la que más cambia el juego, y después los tres objetos de calorimetría que comparten «Toco el metal» y «Dos cubos de hielo».
+
+## 11. Definiciones (razonamiento verbal): la ficha de diccionario y la página de diccionario
+
+Dos dibujos de prueba de la etapa 5 (`contenido/teoria/razonamiento-verbal/definiciones.js`), marcados con `data-prueba="si"`; Gerson decide si se reemplazan. El texto lo pone siempre el kit: el vector es solo el marco.
+
+| Objeto | Dónde está hoy | Partes (`id`) | Tamaño en pantalla | Cuidado |
+| --- | --- | --- | --- | --- |
+| **Ficha de diccionario** | `nucleo/kit/piezas/rv-definicion.js` (la ficha con la palabra, la fila «Clase» y las filas «Rasgo») | `lomo` y `pagina` | 298 px de ancho; el alto lo da el número de filas | Las casillas de clase y rasgo van sin color propio: el color de la paleta de lectura lo pone el kit (entra, se cuela, justa) |
+| **Página de diccionario** | Soporte `diccionario` de `nucleo/kit/piezas/rv-soporte.js` (las entradas con su palabra en negrita) | `lomo`, `pagina` y `uneros` (las tres muescas del índice en el canto) | 290 px de ancho | Los uñeros no pueden tapar el final de los renglones |

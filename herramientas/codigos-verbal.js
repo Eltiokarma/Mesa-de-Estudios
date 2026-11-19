@@ -1,4 +1,4 @@
-// Lee las filas "| RVn |" del informe de razonamiento verbal y escribe
+// Lee las filas "| RVn |" y "| RVDn |" del informe de razonamiento verbal y escribe
 // contenido/razonamiento-verbal/codigos.json (docs/formato-lectura.md, sección 7.7):
 //   { "RV1": { "nombre": "…", "respaldo": "parcial", "por_verificar": true } }
 // El respaldo se normaliza a documentado, parcial o hipotesis (sin tilde, como en nucleo/predicciones.js);
@@ -19,7 +19,8 @@ function normalizarRespaldo(s) {
 }
 
 function construir(md = fs.readFileSync(INFORME, 'utf8')) {
-  const filas = [...md.matchAll(/^\| (RV\d+) \|(.*)\|\s*$/gm)];
+  // RVn y, desde la etapa 5, RVDn (los de la unidad «Definiciones»: van después de los RV).
+  const filas = [...md.matchAll(/^\| (RVD?\d+) \|(.*)\|\s*$/gm)];
   const out = {};
   for (const [, id, resto] of filas) {
     const celdas = resto.split(' | ').map(x => x.trim());
@@ -30,7 +31,8 @@ function construir(md = fs.readFileSync(INFORME, 'utf8')) {
     const nombre = (negrita ? negrita[1] : idea).replace(/\.$/, '').trim();
     out[id] = { nombre, respaldo: normalizarRespaldo(resp), por_verificar: /por verificar/i.test(resp) };
   }
-  const orden = Object.keys(out).sort((a, b) => Number(a.slice(2)) - Number(b.slice(2)));
+  const clave = k => (k.startsWith('RVD') ? 10000 : 0) + Number(k.replace(/^RVD?/, ''));
+  const orden = Object.keys(out).sort((a, b) => clave(a) - clave(b));
   return Object.fromEntries(orden.map(k => [k, out[k]]));
 }
 

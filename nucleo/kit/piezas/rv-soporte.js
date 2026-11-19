@@ -11,7 +11,9 @@
  * (data-prueba="si"): Gerson decide después cuáles se reemplazan (docs/molde-unidad.md §6).
  *
  * datos = {
- *   soporte: 'mural' | 'puerta' | 'cartel' | 'folleto' | 'cuaderno' | 'mensaje' | 'simulacro',
+ *   soporte: 'mural' | 'puerta' | 'cartel' | 'folleto' | 'cuaderno' | 'mensaje' | 'simulacro' | 'diccionario',
+ *                                       // diccionario (etapa 5, Definiciones): una página con lomo y uñeros; cada entrada
+ *                                       // es una oración con `lema` (la palabra, en negrita): { id, lema: 'puente', t: '…' }
  *   lugar: 'Mural del colegio',        // rótulo de arriba (en el mensaje, el nombre del grupo; en el simulacro, no va)
  *   numero: 12,                        // solo simulacro: «Pregunta 12»
  *   hojas: [{                          // un papel (en el mural, la puerta…) o una sección de la hoja del simulacro
@@ -91,6 +93,8 @@
     cuaderno: () => ({ x: 10, w: 300 }),
     mensaje: () => ({ x: 26, w: 258 }),
     simulacro: () => ({ x: 8, w: 304 }),
+    // Etapa 5 (Definiciones): la página de un diccionario escolar; a la izquierda queda el lomo.
+    diccionario: () => ({ x: 20, w: 290 }),
   };
 
   // El contenido de una hoja desde (x, y) con ancho w: título, «De … · Para …», oraciones, tabla o barras.
@@ -110,7 +114,9 @@
     if (h.ilustracion === 'balsa') { items.push({ tipo: 'balsa', x: tx, y, w: tw, h: 50 }); y += 56; }
     (h.oraciones || []).forEach((o, k) => {
       items.push({ tipo: 'num', id: o.id, x: tx, y: y + 15, w: NUM - 6, texto: `${k + 1}`, tam: 14, peso: 700 });
-      for (const r of renglones(o.t, tw - NUM)) { items.push(Object.assign({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, tam: TAM, peso: 400 }, r)); y += LH; }
+      // Con `lema` (entrada de diccionario), la palabra va en negrita al inicio del primer renglón: «puente. Construcción…».
+      const rs = renglones(o.lema ? `${o.lema}. ${o.t}` : o.t, tw - NUM);
+      rs.forEach((r, j) => { items.push(Object.assign({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, tam: TAM, peso: 400 }, r, o.lema && j === 0 ? { lema: `${o.lema}.` } : {})); y += LH; });
       y += 3;
     });
     if (h.tabla) {
@@ -286,6 +292,17 @@
       s += `<circle cx="${T.n(m.x + 30)}" cy="${T.n(m.y + 19)}" r="9" fill="currentColor" fill-opacity="0.25"/>`;
       return { s: obj('celular', s), encima: '' };
     }
+    if (sop === 'diccionario') {
+      // El lomo del libro a la izquierda y los uñeros (las muescas del índice) en el canto derecho: dibujo de prueba.
+      for (const P of L.papeles) if (P.w) {
+        s += `<rect x="${T.n(P.x - 12)}" y="${T.n(P.y)}" width="16" height="${T.n(P.h)}" rx="4" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-opacity="0.4" stroke-width="2"/>`;
+        for (let k = 0; k < 3; k++) {
+          const uy = P.y + 12 + k * 28;
+          if (uy + 18 < P.y + P.h - 6) encima += `<path d="M${T.n(P.x + P.w - 1)} ${T.n(uy)}a9 9 0 0 0 0 18" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.5"/>`;
+        }
+      }
+      return { s: obj('diccionario', s), encima: obj('uneros', encima) };
+    }
     if (sop === 'cuaderno') {
       for (const P of L.papeles) if (P.w) {
         let g = '';
@@ -321,7 +338,9 @@
 
     const texto = (it, extra = '') => {
       const largo = it.estira ? ` textLength="${T.n(it.w)}" lengthAdjust="spacing"` : '';
-      return `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="${it.tam}"${it.peso !== 400 ? ` font-weight="${it.peso}"` : ''}${extra}${largo}>${T.esc(it.texto)}</text>`;
+      // El lema de una entrada de diccionario, en negrita, dentro del mismo renglón.
+      const cuerpoT = it.lema && it.texto.startsWith(it.lema) ? `<tspan font-weight="700">${T.esc(it.lema)}</tspan>${T.esc(it.texto.slice(it.lema.length))}` : T.esc(it.texto);
+      return `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="${it.tam}"${it.peso !== 400 ? ` font-weight="${it.peso}"` : ''}${extra}${largo}>${cuerpoT}</text>`;
     };
     const marca = (it, c) => {
       fondo += `<rect class="rv-marca${cl(it.id)}" x="${T.n(it.x - 2)}" y="${T.n(it.y - 15)}" width="${T.n(it.w + 4)}" height="20" rx="4" fill="${T.color(c)}" fill-opacity="0.14"/>`;
@@ -432,12 +451,12 @@
   }
 
   // El texto alternativo es el texto entero, con su soporte, quién lo escribe y para quién.
-  const NOMBRE = { mural: 'Mural', puerta: 'Papel pegado en una puerta', cartel: 'Cartel', folleto: 'Folleto', cuaderno: 'Hoja de cuaderno', mensaje: 'Mensaje de celular', simulacro: 'Hoja de simulacro' };
+  const NOMBRE = { mural: 'Mural', puerta: 'Papel pegado en una puerta', cartel: 'Cartel', folleto: 'Folleto', cuaderno: 'Hoja de cuaderno', mensaje: 'Mensaje de celular', simulacro: 'Hoja de simulacro', diccionario: 'Página de diccionario' };
   function alt(d) {
     const sop = NOMBRE[d.soporte] ? d.soporte : 'mural';
     const hs = (d.hojas || []).map(h => {
       const cab = [h.titulo, h.de ? `de ${h.de}` : '', h.para ? `para ${h.para}` : ''].filter(Boolean).join(', ');
-      const ors = (h.oraciones || []).map((o, k) => `${k + 1}. ${o.t}`).join(' ');
+      const ors = (h.oraciones || []).map((o, k) => `${k + 1}. ${o.lema ? `${o.lema}. ` : ''}${o.t}`).join(' ');
       const tb = h.tabla ? ` Tabla${h.tabla.titulo ? ` «${h.tabla.titulo}»` : ''}: ${(h.tabla.cols || []).join(', ')}; ${(h.tabla.filas || []).map(f => f.celdas.join(', ')).join('; ')}.` : '';
       const br = h.barras ? ` Gráfico de barras${h.barras.titulo ? ` «${h.barras.titulo}»` : ''}: ${(h.barras.items || []).map(i => `${i.t}, ${i.v}${h.barras.unidad || ''}`).join('; ')}.` : '';
       return `${cab ? `${cab}: ` : ''}${h.ilustracion === 'balsa' ? '(Dibujo de una balsa de totora.) ' : ''}${ors}${tb}${br}`;

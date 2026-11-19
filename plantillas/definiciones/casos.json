@@ -1,0 +1,547 @@
+{
+ "plantilla": "definiciones",
+ "nota": "entrada: tipo e ítem del banco; esperado: la alternativa correcta y las incorrectas mostradas con su código. Las semillas se generan con { idea } (cuatro por idea).",
+ "verificacion": "Script aparte (19 nov 2026, scratchpad e5-rv/casos-def.js, fuera del repo) con la clave de los 40 ítems escrita a mano al leer cada uno: la definición justa, el rasgo de todos, la palabra que se ajusta, la frase que define y la paráfrasis del texto. Los 20 casos cuadran con el generador. Además, generador.test.js recalcula 600 problemas por otro camino (conjuntos de rasgos, un clasificador de frases por su forma y la cercanía de palabras con cada oración).",
+ "casos": [
+  {
+   "semilla": "caso-0",
+   "idea": "genero-diferencia",
+   "entrada": {
+    "tipo": "definicion",
+    "item": "ventilador"
+   },
+   "esperado": {
+    "texto": "Aparato eléctrico con aspas que mueve el aire",
+    "errores": [
+     [
+      "Objeto que se usa en el aula de cómputo",
+      "RVD6"
+     ],
+     [
+      "Aparato eléctrico que da calor en los días de frío",
+      "RVD7"
+     ],
+     [
+      "Que mueve el aire para refrescar",
+      "RVD8"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-1",
+   "idea": "genero-diferencia",
+   "entrada": {
+    "tipo": "definicion-examen",
+    "item": "peine"
+   },
+   "esperado": {
+    "texto": "Utensilio con púas para arreglar el cabello",
+    "errores": [
+     [
+      "Utensilio para arreglar el cabello",
+      "RVD2"
+     ],
+     [
+      "Que tiene púas, como los dientes de un tenedor",
+      "RVD8"
+     ],
+     [
+      "Utensilio con cerdas para limpiar los dientes",
+      "RVD7"
+     ],
+     [
+      "Objeto que se usa en la cabeza",
+      "RVD6"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-2",
+   "idea": "genero-diferencia",
+   "entrada": {
+    "tipo": "definicion-examen",
+    "item": "calculadora"
+   },
+   "esperado": {
+    "texto": "Aparato con teclas que sirve solo para hacer cuentas",
+    "errores": [
+     [
+      "Aparato que puede hacer cuentas",
+      "RVD2"
+     ],
+     [
+      "Que sirve solo para hacer cuentas",
+      "RVD8"
+     ],
+     [
+      "Aparato con pantalla que sirve para llamar y hacer cuentas",
+      "RVD7"
+     ],
+     [
+      "Objeto que se lleva al examen de Matemática",
+      "RVD6"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-3",
+   "idea": "genero-diferencia",
+   "entrada": {
+    "tipo": "definicion-examen",
+    "item": "sarten"
+   },
+   "esperado": {
+    "texto": "Utensilio de cocina poco hondo, con mango, para freír",
+    "errores": [
+     [
+      "Utensilio de cocina con un mango largo",
+      "RVD2"
+     ],
+     [
+      "Objeto de la casa que es poco hondo",
+      "RVD6"
+     ],
+     [
+      "Que sirve para freír los huevos del desayuno",
+      "RVD8"
+     ],
+     [
+      "Utensilio de cocina hondo, en el que se hierve el agua",
+      "RVD7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-4",
+   "idea": "rasgo-necesario",
+   "entrada": {
+    "tipo": "rasgo-examen",
+    "item": "liquido"
+   },
+   "esperado": {
+    "texto": "Toma la forma del recipiente sin cambiar su volumen",
+    "errores": [
+     [
+      "Toma la forma del recipiente y deja ver a través",
+      "RVD4"
+     ],
+     [
+      "Es transparente y deja ver lo que hay detrás",
+      "RVD1"
+     ],
+     [
+      "Es como el agua del caño",
+      "RV56"
+     ],
+     [
+      "Se puede guardar en una botella o en un frasco con tapa",
+      "RVD3"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-5",
+   "idea": "rasgo-necesario",
+   "entrada": {
+    "tipo": "rasgo",
+    "item": "cuadrilatero"
+   },
+   "esperado": {
+    "texto": "Tiene exactamente cuatro lados",
+    "errores": [
+     [
+      "Tiene sus cuatro lados del mismo largo",
+      "RVD1"
+     ],
+     [
+      "Tiene lados rectos",
+      "RVD3"
+     ],
+     [
+      "Tiene cuatro lados y cuatro ángulos rectos",
+      "RVD4"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-6",
+   "idea": "rasgo-necesario",
+   "entrada": {
+    "tipo": "rasgo",
+    "item": "liquido"
+   },
+   "esperado": {
+    "texto": "Toma la forma del recipiente sin cambiar su volumen",
+    "errores": [
+     [
+      "Es transparente y deja ver lo que hay detrás",
+      "RVD1"
+     ],
+     [
+      "Se puede guardar en una botella o en un frasco con tapa",
+      "RVD3"
+     ],
+     [
+      "Es como el agua del caño",
+      "RV56"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-7",
+   "idea": "rasgo-necesario",
+   "entrada": {
+    "tipo": "rasgo-examen",
+    "item": "par"
+   },
+   "esperado": {
+    "texto": "Se puede dividir entre 2 sin que sobre nada",
+    "errores": [
+     [
+      "Es un número que termina en cero",
+      "RVD1"
+     ],
+     [
+      "Es como el 4, que se reparte en dos grupos iguales",
+      "RV56"
+     ],
+     [
+      "Es un número entero",
+      "RVD3"
+     ],
+     [
+      "Se puede dividir entre 2 y también entre 4",
+      "RVD4"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-8",
+   "idea": "definicion-a-palabra",
+   "entrada": {
+    "tipo": "palabra-examen",
+    "item": "infusion"
+   },
+   "esperado": {
+    "texto": "infusión",
+    "errores": [
+     [
+      "bebida",
+      "RVD9"
+     ],
+     [
+      "manzanilla",
+      "RVD10"
+     ],
+     [
+      "hoja",
+      "RVD11"
+     ],
+     [
+      "jugo",
+      "RVD7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-9",
+   "idea": "definicion-a-palabra",
+   "entrada": {
+    "tipo": "palabra",
+    "item": "cunado"
+   },
+   "esperado": {
+    "texto": "cuñado",
+    "errores": [
+     [
+      "yerno",
+      "RVD7"
+     ],
+     [
+      "esposo",
+      "RVD9"
+     ],
+     [
+      "matrimonio",
+      "RVD11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-10",
+   "idea": "definicion-a-palabra",
+   "entrada": {
+    "tipo": "palabra-examen",
+    "item": "contemplar"
+   },
+   "esperado": {
+    "texto": "contemplar",
+    "errores": [
+     [
+      "mirar",
+      "RVD9"
+     ],
+     [
+      "mirada",
+      "RVD11"
+     ],
+     [
+      "contemplar el lago",
+      "RVD10"
+     ],
+     [
+      "ojear",
+      "RVD7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-11",
+   "idea": "definicion-a-palabra",
+   "entrada": {
+    "tipo": "palabra-examen",
+    "item": "infusion"
+   },
+   "esperado": {
+    "texto": "infusión",
+    "errores": [
+     [
+      "manzanilla",
+      "RVD10"
+     ],
+     [
+      "jugo",
+      "RVD7"
+     ],
+     [
+      "bebida",
+      "RVD9"
+     ],
+     [
+      "hoja",
+      "RVD11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-12",
+   "idea": "definicion-defectuosa",
+   "entrada": {
+    "tipo": "falta",
+    "item": "desnudo"
+   },
+   "esperado": {
+    "texto": "Que no lleva ropa sobre el cuerpo",
+    "errores": [
+     [
+      "Que no está triste ni enfermo ni cansado",
+      "RVD13"
+     ],
+     [
+      "Que se quedó desnudo",
+      "RVD12"
+     ],
+     [
+      "Que viste solo su propia piel",
+      "RVD14"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-13",
+   "idea": "definicion-defectuosa",
+   "entrada": {
+    "tipo": "falta",
+    "item": "inmovil"
+   },
+   "esperado": {
+    "texto": "Que no se mueve de su sitio",
+    "errores": [
+     [
+      "Que no corre ni salta ni baila",
+      "RVD13"
+     ],
+     [
+      "Que está inmóvil",
+      "RVD12"
+     ],
+     [
+      "Que es una estatua de carne y hueso",
+      "RVD14"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-14",
+   "idea": "definicion-defectuosa",
+   "entrada": {
+    "tipo": "define",
+    "item": "mercado"
+   },
+   "esperado": {
+    "texto": "Lugar donde se compran y venden alimentos y otras cosas",
+    "errores": [
+     [
+      "Lugar que no es una tienda, ni una feria, ni un supermercado",
+      "RVD13"
+     ],
+     [
+      "Lugar que queda donde está el mercado del barrio, cerca de la plaza",
+      "RVD12"
+     ],
+     [
+      "Lugar de la ciudad",
+      "RVD2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-15",
+   "idea": "definicion-defectuosa",
+   "entrada": {
+    "tipo": "falta",
+    "item": "sordo"
+   },
+   "esperado": {
+    "texto": "Dicho de una persona: que no puede oír los sonidos",
+    "errores": [
+     [
+      "Dicho de una persona: que vive en un silencio sin fin",
+      "RVD14"
+     ],
+     [
+      "Dicho de una persona: que está sorda",
+      "RVD12"
+     ],
+     [
+      "Dicho de una persona: que no es ciega ni muda",
+      "RVD13"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-16",
+   "idea": "definicion-en-texto",
+   "entrada": {
+    "tipo": "termino",
+    "item": "tarwi"
+   },
+   "esperado": {
+    "texto": "Legumbre andina de grano blanco, que se come sin su sabor amargo",
+    "errores": [
+     [
+      "Grano con mucha proteína que se vende desgranado en la feria del pueblo",
+      "RVD15"
+     ],
+     [
+      "El ceviche de la feria, que se prepara con un grano andino de color blanco",
+      "RV56"
+     ],
+     [
+      "Agua en la que se lava un grano amargo",
+      "RVD11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-17",
+   "idea": "definicion-en-texto",
+   "entrada": {
+    "tipo": "termino-examen",
+    "item": "minka"
+   },
+   "esperado": {
+    "texto": "Trabajo que una familia pide a sus vecinos y paga con comida",
+    "errores": [
+     [
+      "Comida y bebida que se invita a los vecinos",
+      "RVD11"
+     ],
+     [
+      "Día en que los vecinos llegan muy temprano",
+      "RVD15"
+     ],
+     [
+      "La construcción de la casa de doña Juana, que se levantó este año",
+      "RV56"
+     ],
+     [
+      "Trabajo que solo se hace en la comunidad de Capachica, cerca del lago",
+      "RV11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-18",
+   "idea": "definicion-en-texto",
+   "entrada": {
+    "tipo": "termino-examen",
+    "item": "eclipse"
+   },
+   "esperado": {
+    "texto": "Ocultamiento de un astro porque otro se pone delante",
+    "errores": [
+     [
+      "El momento en que la Luna tapa al Sol",
+      "RV56"
+     ],
+     [
+      "Astro que se pone delante de otro astro y lo tapa por un rato",
+      "RVD11"
+     ],
+     [
+      "Lo que el club de astronomía mirará desde el patio del colegio",
+      "RVD15"
+     ],
+     [
+      "Ocultamiento que solo se puede ver de noche",
+      "RV11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-19",
+   "idea": "definicion-en-texto",
+   "entrada": {
+    "tipo": "termino",
+    "item": "vacuna"
+   },
+   "esperado": {
+    "texto": "Sustancia que prepara al cuerpo para defenderse de una enfermedad",
+    "errores": [
+     [
+      "La que se pone de niño contra el sarampión, como dice el comunicado del puesto",
+      "RV56"
+     ],
+     [
+      "Sustancia que solo se pone a los niños",
+      "RV11"
+     ],
+     [
+      "Enfermedad de la que el cuerpo se defiende",
+      "RVD11"
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -7207,7 +7207,10 @@
      "temas": [
       "Género próximo",
       "Diferencia específica",
-      "Rasgos mínimos de significado"
+      "Rasgos mínimos de significado",
+      "Definición y palabra definida",
+      "Defectos de la definición",
+      "Definición en el texto"
      ],
      "universidades": {
       "uni": {
@@ -7221,19 +7224,25 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
+      "definiciones",
       "lectura-verbal"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-verbal/definiciones.js",
       "requiere": [
-       "/nucleo/kit/piezas/rv-texto.js"
+       "/nucleo/kit/piezas/rv-texto.js",
+       "/nucleo/kit/piezas/rv-soporte.js",
+       "/nucleo/kit/piezas/rv-definicion.js"
       ],
-      "ideas": 2,
+      "ideas": 5,
       "titulos": {
-       "genero-diferencia": "Clase cercana y rasgo que separa",
-       "rasgo-necesario": "Necesario, no solo frecuente"
+       "genero-diferencia": "Clase y rasgo que separa",
+       "rasgo-necesario": "Necesario, no solo frecuente",
+       "definicion-a-palabra": "De la definición a la palabra",
+       "definicion-defectuosa": "Cuando la definición no define",
+       "definicion-en-texto": "La definición dentro del texto"
       },
-      "terminos": 8
+      "terminos": 26
      }
     },
     {
@@ -7272,7 +7281,7 @@
        "clase-y-causa": "Clase y miembro, causa y efecto",
        "sinonimo-antonimo": "Sinónimos y antónimos en un rasgo"
       },
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -7354,7 +7363,7 @@
        "clases": "Cada hueco pide una clase",
        "locuciones": "Varias palabras, un conector"
       },
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -7391,7 +7400,7 @@
        "impertinencia": "Lo que habla de otro asunto",
        "incompatibilidad": "Contradecir no es contrastar"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -7429,7 +7438,7 @@
        "tiempo-y-causa": "El tiempo y la causa ordenan",
        "analizar-comparar": "Presentar antes de comparar"
       },
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -7476,7 +7485,7 @@
        "conocido-y-nuevo": "Lo conocido trae lo nuevo",
        "no-contradiccion": "Conectores no garantizan sentido"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -7520,7 +7529,7 @@
        "normas-textualidad": "Qué hace que algo sea texto",
        "niveles": "Tres niveles de lectura"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -7567,7 +7576,7 @@
        "jerarquia": "Principal y secundarias",
        "alternativas": "Elegir en el examen"
       },
-      "terminos": 25
+      "terminos": 27
      }
     },
     {
@@ -7610,7 +7619,7 @@
        "parafrasis": "Parafrasear no es inferir",
        "sintesis": "Sintetizar sin borrar diferencias"
       },
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -7654,7 +7663,7 @@
        "escala": "La escala cambia la imagen",
        "texto-y-grafico": "Texto y gráfico se leen juntos"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -7698,7 +7707,7 @@
        "implicito": "Lo que se dice sin decir",
        "intencion-global": "La intención sale del todo"
       },
-      "terminos": 17
+      "terminos": 18
      }
     },
     {
@@ -7739,7 +7748,7 @@
        "cuatro-casillas": "Dice, deduce, contradice o no sabe",
        "idea-principal": "Chocar con la idea principal"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -7781,7 +7790,7 @@
        "condicional": "Si A, entonces B",
        "mundos-posibles": "Qué queda en otro mundo"
       },
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -7828,7 +7837,7 @@
        "cuestion-y-posturas": "Dos autores, una cuestión",
        "tesis-antitesis-sintesis": "Tesis, antítesis y síntesis"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -7868,7 +7877,7 @@
        "emisor-destinatario": "Quién habla y a quién",
        "misma-frase": "La misma frase, otra acción"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -7903,7 +7912,7 @@
        "texto-cientifico": "Dato, método, explicación y límite",
        "texto-filosofico": "Pregunta, término, tesis y objeción"
       },
-      "terminos": 21
+      "terminos": 24
      }
     },
     {
@@ -7943,7 +7952,7 @@
        "main-idea": "Main idea y summary",
        "stated-or-not": "Dicho, contradicho o no dicho"
       },
-      "terminos": 19
+      "terminos": 20
      }
     }
    ]
@@ -8843,6 +8852,29 @@
     "/plantillas/dados-domino/index.html",
     "/plantillas/dados-domino/motor.js",
     "/plantillas/dados-domino/papel.json"
+   ]
+  },
+  "definiciones": {
+   "id": "definiciones",
+   "titulo": "Definiciones: clase, rasgo y palabra",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.definiciones"
+   ],
+   "url": "#/practica/definiciones",
+   "ideas": [
+    "genero-diferencia",
+    "rasgo-necesario",
+    "definicion-a-palabra",
+    "definicion-defectuosa",
+    "definicion-en-texto"
+   ],
+   "papel": "/plantillas/definiciones/papel.json",
+   "archivos": [
+    "/plantillas/definiciones/generador.js",
+    "/plantillas/definiciones/papel.json"
    ]
   },
   "densidad-propiedades": {

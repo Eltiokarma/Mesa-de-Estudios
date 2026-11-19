@@ -1,0 +1,93 @@
+{
+  "titulo": "Definiciones: clase, rasgo y palabra: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el aula de cómputo hay un ventilador, una estufa y una impresora. ¿Qué definición de «ventilador» la separa de sus vecinos? Datos: Definición: dice la clase de la cosa y el rasgo que la separa de sus vecinos. Muy amplia: la definición deja entrar a un vecino, que no es la cosa. Vecino: cosa parecida, de la misma clase, que no es lo que se define. Alternativas: A) Objeto que se usa en el aula de cómputo   B) Aparato eléctrico que da calor en los días de frío   C) Aparato eléctrico con aspas que mueve el aire   D) Aparato eléctrico del aula",
+      "respuesta": "C) Aparato eléctrico con aspas que mueve el aire",
+      "pasos": [
+        "Primero la clase: «aparato eléctrico», el grupo al que pertenece.",
+        "Después el rasgo: «Aparato eléctrico con aspas que mueve el aire» deja fuera a estufa, impresora y abanico.",
+        "Las otras dejan entrar a un vecino, definen a otro o no dicen la clase."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En el laboratorio hay agua, leche y aceite en frascos, y un cubo de hielo en un plato. ¿Qué rasgo de «líquido» está en todos los casos y en ningún vecino? Datos: Rasgo necesario: lo tienen todos los casos, sin excepción. Rasgo suficiente: no lo tiene ningún vecino; basta para separar. Ejemplo: un caso de la cosa. La muestra, pero no la define. La arena también se puede guardar en una botella. Alternativas: A) Toma la forma del recipiente sin cambiar su volumen   B) Toma la forma del recipiente y deja ver a través   C) Se puede guardar en una botella o en un frasco con tapa   D) Es como el agua del caño",
+      "respuesta": "A) Toma la forma del recipiente sin cambiar su volumen",
+      "pasos": [
+        "Dos pruebas: ¿lo tienen todos los casos (agua, leche y aceite)? ¿Lo tiene algún vecino (hielo y arena)?",
+        "«Toma la forma del recipiente sin cambiar su volumen» pasa las dos: está en todos los casos y en ningún vecino."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "________: Mueble con respaldo, para que se siente una persona. ¿Qué palabra se ajusta a la definición? Datos: Se ajusta: la palabra cumple la clase y cada rasgo de la definición, y ninguno más. La más general: cumple la clase, pero no dice los rasgos. La más específica: cumple todo y agrega un rasgo que la definición no dice. Alternativas: A) taburete   B) silla   C) pata   D) mueble",
+      "respuesta": "B) silla",
+      "pasos": [
+        "Primero la clase: la definición empieza con «mueble».",
+        "Después cada rasgo: «silla» los cumple todos y no agrega ninguno.",
+        "La más general no dice los rasgos, la más específica agrega uno, el vecino cambia uno y la de otra clase no es lo que la definición nombra."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Antes de la visita a la posta, la tutora pidió definir la palabra «médico». ¿Cuál de estas frases define de verdad «médico»? Datos: Definición: dice la clase de la cosa y el rasgo que la separa de sus vecinos. Circular: la definición usa la misma palabra que define. Negativa: solo dice lo que la cosa no es. Figurada: compara la cosa con otra en vez de decir qué es. Alternativas: A) Persona que trabaja como médico en una posta o un hospital   B) Persona del hospital   C) Persona con título para curar enfermedades   D) Persona que no es enfermera ni técnico de la posta",
+      "respuesta": "C) Persona con título para curar enfermedades",
+      "pasos": [
+        "«Persona con título para curar enfermedades» dice la clase y el rasgo, sin repetir la palabra, sin negar y sin comparar.",
+        "Las otras repiten la palabra, solo niegan, comparan o no traen el rasgo."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Mensaje de la junta vecinal de Juliaca: (1) Ayer por la tarde cayó una granizada sobre Juliaca. (2) Una granizada es una lluvia de pequeños trozos de hielo que caen de las nubes. (3) Por ejemplo, la de ayer rompió varios techos de calamina. (4) Cubra sus plantas con plástico cuando el cielo se ponga oscuro. En el texto, el término «granizada» se entiende como Datos: Un texto define un término cuando dice qué es: «es», «se llama», «consiste en». Dato: una cifra, un lugar o una fecha del término. Lo acompaña, pero no lo define. «Solo», «siempre», «nunca»: dicen que no hay excepción. Alternativas: A) Plástico con que se cubren las plantas   B) La que ayer rompió varios techos de calamina en la ciudad de Juliaca   C) Lluvia de pequeños trozos de hielo que caen de las nubes   D) Caída de hielo que solo ocurre por la tarde",
+      "respuesta": "C) Lluvia de pequeños trozos de hielo que caen de las nubes",
+      "pasos": [
+        "La oración 2 dice «granizada es»: ahí está la definición.",
+        "«Lluvia de pequeños trozos de hielo que caen de las nubes» conserva su clase, «lluvia», y su rasgo.",
+        "Las otras toman un dato o un ejemplo, cambian la clase o agregan un «solo»."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "________: Cortar la lana o el pelo a un animal. Pregunta de definiciones del simulacro: ¿qué palabra se ajusta a la definición? Datos: Se ajusta: la palabra cumple la clase y cada rasgo de la definición, y ninguno más. La más general: cumple la clase, pero no dice los rasgos. La más específica: cumple todo y agrega un rasgo que la definición no dice. Alternativas: A) esquilar alpacas   B) cortar   C) podar   D) esquilar   E) lana",
+      "respuesta": "D) esquilar",
+      "pasos": [
+        "Primero la clase: la definición empieza con «cortar».",
+        "Después cada rasgo: «esquilar» los cumple todos y no agrega ninguno.",
+        "La más general no dice los rasgos, la más específica agrega uno, el vecino cambia uno y la de otra clase no es lo que la definición nombra."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el cuento del taller de lectura, un personaje se queda «inmóvil». La profesora pidió definir la palabra. ¿Cuál de estas frases define de verdad «inmóvil»? Datos: Circular: la definición usa la misma palabra que define. Negativa: solo dice lo que la cosa no es. Figurada: compara la cosa con otra en vez de decir qué es. Negar vale cuando la palabra nombra una falta: «calvo: que no tiene pelo». Alternativas: A) Que es una estatua de carne y hueso   B) Que está inmóvil   C) Que no se mueve de su sitio   D) Que no corre ni salta ni baila",
+      "respuesta": "C) Que no se mueve de su sitio",
+      "pasos": [
+        "«Inmóvil» nombra una falta: su rasgo solo se dice negando.",
+        "«Que no se mueve de su sitio» nombra esa falta: define.",
+        "Las otras repiten la palabra, niegan otras cosas o comparan."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Folleto del museo de Huancayo: (1) En Huancayo hay muchos talleres de mate burilado. (2) El mate burilado es una calabaza seca con dibujos grabados con un buril. (3) Por ejemplo, el de la vitrina 4 muestra una corrida de toros. (4) Un buen mate puede tomar varias semanas de trabajo. Pregunta de comprensión de lectura: en el texto, el término «mate burilado» se entiende como Datos: Un texto define un término cuando dice qué es: «es», «se llama», «consiste en». Dato: una cifra, un lugar o una fecha del término. Lo acompaña, pero no lo define. «Solo», «siempre», «nunca»: dicen que no hay excepción. Buril: herramienta de punta fina para grabar. Alternativas: A) Trabajo de varias semanas en un taller de Huancayo   B) Calabaza seca con dibujos grabados con un buril   C) Calabaza que solo hacen en Huancayo   D) La pieza de la vitrina 4, con una corrida de toros   E) Herramienta de punta fina",
+      "respuesta": "B) Calabaza seca con dibujos grabados con un buril",
+      "pasos": [
+        "La oración 2 dice «mate burilado es»: ahí está la definición.",
+        "«Calabaza seca con dibujos grabados con un buril» conserva su clase, «calabaza», y su rasgo.",
+        "Las otras toman un dato o un ejemplo, cambian la clase o agregan un «solo»."
+      ]
+    }
+  ]
+}

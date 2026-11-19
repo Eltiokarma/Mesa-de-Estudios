@@ -13,13 +13,13 @@
     {
       "id": "razonamiento-verbal.definiciones",
       "nombre": "Definiciones",
-      "temas": ["Género próximo", "Diferencia específica", "Rasgos mínimos de significado"],
+      "temas": ["Género próximo", "Diferencia específica", "Rasgos mínimos de significado", "Definición y palabra definida", "Defectos de la definición", "Definición en el texto"],
       "universidades": {"uni": {"semanas": [0, 1]}},
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["lectura-verbal"],
-      "investigacion": null
+      "plantillas": ["definiciones", "lectura-verbal"],
+      "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {
       "id": "razonamiento-verbal.analogias",

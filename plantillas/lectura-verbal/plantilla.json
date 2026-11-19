@@ -16,6 +16,7 @@
     "razonamiento-verbal.eliminacion-de-oraciones",
     "razonamiento-verbal.definiciones"
   ],
+  "rehacer": ["razonamiento-verbal.definiciones"],
   "estado": "borrador",
   "version": "0.1.0",
   "banco": "../../contenido/razonamiento-verbal/indice.json",
