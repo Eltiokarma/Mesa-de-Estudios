@@ -14,13 +14,18 @@ const Ecuacion = require('../../nucleo/ecuacion.js');
 
 const RAIZ = path.join(__dirname, '..', '..');
 // Unidades de esta parte. A medida que se animan, se agregan aquí.
-const UNIDADES = ['materia-y-energia', 'estructura-atomica', 'tabla-periodica', 'enlace-quimico', 'nomenclatura-inorganica', 'mol-y-composicion', 'reacciones-y-balance', 'estequiometria', 'gases', 'liquidos-y-solidos'];
+const UNIDADES = ['materia-y-energia', 'estructura-atomica', 'propiedades-periodicas', 'enlace-quimico', 'nomenclatura-inorganica', 'mol-y-composicion', 'reacciones-y-balance', 'estequiometria', 'gases', 'liquidos-y-solidos'];
 // Ideas que de verdad no se prestan a animación (explicadas en rutinas/teoria5-quimica-a.md).
 // Estructura atómica (18 nov, propuesta §5 aprobada): el juego espera al alumno, sin automático. Idea 1, la misión pide
 // armar el carbono-14 a mano; ideas 3 y 4, la propuesta les quita el automático; ideas 2 y 6, sale el control «t» (el
 // reloj de la animación, propuesta §1, punto 4); idea 5, la misión (el Na⁺) se cumpliría sola si Z se moviera solo.
 const SIN_ANIMAR = new Set(['estructura-atomica/nucleo-identidad', 'estructura-atomica/modelos-atomicos', 'estructura-atomica/numeros-cuanticos',
-  'estructura-atomica/configuracion-electronica', 'estructura-atomica/configuracion-iones', 'estructura-atomica/desapareados-isoelectronicos']);
+  'estructura-atomica/configuracion-electronica', 'estructura-atomica/configuracion-iones', 'estructura-atomica/desapareados-isoelectronicos',
+  // Propiedades periódicas (19 nov, etapa 5): las cuatro misiones son de buscar un elemento, un ion o un enlace en la
+  // tabla; con un control que se mueve solo, la misión se cumpliría sin el alumno. Sus dos mesas sí se animan. Tabla
+  // periódica sale de esta lista: sus cuatro juegos también son de buscar y sus mesas se fueron con Propiedades.
+  'propiedades-periodicas/radio-atomico-ionico', 'propiedades-periodicas/radio-ionico',
+  'propiedades-periodicas/energia-ionizacion', 'propiedades-periodicas/electronegatividad']);
 
 function revisar(nombre, j, piezaPorDefecto) {
   const ctr = j.controles || [];

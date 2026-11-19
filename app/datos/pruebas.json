@@ -2918,6 +2918,30 @@
     "productos-pesan-lo-del-combustible": {
      "respaldo": "hipotesis",
      "describe": "Cree que los productos pesan lo mismo que el combustible: no cuenta el O₂ que se une"
+    },
+    "QM-PERIODO-ANTERIOR": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como periodo el del gas noble anterior o el del subnivel d de adentro, no el nivel más alto con electrones"
+    },
+    "QM-SOLO-P": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo los electrones p del nivel más alto para el grupo A y olvida los dos s"
+    },
+    "QM-PERIODO-GRUPO": {
+     "respaldo": "hipotesis",
+     "describe": "Intercambia periodo y grupo (trampa anotada en San Marcos 2026-I)"
+    },
+    "QM-EN-SUMA": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las dos electronegatividades en vez de restarlas"
+    },
+    "QM-EN-SOLO": {
+     "respaldo": "hipotesis",
+     "describe": "Da solo la electronegatividad del átomo que jala más, sin restar la otra"
+    },
+    "QM-EN-MITAD": {
+     "respaldo": "hipotesis",
+     "describe": "Divide la diferencia entre dos, como si se repartiera entre los átomos"
     }
    },
    "pares": [

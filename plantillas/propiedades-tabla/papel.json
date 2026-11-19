@@ -1,0 +1,84 @@
+{
+  "titulo": "Radio, ionización y electronegatividad en la tabla: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el periodo 2, del litio (grupo 1) al flúor (grupo 17). ¿Qué afirmación es correcta? Datos: Litio (Li): periodo 2, grupo 1 (IA). Flúor (F): periodo 2, grupo 17 (VIIA). Alternativas: A) La energía de ionización baja   B) El radio sube y la electronegatividad sube   C) El radio baja y la electronegatividad sube   D) El carácter metálico sube",
+      "respuesta": "C) El radio baja y la electronegatividad sube",
+      "pasos": [
+        "Hacia la derecha, más protones jalan el mismo nivel: el radio y el carácter metálico bajan; la EI y la EN suben.",
+        "Li 167 pm → F 42 pm   ·   Li 0,98 → F 3,98"
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El oxígeno está a la derecha del nitrógeno, en el periodo 2. ¿A cuál le cuesta más perder un electrón, su energía de ionización? Datos: Nitrógeno: 1s² 2s² 2p³; oxígeno: 1s² 2s² 2p⁴. Alternativas: A) No se puede saber sin medirlo   B) Al oxígeno, porque tiene un protón más   C) A los dos por igual: son del mismo periodo   D) Al oxígeno, porque está más a la derecha   E) Al nitrógeno",
+      "respuesta": "E) Al nitrógeno",
+      "pasos": [
+        "En el oxígeno sale un electrón p que ya tenía pareja: se repelen y sale más fácil.",
+        "N: 1402 kJ/mol; O: 1314 kJ/mol."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Tres elementos de los grupos A. Ordénalos de mayor a menor electronegatividad: boro, aluminio, carbono. Datos: Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). Carbono (C): periodo 2, grupo 14 (IVA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) Al > B > C   C) B > Al > C   D) C > B > Al   E) B > C > Al",
+      "respuesta": "D) C > B > Al",
+      "pasos": [
+        "Hacia la derecha en la fila, más; hacia abajo en la columna, menos.",
+        "C > B > Al (B 2,04; C 2,55; Al 1,61)."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El cloro tiene Z = 17. Forma el ion Cl⁻. ¿Cuántos electrones tiene el ion Cl⁻? Datos: Carga de un ion = protones − electrones. Cloro: 17 protones. Alternativas: A) 19   B) 17   C) 18   D) 16",
+      "respuesta": "C) 18",
+      "pasos": [
+        "Ganó 1: 17 + 1 = 18 electrones."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el enlace H–F, cada átomo jala el par compartido según su electronegatividad. ¿Cuánto vale ΔEN? Datos: EN: H 2,20; F 3,98. ΔEN = EN del mayor − EN del menor. Alternativas: A) 6,18   B) 3,09   C) 1,78   D) 0,89   E) 3,98",
+      "respuesta": "C) 1,78",
+      "pasos": [
+        "ΔEN = 3,98 − 2,20 = 1,78."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El estroncio (Z = 38) forma el ion Sr²⁺. ¿Qué es más grande: el átomo de estroncio o el ion Sr²⁺? Datos: Carga de un ion = protones − electrones. El ion Sr²⁺ tiene 36 electrones. Alternativas: A) El átomo de estroncio   B) Miden lo mismo: tienen el mismo núcleo   C) No se puede saber sin la tabla de radios   D) El ion Sr²⁺   E) El que tiene carga, siempre",
+      "respuesta": "A) El átomo de estroncio",
+      "pasos": [
+        "Perdió 2 electrones: los mismos 38 protones jalan a menos; se achica."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Los elementos X (Z = 19), R (Z = 12) y Q (Z = 11) son de los grupos A. ¿Cuál es el orden de sus radios atómicos, de mayor a menor? Datos: Gases nobles: Z = 2, 10, 18 y 36. Grupos A: columnas 1, 2 y 13 a 18. Alternativas: A) Q > X > R   B) X > Q > R   C) Q > R > X   D) R > Q > X   E) X > R > Q",
+      "respuesta": "B) X > Q > R",
+      "pasos": [
+        "Los ubico contando desde los gases nobles: Q = Na (periodo 3, grupo 1); X = K (periodo 4, grupo 1); R = Mg (periodo 3, grupo 2).",
+        "Abajo, mayor; a la derecha, menor: X > Q > R."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Tres elementos de los grupos A. Ordénalos de mayor a menor electronegatividad: carbono, boro, aluminio. Datos: Carbono (C): periodo 2, grupo 14 (IVA). Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) C > B > Al   C) B > Al > C   D) B > C > Al   E) Al > B > C",
+      "respuesta": "B) C > B > Al",
+      "pasos": [
+        "Hacia la derecha en la fila, más; hacia abajo en la columna, menos.",
+        "C > B > Al (B 2,04; C 2,55; Al 1,61)."
+      ]
+    }
+  ]
+}

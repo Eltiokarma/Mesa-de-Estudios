@@ -296,6 +296,43 @@
    }
   },
   {
+   "id": "quimica.propiedades-periodicas",
+   "curso": "Química",
+   "curso_id": "quimica",
+   "numero": "3b",
+   "titulo": "Propiedades periódicas",
+   "grado": 3,
+   "temas_catalogo": [
+    "Radio atómico e iónico",
+    "Energía de ionización y afinidad electrónica",
+    "Electronegatividad"
+   ],
+   "modulos_actuales": [
+    "atomo-y-tabla"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de recordar.",
+   "teoria": [
+    "Unidad nueva (19 nov 2026): nace al partir «Tabla periódica» en dos (docs/etapa5/propuesta-quimica.md). Reúne lo que se compara: radio atómico, radio de los iones y de las especies isoelectrónicas, energía de ionización, afinidad electrónica y electronegatividad.",
+    "Vale el expediente de la unidad 3 (Tabla periódica) en lo que toca a estas propiedades: definiciones de radio, la ionización de una especie gaseosa, la afinidad como otro proceso y la electronegatividad dentro de un enlace; las flechas son tendencias con excepciones y los datos deciden."
+   ],
+   "condiciones": "No mezclar distintas definiciones de radio ni escalas de electronegatividad. Cada valor lleva fuente y unidad; datos ausentes se muestran como «sin dato».",
+   "prerrequisitos": [
+    "Periodo y grupo de un elemento.",
+    "Iones y especies isoelectrónicas.",
+    "Regla de Hund."
+   ],
+   "desempeno": "Compara dos elementos o dos especies por su radio, su energía de ionización o su electronegatividad, justifica con la carga nuclear y los niveles, y reconoce las excepciones.",
+   "error_objetivo": "Aplicar una flecha periódica como ley sin excepciones.",
+   "fuentes": [
+    {
+     "id": "Q05",
+     "titulo": "Chemistry 2e, §6.5",
+     "url": "https://openstax.org/books/chemistry-2e/pages/6-5-periodic-variations-in-element-properties"
+    }
+   ],
+   "estado": "Entrada mínima creada al partir la unidad. El expediente completo y la historia siguen en la unidad 3."
+  },
+  {
    "id": "quimica.enlace-quimico",
    "curso": "Química",
    "curso_id": "quimica",

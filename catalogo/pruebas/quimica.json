@@ -188,6 +188,30 @@
     "productos-pesan-lo-del-combustible": {
       "respaldo": "hipotesis",
       "describe": "Cree que los productos pesan lo mismo que el combustible: no cuenta el O₂ que se une"
+    },
+    "QM-PERIODO-ANTERIOR": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como periodo el del gas noble anterior o el del subnivel d de adentro, no el nivel más alto con electrones"
+    },
+    "QM-SOLO-P": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo los electrones p del nivel más alto para el grupo A y olvida los dos s"
+    },
+    "QM-PERIODO-GRUPO": {
+      "respaldo": "hipotesis",
+      "describe": "Intercambia periodo y grupo (trampa anotada en San Marcos 2026-I)"
+    },
+    "QM-EN-SUMA": {
+      "respaldo": "hipotesis",
+      "describe": "Suma las dos electronegatividades en vez de restarlas"
+    },
+    "QM-EN-SOLO": {
+      "respaldo": "hipotesis",
+      "describe": "Da solo la electronegatividad del átomo que jala más, sin restar la otra"
+    },
+    "QM-EN-MITAD": {
+      "respaldo": "hipotesis",
+      "describe": "Divide la diferencia entre dos, como si se repartiera entre los átomos"
     }
   },
   "pares": [
@@ -1415,6 +1439,60 @@
             "valor": 1.76,
             "error": "olvida-el-agua"
           }
+        ]
+      }
+    },
+    {
+      "par": "qui-18",
+      "plantilla": "tabla-ubicacion",
+      "unidad": "quimica.tabla-periodica",
+      "nombreUnidad": "Tabla periódica",
+      "mide": "Periodo y grupo de un representativo pesado desde su Z: el nivel más alto da el periodo y sus s y p, el grupo",
+      "A": {
+        "enunciado": "El telurio, que se usa en algunos paneles solares, tiene número atómico 52. ¿En qué periodo y en qué grupo de la tabla periódica está? (Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p)",
+        "datos": { "z": 52 },
+        "opciones": [
+          { "texto": "Periodo 4, grupo 16 (VIA)", "clave": "ub:4:16", "error": "QM-PERIODO-ANTERIOR" },
+          { "texto": "Periodo 5, grupo 16 (VIA)", "clave": "ub:5:16", "correcta": true },
+          { "texto": "Periodo 5, grupo 14 (IVA)", "clave": "ub:5:14", "error": "QM-SOLO-P" },
+          { "texto": "Periodo 6, grupo 15 (VA)", "clave": "ub:6:15", "error": "QM-PERIODO-GRUPO" }
+        ]
+      },
+      "B": {
+        "enunciado": "El bismuto, que se usa en algunas medicinas para el estómago, tiene número atómico 83. ¿En qué periodo y en qué grupo de la tabla periódica está? (Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p)",
+        "datos": { "z": 83 },
+        "opciones": [
+          { "texto": "Periodo 6, grupo 13 (IIIA)", "clave": "ub:6:13", "error": "QM-SOLO-P" },
+          { "texto": "Periodo 5, grupo 15 (VA)", "clave": "ub:5:15", "error": "QM-PERIODO-ANTERIOR" },
+          { "texto": "Periodo 6, grupo 15 (VA)", "clave": "ub:6:15", "correcta": true },
+          { "texto": "Periodo 5, grupo 16 (VIA)", "clave": "ub:5:16", "error": "QM-PERIODO-GRUPO" }
+        ]
+      }
+    },
+    {
+      "par": "qui-19",
+      "plantilla": "propiedades-tabla",
+      "unidad": "quimica.propiedades-periodicas",
+      "nombreUnidad": "Propiedades periódicas",
+      "mide": "Diferencia de electronegatividad de un enlace: se resta la menor de la mayor, entera",
+      "A": {
+        "enunciado": "En el enlace entre el azufre (electronegatividad 2,58) y el oxígeno (electronegatividad 3,44), ¿cuánto vale la diferencia de electronegatividad?",
+        "datos": { "a": 2.58, "b": 3.44 },
+        "opciones": [
+          { "texto": "6,02", "valor": 6.02, "error": "QM-EN-SUMA" },
+          { "texto": "0,86", "valor": 0.86, "correcta": true },
+          { "texto": "3,44", "valor": 3.44, "error": "QM-EN-SOLO" },
+          { "texto": "0,43", "valor": 0.43, "error": "QM-EN-MITAD" }
+        ]
+      },
+      "B": {
+        "enunciado": "En el enlace entre el nitrógeno (electronegatividad 3,04) y el hidrógeno (electronegatividad 2,2), ¿cuánto vale la diferencia de electronegatividad?",
+        "datos": { "a": 3.04, "b": 2.2 },
+        "opciones": [
+          { "texto": "0,42", "valor": 0.42, "error": "QM-EN-MITAD" },
+          { "texto": "3,04", "valor": 3.04, "error": "QM-EN-SOLO" },
+          { "texto": "0,84", "valor": 0.84, "correcta": true },
+          { "texto": "5,24", "valor": 5.24, "error": "QM-EN-SUMA" }
         ]
       }
     }

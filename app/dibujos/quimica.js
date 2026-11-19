@@ -32,6 +32,10 @@ D.registrar('quimica', {
     for (let c = 0; c < 18; c++) { const [a, b] = filas(c); for (let f = a; f <= b; f++) s += P.r(x0 + c * w, y0 + f * h, w, h, c === 16 ? 'a f' : 'b f', 1); }
     return s + P.ac(`M${P.n(x0 + 16.5 * w)} 10V16`) + P.punta(x0 + 16.5 * w, 20, 90);
   },
+  // Propiedades periódicas (19 nov, nace al partir Tabla periódica): el átomo se achica de izquierda a derecha en una fila.
+  'quimica.propiedades-periodicas': P =>
+    [[26, 24], [64, 19], [96, 14], [122, 10], [143, 7]].map(([x, r], k) => P.c(x, 62, r, k === 4 ? 'a f' : 'b f')).join('')
+    + P.ac('M22 104H130') + P.punta(138, 104, 0),
   // El enlace: dos átomos comparten un par de electrones.
   'quimica.enlace-quimico': P =>
     P.c(58, 62, 34, 'b') + P.c(102, 62, 34, 'b') + P.p('M80 35.6A34 34 0 0 1 80 88.4A34 34 0 0 1 80 35.6Z', 'a')

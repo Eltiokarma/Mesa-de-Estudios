@@ -82,7 +82,7 @@
     },
     {
       "id": "p6",
-      "unidades": ["quimica.tabla-periodica"],
+      "unidades": ["quimica.propiedades-periodicas"],
       "nivel": "intermedio",
       "enunciado": "Ordena de mayor a menor radio atómico: Cl, K, Mg, Na.",
       "respuesta": "K > Na > Mg > Cl.",
@@ -97,7 +97,7 @@
     },
     {
       "id": "p7",
-      "unidades": ["quimica.tabla-periodica"],
+      "unidades": ["quimica.propiedades-periodicas"],
       "nivel": "intermedio",
       "enunciado": "Ordena de menor a mayor primera energía de ionización: C, N, O, F.",
       "respuesta": "C < O < N < F.",
@@ -113,7 +113,7 @@
     },
     {
       "id": "p8",
-      "unidades": ["quimica.tabla-periodica"],
+      "unidades": ["quimica.propiedades-periodicas"],
       "nivel": "intermedio",
       "enunciado": "Las especies S²⁻ (Z = 16), Cl⁻ (Z = 17), K⁺ (Z = 19) y Ca²⁺ (Z = 20) tienen el mismo número de electrones. ¿Cuántos? Ordénalas de mayor a menor radio.",
       "respuesta": "18 electrones cada una (como el argón); S²⁻ > Cl⁻ > K⁺ > Ca²⁺.",
@@ -129,7 +129,7 @@
     },
     {
       "id": "p9",
-      "unidades": ["quimica.tabla-periodica"],
+      "unidades": ["quimica.propiedades-periodicas"],
       "nivel": "avanzado",
       "enunciado": "Un elemento del período 3 tiene estas energías de ionización sucesivas, en kJ/mol: 578, 1817, 2745 y 11 577. ¿A qué grupo pertenece? ¿Qué elemento es?",
       "respuesta": "Grupo 13 (IIIA): es el aluminio.",

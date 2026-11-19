@@ -84,11 +84,15 @@
       // Antes de mudar (la idea que se va todavía está en la unidad vieja), o después para quien ya mudó.
       if (pt.estudiada && conservaEstudio(est, pt)) cambio = true;
       if (partir(est, pt)) cambio = true;
-      if (pt.sinHuella && sinHuella(est, pt.de, pt.sinHuella)) cambio = true;
+      if (pt.sinHuella && sinHuella(est, pt.sinHuella.en || pt.de, pt.sinHuella)) cambio = true;
     }
     // 18 nov (auditoría de MRUV, A1): pendiente-aceleracion conservó su id con otra Predice en la unidad nueva; después de
     // la partición, una predicción suya sin huella es de la pregunta vieja (también la «c») y se vuelve a preguntar.
     if (sinHuella(est, 'fisica.mruv-y-caida-libre', { marca: 'reinicioVT', ideas: ['pendiente-aceleracion'] })) cambio = true;
+    // 19 nov (etapa 5, fase 3): en Propiedades periódicas, `energia-ionizacion` conservó su id con otra Predice (fósforo y
+    // azufre en vez de nitrógeno y oxígeno). Después de la partición partidoTP, una predicción suya sin huella es de la
+    // pregunta vieja y se vuelve a preguntar, una vez. Las otras dos ideas que vinieron conservan su pregunta y sus ids.
+    if (sinHuella(est, 'quimica.propiedades-periodicas', { marca: 'prediccionTP2', ideas: ['energia-ionizacion'] })) cambio = true;
     return cambio;
   }
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
@@ -166,6 +170,18 @@
       mesas: ['escaleras-a-z'], glosario: ['sumatoria'],
       estudiada: { marca: 'estudiadaSum', fecha: '2026-11-18',
         ideas: ['otras-bases', 'sumatorias', 'complemento', 'multiplicar-partes', 'defecto-exceso', 'cifras-producto'] } },
+    // 19 nov: «Tabla periódica» → «Tabla periódica» (conserva el id: periodos, grupos, bloques y metales) +
+    // quimica.propiedades-periodicas (radio, ionización y electronegatividad; docs/etapa5/propuesta-quimica.md §3 y §12).
+    // Las dos mesas del laboratorio comparan propiedades: van con la unidad nueva. La idea `periodos-grupos-bloques`
+    // conserva su id con otra Predice (el rubidio): una predicción suya guardada sin huella es de la pregunta vieja y se
+    // borra una vez (prediccionTP). Quien había terminado las cinco ideas de antes conserva «Ya la estudié» en Tabla
+    // periódica (estudiadaTP), que ahora tiene dos ideas nuevas (`bloques-transicion` y `metales-no-metales`).
+    { marca: 'partidoTP', de: 'quimica.tabla-periodica', a: 'quimica.propiedades-periodicas',
+      ideas: ['radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad'], mesas: ['tres-propiedades', 'dos-elementos'],
+      glosario: ['radio atomico', 'picometro', 'carga nuclear', 'energia de ionizacion', 'afinidad electronica', 'electronegatividad', 'tendencia periodica'],
+      sinHuella: { marca: 'prediccionTP', ideas: ['periodos-grupos-bloques'] },
+      estudiada: { marca: 'estudiadaTP', fecha: '2026-11-19',
+        ideas: ['periodos-grupos-bloques', 'ubicacion-lewis', 'radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad'] } },
   ];
   function partir(est, { marca, de, a, ideas, mesas, glosario, renombrar, sinPrediccion, mudanza, reiniciaPrediccion }) {
     if (est[marca] >= 1) return false;

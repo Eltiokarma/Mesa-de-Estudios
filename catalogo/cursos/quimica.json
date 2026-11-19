@@ -4,7 +4,7 @@
   "area": "ciencias",
   "formato_principal": "predicciones",
   "ramas": [
-    {"nombre": "Materia y átomo", "unidades": ["quimica.materia-y-energia", "quimica.estructura-atomica", "quimica.tabla-periodica", "quimica.enlace-quimico", "quimica.nomenclatura-inorganica"]},
+    {"nombre": "Materia y átomo", "unidades": ["quimica.materia-y-energia", "quimica.estructura-atomica", "quimica.tabla-periodica", "quimica.propiedades-periodicas", "quimica.enlace-quimico", "quimica.nomenclatura-inorganica"]},
     {"nombre": "Cálculos químicos", "unidades": ["quimica.mol-y-composicion", "quimica.reacciones-y-balance", "quimica.estequiometria", "quimica.gases", "quimica.liquidos-y-solidos", "quimica.soluciones"]},
     {"nombre": "Reacciones y equilibrio", "unidades": ["quimica.cinetica-quimica", "quimica.equilibrio-quimico", "quimica.acidos-y-bases", "quimica.electroquimica"]},
     {"nombre": "Química orgánica", "unidades": ["quimica.hidrocarburos", "quimica.funciones-organicas", "quimica.biomoleculas-y-productos-naturales"]},
@@ -85,7 +85,30 @@
         "Periodos, grupos y bloques",
         "Metales, no metales y semimetales",
         "Notación de Lewis",
-        "Ubicación de un elemento",
+        "Ubicación de un elemento"
+      ],
+      "universidades": {
+        "uni": {
+          "semanas": [
+            3
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            2
+          ]
+        }
+      },
+      "potencial_visual": "medio",
+      "grado": 3,
+      "requiere": ["quimica.estructura-atomica"],
+      "plantillas": ["tabla-ubicacion", "configuracion-ubicacion", "quimica-conceptos", "atomo-y-tabla"],
+      "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.propiedades-periodicas",
+      "nombre": "Propiedades periódicas",
+      "temas": [
         "Radio atómico e iónico",
         "Energía de ionización y afinidad electrónica",
         "Electronegatividad"
@@ -104,8 +127,8 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "requiere": ["quimica.estructura-atomica"],
-      "plantillas": ["atomo-y-tabla", "configuracion-ubicacion", "quimica-conceptos"],
+      "requiere": ["quimica.tabla-periodica"],
+      "plantillas": ["propiedades-tabla", "atomo-y-tabla"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -136,7 +159,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
-      "requiere": ["quimica.tabla-periodica"],
+      "requiere": ["quimica.propiedades-periodicas"],
       "plantillas": ["enlace", "quimica-conceptos"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },

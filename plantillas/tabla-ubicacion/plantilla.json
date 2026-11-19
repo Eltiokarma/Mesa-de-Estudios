@@ -1,0 +1,21 @@
+{
+  "id": "tabla-ubicacion",
+  "titulo": "Dónde va cada elemento",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.tabla-periodica"
+  ],
+  "temas": [
+    "Ley periódica",
+    "Periodos, grupos y bloques",
+    "Ubicación de un elemento",
+    "Notación de Lewis",
+    "Metales, no metales y semimetales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

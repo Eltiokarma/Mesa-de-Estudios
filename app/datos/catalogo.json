@@ -1221,6 +1221,7 @@
       "quimica.materia-y-energia",
       "quimica.estructura-atomica",
       "quimica.tabla-periodica",
+      "quimica.propiedades-periodicas",
       "quimica.enlace-quimico",
       "quimica.nomenclatura-inorganica"
      ]
@@ -1394,10 +1395,7 @@
       "Periodos, grupos y bloques",
       "Metales, no metales y semimetales",
       "Notación de Lewis",
-      "Ubicación de un elemento",
-      "Radio atómico e iónico",
-      "Energía de ionización y afinidad electrónica",
-      "Electronegatividad"
+      "Ubicación de un elemento"
      ],
      "universidades": {
       "uni": {
@@ -1417,25 +1415,71 @@
       "quimica.estructura-atomica"
      ],
      "plantillas": [
-      "atomo-y-tabla",
+      "tabla-ubicacion",
       "configuracion-ubicacion",
-      "quimica-conceptos"
+      "quimica-conceptos",
+      "atomo-y-tabla"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/tabla-periodica.js",
       "requiere": [
-       "/nucleo/kit/piezas/quim-tabla.js",
+       "/nucleo/kit/piezas/quim-tira.js",
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
-      "ideas": 5,
+      "ideas": 4,
       "titulos": {
-       "periodos-grupos-bloques": "Filas, columnas y bloques",
-       "ubicacion-lewis": "Del último nivel al lugar",
-       "radio-atomico-ionico": "Cuánto mide un átomo",
-       "energia-ionizacion": "Cuánto cuesta arrancar un electrón",
-       "electronegatividad": "Quién jala el par compartido"
+       "periodos-grupos-bloques": "Ley periódica: periodos y grupos",
+       "ubicacion-lewis": "Ubicación y notación de Lewis",
+       "bloques-transicion": "Bloques y metales de transición",
+       "metales-no-metales": "Metales, no metales y semimetales"
       },
-      "terminos": 34
+      "terminos": 40
+     }
+    },
+    {
+     "id": "quimica.propiedades-periodicas",
+     "nombre": "Propiedades periódicas",
+     "temas": [
+      "Radio atómico e iónico",
+      "Energía de ionización y afinidad electrónica",
+      "Electronegatividad"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        2
+       ]
+      }
+     },
+     "potencial_visual": "medio",
+     "grado": 3,
+     "requiere": [
+      "quimica.tabla-periodica"
+     ],
+     "plantillas": [
+      "propiedades-tabla",
+      "atomo-y-tabla"
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/propiedades-periodicas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-tabla.js",
+       "/nucleo/kit/piezas/quim-tira.js",
+       "/nucleo/kit/piezas/quim-molecula.js"
+      ],
+      "ideas": 4,
+      "titulos": {
+       "radio-atomico-ionico": "Radio atómico",
+       "radio-ionico": "Radio de iones e isoelectrónicos",
+       "energia-ionizacion": "Energía de ionización y afinidad electrónica",
+       "electronegatividad": "Electronegatividad y carácter metálico"
+      },
+      "terminos": 43
      }
     },
     {
@@ -1467,7 +1511,7 @@
      "potencial_visual": "medio",
      "grado": 3,
      "requiere": [
-      "quimica.tabla-periodica"
+      "quimica.propiedades-periodicas"
      ],
      "plantillas": [
       "enlace",
@@ -1491,7 +1535,7 @@
        "forma-polaridad": "La forma decide la polaridad",
        "fuerzas-intermoleculares": "Lo que une a las moléculas"
       },
-      "terminos": 41
+      "terminos": 42
      }
     },
     {
@@ -2056,7 +2100,7 @@
        "electrolisis-faraday": "La carga decide la masa",
        "pourbaix": "Potencial y pH en un mapa"
       },
-      "terminos": 39
+      "terminos": 38
      }
     },
     {
@@ -2113,7 +2157,7 @@
        "cis-trans-optica": "Cis, trans y el espejo",
        "reacciones-organicas": "Qué enlace cambia en la reacción"
       },
-      "terminos": 44
+      "terminos": 45
      }
     },
     {
@@ -2224,7 +2268,7 @@
        "vitaminas-solubilidad": "Vitaminas: en grasa o en agua",
        "productos-naturales": "Familias por estructura, no por origen"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -8021,7 +8065,8 @@
    "version": "0.1.0",
    "unidades": [
     "quimica.estructura-atomica",
-    "quimica.tabla-periodica"
+    "quimica.tabla-periodica",
+    "quimica.propiedades-periodicas"
    ],
    "url": "/plantillas/atomo-y-tabla/index.html",
    "papel": "/plantillas/atomo-y-tabla/papel.json",
@@ -8031,7 +8076,9 @@
     "/plantillas/atomo-y-tabla/papel.json"
    ],
    "rehacer": [
-    "quimica.estructura-atomica"
+    "quimica.estructura-atomica",
+    "quimica.tabla-periodica",
+    "quimica.propiedades-periodicas"
    ]
   },
   "balance-reacciones": {
@@ -10604,6 +10651,28 @@
     "/plantillas/programacion-lineal/papel.json"
    ]
   },
+  "propiedades-tabla": {
+   "id": "propiedades-tabla",
+   "titulo": "Radio, ionización y electronegatividad en la tabla",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.propiedades-periodicas"
+   ],
+   "url": "#/practica/propiedades-tabla",
+   "ideas": [
+    "radio-atomico-ionico",
+    "radio-ionico",
+    "energia-ionizacion",
+    "electronegatividad"
+   ],
+   "papel": "/plantillas/propiedades-tabla/papel.json",
+   "archivos": [
+    "/plantillas/propiedades-tabla/generador.js",
+    "/plantillas/propiedades-tabla/papel.json"
+   ]
+  },
   "quimica-ambiente": {
    "id": "quimica-ambiente",
    "titulo": "Del pozo al cielo: combustión, petróleo, metales y el aire",
@@ -11287,6 +11356,28 @@
    "archivos": [
     "/plantillas/sustancias-mezclas/generador.js",
     "/plantillas/sustancias-mezclas/papel.json"
+   ]
+  },
+  "tabla-ubicacion": {
+   "id": "tabla-ubicacion",
+   "titulo": "Dónde va cada elemento",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.tabla-periodica"
+   ],
+   "url": "#/practica/tabla-ubicacion",
+   "ideas": [
+    "periodos-grupos-bloques",
+    "ubicacion-lewis",
+    "bloques-transicion",
+    "metales-no-metales"
+   ],
+   "papel": "/plantillas/tabla-ubicacion/papel.json",
+   "archivos": [
+    "/plantillas/tabla-ubicacion/generador.js",
+    "/plantillas/tabla-ubicacion/papel.json"
    ]
   },
   "tablas-graficos": {

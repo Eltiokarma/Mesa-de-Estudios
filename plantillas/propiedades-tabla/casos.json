@@ -1,0 +1,259 @@
+{
+ "plantilla": "propiedades-tabla",
+ "nota": "entrada es _datos del generador (idea, tipo, nivel y los elementos o iones del problema). respuesta: el texto de la alternativa correcta. Se genera con generar(semilla, { idea }).",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo) que no usa el generador ni el núcleo: con sus propias tablas (radios de Clementi y otros 1967, radios iónicos de Shannon 1976, EI del NIST, AE de OpenStax §6.5, EN de Pauling-Allred) ordena, compara y cuenta electrones a partir de la entrada; el salto de las EI sucesivas es el mayor cociente entre dos seguidas.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "radio-atomico-ionico",
+    "tipo": "radio-par",
+    "nivel": 1,
+    "sub": "periodo",
+    "a": "K",
+    "b": "Br"
+   },
+   "esperado": {
+    "respuesta": "El de potasio"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "radio-atomico-ionico",
+    "tipo": "radio-z",
+    "nivel": 3,
+    "trio": [
+     "B",
+     "Al",
+     "C"
+    ],
+    "letras": [
+     "Q",
+     "X",
+     "R"
+    ]
+   },
+   "esperado": {
+    "respuesta": "X > Q > R"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "radio-atomico-ionico",
+    "tipo": "radio-orden",
+    "nivel": 2,
+    "trio": [
+     "O",
+     "S",
+     "F"
+    ]
+   },
+   "esperado": {
+    "respuesta": "S > O > F"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "radio-ionico",
+    "tipo": "ion-electrones",
+    "nivel": 1,
+    "ion": "Cl⁻"
+   },
+   "esperado": {
+    "respuesta": "18"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "radio-ionico",
+    "tipo": "iso-orden",
+    "nivel": 3,
+    "n": 18,
+    "lista": [
+     "Cl⁻",
+     "Ca²⁺",
+     "S²⁻",
+     "K⁺"
+    ]
+   },
+   "esperado": {
+    "respuesta": "S²⁻ > Cl⁻ > K⁺ > Ca²⁺"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "radio-ionico",
+    "tipo": "iso-par",
+    "nivel": 2,
+    "n": 18,
+    "a": "Cl⁻",
+    "b": "K⁺"
+   },
+   "esperado": {
+    "respuesta": "El Cl⁻"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "radio-ionico",
+    "tipo": "ion-atomo",
+    "nivel": 1,
+    "ion": "K⁺"
+   },
+   "esperado": {
+    "respuesta": "El átomo de potasio"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "energia-ionizacion",
+    "tipo": "ei-par",
+    "nivel": 1,
+    "sub": "periodo",
+    "a": "C",
+    "b": "O"
+   },
+   "esperado": {
+    "respuesta": "Al oxígeno"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "energia-ionizacion",
+    "tipo": "sucesivas",
+    "nivel": 3,
+    "elemento": "Na"
+   },
+   "esperado": {
+    "respuesta": "Grupo 1 (IA)"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "energia-ionizacion",
+    "tipo": "afinidad",
+    "nivel": 2,
+    "a": "Br",
+    "b": "K"
+   },
+   "esperado": {
+    "respuesta": "El de bromo"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "energia-ionizacion",
+    "tipo": "ei-bajada",
+    "nivel": 2,
+    "a": "As",
+    "b": "Se"
+   },
+   "esperado": {
+    "respuesta": "Al arsénico"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "electronegatividad",
+    "tipo": "delta-en",
+    "nivel": 1,
+    "a": "F",
+    "b": "Al"
+   },
+   "esperado": {
+    "respuesta": "2,37"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "electronegatividad",
+    "tipo": "tendencias",
+    "nivel": 3,
+    "sub": "periodo",
+    "a": "K",
+    "b": "Br"
+   },
+   "esperado": {
+    "respuesta": "El radio baja y la electronegatividad sube"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "electronegatividad",
+    "tipo": "en-orden",
+    "nivel": 2,
+    "trio": [
+     "Mg",
+     "Al",
+     "Ca"
+    ]
+   },
+   "esperado": {
+    "respuesta": "Al > Mg > Ca"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "electronegatividad",
+    "tipo": "hacia-par",
+    "nivel": 1,
+    "a": "F",
+    "b": "C"
+   },
+   "esperado": {
+    "respuesta": "Hacia el F"
+   }
+  },
+  {
+   "semilla": 11,
+   "entrada": {
+    "idea": "electronegatividad",
+    "tipo": "metalico",
+    "nivel": 2,
+    "a": "Al",
+    "b": "B"
+   },
+   "esperado": {
+    "respuesta": "El aluminio"
+   }
+  },
+  {
+   "semilla": 41,
+   "entrada": {
+    "idea": "radio-ionico",
+    "tipo": "ion-atomo",
+    "nivel": 1,
+    "ion": "Al³⁺"
+   },
+   "esperado": {
+    "respuesta": "El átomo de aluminio"
+   }
+  },
+  {
+   "semilla": 77,
+   "entrada": {
+    "idea": "energia-ionizacion",
+    "tipo": "sucesivas",
+    "nivel": 3,
+    "elemento": "Ca"
+   },
+   "esperado": {
+    "respuesta": "Grupo 2 (IIA)"
+   }
+  }
+ ]
+}

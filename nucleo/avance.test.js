@@ -244,3 +244,44 @@ test('migrar: la predicción vieja de pendiente-aceleracion (sin huella) se borr
   assert.equal(A.migrar(est), false);
   assert.equal(est.teoria[U].ideas['pendiente-aceleracion'].prediccion, 'c', 'la respuesta nueva, con huella, se queda');
 });
+
+// 19 nov (etapa 5, docs/etapa5/propuesta-quimica.md): «Tabla periódica» se parte. Radio, ionización y
+// electronegatividad, las dos mesas y sus palabras pasan a quimica.propiedades-periodicas (partidoTP).
+test('Tabla periódica partida: las ideas de propiedades, las mesas y sus palabras pasan a Propiedades periódicas', () => {
+  const V = 'quimica.tabla-periodica', N = 'quimica.propiedades-periodicas';
+  const est = { avanceV: 1, vistas: { [V]: '2026-11-12' }, marcadas: {},
+    teoria: { [V]: { idea: 'energia-ionizacion', ideas: {
+      'periodos-grupos-bloques': { hecha: true, prediccion: 'masa' },
+      'ubicacion-lewis': { hecha: true, prediccion: 'c', prediccionDe: 'h1' },
+      'radio-atomico-ionico': { hecha: true, prediccion: 'c' },
+      'energia-ionizacion': { prediccion: 'o', casos: 2 } } } },
+    coleccion: [{ unidad: V, mesa: 'tres-propiedades', valores: { z: 11 } }, { unidad: V, mesa: 'otra' }],
+    glosario: { [V]: { 'radio atomico': 'sabe', periodo: 'repasa' } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.partidoTP, 1); assert.equal(est.prediccionTP, 1); assert.equal(est.estudiadaTP, 1);
+  // La idea 1 conserva su id con otra pregunta: su predicción sin huella se borra; la de la idea 2 (con huella) se queda.
+  assert.deepEqual(est.teoria[V].ideas, { 'periodos-grupos-bloques': { hecha: true }, 'ubicacion-lewis': { hecha: true, prediccion: 'c', prediccionDe: 'h1' } });
+  assert.equal(est.teoria[V].idea, undefined);
+  // Lo que se fue no se toca, salvo la predicción sin huella de `energia-ionizacion`, que cambió de pregunta en la fase 3
+  // (del N y el O al P y el S): se borra una vez (prediccionTP2). La del radio (misma pregunta, mismos ids) se queda.
+  assert.deepEqual(est.teoria[N].ideas, { 'radio-atomico-ionico': { hecha: true, prediccion: 'c' }, 'energia-ionizacion': { casos: 2 } });
+  assert.equal(est.prediccionTP2, 1);
+  assert.equal(est.teoria[N].idea, 'energia-ionizacion');
+  assert.deepEqual(est.coleccion.map(c => c.unidad), [N, V]);
+  assert.deepEqual(est.glosario, { [V]: { periodo: 'repasa' }, [N]: { 'radio atomico': 'sabe' } });
+  assert.equal(est.vistas[N], '2026-11-12');
+  assert.equal(est.marcadas[V], undefined, 'no había terminado las cinco ideas de antes');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+  // Quien había terminado las cinco ideas de antes conserva «Ya la estudié» en las dos unidades (estudiadaTP).
+  const hecho = { avanceV: 1, vistas: { [V]: '2026-11-10' }, marcadas: {},
+    teoria: { [V]: { ideas: Object.fromEntries(['periodos-grupos-bloques', 'ubicacion-lewis', 'radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad'].map(i => [i, { hecha: true }])) } } };
+  assert.equal(A.migrar(hecho), true);
+  assert.equal(hecho.marcadas[V], '2026-11-10');
+  assert.equal(hecho.marcadas[N], '2026-11-10');
+  assert.deepEqual(Object.keys(hecho.teoria[N].ideas), ['radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad']);
+  // Quien nunca abrió la unidad: solo quedan las marcas.
+  const nuevo = { avanceV: 1 };
+  A.migrar(nuevo);
+  assert.equal(nuevo.partidoTP, 1);
+  assert.equal((nuevo.teoria || {})[N], undefined);
+});

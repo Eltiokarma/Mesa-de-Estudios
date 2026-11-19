@@ -144,7 +144,8 @@
     // 18 nov (etapa 4, propuesta de Estructura atómica §9): el papel de la escena del átomo y la tabla (p1, p2: partículas;
     // p3, p4 y p10: iones, cuánticos y desapareados; p5 a p9: tabla periódica) y el de configuracion-ubicacion, que dice
     // la unidad de cada problema en su campo «unidades».
-    'atomo-y-tabla': { ...lista(Q + 'estructura-atomica', ps(1, 2, 3, 4, 10)), ...lista(Q + 'tabla-periodica', ps(5, 6, 7, 8, 9)) },
+    // 19 nov (etapa 5): Tabla periódica se partió; p5 (ubicación) se queda y p6 a p9 (radio, ionización) van a Propiedades periódicas.
+    'atomo-y-tabla': { ...lista(Q + 'estructura-atomica', ps(1, 2, 3, 4, 10)), ...lista(Q + 'tabla-periodica', ps(5)), ...lista(Q + 'propiedades-periodicas', ps(6, 7, 8, 9)) },
     'configuracion-ubicacion': { ...lista(Q + 'tabla-periodica', ps(1, 2, 9)), ...lista(Q + 'estructura-atomica', ps(3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22)) },
   };
   // Unidades de un problema de papel (lista vacía si no se sabe).

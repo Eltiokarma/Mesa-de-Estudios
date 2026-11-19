@@ -1,0 +1,229 @@
+{
+ "plantilla": "tabla-ubicacion",
+ "nota": "entrada es _datos del generador (idea, tipo, nivel y el Z o los Z del problema). respuesta: el texto de la alternativa correcta. Se genera con generar(semilla, { idea }).",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo) que no usa el generador ni el núcleo: la tabla escrita fila por fila (el grupo sale de la posición en la fila), las configuraciones por el orden de llenado escrito como texto con el Cr, el Cu, la Ag y el Au copiados de una lista, y las clases por listas de símbolos.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "periodos-grupos-bloques",
+    "tipo": "debajo",
+    "nivel": 2,
+    "z": 4
+   },
+   "esperado": {
+    "respuesta": "12"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "periodos-grupos-bloques",
+    "tipo": "periodo-z",
+    "nivel": 1,
+    "z": 53
+   },
+   "esperado": {
+    "respuesta": "Periodo 5"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "idea": "periodos-grupos-bloques",
+    "tipo": "largo-periodo",
+    "nivel": 2,
+    "p": 6
+   },
+   "esperado": {
+    "respuesta": "32 elementos"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "periodos-grupos-bloques",
+    "tipo": "familia-z",
+    "nivel": 1,
+    "z": 38
+   },
+   "esperado": {
+    "respuesta": "Alcalinotérreos"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "ubicacion-lewis",
+    "tipo": "lewis",
+    "nivel": 1,
+    "z": 6
+   },
+   "esperado": {
+    "respuesta": "4 puntos"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "ubicacion-lewis",
+    "tipo": "z-lugar",
+    "nivel": 2,
+    "z": 17
+   },
+   "esperado": {
+    "respuesta": "17"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "idea": "ubicacion-lewis",
+    "tipo": "par-familia",
+    "nivel": 3,
+    "z": 31
+   },
+   "esperado": {
+    "respuesta": "[Kr] 5s² 4d¹⁰ 5p¹"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "ubicacion-lewis",
+    "tipo": "ubicar-rep",
+    "nivel": 2,
+    "z": 5
+   },
+   "esperado": {
+    "respuesta": "Periodo 2, grupo 13 (IIIA)"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "bloques-transicion",
+    "tipo": "anomalo",
+    "nivel": 3,
+    "z": 24
+   },
+   "esperado": {
+    "respuesta": "Periodo 4, grupo 6 (VIB)"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "bloques-transicion",
+    "tipo": "bloque",
+    "nivel": 1,
+    "z": 26
+   },
+   "esperado": {
+    "respuesta": "Bloque d"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "idea": "bloques-transicion",
+    "tipo": "a-b",
+    "nivel": 3,
+    "a": 37,
+    "b": 47
+   },
+   "esperado": {
+    "respuesta": "No: el rubidio es del grupo 1 (IA) y la plata, del 11 (IB)"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "bloques-transicion",
+    "tipo": "ubicar-d",
+    "nivel": 2,
+    "z": 25
+   },
+   "esperado": {
+    "respuesta": "Periodo 4, grupo 7 (VIIB)"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "metales-no-metales",
+    "tipo": "mas-metalico",
+    "nivel": 2,
+    "trio": [
+     13,
+     11,
+     12
+    ]
+   },
+   "esperado": {
+    "respuesta": "El sodio"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "metales-no-metales",
+    "tipo": "propiedades",
+    "nivel": 2,
+    "perfil": "Un metal"
+   },
+   "esperado": {
+    "respuesta": "Un metal"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "metales-no-metales",
+    "tipo": "clase",
+    "nivel": 1,
+    "z": 26
+   },
+   "esperado": {
+    "respuesta": "Un metal"
+   }
+  },
+  {
+   "semilla": 51,
+   "entrada": {
+    "idea": "ubicacion-lewis",
+    "tipo": "lewis",
+    "nivel": 1,
+    "z": 8
+   },
+   "esperado": {
+    "respuesta": "6 puntos"
+   }
+  },
+  {
+   "semilla": 63,
+   "entrada": {
+    "idea": "bloques-transicion",
+    "tipo": "a-b",
+    "nivel": 3,
+    "a": 20,
+    "b": 48
+   },
+   "esperado": {
+    "respuesta": "No: el calcio es del grupo 2 (IIA) y el cadmio, del 12 (IIB)"
+   }
+  },
+  {
+   "semilla": 88,
+   "entrada": {
+    "idea": "periodos-grupos-bloques",
+    "tipo": "largo-periodo",
+    "nivel": 2,
+    "p": 4
+   },
+   "esperado": {
+    "respuesta": "18 elementos"
+   }
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "propiedades-tabla",
+  "titulo": "Radio, ionización y electronegatividad en la tabla",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.propiedades-periodicas"
+  ],
+  "temas": [
+    "Radio atómico e iónico",
+    "Energía de ionización y afinidad electrónica",
+    "Electronegatividad"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

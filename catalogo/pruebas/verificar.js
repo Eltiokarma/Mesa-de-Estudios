@@ -721,6 +721,18 @@ const V = {
   'cp-02': d => { const r = motor('coordenadas-polares').circuloEje({ a: d.a, f: d.f }), e = r.errores;
     return { correcta: r.texto, errores: { 'CP15-centro-en-el-polo': e.centroPolo.texto, 'CP16-centro-en-a': e.centroEnA.texto, 'CP17-eje-cruzado': e.ejeCruzado.texto } }; },
 
+  // qui-18 y qui-19 (reserva, 19 nov, etapa 5 de química): tabla-ubicacion y propiedades-tabla no tienen motor.js; se
+  // recalculan aquí por otro camino: el lugar por la forma de la tabla (gases nobles y largo de los periodos) y la
+  // configuración del último nivel, y ΔEN restando los dos valores del enunciado.
+  'qui-18': d => {
+    const NOB = [0, 2, 10, 18, 36, 54, 86], p = NOB.findIndex(g => d.z <= g), antes = NOB[p] - d.z, g = 18 - antes, val = g - 10;
+    if (antes > 5) throw new Error('qui-18: solo grupos 13 a 18');
+    const ub = (a, b) => `ub:${a}:${b}`;
+    return { correcta: ub(p, g), errores: { 'QM-PERIODO-ANTERIOR': ub(p - 1, g), 'QM-SOLO-P': ub(p, 10 + val - 2), 'QM-PERIODO-GRUPO': ub(val, 10 + p) } };
+  },
+  'qui-19': d => { const dif = Math.abs(d.a - d.b);
+    return { correcta: dif, errores: { 'QM-EN-SUMA': d.a + d.b, 'QM-EN-SOLO': Math.max(d.a, d.b), 'QM-EN-MITAD': dif / 2 } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
