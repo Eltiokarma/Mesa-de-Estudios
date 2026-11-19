@@ -1,0 +1,555 @@
+{
+  "plantilla": "trig-sistemas-angulares",
+  "tolerancia": 1e-09,
+  "nota": "Entrada = _datos del generador (opciones.tipo fija el tipo). esperado.valor es el número (o la clave de texto: grados y minutos, o la fracción de π con «rad») y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (19 nov 2026, python3 -I con fractions y math, en el scratchpad de la sesión, fuera del repo), que no usa el generador ni el núcleo: lleva cada medida a fracción de vuelta (360°, 400ᵍ, 2π rad) y de ahí al sistema pedido, con fracciones exactas; despeja la fracción de vuelta de cada condición entre S y C (S = 360f, C = 400f) en vez de usar k, y arma el texto con su propio formato. Los 30 casos cuadran.",
+  "casos": [
+    {
+      "semilla": "caso-signo-1",
+      "opciones": {
+        "tipo": "signo"
+      },
+      "entrada": {
+        "idea": "sentido-signo",
+        "tipo": "signo",
+        "nivel": 1,
+        "sub": "llave",
+        "n": 1,
+        "d": 2,
+        "sg": -1
+      },
+      "esperado": {
+        "valor": -180.0,
+        "texto": "−180°"
+      }
+    },
+    {
+      "semilla": "caso-signo-2",
+      "opciones": {
+        "tipo": "signo"
+      },
+      "entrada": {
+        "idea": "sentido-signo",
+        "tipo": "signo",
+        "nivel": 1,
+        "sub": "llave",
+        "n": 1,
+        "d": 2,
+        "sg": -1
+      },
+      "esperado": {
+        "valor": -180.0,
+        "texto": "−180°"
+      }
+    },
+    {
+      "semilla": "caso-seguidos-1",
+      "opciones": {
+        "tipo": "seguidos"
+      },
+      "entrada": {
+        "idea": "sentido-signo",
+        "tipo": "seguidos",
+        "nivel": 2,
+        "sub": "timon",
+        "g1": -240,
+        "g2": 90
+      },
+      "esperado": {
+        "valor": -150,
+        "texto": "−150°"
+      }
+    },
+    {
+      "semilla": "caso-seguidos-2",
+      "opciones": {
+        "tipo": "seguidos"
+      },
+      "entrada": {
+        "idea": "sentido-signo",
+        "tipo": "seguidos",
+        "nivel": 2,
+        "sub": "llave",
+        "g1": 690,
+        "g2": -480
+      },
+      "esperado": {
+        "valor": 210,
+        "texto": "210°"
+      }
+    },
+    {
+      "semilla": "caso-giro-x-1",
+      "opciones": {
+        "tipo": "giro-x"
+      },
+      "entrada": {
+        "idea": "sentido-signo",
+        "tipo": "giro-x",
+        "nivel": 3,
+        "p1": 5,
+        "q1": 40,
+        "p2": 3,
+        "q2": 10,
+        "T": 62
+      },
+      "esperado": {
+        "valor": 16.0,
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": "caso-giro-x-2",
+      "opciones": {
+        "tipo": "giro-x"
+      },
+      "entrada": {
+        "idea": "sentido-signo",
+        "tipo": "giro-x",
+        "nivel": 3,
+        "p1": 5,
+        "q1": 40,
+        "p2": 3,
+        "q2": 30,
+        "T": 78
+      },
+      "esperado": {
+        "valor": 34.0,
+        "texto": "34"
+      }
+    },
+    {
+      "semilla": "caso-convierte-1",
+      "opciones": {
+        "tipo": "convierte"
+      },
+      "entrada": {
+        "idea": "tres-sistemas",
+        "tipo": "convierte",
+        "nivel": 1,
+        "de": "cen",
+        "s": 117,
+        "c": 130
+      },
+      "esperado": {
+        "valor": 117.0,
+        "texto": "117°"
+      }
+    },
+    {
+      "semilla": "caso-convierte-2",
+      "opciones": {
+        "tipo": "convierte"
+      },
+      "entrada": {
+        "idea": "tres-sistemas",
+        "tipo": "convierte",
+        "nivel": 1,
+        "de": "cen",
+        "s": -243,
+        "c": -270
+      },
+      "esperado": {
+        "valor": -243.0,
+        "texto": "−243°"
+      }
+    },
+    {
+      "semilla": "caso-complemento-1",
+      "opciones": {
+        "tipo": "complemento"
+      },
+      "entrada": {
+        "idea": "tres-sistemas",
+        "tipo": "complemento",
+        "nivel": 2,
+        "sub": "complemento",
+        "de": "sex",
+        "xs": 18,
+        "xc": 20
+      },
+      "esperado": {
+        "valor": 80.0,
+        "texto": "80ᵍ"
+      }
+    },
+    {
+      "semilla": "caso-complemento-2",
+      "opciones": {
+        "tipo": "complemento"
+      },
+      "entrada": {
+        "idea": "tres-sistemas",
+        "tipo": "complemento",
+        "nivel": 2,
+        "sub": "complemento",
+        "de": "sex",
+        "xs": 45,
+        "xc": 50
+      },
+      "esperado": {
+        "valor": 50.0,
+        "texto": "50ᵍ"
+      }
+    },
+    {
+      "semilla": "caso-triangulo-1",
+      "opciones": {
+        "tipo": "triangulo"
+      },
+      "entrada": {
+        "idea": "tres-sistemas",
+        "tipo": "triangulo",
+        "nivel": 3,
+        "sub": "triangulo",
+        "xc": 90,
+        "ys": 54,
+        "en": "sex"
+      },
+      "esperado": {
+        "valor": 45.0,
+        "texto": "45°"
+      }
+    },
+    {
+      "semilla": "caso-triangulo-2",
+      "opciones": {
+        "tipo": "triangulo"
+      },
+      "entrada": {
+        "idea": "tres-sistemas",
+        "tipo": "triangulo",
+        "nivel": 3,
+        "sub": "triangulo",
+        "xc": 70,
+        "ys": 36,
+        "en": "cen"
+      },
+      "esperado": {
+        "valor": 90.0,
+        "texto": "90ᵍ"
+      }
+    },
+    {
+      "semilla": "caso-decimal-1",
+      "opciones": {
+        "tipo": "decimal"
+      },
+      "entrada": {
+        "idea": "minutos-decimales",
+        "tipo": "decimal",
+        "nivel": 1,
+        "g": 33,
+        "m": 3
+      },
+      "esperado": {
+        "valor": 33.05,
+        "texto": "33,05°"
+      }
+    },
+    {
+      "semilla": "caso-decimal-2",
+      "opciones": {
+        "tipo": "decimal"
+      },
+      "entrada": {
+        "idea": "minutos-decimales",
+        "tipo": "decimal",
+        "nivel": 1,
+        "g": 8,
+        "m": 57
+      },
+      "esperado": {
+        "valor": 8.95,
+        "texto": "8,95°"
+      }
+    },
+    {
+      "semilla": "caso-llevada-1",
+      "opciones": {
+        "tipo": "llevada"
+      },
+      "entrada": {
+        "idea": "minutos-decimales",
+        "tipo": "llevada",
+        "nivel": 2,
+        "sub": "complemento",
+        "g1": 90,
+        "m1": 0,
+        "g2": 26,
+        "m2": 50
+      },
+      "esperado": {
+        "valor": "63° 10′",
+        "texto": "63° 10′"
+      }
+    },
+    {
+      "semilla": "caso-llevada-2",
+      "opciones": {
+        "tipo": "llevada"
+      },
+      "entrada": {
+        "idea": "minutos-decimales",
+        "tipo": "llevada",
+        "nivel": 2,
+        "sub": "complemento",
+        "g1": 90,
+        "m1": 0,
+        "g2": 57,
+        "m2": 10
+      },
+      "esperado": {
+        "valor": "32° 50′",
+        "texto": "32° 50′"
+      }
+    },
+    {
+      "semilla": "caso-entre-sistemas-1",
+      "opciones": {
+        "tipo": "entre-sistemas"
+      },
+      "entrada": {
+        "idea": "minutos-decimales",
+        "tipo": "entre-sistemas",
+        "nivel": 3,
+        "sub": "minutero",
+        "t": 3
+      },
+      "esperado": {
+        "valor": 2000.0,
+        "texto": "2000ᵐ"
+      }
+    },
+    {
+      "semilla": "caso-entre-sistemas-2",
+      "opciones": {
+        "tipo": "entre-sistemas"
+      },
+      "entrada": {
+        "idea": "minutos-decimales",
+        "tipo": "entre-sistemas",
+        "nivel": 3,
+        "sub": "minutero",
+        "t": 24
+      },
+      "esperado": {
+        "valor": 16000.0,
+        "texto": "16000ᵐ"
+      }
+    },
+    {
+      "semilla": "caso-a-radianes-1",
+      "opciones": {
+        "tipo": "a-radianes"
+      },
+      "entrada": {
+        "idea": "radian",
+        "tipo": "a-radianes",
+        "nivel": 1,
+        "sub": "sex",
+        "g": 30
+      },
+      "esperado": {
+        "valor": "π/6 rad",
+        "texto": "π/6 rad"
+      }
+    },
+    {
+      "semilla": "caso-a-radianes-2",
+      "opciones": {
+        "tipo": "a-radianes"
+      },
+      "entrada": {
+        "idea": "radian",
+        "tipo": "a-radianes",
+        "nivel": 1,
+        "sub": "cen",
+        "c": 50
+      },
+      "esperado": {
+        "valor": "π/4 rad",
+        "texto": "π/4 rad"
+      }
+    },
+    {
+      "semilla": "caso-sin-pi-1",
+      "opciones": {
+        "tipo": "sin-pi"
+      },
+      "entrada": {
+        "idea": "radian",
+        "tipo": "sin-pi",
+        "nivel": 2,
+        "sub": "radios",
+        "cm": 12,
+        "L": 18
+      },
+      "esperado": {
+        "valor": 1.5,
+        "texto": "1,5 rad"
+      }
+    },
+    {
+      "semilla": "caso-sin-pi-2",
+      "opciones": {
+        "tipo": "sin-pi"
+      },
+      "entrada": {
+        "idea": "radian",
+        "tipo": "sin-pi",
+        "nivel": 2,
+        "sub": "sinpi",
+        "t": 1
+      },
+      "esperado": {
+        "valor": 57.3,
+        "texto": "57,3°"
+      }
+    },
+    {
+      "semilla": "caso-tres-sistemas-fig-1",
+      "opciones": {
+        "tipo": "tres-sistemas-fig"
+      },
+      "entrada": {
+        "idea": "radian",
+        "tipo": "tres-sistemas-fig",
+        "nivel": 3,
+        "sub": "triangulo",
+        "a": 90,
+        "xc": 30,
+        "en": "sex"
+      },
+      "esperado": {
+        "valor": 63.0,
+        "texto": "63°"
+      }
+    },
+    {
+      "semilla": "caso-tres-sistemas-fig-2",
+      "opciones": {
+        "tipo": "tres-sistemas-fig"
+      },
+      "entrada": {
+        "idea": "radian",
+        "tipo": "tres-sistemas-fig",
+        "nivel": 3,
+        "sub": "triangulo",
+        "a": 60,
+        "xc": 90,
+        "en": "sex"
+      },
+      "esperado": {
+        "valor": 39.0,
+        "texto": "39°"
+      }
+    },
+    {
+      "semilla": "caso-con-k-1",
+      "opciones": {
+        "tipo": "con-k"
+      },
+      "entrada": {
+        "idea": "formula-general",
+        "tipo": "con-k",
+        "nivel": 1,
+        "sub": "s-a-c",
+        "k": 3
+      },
+      "esperado": {
+        "valor": 30,
+        "texto": "30"
+      }
+    },
+    {
+      "semilla": "caso-con-k-2",
+      "opciones": {
+        "tipo": "con-k"
+      },
+      "entrada": {
+        "idea": "formula-general",
+        "tipo": "con-k",
+        "nivel": 1,
+        "sub": "s-a-c",
+        "k": 14
+      },
+      "esperado": {
+        "valor": 140,
+        "texto": "140"
+      }
+    },
+    {
+      "semilla": "caso-condicion-1",
+      "opciones": {
+        "tipo": "condicion"
+      },
+      "entrada": {
+        "idea": "formula-general",
+        "tipo": "condicion",
+        "nivel": 2,
+        "cond": 1,
+        "k": 11,
+        "en": "sex"
+      },
+      "esperado": {
+        "valor": 99.0,
+        "texto": "99°"
+      }
+    },
+    {
+      "semilla": "caso-condicion-2",
+      "opciones": {
+        "tipo": "condicion"
+      },
+      "entrada": {
+        "idea": "formula-general",
+        "tipo": "condicion",
+        "nivel": 2,
+        "cond": 5,
+        "k": 11,
+        "en": "sex"
+      },
+      "esperado": {
+        "valor": 99.0,
+        "texto": "99°"
+      }
+    },
+    {
+      "semilla": "caso-halla-r-1",
+      "opciones": {
+        "tipo": "halla-r"
+      },
+      "entrada": {
+        "idea": "formula-general",
+        "tipo": "halla-r",
+        "nivel": 3,
+        "sub": "radianes",
+        "cond": 1,
+        "k": 5
+      },
+      "esperado": {
+        "valor": "π/4 rad",
+        "texto": "π/4 rad"
+      }
+    },
+    {
+      "semilla": "caso-halla-r-2",
+      "opciones": {
+        "tipo": "halla-r"
+      },
+      "entrada": {
+        "idea": "formula-general",
+        "tipo": "halla-r",
+        "nivel": 3,
+        "sub": "radianes",
+        "cond": 2,
+        "k": 11
+      },
+      "esperado": {
+        "valor": "11π/20 rad",
+        "texto": "11π/20 rad"
+      }
+    }
+  ]
+}

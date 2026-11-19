@@ -705,6 +705,10 @@ const V = {
 
   // ---------------- Reserva de trigonometría (rutina de matemática C) ----------------
   // tt-01 y tt-02: transformaciones-trig (en "reserva" mientras la plantilla no entre al catálogo).
+  // tri-11 (reserva; las formas ya tienen 10 pares): la condición 2C − S entre los números de un mismo ángulo. Sin k: la
+  // medida es una fracción f de vuelta, S = 360f y C = 400f, y la condición da f.
+  'tri-11': d => { const f = d.dato / (2 * 400 - 360), S = 360 * f, C = 400 * f;
+    return { correcta: S, errores: { 'SCR-SUMA-dato-como-angulo': d.dato, 'SCR-OTRA-da-C': C, 'SCR-K-da-k': S / 9 } }; },
   'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
     if (!r.exacto) throw new Error('la suma debe salir exacta');
     return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },

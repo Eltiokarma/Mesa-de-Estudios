@@ -5394,8 +5394,10 @@
      "temas": [
       "Sentido de giro y signo",
       "Sistemas sexagesimal, centesimal y radial",
+      "Minutos y segundos",
       "Radián",
-      "Conversión entre sistemas"
+      "Conversión entre sistemas",
+      "Relación entre S, C y R"
      ],
      "universidades": {
       "uni": {
@@ -5410,27 +5412,29 @@
       }
      },
      "potencial_visual": "alto",
-     "grado": 3,
+     "grado": 5,
      "requiere": [
       "geometria.segmentos-y-angulos"
      ],
      "plantillas": [
+      "trig-sistemas-angulares",
       "cinta-radio"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/angulo-trigonometrico.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-plano.js",
-       "/nucleo/kit/piezas/recta.js"
+       "/nucleo/kit/piezas/trig-giro.js",
+       "/nucleo/kit/piezas/trig-medida.js"
       ],
-      "ideas": 4,
+      "ideas": 5,
       "titulos": {
-       "sentido-signo": "El sentido es el signo",
-       "tres-sistemas": "Una vuelta, tres escalas",
-       "radian": "Un radián: un radio de arco",
-       "minutos-decimales": "Minutos no son décimas"
+       "sentido-signo": "Ángulo trigonométrico: giro con signo",
+       "tres-sistemas": "Grados sexagesimales y grados centesimales",
+       "minutos-decimales": "Minutos y segundos del grado",
+       "radian": "El radián: un radio de arco",
+       "formula-general": "S, C y R: fórmula general"
       },
-      "terminos": 21
+      "terminos": 31
      }
     },
     {
@@ -8281,6 +8285,9 @@
     "/plantillas/cinta-radio/index.html",
     "/plantillas/cinta-radio/motor.js",
     "/plantillas/cinta-radio/papel.json"
+   ],
+   "rehacer": [
+    "trigonometria.angulo-trigonometrico"
    ]
   },
   "circuitos-cc": {
@@ -11756,6 +11763,29 @@
    "archivos": [
     "/plantillas/trig-polares/generador.js",
     "/plantillas/trig-polares/papel.json"
+   ]
+  },
+  "trig-sistemas-angulares": {
+   "id": "trig-sistemas-angulares",
+   "titulo": "Ángulo trigonométrico y sistemas de medida",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.angulo-trigonometrico"
+   ],
+   "url": "#/practica/trig-sistemas-angulares",
+   "ideas": [
+    "sentido-signo",
+    "tres-sistemas",
+    "minutos-decimales",
+    "radian",
+    "formula-general"
+   ],
+   "papel": "/plantillas/trig-sistemas-angulares/papel.json",
+   "archivos": [
+    "/plantillas/trig-sistemas-angulares/generador.js",
+    "/plantillas/trig-sistemas-angulares/papel.json"
    ]
   },
   "vectores": {

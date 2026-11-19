@@ -1,0 +1,87 @@
+{
+  "titulo": "Ángulo trigonométrico y sistemas de medida: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El chofer de una combi gira el timón un cuarto de vuelta hacia la izquierda. ¿Cuánto mide ese ángulo trigonométrico? Datos: 1 vuelta = 360°. Timón hacia la izquierda: sentido antihorario. Hacia la derecha: sentido horario. Giro antihorario: positivo. Giro horario: negativo. Alternativas: A) 360°   B) 45°   C) −90°   D) 90°   E) 1440°",
+      "respuesta": "D) 90°",
+      "pasos": [
+        "El tamaño: un cuarto de vuelta son 1/4 · 360° = 90°.",
+        "El sentido es antihorario: positivo. El ángulo mide 90°."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un ángulo trigonométrico mide 230ᵍ. ¿Cuánto mide en grados sexagesimales? Datos: Una vuelta: 360° o 400ᵍ. Mismo giro: 9° = 10ᵍ. Alternativas: A) 190°   B) 207°   C) 220°   D) 414°   E) 230°",
+      "respuesta": "B) 207°",
+      "pasos": [
+        "Cada 10ᵍ son 9°: se multiplica por 9/10. El signo no cambia.",
+        "230ᵍ · 9/10 = 207°."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un ángulo mide 5° 12′. ¿Cuánto mide en grados, con decimales? Datos: 1° = 60′ y 1′ = 60″ (minutos y segundos sexagesimales). Alternativas: A) 17°   B) 5,12°   C) 5,2°   D) 3,12°",
+      "respuesta": "C) 5,2°",
+      "pasos": [
+        "Un grado tiene 60 minutos: 12′ = 12/60 de grado = 0,2°.",
+        "Se suman los grados enteros: 5 + 0,2 = 5,2°."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Un ángulo trigonométrico mide −50ᵍ. ¿Cuánto mide en radianes? Datos: π rad = 180° = 200ᵍ. Alternativas: A) −π/8 rad   B) −4π rad   C) −0,25 rad   D) −5π/18 rad   E) −π/4 rad",
+      "respuesta": "E) −π/4 rad",
+      "pasos": [
+        "Media vuelta son 200ᵍ y también π rad: se multiplica por π rad/200ᵍ.",
+        "−50ᵍ · π/200ᵍ = −π/4 rad."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Los números S y C de un mismo ángulo cumplen S/3 + C/5 = 55. ¿Cuánto mide el ángulo, en grados sexagesimales? Datos: S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo. Para un mismo ángulo: S = 9k, C = 10k y R = πk/20. Alternativas: A) 11°   B) 55°   C) 49,5°   D) 99°   E) 110°",
+      "respuesta": "D) 99°",
+      "pasos": [
+        "Con S = 9k y C = 10k: 3k + 2k = 55, y k = 11.",
+        "El ángulo: S = 9 · 11 = 99, o sea 99°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un ángulo mide 300ᵐ, minutos centesimales. ¿Cuántos minutos sexagesimales mide? Datos: 1° = 60′ y 1′ = 60″ (minutos y segundos sexagesimales). 1ᵍ = 100ᵐ y 1ᵐ = 100ˢ (minutos y segundos centesimales). Mismo giro: 9° = 10ᵍ. Alternativas: A) 270′   B) 162′   C) 300′   D) 180′   E) 108′",
+      "respuesta": "B) 162′",
+      "pasos": [
+        "A grados: 300/100 = 3ᵍ. A sexagesimales: · 9/10 = 2,7°.",
+        "A minutos sexagesimales: · 60 = 162′."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Tres ángulos de un cuadrilátero miden 5π/6, π/6 y 2π/3 rad. ¿Cuánto mide el cuarto, en grados sexagesimales? Datos: Los cuatro ángulos de un cuadrilátero suman 360°. π rad = 180° = 200ᵍ. Alternativas: A) 180°   B) 100°   C) 60°   D) 300°",
+      "respuesta": "C) 60°",
+      "pasos": [
+        "Con π rad = 180°, los tres miden 150°, 30° y 120°: suman 300°.",
+        "El cuarto completa los 360°: 360° − 300° = 60°."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Los números S y C de un mismo ángulo cumplen S/3 + C/5 = 30. ¿Cuánto mide el ángulo, en radianes? Datos: S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo. Para un mismo ángulo: S = 9k, C = 10k y R = πk/20. Alternativas: A) 3π/5 rad   B) 6 rad   C) 6π rad   D) 3π/10 rad",
+      "respuesta": "D) 3π/10 rad",
+      "pasos": [
+        "Con S = 9k y C = 10k: 3k + 2k = 30, y k = 6.",
+        "R = πk/20 = 3π/10 rad."
+      ]
+    }
+  ]
+}

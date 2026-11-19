@@ -1,0 +1,22 @@
+{
+  "id": "trig-sistemas-angulares",
+  "titulo": "Ángulo trigonométrico y sistemas de medida",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.angulo-trigonometrico"
+  ],
+  "temas": [
+    "Sentido de giro y signo",
+    "Sistemas sexagesimal, centesimal y radial",
+    "Minutos y segundos",
+    "Radián",
+    "Conversión entre sistemas",
+    "Relación entre S, C y R"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -17,14 +17,16 @@
       "temas": [
         "Sentido de giro y signo",
         "Sistemas sexagesimal, centesimal y radial",
+        "Minutos y segundos",
         "Radián",
-        "Conversión entre sistemas"
+        "Conversión entre sistemas",
+        "Relación entre S, C y R"
       ],
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "alto",
-      "grado": 3,
+      "grado": 5,
       "requiere": ["geometria.segmentos-y-angulos"],
-      "plantillas": ["cinta-radio"],
+      "plantillas": ["trig-sistemas-angulares", "cinta-radio"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

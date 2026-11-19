@@ -4136,6 +4136,18 @@
     "CP17-eje-cruzado": {
      "respaldo": "hipotesis",
      "describe": "Pone el centro en el otro eje: cruza seno y coseno (CP17)"
+    },
+    "SCR-SUMA-dato-como-angulo": {
+     "respaldo": "hipotesis",
+     "describe": "Toma el número de la condición entre S y C por la medida del ángulo (SCR-SUMA)"
+    },
+    "SCR-OTRA-da-C": {
+     "respaldo": "hipotesis",
+     "describe": "Halla bien k y responde con C, el número centesimal, cuando se pide el sexagesimal (SCR-OTRA)"
+    },
+    "SCR-K-da-k": {
+     "respaldo": "hipotesis",
+     "describe": "Halla k y la da como medida del ángulo, sin multiplicar por 9 (SCR-K)"
     }
    },
    "pares": [
