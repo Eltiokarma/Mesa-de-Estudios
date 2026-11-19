@@ -154,11 +154,11 @@
         "Cocientes notables y término general"
       ],
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
-      "potencial_visual": "bajo",
+      "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["algebra.polinomios"],
-      "plantillas": ["polinomios", "division-polinomios"],
-      "investigacion": null
+      "plantillas": ["division-practica", "polinomios", "division-polinomios"],
+      "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {
       "id": "algebra.factorizacion",

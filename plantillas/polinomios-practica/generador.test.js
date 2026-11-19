@@ -182,7 +182,7 @@ test('la unidad lista esta plantilla primero; la escena vieja va a «Más mesas 
   assert.deepEqual(ficha.unidades, [UNIDAD]);
   assert.equal(ficha.formato, 'predicciones');
   const vieja = JSON.parse(fs.readFileSync(path.join(__dirname, '../polinomios/plantilla.json'), 'utf8'));
-  assert.deepEqual(vieja.rehacer, [UNIDAD]);
+  assert.ok(vieja.rehacer.includes(UNIDAD), 'la escena vieja va a «Más mesas del tema» en esta unidad (también en otras)');
 });
 
 test('la práctica no repite las predicciones de la unidad', () => {

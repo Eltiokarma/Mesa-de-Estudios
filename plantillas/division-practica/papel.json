@@ -1,0 +1,87 @@
+{
+  "titulo": "División de polinomios: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se divide un dividendo D de grado 7 entre un divisor d de grado 2. ¿Qué grado tiene el cociente q? Datos: Al dividir D entre d: D = d · q + r, con r de grado menor que d. Grado de un polinomio de una letra: su mayor exponente de x. xᵐ · xⁿ = xᵐ⁺ⁿ. Alternativas: A) 1   B) 2   C) 5   D) 9",
+      "respuesta": "C) 5",
+      "pasos": [
+        "Los grados de d y q suman el de D.",
+        "2 + grado de q = 7, así que el grado de q es 5."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se arma la tabla de Ruffini de x³ − 2x² + 4x + 2 entre x − 3. ¿Qué número va en la segunda casilla de la fila de abajo? Datos: Ruffini: cada casilla nueva de abajo es el coeficiente de arriba más a por la casilla anterior. x − 3 se anula en x = 3. Alternativas: A) −2   B) 2   C) 3   D) 1   E) −5",
+      "respuesta": "D) 1",
+      "pasos": [
+        "El de arriba más a por la casilla anterior.",
+        "−2 + 3 · 1 = 1."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se divide P(x) = −x³ + 3x² + x − 2 entre x − 2. ¿Cuál es el resto? Datos: Teorema del resto: el resto de dividir P(x) entre x − a es P(a). Alternativas: A) 16   B) 4   C) −2   D) 1",
+      "respuesta": "B) 4",
+      "pasos": [
+        "El resto es P(2).",
+        "P(2) = 4."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se divide 2x⁴ − 8x³ + 7x² + 9x − 6 entre x² − 3x + 2. ¿Cuál es el coeficiente de x en el cociente? Datos: Al dividir D entre d: D = d · q + r, con r de grado menor que d. Término de q: el primero de lo que queda entre el primero de d; luego se resta d por ese término. Alternativas: A) 2   B) −14   C) −8   D) −2   E) −3",
+      "respuesta": "D) −2",
+      "pasos": [
+        "x⁴ ÷ x² da 2x²; al restar 2x² · d, la columna de x³ queda en −2.",
+        "El coeficiente de x en el cociente es −2."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se divide −3x³ + 20 entre 3x − 6. ¿Cuál es el cociente? Datos: Para dividir entre cx + b: Ruffini con x = −b/c da el cociente falso q′. Cociente: q = q′ ÷ c. Resto: la última casilla, sin dividir. Ruffini: cada casilla nueva de abajo es el coeficiente de arriba más a por la casilla anterior. Alternativas: A) −x² − 2x − 8   B) −9x² − 18x − 36   C) −3x² − 6x − 12   D) −x² − 2x − 4",
+      "respuesta": "D) −x² − 2x − 4",
+      "pasos": [
+        "3x − 6 se anula en x = 2. La tabla da el cociente falso −3x² − 6x − 12.",
+        "Entre 3: q = −x² − 2x − 4."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se escribe el cociente de (x⁹ − y⁹) ÷ (x − y). ¿Cuál es su término de lugar 5? Datos: Término de lugar k de (xⁿ ± yⁿ) ÷ (x ± y): xⁿ⁻ᵏyᵏ⁻¹, con su signo. Alternativas: A) x⁵y⁴   B) x⁴y⁴   C) x⁵y³   D) x³y⁵   E) x⁴y⁵",
+      "respuesta": "B) x⁴y⁴",
+      "pasos": [
+        "En el lugar 5, x lleva 9 − 5 e y lleva 5 − 1.",
+        "término 5: x⁴y⁴."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "P(x) deja resto 0 al dividirlo entre x + 2 y resto 3 entre x − 1. ¿Cuál es el resto de dividir P(x) entre (x + 2)(x − 1)? Datos: Teorema del resto: el resto de dividir P(x) entre x − a es P(a). Si el divisor vale 0 en x = a, entonces P(a) = r(a). Con un divisor de grado 2, el resto es de grado 1 a lo más: r(x) = mx + n. Alternativas: A) x + 2   B) −x + 2   C) 3   D) 0   E) 2x + 1",
+      "respuesta": "A) x + 2",
+      "pasos": [
+        "r(x) = mx + n, con r(−2) = 0 y r(1) = 3.",
+        "m = 1 y n = 2: r(x) = x + 2."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se divide x⁴⁵ − y³⁶ entre x⁵ − y⁴. ¿Cuál es el grado del término central del cociente? Datos: Término de lugar k de (xⁿ ± yⁿ) ÷ (x ± y): xⁿ⁻ᵏyᵏ⁻¹, con su signo. Si el divisor es x⁵ − y⁴, el dividendo debe ser (x⁵)ⁿ − (y⁴)ⁿ. Grado de un término: la suma de los exponentes de sus letras. Alternativas: A) 40   B) 36   C) 81   D) 35   E) 37",
+      "respuesta": "B) 36",
+      "pasos": [
+        "9 términos: el central es el de lugar 5. Es (x⁵)⁴(y⁴)⁴ = x²⁰y¹⁶.",
+        "Grado: 36."
+      ]
+    }
+  ]
+}

@@ -8,6 +8,30 @@
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
   "errores": {
+    "TAL-TK-EXP-segunda-base-con-k": {
+      "respaldo": "hipotesis",
+      "describe": "En el término de lugar k le da a la segunda base el exponente k, no k − 1"
+    },
+    "TAL-CONTEO-termino-siguiente": {
+      "respaldo": "hipotesis",
+      "describe": "Toma el término de al lado del que se pide"
+    },
+    "TAL-GRADO-D-grado-del-dividendo": {
+      "respaldo": "hipotesis",
+      "describe": "Da el grado del dividendo en vez del de un término del cociente"
+    },
+    "PO3-cociente-falso-sin-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Con divisor cx + b, se queda con el cociente de Ruffini sin dividirlo entre c"
+    },
+    "PO2-numero-con-el-signo-cambiado": {
+      "respaldo": "hipotesis",
+      "describe": "Usa en Ruffini el número del divisor con el signo cambiado"
+    },
+    "TAL-RESTO-EN-Q-suma-el-resto": {
+      "respaldo": "hipotesis",
+      "describe": "Suma el resto a los coeficientes del cociente"
+    },
     "AL28-h-al-reves": {
       "respaldo": "parcial",
       "describe": "Corre la gráfica al revés: (x − h) a la izquierda"
@@ -1622,6 +1646,162 @@
             "texto": "−1",
             "valor": -1,
             "error": "PO11-suma-los-grados"
+          }
+        ]
+      }
+    },
+    {
+      "par": "dp-01",
+      "plantilla": "division-practica",
+      "unidad": "algebra.division-de-polinomios",
+      "mide": "Cocientes notables: el término de lugar k con potencias en el divisor (San Marcos 2023-II, otro lugar)",
+      "A": {
+        "enunciado": "En el cociente notable de (x³⁵ − y²⁸) ÷ (x⁵ − y⁴), ¿qué grado tiene el término de lugar 3?",
+        "datos": {
+          "modelo": {
+            "p": 5,
+            "s": 4,
+            "N": 7,
+            "k": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "32",
+            "valor": 32,
+            "error": "TAL-TK-EXP-segunda-base-con-k"
+          },
+          {
+            "texto": "28",
+            "valor": 28,
+            "correcta": true
+          },
+          {
+            "texto": "63",
+            "valor": 63,
+            "error": "TAL-GRADO-D-grado-del-dividendo"
+          },
+          {
+            "texto": "27",
+            "valor": 27,
+            "error": "TAL-CONTEO-termino-siguiente"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En el cociente notable de (x²⁴ − y¹⁸) ÷ (x⁴ − y³), ¿qué grado tiene el término de lugar 2?",
+        "datos": {
+          "modelo": {
+            "p": 4,
+            "s": 3,
+            "N": 6,
+            "k": 2
+          }
+        },
+        "opciones": [
+          {
+            "texto": "18",
+            "valor": 18,
+            "error": "TAL-CONTEO-termino-siguiente"
+          },
+          {
+            "texto": "42",
+            "valor": 42,
+            "error": "TAL-GRADO-D-grado-del-dividendo"
+          },
+          {
+            "texto": "19",
+            "valor": 19,
+            "correcta": true
+          },
+          {
+            "texto": "22",
+            "valor": 22,
+            "error": "TAL-TK-EXP-segunda-base-con-k"
+          }
+        ]
+      }
+    },
+    {
+      "par": "dp-02",
+      "plantilla": "division-practica",
+      "unidad": "algebra.division-de-polinomios",
+      "mide": "Divisor cx + b: el cociente de Ruffini se divide entre c y el resto no (la suma de coeficientes del cociente)",
+      "A": {
+        "enunciado": "¿Cuánto suman los coeficientes del cociente de dividir 4x³ + 2x² − 4x + 5 entre 2x − 1?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              4,
+              2,
+              -4,
+              5
+            ],
+            "divisor": [
+              2,
+              -1
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "PO3-cociente-falso-sin-dividir"
+          },
+          {
+            "texto": "0",
+            "valor": 0,
+            "error": "PO2-numero-con-el-signo-cambiado"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "error": "TAL-RESTO-EN-Q-suma-el-resto"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuánto suman los coeficientes del cociente de dividir 4x³ + 8x² − x − 5 entre 2x + 1?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              4,
+              8,
+              -1,
+              -5
+            ],
+            "divisor": [
+              2,
+              1
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "9",
+            "valor": 9,
+            "error": "PO2-numero-con-el-signo-cambiado"
+          },
+          {
+            "texto": "0",
+            "valor": 0,
+            "error": "TAL-RESTO-EN-Q-suma-el-resto"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "PO3-cociente-falso-sin-dividir"
           }
         ]
       }

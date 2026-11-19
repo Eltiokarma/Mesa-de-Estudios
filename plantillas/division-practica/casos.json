@@ -1,0 +1,304 @@
+{
+  "plantilla": "division-practica",
+  "nota": "Un caso por tipo (27 tipos, seis ideas). entrada: la idea y el tipo que da generar(semilla, { idea }); esperado.texto: el texto de la alternativa correcta.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e6-algebra/scripts/casos-practica.py), que no usa el generador ni el núcleo: lee el enunciado que ve el alumno, arma los polinomios con sympy, divide (div), evalúa, resuelve los sistemas de m y n, y escribe la respuesta con su propia tabla de superíndices. Los 27 casos cuadran con el texto de la alternativa correcta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "algoritmo",
+        "tipo": "suma-coef",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "12"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "algoritmo",
+        "tipo": "grado-r",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "algoritmo",
+        "tipo": "grado-q",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "algoritmo",
+        "tipo": "identidad-cero",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "algoritmo",
+        "tipo": "reconstruir",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "2x³ − 3x + 8"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "horner",
+        "tipo": "exacta-mn",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "horner",
+        "tipo": "resto-cuad",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "x + 3"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "horner",
+        "tipo": "coef-q",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "horner",
+        "tipo": "primer-termino",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "−x³"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "ruffini",
+        "tipo": "suma-q",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "−3"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "ruffini",
+        "tipo": "resto-ruf",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "−2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "ruffini",
+        "tipo": "cociente",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "2x² + 5x + 14"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "ruffini",
+        "tipo": "casilla",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "25"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "divisor-k",
+        "tipo": "cociente-frac",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "−3x³ − x² + x − 3"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "divisor-k",
+        "tipo": "suma-k",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "divisor-k",
+        "tipo": "resto-k",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "divisor-k",
+        "tipo": "cociente-k",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "x² − 2x + 3"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "teorema-resto",
+        "tipo": "resto-dos",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "−3x − 1"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "teorema-resto",
+        "tipo": "resto-neg",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "−5"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "teorema-resto",
+        "tipo": "resto",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "13"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "teorema-resto",
+        "tipo": "caja",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "256 cm³"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "teorema-resto",
+        "tipo": "divisible",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "cocientes-notables",
+        "tipo": "central",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "14"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "cocientes-notables",
+        "tipo": "signos",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "x⁶y⁴"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "cocientes-notables",
+        "tipo": "termino",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "x⁷y⁴"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "cocientes-notables",
+        "tipo": "exponentes",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "45"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "cocientes-notables",
+        "tipo": "num-terminos",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "division-practica",
+  "titulo": "División de polinomios",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.division-de-polinomios"
+  ],
+  "temas": [
+    "Algoritmo de la división",
+    "Métodos de Horner y Ruffini",
+    "Teorema del resto",
+    "Divisibilidad de polinomios",
+    "Cocientes notables y término general"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
