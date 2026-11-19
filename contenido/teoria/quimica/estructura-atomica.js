@@ -286,8 +286,10 @@
   const juegoHueso = v => HUESO({ atomos: [REF12, { Z: v.z, N: v.n, titulo: 'Tu átomo', rotulo: `A = ${v.z + v.n}` }] });
 
   // Ahora tú (seis tipos, del más simple al de examen). Cada uno da sus datos (contrato, punto 13).
+  // Núclidos reales (auditoría, B5; cabos de la Etapa 4, 19 nov): todos están en plantillas/particulas-nucleo/nuclidos.js
+  // y lo comprueba estructura-atomica.test.js. El bromo iba con A = 80, que no es de los naturales (79 y 81): ahora ⁷⁹Br.
   const IONES1 = [[8, 16, -2], [11, 23, 1], [12, 24, 2], [13, 27, 3], [16, 32, -2], [17, 35, -1], [17, 37, -1], [19, 39, 1], [20, 40, 2],
-    [26, 56, 3], [26, 56, 2], [9, 19, -1], [7, 14, -3], [29, 63, 2], [30, 65, 2], [35, 80, -1]];
+    [26, 56, 3], [26, 56, 2], [9, 19, -1], [7, 14, -3], [29, 63, 2], [30, 65, 2], [35, 79, -1]];
   function casoNeutrones(r) {
     const [z, a, q] = r.de(IONES1);
     return {
@@ -2600,7 +2602,7 @@
 
   const def = {
     unidad: 'quimica.estructura-atomica',
-    version: '0.3.2',
+    version: '0.3.3',
     calidad: 2,
     colores: COLORES,
     estado: 'completa',

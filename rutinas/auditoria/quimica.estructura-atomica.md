@@ -201,3 +201,16 @@ y los ejemplos corregidos) y una en `nucleo/convencion.test.js` (M3).
   - Los exponentes «10» con otra letra en las fórmulas, y una letra suelta en otra línea («d», «1»): son de la tipografía de `app/`.
   - El 2p² y el 3d⁶ dibujados con Hund antes de la idea 6: cambiarlo afecta los dibujos de las ideas 4 y 5 y la predicción de la 6. Queda para decidir con Gerson.
 - **Reglas que faltan.** Quedaron como pruebas de esta unidad: fecha por hecho, gas con su línea, herramienta por tipo, condición sin regla, papel por unidad y abreviada única. Pasarlas al validador común (`nucleo/teoria.js`) queda para la sesión del molde.
+
+## Cabos de la Etapa 4 (19 nov)
+
+- **B5, la tabla de núclidos reales.** `plantillas/particulas-nucleo/nuclidos.js`: los isótopos de la composición natural
+  de cada elemento hasta Z = 54 (175) y 76 radiactivos conocidos, cada uno con su motivo. La prueba `nuclidos.test.js`
+  revisa su forma contra datos escritos aparte. Las pruebas de la teoría, de `particulas-nucleo` y de `niveles-orbitales`
+  comprueban que todo núclido nombrado con su elemento (¹⁴C, «carbono-14») y todo átomo dibujado con Z y N en un
+  ejercicio está en la tabla; las letras genéricas (X, Y) no cuentan. Un solo cambio de contenido: el bromo de «Ahora
+  tú» de la idea 1 y de `masa-ion` iba con A = 80, que no es natural (79 y 81): ahora ⁷⁹Br. v0.3.3.
+- **Sigue pendiente** la otra mitad de B5: que la lectura del juego de la idea 1 (y la de iones de la idea 5) avise cuando
+  el alumno arma algo que no existe. La tabla no alcanza para decir «no existe» (solo trae los naturales y los
+  conocidos, no todos los que se han fabricado), la lectura sigue con su tope de 12 palabras y los iones necesitan su
+  propia tabla. Es una decisión de texto para Gerson («no es estable», «no está en la naturaleza»…).

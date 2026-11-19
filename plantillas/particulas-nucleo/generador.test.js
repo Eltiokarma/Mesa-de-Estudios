@@ -8,6 +8,7 @@ const gen = require('./generador.js');
 const casos = require('./casos.json');
 const papel = require('./papel.json');
 const { probarGenerador, probarFugas, dentroDeEscala } = require('../../nucleo/probar-generador.js');
+const Nuclidos = require('./nuclidos.js');
 
 // ---- Camino independiente ----
 // Dónde está cada partícula y qué afirmaciones son verdad (escrito aquí, sin leer el generador).
@@ -56,16 +57,41 @@ test('casos.json: de 15 a 20 casos, con todos los tipos', () => {
   assert.deepEqual([...new Set(casos.casos.map(c => c.entrada.tipo))].sort(), [...gen.TIPOS].sort());
 });
 
-test('los núclidos de las listas son reales y cumplen su relación', () => {
-  // Masas de núclidos que existen (estables o radiactivos conocidos), escritas aquí aparte: Z → A posibles.
-  const REALES = { 1: [1, 2, 3], 2: [3, 4], 3: [6, 7], 5: [10, 11], 6: [12, 13, 14], 7: [14, 15], 8: [16, 17, 18], 9: [19], 10: [20, 22],
-    11: [23, 24], 12: [24, 25, 26], 13: [26, 27], 14: [28, 30], 15: [31, 32], 16: [32, 34], 17: [35, 37], 18: [38, 40], 19: [39, 40, 41],
-    20: [40, 42, 48], 22: [48], 26: [54, 56, 58], 27: [57, 60], 28: [58, 59, 60], 29: [63, 65] };
+test('los núclidos de las listas son reales (tabla nuclidos.js) y cumplen su relación', () => {
+  // La tabla de núclidos reales hasta Z = 54 (auditoría, B5): naturales y radiactivos conocidos. Antes la prueba traía
+  // una lista corta propia; ahora todas las pruebas de la unidad leen la misma tabla.
+  const real = (z, a) => assert.ok(Nuclidos.existe(z, a), `${Nuclidos.SIMB[z]}-${a} no está en la tabla de núclidos reales`);
   for (const [rel, pares] of Object.entries(gen.PARES)) for (const [[z1, a1], [z2, a2]] of pares) {
-    assert.ok(REALES[z1].includes(a1) && REALES[z2].includes(a2), `${rel}: ${z1}-${a1} o ${z2}-${a2} no es real`);
+    real(z1, a1); real(z2, a2);
     const r = z1 === z2 ? 'isotopos' : a1 === a2 ? 'isobaros' : a1 - z1 === a2 - z2 ? 'isotonos' : 'nada';
     assert.equal(r, rel, `${z1}-${a1} y ${z2}-${a2}`);
   }
+  // Los iones de «masa-ion» van con la letra X, pero sus números son los de un núclido real.
+  for (const [z, a] of gen.IONES) real(z, a);
+  // Los símbolos y los nombres del generador son los de la tabla.
+  gen.SIMB.forEach((x, z) => assert.equal(x, Nuclidos.SIMB[z]));
+  gen.NOMBRE.forEach((x, z) => assert.equal(x, Nuclidos.NOMBRE[z]));
+});
+
+test('todo núclido que un problema nombra con su elemento está en la tabla (1500 semillas, casos.json y papel.json)', () => {
+  const cadenas = (x, out = []) => { if (typeof x === 'string') out.push(x); else if (x && typeof x === 'object') for (const v of Array.isArray(x) ? x : Object.values(x)) cadenas(v, out); return out; };
+  const vistos = new Set();
+  const revisa = (donde, x) => {
+    for (const t of cadenas(x)) for (const n of Nuclidos.enTexto(t)) {
+      vistos.add(`${n.z}-${n.a}`);
+      assert.ok(Nuclidos.existe(n.z, n.a), `${donde}: «${n.texto}» no está en la tabla de núclidos reales («${t}»)`);
+    }
+  };
+  for (let s = 0; s < 1500; s++) {
+    const p = gen.generar(`nuc${s}`);
+    revisa(`semilla nuc${s} (${p._datos.tipo})`, [p.enunciado, p.pregunta, p.datos, p.solucion, p.alternativas.map(a => [a.texto, a.explicacion])]);
+    // Los núclidos de _datos (a y b, o Z y A), aunque el texto los nombre con X.
+    const d = p._datos;
+    for (const par of [d.a, d.b]) if (Array.isArray(par)) assert.ok(Nuclidos.existe(par[0], par[1]), `semilla nuc${s}: ${par.join('-')}`);
+    if (d.tipo === 'masa-ion') assert.ok(Nuclidos.existe(d.Z, d.A), `semilla nuc${s}: ${d.Z}-${d.A}`);
+  }
+  revisa('casos.json', casos); revisa('papel.json', papel);
+  assert.ok(vistos.size >= 30, `los problemas nombran núclidos (${vistos.size})`);
 });
 
 test('salen todos los tipos y subtipos, los tres niveles y los errores pedidos', () => {

@@ -24,6 +24,9 @@
  *   carga }. Respuestas: un número (Z, neutrones o A) o una clave de texto: 'donde:<id>', 'nuc:isotopos|isobaros|
  *   isotonos|nada', 'iso:igual:<id>', 'el:<Z>'.
  * Núclidos: todos existen (estables o radiactivos conocidos, como el carbono-14 o el cobalto-60); ninguno inventado.
+ * Salen de la tabla nuclidos.js (naturales y radiactivos conocidos hasta Z = 54; auditoría, B5): generador.test.js
+ * comprueba que cada núclido de PARES y de IONES, y cada uno que un texto nombra con su elemento, está en ella. Para
+ * usar uno nuevo, primero se agrega a la tabla, comprobado.
  * Notación (propuesta §7): ²³Na⁺ con A arriba a la izquierda y la carga arriba a la derecha; N son los neutrones (A =
  * Z + N), así que el nitrógeno va por su nombre o con su número de masa (¹⁴N), nunca como «N» suelto.
  * Colores (molde §5b; la tabla `colores` de la teoría, copiada en COLOR y comparada por
@@ -296,7 +299,7 @@
 
   // ---- masa-ion: A de un ion con su carga, sus electrones y sus neutrones ----
   const IONES = [[8, 16, -2], [11, 23, 1], [12, 24, 2], [13, 27, 3], [16, 32, -2], [17, 35, -1], [17, 37, -1], [19, 39, 1], [20, 40, 2],
-    [26, 56, 3], [26, 56, 2], [9, 19, -1], [29, 63, 2], [30, 65, 2], [35, 80, -1], [15, 31, -3], [24, 52, 3], [25, 55, 2], [28, 59, 2], [34, 79, -2]];
+    [26, 56, 3], [26, 56, 2], [9, 19, -1], [29, 63, 2], [30, 65, 2], [35, 79, -1], [15, 31, -3], [24, 52, 3], [25, 55, 2], [28, 59, 2], [34, 79, -2]];
   function tMasaIon(rng) {
     const [z, a, q] = rng.elegir(IONES), el = z - q, n = a - z;
     const errores = [

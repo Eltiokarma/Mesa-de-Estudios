@@ -140,3 +140,13 @@ test('nunca se queda sin cuatro alternativas (semillas 0 a 2000 y de texto)', ()
   for (let s = 0; s <= 2000; s++) gen.generar(s);
   for (const s of ['entrada-1', 'entrada-2', 'salida-1', 'salida-3', 'papel-1', 'papel-8', 'examen-x']) gen.generar(s);
 });
+
+// Cabos de la Etapa 4 (19 nov; auditoría de Estructura atómica, B5): si un problema nombra un núclido con su elemento
+// («¹⁴C», «carbono-14»), está en la tabla de núclidos reales de plantillas/particulas-nucleo/nuclidos.js.
+test('ningún problema nombra un núclido que no esté en la tabla de núclidos reales (600 semillas, casos y papel)', () => {
+  const Nuclidos = require('../particulas-nucleo/nuclidos.js');
+  const cadenas = (x, out = []) => { if (typeof x === 'string') out.push(x); else if (x && typeof x === 'object') for (const v of Array.isArray(x) ? x : Object.values(x)) cadenas(v, out); return out; };
+  const revisa = (donde, x) => { for (const t of cadenas(x)) for (const n of Nuclidos.enTexto(t)) assert.ok(Nuclidos.existe(n.z, n.a), `${donde}: «${n.texto}» no está en la tabla («${t}»)`); };
+  for (let s = 0; s < 600; s++) { const p = gen.generar(`nuc${s}`); revisa(`semilla nuc${s}`, [p.enunciado, p.pregunta, p.datos, p.solucion, p.alternativas.map(a => [a.texto, a.explicacion])]); }
+  revisa('casos.json', casos); revisa('papel.json', papel);
+});

@@ -529,7 +529,9 @@ test('M4: cada condición de la regla es una condición, de una frase, y no una 
 test('M2: el papel de atomo-y-tabla dice la unidad de cada problema; los de esta unidad traen Datos y ℓ', () => {
   const fs = require('fs');
   const pl = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../plantillas/atomo-y-tabla/plantilla.json'), 'utf8'));
-  assert.deepEqual(pl.rehacer, [EA]);
+  // La escena se rehace para esta unidad; desde el 19 nov la lista puede traer también las otras unidades que la usan
+  // (Tabla periódica y Propiedades periódicas, que se rehacen aparte).
+  assert.ok(Array.isArray(pl.rehacer) && pl.rehacer.includes(EA), `rehacer: ${JSON.stringify(pl.rehacer)}`);
   const RT = require('../../../nucleo/repaso-tipos.js'), papel = require('../../../plantillas/atomo-y-tabla/papel.json');
   assert.ok(!/\bn \+ l\b|−l a \+l/.test(papel.indicacion));
   for (const q of papel.problemas) {
@@ -675,4 +677,89 @@ test('ronda 2: los ejemplos que marcó el lector', () => {
   // 02 y 10: la resta y el reparto, a la vista.
   assert.ok(ej('nucleo-identidad', 'Dos átomos de cloro').solucion.some(x => /20 − 18 = 2/.test(plano(x.ecuacion))));
   assert.match(plano(ej('configuracion-electronica', 'El último nivel del sodio').solucion.map(x => x.texto)), /2 \+ 2 \+ 6 = 10/);
+});
+
+// ---------- Cabos de la Etapa 4 (19 nov): la tabla de núclidos reales (auditoría, B5) ----------
+// Todo núclido que la unidad nombra con su elemento («¹⁴C», «²³Na⁺», «carbono-14») y todo átomo que una figura dibuja
+// con sus protones y neutrones (fuera del juego, donde el alumno arma el que quiere) está en la tabla de
+// plantillas/particulas-nucleo/nuclidos.js: los isótopos naturales y los radiactivos conocidos hasta Z = 54. Las letras
+// genéricas (X, Y) no cuentan. El bromo de «Ahora tú» iba con A = 80, que no es natural (79 y 81): ahora es ⁷⁹Br.
+test('cabos (B5): todo núclido con nombre de elemento y todo átomo dibujado de los ejercicios está en la tabla de núclidos reales', () => {
+  const Nuclidos = require('../../../plantillas/particulas-nucleo/nuclidos.js');
+  const cadenas = (x, out = [], visto = new Set()) => {
+    if (typeof x === 'string') out.push(x);
+    else if (x && typeof x === 'object' && !visto.has(x)) { visto.add(x); for (const v of Array.isArray(x) ? x : Object.values(x)) cadenas(v, out, visto); }
+    return out;
+  };
+  const atomos = (x, out = [], visto = new Set()) => {
+    if (!x || typeof x !== 'object' || visto.has(x)) return out;
+    visto.add(x);
+    if (!Array.isArray(x) && typeof x.Z === 'number' && typeof x.N === 'number') out.push(x);
+    for (const v of Array.isArray(x) ? x : Object.values(x)) atomos(v, out, visto);
+    return out;
+  };
+  const nombrados = new Set(); let dibujados = 0;
+  const revisa = (donde, x) => {
+    for (const t of cadenas(x)) for (const n of Nuclidos.enTexto(t)) {
+      nombrados.add(`${Nuclidos.SIMB[n.z]}-${n.a}`);
+      assert.ok(Nuclidos.existe(n.z, n.a), `${donde}: «${n.texto}» no está en la tabla de núclidos reales («${t.slice(0, 80)}»)`);
+    }
+    for (const a of atomos(x)) {
+      dibujados++;
+      assert.ok(Nuclidos.existe(a.Z, a.Z + a.N), `${donde}: la figura dibuja ${Nuclidos.SIMB[a.Z] || `Z = ${a.Z}`}-${a.Z + a.N}, que no está en la tabla`);
+    }
+  };
+  for (const i of def.ideas) {
+    // Todo menos el juego: ahí el alumno arma el átomo que quiere (la lectura del juego es el pendiente B5 que queda).
+    revisa(`${i.id}: lee`, i.lee); revisa(`${i.id}: predice`, i.predice); revisa(`${i.id}: mira`, i.mira); revisa(`${i.id}: regla`, i.regla);
+    revisa(`${i.id}: aprendizaje`, [i.aprendizaje, i.actividad, i.pregunta]);
+    for (const e of i.ejemplos) revisa(`${i.id}: ejemplo «${e.titulo}»`, e);
+    for (let s = 0; s < SEMILLAS; s++) {
+      if (i.resuelve) revisa(`${i.id}: resuelve ${s}`, i.resuelve.generar(s));
+      revisa(`${i.id}: ahora tú ${s}`, i.ahoraTu.generar(s));
+    }
+    // Del juego, lo fijo: la consigna, la misión, la leyenda y el átomo de referencia (el carbono-12 del hueso).
+    revisa(`${i.id}: juega`, [i.juega.consigna, i.juega.mision && i.juega.mision.texto, i.juega.mision && i.juega.mision.bien, i.juega.leyenda, i.juega.voz]);
+  }
+  revisa('glosario', def.glosario); revisa('historia', def.historia);
+  // La prueba mira de verdad: salen los núclidos de la idea 1 y más de cien átomos dibujados.
+  for (const k of ['C-12', 'C-14', 'N-14', 'Cl-35', 'Cl-37', 'Br-79']) assert.ok(nombrados.has(k), `no vi ${k}`);
+  assert.ok(nombrados.size >= 25 && dibujados >= 100, `${nombrados.size} núclidos nombrados y ${dibujados} átomos dibujados`);
+  assert.ok(!nombrados.has('Br-80'));
+  // Isótopos, isóbaros e isótonos de la idea 1: los pares de «Ahora tú» y de los ejemplos cumplen su relación con
+  // núclidos de la tabla (la relación se rehace aquí con Z y A).
+  let pares = 0;
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = I1.ahoraTu.generar(s), m = plano(c.pregunta).match(/^¿Qué son entre sí el (\S+) y el (\S+)\?$/);
+    if (!m) continue;
+    const [a, b] = [m[1], m[2]].map(t => Nuclidos.enTexto(t)[0]);
+    assert.ok(a && b && Nuclidos.existe(a.z, a.a) && Nuclidos.existe(b.z, b.a), plano(c.pregunta));
+    const rel = a.z === b.z ? 'Isótopos' : a.a === b.a ? 'Isóbaros' : a.a - a.z === b.a - b.z ? 'Isótonos' : 'Nada';
+    assert.match(c.opciones.find(o => o.correcta).texto, new RegExp(`^${rel}`), plano(c.pregunta));
+    pares++;
+  }
+  assert.ok(pares >= 20, `${pares} pares de núclidos en «Ahora tú»`);
+});
+
+// Cabos de la Etapa 4 (19 nov): los códigos de error (hipótesis) de la unidad están en su informe de docs/investigacion/,
+// que trae la sección «Hipótesis de la Etapa 4 (sin estudio)» con el índice de los que estrenó la etapa.
+test('cabos: todo código de error de la unidad está en su informe, con la sección «Hipótesis de la Etapa 4 (sin estudio)»', () => {
+  const fsI = require('node:fs'), pathI = require('node:path');
+  const leeInforme = n => fsI.readFileSync(pathI.join(__dirname, '..', '..', '..', 'docs', 'investigacion', n), 'utf8');
+  // «GE-TRI6 a GE-TRI8» nombra también GE-TRI7: los rangos se expanden.
+  const expande = t => t.replace(/([A-Z][A-Za-z0-9-]*?[A-Z-])(\d+) a \1(\d+)/g, (m, pre, x, y) => { const l = []; for (let k = +x; k <= +y; k++) l.push(pre + k); return l.join(', '); });
+  const informe = expande(leeInforme('atomo-enlace-ideas-erroneas.md')), transversal = leeInforme('fisica-calculo-transversal-ideas-erroneas.md');
+  const nombra = (t, c) => new RegExp(`(^|[^A-Za-z0-9-])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Za-z0-9-]|$)`).test(t);
+  assert.match(informe, /^## Hipótesis de la Etapa 4 \(sin estudio\)$/m);
+  const seccion = informe.slice(informe.indexOf('## Hipótesis de la Etapa 4 (sin estudio)'));
+  assert.ok(seccion.includes('contenido/teoria/quimica/estructura-atomica.js'), 'la sección nombra esta unidad');
+  assert.ok(!/\(\d{4}\)|et al\.|doi/i.test(seccion.slice(0, seccion.indexOf('\n## ', 5))), 'la sección no trae citas');
+  const codigos = new Set();
+  for (const u of [def]) for (const i of u.ideas) {
+    for (const o of i.predice.opciones) if (o.error) codigos.add(o.error);
+    for (let s = 0; s < 400; s++) for (const o of i.ahoraTu.generar(s).opciones) if (o.error) codigos.add(o.error);
+  }
+  assert.ok(codigos.size >= 30, `${codigos.size} códigos`);
+  const faltan = [...codigos].filter(c => !nombra(informe, c) && !nombra(transversal, c)).sort();
+  assert.deepEqual(faltan, [], `códigos sin describir en atomo-enlace-ideas-erroneas.md: ${faltan.join(', ')}`);
 });
