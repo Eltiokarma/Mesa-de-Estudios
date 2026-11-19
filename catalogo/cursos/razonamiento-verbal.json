@@ -41,7 +41,7 @@
         "Sinónimos en contexto",
         "Antónimos en contexto",
         "Sentido literal y figurado",
-        "Inferencias léxicas"
+        "Significado por el contexto"
       ],
       "universidades": {"uni": {"semanas": [3, 4, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "bajo",

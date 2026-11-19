@@ -1,5 +1,5 @@
 {
- "descripcion": "Casos de plantillas/sentido-contextual, calculados aparte con un léxico propio (scratchpad e7-rv/gen/casos-gen.js): la correcta y el código de cada incorrecta, escritos mirando la oración.",
+ "descripcion": "Casos de plantillas/sentido-contextual, calculados aparte con un léxico propio (scratchpad e7-rv/gen/casos-gen.js; los del cierre, con el léxico del auditor, e7-cierre-sc/aud/casos-aparte.js): la correcta y el código de cada incorrecta, escritos mirando la oración.",
  "casos": [
   {
    "semilla": "caso-0",
@@ -143,25 +143,25 @@
    "idea": "acepcion",
    "entrada": {
     "tipo": "acepcion-examen",
-    "item": "corto"
+    "item": "apagado"
    },
    "esperado": {
-    "texto": "desenvuelto",
+    "texto": "animado",
     "errores": [
      [
-      "largo",
+      "encendido",
       "RV18"
      ],
      [
-      "tímido",
+      "callado",
       "RVS1"
      ],
      [
-      "muy trabajador",
+      "bajito",
       "RV21"
      ],
      [
-      "cortés",
+      "apegado",
       "RV20"
      ]
     ]
@@ -236,7 +236,7 @@
       "RVS5"
      ],
      [
-      "está muy concentrada",
+      "es muy imaginativa",
       "RVS2"
      ]
     ]

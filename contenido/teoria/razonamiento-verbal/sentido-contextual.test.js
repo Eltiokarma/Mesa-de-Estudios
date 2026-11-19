@@ -88,7 +88,8 @@ test('la unidad tiene las cinco ideas en orden, y cada término del glosario tra
   assert.deepEqual(porIdea.map(l => l.length), [4, 2, 2, 2, 2], 'cada idea estrena sus términos');
 });
 
-test('con calidad 2 simulada, el validador no encuentra nada (200 semillas)', () => {
+test('lleva calidad 2 y el validador no encuentra nada (200 semillas)', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { semillas: 200 }), []);
   assert.deepEqual(Teoria.pendientes(Object.assign({}, def, { calidad: 2 })), [], 'una unidad nueva no agrega excepciones');
 });
@@ -166,14 +167,14 @@ for (const idea of IDEAS) {
   });
 
   test(`idea ${k} · «Ahora tú» no repite una palabra de la predicción, de «Así se resuelve» ni de los ejemplos, y tiene voz propia`, () => {
-    const otras = new Set(pre.filter(p => !/^ahora/.test(p.q)).map(p => p.w).filter(w => w && w !== '______'));
-    for (const p of pre.filter(x => /^ahora/.test(x.q))) if (p.w !== '______') assert.ok(!otras.has(p.w), `${p.q}: «${p.w}» ya está en la idea`);
+    const otras = new Set(pre.filter(p => !/^ahora/.test(p.q)).map(p => p.w).filter(w => w && w !== '¿…?'));
+    for (const p of pre.filter(x => /^ahora/.test(x.q))) if (p.w !== '¿…?') assert.ok(!otras.has(p.w), `${p.q}: «${p.w}» ya está en la idea`);
     assert.ok(idea.ahoraTu.voz && !/Lee primero lo que dice/.test(idea.ahoraTu.voz), 'voz propia');
   });
 
   test(`idea ${k} · R1: el glosario que estrena la idea no copia palabras ni alternativas de la idea`, () => {
     const usadas = new Set();
-    for (const p of pre) { if (p.w && p.w !== '______') usadas.add(norm(p.w)); for (const o of p.ops) usadas.add(norm(o.t)); }
+    for (const p of pre) { if (p.w && p.w !== '¿…?') usadas.add(norm(p.w)); for (const o of p.ops) usadas.add(norm(o.t)); }
     for (const c of idea.juega.controles) for (const o of c.opciones || []) if (String(o.texto).length > 3) usadas.add(norm(o.texto));
     for (const e of porIdea[k - 1]) for (const ej of [e.simple, ...(e.ejemplos || [])]) {
       const t = ` ${norm(ej)} `;
@@ -209,4 +210,88 @@ test('las oraciones en trozos dicen lo mismo que su texto entero (el texto alter
   } };
   for (const idea of IDEAS) for (const f of figuras(idea)) ver(f.d.datos);
   assert.ok(n > 300, `pocas oraciones (${n})`);
+});
+
+// ---------- Cierre (19 nov): auditor y lectores en frío A y B (rutinas/auditoria/ y rutinas/frio/) ----------
+// Cada prueba falla con la versión de antes del cierre.
+const TODO = () => JSON.stringify(IDEAS.map(i => [i.titulo, i.temas, i.pregunta, i.actividad, i.lee, i.juega.consigna, i.juega.mision.texto, i.juega.leyenda, i.juega.controles,
+  i.predice, i.mira.pasos, i.regla, i.ejemplos.map(e => [e.enunciado, e.datos, e.figura.datos, e.solucion, e.respuesta]),
+  [...Array(12).keys()].map(s => [i.resuelve.generar(s), i.ahoraTu.generar(s)])]).concat(def.glosario));
+const soportes = () => IDEAS.flatMap(i => figuras(i).map(f => f.d.datos));
+const TRAMPA = /^(Otra acepción|Mismo campo|Parecido de forma|Otro rasgo|Sinónimo por antónimo|Otra valoración|Otro grado|Otra cosa|Choca|Otra acción|Lectura literal|Lectura figurada|Idea propia|Detalle cercano|Contraste al revés|Lo contrario):/;
+
+test('cierre · «inferencia» no sale en nada de lo que lee el alumno (es de la unidad Inferencias), tampoco en los temas', () => {
+  assert.ok(!/inferenc/i.test(TODO()), 'la unidad dice «inferencia»');
+  const cat = require('../../../catalogo/cursos/razonamiento-verbal.json');
+  const u = JSON.stringify(cat).match(/"id": ?"razonamiento-verbal\.sentido-contextual"[\s\S]*?"investigacion"/)[0];
+  assert.ok(!/inferenc/i.test(u), 'el catálogo dice «inferencia»');
+});
+
+test('cierre · «pista» es el término del curso: ningún texto de un soporte la usa con otro sentido (la pista de asfalto)', () => {
+  for (const d of soportes()) for (const h of d.hojas || []) for (const o of h.oraciones || []) assert.ok(!/\bpistas?\b/i.test(o.t), `«${o.t}»`);
+});
+
+test('cierre · Datos de los niveles 2 y 3, «Así se resuelve» y «Ahora tú»: definiciones del criterio, sin nombres de trampas', () => {
+  for (const i of IDEAS) {
+    for (const e of i.ejemplos.filter(x => x.nivel > 1)) for (const l of e.datos) assert.ok(!TRAMPA.test(l), `${i.id} «${e.titulo}»: «${l}»`);
+    for (let s = 0; s < 12; s++) for (const l of [...i.resuelve.generar(s).datos, ...i.ahoraTu.generar(s).datos]) assert.ok(!TRAMPA.test(l), `${i.id} semilla ${s}: «${l}»`);
+  }
+  assert.ok(!def.ideas[1].ejemplos.some(e => e.datos.some(l => /^Otro grado:.*valora igual/.test(l))), '«otro grado» no dice «valora igual»: esquelético exagera');
+});
+
+test('cierre · un solo hueco «¿…?» y una sola marca para «todavía no elegí»: sin «______», «vacío», «sin leer» ni «sin marcar»', () => {
+  const t = TODO();
+  assert.ok(!/_{3,}/.test(t), 'hueco con raya');
+  for (const i of IDEAS) for (const c of i.juega.controles) for (const o of c.opciones) assert.ok(!/^(vacío|sin leer|sin marcar)$/.test(o.texto), `${i.id}: «${o.texto}»`);
+});
+
+test('cierre · el cuaderno de Mira no numera juntas la oración y las palabras; una oración partida tras «:» lleva un solo número', () => {
+  for (const i of IDEAS) {
+    const os = i.mira.datos.hojas[0].oraciones;
+    assert.equal(os[0].num, '', `${i.id}: la oración que se estudia va sin número`);
+    for (const o of os.slice(1)) assert.equal(o.num, '–', `${i.id}: «${o.t}» va con raya`);
+  }
+  for (const d of soportes()) for (const h of d.hojas || []) for (const o of h.oraciones || []) assert.ok(!/[:;,]$/.test(o.t), `«${o.t}» sigue en otro número`);
+});
+
+test('cierre · las explicaciones dicen el motivo real (auditor M3 y lector B)', () => {
+  const t = TODO();
+  assert.ok(!/lo hizo famoso/.test(t), '«lo hizo famoso» no es un sentido figurado de «partió en dos»');
+  assert.ok(!/«tajada»/.test(t), '«tajante» no se parece a «tajada» por la forma: cortar es otra lectura');
+  assert.ok(!/ingenuos/.test(t), '«ingenuo» no describe a quien da');
+  assert.ok(/exagera/.test(def.ideas[1].predice.opciones.find(o => o.texto === 'esquelético').siFuera));
+  const polvo = def.ideas[3].ejemplos.find(e => e.titulo === 'Hecho polvo');
+  assert.ok(!/feliz con su nota» es otra valoración/.test(plano(polvo.solucion.map(x => x.texto))));
+});
+
+test('cierre · el turquesa es siempre la pista, y la regla de la palabra precisa no se parece a la del comodín', () => {
+  for (const i of IDEAS) assert.ok(/pista/.test(i.juega.leyenda.find(l => plano(l.s) === 'turquesa').t), `${i.id}: el turquesa`);
+  assert.ok(!/encaja con todo/.test(plano(def.ideas[2].regla.ecuacion)));
+});
+
+test('cierre · el «Vale si» de la idea 2 nombra palabras que el alumno ya vio; ningún cuaderno es de una persona de los textos', () => {
+  const vistas = new Set(def.ideas[1].predice.opciones.map(o => o.texto));
+  for (const [, w] of def.ideas[1].regla.condicion.matchAll(/«([^»]+)»/g)) assert.ok(vistas.has(w), `«${w}»`);
+  assert.ok(!/Cuaderno de (Rosa|Iván)/.test(TODO()));
+});
+
+test('cierre · la pista que el resuelto pinta en turquesa es la que la figura marca', () => {
+  const n = s => String(s).toLowerCase().replace(/[«»"'.,;:¿?¡!]/g, '').replace(/\s+/g, ' ').trim();
+  const turq = x => (Array.isArray(x) ? x.flatMap(turq) : x && typeof x === 'object' ? (x.v === 'c-i' ? [x.t] : x.texto ? turq(x.texto) : []) : []);
+  for (const i of IDEAS) for (let s = 0; s < 4; s++) {
+    const R = i.resuelve.generar(s);
+    const ps = R.dibujo.datos.hojas.flatMap(h => h.oraciones.flatMap(o => (o.frags || []).filter(f => /[pq]$/.test(f.id) && f.id.length === o.id.length + 1).map(f => n(f.t))));
+    for (const t of turq(R.pasos)) assert.ok(ps.some(p => p.includes(n(t))), `${i.id} resuelve ${s}: «${t}» no está marcada como pista`);
+  }
+});
+
+test('cierre · en «Ahora tú» la correcta no es la única alternativa que repite una palabra de la pista', () => {
+  const raiz = w => w.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').slice(0, 5);
+  const pal = s => String(s).toLowerCase().replace(/[«».,;:¿?¡!]/g, ' ').split(/\s+/).filter(x => x.length >= 4 && !['para', 'todo', 'toda', 'muchas', 'mucho'].includes(x)).map(raiz);
+  for (const i of IDEAS) for (let s = 0; s < 6; s++) {
+    const A = i.ahoraTu.generar(s);
+    const base = new Set(A.dibujo.datos.hojas.flatMap(h => h.oraciones.flatMap(o => (o.frags || []).filter(f => /[pq]$/.test(f.id)).flatMap(f => pal(f.t)))));
+    const c = A.opciones.find(o => o.correcta);
+    for (const r of pal(c.texto).filter(x => base.has(x))) assert.ok(A.opciones.some(o => !o.correcta && pal(o.texto).includes(r)), `${i.id} ${s}: «${c.texto}» repite «${r}…» de la pista`);
+  }
 });

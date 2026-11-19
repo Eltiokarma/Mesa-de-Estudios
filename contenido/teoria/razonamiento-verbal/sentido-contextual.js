@@ -75,7 +75,11 @@
     const t = plantilla.replace(/\[w:([^\]]+)\]/, (_, x) => (w !== undefined ? w : x)).replace(/\[[pq]:([^\]]+)\]/g, '$1');
     return { id, t, frags };
   }
-  const ors = (pre, lista) => lista.map((t, k) => (typeof t === 'string' ? oracion(`${pre}${k + 1}`, t) : t));
+  // Una oración que sigue tras «:», «;» o «,» va en el mismo número (cierre, lector B: «1 La sequía dejó yermos…:» y
+  // «2 no crece…» parecían dos oraciones).
+  const juntar = lista => lista.reduce((a, t) => { const u = a[a.length - 1];
+    if (typeof t === 'string' && typeof u === 'string' && /[:;,]$/.test(u)) a[a.length - 1] = `${u} ${t}`; else a.push(t); return a; }, []);
+  const ors = (pre, lista) => juntar(lista).map((t, k) => (typeof t === 'string' ? oracion(`${pre}${k + 1}`, t) : t));
   // Ids de las pistas de una oración en trozos.
   const pistasDe = o => o.frags.filter(f => /[pq]$/.test(f.id) && f.id.length === o.id.length + 1).map(f => f.id);
   const papel = (soporte, lugar, titulo, de, para, oraciones, extra) => Object.assign({ soporte, lugar, hojas: [Object.assign({ id: 'k' }, titulo ? { titulo } : {}, { de, para, oraciones })] }, extra || {});
@@ -90,8 +94,10 @@
   const estHoja = (sop, L) => ({ marcas: Object.assign(Object.fromEntries(pistasHoja(sop).map(id => [id, 'i'])), L ? { [L]: 'f' } : {}),
     tachar: L ? sop.alternativas.map(a => a.id).filter(id => id !== L) : [] });
   // Un cuaderno con la oración y, debajo, las palabras que se prueban (una por renglón): la figura de «Mira».
+  // La oración va sin número y las palabras, con raya (cierre, lectores A y B: numeradas juntas del 1 al 5 parecían cinco
+  // oraciones).
   const probador = (lugar, titulo, de, plantilla, candidatos) => papel('cuaderno', lugar, titulo, de, 'la práctica de Comunicación',
-    [oracion('c0', plantilla)].concat(candidatos.map((t, k) => ({ id: `c${k + 1}`, t }))));
+    [Object.assign(oracion('c0', plantilla), { num: '' })].concat(candidatos.map((t, k) => ({ id: `c${k + 1}`, t, num: '–' }))));
 
   // ---------- Idea 1: la oración elige la acepción (conserva su id; etapa 7) ----------
   // Cambia: la palabra que entra en lugar de «claro» en cada nota. Permanece: las tres notas y sus pistas. Progresa: de
@@ -227,7 +233,7 @@
       datos: [D_ACEP, D_PISTA],
       figura: fig(papel('mensaje', 'Promoción 2026', null, 'Rosa', 'el grupo de la promoción', ors('k', ['La señal del celular es [w:débil] en la chacra de mi tío: [p:las llamadas se cortan a cada rato].']))),
       solucion: [
-        { texto: [cubre('«Las llamadas se cortan»'), ' dice que la señal llega con poca fuerza: es la pista.'] },
+        { texto: [cubre('«Las llamadas se cortan a cada rato»'), ' dice que la señal llega con poca fuerza: es la pista.'] },
         { texto: ['«En la chacra de mi tío» dice dónde pasa, pero no qué significa «débil».'] }],
       respuesta: [justo('«Las llamadas se cortan a cada rato»')] },
     { nivel: 1, titulo: 'El aviso de la posta',
@@ -320,12 +326,12 @@
       enunciado: 'Pregunta 24 del simulacro. En el texto, la palabra en negrita puede reemplazarse por',
       datos: [D_ACEP, D_PISTA, D_SINC],
       figura: fig(sim(24, ors('h', ['El puente nuevo sobre el río es [w:seguro]: [p:por él pasan sin peligro los camiones más pesados].', 'Antes, los camiones daban una vuelta de dos horas.']), null,
-        ['resistente', 'indiscutible', 'vigilado', 'peligroso', 'segundo'])),
+        ['confiable', 'indiscutible', 'vigilado', 'peligroso', 'segundo'])),
       solucion: [
         { texto: [mala('B'), ': «es seguro que…» es indiscutible, ', prop('otra acepción'), '. ', mala('C'), ' es del ', prop('mismo campo'), ', el de la seguridad.'] },
         { texto: [mala('D'), ' dice lo contrario: ', prop('sinónimo por antónimo'), '. ', mala('E'), ' tiene ', prop('parecido de forma'), '.'] },
-        { texto: [buena('A'), ': la pista, ', cubre('«pasan sin peligro los camiones»'), ', habla de un puente que aguanta.'] }],
-      respuesta: [buena('A'), ': resistente'] },
+        { texto: [buena('A'), ': la pista, ', cubre('«pasan sin peligro los camiones»'), ', habla de un puente en el que se puede confiar.'] }],
+      respuesta: [buena('A'), ': confiable'] },
     { nivel: 3, titulo: 'El clima del valle',
       enunciado: 'Pregunta 25 del simulacro. En el texto, la palabra en negrita puede reemplazarse por',
       datos: [D_ACEP, D_PISTA, D_SINC],
@@ -414,7 +420,8 @@
     },
     regla: {
       texto: 'Una palabra con varias acepciones toma la que piden las pistas de su oración. Su sinónimo o su antónimo en contexto es de esa acepción, no de la más frecuente.',
-      ecuacion: [cubre('pista'), ' → ', { negrita: 'acepción' }, ' → ', justo('reemplazo')],
+      // Sin el tercer tramo (cierre): a 390 px la ecuación se partía después de la segunda flecha.
+      ecuacion: [cubre('pista'), ' → ', { negrita: 'acepción' }, ' de la palabra'],
       voz: 'Vuelve a esta regla cuando dudes con una palabra.',
       condicion: 'el reemplazo, puesto en lugar de la palabra, deja la oración diciendo lo mismo (sinónimo) o lo contrario (antónimo).',
     },
@@ -477,7 +484,7 @@
   const D_CON = 'Connotación: la valoración que la palabra suma a lo que describe: elogio, crítica o ninguna.';
   const D_QUIEN = 'Quien escribe: el soporte dice quién escribe, para quién y para qué; de ahí sale la valoración del texto.';
   const D_OTRAVAL = 'Otra valoración: la palabra describe lo mismo, pero elogia donde el texto critica, o al revés.';
-  const D_GRADO = 'Otro grado: la palabra valora igual, pero con más o con menos fuerza que la del texto.';
+  const D_GRADO = 'Otro grado: la palabra dice lo mismo, pero con más o con menos fuerza que la del texto.';
   const D_OTRACOSA = 'Otra cosa: la palabra describe algo distinto de lo que dice el texto.';
 
   // El juego: el mundo chico de los dos mensajes. val: elogia (+1), critica (−1); den: lo que describe.
@@ -509,14 +516,14 @@
   const PL_POSTA = 'Su hijo está [w:¿…?] para su edad: [p:pesa menos de lo esperado].';
   const posta2 = (w, reserva) => ({ soporte: 'mensaje', lugar: 'Posta Las Lomas', hojas: [{ id: 'hp', de: 'la enfermera', para: 'la mamá de Iván',
     oraciones: [oracion('q1', PL_POSTA, w, reserva), oracion('q2', 'Lo esperamos el lunes para su control.')] }] });
-  const PROB2 = probador('Cuaderno de Iván', '¿Qué palabra va en el mensaje de la posta?', 'Iván', PL_POSTA, ['esbelto', 'esquelético', 'débil', 'delgado']);
+  const PROB2 = probador('Cuaderno de Nilda', '¿Qué palabra va en el mensaje de la posta?', 'Nilda', PL_POSTA, ['esbelto', 'esquelético', 'débil', 'delgado']);
 
   // «Así se resuelve»: cuatro hojas. Cada incorrecta: otra valoración, otro grado u otra cosa. La buena: D, A, E y B.
   const PIDE2 = w => `En el texto, ¿qué palabra describe lo mismo que «${w}» y conserva su valoración?`;
   const RESUELVE_2 = [
-    { sop: sim(41, ors('h', ['Los vecinos agradecieron a doña Carmen, una mujer [w:perseverante].', '[p:Pidió durante dos años la pista para el barrio, hasta que la hicieron].']), PIDE2('perseverante'),
+    { sop: sim(41, ors('h', ['Los vecinos agradecieron a doña Carmen, una mujer [w:perseverante].', '[p:Pidió durante dos años que asfaltaran la calle del barrio, hasta que lo logró].']), PIDE2('perseverante'),
       ['terca', 'desinteresada', 'heroica', 'constante', 'obstinada']), buena: 'D', w: 'perseverante',
-      datos: [D_DEN, D_CON], tengo: ['Describe a quien insiste. La pista, ', cubre('«hasta que la hicieron»'), ', y el agradecimiento dicen que la elogia.'],
+      datos: [D_DEN, D_CON], tengo: ['Describe a quien insiste. La pista, ', cubre('«hasta que lo logró»'), ', y el agradecimiento dicen que la elogia.'],
       malas: [mala('A'), ' y ', mala('E'), ' describen lo mismo, pero critican: ', prop('otra valoración'), '. ', mala('B'), ' es ', prop('otra cosa'), '. ', mala('C'), ' elogia con más fuerza: ', prop('otro grado'), '.'],
       bien: [buena('D'), ': una mujer ', justo('constante'), ' insiste, y la palabra la elogia igual.'],
       sentido: 'Relee: «los vecinos agradecieron a una mujer terca» suena a reproche; «constante», no.' },
@@ -544,7 +551,7 @@
   const AHORA_2 = [
     { o: ['En el informe de conducta, la auxiliar anotó que Pedro es [w:terco]: [p:no hace caso aunque se le explique varias veces].'], ok: 'obstinado',
       m: [['perseverante', 'RVS2', 'Describe a quien insiste, bien; pero elogia, y el informe critica.'],
-        ['imposible', 'RVS3', 'Critica, bien; pero con mucha más fuerza que «terco».'],
+        ['insoportable', 'RVS3', 'Critica, bien; pero con mucha más fuerza que «terco».'],
         ['lento', 'RV19', 'Es otra cosa: describe la rapidez, no el no hacer caso.']] },
     { o: ['La directora felicitó a la brigada: sus integrantes fueron [w:valientes].', '[p:Sacaron a los niños del aula antes de que llegara el humo].'], ok: 'valerosos',
       m: [['imprudentes', 'RVS2', 'Describe a quien se arriesga, bien; pero critica, y la directora felicita.'],
@@ -558,8 +565,8 @@
       m: [['ingenioso', 'RVS2', 'Describe a quien inventa algo, bien; pero elogia, y el cuento critica.'],
         ['diabólico', 'RVS3', 'Critica, bien; pero con mucha más fuerza que «mentiroso».'],
         ['veloz', 'RV19', 'Es otra cosa: describe la rapidez, no el engaño.']] },
-    { o: ['En su discurso, el alcalde agradeció a los vecinos [w:generosos].', '[p:Donaron frazadas a las familias que perdieron sus casas].'], ok: 'bondadosos',
-      m: [['ingenuos', 'RVS2', 'Describe a quien da sin pensarlo, bien; pero critica, y el alcalde agradece.'],
+    { o: ['En su discurso, el alcalde agradeció a los vecinos [w:generosos].', '[p:Donaron frazadas a las familias que perdieron sus casas].'], ok: 'desprendidos',
+      m: [['derrochadores', 'RVS2', 'Describe a quien da mucho, bien; pero critica, y el alcalde agradece.'],
         ['santos', 'RVS3', 'Elogia, bien; pero con mucha más fuerza que «generosos».'],
         ['madrugadores', 'RV19', 'Es otra cosa: describe a qué hora se levantan.'],
         ['generales', 'RV20', 'Se escribe parecido a «generosos», bien visto; pero significa otra cosa.']] },
@@ -575,10 +582,10 @@
   // las correctas son B, D, C, A y E. Revisado aparte (scratchpad e7-rv/revisa.js).
   const EJEMPLOS_2 = [
     { nivel: 1, titulo: 'La casa de la tía',
-      enunciado: 'Según el mensaje de la tía Elena, ¿la palabra «antigua» elogia, critica o solo describe la casa?',
+      enunciado: 'Según el mensaje de la tía Elena, ¿la palabra «elegante» elogia, critica o solo describe la casa?',
       datos: [D_DEN, D_CON],
-      figura: fig(papel('mensaje', 'Familia Quispe', null, 'la tía Elena', 'la familia', ors('k', ['Compramos una casa [w:antigua] en el centro de Puno: [p:tiene unos balcones preciosos].']))),
-      solucion: [{ texto: ['La pista, ', cubre('«unos balcones preciosos»'), ', dice que a la tía le gusta: la palabra elogia.'] }],
+      figura: fig(papel('mensaje', 'Familia Quispe', null, 'la tía Elena', 'la familia', ors('k', ['Compramos una casa [w:elegante] en el centro de Puno: [p:tiene unos balcones preciosos].']))),
+      solucion: [{ texto: ['«Elegante» suma un juicio a la casa, y la pista, ', cubre('«unos balcones preciosos»'), ', dice que a la tía le gusta: la palabra elogia.'] }],
       respuesta: [justo('La elogia')] },
     { nivel: 1, titulo: 'El perro de la plaza',
       enunciado: 'En el cartel de la veterinaria, ¿qué describe la palabra «flaco», sin contar su valoración?',
@@ -631,16 +638,16 @@
       figura: fig(papel('mensaje', 'Promoción 2026', null, 'Mateo', 'la promoción', ors('k', ['Mi primo tiene un celular [w:viejo]: [p:se apaga solo y la pantalla está rota].']))),
       solucion: [
         { texto: ['«De colección» se dice con aprecio: ', prop('otra valoración'), '. «Caro» es ', prop('otra cosa'), ': el precio.'] },
-        { texto: ['La pista, ', cubre('«se apaga solo»'), ', critica el uso que tiene encima.'] }],
+        { texto: ['La pista, ', cubre('«se apaga solo»'), ', dice que el celular ya está gastado por el uso.'] }],
       respuesta: [justo('«Gastado»')] },
     { nivel: 2, titulo: 'La amiga de Lucía',
-      enunciado: '¿Qué palabra conserva el elogio de «conversadora»: «charlatana», «muda» o «amena»?',
+      enunciado: '¿Qué palabra conserva lo que describe «conversadora» y su elogio: «charlatana», «tímida con todos» o «comunicativa»?',
       datos: [D_DEN, D_CON],
       figura: fig(papel('mensaje', 'Promoción 2026', null, 'Lucía', 'la promoción', ors('k', ['Mi amiga Rosa es muy [w:conversadora]: [p:con ella las horas pasan volando].']))),
       solucion: [
-        { texto: ['«Charlatana» describe a quien habla mucho, pero critica: ', prop('otra valoración'), '. «Muda» es ', prop('otra cosa'), '.'] },
-        { texto: ['La pista, ', cubre('«las horas pasan volando»'), ', elogia su charla.'] }],
-      respuesta: [justo('«Amena»')] },
+        { texto: ['«Charlatana» describe a quien habla mucho, pero critica: ', prop('otra valoración'), '. «Tímida con todos» es ', prop('otra cosa'), '.'] },
+        { texto: ['La pista, ', cubre('«las horas pasan volando»'), ', elogia su charla: una persona comunicativa habla con gusto y con todos.'] }],
+      respuesta: [justo('«Comunicativa»')] },
     { nivel: 2, titulo: 'El niño perdido',
       enunciado: '¿Qué palabra describe lo mismo que «pequeño» sin agregar valoración: «menudo», «enano» o «travieso»?',
       datos: [D_DEN, D_CON, D_QUIEN],
@@ -734,17 +741,17 @@
         { s: prop('naranja'), t: 'palabra que no va con el mensaje' },
         { s: justo('violeta'), t: 'palabra que va con el mensaje' },
       ],
-      controles: MSJ2.map((m, k) => ({ id: m.id, etiqueta: `Mensaje ${k + 1}`, opciones: PAL2.map((p, v) => ({ valor: v, texto: v ? p.t : 'vacío' })) })),
+      controles: MSJ2.map((m, k) => ({ id: m.id, etiqueta: `Mensaje ${k + 1}`, opciones: PAL2.map((p, v) => ({ valor: v, texto: p.t })) })),
       dibujo: val => ({ datos: Object.assign({ toques: { m1: 'm1', m2: 'm2' } }, celu2(val)), estado: est2(val) }),
       lectura: lectura2,
       minimo: 3,
     },
     predice: {
-      pregunta: 'La enfermera de la posta escribe a la mamá de Iván: «Su hijo está ___ para su edad: pesa menos de lo esperado». ¿Qué palabra describe lo mismo sin elogiar ni criticar?',
+      pregunta: 'La enfermera de la posta escribe a la mamá de Iván: «Su hijo está ¿…? para su edad: pesa menos de lo esperado». ¿Qué palabra describe lo mismo sin elogiar ni criticar?',
       voz: 'Elige antes de ver: después lo comprobamos con quien escribe.',
       opciones: opciones('delgado', [
         ['esbelto', 'RVS2', 'Describe poco peso, bien; pero lo elogia, y la enfermera solo informa.'],
-        ['esquelético', 'RVS3', 'Describe poco peso, bien; pero critica, y con mucha fuerza.'],
+        ['esquelético', 'RVS3', 'Describe poco peso, bien; pero lo exagera tanto que suena a crítica: es otro grado.'],
         ['débil', 'RV19', 'Habla del cuerpo, bien; pero describe la fuerza, no el peso.'],
       ]),
       dibujo: { datos: posta2(), estado: {} },
@@ -759,7 +766,7 @@
           ecuacion: [cubre('pesa menos'), ' → ', { negrita: 'denotación: poco peso' }] },
         { estado: { marcas: { c0p: 'i' }, tachar: ['c1'], nuevo: ['c1'] }, texto: 'Esbelto elogia, y la enfermera no elogia: solo informa.',
           ecuacion: [prop('esbelto'), ': otra valoración'] },
-        { estado: { marcas: { c0p: 'i' }, tachar: ['c1', 'c2'], nuevo: ['c2'] }, texto: 'Esquelético critica, y con mucha fuerza.',
+        { estado: { marcas: { c0p: 'i' }, tachar: ['c1', 'c2'], nuevo: ['c2'] }, texto: 'Esquelético exagera el poco peso, tanto que suena a crítica.',
           ecuacion: [prop('esquelético'), ': otro grado'] },
         { estado: { marcas: { c0p: 'i' }, tachar: ['c1', 'c2', 'c3'], nuevo: ['c3'] }, texto: 'Débil describe la fuerza, no el peso: es otra cosa.',
           ecuacion: [prop('débil'), ': otra cosa'] },
@@ -771,7 +778,7 @@
       texto: 'La denotación es lo que la palabra describe; la connotación, cómo lo valora: elogio, crítica o ninguno. Un reemplazo en contexto conserva las dos, y quien escribe dice cuál.',
       ecuacion: [{ llave: [cubre('denotación')], nota: 'qué describe' }, ' + ', { llave: [{ negrita: 'connotación' }], nota: 'cómo valora' }],
       voz: 'Vuelve a esta regla cuando dudes con una palabra.',
-      condicion: 'el reemplazo describe lo mismo y valora igual, con la misma fuerza: «esquelético» no reemplaza a «flaco».',
+      condicion: 'el reemplazo describe lo mismo y valora igual, con la misma fuerza: «esquelético» no reemplaza a «delgado».',
     },
     resuelve: {
       pieza: 'rv-soporte',
@@ -827,7 +834,7 @@
   // Colores: el objeto de cada acción (la pista), i; el verbo que no va con su objeto, o; el que lo nombra justo, f.
   // Códigos: RVS4 (comodín), RV23 (choca con otra parte de la oración), RV19 (mismo campo u otra acción) y RV20.
   const D_PREC = 'Palabra precisa: nombra justo lo que dice la oración y no choca con ninguna de sus partes.';
-  const D_COMOD = 'Comodín: palabra tan general (hacer, dar, tener, cosa) que encaja en casi todo y dice poco.';
+  const D_COMOD = 'Comodín: palabra tan general (hacer, dar, tener, poner, ver, cosa) que encaja en casi todo y dice poco.';
   const D_CHOCA = 'Choca: la palabra va con una parte de la oración, pero contradice otra.';
   const D_OTRAAC3 = 'Otra acción: la palabra nombra lo que se hace con otra cosa, no con la de la oración.';
 
@@ -855,7 +862,7 @@
   const PL_APAFA = 'La comisión [w:¿…?] el reglamento con cuidado [p:antes de aprobarlo].';
   const apafa3 = (w, reserva) => ({ soporte: 'mensaje', lugar: 'APAFA del colegio', hojas: [{ id: 'ha', de: 'el presidente de la APAFA', para: 'las familias',
     oraciones: [oracion('r1', PL_APAFA, w, reserva), oracion('r2', 'La asamblea para votarlo será el viernes.')] }] });
-  const PROB3 = probador('Cuaderno de Rosa', '¿Qué verbo va en el mensaje de la APAFA?', 'Rosa', PL_APAFA, ['vio', 'aprobó', 'imprimió', 'examinó']);
+  const PROB3 = probador('Cuaderno de Sofía', '¿Qué verbo va en el mensaje de la APAFA?', 'Sofía', PL_APAFA, ['vio', 'aprobó', 'imprimió', 'examinó']);
 
   // «Así se resuelve»: cuatro hojas. Cada incorrecta: comodín, choca, otra acción, mismo campo o parecido de forma. La
   // buena: D, A, E y B.
@@ -870,15 +877,15 @@
       sentido: 'Relee con la palabra puesta: el puente existe y los niños lo cruzan.' },
     { sop: sim(62, ors('h', ['En la reunión, el director [w:dio] una noticia: [p:el colegio tendrá internet desde mayo].']), PIDE3('dio'),
       ['anunció', 'regaló', 'tuvo', 'ocultó', 'escribió']), buena: 'A', w: 'dio',
-      datos: [D_PREC, D_COMOD], tengo: ['«Dio» es un comodín. La pista, ', cubre('«en la reunión»'), ', dice que la contó a todos de viva voz.'],
+      datos: [D_PREC, D_COMOD], tengo: ['«Dio» es un comodín. La pista, ', cubre('«el colegio tendrá internet desde mayo»'), ', es una noticia para todos, y se dio en la reunión.'],
       malas: [mala('B'), ' es ', prop('otra acción'), ': se regalan cosas. ', mala('C'), ' es otro ', prop('comodín'), '. ', mala('D'), ' ', prop('choca'), ': la noticia se contó. ', mala('E'), ' es del ', prop('mismo campo'), '.'],
       bien: [buena('A'), ': el director ', justo('anunció'), ' la noticia a todos.'],
       sentido: 'Una noticia se anuncia en una reunión; escribirla es otra cosa.' },
-    { sop: sim(63, ors('h', ['El médico le [w:______] una dieta sin sal a su paciente:', '[p:se la anotó en la receta junto con las pastillas].']), P_HUECO,
-      ['dio', 'cocinó', 'prohibió', 'retó', 'recetó']), buena: 'E', w: '______',
-      datos: [D_PREC, D_COMOD], tengo: ['La pista, ', cubre('«se la anotó en la receta»'), ', dice que fue una indicación del médico.'],
+    { sop: sim(63, ors('h', ['El médico le [w:¿…?] una dieta sin sal a su paciente:', '[p:se la anotó en una hoja junto con las pastillas].']), P_HUECO,
+      ['dio', 'cocinó', 'prohibió', 'retó', 'recetó']), buena: 'E', w: '¿…?',
+      datos: [D_PREC, D_COMOD], tengo: ['La pista, ', cubre('«se la anotó en una hoja junto con las pastillas»'), ', dice que fue una indicación del médico.'],
       malas: [mala('A'), ' es un ', prop('comodín'), '. ', mala('B'), ' es del ', prop('mismo campo'), ', la comida. ', mala('C'), ' ', prop('choca'), ': lo prohibido es la sal. ', mala('D'), ' tiene ', prop('parecido de forma'), '.'],
-      bien: [buena('E'), ': el médico le ', justo('recetó'), ' la dieta, y la anotó en la receta.'],
+      bien: [buena('E'), ': el médico le ', justo('recetó'), ' la dieta, y la anotó junto con las pastillas.'],
       sentido: 'Un médico receta: es justo lo que hace con una dieta para su paciente.' },
     { sop: sim(64, ors('h', ['Los vecinos [w:hicieron] una colecta [p:para arreglar el techo de la posta].', 'En una semana juntaron lo necesario.']), PIDE3('hicieron'),
       ['tuvieron', 'organizaron', 'gastaron', 'contabilizaron', 'colgaron']), buena: 'B', w: 'hicieron',
@@ -891,28 +898,28 @@
   // «Ahora tú»: la oración trae un hueco. Cuatro casos con cuatro opciones y dos con cinco. Códigos: RVS4, RV23, RV19 y
   // RV20.
   const AHORA_3 = [
-    { o: ['El jurado [w:______] al ganador del concurso de cuentos.', '[p:Leyó los cuarenta cuentos antes de decidir].'], ok: 'eligió',
+    { o: ['El jurado [w:¿…?] al ganador del concurso de cuentos.', '[p:Leyó los cuarenta cuentos antes de decidir].'], ok: 'eligió',
       m: [['tuvo', 'RVS4', 'Encaja, bien; pero es un comodín: no dice qué hizo el jurado.'],
         ['descalificó', 'RV23', 'Es algo que hace un jurado, bien; pero choca con «ganador».'],
         ['escribió', 'RV19', 'Es del mismo campo, el de los cuentos; pero el jurado no los escribe.']] },
-    { o: ['La profesora [w:______] las dudas de los alumnos una por una:', '[p:al final de la clase, nadie tenía preguntas].'], ok: 'resolvió',
+    { o: ['La profesora [w:¿…?] las dudas de los alumnos una por una:', '[p:al final de la clase, nadie tenía preguntas].'], ok: 'resolvió',
       m: [['vio', 'RVS4', 'Encaja, bien; pero es un comodín: no dice que las aclarara.'],
         ['multiplicó', 'RV23', 'Va con «dudas», bien; pero choca con «nadie tenía preguntas».'],
         ['dictó', 'RV19', 'Es del mismo campo, el de la clase; pero no se dictan dudas.']] },
-    { o: ['La alcaldesa [w:______] la nueva plaza en la ceremonia del domingo:', '[p:cortó la cinta y la abrió al público].'], ok: 'inauguró',
+    { o: ['La alcaldesa [w:¿…?] la nueva plaza en la ceremonia del domingo:', '[p:cortó la cinta y la abrió al público].'], ok: 'inauguró',
       m: [['hizo', 'RVS4', 'Encaja, bien; pero es un comodín: no dice qué pasó en la ceremonia.'],
         ['cerró para siempre', 'RV23', 'Es algo que se hace con una plaza, bien; pero choca con «la abrió al público».'],
         ['barrió', 'RV19', 'Es del mismo campo, la plaza, bien; pero no se hace en una ceremonia.']] },
-    { o: ['Los bomberos [w:______] el incendio del mercado en dos horas:', '[p:cuando se fueron, ya no quedaba fuego].'], ok: 'apagaron',
+    { o: ['Los bomberos [w:¿…?] el incendio del mercado en dos horas:', '[p:cuando se fueron, ya no quedaba fuego].'], ok: 'apagaron',
       m: [['vieron', 'RVS4', 'Encaja, bien; pero es un comodín: no dice qué hicieron con el fuego.'],
         ['provocaron', 'RV23', 'Va con «incendio», bien; pero choca con lo que hacen los bomberos.'],
         ['mojaron', 'RV19', 'Es del mismo campo, el del agua; pero no dice que el fuego acabó.']] },
-    { o: ['El río [w:______] los campos de la parte baja:', '[p:después de tres días de lluvia, el agua tapó las chacras].'], ok: 'inundó',
+    { o: ['El río [w:¿…?] los campos de la parte baja:', '[p:después de tres días de lluvia, el agua tapó las chacras].'], ok: 'inundó',
       m: [['afectó', 'RVS4', 'Encaja, bien; pero es casi un comodín: no dice qué les pasó.'],
         ['secó', 'RV23', 'Es algo que pasa en un campo, bien; pero choca con «el agua tapó».'],
         ['fertilizó', 'RV19', 'Es del mismo campo, la chacra; pero no dice que el agua los tapó.'],
         ['hundió', 'RV20', 'Se escribe parecido a la palabra que va, bien visto; pero significa otra cosa.']] },
-    { o: ['El ministro [w:______] el nuevo reglamento en el diario oficial:', '[p:desde ese día, todos pueden leerlo].'], ok: 'publicó',
+    { o: ['El ministro [w:¿…?] el nuevo reglamento en el diario oficial:', '[p:desde ese día, todos pueden leerlo].'], ok: 'publicó',
       m: [['puso', 'RVS4', 'Encaja, bien; pero es un comodín: no dice cómo llegó a todos.'],
         ['escondió', 'RV23', 'Va con «reglamento», bien; pero choca con «todos pueden leerlo».'],
         ['imprimió', 'RV19', 'Es del mismo campo, el del diario; pero imprimir no es darlo a conocer.'],
@@ -957,7 +964,7 @@
     { nivel: 2, titulo: 'La herida del niño',
       enunciado: '¿Qué palabra completa la oración con más precisión: «limpió», «vio» o «planchó»?',
       datos: [D_PREC, D_COMOD, D_OTRAAC3],
-      figura: fig(papel('puerta', 'Puerta de la posta de Ilave', 'Atenciones del día', 'la enfermera', 'el médico de turno', ors('k', ['La enfermera [w:______] la herida del niño [p:con alcohol y una gasa].']))),
+      figura: fig(papel('puerta', 'Puerta de la posta de Ilave', 'Atenciones del día', 'la enfermera', 'el médico de turno', ors('k', ['La enfermera [w:¿…?] la herida del niño [p:con alcohol y una gasa].']))),
       solucion: [
         { texto: ['«Vio» es un ', prop('comodín'), '. «Planchó» es ', prop('otra acción'), ': no se hace con una herida.'] },
         { texto: ['Con ', cubre('«alcohol y una gasa»'), ', lo que se hace con la herida es limpiarla.'] }],
@@ -965,7 +972,7 @@
     { nivel: 2, titulo: 'La reunión del aula',
       enunciado: '¿Qué palabra completa la oración con más precisión: «tuvo», «despidió» o «convocó»?',
       datos: [D_PREC, D_COMOD, D_CHOCA],
-      figura: fig(papel('mensaje', 'Delegados de 5.º', null, 'el delegado', 'los compañeros', ors('k', ['El delegado [w:______] a sus compañeros a la reunión [p:con un mensaje al grupo].']))),
+      figura: fig(papel('mensaje', 'Delegados de 5.º', null, 'el delegado', 'los compañeros', ors('k', ['El delegado [w:¿…?] a sus compañeros a la reunión [p:con un mensaje al grupo].']))),
       solucion: [
         { texto: ['«Tuvo» es un ', prop('comodín'), '. «Despidió» ', prop('choca'), ' con «a la reunión».'] },
         { texto: ['Con ', cubre('«un mensaje al grupo»'), ', el delegado los llamó a reunirse.'] }],
@@ -973,7 +980,7 @@
     { nivel: 2, titulo: 'Las rosas del jardín',
       enunciado: '¿Qué palabra completa la oración con más precisión: «vendió», «podó» o «vio»?',
       datos: [D_PREC, D_COMOD, D_CHOCA],
-      figura: fig(papel('cuaderno', 'Cuaderno de Mateo', 'Mi barrio', 'Mateo', 'la clase de Comunicación', ors('k', ['El jardinero del parque [w:______] las rosas [p:para que crezcan con más fuerza].']))),
+      figura: fig(papel('cuaderno', 'Cuaderno de Mateo', 'Mi barrio', 'Mateo', 'la clase de Comunicación', ors('k', ['El jardinero del parque [w:¿…?] las rosas [p:para que crezcan con más fuerza].']))),
       solucion: [
         { texto: ['«Vio» es un ', prop('comodín'), '. «Vendió» ', prop('choca'), ' con «para que crezcan».'] },
         { texto: ['La pista, ', cubre('«para que crezcan»'), ', pide cortarles las ramas: podarlas.'] }],
@@ -981,7 +988,7 @@
     { nivel: 2, titulo: 'La fecha del paseo',
       enunciado: '¿Qué palabra completa la oración con más precisión: «hizo», «postergó» o «adelantó una semana»?',
       datos: [D_PREC, D_COMOD, D_CHOCA],
-      figura: fig(papel('mural', 'Mural del colegio', 'Paseo de fin de año', 'el comité de aula', 'los estudiantes', ors('k', ['El comité [w:______] la fecha del paseo [p:porque iba a llover]: ahora será dos semanas después.']))),
+      figura: fig(papel('mural', 'Mural del colegio', 'Paseo de fin de año', 'el comité de aula', 'los estudiantes', ors('k', ['El comité [w:¿…?] la fecha del paseo porque iba a llover: [p:ahora será dos semanas después].']))),
       solucion: [
         { texto: ['«Hizo» es un ', prop('comodín'), '. «Adelantó una semana» ', prop('choca'), ' con «dos semanas después».'] },
         { texto: ['La pista, ', cubre('«dos semanas después»'), ', dice que la fecha se pasó para más adelante.'] }],
@@ -989,7 +996,7 @@
     { nivel: 2, titulo: 'El estante nuevo',
       enunciado: '¿Qué palabra completa la oración con más precisión: «leyó en voz alta», «tuvo» o «clasificó»?',
       datos: [D_PREC, D_COMOD, D_CAMPO],
-      figura: fig(papel('cartel', 'Cartel de la biblioteca', 'Novedades', 'la bibliotecaria', 'los lectores', ors('k', ['La bibliotecaria [w:______] los libros [p:por tema y por autor], en el estante nuevo.']))),
+      figura: fig(papel('cartel', 'Cartel de la biblioteca', 'Novedades', 'la bibliotecaria', 'los lectores', ors('k', ['La bibliotecaria [w:¿…?] los libros [p:por tema y por autor], en el estante nuevo.']))),
       solucion: [
         { texto: ['«Leyó en voz alta» es del ', prop('mismo campo'), ', pero no dice qué hizo en el estante. «Tuvo» es un ', prop('comodín'), '.'] },
         { texto: ['La pista, ', cubre('«por tema y por autor»'), ', dice que los puso en grupos.'] }],
@@ -1009,7 +1016,7 @@
       enunciado: 'Pregunta 72 del simulacro. En el texto, ¿qué palabra reemplaza a «puso» con más precisión?',
       datos: [D_PREC, D_COMOD],
       figura: fig(sim(72, ors('h', ['La empresa de transporte [w:puso] un aviso en el diario: [p:busca diez choferes con licencia].']), PIDE3('puso'),
-        ['tuvo', 'borró', 'fotocopió', 'publicó', 'expuso'])),
+        ['tuvo', 'borró', 'fotocopió', 'publicó', 'impuso'])),
       solucion: [
         { texto: [mala('A'), ' es otro ', prop('comodín'), '. ', mala('B'), ' ', prop('choca'), ': el aviso salió.'] },
         { texto: [mala('C'), ' es del ', prop('mismo campo'), ', el del papel. ', mala('E'), ' tiene ', prop('parecido de forma'), '.'] },
@@ -1018,7 +1025,7 @@
     { nivel: 3, titulo: 'Los buses de la promoción',
       enunciado: 'Pregunta 73 del simulacro. ¿Qué palabra completa la oración con más precisión?',
       datos: [D_PREC, D_COMOD],
-      figura: fig(sim(73, ors('h', ['Para el viaje de promoción, el comité [w:______] tres presupuestos de buses:', '[p:comparó los precios y eligió el más seguro].']), P_HUECO,
+      figura: fig(sim(73, ors('h', ['Para el viaje de promoción, el comité [w:¿…?] tres presupuestos de buses:', '[p:comparó los precios y eligió el más seguro].']), P_HUECO,
         ['hizo', 'perdió', 'pidió', 'manejó', 'midió'])),
       solucion: [
         { texto: [mala('A'), ' es un ', prop('comodín'), '. ', mala('B'), ' ', prop('choca'), ': los comparó.'] },
@@ -1028,7 +1035,7 @@
     { nivel: 3, titulo: 'Las bolsas de plástico',
       enunciado: 'Pregunta 74 del simulacro. ¿Qué palabra completa la oración con más precisión?',
       datos: [D_PREC, D_COMOD],
-      figura: fig(sim(74, ors('h', ['La municipalidad del distrito [w:______] el uso de bolsas de plástico en los mercados:', '[p:desde enero, quien las entregue pagará una multa].']), P_HUECO,
+      figura: fig(sim(74, ors('h', ['La municipalidad del distrito [w:¿…?] el uso de bolsas de plástico en los mercados:', '[p:desde enero, quien las entregue pagará una multa].']), P_HUECO,
         ['prohibió', 'recomendó', 'vio', 'vendió', 'exhibió'])),
       solucion: [
         { texto: [mala('B'), ' ', prop('choca'), ' con la multa. ', mala('C'), ' es un ', prop('comodín'), '.'] },
@@ -1059,14 +1066,14 @@
           pieza: 'rv-soporte', dibujo: { datos: acta3(INI3), estado: {} } },
         { titulo: 'Un comodín', texto: 'Hay palabras tan generales que encajan en casi cualquier oración: hacer, dar, tener, cosa. Se llaman comodines. Como sirven para todo, dicen poco de cada caso.' },
         { titulo: 'La palabra precisa', texto: 'Una palabra precisa nombra justo lo que pasa. Para encontrarla, mira con qué va el verbo: no se hace lo mismo con una sopa que con una carta.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Toca una oración del acta para cambiar «hizo» por otro verbo. El objeto de cada oración está en turquesa: el verbo tiene que ir con él.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Toca una oración del acta para cambiar «hizo» por otro verbo. La pista está en turquesa: lo que se hizo. El verbo tiene que ir con ella.' },
       ],
     },
     actividad: 'Cambiar cada «hizo» del acta de la junta por el verbo que nombra esa acción.',
     aprendizaje: 'La palabra precisa nombra justo lo que dice la oración y no choca con ninguna parte; un comodín encaja en todo y dice poco.',
     ejemplos: EJEMPLOS_3,
     juega: {
-      consigna: 'El acta de la reunión del sábado usa «hizo» en tres oraciones. El objeto de cada acción está en turquesa.',
+      consigna: 'El acta de la reunión del sábado usa «hizo» en tres oraciones. La pista de cada una, lo que se hizo, está en turquesa.',
       mision: {
         texto: 'Cambia cada «hizo» del acta por el verbo que nombra justo esa acción.',
         logrado: listo3,
@@ -1075,7 +1082,7 @@
       voz: '¿Qué se hace con un muro? ¿Y con una pregunta?',
       leyenda: [
         { s: 'negrita', t: 'el verbo que se cambia' },
-        { s: cubre('turquesa'), t: 'el objeto de la acción' },
+        { s: cubre('turquesa'), t: 'la pista: con qué va el verbo' },
         { s: prop('naranja'), t: 'verbo que no va con su objeto' },
         { s: justo('violeta'), t: 'verbo que nombra justo esa acción' },
       ],
@@ -1085,7 +1092,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'El presidente de la APAFA escribe: «La comisión ___ el reglamento con cuidado antes de aprobarlo». ¿Qué verbo es el más preciso?',
+      pregunta: 'El presidente de la APAFA escribe: «La comisión ¿…? el reglamento con cuidado antes de aprobarlo». ¿Qué verbo es el más preciso?',
       voz: 'Elige antes de ver: después lo comprobamos con toda la oración.',
       opciones: opciones('examinó', [
         ['aprobó', 'RV23', 'Va con «reglamento», bien; pero choca con «antes de aprobarlo».'],
@@ -1100,7 +1107,7 @@
       datos: PROB3,
       voz: 'Volvamos al mensaje: cada verbo, con toda la oración.',
       pasos: [
-        { estado: { senal: ['c0'], marcas: { c0p: 'i' } }, texto: 'El verbo va con «el reglamento», y también con «antes de aprobarlo».',
+        { estado: { senal: ['c0'], marcas: { c0p: 'i' } }, texto: 'El verbo va con «el reglamento» y también con la pista, «antes de aprobarlo».',
           ecuacion: [{ negrita: 'verbo' }, ' + el reglamento + ', cubre('antes de aprobarlo')] },
         { estado: { marcas: { c0p: 'i' }, tachar: ['c1'], nuevo: ['c1'] }, texto: '«Vio» encaja, pero es un comodín: no dice cómo lo revisaron.',
           ecuacion: [prop('vio'), ': comodín'] },
@@ -1114,7 +1121,7 @@
     },
     regla: {
       texto: 'La palabra precisa nombra justo lo que dice la oración y no choca con ninguna de sus partes. Un comodín, como hacer o cosa, encaja en todo y dice poco.',
-      ecuacion: [justo('precisa'), ': ', cubre('encaja con todo'), ' + dice más'],
+      ecuacion: [justo('precisa'), ': no choca + dice más que un comodín'],
       voz: 'Vuelve a esta regla cuando dudes con una palabra.',
       condicion: 'la palabra va con el objeto, el tiempo y el resto de la oración, y dice más que un comodín.',
     },
@@ -1124,7 +1131,7 @@
         const R = RESUELVE_3[s % RESUELVE_3.length];
         return resuelveDe(R, {
           pasos: [
-            { tipo: 'pide', texto: R.w === '______' ? 'Piden la palabra que completa la oración con más precisión.' : `Piden la palabra que reemplaza a «${R.w}» y dice más.` },
+            { tipo: 'pide', texto: R.w === '¿…?' ? 'Piden la palabra que completa la oración con más precisión.' : `Piden la palabra que reemplaza a «${R.w}» y dice más.` },
             { tipo: 'datos', texto: R.tengo },
             { tipo: 'regla', texto: 'Cada alternativa se pone en la oración: no debe chocar con ninguna parte, y debe nombrar justo la acción.' },
             { tipo: 'aplica', texto: R.malas },
@@ -1176,7 +1183,7 @@
   const D_FRASE = 'Frase hecha: grupo de palabras con un sentido fijo, que no es la suma de sus palabras.';
   const D_LECLIT = 'Lectura literal: se toma en sentido literal una expresión que va en sentido figurado.';
   const D_LECFIG = 'Lectura figurada: se busca un sentido figurado donde el literal ya encaja.';
-  const D_IDEA = 'Idea propia: lo que la expresión le recuerda al lector, sin apoyo en el texto.';
+  const D_IDEA = 'Idea propia: lo que la palabra o la expresión le recuerda al lector, sin apoyo en el texto.';
 
   // El juego: el mundo chico del periódico mural. lee: 1 literal, 2 figurado.
   const LEC4 = ['¿…?', 'literal', 'figurado'];
@@ -1219,14 +1226,14 @@
       bien: [buena('A'), ': como una luz en lo oscuro, la beca fue ', justo('una esperanza'), '.'],
       sentido: 'La pregunta no es qué es una beca, sino qué fue para los padres.' },
     { sop: sim(83, ors('h', ['Durante la tormenta, un rayo [w:partió en dos] [p:el eucalipto de la plaza].', 'Los bomberos retiraron las ramas al día siguiente.']), 'En el texto, la expresión «partió en dos» significa',
-      ['asustó a todos los vecinos del barrio', 'lo dejó en pie', 'lo hizo famoso', 'lo quemó un poco', 'lo rompió en dos partes']), buena: 'E', w: 'partió en dos',
+      ['asustó a todos los vecinos del barrio', 'lo dejó en pie', 'dividió a los vecinos en dos bandos', 'lo quemó un poco', 'lo rompió en dos partes']), buena: 'E', w: 'partió en dos',
       datos: [D_LIT, D_FIG], tengo: ['La pista, ', cubre('«el eucalipto»'), ': un rayo sí puede romper un árbol. La lectura literal encaja.'],
-      malas: [mala('A'), ' es una ', prop('idea propia'), '. ', mala('B'), ' y ', mala('D'), ' son ', prop('otra cosa'), '. ', mala('C'), ' es una ', prop('lectura figurada'), ' que el texto no pide.'],
+      malas: [mala('A'), ' es una ', prop('idea propia'), '. ', mala('B'), ' y ', mala('D'), ' son ', prop('otra cosa'), '. ', mala('C'), ' es una ', prop('lectura figurada'), ': así se dice de una pelea, y aquí se habla de un árbol.'],
       bien: [buena('E'), ': el rayo ', justo('lo rompió en dos partes'), ', y por eso hubo ramas que retirar.'],
       sentido: 'No toda expresión va en sentido figurado: si la literal encaja, se queda.' },
     { sop: sim(84, ors('h', ['El dirigente dijo que el nuevo impuesto es [w:una soga al cuello] [p:para los pequeños comerciantes del mercado].']), 'En el texto, la expresión «una soga al cuello» connota',
       ['una cuerda en el cuello', 'una carga que ahoga', 'una ayuda para crecer', 'un castigo por robar', 'un tema de moda']), buena: 'B', w: 'una soga al cuello',
-      datos: [D_LIT, D_FRASE], tengo: ['Un impuesto no es una cuerda. La pista, ', cubre('«para los pequeños comerciantes»'), ', dice a quiénes aprieta.'],
+      datos: [D_LIT, D_FRASE, D_CON], tengo: ['Un impuesto no es una cuerda. La pista, ', cubre('«para los pequeños comerciantes»'), ', dice a quiénes aprieta.'],
       malas: [mala('A'), ' es una ', prop('lectura literal'), '. ', mala('C'), ' dice lo contrario: ', prop('otra valoración'), '. ', mala('D'), ' es una ', prop('idea propia'), '. ', mala('E'), ' es ', prop('otra cosa'), '.'],
       bien: [buena('B'), ': como una soga, el impuesto es ', justo('una carga que ahoga'), ' a los comerciantes.'],
       sentido: 'El dirigente critica el impuesto: la frase lo dice con una imagen.' },
@@ -1280,11 +1287,13 @@
       solucion: [{ texto: ['Un rayo sí puede quemar ', cubre('un árbol'), ': la lectura literal encaja con el texto.'] }],
       respuesta: [justo('Literal'), ': el rayo quemó el árbol de verdad'] },
     { nivel: 1, titulo: 'El corazón del barrio',
-      enunciado: '¿Qué pista del cartel dice que «el corazón» va en sentido figurado?',
-      datos: [D_LIT, D_FIG, D_PISTA],
-      figura: fig(papel('cartel', 'Cartel de la junta vecinal', 'Feria del domingo', 'la junta vecinal', 'los vecinos', ors('k', ['El mercado es [w:el corazón] [p:del barrio]: ahí se encuentran todos los vecinos.']))),
-      solucion: [{ texto: ['Un barrio no tiene órganos: la pista es ', cubre('«del barrio»'), '. El mercado es su centro.'] }],
-      respuesta: [justo('«Del barrio»')] },
+      enunciado: '¿Qué parte del cartel dice en qué se parece el mercado a un corazón?',
+      datos: [D_LIT, D_FIG],
+      figura: fig(papel('cartel', 'Cartel de la junta vecinal', 'Feria del domingo', 'la junta vecinal', 'los vecinos', ors('k', ['El mercado es [w:el corazón] del barrio: [p:ahí se encuentran todos los vecinos].']))),
+      solucion: [
+        { texto: ['Un barrio no tiene órganos: «el corazón» va en sentido figurado.'] },
+        { texto: ['La pista, ', cubre('«ahí se encuentran todos los vecinos»'), ', dice el parecido: como un corazón, el mercado está al centro y todo pasa por él.'] }],
+      respuesta: [justo('«Ahí se encuentran todos los vecinos»')] },
     { nivel: 1, titulo: 'En la luna',
       enunciado: 'En el mensaje de la mamá, ¿qué quiere decir «se quedó en la luna»?',
       datos: [D_LIT, D_FIG, D_FRASE],
@@ -1319,13 +1328,13 @@
       datos: [D_LIT, D_FIG, D_FRASE],
       figura: fig(papel('mensaje', 'Promoción 2026', null, 'Iván', 'la promoción', ors('k', ['Después del examen estoy [w:hecho polvo]: [p:no he dormido en dos noches].']))),
       solucion: [
-        { texto: ['«Muy sucio» es una ', prop('lectura literal'), ' del polvo. «Muy feliz con su nota» es ', prop('otra valoración'), '.'] },
+        { texto: ['«Muy sucio» es una ', prop('lectura literal'), ' del polvo. «Muy feliz con su nota» es ', prop('otra cosa'), ': no habla del cansancio.'] },
         { texto: ['La pista, ', cubre('«no he dormido en dos noches»'), ', dice que está agotado.'] }],
       respuesta: [justo('«Muy cansado»')] },
     { nivel: 2, titulo: 'Las tablas del piso',
       enunciado: '¿Cómo se lee «clavó»: «las sujetó con clavos», «las miró fijamente un buen rato» o «las vendió»?',
       datos: [D_LIT, D_FIG],
-      figura: fig(papel('cuaderno', 'Cuaderno de Rosa', 'Mi casa nueva', 'Rosa', 'la clase de Comunicación', ors('k', ['Mi papá [w:clavó] [p:las tablas del piso] con un martillo.']))),
+      figura: fig(papel('cuaderno', 'Cuaderno de Sofía', 'Mi casa nueva', 'Sofía', 'la clase de Comunicación', ors('k', ['Mi papá [w:clavó] [p:las tablas del piso] con un martillo.']))),
       solucion: [
         { texto: ['«Las miró fijamente un buen rato» es una ', prop('lectura figurada'), ': con ', cubre('un martillo'), ' se clava de verdad. «Las vendió» es ', prop('otra cosa'), '.'] },
         { texto: ['La lectura literal encaja: se queda.'] }],
@@ -1371,14 +1380,14 @@
       respuesta: [buena('C'), ': se equivocó'] },
     { nivel: 3, titulo: 'La posta nueva',
       enunciado: 'Pregunta 94 del simulacro. En el texto, la expresión «un salvavidas» connota',
-      datos: [D_LIT, D_FIG],
+      datos: [D_LIT, D_FIG, D_CON],
       figura: fig(sim(94, ors('h', ['Para los vecinos, la nueva posta es [w:un salvavidas]:', '[p:antes había que viajar dos horas para ver a un médico].']), 'En el texto, la expresión «un salvavidas» connota',
-        ['una ayuda que llegó a tiempo', 'un aro que flota para no ahogarse', 'un gasto que sobra', 'un lugar en la playa', 'un hospital de lujo'])),
+        ['una ayuda muy necesaria', 'un aro que flota para no ahogarse', 'un gasto que sobra', 'un lugar en la playa', 'un hospital de lujo'])),
       solucion: [
         { texto: [mala('B'), ' es una ', prop('lectura literal'), '. ', mala('C'), ' la critica: ', prop('otra valoración'), '.'] },
         { texto: [mala('D'), ' es una ', prop('idea propia'), '. ', mala('E'), ' es ', prop('otra cosa'), ': una posta no es un hospital de lujo.'] },
-        { texto: [buena('A'), ': la pista, ', cubre('«antes había que viajar dos horas»'), ', dice que la posta llegó a salvar.'] }],
-      respuesta: [buena('A'), ': una ayuda que llegó a tiempo'] },
+        { texto: [buena('A'), ': la pista, ', cubre('«antes había que viajar dos horas»'), ', dice cuánta falta hacía la posta.'] }],
+      respuesta: [buena('A'), ': una ayuda muy necesaria'] },
     { nivel: 3, titulo: 'El viento en la escuela',
       enunciado: 'Pregunta 95 del simulacro. En el texto, la palabra «arrancó» significa',
       datos: [D_LIT, D_FIG],
@@ -1423,7 +1432,7 @@
         { s: prop('naranja'), t: 'lectura equivocada' },
         { s: justo('violeta'), t: 'lectura que encaja con el texto' },
       ],
-      controles: EXPR4.map((e, k) => ({ id: e.id, etiqueta: `Oración ${k + 1}`, opciones: LEC4.map((t, v) => ({ valor: v, texto: v ? t : 'sin leer' })) })),
+      controles: EXPR4.map((e, k) => ({ id: e.id, etiqueta: `Oración ${k + 1}`, opciones: LEC4.map((t, v) => ({ valor: v, texto: t })) })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(EXPR4.map(e => [e.id, e.id])) }, mural4()), estado: est4(val) }),
       lectura: lectura4,
       minimo: 3,
@@ -1444,8 +1453,8 @@
       datos: PROB4,
       voz: 'Volvamos a la frase: primero, de qué habla.',
       pasos: [
-        { estado: { senal: ['c0'], marcas: { c0p: 'i' } }, texto: 'La oración habla de la subida del pasaje: nadie echó agua.',
-          ecuacion: [cubre('la subida del pasaje'), ' → ', { negrita: 'no es literal' }] },
+        { estado: { senal: ['c0'], marcas: { c0p: 'i' } }, texto: 'Habla de la subida del pasaje: nadie echó agua; el balde no es literal.',
+          ecuacion: [cubre('la subida del pasaje'), ' → ', { negrita: 'el balde no es literal' }] },
         { estado: { marcas: { c0p: 'i' }, tachar: ['c1'], nuevo: ['c1'] }, texto: 'Un baño con agua helada es la lectura literal.',
           ecuacion: [prop('baño'), ': lectura literal'] },
         { estado: { marcas: { c0p: 'i' }, tachar: ['c1', 'c2'], nuevo: ['c2'] }, texto: 'La broma es una idea propia: el texto no la nombra.',
@@ -1457,7 +1466,7 @@
       ],
     },
     regla: {
-      texto: 'Una expresión va en sentido figurado cuando, leída en sentido literal, no encaja con lo que habla el texto. Entonces se busca qué se parece: el golpe es el daño.',
+      texto: 'Una expresión va en sentido figurado cuando, leída en sentido literal, no encaja con lo que habla el texto. Entonces se busca el parecido: el agua fría es el desánimo.',
       ecuacion: [{ negrita: 'literal' }, ' no encaja → ', justo('figurado')],
       voz: 'Vuelve a esta regla cuando dudes con una expresión.',
       condicion: 'la lectura figurada encaja con todo el texto y con su tono; si la literal ya encaja, se queda la literal.',
@@ -1552,11 +1561,11 @@
   const PIDE5 = w => `Según el texto, ¿qué significa «${w}»?`;
   const RESUELVE_5 = [
     { sop: sim(101, ors('h', ['La sequía dejó [w:yermos] los campos de la comunidad:', '[p:no crece ni una planta y los animales se fueron a otro lado].']), PIDE5('yermos'),
-      ['llenos de agua', 'cercados con piedras', 'lejanos', 'sin plantas', 'hermosos']), buena: 'D', w: 'yermos',
+      ['llenos de agua', 'cercados con piedras', 'lejanos', 'sin vegetación', 'hermosos']), buena: 'D', w: 'yermos',
       datos: [D_PISTA5, D_DEDUC], tengo: ['La pista es una consecuencia: ', cubre('«no crece ni una planta»'), '.'],
       malas: [mala('A'), ' es ', prop('lo contrario'), '. ', mala('B'), ' es una ', prop('idea propia'), '. ', mala('C'), ' es ', prop('otra cosa'), '. ', mala('E'), ' tiene ', prop('parecido de forma'), '.'],
-      bien: [buena('D'), ': si no crece ni una planta, los campos quedaron ', justo('sin plantas'), '.'],
-      sentido: 'Relee con la palabra puesta: «dejó sin plantas los campos» encaja con la sequía.' },
+      bien: [buena('D'), ': si no crece ni una planta, los campos quedaron ', justo('sin vegetación'), '.'],
+      sentido: 'Relee con la palabra puesta: «dejó sin vegetación los campos» encaja con la sequía.' },
     { sop: sim(102, ors('h', ['La abuela Rosa es [w:longeva]: [p:tiene noventa y ocho años] y todavía teje sus chompas.']), PIDE5('longeva'),
       ['que vive muchos años', 'que es muy alta', 'que teje chompas de lana muy finas', 'que está enferma', 'que es muy joven']), buena: 'A', w: 'longeva',
       datos: [D_PISTA5, D_DEDUC, D_DETALLE], tengo: ['Tras los dos puntos viene una explicación: ', cubre('«tiene noventa y ocho años»'), '.'],
@@ -1579,8 +1588,8 @@
 
   // «Ahora tú»: cuatro casos con cuatro opciones y dos con cinco. Códigos: RVS7, RVS8, RVS1, RV20 y RV19.
   const AHORA_5 = [
-    { o: ['El camino al cerro es [w:sinuoso]: [p:da tantas curvas que el bus avanza muy despacio].'], w: 'sinuoso', ok: 'con muchas curvas',
-      m: [['lleno de piedras sueltas', 'RVS7', 'Puede pasar en un camino, bien; pero la pista habla de curvas.'],
+    { o: ['El camino al cerro es [w:sinuoso]: [p:da tantas vueltas que el bus avanza muy despacio].'], w: 'sinuoso', ok: 'con muchas curvas',
+      m: [['lleno de piedras sueltas', 'RVS7', 'Puede pasar en un camino, bien; pero la pista habla de vueltas.'],
         ['recto', 'RVS1', 'Habla de la forma del camino, bien; pero dice lo contrario de la pista.'],
         ['muy silencioso', 'RV20', 'Se escribe parecido a «sinuoso», bien visto; pero significa otra cosa.']] },
     { o: ['Mi primo es [w:frugal] en las comidas;', '[p:en cambio, mi tío siempre pide dos platos].'], w: 'frugal', ok: 'que se sirve poco',
@@ -1595,7 +1604,7 @@
       m: [['muy apretada', 'RVS1', 'Habla de cómo le queda, bien; pero dice lo contrario: se le caía.'],
         ['hecha a mano con hilo de lana', 'RVS7', 'Puede ser cierto, bien; pero el texto no habla de cómo se hizo.'],
         ['holgazana', 'RV20', 'Se escribe parecido a «holgada», bien visto; pero significa otra cosa.']] },
-    { o: ['La planta del patio es [w:perenne]: [p:conserva sus hojas verdes durante todo el año].'], w: 'perenne', ok: 'que dura todo el año',
+    { o: ['La planta del patio es [w:perenne]: [p:conserva sus hojas verdes durante todo el año].'], w: 'perenne', ok: 'que siempre tiene hojas',
       m: [['que da flores de muchos colores', 'RVS7', 'Puede pasar con una planta, bien; pero la pista habla de hojas todo el año.'],
         ['que pierde sus hojas', 'RVS1', 'Habla de las hojas, bien; pero dice lo contrario de la pista.'],
         ['que es pequeña', 'RV19', 'Habla de la planta, bien; pero es otra cosa: su tamaño, no sus hojas.'],
@@ -1634,7 +1643,7 @@
     { nivel: 1, titulo: 'Mi hermana diligente',
       enunciado: 'Por el contraste del cuaderno, ¿«diligente» describe a alguien que deja las tareas para el final?',
       datos: [D_PISTA5, D_CONTRAREV],
-      figura: fig(papel('cuaderno', 'Cuaderno de Iván', 'Mi familia', 'Iván', 'la clase de Comunicación', ors('k', ['Mi hermana es [w:diligente];', '[p:en cambio, yo siempre dejo las tareas para el final].']))),
+      figura: fig(papel('cuaderno', 'Cuaderno de Joel', 'Mi familia', 'Joel', 'la clase de Comunicación', ors('k', ['Mi hermana es [w:diligente];', '[p:en cambio, yo siempre dejo las tareas para el final].']))),
       solucion: [{ texto: ['«En cambio» opone a los dos: eso me describe a mí. Leerlo así es el ', prop('contraste al revés'), '.'] }],
       respuesta: [justo('No'), ': describe a quien hace las cosas a tiempo'] },
     { nivel: 1, titulo: 'Los tubérculos del mercado',
@@ -1657,13 +1666,13 @@
       datos: [D_PISTA5, D_DEDUC],
       figura: fig(papel('mensaje', 'Promoción 2026', null, 'Mateo', 'la promoción', ors('k', ['La respuesta del director fue [w:tajante]: [p:dijo que no, y no quiso escuchar nada más].']))),
       solucion: [
-        { texto: ['«Cortado con un cuchillo de cocina» toma «tajante» por su ', prop('parecido de forma'), ' con «tajada». «Muy amable» es ', prop('otra cosa'), '.'] },
+        { texto: ['«Cortado con un cuchillo de cocina» es una ', prop('lectura literal'), ': tajar es cortar, pero una respuesta no se corta. «Muy amable» es ', prop('otra cosa'), '.'] },
         { texto: ['La pista, ', cubre('«no quiso escuchar nada más»'), ', dice que fue un no firme.'] }],
       respuesta: [justo('«Sin dar lugar a dudas»')] },
     { nivel: 2, titulo: 'Los dos hermanos',
       enunciado: '¿Qué significa «retraída»: «que conversa con todos», «que habla poco con los demás» o «que se ríe mucho con sus amigas del colegio»?',
       datos: [D_PISTA5, D_DEDUC],
-      figura: fig(papel('cuaderno', 'Cuaderno de Rosa', 'Mis vecinos', 'Rosa', 'la clase de Comunicación', ors('k', ['La niña del tercer piso es [w:retraída];', '[p:en cambio, su hermano conversa con todos].']))),
+      figura: fig(papel('cuaderno', 'Cuaderno de Sofía', 'Mis vecinos', 'Sofía', 'la clase de Comunicación', ors('k', ['La niña del tercer piso es [w:retraída];', '[p:en cambio, su hermano conversa con todos].']))),
       solucion: [
         { texto: ['«Que conversa con todos» es el ', prop('contraste al revés'), ': es el hermano. «Que se ríe mucho con sus amigas del colegio» es una ', prop('idea propia'), '.'] },
         { texto: [cubre('«En cambio»'), ' dice que ella es lo opuesto del hermano.'] }],
@@ -1718,13 +1727,13 @@
     { nivel: 3, titulo: 'Las vasijas del museo',
       enunciado: 'Pregunta 114 del simulacro. Según el texto, ¿qué significa «vasijas»?',
       datos: [D_PISTA5, D_DEDUC],
-      figura: fig(sim(114, ors('h', ['En el museo de la ciudad se exhiben [w:vasijas] de la cultura Pucará:', '[p:cántaros, ollas y platos de barro].']), PIDE5('vasijas'),
-        ['recipientes de barro', 'vacas de la puna', 'cuadros pintados', 'telas tejidas', 'ruinas de un templo antiguo'])),
+      figura: fig(sim(114, ors('h', ['En el museo de la ciudad se exhiben [w:vasijas] de la cultura Pucará:', '[p:en ellas guardaban agua, chicha y granos].']), PIDE5('vasijas'),
+        ['objetos para contener algo', 'vacas de la puna', 'cuadros pintados', 'telas tejidas', 'ruinas de un templo antiguo'])),
       solucion: [
         { texto: [mala('B'), ' tiene ', prop('parecido de forma'), '. ', mala('C'), ' es una ', prop('idea propia'), '.'] },
-        { texto: [mala('D'), ' y ', mala('E'), ' son ', prop('otra cosa'), ': los ejemplos no son telas ni ruinas.'] },
-        { texto: [buena('A'), ': los ejemplos, ', cubre('«cántaros, ollas y platos»'), ', son recipientes de barro.'] }],
-      respuesta: [buena('A'), ': recipientes de barro'] },
+        { texto: [mala('D'), ' y ', mala('E'), ' son ', prop('otra cosa'), ': en una tela no se guarda agua, y en unas ruinas no se guarda chicha.'] },
+        { texto: [buena('A'), ': la pista, ', cubre('«en ellas guardaban agua, chicha y granos»'), ', dice para qué servían: eran objetos para contener algo.'] }],
+      respuesta: [buena('A'), ': objetos para contener algo'] },
     { nivel: 3, titulo: 'Los sembríos tras la helada',
       enunciado: 'Pregunta 115 del simulacro. Según el texto, ¿qué significa «marchitos»?',
       datos: [D_PISTA5, D_DEDUC],
@@ -1741,7 +1750,7 @@
     id: 'inferir-significado',
     titulo: 'El significado sale de las pistas',
     pregunta: '¿Cómo sé qué significa una palabra que nunca vi?',
-    temas: ['Inferencias léxicas'],
+    temas: ['Significado por el contexto'],
     pieza: 'rv-soporte',
     lee: {
       tarjetas: [
@@ -1770,7 +1779,7 @@
         { s: 'tachado', t: 'oración que no ayuda' },
         { s: justo('violeta'), t: 'la palabra, ya entendida' },
       ],
-      controles: AVISO5.map((o, k) => ({ id: o.ctl, etiqueta: `Oración ${k + 2}`, opciones: MARCA5.map((t, v) => ({ valor: v, texto: v ? t : 'sin marcar' })) })),
+      controles: AVISO5.map((o, k) => ({ id: o.ctl, etiqueta: `Oración ${k + 2}`, opciones: MARCA5.map((t, v) => ({ valor: v, texto: t })) })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(AVISO5.map(o => [o.id, o.ctl])) }, aviso5()), estado: est5(val) }),
       lectura: lectura5,
       minimo: 3,
@@ -1804,8 +1813,8 @@
       ],
     },
     regla: {
-      texto: 'El significado de una palabra nueva sale de las pistas de su texto: una explicación, un ejemplo, un contraste o una consecuencia. El significado deducido encaja en su lugar.',
-      ecuacion: [cubre('pista'), ' + ', { negrita: 'su lugar' }, ' → ', justo('significado')],
+      texto: 'El significado de una palabra nueva sale de las pistas de su texto: una explicación, un ejemplo, un contraste o una consecuencia. Lo deducido encaja en lugar de la palabra.',
+      ecuacion: [cubre('pista'), ' → ', justo('significado')],
       voz: 'Vuelve a esta regla cuando te encuentres una palabra nueva.',
       condicion: 'la pista está en el texto y habla de la palabra; una idea propia o un detalle cercano no bastan.',
     },
@@ -1854,38 +1863,41 @@
         bien: 'Sin la oración 2, «inocuo» queda sin explicar.' },
     ] });
 
-  // Cada falla que un resuelto nombra (lo que va en naranja) está dicha en sus Datos (lección M8 de la auditoría de
-  // Definiciones, como en Analogías). Se completa al armar la unidad, en los ejemplos y en «Así se resuelve». Si no caben
-  // en 6 líneas, salen primero las que el resuelto no necesita (la pista, el reemplazo, quien escribe, deducir); si aún
-  // no caben, falla aquí.
+  // Los Datos (cierre, 19 nov; lectores A y B): en los niveles 2 y 3, «Así se resuelve» y «Ahora tú» dan solo las
+  // definiciones del criterio de la idea, nunca los nombres de las trampas: con una trampa por opción mala, la respuesta
+  // salía por descarte. Los nombres los presenta «Mira», cada uno con su ejemplo, y el resuelto los explica en su línea.
+  // En el nivel 1 (una sola cosa que mirar, que suele ser la trampa misma) va el nombre que usa su solución (lección M8
+  // de Definiciones). «Comodín» no es trampa: es un término de la idea 3 (Lee y glosario).
   const NOMBRES = {
     'otra acepción': D_OTRAAC, 'mismo campo': D_CAMPO, 'parecido de forma': D_FORMA, 'otro rasgo': D_OTRORASGO,
     'sinónimo por antónimo': D_SINANT, 'otra valoración': D_OTRAVAL, 'otro grado': D_GRADO, 'otra cosa': D_OTRACOSA,
-    'comodín': D_COMOD, 'choca': D_CHOCA, 'otra acción': D_OTRAAC3, 'lectura literal': D_LECLIT, 'lectura figurada': D_LECFIG,
+    'choca': D_CHOCA, 'otra acción': D_OTRAAC3, 'lectura literal': D_LECLIT, 'lectura figurada': D_LECFIG,
     'idea propia': D_IDEA, 'detalle cercano': D_DETALLE, 'contraste al revés': D_CONTRAREV, 'lo contrario': D_CONTRARIO,
   };
-  const SOBRAN = [D_PISTA, D_REEMP, D_QUIEN, D_DEDUC];
+  const TRAMPAS = new Set(Object.values(NOMBRES));
+  const sinTrampas = d => d.filter(l => !TRAMPAS.has(l));
   const naranjas = x => (Array.isArray(x) ? x.flatMap(naranjas) : x && typeof x === 'object' ? (x.v === 'c-o' && typeof x.t === 'string' ? [x.t] : x.texto ? naranjas(x.texto) : []) : []);
   const completar = (datos, texto, donde) => {
-    let out = datos.slice();
+    const out = datos.slice();
     for (const n of naranjas(texto)) {
       const linea = NOMBRES[n.replace(/[«»]/g, '').trim()];
       if (linea && !out.includes(linea)) out.push(linea);
     }
-    for (const s of SOBRAN) if (out.length > 6 && out.includes(s)) out = out.filter(l => l !== s);
     if (out.length > 6) throw new Error(`sentido-contextual: ${donde} necesita ${out.length} líneas de datos`);
     return out;
   };
   const IDEAS_U = [acepcion, denotaConnota, precision, figurado, inferencia];
   for (const idea of IDEAS_U) {
-    for (const e of idea.ejemplos) e.datos = completar(e.datos, e.solucion, `${idea.id} «${e.titulo}»`);
-    const gen = idea.resuelve.generar;
-    idea.resuelve.generar = s => { const r = gen(s); r.datos = completar(r.datos, r.pasos.filter(p => p.tipo === 'aplica'), `${idea.id} resuelve ${s}`); return r; };
+    for (const e of idea.ejemplos) e.datos = e.nivel === 1 ? completar(e.datos, e.solucion, `${idea.id} «${e.titulo}»`) : sinTrampas(e.datos);
+    const gen = idea.resuelve.generar, genA = idea.ahoraTu.generar;
+    idea.resuelve.generar = s => { const r = gen(s); r.datos = sinTrampas(r.datos); return r; };
+    idea.ahoraTu.generar = s => { const a = genA(s); a.datos = sinTrampas(a.datos); return a; };
   }
 
   return {
     unidad: 'razonamiento-verbal.sentido-contextual',
-    version: '0.3.0',
+    version: '0.3.2',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-soporte.js'],
     // La unidad no usa letras de fórmula: lo que hay que leer en la figura va en la leyenda de cada juego.

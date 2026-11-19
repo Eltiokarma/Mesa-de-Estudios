@@ -111,3 +111,19 @@ test('ninguna oración ni alternativa usa una palabra de dos lecturas para un al
   const MALOS = /\b(caliente|vivo|viva|fresco|fresca|bravo|brava|rico|rica|jalar|jaló|palta|piña|prendido|despierto)\b/i;
   for (const it of items) for (const t of [it.o, ...it.alts.map(x => x[0])]) assert.ok(!MALOS.test(t), `${it.id}: «${t}»`);
 });
+
+// Cierre (19 nov): auditor y lectores en frío. Cada prueba falla con el generador de antes del cierre.
+test('cierre · Datos sin nombres de trampas, un solo hueco «¿…?» y «pista» solo como término del curso', () => {
+  const TRAMPA = /^(Otra acepción|Mismo campo|Parecido de forma|Otro rasgo|Otra valoración|Otro grado|Otra cosa|Choca|Lectura literal|Idea propia|Detalle cercano|Contraste al revés|Lo contrario):/;
+  for (let s = 0; s < 400; s++) for (const l of gen.generar(s).datos) assert.ok(!TRAMPA.test(l), `semilla ${s}: «${l}»`);
+  for (const it of items) {
+    assert.ok(!/_{3}/.test(it.o + it.w), `${it.id}: hueco con raya`);
+    assert.ok(!/\bpistas?\b/i.test(it.o), `${it.id}: «pista» con otro sentido`);
+  }
+});
+
+test('cierre · las palabras precisas tienen una pista que deja una sola (auditor: pagó, abandonó, prestó también encajaban)', () => {
+  for (const it of gen.PRECISA.filter(x => ['empresa', 'vacuna', 'libros'].includes(x.id))) assert.ok(/: /.test(it.o), `${it.id}: sin pista tras los dos puntos`);
+  assert.ok(!items.some(it => it.id === 'corto'), '«corto» por tímido se lee también «bajo» en el Perú');
+  assert.ok(!gen.FIGURADO.find(it => it.id === 'nubes').alts.some(([t, e]) => e === 'VAL' && /concentrada/.test(t)), '«concentrada» es lo opuesto, no otra valoración');
+});

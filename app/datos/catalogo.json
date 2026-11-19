@@ -7443,7 +7443,7 @@
       "Sinónimos en contexto",
       "Antónimos en contexto",
       "Sentido literal y figurado",
-      "Inferencias léxicas"
+      "Significado por el contexto"
      ],
      "universidades": {
       "uni": {
@@ -7482,7 +7482,7 @@
        "sentido-figurado": "Literal o figurado",
        "inferir-significado": "El significado sale de las pistas"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {

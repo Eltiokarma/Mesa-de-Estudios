@@ -268,3 +268,14 @@ test('trozos: la palabra se marca dentro de su renglón, la reserva no mueve nad
   const toque = P.dibujar(Object.assign(nota('claro'), { toques: { n1: 'w1' } }), {});
   assert.ok(/data-toque="w1"[^>]*><title>Tocar para cambiar esta oración<\/title>/.test(toque), 'la oración entera se toca');
 });
+
+// Etapa 7 (cierre de Sentido contextual, lector en frío A): `num` cambia la marca de una oración. La oración que se
+// estudia va sin número y las palabras que se prueban, con raya: así no parecen cinco oraciones numeradas juntas.
+test('num: una oración sin número y una lista con raya; sin `num`, se numera como siempre', () => {
+  const d = { soporte: 'cuaderno', lugar: 'Cuaderno', hojas: [{ id: 'k', titulo: 'Prueba', de: 'Sofía', para: 'la clase', oraciones: [
+    { id: 'c0', t: 'La explicación fue clara.', num: '' }, { id: 'c1', t: 'nublada', num: '–' }, { id: 'c2', t: 'confusa', num: '–' }] }] };
+  const nums = P.disponer(d).items.filter(i => i.tipo === 'num');
+  assert.deepEqual(nums.map(n => [n.id, n.texto]), [['c1', '–'], ['c2', '–']]);
+  assert.ok(!/NaN|undefined/.test(P.dibujar(d, { senal: ['c0'] })));
+  assert.deepEqual(P.disponer(CASOS.mural).items.filter(i => i.tipo === 'num').map(n => n.texto).slice(0, 2), ['1', '2']);
+});

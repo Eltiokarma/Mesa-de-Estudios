@@ -50,9 +50,9 @@
     PISTA: 'Pista: la parte del texto que decide qué acepción usa la palabra.',
     DEN: 'Denotación: lo que la palabra describe, sin ningún juicio.',
     CON: 'Connotación: la valoración que la palabra suma a lo que describe: elogio, crítica o ninguna.',
-    GRADO: 'Otro grado: la palabra valora igual, pero con más o con menos fuerza que la del texto.',
+    GRADO: 'Otro grado: la palabra dice lo mismo, pero con más o con menos fuerza que la del texto.',
     PREC: 'Palabra precisa: nombra justo lo que dice la oración y no choca con ninguna de sus partes.',
-    COMOD: 'Comodín: palabra tan general (hacer, dar, tener, cosa) que encaja en casi todo y dice poco.',
+    COMOD: 'Comodín: palabra tan general (hacer, dar, tener, poner, ver, cosa) que encaja en casi todo y dice poco.',
     CHOCA: 'Choca: la palabra va con una parte de la oración, pero contradice otra.',
     LIT: 'Sentido literal: lo que las palabras nombran tal cual.',
     FIG: 'Sentido figurado: la palabra nombra otra cosa que se le parece.',
@@ -63,7 +63,7 @@
   };
 
   // ---------------- El banco ----------------
-  // Cada ítem: { id, o (la oración; en la idea 3, con «___» en el hueco), w (la palabra o expresión), pide?, alts:
+  // Cada ítem: { id, o (la oración; en la idea 3, con «¿…?» en el hueco), w (la palabra o expresión), pide?, alts:
   // [[texto, etiqueta], …] } con una OK y cuatro incorrectas. Etiquetas: OK · ACEP otra acepción · CAMPO mismo campo ·
   // FORMA parecido de forma · RASGO otro rasgo · INV lo contrario de lo que se pide · VAL otra valoración · GRADO otro
   // grado · OTRA otra cosa · COMOD comodín · CHOCA choca · LIT lectura literal · FIG lectura figurada · PROPIA idea
@@ -73,8 +73,9 @@
       alts: [['acordó', 'OK'], ['clausuró', 'ACEP'], ['discutió', 'CAMPO'], ['cedió', 'FORMA'], ['rompió', 'INV']] },
     { id: 'solida', w: 'sólida', pide: 'sinónimo', o: 'Rosa dio una razón sólida: tenía datos y ejemplos para probarla.',
       alts: [['firme', 'OK'], ['dura', 'ACEP'], ['discutida', 'CAMPO'], ['soldada', 'FORMA'], ['débil', 'INV']] },
-    { id: 'corto', w: 'corto', pide: 'antónimo', o: 'Mi primo es corto: le da vergüenza hablar con gente nueva.',
-      alts: [['desenvuelto', 'OK'], ['largo', 'ACEP'], ['tímido', 'INV'], ['muy trabajador', 'RASGO'], ['cortés', 'FORMA']] },
+    // «corto» por tímido salió en el cierre (19 nov): en el Perú se lee también «bajo» o «de pocas luces».
+    { id: 'apagado', w: 'apagado', pide: 'antónimo', o: 'Mi primo es muy apagado: en las reuniones casi no habla ni se ríe.',
+      alts: [['animado', 'OK'], ['encendido', 'ACEP'], ['callado', 'INV'], ['bajito', 'RASGO'], ['apegado', 'FORMA']] },
     { id: 'subio', w: 'subió', pide: 'sinónimo', o: 'Este año subió el número de postulantes: se inscribieron mil más que el año pasado.',
       alts: [['aumentó', 'OK'], ['trepó', 'ACEP'], ['inscribió', 'CAMPO'], ['sumió', 'FORMA'], ['bajó', 'INV']] },
     { id: 'clave', w: 'clave', pide: 'sinónimo', o: 'El testimonio de la vecina fue clave: gracias a él encontraron al niño perdido.',
@@ -87,7 +88,7 @@
       alts: [['perezoso', 'OK'], ['tranquilo', 'VAL'], ['inútil', 'GRADO'], ['nuevo', 'OTRA'], ['flaco', 'FORMA']] },
     { id: 'modesto', w: 'modesto', o: 'En la ceremonia, todos elogiaron al campeón por ser modesto: nunca habla de sus premios.',
       alts: [['humilde', 'OK'], ['acomplejado', 'VAL'], ['santo', 'GRADO'], ['puntual', 'OTRA'], ['molesto', 'FORMA']] },
-    { id: 'barato', w: 'barato', o: 'Los vecinos se quejaron de que el municipio usó un cemento barato: la pista se rajó en un mes.',
+    { id: 'barato', w: 'barato', o: 'Los vecinos se quejaron de que el municipio usó un cemento barato: la vereda se rajó en un mes.',
       alts: [['corriente', 'OK'], ['económico para el bolsillo', 'VAL'], ['basura', 'GRADO'], ['húmedo', 'OTRA'], ['barroso', 'FORMA']] },
     { id: 'gordito', w: 'gordito', o: 'La abuela dice con cariño que su nieto está gordito: come todo lo que ella cocina.',
       alts: [['llenito', 'OK'], ['obeso', 'VAL'], ['gigantesco', 'GRADO'], ['alto', 'OTRA'], ['gorrito', 'FORMA']] },
@@ -97,17 +98,19 @@
       alts: [['embaucador', 'OK'], ['buen conversador', 'VAL'], ['criminal', 'GRADO'], ['ambulante', 'OTRA'], ['chalán', 'FORMA']] },
   ];
   const PRECISA = [
-    { id: 'juez', w: '___', o: 'El juez ___ al acusado: lo dejó libre porque no había pruebas.',
+    { id: 'juez', w: '¿…?', o: 'El juez ¿…? al acusado: lo dejó libre porque no había pruebas.',
       alts: [['absolvió', 'OK'], ['vio', 'COMOD'], ['condenó', 'CHOCA'], ['interrogó', 'CAMPO'], ['absorbió', 'FORMA']] },
-    { id: 'empresa', w: '___', o: 'La empresa ___ a diez trabajadores nuevos para la cosecha de quinua.',
-      alts: [['contrató', 'OK'], ['tuvo', 'COMOD'], ['despidió sin motivo', 'CHOCA'], ['pagó', 'CAMPO'], ['contó', 'FORMA']] },
-    { id: 'vacuna', w: '___', o: 'El científico ___ una vacuna contra la gripe después de diez años de trabajo.',
+    // Cierre (19 nov): «empresa», «vacuna» y «libros» ganan una pista; sin ella, «pagó», «abandonó para siempre» y «prestó a
+    // los lectores» también encajaban.
+    { id: 'empresa', w: '¿…?', o: 'La empresa ¿…? a diez trabajadores nuevos: desde el lunes forman parte de su equipo para la cosecha de quinua.',
+      alts: [['contrató', 'OK'], ['tuvo', 'COMOD'], ['despidió sin motivo', 'CHOCA'], ['entrevistó', 'CAMPO'], ['contó', 'FORMA']] },
+    { id: 'vacuna', w: '¿…?', o: 'El científico ¿…? una vacuna contra la gripe después de diez años de trabajo: hoy ya la ponen en todas las postas.',
       alts: [['desarrolló', 'OK'], ['hizo', 'COMOD'], ['abandonó para siempre', 'CHOCA'], ['aplicó', 'CAMPO'], ['desarrugó', 'FORMA']] },
-    { id: 'nota', w: '___', o: 'El profesor ___ la nota del examen después de revisar otra vez las respuestas.',
+    { id: 'nota', w: '¿…?', o: 'El profesor ¿…? la nota del examen después de revisar otra vez las respuestas.',
       alts: [['corrigió', 'OK'], ['puso', 'COMOD'], ['adivinó', 'CHOCA'], ['fotocopió', 'CAMPO'], ['corrió', 'FORMA']] },
-    { id: 'escalar', w: '___', o: 'Los turistas ___ el cerro en tres horas: llegaron a la cima al mediodía.',
+    { id: 'escalar', w: '¿…?', o: 'Los turistas ¿…? el cerro en tres horas: llegaron a la cima al mediodía.',
       alts: [['escalaron', 'OK'], ['hicieron', 'COMOD'], ['bajaron', 'CHOCA'], ['fotografiaron', 'CAMPO'], ['escarbaron', 'FORMA']] },
-    { id: 'libros', w: '___', o: 'La biblioteca ___ cien libros nuevos que le donó una editorial.',
+    { id: 'libros', w: '¿…?', o: 'La biblioteca ¿…? cien libros nuevos que le donó una editorial: llegaron ayer en dos cajas.',
       alts: [['recibió', 'OK'], ['tuvo', 'COMOD'], ['compró', 'CHOCA'], ['prestó a los lectores', 'CAMPO'], ['recicló', 'FORMA']] },
   ];
   const FIGURADO = [
@@ -120,7 +123,7 @@
     { id: 'peluquero', w: 'cortó', o: 'El peluquero cortó el pelo de Iván con una tijera.',
       alts: [['lo hizo más corto', 'OK'], ['lo dejó sin hablar', 'FIG'], ['lo peinó', 'PROPIA'], ['lo arruinó', 'VAL'], ['lo pintó de rojo', 'OTRA']] },
     { id: 'nubes', w: 'está en las nubes', o: 'Lucía está en las nubes: no oyó cuando la profesora la llamó dos veces.',
-      alts: [['está distraída', 'OK'], ['está en el cielo', 'LIT'], ['está cansada', 'PROPIA'], ['está muy concentrada', 'VAL'], ['está en el patio', 'OTRA']] },
+      alts: [['está distraída', 'OK'], ['está en el cielo', 'LIT'], ['está cansada', 'PROPIA'], ['es muy imaginativa', 'VAL'], ['está en el patio', 'OTRA']] },
     { id: 'pulmon', w: 'el pulmón', o: 'El parque es el pulmón del distrito: sus árboles limpian el aire de las calles.',
       alts: [['lo que le da aire limpio', 'OK'], ['un órgano del cuerpo para respirar', 'LIT'], ['el lugar más bonito', 'PROPIA'], ['un estorbo', 'VAL'], ['el centro comercial', 'OTRA']] },
   ];
@@ -149,8 +152,8 @@
   };
   // La explicación de una incorrecta empieza por lo que el alumno hizo bien y dice el motivo con las palabras del curso.
   function explicar(base, et, t, it) {
-    const w = it.w === '___' ? 'la palabra que va' : `«${it.w}»`;
-    if (et === 'FORMA') return `«${t}» se escribe parecido a ${it.w === '___' ? 'la palabra que va' : w}, bien visto; pero significa otra cosa.`;
+    const w = it.w === '¿…?' ? 'la palabra que va' : `«${it.w}»`;
+    if (et === 'FORMA') return `«${t}» se escribe parecido a ${w}, bien visto; pero significa otra cosa.`;
     if (base === 'acepcion') return {
       ACEP: `«${t}» sirve para otra acepción de ${w}, bien visto; pero no para la que usa esta oración.`,
       CAMPO: `«${t}» es del mismo campo, bien; pero no dice lo mismo que ${w}.`,
@@ -185,10 +188,11 @@
   const IDEA_BANCO = { acepcion: ACEPCION, valor: VALOR, precisa: PRECISA, figurado: FIGURADO, pistas: PISTAS };
   const DATOS = {
     acepcion: it => [D.ACEP, D.PISTA, it.pide === 'antónimo' ? D.ANTC : D.SINC],
-    valor: () => [D.DEN, D.CON, D.GRADO],
-    precisa: () => [D.PREC, D.COMOD, D.CHOCA],
+    // Cierre (19 nov; lectores A y B): solo las definiciones del criterio, como en la teoría; ningún nombre de trampa.
+    valor: () => [D.DEN, D.CON],
+    precisa: () => [D.PREC, D.COMOD],
     figurado: () => [D.LIT, D.FIG, D.FRASE],
-    pistas: () => [D.PISTA5, D.DEDUC, D.DETALLE],
+    pistas: () => [D.PISTA5, D.DEDUC],
   };
   const sinPunto = t => t.replace(/[.]$/, '');
   const PREGUNTA = {

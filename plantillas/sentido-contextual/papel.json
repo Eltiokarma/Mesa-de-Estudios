@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Sentido contextual. En «Los vecinos se quejaron de que el municipio usó un cemento barato: la pista se rajó en un mes», ¿qué palabra describe lo mismo que «barato» y lo valora igual? Datos: Denotación: lo que la palabra describe, sin ningún juicio. Connotación: la valoración que la palabra suma a lo que describe: elogio, crítica o ninguna. Otro grado: la palabra valora igual, pero con más o con menos fuerza que la del texto. Alternativas: A) corriente   B) económico para el bolsillo   C) húmedo   D) barroso",
+      "enunciado": "Sentido contextual. En «Los vecinos se quejaron de que el municipio usó un cemento barato: la vereda se rajó en un mes», ¿qué palabra describe lo mismo que «barato» y lo valora igual? Datos: Denotación: lo que la palabra describe, sin ningún juicio. Connotación: la valoración que la palabra suma a lo que describe: elogio, crítica o ninguna. Alternativas: A) corriente   B) económico para el bolsillo   C) húmedo   D) barroso",
       "respuesta": "A) corriente",
       "pasos": [
         "«corriente» describe lo mismo que «barato» y lo valora igual, con la misma fuerza.",
@@ -26,7 +26,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Sentido contextual. ¿Qué palabra completa con más precisión la oración «El juez ___ al acusado: lo dejó libre porque no había pruebas»? Datos: Palabra precisa: nombra justo lo que dice la oración y no choca con ninguna de sus partes. Comodín: palabra tan general (hacer, dar, tener, cosa) que encaja en casi todo y dice poco. Choca: la palabra va con una parte de la oración, pero contradice otra. Alternativas: A) vio   B) interrogó   C) condenó   D) absolvió",
+      "enunciado": "Sentido contextual. ¿Qué palabra completa con más precisión la oración «El juez ¿…? al acusado: lo dejó libre porque no había pruebas»? Datos: Palabra precisa: nombra justo lo que dice la oración y no choca con ninguna de sus partes. Comodín: palabra tan general (hacer, dar, tener, poner, ver, cosa) que encaja en casi todo y dice poco. Alternativas: A) vio   B) interrogó   C) condenó   D) absolvió",
       "respuesta": "D) absolvió",
       "pasos": [
         "«absolvió» nombra justo la acción y no choca con ninguna parte de la oración.",
@@ -36,7 +36,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Sentido contextual. En «Lucía está en las nubes: no oyó cuando la profesora la llamó dos veces», ¿qué quiere decir «está en las nubes»? Datos: Sentido literal: lo que las palabras nombran tal cual. Sentido figurado: la palabra nombra otra cosa que se le parece. Frase hecha: grupo de palabras con un sentido fijo, que no es la suma de sus palabras. Alternativas: A) está distraída   B) está cansada   C) está en el patio   D) está muy concentrada",
+      "enunciado": "Sentido contextual. En «Lucía está en las nubes: no oyó cuando la profesora la llamó dos veces», ¿qué quiere decir «está en las nubes»? Datos: Sentido literal: lo que las palabras nombran tal cual. Sentido figurado: la palabra nombra otra cosa que se le parece. Frase hecha: grupo de palabras con un sentido fijo, que no es la suma de sus palabras. Alternativas: A) está distraída   B) está cansada   C) está en el patio   D) es muy imaginativa",
       "respuesta": "A) está distraída",
       "pasos": [
         "Leída tal cual, «está en las nubes» no encaja con el texto: va en sentido figurado; quiere decir «está distraída».",
@@ -46,7 +46,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Sentido contextual. En «En el bus iban hacinados: no cabía ni un alfiler y nadie podía moverse», ¿qué significa «hacinados»? Datos: Pista: una explicación, un ejemplo, un contraste o una consecuencia que habla de la palabra. Deducir: sacar del texto algo que no está dicho con esas mismas palabras. Detalle cercano: algo que el texto cuenta junto a la palabra, pero que no dice qué significa. Alternativas: A) muertos de cansancio   B) muy cómodos   C) hechizados   D) muy apretados",
+      "enunciado": "Sentido contextual. En «En el bus iban hacinados: no cabía ni un alfiler y nadie podía moverse», ¿qué significa «hacinados»? Datos: Pista: una explicación, un ejemplo, un contraste o una consecuencia que habla de la palabra. Deducir: sacar del texto algo que no está dicho con esas mismas palabras. Alternativas: A) muertos de cansancio   B) muy cómodos   C) hechizados   D) muy apretados",
       "respuesta": "D) muy apretados",
       "pasos": [
         "La pista del texto lleva a «muy apretados», y encaja en el lugar de «hacinados».",
@@ -76,7 +76,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Pregunta del simulacro. En «Don Pedro es pródigo con su familia; en cambio, su hermano no regala nada», ¿qué significa «pródigo»? Datos: Pista: una explicación, un ejemplo, un contraste o una consecuencia que habla de la palabra. Deducir: sacar del texto algo que no está dicho con esas mismas palabras. Detalle cercano: algo que el texto cuenta junto a la palabra, pero que no dice qué significa. Alternativas: A) prolijo   B) que no regala nada   C) generoso   D) muy trabajador   E) muy alto",
+      "enunciado": "Pregunta del simulacro. En «Don Pedro es pródigo con su familia; en cambio, su hermano no regala nada», ¿qué significa «pródigo»? Datos: Pista: una explicación, un ejemplo, un contraste o una consecuencia que habla de la palabra. Deducir: sacar del texto algo que no está dicho con esas mismas palabras. Alternativas: A) prolijo   B) que no regala nada   C) generoso   D) muy trabajador   E) muy alto",
       "respuesta": "C) generoso",
       "pasos": [
         "La pista del texto lleva a «generoso», y encaja en el lugar de «pródigo».",

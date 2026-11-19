@@ -141,7 +141,10 @@
     if (h.titulo || firma) y += 6;
     if (h.ilustracion === 'balsa') { items.push({ tipo: 'balsa', x: tx, y, w: tw, h: 50 }); y += 56; }
     (h.oraciones || []).forEach((o, k) => {
-      items.push({ tipo: 'num', id: o.id, x: tx, y: y + 15, w: NUM - 6, texto: `${k + 1}`, tam: 14, peso: 700 });
+      // Etapa 7 (Sentido contextual): `num` cambia la marca de la oración: '' la deja sin número y '–' la pone como un
+      // renglón de lista (la oración que se estudia y, debajo, las palabras que se prueban, sin numerarlas juntas).
+      const nu = o.num !== undefined ? String(o.num) : `${k + 1}`;
+      if (nu) items.push({ tipo: 'num', id: o.id, x: tx, y: y + 15, w: NUM - 6, texto: nu, tam: 14, peso: 700 });
       // Etapa 7 (Sentido contextual): una oración en trozos (`frags`), para marcar una palabra o una frase dentro de ella.
       if (o.frags) { for (const r of trozosDe(o, tw - NUM)) { items.push(Object.assign({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, tam: TAM, peso: 400 }, r)); y += LH; } y += 3; return; }
       // Con `lema` (entrada de diccionario), la palabra va en negrita al inicio del primer renglón: «puente. Construcción…».
