@@ -27,8 +27,8 @@
     'antes-predice': 'Nada de lo que se lee antes de Predice (Lee, el juego, su misión y su leyenda) trae la frase o la cuenta que la responde.',
     'letras-datos': 'Toda letra de una línea de Datos está dicha en ese ejercicio (enunciado o datos) o en la tabla de letras de la unidad.',
     'letra-repartida': 'La letra de la alternativa correcta se reparte: con 10 casos o más, ninguna pasa del 40 % ni falta.',
-    'respuesta-letra': 'La letra que da la respuesta de un ejemplo es la de la alternativa que dice su valor.',
-    'alternativa-sin-explicar': 'En un ejemplo con alternativas, el resuelto nombra cada alternativa incorrecta.',
+    'respuesta-letra': 'La respuesta de un ejemplo con alternativas dice cuál es la suya: por su letra o por su valor; si da la letra, es la de la alternativa que dice su valor.',
+    'alternativa-sin-explicar': 'En un ejemplo con alternativas, el resuelto nombra cada alternativa incorrecta, por su letra o por su valor.',
     'figura-respuesta': 'La figura de un ejemplo o de Predice no escribe el número que se pide (de dos cifras o más, fuera de una escala).',
     'datos-respuesta': 'Los Datos no traen «lo que se pregunta = la respuesta» (cos 37° = 4/5 cuando se pide cos 37°).',
     'datos-consejo': 'Una línea de Datos es equivalencia, valor, constante, definición o fórmula: nunca un consejo.',
@@ -41,31 +41,25 @@
   //   { regla, unidad, idea ('' si es de toda la unidad), en?: texto que debe traer el hallazgo, motivo, fecha }
   const EXCEPCIONES = [
     // alternativa-sin-explicar
-    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.cuatro-operaciones', idea: 'otras-bases', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 14', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.cuatro-operaciones', idea: 'prestamo', motivo: 'el resuelto no nombra todas las alternativas incorrectas en el ejemplo 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.numeracion', idea: 'agrupar', motivo: 'el resuelto no nombra todas las alternativas incorrectas en el ejemplo 11', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.numeracion', idea: 'conteo-cifras', motivo: 'el resuelto no nombra todas las alternativas incorrectas en el ejemplo 11', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.numeracion', idea: 'descomposicion', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 14', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'desplazamiento-distancia', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'encuentro', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'grafica-xt', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'mru', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'velocidad-relativa', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'aceleracion', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'caida-libre', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'caida-reposo', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'ecuaciones-mruv', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'graficas-xt-at', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'pendiente-aceleracion', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 12, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'quimica.estructura-atomica', idea: 'configuracion-iones', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'quimica.estructura-atomica', idea: 'desapareados-isoelectronicos', motivo: 'el resuelto no nombra todas las alternativas incorrectas en el ejemplo 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'quimica.estructura-atomica', idea: 'modelos-atomicos', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'quimica.estructura-atomica', idea: 'numeros-cuanticos', motivo: 'el resuelto no nombra todas las alternativas incorrectas en el ejemplo 11', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'conclusion-necesaria', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'doble-entrada', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'dos-atributos', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'parentesco', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
-    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'si-entonces', motivo: 'el resuelto no nombra todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.cuatro-operaciones', idea: 'otras-bases', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en el ejemplo 14', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'aritmetica.numeracion', idea: 'descomposicion', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en el ejemplo 11', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'desplazamiento-distancia', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 13, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'encuentro', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 12, 13, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'grafica-xt', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'mru', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 13, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.movimiento-rectilineo', idea: 'velocidad-relativa', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'aceleracion', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 13, 14', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'caida-libre', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 12, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'caida-reposo', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en el ejemplo 12', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'ecuaciones-mruv', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 13, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'graficas-xt-at', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'fisica.mruv-y-caida-libre', idea: 'pendiente-aceleracion', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 12, 13, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'quimica.estructura-atomica', idea: 'modelos-atomicos', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 13, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'conclusion-necesaria', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'doble-entrada', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 13, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'dos-atributos', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'parentesco', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
+    { regla: 'alternativa-sin-explicar', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'si-entonces', motivo: 'el resuelto no nombra, ni por su letra ni por su valor, todas las alternativas incorrectas en los ejemplos 11, 12, 13, 14, 15', fecha: '2026-11-19' },
     // glosario-predice
     { regla: 'glosario-predice', unidad: 'fisica.vectores', idea: 'componentes', motivo: '«vector unitario» (ejemplo 1) da la respuesta de Predice «0,6î + 0,8ĵ»: «A⃗ = 6î + 8ĵ: û = 0,6î + 0,8ĵ.»', fecha: '2026-11-19' },
     { regla: 'glosario-predice', unidad: 'trigonometria.razones-trigonometricas-agudas', idea: 'aproximados', motivo: '«ángulo aproximado» (ejemplo 1) da la respuesta de Predice «No: mide unos 36,87°»: «37° del 3-4-5, que mide unos 36,87°.»', fecha: '2026-11-19' },
@@ -453,22 +447,42 @@
           const delata = pide.filter(n => fig.has(n) && ![...alts].some(x => x !== n && fig.has(x)) && !escala(txtFig, n));
           if (delata.length) mal('figura-respuesta', de, `la figura escribe ${delata.join(', ')}, que es la respuesta («${resp}»): la figura muestra el planteamiento, no el resultado`);
         }
-        // Con alternativas: la letra de la respuesta
+        // Con alternativas: cuál es la correcta y si el resuelto explica las demás. Una alternativa se nombra por su
+        // letra o por su valor: donde la figura tiene puntos A, B, C, ningún resuelto nombra una alternativa por su
+        // letra (Gerson, docs/etapa3/decisiones.md, «Letras de las alternativas»).
         if (Array.isArray(e.alternativas) && e.alternativas.length >= 2) {
           const alts = e.alternativas.map(a => limpio(liso(a)).trim()), L = 'ABCDE'.slice(0, alts.length);
-          const m = /^\s*([A-E])(?![\p{L}\p{N}])/u.exec(resp);
-          if (!m || !L.includes(m[1])) { mal('respuesta-letra', de, `la respuesta («${resp}») no empieza por la letra de su alternativa (${L[0]} a ${L[L.length - 1]})`); return; }
-          const letra = m[1], idx = L.indexOf(letra), resto = ` ${norma(resp.slice(m[0].length))} `;
-          const dice = a => norma(a).length > 0 && resto.includes(` ${norma(a)} `);
-          const otra = alts.findIndex((a, j) => j !== idx && dice(a) && !norma(alts[idx]).includes(norma(a)));
-          if (!dice(alts[idx]) && otra >= 0) mal('respuesta-letra', de, `la respuesta dice ${letra} y escribe «${alts[otra]}», que es la alternativa ${L[otra]} (la ${letra} es «${alts[idx]}»)`);
+          const dentro = (txt, a) => norma(a).length > 0 && ` ${norma(txt)} `.includes(` ${norma(a)} `);
+          // Las alternativas que un texto escribe; si una está dentro de otra («8» en «8 m»), cuenta la más larga.
+          const escritas = txt => { const c = alts.map((a, k) => k).filter(k => dentro(txt, alts[k])); return c.filter(k => !c.some(q => q !== k && norma(alts[q]).includes(norma(alts[k])) && norma(alts[q]) !== norma(alts[k]))); };
+          // La letra, como la escribe un resuelto: sola y seguida de coma, dos puntos, punto o paréntesis («B, 8 m»,
+          // «C: Carla es obstetra»). «C = 40 N» o «AC = 17 cm» empiezan por una letra de la figura, no por la de una alternativa.
+          const m = /^\s*([A-E])\s*(?:[,:.)]|$)/u.exec(resp);
+          let idx = -1;
+          if (m && L.includes(m[1])) {
+            idx = L.indexOf(m[1]);
+            const resto = resp.slice(m[0].length), otra = escritas(resto).find(k => k !== idx && !norma(alts[idx]).includes(norma(alts[k])));
+            if (!dentro(resto, alts[idx]) && otra !== undefined) mal('respuesta-letra', de, `la respuesta dice ${m[1]} y escribe «${alts[otra]}», que es la alternativa ${L[otra]} (la ${m[1]} es «${alts[idx]}»)`);
+          } else {
+            // Sin letra: la respuesta escribe el valor de una sola alternativa (su texto o, si no, sus números).
+            let c = escritas(resp);
+            if (!c.length) {
+              const fs = fichas(e.respuesta), nR = nums((fs.length ? fs.map(x => x.t) : [resp]).join(' · '));
+              c = alts.map((a, k) => k).filter(k => { const nA = nums(alts[k]); return nA.size > 0 && nA.size === nR.size && [...nA].every(n => nR.has(n)); });
+            }
+            if (c.length !== 1) { mal('respuesta-letra', de, `la respuesta («${resp}») no dice cuál es su alternativa: empieza por su letra (${L[0]} a ${L[L.length - 1]}) o escribe su valor tal como está en la lista${c.length > 1 ? ` (aquí calzan ${c.map(k => L[k]).join(' y ')})` : ''}`); return; }
+            idx = c[0];
+          }
+          const letra = L[idx];
           letrasEj.push({ letra, n: alts.length, nivel: e.nivel, donde: de });
-          // alternativa-sin-explicar: cada letra incorrecta sale en el resuelto
-          const sol = limpio((e.solucion || []).map(x => `${liso(x && x.texto)} ${liso((x && x.ecuacion) || '')}`).join(' · '));
-          const faltan = [...L].filter(x => x !== letra && !new RegExp(`(?<![\\p{L}\\p{N}_])${x}(?![\\p{L}\\p{N}_⃗])`, 'u').test(sol));
+          // alternativa-sin-explicar: el resuelto nombra cada incorrecta, por su letra o por su valor (su texto o sus números).
+          const sol = limpio((e.solucion || []).map(x => `${liso(x && x.texto)} ${liso((x && x.ecuacion) || '')}`).join(' · ')), nSol = nums(sol);
+          const porLetra = x => new RegExp(`(?<![\\p{L}\\p{N}_])${x}(?![\\p{L}\\p{N}_⃗])`, 'u').test(sol);
+          const porValor = a => dentro(sol, a) || (nums(a).size > 0 && [...nums(a)].every(n => nSol.has(n)));
+          const faltan = [...L].filter((x, k) => k !== idx && !porLetra(x) && !porValor(alts[k]));
           // «Las demás…», «las otras cuatro…»: el resuelto las despacha juntas.
           const juntas = /\b(?:las|los) (?:dem[aá]s|otras|otros)\b|\bel resto\b|\bninguna otra\b/i.test(sol);
-          if (faltan.length && !juntas) mal('alternativa-sin-explicar', de, `el resuelto no nombra ${faltan.length > 1 ? 'las alternativas' : 'la alternativa'} ${faltan.join(', ')}: di de qué error sale cada una`);
+          if (faltan.length && !juntas) mal('alternativa-sin-explicar', de, `el resuelto no nombra ${faltan.length > 1 ? 'las alternativas' : 'la alternativa'} ${faltan.map(x => `${x} («${alts[L.indexOf(x)]}»)`).join(', ')}, ni por su letra ni por su valor: di de qué error sale cada una`);
         }
       });
 

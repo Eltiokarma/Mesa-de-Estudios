@@ -93,23 +93,55 @@ test('letra-repartida: en los ejemplos de nivel 3 y en «Ahora tú», ninguna le
   assert.deepEqual(de('letra-repartida', unidad(idea({ ahoraTu: { generar: pareja } }))), []);
 });
 
-test('respuesta-letra: la letra de la respuesta es la de la alternativa que dice su valor', () => {
+// Una alternativa se nombra por su letra o por su valor. Donde la figura tiene puntos A, B, C, ningún resuelto nombra
+// una alternativa por su letra (Gerson, docs/etapa3/decisiones.md, «Letras de las alternativas»): ahí va el valor.
+const triangulo = (respuesta, sol) => ({
+  nivel: 3, titulo: 'El lado que falta', enunciado: 'En el triángulo ABC, AB = AC y M es el punto medio de BC. Si AB mide 17 cm, ¿cuánto mide AC?',
+  alternativas: ['15 cm', '17 cm', '19 cm', '21 cm', '34 cm'], datos: ['Isósceles: dos lados iguales.'], solucion: [{ texto: sol }], respuesta,
+});
+const SOL_VALOR = 'AC = AB = 17 cm. 15 cm le resta 2; 19 cm y 21 cm le suman; 34 cm es el doble: confunde A con M.';
+
+test('respuesta-letra: la respuesta dice cuál es su alternativa, por su letra o por su valor', () => {
   const con = e => unidad(idea({ ejemplos: [e] }));
+  // Por su letra: «B, 8 m». Si la letra no es la de ese valor, falla.
   assert.deepEqual(de('respuesta-letra', con(ejAlt('B'))), []);
   const otra = ejAlt('B'); otra.respuesta = [{ negrita: 'C' }, ', ', f('8 m')];
   assert.match(de('respuesta-letra', con(otra))[0].que, /dice C y escribe «8 m», que es la alternativa B/);
+  // Por su valor, sin letra: «8 m», y con puntos en la figura, «AC = 17 cm» (la A de AC no es una alternativa).
   const sin = ejAlt('B'); sin.respuesta = [f('8 m')];
-  assert.match(de('respuesta-letra', con(sin))[0].que, /no empieza por la letra/);
+  assert.deepEqual(de('respuesta-letra', con(sin)), []);
+  assert.deepEqual(de('respuesta-letra', con(triangulo(['AC = ', f('17 cm')], SOL_VALOR))), []);
+  // «C = 40 N» empieza por la letra de un vector, no por la de una alternativa: vale por su valor (que aquí es la A).
+  const vector = Object.assign(ejAlt('A', 'A, B, C, D y E.', ['40 N', '50 N', '60 N', '70 N', '80 N']), { respuesta: ['C = ', f('40 N')] });
+  assert.deepEqual(de('respuesta-letra', con(vector)), []);
+  // El valor puede ir sin el signo de su unidad: «x = 40» con la alternativa «40°».
+  const grados = Object.assign(ejAlt('A', 'A, B, C, D y E.', ['20°', '40°', '50°', '70°', '90°']), { respuesta: ['x = ', f('40')] });
+  assert.deepEqual(de('respuesta-letra', con(grados)), []);
+  // Ni letra ni valor de la lista, o el valor de dos alternativas: falla.
+  assert.match(de('respuesta-letra', con(triangulo(['Mide lo mismo que ', f('AB')], SOL_VALOR)))[0].que, /no dice cuál es su alternativa/);
+  assert.match(de('respuesta-letra', con(triangulo(['Entre ', f('15 cm'), ' y ', f('17 cm')], SOL_VALOR)))[0].que, /aquí calzan A y B/);
+  // La letra que se deduce del valor entra en el reparto: diez veces «17 cm», la B, pasa del 40 %.
+  const diez = [0, 1].map(k => idea({ id: `i${k}`, ejemplos: [0, 1, 2, 3, 4].map(n => Object.assign(triangulo(['AC = ', f('17 cm')], SOL_VALOR), { enunciado: `Caso ${k}${n}: ¿cuánto mide AC?` })) }));
+  assert.match(de('letra-repartida', unidad(diez)).map(h => h.que).join('\n'), /la B es la correcta en 10 de 10/);
 });
 
-test('alternativa-sin-explicar: el resuelto de un ejemplo con alternativas nombra cada incorrecta', () => {
+test('alternativa-sin-explicar: el resuelto nombra cada incorrecta, por su letra o por su valor', () => {
   const con = sol => unidad(idea({ ejemplos: [ejAlt('B', sol)] }));
-  assert.match(de('alternativa-sin-explicar', con('Se suma 3 + 5. La A resta en vez de sumar.'))[0].que, /no nombra las alternativas C, D, E/);
+  // Por su letra.
+  assert.match(de('alternativa-sin-explicar', con('Se suma 3 + 5. La A resta en vez de sumar.'))[0].que, /no nombra las alternativas C \(«9 m»\), D \(«10 m»\), E \(«11 m»\)/);
   assert.deepEqual(de('alternativa-sin-explicar', con('A resta. C suma mal. D olvida la llevada. E duplica.')), []);
   assert.deepEqual(de('alternativa-sin-explicar', con('La A resta en vez de sumar; las demás no usan los dos lados.')), []);
   // La letra puede ir en negrita, como parte de la ecuación.
   const e = ejAlt('B'); e.solucion = [{ texto: ['Suma. ', { negrita: 'A' }, ' resta; ', { negrita: 'C' }, ' y ', { negrita: 'D' }, ' olvidan un lado; ', { negrita: 'E' }, ' duplica.'] }];
   assert.deepEqual(de('alternativa-sin-explicar', unidad(idea({ ejemplos: [e] }))), []);
+  // Por su valor, sin ninguna letra de alternativa: una figura con puntos A, B, C.
+  const tri = (resp, sol) => unidad(idea({ ejemplos: [triangulo(resp, sol)] }));
+  assert.deepEqual(de('alternativa-sin-explicar', tri(['AC = ', f('17 cm')], SOL_VALOR)), []);
+  // Las letras A, B y M del resuelto son puntos; aun así cuentan como nombradas (la regla no distingue), pero las que
+  // no salen ni como letra ni como valor, fallan: aquí la D y la E.
+  assert.match(de('alternativa-sin-explicar', tri(['AC = ', f('17 cm')], 'AC = AB = 17 cm. Con 15 cm se le resta 2; con 19 cm se le suma.'))[0].que, /no nombra las alternativas D \(«21 cm»\), E \(«34 cm»\), ni por su letra ni por su valor/);
+  // Mezcla de las dos formas en un mismo resuelto.
+  assert.deepEqual(de('alternativa-sin-explicar', con('Suma: 8 m. Con 7 m se resta; la C y la D olvidan un lado; 11 m duplica.')), []);
 });
 
 test('figura-respuesta: la figura de un ejemplo o de Predice no escribe el número que se pide', () => {

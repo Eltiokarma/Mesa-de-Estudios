@@ -21,13 +21,21 @@ frío (`rutinas/frio/`) encontraron una y otra vez en las 15 primeras unidades.
 | `antes-predice` | Nada de lo que se lee antes de Predice la responde: las tarjetas de «Lee», la consigna y la voz del juego, la misión (su texto, su `bien` y su `pista`) y la leyenda. | No escribas la respuesta entera ni la cuenta que la da («… = 25 m²»). |
 | `letras-datos` | Toda letra de una línea de `datos` (ejemplos, Predice, «Así se resuelve» y «Ahora tú») está dicha en ese mismo ejercicio o en la tabla de letras de la unidad. | Ver «La tabla de letras», abajo. |
 | `letra-repartida` | La letra de la alternativa correcta se reparte. Se mide en toda la unidad, por separado en los ejemplos de nivel 3 con alternativas y en «Ahora tú», con los casos de 4 o 5 alternativas y solo si hay 10 o más: ninguna letra pasa del 40 % y ninguna falta. | Al escribir los ejemplos, lleva la cuenta de las letras: con 25 ejemplos de A a E, unas 5 veces cada una. En «Ahora tú» la app baraja las opciones; no hay que hacer nada. |
-| `respuesta-letra` | En un ejemplo con `alternativas`, la respuesta empieza por su letra (A a E) y esa letra es la de la alternativa que dice su valor. | `respuesta: [{ negrita: 'B' }, ', ', { v: 'c-f', t: '8 m' }]` con «8 m» en la segunda alternativa. |
-| `alternativa-sin-explicar` | En un ejemplo con `alternativas`, el resuelto nombra cada alternativa incorrecta por su letra. | «**A** resta en vez de sumar; **C** olvida la llevada…». Si varias salen del mismo error, vale «las demás…» o «las otras…». |
+| `respuesta-letra` | En un ejemplo con `alternativas`, la respuesta dice cuál es la suya: por su letra o por su valor. Si da la letra, es la de la alternativa que dice su valor. | Con letra: `respuesta: [{ negrita: 'B' }, ', ', { v: 'c-f', t: '8 m' }]`, con «8 m» en la segunda alternativa. Sin letra: «AC = 17 cm», con «17 cm» en la lista (una sola alternativa calza). Donde la figura tiene puntos A, B, C va sin letra (ver la nota de abajo). |
+| `alternativa-sin-explicar` | En un ejemplo con `alternativas`, el resuelto nombra cada alternativa incorrecta, por su letra o por su valor. | Por letra: «**A** resta en vez de sumar; **C** olvida la llevada…». Por valor: «15 cm le resta 2; 34 cm es el doble…». Si varias salen del mismo error, vale «las demás…» o «las otras…». |
 | `figura-respuesta` | La figura de un ejemplo o de Predice no escribe el número que se pide. | Lo pedido va con «?». Se miran los números de dos cifras o más de la respuesta que no están en el enunciado ni en los datos; una marca de la escala de un eje (0, 20, 40…) no cuenta. |
 | `datos-respuesta` | Los Datos no traen «lo que se pregunta = la respuesta». | Si se pregunta «¿cuánto vale cos 37°?», los datos no dicen «cos 37° = 4/5»: dan el triángulo 3-4-5 y la definición. Una tabla de valores entre los que se elige sí va. |
 | `datos-consejo` | Una línea de Datos es equivalencia, valor, constante, definición o fórmula. Nunca un consejo. | No empiezan por «Recuerda», «Ojo», «Cuidado», «No olvides», «Ten en cuenta», «Fíjate», «Conviene», «Primero halla…». El aviso de una letra que choca sí va: «Ojo: aquí T es el período…». |
 | `resuelve-repite` | Los 4 primeros casos de «Así se resuelve» no son ninguno de los 12 primeros de «Ahora tú» (mismo enunciado y, si lo llevan, mismo dibujo). | Que `resuelve.generar` y `ahoraTu.generar` saquen sus casos de listas distintas, o de tipos distintos. |
 | `leyenda-visible` | Toda letra y todo color que nombra la leyenda del juego se ve en el juego. | La letra («θ», «v₀», «Δx») está escrita en la figura, la lectura, la consigna, la misión o un control, al abrir o en algún caso del juego. Si la leyenda dice «naranja», algo se pinta con `c-o` (turquesa `c-i`, violeta `c-f`, carmín `c-h`, verde `c-d`). Si la letra no está en el juego, su explicación va donde se usa. |
+
+### Letra o valor de una alternativa
+
+Las alternativas llevan A–E como en el examen. **Donde la figura tiene puntos con letras, ningún resuelto nombra una
+alternativa por su letra** (decisión de Gerson, `docs/etapa3/decisiones.md`, «Letras de las alternativas»): ahí la
+respuesta y las explicaciones van por el valor («AC = 17 cm», «34 cm es el doble»). Por eso `respuesta-letra` y
+`alternativa-sin-explicar` aceptan las dos formas. El validador no comprueba que una unidad con puntos evite las
+letras: eso lo mira el auditor. La letra de la correcta, para `letra-repartida`, se deduce del valor cuando no se escribe.
 
 ### La tabla de letras
 
@@ -70,7 +78,7 @@ esa unidad. No entran el papel de lectura (formato `lectura`) ni, en `papel-dato
 ## Excepciones: la lista de pendientes
 
 Las faltas reales que estas reglas encontraron en las 15 unidades ya hechas no se corrigieron al escribir las reglas.
-Están en `EXCEPCIONES`, con unidad, idea, motivo y fecha, en `nucleo/teoria-reglas.js` (52 líneas) y en
+Están en `EXCEPCIONES`, con unidad, idea, motivo y fecha, en `nucleo/teoria-reglas.js` (46 líneas) y en
 `herramientas/papel-reglas.js` (10 líneas). Mientras una falta está en la lista, la prueba no falla.
 
 - La lista no es un permiso: es lo que queda por corregir en esas unidades. `Teoria.pendientes(def)` da las de una unidad.
@@ -92,5 +100,5 @@ que estaba bien. Las revisan el lector en frío y el auditor.
 | **La letra de una alternativa va en negrita y en tinta.** | Las unidades no coinciden: cuatro pintan la letra de la respuesta con el color de la magnitud y una prueba suya lo exige. Falta una decisión. |
 | **Un código de error por distractor.** | En 29 de las 76 ideas (9 unidades) dos distractores de un mismo «Ahora tú» comparten código, casi siempre el mismo error con otro número. Marcarlo sería exigir un cambio de criterio, no encontrar una falta. |
 | **Los Datos no dan el método ni el paso hecho** («regala la fórmula»). | Depende de qué practica el ejercicio. Automático solo el caso literal (`datos-respuesta`). |
-| **La explicación de cada distractor da su valor** (rehacer la cuenta del error). | Hace falta el motor de errores de cada unidad. Automático solo que el resuelto nombre cada letra (`alternativa-sin-explicar`); la cuenta la rehace la prueba propia de la unidad. |
+| **La explicación de cada distractor da su valor** (rehacer la cuenta del error). | Hace falta el motor de errores de cada unidad. Automático solo que el resuelto nombre cada alternativa, por su letra o su valor (`alternativa-sin-explicar`); la cuenta la rehace la prueba propia de la unidad. |
 | **Datos del mundo con fuente, medidas creíbles, colores por magnitud, rótulos que no se pisan, fidelidad de los ángulos.** | Necesitan tablas o geometría de cada unidad: siguen en la prueba propia de cada unidad y de cada pieza. |
