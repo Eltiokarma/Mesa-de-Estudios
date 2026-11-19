@@ -345,3 +345,33 @@ se confirman con la medición del piloto. GE-POL1 a GE-POL5 y GE-TRP1 y GE-TRP2 
 | GE-PC19 a GE-PC23 | Parte el ángulo que no es; da el vecino; da el ángulo en B del isósceles; da el de la diagonal (45°); resta de 360° | Idea 5 |
 | GE-TRP1, GE-TRP2 | Da la mediana por el tramo PQ (o al revés); suma o resta las bases y no saca la mitad | Idea 6 |
 | GE-TRP3 a GE-TRP10 | Da MP (mitad de la base menor); usa solo la base mayor; resta la base de la mediana sin duplicar; suma mediana y base; da la suma de las bases; da la base mayor; con tres paralelas da solo la del medio o la suma de las bases | Idea 6 (la de tres paralelas, San Marcos 2027-I) |
+
+## Circunferencia (19 nov)
+
+Códigos de `contenido/teoria/geometria/circunferencia.js` y de la práctica `geo-circunferencia` (etapa 7,
+`docs/etapa7/propuesta-geometria.md`). Salvo GE11, GE12, GE15 y GE16 (arriba), **todos son hipótesis** sacadas del
+temario, de las preguntas de San Marcos clasificadas en la unidad y de la práctica de academia; se confirman con la
+medición del piloto.
+
+| Código | Hipótesis (lo que hace el alumno) | Dónde aparece |
+| --- | --- | --- |
+| GE-CIR1 a GE-CIR3 | Cree que el ancho del agua crece en proporción a la altura; que crece sin tope; suma la subida al ancho (nunca pasa del diámetro) | Idea 1, predicción |
+| GE-CIR4 a GE-CIR6 | Da media cuerda y no la duplica; resta radio y distancia sin Pitágoras (o los suma); da el diámetro por una cuerda que no pasa por el centro | Idea 1 |
+| GE-CIR7 a GE-CIR9 | En la tubería: da media superficie (un cateto) como radio; da r − h, la distancia al centro; da el diámetro | Idea 1, nivel examen |
+| GE-CIR10 a GE-CIR12 | En el isósceles de dos radios: no reparte lo que falta para 180°; da la mitad del central; pone en O el ángulo de la base | Idea 1 |
+| GE-TAN1 a GE-TAN3 | Da PO (hasta el centro) por la tangente; cree que radio y tangente miden igual; da la mitad de PO | Idea 1 |
+| GE-PIT1 | Cree que al cambiar la forma de la bandeja los tramos tangentes dejan de ser iguales | Idea 2, predicción |
+| GE-PIT2 a GE-PIT5 | En Pitot: copia el lado de enfrente; suma lados vecinos; da la suma de los tres; parte AB + CD entre 2 | Idea 2 |
+| GE-PIT6 a GE-PIT8 | En el triángulo con su inscrita: cree que el punto de contacto cae en la mitad del lado; da el tramo del otro vértice; no parte AB + BC − CA | Idea 2 |
+| GE-PIT9, GE-PIT10 | Con las dos tangentes desde P: da una tangente por el perímetro; toma PO como tramo | Idea 2, nivel examen |
+| GE-PIT11 a GE-PIT13 | En el trapecio circunscrito: no parte la suma de las bases; resta las bases; da la altura (el diámetro) o un cateto; toma la base menor como diámetro | Idea 2 |
+| GE-PON1 a GE-PON6 | En el triángulo rectángulo: da la mitad de la hipotenusa (la circunscrita); da 2r; da la altura sobre la hipotenusa; suma la hipotenusa; divide el área entre el perímetro y no entre el semiperímetro (ya no se usa: pedía una fórmula que la unidad no da); parte 2r dos veces | Idea 2 |
+| GE-POS1 a GE-POS4 | Solo mira la suma de los radios; usa los radios como límites; incluye los extremos (ahí se tocan); nombra mal la posición | Idea 3 |
+| GE-POS5 a GE-POS9 | Resta los radios por fuera (o suma por dentro); duplica d; da solo un radio; despeja con el signo cambiado; parte d en dos como si los radios fueran iguales | Idea 3 |
+| GE-POS10, GE-POS11 | En las tres monedas: da el radio de la del medio; da la suma de los tres radios (o su doble) | Idea 3, nivel examen |
+| GE-POS12, GE-POS13 | En la faja de dos poleas: toma la distancia entre centros como el tramo recto; suma los radios donde se restan | Idea 3 |
+| GE-INS1 a GE-INS4 | Cree que la tangente forma 90° con la cuerda; resta el inscrito de 180°; da el ángulo del otro lado de la cuerda; desde el arco menor, toma el arco menor | Idea 4 |
+| GE-INS5 a GE-INS8 | Con un diámetro: no resta el recto; iguala los otros dos ángulos; da los 90° de C; reparte como si fuera isósceles | Idea 4 |
+| GE-ANG1 a GE-ANG7 | Da el vecino del ángulo interior; iguala el ángulo entre tangentes al arco cercano; resta un arco del ángulo y no de su doble; olvida restar el arco dado; iguala arcos de ángulos opuestos; despeja mal el cercano; usa la mitad del cercano como si Q estuviera en la circunferencia | Idea 5 |
+| GE-CIC1 a GE-CIC3 | Resta de 180° el ángulo que no es el opuesto; cree que la suma sigue en 180° con D dentro; cree que baja | Idea 6 (predicción, D dentro) |
+| GE-CIC4 a GE-CIC10 | Iguala los opuestos (como en el paralelogramo); resta de 360°; da x y no el ángulo; cree que todo cuadrilátero es inscriptible; pide 90°; cree que faltan B y D; da m∠C en vez del ángulo de afuera | Idea 6 |

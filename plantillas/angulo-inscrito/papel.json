@@ -3,7 +3,7 @@
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Dibuja siempre la circunferencia y marca el arco que queda entre los lados del ángulo. Si el vértice está en el centro, el ángulo mide lo mismo que su arco; si está en la circunferencia (inscrito o entre tangente y cuerda), la mitad; si está dentro, la semisuma de los dos arcos; si está fuera, la semidiferencia. Para la longitud de arco y el área del sector, usa la fracción θ/360 y fíjate si te dan el radio o el diámetro.",
   "problemas": [
     {
-      "id": "p1",
+      "id": "p1", "unidades": ["geometria.circunferencia"],
       "nivel": "básico",
       "enunciado": "En una circunferencia de centro O, el ángulo central AOB mide 136°. El punto P está en el arco mayor AB. ¿Cuánto mide el ángulo APB?",
       "respuesta": "68°.",
@@ -16,7 +16,7 @@
                      { "fn": "inscrito", "args": [0, 136, 160], "espera": { "angulo": 68, "porCoordenadas": 68 } } ]
     },
     {
-      "id": "p2",
+      "id": "p2", "unidades": ["geometria.circunferencia"],
       "nivel": "básico",
       "enunciado": "Los puntos A y B dividen una circunferencia en dos arcos; el menor mide 80°. El punto P está en el arco menor, entre A y B. ¿Cuánto mide el ángulo APB?",
       "respuesta": "140°.",
@@ -28,7 +28,7 @@
       "verificar": [ { "fn": "inscrito", "args": [0, 80, 40], "espera": { "angulo": 140, "porCoordenadas": 140, "arcoAbarcado": 280, "pEnArco": "menor" } } ]
     },
     {
-      "id": "p3",
+      "id": "p3", "unidades": ["geometria.circunferencia"],
       "nivel": "básico",
       "enunciado": "El triángulo ABC está inscrito en una circunferencia y su lado AB es un diámetro. Si el ángulo en A mide 35°, ¿cuánto miden los ángulos en C y en B?",
       "respuesta": "El ángulo en C mide 90° y el ángulo en B, 55°.",
@@ -42,7 +42,7 @@
                      { "fn": "inscrito", "args": [180, 70, 0], "espera": { "angulo": 55, "porCoordenadas": 55 } } ]
     },
     {
-      "id": "p4",
+      "id": "p4", "unidades": ["geometria.circunferencia"],
       "nivel": "intermedio",
       "enunciado": "El cuadrilátero ABCD está inscrito en una circunferencia. Sus ángulos opuestos en A y en C miden 3x + 10° y 2x + 20°. Halla x y los dos ángulos.",
       "respuesta": "x = 30; el ángulo en A mide 100° y el ángulo en C, 80°.",
@@ -55,7 +55,7 @@
       "verificar": [ { "fn": "cuadrilatero", "args": [[90, 150, 240, 350]], "espera": { "angulos": [100, 105, 80, 75], "opuestos": [180, 180] } } ]
     },
     {
-      "id": "p5",
+      "id": "p5", "unidades": ["geometria.circunferencia"],
       "nivel": "intermedio",
       "enunciado": "Por el punto A de una circunferencia pasa una recta tangente. La cuerda AB y la tangente forman un ángulo que abarca un arco AB de 112°. ¿Cuánto mide ese ángulo? ¿Y el que forman del otro lado de la cuerda?",
       "respuesta": "56° y 124°.",
@@ -67,7 +67,7 @@
       "verificar": [ { "fn": "semiinscrito", "args": [0, 112], "espera": { "angulo": 56, "haciaMenor": 56, "haciaMayor": 124 } } ]
     },
     {
-      "id": "p6",
+      "id": "p6", "unidades": ["geometria.circunferencia"],
       "nivel": "intermedio",
       "enunciado": "Dos cuerdas se cortan en un punto Q dentro de una circunferencia. Uno de los ángulos que forman abarca un arco de 96°, y el ángulo opuesto por el vértice abarca un arco de 44°. ¿Cuánto mide ese ángulo? ¿Cuánto miden los otros dos ángulos en Q?",
       "respuesta": "70°; los otros dos miden 110° cada uno.",
@@ -81,7 +81,7 @@
                      { "fn": "interiorConArcos", "args": [96, 44, 1, 30], "espera": { "angulo": 70, "porArcos": 70, "tipo": "interior" } } ]
     },
     {
-      "id": "p7",
+      "id": "p7", "unidades": ["geometria.circunferencia"],
       "nivel": "intermedio",
       "enunciado": "Desde un punto Q, fuera de una circunferencia, se trazan dos secantes. Entre ellas quedan dos arcos: el lejano mide 150° y el cercano, 50°. ¿Cuánto mide el ángulo en Q?",
       "respuesta": "50°.",
@@ -94,7 +94,7 @@
                      { "fn": "exteriorConArcos", "args": [150, 50, 1, 90], "espera": { "angulo": 50, "porArcos": 50, "subtipo": "dos secantes" } } ]
     },
     {
-      "id": "p8",
+      "id": "p8", "unidades": ["geometria.circunferencia"],
       "nivel": "avanzado",
       "enunciado": "Desde un punto Q se trazan las dos tangentes a una circunferencia, que la tocan en A y en B. El ángulo AQB mide 50°. ¿Cuánto miden los dos arcos AB?",
       "respuesta": "El arco cercano a Q mide 130° y el lejano, 230°.",
@@ -107,7 +107,7 @@
       "verificar": [ { "fn": "dosTangentes", "args": [130], "espera": { "angulo": 50, "lejano": 230 } } ]
     },
     {
-      "id": "p9",
+      "id": "p9", "unidades": ["geometria.longitud-y-areas-circulares"],
       "nivel": "básico",
       "enunciado": "Una pizza circular tiene 9 cm de radio y se corta una porción en forma de sector de 80°. ¿Cuánto mide el borde curvo de la porción y cuál es su área? Deja π en la respuesta.",
       "respuesta": "El borde curvo mide 4π cm (unos 12,6 cm) y el área es 18π cm² (unos 56,5 cm²).",
@@ -121,7 +121,7 @@
                      { "fn": "sector", "args": [80, 9], "espera": { "pi": 18 } } ]
     },
     {
-      "id": "p10",
+      "id": "p10", "unidades": ["geometria.longitud-y-areas-circulares"],
       "nivel": "intermedio",
       "enunciado": "Una pista circular tiene 20 m de diámetro. Un corredor recorre por el borde un arco de 72°. ¿Cuántos metros recorre? Deja π en la respuesta.",
       "respuesta": "4π m (unos 12,6 m).",

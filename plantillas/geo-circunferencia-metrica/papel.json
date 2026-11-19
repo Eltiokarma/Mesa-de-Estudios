@@ -29,6 +29,9 @@
           ],
           "espera": 5
         }
+      ],
+      "unidades": [
+        "geometria.relaciones-metricas"
       ]
     },
     {
@@ -60,6 +63,9 @@
           ],
           "espera": 9
         }
+      ],
+      "unidades": [
+        "geometria.relaciones-metricas"
       ]
     },
     {
@@ -82,6 +88,9 @@
           ],
           "espera": 5
         }
+      ],
+      "unidades": [
+        "geometria.relaciones-metricas"
       ]
     },
     {
@@ -113,6 +122,13 @@
           ],
           "espera": 3
         }
+      ],
+      "unidades": [
+        "geometria.circunferencia"
+      ],
+      "datos": [
+        "Desde un punto exterior, las dos tangentes a una circunferencia miden lo mismo.",
+        "Pitot: en un cuadrilátero circunscrito, AB + CD = BC + DA."
       ]
     },
     {
@@ -150,6 +166,14 @@
           ],
           "espera": 6
         }
+      ],
+      "unidades": [
+        "geometria.circunferencia"
+      ],
+      "datos": [
+        "Poncelet: en un triángulo rectángulo, cateto + cateto = hipotenusa + 2r (r, el radio de la circunferencia inscrita).",
+        "Pitot: en un cuadrilátero circunscrito, los lados opuestos suman igual.",
+        "Pitágoras: hipotenusa² = cateto² + cateto²."
       ]
     },
     {
@@ -189,6 +213,9 @@
           ],
           "espera": 30.84955592153876
         }
+      ],
+      "unidades": [
+        "geometria.relaciones-metricas"
       ]
     },
     {
@@ -228,6 +255,9 @@
           ],
           "espera": 7.0710678118654755
         }
+      ],
+      "unidades": [
+        "geometria.relaciones-metricas"
       ]
     },
     {
@@ -250,6 +280,14 @@
           ],
           "espera": 71.5
         }
+      ],
+      "unidades": [
+        "geometria.circunferencia"
+      ],
+      "datos": [
+        "Si dos ángulos opuestos de un cuadrilátero suman 180°, el cuadrilátero es inscriptible.",
+        "Dos ángulos inscritos que abarcan el mismo arco miden lo mismo.",
+        "tan(37°/2) = 1/3."
       ]
     }
   ]

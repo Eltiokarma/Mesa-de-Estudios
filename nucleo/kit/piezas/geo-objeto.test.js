@@ -100,6 +100,9 @@ const ESCENAS = [
         segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C', color: 'i', grosor: 'variable' }, { de: 'C', a: 'D' }, { de: 'A', a: 'D', color: 'o', discontinua: true, grosor: 'fino' }, { de: 'M', a: 'N', grosor: 'variable' }], angulos: [] } };
     return [terreno, plaza, geoplano, canal];
   })(),
+  // Circunferencia (19 nov, etapa 7; bloque propio): el redondo en sus seis tipos, sacados de la unidad
+  // (contenido/teoria/geometria/circunferencia.js) a geo-objeto-redondo.muestras.json.
+  ...require('./geo-objeto-redondo.muestras.json'),
 ];
 const casos = () => MUESTRAS.map(d => [d, {}]);
 const esEscena = d => P.ESCENAS.includes(d.objeto);

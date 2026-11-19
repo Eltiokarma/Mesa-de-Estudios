@@ -1,0 +1,87 @@
+{
+  "titulo": "Circunferencia y ángulos en ella: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Una circunferencia tiene 5 cm de radio, y la cuerda AB está a 3 cm del centro. ¿Cuánto mide AB? Datos: El radio perpendicular a una cuerda la parte en dos mitades iguales. Pitágoras: en un triángulo rectángulo, la suma de los cuadrados de los catetos es el cuadrado de la hipotenusa. La distancia del centro a la cuerda se mide por la perpendicular desde el centro. Alternativas: A) 11,66 cm   B) 10 cm   C) 8 cm   D) 4 cm",
+      "respuesta": "C) 8 cm",
+      "pasos": [
+        "Media cuerda: 5² − 3² = 16, así que mide 4 cm.",
+        "AB = 2 · 4 cm = 8 cm."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Los cuatro lados del cuadrilátero ABCD tocan una circunferencia. AB = 34 cm, BC = 31 cm y CD = 18 cm. ¿Cuánto mide DA? Datos: Pitot: si los cuatro lados de ABCD tocan una circunferencia, AB + CD = BC + DA. Alternativas: A) 83 cm   B) 21 cm   C) 31 cm   D) 47 cm   E) 26 cm",
+      "respuesta": "B) 21 cm",
+      "pasos": [
+        "AB + CD = BC + DA: 34 + 18 = 31 + DA.",
+        "DA = 21 cm."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Dos circunferencias de 15 cm y 4 cm de radio son tangentes exteriores. ¿A qué distancia están sus centros? Datos: Con radios r₁ ≥ r₂ y d entre los centros: d > r₁ + r₂, exteriores; d = r₁ + r₂, tangentes exteriores. r₁ − r₂ < d < r₁ + r₂, secantes; d = r₁ − r₂, tangentes interiores; d < r₁ − r₂, interiores. Alternativas: A) 15 cm   B) 38 cm   C) 11 cm   D) 19 cm",
+      "respuesta": "D) 19 cm",
+      "pasos": [
+        "Por fuera, d es la suma de los radios:",
+        "d = 15 + 4 = 19 cm."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La tangente en A y la cuerda AB forman un ángulo que abarca un arco de 66°. ¿Cuánto mide ese ángulo? Datos: Un ángulo semiinscrito (entre una tangente y una cuerda) mide la mitad del arco que abarca. La tangente es perpendicular al radio que llega al punto de contacto. Alternativas: A) 147°   B) 66°   C) 33°   D) 90°",
+      "respuesta": "C) 33°",
+      "pasos": [
+        "Semiinscrito: la mitad de su arco.",
+        "66° ÷ 2 = 33°."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Desde Q, fuera de una circunferencia, salen dos secantes. Entre ellas quedan un arco lejano de 130° y uno cercano de 58°. ¿Cuánto mide el ángulo en Q? Datos: Con el vértice dentro del círculo, el ángulo mide la semisuma de los dos arcos que abarcan él y su opuesto. Con el vértice fuera del círculo, el ángulo mide la semidiferencia: arco lejano menos cercano, sobre 2. Alternativas: A) 65°   B) 72°   C) 94°   D) 29°   E) 36°",
+      "respuesta": "E) 36°",
+      "pasos": [
+        "Vértice fuera: semidiferencia.",
+        "(130° − 58°) ÷ 2 = 36°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El cuadrilátero ABCD está inscrito en una circunferencia. m∠A = 4x + 15° y m∠C = x + 85°, con x en grados. ¿Cuánto mide m∠A? Datos: En un cuadrilátero inscrito, los ángulos opuestos suman 180°. Alternativas: A) 108,33°   B) 101°   C) 79°   D) 16°",
+      "respuesta": "C) 79°",
+      "pasos": [
+        "4x + 15° + x + 85° = 180°, así que x = 16.",
+        "m∠A = 4 · 16° + 15° = 79°."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un trapecio isósceles tiene bases de 48 cm y 3 cm, y sus cuatro lados tocan una circunferencia. ¿Cuánto mide el radio de esa circunferencia? Datos: Pitot: si los cuatro lados de ABCD tocan una circunferencia, AB + CD = BC + DA. En un trapecio isósceles, los dos lados no paralelos miden igual. Pitágoras: en un triángulo rectángulo, la suma de los cuadrados de los catetos es el cuadrado de la hipotenusa. La altura del trapecio es un diámetro de la circunferencia. Alternativas: A) 6 cm   B) 25,5 cm   C) 22,5 cm   D) 1,5 cm   E) 12 cm",
+      "respuesta": "A) 6 cm",
+      "pasos": [
+        "Cada lado: (48 + 3) ÷ 2 = 25,5 cm. Altura²: 25,5² − 22,5² = 144, así que la altura mide 12 cm.",
+        "r es la mitad de la altura: r = 6 cm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Desde Q se trazan dos tangentes a una circunferencia. El arco cercano entre los puntos de contacto mide 66°. ¿Cuánto mide el ángulo en Q? Datos: Con el vértice fuera del círculo, el ángulo mide la semidiferencia: arco lejano menos cercano, sobre 2. La circunferencia entera mide 360°; media circunferencia, 180°. Alternativas: A) 66°   B) 228°   C) 33°   D) 147°   E) 114°",
+      "respuesta": "E) 114°",
+      "pasos": [
+        "El lejano mide 360° − 66° = 294°.",
+        "(294° − 66°) ÷ 2 = 114°."
+      ]
+    }
+  ]
+}

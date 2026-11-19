@@ -1,0 +1,21 @@
+{
+  "id": "geo-circunferencia",
+  "titulo": "Circunferencia y ángulos en ella",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.circunferencia"
+  ],
+  "temas": [
+    "Elementos y teoremas de tangencia",
+    "Posiciones relativas de dos circunferencias",
+    "Teoremas de Poncelet y Pitot",
+    "Ángulos central, inscrito, semiinscrito, interior y exterior",
+    "Cuadrilátero inscrito e inscriptible"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

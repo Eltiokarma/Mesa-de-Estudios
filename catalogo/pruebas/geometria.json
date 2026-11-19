@@ -241,7 +241,13 @@
     "GE-PC14": {"respaldo": "hipotesis", "describe": "Suma los lados en vez de restar BE de BC"},
     "GE-TRP1": {"respaldo": "hipotesis", "describe": "Da la mediana entera MN en vez del tramo PQ"},
     "GE-TRP2": {"respaldo": "hipotesis", "describe": "Resta las bases y no saca la mitad"},
-    "GE-TRP3": {"respaldo": "hipotesis", "describe": "Da MP, la mitad de la base menor, en vez de PQ"}
+    "GE-TRP3": {"respaldo": "hipotesis", "describe": "Da MP, la mitad de la base menor, en vez de PQ"},
+    "GE-PIT2": {"respaldo": "hipotesis", "describe": "En Pitot iguala el lado pedido con su opuesto, en vez de igualar las sumas de los opuestos"},
+    "GE-PIT3": {"respaldo": "hipotesis", "describe": "En Pitot suma lados vecinos (AB + BC = CD + DA) en vez de los opuestos"},
+    "GE-PIT5": {"respaldo": "hipotesis", "describe": "En Pitot parte AB + CD entre 2, como si fuera el doble del lado pedido"},
+    "GE-ANG2": {"respaldo": "hipotesis", "describe": "Cree que el ángulo entre dos tangentes mide lo mismo que el arco cercano (en realidad suman 180°)"},
+    "GE15": {"respaldo": "hipotesis", "describe": "Toma la mitad de un solo arco, como si el ángulo fuera inscrito"},
+    "GE16": {"respaldo": "hipotesis", "describe": "Resta los arcos de un ángulo exterior pero no divide entre 2"}
   },
   "pares": [
     {
@@ -1768,6 +1774,134 @@
             "texto": "16 dm",
             "valor": 16,
             "error": "GE-TRP1"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ci-01",
+      "plantilla": "geo-circunferencia",
+      "unidad": "geometria.circunferencia",
+      "mide": "Pitot: en un cuadrilátero con una circunferencia que toca sus cuatro lados, las sumas de los lados opuestos son iguales (DA = AB + CD − BC)",
+      "A": {
+        "enunciado": "Una circunferencia toca los cuatro lados del cuadrilátero ABCD. Los lados miden AB = 30 cm, BC = 44 cm y CD = 48 cm. ¿Cuánto mide DA?",
+        "datos": {
+          "AB": 30,
+          "BC": 44,
+          "CD": 48
+        },
+        "opciones": [
+          {
+            "texto": "44 cm",
+            "valor": 44,
+            "error": "GE-PIT2"
+          },
+          {
+            "texto": "34 cm",
+            "valor": 34,
+            "correcta": true
+          },
+          {
+            "texto": "26 cm",
+            "valor": 26,
+            "error": "GE-PIT3"
+          },
+          {
+            "texto": "39 cm",
+            "valor": 39,
+            "error": "GE-PIT5"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un marco de cuatro lados, ABCD, rodea un espejo redondo que toca sus cuatro bordes. AB = 36 cm, BC = 52 cm y CD = 56 cm. ¿Cuánto mide el borde DA?",
+        "datos": {
+          "AB": 36,
+          "BC": 52,
+          "CD": 56
+        },
+        "opciones": [
+          {
+            "texto": "32 cm",
+            "valor": 32,
+            "error": "GE-PIT3"
+          },
+          {
+            "texto": "46 cm",
+            "valor": 46,
+            "error": "GE-PIT5"
+          },
+          {
+            "texto": "40 cm",
+            "valor": 40,
+            "correcta": true
+          },
+          {
+            "texto": "52 cm",
+            "valor": 52,
+            "error": "GE-PIT2"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ci-02",
+      "plantilla": "geo-circunferencia",
+      "unidad": "geometria.circunferencia",
+      "mide": "Ángulo entre dos tangentes desde un punto exterior: la semidiferencia del arco lejano (360° menos el cercano) y el cercano; suplementa al arco cercano",
+      "A": {
+        "enunciado": "Las dos rectas que pasan por un punto Q y tocan una circunferencia en un solo punto cada una dejan, del lado de Q, un arco de 75° entre esos puntos. ¿Qué ángulo forman esas rectas en Q?",
+        "datos": {
+          "c": 75
+        },
+        "opciones": [
+          {
+            "texto": "37,5°",
+            "valor": 37.5,
+            "error": "GE15"
+          },
+          {
+            "texto": "105°",
+            "valor": 105,
+            "correcta": true
+          },
+          {
+            "texto": "75°",
+            "valor": 75,
+            "error": "GE-ANG2"
+          },
+          {
+            "texto": "210°",
+            "valor": 210,
+            "error": "GE16"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos sogas tensas salen de una estaca Q y tocan, cada una en un solo punto, el borde de una rueda. Entre esos dos puntos, el arco del borde más cercano a la estaca mide 105°. ¿Qué ángulo forman las sogas en Q?",
+        "datos": {
+          "c": 105
+        },
+        "opciones": [
+          {
+            "texto": "105°",
+            "valor": 105,
+            "error": "GE-ANG2"
+          },
+          {
+            "texto": "75°",
+            "valor": 75,
+            "correcta": true
+          },
+          {
+            "texto": "150°",
+            "valor": 150,
+            "error": "GE16"
+          },
+          {
+            "texto": "52,5°",
+            "valor": 52.5,
+            "error": "GE15"
           }
         ]
       }

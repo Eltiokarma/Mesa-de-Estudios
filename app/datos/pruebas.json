@@ -2589,6 +2589,30 @@
     "GE-TRP3": {
      "respaldo": "hipotesis",
      "describe": "Da MP, la mitad de la base menor, en vez de PQ"
+    },
+    "GE-PIT2": {
+     "respaldo": "hipotesis",
+     "describe": "En Pitot iguala el lado pedido con su opuesto, en vez de igualar las sumas de los opuestos"
+    },
+    "GE-PIT3": {
+     "respaldo": "hipotesis",
+     "describe": "En Pitot suma lados vecinos (AB + BC = CD + DA) en vez de los opuestos"
+    },
+    "GE-PIT5": {
+     "respaldo": "hipotesis",
+     "describe": "En Pitot parte AB + CD entre 2, como si fuera el doble del lado pedido"
+    },
+    "GE-ANG2": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que el ángulo entre dos tangentes mide lo mismo que el arco cercano (en realidad suman 180°)"
+    },
+    "GE15": {
+     "respaldo": "hipotesis",
+     "describe": "Toma la mitad de un solo arco, como si el ángulo fuera inscrito"
+    },
+    "GE16": {
+     "respaldo": "hipotesis",
+     "describe": "Resta los arcos de un ángulo exterior pero no divide entre 2"
     }
    },
    "pares": [

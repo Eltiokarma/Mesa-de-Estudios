@@ -1,0 +1,272 @@
+{
+  "plantilla": "geo-circunferencia",
+  "tolerancia": 1e-06,
+  "nota": "enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales); esperado.valor es el número (o la clave) y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (19 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e7-geometria/casos/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, con coordenadas (cuerdas, tangentes, ángulos inscritos, interiores y exteriores, el incentro y el cuadrilátero inscrito), con bisección (el trapecio circunscrito), contando cortes (posición de dos circunferencias) o probando enteros (Pitot, la tubería, las tres monedas y la x).",
+  "casos": [
+    {
+      "semilla": 100,
+      "opciones": {
+        "tipo": "cuerda"
+      },
+      "enunciado": "Una circunferencia tiene 34 cm de radio, y la cuerda AB está a 16 cm del centro. ¿Cuánto mide AB?",
+      "esperado": {
+        "valor": 60.0,
+        "texto": "60 cm"
+      }
+    },
+    {
+      "semilla": 101,
+      "opciones": {
+        "tipo": "tangente"
+      },
+      "enunciado": "El punto P está a 17 cm del centro de una circunferencia de 8 cm de radio. ¿Cuánto mide la tangente PT, de P al punto de contacto?",
+      "esperado": {
+        "valor": 15.0,
+        "texto": "15 cm"
+      }
+    },
+    {
+      "semilla": 102,
+      "opciones": {
+        "tipo": "iso"
+      },
+      "enunciado": "En una circunferencia de centro O, los radios OA y OB forman un ángulo m∠AOB = 130°. ¿Cuánto mide m∠OAB?",
+      "esperado": {
+        "valor": 25.0,
+        "texto": "25°"
+      }
+    },
+    {
+      "semilla": 103,
+      "opciones": {
+        "tipo": "flecha"
+      },
+      "enunciado": "En una tubería, la superficie del agua mide 36 cm de ancho y el agua llega a 6 cm de alto, menos de la mitad. ¿Cuánto mide el radio de la tubería?",
+      "esperado": {
+        "valor": 30,
+        "texto": "30 cm"
+      }
+    },
+    {
+      "semilla": 104,
+      "opciones": {
+        "tipo": "pitot"
+      },
+      "enunciado": "Los cuatro lados del cuadrilátero ABCD tocan una circunferencia. AB = 19 cm, BC = 9 cm y CD = 21 cm. ¿Cuánto mide DA?",
+      "esperado": {
+        "valor": 31,
+        "texto": "31 cm"
+      }
+    },
+    {
+      "semilla": 105,
+      "opciones": {
+        "tipo": "triangulo"
+      },
+      "enunciado": "La circunferencia inscrita en el triángulo ABC toca BC en D. AB = 17 cm, BC = 24 cm y CA = 19 cm. ¿Cuánto mide BD?",
+      "esperado": {
+        "valor": 11.0,
+        "texto": "11 cm"
+      }
+    },
+    {
+      "semilla": 106,
+      "opciones": {
+        "tipo": "poncelet"
+      },
+      "enunciado": "Un triángulo rectángulo tiene catetos de 15 cm y 20 cm, e hipotenusa de 25 cm. ¿Cuánto mide el radio de su circunferencia inscrita?",
+      "esperado": {
+        "valor": 5.0,
+        "texto": "5 cm"
+      }
+    },
+    {
+      "semilla": 107,
+      "opciones": {
+        "tipo": "trapecio"
+      },
+      "enunciado": "Un trapecio isósceles tiene bases de 50 cm y 8 cm, y sus cuatro lados tocan una circunferencia. ¿Cuánto mide el radio de esa circunferencia?",
+      "esperado": {
+        "valor": 10.0,
+        "texto": "10 cm"
+      }
+    },
+    {
+      "semilla": 108,
+      "opciones": {
+        "tipo": "posicion"
+      },
+      "enunciado": "Dos circunferencias tienen radios de 13 cm y 4 cm, y sus centros están a 8 cm. ¿Cuál es su posición?",
+      "esperado": {
+        "valor": "Interiores",
+        "texto": "Interiores"
+      }
+    },
+    {
+      "semilla": 109,
+      "opciones": {
+        "tipo": "tocan"
+      },
+      "enunciado": "Dos circunferencias de 11 cm y 6 cm de radio son tangentes interiores. ¿A qué distancia están sus centros?",
+      "esperado": {
+        "valor": 5.0,
+        "texto": "5 cm"
+      }
+    },
+    {
+      "semilla": 110,
+      "opciones": {
+        "tipo": "radio"
+      },
+      "enunciado": "Dos circunferencias son tangentes exteriores y sus centros están a 19 cm. La primera tiene 13 cm de radio. ¿Cuánto mide el radio de la otra?",
+      "esperado": {
+        "valor": 6.0,
+        "texto": "6 cm"
+      }
+    },
+    {
+      "semilla": 111,
+      "opciones": {
+        "tipo": "monedas"
+      },
+      "enunciado": "Tres ruedas son tangentes exteriores de dos en dos. Las distancias entre sus centros son 10 cm, 17 cm y 21 cm. ¿Cuánto mide el radio de la rueda más grande?",
+      "esperado": {
+        "valor": 14,
+        "texto": "14 cm"
+      }
+    },
+    {
+      "semilla": 112,
+      "opciones": {
+        "tipo": "inscrito"
+      },
+      "enunciado": "Desde un punto P de una circunferencia se ven los puntos A y B; el arco AB que abarca el ángulo APB mide 128°. ¿Cuánto mide m∠APB?",
+      "esperado": {
+        "valor": 64.0,
+        "texto": "64°"
+      }
+    },
+    {
+      "semilla": 113,
+      "opciones": {
+        "tipo": "semi"
+      },
+      "enunciado": "La tangente en A y la cuerda AB forman un ángulo que abarca un arco de 296°. ¿Cuánto mide ese ángulo?",
+      "esperado": {
+        "valor": 148.0,
+        "texto": "148°"
+      }
+    },
+    {
+      "semilla": 114,
+      "opciones": {
+        "tipo": "menor"
+      },
+      "enunciado": "A y B parten una circunferencia en dos arcos; el menor mide 90°. P está en el arco menor. ¿Cuánto mide m∠APB?",
+      "esperado": {
+        "valor": 135.0,
+        "texto": "135°"
+      }
+    },
+    {
+      "semilla": 115,
+      "opciones": {
+        "tipo": "diametro"
+      },
+      "enunciado": "El triángulo ABC tiene sus vértices en una circunferencia, y AB es un diámetro. m∠CAB = 52°. ¿Cuánto mide m∠CBA?",
+      "esperado": {
+        "valor": 38.0,
+        "texto": "38°"
+      }
+    },
+    {
+      "semilla": 116,
+      "opciones": {
+        "tipo": "interior"
+      },
+      "enunciado": "Dos cuerdas AC y BD se cortan en Q, dentro de una circunferencia. El arco AB mide 78° y el arco CD, 42°. ¿Cuánto mide m∠AQB?",
+      "esperado": {
+        "valor": 60.0,
+        "texto": "60°"
+      }
+    },
+    {
+      "semilla": 117,
+      "opciones": {
+        "tipo": "exterior"
+      },
+      "enunciado": "Desde Q, fuera de una circunferencia, salen dos secantes. Entre ellas quedan un arco lejano de 166° y uno cercano de 54°. ¿Cuánto mide el ángulo en Q?",
+      "esperado": {
+        "valor": 56.0,
+        "texto": "56°"
+      }
+    },
+    {
+      "semilla": 118,
+      "opciones": {
+        "tipo": "tangentes"
+      },
+      "enunciado": "Desde Q se trazan dos tangentes a una circunferencia. El arco cercano entre los puntos de contacto mide 96°. ¿Cuánto mide el ángulo en Q?",
+      "esperado": {
+        "valor": 84.0,
+        "texto": "84°"
+      }
+    },
+    {
+      "semilla": 119,
+      "opciones": {
+        "tipo": "cercano"
+      },
+      "enunciado": "Desde Q, fuera de una circunferencia, salen dos secantes que forman un ángulo de 33°. El arco lejano mide 150°. ¿Cuánto mide el arco cercano?",
+      "esperado": {
+        "valor": 84,
+        "texto": "84°"
+      }
+    },
+    {
+      "semilla": 120,
+      "opciones": {
+        "tipo": "opuesto"
+      },
+      "enunciado": "El cuadrilátero ABCD está inscrito en una circunferencia. m∠D = 86° y m∠C = 117°. ¿Cuánto mide m∠B?",
+      "esperado": {
+        "valor": 94.0,
+        "texto": "94°"
+      }
+    },
+    {
+      "semilla": 121,
+      "opciones": {
+        "tipo": "opuesto-x"
+      },
+      "enunciado": "El cuadrilátero ABCD está inscrito en una circunferencia. m∠A = 3x + 10° y m∠C = 2x + 20°, con x en grados. ¿Cuánto mide m∠A?",
+      "esperado": {
+        "valor": 100,
+        "texto": "100°"
+      }
+    },
+    {
+      "semilla": 122,
+      "opciones": {
+        "tipo": "exterior-cic"
+      },
+      "enunciado": "El cuadrilátero ABCD está inscrito en una circunferencia y m∠A = 81°. Se prolonga BC más allá de C. ¿Qué ángulo forma esa prolongación con CD?",
+      "esperado": {
+        "valor": 81.0,
+        "texto": "81°"
+      }
+    },
+    {
+      "semilla": 123,
+      "opciones": {
+        "tipo": "inscriptible"
+      },
+      "enunciado": "En el cuadrilátero convexo ABCD, m∠A = 80° y m∠C = 90°. ¿Se puede inscribir en una circunferencia?",
+      "esperado": {
+        "valor": "no",
+        "texto": "No: A y C suman 170°"
+      }
+    }
+  ]
+}

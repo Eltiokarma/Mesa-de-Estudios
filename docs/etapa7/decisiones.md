@@ -21,7 +21,7 @@ curso.
 | aritmetica.mcd-y-mcm | 6 | mcd-mcm | calidad 2 |
 | trigonometria.triangulos-rectangulos | 5 | trig-resolucion (nueva) | calidad 2 |
 | razonamiento-matematico.certezas | 6 | rm-certezas | calidad 2 |
-| geometria.circunferencia | 6 | geo-circunferencia (nueva) | en cierre |
+| geometria.circunferencia | 6 | geo-circunferencia (nueva) | calidad 2 |
 
 Informes en `rutinas/auditoria/<unidad>.md` y `rutinas/frio/<unidad>.md`.
 
@@ -34,6 +34,8 @@ Informes en `rutinas/auditoria/<unidad>.md` y `rutinas/frio/<unidad>.md`.
 - **MCD y MCM:** la explicación del distractor del cociente en Euclides era falsa en 73 de 80 casos.
 - **Certezas:** «36 asegura 3 en cada mes» (falso); «con buena suerte: 10 pruebas» cuando son 9; casos de «Ahora tú»
   que repetían ejemplos o la predicción.
+- **Circunferencia:** en la idea 5, «Así se resuelve» de las semillas impares (200 de 400) decía algo falso (el
+  interior «queda entre la mitad del arco chico y la del grande»).
 - **Triángulos rectángulos:** ninguna grave; quince medias (figuras «no a escala» que dejaban medir la respuesta,
   igualdades con «=» y redondeo, la altura de los ojos que no se sumaba).
 

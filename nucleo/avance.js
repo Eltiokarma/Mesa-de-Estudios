@@ -158,6 +158,10 @@
     { u: 'aritmetica.mcd-y-mcm', p: 'prediccionMM', e: 'estudiadaMM',
       cambian: ['mcd-cintas', 'mcm-coinciden', 'mcd-por-mcm', 'euclides'],
       antes: ['mcd-cintas', 'mcm-coinciden', 'euclides', 'mcd-por-mcm', 'fraccion-continua'] },
+    // Etapa 7 (19 nov): Circunferencia conservó sus seis ids y no sumó ideas. Cinco cambiaron su Predice;
+    // cuadrilatero-inscrito conserva la pregunta (B + D con D dentro) y los ids de sus opciones.
+    { u: 'geometria.circunferencia', p: 'prediccionCI',
+      cambian: ['tangentes', 'poncelet-pitot', 'posiciones', 'inscrito', 'interior-exterior'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

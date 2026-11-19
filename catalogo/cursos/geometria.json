@@ -97,8 +97,8 @@
       "universidades": {"uni": {"semanas": [4, 5]}, "unmsm": {"temas": [6, 7]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "requiere": ["geometria.triangulos"],
-      "plantillas": ["angulo-inscrito", "geo-circunferencia-metrica"],
+      "requiere": ["geometria.poligonos-y-cuadrilateros"],
+      "plantillas": ["geo-circunferencia", "angulo-inscrito", "geo-circunferencia-metrica"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

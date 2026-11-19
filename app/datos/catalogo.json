@@ -4844,27 +4844,29 @@
      "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
-      "geometria.triangulos"
+      "geometria.poligonos-y-cuadrilateros"
      ],
      "plantillas": [
+      "geo-circunferencia",
       "angulo-inscrito",
       "geo-circunferencia-metrica"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/circunferencia.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-objeto.js"
       ],
       "ideas": 6,
       "titulos": {
-       "tangentes": "El radio y la tangente",
-       "posiciones": "Dos circunferencias: compara d",
-       "inscrito": "Inscrito: la mitad del arco",
-       "interior-exterior": "Dentro se suma, fuera se resta",
+       "tangentes": "Radio, cuerda y tangente",
        "poncelet-pitot": "Tangentes iguales: Pitot y Poncelet",
-       "cuadrilatero-inscrito": "Opuestos que suman 180°"
+       "posiciones": "Posición de dos circunferencias",
+       "inscrito": "Ángulo central e inscrito",
+       "interior-exterior": "Ángulos interior y exterior",
+       "cuadrilatero-inscrito": "Cuadrilátero inscrito"
       },
-      "terminos": 48
+      "terminos": 60
      }
     },
     {
@@ -4956,7 +4958,7 @@
        "centros": "Cada centro y sus líneas",
        "euler": "Recta y círculo de Euler"
       },
-      "terminos": 50
+      "terminos": 49
      }
     },
     {
@@ -8210,6 +8212,9 @@
     "/plantillas/angulo-inscrito/index.html",
     "/plantillas/angulo-inscrito/motor.js",
     "/plantillas/angulo-inscrito/papel.json"
+   ],
+   "rehacer": [
+    "geometria.circunferencia"
    ]
   },
   "areas-volumenes": {
@@ -9818,6 +9823,30 @@
    "archivos": [
     "/plantillas/geo-areas-triangulares/generador.js",
     "/plantillas/geo-areas-triangulares/papel.json"
+   ]
+  },
+  "geo-circunferencia": {
+   "id": "geo-circunferencia",
+   "titulo": "Circunferencia y ángulos en ella",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.circunferencia"
+   ],
+   "url": "#/practica/geo-circunferencia",
+   "ideas": [
+    "tangentes",
+    "poncelet-pitot",
+    "posiciones",
+    "inscrito",
+    "interior-exterior",
+    "cuadrilatero-inscrito"
+   ],
+   "papel": "/plantillas/geo-circunferencia/papel.json",
+   "archivos": [
+    "/plantillas/geo-circunferencia/generador.js",
+    "/plantillas/geo-circunferencia/papel.json"
    ]
   },
   "geo-circunferencia-metrica": {

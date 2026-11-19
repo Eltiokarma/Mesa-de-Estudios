@@ -63,6 +63,10 @@
  *   Polígonos y cuadriláteros (19 nov, etapa 6; bloque propio), dibujo de prueba sobre una figura de geo-figura:
  *   parcela    el terreno con estacas, la plaza con su mototaxi, el geoplano con clavos y el corte del canal de riego
  *              (tipo: 'terreno' | 'plaza' | 'geoplano' | 'canal'); formato en su función
+ *   Circunferencia (19 nov, etapa 7; bloque propio), dibujo de prueba sobre una figura de geo-figura:
+ *   redondo    el tanque echado con agua, la bandeja con su plato, dos círculos de luz, la pileta con faroles y fotógrafo,
+ *              la plaza redonda con veredas y la figura de examen (tipo: 'tanque' | 'bandeja' | 'luces' | 'pileta' |
+ *              'veredas' | 'examen'); el contorno de sus circunferencias y arcos es obstáculo para los rótulos
  *   Comunes a estas y a «angulos»: llaves (marca de igualdad sobre una llave que une las puntas del tramo), ladosRot (la
  *   medida de un lado), libres (un rótulo suelto junto a un punto) y masPuntos, masSegmentos, masAngulos. Lo que escriben
  *   y lo que trazan (llaves, objetos) es obstáculo para los rótulos de los ángulos, y escenaCabe lo revisa; las letras de
@@ -116,7 +120,7 @@
   const LETRA = 162;                              // línea base de las letras de los paraderos
   const NIVEL = { 1: 88, 2: 58, 3: 28, '-1': 182, '-2': 212 };
   const CW = 30, CH = 15;                         // la combi
-  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon', 'parcela'];
+  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon', 'parcela', 'redondo'];
   const COLORES_DATO = ['o', 'i', 'd'];
   const n = T.n;
   const f = x => Kit.formatear(x, 2);
@@ -1574,6 +1578,95 @@
     return { fig: Object.assign(fig, { puntos: fig.puntos || [] }), deco, extra, ids };
   }
 
+  // ---------- Circunferencia (19 nov, etapa 7; bloque propio) ----------
+  // Objetos redondos (dibujos de prueba) bajo una figura de geo-figura que arma la teoría: el tanque echado con agua, la
+  // bandeja con su plato, dos círculos de luz en el piso, la pileta de la plaza con sus faroles y su fotógrafo, la plaza
+  // redonda con sus veredas, y «examen» (la figura sola). Afirmación: el borde del objeto es la circunferencia; la
+  // superficie del agua, una vereda o un cordel son cuerdas; el piso y los bordes de la bandeja, tangentes. Fidelidad: la
+  // figura (puntos, trazos, circunferencias, arcos y ángulos) va a escala de geo-figura; el objeto solo se pone debajo.
+  //   { objeto: 'redondo', tipo: 'tanque' | 'bandeja' | 'luces' | 'pileta' | 'veredas' | 'examen', figura: <geo-figura>,
+  //     piso: id,                   (tanque) el punto donde el tanque toca el piso: el piso se raya por debajo, de lado a lado
+  //     cunas: [id, id],            (tanque) dos calzas en el piso, bajo esos puntos de la circunferencia
+  //     bandeja: [id, …],           (bandeja) el contorno de la bandeja, en orden: un relleno tenue
+  //     plato: { centro, r },       (bandeja) el plato: un relleno y su reborde (un anillo adentro del borde)
+  //     luces: [{ centro, r }],     (luces) cada círculo de luz, relleno (donde se juntan, más claro)
+  //     agua: { centro, r },        (pileta, veredas) el agua de la pileta o el pasto de la plaza: un relleno tenue
+  //     faroles: [id, …],           (pileta) un farol en esos puntos
+  //     persona: id,                (pileta) el fotógrafo en ese punto, del lado de afuera
+  //     veredas: [[id, id], …] }    (veredas) una franja clara bajo esos tramos
+  //   y lo común: llaves, ladosRot, libres (comunes). Lo nuevo de este bloque, solo en sus escenas: el contorno de cada
+  //   circunferencia y de cada arco de la figura es obstáculo para los rótulos (las demás escenas no cambian).
+  function redondo(d) {
+    const f0 = d.figura || { puntos: [] }, tipo = d.tipo || 'examen';
+    const ALT = { tanque: 'Un tanque de agua cilíndrico, echado en el piso y visto de frente.', bandeja: 'Una bandeja vista desde arriba, con un plato redondo adentro.',
+      luces: 'Dos círculos de luz de linterna en el piso.', pileta: 'La pileta redonda de una plaza, vista desde arriba.', veredas: 'Una plaza redonda vista desde arriba, con veredas rectas.',
+      examen: 'Una circunferencia con su figura.' };
+    // La letra de un farol va un poco más lejos de su punto, para no tocar el disco del farol.
+    const conFarol = new Set(d.faroles || []);
+    const fig = Object.assign({}, f0, { alt: f0.alt || d.alt || ALT[tipo] || ALT.examen,
+      puntos: (f0.puntos || []).map(q => (conFarol.has(q.id) ? Object.assign({}, q, { lejos: Math.max(+q.lejos || 0, 4) }) : q)) });
+    const ids = fig.puntos.map(q => q.id);
+    const S = (g, id) => g.S(id);
+    const caja4 = (c, r) => [[[c[0] - r, c[1] - r], [c[0] + r, c[1] - r]], [[c[0] + r, c[1] - r], [c[0] + r, c[1] + r]], [[c[0] + r, c[1] + r], [c[0] - r, c[1] + r]], [[c[0] - r, c[1] + r], [c[0] - r, c[1] - r]]];
+    // Una circunferencia o un arco de la figura, como polígono de pantalla (de 48 lados la vuelta entera).
+    const contorno = (g, c) => { const k = g.S(c.centro); if (!k) return []; const de = c.de === undefined ? 0 : c.de, a = c.a === undefined ? 360 : c.a, nn = Math.max(6, Math.ceil(Math.abs(a - de) / 7.5));
+      return Array.from({ length: nn + 1 }, (_, i) => { const t = (de + (a - de) * i / nn) * RAD; return [k[0] + c.r * g.s * Math.cos(t), k[1] - c.r * g.s * Math.sin(t)]; }); };
+    const circulo = (g, c, op, extra = '') => { const k = g.S(c.centro); return k ? `<circle cx="${n(k[0])}" cy="${n(k[1])}" r="${n(c.r * g.s)}" fill="currentColor" fill-opacity="${op}"${extra}/>` : ''; };
+    // El farol (visto desde arriba): un disco con su pantalla; el fotógrafo: cabeza y hombros, del lado de afuera.
+    const centroFig = g => { const cs = (fig.circulos || []).map(c => g.S(c.centro)).filter(Boolean); return cs.length ? cs[0] : [W / 2, g.alto / 2]; };
+    const persona = g => {
+      if (!d.persona) return null;
+      const p = S(g, d.persona); if (!p) return null;
+      const c = centroFig(g), L = Math.hypot(p[0] - c[0], p[1] - c[1]) || 1, u = [(p[0] - c[0]) / L, (p[1] - c[1]) / L], q = [p[0] + u[0] * 10 - u[1] * 21, p[1] + u[1] * 10 + u[0] * 21];   // afuera y de costado: la letra del punto va afuera
+      return { q, u };
+    };
+    const deco = (g, corte) => {
+      let s = '';
+      if (tipo === 'pileta' || tipo === 'veredas') s += `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.04"/>`;
+      if (d.agua) s += circulo(g, d.agua, tipo === 'pileta' ? 0.1 : 0.06);
+      if (tipo === 'veredas') for (const [a, b] of d.veredas || []) {
+        const p = S(g, a), q = S(g, b); if (!p || !q) continue;
+        s += `<path d="${rutaPx([p, q], false)}" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="16" stroke-linecap="round"/>`;
+      }
+      if (tipo === 'luces') for (const l of d.luces || []) s += circulo(g, l, 0.1);
+      if (tipo === 'bandeja') {
+        const b = (d.bandeja || []).map(id => S(g, id)).filter(Boolean);
+        if (b.length >= 3) s += `<path d="${rutaPx(b)}" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-opacity="0.1" stroke-width="6" stroke-linejoin="round"/>`;
+        if (d.plato) { s += circulo(g, d.plato, 0.08); const k = S(g, d.plato.centro); if (k) s += `<circle cx="${n(k[0])}" cy="${n(k[1])}" r="${n(d.plato.r * g.s * 0.72)}" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="1.2"/>`; }
+      }
+      if (tipo === 'tanque') {
+        const t = d.piso !== undefined ? S(g, d.piso) : null;
+        if (t) {
+          for (let x = M + 7; x < W - M - 6; x += 9) s += `<line x1="${n(x)}" y1="${n(t[1] + 2)}" x2="${n(x - 6)}" y2="${n(t[1] + 9)}" stroke="currentColor" stroke-opacity="0.3" stroke-width="1"/>`;
+          for (const id of d.cunas || []) { const p = S(g, id); if (p) s += `<path d="${rutaPx([[p[0] - 9, t[1]], [p[0] - 5, p[1]], [p[0] + 5, p[1]], [p[0] + 9, t[1]]])}" fill="currentColor" fill-opacity="0.18"/>`; }
+        }
+      }
+      const pr = persona(g);
+      if (pr) s += `<g data-objeto="fotografo" data-prueba="si"><circle cx="${n(pr.q[0])}" cy="${n(pr.q[1])}" r="5" fill="var(--card)" stroke="currentColor" stroke-width="1.6"/>`
+        + `<path d="${rutaPx([[pr.q[0] + pr.u[0] * 4 - pr.u[1] * 6, pr.q[1] + pr.u[1] * 4 + pr.u[0] * 6], [pr.q[0] + pr.u[0] * 8, pr.q[1] + pr.u[1] * 8], [pr.q[0] + pr.u[0] * 4 + pr.u[1] * 6, pr.q[1] + pr.u[1] * 4 - pr.u[0] * 6]], false)}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></g>`;
+      void corte;
+      return s;
+    };
+    const extra = (g, corte) => {
+      let svg = '';
+      const lineas = [];
+      for (const c of (fig.circulos || []).filter(x => ve(x, corte))) lineas.push(...bordes(contorno(g, c), false));
+      for (const c of (fig.arcos || []).filter(x => ve(x, corte))) lineas.push(...bordes(contorno(g, c), false));
+      for (const id of d.faroles || []) {
+        const q = fig.puntos.find(x => x.id === id);
+        if (!q || !ve(q, corte)) continue;
+        const c = S(g, id);
+        svg += `<g data-objeto="farol" data-prueba="si"><circle cx="${n(c[0])}" cy="${n(c[1])}" r="5.5" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/><circle cx="${n(c[0])}" cy="${n(c[1])}" r="2.2" fill="currentColor"/></g>`;
+        lineas.push(...caja4(c, 5.5));
+      }
+      const pr = persona(g);
+      if (pr) lineas.push(...caja4(pr.q, 8));
+      if (tipo === 'tanque' && d.piso !== undefined) { const t = S(g, d.piso); if (t) lineas.push([[M, t[1] + 2], [W - M, t[1] + 2]]); }
+      return { svg, lineas };
+    };
+    return { fig, deco, extra, ids };
+  }
+
   const TAU = 2 * Math.PI, norm = t => ((t % TAU) + TAU) % TAU;
   function prepararAngulos(g, fig, corte = Infinity) {
     const angs = (fig.angulos || []).map(a => Object.assign({}, a));
@@ -1644,7 +1737,7 @@
     return angs;
   }
 
-  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon, parcela,
+  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon, parcela, redondo,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
   // manija: el id del punto que el juego arrastra; su letra se aleja 8 px más (la manija, de radio 13, la tapaba).
   const escena = d => {

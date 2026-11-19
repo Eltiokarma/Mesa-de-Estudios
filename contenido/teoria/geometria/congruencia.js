@@ -3424,15 +3424,8 @@
       // La definición no dice cuántos triángulos salen: esa es la predicción de la idea 1 (auditoría de Triángulos, B8).
       { termino: 'LLA', def: 'Lado, lado, ángulo: dos lados y un ángulo que no queda entre ellos. No es un criterio.',
         ejemplos: ['AB = DE, BC = EF y m∠A = m∠D: el ángulo A no toca a BC.', 'Se lee «lado, lado, ángulo».', 'No hay que confundirlo con LAL, donde el ángulo va en medio.'], ver: ['criterio'] },
-      { termino: 'circunferencia', formas: ['circunferencia', 'circunferencias'],
-        def: 'Línea curva cerrada cuyos puntos están todos a la misma distancia de un punto fijo, su centro.',
-        ejemplos: ['La punta de una viga que gira en B recorre una circunferencia de centro B.', 'El borde de una moneda.', 'Un compás abierto 5 cm traza una de radio 5 cm.'] },
-      // Radio y diámetro: otras unidades del curso los mandan a ver aquí (Circunferencia). «paralelogramo» se mudó a
-      // Polígonos y cuadriláteros (19 nov, etapa 6): aquí el lector lo marca «se explica en…».
-      { termino: 'radio', formas: ['radio', 'radios'], def: 'Segmento del centro a un punto de la circunferencia; también, su medida.',
-        ejemplos: ['Un compás abierto 5 cm traza una circunferencia de radio 5 cm.', 'Todos los radios de una circunferencia miden igual.', 'La viga que gira en B es un radio de la circunferencia que recorre su punta.'], ver: ['diámetro'] },
-      { termino: 'diámetro', formas: ['diámetro', 'diámetros'], def: 'Segmento que pasa por el centro y une dos puntos de la circunferencia. Mide dos radios.',
-        ejemplos: ['Con radio 5 cm, el diámetro mide 10 cm.', 'Es la cuerda más larga de una circunferencia.', 'Lo parte en dos mitades el centro.'], ver: ['radio'] },
+      // «circunferencia», «radio» y «diámetro» se mudaron a Circunferencia (19 nov, etapa 7; pendiente de la Etapa 5), y
+      // «paralelogramo», a Polígonos y cuadriláteros (etapa 6): aquí el lector los marca «se explica en…».
       // Idea 2. No dice que la pareja de un lado es el lado de enfrente del ángulo igual (es la predicción).
       { termino: 'partes correspondientes', formas: ['partes correspondientes', 'parte correspondiente'],
         def: 'En dos figuras congruentes, el lado o ángulo de una que cae sobre otro de la otra al superponerlas.',

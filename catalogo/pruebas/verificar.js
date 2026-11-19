@@ -811,6 +811,17 @@ const V = {
     return { correcta: r(Math.hypot(C[0] - E[0], C[1] - E[1])), errores: { 'GE-PC12': r(Math.hypot(E[0] - d.ab, E[1])), 'GE-PC13': d.bc / 2, 'GE-PC14': d.ab + d.bc } }; },
   'pc-02': d => { const A = [0, 0], Dd = [d.B, 0], Bt = [1.5, 3], Ct = [1.5 + d.b, 3], Pp = [(A[0] + Ct[0]) / 2, 1.5], Q = [(Bt[0] + Dd[0]) / 2, 1.5], M = [(A[0] + Bt[0]) / 2, 1.5], N = [(Dd[0] + Ct[0]) / 2, 1.5];
     return { correcta: Q[0] - Pp[0], errores: { 'GE-TRP1': N[0] - M[0], 'GE-TRP2': d.B - d.b, 'GE-TRP3': Pp[0] - M[0] } }; },
+  // ci-01 y ci-02 (19 nov, etapa 7, Circunferencia; reserva: las formas ya tienen 10 pares). geo-circunferencia es un
+  // generador sin motor: aquí se rehacen aparte. ci-01: Pitot, probando cada DA entera contra el cuadrilátero de verdad
+  // (cuatro tramos tangentes t1..t4 desde los vértices: AB = t1 + t2, BC = t2 + t3, CD = t3 + t4). ci-02: con
+  // coordenadas, las tangentes en los extremos del arco cercano y el ángulo medido en su corte.
+  'ci-01': d => { let da = NaN; for (let t2 = 0.5; t2 < d.AB; t2 += 0.5) { const t1 = d.AB - t2, t3 = d.BC - t2, t4 = d.CD - t3; if (t1 > 0 && t3 > 0 && t4 > 0) { da = t4 + t1; break; } }
+    return { correcta: da, errores: { 'GE-PIT2': d.BC, 'GE-PIT3': d.AB + d.BC - d.CD, 'GE-PIT5': (d.AB + d.CD) / 2 } }; },
+  'ci-02': d => { const g = x => x * PI / 180, T1 = [Math.cos(g(d.c / 2)), Math.sin(g(d.c / 2))], T2 = [T1[0], -T1[1]];
+    // Las dos tangentes son simétricas respecto al eje x: se cortan en Q = (1 / cos(c/2), 0).
+    const Q = [1 / T1[0], 0], u = [T1[0] - Q[0], T1[1] - Q[1]], w = [T2[0] - Q[0], T2[1] - Q[1]];
+    const ang = Math.round(Math.acos((u[0] * w[0] + u[1] * w[1]) / (Math.hypot(...u) * Math.hypot(...w))) * 180 / PI * 1e6) / 1e6;
+    return { correcta: ang, errores: { GE15: d.c / 2, 'GE-ANG2': d.c, GE16: 360 - 2 * d.c } }; },
   'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
     return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
   'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;

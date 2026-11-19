@@ -529,6 +529,23 @@ test('MCD y MCM: las predicciones viejas se vuelven a preguntar y quien terminó
   assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
 });
 
+// 19 nov (etapa 7): Circunferencia, rehecha con sus seis ids; cinco con otra Predice y ninguna idea nueva.
+test('Etapa 7, Circunferencia rehecha: predicciones viejas sin huella borradas una vez en cinco ideas; cuadrilatero-inscrito las conserva', () => {
+  const U = 'geometria.circunferencia';
+  const est = { avanceV: 1, teoria: { [U]: { ideas: {
+    tangentes: { hecha: true, prediccion: 'c' }, inscrito: { hecha: true, prediccion: 'central', prediccionDe: 'h3' },
+    'interior-exterior': { hecha: true, prediccion: 'suma' }, 'cuadrilatero-inscrito': { hecha: true, prediccion: 'c' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionCI, 1);
+  assert.equal(est.teoria[U].ideas.tangentes.prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['interior-exterior'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas.tangentes.hecha, true, 'la idea sigue hecha');
+  assert.equal(est.teoria[U].ideas.inscrito.prediccion, 'central', 'con huella: la revisa la app');
+  assert.equal(est.teoria[U].ideas['cuadrilatero-inscrito'].prediccion, 'c', 'misma pregunta y mismas opciones');
+  assert.ok(!(est.marcadas || {})[U], 'sin ideas nuevas: no hace falta «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
 // 19 nov (etapa 7): Resolución de triángulos rectángulos, rehecha con sus tres ids (dos con otra Predice) y dos ideas nuevas.
 test('Etapa 7, Triángulos rectángulos rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las tres', () => {
   const U = 'trigonometria.triangulos-rectangulos';
