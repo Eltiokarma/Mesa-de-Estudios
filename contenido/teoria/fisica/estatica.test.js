@@ -1,6 +1,6 @@
 // Pruebas propias de «Estática: equilibrio y torque» (además del validador común de contenido/teoria/teoria.test.js).
-// La unidad se rehizo el 19 nov 2026 (etapa 6, docs/etapa6/propuesta-fisica.md). Todavía no declara calidad: 2 (la marca
-// la sesión después del lector en frío y el auditor), pero una prueba la simula.
+// La unidad se rehizo el 19 nov 2026 (etapa 6, docs/etapa6/propuesta-fisica.md). Lleva calidad: 2 desde el 19 nov (lector en
+// frío y auditor).
 //   - la forma: seis ideas en el orden de la propuesta, los ids que se conservan, las tres mesas;
 //   - un color fijo por clase de fuerza (peso carmín, normal violeta, tensión y mano naranja, rozamiento turquesa), sin verde;
 //   - cada misión se logra y no está cumplida al abrir;
@@ -55,6 +55,7 @@ const estirar = (Fz, k) => { let x = 0; while (k * x < Fz - 1e-9) x += 1e-4; ret
 
 // ---------- La forma ----------
 test('seis ideas en el orden de la propuesta; los ids publicados se conservan; tres mesas', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.equal(def.unidad, 'fisica.estatica');
   assert.deepEqual(def.ideas.map(i => i.id), ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo', 'cuerpo-rigido']);
   assert.deepEqual(def.laboratorio.map(m => m.id), ['palanca-libre', 'caja-con-masa', 'nudo-libre']);
@@ -141,7 +142,9 @@ const ESPERA = {
   'nudo-en-equilibrio': [40, 50 * sn(37), 40, 60, 100, R([{ F: null, ang: 143 }, { F: null, ang: 37 }, { F: 120, ang: 270 }])[1], R([{ F: null, ang: 150 }, { F: null, ang: 30 }, { F: 50, ang: 270 }])[0],
     R([{ F: null, ang: 127 }, { F: null, ang: 53 }, { F: 160, ang: 270 }])[0], Math.max(...R([{ F: null, ang: 143 }, { F: null, ang: 53 }, { F: 200, ang: 270 }])),
     R([{ F: null, ang: 180 }, { F: null, ang: 53 }, { F: 80, ang: 270 }])[0], R([{ F: null, ang: 53 }, { F: null, ang: 180 }, { F: 600, ang: 270 }])[1], 210,
-    R([{ F: null, ang: 150 }, { F: null, ang: 60 }, { F: 100, ang: 270 }])[1] / Math.sqrt(3), 30, R([{ F: null, ang: 180 }, { F: null, ang: 53 }, { F: 60, ang: 270 }])[0]],
+    R([{ F: null, ang: 150 }, { F: null, ang: 60 }, { F: 100, ang: 270 }])[1] / Math.sqrt(3),
+    // el ángulo con el que cada cable de un letrero de 120 N jala 75 N (auditoría: antes era el de la misión, T = P)
+    [30, 37, 45, 53, 60].find(a => Math.abs(R([{ F: null, ang: 180 - a }, { F: null, ang: a }, { F: 120, ang: 270 }])[0] - 75) < 1e-6), R([{ F: null, ang: 180 }, { F: null, ang: 53 }, { F: 60, ang: 270 }])[0]],
   'rozamiento-se-ajusta': [50, 100, 60, 80, 100, 100, 240, 0.3, R([{ F: 100, ang: 270 }, { F: null, ang: 127 }, { F: null, ang: 37 }])[1], R([{ F: 100, ang: 270 }, { F: null, ang: 127 }, { F: null, ang: 37 }])[0],
     R([{ F: 100, ang: 37 }, { F: 300, ang: 270 }, { F: null, ang: 90 }, { F: null, ang: 180 }])[0],
     (() => { let lo = 0, hi = 500; for (let k = 0; k < 80; k++) { const m = (lo + hi) / 2, Nn = R([{ F: m, ang: 37 }, { F: 100, ang: 270 }, { F: null, ang: 90 }], ['y'])[0]; if (m * cs(37) < 0.75 * Nn) lo = m; else hi = m; } return lo; })(),
@@ -326,4 +329,108 @@ test('la unidad pasa el validador común, y con calidad: 2 simulada pasa todas s
   const temas = require('../../../catalogo/cursos/fisica.json').unidades.find(u => u.id === def.unidad).temas;
   assert.deepEqual(Teoria.problemas(def, { temas, semillas: 60 }), []);
   assert.deepEqual(Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas, semillas: 60 }), []);
+});
+
+// ---------- Auditoría del 19 nov (rutinas/auditoria/fisica.estatica.md): cada prueba falla con la versión de antes ----------
+// Todas las figuras de una idea: juego (toda la grilla), Lee, Predice, Mira, regla, ejemplos y 40 semillas de cada generador.
+function figurasDe(i) {
+  const out = [];
+  for (const v of Teoria.grilla(i.juega.controles)) out.push([`juego ${JSON.stringify(v)}`, i.juega.dibujo(v)]);
+  for (const [k, t] of i.lee.tarjetas.entries()) if (t.dibujo) out.push([`lee ${k + 1}`, t.dibujo]);
+  out.push(['predice', i.predice.dibujo], ['revelar', i.predice.revelar]);
+  for (const [k, p] of i.mira.pasos.entries()) out.push([`mira ${k + 1}`, { datos: i.mira.datos, estado: p.estado }]);
+  if (i.regla.dibujo) out.push(['regla', i.regla.dibujo]);
+  for (const [k, e] of i.ejemplos.entries()) out.push([`ejemplo ${k + 1}`, e.figura]);
+  for (let s = 0; s < 40; s++) { const a = i.ahoraTu.generar(s), r = i.resuelve.generar(s); if (a.dibujo) out.push([`ahora tú ${s}`, a.dibujo]); if (r.dibujo) out.push([`resuelve ${s}`, r.dibujo]); }
+  return out.map(([q, f]) => [q, f, P.geometria(f.datos, f.estado || {}), f.datos.cortes ? Object.assign({}, f.datos, f.datos.cortes[Math.min((f.estado || {}).corte || 0, f.datos.cortes.length - 1)]) : f.datos]);
+}
+test('auditoría A1: la regla, la misión y los títulos son texto plano (la app los escribe tal cual: nada de «[object Object]»)', () => {
+  for (const i of def.ideas) {
+    for (const [campo, v] of [['regla.texto', i.regla.texto], ['regla.condicion', i.regla.condicion], ['mision.texto', i.juega.mision.texto], ['mision.bien', i.juega.mision.bien], ['titulo', i.titulo], ['pregunta', i.pregunta], ['actividad', i.actividad]]) {
+      assert.equal(typeof v, 'string', `${i.id} ${campo}`);
+      assert.ok(!/object Object|μ_[sk]/.test(v), `${i.id} ${campo}: «${v}»`);
+    }
+    // «Vale si …»: la condición sigue a «si» en minúscula (lector B: «Vale si El punto …»)
+    assert.match(i.regla.condicion, /^[a-záéíóúñdxL]/, `${i.id}: «Vale si ${i.regla.condicion}»`);
+  }
+});
+test('auditoría A2: toda caja «quieta» en una rampa puede estarlo con el μ_s que se da (sin 53° con μ_s = 0,9)', () => {
+  for (let s = 0; s < 400; s++) for (const c of [idea('rozamiento-se-ajusta').ahoraTu.generar(s), idea('rozamiento-se-ajusta').resuelve.generar(s)]) {
+    const q = plano(c.pregunta || c.enunciado), m = q.match(/quieta en una rampa de (\d+)°(?:; entre ellas, μs = (\d+(?:,\d+)?))?/);
+    if (!m) continue;
+    const a = +m[1], mus = m[2] ? Number(m[2].replace(',', '.')) : null;
+    // lo que haría falta: el rozamiento que deja la caja quieta, contra el tope μ_s · N (las dos con el resolvedor)
+    const [Nn, f] = resolver([{ F: 100, ang: 270 }, { F: null, ang: 90 + a }, { F: null, ang: a }]);
+    if (mus !== null) assert.ok(f <= mus * Nn + 1e-9, `semilla ${s}: ${q}`);
+    else assert.ok(f / Nn <= 0.75 + 1e-9, `semilla ${s}: pide μ_s = ${f / Nn}: ${q}`);
+  }
+});
+test('auditoría A3: el rozamiento de la caja que sube por la rampa apunta hacia abajo de la rampa, al revés que F', () => {
+  const e = idea('rozamiento-se-ajusta').ejemplos.find(x => x.titulo === 'Subir la caja por la rampa'), g = P.geometria(e.figura.datos);
+  const F = g.flechas.find(x => x.color === 'o'), f = g.flechas.find(x => x.color === 'i');
+  assert.ok(F.ux * f.ux + F.uy * f.uy < -0.99, 'f y F en sentidos opuestos');
+});
+test('auditoría A4: en los DCL del rozamiento, si algo empuja de lado va el rozamiento; en la balanza, la normal', () => {
+  for (const [q, , g, d] of figurasDe(idea('rozamiento-se-ajusta'))) {
+    if ((d.objetos || []).some(o => o.tipo === 'rampa')) continue;
+    const lado = g.flechas.filter(x => x.color === 'o' && Math.abs(x.ux) > 0.5);
+    if (lado.length) assert.ok(g.flechas.some(x => x.color === 'i'), `rozamiento ${q}: F sin f`);
+  }
+  for (const [q, , g, d] of figurasDe(idea('diagrama-y-parejas')).filter(x => !/^mira/.test(x[0]))) {   // Mira arma el DCL de a una
+    const bal = (d.objetos || []).find(o => o.tipo === 'balanza'), dcl = (d.objetos || []).some(o => o.fig);
+    if (bal && dcl && bal.lectura !== '0 N' && g.flechas.some(x => x.color === 'h')) assert.ok(g.flechas.some(x => x.color === 'f'), `parejas ${q}: el DCL sin la normal`);
+  }
+});
+test('auditoría M1: lo que se pide no se mide en la figura (sin regla en los ejercicios; flechas pedidas sin escala)', () => {
+  const R4 = idea('resorte-proporcional');
+  for (const [q, , , d] of figurasDe(R4)) if (!/^juego|^mira/.test(q)) assert.ok(!(d.objetos || []).some(o => o.tipo === 'regla'), `resorte ${q}: la regla deja leer la respuesta`);
+  for (const t of ['El largo natural', 'El largo sin nada']) assert.equal((R4.ejemplos.find(e => e.titulo === t).figura.datos.lineas || []).length, 0, `${t}: la punteada marca el largo pedido`);
+  for (const id of ['diagrama-y-parejas', 'rozamiento-se-ajusta']) for (const [q, f, , d] of figurasDe(idea(id))) {
+    if (!(d.objetos || []).some(o => o.fig)) continue;   // los DCL de la pieza
+    for (const fl of d.flechas || []) if (/\?/.test(fl.texto || '')) assert.equal(fl.largo, 30, `${id} ${q}: «${fl.texto}» a escala`);
+  }
+  // los dos del sube y baja: lo pedido no está donde lo dibuja la figura
+  for (const t of ['Equilibrar el sube y baja', 'Tres niños en el balancín']) {
+    const e = idea('torque-y-brazo').ejemplos.find(x => x.titulo === t), d = e.figura.datos;
+    assert.ok((d.textos || []).some(x => /no está a escala/.test(x.texto)), `${t}: sin aviso de escala`);
+  }
+});
+test('auditoría M3: cada alternativa de nivel 3 corregida vale lo que da su error', () => {
+  const alt = (id, t, k) => primero(idea(id).ejemplos.find(e => e.titulo === t).alternativas[k]);
+  cerca(alt('rozamiento-se-ajusta', 'A punto de resbalar', 4), 1 / cs(37), 'iguala el rozamiento al peso', 1e-2);
+  cerca(alt('resorte-proporcional', 'Caja, resorte y balanza', 4), 60 - 500 * 0.004, 'pasa 4 cm a 0,004 m');
+  cerca(alt('torque-y-brazo', 'La barreta del agricultor', 4), 800 * 1.2 / 0.3, 'invierte los brazos');
+  cerca(alt('torque-y-brazo', 'Tres niños en el balancín', 1), (300 + 200) * 2 / 400, 'los dos a 2 m');
+  cerca(alt('torque-y-brazo', 'Tres niños en el balancín', 2), 2 + 1, 'suma las distancias');
+  cerca(alt('cuerpo-rigido', 'Caminar hasta la punta', 2), 300 * 0.5 / 600, 'medio metro de brazo');
+  cerca(alt('cuerpo-rigido', 'La viga y el cable inclinado', 4), 100 / 2 * sn(30), 'multiplica por sen 30°');
+});
+test('auditoría M4 y M5: ningún error da la correcta; «Ahora tú» no repite la misión ni un ejemplo', () => {
+  for (const i of def.ideas) for (let s = 0; s < 400; s++) assert.ok(!i.ahoraTu.generar(s).opciones.repiteCorrecta, `${i.id} semilla ${s}: un error da la correcta`);
+  for (let s = 0; s < 400; s++) {
+    const q1 = plano(idea('diagrama-y-parejas').ahoraTu.generar(s).pregunta), m1 = q1.match(/Una caja de (\d+) kg está sobre otra de (\d+) kg/);
+    if (m1) assert.notEqual(+m1[2], 2 * m1[1], `idea 1 semilla ${s}: restar los pesos da la de arriba`);
+    const q2 = plano(idea('nudo-en-equilibrio').ahoraTu.generar(s).pregunta);
+    assert.ok(!/cables iguales que forman 30°/.test(q2), `idea 2 semilla ${s}: es la misión (T = P)`);
+    const q3 = plano(idea('rozamiento-se-ajusta').ahoraTu.generar(s).pregunta), m3 = q3.match(/de (\d+) kg está en un piso con μs = (\d+(?:,\d+)?) y μk = (\d+(?:,\d+)?)\. L[oa] empujas de lado con (\d+) N/);
+    if (m3) { const [Pv, ms, mk, Fv] = [m3[1] * 10, +m3[2].replace(',', '.'), +m3[3].replace(',', '.'), +m3[4]]; if (Fv <= ms * Pv) assert.ok(Math.abs(mk * Pv - Fv) > 1e-9, `idea 3 semilla ${s}: μk · N da lo mismo que F`); }
+    const q6 = plano(idea('cuerpo-rigido').ahoraTu.generar(s).pregunta);
+    const m6 = q6.match(/tablón parejo de (\d+) m y \d+ kg está sobre un solo caballete, a (\d+(?:,\d+)?) m/);
+    if (m6) assert.notEqual(+m6[1], 4 * +m6[2].replace(',', '.'), `idea 6 semilla ${s}: la carga pesa lo que el tablón`);
+    assert.ok(!/de 4 m y 300 N se apoya en A.*pintor de 600 N/.test(q6), `idea 6 semilla ${s}: es el ejemplo «Caminar hasta la punta»`);
+    assert.ok(!/de 4 m y 200 N .* 53° .* persona de 600 N sube hasta 3 m/.test(q6), `idea 6 semilla ${s}: es el ejemplo de la escalera`);
+  }
+});
+test('auditoría M6 y M7: medidas posibles, g dicho en el juego y «Así se resuelve» con dibujo', () => {
+  for (let s = 0; s < 400; s++) {
+    const o = idea('torque-y-brazo').ahoraTu.generar(s).opciones.find(x => x.correcta).texto;
+    if (/ m$/.test(o) && !/N·m/.test(o)) assert.ok(primero(o) <= 2.5, `semilla ${s}: ${o} del apoyo de un sube y baja`);
+    for (const id of ['torque-y-brazo', 'cuerpo-rigido']) assert.ok(idea(id).resuelve.generar(s).dibujo, `${id} resuelve ${s}: sin dibujo`);
+  }
+  for (const id of ['resorte-proporcional', 'torque-y-brazo']) assert.match(idea(id).juega.consigna, /10 N/, `${id}: el juego no dice cuánto pesa un kilo`);
+  // la piedra empuja la barreta: fuerza de contacto, violeta; el 50 N entre las cajas es una normal
+  const bar = idea('torque-y-brazo').ejemplos.find(e => e.titulo === 'La barreta del agricultor');
+  assert.equal(bar.figura.datos.flechas.find(x => x.texto === '800 N').color, 'f');
+  const cajas = idea('diagrama-y-parejas').ejemplos.find(e => e.titulo === 'Entre las dos cajas').solucion[0].ecuacion;
+  assert.equal(cajas[cajas.length - 1].v, 'c-f');
 });

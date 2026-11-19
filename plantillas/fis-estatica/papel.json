@@ -26,11 +26,11 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Un ropero de 40 kg está en un piso con μ_s = 0,6. Lo empujas de lado con 120 N. ¿Con cuánta fuerza lo frena el piso? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Rozamiento estático: f_s ≤ μ_s · N; quieto, vale lo que haga falta hasta ese tope. Quieto o a velocidad constante, las fuerzas suman cero: lo de arriba iguala a lo de abajo. Alternativas: A) 240 N   B) 72 N   C) 400 N   D) 120 N",
-      "respuesta": "D) 120 N",
+      "enunciado": "Un ropero de 20 kg está en un piso con μ_s = 0,5. Lo empujas de lado con 40 N. ¿Con cuánta fuerza lo frena el piso? Datos: Peso: P = m · g, con g = 10 m/s² (convención del examen). Rozamiento estático: f_s ≤ μ_s · N; quieto, vale lo que haga falta hasta ese tope. Quieto o a velocidad constante, las fuerzas suman cero: lo de arriba iguala a lo de abajo. Alternativas: A) 40 N   B) 20 N   C) 60 N   D) 100 N   E) 200 N",
+      "respuesta": "A) 40 N",
       "pasos": [
-        "El tope: f_s máx = 0,6 · 400 = 240 N. No lo alcanzas: sigue quieto.",
-        "Frena lo que empujas: f_s = 120 N."
+        "El tope: f_s máx = 0,5 · 200 = 100 N. No lo alcanzas: sigue quieto.",
+        "Frena lo que empujas: f_s = 40 N."
       ]
     },
     {

@@ -117,3 +117,24 @@ test('datos en líneas cortas, sin la respuesta ni consejos; la práctica no rep
     assert.ok(!/de 40 kg\..*con 100 N/.test(t), `semilla ${s}: la Predice de la idea 1`);
   }
 });
+
+// Auditoría del 19 nov (rutinas/auditoria/fisica.estatica.md, M4 y M6): un error que da la correcta descarta el caso
+// (antes se borraba en silencio y quien se equivocaba así acertaba), y el sube y baja no pasa de 2,5 m del apoyo.
+// Con la versión de antes falla: el ropero a la mitad del tope (RZ-RESTA), los cables a 30° (ST-P), el tablón con
+// L = 4a (TQ-IGUAL), las cajas con b = 2a (N-SIGNO), k ÷ P = x (RS-INV) y el niño a 2,88 m.
+test('auditoría: ningún error da la correcta, y las distancias del sube y baja son posibles', () => {
+  const ig = (a, b) => Math.abs(a - b) < 1e-9;
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) {
+    const d = gen.generar(s, { idea })._datos, que = `${d.tipo} ${s}: ${JSON.stringify(d)}`;
+    if (d.tipo === 'quieto') assert.ok(!ig(d.F, d.mus * d.m * 10 / 2), que);
+    if (d.tipo === 'simetrico') assert.notEqual(d.a, 30, que);
+    if (d.tipo === 'caballete') assert.notEqual(d.L, 4 * d.a, que);
+    if (d.tipo === 'apiladas' && d.entre) assert.notEqual(d.b, 2 * d.a, que);
+    if (d.tipo === 'estira') assert.ok(!ig(d.k / (d.m * 10), d.m * 10 / d.k * 100), que);
+    if (d.tipo === 'balancin') { const db = d.ma * d.da / d.mb; assert.ok(db <= 2.5 && !ig(d.da + (d.ma - d.mb) / 10, db), que); }
+  }
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'torque-y-brazo' });
+    for (const a of p.alternativas) assert.ok(!/revisa la cuenta/.test(a.explicacion || ''), `semilla ${s}: «${a.explicacion}» no es un error con nombre`);
+  }
+});

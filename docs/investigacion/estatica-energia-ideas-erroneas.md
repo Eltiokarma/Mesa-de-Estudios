@@ -324,7 +324,8 @@ Todos los demás son **hipótesis de diseño**, la cara numérica de un error do
 | E1-LARGO | Cree que la parte más larga de un cuerpo equilibrado pesa más |
 | TQ-NOSE | Cree que el equilibrio no dice nada de los pesos |
 | TQ-BRAZO, TQ-COS | Toma la distancia al punto de aplicación como brazo; usa el coseno |
-| TQ-DIV, TQ-INV, TQ-MITAD, TQ-SUMA, TQ-SIN-ANG, TQ-DOBLE, TQ-RARO | Divide, invierte, parte, suma o dobla en vez de fuerza por brazo |
+| TQ-DIV, TQ-INV, TQ-MITAD, TQ-SUMA, TQ-DOBLE | Divide, invierte, parte, suma o dobla en vez de fuerza por brazo (TQ-SIN-ANG y TQ-RARO salieron en la auditoría del 19 nov: no eran errores con nombre) |
+| TQ-ENTRE-SEN | Divide la distancia entre sen θ en vez de multiplicarla: el brazo le sale más largo que la barra |
 | TQ-IGUAL, TQ-RESTA, TQ-LARGO | Iguala distancias o fuerzas; suma la diferencia de pesos; usa el largo entero como brazo |
 | RG-SIN-PESO | Olvida el peso propio de la barra o del tablón (cercano a E2) |
 | RG-MITAD, RG-TODO, RG-OTRO, RG-PUNTA, RG-BRAZO, RG-NORMAL | Reparte por mitades; un apoyo carga todo; da el otro apoyo; pone el peso en la punta; mide el brazo desde la punta; da la normal del piso en vez del rozamiento |

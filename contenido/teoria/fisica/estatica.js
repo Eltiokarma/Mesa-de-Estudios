@@ -54,16 +54,20 @@
   // Opciones distintas: la correcta primero; un distractor que repite un texto se descarta (hay uno de reserva por tipo,
   // para que siempre salgan 4).
   function opciones(correcta, distractores, fmt, textoBien) {
-    const bien = textoBien || fmt(correcta), vistos = new Set([bien]);
+    const bien = textoBien || fmt(correcta), vistos = new Set([bien]), repite = [];
     const ops = [{ id: 'c', texto: bien, correcta: true }];
     for (const d of distractores) {
       if (!d || (d.texto === undefined && !(Number.isFinite(d.valor) && d.valor >= 0))) continue;
       const txt = d.texto !== undefined ? d.texto : fmt(d.valor);
+      // Un error que da la correcta (o la misma cifra que ella) es un caso mal elegido: la prueba de la unidad lo busca.
+      if (txt === bien) repite.push(d.id);
       if (vistos.has(txt)) continue;
       vistos.add(txt);
       ops.push({ id: d.id, texto: txt, error: d.error, siFuera: d.siFuera });
     }
-    return ops.slice(0, 4);
+    const out = ops.slice(0, 4);
+    if (repite.length) Object.defineProperty(out, 'repiteCorrecta', { value: repite });
+    return out;
   }
   // Valores de examen de los ángulos notables (convención del examen): 37° y 53° del triángulo 3-4-5.
   const SEN = { 0: 0, 30: 0.5, 37: 0.6, 45: Math.SQRT1_2, 53: 0.8, 60: Math.sqrt(3) / 2, 90: 1 };
@@ -88,7 +92,7 @@
   // Datos de cada ejercicio (contrato, punto 13): herramientas, nunca el paso hecho; ningún atajo ni consejo.
   const D = {
     peso: ['Peso: ', P, ' = m · ', g, ', con ', g, ' = 10 m/s²'],
-    primera: ['Primera ley: quieto o a velocidad constante, ', ...SF, ' = 0'],
+    primera: ['Primera ley: ', ...SF, ' = 0 si está quieto o va a velocidad constante'],
     tercera: 'Tercera ley: la fuerza de A sobre B es igual y opuesta a la de B sobre A',
     balanza: ['La balanza marca con qué fuerza la aprietan: la pareja de ', N, ' sobre lo que se apoya'],
     vertical: 'Hacia arriba suman lo mismo que hacia abajo',
@@ -100,13 +104,19 @@
   // Lienzo: la escena a la izquierda (balanza de 30 a 140, piso en y = 236) y el DCL del costal a la derecha (caja
   // centrada en x = 262, y = 122). Todas las flechas del DCL con la misma escala (K1 px por newton).
   const K1 = 0.14;
+  // Largo de una flecha: a escala (k px por newton, con un mínimo para que se vea el palo), salvo lo que se pide («?») o
+  // una figura sin escala, que van todas con el mismo largo (auditoría: la flecha no dice lo que se pregunta).
+  const LARGO_FIJO = 30;
+  const largoDe = (v, t, k, fijo) => (fijo || /\?/.test(t || '') ? LARGO_FIJO : Math.max(18, v * k));
   function dclCostal(fz, o = {}) {
-    const cx = o.cx || 258, cy = o.cy || 124, h = 16, k = o.k || K1, dx = 15;
+    const cx = o.cx || 258, cy = o.cy || 124, h = 16, k = o.k || K1, dx = 15, fijo = !!o.sinEscala;
     const fl = [];
-    if (fz.P) fl.push({ de: [cx - dx, cy + h], ang: 270, largo: fz.P * k, color: 'h', texto: fz.tP || `P = ${N_(fz.P)}`, rumbo: [-1, 0.6], paso: o.pP });
-    if (fz.F) fl.push({ de: [cx + dx, cy + h], ang: 270, largo: fz.F * k, color: 'o', texto: fz.tF || `F = ${N_(fz.F)}`, rumbo: [1, 0.6], paso: o.pF });
-    if (fz.N !== undefined && fz.N > 0) fl.push({ de: [cx - dx, cy - h], ang: 90, largo: fz.N * k, color: 'f', texto: fz.tN || `N = ${N_(fz.N)}`, rumbo: [-1, -0.6], paso: o.pN });
-    if (fz.T) fl.push({ de: [cx + dx, cy - h], ang: 90, largo: fz.T * k, color: 'o', texto: fz.tT || `T = ${N_(fz.T)}`, rumbo: [1, -0.6], paso: o.pT });
+    const L = (v, t) => largoDe(v, t, k, fijo);
+    if (fz.P) fl.push({ de: [cx - dx, cy + h], ang: 270, largo: L(fz.P, fz.tP), color: 'h', texto: fz.tP || `P = ${N_(fz.P)}`, rumbo: [-1, 0.6], paso: o.pP });
+    // la mano empuja por arriba: la flecha llega a la cara de arriba del cuerpo
+    if (fz.F) { const lf = L(fz.F, fz.tF); fl.push({ de: [cx + dx, cy - h - lf], ang: 270, largo: lf, color: 'o', texto: fz.tF || `F = ${N_(fz.F)}`, lado: -1, paso: o.pF }); }
+    if (fz.N !== undefined && (fz.N > 0 || /\?/.test(fz.tN || ''))) fl.push({ de: [cx - dx, cy - h], ang: 90, largo: L(fz.N, fz.tN), color: 'f', texto: fz.tN || `N = ${N_(fz.N)}`, rumbo: [-1, -0.6], paso: o.pN });
+    if (fz.T) fl.push({ de: [cx + dx, cy - h], ang: 90, largo: L(fz.T, fz.tT), color: 'o', texto: fz.tT || `T = ${N_(fz.T)}`, rumbo: [1, -0.6], paso: o.pT });
     return { obj: [{ tipo: 'caja', fig: true, x: cx, y: cy + h, w: 44, h: 2 * h, texto: o.nombre === undefined ? '' : o.nombre }], fl,
       txt: o.sinTitulo ? [] : [{ x: cx, y: 18, texto: o.titulo || 'DCL del costal', ancla: 'middle', peso: 400 }] };
   }
@@ -131,7 +141,7 @@
     return est(figBalanza({ cuerda: val.T > 0 ? true : 'floja', lectura: N_(Nv), fz: { P: Pv, N: Nv, T: val.T, tN: 'N⃗', tP: 'P⃗', tT: 'T⃗' },
       alt: `Un costal de ${val.m} kg sobre la balanza de la bodega; la cuerda lo jala hacia arriba con ${val.T} N y la balanza marca ${f(Nv)} N.` }));
   };
-  const PRED1 = figBalanza({ mano: true, lectura: '? N', fz: { P: 400, F: 100, tP: 'P = 400 N', tF: 'F = 100 N' },
+  const PRED1 = figBalanza({ mano: true, lectura: '? N', fz: { P: 400, F: 100, N: 0, tP: 'P = 400 N', tF: 'F = 100 N', tN: 'N = ?' }, dcl: { sinEscala: true },
     alt: 'Una persona empuja hacia abajo, con la mano, el costal de 40 kg puesto sobre la balanza. La pantalla dice «? N».' });
   const REVELA1 = figBalanza({ mano: true, lectura: '500 N', fz: { P: 400, F: 100, N: 500 },
     alt: 'El costal de 40 kg empujado con 100 N: la balanza lo empuja hacia arriba con 500 N y marca 500 N.' });
@@ -142,6 +152,7 @@
     // La pareja de N⃗ (el costal aprieta la balanza) y la del peso (el costal jala la Tierra), escritas arriba.
     b.textos.push({ x: 8, y: 92, texto: 'costal → balanza: 500 N ↓', ancla: 'start', color: 'f', paso: 4 });
     b.textos.push({ x: 8, y: 114, texto: 'costal → Tierra: 400 N ↑', ancla: 'start', color: 'h', paso: 5 });
+    b.textos.push({ x: 8, y: 70, texto: 'costal → mano: 100 N ↑', ancla: 'start', color: 'o', paso: 6 });
     return b;
   })();
 
@@ -171,7 +182,7 @@
       solucion: [{ texto: 'Quieta, lo de arriba iguala a lo de abajo: la normal iguala al peso.', ecuacion: [N, ' = ', P, ' = 4 · 10 = ', pn('40 N')] }],
       respuesta: [N, ' = ', pn('40 N')] },
     { nivel: 1, titulo: 'Lo que marca la balanza',
-      figura: est(figBalanza({ cuerda: true, lectura: '? N', fz: { P: 300, T: 100, tP: 'P = 300 N', tT: 'T = 100 N' }, alt: 'Un costal de 30 kg sobre la balanza, jalado hacia arriba con una cuerda con 100 N.' })),
+      figura: est(figBalanza({ cuerda: true, lectura: '? N', fz: { P: 300, T: 100, N: 0, tP: 'P = 300 N', tT: 'T = 100 N', tN: 'N = ?' }, dcl: { sinEscala: true }, alt: 'Un costal de 30 kg sobre la balanza, jalado hacia arriba con una cuerda con 100 N.' })),
       enunciado: ['Un costal de 30 kg está sobre la balanza. Una cuerda lo jala hacia arriba con ', pj('100 N'), ' y sigue quieto. ¿Cuánto marca la balanza?'],
       datos: [D.peso, D.primera, D.balanza],
       solucion: [{ texto: 'La balanza sostiene lo que la cuerda no sostiene:', ecuacion: [N, ' = 300 − 100 = ', pn('200 N')] }],
@@ -191,7 +202,7 @@
       solucion: [{ texto: 'Hacia abajo van el peso y tu mano; hacia arriba, solo la normal:', ecuacion: [N, ' = 100 + 50 = ', pn('150 N')] }],
       respuesta: [N, ' = ', pn('150 N')] },
     { nivel: 2, titulo: '¿Cuánta masa tiene el costal?',
-      figura: est(figBalanza({ cuerda: true, lectura: '180 N', fz: { N: 180, T: 70, tN: 'N = 180 N', tT: 'T = 70 N' }, texto: '? kg', alt: 'Un costal sobre la balanza, jalado con 70 N; la balanza marca 180 N.' })),
+      figura: est(figBalanza({ cuerda: true, lectura: '180 N', fz: { P: 1, N: 180, T: 70, tP: 'P = ?', tN: 'N = 180 N', tT: 'T = 70 N' }, dcl: { sinEscala: true }, texto: '? kg', alt: 'Un costal sobre la balanza, jalado con 70 N; la balanza marca 180 N.' })),
       enunciado: ['Mientras una cuerda jala un costal hacia arriba con ', pj('70 N'), ', la balanza marca ', pn('180 N'), '. ¿Qué masa tiene el costal?'],
       datos: [D.peso, D.primera, D.balanza],
       solucion: [
@@ -213,10 +224,10 @@
     { nivel: 2, titulo: 'Entre las dos cajas',
       figura: est(figCosa({ pila: [{ tipo: 'caja', w: 80, h: 44, texto: 'B: 8 kg' }, { tipo: 'caja', w: 60, h: 36, texto: 'A: 5 kg' }],
         textos: [{ x: 312, y: 30, texto: 'B sobre A: ?', ancla: 'end' }, { x: 312, y: 50, texto: 'A sobre B: ?', ancla: 'end' }], alt: 'La caja A sobre la caja B, en el piso.' })),
-      enunciado: ['Con las mismas cajas, A de 5 kg sobre B de 8 kg: ¿con qué fuerza empuja B a A, y con cuál empuja A a B?'],
+      enunciado: ['La caja A, de 5 kg, está sobre la caja B, de 8 kg, y las dos están quietas en el piso. ¿Con qué fuerza empuja B a A, y con cuál empuja A a B?'],
       datos: [D.peso, D.primera, D.tercera],
       solucion: [
-        { texto: 'A está quieta: B la empuja hacia arriba lo que A pesa.', ecuacion: [sub(N, 'B→A'), ' = ', pp('50 N')] },
+        { texto: 'A está quieta: B la empuja hacia arriba lo que A pesa.', ecuacion: [sub(N, 'B→A'), ' = ', P, ' = 5 · 10 = ', pn('50 N')] },
         { texto: 'Por la tercera ley, A empuja a B con lo mismo, hacia abajo:', ecuacion: [sub(N, 'A→B'), ' = ', pn('50 N'), ', hacia abajo'] },
       ],
       respuesta: ['Las dos miden ', pn('50 N'), ', en sentidos opuestos'] },
@@ -317,8 +328,8 @@
     const ob = r.de(lista), m = r.de([15, 20, 25, 30, 45]), Fm = r.de([50, 60, 80, 120]), abajo = sm % 8 < 4;
     const Pv = m * G, Nv = abajo ? Pv + Fm : Pv - Fm;
     return { ob, m, Fm, abajo, Pv, Nv,
-      dibujo: est(abajo ? figBalanza({ mano: true, cuerpo: ob.cuerpo, texto: `${m} kg`, lectura: '? N', fz: { P: Pv, F: Fm, tP: `P = ${N_(Pv)}`, tF: `F = ${N_(Fm)}` }, dcl: { titulo: 'DCL' } })
-        : figBalanza({ cuerda: true, cuerpo: ob.cuerpo, texto: `${m} kg`, lectura: '? N', fz: { P: Pv, T: Fm, tP: `P = ${N_(Pv)}`, tT: `T = ${N_(Fm)}` }, dcl: { titulo: 'DCL' } })) };
+      dibujo: est(abajo ? figBalanza({ mano: true, cuerpo: ob.cuerpo, texto: `${m} kg`, lectura: '? N', fz: { P: Pv, F: Fm, N: 0, tP: `P = ${N_(Pv)}`, tF: `F = ${N_(Fm)}`, tN: 'N = ?' }, dcl: { titulo: 'DCL', sinEscala: true } })
+        : figBalanza({ cuerda: true, cuerpo: ob.cuerpo, texto: `${m} kg`, lectura: '? N', fz: { P: Pv, T: Fm, N: 0, tP: `P = ${N_(Pv)}`, tT: `T = ${N_(Fm)}`, tN: 'N = ?' }, dcl: { titulo: 'DCL', sinEscala: true } })) };
   }
   const dcl = {
     id: 'diagrama-y-parejas',
@@ -332,7 +343,7 @@
       tarjetas: [
         { titulo: 'Empujones y jalones', texto: ['Una fuerza es un empujón o un jalón, y se mide en newtons (N). Es un vector: tiene valor y dirección, y se dibuja con una flecha. La Tierra jala cada kilo con unos 10 N: es el peso, ', P, '.'],
           ecuacion: [P, ' = m · ', g] },
-        { titulo: 'Un cuerpo a la vez', texto: 'Para estudiar un cuerpo se dibuja solo él, aislado, con una flecha por cada fuerza que otro cuerpo le hace. Ese dibujo se llama diagrama de cuerpo libre, o DCL.',
+        { titulo: 'Un cuerpo a la vez', texto: ['Para estudiar un cuerpo se dibuja solo él, con una flecha por cada fuerza que otro cuerpo le hace: es su diagrama de cuerpo libre, o DCL. En el del costal van su peso, ', vec(P), ', y el empujón de la balanza, ', vec(N), '.'],
           dibujo: est(figBalanza({ fz: { P: 400, N: 400, tN: 'N⃗', tP: 'P⃗' }, lectura: '400 N', alt: 'Un costal sobre la balanza y, al lado, su diagrama de cuerpo libre con el peso y la fuerza de la balanza.' })) },
         { titulo: 'Qué mirar al jugar', texto: ['La balanza de la bodega empuja al costal hacia arriba: esa fuerza se llama normal, ', N, '. Jala la cuerda y mira qué flecha se achica.'] },
       ],
@@ -389,12 +400,13 @@
         { estado: { paso: 3 }, texto: 'Quieto: hacia arriba, la balanza empuja lo que suma lo de abajo.', ecuacion: [N, ' = 400 + 100 = ', pn('500 N')] },
         { estado: { paso: 4 }, texto: ['El costal aprieta la balanza con 500 N: es la pareja de ', vec(N), '.'], ecuacion: ['balanza → costal: ', pn('500 N'), ' ↑   ·   costal → balanza: ', pn('500 N'), ' ↓'] },
         { estado: { paso: 5 }, texto: 'La pareja del peso: el costal jala a la Tierra hacia arriba.', ecuacion: ['Tierra → costal: ', pp('400 N'), ' ↓   ·   costal → Tierra: ', pp('400 N'), ' ↑'] },
+        { estado: { paso: 6 }, texto: 'Y la de tu mano: el costal empuja tu mano hacia arriba.', ecuacion: ['mano → costal: ', pj('100 N'), ' ↓   ·   costal → mano: ', pj('100 N'), ' ↑'] },
       ],
     },
     regla: {
       texto: 'Primera ley: si un cuerpo está quieto, o va en línea recta a velocidad constante, las fuerzas sobre él suman cero. Tercera ley: cada fuerza tiene su pareja.',
       ecuacion: [...SF, ' = 0', '   ·   ', sub(vec('F'), 'A→B'), ' = −', sub(vec('F'), 'B→A')],
-      condicion: 'La pareja mide lo mismo, apunta al revés y está en el otro cuerpo. El DCL lleva solo las fuerzas sobre él.',
+      condicion: 'el cuerpo está quieto o a velocidad constante. La pareja mide lo mismo, apunta al revés y actúa sobre el otro cuerpo.',
       dibujo: est(Object.assign({}, MIRA1, { flechas: MIRA1.flechas.map(x => Object.assign({}, x, { paso: 0 })), textos: MIRA1.textos.map(x => Object.assign({}, x, { paso: 0 })) })),
     },
     // Así se resuelve: la caja de herramientas o el balde (otra lista que «Ahora tú») y, en las semillas impares, dos
@@ -421,7 +433,7 @@
         }
         const c = casoNormal(r, COSAS_RS, sm);
         return {
-          enunciado: [`${c.ob.nombre[0].toUpperCase()}${c.ob.nombre.slice(1)} de ${c.m} kg está sobre la balanza. ${c.abajo ? c.ob.lo + ' empujas hacia abajo con la mano, ' : 'Una cuerda ' + c.ob.lo.toLowerCase() + ' jala hacia arriba'} con `, pj(N_(c.Fm)), ` y sigue ${c.ob.lo === 'La' ? 'quieta' : 'quieto'}. ¿Cuánto marca la balanza?`],
+          enunciado: [`${c.ob.nombre[0].toUpperCase()}${c.ob.nombre.slice(1)} de ${c.m} kg está sobre la balanza. ${c.abajo ? 'Con la mano, ' + c.ob.lo.toLowerCase() + ' empujas hacia abajo' : 'Una cuerda ' + c.ob.lo.toLowerCase() + ' jala hacia arriba'} con `, pj(N_(c.Fm)), ` y sigue ${c.ob.lo === 'La' ? 'quieta' : 'quieto'}. ¿Cuánto marca la balanza?`],
           datos: [D.peso, D.primera, D.balanza],
           dibujo: c.dibujo,
           pasos: [
@@ -444,7 +456,7 @@
         if (k === 0) {
           const c = casoNormal(r, COSAS_AT, sm);
           return {
-            pregunta: [`${c.ob.nombre[0].toUpperCase()}${c.ob.nombre.slice(1)} de ${c.m} kg está sobre la balanza. ${c.abajo ? c.ob.lo + ' empujas hacia abajo con la mano, ' : 'Una cuerda ' + c.ob.lo.toLowerCase() + ' jala hacia arriba'} con `, pj(N_(c.Fm)), ` y sigue ${c.ob.lo === 'La' ? 'quieta' : 'quieto'}. ¿Cuánto marca la balanza?`],
+            pregunta: [`${c.ob.nombre[0].toUpperCase()}${c.ob.nombre.slice(1)} de ${c.m} kg está sobre la balanza. ${c.abajo ? 'Con la mano, ' + c.ob.lo.toLowerCase() + ' empujas hacia abajo' : 'Una cuerda ' + c.ob.lo.toLowerCase() + ' jala hacia arriba'} con `, pj(N_(c.Fm)), ` y sigue ${c.ob.lo === 'La' ? 'quieta' : 'quieto'}. ¿Cuánto marca la balanza?`],
             datos: [D.peso, D.primera, D.balanza],
             dibujo: c.dibujo,
             opciones: opciones(c.Nv, [
@@ -459,7 +471,7 @@
         if (k === 1) {
           const pa = PAREJAS[Math.floor(sm / 4) % PAREJAS.length];
           return {
-            pregunta: [`Según la tercera ley, ¿cuál es la pareja de ${pa.de}?`],
+            pregunta: [`Según la tercera ley, ¿cuál es la pareja ${pa.de.startsWith('el ') ? 'del ' + pa.de.slice(3) : 'de ' + pa.de}?`],
             datos: [D.tercera],
             opciones: opciones(0, [
               { id: 'mismo', texto: pa.mismo, error: 'ES-REACCION', siFuera: 'Bien buscar una fuerza opuesta. Pero esa actúa sobre el mismo cuerpo: la pareja está en el otro.' },
@@ -470,7 +482,8 @@
           };
         }
         if (k === 2) {
-          const a = r.de([2, 3, 4, 6]), b = r.de([5, 7, 8, 10]), arriba = sm % 8 >= 4;
+          // sin b = 2a: ahí restar los pesos (N-SIGNO) daría justo lo que pesa la de arriba
+          const { a, b } = elegir(r, () => { const c = { a: r.de([2, 3, 4, 6]), b: r.de([5, 7, 8, 10]) }; return c.b !== 2 * c.a && c; }), arriba = sm % 8 >= 4;
           const pide = arriba ? a * G : (a + b) * G;
           return {
             pregunta: [`Una caja de ${a} kg está sobre otra de ${b} kg, y las dos están quietas en el piso. ¿Con qué fuerza empuja ${arriba ? 'la caja de abajo a la de arriba' : 'el piso a la caja de abajo'}?`],
@@ -527,9 +540,10 @@
   const SEN_ = a => (SEN[a] !== undefined ? SEN[a] : Math.sin(rad(a))), COS_ = a => (COS[a] !== undefined ? COS[a] : Math.cos(rad(a)));
   function figColgado(o) {
     const yt = 16, xn = o.xn || 160, yn = o.yn || 110, objs = [], fl = [], an = [], txt = [...(o.textos || [])];
-    const cosa = Object.assign({ tipo: 'letrero', w: 84, h: 34 }, o.cosa || {}), alto = o.alto || 250, yc = yn + 18;
-    // Una sola escala para todas las flechas, la mayor que deja caber el peso con su rótulo.
-    const k = Math.min(o.k || 0.6, o.P ? (alto - 28 - yc - cosa.h) / o.P : Infinity);
+    const cosa = Object.assign({ tipo: 'letrero', w: 84, h: 34 }, o.cosa || {}), yc = yn + 18;
+    // Una sola escala para todas las flechas (o.k); si el peso no cabe con su rótulo, la figura se alarga en vez de
+    // achicar las flechas (auditoría: con 53° y 160 N las tensiones quedaban en dos puntas, «como un moño»).
+    const k = Math.min(o.k || 0.6, o.P ? 110 / o.P : Infinity), alto = Math.max(o.alto || 250, o.P ? Math.ceil(yc + cosa.h + o.P * k + 30) : 0);
     const lados = [['izq', -1], ['der', 1]];
     let paredes = [];
     for (const [nom, sg] of lados) {
@@ -543,7 +557,8 @@
       if (c.T) fl.push({ de: [xn, yn], ang: angF, largo: c.T * k, color: 'o', texto: c.tT, rumbo: [sg, -0.4], paso: c.paso });
       if (c.comp && c.T) {
         fl.push({ de: [xn, yn], ang: sg < 0 ? 180 : 0, largo: c.T * k * Math.abs(ux), color: 'o', discontinua: true, texto: c.tx, rumbo: [sg, 0.8], paso: c.pasoComp });
-        fl.push({ de: [xn, yn], ang: 90, largo: c.T * k * Math.abs(uy), color: 'o', discontinua: true, texto: c.ty, rumbo: [sg * 0.6, -1], paso: c.pasoComp });
+        // la parte vertical de cada cable, corrida 9 px a su lado para que las dos no queden en la misma línea
+        fl.push({ de: [xn + sg * 9, yn], ang: 90, largo: c.T * k * Math.abs(uy), color: 'o', discontinua: true, texto: c.ty, rumbo: [sg, -0.2], paso: c.pasoComp });
       }
       if (c.tipo !== 'pared' && !c.sinAngulo) an.push(sg < 0 ? { c: amarre, de: -c.ang, a: 0, r: 26, texto: `${c.ang}°` } : { c: amarre, de: 180, a: 180 + c.ang, r: 26, texto: `${c.ang}°` });
     }
@@ -564,8 +579,7 @@
     alt: `El letrero de la bodega, de ${val.P} N, cuelga de dos cables iguales que forman ${val.ang}° con el techo; cada uno jala ${f(val.P / (2 * SEN_(val.ang)))} N.` }));
   const PRED2 = figColgado({ xn: 180, yn: 100, k: 0.5, izq: { ang: 37 }, der: { ang: 53 }, P: 100, cosa: { texto: 'BODEGA' },
     alt: 'El letrero de 100 N cuelga de dos cables distintos: el de la izquierda forma 37° con el techo y el de la derecha, 53°.' });
-    PRED2.textos.push({ x: 20, y: 236, texto: '¿Cuál cable jala más?', ancla: 'start' });
-  const asim = (o = {}) => figColgado(Object.assign({ xn: 180, yn: 100, k: 0.9, izq: { ang: 37, T: 60, tT: 'T₁ = 60 N', comp: o.comp, tx: '48 N', ty: '36 N', pasoComp: o.pasoComp },
+  const asim = (o = {}) => figColgado(Object.assign({ xn: 180, yn: 100, k: 0.7, izq: { ang: 37, T: 60, tT: 'T₁ = 60 N', comp: o.comp, tx: '48 N', ty: '36 N', pasoComp: o.pasoComp },
     der: { ang: 53, T: 80, tT: 'T₂ = 80 N', comp: o.comp, tx: '48 N', ty: '64 N', pasoComp: o.pasoComp }, P: 100, cosa: { texto: 'BODEGA' } }, o.extra || {}));
   const REVELA2 = asim({ extra: { alt: 'El cable de 53° jala 80 N y el de 37°, 60 N: el más parado jala más.' } });
   const MIRA2 = (() => {
@@ -682,7 +696,7 @@
       ],
       respuesta: ['Cada cable jala ', pj('50 N'), ': tanto como pesa la maceta'] },
     { nivel: 2, titulo: 'Cables más parados',
-      figura: est(colgadoIgual(53, 160, { tT: 'T₁ = ?', tT2: 'T₂ = ?', tP: 'P = 160 N', k: 0.4, alt: 'Un letrero de 160 N cuelga de dos cables iguales que forman 53° con el techo.' })),
+      figura: est(colgadoIgual(53, 160, { tT: 'T₁ = ?', tT2: 'T₂ = ?', tP: 'P = 160 N', k: 0.5, alt: 'Un letrero de 160 N cuelga de dos cables iguales que forman 53° con el techo.' })),
       enunciado: ['Un letrero de 160 N cuelga de dos cables iguales que forman 53° con el techo. ¿Cuánto jala cada cable?'],
       datos: [D2.comp, D2.equil, D2.trig],
       solucion: [
@@ -743,16 +757,16 @@
         { texto: ['La ', neg('A'), ' da el cable de 30°; la ', neg('B'), ' cree que el parado sostiene todo; la ', neg('C'), ' reparte 100 entre 4; la ', neg('E'), ' multiplica 100 por √3.'] },
       ],
       respuesta: [neg('D'), ', ', pj('50√3 N'), ', unos ', pj('86,6 N')] },
-    { nivel: 3, titulo: '¿A qué ángulo jala el peso?',
-      figura: est(colgadoIgual(30, 120, { tT: 'T = P', tT2: 'T = P', tP: 'P', izq: { ang: 30, T: 120, tT: 'T = P', sinAngulo: true }, der: { ang: 30, T: 120, tT: 'T = P', sinAngulo: true }, alt: 'Un letrero cuelga de dos cables iguales; cada cable jala lo mismo que pesa el letrero.' })),
-      enunciado: ['Un letrero cuelga de dos cables iguales, con el mismo ángulo con el techo. ¿Con qué ángulo cada cable jala justo lo que pesa el letrero?'],
-      alternativas: ['45°', '60°', '37°', '90°', '30°'],
+    { nivel: 3, titulo: '¿Con qué ángulo cuelgan los cables?',
+      figura: est(Object.assign(colgadoIgual(37, 120, { tT: 'T = 75 N', tT2: 'T = 75 N', tP: 'P = 120 N', izq: { ang: 37, T: 75, tT: 'T = 75 N', sinAngulo: true }, der: { ang: 37, T: 75, tT: 'T = 75 N', sinAngulo: true } }), { alt: 'Un letrero de 120 N cuelga de dos cables iguales; cada cable jala 75 N. El dibujo no está a escala.' })),
+      enunciado: ['Un letrero de 120 N cuelga de dos cables iguales, con el mismo ángulo con el techo. Cada cable jala ', pj('75 N'), '. ¿Qué ángulo forma cada cable con el techo? (El dibujo no está a escala.)'],
+      alternativas: ['45°', '60°', '37°', '90°', '53°'],
       datos: [D2.comp, D2.equil, D2.trig30, D2.trig45, D2.trig],
       solucion: [
-        { texto: 'Lo vertical de los dos sostiene el peso; con T = P:', ecuacion: ['2', P, ' · sen θ = ', P, '   →   sen θ = ', { frac: ['1', '2'] }] },
-        { texto: ['El seno vale 1/2 a 30°. La ', neg('D'), ', 90°, da cables verticales que jalan la mitad; la ', neg('A'), ', la ', neg('B'), ' y la ', neg('C'), ' dan menos que el peso.'] },
+        { texto: 'Lo vertical de los dos cables sostiene el peso:', ecuacion: ['2 · 75 · sen θ = 120   →   sen θ = ', { frac: ['120', '150'] }, ' = ', { frac: ['4', '5'] }] },
+        { texto: ['Es 53°. La ', neg('C'), ' toma el coseno; la ', neg('D'), ' pone los cables verticales: 60 N cada uno; con la ', neg('A'), ' y la ', neg('B'), ' jalarían unos 85 N y 69 N.'] },
       ],
-      respuesta: [neg('E'), ', 30°'] },
+      respuesta: [neg('E'), ', 53°'] },
     { nivel: 3, titulo: 'La cuerda horizontal',
       figura: est(Object.assign(figColgado({ xn: 160, yn: 120, k: 0.8, izq: { tipo: 'pared' }, der: { ang: 53 }, P: 60, cosa: { tipo: 'caja', w: 50, h: 30, texto: '60 N' } }),
         { alt: 'Un bulto de 60 N cuelga de un nudo con una cuerda horizontal a la pared y un cable que forma 53° con el techo.', textos: [{ x: 8, y: 236, texto: 'cuerda horizontal: ?', ancla: 'start' }] })),
@@ -779,7 +793,7 @@
     actividad: 'Colgar el letrero de la bodega con dos cables y cambiar su ángulo.',
     lee: {
       tarjetas: [
-        { titulo: 'Cables que cuelgan', texto: 'En muchas calles de Puno, los letreros cuelgan de dos cables que se juntan en un nudo. El nudo no se mueve: está en equilibrio. Se lo puede tratar como un punto, una partícula.',
+        { titulo: 'Cables que cuelgan', texto: 'En muchas calles, los letreros cuelgan de dos cables que se juntan en un nudo. El nudo no se mueve: está en equilibrio. Se lo puede tratar como un punto, una partícula.',
           dibujo: est(colgadoIgual(45, 100, { tT: '', tT2: '', tP: '', izq: { ang: 45, sinAngulo: true }, der: { ang: 45, sinAngulo: true }, P: 0, alt: 'El letrero de la bodega colgado de dos cables que se juntan en un nudo.' })) },
         { titulo: 'La tensión', texto: ['Un cable tirante jala con una fuerza llamada tensión, ', vec(T), ', siempre a lo largo del cable. Una cuerda que pasa por una polea jala igual a los dos lados.'] },
         { titulo: 'Partir una flecha', texto: 'Como en Vectores, una flecha inclinada se parte en dos componentes: una horizontal y una vertical. Al jugar, mira cuánto jala cada cable cuando los tiendes más.' },
@@ -838,7 +852,7 @@
     regla: {
       texto: 'Una partícula está en equilibrio si las fuerzas suman cero por partes: lo horizontal suma cero y lo vertical suma cero. Cada fuerza inclinada se parte en sus componentes.',
       ecuacion: ['Σ', sub('F', 'x'), ' = 0', '   ·   ', 'Σ', sub('F', 'y'), ' = 0'],
-      condicion: 'Con θ desde la horizontal: F · cos θ y F · sen θ. Una cuerda ideal jala igual en todos sus tramos.',
+      condicion: 'está quieto o a velocidad constante. Con θ desde la horizontal, F se parte en F · cos θ y F · sen θ.',
     },
     // Así se resuelve: un letrero o un farol con cables iguales (otra lista que «Ahora tú») y, en las semillas impares,
     // la cuerda horizontal que jala la lámpara hacia la pared.
@@ -882,7 +896,9 @@
       generar(sm) {
         const r = azar(sm), k = sm % 4;
         if (k === 0) {
-          const { cosa, ang, Pv, Tv } = elegir(r, () => { const c = { cosa: r.de(COLG_AT), ang: r.de([30, 37, 53]), Pv: r.de([40, 60, 80, 100, 120, 200]) }; c.Tv = c.Pv / (2 * SEN_(c.ang)); return exacto(c.Tv) && c; });
+          // Sin 30°: ahí cada cable jala justo el peso, que es la misión del juego y el error ST-P. Todas las opciones con
+          // dos decimales exactos, para que ninguna se note por sus cifras (lector A: «46,19 N»).
+          const { cosa, ang, Pv, Tv } = elegir(r, () => { const c = { cosa: r.de(COLG_AT), ang: r.de([37, 53]), Pv: r.de([60, 80, 90, 120, 150, 240]) }; c.Tv = c.Pv / (2 * SEN_(c.ang)); return exacto(c.Tv) && exacto(c.Pv / (2 * COS_(c.ang))) && c; });
           return {
             pregunta: [`${cosa[0].toUpperCase()}${cosa.slice(1)} de ${Pv} N cuelga de un nudo con dos cables iguales que forman ${ang}° con el techo. ¿Cuánto jala cada cable?`],
             datos: [D2.comp, D2.equil, trigDe(ang)],
@@ -955,27 +971,31 @@
   // estático copia el empujón hasta un tope; el cinético vale μ_k · N.
   const MS3 = 0.4, MK3 = 0.3, P3 = 500, K3 = 0.12;
   // El DCL de un cuerpo con fuerzas de lado: F⃗ (con su ángulo θ sobre la horizontal) a la derecha y f⃗ a la izquierda.
+  // El DCL del cuerpo que se empuja. El rozamiento va siempre que el cuerpo se apoya y algo lo empuja de lado (lector A:
+  // «con F sola hacia un lado no debería quedarse quieto»): si no se sabe cuánto vale, con «?» y sin escala.
   function dclRoce(fz, o = {}) {
-    const cx = o.cx || 258, cy = o.cy || 112, h = 16, w = 44, fl = [];
+    const cx = o.cx || 258, cy = o.cy || 126, h = 16, w = 44, fl = [], fijo = !!o.sinEscala;
     // una sola escala: la flecha más larga, de unos 56 px
     const k = Math.min(o.k || K3, 56 / Math.max(fz.P || 1, fz.N || 1), fz.F ? 34 / fz.F : Infinity);
-    if (fz.P) fl.push({ de: [cx - 8, cy + h], ang: 270, largo: fz.P * k, color: 'h', texto: fz.tP || `P = ${N_(fz.P)}`, rumbo: [1, 0.3] });
-    if (fz.N) fl.push({ de: [cx - 8, cy - h], ang: 90, largo: fz.N * k, color: 'f', texto: fz.tN || `N = ${N_(fz.N)}`, rumbo: [-1, -0.4] });
-    if (fz.F) fl.push({ de: [cx + w / 2, cy], ang: fz.ang || 0, largo: Math.max(14, fz.F * k), color: 'o', texto: fz.tF || `F = ${N_(fz.F)}`, rumbo: [0.4, -1] });
-    if (fz.f) fl.push({ de: [cx - w / 2, cy + 6], ang: 180, largo: Math.max(14, fz.f * k), color: 'i', texto: fz.tf || `f = ${N_(fz.f)}`, rumbo: [-0.3, 1] });
+    const L = (v, t) => largoDe(v, t, k, fijo);
+    if (fz.P) fl.push({ de: [cx - 8, cy + h], ang: 270, largo: L(fz.P, fz.tP), color: 'h', texto: fz.tP || `P = ${N_(fz.P)}`, rumbo: [1, 0.3] });
+    if (fz.N) fl.push({ de: [cx - 8, cy - h], ang: 90, largo: L(fz.N, fz.tN), color: 'f', texto: fz.tN || `N = ${N_(fz.N)}`, rumbo: [-1, -0.4] });
+    if (fz.F) fl.push({ de: [cx + w / 2, cy], ang: fz.ang || 0, largo: L(fz.F, fz.tF), color: 'o', texto: fz.tF || `F = ${N_(fz.F)}`, rumbo: [0.4, -1] });
+    if (fz.f || (fz.tf && fz.tf.includes('?'))) fl.push({ de: [cx - w / 2, cy + 6], ang: 180, largo: L(fz.f || 0, fz.tf), color: 'i', texto: fz.tf || `f = ${N_(fz.f)}`, rumbo: [-0.3, 1] });
     return { obj: [{ tipo: 'caja', fig: true, x: cx, y: cy + h, w, h: 2 * h }], fl, txt: [{ x: cx, y: 18, texto: o.titulo || 'DCL del ropero', ancla: 'middle', peso: 400 }] };
   }
   function figRoce(o) {
     const piso = 200, d = dclRoce(o.fz || {}, o.dcl || {});
     const c = Object.assign({ tipo: 'ropero', x: 120, y: piso, w: 60, h: 104 }, o.cosa || {});
     const objs = [c];
-    if (o.persona !== false) objs.push({ tipo: 'persona', x: c.x - c.w / 2 - 42, y: piso, alto: 104, mano: [c.x - c.w / 2, piso - 62] });
+    // la mano toca el cuerpo, también si es bajo (un baúl)
+    if (o.persona !== false) objs.push({ tipo: 'persona', x: c.x - c.w / 2 - 42, y: piso, alto: 104, mano: [c.x - c.w / 2, piso - Math.min(62, c.h * 0.6)] });
     return { alto: 226, piso: { y: piso, x0: 8, x1: 196 }, objetos: [...objs, ...d.obj], flechas: d.fl, textos: [...d.txt, ...(o.textos || [])], alt: o.alt };
   }
   const roce3 = F => (F <= MS3 * P3 + 1e-9 ? { quieto: true, f: F } : { quieto: false, f: MK3 * P3 });
   const juego3 = val => {
     const r = roce3(val.F);
-    return est(figRoce({ fz: { P: P3, N: P3, F: val.F, tP: 'P⃗', tN: 'N⃗', tF: 'F⃗' }, textos: [{ x: 8, y: 22, texto: r.quieto ? 'quieto' : 'se mueve →', ancla: 'start' }],
+    return est(figRoce({ fz: { P: P3, N: P3, F: val.F, tP: 'P⃗', tN: 'N⃗', tF: 'F⃗', tf: 'f⃗ = ?' }, textos: [{ x: 8, y: 22, texto: r.quieto ? 'quieto' : 'se mueve →', ancla: 'start' }],
       alt: `Una persona empuja el ropero de 500 N con ${val.F} N; ${r.quieto ? 'el ropero sigue quieto' : 'el ropero se mueve'}.` }));
   };
   const PRED3 = figRoce({ fz: { P: 500, N: 500, F: 120, tf: 'f = ?' }, textos: [{ x: 8, y: 22, texto: 'quieto', ancla: 'start' }, { x: 312, y: 210, texto: 'el piso frena: ?', ancla: 'end' }],
@@ -988,16 +1008,20 @@
     est: [fs, ' ≤ ', sub('μ', 's'), ' · ', N, ': quieto, vale lo que haga falta, hasta ese tope'],
     cin: [fk, ' = ', sub('μ', 'k'), ' · ', N, ' mientras desliza'],
     eq: 'Quieto o a velocidad constante, lo horizontal suma cero y lo vertical suma cero',
+    eqRampa: 'Quieto o a velocidad constante: a lo largo de la rampa suma cero, y contra ella también',
     comp: D2.comp, trig: D2.trig,
     rampa: ['En una rampa de ángulo θ: ', P, ' · sen θ a lo largo y ', P, ' · cos θ contra ella'],
   };
   function figRampa(o) {
     const th = o.ang, x0 = 20, y0 = 214, L = 270, s0 = o.s || 150, cs = Math.cos(rad(th)), sn = Math.sin(rad(th));
     const base = [x0 + s0 * cs, y0 - s0 * sn], h = 34, w = 50, c = [base[0] - sn * h / 2, base[1] - cs * h / 2], k = o.k || 0.6, fl = [];
-    if (o.P) fl.push({ de: c, ang: 270, largo: o.P * k, color: 'h', texto: o.tP || `P = ${N_(o.P)}`, rumbo: [1, 0.4] });
-    if (o.N !== undefined) fl.push({ de: [base[0] - sn * h, base[1] - cs * h], ang: 90 + th, largo: Math.max(16, (o.N || 0) * k), color: 'f', texto: o.tN || `N = ${N_(o.N)}`, rumbo: [-1, -0.3] });
-    if (o.f !== undefined) fl.push({ de: [base[0] + cs * w / 2 - sn * 6, base[1] - sn * w / 2 - cs * 6], ang: th, largo: Math.max(16, (o.f || 0) * k), color: 'i', texto: o.tf || `f = ${N_(o.f)}`, rumbo: [0.3, -1] });
-    if (o.F !== undefined) fl.push({ de: [base[0] + cs * w / 2 - sn * 18, base[1] - sn * w / 2 - cs * 18], ang: th, largo: Math.max(16, (o.F || 0) * k), color: 'o', texto: o.tF || `F = ${N_(o.F)}`, rumbo: [0.3, -1] });
+    if (o.P) fl.push({ de: c, ang: 270, largo: largoDe(o.P, o.tP, k), color: 'h', texto: o.tP || `P = ${N_(o.P)}`, rumbo: [1, 0.4] });
+    if (o.N !== undefined) fl.push({ de: [base[0] - sn * h, base[1] - cs * h], ang: 90 + th, largo: largoDe(o.N || 0, o.tN, k), color: 'f', texto: o.tN || `N = ${N_(o.N)}`, rumbo: [-1, -0.3] });
+    // el rozamiento, a lo largo de la rampa: hacia arriba si la caja tiende a bajar; hacia abajo (fAbajo) si sube
+    if (o.f !== undefined) fl.push(o.fAbajo
+      ? { de: [base[0] - cs * w / 2 - sn * 6, base[1] + sn * w / 2 - cs * 6], ang: th + 180, largo: largoDe(o.f || 0, o.tf, k), color: 'i', texto: o.tf || `f = ${N_(o.f)}`, rumbo: [-0.3, 1] }
+      : { de: [base[0] + cs * w / 2 - sn * 6, base[1] - sn * w / 2 - cs * 6], ang: th, largo: largoDe(o.f || 0, o.tf, k), color: 'i', texto: o.tf || `f = ${N_(o.f)}`, rumbo: [0.3, -1] });
+    if (o.F !== undefined) fl.push({ de: [base[0] + cs * w / 2 - sn * 18, base[1] - sn * w / 2 - cs * 18], ang: th, largo: largoDe(o.F || 0, o.tF, k), color: 'o', texto: o.tF || `F = ${N_(o.F)}`, rumbo: [0.3, -1] });
     return { alto: 236, objetos: [{ tipo: 'rampa', x0, y0, largo: L, ang: th }, { tipo: 'caja', x: base[0], y: base[1], w, h, giro: th, texto: o.texto || '' }],
       flechas: fl, angulos: [{ c: [x0, y0], de: 0, a: th, r: 44, texto: `${th}°` }], textos: o.textos || [], alt: o.alt };
   }
@@ -1020,7 +1044,7 @@
       solucion: [{ texto: 'El tope es μ_s por la normal:', ecuacion: [fs, ' máx = 0,5 · 200 = ', pr('100 N')] }],
       respuesta: [pr('100 N')] },
     { nivel: 1, titulo: 'Ya desliza',
-      figura: est(figRoce({ cosa: { tipo: 'caja', w: 70, h: 50, texto: '' }, fz: { P: 300, N: 300, F: 90, f: 60, tf: 'f = ?' }, dcl: { titulo: 'DCL de la caja', k: 0.18 }, textos: [{ x: 8, y: 22, texto: 'desliza →', ancla: 'start' }] })),
+      figura: est(figRoce({ cosa: { tipo: 'caja', w: 70, h: 50, texto: '' }, fz: { P: 300, N: 300, F: 90, f: 60, tF: 'F', tf: 'f = ?' }, dcl: { titulo: 'DCL de la caja', k: 0.18 }, textos: [{ x: 8, y: 22, texto: 'desliza →', ancla: 'start' }] })),
       enunciado: ['Una caja desliza por el piso con una normal de ', pn('300 N'), '. Si μ_k = 0,2, ¿con cuánta fuerza la frena el rozamiento?'],
       datos: [D3.cin],
       solucion: [{ texto: 'Deslizando, vale μ_k por la normal:', ecuacion: [fk, ' = 0,2 · 300 = ', pr('60 N')] }],
@@ -1032,7 +1056,7 @@
       solucion: [{ texto: 'A velocidad constante, las fuerzas suman cero: tu empujón iguala al rozamiento.', ecuacion: [F, ' = ', fk, ' = ', pj('80 N')] }],
       respuesta: [F, ' = ', pj('80 N')] },
     { nivel: 1, titulo: '¿Se mueve o no?',
-      figura: est(figRoce({ fz: { P: 400, N: 400, F: 100 }, dcl: { k: 0.14 }, textos: [{ x: 8, y: 22, texto: 'μ_s = 0,3', ancla: 'start' }] })),
+      figura: est(figRoce({ fz: { P: 400, N: 400, F: 100, tf: 'f = ?' }, dcl: { k: 0.14 }, textos: [{ x: 8, y: 22, texto: 'μ_s = 0,3', ancla: 'start' }] })),
       enunciado: ['Un ropero de 400 N está en un piso con μ_s = 0,3. Lo empujas de lado con ', pj('100 N'), '. ¿Se mueve? ¿Cuánto vale el rozamiento?'],
       datos: [D3.est, D3.eq],
       solucion: [
@@ -1050,7 +1074,7 @@
       ],
       respuesta: [fk, ' = ', pr('100 N')] },
     { nivel: 2, titulo: 'La fuerza para arrancarlo',
-      figura: est(figRoce({ fz: { P: 600, N: 600, F: 240, tF: 'F = ?' }, dcl: { k: 0.1 }, textos: [{ x: 8, y: 22, texto: '60 kg; μ_s = 0,4', ancla: 'start' }] })),
+      figura: est(figRoce({ fz: { P: 600, N: 600, F: 240, f: 240, tF: 'F = ?', tf: 'f' }, dcl: { k: 0.1, sinEscala: true }, textos: [{ x: 8, y: 22, texto: '60 kg; μ_s = 0,4', ancla: 'start' }] })),
       enunciado: ['Un ropero de 60 kg está en un piso con μ_s = 0,4. ¿Con qué fuerza de lado empieza a moverse?'],
       datos: [D.peso, D3.est, D3.eq],
       solucion: [
@@ -1070,17 +1094,17 @@
     { nivel: 2, titulo: 'La caja quieta en la rampa',
       figura: est(figRampa({ ang: 37, P: 100, f: 60, N: 80, tf: 'f = ?', tN: 'N', texto: '10 kg', k: 0.5, alt: 'Una caja de 10 kg quieta en una rampa de 37°.' })),
       enunciado: ['Una caja de 10 kg está quieta en una rampa de 37°. ¿Con cuánta fuerza la sostiene el rozamiento?'],
-      datos: [D.peso, D3.rampa, D3.trig, D3.eq],
+      datos: [D.peso, D3.rampa, D3.trig, D3.eqRampa],
       solucion: [{ texto: 'A lo largo de la rampa, el rozamiento iguala la parte del peso que la haría bajar:', ecuacion: [fs, ' = 100 · sen 37° = 100 · ', { frac: ['3', '5'] }, ' = ', pr('60 N')] }],
       respuesta: [fs, ' = ', pr('60 N')] },
     { nivel: 2, titulo: 'La normal en la rampa',
       figura: est(figRampa({ ang: 37, P: 100, N: 80, tN: 'N = ?', texto: '10 kg', k: 0.5, alt: 'Una caja de 10 kg quieta en una rampa de 37°.' })),
       enunciado: ['La misma caja de 10 kg, quieta en la rampa de 37°: ¿con cuánta fuerza la empuja la rampa?'],
-      datos: [D.peso, D3.rampa, D3.trig, D3.eq],
+      datos: [D.peso, D3.rampa, D3.trig, D3.eqRampa],
       solucion: [{ texto: 'Contra la rampa, la normal iguala la parte del peso que la aprieta:', ecuacion: [N, ' = 100 · cos 37° = 100 · ', { frac: ['4', '5'] }, ' = ', pn('80 N')] }],
       respuesta: [N, ' = ', pn('80 N'), ': menos que el peso'] },
     { nivel: 3, titulo: 'Jalar hacia arriba con ángulo',
-      figura: est(figRoce({ cosa: { tipo: 'caja', w: 70, h: 50, texto: '30 kg' }, persona: false, fz: { P: 300, N: 240, F: 100, ang: 37, tN: 'N = ?' }, dcl: { titulo: 'DCL de la caja', k: 0.2 }, textos: [{ x: 8, y: 22, texto: 'velocidad constante →', ancla: 'start' }],
+      figura: est(figRoce({ cosa: { tipo: 'caja', w: 70, h: 50, texto: '30 kg' }, persona: false, fz: { P: 300, N: 240, F: 100, f: 80, ang: 37, tN: 'N = ?', tf: 'f' }, dcl: { titulo: 'DCL de la caja', k: 0.2, sinEscala: true }, textos: [{ x: 8, y: 22, texto: 'velocidad constante →', ancla: 'start' }],
         alt: 'Una caja de 30 kg arrastrada con 100 N que forman 37° sobre la horizontal, a velocidad constante.' })),
       enunciado: ['Arrastras una caja de 30 kg a velocidad constante con una fuerza de ', pj('100 N'), ' que forma 37° sobre la horizontal. ¿Con cuánta fuerza la empuja el piso? (Como en San Marcos 2025-I.)'],
       alternativas: ['300 N', '360 N', '220 N', '240 N', '80 N'],
@@ -1092,7 +1116,7 @@
       ],
       respuesta: [neg('D'), ', ', pn('240 N')] },
     { nivel: 3, titulo: 'La fuerza mínima con ángulo',
-      figura: est(figRoce({ cosa: { tipo: 'caja', w: 70, h: 50, texto: '10 kg' }, persona: false, fz: { P: 100, N: 64, F: 60, ang: 37, tF: 'F = ?', tN: 'N' }, dcl: { titulo: 'DCL de la caja', k: 0.45 }, textos: [{ x: 8, y: 22, texto: 'μ_s = 0,75', ancla: 'start' }],
+      figura: est(figRoce({ cosa: { tipo: 'caja', w: 70, h: 50, texto: '10 kg' }, persona: false, fz: { P: 100, N: 64, F: 60, f: 48, ang: 37, tF: 'F = ?', tN: 'N', tf: 'f' }, dcl: { titulo: 'DCL de la caja', k: 0.45, sinEscala: true }, textos: [{ x: 8, y: 22, texto: 'μ_s = 0,75', ancla: 'start' }],
         alt: 'Una caja de 10 kg jalada con una fuerza que forma 37° sobre la horizontal.' })),
       enunciado: ['Una caja de 10 kg está en un piso con μ_s = 0,75. La jalas con una fuerza que forma 37° sobre la horizontal. ¿Con qué fuerza empieza a moverse? (Como en San Marcos 2026-II.)'],
       alternativas: ['93,75 N', '60 N', '75 N', '62,5 N', '48 N'],
@@ -1106,21 +1130,22 @@
     { nivel: 3, titulo: 'A punto de resbalar',
       figura: est(figRampa({ ang: 37, P: 100, f: 60, N: 80, tf: 'f', tN: 'N', tP: 'P', k: 0.5, textos: [{ x: 8, y: 22, texto: 'a punto de resbalar', ancla: 'start' }], alt: 'Una caja a punto de resbalar en una rampa de 37°.' })),
       enunciado: ['Una caja está quieta en una rampa de 37°, pero a punto de resbalar. ¿Cuánto vale μ_s entre la caja y la rampa?'],
-      alternativas: ['0,75', '0,6', '0,8', '1,33', '0,5'],
+      alternativas: ['0,75', '0,6', '0,8', '1,33', '1,25'],
       datos: [D3.est, D3.rampa, D3.trig, D2.tan],
       solucion: [
         { texto: 'A punto de resbalar, el rozamiento está en su tope:', ecuacion: [P, ' · sen 37° = ', sub('μ', 's'), ' · ', P, ' · cos 37°'] },
         { texto: 'El peso se va:', ecuacion: [sub('μ', 's'), ' = tan 37° = ', { frac: ['3', '4'] }, ' = 0,75'] },
-        { texto: ['La ', neg('B'), ' y la ', neg('C'), ' dan el seno o el coseno; la ', neg('D'), ' divide al revés; la ', neg('E'), ' toma un valor redondo sin el ángulo.'] },
+        { texto: ['La ', neg('B'), ' y la ', neg('C'), ' dan el seno o el coseno; la ', neg('D'), ' divide al revés; la ', neg('E'), ' iguala el rozamiento al peso entero: μ_s · P · cos 37° = P.'] },
       ],
       respuesta: [neg('A'), ', μ_s = 0,75'] },
     { nivel: 3, titulo: 'Subir la caja por la rampa',
-      figura: est(figRampa({ ang: 37, P: 100, F: 100, f: 40, N: 80, tF: 'F = ?', tf: 'f', tN: 'N', tP: 'P', k: 0.45, texto: '10 kg', textos: [{ x: 8, y: 22, texto: 'sube a velocidad constante; μ_k = 0,5', ancla: 'start' }], alt: 'Una caja de 10 kg que sube por una rampa de 37° empujada por una fuerza paralela a la rampa.' })),
+      figura: est(figRampa({ ang: 37, P: 100, F: 100, f: 40, fAbajo: true, N: 80, tF: 'F = ?', tf: 'f', tN: 'N', tP: 'P', k: 0.45, texto: '10 kg', textos: [{ x: 8, y: 22, texto: 'sube a velocidad constante; μ_k = 0,5', ancla: 'start' }], alt: 'Una caja de 10 kg que sube por una rampa de 37° empujada por una fuerza paralela a la rampa.' })),
       enunciado: ['Subes una caja de 10 kg por una rampa de 37° a velocidad constante, empujándola paralela a la rampa. Si μ_k = 0,5, ¿con qué fuerza la empujas? (Como en San Marcos 2019-I.)'],
       alternativas: ['60 N', '20 N', '110 N', '40 N', '100 N'],
-      datos: [D.peso, D3.cin, D3.rampa, D3.trig, D3.eq],
+      datos: [D.peso, D3.cin, D3.rampa, D3.trig, D3.eqRampa],
       solucion: [
-        { texto: 'Contra la rampa: ', ecuacion: [N, ' = 100 · cos 37° = 80 N   ·   ', fk, ' = 0,5 · 80 = 40 N'] },
+        { texto: 'Contra la rampa, la normal iguala esa parte del peso:', ecuacion: [N, ' = 100 · cos 37° = 80 N'] },
+        { texto: 'Desliza: el rozamiento es el cinético.', ecuacion: [fk, ' = 0,5 · 80 = 40 N'] },
         { texto: 'Sube: el rozamiento apunta hacia abajo de la rampa, junto con la parte del peso.', ecuacion: [F, ' = 100 · sen 37° + 40 = 60 + 40 = ', pj('100 N')] },
         { texto: ['La ', neg('A'), ' olvida el rozamiento; la ', neg('B'), ' lo resta; la ', neg('C'), ' cambia seno por coseno; la ', neg('D'), ' da solo el rozamiento.'] },
       ],
@@ -1139,8 +1164,8 @@
       respuesta: [neg('C'), ', ', pr('40 N')] },
   ];
 
-  const COSAS3_AT = [{ nombre: 'un ropero', cosa: { tipo: 'ropero' } }, { nombre: 'una refrigeradora', cosa: { tipo: 'ropero', w: 56, h: 110 } }, { nombre: 'un baúl', cosa: { tipo: 'caja', w: 76, h: 50 } }];
-  const COSAS3_RS = [{ nombre: 'un estante de libros', cosa: { tipo: 'ropero', w: 66, h: 96 } }, { nombre: 'una mesa de madera', cosa: { tipo: 'caja', w: 80, h: 40 } }];
+  const COSAS3_AT = [{ nombre: 'un ropero', lo: 'Lo', cosa: { tipo: 'ropero' } }, { nombre: 'una refrigeradora', lo: 'La', cosa: { tipo: 'ropero', w: 56, h: 110 } }, { nombre: 'un baúl', lo: 'Lo', cosa: { tipo: 'caja', w: 76, h: 50 } }];
+  const COSAS3_RS = [{ nombre: 'un estante de libros', lo: 'Lo', cosa: { tipo: 'ropero', w: 66, h: 96 } }, { nombre: 'una mesa de madera', lo: 'La', cosa: { tipo: 'caja', w: 80, h: 40 } }];
   const roce = {
     id: 'rozamiento-se-ajusta',
     titulo: 'Rozamiento estático y cinético',
@@ -1152,7 +1177,7 @@
     lee: {
       tarjetas: [
         { titulo: 'El piso también frena', texto: 'Empujas un ropero pesado y no se mueve: algo lo frena. Es el piso, que lo empuja paralelo al suelo y en contra del deslizamiento. Esa fuerza se llama rozamiento, f.',
-          dibujo: est(figRoce({ fz: { P: 500, N: 500, F: 100, tP: 'P⃗', tN: 'N⃗', tF: 'F⃗' }, alt: 'Una persona empuja el ropero del cuarto.' })) },
+          dibujo: est(figRoce({ fz: { P: 500, N: 500, F: 100, tP: 'P⃗', tN: 'N⃗', tF: 'F⃗', tf: 'f⃗ = ?' }, alt: 'Una persona empuja el ropero del cuarto; el piso lo frena con el rozamiento.' })) },
         { titulo: 'Dos nombres', texto: ['Mientras el cuerpo sigue quieto, actúa el rozamiento estático, ', fs, '. Cuando ya desliza, actúa el rozamiento cinético, ', fk, '. Cada uno tiene su coeficiente, μ_s y μ_k: números sin unidad.'] },
         { titulo: 'Áspero o liso', texto: 'Una zapatilla sobre cemento seco tiene un μ alto; sobre la escarcha de una mañana fría en el altiplano, uno muy bajo. Al jugar, empuja cada vez más y mira cuándo empieza a moverse.' },
       ],
@@ -1171,6 +1196,7 @@
         { s: [vec(F)], t: 'lo que empuja tu mano' },
         { s: [vec(P)], t: 'el peso del ropero' },
         { s: [vec(N)], t: 'el piso lo empuja hacia arriba' },
+        { s: [vec(fr)], t: 'el rozamiento: cuánto frena, en «Mira»' },
       ],
       controles: [{ id: 'F', etiqueta: 'Empujón, F', color: 'c-o', min: 0, max: 300, paso: 20, inicio: 60, unidad: 'N', decimales: 0 }],
       dibujo: juego3,
@@ -1197,15 +1223,15 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Empujas con 60 N: el piso frena 60 N y sigue quieto.', ecuacion: [fs, ' = ', F, ' = ', pr('60 N')] },
         { estado: { corte: 1 }, texto: 'Con 120 N, frena 120 N: el rozamiento copia tu empujón.', ecuacion: [fs, ' = ', pr('120 N')] },
-        { estado: { corte: 2 }, texto: 'Con 200 N llega a su tope, μ_s por la normal.', ecuacion: [fs, ' máx = 0,4 · 500 = ', pr('200 N')] },
-        { estado: { corte: 3 }, texto: 'Al pasar el tope, desliza: el cinético frena menos.', ecuacion: [fk, ' = 0,3 · 500 = ', pr('150 N')] },
+        { estado: { corte: 2 }, texto: 'Con 200 N llega a su tope, μ_s · N, con μ_s = 0,4.', ecuacion: [fs, ' máx = 0,4 · 500 = ', pr('200 N')] },
+        { estado: { corte: 3 }, texto: 'Al pasar el tope, desliza: el cinético, con μ_k = 0,3, frena menos.', ecuacion: [fk, ' = 0,3 · 500 = ', pr('150 N')] },
         { estado: { corte: 4 }, texto: 'Para seguir a velocidad constante basta empujar 150 N.', ecuacion: [F, ' = ', fk, ' = ', pj('150 N')] },
       ],
     },
     regla: {
-      texto: 'Mientras no desliza, el rozamiento estático vale lo justo para el equilibrio, hasta su tope μ_s · N. Al deslizar, el cinético vale μ_k · N.',
+      texto: 'Mientras no desliza, el rozamiento estático vale lo justo para el equilibrio, hasta un tope: su coeficiente por la normal. Al deslizar, el cinético vale su coeficiente por la normal.',
       ecuacion: [fs, ' ≤ ', sub('μ', 's'), ' · ', N, '   ·   ', fk, ' = ', sub('μ', 'k'), ' · ', N],
-      condicion: 'La normal no siempre es el peso: con una fuerza inclinada o en una rampa, sale de que lo perpendicular sume cero.',
+      condicion: 'el cuerpo se apoya con una normal N, que no siempre es el peso: con una fuerza inclinada o en rampa, cambia.',
       dibujo: est(REVELA3),
     },
     // Así se resuelve: un estante o una mesa (otra lista que «Ahora tú»), quietos o deslizando, y en las semillas impares la
@@ -1215,24 +1241,24 @@
       generar(sm) {
         const r = azar(sm + 900);
         if (sm % 2 === 1) {
-          const m = r.de([4, 6, 8, 12]), Pv = m * G, fsv = Pv * 0.8;
+          const m = r.de([4, 6, 8, 12]), Pv = m * G, fsv = Pv * 0.6;
           return {
-            enunciado: [`Una caja de ${m} kg está quieta en una rampa de 53°. ¿Con cuánta fuerza la sostiene el rozamiento?`],
-            datos: [D.peso, D3.rampa, D3.trig, D3.eq],
-            dibujo: est(figRampa({ ang: 53, P: Pv, f: fsv, N: Pv * 0.6, tf: 'f = ?', tN: 'N', texto: `${m} kg`, k: 50 / Pv, s: 110 })),
+            enunciado: [`Una caja de ${m} kg está quieta en una rampa de 37°. ¿Con cuánta fuerza la sostiene el rozamiento?`],
+            datos: [D.peso, D3.rampa, D3.trig, D3.eqRampa],
+            dibujo: est(figRampa({ ang: 37, P: Pv, f: fsv, N: Pv * 0.8, tf: 'f = ?', tN: 'N', texto: `${m} kg`, k: 50 / Pv })),
             pasos: [
               { tipo: 'pide', texto: 'Piden el rozamiento estático que la sostiene.' },
-              { tipo: 'datos', texto: ['Peso: ', pp(N_(Pv)), '; la rampa forma 53° con el piso.'] },
+              { tipo: 'datos', texto: ['Peso: ', pp(N_(Pv)), '; la rampa forma 37° con el piso.'] },
               { tipo: 'regla', texto: 'Quieta: a lo largo de la rampa, las fuerzas suman cero.', ecuacion: [fs, ' = ', P, ' · sen θ'] },
-              { tipo: 'cuentas', texto: 'Con sen 53° = 4/5:', ecuacion: [fs, ` = ${Pv} · 4/5 = `, pr(N_(fsv))] },
-              { tipo: 'sentido', texto: 'Una rampa empinada pide mucho rozamiento: casi todo el peso tira hacia abajo de la rampa.' },
+              { tipo: 'cuentas', texto: 'Con sen 37° = 3/5:', ecuacion: [fs, ` = ${Pv} · 3/5 = `, pr(N_(fsv))] },
+              { tipo: 'sentido', texto: 'El rozamiento sostiene 3/5 del peso: la parte que la haría bajar. Lo demás aprieta la caja contra la rampa.' },
             ],
             respuesta: [fs, ' = ', pr(N_(fsv))],
           };
         }
         const ob = r.de(COSAS3_RS), m = r.de([20, 30, 40, 50]), mu = r.de([0.3, 0.4, 0.5]), Pv = m * G, tope = mu * Pv, Fv = r.de([0.5, 0.75]) * tope;
         return {
-          enunciado: [`${ob.nombre[0].toUpperCase()}${ob.nombre.slice(1)} de ${m} kg está en un piso con μ_s = ${f(mu)}. Lo empujas de lado con `, pj(N_(Fv)), '. ¿Cuánto vale el rozamiento?'],
+          enunciado: [`${ob.nombre[0].toUpperCase()}${ob.nombre.slice(1)} de ${m} kg está en un piso con μ_s = ${f(mu)}. ${ob.lo} empujas de lado con `, pj(N_(Fv)), '. ¿Cuánto vale el rozamiento?'],
           datos: [D.peso, D3.est, D3.eq],
           dibujo: est(figRoce({ cosa: ob.cosa, fz: { P: Pv, N: Pv, F: Fv, tf: 'f = ?' }, dcl: { titulo: 'DCL', k: 60 / Pv } })),
           pasos: [
@@ -1251,10 +1277,17 @@
       generar(sm) {
         const r = azar(sm), k = sm % 4;
         if (k === 0) {
-          const ob = r.de(COSAS3_AT), m = r.de([20, 30, 40, 50, 60]), Pv = m * G, mus = r.de([0.4, 0.5, 0.6]), muk = mus - 0.1, tope = mus * Pv, mueve = sm % 8 >= 4;
-          const Fv = mueve ? tope + r.de([20, 40, 60]) : r.de([0.4, 0.6, 0.8]) * tope, fv = mueve ? muk * Pv : Fv;
+          // Ningún error da la correcta (lector A: con μ_s = 0,5, μ_k = 0,4 y 0,8 del tope, μ_k · N daba lo mismo que F).
+          const mueve = sm % 8 >= 4;
+          const { ob, m, Pv, mus, muk, tope, Fv, fv } = elegir(r, () => {
+            const c = { ob: r.de(COSAS3_AT), m: r.de([20, 30, 40, 50, 60]), mus: r.de([0.4, 0.5, 0.6]) };
+            c.Pv = c.m * G; c.muk = Math.round((c.mus - 0.1) * 10) / 10; c.tope = c.mus * c.Pv;
+            c.Fv = mueve ? c.tope + r.de([20, 40, 60]) : r.de([0.4, 0.6, 0.8]) * c.tope; c.fv = mueve ? c.muk * c.Pv : c.Fv;
+            const errores = mueve ? [c.Fv, c.tope, c.Fv - c.muk * c.Pv, 0] : [c.tope, 0, c.tope - c.Fv, c.muk * c.Pv];
+            return errores.every(x => Math.abs(x - c.fv) > 1e-9) && c;
+          });
           return {
-            pregunta: [`${ob.nombre[0].toUpperCase()}${ob.nombre.slice(1)} de ${m} kg está en un piso con μ_s = ${f(mus)} y μ_k = ${f(muk)}. Lo empujas de lado con `, pj(N_(Fv)), '. ¿Con cuánta fuerza lo frena el piso?'],
+            pregunta: [`${ob.nombre[0].toUpperCase()}${ob.nombre.slice(1)} de ${m} kg está en un piso con μ_s = ${f(mus)} y μ_k = ${f(muk)}. ${ob.lo} empujas de lado con `, pj(N_(Fv)), '. ¿Con cuánta fuerza lo frena el piso?'],
             datos: [D.peso, D3.est, D3.cin, D3.eq],
             dibujo: est(figRoce({ cosa: ob.cosa, fz: { P: Pv, N: Pv, F: Fv, tf: 'f = ?' }, dcl: { titulo: 'DCL', k: 60 / Pv } })),
             opciones: opciones(fv, mueve ? [
@@ -1286,12 +1319,14 @@
           };
         }
         if (k === 2) {
-          const m = r.de([5, 8, 10, 15, 20]), Pv = m * G, ang = r.de([37, 53]), pideN = sm % 8 >= 4, mus = 0.9;
+          // Solo 37°: con μ_s de 0,8 o 0,9 el tope (0,64 P o 0,72 P) alcanza para P · sen 37° = 0,6 P. A 53° haría falta
+          // μ_s de 1,33 o más: la caja «quieta» era imposible (auditoría A2).
+          const m = r.de([5, 8, 10, 15, 20]), Pv = m * G, ang = 37, pideN = sm % 8 >= 4, mus = r.de([0.8, 0.9]);
           const v = pideN ? Pv * COS_(ang) : Pv * SEN_(ang);
           return {
             pregunta: [`Una caja de ${m} kg está quieta en una rampa de ${ang}°; entre ellas, μ_s = ${f(mus)}. ¿Con cuánta fuerza ${pideN ? 'la empuja la rampa' : 'la sostiene el rozamiento'}?`],
-            datos: [D.peso, D3.rampa, D3.est, D3.trig],
-            dibujo: est(figRampa({ ang, P: Pv, N: pideN ? Pv * COS_(ang) : undefined, f: pideN ? undefined : Pv * SEN_(ang), tN: 'N = ?', tf: 'f = ?', texto: `${m} kg`, k: 50 / Pv, s: ang === 53 ? 110 : 150 })),
+            datos: [D.peso, D3.rampa, D3.est, D3.trig, D3.eqRampa],
+            dibujo: est(figRampa({ ang, P: Pv, N: pideN ? Pv * COS_(ang) : undefined, f: pideN ? undefined : Pv * SEN_(ang), tN: 'N = ?', tf: 'f = ?', texto: `${m} kg`, k: 50 / Pv })),
             opciones: opciones(v, [
               { id: 'swap', valor: pideN ? Pv * SEN_(ang) : Pv * COS_(ang), error: 'ST-SENCOS', siFuera: pideN ? 'Bien partir el peso. Pero contra la rampa va P · cos θ; P · sen θ la haría bajar.' : 'Bien partir el peso. Pero a lo largo va P · sen θ; P · cos θ la aprieta.' },
               { id: 'peso', valor: Pv, error: 'N-MG', siFuera: 'Bien el peso. Pero en la rampa se parte en dos: solo una parte va en cada dirección.' },
@@ -1304,7 +1339,8 @@
         // Nivel examen: la fuerza inclinada (San Marcos 2025-I y 2026-II): la normal ya no es el peso.
         const m = r.de([20, 25, 30, 40, 50]), Pv = m * G, Fv = r.de([50, 100, 150]), ang = r.de([37, 53]), pideMu = sm % 8 >= 4;
         const Nv = Pv - Fv * SEN_(ang), fkv = Fv * COS_(ang), mu = fkv / Nv;
-        if (pideMu && Math.abs(Math.round(mu * 100) - mu * 100) > 1e-9) return generarExamen3(m, Pv, Fv, ang, Nv);
+        // μ con dos decimales exactos, y que F ÷ P (el error de no partir la fuerza) no dé lo mismo
+        if (pideMu && (Math.abs(Math.round(mu * 100) - mu * 100) > 1e-9 || Math.abs(Fv / Pv - mu) < 1e-9)) return generarExamen3(m, Pv, Fv, ang, Nv);
         if (!pideMu) return generarExamen3(m, Pv, Fv, ang, Nv);
         return {
           pregunta: [`Arrastras una caja de ${m} kg a velocidad constante con una fuerza de `, pj(N_(Fv)), ` que forma ${ang}° sobre la horizontal. ¿Cuánto vale μ_k?`],
@@ -1345,7 +1381,7 @@
   function conMu(idea) {
     idea.ejemplos = idea.ejemplos.map(e => Object.assign({}, e, { enunciado: mu(e.enunciado), datos: e.datos.map(mu), solucion: muPasos(e.solucion), respuesta: mu(e.respuesta) }));
     idea.lee.tarjetas = idea.lee.tarjetas.map(t => Object.assign({}, t, { texto: mu(t.texto) }));
-    idea.regla = Object.assign({}, idea.regla, { texto: mu(idea.regla.texto), condicion: mu(idea.regla.condicion) });
+    // La regla no: la app escribe su texto y su condición como texto plano (un arreglo salía «[object Object]»).
     idea.mira = Object.assign({}, idea.mira, { pasos: muPasos(idea.mira.pasos) });
     const gR = idea.resuelve.generar, gA = idea.ahoraTu.generar;
     idea.resuelve.generar = sm => { const c = gR(sm); return Object.assign(c, { enunciado: mu(c.enunciado), datos: c.datos.map(mu), pasos: muPasos(c.pasos) }); };
@@ -1364,8 +1400,10 @@
     const y0 = 22, xs = 140, L0 = o.L0, x = o.x || 0, yEnd = y0 + (L0 + x) * CM, objs = [], fl = [], txt = [...(o.textos || [])];
     objs.push({ tipo: 'viga', x0: 100, x1: 190, y: y0 }, { tipo: 'resorte', de: [xs, y0], a: [xs, yEnd], vueltas: 12, ancho: 8 });
     if (o.bolsa !== false) objs.push({ tipo: 'bolsa', x: xs, y: yEnd, w: 44, h: 34, texto: o.texto || '' });
-    if (o.regla !== false) objs.push({ tipo: 'regla', x: 176, y0, y1: y0 + (o.reglaCm || 40) * CM, cm: CM });
-    const lineas = [{ de: [108, y0 + L0 * CM], a: [176, y0 + L0 * CM] }];
+    // La regla en centímetros solo donde se mide jugando (o.regla: true): en un ejercicio dejaba leer la respuesta
+    // (auditoría M1). La punteada marca siempre el largo natural; si eso es lo que se pide, no va (o.natural: false).
+    if (o.regla) objs.push({ tipo: 'regla', x: 176, y0, y1: y0 + (o.reglaCm || 40) * CM, cm: CM });
+    const lineas = o.natural === false ? [] : [{ de: [116, y0 + L0 * CM], a: [176, y0 + L0 * CM] }];
     const cotas = [];
     if (x > 0 && o.tx !== false) cotas.push({ de: [xs, y0 + L0 * CM], a: [xs, yEnd], lado: 1, sep: 26, texto: o.tx || `x = ${f(x)} cm` });
     if (o.tL) cotas.push({ de: [xs, y0], a: [xs, yEnd], lado: -1, sep: 46, texto: o.tL });
@@ -1378,15 +1416,15 @@
   const K4 = 200, L04 = 20;
   const juego4 = val => {
     const Pv = val.m * G, xcm = Pv / K4 * 100;
-    return est(figResorte({ L0: L04, x: xcm, texto: `${f(val.m)} kg`, fz: { P: Pv, T: Pv, tP: 'P⃗', tT: 'F⃗_e' },
+    return est(figResorte({ L0: L04, x: xcm, regla: true, texto: `${f(val.m)} kg`, fz: { P: Pv, T: Pv, tP: 'P⃗', tT: 'F⃗_e' },
       alt: `La balanza de resorte del mercado con una bolsa de ${f(val.m)} kg: el resorte se estira ${f(xcm)} cm desde su largo natural.` }));
   };
-  const PRED4 = figResorte({ L0: 12, x: 3, texto: '1 kg', tx: false, tL: '15 cm', reglaCm: 40, textos: [{ x: 312, y: 60, texto: 'sin nada: 12 cm', ancla: 'end' }, { x: 312, y: 84, texto: 'con 3 kg: ? cm', ancla: 'end' }],
+  const PRED4 = figResorte({ L0: 12, x: 3, texto: '1 kg', tx: false, tL: '15 cm', reglaCm: 40, textos: [{ x: 312, y: 196, texto: 'sin nada: 12 cm', ancla: 'end' }, { x: 312, y: 220, texto: 'con 3 kg: ? cm', ancla: 'end' }],
     alt: 'Otro resorte, de 12 cm sin nada colgado, mide 15 cm con 1 kg. ¿Cuánto medirá con 3 kg?' });
-  const REVELA4 = figResorte({ L0: 12, x: 9, texto: '3 kg', tx: 'x = 9 cm', tL: '21 cm', textos: [{ x: 312, y: 60, texto: 'sin nada: 12 cm', ancla: 'end' }],
+  const REVELA4 = figResorte({ L0: 12, x: 9, texto: '3 kg', tx: 'x = 9 cm', tL: '21 cm', textos: [{ x: 312, y: 220, texto: 'sin nada: 12 cm', ancla: 'end' }],
     alt: 'Con 3 kg el resorte se estira 9 cm desde su largo natural de 12 cm: mide 21 cm.' });
-  const corte4 = (kg, xx) => { const d = figResorte({ L0: 12, x: xx, bolsa: kg > 0, texto: `${kg} kg`, tx: xx ? `x = ${xx} cm` : false, tL: `${12 + xx} cm` }); return { objetos: d.objetos, cotas: d.cotas, lineas: d.lineas, textos: d.textos }; };
-  const MIRA4 = Object.assign(figResorte({ L0: 12, x: 0, bolsa: false }), { alt: 'El resorte de 12 cm con 1, 2 y 3 kg: cada kilo lo estira 3 cm más.',
+  const corte4 = (kg, xx) => { const d = figResorte({ L0: 12, x: xx, regla: true, bolsa: kg > 0, texto: `${kg} kg`, tx: xx ? `x = ${xx} cm` : false, tL: `${12 + xx} cm` }); return { objetos: d.objetos, cotas: d.cotas, lineas: d.lineas, textos: d.textos }; };
+  const MIRA4 = Object.assign(figResorte({ L0: 12, x: 0, regla: true, bolsa: false }), { alt: 'El resorte de 12 cm con 1, 2 y 3 kg: cada kilo lo estira 3 cm más.',
     cortes: [corte4(0, 0), corte4(1, 3), corte4(2, 6), corte4(3, 9), corte4(3, 9)] });
   const D4 = {
     hooke: [Fe, ' = k · x, con x lo que se estira o se encoge desde el largo natural'],
@@ -1445,7 +1483,7 @@
       ],
       respuesta: [neg('L = 40 cm')] },
     { nivel: 2, titulo: 'El largo natural',
-      figura: est(figResorte({ L0: 15, x: 3, tx: false, tL: '18 cm', texto: '1 kg', textos: [{ x: 312, y: 30, texto: 'con 3 kg: 24 cm', ancla: 'end' }, { x: 312, y: 52, texto: 'sin nada: ?', ancla: 'end' }], alt: 'Un resorte mide 18 cm con 1 kg y 24 cm con 3 kg.' })),
+      figura: est(figResorte({ L0: 15, x: 3, tx: false, natural: false, tL: '18 cm', texto: '1 kg', textos: [{ x: 312, y: 30, texto: 'con 3 kg: 24 cm', ancla: 'end' }, { x: 312, y: 52, texto: 'sin nada: ?', ancla: 'end' }], alt: 'Un resorte mide 18 cm con 1 kg y 24 cm con 3 kg.' })),
       enunciado: ['Un resorte mide 18 cm con 1 kg colgado y 24 cm con 3 kg. ¿Cuánto mide sin nada?'],
       datos: [D4.hooke, D4.largo],
       solucion: [
@@ -1483,7 +1521,7 @@
       ],
       respuesta: [fs, ' = ', pr('6 N')] },
     { nivel: 3, titulo: 'El resorte de la polea móvil',
-      figura: est({ alto: 230, techo: { y: 16, x0: 40, x1: 280 }, objetos: [{ tipo: 'cuerda', de: [144, 120], a: [83, 16] }, { tipo: 'cuerda', de: [176, 120], a: [214, 70] }, { tipo: 'resorte', de: [214, 70], a: [237, 16], vueltas: 8, ancho: 6 },
+      figura: est({ alto: 230, techo: { y: 16, x0: 40, x1: 280 }, objetos: [{ tipo: 'cuerda', de: [144, 120], a: [66, 16] }, { tipo: 'cuerda', de: [176, 120], a: [214, 70] }, { tipo: 'resorte', de: [214, 70], a: [254.5, 16], vueltas: 8, ancho: 6 },
         { tipo: 'polea', c: [160, 124], r: 16 }, { tipo: 'cuerda', de: [160, 124], a: [160, 156] }, { tipo: 'caja', x: 160, y: 190, w: 56, h: 34, texto: '160 N' }],
         angulos: [{ c: [176, 120], de: 53, a: 90, r: 26, texto: '37°' }], textos: [{ x: 312, y: 110, texto: 'k = 2000 N/m', ancla: 'end' }, { x: 312, y: 132, texto: 'x = ?', ancla: 'end' }],
         alt: 'Una carga de 160 N cuelga de una polea móvil; un tramo de cuerda va al techo y el otro a un resorte; los dos forman 37° con la vertical.' }),
@@ -1512,16 +1550,16 @@
       figura: est({ alto: 236, piso: { y: 226 }, objetos: [{ tipo: 'viga', x0: 100, x1: 200, y: 22 }, { tipo: 'resorte', de: [150, 22], a: [150, 152], vueltas: 12 }, { tipo: 'balanza', x: 150, y: 226, w: 110, lectura: '? N' }, { tipo: 'caja', x: 150, y: 200, w: 60, h: 48, texto: '6 kg' }],
         textos: [{ x: 312, y: 60, texto: 'k = 500 N/m', ancla: 'end' }, { x: 312, y: 82, texto: 'estirado 4 cm', ancla: 'end' }], alt: 'Una caja de 6 kg sobre la balanza, jalada hacia arriba por un resorte estirado 4 cm.' }),
       enunciado: ['Una caja de 6 kg está sobre la balanza. Un resorte de 500 N/m, estirado 4 cm, la jala hacia arriba. ¿Cuánto marca la balanza?'],
-      alternativas: ['60 N', '80 N', '40 N', '20 N', '100 N'],
+      alternativas: ['60 N', '80 N', '40 N', '20 N', '58 N'],
       datos: [D.peso, D4.hooke, D.primera, D.balanza, D4.cm],
       solucion: [
         { texto: 'El resorte jala hacia arriba con:', ecuacion: [Fe, ' = 500 · 0,04 = ', pj('20 N')] },
         { texto: 'Quieta: la balanza sostiene el resto del peso.', ecuacion: [N, ' = 60 − 20 = ', pn('40 N')] },
-        { texto: ['La ', neg('A'), ' marca el peso; la ', neg('B'), ' suma el resorte; la ', neg('D'), ' da el resorte; la ', neg('E'), ' usa 4 · 500 / 20 sin pasar a metros.'] },
+        { texto: ['La ', neg('A'), ' marca el peso; la ', neg('B'), ' suma el resorte; la ', neg('D'), ' da el resorte; la ', neg('E'), ' usa 0,004 m: el resorte daría 2 N.'] },
       ],
       respuesta: [neg('C'), ', ', pn('40 N')] },
     { nivel: 3, titulo: 'El largo sin nada',
-      figura: est(figResorte({ L0: 26, x: 4, tx: false, tL: '30 cm', texto: '2 kg', reglaCm: 44, textos: [{ x: 312, y: 30, texto: 'con 6 kg: 38 cm', ancla: 'end' }, { x: 312, y: 52, texto: 'sin nada: ?', ancla: 'end' }], alt: 'Un resorte mide 30 cm con 2 kg y 38 cm con 6 kg.' })),
+      figura: est(figResorte({ L0: 26, x: 4, tx: false, natural: false, tL: '30 cm', texto: '2 kg', reglaCm: 44, textos: [{ x: 312, y: 30, texto: 'con 6 kg: 38 cm', ancla: 'end' }, { x: 312, y: 52, texto: 'sin nada: ?', ancla: 'end' }], alt: 'Un resorte mide 30 cm con 2 kg y 38 cm con 6 kg.' })),
       enunciado: ['Un resorte mide 30 cm con 2 kg colgados y 38 cm con 6 kg. ¿Cuánto mide sin nada colgado?'],
       alternativas: ['22 cm', '30 cm', '15 cm', '26 cm', '28 cm'],
       datos: [D4.hooke, D4.largo],
@@ -1566,7 +1604,7 @@
     ejemplos: EJEMPLOS_RES,
     juega: {
       pieza: 'fis-estatica',
-      consigna: 'La balanza de resorte del mercado tiene un resorte de k = 200 N/m. La línea punteada marca su largo natural.',
+      consigna: 'La balanza de resorte del mercado tiene k = 200 N/m; la punteada marca su largo natural. Cada kilo pesa 10 N.',
       mision: {
         texto: 'Cuelga una bolsa que estire el resorte justo 10 cm.',
         logrado: val => Math.abs(val.m * G / K4 * 100 - 10) < 1e-9,
@@ -1612,7 +1650,7 @@
     regla: {
       texto: 'Un resorte estirado o encogido hace una fuerza proporcional a su deformación x: lo que cambió su largo desde el largo natural.',
       ecuacion: [Fe, ' = k · x'],
-      condicion: 'x no es el largo total: L = L₀ + x al estirar y L = L₀ − x al encoger. k va en N/m.',
+      condicion: 'el resorte no pasa de su límite; x no es el largo: L = L₀ + x al estirar y L₀ − x al encoger.',
       dibujo: est(REVELA4),
     },
     // Así se resuelve: la constante con una medida (semillas pares) y el largo total de un resorte que se encoge bajo una
@@ -1657,7 +1695,9 @@
       generar(sm) {
         const r = azar(sm), k = sm % 4;
         if (k === 0) {
-          const bolsa = r.de(BOLSAS), m = r.de([1, 1.5, 2, 3, 4]), kk = r.de([200, 250, 400, 500]), Pv = m * G, xcm = xcmDe(Pv, kk);
+          // sin k ÷ P = x (el error RS-INV acertaba: 400 N/m con 4 kg) ni la misión del juego (200 N/m con 2 kg: 10 cm)
+          const { bolsa, m, kk } = elegir(r, () => { const c = { bolsa: r.de(BOLSAS), m: r.de([1, 1.5, 2, 3, 4]), kk: r.de([200, 250, 400, 500]) }; const x = xcmDe(c.m * G, c.kk);
+            return Math.abs(c.kk / (c.m * G) - x) > 1e-9 && !(c.kk === 200 && c.m === 2) && c; }), Pv = m * G, xcm = xcmDe(Pv, kk);
           return {
             pregunta: [`En la balanza de resorte del mercado, de k = ${kk} N/m, cuelgas ${bolsa} de ${f(m)} kg. ¿Cuánto se estira el resorte?`],
             datos: [D.peso, D4.hooke, D4.eq, D4.cm],
@@ -1688,7 +1728,7 @@
         if (k === 2) {
           const L0 = r.de([10, 15, 20, 25]), m = r.de([1, 2, 3]), kk = r.de([200, 400, 500]), xcm = xcmDe(m * G, kk), L = L0 + xcm;
           return {
-            pregunta: [`Un resorte de k = ${kk} N/m mide ${L0} cm sin nada colgado. ¿Cuánto mide con ${m} kg colgados?`],
+            pregunta: [`Un resorte de k = ${kk} N/m mide ${L0} cm sin nada colgado. ¿Cuánto mide con ${m} kg ${m === 1 ? 'colgado' : 'colgados'}?`],
             datos: [D.peso, D4.hooke, D4.largo, D4.cm],
             opciones: opciones(L, [
               { id: 'x', valor: xcm, error: 'RS-SOLO-X', siFuera: 'Bien lo que se estira. Pero piden cuánto mide: suma el largo natural.' },
@@ -1729,7 +1769,7 @@
       const p = en(q.s);
       if (q.persona) objs.push({ tipo: 'persona', x: p[0], y: p[1] - 4, alto: 54, mano: [p[0] + (q.s < 0 ? 10 : -10), p[1] - 28], texto: q.nombre });
       else if (q.caja) objs.push({ tipo: 'caja', x: p[0], y: p[1] - 4, w: 34, h: 26, texto: q.caja });
-      if (q.F) fl.push({ de: [p[0], p[1] + 4], ang: q.ang === undefined ? 270 : q.ang, largo: q.F * (o.k || 0.12), color: q.color || 'h', texto: q.texto, rumbo: [q.s < 0 ? -1 : 1, 0.4] });
+      if (q.F) fl.push({ de: [p[0], p[1] + 4], ang: q.ang === undefined ? 270 : q.ang, largo: largoDe(q.F, q.texto, o.k || 0.12), color: q.color || 'h', texto: q.texto, rumbo: [q.s < 0 ? -1 : 1, 0.4] });
       if (q.cota) cotas.push({ de: [c[0], c[1] + 6], a: [p[0], p[1] + 6], lado: q.s < 0 ? 1 : -1, sep: 18, texto: q.cota });
     }
     return { alto: o.alto || 240, piso: { y: c[1] + 26 + (o.pisoMas || 0), x0: 8, x1: 312 }, objetos: objs, flechas: fl, cotas, textos: o.textos || [], alt: o.alt };
@@ -1753,15 +1793,24 @@
     alt: 'La parte del palo pesa unos 2 N con su centro lejos del corte; la del cepillo, unos 6 N, cerca: hacen el mismo torque.' });
   function figLlave(o) {
     const e = [70, 150], L = o.L || 170, a = [e[0] + L, e[1]], th = o.ang;
-    const fl = [{ de: a, ang: th === 90 ? 90 : 180 - th, largo: o.largo || 60, color: 'o', texto: o.tF || `F = ${N_(o.F)}`, rumbo: [1, -0.4] }];
+    const fl = [{ de: a, ang: th === 90 ? 90 : 180 - th, largo: o.largo || 72, color: 'o', texto: o.tF || `F = ${N_(o.F)}`, rumbo: [0, -1] }];
     const objs = [{ tipo: 'llave', de: e, a }];
     const lineas = [], angs = [];
     if (th !== 90) {
       const ux = Math.cos(rad(180 - th)), uy = -Math.sin(rad(180 - th));
-      lineas.push({ de: [a[0] - ux * 90, a[1] - uy * 90], a: [a[0] + ux * 70, a[1] + uy * 70] });
+      lineas.push({ de: [a[0] - ux * 50, a[1] - uy * 50], a: [a[0], a[1]] });
       angs.push({ c: a, de: 180 - th, a: 180, r: 26, texto: `${th}°` });
     }
-    return { alto: 210, objetos: objs, flechas: fl, lineas, angulos: angs, cotas: [{ de: e, a, lado: -1, sep: 18, texto: o.tL || 'L' }], textos: o.textos || [], alt: o.alt };
+    return { alto: 210, objetos: objs, flechas: fl, lineas, angulos: angs, cotas: [{ de: e, a, lado: 1, sep: 24, texto: o.tL || 'L' }], textos: o.textos || [], alt: o.alt };
+  }
+  // La puerta vista desde arriba: las bisagras a la izquierda y la fuerza en el borde, con su ángulo con la puerta.
+  function figPuerta(o) {
+    const x0 = 40, y = 120, x1 = x0 + 200 * o.L, a = [x1, y];
+    return { alto: 180, objetos: [{ tipo: 'barra', de: [x0, y], a, grosor: 10 }, { tipo: 'nudo', en: [x0, y] }],
+      flechas: [{ de: a, ang: 180 - o.ang, largo: 60, color: 'o', texto: o.tF, rumbo: [0, -1] }],
+      angulos: [{ c: a, de: 180 - o.ang, a: 180, r: 26, texto: `${o.ang}°` }],
+      cotas: [{ de: [x0, y + 6], a: [x1, y + 6], lado: 1, sep: 16, texto: `${f(o.L)} m` }], textos: [{ x: x0, y: y - 22, texto: 'bisagras', ancla: 'start', peso: 400 }],
+      alt: `Una puerta vista desde arriba, empujada en su borde con una fuerza inclinada ${o.ang}° respecto de la puerta.` };
   }
   const MIRA5 = Object.assign(figBarra({ cargas: [] }), { alt: 'El sube y baja equilibrado, la escoba cortada y la llave con la fuerza inclinada.',
     cortes: [
@@ -1771,7 +1820,7 @@
       (() => { const d = figLlave({ ang: 53, F: 80, tF: 'F = 80 N', tL: 'L = 0,25 m' }); return { objetos: d.objetos, flechas: d.flechas, cotas: d.cotas, lineas: d.lineas, angulos: d.angulos, textos: [{ x: 8, y: 22, texto: 'brazo: 0,25 · sen 53° = 0,2 m', ancla: 'start' }], piso: undefined }; })(),
     ] });
   const D5 = {
-    tau: ['Torque: τ = ', F, ' · d, con d el brazo: la distancia del eje a la línea de la fuerza'],
+    tau: 'Torque: τ = F · d, con F la fuerza y d su brazo: la distancia del eje a la línea de la fuerza',
     eq: 'Sin girar, los torques horarios igualan a los antihorarios',
     brazo: ['Fuerza que forma θ con una barra, a L del eje: d = L · sen θ'],
     cm: '1 m = 100 cm',
@@ -1814,8 +1863,8 @@
       solucion: [{ texto: 'Se despeja el brazo:', ecuacion: ['d = ', { frac: ['12', pj('40')] }, ' = 0,3 m'] }],
       respuesta: [neg('d = 0,3 m')] },
     { nivel: 2, titulo: 'Equilibrar el sube y baja',
-      figura: est(figBarra({ cargas: [{ s: -1.5, persona: true, nombre: '40 kg', F: 400, texto: '400 N', cota: '1,5 m' }, { s: 2, persona: true, nombre: '30 kg', F: 300, texto: '300 N', cota: 'd = ?' }], k: 0.1, alt: 'Un niño de 40 kg a 1,5 m del apoyo y otro de 30 kg del otro lado.' })),
-      enunciado: ['Un niño de 40 kg se sienta a 1,5 m del apoyo del sube y baja. ¿A qué distancia del apoyo debe sentarse otro de 30 kg para que quede horizontal?'],
+      figura: est(figBarra({ cargas: [{ s: -1.5, persona: true, nombre: '40 kg', F: 400, texto: '400 N', cota: '1,5 m' }, { s: 1.4, persona: true, nombre: '30 kg', F: 300, texto: '300 N', cota: 'd = ?' }], k: 0.1, textos: [{ x: 8, y: 22, texto: 'El dibujo no está a escala.', ancla: 'start', peso: 400 }], alt: 'Un niño de 40 kg a 1,5 m del apoyo y otro de 30 kg del otro lado. El dibujo no está a escala.' })),
+      enunciado: ['Un niño de 40 kg se sienta a 1,5 m del apoyo del sube y baja. ¿A qué distancia del apoyo debe sentarse otro de 30 kg para que quede horizontal? (El dibujo no está a escala.)'],
       datos: [D.peso, D5.tau, D5.eq],
       solucion: [
         { texto: 'Los torques de los dos lados se igualan:', ecuacion: ['400 · 1,5 = 300 · d'] },
@@ -1857,27 +1906,27 @@
       respuesta: [neg('τ = 12 N·m')] },
     { nivel: 3, titulo: 'La barreta del agricultor',
       figura: est({ alto: 214, piso: { y: 178, x0: 120 }, objetos: [{ tipo: 'barra', de: [50, 140], a: [300, 140], grosor: 7 }, { tipo: 'apoyo', x: 100, y: 144, alto: 30 }, { tipo: 'caja', x: 60, y: 136, w: 40, h: 34, texto: 'piedra' }],
-        flechas: [{ de: [60, 144], ang: 270, largo: 34, color: 'h', texto: '800 N', rumbo: [1, 0.6] }, { de: [300, 112], ang: 270, largo: 26, color: 'o', texto: 'F = ?', rumbo: [-1, -0.2] }],
+        flechas: [{ de: [54, 144], ang: 270, largo: 34, color: 'f', texto: '800 N', rumbo: [1, 0.6] }, { de: [300, 112], ang: 270, largo: 26, color: 'o', texto: 'F = ?', rumbo: [-1, -0.2] }],
         cotas: [{ de: [50, 150], a: [100, 150], lado: 1, sep: 46, texto: '0,3 m' }, { de: [50, 126], a: [300, 126], lado: -1, sep: 26, texto: '1,5 m' }], alt: 'Una barreta de 1,5 m apoyada en una piedrita a 0,3 m de la punta, bajo una piedra que empuja con 800 N.' }),
-      enunciado: ['Un agricultor mueve una piedra con una barreta liviana de 1,5 m, apoyada en una piedrita a 0,3 m de la punta. La piedra empuja la punta con 800 N. ¿Con qué fuerza vertical empuja el otro extremo?'],
-      alternativas: ['200 N', '800 N', '160 N', '1000 N', '4000 N'],
+      enunciado: ['Un agricultor mueve una piedra con una barreta liviana de 1,5 m, apoyada en una piedrita a 0,3 m de la punta. La piedra empuja la punta con ', pn('800 N'), '. ¿Con qué fuerza vertical empuja el otro extremo?'],
+      alternativas: ['200 N', '800 N', '160 N', '1000 N', '3200 N'],
       datos: [D5.tau, D5.eq],
       solucion: [
         { texto: 'El eje es la piedrita: la piedra tiene brazo 0,3 m y la mano, 1,5 − 0,3 = 1,2 m.' },
         { texto: 'Torques iguales:', ecuacion: ['800 · 0,3 = ', F, ' · 1,2   →   ', F, ' = ', pj('200 N')] },
-        { texto: ['La ', neg('B'), ' iguala fuerzas; la ', neg('C'), ' usa 1,5 m de brazo; la ', neg('D'), ' suma 800 y 200; la ', neg('E'), ' multiplica en vez de dividir.'] },
+        { texto: ['La ', neg('B'), ' iguala fuerzas; la ', neg('C'), ' usa 1,5 m de brazo; la ', neg('D'), ' suma 800 y 200; la ', neg('E'), ' invierte los brazos: 800 · 1,2 ÷ 0,3.'] },
       ],
       respuesta: [neg('A'), ', ', pj('200 N')] },
     { nivel: 3, titulo: 'Tres niños en el balancín',
-      figura: est(figBarra({ cargas: [{ s: -2, persona: true, nombre: 'Ana', F: 300, texto: '300 N', cota: '2 m' }, { s: -1, persona: true, nombre: 'Beto', F: 200, texto: '200 N' }, { s: 2, persona: true, nombre: 'Carla', F: 400, texto: '400 N', cota: 'd = ?' }], k: 0.1,
-        textos: [{ x: 8, y: 22, texto: 'Beto, a 1 m del apoyo', ancla: 'start', peso: 400 }], alt: 'Ana, de 300 N, a 2 m del apoyo y Beto, de 200 N, a 1 m, del mismo lado; Carla, de 400 N, del otro.' })),
-      enunciado: ['Ana, de 30 kg, a 2 m del apoyo, y Beto, de 20 kg, a 1 m, están del mismo lado. ¿A qué distancia del otro lado se sienta Carla, de 40 kg, para equilibrarlos?'],
-      alternativas: ['1,5 m', '2,5 m', '1 m', '0,5 m', '2 m'],
+      figura: est(figBarra({ cargas: [{ s: -2, persona: true, nombre: 'Ana', F: 300, texto: '300 N', cota: '2 m' }, { s: -1, persona: true, nombre: 'Beto', F: 200, texto: '200 N' }, { s: 1.4, persona: true, nombre: 'Carla', F: 400, texto: '400 N', cota: 'd = ?' }], k: 0.1,
+        textos: [{ x: 8, y: 22, texto: 'Beto, a 1 m del apoyo', ancla: 'start', peso: 400 }, { x: 8, y: 42, texto: 'El dibujo no está a escala.', ancla: 'start', peso: 400 }], alt: 'Ana, de 300 N, a 2 m del apoyo y Beto, de 200 N, a 1 m, del mismo lado; Carla, de 400 N, del otro.' })),
+      enunciado: ['Ana, de 30 kg, a 2 m del apoyo, y Beto, de 20 kg, a 1 m, están del mismo lado. ¿A qué distancia del apoyo se sienta Carla, de 40 kg, al otro lado?'],
+      alternativas: ['1,5 m', '2,5 m', '3 m', '0,5 m', '2 m'],
       datos: [D.peso, D5.tau, D5.eq],
       solucion: [
         { texto: 'Del lado de Ana y Beto, los torques se suman:', ecuacion: ['300 · 2 + 200 · 1 = 800 N·m'] },
         { texto: 'Carla los iguala:', ecuacion: ['400 · d = 800   →   d = 2 m'] },
-        { texto: ['La ', neg('A'), ' usa solo a Ana; la ', neg('B'), ' suma las distancias; la ', neg('C'), ' iguala pesos; la ', neg('D'), ' usa solo a Beto.'] },
+        { texto: ['La ', neg('A'), ' usa solo a Ana; la ', neg('B'), ' pone a Beto a 2 m: 500 · 2 ÷ 400; la ', neg('C'), ' suma 2 + 1; la ', neg('D'), ' usa solo a Beto.'] },
       ],
       respuesta: [neg('E'), ', 2 m'] },
     { nivel: 3, titulo: 'La escoba cortada',
@@ -1938,7 +1987,7 @@
     ejemplos: EJEMPLOS_TQ,
     juega: {
       pieza: 'fis-estatica',
-      consigna: 'En el sube y baja del parque, Ana, de 30 kg, se sienta a 1,5 m del apoyo. Tú decides dónde se sienta Beto.',
+      consigna: 'En el sube y baja, Ana, de 30 kg, está a 1,5 m del apoyo. Tú sientas a Beto. Un kilo pesa 10 N.',
       mision: {
         texto: 'Sienta a Beto donde el sube y baja quede horizontal.',
         // Dos maneras: Beto de 20 kg a 2,25 m, o de 30 kg a 1,5 m.
@@ -1956,7 +2005,7 @@
         { id: 'd', etiqueta: 'Distancia, d', min: 0.5, max: 2.5, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
       ],
       dibujo: juego5,
-      lectura: val => { const [ta, tb] = tauDe(val); return [`τ de Ana: ${f(ta)} N·m; Beto: ${f(tb)} N·m: `, Math.abs(ta - tb) < 1e-9 ? 'horizontal' : ta > tb ? 'baja Ana' : 'baja Beto']; },
+      lectura: val => { const [ta, tb] = tauDe(val); return [`Ana, τ = ${f(ta)} N·m; Beto, τ = ${f(tb)} N·m: `, Math.abs(ta - tb) < 1e-9 ? 'queda horizontal' : ta > tb ? 'baja Ana' : 'baja Beto']; },
       resumen: { mB: 20, d: 1.5 },
       minimo: 3,
     },
@@ -1984,9 +2033,9 @@
       ],
     },
     regla: {
-      texto: 'El torque mide cuánto hace girar una fuerza: τ = F · d, con d el brazo. Sin girar, los torques de un sentido igualan a los del otro.',
-      ecuacion: ['τ = ', F, ' · d'],
-      condicion: 'Si F forma θ con la barra y actúa a L del eje, el brazo es d = L · sen θ.',
+      texto: 'El torque mide cuánto hace girar una fuerza, un peso o una mano: τ = F · d, con d su brazo. Sin girar, los de un sentido igualan a los otros.',
+      ecuacion: ['τ = F · d'],
+      condicion: 'd va del eje a la línea de F; si F forma θ con la barra, d = L · sen θ.',
       dibujo: est(Object.assign({}, MIRA5, MIRA5.cortes[1], { cortes: undefined })),
     },
     // Así se resuelve: la palanca con un peso que se levanta (semillas pares) y el torque de una fuerza inclinada en una
@@ -2000,10 +2049,11 @@
           return {
             enunciado: ['Empujas el borde de una puerta, a ', `${f(L)} m de las bisagras, con `, pj(N_(Fv)), ` que forman ${ang}° con la puerta. ¿Qué torque haces?`],
             datos: [D5.tau, D5.brazo, trigDe(ang)],
+            dibujo: est(figPuerta({ L, ang, tF: `F = ${N_(Fv)}` })),
             pasos: [
               { tipo: 'pide', texto: 'Piden el torque respecto de las bisagras.' },
               { tipo: 'datos', texto: ['Fuerza: ', pj(N_(Fv)), `, a ${f(L)} m del eje, inclinada ${ang}° respecto de la puerta.`] },
-              { tipo: 'regla', texto: 'El torque es la fuerza por su brazo; con la fuerza inclinada, el brazo es L · sen θ.', ecuacion: ['τ = ', F, ' · d   ·   d = L · sen θ'] },
+              { tipo: 'regla', texto: 'El torque es la fuerza por su brazo; con la fuerza inclinada, el brazo es L · sen θ.', ecuacion: ['τ = F · d   ·   d = L · sen θ'] },
               { tipo: 'cuentas', texto: 'Primero el brazo, después el torque.', ecuacion: [`d = ${f(L)} · sen ${ang}° = ${f(d, 3)} m   →   τ = ${Fv} · ${f(d, 3)} = ${f(tau)} N·m`] },
               { tipo: 'sentido', texto: `Perpendicular darías ${f(Fv * L)} N·m: inclinada, gira menos.` },
             ],
@@ -2014,10 +2064,11 @@
         return {
           enunciado: [`Con una palanca liviana levantas un saco de ${Pv} N. El saco está a ${f(a)} m del apoyo y tú empujas hacia abajo a ${f(b)} m del otro lado. ¿Con qué fuerza empujas?`],
           datos: [D5.tau, D5.eq],
+          dibujo: est(figBarra({ medio: 1.8, k: 42 / Pv, cargas: [{ s: -a, caja: 'saco', F: Pv, texto: `${Pv} N`, cota: `${f(a)} m` }, { s: b, F: 1, color: 'o', texto: 'F = ?', cota: `${f(b)} m` }] })),
           pasos: [
             { tipo: 'pide', texto: 'Piden tu fuerza para que la palanca no gire.' },
             { tipo: 'datos', texto: ['El saco empuja con ', pp(N_(Pv)), ` a ${f(a)} m del apoyo; tú, a ${f(b)} m.`] },
-            { tipo: 'regla', texto: 'Sin girar, los torques de los dos lados se igualan.', ecuacion: ['τ = ', F, ' · d'] },
+            { tipo: 'regla', texto: 'Sin girar, los torques de los dos lados se igualan.', ecuacion: ['τ = F · d'] },
             { tipo: 'cuentas', texto: 'Se igualan y se despeja F.', ecuacion: [`${Pv} · ${f(a)} = `, F, ` · ${f(b)}   →   `, F, ' = ', pj(N_(Fv))] },
             { tipo: 'sentido', texto: `Empujas menos que ${Pv} N porque tu brazo es más largo: ${f(b / a)} veces el del saco.` },
           ],
@@ -2038,14 +2089,14 @@
             opciones: opciones(tau, [
               { id: 'cm', valor: Fv * dcm, error: 'U-cm', siFuera: 'Bien multiplicar. Pero el brazo va en metros: así sale cien veces más.' },
               { id: 'div', valor: Fv / (dcm / 100), error: 'TQ-DIV', siFuera: 'Bien usar la fuerza y el brazo. Pero se multiplican, no se dividen.' },
-              { id: 'inv', valor: (dcm / 100) / Fv, error: 'TQ-INV', siFuera: 'Bien la idea. Pero dividiste al revés: el torque es fuerza por brazo.' },
+              { id: 'divcm', valor: Fv / dcm, error: 'TQ-DIV', siFuera: 'Bien usar la fuerza y el brazo. Pero se multiplican, y el brazo va en metros.' },
               { id: 'mitad', valor: tau / 2, error: 'TQ-MITAD', siFuera: 'Bien fuerza por brazo. Pero el brazo es todo el largo, no la mitad.' },
             ], v => `${f(v)} N·m`),
             solucion: { texto: `Perpendicular, el brazo es ${f(dcm / 100)} m.`, ecuacion: [`τ = ${Fv} · ${f(dcm / 100)} = ${f(tau)} N·m`] },
           };
         }
         if (k === 1) {
-          const [a, b] = r.de(NINOS), { ma, da, mb, db } = elegir(r, () => { const c = { ma: r.de([30, 36, 40]), da: r.de([1, 1.5, 2]), mb: r.de([20, 24, 25]) }; c.db = c.ma * c.da / c.mb; return exacto(c.db) && c; });
+          const [a, b] = r.de(NINOS), { ma, da, mb, db } = elegir(r, () => { const c = { ma: r.de([30, 36, 40]), da: r.de([1, 1.5, 2]), mb: r.de([20, 24, 25]) }; c.db = c.ma * c.da / c.mb; return exacto(c.db) && c.db <= 2.5 && c; });
           return {
             pregunta: [`En el sube y baja, ${a}, de ${ma} kg, se sienta a ${f(da)} m del apoyo. ¿A qué distancia del otro lado se sienta ${b}, de ${mb} kg, para que quede horizontal?`],
             datos: [D.peso, D5.tau, D5.eq],
@@ -2068,7 +2119,7 @@
               { id: 'brazo', valor: Fv * L, error: 'TQ-BRAZO', siFuera: 'Bien fuerza por distancia. Pero inclinada, el brazo es menor que la llave.' },
               { id: 'cos', valor: Fv * L * COS_(ang), error: 'TQ-COS', siFuera: 'Bien acortar el brazo. Pero va con el seno del ángulo con la llave.' },
               { id: 'div', valor: Fv * SEN_(ang) / L, error: 'TQ-DIV', siFuera: 'Bien la parte de la fuerza. Pero se multiplica por la distancia.' },
-              { id: 'suma', valor: Fv * (L + SEN_(ang)) / 2, error: 'TQ-RARO', siFuera: 'Bien usar los tres datos. Pero el brazo es L · sen θ: un producto.' },
+              { id: 'entre', valor: Fv * L / SEN_(ang), error: 'TQ-ENTRE-SEN', siFuera: 'Bien usar el seno. Pero el brazo se acorta: se multiplica por sen θ, no se divide.' },
             ], v => `${f(v)} N·m`),
             solucion: { texto: `El brazo: ${f(L)} · sen ${ang}° = ${f(L * SEN_(ang), 3)} m.`, ecuacion: [`τ = ${Fv} · ${f(L * SEN_(ang), 3)} = ${f(tau)} N·m`] },
           };
@@ -2098,23 +2149,23 @@
   const PXT = 60, XA = 40, K6 = 0.08;
   function figTablon(o) {
     const L = o.L || 4, xB = o.xB === undefined ? L : o.xB, X = s => XA + PXT * s, k = o.k || K6, fl = [], objs = [];
-    objs.push({ tipo: 'barra', de: [X(0), 145], a: [X(L), 145], grosor: 10 }, { tipo: 'caballete', x: X(0) + 8, y: 150, alto: 48 }, { tipo: 'caballete', x: X(xB) - (xB === L ? 8 : 0), y: 150, alto: 48 });
-    if (o.NA !== undefined) fl.push({ de: [X(0) + 8, 140], ang: 90, largo: Math.max(14, o.NA * k), color: 'f', texto: o.tA || `N_A = ${N_(o.NA)}`, rumbo: [-0.2, -1] });
-    if (o.NB !== undefined) fl.push({ de: [X(xB) - (xB === L ? 8 : 0), 140], ang: 90, largo: Math.max(14, o.NB * k), color: 'f', texto: o.tB || `N_B = ${N_(o.NB)}`, rumbo: [0.2, -1] });
-    if (o.Pb) fl.push({ de: [X(L / 2), 150], ang: 270, largo: o.Pb * k, color: 'h', texto: o.tPb || `P_b = ${N_(o.Pb)}`, rumbo: [0, 1] });
+    objs.push({ tipo: 'barra', de: [X(0), 145], a: [X(L), 145], grosor: 10 }, { tipo: 'caballete', x: X(0) + 8, y: 150, alto: 64 }, { tipo: 'caballete', x: X(xB) - (xB === L ? 8 : 0), y: 150, alto: 64 });
+    if (o.NA !== undefined) fl.push({ de: [X(0) + 8, 140], ang: 90, largo: largoDe(o.NA, o.tA, k), color: 'f', texto: o.tA || `N_A = ${N_(o.NA)}`, rumbo: [-0.2, -1] });
+    if (o.NB !== undefined) fl.push({ de: [X(xB) - (xB === L ? 8 : 0), 140], ang: 90, largo: largoDe(o.NB, o.tB, k), color: 'f', texto: o.tB || `N_B = ${N_(o.NB)}`, rumbo: [0.2, -1] });
+    if (o.Pb) fl.push({ de: [X(L / 2), 150], ang: 270, largo: o.Pb * k, color: 'h', texto: o.tPb || `P_b = ${N_(o.Pb)}`, rumbo: [o.pintor !== undefined && o.pintor < L / 2 ? 1 : -1, 0.3] });
+    if (o.carga) { objs.push({ tipo: 'balde', x: X(o.carga.x), y: 140, w: 28, h: 24 }); fl.push({ de: [X(o.carga.x), 150], ang: 270, largo: o.carga.P * k, color: 'h', texto: o.carga.texto, rumbo: [o.carga.x < L / 2 ? -1 : 1, 0.3] }); }
     if (o.pintor !== undefined) {
       objs.push({ tipo: 'persona', x: X(o.pintor), y: 140, alto: 70, mano: [X(o.pintor) + 16, 96] });
-      if (o.Pp) fl.push({ de: [X(o.pintor), 150], ang: 270, largo: o.Pp * k, color: 'h', texto: o.tPp || `${N_(o.Pp)}`, rumbo: [1, 0.5] });
+      if (o.Pp) fl.push({ de: [X(o.pintor), 150], ang: 270, largo: o.Pp * k, color: 'h', texto: o.tPp || `${N_(o.Pp)}`, rumbo: [o.pintor < L / 2 ? -1 : 1, -0.2] });
     }
     const cotas = (o.cotas || []).map(c => ({ de: [X(c[0]), 156], a: [X(c[1]), 156], lado: 1, sep: c[3] || 14, texto: c[2] }));
-    return { alto: o.alto || 236, piso: { y: 198, x0: 8, x1: 312 }, objetos: objs, flechas: fl, cotas, textos: o.textos || [], alt: o.alt };
+    return { alto: o.alto || 250, piso: { y: 214, x0: 8, x1: 312 }, objetos: objs, flechas: fl, cotas, textos: o.textos || [], alt: o.alt };
   }
   const NAde = x => 700 - 150 * x, NBde = x => 100 + 150 * x;
   const juego6 = val => est(figTablon({ NA: NAde(val.x), NB: NBde(val.x), Pb: 200, pintor: val.x, Pp: 600, tA: 'N⃗_A', tB: 'N⃗_B', tPb: 'P⃗_b', tPp: '600 N', cotas: [[0, val.x, 'x', 30]],
     alt: `El tablón de 4 m y 200 N sobre dos caballetes, con el pintor de 600 N a ${f(val.x)} m del caballete A: A empuja ${f(NAde(val.x))} N y B, ${f(NBde(val.x))} N.` }));
-  const PRED6 = figTablon({ NB: 300, tB: 'N_B', Pb: 200, pintor: 4, Pp: 600, tPp: '600 N', textos: [{ x: 8, y: 30, texto: 'N_A = ?', ancla: 'start', color: 'f' }],
+  const PRED6 = figTablon({ NA: 0, tA: 'N_A = ?', Pb: 200, pintor: 4, Pp: 600, tPp: '600 N',
     alt: 'El pintor de 600 N parado justo encima del caballete B; el tablón de 200 N, parejo. Lo que empuja A, con un signo de pregunta.' });
-  PRED6.flechas = PRED6.flechas.filter(x => x.color !== 'f');
   const REVELA6 = figTablon({ NA: 100, NB: 700, Pb: 200, pintor: 4, Pp: 600, alt: 'Con el pintor sobre B, el caballete A sostiene solo la mitad del tablón: 100 N.' });
   const corte6 = (o, txt) => { const d = figTablon(o); return { objetos: d.objetos, flechas: d.flechas, cotas: d.cotas, textos: txt ? [{ x: 8, y: 26, texto: txt, ancla: 'start' }] : [] }; };
   const MIRA6 = Object.assign(figTablon({}), { alt: 'El tablón con el pintor a 3 m de A: los torques respecto de A dan lo que empuja B; las fuerzas, lo que empuja A.',
@@ -2193,7 +2244,7 @@
       respuesta: [NB, ' = ', pn('550 N')] },
     { nivel: 2, titulo: 'Un solo caballete',
       figura: est({ alto: 210, piso: { y: 198 }, objetos: [{ tipo: 'barra', de: [40, 145], a: [290, 145], grosor: 10 }, { tipo: 'caballete', x: 90, y: 150, alto: 48 }, { tipo: 'caja', x: 50, y: 140, w: 30, h: 30, texto: '?' }],
-        flechas: [{ de: [165, 150], ang: 270, largo: 30, color: 'h', texto: 'P_b = 300 N', rumbo: [1, 0.5] }], cotas: [{ de: [40, 135], a: [90, 135], lado: -1, sep: 26, texto: '1 m' }, { de: [40, 135], a: [290, 135], lado: -1, sep: 50, texto: '5 m' }],
+        flechas: [{ de: [165, 150], ang: 270, largo: 30, color: 'h', texto: 'P_b = 300 N', rumbo: [1, -0.2] }], cotas: [{ de: [40, 135], a: [90, 135], lado: -1, sep: 40, texto: '1 m' }, { de: [40, 135], a: [290, 135], lado: -1, sep: 64, texto: '5 m' }],
         alt: 'Un tablón de 5 m y 30 kg sobre un caballete a 1 m de su punta A, con una carga en A.' }),
       enunciado: ['Un tablón parejo de 5 m y 30 kg está sobre un solo caballete, a 1 m de su punta A. ¿Qué masa hay que poner en A para que quede horizontal?'],
       datos: [D.peso, D6.cg, D6.tau, D5.eq],
@@ -2260,31 +2311,31 @@
       solucion: [
         { texto: 'A punto de levantarse, A deja de empujar: el tablón gira sobre B. Su peso está a 2 m de A: 1 m antes de B.' },
         { texto: 'Torques respecto de B:', ecuacion: ['600 · s = 300 · 1   →   s = 0,5 m'] },
-        { texto: ['La ', neg('A'), ' cree que llega a la punta; la ', neg('B'), ' cree que se levanta apenas pasa B; la ', neg('C'), ' divide 300 entre 1200; la ', neg('D'), ' divide al revés.'] },
+        { texto: ['La ', neg('A'), ' cree que llega a la punta; la ', neg('B'), ', que se levanta apenas pasa B; la ', neg('C'), ' da al tablón 0,5 m de brazo; la ', neg('D'), ' divide al revés.'] },
       ],
       respuesta: [neg('E'), ', 0,5 m'] },
     { nivel: 3, titulo: 'La viga y el cable inclinado',
       figura: est({ alto: 200, paredes: [{ x: 30, y0: 10, y1: 190, lado: -1 }], objetos: [{ tipo: 'barra', de: [30, 150], a: [270, 150], grosor: 10 }, { tipo: 'cuerda', de: [270, 146], a: [30, 7.4] }],
         flechas: [{ de: [270, 146], ang: 150, largo: 60, color: 'o', texto: 'T = ?', rumbo: [0.3, -1] }, { de: [150, 156], ang: 270, largo: 30, color: 'h', texto: 'P_b = 100 N', rumbo: [1, 0.4] }],
-        angulos: [{ c: [270, 150], de: 150, a: 180, r: 34, texto: '30°' }], alt: 'Una viga pareja de 100 N con una bisagra en la pared y un cable desde su punta a la pared, a 30° de la viga.' }),
+        angulos: [{ c: [270, 150], de: 150, a: 180, r: 34, texto: '30°' }], textos: [{ x: 38, y: 176, texto: 'bisagra', ancla: 'start', peso: 400 }], alt: 'Una viga pareja de 100 N con una bisagra en la pared y un cable desde su punta a la pared, a 30° de la viga.' }),
       enunciado: ['Una viga pareja de 100 N sale horizontal de una pared, con una bisagra. Un cable va de su otra punta a la pared y forma 30° con la viga. ¿Cuánto jala el cable?'],
       alternativas: ['50 N', '57,74 N', '200 N', '100 N', '25 N'],
       datos: [D6.dos, D6.cg, D5.tau, D5.brazo, D2.trig30],
       solucion: [
         { texto: 'Torques respecto de la bisagra. El brazo del cable es L · sen 30°; el del peso, L/2:', ecuacion: [T, ' · L · ', { frac: ['1', '2'] }, ' = 100 · ', { frac: ['L', '2'] }] },
         { texto: 'El largo se va:', ecuacion: [T, ' = ', pj('100 N')] },
-        { texto: ['La ', neg('A'), ' olvida el seno; la ', neg('B'), ' usa el coseno; la ', neg('C'), ' pone el peso en la punta; la ', neg('E'), ' parte el peso en cuatro.'] },
+        { texto: ['La ', neg('A'), ' olvida el seno; la ', neg('B'), ' usa el coseno; la ', neg('C'), ' pone el peso en la punta; la ', neg('E'), ' multiplica por sen 30° en vez de dividir: 50 · ½.'] },
       ],
       respuesta: [neg('D'), ', ', pj('100 N')] },
-    { nivel: 3, titulo: 'El centro de gravedad del bate',
+    { nivel: 3, titulo: 'El centro de la escoba',
       figura: est({ alto: 170, objetos: [{ tipo: 'escoba', de: [300, 90], a: [24, 90] }, { tipo: 'apoyo', x: 112, y: 98, alto: 18 }], cotas: [{ de: [24, 80], a: [112, 80], lado: -1, sep: 16, texto: '0,8 m' }, { de: [24, 104], a: [300, 104], lado: 1, sep: 30, texto: '2 m' }],
-        textos: [{ x: 24, y: 60, texto: 'grueso', ancla: 'start', peso: 400 }], alt: 'Un palo no parejo de 2 m, horizontal y quieto sobre un apoyo a 0,8 m de su punta gruesa.' }),
-      enunciado: ['Un palo no parejo de 2 m, más grueso en una punta, queda horizontal y quieto sobre un apoyo a 0,8 m de la punta gruesa. ¿Dónde está su centro de gravedad?'],
-      alternativas: ['Sobre el apoyo, a 0,8 m', 'A 1,2 m de la punta gruesa', 'A 0,4 m de la punta gruesa', 'No se sabe sin pesarlo', 'En el medio, a 1 m'],
+        textos: [{ x: 24, y: 60, texto: 'cepillo', ancla: 'start', peso: 400 }], alt: 'Una escoba de 2 m, horizontal y quieta sobre un apoyo a 0,8 m de la punta del cepillo.' }),
+      enunciado: ['Una escoba de 2 m queda horizontal y quieta sobre un solo apoyo, a 0,8 m de la punta del cepillo. ¿Dónde está su centro de gravedad?'],
+      alternativas: ['Sobre el apoyo, a 0,8 m', 'A 1,2 m de la punta del cepillo', 'A 0,4 m de la punta del cepillo', 'No se sabe sin pesarla', 'En el medio, a 1 m'],
       datos: [D6.dos, D6.tau],
       solucion: [
         { texto: 'Solo lo sostiene el apoyo. Para que su peso no lo haga girar, el peso tiene que pasar por el apoyo: su brazo es cero.' },
-        { texto: ['La ', neg('E'), ' lo cree parejo; la ', neg('B'), ' mide desde la punta delgada; la ', neg('C'), ' toma la mitad de 0,8 m; la ', neg('D'), ' no usa que está quieto.'] },
+        { texto: ['La ', neg('E'), ' la cree pareja; la ', neg('B'), ' mide desde la otra punta; la ', neg('C'), ' toma la mitad de 0,8 m; la ', neg('D'), ' no usa que está quieto.'] },
       ],
       respuesta: [neg('A'), ', sobre el apoyo'] },
   ];
@@ -2308,7 +2359,7 @@
     ejemplos: EJEMPLOS_RIG,
     juega: {
       pieza: 'fis-estatica',
-      consigna: 'El tablón del pintor mide 4 m y pesa 200 N; el pintor pesa 600 N. Tú decides dónde se para.',
+      consigna: 'El tablón del pintor, de 4 m y 200 N, se apoya en sus puntas en los caballetes A y B. El pintor: 600 N.',
       mision: {
         texto: 'Lleva al pintor hasta que el caballete B aguante 550 N.',
         logrado: val => Math.abs(NBde(val.x) - 550) < 1e-9,
@@ -2353,7 +2404,7 @@
     regla: {
       texto: 'Un cuerpo rígido está en equilibrio si las fuerzas suman cero y los torques, respecto de un mismo punto, también. El peso de un cuerpo parejo actúa en su centro.',
       ecuacion: [...SF, ' = 0', '   ·   ', 'Στ = 0'],
-      condicion: 'El punto para los torques se elige: una fuerza que pasa por ese punto no hace torque.',
+      condicion: 'los torques se toman respecto de un mismo punto, el que elijas: una fuerza que pasa por él no hace torque.',
       dibujo: est(Object.assign({}, MIRA6, MIRA6.cortes[2], { cortes: undefined })),
     },
     // Así se resuelve: el tablón con un balde (semillas pares) y la barra sobre un solo caballete (impares); «Ahora tú»
@@ -2367,6 +2418,8 @@
           return {
             enunciado: [`Una barra pareja de ${L} m y ${Pb} N está sobre un solo apoyo, a ${f(a)} m de su punta A. ¿Qué masa hay que colgar en A para que quede horizontal?`],
             datos: [D.peso, D6.cg, D6.tau, D5.eq],
+            dibujo: est(figBarraSimple({ apoyos: [40 + 60 * a], extra: [{ tipo: 'caja', x: 52, y: 115, w: 24, h: 24, texto: '?' }], flechas: [{ de: [160, 126], ang: 270, largo: 34, color: 'h', texto: `P_b = ${N_(Pb)}`, rumbo: [1, 0.4] }],
+              cotas: [{ de: [40, 112], a: [40 + 60 * a, 112], lado: -1, sep: 20, texto: `${f(a)} m` }, { de: [40, 112], a: [280, 112], lado: -1, sep: 44, texto: `${L} m` }], textos: [{ x: 40, y: 150, texto: 'A', ancla: 'middle' }] })),
             pasos: [
               { tipo: 'pide', texto: 'Piden la masa que equilibra la barra sobre el apoyo.' },
               { tipo: 'datos', texto: [`La barra pesa `, pp(N_(Pb)), `, en su centro: a ${f(L / 2)} − ${f(a)} = ${f(L / 2 - a)} m del apoyo. La carga va a ${f(a)} m del otro lado.`] },
@@ -2381,6 +2434,7 @@
         return {
           enunciado: [`Un tablón parejo de ${L} m y ${Pb} N está sobre dos caballetes en sus puntas, A y B. Un balde de ${Pc} N está a ${f(xc)} m de A. ¿Cuánto empuja A?`],
           datos: [D6.dos, D6.cg, D6.tau],
+          dibujo: est(figTablon({ L, Pb, tPb: `P_b = ${N_(Pb)}`, carga: { x: xc, P: Pc, texto: `${N_(Pc)}` }, NA: 0, tA: 'N_A = ?', NB: 0, tB: 'N_B', k: 0.12, cotas: [[0, xc, `${f(xc)} m`, 30]] })),
           pasos: [
             { tipo: 'pide', texto: ['Piden ', NA, ', lo que empuja el caballete A.'] },
             { tipo: 'datos', texto: [`El tablón, `, pp(N_(Pb)), ` en su centro, a ${f(L / 2)} m de A; el balde, `, pp(N_(Pc)), ` a ${f(xc)} m de A.`] },
@@ -2413,7 +2467,8 @@
           };
         }
         if (k === 1) {
-          const L = r.de([3, 4, 6]), m = r.de([10, 20, 30]), a = r.de([0.5, 1]), Pb = m * G, Pc = Pb * (L / 2 - a) / a;
+          // sin L = 4a: ahí la carga pesa lo mismo que el tablón, y los errores TQ-IGUAL y TQ-INV dan la correcta
+          const { L, m, a } = elegir(r, () => { const c = { L: r.de([3, 4, 6]), m: r.de([10, 20, 30]), a: r.de([0.5, 1]) }; return c.L !== 4 * c.a && c; }), Pb = m * G, Pc = Pb * (L / 2 - a) / a;
           return {
             pregunta: [`Un tablón parejo de ${L} m y ${m} kg está sobre un solo caballete, a ${f(a)} m de su punta A. ¿Qué peso hay que poner en A para que quede horizontal?`],
             datos: [D.peso, D6.cg, D6.tau, D5.eq],
@@ -2428,7 +2483,7 @@
           };
         }
         if (k === 2) {
-          const [Pb, Pp] = r.de([[200, 400], [200, 800], [300, 600], [400, 800], [300, 400]]), s = Pb * 1 / Pp;
+          const [Pb, Pp] = r.de([[200, 400], [200, 800], [150, 600], [400, 800], [300, 400]]), s = Pb * 1 / Pp;
           return {
             pregunta: [`Un tablón parejo de 4 m y ${Pb} N se apoya en A, una punta, y en B, a 3 m de A. ¿Cuánto puede pasar de B un pintor de ${Pp} N sin que el tablón se levante?`],
             datos: [D6.dos, D6.cg, D6.tau],
@@ -2445,7 +2500,9 @@
         // Nivel examen: la escalera en la pared lisa, con o sin persona (San Marcos 2021).
         const conP = sm % 8 >= 4;
         const { L, Pe, ang, Pp, sP, Np } = elegir(r, () => { const c = { L: r.de([4, 5]), Pe: r.de([100, 150, 200, 300]), ang: r.de([37, 53]), Pp: conP ? r.de([400, 600]) : 0 }; c.sP = c.Pp ? r.de([0.5, 0.75]) * c.L : 0;
-          c.Np = (c.Pe * c.L / 2 * COS_(c.ang) + c.Pp * c.sP * COS_(c.ang)) / (c.L * SEN_(c.ang)); return exacto(c.Np) && exacto(c.sP) && c; });
+          c.Np = (c.Pe * c.L / 2 * COS_(c.ang) + c.Pp * c.sP * COS_(c.ang)) / (c.L * SEN_(c.ang));
+          const esEjemplo = c.L === 4 && c.Pe === 200 && c.ang === 53 && c.Pp === 600 && c.sP === 3;
+          return exacto(c.Np) && exacto(c.sP) && !esEjemplo && c; });
         return {
           pregunta: [`Una escalera pareja de ${L} m y ${Pe} N está apoyada en una pared lisa y forma ${ang}° con el piso.${Pp ? ` Una persona de ${Pp} N sube hasta ${f(sP)} m del pie.` : ''} ¿Con cuánta fuerza la frena el piso?`],
           datos: [D6.dos, D6.cg, D6.tau, D6.pared, D2.trig],
@@ -2526,7 +2583,8 @@
 
   return {
     unidad: 'fisica.estatica',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     colores: COLORES,
     notacion: { vectores: true, motivo: 'Las fuerzas son vectores: llevan flecha (F⃗, P⃗, N⃗) cuando se habla de la flecha; en las cuentas va su valor, sin flecha.' },

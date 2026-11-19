@@ -1,7 +1,7 @@
 {
  "plantilla": "fis-estatica",
  "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta (N, cm, m o N·m); texto: lo que ve el alumno (coma decimal). Un caso por tipo: las seis ideas de Estática.",
- "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e6-fisica/casos.py), que no usa el generador, el núcleo ni plantillas/estatica/motor.js: resuelve cada equilibrio con eliminación de Gauss sobre la suma de fuerzas por componentes y la suma de torques respecto de un punto; el resorte se estira de a 0,0001 m hasta que su fuerza alcanza la carga; sen y cos de 37° y 53° son 3/5 y 4/5. Escribe el texto con su propio redondeo (la mitad hacia afuera, con Decimal) y su coma decimal. Los 18 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e6-fisica/casos.py), que no usa el generador, el núcleo ni plantillas/estatica/motor.js: resuelve cada equilibrio con eliminación de Gauss sobre la suma de fuerzas por componentes y la suma de torques respecto de un punto; el resorte se estira de a 0,0001 m hasta que su fuerza alcanza la carga; sen y cos de 37° y 53° son 3/5 y 4/5. Escribe el texto con su propio redondeo (la mitad hacia afuera, con Decimal) y su coma decimal. Los 18 casos cuadran con el generador en el valor y en el texto de la alternativa correcta. Auditoría del 19 nov: el caso de la semilla 6 cambió (el de antes, 50 kg con μ_s = 0,3 y 75 N, era la mitad del tope y el error RZ-RESTA daba la correcta); el nuevo, 40 kg con μ_s = 0,5 y 120 N (tope 200 N, frena 120 N), se rehízo con el resolvedor aparte del auditor (scratchpad e6-cierre-est/practica.js).",
  "casos": [
   {
    "semilla": 0,
@@ -13,7 +13,7 @@
     "mp": 20
    },
    "esperado": {
-    "respuesta": 700.0,
+    "respuesta": 700,
     "texto": "700 N"
    }
   },
@@ -27,7 +27,7 @@
     "k": 2000
    },
    "esperado": {
-    "respuesta": 5.0,
+    "respuesta": 5,
     "texto": "5 cm"
    }
   },
@@ -42,7 +42,7 @@
     "pideN": false
    },
    "esperado": {
-    "respuesta": 25.0,
+    "respuesta": 25,
     "texto": "25 N"
    }
   },
@@ -70,7 +70,7 @@
     "a": 53
    },
    "esperado": {
-    "respuesta": 75.0,
+    "respuesta": 75,
     "texto": "75 N"
    }
   },
@@ -80,13 +80,13 @@
     "idea": "rozamiento-se-ajusta",
     "tipo": "quieto",
     "nivel": 1,
-    "m": 50,
-    "mus": 0.3,
-    "F": 75
+    "m": 40,
+    "mus": 0.5,
+    "F": 120
    },
    "esperado": {
-    "respuesta": 75,
-    "texto": "75 N"
+    "respuesta": 120,
+    "texto": "120 N"
    }
   },
   {
@@ -102,7 +102,7 @@
     "s": 3.75
    },
    "esperado": {
-    "respuesta": 700.0,
+    "respuesta": 700,
     "texto": "700 N"
    }
   },
@@ -116,7 +116,7 @@
     "d": 30
    },
    "esperado": {
-    "respuesta": 24.0,
+    "respuesta": 24,
     "texto": "24 N·m"
    }
   },
@@ -146,7 +146,7 @@
     "a": 30
    },
    "esperado": {
-    "respuesta": 20.0,
+    "respuesta": 20,
     "texto": "20 N·m"
    }
   },
@@ -160,7 +160,7 @@
     "a": 53
    },
    "esperado": {
-    "respuesta": 800.0,
+    "respuesta": 800,
     "texto": "800 N"
    }
   },
@@ -190,7 +190,7 @@
     "abajo": true
    },
    "esperado": {
-    "respuesta": 400.0,
+    "respuesta": 400,
     "texto": "400 N"
    }
   },
@@ -204,7 +204,7 @@
     "cual": 37
    },
    "esperado": {
-    "respuesta": 90.0,
+    "respuesta": 90,
     "texto": "90 N"
    }
   },
@@ -219,7 +219,7 @@
     "k": 200
    },
    "esperado": {
-    "respuesta": 20.0,
+    "respuesta": 20,
     "texto": "20 cm"
    }
   },
@@ -235,7 +235,7 @@
     "pideB": true
    },
    "esperado": {
-    "respuesta": 525.0,
+    "respuesta": 525,
     "texto": "525 N"
    }
   },
@@ -250,7 +250,7 @@
     "a": 1
    },
    "esperado": {
-    "respuesta": 400.0,
+    "respuesta": 400,
     "texto": "400 N"
    }
   },
@@ -265,7 +265,7 @@
     "a": 37
    },
    "esperado": {
-    "respuesta": 310.0,
+    "respuesta": 310,
     "texto": "310 N"
    }
   }

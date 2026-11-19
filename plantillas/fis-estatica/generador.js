@@ -134,7 +134,10 @@
     const vistos = new Set([ok]);
     const errores = [];
     for (const x of o.errores) {
-      if (!x || !Number.isFinite(x.valor) || x.valor <= 0 || igual(x.valor, o.correcta) || Math.abs(x.valor - o.correcta) < 0.02 * o.correcta) continue;
+      // Un error que da la correcta descarta el caso: quien se equivoca así acertaría (auditoría del 19 nov: pasaba con
+      // el ropero a la mitad del tope, los cables a 30°, el tablón con L = 4a…, y el error se borraba sin avisar).
+      if (x && Number.isFinite(x.valor) && igual(x.valor, o.correcta)) return null;
+      if (!x || !Number.isFinite(x.valor) || x.valor <= 0 || Math.abs(x.valor - o.correcta) < 0.02 * o.correcta) continue;
       const t = o.fmt(x.valor);
       if (vistos.has(t)) continue;
       vistos.add(t);
@@ -371,7 +374,7 @@
   }
   function balancin(rng) {
     const ma = rng.elegir([30, 36, 40]), da = rng.elegir([1, 1.5, 2]), mb = rng.elegir([20, 24, 25]), db = ma * da / mb;
-    if (!exacto(db) || db > 3) return null;
+    if (!exacto(db) || db > 2.5) return null;   // un sube y baja de verdad: hasta 2,5 m del apoyo
     const r = M.barra({ L: 6, m: 0, apoyos: [{ x: 3 }], cargas: [{ x: 3 - da, F: ma * G }, { x: 3 + db, F: mb * G }] });
     if (Math.abs(r.momentos(3).neto) > 1e-6) return null;
     return {
@@ -396,7 +399,7 @@
         e('TQ-BRAZO', Fz * L, x => `Bien fuerza por distancia. Pero inclinada, el brazo es menor que la llave: ${x} no es.`),
         e('TQ-COS', Fz * L * C(a), x => `Bien acortar el brazo. Pero va con el seno del ángulo con la llave; con el coseno sale ${x}.`),
         e('TQ-DIV', Fz * S(a) / L, x => `Bien la parte de la fuerza. Pero se multiplica por la distancia: ${x} no es.`),
-        e('TQ-SIN-ANG', Fz * L * S(a) * 2, x => `Bien el brazo. Pero ${x} es el doble: revisa la cuenta.`),
+        e('TQ-ENTRE-SEN', Fz * L / S(a), x => `Bien usar el seno. Pero el brazo se acorta: se multiplica por sen θ, no se divide; así sale ${x}.`),
       ],
       solucion: [[`El brazo: ${f(L)} · sen ${a}° = ${mt(Math.abs(r.brazo))}.`], [`τ = ${Fz} · ${f(Math.abs(r.brazo), 3)} = ${nm(Math.abs(r.tau))}.`]],
       unidad: 'N·m', _datos: { F: Fz, L, a },
