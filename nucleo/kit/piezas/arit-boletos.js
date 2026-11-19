@@ -22,6 +22,17 @@
  *   pie: [[texto, color?, peso?], …],       una línea bajo la plancha (lo que se cuenta); el alto se reserva siempre que
  *                                           algún paso la traiga, para que la figura no salte
  *   pasos: [{ …datos }, …],     para «Mira»: estado.paso elige qué cambia (se mezcla con los datos)
+ *
+ *   Bloque de «Números primos y divisores» (19 nov; contenido/teoria/aritmetica/numeros-primos-y-divisores.js, ideas
+ *   1, 2 y 5). No cambia nada de lo de arriba si no se pide:
+ *   numeros: [1, 2, 33, 35, 37],   en vez de desde…hasta, estos boletos sueltos (en ese orden)
+ *   criba: { primos: [2, 3], uno: true, propios: true, quedan: true },   la criba de Eratóstenes: tacha (raya diagonal,
+ *                               número atenuado) los múltiplos de cada primo de la lista; con propios: true (por
+ *                               defecto) el primo mismo no se tacha y lleva el aro turquesa del que tacha; con propios:
+ *                               false se tachan también (Euler: los que comparten un primo con N). uno: true tacha el 1.
+ *                               quedan: true marca en violeta (borde grueso y número en negrita) los que no se tacharon
+ *                               (salvo el 1 y los primos que tachan); con unoQueda: true, también el 1 (Euler: el 1 no
+ *                               comparte ningún primo con N)
  * }
  * estado = { paso }. Función pura de (datos, estado): sin ids, sin azar, sin reloj. Lienzo de 320 de ancho; el alto sale
  * de las filas (fijo para una misma plancha).
@@ -65,7 +76,12 @@
     const desde = Math.max(1, entero(d.desde) || 1), hasta = Math.max(desde, entero(d.hasta) || desde);
     const cols = Math.max(5, Math.min(10, entero(d.columnas) || 10));
     const premio = entero(d.premio);
-    const total = hasta - desde + 1, filas = Math.ceil(total / cols);
+    // Boletos sueltos (bloque de Números primos): la lista manda sobre desde…hasta.
+    const lista = Array.isArray(d.numeros) && d.numeros.length ? d.numeros.map(entero) : null;
+    const total = lista ? lista.length : hasta - desde + 1, filas = Math.ceil(total / cols);
+    const cr = d.criba && typeof d.criba === 'object' ? d.criba : null, crP = cr ? (cr.primos || []).map(entero).filter(x => x > 1) : [];
+    const propios = !cr || cr.propios !== false;
+    const tachado = num => !!cr && ((num === 1 && !!cr.uno) || crP.some(p => num % p === 0 && (!propios || num !== p)));
     const cw = (X1 - X0 - (cols - 1) * SEP) / cols;
     const letrero = segsDe(d.letrero), pie = segsDe(d.pie);
     // El pie reserva su línea si los datos o algún paso lo traen (el alto no salta en «Mira»).
@@ -78,7 +94,7 @@
     const celdas = [];
     let vistos = 0;
     for (let i = 0; i < total; i++) {
-      const num = desde + i, f = Math.floor(i / cols), c = i % cols;
+      const num = lista ? lista[i] : desde + i, f = Math.floor(i / cols), c = i % cols;
       const esPremio = !!premio && num % premio === 0;
       if (esPremio) vistos++;
       const grupo = premio ? Math.floor((num - 1) / premio) : 0;
@@ -87,7 +103,9 @@
       celdas.push({ num, x: X0 + c * (cw + SEP), y: yG + f * PASO_Y, w: cw, h: ALTO,
         premio: esPremio && vistos <= tope,
         sombra: !!d.grupos && entera && grupo % 2 === 0,
-        sobra: !!d.sobran && !!premio && num > ultimoPremio });
+        sobra: !!d.sobran && !!premio && num > ultimoPremio,
+        tacha: tachado(num), usado: !!cr && propios && crP.includes(num),
+        queda: !!cr && !!cr.quedan && !tachado(num) && (num > 1 || !!cr.unoQueda) && !(propios && crP.includes(num)) });
     }
     const objetos = [], textos = [];
     for (const c of celdas) objetos.push({ que: `boleto ${c.num}`, x0: c.x, y0: c.y, x1: c.x + c.w, y1: c.y + c.h });
@@ -108,7 +126,7 @@
     const yFin = yG + (filas - 1) * PASO_Y + ALTO;
     if (pie) tx('pie', X0, yFin + 18, pie);
     const H = Math.round(yFin + (conPie ? 26 : 6));
-    return { W, H, M, d, desde, hasta, cols, premio, filas, cw, celdas, cuantos, ultimoPremio, sobrantes: premio ? hasta - ultimoPremio : 0, cartel, rot, objetos, textos, yG };
+    return { W, H, M, d, desde: lista ? Math.min(...lista) : desde, hasta: lista ? Math.max(...lista) : hasta, lista, criba: cr, cols, premio, filas, cw, celdas, cuantos, ultimoPremio, sobrantes: premio ? hasta - ultimoPremio : 0, cartel, rot, objetos, textos, yG };
   }
 
   // Un boleto: tarjeta con las dos muescas del troquel a media altura.
@@ -119,7 +137,12 @@
     const t = String(c.num), tam = t.length >= 3 ? 10 : 11.5;
     let s = `<path d="${d}" fill="var(--card)" stroke="none"/>`;
     if (c.sombra) s += `<path d="${d}" fill="currentColor" fill-opacity="0.13" stroke="none"/>`;
-    if (c.premio) {
+    if (c.usado || c.queda) {
+      // Criba (bloque de Números primos): el primo que tacha, en turquesa; lo que queda, en violeta. Borde grueso y
+      // número en negrita: no se lee solo por el color.
+      const col = c.usado ? 'i' : 'f';
+      s += `<path class="${c.usado ? 'bo-usado' : 'bo-queda'}" d="${d}" fill="var(--c-${col})" fill-opacity="0.16" stroke="var(--c-${col})" stroke-width="2.2" stroke-linejoin="round"/>`;
+    } else if (c.premio) {
       s += `<path class="bo-premio" d="${d}" fill="var(--c-i)" fill-opacity="0.2" stroke="var(--c-i)" stroke-width="2.2" stroke-linejoin="round"/>`;
       // La esquina sellada: el premio no se lee solo por el color.
       s += `<path d="M${n2(x + w - 8)} ${n2(y + 1.1)}H${n2(x + w - r)}Q${n2(x + w - 1.1)} ${n2(y + 1.1)} ${n2(x + w - 1.1)} ${n2(y + r)}V${n2(y + 8)}Z" fill="var(--c-i)"/>`;
@@ -128,7 +151,10 @@
     } else {
       s += `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity="0.6" stroke-linejoin="round"/>`;
     }
-    s += `<text class="kit-txt" x="${n2(x + w / 2)}" y="${n2(y + h / 2 + tam * 0.36)}" font-size="${tam}" text-anchor="middle"${c.premio ? ' font-weight="700"' : ''} fill="${c.premio ? 'var(--c-i)' : c.sobra ? 'var(--c-o)' : 'currentColor'}" style="font-variant-numeric:tabular-nums">${T.esc(t)}</text>`;
+    const fuerte = c.premio || c.usado || c.queda, tinta = c.usado ? 'var(--c-i)' : c.queda ? 'var(--c-f)' : c.premio ? 'var(--c-i)' : c.sobra ? 'var(--c-o)' : 'currentColor';
+    s += `<text class="kit-txt" x="${n2(x + w / 2)}" y="${n2(y + h / 2 + tam * 0.36)}" font-size="${tam}" text-anchor="middle"${fuerte ? ' font-weight="700"' : ''} fill="${tinta}"${c.tacha ? ' fill-opacity="0.45"' : ''} style="font-variant-numeric:tabular-nums">${T.esc(t)}</text>`;
+    // Tachado por la criba: una raya diagonal de esquina a esquina, en tinta.
+    if (c.tacha) s += `<path class="bo-tacha" d="M${n2(x + 3)} ${n2(y + h - 3)}L${n2(x + w - 3)} ${n2(y + 3)}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`;
     return s;
   }
 
@@ -149,7 +175,13 @@
 
   function alt(datos, estado = {}) {
     const g = geometria(datos, estado);
-    let t = `Plancha de boletos de una rifa, numerados del ${g.desde} al ${g.hasta}, en filas de ${g.cols}.`;
+    let t = g.lista ? `Boletos de una rifa con los números ${g.lista.join(', ')}.` : `Plancha de boletos de una rifa, numerados del ${g.desde} al ${g.hasta}, en filas de ${g.cols}.`;
+    if (g.criba) {
+      const tch = g.celdas.filter(c => c.tacha).map(c => c.num), usa = (g.criba.primos || []).filter(p => p > 1), qd = g.celdas.filter(c => c.queda).map(c => c.num);
+      const lista = xs => (xs.length > 8 ? `${xs.slice(0, 5).join(', ')}… (${xs.length} en total)` : xs.join(', '));
+      t += usa.length ? ` Están tachados los múltiplos de ${usa.join(', ')}${g.criba.uno ? ' y el 1' : ''}: ${tch.length ? lista(tch) : 'ninguno'}.` : g.criba.uno ? ' Está tachado el 1.' : ' No hay nada tachado.';
+      if (g.criba.quedan) t += qd.length ? ` Quedan marcados ${lista(qd)}.` : ' No queda ninguno marcado.';
+    }
     if (g.premio) {
       const marcados = g.celdas.filter(c => c.premio).map(c => c.num);
       t += ` El premio es para los múltiplos de ${g.premio}`;

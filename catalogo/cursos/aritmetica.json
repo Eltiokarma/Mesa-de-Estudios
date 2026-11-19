@@ -419,8 +419,8 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": ["aritmetica.divisibilidad"],
-      "plantillas": ["divisores", "numeros-sucesiones"],
-      "investigacion": null
+      "plantillas": ["primos-divisores", "numeros-sucesiones", "divisores"],
+      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
       "id": "aritmetica.mcd-y-mcm",

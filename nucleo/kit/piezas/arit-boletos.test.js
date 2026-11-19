@@ -115,3 +115,34 @@ test('las figuras de la teoría que usan la pieza caben y no se pisan', () => {
   assert.deepEqual(mal, []);
   assert.ok(n >= 4, `la teoría usa la pieza en ${n} figuras`);
 });
+
+// Bloque de «Números primos y divisores» (19 nov): boletos sueltos y la criba. Cuenta aparte: un número se tacha si es
+// múltiplo de un primo de la lista (sin contar al primo mismo, salvo con propios: false); lo que queda va en violeta.
+test('criba: tacha los múltiplos de cada primo, deja el aro al primo que tacha y marca lo que queda; numeros sueltos', () => {
+  const esPrimo = x => x > 1 && Array.from({ length: x - 2 }, (_, i) => i + 2).every(k => x % k);
+  const mal = [];
+  for (const [d, nombre] of [
+    [{ desde: 1, hasta: 100, criba: { primos: [2, 3, 5, 7], uno: true, quedan: true }, letrero: 'criba', pie: 'pie' }, '1..100'],
+    [{ desde: 1, hasta: 30, columnas: 10, criba: { primos: [2, 3], uno: true } }, '1..30 hasta 3'],
+    [{ desde: 1, hasta: 15, columnas: 5, criba: { primos: [3, 5], propios: false, quedan: true, unoQueda: true } }, 'Euler 15'],
+    [{ numeros: [1, 2, 33, 35, 37], columnas: 5, criba: { primos: [2, 3, 5], uno: true, quedan: true } }, 'sueltos'],
+    [{ numeros: [1, 2, 33, 35, 37], columnas: 5 }, 'sueltos sin criba'],
+  ]) {
+    const g = P.geometria(d), cr = d.criba;
+    if (d.numeros) assert.deepEqual(g.celdas.map(c => c.num), d.numeros);
+    for (const c of g.celdas) {
+      const t = !!cr && ((c.num === 1 && !!cr.uno) || cr.primos.some(p => c.num % p === 0 && (cr.propios === false || c.num !== p)));
+      assert.equal(c.tacha, t, `${nombre}: ${c.num}`);
+      if (cr && cr.quedan) assert.equal(c.queda, !t && (c.num > 1 || !!cr.unoQueda) && !(cr.propios !== false && cr.primos.includes(c.num)), `${nombre}: ${c.num}`);
+    }
+    revisar(d, {}, nombre, mal);
+    const s = P.dibujar(d);
+    assert.ok(!/NaN|undefined|var\(--c-[hd]\)/.test(s));
+    assert.equal((s.match(/class="bo-tacha"/g) || []).length, g.celdas.filter(c => c.tacha).length);
+  }
+  assert.deepEqual(mal, []);
+  // Con los primos hasta 7, lo que queda del 1 al 100 son los primos mayores que 7.
+  const g = P.geometria({ desde: 1, hasta: 100, criba: { primos: [2, 3, 5, 7], uno: true, quedan: true } });
+  assert.deepEqual(g.celdas.filter(c => c.queda).map(c => c.num), Array.from({ length: 100 }, (_, i) => i + 1).filter(x => esPrimo(x) && x > 7));
+  assert.match(P.alt({ numeros: [1, 2, 33], criba: { primos: [3], uno: true, quedan: true } }), /números 1, 2, 33.*tachados/);
+});

@@ -991,6 +991,30 @@
     "completa-la-decena": {
      "respaldo": "hipotesis",
      "describe": "Completa la suma de cifras hasta una decena en vez de un múltiplo de 9 (AT-CRITERIO-DECENA)"
+    },
+    "olvida-un-primo": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los divisores sin uno de los primos del número (AT-CD-OLVIDA)"
+    },
+    "duplica-por-las-parejas": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta dos veces cada divisor, como si cada uno diera una pareja nueva (AT-PAREJA-FORMAS)"
+    },
+    "multiplica-los-exponentes": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica los exponentes sin sumarles 1 (AT-CD-SIN-UNO)"
+    },
+    "cuenta-todas-las-propias": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta todas las fracciones propias, también las que se simplifican (AT-EULER-TODAS)"
+    },
+    "solo-las-mayores-que-un-medio": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo las irreductibles mayores que 1/2 (AT-EULER-MITAD)"
+    },
+    "cuenta-las-que-se-simplifican": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta las fracciones que sí se simplifican (AT-COND-COMPLEMENTO)"
     }
    },
    "pares": [

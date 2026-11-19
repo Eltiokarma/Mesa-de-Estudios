@@ -3657,7 +3657,7 @@
        "medias": "Tres medias para dos números",
        "serie": "Razones iguales: la suma también"
       },
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -4008,7 +4008,7 @@
        "bayes": "De dónde viene un fallado",
        "esperanza": "El promedio a la larga"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -4209,14 +4209,19 @@
       "aritmetica.divisibilidad"
      ],
      "plantillas": [
-      "divisores",
-      "numeros-sucesiones"
+      "primos-divisores",
+      "numeros-sucesiones",
+      "divisores"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/numeros-primos-y-divisores.js",
       "requiere": [
+       "/nucleo/kit/piezas/arit-bandejas.js",
+       "/nucleo/kit/piezas/arit-arbol.js",
+       "/nucleo/kit/piezas/arit-boletos.js",
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-puesto.js",
        "/plantillas/divisores/motor.js",
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
@@ -4226,10 +4231,10 @@
        "criba": "La criba tacha múltiplos",
        "factorizacion": "Una sola factorización",
        "divisores": "Elegir exponentes cuenta divisores",
-       "euler": "φ(n) cuenta los coprimos",
+       "euler": "Función de Euler: los PESI",
        "fermat-wilson": "Fermat y Wilson con un primo"
       },
-      "terminos": 29
+      "terminos": 39
      }
     },
     {
@@ -4335,7 +4340,7 @@
        "generatriz": "Alinear las colas y restar",
        "otras-bases": "Exacto según la base"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -9080,7 +9085,8 @@
     "/plantillas/divisores/papel.json"
    ],
    "rehacer": [
-    "aritmetica.divisibilidad"
+    "aritmetica.divisibilidad",
+    "aritmetica.numeros-primos-y-divisores"
    ]
   },
   "ecuaciones-polinomiales": {
@@ -10776,6 +10782,30 @@
     "/plantillas/potenciacion/index.html",
     "/plantillas/potenciacion/motor.js",
     "/plantillas/potenciacion/papel.json"
+   ]
+  },
+  "primos-divisores": {
+   "id": "primos-divisores",
+   "titulo": "La vitrina de los primos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-primos-y-divisores"
+   ],
+   "url": "#/practica/primos-divisores",
+   "ideas": [
+    "rectangulos",
+    "criba",
+    "factorizacion",
+    "divisores",
+    "euler",
+    "fermat-wilson"
+   ],
+   "papel": "/plantillas/primos-divisores/papel.json",
+   "archivos": [
+    "/plantillas/primos-divisores/generador.js",
+    "/plantillas/primos-divisores/papel.json"
    ]
   },
   "probabilidad-conteo": {

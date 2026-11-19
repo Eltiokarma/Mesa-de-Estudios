@@ -6,7 +6,7 @@
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores.",
+  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -335,6 +335,30 @@
     "completa-la-decena": {
       "respaldo": "hipotesis",
       "describe": "Completa la suma de cifras hasta una decena en vez de un múltiplo de 9 (AT-CRITERIO-DECENA)"
+    },
+    "olvida-un-primo": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta los divisores sin uno de los primos del número (AT-CD-OLVIDA)"
+    },
+    "duplica-por-las-parejas": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta dos veces cada divisor, como si cada uno diera una pareja nueva (AT-PAREJA-FORMAS)"
+    },
+    "multiplica-los-exponentes": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica los exponentes sin sumarles 1 (AT-CD-SIN-UNO)"
+    },
+    "cuenta-todas-las-propias": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta todas las fracciones propias, también las que se simplifican (AT-EULER-TODAS)"
+    },
+    "solo-las-mayores-que-un-medio": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo las irreductibles mayores que 1/2 (AT-EULER-MITAD)"
+    },
+    "cuenta-las-que-se-simplifican": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta las fracciones que sí se simplifican (AT-COND-COMPLEMENTO)"
     }
   },
   "pares": [
@@ -2191,6 +2215,132 @@
             "texto": "8",
             "valor": 8,
             "error": "multiplo-de-3-no-de-9"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-33",
+      "plantilla": "primos-divisores",
+      "unidad": "aritmetica.numeros-primos-y-divisores",
+      "nombreUnidad": "Números primos y divisores",
+      "mide": "Cantidad de divisores: se escribe el número en primos, cada exponente más 1, y se multiplican (también el del primo que entra una vez)",
+      "A": {
+        "enunciado": "¿Cuántos divisores tiene 132?",
+        "datos": {
+          "N": 132
+        },
+        "opciones": [
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "olvida-un-primo"
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "duplica-por-las-parejas"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "multiplica-los-exponentes"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuántos divisores tiene 792?",
+        "datos": {
+          "N": 792
+        },
+        "opciones": [
+          {
+            "texto": "48",
+            "valor": 48,
+            "error": "duplica-por-las-parejas"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "multiplica-los-exponentes"
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "error": "olvida-un-primo"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-34",
+      "plantilla": "primos-divisores",
+      "unidad": "aritmetica.numeros-primos-y-divisores",
+      "nombreUnidad": "Números primos y divisores",
+      "mide": "Fracciones propias irreductibles de denominador N: son los k de 1 a N − 1 que no comparten ningún primo con N (la función de Euler)",
+      "A": {
+        "enunciado": "¿Cuántas fracciones propias irreductibles tienen denominador 26?",
+        "datos": {
+          "N": 26
+        },
+        "opciones": [
+          {
+            "texto": "13",
+            "valor": 13,
+            "error": "cuenta-las-que-se-simplifican"
+          },
+          {
+            "texto": "25",
+            "valor": 25,
+            "error": "cuenta-todas-las-propias"
+          },
+          {
+            "texto": "12",
+            "valor": 12,
+            "correcta": true
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "solo-las-mayores-que-un-medio"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuántas fracciones propias irreductibles tienen denominador 32?",
+        "datos": {
+          "N": 32
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "solo-las-mayores-que-un-medio"
+          },
+          {
+            "texto": "16",
+            "valor": 16,
+            "correcta": true
+          },
+          {
+            "texto": "31",
+            "valor": 31,
+            "error": "cuenta-todas-las-propias"
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "error": "cuenta-las-que-se-simplifican"
           }
         ]
       }

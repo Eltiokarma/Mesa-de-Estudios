@@ -1,0 +1,23 @@
+{
+  "id": "primos-divisores",
+  "titulo": "La vitrina de los primos",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.numeros-primos-y-divisores"
+  ],
+  "temas": [
+    "Primos y compuestos",
+    "Números PESI",
+    "Criba de Eratóstenes",
+    "Teorema fundamental de la aritmética",
+    "Cantidad, suma y producto de divisores",
+    "Función de Euler",
+    "Teoremas de Fermat y Wilson"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

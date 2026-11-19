@@ -8,7 +8,8 @@
   ],
   "estado": "borrador",
   "rehacer": [
-    "aritmetica.divisibilidad"
+    "aritmetica.divisibilidad",
+    "aritmetica.numeros-primos-y-divisores"
   ],
   "version": "0.1.0",
   "escena": "index.html",

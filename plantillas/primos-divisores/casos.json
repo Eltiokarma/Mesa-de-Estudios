@@ -1,0 +1,390 @@
+{
+  "plantilla": "primos-divisores",
+  "nota": "entrada es _datos del generador; un caso por tipo (25), con la semilla y la idea con que se generó. respuesta: la clave de la correcta, como texto.",
+  "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: lee solo los parámetros de cada caso y recalcula por fuerza bruta (divisores, primos, PESI con gcd, φ contando, restos con pow(a, n, p) y el producto de 1 a p − 1). Los 25 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": "c7",
+      "idea": "rectangulos",
+      "entrada": {
+        "idea": "rectangulos",
+        "tipo": "cual-primo",
+        "nivel": 1,
+        "opciones": [
+          83,
+          1,
+          69,
+          49
+        ]
+      },
+      "esperado": {
+        "respuesta": "83",
+        "texto": "83"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "rectangulos",
+      "entrada": {
+        "idea": "rectangulos",
+        "tipo": "cuantos-divisores",
+        "nivel": 1,
+        "N": 48
+      },
+      "esperado": {
+        "respuesta": "10",
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "rectangulos",
+      "entrada": {
+        "idea": "rectangulos",
+        "tipo": "formas-cuadrado",
+        "nivel": 2,
+        "N": 100
+      },
+      "esperado": {
+        "respuesta": "5",
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "rectangulos",
+      "entrada": {
+        "idea": "rectangulos",
+        "tipo": "dos-primos",
+        "nivel": 3,
+        "S": 13
+      },
+      "esperado": {
+        "respuesta": "22",
+        "texto": "22"
+      }
+    },
+    {
+      "semilla": "c7",
+      "idea": "criba",
+      "entrada": {
+        "idea": "criba",
+        "tipo": "hasta-primo",
+        "nivel": 1,
+        "N": 821
+      },
+      "esperado": {
+        "respuesta": "23",
+        "texto": "23"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "criba",
+      "entrada": {
+        "idea": "criba",
+        "tipo": "menor-primo",
+        "nivel": 2,
+        "N": 533
+      },
+      "esperado": {
+        "respuesta": "13",
+        "texto": "13"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "criba",
+      "entrada": {
+        "idea": "criba",
+        "tipo": "primos-tramo",
+        "nivel": 2,
+        "a": 117,
+        "b": 140
+      },
+      "esperado": {
+        "respuesta": "4",
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "criba",
+      "entrada": {
+        "idea": "criba",
+        "tipo": "primos-pa",
+        "nivel": 3,
+        "n": 5,
+        "d": 6,
+        "B": 60
+      },
+      "esperado": {
+        "respuesta": "29",
+        "texto": "29"
+      }
+    },
+    {
+      "semilla": "c7",
+      "idea": "factorizacion",
+      "entrada": {
+        "idea": "factorizacion",
+        "tipo": "canonica",
+        "nivel": 1,
+        "N": 924
+      },
+      "esperado": {
+        "respuesta": "2² × 3 × 7 × 11",
+        "texto": "2² × 3 × 7 × 11"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "factorizacion",
+      "entrada": {
+        "idea": "factorizacion",
+        "tipo": "exponente",
+        "nivel": 1,
+        "N": 400
+      },
+      "esperado": {
+        "respuesta": "4",
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "factorizacion",
+      "entrada": {
+        "idea": "factorizacion",
+        "tipo": "pesi",
+        "nivel": 2,
+        "pares": [
+          [
+            25,
+            36
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            15,
+            25
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "25 y 36",
+        "texto": "25 y 36"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "factorizacion",
+      "entrada": {
+        "idea": "factorizacion",
+        "tipo": "potencias",
+        "nivel": 3,
+        "A": 6,
+        "B": 20,
+        "x": 2,
+        "y": 3,
+        "P": 2
+      },
+      "esperado": {
+        "respuesta": "8",
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": "c7",
+      "idea": "divisores",
+      "entrada": {
+        "idea": "divisores",
+        "tipo": "cd",
+        "nivel": 1,
+        "N": 46305
+      },
+      "esperado": {
+        "respuesta": "32",
+        "texto": "32"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "divisores",
+      "entrada": {
+        "idea": "divisores",
+        "tipo": "sd",
+        "nivel": 2,
+        "N": 80
+      },
+      "esperado": {
+        "respuesta": "186",
+        "texto": "186"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "divisores",
+      "entrada": {
+        "idea": "divisores",
+        "tipo": "condicion",
+        "nivel": 2,
+        "N": 1800,
+        "k": 9
+      },
+      "esperado": {
+        "respuesta": "12",
+        "texto": "12"
+      }
+    },
+    {
+      "semilla": "c6",
+      "idea": "divisores",
+      "entrada": {
+        "idea": "divisores",
+        "tipo": "compuestos",
+        "nivel": 3,
+        "N": 36
+      },
+      "esperado": {
+        "respuesta": "6",
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "divisores",
+      "entrada": {
+        "idea": "divisores",
+        "tipo": "exp-oculto",
+        "nivel": 3,
+        "b": 1,
+        "T": 10
+      },
+      "esperado": {
+        "respuesta": "48",
+        "texto": "48"
+      }
+    },
+    {
+      "semilla": "c7",
+      "idea": "euler",
+      "entrada": {
+        "idea": "euler",
+        "tipo": "phi",
+        "nivel": 1,
+        "N": 44
+      },
+      "esperado": {
+        "respuesta": "20",
+        "texto": "20"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "euler",
+      "entrada": {
+        "idea": "euler",
+        "tipo": "phi-tres",
+        "nivel": 2,
+        "N": 25
+      },
+      "esperado": {
+        "respuesta": "20",
+        "texto": "20"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "euler",
+      "entrada": {
+        "idea": "euler",
+        "tipo": "irreductibles",
+        "nivel": 2,
+        "N": 30
+      },
+      "esperado": {
+        "respuesta": "8",
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "euler",
+      "entrada": {
+        "idea": "euler",
+        "tipo": "cota",
+        "nivel": 3,
+        "N": 33
+      },
+      "esperado": {
+        "respuesta": "10",
+        "texto": "10"
+      }
+    },
+    {
+      "semilla": "c7",
+      "idea": "fermat-wilson",
+      "entrada": {
+        "idea": "fermat-wilson",
+        "tipo": "wilson",
+        "nivel": 1,
+        "p": 23,
+        "c": 0
+      },
+      "esperado": {
+        "respuesta": "22",
+        "texto": "22"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "fermat-wilson",
+      "entrada": {
+        "idea": "fermat-wilson",
+        "tipo": "fermat",
+        "nivel": 2,
+        "a": 4,
+        "n": 33,
+        "p": 11
+      },
+      "esperado": {
+        "respuesta": "9",
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "fermat-wilson",
+      "entrada": {
+        "idea": "fermat-wilson",
+        "tipo": "no-vale",
+        "nivel": 3,
+        "a": 2,
+        "n": 14,
+        "p": 15
+      },
+      "esperado": {
+        "respuesta": "4",
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "fermat-wilson",
+      "entrada": {
+        "idea": "fermat-wilson",
+        "tipo": "wilson-mas",
+        "nivel": 3,
+        "p": 7,
+        "c": 3
+      },
+      "esperado": {
+        "respuesta": "2",
+        "texto": "2"
+      }
+    }
+  ]
+}

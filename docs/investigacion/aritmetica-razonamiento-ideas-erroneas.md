@@ -361,6 +361,55 @@ confirman con las predicciones y la práctica, como en los otros temas. La tabla
 | AT-DIOF-UNA | 6 | Cree que una cantidad se paga de una sola manera, o se pasa de la cuenta | → 11 | Hipótesis |
 | AT-RESPONDE-OTRA, AT-CONTEO | 1 a 6 | Responde otra cantidad del problema (las cajas por las bolsas, cuántas cifras por su suma) o cuenta mal la lista | → 8 | Hipótesis |
 
+## Números primos y divisores (19 nov)
+
+Códigos AT de la unidad `aritmetica.numeros-primos-y-divisores` (teoría
+`contenido/teoria/aritmetica/numeros-primos-y-divisores.js`; propuesta `docs/etapa6/propuesta-aritmetica.md` §4) y de su
+práctica `plantillas/primos-divisores/`. **Todos son hipótesis**: no encontramos estudios con cifras de errores sobre
+primos, divisores ni la función de Euler, y la matriz del curso marca el error objetivo («contar el 1 como primo» y
+«usar Euler cuando base y módulo comparten un factor») como «hipótesis de diseño». Tres se apoyan en trampas que el CSV
+de San Marcos deduce de los solucionarios: no descomponer las bases compuestas (2025-I, AT-FACT-BASES), el 1 es simple y
+no primo (2025-II, AT-SIMPLE-UNO) y restar los múltiplos de cada primo sin corregir los comunes (2023-I, AT-EULER-DOBLE).
+Los códigos que vienen de Divisibilidad (AT-POTENCIA-ENTERA, AT-EXP-DIVISOR, AT-CICLO-LUGAR, AT-RESTO-MAYOR,
+AT-RESPONDE-OTRA) se reusan con el mismo sentido.
+
+| Código | Idea | Qué hace el alumno | Ejemplo | Respaldo |
+| --- | --- | --- | --- | --- |
+| AT-PRIMO-UNO | 1, 2 | Cuenta al 1 como primo («se divide entre 1 y entre sí mismo») | boletos 1, 2, 33, 35 y 37: 2 primos → 3 | Hipótesis (matriz) |
+| AT-PRIMO-PAR | 1 | Deja fuera al 2 por ser par | → 1 | Hipótesis |
+| AT-PRIMO-IMPAR | 1, 2 | Cree que todo impar es primo | → 4 | Hipótesis |
+| AT-PRIMO-SIETE | 1 | No prueba el 7: 49, 77 y 91 le parecen primos | ¿cuál es primo?: 91 | Hipótesis |
+| AT-PRIMO-MITAD | 1 | Parte la suma de dos primos en dos mitades | suman 25: 46 → 156 | Hipótesis |
+| AT-PRIMO-TERMINA | 2 | Cree que terminar en 1, 3, 7 o 9 basta para ser primo | primos entre 70 y 90 | Hipótesis |
+| AT-PAREJA-FORMAS | 1 | Cuenta las formas de acomodar en vez de los divisores | 28: 6 divisores → 3 | Hipótesis |
+| AT-DIV-EXTREMOS, AT-DIV-PROPIO | 1 | No cuenta el 1 ni N, o solo no cuenta a N | → 4, → 5 | Hipótesis |
+| AT-PAREJA-CUADRADO, AT-PAREJA-GIRA, AT-PAREJA-DOBLE | 1 | En un cuadrado, olvida la forma n × n, cuenta las formas giradas o la cuenta dos veces | 64: 4 formas → 3, 7 o 5 | Hipótesis |
+| AT-PAREJA-CASI | 1 | Toma un número del rango sin ver si divide | 119 en cajas de 11 a 19: 17 → 13 | Hipótesis (San Marcos 2026-II) |
+| AT-CRIBA-MISMO | 2 | Usa el tope de otra plancha | del 1 al 100: 7 → 5 | Hipótesis |
+| AT-CRIBA-PASA, AT-CRIBA-CORTA | 2 | Cree que hay que pasar de la raíz, o se queda corto (prueba solo 2, 3, 5 y 7) | → 11; 221 «es primo» | Hipótesis |
+| AT-CRIBA-MITAD | 2 | Prueba hasta la mitad | → 47 | Hipótesis |
+| AT-CRIBA-RAIZ | 2 | Prueba con la raíz aunque no sea primo | √200 ≈ 14 | Hipótesis |
+| AT-CRIBA-OTRO, AT-CRIBA-SIETE | 2 | Responde el otro primo de la pareja, o no tacha con el 7 | 323: 17 → 19 | Hipótesis |
+| AT-PA-UNO-MAS | 2 | Cuenta un término de más en la progresión | 29 → 35 | Hipótesis (San Marcos 2026-I) |
+| AT-PESI-PRIMOS | 3 | Lee el nombre: cree que dos PESI tienen que ser primos | 8 y 15 → «ninguno» | Hipótesis (matriz) |
+| AT-PESI-UN-PRIMO, AT-PESI-IMPARES | 3 | Cree que basta que uno sea primo, o que dos impares no comparten nada | 7 y 21; 9 y 15 | Hipótesis |
+| AT-FACT-INCOMPLETA, AT-FACT-EXPONENTE, AT-FACT-SUMA | 3 | Deja un compuesto sin partir, no cuenta las veces de cada primo o cuenta una de más | 72: 2³ × 3² → 8 × 3² | Hipótesis |
+| AT-FACT-DISTINTOS, AT-FACT-CORTA, AT-FACT-TODOS | 3 | Cuenta los primos distintos, se detiene antes o cuenta todos los primos | doses de 480: 5 → 3, 4 o 6 | Hipótesis |
+| AT-FACT-BASES, AT-FACT-MULTIPLICA, AT-FACT-UNA-BASE | 3 | Suma los exponentes sin descomponer las bases, los multiplica o mira una sola base | treses de 12³ × 45²: 7 → 5, 6 o 3 | Hipótesis (San Marcos 2025-I) |
+| AT-CD-OLVIDA, AT-CD-SIN-UNO, AT-CD-SUMA | 4 | Se olvida de un primo, no suma 1 a los exponentes o suma en vez de multiplicar | 720: 30 → 15, 8 o 10 | Hipótesis |
+| AT-SD-CUENTA, AT-SD-SUMA, AT-SD-PROPIOS | 4 | Da la cantidad por la suma, suma las sumas o deja fuera a N | SD(200): 465 → 12, 46 o 265 | Hipótesis |
+| AT-COND-TODOS, AT-COND-COMPLEMENTO, AT-COND-DE-K | 4, 5 | Cuenta todos los divisores, los que no cumplen o los divisores de k | múltiplos de 6: 24 → 40, 16 o 4 | Hipótesis |
+| AT-SIMPLE-UNO, AT-COMPUESTO-PRIMOS | 4 | Olvida que el 1 es simple, o solo quita el 1 | compuestos de 60: 8 → 9 o 11 | Hipótesis (San Marcos 2025-II) |
+| AT-EULER-DOBLE | 5 | Quita los múltiplos de cada primo y descuenta dos veces los comunes | φ(100): 40 → 30 | Hipótesis (San Marcos 2023-I) |
+| AT-EULER-UN-PRIMO, AT-EULER-PRIMOS, AT-EULER-FRACCION | 5 | Quita un solo primo, cuenta los primos o multiplica por 1/p en vez de 1 − 1/p | → 50, 25 o 10 | Hipótesis |
+| AT-EULER-PRIMO-SIEMPRE | 5 | Cree que φ(N) = N − 1 siempre | φ(84): 24 → 83 | Hipótesis |
+| AT-EULER-TODAS, AT-EULER-MITAD, AT-EULER-COTA, AT-EULER-EXTREMO | 5 | Cuenta todas las fracciones, la mitad, no descarta las de abajo de la cota o cuenta N/N | denominador 30, mayores que 1/2: 4 → 14, 8 o 5 | Hipótesis (San Marcos 2024-I y 2025-I) |
+| AT-FERMAT-BASE, AT-FERMAT-MENOS-UNO | 6 | Cree que vuelve a la base, o responde p − 1 | 2¹⁰⁰ entre 101: 1 → 2 o 100 | Hipótesis |
+| AT-FERMAT-SIEMPRE-UNO | 6 | Cree que una potencia entre un primo siempre deja 1 | 2¹⁰⁰ entre 13: 3 → 1 | Hipótesis |
+| AT-FERMAT-MULTIPLO, AT-FERMAT-NO-PRIMO | 6 | Usa Fermat cuando p divide a la base, o sin que el divisor sea primo | 14⁶ entre 7: 0 → 1; 2¹⁴ entre 15: 4 → 1 | Hipótesis (matriz) |
+| AT-WILSON-UNO, AT-WILSON-CERO, AT-WILSON-MENOS-DOS | 6 | Confunde Wilson con Fermat, cree que el producto es múltiplo de p o resta uno de más | 1 × … × 16 + 5 entre 17: 4 → 6 o 5 | Hipótesis |
+| AT-POTENCIA-ENTERA, AT-EXP-DIVISOR, AT-CICLO-LUGAR, AT-RESTO-MAYOR, AT-RESPONDE-OTRA | 1 a 6 | Los de Divisibilidad: calcular la potencia, reducir mal el exponente, dar el exponente que queda, no volver a dividir, responder otra cantidad | — | Hipótesis |
+
 ## Huecos y siguientes pasos
 
 - **Abrir los originales.** En esta sesión no se pudo descargar nada. Las cifras "por confirmar" son las de la tesis de Roa sobre Navarro-Pelayo (37,8 % y 66,6 %), la tabla de Lecoutre (51 %), el 68 % de Clement y el 40 % de la regla del número entero de Resnick. El artículo de 1996 de Navarro-Pelayo y otros está en acceso abierto en la revista *Educación Matemática* y en ugr.es; Jacobs Danan y Gelman (2018) está en PMC; Van Dooren y otros (2005) y De Bock y otros (1998) son de pago.

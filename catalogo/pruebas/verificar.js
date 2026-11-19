@@ -648,6 +648,18 @@ const V = {
     const tres = [a + 3, a - 3].find(t => t >= 0 && t <= 9 && (S + t) % 3 === 0 && t !== S % 9);
     return { correcta: a, errores: { 'responde-lo-que-sobra': S % 9, 'multiplo-de-3-no-de-9': tres, 'completa-la-decena': 10 * (Math.floor(S / 10) + 1) - S } };
   },
+  // ari-33 y ari-34 (19 nov): ítems de la práctica primos-divisores (sin motor), verificados aquí por fuerza bruta.
+  'ari-33': d => {
+    const divs = n => { let c = 0; for (let k = 1; k <= n; k++) if (n % k === 0) c++; return c; };
+    const fs = []; for (let n = d.N, p = 2; n > 1; p++) { let e = 0; while (n % p === 0) { n /= p; e++; } if (e) fs.push(e); }
+    const uno = fs.slice(0, -1).reduce((x, e) => x * (e + 1), 1);   // sin el último primo (el 11 de 132 y de 792)
+    return { correcta: divs(d.N), errores: { 'olvida-un-primo': uno, 'duplica-por-las-parejas': 2 * divs(d.N), 'multiplica-los-exponentes': fs.reduce((x, e) => x * e, 1) } };
+  },
+  'ari-34': d => {
+    const g = (a, b) => (b ? g(b, a % b) : a);
+    let c = 0, m = 0; for (let k = 1; k < d.N; k++) if (g(k, d.N) === 1) { c++; if (2 * k > d.N) m++; }
+    return { correcta: c, errores: { 'cuenta-todas-las-propias': d.N - 1, 'solo-las-mayores-que-un-medio': m, 'cuenta-las-que-se-simplifican': d.N - 1 - c } };
+  },
   'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
     return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
   'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;

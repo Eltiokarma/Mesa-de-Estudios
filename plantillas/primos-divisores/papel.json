@@ -1,0 +1,87 @@
+{
+  "titulo": "La vitrina de los primos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En la rifa quedan los boletos 1, 43, 57 y 91. ¿Cuál de ellos lleva un número primo? Datos: Un número primo tiene exactamente dos divisores: 1 y él mismo. Un compuesto tiene más de dos divisores; el 1 no es primo ni compuesto. Alternativas: A) 57   B) 1   C) 43   D) 91",
+      "respuesta": "C) 43",
+      "pasos": [
+        "Los otros se parten: 57 = 3 × 19 y 91 = 7 × 13; el 1 tiene un solo divisor.",
+        "43 solo tiene los divisores 1 y 43."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Doña Juana parte 196 caramelos en partes iguales, y cada parte otra vez, hasta llegar a primos. ¿Cuál es la descomposición canónica de 196? Datos: Todo número mayor que 1 es un producto de primos, de una sola manera salvo el orden. Forma canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5. Alternativas: A) 2³ × 7²   B) 2 × 7   C) 2² × 7²   D) 4 × 7²",
+      "respuesta": "C) 2² × 7²",
+      "pasos": [
+        "Se divide entre el menor primo una y otra vez: 2 × 2 × 7 × 7.",
+        "196 = 2² × 7²."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "N = 2⁴ × 3³ × 5. ¿Cuántos divisores tiene N? Datos: CD(N) = (α + 1) × (β + 1) × …, con N = pᵅ × qᵝ × … escrito en primos. Alternativas: A) 12   B) 20   C) 11   D) 40",
+      "respuesta": "D) 40",
+      "pasos": [
+        "Cada primo da su exponente más 1 opciones.",
+        "(4 + 1) × (3 + 1) × (1 + 1) = 40 divisores."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El número 923 no es múltiplo de 2, 3, 5 ni 7. ¿Cuál es el menor primo que divide a 923? Datos: N es primo si no es múltiplo de ningún primo p con p × p ≤ N. Los primos menores que 40: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31 y 37. Alternativas: A) 71   B) 7   C) 13   D) 1",
+      "respuesta": "C) 13",
+      "pasos": [
+        "Con los primos hasta el anterior a 13 siempre sobra algo.",
+        "923 = 13 × 71: el menor es 13."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una torta se parte en 42 tajadas iguales. ¿Cuántas fracciones propias irreductibles tienen denominador 42? Datos: Una fracción k/N es irreductible si k y N son PESI; es propia si k es menor que N. φ(N) = N × (1 − 1/p) × (1 − 1/q) × …, con p, q, … los primos distintos de N. Alternativas: A) 6   B) 12   C) 41   D) 29",
+      "respuesta": "B) 12",
+      "pasos": [
+        "k/42 es irreductible si k y 42 son PESI: son φ(42).",
+        "42 × (1 − 1/2) × (1 − 1/3) × (1 − 1/7) = 12."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Doña Juana empaca 4³⁶ caramelos en bolsitas de 11. ¿Cuántos caramelos quedan sueltos? Datos: Fermat: si p es primo y a no es múltiplo de p, a elevado a p − 1 deja resto 1 entre p. Al multiplicar potencias de una base, los exponentes se suman: a⁵ × a³ = a⁸. El resto de un producto o de una suma sale de operar los restos y volver a dividir. Alternativas: A) 9   B) 6   C) 1   D) 4",
+      "respuesta": "D) 4",
+      "pasos": [
+        "36 = 10 × 3 + 6: cada bloque de 10 deja 1, y queda 4⁶.",
+        "4⁶ deja 4 entre 11."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Cinco números primos, todos menores que 61, forman una progresión aritmética: cada uno es el anterior más 12. ¿Cuál es el mayor? Datos: N es primo si no es múltiplo de ningún primo p con p × p ≤ N. Progresión de razón 12: cada término es el anterior más 12. Alternativas: A) 59   B) 5   C) 65   D) 53",
+      "respuesta": "D) 53",
+      "pasos": [
+        "Se prueba cada primo de inicio; solo con 5 los 5 son primos: 5, 17, 29, 41, 53.",
+        "El mayor es 53."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se toman las fracciones de denominador 18. ¿Cuántas son irreductibles, mayores que 1/2 y menores que 1? Datos: Una fracción k/N es irreductible si k y N son PESI; es propia si k es menor que N. k/N y (N − k)/N son irreductibles a la vez: van en parejas que suman 1. φ(N) = N × (1 − 1/p) × (1 − 1/q) × …, con p, q, … los primos distintos de N. Alternativas: A) 3   B) 4   C) 6   D) 8",
+      "respuesta": "A) 3",
+      "pasos": [
+        "φ(18) = 6 irreductibles, en parejas que suman 1.",
+        "La mitad pasa de 1/2: 6 ÷ 2 = 3."
+      ]
+    }
+  ]
+}

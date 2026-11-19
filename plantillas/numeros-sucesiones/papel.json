@@ -71,6 +71,14 @@
         "I. CD(N) = 5·6·4 = 120: verdadera. II. Los múltiplos de 6 son los divisores de N/6 = 2³·3⁴·5³: 4·5·4 = 80: verdadera.",
         "III. Los impares son los divisores de 3⁵·5³: 6·4 = 24, con el 1 incluido: falsa.",
         "IV. Cuadrados: exponentes pares, 2 tiene 0, 2 o 4 (3 opciones), 3 tiene 0, 2 o 4 (3) y 5 tiene 0 o 2 (2): 3·3·2 = 18: falsa. Son verdaderas 2."
+      ],
+      "unidades": [
+        "aritmetica.numeros-primos-y-divisores"
+      ],
+      "datos": [
+        "CD(N) = (α + 1) × (β + 1) × …, con N = pᵅ × qᵝ × … escrito en primos",
+        "Los divisores de N que son múltiplos de k son k por cada divisor de N ÷ k",
+        "Los divisores impares son los de la parte de N sin el 2; un cuadrado perfecto tiene exponentes pares"
       ]
     },
     {
@@ -82,6 +90,13 @@
         "Si el menor es p, los primos son p, p + 12, p + 24, p + 36 y p + 48, con p + 48 < 60: p < 12.",
         "p = 2 da 14 (par); p = 3 da 15; p = 7 da 7, 19, 31, 43, 55 y 55 = 5·11; p = 11 da 35 = 5·7.",
         "Solo p = 5 sirve: 5, 17, 29, 41, 53. El mayor es 5 + 4·12 = 53 (con 5·12 saldría 65, un término de más)."
+      ],
+      "unidades": [
+        "aritmetica.numeros-primos-y-divisores"
+      ],
+      "datos": [
+        "N es primo si no es múltiplo de ningún primo p con p × p ≤ N",
+        "Progresión de razón 12: cada término es el anterior más 12"
       ]
     },
     {
