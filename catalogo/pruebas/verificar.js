@@ -692,6 +692,14 @@ const V = {
   'cg-02': d => { const r = motor('congruencia').medianaHipotenusa({ catetos: [d.AB, d.BC] }), e = r.errores;
     if (Math.abs(r.hipotenusa - d.AC) > 1e-9) throw new Error('la hipotenusa del enunciado no es la del motor');
     return { correcta: r.mediana, errores: { 'mediana-igual-cateto': e.cateto, 'GE8-mediana-como-altura': e.altura, 'mediana-promedio-catetos': e.promedioCatetos } }; },
+  // cg-03 y cg-04 (19 nov, etapa 5, Congruencia): la práctica geo-congruencia es un generador sin motor; aquí se rehacen
+  // aparte. cg-03: p·x − q = x + s (AB = CD por LAL con los opuestos por el vértice). cg-04: la altura BH deja un notable
+  // de 45° (AH = BH) y uno de 37° y 53° (BH = 3k frente a 37°, 4k frente a 53°).
+  'cg-03': d => { let x = NaN; for (let t = -50; t <= 100; t++) if (d.p * t - d.q === t + d.s) x = t;
+    let xs = NaN; for (let t = -50; t <= 100; t++) if ((d.p - 1) * t === d.s - d.q) xs = t;   // pasar −q sin cambiarle el signo
+    return { correcta: d.p * x - d.q, errores: { 'GE-CON30': x, 'GE-CON31': 2 * (d.p * x - d.q), 'GE-TRI15': d.p * xs - d.q } }; },
+  'cg-04': d => { const k = d.C === 37 ? d.BH / 3 : d.BH / 4, hc = d.C === 37 ? 4 * k : 3 * k;
+    return { correcta: d.BH + hc, errores: { 'GE-CON72': hc, 'GE-CON73': 2 * d.BH, 'GE-CON64': d.BH + 5 * k } }; },
   'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
     return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
   'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;

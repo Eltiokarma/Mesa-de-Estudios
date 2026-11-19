@@ -1,0 +1,22 @@
+{
+  "id": "geo-congruencia",
+  "titulo": "Congruencia de triángulos",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.congruencia"
+  ],
+  "temas": [
+    "Criterios LAL, ALA y LLL",
+    "Lados y ángulos correspondientes",
+    "Teorema de la mediatriz y de la bisectriz",
+    "Teorema de la base media",
+    "Mediana relativa a la hipotenusa",
+    "Triángulos rectángulos notables"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

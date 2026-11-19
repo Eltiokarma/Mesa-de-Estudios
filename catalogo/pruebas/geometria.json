@@ -230,7 +230,12 @@
     "GE-DT14": {
       "respaldo": "hipotesis",
       "describe": "Da el menor valor del lado en vez de contar cuántos valores hay"
-    }
+    },
+    "GE-CON30": {"respaldo": "hipotesis", "describe": "Halla x y no la medida que se pide"},
+    "GE-CON31": {"respaldo": "hipotesis", "describe": "Suma las dos medidas iguales en vez de dar una"},
+    "GE-CON64": {"respaldo": "hipotesis", "describe": "En el notable de 37° y 53° usa la hipotenusa en vez del cateto"},
+    "GE-CON72": {"respaldo": "hipotesis", "describe": "Da solo una de las dos partes en que la altura parte el lado"},
+    "GE-CON73": {"respaldo": "hipotesis", "describe": "Cree que la altura parte el lado en dos partes iguales a ella"}
   },
   "pares": [
     {
@@ -1027,6 +1032,136 @@
             "texto": "12,5 m",
             "valor": 12.5,
             "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "cg-03",
+      "plantilla": "geo-congruencia",
+      "unidad": "geometria.congruencia",
+      "mide": "Lados correspondientes: con los ángulos opuestos por el vértice, LAL da AB = CD, y se iguala con x",
+      "A": {
+        "enunciado": "Dos varillas, AD y BC, se cruzan en O, con OA = OD y OB = OC. Si AB = 3x − 2 y CD = x + 14, en centímetros, ¿cuánto mide AB?",
+        "datos": {
+          "p": 3,
+          "q": 2,
+          "s": 14
+        },
+        "opciones": [
+          {
+            "texto": "8 cm",
+            "valor": 8,
+            "error": "GE-CON30"
+          },
+          {
+            "texto": "22 cm",
+            "valor": 22,
+            "correcta": true
+          },
+          {
+            "texto": "16 cm",
+            "valor": 16,
+            "error": "GE-TRI15"
+          },
+          {
+            "texto": "44 cm",
+            "valor": 44,
+            "error": "GE-CON31"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos cables tensos, AD y BC, se cruzan en O, con OA = OD y OB = OC. Si AB = 4x − 3 y CD = x + 12, en metros, ¿cuánto mide AB?",
+        "datos": {
+          "p": 4,
+          "q": 3,
+          "s": 12
+        },
+        "opciones": [
+          {
+            "texto": "34 m",
+            "valor": 34,
+            "error": "GE-CON31"
+          },
+          {
+            "texto": "9 m",
+            "valor": 9,
+            "error": "GE-TRI15"
+          },
+          {
+            "texto": "17 m",
+            "valor": 17,
+            "correcta": true
+          },
+          {
+            "texto": "5 m",
+            "valor": 5,
+            "error": "GE-CON30"
+          }
+        ]
+      }
+    },
+    {
+      "par": "cg-04",
+      "plantilla": "geo-congruencia",
+      "unidad": "geometria.congruencia",
+      "mide": "La altura parte el triángulo en dos notables: 45° (AH = BH) y 37° y 53° (3k, 4k y 5k)",
+      "A": {
+        "enunciado": "En el triángulo ABC, m∠A = 45° y m∠C = 37°. La altura BH mide 12 cm. ¿Cuánto mide AC?",
+        "datos": {
+          "C": 37,
+          "BH": 12
+        },
+        "opciones": [
+          {
+            "texto": "16 cm",
+            "valor": 16,
+            "error": "GE-CON72"
+          },
+          {
+            "texto": "24 cm",
+            "valor": 24,
+            "error": "GE-CON73"
+          },
+          {
+            "texto": "28 cm",
+            "valor": 28,
+            "correcta": true
+          },
+          {
+            "texto": "32 cm",
+            "valor": 32,
+            "error": "GE-CON64"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En el triángulo ABC, m∠A = 45° y m∠C = 53°. La altura BH mide 8 cm. ¿Cuánto mide AC?",
+        "datos": {
+          "C": 53,
+          "BH": 8
+        },
+        "opciones": [
+          {
+            "texto": "14 cm",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "6 cm",
+            "valor": 6,
+            "error": "GE-CON72"
+          },
+          {
+            "texto": "18 cm",
+            "valor": 18,
+            "error": "GE-CON64"
+          },
+          {
+            "texto": "16 cm",
+            "valor": 16,
+            "error": "GE-CON73"
           }
         ]
       }

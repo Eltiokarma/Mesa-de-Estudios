@@ -2313,6 +2313,26 @@
     "GE-DT14": {
      "respaldo": "hipotesis",
      "describe": "Da el menor valor del lado en vez de contar cuántos valores hay"
+    },
+    "GE-CON30": {
+     "respaldo": "hipotesis",
+     "describe": "Halla x y no la medida que se pide"
+    },
+    "GE-CON31": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las dos medidas iguales en vez de dar una"
+    },
+    "GE-CON64": {
+     "respaldo": "hipotesis",
+     "describe": "En el notable de 37° y 53° usa la hipotenusa en vez del cateto"
+    },
+    "GE-CON72": {
+     "respaldo": "hipotesis",
+     "describe": "Da solo una de las dos partes en que la altura parte el lado"
+    },
+    "GE-CON73": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la altura parte el lado en dos partes iguales a ella"
     }
    },
    "pares": [

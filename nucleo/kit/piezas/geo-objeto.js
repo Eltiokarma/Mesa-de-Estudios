@@ -57,6 +57,9 @@
  *   ejercicio: true (cartulina, plaza, compas, lampara, caserio y parque): un arco sin texto ni color va en tinta, no en
  *              carmín ni turquesa (en un ejercicio el carmín dice «dato»; auditoría de Triángulos, 18 nov). Sin la clave,
  *              como antes (Segmentos y ángulos no la usa).
+ *   Congruencia (19 nov, etapa 5), dibujo de prueba sobre una figura de geo-figura que arma la teoría:
+ *   armazon    un armado de vigas o varillas: el tijeral que se arma en el piso del taller sobre la silueta de tiza del
+ *              modelo (tipo: 'taller') y la cometa de varillas y papel (tipo: 'cometa'); formato en su función
  *   Comunes a estas y a «angulos»: llaves (marca de igualdad sobre una llave que une las puntas del tramo), ladosRot (la
  *   medida de un lado), libres (un rótulo suelto junto a un punto) y masPuntos, masSegmentos, masAngulos. Lo que escriben
  *   y lo que trazan (llaves, objetos) es obstáculo para los rótulos de los ángulos, y escenaCabe lo revisa; las letras de
@@ -110,7 +113,7 @@
   const LETRA = 162;                              // línea base de las letras de los paraderos
   const NIVEL = { 1: 88, 2: 58, 3: 28, '-1': 182, '-2': 212 };
   const CW = 30, CH = 15;                         // la combi
-  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque'];
+  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon'];
   const COLORES_DATO = ['o', 'i', 'd'];
   const n = T.n;
   const f = x => Kit.formatear(x, 2);
@@ -1362,6 +1365,108 @@
   // OB en medio) va en el hueco más ancho entre esos rayos, no sobre OB; (2) un arco que contiene a otros ángulos del
   // mismo vértice pasa por fuera de sus rótulos; (3) en un ángulo chico, el arco crece hasta su rótulo (conArco). Se
   // trabaja del ángulo más chico al más grande.
+  // ---------- Congruencia (19 nov, etapa 5): el armazón ----------
+  // Un armado de vigas o de varillas, a escala (dibujo de prueba): el tijeral que se arma en el piso del taller sobre la
+  // silueta del modelo marcada con tiza (Congruencia, idea 1) y la cometa de varillas y papel. Afirmación: copiar un
+  // triángulo es armar otro que calce sobre el primero; con las tres medidas bien elegidas, las vigas caen en un solo
+  // lugar. Fidelidad: la figura (puntos, trazos, arcos y ángulos) la arma la teoría con geo-figura, a escala; esta escena
+  // solo pone el objeto debajo, y sus tablas son obstáculo para los rótulos.
+  //   { objeto: 'armazon', tipo: 'taller' | 'cometa', figura: <datos de geo-figura>,
+  //     vigas: [{ de, a, desde, hasta }],              una tabla bajo ese trazo (de y a: ids de la figura o [x, y])
+  //     silueta: { puntos: [id | [x, y], …], desde, hasta } | [{…}, …],   la silueta del modelo: un relleno tenue, sin borde
+  //     papel: [id, …],                                (cometa) el papel entre las varillas
+  //     cola: id,                                      (cometa) la punta de donde cuelga la cola
+  //     pernos: [id, …] }                              un perno en esas puntas
+  //   y lo común: llaves, ladosRot, libres (comunes).
+  //   Fase 3 de Congruencia (19 nov): más tipos sobre la misma figura. 'costura' (banderines de tela sobre la mesa de
+  //   costura: papel con una lista de piezas), 'mapa' (casas: [id] en los caseríos y pozo: id), 'escalera' (muros:
+  //   [{ de, a, lado: 1 | -1 }], la pared y el piso rayados de un lado, y escalera: { de, a }, dos largueros con
+  //   peldaños) y 'escuadras' (escuadras: [{ puntos, desde, hasta }], la escuadra de plástico con su hueco). Los bordes
+  //   de casas, pozo, muros y escalera son obstáculo para los rótulos de los ángulos.
+  function armazon(d) {
+    const f0 = d.figura || { puntos: [] }, cometa = d.tipo === 'cometa', HW = cometa ? 2.4 : 4.5;
+    const fondo = !cometa && d.tipo !== 'escalera' && d.tipo !== 'escuadras';
+    const fig = Object.assign({}, f0, { alt: f0.alt || d.alt || (cometa ? 'Una cometa de varillas y papel, vista de frente.' : 'Las vigas de un tijeral sobre el piso del taller.') });
+    const tabla = (g, v) => {
+      const P0 = g.S(v.de), Q0 = g.S(v.a);
+      if (!P0 || !Q0) return null;
+      const u = unidad(P0, Q0), nn = [-u[1], u[0]], e = cometa ? 0 : 3;
+      const z = (o, k, w) => [o[0] + u[0] * k + nn[0] * w, o[1] + u[1] * k + nn[1] * w];
+      return { ps: [z(P0, -e, -HW), z(Q0, e, -HW), z(Q0, e, HW), z(P0, -e, HW)], veta: [z(P0, 2, 0), z(Q0, -2, 0)] };
+    };
+    const vigas = (g, corte) => (d.vigas || []).filter(v => ve(v, corte)).map(v => tabla(g, v)).filter(Boolean);
+    const deco = (g, corte) => {
+      let s = '';
+      if (fondo) s += `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.04"/>`;
+      for (const e of (d.escuadras || []).filter(x => ve(x, corte))) {
+        const ps = e.puntos.map(q => g.S(q)), c = [ps.reduce((a, p) => a + p[0], 0) / ps.length, ps.reduce((a, p) => a + p[1], 0) / ps.length];
+        s += `<path d="${rutaPx(ps)}" fill="currentColor" fill-opacity="0.10"/>`;
+        s += `<path d="${rutaPx(ps.map(p => [c[0] + (p[0] - c[0]) * 0.2, c[1] + (p[1] - c[1]) * 0.2]))}" fill="var(--card)" stroke="currentColor" stroke-opacity="0.35" stroke-width="1"/>`;
+      }
+      for (const m of d.muros || []) {
+        const p = g.S(m.de), q = g.S(m.a);
+        if (!p || !q) continue;
+        const u = unidad(p, q), nn = [-u[1] * (m.lado || 1), u[0] * (m.lado || 1)], L = Math.hypot(q[0] - p[0], q[1] - p[1]);
+        let h = '';
+        for (let k = 4; k < L - 2; k += 8) { const x0 = p[0] + u[0] * k, y0 = p[1] + u[1] * k; h += `M${n(x0)} ${n(y0)}L${n(x0 + (nn[0] - u[0]) * 5)} ${n(y0 + (nn[1] - u[1]) * 5)}`; }
+        s += `<path d="${h}" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="1"/>`;
+      }
+      for (const sl of [].concat(d.silueta || [])) {
+        if (!ve(sl, corte)) continue;
+        s += `<path d="${rutaPx(sl.puntos.map(q => g.S(q)))}" fill="currentColor" fill-opacity="0.15"/>`;
+      }
+      if (d.papel) for (const pz of Array.isArray(d.papel[0]) ? d.papel : [d.papel]) s += `<path d="${rutaPx(pz.map(q => g.S(q)))}" fill="currentColor" fill-opacity="${d.tipo === 'costura' ? 0.12 : 0.08}"/>`;
+      if (d.cola !== undefined) {
+        // La cola de la cometa: una cinta que cuelga en zigzag suave, con dos lazos.
+        const c = g.S(d.cola), k = Math.min(1, (g.alto - 10 - c[1]) / 40), pts = [c, [c[0] + 7, c[1] + 10 * k], [c[0] - 4, c[1] + 20 * k], [c[0] + 6, c[1] + 30 * k], [c[0] + 1, c[1] + 38 * k]];
+        s += `<path d="${rutaPx(pts, false)}" fill="none" stroke="currentColor" stroke-opacity="0.15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+      }
+      for (const t of vigas(g, corte)) {
+        s += `<path d="${rutaPx(t.ps)}" fill="var(--card)" stroke="currentColor" stroke-width="${cometa ? 1 : 1.5}" stroke-linejoin="round"/>`;
+        if (!cometa) s += `<path d="${rutaPx(t.veta, false)}" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="1"/>`;
+      }
+      return s;
+    };
+    const extra = (g, corte) => {
+      let svg = '';
+      for (const id of d.pernos || []) {
+        const q = (fig.puntos || []).find(x => x.id === id);
+        if (!q || !ve(q, corte)) continue;
+        const c = g.S(id);
+        svg += `<circle cx="${n(c[0])}" cy="${n(c[1])}" r="2.6" fill="var(--card)" stroke="currentColor" stroke-width="1.4"/>`;
+      }
+      const lineas = vigas(g, corte).flatMap(t => bordes(t.ps));
+      for (const m of d.muros || []) { const p = g.S(m.de), q = g.S(m.a); if (p && q) lineas.push([p, q]); }
+      for (const id of d.casas || []) {
+        const q = (fig.puntos || []).find(x => x.id === id);
+        if (!q || !ve(q, corte)) continue;
+        const c = g.S(id), ps = [[c[0] - 6, c[1] + 5], [c[0] + 6, c[1] + 5], [c[0] + 6, c[1] - 2], [c[0], c[1] - 7], [c[0] - 6, c[1] - 2]];
+        svg += `<path d="${rutaPx(ps)}" fill="var(--card)" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>`;
+        lineas.push(...bordes(ps));
+      }
+      if (d.pozo !== undefined) {
+        const q = (fig.puntos || []).find(x => x.id === d.pozo);
+        if (q && ve(q, corte)) {
+          const c = g.S(d.pozo);
+          svg += `<circle cx="${n(c[0])}" cy="${n(c[1])}" r="6.5" fill="var(--card)" stroke="currentColor" stroke-width="1.4"/><circle cx="${n(c[0])}" cy="${n(c[1])}" r="3" fill="currentColor" fill-opacity="0.35"/>`;
+          lineas.push([[c[0] - 6.5, c[1] - 6.5], [c[0] + 6.5, c[1] - 6.5]], [[c[0] + 6.5, c[1] - 6.5], [c[0] + 6.5, c[1] + 6.5]], [[c[0] + 6.5, c[1] + 6.5], [c[0] - 6.5, c[1] + 6.5]], [[c[0] - 6.5, c[1] + 6.5], [c[0] - 6.5, c[1] - 6.5]]);
+        }
+      }
+      if (d.escalera && ve(d.escalera, corte)) {
+        const p = g.S(d.escalera.de), q = g.S(d.escalera.a);
+        if (p && q) {
+          const u = unidad(p, q), nn = [-u[1], u[0]], L = Math.hypot(q[0] - p[0], q[1] - p[1]), z = (k, w) => [p[0] + u[0] * k + nn[0] * w, p[1] + u[1] * k + nn[1] * w];
+          let h = `M${n(z(0, -4)[0])} ${n(z(0, -4)[1])}L${n(z(L, -4)[0])} ${n(z(L, -4)[1])}M${n(z(0, 4)[0])} ${n(z(0, 4)[1])}L${n(z(L, 4)[0])} ${n(z(L, 4)[1])}`;
+          for (let k = 10; k < L - 4; k += 13) h += `M${n(z(k, -4)[0])} ${n(z(k, -4)[1])}L${n(z(k, 4)[0])} ${n(z(k, 4)[1])}`;
+          svg = `<path d="${h}" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.4" stroke-linecap="round"/>` + svg;
+          lineas.push([z(0, -4), z(L, -4)], [z(0, 4), z(L, 4)]);
+        }
+      }
+      return { svg, lineas };
+    };
+    return { fig, deco, extra };
+  }
+
   const TAU = 2 * Math.PI, norm = t => ((t % TAU) + TAU) % TAU;
   function prepararAngulos(g, fig, corte = Infinity) {
     const angs = (fig.angulos || []).map(a => Object.assign({}, a));
@@ -1432,7 +1537,7 @@
     return angs;
   }
 
-  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque,
+  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
   // manija: el id del punto que el juego arrastra; su letra se aleja 8 px más (la manija, de radio 13, la tapaba).
   const escena = d => {

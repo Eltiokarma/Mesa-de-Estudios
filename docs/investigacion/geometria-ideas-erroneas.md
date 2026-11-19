@@ -210,6 +210,50 @@ parten para que dos opciones de una misma pregunta no lleven el mismo código.
 | GE-DT14 a GE-DT16 | Da el menor valor del lado en vez de contar cuántos; en el punto interior (San Marcos 2026-I) olvida el límite de BC y usa solo PB + PC; redondea cada parte del perímetro por separado | Práctica `geo-triangulos`, idea 4 |
 | GE-BIS14 | Interior con exterior: parte A entre cuatro (una mitad por cada bisectriz) | Práctica `geo-triangulos`, idea 6 |
 
+
+## Congruencia (19 nov)
+
+Códigos de las ideas 1 y 2 de `contenido/teoria/geometria/congruencia.js` (etapa 5, `docs/etapa5/propuesta-geometria.md`).
+**Todos son hipótesis** sacadas del temario, de las 20 preguntas de San Marcos clasificadas en la unidad y de la práctica
+de academia: no tienen datos de alumnos y se confirman con la medición del piloto. GE-CON1 a 3 y 6 a 15 ya estaban en
+`rutinas/teoria-geometria.md`; los demás son nuevos. Las ideas 3 a 6 (fase 3, 19 nov) agregan GE-CON19 a GE-CON24 (los de la
+propuesta) y GE-CON32 a GE-CON73; todos, también los de la práctica `geo-congruencia`, son hipótesis.
+
+| Código | Hipótesis (lo que hace el alumno) | Dónde aparece |
+| --- | --- | --- |
+| GE-CON1 | Toma LLA por LAL: con dos lados y un ángulo cree que el triángulo ya está fijo, sin mirar dónde queda el ángulo | Idea 1, predicción y «Ahora tú» |
+| GE-CON2 | Cree que el lado que gira no alcanza la recta (no lo compara con la distancia de B a ella) | Idea 1, predicción y «Ahora tú» |
+| GE-CON3 | Confunde las siglas (ALA por LAL) o empareja por el orden alfabético de las letras | Ideas 1 y 2 |
+| GE-CON4 | Cree que los ángulos solos fijan el tamaño (AAA como criterio): el «error objetivo» de la matriz, semejanza por congruencia | Idea 1, «Ahora tú» |
+| GE-CON5 | Cree que con dos lados iguales ya basta | Idea 1, «Ahora tú» |
+| GE-CON16 | Cree que salen muchos triángulos: no ve que la punta del lado que gira tiene que caer en la recta | Idea 1, predicción y «Ahora tú» |
+| GE-CON17 | Empareja los lados por su posición en el dibujo (el de abajo con el de abajo); vecino de GE9 | Idea 2 |
+| GE-CON18 | Cree que la congruencia no dice qué lado es cuál («no se sabe sin medir») | Idea 2 |
+| GE-CON25 | No cuenta cuántos lados y cuántos ángulos se dan (elige LLL con dos lados y un ángulo) | Idea 1, «Ahora tú» |
+| GE-CON26 | Desconfía de un criterio que sí se cumple («esos datos no bastan») | Idea 1, «Ahora tú» |
+| GE-CON27 | Con dos lados dados, cree que cualquier ángulo igual completa el criterio | Idea 1, «Ahora tú» |
+| GE-CON28 | Cree que LLA siempre da dos triángulos, mida lo que mida el lado que gira | Idea 1, «Ahora tú» |
+| GE-CON29 | No cuenta el lado común ni los ángulos opuestos por el vértice como tercer dato | Idea 1, «Ahora tú» |
+| GE-CON30, GE-CON31 | Da x y no la medida; suma las dos medidas iguales | Idea 1, «Ahora tú» |
+| GE-CON19 | No mide en perpendicular: cree que la distancia a una recta depende de hacia dónde se mida | Idea 3, predicción |
+| GE-CON20 | En la paralela por un punto medio, copia la medida (AM) en vez de partir el otro lado por la mitad | Idea 4 |
+| GE-CON21 | Toma la base media (o la paralela) como un tercio, no como la mitad | Ideas 4 y 5 |
+| GE-CON22 | Con la esquina más abierta que el recto, cree que la mediana crece | Idea 5, predicción |
+| GE-CON23 | Cree que para comparar con la mitad de la hipotenusa hace falta el ángulo exacto | Idea 5, predicción |
+| GE-CON24 | En el notable de 45° usa k√3, el cateto mayor del de 30° y 60° | Idea 6 |
+| GE-CON32, GE-CON33 | Toma el lado que llega al ángulo, o el de otra pareja, en vez del de enfrente | Idea 2 |
+| GE-CON34 | Da el suplemento (el vecino) del ángulo pedido | Ideas 2 a 4 |
+| GE-CON35, GE-CON36 | Copia el ángulo dado en el vértice equivocado; parte un ángulo en dos sin motivo | Ideas 2, 3 y 5 |
+| GE-CON37 a GE-CON40 | Perímetro con la mediatriz: suma también AC; toma P como punto medio de BC; olvida AB; toma PA como la mitad de AC | Idea 3 |
+| GE-CON41 a GE-CON43 | Perpendicular a la bisectriz: da AD en vez de BD; parte BD en dos; da la mitad del ángulo de P | Idea 3 |
+| GE-CON44 a GE-CON49 | Base media: la compara con una resta; da el lado entero; confunde cuál perímetro es el doble; da la primera base media en vez de la segunda; copia el ángulo C o el A en vez del B | Idea 4 |
+| GE-CON50 a GE-CON52 | Mayor cateto entero: toma el valor límite (la hipotenusa); toma la mediana como tope | Idea 5, nivel examen (San Marcos 2023-II) |
+| GE-CON53 a GE-CON58 | Mediana a la hipotenusa: un tercio (baricentro); el ángulo del otro extremo; cree que la mediana es bisectriz del recto; da el exterior en M; da el ángulo de M; da m∠B sin restar | Idea 5 |
+| GE-CON59 a GE-CON62 | Notables: copia el cateto como hipotenusa; usa k√2 en el de 30° y 60°; confunde k con k√3; duplica desde el cateto mayor | Idea 6 |
+| GE-CON63 a GE-CON65 | 37° y 53°: cambia 3k por 4k; da la hipotenusa; resta lados | Idea 6 |
+| GE-CON66 a GE-CON69 | ¿Qué notable es?: elige otro notable, o «ninguno» | Idea 6 |
+| GE-CON70 a GE-CON73 | El isósceles de 120° (da BH; suma AB y AC) y la altura que parte en dos notables (da solo HC; toma HC = BH) | Idea 6, nivel examen (San Marcos 2024-II) |
+
 ## Hipótesis de la Etapa 4 (sin estudio)
 
 Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)

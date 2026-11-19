@@ -4591,7 +4591,7 @@
        "lineas-notables": "Líneas notables",
        "angulo-de-bisectrices": "Ángulos entre bisectrices"
       },
-      "terminos": 51
+      "terminos": 52
      }
     },
     {
@@ -4599,6 +4599,7 @@
      "nombre": "Congruencia de triángulos",
      "temas": [
       "Criterios LAL, ALA y LLL",
+      "Lados y ángulos correspondientes",
       "Teorema de la mediatriz y de la bisectriz",
       "Teorema de la base media",
       "Mediana relativa a la hipotenusa",
@@ -4623,22 +4624,25 @@
       "geometria.triangulos"
      ],
      "plantillas": [
+      "geo-congruencia",
       "congruencia"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/congruencia.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-objeto.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "criterios": "Qué datos fijan un triángulo",
-       "mediatriz-bisectriz": "Puntos que equidistan",
-       "base-media": "La base media mide la mitad",
-       "mediana-hipotenusa": "La mediana a la hipotenusa",
-       "notables": "Los rectángulos notables"
+       "criterios": "Criterios de congruencia",
+       "partes-correspondientes": "Lados y ángulos correspondientes",
+       "mediatriz-bisectriz": "Mediatriz y bisectriz",
+       "base-media": "Base media del triángulo",
+       "mediana-hipotenusa": "Mediana relativa a la hipotenusa",
+       "notables": "Triángulos rectángulos notables"
       },
-      "terminos": 47
+      "terminos": 61
      }
     },
     {
@@ -4736,7 +4740,7 @@
        "poncelet-pitot": "Tangentes iguales: Pitot y Poncelet",
        "cuadrilatero-inscrito": "Opuestos que suman 180°"
       },
-      "terminos": 48
+      "terminos": 47
      }
     },
     {
@@ -4828,7 +4832,7 @@
        "centros": "Cada centro y sus líneas",
        "euler": "Recta y círculo de Euler"
       },
-      "terminos": 51
+      "terminos": 50
      }
     },
     {
@@ -4881,7 +4885,7 @@
        "potencia": "Cuerdas, secantes y tangente",
        "ptolomeo": "Diagonales del cuadrilátero inscrito"
       },
-      "terminos": 51
+      "terminos": 49
      }
     },
     {
@@ -5070,7 +5074,7 @@
        "segmento-y-corona": "Corona y segmento: restar regiones",
        "trapecio-circular-y-lunulas": "Sumar y restar regiones curvas"
       },
-      "terminos": 37
+      "terminos": 36
      }
     },
     {
@@ -5283,7 +5287,7 @@
        "zona-y-casquete": "Franjas de igual área",
        "pappus": "Lo que recorre el centro"
       },
-      "terminos": 39
+      "terminos": 38
      }
     },
     {
@@ -5375,7 +5379,7 @@
        "rutas": "Cada esquina suma dos caminos",
        "cubos-ocultos": "Los cubitos que no se ven"
       },
-      "terminos": 22
+      "terminos": 23
      }
     }
    ]
@@ -8626,7 +8630,8 @@
     "/plantillas/congruencia/index.html",
     "/plantillas/congruencia/motor.js",
     "/plantillas/congruencia/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "conicas": {
    "id": "conicas",
@@ -9466,6 +9471,30 @@
    "archivos": [
     "/plantillas/geo-circunferencia-metrica/generador.js",
     "/plantillas/geo-circunferencia-metrica/papel.json"
+   ]
+  },
+  "geo-congruencia": {
+   "id": "geo-congruencia",
+   "titulo": "Congruencia de triángulos",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.congruencia"
+   ],
+   "url": "#/practica/geo-congruencia",
+   "ideas": [
+    "criterios",
+    "partes-correspondientes",
+    "mediatriz-bisectriz",
+    "base-media",
+    "mediana-hipotenusa",
+    "notables"
+   ],
+   "papel": "/plantillas/geo-congruencia/papel.json",
+   "archivos": [
+    "/plantillas/geo-congruencia/generador.js",
+    "/plantillas/geo-congruencia/papel.json"
    ]
   },
   "geo-poligonos": {

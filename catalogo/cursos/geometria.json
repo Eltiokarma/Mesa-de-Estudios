@@ -53,6 +53,7 @@
       "nombre": "Congruencia de triángulos",
       "temas": [
         "Criterios LAL, ALA y LLL",
+        "Lados y ángulos correspondientes",
         "Teorema de la mediatriz y de la bisectriz",
         "Teorema de la base media",
         "Mediana relativa a la hipotenusa",
@@ -62,7 +63,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["geometria.triangulos"],
-      "plantillas": ["congruencia"],
+      "plantillas": ["geo-congruencia", "congruencia"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

@@ -61,6 +61,19 @@ const ESCENAS = [
   { objeto: 'parque', b: 70, c: 50, I: 1, E: 3, mitades: { B: true, C: true, Ce: true }, angulos: { A: { color: 'h' } }, BIC: { texto: '120°', desde: 2 }, ICE: { desde: 3, arcoRecto: true }, BEC: { color: 'h', desde: 4 } },
   { objeto: 'angulos', figura: { vista: { x: [-3, 3], y: [-0.8, 3] }, puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'O', lado: -90 }, { id: 'A', x: 2.5, y: 0, rotulo: 'A', lado: 0 }, { id: 'B', x: 2.5 * Math.cos(0.5), y: 2.5 * Math.sin(0.5), rotulo: 'B', lado: 28.6 }],
     segmentos: [{ de: 'O', a: 'A' }, { de: 'O', a: 'B' }], angulos: [{ en: 'O', de: 'A', a: 'B', texto: '2x + 10°', color: 'h', mide: 28.65 }] } },
+  // Congruencia (19 nov, etapa 5): el armazón. El tijeral que se arma en el piso del taller sobre la silueta del modelo
+  // (8 m, 5 m y 100° entre las vigas; cierra con unos 10,1 m) y la cometa de varillas y papel.
+  { objeto: 'armazon', tipo: 'taller', manija: 'C', silueta: { puntos: [[0, 0], [8, 0], [2.5, 4.33]] }, vigas: [{ de: 'A', a: 'B' }, { de: 'A', a: 'C' }, { de: 'B', a: 'C' }], pernos: ['A', 'B', 'C'],
+    ladosRot: [{ de: 'A', a: 'B', texto: '8 m', color: 'o', ref: 'C', dist: 9 }, { de: 'A', a: 'C', texto: '5 m', color: 'i', ref: 'B', dist: 9 }, { de: 'B', a: 'C', texto: '≈ 10,1 m', ref: 'A', dist: 9 }],
+    figura: { vista: { x: [-3.5, 9.2], y: [-1.6, 5.7] }, alto: 262,
+      puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: 230, sinPunto: true }, { id: 'B', x: 8, y: 0, rotulo: 'B', lado: -20, sinPunto: true }, { id: 'C', x: 5 * Math.cos(100 * Math.PI / 180), y: 5 * Math.sin(100 * Math.PI / 180), rotulo: 'C', lado: 120, sinPunto: true }],
+      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'A', a: 'C', color: 'i', grosor: 'variable' }, { de: 'B', a: 'C' }],
+      angulos: [{ en: 'A', de: 'B', a: 'C', texto: '100°', color: 'h', radio: 16, holgura: 11 }] } },
+  { objeto: 'armazon', tipo: 'cometa', vigas: [{ de: 'A', a: 'C' }], papel: ['A', 'B', 'C', 'D'], cola: 'C',
+    ladosRot: [{ de: 'A', a: 'B', ref: 'D', texto: '30 cm', color: 'o', dist: 6 }, { de: 'C', a: 'D', ref: 'B', texto: '50 cm', color: 'i', dist: 6 }],
+    figura: { vista: { x: [-50, 50], y: [-62, 27] }, alto: 262,
+      puntos: [{ id: 'A', x: 0, y: 18, rotulo: 'A', lado: 90, sinPunto: true }, { id: 'B', x: -24, y: 0, rotulo: 'B', lado: 180, sinPunto: true }, { id: 'C', x: 0, y: -43.86, rotulo: 'C', lado: 200, sinPunto: true }, { id: 'D', x: 24, y: 0, rotulo: 'D', lado: 0, sinPunto: true }],
+      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'A', a: 'D', color: 'o', grosor: 'variable' }, { de: 'C', a: 'B', color: 'i', grosor: 'variable' }, { de: 'C', a: 'D', color: 'i', grosor: 'variable' }, { de: 'A', a: 'C' }], angulos: [] } },
 ];
 const casos = () => MUESTRAS.map(d => [d, {}]);
 const esEscena = d => P.ESCENAS.includes(d.objeto);
@@ -282,8 +295,9 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
   const Teoria = require('../../teoria.js');
   const mal = [], figs = [];
   const toma = (nombre, dib, pieza) => { if (dib && pieza === 'geo-objeto') figs.push([nombre, dib.datos, dib.estado || {}]); };
-  // Segmentos y ángulos, y Triángulos (18 nov: la idea 1, con la cartulina, el tijeral y las figuras de examen).
-  const ideas = ['segmentos-y-angulos', 'triangulos'].flatMap(u => require(path.join(__dirname, `../../../contenido/teoria/geometria/${u}.js`)).ideas);
+  // Segmentos y ángulos, y Triángulos (18 nov: la idea 1, con la cartulina, el tijeral y las figuras de examen); Congruencia
+  // (19 nov: las ideas 1 y 2, con el armazón y las figuras de examen; las ideas 3 a 6 siguen con geo-figura).
+  const ideas = ['segmentos-y-angulos', 'triangulos', 'congruencia'].flatMap(u => require(path.join(__dirname, `../../../contenido/teoria/geometria/${u}.js`)).ideas);
   for (const idea of ideas) {
     const pz = idea.pieza;
     if (idea.juega) {

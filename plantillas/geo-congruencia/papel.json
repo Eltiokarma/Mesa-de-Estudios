@@ -1,0 +1,88 @@
+{
+  "titulo": "Congruencia de triángulos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En △ABC y △DEF se sabe: AB = DE = 10 cm; BC = EF = 7 cm; AC = DF = 6 cm. ¿Qué criterio asegura que son congruentes? Datos: Criterios de congruencia: LAL (el ángulo entre los dos lados), ALA (el lado entre los dos ángulos) y LLL. LLA (el ángulo no queda entre los dos lados) y AAA no aseguran la congruencia. Alternativas: A) LAL   B) Ninguno: esos datos no bastan   C) ALA   D) LLL",
+      "respuesta": "D) LLL",
+      "pasos": [
+        "Los tres lados, cada uno con su pareja: lado, lado, lado.",
+        "LLL."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "△ABC ≅ △DFE, con AB = 9 cm, BC = 7 cm y AC = 8 cm. ¿Cuánto mide DF? Datos: En una congruencia escrita, las letras van en orden: primera con primera, segunda con segunda, tercera con tercera. Alternativas: A) 9 cm   B) 8 cm   C) 7 cm   D) 15 cm   E) 24 cm",
+      "respuesta": "A) 9 cm",
+      "pasos": [
+        "Por el orden de las letras, DF va con AB.",
+        "DF = AB = 9 cm."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "P equidista de A y de B, y m∠PAB = 50°. ¿Cuánto mide el ángulo APB? Datos: Y al revés: si un punto equidista de A y de B, está en la mediatriz de AB. En un triángulo isósceles, los ángulos de la base miden igual. En todo triángulo, los tres ángulos interiores suman 180°. Alternativas: A) 50°   B) 80°   C) 130°   D) 40°   E) 100°",
+      "respuesta": "B) 80°",
+      "pasos": [
+        "PA = PB: △APB es isósceles y m∠PBA = 50°.",
+        "m∠APB = 180° − 2 · 50° = 80°."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "△ABC tiene lados de 13 cm, 15 cm y 6 cm. M, N y P son los puntos medios de sus lados. ¿Cuánto mide el perímetro de △MNP? Datos: Base media: el segmento que une los puntos medios de dos lados de un triángulo. La base media es paralela al tercer lado y mide su mitad. El perímetro de un triángulo es la suma de sus tres lados. Alternativas: A) 34 cm   B) 68 cm   C) 11,33 cm   D) 17 cm   E) 8,5 cm",
+      "respuesta": "D) 17 cm",
+      "pasos": [
+        "Cada lado del triángulo de los puntos medios es una base media: la mitad del lado de enfrente.",
+        "Perímetro = 17 cm."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En △ABC, recto en C, M es el punto medio de la hipotenusa AB, y m∠A = 40°. ¿Cuánto mide el ángulo BCM? Datos: En un triángulo rectángulo, la mediana relativa a la hipotenusa mide la mitad de ella: MA = MB = MC. En un triángulo isósceles, los ángulos de la base miden igual. En todo triángulo, los tres ángulos interiores suman 180°. Alternativas: A) 40°   B) 80°   C) 50°   D) 25°   E) 45°",
+      "respuesta": "C) 50°",
+      "pasos": [
+        "MC = MB: el isósceles copia el ángulo de B.",
+        "m∠BCM = 50°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En △ABC, AB = 8 cm, BC = 10 cm y AC = 11 cm. La mediatriz de AC corta BC en P. ¿Cuánto mide el perímetro de △ABP? Datos: Mediatriz de AB: la recta perpendicular a AB por su punto medio. Todo punto de la mediatriz de AB equidista de A y de B; todo punto de la bisectriz equidista de los lados. El perímetro de un triángulo es la suma de sus tres lados. Alternativas: A) 10 cm   B) 18,5 cm   C) 29 cm   D) 18 cm   E) 23,5 cm",
+      "respuesta": "D) 18 cm",
+      "pasos": [
+        "P está en la mediatriz de AC: PA = PC. Así BP + PA = BC.",
+        "Perímetro = AB + BC = 8 + 10 = 18 cm."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "AD y BC se cortan en O, con OA = OD y OB = OC. Además, AB = 3x − 3 y CD = x + 7, en centímetros. ¿Cuánto mide AB? Datos: Criterios de congruencia: LAL (el ángulo entre los dos lados), ALA (el lado entre los dos ángulos) y LLL. Opuestos por el vértice: miden igual. En triángulos congruentes, frente a ángulos iguales hay lados iguales, y al revés. Alternativas: A) 24 cm   B) 5 cm   C) 12 cm   D) 15 cm   E) 3 cm",
+      "respuesta": "C) 12 cm",
+      "pasos": [
+        "Los ángulos en O son opuestos: por LAL, △AOB ≅ △DOC, y AB = CD.",
+        "3x − 3 = x + 7, así x = 5.",
+        "AB = 12 cm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, m∠A = 45° y m∠C = 37°. La altura BH mide 6 cm. ¿Cuánto mide AC? Datos: Notable de 45° y 45°: catetos k y k; hipotenusa k√2. Notable de 37° y 53° (convención del examen): catetos 3k (frente a 37°) y 4k; hipotenusa 5k. Alternativas: A) 14 cm   B) 10,5 cm   C) 12 cm   D) 8 cm   E) 16 cm",
+      "respuesta": "A) 14 cm",
+      "pasos": [
+        "△AHB es de 45°: AH = BH = 6 cm. En △CHB, de 37° y 53°, HC = 8 cm.",
+        "AC = 6 + 8 = 14 cm."
+      ]
+    }
+  ]
+}

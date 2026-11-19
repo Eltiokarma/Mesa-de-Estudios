@@ -1,0 +1,294 @@
+{
+  "plantilla": "geo-congruencia",
+  "tolerancia": 1e-06,
+  "nota": "enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales); esperado.valor es el número (o el texto, en los tipos de respuesta escrita) y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (19 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e5-geometria/casos/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, con coordenadas y trigonometría (el ángulo ADE, el ángulo de P, el punto P de BC que equidista de A y de C por bisección, el pie de la perpendicular a la bisectriz, los ángulos de la mediana y de la altura medidos) y la convención 3-4-5 de 37° y 53°.",
+  "casos": [
+    {
+      "semilla": 100,
+      "opciones": {
+        "tipo": "criterio"
+      },
+      "enunciado": "En △ABC y △DEF se sabe: AB = DE = 6 cm; m∠A = m∠D = 40°; AC = DF = 6 cm. ¿Qué criterio asegura que son congruentes?",
+      "esperado": {
+        "valor": "LAL",
+        "texto": "LAL"
+      }
+    },
+    {
+      "semilla": 101,
+      "opciones": {
+        "tipo": "cuantos"
+      },
+      "enunciado": "Se quiere armar un triángulo con AB = 16 cm, m∠A = 30° y BC = 11 cm. ¿Cuántos triángulos distintos salen?",
+      "esperado": {
+        "valor": "Dos",
+        "texto": "Dos"
+      }
+    },
+    {
+      "semilla": 102,
+      "opciones": {
+        "tipo": "con-x"
+      },
+      "enunciado": "En △ABC y △DEF: m∠A = m∠D, AB = DE y m∠B = m∠E. Además, AC = 3x − 1 y DF = x + 11, en centímetros. ¿Cuánto mide AC?",
+      "esperado": {
+        "valor": 17.0,
+        "texto": "17 cm"
+      }
+    },
+    {
+      "semilla": 103,
+      "opciones": {
+        "tipo": "orden"
+      },
+      "enunciado": "△ABC ≅ △FDE, con AB = 9 cm, BC = 5 cm y AC = 10 cm. ¿Cuánto mide DE?",
+      "esperado": {
+        "valor": 5,
+        "texto": "5 cm"
+      }
+    },
+    {
+      "semilla": 104,
+      "opciones": {
+        "tipo": "angulo-orden"
+      },
+      "enunciado": "△ABC ≅ △FED, con m∠A = 45° y m∠B = 40°. ¿Cuánto mide el ángulo D?",
+      "esperado": {
+        "valor": 95,
+        "texto": "95°"
+      }
+    },
+    {
+      "semilla": 105,
+      "opciones": {
+        "tipo": "cruce"
+      },
+      "enunciado": "AD y BC se cortan en O, con OA = OD y OB = OC. Además, AB = 4x − 2 y CD = x + 10, en centímetros. ¿Cuánto mide AB?",
+      "esperado": {
+        "valor": 14.0,
+        "texto": "14 cm"
+      }
+    },
+    {
+      "semilla": 106,
+      "opciones": {
+        "tipo": "iso-de"
+      },
+      "enunciado": "En el triángulo ABC, AB = AC. D y E están en BC, con BD = EC, y m∠DAE = 50°. ¿Cuánto mide el ángulo ADE?",
+      "esperado": {
+        "valor": 65.0,
+        "texto": "65°"
+      }
+    },
+    {
+      "semilla": 107,
+      "opciones": {
+        "tipo": "iso-med"
+      },
+      "enunciado": "P equidista de A y de B, y m∠PAB = 75°. ¿Cuánto mide el ángulo APB?",
+      "esperado": {
+        "valor": 30.0,
+        "texto": "30°"
+      }
+    },
+    {
+      "semilla": 108,
+      "opciones": {
+        "tipo": "igualar"
+      },
+      "enunciado": "P está en la bisectriz del ángulo O. Sus distancias a los lados son PH = 2x + 15 y PK = x + 17, en centímetros. ¿Cuánto mide PH?",
+      "esperado": {
+        "valor": 19.0,
+        "texto": "19 cm"
+      }
+    },
+    {
+      "semilla": 109,
+      "opciones": {
+        "tipo": "perimetro"
+      },
+      "enunciado": "En △ABC, AB = 5 cm, BC = 10 cm y AC = 9 cm. La mediatriz de AC corta BC en P. ¿Cuánto mide el perímetro de △ABP?",
+      "esperado": {
+        "valor": 15.0,
+        "texto": "15 cm"
+      }
+    },
+    {
+      "semilla": 110,
+      "opciones": {
+        "tipo": "perp-bis"
+      },
+      "enunciado": "En △ABC, AB = 12 cm y AC = 9 cm. Desde C se traza la perpendicular a la bisectriz del ángulo A: la corta en H y llega a AB en D. ¿Cuánto mide BD?",
+      "esperado": {
+        "valor": 3.0,
+        "texto": "3 cm"
+      }
+    },
+    {
+      "semilla": 111,
+      "opciones": {
+        "tipo": "mitad"
+      },
+      "enunciado": "En △ABC, M y N son los puntos medios de AB y AC, y BC = 10 cm. ¿Cuánto mide MN?",
+      "esperado": {
+        "valor": 5.0,
+        "texto": "5 cm"
+      }
+    },
+    {
+      "semilla": 112,
+      "opciones": {
+        "tipo": "reciproco"
+      },
+      "enunciado": "En △ABC, M es el punto medio de AB, AB = 9 cm y AC = 11 cm. Por M se traza una paralela a BC, que corta AC en N. ¿Cuánto mide NC?",
+      "esperado": {
+        "valor": 5.5,
+        "texto": "5,5 cm"
+      }
+    },
+    {
+      "semilla": 113,
+      "opciones": {
+        "tipo": "con-x-bm"
+      },
+      "enunciado": "En △ABC, M y N son los puntos medios de AB y AC. MN = x + 2 y BC = 4x − 8, en centímetros. ¿Cuánto mide MN?",
+      "esperado": {
+        "valor": 8.0,
+        "texto": "8 cm"
+      }
+    },
+    {
+      "semilla": 114,
+      "opciones": {
+        "tipo": "medial"
+      },
+      "enunciado": "△ABC tiene lados de 14 cm, 13 cm y 7 cm. M, N y P son los puntos medios de sus lados. ¿Cuánto mide el perímetro de △MNP?",
+      "esperado": {
+        "valor": 17.0,
+        "texto": "17 cm"
+      }
+    },
+    {
+      "semilla": 115,
+      "opciones": {
+        "tipo": "dos-bases"
+      },
+      "enunciado": "En △ABC, BC = 28 cm. M y N son los puntos medios de AB y AC; Q y R, los puntos medios de AM y AN. ¿Cuánto mide QR?",
+      "esperado": {
+        "valor": 7.0,
+        "texto": "7 cm"
+      }
+    },
+    {
+      "semilla": 116,
+      "opciones": {
+        "tipo": "mediana"
+      },
+      "enunciado": "En △ABC, recto en C, M es el punto medio de la hipotenusa AB y CM = 10,5 cm. ¿Cuánto mide AB?",
+      "esperado": {
+        "valor": 21.0,
+        "texto": "21 cm"
+      }
+    },
+    {
+      "semilla": 117,
+      "opciones": {
+        "tipo": "iso-ang"
+      },
+      "enunciado": "En △ABC, recto en C, M es el punto medio de la hipotenusa AB, y m∠B = 66°. ¿Cuánto mide el ángulo BCM?",
+      "esperado": {
+        "valor": 66.0,
+        "texto": "66°"
+      }
+    },
+    {
+      "semilla": 118,
+      "opciones": {
+        "tipo": "med-x"
+      },
+      "enunciado": "En △ABC, recto en C, CM es la mediana relativa a la hipotenusa. CM = x + 4 y AB = 4x − 10, en centímetros. ¿Cuánto mide CM?",
+      "esperado": {
+        "valor": 13.0,
+        "texto": "13 cm"
+      }
+    },
+    {
+      "semilla": 119,
+      "opciones": {
+        "tipo": "med-altura"
+      },
+      "enunciado": "En △ABC, recto en C, m∠A = 26°. CM es la mediana relativa a la hipotenusa y CH, la altura. ¿Cuánto mide el ángulo MCH?",
+      "esperado": {
+        "valor": 38.0,
+        "texto": "38°"
+      }
+    },
+    {
+      "semilla": 120,
+      "opciones": {
+        "tipo": "entero"
+      },
+      "enunciado": "En △ABC, recto en C, la mediana relativa a la hipotenusa mide CM = 4 cm. AC mide un número entero de centímetros. ¿Cuál es el mayor valor posible de AC?",
+      "esperado": {
+        "valor": 7,
+        "texto": "7 cm"
+      }
+    },
+    {
+      "semilla": 121,
+      "opciones": {
+        "tipo": "n30"
+      },
+      "enunciado": "En un triángulo rectángulo de 30° y 60°, la hipotenusa mide 28 cm. ¿Cuánto mide el cateto frente a 30°?",
+      "esperado": {
+        "valor": 13.999999999999998,
+        "texto": "14 cm"
+      }
+    },
+    {
+      "semilla": 122,
+      "opciones": {
+        "tipo": "n37"
+      },
+      "enunciado": "Una rampa recta sube desde el piso, mide 35 m y forma 53° con el piso. ¿A qué distancia de la base queda su pie?",
+      "esperado": {
+        "valor": 21.0,
+        "texto": "21 m"
+      }
+    },
+    {
+      "semilla": 123,
+      "opciones": {
+        "tipo": "n45"
+      },
+      "enunciado": "En un triángulo rectángulo de 45° y 45°, la hipotenusa mide 24 cm. ¿Cuánto mide cada cateto?",
+      "esperado": {
+        "valor": "12√2 cm",
+        "texto": "12√2 cm"
+      }
+    },
+    {
+      "semilla": 124,
+      "opciones": {
+        "tipo": "iso120"
+      },
+      "enunciado": "En el triángulo ABC, AB = AC = 10 cm y m∠A = 120°. ¿Cuánto mide BC?",
+      "esperado": {
+        "valor": "10√3 cm",
+        "texto": "10√3 cm"
+      }
+    },
+    {
+      "semilla": 125,
+      "opciones": {
+        "tipo": "altura"
+      },
+      "enunciado": "En el triángulo ABC, m∠A = 45° y m∠C = 53°. La altura BH mide 16 cm. ¿Cuánto mide AC?",
+      "esperado": {
+        "valor": 28.0,
+        "texto": "28 cm"
+      }
+    }
+  ]
+}
