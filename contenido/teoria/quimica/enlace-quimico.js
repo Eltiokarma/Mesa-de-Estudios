@@ -8,8 +8,8 @@
  * pasaron a quimica.geometria-molecular, con su avance (partición partidoEN, nucleo/avance.js).
  * Cinco ideas, en este orden y con estos id: 1 «Iónico, covalente y metálico» (`tres-enlaces`), 2 «Enlace iónico: iones
  * y fórmula» (`enlace-ionico`, nueva), 3 «Estructuras de Lewis y octeto» (`lewis-octeto`), 4 «Enlace dativo y
- * excepciones al octeto» (`dativo-excepciones`, nueva) y 5 «Resonancia» (`resonancia`). No declara calidad: 2 (la
- * sesión la marca después del lector en frío y el auditor); su prueba simula la marca.
+ * excepciones al octeto» (`dativo-excepciones`, nueva) y 5 «Resonancia» (`resonancia`). Lleva calidad: 2 desde el 19 nov
+ * (lector en frío y auditor).
  *
  * Mapa de colores (propuesta §8A, un color fijo por magnitud): Z naranja (c-o), electronegatividad y ΔEN turquesa (c-i),
  * electrones (de valencia, pares, puntos, los que pasan de un átomo a otro) violeta (c-f), carga (del ion, parcial δ,
@@ -66,8 +66,11 @@
   const vf = l => l.map(x => (x ? 'V' : 'F')).join('');
   const ROMANO = ['I', 'II', 'III'];
   // V/F de tres afirmaciones de un banco [[texto, verdad, por qué, datos?]…], con un distractor por afirmación invertida.
-  function vfDe(r, banco, datosBase) {
-    const tres = r.baraja(banco.map((_, i) => i)).slice(0, 3).sort((a, b) => a - b).map(i => banco[i]), bien = tres.map(x => x[1]);
+  // `evitar`: un trío de índices que ya sale en un ejemplo (su V/F); si toca, el tercero se cambia por el cuarto del banco.
+  function vfDe(r, banco, datosBase, evitar) {
+    let idx = r.baraja(banco.map((_, i) => i)).slice(0, 3).sort((a, b) => a - b);
+    if (evitar && idx.join() === evitar.join()) idx = [idx[0], idx[1], 3];
+    const tres = idx.map(i => banco[i]), bien = tres.map(x => x[1]);
     const o = [{ id: 'c', texto: vf(bien), correcta: true }];
     tres.forEach((x, i) => { const otra = bien.slice(); otra[i] = !otra[i]; o.push({ id: `vf${i}`, texto: vf(otra), error: x[1] ? 'QM-VF-NIEGA' : 'QM-VF-ACEPTA', siFuera: `Bien las otras dos. La ${ROMANO[i]} es ${x[1] ? 'verdadera' : 'falsa'}: ${x[2]}.` }); });
     const clave = tres.find(x => !x[1]) || tres[0];
@@ -80,7 +83,9 @@
   const EXTRA = { Cu: [29, 1.90, true, 'cobre', 1], Fe: [26, 1.83, true, 'hierro', 2], Zn: [30, 1.65, true, 'cinc', 2], Ag: [47, 1.93, true, 'plata', 1] };
   const el = s => (EXTRA[s] ? { simbolo: s, Z: EXTRA[s][0], en: EXTRA[s][1], metal: true, nombre: EXTRA[s][3], valencia: EXTRA[s][4] } : M.elemento(s));
   const EN = s => el(s).en;
-  const enTxt = s => f(EN(s), 2);
+  // La EN siempre con dos decimales («2,20», no «2,2»; lector en frío, 19 nov), como en Propiedades periódicas.
+  const f2 = x => x.toFixed(2).replace('.', ',');
+  const enTxt = s => f2(EN(s));
   const nombre = s => el(s).nombre;
   const dEN = (a, b) => Math.round(Math.abs(EN(a) - EN(b)) * 100) / 100;
   const mayorEN = (a, b) => (EN(a) >= EN(b) ? a : b);
@@ -92,6 +97,8 @@
     metales: 'Metales: a la izquierda de la escalera de la tabla (litio, sodio, potasio, magnesio, calcio, aluminio, hierro, cobre, cinc, plata)',
     noMetales: 'No metales: a la derecha de la escalera (hidrógeno, carbono, nitrógeno, oxígeno, flúor, fósforo, azufre, cloro, bromo, yodo)',
     carga: 'Carga de un ion = protones − electrones',
+    tipos: 'Iónico: metal con no metal. Covalente: solo no metales. Metálico: un metal solo',
+    corre: 'El par compartido se corre hacia el átomo de mayor EN',
   };
 
   // ---------- Idea 1 (rehecha, 19 nov): iónico, covalente y metálico ----------
@@ -113,8 +120,10 @@
   const probador = (m, nombreObj) => ({ pieza: 'quim-enlace', datos: { vista: 'objeto', objeto: 'probador', contenido: m, prende: MATERIALES[m].prende, nombre: nombreObj }, estado: {} });
   const OBJ = (objeto, o) => ({ pieza: 'quim-enlace', datos: Object.assign({ vista: 'objeto', objeto }, o), estado: {} });
   // La lupa de «Mira»: partículas con la paleta de elementos (un dibujo de partículas, sin variables).
-  const ATOMOS = { Na: { el: 'Na', estilo: 'punto', r: 6, carga: '+' }, Cl: { el: 'Cl', estilo: 'hueco', r: 8, carga: '-' }, Cu: { el: 'Cu', estilo: 'punto', r: 7, carga: '+' },
-    e: { estilo: 'lleno', r: 2.5 }, O: { el: 'O', estilo: 'lleno', r: 6 }, H: { el: 'H', estilo: 'hueco', r: 4 }, C: { el: 'C', estilo: 'lleno', r: 6 } };
+  // Los iones en carmín (el color de la carga) y los electrones en violeta, como en el resto de la unidad (lector en frío,
+  // 19 nov: el ⊕ gris y el ⊖ verde de la paleta de elementos chocaban con el «Na⁺ Cl⁻» carmín del texto).
+  const ATOMOS = { Na: { color: 'h', estilo: 'punto', r: 6, carga: '+' }, Cl: { color: 'h', estilo: 'hueco', r: 8, carga: '-' }, Cu: { color: 'h', estilo: 'punto', r: 7, carga: '+' },
+    e: { color: 'f', estilo: 'lleno', r: 2.5 }, O: { el: 'O', estilo: 'lleno', r: 6 }, H: { el: 'H', estilo: 'hueco', r: 4 }, C: { el: 'C', estilo: 'lleno', r: 6 } };
   const ESPECIES = { H2O: [['O', 0, -1], ['H', -6, 4], ['H', 6, 4]] };
   function red(a, b, cols, filas, x0, x1, y0, y1, extra = {}) {
     const out = [];
@@ -157,7 +166,7 @@
     const malas = Object.keys(TIPO_TXT).filter(k => k !== t).map(k => [TIPO_TXT[k], SI_TIPO[k][0], `Bien mirar los elementos. ${SI_TIPO[k][1]}`]);
     return {
       pregunta: `¿Qué tipo de enlace une las partículas del ${quien(fo, els)}?`,
-      datos: [D.metales, D.noMetales],
+      datos: [D.metales, D.noMetales, D.tipos],
       opciones: ops(TIPO_TXT[t], ...malas, ['Ninguno: sus átomos están sueltos', 'QM-SIN-ENLACE', 'Es un sólido, un líquido o un gas estable: sus partículas están unidas.']),
       solucion: { texto: POR_QUE[t], ecuacion: [`${fo}: ${elemTxt(els)} → enlace ${TIPO_TXT[t].toLowerCase()}`] },
     };
@@ -207,8 +216,8 @@
       datos: [enLinea([...new Set([a, b])]), D.delta, D.guia],
       opciones: ops(TIPO_DEN[t], ...Object.keys(TIPO_DEN).filter(k => k !== t).map(k => [TIPO_DEN[k], SI[k][0], SI[k][1]]),
         ['Metálico', 'QM-TIPO-METAL', 'Sería metálico si los dos fueran metales. Aquí no.']),
-      solucion: { texto: a === b ? 'Dos átomos iguales jalan igual el par: queda al medio.' : `ΔEN = ${f(d)}. ${t === 'ionico' ? 'Metal con no metal y 1,7 o más.' : 'Dos no metales que jalan distinto.'}`,
-        ecuacion: ['ΔEN = ', Ne(f(d)), `: ${TIPO_DEN[t].toLowerCase()}`] },
+      solucion: { texto: a === b ? 'Dos átomos iguales jalan igual el par: queda al medio.' : `ΔEN = ${f2(d)}. ${t === 'ionico' ? 'Metal con no metal y 1,7 o más.' : 'Dos no metales que jalan distinto.'}`,
+        ecuacion: ['ΔEN = ', Ne(f2(d)), `: ${TIPO_DEN[t].toLowerCase()}`] },
     };
   }
   // Polares entre no metales: quién queda con δ−.
@@ -231,18 +240,18 @@
   const EJEMPLOS_TIPOS = [
     { nivel: 1, titulo: 'La sal de potasio',
       enunciado: '¿Qué tipo de enlace hay en el KBr, el sólido que forman el potasio y el bromo?',
-      datos: [D.metales, D.noMetales],
+      datos: [D.metales, D.noMetales, D.tipos],
       solucion: [{ texto: 'El potasio es un metal y el bromo, un no metal: el potasio cede su electrón y quedan iones K⁺ y Br⁻ que se atraen.' }],
       respuesta: ['Iónico'] },
     { nivel: 1, titulo: 'El cable de la casa',
       enunciado: '¿Qué tipo de enlace une los átomos del cobre de un cable eléctrico?',
-      datos: [D.metales],
+      datos: [D.metales, D.tipos],
       figura: probador('cobre', 'Un cable de cobre en el probador'),
       solucion: [{ texto: 'Hay un solo elemento y es un metal: sus átomos sueltan electrones que se mueven entre todos. Por eso el cable conduce.' }],
       respuesta: ['Metálico'] },
     { nivel: 1, titulo: 'El gas de Camisea',
       enunciado: 'El gas natural de Camisea es sobre todo metano, CH₄. ¿Qué tipo de enlace une sus átomos?',
-      datos: [D.noMetales],
+      datos: [D.noMetales, D.tipos],
       solucion: [{ texto: 'El carbono y el hidrógeno son no metales: comparten pares de electrones y forman moléculas.' }],
       respuesta: ['Covalente'] },
     { nivel: 1, titulo: 'La diferencia en el MgO',
@@ -257,7 +266,7 @@
       respuesta: ['El cloro: ', Cq('δ−')] },
     { nivel: 2, titulo: 'Tres sustancias, tres enlaces',
       enunciado: 'Indica el tipo de enlace de cada una: CaO (calcio y oxígeno), Cl₂ (dos cloros) y Fe (hierro).',
-      datos: [D.metales, D.noMetales],
+      datos: [D.metales, D.noMetales, D.tipos, 'Dos átomos iguales jalan igual el par: covalente apolar'],
       solucion: [
         { texto: 'CaO: metal con no metal, iónico. Cl₂: un solo no metal, covalente; los dos cloros jalan igual, así que es apolar.' },
         { texto: 'Fe: un metal solo, metálico.', ecuacion: ['CaO iónico', SEP, 'Cl₂ covalente apolar', SEP, 'Fe metálico'] },
@@ -273,7 +282,7 @@
       respuesta: ['Iónico'] },
     { nivel: 2, titulo: 'El enlace del amoníaco',
       enunciado: 'En el enlace N–H del amoníaco, ¿cuánto vale ΔEN, qué tipo de enlace es y hacia qué átomo se corre el par?',
-      datos: [enLinea(['N', 'H']), D.delta, D.guia],
+      datos: [enLinea(['N', 'H']), D.delta, D.guia, D.corre],
       solucion: [
         { texto: 'Resto las electronegatividades.', ecuacion: ['ΔEN = ', Ne('3,04'), ' − ', Ne('2,20'), ' = ', Ne('0,84')] },
         { texto: 'Dos no metales que jalan distinto: covalente polar. El par se corre hacia el nitrógeno.' },
@@ -298,7 +307,7 @@
     { nivel: 3, titulo: 'Cada sustancia con su enlace',
       enunciado: '¿Qué tipo de enlace tienen, en este orden, el KCl, el H₂O y la plata (Ag)?',
       alternativas: ['Covalente, iónico y metálico', 'Iónico, covalente y metálico', 'Iónico, iónico y metálico', 'Metálico, covalente e iónico', 'Iónico, covalente y covalente'],
-      datos: [D.metales, D.noMetales],
+      datos: [D.metales, D.noMetales, D.tipos],
       solucion: [
         { texto: 'KCl: metal con no metal, iónico. H₂O: dos no metales, covalente. Ag: un metal solo, metálico.' },
         { texto: ['La ', letra('A'), ' invierte los dos primeros. La ', letra('C'), ' cree que el agua es iónica por tener oxígeno.'] },
@@ -333,14 +342,14 @@
       datos: D_PROPS,
       solucion: [
         { texto: 'I es falsa: en la sal sólida los iones no se mueven. II es verdadera: dos cloros jalan igual. III es verdadera.', ecuacion: ['FVV'] },
-        { texto: ['La ', letra('A'), ', la ', letra('B'), ' y la ', letra('D'), ' creen que la sal sólida conduce; la ', letra('B'), ' también corre el par del Cl₂.'] },
+        { texto: ['La ', letra('A'), ', la ', letra('B'), ' y la ', letra('D'), ' creen que la sal sólida conduce; la ', letra('B'), ' también corre el par del Cl₂ y la ', letra('D'), ' niega la III.'] },
         { texto: ['La ', letra('C'), ' acierta con la sal, pero el par del Cl₂ no se corre hacia ningún lado.'] },
       ],
       respuesta: [letra('E'), ', FVV'] },
     { nivel: 3, titulo: 'Dos elementos sin nombre',
       enunciado: 'X tiene Z = 19 y Q, Z = 17. ¿Qué enlace hay en el compuesto de X con Q y cuál en la molécula Q₂?',
       alternativas: ['Covalente en los dos', 'Iónico en los dos', 'Iónico en X con Q; covalente apolar en Q₂', 'Metálico en X con Q; iónico en Q₂', 'Covalente polar en X con Q; iónico en Q₂'],
-      datos: ['Gases nobles: Z = 2, 10, 18 y 36', D.metales, D.noMetales],
+      datos: ['Gases nobles: Z = 2, 10, 18 y 36', D.metales, D.noMetales, D.tipos],
       solucion: [
         { texto: 'X está uno después del argón (18): grupo 1, un metal. Q está uno antes: grupo 17, un no metal.', ecuacion: [Pz('Z = 19'), ': grupo 1', SEP, Pz('Z = 17'), ': grupo 17'] },
         { texto: 'X con Q: metal con no metal, iónico. Q₂: dos átomos iguales del no metal, covalente apolar.' },
@@ -361,7 +370,7 @@
       tarjetas: [
         { titulo: 'El probador', texto: 'Una pila, un foquito y dos cables. Si lo que tocan los cables deja pasar la corriente, el foquito prende. La corriente pasa cuando algo con carga eléctrica se puede mover.',
           pieza: 'quim-enlace', dibujo: probador('agua', 'Los cables tocan agua destilada') },
-        { titulo: 'Metales y no metales', texto: 'En la tabla, los metales están a la izquierda de la escalera y los no metales, a la derecha. El sodio es un metal; el cloro, un no metal. La sal de mesa, NaCl, tiene los dos.' },
+        { titulo: 'Metales y no metales', texto: 'En la tabla, los metales están a la izquierda de la escalera y los no metales, a la derecha. La sal, NaCl, tiene un metal (sodio) y un no metal (cloro). La electronegatividad (EN) dice cuánto jala un átomo los electrones de un enlace.' },
         { titulo: 'Los electrones de afuera', texto: 'Los átomos se unen reacomodando sus electrones de valencia. Esa unión se llama enlace químico. No todas las sustancias se unen de la misma manera.' },
         { titulo: 'Qué mirar', texto: 'En el juego tocas cinco materiales: un metal, un trozo de sal seca y tres vasos con agua. Anota cuáles prenden el foquito y cuáles no.' },
       ],
@@ -389,7 +398,7 @@
     predice: {
       pieza: 'quim-particulas',
       pregunta: 'La sal seca no prende el foquito; disuelta en agua, sí. Con una lupa enorme, ¿qué habría dentro de un grano de sal?',
-      datos: ['Sodio (Na): metal del grupo 1', 'Cloro (Cl): no metal del grupo 17'],
+      datos: ['Sodio (Na): un metal; cloro (Cl): un no metal', 'La corriente pasa si algo con carga eléctrica se puede mover'],
       voz: 'Piensa qué tiene carga y por qué no se mueve en la sal seca.',
       opciones: [
         { id: 'c', texto: 'Iones de sodio y de cloro alternados en filas', correcta: true },
@@ -408,9 +417,9 @@
         alt: 'Tres lupas (modelo, no a escala): la sal seca con sus iones en filas, el agua con sal con los iones sueltos y el cobre con sus iones en un mar de electrones.' }).datos,
       voz: 'Miremos por dentro lo que probaste.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Sal seca: iones Na⁺ y Cl⁻ fijos en una red; no pueden moverse.', ecuacion: ['Na', Cq('⁺'), ' Cl', Cq('⁻'), ' Na', Cq('⁺'), ' Cl', Cq('⁻'), ' …'] },
+        { estado: { corte: 1 }, texto: 'Sal seca: iones Na⁺ (chicos, +) y Cl⁻ (grandes, −) fijos en una red.', ecuacion: ['Na', Cq('⁺'), ' Cl', Cq('⁻'), ' Na', Cq('⁺'), ' Cl', Cq('⁻'), ' …'] },
         { estado: { corte: 2 }, texto: 'En el agua, los iones se separan y se mueven: el foquito prende.' },
-        { estado: { corte: 3 }, texto: 'Cobre: iones de cobre en un mar de electrones que se mueven.', ecuacion: ['Cu', Cq('⁺'), ' + ', El('e⁻'), ' que se mueven'] },
+        { estado: { corte: 3 }, texto: 'Cobre: iones de cobre en un mar de electrones móviles (puntitos violeta).', ecuacion: ['Cu', Cq('⁺'), ' + ', El('e⁻'), ' que se mueven'] },
         { estado: { corte: 3 }, texto: 'Azúcar y agua destilada: moléculas sin carga, el foquito no prende.' },
         { estado: { corte: 3 }, texto: 'Entre no metales se comparten pares; si jalan distinto, el enlace es polar.', ecuacion: ['H', Cq('δ+'), '–Cl', Cq('δ−'), ': ', dENf, ' = 0,96'] },
       ],
@@ -418,7 +427,7 @@
     regla: {
       texto: 'Metal con no metal: iónico, iones que se atraen en una red. Solo no metales: covalente, pares compartidos, polar si jalan distinto. Un metal solo: metálico, mar de electrones.',
       ecuacion: [dENf, ' ≥ 1,7: suele ser iónico', SEP, dENf, ' < 1,7: covalente polar', SEP, dENf, ' = 0: covalente apolar'],
-      condicion: 'la ΔEN es una guía: primero mira qué elementos se unen (el HF, con 1,78, es covalente polar).',
+      condicion: 'la ΔEN (diferencia de electronegatividad) es una guía; mandan los elementos. El HF, con 1,78, son dos no metales: covalente polar.',
       voz: 'Primero los elementos; la ΔEN confirma.',
       dibujo: lupa([CAJA_SAL, CAJA_AGUA_SAL, CAJA_COBRE], { separacion: 18, alt: 'Las tres lupas: iones fijos en la sal seca, iones sueltos en el agua con sal y el cobre con su mar de electrones.' }),
     },
@@ -430,7 +439,7 @@
           metalico: 'Cuadra con una propiedad: un metal conduce la corriente en estado sólido.' }[t];
         return {
           enunciado: `¿Qué tipo de enlace une las partículas del ${quien(fo, els)}?`,
-          datos: [D.metales, D.noMetales],
+          datos: [D.metales, D.noMetales, D.tipos],
           pasos: [
             { tipo: 'pide', texto: `Piden el tipo de enlace del ${fo}: iónico, covalente o metálico.` },
             { tipo: 'datos', texto: els.length === 1 ? `El ${fo} tiene un solo elemento: ${elemTxt(els)}.` : `En el ${fo} hay ${elemTxt(els)}.` },
@@ -482,8 +491,10 @@
   }
   const simb = (filas, o) => ({ pieza: 'quim-enlace', datos: Object.assign({ vista: 'simbolos', filas }, o), estado: {} });
   const NOBLE = { 2: 'helio', 10: 'neón', 18: 'argón', 36: 'kriptón', 54: 'xenón' };
-  const grupoTxt = s => { const g = M.elemento(s).grupo, R = { 1: 'IA', 2: 'IIA', 13: 'IIIA', 15: 'VA', 16: 'VIA', 17: 'VIIA' }; return `grupo ${g} (${R[g]})`; };
-  const lugarTxt = s => `${nombre(s).charAt(0).toUpperCase()}${nombre(s).slice(1)} (${s}): ${grupoTxt(s)}, ${val(s)} electrón${val(s) > 1 ? 'es' : ''} de valencia`;
+  // El grupo con su número, como en la regla («grupos 1, 2 y 13»), sin el romano (lector en frío, 19 nov).
+  const grupoTxt = s => `grupo ${M.elemento(s).grupo}`;
+  const eTxt = k => (k === 1 ? '1 electrón' : `${k} electrones`);
+  const lugarTxt = s => `${nombre(s).charAt(0).toUpperCase()}${nombre(s).slice(1)} (${s}): ${grupoTxt(s)}, ${eTxt(val(s))} de valencia`;
   const D2 = { cero: 'Carga total de un compuesto iónico = 0', octeto: 'Gas noble: 8 electrones en su último nivel (el helio, 2)' };
   const METALES_I = ['Li', 'Na', 'K', 'Mg', 'Ca', 'Al'], NO_METALES_I = ['F', 'Cl', 'Br', 'I', 'O', 'S', 'N'];
   // Pares de «Ahora tú» (sin el Mg con N de la predicción) y los de «Así se resuelve», en listas distintas.
@@ -498,7 +509,7 @@
       datos: [lugarTxt(s), D2.octeto],
       opciones: ops(t(q), [t(-q), 'QM-ION-SIGNO', met ? 'Bien la cantidad. Pero un metal entrega electrones: queda positivo.' : 'Bien la cantidad. Pero un no metal recibe electrones: queda negativo.'],
         [met ? t(v - 8) : t(v), 'QM-ION-OCTETO', met ? `Bien buscar el 8. Pero entregar ${v} es más fácil que recibir ${8 - v}.` : `Bien mirar sus ${v}. Pero recibir ${8 - v} es más fácil que entregar ${v}.`],
-        [Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), 'QM-ION-UNO', `Bien el signo. Pero cambian ${Math.abs(q)} electrón${Math.abs(q) > 1 ? 'es' : ''}: ${met ? 'los de valencia' : 'los que le faltan para 8'}.`]),
+        [Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), 'QM-ION-UNO', `Bien el signo. Pero ${Math.abs(q) === 1 ? 'cambia' : 'cambian'} ${eTxt(Math.abs(q))}: ${met ? Math.abs(q) === 1 ? 'el de valencia' : 'los de valencia' : Math.abs(q) === 1 ? 'el que le falta para 8' : 'los que le faltan para 8'}.`]),
       solucion: { texto: met ? `Entrega sus ${v} de valencia y queda como el gas noble anterior.` : `Recibe ${8 - v} y completa 8, como el gas noble que le sigue.`,
         ecuacion: [s, ' → ', `${s}`, Cq(cargaSup(q))] },
     };
@@ -508,8 +519,9 @@
     // Candidatos, cada uno con el error que lo produce; se quedan los tres primeros distintos de la correcta.
     const cand = [
       [fo(1, 1), 'QM-FORM-UNO', `Bien juntar los dos. Pero las cargas ${cargaSup(F.qm)} y ${cargaSup(-F.qx)} no se anulan uno a uno.`],
-      [fo(F.qm, F.qx), 'QM-FORM-INVERSA', 'Bien usar las cargas. Pero así la carga total no da 0: cada ion lleva la cantidad del otro.'],
+      // La forma sin simplificar va antes que la «inversa»: con cargas iguales (Mg²⁺ y O²⁻) las dos dan Mg₂O₂, que sí da 0.
       [fo(F.qx, F.qm), 'QM-FORM-SIN-SIMPLIFICAR', 'Bien la proporción. Pero se simplifica: es la misma, en números menores.'],
+      [fo(F.qm, F.qx), 'QM-FORM-INVERSA', 'Bien usar las cargas. Pero así la carga total no da 0: cada ion lleva la cantidad del otro.'],
       [fo(F.b, F.a), 'QM-FORM-INVERSA', 'Así la carga total no da 0: cada ion lleva la cantidad del otro.'],
       [fo(1, 2), 'QM-FORM-CARGA', `Así la carga total no da 0: un ${ionTxt(m)} no alcanza para dos ${ionTxt(x)}.`],
       [fo(2, 1), 'QM-FORM-CARGA', `Así la carga total no da 0: dos ${ionTxt(m)} son demasiados para un ${ionTxt(x)}.`],
@@ -643,7 +655,7 @@
       datos: [lugarTxt('Al'), lugarTxt('S')],
       solucion: [
         { texto: 'I es verdadera: el Al tiene 3 de valencia. II es falsa: el azufre recibe 2 y queda S²⁻. III es verdadera.', ecuacion: ['2 · 3 = 3 · 2 = ', El('6 e⁻')] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' creen que el azufre recibe lo mismo que entrega el aluminio.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' creen que el azufre recibe lo mismo que entrega el aluminio; la ', letra('D'), ' además niega la III.'] },
         { texto: ['La ', letra('C'), ' invierte las tres. La ', letra('E'), ' duda del aluminio, que sí entrega 3.'] },
       ],
       respuesta: [letra('B'), ', VFV'] },
@@ -651,7 +663,7 @@
       enunciado: 'Sobre un compuesto iónico como el CaO, ¿qué afirmación es correcta?',
       alternativas: ['Fundido o disuelto conduce la corriente; sólido, no.', 'Conduce la corriente en estado sólido.', 'Está hecho de moléculas de CaO.',
         'Funde a menos de 100 °C.', 'Sus átomos comparten pares de electrones.'],
-      datos: D_PROPS,
+      datos: ['La corriente pasa si hay algo con carga que se pueda mover', 'Calcio (Ca): un metal; oxígeno (O): un no metal', 'En un sólido iónico, cada ion está atraído por todos los de carga opuesta que lo rodean'],
       solucion: [
         { texto: 'En el sólido los iones están fijos en la red; fundido o disuelto se mueven y llevan la corriente.' },
         { texto: ['La ', letra('B'), ' le da al iónico lo que es del metal. La ', letra('C'), ' ve moléculas donde hay una red.'] },
@@ -743,8 +755,8 @@
       ],
     },
     regla: {
-      texto: 'El metal entrega sus electrones de valencia y el no metal recibe los que le faltan para 8: quedan como un gas noble. La fórmula da carga total cero.',
-      ecuacion: ['metal: ', El('pierde sus e⁻ de valencia'), SEP, 'no metal: ', El('gana hasta 8'), SEP, 'carga total = 0'],
+      texto: 'El metal entrega sus electrones de valencia y el no metal recibe los que le faltan para 8. La fórmula da carga total cero: dos Al³⁺ y tres O²⁻, Al₂O₃.',
+      ecuacion: ['metal: ', El('pierde sus e⁻ de valencia'), SEP, 'no metal: ', El('gana hasta 8'), SEP, 'carga total = 0', SEP, '2 · (+3) + 3 · (−2) = 0 → Al₂O₃'],
       condicion: 'metales de los grupos 1, 2 y 13 con no metales de los grupos 15, 16 y 17.',
       voz: 'Cuenta lo que entrega y lo que recibe: deben ser iguales.',
       dibujo: simb(filasCompuesto('Al', 'O').filas, { transfiere: filasCompuesto('Al', 'O').transfiere }),
@@ -771,7 +783,7 @@
     },
     ahoraTu: {
       pieza: 'quim-enlace',
-      voz: 'Cuenta lo que entrega el metal y lo que recibe el no metal.',
+      voz: 'Piensa qué átomo entrega electrones, cuál los recibe y cuántos.',
       generar(sem) {
         const r = azar(sem * 73 + 5), tipo = sem % 4;
         if (tipo === 3) return vfDe(r, AFIRMA_I, [D2.cero]);
@@ -815,9 +827,9 @@
     alt: `Estructura de Lewis del ${LEWIS[k].t}: ${compartidos(k)} par${compartidos(k) > 1 ? 'es' : ''} compartido${compartidos(k) > 1 ? 's' : ''} y ${libres(k)} par${libres(k) === 1 ? '' : 'es'} libre${libres(k) === 1 ? '' : 's'}.` }, o), estado: {} });
   const JUEGO_L = ['H2', 'Cl2', 'HCl', 'H2O', 'NH3', 'CH4', 'O2', 'CO2'];
   const MAX_LIBRES = Math.max(...JUEGO_L.map(libres));
-  const enlTxt = n => `${n} enlace${n > 1 ? 's' : ''}`;
+  const parTxt = n => `${n} par${n > 1 ? 'es' : ''} compartido${n > 1 ? 's' : ''}`;
   const pTxt = n => (n === 0 ? 'ningún par libre' : `${n} par${n > 1 ? 'es' : ''} libre${n > 1 ? 's' : ''}`);
-  const D3 = { enlace: 'Cada raya: un par compartido (2 electrones)', par: 'Cada par libre: 2 electrones', meta: 'Octeto: 8 electrones alrededor de cada átomo (el H, 2)', carga: 'Electrones a repartir = suma de los de valencia − carga del ion' };
+  const D3 = { enlace: 'Cada raya: un par compartido (2 electrones)', par: 'Cada par libre: 2 electrones', meta: 'Octeto: 8 electrones alrededor de cada átomo (el H, 2)', carga: 'Electrones a repartir = suma de valencias − carga del ion (un anión 2− suma 2; un catión 1+ resta 1)' };
   const valTxt = ss => `Electrones de valencia: ${[...new Set(ss)].map(s => `${s} ${val(s)}`).join('; ')}`;
   // Especies para contar electrones a repartir: [texto, átomos, carga].
   const ESPECIES_A = [['NH₄⁺', ['N', 'H', 'H', 'H', 'H'], 1], ['H₃O⁺', ['O', 'H', 'H', 'H'], 1], ['OH⁻', ['O', 'H'], -1], ['CN⁻', ['C', 'N'], -1], ['NO₃⁻', ['N', 'O', 'O', 'O'], -1],
@@ -839,9 +851,10 @@
     };
   }
   // Pares libres del átomo central (molécula neutra con octeto, del motor de plantillas/enlace).
-  const CENTRALES_A = ['H2S', 'PCl3', 'NF3', 'SCl2', 'CCl4', 'NH3', 'CH4'], CENTRALES_R = ['H2O', 'PH3', 'OF2', 'SiH4'];
+  // Los de «Así se resuelve» no son los del juego (el H₂O abre el juego; lector en frío, 19 nov).
+  const CENTRALES_A = ['H2S', 'PCl3', 'NF3', 'SCl2', 'CCl4', 'NH3', 'CH4'], CENTRALES_R = ['PH3', 'OF2', 'SiH4', 'NCl3'];
   const especie = k => ({ H2S: { central: 'S', ligandos: ['H', 'H'] }, PH3: { central: 'P', ligandos: ['H', 'H', 'H'] }, OF2: { central: 'O', ligandos: ['F', 'F'] },
-    SiH4: { central: 'Si', ligandos: ['H', 'H', 'H', 'H'] } }[k] || k);
+    SiH4: { central: 'Si', ligandos: ['H', 'H', 'H', 'H'] }, NCl3: { central: 'N', ligandos: ['Cl', 'Cl', 'Cl'] }, BrF3: { central: 'Br', ligandos: ['F', 'F', 'F'] } }[k] || k);
   const textoK = k => M.lewis(especie(k)).formula;
   function casoLibresCentral(r) {
     const k = r.de(CENTRALES_A), L = M.lewis(especie(k)), c = L.central, lig = L.ligandos.length;
@@ -851,7 +864,7 @@
       opciones: ops(String(L.paresLibres), [String(4), 'QM-LIBRES-TODOS', `Bien la meta de 8. Pero ${lig} de sus 4 pares se comparten.`],
         [String(val(c) - lig), 'QM-LIBRES-ELECTRONES', `Eso cuenta electrones sueltos, no pares: los ${val(c) - lig} van de a dos.`],
         [String(L.paresLibres + lig), 'QM-LIBRES-TODOS', 'Eso suma también los pares de los enlaces.'], [String(L.paresLibres + 1), 'QM-LIBRES-UNO', 'Sobra uno: cuenta de nuevo los 8.']),
-      solucion: { texto: `El ${c} pone ${lig} electrones en ${lig} enlaces; le quedan ${val(c) - lig}, en pares.`, ecuacion: [`(${val(c)} − ${lig}) ÷ 2 = `, El(`${L.paresLibres} pares libres`)] },
+      solucion: { texto: `El ${c} pone ${lig} electrones en ${lig} enlaces; le quedan ${val(c) - lig}, en pares.`, ecuacion: [`(${val(c)} − ${lig}) ÷ 2 = `, El(String(L.paresLibres)), `: ${pTxt(L.paresLibres)}`] },
     };
   }
   // El enlace entre dos átomos (simple, doble o triple), sin el N₂ de la predicción.
@@ -866,7 +879,7 @@
       datos: [valTxt(ats), D3.meta],
       opciones: ops(ORDEN_TXT[o], ...[1, 2, 3].filter(x => x !== o).map(x => [ORDEN_TXT[x], x < o ? 'QM-OCTETO-FALTA' : 'QM-OCTETO-SOBRA', x < o ? 'Bien unirlos. Pero así a alguno le faltan electrones para su octeto.' : 'Bien buscar el octeto. Pero así alguno pasa de 8.']),
         ['Iónico: un átomo le entrega electrones al otro', 'EN5', 'Entregar sería con un metal. Aquí solo hay no metales.']),
-      solucion: { texto: `Con ${enlTxt(compartidos(k))} entre todos y ${pTxt(libres(k))}, cada átomo llega a su meta.`, ecuacion: [`${LEWIS[k].t}: ${2 * compartidos(k)} + ${2 * libres(k)} = `, El(`${valTotal(k)} e⁻`)] },
+      solucion: { texto: `Con ${parTxt(compartidos(k))} entre todos y ${pTxt(libres(k))}, cada átomo llega a su meta.`, ecuacion: [`${LEWIS[k].t}: ${2 * compartidos(k)} + ${2 * libres(k)} = `, El(`${valTotal(k)} e⁻`)] },
     };
   }
   function casoPares(r) {
@@ -878,7 +891,7 @@
       opciones: ops(tx(c, l), [tx(LEWIS[k].enlaces.length, tot - LEWIS[k].enlaces.length), 'QM-ORDEN-SIMPLE', 'Bien contar las uniones. Pero un enlace doble o triple comparte más de un par.'],
         [tx(c, 2 * l), 'QM-LIBRES-ELECTRONES', 'Bien los compartidos. Pero contaste electrones libres, no pares.'], [tx(l, c), 'QM-PARES-INVERSO', 'Tiene esos números, pero al revés.'],
         [tx(c, tot), 'QM-PARES-TOTAL', 'Bien los compartidos. Pero los libres son los que sobran, no todos.']),
-      solucion: { texto: `${valTotal(k)} electrones son ${tot} pares: ${c} en los enlaces y el resto libres.`, ecuacion: [`${tot} − ${c} = `, El(`${l} pares libres`)] },
+      solucion: { texto: `${valTotal(k)} electrones son ${tot} pares: ${c} en los enlaces y el resto libres.`, ecuacion: [`${tot} − ${c} = `, El(String(l)), `: ${pTxt(l)}`] },
     };
   }
   const AFIRMA_L = [
@@ -925,7 +938,7 @@
       enunciado: '¿Cómo es la estructura de Lewis del O₂? Di el tipo de enlace y cuántos pares libres tiene cada oxígeno.',
       datos: [valTxt(['O']), D3.enlace, D3.meta],
       solucion: [
-        { texto: 'Hay 12 electrones. Con un enlace simple, a cada O le faltarían 2 para su octeto: comparten un par más.' },
+        { texto: 'Hay 12 electrones. Un enlace simple usa 2 y quedan 10: no alcanzan para tres pares libres en cada O, que pedirían 12. Comparten un par más.' },
         { texto: 'Con un enlace doble, cada O tiene 4 compartidos y 2 pares libres: 8.', ecuacion: ['2 · 2 + 4 · 2 = ', El('12 e⁻')] },
       ],
       respuesta: ['Enlace doble; ', El('2 pares libres'), ' en cada O'] },
@@ -941,8 +954,8 @@
       enunciado: 'En el CH₂O, el carbono está al centro, unido a dos H y a un O. ¿Qué enlace hay entre el C y el O, y cuántos pares libres tiene el O?',
       datos: [valTxt(['H', 'C', 'O']), D3.meta],
       solucion: [
-        { texto: 'Hay 12 electrones. Con tres enlaces simples, al carbono le faltan 2: el O comparte un par más.', ecuacion: ['4 + 2 · 1 + 6 = 12'] },
-        { texto: 'C=O doble; el oxígeno queda con 4 compartidos y 2 pares libres.' },
+        { texto: 'Hay 12 electrones. Tres enlaces simples usan 6, y los otros 6 van como 3 pares libres en el O.', ecuacion: ['4 + 2 · 1 + 6 = 12', SEP, '12 − 6 = 6'] },
+        { texto: 'El O queda con 8; el C, con 6: le faltan 2. El O comparte un par más: C=O doble, y le quedan 2 pares libres.' },
       ],
       respuesta: ['Doble; ', El('2 pares libres')] },
     { nivel: 2, titulo: 'Un anión de dos átomos',
@@ -969,7 +982,7 @@
       solucion: [
         { texto: 'N₂: 10 electrones; con un triple (6) y un par libre en cada N, los dos llegan a 8.' },
         { texto: 'O₂: 12 electrones; con un doble y dos pares libres en cada O.' },
-        { texto: ['La ', letra('A'), ' y la ', letra('B'), ' le dan al N₂ un doble: así cada N quedaría con 6 y un par de más.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('B'), ' le dan al N₂ un doble: con 10 electrones, uno de los N quedaría con 6.'] },
         { texto: ['La ', letra('C'), ' olvida que tienen un solo elemento. La ', letra('D'), ' cuenta electrones, no pares: son 2 pares por O.'] },
       ],
       respuesta: [letra('E'), ', triple en el N₂ y doble en el O₂'] },
@@ -980,18 +993,18 @@
       datos: [valTxt(['H', 'C', 'N']), D3.meta],
       solucion: [
         { texto: 'Hay 1 + 4 + 5 = 10 electrones. H–C usa 2; C≡N usa 6 y queda un par libre en el N.', ecuacion: ['2 + 6 + 2 = ', El('10 e⁻')] },
-        { texto: ['La ', letra('B'), ' pondría un doble con el H, que solo admite 2. La ', letra('C'), ' deja al C con 10.'] },
+        { texto: ['La ', letra('B'), ' pondría un doble con el H, que solo admite 2. La ', letra('C'), ' necesitaría 14 electrones, y hay 10.'] },
         { texto: ['La ', letra('D'), ' suma mal: son 10. La ', letra('E'), ' le da al hidrógeno 6 compartidos.'] },
       ],
       respuesta: [letra('A'), ', triple C≡N'] },
     { nivel: 3, titulo: 'Dos moléculas con hidrógeno',
       enunciado: 'En el PH₃ y el H₂S, ¿cuántos pares libres tiene el átomo central de cada uno?',
-      alternativas: ['0 y 0', '1 y 1', '2 y 1', '1 y 2', '3 y 2'],
+      alternativas: ['0 y 0', '1 y 1', '2 y 1', '1 y 2', '2 y 4'],
       datos: [valTxt(['H', 'P', 'S']), D3.enlace, D3.meta],
       solucion: [
         { texto: 'El P pone 3 de sus 5 en enlaces; el S, 2 de sus 6.', ecuacion: ['P: (5 − 3) ÷ 2 = 1', SEP, 'S: (6 − 2) ÷ 2 = 2'] },
         { texto: ['La ', letra('A'), ' cree que estas moléculas no tienen pares libres. La ', letra('B'), ' le da al S los mismos que al P.'] },
-        { texto: ['La ', letra('C'), ' los invierte. La ', letra('E'), ' cuenta electrones del P, no pares, y acierta en el S por casualidad.'] },
+        { texto: ['La ', letra('C'), ' los invierte. La ', letra('E'), ' cuenta electrones sueltos, no pares: 2 en el P y 4 en el S.'] },
       ],
       respuesta: [letra('D'), ', 1 y 2'] },
     { nivel: 3, titulo: 'Un anión de cinco átomos',
@@ -1050,7 +1063,7 @@
       ],
       controles: [{ id: 'k', etiqueta: 'Molécula', opciones: JUEGO_L.map(k => ({ valor: k, texto: LEWIS[k].t })), inicio: 'H2O' }],
       dibujo: v => lewisDib(v.k),
-      lectura: v => [`${LEWIS[v.k].t}: `, El(`${valTotal(v.k)} e⁻`), ` = ${enlTxt(compartidos(v.k))} (${2 * compartidos(v.k)}) + ${pTxt(libres(v.k))} (${2 * libres(v.k)})`],
+      lectura: v => [`${LEWIS[v.k].t}: `, El(`${valTotal(v.k)} e⁻`), ` = ${parTxt(compartidos(v.k))} (${2 * compartidos(v.k)}) + ${pTxt(libres(v.k))} (${2 * libres(v.k)})`],
       minimo: 4,
     },
     predice: {
@@ -1087,8 +1100,8 @@
       ],
     },
     regla: {
-      texto: 'Suma los electrones de valencia, con la carga del ion. Pon un enlace a cada átomo y completa octetos con pares libres; si faltan, forma enlaces dobles o triples.',
-      ecuacion: [El('electrones a repartir'), ' = valencia − carga', SEP, 'cada raya: ', El('2 e⁻'), SEP, 'H: 2; los demás: 8'],
+      texto: 'Suma los electrones de valencia con la carga. Une el central con cada átomo por un enlace simple y completa octetos con pares libres; si faltan, dobles o triples.',
+      ecuacion: [El('electrones a repartir'), ' = valencia − carga', SEP, 'CO₃²⁻: 4 + 3 · 6 + 2 = ', El('24'), SEP, 'cada raya: ', El('2 e⁻'), SEP, 'H: 2; los demás: 8'],
       condicion: 'en la mayoría de las moléculas con átomos del periodo 2; las excepciones vienen en la idea siguiente.',
       voz: 'Primero contar, después dibujar.',
       dibujo: lewisDib('CO2'),
@@ -1116,7 +1129,7 @@
       voz: 'Cuenta primero; las rayas y los puntos vienen después.',
       generar(sem) {
         const r = azar(sem * 61 + 13), tipo = sem % 5;
-        if (tipo === 4) return vfDe(r, AFIRMA_L, D_AFIRMA_L);
+        if (tipo === 4) return vfDe(r, AFIRMA_L, D_AFIRMA_L, [0, 1, 2]);
         return [casoElectrones3, casoLibresCentral, casoOrden, casoPares][tipo](r);
       },
     },
@@ -1133,8 +1146,11 @@
   // (el que recibe pone el par).
   const HAL = new Set(['F', 'Cl', 'Br', 'I']);
   // Estructura radial: el central al medio, los ligandos alrededor; cada halógeno con sus tres pares hacia afuera.
+  // Lugar de los pares libres del central, por número de ligandos y de pares: en los huecos entre enlaces (no es la forma de
+  // la molécula, que es de Geometría molecular: solo un dibujo plano donde se ven todos los electrones).
+  const HUECOS = { 2: [[], [-90], [-90, 90], [-125, -55, 90]], 3: [[], [90], [-150, -30]], 4: [[], [-45], [-45, 135]], 5: [[], [90]], 6: [[]] };
   function radial(k, o = {}) {
-    const L = M.lewis(k), n = L.ligandos.length, R = n > 4 ? 1.3 : 1.2, a0 = n === 2 ? 180 : -90;
+    const L = M.lewis(especie(k)), n = L.ligandos.length, R = n > 4 ? 1.3 : 1.2, a0 = n === 2 ? 180 : -90;
     const atomos = [{ id: 'c', t: L.central, x: 0, y: 0 }], enlaces = [], pares = [];
     L.ligandos.forEach((l, i) => {
       const ang = a0 + 360 * i / n, rad = ang * Math.PI / 180, id = `l${i}`;
@@ -1142,8 +1158,9 @@
       enlaces.push({ a: 'c', b: id, orden: l.orden, color: o.dativo === i ? 'f' : undefined });
       if (HAL.has(l.simbolo)) for (const da of [0, -75, 75]) pares.push({ en: id, ang: ang + da, color: 'f' });
     });
-    const huecos = L.paresLibres ? (n === 3 ? [90] : n === 4 ? [] : n === 2 ? [-90, 90] : []) : [];
-    for (const ang of huecos.slice(0, L.paresLibres)) pares.push({ en: 'c', ang, color: 'f' });
+    const huecos = (HUECOS[n] || [])[L.paresLibres];
+    if (!huecos) throw new Error(`radial ${k}: no sé dónde van ${L.paresLibres} pares libres con ${n} enlaces`);
+    for (const ang of huecos) pares.push({ en: 'c', ang, color: 'f' });
     return { pieza: 'quim-molecula', datos: { atomos, enlaces, pares, escala: n > 4 ? 46 : 54, alto: n > 4 ? 210 : 180,
       alt: o.alt || `Estructura de Lewis del ${L.formula}: el ${L.central} al centro con ${n} enlaces${L.paresLibres ? ` y ${pTxt(L.paresLibres)}` : ''}; lo rodean ${L.electronesCentral} electrones.` }, estado: {} };
   }
@@ -1156,13 +1173,13 @@
   const formulaX = k => (k === 'NO' ? 'NO' : M.lewis(k).formula);
   const centralX = k => (k === 'NO' ? 'N' : M.lewis(k).central);
   const LEE_X = k => { const e = alrededor(k), c = centralX(k); return k === 'NO' ? 'NO: 11 electrones; al N le queda uno sin pareja.' : `${formulaX(k)}: el ${c} queda con ${e} electrones, ${e < 8 ? 'menos de 8' : e > 8 ? 'más de 8' : 'su octeto'}.`; };
-  const D4 = { cuenta: 'Alrededor del central: 2 por cada enlace simple + 2 por cada par libre suyo', dativo: 'Enlace dativo: un solo átomo pone los dos electrones del par', expande: 'Solo los átomos del periodo 3 en adelante pueden tener más de 8' };
-  const AROUND_A = ['BeCl2', 'BF3', 'BCl3', 'PCl5', 'SF6', 'SF4', 'ClF3', 'XeF4', 'BrF5', 'ICl4^-'], AROUND_R = ['AlCl3', 'XeF2', 'I3^-', 'PCl3'];
+  const D4 = { cuenta: 'Alrededor del central: 2 por cada enlace simple + 2 por cada par libre suyo', libres: 'Pares libres del central = (sus electrones de valencia − enlaces simples que forma) ÷ 2', dativo: 'Enlace dativo: un solo átomo pone los dos electrones del par', expande: 'Solo los átomos del periodo 3 en adelante pueden tener más de 8' };
+  const AROUND_A = ['BeCl2', 'BF3', 'BCl3', 'PCl5', 'SF6', 'SF4', 'ClF3', 'XeF4', 'BrF5'], AROUND_R = ['AlCl3', 'XeF2', 'BrF3', 'PCl3'];
   function casoAlrededor(r) {
     const k = r.de(AROUND_A), L = M.lewis(k), n = L.ligandos.length, e = L.electronesCentral;
     return {
-      pregunta: `En la estructura de Lewis del ${L.formula}, ¿cuántos electrones rodean al átomo central, el ${L.central}?`,
-      datos: [valTxt([L.central, ...L.ligandos.map(x => x.simbolo)]), D3.carga, D4.cuenta],
+      pregunta: `En la estructura de Lewis del ${L.formula}, el átomo central, el ${L.central}, forma un enlace simple con cada ${L.ligandos[0].simbolo}. ¿Cuántos electrones lo rodean?`,
+      datos: [valTxt([L.central, ...L.ligandos.map(x => x.simbolo)]), D4.libres, D4.cuenta],
       opciones: ops(String(e), [String(8), 'QM-CENTRAL-OCHO', `Bien la idea del octeto. Pero el ${L.central} ${e < 8 ? 'no llega' : 'pasa'}: cuenta sus enlaces y pares.`],
         [String(n), 'QM-CENTRAL-ENLACES', 'Eso cuenta enlaces. Cada enlace son 2 electrones.'],
         [String(2 * n), L.paresLibres ? 'QM-CENTRAL-SIN-LIBRES' : 'QM-CENTRAL-ENLACES', L.paresLibres ? `Bien los enlaces. Pero el ${L.central} tiene además ${pTxt(L.paresLibres)}.` : 'Bien contar de a dos. Revisa cuántos enlaces son.'],
@@ -1241,7 +1258,7 @@
       respuesta: [El('12 electrones')] },
     { nivel: 1, titulo: 'Un gas del escape',
       enunciado: 'El NO sale del escape de los autos. ¿Tiene un electrón sin pareja?',
-      datos: [valTxt(['N', 'O'])],
+      datos: [valTxt(['N', 'O']), 'Radical libre: especie con un electrón sin pareja'],
       solucion: [{ texto: 'Sumo sus electrones de valencia: un número impar no se puede repartir todo en pares.', ecuacion: ['5 + 6 = ', El('11'), ': impar'] }],
       respuesta: ['Sí: es un radical libre'] },
     { nivel: 1, titulo: 'El berilio con dos cloros',
@@ -1258,7 +1275,7 @@
       enunciado: 'En el PCl₅, el fósforo está unido a cinco cloros. ¿Cuántos electrones lo rodean y cuántos pares libres tiene?',
       datos: [valTxt(['P', 'Cl']), D4.cuenta, D4.expande],
       solucion: [
-        { texto: 'El P pone sus 5 electrones en cinco enlaces: no le queda ninguno.', ecuacion: ['(5 − 5) ÷ 2 = ', El('0 pares libres')] },
+        { texto: 'El P pone sus 5 electrones en cinco enlaces: no le queda ninguno.', ecuacion: ['(5 − 5) ÷ 2 = ', El('0'), ': ningún par libre'] },
         { texto: 'Cinco enlaces de 2 electrones.', ecuacion: ['2 · 5 = ', El('10 e⁻')] },
       ],
       respuesta: [El('10 electrones'), '; ningún par libre'] },
@@ -1270,14 +1287,14 @@
         { texto: 'Le queda un par libre.', ecuacion: ['2 − 1 = ', El('1 par libre')] },
       ],
       respuesta: ['El oxígeno; le queda ', El('1 par libre')] },
-    { nivel: 2, titulo: 'El gas café de la ciudad',
-      enunciado: 'El NO₂ es un gas café del aire contaminado. ¿Es un radical libre?',
-      datos: [valTxt(['N', 'O']), 'Radical libre: especie con un electrón sin pareja'],
+    { nivel: 2, titulo: 'El gas café y su ion',
+      enunciado: 'El NO₂ es un gas café del aire contaminado; el NO₂⁻ es un ion. ¿Cuál de los dos es un radical libre?',
+      datos: [valTxt(['N', 'O']), D3.carga, 'Radical libre: especie con un electrón sin pareja'],
       solucion: [
-        { texto: 'Sumo los electrones de valencia.', ecuacion: ['5 + 2 · 6 = ', El('17')] },
-        { texto: 'Diecisiete es impar: al repartirlos en pares, uno queda solo.' },
+        { texto: 'Sumo los electrones de valencia del NO₂: un número impar.', ecuacion: ['5 + 2 · 6 = ', El('17')] },
+        { texto: 'El NO₂⁻ ganó un electrón más: un número par, todos en pares.', ecuacion: ['17 + 1 = ', El('18')] },
       ],
-      respuesta: ['Sí: 17 electrones, impar'] },
+      respuesta: ['El NO₂: 17 electrones, impar'] },
     { nivel: 2, titulo: 'El xenón también se une',
       enunciado: 'En el XeF₂, el xenón forma un enlace con cada flúor y tiene 3 pares libres. ¿Cuántos electrones lo rodean?',
       datos: [D4.cuenta, D4.expande],
@@ -1300,7 +1317,7 @@
       solucion: [
         { texto: 'Cada central pone un electrón en cada enlace; lo que le queda, en pares.', ecuacion: ['S: (6 − 4) ÷ 2 = 1', SEP, 'Cl: (7 − 3) ÷ 2 = 2', SEP, 'Xe: (8 − 4) ÷ 2 = 2'] },
         { texto: ['La ', letra('A'), ' cree que con más de 8 no quedan pares. La ', letra('B'), ' cambia el azufre y el cloro.'] },
-        { texto: ['La ', letra('C'), ' supone un par para todos. La ', letra('E'), ' cuenta electrones, no pares, en el xenón.'] },
+        { texto: ['La ', letra('C'), ' supone un par para todos. La ', letra('E'), ' cuenta electrones sueltos, no pares, en el azufre (2) y en el xenón (4).'] },
       ],
       respuesta: [letra('D'), ', 1, 2 y 2'] },
     { nivel: 3, titulo: 'Un radical en la lista',
@@ -1319,12 +1336,12 @@
       datos: [D4.dativo, D4.cuenta],
       solucion: [
         { texto: 'I es verdadera. II es falsa: ya formado, es igual a los otros tres. III es verdadera: cuatro enlaces, 8.', ecuacion: ['VFV'] },
-        { texto: ['La ', letra('A'), ' y la ', letra('C'), ' creen que el dativo se distingue después. La ', letra('B'), ' niega el dativo y el octeto.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('C'), ' creen que el dativo se distingue después; la ', letra('C'), ' además niega el octeto. La ', letra('B'), ' niega el dativo y el octeto.'] },
         { texto: ['La ', letra('D'), ' niega el dativo: el cuarto par lo puso el nitrógeno.'] },
       ],
       respuesta: [letra('E'), ', VFV'] },
     { nivel: 3, titulo: 'El amoníaco y el boro',
-      enunciado: 'El NH₃ y el BF₃ se unen y forman H₃N–BF₃. ¿Qué afirmación es correcta?',
+      enunciado: 'El NH₃ y el BF₃ se unen y forman H₃N⁠–⁠BF₃. ¿Qué afirmación es correcta?',
       alternativas: ['El N pone su par libre y el B completa su octeto.', 'El B pone un par y el N lo recibe.', 'Cada uno pone un electrón del enlace nuevo.', 'El enlace nuevo es iónico.', 'El B queda con 10 electrones.'],
       datos: [D4.dativo, valTxt(['N', 'B']), D4.cuenta],
       solucion: [
@@ -1356,7 +1373,7 @@
       tarjetas: [
         { titulo: 'El limpiador', texto: 'Muchos limpiadores de vidrios llevan amoníaco, NH₃, disuelto en agua. Ahí, parte del NH₃ recibe un ion H⁺ y se forma el ion NH₄⁺.',
           pieza: 'quim-enlace', dibujo: OBJ('limpiador', { nombre: 'Limpiador con amoníaco' }) },
-        { titulo: 'No siempre ocho', texto: 'La regla del octeto es una guía. El berilio y el boro se quedan con menos de 8; el fósforo y el azufre, del periodo 3, pueden tener más.' },
+        { titulo: 'No siempre ocho', texto: 'La regla del octeto es una guía. El berilio, el boro y el aluminio pueden quedarse con menos de 8; el fósforo y el azufre, del periodo 3, pueden tener más.' },
         { titulo: 'Un número impar', texto: 'Si una especie tiene un número impar de electrones de valencia, uno queda sin pareja. Esas especies se llaman radicales libres y reaccionan rápido.' },
         { titulo: 'Qué mirar', texto: 'En el juego cuenta los electrones que rodean al átomo central: 2 por cada raya que lo toca y 2 por cada par libre suyo.' },
       ],
@@ -1405,11 +1422,11 @@
       pieza: 'quim-molecula',
       datos: { atomos: [At('n', 'N', 0, 0), At('h1', 'H', 0, -1.1), At('h2', 'H', -1.1, 0), At('h3', 'H', 0, 1.1), At('h4', 'H', 1.25, 0)],
         enlaces: [Bo('n', 'h1'), Bo('n', 'h2'), Bo('n', 'h3'), { a: 'n', b: 'h4', orden: 1, color: 'f', desde: 2 }], pares: [{ en: 'n', ang: 0, color: 'f', hasta: 1 }],
-        textos: [{ x: 1.1, y: -1.0, t: '+', color: 'h', peso: 700, desde: 2 }], escala: 58, alto: 180,
+        textos: [{ x: 1.55, y: -0.4, t: '+', color: 'h', peso: 700, hasta: 1 }, { x: 1.1, y: -1.0, t: '+', color: 'h', peso: 700, desde: 2 }], escala: 58, alto: 180,
         alt: 'El NH₃ con su par libre y un H⁺ al lado; después, el par del nitrógeno queda como cuarto enlace del NH₄⁺.' },
       voz: 'Sigamos el par libre del nitrógeno.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El N del NH₃ tiene un par libre; el H⁺ no trae electrones.', ecuacion: ['NH₃ + H', Cq('⁺')] },
+        { estado: { corte: 1 }, texto: 'El N del NH₃ tiene un par libre; el H⁺ no trae electrones.', ecuacion: ['NH₃ + ', Cq('H⁺')] },
         { estado: { corte: 2 }, texto: 'El N pone su par entero: es un enlace dativo.', ecuacion: ['N → H', SEP, 'NH₄', Cq('⁺')] },
         { estado: { corte: 2 }, texto: 'Ya formado, el dativo es igual a los otros tres N–H.', ecuacion: ['NH₄⁺: 4 enlaces iguales'] },
         { estado: { corte: 2 }, texto: 'Así también se forma el H₃O⁺: el O del agua pone un par.', ecuacion: ['H₂O + H⁺ → H₃O⁺'] },
@@ -1418,8 +1435,8 @@
       ],
     },
     regla: {
-      texto: 'En el enlace dativo, un átomo pone el par. Excepciones al octeto: Be y B quedan con menos de 8; P y S, con más; lo impar es radical.',
-      ecuacion: ['dativo: un átomo pone los ', El('2 e⁻'), SEP, 'Be: ', El('4'), '; B: ', El('6'), SEP, 'P: hasta ', El('10'), '; S: hasta ', El('12'), SEP, 'número impar: radical'],
+      texto: 'Dativo: un átomo pone el par. Excepciones al octeto: Be, B y Al pueden quedar con menos de 8; P, S, Cl y Xe, con más; lo impar es radical.',
+      ecuacion: ['dativo: un átomo pone los ', El('2 e⁻'), SEP, 'Be: ', El('4'), '; B y Al: ', El('6'), SEP, 'P: hasta ', El('10'), '; S: hasta ', El('12'), SEP, 'número impar: radical'],
       condicion: 'solo los átomos del periodo 3 en adelante (P, S, Cl, Xe) pasan de 8; los del periodo 2, nunca.',
       voz: 'El octeto es una guía; cuenta siempre.',
       dibujo: radial('PCl5', { alt: 'Estructura de Lewis del PCl₅: el fósforo con cinco enlaces, 10 electrones alrededor.' }),
@@ -1427,14 +1444,14 @@
     resuelve: {
       pieza: 'quim-molecula',
       generar(s) {
-        const k = AROUND_R[s % AROUND_R.length], L = M.lewis(k), n = L.ligandos.length, e = L.electronesCentral;
+        const k = AROUND_R[s % AROUND_R.length], L = M.lewis(especie(k)), n = L.ligandos.length, e = L.electronesCentral, v = val(L.central);
         return {
-          enunciado: `En la estructura de Lewis del ${L.formula}, ¿cuántos electrones rodean al ${L.central}? ¿Cumple el octeto?`,
-          datos: [valTxt([L.central, ...L.ligandos.map(x => x.simbolo)]), D3.carga, D4.cuenta],
+          enunciado: `En la estructura de Lewis del ${L.formula}, el ${L.central} forma un enlace simple con cada ${L.ligandos[0].simbolo}. ¿Cuántos electrones rodean al ${L.central}? ¿Cumple el octeto?`,
+          datos: [valTxt([L.central, ...L.ligandos.map(x => x.simbolo)]), D4.libres, D4.cuenta],
           dibujo: radial(k),
           pasos: [
             { tipo: 'pide', texto: `Piden los electrones que rodean al ${L.central} y si son 8.` },
-            { tipo: 'datos', texto: `El ${L.central} tiene ${n} enlaces simples${L.paresLibres ? ` y ${pTxt(L.paresLibres)}` : ' y ningún par libre'}.` },
+            { tipo: 'datos', texto: `El ${L.central} forma ${n} enlaces simples y tiene ${v} electrones de valencia: le quedan ${v - n}, ${pTxt(L.paresLibres)}.`, ecuacion: [`(${v} − ${n}) ÷ 2 = `, El(String(L.paresLibres))] },
             { tipo: 'regla', texto: 'Cuento 2 por cada enlace y 2 por cada par libre del central. Menos de 8 es incompleto; más de 8, expandido.' },
             { tipo: 'cuentas', texto: 'Sumo.', ecuacion: [`2 · ${n}${L.paresLibres ? ` + 2 · ${L.paresLibres}` : ''} = `, El(`${e} e⁻`)] },
             { tipo: 'sentido', texto: e > 8 ? `Más de 8: el ${L.central} es del periodo ${M.elemento(L.central).periodo}, puede expandirse.` : e < 8 ? `Menos de 8: el ${L.central} se queda corto.` : 'Ocho justos: cumple.' },
@@ -1479,26 +1496,34 @@
       alt: o.alt || `Una estructura de resonancia del ${central === 'N' ? 'NO₃⁻' : 'CO₃²⁻'}: el doble enlace ${['arriba', 'a la izquierda', 'a la derecha'][dobleEn]}; los oxígenos con enlace simple llevan carga −.` }, estado: {} };
   }
   const LADO = ['arriba', 'a la izquierda', 'a la derecha'];
-  // Especies con resonancia: [texto, enlace, pares compartidos en esos enlaces, posiciones equivalentes].
-  const RES_A = [['O₃', 'O–O', 3, 2], ['NO₃⁻', 'N–O', 4, 3], ['CH₃COO⁻', 'C–O', 3, 2], ['SO₃', 'S–O', 4, 3]];
+  // Especies con resonancia: [texto, enlace, pares compartidos en esos enlaces, número de esos enlaces]. Las de «Ahora tú»
+  // no son las de los ejemplos (O₃, NO₃⁻, CH₃COO⁻), ni la del juego (CO₃²⁻), ni las de «Así se resuelve» (auditoría, 19 nov).
+  // El C₆H₆ tiene 2 estructuras con 3 dobles cada una: 9 pares en 6 enlaces C–C.
+  const RES_A = [['SO₃', 'S–O', 4, 3], ['SO₂', 'S–O', 3, 2], ['C₆H₆', 'C–C', 9, 6]];
   const RES_R = [['NO₂⁻', 'N–O', 3, 2], ['CO₃²⁻', 'C–O', 4, 3], ['HCOO⁻', 'C–O', 3, 2]];
-  const fr = (a, b) => (a === 4 && b === 3 ? '4/3' : a === 3 && b === 2 ? '3/2' : `${a}/${b}`);
+  const mcdR = (a, b) => (b ? mcdR(b, a % b) : a);
+  const fr = (a, b) => { const g = mcdR(a, b); return `${a / g}/${b / g}`; };
+  // Lo que sigue a la fracción a/b en la cuenta: la simplificada si hace falta y el decimal, con «≈» si se redondea.
+  const colaFr = (a, b) => { const g = mcdR(a, b), v = a / b; return `${g > 1 ? ` = ${fr(a, b)}` : ''}${Number.isInteger(v * 10) ? ' =' : ' ≈'} ${f(v)}`; };
   const frDec = (a, b) => (a === 4 && b === 3 ? '4/3 ≈ 1,33' : '3/2 = 1,5');
-  const D5 = { orden: 'Orden de enlace: 1 en un simple, 2 en un doble, 3 en un triple', promedio: 'Orden promedio = pares compartidos en esos enlaces ÷ número de esos enlaces',
+  const D5 = { orden: 'Orden de enlace: 1 en un simple, 2 en un doble, 3 en un triple', promedio: 'Orden promedio = pares compartidos en esos enlaces ÷ número de esos enlaces (un doble cuenta como un enlace)', res: 'Resonancia: varias estructuras válidas, con los átomos en su lugar, que solo cambian en cuál de varios enlaces iguales va el doble',
     cf: 'Carga formal = electrones de valencia − electrones de sus pares libres − enlaces que forma', largo: 'Más orden de enlace: enlace más corto' };
   function casoOrdenRes(r) {
     const [fo, enl, tot, pos] = r.de(RES_A);
+    const cada = fo === 'C₆H₆' ? `2 estructuras de resonancia; en cada una, 3 de sus 6 enlaces ${enl} son dobles y los otros 3, simples`
+      : `${pos} estructuras de resonancia; en cada una, un ${enl} es doble y ${pos === 2 ? 'el otro, simple' : 'los otros, simples'}`;
     return {
-      pregunta: `El ${fo} tiene ${pos} estructuras de resonancia; en cada una, un ${enl} es doble y ${pos === 2 ? 'el otro, simple' : 'los otros, simples'}. ¿Qué orden tiene cada ${enl} en la especie real?`,
+      pregunta: `El ${fo} tiene ${cada}. ¿Qué orden tiene cada ${enl} en la especie real?`,
       datos: [D5.orden, D5.promedio],
       opciones: ops(fr(tot, pos), ['2', 'QM-RES-UNO', 'Sería 2 si el doble enlace estuviera fijo. En la especie real se reparte.'],
         ['1', 'QM-RES-UNO', 'Sería 1 sin ningún doble. Hay uno, repartido entre todos.'],
-        [tot === 4 ? '3/2' : '4/3', 'QM-RES-CUENTA', `Esa fracción es de otro número de enlaces: aquí son ${pos}.`]),
-      solucion: { texto: `${tot} pares compartidos repartidos en ${pos} enlaces iguales.`, ecuacion: ['orden = ', { frac: [String(tot), String(pos)] }, ` = ${frDec(tot, pos)}`] },
+        [fr(tot, pos) === '4/3' ? '3/2' : '4/3', 'QM-RES-CUENTA', `Esa fracción es de otro reparto: aquí son ${tot} pares en ${pos} enlaces.`]),
+      solucion: { texto: `${tot} pares compartidos repartidos en ${pos} enlaces iguales.`, ecuacion: ['orden = ', { frac: [String(tot), String(pos)] }, colaFr(tot, pos)] },
     };
   }
   function casoCuantas(r) {
-    const [fo, enl, , pos] = r.de([...RES_A, ['CO₃²⁻', 'C–O', 4, 3], ['NO₂⁻', 'N–O', 3, 2]]);
+    // Sin el CO₃²⁻ (ejemplo «Los dibujos de la tiza» y juego) ni el C₆H₆ (dos estructuras con tres dobles cada una).
+    const [fo, enl, , pos] = r.de([['O₃', 'O–O', 3, 2], ['NO₃⁻', 'N–O', 4, 3], ['SO₃', 'S–O', 4, 3], ['SO₂', 'S–O', 3, 2], ['NO₂⁻', 'N–O', 3, 2], ['CH₃COO⁻', 'C–O', 3, 2]]);
     return {
       pregunta: `En el ${fo}, el doble enlace puede ir en cualquiera de sus enlaces ${enl} iguales. ¿Cuántas estructuras de resonancia tiene?`,
       datos: [`${fo}: ${pos} enlaces ${enl}, uno de ellos doble en cada dibujo`],
@@ -1513,15 +1538,17 @@
     const si = r.de(CON_RES), no = r.baraja(SIN_RES).slice(0, 3), conDoble = no.filter(x => ['CO₂', 'HCN', 'N₂', 'CH₂O'].includes(x));
     return {
       pregunta: `¿Cuál de estas especies tiene estructuras de resonancia: ${r.baraja([si, ...no]).join(', ')}?`,
-      datos: ['Resonancia: varias estructuras válidas que solo cambian dónde va un par, entre átomos iguales'],
+      datos: [D5.res],
       opciones: ops(si, ...no.map(x => [x, conDoble.includes(x) ? 'QM-RES-CUALQUIERA' : 'QM-RES-SIMPLE', conDoble.includes(x) ? `Tiene enlaces múltiples, cierto. Pero solo se pueden dibujar en un lugar.` : 'Solo tiene enlaces simples: no hay un par que mover.'])),
       solucion: { texto: `En el ${si}, el doble enlace puede ir en más de un lugar igual.`, ecuacion: [`${si}: resonancia`] },
     };
   }
   // Carga formal de un átomo en una estructura: [quién, valencia, electrones libres, enlaces, especie].
-  const CF_A = [['un oxígeno con enlace simple y tres pares libres', 6, 6, 1, 'NO₃⁻'], ['el oxígeno del doble enlace, con dos pares libres', 6, 4, 2, 'CO₃²⁻'],
-    ['el nitrógeno central, con cuatro enlaces y sin pares libres', 5, 0, 4, 'NO₃⁻'], ['el oxígeno central, con tres enlaces y un par libre', 6, 2, 3, 'O₃'],
-    ['el carbono central, con cuatro enlaces y sin pares libres', 4, 0, 4, 'CO₃²⁻'], ['el oxígeno de la punta con enlace simple y tres pares libres', 6, 6, 1, 'O₃']];
+  // Sin los átomos de los ejemplos (el O y el N del NO₃⁻, los tres O del O₃).
+  const CF_A = [['el carbono central, con cuatro enlaces (un doble y dos simples) y sin pares libres', 4, 0, 4, 'CO₃²⁻'], ['el oxígeno del doble enlace, con dos pares libres', 6, 4, 2, 'CO₃²⁻'],
+    ['el nitrógeno central, con tres enlaces (un doble y un simple) y un par libre', 5, 2, 3, 'NO₂⁻'], ['el azufre central, con cuatro enlaces (un doble y dos simples) y sin pares libres', 6, 0, 4, 'SO₃'],
+    ['el azufre central, con tres enlaces (un doble y un simple) y un par libre', 6, 2, 3, 'SO₂'], ['el oxígeno con enlace simple y tres pares libres', 6, 6, 1, 'SO₂']];
+  const CARGA_ESP = { 'CO₃²⁻': -2, 'NO₂⁻': -1, 'SO₃': 0, 'SO₂': 0 };
   const cfTxt = x => (x === 0 ? '0' : `${x > 0 ? '+' : '−'}${Math.abs(x)}`);
   function casoCF(r) {
     const [quien, v, l, b, sp] = r.de(CF_A), cf = v - l - b;
@@ -1531,7 +1558,8 @@
       opciones: ops(cfTxt(cf), [cfTxt(-cf || 1), cf ? 'QM-CF-SIGNO' : 'QM-CF-CARGA', cf ? 'Bien la cuenta. Pero el signo va al revés: valencia menos lo que tiene.' : 'Ese átomo tiene justo sus electrones: queda en 0.'],
         [cfTxt(v - l / 2 - b), 'QM-CF-PARES', 'Bien restar los libres. Pero se restan electrones, no pares.'],
         [cfTxt(v - l - 2 * b), 'QM-CF-ENLACES', 'Bien restar los enlaces. Pero de cada enlace le toca un electrón, no dos.'],
-        [sp === 'CO₃²⁻' ? '−2' : sp === 'NO₃⁻' ? '−1' : '+2', 'QM-CF-CARGA', 'Esa es la carga del ion entero. La carga formal se cuenta átomo por átomo.']),
+        CARGA_ESP[sp] ? [cfTxt(CARGA_ESP[sp]), 'QM-CF-CARGA', 'Esa es la carga del ion entero. La carga formal se cuenta átomo por átomo.']
+          : ['0', 'QM-CF-CARGA', 'La molécula no tiene carga, cierto. Pero la carga formal se cuenta átomo por átomo.']),
       solucion: { texto: 'Valencia menos electrones libres menos enlaces.', ecuacion: [`${v} − ${l} − ${b} = `, Cq(cfTxt(cf))] },
     };
   }
@@ -1614,20 +1642,20 @@
         { texto: 'Menos pares compartidos, enlace más largo.' },
       ],
       respuesta: ['El C–O del CO₃²⁻'] },
-    { nivel: 3, titulo: 'Una molécula lineal: N₂O',
+    { nivel: 3, titulo: 'Los pares del N₂O',
       enunciado: 'Una estructura del N₂O es N≡N–O, con 16 electrones. ¿Cuántos pares libres tiene en total?',
-      alternativas: ['4', '8', '2', '6', '3'],
+      alternativas: ['4', '8', '1', '5', '3'],
       datos: [valTxt(['N', 'O']), D3.enlace, D3.meta],
       solucion: [
         { texto: 'El triple y el simple usan 6 + 2 = 8 electrones. Quedan 8, que son 4 pares: uno en el N de la punta y tres en el O.', ecuacion: ['16 − 8 = 8 → ', El('4 pares')] },
-        { texto: ['La ', letra('B'), ' cuenta electrones, no pares. La ', letra('C'), ' olvida los del oxígeno. La ', letra('D'), ' suma también los pares compartidos que no son del triple.'] },
+        { texto: ['La ', letra('B'), ' cuenta electrones, no pares. La ', letra('C'), ' olvida los tres del oxígeno. La ', letra('D'), ' suma también el par del enlace simple.'] },
         { texto: ['La ', letra('E'), ' cuenta solo los del oxígeno.'] },
       ],
       respuesta: [letra('A'), ', ', El('4 pares libres')] },
     { nivel: 3, titulo: 'Verdadero o falso',
       enunciado: 'Indica verdadero (V) o falso (F). I. En el NO₃⁻, el doble enlace salta de un oxígeno a otro. II. Entre dos estructuras de resonancia, los átomos no se mueven. III. El O₃ tiene dos estructuras de resonancia.',
       alternativas: ['VVV', 'FVV', 'VFV', 'FVF', 'VVF'],
-      datos: ['Resonancia: varias estructuras válidas que solo cambian dónde va un par'],
+      datos: [D5.res],
       solucion: [
         { texto: 'I es falsa: los dibujos se alternan en el papel; el ion real es el promedio. II y III son verdaderas.', ecuacion: ['FVV'] },
         { texto: ['La ', letra('A'), ', la ', letra('C'), ' y la ', letra('E'), ' creen que el ion salta entre dibujos.'] },
@@ -1647,7 +1675,7 @@
     { nivel: 3, titulo: 'Quién tiene resonancia',
       enunciado: '¿Cuál de estas especies tiene estructuras de resonancia: CO₂, H₂O, CH₄, O₃ o NH₃?',
       alternativas: ['CO₂', 'H₂O', 'CH₄', 'O₃', 'NH₃'],
-      datos: ['Resonancia: varias estructuras válidas que solo cambian dónde va un par, entre átomos iguales'],
+      datos: [D5.res, valTxt(['H', 'C', 'N', 'O']), D3.meta],
       solucion: [
         { texto: 'En el O₃ el doble enlace puede ir de un lado o del otro del oxígeno central.' },
         { texto: ['La ', letra('A'), ' tiene dobles, pero fijos: no hay otro lugar. La ', letra('B'), ', la ', letra('C'), ' y la ', letra('E'), ' solo tienen enlaces simples.'] },
@@ -1694,18 +1722,18 @@
       voz: 'Mira qué se mueve y qué se queda quieto.',
       leyenda: [
         { s: '=', t: 'enlace doble' },
-        { s: Cq('−'), t: 'carga de ese oxígeno en el dibujo' },
+        { s: Cq('−'), t: 'carga de un átomo en ese dibujo' },
         { s: El('••'), t: 'un par libre' },
       ],
       controles: [{ id: 'k', etiqueta: 'Doble enlace', opciones: [0, 1, 2].map(k => ({ valor: k, texto: ['Arriba', 'Izquierda', 'Derecha'][k] })), inicio: 0 }],
       dibujo: v => triangular('C', v.k),
-      lectura: v => [`Doble ${LADO[v.k]}: `, El('24 e⁻'), ', como en los otros dibujos.'],
+      lectura: v => [`Doble ${LADO[v.k]}: `, El('24 e⁻'), '; los átomos no se movieron.'],
       minimo: 3,
     },
     predice: {
       pieza: 'quim-molecula',
-      pregunta: 'El ion NO₃⁻ también tiene tres dibujos válidos, con el doble en cualquiera de sus oxígenos. En el ion real se miden los tres enlaces N–O. ¿Cómo son?',
-      datos: ['Enlace doble: más corto que uno simple', 'NO₃⁻: tres estructuras de Lewis válidas'],
+      pregunta: 'El ion NO₃⁻ también tiene tres dibujos válidos, con el doble en cualquiera de sus oxígenos. En el ion real se miden los tres enlaces N⁠–⁠O. ¿Cómo son?',
+      datos: ['Enlace doble: más corto que uno simple', 'NO₃⁻: tres estructuras de Lewis válidas', 'En el dibujo, cada signo (+, −) es la carga de un átomo en esa estructura'],
       voz: 'Piensa qué describe el ion real, no el dibujo.',
       opciones: [
         { id: 'c', texto: 'Los tres iguales, de largo intermedio', correcta: true },
@@ -1741,7 +1769,7 @@
     regla: {
       texto: 'Si varias estructuras de Lewis válidas solo difieren en dónde va un par, la especie real es un híbrido: los electrones se reparten y esos enlaces quedan iguales.',
       ecuacion: ['orden promedio = ', { frac: ['pares compartidos', 'número de enlaces'] }],
-      condicion: 'las estructuras mueven electrones, nunca átomos, y van entre átomos iguales; la especie no salta de un dibujo a otro.',
+      condicion: 'se mueven electrones, nunca átomos, entre enlaces iguales; un doble cuenta como un enlace. La especie no salta entre dibujos.',
       voz: 'Varios dibujos, una sola especie.',
       dibujo: triangular('C', null, { alt: 'Híbrido del CO₃²⁻: tres enlaces C–O iguales, cada uno de orden 4/3.' }),
     },
@@ -1770,7 +1798,7 @@
       voz: 'Cuenta los pares y repártelos.',
       generar(sem) {
         const r = azar(sem * 47 + 19), tipo = sem % 5;
-        if (tipo === 4) return vfDe(r, AFIRMA_R, ['Resonancia: varias estructuras válidas que solo cambian dónde va un par', D5.orden]);
+        if (tipo === 4) return vfDe(r, AFIRMA_R, [D5.res, D5.orden], [0, 1, 2]);
         return [casoOrdenRes, casoCuantas, casoCual, casoCF][tipo](r);
       },
     },
@@ -1787,7 +1815,8 @@
   // Mesa de la idea 1: dos átomos y el enlace que forman. El tipo por los elementos (metal con no metal, iónico) manda;
   // la ΔEN y la guía de 1,7 se muestran al lado, para ver dónde coinciden y dónde no (Mg–Br, Na–H).
   const MESA_A = ['Li', 'Na', 'K', 'Mg', 'Ca', 'H', 'C', 'N', 'Cl'], MESA_B = ['H', 'C', 'N', 'O', 'F', 'Cl', 'Br'];
-  const CARGA_ION = s => { const g = M.elemento(s).grupo; return el(s).metal ? (g === 1 ? '+' : `${g}+`) : s === 'H' ? '−' : g === 17 ? '−' : g === 16 ? '2−' : '3−'; };
+  // Carga del ion en la mesa: el metal, la de su grupo; el no metal, lo que le falta para 8 (el C, 4−; el H con un metal, −).
+  const CARGA_ION = s => { const g = M.elemento(s).grupo; return el(s).metal ? (g === 1 ? '+' : g === 13 ? '3+' : `${g}+`) : s === 'H' ? '−' : g === 17 ? '−' : g === 16 ? '2−' : g === 15 ? '3−' : '4−'; };
   const tipoMesa = (a, b) => (a === b ? 'apolar' : el(a).metal !== el(b).metal ? 'ionico' : 'polar');
   function dibujoMesa(v) {
     const a = v.a, b = v.b, t = tipoMesa(a, b), d = dEN(a, b), m = mayorEN(a, b);
@@ -1795,8 +1824,8 @@
     const enlaces = t === 'ionico' ? [] : [{ a: 'a', b: 'b' }];
     const cargas = t === 'ionico' ? [{ en: 'a', t: CARGA_ION(a), ang: -60, color: 'h' }, { en: 'b', t: CARGA_ION(b), ang: -60, color: 'h' }]
       : t === 'polar' ? [{ en: m === a ? 'a' : 'b', t: 'δ−', ang: -90, color: 'h' }, { en: m === a ? 'b' : 'a', t: 'δ+', ang: -90, color: 'h' }] : [];
-    return { pieza: 'quim-molecula', datos: { atomos, enlaces, cargas, textos: [{ x: 0, y: 1.25, t: `ΔEN = ${f(d)}`, color: 'i', peso: 700 }], escala: 60, alto: 170,
-      alt: `${a} y ${b}: ${t === 'ionico' ? 'iones de carga opuesta, sin par compartido' : t === 'polar' ? `un par compartido, corrido hacia el ${m}` : 'un par compartido justo al medio'}; ΔEN = ${f(d)}.` }, estado: {} };
+    return { pieza: 'quim-molecula', datos: { atomos, enlaces, cargas, textos: [{ x: 0, y: 1.25, t: `ΔEN = ${f2(d)}`, color: 'i', peso: 700 }], escala: 60, alto: 170,
+      alt: `${a} y ${b}: ${t === 'ionico' ? 'iones de carga opuesta, sin par compartido' : t === 'polar' ? `un par compartido, corrido hacia el ${m}` : 'un par compartido justo al medio'}; ΔEN = ${f2(d)}.` }, estado: {} };
   }
   const TIPO_MESA = { ionico: 'iónico', polar: 'covalente polar', apolar: 'covalente apolar' };
   const guiaDice = d => (d >= 1.7 ? 'iónico' : d > 0 ? 'covalente polar' : 'covalente apolar');
@@ -1804,7 +1833,8 @@
 
   return {
     unidad: 'quimica.enlace-quimico',
-    version: '0.2.0',
+    version: '0.2.2',
+    calidad: 2,
     colores: COLORES,
     estado: 'completa',
     requiere: ['/nucleo/elementos.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/quim-enlace.js', '/plantillas/enlace/motor.js'],

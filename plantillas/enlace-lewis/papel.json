@@ -44,7 +44,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Las especies O₂²⁻, NO⁺, H₂O, ClO₂. ¿Cuál es un radical libre? Datos: Electrones de valencia: Cl 7; O 6; N 5; H 1. Electrones a repartir = suma de los de valencia − carga del ion. Radical libre: especie con un electrón sin pareja. Alternativas: A) O₂²⁻   B) H₂O   C) ClO₂   D) NO⁺",
+      "enunciado": "Las especies O₂²⁻, NO⁺, H₂O, ClO₂. ¿Cuál es un radical libre? Datos: Electrones de valencia: Cl 7; O 6; N 5; H 1. Electrones a repartir = suma de valencias − carga del ion (un anión 2− suma 2; un catión 1+ resta 1). Radical libre: especie con un electrón sin pareja. Alternativas: A) O₂²⁻   B) H₂O   C) ClO₂   D) NO⁺",
       "respuesta": "C) ClO₂",
       "pasos": [
         "ClO₂: 7 + 6 + 6 = 19, impar."

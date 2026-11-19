@@ -73,8 +73,8 @@ function esperado(a) {
     const T = { HCN: [4, 1], 'CH₂O': [4, 2], 'CO₂': [4, 4], 'O₂': [2, 4], 'Cl₂': [1, 6], 'NH₃': [3, 1] }[m[1]];
     return `${T[0]} compartido${T[0] > 1 ? 's' : ''} y ${T[1]} libre${T[1] === 1 ? '' : 's'}`;
   }
-  if ((m = q.match(/del (\S+), ¿cuántos electrones rodean al átomo central/))) {
-    return String({ 'BeCl₂': 4, 'BF₃': 6, 'BCl₃': 6, 'PCl₅': 10, 'SF₆': 12, 'SF₄': 10, 'ClF₃': 10, 'XeF₄': 12, 'BrF₅': 12, 'ICl₄⁻': 12 }[m[1]]);
+  if ((m = q.match(/del ([^\s,]+), el átomo central, el \w+, forma un enlace simple con cada \w+\. ¿Cuántos electrones lo rodean\?$/))) {
+    return String({ 'BeCl₂': 4, 'BF₃': 6, 'BCl₃': 6, 'PCl₅': 10, 'SF₆': 12, 'SF₄': 10, 'ClF₃': 10, 'XeF₄': 12, 'BrF₅': 12 }[m[1]]);
   }
   if ((m = q.match(/octeto del átomo central en el (\S+)\?$/))) {
     const k = { 'BeCl₂': 'incompleto', 'BF₃': 'incompleto', 'BCl₃': 'incompleto', 'PCl₅': 'expandido', 'SF₆': 'expandido', 'XeF₄': 'expandido', 'NH₃': 'cumple', 'H₂O': 'cumple', 'CH₄': 'cumple', 'PCl₃': 'cumple', 'NO₂': 'impar', 'ClO₂': 'impar' }[m[1]];
@@ -85,14 +85,17 @@ function esperado(a) {
     const l = m[1].split(', '), imp = l.filter(x => { const { atomos, q: c } = atomosDe(x); return (atomos.reduce((t, s) => t + VAL[s], 0) - c) % 2; });
     assert.equal(imp.length, 1, q); return imp[0];
   }
-  if ((m = q.match(/^El (\S+) tiene (\d) estructuras de resonancia; en cada una, un (\S+) es doble/))) {
-    const [t, n] = { 'O₃': [3, 2], 'NO₃⁻': [4, 3], 'CH₃COO⁻': [3, 2], 'SO₃': [4, 3] }[m[1]]; assert.equal(n, +m[2]); return `${t}/${n}`;
+  if ((m = q.match(/^El (\S+) tiene (\d) estructuras de resonancia; en cada una, (?:un (\S+) es doble|3 de sus 6)/))) {
+    // pares compartidos en esos enlaces, número de esos enlaces y de estructuras; la fracción, simplificada
+    const [t, n, e] = { 'O₃': [3, 2, 2], 'NO₃⁻': [4, 3, 3], 'CH₃COO⁻': [3, 2, 2], 'SO₃': [4, 3, 3], 'SO₂': [3, 2, 2], 'C₆H₆': [9, 6, 2] }[m[1]]; assert.equal(e, +m[2]);
+    const g = t % 3 === 0 && n % 3 === 0 ? 3 : 1; return `${t / g}/${n / g}`;
   }
-  if ((m = q.match(/^En el (\S+), el doble enlace puede ir en cualquiera/))) return String({ 'O₃': 2, 'NO₃⁻': 3, 'CH₃COO⁻': 2, 'SO₃': 3, 'CO₃²⁻': 3, 'NO₂⁻': 2 }[m[1]]);
+  if ((m = q.match(/^En el (\S+), el doble enlace puede ir en cualquiera/))) return String({ 'O₃': 2, 'NO₃⁻': 3, 'CH₃COO⁻': 2, 'SO₃': 3, 'SO₂': 2, 'CO₃²⁻': 3, 'NO₂⁻': 2 }[m[1]]);
   if ((m = q.match(/tiene estructuras de resonancia: (.+)\?$/))) { const si = m[1].split(', ').filter(x => ['O₃', 'NO₃⁻', 'CO₃²⁻', 'NO₂⁻', 'SO₃'].includes(x)); assert.equal(si.length, 1, q); return si[0]; }
   if ((m = q.match(/qué carga formal tiene (.+)\?$/))) {
-    const [v, l, b] = { 'un oxígeno con enlace simple y tres pares libres': [6, 6, 1], 'el oxígeno del doble enlace, con dos pares libres': [6, 4, 2], 'el nitrógeno central, con cuatro enlaces y sin pares libres': [5, 0, 4],
-      'el oxígeno central, con tres enlaces y un par libre': [6, 2, 3], 'el carbono central, con cuatro enlaces y sin pares libres': [4, 0, 4], 'el oxígeno de la punta con enlace simple y tres pares libres': [6, 6, 1] }[m[1]];
+    const [v, l, b] = { 'el carbono central, con cuatro enlaces (un doble y dos simples) y sin pares libres': [4, 0, 4], 'el oxígeno del doble enlace, con dos pares libres': [6, 4, 2],
+      'el nitrógeno central, con tres enlaces (un doble y un simple) y un par libre': [5, 2, 3], 'el azufre central, con cuatro enlaces (un doble y dos simples) y sin pares libres': [6, 0, 4],
+      'el azufre central, con tres enlaces (un doble y un simple) y un par libre': [6, 2, 3], 'el oxígeno con enlace simple y tres pares libres': [6, 6, 1] }[m[1]];
     const c = v - l - b; return c === 0 ? '0' : `${c > 0 ? '+' : '−'}${Math.abs(c)}`;
   }
   if (/^Indica verdadero/.test(q)) {
@@ -127,7 +130,7 @@ function igualdades(texto) {
 
 test('las cinco ideas en el orden de la propuesta; pasaría el validador con calidad 2 y cada idea estrena sus palabras', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ['tres-enlaces', 'enlace-ionico', 'lewis-octeto', 'dativo-excepciones', 'resonancia']);
-  assert.equal(def.calidad, undefined, 'la marca la pone la sesión después del lector en frío y el auditor');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   const cat = require('../../../catalogo/cursos/quimica.json').unidades.find(u => u.id === def.unidad);
   const p = Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas: cat.temas, semillas: 60 });
   assert.deepEqual(p, [], p.join('\n'));
@@ -246,7 +249,7 @@ test('ejemplos: 15 por idea, 5 por nivel, con datos; en el nivel 3 la letra es l
     'El litio con el nitrógeno': '3', 'Un sólido iónico': 'Fundido o disuelto conduce la corriente; sólido, no.', 'Los iones del MgF₂': 'Los dos iones tienen 10 electrones, como el neón.',
     'Los dos gases del aire': 'El N₂ tiene un enlace triple y el O₂, uno doble.', 'La estructura del HCN': 'Tiene un enlace triple C≡N y un par libre en el nitrógeno.', 'Dos moléculas con hidrógeno': '1 y 2',
     'Un anión de cinco átomos': '32', 'Pares libres con más de ocho': '1, 2 y 2', 'Un radical en la lista': 'OH', 'El amoníaco y el boro': 'El N pone su par libre y el B completa su octeto.',
-    'Quién no se expande': 'N', 'Una molécula lineal: N₂O': '4', 'Tres enlaces carbono–oxígeno': 'CO₃²⁻ > CO₂ > CO', 'Quién tiene resonancia': 'O₃', 'Las cargas del ozono': '0, +1 y −1',
+    'Quién no se expande': 'N', 'Los pares del N₂O': '4', 'Tres enlaces carbono–oxígeno': 'CO₃²⁻ > CO₂ > CO', 'Quién tiene resonancia': 'O₃', 'Las cargas del ozono': '0, +1 y −1',
   };
   const VF = { 'tres-enlaces': 'FVV', 'enlace-ionico': 'VFV', 'lewis-octeto': 'FVV', 'dativo-excepciones': 'VFV', resonancia: 'FVV' };
   const SIN_NOMBRE = { 'tres-enlaces': 'Iónico en X con Q; covalente apolar en Q₂', 'enlace-ionico': 'X forma X²⁺ y la fórmula es XQ₂.' };
@@ -278,5 +281,90 @@ test('las figuras de quim-enlace caben con 4 de margen y sus rótulos no se pisa
     for (let a = 0; a < g.textos.length; a++) for (let b = a + 1; b < g.textos.length; b++) assert.ok(!solapan(g.textos[a], g.textos[b]), `${f.donde}: «${g.textos[a].txt}» pisa «${g.textos[b].txt}»`);
     for (const t of g.textos) for (const o of g.objetos.filter(x => x.que !== 'corchetes')) assert.ok(!solapan(t, o), `${f.donde}: «${t.txt}» pisa ${o.que}`);
     for (const [x, y] of g.puntos || []) for (const t of g.textos) assert.ok(!(x > t.x0 + 1 && x < t.x1 - 1 && y > t.y0 + 1 && y < t.y1 - 1), `${f.donde}: un punto cae sobre «${t.txt}»`);
+  }
+});
+
+// ---------- Auditoría del cierre (19 nov): cada prueba falla con la versión anterior ----------
+// Figuras de Lewis (quim-molecula): carga formal de cada átomo = valencia − electrones propios − órdenes de sus enlaces; la
+// suma es la carga de la especie y los electrones dibujados son los de valencia menos esa carga. Una figura que olvida un
+// par libre (el XeF₂ con 2 de sus 3) no cuadra. Las cargas dibujadas son las cargas formales de cada átomo.
+function revisaLewis(donde, d, corte) {
+  const ve = x => (x.desde === undefined || corte >= x.desde) && (x.hasta === undefined || corte <= x.hasta);
+  const en = (d.enlaces || []).filter(ve), pa = (d.pares || []).filter(ve), tx = (d.textos || []).filter(ve), cg = (d.cargas || []).filter(ve);
+  if (tx.some(t => /\?|4\/3|ΔEN/.test(t.t)) || !pa.length) return null; // lo pedido tapado, el híbrido, la mesa o el esqueleto
+  const fo = ((d.alt || '').match(/del ([A-Z][A-Za-z₀-₉²³⁺⁻]*)/) || (d.alt || '').match(/\b([A-Z][A-Za-z₀-₉]*[₀-₉][A-Za-z₀-₉]*[²³]?[⁺⁻]?)/) || [])[1];
+  assert.ok(fo, `${donde}: el alt no nombra la especie`);
+  const { atomos, q } = atomosDe(fo), sueltos = {};
+  for (const t of tx.filter(x => x.t === '•')) { const a = d.atomos.reduce((m, b) => ((b.x - t.x) ** 2 + (b.y - t.y) ** 2 < (m.x - t.x) ** 2 + (m.y - t.y) ** 2 ? b : m)); sueltos[a.id] = (sueltos[a.id] || 0) + 1; }
+  let suma = 0, dibujados = 0;
+  for (const a of d.atomos) {
+    const ord = en.filter(e => e.a === a.id || e.b === a.id).reduce((t, e) => t + (e.orden || 1), 0), lp = pa.filter(p => p.en === a.id).length, s1 = sueltos[a.id] || 0;
+    const fc = VAL[a.t] - 2 * lp - s1 - ord; suma += fc; dibujados += 2 * lp + s1;
+    if (cg.length) { const t = cg.filter(c => c.en === a.id).map(c => c.t).join(''); assert.equal(t === '' ? 0 : t === '+' ? 1 : -1, fc, `${donde}: carga del ${a.t} (${a.id})`); }
+  }
+  dibujados += 2 * en.reduce((t, e) => t + (e.orden || 1), 0);
+  assert.equal(suma, q, `${donde}: las cargas formales del ${fo} suman ${suma}`);
+  assert.equal(dibujados, atomos.reduce((t, s) => t + VAL[s], 0) - q, `${donde}: electrones dibujados del ${fo}`);
+  return fo;
+}
+test('auditoría: ninguna figura de Lewis tiene electrones de más ni de menos, en el juego, Mira, la regla, los ejemplos y 400 semillas de «Así se resuelve»', () => {
+  const vistas = new Set();
+  for (const i of def.ideas) {
+    const lewis = (donde, f, cortes = [0]) => { if (f && f.pieza === 'quim-molecula') for (const c of cortes) { const fo = revisaLewis(`${i.id} ${donde}`, f.datos, c); if (fo) vistas.add(fo); } };
+    for (const v of Teoria.grilla(i.juega.controles)) lewis(`juego ${JSON.stringify(v)}`, i.juega.dibujo(v));
+    lewis('predice', i.predice.dibujo); lewis('revelar', i.predice.revelar);
+    lewis('mira', { pieza: i.mira.pieza, datos: i.mira.datos }, [1, 2, 3, 4, 5, 6]);
+    lewis('regla', i.regla.dibujo);
+    i.ejemplos.forEach((e, k) => lewis(`ejemplo ${k + 1}`, e.figura));
+    for (let s = 0; s < SEMILLAS; s++) { const r = i.resuelve.generar(s); lewis(`resuelve ${s}`, r.dibujo); r.pasos.forEach(p => lewis(`resuelve ${s}`, p.dibujo)); }
+  }
+  const mesa = def.laboratorio.find(m => m.id === 'resonancia-libre');
+  for (const v of Teoria.grilla(mesa.controles)) { const fo = revisaLewis(`mesa ${JSON.stringify(v)}`, mesa.dibujo(v).datos, 0); if (fo) vistas.add(fo); }
+  for (const fo of ['XeF₂', 'BrF₃', 'PCl₅', 'SF₆', 'BF₃', 'NO', 'NH₄⁺', 'CO₃²⁻', 'NO₃⁻', 'N₂', 'CO₂']) assert.ok(vistas.has(fo), `no se revisó el ${fo}`);
+});
+test('auditoría: ninguna explicación de una fórmula iónica dice «no da 0» de una fórmula que da 0 (Mg₂O₂), en 400 semillas', () => {
+  const ion = def.ideas[1];
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = ion.ahoraTu.generar(s), m = plano(a.pregunta).match(/que forman el (\S+) y el (\S+)\?$/); if (!m) continue;
+    const [x, y] = [NOM[m[1]], NOM[m[2]]];
+    for (const o of a.opciones) {
+      const at = atomosDe(o.texto).atomos, carga = at.filter(z => z === x).length * qIon(x) + at.filter(z => z === y).length * qIon(y);
+      if (/no da 0/.test(o.siFuera || '')) assert.notEqual(carga, 0, `${o.texto}: ${o.siFuera}`);
+      if (/simplifica|más chicos/.test(o.siFuera || '')) assert.equal(carga, 0, `${o.texto}: ${o.siFuera}`);
+    }
+  }
+});
+test('auditoría: la mesa de dos átomos pone a cada ion la carga de su grupo (el C con un metal, 4−; el H, −)', () => {
+  const mesa = def.laboratorio.find(m => m.id === 'dos-atomos');
+  for (const v of Teoria.grilla(mesa.controles)) {
+    const d = mesa.dibujo(v).datos; if (METAL.has(v.a) === METAL.has(v.b)) continue;
+    for (const c of d.cargas) {
+      const s = d.atomos.find(a => a.id === c.en).t, q = METAL.has(s) ? VAL[s] : s === 'H' ? -1 : VAL[s] - 8;
+      assert.equal(c.t, `${Math.abs(q) === 1 ? '' : Math.abs(q)}${q > 0 ? '+' : '−'}`, `${v.a}–${v.b}: ${s}`);
+    }
+  }
+});
+test('auditoría: nada de forma, hibridación ni polaridad de la molécula, y sin «electrónes», «1 pares» ni «cambian 1 electrón»', () => {
+  const PROHIBIDO = /lineal|angular|tetra[eé]dric|piramidal|trigonal|hibrida|\bsp[²³\d]|moléculas? (a)?polar|geometr|RPECV|dipolo|ángulo de enlace|fuerzas? intermolecular/i;
+  const MAL = /electrónes|\b[01] pares|cambian 1 electrón|tiene ningún/;
+  const textos = [];
+  const junta = x => { if (x == null || typeof x === 'function') return; if (typeof x === 'string') textos.push(x); else if (typeof x === 'object') for (const [k, y] of Object.entries(x)) if (!['pieza', 'v', 'm', 'id', 'formas'].includes(k)) junta(y); };
+  for (const i of def.ideas) { junta(Object.assign({}, i, { ahoraTu: null, resuelve: null })); for (const l of lecturas(i)) textos.push(plano(l.x)); }
+  junta(def.glosario); junta(def.historia); junta(def.laboratorio);
+  for (const t of textos) { assert.ok(!PROHIBIDO.test(t), `de Geometría molecular: «${t.slice(0, 80)}»`); assert.ok(!MAL.test(t), `«${t.match(MAL)}» en «${t.slice(0, 80)}»`); }
+});
+test('auditoría: la EN va con dos decimales («2,20») y «Ahora tú» de la resonancia no repite las especies ni el V/F de los ejemplos', () => {
+  for (const i of def.ideas) for (const l of lecturas(i)) {
+    const t = plano(l.x); for (const m of t.matchAll(/EN: ([^·\n]+)/g)) assert.ok(!/\b[A-Z][a-z]? \d,\d(?!\d)/.test(m[1]), `${i.id} ${l.donde}: «${m[0]}»`);
+  }
+  const res = def.ideas[4], enEjemplos = res.ejemplos.map(e => e.enunciado).join(' ');
+  const vfEj = i => i.ejemplos.find(e => e.titulo === 'Verdadero o falso').enunciado.split(/\b(?:III|II|I)\. /).slice(1).map(x => x.trim());
+  for (let s = 0; s < SEMILLAS; s++) {
+    const q = plano(res.ahoraTu.generar(s).pregunta);
+    let m;
+    if ((m = q.match(/^El (\S+) tiene \d estructuras de resonancia/))) assert.ok(!enEjemplos.includes(`${m[1]} tiene`) && !/^(O₃|NO₃⁻|CH₃COO⁻|CO₃²⁻)$/.test(m[1]), `orden del ${m[1]}: ya está en un ejemplo o en el juego`);
+    if ((m = q.match(/del (\S+), ¿qué carga formal tiene/))) assert.ok(!/^(NO₃⁻|O₃)$/.test(m[1]), `carga formal en el ${m[1]}: ya está en los ejemplos`);
+    if ((m = q.match(/^En el (\S+), el doble enlace puede ir/))) assert.notEqual(m[1], 'CO₃²⁻', 'el CO₃²⁻ ya está en un ejemplo');
+    for (const k of [2, 4]) { const a = plano(def.ideas[k].ahoraTu.generar(s).pregunta); if (/^Indica verdadero/.test(a)) assert.notDeepEqual(a.split(/\b(?:III|II|I)\. /).slice(1).map(x => x.trim()), vfEj(def.ideas[k]), `${def.ideas[k].id} ${s}: el V/F del ejemplo`); }
   }
 });

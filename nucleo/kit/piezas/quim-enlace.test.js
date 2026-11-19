@@ -43,3 +43,16 @@ test('todo cabe con 4 de margen y nada se pisa', () => {
     for (const [x, y] of g.puntos || []) for (const t of g.textos) assert.ok(!(x > t.x0 + 1 && x < t.x1 - 1 && y > t.y0 + 1 && y < t.y1 - 1), `${nombre}: punto sobre «${t.txt}»`);
   }
 });
+
+// Cierre de Enlace químico (19 nov): falla con la versión anterior. Cambios solo en los objetos y la vista de símbolos de
+// esa unidad (globos, soplete, chorro y olla, de Geometría molecular, no se tocaron).
+test('enlace químico: N₂ y O₂ distintos en la ventana, la tiza se ve, sin rayos horizontales y la flecha nace sobre el punto', () => {
+  const ventana = P.dibujar({ vista: 'objeto', objeto: 'ventana' });
+  assert.equal((ventana.match(/kit-o2/g) || []).length, 2); assert.equal((ventana.match(/kit-n2/g) || []).length, 6);
+  assert.ok(/kit-tiza/.test(P.dibujar({ vista: 'objeto', objeto: 'tiza' })));
+  const on = P.dibujar(OBJS.find(d => d.contenido === 'cobre'));
+  for (const m of on.matchAll(/class="kit-rayo" x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"/g)) assert.ok(Math.abs(+m[2] - +m[4]) > 1, `rayo horizontal: ${m[0]}`);
+  const svg = P.dibujar(SIMB[0]), punto = [...svg.matchAll(/kit-punto" cx="([\d.]+)" cy="([\d.]+)"/g)].map(m => [+m[1], +m[2]])[0];
+  const ini = svg.match(/kit-transfiere" d="M([\d.]+) ([\d.]+)/);
+  assert.ok(+ini[2] < punto[1] - 6, `la flecha (y = ${ini[2]}) nace encima del punto del Na (y = ${punto[1]})`);
+});

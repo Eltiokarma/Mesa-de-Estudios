@@ -36,10 +36,11 @@
     ['Ca', 'calcio', 2, 2, 1.00, 1], ['Br', 'bromo', 17, 7, 2.96, 0], ['I', 'yodo', 17, 7, 2.66, 0], ['Xe', 'xenón', 18, 8, 2.60, 0], ['Fe', 'hierro', 8, 2, 1.83, 1],
     ['Cu', 'cobre', 11, 1, 1.90, 1], ['Zn', 'cinc', 12, 2, 1.65, 1], ['Ag', 'plata', 11, 1, 1.93, 1]]
     .forEach(([s, nombre, g, val, en, met]) => { EL[s] = { s, nombre, g, val, en, metal: !!met }; });
-  const ROM = { 1: 'IA', 2: 'IIA', 13: 'IIIA', 14: 'IVA', 15: 'VA', 16: 'VIA', 17: 'VIIA' };
   const SUB = { 1: '', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆' }, SUP = { 1: '', 2: '²', 3: '³' };
   const f2 = x => (Math.round(x * 100) / 100).toFixed(2).replace('.', ',');
-  const lugarTxt = s => `${EL[s].nombre.replace(/^./, c => c.toUpperCase())} (${s}): grupo ${EL[s].g} (${ROM[EL[s].g]}), ${EL[s].val} electrón${EL[s].val > 1 ? 'es' : ''} de valencia`;
+  // El grupo con su número, como en la teoría, y «electrones» sin tilde (auditoría, 19 nov).
+  const eTxt = k => (k === 1 ? '1 electrón' : `${k} electrones`);
+  const lugarTxt = s => `${EL[s].nombre.replace(/^./, c => c.toUpperCase())} (${s}): grupo ${EL[s].g}, ${eTxt(EL[s].val)} de valencia`;
   const valTxt = ss => `Electrones de valencia: ${[...new Set(ss)].map(s => `${s} ${EL[s].val}`).join('; ')}`;
   const enTxt = ss => `EN: ${[...new Set(ss)].map(s => `${s} ${f2(EL[s].en)}`).join('; ')}`;
   const D = {
@@ -48,7 +49,7 @@
     delta: 'ΔEN = EN del mayor − EN del menor', guia: 'Guía de ΔEN: 1,7 o más suele ser iónico; menos de 1,7, covalente polar; 0, covalente apolar',
     props: 'Iónico: alto punto de fusión, conduce fundido o disuelto; metálico: conduce sólido; molecular: funde bajo, no conduce',
     octeto: 'Gas noble: 8 electrones en su último nivel (el helio, 2)', cero: 'Carga total de un compuesto iónico = 0',
-    carga: 'Electrones a repartir = suma de los de valencia − carga del ion', enlace: 'Cada raya: un par compartido (2 electrones)', meta: 'Octeto: 8 electrones alrededor de cada átomo (el H, 2)',
+    carga: 'Electrones a repartir = suma de valencias − carga del ion (un anión 2− suma 2; un catión 1+ resta 1)', enlace: 'Cada raya: un par compartido (2 electrones)', meta: 'Octeto: 8 electrones alrededor de cada átomo (el H, 2)',
     cuenta: 'Alrededor del central: 2 por cada enlace + 2 por cada par libre suyo', dativo: 'Enlace dativo: un solo átomo pone los dos electrones del par',
     radical: 'Radical libre: especie con un electrón sin pareja', orden: 'Orden de enlace: 1 en un simple, 2 en un doble, 3 en un triple',
     promedio: 'Orden promedio = pares compartidos en esos enlaces ÷ número de esos enlaces', cf: 'Carga formal = valencia − electrones de sus pares libres − enlaces que forma',
@@ -160,7 +161,7 @@
       enunciado: [`El ${EL[s].nombre} se une con ${met ? 'un no metal' : 'un metal'}.`], pregunta: ['¿Qué ', v('q', 'ion'), ' forma?'], datos: [lugarTxt(s), D.octeto],
       errores: [err('QM-ION-SIGNO', t(-q), met ? 'Bien la cantidad. Pero un metal entrega electrones: queda positivo.' : 'Bien la cantidad. Pero un no metal recibe electrones: queda negativo.'),
         err('QM-ION-OCTETO', met ? t(val - 8) : t(val), met ? `Bien buscar el 8. Pero entregar ${val} es más fácil que recibir ${8 - val}.` : `Bien mirar sus ${val}. Pero recibir ${8 - val} es más fácil.`),
-        err('QM-ION-UNO', Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), `Bien el signo. Pero cambian ${Math.abs(q)} electrón${Math.abs(q) > 1 ? 'es' : ''}.`)],
+        err('QM-ION-UNO', Math.abs(q) === 1 ? t(2 * q) : t(Math.sign(q)), `Bien el signo. Pero ${Math.abs(q) === 1 ? 'cambia' : 'cambian'} ${eTxt(Math.abs(q))}.`)],
       solucion: [[met ? `Entrega sus ${val} de valencia.` : `Recibe ${8 - val} y completa 8.`], [v('q', t(q))]] };
   }
   function formulaIonica(rng) {
@@ -237,7 +238,7 @@
   function electronesCentral(rng) {
     const [fo, c, n, l] = rng.elegir(ALREDEDOR), e = 2 * n + 2 * l;
     return { correcta: String(e), _datos: { fo, n, l },
-      enunciado: [`En la estructura de Lewis del ${fo}, el ${EL[c].nombre} forma ${n} enlaces simples y tiene ${l === 0 ? 'ningún par libre' : `${l} par${l > 1 ? 'es' : ''} libre${l > 1 ? 's' : ''}`}.`],
+      enunciado: [`En la estructura de Lewis del ${fo}, el ${EL[c].nombre} forma ${n} enlaces simples y ${l === 0 ? 'no tiene pares libres' : `tiene ${l} par${l > 1 ? 'es' : ''} libre${l > 1 ? 's' : ''}`}.`],
       pregunta: ['¿Cuántos ', v('e', 'electrones'), ' lo rodean?'], datos: [D.cuenta],
       errores: [err('QM-CENTRAL-OCHO', '8', 'Bien la idea del octeto. Pero aquí no se cumple: cuenta.'), err('QM-CENTRAL-ENLACES', String(n), 'Eso cuenta enlaces; cada uno son 2 electrones.'),
         err('QM-CENTRAL-SIN-LIBRES', String(2 * n), l ? 'Bien los enlaces. Pero faltan sus pares libres.' : 'Bien los enlaces; revisa si sobran.'), err('QM-CENTRAL-UNO', String(e + 2), 'Sobran dos.')],

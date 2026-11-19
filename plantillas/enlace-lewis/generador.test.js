@@ -93,3 +93,12 @@ test('los distractores dan el valor que su error produce (fórmula, transferenci
     }
   }
 });
+
+// Auditoría del cierre (19 nov): falla con la versión anterior («6 electrónes», «cambian 1 electrón», «tiene ningún par
+// libre», el grupo con romano distinto del de la teoría).
+test('auditoría: sin «electrónes», «cambian 1 electrón» ni «tiene ningún par libre», y el grupo sin romano (400 semillas por idea)', () => {
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) {
+    const t = JSON.stringify(gen.generar(s, { idea }));
+    assert.ok(!/electrónes|cambian 1 electrón|tiene ningún|grupo \d+ \([IV]+A\)/.test(t), `${idea} ${s}: ${t.match(/electrónes|cambian 1 electrón|tiene ningún|grupo \d+ \([IV]+A\)/)}`);
+  }
+});

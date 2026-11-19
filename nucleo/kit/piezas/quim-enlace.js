@@ -66,7 +66,8 @@
     s += `<rect x="153" y="65" width="14" height="9" fill="currentColor" fill-opacity="0.3" ${tinta(1.5)}/>`;
     if (p) {
       const L = p === 2 ? 9 : 5;
-      for (const a of [-180, -150, -120, -90, -60, -30, 0]) {
+      // Sin rayos horizontales: el de la izquierda caía sobre el cable (auditoría de Enlace químico, 19 nov).
+      for (const a of [-155, -125, -90, -55, -25]) {
         const r = a * Math.PI / 180, x0 = 160 + 28 * Math.cos(r), y0 = 50 + 28 * Math.sin(r);
         s += `<line class="kit-rayo" x1="${n(x0)}" y1="${n(y0)}" x2="${n(x0 + L * Math.cos(r))}" y2="${n(y0 + L * Math.sin(r))}" ${tinta(2)}/>`;
       }
@@ -100,12 +101,14 @@
       s += `<rect x="${x}" y="${y}" width="10" height="10" fill="var(--card)" ${tinta(1.6)}/>`;
     return s;
   }
+  // Las moléculas del aire: N₂ con las bolitas claras y O₂ (la 2.ª y la 7.ª) oscuras, unas 3 de cada 4 de nitrógeno
+  // (78 contra 21; lector en frío de Enlace químico, 19 nov: todas iguales no dejaban ver cuáles eran cuáles).
   function ventana() {
     let s = `<rect x="70" y="34" width="180" height="100" rx="4" fill="currentColor" fill-opacity="0.04" ${tinta(2)}/>`;
     s += `<path d="M160 34V134M70 84H250" ${tinta(1.5)} stroke-opacity="0.5"/>`;
-    for (const [x, y, ang] of [[96, 54, 20], [134, 66, -30], [196, 52, 60], [226, 70, 0], [100, 108, -10], [140, 116, 40], [190, 104, -45], [226, 118, 15]]) {
-      const r = ang * Math.PI / 180, dx = 5 * Math.cos(r), dy = 5 * Math.sin(r);
-      s += `<circle cx="${n(x - dx)}" cy="${n(y - dy)}" r="5" fill="currentColor" fill-opacity="0.25" ${tinta(1.2)}/><circle cx="${n(x + dx)}" cy="${n(y + dy)}" r="5" fill="currentColor" fill-opacity="0.25" ${tinta(1.2)}/>`;
+    for (const [k, [x, y, ang]] of [[96, 54, 20], [134, 66, -30], [196, 52, 60], [226, 70, 0], [100, 108, -10], [140, 116, 40], [190, 104, -45], [226, 118, 15]].entries()) {
+      const r = ang * Math.PI / 180, dx = 5 * Math.cos(r), dy = 5 * Math.sin(r), op = k === 1 || k === 6 ? 0.8 : 0.18;
+      s += `<circle class="kit-${op > 0.5 ? 'o2' : 'n2'}" cx="${n(x - dx)}" cy="${n(y - dy)}" r="5" fill="currentColor" fill-opacity="${op}" ${tinta(1.2)}/><circle cx="${n(x + dx)}" cy="${n(y + dy)}" r="5" fill="currentColor" fill-opacity="${op}" ${tinta(1.2)}/>`;
     }
     return s;
   }
@@ -117,11 +120,14 @@
     s += `<line x1="90" y1="137" x2="230" y2="137" ${tinta(2)}/>`;
     return s;
   }
+  // La tiza en primer plano, grande y con su punta gastada; la pizarra queda detrás (lector en frío de Enlace químico,
+  // 19 nov: la tiza chiquita en la repisa no se veía).
   function tiza() {
-    let s = `<rect x="40" y="34" width="240" height="78" rx="3" fill="currentColor" fill-opacity="0.16" ${tinta(2)}/>`;
-    s += `<path d="M60 70Q80 56 100 70T140 70" fill="none" ${tinta(2)} stroke-opacity="0.5"/>`;
-    s += `<line x1="36" y1="116" x2="284" y2="116" ${tinta(3)}/>`;
-    s += `<rect x="160" y="120" width="64" height="12" rx="5" fill="var(--card)" ${tinta(2)}/>`;
+    let s = `<rect x="40" y="34" width="240" height="64" rx="3" fill="currentColor" fill-opacity="0.16" ${tinta(2)}/>`;
+    s += `<path d="M60 62Q80 48 100 62T140 62" fill="none" ${tinta(2)} stroke-opacity="0.5"/>`;
+    s += `<line x1="36" y1="102" x2="284" y2="102" ${tinta(3)}/>`;
+    s += `<path class="kit-tiza" d="M96 110H214L226 116L214 132H96Q90 121 96 110Z" fill="var(--card)" ${tinta(2.2)}/>`;
+    s += `<path d="M214 110V132" ${tinta(1.4)} stroke-opacity="0.6"/><path d="M110 116H200M110 125H186" ${tinta(1)} stroke-opacity="0.25"/>`;
     return s;
   }
   function globos(d) {
@@ -225,7 +231,7 @@
       const [ar, de, ab, iz] = lugaresPuntos(f.puntos), pts = [];
       const par = (k, x, y, horiz) => { if (k === 1) pts.push([x, y]); else if (k === 2) { if (horiz) pts.push([x - 4, y], [x + 4, y]); else pts.push([x, y - 4], [x, y + 4]); } };
       par(ar, cx, top - 3, true); par(de, cx + m.ws / 2 + 6, mid, false); par(ab, cx, bot + 4, true); par(iz, cx - m.ws / 2 - 6, mid, false);
-      for (const [x, y] of pts) s += `<circle class="kit-punto" cx="${n(x)}" cy="${n(y)}" r="2.6" fill="var(--c-f)"/>`;
+      for (const [x, y] of pts) s += `<circle class="kit-punto" cx="${n(x)}" cy="${n(y)}" r="3.2" fill="var(--c-f)"/>`;
       cajas.puntos.push(...pts);
     }
     if (f.corchetes) {
@@ -252,7 +258,8 @@
       const fila = fichasDe(fila0), base = y0 + 20 + ALTO_FILA * k + 38, lay = layoutFila(fila);
       fila.forEach((f, i) => { s += dibujarFicha(f, lay[i], base, cajas); });
       for (const [fk, i, j] of d.transfiere || []) if (fk === k) {
-        const a = lay[i], b = lay[j], xa = a.x0 + a.w / 2, xb = b.x0 + b.w / 2, yt = base - 0.74 * TAM - 8, yc = yt - 14;
+        // La flecha nace 14 px sobre el símbolo, por encima de su punto de arriba, para que el electrón que pasa se vea.
+        const a = lay[i], b = lay[j], xa = a.x0 + a.w / 2, xb = b.x0 + b.w / 2, yt = base - 0.74 * TAM - 14, yc = yt - 10;
         s += `<path class="kit-transfiere" d="M${n(xa)} ${n(yt)}Q${n((xa + xb) / 2)} ${n(yc - 6)} ${n(xb - 6)} ${n(yt - 2)}" fill="none" stroke="var(--c-f)" stroke-width="2"/>`;
         s += T.flecha(xb - 9, yt - 4, xb - 4, yt - 1, { color: 'f', grosor: 2 });
       }
