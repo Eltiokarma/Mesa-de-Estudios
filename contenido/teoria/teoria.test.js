@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const Teoria = require('../../nucleo/teoria.js');
+const Reglas = require('../../nucleo/teoria-reglas.js');
 
 const RAIZ = path.join(__dirname, '..', '..');
 const cursos = Object.fromEntries(fs.readdirSync(path.join(RAIZ, 'catalogo', 'cursos')).filter(f => f.endsWith('.json'))
@@ -32,10 +33,32 @@ for (const [curso, archivo] of archivos) {
         `requiere solo piezas del kit, motores de plantilla, nucleo/elementos.js o un módulo 3D de nucleo/: ${r}`);
       require(path.join(RAIZ, r));
     }
+    // Con calidad: 2 corren además las reglas de nucleo/teoria-reglas.js (docs/metodo/unidad/reglas-validador.md).
     const p = Teoria.problemas(def, { temas: u.temas, semillas: 60 });
     assert.deepEqual(p, [], p.join('\n'));
   });
 }
+
+// Reglas de calidad 2 (Etapa 5, 19 nov): las faltas reales del contenido que ya existía están en una lista con fecha
+// (TeoriaReglas.EXCEPCIONES). La lista es de pendientes: cada línea nombra una unidad con calidad 2 y una idea suya.
+// Si una excepción ya no cubre nada (alguien corrigió la unidad), la prueba no falla: avisa para que se borre.
+test('reglas de calidad 2: cada excepción nombra una unidad con calidad 2 y una idea que existe', t => {
+  const defs = {};
+  for (const [curso, archivo] of archivos) {
+    const id = `${curso}.${archivo.replace(/\.js$/, '')}`;
+    if (!Reglas.EXCEPCIONES.some(x => x.unidad === id)) continue;
+    try { defs[id] = require(path.join(__dirname, curso, archivo)); for (const r of defs[id].requiere || []) require(path.join(RAIZ, r)); } catch (e) { /* la dirá su propia prueba */ }
+  }
+  for (const x of Reglas.EXCEPCIONES) {
+    const def = defs[x.unidad];
+    assert.ok(def, `la excepción nombra una unidad que no existe o no carga: ${x.unidad}`);
+    assert.ok(def.calidad >= 2, `${x.unidad} no tiene calidad 2: su excepción sobra`);
+    if (x.idea) assert.ok(def.ideas.some(i => i.id === x.idea), `${x.unidad}: no hay idea «${x.idea}»`);
+  }
+  for (const [id, def] of Object.entries(defs)) {
+    for (const x of Reglas.sobran(def, { semillas: 60 }, Teoria)) t.diagnostic(`excepción que ya no hace falta (bórrala de nucleo/teoria-reglas.js): ${x.regla} · ${x.unidad} · ${x.idea || 'toda la unidad'}`);
+  }
+});
 
 test('el catálogo construido lleva la teoría de cada unidad que la tiene', () => {
   const cat = JSON.parse(fs.readFileSync(path.join(RAIZ, 'app', 'datos', 'catalogo.json'), 'utf8'));

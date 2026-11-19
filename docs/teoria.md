@@ -420,6 +420,27 @@ regla: { texto, ecuacion, condicion, voz,
 - El validador lo dibuja y exige un SVG puro (el mismo estado da el mismo SVG), sin NaN, undefined ni Infinity, y con
   texto alternativo.
 
+## 4j. Reglas de calidad 2 y tabla de letras (Etapa 5, 19 nov)
+
+Con `calidad: 2`, `Teoria.problemas` corre además las reglas de `nucleo/teoria-reglas.js`: lo que los auditores y los
+lectores en frío encontraron una y otra vez en las 15 primeras unidades. La lista, en lenguaje claro y con cómo se
+cumple cada una, está en `docs/metodo/unidad/reglas-validador.md`. Cada falla lleva el nombre de su regla entre
+corchetes (`[letras-datos]`, `[glosario-predice]`, `[letra-repartida]`…). Corren en las pruebas, no en el celular.
+
+**Tabla de letras (`letras`, opcional).** La tabla de letras del molde (§0.4), como dato de la unidad:
+
+```js
+letras: { v: 'velocidad', t: 'tiempo', t_e: 'instante del encuentro', 'Δx': 'desplazamiento' },
+```
+
+- La usa la regla `letras-datos`: toda letra de una línea de `datos` tiene que estar dicha en su ejercicio o en la
+  tabla. A la tabla se suman solos el `simbolo` de los términos del glosario de la unidad y los de las unidades que pide.
+- Un subíndice de letras va con «_» (`t_e`, `v_B`); uno de números no hace otra letra (v₀ es v).
+- Por ahora no se muestra al alumno.
+
+Las faltas que esas reglas encontraron en el contenido ya hecho están en `TeoriaReglas.EXCEPCIONES`, con fecha
+(`Teoria.pendientes(def)` da las de una unidad). Una unidad nueva no agrega excepciones.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |

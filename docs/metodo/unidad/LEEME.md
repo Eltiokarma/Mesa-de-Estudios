@@ -29,6 +29,9 @@ Reglas de la orquestación (aprendidas en estas dos unidades):
 - **Nada se escribe en paralelo sobre el mismo archivo.** Cada agente tiene su alcance de archivos; quien integra corre
   `npm run catalogo` y `npm test` al final.
 - **Los agentes no hacen commits.** La sesión revisa, corre todo y hace un commit por cambio.
+- **Antes de marcar `calidad: 2`, lee `reglas-validador.md`** (19 nov): al poner la marca corren las reglas que salieron
+  de las auditorías y los lectores de las 15 primeras unidades (glosario que adelanta la predicción, letras sin decir
+  en los datos, letra correcta sin repartir, papel sin datos…). Una unidad nueva no agrega excepciones.
 - **El lector en frío nunca es quien escribió la unidad**, y uno que ya vio la pantalla no vuelve a servir.
 - **Gerson decide** las ideas, la primera idea y lo que los informes marcan como «decisión de Gerson». La sesión no
   inventa datos del mundo: los busca con fuente o los presenta como aproximados.
@@ -52,3 +55,4 @@ Reglas de la orquestación (aprendidas en estas dos unidades):
 | Auditoría de colores (contraste y daltonismo) | `python3 herramientas/auditar-colores.py` (funciones `contraste`, `dist`, `simular`) |
 | Papel de los generadores | `node herramientas/papel-generador.js` y `--revisar` |
 | Validador de la teoría | `node --test contenido/teoria/teoria.test.js` |
+| Reglas de calidad 2 del papel (lista los hallazgos) | `node herramientas/papel-reglas.js`; las reglas, en `reglas-validador.md` |

@@ -172,7 +172,14 @@ simulados, Machado 2009):
 ## 8. Comprobación (en este orden)
 
 1. `npm test` en verde (validador de la teoría, piezas, generadores, papel al día).
+   Con `calidad: 2` corren además las reglas que salieron de las auditorías y los lectores de las 15 primeras unidades
+   (19 nov): léelas antes de poner la marca, en `docs/metodo/unidad/reglas-validador.md`. La tabla de letras de §0.4
+   va también como dato, en el campo `letras` de la unidad.
 2. Cuentas rehechas con un script aparte.
+   Y el ancho de las ecuaciones a 390 px (19 nov): con el servidor local arriba, `node herramientas/ecuaciones-ancho.js
+   <unidad>` lista cada fórmula que se corta o se sale en «Mira», «La regla», «Así se resuelve» y «Ejemplos» (sin
+   unidad, recorre todas las de `calidad: 2`; tarda minutos y por eso no está en `npm test`). La app parte sola el
+   renglón que no cabe después de un signo; lo que la herramienta sigue listando se arregla en el contenido.
 3. **Lector en frío de los momentos**: un agente nuevo, solo con capturas (360 × 780 y 1280 × 860), responde las cinco
    preguntas de `docs/plan-calidad.md` §4. Se corrige y se pasa con un lector nuevo.
 4. **Lector en frío de los ejemplos**: 3 tarjetas por idea (una por nivel) con su recuadro «Datos»: ¿tiene todo?,

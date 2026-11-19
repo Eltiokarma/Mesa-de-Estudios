@@ -14,11 +14,12 @@
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
+  // Las reglas de calidad 2 (nucleo/teoria-reglas.js) corren en las pruebas; la app no carga ese archivo.
   const api = fabrica(root, nodo ? require('./ecuacion.js') : root.Ecuacion, nodo ? require('./kit/kit.js') : root.Kit,
-    nodo ? require('./glosario.js') : root.Glosario);
+    nodo ? require('./glosario.js') : root.Glosario, nodo ? require('./teoria-reglas.js') : root.TeoriaReglas);
   if (nodo) module.exports = api;
   else root.Teoria = Object.assign(root.Teoria || {}, api);
-})(typeof self !== 'undefined' ? self : this, function (root, Ecuacion, Kit, Glosario) {
+})(typeof self !== 'undefined' ? self : this, function (root, Ecuacion, Kit, Glosario, Reglas) {
   'use strict';
 
   // Los ocho compañeros (docs/teoria/fuentes/guia-personajes.pdf). La asignación es provisional, como dice la guía.
@@ -114,8 +115,10 @@
   }
 
   // ---------- Validación (Node y navegador) ----------
-  // problemas(def, { temas, semillas }) → lista de textos; vacía si la unidad cumple el formato.
+  // problemas(def, { temas, semillas, letras, sinReglas }) → lista de textos; vacía si la unidad cumple el formato.
   //   temas: los temas de la unidad en el catálogo; si se dan, cada uno tiene que estar en alguna idea.
+  //   letras: { símbolo: término } del glosario de las unidades que esta pide; se suman a su tabla de letras.
+  //   sinReglas: true deja fuera las reglas de calidad 2 de nucleo/teoria-reglas.js (Etapa 5, 19 nov).
   function problemas(def, o = {}) {
     const out = [];
     const mal = (donde, que) => out.push(`${donde}: ${que}`);
@@ -592,6 +595,13 @@
       }
     }
     if (Glosario) for (const q of Glosario.revisar(def)) mal(def.unidad, q);
+    // Reglas de calidad 2 (Etapa 5, 19 nov): lo que los auditores y los lectores en frío encontraron una y otra vez en
+    // las 15 primeras unidades (glosario que adelanta la predicción, letras sin decir en los datos, la letra correcta
+    // sin repartir…). Solo con calidad: 2 y solo si el formato de arriba ya está sano. Las faltas ya conocidas del
+    // contenido viejo están en TeoriaReglas.EXCEPCIONES y no salen aquí (salen en Teoria.pendientes).
+    if (def.calidad >= 2 && Reglas && !o.sinReglas && out.length === 0) {
+      for (const h of Reglas.aplicar(def, o, api).fallan) mal(h.donde, `[${h.regla}] ${h.que}`);
+    }
     if (!['borrador', 'completa'].includes(def.estado)) mal(def.unidad, 'estado: «borrador» o «completa»');
     if (o.temas) {
       const cubiertos = new Set(def.ideas.flatMap(i => i.temas || []));
@@ -658,5 +668,8 @@
     return x;
   }
 
-  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
+  // Las faltas de una unidad con calidad 2 que una excepción con fecha deja pasar (la lista de pendientes de la unidad).
+  const pendientes = (def, o = {}) => (def && def.calidad >= 2 && Reglas ? Reglas.aplicar(def, o, api).pendientes.map(h => `${h.donde}: [${h.regla}] ${h.que} (pendiente desde ${h.fecha}: ${h.motivo})`) : []);
+  const api = { unidad, unidades, problemas, pendientes, plano, inicio, ajustar, grilla, barajar, figuraRegla, ejemplosAbiertos, numerosDe, textoSVG, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
+  return api;
 });
