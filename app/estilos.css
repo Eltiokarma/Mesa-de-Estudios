@@ -128,7 +128,7 @@ input[type=text]:focus{outline:none;border-color:var(--brand)}
 /* «No sé»: al final, sin letra, sobria (borde punteado y texto suave). Ocupa toda la fila. */
 .alt.nose{grid-column:1/-1;justify-content:center;border-style:dashed;background:transparent;color:var(--muted);font-weight:500;font-size:15px;padding:10px 14px}
 .alt.nose:not(:disabled):hover{border-color:var(--muted);color:var(--ink)}
-.alt.nose.elegida,.alt.nose.ok{border-color:var(--muted);background:var(--line);color:var(--ink)}
+.alt.nose.elegida,.alt.nose.on,.alt.nose.ok{border-color:var(--muted);background:var(--line);color:var(--ink)}
 .retro{margin-top:16px;border-radius:var(--radius-s);padding:14px 16px}
 .retro.bien{background:color-mix(in srgb,var(--ok) 14%,var(--card))}
 .retro.malo{background:color-mix(in srgb,var(--warn) 10%,var(--card))}
@@ -243,8 +243,15 @@ details[open] summary{margin-bottom:8px}
 .acciones-prueba{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .acciones-prueba .btn{flex:1 1 140px;justify-content:center;padding:14px}
 .progreso-prueba .barra{display:block;margin-top:12px}
-.alt.elegida{border-color:var(--brand);background:var(--brand-soft)}
-.alt.elegida .letra{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+/* Alternativa elegida, antes de saber si está bien (19 nov): en tinta, sin el violeta de la marca. El violeta de
+   --brand en la letra chocaba con el de --c-f, que en varias unidades es la posición, los electrones o lo que se pide
+   (a 0,089 en OKLab en claro y 0,042 en oscuro), y en oscuro la letra blanca sobre --brand daba 3,13:1. Ahora: borde y
+   letra rellena en --ink sobre --card (14,2:1 en claro y 13,1:1 en oscuro), a 0,20 o más de --c-f, --ok y --warn
+   también con protanopía, deuteranopía y tritanopía (herramientas/auditar-colores.py; prueba en app/estilos.test.js).
+   Vale para .on (teoría, simulacro) y .elegida (pruebas, lectura). «No sé» elegido sigue en gris, sin letra. */
+.alt.elegida,.alt.on{border-color:var(--ink);background:var(--card)}
+.alt.elegida .letra,.alt.on .letra{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.alt.elegida:not(:disabled):hover,.alt.on:not(:disabled):hover{border-color:var(--ink)}
 .ok-t{color:var(--ok);font-weight:700}
 .mal-t{color:var(--warn);font-weight:700}
 .revision details summary{color:var(--ink)}
@@ -676,8 +683,6 @@ input[type=file]{font:inherit;max-width:100%}
 .ex-puntos span{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);background:transparent}
 .ex-puntos span.resp{background:var(--ink)}
 .ex-puntos span.aqui{outline:2px solid var(--brand);outline-offset:2px}
-.alt.on{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,var(--card))}
-.alt.on .letra{background:var(--brand);border-color:var(--brand);color:#fff}
 .ex-blanco{min-height:1.45em;margin:12px 0 0;font-size:14px;color:var(--muted)}
 .ex-nav{position:sticky;bottom:calc(96px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 0;background:var(--bg)}
 .ex-nota{text-align:center}
@@ -797,11 +802,21 @@ input[type=file]{font:inherit;max-width:100%}
 .te-control [data-paso="-1"]{grid-area:menos}.te-control [data-paso="1"]{grid-area:mas}.te-control input{grid-area:barra}
 .te-control input[type=range]{width:100%;accent-color:var(--brand);min-height:44px}
 .te-etq{font-weight:700;font-size:15px}
+/* La etiqueta de un control con color es una frase, no una letra de la ecuación: puede partir en dos renglones
+   (19 nov; «Estaca de arriba: distancia a la esquina» se salía 35 px a 390 px, herramientas/ecuaciones-ancho.js). */
+.te-etq .var{white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .te-mm{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:22px;font-weight:700;line-height:1}
 .te-opc{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .te-ficha-op{min-height:44px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:600}
 .te-ficha-op[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
-.te-casos{margin:0;min-height:20px}
+/* Contador de «Juega» (19 nov): un punto por cambio que falta y una frase que dice qué hacer. Reserva dos líneas para
+   que el paso a «Listo» no mueva nada; con misión no hay contador (queda vacío) y no ocupa lugar. */
+.te-casos{margin:0;min-height:40px;line-height:20px;display:flex;align-items:flex-start;gap:8px}
+.te-casos:empty{display:none}
+.te-casos-p{display:inline-flex;gap:4px;flex:none;height:20px;align-items:center}
+.te-casos-p i{width:10px;height:10px;border-radius:50%;border:2px solid var(--muted)}
+.te-casos-p i.on{background:var(--muted)}
+.te-casos-p.listo i{background:var(--ok);border-color:var(--ok)}
 .te-fb{min-height:24px;scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
 /* El paso nuevo de «Así se resuelve» queda a la vista, sobre el botón fijo (lector en frío, 16 nov: quedaba tapado). */
 .te-res-paso,.te-res-resp,.te-paso{scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}

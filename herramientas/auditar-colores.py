@@ -61,3 +61,10 @@ if __name__ == '__main__':
     # Peores pares con la tinta: claro tinta-f 0,203 (tritan), oscuro tinta-d 0,141 (tritan).
     auditar('física, tinta junto a variables, claro', dict(claro, tinta='#2d2340'), '#fffaf6', '#2d2340')
     auditar('física, tinta junto a variables, oscuro', dict(oscuro, tinta='#f1ebf7'), '#2a2135', '#f1ebf7')
+    # Alternativa elegida (19 nov): la letra rellena va en tinta, no en --brand. Se mide el relleno de la letra contra el
+    # violeta de las variables (f: posición, electrones, lo pedido) y contra los rellenos de correcta (--ok) e incorrecta
+    # (--warn). «brand» es el relleno de antes, para comparar. La letra va en --card sobre la tinta (antes, blanco sobre
+    # --brand: 3,13:1 en oscuro).
+    for nombre, card, ink, f, brand in (('claro', '#fffaf6', '#2d2340', claro['f'], '#7f5ae0'), ('oscuro', '#2a2135', '#f1ebf7', oscuro['f'], '#9b7ff2')):
+        auditar(f'alternativa elegida, {nombre}', {'elegida': ink, 'brand': brand, 'f': f, 'ok': '#1f9d6b', 'warn': '#e5484d'}, card, ink)
+        print(f'  letra: elegida {card} sobre {ink} {contraste(card, ink):.2f}:1 | antes #ffffff sobre {brand} {contraste("#ffffff", brand):.2f}:1')
