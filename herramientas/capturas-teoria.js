@@ -17,9 +17,39 @@
  * Lector en frío: node herramientas/capturas-teoria.js <unidad> <carpeta> momentos,ejemplos --entera --lector
  * Cada momento sale en una captura de la pantalla visible (no de página entera: la barra de abajo y la de acción son
  * fijas y en una captura de página entera quedan encima del contenido). Las tarjetas de ejemplos salen una por una.
+ * Antes de empezar comprueba que <MESA_URL>/app/datos/catalogo.json responde 200 con JSON válido (reintenta unas veces);
+ * si una pantalla muestra «No se pudo cargar el catálogo», para con error y no guarda esa captura.
  */
 const path = require('path');
 const fs = require('fs');
+
+// El aviso que pinta app/app.js cuando no llega el catálogo (Etapa 6: salieron 35 capturas iguales de este aviso).
+const AVISO_CATALOGO = /No se pudo cargar el catálogo/;
+const muestraAvisoCatalogo = texto => AVISO_CATALOGO.test(String(texto || ''));
+
+// Antes de abrir el navegador: <base>/app/datos/catalogo.json responde 200 con JSON válido. Reintenta unas veces (el
+// servidor puede estar arrancando); si no, lanza un error que dice qué pasó y cómo arreglarlo.
+async function comprobarCatalogo(base, { intentos = 5, espera = 1000, pedir = globalThis.fetch } = {}) {
+  const url = `${base}/app/datos/catalogo.json`;
+  let ultimo = '';
+  for (let k = 1; k <= intentos; k++) {
+    try {
+      const r = await pedir(url);
+      if (r.status !== 200) ultimo = `respondió ${r.status}`;
+      else {
+        const texto = await r.text();
+        try { JSON.parse(texto); return true; } catch (e) { ultimo = `respondió 200 pero no es JSON válido (${e.message})`; }
+      }
+    } catch (e) { ultimo = `no respondió (${(e.cause && e.cause.code) || e.message})`; }
+    if (k < intentos) await new Promise(r => setTimeout(r, espera));
+  }
+  throw new Error(`El catálogo no está disponible: ${url} ${ultimo} tras ${intentos} intentos. ¿Corre el servidor en ${base}? ` +
+    `¿Existe app/datos/catalogo.json (npm run catalogo)? No saco capturas del aviso «No se pudo cargar el catálogo».`);
+}
+
+module.exports = { AVISO_CATALOGO, muestraAvisoCatalogo, comprobarCatalogo };
+if (require.main !== module) return;
+
 let chromium;
 try { ({ chromium } = require('playwright')); } catch (e) { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
 
@@ -29,7 +59,6 @@ const banderas = new Set(resto.filter(x => x.startsWith('--')));
 const partes = new Set((resto.find(x => !x.startsWith('--')) || 'momentos,ejemplos,glosario,laboratorio').split(','));
 const BASE = process.env.MESA_URL || 'http://localhost:4173';
 const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu'];
-fs.mkdirSync(carpeta, { recursive: true });
 
 // La unidad abierta: con su propio estado de teoría empezado, el mapa la deja entrar aunque su requisito no esté hecho.
 // El estado sembrado ya trae hechas las migraciones del avance (nucleo/avance.js): si no, una migración que borra
@@ -44,11 +73,17 @@ async function abrir(ctx, ruta, teoria) {
   // Espera a que la teoría termine de abrir (con la máquina cargada pasa de 1,5 s), con tope de 20 s.
   await p.waitForFunction(() => document.body && !/Abriendo la teoría|Cargando/.test(document.body.innerText) && document.querySelector('#app *'), null, { timeout: 20000 }).catch(() => {});
   await p.waitForTimeout(600);
+  // Si la pantalla muestra el aviso del catálogo, no se guarda nada: se corta con un error claro.
+  if (muestraAvisoCatalogo(await p.evaluate(() => document.body ? document.body.innerText : '').catch(() => ''))) {
+    throw new Error(`La pantalla #${ruta} muestra «No se pudo cargar el catálogo»: no guardo su captura. Revisa que ${BASE}/app/datos/catalogo.json cargue en el navegador.`);
+  }
   await p.addStyleTag({ content: '#nav{display:none!important}' }).catch(() => {});
   return p;
 }
 
 (async () => {
+  await comprobarCatalogo(BASE);
+  fs.mkdirSync(carpeta, { recursive: true });
   const navegador = await chromium.launch(fs.existsSync('/usr/bin/google-chrome') ? { executablePath: '/usr/bin/google-chrome' } : {});
   const errores = [];
   const temas = banderas.has('--oscuro') ? ['claro', 'oscuro'] : ['claro'];
@@ -121,4 +156,4 @@ async function abrir(ctx, ruta, teoria) {
   }
   await navegador.close();
   console.log(`Capturas en ${carpeta}${errores.length ? `\nErrores:\n- ${errores.join('\n- ')}` : '\nSin errores de página.'}`);
-})();
+})().catch(e => { console.error(`capturas-teoria: ${e.message}`); process.exit(1); });
