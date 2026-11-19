@@ -68,6 +68,21 @@ prueba del curso (a la reserva si las formas ya tienen 10 pares) y una prueba pr
 11. **Papel de escenas compartidas.** Cada problema dice de qué unidad es (`"unidades"`).
 12. **Objetos creíbles.** Medidas posibles (una escalera de 40 m no lo es) y el objeto del enunciado igual al del dibujo.
 
+## Lo que encontraron los auditores de la Etapa 6 (también)
+13. **El avance.** Si una idea conserva su `id` y cambia su Predice, o la unidad suma ideas, agrega la unidad a
+    `REHECHAS_E6` en `nucleo/avance.js` (o un bloque igual, con su marca y su prueba): una predicción vieja sin huella se
+    vuelve a preguntar y quien terminó todas las de antes conserva «Ya la estudié».
+14. **Texto que sale roto.** Ninguna regla, Datos ni voz puede mostrar «[object Object]», «undefined» o «NaN»: si armas
+    un texto con nodos de ecuación, conviértelo con la función del formato, no con `${}`.
+15. **Preguntas posibles.** Toda situación de «Ahora tú» y «Así se resuelve» tiene que poder pasar (una caja quieta en
+    una rampa tiene rozamiento suficiente; un podio cabe), y ningún caso repite el de la misión, la predicción o un
+    ejemplo.
+16. **La pregunta no delata.** Ni el género («la ganadora», «llegó última»), ni el número, ni un título dicen cuál
+    alternativa es; una predicción tiene una sola respuesta con lo que el alumno vio hasta ahí.
+17. **No rompas el catálogo.** Edita tu unidad de forma que el archivo cargue siempre (si reescribes mucho, escribe en
+    una copia y muévela al terminar): mientras no carga, `npm run catalogo` falla y las capturas de los demás salen
+    con el aviso «No se pudo cargar el catálogo».
+
 ## Mensaje final (texto plano, corto)
 Ideas en una línea cada una (título · objeto · misión · predicción); práctica (tipos por idea); decisiones que Gerson
 debería mirar (máximo 6) y cualquier CONFLICTO CRÍTICO; tests y cuentas recalculadas; lo que saldría del validador con
