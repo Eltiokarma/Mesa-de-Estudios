@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "básico",
       "enunciado": "a) ¿Cuánto suman los ángulos interiores de un decágono? b) Si el decágono es regular, ¿cuánto mide cada ángulo interior y cada ángulo exterior?",
       "respuesta": "a) 1440°. b) Cada interior mide 144° y cada exterior, 36°.",
@@ -17,6 +18,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "básico",
       "enunciado": "Un dodecágono tiene 12 lados. a) ¿Cuántas diagonales tiene en total? b) ¿Cuántas diagonales se pueden trazar desde tres vértices consecutivos?",
       "respuesta": "a) 54. b) 26.",
@@ -31,6 +33,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "básico",
       "enunciado": "El ángulo exterior de un polígono regular mide 20°. ¿Cuántos lados tiene y cuántas diagonales?",
       "respuesta": "18 lados y 135 diagonales.",
@@ -44,6 +47,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "intermedio",
       "enunciado": "En un polígono regular, cada ángulo interior mide el cuádruple de cada ángulo exterior. ¿Cómo se llama el polígono?",
       "respuesta": "Decágono (10 lados).",
@@ -57,6 +61,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "intermedio",
       "enunciado": "Los ángulos interiores de un polígono convexo suman 1980°. ¿Cuántos lados y cuántas diagonales tiene?",
       "respuesta": "13 lados y 65 diagonales.",
@@ -70,6 +75,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "intermedio",
       "enunciado": "¿Qué polígono tiene el triple de diagonales que de lados?",
       "respuesta": "El eneágono (9 lados y 27 diagonales).",
@@ -83,6 +89,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["geometria.poligonos-regulares"],
       "nivel": "intermedio",
       "enunciado": "Un hexágono regular tiene lado 4 cm. Halla su radio, su apotema y su área.",
       "respuesta": "Radio 4 cm, apotema 2√3 cm (unos 3,46 cm) y área 24√3 cm² (unos 41,57 cm²).",
@@ -95,6 +102,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "intermedio",
       "enunciado": "En el trapecio ABCD, el lado BC es paralelo al lado AD. Sus vértices son A(0, 0), B(3, 4), C(9, 4) y D(14, 0). a) ¿Cuánto mide la mediana, el segmento que une los puntos medios de AB y CD? b) ¿Cuánto mide el segmento que une los puntos medios de las diagonales AC y BD?",
       "respuesta": "a) 10. b) 4.",
@@ -109,6 +117,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "intermedio",
       "enunciado": "Los vértices de un cuadrilátero son A(0, 0), B(6, 0), C(8, 4) y D(2, 4). a) ¿Qué cuadrilátero es? b) Halla su área.",
       "respuesta": "a) Un romboide (un paralelogramo que no es rectángulo ni rombo). b) 24.",
@@ -121,6 +130,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["geometria.poligonos-y-cuadrilateros"],
       "nivel": "básico",
       "enunciado": "Indica si cada afirmación es verdadera o falsa: I. Todo cuadrado es un rombo. II. Todo rombo es un cuadrado. III. Todo rectángulo es un paralelogramo. IV. Un cuadrado apoyado en uno de sus vértices deja de ser cuadrado.",
       "respuesta": "I verdadera, II falsa, III verdadera y IV falsa.",

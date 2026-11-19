@@ -73,7 +73,33 @@ const ESCENAS = [
     ladosRot: [{ de: 'A', a: 'B', ref: 'D', texto: '30 cm', color: 'o', dist: 6 }, { de: 'C', a: 'D', ref: 'B', texto: '50 cm', color: 'i', dist: 6 }],
     figura: { vista: { x: [-50, 50], y: [-62, 27] }, alto: 262,
       puntos: [{ id: 'A', x: 0, y: 18, rotulo: 'A', lado: 90, sinPunto: true }, { id: 'B', x: -24, y: 0, rotulo: 'B', lado: 180, sinPunto: true }, { id: 'C', x: 0, y: -43.86, rotulo: 'C', lado: 200, sinPunto: true }, { id: 'D', x: 24, y: 0, rotulo: 'D', lado: 0, sinPunto: true }],
-      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'A', a: 'D', color: 'o', grosor: 'variable' }, { de: 'C', a: 'B', color: 'i', grosor: 'variable' }, { de: 'C', a: 'D', color: 'i', grosor: 'variable' }, { de: 'A', a: 'C' }], angulos: [] } },
+      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable' }, { de: 'A', a: 'D', color: 'o', grosor: 'variable' }, { de: 'C', a: 'B', color: 'i', grosor: 'variable' }, { de: 'C', a: 'D', color: 'i', grosor: 'variable' }, { de: 'A', a: 'C' }], angulos: [] } },  // Polígonos y cuadriláteros (19 nov, etapa 6; bloque propio): la parcela en sus cuatro tipos (más pruebas en
+  // geo-objeto-parcela.test.js).
+  ...(() => {
+    const pent = [[0, 0], [5, -0.6], [6.6, 3.2], [3.2, 5.6], [-0.8, 3.6]], ids = 'ABCDE'.split('');
+    const pts = (ps, nom, lados) => ps.map((q, k) => ({ id: nom[k], x: q[0], y: q[1], rotulo: nom[k], lado: lados[k], sinPunto: true }));
+    const lados = ps => ps.map((_, k) => ({ de: ids[k], a: ids[(k + 1) % ps.length] }));
+    const terreno = { objeto: 'parcela', tipo: 'terreno', borde: ids, estacas: ids,
+      figura: { vista: { x: [-2, 8.4], y: [-1.8, 6.8] }, alto: 250, puntos: pts(pent, ids, [225, 300, 0, 90, 160]),
+        segmentos: [...lados(pent), { de: 'A', a: 'C', discontinua: true, grosor: 'fino' }, { de: 'A', a: 'D', discontinua: true, grosor: 'fino' }],
+        angulos: [{ en: 'B', de: 'A', a: 'C', color: 'h', radio: 16 }] } };
+    const hexa = Array.from({ length: 6 }, (_, k) => [3 * Math.cos((k * 60 - 90) * Math.PI / 180), 3 * Math.sin((k * 60 - 90) * Math.PI / 180)]);
+    const plaza = { objeto: 'parcela', tipo: 'plaza', borde: 'ABCDEF'.split(''), mototaxi: { de: 'A', a: 'B', t: 0.5 },
+      figura: { vista: { x: [-5, 5], y: [-4.6, 4.6] }, alto: 250, puntos: pts(hexa, 'ABCDEF', [270, 330, 30, 90, 150, 210]),
+        segmentos: hexa.map((_, k) => ({ de: 'ABCDEF'[k], a: 'ABCDEF'[(k + 1) % 6] })), angulos: [] } };
+    const clv = Array.from({ length: 8 }, (_, k) => [3 * Math.cos((90 + k * 45) * Math.PI / 180), 3 * Math.sin((90 + k * 45) * Math.PI / 180)]);
+    const geoplano = { objeto: 'parcela', tipo: 'geoplano', clavos: 'ABCDEFGH'.split(''),
+      figura: { vista: { x: [-4.6, 4.6], y: [-4.4, 4.4] }, alto: 250, puntos: pts(clv, 'ABCDEFGH', clv.map((_, k) => 90 + k * 45)),
+        segmentos: [2, 3, 4, 5, 6].map(k => ({ de: 'A', a: 'ABCDEFGH'[k], color: 'o' })), angulos: [] } };
+    const canal = { objeto: 'parcela', tipo: 'canal', borde: ['A', 'B', 'C', 'D'], agua: ['M', 'B', 'C', 'N'],
+      ladosRot: [{ de: 'A', a: 'D', texto: '6 m', color: 'o', ref: 'B', dist: 8 }],
+      figura: { vista: { x: [-0.8, 6.8], y: [-1.2, 3.4] }, alto: 220,
+        puntos: [{ id: 'A', x: 0, y: 2.4, rotulo: 'A', lado: 120, sinPunto: true }, { id: 'B', x: 1.6, y: 0, rotulo: 'B', lado: 230, sinPunto: true },
+          { id: 'C', x: 4.4, y: 0, rotulo: 'C', lado: 310, sinPunto: true }, { id: 'D', x: 6, y: 2.4, rotulo: 'D', lado: 60, sinPunto: true },
+          { id: 'M', x: 0.8, y: 1.2, rotulo: 'M', lado: 180, sinPunto: true }, { id: 'N', x: 5.2, y: 1.2, rotulo: 'N', lado: 0, sinPunto: true }],
+        segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C', color: 'i', grosor: 'variable' }, { de: 'C', a: 'D' }, { de: 'A', a: 'D', color: 'o', discontinua: true, grosor: 'fino' }, { de: 'M', a: 'N', grosor: 'variable' }], angulos: [] } };
+    return [terreno, plaza, geoplano, canal];
+  })(),
 ];
 const casos = () => MUESTRAS.map(d => [d, {}]);
 const esEscena = d => P.ESCENAS.includes(d.objeto);

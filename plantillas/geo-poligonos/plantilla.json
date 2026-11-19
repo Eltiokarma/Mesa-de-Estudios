@@ -3,7 +3,6 @@
   "titulo": "Polígonos regulares, trapecios y cuadriláteros",
   "formato": "predicciones",
   "unidades": [
-    "geometria.poligonos-y-cuadrilateros",
     "geometria.poligonos-regulares"
   ],
   "estado": "borrador",

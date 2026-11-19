@@ -313,3 +313,35 @@ No pude leer ninguna completa; lo que digo de cada una viene de los resúmenes d
 - Espinoza-Vergara, J. y otros (2020). Artículo sobre el uso del teorema del ángulo inscrito en un problema de percepción visual. Enseñanza de las Ciencias 38(1), 5–26. https://ensciencias.uab.cat/article/download/v38-n1-espinoza-vergara-valenzuela/2418-pdf-es/18901
 - *Examining the errors made by high school students while applying the Pythagorean Theorem*. Bolema (SciELO Brasil). https://www.scielo.br/j/bolema/a/wd97pKjzkcD66Nm6vSF9pwC/?format=pdf&lang=en
 - *The nature of middle school mathematics teachers' pedagogical content knowledge: the case of the volume of prisms*. Australian Mathematics Teacher 74(1), 2018. https://files.eric.ed.gov/fulltext/EJ1175356.pdf
+
+## Polígonos y cuadriláteros (19 nov)
+
+Códigos de `contenido/teoria/geometria/poligonos-y-cuadrilateros.js` y de la práctica `geo-poligonos-cuadrilateros`
+(etapa 6, `docs/etapa6/propuesta-geometria.md`). Salvo GE10 y GE23 (arriba, con respaldo parcial o sin él), **todos son
+hipótesis** sacadas del temario, de las preguntas de San Marcos clasificadas en la unidad y de la práctica de academia;
+se confirman con la medición del piloto. GE-POL1 a GE-POL5 y GE-TRP1 y GE-TRP2 ya estaban en `rutinas/teoria-geometria.md`.
+
+| Código | Hipótesis (lo que hace el alumno) | Dónde aparece |
+| --- | --- | --- |
+| GE-POL1 | Usa la suma de los interiores donde van los exteriores, o al revés | Ideas 1 y 2 |
+| GE-POL4, GE-POL5 | Cuenta cada diagonal dos veces; cuenta solo las de un vértice | Idea 3 |
+| GE-POL6, GE-POL7 | Partiendo desde un punto de adentro, suma también los ángulos de ese punto; cree que la suma depende de dónde quede | Idea 1, predicción |
+| GE-POL8, GE-POL9 | Reparte la suma en partes iguales sin que los ángulos lo sean; da el interior en vez del exterior (o al revés) | Ideas 1 y 2 |
+| GE-POL10, GE-POL11 | Cuenta n − 1 triángulos; cuenta n − 3 (las diagonales) como triángulos | Idea 1 |
+| GE-POL12, GE-POL13 | Da los triángulos (n − 2) como lados; al despejar, resta el 2 en vez de sumarlo | Idea 1 |
+| GE-POL14, GE-POL15 | Con las bisectrices de C y D, da m∠A + m∠B sin partir; da la suma de las mitades o de C y D | Idea 1, nivel examen (San Marcos 2025-I) |
+| GE-POL16 | Con dos polígonos, da los lados del mayor | Idea 1 |
+| GE-POL17 a GE-POL21 | En el equiángulo: da la suma de todos; reparte 180° en vez de 360°; reparte entre n − 2; da el exterior como número de lados; divide el interior entre el exterior | Idea 2 |
+| GE-POL22 | Con exteriores en x, olvida los números sueltos | Idea 2 |
+| GE-POL23 a GE-POL25 | En el hexágono equiángulo: supone lados opuestos iguales; da el perímetro (o el lado) del triángulo grande; suma solo los lados dados | Idea 2, nivel examen (San Marcos 2026-II) |
+| GE-POL26, GE-POL27 | Con el interior k veces el exterior, da las partes (k + 1); confunde lados con diagonales o duplica k | Ideas 2 y 3 |
+| GE-POL28 a GE-POL32 | Quita un vecino de más o de menos; prueba lados vecinos; toma las diagonales de un vértice como lados; olvida sumar 3; da los lados del polígono con más lados | Idea 3 |
+| GE-PC1 a GE-PC3 | Lleva al paralelogramo las diagonales del rectángulo (iguales) o del rombo (perpendiculares); cree que nada se conserva al inclinarlo | Idea 4, predicción |
+| GE-PC4 | En el rombo inclinado, cree que las diagonales se cruzan con el ángulo de la esquina | Idea 5, predicción |
+| GE-PC5 a GE-PC11 | Iguala vecinos o suplementa opuestos; supone ángulos rectos; suma solo dos o tres lados del perímetro; da la mitad de la diagonal; duplica dos veces | Ideas 4 y 5 |
+| GE-PC12 a GE-PC14, GE-PC24 | Con la bisectriz de A: da BE (el isósceles) y no EC; cree que corta BC en su mitad; suma los lados; parte EC | Idea 4, nivel examen |
+| GE-PC15, GE-PC16 | En el cuadrilátero de los puntos medios: suma un lado de cada clase; usa las diagonales enteras | Idea 4, nivel examen |
+| GE-PC17, GE-PC18 | Nombra la figura con un nombre menos preciso, o con el de la propiedad que no tiene | Idea 5 (vecino de GE10) |
+| GE-PC19 a GE-PC23 | Parte el ángulo que no es; da el vecino; da el ángulo en B del isósceles; da el de la diagonal (45°); resta de 360° | Idea 5 |
+| GE-TRP1, GE-TRP2 | Da la mediana por el tramo PQ (o al revés); suma o resta las bases y no saca la mitad | Idea 6 |
+| GE-TRP3 a GE-TRP10 | Da MP (mitad de la base menor); usa solo la base mayor; resta la base de la mediana sin duplicar; suma mediana y base; da la suma de las bases; da la base mayor; con tres paralelas da solo la del medio o la suma de las bases | Idea 6 (la de tres paralelas, San Marcos 2027-I) |

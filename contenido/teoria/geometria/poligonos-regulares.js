@@ -729,9 +729,7 @@
     // de unidades anteriores y el lector los marca solos.
     glosario: [
       { termino: 'número pi', simbolo: 'π', formas: ['número pi', 'π'], def: 'Cuántas veces cabe el diámetro en la vuelta de una circunferencia; vale aproximadamente 3,1416.', ver: ['diámetro'] },
-      { termino: 'polígono regular', formas: ['polígono regular', 'polígonos regulares'],
-        def: 'Polígono con todos sus lados iguales y todos sus ángulos iguales.',
-        ejemplo: 'El cuadrado lo es; el rombo no: lados iguales, ángulos distintos.', ver: ['apotema'] },
+      // «polígono regular» se mudó a Polígonos y cuadriláteros (19 nov, etapa 6): aquí el lector lo marca «se explica en…».
       { termino: 'apotema', simbolo: 'a', formas: ['apotema', 'apotemas'],
         def: 'Segmento perpendicular del centro de un polígono regular al punto medio de uno de sus lados.',
         ejemplo: 'Hexágono de lado 6: √(36 − 9) = 3√3 ≈ 5,2.', ver: ['polígono regular', 'ángulo central'] },

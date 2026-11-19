@@ -53,8 +53,8 @@
     'geo-areas-circulares': { ...todo(G + 'longitud-y-areas-circulares', ['corona', 'sector', 'cuadrantes', 'lunulas', 'sombreada', 'concentricas']), rueda: T + 'longitud-de-arco-y-sector' },
     'geo-circunferencia-metrica': { ...todo(G + 'circunferencia', ['tangentes-iguales', 'tangente', 'pitot', 'inscriptible', 'poncelet']),
       ...todo(G + 'relaciones-metricas', ['secantes', 'cuerdas', 'arcos-cuerdas']) },
-    'geo-poligonos': { ...todo(G + 'poligonos-y-cuadrilateros', ['rombo', 'cuadrados', 'trapecio', 'encajados', 'equiangulo']),
-      ...todo(G + 'poligonos-regulares', ['diagonales', 'hexagono', 'soporte', 'area-regular']) },
+    // 19 nov (etapa 6): geo-poligonos queda solo para Polígonos regulares; Polígonos y cuadriláteros usa
+    // geo-poligonos-cuadrilateros (docs/etapa6/propuesta-geometria.md, decisión 13). Ya no es mixto: sale de la tabla.
     'geo-proporcionalidad': todo(G + 'proporcionalidad-y-semejanza', ['bisectriz', 'raices-areas', 'incentro', 'cuerdas', 'bis-semejanza', 'thales']),
     // 18 nov (docs/etapa4/decisiones.md): la condición de obtusángulo (x² frente a a² + b²) va a Relaciones métricas, y
     // las bisectrices con 37°/2 y 53°/2, a Puntos notables, igual que TIPOS_POR_UNIDAD del generador.

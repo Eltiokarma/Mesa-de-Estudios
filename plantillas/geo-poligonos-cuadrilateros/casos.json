@@ -1,0 +1,228 @@
+{
+  "plantilla": "geo-poligonos-cuadrilateros",
+  "tolerancia": 1e-06,
+  "nota": "enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales); esperado.valor es el número y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (19 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e6-geometria/casos/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, contando triángulos y pares de vértices uno por uno, cerrando el hexágono equiángulo con lados enteros y midiendo con coordenadas los ángulos del rectángulo, del rombo y del cuadrado con su equilátero, y el corte de la bisectriz del paralelogramo.",
+  "casos": [
+    {
+      "semilla": 100,
+      "opciones": {
+        "tipo": "suma"
+      },
+      "enunciado": "Un polígono convexo tiene 5 lados. ¿Cuánto suman sus ángulos interiores?",
+      "esperado": {
+        "valor": 540.0,
+        "texto": "540°"
+      }
+    },
+    {
+      "semilla": 101,
+      "opciones": {
+        "tipo": "lados"
+      },
+      "enunciado": "Los ángulos interiores de un polígono convexo suman 3 420°. ¿Cuántos lados tiene?",
+      "esperado": {
+        "valor": 21,
+        "texto": "21"
+      }
+    },
+    {
+      "semilla": 102,
+      "opciones": {
+        "tipo": "falta"
+      },
+      "enunciado": "Un polígono convexo de 7 lados tiene 6 ángulos interiores de 145°, 130°, 110°, 140°, 150° y 110°. ¿Cuánto mide el ángulo que falta?",
+      "esperado": {
+        "valor": 115.0,
+        "texto": "115°"
+      }
+    },
+    {
+      "semilla": 103,
+      "opciones": {
+        "tipo": "bisectrices"
+      },
+      "enunciado": "En el cuadrilátero convexo ABCD, m∠A = 110° y m∠B = 120°. Las bisectrices de los ángulos C y D se cortan en E. ¿Cuánto mide m∠CED?",
+      "esperado": {
+        "valor": 115.0,
+        "texto": "115°"
+      }
+    },
+    {
+      "semilla": 104,
+      "opciones": {
+        "tipo": "cada"
+      },
+      "enunciado": "Un polígono equiángulo tiene 6 lados. ¿Cuánto mide cada ángulo exterior?",
+      "esperado": {
+        "valor": 60.0,
+        "texto": "60°"
+      }
+    },
+    {
+      "semilla": 105,
+      "opciones": {
+        "tipo": "n-interior"
+      },
+      "enunciado": "Cada ángulo interior de un polígono regular mide 162°. ¿Cuántos lados tiene?",
+      "esperado": {
+        "valor": 20,
+        "texto": "20"
+      }
+    },
+    {
+      "semilla": 106,
+      "opciones": {
+        "tipo": "hexagono"
+      },
+      "enunciado": "El hexágono ABCDEF es equiángulo: AB = 7 cm, BC = 4 cm, CD = 3 cm y EF = 6 cm. Al prolongar AB, CD y EF se forma un triángulo. ¿Cuánto mide el perímetro del hexágono?",
+      "esperado": {
+        "valor": 26.0,
+        "texto": "26 cm"
+      }
+    },
+    {
+      "semilla": 107,
+      "opciones": {
+        "tipo": "total"
+      },
+      "enunciado": "Un polígono convexo tiene 15 lados. ¿Cuántas diagonales tiene?",
+      "esperado": {
+        "valor": 90,
+        "texto": "90"
+      }
+    },
+    {
+      "semilla": 108,
+      "opciones": {
+        "tipo": "n-diag"
+      },
+      "enunciado": "Un polígono convexo tiene 44 diagonales. ¿Cuántos lados tiene?",
+      "esperado": {
+        "valor": 11,
+        "texto": "11"
+      }
+    },
+    {
+      "semilla": 109,
+      "opciones": {
+        "tipo": "mas-lados"
+      },
+      "enunciado": "Si un polígono convexo tuviera 2 lados más, tendría 31 diagonales más. ¿Cuántos lados tiene?",
+      "esperado": {
+        "valor": 16,
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": 110,
+      "opciones": {
+        "tipo": "ang-par"
+      },
+      "enunciado": "En el paralelogramo ABCD, m∠A = 80°. ¿Cuánto mide m∠B?",
+      "esperado": {
+        "valor": 100.0,
+        "texto": "100°"
+      }
+    },
+    {
+      "semilla": 111,
+      "opciones": {
+        "tipo": "diag-par"
+      },
+      "enunciado": "En el paralelogramo ABCD, las diagonales se cortan en O; AO = 2x − 4 y OC = x + 11, en centímetros. ¿Cuánto mide AC?",
+      "esperado": {
+        "valor": 52,
+        "texto": "52 cm"
+      }
+    },
+    {
+      "semilla": 112,
+      "opciones": {
+        "tipo": "bisectriz-par"
+      },
+      "enunciado": "En el paralelogramo ABCD, AB = 13 cm y BC = 16 cm. La bisectriz del ángulo A corta BC en E. ¿Cuánto mide EC?",
+      "esperado": {
+        "valor": 3.0,
+        "texto": "3 cm"
+      }
+    },
+    {
+      "semilla": 113,
+      "opciones": {
+        "tipo": "rect-ang"
+      },
+      "enunciado": "En el rectángulo ABCD, las diagonales se cortan en O y m∠AOB = 92°. ¿Cuánto mide m∠OAB?",
+      "esperado": {
+        "valor": 44.0,
+        "texto": "44°"
+      }
+    },
+    {
+      "semilla": 114,
+      "opciones": {
+        "tipo": "rombo-ang"
+      },
+      "enunciado": "En el rombo ABCD, m∠A = 82°. ¿Cuánto mide m∠ABD?",
+      "esperado": {
+        "valor": 49.0,
+        "texto": "49°"
+      }
+    },
+    {
+      "semilla": 115,
+      "opciones": {
+        "tipo": "cuad-eq"
+      },
+      "enunciado": "Fuera del cuadrado ABCD se dibuja el triángulo equilátero BCE. ¿Cuánto mide m∠BAE?",
+      "esperado": {
+        "valor": 15.0,
+        "texto": "15°"
+      }
+    },
+    {
+      "semilla": 116,
+      "opciones": {
+        "tipo": "mediana"
+      },
+      "enunciado": "Las bases de un trapecio miden 21 cm y 5 cm. ¿Cuánto mide su mediana?",
+      "esperado": {
+        "valor": 13.0,
+        "texto": "13 cm"
+      }
+    },
+    {
+      "semilla": 117,
+      "opciones": {
+        "tipo": "pq"
+      },
+      "enunciado": "En un trapecio de bases 19 cm y 5 cm, las diagonales cortan la mediana en P y Q. ¿Cuánto mide PQ?",
+      "esperado": {
+        "valor": 7.0,
+        "texto": "7 cm"
+      }
+    },
+    {
+      "semilla": 118,
+      "opciones": {
+        "tipo": "base"
+      },
+      "enunciado": "En el trapecio ABCD (BC ∥ AD), la mediana mide 8 cm y la base menor BC, 7 cm. ¿Cuánto mide la base mayor AD?",
+      "esperado": {
+        "valor": 9.0,
+        "texto": "9 cm"
+      }
+    },
+    {
+      "semilla": 119,
+      "opciones": {
+        "tipo": "tres"
+      },
+      "enunciado": "En el trapecio ABCD, las bases miden BC = 3 cm y AD = 23 cm. AB se parte en cuatro partes iguales y por los tres puntos se trazan paralelas a las bases hasta CD. ¿Cuánto suman las tres paralelas?",
+      "esperado": {
+        "valor": 39.0,
+        "texto": "39 cm"
+      }
+    }
+  ]
+}

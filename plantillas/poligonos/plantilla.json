@@ -6,6 +6,7 @@
     "geometria.poligonos-y-cuadrilateros",
     "geometria.poligonos-regulares"
   ],
+  "rehacer": ["geometria.poligonos-y-cuadrilateros"],
   "estado": "borrador",
   "version": "0.1.0",
   "escena": "index.html",

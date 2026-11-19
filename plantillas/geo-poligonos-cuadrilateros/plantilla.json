@@ -1,0 +1,21 @@
+{
+  "id": "geo-poligonos-cuadrilateros",
+  "titulo": "Polígonos y cuadriláteros",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.poligonos-y-cuadrilateros"
+  ],
+  "temas": [
+    "Suma de ángulos internos y externos",
+    "Número de diagonales",
+    "Paralelogramos",
+    "Rectángulo, rombo y cuadrado",
+    "Trapecios"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

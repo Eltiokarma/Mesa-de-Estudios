@@ -1,0 +1,87 @@
+{
+  "titulo": "Polígonos y cuadriláteros: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Los ángulos interiores de un polígono convexo suman 3 420°. ¿Cuántos lados tiene? Datos: Los ángulos interiores de un polígono convexo de n lados suman (n − 2) · 180°. Alternativas: A) 21   B) 17   C) 19   D) 22   E) 20",
+      "respuesta": "A) 21",
+      "pasos": [
+        "(n − 2) · 180° = 3 420°, así que n − 2 = 19.",
+        "n = 21."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Cada ángulo interior de un polígono regular mide 120°. ¿Cuántos lados tiene? Datos: En un polígono equiángulo de n lados, cada exterior mide 360° ÷ n. En cada vértice, el ángulo interior y el exterior forman 180°. Polígono regular: lados iguales y ángulos iguales. Alternativas: A) 2   B) 6   C) 60   D) 3",
+      "respuesta": "B) 6",
+      "pasos": [
+        "Cada exterior: 180° − 120° = 60°.",
+        "n = 360° ÷ 60° = 6."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un polígono convexo tiene 22 lados. ¿Cuántas diagonales tiene? Datos: Un polígono convexo de n lados tiene n(n − 3) ÷ 2 diagonales. Alternativas: A) 231   B) 19   C) 209   D) 418",
+      "respuesta": "C) 209",
+      "pasos": [
+        "De cada vértice salen 19; cada diagonal tiene dos puntas.",
+        "22 · 19 ÷ 2 = 209."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el paralelogramo ABCD, AB = 12 cm y BC = 15 cm. La bisectriz del ángulo A corta BC en E. ¿Cuánto mide EC? Datos: Bisectriz de un ángulo: la recta que lo parte en dos ángulos iguales. Alternos internos entre paralelas: miden igual. En un triángulo isósceles, los ángulos de la base miden igual; y al revés: ángulos iguales, lados iguales. Alternativas: A) 7,5 cm   B) 1,5 cm   C) 3 cm   D) 12 cm   E) 27 cm",
+      "respuesta": "C) 3 cm",
+      "pasos": [
+        "Por los alternos internos, m∠BAE = m∠AEB: △ABE es isósceles y BE = AB.",
+        "EC = 15 − 12 = 3 cm."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En el rombo ABCD, m∠A = 98°. ¿Cuánto mide m∠ABD? Datos: Rombo: paralelogramo con sus cuatro lados iguales. Sus diagonales son perpendiculares y parten sus ángulos por la mitad. En un paralelogramo, dos ángulos vecinos (del mismo lado) suman 180°. Alternativas: A) 49°   B) 82°   C) 90°   D) 41°",
+      "respuesta": "D) 41°",
+      "pasos": [
+        "m∠B = 180° − 98° = 82°, y BD lo parte por la mitad.",
+        "82° ÷ 2 = 41°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Las bases de un trapecio miden 30 cm y 22 cm. ¿Cuánto mide su mediana? Datos: Mediana del trapecio: el segmento que une los puntos medios de los lados no paralelos. La mediana del trapecio es paralela a las bases y mide su semisuma: (base mayor + base menor) ÷ 2. Alternativas: A) 4 cm   B) 15 cm   C) 26 cm   D) 52 cm",
+      "respuesta": "C) 26 cm",
+      "pasos": [
+        "La mediana es la semisuma de las bases.",
+        "(30 + 22) ÷ 2 = 26 cm."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el cuadrilátero convexo ABCD, m∠A = 105° y m∠B = 115°. Las bisectrices de los ángulos C y D se cortan en E. ¿Cuánto mide m∠CED? Datos: Los ángulos interiores de un cuadrilátero convexo suman 360°. En todo triángulo, los tres ángulos interiores suman 180°. Bisectriz de un ángulo: la recta que lo parte en dos ángulos iguales. Alternativas: A) 220°   B) 140°   C) 110°   D) 70°",
+      "respuesta": "C) 110°",
+      "pasos": [
+        "m∠C + m∠D = 360° − 105° − 115° = 140°; sus mitades suman 70°.",
+        "m∠CED = 180° − 70° = 110°."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el trapecio ABCD, las bases miden BC = 6 cm y AD = 14 cm. AB se parte en cuatro partes iguales y por los tres puntos se trazan paralelas a las bases hasta CD. ¿Cuánto suman las tres paralelas? Datos: La mediana del trapecio es paralela a las bases y mide su semisuma: (base mayor + base menor) ÷ 2. Alternativas: A) 40 cm   B) 30 cm   C) 20 cm   D) 10 cm",
+      "respuesta": "B) 30 cm",
+      "pasos": [
+        "La del medio es la mediana, 10; las otras, medianas de trapecios más chicos: 8 y 12.",
+        "8 + 10 + 12 = 30 cm."
+      ]
+    }
+  ]
+}

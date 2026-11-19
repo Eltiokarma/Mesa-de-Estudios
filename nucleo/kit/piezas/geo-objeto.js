@@ -60,6 +60,9 @@
  *   Congruencia (19 nov, etapa 5), dibujo de prueba sobre una figura de geo-figura que arma la teoría:
  *   armazon    un armado de vigas o varillas: el tijeral que se arma en el piso del taller sobre la silueta de tiza del
  *              modelo (tipo: 'taller') y la cometa de varillas y papel (tipo: 'cometa'); formato en su función
+ *   Polígonos y cuadriláteros (19 nov, etapa 6; bloque propio), dibujo de prueba sobre una figura de geo-figura:
+ *   parcela    el terreno con estacas, la plaza con su mototaxi, el geoplano con clavos y el corte del canal de riego
+ *              (tipo: 'terreno' | 'plaza' | 'geoplano' | 'canal'); formato en su función
  *   Comunes a estas y a «angulos»: llaves (marca de igualdad sobre una llave que une las puntas del tramo), ladosRot (la
  *   medida de un lado), libres (un rótulo suelto junto a un punto) y masPuntos, masSegmentos, masAngulos. Lo que escriben
  *   y lo que trazan (llaves, objetos) es obstáculo para los rótulos de los ángulos, y escenaCabe lo revisa; las letras de
@@ -113,7 +116,7 @@
   const LETRA = 162;                              // línea base de las letras de los paraderos
   const NIVEL = { 1: 88, 2: 58, 3: 28, '-1': 182, '-2': 212 };
   const CW = 30, CH = 15;                         // la combi
-  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon'];
+  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon', 'parcela'];
   const COLORES_DATO = ['o', 'i', 'd'];
   const n = T.n;
   const f = x => Kit.formatear(x, 2);
@@ -1467,6 +1470,110 @@
     return { fig, deco, extra };
   }
 
+  // ---------- Polígonos y cuadriláteros (19 nov, etapa 6; bloque propio) ----------
+  // Dibujos de prueba bajo una figura de geo-figura que arma la teoría (contenido/teoria/geometria/
+  // poligonos-y-cuadrilateros.js). Afirmación: cada objeto es el polígono que se estudia: las esquinas del terreno, la
+  // plaza que rodea el mototaxi, los clavos del geoplano y el corte del canal son los vértices y los lados de la figura.
+  // Fidelidad: la figura (puntos, lados, arcos) va a escala de geo-figura; el objeto solo se pone debajo, y lo que dibuja
+  // (estacas, clavos, el mototaxi, las rayas del suelo) es obstáculo para los rótulos.
+  //   { objeto: 'parcela', tipo: 'terreno' | 'plaza' | 'geoplano' | 'canal', figura: <datos de geo-figura>,
+  //     borde: [id, …],          el contorno del objeto, en orden (el terreno, la plaza, el corte del canal)
+  //     estacas: [id, …],        (terreno) una estaca en esas esquinas
+  //     mototaxi: { de, a, t },  (plaza) el mototaxi en la calle de → a, a esa fracción del camino, rumbo a «a»
+  //     clavos: [id, …],         (geoplano) un clavo en esos puntos; el tablero redondo los rodea
+  //     agua: [id, …],           (canal) la región del agua, por sus puntos; el suelo se raya por fuera de las paredes
+  //     suelo: [id, id] }        (canal) los dos bordes de arriba: el suelo sigue a los lados, horizontal
+  //   y lo común: llaves, ladosRot, libres (comunes).
+  function parcela(d) {
+    const f0 = d.figura || { puntos: [] }, tipo = d.tipo || 'terreno';
+    const ALT = { terreno: 'Un terreno visto desde arriba, con una estaca en cada esquina.', plaza: 'Una plaza vista desde arriba, rodeada de calles, y un mototaxi que da la vuelta.',
+      geoplano: 'Un geoplano redondo: un tablero con clavos y ligas.', canal: 'El corte de un canal de riego, con el agua adentro.' };
+    const fig = Object.assign({}, f0, { alt: f0.alt || d.alt || ALT[tipo] });
+    const ids = (fig.puntos || []).map(q => q.id);
+    const S = (g, id) => g.S(id);
+    const borde = g => (d.borde || []).map(id => S(g, id)).filter(Boolean);
+    const centro = ps => (ps.length ? [ps.reduce((a, p) => a + p[0], 0) / ps.length, ps.reduce((a, p) => a + p[1], 0) / ps.length] : [W / 2, 120]);
+    const caja4 = (c, r) => [[[c[0] - r, c[1] - r], [c[0] + r, c[1] - r]], [[c[0] + r, c[1] - r], [c[0] + r, c[1] + r]], [[c[0] + r, c[1] + r], [c[0] - r, c[1] + r]], [[c[0] - r, c[1] + r], [c[0] - r, c[1] - r]]];
+    // El mototaxi (como el de la plaza triangular), en la calle de → a, del lado de afuera de la plaza.
+    const moto = g => {
+      if (!d.mototaxi) return null;
+      const m = d.mototaxi, p = S(g, m.de), q = S(g, m.a);
+      if (!p || !q) return null;
+      const t = m.t === undefined ? 0.5 : m.t, u = unidad(p, q), nv = normalFuera(p, q, centro(borde(g)));
+      const c0 = [p[0] + (q[0] - p[0]) * t + nv[0] * 11, p[1] + (q[1] - p[1]) * t + nv[1] * 11];
+      const z = (k, e) => [c0[0] + u[0] * k + nv[0] * e, c0[1] + u[1] * k + nv[1] * e];
+      return { cuerpo: [z(-13, -6), z(3, -6), z(12, -3), z(14, 0), z(12, 3), z(3, 6), z(-13, 6), z(-15, 4), z(-15, -4)],
+        techo: [z(-12, -4.2), z(1, -4.2), z(1, 4.2), z(-12, 4.2)], rueda: [z(8, -1.6), z(12, -1.6), z(12, 1.6), z(8, 1.6)] };
+    };
+    // Las rayas del suelo del canal: por fuera de cada pared y del fondo, y a los lados de la boca.
+    const rayas = g => {
+      if (tipo !== 'canal') return [];
+      const b = borde(g), out = [], c = centro(b);
+      // Solo las paredes (el primer y el último tramo del borde) y el suelo de los lados: el fondo lleva su medida debajo.
+      for (let i = 0; i + 1 < b.length; i++) {
+        if (i > 0 && i + 2 < b.length) continue;
+        const p = b[i], q = b[i + 1], u = unidad(p, q), nv = normalFuera(p, q, c), L = Math.hypot(q[0] - p[0], q[1] - p[1]);
+        for (let k = 5; k < L - 3; k += 9) { const x0 = [p[0] + u[0] * k, p[1] + u[1] * k]; out.push([x0, [x0[0] + (nv[0] - u[0]) * 6, x0[1] + (nv[1] - u[1]) * 6]]); }
+      }
+      if (b.length >= 2) {
+        const A = b[0], D = b[b.length - 1];
+        for (const [p, s] of [[A, -1], [D, 1]]) {
+          const fin = s < 0 ? M + 4 : W - M - 4;
+          out.push([p, [fin, p[1]]]);
+          for (let x = p[0] + s * 6; s < 0 ? x > fin : x < fin; x += s * 9) out.push([[x, p[1]], [x - 5, p[1] + 6]]);
+        }
+      }
+      // (Sin rayas bajo las letras de los puntos: una letra no cruza ningún trazo.)
+      const cajas = letras(g, fig, Infinity, []).map(c => ({ x0: c.x0 - 6, x1: c.x1 + 6, y0: c.y0 - 6, y1: c.y1 + 6 }));
+      return out.filter(([p, q]) => !cajas.some(c => tocaCaja(p, q, c)));
+    };
+    const deco = (g, corte) => {
+      let s = '';
+      const b = borde(g);
+      if (tipo === 'terreno' || tipo === 'plaza') s += `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.04"/>`;
+      if (tipo === 'plaza') for (let i = 0; i < b.length; i++) {
+        const P0 = b[i], Q0 = b[(i + 1) % b.length], u = unidad(P0, Q0), x0 = [P0[0] - u[0] * 16, P0[1] - u[1] * 16], x1 = [Q0[0] + u[0] * 16, Q0[1] + u[1] * 16];
+        s += `<path d="${rutaPx([x0, x1], false)}" fill="none" stroke="currentColor" stroke-opacity="0.08" stroke-width="20"/>`;
+      }
+      if (tipo === 'geoplano') {
+        const cs = (d.clavos || []).map(id => S(g, id)).filter(Boolean), c = centro(cs), r = Math.max(...cs.map(p => Math.hypot(p[0] - c[0], p[1] - c[1])), 20) + 16;
+        s += `<circle cx="${n(c[0])}" cy="${n(c[1])}" r="${n(r)}" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.3" stroke-width="1.4"/>`;
+      }
+      if (b.length >= 3 && tipo !== 'canal') s += `<path d="${rutaPx(b)}" fill="currentColor" fill-opacity="${tipo === 'plaza' ? 0.08 : 0.07}"/>`;
+      if (tipo === 'canal') {
+        if (d.agua && d.agua.length >= 3) s += `<path d="${rutaPx(d.agua.map(id => S(g, id)).filter(Boolean))}" fill="currentColor" fill-opacity="0.12"/>`;
+        s += rayas(g).map(([p, q]) => `<line x1="${n(p[0])}" y1="${n(p[1])}" x2="${n(q[0])}" y2="${n(q[1])}" stroke="currentColor" stroke-opacity="0.3" stroke-width="1"/>`).join('');
+      }
+      const m = moto(g);
+      if (m) s += `<g data-objeto="mototaxi" data-prueba="si"><path d="${rutaPx(m.cuerpo)}" fill="var(--card)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>`
+        + `<path d="${rutaPx(m.techo)}" fill="currentColor" fill-opacity="0.3"/><path d="${rutaPx(m.rueda)}" fill="currentColor"/></g>`;
+      return s;
+    };
+    const extra = (g, corte) => {
+      let svg = '';
+      const lineas = [];
+      for (const id of d.estacas || []) {
+        const q = (fig.puntos || []).find(x => x.id === id);
+        if (!q || !ve(q, corte)) continue;
+        const c = S(g, id);
+        svg += `<circle cx="${n(c[0])}" cy="${n(c[1])}" r="3.4" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>`;
+        lineas.push(...caja4(c, 3.4));
+      }
+      for (const id of d.clavos || []) {
+        const q = (fig.puntos || []).find(x => x.id === id);
+        if (!q || !ve(q, corte)) continue;
+        const c = S(g, id);
+        svg += `<circle cx="${n(c[0])}" cy="${n(c[1])}" r="3.2" fill="currentColor" fill-opacity="0.55"/>`;
+        lineas.push(...caja4(c, 3.2));
+      }
+      const m = moto(g);
+      if (m) lineas.push(...bordes(m.cuerpo));
+      lineas.push(...rayas(g));
+      return { svg, lineas };
+    };
+    return { fig: Object.assign(fig, { puntos: fig.puntos || [] }), deco, extra, ids };
+  }
+
   const TAU = 2 * Math.PI, norm = t => ((t % TAU) + TAU) % TAU;
   function prepararAngulos(g, fig, corte = Infinity) {
     const angs = (fig.angulos || []).map(a => Object.assign({}, a));
@@ -1537,7 +1644,7 @@
     return angs;
   }
 
-  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon,
+  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon, parcela,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
   // manija: el id del punto que el juego arrastra; su letra se aleja 8 px más (la manija, de radio 13, la tapaba).
   const escena = d => {
