@@ -333,7 +333,7 @@ test('«Ahora tú» de la idea 1 (400 semillas): una sola opción encaja y cada 
     }
     assert.equal(q.length, 1, `semilla ${s}`);
     for (const o of c.opciones) {
-      const set = conjunto(o.texto, g), v = Object.fromEntries(g.map(x => [x, tipo === 3 ? !set.includes(x) : set.includes(x)]));
+      const set = conjunto(o.texto, g), v = Object.fromEntries(g.map(x => [x, tipo === 0 || tipo === 3 ? !set.includes(x) : set.includes(x)]));
       const ok = Object.keys(v).every(x => v[x] === q[0][x]);
       assert.equal(ok, !!o.correcta, `semilla ${s}: ${o.texto}`);
       if (!o.correcta) {
@@ -482,6 +482,7 @@ test('paleta de deducción: sin verde ni carmín, y sin violeta en lo que se ve 
 
 test('la unidad: ids, letras de nivel 3 repartidas (6 cada una) y validador de calidad 2 sin faltas', () => {
   const cat = require('../../../catalogo/cursos/razonamiento-matematico.json').unidades.find(u => u.id === def.unidad);
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.ideas.map(i => i.id), ['suposicion', 'negar-bien', 'contradictorias', 'solo-uno-veraz', 'verdad-y-mentira', 'cuantos-mienten']);
   const letras = def.ideas.flatMap(i => i.ejemplos.filter(e => e.alternativas).map(e => plano(e.respuesta)[0]));
   assert.deepEqual(['A', 'B', 'C', 'D', 'E'].map(l => letras.filter(x => x === l).length), [6, 6, 6, 6, 6]);
@@ -496,4 +497,83 @@ test('la unidad: ids, letras de nivel 3 repartidas (6 cada una) y validador de c
   // Ningún nombre en minúscula, y «choque» lo estrena la idea 1.
   const G = require('../../../nucleo/glosario.js').porIdea(def);
   assert.ok(G[0].some(e => e.termino === 'choque'));
+});
+
+// ---------- Cierre de la unidad (19 nov): lo que encontraron el auditor y los lectores en frío ----------
+test('cierre, idea 1: en «Así se resuelve» cada «X miente (frase de Z)» sale de verdad de la frase de Z (400 semillas)', () => {
+  // Antes: «Si Ciro es veraz: Eva es veraz (frase de Ciro) y Hugo miente (frase de Eva)», cuando la frase de Eva, «Ciro y
+  // Hugo mienten», ya era falsa con Ciro veraz y no obligaba a nada (118 de 400 semillas).
+  const I = idea('suposicion');
+  for (let s = 0; s < 400; s++) {
+    const c = I.resuelve.generar(s), fr = dichos(c.datos), g = fr.map(x => x.de);
+    for (const p of c.pasos.map(x => plano(x.texto))) {
+      const m = p.match(new RegExp(`^Si ${N} (es veraz|miente): (.+?)\\. `));
+      if (!m) continue;
+      const sabe = { [m[1]]: m[2] === 'es veraz' };
+      for (const parte of m[3].split(/, | y (?=[A-ZÁÉÍÓÚ][a-záéíóúñ]+ (?:es veraz|miente) \()/)) {
+        const x = parte.match(new RegExp(`^${N} (es veraz|miente) \\((?:frase de ${N}|por lo que vale su frase)\\)$`));
+        assert.ok(x, `semilla ${s}: «${parte}»`);
+        const y = x[1], vy = x[2] === 'es veraz', z = x[3];
+        const casos = todasKK(g).filter(v => Object.entries(sabe).every(([q, b]) => v[q] === b));
+        const sale = z ? new Set(casos.filter(v => leerKK(fr.find(f => f.de === z).t, g)(v, z) === v[z]).map(v => v[y]))
+          : new Set(casos.map(v => leerKK(fr.find(f => f.de === y).t, g)(v, y)));
+        assert.deepEqual([...sale], [vy], `semilla ${s}: «${parte}» no sale de lo dicho (${p})`);
+        sabe[y] = vy;
+      }
+    }
+  }
+});
+
+test('cierre, ideas 3 y 4: un solo par que se contradice en «Ahora tú» y «Así se resuelve» (400 semillas)', () => {
+  // Antes: con dos pares, «Gaby está fuera del par que se contradice» cuando Gaby estaba en el otro (78 y 41 de 400).
+  for (const id of ['contradictorias', 'solo-uno-veraz']) for (let s = 0; s < 400; s++) for (const c of [idea(id).ahoraTu.generar(s), idea(id).resuelve.generar(s)]) {
+    const fs = dichos(c.datos).map(x => ({ de: x.de, f: leerC(x.t, x.de) })), g = fs.map(x => x.de), pares = [];
+    for (let i = 0; i < fs.length; i++) for (let j = i + 1; j < fs.length; j++) if (g.every(z => valC(fs[i].f, fs, z) !== valC(fs[j].f, fs, z))) pares.push([fs[i].de, fs[j].de]);
+    assert.equal(pares.length, 1, `${id} ${s}: ${JSON.stringify(pares)}`);
+  }
+});
+
+test('cierre, idea 5: la pregunta por el último puesto no dice si es varón o mujer (400 semillas)', () => {
+  // Antes: «¿Quién llegó última?» cuando la respuesta era mujer: en 17 de 100 había una sola mujer entre las opciones.
+  for (let s = 0; s < 400; s++) assert.ok(!/llegó (último|última)\?/.test(plano(idea('verdad-y-mentira').ahoraTu.generar(s).pregunta)), `semilla ${s}`);
+  const titulos = def.ideas.flatMap(i => i.ejemplos.map(e => e.titulo));
+  assert.ok(!titulos.some(t => /últim[oa]$|ganadora|ganador /.test(t)), 'un título que dice el género de la respuesta');
+});
+
+test('cierre, idea 6: «Ahora tú» y «Así se resuelve» no repiten el acertijo 1, 2, 3, 4 del juego (400 semillas)', () => {
+  const I = idea('cuantos-mienten');
+  for (let s = 0; s < 400; s++) for (const c of [I.ahoraTu.generar(s), I.resuelve.generar(s)]) {
+    const ts = dichos(c.datos).map(x => x.t);
+    assert.ok(new Set(ts).size < ts.length || ts.some(t => /por lo menos/.test(t)), `semilla ${s}: ${ts.join(' / ')}`);
+  }
+});
+
+test('cierre, idea 1: «Ahora tú» no es de dos personas (con dos solo caben el juego y el ejemplo 6)', () => {
+  for (let s = 0; s < 400; s++) assert.ok(dichos(idea('suposicion').ahoraTu.generar(s).datos).length >= 3, `semilla ${s}`);
+});
+
+test('cierre: en los ejemplos de nivel 3, la correcta no es la única más larga ni la única más corta', () => {
+  for (const I of def.ideas) for (const [k, e] of I.ejemplos.entries()) {
+    if (!e.alternativas) continue;
+    const L = e.alternativas.map(a => plano(a).length), c = L[plano(e.respuesta).charCodeAt(0) - 65];
+    assert.ok(!(c === Math.max(...L) && L.filter(x => x === c).length === 1), `${I.id} ${k + 1}: la más larga`);
+    assert.ok(!(c === Math.min(...L) && L.filter(x => x === c).length === 1), `${I.id} ${k + 1}: la más corta`);
+  }
+});
+
+test('cierre, lectores en frío: Datos sin «A lo más 5», opciones en tercera persona, marcas de un solo significado', () => {
+  const N2 = idea('negar-bien');
+  for (const e of N2.ejemplos) assert.ok(!(e.datos || []).some(d => /A lo más 5/.test(plano(d))), e.titulo);
+  for (let s = 0; s < 400; s++) for (const c of [N2.ahoraTu.generar(s), N2.resuelve.generar(s)]) {
+    assert.ok(!c.datos.some(d => /A lo más 5/.test(plano(d))), `semilla ${s}`);
+    for (const o of c.opciones || []) assert.ok(!/\bmis? /.test(plano(o.texto)), `semilla ${s}: «${plano(o.texto)}»`);
+    if (c.respuesta) assert.ok(!/\bmis? /.test(plano(c.respuesta)), `semilla ${s}: respuesta`);
+  }
+  // Idea 3: el anillo es solo del culpable (en el juego marca al culpable supuesto), también en Mira y al revelar.
+  const C3 = idea('contradictorias');
+  assert.deepEqual(C3.mira.datos.habla.filter(h => h.anillo).map(h => h.quien), ['Fito']);
+  assert.ok(!C3.predice.revelar.datos.habla.some(h => h.anillo));
+  // Idea 5: si habla uno solo, el dato habla de él, no de «cada uno»; e idea 6: «por lo menos» va en los Datos.
+  for (const e of idea('verdad-y-mentira').ejemplos) if (frasesVYM(e.datos).length === 1) assert.ok(!e.datos.some(d => /^Cada uno dice dos frases/.test(plano(d))), e.titulo);
+  for (const e of idea('cuantos-mienten').ejemplos) if (e.datos.some(d => /por lo menos/.test(plano(d)))) assert.ok(e.datos.some(d => /Por lo menos \d+: \d+ o más/.test(plano(d))), e.titulo);
 });

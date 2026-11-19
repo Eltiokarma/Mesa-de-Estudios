@@ -102,7 +102,7 @@
   const quedanKK = (gente, frases) => suposiciones(gente).filter(v => encaja(frases, v));
   // La primera frase que choca con una suposición: quién la dice y qué sale.
   const chocaEn = (frases, v) => frases.find(x => valorFrase(x.de, x.f, v) !== v[x.de]);
-  const D_TARJ = 'Cada uno es veraz o mentiroso. El veraz siempre dice la verdad; el mentiroso siempre miente.';
+  const D_TARJ = 'Cada uno es veraz (tarjeta VERAZ) o mentiroso (tarjeta MIENTE): el veraz siempre dice la verdad; el mentiroso, siempre miente.';
   const dicho = (x, gente) => `${x.de} dice: «${textoFrase(x.de, x.f, gente)}».`;
   // Quiénes dicen la verdad, dicho en palabras («Solo Ana», «Ana y Ciro», «Nadie», «Los tres»).
   function veracesTxt(gente, v) {
@@ -118,6 +118,12 @@
   function porQueChoca(frases, v) {
     const x = chocaEn(frases, v), val = valorFrase(x.de, x.f, v);
     return `Con esas tarjetas, la frase de ${x.de} sale ${vf(val)} y ${x.de} ${v[x.de] ? 'es veraz' : 'miente'}: choca.`;
+  }
+  // Por qué x no puede tener la otra tarjeta: ninguna suposición con ella encaja. Se da un ejemplo entero (las tarjetas de
+  // todos, tomadas de una suposición que sí encaja con x cambiado) y la frase que choca.
+  function otraTarjeta(c, x, es) {
+    const w = Object.assign({}, c.q[0], { [x]: !es }), z = chocaEn(c.frases, w), tarj = c.gente.filter(y => y !== x).map(y => `${y} ${ES(w[y])}`);
+    return `Ninguna suposición con ${x} ${ES(!es)} encaja: con ${lista(tarj)}, por ejemplo, choca la frase de ${z.de}.`;
   }
   // Los renglones de quien habla: su tarjeta (boca abajo, supuesta o dada), su frase y, si se pide, lo que vale y si encaja.
   function hablaKK(gente, frases, o = {}) {
@@ -210,7 +216,8 @@
           if (uno && !sabe(uno)) pone(uno, x.f.m ? !v[x.de] : v[x.de], x);
           if (xs) {
             const quiere = Boolean(x.f.vv), sin = xs.filter(z => !sabe(z));
-            if (v[x.de]) sin.forEach(z => pone(z, quiere, x));
+            // Si alguno ya sabido no cumple, la frase ya es falsa: no obliga a nadie (el choque lo ve chocaEn al final).
+            if (v[x.de] && xs.every(z => !sabe(z) || v[z] === quiere)) sin.forEach(z => pone(z, quiere, x));
             else if (sin.length === 1 && xs.filter(z => v[z] === quiere).length === 1) pone(sin[0], !quiere, x);
           }
         } else {
@@ -323,7 +330,7 @@
       texto: 'Supón la tarjeta de cada uno y revisa cada frase: el veraz dice algo cierto y el mentiroso, algo falso. Si una frase choca, esa suposición se descarta.',
       ecuacion: [{ llave: ['VERAZ'], nota: 'tarjeta supuesta', color: 'c-o' }, ': su frase es ', { llave: ['cierta'], nota: 'lo que sale', color: 'c-i' },
         '   ·   ', { llave: ['MIENTE'], nota: 'tarjeta supuesta', color: 'c-o' }, ': su frase es ', { llave: ['falsa'], nota: 'lo que sale', color: 'c-i' }],
-      condicion: 'cada uno miente siempre o dice siempre la verdad. Seguro: lo que vale en todas las suposiciones que quedan.',
+      condicion: 'cada uno miente siempre o dice siempre la verdad. Si varias suposiciones quedan sin choque, es seguro lo que pasa en todas.',
       voz: 'Una suposición vale solo si ninguna frase choca.',
       // Dibujo propio de la regla: las cuatro suposiciones del juego, lado a lado (lo que se compara se ve junto).
       dibujo: { pieza: VZ, datos: { habla: hablaKK(J1, FJ1, { tarjetas: false }), casos: tablaCasos(J1, FJ1, suposiciones(J1), { seguro: true }) }, estado: {} },
@@ -353,14 +360,15 @@
         };
       },
     },
-    // Ahora tú, por tipos (semilla % 4): 0 dos personas, ¿quiénes dicen la verdad?; 1 tres personas, lo mismo; 2 tres
-    // personas con dos suposiciones en pie, ¿qué tarjeta tiene X? (lo seguro); 3 nivel examen, cuatro personas, ¿quiénes
-    // mienten? Cada distractor es otra suposición y su explicación dice la frase exacta que choca (porQueChoca).
+    // Ahora tú, por tipos (semilla % 4): 0 tres personas, ¿quiénes mienten?; 1 tres personas, ¿quiénes dicen la verdad?;
+    // 2 tres personas con dos suposiciones en pie, ¿qué tarjeta tiene X? (lo seguro); 3 nivel examen, cuatro personas,
+    // ¿quiénes mienten? Cada distractor es otra suposición y su explicación dice la frase exacta que choca (porQueChoca).
+    // Sin parejas: con dos personas solo caben dos acertijos, el del juego y el del ejemplo 6 (auditoría, 19 nov).
     ahoraTu: {
       pieza: VZ,
       voz: 'Supón una tarjeta y sigue lo que obliga cada frase.',
       generar(s) {
-        const r = azar(s), tipo = s % 4, k = tipo === 0 ? 2 : tipo === 3 ? 4 : 3;
+        const r = azar(s), tipo = s % 4, k = tipo === 3 ? 4 : 3;
         const c = casoKK(r, k, tipo === 2 ? 2 : 1);
         const intro = INTROS[Math.floor(s / 4) % INTROS.length], datos = [D_TARJ, ...c.frases.map(x => dicho(x, c.gente))];
         const dibujo = { datos: { escena: 'tarjetas', habla: hablaKK(c.gente, c.frases) }, estado: {} };
@@ -369,18 +377,18 @@
         if (tipo === 2) {
           const x = c.fijos[0], es = c.sol[x];
           const ops = [{ id: 'c', texto: `${x} tiene ${ES(es)}`, correcta: true },
-            { id: 'otra', texto: `${x} tiene ${ES(!es)}`, error: 'RMP72', siFuera: porQueChoca(c.frases, Object.assign({}, c.q[0], { [x]: !es })).replace('Con esas tarjetas', `Con ${x} ${es ? 'mintiendo' : 'veraz'} y los demás como antes`) },
+            { id: 'otra', texto: `${x} tiene ${ES(!es)}`, error: 'RMP72', siFuera: otraTarjeta(c, x, es) },
             { id: 'nose', texto: `No se sabe la tarjeta de ${x}`, error: 'RMP78', siFuera: `Quedan ${f0(c.q.length)} suposiciones que encajan, pero en las dos ${x} tiene ${ES(es)}.` }];
           const otro = c.gente.find(z => z !== x), po = c.q[0][otro];
           ops.push({ id: 'posible', texto: `${otro} tiene ${ES(po)}`, error: 'RMP77', siFuera: `Pasa en una de las ${f0(c.q.length)} suposiciones que encajan; en la otra, ${otro} tiene ${ES(!po)}.` });
           return { pregunta: `${intro} Hablan ${lista(c.gente)}. ¿Qué es seguro?`, datos, dibujo, opciones: ops,
             solucion: { texto: `Encajan ${f0(c.q.length)} suposiciones y en las dos ${x} tiene ${ES(es)}.`, dibujo: { datos: { escena: 'tarjetas', habla: hablaKK(c.gente, c.frases, { tarjetas: false }), casos: tablaCasos(c.gente, c.frases, c.q, { seguro: true }) }, estado: {} } } };
         }
-        const txt = tipo === 3 ? mienteTxt : veracesTxt;
+        const mienten = tipo === 0 || tipo === 3, txt = mienten ? mienteTxt : veracesTxt;
         const otras = suposiciones(c.gente).filter(v => !encaja(c.frases, v)).sort((p, q) => lejos(p) - lejos(q) || r() - 0.5);
-        const ops = opcionesTexto(txt(c.gente, c.sol), otras.map((v, i) => ({ id: `s${i}`, texto: txt(c.gente, v), error: 'RMP72', siFuera: porQueChoca(c.frases, v) })), tipo === 0 ? 4 : 5);
-        return { pregunta: `${intro} Hablan ${lista(c.gente)}. ¿Quiénes ${tipo === 3 ? 'mienten' : 'dicen la verdad'}?`, datos, dibujo, opciones: ops,
-          solucion: { texto: `Es la única suposición en que ninguna frase choca. ${conVerbo(txt(c.gente, c.sol), tipo === 3)}.`, dibujo: solDib(c.sol) } };
+        const ops = opcionesTexto(txt(c.gente, c.sol), otras.map((v, i) => ({ id: `s${i}`, texto: txt(c.gente, v), error: 'RMP72', siFuera: porQueChoca(c.frases, v) })), 5);
+        return { pregunta: `${intro} Hablan ${lista(c.gente)}. ¿Quiénes ${mienten ? 'mienten' : 'dicen la verdad'}?`, datos, dibujo, opciones: ops,
+          solucion: { texto: `Es la única suposición en que ninguna frase choca. ${conVerbo(txt(c.gente, c.sol), mienten)}.`, dibujo: solDib(c.sol) } };
       },
     },
   };
@@ -516,7 +524,7 @@
       respuesta: [{ negrita: 'B' }, ': ', F('dos')] },
     { nivel: 3, titulo: 'Cuatro en la ronda', figura: fig(['Rosa', 'Teo', 'Nora', 'Leo'], E13),
       enunciado: 'Rosa, Teo, Nora y Leo tienen su tarjeta boca abajo y hablan. ¿Quiénes mienten?',
-      alternativas: ['Solo Nora', 'Teo y Leo', 'Teo, Nora y Leo', 'Rosa y Nora', 'Los cuatro'],
+      alternativas: ['Solo Nora', 'Teo y Leo', 'Teo, Nora y Leo', 'Rosa, Nora y Leo', 'Los cuatro'],
       datos: dat(['Rosa', 'Teo', 'Nora', 'Leo'], E13),
       solucion: [
         { texto: 'Supón que Nora es veraz: su frase dice que Rosa también lo es, y Rosa dijo «Nora miente»: choca. Nora miente.' },
@@ -531,7 +539,8 @@
       datos: dat(['Sara', 'Gino', 'Pía'], E14),
       solucion: [
         { texto: 'Si Gino fuera veraz, Sara y Pía mentirían; pero entonces «Sara miente», la frase de Pía, sería cierta: choca. Gino miente.' },
-        { texto: 'Con Gino mintiendo encajan dos: Sara veraz y Pía mintiendo, o Sara mintiendo y Pía veraz.' },
+        { texto: 'Con Gino mintiendo, Sara y Pía no son veraces las dos (saldría falsa la frase de Sara) ni mienten las dos (saldría cierta la de Pía).' },
+        { texto: 'Encajan dos: Sara veraz y Pía mintiendo, o al revés.' },
         { texto: 'A y B pasan en una sola de las dos: posibles, no seguras. C no pasa en ninguna; E no vale, porque Gino miente en las dos.' },
       ],
       respuesta: [{ negrita: 'D' }, ': ', F('Gino miente')] },
@@ -566,38 +575,39 @@
   }
   // Los casos de «Así se resuelve» y «Ahora tú» de la idea 2. Cada uno trae lo que dice el mentiroso, su contraria (ok) y
   // los errores que se cometen al negar, con la cuenta de por qué fallan.
-  const D_NEG = ['Lo que dice quien siempre miente es falso.', 'Al menos uno: uno o más. A lo más 5: 5 o menos.'];
+  const D_MIENTE = 'Lo que dice quien siempre miente es falso.', D_ALMENOS = 'Al menos uno: uno o más.';
+  const D_NEG = [D_MIENTE, D_ALMENOS];   // frases con «todos» o «ninguno»; con una cantidad, solo D_MIENTE
   const GRUPOS = [
-    { g: 'los de mi grupo', pl: 'aprobaron', sg: 'aprobó', no: 'no aprobó', fem: false },
-    { g: 'mis primos', pl: 'son de Puno', sg: 'es de Puno', no: 'no es de Puno', fem: false },
-    { g: 'las cajas del aula', pl: 'están llenas', sg: 'está llena', no: 'no está llena', fem: true },
-    { g: 'los buses de la ruta', pl: 'pasaron a tiempo', sg: 'pasó a tiempo', no: 'no pasó a tiempo', fem: false },
+    { g: 'los de mi grupo', s3: 'los de su grupo', pl: 'aprobaron', sg: 'aprobó', no: 'no aprobó', fem: false },
+    { g: 'mis primos', s3: 'sus primos', pl: 'son de Puno', sg: 'es de Puno', no: 'no es de Puno', fem: false },
+    { g: 'las cajas del aula', s3: 'las cajas del aula', pl: 'están llenas', sg: 'está llena', no: 'no está llena', fem: true },
+    { g: 'los buses de la ruta', s3: 'los buses de la ruta', pl: 'pasaron a tiempo', sg: 'pasó a tiempo', no: 'no pasó a tiempo', fem: false },
   ];
   const QUIEN2 = ['Rosa', 'Teo', 'Omar', 'Nora', 'Leo', 'Sara', 'Gino', 'Pía'];
   const sinArticulo = g => g.replace(/^(los|las|mis) /, '');
   function casoNegar(r, tipo) {
     const quien = r.elegir(QUIEN2), G = r.elegir(GRUPOS), uno = G.fem ? 'una' : 'uno', todos = G.fem ? 'Todas' : 'Todos', ning = G.fem ? 'Ninguna' : 'Ninguno';
-    const de = `${ning} de ${G.g}`;
+    const de = `${ning} de ${G.s3}`;
     if (tipo === 0) {
-      const dice = `${todos} ${G.g} ${G.pl}`, ok = `Al menos ${uno} de ${G.g} ${G.no}`;
+      const dice = `${todos} ${G.g} ${G.pl}`, ok = `Al menos ${uno} de ${G.s3} ${G.no}`;
       return { quien, dice, ok, corto: G.fem ? 'todas' : 'todos', cortoOk: `al menos ${uno} no`,
         regla: 'Una frase con «todos» se rompe con un solo caso que no cumple: su contraria es «al menos uno no cumple».',
         prueba: `Compruebo: si solo ${uno} ${G.no}, la frase dicha ya es falsa y su contraria se cumple. No hace falta que fallen ${G.fem ? 'todas' : 'todos'}.`,
         mal: [
           { id: 'ninguno', texto: `${de} ${G.sg}`, error: 'RMP146', siFuera: `Es un caso posible, pero «${G.fem ? 'todas' : 'todos'}» también falla si solo ${uno} ${G.no}.` },
           { id: 'algunos', texto: `Algunos ${G.pl} y otros no`.replace(/^Algunos/, G.fem ? 'Algunas' : 'Algunos').replace(/otros/, G.fem ? 'otras' : 'otros'), error: 'RMP77', siFuera: `Puede pasar, pero también es posible que ${G.fem ? 'ninguna' : 'ninguno'} ${G.sg}.` },
-          { id: 'otro', texto: `Al menos ${uno} de ${G.g} ${G.sg}`, error: 'RMP146', siFuera: 'Esa es la contraria de «ninguno». Lo dicho fue con «todos»: basta uno que no.' },
+          { id: 'otro', texto: `Al menos ${uno} de ${G.s3} ${G.sg}`, error: 'RMP146', siFuera: 'Esa es la contraria de «ninguno». Lo dicho fue con «todos»: basta uno que no.' },
           { id: 'nada', texto: 'Nada: no se sabe cuáles', error: 'RMP78', siFuera: `No se sabe cuáles, pero sí que no ${G.pl === 'aprobaron' ? 'aprobaron' : G.pl.replace(/^son/, 'son').replace(/^están/, 'están')} ${G.fem ? 'todas' : 'todos'}.` },
         ] };
     }
     if (tipo === 1) {
-      const dice = `${de} ${G.sg}`, ok = `Al menos ${uno} de ${G.g} ${G.sg}`;
+      const dice = `${ning} de ${G.g} ${G.sg}`, ok = `Al menos ${uno} de ${G.s3} ${G.sg}`;
       return { quien, dice, ok, corto: G.fem ? 'ninguna' : 'ninguno', cortoOk: `al menos ${uno}`,
         regla: 'Una frase con «ninguno» se rompe con un solo caso que sí cumple: su contraria es «al menos uno cumple».',
         prueba: `Compruebo: si solo ${uno} ${G.sg}, la frase dicha ya es falsa y su contraria se cumple. No hace falta que cumplan ${G.fem ? 'todas' : 'todos'}.`,
         mal: [
-          { id: 'todos', texto: `${todos} ${G.g} ${G.pl}`, error: 'RMP146', siFuera: `Es un caso posible, pero «${G.fem ? 'ninguna' : 'ninguno'}» también falla si solo ${uno} ${G.sg}.` },
-          { id: 'otro', texto: `Al menos ${uno} de ${G.g} ${G.no}`, error: 'RMP146', siFuera: 'Esa es la contraria de «todos». Lo dicho fue con «ninguno»: basta uno que sí.' },
+          { id: 'todos', texto: `${todos} ${G.s3} ${G.pl}`, error: 'RMP146', siFuera: `Es un caso posible, pero «${G.fem ? 'ninguna' : 'ninguno'}» también falla si solo ${uno} ${G.sg}.` },
+          { id: 'otro', texto: `Al menos ${uno} de ${G.s3} ${G.no}`, error: 'RMP146', siFuera: 'Esa es la contraria de «todos». Lo dicho fue con «ninguno»: basta uno que sí.' },
           { id: 'algunos', texto: `${G.fem ? 'Algunas' : 'Algunos'} ${G.pl} y ${G.fem ? 'otras' : 'otros'} no`, error: 'RMP77', siFuera: `Puede pasar, pero también es posible que ${G.fem ? 'todas' : 'todos'} ${G.pl}.` },
           { id: 'nada', texto: 'Nada: no se sabe cuáles', error: 'RMP78', siFuera: `No se sabe cuáles, pero sí que ${uno} o más ${G.fem ? 'cumplen' : 'cumplen'}.` },
         ] };
@@ -605,7 +615,7 @@
     // tipo 2: una cantidad con «más de» o «menos de» (soles o años).
     const mas = r() < 0.5, soles = r() < 0.5, k = soles ? r.elegir([10, 20, 30, 50]) : r.ent(14, 17), u = soles ? 'soles' : 'años';
     const dice = `Tengo ${mas ? 'más' : 'menos'} de ${k} ${u}`, ok = `${quien} tiene ${k} ${u} o ${mas ? 'menos' : 'más'}`;
-    return { quien, dice, ok, corto: `${mas ? 'más' : 'menos'} de ${k}`, cortoOk: `${k} o ${mas ? 'menos' : 'más'}`,
+    return { quien, dice, ok, soloMiente: true, corto: `${mas ? 'más' : 'menos'} de ${k}`, cortoOk: `${k} o ${mas ? 'menos' : 'más'}`,
       regla: `Lo contrario de «${mas ? 'más' : 'menos'} de ${k}» no es «${mas ? 'menos' : 'más'} de ${k}»: con ${k} justos, la frase dicha también es falsa. Es «${k} o ${mas ? 'menos' : 'más'}».`,
       prueba: `Compruebo: con ${k} ${u} justos la frase dicha es falsa, y con ${mas ? k + 1 : k - 1} ${u} sería cierta. Por eso el ${k} entra.`,
       mal: [
@@ -642,7 +652,7 @@
       tarjetas: [
         { titulo: 'La lista del mural', texto: 'Después del simulacro, la lista de notas se pega en el mural del aula. Dice quién aprobó y quién no.',
           pieza: VZ, dibujo: { datos: Object.assign(muralDe(2), { habla: [] }), estado: {} } },
-        { titulo: 'Palabras que cuentan', texto: '«Todos», «ninguno» y «al menos uno» dicen cuántos cumplen algo. «Al menos uno» quiere decir uno o más: también pueden ser todos.' },
+        { titulo: 'Palabras que cuentan', texto: '«Todos», «ninguno» y «al menos uno» dicen cuántos cumplen algo. «Al menos uno» quiere decir uno o más: también pueden ser todos. Con números pasa lo mismo: «más de 5» es 6, 7, 8…; con 5 justos ya no se cumple.' },
         { titulo: 'Lo contrario de una frase', texto: 'Lo contrario de una frase, su negación, es otra que es falsa justo cuando la primera es cierta, y cierta cuando la primera es falsa. Lo que dice un mentiroso es falso: su contraria es cierta.' },
         { titulo: 'Qué mirar al jugar', texto: 'Cambia cuántos de los cuatro aprobaron. Mira cuándo es cierta «Todos aprobaron» y cuándo «Ninguno aprobó».' },
       ],
@@ -687,13 +697,13 @@
       pieza: VZ,
       datos: {
         casos: { columnas: ['Aprobaron', '«Todos»', '«Ninguno»'],
-          filas: [3, 1, 0].map((nn, i) => ({ celdas: [`${f0(nn)} de 4`, { t: vf(nn === 4), papel: 'sale' }, { t: vf(nn === 0), papel: 'sale' }], desde: i + 1 })) },
+          filas: [3, 2, 1, 0].map((nn, i) => ({ celdas: [`${f0(nn)} de 4`, { t: vf(nn === 4), papel: 'sale' }, { t: vf(nn === 0), papel: 'sale' }], desde: [1, 2, 2, 3][i] })) },
         nota: [{ t: 'En los tres, «todos» es falsa', desde: 3 }, { t: 'Lo común: al menos uno no aprobó', desde: 4, fuerte: true }], notas: 2,
       },
       voz: 'Junta los casos en que «todos» falla y busca qué tienen en común.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Si falla uno solo, «Todos aprobaron» ya es falsa.' },
-        { estado: { corte: 2 }, texto: 'También es falsa si fallan tres.' },
+        { estado: { corte: 2 }, texto: 'También es falsa si fallan dos o tres.' },
         { estado: { corte: 3 }, texto: 'Y si fallan los cuatro: ahí «Ninguno aprobó» es cierta.' },
         { estado: { corte: 4 }, texto: 'Lo que se repite en todos esos casos es lo contrario de «todos».', ecuacion: ['lo contrario de «todos» = «al menos uno no»'] },
       ],
@@ -702,7 +712,7 @@
       texto: 'Lo contrario de «todos cumplen» es «al menos uno no cumple»; de «ninguno cumple», «al menos uno cumple»; de «más de 5», «a lo más 5»: 5 o menos.',
       ecuacion: ['contrario de ', { llave: ['todos'], nota: 'cumplen' }, ' = ', { llave: ['al menos uno no'], nota: 'basta uno', color: 'c-i' },
         '   ·   ', 'contrario de ', { llave: ['más de 5'], nota: '6, 7, 8…' }, ' = ', { llave: ['5 o menos'], nota: 'el 5 entra', color: 'c-i' }],
-      condicion: 'lo contrario es falso justo cuando la frase es cierta. Con «menos de 5», lo contrario es «5 o más».',
+      condicion: 'una frase y su contraria nunca valen lo mismo. Con «menos de 5», lo contrario es «5 o más».',
       voz: 'Antes de negar, piensa: ¿con qué caso se rompe la frase?',
     },
     ejemplos: null,   // se completa abajo (EJEMPLOS_NEG)
@@ -714,7 +724,7 @@
         const c = casoNegar(azar(s + 900), s % 3);
         return {
           enunciado: `En el recreo, ${c.quien}, que siempre miente, dice: «${c.dice}». ¿Qué es seguro?`,
-          datos: D_NEG.concat(c.datoExtra || []),
+          datos: c.soloMiente ? [D_MIENTE] : D_NEG.slice(),
           dibujo: { datos: { habla: [{ quien: c.quien, dice: [c.dice], tarjeta: 'M', papelTarjeta: 'amarra' }] }, estado: {} },
           pasos: [
             { tipo: 'pide', texto: `Piden lo que es seguro cuando alguien que siempre miente dice «${c.dice}».` },
@@ -734,12 +744,12 @@
         const r = azar(s), tipo = s % 4;
         if (tipo === 3) {
           const c = casoEdad(r);
-          return { pregunta: `${c.quien} siempre miente. Dice tres frases sobre su edad. ¿Cuántos años tiene?`, datos: D_NEG.concat(c.datos),
+          return { pregunta: `${c.quien} siempre miente. Dice tres frases sobre su edad. ¿Cuántos años tiene?`, datos: [D_MIENTE].concat(c.datos),
             dibujo: { datos: { habla: [{ quien: c.quien, dice: c.frases, tarjeta: 'M', papelTarjeta: 'amarra' }] }, estado: {} },
             opciones: c.opciones, solucion: { texto: c.solucion } };
         }
         const c = casoNegar(r, tipo);
-        return { pregunta: `${c.quien} siempre miente y dice: «${c.dice}». ¿Qué es seguro?`, datos: D_NEG.concat(c.datoExtra || []),
+        return { pregunta: `${c.quien} siempre miente y dice: «${c.dice}». ¿Qué es seguro?`, datos: c.soloMiente ? [D_MIENTE] : D_NEG.slice(),
           dibujo: { datos: { habla: [{ quien: c.quien, dice: [c.dice], tarjeta: 'M', papelTarjeta: 'amarra' }] }, estado: {} },
           opciones: opcionesTexto(c.ok, c.mal),
           solucion: { texto: 'La frase dicha es falsa. Lo seguro es su contraria:', ecuacion: [F(c.ok)] } };
@@ -775,7 +785,7 @@
       respuesta: [F('Al menos uno de sus primos es de Juliaca')] },
     { nivel: 1, titulo: 'Lo contrario de «más de»', figura: figN([miente1('Omar', 'Tengo más de 10 soles')]),
       enunciado: 'Omar habla de cuánto dinero tiene. ¿Qué es seguro?',
-      datos: [...D_NEG, D_M('Omar'), 'Omar dice: «Tengo más de 10 soles».'],
+      datos: [D_MIENTE, D_M('Omar'), 'Omar dice: «Tengo más de 10 soles».'],
       solucion: [
         { texto: 'La frase es falsa. Con 10 soles justos, «más de 10» también es falsa: el 10 entra.' },
         { texto: ['Omar tiene ', F('a lo más 10 soles'), ': 10 o menos.'] },
@@ -783,7 +793,7 @@
       respuesta: [F('Omar tiene 10 soles o menos')] },
     { nivel: 1, titulo: 'Lo contrario de «menos de»', figura: figN([miente1('Nora', 'Tengo menos de 16 años')]),
       enunciado: 'Nora habla de su edad. ¿Qué es seguro?',
-      datos: [...D_NEG, D_M('Nora'), 'Nora dice: «Tengo menos de 16 años».'],
+      datos: [D_MIENTE, D_M('Nora'), 'Nora dice: «Tengo menos de 16 años».'],
       solucion: [
         { texto: 'La frase es falsa. Con 16 años justos, «menos de 16» ya es falsa.' },
         { texto: ['Nora tiene ', F('16 años o más'), '.'] },
@@ -809,7 +819,7 @@
       respuesta: [F('No: Dina desaprobó')] },
     { nivel: 2, titulo: 'Un solo billete', figura: figN([miente1('Gino', 'Tengo más de 30 soles')]),
       enunciado: 'Gino tiene un solo billete: de 20, de 50 o de 100 soles. Gino habla de su dinero. ¿Qué billete tiene?',
-      datos: [...D_NEG, D_M('Gino'), 'Gino dice: «Tengo más de 30 soles».'],
+      datos: [D_MIENTE, D_M('Gino'), 'Gino dice: «Tengo más de 30 soles».'],
       solucion: [
         { texto: 'La frase es falsa: Gino tiene a lo más 30 soles, 30 o menos.' },
         { texto: ['De los tres billetes, el único de 30 o menos es el de ', F('20 soles'), '.'] },
@@ -834,7 +844,7 @@
       respuesta: [F('En el par 2')] },
     { nivel: 2, titulo: 'Lápices en la caja', figura: figN([miente1('Lucho', 'En mi caja hay más de 6 lápices')]),
       enunciado: 'La caja de Lucho tiene 5, 6 o 7 lápices. Lucho habla de su caja. ¿Cuántos lápices puede tener?',
-      datos: [...D_NEG, D_M('Lucho'), 'Lucho dice: «En mi caja hay más de 6 lápices».'],
+      datos: [D_MIENTE, D_M('Lucho'), 'Lucho dice: «En mi caja hay más de 6 lápices».'],
       solucion: [
         { texto: 'La frase es falsa: hay a lo más 6 lápices, 6 o menos.' },
         { texto: ['De 5, 6 y 7, quedan ', F('5 o 6'), '. El 6 entra: con 6 justos, «más de 6» es falsa.'] },
@@ -842,18 +852,18 @@
       respuesta: [F('5 o 6 lápices')] },
     { nivel: 3, titulo: 'Dos frases sobre los primos', figura: figN([miente1('Leo', 'Ninguno de mis primos juega fútbol', 'Todos mis primos juegan vóley')]),
       enunciado: 'Leo tiene tres primos y habla de ellos. ¿Qué es seguro?',
-      alternativas: ['Ninguno de sus primos juega vóley', 'Al menos uno de sus primos juega fútbol', 'Todos sus primos juegan fútbol', 'Ninguno de sus primos juega fútbol', 'No se puede asegurar nada'],
+      alternativas: ['Ninguno de sus primos juega vóley', 'Al menos uno de sus primos juega fútbol', 'Todos sus primos juegan fútbol y ninguno vóley', 'Ninguno de sus primos juega fútbol', 'No se puede asegurar nada'],
       datos: [...D_NEG, D_M('Leo'), 'Frase 1: «Ninguno de mis primos juega fútbol».', 'Frase 2: «Todos mis primos juegan vóley».'],
       solucion: [
         { texto: 'Frase 1 falsa: al menos uno juega fútbol. Frase 2 falsa: al menos uno no juega vóley.' },
-        { texto: 'A y C son casos posibles, no seguros: también puede que solo uno no juegue vóley o que solo uno juegue fútbol.' },
+        { texto: 'A y C son casos posibles, no seguros: también puede que solo uno no juegue vóley y que solo uno juegue fútbol.' },
         { texto: 'D es creerle la frase 1. E no vale: sí se asegura algo.' },
       ],
       respuesta: [{ negrita: 'B' }, ': ', F('al menos uno juega fútbol')] },
     { nivel: 3, titulo: 'Tres frases sobre la edad', figura: figN([miente1('Lucho', 'Tengo menos de 15 años', 'Tengo más de 16 años', 'Tengo 16 años')]),
       enunciado: 'Lucho dice tres frases sobre su edad. ¿Cuántos años tiene?',
       alternativas: ['14 años', '16 años', '15 años', '17 años', 'No se puede saber'],
-      datos: [...D_NEG, D_M('Lucho'), 'Frase 1: «Tengo menos de 15 años».', 'Frase 2: «Tengo más de 16 años».', 'Frase 3: «Tengo 16 años».'],
+      datos: [D_MIENTE, D_M('Lucho'), 'Frase 1: «Tengo menos de 15 años».', 'Frase 2: «Tengo más de 16 años».', 'Frase 3: «Tengo 16 años».'],
       solucion: [
         { texto: 'Lo contrario de cada una: tiene 15 o más, 16 o menos, y no tiene 16.' },
         { texto: 'Con 15 o más y 16 o menos quedan 15 y 16. La frase 3 descarta el 16: queda 15.' },
@@ -883,10 +893,10 @@
     { nivel: 3, titulo: 'El billete de Fito', figura: figN([miente1('Fito', 'Tengo más de 50 soles'), miente1('Gaby', 'Fito tiene menos de 50 soles'), { quien: 'Hugo', dice: ['Fito tiene un solo billete'], tarjeta: 'V', papelTarjeta: 'amarra' }]),
       enunciado: 'Fito y Gaby siempre mienten; Hugo siempre dice la verdad. ¿Cuánto dinero tiene Fito?',
       alternativas: ['50 soles', '20 soles', '100 soles', 'Más de 50 soles', 'No se puede saber'],
-      datos: ['Lo que dice quien siempre miente es falso; lo que dice quien siempre dice la verdad, cierto.', 'A lo más 5: 5 o menos.',
+      datos: ['Lo que dice quien siempre miente es falso; lo que dice quien siempre dice la verdad, cierto.',
         'Fito dice: «Tengo más de 50 soles».', 'Gaby dice: «Fito tiene menos de 50 soles».', 'Hugo dice: «Fito tiene un solo billete».', 'Hay billetes de 10, 20, 50, 100 y 200 soles.'],
       solucion: [
-        { texto: 'Lo que dice Fito es falso: tiene a lo más 50 soles. Lo que dice Gaby es falso: tiene 50 o más.' },
+        { texto: 'Lo que dice Fito es falso: tiene 50 soles o menos. Lo que dice Gaby es falso: tiene 50 o más.' },
         { texto: 'Con 50 o menos y 50 o más, Fito tiene 50 justos. Hugo dice la verdad: es un billete de 50.' },
         { texto: 'B es creerle a Gaby; C y D, creerle a Fito. E no vale: las dos frases juntas fijan los 50.' },
       ],
@@ -936,7 +946,9 @@
     });
   }
   const QUIEN34 = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Gaby', 'Hugo', 'Rosa', 'Nora'];
-  // Un caso de k sospechosos con `falsas` frases falsas exactas, una sola respuesta y al menos un par que se contradice.
+  // Un caso de k sospechosos con `falsas` frases falsas exactas, una sola respuesta y un solo par que se contradice (con
+  // dos pares, «X está fuera del par» sería falso para quien está en el otro; auditoría, 19 nov). Los ejemplos de nivel
+  // examen sí traen a alguien en dos pares, a propósito.
   function casoC(r, n, falsas, ctx) {
     for (let t = 0; t < 3000; t++) {
       const gente = r.barajar(QUIEN34.filter(x => !['Ana', 'Beto', 'Ciro', 'Dina'].includes(x) || t % 2)).slice(0, n);
@@ -948,7 +960,7 @@
       if (frases.some(x => x.f.miente && frases.find(y => y.de === x.f.miente).f.miente)) continue;
       if (new Set(frases.map(x => textoC(x, ctx))).size < n) continue;
       const sol = cumpleC(gente, frases, falsas), pares = paresC(gente, frases);
-      if (sol.length !== 1 || !pares.length) continue;
+      if (sol.length !== 1 || pares.length !== 1) continue;
       const c = sol[0], fuera = frases.filter(x => !pares[0].includes(x.de));
       return { gente, frases, c, pares, par: pares[0], fuera, falsas, mentirosos: frases.filter(x => !valorC(frases, x, c)).map(x => x.de) };
     }
@@ -1018,14 +1030,15 @@
         { id: 'nada', texto: 'Nada, sin probar cada culpable', error: 'RMP78', siFuera: 'Sí se sabe algo: si Eva miente, Gaby acierta, y al revés. El que miente está ahí.' },
       ],
       dibujo: { datos: { habla: hablaC(FP3, 'fue') }, estado: {} },
-      revelar: { datos: { habla: hablaC(FP3, 'fue', { anillos: Object.fromEntries(VERACES_P3.map(x => [x, 'seguro'])) }), nota: 'Eva y Gaby: una de las dos es la falsa' }, estado: {} },
+      revelar: { datos: { habla: hablaC(FP3, 'fue'), nota: [{ t: 'Eva y Gaby: una de las dos es la falsa' }, { t: `${lista(VERACES_P3)} dicen la verdad` }] }, estado: {} },
       coincide: `Coincide: Eva y Gaby se contradicen, así que el que miente está entre ellas. ${lista(VERACES_P3)} dicen la verdad.`,
       noCoincide: 'Revisemos: si la frase de Eva es falsa, «Eva miente» es cierta; si es cierta, es falsa. Una de las dos miente.',
     },
     mira: {
       pieza: VZ,
-      datos: { habla: hablaC(FP3, 'fue', { anillos: Object.fromEntries(VERACES_P3.map(x => [x, { papel: 'seguro', desde: 3 }])) }).map(h => (h.quien === SOLP3[0] ? Object.assign(h, { anillo: { papel: 'seguro', desde: 3 } }) : h))
+      datos: { habla: hablaC(FP3, 'fue').map(h => (h.quien === SOLP3[0] ? Object.assign(h, { anillo: { papel: 'seguro', desde: 4 } }) : h))
         .map(h => Object.assign(h, { valores: [{ t: vf(valorC(FP3, FP3.find(x => x.de === h.quien), SOLP3[0])), papel: 'sale', desde: 5 }] })),
+        nota: [{ t: `${lista(VERACES_P3)} dicen la verdad`, desde: 3 }], notas: 1,
         seguro: `Fue ${SOLP3[0]}`, seguroDesde: 4, casos: { columnas: ['Si fue', 'Eva dice', 'Gaby dice'], filas: SP3.map(c => ({ celdas: [c, { t: vf(valorC(FP3, FP3[0], c)), papel: 'sale' }, { t: vf(valorC(FP3, FP3[2], c)), papel: 'sale' }], desde: 1 })) } },
       voz: 'Primero el par, después lo que dicen los demás.',
       pasos: [
@@ -1039,7 +1052,7 @@
     regla: {
       texto: 'Dos frases se contradicen si una dice justo lo contrario de la otra: siempre una es cierta y la otra, falsa. Si solo uno miente, está en ese par.',
       ecuacion: [{ llave: ['una frase'], nota: 'cierta o falsa' }, ' y ', { llave: ['su contraria'], nota: 'al revés' }, ': ', { llave: ['una cierta, una falsa'], nota: 'siempre', color: 'c-i' }],
-      condicion: 'una es la negación de la otra, y los de fuera del par dicen la verdad. «Fue Ana» y «Fue Beto» no.',
+      condicion: 'una es la negación de la otra. «Fue Ana» y «Fue Beto» no se contradicen: pueden fallar juntas.',
       voz: 'Antes de suponer, busca el par que se contradice.',
     },
     ejemplos: null,   // EJEMPLOS_CONTRA, abajo
@@ -1122,7 +1135,7 @@
       tarjetas: [
         { titulo: 'La pelota escondida', texto: 'Antes de la clase, alguien escondió la pelota en una de las cuatro mochilas colgadas en la pared. Cada dueño dice una frase. Esta vez, solo uno dice la verdad.',
           pieza: VZ, dibujo: { datos: { escena: 'mochilas', objetos: mochilasDe(S3), habla: hablaC(F4, 'mochila') }, estado: {} } },
-        { titulo: 'Contar las ciertas', texto: 'Se supone en qué mochila está y se revisa cada frase. Ahora el dato habla de las ciertas: debe quedar exactamente una. Lo mismo pasa con cajas que llevan un rótulo.' },
+        { titulo: 'Contar las ciertas', texto: 'Se supone en qué mochila está y se revisa cada frase. Ahora el dato habla de las ciertas: debe quedar exactamente una. Al único que dice la verdad lo llamamos el veraz. Lo mismo pasa con cajas que llevan un rótulo.' },
         { titulo: 'Qué mirar al jugar', texto: 'Cambia la mochila y cuenta las frases ciertas. Busca la que deja justo una.' },
       ],
     },
@@ -1307,7 +1320,7 @@
         { texto: ['Entonces «Fue Leo», de Rosa, es cierta, y «Rosa miente» es falsa: miente ', F('Leo'), '.'] },
       ],
       respuesta: [F('Miente Leo')] },
-    { nivel: 2, titulo: 'La ganadora de la rifa', figura: figC(C8, 'gano'),
+    { nivel: 2, titulo: 'La rifa del aniversario', figura: figC(C8, 'gano'),
       enunciado: 'Uno de los cuatro ganó la rifa del aniversario. Solo una de sus frases es falsa. ¿Quién ganó?',
       datos: [D_SOLO1, ...C8.map(x => dichoC(x, 'gano'))],
       solucion: [
@@ -1519,14 +1532,14 @@
         { texto: 'Con Nora culpable, «Fue Leo» es falsa y «Nora miente» es cierta. B está en el par, pero falla; C, D y E mienten.' },
       ],
       respuesta: [{ negrita: 'A' }, ': ', F('Leo')] },
-    { nivel: 3, titulo: 'El sobre de 50', figura: { pieza: VZ, datos: { habla: [{ quien: 'Lucho', dice: ['Recibí 50 soles'] }, { quien: 'Vilma', dice: ['Lucho miente'] }, { quien: 'Omar', dice: ['Recibí 50 soles'] }] }, estado: {} },
-      enunciado: 'Lucho, Vilma y Omar recibieron sobres de 10, 20 y 50 soles, uno cada uno. Solo uno dice la verdad. ¿Quién, con seguridad, no recibió 50?',
-      alternativas: ['Lucho', 'Omar', 'Vilma', 'Ninguno', 'No se puede saber'],
-      datos: [D_SOLOV, 'Lucho dice: «Recibí 50 soles».', 'Vilma dice: «Lucho miente».', 'Omar dice: «Recibí 50 soles».'],
+    { nivel: 3, titulo: 'El sobre de 50', figura: { pieza: VZ, datos: { habla: [{ quien: 'Leo', dice: ['Recibí 50 soles'] }, { quien: 'Vilma', dice: ['Leo miente'] }, { quien: 'Omar', dice: ['Recibí 50 soles'] }] }, estado: {} },
+      enunciado: 'Leo, Vilma y Omar recibieron sobres de 10, 20 y 50 soles, uno cada uno. Solo uno dice la verdad. ¿Quién, con seguridad, no recibió 50?',
+      alternativas: ['Leo', 'Omar', 'Vilma', 'Ninguno', 'No se puede saber'],
+      datos: [D_SOLOV, 'Leo dice: «Recibí 50 soles».', 'Vilma dice: «Leo miente».', 'Omar dice: «Recibí 50 soles».'],
       solucion: [
-        { texto: 'Lucho y Vilma se contradicen: el veraz está entre ellos.' },
+        { texto: 'Leo y Vilma se contradicen: el veraz está entre ellos.' },
         { texto: 'Omar miente: lo contrario de «Recibí 50 soles» es cierto. Omar no recibió 50.' },
-        { texto: 'El de 50 lo tiene Lucho o Vilma: A y C son posibles, no seguros. D y E no valen: Omar seguro no.' },
+        { texto: 'El de 50 lo tiene Leo o Vilma: A y C son posibles, no seguros. D y E no valen: Omar seguro no.' },
       ],
       respuesta: [{ negrita: 'B' }, ': ', F('Omar')] },
     { nivel: 3, titulo: 'Uno en dos pares', figura: figV(V15, 'fue'),
@@ -1658,7 +1671,7 @@
     regla: {
       texto: 'Si cada uno dice una verdad y una mentira, supón cierta una de sus frases: la otra es falsa. Sigue la cadena; si algo choca, la cierta era la otra.',
       ecuacion: [{ llave: ['supón cierta una'], nota: 'lo que supones', color: 'c-o' }, ': ', { llave: ['la otra es falsa'], nota: 'lo que sale', color: 'c-i' }],
-      condicion: 'cada uno dice una frase cierta y una falsa: no es veraz ni mentiroso, y no se niegan las dos.',
+      condicion: 'cada uno dice una frase cierta y una falsa: no se le cree todo ni se le da vuelta todo.',
       voz: 'Una frase supuesta cierta obliga a la otra.',
       dibujo: { pieza: VZ, datos: Object.assign(podioDe(SOL5[0]), { seguroPodio: true, habla: hablaP(F5, SOL5[0]) }), estado: {} },
     },
@@ -1679,7 +1692,7 @@
             { tipo: 'pide', texto: 'Piden quién llegó primero.' },
             { tipo: 'datos', texto: 'Cada uno dijo dos frases, una cierta y una falsa. Hay 6 órdenes posibles de llegada.', ecuacion: ['3 × 2 × 1 = 6'] },
             { tipo: 'regla', texto: `Supongo cierta una frase de ${x.de}: la otra queda falsa. Si algo choca, la cierta era la otra.` },
-            { tipo: 'aplica', texto: conMala.length ? `Si es cierta «${textoP(x.de, x.dos[mala])}», quedan ${f0(conMala.length)} ${conMala.length === 1 ? 'orden' : 'órdenes'}, y en ${conMala.length === 1 ? 'él' : 'cada uno'} alguien dice dos verdades o dos mentiras (${lista([...new Set(quien)])}): choca.`
+            { tipo: 'aplica', texto: conMala.length ? `Si es cierta «${textoP(x.de, x.dos[mala])}», ${conMala.length === 1 ? 'queda 1 orden' : `quedan ${f0(conMala.length)} órdenes`}, y en ${conMala.length === 1 ? 'él' : 'cada uno'} alguien dice dos verdades o dos mentiras (${lista([...new Set(quien)])}): choca.`
               : `«${textoP(x.de, x.dos[mala])}» no puede ser la cierta: con ella, la otra frase también saldría cierta o no queda orden posible.` },
             { tipo: 'aplica', texto: `Entonces es cierta «${textoP(x.de, x.dos[buena])}». Queda un solo orden: ${c.o.join(', ')}.`, dibujo: { datos: Object.assign(podioDe(c.o), { seguroPodio: true, habla: hablaP(c.frases, c.o) }), estado: {} } },
             { tipo: 'sentido', texto: 'Compruebo: con ese orden, cada uno tiene una frase cierta y una falsa.' },
@@ -1705,9 +1718,11 @@
           const viene = !pide && cree.find(p => p.x === z && p.k === k);
           const ordenes = c.todos.filter(ok), quien = [...new Set(ordenes.map(o => c.frases.find(y => !unaYUna(y, o)).de))];
           return { id: `z${z}`, texto: pide ? `Llegó ${z}` : z, error: viene ? 'RMP150' : 'RMP72',
-            siFuera: `${viene ? 'Lo dice una frase, pero puede ser la falsa. ' : ''}Así, en cada orden posible choca alguien: ${lista(quien)}.` };
+            siFuera: `${viene ? 'Lo dice una frase, pero puede ser la falsa. ' : ''}Así, en cada orden posible choca alguien: ${lista(quien, 'o')}.` };
         });
-        return { pregunta: `${['Terminó la carrera del aniversario.', 'Terminó la posta del colegio.'][Math.floor(s / 4) % 2]} ${pide ? `¿En qué puesto llegó ${pide}?` : k === 1 ? '¿Quién ganó?' : '¿Quién llegó último?'}`.replace(/último\?$/, FEM.has(correcta) && k === n ? 'última?' : 'último?'),
+        // «¿Quién llegó en el último puesto?» y no «último» o «última»: el género de la palabra delataba a la persona
+        // (auditoría, 19 nov).
+        return { pregunta: `${['Terminó la carrera del aniversario.', 'Terminó la posta del colegio.'][Math.floor(s / 4) % 2]} ${pide ? `¿En qué puesto llegó ${pide}?` : k === 1 ? '¿Quién ganó?' : '¿Quién llegó en el último puesto?'}`,
           datos, dibujo, opciones: ops,
           solucion: { texto: `Queda un solo orden en que cada uno dice una verdad y una mentira: ${c.o.join(', ')}.`, dibujo: sol } };
       },
@@ -1721,7 +1736,9 @@
   // tercera (C) · 15 Sara, profesora (D). La figura: el podio vacío (o con el dato) y lo que dice cada uno.
   const VP = (de, ...ps) => ({ de, dos: ps.map(([x, k]) => P(x, k)) });
   const figP = (frases, podio) => ({ pieza: VZ, datos: Object.assign(podioDe(podio || ['?', '?', '?']), { habla: hablaP(frases) }), estado: {} });
-  const datP = frases => [D_VYM, ...frases.map(y => `${y.de} dice: «${textoP(y.de, y.dos[0])}» y «${textoP(y.de, y.dos[1])}».`)];
+  // Con una sola persona que habla, el dato habla de ella (lector B: «Cada uno dice…» cuando solo habla Maru).
+  const D_VYM1 = ['Quien habla dice dos frases: una es cierta y la otra, falsa.', 'Cada puesto es de un solo atleta.'];
+  const datP = frases => [...(frases.length === 1 ? D_VYM1 : [D_VYM]), ...frases.map(y => `${y.de} dice: «${textoP(y.de, y.dos[0])}» y «${textoP(y.de, y.dos[1])}».`)];
   const Y1 = [VP('Rosa', ['Rosa', 1], ['Leo', 2])], Y2 = [VP('Teo', ['Teo', 1], ['Nora', 2])], Y3 = [VP('Maru', ['Maru', 1], ['Gino', 1])], Y4 = [VP('Sara', ['Sara', 3], ['Omar', 1])];
   const Y6 = [VP('Leo', ['Leo', 3], ['Nora', 1]), VP('Nora', ['Nora', 2], ['Leo', 2]), VP('Teo', ['Teo', 1], ['Leo', 1])];
   const Y7 = [VP('Sara', ['Sara', 2], ['Pía', 1]), VP('Gino', ['Gino', 1], ['Pía', 2]), VP('Pía', ['Pía', 3], ['Gino', 3])];
@@ -1789,7 +1806,7 @@
         { texto: ['Nora llegó segunda: una verdad y una mentira, como debe. Ganó ', F('Teo'), '.'] },
       ],
       respuesta: [F('Ganó Teo')] },
-    { nivel: 2, titulo: 'Quién llegó última', figura: figP(Y7),
+    { nivel: 2, titulo: 'Quién cerró el podio', figura: figP(Y7),
       enunciado: 'Sara, Gino y Pía llegaron en los tres primeros puestos. ¿Quién llegó en el tercer puesto?',
       datos: datP(Y7),
       solucion: [
@@ -1803,7 +1820,7 @@
       datos: datP(Y8),
       solucion: [
         { texto: 'Las dos frases de Hugo hablan del primero: ganó Hugo o ganó Eva.' },
-        { texto: 'Si ganó Hugo, Eva llegó tercera y Gaby segunda: Gaby diría dos mentiras. Choca.' },
+        { texto: 'Si ganó Hugo, la frase «Hugo llegó segundo», de Eva, es falsa: Eva llegó tercera. Gaby queda segunda y diría dos mentiras. Choca.' },
         { texto: ['Ganó ', F('Eva'), '. Hugo fue segundo y Gaby, tercera: cada uno con una verdad y una mentira.'] },
       ],
       respuesta: [F('Ganó Eva')] },
@@ -1864,7 +1881,7 @@
       datos: datP(Y14),
       solucion: [
         { texto: 'Las dos frases de Leo hablan del primero: ganó Nora o ganó Leo.' },
-        { texto: 'Si ganó Nora, su cierta sería «Leo llegó tercero»; Teo sería cuarto y Rosa, segunda, diría dos mentiras: choca.' },
+        { texto: 'Si ganó Nora, su «Llegué segunda» es falsa: Leo llegó tercero. Teo no acierta «Rosa llegó primera»: es cuarto. Rosa queda segunda y diría dos mentiras: choca.' },
         { texto: 'Ganó Leo. Nora acierta «Llegué segunda»; Teo, «Llegué cuarto». Rosa llegó tercera.' },
         { texto: 'A, B y D dejan a alguien con dos verdades o dos mentiras; E no vale.' },
       ],
@@ -1913,7 +1930,9 @@
   };
   const GP6 = ['Eva', 'Fito', 'Gaby'], FP6 = GP6.map(de => ({ de, f: { k: 1 } })), SOLP6 = quedanKK(GP6, FP6);
   if (SOLP6.length !== 1 || GP6.some(x => SOLP6[0][x])) throw new Error('predicción de la idea 6: deben mentir los tres');
-  const filaP6 = (k, d) => { const { ciertas, cuadra } = supK(GP6, FP6, k); return { celdas: [nMienten(k), { t: vf(ciertas.length > 0), papel: 'sale' }, f0(ciertas.length), cuadra ? ENCAJA : CHOCA], fuera: cuadra ? undefined : d + 1, desde: d }; };
+  const filaP6 = (k, d) => { const { ciertas, cuadra } = supK(GP6, FP6, k); return { celdas: [nMienten(k), { t: vf(ciertas.length > 0), papel: 'sale' }, f0(ciertas.length), f0(GP6.length - k), cuadra ? ENCAJA : CHOCA], fuera: cuadra ? undefined : d + 1, desde: d }; };
+  // Frases ciertas y veraces que harían falta, lado a lado (lector B: había que restar a mano).
+  const COL6 = ['Mienten', 'La frase', 'Ciertas', 'Veraces', 'Encaja'];
   const cuantos = {
     id: 'cuantos-mienten',
     titulo: '¿Cuántos mienten?',
@@ -1924,7 +1943,7 @@
     actividad: 'Suponer cuántos mienten y contar las frases que salen ciertas.',
     lee: {
       tarjetas: [
-        { titulo: 'La última ronda', texto: 'Última ronda del juego de las tarjetas. Ahora las frases no hablan de una persona: hablan de cuántos mienten en el grupo, contando a quien habla.',
+        { titulo: 'La última ronda', texto: 'Última ronda del juego de las tarjetas: cada uno tiene una tarjeta boca abajo, VERAZ o MIENTE. Ahora las frases no hablan de una persona: hablan de cuántos mienten en el grupo, contando a quien habla.',
           pieza: VZ, dibujo: { datos: { escena: 'tarjetas', panel: false, habla: hablaKK(G6, F6) }, estado: {} } },
         { titulo: 'Contar dos veces', texto: 'Si supones cuántos mienten, cada frase sale cierta o falsa. Quien dice algo cierto es veraz; quien dice algo falso, miente. Esa cuenta tiene que coincidir con lo supuesto.' },
         { titulo: 'Qué mirar al jugar', texto: 'Cambia cuántos mienten. Mira cuántas frases salen ciertas y si alcanzan para los veraces que harían falta.' },
@@ -1941,7 +1960,7 @@
       voz: '¿Cuántas frases ciertas? ¿Cuántos veraces harían falta?',
       leyenda: [
         { s: O('Supón: miente…'), t: 'la cuenta que pruebas' },
-        { s: O('VERAZ / MIENTE'), t: 'la tarjeta que le toca a cada uno' },
+        { s: O('VERAZ / MIENTE'), t: 'la tarjeta que sale de su frase' },
         { s: I('cierta / falsa'), t: 'lo que vale su frase con esa cuenta' },
       ],
       controles: [{ id: 'k', etiqueta: 'Supón que mienten', min: 0, max: 4, paso: 1, inicio: 0, decimales: 0 }],
@@ -1959,14 +1978,14 @@
         { id: 'ninguno', texto: 'Ninguno', error: 'RMP144', siFuera: 'Que coincidan no los hace veraces: sin mentirosos, la frase saldría falsa.' },
         { id: 'nose', texto: 'No se puede saber', error: 'RMP78', siFuera: 'Sí se sabe: se prueba cada cuenta y solo una encaja.' },
       ],
-      dibujo: { datos: { escena: 'tarjetas', habla: hablaKK(GP6, FP6), casos: { columnas: ['Mienten', 'La frase', 'Veraces', 'Encaja'], filas: [0, 1, 2, 3].map(k => ({ celdas: [nMienten(k), '?', '?', '?'] })) } }, estado: {} },
-      revelar: { datos: { escena: 'tarjetas', habla: hablaKK(GP6, FP6), casos: { columnas: ['Mienten', 'La frase', 'Veraces', 'Encaja'], filas: [0, 1, 2, 3].map(k => filaP6(k, 0)).map(f => Object.assign(f, { fuera: f.fuera === undefined ? undefined : true })) } }, estado: {} },
+      dibujo: { datos: { escena: 'tarjetas', habla: hablaKK(GP6, FP6), casos: { columnas: COL6, filas: [0, 1, 2, 3].map(k => ({ celdas: [nMienten(k), '?', '?', f0(GP6.length - k), '?'] })) } }, estado: {} },
+      revelar: { datos: { escena: 'tarjetas', habla: hablaKK(GP6, FP6), casos: { columnas: COL6, filas: [0, 1, 2, 3].map(k => filaP6(k, 0)).map(f => Object.assign(f, { fuera: f.fuera === undefined ? undefined : true })) } }, estado: {} },
       coincide: 'Coincide: si la frase fuera cierta, los tres serían veraces y nadie mentiría. Es falsa: mienten los tres.',
       noCoincide: 'Revisemos: los tres dicen lo mismo, así que tienen la misma tarjeta. Con los tres veraces, la frase sería falsa.',
     },
     mira: {
       pieza: VZ,
-      datos: { escena: 'tarjetas', habla: hablaKK(GP6, FP6), casos: { columnas: ['Mienten', 'La frase', 'Veraces', 'Encaja'], filas: [0, 1, 2, 3].map((k, i) => filaP6(k, i < 3 ? 1 : 3)) } },
+      datos: { escena: 'tarjetas', habla: hablaKK(GP6, FP6), casos: { columnas: COL6, filas: [0, 1, 2, 3].map((k, i) => filaP6(k, i < 3 ? 1 : 3)) } },
       voz: 'Una cuenta por renglón.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Dicen lo mismo: la frase es cierta para los tres, o falsa para todos.' },
@@ -2150,14 +2169,14 @@
       respuesta: [{ negrita: 'A' }, ': ', F('Rosa y Nora')] },
     { nivel: 3, titulo: 'Los que van juntos', figura: figK(W12, K12),
       enunciado: 'Sara, Gino, Pía y Omar juegan con las tarjetas y hablan. ¿Cuántos de ellos mienten?',
-      alternativas: ['Uno', 'Los cuatro', 'Dos', 'Ninguno', 'Tres'],
+      alternativas: ['Uno', 'Cuatro', 'Dos', 'Ninguno', 'Tres'],
       datos: datK(W12, K12),
       solucion: [
         { texto: 'Sara y Gino dicen lo mismo: misma tarjeta. Pía le cree a Sara y Omar a Gino: los cuatro van juntos.' },
         { texto: 'O mienten 0, o mienten 4. Con 0, «miente exactamente uno» saldría falsa en boca de veraces: choca.' },
         { texto: 'Mienten los cuatro: sus frases son falsas, como debe. A, C y E separan a quienes van juntos; D choca.' },
       ],
-      respuesta: [{ negrita: 'B' }, ': ', F('los cuatro')] },
+      respuesta: [{ negrita: 'B' }, ': ', F('cuatro')] },
     { nivel: 3, titulo: 'Una cadena de confianza', figura: figK(W13, K13),
       enunciado: 'Ana, Beto, Ciro, Dina y Eva juegan con las tarjetas y hablan. ¿Cuántos de ellos mienten?',
       alternativas: ['Cuatro', 'Tres', 'Dos', 'Uno', 'Ninguno'],
@@ -2172,12 +2191,12 @@
     { nivel: 3, titulo: 'Por lo menos cinco', figura: figK(W14, K14),
       enunciado: 'Rosa, Nora, Leo, Teo y Maru juegan con las tarjetas y hablan. ¿Quiénes dicen la verdad?',
       alternativas: ['Solo Rosa', 'Leo, Teo y Maru', 'Nora y Leo', 'Teo y Maru', 'Nadie'],
-      datos: datK(W14, K14),
+      datos: ['Veraz: siempre dice la verdad; mentiroso: siempre miente. Cada frase cuenta también a quien habla. Por lo menos 1: 1 o más.', ...K14.map(x => dicho(x, W14))],
       solucion: [
         { texto: 'Si Rosa fuera veraz, mentirían los cinco, también ella: choca. Rosa miente.' },
-        { texto: 'Ya hay un mentiroso: Teo y Maru aciertan. Entonces «Maru miente» es falsa: Nora miente.' },
-        { texto: 'Mienten 3, no 1: Leo también miente. Veraces: Teo y Maru.' },
-        { texto: 'A choca; B y C ponen veraz a Leo o a Nora con una frase falsa; E deja falsas frases ciertas.' },
+        { texto: 'Ya hay un mentiroso: Teo y Maru aciertan y son veraces. Entonces «Maru miente», de Nora, es falsa: Nora miente.' },
+        { texto: 'Ya mienten Rosa y Nora: «exactamente uno», de Leo, es falsa. Leo miente, y mienten 3. Veraces: Teo y Maru.' },
+        { texto: 'A choca; B y C ponen veraz a Leo o a Nora con una frase falsa; con E, Teo y Maru mentirían diciendo algo cierto.' },
       ],
       respuesta: [{ negrita: 'D' }, ': ', F('Teo y Maru')] },
     { nivel: 3, titulo: 'Tres juntos, dos al revés', figura: figK(W15, K15),
@@ -2200,7 +2219,9 @@
     for (let t = 0; t < 4000; t++) {
       const gente = r.barajar(NOMBRES).slice(0, n).sort((a, b) => NOMBRES.indexOf(a) - NOMBRES.indexOf(b));
       let frases;
-      if (modo === 'k') { const js = r.barajar(Array.from({ length: n }, (_, j) => j + 1)).slice(0, n); frases = gente.map((de, i) => ({ de, f: { k: js[i] } })); }
+      // 'k': números con alguno repetido. Con n números distintos (1, 2, 3, 4) sale siempre el acertijo del juego, con la
+      // misma respuesta (lector B y auditoría, 19 nov); con dos solos, es el modo 'repite'.
+      if (modo === 'k') { const js = gente.map(() => r.ent(1, n)), d = new Set(js).size; if (d < 3 || d === n) continue; frases = gente.map((de, i) => ({ de, f: { k: js[i] } })); }
       else if (modo === 'alMenos') { const js = r.barajar(Array.from({ length: n }, (_, j) => j + 1)); frases = gente.map((de, i) => ({ de, f: r() < 0.75 ? { alMenos: js[i] } : { k: js[i] } })); }
       else { const a = r.ent(1, n), b = r.ent(1, n); if (a === b) continue; frases = gente.map((de, i) => ({ de, f: { k: i < Math.ceil(n / 2) ? a : b } })); }
       const cuadran = Array.from({ length: n + 1 }, (_, k) => k).filter(k => supK(gente, frases, k).cuadra);
@@ -2297,7 +2318,8 @@
 
   return {
     unidad: 'razonamiento-matematico.verdades-y-mentiras',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-veraz.js'],
     letras: {},

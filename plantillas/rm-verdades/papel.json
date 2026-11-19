@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Beto siempre miente. Beto dice: «Ninguna de las cajas del aula está llena». ¿Qué es seguro? Datos: Lo que dice quien siempre miente es falso. Al menos uno: uno o más. A lo más 5: 5 o menos. Alternativas: A) Al menos una de las cajas del aula está llena   B) Ninguna de las cajas del aula está llena   C) No se puede saber nada   D) Todas las cajas del aula están llenas   E) Algunas están llenas y otras no",
+      "enunciado": "Beto siempre miente. Beto dice: «Ninguna de las cajas del aula está llena». ¿Qué es seguro? Datos: Lo que dice quien siempre miente es falso. Al menos uno: uno o más. Alternativas: A) Al menos una de las cajas del aula está llena   B) Ninguna de las cajas del aula está llena   C) No se puede saber nada   D) Todas las cajas del aula están llenas   E) Algunas están llenas y otras no",
       "respuesta": "A) Al menos una de las cajas del aula está llena",
       "pasos": [
         "La frase es falsa. Una frase con «todos» o «ninguno» se rompe con un solo caso.",
@@ -26,21 +26,21 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Uno de los cuatro sospechosos dejó la puerta abierta. ¿Quién fue? Datos: Solo una de las frases es falsa: solo uno miente. Eva dice: «Fito miente». Ciro dice: «No fue Eva». Ana dice: «Fui yo». Fito dice: «Fue Ana». Alternativas: A) Ciro   B) Ana   C) Fito   D) No se puede saber   E) Eva",
-      "respuesta": "B) Ana",
+      "enunciado": "Uno de los cuatro sospechosos dejó la puerta abierta. ¿Quién fue? Datos: Solo una de las frases es falsa: solo uno miente. Beto dice: «Dina miente». Gaby dice: «No fue Beto». Dina dice: «Yo no fui». Hugo dice: «Fue Gaby». Alternativas: A) Dina   B) Hugo   C) No se puede saber   D) Gaby   E) Beto",
+      "respuesta": "D) Gaby",
       "pasos": [
-        "Eva y Ana se contradicen: ahí está el que miente. Los demás dicen la verdad.",
-        "Con eso, solo con Ana queda una frase falsa."
+        "Beto y Dina se contradicen: ahí está el que miente. Los demás dicen la verdad.",
+        "Con eso, solo con Gaby queda una frase falsa."
       ]
     },
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "La pelota está en una de las mochilas de Dina, Nora, Beto y Ana. ¿En qué mochila está la pelota? Datos: Solo una de las frases es cierta: solo uno dice la verdad. Dina dice: «Está en la de Ana». Nora dice: «No está en la de Ana». Beto dice: «Nora miente». Ana dice: «No está en la de Dina». Alternativas: A) En la de Beto   B) En la de Ana   C) No se puede saber   D) En la de Dina   E) En la de Nora",
-      "respuesta": "D) En la de Dina",
+      "enunciado": "La pelota está en una de las mochilas de Nora, Gaby, Eva y Beto. ¿En qué mochila está la pelota? Datos: Solo una de las frases es cierta: solo uno dice la verdad. Nora dice: «No está en la de Eva». Gaby dice: «Beto miente». Eva dice: «No está en la mía». Beto dice: «No está en la de Nora». Alternativas: A) No se puede saber   B) En la de Gaby   C) En la de Eva   D) En la de Beto   E) En la de Nora",
+      "respuesta": "C) En la de Eva",
       "pasos": [
-        "Dina y Nora se contradicen: ahí está el único veraz. Los demás mienten.",
-        "Con eso, solo en la de Dina queda una frase cierta."
+        "Gaby y Beto se contradicen: ahí está el único veraz. Los demás mienten.",
+        "Con eso, solo en la de Eva queda una frase cierta."
       ]
     },
     {
@@ -76,7 +76,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Ana siempre miente. Dice tres frases sobre su edad. ¿Cuántos años tiene? Datos: Lo que dice quien siempre miente es falso. Al menos uno: uno o más. A lo más 5: 5 o menos. Frase 1: «Tengo menos de 17 años». Frase 2: «Tengo más de 18 años». Frase 3: «Tengo 18 años». Alternativas: A) 19 años   B) 18 años   C) 16 años   D) 17 años   E) No se puede saber",
+      "enunciado": "Ana siempre miente. Dice tres frases sobre su edad. ¿Cuántos años tiene? Datos: Lo que dice quien siempre miente es falso. Frase 1: «Tengo menos de 17 años». Frase 2: «Tengo más de 18 años». Frase 3: «Tengo 18 años». Alternativas: A) 19 años   B) 18 años   C) 16 años   D) 17 años   E) No se puede saber",
       "respuesta": "D) 17 años",
       "pasos": [
         "Lo contrario de cada frase: 17 o más, 18 o menos, y no 18.",

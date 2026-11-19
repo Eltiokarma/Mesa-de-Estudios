@@ -149,3 +149,25 @@ test('papel: 8 problemas al día con el generador, con sus datos', () => {
   assert.equal(papel.problemas.length, 8);
   for (const pr of papel.problemas) assert.match(pr.enunciado, / Datos: /);
 });
+
+// Auditoría del cierre (19 nov): con dos pares que se contradicen, «X está fuera del par» era falso para quien estaba en
+// el otro (68 de 400 semillas de la idea 3); el acertijo de «cuántos mienten» con 1, 2, 3, 4 era el del juego de la
+// teoría; los Datos traían «A lo más 5», que no se usaba y daba la forma de la respuesta.
+test('cierre: un solo par que se contradice, «cuántos» sin los n números distintos y Datos sin «A lo más 5»', () => {
+  for (const idea of ['contradictorias', 'solo-uno-veraz']) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea }), fs = dichos(p.datos).map(x => ({ de: x.de, f: leerC(x.t, x.de) })), g = p._datos.gente;
+    const pares = [];
+    for (let i = 0; i < fs.length; i++) for (let j = i + 1; j < fs.length; j++) if (g.every(c => valC(fs[i].f, fs, c) !== valC(fs[j].f, fs, c))) pares.push([fs[i].de, fs[j].de]);
+    assert.equal(pares.length, 1, `${idea} ${s}: pares ${JSON.stringify(pares)}`);
+    for (const a of p.alternativas) {
+      const m = a.error && a.error.explicacion.match(new RegExp(`(?:Pero|que) ${N} está fuera del par`));
+      if (m) assert.ok(!pares[0].includes(m[1]), `${idea} ${s}: ${a.error.explicacion}`);
+    }
+  }
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'cuantos-mienten' });
+    if (p._datos.tipo === 'cuantos') { const ks = dichos(p.datos).map(x => x.t); assert.ok(new Set(ks).size < ks.length || ks.some(t => /por lo menos/.test(t)), `cuantos ${s}: ${ks}`); }
+    const q = gen.generar(s, { idea: 'negar-bien' });
+    assert.ok(!q.datos.some(d => /A lo más 5/.test(d)), `negar ${s}`);
+  }
+});

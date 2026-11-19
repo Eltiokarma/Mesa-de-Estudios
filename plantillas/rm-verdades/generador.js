@@ -80,6 +80,8 @@
         return { de, f: rng.elegir([{ m: x }, { m: x }, { v: x }, { mm: par }, { vv: par }]) };
       });
       if (new Set(fr.map(x => textoKK(x.de, x.f, gente))).size < (modo === 'cuantos' ? 2 : n)) continue;
+      // Con «cuantos», nunca los n números distintos: es el acertijo del juego de la teoría, con la misma respuesta.
+      if (modo === 'cuantos' && new Set(fr.map(x => x.f.k)).size === n) continue;
       const q = tarjetas(gente).filter(w => encajaKK(fr, w));
       if (q.length !== 1) continue;
       return { gente, fr, sol: q[0] };
@@ -130,7 +132,8 @@
     { g: 'mis primos', s3: 'sus primos', pl: 'son de Puno', sg: 'es de Puno', no: 'no es de Puno', fem: false },
     { g: 'las cajas del aula', s3: 'las cajas del aula', pl: 'están llenas', sg: 'está llena', no: 'no está llena', fem: true },
   ];
-  const D_NEG = ['Lo que dice quien siempre miente es falso.', 'Al menos uno: uno o más. A lo más 5: 5 o menos.'];
+  // Solo lo que el caso usa (lectores en frío, 19 nov: «A lo más 5» no servía y daba la forma de la respuesta).
+  const D_MIENTE = 'Lo que dice quien siempre miente es falso.', D_NEG = [D_MIENTE, 'Al menos uno: uno o más.'];
   function negar(rng) {
     const q = rng.elegir(GENTE), tipo = rng.entero(0, 2), G = rng.elegir(GRUPOS), uno = G.fem ? 'una' : 'uno';
     const Todos = G.fem ? 'Todas' : 'Todos', Ning = G.fem ? 'Ninguna' : 'Ninguno', Alg = G.fem ? 'Algunas' : 'Algunos', otros = G.fem ? 'otras' : 'otros';
@@ -151,7 +154,7 @@
       errores = [err('RMP147-borde', 'borde', `${q} tiene ${mas ? 'menos' : 'más'} de ${k} ${u}`, `Bien: diste vuelta la frase. Pero falta el ${k}: con ${k} ${u} justos, la frase dicha también es falsa.`),
         err('RMP49-cree', 'cree', `${q} tiene ${mas ? 'más' : 'menos'} de ${k} ${u}`, 'Eso es creerle. Quien siempre miente dice algo falso.'),
         err('RMP77-posible', 'justo', `${q} tiene ${k} ${u} justos`, `Bien: ${k} hace falsa la frase. Pero ${mas ? k - 1 : k + 1} también: no es lo único posible.`)];
-      return { enunciado: [`${q} siempre miente.`], pregunta: [`${q} dice: «${dice}». ¿Qué es seguro?`], datos: D_NEG.slice(), correcta: { clave: 'ok', texto: ok },
+      return { enunciado: [`${q} siempre miente.`], pregunta: [`${q} dice: «${dice}». ¿Qué es seguro?`], datos: [D_MIENTE], correcta: { clave: 'ok', texto: ok },
         errores: errores.concat([err('RMP78-nada', 'nada', 'No se puede saber nada', 'Bien: no se sabe la cantidad exacta. Pero sí un límite: lo contrario de lo que dijo.')]),
         solucion: [[`La frase es falsa. Lo contrario de «${mas ? 'más' : 'menos'} de ${k}» es «${k} o ${mas ? 'menos' : 'más'}»: el ${k} entra.`], ['Es seguro: ', v('x', ok), '.']],
         _datos: { forma: 'cantidad', dice, pide: 'seguro' } };
@@ -164,7 +167,7 @@
   function edad(rng) {
     const q = rng.elegir(GENTE), a = rng.entero(14, 17), frases = [`Tengo menos de ${a} años`, `Tengo más de ${a + 1} años`, `Tengo ${a + 1} años`];
     return { enunciado: [`${q} siempre miente. Dice tres frases sobre su edad.`], pregunta: ['¿Cuántos años tiene?'],
-      datos: [...D_NEG, ...frases.map((t, i) => `Frase ${i + 1}: «${t}».`)], correcta: { clave: `e:${a}`, texto: `${a} años` },
+      datos: [D_MIENTE, ...frases.map((t, i) => `Frase ${i + 1}: «${t}».`)], correcta: { clave: `e:${a}`, texto: `${a} años` },
       errores: [err('RMP72-choca', `e:${a + 1}`, `${a + 1} años`, `Bien: diste vuelta las frases 1 y 2. Pero la frase 3 dice ${a + 1}, y es falsa.`),
         err('RMP49-cree', `e:${a - 1}`, `${a - 1} años`, `Eso es creerle la frase 1. Como miente, tiene ${a} años o más.`),
         err('RMP49-cree', `e:${a + 2}`, `${a + 2} años`, `Eso es creerle la frase 2. Como miente, tiene ${a + 1} años o menos.`),
@@ -192,7 +195,9 @@
       if (fr.some(x => x.f.miente && fr.find(y => y.de === x.f.miente).f.miente)) continue;
       if (new Set(fr.map(x => textoC(x, ctx))).size < n) continue;
       const sol = gente.filter(c => falsasC(fr, c) === falsas), pares = paresC(gente, fr);
-      if (sol.length !== 1 || !pares.length) continue;
+      // Un solo par que se contradice: con dos, «X está fuera del par» sería falso para quien está en el otro (auditoría,
+      // 19 nov).
+      if (sol.length !== 1 || pares.length !== 1) continue;
       return { gente, fr, c: sol[0], par: pares[0] };
     }
     return null;

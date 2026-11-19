@@ -2,7 +2,7 @@
   "plantilla": "rm-verdades",
   "tolerancia": 0,
   "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Claves: t:<quiénes>, k:<cuántos mienten>, p:<persona o mochila>, e:<edad>, ok (la contraria exacta). entrada: el _datos del problema.",
-  "verificacion": "Script aparte (19 nov 2026, python3 con itertools, fuera del repo: scratchpad e6-rm/v-casos.py), que no usa el generador: lee cada frase de los datos, prueba todas las tarjetas, todos los culpables o lugares, todos los órdenes de llegada o todas las edades, se queda con lo que encaja y calcula la clave. Los 18 casos cuadran.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con itertools, fuera del repo: scratchpad e6-rm/v-casos.py), que no usa el generador: lee cada frase de los datos, prueba todas las tarjetas, todos los culpables o lugares, todos los órdenes de llegada o todas las edades, se queda con lo que encaja y calcula la clave. Los 18 casos cuadran. Rehechos el 19 nov 2026 (cierre de la unidad: un solo par que se contradice) con otro script aparte: scratchpad e6-cierre-vm/cuentas/practica.py.",
   "casos": [
     {
       "semilla": "caso-0",
@@ -214,25 +214,25 @@
         "forma": "culpa",
         "ctx": "fue",
         "gente": [
-          "Fito",
           "Ciro",
-          "Beto",
-          "Dina",
-          "Gaby"
+          "Fito",
+          "Rosa",
+          "Hugo",
+          "Nora"
         ],
         "frases": [
-          "Fito dice: «Fue Dina».",
-          "Ciro dice: «No fue Gaby».",
-          "Beto dice: «Yo no fui».",
-          "Dina dice: «Fue Gaby».",
-          "Gaby dice: «Dina miente»."
+          "Ciro dice: «Fui yo».",
+          "Fito dice: «No fue Rosa».",
+          "Rosa dice: «Yo no fui».",
+          "Hugo dice: «Fue Nora».",
+          "Nora dice: «Hugo miente»."
         ],
         "falsas": 1,
         "pide": "miente"
       },
       "esperado": {
-        "clave": "p:Dina",
-        "texto": "Dina"
+        "clave": "p:Hugo",
+        "texto": "Hugo"
       }
     },
     {
