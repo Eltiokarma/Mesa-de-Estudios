@@ -190,3 +190,32 @@ test('papel: 8 problemas de las seis ideas, cada uno con sus datos y su unidad',
     assert.ok(q.respuesta && q.enunciado, q.id);
   }
 });
+
+// ---- Correcciones del 19 nov (cierre: rutinas/auditoria/algebra.factorizacion.md). Fallan con la versión anterior. ----
+const mcdE = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; };
+const contenido = f => (f.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, '').match(/\d+|(?<![\d])(?=[xy])/g) || []).map(n => (n === '' ? 1 : +n)).reduce(mcdE, 0);
+test('cierre: dif-cuad y tcp dan la factorización completa (ningún factor con un número común) y nunca «1y»', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'identidades' }), t = plano(p.enunciado) + ' ' + p.alternativas.map(a => a.texto).join(' ');
+    assert.ok(!/\b1y/.test(t), `${s}: ${t}`);
+    if (['dif-cuad', 'tcp'].includes(p._datos.tipo)) for (const f of (p.alternativas.find(a => a.correcta).texto.match(/\(([^()]+)\)/g) || [])) assert.equal(contenido(f), 1, `${s}: ${f}`);
+  }
+});
+test('cierre: los datos dicen la convención entera de factor primo y que a y b son lo que va al cuadrado', () => {
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea }), d = p.datos.join(' ');
+    if (/factores primos/.test(plano(p.pregunta))) assert.ok(/enteros/.test(d) && /distintos/.test(d) && /no cuenta/.test(d), `${idea} ${s}`);
+    assert.ok(!/con a y b los dos términos/.test(d), `${idea} ${s}`);
+  }
+});
+test('cierre: cada distractor de principal y de grado-mcm sale de su error (candidato de verdad; sin el 8 inventado)', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'teorema-factor' });
+    if (p._datos.tipo === 'principal') {
+      const ind = Math.abs(p._datos.b * p._datos.s * p._datos.t);   // P(0) = (−b)(−s)(−t)
+      for (const a of p.alternativas.filter(x => x.error && x.error.id === 'TAL-FACTOR-CAND')) { const k = +a.texto.replace(/^\d+x [−+] /, ''); assert.ok(ind % k === 0, `${s}: ${a.texto} no es candidato (independiente ${ind})`); }
+    }
+    const q = gen.generar(s, { idea: 'mcd-mcm' });
+    if (q._datos.tipo === 'grado-mcm') assert.ok(!q.alternativas.some(a => a.texto === '8'), `${s}`);
+  }
+});

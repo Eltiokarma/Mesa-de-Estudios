@@ -97,3 +97,12 @@ test('la tabla de Ruffini con una casilla «?»: todas las columnas de números 
   const g = P.geometria(d), ws = g.xs.slice(2).map((x, k) => x - g.xs[k + 1]);
   assert.ok(Math.max(...ws) - Math.min(...ws) < 0.5, `anchos de columna: ${ws.map(w => w.toFixed(1)).join(', ')}`);
 });
+
+// 19 nov (cierre de Factorización, lector B): un piso cuadrado dice «lado: ?», no «largo: ?» (cambio aditivo).
+test('rotuloLargo «lado: ?» para un piso cuadrado', () => {
+  const svg = P.dibujar({ objeto: 'pasadizo', ancho: [2, 5], largo: [2, 5], piezas: false, rotuloLargo: 'lado: ?', rotuloAncho: false, sobran: false }, {});
+  const t = typeof svg === 'string' ? svg : JSON.stringify(svg);
+  assert.match(t, /lado: \?/);
+  assert.doesNotMatch(t, /largo:/);
+  assert.match(t, /el mismo lado, por hallar/);
+});

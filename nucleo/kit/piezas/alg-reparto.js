@@ -13,7 +13,7 @@
  *               (naranja) o lo que falta (las piezas que no hay quedan punteadas dentro del rectángulo).
  *               datos = { objeto: 'pasadizo', ancho: [c, b], largo: [p, s], pedido: [losetas, tiras, cuadraditos]
  *                 (por defecto, justo lo que pide el rectángulo), tope: [p, s] y topeAncho: [c, b] (la escala del juego:
- *                 nada cambia de tamaño al mover el control), rotuloLargo: true | '?' | false, rotuloAncho: true | false,
+ *                 nada cambia de tamaño al mover el control), rotuloLargo: true | '?' | 'lado: ?' | false, rotuloAncho: true | false,
  *                 sobran: true | false (la zona de la derecha), piezas: true | false (false: solo el borde) }.
  *   'angosto'   el piso de x² + x + 1 dm² visto como un rectángulo de (x − a) por q(x) dm y r cuadraditos sueltos; al
  *               achicar la loseta (x), el rectángulo se angosta y con x = a desaparece.
@@ -134,7 +134,8 @@
       ponTexto(textos, 'ancho', x0 - 7, y0 + h / 2 + 11, [[etA, 'i', 700]], 'end', 12);
     }
     if (d.rotuloLargo !== false && w > 0) {
-      const t = d.rotuloLargo === '?' ? [['largo: ?', null, 700]] : [['largo: ', null, 400], [`${binomio(largo[0], largo[1])} dm`, 'f', 700]];
+      // 19 nov (cierre de Factorización): rotuloLargo 'lado: ?' para un piso cuadrado, donde «largo» no se entiende.
+      const t = d.rotuloLargo === '?' ? [['largo: ?', null, 700]] : d.rotuloLargo === 'lado: ?' ? [['lado: ?', null, 700]] : [['largo: ', null, 400], [`${binomio(largo[0], largo[1])} dm`, 'f', 700]];
       ponTexto(textos, 'largo', x0 + w / 2, y0 - 9, t, 'middle', 12);
     }
     // La zona de la derecha: lo que sobra (en naranja, apilado) o lo que falta (en palabras).
@@ -173,7 +174,7 @@
   }
   function altPasadizo(d) {
     const g = geoPasadizo(d), falta = g.sobra.map(v => Math.max(0, -v)), resta = g.sobra.map(v => Math.max(0, v));
-    const largo = d.rotuloLargo === '?' ? 'un largo por hallar' : `${binomio(g.largo[0], g.largo[1], false)} dm de largo`;
+    const largo = d.rotuloLargo === '?' ? 'un largo por hallar' : d.rotuloLargo === 'lado: ?' ? 'el mismo lado, por hallar' : `${binomio(g.largo[0], g.largo[1], false)} dm de largo`;
     let t = `Un pasadizo de ${binomio(g.ancho[0], g.ancho[1], false)} dm de ancho y ${largo}, hecho con losetas, tiras y cuadraditos.`;
     if (d.sobran !== false) t += falta.some(v => v > 0) ? ` Al pedido le faltan ${cuantas(falta)}: quedan huecos punteados.` : ` Del pedido sobran: ${cuantas(resta)}.`;
     return t;

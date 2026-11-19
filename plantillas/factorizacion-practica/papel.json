@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Se factoriza 16x² − 9y². ¿Cuál es la factorización? Datos: a² − b² = (a + b)(a − b), con a y b los dos términos. Alternativas: A) (4x + 3y)²   B) (16x + 9y)(16x − 9y)   C) (4x − 3y)²   D) (4x + 9y)(4x − 9y)   E) (4x + 3y)(4x − 3y)",
+      "enunciado": "Se factoriza 16x² − 9y². ¿Cuál es la factorización? Datos: a² − b² = (a + b)(a − b), con a y b lo que va al cuadrado (no los términos). Alternativas: A) (4x + 3y)²   B) (16x + 9y)(16x − 9y)   C) (4x − 3y)²   D) (4x + 9y)(4x − 9y)   E) (4x + 3y)(4x − 3y)",
       "respuesta": "E) (4x + 3y)(4x − 3y)",
       "pasos": [
         "Es un cuadrado menos otro: (4x)² − (3y)².",
@@ -66,7 +66,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "P(x) = 2x³ + 7x² + 2x − 3 tiene un factor de grado 1 que empieza con 2x. ¿Cuál es ese factor? Datos: Teorema del factor: si P(a) = 0, entonces x − a es un factor de P. Números por probar: los divisores del término independiente, con + y con −. Si el coeficiente principal no es 1: también esos divisores entre los divisores del principal. Alternativas: A) x − 2   B) 2x − 1   C) 2x + 1   D) x − 1",
+      "enunciado": "P(x) = 2x³ + 7x² + 2x − 3 tiene un factor de grado 1 que empieza con 2x. ¿Cuál es ese factor? Datos: Teorema del factor: si P(a) = 0, entonces x − a es un factor de P. cx − b = c(x − b/c): es un factor de P si P(b/c) = 0. Números por probar: los divisores del término independiente, con + y con −. Si el coeficiente principal no es 1: también esos divisores entre los divisores del principal. Alternativas: A) x − 2   B) 2x − 1   C) 2x + 1   D) x − 1",
       "respuesta": "B) 2x − 1",
       "pasos": [
         "1/2 anula a P: el binomio con enteros que se anula ahí es 2x − 1.",

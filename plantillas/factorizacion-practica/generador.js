@@ -91,13 +91,14 @@
     distrib: 'ab + ac = a(b + c)',
     agrupa: 'Agrupar: se juntan los términos de a dos y se saca el factor común de cada par',
     signo: 'b − a = −(a − b)',
-    dif: 'a² − b² = (a + b)(a − b), con a y b los dos términos',
+    dif: 'a² − b² = (a + b)(a − b), con a y b lo que va al cuadrado (no los términos)',
     tcp: 'a² ± 2ab + b² = (a ± b)²: el del medio es el doble producto',
     cubos: 'a³ + b³ = (a + b)(a² − ab + b²)',
     cubos2: 'a³ − b³ = (a − b)(a² + ab + b²)',
-    cuenta: 'Factores primos: se cuentan los distintos; un número solo, como el 2 de 2x, no cuenta',
+    cuenta: 'Factores primos, con coeficientes enteros: se cuentan los distintos; un número solo, como el 2 de 2x, no cuenta',
     sumaCuad: 'Con coeficientes enteros, a² + b² no se escribe como producto',
     aspa: 'Aspa: el primer término se parte en dos con x y el último en dos números; cada fila es un factor',
+    aspaY: 'Aspa con dos letras: el primer término se parte en dos términos con x; el último, en dos con y',
     cruz: 'Los productos en cruz tienen que sumar el término del medio',
     signos: 'Dos números de igual signo dan un producto positivo; de distinto signo, negativo',
     doble: 'Aspa doble: columnas x, y y número; las aspas x–y, y–número y x–número dan los términos del medio',
@@ -105,6 +106,7 @@
     orden: 'El polinomio va ordenado: x⁴, x³, x², x y número; un término que falta va con 0',
     teo: 'Teorema del factor: si P(a) = 0, entonces x − a es un factor de P',
     valor: 'P(a): el valor de P cuando x vale a',
+    teoC: 'cx − b = c(x − b/c): es un factor de P si P(b/c) = 0',
     cand: 'Números por probar: los divisores del término independiente, con + y con −',
     candQ: 'Si el coeficiente principal no es 1: también esos divisores entre los divisores del principal',
     ruf: 'Ruffini: se baja el primero; cada casilla es el de arriba más a por la anterior (a: el número que se prueba)',
@@ -285,7 +287,7 @@
   // ======================= Idea 2: productos notables al revés =======================
   function difCuad(rng) {
     const p = rng.entero(2, 7), q = rng.entero(1, 9), dos = rng.elegir([false, true]);
-    if (p === q) return null;
+    if (p === q || mcd(p, q) !== 1 || (dos && q === 1)) return null;   // «1y²» no se escribe (auditoría)   // con un número común la factorización no sería completa (auditoría A1)
     const L = dos ? 'y' : '', A = `${p}x`, B = `${q}${L}`, Pt = `${p * p}x² − ${q * q}${dos ? 'y²' : ''}`;
     return {
       enunciado: [`Se factoriza ${Pt}.`], pregunta: ['¿Cuál es la factorización?'],
@@ -302,7 +304,7 @@
   }
   function tcp(rng) {
     const a = rng.entero(1, 5), b = rng.entero(1, 9), sg = rng.elegir([1, -1]);
-    if (a === 1 && b === 3 && sg === 1) return null;
+    if ((a === 1 && b === 3 && sg === 1) || (a === 1 && b === 1 && sg === -1) || mcd(a, b) !== 1) return null;   // (2x − 4)² no es completa (auditoría A1)
     const A = a === 1 ? 'x' : `${a}x`, s = sg > 0 ? '+' : '−', o = sg > 0 ? '−' : '+', Pt = poli([a * a, sg * 2 * a * b, b * b]);
     return {
       enunciado: [`Se factoriza ${Pt}.`], pregunta: ['¿Cuál es la factorización?'],
@@ -404,11 +406,11 @@
     const sumaF = (u, w) => suma([[1 + p, 1, 0], [u + w, 0, 1]]);
     return {
       enunciado: [`${Pt} se factoriza con aspa en dos binomios.`], pregunta: ['¿Cuánto suman esos dos binomios?'],
-      datos: [D.aspa, D.cruz], correcta: sumaF(q, s),
+      datos: [D.aspaY, D.cruz], correcta: sumaF(q, s),
       errores: [
         e('TAL-ASPA-SIGNO', sumaF(-q, -s), t => `Bien los extremos. Pero con los signos cambiados el del medio sale al revés; suman ${t}.`),
         e('TAL-PIDE', suma([[q + s, 0, 1]]), t => `Bien los términos con y. Pero cada binomio trae su x: ${t} se olvida de ellas.`),
-        e('TAL-ASPA-MEDIO', suma([[p, 1, 0], [q * s, 0, 1]]), t => `Bien el ${p === 1 ? '' : p}x. Pero se suman los dos binomios, no se multiplican sus números: ${t}.`),
+        e('TAL-PIDE', suma([[p, 1, 0], [q * s, 0, 1]]), t => `Bien el ${p === 1 ? '' : p}x. Pero se suman los dos binomios, no se multiplican sus números: ${t}.`),
         e('TAL-ASPA-UNO', suma([[p, 1, 0], [s, 0, 1]]), t => `Bien uno de los binomios, ${t}. Pero piden la suma de los dos.`),
       ],
       solucion: [[`${Pt} = (${fac2(1, q)})(${fac2(p, s)}): el cruce da el del medio.`], [`(${fac2(1, q)}) + (${fac2(p, s)}) = `, To(sumaF(q, s)), '.']],
@@ -583,12 +585,13 @@
     const bien = lin(c, -b);
     return {
       enunciado: [`P(x) = ${poli(cs)} tiene un factor de grado 1 que empieza con ${c}x.`], pregunta: ['¿Cuál es ese factor?'],
-      datos: [D.teo, D.cand, D.candQ], correcta: bien,
+      datos: [D.teo, D.teoC, D.cand, D.candQ], correcta: bien,
       errores: [
         e('TAL-OLVIDA-PRINC', lin(1, -b), t => `Bien que ${z(b)} divide al independiente. Pero P(${z(b)}) = ${z(evaluar(cs, b))}: ${t} no es factor.`),
         e('TAL-FACTOR-SIGNO', lin(c, b), t => `Bien el ${c} y el ${Math.abs(b)}. Pero ${t} se anula en ${b > 0 ? '−' : ''}${Math.abs(b)}/${c}, que no anula a P.`),
         e('TAL-FRAC-AL-REVES', lin(c, -b) === lin(c, c) ? null : `${Math.abs(b) === 1 ? '' : Math.abs(b)}x ${b > 0 ? '−' : '+'} ${c}`, t => `Bien la fracción con ${c} y ${Math.abs(b)}. Pero va el divisor del independiente arriba; ${t} la invierte.`),
-        e('TAL-FACTOR-CAND', lin(c, -Math.abs(b) - c) === bien ? null : lin(c, -Math.abs(b) - c), t => `Bien el ${c}x. Pero ${t} se anula en ${Math.abs(b) + c}/${c}, que no anula a P.`),
+        // Un candidato de verdad (un divisor del independiente entre c) que no anula a P (auditoría: antes, (|b| + c)/c no era candidato).
+        (() => { const k = [1, 2, 3, 4, 6, 8, 12, 18, 24].flatMap(v => [v, -v]).find(v => cs[3] % v === 0 && mcd(v, c) === 1 && v !== b && v !== -b && Math.abs(v) !== c && !anula(v / c)); return k === undefined ? null : e('TAL-FACTOR-CAND', lin(c, -k), t => `Bien que ${z(k)}/${c} es un candidato: ${z(k)} divide a ${z(cs[3])}. Pero P(${z(k)}/${c}) no es 0: ${t} no es factor.`); })(),
       ],
       solucion: [[`${z(b)}/${c} anula a P: el binomio con enteros que se anula ahí es ${bien}.`], [`${poli(cs)} = `, Ts(`(${bien})`), To(`(${poli(mult([1, -s], [1, -t2]))})`), '.']],
       _datos: { c, b, s, t: t2 },
@@ -640,7 +643,6 @@
         en('TAL-MCM-SUMA', 4, t => `Bien que van todos los factores. Pero ${binx(a)} es común: contarlo dos veces da ${t}.`),
         en('TAL-MCD-MCM', 1, t => `Bien el factor común, ${binx(a)}, de grado ${t}. Pero ese es el MCD.`),
         en('TAL-MCD-PRIMOS', 2, t => `Bien el grado de cada uno, ${t}. Pero el MCM es múltiplo de los dos, y ninguno lo es del otro.`),
-        en('TAL-MCM-PROD', 8, t => `Bien que se combinan los grados. Pero no se multiplican P y Q dos veces: ${t} es demasiado.`),
       ],
       solucion: [[`P = (${binx(a)})(${binx(b)}) y Q = (${binx(a)})(${binx(c)}).`], [`MCM = (${binx(a)})(${binx(b)})(${binx(c)}): grado `, Tm('3'), '.']],
       _datos: { a, b, c },
@@ -657,7 +659,7 @@
       errores: [
         en('TAL-FACTOR-SIGNO', k + a, t => `Bien que ${z(a)} anula a los dos. Pero el factor es ${binx(a)}; con el signo cambiado da ${t}.`),
         en('TAL-MCD-SINFACTOR', (k - a) * (k - b), t => `Bien ${binx(a)}. Pero ${binx(b)} solo está en P; con él da ${t}.`),
-        en('TAL-MCD-MAX', evaluar(Qc, k), t => `Bien que Q comparte un factor con P. Pero ${binx(d)} no está en P; Q(${k}) = ${t}.`),
+        en('TAL-MCD-SINFACTOR', evaluar(Qc, k), t => `Bien que Q comparte un factor con P. Pero ${binx(d)} no está en P; Q(${k}) = ${t}.`),
         en('TAL-MCD-PRIMOS', 1, t => `Bien que no se parecen a simple vista. Pero los dos se anulan en ${z(a)}: el MCD no es ${t}.`),
       ],
       solucion: [[`P = (${binx(a)})(${binx(b)})(${binx(c)}) y Q = (${binx(a)})(${binx(d)}): solo ${binx(a)} es común.`], [`M(${k}) = ${k} ${a > 0 ? '−' : '+'} ${Math.abs(a)} = `, Tm(f(k - a)), '.']],

@@ -1,7 +1,7 @@
 {
   "plantilla": "factorizacion-practica",
   "nota": "Un caso por tipo (25 tipos, seis ideas). entrada: la idea y el tipo que da generar(semilla, { idea }); esperado.texto: el texto de la alternativa correcta.",
-  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e7-algebra/scripts/cuentas-practica.py), que no usa el generador ni el núcleo: lee el enunciado que ve el alumno, arma los polinomios con sympy y recalcula (expand, factor_list, rem, gcd, lcm): la correcta da el polinomio, divide a P, cuenta o suma sus factores primos, o da el MCD y el MCM; ningún distractor de una factorización o de un factor es también correcto. Revisó 2408 problemas (400 por idea y los 8 del papel), entre ellos estos 25 casos: todos cuadran.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e7-algebra/scripts/cuentas-practica.py), que no usa el generador ni el núcleo: lee el enunciado que ve el alumno, arma los polinomios con sympy y recalcula (expand, factor_list, rem, gcd, lcm): la correcta da el polinomio, divide a P, cuenta o suma sus factores primos, o da el MCD y el MCM; ningún distractor de una factorización o de un factor es también correcto. Revisó 2408 problemas (400 por idea y los 8 del papel), entre ellos estos 25 casos: todos cuadran. Cierre (19 nov, auditor): con la corrección A1 (diferencias de cuadrados y cuadrados perfectos sin número común) cambió la semilla 0 de dif-cuad, 4x² − 9 = (2x + 3)(2x − 3); las 2400 respuestas y sus distractores se rehicieron aparte con sympy (scratchpad de la sesión, e7-cierre-fz/scripts/cuentas-gen.py).",
   "casos": [
     {
       "semilla": 0,
@@ -55,7 +55,7 @@
         "nivel": 1
       },
       "esperado": {
-        "texto": "(4x + 2y)(4x − 2y)"
+        "texto": "(2x + 3)(2x − 3)"
       }
     },
     {

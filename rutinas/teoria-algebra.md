@@ -202,3 +202,78 @@ Los PO (de `plantillas/polinomios/`), AL7, AL16 y las trampas 44 y 45 de San Mar
 | TAL-PIDE | Responde otra cosa que la pedida (un dato, un valor intermedio, la suma por el producto) | 1 a 6 | T, P |
 
 Son 68 códigos; la lista se comparó con los dos archivos el 19 nov. TAL-COEF-GRADO y TAL-EXP-NEG están en el comentario de la idea 3, sin opción propia.
+
+## Factorización, Etapa 7 (19 nov 2026): códigos TAL- de la unidad rehecha
+
+La unidad `algebra.factorizacion` se rehízo en la Etapa 7 (`docs/etapa7/propuesta-algebra.md`; auditoría en
+`rutinas/auditoria/algebra.factorizacion.md`). Todos son hipótesis de diseño, sin dato de prevalencia en alumnos
+peruanos; AL8 y AL11 (de `docs/investigacion/algebra-funciones-ideas-erroneas.md`, parcial) siguen con su nombre. Cada
+código vive junto a la opción que lo usa, con su `siFuera` o su explicación, en `contenido/teoria/algebra/factorizacion.js`
+(T; la lista de cada idea está en su comentario) o en la práctica `plantillas/factorizacion-practica/generador.js` (P). El
+análisis agrupa por (unidad, idea, error): TAL-SIGNO, TAL-PIDE, TAL-INCOMPLETA, TAL-FACTOR-SIGNO y TAL-ASPA-SIGNO tienen
+otro sentido en otras unidades (TAL-FACTOR-SIGNO, por ejemplo, en Polinomios y aquí en las ideas 5 y 6). Ideas: 1 factor
+común, 2 identidades, 3 aspa simple, 4 aspa doble, 5 teorema del factor, 6 MCD y MCM.
+
+| Código | Qué hace el alumno | Ideas | Dónde |
+| --- | --- | --- | --- |
+| TAL-UNO-CERO | Borra el 1 que deja el término que sale entero (3x²(2x) por 3x²(2x + 1)) | 1 | T, P |
+| TAL-UNO-SIGNO | Deja el 1 con el signo cambiado | 1 | P |
+| TAL-UNO-COEF | No saca el número común y además pierde el 1 | 1 | P |
+| TAL-COMUN-MENOR | No saca la menor potencia de x (queda una x común dentro) | 1 | T, P |
+| TAL-COMUN-COEF | No saca el número común | 1 | T, P |
+| TAL-COMUN-MAYOR | Toma la mayor potencia de cada letra | 1 | T, P |
+| TAL-COMUN-UNA | Saca una sola de las letras comunes | 1 | T, P |
+| TAL-COMUN-SUMA | Toma como número común la suma de los coeficientes | 1 | P |
+| TAL-SIGNO-BIN | No cambia el signo al voltear el binomio (b − a = −(a − b)) | 1 | T, P |
+| TAL-SIGNO-DENTRO | Cambia el signo dentro del binomio común | 1 | T, P |
+| TAL-AGRUPA-SIGNO | Saca el factor del segundo par sin su signo | 1 | T, P |
+| TAL-AGRUPA-CRUZ | Cambia el signo del binomio común | 1 | T, P |
+| TAL-AGRUPA-PROD | Multiplica los números de los dos factores en vez de sumarlos | 1 | P |
+| TAL-INCOMPLETA | Se para antes de que cada factor sea primo | 2, 3, 4, 5 | T, P |
+| TAL-SIN-RAIZ | No pasa de los cuadrados a lo que va al cuadrado (16x + 25 por 4x + 5) | 2 | T, P |
+| TAL-RAIZ-UNA | Pasa uno solo de los dos términos a lo que va al cuadrado | 2 | T, P |
+| TAL-IDENTIDAD | Cambia una identidad por otra (la suma por la diferencia en un cuadrado perfecto, o al revés) | 2 | T, P |
+| TAL-SIGNO | Cambia el signo del binomio al cuadrado | 2 | T, P |
+| TAL-2AB | Toma el término del medio sin dividirlo entre 2 | 2 | T, P |
+| TAL-CUBO-SIGNO | Deja el término del medio del trinomio con el signo del binomio | 2 | T, P |
+| TAL-CUBO-DOBLE | Pone el doble producto en el trinomio de los cubos | 2 | T, P |
+| TAL-CUBO-MEDIO | Olvida el término del medio del trinomio | 2 | T, P |
+| TAL-CUBO-CUAD | Pone b en vez de b² al final del trinomio | 2 | P |
+| TAL-PRIMO-CONST | Cuenta la constante como factor primo | 2 | T, P |
+| TAL-PRIMO-X | Olvida el factor x | 2 | T, P |
+| TAL-PRIMO-REPITE | Cuenta un factor repetido tantas veces como su exponente | 2 | T, P |
+| TAL-ASPA-CRUCE | Pone los números en la fila equivocada | 3 | T, P |
+| TAL-ASPA-PRINC | Olvida el coeficiente de x² | 3 | T, P |
+| TAL-ASPA-EXTREMO | Parte mal el primer término | 3 | T, P |
+| TAL-ASPA-SIGNO | Cambia los signos de los números | 3, 4 | T, P |
+| TAL-ASPA-SIGNO2 | Toma el otro número con el signo cambiado | 3 | P |
+| TAL-ASPA-MEDIO | Toma una partición del último término cuyo cruce no da el del medio | 3 | T, P |
+| TAL-ASPA-UNO | Da uno solo de los dos binomios cuando piden la suma | 3 | P |
+| TAL-ASPA-NUM | Pone otro número en el trinomio primo | 3 | P |
+| TAL-PRIMO-SUMA | Abre un factor que con enteros no se abre (x² + 9) | 3 | T, P |
+| TAL-DE-TODO | Pone el término en x² entero en la columna del medio | 4 | T, P |
+| TAL-DE-SUMA | Suma el cruce de los extremos en vez de restarlo | 4 | T, P |
+| TAL-DE-CRUCE | Pone lo que ya dieron los extremos | 4 | T, P |
+| TAL-DE-RESTA | Resta al revés (el cruce menos el término) | 4 | P |
+| TAL-DOBLE-NUM | Cambia los números de fila | 4 | T, P |
+| TAL-DOBLE-SIGNO | Cambia el signo de los términos en y o de los números | 4 | T, P |
+| TAL-DOBLE-SIGNO2 | Cambia el signo del otro grupo (números o términos en y) | 4 | P |
+| TAL-DOBLE-PRINC | Parte mal el primer término (lleva el número a la otra fila) | 4 | T, P |
+| TAL-FACTOR-SIGNO | Copia el signo del número en el binomio (x − 3 por P(−3) = 0) | 5, 6 | T, P |
+| TAL-FACTOR-INDEP | Toma el término independiente como el número que anula | 5 | T, P |
+| TAL-FACTOR-COEF | Toma el coeficiente de x² como el número que anula | 5 | P |
+| TAL-FACTOR-X | Cree que x siempre es un factor | 5 | T, P |
+| TAL-FACTOR-CAND | Cree que todo divisor del independiente anula a P | 5 | T, P |
+| TAL-FACTOR-PROD | Multiplica los números que anulan en vez de sumarlos | 5 | P |
+| TAL-OLVIDA-PRINC | Prueba solo los divisores del independiente, sin dividir entre el principal | 5 | T, P |
+| TAL-FRAC-AL-REVES | Invierte la fracción (divisor del principal arriba) | 5 | T, P |
+| TAL-MCD-MAX | Toma el mayor exponente en el MCD | 6 | T, P |
+| TAL-MCD-SINFACTOR | Mete en el MCD un factor que no es común | 6 | T, P |
+| TAL-MCD-MCM | Confunde el MCD con el MCM | 6 | T, P |
+| TAL-MCD-PRIMOS | No factoriza y cree que no hay nada común (MCD 1) | 6 | T, P |
+| TAL-MCM-MIN | Toma el menor exponente en el MCM | 6 | T, P |
+| TAL-MCM-SUMA | Suma exponentes o grados: da P · Q y cuenta dos veces lo común | 6 | T, P |
+| TAL-PIDE | Responde otra cosa que la pedida (un factor por la suma, el producto por la suma, P(0) por Q(0)) | 1, 3, 4, 5, 6 | T, P |
+
+Son 58 códigos TAL- y los dos AL; la lista se comparó con los dos archivos el 19 nov, después de las correcciones del
+cierre (salió TAL-MCM-PROD, un 8 que no producía ningún error).

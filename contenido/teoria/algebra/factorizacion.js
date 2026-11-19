@@ -55,7 +55,9 @@
     for (const o of ops) { if (!o || o.texto === null || o.texto === undefined || o.texto === '') continue; const t = Kit.plano(o.texto); if (vistos.has(t) || /NaN|undefined|Infinity/.test(t)) continue; vistos.add(t); out.push(o); }
     return out;
   }
-  const ops = lista => distintas(lista).slice(0, 4);
+  // Las alternativas van en tinta, sin fichas de magnitud: con su color y su punteado se leían como términos del glosario
+  // (lector B, 19 nov). El color queda en la solución.
+  const ops = lista => distintas(lista).slice(0, 4).map(o => Object.assign({}, o, { texto: Kit.plano(o.texto) }));
   function conCuatro(caso, r) {
     for (let i = 0; i < 120; i++) { const c = caso(r); if (c && c.opciones.length >= 4) return c; }   // null: el caso no sirve, otro
     throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
@@ -114,7 +116,7 @@
     distrib: 'ab + ac = a(b + c)',
     agrupa: 'Agrupar: se juntan los términos de a dos y se saca el factor común de cada par',
     signo: 'b − a = −(a − b)',
-    piezas: 'Una loseta cubre x² dm²; una tira, x dm²; un cuadradito, 1 dm²',
+    piezas: 'Una loseta (x por x dm) cubre x² dm²; una tira (x por 1 dm), x dm²; un cuadradito, 1 dm²',
     area: 'Área de un rectángulo: ancho · largo',
     gradoA: 'Grado absoluto de un polinomio: el mayor de los grados de sus términos (exponentes sumados)',
     valor: 'Valor numérico: se cambia cada letra por su número y se opera',
@@ -143,7 +145,7 @@
     const ec = [FS(cx(c)), ' · ', FO(conPar(lin(p, s))), ` = ${poli([usa[0], usa[1], 0])}`];
     if (dif.some(v => v < 0)) return [...ec, ': ', SO(`falta${dif.filter(v => v < 0).reduce((a, v) => a - v, 0) > 1 ? 'n' : ''} ${dif.map((v, k) => (v < 0 ? piezasTxt(-v, k) : '')).filter(Boolean).join(' y ')}`)];
     if (dif.some(v => v > 0)) return [...ec, ': ', SO(`sobra${dif.reduce((a, v) => a + v, 0) > 1 ? 'n' : ''} ${dif.map((v, k) => (v > 0 ? piezasTxt(v, k) : '')).filter(Boolean).join(' y ')}`)];
-    return ec;
+    return c === 1 ? [...ec, ': entra todo; ¿entra con uno más ancho?'] : [...ec, ': entra todo'];
   }
 
   // Ahora tú 1: el término que sale entero deja un 1 (no la predicción: 6x³ + 3x²).
@@ -195,7 +197,7 @@
       opciones: ops([
         { id: 'c', texto: [FS(`(x − ${a})`), FO(`(${m}x − ${n})`)], correcta: true },
         { id: 'nosigno', texto: [FS(`(x − ${a})`), FO(`(${m}x + ${n})`)], error: 'TAL-SIGNO-BIN', siFuera: `Bien x − ${a} como binomio común. Pero ${a} − x = −(x − ${a}): el ${n} sale con su menos.` },
-        { id: 'dentro', texto: [FS(`(x + ${a})`), FO(`(${m}x − ${n})`)], error: 'TAL-SIGNO-DENTRO', siFuera: `Bien el ${m}x − ${n}. Pero el signo se le cambia al ${n}, no al ${a} de adentro.` },
+        { id: 'dentro', texto: [FS(`(x + ${a})`), FO(`(${m}x − ${n})`)], error: 'TAL-SIGNO-DENTRO', siFuera: `Bien el ${m}x − ${n}. Pero el signo cambia en el ${n} que multiplica, no dentro del binomio x − ${a}.` },
         { id: 'ambos', texto: [FS(`(${a} − x)`), FO(`(${m}x + ${n})`)], error: 'TAL-AGRUPA-CRUZ', siFuera: `Bien que un binomio se voltea. Pero así da −(x − ${a})(${m}x + ${n}), otro polinomio.` },
       ]),
       solucion: { texto: `${a} − x = −(x − ${a}): el segundo término es −${n}(x − ${a}), y x − ${a} queda común.`, ecuacion: [`${P} = `, FS(`(x − ${a})`), FO(`(${m}x − ${n})`)] },
@@ -213,7 +215,7 @@
       datos: [DD.agrupa, DD.distrib],
       opciones: ops([
         { id: 'c', texto: FO(bien), correcta: true },
-        { id: 'signo', texto: FO(sumaF([1, a], [c, 0, -b])), error: 'TAL-AGRUPA-SIGNO', siFuera: `Bien x + ${a} común al primer par. Pero del segundo sale ${f(b)} con su signo.` },
+        { id: 'signo', texto: FO(sumaF([1, a], [c, 0, -b])), error: 'TAL-AGRUPA-SIGNO', siFuera: `Bien ${lin(1, a)} común al primer par. Pero del segundo sale ${f(b)} con su signo.` },
         { id: 'cruz', texto: FO(sumaF([1, -a], [c, 0, b])), error: 'TAL-AGRUPA-CRUZ', siFuera: `Bien ${poli([c, 0, b])}. Pero el binomio común es ${lin(1, a)}, con el signo de su número.` },
         { id: 'olvida', texto: FO(poli([c, 0, b + a])), error: 'TAL-PIDE', siFuera: `Bien los números ${f(a)} y ${f(b)}. Pero el factor ${lin(1, a)} también trae su x.` },
       ]),
@@ -262,13 +264,13 @@
       solucion: [{ texto: 'Se multiplica el factor por cada término de adentro y se compara con el original.', ecuacion: [FS('4x'), ' · x − ', FS('4x'), ' · 3 = 4x² − 12x'] }],
       respuesta: ['Sí: 4x(x − 3) vuelve a dar 4x² − 12x'] },
     { nivel: 2, titulo: 'Tres términos',
-      enunciado: ['Factoriza 8x³ − 12x² + 4x.'],
+      enunciado: ['Factoriza 8x³ − 12x² + 8x.'],
       datos: [DD.comun, DD.dentro, DD.divPot],
       solucion: [
-        { texto: 'El mayor número que divide a 8, 12 y 4 es 4. La menor potencia de x es x¹.', ecuacion: ['factor común: ', FS('4x')] },
-        { texto: 'Cada término entre 4x: queda 2x², −3x y 1, porque el último término es el mismo 4x.', ecuacion: ['8x³ − 12x² + 4x = ', FS('4x'), '(', FO('2x² − 3x + 1'), ')'] },
+        { texto: 'El mayor número que divide a 8, 12 y 8 es 4. La menor potencia de x es x¹.', ecuacion: ['factor común: ', FS('4x')] },
+        { texto: 'Cada término entre 4x: queda 2x², −3x y 2.', ecuacion: ['8x³ − 12x² + 8x = ', FS('4x'), '(', FO('2x² − 3x + 2'), ')'] },
       ],
-      respuesta: [FS('4x'), '(', FO('2x² − 3x + 1'), ')'] },
+      respuesta: [FS('4x'), '(', FO('2x² − 3x + 2'), ')'] },
     { nivel: 2, titulo: 'Dos letras y tres términos',
       enunciado: ['Factoriza 6x³y² + 9x²y³ − 3x²y².'],
       datos: [DD.comun, DD.dentro, DD.divPot],
@@ -416,7 +418,7 @@
     },
     mira: {
       pieza: 'alg-tabla',
-      datos: { columnas: ['paso', 'queda'], filas: [
+      datos: { columnas: ['paso', 'cómo'], filas: [
         [{ t: 'número', desde: 1 }, { t: '3 divide a 6 y a 3', desde: 1 }],
         [{ t: 'letra', desde: 2 }, { t: 'la menor: x²', desde: 2 }],
         [{ t: 'entre 3x²', desde: 3 }, { t: '2x y 1', desde: 3, color: 'f' }],
@@ -436,7 +438,7 @@
     regla: {
       texto: 'El factor común lleva el mayor número que divide a los coeficientes y cada letra con su menor exponente. Si nada es común a todos, se agrupa de a dos.',
       ecuacion: ['ab + ac = ', FS('a'), '(', FO('b + c'), ')'],
-      condicion: 'un término que sale entero deja un 1 dentro; se comprueba multiplicando.',
+      condicion: 'cada término se divide entre el factor común: uno que sale entero deja un 1; se comprueba multiplicando.',
       voz: 'Si no hay nada común a todos, prueba agrupar de a dos.',
       dibujo: RP({ objeto: 'pasadizo', ancho: [2, 0], largo: [1, 2], pedido: PED1, sobran: false }),
     },
@@ -454,7 +456,7 @@
         const pm = Math.min(...ps), qm = Math.min(...qs), comunT = mono(g, pm, qm);
         const P = suma(ks.map((k, i) => [g * k, ps[i], qs[i]])), dentro = suma(ks.map((k, i) => [k, ps[i] - pm, qs[i] - qm]));
         const tabla = corte => ({ datos: { columnas: ['', 'número', 'x', 'y'], filas: [
-          ['coeficientes', ks.map(k => f(Math.abs(g * k))).join(', '), ps.map(p => pot('x', p)).join(', '), qs.map(q => pot('y', q)).join(', ')],
+          ['términos', ks.map(k => f(Math.abs(g * k))).join(', '), ps.map(p => pot('x', p)).join(', '), qs.map(q => pot('y', q)).join(', ')],
           ['común', { t: f(g), desde: 1, color: 'i' }, { t: pot('x', pm), desde: 1, color: 'i' }, { t: pot('y', qm), desde: 1, color: 'i' }]], alt: `Números y potencias de los tres términos de ${P}` }, estado: { corte } });
         return {
           enunciado: [`Factoriza ${P} sacando todo su factor común.`],
@@ -500,20 +502,20 @@
   function lectura2(s, t) {
     const ec = [FS(`(x + ${s})`), '² = ', poli([1, 2 * s, s * s])];
     if (t === 2 * s && s * s === 9) return [...ec, ': el pedido entero'];
-    return [...ec, `; pedido: ${poli([1, t, 9])}`];
+    return [...ec, `;   tienes ${poli([1, t, 9])}`];   // lo que hay con las tiras compradas (el pedido era x² + 9: lector A)
   }
   const DI = {
-    dif: 'a² − b² = (a + b)(a − b), con a y b los dos términos',
+    dif: 'a² − b² = (a + b)(a − b), con a y b lo que va al cuadrado (no los términos)',
     tcp: 'a² ± 2ab + b² = (a ± b)²: el del medio es el doble producto',
     cubos: 'a³ + b³ = (a + b)(a² − ab + b²) y a³ − b³ = (a − b)(a² + ab + b²)',
     primo: 'Factor primo: de grado 1 o más, ya no se escribe como producto con coeficientes enteros',
-    cuenta: 'Factores primos: se cuentan los distintos; un número solo, como el 2 de 2x, no cuenta',
+    cuenta: 'Factores primos, con coeficientes enteros: se cuentan los distintos; un número solo, como el 2 de 2x, no cuenta',
     sumaCuad: 'Con coeficientes enteros, a² + b² no se escribe como producto',
   };
   // Ahora tú 1: una diferencia de cuadrados con coeficientes (y a veces con dos letras).
   function casoDifCuad(r) {
     const p = r.ent(2, 7), q = r.ent(1, 9), dos = r.uno([false, true]);
-    if (p === q) return null;
+    if (p === q || mcdN(p, q) !== 1 || (dos && q === 1)) return null;   // «1y²» no se escribe (auditoría)   // con un número común, la factorización no sería completa (auditoría A1)
     const L = dos ? 'y' : '', A = `${p}x`, B = `${q}${L}`, P = `${p * p}x² − ${q * q}${pot(L || '', dos ? 2 : 0)}`;
     return {
       pregunta: [`¿Cuál es la factorización de ${P}?`],
@@ -557,7 +559,7 @@
       datos: [DI.cubos],
       opciones: ops([
         { id: 'c', texto: FO(tri(o, a * b === 1 ? '' : a * b)), correcta: true },
-        { id: 'igual', texto: FO(tri(s, a * b === 1 ? '' : a * b)), error: 'TAL-CUBO-SIGNO', siFuera: `Bien los cuadrados ${pot(A, 2)} y ${b * b}. Pero el del medio va con el signo contrario al del binomio.` },
+        { id: 'igual', texto: FO(tri(s, a * b === 1 ? '' : a * b)), error: 'TAL-CUBO-SIGNO', siFuera: `Bien los cuadrados ${a === 1 ? 'x²' : `(${A})² = ${a * a}x²`} y ${b * b}. Pero el del medio va con el signo contrario al del binomio.` },
         { id: 'doble', texto: FO(tri(o, 2 * a * b)), error: 'TAL-CUBO-DOBLE', siFuera: `Bien los cuadrados. Pero el del medio es ${A} · ${b}, sin el 2 del cuadrado de un binomio.` },
         { id: 'medio', texto: FO(`${a * a === 1 ? '' : a * a}x² + ${b * b}`), error: 'TAL-CUBO-MEDIO', siFuera: `Bien los cuadrados. Pero falta el del medio, ${A} · ${b}.` },
       ]),
@@ -698,7 +700,7 @@
       enunciado: ['Un piso cuadrado cubre (4x² + 20x + 25) dm². Si la loseta mide x = 3 dm, ¿cuántos dm mide el lado del piso?'],
       alternativas: ['121', '17', '11', '8', '31'],
       datos: [DI.tcp, DD.valor],
-      figura: RP({ objeto: 'pasadizo', ancho: [2, 5], largo: [2, 5], piezas: false, rotuloLargo: '?', rotuloAncho: false, sobran: false }),
+      figura: RP({ objeto: 'pasadizo', ancho: [2, 5], largo: [2, 5], piezas: false, rotuloLargo: 'lado: ?', rotuloAncho: false, sobran: false }),
       solucion: [
         { texto: '4x² es (2x)² y 25 es 5²; el doble producto, 2 · 2x · 5 = 20x, coincide.', ecuacion: ['4x² + 20x + 25 = ', FS('(2x + 5)'), '²'] },
         { texto: 'El lado es 2x + 5. Con x = 3.', ecuacion: ['2 · 3 + 5 = ', FS('11')] },
@@ -732,7 +734,7 @@
       tarjetas: [
         { titulo: 'Un piso cuadrado', texto: 'Rubén tiene 1 loseta y 9 cuadraditos. Quiere un piso cuadrado, con el ancho igual al largo, y puede comprar las tiras que le falten.',
           pieza: 'alg-losetas', dibujo: LO({ objeto: 'pedido', filas: [{ nombre: 'Pedido', cuenta: [1, 0, 9] }] }) },
-        { titulo: 'Lo viste en Productos notables', texto: 'El cuadrado de un binomio son cuatro piezas: dos cuadrados y dos rectángulos iguales. Al revés, si reconoces esas piezas, escribes el producto sin buscarlo.',
+        { titulo: 'Lo viste en Productos notables', texto: 'El cuadrado de un binomio son cuatro piezas: dos cuadrados y dos rectángulos iguales. Al revés, si reconoces esas piezas, escribes el producto sin buscarlo. Lo mismo con la suma por la diferencia: (a + b)(a − b) = a² − b².',
           ecuacion: ['(a + b)² = a² + 2ab + b²'] },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir el lado y las tiras. Mira qué lado arman los 9 cuadraditos y cuántas tiras pide ese piso.' },
       ],
@@ -799,9 +801,9 @@
     regla: {
       texto: 'Se lee al revés el producto notable: un cuadrado menos otro, dos cuadrados con su doble producto, o dos cubos. Se sigue hasta que cada factor sea primo.',
       ecuacion: ['a² − b² = (a + b)(a − b)'],
-      condicion: 'primero se saca el factor común; con coeficientes enteros, a² + b² ya no se abre.',
+      condicion: 'ya se sacó el factor común; con coeficientes enteros, a² + b² no se abre.',
       voz: 'Cuando termines, revisa cada factor: ¿se abre otra vez?',
-      dibujo: TB({ columnas: ['forma', 'se escribe'], filas: [['a² − b²', { t: '(a + b)(a − b)', fuerte: true }], ['a² ± 2ab + b²', { t: '(a ± b)²', fuerte: true }], ['a³ ± b³', { t: '(a ± b)(a² ∓ ab + b²)', fuerte: true }]], alt: 'Tres formas y su factorización: diferencia de cuadrados, cuadrado perfecto y suma o diferencia de cubos' }),
+      dibujo: TB({ columnas: ['forma', 'se escribe'], filas: [['a² − b²', { t: '(a + b)(a − b)', fuerte: true }], ['a² ± 2ab + b²', { t: '(a ± b)²', fuerte: true }], ['a³ + b³', { t: '(a + b)(a² − ab + b²)', fuerte: true }], ['a³ − b³', { t: '(a − b)(a² + ab + b²)', fuerte: true }]], alt: 'Cuatro formas y su factorización: diferencia de cuadrados, cuadrado perfecto, suma de cubos y diferencia de cubos' }),
     },
     // Así se resuelve: un trinomio cuadrado perfecto con coeficiente. «Ahora tú» pide una diferencia de cuadrados, un
     // cuadrado perfecto con distractores, cubos y el número de factores primos; sus casos salen de otras semillas.
@@ -809,7 +811,9 @@
       pieza: 'alg-tabla',
       generar(s) {
         const r = azar(s + 900);
-        const a = r.ent(2, 5), b = r.ent(1, 9), sg = r.uno([1, -1]), A = `${a}x`, sgn = sg > 0 ? '+' : '−';
+        let a, b;   // a y b sin número común: (2x − 4)² no es la factorización completa de 4x² − 16x + 16 (auditoría A1)
+        do { a = r.ent(2, 5); b = r.ent(1, 9); } while (mcdN(a, b) !== 1);
+        const sg = r.uno([1, -1]), A = `${a}x`, sgn = sg > 0 ? '+' : '−';
         const P = poli([a * a, sg * 2 * a * b, b * b]);
         const tabla = corte => ({ datos: { columnas: ['término', 'es'], filas: [[`${a * a}x²`, { t: `(${A})²`, desde: 1 }], [`${b * b}`, { t: `${b}²`, desde: 1 }], [`${sgn} ${2 * a * b}x`, { t: `${sgn} 2 · ${A} · ${b}`, desde: 2 }]], alt: `Los tres términos de ${P}` }, estado: { corte } });
         return {
@@ -848,7 +852,7 @@
     const cel = (t, c) => (t === '?' ? { t: '?', hueco: true, desde } : { t, color: c, fuerte: true, desde });
     return {
       columnas: ['', '', '', cruz[0] !== null ? 'en cruz' : ''],
-      filas: [[cel(a[0], 'i'), '', cel(a[1], 'i'), cruz[0] ? { t: cruz[0], desde } : ''], [cel(b[0], 'f'), '', cel(b[1], 'f'), cruz[1] ? { t: cruz[1], desde } : '']],
+      filas: [[cel(a[0], 'i'), '', cel(a[1], 'i'), cruz[1] ? { t: cruz[1], desde } : ''], [cel(b[0], 'f'), '', cel(b[1], 'f'), cruz[0] ? { t: cruz[0], desde } : '']],   // cada producto, en la fila del número por el que se multiplica
       flechas: [{ de: [0, 0], a: [1, 2], desde }, { de: [1, 0], a: [0, 2], desde }],
       ...(pie ? { pie } : {}),
       alt: alt || `Aspa: ${a.join(' y ')} arriba, ${b.join(' y ')} abajo, con los productos en cruz`,
@@ -874,6 +878,7 @@
     cruz: 'Los productos en cruz tienen que sumar el término del medio',
     mult: DD.mult,
     signo: 'Dos números de igual signo dan un producto positivo; de distinto signo, negativo',
+    aspaY: 'Aspa con dos letras: el primer término se parte en dos términos con x; el último, en dos con y',
   };
   const fac = (p, q) => `(${lin(p, q)})`;
   const fac2 = (p, q, L = 'y') => `(${p === 1 ? '' : p}x ${q < 0 ? '−' : '+'} ${Math.abs(q) === 1 ? '' : Math.abs(q)}${L})`;
@@ -889,7 +894,7 @@
       opciones: ops([
         { id: 'c', texto: FS(binx(m)), correcta: true },
         { id: 'signo', texto: FS(binx(-m)), error: 'TAL-ASPA-SIGNO', siFuera: `Bien ${m} · ${n} = ${m * n}. Pero el del medio es negativo: los dos números van con −.` },
-        { id: 'medio', texto: FS(binx(-otro)), error: 'TAL-ASPA-MEDIO', siFuera: `Bien que ${otro} divide a ${m * n}. Pero con su pareja, el cruce no da ${f(m + n)}x.` },
+        { id: 'medio', texto: FS(binx(-otro)), error: 'TAL-ASPA-MEDIO', siFuera: `Bien que ${otro} divide a ${m * n}. Pero con su pareja, el cruce no da −${f(m + n)}x.` },
         { id: 'signo2', texto: FS(binx(-n)), error: 'TAL-ASPA-SIGNO', siFuera: `Bien ${n}. Pero va con −: con + el del medio saldría positivo.` },
       ]),
       solucion: { texto: `${m * n} = (−${m})(−${n}) y en cruz −${m}x − ${n}x = −${m + n}x: cuadra.`, ecuacion: [`${P} = `, FS(`(${binx(m)})`), FO(`(${binx(n)})`)] },
@@ -926,15 +931,15 @@
     const bien = sumaF(q, s);
     return {
       pregunta: [`${P} se factoriza con aspa en dos binomios. ¿Cuánto suman esos dos factores?`],
-      datos: [DA.aspa, DA.cruz],
+      datos: [DA.aspaY, DA.cruz],
       opciones: ops([
         { id: 'c', texto: FO(bien), correcta: true },
         { id: 'signo', texto: FO(sumaF(-q, -s)), error: 'TAL-ASPA-SIGNO', siFuera: 'Bien los extremos. Pero con esos signos el del medio cambia de signo.' },
         p !== 1 ? { id: 'cruce', texto: FO(sumaF(s, q)), error: 'TAL-ASPA-CRUCE', siFuera: 'Bien los números. Pero en otras filas el cruce no da el del medio.' } : null,
         { id: 'sinx', texto: FO(suma([[q + s, 0, 1]])), error: 'TAL-PIDE', siFuera: `Bien los términos con y. Pero cada factor también trae su término con x.` },
-        { id: 'prod', texto: FO(suma([[p, 1, 0], [q * s, 0, 1]])), error: 'TAL-ASPA-MEDIO', siFuera: `Bien el ${p}x. Pero se suman los dos factores enteros, no se multiplican sus números.` },
+        { id: 'prod', texto: FO(suma([[p, 1, 0], [q * s, 0, 1]])), error: 'TAL-PIDE', siFuera: `Bien el ${p}x. Pero se suman los dos factores enteros, no se multiplican sus números.` },
       ]),
-      solucion: { texto: `${P} = ${fac2(1, q)}${fac2(p, s)}: en cruz, ${p === 1 ? '' : p}x · ${q === 1 ? '' : q === -1 ? '−' : q}y + x · ${s === 1 ? '' : s === -1 ? '−' : s}y da el del medio.`, ecuacion: [`${fac2(1, q)} + ${fac2(p, s)} = `, FO(bien)] },
+      solucion: { texto: `${P} = ${fac2(1, q)}${fac2(p, s)}: en cruz, ${p === 1 ? '' : p}x · ${q < 0 ? `(${yT(q)})` : yT(q)} + x · ${s < 0 ? `(${yT(s)})` : yT(s)} = ${suma([[B, 1, 1]])}, el del medio.`, ecuacion: [`${fac2(1, q)} + ${fac2(p, s)} = `, FO(bien)] },
     };
   }
   // Ahora tú 4 (nivel examen): un trinomio en x², x⁴ − (k² − l²)x² − k²l² = (x² − k²)(x² + l²): suma de factores primos.
@@ -1009,7 +1014,7 @@
       enunciado: ['Factoriza 6x² + 7x + 2.'],
       datos: [DA.aspa, DA.cruz],
       solucion: [
-        { texto: '6x² puede ser 6x · x o 3x · 2x. Con 6x · x ninguna partición de 2 da 7x (6x · 2 + x = 13x; 6x + 2x = 8x).' },
+        { texto: '6x² puede ser 6x · x o 3x · 2x. Con 6x · x no sale 7x: el cruce da 6x · 2 + x · 1 = 13x o 6x · 1 + x · 2 = 8x.' },
         { texto: 'Con 3x · 2x y 2 · 1: 3x · 1 + 2x · 2 = 7x. Cuadra.', ecuacion: ['6x² + 7x + 2 = ', FS('(3x + 2)'), FO('(2x + 1)')] },
       ],
       respuesta: [FS('(3x + 2)'), FO('(2x + 1)')] },
@@ -1063,7 +1068,7 @@
     { nivel: 3, titulo: 'Un factor con dos letras',
       enunciado: ['¿Cuál de estos binomios es un factor de 3x² + 7xy + 2y²?'],
       alternativas: ['3x + 2y', 'x + y', 'x + 2y', '3x − y', 'x − 2y'],
-      datos: [DA.aspa, DA.cruz],
+      datos: [DA.aspaY, DA.cruz],
       solucion: [
         { texto: '3x² = 3x · x y 2y² = y · 2y. En cruz: 3x · 2y + x · y = 7xy.', ecuacion: ['3x² + 7xy + 2y² = ', FS('(3x + y)'), FO('(x + 2y)')] },
         { texto: ['La ', letra('A'), ' y la ', letra('B'), ' salen de (3x + 2y)(x + y), que da 3x² + 5xy + 2y².'] },
@@ -1144,12 +1149,12 @@
     mira: {
       pieza: 'alg-tabla',
       datos: { columnas: ['', '', '', 'en cruz'], filas: [
-        [{ t: 'x', color: 'i', fuerte: true, desde: 1 }, '', { t: '3', color: 'i', fuerte: true, desde: 1 }, { t: '4x', desde: 2 }],
-        [{ t: 'x', color: 'f', fuerte: true, desde: 1 }, '', { t: '4', color: 'f', fuerte: true, desde: 1 }, { t: '3x', desde: 2 }],
-        [{ t: '2x', color: 'i', fuerte: true, desde: 3 }, '', { t: '1', color: 'i', fuerte: true, desde: 3 }, { t: '6x', desde: 4 }],
-        [{ t: 'x', color: 'f', fuerte: true, desde: 3 }, '', { t: '3', color: 'f', fuerte: true, desde: 3 }, { t: 'x', desde: 4 }],
-        [{ t: 'x', color: 'i', fuerte: true, desde: 5 }, '', { t: '−4', color: 'i', fuerte: true, desde: 5 }, { t: '3x', desde: 5 }],
-        [{ t: 'x', color: 'f', fuerte: true, desde: 5 }, '', { t: '3', color: 'f', fuerte: true, desde: 5 }, { t: '−4x', desde: 5 }],
+        [{ t: 'x', color: 'i', fuerte: true, desde: 1 }, '', { t: '3', color: 'i', fuerte: true, desde: 1 }, { t: '3x', desde: 2 }],
+        [{ t: 'x', color: 'f', fuerte: true, desde: 1 }, '', { t: '4', color: 'f', fuerte: true, desde: 1 }, { t: '4x', desde: 2 }],
+        [{ t: '2x', color: 'i', fuerte: true, desde: 3 }, '', { t: '1', color: 'i', fuerte: true, desde: 3 }, { t: 'x', desde: 4 }],
+        [{ t: 'x', color: 'f', fuerte: true, desde: 3 }, '', { t: '3', color: 'f', fuerte: true, desde: 3 }, { t: '6x', desde: 4 }],
+        [{ t: 'x', color: 'i', fuerte: true, desde: 5 }, '', { t: '−4', color: 'i', fuerte: true, desde: 5 }, { t: '−4x', desde: 5 }],
+        [{ t: 'x', color: 'f', fuerte: true, desde: 5 }, '', { t: '3', color: 'f', fuerte: true, desde: 5 }, { t: '3x', desde: 5 }],
       ], flechas: [
         { de: [0, 0], a: [1, 2], desde: 2 }, { de: [1, 0], a: [0, 2], desde: 2 },
         { de: [2, 0], a: [3, 2], desde: 4 }, { de: [3, 0], a: [2, 2], desde: 4 },
@@ -1168,8 +1173,8 @@
     regla: {
       texto: 'Se parte el primer término en dos con x y el último en dos números. Si los productos en cruz suman el del medio, cada fila es un factor.',
       ecuacion: ['2x² + 7x + 3:   2x · 3 + x · 1 = 7x   →   ', FS('(2x + 1)'), FO('(x + 3)')],
-      condicion: 'si ninguna partición da el término del medio, el trinomio no se factoriza con enteros.',
-      voz: 'Los signos de los números salen del último término.',
+      condicion: 'alguna partición da el término del medio; si ninguna lo da, el trinomio no se factoriza con enteros.',
+      voz: 'El signo del último término dice si los números tienen igual signo; el del medio, cuál manda.',
       dibujo: TB(aspaT({ a: ['2x', '1'], b: ['x', '3'], cruz: ['6x', 'x'], pie: '6x + x = 7x', alt: 'Aspa de 2x² + 7x + 3: en cruz 6x y x suman 7x' })),
     },
     // Así se resuelve: un trinomio mónico con un número de cada signo. «Ahora tú» pide un factor con los dos negativos, un
@@ -1310,7 +1315,7 @@
         { id: 'suma', texto: FO(xx(T[2] + cruce)), error: 'TAL-DE-SUMA', siFuera: `Bien el cruce de los extremos, ${xx(cruce)}. Pero se resta, no se suma.` },
         { id: 'cruce', texto: FO(xx(cruce)), error: 'TAL-DE-CRUCE', siFuera: `Bien x² · ${par(d)} + ${par(b)} · x². Pero eso es lo que ya está; falta el resto.` },
       ]),
-      solucion: { texto: `Los extremos dan x² · ${par(d)} + ${par(b)} · x² = ${xx(cruce)}. Lo que falta es la resta.`, ecuacion: [`${xx(T[2])} − ${conPar(xx(cruce))} = `, FO(xx(falta))] },
+      solucion: { texto: `Los extremos dan x² · ${par(d)} + ${par(b)} · x² = ${xx(cruce)}. Lo que falta es la resta.`, ecuacion: [`${xx(T[2])} − ${cruce < 0 ? `(${xx(cruce)})` : xx(cruce)} = `, FO(xx(falta))] },
     };
   }
   // Ahora tú 4 (nivel examen): la suma de los factores primos de (x + p)(x + q)(x² + c x + d), con x² + c x + d primo.
@@ -1389,8 +1394,10 @@
     { nivel: 2, titulo: 'Sin término en x²',
       enunciado: ['Factoriza x⁴ − x³ + 5x − 3.'],
       datos: [DB.especial, DB.orden],
+      figura: TB(especialT({ fil: [['?', '−1'], ['?', '3']], falta: '?', alt: 'Doble especial de x⁴ − x³ + 5x − 3: x² y −1 en la primera fila, x² y 3 en la segunda; la columna del medio, por hallar' })),
       solucion: [
-        { texto: 'Se escribe 0x². Extremos: x² · 3 y (−1) · x²; su cruce da 2x². Falta 0 − 2x² = −2x² = x · (−2x).' },
+        { texto: 'Se escribe 0x². Los extremos: x⁴ = x² · x² y −3 = (−1) · 3; la primera fila lleva −1 y la segunda, 3. Su cruce da x² · 3 + (−1) · x² = 2x².' },
+        { texto: 'Falta 0 − 2x² = −2x², partido en x · (−2x): x en la primera fila y −2x en la segunda.' },
         { texto: 'Con x y −2x: el x³ da −2x³ + x³ = −x³ y el x da 3x + 2x = 5x. Cuadra.', ecuacion: ['x⁴ − x³ + 5x − 3 = ', FS('(x² + x − 1)'), FO('(x² − 2x + 3)')] },
       ],
       respuesta: [FS('(x² + x − 1)'), FO('(x² − 2x + 3)')] },
@@ -1515,7 +1522,7 @@
     },
     predice: {
       pregunta: 'En el aspa doble especial de x⁴ + 5x³ + 9x² + 7x + 2, los extremos se parten en x² · x² y 1 · 2. ¿Qué término en x² tiene que poner la columna del medio?',
-      datos: ['x² · 2 = 2x²', '1 · x² = x²'],
+      datos: ['x⁴ = x² · x²', '2 = 1 · 2', 'El término en x² de P es 9x²'],
       voz: 'Piensa cuánto del 9x² ya ponen los extremos.',
       opciones: [
         { id: 'c', texto: '6x²', correcta: true },
@@ -1556,7 +1563,7 @@
     regla: {
       texto: 'Aspa doble: tres columnas y tres aspas, que dan los términos del medio. Doble especial: la columna del medio pone lo que falta del término en x².',
       ecuacion: ['9x² − 3x² = ', FO('6x²'), ' = 2x · 3x'],
-      condicion: 'el polinomio va ordenado, con 0 en el término que falte; después cada factor se revisa por si se abre.',
+      condicion: 'el polinomio va ordenado, con 0 donde falte un término; lo que falta se parte para que cuadren x³ y x.',
       voz: 'Si un aspa no cuadra, cambia esa partición.',
       dibujo: TB(especialT({ fil: [['2x', '1'], ['3x', '2']], falta: '6x²', pie: '9x² − 3x² = 6x² = 2x · 3x', alt: 'Doble especial de x⁴ + 5x³ + 9x² + 7x + 2: falta 6x²' })),
     },
@@ -1628,6 +1635,8 @@
     ruf: 'Ruffini: se baja el primero; cada casilla es el de arriba más a por la anterior (a: el número que se prueba)',
     fila: 'Sin la última casilla, la fila de abajo da los coeficientes del otro factor',
     valor: 'P(a): el valor de P cuando x vale a',
+    teoC: 'cx − b = c(x − b/c): es un factor de P si P(b/c) = 0',
+    indep: 'Si x − a es un factor, P = (x − a) · q, y el término independiente de P es −a por el de q',
   };
   // Un P = (x − a)·(x² + b x + c), con x² + b x + c sin números enteros que lo anulen: solo a lo anula entre los enteros.
   function cubicaUno(r) {
@@ -1701,7 +1710,7 @@
     if (anula(b) || anula(-b / c) || anula(c / b)) return null;
     return {
       pregunta: [`¿Cuál de estos binomios es un factor de P(x) = ${poli(cs)}?`],
-      datos: [DT.teo, DT.cand, DT.candQ],
+      datos: [DT.teo, DT.teoC, DT.cand, DT.candQ],
       opciones: ops([
         { id: 'c', texto: FS(bien), correcta: true },
         { id: 'sinc', texto: FS(sinC), error: 'TAL-OLVIDA-PRINC', siFuera: `Bien que ${f(b)} divide al independiente. Pero P(${f(b)}) = ${f(evaluar(cs, b))}: falta dividir entre ${c}.` },
@@ -1726,8 +1735,8 @@
       respuesta: [FS('x + 2')] },
     { nivel: 1, titulo: 'Qué números probar',
       enunciado: ['Para buscar un divisor binómico de x³ − 2x² − 5x + 6, ¿qué números conviene probar?'],
-      datos: [DT.cand],
-      solucion: [{ texto: 'El término independiente es 6. Sus divisores, con + y con −, son los candidatos.', ecuacion: ['6 = 1 · 6 = 2 · 3'] }],
+      datos: [DT.teo, DT.indep],
+      solucion: [{ texto: 'Si x − a es un factor, 6 es −a por un entero: a divide a 6. Los candidatos son los divisores de 6, con + y con −.', ecuacion: ['6 = 1 · 6 = 2 · 3'] }],
       respuesta: ['±1, ±2, ±3 y ±6'] },
     { nivel: 1, titulo: 'El otro factor',
       enunciado: ['x − 1 es un factor de x³ − 7x + 6. ¿Cuál es el otro factor?'],
@@ -1749,7 +1758,7 @@
       ],
       respuesta: ['(x − 1)(x − 3)(x + 2)'] },
     { nivel: 2, titulo: 'Una fila que no se abre',
-      enunciado: ['Factoriza por completo P(x) = x³ − x² − 4.'],
+      enunciado: ['P(x) = x³ − x² − 4. Factorízalo por completo.'],
       datos: [DT.teo, DT.cand, DT.ruf],
       solucion: [
         { texto: 'Candidatos: ±1, ±2, ±4. P(1) = −4; P(2) = 8 − 4 − 4 = 0.', ecuacion: ['x³ − x² − 4 = ', FS('(x − 2)'), FO('(x² + x + 2)')] },
@@ -1758,14 +1767,14 @@
       respuesta: [FS('(x − 2)'), FO('(x² + x + 2)')] },
     { nivel: 2, titulo: 'Con un 2 adelante',
       enunciado: ['Factoriza por completo P(x) = 2x³ − 3x² − 3x + 2.'],
-      datos: [DT.teo, DT.cand, DT.candQ, DT.ruf],
+      datos: [DT.teo, DT.cand, DT.candQ, DT.ruf, DA.aspa],
       solucion: [
-        { texto: 'P(2) = 16 − 12 − 6 + 2 = 0. La tabla con a = 2 deja 2, 1, −1.', ecuacion: ['2x³ − 3x² − 3x + 2 = ', FS('(x − 2)'), FO('(2x² + x − 1)')] },
+        { texto: 'Primero los enteros: P(1) = 2 − 3 − 3 + 2 = −2, no sirve; P(2) = 16 − 12 − 6 + 2 = 0. La tabla con a = 2 deja 2, 1, −1.', ecuacion: ['2x³ − 3x² − 3x + 2 = ', FS('(x − 2)'), FO('(2x² + x − 1)')] },
         { texto: 'La fila se abre con aspa: 2x² = 2x · x, −1 = (−1) · 1 y 2x − x = x.', ecuacion: ['2x² + x − 1 = (2x − 1)(x + 1)'] },
       ],
       respuesta: ['(x − 2)(2x − 1)(x + 1)'] },
     { nivel: 2, titulo: 'Un factor que se repite',
-      enunciado: ['Factoriza por completo P(x) = x³ − 3x + 2.'],
+      enunciado: ['P(x) = x³ − 3x + 2. Factorízalo por completo.'],
       datos: [DT.teo, DT.cand, DT.ruf],
       solucion: [
         { texto: 'P(1) = 0. Con 0 por el x², la tabla con a = 1 deja 1, 1, −2.', ecuacion: ['x³ − 3x + 2 = ', FS('(x − 1)'), FO('(x² + x − 2)')] },
@@ -1816,7 +1825,7 @@
     { nivel: 3, titulo: 'Con un 3 adelante',
       enunciado: ['¿Cuál de estos binomios es un factor de P(x) = 3x³ − 4x² − 5x + 2?'],
       alternativas: ['x − 1', '3x + 1', 'x + 2', '3x − 1', 'x − 3'],
-      datos: [DT.teo, DT.cand, DT.candQ],
+      datos: [DT.teo, DT.teoC, DT.cand, DT.candQ],
       solucion: [
         { texto: '3x − 1 se anula en 1/3: P(1/3) = 1/9 − 4/9 − 5/3 + 2 = 0.', ecuacion: ['3x³ − 4x² − 5x + 2 = ', FS('(3x − 1)'), FO('(x² − x − 2)')] },
         { texto: ['La ', letra('A'), ' da P(1) = −4. La ', letra('B'), ' se anula en −1/3, y P(−1/3) = 28/9. La ', letra('C'), ' da P(−2) = −28.'] },
@@ -1826,7 +1835,7 @@
     { nivel: 3, titulo: 'Dos factores con números',
       enunciado: ['P(x) = x⁴ − x³ − 7x² + x + 6 tiene los factores x − 1 y x + 1. Si x = 4, ¿cuánto vale el producto de sus otros dos factores primos?'],
       alternativas: ['15', '6', '90', '7', '14'],
-      datos: [DT.teo, DT.ruf, DA.aspa],
+      datos: [DT.teo, DT.ruf, DA.aspa, DI.primo],
       solucion: [
         { texto: '(x − 1)(x + 1) = x² − 1, y P entre x² − 1 deja x² − x − 6 = (x + 2)(x − 3).', ecuacion: ['x⁴ − x³ − 7x² + x + 6 = (x − 1)(x + 1)(x + 2)(x − 3)'] },
         { texto: 'Con x = 4:', ecuacion: ['(4 + 2)(4 − 3) = 6 · 1 = ', FO('6')] },
@@ -1896,7 +1905,7 @@
         rufTabla(PJ5, 1, { cabeza: cabezaP(PJ5, 1) }), rufTabla(PJ5, 2, { cabeza: cabezaP(PJ5, 2) }), rufTabla(PJ5, 2, { cabeza: cabezaP(PJ5, 2) }),
         rufTabla(PR5, -3, { cabeza: cabezaP(PR5, -3) }), rufTabla(PR5, -3, { cabeza: cabezaP(PR5, -3) }),
         rufTabla([2, -3, -3, 2], 2, { cabeza: cabezaP([2, -3, -3, 2], 2) })] }),
-      voz: 'Primero los candidatos; después la tabla.',
+      voz: 'Se prueba un candidato en la tabla y se mira la última casilla.',
       pasos: [
         { estado: { paso: 0 }, texto: 'Con a = 1 sobra −5: x − 1 no es un factor.', ecuacion: ['P(1) = 1 − 1 + 1 − 6 = −5'] },
         { estado: { paso: 1 }, texto: 'Con a = 2 la última casilla es 0: la división es exacta.', ecuacion: ['P(2) = 8 − 4 + 2 − 6 = 0'] },
@@ -1909,7 +1918,7 @@
     regla: {
       texto: 'Si a anula a P, x − a es un factor y Ruffini da el otro. Se prueban los divisores del independiente; si el principal no es 1, también fracciones.',
       ecuacion: ['P(x) = ', FS('(x − a)'), ' · ', FO('q(x)')],
-      condicion: 'coeficientes enteros; la fila nueva se sigue abriendo hasta que cada factor sea primo.',
+      condicion: 'coeficientes enteros; las fracciones son un divisor del independiente entre uno del principal; la fila se sigue abriendo.',
       voz: 'El binomio lleva el número con el signo cambiado: x − a.',
       dibujo: CU(rufTabla(PJ5, 2, { cabeza: cabezaP(PJ5, 2) })),
     },
@@ -1925,12 +1934,13 @@
         return {
           enunciado: [`Factoriza por completo ${P}.`],
           datos: [DT.teo, DT.cand, DT.ruf, DA.aspa],
-          dibujo: CU(rufTabla(cs, u, { cabeza: cabezaP(cs, u) })),
+          // Antes de los pasos, la tabla sin el número ni las filas: el número que anula a P se busca (lector B, 19 nov).
+          dibujo: CU(Object.assign(rufTabla(cs, u, { hasta: 0 }), { a: { t: '?', c: 'i' }, cabeza: [[[`${P} con a = `, null, 400], ['?', 'i', 700]]] })),
           pasos: [
             { tipo: 'pide', texto: 'Piden escribirlo como producto de factores primos.' },
             { tipo: 'datos', texto: `Es una cúbica con término independiente ${f(cs[3])}: los candidatos son sus divisores, con + y con −.` },
             { tipo: 'regla', texto: 'Teorema del factor: si a anula a P, x − a es un factor; la tabla de Ruffini da el otro.' },
-            { tipo: 'cuentas', texto: `Con a = ${f(u)} la última casilla es 0.`, ecuacion: [`${P} = `, FS(`(${binx(u)})`), FO(`(${poli(q)})`)] },
+            { tipo: 'cuentas', texto: `Con a = ${f(u)} la última casilla es 0.`, ecuacion: [`${P} = `, FS(`(${binx(u)})`), FO(`(${poli(q)})`)], dibujo: CU(rufTabla(cs, u, { cabeza: cabezaP(cs, u) })) },
             { tipo: 'cuentas', texto: `La fila ${poli(q)} se abre con aspa: ${f(q[2])} = ${par(-v)} · ${par(-w)}.`, ecuacion: [`${poli(q)} = (${binx(v)})(${binx(w)})`] },
             { tipo: 'sentido', texto: `Comprueba: ${f(u)}, ${f(v)} y ${f(w)} dividen a ${f(cs[3])}, y cada uno anula a P.` },
           ],
@@ -1939,7 +1949,7 @@
       },
     },
     ahoraTu: {
-      voz: 'Prueba los divisores del término independiente.',
+      voz: 'El número que anula a P da el binomio con el signo cambiado: x − a.',
       generar(sem) {
         const r = azar(sem + 71), tipo = sem % 4;
         if (tipo === 0) return conCuatro(casoSigno, r);
@@ -2059,7 +2069,7 @@
       { id: 'j3', etiqueta: 'x + 3 en Q', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
     ],
     dibujo: v => ({ datos: tablaExp([['x − 1', v.i1, v.j1], ['x + 2', v.i2, v.j2], ['x + 3', v.i3, v.j3]]), estado: {} }),
-    lectura: v => { const g = grados(v); return [`grados: MCD ${g.mcd} + MCM ${g.mcm} = P · Q ${g.pq}`]; },
+    lectura: v => { const g = grados(v); return [`grado de MCD · MCM: ${g.mcd} + ${g.mcm} = ${g.pq}, el de P · Q`]; },
     invitaciones: [
       { texto: 'Haz que P y Q no tengan ningún factor común.', logrado: v => grados(v).mcd === 0, bien: 'MCD = 1: el MCM es P · Q.' },
       { texto: 'Consigue el MCM de mayor grado.', logrado: v => grados(v).mcm === 9, bien: 'En cada factor, uno de los dos llegó al exponente 3.' },
@@ -2159,7 +2169,7 @@
         { id: 'c', texto: MM(f(bien)), correcta: true },
         { id: 'signo', texto: MM(f(k + a)), error: 'TAL-FACTOR-SIGNO', siFuera: `Bien que ${f(a)} anula a los dos. Pero el factor es ${binx(a)}.` },
         { id: 'sinf', texto: MM(f((k - a) * (k - b))), error: 'TAL-MCD-SINFACTOR', siFuera: `Bien ${binx(a)}. Pero ${binx(b)} solo está en P: no es común.` },
-        { id: 'q', texto: MM(f(evaluar(Q, k))), error: 'TAL-MCD-MAX', siFuera: `Bien que Q comparte un factor con P. Pero ${binx(d)} no está en P.` },
+        { id: 'q', texto: MM(f(evaluar(Q, k))), error: 'TAL-MCD-SINFACTOR', siFuera: `Bien que Q comparte un factor con P. Pero ${binx(d)} no está en P.` },
       ]),
       solucion: { texto: `P = (${binx(a)})(${binx(b)})(${binx(c)}) y Q = (${binx(a)})(${binx(d)}): solo ${binx(a)} es común.`, ecuacion: [`M(${k}) = ${k} ${a > 0 ? '−' : '+'} ${Math.abs(a)} = `, MM(f(bien))] },
     };
@@ -2325,7 +2335,7 @@
         { id: 'j', etiqueta: 'Exponente de x − 2 en Q', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
       ],
       dibujo: v => tablaJ6(v.i, v.j),
-      lectura: v => { const g = gradosJ6(v); return [`grados: MCD ${g.mcd} + MCM ${g.mcm} = P · Q ${g.pq}`]; },
+      lectura: v => { const g = gradosJ6(v); return [`grado de MCD · MCM: ${g.mcd} + ${g.mcm} = ${g.pq}, el de P · Q`]; },
       minimo: 3,
     },
     predice: {
@@ -2387,7 +2397,7 @@
       },
     },
     ahoraTu: {
-      voz: 'Factoriza primero; después compara exponentes.',
+      voz: 'Con los dos factorizados, compara los exponentes de cada factor.',
       generar(sem) {
         const r = azar(sem + 81), tipo = sem % 4;
         if (tipo === 0) return conCuatro(casoMCD, r);
@@ -2401,7 +2411,7 @@
   // ---------- Unidad ----------
   const LETRAS = {
     x: 'la variable; en las ideas 1 a 3, el lado de la loseta en dm', y: 'la segunda variable',
-    a: 'en una identidad, el primer término; en la idea 5, el número que anula a P', b: 'en una identidad, el segundo término',
+    a: 'en una identidad, lo que va al cuadrado o al cubo en el primer término; en la idea 5, el número que anula a P', b: 'en una identidad, lo que va al cuadrado o al cubo en el segundo término',
     c: 'una letra cualquiera de una identidad', P: 'el nombre de un polinomio en un enunciado', Q: 'el nombre del segundo polinomio',
     q: 'el cociente de Ruffini: el otro factor', m: 'el número del primer factor en el aspa simple, (x + m)(x + n)', n: 'el número del segundo factor en el aspa simple', M: 'el MCD en un enunciado', N: 'el MCM en un enunciado',
   };
@@ -2421,7 +2431,7 @@
       ejemplos: ['En 5(2x + 1), los factores son 5 y 2x + 1.', 'En (x + 1)(x − 1) hay dos factores.', 'En un pasadizo, el ancho y el largo.'] },
     { termino: 'factor común', formas: ['factor común', 'factores comunes'], def: 'Lo que está en todos los términos y se saca multiplicando afuera del paréntesis.',
       simple: 'Lo que se repite en todos los términos.', ver: ['factor'],
-      ejemplos: ['En 10x + 5, es 5.', 'En 2x² + 8x, es 2x.', 'En x(a + 1) + y(a + 1), es a + 1.'] },
+      ejemplos: ['En 10x + 5, es 5.', 'En 2x² + 8x, es 2x.', 'En x(y + 1) + 2(y + 1), es y + 1.'] },
     { termino: 'agrupar', formas: ['agrupar', 'agrupando', 'agrupa', 'agrupan', 'agrupación'], def: 'Juntar los términos en grupos que tengan su propio factor común.',
       simple: 'Juntar los términos de a dos para que aparezca algo común.', ver: ['factor común'],
       ejemplos: ['xy + 2y + 3x + 6 = y(x + 2) + 3(x + 2).', 'Sirve cuando no hay nada común a los cuatro términos.', 'Cada grupo deja el mismo binomio.'] },
@@ -2492,7 +2502,8 @@
 
   return {
     unidad: 'algebra.factorizacion',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-losetas.js', '/nucleo/kit/piezas/alg-reparto.js'],
     colores: COLORES,

@@ -1,6 +1,6 @@
 // Pruebas propias de «Factorización» (además del validador común de contenido/teoria/teoria.test.js). Etapa 7 (19 nov
-// 2026; docs/etapa7/propuesta-algebra.md): seis ideas reescritas contra el contrato. La unidad todavía no lleva
-// calidad: 2 (falta el cierre: lector en frío y auditor); la primera prueba corre el validador con la marca simulada.
+// 2026; docs/etapa7/propuesta-algebra.md): seis ideas reescritas contra el contrato. La unidad lleva calidad: 2
+// desde el cierre (lector en frío y auditor); la primera prueba corre el validador con esa marca.
 // Lo que se comprueba aquí:
 //   - el orden de las ideas y los ids publicados (los cinco de la ronda 2 se conservan; `identidades` es nueva);
 //   - un color fijo por magnitud (cabecera): cada ficha de color dice su magnitud (m) y lleva el color de def.colores;
@@ -90,7 +90,8 @@ function igualdades(txt, donde) {
 }
 
 // ---------- La unidad ----------
-test('seis ideas en el orden de la propuesta; los ids publicados se conservan; pasa el validador con calidad 2 simulada', () => {
+test('seis ideas en el orden de la propuesta; los ids publicados se conservan; pasa el validador con calidad 2', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.ideas.map(i => i.id), IDS);
   const u = require('../../../catalogo/cursos/algebra.json').unidades.find(x => x.id === def.unidad);
   assert.deepEqual(Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas: u.temas, semillas: 60 }), []);
@@ -275,4 +276,77 @@ test('«Ahora tú» y «Así se resuelve» no repiten el polinomio de un ejemplo
       for (const p of polis(i.resuelve.generar(s).enunciado)) if (p.split(/ [+−] /).length >= 3 || /x²|x³|x⁴/.test(p)) assert.ok(!vistos.has(p), `${i.id} resuelve ${s}: «${p}» ya está en un ejemplo o en la predicción`);
     }
   }
+});
+
+// ---------- Correcciones del 19 nov (cierre: auditoría rutinas/auditoria/algebra.factorizacion.md y lectores en frío) ----------
+// Cada prueba falla con la versión anterior (scratchpad de la sesión, e7-cierre-fz/antes/).
+const mcdE = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; };
+// Los factores entre paréntesis de un texto («(2x − 4)²(x + 1)») con los números de sus coeficientes.
+const factoresDe = t => (t.match(/\(([^()]+)\)/g) || []).map(f => f.slice(1, -1));
+const contenido = f => (f.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, '').match(/\d+|(?<![\d])(?=[xy])/g) || []).map(n => (n === '' ? 1 : +n)).reduce(mcdE, 0);
+const textosCaso = c => [plano(c.pregunta || c.enunciado), ...(c.datos || []).map(plano), ...(c.opciones || []).map(o => plano(o.texto) + ' ' + (o.siFuera || '')),
+  c.solucion ? plano(c.solucion.texto) + ' ' + plano(c.solucion.ecuacion) : '', ...(c.pasos || []).map(p => plano(p.texto) + ' ' + plano(p.ecuacion)), c.respuesta ? plano(c.respuesta) : ''];
+
+test('A1: las factorizaciones de las identidades son completas (ningún factor con un número común)', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = idea('identidades').ahoraTu.generar(s);
+    if (/¿Cuál es la factorización/.test(plano(c.pregunta))) for (const f of factoresDe(plano(c.opciones.find(o => o.correcta).texto))) assert.equal(contenido(f), 1, `ahora tú ${s}: «${f}» tiene un número común`);
+    for (const f of factoresDe(plano(idea('identidades').resuelve.generar(s).respuesta))) assert.equal(contenido(f), 1, `resuelve ${s}: «${f}» tiene un número común`);
+  }
+});
+
+test('A2: a y b de una identidad son lo que va al cuadrado, no los términos', () => {
+  for (const i of def.ideas) for (let s = 0; s < 40; s++) for (const t of [...textosCaso(i.ahoraTu.generar(s)), ...textosCaso(i.resuelve.generar(s))])
+    assert.ok(!/con a y b los dos términos/.test(t), `${i.id} ${s}: «${t}»`);
+  assert.ok(!/con a y b los dos términos/.test(def.ideas.flatMap(i => i.ejemplos.flatMap(e => (e.datos || []).map(plano))).join(' ')));
+});
+
+test('M1: todo ejercicio que cuenta o suma factores primos dice la convención entera en sus datos (enteros, distintos, sin la constante)', () => {
+  const dice = ds => { const t = ds.map(plano).join(' '); return /enteros/.test(t) && /distintos/.test(t) && /no cuenta/.test(t); };
+  for (const i of def.ideas) {
+    for (let s = 0; s < SEMILLAS; s++) { const c = i.ahoraTu.generar(s); if (/factores primos/.test(plano(c.pregunta))) assert.ok(dice(c.datos), `${i.id} ahora tú ${s}`); }
+    for (const e of i.ejemplos) if (/cuántos factores primos|suman los factores primos/i.test(plano(e.enunciado))) assert.ok(dice(e.datos || []), `${i.id} «${e.titulo}»`);
+  }
+});
+
+test('M2: ningún texto sale con un menos de teclado ni con dos signos seguidos («x + -1», «x · -5y», «− −6x²»)', () => {
+  for (const i of def.ideas) for (let s = 0; s < SEMILLAS; s++) for (const t of [...textosCaso(i.ahoraTu.generar(s)), ...textosCaso(i.resuelve.generar(s))])
+    assert.ok(!/[+−·] -|(?<![\w)])-\d|− −|\+ −|− \+/.test(t), `${i.id} ${s}: «${t}»`);
+});
+
+test('M3: en los cubos, el cuadrado de 2x o 3x se escribe (2x)² = 4x², no «2x²»', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = idea('identidades').ahoraTu.generar(s);
+    for (const o of c.opciones) { const m = /los cuadrados (\S+)/.exec(o.siFuera || ''); if (m) assert.ok(m[1] === 'x²' || /^\(\dx\)²$/.test(m[1]), `${s}: «${o.siFuera}»`); }
+  }
+});
+
+test('M7: las alternativas de «Ahora tú» van en tinta, sin fichas de color (se leían como términos del glosario)', () => {
+  for (const i of def.ideas) for (let s = 0; s < 80; s++) for (const o of i.ahoraTu.generar(s).opciones) assert.equal(fichas(o.texto).length, 0, `${i.id} ${s}`);
+});
+
+test('M9: el dibujo de «Así se resuelve» del teorema del factor no muestra el número que anula a P antes de los pasos', () => {
+  for (let s = 0; s < 40; s++) {
+    const r = idea('teorema-factor').resuelve.generar(s), d = r.dibujo.datos;
+    assert.equal(d.a.t, '?', `${s}: a = ${d.a.t}`);
+    assert.ok(d.abajo.every(x => x === ''), `${s}: la fila de abajo ya está llena`);
+    assert.ok(r.pasos.some(p => p.dibujo), `${s}: ningún paso trae la tabla llena`);
+  }
+});
+
+test('Lectores: el juego 2 no llama «pedido» a lo que hay con las tiras compradas; el juego 1 con ancho x no parece cumplido', () => {
+  const j2 = idea('identidades').juega;
+  for (const c of j2.controles) assert.ok(c);
+  assert.ok(!/pedido: x² \+ \d+x \+ 9/.test(plano(j2.lectura({ s: 2, t: 4 }))), plano(j2.lectura({ s: 2, t: 4 })));
+  assert.match(plano(idea('factor-comun').juega.lectura({ c: 1 })), /uno más ancho/);
+});
+
+test('Notación: la letra a no tiene un tercer sentido en el glosario (a + 1 como variable)', () => {
+  assert.ok(!def.glosario.some(g => (g.ejemplos || []).some(e => /\ba \+ 1\b/.test(e))));
+});
+
+test('Datos que no regalan: «Qué números probar» no trae la regla de los candidatos; la Predice de la doble especial no trae el cruce', () => {
+  const q = idea('teorema-factor').ejemplos.find(e => e.titulo === 'Qué números probar');
+  assert.ok(!(q.datos || []).map(plano).some(d => /divisores del término independiente/.test(d)));
+  assert.ok(!idea('aspa-doble').predice.datos.some(d => /x² · 2 = 2x²|1 · x² = x²/.test(d)));
 });
