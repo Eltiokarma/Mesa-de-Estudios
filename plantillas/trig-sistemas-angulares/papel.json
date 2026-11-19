@@ -46,7 +46,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Los números S y C de un mismo ángulo cumplen S/3 + C/5 = 55. ¿Cuánto mide el ángulo, en grados sexagesimales? Datos: S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo. Para un mismo ángulo: S = 9k, C = 10k y R = πk/20. Alternativas: A) 11°   B) 55°   C) 49,5°   D) 99°   E) 110°",
+      "enunciado": "Los números S y C de un mismo ángulo cumplen S/3 + C/5 = 55. ¿Cuánto mide el ángulo, en grados sexagesimales? Datos: S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo. Para un mismo ángulo: S = 9k, C = 10k y R = πk/20 (k = S ÷ 9). Alternativas: A) 11°   B) 55°   C) 49,5°   D) 99°   E) 110°",
       "respuesta": "D) 99°",
       "pasos": [
         "Con S = 9k y C = 10k: 3k + 2k = 55, y k = 11.",
@@ -76,7 +76,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Los números S y C de un mismo ángulo cumplen S/3 + C/5 = 30. ¿Cuánto mide el ángulo, en radianes? Datos: S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo. Para un mismo ángulo: S = 9k, C = 10k y R = πk/20. Alternativas: A) 3π/5 rad   B) 6 rad   C) 6π rad   D) 3π/10 rad",
+      "enunciado": "Los números S y C de un mismo ángulo cumplen S/3 + C/5 = 30. ¿Cuánto mide el ángulo, en radianes? Datos: S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo. Para un mismo ángulo: S = 9k, C = 10k y R = πk/20 (k = S ÷ 9). Alternativas: A) 3π/5 rad   B) 6 rad   C) 6π rad   D) 3π/10 rad",
       "respuesta": "D) 3π/10 rad",
       "pasos": [
         "Con S = 9k y C = 10k: 3k + 2k = 30, y k = 6.",

@@ -128,10 +128,15 @@
       if (r) {
         // Dentro de la rueda, pasado el lado final del ángulo (ahí ya no hay arco); si el ángulo pasa de media vuelta,
         // al medio de lo que queda libre, y con la vuelta casi entera, debajo del centro.
-        const a = fin <= 180 ? fin + 30 : fin < 330 ? fin + (360 - fin) / 2 : 270, w = T.ancho(String(r), 16, 600), u2 = [Math.cos(a * RAD), -Math.sin(a * RAD)];
-        // Siempre pasado el arco del ángulo, para no pisarlo.
-        const dist = ra + 8 + Math.abs(u2[0]) * w / 2 + Math.abs(u2[1]) * 8.4;
-        cajas.push(caja(RC[0] + u2[0] * dist, RC[1] + u2[1] * dist, String(r), { color: d.colorRotulo === undefined ? 'f' : d.colorRotulo }));
+        // Desde dos pitas, dentro del ángulo, a la mitad de su abertura (lector en frío B, 19 nov: «3 rad» y «?» quedaban
+        // fuera de la zona que barre el ángulo); con menos, no cabe y va pasado el lado final.
+        const w = T.ancho(String(r), 16, 600), en = a => {
+          const u2 = [Math.cos(a * RAD), -Math.sin(a * RAD)], dist = ra + 8 + Math.abs(u2[0]) * w / 2 + Math.abs(u2[1]) * 8.4;   // pasado el arco
+          return caja(RC[0] + u2[0] * dist, RC[1] + u2[1] * dist, String(r), { color: d.colorRotulo === undefined ? 'f' : d.colorRotulo });
+        };
+        const pisa = b => cajas.some(c => Math.abs(c.x - b.x) < (c.w + b.w) / 2 + 2 && Math.abs(c.y - b.y) < (c.h + b.h) / 2 + 1);
+        const dentro = fin >= 110 && en(fin / 2);
+        cajas.push(dentro && !pisa(dentro) ? dentro : en(fin <= 180 ? fin + 30 : fin < 330 ? fin + (360 - fin) / 2 : 270));
       }
     }
     return { s, cajas, punta, R, RP };

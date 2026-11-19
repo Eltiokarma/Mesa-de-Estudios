@@ -13,8 +13,8 @@
  * leyenda, predicción con datos sin fórmula, «Mira», regla, «Así se resuelve» distinto de «Ahora tú», «Ahora tú» de tres
  * tipos con datos y nivel de examen, glosario con `simple` y 15 ejemplos por idea. El laboratorio tiene una mesa por
  * idea (dos-giros, idea 1; tres-escalas y arco-sale, idea 4) y la práctica es plantillas/trig-sistemas-angulares/
- * (cinta-radio pasa a «Más mesas del tema»). La unidad todavía NO declara calidad: 2: la sesión la marca después del
- * lector en frío y del auditor (el validador con calidad: 2 simulada no da faltas).
+ * (cinta-radio pasa a «Más mesas del tema»). Cerrada el 19 nov con calidad: 2, después del lector en frío y del
+ * auditor.
  *
  * REGLA DE COLORES DE LA UNIDAD (propuesta §6; molde §5b, «un color fijo por magnitud»). Todo es un ángulo: el color dice
  * en qué sistema está escrito.
@@ -154,6 +154,8 @@
     [1, 1, 'una vuelta'], [5, 4, 'una vuelta y cuarto'], [4, 3, 'una vuelta y un tercio'], [3, 2, 'una vuelta y media'], [7, 4, 'una vuelta y tres cuartos'],
     [2, 1, 'dos vueltas'], [9, 4, 'dos vueltas y cuarto'], [5, 2, 'dos vueltas y media'], [3, 1, 'tres vueltas']];
   const datosDe = cosa => [D.vuelta, cosa.objeto === 'timon' ? D.izq : null, D.signo].filter(Boolean);
+  // Qué marca el giro en la figura de la llave y de la tapa (lector en frío A, 19 nov: «nadie dice qué es la bolita negra»).
+  const MARCA_DE = { llave: ' La bolita negra marca un brazo de la llave.', tapa: ' La flecha pintada marca el giro de la tapa.', timon: '' };
 
   // Ejemplos resueltos de la idea 1 (pestaña «Ejemplos»; molde §3). Cuentas rehechas con un script aparte, que no usa
   // este archivo (scratchpad e5-trigonometria/cuentas-idea1.js, 19 nov): 360/2; 3·360/4; 135 con flecha horaria; 20/60·360;
@@ -210,7 +212,7 @@
         { texto: 'Dos vueltas son 2 · 360° = 720°: un ángulo trigonométrico puede pasar de una vuelta. En sentido horario es negativo.', ecuacion: [dH('−720°')] },
       ],
       respuesta: [dH('−720°')] },
-    { nivel: 2, titulo: 'Dos giros seguidos', figura: fig(giroDe('timon', 200, '200°')),
+    { nivel: 2, titulo: 'Dos giros seguidos', figura: fig(giroDe('timon', 200, '200°', { rotulos: { inicial: 'lado inicial' } })),
       enunciado: ['El chofer gira el timón ', dH('200°'), ' hacia la izquierda y, sin soltarlo, ', dH('320°'), ' hacia la derecha. ¿Cuánto mide el giro total?'],
       datos: [D.izq, D.signo, D.seguidos],
       solucion: [
@@ -284,7 +286,7 @@
         { texto: 'Compruebo: 140°, 100° y 120° suman 360°. 75 suma β con su signo menos; 30 olvida el 40 y el 20; 10 usa 180°; 35 pasa el 60 sumando.' },
       ],
       respuesta: ['x = ', dH('25')] },
-    { nivel: 3, titulo: 'El timón en una curva', figura: fig({ objeto: 'timon' }),
+    { nivel: 3, titulo: 'El timón en una curva',
       enunciado: 'En una curva cerrada, el chofer gira el timón 1 vuelta y un tercio hacia la izquierda y, al salir, 2 vueltas y cuarto hacia la derecha. ¿Cuánto mide el giro total?',
       alternativas: ALT.curva,
       datos: [D.vuelta, D.izq, D.signo, D.seguidos],
@@ -320,9 +322,10 @@
     const lado = sg => (cosa.objeto === 'timon' ? `hacia la ${sg > 0 ? 'izquierda' : 'derecha'}` : `en sentido ${sentidoDe(sg)}`);
     const otra = Math.abs(total) % 360 ? total - Math.sign(total) * 360 * Math.ceil(Math.abs(total) / 360) : NaN;
     return {
-      pregunta: [cosa.objeto === 'timon' ? 'El chofer gira el timón ' : 'Giras la llave de un caño ', dH(gr(a)), ` ${lado(s1)} y, sin soltar${cosa.objeto === 'timon' ? 'lo' : 'la'}, `, dH(gr(b)), ` ${lado(s2)}. ¿Cuánto mide el giro total?`],
+      pregunta: [cosa.objeto === 'timon' ? 'El chofer gira el timón ' : 'Giras la llave de un caño ', dH(gr(a)), ` ${lado(s1)} y, sin soltar${cosa.objeto === 'timon' ? 'lo' : 'la'}, `, dH(gr(b)), ` ${lado(s2)}.${MARCA_DE[cosa.objeto]} ¿Cuánto mide el giro total?`],
       datos: [cosa.objeto === 'timon' ? D.izq : null, D.signo, D.seguidos].filter(Boolean),
-      dibujo: { datos: giroDe(cosa.objeto, g1, gr(a)), estado: {} },
+      // Los dos giros, cada uno con su dato (lector en frío A, 19 nov: el dibujo mostraba solo el primero).
+      dibujo: { datos: { objeto: cosa.objeto, giros: [{ mide: g1, texto: gr(a), r: 92 }, { mide: g2, texto: gr(b), r: 128 }] }, estado: {} },
       opciones: opciones(total, [
         contrarios ? { id: 'tamanos', valor: a + b, error: 'TRIG-SIN-SIGNO', siFuera: 'Juntar los dos giros está bien; pero van en sentidos contrarios: uno deshace parte del otro.' }
           : { id: 'resta', valor: s1 * Math.abs(a - b), error: 'RESTA-SIEMPRE', siFuera: 'El sentido está bien; pero los dos giros van hacia el mismo lado: se suman.' },
@@ -340,7 +343,7 @@
     const sg = rr.uno([1, -1]), mag = 360 * v[0] / v[1], g = sg * mag;
     const txt = (m, s0) => `${vueltasTxt(m)}, ${sentidoDe(s0)}`;
     return {
-      pregunta: [`${cap(cosa.que)} de ${cosa.objeto === 'timon' ? 'una combi' : cosa.objeto === 'llave' ? 'un caño' : 'una botella'} giró `, th, ' = ', dH(gr(g)), '. ¿Cuántas vueltas dio y en qué sentido?'],
+      pregunta: [`${cap(cosa.que)} de ${cosa.objeto === 'timon' ? 'una combi' : cosa.objeto === 'llave' ? 'un caño' : 'una botella'} giró `, th, ' = ', dH(gr(g)), `.${MARCA_DE[cosa.objeto]} ¿Cuántas vueltas dio y en qué sentido?`],
       datos: [D.vuelta, D.signo],
       dibujo: { datos: { objeto: cosa.objeto }, estado: {} },
       opciones: [
@@ -403,7 +406,7 @@
     ejemplos: EJEMPLOS_GIRO,
     juega: {
       pieza: OB,
-      consigna: ['El chofer gira el timón de su combi. ', th, ' es el giro de la cinta desde su lugar de arriba, con su signo.'],
+      consigna: ['El chofer gira el timón de su combi. ', th, ' es el giro de la cinta desde arriba, con su signo: va de −540° a 540°.'],
       mision: {
         texto: 'Gira el timón en sentido horario hasta que la cinta apunte a la izquierda.',
         logrado: val => Math.abs(val.g + 270) < 1e-9,
@@ -417,7 +420,7 @@
         { s: 'línea punteada', t: 'lado inicial: donde estaba la cinta' },
         { s: '°', t: 'grado: una vuelta tiene 360' },
       ],
-      controles: [{ id: 'g', etiqueta: 'Giro del timón', color: 'c-h', min: -540, max: 540, paso: 30, inicio: 60, unidad: '°', decimales: 0 }],
+      controles: [{ id: 'g', etiqueta: 'Giro del timón (− gira a la derecha, + a la izquierda)', color: 'c-h', min: -540, max: 540, paso: 30, inicio: 60, unidad: '°', decimales: 0 }],
       // Gesto directo: se arrastra la cinta; al dar la vuelta, el giro sigue sumando (no salta a la vuelta anterior).
       arrastres: [{ id: 'cinta', etiqueta: 'cinta del timón: se gira hacia los dos lados', color: 'c-h',
         donde: val => { const p = TG().geometria(timonJ(val.g)).marca; return { x: p[0], y: p[1] }; },
@@ -472,7 +475,7 @@
         const v = rr.uno(VUELTAS.filter(x => x[0] / x[1] <= cosa.max)), mag = 360 * v[0] / v[1], g = sg * mag;
         const sen = sentidoDe(sg), lado = cosa.objeto === 'timon' ? `hacia la ${sg > 0 ? 'izquierda' : 'derecha'}, que es sentido ${sen}` : `en sentido ${sen}`;
         return {
-          enunciado: [`${cosa.frase(v[2], sg)} ¿Cuánto mide ese ángulo trigonométrico, `, th, '?'],
+          enunciado: [`${cosa.frase(v[2], sg)}${MARCA_DE[cosa.objeto]} ¿Cuánto mide ese ángulo trigonométrico, `, th, '?'],
           datos: datosDe(cosa),
           dibujo: { datos: { objeto: cosa.objeto, giros: [Object.assign({ mide: g }, PIDE)] }, estado: {} },
           pasos: [
@@ -527,7 +530,7 @@
     piNum: 'π ≈ 3,1416',
     radDef: 'Medida en radianes de un ángulo central: cuántas veces cabe el radio en su arco.',
     scrDef: ['S, C y R: los números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo.'],
-    scr: ['Para un mismo ángulo: ', junto([S, ' = 9k']), ', ', junto([Cc, ' = 10k']), ' y ', junto([R, ' = πk/20']), '.'],
+    scr: ['Para un mismo ángulo: ', junto([S, ' = 9k']), ', ', junto([Cc, ' = 10k']), ' y ', junto([R, ' = πk/20']), ', con k = S ÷ 9 = C ÷ 10.'],
   };
 
   // ---------- Idea 2: grados sexagesimales y grados centesimales ----------
@@ -545,32 +548,32 @@
   // 100 − 100·9/10; 180 − 80·9/10 − 63 = 45 y 45·10/9; (200 − 160)·9/10 = 36 y 90 − 36; 5x + 20 = 9x; 27 + 27 + 45;
   // 24/60·400, y el valor de cada alternativa equivocada.
   const EJEMPLOS_ESCALAS = [
-    { nivel: 1, titulo: 'De centesimales a sexagesimales', figura: fig(transp(72, enCen('80ᵍ'))),
+    { nivel: 1, titulo: 'De centesimales a sexagesimales',
       enunciado: ['Un ángulo mide ', dI('80ᵍ'), '. ¿Cuánto mide en grados sexagesimales?'],
       datos: [DS.vuelta, DS.conv],
       solucion: [{ texto: 'Cada 10ᵍ son 9°: el número sexagesimal es 9/10 del centesimal.', ecuacion: junto([dI('80ᵍ'), ' · ', { frac: ['9°', '10ᵍ'] }, ' = ', dH('72°')]) }],
       respuesta: [dH('72°')] },
-    { nivel: 1, titulo: 'De sexagesimales a centesimales', figura: fig(transp(54, enSex('54°'))),
+    { nivel: 1, titulo: 'De sexagesimales a centesimales',
       enunciado: ['Un ángulo mide ', dH('54°'), '. ¿Cuánto mide en grados centesimales?'],
       datos: [DS.vuelta, DS.conv],
       solucion: [{ texto: 'Cada 9° son 10ᵍ: el número centesimal es 10/9 del sexagesimal.', ecuacion: junto([dH('54°'), ' · ', { frac: ['10ᵍ', '9°'] }, ' = ', dI('60ᵍ')]) }],
       respuesta: [dI('60ᵍ')] },
-    { nivel: 1, titulo: 'Un cuarto de vuelta', figura: fig(transp(90)),
+    { nivel: 1, titulo: 'Un cuarto de vuelta',
       enunciado: 'La aguja del transportador da un cuarto de vuelta. ¿Cuánto mide ese giro en grados sexagesimales y en grados centesimales?',
       datos: [DS.vuelta],
       solucion: [{ texto: 'Un cuarto de vuelta es la cuarta parte de 360° y también la cuarta parte de 400ᵍ.', ecuacion: [junto(['360° ÷ 4 = ', dH('90°')]), SEP, junto(['400ᵍ ÷ 4 = ', dI('100ᵍ')])] }],
       respuesta: [dH('90°'), ' y ', dI('100ᵍ')] },
-    { nivel: 1, titulo: 'El signo no cambia', figura: fig(transp(-135, enCen('−150ᵍ'))),
+    { nivel: 1, titulo: 'El signo no cambia',
       enunciado: ['Un ángulo trigonométrico mide ', dI('−150ᵍ'), '. ¿Cuánto mide en grados sexagesimales?'],
       datos: [DS.vuelta, DS.conv],
       solucion: [{ texto: 'Se convierte igual: 9/10 del número. El signo dice el sentido del giro, y el giro es el mismo.', ecuacion: junto([dI('−150ᵍ'), ' · ', { frac: ['9°', '10ᵍ'] }, ' = ', dH('−135°')]) }],
       respuesta: [dH('−135°')] },
-    { nivel: 1, titulo: '¿Cuál abre más?', figura: fig(transp(50, enSex('50°'))),
+    { nivel: 1, titulo: '¿Cuál abre más?',
       enunciado: ['¿Qué ángulo abre más: uno de ', dH('50°'), ' o uno de ', dI('50ᵍ'), '?'],
       datos: [DS.vuelta, DS.conv],
       solucion: [{ texto: 'Se llevan los dos al mismo sistema. El grado centesimal es más chico: 50 de ellos abren menos que 50 sexagesimales.', ecuacion: junto([dI('50ᵍ'), ' · ', { frac: ['9°', '10ᵍ'] }, ' = ', dH('45°'), ' < ', dH('50°')]) }],
       respuesta: ['El de ', dH('50°')] },
-    { nivel: 2, titulo: 'El suplemento, en centesimales', figura: fig(transp(126, enSex('126°'))),
+    { nivel: 2, titulo: 'El suplemento, en centesimales',
       enunciado: ['Un ángulo mide ', dH('126°'), '. ¿Cuánto mide su suplemento, en grados centesimales?'],
       datos: [DS.supl, DS.llano, DS.conv],
       solucion: [
@@ -578,7 +581,7 @@
         { texto: 'Después se pasa a centesimales:', ecuacion: junto([dH('54°'), ' · ', { frac: ['10ᵍ', '9°'] }, ' = ', dI('60ᵍ')]) },
       ],
       respuesta: [dI('60ᵍ')] },
-    { nivel: 2, titulo: 'Suma de dos escalas', figura: fig(transp(63, enCen('70ᵍ'))),
+    { nivel: 2, titulo: 'Suma de dos escalas',
       enunciado: ['¿Cuánto mide, en grados sexagesimales, la suma de un ángulo de ', dH('36°'), ' y otro de ', dI('70ᵍ'), '?'],
       datos: [DS.conv],
       solucion: [
@@ -645,7 +648,7 @@
       alternativas: EJ_ESC.suma,
       datos: [DS.conv],
       solucion: [
-        { texto: 'Cada sumando centesimal pasa a sexagesimales:', ecuacion: [junto([dI('30ᵍ'), ' = ', dH('27°')]), SEP, junto([dI('50ᵍ'), ' = ', dH('45°')])] },
+        { texto: 'Cada sumando centesimal pasa a sexagesimales, por 9/10:', ecuacion: [junto([dI('30ᵍ'), ' · ', { frac: ['9°', '10ᵍ'] }, ' = ', dH('27°')]), SEP, junto([dI('50ᵍ'), ' · ', { frac: ['9°', '10ᵍ'] }, ' = ', dH('45°')])] },
         { texto: 'La suma:', ecuacion: junto(['27° + 27° + 45° = ', dH('99°')]) },
         { texto: ['La ', letra(EJ_ESC.suma, '107°'), ' suma los números sin convertir; la ', letra(EJ_ESC.suma, '104°'), ' convierte solo uno; la ', letra(EJ_ESC.suma, '110°'), ' pasa todo a centesimales y escribe «°»; la ', letra(EJ_ESC.suma, '89,1°'), ' convierte de más.'] },
       ],
@@ -739,19 +742,19 @@
         { titulo: 'Un transportador de dos escalas', texto: 'Este transportador de vuelta entera tiene dos escalas. La de afuera cuenta grados sexagesimales (°). La de adentro cuenta grados centesimales (ᵍ). El cero de las dos está a la derecha, y la aguja marca el mismo giro en las dos.',
           pieza: OB, dibujo: { datos: transp(90), estado: {} } },
         { titulo: 'Cómo se escriben', texto: '40° se lee «cuarenta grados sexagesimales». 40ᵍ, con una g pequeña arriba, se lee «cuarenta grados centesimales». En la calculadora científica son los modos DEG y GRA. No abren lo mismo: sus rayitas son de distinto tamaño.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Mueve la aguja y compara los dos números que marca. Mira cuál de los dos es siempre mayor, y qué marcan en el cuarto de vuelta y en la media vuelta.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve la aguja y compara los dos números que marca. Fuera del cero, mira cuál de los dos es mayor, y qué marcan en el cuarto de vuelta y en la media vuelta.' },
       ],
     },
     ejemplos: EJEMPLOS_ESCALAS,
     juega: {
       pieza: OB,
-      consigna: 'La aguja del transportador marca el mismo giro en sus dos escalas: afuera, grados sexagesimales; adentro, grados centesimales.',
+      consigna: 'La aguja marca el mismo giro en las dos escalas: afuera, grados sexagesimales; adentro, centesimales. La lectura de abajo dice los dos números.',
       mision: {
         texto: 'Lleva la aguja hasta que la escala de adentro marque 150ᵍ.',
         logrado: val => Math.abs(val.g - 135) < 1e-9,
         bien: 'Listo: 150ᵍ adentro y 135° afuera. Es la misma abertura.',
       },
-      voz: '¿Cuál de los dos números es siempre el mayor?',
+      voz: 'Fuera del cero, ¿cuál de los dos números es el mayor?',
       leyenda: [
         { s: '°', t: 'grado sexagesimal: la vuelta tiene 360' },
         { s: 'ᵍ', t: 'grado centesimal: la vuelta tiene 400' },
@@ -795,7 +798,8 @@
     },
     regla: {
       texto: 'Una vuelta mide 360° o 400ᵍ: 9° y 10ᵍ son el mismo giro. Para cambiar de sistema se multiplica por 9°/10ᵍ o por 10ᵍ/9°.',
-      ecuacion: [junto([dH('9°'), ' = ', dI('10ᵍ')]), SEP, junto(['de ᵍ a °: × ', { frac: ['9', '10'] }]), SEP, junto(['de ° a ᵍ: × ', { frac: ['10', '9'] }])],
+      ecuacion: [junto([dH('9°'), ' = ', dI('10ᵍ')]), SEP, junto(['a sexagesimales: × ', { frac: ['9', '10'] }]), SEP, junto(['a centesimales: × ', { frac: ['10', '9'] }])],
+      dibujo: { datos: transp(90, enSex('90°')), estado: {} },
       condicion: 'los dos números miden el mismo giro: el signo no cambia. Antes de sumar o restar, todo va al mismo sistema.',
       voz: 'Dos escalas, un solo giro.',
     },
@@ -810,7 +814,8 @@
         return {
           enunciado: ['Un ángulo trigonométrico mide ', dH(gr(d0)), '. ¿Cuánto mide en grados centesimales?'],
           datos: [DS.vuelta, DS.conv],
-          dibujo: { datos: transp(d0, enSex(gr(d0))), estado: {} },
+          // Sin la aguja hasta la cuenta: en el transportador, su escala de adentro sería la respuesta (lector B).
+          dibujo: { datos: transp(0), estado: {} },
           pasos: [
             { tipo: 'pide', texto: 'Piden la medida del mismo giro, escrita en grados centesimales.' },
             { tipo: 'datos', texto: ['El ángulo mide ', dH(gr(d0)), `, en grados sexagesimales${d0 < 0 ? ': es un giro horario' : ''}.`] },
@@ -849,7 +854,7 @@
     { nivel: 1, titulo: 'Un cuarto de grado', figura: figM(lupaEn(2, 15)),
       enunciado: ['Un ángulo mide ', dH('2° 15′'), '. ¿Cuánto mide en grados, con decimales?'],
       datos: [DS.min],
-      solucion: [{ texto: 'Un grado tiene 60 minutos: 15 minutos son 15 de esas 60 partes.', ecuacion: junto(['2° + ', { frac: ['15', '60'] }, '° = 2° + 0,25° = ', dH('2,25°')]) }],
+      solucion: [{ texto: 'Un grado tiene 60 minutos: 15 minutos son 15 de esas 60 partes.', ecuacion: junto(['2° + ', { frac: ['15', '60'] }, ' de grado = 2° + 0,25° = ', dH('2,25°')]) }],
       respuesta: [dH('2,25°')] },
     { nivel: 1, titulo: 'De decimales a minutos', figura: figM(lupaEn(4, 30, '4,5°')),
       enunciado: ['Un ángulo mide ', dH('4,5°'), '. ¿Cuánto mide en grados y minutos?'],
@@ -864,7 +869,7 @@
     { nivel: 1, titulo: 'En centesimales es directo',
       enunciado: ['Un ángulo mide ', dI('3ᵍ 25ᵐ'), '. ¿Cuánto mide en grados centesimales, con decimales?'],
       datos: [DS.minC],
-      solucion: [{ texto: 'El grado centesimal tiene 100 minutos: 25 minutos son 25 centésimas.', ecuacion: junto(['3ᵍ + ', { frac: ['25', '100'] }, 'ᵍ = ', dI('3,25ᵍ')]) }],
+      solucion: [{ texto: 'El grado centesimal tiene 100 minutos: 25 minutos son 25 centésimas.', ecuacion: junto(['3ᵍ + ', { frac: ['25', '100'] }, ' de grado = ', dI('3,25ᵍ')]) }],
       respuesta: [dI('3,25ᵍ')] },
     { nivel: 1, titulo: 'Minutos de más', figura: figM(lupaEn(1, 15, '75′')),
       enunciado: ['Un ángulo mide ', dH('75′'), '. ¿Cómo se escribe en grados y minutos?'],
@@ -926,7 +931,7 @@
       alternativas: EJ_MIN.seg,
       datos: [DS.min, DS.minC, DS.conv],
       solucion: [
-        { texto: 'A grados sexagesimales y, de ahí, a centesimales:', ecuacion: [junto([{ frac: ['81', '3600'] }, '° = 0,0225°']), FL, junto(['0,0225 · ', { frac: ['10', '9'] }, ' = 0,025ᵍ'])] },
+        { texto: 'A grados sexagesimales y, de ahí, a centesimales:', ecuacion: [junto([{ frac: ['81', '3600'] }, ' de grado = 0,0225°']), FL, junto(['0,0225 · ', { frac: ['10', '9'] }, ' = 0,025ᵍ'])] },
         { texto: 'Un grado centesimal tiene 100 · 100 segundos:', ecuacion: junto(['0,025 · 10 000ˢ = ', dI('250ˢ')]) },
         { texto: ['La ', letra(EJ_MIN.seg, '81ˢ'), ' deja el número; la ', letra(EJ_MIN.seg, '90ˢ'), ' usa 10/9, el de los grados; la ', letra(EJ_MIN.seg, '135ˢ'), ' cambia 60 por 100 una vez; la ', letra(EJ_MIN.seg, '225ˢ'), ' no pasa a centesimales.'] },
       ],
@@ -948,7 +953,7 @@
       solucion: [
         { texto: 'La suma de los dos, con su llevada:', ecuacion: junto(['119° 80′ = 120° 20′']) },
         { texto: 'Se resta de 180°, prestando un grado:', ecuacion: junto(['179° 60′ − 120° 20′ = ', dH('59° 40′')]) },
-        { texto: ['La ', letra(EJ_MIN.tri, '59° 80′'), ' presta 100 minutos; la ', letra(EJ_MIN.tri, '60° 40′'), ' no descuenta el grado prestado; la ', letra(EJ_MIN.tri, '60° 20′'), ' lee 119° 80′ como 119,80; la ', letra(EJ_MIN.tri, '59° 20′'), ' no resta los minutos.'] },
+        { texto: ['La ', letra(EJ_MIN.tri, '59° 80′'), ' presta 100 minutos; la ', letra(EJ_MIN.tri, '60° 40′'), ' no descuenta el grado prestado; la ', letra(EJ_MIN.tri, '60° 20′'), ' lee 119° 80′ como 119,80; la ', letra(EJ_MIN.tri, '59° 20′'), ' copia los 20′ sin restarlos de 60′.'] },
       ],
       respuesta: [letra(EJ_MIN.tri, '59° 40′'), ', ', dH('59° 40′')] },
     { nivel: 3, titulo: 'Minutos de un sistema al otro',
@@ -956,7 +961,7 @@
       alternativas: EJ_MIN.gm,
       datos: [DS.min, DS.minC, DS.conv],
       solucion: [
-        { texto: 'Primero, a grados con decimales; después, a centesimales:', ecuacion: [junto(['1° + ', { frac: ['21', '60'] }, '° = 1,35°']), FL, junto(['1,35 · ', { frac: ['10', '9'] }, ' = 1,5ᵍ'])] },
+        { texto: 'Primero, a grados con decimales; después, a centesimales:', ecuacion: [junto(['1° + ', { frac: ['21', '60'] }, ' de grado = 1,35°']), FL, junto(['1,35 · ', { frac: ['10', '9'] }, ' = 1,5ᵍ'])] },
         { texto: 'El medio grado centesimal son 50 de sus 100 minutos:', ecuacion: [dI('1ᵍ 50ᵐ')] },
         { texto: ['La ', letra(EJ_MIN.gm, '1ᵍ 21ᵐ'), ' deja los mismos números; la ', letra(EJ_MIN.gm, '1ᵍ 35ᵐ'), ' no cambia de sistema; la ', letra(EJ_MIN.gm, '1ᵍ 5ᵐ'), ' lee 1,5 como 5 minutos; la ', letra(EJ_MIN.gm, '15ᵍ'), ' corre la coma.'] },
       ],
@@ -976,12 +981,12 @@
           { id: 'todo', valor: (60 * g + m) / 100, error: 'SEX-CIEN', siFuera: 'Pasar todo a minutos está bien; pero para volver a grados se divide entre 60, no entre 100.' },
           { id: 'suma', valor: g + m, error: 'SEX-SUMA', siFuera: 'Juntar las dos partes es la idea; pero los minutos son pedazos de grado: primero se dividen entre 60.' },
         ], x => `${f(x, 2)}°`),
-        solucion: { texto: 'Los minutos se dividen entre 60 y se suman a los grados enteros.', ecuacion: junto([`${fg(g)}° + `, { frac: [`${m}`, '60'] }, '° = ', dH(`${f(dec, 2)}°`)]) },
+        solucion: { texto: 'Los minutos se dividen entre 60 y se suman a los grados enteros.', ecuacion: junto([`${fg(g)}° + `, { frac: [`${m}`, '60'] }, ' de grado = ', dH(`${f(dec, 2)}°`)]) },
       };
     }
     if (v === 1) {
       return {
-        pregunta: ['Un ángulo mide ', dH(`${f(dec, 2)}°`), '. ¿Cuántos minutos sexagesimales son, en total?'],
+        pregunta: ['Un ángulo mide ', dH(`${f(dec, 2)}°`), ', en grados con decimales (no son minutos). ¿Cuántos minutos sexagesimales son, en total?'],
         datos: [DS.min],
         dibujo: figM(lupaEn(g, m, `${f(dec, 2)}°`)),
         opciones: opciones(60 * g + m, [
@@ -1001,7 +1006,7 @@
         { id: 'mil', valor: g + mc / 1000, error: 'SEX-CIEN', siFuera: 'Dejar los grados enteros está bien; pero los minutos son centésimas, no milésimas.' },
         { id: 'suma', valor: g + mc, error: 'SEX-SUMA', siFuera: 'Juntar las dos partes es la idea; pero los minutos son pedazos de grado.' },
       ], x => `${f(x, 3)}ᵍ`),
-      solucion: { texto: 'En centesimales, los minutos son centésimas de grado.', ecuacion: junto([`${fg(g)}ᵍ + `, { frac: [`${mc}`, '100'] }, 'ᵍ = ', dI(`${f(decC, 2)}ᵍ`)]) },
+      solucion: { texto: 'En centesimales, los minutos son centésimas de grado.', ecuacion: junto([`${fg(g)}ᵍ + `, { frac: [`${mc}`, '100'] }, ' de grado = ', dI(`${f(decC, 2)}ᵍ`)]) },
     };
   }
   // Tipo 1: restar con préstamo (una diferencia o un complemento).
@@ -1043,7 +1048,7 @@
     const T = [
       { de: 27 * k, a: 50 * k, u1: '′', u2: 'ᵐ', n1: 'minutos sexagesimales', n2: 'minutos centesimales', sex: true, errs: [27 * k, 30 * k, 45 * k] },
       { de: 50 * k, a: 27 * k, u1: 'ᵐ', u2: '′', n1: 'minutos centesimales', n2: 'minutos sexagesimales', sex: false, errs: [50 * k, 45 * k, 30 * k] },
-      { de: 81 * k, a: 250 * k, u1: '″', u2: 'ˢ', n1: 'segundos sexagesimales', n2: 'segundos centesimales', sex: true, errs: [81 * k, 90 * k, 135 * k] },
+      { de: 81 * k, a: 250 * k, u1: '″', u2: 'ˢ', n1: 'segundos sexagesimales', n2: 'segundos centesimales', sex: true, errs: [81 * k, 90 * k, 225 * k] },
     ][v];
     const col = T.sex ? dH : dI, col2 = T.sex ? dI : dH;
     return {
@@ -1078,9 +1083,9 @@
     ejemplos: EJEMPLOS_MINUTOS,
     juega: {
       pieza: MD,
-      consigna: 'La lupa muestra un solo grado del transportador, partido en minutos: hay una rayita cada 5 minutos.',
+      consigna: 'La lupa muestra un grado partido en minutos, con una rayita cada 5. «Grados» elige el grado; la marca redonda corre por sus minutos.',
       mision: {
-        texto: 'Arma con la aguja un ángulo que mida exactamente 2,75°.',
+        texto: 'Arma un ángulo de exactamente 2,75°: elige el grado y corre la marca.',
         logrado: val => val.g === 2 && val.m === 45,
         bien: 'Listo: 2° 45′. Los 45 minutos son tres cuartos de los 60 del grado.',
       },
@@ -1102,8 +1107,8 @@
       minimo: 3,
     },
     predice: {
-      pregunta: ['Un ángulo mide ', dH('27′'), ', minutos sexagesimales. ¿Cuántos minutos centesimales mide?'],
-      datos: ['Un grado sexagesimal tiene 60 minutos sexagesimales.', 'Un grado centesimal tiene 100 minutos centesimales.', 'Mismo giro: 9° y 10ᵍ.'],
+      pregunta: ['Un ángulo mide ', dH('27′'), ', minutos sexagesimales. ¿Cuántos minutos centesimales mide? El minuto centesimal se escribe con una m pequeña arriba: ᵐ.'],
+      datos: ['Un grado sexagesimal (°) tiene 60 minutos sexagesimales (′).', 'Un grado centesimal (ᵍ) tiene 100 minutos centesimales (ᵐ).', 'Mismo giro: 9° y 10ᵍ.'],
       voz: 'Los dos se llaman minutos. ¿Miden lo mismo?',
       opciones: [
         { id: 'c', texto: '50ᵐ', correcta: true },
@@ -1121,7 +1126,7 @@
       datos: { objeto: 'lupa', desde: 0, min: 27, rotulo: '27′', cen: [{ v: false }, { v: true, paso: 2 }], rotuloCen: [{ t: '' }, { t: '50ᵐ', paso: 3 }] },
       voz: 'De minutos a grados, y de un grado al otro.',
       pasos: [
-        { estado: { paso: 0 }, texto: 'El grado sexagesimal tiene 60 minutos: 27 son 27 de esas 60 partes.', ecuacion: junto([{ frac: ['27', '60'] }, '° = ', dH('0,45°')]) },
+        { estado: { paso: 0 }, texto: 'El grado sexagesimal tiene 60 minutos: 27 son 27 de esas 60 partes.', ecuacion: junto([dH('27′'), ' = ', { frac: ['27', '60'] }, ' de grado = ', dH('0,45°')]) },
         { estado: { paso: 1 }, texto: 'Se cambia de sistema con los grados: 9° son 10ᵍ.', ecuacion: junto(['0,45 · ', { frac: ['10', '9'] }, ' = ', dI('0,5ᵍ')]) },
         { estado: { paso: 2 }, texto: 'El grado centesimal es más corto y se parte en 100 minutos.', ecuacion: junto([dI('1ᵍ = 100ᵐ')]) },
         { estado: { paso: 3 }, texto: 'Medio grado centesimal son 50 de sus minutos.', ecuacion: junto(['0,5 · 100ᵐ = ', dI('50ᵐ')]) },
@@ -1192,7 +1197,7 @@
       datos: [DS.pi],
       solucion: [{ texto: 'π rad son 180°: la tercera parte de π rad es la tercera parte de 180°.', ecuacion: junto([{ frac: ['180°', '3'] }, ' = ', dH('60°')]) }],
       respuesta: [dH('60°')] },
-    { nivel: 1, titulo: 'Tres pitas sobre la llanta', figura: figM(ruedaCon(30, 3, '?')),
+    { nivel: 1, titulo: 'Tres pitas sobre la llanta', figura: figM(ruedaCon(30, 3, '?', { cuenta: false })),
       enunciado: 'Sobre la llanta de una rueda hay acostadas, una tras otra, 3 pitas del largo de su radio. ¿Qué ángulo abarcan desde el centro, en radianes?',
       datos: [DS.radDef],
       solucion: [{ texto: 'Cada pita mide un radio y abarca 1 radián. Tres pitas seguidas abarcan 3.', ecuacion: [dF('3 rad')] }],
@@ -1219,7 +1224,7 @@
       enunciado: ['Un ángulo mide ', dF('2 rad'), ', así, sin π. ¿Cuánto mide en grados sexagesimales, con un decimal?'],
       datos: [DS.pi, DS.piNum],
       solucion: [
-        { texto: 'π es un número, 3,1416: no hace falta que aparezca. Se multiplica por 180°/π rad.', ecuacion: junto(['2 · ', { frac: ['180°', 'π'] }, ' = ', { frac: ['360°', '3,1416'] }]) },
+        { texto: 'π es un número, 3,1416: no hace falta que aparezca. Se multiplica por 180°/π rad.', ecuacion: junto(['2 · ', { frac: ['180°', 'π'] }, ' ≈ ', { frac: ['360°', '3,1416'] }]) },
         { texto: 'Se divide:', ecuacion: junto(['≈ ', dH('114,6°')]) },
       ],
       respuesta: ['≈ ', dH('114,6°')] },
@@ -1353,7 +1358,7 @@
       datos: [DS.radDef],
       opciones: opciones(t, [
         { id: 'inversa', valor: cm / L, error: 'TR2', siFuera: 'Dividir los dos largos es la idea; pero se cuenta cuántos radios caben en la pita, no al revés.' },
-        { id: 'resta', valor: L - cm, error: 'RAD-RESTA', siFuera: 'Comparar la pita con el radio es la idea; pero se comparan dividiendo, no restando.' },
+        { id: 'resta', valor: L > cm ? L - cm : NaN, error: 'RAD-RESTA', siFuera: 'Comparar la pita con el radio es la idea; pero se comparan dividiendo, no restando.' },
         { id: 'grados', valor: t * 180 / Math.PI, error: 'TR3', siFuera: 'Ese número es la medida en grados; en radianes es el número de radios que mide la pita.' },
         { id: 'conpi', valor: t * Math.PI, error: 'TR1', siFuera: 'La división está bien; pero no hay que multiplicar por π: el número de radios ya es la medida.' },
       ], v => radTxt(f(v, 2))),
@@ -1433,13 +1438,13 @@
       arrastres: [{ id: 'pita', etiqueta: 'punta de la última pita: se corre por la llanta', color: 'c-o',
         donde: val => { const p = TM().geometria(ruedaCon(val.r, val.n, '')).punta; return { x: p[0], y: p[1] }; },
         mover: pt => { const c = TM().constantes.RC, a = Math.atan2(c[1] - pt.y, pt.x - c[0]); return { n: Math.max(0.5, Math.min(2.5, Math.round((a < -0.3 ? a + 2 * Math.PI : Math.max(a, 0)) * 2) / 2)) }; } }],
-      dibujo: val => ({ datos: ruedaCon(val.r, val.n, radTxt(f(val.n))), estado: {} }),
-      lectura: val => [`${f(val.n)} ${val.n === 1 ? 'pita' : 'pitas'} de arco: `, th, ' = ', dF(radTxt(f(val.n)))],
+      dibujo: val => ({ datos: ruedaCon(val.r, val.n, radTxt(f(val.n)), { cuenta: false }), estado: {} }),
+      lectura: val => [`${f(val.n)} ${val.n === 1 ? 'pita' : 'pitas'} de arco, ${f(val.n)} ${val.n === 1 ? 'radio' : 'radios'}: `, th, ' = ', dF(radTxt(f(val.n)))],
       minimo: 3,
     },
     predice: {
-      pregunta: 'Si sigues acostando pitas del largo del radio sobre la llanta, ¿cuántas caben en la vuelta completa?',
-      datos: ['Largo del borde de una rueda, la vuelta completa: 2 · π · radio.', DS.piNum],
+      pregunta: 'Si sigues acostando pitas del largo del radio sobre la llanta, ¿cuántas caben en la vuelta completa? La línea punteada es lo que falta para cerrar la vuelta.',
+      datos: ['Cada pita mide un radio de la rueda.', DS.piNum],
       voz: 'Compara el largo de la vuelta con el largo de una pita.',
       opciones: [
         { id: 'c', texto: '2π: unas 6,28', correcta: true },
@@ -1467,7 +1472,7 @@
     regla: {
       texto: 'Un radián es el ángulo central cuyo arco mide lo mismo que el radio. La medida en radianes cuenta cuántos radios mide el arco: en la vuelta caben 2π.',
       ecuacion: [junto([dF('π rad'), ' = ', dH('180°'), ' = ', dI('200ᵍ')]), SEP, junto(['1 vuelta = ', dF('2π rad')])],
-      condicion: 'no depende del tamaño del círculo. π es el número 3,1416; un ángulo sin unidad escrita está en radianes.',
+      condicion: 'arco y radio, en la misma unidad: el tamaño de la rueda no importa. Sin unidad escrita, el ángulo está en radianes.',
       voz: 'El radián compara dos largos; por eso no lleva centímetros.',
     },
     // Así se resuelve: de radianes (con π) a grados sexagesimales. «Ahora tú» va al revés (de grados a radianes), y
@@ -1480,7 +1485,8 @@
         return {
           enunciado: ['Un ángulo trigonométrico mide ', dF(radTxt(piTxt(dd))), '. ¿Cuánto mide en grados sexagesimales?'],
           datos: [DS.pi],
-          dibujo: { datos: transp(dd, { texto: '?', colorTexto: 'tinta' }), estado: {} },
+          // Sin la aguja hasta la cuenta: en el transportador, su escala se leería y es la respuesta (lector B).
+          dibujo: { datos: transp(0), estado: {} },
           pasos: [
             { tipo: 'pide', texto: 'Piden la medida del mismo giro, en grados sexagesimales.' },
             { tipo: 'datos', texto: ['El ángulo mide ', dF(radTxt(piTxt(dd))), `: ${Math.abs(dd) / m === 1 ? '' : `${Math.abs(dd) / m} veces `}la ${180 / m === 1 ? 'media vuelta entera' : `${['', '', 'mitad', 'tercera parte', 'cuarta parte', 'quinta parte', 'sexta parte', '', '', 'novena parte', 'décima parte', '', 'doceava parte'][180 / m] || `parte ${180 / m}`} de π rad`}${dd < 0 ? ', en sentido horario' : ''}.`] },
@@ -1560,9 +1566,9 @@
       datos: [DS.scrDef, DS.scr],
       solucion: [
         { texto: 'Se reemplazan S y C por 9k y 10k:', ecuacion: junto([{ frac: ['10k + 9k', '10k − 9k'] }, ' = ', { frac: ['19k', 'k'] }]) },
-        { texto: 'La k se simplifica: el cociente vale lo mismo para cualquier ángulo.', ecuacion: [dH('19')] },
+        { texto: 'La k se simplifica: el cociente vale lo mismo para cualquier ángulo.', ecuacion: ['19'] },
       ],
-      respuesta: [dH('19')] },
+      respuesta: [neg('19')] },
     { nivel: 2, titulo: 'Dos veces S menos C',
       enunciado: ['Los números ', S, ' y ', Cc, ' de un mismo ángulo cumplen ', junto(['2', S, ' − ', Cc, ' = 40']), '. ¿Cuánto mide el ángulo, en grados sexagesimales?'],
       datos: [DS.scrDef, DS.scr],
@@ -1594,10 +1600,10 @@
       alternativas: EJ_SCR.expr,
       datos: [DS.scrDef, DS.scr],
       solucion: [
-        { texto: 'Se reemplaza:', ecuacion: junto([{ frac: ['2 · 9k + 10k', '10k − 9k'] }, ' = ', { frac: ['28k', 'k'] }, ' = ', dH('28')]) },
-        { texto: ['La ', letra(EJ_SCR.expr, '3'), ' tacha las letras: (2 + 1)/1; la ', letra(EJ_SCR.expr, '19'), ' olvida el 2; la ', letra(EJ_SCR.expr, '−29'), ' cambia 9 por 10; la ', letra(EJ_SCR.expr, '2,8'), ' divide entre 10.'] },
+        { texto: 'Se reemplaza:', ecuacion: junto([{ frac: ['2 · 9k + 10k', '10k − 9k'] }, ' = ', { frac: ['28k', 'k'] }, ' = 28']) },
+        { texto: ['La ', letra(EJ_SCR.expr, '3'), ' tacha las letras de arriba y se queda con 2 + 1; la ', letra(EJ_SCR.expr, '19'), ' olvida el 2; la ', letra(EJ_SCR.expr, '−29'), ' cambia 9 por 10; la ', letra(EJ_SCR.expr, '2,8'), ' divide entre 10.'] },
       ],
-      respuesta: [letra(EJ_SCR.expr, '28'), ', ', dH('28')] },
+      respuesta: [letra(EJ_SCR.expr, '28'), ', 28'] },
     { nivel: 3, titulo: 'S y C con una incógnita',
       enunciado: ['Los números de un mismo ángulo son ', junto([S, ' = x + 4']), ' y ', junto([Cc, ' = x + 9']), '. ¿Cuánto mide el ángulo, en radianes?'],
       alternativas: EJ_SCR.x,
@@ -1613,7 +1619,8 @@
       alternativas: EJ_SCR.cuad,
       datos: [DS.scrDef, DS.scr],
       solucion: [
-        { texto: 'Con k:', ecuacion: [junto('100k² − 81k² = 76'), FL, junto('19k² = 76'), FL, junto('k² = 4'), FL, junto('k = 2')] },
+        { texto: 'Con k: C² = (10k)² = 100k² y S² = (9k)² = 81k².', ecuacion: [junto('100k² − 81k² = 76'), FL, junto('19k² = 76'), FL, junto('k² = 4')] },
+        { texto: 'k² = 4 da k = 2 o k = −2. El ángulo es positivo, así que k = 2.' },
         { texto: 'El ángulo mide S grados:', ecuacion: junto([S, ' = 9 · 2 = 18', FL, dH('18°')]) },
         { texto: ['La ', letra(EJ_SCR.cuad, '2°'), ' da k; la ', letra(EJ_SCR.cuad, '4°'), ' da k²; la ', letra(EJ_SCR.cuad, '20°'), ' da C; la ', letra(EJ_SCR.cuad, '36°'), ' usa k = 4, sin sacar la raíz.'] },
       ],
@@ -1702,10 +1709,10 @@
     actividad: 'Cambiar un ángulo en una calculadora que lo muestra en sus tres modos.',
     lee: {
       tarjetas: [
-        { titulo: 'La calculadora de tres modos', texto: 'Una calculadora científica mide los ángulos en tres modos: DEG, grados sexagesimales; GRA, grados centesimales, y RAD, radianes. Si escribes un ángulo y cambias de modo, el número cambia; el ángulo, no.',
+        { titulo: 'La calculadora de tres modos', texto: 'Una calculadora científica mide los ángulos en tres modos: DEG, grados sexagesimales; GRA, grados centesimales, y RAD, radianes. La tecla DRG cambia de modo: el número cambia; el ángulo, no.',
           pieza: MD, dibujo: { datos: calc('90', '100', 'π/2'), estado: {} } },
         { titulo: 'Tres números, un ángulo', texto: ['El examen pone letra a cada número del mismo ángulo: ', S, ', su número de grados sexagesimales; ', Cc, ', su número de grados centesimales, y ', R, ', su número de radianes. Ojo: aquí ', R, ' no es un radio.'] },
-        { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar el ángulo. En cada caso, divide ', S, ' entre 9 y ', Cc, ' entre 10, y compara los dos resultados.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar el ángulo. En cada caso, divide ', S, ' entre 9 y ', Cc, ' entre 10, porque 9° y 10ᵍ son el mismo giro, y compara los dos resultados.'] },
       ],
     },
     ejemplos: EJEMPLOS_FORMULA,
@@ -1738,7 +1745,7 @@
         { id: 'mitad', texto: '28,5°', error: 'CONV-MISMO', siFuera: 'Repartir la suma está bien pensado; pero S y C no son iguales: C es mayor.' },
         { id: 'otra', texto: '30°', error: 'SCR-OTRA', siFuera: '30 es C, el número de grados centesimales. Se pide en sexagesimales.' },
       ],
-      dibujo: { datos: calc('?', '?', ''), estado: {} },
+      dibujo: { datos: calc('?', '?', '?'), estado: {} },
       revelar: { datos: calc('27', '30', '3π/20'), estado: {} },
       coincide: 'Coincide: 27 + 30 = 57, y 27° y 30ᵍ son el mismo ángulo.',
       noCoincide: 'Revisemos: los dos números tienen que ser del mismo ángulo, como 9 y 10.',
@@ -1746,7 +1753,7 @@
     mira: {
       pieza: MD,
       datos: { objeto: 'calculadora', modos: [{ nombre: 'DEG', valor: [{ t: '?' }, { t: '27', paso: 2 }], color: 'h' }, { nombre: 'GRA', valor: [{ t: '?' }, { t: '30', paso: 2 }], color: 'i' }, { nombre: 'RAD', valor: [{ t: '' }, { t: '3π/20', paso: 3 }], color: 'f' }] },
-      voz: 'Una sola letra, k, para los tres números.',
+      voz: 'Una sola letra, k, para S y C; después, para R.',
       pasos: [
         { estado: { paso: 0 }, texto: 'En el mismo ángulo, S/9 y C/10 dan el mismo número: k.', ecuacion: [junto([S, ' = 9k']), SEP, junto([Cc, ' = 10k'])] },
         { estado: { paso: 1 }, texto: 'La suma es 57: se reemplaza y sale k.', ecuacion: [junto('9k + 10k = 57'), FL, junto('k = 3')] },
@@ -1755,7 +1762,7 @@
       ],
     },
     regla: {
-      texto: 'Los números S, C y R de un mismo ángulo guardan siempre la misma proporción. Por eso los tres se escriben con una sola letra, k.',
+      texto: 'Los números S, C y R de un mismo ángulo guardan la misma proporción. Como 180 = 9 · 20 y 200 = 10 · 20, cada cociente es k/20.',
       ecuacion: [junto([{ frac: [S, '180'] }, ' = ', { frac: [Cc, '200'] }, ' = ', { frac: [R, 'π'] }]), SEP, junto([S, ' = 9k']), SEP, junto([Cc, ' = 10k']), SEP, junto([R, ' = ', { frac: ['πk', '20'] }])],
       condicion: 'S, C y R son los números de un mismo ángulo, con el mismo signo. La k es la misma.',
       voz: 'Tres números, una sola k.',
@@ -1801,7 +1808,9 @@
 
   return {
     unidad: 'trigonometria.angulo-trigonometrico',
-    version: '0.3.0',
+    version: '0.4.0',
+    // Las cinco ideas pasaron el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-giro.js', '/nucleo/kit/piezas/trig-medida.js'],
     // Glosario del tema (docs/teoria.md §4d): las palabras que el curso estrena aquí. Las demás unidades las heredan.
@@ -1872,8 +1881,9 @@
         def: 'Segmento que va del centro a la circunferencia; también se llama así a su largo.',
         ejemplos: ['Cada rayo de una rueda de bicicleta es un radio.', 'En un reloj de pared, el minutero es casi un radio.', 'Si el diámetro mide 10 cm, el radio mide 5 cm.'],
         ver: ['circunferencia'] },
+      // Sin `simple`: así no sale en «Palabras de esta idea» antes del juego, donde su definición y su «S = 9k» darían la
+      // regla que la predicción de la idea 5 mide (auditoría, 19 nov).
       { termino: 'fórmula general de conversión', formas: ['fórmula general'],
-        simple: 'La relación que amarra los tres números de un mismo ángulo.',
         def: 'Relación entre los números S, C y R de un mismo ángulo: S/180 = C/200 = R/π.',
         ejemplos: ['Con S = 54 sale C = 60.', 'S = 9k, C = 10k y R = πk/20.', 'En media vuelta: 180/180 = 200/200 = π/π.'],
         ver: ['número de grados sexagesimales', 'número de grados centesimales', 'número de radianes'] },
@@ -1892,7 +1902,9 @@
         def: 'Cuántos radianes mide un ángulo. En la fórmula general se llama R (no es un radio).',
         ejemplos: ['En π/4 rad, R = π/4.', 'En media vuelta, R = π.', 'En 2 rad, R = 2.'],
         ver: ['fórmula general de conversión'] },
-      { termino: 'vuelta', def: 'Giro completo que regresa al lado inicial: 360°, 400ᵍ o 2π rad.',
+      // Sin 400ᵍ ni 2π rad: «vuelta» se toca desde la idea 1, antes de esos símbolos, y 2π es la respuesta de la
+      // predicción del radián (auditoría, 19 nov). Cada sistema dice su vuelta en su término.
+      { termino: 'vuelta', def: 'Giro completo que regresa al lado inicial: 360°.',
         ejemplos: ['El minutero da una vuelta cada hora.', 'Media vuelta deja el rayo apuntando al lado contrario.', 'Una vuelta y media del timón son 540°.'], ver: ['ángulos coterminales'] },
       { termino: 'circunferencia', def: 'Línea cerrada cuyos puntos están todos a la misma distancia de un centro.',
         ejemplos: ['El borde de una moneda.', 'La llanta de una rueda, vista de frente.', 'El aro de un timón.'], ver: ['radio', 'arco'] },
@@ -1939,7 +1951,7 @@
         consigna: 'Gira la aguja del transportador hacia cualquier lado. La lectura escribe el mismo giro en grados, grados centesimales y radianes.',
         controles: [{ id: 'g', etiqueta: 'Giro de la aguja', color: 'c-h', min: -360, max: 360, paso: 5, inicio: 135, unidad: '°', decimales: 0 }],
         dibujo: val => ({ datos: transp(val.g, val.g ? enSex(gr(val.g)) : {}), estado: {} }),
-        lectura: val => junto([th, ' = ', dH(gr(val.g)), ' = ', dI(cen(f(aCent(val.g), 2))), ' = ', dF(radLab(val.g))]),
+        lectura: val => junto([th, ' = ', dH(gr(val.g)), ' = ', dF(radLab(val.g)), entero(aCent(val.g) * 100) ? ' = ' : ' ≈ ', dI(cen(f(aCent(val.g), 2)))]),
         invitaciones: [
           { texto: 'Haz que el giro mida exactamente −150ᵍ.',
             logrado: val => entero(aCent(val.g)) && Math.round(aCent(val.g)) === -150,
@@ -1981,7 +1993,7 @@
             bien: 'Media vuelta mide π ≈ 3,14 radios: con 3 pitas falta un poquito.' },
           { texto: 'Lleva el arco casi a la vuelta completa, sin cerrarla.',
             logrado: val => val.t < 2 * Math.PI && 2 * Math.PI - val.t < 0.5,
-            bien: 'Con 6 radios de arco falta un pedacito: la vuelta mide 2π ≈ 6,28 radios.' },
+            bien: 'Casi: la vuelta mide 2π ≈ 6,28 radios, y con 6 o 6,25 todavía falta un pedacito.' },
           { texto: 'Guarda dos casos con las mismas pitas y ruedas de distinto tamaño.',
             logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.t === y.t && x.r !== y.r)),
             bien: 'Rueda más grande, pitas más largas: el ángulo en radianes es el mismo.' },

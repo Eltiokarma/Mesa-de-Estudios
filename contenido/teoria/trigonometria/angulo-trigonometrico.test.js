@@ -1,6 +1,6 @@
 // Pruebas propias de «Ángulo trigonométrico y sistemas de medida» (además del validador común de
 // contenido/teoria/teoria.test.js). Etapa 5, fases 2 y 3 (19 nov): las cinco ideas están rehechas contra el contrato (la
-// unidad todavía no declara calidad: 2; la sesión la marca después del lector en frío y del auditor).
+// unidad lleva calidad: 2 desde el 19 nov, tras el lector en frío y el auditor).
 //   - el orden nuevo de las ideas, con los `id` publicados y la idea nueva `formula-general`;
 //   - nada adelantado ni repetido: el radián no aparece antes de su idea y ningún ejercicio calcula un arco (s = θ · r);
 //   - la idea 1 cumple el contrato: aprendizaje, actividad, pregunta, misión que solo se logra con −270°, leyenda, datos
@@ -36,9 +36,9 @@ function colores(x, acc = new Set()) {
   return acc;
 }
 
-test('orden nuevo: cinco ideas, con los id publicados y la idea nueva al final; sin calidad 2 todavía', () => {
+test('orden nuevo: cinco ideas, con los id publicados y la idea nueva al final; con calidad 2', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ['sentido-signo', 'tres-sistemas', 'minutos-decimales', 'radian', 'formula-general']);
-  assert.ok(!(def.calidad >= 2), 'la unidad se marca calidad 2 al cerrarla, no en la fase 2');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.ok(def.requiere.includes('/nucleo/kit/piezas/trig-giro.js'));
   const cat = JSON.parse(fs.readFileSync(path.join(RAIZ, 'catalogo/cursos/trigonometria.json'), 'utf8')).unidades.find(u => u.id === def.unidad);
   for (const i of def.ideas) for (const t of i.temas) assert.ok(cat.temas.includes(t), `${i.id}: «${t}» no es un tema del catálogo`);
@@ -131,7 +131,9 @@ test('idea 1, ejemplos: 5 por nivel con datos; la figura muestra el planteamient
   for (const nv of [1, 2, 3]) assert.equal(EJ.filter(e => e.nivel === nv).length, 5);
   EJ.forEach((e, k) => {
     assert.ok(Array.isArray(e.datos) && e.datos.length >= 1, `ejemplo ${k + 1}: sin datos`);
-    assert.ok(e.figura, `ejemplo ${k + 1}: sin figura`);
+    // La figura es opcional (auditoría, 19 nov: el timón quieto de «El timón en una curva» no decía nada); si está,
+    // muestra el planteamiento.
+    if (!e.figura) { assert.ok(colores(e.respuesta).has('c-h'), `ejemplo ${k + 1}: la respuesta no lleva color`); return; }
     // Los números de la figura están todos en el enunciado: ninguno es un resultado.
     const enFig = Teoria.numerosDe(Teoria.textoSVG(svgDe(e.figura))), enEnun = Teoria.numerosDe(plano(e.enunciado));
     for (const x of enFig) assert.ok(enEnun.has(x), `ejemplo ${k + 1} («${e.titulo}»): la figura muestra ${x}, que no es un dato del enunciado`);
@@ -148,7 +150,7 @@ test('idea 1, ejemplos de nivel 3: cinco alternativas con la respuesta; por letr
   for (const e of N3) {
     assert.equal(e.alternativas.length, 5, e.titulo);
     assert.equal(new Set(e.alternativas).size, 5, `${e.titulo}: alternativas repetidas`);
-    const r = plano(e.respuesta), conLetras = e.figura.datos.objeto === 'rayos';
+    const r = plano(e.respuesta), conLetras = !!e.figura && e.figura.datos.objeto === 'rayos';
     const valor = r.replace(/^[A-E], /, '').replace(/^(x|β) = /, '');
     const k = e.alternativas.indexOf(valor);
     assert.ok(k >= 0, `${e.titulo}: la respuesta «${valor}» no está entre las alternativas`);
@@ -184,14 +186,15 @@ test(`idea 1, «Ahora tú»: cuatro opciones, datos, y la correcta cuadra con un
     const enDatos = /^[\d,]+$/.test(bien) ? new RegExp(`(?<![\\d,−])${bien}(?![\\d,°])`).test(plano(c.datos)) : plano(c.datos).includes(bien);
     assert.ok(!enDatos, `semilla ${s}: los datos traen la respuesta`);
     let m;
-    if ((m = /(\d+)° (.+?) y, sin soltarl[oa], (\d+)° (.+?)\. ¿Cuánto mide el giro total\?$/.exec(q))) {
+    if ((m = /(\d+)° (.+?) y, sin soltarl[oa], (\d+)° (.+?)\.(?: La bolita negra marca un brazo de la llave\.)? ¿Cuánto mide el giro total\?$/.exec(q))) {
       tipos[0]++;
       const total = signoDe(m[2]) * +m[1] + signoDe(m[4]) * +m[3];
       assert.equal(num(bien.replace('°', '')), total, `semilla ${s}: ${q}`);
       assert.notEqual(total, 0);
-      // La figura muestra solo el primer giro.
-      assert.equal(c.dibujo.datos.giros.length, 1); assert.equal(c.dibujo.datos.giros[0].mide, signoDe(m[2]) * +m[1]);
-    } else if ((m = /giró θ = (−?\d+)°\. ¿Cuántas vueltas dio y en qué sentido\?$/.exec(q))) {
+      // La figura muestra los dos giros, cada uno con su dato (lector en frío A, 19 nov), y no el total.
+      assert.deepEqual(c.dibujo.datos.giros.map(g => g.mide), [signoDe(m[2]) * +m[1], signoDe(m[4]) * +m[3]]);
+      assert.ok(!c.dibujo.datos.giros.some(g => g.total), `semilla ${s}: la figura dibuja el total`);
+    } else if ((m = /giró θ = (−?\d+)°\.(?: La [^.]+ marca [^.]+\.)? ¿Cuántas vueltas dio y en qué sentido\?$/.exec(q))) {
       tipos[1]++;
       assert.equal(gradosDe(bien), num(m[1]), `semilla ${s}: ${q} → ${bien}`);
       assert.ok(!(c.dibujo.datos.giros || []).length, 'la figura no dibuja el giro (se contarían las vueltas)');
@@ -274,7 +277,7 @@ function esperado(q) {
     return f0 * (m[3] === 'radianes' ? 2 * Math.PI : m[3] === 'grados sexagesimales' ? 360 : 400);
   }
   if ((m = /mide (\d+)° (\d+)′\. ¿Cuánto mide en grados, con decimales\?$/.exec(q))) return +m[1] + m[2] / 60;
-  if ((m = /mide ([\d,]+)°\. ¿Cuántos minutos sexagesimales son, en total\?$/.exec(q))) return num(m[1]) * 60;
+  if ((m = /mide ([\d,]+)°, en grados con decimales \(no son minutos\)\. ¿Cuántos minutos sexagesimales son, en total\?$/.exec(q))) return num(m[1]) * 60;
   if ((m = /mide (\d+)ᵍ (\d+)ᵐ\. ¿Cuánto mide en grados centesimales, con decimales\?$/.exec(q))) return +m[1] + m[2] / 100;
   if ((m = /diferencia entre un ángulo de (\d+)° (\d+)′ y otro de (\d+)° (\d+)′\?$/.exec(q))) return (+m[1] + m[2] / 60) - (+m[3] + m[4] / 60);
   if ((m = /mide (\d+)° (\d+)′\. ¿Cuánto mide su complemento\?$/.exec(q))) return 90 - (+m[1] + m[2] / 60);
@@ -408,4 +411,104 @@ test('regla de colores en los textos: ° en carmín, ᵍ en turquesa, π y rad e
     for (let s = 0; s < 60; s++) { const a = I.ahoraTu.generar(s), r = I.resuelve.generar(s); mira([a.pregunta, a.datos, a.solucion, r.enunciado, r.datos, r.pasos, r.respuesta], `${I.id} ${s}`); }
   }
   assert.deepEqual(mal.slice(0, 20), []);
+});
+
+// ---------- Auditoría y lectores en frío (19 nov): cada prueba falla con la versión de antes ----------
+const plano2 = x => plano(x).replace(/\s+/g, ' ');
+const textoFig = (dib, pz) => Teoria.textoSVG(Kit.piezas[(dib && dib.pieza) || pz].dibujar(dib.datos, dib.estado || {}));
+
+test('auditoría: el siFuera de «sin cambiar de sistema» dice lo que da ese error (también en los segundos)', () => {
+  const I = idea('minutos-decimales');
+  let vistos = 0;
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = I.ahoraTu.generar(s), q = plano2(c.pregunta), o = c.opciones.find(x => x.id === 'sinsistema');
+    const m = /mide (\d+)″, segundos sexagesimales/.exec(q);
+    if (!m || !o) continue;
+    vistos++;
+    // Sin cambiar el grado: 81″ = 0,0225°, leído como 0,0225ᵍ = 225ˢ.
+    assert.equal(num(o.texto.replace('ˢ', '')), +m[1] / 3600 * 10000, `semilla ${s}: ${o.texto}`);
+  }
+  assert.ok(vistos > 10);
+});
+
+test('auditoría: la mesa «tres-escalas» escribe «=» solo si la cuenta es exacta', () => {
+  const m = def.laboratorio.find(x => x.id === 'tres-escalas');
+  for (const v of Teoria.grilla(m.controles)) {
+    const t = plano2(m.lectura(v)), c = /([−\d,]+)ᵍ/.exec(t)[1], exacto = Math.abs(v.g * 10 / 9 - num(c)) < 1e-9;
+    assert.ok(exacto ? !/≈/.test(t) : new RegExp(`≈ ${c}ᵍ$`).test(t), `${v.g}°: ${t}`);
+  }
+});
+
+test('auditoría: el glosario no adelanta símbolos ni la regla de una predicción', () => {
+  const g = t => def.glosario.find(x => x.termino === t);
+  // «vuelta» se toca desde la idea 1: sin ᵍ ni rad, y sin 2π (la respuesta de la predicción del radián).
+  assert.ok(!/ᵍ|rad|π/.test(g('vuelta').def), g('vuelta').def);
+  // La idea 5 no muestra antes del juego un término cuya definición trae S = 9k o S/180 = C/200.
+  const palabras5 = Glosario.porIdea(def)[4].filter(e => e.simple);
+  for (const e of palabras5) assert.ok(!/9k|\/180|S\/180/.test([e.simple, e.def, ...(e.ejemplos || [])].join(' ')), e.termino);
+});
+
+test('auditoría: k se dice en palabras en los Datos de la idea 5, y la regla dice de dónde sale el 20', () => {
+  const F = idea('formula-general');
+  const linea = plano2(F.ahoraTu.generar(0).datos.find(l => /9k/.test(plano2(l))));
+  assert.match(linea, /k = S ÷ 9/);
+  assert.match(F.regla.texto, /9 · 20/);
+  for (const e of F.ejemplos) assert.ok(e.datos.some(l => /k = S ÷ 9/.test(plano2(l))), e.titulo);
+});
+
+test('lector A: Predice de la idea 3 dice en palabras el ᵐ; el juego de la idea 1 dice que el control llega a los negativos', () => {
+  const P3 = idea('minutos-decimales').predice;
+  assert.ok(/m pequeña arriba: ᵐ/.test(plano2(P3.pregunta)) && /\(ᵐ\)/.test(plano2(P3.datos)));
+  assert.match(plano2(I1.juega.consigna), /−540°/);
+  assert.match(I1.juega.controles[0].etiqueta, /derecha.*izquierda/);
+  // «siempre el mayor» es falso en el cero.
+  const I2 = idea('tres-sistemas');
+  assert.ok(!/siempre/.test(I2.juega.voz) && !/siempre/.test(plano2(I2.lee.tarjetas.map(t => t.texto))));
+});
+
+test('lectores: dos giros seguidos se dibujan los dos, y la marca de la llave se dice en palabras', () => {
+  let n = 0;
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = I1.ahoraTu.generar(s), q = plano2(c.pregunta);
+    if (!/sin soltar/.test(q)) continue;
+    n++;
+    assert.equal(c.dibujo.datos.giros.length, 2, `semilla ${s}`);
+    if (c.dibujo.datos.objeto === 'llave') assert.match(q, /bolita negra/);
+  }
+  assert.ok(n > 50);
+});
+
+test('lectores: ninguna figura de conversión muestra la aguja antes de la cuenta (la otra escala es la respuesta)', () => {
+  for (const id of ['tres-sistemas', 'radian']) {
+    const I = idea(id);
+    for (let s = 0; s < 40; s++) assert.ok(!(I.resuelve.generar(s).dibujo.datos.giros || []).length, `${id} resuelve ${s}`);
+  }
+  // Los ejemplos de la idea 2 que piden la otra escala van sin transportador.
+  for (const e of idea('tres-sistemas').ejemplos) if (e.figura && e.figura.datos.objeto === 'transportador') assert.fail(`«${e.titulo}»: el transportador da la respuesta`);
+  // «Tres pitas»: las pitas no van numeradas; el juego tampoco (el «1» se leía como 1 cm).
+  const tres = idea('radian').ejemplos.find(e => e.titulo === 'Tres pitas sobre la llanta');
+  assert.ok(!tres.figura.datos.cuenta);
+  assert.ok(!idea('radian').juega.dibujo({ n: 1, r: 20 }).datos.cuenta);
+});
+
+test('lectores: Predice del radián no trae la relación que se predice; la de S y C pone «?» en las tres filas', () => {
+  assert.ok(!/2 · π|2π/.test(plano2(idea('radian').predice.datos)));
+  const d = idea('formula-general').predice.dibujo.datos.modos.map(m => m.valor);
+  assert.deepEqual(d, ['?', '?', '?']);
+});
+
+test('lector A: ningún «°» o «ᵍ» suelto después de una fracción (se lee «de grado»)', () => {
+  const malo = x => /"frac":\[[^\]]*\]\},"[°ᵍ][ \u00a0]=/.test(JSON.stringify(x));
+  for (const I of def.ideas) {
+    assert.ok(!malo(I.mira.pasos), `${I.id} mira`);
+    for (const e of I.ejemplos) assert.ok(!malo(e.solucion), `${I.id} «${e.titulo}»`);
+    for (let s = 0; s < 60; s++) assert.ok(!malo(I.ahoraTu.generar(s).solucion), `${I.id} ahora tú ${s}`);
+  }
+});
+
+test('lector B: tarjetas 14 y 15 (19 sin color de S; (10k)² y k = −2 a la vista)', () => {
+  const F = idea('formula-general');
+  const c14 = F.ejemplos.find(e => e.titulo === 'Un cociente que no cambia'), c15 = F.ejemplos.find(e => e.titulo === 'Una condición con cuadrados');
+  assert.ok(!colores(c14.respuesta).has('c-h'));
+  assert.match(plano2(c15.solucion.map(p => p.texto)), /\(10k\)².*k = −2/);
 });

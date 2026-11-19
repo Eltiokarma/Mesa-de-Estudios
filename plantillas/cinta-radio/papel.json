@@ -3,7 +3,7 @@
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Recuerda: S/180 = C/200 = R/π, donde S, C y R son el mismo ángulo en grados sexagesimales, grados centesimales y radianes. Un radián es el ángulo cuyo arco mide lo mismo que el radio (unos 57,3°, no 1°). En L = θ·r y en A = θ·r²/2, el ángulo θ va siempre en radianes. Una rueda que rueda sin resbalar avanza 2πr por vuelta. Ojo: R mayúscula es el ángulo en radianes y r minúscula es el radio. En muchos libros el área del sector se escribe S; aquí usamos A para no confundirla con los grados sexagesimales.",
   "problemas": [
     {
-      "id": "p1",
+      "id": "p1", "unidades": ["trigonometria.angulo-trigonometrico"],
       "nivel": "básico",
       "enunciado": "Expresa un ángulo de 135° en radianes y en grados centesimales.",
       "respuesta": "3π/4 rad y 150ᵍ.",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "id": "p2",
+      "id": "p2", "unidades": ["trigonometria.angulo-trigonometrico"],
       "nivel": "básico",
       "enunciado": "Un ángulo mide 2 rad (así, sin π). ¿Cuántos grados sexagesimales mide, aproximadamente? Exprésalo en grados y minutos.",
       "respuesta": "360/π ≈ 114,6°, es decir, unos 114°35'.",
@@ -57,7 +57,7 @@
       "verificar": [ { "fn": "convertir", "args": [{ "R": 2 }], "espera": { "S": 114.59155902616465, "sexagesimal.grados": 114, "sexagesimal.minutos": 35, "errores.leePiEnR": 360 } } ]
     },
     {
-      "id": "p3",
+      "id": "p3", "unidades": ["trigonometria.longitud-de-arco-y-sector"],
       "nivel": "básico",
       "enunciado": "Un abanico de 18 cm de radio se abre 100°. ¿Cuánto mide el arco de su borde y cuál es el área de la tela (un sector circular)?",
       "respuesta": "Arco 10π cm (unos 31,4 cm); área 90π cm² (unos 283 cm²).",
@@ -145,7 +145,7 @@
       ]
     },
     {
-      "id": "p4",
+      "id": "p4", "unidades": ["trigonometria.angulo-trigonometrico"],
       "nivel": "intermedio",
       "enunciado": "Los números S y C de grados sexagesimales y centesimales de un mismo ángulo cumplen C − S = 4. ¿Cuánto mide el ángulo en radianes?",
       "respuesta": "π/5 rad.",
@@ -157,7 +157,7 @@
       "verificar": [ { "fn": "resolverSCR", "args": [{ "C": 1, "S": -1 }, 4], "espera": { "textoR": "π/5", "S": 36, "C": 40, "errores.kComoRespuesta": 0.2 } } ]
     },
     {
-      "id": "p5",
+      "id": "p5", "unidades": ["trigonometria.longitud-de-arco-y-sector"],
       "nivel": "intermedio",
       "enunciado": "En una pista circular de 40 m de radio, una ciclista recorre 100 m. a) ¿Qué ángulo central barre, en radianes? b) Otra ciclista, en una pista de 80 m de radio, recorre 200 m. ¿Barre un ángulo mayor, menor o igual?",
       "respuesta": "a) 2,5 rad (unos 143°). b) Igual: 2,5 rad.",
@@ -170,7 +170,7 @@
                      { "fn": "sector", "args": [{ "L": 200, "r": 80 }], "espera": { "theta": 2.5 } } ]
     },
     {
-      "id": "p6",
+      "id": "p6", "unidades": ["trigonometria.longitud-de-arco-y-sector"],
       "nivel": "intermedio",
       "enunciado": "La escobilla de un limpiaparabrisas va desde 15 cm hasta 45 cm del eje y gira 120°. ¿Qué área del vidrio limpia? (Es un trapecio circular.)",
       "respuesta": "600π cm², unos 1885 cm².",
@@ -221,7 +221,7 @@
       ]
     },
     {
-      "id": "p7",
+      "id": "p7", "unidades": ["trigonometria.longitud-de-arco-y-sector"],
       "nivel": "básico",
       "enunciado": "Una rueda de 30 cm de radio rueda sin resbalar y avanza 180π m. ¿Cuántas vueltas da?",
       "respuesta": "300 vueltas.",
@@ -272,7 +272,7 @@
       ]
     },
     {
-      "id": "p8",
+      "id": "p8", "unidades": ["trigonometria.longitud-de-arco-y-sector"],
       "nivel": "avanzado",
       "enunciado": "La polea de un motor tiene 5 cm de radio y da 1200 vueltas por minuto. Una faja la une a una polea de 15 cm de radio, y en el mismo eje de esta va una rueda de 25 cm de radio. a) ¿Cuántas vueltas por minuto da la rueda? b) ¿Cuánto recorre en un minuto un punto del borde de la rueda?",
       "respuesta": "a) 400 vueltas por minuto. b) 20 000π cm, unos 628 m.",
@@ -352,7 +352,7 @@
       ]
     },
     {
-      "id": "p9",
+      "id": "p9", "unidades": ["trigonometria.longitud-de-arco-y-sector"],
       "nivel": "avanzado",
       "enunciado": "Una moneda de 1 cm de radio rueda sin resbalar alrededor de un disco fijo de 5 cm de radio, por fuera, hasta volver a su lugar. ¿Cuántas vueltas da sobre sí misma? ¿Y si rodara por dentro de un aro de 5 cm de radio?",
       "respuesta": "Por fuera, 6 vueltas; por dentro, 4.",
@@ -441,7 +441,7 @@
       ]
     },
     {
-      "id": "p10",
+      "id": "p10", "unidades": ["trigonometria.angulo-trigonometrico"],
       "nivel": "intermedio",
       "enunciado": "Convierte 50ᵍ25ᵐ a grados, minutos y segundos sexagesimales.",
       "respuesta": "45°13'30\".",

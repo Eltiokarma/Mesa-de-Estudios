@@ -146,3 +146,16 @@ test('todas las figuras de la teoría y del laboratorio que usan la pieza: caben
   for (const [nombre, d, e] of figs) revisar(d, e, nombre, mal);
   assert.deepEqual(mal, []);
 });
+
+// Lector en frío B (19 nov): «3 rad» y «?» quedaban fuera de la zona que barre el ángulo. Desde dos pitas, el rótulo
+// del ángulo va dentro de su abertura (entre el radio naranja y el lado final), en todas las ruedas.
+test('rueda: desde dos pitas, el rótulo del ángulo va dentro de la abertura del ángulo', () => {
+  const RC = P.constantes.RC, UNO = 180 / Math.PI;
+  for (const radio of [20, 30, 40]) for (const pitas of [2, 2.5, 3, 4, 5]) for (const rotulo of ['?', `${pitas} rad`]) {
+    const svg = P.dibujar({ objeto: 'rueda', radio, pitas, rotulo, colorRotulo: rotulo === '?' ? 'tinta' : undefined }, {});
+    const m = [...svg.matchAll(/<text[^>]*x="([\d.]+)"[^>]*y="([\d.]+)"[^>]*>([^<]*)<\/text>/g)].find(x => x[3] === rotulo);
+    assert.ok(m, `${radio} cm, ${pitas} pitas: no encontré «${rotulo}»`);
+    let a = Math.atan2(RC[1] - +m[2], +m[1] - RC[0]) * 180 / Math.PI; if (a < 0) a += 360;
+    assert.ok(a > 5 && a < pitas * UNO - 5, `${radio} cm, ${pitas} pitas: «${rotulo}» a ${a.toFixed(0)}°, fuera de 0°–${(pitas * UNO).toFixed(0)}°`);
+  }
+});

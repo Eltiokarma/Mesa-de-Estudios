@@ -95,7 +95,7 @@
     piNum: 'π ≈ 3,1416.',
     radDef: 'Medida en radianes de un ángulo central: cuántas veces cabe el radio en su arco.',
     scrDef: 'S, C y R: números de grados sexagesimales, de grados centesimales y de radianes de un mismo ángulo.',
-    scr: 'Para un mismo ángulo: S = 9k, C = 10k y R = πk/20.',
+    scr: 'Para un mismo ángulo: S = 9k, C = 10k y R = πk/20 (k = S ÷ 9).',
     x: 'x es un número, sin unidad.',
   };
 

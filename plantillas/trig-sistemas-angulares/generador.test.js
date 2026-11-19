@@ -206,3 +206,11 @@ test('nunca se queda sin cuatro alternativas (semillas 0 a 3000 y de texto)', ()
   for (let s = 0; s <= 3000; s++) gen.generar(s);
   for (const s of ['entrada-1', 'salida-3', 'papel-1', 'papel-8', 'alumno-7']) gen.generar(s);
 });
+
+// Auditoría (19 nov): k se dice en palabras en la línea de la fórmula general («S = 9k» solo no dice qué es k).
+test('datos de la idea 5: la línea de S = 9k dice qué es k', () => {
+  for (let s = 0; s < 200; s++) {
+    const p = gen.generar(s, { idea: 'formula-general' }), l = p.datos.find(x => /9k/.test(x));
+    assert.ok(l && /k = S ÷ 9/.test(l), `semilla ${s}: ${l}`);
+  }
+});
