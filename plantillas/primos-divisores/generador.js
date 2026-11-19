@@ -82,7 +82,7 @@
     p17: 'Los primos menores que 17: 2, 3, 5, 7, 11 y 13',
     pa: d => `Progresión de razón ${d}: cada término es el anterior más ${d}`,
     tfa: 'Todo número mayor que 1 es un producto de primos, de una sola manera salvo el orden',
-    canon: 'Forma canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5',
+    canon: 'Descomposición canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5',
     exp: 'El exponente dice cuántas veces entra el primo: 2³ = 2 × 2 × 2',
     pesi: 'Dos números son PESI si no comparten ningún primo en su factorización',
     potProd: 'Potencia de un producto: (2 × 3)⁴ = 2⁴ × 3⁴; potencia de una potencia: (2²)³ = 2⁶',
@@ -315,7 +315,8 @@
       correcta: canon(N), fmt: String,
       errores: [
         h('AT-FACT-INCOMPLETA', incompleta, `Bien, el producto da ${N}. Pero ${val} no es primo: falta partirlo.`, String),
-        h('AT-FACT-EXPONENTE', sinExp, 'Bien los primos. Pero cada uno entra más de una vez.', String),
+        // Solo los que se repiten (auditoría, 19 nov: «cada uno entra más de una vez» era falso con un exponente 1).
+        h('AT-FACT-EXPONENTE', sinExp, `Bien los primos. Pero ${yLista(fs.filter(([, e]) => e > 1).map(([p]) => `el ${p}`))} ${fs.filter(([, e]) => e > 1).length === 1 ? 'entra' : 'entran'} más de una vez.`, String),
         h('AT-FACT-SUMA', mas, `Bien los primos. Pero el ${fs[0][0]} entra ${fs[0][1]} ${fs[0][1] === 1 ? 'vez' : 'veces'}.`, String),
       ],
       solucion: [[`Se divide entre el menor primo una y otra vez: ${fs.flatMap(([p, e]) => Array(e).fill(p)).join(' × ')}.`], [`${N} = `, Bv(canon(N)), '.']],
@@ -504,11 +505,11 @@
       errores: pot ? [
         h('AT-EULER-PRIMO-SIEMPRE', N - 1, `Bien, N − 1 vale con un primo. Pero ${N} no lo es.`),
         h('AT-EULER-FRACCION', N / p, `Bien hallar los múltiplos de ${p}. Pero se piden los que quedan.`),
-        h('AT-EULER-PRIMOS', primosHasta(N).length, 'Bien contar primos. Pero un PESI con N no tiene que ser primo: el 1 lo es.'),
+        h('AT-EULER-PRIMOS', primosHasta(N).length, `Bien contar primos. Pero un PESI con ${N} no tiene que ser primo: el 1, que no es primo, también cuenta.`),
       ] : [
         h('AT-EULER-UN-PRIMO', N - N / p, `Bien quitar los múltiplos de ${p}. Faltan los de ${yLista(ps.slice(1))}.`),
         h('AT-EULER-PRIMO-SIEMPRE', N - 1, `Bien, N − 1 vale con un primo. Pero ${N} tiene los primos ${yLista(ps)}.`),
-        h('AT-EULER-PRIMOS', primosHasta(N).length, 'Bien contar primos. Pero un PESI con N no tiene que ser primo: el 1 lo es.'),
+        h('AT-EULER-PRIMOS', primosHasta(N).length, `Bien contar primos. Pero un PESI con ${N} no tiene que ser primo: el 1, que no es primo, también cuenta.`),
       ],
       solucion: [[`Entran ${ps.length === 1 ? `solo el ${p}` : `los primos ${yLista(ps)}`}, sin sus exponentes.`], [`${N}${ps.map(x => ` × (1 − 1/${x})`).join('')} = `, Bv(c), '.']],
       _datos: { N },
@@ -569,8 +570,9 @@
     const p = rng.elegir([5, 7, 11, 13]), a = rng.elegir([2, 3, 4, 6, 8, 9, 10, 12].filter(x => x % p)), n = rng.entero(30, 99), s = n % (p - 1), r = powmod(a, n, p);
     if (s === 0) return null;
     return {
-      enunciado: [`Doña Juana empaca ${a}${sup(n)} caramelos en bolsitas de `, Ev(p), '.'],
-      pregunta: ['¿Cuántos caramelos quedan sueltos?'],
+      // Sin caramelos: 12⁹⁹ caramelos no es un pedido creíble (auditoría, 19 nov).
+      enunciado: [`Se divide ${a}${sup(n)} entre `, Ev(p), '.'],
+      pregunta: ['¿Qué resto deja?'],
       datos: [D.fermat, D.expS, D.resto],
       correcta: r,
       errores: [
@@ -600,7 +602,8 @@
         _datos: { a, n: p - 1, p },
       };
     }
-    const m = rng.elegir([9, 15, 21, 25]), a = rng.elegir([2, 4, 8].filter(x => mcd(x, m) === 1)), r = powmod(a, m - 1, m);
+    // Sin el 25: sus ciclos de restos miden 10 o 20 (auditoría, 19 nov; ciclos de 3 a 6, como en Divisibilidad).
+    const m = rng.elegir([9, 15, 21]), a = rng.elegir([2, 4, 8].filter(x => mcd(x, m) === 1)), r = powmod(a, m - 1, m);
     if (r === 1) return null;
     return {
       enunciado: [`Se divide ${a}${sup(m - 1)} entre `, Ev(m), '.'],
@@ -612,7 +615,7 @@
         h('AT-FERMAT-MENOS-UNO', m - 1, `Bien mirar el exponente. Pero ${m - 1} no es lo que sobra.`),
         h('AT-FERMAT-BASE', a, `Bien, ${a} deja ${a}. Pero hay que seguir el ciclo hasta ${m - 1}.`),
       ],
-      solucion: [[`${m} no es primo: se sigue el ciclo de restos de ${a}.`], ['Resto ', Rv(r), '.']],
+      solucion: [[`${m} no es primo: se sigue el ciclo de restos de ${a}: ${Array.from({ length: 6 }, (_, i) => powmod(a, i + 1, m)).join(', ')}…`], ['Resto ', Rv(r), '.']],
       _datos: { a, n: m - 1, p: m },
     };
   }

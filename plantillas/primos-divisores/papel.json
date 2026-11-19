@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Doña Juana parte 196 caramelos en partes iguales, y cada parte otra vez, hasta llegar a primos. ¿Cuál es la descomposición canónica de 196? Datos: Todo número mayor que 1 es un producto de primos, de una sola manera salvo el orden. Forma canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5. Alternativas: A) 2³ × 7²   B) 2 × 7   C) 2² × 7²   D) 4 × 7²",
+      "enunciado": "Doña Juana parte 196 caramelos en partes iguales, y cada parte otra vez, hasta llegar a primos. ¿Cuál es la descomposición canónica de 196? Datos: Todo número mayor que 1 es un producto de primos, de una sola manera salvo el orden. Descomposición canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5. Alternativas: A) 2³ × 7²   B) 2 × 7   C) 2² × 7²   D) 4 × 7²",
       "respuesta": "C) 2² × 7²",
       "pasos": [
         "Se divide entre el menor primo una y otra vez: 2 × 2 × 7 × 7.",
@@ -56,7 +56,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Doña Juana empaca 4³⁶ caramelos en bolsitas de 11. ¿Cuántos caramelos quedan sueltos? Datos: Fermat: si p es primo y a no es múltiplo de p, a elevado a p − 1 deja resto 1 entre p. Al multiplicar potencias de una base, los exponentes se suman: a⁵ × a³ = a⁸. El resto de un producto o de una suma sale de operar los restos y volver a dividir. Alternativas: A) 9   B) 6   C) 1   D) 4",
+      "enunciado": "Se divide 4³⁶ entre 11. ¿Qué resto deja? Datos: Fermat: si p es primo y a no es múltiplo de p, a elevado a p − 1 deja resto 1 entre p. Al multiplicar potencias de una base, los exponentes se suman: a⁵ × a³ = a⁸. El resto de un producto o de una suma sale de operar los restos y volver a dividir. Alternativas: A) 9   B) 6   C) 1   D) 4",
       "respuesta": "D) 4",
       "pasos": [
         "36 = 10 × 3 + 6: cada bloque de 10 deja 1, y queda 4⁶.",

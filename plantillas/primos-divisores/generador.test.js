@@ -157,3 +157,31 @@ test('papel.json: 8 problemas de las seis ideas, con sus datos al final y su res
   assert.deepEqual([...ideas].sort(), [...IDEAS].sort());
   assert.deepEqual([7, 8].map(i => gen.generar(`papel-${i}`)._datos.tipo), ['primos-pa', 'cota']);
 });
+
+// ---------- Auditoría (19 nov, rutinas/auditoria/aritmetica.numeros-primos-y-divisores.md): fallan con la versión de antes ----------
+test('A1: AT-FACT-EXPONENTE solo dice «más de una vez» de los primos que se repiten', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'factorizacion' });
+    if (p._datos.tipo !== 'canonica') continue;
+    const a = p.alternativas.find(x => x.error && x.error.id === 'AT-FACT-EXPONENTE');
+    if (!a) continue;
+    const N = p._datos.N, rep = []; let n = N; for (let q = 2; n > 1; q++) { let e = 0; while (n % q === 0) { n /= q; e++; } if (e > 1) rep.push(q); }
+    assert.ok(!/cada uno/.test(a.error.explicacion), a.error.explicacion);
+    assert.deepEqual([...a.error.explicacion.matchAll(/el (\d+)/g)].map(m => +m[1]), rep, `${N}: ${a.error.explicacion}`);
+  }
+});
+test('M1: Fermat que no vale con un divisor compuesto: ciclos de 2 a 6, y la solución los muestra', () => {
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { idea: 'fermat-wilson' });
+    if (p._datos.tipo !== 'no-vale' || PRIMO(p._datos.p)) continue;
+    const { a, p: m } = p._datos; let k = 1, x = a % m; while (x !== 1 && k < 50) { x = (x * a) % m; k++; }
+    assert.ok(k <= 6, `${a} entre ${m}: ciclo de ${k}`);
+    assert.match(p.solucion[0].join(''), /ciclo de restos de \d+: \d+, \d+/);
+  }
+});
+test('B4: el resto de una potencia grande no se cuenta en caramelos (12⁹⁹ caramelos no es creíble)', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'fermat-wilson' });
+    assert.ok(!/caramelos/.test(JSON.stringify(p.enunciado)), JSON.stringify(p.enunciado));
+  }
+});

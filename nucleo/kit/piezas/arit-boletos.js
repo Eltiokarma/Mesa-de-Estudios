@@ -26,6 +26,7 @@
  *   Bloque de «Números primos y divisores» (19 nov; contenido/teoria/aritmetica/numeros-primos-y-divisores.js, ideas
  *   1, 2 y 5). No cambia nada de lo de arriba si no se pide:
  *   numeros: [1, 2, 33, 35, 37],   en vez de desde…hasta, estos boletos sueltos (en ese orden)
+ *   cordeles: false             el cartel sin los dos cordeles de arriba (Números primos: se leían como una llave)
  *   criba: { primos: [2, 3], uno: true, propios: true, quedan: true },   la criba de Eratóstenes: tacha (raya diagonal,
  *                               número atenuado) los múltiplos de cada primo de la lista; con propios: true (por
  *                               defecto) el primo mismo no se tacha y lleva el aro turquesa del que tacha; con propios:
@@ -104,8 +105,9 @@
         premio: esPremio && vistos <= tope,
         sombra: !!d.grupos && entera && grupo % 2 === 0,
         sobra: !!d.sobran && !!premio && num > ultimoPremio,
-        tacha: tachado(num), usado: !!cr && propios && crP.includes(num),
-        queda: !!cr && !!cr.quedan && !tachado(num) && (num > 1 || !!cr.unoQueda) && !(propios && crP.includes(num)) });
+        tacha: tachado(num), usado: !!cr && propios && crP.includes(num) && !cr.primosQuedan,
+        // primosQuedan (Números primos, 19 nov): al final, los primos que tacharon también se marcan como los que quedan.
+        queda: !!cr && !!cr.quedan && !tachado(num) && (num > 1 || !!cr.unoQueda) && (!(propios && crP.includes(num)) || !!cr.primosQuedan) });
     }
     const objetos = [], textos = [];
     for (const c of celdas) objetos.push({ que: `boleto ${c.num}`, x0: c.x, y0: c.y, x1: c.x + c.w, y1: c.y + c.h });
@@ -152,9 +154,10 @@
       s += `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity="0.6" stroke-linejoin="round"/>`;
     }
     const fuerte = c.premio || c.usado || c.queda, tinta = c.usado ? 'var(--c-i)' : c.queda ? 'var(--c-f)' : c.premio ? 'var(--c-i)' : c.sobra ? 'var(--c-o)' : 'currentColor';
-    s += `<text class="kit-txt" x="${n2(x + w / 2)}" y="${n2(y + h / 2 + tam * 0.36)}" font-size="${tam}" text-anchor="middle"${fuerte ? ' font-weight="700"' : ''} fill="${tinta}"${c.tacha ? ' fill-opacity="0.45"' : ''} style="font-variant-numeric:tabular-nums">${T.esc(t)}</text>`;
-    // Tachado por la criba: una raya diagonal de esquina a esquina, en tinta.
-    if (c.tacha) s += `<path class="bo-tacha" d="M${n2(x + 3)} ${n2(y + h - 3)}L${n2(x + w - 3)} ${n2(y + 3)}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>`;
+    s += `<text class="kit-txt" x="${n2(x + w / 2)}" y="${n2(y + h / 2 + tam * 0.36)}" font-size="${tam}" text-anchor="middle"${fuerte ? ' font-weight="700"' : ''} fill="${tinta}"${c.tacha ? ' fill-opacity="0.72"' : ''} style="font-variant-numeric:tabular-nums">${T.esc(t)}</text>`;
+    // Tachado por la criba: una raya diagonal de esquina a esquina, en tinta y más suave que el número (lector en frío B,
+    // 19 nov: con el número al 45 % y la raya entera, el tachado casi no se leía).
+    if (c.tacha) s += `<path class="bo-tacha" d="M${n2(x + 3)} ${n2(y + h - 3)}L${n2(x + w - 3)} ${n2(y + 3)}" stroke="currentColor" stroke-width="1.3" stroke-opacity="0.55" stroke-linecap="round"/>`;
     return s;
   }
 
@@ -164,8 +167,8 @@
     let s = '';
     if (g.cartel) {
       const c = g.cartel;
-      // El cartel cuelga de dos cordeles.
-      s += `<path d="M${n2(c.x0 + 12)} ${M}V${c.y0}M${n2(c.x1 - 12)} ${M}V${c.y0}" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.6"/>`;
+      // El cartel cuelga de dos cordeles (salvo cordeles: false).
+      if (g.d.cordeles !== false) s += `<path d="M${n2(c.x0 + 12)} ${M}V${c.y0}M${n2(c.x1 - 12)} ${M}V${c.y0}" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.6"/>`;
       s += `<rect x="${n2(c.x0)}" y="${c.y0}" width="${n2(c.x1 - c.x0)}" height="${c.y1 - c.y0}" rx="5" fill="var(--card)" stroke="currentColor" stroke-width="1.6"/>`;
     }
     for (const c of g.celdas) s += boleto(c);

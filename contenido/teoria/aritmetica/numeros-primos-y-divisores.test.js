@@ -1,6 +1,6 @@
 // Pruebas propias de «Números primos y divisores» (además del validador común de contenido/teoria/teoria.test.js).
 // Etapa 6 (19 nov): las seis ideas pasan por el contrato, con la propuesta docs/etapa6/propuesta-aritmetica.md como guion.
-//   - seis ideas con los id de antes, en el orden de la propuesta; sin calidad 2 todavía (la marca va tras el cierre);
+//   - seis ideas con los id de antes, en el orden de la propuesta; con calidad 2 desde el 19 nov (lector en frío y auditor);
 //   - un color fijo por magnitud (docs/molde-unidad.md §5b; propuesta §7): cada ficha de color dice su magnitud (m) y
 //     lleva el color de def.colores; nunca verde ni carmín, tampoco en las figuras de las ideas; letras de alternativa en
 //     negrita y sin color;
@@ -100,6 +100,7 @@ test('seis ideas en el orden de la propuesta, con sus id; la tabla de letras y l
   const hechas = def.ideas.map(i => i.id);
   assert.deepEqual(hechas, ID.slice(0, hechas.length), 'los id y el orden de la propuesta');
   assert.equal(def.septimaIdea, undefined);
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.colores, { envase: 'i', sobra: 'o', busca: 'f' });
   for (const l of ['N', 'd', 'k', 'p', 'q', 'α', 'β', 'φ', 'a']) assert.ok(def.letras[l], `tabla de letras: ${l}`);
 });
@@ -344,7 +345,7 @@ const ESPERADO = {
     'Primos de un producto': DIV(2 ** 7 * 3 ** 5 * 25).filter(PRIMO).length,
   },
   divisores: {
-    'Divisores de 2⁴ × 3': DIV(48).length, 'Divisores de 2³ × 5²': DIV(200).length, 'Un primo al cubo': DIV(343).length, 'Divisores propios de 12': DIV(12).length - 1,
+    'Divisores de 2⁴ × 7': DIV(112).length, 'Divisores de 2³ × 5²': DIV(200).length, 'Un primo al cubo': DIV(343).length, 'Divisores propios de 12': DIV(12).length - 1,
     'Divisores de 360': DIV(360).length, 'Suma de los divisores de 12': SD(12), 'Los impares de 360': DIV(360).filter(x => x % 2).length,
     'Múltiplos de 10': DIV(600).filter(x => x % 10 === 0).length, 'El producto de sus divisores': DIV(12).reduce((x, y) => x * y, 1),
     'El exponente que falta': (() => { for (let a = 0; a < 20; a++) if (DIV(2 ** a * 9).length === 21) return a; })(),
@@ -355,12 +356,12 @@ const ESPERADO = {
     'φ de 10': PHI(10), 'φ de un primo': PHI(13), 'Los PESI con 9': PHI(9), 'φ de 8': PHI(8), 'φ de 21': PHI(21), 'φ de 36': PHI(36), 'φ de 60': PHI(60),
     'Fracciones de denominador 12': PHI(12), 'φ de 49': PHI(49), 'Los que no son PESI': 30 - PHI(30),
     'Mayores que un medio': (() => { let c = 0; for (let k = 16; k < 30; k++) if (GCD(k, 30) === 1) c++; return c; })(),
-    'Ni de 3 ni de 5': (() => { let c = 0; for (let x = 1; x <= 150; x++) if (x % 3 && x % 5) c++; return c; })(), 'φ con tres primos': PHI(84), 'Fracciones de denominador 18': PHI(18),
+    'Ni de 3 ni de 5': (() => { let c = 0; for (let x = 1; x <= 150; x++) if (x % 3 && x % 5) c++; return c; })(), 'φ con tres primos': PHI(84), 'Fracciones de denominador 90': PHI(90),
     'Un N con φ dado': (() => { for (let a = 1; a < 9; a++) if (PHI(3 ** a) === 54) return 3 ** a; })(),
   },
   'fermat-wilson': {
-    'Fermat con 5': POT(2, 4, 5), 'Fermat con 7': POT(3, 6, 7), 'Wilson con 5': 24 % 5, 'Una base múltiplo': POT(10, 4, 5), 'Un divisor que no es primo': POT(2, 3, 4),
-    'Un exponente grande': POT(2, 62, 7), 'Fermat con 11': POT(3, 20, 11), 'Wilson con 13': (() => { let x = 1; for (let k = 1; k <= 12; k++) x = x * k % 13; return x; })(),
+    'Fermat con 5': POT(2, 4, 5), 'Fermat con 7': POT(3, 6, 7), 'El producto de 1 a 4': 24 % 5, 'Una base múltiplo': POT(10, 4, 5), 'Un divisor que no es primo': POT(2, 3, 4),
+    'Un exponente grande': POT(2, 62, 7), 'Fermat con 11': POT(3, 20, 11), 'Wilson más uno': (() => { let x = 1; for (let k = 1; k <= 12; k++) x = x * k % 13; return (x + 1) % 13; })(),
     'Sin el último factor': 120 % 7, 'Una base mayor que la bolsita': POT(8, 25, 5), 'Una potencia entre 13': POT(2, 100, 13),
     'Wilson más cinco': (() => { let x = 1; for (let k = 1; k <= 16; k++) x = x * k % 17; return (x + 5) % 17; })(), 'Fermat no vale con 15': POT(2, 14, 15),
     'Dos potencias entre 41': (POT(3, 40, 41) + POT(5, 40, 41)) % 41,
@@ -413,4 +414,104 @@ test('la letra correcta de los ejemplos de nivel 3 se reparte entre A y E', () =
   for (const I of def.ideas) for (const e of I.ejemplos.filter(x => x.nivel === 3)) { const L = plano(negritas(e.respuesta)[0].negrita); c[L] = (c[L] || 0) + 1; }
   const total = Object.values(c).reduce((x, y) => x + y, 0);
   for (const L of 'ABCDE') assert.ok(c[L] >= 4 && c[L] / total <= 0.4, `${L}: ${c[L]} de ${total} (${JSON.stringify(c)})`);
+});
+
+// ---------- Auditoría y lector en frío (19 nov, rutinas/auditoria y rutinas/frio de la unidad) ----------
+// Cada prueba falla con la versión de antes de las correcciones.
+const FACT = n => { const o = []; for (let p = 2; n > 1; p++) { let e = 0; while (n % p === 0) { n /= p; e++; } if (e) o.push([p, e]); } return o; };
+test('A1: el siFuera de AT-FACT-EXPONENTE solo dice «más de una vez» de los primos que se repiten', () => {
+  for (let s = 0; s < SEMILLAS; s += 4) {
+    const c = idea('factorizacion').ahoraTu.generar(s), o = c.opciones.find(x => x.id === 'sinexp');
+    if (!o) continue;
+    const N = +plano(c.pregunta).match(/de (\d+)\?/)[1], rep = FACT(N).filter(([, e]) => e > 1).map(([p]) => p);
+    assert.ok(!/cada uno/.test(o.siFuera), o.siFuera);
+    const nombrados = [...o.siFuera.matchAll(/el (\d+)/g)].map(m => +m[1]);
+    assert.deepEqual(nombrados, rep, `${N}: ${o.siFuera}`);
+  }
+});
+test('A2: la regla de la idea 1 dice que el cuadrado da un solo divisor, y Lee define primo con dos divisores', () => {
+  const I = idea('rectangulos');
+  assert.match(I.regla.texto, /la del cuadrado \(6 × 6\), uno solo/);
+  assert.match(plano(I.lee.tarjetas[2].texto), /exactamente dos divisores/);
+});
+test('M1: con un divisor que no es primo, el ciclo de restos mide de 2 a 6 y la solución lo muestra entero', () => {
+  for (let s = 1; s < 4 * SEMILLAS; s += 4) {
+    const c = idea('fermat-wilson').ahoraTu.generar(s), m = plano(c.pregunta).match(/(\d+)\^?\(?(\d+)?\)? al dividirlo entre (\d+)/);
+    const ns = plano(c.pregunta).match(/\d+/g).map(Number), [a, , d] = ns;
+    if (PRIMO(d)) continue;
+    let k = 1, x = a % d; while (x !== 1 && k < 50) { x = (x * a) % d; k++; }
+    assert.ok(k <= 6, `${a} entre ${d}: ciclo de ${k}`);
+    void m;
+  }
+});
+test('M2: todo ejercicio de la idea 6 que usa el circulito lo dice en sus Datos, y ninguno lo trae sin usarlo', () => {
+  const I = idea('fermat-wilson'), usa = x => JSON.stringify(x).includes('"mult"');
+  const tieneMu = c => c.datos.some(d => usa(d));
+  const revisa = (c, donde) => assert.equal(tieneMu(c), usa([c.pregunta, c.enunciado, c.opciones, c.solucion, c.pasos, c.respuesta]), donde);
+  I.ejemplos.forEach(e => revisa(e, e.titulo));
+  for (let s = 0; s < SEMILLAS; s++) { revisa(I.ahoraTu.generar(s), `Ahora tú ${s}`); revisa(I.resuelve.generar(s), `resuelve ${s}`); }
+});
+test('M3: las fórmulas largas no se parten dentro de un paréntesis (φ con tres primos en dos renglones; reglas sin «)(»)', () => {
+  const sep = x => JSON.stringify(x).includes('   ·   ');
+  const fracs = x => (JSON.stringify(x).match(/"frac"/g) || []).length;
+  for (const I of def.ideas) for (const e of I.ejemplos) for (const p of e.solucion) if (p.ecuacion && fracs(p.ecuacion) >= 3) assert.ok(sep(p.ecuacion), `${e.titulo}: tres fracciones en un renglón`);
+  for (let s = 0; s < SEMILLAS; s++) { const c = idea('euler').ahoraTu.generar(s); if (fracs(c.solucion.ecuacion) >= 3) assert.ok(sep(c.solucion.ecuacion), `Ahora tú ${s}`); }
+  for (const id of ['divisores', 'euler']) { const t = plano(idea(id).regla.ecuacion); assert.ok(!/\)\(/.test(t), `${id}: «)(» en la regla`); }
+  assert.equal(fracs(idea('euler').regla.ecuacion), 0, 'la regla de Euler con fracciones en línea');
+  assert.ok(!/ ≤ | o /.test(idea('criba').regla.ecuacion.filter(x => typeof x === 'string').join('|').replace(/≤ /g, '≤ ')), 'espacios partibles en «d ≤ √N o k ≤ √N»');
+});
+test('M4: los ejemplos de Wilson no traen el resultado en los Datos en el nivel 1, y el nivel 2 pide dos pasos', () => {
+  const I = idea('fermat-wilson'), n1 = I.ejemplos.find(e => e.nivel === 1 && /1 × 2 × 3 × 4/.test(plano(e.enunciado)));
+  assert.ok(n1 && !n1.datos.some(d => /Wilson/.test(plano(d))), 'el nivel 1 de Wilson trae Wilson en los Datos');
+  const n2 = I.ejemplos.filter(e => e.nivel === 2 && /1 × 2 × 3 × …/.test(plano(e.enunciado)));
+  assert.ok(n2.length && n2.every(e => /\+/.test(plano(e.enunciado))), 'el nivel 2 de Wilson es igual al nivel 1');
+  const e3 = idea('euler').ejemplos.filter(e => e.nivel === 3 && /fracciones propias irreductibles/.test(plano(e.enunciado)));
+  for (const e of e3) assert.ok(FACT(+plano(e.enunciado).match(/denominador (\d+)/)[1]).length >= 3, `${e.titulo}: igual que el nivel 2`);
+});
+test('M5: «Dos formas, una de 3 filas» no afirma que 3 × un compuesto siempre tenga otra forma (27 = 3 × 9 tiene dos)', () => {
+  const e = idea('rectangulos').ejemplos.find(x => x.titulo === 'Dos formas, una de 3 filas');
+  assert.ok(!/habría una tercera forma/.test(plano(e.solucion.map(p => p.texto))));
+});
+test('M6: el juego de Fermat resalta el primer día en que los sueltos vuelven a 1; Predice y Mira no usan p sin presentarla', () => {
+  const I = idea('fermat-wilson');
+  for (const a of [2, 3, 4, 6]) for (const p of [5, 7]) {
+    const t = I.juega.dibujo({ a, p }).datos, res = t.filas.map(f => f[2]).findIndex(x => x.resalta);
+    const rs = t.filas.map(f => +f[2].t);
+    assert.equal(res, rs.indexOf(1), `base ${a}, bolsitas de ${p}`);
+  }
+  for (const o of I.predice.opciones) assert.ok(!/\bp\b/.test(o.siFuera || ''), o.siFuera);
+  assert.ok(!/\bp\b/.test(I.mira.voz + I.predice.voz));
+  assert.ok(!/base \d/.test(JSON.stringify(I.mira.datos.columnas)), 'encabezados «base 2» que se pegan');
+});
+test('M7: las reglas dicen qué son p, q, α y β; «Vale si» sigue en minúscula; un solo nombre: descomposición canónica', () => {
+  assert.match(idea('factorizacion').regla.condicion, /«alfa» y «beta»/);
+  assert.match(idea('divisores').regla.texto, /p y q primos/);
+  assert.ok(!/12³ no es 2³/.test(idea('divisores').regla.condicion));
+  for (const I of def.ideas) assert.match(I.regla.condicion, /^[a-zé0-9p]/, `${I.id}: «Vale si» con mayúscula`);
+  const todo = JSON.stringify(def.ideas.map(I => [I.lee, I.juega.consigna, I.predice, I.mira, I.regla, I.ejemplos, I.ahoraTu.generar(0), I.resuelve.generar(0)])) + JSON.stringify(def.glosario);
+  assert.ok(!/[Ff]orma canónica/.test(todo), 'aparece «forma canónica»');
+});
+test('M8: PESI se dice en palabras en la idea 5 (Lee y la definición de φ en los Datos) y en Lee de la idea 3', () => {
+  assert.match(plano(idea('euler').lee.tarjetas[0].texto), /primo entre sí/);
+  assert.ok(idea('euler').ejemplos.filter(e => e.datos.some(d => /^φ\(N\): cuántos/.test(plano(d)))).every(e => e.datos.some(d => /no comparten ningún primo/.test(plano(d)))));
+  assert.match(plano(idea('factorizacion').lee.tarjetas[2].texto), /primos entre sí/);
+});
+test('M9: ningún ejemplo de la idea 4 es la misión del juego (48 = 2⁴ × 3 con 10 divisores)', () => {
+  for (const e of idea('divisores').ejemplos) assert.ok(!JSON.stringify(e.enunciado).includes('{"sup":["2","4"]}," × 3?"'), e.titulo);
+});
+test('lector A y B: carteles sin cordeles; al final de la criba quedan en violeta todos los primos; tachados legibles', () => {
+  const dibujos = [];
+  for (const I of def.ideas) {
+    for (const t of I.lee.tarjetas) if (t.pieza === 'arit-boletos') dibujos.push(t.dibujo.datos);
+    if (I.juega.pieza === 'arit-boletos') for (const v of [{ p: 2, n: 12 }, { p: 5, n: 15 }]) dibujos.push(I.juega.dibujo(v).datos);
+    if (I.predice.pieza === 'arit-boletos') dibujos.push(I.predice.dibujo.datos, I.predice.revelar.datos);
+    if (I.mira.pieza === 'arit-boletos') dibujos.push(I.mira.datos);
+  }
+  for (const d of dibujos) if (d.letrero || (d.pasos || []).some(p => p.letrero)) assert.equal(d.cordeles, false, JSON.stringify(d.letrero));
+  const M = idea('criba').mira, ult = { paso: M.datos.pasos.length - 1 };
+  const g = PZ('arit-boletos').geometria(M.datos, ult);
+  assert.equal(g.celdas.filter(c => c.queda).length, 25);
+  assert.ok(!/fill-opacity="0.45"/.test(PZ('arit-boletos').dibujar(M.datos, ult)));
+  // La lectura del árbol no pinta las partes del primer corte (el 18 parecía primo).
+  assert.ok(!fichas(idea('factorizacion').juega.lectura({ n: 36, d: 2 })).some(x => x.t === '18'));
 });

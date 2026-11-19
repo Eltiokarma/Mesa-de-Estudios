@@ -5,8 +5,8 @@
  * Etapa 6 del plan de calidad (19 nov), EN PROCESO: la propuesta es docs/etapa6/propuesta-aritmetica.md (Gerson delegó
  * el criterio y la revisa después). Seis ideas, con los id de antes (nadie pierde avance), rehechas contra el contrato
  * con sus 15 ejemplos: 1 `rectangulos` (primos y compuestos), 2 `criba`, 3 `factorizacion` (teorema fundamental y PESI),
- * 4 `divisores` (cantidad, suma y producto), 5 `euler` y 6 `fermat-wilson`. La unidad todavía NO lleva calidad: 2: la
- * marca la sesión después del lector en frío y del auditor. Hilo de la rama: el puesto de doña Juana (la bandeja de la
+ * 4 `divisores` (cantidad, suma y producto), 5 `euler` y 6 `fermat-wilson`. La unidad lleva calidad: 2 desde el 19 nov
+ * (lector en frío y auditor). Hilo de la rama: el puesto de doña Juana (la bandeja de la
  * vitrina, pieza arit-bandejas; el pedido en bolsitas, arit-puesto) y la rifa de la promoción (la plancha de boletos,
  * arit-boletos, con el bloque «criba»), todos dibujos de prueba. Práctica por idea: plantillas/primos-divisores.
  *
@@ -254,7 +254,7 @@
       enunciado: '¿Es 13 un número primo?',
       datos: [D1.primo, D1.forma],
       figura: bandeja({ n: 13, formas: [], intento: 2 }),
-      solucion: [{ texto: 'En filas de 2 sobra 1, en filas de 3 sobra 1, y en filas de 4, 5 o 6 también sobran: 13 solo cabe en una fila.', ecuacion: ['13 = ', bas(1), ' × ', bas(13)] }],
+      solucion: [{ texto: 'Con 2, 3, 4, 5 o 6 filas sobran caramelos. Con 7 filas o más no alcanzan 2 por fila, y 13 filas de 1 es la fila girada.', ecuacion: ['13 = ', bas(1), ' × ', bas(13)] }],
       respuesta: [res('Sí'), ': sus divisores son 1 y 13'] },
     { nivel: 1, titulo: '¿Es 21 primo?',
       enunciado: '¿Es 21 un número primo o compuesto?',
@@ -290,7 +290,8 @@
       datos: [D1.primo, D1.par],
       solucion: [
         { texto: 'Los pares no sirven: van en 2 filas. Quedan 21, 23, 25, 27 y 29.' },
-        { texto: '21 = 3 × 7, 25 = 5 × 5 y 27 = 3 × 9 son compuestos. 23 y 29 solo caben en una fila.', ecuacion: ['23 = ', bas(1), ' × ', bas(23), SEP, '29 = ', bas(1), ' × ', bas(29)] },
+        { texto: '21 = 3 × 7, 25 = 5 × 5 y 27 = 3 × 9 son compuestos.' },
+        { texto: '23 y 29 dejan sueltos en 2, 3, 4 y 5 filas; con 6 o más habría menos de 5 por fila: formas giradas ya probadas.', ecuacion: ['23 = ', bas(1), ' × ', bas(23), SEP, '29 = ', bas(1), ' × ', bas(29)] },
       ],
       respuesta: [res(2), ' primos: el 23 y el 29'] },
     { nivel: 2, titulo: 'La caja de huevos',
@@ -354,8 +355,8 @@
       alternativas: ['99', '96', '93', '33', '31'],
       datos: [D1.forma, D1.pareja, D1.primo],
       solucion: [
-        { texto: 'Las dos formas son 1 fila y 3 filas. Si lo de cada fila no fuera primo, habría una tercera forma: el número es 3 × un primo.' },
-        { texto: 'Con dos cifras, el primo más grande que sirve es 31.', ecuacion: formasEc(93) },
+        { texto: 'Pruebo los múltiplos de 3 de dos cifras, del mayor al menor. 99 también va en 9 filas de 11, y 96 en 2, 4, 6 y 8 filas.' },
+        { texto: '93 = 3 × 31, y 31 es primo: 93 solo va en 1 fila y en 3 filas.', ecuacion: formasEc(93) },
         { texto: ['Las trampas: ', letra('A'), ' también va en 9 filas de 11; ', letra('B'), ' va en 2, 4, 6 y 8 filas; ', letra('D'), ' es menor; ', letra('E'), ' es lo que lleva cada fila.'] },
       ],
       respuesta: [letra('C'), ': ', res(93)] },
@@ -378,7 +379,7 @@
         { titulo: 'Una forma, dos divisores', texto: ['En 3 filas de 4, el ', bas(3), ' y el ', bas(4), ' dividen a 12 sin que sobre nada: son una pareja de divisores. 12 filas de 1 es la bandeja de 1 fila girada: la misma forma. Con filas de 5 sobran 2.'],
           ecuacion: ['12 = ', bas(3), ' × ', bas(4)],
           pieza: BA, dibujo: { datos: { n: 12, formas: [[3, 4]], intento: 5 }, estado: {} } },
-        { titulo: 'Primos y compuestos', texto: 'Un número que solo se acomoda en una fila (o, girada, en una columna) es un número primo: sus divisores son el 1 y él mismo. Si se acomoda de más formas, como el 12, es un número compuesto.' },
+        { titulo: 'Primos y compuestos', texto: 'Un número primo tiene exactamente dos divisores, el 1 y él mismo: sus caramelos solo se acomodan en una fila (o, girada, en una columna). Si se acomoda de más formas, como el 12, es un número compuesto.' },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar cuántos caramelos hay. Cuenta las formas de cada número y busca los que solo caben en una fila.' },
       ],
     },
@@ -421,15 +422,15 @@
         { id: 'par', texto: '1', error: 'AT-PRIMO-PAR', siFuera: 'El 37 sí es primo. El 2 también: sus divisores son 1 y 2, aunque sea par.' },
         { id: 'impar', texto: '4', error: 'AT-PRIMO-IMPAR', siFuera: 'El 37 es primo, bien. Pero 33 = 3 × 11 y 35 = 5 × 7, y el 1 no es primo.' },
       ],
-      dibujo: { datos: { numeros: PREDICE1, columnas: 5, letrero: [['Gana un número primo']], pie: [['Boletos que quedan en la rifa']] }, estado: {} },
-      revelar: { datos: { numeros: PREDICE1, columnas: 5, criba: { primos: [3, 5], uno: true, quedan: true }, letrero: [['Gana un número primo']], pie: [['Ganan '], ['2', 'f', 700], [' boletos: el 2 y el 37']] }, estado: {} },
+      dibujo: { datos: { numeros: PREDICE1, columnas: 5, cordeles: false, letrero: [['Gana un número primo']], pie: [['Boletos que quedan en la rifa']] }, estado: {} },
+      revelar: { datos: { numeros: PREDICE1, columnas: 5, cordeles: false, criba: { primos: [3, 5], uno: true, quedan: true }, letrero: [['Gana un número primo']], pie: [['Ganan '], ['2', 'f', 700], [' boletos: el 2 y el 37']] }, estado: {} },
       coincide: 'Coincide: ganan el 2 y el 37. El 1 tiene un solo divisor.',
       noCoincide: 'Revisemos cuántos divisores tiene cada boleto.',
     },
     mira: {
       pieza: BA,
       datos: { n: 1, pasos: PREDICE1.map(n => ({ n })).concat([{ n: 37 }]) },
-      voz: 'Cuenta los divisores de cada boleto.',
+      voz: 'Cada boleto, en caramelos: cuenta sus divisores.',
       pasos: [
         { estado: { paso: 0 }, texto: 'Un caramelo: una sola forma, que da un solo divisor.', ecuacion: ['1 = ', bas(1), ' × ', bas(1)] },
         { estado: { paso: 1 }, texto: 'Dos caramelos: 1 fila de 2. Dos divisores: es primo.', ecuacion: ['2 = ', bas(1), ' × ', bas(2)] },
@@ -440,9 +441,9 @@
       ],
     },
     regla: {
-      texto: 'Un número primo tiene exactamente dos divisores: 1 y él mismo. Un compuesto tiene más. El 1 tiene uno solo: no es primo ni compuesto. Cada forma da dos divisores.',
+      texto: 'Un primo tiene exactamente dos divisores, 1 y él mismo; un compuesto, más; el 1, uno solo. Cada forma da dos divisores; la del cuadrado (6 × 6), uno solo.',
       ecuacion: [{ llave: formasEc(37), nota: 'una forma: primo' }, SEP, { llave: formasEc(35), nota: 'más formas: compuesto' }],
-      condicion: 'Primos y compuestos son enteros mayores que 1. El 2 es el único primo par: los demás pares van en 2 filas.',
+      condicion: 'primos y compuestos son mayores que 1: el 1 no es ni uno ni otro. El 2 es el único primo par.',
       voz: 'Dos divisores, primo. Más de dos, compuesto.',
       dibujo: { pieza: BA, datos: { n: 35 }, estado: {} },
     },
@@ -461,7 +462,7 @@
             enunciado: `Doña Juana tiene ${N} caramelos. ¿De cuántas formas distintas los acomoda en la bandeja, en filas iguales y todas llenas?`,
             datos: [D1.forma, D1.pareja],
             pasos: [
-              { tipo: 'pide', texto: `Piden cuántas parejas filas × caramelos por fila dan ${N}.` },
+              { tipo: 'pide', texto: `Piden cuántas parejas de números, filas y caramelos por fila, dan ${N} al multiplicarse.` },
               { tipo: 'regla', texto: 'Cada forma es una pareja de divisores. Pruebo cuántas filas, de 1 en 1, hasta que las filas pasen a ser más que los caramelos de cada fila.' },
               { tipo: 'cuentas', texto: `Se llenan ${yLista(llenas)} ${llenas.length === 1 ? 'fila' : 'filas'}${sobran.length ? `; con ${yLista(sobran)} sobran` : ''}.`, ecuacion: formasEc(N, ps) },
               { tipo: 'sentido', texto: `Cada forma da dos divisores distintos: ${N} tiene ${2 * ps.length} divisores, el doble de las formas.` },
@@ -497,7 +498,8 @@
   // con el 7 (77 y 91 parecen primos) · AT-PRIMO-TERMINA cree que terminar en 1, 3, 7 o 9 basta · AT-PA-UNO-MAS cuenta un
   // término de más.
   const PRIMOS20 = primosHasta(20);
-  const cribaDe = (hasta, p, extra = {}) => Object.assign({ desde: 1, hasta, columnas: 10, criba: { primos: primosHasta(p), uno: true } }, extra);
+  // El cartel va sin cordeles (lector en frío A, 19 nov: los dos cordeles se leían como una llave sobre los boletos 1 y 2).
+  const cribaDe = (hasta, p, extra = {}) => Object.assign({ desde: 1, hasta, columnas: 10, cordeles: false, criba: { primos: primosHasta(p), uno: true } }, extra);
   const LETRERO2 = p => [['Tachar con los primos hasta el '], [String(p), 'i', 700]];
   const quedanComp = (hasta, p) => { const out = []; for (let x = 2; x <= hasta; x++) if (!esPrimo(x) && !primosHasta(p).some(q => x % q === 0)) out.push(x); return out; };
   const menorPrimo = N => factores(N)[0][0];
@@ -675,7 +677,7 @@
       solucion: [
         { texto: 'Pruebo cada primo de inicio. 7 da 25 = 5 × 5; 11 da 35 = 5 × 7; 13 da 25; 31 da 49 = 7 × 7.' },
         { texto: 'Solo 5, 11, 17, 23 y 29 son todos primos.' },
-        { texto: ['Las trampas: ', letra('A'), ' es el menor; ', letra('B'), ' sale de empezar en 11; ', letra('D'), ', de empezar en 31; ', letra('E'), ' es 4 × 6, lo que se sumó.'] },
+        { texto: ['Las trampas: ', letra('A'), ' es el menor; ', letra('B'), ' sale de empezar en 11; ', letra('D'), ' falla al empezar en 31 (31, 37, 43, 49); ', letra('E'), ' es 4 × 6, lo que se sumó.'] },
       ],
       respuesta: [letra('C'), ': ', res(29)] },
     { nivel: 3, titulo: 'El menor divisor primo',
@@ -764,30 +766,31 @@
         { id: 'pasa', texto: '11', error: 'AT-CRIBA-PASA', siFuera: 'Pasar de 10 parece seguro. Pero 11 × 11 = 121 no cabe: el 11 no tacha nada nuevo.' },
         { id: 'mitad', texto: '47', error: 'AT-CRIBA-MITAD', siFuera: 'Llegar a la mitad también deja solo primos, pero sobra: desde el 11 nada cambia.' },
       ],
-      dibujo: { datos: { desde: 1, hasta: 100, columnas: 10, letrero: [['Rifa grande: del 1 al 100']], pie: [['¿Hasta qué primo se tacha?']] }, estado: {} },
-      revelar: { datos: cribaDe(100, 7, { criba: { primos: primosHasta(7), uno: true, quedan: true }, letrero: [['Rifa grande: del 1 al 100']], pie: [['Hasta el '], ['7', 'f', 700], [': quedan 25 primos']] }), estado: {} },
+      dibujo: { datos: { desde: 1, hasta: 100, columnas: 10, cordeles: false, letrero: [['Rifa grande: del 1 al 100']], pie: [['El 1 y los primos, sin tachar todavía']] }, estado: {} },
+      revelar: { datos: cribaDe(100, 7, { criba: { primos: primosHasta(7), uno: true, quedan: true, primosQuedan: true }, letrero: [['Rifa grande: del 1 al 100']], pie: [['Hasta el '], ['7', 'f', 700], [': quedan 25 primos']] }), estado: {} },
       coincide: 'Coincide: 7 × 7 = 49 cabe en 100, y 11 × 11 = 121 ya no.',
       noCoincide: 'Revisemos dónde empieza a tachar cada primo.',
     },
     mira: {
       pieza: BO,
-      datos: { desde: 1, hasta: 100, columnas: 10, letrero: [['Rifa grande: del 1 al 100']],
+      datos: { desde: 1, hasta: 100, columnas: 10, cordeles: false, letrero: [['Rifa grande: del 1 al 100']],
         pasos: [[], [2], [2, 3], [2, 3, 5], [2, 3, 5, 7]].map(ps => ({ criba: { primos: ps, uno: true }, pie: [[ps.length ? `Tachados los múltiplos de ${yLista(ps)}` : 'Tachado el 1']] }))
-          .concat([{ criba: { primos: [2, 3, 5, 7], uno: true, quedan: true }, pie: [['Quedan '], ['25', 'f', 700], [' primos']] }]) },
-      voz: 'Cada primo empieza a tachar más lejos.',
+          .concat([{ criba: { primos: [2, 3, 5, 7], uno: true, quedan: true, primosQuedan: true }, pie: [['Quedan '], ['25', 'f', 700], [' primos, en violeta']] }]) },
+      voz: 'Mira dónde empieza a tachar cada primo.',
       pasos: [
         { estado: { paso: 0 }, texto: 'El 1 no es primo: se tacha primero.' },
         { estado: { paso: 1 }, texto: 'El 2 se queda y tacha sus múltiplos desde el 4.', ecuacion: ['4, 6, 8, …, 100'] },
         { estado: { paso: 2 }, texto: 'El 3 tacha algo nuevo recién en 9: el 6 ya estaba.', ecuacion: ['3 × 3 = 9'] },
         { estado: { paso: 3 }, texto: 'El 5 tacha algo nuevo recién en 25.', ecuacion: ['5 × 5 = 25'] },
         { estado: { paso: 4 }, texto: 'El 7 empieza en 49: tacha el 49, el 77 y el 91.', ecuacion: ['7 × 7 = 49'] },
-        { estado: { paso: 5 }, texto: 'El 11 empezaría en 121: ya no tacha nada. Quedan 25 primos.', ecuacion: ['11 × 11 = 121 > 100'] },
+        { estado: { paso: 5 }, texto: 'El 11 empezaría en 121: no tacha nada. Quedan 25 primos, todos en violeta.', ecuacion: ['11 × 11 = 121 > 100'] },
       ],
     },
     regla: {
       texto: 'Para saber si N es primo, se divide entre los primos p con p × p ≤ N. Si ninguno lo divide sin que sobre nada, N es primo.',
-      ecuacion: [{ llave: ['p × p ≤ N'], nota: 'basta probar esos p' }, SEP, 'N = ', bas('d'), ' × ', bas('k'), '  →  ', bas('d'), ' ≤ ', { raiz: ['N'] }, ' o ', bas('k'), ' ≤ ', { raiz: ['N'] }],
-      condicion: 'Si un divisor pasa de la raíz cuadrada de N, su pareja no llega. Cada primo tacha desde p × p.',
+      // Sin espacios partibles dentro de «d ≤ √N o k ≤ √N» (lector en frío A, 19 nov: el √N quedaba solo en otro renglón).
+      ecuacion: [{ llave: ['p × p ≤ N'], nota: 'basta probar esos p' }, SEP, 'N = ', bas('d'), ' × ', bas('k'), SEP, bas('d'), '\u00a0≤\u00a0', { raiz: ['N'] }, '\u00a0o\u00a0', bas('k'), '\u00a0≤\u00a0', { raiz: ['N'] }],
+      condicion: 'si un divisor pasa de la raíz cuadrada de N, su pareja no llega. Cada primo p tacha desde p × p.',
       voz: 'Se prueba hasta la raíz, con primos.',
     },
     // Así se resuelve: ¿es primo un número de tres cifras que sí lo es? «Ahora tú» pide otra cosa: el mayor primo con el
@@ -851,7 +854,7 @@
   const altoJuego3 = () => { if (alto3) return alto3; let h = 0; for (const n of NS3) for (const d of DS3) h = Math.max(h, ARBOL().geometria({ arboles: [arbolDe(n, d)] }).H); return (alto3 = h); };
   const D3 = {
     tfa: 'Todo número mayor que 1 es un producto de primos, de una sola manera salvo el orden',
-    canon: 'Forma canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5',
+    canon: 'Descomposición canónica: los primos de menor a mayor, cada uno con su exponente: 2² × 3 × 5',
     exp: 'El exponente dice cuántas veces entra el primo: 2³ = 2 × 2 × 2',
     pesi: 'Dos números son PESI si no comparten ningún primo en su factorización',
     potProd: 'Potencia de un producto: (2 × 3)⁴ = 2⁴ × 3⁴',
@@ -872,7 +875,8 @@
       datos: [D3.tfa, D3.canon],
       opciones: opciones(canonTxt(fs), [
         { id: 'incompleta', valor: incompleta, error: 'AT-FACT-INCOMPLETA', siFuera: `El producto da ${N}, bien. Pero ${val} no es primo: falta partirlo.` },
-        { id: 'sinexp', valor: sinExp, error: 'AT-FACT-EXPONENTE', siFuera: `Los primos están bien. Pero cada uno entra más de una vez: ${sinExp} no da ${N}.` },
+        // Solo los que se repiten (auditoría, 19 nov: «cada uno entra más de una vez» era falso con un exponente 1).
+        { id: 'sinexp', valor: sinExp, error: 'AT-FACT-EXPONENTE', siFuera: `Bien los primos. Pero ${yLista(fs.filter(([, e]) => e > 1).map(([p]) => `el ${p}`))} ${fs.filter(([, e]) => e > 1).length === 1 ? 'entra' : 'entran'} más de una vez${fs.filter(([, e]) => e > 1).length > 2 ? '' : `: ${sinExp} no da ${N}`}.` },
         { id: 'mas', valor: mas, error: 'AT-FACT-SUMA', siFuera: `Los primos están bien. Pero el ${fs[0][0]} entra ${fs[0][1]} ${fs[0][1] === 1 ? 'vez' : 'veces'}, no ${fs[0][1] + 1}.` },
       ]),
       solucion: { texto: `Partiendo ${N} hasta llegar a primos: ${hojasTxt(N)}.`, ecuacion: [`${N} = `, ...canon(N)] },
@@ -1028,11 +1032,12 @@
       ],
       respuesta: [letra('C'), ': ', res(4)] },
     { nivel: 3, titulo: 'Los mismos primos',
-      enunciado: ['a = ', { sup: ['2', '3'] }, ' × 5 y b = 2 × ', { sup: ['5', '2'] }, ' × 7. ¿Cuál es el menor número por el que hay que multiplicar a para que tenga los mismos primos que b?'],
+      // Sin a ni b: en la tabla de letras, a es la base de Fermat (auditoría, 19 nov).
+      enunciado: ['Un pedido tiene ', { sup: ['2', '3'] }, ' × 5 caramelos y otro, 2 × ', { sup: ['5', '2'] }, ' × 7. ¿Por qué número, como mínimo, hay que multiplicar el primero para que tenga los mismos primos que el segundo?'],
       alternativas: ['35', '70', '5', '7', '14'],
       datos: [D3.tfa, D3.prod],
       solucion: [
-        { texto: 'Los primos de b son 2, 5 y 7. A a le falta solo el 7; los exponentes no importan.' },
+        { texto: 'Los primos del segundo son 2, 5 y 7. Al primero le falta solo el 7; los exponentes no importan.' },
         { texto: ['Las trampas: ', letra('A'), ' agrega un 5 que ya estaba; ', letra('B'), ' agrega 2, 5 y 7; ', letra('C'), ' no trae el 7; ', letra('E'), ' agrega un 2 de más.'] },
       ],
       respuesta: [letra('D'), ': ', res(7)] },
@@ -1072,7 +1077,7 @@
           pieza: BA, dibujo: { datos: { n: 12, formas: [[3, 4]] }, estado: {} } },
         { titulo: 'El árbol de cortes', texto: 'Cada corte escribe un número como producto de dos. Se sigue hasta que todas las hojas son primos: los factores primos del número.',
           pieza: AR, dibujo: { datos: { arboles: [arbolDe(12, 3)] }, estado: {} } },
-        { titulo: 'Con exponentes', texto: ['Si un primo se repite, se escribe con exponente: 2 × 2 × 3 = ', { sup: ['2', '2'] }, ' × 3. Esa es la descomposición canónica de 12, con los primos de menor a mayor.'] },
+        { titulo: 'Con exponentes', texto: ['Si un primo se repite, se escribe con exponente: 2 × 2 × 3 = ', { sup: ['2', '2'] }, ' × 3. Esa es la descomposición canónica de 12, con los primos de menor a mayor. Dos números que no comparten ningún primo se llaman PESI («primos entre sí»).'] },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir el número y el primer corte. Compara las hojas que salen con cortes distintos del mismo número.' },
       ],
     },
@@ -1098,7 +1103,8 @@
       dibujo: v => ({ datos: { arboles: [arbolDe(v.n, v.d)], alto: altoJuego3() }, estado: {} }),
       lectura: v => (v.n % v.d
         ? [`${v.n} = ${v.d} × ${Math.floor(v.n / v.d)} + `, sob(v.n % v.d), `: no se parte en ${v.d}`]
-        : [`${v.n} = `, bas(v.d), ' × ', bas(v.n / v.d), ' = ', ...canon(v.n)]),
+        // Las dos partes del primer corte van en tinta: no siempre son primas (lector en frío A, 19 nov: el 18 parecía primo).
+        : [`${v.n} = ${v.d} × ${v.n / v.d} = `, ...canon(v.n)]),
       minimo: 3,
     },
     predice: {
@@ -1137,10 +1143,10 @@
       ],
     },
     regla: {
-      texto: 'Todo número mayor que 1 es un producto de primos de una sola manera, sin contar el orden. Dos números son PESI si no comparten ningún primo.',
-      ecuacion: ['60 = 4 × 15 = 6 × 10 = ', { llave: canon(60), nota: 'forma canónica', color: 'c-i' }, SEP,
+      texto: 'Todo número mayor que 1 es un producto de primos de una sola manera. Dos números son PESI si no comparten ningún primo, aunque no sean primos.',
+      ecuacion: ['60 = 4 × 15 = 6 × 10 = ', { llave: canon(60), nota: 'descomposición canónica', color: 'c-i' }, SEP,
         'N = ', { llave: [{ sup: [bas('p'), 'α'] }, ' × ', { sup: [bas('q'), 'β'] }], nota: 'primos con sus exponentes', color: 'c-i' }, ' × …'],
-      condicion: 'Se corta hasta que cada parte sea prima; el exponente dice cuántas veces entra. Dos PESI no tienen que ser primos.',
+      condicion: 'en N = pᵅ × qᵝ, p y q son primos, y α y β («alfa» y «beta») dicen cuántas veces entra cada uno.',
       voz: 'Una sola factorización. PESI: sin primos en común.',
       dibujo: { pieza: AR, datos: { arboles: [arbolDe(60, 4), arbolDe(60, 6)], pies: [[['60 = 4 × 15']], [['60 = 6 × 10']]] }, estado: {} },
     },
@@ -1310,16 +1316,17 @@
     };
   }
 
-  // Ejemplos resueltos de la idea 4. Cuentas rehechas aparte (cuentas-ideas.py): CD(2⁴ × 3) = 10; CD(2³ × 5²) = 12;
+  // Ejemplos resueltos de la idea 4. Cuentas rehechas aparte (cuentas-ideas.py): CD(2⁴ × 7) = 10; CD(2³ × 5²) = 12;
   // divisores de 18: 1, 2, 3, 6, 9, 18; CD(7³) = 4; 12 tiene 5 propios; CD(360) = 24; SD(12) = 28; impares de 360: 6;
   // de 600 son múltiplos de 10 los 12 divisores de 60; PD(12) = 12³ = 1728; 2ᵅ × 3² con 21 divisores: α = 6; 60: 12
   // divisores, 4 simples, 8 compuestos; 45: SD = 78, CD = 6, promedio 13; 2⁴ × 3³ × 5: 40 divisores, 24 múltiplos de 6;
   // SD(200) = 15 × 31 = 465.
   const EJEMPLOS_DIV = [
-    { nivel: 1, titulo: 'Divisores de 2⁴ × 3',
-      enunciado: ['¿Cuántos divisores tiene N = ', { sup: ['2', '4'] }, ' × 3?'],
+    // Antes era 2⁴ × 3, la respuesta de la misión del juego (auditoría, 19 nov).
+    { nivel: 1, titulo: 'Divisores de 2⁴ × 7',
+      enunciado: ['¿Cuántos divisores tiene N = ', { sup: ['2', '4'] }, ' × 7?'],
       datos: [D4.cd],
-      solucion: [{ texto: 'El 2 puede entrar 0, 1, 2, 3 o 4 veces: 5 opciones. El 3, 0 o 1 vez: 2 opciones.', ecuacion: ['(4 + 1) × (1 + 1) = ', res(10)] }],
+      solucion: [{ texto: 'El 2 puede entrar 0, 1, 2, 3 o 4 veces: 5 opciones. El 7, 0 o 1 vez: 2 opciones.', ecuacion: ['(4 + 1) × (1 + 1) = ', res(10)] }],
       respuesta: [res(10), ' divisores'] },
     { nivel: 1, titulo: 'Divisores de 2³ × 5²',
       enunciado: ['¿Cuántos divisores tiene N = ', { sup: ['2', '3'] }, ' × ', { sup: ['5', '2'] }, '?'],
@@ -1330,7 +1337,7 @@
       enunciado: '¿Cuáles son los divisores de 18?',
       datos: [D4.cd, D3.canon],
       solucion: [
-        { texto: '18 = 2 × 3². Las potencias de 2 que sirven son 1 y 2; las de 3, 1, 3 y 9.' },
+        { texto: '18 = 2 × 3². Las potencias de 2 que sirven son 1 = 2⁰ y 2; las de 3, 1 = 3⁰, 3 y 9.' },
         { texto: 'Cada divisor es una de cada lista multiplicadas: 2 × 3 = 6 divisores.', ecuacion: ['1, 3, 9 ; 2, 6, 18'] },
       ],
       respuesta: [res('1, 2, 3, 6, 9 y 18')] },
@@ -1506,11 +1513,13 @@
       ],
     },
     regla: {
-      texto: 'Cada divisor elige cuántas veces entra cada primo, de 0 hasta su exponente. La misma tabla da la cantidad, la suma y el producto de los divisores.',
-      ecuacion: [{ llave: [res('CD(N)')], nota: 'cantidad' }, ' = (α + 1)(β + 1)', SEP,
-        { llave: [res('SD(N)')], nota: 'suma' }, ' = (1 + ', bas('p'), ' + … + ', { sup: [bas('p'), 'α'] }, ')(1 + ', bas('q'), ' + … + ', { sup: [bas('q'), 'β'] }, ')', SEP,
+      texto: 'Con p y q primos, cada divisor de N = pᵅ × qᵝ elige cuántas veces entra cada uno: de 0 a su exponente. La tabla da cantidad, suma y producto.',
+      // Con «×» entre los paréntesis y sin espacios partibles adentro: el renglón solo se parte después del «=» (lector
+      // en frío B, 19 nov: la suma se partía entre los dos paréntesis).
+      ecuacion: [{ llave: [res('CD(N)')], nota: 'cantidad' }, ' = (α + 1) × (β + 1)', SEP,
+        { llave: [res('SD(N)')], nota: 'suma' }, ' = (1 + … + ', { sup: [bas('p'), 'α'] }, ') × (1 + … + ', { sup: [bas('q'), 'β'] }, ')', SEP,
         { llave: [res('PD(N)')], nota: 'producto' }, ' = ', { sup: ['N', 'CD ÷ 2'] }],
-      condicion: 'Antes de contar, N va en primos: 12³ no es 2³. Propios: todos menos N. Simples: el 1 y los primos.',
+      condicion: 'antes de contar, N va en primos: 12³ = 2⁶ × 3³. Propios: todos menos N. Simples: el 1 y los primos.',
       voz: 'Exponente más uno, y se multiplican.',
     },
     // Así se resuelve: la cantidad de divisores de un número que hay que factorizar. «Ahora tú» pide otra cosa: la
@@ -1565,17 +1574,24 @@
   const primosDe = N => factores(N).map(f => f[0]);
   const NS5 = [12, 14, 15, 18, 21, 22];
   const colsDe = n => [6, 7, 5, 8, 9, 10].find(c => n % c === 0) || 10;
-  const rifaEuler = (n, cr = true, extra = {}) => Object.assign({ desde: 1, hasta: n, columnas: colsDe(n) }, cr ? { criba: { primos: primosDe(n), propios: false, quedan: true, unoQueda: true } } : {}, extra);
+  const rifaEuler = (n, cr = true, extra = {}) => Object.assign({ desde: 1, hasta: n, columnas: colsDe(n), cordeles: false }, cr ? { criba: { primos: primosDe(n), propios: false, quedan: true, unoQueda: true } } : {}, extra);
   const frac = (a, b) => ({ frac: [String(a), b] });
   const D5 = {
-    def: 'φ(N): cuántos números del 1 al N son PESI con N',
+    def: 'φ(N): cuántos números del 1 al N son PESI con N, es decir, no comparten ningún primo con N',
     form: 'φ(N) = N × (1 − 1/p) × (1 − 1/q) × …, con p, q, … los primos distintos de N',
     primo: 'Si p es primo, φ(p) = p − 1',
     frac: 'Una fracción k/N es irreductible si k y N son PESI',
     sim: 'k/N y (N − k)/N son irreductibles a la vez: van en parejas que suman 1',
     propia: 'Una fracción propia es menor que 1: su numerador es menor que N',
   };
-  const phiEc = N => [String(N), ...primosDe(N).flatMap(p => [' × (1 − ', frac(1, bas(p)), ')'])];
+  // Con tres primos, en dos renglones: los dos primeros y después el tercero (lector en frío B, 19 nov: el renglón largo
+  // se partía entre la fracción y su paréntesis). Quien llama agrega « = » y el resultado.
+  const phiEc = N => {
+    const ps = primosDe(N), tramo = (x, qs) => [String(x), ...qs.flatMap(p => [' × (1 − ', frac(1, bas(p)), ')'])];
+    if (ps.length < 3) return tramo(N, ps);
+    const m = N * (ps[0] - 1) * (ps[1] - 1) / (ps[0] * ps[1]);
+    return [...tramo(N, ps.slice(0, 2)), ` = ${m}`, SEP, ...tramo(m, ps.slice(2))];
+  };
 
   // Ahora tú · tipo 0: φ de un número con dos primos.
   function casoPhi2(r) {
@@ -1599,13 +1615,13 @@
     const N = pot ? r.de([8, 16, 32, 27, 81, 25, 125, 49, 64]) : r.de([2, 4]) * r.de([3, 9]) * r.de([5, 7]);
     const c = PHI(N), ps = primosDe(N), p = ps[0];
     const ops = pot ? [
-      { id: 'siempre', valor: N - 1, error: 'AT-EULER-PRIMO-SIEMPRE', siFuera: `N − 1 vale solo si N es primo. ${N} es ${canonTxtN(N)}: se quitan los múltiplos de ${p}.` },
+      { id: 'siempre', valor: N - 1, error: 'AT-EULER-PRIMO-SIEMPRE', siFuera: `${N} − 1 valdría solo si ${N} fuera primo. ${N} es ${canonTxtN(N)}: se quitan los múltiplos de ${p}.` },
       { id: 'fraccion', valor: N / p, error: 'AT-EULER-FRACCION', siFuera: `${N / p} son los múltiplos de ${p}. Quedan los que no lo son: ${N} − ${N / p}.` },
-      { id: 'primos', valor: primosHasta(N).length, error: 'AT-EULER-PRIMOS', siFuera: 'Esos son los primos hasta N. Un PESI con N no tiene que ser primo: el 1 lo es.' },
+      { id: 'primos', valor: primosHasta(N).length, error: 'AT-EULER-PRIMOS', siFuera: `Esos son los primos hasta ${N}. Pero un PESI con ${N} no tiene que ser primo: el 1 también cuenta.` },
     ] : [
       { id: 'uno', valor: N - N / p, error: 'AT-EULER-UN-PRIMO', siFuera: `Quitar los múltiplos de ${p} está bien. Faltan los de ${yLista(ps.slice(1))}.` },
-      { id: 'siempre', valor: N - 1, error: 'AT-EULER-PRIMO-SIEMPRE', siFuera: `N − 1 vale solo si N es primo. ${N} tiene los primos ${yLista(ps)}.` },
-      { id: 'primos', valor: primosHasta(N).length, error: 'AT-EULER-PRIMOS', siFuera: 'Esos son los primos hasta N. Un PESI con N no tiene que ser primo: el 1 lo es.' },
+      { id: 'siempre', valor: N - 1, error: 'AT-EULER-PRIMO-SIEMPRE', siFuera: `${N} − 1 valdría solo si ${N} fuera primo. ${N} tiene los primos ${yLista(ps)}.` },
+      { id: 'primos', valor: primosHasta(N).length, error: 'AT-EULER-PRIMOS', siFuera: `Esos son los primos hasta ${N}. Pero un PESI con ${N} no tiene que ser primo: el 1 también cuenta.` },
     ];
     return {
       pregunta: `¿Cuánto vale φ(${N})?`,
@@ -1647,7 +1663,7 @@
   // Ejemplos resueltos de la idea 5. Cuentas rehechas aparte (cuentas-ideas.py): φ(10) = 4; φ(13) = 12; φ(9) = 6;
   // φ(8) = 4; φ(21) = 12; φ(36) = 12; φ(60) = 16; φ(12) = 4 (1/12, 5/12, 7/12, 11/12); φ(49) = 42; 30 − φ(30) = 22;
   // φ(30) = 8, la mitad mayores que 1/2: 4 (de 16/30 a 29/30 hay 14); del 1 al 150, sin múltiplos de 3 ni de 5: 80 (150 −
-  // 50 − 30 = 70); φ(84) = 24; φ(18) = 6; φ(3ᵅ) = 54 → 81.
+  // 50 − 30 = 70); φ(84) = 24; φ(90) = 24; φ(3ᵅ) = 54 → 81.
   const EJEMPLOS_EULER = [
     { nivel: 1, titulo: 'φ de 10',
       enunciado: '¿Cuántos números del 1 al 10 son PESI con 10?',
@@ -1742,15 +1758,17 @@
         { texto: ['Las trampas: ', letra('A'), ' solo quita los pares; ', letra('B'), ' olvida el 7; ', letra('C'), ' trata a 84 como primo; ', letra('D'), ' multiplica por 1/p y no por 1 − 1/p.'] },
       ],
       respuesta: [letra('E'), ': ', res(24)] },
-    { nivel: 3, titulo: 'Fracciones de denominador 18',
-      enunciado: '¿Cuántas fracciones propias irreductibles tienen denominador 18?',
-      alternativas: ['6', '17', '11', '3', '9'],
-      datos: [D5.propia, D5.frac, D5.form],
+    // Antes, denominador 18: con dos primos, igual que el nivel 2 (lector en frío B, 19 nov). Ahora hay que factorizar
+    // y entran tres primos.
+    { nivel: 3, titulo: 'Fracciones de denominador 90',
+      enunciado: '¿Cuántas fracciones propias irreductibles tienen denominador 90?',
+      alternativas: ['24', '89', '65', '12', '45'],
+      datos: [D5.propia, D5.frac, D5.form, D3.tfa],
       solucion: [
-        { texto: '18 = 2 × 3²: k no tiene el 2 ni el 3. Son 1, 5, 7, 11, 13 y 17.', ecuacion: [...phiEc(18), ' = ', res(6)] },
-        { texto: ['Las trampas: ', letra('B'), ' cuenta todas las propias; ', letra('C'), ', las que se simplifican; ', letra('D'), ', solo las mayores que 1/2; ', letra('E'), ' solo quita los pares.'] },
+        { texto: '90 = 2 × 3² × 5: k no tiene el 2, ni el 3, ni el 5.', ecuacion: [...phiEc(90), ' = ', res(24)] },
+        { texto: ['Las trampas: ', letra('B'), ' cuenta todas las propias; ', letra('C'), ', las que se simplifican (89 − 24); ', letra('D'), ', solo las mayores que 1/2; ', letra('E'), ' solo quita los pares.'] },
       ],
-      respuesta: [letra('A'), ': ', res(6)] },
+      respuesta: [letra('A'), ': ', res(24)] },
     { nivel: 3, titulo: 'Un N con φ dado',
       enunciado: ['N = ', { sup: ['3', 'α'] }, ' y φ(N) = 54. ¿Cuánto vale N?'],
       alternativas: ['54', '81', '27', '55', '243'],
@@ -1773,7 +1791,7 @@
     // Lee: la rifa de 12, qué se tacha, y los nombres. No dice cuántos quedan con 100 (la predicción) ni con 15 (la misión).
     lee: {
       tarjetas: [
-        { titulo: 'Otra rifa', texto: 'Esta vez la rifa tiene 12 boletos, y gana cada número que no comparte ningún primo con 12: cada número que es PESI con 12.',
+        { titulo: 'La rifa de 12 boletos', texto: 'Esta vez la rifa tiene 12 boletos, y gana cada número que no comparte ningún primo con 12: cada número que es PESI («primo entre sí») con 12.',
           pieza: BO, dibujo: { datos: rifaEuler(12, false), estado: {} } },
         { titulo: 'Tachar lo que comparte', texto: ['12 = ', { sup: ['2', '2'] }, ' × 3. Se tachan los múltiplos de 2 y de 3, también el 2 y el 3: comparten un primo con 12. El 1 se queda.'],
           pieza: BO, dibujo: { datos: rifaEuler(12), estado: {} } },
@@ -1812,14 +1830,14 @@
         { id: 'uno', texto: '50', error: 'AT-EULER-UN-PRIMO', siFuera: 'Quitar los pares está bien. Falta quitar los múltiplos de 5 que quedan.' },
         { id: 'primos', texto: '25', error: 'AT-EULER-PRIMOS', siFuera: 'Hay 25 primos hasta 100, pero ganar no pide ser primo: el 1, el 9 y el 21 ganan.' },
       ],
-      dibujo: { datos: { desde: 1, hasta: 100, columnas: 10, letrero: [['Rifa grande: 100 = 2² × 5²']], pie: [['¿Cuántos ganan?']] }, estado: {} },
-      revelar: { datos: { desde: 1, hasta: 100, columnas: 10, criba: { primos: [2, 5], propios: false, quedan: true, unoQueda: true }, letrero: [['Rifa grande: 100 = 2² × 5²']], pie: [['Ganan '], ['40', 'f', 700], [' boletos']] }, estado: {} },
+      dibujo: { datos: { desde: 1, hasta: 100, columnas: 10, cordeles: false, letrero: [['Rifa grande: 100 = 2² × 5²']], pie: [['Boletos del 1 al 100']] }, estado: {} },
+      revelar: { datos: { desde: 1, hasta: 100, columnas: 10, cordeles: false, criba: { primos: [2, 5], propios: false, quedan: true, unoQueda: true }, letrero: [['Rifa grande: 100 = 2² × 5²']], pie: [['Ganan '], ['40', 'f', 700], [' boletos']] }, estado: {} },
       coincide: 'Coincide: queda la mitad sin pares, y de eso, cuatro quintos.',
       noCoincide: 'Revisemos qué parte deja cada primo.',
     },
     mira: {
       pieza: BO,
-      datos: { desde: 1, hasta: 100, columnas: 10, letrero: [['Rifa grande: 100 = 2² × 5²']],
+      datos: { desde: 1, hasta: 100, columnas: 10, cordeles: false, letrero: [['Rifa grande: 100 = 2² × 5²']],
         pasos: [
           { pie: [['100 = 2² × 5²: sus primos son 2 y 5']] },
           { criba: { primos: [2], propios: false, quedan: true, unoQueda: true }, pie: [['Sin los pares: quedan 50']] },
@@ -1838,8 +1856,10 @@
     },
     regla: {
       texto: 'φ(N) cuenta los números del 1 al N que son PESI con N. Cada primo de N deja la parte que no es su múltiplo.',
-      ecuacion: [{ llave: [res('φ(N)')], nota: 'los PESI con N' }, ' = N × (1 − ', frac(1, bas('p')), ') × (1 − ', frac(1, bas('q')), ')', SEP, 'φ(', bas('p'), ') = ', bas('p'), ' − 1'],
-      condicion: 'Entran los primos distintos de N, sin sus exponentes. Si p es primo, solo p no es PESI con p.',
+      // Fracciones en línea (1/p): así el renglón solo se parte después del «=» (lector en frío B, 19 nov: se partía
+      // entre la fracción apilada y su paréntesis).
+      ecuacion: [{ llave: [res('φ(N)')], nota: 'los PESI con N' }, ' = N × (1 − 1/', bas('p'), ') × (1 − 1/', bas('q'), ')', SEP, 'φ(', bas('p'), ') = ', bas('p'), ' − 1'],
+      condicion: 'entran los primos distintos de N, sin exponentes. Con p primo, del 1 al p solo p no es PESI con p.',
       voz: 'Cada primo deja su parte.',
     },
     // Así se resuelve: φ de un número con dos primos, que hay que factorizar. «Ahora tú» pide otra cosa: φ con la forma
@@ -1894,10 +1914,13 @@
   const restosDe = (a, p, n) => Array.from({ length: n }, (_, i) => powmod(a, i + 1, p));
   const tablaRestos = (a, p) => ({
     columnas: [{ t: 'día' }, { t: 'pedido' }, { t: `sueltos con ${p}`, color: 'o' }],
-    filas: restosDe(a, p, p - 1).map((r, i) => [String(i + 1), f(a ** (i + 1), 0), { t: String(r), color: 'o', resalta: i === p - 2 }]),
+    // Se resalta el primer día en que los sueltos vuelven a 1 (antes, el día p − 1: con la base 2 parecía la meta de
+    // la misión; lector en frío B, 19 nov).
+    filas: restosDe(a, p, p - 1).map((r, i, rs) => [String(i + 1), f(a ** (i + 1), 0), { t: String(r), color: 'o', resalta: i === rs.indexOf(1) }]),
     filasMax: 6, cabeza: true, alt: `Pedido que se multiplica por ${a} cada día, en bolsitas de ${p}: los sueltos de los días 1 a ${p - 1} son ${restosDe(a, p, p - 1).join(', ')}`,
   });
-  const TABLA7 = { columnas: [{ t: 'día' }, ...[2, 3, 4, 5, 6].map(a => ({ t: `base ${a}` }))],
+  // Encabezado «×2»: el pedido se multiplica por la base cada día («base 2» no cabía y se pegaba; lector en frío B).
+  const TABLA7 = { columnas: [{ t: 'día' }, ...[2, 3, 4, 5, 6].map(a => ({ t: `×${a}` }))],
     filas: [1, 2, 3, 4, 5, 6].map(e => [String(e), ...[2, 3, 4, 5, 6].map(a => ({ t: String(powmod(a, e, 7)), color: 'o', resalta: e === 6 }))]),
     filasMax: 6, cabeza: true, alt: 'Sueltos con bolsitas de 7 para las bases 2 a 6, de los días 1 a 6: el día 6 todas dejan 1' };
   const pot6 = (b, e) => ({ sup: [String(b), String(e)] });
@@ -1910,6 +1933,10 @@
     suma: 'El resto de una suma sale de sumar los restos y volver a dividir',
     ciclo: 'Los restos de las potencias de un número se repiten en ciclo: se calculan hasta que uno se repite',
   };
+  // El circulito se dice en palabras en los Datos de todo ejercicio que lo usa (auditoría, 19 nov; como D2.mu de
+  // Divisibilidad): lector en frío B, tarjeta 17.
+  const usaMu = x => JSON.stringify(x).includes('"mult"');
+  const conMu = c => (usaMu([c.pregunta, c.enunciado, c.opciones, c.solucion, c.pasos, c.respuesta]) ? Object.assign({}, c, { datos: [...c.datos, D6.mu] }) : c);
 
   // Ahora tú · tipo 0: el resto de una potencia grande entre 5 o 7.
   function casoFermat(r) {
@@ -1942,7 +1969,9 @@
         solucion: { texto: `${a} es múltiplo de ${p}: deja 0, y su potencia también.`, ecuacion: [pot6(a, p - 1), ' = ', MU(p), ' + ', sob(0)] },
       };
     }
-    const m = r.de([9, 15, 21, 25]), a = r.de([2, 4, 8].filter(x => mcd(x, m) === 1)), v = powmod(a, m - 1, m);
+    // Sin el 25: con él, los ciclos de 2, 4 y 8 miden 20 o 10 y la solución, que muestra 6 restos, no llegaba
+    // (auditoría, 19 nov; decisión 15 de Divisibilidad: ciclos de 3 a 6).
+    const m = r.de([9, 15, 21]), a = r.de([2, 4, 8].filter(x => mcd(x, m) === 1)), v = powmod(a, m - 1, m);
     if (v === 1) return null;
     return {
       pregunta: ['¿Qué resto deja ', pot6(a, m - 1), ' al dividirlo entre ', bas(m), '?'],
@@ -1986,7 +2015,7 @@
 
   // Ejemplos resueltos de la idea 6. Cuentas rehechas aparte (cuentas-ideas.py, con pow(a, n, p) de Python): 2⁴ = 16 →
   // 1 entre 5; 3⁶ = 729 → 1 entre 7; 1 × 2 × 3 × 4 = 24 → 4 entre 5; 10⁴ → 0 entre 5; 2³ = 8 → 0 entre 4; 2⁶² → 4 entre 7;
-  // 3²⁰ → 1 entre 11; 12! → 12 entre 13; 5! = 120 → 1 entre 7; 8²⁵ → 3 entre 5; 2¹⁰⁰ → 3 entre 13; 16! + 5 → 4 entre 17;
+  // 3²⁰ → 1 entre 11; 12! + 1 → 0 entre 13; 5! = 120 → 1 entre 7; 8²⁵ → 3 entre 5; 2¹⁰⁰ → 3 entre 13; 16! + 5 → 4 entre 17;
   // 2¹⁴ → 4 entre 15; 3⁴⁰ + 5⁴⁰ → 2 entre 41; 2⁶⁰ → 1 entre 7 (de lunes a martes).
   const EJEMPLOS_FW = [
     { nivel: 1, titulo: 'Fermat con 5',
@@ -1999,15 +2028,20 @@
       datos: [D6.fermat],
       solucion: [{ texto: '7 es primo, 3 no es su múltiplo, y el exponente es 7 − 1.', ecuacion: [pot6(3, 6), ' = 729 = 7 × 104 + ', sob(1)] }],
       respuesta: ['Resto ', sob(1)] },
-    { nivel: 1, titulo: 'Wilson con 5',
+    // Sin Wilson en los Datos: el nivel 1 hace la cuenta y ve el resultado (lector en frío B, 19 nov: con Wilson en los
+    // Datos, la respuesta venía dada).
+    { nivel: 1, titulo: 'El producto de 1 a 4',
       enunciado: '¿Qué resto deja 1 × 2 × 3 × 4 al dividirlo entre 5?',
-      datos: [D6.wilson],
-      solucion: [{ texto: '5 es primo: el producto de 1 a 4 deja 5 − 1.', ecuacion: ['1 × 2 × 3 × 4 = 24 = 5 × 4 + ', sob(4)] }],
+      datos: [D6.prod],
+      solucion: [
+        { texto: 'Se multiplica y se divide entre 5.', ecuacion: ['1 × 2 × 3 × 4 = 24 = 5 × 4 + ', sob(4)] },
+        { texto: 'Sobran 4, que es 5 − 1. Con todo primo pasa lo mismo: es el teorema de Wilson.' },
+      ],
       respuesta: ['Resto ', sob(4)] },
     { nivel: 1, titulo: 'Una base múltiplo',
       enunciado: ['¿Qué resto deja ', pot6(10, 4), ' al dividirlo entre 5?'],
       datos: [D6.fermat, D6.prod],
-      solucion: [{ texto: '10 es múltiplo de 5: Fermat no vale. 10 deja 0, y 0 × 0 × 0 × 0 = 0.', ecuacion: [pot6(10, 4), ' = 10000 = 5 × 2000 + ', sob(0)] }],
+      solucion: [{ texto: '10 es múltiplo de 5: Fermat no vale. 10 deja 0, y 0 × 0 × 0 × 0 = 0.', ecuacion: [pot6(10, 4), ' = 10 000 = 5 × 2000 + ', sob(0)] }],
       respuesta: ['Resto ', sob(0)] },
     { nivel: 1, titulo: 'Un divisor que no es primo',
       enunciado: ['¿Qué resto deja ', pot6(2, 3), ' al dividirlo entre 4?'],
@@ -2030,19 +2064,21 @@
         { texto: 'Cada factor deja 1.', ecuacion: ['1 × 1 = ', sob(1)] },
       ],
       respuesta: ['Resto ', sob(1)] },
-    { nivel: 2, titulo: 'Wilson con 13',
-      enunciado: '¿Qué resto deja 1 × 2 × 3 × … × 12 al dividirlo entre 13?',
-      datos: [D6.wilson],
+    // Dos pasos: Wilson y después la suma (antes era Wilson solo, igual que el nivel 1; lector en frío B, 19 nov).
+    { nivel: 2, titulo: 'Wilson más uno',
+      enunciado: '¿Es 1 × 2 × 3 × … × 12 + 1 un múltiplo de 13?',
+      datos: [D6.wilson, D6.suma],
       solucion: [
-        { texto: '13 es primo y el producto va de 1 a 13 − 1.' },
-        { texto: 'Por Wilson deja 13 − 1.', ecuacion: ['1 × 2 × … × 12 = ', MU(13), ' + ', sob(12)] },
+        { texto: '13 es primo y el producto va de 1 a 13 − 1: por Wilson deja 12.', ecuacion: ['1 × 2 × … × 12 = ', MU(13), ' + ', sob(12)] },
+        { texto: 'Con 1 más, los sueltos son 12 + 1 = 13: una bolsita más, y no sobra nada.', ecuacion: ['12 + 1 = 13 × 1 + ', sob(0)] },
       ],
-      respuesta: ['Resto ', sob(12)] },
+      respuesta: [res('Sí'), ': deja resto ', sob(0)] },
     { nivel: 2, titulo: 'Sin el último factor',
       enunciado: '¿Qué resto deja 1 × 2 × 3 × 4 × 5 al dividirlo entre 7?',
       datos: [D6.wilson, D6.prod],
       solucion: [
-        { texto: 'Por Wilson, 1 × 2 × … × 6 deja 6. Ese producto es el pedido por 6, y 6 × 1 = 6: el de 1 a 5 deja 1.' },
+        { texto: 'Por Wilson, 1 × 2 × … × 6 deja 6 entre 7, y ese producto es (1 × 2 × 3 × 4 × 5) × 6.' },
+        { texto: 'Si el de 1 a 5 dejara 1, 2, 3…, el de 1 a 6 dejaría 6, 5, 4…: solo con 1 deja 6.' },
         { texto: 'Se comprueba.', ecuacion: ['1 × 2 × 3 × 4 × 5 = 120 = 7 × 17 + ', sob(1)] },
       ],
       respuesta: ['Resto ', sob(1)] },
@@ -2096,7 +2132,7 @@
       alternativas: ['martes', 'lunes', 'miércoles', 'domingo', 'viernes'],
       datos: [D6.fermat, 'La semana se repite cada 7 días', 'Los días, en orden: lunes, martes, miércoles, jueves, viernes, sábado y domingo'],
       solucion: [
-        { texto: '7 es primo: 2⁶ deja 1, y 60 = 6 × 10. Entonces 2⁶⁰ deja 1: es una semana entera más un día.', ecuacion: [pot6(2, 60), ' = ', MU(7), ' + ', sob(1)] },
+        { texto: '7 es primo: 2⁶ deja 1, y 60 = 6 × 10. Entonces 2⁶⁰ deja 1: son semanas enteras y un día más.', ecuacion: [pot6(2, 60), ' = ', MU(7), ' + ', sob(1)] },
         { texto: ['Las trampas: ', letra('B'), ' cree que deja 0; ', letra('C'), ' avanza 2, la base; ', letra('D'), ' avanza 6; ', letra('E'), ' avanza 4: reduce 60 entre 7.'] },
       ],
       respuesta: [letra('A'), ': el ', res('martes')] },
@@ -2117,11 +2153,11 @@
           pieza: 'arit-puesto', dibujo: { datos: { n: 7, bolsitas: 1, sueltos: 2, ceros: true, colorCifras: false, regla: [[['1 bolsita = '], ['7', 'i', 700], [' caramelos']], [['Día 2: 9 caramelos']]], rotulos: { bolsitas: '1 bolsita llena', sueltos: [['2', 'o', 700], [' sueltos']] } }, estado: {} } },
         { titulo: 'Los sueltos se multiplican', texto: 'No hace falta contar todo el pedido: los sueltos de mañana salen de multiplicar los de hoy por 3 y volver a empacar.',
           ecuacion: ['9 = 7 + 2', SEP, '2 × 3 = 6', SEP, '27 = 7 × 3 + 6'] },
-        { titulo: 'El circulito', texto: ['Como en Divisibilidad, ', MU(7), ' + 1 se lee «un múltiplo de 7, más 1»: un pedido que deja 1 suelto. Las bolsitas de esta idea siempre llevan un número primo.'] },
+        { titulo: 'El circulito', texto: ['Como en Divisibilidad, ', MU(7), ' + 1 se lee «un múltiplo de 7, más 1»: un pedido que deja 1 suelto. Las bolsitas de esta idea siempre llevan un número primo; en las reglas, ese primo se llama p.'] },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar la base y la bolsita. Mira el día en que los sueltos vuelven a ser 1, y compáralo con la bolsita.' },
       ],
     },
-    ejemplos: EJEMPLOS_FW,
+    ejemplos: EJEMPLOS_FW.map(conMu),
     juega: {
       pieza: TA,
       consigna: 'Cada día doña Juana multiplica el pedido por la base y lo empaca en bolsitas. La tabla anota los sueltos.',
@@ -2151,9 +2187,9 @@
       voz: 'Piensa en el día en que los sueltos vuelven a 1.',
       opciones: [
         { id: 'c', texto: '1', correcta: true },
-        { id: 'base', texto: '2', error: 'AT-FERMAT-BASE', siFuera: 'Volver a la base pasa un día después: el día p − 1, con p primo, deja otra cosa.' },
-        { id: 'menos', texto: '100', error: 'AT-FERMAT-MENOS-UNO', siFuera: '100 es el exponente, p − 1. El resto es lo que sobra de 2¹⁰⁰.' },
-        { id: 'entera', texto: 'No se puede saber sin calcular 2¹⁰⁰', error: 'AT-POTENCIA-ENTERA', siFuera: 'Calcularla no hace falta: con un primo, el día p − 1 siempre deja lo mismo.' },
+        { id: 'base', texto: '2', error: 'AT-FERMAT-BASE', siFuera: 'Los sueltos vuelven a la base un día después, el día 101. El día 100 deja otra cosa.' },
+        { id: 'menos', texto: '100', error: 'AT-FERMAT-MENOS-UNO', siFuera: '100 es el exponente, uno menos que 101. El resto es lo que sobra de 2¹⁰⁰.' },
+        { id: 'entera', texto: 'No se puede saber sin calcular 2¹⁰⁰', error: 'AT-POTENCIA-ENTERA', siFuera: 'Calcularla no hace falta: con bolsitas de 7, el día 6 dejaba lo mismo con cualquier base.' },
       ],
       dibujo: { datos: tablaRestos(2, 7), estado: {} },
       revelar: { datos: TABLA7, estado: { fila: 5 } },
@@ -2163,20 +2199,20 @@
     mira: {
       pieza: TA,
       datos: TABLA7,
-      voz: 'El día p − 1 siempre deja 1.',
+      voz: 'Con bolsitas de 7, mira el día 6.',
       pasos: [
         { estado: { fila: 5 }, texto: 'Con bolsitas de 7, el día 6 deja 1 suelto con cualquier base.', ecuacion: [pot6(3, 6), ' = 729 = 7 × 104 + ', sob(1)] },
         { estado: { fila: 5 }, texto: 'Con bolsitas de 101 pasa lo mismo el día 100.', ecuacion: [pot6(2, 100), ' = ', MU(101), ' + ', sob(1)] },
         { estado: {}, texto: 'Si la base es múltiplo de la bolsita, no: 7⁶ deja 0.', ecuacion: [pot6(7, 6), ' = ', MU(7), ' + ', sob(0)] },
         { estado: {}, texto: 'Y la bolsita tiene que ser un primo: con 9, 2⁸ deja 4.', ecuacion: [pot6(2, 8), ' = 256 = 9 × 28 + ', sob(4)] },
-        { estado: {}, texto: 'Otro hecho con un primo: 1 × 2 × … × 6 deja 6 entre 7.', ecuacion: ['1 × 2 × 3 × 4 × 5 × 6 = 720 = 7 × 102 + ', sob(6)] },
+        { estado: {}, texto: 'Teorema de Wilson: el producto de 1 a 6 deja 6 entre 7.', ecuacion: ['1 × 2 × 3 × 4 × 5 × 6 = 720 = 7 × 102 + ', sob(6)] },
       ],
     },
     regla: {
-      texto: 'Con p primo y a sin el factor p: aᵖ⁻¹ deja resto 1 entre p (Fermat), y 1 × 2 × … × (p − 1) deja p − 1 (Wilson).',
+      texto: 'Con p primo (la bolsita) y a no múltiplo de p: aᵖ⁻¹ deja resto 1 entre p (Fermat), y 1 × 2 × … × (p − 1) deja p − 1 (Wilson).',
       ecuacion: [{ llave: [{ sup: ['a', ['p − 1']] }], nota: 'a no es múltiplo de p' }, ' = ', MU('p'), ' + ', sob(1), SEP,
-        { llave: ['1 × 2 × … × (', bas('p'), ' − 1)'], nota: 'se escribe (p − 1)!' }, ' = ', MU('p'), ' − 1'],
-      condicion: 'p primo y a no múltiplo de p: 7⁶ deja 0 y, con 9, que no es primo, 2⁸ deja 4.',
+        { llave: ['1 × 2 × … × (', bas('p'), ' − 1)'], nota: 'el producto de 1 a p − 1' }, ' = ', MU('p'), ' − 1'],
+      condicion: 'p es primo y a no es múltiplo de p (7⁶ deja 0 entre 7). p̊: un múltiplo de p.',
       voz: 'Con un primo, el día p − 1 deja 1.',
     },
     // Así se resuelve: el resto de una potencia grande entre 11 o 13. «Ahora tú» pide otra cosa: entre 5 o 7, cuándo no
@@ -2190,7 +2226,7 @@
           const val = a ** q;
           return {
             enunciado: ['¿Qué resto deja ', pot6(a, n), ' al dividirlo entre ', bas(p), '?'],
-            datos: [D6.fermat, D6.exp, D6.mu],
+            datos: [D6.fermat, D6.exp],
             pasos: [
               { tipo: 'pide', texto: `Piden lo que sobra de ${a}${sup(n)} entre ${p}, sin calcular la potencia.` },
               { tipo: 'regla', texto: `${p} es primo y ${a} no es su múltiplo: por Fermat, ${a}${sup(p - 1)} deja 1. Cada bloque de ${p - 1} en el exponente vale 1.` },
@@ -2207,10 +2243,10 @@
       voz: 'Primo, y la base no es su múltiplo.',
       generar(sem) {
         const r = azar(sem + 113), tipo = sem % 4;
-        if (tipo === 0) return conCuatro(casoFermat, r);
-        if (tipo === 1) return conCuatro(casoNoVale, r);
-        if (tipo === 2) return conCuatro(casoWilson, r);
-        return conCuatro(casoWilsonMas, r);
+        if (tipo === 0) return conMu(conCuatro(casoFermat, r));
+        if (tipo === 1) return conMu(conCuatro(casoNoVale, r));
+        if (tipo === 2) return conMu(conCuatro(casoWilson, r));
+        return conMu(conCuatro(casoWilsonMas, r));
       },
     },
   };
@@ -2382,7 +2418,8 @@
 
   return {
     unidad: 'aritmetica.numeros-primos-y-divisores',
-    version: '0.3.0',
+    version: '0.3.2',
+    calidad: 2,
     estado: 'completa',
     colores: COLORES,
     letras: { N: 'el número que se estudia', d: 'un divisor de N', k: 'un entero', p: 'un número primo', q: 'otro número primo, distinto de p',

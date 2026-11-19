@@ -146,3 +146,17 @@ test('criba: tacha los múltiplos de cada primo, deja el aro al primo que tacha 
   assert.deepEqual(g.celdas.filter(c => c.queda).map(c => c.num), Array.from({ length: 100 }, (_, i) => i + 1).filter(x => esPrimo(x) && x > 7));
   assert.match(P.alt({ numeros: [1, 2, 33], criba: { primos: [3], uno: true, quedan: true } }), /números 1, 2, 33.*tachados/);
 });
+
+// Números primos y divisores, cierre (19 nov): el cartel puede ir sin cordeles (se leían como una llave sobre los
+// boletos); al final de la criba, primosQuedan marca también en violeta los primos que tacharon; el número tachado se
+// lee (antes, al 45 %). Ninguna de las tres cambia lo que dibuja Divisibilidad.
+test('criba: cartel sin cordeles, primosQuedan y tachados legibles', () => {
+  const base = { desde: 1, hasta: 30, letrero: 'Rifa', criba: { primos: [2, 3, 5], uno: true, quedan: true } };
+  const cordel = s => (s.match(/<path d="M[\d.]+ [\d.]+V[\d.]+M/g) || []).length;
+  assert.equal(cordel(P.dibujar(base)), 1);
+  assert.equal(cordel(P.dibujar(Object.assign({}, base, { cordeles: false }))), 0);
+  const g = P.geometria(Object.assign({}, base, { criba: Object.assign({}, base.criba, { primosQuedan: true }) }));
+  assert.deepEqual(g.celdas.filter(c => c.queda).map(c => c.num), [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]);
+  assert.equal(g.celdas.filter(c => c.usado).length, 0);
+  assert.ok(!/fill-opacity="0.45"/.test(P.dibujar(base)));
+});
