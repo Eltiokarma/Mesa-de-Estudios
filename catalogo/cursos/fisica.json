@@ -137,8 +137,8 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "requiere": ["fisica.estatica", "fisica.mruv-y-caida-libre"],
-      "plantillas": ["dinamica", "dinamica-fuerzas"],
+      "requiere": ["fisica.estatica", "fisica.mruv-y-caida-libre", "fisica.movimiento-circular"],
+      "plantillas": ["fis-dinamica", "dinamica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },
     {

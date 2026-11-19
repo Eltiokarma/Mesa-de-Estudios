@@ -362,6 +362,30 @@
     "N-MG-el-peso": {
       "respaldo": "parcial",
       "describe": "Iguala la fuerza pedida al peso (trampa 7 de San Marcos, con la normal)"
+    },
+    "PL-tension-igual-peso": {
+      "respaldo": "hipotesis",
+      "describe": "Iguala la tensión de la cuerda al peso del bloque que cuelga, aunque el sistema acelere"
+    },
+    "PL-tension-neta-colgante": {
+      "respaldo": "hipotesis",
+      "describe": "Da la fuerza neta del bloque que cuelga (m · a) como tensión"
+    },
+    "PL-tension-peso-mesa": {
+      "respaldo": "hipotesis",
+      "describe": "Da el peso del bloque de la mesa como tensión"
+    },
+    "AS-signo-por-el-viaje": {
+      "respaldo": "hipotesis",
+      "describe": "Suma o resta la aceleración según hacia dónde viaja el ascensor, no según hacia dónde apunta la aceleración"
+    },
+    "N-igual-mg-ascensor": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la balanza del ascensor marca siempre el peso"
+    },
+    "AS-solo-m-por-a": {
+      "respaldo": "hipotesis",
+      "describe": "Da solo m · a, sin el peso"
     }
   },
   "pares": [
@@ -2292,6 +2316,136 @@
           {
             "texto": "25 N",
             "valor": 25,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-29",
+      "plantilla": "dinamica",
+      "unidad": "fisica.dinamica",
+      "nombreUnidad": "Dinámica",
+      "mide": "Dos bloques unidos por una cuerda: la tensión sale del DCL de un solo bloque y es menor que el peso del que cuelga",
+      "A": {
+        "enunciado": "Un bloque de 8 kg está sobre una mesa lisa, unido por una cuerda que pasa por una polea a otro de 2 kg que cuelga. Con g = 10 m/s², ¿con qué fuerza jala la cuerda?",
+        "datos": {
+          "m1": 8,
+          "m2": 2
+        },
+        "opciones": [
+          {
+            "texto": "20 N",
+            "valor": 20,
+            "error": "PL-tension-igual-peso"
+          },
+          {
+            "texto": "16 N",
+            "valor": 16,
+            "correcta": true
+          },
+          {
+            "texto": "80 N",
+            "valor": 80,
+            "error": "PL-tension-peso-mesa"
+          },
+          {
+            "texto": "4 N",
+            "valor": 4,
+            "error": "PL-tension-neta-colgante"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una caja de 6 kg está sobre una mesa lisa, unida por una cuerda que pasa por una polea a un balde de 4 kg que cuelga. Con g = 10 m/s², ¿con qué fuerza jala la cuerda?",
+        "datos": {
+          "m1": 6,
+          "m2": 4
+        },
+        "opciones": [
+          {
+            "texto": "16 N",
+            "valor": 16,
+            "error": "PL-tension-neta-colgante"
+          },
+          {
+            "texto": "60 N",
+            "valor": 60,
+            "error": "PL-tension-peso-mesa"
+          },
+          {
+            "texto": "24 N",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "40 N",
+            "valor": 40,
+            "error": "PL-tension-igual-peso"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-30",
+      "plantilla": "dinamica",
+      "unidad": "fisica.dinamica",
+      "nombreUnidad": "Dinámica",
+      "mide": "En un ascensor, la balanza marca N = m · (g + a): manda hacia dónde apunta la aceleración, no hacia dónde viaja",
+      "A": {
+        "enunciado": "Ana, de 60 kg, sube a su departamento en ascensor parada sobre una báscula. Cerca de su piso, el ascensor frena: pierde 2 m/s cada segundo. Con g = 10 m/s², ¿cuánto indica la báscula?",
+        "datos": {
+          "m": 60,
+          "a": -2
+        },
+        "opciones": [
+          {
+            "texto": "720 N",
+            "valor": 720,
+            "error": "AS-signo-por-el-viaje"
+          },
+          {
+            "texto": "480 N",
+            "valor": 480,
+            "correcta": true
+          },
+          {
+            "texto": "120 N",
+            "valor": 120,
+            "error": "AS-solo-m-por-a"
+          },
+          {
+            "texto": "600 N",
+            "valor": 600,
+            "error": "N-igual-mg-ascensor"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Luis, de 70 kg, baja en ascensor parado sobre una báscula. Al llegar al primer piso, el ascensor frena: pierde 3 m/s cada segundo. Con g = 10 m/s², ¿cuánto indica la báscula?",
+        "datos": {
+          "m": 70,
+          "a": 3
+        },
+        "opciones": [
+          {
+            "texto": "700 N",
+            "valor": 700,
+            "error": "N-igual-mg-ascensor"
+          },
+          {
+            "texto": "210 N",
+            "valor": 210,
+            "error": "AS-solo-m-por-a"
+          },
+          {
+            "texto": "490 N",
+            "valor": 490,
+            "error": "AS-signo-por-el-viaje"
+          },
+          {
+            "texto": "910 N",
+            "valor": 910,
             "correcta": true
           }
         ]

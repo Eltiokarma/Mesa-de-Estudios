@@ -1,0 +1,284 @@
+{
+ "plantilla": "fis-dinamica",
+ "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta (N, m, m/s o m/s²); texto: lo que ve el alumno (coma decimal). Un caso por tipo: las seis ideas de Dinámica.",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e7-fisica/casos.py), que no usa el generador, el núcleo ni plantillas/dinamica/motor.js: escribe la segunda ley por ejes con fracciones exactas (sen 37° = 3/5) y las distancias de frenado integrando el movimiento paso a paso; el texto lleva su propio redondeo (la mitad hacia afuera) y su coma decimal.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "rozamiento-en-movimiento",
+    "tipo": "rampa",
+    "nivel": 3,
+    "mu": 0.5,
+    "v0": 6
+   },
+   "esperado": {
+    "respuesta": 1.8,
+    "texto": "1,8 m"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "plano-y-polea",
+    "tipo": "mesa",
+    "nivel": 1,
+    "m1": 4,
+    "m2": 4
+   },
+   "esperado": {
+    "respuesta": 5.0,
+    "texto": "5 m/s²"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "masa-y-peso",
+    "tipo": "pesoLugar",
+    "nivel": 1,
+    "PT": 50,
+    "g2": 3.7
+   },
+   "esperado": {
+    "respuesta": 18.5,
+    "texto": "18,5 N"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "plano-y-polea",
+    "tipo": "atwood",
+    "nivel": 2,
+    "m1": 6,
+    "m2": 2
+   },
+   "esperado": {
+    "respuesta": 30.0,
+    "texto": "30 N"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "idea": "plano-y-polea",
+    "tipo": "aspera",
+    "nivel": 3,
+    "m1": 2,
+    "m2": 2,
+    "mu": 0.2
+   },
+   "esperado": {
+    "respuesta": 12.0,
+    "texto": "12 N"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "masa-y-peso",
+    "tipo": "levantar",
+    "nivel": 3,
+    "m": 25,
+    "T": 100,
+    "g2": 1.6
+   },
+   "esperado": {
+    "respuesta": 2.4,
+    "texto": "2,4 m/s²"
+   }
+  },
+  {
+   "semilla": 6,
+   "entrada": {
+    "idea": "centripeta-es-resultante",
+    "tipo": "rizo",
+    "nivel": 3,
+    "m": 300,
+    "r": 4,
+    "v": 10
+   },
+   "esperado": {
+    "respuesta": 4500.0,
+    "texto": "4 500 N"
+   }
+  },
+  {
+   "semilla": 7,
+   "entrada": {
+    "idea": "ascensor-y-marcos",
+    "tipo": "grua",
+    "nivel": 2,
+    "m": 50,
+    "a": -2.5
+   },
+   "esperado": {
+    "respuesta": 375.0,
+    "texto": "375 N"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "ascensor-y-marcos",
+    "tipo": "lectura",
+    "nivel": 3,
+    "m": 60,
+    "N": 720
+   },
+   "esperado": {
+    "respuesta": 2.0,
+    "texto": "2 m/s²"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "rozamiento-en-movimiento",
+    "tipo": "frenado",
+    "nivel": 2,
+    "m": 20,
+    "v0": 5,
+    "mu": 0.25
+   },
+   "esperado": {
+    "respuesta": 5.0,
+    "texto": "5 m"
+   }
+  },
+  {
+   "semilla": 11,
+   "entrada": {
+    "idea": "centripeta-es-resultante",
+    "tipo": "loma",
+    "nivel": 1,
+    "m": 800,
+    "r": 50,
+    "v": 5
+   },
+   "esperado": {
+    "respuesta": 7600.0,
+    "texto": "7 600 N"
+   }
+  },
+  {
+   "semilla": 13,
+   "entrada": {
+    "idea": "fuerza-neta-acelera",
+    "tipo": "recorrido",
+    "nivel": 3,
+    "m": 2,
+    "d": 24,
+    "t": 4
+   },
+   "esperado": {
+    "respuesta": 6.0,
+    "texto": "6 N"
+   }
+  },
+  {
+   "semilla": 14,
+   "entrada": {
+    "idea": "centripeta-es-resultante",
+    "tipo": "plataforma",
+    "nivel": 2,
+    "w": 2,
+    "mu": 0.2
+   },
+   "esperado": {
+    "respuesta": 0.5,
+    "texto": "0,5 m"
+   }
+  },
+  {
+   "semilla": 21,
+   "entrada": {
+    "idea": "fuerza-neta-acelera",
+    "tipo": "reposo",
+    "nivel": 2,
+    "m": 2,
+    "F": 12,
+    "t": 4
+   },
+   "esperado": {
+    "respuesta": 24.0,
+    "texto": "24 m/s"
+   }
+  },
+  {
+   "semilla": 23,
+   "entrada": {
+    "idea": "rozamiento-en-movimiento",
+    "tipo": "oblicua",
+    "nivel": 3,
+    "m": 20,
+    "F": 150,
+    "mu": 0.5
+   },
+   "esperado": {
+    "respuesta": 3.25,
+    "texto": "3,25 m/s²"
+   }
+  },
+  {
+   "semilla": 25,
+   "entrada": {
+    "idea": "ascensor-y-marcos",
+    "tipo": "balanza",
+    "nivel": 1,
+    "m": 55,
+    "a": -1
+   },
+   "esperado": {
+    "respuesta": 495.0,
+    "texto": "495 N"
+   }
+  },
+  {
+   "semilla": 30,
+   "entrada": {
+    "idea": "fuerza-neta-acelera",
+    "tipo": "neta",
+    "nivel": 1,
+    "m": 25,
+    "F1": 90,
+    "F2": 30
+   },
+   "esperado": {
+    "respuesta": 2.4,
+    "texto": "2,4 m/s²"
+   }
+  },
+  {
+   "semilla": 31,
+   "entrada": {
+    "idea": "rozamiento-en-movimiento",
+    "tipo": "arrastre",
+    "nivel": 1,
+    "m": 50,
+    "F": 200,
+    "mu": 0.1
+   },
+   "esperado": {
+    "respuesta": 3.0,
+    "texto": "3 m/s²"
+   }
+  },
+  {
+   "semilla": 35,
+   "entrada": {
+    "idea": "masa-y-peso",
+    "tipo": "lugares",
+    "nivel": 2,
+    "m": 5,
+    "g1": 3.7,
+    "g2": 1.6
+   },
+   "esperado": {
+    "respuesta": 8.0,
+    "texto": "8 N"
+   }
+  }
+ ]
+}

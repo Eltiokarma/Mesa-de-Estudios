@@ -371,6 +371,20 @@ test('Estática rehecha (19 nov): predicciones viejas sin huella borradas una ve
   const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'diagrama-y-parejas': { hecha: true } } } } };
   A.migrar(otro);
   assert.ok(!(otro.marcadas || {})[U]);
+test('Dinámica rehecha (19 nov, etapa 7): las predicciones viejas sin huella se borran una vez; lo demás queda', () => {
+  const U = 'fisica.dinamica';
+  const est = { avanceV: 1, teoria: { [U]: { ideas: { 'fuerza-neta-acelera': { hecha: true, prediccion: 'v' }, 'masa-y-peso': { prediccion: 'c', prediccionDe: 'h2' }, 'centripeta-es-resultante': { momento: 'mira' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionDN, 1);
+  assert.equal(est.teoria[U].ideas['fuerza-neta-acelera'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['fuerza-neta-acelera'].hecha, true);
+  assert.equal(est.teoria[U].ideas['masa-y-peso'].prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.teoria[U].ideas['centripeta-es-resultante'].momento, 'mira');
+  est.teoria[U].ideas['fuerza-neta-acelera'].prediccion = 'c';
+  A.migrar(est);
+  assert.equal(est.teoria[U].ideas['fuerza-neta-acelera'].prediccion, 'c', 'una sola vez');
+});
+
 });
 
 // 19 nov (etapa 6, docs/etapa6/propuesta-quimica.md): «Enlace químico y fuerzas intermoleculares» se parte. La forma y la

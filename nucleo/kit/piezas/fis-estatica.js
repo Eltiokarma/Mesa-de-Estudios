@@ -88,6 +88,69 @@
   const raya = (x1, y1, x2, y2, g = 2, extra = '') => `<path d="M${n(x1)} ${n(y1)}L${n(x2)} ${n(y2)}" stroke="${ink}" stroke-width="${g}" stroke-linecap="round" fill="none"${extra}/>`;
   const cajaDe = (nombre, x0, y0, x1, y1, fig) => ({ nombre, x0: Math.min(x0, x1), x1: Math.max(x0, x1), y0: Math.min(y0, y1), y1: Math.max(y0, y1), fig: !!fig });
 
+  // ---- Bloque de Dinámica (19 nov 2026, etapa 7): carrito, ascensor, auto, tramo de pista y disco que gira ----
+  //   carrito  { x: centro, y: piso, w, h, texto, mango: -1 | 1 | 0 }   la caja sobre dos ruedas; el mango atrás
+  //   ascensor { x, y: piso de la cabina, w, h }                       la cabina con su cable hasta arriba
+  //   auto     { x, y: donde tocan las ruedas, w, giro, texto }        de costado; giro, como la caja de la rampa
+  //   pista    { c: [x, y], r, de, a, forma: 'loma' | 'hondonada' }     un arco de pista (grados: 0° a la derecha, 90° arriba)
+  //   disco    { c: [x, y], r }                                       una plataforma que gira, vista desde arriba
+  //   pelota   { x, y: centro, r }                                    una pelota
+  function objetoDinamica(o, lineas) {
+    let s = '', b = null;
+    const figs = [], t = o.tipo;
+    if (t === 'carrito') {
+      const w = o.w || 80, h = o.h || 30, rr = 7, x0 = o.x - w / 2, yb = o.y - 2 * rr, y0 = yb - h, m = o.mango === undefined ? -1 : o.mango;
+      s += `<rect x="${n(x0)}" y="${n(y0)}" width="${n(w)}" height="${n(h)}" rx="3" fill="${ink}" fill-opacity="0.08" stroke="${ink}" stroke-width="2"/>`;
+      for (const xr of [x0 + w * 0.22, x0 + w * 0.78]) s += `<circle cx="${n(xr)}" cy="${n(o.y - rr)}" r="${rr}" fill="var(--card)" stroke="${ink}" stroke-width="2"/><circle cx="${n(xr)}" cy="${n(o.y - rr)}" r="1.8" fill="${ink}"/>`;
+      let xm = o.x;
+      if (m) { const xa = m < 0 ? x0 : x0 + w, xb = xa + m * 14; s += raya(xa, y0 + 4, xb, y0 - 18, 2.5) + raya(xb - 4, y0 - 18, xb + 4, y0 - 18, 3); xm = xb; lineas.push([xa, y0 + 4, xb, y0 - 18]); }
+      if (o.texto) s += T.rotulo(o.x, y0 + h / 2 + 5, o.texto, { ancla: 'middle', tam: 13, peso: 700, min: -1e4, max: 1e4 });
+      b = cajaDe('carrito', Math.min(x0, xm - 5) - 1, y0 - (m ? 20 : 2), Math.max(x0 + w, xm + 5) + 1, o.y + 1);
+    } else if (t === 'ascensor') {
+      const w = o.w || 110, h = o.h || 150, x0 = o.x - w / 2, y0 = o.y - h;
+      s += `<rect x="${n(x0)}" y="${n(y0)}" width="${n(w)}" height="${n(h)}" rx="2" fill="${ink}" fill-opacity="0.04" stroke="${ink}" stroke-width="2.5"/>`
+        + raya(x0, o.y, x0 + w, o.y, 4) + raya(o.x, y0, o.x, M, 2) + raya(x0 + 6, y0 + 8, x0 + 6, o.y - 8, 1) + raya(x0 + w - 6, y0 + 8, x0 + w - 6, o.y - 8, 1);
+      lineas.push([o.x, y0, o.x, M]);
+      b = cajaDe('ascensor', x0 - 2, y0 - 2, x0 + w + 2, o.y + 3);
+      figs.push(cajaDe('techo-ascensor', x0 - 2, y0 - 2, x0 + w + 2, y0 + 3, true));
+    } else if (t === 'auto') {
+      const w = o.w || 72, rr = 7, x0 = o.x - w / 2, yb = o.y - rr, y1 = yb - 14, y2 = y1 - 13;
+      let g = `<path d="M${n(x0)} ${n(yb)}V${n(y1 + 3)}Q${n(x0)} ${n(y1)} ${n(x0 + 4)} ${n(y1)}H${n(x0 + w * 0.22)}L${n(x0 + w * 0.34)} ${n(y2)}H${n(x0 + w * 0.7)}L${n(x0 + w * 0.82)} ${n(y1)}H${n(x0 + w - 3)}Q${n(x0 + w)} ${n(y1)} ${n(x0 + w)} ${n(y1 + 3)}V${n(yb)}Z" fill="${ink}" fill-opacity="0.1" stroke="${ink}" stroke-width="2" stroke-linejoin="round"/>`;
+      g += raya(x0 + w * 0.52, y2 + 2, x0 + w * 0.52, y1 - 1, 1.5);
+      for (const xr of [x0 + w * 0.22, x0 + w * 0.78]) g += `<circle cx="${n(xr)}" cy="${n(o.y - rr)}" r="${rr}" fill="var(--card)" stroke="${ink}" stroke-width="2"/><circle cx="${n(xr)}" cy="${n(o.y - rr)}" r="1.8" fill="${ink}"/>`;
+      if (o.texto) g += T.rotulo(o.x, y1 + 11, o.texto, { ancla: 'middle', tam: 11, peso: 700, min: -1e4, max: 1e4 });
+      s += o.giro ? `<g transform="rotate(${n(-o.giro)} ${n(o.x)} ${n(o.y)})">${g}</g>` : g;
+      const R = Math.hypot(w / 2, o.y - y2) + 2;
+      b = o.giro ? cajaDe('auto', o.x - R, o.y - R, o.x + R, o.y + R * Math.sin(rad(Math.abs(o.giro))) + 2) : cajaDe('auto', x0 - 1, y2 - 1, x0 + w + 1, o.y + 1);
+    } else if (t === 'pista') {
+      const [cx, cy] = o.c, r = o.r || 120, de = o.de === undefined ? 45 : o.de, a = o.a === undefined ? 135 : o.a, dentro = o.forma !== 'hondonada';
+      const pt = (ang, rr) => [cx + rr * Math.cos(rad(ang)), cy - rr * Math.sin(rad(ang))];
+      const P1 = pt(de, r), P2 = pt(a, r);
+      s += `<path d="M${n(P1[0])} ${n(P1[1])}A${n(r)} ${n(r)} 0 ${a - de > 180 ? 1 : 0} 0 ${n(P2[0])} ${n(P2[1])}" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`;
+      let rs = '';
+      const k = Math.max(4, Math.round((a - de) * r * Math.PI / 180 / 10));
+      let xmin = Math.min(P1[0], P2[0]), xmax = Math.max(P1[0], P2[0]), ymin = Math.min(P1[1], P2[1]), ymax = Math.max(P1[1], P2[1]);
+      for (let i = 0; i <= k; i++) {
+        const ang = de + (a - de) * i / k, q = pt(ang, r), q2 = pt(ang + (dentro ? 3 : -3), dentro ? r - 7 : r + 7);
+        if (i < k) rs += `M${n(q[0])} ${n(q[1])}L${n(q2[0])} ${n(q2[1])}`;
+        xmin = Math.min(xmin, q[0], q2[0]); xmax = Math.max(xmax, q[0], q2[0]); ymin = Math.min(ymin, q[1], q2[1]); ymax = Math.max(ymax, q[1], q2[1]);
+        if (i) { const p0 = pt(de + (a - de) * (i - 1) / k, r); lineas.push([p0[0], p0[1], q[0], q[1]]); }
+      }
+      s += `<path d="${rs}" stroke="${ink}" stroke-width="1" stroke-opacity="0.5" fill="none"/>`;
+      b = cajaDe('pista', xmin - 2, ymin - 2, xmax + 2, ymax + 2);
+    } else if (t === 'pelota') {
+      const r = o.r || 12;
+      s += `<circle cx="${n(o.x)}" cy="${n(o.y)}" r="${n(r)}" fill="${ink}" fill-opacity="0.12" stroke="${ink}" stroke-width="2"/><path d="M${n(o.x - r * 0.7)} ${n(o.y - r * 0.3)}Q${n(o.x)} ${n(o.y + r * 0.4)} ${n(o.x + r * 0.7)} ${n(o.y - r * 0.3)}" fill="none" stroke="${ink}" stroke-width="1.2"/>`;
+      b = cajaDe('pelota', o.x - r - 1, o.y - r - 1, o.x + r + 1, o.y + r + 1);
+    } else if (t === 'disco') {
+      const [cx, cy] = o.c, r = o.r || 80;
+      s += `<circle cx="${n(cx)}" cy="${n(cy)}" r="${n(r)}" fill="${ink}" fill-opacity="0.06" stroke="${ink}" stroke-width="2"/><circle cx="${n(cx)}" cy="${n(cy)}" r="3.5" fill="${ink}"/>`;
+      b = cajaDe('disco', cx - r - 1, cy - r - 1, cx + r + 1, cy + r + 1);
+      figs.push(cajaDe('eje', cx - 5, cy - 5, cx + 5, cy + 5, true));
+    }
+    return { s, b, figs };
+  }
+
   // ---- los objetos ----
   function objeto(o, lineas) {
     let s = '', b = null, figs = [];
@@ -215,6 +278,10 @@
       s += `<rect x="${n(x - w / 2)}" y="${n(y)}" width="${n(w)}" height="22" rx="4" fill="var(--card)" stroke="${ink}" stroke-width="2"/>`
         + raya(x - w / 2 + 5, y + 11, x + w / 2 - 5, y + 11, 1);
       b = cajaDe('gancho', x - w / 2 - 1, y - 1, x + w / 2 + 1, y + 23);
+    } else if (t === 'carrito' || t === 'ascensor' || t === 'auto' || t === 'pista' || t === 'disco' || t === 'pelota') {
+      // Bloque de Dinámica (19 nov 2026, etapa 7; docs/etapa7/propuesta-fisica.md, decisión 10): objetos que se mueven.
+      const r = objetoDinamica(o, lineas);
+      s += r.s; b = r.b; figs.push(...r.figs);
     }
     // Un objeto con fig: true (la caja de un DCL) no deja que un rótulo lo pise.
     if (o.fig && b) figs.push(Object.assign({}, b, { fig: true }));
@@ -353,7 +420,8 @@
     if (d.alt) return d.alt;
     const NOM = { caja: 'una caja', costal: 'un costal', ropero: 'un ropero', letrero: 'un letrero colgado', bolsa: 'una bolsa', balde: 'un balde',
       balanza: 'una balanza de piso', persona: 'una persona', resorte: 'un resorte', polea: 'una polea', rampa: 'una rampa', barra: 'una barra',
-      caballete: 'un caballete', escalera: 'una escalera', escoba: 'una escoba', llave: 'una llave de tuercas', gancho: 'una balanza de resorte' };
+      caballete: 'un caballete', escalera: 'una escalera', escoba: 'una escoba', llave: 'una llave de tuercas', gancho: 'una balanza de resorte',
+      carrito: 'un carrito', ascensor: 'un ascensor', auto: 'un auto', pista: 'un tramo de pista curva', disco: 'una plataforma que gira', pelota: 'una pelota' };
     const cs = [...new Set((d.objetos || []).map(o => NOM[o.tipo]).filter(Boolean))];
     const k = (d.flechas || []).length;
     return `Figura con ${cs.join(', ') || 'un cuerpo'}${k ? ` y ${k} ${k === 1 ? 'fuerza dibujada' : 'fuerzas dibujadas'}` : ''}.`;

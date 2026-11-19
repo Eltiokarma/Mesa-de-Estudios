@@ -1840,6 +1840,30 @@
     "N-MG-el-peso": {
      "respaldo": "parcial",
      "describe": "Iguala la fuerza pedida al peso (trampa 7 de San Marcos, con la normal)"
+    },
+    "PL-tension-igual-peso": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala la tensión de la cuerda al peso del bloque que cuelga, aunque el sistema acelere"
+    },
+    "PL-tension-neta-colgante": {
+     "respaldo": "hipotesis",
+     "describe": "Da la fuerza neta del bloque que cuelga (m · a) como tensión"
+    },
+    "PL-tension-peso-mesa": {
+     "respaldo": "hipotesis",
+     "describe": "Da el peso del bloque de la mesa como tensión"
+    },
+    "AS-signo-por-el-viaje": {
+     "respaldo": "hipotesis",
+     "describe": "Suma o resta la aceleración según hacia dónde viaja el ascensor, no según hacia dónde apunta la aceleración"
+    },
+    "N-igual-mg-ascensor": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la balanza del ascensor marca siempre el peso"
+    },
+    "AS-solo-m-por-a": {
+     "respaldo": "hipotesis",
+     "describe": "Da solo m · a, sin el peso"
     }
    },
    "pares": [

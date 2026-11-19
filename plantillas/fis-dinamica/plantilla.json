@@ -1,0 +1,22 @@
+{
+  "id": "fis-dinamica",
+  "titulo": "Dinámica",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.dinamica"
+  ],
+  "temas": [
+    "Segunda ley de Newton",
+    "Masa y peso",
+    "Rozamiento en movimiento",
+    "Bloques, poleas y planos inclinados",
+    "Dinámica circular",
+    "Movimiento relativo y sistemas inerciales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

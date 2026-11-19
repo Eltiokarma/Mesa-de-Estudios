@@ -103,6 +103,10 @@
     if (sinHuella(est, 'fisica.estatica', { marca: 'prediccionES', ideas: ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo'] })) cambio = true;
     if (conservaEstudio(est, { de: 'fisica.estatica', a: 'fisica.estatica', estudiada: { marca: 'estudiadaES', fecha: '2026-11-19',
       ideas: ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo', 'polea-movil'] } })) cambio = true;
+    // 19 nov (etapa 7, «Dinámica»): la unidad se rehizo con sus seis ids, todos con otra Predice. Una predicción suya sin
+    // huella es de la pregunta vieja y se vuelve a preguntar, una vez (prediccionDN). No sumó ni quitó ideas: «Ya la
+    // estudié» no se toca.
+    if (sinHuella(est, 'fisica.dinamica', { marca: 'prediccionDN', ideas: ['fuerza-neta-acelera', 'masa-y-peso', 'rozamiento-en-movimiento', 'plano-y-polea', 'ascensor-y-marcos', 'centripeta-es-resultante'] })) cambio = true;
     // 19 nov (etapa 6): seis unidades más se rehicieron conservando los ids de sus ideas, con otra Predice. Una predicción
     // suya sin huella es de la pregunta vieja y se vuelve a preguntar, una vez (cada unidad con su marca). Las que sumaron
     // ideas (División, Polígonos, Verdades y mentiras, Analogías) le dejan «Ya la estudié» a quien había terminado todas

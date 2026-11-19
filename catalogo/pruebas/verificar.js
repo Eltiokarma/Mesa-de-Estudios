@@ -889,6 +889,12 @@ const V = {
   'fis-28': d => { const r = motor('estatica').planoRoce({ m: d.m, angulo: d.angulo, mus: d.mus, F: 0 });
     if (!r.quieto) throw new Error('fis-28: la caja debe estar quieta');
     return { correcta: Math.abs(r.roce), errores: { 'E10-estatico-siempre-mu-N': r.fsMax, 'ST-seno-por-coseno': r.N, 'N-MG-el-peso': d.m * 10 } }; },
+  // fis-29 y fis-30 (reserva, 19 nov, etapa 7 de física: «Dinámica»; las formas ya tienen 10 pares). El motor de la escena
+  // dinamica da la tensión de la mesa con polea (mesaPolea) y lo que marca la balanza del ascensor (ascensor, a con signo).
+  'fis-29': d => { const r = motor('dinamica').mesaPolea({ m1: d.m1, m2: d.m2 });
+    return { correcta: r.T, errores: { 'PL-tension-igual-peso': r.errores.tensionIgualPeso2, 'PL-tension-peso-mesa': r.errores.tensionIgualPeso1, 'PL-tension-neta-colgante': d.m2 * r.a } }; },
+  'fis-30': d => { const r = motor('dinamica').ascensor({ m: d.m, a: d.a });
+    return { correcta: r.N, errores: { 'AS-signo-por-el-viaje': r.errores.signoCambiado, 'N-igual-mg-ascensor': r.errores.normalIgualPeso, 'AS-solo-m-por-a': d.m * Math.abs(d.a) } }; },
 
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);

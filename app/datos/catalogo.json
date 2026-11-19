@@ -432,7 +432,7 @@
        "torque-y-brazo": "Torque: fuerza por brazo",
        "cuerpo-rigido": "Equilibrio del cuerpo rígido"
       },
-      "terminos": 36
+      "terminos": 38
      }
     },
     {
@@ -462,28 +462,29 @@
      "grado": 4,
      "requiere": [
       "fisica.estatica",
-      "fisica.mruv-y-caida-libre"
+      "fisica.mruv-y-caida-libre",
+      "fisica.movimiento-circular"
      ],
      "plantillas": [
+      "fis-dinamica",
       "dinamica",
       "dinamica-fuerzas"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/dinamica.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-lienzo.js"
+       "/nucleo/kit/piezas/fis-estatica.js"
       ],
       "ideas": 6,
       "titulos": {
-       "fuerza-neta-acelera": "La aceleración sigue a la fuerza",
-       "masa-y-peso": "La masa viaja, el peso cambia",
-       "rozamiento-en-movimiento": "Acelera lo que sobra",
-       "plano-y-polea": "Planos y poleas",
-       "centripeta-es-resultante": "La centrípeta es una resultante",
-       "ascensor-y-marcos": "La balanza del ascensor"
+       "fuerza-neta-acelera": "Segunda ley de Newton",
+       "masa-y-peso": "Masa y peso",
+       "rozamiento-en-movimiento": "Rozamiento en movimiento",
+       "plano-y-polea": "Bloques unidos por una cuerda",
+       "ascensor-y-marcos": "Peso aparente en el ascensor",
+       "centripeta-es-resultante": "Dinámica circular"
       },
-      "terminos": 28
+      "terminos": 46
      }
     },
     {
@@ -682,7 +683,7 @@
        "pendulo": "El péndulo no mira la masa",
        "energia-mas": "La energía se reparte, no cambia"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -730,7 +731,7 @@
        "ondas-estacionarias": "Solo caben medias ondas",
        "intensidad-decibeles": "Los decibeles no se suman"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -781,7 +782,7 @@
        "tension-superficial": "La superficie tira como una piel",
        "bernoulli": "Más rápido, menos presión"
       },
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -878,7 +879,7 @@
        "cp-cv": "A presión fija cuesta más",
        "maquina-termica": "Ningún motor gana a Carnot"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -9113,7 +9114,8 @@
     "/plantillas/dinamica/index.html",
     "/plantillas/dinamica/motor.js",
     "/plantillas/dinamica/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "dinamica-fuerzas": {
    "id": "dinamica-fuerzas",
@@ -9133,7 +9135,8 @@
     "/plantillas/dinamica-fuerzas/papel.json"
    ],
    "rehacer": [
-    "fisica.estatica"
+    "fisica.estatica",
+    "fisica.dinamica"
    ]
   },
   "divisibilidad-restos": {
@@ -9459,6 +9462,30 @@
    "archivos": [
     "/plantillas/exponentes-radicales/generador.js",
     "/plantillas/exponentes-radicales/papel.json"
+   ]
+  },
+  "fis-dinamica": {
+   "id": "fis-dinamica",
+   "titulo": "Dinámica",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.dinamica"
+   ],
+   "url": "#/practica/fis-dinamica",
+   "ideas": [
+    "fuerza-neta-acelera",
+    "masa-y-peso",
+    "rozamiento-en-movimiento",
+    "plano-y-polea",
+    "ascensor-y-marcos",
+    "centripeta-es-resultante"
+   ],
+   "papel": "/plantillas/fis-dinamica/papel.json",
+   "archivos": [
+    "/plantillas/fis-dinamica/generador.js",
+    "/plantillas/fis-dinamica/papel.json"
    ]
   },
   "fis-estatica": {

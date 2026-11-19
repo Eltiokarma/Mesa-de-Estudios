@@ -153,3 +153,39 @@ Verificados con fracciones exactas; van al `casos.json` de cada plantilla cuando
 - Minstrell (1982), *Explaining the "at rest" condition of an object*, The Physics Teacher 20, p. 10. Leído a través de Mora y Herrera.
 - Clement (1982), *Students' preconceptions in introductory mechanics*, American Journal of Physics 50(1), 66–71. Solo la referencia.
 - McCloskey, Caramazza y Green (1980), *Curvilinear motion in the absence of external forces*, Science 210, 1139–1141. Solo la referencia.
+
+## Dinámica (19 nov 2026): códigos de la unidad rehecha
+
+La unidad `fisica.dinamica` se rehízo en la etapa 7 (`docs/etapa7/propuesta-fisica.md`). Sus predicciones, «Ahora tú» y
+la práctica `plantillas/fis-dinamica/` usan D1 y D3 de este informe y W5 de
+[estática y energía](estatica-energia-ideas-erroneas.md) con su respaldo, y N-MG («la normal igual al peso», la trampa 7
+del informe de trampas de San Marcos). Los demás son **hipótesis de diseño**: la cara numérica de un error conceptual
+documentado o la trampa que nombra el solucionario de una pregunta de San Marcos. Se confirman con los datos del piloto.
+
+| Código | Qué hace el alumno | De dónde sale |
+| --- | --- | --- |
+| AC-FRENA | Cree que algo que frena no tiene aceleración | D1, D3 |
+| DN-SUMA, DN-UNA | Suma dos fuerzas opuestas, o usa solo la mayor | D11, diagrama de cuerpo libre |
+| DN-INV, DN-POR, DN-DIV, DN-SUMA2 | Divide al revés, multiplica la fuerza por la masa o suma masa y aceleración | hipótesis de cálculo |
+| DN-PESO | Usa el peso en vez de la masa en ΣF = m · a | MP-PESO |
+| DN-TOTAL, DN-SUMA-M | Da la masa total en vez de la que falta, o la suma | San Marcos 2021 (81) |
+| DN-VMEDIA, DN-VFINAL, DN-SIN-DOS, DN-POR-D | Toma d ÷ t o 2d ÷ t como aceleración, olvida el 2 de d = a · t²/2, multiplica por la distancia | San Marcos 2026-II (89): «usar la velocidad media como aceleración» |
+| DN-SOLO-A, DN-SIN-M, DN-MEDIO | Da la aceleración en vez de la rapidez, olvida la masa o pone el ½ en v = a · t | San Marcos 2023-I (82) |
+| MP-PESO, MP-LIVIANO, MP-DIV, MP-DIV2 | Cree que en la Luna la misma fuerza acelera más (o menos), o divide entre el peso | San Marcos 2021 (84) y 2024-II (81) |
+| MP-IGUAL, MP-POR, MP-MASA, MP-G-TIERRA, MP-PESO-MASA, MP-MASA-CAMBIA | El peso igual en todas partes, multiplica el peso por la nueva g, da la masa, saca la masa con la g de la Tierra, la masa cambia de lugar | D8, hipótesis |
+| MP-SIN-PESO, MP-SUMA-PESO | Al levantar en la Luna, olvida el peso o lo suma | San Marcos 2024-II (81) |
+| RM-MAS-ROCE, RM-IMPETU, RM-CUADRADO | Cree que la caja más pesada frena antes (más rozamiento) o después (más ímpetu) | D2, D5 (la masa que no cambia la caída) |
+| RM-SIN-ROCE, RM-SUMA, RM-MASA, RM-SOLO-ROCE, RM-PESO | Olvida el rozamiento, lo suma, usa μ · m o μ · P mal | San Marcos 2019-I (106) |
+| RM-SIN-DOS, RM-TIEMPO, RM-MASA-FRENA, RM-G | En la frenada: olvida el 2, da el tiempo, divide entre la masa o usa g | San Marcos 2019-I (106) |
+| RM-SIN-COS, RM-SIGNO-N | Con la fuerza oblicua: no descompone F o suma lo que levanta a la normal | San Marcos 2025-II (82) |
+| RM-RAMPA-RESTA, RM-SEN-COS | En la rampa que sube, resta el rozamiento; cambia seno y coseno | San Marcos 2027-I (82): «olvidar que peso y rozamiento se suman al frenar la subida» |
+| PL-TPESO, PL-TPESO2, PL-NETA, PL-PESO-MESA, PL-PROMEDIO | La tensión igual al peso del que cuelga (o del otro), su fuerza neta, el peso del bloque de la mesa o el promedio | San Marcos 2023-I (80) y 2024-I (86); el informe, «Poleas» |
+| PL-G, PL-M1, PL-INV, PL-PESO-TOTAL | Usa g como aceleración del sistema, divide entre una sola masa o al revés | San Marcos 2026-I (81) |
+| PL-IGUAL-F, PL-MITAD, PL-DELANTE | En un tren de carritos: la cuerda del medio jala lo mismo que tú, la mitad o lo del carrito de adelante | hipótesis |
+| PL-SIN-RAIZ, PL-SIN-DOS, PL-SIN-ROCE-T, PL-LISA, PL-NETA-SIS | Olvida la raíz o el 2 de v² = 2 · a · d; olvida el rozamiento en la tensión; da la neta del sistema | hipótesis |
+| AS-SIGNO | Suma o resta la aceleración por hacia dónde viaja el ascensor, no por el sentido de a | D1; San Marcos 2023-I (81), 2025-II (90) y 2027-I (91) |
+| AS-MA, AS-V, AS-G, AS-SIN-M, AS-PESO | Da solo m · a; cree que a velocidad constante cambia la balanza; toma N ÷ m como a | hipótesis |
+| DC-LOMA, DC-SUMA | En el fondo de una hondonada resta como en la loma; en lo alto suma el peso a la centrípeta | D9; San Marcos 2026-I (82): «sumar el peso a la fuerza centrípeta» |
+| DC-SOLO, DC-SIN-CUADRADO | Da solo m · v²/r, o usa v en vez de v² | hipótesis |
+| DC-INV, DC-W, DC-SIN-G | En la plataforma: despeja r al revés, usa ω sin cuadrado, olvida g | San Marcos 2019-II (81): «invertir la relación entre radio y fuerza centrípeta» |
+| DC-DOS, DC-SIN-RAIZ | La rapidez mínima del rizo con un 2 de más, o sin la raíz | hipótesis |
