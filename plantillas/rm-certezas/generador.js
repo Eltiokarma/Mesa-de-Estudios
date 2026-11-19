@@ -297,11 +297,11 @@
   function datosDe(d) {
     switch (d.tipo) {
       case 'colores': return [D_SIN, D_CERT];
-      case 'guantes': return ['Cada par tiene un izquierdo y un derecho; un par se usa si son del mismo color.', D_SIN];
+      case 'guantes': return ['Un par que se puede usar: un izquierdo y un derecho, los dos del mismo color.', D_SIN];
       case 'divisibilidad': return [`Múltiplo de ${d.a} o de ${d.b}: de uno de los dos, o de los dos a la vez.`, `Los múltiplos de ${d.a} y de ${d.b} a la vez son los múltiplos de su MCM.`, D_SIN];
       case 'suma-supera': return [`Mayor que ${d.S}: ${d.S + 1} o más.`, 'Las cartas se voltean sin saber qué número tiene cada una.'];
       case 'pareja-suma': return [d.copias === 1 ? 'Cada número está una sola vez.' : `Cada número está ${d.copias} veces.`, D_SIN];
-      case 'trio-suma': return ['Las tres fichas deben ser distintas.', D_SIN];
+      case 'trio-suma': return ['Las tres pesas deben ser distintas.', D_SIN];
       case 'consecutivos': return ['Consecutivos: números seguidos, como 4, 5 y 6.', D_SIN];
       case 'paridad': return [{ 'producto-par': 'Un producto es par si alguno de sus factores es par.', 'suma-impar': 'Una suma de dos es impar si uno es par y el otro, impar.', 'suma-par': 'Una suma de dos es par si los dos son pares o los dos impares.' }[d.pide], D_SIN];
       case 'diferencia': return ['Diferencia de dos números: el mayor menos el menor.', D_SIN];
@@ -772,7 +772,7 @@
       casilla === 'fecha' ? h('RMP33-sin-bisiesto', 365 * (k - 1) + 1, 'Olvidaste el 29 de febrero: alguien puede haber nacido ese día. Hay 366 fechas posibles.') : null,
       h('RM6-favorable', k, 'Ese es el caso con suerte: que coincidan de frente. Para estar seguro hay que pensar en la peor suerte.'),
       h('RMP34-sin-mas-uno', C * (k - 1), `Con ${f(C * (k - 1))} personas puede haber justo ${k - 1} en cada casilla: todavía no coinciden ${k}. Falta una más.`),
-      h('RMP31-k-por-casilla', C * k, `Pusiste ${k} personas en cada casilla en el peor caso, pero ahí ya coinciden ${k}. El peor caso llena cada casilla con ${k - 1}.`),
+      h('RMP31-k-por-casilla', C * k, `${f(C * k)} es poner ${k} personas en cada casilla, pero la meta pide ${k} en una sola. El peor caso llena cada casilla con ${k - 1}.`),
       h('RMP34-mas-uno', C * (k - 1) + 2, `Sumaste uno de más: con ${f(r)} ya es seguro.`),
       casilla === 'dia-mes' ? h('RMP33-treinta', 30 * (k - 1) + 1, 'Contaste 30 días por mes, pero hay meses con día 31: los números posibles son del 1 al 31.') : null,
     ].filter(Boolean);

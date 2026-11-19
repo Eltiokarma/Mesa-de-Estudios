@@ -139,7 +139,8 @@
     let p = p0;
     const c = tok(papel), desc = papel === 'descartado';
     const borde = c ? `var(--c-${c})` : 'currentColor', g = c ? 3 : 2;
-    const fondo = c ? ` fill="var(--c-${c})" fill-opacity="0.14"` : o.relleno ? ' fill="currentColor" fill-opacity="0.3"' : ' fill="var(--card)"';
+    // Un objeto oscuro (relleno: guante o bolo negro) conserva su gris también cuando sale con un papel (cierre del 19 nov).
+    const fondo = o.relleno ? ' fill="currentColor" fill-opacity="0.3"' : c ? ` fill="var(--c-${c})" fill-opacity="0.14"` : ' fill="var(--card)"';
     let s = '';
     if (o.forma === 'carta') s += `<rect${CAJA} x="${n(p.cx - p.w / 2)}" y="${n(p.cy - p.h / 2)}" width="${p.w}" height="${p.h}" rx="3"${fondo} stroke="${borde}" stroke-width="${g}"/>`;
     else if (o.forma === 'guante') {
@@ -171,9 +172,9 @@
     const objs = d.objetos || [], sal = salidasDe(d).filter(x => ve(x, corte)), fuera = new Map(sal.map(x => [x.i, x]));
     const y0 = g.yCaja, h = g.yFinCaja - y0;
     let s = `<rect${CAJA} x="${M + 1}" y="${n(y0)}" width="${W - 2 * M - 2}" height="${n(h)}" rx="${d.recipiente === 'mesa' ? 4 : 10}" fill="none" stroke="currentColor" stroke-width="2"/>`;
-    // La manija del cajón o la manivela del bombo del bingo, arriba a la derecha (la tómbola va con su nombre).
-    if (d.recipiente === 'cajon') s += `<rect x="${W / 2 + 30}" y="${n(y0 + 11)}" width="50" height="8" rx="4" fill="none" stroke="currentColor" stroke-width="2"/>`;
-    else if (d.recipiente === 'bingo') s += `<circle cx="${W - M - 26}" cy="${n(y0 + 16)}" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line x1="${W - M - 26}" y1="${n(y0 + 16)}" x2="${W - M - 44}" y2="${n(y0 + 16)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
+    // La manivela del bombo del bingo, arriba a la derecha (la tómbola y el cajón van con su nombre; la manija del cajón
+    // salió en el cierre del 19 nov: el lector no la reconocía).
+    if (d.recipiente === 'bingo') s += `<circle cx="${W - M - 26}" cy="${n(y0 + 16)}" r="9" fill="none" stroke="currentColor" stroke-width="2"/><line x1="${W - M - 26}" y1="${n(y0 + 16)}" x2="${W - M - 44}" y2="${n(y0 + 16)}" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`;
     s += T.rotulo(M + 12, y0 + 21, d.titulo || NOMBRE[d.recipiente] || 'Tómbola', { tam: TAM, peso: 700, min: M + 8, max: W / 2 + 14 });
     // Dentro: lo que queda (o, en su lugar, todo con lo que salió marcado).
     const dentro = [];
@@ -198,9 +199,8 @@
     const c = g.cal, cs = d.casilleros || [];
     const yt = g.yCal, h = g.yFinCal - yt;
     let s = `<rect${CAJA} x="${M + 1}" y="${n(yt)}" width="${W - 2 * M - 2}" height="${n(h)}" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>`;
-    // Dos anillos de colgar, arriba a la derecha.
-    s += `<circle cx="${W - M - 56}" cy="${n(yt + 13)}" r="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="${W - M - 30}" cy="${n(yt + 13)}" r="5" fill="none" stroke="currentColor" stroke-width="2"/>`;
-    s += T.rotulo(M + 10, yt + 20, d.tituloCal || 'Cumpleaños del salón', { tam: TAM, peso: 700, min: M + 6, max: W - M - 66 });
+    // Sin los anillos de colgar (cierre del 19 nov: dos circulitos que el lector no sabía qué eran).
+    s += T.rotulo(M + 10, yt + 20, d.tituloCal || 'Cumpleaños del salón', { tam: TAM, peso: 700, min: M + 6, max: W - M - 6 });
     cs.forEach((x, k) => {
       const col = k % c.cols, fila = Math.floor(k / c.cols), x0 = c.x0 + col * (c.w + c.gap), y0 = c.y0 + fila * (c.h + c.gap);
       const papel = x.papel, col0 = tok(papel);

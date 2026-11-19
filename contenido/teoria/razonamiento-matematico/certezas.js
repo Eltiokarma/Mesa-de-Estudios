@@ -118,6 +118,22 @@
     })(0, m);
     return out;
   }
+  // Casos ya usados por idea (el juego, la predicción y los 15 ejemplos): «Ahora tú» y «Así se resuelve» no los repiten
+  // (regla 15 de la Etapa 6; cierre del 19 nov). Cada ejemplo guarda su clave en _caso; se juntan al armar cada idea.
+  const CLAVES = {};
+  const usado = (idea, clave) => !!(CLAVES[idea] && CLAVES[idea].has(clave));
+  const kColor = (urna, c, k) => `color|${JSON.stringify(urna)}|${c}|${k}`;
+  const kMismo = (urna, k) => `mismo|${JSON.stringify(urna)}|${k}`;
+  const kCal = (C, k, ya) => `cal|${C}|${k}|${ya || 0}`;
+  const kCada = urna => `cada|${JSON.stringify(urna)}`;
+  const kGu = (pares, c) => `guantes|${JSON.stringify(pares)}|${c || ''}`;
+  const kDos = (urna, a, b, k) => `dos|${JSON.stringify(urna)}|${a}|${b}|${k}`;
+  const kCond = (desde, N, nombre, k) => `cond|${desde}|${N}|${nombre}|${k}`;
+  const kPar = (N, S, cop) => `pareja|${N}|${S}|${cop}`;
+  const kSup = (vals, S) => `supera|${vals.join(',')}|${S}`;
+  const kBil = (B, M) => `billetes|${JSON.stringify(B)}|${M}`;
+  const kLl = (n, k, ya) => `llaves|${n}|${k}|${ya || 0}`;
+  const juntar = (idea, ejemplos, extra) => { CLAVES[idea] = new Set(extra.concat(ejemplos.map(e => e._caso).filter(Boolean))); };
   const D_SIN = 'Se saca sin mirar, una por una, y lo que sale no vuelve.';
   const D_CERT = 'Con certeza: la meta se cumple salga lo que salga, en cualquier orden.';
   const BOL = ['bolita', 'bolitas'];
@@ -166,7 +182,7 @@
   const esU1 = urna => JSON.stringify(urna) === JSON.stringify(U1);
   function casoColor(r, nc, lo, hi) {
     let urna, c, n, k;
-    do { urna = urnaAzar(r, nc, lo, hi); [c, n] = r.elegir(urna); k = r.ent(2, Math.min(n, 5)); } while (esU1(urna) && c === 'R' && k <= 3);
+    do { urna = urnaAzar(r, nc, lo, hi); [c, n] = r.elegir(urna); k = r.ent(2, Math.min(n, 5)); } while ((esU1(urna) && c === 'R' && k <= 3) || usado('peor-caso', kColor(urna, c, k)));
     const otros = urna.filter(x => x[0] !== c), O = suma(otros.map(x => x[1])), bien = O + k;
     if (peorCuentas(urna.map(x => x[1]), v => v[urna.findIndex(x => x[0] === c)] >= k).max + 1 !== bien) throw new Error('casoColor');
     return { urna, c, n, k, otros, O, bien, T: totalU(urna) };
@@ -218,7 +234,7 @@
         { titulo: 'La tómbola de la kermés', texto: 'En la kermés del aniversario hay una tómbola: una caja cerrada con bolitas de colores. Metes la mano y sacas una sin mirar. Lo que sale no vuelve a la caja.',
           pieza: CR, dibujo: { datos: tombola(U1, null), estado: {} } },
         { titulo: 'Con suerte o con certeza', texto: 'Con buena suerte, las dos primeras bolitas ya podrían ser rojas. Pero tener algo «con certeza» pide más: que la meta se cumpla salga lo que salga, en cualquier orden.' },
-        { titulo: 'La peor suerte', texto: 'Para estar seguro, imagina que la suerte juega en contra y te da primero lo que no te sirve. A esa forma de salir se le llama el peor caso.' },
+        { titulo: 'La peor suerte', texto: 'Para estar seguro, imagina que la suerte juega en contra y te da primero lo que no te sirve. Esa peor suerte tiene un nombre: el peor caso. Son dos nombres para lo mismo.' },
         { titulo: 'Qué mirar al jugar', texto: 'En el juego tú haces de mala suerte: eliges cuántas bolitas de cada color salen. Mira cuántas pueden salir sin que se cumpla la meta.' },
       ],
     },
@@ -272,7 +288,7 @@
       ],
     },
     regla: {
-      texto: 'Para tener certeza, arma el peor caso: sale todo lo que no sirve y, de lo que sirve, una menos de lo pedido. La siguiente obliga a cumplir.',
+      texto: 'Para tener certeza, arma el peor caso (la peor suerte): sale todo lo que no sirve y, de lo que sirve, una menos de lo pedido. La siguiente obliga.',
       ecuacion: [{ llave: ['peor caso'], nota: 'lo que no sirve y una menos de lo pedido', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-i' }],
       condicion: 'se saca sin mirar y sin devolver. Seguro es lo que pasa en todas las extracciones posibles, también en la peor.',
       voz: 'La certeza se gana contra la peor suerte.',
@@ -331,6 +347,7 @@
             const T = r.elegir([24, 30, 36]), R = 2 * r.ent(3, Math.floor(T / 5)), V = R / 2, N = T - R - V;
             if (N < 3) continue;
             const urna = [['R', R], ['V', V], ['N', N]], [c, n] = r.elegir(urna), k = r.ent(2, Math.min(n, 5));
+            if (usado('peor-caso', kColor(urna, c, k))) continue;
             const otros = urna.filter(x => x[0] !== c), O = suma(otros.map(x => x[1]));
             cs = { urna, c, n, k, otros, O, bien: O + k, T };
             preg = `En la tómbola hay ${pl(T, BOL)}: ${cant('R', R)}, la mitad de verdes que de rojas y el resto, negras. ¿Cuántas hay que sacar, como mínimo, para tener con certeza ${cant(c, k)}?`;
@@ -368,12 +385,12 @@
     if (k > 1) sol.push({ texto: `Después, ${cant(c, k - 1)}: todavía no hay ${f0(k)}.`, ecuacion: [`${f0(Oo)} + ${f0(k - 1)} = ${f0(bien - 1)}`] });
     sol.push({ texto: `Ya no queda nada que no sirva: la siguiente es ${nom(c, 1)} y obliga.`, ecuacion: [`${f0(bien - 1)} + 1 = `, F(f0(bien))] });
     const meta = k === 1 ? `una ${nom(c, 1)}` : cant(c, k);
-    return ejCierra(o, bien, sol, `En ${o.recipTxt || 'la tómbola'} hay ${urnaTxt(urna)}. ¿Cuántas bolitas hay que sacar, como mínimo, para tener con certeza ${meta}?`,
+    return ejCierra(Object.assign({ _caso: kColor(urna, c, k) }, o), bien, sol, `En ${o.recipTxt || 'la tómbola'} hay ${urnaTxt(urna)}. ¿Cuántas bolitas hay que sacar, como mínimo, para tener con certeza ${meta}?`,
       figT(urna, `Meta: ${meta}`, o.titulo2 ? { titulo: o.titulo2 } : {}));
   }
   // Junta el ejemplo: con alternativas, la última línea explica cada una por su valor (y las de antes se compactan).
   function ejCierra(o, bien, sol, enunciado, figura, unidad = BOL) {
-    const e = { nivel: o.nivel, titulo: o.titulo, enunciado: o.enunciado || enunciado, datos: o.datos || [D_SIN, D_CERT], figura, solucion: sol, respuesta: [F(pl(bien, unidad))], _caso: o.caso || null };
+    const e = { nivel: o.nivel, titulo: o.titulo, enunciado: o.enunciado || enunciado, datos: o.datos || [D_SIN, D_CERT], figura, solucion: sol, respuesta: [F(pl(bien, unidad))], _caso: o.caso || o._caso || null };
     if (o.alts) {
       const buenas = o.alts.filter(a => a.ok);
       if (buenas.length !== 1 || buenas[0].v !== bien) throw new Error(`ejemplo «${o.titulo}»: la correcta no es ${bien}`);
@@ -389,7 +406,7 @@
     (() => {
       const urna = [['R', 4], ['V', 3], ['N', 2]], otros = urna.filter(x => x[0] !== 'V'), Oo = suma(otros.map(x => x[1]));
       if (peorCuentas(urna.map(x => x[1]), v => v[1] >= 1).max !== Oo) throw new Error('ejemplo 2');
-      return { nivel: 1, titulo: 'Lo que sale sin una verde', enunciado: `En la tómbola hay ${urnaTxt(urna)}. ¿Cuántas bolitas pueden salir, como máximo, sin que salga ninguna verde?`,
+      return { nivel: 1, titulo: 'Lo que sale sin una verde', _caso: kColor(urna, 'V', 1), enunciado: `En la tómbola hay ${urnaTxt(urna)}. ¿Cuántas bolitas pueden salir, como máximo, sin que salga ninguna verde?`,
         datos: [D_SIN], figura: figT(urna, 'Sin ninguna verde: ¿cuántas, como máximo?'),
         solucion: [{ texto: `Sin verdes solo pueden salir las ${nom('R', 2)} y las ${nom('N', 2)}: todas.`, ecuacion: [`${f0(otros[0][1])} + ${f0(otros[1][1])} = `, F(f0(Oo))] }],
         respuesta: [F(pl(Oo, BOL))] };
@@ -479,6 +496,7 @@
       explica: '8 es con buena suerte; 20 son solo las que no sirven; 27 olvida la que obliga; 29 suma una de más.' }),
   ];
   peor.ejemplos = EJEMPLOS_PEOR;
+  juntar('peor-caso', EJEMPLOS_PEOR, [kColor(U1, 'R', META1), kColor(U1, 'R', K_P1)]);
 
   // ---------- Idea 2: más objetos que casilleros ----------
   // Objeto: la misma tómbola (rm-certeza, escena «recipiente») y, en Predice, el calendario de cumpleaños del salón
@@ -526,7 +544,7 @@
       const k = r.ent(3, 5), urna = urnaAzar(r, nc, k, k + 6);
       if (conEscaso) { const i = r.ent(0, nc - 1); urna[i][1] = r.ent(1, k - 2); }
       const topes = urna.map(x => x[1]), peorN = suma(topes.map(x => Math.min(x, k - 1)));
-      if (!topes.some(x => x >= k) || (esU1(urna) && k === META2)) continue;
+      if (!topes.some(x => x >= k) || usado('palomar', kMismo(urna, k))) continue;
       if (peorCuentas(topes, v => Math.max(...v) >= k).max !== peorN) throw new Error('casoMismo');
       const escasos = urna.filter(x => x[1] < k - 1);
       if (conEscaso !== escasos.length > 0) continue;
@@ -559,7 +577,7 @@
     const d = [
       { id: 'suerte', valor: ya ? 1 : k, error: 'RM6', siFuera: ya ? 'Con suerte, el siguiente coincide con alguien. La certeza pide la peor suerte.' : `Con suerte, los ${f0(k)} primeros coinciden. La certeza pide la peor suerte.` },
       { id: 'sin1', valor: bien - 1, error: 'RMP34', siFuera: `Con ${f0((k - 1) * cal.c)} en total puede haber justo ${f0(k - 1)} en cada casillero. Falta uno que obligue.` },
-      { id: 'cada', valor: k * cal.c - ya, error: 'RMP153', siFuera: `Eso asegura ${f0(k)} en cada casillero; la meta pide ${f0(k)} en uno solo.` },
+      { id: 'cada', valor: k * cal.c - ya, error: 'RMP153', siFuera: `Eso es pedir ${f0(k)} en cada casillero; la meta pide ${f0(k)} en uno solo, no en todos.` },
     ];
     if (k > 2) d.push({ id: 'mas1', valor: cal.c + 1 - ya, error: 'RMP155', siFuera: `Con ${f0(cal.c + 1)} en total se repite un casillero, pero solo dos veces.` });
     if (cal.c === 366) d.unshift({ id: 'bis', valor: (k - 1) * 365 + 1 - ya, error: 'RMP33', siFuera: 'Contaste 365 fechas. Alguien puede haber nacido el 29 de febrero: son 366.' });
@@ -577,9 +595,9 @@
     actividad: 'Sacar bolitas evitando que algún color llegue a tres.',
     lee: {
       tarjetas: [
-        { titulo: 'Del mismo color', texto: 'Otra meta para la tómbola: sacar 3 bolitas del mismo color, el que sea. Ya no importa cuál: pueden ser rojas, verdes o negras.',
+        { titulo: 'Del mismo color', texto: 'Otra meta para la tómbola: sacar 3 bolitas del mismo color, el que sea: rojas, verdes o negras. Piensa cada color como un casillero que se va llenando: hay más bolitas que casilleros.',
           pieza: CR, dibujo: { datos: tombola(U1, null, { meta: 'Meta: 3 del mismo color' }), estado: {} } },
-        { titulo: 'Casilleros', texto: 'Piensa cada color como un casillero donde cae cada bolita que sale. Un calendario también tiene casilleros: cada mes es uno, y cada persona cae en el mes de su cumpleaños.' },
+        { titulo: 'Casilleros', texto: 'Cada bolita que sale cae en el casillero de su color. Un calendario también tiene casilleros: cada mes es uno, y cada persona cae en el mes de su cumpleaños.' },
         { titulo: 'Qué mirar al jugar', texto: 'Haz de mala suerte: saca bolitas sin que ningún color llegue a 3. Mira cuántas caben en cada casillero antes de que uno se llene.' },
       ],
     },
@@ -614,7 +632,7 @@
         { id: 'c', texto: `${f0(R_P2)} alumnos`, correcta: true },
         { id: 'tres', texto: '3 alumnos', error: 'RM6', siFuera: 'Con suerte, los tres primeros nacieron el mismo mes. La certeza pide que alcance con la peor suerte.' },
         { id: 'sin1', texto: `${f0(R_P2 - 1)} alumnos`, error: 'RMP34', siFuera: `Con ${f0(R_P2 - 1)} puede haber justo 2 por mes: ninguno con 3. Falta uno que obligue.` },
-        { id: 'cada', texto: `${f0(K_P2 * 12)} alumnos`, error: 'RMP153', siFuera: `${f0(K_P2 * 12)} asegura 3 en cada mes; la meta pide 3 en algún mes.` },
+        { id: 'cada', texto: `${f0(K_P2 * 12)} alumnos`, error: 'RMP153', siFuera: `${f0(K_P2 * 12)} es pedir 3 en cada mes; la meta pide 3 en un mismo mes, no en los 12.` },
         { id: 'trece', texto: '13 alumnos', error: 'RMP155', siFuera: 'Con 13, dos cumplen el mismo mes; para que sean 3 hacen falta más.' },
       ],
       dibujo: { datos: calP2(null), estado: {} },
@@ -635,8 +653,8 @@
     },
     regla: {
       texto: 'Para asegurar varios en un mismo casillero, la peor suerte pone en cada casillero uno menos de lo pedido. Uno más obliga a repetir.',
-      ecuacion: [{ llave: ['lo pedido − 1'], nota: 'en cada casillero', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-i' }],
-      condicion: 'cada objeto cae en un solo casillero. Un casillero con menos objetos que eso aporta todos los que tiene.',
+      ecuacion: [{ llave: ['(pedido − 1) × casilleros'], nota: 'peor caso', color: 'c-o' }, ' + 1'],
+      condicion: 'cada objeto cae en un solo casillero. Si un casillero no llega a «lo pedido − 1», aporta solo los que tiene.',
       voz: 'Parejo hasta el borde, y uno más.',
     },
     ejemplos: null,
@@ -678,9 +696,14 @@
             solucion: { texto: `En cada color, ${f0(cs.k - 1)} o las que haya si son menos. La siguiente obliga.`, ecuacion: [`${partes.map(f0).join(' + ')} + 1 = `, F(f0(cs.bien))],
               dibujo: { datos: tombola(cs.urna, seqParejo(partes, cs.urna.map(x => x[0]), cs.k), { meta }), estado: {} } } };
         }
-        const cal = tipo === 2 ? CALS[r.elegir(['mes', 'semana'])] : CALS[r.elegir(['dia', 'fecha', 'mes'])];
-        const k = cal.c > 31 ? r.ent(2, 3) : r.ent(2, 5), conYa = tipo === 3 && cal.c !== 31 && r() < 0.6;
-        const total = (k - 1) * cal.c + 1, ya = conYa ? r.ent(Math.ceil(total / 2), total - 2) : 0, bien = total - ya;
+        let cal, k, ya, total;
+        do {
+          cal = tipo === 2 ? CALS[r.elegir(['mes', 'semana'])] : CALS[r.elegir(['dia', 'fecha', 'mes'])];
+          k = cal.c > 31 ? r.ent(2, 3) : r.ent(2, 5);
+          const conYa = tipo === 3 && cal.c !== 31 && r() < 0.6;
+          total = (k - 1) * cal.c + 1; ya = conYa ? r.ent(Math.ceil(total / 2), total - 2) : 0;
+        } while (usado('palomar', kCal(cal.c, k, ya)));
+        const bien = total - ya;
         const preg = ya ? `En un club ya hay ${pl(ya, PER)} inscritas. ¿Cuántas más deben inscribirse, como mínimo, para que con certeza ${f0(k)} cumplan años ${cal.nombre}?`
           : `¿Cuántas personas debe haber, como mínimo, para que con certeza ${f0(k)} de ellas cumplan años ${cal.nombre}?`;
         return { pregunta: preg, datos: [cal.dato, D_CERT],
@@ -703,7 +726,7 @@
       { texto: `Cada color es un casillero. La peor suerte saca ${f0(k - 1)} de cada uno${escasos.length ? `; de ${lista(escasos.map(([c]) => nom(c, 2)))}, solo las que hay` : ''}.`, ecuacion: [`${partes.map(f0).join(' + ')} = ${f0(peorN)}`] },
       { texto: `La siguiente cae en un color que ya tiene ${f0(k - 1)}: obliga.`, ecuacion: [`${f0(peorN)} + 1 = `, F(f0(bien))] },
     ];
-    return ejCierra(o, bien, sol, `En ${o.recipTxt || 'la tómbola'} hay ${urnaTxt(urna)}. ¿Cuántas ${o.cosa ? o.cosa[1] : 'bolitas'} hay que sacar, como mínimo, para tener con certeza ${f0(k)} del mismo color?`,
+    return ejCierra(Object.assign({ _caso: kMismo(urna, k) }, o), bien, sol, `En ${o.recipTxt || 'la tómbola'} hay ${urnaTxt(urna)}. ¿Cuántas ${o.cosa ? o.cosa[1] : 'bolitas'} hay que sacar, como mínimo, para tener con certeza ${f0(k)} del mismo color?`,
       figT(urna, `Meta: ${f0(k)} del mismo color`, o.titulo2 ? { titulo: o.titulo2, recipiente: o.recipiente } : {}), o.cosa || BOL);
   }
   function ejCal(o) {
@@ -715,7 +738,7 @@
     if (ya) sol.push({ texto: `Ya hay ${f0(ya)}: faltan`, ecuacion: [`${f0(bien + ya)} − ${f0(ya)} = `, F(f0(bien))] });
     const enun = ya ? `En ${o.lugar} ya hay ${pl(ya, PER)} inscritas. ¿Cuántas más deben inscribirse, como mínimo, para que con certeza ${f0(k)} cumplan años ${cal.nombre}?`
       : `¿Cuántas personas debe haber, como mínimo, para que con certeza ${f0(k)} de ellas cumplan años ${cal.nombre}?`;
-    return ejCierra(o, bien, sol, enun, cal.dib ? { pieza: CR, datos: Object.assign(cal.dib(), { meta: `Meta: ${f0(k)} en un mismo casillero` }), estado: {} } : undefined, PER);
+    return ejCierra(Object.assign({ _caso: kCal(cal.c, k, ya) }, o), bien, sol, enun, cal.dib ? { pieza: CR, datos: Object.assign(cal.dib(), { meta: `Meta: ${f0(k)} en un mismo casillero` }), estado: {} } : undefined, PER);
   }
   const datosCal = c => [CALS[c].dato, D_CERT];
   const EJEMPLOS_PALO = [
@@ -762,6 +785,7 @@
       explica: '28 olvida la que obliga; 35 son 5 en cada día; 8 solo asegura dos el mismo día; 5 es con buena suerte.' }),
   ];
   palo.ejemplos = EJEMPLOS_PALO;
+  juntar('palomar', EJEMPLOS_PALO, [kMismo(U1, META2), kCal(12, K_P2, 0)]);
 
   // ---------- Idea 3: una de cada clase ----------
   // Objeto: la tómbola y, en Predice, el cajón de los guantes de educación física (rm-certeza, recipiente «cajon»). Cambia:
@@ -797,14 +821,14 @@
   }
   const cajon = (pares, seq, o = {}) => Object.assign({ escena: 'recipiente', recipiente: 'cajon', titulo: 'Cajón de guantes', objetos: guantes(pares) },
     o.meta ? { meta: o.meta } : {}, seq ? { salieron: salenG(pares, seq), reserva: 2 * suma(pares.map(x => x[1])) } : {}, o.cuenta ? { cuenta: o.cuenta } : {},
-    { nota: 'I: izquierdo · D: derecho · gris: negro' });
+    { nota: [{ t: 'I: izquierdo · D: derecho' }, { t: 'En gris, los guantes negros' }] });
   const PARES_P3 = [['N', 4], ['B', 3]];
   const R_P3 = peorCuentas(topesG(PARES_P3), parUsable(PARES_P3)).max + 1;
   if (R_P3 !== 4 + 3 + 1) throw new Error('predicción de la idea 3');
   const seqP3 = [...Array(4).fill([0, 'peor', 1]), ...Array(3).fill([2, 'peor', 2]), [1, 'obliga', 3]];
   const cuentaP3 = [{ t: `${f0(R_P3 - 1)} izquierdos`, papel: 'peor', desde: 2 }, { t: '+ 1 obliga', papel: 'obliga', desde: 3 }, { t: `= ${f0(R_P3)}`, papel: 'seguro', desde: 4 }];
   const META_P3 = 'Meta: un par que se pueda usar';
-  const D_PAR = 'Cada par tiene un guante izquierdo y uno derecho; un par se usa si son del mismo color.';
+  const D_PAR = 'Un par que se puede usar: un guante izquierdo y uno derecho, los dos del mismo color.';
   const GUA = ['guante', 'guantes'];
   const nomG = c => (c === 'N' ? 'negros' : 'blancos');
   const paresTxt = pares => lista(pares.map(([c, p]) => `${pl(p, ['par', 'pares'])} de guantes ${nomG(c)}`));
@@ -813,7 +837,7 @@
   function casoCada(r, nc) {
     for (let t = 0; t < 200; t++) {
       const urna = urnaAzar(r, nc, 2, 9), topes = urna.map(x => x[1]), mn = Math.min(...topes);
-      if (topes.filter(x => x === mn).length > 1 || esU1(urna)) continue;
+      if (topes.filter(x => x === mn).length > 1 || esU1(urna) || usado('una-de-cada', kCada(urna))) continue;
       const bien = totalU(urna) - mn + 1;
       if (peorCuentas(topes, todas).max + 1 !== bien) throw new Error('casoCada');
       return { urna, topes, mn, bien, T: totalU(urna), chico: urna[topes.indexOf(mn)][0], grandes: urna.filter(x => x[1] !== mn) };
@@ -832,9 +856,13 @@
   const seqCada = cs => seqClases(cs.urna.map(x => (x[0] === cs.chico ? 1 : x[1])), cs.urna.map(x => x[0]), todas);
   // Guantes: de cualquier color o de uno dado.
   function casoGuantes(r, solo) {
-    const pares = [['N', r.ent(2, 7)], ['B', r.ent(2, 7)]];
-    if (pares[0][1] === pares[1][1]) pares[1][1]++;
-    const c = solo ? r.elegir(['N', 'B']) : null, topes = topesG(pares);
+    let pares, c;
+    do {
+      pares = [['N', r.ent(2, 7)], ['B', r.ent(2, 7)]];
+      if (pares[0][1] === pares[1][1]) pares[1][1]++;
+      c = solo ? r.elegir(['N', 'B']) : null;
+    } while (usado('una-de-cada', kGu(pares, c)));
+    const topes = topesG(pares);
     const p = peorCuentas(topes, parUsable(pares, c)), bien = p.max + 1, T = suma(topes);
     const otros = c ? 2 * suma(pares.filter(x => x[0] !== c).map(x => x[1])) : 0, pc = c ? pares.find(x => x[0] === c)[1] : 0;
     if (bien !== (c ? otros + pc + 1 : suma(pares.map(x => x[1])) + 1)) throw new Error('casoGuantes');
@@ -864,7 +892,7 @@
   function casoDosColores(r) {
     for (let t = 0; t < 200; t++) {
       const urna = urnaAzar(r, 4, 3, 9), k = r.ent(2, 3), [a, b] = r.barajar([0, 1, 2, 3]).slice(0, 2).sort();
-      if (urna[a][1] < k || urna[b][1] < k || urna[a][1] === urna[b][1]) continue;
+      if (urna[a][1] < k || urna[b][1] < k || urna[a][1] === urna[b][1] || usado('una-de-cada', kDos(urna, urna[a][0], urna[b][0], k))) continue;
       const topes = urna.map(x => x[1]), p = peorCuentas(topes, v => v[a] >= k && v[b] >= k);
       const otros = suma(topes.filter((_, i) => i !== a && i !== b)), mx = Math.max(topes[a], topes[b]), mn = Math.min(topes[a], topes[b]);
       if (p.max !== otros + mx + k - 1) throw new Error('casoDosColores');
@@ -940,31 +968,37 @@
       ],
     },
     regla: {
-      texto: 'Si la meta pide una de cada clase, la peor suerte agota primero las clases más grandes; la que falta llega al final. Con guantes, salen de una sola mano.',
-      ecuacion: [{ llave: ['las clases grandes'], nota: 'salen enteras', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que falta', color: 'c-i' }],
-      condicion: 'se saca sin mirar. Si se pide un par de un color, antes salen todos los de otro color.',
+      texto: 'Para tener una de cada clase, la peor suerte saca enteras todas las clases menos la más chica, que llega al final. Con guantes, salen todos los de una mano.',
+      ecuacion: [{ llave: ['peor caso'], nota: 'todas las clases menos la más chica', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que falta', color: 'c-i' }],
+      condicion: 'se saca sin mirar. Si se pide un par de un color dado, antes salen todos los guantes de los otros colores.',
       voz: 'Lo que falta llega al final.',
     },
     ejemplos: null,
+    // Así se resuelve: los guantes (cierre del 19 nov: la predicción es de guantes y las bolitas ya están en el juego,
+    // en «Ahora tú» y en los ejemplos). Un par de cualquier color o de un color dado.
     resuelve: {
       pieza: CR,
       generar(s) {
-        const r = azar(s + 900), cs = casoCada(r, 3), op = { titulo: 'Bolsa del sorteo', meta: 'Meta: una de cada color' };
+        const r = azar(s + 900), cs = casoGuantes(r, r() < 0.5), pide = cs.c ? `un par ${cs.c === 'N' ? 'negro' : 'blanco'} que se pueda usar` : 'un par que se pueda usar';
+        const meta = `Meta: ${pide}`, seq = seqGuantes(cs), otro = cs.c ? nomG(cs.pares.find(x => x[0] !== cs.c)[0]) : '';
         return {
-          enunciado: `Una bolsa del sorteo tiene ${urnaTxt(cs.urna)}. ¿Cuántas bolitas hay que sacar, como mínimo, para tener con certeza una de cada color?`,
-          datos: [D_SIN, D_CERT],
-          dibujo: { datos: tombola(cs.urna, null, op), estado: {} },
+          enunciado: `En el cajón de educación física hay ${paresTxt(cs.pares)}, sueltos. ¿Cuántos guantes hay que sacar, como mínimo, para tener con certeza ${pide}?`,
+          datos: [D_PAR, D_SIN],
+          dibujo: { datos: cajon(cs.pares, null, { meta }), estado: {} },
           pasos: [
-            { tipo: 'pide', texto: 'Piden el menor número de bolitas que asegura los tres colores, salga lo que salga.' },
-            { tipo: 'datos', texto: `Las que menos hay son las ${nom(cs.chico, 2)}: ${cant(cs.chico, cs.mn)}.` },
-            { tipo: 'regla', texto: 'La peor suerte agota primero los colores que más hay y deja para el final el más escaso. Uno más completa.' },
-            { tipo: 'cuentas', texto: `Peor caso: ${urnaTxt(cs.grandes)}, y ninguna ${nom(cs.chico, 1)}.`, ecuacion: [`${cs.grandes.map(x => f0(x[1])).join(' + ')} = ${f0(cs.bien - 1)}`],
-              dibujo: { datos: tombola(cs.urna, seqCada(cs).slice(0, -1), op), estado: {} } },
-            { tipo: 'cuentas', texto: `Solo quedan ${nom(cs.chico, 2)}: la siguiente completa los tres colores.`, ecuacion: [`${f0(cs.bien - 1)} + 1 = `, F(f0(cs.bien))],
-              dibujo: { datos: tombola(cs.urna, seqCada(cs), op), estado: {} } },
-            { tipo: 'sentido', texto: 'Si dejara para el final otro color, la mala suerte sacaría menos bolitas: no sería la peor.' },
+            { tipo: 'pide', texto: `Piden el menor número de guantes que asegura ${pide}: un izquierdo y un derecho${cs.c ? ` ${cs.c === 'N' ? 'negros' : 'blancos'}` : ' del mismo color'}.` },
+            { tipo: 'datos', texto: cs.c ? `Los ${otro} no sirven. De los ${nomG(cs.c)} hay ${f0(cs.pc)} izquierdos y ${f0(cs.pc)} derechos.`
+              : `Las clases son color y mano: izquierdos y derechos de cada color.` },
+            { tipo: 'regla', texto: cs.c ? 'La peor suerte saca primero lo que no sirve y, del color pedido, solo una mano. El siguiente forma par.'
+              : 'La peor suerte saca guantes de una sola mano, de todos los colores. El siguiente forma par.' },
+            { tipo: 'cuentas', texto: cs.c ? `Peor caso: los ${f0(cs.otros)} ${otro} y ${f0(cs.pc)} ${nomG(cs.c)} de una sola mano.` : `Peor caso: los izquierdos de los dos colores, ${lista(cs.pares.map(([c, p]) => `${f0(p)} ${nomG(c)}`))}.`,
+              ecuacion: cs.c ? [`${f0(cs.otros)} + ${f0(cs.pc)} = ${f0(cs.bien - 1)}`] : [`${cs.pares.map(x => f0(x[1])).join(' + ')} = ${f0(cs.bien - 1)}`],
+              dibujo: { datos: cajon(cs.pares, seq.slice(0, -1), { meta }), estado: {} } },
+            { tipo: 'cuentas', texto: cs.c ? `Ya no quedan ${nomG(cs.c)} de esa mano: el siguiente es de la otra y forma par.` : 'Ya no quedan izquierdos: el siguiente es derecho y forma par con el izquierdo de su color.', ecuacion: [`${f0(cs.bien - 1)} + 1 = `, F(f0(cs.bien))],
+              dibujo: { datos: cajon(cs.pares, seq, { meta }), estado: {} } },
+            { tipo: 'sentido', texto: cs.c ? `Mirar solo los ${nomG(cs.c)} daría ${f0(cs.pc + 1)}: olvida que antes pueden salir los ${otro}.` : 'Con 3 ya hay dos del mismo color, pero pueden ser los dos izquierdos: el color solo no basta.' },
           ],
-          respuesta: [F(pl(cs.bien, BOL))],
+          respuesta: [F(pl(cs.bien, GUA))],
         };
       },
     },
@@ -1012,7 +1046,7 @@
     const chico = urna.find(x => x[1] === mn)[0], grandes = urna.filter(x => x[0] !== chico);
     const sol = [{ texto: `Lo que más hay sale primero: ${urnaTxt(grandes)}. Las ${nom(chico, 2)} quedan para el final.`, ecuacion: sumaOtros(grandes) },
       { texto: `La siguiente es ${nom(chico, 1)} y completa.`, ecuacion: [`${f0(bien - 1)} + 1 = `, F(f0(bien))] }];
-    return ejCierra(o, bien, sol, `En la tómbola hay ${urnaTxt(urna)}. ¿Cuántas bolitas hay que sacar, como mínimo, para tener con certeza una de cada color?`,
+    return ejCierra(Object.assign({ _caso: kCada(urna) }, o), bien, sol, `En la tómbola hay ${urnaTxt(urna)}. ¿Cuántas bolitas hay que sacar, como mínimo, para tener con certeza una de cada color?`,
       figT(urna, 'Meta: una de cada color'));
   }
   function ejGuantes(o) {
@@ -1026,7 +1060,7 @@
       : [{ texto: `La peor suerte saca guantes de una sola mano: ${lista(pares.map(([cc, p]) => `${f0(p)} ${nomG(cc)}`))}.`, ecuacion: pares.length > 1 ? [`${pares.map(x => f0(x[1])).join(' + ')} = ${f0(bien - 1)}`] : undefined },
         { texto: 'El siguiente es de la otra mano y forma par con uno de su color.', ecuacion: [`${f0(bien - 1)} + 1 = `, F(f0(bien))] }];
     const pide = c ? `un par ${c === 'N' ? 'negro' : 'blanco'} que se pueda usar` : 'un par que se pueda usar';
-    return ejCierra(Object.assign({ datos: [D_PAR, D_SIN] }, o), bien, sol, `En el cajón hay ${paresTxt(pares)}, sueltos. ¿Cuántos hay que sacar, como mínimo, para tener con certeza ${pide}?`,
+    return ejCierra(Object.assign({ datos: [D_PAR, D_SIN], _caso: kGu(pares, c) }, o), bien, sol, `En el cajón hay ${paresTxt(pares)}, sueltos. ¿Cuántos hay que sacar, como mínimo, para tener con certeza ${pide}?`,
       { pieza: CR, datos: cajon(pares, null, { meta: `Meta: ${pide}` }), estado: {} }, GUA);
   }
   function ejDos(o) {
@@ -1037,7 +1071,7 @@
     const sol = [{ texto: `No sirven: ${urnaTxt(otros)}. Y la peor suerte agota el color pedido que más hay: ${cant(grande, deU(urna, grande))}.` },
       { texto: `De las ${nom(chico, 2)}, ${f0(k - 1)} sin llegar a ${f0(k)}.`, ecuacion: [`${f0(suma(otros.map(x => x[1])))} + ${f0(deU(urna, grande))} + ${f0(k - 1)} = ${f0(p.max)}`] },
       { texto: `La siguiente es ${nom(chico, 1)} y completa.`, ecuacion: [`${f0(p.max)} + 1 = `, F(f0(bien))] }];
-    return ejCierra(o, bien, sol, `En la tómbola hay ${urnaTxt(urna)}. ¿Cuántas hay que sacar, como mínimo, para tener con certeza ${cant(a, k)} y ${cant(b, k)}?`,
+    return ejCierra(Object.assign({ _caso: kDos(urna, a, b, k) }, o), bien, sol, `En la tómbola hay ${urnaTxt(urna)}. ¿Cuántas hay que sacar, como mínimo, para tener con certeza ${cant(a, k)} y ${cant(b, k)}?`,
       figT(urna, `Meta: ${cant(a, k)} y ${cant(b, k)}`));
   }
   // Fichas cuadradas y redondas de dos colores: un par de distinta forma e igual color (2026-II, pregunta 28).
@@ -1082,6 +1116,7 @@
       explica: '3 mira solo el color, sin las manos; 12 olvida el que obliga; 24 es sacar todos; 2 es con buena suerte.' }),
   ];
   unaDeCada.ejemplos = EJEMPLOS_CADA;
+  juntar('una-de-cada', EJEMPLOS_CADA, [kCada(U1), kGu(PARES_P3, null)]);
 
   // ---------- Idea 4: números que cumplen algo ----------
   // Objeto: el bingo de la kermés, el tablero con las bolillas del 1 al 20 (rm-certeza, recipiente «bingo»; lo que sale
@@ -1098,8 +1133,9 @@
     objetos: rango(o.desde || 1, N).map(x => ({ forma: 'ficha', t: String(x) })),
     salieron: Object.entries(marcas).map(([x, p]) => Object.assign({ i: +x - (o.desde || 1) }, typeof p === 'string' ? { papel: p } : p)) },
   o.meta ? { meta: o.meta } : {}, o.cuenta ? { cuenta: o.cuenta } : {});
-  // El bombo, con las bolillas dentro: no se ven sus números (así el dibujo de un ejemplo no muestra cuentas).
-  const bombo = (n, meta) => ({ pieza: CR, datos: { escena: 'recipiente', recipiente: 'bingo', titulo: 'Bombo del bingo', meta, objetos: Array.from({ length: n }, () => ({ forma: 'bola', t: '' })) }, estado: {} });
+  // El tablero del bingo sin marcas, con sus números a la vista (cierre del 19 nov: el bombo con las bolillas tapadas no
+  // dejaba ver cuáles cumplen; un tablero sin marcas no muestra ninguna cuenta).
+  const bombo = (N, meta, desde = 1) => ({ pieza: CR, datos: tablero(N, {}, { meta, desde }), estado: {} });
   const marcasJ4 = val => {
     const m = {};
     NO4.slice(0, val.nm).forEach(x => { m[x] = 'peor'; });
@@ -1123,12 +1159,12 @@
 
   // ---------- Casos de «Así se resuelve» y «Ahora tú» de la idea 4 ----------
   const COND = {
-    mult: d => ({ es: x => x % d === 0, nombre: [`múltiplo de ${d}`, `múltiplos de ${d}`], dato: `Múltiplo de ${d}: se divide entre ${d} sin residuo (${d}, ${2 * d}, ${3 * d}…).` }),
-    primo: () => ({ es: esPrimo, nombre: ['número primo', 'números primos'], dato: 'Un primo tiene solo dos divisores, 1 y él mismo; el 1 no es primo.' }),
-    par: () => ({ es: x => x % 2 === 0, nombre: ['número par', 'números pares'], dato: 'Par: múltiplo de 2 (2, 4, 6…). Impar: los demás.' }),
-    impar: () => ({ es: x => x % 2 === 1, nombre: ['número impar', 'números impares'], dato: 'Impar: no es múltiplo de 2 (1, 3, 5…).' }),
-    termina: d => ({ es: x => x % 10 === d, nombre: [`número que termina en ${d}`, `números que terminan en ${d}`], dato: `Terminan en ${d}: ${d}, ${10 + d}, ${20 + d}, ${30 + d}…` }),
-    multAoB: (a, b) => ({ es: x => x % a === 0 || x % b === 0, nombre: [`múltiplo de ${a} o de ${b}`, `múltiplos de ${a} o de ${b}`], dato: `Múltiplo de ${a} o de ${b}: de uno de los dos, o de los dos a la vez.` }),
+    mult: d => ({ es: x => x % d === 0, adj: `múltiplo de ${d}`, nombre: [`múltiplo de ${d}`, `múltiplos de ${d}`], dato: `Múltiplo de ${d}: se divide entre ${d} sin residuo (${d}, ${2 * d}, ${3 * d}…).` }),
+    primo: () => ({ es: esPrimo, adj: 'primo', nombre: ['número primo', 'números primos'], dato: 'Un primo tiene solo dos divisores, 1 y él mismo; el 1 no es primo.' }),
+    par: () => ({ es: x => x % 2 === 0, adj: 'par', nombre: ['número par', 'números pares'], dato: 'Par: múltiplo de 2 (2, 4, 6…). Impar: los demás.' }),
+    impar: () => ({ es: x => x % 2 === 1, adj: 'impar', nombre: ['número impar', 'números impares'], dato: 'Impar: no es múltiplo de 2 (1, 3, 5…).' }),
+    termina: d => ({ es: x => x % 10 === d, adj: `que termina en ${d}`, nombre: [`número que termina en ${d}`, `números que terminan en ${d}`], dato: `Terminan en ${d}: ${d}, ${10 + d}, ${20 + d}, ${30 + d}…` }),
+    multAoB: (a, b) => ({ es: x => x % a === 0 || x % b === 0, adj: `múltiplo de ${a} o de ${b}`, nombre: [`múltiplo de ${a} o de ${b}`, `múltiplos de ${a} o de ${b}`], dato: `Múltiplo de ${a} o de ${b}: de uno de los dos, o de los dos a la vez.` }),
   };
   function cond(N, c, k, desde = 1) {
     const nums = rango(desde, N), si = nums.filter(c.es), no = nums.filter(x => !c.es(x));
@@ -1144,13 +1180,16 @@
       { id: 'todo', valor: cs.nums.length, error: 'RMP152', siFuera: `Sacar las ${f0(cs.nums.length)} asegura la meta, pero sobran.` },
     ];
   }
-  const metaK = (k, c) => `Meta: ${k === 1 ? 'una' : f0(k)} con ${c.nombre[k === 1 ? 0 : 1]}`;
-  const kTxt = (k, c) => (k === 1 ? `una bolilla con un ${c.nombre[0]}` : `${f0(k)} bolillas con ${c.nombre[1]}`);
+  const metaK = (k, c) => `Meta: ${k === 1 ? 'una' : f0(k)} con número ${c.adj}`;
+  const kTxt = (k, c) => `${k === 1 ? 'una bolilla' : `${f0(k)} bolillas`} con número ${c.adj}`;
   function casoCond(r, tipo) {
     // Ni el juego (2 múltiplos de 3 del 1 al 20) ni la predicción (un primo del 1 al 20).
-    if (tipo === 0) { for (;;) { const N = r.elegir([20, 24, 30, 36, 40]), d = r.elegir([3, 4, 5, 6]), k = r.ent(1, 3); if (N === N4 && d === D4 && k === K4) continue; return { c: COND.mult(d), cs: cond(N, COND.mult(d), k) }; } }
-    if (tipo === 1) { for (;;) { const N = r.elegir([15, 20, 25, 30]), k = r.ent(1, 2); if (N === N4 && k === 1) continue; return { c: COND.primo(), cs: cond(N, COND.primo(), k) }; } }
-    const N = r.elegir([12, 15, 20, 25, 30]), c = r() < 0.5 ? COND.par() : COND.impar(); return { c, cs: cond(N, c, r.ent(2, 3)) };
+    for (;;) {
+      const N = tipo === 0 ? r.elegir([20, 24, 30, 36, 40]) : tipo === 1 ? r.elegir([15, 20, 25, 30]) : r.elegir([12, 15, 20, 25, 30]);
+      const c = tipo === 0 ? COND.mult(r.elegir([3, 4, 5, 6])) : tipo === 1 ? COND.primo() : r() < 0.5 ? COND.par() : COND.impar();
+      const k = tipo === 0 ? r.ent(1, 3) : tipo === 1 ? r.ent(1, 2) : r.ent(2, 3);
+      if (!usado('condicion', kCond(1, N, c.nombre[1], k))) return { c, cs: cond(N, c, k) };
+    }
   }
 
   const condicion = {
@@ -1171,7 +1210,7 @@
     },
     juega: {
       pieza: CR,
-      consigna: 'El bingo de la kermés tiene bolillas del 1 al 20. La meta: 2 bolillas con un múltiplo de 3. Tú haces de mala suerte.',
+      consigna: 'El bingo de la kermés tiene bolillas del 1 al 20. La meta: 2 bolillas con número múltiplo de 3. Tú haces de mala suerte.',
       mision: {
         texto: 'Saca la mayor cantidad de bolillas sin tener 2 múltiplos de 3.',
         logrado: v => v.m < K4 && v.nm + v.m === PEOR4,
@@ -1197,7 +1236,7 @@
       voz: '¿Cuáles no sirven?',
       opciones: [
         { id: 'c', texto: pl(R_P4, BOLI), correcta: true },
-        { id: 'suerte', texto: pl(1, BOLI), error: 'RM6', siFuera: 'Con suerte, la primera ya es prima. La certeza pide que alcance con la peor suerte.' },
+        { id: 'suerte', texto: pl(1, BOLI), error: 'RM6', siFuera: 'Con suerte, la primera ya tiene número primo. La certeza pide que alcance con la peor suerte.' },
         { id: 'sirven', texto: pl(PRIMOS20.length + 1, BOLI), error: 'RMP32', siFuera: `Contaste los primos, ${f0(PRIMOS20.length)}, y sumaste 1. Pero lo que sale primero son los que no son primos.` },
         { id: 'sin1', texto: pl(NOP.length, BOLI), error: 'RMP34', siFuera: `Con ${f0(NOP.length)} pueden haber salido justo los que no son primos. Falta la que obliga.` },
         { id: 'todo', texto: pl(N4, BOLI), error: 'RMP152', siFuera: `Sacar las ${f0(N4)} asegura un primo, pero sobran ${f0(N4 - R_P4)}.` },
@@ -1213,12 +1252,12 @@
       voz: 'Primero se cuenta, después se suma.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Los que no son primos salen todos primero. Son el total menos los primos.', ecuacion: [`${f0(N4)} − ${f0(PRIMOS20.length)} = ${f0(NOP.length)}`] },
-        { estado: { corte: 2 }, texto: 'Ya no queda ninguno que no sirva: la siguiente es prima y obliga.', ecuacion: [`${f0(NOP.length)} + 1 = ${f0(R_P4)}`] },
+        { estado: { corte: 2 }, texto: 'Solo quedan números primos: la siguiente (aquí, el 2) obliga.', ecuacion: [`${f0(NOP.length)} + 1 = ${f0(R_P4)}`] },
         { estado: { corte: 3 }, texto: `Con ${f0(NOP.length)} todavía podía no haber primo; con ${f0(R_P4)}, ya no.` },
       ],
     },
     regla: {
-      texto: 'Cuenta las que no cumplen: con la peor suerte salen todas primero. Después, de las que cumplen, una menos de lo pedido. La siguiente obliga.',
+      texto: 'Cuenta las que no cumplen: con la peor suerte salen todas primero. Después, de las que cumplen, una menos de lo pedido (si piden una, ninguna). La siguiente obliga.',
       ecuacion: [{ llave: ['peor caso'], nota: 'las que no cumplen y una menos de lo pedido', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-i' }],
       condicion: 'cada número está una sola vez. Las que no cumplen son el total menos las que cumplen.',
       voz: 'Lo que no sirve se cuenta, no se adivina.',
@@ -1227,7 +1266,10 @@
     resuelve: {
       pieza: CR,
       generar(s) {
-        const r = azar(s + 900), N = r.elegir([24, 30, 36]), d = r.elegir([4, 5, 6]), k = r.ent(2, 3), c = COND.mult(d), cs = cond(N, c, k);
+        const r = azar(s + 900);
+        let N, d, k;
+        do { N = r.elegir([24, 30, 36]); d = r.elegir([4, 5, 6]); k = r.ent(2, 3); } while (usado('condicion', kCond(1, N, COND.mult(d).nombre[1], k)));
+        const c = COND.mult(d), cs = cond(N, c, k);
         return {
           enunciado: `En otro bingo, las bolillas van del 1 al ${f0(N)}. ¿Cuántas hay que sacar, como mínimo, para tener con certeza ${kTxt(k, c)}?`,
           datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato, D_SIN],
@@ -1253,7 +1295,8 @@
         const r = azar(s), tipo = s % 4;
         if (tipo === 3) {
           if (Math.floor(s / 4) % 2) {
-            const N = r.elegir([15, 18, 21, 25, 30]), impares = rango(1, N).filter(x => x % 2).length, bien = impares + 1;
+            let N; do { N = r.elegir([15, 18, 21, 25, 30]); } while (usado('condicion', `prodpar|${N}`));
+            const impares = rango(1, N).filter(x => x % 2).length, bien = impares + 1;
             if (peorCuentas([impares, N - impares], v => v[1] >= 1 && v[0] + v[1] >= 2).max + 1 !== bien) throw new Error('producto par');
             const d = [{ id: 'suerte', valor: 2, error: 'RM6', siFuera: 'Con suerte, las dos primeras ya dan producto par. La certeza pide la peor suerte.' },
               { id: 'sin1', valor: impares, error: 'RMP34', siFuera: `Con ${f0(impares)} pueden salir solo impares: su producto es impar. Falta la que obliga.` },
@@ -1264,18 +1307,20 @@
               dibujo: bombo(N, 'Meta: dos con producto par'), opciones: opcionesNum(bien, BOLI, d, 5),
               solucion: { texto: `Los impares no sirven entre sí: salen los ${f0(impares)}. La siguiente es par y da producto par.`, ecuacion: [`${f0(impares)} + 1 = `, F(f0(bien))] } };
           }
-          const [a, b] = r.elegir([[2, 3], [2, 5], [3, 5], [3, 4], [4, 6]]), N = r.elegir([30, 40, 60]), k = r.ent(2, 4), c = COND.multAoB(a, b), cs = cond(N, c, k);
+          let a, b, N, k;
+          do { [a, b] = r.elegir([[2, 3], [2, 5], [3, 5], [3, 4], [4, 6]]); N = r.elegir([30, 40, 60]); k = r.ent(2, 4); } while (usado('condicion', kCond(1, N, COND.multAoB(a, b).nombre[1], k)));
+          const c = COND.multAoB(a, b), cs = cond(N, c, k);
           const A = Math.floor(N / a), B = Math.floor(N / b), AB = cs.si.length;
           const d = distCond(cs, c).concat([{ id: 'comunes', valor: N - A - B + k, error: 'RMP32', siFuera: `Restaste ${f0(A)} y ${f0(B)}, pero los múltiplos de los dos a la vez quedaron restados dos veces.` }]);
           return { pregunta: `En un bingo con bolillas del 1 al ${f0(N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza ${kTxt(k, c)}?`,
-            datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato, `Múltiplos de ${a} hasta ${f0(N)}: tantos como veces cabe ${a} en ${f0(N)}.`],
+            datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato, `Múltiplos de ${a} hasta ${f0(N)}: tantos como veces cabe ${a} en ${f0(N)}.`, D_SIN],
             dibujo: bombo(N, metaK(k, c)), opciones: opcionesNum(cs.bien, BOLI, [d[4], d[0], d[2], d[1], d[3]], 5),
             solucion: { texto: `Cumplen ${f0(A)} + ${f0(B)} − ${f0(A + B - AB)} = ${f0(AB)} (los comunes, una vez). No cumplen ${f0(cs.no.length)}; se suman ${f0(k)}.`, ecuacion: [`${f0(cs.no.length)} + ${f0(k)} = `, F(f0(cs.bien))] } };
         }
         const { c, cs } = casoCond(r, tipo);
         return { pregunta: `En un bingo con bolillas del 1 al ${f0(cs.N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza ${kTxt(cs.k, c)}?`,
           datos: [`Bolillas del 1 al ${f0(cs.N)}, una de cada número.`, c.dato, D_SIN],
-          dibujo: cs.N <= 20 ? { datos: tablero(cs.N, {}, { meta: metaK(cs.k, c) }), estado: {} } : bombo(cs.N, metaK(cs.k, c)),
+          dibujo: bombo(cs.N, metaK(cs.k, c)),
           opciones: opcionesNum(cs.bien, BOLI, distCond(cs, c), 5),
           solucion: { texto: `No cumplen ${f0(cs.no.length)} de las ${f0(cs.N)}: salen todas, y ${f0(cs.k - 1)} que sí. La siguiente obliga.`, ecuacion: [`${f0(cs.no.length)} + ${f0(cs.k - 1)} + 1 = `, F(f0(cs.bien))] } };
       },
@@ -1290,11 +1335,11 @@
     const c = o.c, desde = o.desde || 1, cs = cond(o.N, c, o.k, desde), n = cs.nums.length;
     const sol = [
       { texto: `Cumplen ${f0(cs.si.length)}${cs.si.length <= 8 ? ` (${lista(cs.si.map(String))})` : ''}. Las que no cumplen son las demás.`, ecuacion: [`${f0(n)} − ${f0(cs.si.length)} = ${f0(cs.no.length)}`] },
-      { texto: `Peor caso: salen las ${f0(cs.no.length)}${o.k > 1 ? ` y ${f0(o.k - 1)} que sí cumplen` : ''}. La siguiente obliga.`, ecuacion: [`${f0(cs.no.length)}${o.k > 1 ? ` + ${f0(o.k - 1)}` : ''} + 1 = `, F(f0(cs.bien))] },
+      { texto: `Peor caso: salen las ${f0(cs.no.length)} que no cumplen${o.k > 1 ? ` y ${f0(o.k - 1)} que sí` : ''}. La siguiente obliga.`, ecuacion: [`${f0(cs.no.length)}${o.k > 1 ? ` + ${f0(o.k - 1)}` : ''} + 1 = `, F(f0(cs.bien))] },
     ];
     const rangoTxt = `del ${f0(desde)} al ${f0(o.N)}`;
-    return ejCierra(Object.assign({ datos: [`Bolillas ${rangoTxt}, una de cada número.`, c.dato, D_SIN] }, o), cs.bien, sol,
-      `En un bingo con bolillas ${rangoTxt}, ¿cuántas hay que sacar, como mínimo, para tener con certeza ${kTxt(o.k, c)}?`, bombo(n, metaK(o.k, c)), BOLI);
+    return ejCierra(Object.assign({ datos: [`Bolillas ${rangoTxt}, una de cada número.`, c.dato, D_SIN], _caso: kCond(desde, o.N, c.nombre[1], o.k) }, o), cs.bien, sol,
+      `En un bingo con bolillas ${rangoTxt}, ¿cuántas hay que sacar, como mínimo, para tener con certeza ${kTxt(o.k, c)}?`, bombo(o.N, metaK(o.k, c), desde), BOLI);
   }
   const EJEMPLOS_COND = [
     ejCond({ nivel: 1, titulo: 'Un múltiplo de 5', N: 20, c: COND.mult(5), k: 1 }),
@@ -1302,8 +1347,8 @@
     ejCond({ nivel: 1, titulo: 'Dos impares', N: 10, c: COND.impar(), k: 2 }),
     (() => {
       const N = 24, c = COND.mult(4), cs = cond(N, c, 1);
-      return { nivel: 1, titulo: 'Las que no sirven', enunciado: `En un bingo con bolillas del 1 al ${f0(N)}, la meta es un múltiplo de 4. ¿Cuántas bolillas no sirven?`,
-        datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato], figura: bombo(N, 'Meta: un múltiplo de 4'),
+      return { nivel: 1, titulo: 'Las que no sirven', _caso: kCond(1, N, c.nombre[1], 1), enunciado: `En un bingo con bolillas del 1 al ${f0(N)}, la meta es un múltiplo de 4. ¿Cuántas bolillas no sirven?`,
+        datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato], figura: bombo(N, 'Meta: un número múltiplo de 4'),
         solucion: [{ texto: `Múltiplos de 4 hasta ${f0(N)}: ${lista(cs.si.map(String))}. No sirven las demás.`, ecuacion: [`${f0(N)} − ${f0(cs.si.length)} = `, F(f0(cs.no.length))] }],
         respuesta: [F(pl(cs.no.length, BOLI))] };
     })(),
@@ -1312,7 +1357,7 @@
     ejCond({ nivel: 2, titulo: 'Dos primos del 1 al 25', N: 25, c: COND.primo(), k: 2 }),
     (() => {
       const N = 12, impares = rango(1, N).filter(x => x % 2).length, bien = impares + 1;
-      return { nivel: 2, titulo: 'Un producto par', enunciado: `En un bingo con bolillas del 1 al ${f0(N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza dos cuyo producto sea par?`,
+      return { nivel: 2, titulo: 'Un producto par', _caso: `prodpar|${N}`, enunciado: `En un bingo con bolillas del 1 al ${f0(N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza dos cuyo producto sea par?`,
         datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, 'Un producto es par si alguno de sus factores es par.', D_SIN], figura: bombo(N, 'Meta: dos con producto par'),
         solucion: [{ texto: `Dos impares dan producto impar: no sirven entre sí. Con la peor suerte salen los ${f0(impares)} impares.` },
           { texto: 'La siguiente es par: con cualquiera de las que salieron da producto par.', ecuacion: [`${f0(impares)} + 1 = `, F(f0(bien))] }],
@@ -1340,16 +1385,16 @@
     })(),
     (() => {
       const N = 30, c = COND.multAoB(2, 3), cs = cond(N, c, 4);
-      return ejCierra({ nivel: 3, titulo: 'Múltiplos de 2 o de 3', datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato, 'Múltiplos de 6: los que son de 2 y de 3 a la vez.'],
+      return ejCierra({ nivel: 3, titulo: 'Múltiplos de 2 o de 3', _caso: kCond(1, N, c.nombre[1], 4), datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, c.dato, 'Múltiplos de 6: los que son de 2 y de 3 a la vez.'],
         alts: [{ v: 4 }, { v: 9 }, { v: cs.bien - 1 }, { v: cs.bien, ok: true }, { v: cs.si.length + 4 }],
-        explica: `4 es con buena suerte; 9 resta dos veces los múltiplos de 6; ${f0(cs.bien - 1)} olvida la que obliga; ${f0(cs.si.length + 4)} cuenta las que sí cumplen.` },
+        explica: `4 es con buena suerte; 9 resta dos veces los múltiplos de 6; ${f0(cs.bien - 1)} olvida la que obliga; ${f0(cs.si.length + 4)} cuenta las ${f0(cs.si.length)} que sí cumplen y les suma 4.` },
       cs.bien, [{ texto: 'Múltiplos de 2: 15. De 3: 10. De los dos a la vez (de 6): 5, que no se cuentan dos veces.', ecuacion: [`15 + 10 − 5 = ${f0(cs.si.length)}`] },
         { texto: `No cumplen ${f0(cs.no.length)}. Salen todas, y 3 que sí; la siguiente obliga.`, ecuacion: [`${f0(cs.no.length)} + 3 + 1 = `, F(f0(cs.bien))] }],
       `En un bingo con bolillas del 1 al ${f0(N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza ${kTxt(4, c)}?`, bombo(N, metaK(4, c)), BOLI);
     })(),
     (() => {
       const N = 25, impares = rango(1, N).filter(x => x % 2).length, bien = impares + 1;
-      return { nivel: 3, titulo: 'El producto par, examen', enunciado: `En un bingo con bolillas del 1 al ${f0(N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza dos cuyo producto sea par?`,
+      return { nivel: 3, titulo: 'El producto par, examen', _caso: `prodpar|${N}`, enunciado: `En un bingo con bolillas del 1 al ${f0(N)}, ¿cuántas hay que sacar, como mínimo, para tener con certeza dos cuyo producto sea par?`,
         alternativas: ['2 bolillas', '13 bolillas', '25 bolillas', '15 bolillas', '14 bolillas'],
         datos: [`Bolillas del 1 al ${f0(N)}, una de cada número.`, 'Un producto es par si alguno de sus factores es par.', D_SIN], figura: bombo(N, 'Meta: dos con producto par'),
         solucion: [{ texto: `Del 1 al 25 hay ${f0(impares)} impares y 12 pares. Dos impares dan producto impar: salen los ${f0(impares)}.` },
@@ -1359,15 +1404,16 @@
     })(),
     ejCond({ nivel: 3, titulo: 'Boletos que terminan en 7', N: 40, c: COND.termina(7), k: 3,
       alts: [{ v: 39, ok: true }, { v: 38 }, { v: 40 }, { v: 7 }, { v: 3 }],
-      explica: '38 olvida la que obliga; 40 es sacar todo; 7 cuenta los que sí terminan en 7; 3 es con buena suerte.' }),
+      explica: '38 olvida la que obliga; 40 es sacar todo; 7 cuenta los 4 que sí terminan en 7 y les suma 3; 3 es con buena suerte.' }),
     ejCond({ nivel: 3, titulo: 'Dos múltiplos de 6', N: 50, c: COND.mult(6), k: 2,
       alts: [{ v: 2 }, { v: 44, ok: true }, { v: 43 }, { v: 10 }, { v: 50 }],
-      explica: '2 es con buena suerte; 43 olvida la que obliga; 10 cuenta los que sí son múltiplos; 50 es sacar todo.' }),
+      explica: '2 es con buena suerte; 43 olvida la que obliga; 10 cuenta los 8 múltiplos de 6 y les suma 2; 50 es sacar todo.' }),
     ejCond({ nivel: 3, titulo: 'Tres pares del 10 al 30', N: 30, desde: 10, c: COND.par(), k: 3,
       alts: [{ v: 3 }, { v: 14 }, { v: 13, ok: true }, { v: 12 }, { v: 21 }],
-      explica: '3 es con buena suerte; 14 cuenta los pares; 12 olvida la que obliga; 21 es sacar todo.' }),
+      explica: '3 es con buena suerte; 14 cuenta los 11 pares y les suma 3; 12 olvida la que obliga; 21 es sacar todo.' }),
   ];
   condicion.ejemplos = EJEMPLOS_COND;
+  juntar('condicion', EJEMPLOS_COND, [kCond(1, N4, COND.mult(D4).nombre[1], K4), kCond(1, N4, COND.primo().nombre[1], 1)]);
 
   // ---------- Idea 5: parejas y sumas ----------
   // Objeto: las cartas de la feria, del 1 al 7, en la mesa; las que suman 8 van juntas y unidas por una raya
@@ -1414,7 +1460,9 @@
     m[PJ_P5.pares[0][1]] = p('obliga', 3);
     return m;
   };
-  const cuentaP5 = [{ t: `${f0(PJ_P5.pares.length)} parejas`, papel: 'peor', desde: 1 }, { t: `+ ${f0(PJ_P5.solos.length)} solas`, papel: 'peor', desde: 2 }, { t: '+ 1 obliga', papel: 'obliga', desde: 3 }, { t: `= ${f0(R_P5)}`, papel: 'seguro', desde: 4 }];
+  // Después de responder (Mira y el revelar), las cartas van juntas por pareja, con su raya, como en el juego.
+  const GR_P5 = PJ_P5.pares.map(x => x.slice()).concat(PJ_P5.solos.map(x => [x]));
+  const cuentaP5 = [{ t: `${f0(PJ_P5.pares.length)}, una por pareja`, papel: 'peor', desde: 1 }, { t: `+ ${f0(PJ_P5.solos.length)} solas`, papel: 'peor', desde: 2 }, { t: '+ 1 obliga', papel: 'obliga', desde: 3 }, { t: `= ${f0(R_P5)}`, papel: 'seguro', desde: 4 }];
   const META_P5 = 'Meta: dos que sumen 12';
 
   // ---------- Casos de «Así se resuelve» y «Ahora tú» de la idea 5 ----------
@@ -1422,7 +1470,7 @@
     for (let t = 0; t < 200; t++) {
       const N = r.ent(7, 14), S = r.ent(Math.floor(N / 2) + 3, N + 3), pj = parejasDe(N, S);
       if (pj.pares.length < 2 || (copias === 1 && !pj.solos.length) || (copias > 1 && pj.mitad)) continue;
-      if ((N === 7 && S === S5) || (N === N_P5 && S === S_P5)) continue;   // ni el juego ni la predicción
+      if (usado('parejas', kPar(N, S, copias))) continue;   // ni el juego, ni la predicción, ni un ejemplo
       const malo = copias * pj.pares.length + copias * (pj.solos.length - (pj.mitad ? 1 : 0)) + (pj.mitad ? 1 : 0);
       return { N, S, pj, copias, malo, bien: malo + 1, T: copias * N };
     }
@@ -1432,7 +1480,7 @@
     const u = cs.copias === 1 ? CAR : ['disco', 'discos'];
     return [
       { id: 'suerte', valor: 2, error: 'RM6', siFuera: 'Con buena suerte, las dos primeras ya suman lo pedido. La certeza pide la peor suerte.' },
-      { id: 'sinsolas', valor: cs.copias * cs.pj.pares.length + 1, error: 'RMP30', siFuera: `Contaste las parejas, pero ${lista(cs.pj.solos.map(String))} no ${cs.pj.solos.length === 1 ? 'tiene' : 'tienen'} pareja: también salen.` },
+      { id: 'sinsolas', valor: cs.copias * cs.pj.pares.length + 1, error: 'RMP30', siFuera: `Contaste las parejas, pero ${lista(cs.pj.solos.map(String))} no ${cs.pj.solos.length === 1 ? 'tiene pareja: también sale' : 'tienen pareja: también salen'}.` },
       { id: 'sin1', valor: cs.bien - 1, error: 'RMP34', siFuera: `Armaste bien el peor caso: ${pl(cs.bien - 1, u)} sin pareja completa. Falta la que obliga.` },
       { id: 'todo', valor: cs.T, error: 'RMP152', siFuera: `Sacar ${cs.copias === 1 ? 'las' : 'los'} ${f0(cs.T)} asegura la pareja, pero sobran.` },
       ...(cs.copias > 1 ? [{ id: 'copia', valor: cs.pj.pares.length + cs.pj.solos.length + 1, error: 'RMP31', siFuera: `Contaste un disco por número; pero de cada lado de una pareja salen las ${f0(cs.copias)} copias.` }] : []),
@@ -1448,7 +1496,7 @@
   function casoSupera(r) {
     for (let t = 0; t < 200; t++) {
       const N = r.ent(7, 12), S = r.ent(N + 2, Math.floor(N * (N + 1) / 2) - N - 1), sp = supera(rango(1, N), S);
-      if (!sp || sp.m < 3) continue;
+      if (!sp || sp.m < 3 || usado('parejas', kSup(rango(1, N), S))) continue;
       let g = 0, s = 0; for (const x of sp.grandes) { g++; s += x; if (s > S) break; }
       return { N, S, sp, bien: sp.m, grandes: g };
     }
@@ -1521,13 +1569,13 @@
         { id: 'todo', texto: pl(N_P5, CAR), error: 'RMP152', siFuera: `Sacar las ${f0(N_P5)} asegura la pareja, pero sobran ${f0(N_P5 - R_P5)}.` },
       ],
       dibujo: { datos: cartasMesa(UNO_P5, {}, { sueltas: true, meta: META_P5 }), estado: {} },
-      revelar: { datos: cartasMesa(UNO_P5, marcasP5(), { sueltas: true, meta: META_P5, cuenta: cuentaP5 }), estado: { corte: 4 } },
+      revelar: { datos: cartasMesa(GR_P5, marcasP5(), { meta: META_P5, cuenta: cuentaP5 }), estado: { corte: 4 } },
       coincide: `Coincide: una de cada pareja, las ${f0(PJ_P5.solos.length)} sin pareja y la que obliga.`,
       noCoincide: 'Revisemos: el 1 y el 6 no tienen con quién sumar 12; salen sin cumplir.',
     },
     mira: {
       pieza: CR,
-      datos: cartasMesa(UNO_P5, marcasP5({ mira: true }), { sueltas: true, meta: META_P5, cuenta: cuentaP5 }),
+      datos: cartasMesa(GR_P5, marcasP5({ mira: true }), { meta: META_P5, cuenta: cuentaP5 }),
       voz: 'Una de cada pareja, y las solas.',
       pasos: [
         { estado: { corte: 1 }, texto: 'La peor suerte saca una carta de cada pareja que suma 12.', ecuacion: ['2 + 10 = 3 + 9 = 4 + 8 = 5 + 7 = 12'] },
@@ -1539,8 +1587,8 @@
     regla: {
       texto: 'Para tener dos que sumen lo pedido, la peor suerte saca una de cada pareja y todas las que no tienen pareja. La siguiente completa una.',
       ecuacion: [{ llave: ['peor caso'], nota: 'una de cada pareja y todas las sin pareja', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-i' }],
-      condicion: 'cada número está una vez. Si la meta es que la suma pase de un número, salen primero las más chicas.',
-      voz: 'Cada pareja es un casillero de una sola carta.',
+      condicion: 'cada número está una vez. Si la suma debe pasar de un número, la peor suerte da primero las más chicas.',
+      voz: 'De cada pareja, una carta; de las solas, todas.',
     },
     ejemplos: null,
     resuelve: {
@@ -1583,7 +1631,9 @@
             solucion: { texto: `Las más chicas primero, del 1 al ${f0(cs.bien - 1)}: suman ${f0(cs.sp.suma)}, sin pasar. La siguiente sí pasa.`, ecuacion: [`${f0(cs.bien - 1)} + 1 = `, F(f0(cs.bien))] } };
         }
         if (tipo === 3) {
-          const B = { 10: r.ent(3, 7), 20: r.ent(2, 6), 50: r.ent(2, 5), 100: r.ent(1, 4) }, M = r.elegir([60, 70, 120, 150]), bl = billetes(B, M);
+          let B, M;
+          do { B = { 10: r.ent(3, 7), 20: r.ent(2, 6), 50: r.ent(2, 5), 100: r.ent(1, 4) }; M = r.elegir([60, 70, 120, 150]); } while (usado('parejas', kBil(B, M)));
+          const bl = billetes(B, M);
           const par = bl.det.find(x => x.vals.length === 2), d = [
             { id: 'suerte', valor: 2, error: 'RM6', siFuera: 'Con buena suerte, los dos primeros ya suman el monto. La certeza pide la peor suerte.' },
             { id: 'sin1', valor: bl.bien - 1, error: 'RMP34', siFuera: `Armaste bien el peor caso: ${pl(bl.malo, BIL)} sin el monto. Falta el que obliga.` },
@@ -1615,18 +1665,23 @@
     const malo = copias * pj.pares.length + copias * (pj.solos.length - (pj.mitad ? 1 : 0)) + (pj.mitad ? 1 : 0), bien = malo + 1;
     const u = copias > 1 ? ['disco', 'discos'] : CAR;
     const sol = [{ texto: `${pj.pares.length > 6 ? `Parejas que suman ${f0(S)}: de ${pj.pares[0][0]} y ${pj.pares[0][1]} a ${pj.pares[pj.pares.length - 1][0]} y ${pj.pares[pj.pares.length - 1][1]}, ${f0(pj.pares.length)} en total` : `Parejas que suman ${f0(S)}: ${pj.pares.map(p => `${p[0]} y ${p[1]}`).join('; ')}`}.${pj.solos.length ? ` Sin pareja: ${lista(pj.solos.map(String))}${pj.mitad ? ` (el ${pj.mitad} necesitaría otro ${pj.mitad})` : ''}.` : ''}` },
-      { texto: copias > 1 ? `Peor caso: de cada pareja, los ${f0(copias)} de un mismo lado${pj.solos.length ? ', y los que no tienen pareja' : ''}.` : `Peor caso: una de cada pareja${pj.solos.length ? ' y todas las sin pareja' : ''}.`,
-        ecuacion: [`${f0(malo)} + 1 = `, F(f0(bien))] }];
+      { texto: copias > 1 ? `Peor caso: de cada pareja, los ${f0(copias)} de un mismo lado${pj.solos.length ? ', y los que no tienen pareja' : ''}${pj.mitad ? ` (del ${pj.mitad}, uno solo)` : ''}: ${pl(malo, u)} sin pareja completa.`
+        : `Peor caso: una carta de cada pareja${pj.solos.length ? ' y todas las sin pareja' : ''}: ${pl(malo, u)} sin pareja completa.`,
+        ecuacion: [copias > 1 ? `${f0(copias)} × ${f0(pj.pares.length)}${pj.solos.length - (pj.mitad ? 1 : 0) ? ` + ${f0(copias)} × ${f0(pj.solos.length - (pj.mitad ? 1 : 0))}` : ''}${pj.mitad ? ' + 1' : ''} = ${f0(malo)}`
+          : `${f0(pj.pares.length)}${pj.solos.length ? ` + ${f0(pj.solos.length)}` : ''} = ${f0(malo)}`] },
+      { texto: 'La siguiente completa una pareja: obliga.', ecuacion: [`${f0(malo)} + 1 = `, F(f0(bien))] }];
     const enun = copias > 1 ? `En una caja hay discos numerados del 1 al ${f0(N)}, ${copias === 2 ? 'dos' : 'tres'} de cada número. ¿Cuántos hay que sacar, como mínimo, para tener con certeza dos que sumen ${f0(S)}?`
       : `Con cartas del 1 al ${f0(N)}, una de cada número, ¿cuántas hay que sacar, como mínimo, para tener con certeza dos que sumen ${f0(S)}?`;
-    return ejCierra(Object.assign({ datos: [copias > 1 ? `Discos del 1 al ${f0(N)}, ${copias === 2 ? 'dos' : 'tres'} de cada número.` : `Cartas del 1 al ${f0(N)}, una de cada número.`, D_SIN] }, o),
+    return ejCierra(Object.assign({ _caso: kPar(N, S, copias), datos: [copias > 1 ? `Discos del 1 al ${f0(N)}, ${copias === 2 ? 'dos' : 'tres'} de cada número.` : `Cartas del 1 al ${f0(N)}, una de cada número.`, D_SIN] }, o),
       bien, sol, enun, figCartas(N, `Meta: dos que sumen ${f0(S)}`, copias > 1 ? { titulo: 'Caja de discos' } : {}), u);
   }
   function ejSupera(o) {
     const sp = supera(o.valores, o.S), bien = sp.m;
-    const sol = [{ texto: 'La peor suerte da primero las más chicas.', ecuacion: [`${sp.chicas.join(' + ')} = ${f0(sp.suma)}`] },
-      { texto: `Todavía no pasa de ${f0(o.S)}. La siguiente, la más chica que queda, sí.`, ecuacion: [`${f0(bien - 1)} + 1 = `, F(f0(bien))] }];
-    return ejCierra(Object.assign({ datos: [`Las cartas: ${lista(o.valores.map(String))}.`, `Pasar de ${f0(o.S)}: ${f0(o.S + 1)} o más.`] }, o), bien, sol,
+    const prox = o.valores.slice().sort((a, b) => a - b)[bien - 1];
+    const sol = [{ texto: `La peor suerte da primero las más chicas: ${pl(bien - 1, CAR)} que suman`, ecuacion: [`${sp.chicas.join(' + ')} = ${f0(sp.suma)}`] },
+      { texto: `Todavía no pasa de ${f0(o.S)}. La siguiente, la más chica que queda (el ${f0(prox)}), ya pasa:`, ecuacion: [`${f0(sp.suma)} + ${f0(prox)} = ${f0(sp.suma + prox)}`] },
+      { texto: 'Se cuentan las cartas volteadas:', ecuacion: [`${f0(bien - 1)} + 1 = `, F(f0(bien))] }];
+    return ejCierra(Object.assign({ _caso: kSup(o.valores, o.S), datos: [`Las cartas: ${lista(o.valores.map(String))}.`, `Pasar de ${f0(o.S)}: ${f0(o.S + 1)} o más.`] }, o), bien, sol,
       `Hay ${f0(o.valores.length)} cartas boca abajo con los números ${lista(o.valores.map(String))}. ¿Cuántas hay que voltear, como mínimo, para que con certeza la suma de las volteadas pase de ${f0(o.S)}?`,
       { pieza: CR, datos: cartasMesa(o.valores.map(() => ['?']), {}, { sueltas: true, meta: `Meta: suma mayor que ${f0(o.S)}` }), estado: {} }, CAR);
   }
@@ -1634,7 +1689,7 @@
     const bl = billetes(o.B, o.M);
     const sol = [{ texto: bl.det.map(x => (x.vals.length === 2 ? `S/ ${x.vals[0]} y S/ ${x.vals[1]} hacen pareja: salen los ${f0(x.toma)} del que hay más` : x.solo ? `S/ ${x.vals[0]} no hace pareja: salen los ${f0(x.toma)}` : `S/ ${x.vals[0]} con otro igual: sale ${f0(x.toma)}`)).join('; ') + '.' },
       { texto: 'El siguiente completa el monto.', ecuacion: [`${bl.det.map(x => f0(x.toma)).join(' + ')} + 1 = `, F(f0(bl.bien))] }];
-    return ejCierra(Object.assign({ datos: [D_SIN, `Dos billetes suman S/ ${f0(o.M)} si sus valores suman ${f0(o.M)}.`] }, o), bl.bien, sol,
+    return ejCierra(Object.assign({ _caso: kBil(o.B, o.M), datos: [D_SIN, `Dos billetes suman S/ ${f0(o.M)} si sus valores suman ${f0(o.M)}.`] }, o), bl.bien, sol,
       `La caja de la colecta tiene ${billTxt(o.B)}. ¿Cuántos hay que sacar, como mínimo, para tener con certeza dos que sumen S/ ${f0(o.M)}?`, undefined, BIL);
   }
   // Dos colores con los números del 1 al N cada uno: dos de distinto color y distinto número que sumen S (2023-I, 28).
@@ -1646,13 +1701,13 @@
       { texto: 'El siguiente es negro con pareja entre los blancos.', ecuacion: [`${f0(malo)} + 1 = `, F(f0(bien))] }];
     return ejCierra(Object.assign({ datos: [`Bolos blancos del 1 al ${f0(N)} y negros del 1 al ${f0(N)}.`, D_SIN] }, o), bien, sol,
       `En una caja hay bolos blancos numerados del 1 al ${f0(N)} y negros, también del 1 al ${f0(N)}. ¿Cuántos hay que sacar, como mínimo, para tener con certeza dos de distinto color y distinto número que sumen ${f0(S)}?`,
-      { pieza: CR, datos: { escena: 'recipiente', recipiente: 'tombola', titulo: 'Caja de bolos', meta: `Meta: distinto color, suma ${f0(S)}`, objetos: objs }, estado: {} }, ['bolo', 'bolos']);
+      { pieza: CR, datos: { escena: 'recipiente', recipiente: 'tombola', titulo: 'Caja de bolos', meta: `Meta: distinto color, suma ${f0(S)}`, objetos: objs, nota: 'En gris, los bolos negros.' }, estado: {} }, ['bolo', 'bolos']);
   }
   const EJEMPLOS_PAR = [
     ejPareja({ nivel: 1, titulo: 'Dos que sumen 6', N: 5, S: 6 }),
     (() => {
       const N = 8, S = 11, pj = parejasDe(N, S);
-      return { nivel: 1, titulo: 'Las que no tienen pareja', enunciado: `Con cartas del 1 al ${f0(N)}, una de cada número, la meta es tener dos que sumen ${f0(S)}. ¿Qué cartas no tienen pareja?`,
+      return { nivel: 1, titulo: 'Las que no tienen pareja', _caso: kPar(N, S, 1), enunciado: `Con cartas del 1 al ${f0(N)}, una de cada número, la meta es tener dos que sumen ${f0(S)}. ¿Qué cartas no tienen pareja?`,
         datos: [`Cartas del 1 al ${f0(N)}, una de cada número.`], figura: figCartas(N, `Meta: dos que sumen ${f0(S)}`),
         solucion: [{ texto: `Al 1 le faltaría el 10 y al 2, el 9: no están. Las demás sí: ${pj.pares.map(p => `${p[0]} y ${p[1]}`).join('; ')}.` }],
         respuesta: [F(`El ${pj.solos[0]} y el ${pj.solos[1]}`)] };
@@ -1682,6 +1737,7 @@
       explica: '2 es con buena suerte; 7 mira solo los de S/ 10; 14 olvida el que obliga; 18 es sacar todos.' }),
   ];
   parejas.ejemplos = EJEMPLOS_PAR;
+  juntar('parejas', EJEMPLOS_PAR, [kPar(7, S5, 1), kPar(N_P5, S_P5, 1)]);
 
   // ---------- Idea 6: llaves y candados ----------
   // Objeto: los casilleros del gimnasio, 4 candados y 4 llaves sueltas (rm-certeza, escena «llaves»: filas = llaves,
@@ -1726,7 +1782,8 @@
   function distLlaves(n, k = n) {
     const bien = suma(rango(1, k).map(i => n - i)), todas = suma(rango(1, k).map(i => n - i + 1));
     return { bien, d: [
-      { id: 'suerte', valor: k, error: 'RM6', siFuera: `Con buena suerte, cada llave abre en su primer intento: ${f0(k)}. La certeza pide la peor suerte.` },
+      { id: 'suerte', valor: k, error: 'RM6', siFuera: k < n ? `Con buena suerte, cada llave abre en su primer intento: ${f0(k)}. La certeza pide la peor suerte.`
+        : 'Una prueba por llave es contar con que cada una abra al primer intento; la certeza pide la peor suerte.' },
       { id: 'ultima', valor: todas, error: 'RMP34', siFuera: `Probaste también el último candado de cada llave, pero ese ya se sabe sin probar.` },
       { id: 'todas', valor: n * k, error: 'RMP154', siFuera: `${f0(n * k)} es probar cada llave en todos los candados, también en los que ya se abrieron.` },
       { id: 'primera', valor: n - 1, error: 'RMP31', siFuera: `${f0(n - 1)} son las pruebas de la primera llave; faltan las de las otras.` },
@@ -1743,7 +1800,7 @@
     actividad: 'Decidir en qué intento abre cada llave para gastar la mayor cantidad de pruebas.',
     lee: {
       tarjetas: [
-        { titulo: 'Los casilleros del gimnasio', texto: 'En el gimnasio del colegio hay 4 casilleros con candado y 4 llaves sueltas, mezcladas. Cada llave abre un solo candado.',
+        { titulo: 'Los casilleros del gimnasio', texto: 'En el gimnasio del colegio hay 4 casilleros con candado y 4 llaves sueltas, mezcladas. Cada llave abre un solo candado. Los números solo sirven para nombrarlas: la llave 1 no tiene por qué abrir el candado 1.',
           pieza: CR, dibujo: { datos: { escena: 'llaves', llaves: N6, filas: [] }, estado: {} } },
         { titulo: 'Una prueba', texto: 'Probar es meter una llave en un candado: abre o no abre. Identificar es saber, con certeza, qué llave abre cada candado.' },
         { titulo: 'Qué mirar al jugar', texto: 'Tú haces de mala suerte: decides en qué intento abre cada llave. Mira cuántas pruebas gasta cada llave.' },
@@ -1779,7 +1836,7 @@
       voz: 'Piensa en la peor suerte de cada llave.',
       opciones: [
         { id: 'c', texto: pl(R_P6, PRU), correcta: true },
-        { id: 'suerte', texto: pl(N_P6, PRU), error: 'RM6', siFuera: 'Con buena suerte, cada llave abre al primer intento: 10. La certeza pide la peor suerte.' },
+        { id: 'suerte', texto: pl(N_P6, PRU), error: 'RM6', siFuera: 'Una prueba por llave es contar con que cada una abra al primer intento; la certeza pide la peor suerte.' },
         { id: 'ultima', texto: pl(R_P6 + N_P6, PRU), error: 'RMP34', siFuera: `${f0(R_P6 + N_P6)} prueba también el último candado de cada llave, que ya se sabe sin probar.` },
         { id: 'todas', texto: pl(N_P6 * N_P6, PRU), error: 'RMP154', siFuera: 'Probar todas con todas asegura, pero cada candado abierto ya no se vuelve a probar.' },
       ],
@@ -1802,14 +1859,16 @@
     regla: {
       texto: 'En el peor caso, cada llave falla en todos los candados que quedan menos uno, que ya no se prueba: se deduce. Cada llave, una prueba menos.',
       ecuacion: [{ llave: ['(llaves − 1) + … + 2 + 1'], nota: 'pruebas: una menos por llave', color: 'c-o' }],
-      condicion: 'cada llave abre un solo candado. Con más candados que llaves, cada llave falla en todos los que quedan menos uno.',
+      condicion: 'cada llave abre un solo candado. Con más candados que llaves, la primera falla en todos menos uno: 7 candados, 6 pruebas.',
       voz: 'Lo último no se prueba: se deduce.',
     },
     ejemplos: null,
     resuelve: {
       pieza: CR,
       generar(s) {
-        const r = azar(s + 900), n = r.ent(5, 8), L = peorLlaves(n), bien = suma(L.pruebas);
+        const r = azar(s + 900);
+        let n; do { n = r.ent(5, 14); } while (usado('llaves', kLl(n, n, 0)));
+        const L = peorLlaves(n), bien = suma(L.pruebas);
         return {
           enunciado: `En la sala de cómputo hay ${f0(n)} armarios con candado y sus ${f0(n)} llaves, mezcladas. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza qué llave abre cada uno?`,
           datos: ['Cada llave abre un solo candado.', 'Una prueba: meter una llave en un candado.'],
@@ -1818,7 +1877,7 @@
             { tipo: 'pide', texto: 'Piden cuántas pruebas aseguran saber todas las llaves, aunque la suerte juegue en contra.' },
             { tipo: 'datos', texto: `Hay ${f0(n)} llaves y ${f0(n)} candados; cada candado abierto ya no se vuelve a probar.` },
             { tipo: 'regla', texto: 'Cada llave falla en todos los candados que quedan menos uno; ese último se deduce sin probar.' },
-            { tipo: 'cuentas', texto: `La primera llave gasta ${f0(n - 1)}, la segunda ${f0(n - 2)}, y así hasta 1; la última no se prueba.`, ecuacion: [`${L.pruebas.slice(0, -1).map(f0).join(' + ')} = `, F(f0(bien))],
+            { tipo: 'cuentas', texto: `La primera llave gasta ${f0(n - 1)}, la segunda ${f0(n - 2)}, y así hasta 1; la última no se prueba.`, ecuacion: [`${n > 9 ? `${f0(n - 1)} + ${f0(n - 2)} + … + 1` : L.pruebas.slice(0, -1).map(f0).join(' + ')} = `, F(f0(bien))],
               dibujo: { datos: { escena: 'llaves', llaves: n, filas: L.filas }, estado: {} } },
             { tipo: 'sentido', texto: `Probar todas con todas serían ${f0(n * n)}: sobran las de los candados ya abiertos y los que se deducen.` },
           ],
@@ -1834,7 +1893,8 @@
       generar(s) {
         const r = azar(s), tipo = s % 4, D = ['Cada llave abre un solo candado.', 'Una prueba: meter una llave en un candado.'];
         if (tipo === 1) {
-          const k = r.ent(3, 5), n = k + r.ent(1, 3), { bien, d } = distLlaves(n, k);
+          let k, n; do { k = r.ent(3, 5); n = k + r.ent(1, 3); } while (usado('llaves', kLl(n, k, 0)));
+          const { bien, d } = distLlaves(n, k);
           d.push({ id: 'iguales', valor: suma(rango(1, k - 1)), error: 'RMP31', siFuera: `Contaste como si hubiera ${f0(k)} candados; con ${f0(n)}, cada llave falla en más.` });
           return { pregunta: `Hay ${f0(n)} casilleros con candado, pero solo ${f0(k)} llaves, y cada llave abre uno de ellos. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza qué abre cada llave?`,
             datos: D, dibujo: { datos: { escena: 'llaves', llaves: k, candados: n, filas: [] }, estado: {} }, opciones: opcionesNum(bien, PRU, d, 5),
@@ -1842,8 +1902,9 @@
               dibujo: { datos: { escena: 'llaves', llaves: k, candados: n, filas: peorLlaves(k, n).filas }, estado: {} } } };
         }
         if (tipo === 2) {
-          const n = r.ent(7, 10), m = r.ent(2, 4), q = n - m, bien = suma(rango(1, q - 1));
-          const d = [{ id: 'suerte', valor: q, error: 'RM6', siFuera: 'Con buena suerte, cada llave que falta abre al primer intento. La certeza pide la peor suerte.' },
+          let n, m; do { n = r.ent(7, 10); m = r.ent(2, 4); } while (usado('llaves', kLl(n, n, m)));
+          const q = n - m, bien = suma(rango(1, q - 1));
+          const d = [{ id: 'suerte', valor: q, error: 'RM6', siFuera: 'Una prueba por cada llave que falta es contar con que todas abran al primer intento.' },
             { id: 'restar', valor: suma(rango(1, n - 1)), error: 'RMP92', siFuera: `Contaste las ${f0(n)} llaves; las de ${f0(m)} candados ya se saben y no se prueban.` },
             { id: 'ultima', valor: suma(rango(1, q)), error: 'RMP34', siFuera: 'Probaste también el último candado de cada llave, que se sabe sin probar.' },
             { id: 'todas', valor: q * q, error: 'RMP154', siFuera: `${f0(q * q)} es probar todas con todas, también los candados ya abiertos.` }];
@@ -1851,12 +1912,14 @@
             datos: D, dibujo: { datos: { escena: 'llaves', llaves: n, filas: [] }, estado: {} }, opciones: opcionesNum(bien, PRU, d, 5),
             solucion: { texto: `Quedan ${f0(q)} llaves y ${f0(q)} candados: ${sumaBaja(q)}.`, ecuacion: [`${rango(1, q - 1).reverse().map(f0).join(' + ')} = `, F(f0(bien))] } };
         }
-        const n = tipo === 3 ? r.elegir([9, 11, 12]) : r.ent(5, 8), { bien, d } = distLlaves(n), cosa = tipo === 3 ? 'puertas de aulas' : 'casilleros con candado';
+        let n; do { n = tipo === 3 ? r.ent(9, 15) : r.ent(5, 11); } while (usado('llaves', kLl(n, n, 0)));
+        const { bien, d } = distLlaves(n), cosa = tipo === 3 ? 'puertas de aulas' : 'casilleros con candado';
         return { pregunta: `Hay ${f0(n)} ${cosa} y ${f0(n)} llaves mezcladas; cada llave abre ${tipo === 3 ? 'una sola puerta' : 'un solo candado'}. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza qué abre cada llave?`,
           datos: tipo === 3 ? ['Cada llave abre una sola puerta.', 'Una prueba: meter una llave en una cerradura.'] : D,
-          dibujo: { datos: { escena: 'llaves', llaves: n, filas: [] }, estado: {} }, opciones: opcionesNum(bien, PRU, d, 5),
-          solucion: { texto: `La primera falla ${f0(n - 1)} veces, la segunda ${f0(n - 2)}… y la última no se prueba.`, ecuacion: [`${rango(1, n - 1).reverse().map(f0).join(' + ')} = `, F(f0(bien))],
-            dibujo: { datos: { escena: 'llaves', llaves: n, filas: peorLlaves(n).filas }, estado: {} } } };
+          // Con más de 12 llaves la cuadrícula no cabe a 390 px: va sin dibujo.
+          dibujo: n <= 12 ? { datos: { escena: 'llaves', llaves: n, filas: [] }, estado: {} } : undefined, opciones: opcionesNum(bien, PRU, d, 5),
+          solucion: Object.assign({ texto: `La primera falla ${f0(n - 1)} veces, la segunda ${f0(n - 2)}… y la última no se prueba.`, ecuacion: [`${n > 9 ? `${f0(n - 1)} + ${f0(n - 2)} + … + 1` : rango(1, n - 1).reverse().map(f0).join(' + ')} = `, F(f0(bien))] },
+            n <= 12 ? { dibujo: { datos: { escena: 'llaves', llaves: n, filas: peorLlaves(n).filas }, estado: {} } } : {}) };
       },
     },
   };
@@ -1864,18 +1927,20 @@
   // ---------- Ejemplos de «Llaves y candados» ----------
   // Resueltos aparte (e7-rm/ejemplos.py; el peor caso de las llaves, por búsqueda sobre todos los repartos posibles para
   // n ≤ 5, y la suma para los demás): 1 → 3 · 2 → 4 · 3 → 1 · 4 → 10 · 5 → ninguna · 6 → 21 · 7 → 9 · 8 → 15 · 9 → 15 ·
-  // 10 → 4 · 11 → 36 (A) · 12 → 66 (B) · 13 → 18 (C) · 14 → 15 (D) · 15 → una caja (E).
+  // 10 → 4 · 11 → 36 (A) · 12 → 66 (B) · 13 → 18 (C) · 14 → 28 (D) · 15 → una caja (E). El 14 rehecho en el cierre (19 nov):
+  // antes daba la misma cuenta que el 8 (15 pruebas).
   const figLl = (n, nc) => ({ pieza: CR, datos: Object.assign({ escena: 'llaves', llaves: n, filas: [] }, nc ? { candados: nc } : {}), estado: {} });
   const D_LL = ['Cada llave abre un solo candado.', 'Una prueba: meter una llave en un candado.'];
   function ejLlaves(o) {
     const n = o.n, k = o.k || n, ya = o.ya || 0, q = n - ya, nc = o.k ? n : q;
     const pr = o.k ? rango(1, k).map(i => n - i) : rango(1, q).map(i => q - i), bien = suma(pr);
-    const sol = [{ texto: o.k ? `Cada llave falla en todos los candados que quedan menos uno: ${pr.map(f0).join(', ')}.` : ya ? `Quedan ${f0(q)} llaves y ${f0(q)} candados por saber.` : `La primera llave falla en ${f0(n - 1)} candados; el último se sabe sin probar.` },
-      { texto: o.k ? 'Se suman las pruebas de cada llave.' : 'Cada llave siguiente, una prueba menos; la última no se prueba.', ecuacion: [`${pr.filter(x => x > 0).length > 8 ? `${f0(pr[0])} + ${f0(pr[1])} + ${f0(pr[2])} + … + ${f0(pr.filter(x => x > 0).slice(-1)[0])}` : pr.filter(x => x > 0).map(f0).join(' + ')} = `, F(f0(bien))] }];
+    const sol = [{ texto: o.k ? `Cada llave falla en todos los candados que quedan menos uno: ${pr.map(f0).join(', ')}.` : ya ? `Quedan ${f0(q)} llaves y ${f0(q)} candados por saber: la primera de esas llaves falla, como mucho, en ${pl(q - 1, ['candado', 'candados'])}.` : `La primera llave falla en ${pl(n - 1, ['candado', 'candados'])}; el último se sabe sin probar.` },
+      q === 2 && !o.k ? { texto: 'A la segunda llave le queda un solo candado: no se prueba. Basta la prueba de la primera.', ecuacion: ['1 + 0 = ', F(f0(bien))] }
+        : { texto: o.k ? 'Se suman las pruebas de cada llave.' : 'Cada llave siguiente, una prueba menos; la última no se prueba.', ecuacion: [`${pr.filter(x => x > 0).length > 8 ? `${f0(pr[0])} + ${f0(pr[1])} + ${f0(pr[2])} + … + ${f0(pr.filter(x => x > 0).slice(-1)[0])}` : pr.filter(x => x > 0).map(f0).join(' + ')} = `, F(f0(bien))] }];
     const enun = o.enunciado || (o.k ? `Hay ${f0(n)} casilleros con candado, pero solo ${f0(k)} llaves, y cada llave abre uno de ellos. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza qué abre cada llave?`
       : ya ? `Hay ${f0(n)} candados y ${f0(n)} llaves mezcladas. Ya se sabe qué llave abre ${f0(ya)} de los candados. ¿Cuántas pruebas más hacen falta, como mínimo, para saber las demás?`
         : `En el gimnasio hay ${f0(n)} casilleros con candado y sus ${f0(n)} llaves, mezcladas. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza qué llave abre cada candado?`);
-    return ejCierra(Object.assign({ datos: D_LL }, o), bien, sol, enun, figLl(o.k ? k : n, o.k ? n : null), PRU);
+    return ejCierra(Object.assign({ datos: D_LL, _caso: o.k ? kLl(n, k, 0) : kLl(n, n, ya) }, o), bien, sol, enun, figLl(o.k ? k : n, o.k ? n : null), PRU);
   }
   const EJEMPLOS_LL = [
     ejLlaves({ nivel: 1, titulo: 'Tres llaves', n: 3 }),
@@ -1910,16 +1975,16 @@
     ejLlaves({ nivel: 3, titulo: 'Llaves y puertas', n: 9, datos: ['Cada llave abre una sola puerta.', 'Una prueba: meter una llave en una cerradura.'],
       enunciado: 'Un portero tiene 9 llaves mezcladas para las 9 puertas de un pasillo. ¿Cuántas pruebas hacen falta, como mínimo, para saber con certeza qué llave abre cada puerta?',
       alts: [{ v: 36, ok: true }, { v: 45 }, { v: 81 }, { v: 9 }, { v: 8 }],
-      explica: '45 prueba también la última de cada llave; 81 es todas con todas; 9 es con buena suerte; 8 son solo las de la primera llave.' }),
+      explica: '45 prueba la última de cada llave; 81 es 9 × 9, todas con todas; 9 es una prueba por llave, con suerte; 8 son las de la primera llave.' }),
     ejLlaves({ nivel: 3, titulo: 'Doce casilleros', n: 12,
       alts: [{ v: 78 }, { v: 66, ok: true }, { v: 144 }, { v: 12 }, { v: 11 }],
-      explica: '78 prueba también la última de cada llave; 144 es todas con todas; 12 es con buena suerte; 11 son solo las de la primera llave.' }),
+      explica: '78 prueba la última de cada llave; 144 es 12 × 12, todas con todas; 12 es una prueba por llave, con suerte; 11 son las de la primera llave.' }),
     ejLlaves({ nivel: 3, titulo: 'Siete candados, cuatro llaves', n: 7, k: 4,
       alts: [{ v: 4 }, { v: 22 }, { v: 18, ok: true }, { v: 28 }, { v: 6 }],
       explica: '4 es con buena suerte; 22 prueba también el último que queda; 28 es cada llave en los 7; 6 cuenta como si hubiera 4 candados.' }),
-    ejLlaves({ nivel: 3, titulo: 'Ya se saben cuatro', n: 10, ya: 4,
-      alts: [{ v: 45 }, { v: 21 }, { v: 36 }, { v: 15, ok: true }, { v: 6 }],
-      explica: '45 cuenta las 10 llaves, sin las que ya se saben; 21 prueba la última de cada llave; 36 es todas con todas; 6 es con buena suerte.' }),
+    ejLlaves({ nivel: 3, titulo: 'Ya se saben cuatro', n: 12, ya: 4,
+      alts: [{ v: 66 }, { v: 36 }, { v: 64 }, { v: 28, ok: true }, { v: 8 }],
+      explica: '66 cuenta también las 4 llaves sabidas; 36 prueba la última de cada llave; 64 es 8 × 8, todas con todas; 8 es una prueba por llave, con suerte.' }),
     {
       nivel: 3, titulo: 'Cajas mal rotuladas', enunciado: 'Tres cajas tienen los rótulos «fresa», «limón» y «mezcla», y los tres están mal puestos. ¿De cuántas cajas hay que sacar un caramelo, como mínimo, para rotular bien las tres?',
       alternativas: ['De ninguna', 'De dos cajas', 'De las tres cajas', 'No se puede saber', 'De una caja'],
@@ -1931,6 +1996,7 @@
     },
   ];
   ident.ejemplos = EJEMPLOS_LL;
+  juntar('llaves', EJEMPLOS_LL, [kLl(N6, N6, 0), kLl(N_P6, N_P6, 0)]);
 
   // ---------- Glosario ----------
   const GLOSARIO = [
@@ -2098,7 +2164,8 @@
 
   return {
     unidad: 'razonamiento-matematico.certezas',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-certeza.js'],
     letras: {},

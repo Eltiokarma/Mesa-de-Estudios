@@ -8,7 +8,7 @@
 //   3. «Ahora tú» en 400 semillas por idea: una sola opción correcta, la que da la fuerza bruta; los errores dan su valor.
 //   4. «Así se resuelve» en 200 semillas: la respuesta es la de la fuerza bruta.
 //   5. Lo que no se repite (ni el juego ni la predicción en «Ahora tú»), la paleta, las letras repartidas y el validador
-//      con calidad 2 simulada.
+//      con calidad 2 (la marca la puso el cierre: lector en frío y auditor).
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -339,7 +339,7 @@ test('«Ahora tú» y «Así se resuelve» no traen el caso del juego ni el de l
     'peor-caso': [/hay 5 rojas, 4 verdes y 3 negras\. ¿Cuántas bolitas hay que sacar, como mínimo, para tener con certeza [23] rojas\?/],
     palomar: [/hay 5 rojas, 4 verdes y 3 negras\. .*3 del mismo color/],
     'una-de-cada': [/(hay|tiene) 5 rojas, 4 verdes y 3 negras\. .*una de cada color/],
-    condicion: [/del 1 al 20, .*(2 bolillas con múltiplos de 3|una bolilla con un número primo)\?/],
+    condicion: [/del 1 al 20, .*(2 bolillas con número múltiplo de 3|una bolilla con número primo)\?/],
     parejas: [/del 1 al 7, .*sumen 8\?/, /del 1 al 10, una de cada número, .*sumen 12\?/],
     llaves: [/^Hay (4|10) (casilleros con candado|puertas de aulas) y (4|10) llaves mezcladas;/, /hay (4|10) armarios/],
   };
@@ -354,7 +354,8 @@ test('paleta de la rama: ningún texto ni figura en verde o carmín', () => {
   for (const I of def.ideas) for (const c of I.juega.controles) assert.ok(!c.color || !/c-[dh]/.test(c.color), `${I.id}: control ${c.id}`);
 });
 
-test('la unidad: ids, temas y validador de calidad 2 (simulada) sin faltas', () => {
+test('la unidad: ids, temas, calidad 2 y validador sin faltas', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   const cat = require('../../../catalogo/cursos/razonamiento-matematico.json').unidades.find(u => u.id === def.unidad);
   assert.deepEqual(def.ideas.map(i => i.id), ['peor-caso', 'palomar', 'una-de-cada', 'condicion', 'parejas', 'llaves']);
   assert.deepEqual(cat.requiere, ['razonamiento-matematico.razonamiento-deductivo']);
@@ -365,4 +366,97 @@ test('la unidad: ids, temas y validador de calidad 2 (simulada) sin faltas', () 
   const G = require('../../../nucleo/glosario.js').porIdea(def);
   assert.ok(G[0].some(e => e.termino === 'peor caso'));
   assert.ok(G[1].some(e => e.termino === 'casillero'));
+});
+
+// ---------- 6. Cierre del 19 nov (auditoría y lectores en frío): cada prueba falla con la versión anterior ----------
+const Kit = require('../../../nucleo/kit/kit.js');
+const textosIdea = (I, semillas = 400) => {
+  const out = [];
+  out.push(...I.predice.opciones.map(o => o.siFuera || ''));
+  for (const e of I.ejemplos) out.push(...e.solucion.map(x => plano(x.texto)));
+  for (let s = 0; s < semillas; s++) out.push(...I.ahoraTu.generar(s).opciones.map(o => o.siFuera || ''));
+  return out;
+};
+test('cierre A1: ninguna explicación dice que pedir lo pedido en cada casillero «asegura» algo', () => {
+  for (const I of def.ideas) for (const t of textosIdea(I)) assert.ok(!/asegura \d+ en cada|asegura \d+ en todos|Eso asegura/.test(t), `${I.id}: ${t}`);
+});
+test('cierre A2: en las llaves, lo que se llama «buena suerte» tiene el valor de la buena suerte (la última no se prueba)', () => {
+  // Con buena suerte cada llave abre al primer intento y la última no se prueba: k llaves y n candados dan k pruebas si
+  // n > k, y n − 1 si n = k.
+  const suerte = (k, n) => (k < n ? k : n - 1);
+  const I = idea('llaves');
+  const caso = t => {
+    let m;
+    if ((m = t.match(/Hay (\d+) casilleros con candado, pero solo (\d+) llaves/))) return [+m[2], +m[1]];
+    if ((m = t.match(/(\d+) llaves mezcladas para las (\d+) puertas/))) return [+m[1], +m[2]];
+    m = t.match(/(\d+) (?:candados|casilleros con candado|puertas de aulas|puertas|armarios con candado)/); const n = +m[1];
+    const ya = t.match(/Ya se sabe qué llave abre (\d+)/), q = n - (ya ? +ya[1] : 0);
+    return [q, q];
+  };
+  for (let s = 0; s < 400; s++) {
+    const p = I.ahoraTu.generar(s), [k, n] = caso(plano(p.pregunta));
+    for (const o of p.opciones) {
+      const m = (o.siFuera || '').match(/buena suerte[^.]*?: (\d+)\./);
+      if (m) assert.equal(+m[1], suerte(k, n), `semilla ${s}: ${o.siFuera}`);
+      if (o.error === 'RM6' && k === n) assert.ok(!/^Con buena suerte/.test(o.siFuera), `semilla ${s}: ${o.siFuera}`);
+    }
+  }
+  for (const o of I.predice.opciones) assert.ok(!/buena suerte[^.]*: 10/.test(o.siFuera || ''), o.siFuera);
+  for (const e of I.ejemplos.filter(x => x.alternativas && /llave/.test(plano(x.enunciado)))) {
+    const [k, n] = caso(plano(e.enunciado)), ex = plano(e.solucion[e.solucion.length - 1].texto);
+    for (const m of ex.matchAll(/(\d+) es con buena suerte/g)) assert.equal(+m[1], suerte(k, n), `${e.titulo}: ${ex}`);
+  }
+});
+test('cierre M5: «N cuenta los que sí cumplen» dice cuántos cumplen', () => {
+  for (const I of def.ideas) for (const e of I.ejemplos) for (const x of e.solucion) {
+    const t = plano(x.texto);
+    assert.ok(!/\d+ cuenta (?:los|las) (?:que sí|pares\b|que sí son)/.test(t), `${e.titulo}: ${t}`);
+  }
+});
+test('cierre M7: los dos ejemplos de «ya se saben» no dan la misma cuenta', () => {
+  const ya = idea('llaves').ejemplos.filter(e => /Ya se saben/.test(e.titulo)).map(e => plano(e.respuesta));
+  assert.equal(ya.length, 2);
+  assert.notEqual(ya[0], ya[1]);
+});
+// Firma de un caso: los números del enunciado y las palabras que deciden la meta. Dos casos con la misma firma son el
+// mismo problema (con otro recipiente u otra redacción).
+const VOCES = ['mismo color', 'una de cada', 'mes', 'semana', 'día del mes', 'día y mes', 'guantes', 'par negro', 'par blanco', 'múltiplo',
+  'primo', ' par', 'impar', 'producto', 'suma sea impar', 'pase de', 'discos', 'billetes', 'candado', 'puerta', 'Ya se sabe', 'pero solo',
+  'rojas', 'verdes', 'negras', 'blancas', ' y ', 'dos de cada', 'tres de cada'];
+const firma = (id, t) => `${id}|${(t.match(/\d+/g) || []).join(',')}|${VOCES.filter(v => t.includes(v)).join(',')}|${(t.split('certeza')[1] || '').match(/rojas?|verdes?|negras?|blancas?/g) || ''}`;
+test('cierre: «Ahora tú» y «Así se resuelve» no repiten un ejemplo, la predicción ni el juego (400 semillas)', () => {
+  for (const I of def.ideas) {
+    const usados = new Set(I.ejemplos.map(e => firma(I.id, plano(e.enunciado))).concat([firma(I.id, I.predice.datos.join(' ') + ' ' + I.predice.pregunta), firma(I.id, I.predice.pregunta)]));
+    for (let s = 0; s < 400; s++) {
+      for (const t of [plano(I.ahoraTu.generar(s).pregunta), plano(I.resuelve.generar(s).enunciado)]) {
+        const t2 = t.replace(/^Para el sorteo de la kermés, una bolsa tiene|^Una bolsa del sorteo tiene/, 'En la tómbola hay').replace(/^En otro juego de la feria hay fichas/, 'Con cartas')
+          .replace(/^En la sala de cómputo hay (\d+) armarios con candado y sus (\d+) llaves, mezcladas\./, 'En el gimnasio hay $1 casilleros con candado y sus $2 llaves, mezcladas.');
+        assert.ok(!usados.has(firma(I.id, t2)), `${I.id} semilla ${s}: ${t}`);
+      }
+    }
+  }
+});
+test('cierre M3: el bingo de «Ahora tú», «Así se resuelve» y los ejemplos muestra los números (ninguna bolilla tapada)', () => {
+  const I = idea('condicion');
+  const figs = I.ejemplos.map(e => e.figura).filter(Boolean).map(f => f.datos);
+  for (let s = 0; s < 40; s++) figs.push(I.ahoraTu.generar(s).dibujo.datos, I.resuelve.generar(s).dibujo.datos);
+  for (const d of figs) assert.ok(d.objetos.every(o => o.t !== ''), JSON.stringify(d.meta));
+});
+test('cierre M2: Así se resuelve de la idea 3 resuelve guantes; los Datos de los guantes piden izquierdo y derecho', () => {
+  const I = idea('una-de-cada');
+  for (let s = 0; s < 50; s++) assert.match(plano(I.resuelve.generar(s).enunciado), /pares de guantes/);
+  const usable = I.predice.datos.find(d => /se (puede )?usa/.test(d));
+  assert.ok(usable && /izquierdo/.test(usable) && /derecho/.test(usable), usable);
+  for (const x of usable.split(';')) if (/se (puede )?usa/.test(x)) assert.ok(/izquierdo/.test(x) && /derecho/.test(x), x);
+});
+test('cierre M2: un guante negro que sale conserva su gris (la figura de Mira de la idea 3)', () => {
+  const I = idea('una-de-cada');
+  const svg = Kit.dibujar ? Kit.dibujar('rm-certeza', I.mira.datos, { corte: 4 }) : require('../../../nucleo/kit/piezas/rm-certeza.js').dibujar(I.mira.datos, { corte: 4 });
+  // 4 negros quedan en el cajón (derechos) y 4 izquierdos negros salieron: los 8 con su gris.
+  const grises = (svg.match(/fill="currentColor" fill-opacity="0.3"/g) || []).length;
+  assert.ok(grises >= 2 * 8, `grises: ${grises}`);
+});
+test('cierre M1: la regla del palomar multiplica por los casilleros', () => {
+  assert.ok(JSON.stringify(idea('palomar').regla.ecuacion).includes('× casilleros'));
+  assert.ok(!/menos objetos que eso/.test(idea('palomar').regla.condicion));
 });

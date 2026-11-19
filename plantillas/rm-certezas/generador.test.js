@@ -315,3 +315,21 @@ test('paleta de la rama: el problema en tinta; solo lo pedido, ya comprobado, en
     assert.ok(!/"v":"[^x]/.test(JSON.stringify(p.solucion)), `semilla ${s}: otro color en la solución`);
   }
 });
+
+// Cierre de «Certezas» (19 nov): los Datos de los guantes definen el par que se puede usar con izquierdo y derecho; los
+// del trío hablan de pesas; la explicación de «k en cada casilla» no dice que ese sea el peor caso.
+test('cierre: Datos de guantes y de tríos, y la explicación de k en cada casilla', () => {
+  const G2 = require('./generador.js');
+  for (let s = 0; s < 400; s++) {
+    const p = G2.generar(s, { idea: s % 2 ? 'una-de-cada' : 'palomar' });
+    if (p._datos.tipo === 'guantes') {
+      const usable = p.datos.find(d => /se (puede )?usa/.test(d));
+      assert.ok(usable && /izquierdo/.test(usable) && /derecho/.test(usable) && !/;/.test(usable), usable);
+    }
+    for (const a of p.alternativas) if (a.error && a.error.id === 'RMP31-k-por-casilla') assert.ok(!/en el peor caso/.test(a.error.explicacion), a.error.explicacion);
+  }
+  for (let s = 0; s < 400; s++) {
+    const p = G2.generar(s, { idea: 'parejas' });
+    if (p._datos.tipo === 'trio-suma') assert.ok(p.datos.some(d => /pesas/.test(d)) && !p.datos.some(d => /fichas/.test(d)), p.datos.join(' | '));
+  }
+});

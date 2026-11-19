@@ -64,7 +64,7 @@
         }
       ],
       "datos": [
-        "Cada par tiene un izquierdo y un derecho; un par se usa si son del mismo color.",
+        "Un par que se puede usar: un izquierdo y un derecho, los dos del mismo color.",
         "Se saca sin mirar, una por una, y lo que sale no vuelve."
       ],
       "idea": "una-de-cada"
