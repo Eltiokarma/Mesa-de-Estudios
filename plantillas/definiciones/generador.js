@@ -40,6 +40,14 @@
   const err = (id, explicacion) => ({ id, explicacion, respaldo: 'hipotesis', fuente: FUENTE });
   const lista = xs => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}`);
   const may = t => t.charAt(0).toUpperCase() + t.slice(1);
+  // Las incorrectas que se muestran: k al azar, de modo que la correcta no sea la más larga ni la más corta (auditoría,
+  // 19 nov: lo era en uno de cada cuatro problemas). Si la primera mezcla cumple, es la de siempre; si no, se vuelve a
+  // mezclar. Si ninguna mezcla sirve, el banco no cuadra y se lanza un error (generador.test.js recorre el banco).
+  function elegir(rng, malas, k, correcta, texto = x => x[0]) {
+    const sirve = xs => { const l = xs.map(x => texto(x).length), c = correcta.length; return c < Math.max(...l) && c > Math.min(...l); };
+    for (let n = 0; n < 40; n++) { const xs = rng.barajar(malas).slice(0, k); if (sirve(xs)) return xs; }
+    throw new Error(`${ID}: con «${correcta}» ninguna mezcla deja la correcta entre la más corta y la más larga`);
+  }
 
   // Las líneas de datos, las mismas de la teoría.
   const D_DEF = 'Definición: dice la clase de la cosa y el rasgo que la separa de sus vecinos.';
@@ -49,7 +57,10 @@
   const D_NECES = 'Rasgo necesario: lo tienen todos los casos, sin excepción.';
   const D_SUFI = 'Rasgo suficiente: no lo tiene ningún vecino; basta para separar.';
   const D_EJEMPLO = 'Ejemplo: un caso de la cosa. La muestra, pero no la define.';
-  const D_AJUSTA = 'Se ajusta: la palabra cumple la clase y cada rasgo de la definición, y ninguno más.';
+  const D_AJUSTA = 'Se ajusta: la palabra cumple la clase y cada rasgo de la definición, sin agregar otro.';
+  const D_OTRA = 'Define al vecino: tiene clase y rasgo, pero el rasgo es de otra cosa.';
+  const D_VECINO3 = 'El vecino: palabra de la misma clase que cambia un rasgo.';
+  const D_OTRA3 = 'Otra clase: palabra del mismo tema que no es de la clase que nombra la definición.';
   const D_GENERAL = 'La más general: cumple la clase, pero no dice los rasgos.';
   const D_ESPEC = 'La más específica: cumple todo y agrega un rasgo que la definición no dice.';
   const D_CIRC = 'Circular: la definición usa la misma palabra que define.';
@@ -74,11 +85,11 @@
       seres: { sartén: ['objeto', 'utensilio de cocina', 'para freír', 'poco hondo', 'con mango'], olla: ['objeto', 'utensilio de cocina', 'hondo', 'para hervir'], cucharón: ['objeto', 'utensilio de cocina', 'con mango', 'para servir'], plato: ['objeto', 'poco hondo'], parrilla: ['objeto', 'para freír'] },
       ops: [['Utensilio de cocina poco hondo, con mango, para freír', ['utensilio de cocina', 'poco hondo', 'para freír']], ['Utensilio de cocina con un mango largo', ['utensilio de cocina', 'con mango'], 'RVD2'],
         ['Utensilio de cocina hondo, en el que se hierve el agua', ['utensilio de cocina', 'hondo', 'para hervir'], 'RVD7'], ['Objeto de la casa que es poco hondo', ['objeto', 'poco hondo'], 'RVD6'],
-        ['Que sirve para freír los huevos del desayuno', ['para freír'], 'RVD8']] },
+        ['Que sirve para freír los huevos y el pescado del almuerzo', ['para freír'], 'RVD8']] },
     { id: 'tambor', p: 'tambor', cl: 'instrumento de percusión', sit: 'En la banda del colegio hay tambores, platillos y trompetas.',
       seres: { tambor: ['objeto', 'instrumento', 'de percusión', 'con parche', 'se golpea'], platillos: ['objeto', 'instrumento', 'de percusión', 'de metal', 'se golpea'], trompeta: ['objeto', 'instrumento', 'de viento', 'de metal'], puerta: ['objeto', 'se golpea'] },
       ops: [['Instrumento de percusión con un parche que se golpea', ['instrumento', 'de percusión', 'con parche']], ['Instrumento de percusión que se golpea', ['instrumento', 'de percusión'], 'RVD2'],
-        ['Instrumento de percusión de dos discos de metal', ['instrumento', 'de percusión', 'de metal'], 'RVD7'], ['Objeto que suena cuando se lo golpea', ['objeto', 'se golpea'], 'RVD6'],
+        ['Instrumento de percusión de dos discos de metal que chocan entre sí', ['instrumento', 'de percusión', 'de metal'], 'RVD7'], ['Objeto que suena cuando se lo golpea', ['objeto', 'se golpea'], 'RVD6'],
         ['Que suena fuerte cuando se lo golpea con un palo', ['se golpea'], 'RVD8']] },
     { id: 'balde', p: 'balde', cl: 'recipiente', sit: 'Para regar el biohuerto, la profesora pidió un balde y una regadera.',
       seres: { balde: ['objeto', 'recipiente', 'con asa', 'boca ancha', 'para llevar líquidos'], regadera: ['objeto', 'recipiente', 'con asa', 'con pico de flor', 'para llevar líquidos'], botella: ['objeto', 'recipiente', 'boca angosta', 'para llevar líquidos'], canasta: ['objeto', 'con asa'] },
@@ -95,12 +106,12 @@
     { id: 'calculadora', p: 'calculadora', cl: 'aparato', sit: 'Para el examen de Matemática se permite una calculadora, pero no el celular.',
       seres: { calculadora: ['objeto', 'aparato', 'hace cuentas', 'con teclas', 'solo cuentas'], celular: ['objeto', 'aparato', 'hace cuentas', 'con pantalla', 'llama'], reloj: ['objeto', 'aparato', 'da la hora'], ábaco: ['objeto', 'hace cuentas', 'solo cuentas'] },
       ops: [['Aparato con teclas que sirve solo para hacer cuentas', ['aparato', 'solo cuentas']], ['Aparato que puede hacer cuentas', ['aparato', 'hace cuentas'], 'RVD2'],
-        ['Aparato con pantalla que sirve para llamar y hacer cuentas', ['aparato', 'llama'], 'RVD7'], ['Objeto que se lleva al examen de Matemática', ['objeto'], 'RVD6'],
+        ['Aparato con pantalla que sirve para llamar y hacer cuentas', ['aparato', 'llama'], 'RVD7'], ['Objeto que sirve para hacer cuentas', ['objeto', 'hace cuentas'], 'RVD6'],
         ['Que sirve solo para hacer cuentas', ['solo cuentas'], 'RVD8']] },
     { id: 'ventilador', p: 'ventilador', cl: 'aparato eléctrico', sit: 'En el aula de cómputo hay un ventilador, una estufa y una impresora.',
       seres: { ventilador: ['objeto', 'aparato eléctrico', 'mueve el aire', 'aspas'], estufa: ['objeto', 'aparato eléctrico', 'da calor'], impresora: ['objeto', 'aparato eléctrico', 'imprime'], abanico: ['objeto', 'mueve el aire'] },
       ops: [['Aparato eléctrico con aspas que mueve el aire', ['aparato eléctrico', 'mueve el aire']], ['Aparato eléctrico del aula', ['aparato eléctrico'], 'RVD2'],
-        ['Aparato eléctrico que da calor en los días de frío', ['aparato eléctrico', 'da calor'], 'RVD7'], ['Objeto que se usa en el aula de cómputo', ['objeto'], 'RVD6'],
+        ['Aparato eléctrico que da calor en los días de frío', ['aparato eléctrico', 'da calor'], 'RVD7'], ['Objeto que sirve para refrescar el aire de un cuarto', ['objeto', 'mueve el aire'], 'RVD6'],
         ['Que mueve el aire para refrescar', ['mueve el aire'], 'RVD8']] },
     { id: 'hamaca', p: 'hamaca', cl: 'red o tela', sit: 'En el patio de la casa de la selva hay una hamaca y una cuerda para tender la ropa.',
       seres: { hamaca: ['objeto', 'red o tela', 'colgada', 'para echarse'], cuerda: ['objeto', 'colgada', 'para tender'], 'red de pescar': ['objeto', 'red o tela', 'para pescar'], cama: ['objeto', 'para echarse'] },
@@ -116,22 +127,24 @@
     const it = rng.elegir(DEF), [ok, ...malas] = it.ops;
     const dentro = entran(it, ok[1]);
     if (dentro.length !== 1 || dentro[0] !== it.p) throw new Error(`${ID}: en «${it.id}» la correcta deja dentro a ${dentro}`);
-    const errores = rng.barajar(malas).slice(0, examen ? 4 : 3).map(([t, pide, cod]) => {
+    const errores = elegir(rng, malas, examen ? 4 : 3, ok[0]).map(([t, pide, cod]) => {
       const d = entran(it, pide), cuelan = d.filter(n => n !== it.p);
       const nom = n => `${FEM.has(n) ? 'la' : /s$/.test(n) ? 'los' : 'el'} ${n}`;
+      // «de el» se contrae: «el rasgo del celular», «es cierto de la calculadora».
+      const del = n => `el ${nom(n).replace(/^el /, 'del ').replace(/^(la|los) /, 'de $1 ')}`;
       let ex;
-      if (cod === 'RVD7') { if (d.includes(it.p) || !cuelan.length) throw new Error(`${ID}: «${t}» no define al vecino`); ex = `Tiene clase y rasgo, pero ese rasgo es el de ${nom(cuelan[0])}: ${nom(it.p)} queda fuera.`; }
+      if (cod === 'RVD7') { if (d.includes(it.p) || !cuelan.length) throw new Error(`${ID}: «${t}» no define al vecino`); ex = `Tiene clase y rasgo, pero ese rasgo es ${del(cuelan[0])}: ${nom(it.p)} queda fuera.`; }
       else {
         if (!d.includes(it.p) || !cuelan.length) throw new Error(`${ID}: «${t}» (${cod}) no deja entrar a nadie más`);
         if (cod === 'RVD2') ex = `La clase, «${it.cl}», está bien, pero falta un rasgo que separe: también entra ${nom(cuelan[0])}.`;
-        if (cod === 'RVD6') ex = `Es cierto de ${nom(it.p)}, pero esa clase queda muy lejos: también entra ${lista(cuelan.map(nom))}.`;
+        if (cod === 'RVD6') ex = `Es cierto ${del(it.p).replace(/^el /, '')}, pero esa clase queda muy lejos: también ${cuelan.length > 1 ? 'entran' : 'entra'} ${lista(cuelan.map(nom))}.`;
         if (cod === 'RVD8') ex = `El rasgo va bien, pero no dice qué es: falta la clase, «${it.cl}». Así entra también ${nom(cuelan[0])}.`;
       }
       return Object.assign({ clave: `def:${t}`, texto: t }, err(cod, ex));
     });
     return {
       enunciado: [it.sit], pregunta: [examen ? `Pregunta del simulacro: ¿qué alternativa define mejor la palabra «${it.p}»?` : `¿Qué definición de «${it.p}» la separa de sus vecinos?`],
-      datos: examen ? [D_DEF, D_AMPLIA, D_SINCLASE] : [D_DEF, D_AMPLIA, D_VECINO],
+      datos: examen ? [D_DEF, D_AMPLIA, D_OTRA, D_SINCLASE] : [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       correcta: ok[0], errores,
       solucion: [[`Primero la clase: «${it.cl}», el grupo al que pertenece.`],
         [`Después el rasgo: «${ok[0]}» deja fuera a ${lista(Object.keys(it.seres).filter(n => n !== it.p))}.`],
@@ -180,7 +193,7 @@
     const cuelan = pide => Object.entries(it.vecinos).filter(([, r]) => tiene(r, pide)).map(([n]) => n);
     if (fuera(ok[1]).length || cuelan(ok[1]).length) throw new Error(`${ID}: en «${it.id}» la correcta no está en todos o la tiene un vecino`);
     const q = n => (/^\d+$/.test(n) ? `el ${n}` : n);
-    const errores = rng.barajar(malas).slice(0, examen ? 4 : 3).map(([t, pide, cod]) => {
+    const errores = elegir(rng, malas, examen ? 4 : 3, ok[0]).map(([t, pide, cod]) => {
       let ex;
       if (cod === 'RV56') ex = 'Nombra un caso, pero un caso no dice qué tienen todos: un ejemplo no define.';
       else if (cod === 'RVD3') { const c = cuelan(pide); if (fuera(pide).length || !c.length) throw new Error(`${ID}: «${t}» no es necesario y amplio`); ex = `Lo tienen todos los casos, pero también ${q(c[0])}: no basta para separar.`; }
@@ -235,7 +248,7 @@
   function tPalabra(rng, examen) {
     const it = rng.elegir(PAL), ws = Object.keys(it.pals), buenas = ws.filter(w => clasePal(it.defi, it.pals[w]) === 'ok');
     if (buenas.length !== 1) throw new Error(`${ID}: en «${it.id}» se ajustan ${buenas}`);
-    const errores = rng.barajar(ws.filter(w => w !== buenas[0])).slice(0, examen ? 4 : 3).map(w => {
+    const errores = elegir(rng, ws.filter(w => w !== buenas[0]), examen ? 4 : 3, buenas[0], w => w).map(w => {
       const c = clasePal(it.defi, it.pals[w]), nota = it.pals[w][2];
       const ex = { general: `«${w}» cumple la clase, pero no dice los rasgos: es la más general.`, especifica: `«${w}» cumple todo, pero agrega «${nota}», que la definición no dice: es la más específica.`,
         vecino: `«${w}» es de la misma clase, pero ${nota}: cambia el rasgo.`, otra: `«${w}» es del mismo tema, pero es ${nota}: es de otra clase.` }[c];
@@ -243,7 +256,7 @@
     });
     return {
       enunciado: [`________: ${it.t}`], pregunta: [examen ? 'Pregunta de definiciones del simulacro: ¿qué palabra se ajusta a la definición?' : '¿Qué palabra se ajusta a la definición?'],
-      datos: [D_AJUSTA, D_GENERAL, D_ESPEC], correcta: buenas[0], errores,
+      datos: [D_AJUSTA, D_GENERAL, D_ESPEC, D_VECINO3, D_OTRA3], correcta: buenas[0], errores,
       solucion: [[`Primero la clase: la definición empieza con «${it.t.split(/[ ,]/)[0].toLowerCase()}».`], [`Después cada rasgo: «${buenas[0]}» los cumple todos y no agrega ninguno.`],
         ['La más general no dice los rasgos, la más específica agrega uno, el vecino cambia uno y la de otra clase no es lo que la definición nombra.']],
       _datos: { item: it.id },
@@ -287,7 +300,7 @@
   function tFalla(rng, falta) {
     const it = rng.elegir(falta ? FALTA : FALLA), ok = it.fr.filter(f => f[1] === 'define');
     if (ok.length !== 1) throw new Error(`${ID}: en «${it.id}» hay ${ok.length} que definen`);
-    const malas = rng.barajar(it.fr.filter(f => f[1] !== 'define')).slice(0, 3);
+    const malas = elegir(rng, it.fr.filter(f => f[1] !== 'define'), 3, ok[0][0]);
     const errores = malas.map(([t, forma, nota]) => {
       const ex = { circular: `Tiene forma de definición, pero usa «${it.p}» (o su familia) para definir «${it.p}»: quien no conoce la palabra se queda igual.`,
         negativa: falta ? 'Niega, pero no nombra la falta que dice la palabra: niega otras cosas.' : 'Tiene forma de definición, pero solo dice lo que no es: entran muchas otras cosas.',
@@ -309,14 +322,14 @@
   // comprueba que la oración que define diga «es» o «se llama», que la paráfrasis empiece por la clase que esa oración
   // da y que la alternativa con «solo» agregue algo que el texto no dice.
   const TEXTO = [
-    { id: 'tarwi', t: 'tarwi', cl: 'legumbre', clA: 'una legumbre', lugar: 'Cartel de la feria de Ilave',
-      ors: [['En la feria se vende tarwi desgranado.', 'dato'], ['El tarwi es una legumbre andina de grano blanco, que se come después de quitarle el sabor amargo en agua.', 'define'],
+    { id: 'tarwi', t: 'tarwi', cl: 'legumbre', clA: 'una legumbre', lugar: 'Cartel de la feria de Lampa',
+      ors: [['El tarwi es una legumbre andina de grano blanco, que se come después de quitarle el sabor amargo en agua.', 'define'], ['En la feria se vende tarwi desgranado.', 'dato'],
         ['Tiene mucha proteína.', 'dato'], ['Por ejemplo, con él se prepara el ceviche de tarwi.', 'ejemplo']],
       ops: [['Legumbre andina de grano blanco, que se come sin su sabor amargo'], ['Grano con mucha proteína que se vende desgranado en la feria del pueblo', 'RVD15'], ['El ceviche de la feria, que se prepara con un grano andino de color blanco', 'RV56'],
         ['Legumbre andina que solo se come en ceviche', 'RV11'], ['Agua en la que se lava un grano amargo', 'RVD11']] },
     { id: 'mate', t: 'mate burilado', cl: 'calabaza', clA: 'una calabaza', lugar: 'Folleto del museo de Huancayo',
-      ors: [['En Huancayo hay muchos talleres de mate burilado.', 'dato'], ['El mate burilado es una calabaza seca con dibujos grabados con un buril.', 'define'],
-        ['Por ejemplo, el de la vitrina 4 muestra una corrida de toros.', 'ejemplo'], ['Un buen mate puede tomar varias semanas de trabajo.', 'dato']],
+      ors: [['En Huancayo hay muchos talleres de mate burilado.', 'dato'], ['Un buen mate puede tomar varias semanas de trabajo.', 'dato'],
+        ['El mate burilado es una calabaza seca con dibujos grabados con un buril.', 'define'], ['Por ejemplo, el de la vitrina 4 muestra una corrida de toros.', 'ejemplo']],
       ops: [['Calabaza seca con dibujos grabados con un buril'], ['Trabajo de varias semanas en un taller de Huancayo', 'RVD15'], ['La pieza de la vitrina 4, con una corrida de toros', 'RV56'],
         ['Calabaza que solo hacen en Huancayo', 'RV11'], ['Herramienta de punta fina', 'RVD11']],
       datos: ['Buril: herramienta de punta fina para grabar.'] },
@@ -331,8 +344,8 @@
       ops: [['Trabajo que una familia pide a sus vecinos y paga con comida'], ['Día en que los vecinos llegan muy temprano', 'RVD15'], ['La construcción de la casa de doña Juana, que se levantó este año', 'RV56'],
         ['Trabajo que solo se hace en la comunidad de Capachica, cerca del lago', 'RV11'], ['Comida y bebida que se invita a los vecinos', 'RVD11']] },
     { id: 'eclipse', t: 'eclipse', cl: 'ocultamiento', clA: 'un ocultamiento', lugar: 'Mensaje del club de astronomía del colegio',
-      ors: [['El club mirará un eclipse desde el patio.', 'dato'], ['Un eclipse es el ocultamiento de un astro porque otro se pone delante.', 'define'],
-        ['Por ejemplo, en un eclipse de sol, la Luna tapa al Sol.', 'ejemplo'], ['Nunca mire el Sol sin lentes especiales.', 'consejo']],
+      ors: [['El club mirará un eclipse desde el patio.', 'dato'], ['Nunca mire el Sol sin lentes especiales.', 'consejo'],
+        ['Un eclipse es el ocultamiento de un astro porque otro se pone delante.', 'define'], ['Por ejemplo, en un eclipse de sol, la Luna tapa al Sol.', 'ejemplo']],
       ops: [['Ocultamiento de un astro porque otro se pone delante'], ['Lo que el club de astronomía mirará desde el patio del colegio', 'RVD15'], ['El momento en que la Luna tapa al Sol', 'RV56'],
         ['Ocultamiento que solo se puede ver de noche', 'RV11'], ['Astro que se pone delante de otro astro y lo tapa por un rato', 'RVD11']] },
     { id: 'vacuna', t: 'vacuna', cl: 'sustancia', clA: 'una sustancia', lugar: 'Comunicado del puesto de salud',
@@ -348,7 +361,7 @@
     const [ok, ...malas] = it.ops;
     if (raiz(ok[0]) !== raiz(it.cl)) throw new Error(`${ID}: en «${it.id}» la paráfrasis no empieza por la clase`);
     const n = k => it.ors.findIndex(o => o[1] === k) + 1;
-    const errores = rng.barajar(malas).slice(0, examen ? 4 : 3).map(([t, cod]) => {
+    const errores = elegir(rng, malas, examen ? 4 : 3, ok[0]).map(([t, cod]) => {
       if (cod === 'RV11' && (!/\bsolo\b/.test(t) || /\bsolo\b/.test(texto))) throw new Error(`${ID}: «${t}» no agrega un «solo»`);
       if (cod === 'RVD11' && raiz(t) === raiz(it.cl)) throw new Error(`${ID}: «${t}» no cambia la clase`);
       const ex = { RVD15: 'Tiene que ver con el texto, pero toma otra oración, que da un dato o un consejo: no dice qué es.', RV56: `Es un caso, el de la oración ${n('ejemplo')}: un ejemplo no define.`,

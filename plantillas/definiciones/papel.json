@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En el aula de cómputo hay un ventilador, una estufa y una impresora. ¿Qué definición de «ventilador» la separa de sus vecinos? Datos: Definición: dice la clase de la cosa y el rasgo que la separa de sus vecinos. Muy amplia: la definición deja entrar a un vecino, que no es la cosa. Vecino: cosa parecida, de la misma clase, que no es lo que se define. Alternativas: A) Objeto que se usa en el aula de cómputo   B) Aparato eléctrico que da calor en los días de frío   C) Aparato eléctrico con aspas que mueve el aire   D) Aparato eléctrico del aula",
+      "enunciado": "En el aula de cómputo hay un ventilador, una estufa y una impresora. ¿Qué definición de «ventilador» la separa de sus vecinos? Datos: Definición: dice la clase de la cosa y el rasgo que la separa de sus vecinos. Muy amplia: la definición deja entrar a un vecino, que no es la cosa. Vecino: cosa parecida, de la misma clase, que no es lo que se define. Define al vecino: tiene clase y rasgo, pero el rasgo es de otra cosa. Alternativas: A) Objeto que sirve para refrescar el aire de un cuarto   B) Aparato eléctrico que da calor en los días de frío   C) Aparato eléctrico con aspas que mueve el aire   D) Aparato eléctrico del aula",
       "respuesta": "C) Aparato eléctrico con aspas que mueve el aire",
       "pasos": [
         "Primero la clase: «aparato eléctrico», el grupo al que pertenece.",
@@ -27,7 +27,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "________: Mueble con respaldo, para que se siente una persona. ¿Qué palabra se ajusta a la definición? Datos: Se ajusta: la palabra cumple la clase y cada rasgo de la definición, y ninguno más. La más general: cumple la clase, pero no dice los rasgos. La más específica: cumple todo y agrega un rasgo que la definición no dice. Alternativas: A) taburete   B) silla   C) pata   D) mueble",
+      "enunciado": "________: Mueble con respaldo, para que se siente una persona. ¿Qué palabra se ajusta a la definición? Datos: Se ajusta: la palabra cumple la clase y cada rasgo de la definición, sin agregar otro. La más general: cumple la clase, pero no dice los rasgos. La más específica: cumple todo y agrega un rasgo que la definición no dice. El vecino: palabra de la misma clase que cambia un rasgo. Otra clase: palabra del mismo tema que no es de la clase que nombra la definición. Alternativas: A) taburete   B) silla   C) pata   D) mueble",
       "respuesta": "B) silla",
       "pasos": [
         "Primero la clase: la definición empieza con «mueble».",
@@ -59,7 +59,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "________: Cortar la lana o el pelo a un animal. Pregunta de definiciones del simulacro: ¿qué palabra se ajusta a la definición? Datos: Se ajusta: la palabra cumple la clase y cada rasgo de la definición, y ninguno más. La más general: cumple la clase, pero no dice los rasgos. La más específica: cumple todo y agrega un rasgo que la definición no dice. Alternativas: A) esquilar alpacas   B) cortar   C) podar   D) esquilar   E) lana",
+      "enunciado": "________: Cortar la lana o el pelo a un animal. Pregunta de definiciones del simulacro: ¿qué palabra se ajusta a la definición? Datos: Se ajusta: la palabra cumple la clase y cada rasgo de la definición, sin agregar otro. La más general: cumple la clase, pero no dice los rasgos. La más específica: cumple todo y agrega un rasgo que la definición no dice. El vecino: palabra de la misma clase que cambia un rasgo. Otra clase: palabra del mismo tema que no es de la clase que nombra la definición. Alternativas: A) esquilar alpacas   B) cortar   C) podar   D) esquilar   E) lana",
       "respuesta": "D) esquilar",
       "pasos": [
         "Primero la clase: la definición empieza con «cortar».",
@@ -81,10 +81,10 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Folleto del museo de Huancayo: (1) En Huancayo hay muchos talleres de mate burilado. (2) El mate burilado es una calabaza seca con dibujos grabados con un buril. (3) Por ejemplo, el de la vitrina 4 muestra una corrida de toros. (4) Un buen mate puede tomar varias semanas de trabajo. Pregunta de comprensión de lectura: en el texto, el término «mate burilado» se entiende como Datos: Un texto define un término cuando dice qué es: «es», «se llama», «consiste en». Dato: una cifra, un lugar o una fecha del término. Lo acompaña, pero no lo define. «Solo», «siempre», «nunca»: dicen que no hay excepción. Buril: herramienta de punta fina para grabar. Alternativas: A) Trabajo de varias semanas en un taller de Huancayo   B) Calabaza seca con dibujos grabados con un buril   C) Calabaza que solo hacen en Huancayo   D) La pieza de la vitrina 4, con una corrida de toros   E) Herramienta de punta fina",
+      "enunciado": "Folleto del museo de Huancayo: (1) En Huancayo hay muchos talleres de mate burilado. (2) Un buen mate puede tomar varias semanas de trabajo. (3) El mate burilado es una calabaza seca con dibujos grabados con un buril. (4) Por ejemplo, el de la vitrina 4 muestra una corrida de toros. Pregunta de comprensión de lectura: en el texto, el término «mate burilado» se entiende como Datos: Un texto define un término cuando dice qué es: «es», «se llama», «consiste en». Dato: una cifra, un lugar o una fecha del término. Lo acompaña, pero no lo define. «Solo», «siempre», «nunca»: dicen que no hay excepción. Buril: herramienta de punta fina para grabar. Alternativas: A) Trabajo de varias semanas en un taller de Huancayo   B) Calabaza seca con dibujos grabados con un buril   C) Calabaza que solo hacen en Huancayo   D) La pieza de la vitrina 4, con una corrida de toros   E) Herramienta de punta fina",
       "respuesta": "B) Calabaza seca con dibujos grabados con un buril",
       "pasos": [
-        "La oración 2 dice «mate burilado es»: ahí está la definición.",
+        "La oración 3 dice «mate burilado es»: ahí está la definición.",
         "«Calabaza seca con dibujos grabados con un buril» conserva su clase, «calabaza», y su rasgo.",
         "Las otras toman un dato o un ejemplo, cambian la clase o agregan un «solo»."
       ]

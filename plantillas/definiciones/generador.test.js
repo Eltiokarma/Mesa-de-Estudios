@@ -167,3 +167,32 @@ test('la correcta no es siempre la más larga ni la más corta', () => {
     assert.ok(o.corta / o.n < 0.45, `${t}: la correcta es la más corta en ${Math.round(100 * o.corta / o.n)} %`);
   }
 });
+
+// ---------- Auditoría (19 nov; rutinas/auditoria/razonamiento-verbal.definiciones.md) ----------
+// Fallan con el generador de antes y pasan con este.
+test('auditoría: en ningún problema la correcta es la más larga ni la más corta (200 semillas por idea)', () => {
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 200; s++) {
+    const p = gen.generar(`aud-${s}`, { idea }), l = p.alternativas.map(a => a.texto.length), c = p.respuesta.texto.length;
+    assert.ok(c < Math.max(...l) && c > Math.min(...l), `${idea} ${p._datos.tipo} ${p._datos.item}: la correcta mide ${c}; ${l}`);
+  }
+});
+test('auditoría: la clase lejana (RVD6) pide también un rasgo, y lo que dice su explicación se cumple en la situación', () => {
+  for (const it of gen.DEF) for (const [t, pide, cod] of it.ops) if (cod === 'RVD6') {
+    assert.ok(pide.length >= 2, `${it.id}: «${t}» no pide ningún rasgo: deja entrar a todo, aun a lo que la situación excluye`);
+  }
+  const calc = gen.DEF.find(x => x.id === 'calculadora');
+  assert.ok(!calc.ops.some(([t]) => /examen/.test(t)), 'el celular no se lleva al examen: no entra en «objeto que se lleva al examen»');
+});
+test('auditoría: la oración que define no está siempre en el mismo lugar del texto', () => {
+  const lugares = new Set(gen.TEXTO.map(it => it.ors.findIndex(o => o[1] === 'define')));
+  assert.ok(lugares.size >= 3, [...lugares].join());
+});
+test('auditoría: «entra» o «entran» según cuántos se cuelan, y «del» en vez de «de el»', () => {
+  for (let s = 0; s < 300; s++) {
+    const p = gen.generar(s, { idea: 'genero-diferencia' });
+    for (const a of p.alternativas) if (a.error) {
+      assert.ok(!/\bde el\b/.test(a.error.explicacion), a.error.explicacion);
+      assert.ok(!/también entra [^.:]+ y (el|la|los|las) /.test(a.error.explicacion), a.error.explicacion);
+    }
+  }
+});

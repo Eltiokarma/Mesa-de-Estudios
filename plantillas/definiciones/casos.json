@@ -1,7 +1,7 @@
 {
  "plantilla": "definiciones",
  "nota": "entrada: tipo e ítem del banco; esperado: la alternativa correcta y las incorrectas mostradas con su código. Las semillas se generan con { idea } (cuatro por idea).",
- "verificacion": "Script aparte (19 nov 2026, scratchpad e5-rv/casos-def.js, fuera del repo) con la clave de los 40 ítems escrita a mano al leer cada uno: la definición justa, el rasgo de todos, la palabra que se ajusta, la frase que define y la paráfrasis del texto. Los 20 casos cuadran con el generador. Además, generador.test.js recalcula 600 problemas por otro camino (conjuntos de rasgos, un clasificador de frases por su forma y la cercanía de palabras con cada oración).",
+ "verificacion": "Script aparte (19 nov 2026, scratchpad e5-rv/casos-def.js, fuera del repo) con la clave de los 40 ítems escrita a mano al leer cada uno: la definición justa, el rasgo de todos, la palabra que se ajusta, la frase que define y la paráfrasis del texto. Los 20 casos cuadran con el generador. Además, generador.test.js recalcula 600 problemas por otro camino (conjuntos de rasgos, un clasificador de frases por su forma y la cercanía de palabras con cada oración). Auditoría (19 nov 2026): caso-0, caso-2 y caso-3 cambiaron porque cambiaron tres incorrectas del banco (la clase lejana del ventilador y de la calculadora, que no separaba lo que el texto dice, y la sin clase de la sartén, alargada); se revisaron a mano: cada una deja entrar al vecino que dice su explicación.",
  "casos": [
   {
    "semilla": "caso-0",
@@ -14,7 +14,7 @@
     "texto": "Aparato eléctrico con aspas que mueve el aire",
     "errores": [
      [
-      "Objeto que se usa en el aula de cómputo",
+      "Objeto que sirve para refrescar el aire de un cuarto",
       "RVD6"
      ],
      [
@@ -80,7 +80,7 @@
       "RVD7"
      ],
      [
-      "Objeto que se lleva al examen de Matemática",
+      "Objeto que sirve para hacer cuentas",
       "RVD6"
      ]
     ]
@@ -105,7 +105,7 @@
       "RVD6"
      ],
      [
-      "Que sirve para freír los huevos del desayuno",
+      "Que sirve para freír los huevos y el pescado del almuerzo",
       "RVD8"
      ],
      [

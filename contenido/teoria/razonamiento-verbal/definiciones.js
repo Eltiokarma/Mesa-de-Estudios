@@ -7,7 +7,7 @@
  *   3. definicion-a-palabra  «De la definición a la palabra»   nueva (la pregunta de la UNI, como hipótesis de formato)
  *   4. definicion-defectuosa «Cuando la definición no define»  nueva
  *   5. definicion-en-texto   «La definición dentro del texto»  nueva (como llega en San Marcos)
- * La unidad NO lleva calidad: 2: la marca la sesión después del lector en frío y el auditor. definiciones.test.js
+ * La unidad lleva calidad: 2 desde el 19 nov, después del lector en frío y el auditor. definiciones.test.js
  * comprueba que pasaría el validador con esa marca.
  * Objeto de la primera pantalla en verbal: el texto en su soporte, con quién lo escribe y para quién (rv-soporte; la
  * ficha de la definición con la tabla de casos es rv-definicion). Textos propios, de situaciones de Juliaca, Puno y el
@@ -45,6 +45,12 @@
  * como un mundo chico de seres con sus rasgos y cada alternativa como una condición, y comprueba que solo una deja
  * dentro justo lo que debe, que cada distractor falla por lo que dice su explicación y que la correcta no es la más
  * larga ni la más corta.
+ * Versión 0.4.1 (19 nov, auditoría y dos lectores en frío; rutinas/auditoria/razonamiento-verbal.definiciones.md):
+ * «hermano» salió de la hoja de «muy estrecha» (dejaba fuera al medio hermano: dos correctas); el Misti pasó a la
+ * vicuña (un lugar no define); las listas de candidatas ya no ponen la correcta como la más larga o la más corta; en la
+ * idea 3 la correcta ya no es casi siempre la palabra que está dentro de otra alternativa, y el juego ya no trae la más
+ * específica (la estrena la predicción); en la idea 5 la oración que define cambia de lugar; cada falla que nombra un
+ * resuelto está en sus Datos (`completar`, al final); Ilave pasó a Lampa (la I se lee como l).
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -168,7 +174,7 @@
       sop: cuaderno('Cuaderno de Rosa', 'Glosario: termómetro', 'Rosa', 'la práctica de Ciencia y Tecnología', [
         'Instrumento de medida.', 'Instrumento que mide el peso de un cuerpo.', 'Instrumento que mide la temperatura.']),
       enunciado: 'Rosa escribió tres definiciones de «termómetro» para su glosario. ¿Con cuál se queda: la 1, la 2 o la 3?',
-      datos: [D_DEF, D_AMPLIA, D_VECINO],
+      datos: [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       tengo: 'Las tres empiezan por la misma clase, «instrumento». Los vecinos del termómetro son otros instrumentos de medida: la balanza y la regla.',
       malas: ['La 1 no trae rasgo: entran la balanza y la regla, ', prop('muy amplia'), '. La 2 da el rasgo de la balanza: ', prop('define al vecino'), '.'],
       bien: ['La 3 dice la clase, «instrumento», y el rasgo, «que mide la temperatura»: ', cubre('entra solo el termómetro'), '.'],
@@ -178,7 +184,7 @@
       sop: cuaderno('Cuaderno de Diego', 'Glosario: semáforo', 'Diego', 'la semana de la seguridad vial', [
         'Aparato de luces que ordena el paso en un cruce.', 'Aparato de luces de la calle.', 'Aparato de luces que alumbra la calle durante toda la noche.']),
       enunciado: 'Diego tiene tres definiciones de «semáforo» en su cuaderno. ¿Cuál deja entrar al semáforo y a ningún vecino?',
-      datos: [D_DEF, D_AMPLIA, D_VECINO],
+      datos: [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       tengo: 'Las tres dicen la clase, «aparato de luces». En la calle hay otro aparato de luces: el poste de alumbrado.',
       malas: ['La 2 no trae rasgo: entra el poste de alumbrado, ', prop('muy amplia'), '. La 3 da el rasgo del poste: ', prop('define al vecino'), '.'],
       bien: ['La 1 dice la clase, «aparato de luces», y el rasgo, «que ordena el paso en un cruce»: ', cubre('entra solo el semáforo'), '.'],
@@ -215,14 +221,14 @@
   const AHORA = [
     { sop: pagina('En la mesa', [['cuchillo', 'Cubierto con filo, para cortar.'], ['tenedor', 'Cubierto con dientes, para pinchar.'], ['cuchara', '________']]),
       pregunta: 'En esta página falta la definición de «cuchara». ¿Cuál deja entrar a la cuchara y a ninguno de sus vecinos?',
-      datos: [D_DEF, D_AMPLIA, D_VECINO],
+      datos: [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       ok: 'Cubierto con una parte honda, para tomar líquidos', sol: 'Dice la clase, «cubierto», y el rasgo que deja fuera al cuchillo y al tenedor.',
       m: [['Cubierto de la mesa', 'RVD2', 'La clase está bien, pero sin rasgo también entran el cuchillo y el tenedor.'],
         ['Cubierto con dientes, para pinchar la comida', 'RVD7', 'Tiene clase y rasgo, pero ese rasgo es el del tenedor.'],
         ['Objeto de metal o de madera que se usa a la hora de comer', 'RVD6', 'Es cierto, pero «objeto» queda muy lejos: también entran el plato y la olla.']] },
     { sop: pagina('Instrumentos', [['guitarra', 'Instrumento de seis cuerdas, de caja grande.'], ['quena', 'Instrumento de viento, de caña.'], ['charango', '________']]),
       pregunta: 'En esta página falta la definición de «charango». ¿Cuál lo deja entrar y deja fuera a sus vecinos?',
-      datos: [D_DEF, D_AMPLIA, D_VECINO],
+      datos: [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       ok: 'Instrumento de cuerda pequeño, con cinco pares de cuerdas', sol: 'Dice la clase, «instrumento de cuerda», y el rasgo que deja fuera a la guitarra.',
       m: [['Instrumento musical de los Andes', 'RVD2', 'La clase está bien, pero sin un rasgo que separe también entra la quena.'],
         ['Instrumento de viento, hecho de caña', 'RVD7', 'Tiene clase y rasgo, pero ese rasgo es el de la quena.'],
@@ -230,7 +236,7 @@
     { sop: { soporte: 'folleto', lugar: 'Folleto del muelle de Puno', hojas: [{ id: 'f', titulo: 'Información para visitantes', de: 'la caseta del muelle', para: 'visitantes', oraciones: ora('f', [
         'Desde el muelle de Puno salen lanchas a las islas de Taquile y Amantaní.', 'A la península de Capachica también se llega por carretera.']) }] },
       pregunta: 'El folleto habla de islas y de una península. ¿Qué definición de «isla» deja fuera a la península?',
-      datos: [D_DEF, D_AMPLIA, D_VECINO],
+      datos: [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       ok: 'Porción de tierra rodeada de agua por todas partes', sol: 'Dice la clase, «porción de tierra», y el rasgo que deja fuera a la península.',
       m: [['Porción de tierra que está junto al agua', 'RVD2', 'La clase está bien, pero ese rasgo no separa: también entra la península.'],
         ['Porción de tierra rodeada de agua por todos lados menos uno', 'RVD7', 'Tiene clase y rasgo, pero ese rasgo es el de la península.'],
@@ -238,7 +244,7 @@
     { sop: { soporte: 'mensaje', lugar: 'Familias de 2.º C', hojas: [{ id: 'm', de: 'la tutora', para: 'familias de 2.º C', oraciones: ora('m', [
         'Para mañana se anuncia una helada.', 'Manden a sus hijos con un termo de mate caliente.']) }] },
       pregunta: 'La tutora pide un termo. ¿Qué definición de «termo» lo separa de una botella cualquiera?',
-      datos: [D_DEF, D_AMPLIA, D_VECINO],
+      datos: [D_DEF, D_AMPLIA, D_VECINO, D_OTRA],
       ok: 'Recipiente que mantiene la temperatura de lo que guarda', sol: 'Dice la clase, «recipiente», y el rasgo que deja fuera a la botella y a la jarra.',
       m: [['Recipiente para llevar líquidos', 'RVD2', 'La clase está bien, pero ese rasgo no separa: también entran la botella y la jarra.'],
         ['Recipiente de metal en el que se cocina', 'RVD7', 'Tiene clase y rasgo, pero ese rasgo es el de la olla.'],
@@ -303,7 +309,7 @@
       solucion: [
         { texto: ['La clase es ', cubre('«llegada al colegio»'), ': dice qué es una tardanza. Una llegada puntual también está en esa clase.'] },
         { texto: ['El rasgo es ', cubre('«después de las 7:45 de la mañana»'), ': deja fuera la llegada puntual.'] }],
-      respuesta: [justo('Clase: llegada al colegio'), '; ', justo('rasgo: pasada la hora que fija el aviso')] },
+      respuesta: [justo('Clase: llegada al colegio'), '; ', justo('rasgo: después de la hora fijada')] },
     { nivel: 1, titulo: 'Dos frases para el triángulo',
       enunciado: 'Rosa escribió dos frases para «triángulo» en su cuaderno. ¿Cuál de las dos dice la clase: la 1 o la 2?',
       datos: [D_DEF, 'Polígono: figura plana y cerrada, de lados rectos.'],
@@ -313,17 +319,17 @@
         { texto: ['La 2 empieza por la clase, ', cubre('«Polígono»'), ', y después da el rasgo, ', cubre('«de tres lados»'), '.'] }],
       respuesta: [justo('La 2'), ': «polígono» es la clase'] },
     { nivel: 1, titulo: 'Tres clases para el cuy',
-      enunciado: 'Para definir «cuy», ¿cuál es la clase más cercana: «ser vivo», «roedor» o «animal»?',
+      enunciado: 'Para definir «cuy», ¿cuál es la clase más cercana: «ser vivo», «ave», «roedor» o «animal»?',
       datos: [D_CERCANA, 'Roedor: animal con dientes delanteros que no dejan de crecer, como el ratón.'],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel de la feria agropecuaria', hojas: [{ id: 'h', titulo: 'Concurso del cuy', de: 'la comisión de la feria', para: 'criadores', oraciones: ora('h', [
         'El domingo se premiará al cuy de mayor peso.', 'Cada criador puede presentar hasta tres cuyes.']) }] }),
       solucion: [
-        { texto: ['Las tres clases contienen al cuy. «Ser vivo» y «animal» ', prop('son muy amplias'), ': en ellas también entran la alpaca y la gallina.'] },
-        { texto: [cubre('«Roedor»'), ' es la más chica de las tres: ya deja fuera a la alpaca y a la gallina.'] }],
+        { texto: ['«Ave» ', prop('no contiene al cuy'), ': no tiene plumas. «Ser vivo» y «animal» sí, pero ', prop('son muy amplias'), ': también entran la alpaca y la gallina.'] },
+        { texto: [cubre('«Roedor»'), ' es la más chica que contiene al cuy: ya deja fuera a la alpaca y a la gallina.'] }],
       respuesta: [justo('«Roedor»'), ': la clase más cercana'] },
 
     { nivel: 2, titulo: 'La bicicleta sin su rasgo',
-      enunciado: 'A esta definición de «bicicleta» le falta un rasgo. ¿Qué vecino se cuela, y cuál lo deja fuera: «con asiento», «con timón» o «que se mueve con pedales»?',
+      enunciado: 'A esta definición de «bicicleta» le falta un rasgo. ¿Qué vecino se cuela, y cuál lo deja fuera: «con asiento», «con un timón para doblar en las esquinas» o «que se mueve con pedales»?',
       datos: [D_DEF, D_AMPLIA, D_VECINO],
       figura: fig(cuaderno('Cuaderno de Diego', 'Glosario de Educación Física', 'Diego', 'la exposición del jueves', ['Bicicleta: vehículo de dos ruedas.'])),
       solucion: [
@@ -331,7 +337,7 @@
         { texto: ['La motocicleta también tiene asiento y timón: esos rasgos no la separan. Pedales no tiene: ', cubre('«que se mueve con pedales»'), ' la deja fuera.'] }],
       respuesta: [justo('Se cuela la motocicleta'), '; la deja fuera «que se mueve con pedales»'] },
     { nivel: 2, titulo: 'El campeonato del sábado',
-      enunciado: 'Con la definición de la oración 2, ¿entra un equipo de seis varones? ¿Qué rasgo falta: «con uniforme», «con mujeres y varones» o «del mismo salón»?',
+      enunciado: 'Con la definición de la oración 2, ¿entra un equipo de seis varones? ¿Qué rasgo falta: «con uniforme del mismo color», «con mujeres y varones» o «del mismo salón»?',
       datos: [D_DEF, D_AMPLIA],
       figura: fig({ soporte: 'mural', lugar: 'Mural del colegio', hojas: [{ id: 'h', titulo: 'Convocatoria del municipio escolar', para: 'secciones de 4.º y 5.º', oraciones: ora('h', [
         'El sábado habrá un campeonato de vóley para equipos mixtos.', 'Equipo mixto: equipo de seis jugadores.']) }] }),
@@ -340,20 +346,20 @@
         { texto: ['Un equipo de seis varones puede tener uniforme y ser del mismo salón. Lo que no tiene es ', cubre('mujeres y varones'), '.'] }],
       respuesta: [justo('Sí entra'), '; falta el rasgo «con mujeres y varones»'] },
     { nivel: 2, titulo: 'La clase del chullo',
-      enunciado: '¿Qué frase define «chullo» con la clase más cercana: «prenda de lana», «gorro de lana con orejeras» o «cosa que abriga la cabeza»?',
+      enunciado: '¿Qué frase define «chullo» con la clase más cercana: «prenda de lana», «gorro de lana con orejeras» o «cosa que abriga la cabeza en el frío»?',
       datos: [D_DEF, D_CERCANA, D_AMPLIA],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel en un puesto de tejidos', hojas: [{ id: 'h', titulo: 'Chullos de alpaca', de: 'la asociación de tejedoras', para: 'visitantes', oraciones: ora('h', [
-        'Cada chullo se teje a mano.', 'Sus dibujos cambian de una comunidad a otra.']) }] }),
+        'Cada chullo se teje a mano, con orejeras para el frío.', 'Sus dibujos cambian de una comunidad a otra.']) }] }),
       solucion: [
-        { texto: ['Con «prenda de lana» entra la chompa, y con «cosa que abriga la cabeza», el sombrero: las dos clases quedan lejos y son ', prop('muy amplias'), '.'] },
+        { texto: ['Con «prenda de lana» entra la chompa, y con «cosa que abriga la cabeza en el frío», el sombrero: las dos clases quedan lejos y son ', prop('muy amplias'), '.'] },
         { texto: [cubre('«Gorro»'), ' es la clase más cercana, y ', cubre('«con orejeras»'), ' lo separa de los otros gorros.'] }],
       respuesta: [justo('«Gorro de lana con orejeras»')] },
     { nivel: 2, titulo: 'El lago y sus vecinos',
-      enunciado: 'En esta definición de «lago» se cuelan el río y el mar. ¿Con cuál queda justa: «muy grande», «que corre hacia el mar» o «que no corre, rodeada de tierra»?',
+      enunciado: 'En esta definición de «lago» se cuelan el río y el mar. ¿Con cuál queda justa: «que no corre, rodeada de tierra», «muy grande» o «que corre por un cauce hasta llegar al mar»?',
       datos: [D_DEF, D_AMPLIA, D_OTRA],
       figura: fig(cuaderno('Cuaderno de Rosa', 'Glosario de Ciencias Sociales', 'Rosa', 'la práctica del martes', ['Lago: masa de agua.'])),
       solucion: [
-        { texto: ['«Muy grande» no separa: el mar también lo es. «Que corre hacia el mar» es el rasgo del río: ', prop('define al vecino'), '.'] },
+        { texto: ['«Muy grande» no separa: el mar también lo es. «Que corre por un cauce hasta llegar al mar» es el rasgo del río: ', prop('define al vecino'), '.'] },
         { texto: ['El río corre y el mar no está rodeado de tierra: ', cubre('«que no corre, rodeada de tierra»'), ' deja fuera a los dos.'] }],
       respuesta: [justo('«Masa de agua que no corre, rodeada de tierra»')] },
     { nivel: 2, titulo: 'El concurso de cuentos',
@@ -400,14 +406,14 @@
       respuesta: [buena('E'), ': terraza de cultivo en una ladera, con muro de piedra'] },
     { nivel: 3, titulo: 'El género próximo',
       enunciado: 'Pregunta 34 del simulacro: «En la definición, el género próximo es». ¿Qué alternativa es la correcta?',
-      datos: [D_GENERO, D_DEF],
-      figura: fig(simDef(34, 'En la definición, el género próximo es', ['barómetro.', 'instrumento.', 'que mide la presión del aire.', 'la presión del aire.', 'mide.'],
-        ['Barómetro: instrumento que mide la presión del aire.'])),
+      datos: [D_GENERO, D_DEF, D_CERCANA],
+      figura: fig(simDef(34, 'En la definición, el género próximo es', ['objeto.', 'instrumento de medida.', 'que indica la presión del aire.', 'instrumento.', 'barómetro.'],
+        ['Barómetro: instrumento de medida que indica la presión del aire.'])),
       solucion: [
-        { texto: [mala('A'), ' es la palabra que se define. ', mala('C'), ' es la diferencia específica: separa al barómetro de otros instrumentos.'] },
-        { texto: [mala('D'), ' y ', mala('E'), ' son pedazos del rasgo: ninguno responde «¿qué es?».'] },
-        { texto: [buena('B'), ' responde «¿qué es un barómetro?»: ', cubre('un instrumento'), '. Es la clase más cercana.'] }],
-      respuesta: [buena('B'), ': instrumento'] },
+        { texto: [mala('E'), ' es la palabra que se define. ', mala('C'), ' es la diferencia específica: separa al barómetro de otros instrumentos de medida.'] },
+        { texto: [mala('A'), ' y ', mala('D'), ' también contienen al barómetro, pero ', prop('quedan lejos'), ': en «instrumento» entra la guitarra, que no mide nada.'] },
+        { texto: [buena('B'), ' es la clase que da la definición, y la más cercana: ', cubre('un instrumento de medida'), '.'] }],
+      respuesta: [buena('B'), ': instrumento de medida'] },
     { nivel: 3, titulo: 'Cinco definiciones cortas',
       enunciado: 'Pregunta 35 del simulacro: «¿Cuál de estas definiciones es muy amplia?». ¿Qué alternativa es la correcta?',
       datos: [D_DEF, D_AMPLIA, D_VECINO],
@@ -429,10 +435,10 @@
       tarjetas: [
         { titulo: 'Un cartel que necesita definir', texto: 'En un paradero de Juliaca, la municipalidad pegó este cartel para los conductores. ¿Le toca al tricitaxi? ¿Y a la motocarga? Para saberlo, el cartel tiene que decir qué es un mototaxi: tiene que dar su definición.',
           pieza: 'rv-soporte', dibujo: { datos: CARTEL, estado: {} } },
-        { titulo: 'La clase: ¿qué es?', texto: 'Una definición empieza por la clase: el grupo al que pertenece la cosa. Un cuy es un animal; una quena, un instrumento musical. La clase responde «¿qué es?», pero en ella todavía entran muchas cosas.' },
-        { titulo: 'Los vecinos se cuelan', texto: 'Los vecinos son las cosas parecidas, de la misma clase. Si la ficha de «quena» solo dice su clase, la quena entra (turquesa) y sus vecinos se cuelan: entran sin ser quenas (naranja). La pizarra queda fuera (gris).',
+        { titulo: 'La clase: ¿qué es?', texto: 'Una definición empieza por la clase, el grupo de la cosa: un cuy es un animal. La clase responde «¿qué es?», pero en ella entran muchas cosas. Por eso sigue un rasgo: algo que la cosa tiene y las demás no.' },
+        { titulo: 'Los vecinos se cuelan', texto: 'Los vecinos son las cosas parecidas, de la misma clase. Si la ficha de «quena» solo dice su clase, la quena entra (turquesa) y sus vecinos se cuelan: entran sin ser quenas (naranja). Esa ficha es muy amplia. La pizarra queda fuera (gris).',
           pieza: 'rv-definicion', dibujo: { datos: FIG_LEE, estado: EST_LEE } },
-        { titulo: 'Qué mirar al jugar', texto: 'Debajo del cartel está la ficha de «mototaxi», con su clase y dos rasgos, y la tabla de los vehículos del paradero. Toca una pieza de la ficha para cambiarla y mira en la tabla quién entra.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Debajo del cartel está la ficha de «mototaxi», con su clase y dos rasgos, y la tabla de los vehículos del paradero. Toca la clase o la casilla de un rasgo para cambiarlos, y mira en la tabla quién entra.' },
       ],
     },
     actividad: 'Armar la definición de «mototaxi» y ver qué vehículos del paradero entran.',
@@ -445,7 +451,7 @@
         logrado: val => { const r = medir(condDe(val), esMoto); return !r.cuelan.length && !r.faltan.length; },
         bien: 'Listo: con la clase cercana y los dos rasgos no se cuela ninguno.',
       },
-      voz: 'Cambia una sola pieza cada vez y mira quién entra en la tabla.',
+      voz: 'Toca la clase o la casilla de un rasgo, una por vez, y mira la tabla.',
       leyenda: [
         { s: 'Clase', t: 'el grupo: responde «¿qué es?»' },
         { s: 'Rasgo', t: 'lo que lo separa de sus vecinos' },
@@ -453,7 +459,6 @@
         { s: prop('naranja'), t: 'vehículo que se cuela, o la definición amplia' },
         { s: 'gris', t: 'vehículo que queda fuera' },
         { s: justo('violeta'), t: 'la definición que quedó justa' },
-        { s: 'botón marcado', t: 'lo que elegiste; no es color del texto' },
       ],
       controles: [
         { id: 'g', etiqueta: 'Clase', opciones: Object.entries(CLASES).map(([valor, c]) => ({ valor, texto: c.t })) },
@@ -479,7 +484,7 @@
     mira: {
       datos: FIG_CARGA,
       pasos: [
-        { estado: estCarga('clase', { nuevo: ['g', ...cuelanCarga('clase').map(v => v.id)] }), texto: 'Con la clase «vehículo» también entra la camioneta: esa clase queda lejos.',
+        { estado: estCarga('clase', { nuevo: ['g', ...cuelanCarga('clase').map(v => v.id)] }), texto: 'Con «vehículo» también entra la camioneta: no es la clase más cercana.',
           ecuacion: [prop('muy amplia'), ': se cuela ', prop(lista(cuelanCarga('clase').map(v => v.corto)))] },
         { estado: estCarga('rasgo', { nuevo: ['g', ...cuelanCarga('rasgo').map(v => v.id)] }), texto: 'Con la clase cercana y un solo rasgo, se cuelan los dos mototaxis.',
           ecuacion: [prop('muy amplia'), ': se cuelan ', prop(`${cuelanCarga('rasgo').length} mototaxis`)] },
@@ -600,11 +605,11 @@
   const lecturaAve = val => {
     const r = medirAve(val.r);
     if (!r.faltan.length && !r.cuelan.length) return [justo('Justa'), ': entran ', cubre(`las ${N_AVES} aves`), ' y nadie más'];
-    const out = [];
-    if (r.faltan.length) out.push(prop('Muy estrecha'), ': fuera ', prop(lista(r.faltan.map(a => a.corto))));
-    else out.push(prop('Muy amplia'));
-    if (r.cuelan.length) out.push(r.faltan.length ? '; se cuela ' : ': se cuela ', prop(lista(r.cuelan.map(a => a.corto))));
-    return out;
+    // Una definición puede fallar por los dos lados a la vez (lector en frío A, 19 nov): la lectura dice las dos.
+    const fuera = r.faltan.length === 1 ? r.faltan[0].corto : `${r.faltan.length} aves`, cuela = lista(r.cuelan.map(a => a.corto));
+    if (r.faltan.length && r.cuelan.length) return [prop('Muy estrecha y muy amplia'), ': fuera ', prop(fuera), ', se cuela ', prop(cuela)];
+    if (r.faltan.length) return [prop('Muy estrecha'), ': fuera ', prop(lista(r.faltan.map(a => a.corto)))];
+    return [prop('Muy amplia'), ': se cuela ', prop(cuela)];
   };
 
   // «Así se resuelve»: tres cuadernos o fichas con tres definiciones numeradas y una hoja con cinco alternativas. La
@@ -657,33 +662,33 @@
   // amplia), RV56 (un ejemplo en lugar del rasgo) y RVD4 (agrega un rasgo de más: muy estrecha).
   const lamina = (lugar, titulo, de, casos) => ({ soporte: 'mural', lugar, hojas: [{ id: 'k', titulo, de, para: 'los visitantes', oraciones: ora('k', casos) }] });
   const AHORA_NEC = [
-    { sop: lamina('Mural de la feria de ciencias', 'Peces', '1.º A', ['La trucha vive en ríos y lagos.', 'La sardina vive en el mar.', 'El caballito de mar nada de pie.']),
-      pregunta: 'La lámina muestra tres peces. ¿Qué rasgo de «pez» está en todos y no en un animal que no es pez?', datos: [D_NECES, D_SUFI, D_EJEMPLO],
+    { sop: lamina('Mural de la feria de ciencias', 'Peces', '1.º A', ['La trucha vive en ríos y lagos, y respira por branquias.', 'La sardina vive en el mar y respira por branquias.', 'El caballito de mar nada de pie y respira por branquias.']),
+      pregunta: 'La lámina muestra tres peces. ¿Qué rasgo de «pez» está en todos y no en un animal que no es pez?', datos: [D_NECES, D_SUFI, D_EJEMPLO, 'El pato nada, pero respira con pulmones.'],
       ok: 'Respira por branquias toda su vida', sol: 'La trucha, la sardina y el caballito de mar respiran por branquias; el pato, no.',
       m: [['Vive en el mar', 'RVD1', 'Muchos peces son de mar, pero la trucha de la lámina vive en ríos y lagos.'],
         ['Nada en el agua', 'RVD3', 'Todos los peces nadan, pero también nada el pato, que no es pez.'],
         ['Es como la sardina que se vende en el mercado', 'RV56', 'La sardina es un pez, pero un caso no dice qué tienen todos.']] },
     { sop: cuaderno('Cuaderno de Rosa', 'Matemática: triángulos', 'Rosa', 'la práctica del miércoles', ['El equilátero tiene sus tres lados iguales.', 'El rectángulo tiene un ángulo recto.', 'El obtusángulo tiene un ángulo mayor que el recto.']),
-      pregunta: 'Rosa anotó tres triángulos. ¿Qué rasgo de «triángulo» está en los tres y no en otra figura?', datos: [D_NECES, D_SUFI, D_EJEMPLO],
+      pregunta: 'Rosa anotó tres triángulos. ¿Qué rasgo de «triángulo» está en los tres y no en otra figura?', datos: [D_NECES, D_SUFI, D_EJEMPLO, 'Cuadrado: figura cerrada de cuatro lados rectos e iguales.'],
       ok: 'Tiene exactamente tres lados', sol: 'Los tres triángulos del cuaderno tienen tres lados; el cuadrado tiene cuatro.',
       m: [['Tiene un ángulo recto', 'RVD1', 'El triángulo rectángulo lo tiene, pero el equilátero no: no está en todos.'],
         ['Es una figura cerrada de lados rectos', 'RVD3', 'Todo triángulo lo es, pero también el cuadrado: no basta.'],
         ['Es como la escuadra de la clase', 'RV56', 'La escuadra tiene esa forma, pero un caso no dice qué tienen todos.']] },
-    { sop: lamina('Mural de la feria de ciencias', 'Mamíferos', '3.º B', ['El perro corre en cuatro patas.', 'La ballena nada en el mar.', 'El murciélago vuela de noche.']),
-      pregunta: 'La lámina muestra tres mamíferos. ¿Qué rasgo de «mamífero» está en los tres y no en un ave?', datos: [D_NECES, D_SUFI, D_EJEMPLO],
+    { sop: lamina('Mural de la feria de ciencias', 'Mamíferos', '3.º B', ['El perro corre en cuatro patas; la perra da leche a sus cachorros.', 'La ballena nada en el mar y da leche a su cría.', 'El murciélago vuela de noche; la hembra da leche a sus crías.']),
+      pregunta: 'La lámina muestra tres mamíferos. ¿Qué rasgo de «mamífero» está en los tres y no en un ave?', datos: [D_NECES, D_SUFI, D_EJEMPLO, 'Las aves respiran con pulmones y no dan leche a sus crías.'],
       ok: 'Alimenta a sus crías con leche', sol: 'El perro, la ballena y el murciélago dan leche a sus crías; un ave, no.',
       m: [['Camina en cuatro patas', 'RVD1', 'El perro sí, pero la ballena y el murciélago de la lámina no.'],
         ['Respira aire por los pulmones', 'RVD3', 'Los tres lo hacen, pero también las aves: no basta.'],
         ['Es un animal como el perro de la casa', 'RV56', 'El perro es un mamífero, pero un caso no dice qué tienen todos.']] },
-    { sop: lamina('Mural de la feria de ciencias', 'Insectos', '2.º A', ['La hormiga obrera no tiene alas.', 'La mariposa vuela de flor en flor.', 'El escarabajo camina por el suelo.']),
-      pregunta: 'La lámina muestra tres insectos. ¿Qué rasgo de «insecto» está en los tres y no en una araña?', datos: [D_NECES, D_SUFI, D_EJEMPLO, 'La araña tiene ocho patas.'],
+    { sop: lamina('Mural de la feria de ciencias', 'Insectos', '2.º A', ['La hormiga obrera tiene seis patas y no tiene alas.', 'La mariposa tiene seis patas y vuela de flor en flor.', 'El escarabajo tiene seis patas y camina por el suelo.']),
+      pregunta: 'La lámina muestra tres insectos. ¿Qué rasgo de «insecto» está en los tres y no en una araña?', datos: [D_NECES, D_SUFI, D_EJEMPLO, 'La araña es pequeña y tiene ocho patas.'],
       ok: 'Tiene seis patas', sol: 'La hormiga, la mariposa y el escarabajo tienen seis patas; la araña, ocho.',
       m: [['Tiene alas', 'RVD1', 'La mariposa sí, pero la hormiga obrera de la lámina no tiene alas.'],
         ['Es un animal pequeño', 'RVD3', 'Los tres lo son, pero también la araña, que no es un insecto.'],
         ['Es como la mosca que entra a la cocina', 'RV56', 'La mosca es un insecto, pero un caso no dice qué tienen todos.']] },
     { sop: { soporte: 'cartel', lugar: 'Cartel del taller de música', hojas: [{ id: 'k', titulo: 'Instrumentos de viento', de: 'el profesor de Música', para: 'el taller', oraciones: ora('k', [
-        'La quena es de caña.', 'La zampoña tiene varios tubos.', 'La trompeta es de metal.']) }] },
-      pregunta: 'El cartel nombra tres instrumentos de viento. ¿Qué rasgo está en los tres y no en un charango?', datos: [D_NECES, D_SUFI, D_ESTRECHA, D_EJEMPLO],
+        'La quena es de caña y suena cuando se la sopla.', 'La zampoña tiene varios tubos y suena cuando se la sopla.', 'La trompeta es de metal y suena cuando se la sopla.']) }] },
+      pregunta: 'El cartel nombra tres instrumentos de viento. ¿Qué rasgo está en los tres y no en un charango?', datos: [D_NECES, D_SUFI, D_ESTRECHA, D_EJEMPLO, 'El charango suena cuando se pulsan sus cuerdas.'],
       ok: 'Suena cuando se sopla aire por él', sol: 'La quena, la zampoña y la trompeta suenan al soplar; el charango, al pulsar sus cuerdas.',
       m: [['Está hecho de caña', 'RVD1', 'La quena sí, pero la trompeta del cartel es de metal.'],
         ['Produce sonidos musicales', 'RVD3', 'Los tres lo hacen, pero también el charango, que es de cuerda.'],
@@ -691,10 +696,10 @@
         ['Suena cuando se sopla y tiene varios tubos de distinto largo', 'RVD4', 'Soplar está bien, pero «varios tubos» deja fuera a la quena y a la trompeta.']] },
     { sop: { soporte: 'mural', lugar: 'Mural del aula', hojas: [{ id: 'k', titulo: 'Calendario del año', de: 'la tutora', para: '4.º A', oraciones: ora('k', [
         'Febrero tiene veintiocho o veintinueve días.', 'Julio tiene treinta y uno.', 'Setiembre tiene treinta.']) }] },
-      pregunta: 'El calendario nombra tres meses. ¿Qué rasgo de «mes» está en los tres y no en una semana?', datos: [D_NECES, D_SUFI, D_EJEMPLO],
+      pregunta: 'El calendario nombra tres meses. ¿Qué rasgo de «mes» está en los tres y no en una semana?', datos: [D_NECES, D_SUFI, D_EJEMPLO, 'El año se divide en doce meses. Una semana tiene siete días.'],
       ok: 'Es una de las doce partes del año', sol: 'Febrero, julio y setiembre son tres de las doce partes del año; una semana, no.',
       m: [['Tiene treinta y un días', 'RVD1', 'Julio sí, pero febrero y setiembre no: no está en todos.'],
-        ['Dura más de una semana', 'RVD3', 'Los tres duran más, pero también las vacaciones de verano.'],
+        ['Dura más de una semana', 'RVD3', 'Los tres duran más, pero también un año entero, que no es un mes.'],
         ['Es como julio, el mes de las Fiestas Patrias', 'RV56', 'Julio es un mes, pero un caso no dice qué tienen todos.']] },
   ];
 
@@ -718,7 +723,7 @@
         { texto: [cubre('«Como el Ramis»'), ' nombra un caso. No dice la clase ni el rasgo que tienen todos los ríos.'] }],
       respuesta: [justo('Solo da un ejemplo'), ': no define'] },
     { nivel: 1, titulo: 'La mesa de una pata',
-      enunciado: 'Con esta entrada del diccionario, ¿entra una mesa redonda de una sola pata?',
+      enunciado: 'Con esta entrada del diccionario, ¿entra una mesa de una sola pata?',
       datos: [D_NECES, D_ESTRECHA],
       figura: fig(pagina('M', [['mesa', 'Mueble de cuatro patas, con un tablero para poner cosas encima.']])),
       solucion: [
@@ -762,7 +767,7 @@
     { nivel: 2, titulo: 'La araña y sus ocho patas',
       enunciado: '¿Cuál sirve sola para definir «araña»: «que teje telas», «de ocho patas» o ninguna de las dos?',
       datos: [D_NECES, D_SUFI, 'La tarántula es una araña que no teje telas para cazar.'],
-      figura: fig(lamina('Mural de la feria de ciencias', 'Animales de ocho patas', '2.º C', ['La araña de jardín teje su tela entre las plantas.', 'El alacrán tiene ocho patas y una cola con aguijón.'])),
+      figura: fig(lamina('Mural de la feria de ciencias', 'Animales del jardín', '2.º C', ['La araña de jardín teje su tela entre las plantas.', 'El alacrán tiene ocho patas y una cola con aguijón.'])),
       solucion: [
         { texto: ['«Que teje telas» deja fuera a la tarántula: es frecuente, no de todas. Sola queda ', prop('muy estrecha'), '.'] },
         { texto: ['«De ocho patas» está en todas las arañas, pero también en ', cubre('el alacrán'), ' de la oración 2: sola queda ', prop('muy amplia'), '.'] }],
@@ -828,7 +833,7 @@
     { nivel: 3, titulo: 'La que deja un caso fuera',
       enunciado: 'Pregunta 45 del simulacro: «¿Cuál de estas definiciones es muy estrecha?». ¿Qué alternativa es la correcta?',
       datos: [D_ESTRECHA, D_NECES],
-      figura: fig(simDef(45, '¿Cuál de estas definiciones es muy estrecha?', ['Zapato: calzado que cubre el pie.', 'Hermano: persona que tiene los mismos padres que otra.',
+      figura: fig(simDef(45, '¿Cuál de estas definiciones es muy estrecha?', ['Zapato: calzado que cubre el pie.', 'Mes: cada una de las doce partes en que se divide el año.',
         'Cuchara: cubierto de metal con una parte honda.', 'Año: periodo de doce meses.', 'Vecino: persona que vive cerca de otra.'])),
       solucion: [
         { texto: ['En ', mala('A'), ', ', mala('B'), ', ', mala('D'), ' y ', mala('E'), ' ningún caso queda fuera: todo año tiene doce meses y todo zapato cubre el pie.'] },
@@ -846,7 +851,7 @@
       tarjetas: [
         { titulo: 'Una lámina para la feria', texto: 'Los alumnos de 2.º B prepararon esta lámina para la feria de ciencias. Debajo va una ficha que diga qué es un ave. Ya tienen la clase, «animal». Les falta el rasgo que separa a las aves de los demás.',
           pieza: 'rv-soporte', dibujo: { datos: LAMINA, estado: {} } },
-        { titulo: 'Casi todos no es todos', texto: 'Que algo pase casi siempre no quiere decir que pase siempre. Casi todos en tu salón llevan mochila, pero alguno carga sus cuadernos en la mano. Un rasgo de casi todos deja fuera a ese alguno.' },
+        { titulo: 'Casi todos no es todos', texto: 'Que algo pase casi siempre no quiere decir que pase siempre. Casi todos en tu salón llevan mochila, pero alguno carga sus cuadernos en la mano. Un rasgo de casi todos deja fuera a ese alguno: la definición queda muy estrecha.' },
         { titulo: 'Un caso no define', texto: '«Un ave es, por ejemplo, el cóndor» nombra un caso: no dice qué tienen todas las aves. Un ejemplo ayuda a imaginar la cosa, pero no la define. Para definirla hacen falta su clase y su rasgo.' },
         { titulo: 'Qué mirar al jugar', texto: 'Toca el rasgo de la ficha para cambiarlo. En la tabla, mira dos cosas: si algún ave queda fuera y si se cuela un animal que no es ave. Las dos fallas van en naranja.' },
       ],
@@ -861,7 +866,7 @@
         logrado: val => { const r = medirAve(val.r); return !r.faltan.length && !r.cuelan.length; },
         bien: `Listo: ese rasgo está en las ${N_AVES} aves y en ningún otro animal.`,
       },
-      voz: 'Mira qué ave queda fuera con cada rasgo, y qué animal se cuela.',
+      voz: 'Toca el rasgo de la ficha: mira qué ave queda fuera y qué animal entra.',
       leyenda: [
         { s: 'Clase', t: 'el grupo: responde «¿qué es?»' },
         { s: 'Rasgo', t: 'lo que separa a las aves' },
@@ -869,7 +874,6 @@
         { s: prop('naranja'), t: 'mal ubicado: se cuela o falta' },
         { s: 'gris', t: 'animal que queda fuera' },
         { s: justo('violeta'), t: 'la definición que quedó justa' },
-        { s: 'botón marcado', t: 'lo que elegiste; no es color del texto' },
       ],
       controles: [{ id: 'r', etiqueta: 'Rasgo', opciones: ['vuela', 'lago', 'plumas'].map(valor => ({ valor, texto: RASGOS_AVE[valor].t })) }],
       dibujo: val => ({ datos: FIG_AVE, estado: estAve(val.r) }),
@@ -891,8 +895,8 @@
     mira: {
       datos: FIG_HUEVOS,
       pasos: [
-        { estado: estAve('vuela', { nuevo: ['r', ...medirAve('vuela').faltan.map(a => a.id)] }), texto: 'Volar es frecuente, no de todas: el zambullidor y el suri quedan fuera.',
-          ecuacion: [prop('muy estrecha'), ': fuera ', prop(`${medirAve('vuela').faltan.length} aves`)] },
+        { estado: estAve('vuela', { nuevo: ['r', ...medirAve('vuela').faltan.map(a => a.id)] }), texto: 'Volar no es de todas: quedan fuera dos aves, y se cuela el murciélago.',
+          ecuacion: [prop('muy estrecha y muy amplia'), ': fuera ', prop(`${medirAve('vuela').faltan.length} aves`), ', se cuela ', prop(lista(medirAve('vuela').cuelan.map(a => a.corto)))] },
         { estado: estAve('huevos', { nuevo: ['r', ...medirAve('huevos').cuelan.map(a => a.id)] }), texto: 'Poner huevos está en las cuatro aves, pero también en la rana.',
           ecuacion: [prop('muy amplia'), ': se cuela ', prop(lista(medirAve('huevos').cuelan.map(a => a.corto)))] },
         { estado: estAve('plumas', { nuevo: ['r'] }), texto: 'Las plumas están en las cuatro aves y en ningún otro animal.',
@@ -901,7 +905,7 @@
       ],
     },
     regla: {
-      texto: 'El rasgo de una definición está en todos los casos, no solo en muchos. Si deja fuera un caso, la definición es muy estrecha. Un ejemplo no define.',
+      texto: 'El rasgo de una definición está en todos los casos, no solo en muchos; si deja uno fuera, es muy estrecha. Un caso, como «el cóndor», no define.',
       ecuacion: ['rasgo que define = ', { llave: [{ negrita: 'en todos los casos' }], nota: 'ni muy estrecha' }, ' + ', { llave: [{ negrita: 'en ningún vecino' }], nota: 'ni muy amplia' }],
       condicion: 'el rasgo es necesario (lo tienen todos los casos del concepto) y suficiente (no lo tiene ningún vecino).',
     },
@@ -961,22 +965,24 @@
   // que se descarta, o; la palabra que se ajusta, f; lo tachado, tinta.
   // Códigos: RVD9 (la más general: cumple la clase y no los rasgos), RVD10 (la más específica: agrega un rasgo), RVD7
   // (el vecino: misma clase, otro rasgo) y RVD11 (otra clase: una palabra del mismo tema que no es de esa clase).
-  const D_AJUSTA = 'Se ajusta: la palabra cumple la clase y cada rasgo de la definición, y ninguno más.';
+  const D_AJUSTA = 'Se ajusta: la palabra cumple la clase y cada rasgo de la definición, sin agregar otro.';
+  const D_VECINO3 = 'El vecino: palabra de la misma clase que cambia un rasgo.';
+  const D_OTRA3 = 'Otra clase: palabra del mismo tema que no es de la clase que nombra la definición.';
   const D_GENERAL = 'La más general: cumple la clase, pero no dice los rasgos.';
   const D_ESPEC = 'La más específica: cumple todo y agrega un rasgo que la definición no dice.';
-  const D_VERBO = 'Una definición que empieza con un verbo, como «hablar», define una acción.';
+  const D_VERBO = 'Una definición que empieza con un verbo, como «cortar», define una acción.';
   const P_AJUSTA = 'Elija la palabra que se ajusta a la definición.';
   const hojaDef = (numero, definicion, palabras) => simDef(numero, palabras ? P_AJUSTA : null, palabras || [], [`________: ${definicion}`]);
   const estHoja = (buena, sop) => ({ marcas: { [buena]: 'f', h1: 'i' }, tachar: sop.alternativas.map(a => a.id).filter(id => id !== buena) });
 
-  const HOJA_OLLA = hojaDef(21, 'Recipiente de barro o de metal, redondo y hondo, que sirve para cocinar.', ['jarra', 'recipiente', 'cocinar', 'olla', 'olla de presión']);
+  const HOJA_OLLA = hojaDef(21, 'Recipiente de barro o de metal, redondo y hondo, que sirve para cocinar.', ['jarra', 'recipiente', 'cocinar', 'olla', 'sartén']);
   // Por qué se descarta cada palabra de la hoja del juego (D es la que se ajusta).
   const ALTS_OLLA = [
     { id: 'A', por: [prop('«jarra»'), ': es un recipiente, pero sirve para servir'] },
     { id: 'B', por: [prop('«recipiente»'), ': cumple la clase, no dice los rasgos'] },
     { id: 'C', por: [prop('«cocinar»'), ': es una acción, no un recipiente'] },
     { id: 'D', ok: true },
-    { id: 'E', por: [prop('«olla de presión»'), ': agrega un rasgo, la tapa'] },
+    { id: 'E', por: [prop('«sartén»'), ': cocina, pero no es honda'] },
   ];
   const tachadasOlla = val => ALTS_OLLA.filter(x => val[x.id.toLowerCase()] === 1);
   const listoOlla = val => ALTS_OLLA.every(x => (val[x.id.toLowerCase()] === 1) === !x.ok);
@@ -993,10 +999,10 @@
 
   // «Así se resuelve»: cuatro hojas con sus cinco palabras. Las correctas son B, D, A y E.
   const RESUELVE_PAL = [
-    { buena: 'B', sop: hojaDef(23, 'Embarcación angosta y ligera, sin motor, que se mueve con remos.', ['lancha', 'canoa', 'embarcación', 'remo', 'canoa de pesca']),
-      datos: [D_AJUSTA, D_GENERAL, D_ESPEC],
+    { buena: 'B', sop: hojaDef(23, 'Embarcación angosta y ligera, sin motor, que se mueve con remos.', ['lancha', 'canoa', 'embarcación', 'remo', 'balsa']),
+      datos: [D_AJUSTA, D_GENERAL, D_ESPEC, D_VECINO3, D_OTRA3],
       tengo: 'La definición empieza con «embarcación» y da tres rasgos: angosta y ligera, sin motor, con remos.',
-      malas: [mala('D'), ' no es una embarcación. ', mala('C'), ' es la más general. ', mala('A'), ' cambia un rasgo: la lancha lleva motor. ', mala('E'), ' agrega «de pesca».'],
+      malas: [mala('D'), ' no es una embarcación. ', mala('C'), ' es la más general. ', mala('A'), ' cambia un rasgo: la lancha lleva motor. ', mala('E'), ' cambia otro: la balsa es plana y ancha.'],
       bien: [buena('B'), ' cumple la clase y los tres rasgos: ', cubre('angosta y ligera, sin motor, con remos'), '.'],
       sentido: 'Si la definición dijera «con motor», la palabra sería «lancha»: un solo rasgo cambia la palabra.' },
     { buena: 'D', sop: hojaDef(24, 'Lugar donde se guardan y se prestan libros.', ['librería', 'local', 'bibliotecario', 'biblioteca', 'biblioteca escolar']),
@@ -1024,16 +1030,16 @@
     { sop: hojaDef(27, 'Calzado que cubre el pie y parte de la pierna.'), ok: 'bota', sol: 'Es un calzado y cubre también parte de la pierna, sin decir de qué material es.',
       m: [['calzado', 'RVD9', 'Una bota es un calzado, pero esa palabra no dice que cubre parte de la pierna.'],
         ['bota de jebe', 'RVD10', 'Cubre el pie y la pierna, pero agrega el material, que la definición no dice.'],
-        ['sandalia', 'RVD7', 'Es un calzado, pero deja el pie al aire: cambia el rasgo.'],
+        ['calzado de playa', 'RVD7', 'Es un calzado, pero deja el pie al aire y no cubre la pierna: cambia el rasgo.'],
         ['pie', 'RVD11', 'Es del mismo tema, pero el pie no es un calzado.']] },
     { sop: hojaDef(28, 'Tienda donde se venden medicinas.'), ok: 'farmacia', sol: 'Es una tienda y en ella se venden medicinas, sin decir a qué hora atiende.',
       m: [['tienda', 'RVD9', 'Una farmacia es una tienda, pero esa palabra no dice qué se vende.'],
         ['farmacia de turno', 'RVD10', 'Vende medicinas, pero agrega «de turno», que la definición no dice.'],
-        ['panadería', 'RVD7', 'Es una tienda, pero vende pan: cambia el rasgo.'],
+        ['tienda de abarrotes', 'RVD7', 'Es una tienda, pero vende comida, no medicinas: cambia el rasgo.'],
         ['jarabe', 'RVD11', 'Es del mismo tema, pero un jarabe es una medicina, no una tienda.']] },
-    { sop: hojaDef(29, 'Persona que enseña en un colegio.'), ok: 'profesor', sol: 'Es una persona y enseña en un colegio, sin decir qué curso.',
+    { sop: hojaDef(29, 'Persona que enseña en un colegio.'), ok: 'profesor', sol: 'Es una persona y enseña en un colegio, sin decir si tiene una sección a su cargo.',
       m: [['persona', 'RVD9', 'Un profesor es una persona, pero esa palabra no dice que enseña.'],
-        ['profesor de Matemática', 'RVD10', 'Enseña en un colegio, pero agrega el curso, que la definición no dice.'],
+        ['tutor', 'RVD10', 'Un tutor enseña en un colegio, pero además está a cargo de una sección: agrega un rasgo.'],
         ['portero', 'RVD7', 'Es una persona del colegio, pero cuida la puerta: cambia el rasgo.'],
         ['enseñanza', 'RVD11', 'Es del mismo tema, pero la enseñanza no es una persona.']] },
     { sop: hojaDef(30, 'Instrumento de dos hojas de metal que sirve para cortar.'), ok: 'tijera', sol: 'Es un instrumento, tiene dos hojas de metal y corta, sin decir qué corta.',
@@ -1041,16 +1047,16 @@
         ['tijera de podar', 'RVD10', 'Tiene dos hojas y corta, pero agrega para qué, que la definición no dice.'],
         ['cuchillo', 'RVD7', 'Es un instrumento que corta, pero tiene una sola hoja: cambia un rasgo.'],
         ['corte', 'RVD11', 'Es del mismo tema, pero un corte no es un instrumento.']] },
-    { sop: hojaDef(31, 'Correr despacio y con pasos cortos.'), ok: 'trotar', datos: [D_AJUSTA, D_GENERAL, D_ESPEC, D_VERBO], sol: 'Es correr, despacio y con pasos cortos, sin decir por dónde.',
+    { sop: hojaDef(31, 'Correr despacio y con pasos cortos.'), ok: 'trotar', datos: [D_AJUSTA, D_GENERAL, D_ESPEC, D_VECINO3, D_OTRA3, D_VERBO], sol: 'Es correr, despacio y con pasos cortos, sin decir por dónde.',
       m: [['correr', 'RVD9', 'Trotar es correr, pero esa palabra no dice que es despacio.'],
         ['trotar en subida', 'RVD10', 'Es correr despacio, pero agrega por dónde, que la definición no dice.'],
-        ['galopar', 'RVD7', 'Es correr, pero rápido y a cuatro patas, como el caballo: cambia el rasgo.'],
+        ['correr a galope', 'RVD7', 'Es correr, pero rápido, como el caballo: cambia el rasgo.'],
         ['trote', 'RVD11', 'Es de la misma familia, pero nombra la cosa y no la acción.']] },
     { sop: hojaDef(32, 'Hijo del hermano o de la hermana de una persona.'), ok: 'sobrino', sol: 'Es un hijo, y de un hermano o de una hermana, sin decir si es el mayor.',
       m: [['pariente', 'RVD9', 'Un sobrino es un pariente, pero esa palabra no dice de quién es hijo.'],
         ['sobrino mayor', 'RVD10', 'Es hijo de un hermano, pero agrega «mayor», que la definición no dice.'],
-        ['primo', 'RVD7', 'Es un pariente, pero es hijo del tío o de la tía: cambia el rasgo.'],
-        ['familia', 'RVD11', 'Es del mismo tema, pero la familia es un grupo, no un hijo.']] },
+        ['pariente político', 'RVD7', 'Es un pariente, pero por matrimonio, no hijo de un hermano: cambia el rasgo.'],
+        ['hogar', 'RVD11', 'Es del mismo tema, pero el hogar es la casa de la familia, no una persona.']] },
   ];
 
   // Ejemplos resueltos de la idea 3. Nivel 1: un paso (la clase de la definición, verbo o cosa, la más general, la más
@@ -1058,11 +1064,11 @@
   // hoja completa, con cinco palabras; las correctas son C, A, E, B y D.
   const EJEMPLOS_PAL = [
     { nivel: 1, titulo: 'La clase de la definición',
-      enunciado: '¿Cuál de estas tres no puede ser la palabra, por ser de otra clase: «martillo», «serrucho» o «clavar»?',
+      enunciado: '¿Cuál de estas tres no puede ser la palabra, por ser de otra clase: «martillo», «pico» o «clavar»?',
       datos: [D_AJUSTA],
       figura: fig(hojaDef(51, 'Herramienta con mango y cabeza de metal, que sirve para clavar.')),
       solucion: [
-        { texto: ['La definición empieza con ', cubre('«Herramienta»'), ': la palabra nombra una herramienta. El martillo y el serrucho lo son.'] },
+        { texto: ['La definición empieza con ', cubre('«Herramienta»'), ': la palabra nombra una herramienta. El martillo y el pico lo son.'] },
         { texto: ['«Clavar» ', prop('es una acción'), ', no una herramienta: se descarta sin mirar los rasgos.'] }],
       respuesta: [justo('«Clavar»'), ': es una acción, no una herramienta'] },
     { nivel: 1, titulo: 'La escoba y el piso',
@@ -1073,7 +1079,7 @@
         { texto: ['Empieza con el verbo ', cubre('«Limpiar»'), ': define una acción. «Escoba» nombra una cosa, ', prop('otra clase'), '.'] }],
       respuesta: [justo('La de «barrer»'), ': empieza con un verbo'] },
     { nivel: 1, titulo: 'Una palabra que queda grande',
-      enunciado: 'Una lechuza es un ave. ¿Se ajusta la palabra «ave» a esta definición?',
+      enunciado: 'En la hoja falta la palabra. ¿Se ajusta «ave» a esta definición, o le faltan rasgos?',
       datos: [D_AJUSTA, D_GENERAL],
       figura: fig(hojaDef(53, 'Ave nocturna de ojos grandes, que caza ratones.')),
       solucion: [
@@ -1081,11 +1087,11 @@
         { texto: ['Es ', prop('la más general'), ': le faltan los rasgos.'] }],
       respuesta: [justo('No'), ': «ave» es la más general'] },
     { nivel: 1, titulo: 'Un rasgo de más',
-      enunciado: '¿Qué palabra se ajusta a la definición: «pantalón» o «pantalón de lana»?',
-      datos: [D_AJUSTA, D_ESPEC],
+      enunciado: '¿Qué palabra se ajusta a la definición: «prenda», «pantalón» o «pantalón de lana»?',
+      datos: [D_AJUSTA, D_GENERAL, D_ESPEC],
       figura: fig(hojaDef(54, 'Prenda de vestir que cubre cada pierna por separado, de la cintura a los tobillos.')),
       solucion: [
-        { texto: ['Las dos son prendas que cubren las piernas. Pero «de lana» es un rasgo que la definición no dice: ', prop('la más específica'), '.'] }],
+        { texto: ['«Prenda» no dice que cubre cada pierna: ', prop('la más general'), '. «Pantalón de lana» agrega un rasgo que la definición no dice: ', prop('la más específica'), '.'] }],
       respuesta: [justo('«Pantalón»'), ': no agrega ningún rasgo'] },
     { nivel: 1, titulo: 'El pariente vecino',
       enunciado: '¿Se ajusta la palabra «abuelo» a esta definición?',
@@ -1096,45 +1102,45 @@
       respuesta: [justo('No'), ': el abuelo es el padre, no el hermano'] },
 
     { nivel: 2, titulo: 'Tres palabras del mercado',
-      enunciado: '¿Qué palabra se ajusta a la definición: «chacra», «vender» o «mercado»?',
+      enunciado: '¿Qué palabra se ajusta a la definición: «mercado», «chacra» o «vendedor»?',
       datos: [D_AJUSTA, D_VERBO],
       figura: fig(hojaDef(56, 'Lugar donde se venden frutas, verduras y otros alimentos.')),
       solucion: [
-        { texto: ['Primero la clase: empieza con ', cubre('«Lugar»'), '. «Vender» es una acción: ', prop('otra clase'), '.'] },
+        { texto: ['Primero la clase: empieza con ', cubre('«Lugar»'), '. «Vendedor» es una persona: ', prop('otra clase'), '.'] },
         { texto: ['Después el rasgo: en la chacra se siembra, no se vende: ', prop('cambia el rasgo'), '. Queda «mercado».'] }],
       respuesta: [justo('«Mercado»'), ': un lugar, y donde se vende'] },
     { nivel: 2, titulo: 'La lana y la carne',
-      enunciado: '¿Qué palabra se ajusta a la definición: «animal», «oveja merina» u «oveja»?',
+      enunciado: '¿Qué palabra se ajusta a la definición: «animal», «cuy», «oveja merina» u «oveja»?',
       datos: [D_AJUSTA, D_GENERAL, D_ESPEC],
       figura: fig(hojaDef(57, 'Animal doméstico de cuatro patas, cubierto de lana, que bala.')),
       solucion: [
-        { texto: ['«Animal» cumple la clase y no dice los rasgos: ', prop('la más general'), '.'] },
+        { texto: ['«Animal» cumple la clase y no dice los rasgos: ', prop('la más general'), '. El cuy no tiene lana: ', prop('cambia el rasgo'), '.'] },
         { texto: ['«Oveja merina» cumple todo, pero agrega la raza: ', prop('la más específica'), '. Queda «oveja».'] }],
       respuesta: [justo('«Oveja»'), ': ni un rasgo menos, ni uno más'] },
     { nivel: 2, titulo: 'En voz muy alta',
-      enunciado: '¿Qué palabra se ajusta a la definición: «hablar», «gritar» o «grito»?',
+      enunciado: '¿Qué palabra se ajusta a la definición: «decir», «gritar» o «gritería»?',
       datos: [D_AJUSTA, D_GENERAL, D_VERBO],
       figura: fig(hojaDef(58, 'Decir algo en voz muy alta.')),
       solucion: [
-        { texto: ['Primero la clase: empieza con el verbo ', cubre('«Decir»'), '. «Grito» nombra una cosa: ', prop('otra clase'), '.'] },
-        { texto: ['Después el rasgo: «hablar» no dice «en voz muy alta»: ', prop('la más general'), '. Queda «gritar».'] }],
+        { texto: ['Primero la clase: empieza con el verbo ', cubre('«Decir»'), '. «Gritería» nombra una cosa: ', prop('otra clase'), '.'] },
+        { texto: ['Después el rasgo: «decir» no dice «en voz muy alta»: ', prop('la más general'), '. Queda «gritar».'] }],
       respuesta: [justo('«Gritar»'), ': una acción, y en voz muy alta'] },
     { nivel: 2, titulo: 'Al lado de la pista',
-      enunciado: '¿Qué palabra se ajusta a la definición: «ciclovía», «camino» o «vereda»?',
+      enunciado: '¿Qué palabra se ajusta a la definición: «ciclovía», «camino» o «vereda peatonal»?',
       datos: [D_AJUSTA, D_GENERAL],
       figura: fig(hojaDef(59, 'Camino angosto para bicicletas, al lado de la pista.')),
       solucion: [
         { texto: ['«Camino» cumple la clase y no dice para quién es: ', prop('la más general'), '.'] },
-        { texto: ['La vereda también va al lado de la pista, pero es para quienes van a pie: ', prop('cambia el rasgo'), '. Queda «ciclovía».'] }],
+        { texto: ['La vereda peatonal también va al lado de la pista, pero es para quienes van a pie: ', prop('cambia el rasgo'), '. Queda «ciclovía».'] }],
       respuesta: [justo('«Ciclovía»'), ': un camino, y para bicicletas'] },
-    { nivel: 2, titulo: 'Sin agua ni humedad',
-      enunciado: '¿Qué palabra se ajusta a la definición: «sequía», «mojado» o «seco»?',
+    { nivel: 2, titulo: 'Sin manchas ni suciedad',
+      enunciado: '¿Qué palabra se ajusta a la definición: «limpio», «limpieza» o «sucio»?',
       datos: [D_AJUSTA, 'Una definición que empieza con «que…» dice cómo es algo: define un adjetivo.'],
-      figura: fig(hojaDef(60, 'Que no tiene agua ni humedad.')),
+      figura: fig(hojaDef(60, 'Que no tiene manchas ni suciedad.')),
       solucion: [
-        { texto: ['Primero la clase: empieza con ', cubre('«Que»'), ': dice cómo es algo. «Sequía» nombra un periodo: ', prop('otra clase'), '.'] },
-        { texto: ['Después el rasgo: «mojado» dice lo contrario, que sí tiene agua: ', prop('cambia el rasgo'), '. Queda «seco».'] }],
-      respuesta: [justo('«Seco»'), ': dice cómo es algo, y sin agua'] },
+        { texto: ['Primero la clase: empieza con ', cubre('«Que»'), ': dice cómo es algo. «Limpieza» nombra una acción o un estado: ', prop('otra clase'), '.'] },
+        { texto: ['Después el rasgo: «sucio» dice lo contrario, que sí tiene manchas: ', prop('cambia el rasgo'), '. Queda «limpio».'] }],
+      respuesta: [justo('«Limpio»'), ': dice cómo es algo, y sin manchas'] },
 
     { nivel: 3, titulo: 'Un golpe de viento',
       enunciado: 'Pregunta 61 del simulacro, de definiciones. ¿Qué palabra se ajusta a la definición de la hoja?',
@@ -1147,11 +1153,11 @@
       respuesta: [buena('C'), ': ráfaga'] },
     { nivel: 3, titulo: 'La luz y el aire',
       enunciado: 'Pregunta 62 del simulacro, de definiciones. ¿Qué palabra se ajusta a la definición de la hoja?',
-      datos: [D_AJUSTA, D_GENERAL, D_ESPEC],
-      figura: fig(hojaDef(62, 'Abertura en una pared para que entren la luz y el aire.', ['ventana', 'abertura', 'puerta', 'ventilar', 'ventana del baño'])),
+      datos: [D_AJUSTA, D_GENERAL, D_ESPEC, 'Tragaluz: ventana abierta en el techo o en lo alto de una pared.'],
+      figura: fig(hojaDef(62, 'Abertura en una pared para que entren la luz y el aire.', ['ventana', 'abertura', 'puerta', 'ventilar', 'tragaluz'])),
       solucion: [
         { texto: [mala('D'), ' es una acción: ', prop('otra clase'), '. ', mala('B'), ' no dice dónde está ni para qué: ', prop('la más general'), '.'] },
-        { texto: [mala('C'), ' es una abertura para entrar y salir: ', prop('cambia el rasgo'), '. ', mala('E'), ' agrega «del baño»: ', prop('la más específica'), '.'] },
+        { texto: [mala('C'), ' es una abertura para entrar y salir: ', prop('cambia el rasgo'), '. ', mala('E'), ' agrega «en el techo o en lo alto»: ', prop('la más específica'), '.'] },
         { texto: [buena('A'), ' cumple la clase, «abertura», y el rasgo: ', cubre('para que entren la luz y el aire'), '.'] }],
       respuesta: [buena('A'), ': ventana'] },
     { nivel: 3, titulo: 'Quitar la humedad',
@@ -1175,10 +1181,10 @@
     { nivel: 3, titulo: 'Rayos y truenos',
       enunciado: 'Pregunta 65 del simulacro, de definiciones. ¿Qué palabra se ajusta a la definición de la hoja?',
       datos: [D_AJUSTA, D_GENERAL, D_ESPEC],
-      figura: fig(hojaDef(65, 'Lluvia fuerte con viento, rayos y truenos.', ['lluvia', 'llovizna', 'tronar', 'tormenta', 'tormenta de granizo'])),
+      figura: fig(hojaDef(65, 'Lluvia fuerte con viento, rayos y truenos.', ['lluvia', 'lluvia fina', 'tronar', 'tormenta', 'tormenta de granizo'])),
       solucion: [
         { texto: [mala('C'), ' es una acción: ', prop('otra clase'), '. ', mala('A'), ' no dice «fuerte» ni «con rayos»: ', prop('la más general'), '.'] },
-        { texto: [mala('B'), ' es una lluvia fina y suave: ', prop('cambia el rasgo'), '. ', mala('E'), ' agrega el granizo: ', prop('la más específica'), '.'] },
+        { texto: [mala('B'), ' es una lluvia suave, sin rayos: ', prop('cambia el rasgo'), '. ', mala('E'), ' agrega el granizo: ', prop('la más específica'), '.'] },
         { texto: [buena('D'), ' cumple la clase, «lluvia», y los rasgos: ', cubre('fuerte, con viento, rayos y truenos'), '.'] }],
       respuesta: [buena('D'), ': tormenta'] },
   ];
@@ -1193,7 +1199,7 @@
       tarjetas: [
         { titulo: 'Una hoja de simulacro', texto: 'En esta hoja, la definición viene sin su palabra definida, y debajo hay cinco palabras del mismo tema. Solo una cumple todo lo que la definición dice. Antes de mirarlas, lee la definición entera.',
           pieza: 'rv-soporte', dibujo: { datos: HOJA_OLLA, estado: {} } },
-        { titulo: 'La primera palabra manda', texto: 'La definición empieza por la clase. Si empieza con «recipiente», la palabra nombra un recipiente. Si empieza con un verbo, como «hablar», define una acción. Una palabra de otra clase se descarta sin mirar más.' },
+        { titulo: 'La primera palabra manda', texto: 'La definición empieza por la clase. Si empieza con «recipiente», la palabra nombra un recipiente. Si empieza con un verbo, como «cortar», define una acción. Una palabra de otra clase se descarta sin mirar más.' },
         { titulo: 'Del grupo grande al chico', texto: 'Dentro de una clase hay grupos más chicos, sus especies: «calzado» es la clase; «zapato» y «sandalia», dos especies. Y dentro de «zapato» hay otras, como «zapato de fútbol». Cada paso hacia abajo agrega un rasgo.' },
         { titulo: 'Qué mirar al jugar', texto: 'Toca una palabra de la hoja para tacharla y lee por qué no se ajusta. Tócala otra vez para dejarla. Prueba con las cinco.' },
       ],
@@ -1208,7 +1214,7 @@
         logrado: listoOlla,
         bien: 'Queda la única que cumple la clase y cada rasgo, sin agregar ninguno.',
       },
-      voz: 'Antes de tachar, pregúntate: ¿es de esa clase?, ¿le falta o le sobra un rasgo?',
+      voz: 'Toca una palabra de la hoja para tacharla; antes, mira su clase y sus rasgos.',
       leyenda: [
         { s: '________', t: 'el lugar de la palabra que se define' },
         { s: 'A–E', t: 'las cinco palabras de la hoja' },
@@ -1216,7 +1222,6 @@
         { s: prop('naranja'), t: 'la palabra descartada y su falla' },
         { s: cubre('turquesa'), t: 'la definición que la palabra cumple' },
         { s: justo('violeta'), t: 'la palabra que se ajusta' },
-        { s: 'botón marcado', t: 'lo que elegiste; no es color del texto' },
       ],
       controles: ALTS_OLLA.map(x => ({ id: x.id.toLowerCase(), etiqueta: `Palabra ${x.id}`, opciones: [{ valor: 0, texto: 'dejar' }, { valor: 1, texto: 'tachar' }] })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(ALTS_OLLA.map(x => [x.id, x.id.toLowerCase()])) }, HOJA_OLLA), estado: estOlla(val) }),
@@ -1251,7 +1256,7 @@
     regla: {
       texto: 'La palabra se ajusta si cumple la clase y cada rasgo, sin agregar ninguno. Fallan la más general, la más específica, el vecino y la de otra clase.',
       ecuacion: ['la palabra = ', { llave: [{ negrita: 'la misma clase' }], nota: 'primero' }, ' + ', { llave: [{ negrita: 'cada rasgo' }], nota: 'ni uno menos, ni uno más' }],
-      condicion: 'la definición es de diccionario: empieza por la clase y sus rasgos separan a la palabra de sus vecinos.',
+      condicion: 'la palabra es de la clase con que empieza la definición y tiene cada rasgo que dice, sin agregar otro.',
     },
     resuelve: {
       pieza: 'rv-soporte',
@@ -1278,7 +1283,7 @@
         const A = AHORA_PAL[s % AHORA_PAL.length];
         return {
           pregunta: 'La hoja trae la definición sin su palabra. ¿Qué palabra se ajusta a ella?',
-          datos: A.datos || [D_AJUSTA, D_GENERAL, D_ESPEC], dibujo: { datos: A.sop, estado: {} },
+          datos: A.datos || [D_AJUSTA, D_GENERAL, D_ESPEC, D_VECINO3, D_OTRA3], dibujo: { datos: A.sop, estado: {} },
           opciones: opciones(A.ok, voltear(A.m, s)),
           solucion: { texto: A.sol, ecuacion: [justo(A.ok)], dibujo: { datos: A.sop, estado: { marcas: { h1: 'i' } } } },
         };
@@ -1304,7 +1309,7 @@
     'Sequía: tiempo en que hay sequía.', 'Alpaca: animal de la puna.', 'Bofedal: pastizal húmedo de las zonas altas.', 'Cóndor: el rey de los cielos andinos.']);
   const ENT_MATEO = [
     { id: 'h1', ctl: 'a', por: [prop('La 1'), ': repite la palabra, no dice nada nuevo'] },
-    { id: 'h2', ctl: 'b', por: [prop('La 2'), ': muy amplia, también entra la vicuña'] },
+    { id: 'h2', ctl: 'b', por: [prop('La 2'), ': su rasgo no separa, también entra la vicuña'] },
     { id: 'h3', ctl: 'c', ok: true },
     { id: 'h4', ctl: 'd', por: [prop('La 4'), ': compara con un rey, no dice qué es'] },
   ];
@@ -1325,7 +1330,7 @@
   // «Así se resuelve»: tres definiciones numeradas de una misma palabra (o cinco con letra). La buena: 2.ª, 3.ª, 1.ª y C.
   const RESUELVE_FALLA = [
     { c: 'lluvia', buena: 'h2',
-      sop: cuaderno('Cuaderno de Rosa', 'Glosario: lluvia', 'Rosa', 'la práctica de Ciencia y Tecnología', ['Agua de lluvia que moja los campos.', 'Agua que cae de las nubes en gotas.', 'Las lágrimas del cielo.']),
+      sop: cuaderno('Cuaderno de Rosa', 'Glosario: lluvia', 'Rosa', 'la práctica de Ciencia y Tecnología', ['Agua de lluvia que moja los campos y las calles.', 'Agua que cae de las nubes en gotas.', 'Las lágrimas del cielo.']),
       enunciado: 'Rosa tiene tres frases para «lluvia». ¿Cuál la define de verdad: la 1, la 2 o la 3?',
       datos: [D_DEF, D_CIRC, D_FIG],
       tengo: 'Las tres tienen forma de definición. Hay que ver si dicen la clase y el rasgo, o solo lo parecen.',
@@ -1407,21 +1412,21 @@
       datos: [D_DEF, D_CIRC],
       figura: fig(cuaderno('Cuaderno de Mateo', 'Glosario de oficios', 'Mateo', 'la feria de tejidos', ['Tejedor: persona que hace el trabajo de un tejedor.'])),
       solucion: [
-        { texto: ['La definición usa ', cubre('«tejedor»'), ' para decir qué es un tejedor: quien no conoce la palabra se queda igual. Es ', prop('circular'), '.'] }],
+        { texto: ['La definición usa ', prop('«tejedor»'), ' para decir qué es un tejedor: quien no conoce la palabra se queda igual. Es ', prop('circular'), '.'] }],
       respuesta: [justo('«Tejedor»'), ': la definición repite la palabra'] },
     { nivel: 1, titulo: 'Lo que no es caliente',
       enunciado: 'Esta entrada, ¿dice qué es el frío o solo dice qué no es?',
       datos: [D_DEF, D_NEG],
       figura: fig(cuaderno('Cuaderno de Mateo', 'Glosario de Ciencia y Tecnología', 'Mateo', 'la práctica del viernes', ['Frío: lo que no es caliente.'])),
       solucion: [
-        { texto: [cubre('«Lo que no es caliente»'), ' solo niega. Algo tibio tampoco es caliente, y no es frío: la definición es ', prop('negativa'), '.'] }],
+        { texto: [prop('«Lo que no es caliente»'), ' solo niega. Algo tibio tampoco es caliente, y no es frío: la definición es ', prop('negativa'), '.'] }],
       respuesta: [justo('Solo dice qué no es'), ': es negativa'] },
     { nivel: 1, titulo: 'La primavera de la vida',
       enunciado: 'El cartel dice esto de la juventud. ¿Dice su clase y su rasgo, o la compara con otra cosa?',
       datos: [D_DEF, D_FIG],
       figura: fig({ soporte: 'cartel', lugar: 'Cartel en el patio del colegio', hojas: [{ id: 'h', titulo: 'Semana de la Juventud', de: 'el municipio escolar', para: 'estudiantes', oraciones: ora('h', ['La juventud es la primavera de la vida.']) }] }),
       solucion: [
-        { texto: ['La frase llama a la juventud ', cubre('«la primavera de la vida»'), ': la compara con una estación. Es ', prop('figurada'), ': sirve en un cartel, no en un diccionario.'] }],
+        { texto: ['La frase llama a la juventud ', prop('«la primavera de la vida»'), ': la compara con una estación. Es ', prop('figurada'), ': sirve en un cartel, no en un diccionario.'] }],
       respuesta: [justo('La compara'), ': es figurada'] },
     { nivel: 1, titulo: 'Una negación que vale',
       enunciado: 'Esta entrada del diccionario niega. ¿Está mal por eso?',
@@ -1439,19 +1444,19 @@
       respuesta: [justo('Define'), ': dice clase y rasgo'] },
 
     { nivel: 2, titulo: 'El panadero circular',
-      enunciado: '¿Qué le pasa a esta definición, y cuál la arregla: «persona que hace y vende pan», «persona que no es carpintero» o «el mago de la harina»?',
+      enunciado: '¿Qué le pasa a esta definición, y cuál la arregla: «persona que hace y vende pan», «persona que no es carpintero ni albañil» o «el mago de la harina»?',
       datos: [D_DEF, D_CIRC, D_NEG, D_FIG],
       figura: fig(cuaderno('Cuaderno de Mateo', 'Glosario de oficios', 'Mateo', 'la feria de tejidos', ['Panadero: el que trabaja de panadero.'])),
       solucion: [
-        { texto: ['La definición usa ', cubre('«panadero»'), ' para definir «panadero»: es ', prop('circular'), '.'] },
-        { texto: ['«Persona que no es carpintero» solo niega y «el mago de la harina» compara. La primera dice clase y rasgo.'] }],
+        { texto: ['La definición usa ', prop('«panadero»'), ' para definir «panadero»: es circular.'] },
+        { texto: ['«Persona que no es carpintero ni albañil» solo niega y «el mago de la harina» compara. La primera dice clase y rasgo.'] }],
       respuesta: [justo('Es circular'), '; la arregla «persona que hace y vende pan»'] },
     { nivel: 2, titulo: 'El desayuno que niega',
       enunciado: 'Con esta definición de «desayuno», ¿qué otra comida entra? ¿Qué rasgo la dejaría fuera: «la más rica», «la primera del día» o «la que se toma sentado»?',
       datos: [D_NEG, D_AMPLIA],
       figura: fig(cuaderno('Cuaderno de Rosa', 'Glosario de la salud', 'Rosa', 'la clase de tutoría', ['Desayuno: comida que no es el almuerzo ni la cena.'])),
       solucion: [
-        { texto: ['Una merienda de media tarde es una ', cubre('comida que no es el almuerzo ni la cena'), ': entra. La definición solo niega y queda ', prop('muy amplia'), '.'] },
+        { texto: ['Una merienda de media tarde es una ', prop('comida que no es el almuerzo ni la cena'), ': entra. La definición solo niega y queda ', prop('muy amplia'), '.'] },
         { texto: ['La merienda también puede ser rica y tomarse sentado. Lo que solo tiene el desayuno es ser ', cubre('la primera del día'), '.'] }],
       respuesta: [justo('Entra la merienda'), '; el rasgo es «la primera del día»'] },
     { nivel: 2, titulo: 'El lema de la biblioteca',
@@ -1459,9 +1464,9 @@
       datos: [D_DEF, D_FIG],
       figura: fig({ soporte: 'mural', lugar: 'Mural de la biblioteca', hojas: [{ id: 'h', titulo: 'Mes de la lectura', de: 'la biblioteca', para: 'estudiantes', oraciones: ora('h', ['Un libro es un amigo que nunca falla.', 'Este mes, lleva uno a tu casa.']) }] }),
       solucion: [
-        { texto: ['La oración 1 llama al libro ', cubre('«un amigo»'), ': lo compara con una persona. Es ', prop('figurada'), ' y no sirve para un diccionario.'] },
-        { texto: ['Le faltan la clase, que diga qué es, y el rasgo que lo separe de sus vecinos.'] }],
-      respuesta: [justo('No sirve'), ': compara; le faltan la clase y el rasgo'] },
+        { texto: ['La oración 1 llama al libro ', prop('«un amigo»'), ': lo compara con una persona. Es figurada y no sirve para un diccionario.'] },
+        { texto: ['Un libro no es una persona: «amigo» no es su clase. Le faltan una clase de verdad, como «conjunto de hojas», y un rasgo que lo separe.'] }],
+      respuesta: [justo('No sirve'), ': compara; le faltan una clase y un rasgo de verdad'] },
     { nivel: 2, titulo: 'Dos entradas que niegan',
       enunciado: 'Las dos entradas niegan. ¿Cuál está bien y cuál no?',
       datos: [D_NEG, D_FALTA],
@@ -1496,7 +1501,7 @@
         'Panadería: tienda donde se hace y se vende pan.', 'Calvo: que no tiene pelo en la cabeza.', 'Feria: mercado al aire libre en días fijos.'])),
       solucion: [
         { texto: [mala('A'), ', ', mala('C'), ' y ', mala('E'), ' dicen clase y rasgo sin repetir su palabra. ', mala('D'), ' niega, pero «calvo» nombra una falta.'] },
-        { texto: [buena('B'), ' usa ', cubre('«lector»'), ' para definir «lector»: quien no conoce la palabra se queda igual.'] }],
+        { texto: [buena('B'), ' usa ', prop('«lector»'), ' para definir «lector»: quien no conoce la palabra se queda igual.'] }],
       respuesta: [buena('B'), ': usa «lector» para definir «lector»'] },
     { nivel: 3, titulo: 'La negación correcta',
       enunciado: 'Pregunta 73 del simulacro: «¿Cuál de estas definiciones que niegan es correcta?». ¿Qué alternativa es la correcta?',
@@ -1507,15 +1512,15 @@
         { texto: ['En ', mala('B'), ' entra la vaca; en ', mala('C'), ', el amarillo; en ', mala('D'), ', la regla; en ', mala('E'), ', el mar. Ninguna de esas palabras nombra una falta.'] },
         { texto: [buena('A'), ' nombra una falta, la del habla: ', cubre('«que no puede hablar»'), ' es su rasgo.'] }],
       respuesta: [buena('A'), ': «mudo» nombra una falta'] },
-    { nivel: 3, titulo: 'El faro del cartel',
+    { nivel: 3, titulo: 'El motor del cuerpo',
       enunciado: 'Pregunta 74 del simulacro: «¿En cuál de estas definiciones hay sentido figurado?». ¿Qué alternativa es la correcta?',
       datos: [D_FIG, D_DEF],
-      figura: fig(simDef(74, '¿En cuál de estas definiciones hay sentido figurado?', ['Maestro: persona que enseña.', 'Abeja: insecto que hace miel.',
-        'Faro: torre con una luz para guiar a los barcos.', 'Puerto: lugar donde llegan y salen los barcos.', 'Maestro: el faro que guía a sus alumnos.'])),
+      figura: fig(simDef(74, '¿En cuál de estas definiciones hay sentido figurado?', ['Faro: torre con una luz para guiar a los barcos.', 'Llave: pieza de metal que abre una cerradura.',
+        'Motor: máquina que hace mover un vehículo o un aparato.', 'Puerto: lugar donde llegan y salen los barcos.', 'Corazón: el motor que mueve la sangre por el cuerpo.'])),
       solucion: [
-        { texto: [mala('A'), ', ', mala('B'), ', ', mala('C'), ' y ', mala('D'), ' dicen la clase y el rasgo de lo que nombran, sin comparar.'] },
-        { texto: [buena('E'), ' llama al maestro ', cubre('«el faro»'), ': un maestro no es una torre con luz. Lo compara.'] }],
-      respuesta: [buena('E'), ': compara al maestro con un faro'] },
+        { texto: [mala('A'), ', ', mala('B'), ', ', mala('C'), ' y ', mala('D'), ' dicen la clase de lo que nombran (torre, pieza, máquina, lugar) y su rasgo.'] },
+        { texto: [buena('E'), ' llama al corazón ', prop('«el motor»'), ': el corazón no es una máquina. Lo compara con un motor: es figurada.'] }],
+      respuesta: [buena('E'), ': compara al corazón con un motor'] },
     { nivel: 3, titulo: 'La palabra «sombra»',
       enunciado: 'Pregunta 75 del simulacro, de definiciones: hay que elegir la que define «sombra». ¿Qué alternativa es la correcta?',
       datos: [D_DEF, D_CIRC, D_NEG, D_FIG, D_AMPLIA],
@@ -1540,7 +1545,7 @@
           pieza: 'rv-soporte', dibujo: { datos: CUAD_MATEO, estado: {} } },
         { titulo: 'Repetir no explica', texto: 'Si preguntas qué es un tejedor y te responden «el que hace de tejedor», te quedas igual. Una definición que usa la misma palabra que define da vueltas en círculo: es una definición circular.' },
         { titulo: 'Comparar no es definir', texto: '«Mi abuela es un roble» dice algo bonito de la abuela, pero no qué es una abuela. Eso es sentido figurado: llamar a una cosa con el nombre de otra. Sirve en un poema, no en un diccionario.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Toca una entrada del cuaderno para tacharla y lee qué le pasa. Tócala otra vez para dejarla. Una sola dice la clase y el rasgo.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Toca una entrada del cuaderno para tacharla y lee qué le pasa. Tócala otra vez para dejarla. Una sola dice la clase y un rasgo que separa.' },
       ],
     },
     actividad: 'Revisar el glosario de un compañero y dejar la única entrada que define.',
@@ -1553,14 +1558,13 @@
         logrado: listoMateo,
         bien: 'Queda la única que dice la clase y el rasgo de su palabra.',
       },
-      voz: 'Pregúntale a cada entrada: ¿me dice qué es la cosa?',
+      voz: 'Toca una entrada para tacharla; pregúntale: ¿dice qué es y la separa de sus vecinos?',
       leyenda: [
         { s: '1, 2, 3, 4', t: 'número de cada entrada del cuaderno' },
         { s: 'tachado', t: 'entrada que descartaste' },
         { s: prop('naranja'), t: 'la entrada descartada y su falla' },
         { s: cubre('turquesa'), t: 'lo que la buena sí dice' },
         { s: justo('violeta'), t: 'la entrada que define' },
-        { s: 'botón marcado', t: 'lo que elegiste; no es color del texto' },
       ],
       controles: ENT_MATEO.map((x, k) => ({ id: x.ctl, etiqueta: `Entrada ${k + 1}`, opciones: [{ valor: 0, texto: 'dejar' }, { valor: 1, texto: 'tachar' }] })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(ENT_MATEO.map(x => [x.id, x.ctl])) }, CUAD_MATEO),
@@ -1583,14 +1587,14 @@
     mira: {
       datos: PESCADOR3,
       pasos: [
-        { estado: { marcas: { h1: 'o' }, tapar: ['h2', 'h3'], nuevo: ['h1'] }, texto: 'Tiene clase, «persona», pero su rasgo solo dice lo que no hace.', ecuacion: [prop('negativa'), ': no dice qué hace'] },
-        { estado: { marcas: { h1: 'o' }, tapar: ['h2', 'h3'] }, texto: 'Tampoco trabajan en la chacra el profesor ni el chofer: entran.', ecuacion: [prop('muy amplia'), ': entra ', prop('el profesor')] },
-        { estado: { marcas: { h1: 'o', h2: 'f' }, tapar: ['h3'], nuevo: ['h2'] }, texto: 'La buena dice lo que sí hace: pesca por oficio.', ecuacion: [justo('define'), ': clase y rasgo'] },
-        { estado: { marcas: { h1: 'o', h2: 'f', h3: 'i' }, nuevo: ['h3'] }, texto: 'Negar vale si la palabra nombra una falta, como «soltero».', ecuacion: [cubre('«que no está casada»'), ': la falta es el rasgo'] },
+        { estado: { marcas: { h1: 'o' }, nuevo: ['h1'] }, texto: 'Tiene clase, «persona», pero su rasgo solo dice lo que no hace.', ecuacion: [prop('negativa'), ': no dice qué hace'] },
+        { estado: { marcas: { h1: 'o' } }, texto: 'Tampoco trabajan en la chacra el profesor ni el chofer: entran.', ecuacion: [prop('muy amplia'), ': entra ', prop('el profesor')] },
+        { estado: { marcas: { h1: 'o', h2: 'f' }, nuevo: ['h2'] }, texto: 'La buena dice lo que sí hace: pesca por oficio.', ecuacion: [justo('define'), ': clase y rasgo'] },
+        { estado: { marcas: { h1: 'o', h2: 'f', h3: 'f' }, nuevo: ['h3'] }, texto: 'Negar vale si la palabra nombra una falta, como «soltero».', ecuacion: [cubre('«que no está casada»'), ': la falta es el rasgo'] },
       ],
     },
     regla: {
-      texto: 'Una definición no define si repite la palabra, si solo dice lo que la cosa no es o si la compara con otra. Tiene que decir clase y rasgo.',
+      texto: 'Una definición no define si repite la palabra, si solo dice lo que no es o si compara. Tiene que decir la clase y un rasgo que separe.',
       ecuacion: [{ llave: [{ negrita: 'repite' }], nota: 'circular' }, ' · ', { llave: [{ negrita: 'solo niega' }], nota: 'negativa' }, ' · ', { llave: [{ negrita: 'compara' }], nota: 'figurada' }],
       condicion: 'una definición negativa vale solo si la palabra nombra una falta, como «soltero: persona que no está casada».',
     },
@@ -1672,7 +1676,7 @@
   };
 
   // La predicción y «Mira»: el folleto de una feria (inventada) con el chuño.
-  const CHUNO = { soporte: 'folleto', lugar: 'Folleto de la feria de Ilave', hojas: [{ id: 'p', titulo: 'Feria del chuño', de: 'la municipalidad', para: 'los visitantes', oraciones: ora('p', [
+  const CHUNO = { soporte: 'folleto', lugar: 'Folleto de la feria de Lampa', hojas: [{ id: 'p', titulo: 'Feria del chuño', de: 'la municipalidad', para: 'los visitantes', oraciones: ora('p', [
     'Este sábado, en la plaza, se vende chuño de varias comunidades.', 'El chuño es una papa seca que se obtiene helándola de noche y secándola al sol de día.',
     'Así preparado, se puede guardar durante muchos meses.', 'Por ejemplo, con chuño se prepara el chairo.']) }] };
 
@@ -1680,23 +1684,23 @@
   const hojaTexto = (numero, titulo, oraciones, termino, alts) => ({ soporte: 'simulacro', numero, hojas: [{ id: 'h', titulo, oraciones: ora('h', oraciones) }],
     pregunta: `En el texto, el término «${termino}» se entiende como`, alternativas: alts.map((t, k) => ({ id: 'ABCDE'[k], t })) });
   const RESUELVE_TEX = [
-    { c: 'totora', buena: 'B', def: 'h2',
-      sop: hojaTexto(81, 'Texto', ['En el lago Titicaca crece mucha totora.', 'La totora es una planta de tallo largo que crece en el agua, a la orilla del lago.',
-        'Con sus tallos, los uros hacen balsas y casas.', 'En algunas bahías, cubre la orilla de punta a punta.'], 'totora',
+    { c: 'totora', buena: 'B', def: 'h4',
+      sop: hojaTexto(81, 'Texto', ['En el lago Titicaca crece mucha totora.', 'Con sus tallos, los uros hacen balsas y casas.',
+        'En algunas bahías, cubre la orilla de punta a punta.', 'La totora es una planta de tallo largo que crece en el agua, a la orilla del lago.'], 'totora',
       ['planta que solo crece cerca de las islas flotantes de los uros.', 'planta de tallo largo que crece en el agua de la orilla.', 'material con el que los uros hacen sus balsas.',
         'planta que abunda en el lago Titicaca.', 'balsa hecha con tallos del lago.']),
       datos: [D_TEXTO, D_DATO, D_SOLO],
-      tengo: 'La oración 2 dice «la totora es»: ahí está la definición. Las otras tres dan datos o usos.',
+      tengo: 'La oración 4 dice «la totora es»: ahí está la definición. Las otras tres dan datos o usos.',
       malas: [mala('A'), ' agrega «solo»: el texto no lo dice. ', mala('C'), ' y ', mala('E'), ' cambian la clase: material y balsa, no planta. ', mala('D'), ' toma el dato de la oración 1.'],
-      bien: [buena('B'), ' dice con otras palabras la oración 2: ', cubre('planta de tallo largo que crece en el agua'), '.'],
+      bien: [buena('B'), ' dice con otras palabras la oración 4: ', cubre('planta de tallo largo que crece en el agua'), '.'],
       sentido: 'Quien no conoce la totora la reconoce con la B; con la D, cualquier planta del lago serviría.' },
-    { c: 'puna', buena: 'D', def: 'h2',
-      sop: hojaTexto(82, 'Texto', ['Gran parte de Puno está en la puna.', 'La puna es una región alta y fría de los Andes, de pastos y casi sin árboles.',
+    { c: 'puna', buena: 'D', def: 'h1',
+      sop: hojaTexto(82, 'Texto', ['La puna es una región alta y fría de los Andes, de pastos y casi sin árboles.', 'Gran parte de Puno está en la puna.',
         'Ahí se crían alpacas y llamas.', 'De noche, la temperatura baja mucho.'], 'puna',
       ['región donde se crían alpacas y llamas.', 'región alta y fría que solo hay en Puno.', 'pasto duro que crece en las zonas altas y frías de los Andes del sur.',
         'región alta y fría de los Andes, con pastos y casi sin árboles.', 'lugar donde de noche hace mucho frío.']),
       datos: [D_TEXTO, D_DATO, D_SOLO],
-      tengo: 'La oración 2 dice «la puna es»: da la clase, «región», y sus rasgos. Las otras dan datos.',
+      tengo: 'La oración 1 dice «la puna es»: da la clase, «región», y sus rasgos. Las otras dan datos.',
       malas: [mala('A'), ' y ', mala('E'), ' toman los datos de las oraciones 3 y 4. ', mala('B'), ' agrega «solo en Puno». ', mala('C'), ' cambia la clase: un pasto, no una región.'],
       bien: [buena('D'), ' conserva la clase y los rasgos: ', cubre('región alta y fría de los Andes, de pastos y casi sin árboles'), '.'],
       sentido: 'También hay puna fuera de Puno, y en otros lugares también se crían alpacas: solo la D separa.' },
@@ -1728,11 +1732,11 @@
   // RV56, RV11 y RVD11 (uno por alternativa).
   const papelDe = (soporte, lugar, titulo, de, para, oraciones) => ({ soporte, lugar, hojas: [Object.assign({ id: 't' }, titulo ? { titulo } : {}, { de, para, oraciones: ora('t', oraciones) })] });
   const AHORA_TEX = [
-    { c: 'quinua', def: 't2', sop: papelDe('cartel', 'Cartel en el mercado de Juliaca', 'Quinua del altiplano', 'la asociación de productores', 'los compradores', [
-      'En este puesto se vende quinua blanca, roja y negra.', 'La quinua es una planta de los Andes cuyo grano se come cocido, como un cereal.',
+    { c: 'quinua', def: 't1', sop: papelDe('cartel', 'Cartel en el mercado de Juliaca', 'Quinua del altiplano', 'la asociación de productores', 'los compradores', [
+      'La quinua es una planta de los Andes cuyo grano se come cocido, como un cereal.', 'En este puesto se vende quinua blanca, roja y negra.',
       'Su grano tiene más proteína que el arroz.', 'Por ejemplo, con ella se prepara la sopa de quinua.']),
-      ok: 'Planta de los Andes cuyo grano se come cocido', sol: 'La oración 2 dice qué es: una planta de los Andes, y su rasgo, el grano que se come cocido.',
-      m: [['Grano de tres colores que se vende en un puesto del mercado', 'RVD15', 'Es cierto que se vende ahí, pero es un dato de la oración 1: no dice qué es.'],
+      ok: 'Planta de los Andes cuyo grano se come cocido', sol: 'La oración 1 dice qué es: una planta de los Andes, y su rasgo, el grano que se come cocido.',
+      m: [['Grano de tres colores que se vende en un puesto del mercado', 'RVD15', 'Es cierto que se vende ahí, pero es un dato de la oración 2: no dice qué es.'],
         ['La sopa que se prepara con un grano', 'RV56', 'Es un uso, el ejemplo de la oración 4: no dice qué es la quinua.'],
         ['Planta andina que solo se cultiva en Juliaca', 'RV11', 'Es una planta andina, pero el texto no dice «solo»: ese absoluto lo agregaste.']] },
     { c: 'friaje', def: 't2', sop: papelDe('mensaje', 'Familias de 4.º A', null, 'la tutora', 'familias de 4.º A', [
@@ -1743,11 +1747,11 @@
         ['La noche de hace unos años en que la temperatura bajó mucho de golpe', 'RV56', 'Es un caso, el de la oración 3: un ejemplo no define.'],
         ['Bajada de la temperatura que llega solo de noche', 'RV11', 'Es una bajada de la temperatura, pero el texto no dice que sea solo de noche.'],
         ['Viento frío que sopla desde el sur', 'RVD11', 'El viento es la causa del friaje, no el friaje: cambia la clase.']] },
-    { c: 'apacheta', def: 't2', sop: papelDe('cartel', 'Cartel en un camino de la puna', 'Apacheta del abra', 'la comunidad', 'los viajeros', [
-      'En el abra de este camino hay una apacheta.', 'Una apacheta es un montón de piedras que los viajeros forman en los pasos altos, como ofrenda.',
-      'Cada viajero que pasa deja una piedra.', 'Por favor, no saque piedras de ella.']),
-      ok: 'Montón de piedras de los viajeros en un paso alto, como ofrenda', sol: 'La oración 2 dice qué es: la clase, «montón de piedras», y su rasgo, de los viajeros y como ofrenda.',
-      m: [['Piedra que cada viajero deja al pasar por el abra', 'RVD15', 'Es lo que hace cada viajero, el dato de la oración 3: no dice qué es la apacheta.'],
+    { c: 'apacheta', def: 't3', sop: papelDe('cartel', 'Cartel en un camino de la puna', 'Apacheta del abra', 'la comunidad', 'los viajeros', [
+      'En el abra de este camino hay una apacheta.', 'Cada viajero que pasa deja una piedra.',
+      'Una apacheta es un montón de piedras que los viajeros forman en los pasos altos, como ofrenda.', 'Por favor, no saque piedras de ella.']),
+      ok: 'Montón de piedras de los viajeros en un paso alto, como ofrenda', sol: 'La oración 3 dice qué es: la clase, «montón de piedras», y su rasgo, de los viajeros y como ofrenda.',
+      m: [['Piedra que cada viajero deja al pasar por el abra', 'RVD15', 'Es lo que hace cada viajero, el dato de la oración 2: no dice qué es la apacheta.'],
         ['Montón de piedras que solo forman los viajeros del altiplano de Puno', 'RV11', 'Es un montón de piedras, pero el texto no dice «solo»: ese absoluto lo agregaste.'],
         ['Camino alto por el que pasan los viajeros', 'RVD11', 'El paso alto es el lugar, no la apacheta: cambia la clase.']] },
     { c: 'huaico', def: 't2', sop: papelDe('mural', 'Mural de la municipalidad', 'Temporada de lluvias', 'Defensa Civil', 'los vecinos', [
@@ -1758,17 +1762,17 @@
         ['El que dañó casas y puentes de la costa hace algunos años', 'RV56', 'Es un caso, el de la oración 3: un ejemplo no define.'],
         ['Torrente de lodo que baja solo por las quebradas de la costa', 'RV11', 'Es un torrente de lodo, pero el texto no dice «solo» en la costa.'],
         ['Peligro por el que no conviene vivir cerca de una quebrada, en su cauce', 'RVD15', 'Tiene que ver, pero es el consejo de la oración 4: no dice qué es.']] },
-    { c: 'faena', def: 't2', sop: papelDe('mensaje', 'Vecinos del barrio Santa Rosa', null, 'la junta vecinal', 'los vecinos', [
-      'El domingo habrá faena en el barrio.', 'La faena es un trabajo que los vecinos hacen juntos, sin pago, para una obra de todos.',
-      'La última vez se limpió el canal de riego.', 'Cada familia debe enviar al menos a una persona.']),
-      ok: 'Trabajo que hacen juntos los vecinos, sin pago, para una obra común', sol: 'La oración 2 dice qué es: la clase, «trabajo», y sus rasgos: juntos, sin pago, para todos.',
-      m: [['La limpieza del canal de riego', 'RV56', 'Es lo que se hizo la última vez, el caso de la oración 3: un ejemplo no define.'],
+    { c: 'faena', def: 't3', sop: papelDe('mensaje', 'Vecinos del barrio Santa Rosa', null, 'la junta vecinal', 'los vecinos', [
+      'El domingo habrá faena en el barrio.', 'La última vez se limpió el canal de riego.',
+      'La faena es un trabajo que los vecinos hacen juntos, sin pago, para una obra de todos.', 'Cada familia debe enviar al menos a una persona.']),
+      ok: 'Trabajo que hacen juntos los vecinos, sin pago, para una obra común', sol: 'La oración 3 dice qué es: la clase, «trabajo», y sus rasgos: juntos, sin pago, para todos.',
+      m: [['La limpieza del canal de riego', 'RV56', 'Es lo que se hizo la última vez, el caso de la oración 2: un ejemplo no define.'],
         ['Reunión a la que cada familia del barrio envía a una persona los domingos', 'RVD15', 'Es la regla de la oración 4, y la faena no es una reunión: no dice qué es.'],
         ['Trabajo sin pago que solo se hace los domingos', 'RV11', 'Es un trabajo sin pago, pero el texto no dice «solo» los domingos.']] },
-    { c: 'ojota', def: 't2', sop: papelDe('mural', 'Mural del museo del colegio', 'Vitrina 2: el calzado del campo', '5.º B', 'los visitantes', [
-      'En esta vitrina se ven unas ojotas.', 'La ojota es una sandalia de caucho que se sujeta al pie con tiras.',
+    { c: 'ojota', def: 't1', sop: papelDe('mural', 'Mural del museo del colegio', 'Vitrina 2: el calzado del campo', '5.º B', 'los visitantes', [
+      'La ojota es una sandalia de caucho que se sujeta al pie con tiras.', 'En esta vitrina se ven unas ojotas.',
       'Se usa mucho en el campo, porque es barata y dura bastante.', 'Por ejemplo, estas son de un pastor de Macusani.']),
-      ok: 'Sandalia de caucho que se sujeta al pie con tiras', sol: 'La oración 2 dice qué es: la clase, «sandalia de caucho», y su rasgo, las tiras.',
+      ok: 'Sandalia de caucho que se sujeta al pie con tiras', sol: 'La oración 1 dice qué es: la clase, «sandalia de caucho», y su rasgo, las tiras.',
       m: [['Calzado barato que se usa mucho en el campo', 'RVD15', 'Es cierto, pero es el dato de la oración 3: también es barata una zapatilla.'],
         ['Las sandalias de un pastor', 'RV56', 'Es un caso, el de la oración 4: un ejemplo no define.'],
         ['Sandalia de caucho que solo usan los pastores de Macusani', 'RV11', 'Es una sandalia de caucho, pero el texto no dice «solo»: ese absoluto lo agregaste.']] },
@@ -1794,7 +1798,7 @@
         { texto: ['La oración da ', cubre('una altura'), ': un número sobre el lago. No dice su clase, «lago», ni lo que lo separa de otros lagos.'] }],
       respuesta: [justo('Da un dato'), ': la altura del lago'] },
     { nivel: 1, titulo: 'Un ejemplo de cuento',
-      enunciado: 'El mensaje dice qué es un cuento «por ejemplo». ¿Define «cuento»?',
+      enunciado: 'La oración 1 del mensaje dice «Un cuento es…». ¿Define de verdad qué es un cuento?',
       datos: [D_TEXTO, D_EJEMPLO],
       figura: fig(papelDe('mensaje', 'Club de lectura de 3.º A', null, 'el profesor de Comunicación', 'el club', ['Un cuento es, por ejemplo, «El caballero Carmelo».', 'Lo leeremos el viernes.'])),
       solucion: [
@@ -1832,13 +1836,13 @@
         { texto: ['Un retablo con una fiesta queda fuera de lo que escribió Diego, y es un retablo.'] }],
       respuesta: [justo('Cambió el rasgo por un ejemplo'), ': un retablo con una fiesta queda fuera'] },
     { nivel: 2, titulo: 'Dos veces «es»',
-      enunciado: 'Las dos oraciones dicen «es». ¿Cuál define «Misti», y por qué la otra no?',
-      datos: [D_TEXTO],
-      figura: fig(papelDe('cartel', 'Cartel del mirador de Yanahuara', 'Arequipa', 'la municipalidad', 'los visitantes', ['El Misti es muy visitado.', 'El Misti es un volcán del sur del Perú, cerca de Arequipa.'])),
+      enunciado: 'Las dos oraciones dicen «es». ¿Cuál define «vicuña», y por qué la otra no?',
+      datos: [D_TEXTO, 'Camélido: animal de la familia de la llama, la alpaca y el camello.', 'Silvestre: que vive libre, sin que nadie lo críe.'],
+      figura: fig(papelDe('cartel', 'Cartel de la reserva de vicuñas', 'La vicuña', 'la reserva', 'los visitantes', ['La vicuña es muy apreciada por los visitantes.', 'La vicuña es un camélido silvestre de los Andes, de lana muy fina.'])),
       solucion: [
-        { texto: ['La 1 dice ', prop('cómo es'), ' el Misti para los visitantes: no da una clase.'] },
-        { texto: ['La 2 dice ', cubre('qué es'), ': la clase, «volcán», y el rasgo que lo ubica, «del sur del Perú, cerca de Arequipa».'] }],
-      respuesta: [justo('La 2'), ': da la clase, «volcán»; la 1 no'] },
+        { texto: ['La 1 dice qué piensan de ella los visitantes: ', prop('no da una clase'), ' ni un rasgo.'] },
+        { texto: ['La 2 dice ', cubre('qué es'), ': la clase, «camélido», y los rasgos «silvestre» y «de lana muy fina», que la separan de la alpaca y la llama.'] }],
+      respuesta: [justo('La 2'), ': da la clase, «camélido», y sus rasgos'] },
     { nivel: 2, titulo: 'La alpaca de Rosa',
       enunciado: 'Rosa escribió: «La alpaca es un camélido que solo se cría en Puno». ¿Qué agregó al texto y qué rasgo le quitó?',
       datos: [D_TEXTO, D_SOLO, 'Camélido: animal de la familia de la llama, la vicuña y el camello.'],
@@ -1857,7 +1861,7 @@
       respuesta: [justo('Cambió la clase'), ': el quipu eran cuerdas, no una persona'] },
 
     { nivel: 3, titulo: 'El aguayo de la feria',
-      enunciado: 'Pregunta 91 del simulacro, de comprensión de lectura. ¿Qué alternativa es la correcta?',
+      enunciado: 'Pregunta 91 del simulacro, sobre un texto. ¿Qué alternativa es la correcta?',
       datos: [D_TEXTO, D_DATO, D_SOLO],
       figura: fig(hojaTexto(91, 'Texto', ['En las ferias de Puno se ven aguayos de muchos colores.', 'El aguayo es una manta tejida, de colores vivos, que se usa para cargar cosas o bebés en la espalda.',
         'Sus dibujos cambian de una comunidad a otra.', 'Por ejemplo, muchas mujeres lo usan para llevar la compra del mercado.'], 'aguayo',
@@ -1869,19 +1873,19 @@
         { texto: [buena('E'), ' dice con otras palabras la oración 2: ', cubre('manta tejida, de colores vivos, para cargar en la espalda'), '.'] }],
       respuesta: [buena('E'), ': manta tejida de colores, que sirve para cargar en la espalda'] },
     { nivel: 3, titulo: 'El yaraví',
-      enunciado: 'Pregunta 92 del simulacro, de comprensión de lectura. ¿Qué alternativa es la correcta?',
+      enunciado: 'Pregunta 92 del simulacro, sobre un texto. ¿Qué alternativa es la correcta?',
       datos: [D_TEXTO, D_DATO, D_SOLO],
-      figura: fig(hojaTexto(92, 'Texto', ['En Arequipa se canta el yaraví desde hace mucho tiempo.', 'El yaraví es un canto triste y lento, de origen andino, que habla de amor o de despedida.',
+      figura: fig(hojaTexto(92, 'Texto', ['El yaraví es un canto triste y lento, de origen andino, que habla de amor o de despedida.', 'En Arequipa se canta el yaraví desde hace mucho tiempo.',
         'Mariano Melgar escribió yaravíes muy conocidos.', 'Hoy se canta casi siempre con guitarra.'], 'yaraví',
         ['canción alegre que se baila en pareja en las fiestas de los pueblos.', 'poema que escribió Mariano Melgar en Arequipa.', 'canto triste y lento, de origen andino, de amor o de despedida.',
           'canto que solo se canta acompañado de guitarra.', 'costumbre antigua de la ciudad de Arequipa.'])),
       solucion: [
         { texto: [mala('A'), ' define a un vecino, el huayno: es lo contrario de triste y lento. ', mala('B'), ' es un caso, el de la oración 3.'] },
-        { texto: [mala('D'), ' cambia «casi siempre» por «solo». ', mala('E'), ' toma el dato de la oración 1 y su clase queda muy lejos.'] },
-        { texto: [buena('C'), ' conserva la clase y los rasgos de la oración 2: ', cubre('canto triste y lento, de amor o de despedida'), '.'] }],
+        { texto: [mala('D'), ' cambia «casi siempre» por «solo». ', mala('E'), ' toma el dato de la oración 2 y su clase queda muy lejos.'] },
+        { texto: [buena('C'), ' conserva la clase y los rasgos de la oración 1: ', cubre('canto triste y lento, de amor o de despedida'), '.'] }],
       respuesta: [buena('C'), ': canto triste y lento, de origen andino, de amor o de despedida'] },
     { nivel: 3, titulo: 'El ayni',
-      enunciado: 'Pregunta 93 del simulacro, de comprensión de lectura. ¿Qué alternativa es la correcta?',
+      enunciado: 'Pregunta 93 del simulacro, sobre un texto. ¿Qué alternativa es la correcta?',
       datos: [D_TEXTO, D_SOLO, D_PARA],
       figura: fig(hojaTexto(93, 'Texto', ['En muchas comunidades de Puno se practica el ayni.', 'El ayni es una ayuda que se devuelve: quien recibe un día de trabajo lo paga después con otro día de trabajo.',
         'Por ejemplo, una familia ayuda a techar la casa del vecino, y luego el vecino la ayuda en la cosecha.', 'Así, nadie paga con dinero.'], 'ayni',
@@ -1893,11 +1897,11 @@
         { texto: [buena('B'), ' es la paráfrasis de la oración 2: ', cubre('una ayuda que se devuelve con otro día de trabajo'), '.'] }],
       respuesta: [buena('B'), ': ayuda en el trabajo que se devuelve después con otro trabajo'] },
     { nivel: 3, titulo: 'La fotosíntesis',
-      enunciado: 'Pregunta 94 del simulacro, de comprensión de lectura. ¿Qué alternativa es la correcta?',
+      enunciado: 'Pregunta 94 del simulacro, sobre un texto. ¿Qué alternativa es la correcta?',
       datos: [D_TEXTO, D_DATO, D_SOLO],
       figura: fig(hojaTexto(94, 'Texto', ['Las plantas de la puna reciben mucha luz.', 'La fotosíntesis es el proceso con que las plantas fabrican su alimento usando la luz del sol, el agua y el aire.',
         'Ocurre sobre todo en las hojas.', 'Sin ella, no habría pasto para las alpacas.'], 'fotosíntesis',
-        ['parte de la planta donde se fabrica el alimento.', 'proceso que solo ocurre en las plantas de la puna.', 'razón por la que hay pasto para las alpacas y las llamas de toda la puna.',
+        ['parte de la planta donde se fabrica el alimento.', 'proceso que solo ocurre en las plantas de la puna.', 'razón por la que crece el pasto que comen las alpacas en las tierras altas de la puna.',
           'proceso con que las plantas fabrican su alimento con luz, agua y aire.', 'alimento que fabrican las plantas en sus hojas.'])),
       solucion: [
         { texto: [mala('A'), ' y ', mala('E'), ' cambian la clase: la hoja y el alimento no son un proceso. ', mala('B'), ' agrega «solo».'] },
@@ -1905,16 +1909,16 @@
         { texto: [buena('D'), ' conserva la clase y el rasgo de la oración 2: ', cubre('proceso con que las plantas fabrican su alimento'), ', con luz, agua y aire.'] }],
       respuesta: [buena('D'), ': proceso con que las plantas fabrican su alimento con luz, agua y aire'] },
     { nivel: 3, titulo: 'La huaca',
-      enunciado: 'Pregunta 95 del simulacro, de comprensión de lectura. ¿Qué alternativa es la correcta?',
+      enunciado: 'Pregunta 95 del simulacro, sobre un texto. ¿Qué alternativa es la correcta?',
       datos: [D_TEXTO, D_DATO, D_SOLO],
-      figura: fig(hojaTexto(95, 'Texto', ['En la costa del Perú hay muchas huacas.', 'Para los antiguos peruanos, una huaca era un lugar u objeto sagrado, al que se le hacían ofrendas.',
-        'Por ejemplo, la huaca Pucllana, en Miraflores, es una pirámide de adobe.', 'Hoy muchas son sitios arqueológicos que se pueden visitar.'], 'huaca',
+      figura: fig(hojaTexto(95, 'Texto', ['En la costa del Perú hay muchas huacas.', 'Hoy muchas son sitios arqueológicos que se pueden visitar.',
+        'Para los antiguos peruanos, una huaca era un lugar u objeto sagrado, al que se le hacían ofrendas.', 'Por ejemplo, la huaca Pucllana, en Miraflores, es una pirámide de adobe.'], 'huaca',
         ['lugar u objeto sagrado al que se le hacían ofrendas.', 'pirámide de adobe que está en Miraflores.', 'sitio arqueológico que hoy se puede visitar con un guía en la costa.',
           'pirámide sagrada que solo hay en la costa.', 'ofrenda que se dejaba en un lugar sagrado.'])),
       solucion: [
-        { texto: [mala('B'), ' es el ejemplo de la oración 3. ', mala('C'), ' toma el dato de la oración 4. ', mala('D'), ' agrega «solo».'] },
+        { texto: [mala('B'), ' es el ejemplo de la oración 4. ', mala('C'), ' toma el dato de la oración 2. ', mala('D'), ' agrega «solo».'] },
         { texto: [mala('E'), ' cambia la clase: la ofrenda es lo que se le daba a la huaca.'] },
-        { texto: [buena('A'), ' conserva la clase y el rasgo de la oración 2: ', cubre('lugar u objeto sagrado'), ', al que se le hacían ofrendas.'] }],
+        { texto: [buena('A'), ' conserva la clase y el rasgo de la oración 3: ', cubre('lugar u objeto sagrado'), ', al que se le hacían ofrendas.'] }],
       respuesta: [buena('A'), ': lugar u objeto sagrado al que se le hacían ofrendas'] },
   ];
 
@@ -1928,7 +1932,7 @@
       tarjetas: [
         { titulo: 'Un folleto en el terminal', texto: 'En el terminal de Puno, el puesto de salud entrega este folleto a los visitantes. Sus cinco oraciones hablan del soroche, pero no todas dicen qué es.',
           pieza: 'rv-soporte', dibujo: { datos: FOLLETO, estado: {} } },
-        { titulo: 'Cómo avisa un texto que define', texto: 'Un texto define un término cuando dice qué es: «el soroche es…», «se llama…», «consiste en…». Esa oración da la clase y el rasgo, como una entrada de diccionario, pero dentro del texto.' },
+        { titulo: 'Cómo avisa un texto que define', texto: 'Un texto define un término cuando dice qué es: «la helada es…», «se llama…», «consiste en…». Esa oración da la clase y el rasgo, como una entrada de diccionario, pero dentro del texto.' },
         { titulo: 'Hablar de algo no es definirlo', texto: 'Otras oraciones dan un dato con números, cuentan a quién le pasa, ponen un ejemplo o dan un consejo. Todas hablan del término, y ninguna dice qué es.' },
         { titulo: 'Qué mirar al jugar', texto: 'Toca una oración del folleto para tacharla y lee qué hace. Tócala otra vez para dejarla. Una sola dice qué es el soroche.' },
       ],
@@ -1950,7 +1954,6 @@
         { s: prop('naranja'), t: 'la oración descartada y lo que hace' },
         { s: cubre('turquesa'), t: 'lo que la buena sí dice' },
         { s: justo('violeta'), t: 'la oración que define' },
-        { s: 'botón marcado', t: 'lo que elegiste; no es color del texto' },
       ],
       controles: ORA_FOL.map((x, k) => ({ id: x.ctl, etiqueta: `Oración ${k + 1}`, opciones: [{ valor: 0, texto: 'dejar' }, { valor: 1, texto: 'tachar' }] })),
       dibujo: val => ({ datos: Object.assign({ toques: Object.fromEntries(ORA_FOL.map(x => [x.id, x.ctl])) }, FOLLETO),
@@ -1964,7 +1967,7 @@
         { id: 'c', texto: 'Papa seca por la helada de la noche y el sol del día', correcta: true },
         { id: 'dato', texto: 'Producto de varias comunidades que se vende el sábado en la plaza', error: 'RVD15', siFuera: 'Es cierto que se vende ahí, pero es el dato de la oración 1: no dice qué es.' },
         { id: 'ejemplo', texto: 'El ingrediente con el que se prepara el chairo', error: 'RV56', siFuera: 'Es un uso del chuño, el ejemplo de la oración 4: un ejemplo no define.' },
-        { id: 'solo', texto: 'Papa seca que solo se prepara en las comunidades de Ilave', error: 'RV11', siFuera: 'Es papa seca, pero el texto dice «de varias comunidades», no «solo» de Ilave: ese absoluto lo agregaste.' },
+        { id: 'solo', texto: 'Papa seca que solo se prepara en las comunidades de Lampa', error: 'RV11', siFuera: 'Es papa seca, pero el texto dice «de varias comunidades», no «solo» de Lampa: ese absoluto lo agregaste.' },
       ],
       dibujo: { datos: CHUNO, estado: {} },
       revelar: { datos: CHUNO, estado: { marcas: { p2: 'i' }, tachar: ['p1', 'p3', 'p4'] } },
@@ -1974,14 +1977,14 @@
       datos: CHUNO,
       pasos: [
         { estado: { marcas: { p1: 'o' }, nuevo: ['p1'] }, texto: 'La oración 1 dice dónde y cuándo se vende el chuño: es un dato.', ecuacion: [prop('dato'), ': no dice qué es'] },
-        { estado: { marcas: { p3: 'o' }, tachar: ['p1'], nuevo: ['p3'] }, texto: 'La 3 dice cuánto dura: otro dato del chuño.', ecuacion: [prop('dato'), ': no dice qué es'] },
+        { estado: { marcas: { p3: 'o' }, tachar: ['p1'], nuevo: ['p3'] }, texto: 'La 3 dice cuánto se puede guardar: un dato del chuño, no qué es.', ecuacion: [prop('dato'), ': no dice qué es'] },
         { estado: { marcas: { p4: 'o' }, tachar: ['p1', 'p3'], nuevo: ['p4'] }, texto: 'La 4 da un uso, el chairo: un ejemplo no define.', ecuacion: [prop('ejemplo'), ': no dice qué es'] },
         { estado: { marcas: { p2: 'i' }, tachar: ['p1', 'p3', 'p4'], nuevo: ['p2'] }, texto: 'La 2 dice «el chuño es»: da la clase, papa seca, y su rasgo.', ecuacion: [cubre('clase y rasgo'), ': la define'] },
         { estado: { marcas: { p2: 'f' }, tachar: ['p1', 'p3', 'p4'] }, texto: 'La respuesta es su paráfrasis: lo mismo, sin agregar un «solo».', ecuacion: [justo('papa seca'), ' con la helada y el sol'] },
       ],
     },
     regla: {
-      texto: 'Si un texto define un término, la respuesta conserva la clase y el rasgo que el texto da. Un dato, un ejemplo o un «solo» no lo definen.',
+      texto: 'La respuesta repite, con otras palabras, la oración que define. Un dato, un ejemplo o un uso no definen; un «solo» agrega lo que el texto no dice.',
       ecuacion: ['el término = ', { llave: [{ negrita: 'la clase del texto' }], nota: 'la misma' }, ' + ', { llave: [{ negrita: 'su rasgo' }], nota: 'sin agregar nada' }],
       condicion: 'el texto lo define con todas sus letras («es», «se llama»); si hay que deducirlo de pistas, no lo define.',
     },
@@ -1990,7 +1993,7 @@
       generar(s) {
         const R = RESUELVE_TEX[s % RESUELVE_TEX.length];
         return {
-          enunciado: `Pregunta ${R.sop.numero} del simulacro, de comprensión de lectura: «En el texto, el término «${R.c}» se entiende como». Las alternativas están en la hoja.`,
+          enunciado: `Pregunta ${R.sop.numero} del simulacro, sobre un texto: «En el texto, el término «${R.c}» se entiende como». Las alternativas están en la hoja.`,
           datos: R.datos, dibujo: { datos: R.sop, estado: {} },
           pasos: [
             { tipo: 'pide', texto: `Piden lo que el texto entiende por «${R.c}»: la clase y el rasgo que el mismo texto da.` },
@@ -2025,9 +2028,9 @@
       { texto: 'Tacha solo la palabra que no es un recipiente.',
         logrado: val => ALTS_OLLA.every(x => (val[x.id.toLowerCase()] === 1) === (x.id === 'C')),
         bien: '«Cocinar» es una acción: las otras cuatro son recipientes.' },
-      { texto: 'Deja dos palabras: la que se ajusta y la que agrega un rasgo.',
-        logrado: val => ALTS_OLLA.every(x => (val[x.id.toLowerCase()] === 1) === !['D', 'E'].includes(x.id)),
-        bien: 'La olla de presión cumple todo y agrega la tapa: es la más específica.' },
+      { texto: 'Deja solo las dos palabras que cambian un rasgo de la definición.',
+        logrado: val => ALTS_OLLA.every(x => (val[x.id.toLowerCase()] === 1) === !['A', 'E'].includes(x.id)),
+        bien: 'La jarra no cocina y la sartén no es honda: son vecinas de la olla.' },
     ] });
   const mesaFolleto = Object.assign({ id: 'folleto', titulo: 'El folleto del soroche', pieza: 'rv-soporte' }, sinMision(definicionTexto.juega), {
     invitaciones: [
@@ -2123,11 +2126,31 @@
     ],
   };
 
+  // Cada falla que un resuelto nombra está dicha en sus Datos (lectores en frío A y B, 19 nov: «muy estrecha», «otra
+  // clase» o «define al vecino» aparecían en el resuelto sin estar en el recuadro). Se completa al armar la unidad, en
+  // los ejemplos y en «Así se resuelve»; si no caben en las 6 líneas, falla aquí.
+  const NOMBRES = [
+    [/muy amplia/i, D_AMPLIA], [/muy estrecha/i, D_ESTRECHA], [/define (al|a un) vecino/i, D_OTRA], [/clase más cercana/i, D_CERCANA],
+    [/la más general/i, D_GENERAL], [/la más específica/i, D_ESPEC], [/cambia (el|un|otro) rasgo|cambia otro/i, D_VECINO3], [/otra clase/i, D_OTRA3],
+    [/circular/i, D_CIRC], [/figurada/i, D_FIG], [/negativa|solo niega/i, D_NEG], [/«solo»/, D_SOLO]];
+  const planoT = x => (Array.isArray(x) ? x.map(planoT).join('') : x == null ? '' : typeof x === 'object' ? planoT(x.t !== undefined ? x.t : x.negrita !== undefined ? x.negrita : '') : String(x));
+  const completar = (datos, texto, donde) => {
+    const t = planoT(texto), out = datos.slice();
+    for (const [re, linea] of NOMBRES) if (re.test(t) && !out.includes(linea)) out.push(linea);
+    if (out.length > 6) throw new Error(`definiciones: ${donde} necesita ${out.length} líneas de datos`);
+    return out;
+  };
+  for (const idea of [claseRasgo, rasgoNecesario, definicionPalabra, definicionDefectuosa, definicionTexto]) {
+    for (const e of idea.ejemplos) e.datos = completar(e.datos, e.solucion.map(x => x.texto), `${idea.id} «${e.titulo}»`);
+    const gen = idea.resuelve.generar;
+    idea.resuelve.generar = s => { const r = gen(s); r.datos = completar(r.datos, r.pasos.filter(p => p.tipo === 'aplica').map(p => p.texto), `${idea.id} resuelve ${s}`); return r; };
+  }
+
   return {
     unidad: 'razonamiento-verbal.definiciones',
-    version: '0.4.0',
-    // Sin calidad: 2 todavía: la sesión la marca después del lector en frío y el auditor (etapa 5). La unidad ya pasa
-    // el validador como si la tuviera (definiciones.test.js).
+    version: '0.5.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js', '/nucleo/kit/piezas/rv-soporte.js', '/nucleo/kit/piezas/rv-definicion.js'],
     historia: {
@@ -2165,7 +2188,7 @@
         formas: ['necesario', 'necesarios', 'necesaria'], ver: ['suficiente'] },
       { termino: 'suficiente', def: 'Dicho de los rasgos: juntos bastan para dejar fuera todo lo que no corresponde.',
         simple: 'Que basta para separar a la cosa de sus parecidos.',
-        ejemplos: ['«Que tiene trompa» basta para separar al elefante de los otros animales.', '«Que sigue al lunes» basta para separar al martes de los otros días.', '«Que tiene ruedas» no basta para el tren: el bus también las tiene.'],
+        ejemplos: ['«Que tiene trompa» basta para separar al elefante de los otros animales.', '«Que sigue al lunes» basta para separar al martes de los otros días.', '«Que tiene joroba» basta para separar al camello de la llama.'],
         ver: ['necesario'] },
       { termino: 'especie', def: 'Grupo más chico dentro de una clase: tiene sus rasgos y suma otros propios.',
         simple: 'Un grupo más chico que está dentro de otro.',
@@ -2180,8 +2203,7 @@
         ejemplos: ['«Nadador: el que nada como un nadador.»', '«Barco: un barco que flota en el agua.»', 'Quien no sabe qué es un barco se queda igual.'],
         formas: ['circular', 'circulares'], ver: ['definición'] },
       { termino: 'definición negativa', def: 'La que nombra lo que la cosa no es, sin dar su rasgo.',
-        simple: 'Decir qué no es una cosa, en lugar de qué es.',
-        ejemplos: ['«Pez: animal que no es ave.» Entra la rana.', '«Mesa: mueble que no es silla.» Entra el ropero.', 'Vale si la palabra nombra una falta, como «manco».'],
+        ejemplos: ['«Pez: animal que no es ave.»', '«Mesa: mueble que no es silla.»', 'Vale si la palabra nombra una falta, como «manco».'],
         formas: ['negativa', 'negativas'], ver: ['definición'] },
       { termino: 'sentido figurado', def: 'Uso de una palabra con el sentido de otra que se le parece, para comparar.',
         simple: 'Llamar a una cosa con el nombre de otra que se le parece.',
