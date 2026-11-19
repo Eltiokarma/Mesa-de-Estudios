@@ -1,0 +1,87 @@
+{
+  "titulo": "Polinomios: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se tiene el polinomio 5x² + 3x − 3x² − x. ¿A qué es igual, reducido? Datos: Términos semejantes: las mismas letras con los mismos exponentes. axⁿ + bxⁿ = (a + b)xⁿ. Alternativas: A) 2x² + 2x   B) 4x³   C) 2x² + 3x   D) 2x⁴ + 2x²   E) 8x² + 4x",
+      "respuesta": "A) 2x² + 2x",
+      "pasos": [
+        "Los de x² con los de x², y los de x con los de x.",
+        "(5 − 3)x² + (3 − 1)x = 2x² + 2x."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un pedido de Rubén cubre 3x² + 3x + 5 dm², con x el lado de la loseta en dm. Rubén compra losetas de 3 dm de lado. ¿Cuántos dm² cubre el pedido? Datos: P(k): el valor de P cuando x vale k; cada x se cambia por k. Una loseta de x dm de lado cubre x² dm²; una tira, x dm²; un cuadradito, 1 dm². Alternativas: A) 23 dm²   B) 11 dm²   C) 51 dm²   D) 36 dm²   E) 41 dm²",
+      "respuesta": "E) 41 dm²",
+      "pasos": [
+        "Cada x se cambia por 3.",
+        "3 · 3² + 3 · 3 + 5 = 27 + 9 + 5 = 41 dm²."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se tiene P(x, y) = −3xy² + 3xy + 6x⁵y⁴. ¿Cuál es su grado absoluto? Datos: Grado de un término: la suma de los exponentes de sus letras. Grado absoluto (GA): el mayor de los grados de los términos. Alternativas: A) 5   B) 14   C) 9   D) 3",
+      "respuesta": "C) 9",
+      "pasos": [
+        "Grados de los términos: 3, 2, 9.",
+        "GA = 9."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se tiene el polinomio −4x⁶ + 3x⁴. ¿Cuántos términos de coeficiente 0 hay que agregarle para que quede completo? Datos: Completo: aparece cada potencia de x, desde la del grado hasta x⁰. Una potencia que falta se escribe con coeficiente 0. Alternativas: A) 5   B) 4   C) 1   D) 2   E) 7",
+      "respuesta": "A) 5",
+      "pasos": [
+        "De x⁶ a x⁰ hay 7 casillas; 2 tienen número.",
+        "7 − 2 = 5."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se sabe que (a − 6)x² + (b − 2)x + (c + 3) ≡ 0. ¿Cuánto vale a + b + c? Datos: Idénticamente nulo (≡ 0): todos sus coeficientes valen 0. Alternativas: A) 11   B) −5   C) 5   D) 0   E) 8",
+      "respuesta": "C) 5",
+      "pasos": [
+        "Cada coeficiente vale 0.",
+        "a = 6, b = 2, c = −3; a + b + c = 5."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se multiplica (x + 4)(x² − x + 1). ¿Cuál es el coeficiente de x² en el producto? Datos: Cada término del primer polinomio multiplica a cada término del segundo. xᵃ · xᵇ = xᵃ⁺ᵇ. Alternativas: A) 4   B) −1   C) −5   D) 3   E) −4",
+      "respuesta": "D) 3",
+      "pasos": [
+        "Dos casillas dan x²; se suman sus coeficientes.",
+        "−1 + 4 = 3."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Se sabe que P(x − 1) = 2x² − x + 4. ¿Cuánto vale el término independiente de P? Datos: Si se da P(x + h), P(k) sale con el x que cumple x + h = k. Suma de coeficientes de P: P(1).  Término independiente de P: P(0). Alternativas: A) 5   B) 4   C) 10   D) 7",
+      "respuesta": "A) 5",
+      "pasos": [
+        "P(0) sale con el x que cumple x − 1 = 0.",
+        "x = 1: P(0) = 5."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "El polinomio P(x, y) = x^(n)y² − x^(n + 2)y⁵ + 3x^(n + 3)y⁵ tiene grado absoluto 14. ¿Cuánto vale n? Datos: Grado de un término: la suma de los exponentes de sus letras. Grado absoluto (GA): el mayor de los grados de los términos. Alternativas: A) 12   B) −1   C) 14   D) 11   E) 6",
+      "respuesta": "E) 6",
+      "pasos": [
+        "Los grados son n + 2, n + 7, n + 8: el mayor es n + 8.",
+        "n + 8 = 14, n = 6."
+      ]
+    }
+  ]
+}

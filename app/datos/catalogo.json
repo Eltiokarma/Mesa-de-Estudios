@@ -2792,30 +2792,33 @@
        ]
       }
      },
-     "potencial_visual": "bajo",
+     "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
       "algebra.exponentes-y-productos-notables",
       "aritmetica.cuatro-operaciones"
      ],
      "plantillas": [
+      "polinomios-practica",
       "polinomios"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/algebra/polinomios.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-losetas.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "grados": "El grado se suma por término",
-       "valor-numerico": "Evaluar es reemplazar cada x",
-       "completo-ordenado": "Una casilla por cada potencia",
-       "igualdad": "Iguales casilla por casilla",
-       "operaciones": "Cada término por cada término"
+       "terminos-semejantes": "Términos semejantes",
+       "valor-numerico": "Valor numérico",
+       "grados": "Grado absoluto y relativo",
+       "completo-ordenado": "Completo, ordenado y homogéneo",
+       "igualdad": "Polinomios idénticos",
+       "operaciones": "Multiplicar polinomios"
       },
-      "terminos": 26
+      "terminos": 39
      }
     },
     {
@@ -10581,6 +10584,33 @@
     "/plantillas/polinomios/index.html",
     "/plantillas/polinomios/motor.js",
     "/plantillas/polinomios/papel.json"
+   ],
+   "rehacer": [
+    "algebra.polinomios"
+   ]
+  },
+  "polinomios-practica": {
+   "id": "polinomios-practica",
+   "titulo": "Polinomios",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.polinomios"
+   ],
+   "url": "#/practica/polinomios-practica",
+   "ideas": [
+    "terminos-semejantes",
+    "valor-numerico",
+    "grados",
+    "completo-ordenado",
+    "igualdad",
+    "operaciones"
+   ],
+   "papel": "/plantillas/polinomios-practica/papel.json",
+   "archivos": [
+    "/plantillas/polinomios-practica/generador.js",
+    "/plantillas/polinomios-practica/papel.json"
    ]
   },
   "porcentajes-planteo": {

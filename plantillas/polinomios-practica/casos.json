@@ -1,0 +1,542 @@
+{
+  "plantilla": "polinomios-practica",
+  "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta (un número o el polinomio tal cual); texto: lo que ve el alumno. Un caso por tipo (30 tipos, seis ideas).",
+  "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad de la sesión, e5-algebra/casos-practica.py), que no usa el generador ni el núcleo: lee los polinomios del enunciado como diccionarios de monomios y los suma, resta y reduce por su cuenta; desarrolla los productos término por término; halla por fuerza bruta los números por hallar (m, n, k, a, b, c); evalúa con números y escribe la respuesta con su propia tabla de superíndices. Los 30 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "completo-ordenado",
+        "tipo": "ceros",
+        "nivel": 2,
+        "n": 6,
+        "m": 3,
+        "exps": [
+          6,
+          3,
+          0
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "igualdad",
+        "tipo": "tres",
+        "nivel": 2,
+        "a": 2,
+        "b": 5,
+        "c": -4
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "completo-ordenado",
+        "tipo": "parametros",
+        "nivel": 3,
+        "p": 2,
+        "s": 1,
+        "crec": true
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "igualdad",
+        "tipo": "mn",
+        "nivel": 1,
+        "p": 4,
+        "q": 3,
+        "A": 3,
+        "B": 2,
+        "mas": true
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "terminos-semejantes",
+        "tipo": "sumar",
+        "nivel": 1,
+        "P": [
+          6,
+          2,
+          8
+        ],
+        "Q": [
+          2,
+          -3,
+          -1
+        ]
+      },
+      "esperado": {
+        "respuesta": "8x² − x + 7",
+        "texto": "8x² − x + 7"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "idea": "valor-numerico",
+        "tipo": "desplazado",
+        "nivel": 3,
+        "h": 2,
+        "A": 2,
+        "B": -3,
+        "C": -7,
+        "pide": "p1"
+      },
+      "esperado": {
+        "respuesta": -2,
+        "texto": "−2"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "idea": "operaciones",
+        "tipo": "indep",
+        "nivel": 2,
+        "a": 1,
+        "b": 1,
+        "c": 4
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "terminos-semejantes",
+        "tipo": "reducir",
+        "nivel": 1,
+        "cs": [
+          7,
+          2,
+          3,
+          -6
+        ]
+      },
+      "esperado": {
+        "respuesta": "10x² − 4x",
+        "texto": "10x² − 4x"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "grados",
+        "tipo": "ga",
+        "nivel": 1,
+        "ts": [
+          [
+            7,
+            5,
+            0
+          ],
+          [
+            -6,
+            2,
+            4
+          ],
+          [
+            7,
+            5,
+            2
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "terminos-semejantes",
+        "tipo": "exponentes",
+        "nivel": 3,
+        "p": 3,
+        "s": 1,
+        "ex": 8,
+        "ey": 5
+      },
+      "esperado": {
+        "respuesta": 11,
+        "texto": "11"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "idea": "operaciones",
+        "tipo": "grado",
+        "nivel": 1,
+        "m": 3,
+        "n": 2,
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 8,
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "grados",
+        "tipo": "relativos",
+        "nivel": 3,
+        "p": 1,
+        "q": 3,
+        "A": 6,
+        "B": 4
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "operaciones",
+        "tipo": "coef",
+        "nivel": 2,
+        "a": -2,
+        "b": 2,
+        "c": -1,
+        "enX2": true
+      },
+      "esperado": {
+        "respuesta": 0,
+        "texto": "0"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "idea": "grados",
+        "tipo": "gr",
+        "nivel": 1,
+        "ts": [
+          [
+            2,
+            3,
+            2
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            -2,
+            1,
+            2
+          ]
+        ],
+        "L": "x"
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "idea": "terminos-semejantes",
+        "tipo": "dos-letras",
+        "nivel": 2,
+        "a": 4,
+        "b": 5,
+        "c": 1,
+        "d": -3
+      },
+      "esperado": {
+        "respuesta": "5x²y + 2xy²",
+        "texto": "5x²y + 2xy²"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "idea": "valor-numerico",
+        "tipo": "factorizada",
+        "nivel": 2,
+        "p": 1,
+        "q": 2,
+        "s": 2,
+        "u": -1,
+        "w": -3
+      },
+      "esperado": {
+        "respuesta": -14,
+        "texto": "−14"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "idea": "igualdad",
+        "tipo": "sistema",
+        "nivel": 3,
+        "p": 4,
+        "q": 2,
+        "S": 5,
+        "T": 14
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "idea": "completo-ordenado",
+        "tipo": "total",
+        "nivel": 1,
+        "n": 8,
+        "m": 3
+      },
+      "esperado": {
+        "respuesta": 9,
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "idea": "completo-ordenado",
+        "tipo": "homogeneo",
+        "nivel": 2,
+        "g": 9,
+        "b1": 7
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 27,
+      "entrada": {
+        "idea": "valor-numerico",
+        "tipo": "losetas",
+        "nivel": 1,
+        "cs": [
+          2,
+          4,
+          1
+        ],
+        "k": 2
+      },
+      "esperado": {
+        "respuesta": 17,
+        "texto": "17 dm²"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "idea": "grados",
+        "tipo": "parametro",
+        "nivel": 3,
+        "ps": [
+          3,
+          1,
+          2
+        ],
+        "qs": [
+          4,
+          3,
+          4
+        ],
+        "G": 14
+      },
+      "esperado": {
+        "respuesta": 7,
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 32,
+      "entrada": {
+        "idea": "valor-numerico",
+        "tipo": "coeficiente",
+        "nivel": 3,
+        "cs": [
+          3,
+          4,
+          2,
+          2
+        ],
+        "t": 2,
+        "u": -1
+      },
+      "esperado": {
+        "respuesta": 1,
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "idea": "valor-numerico",
+        "tipo": "evaluar",
+        "nivel": 1,
+        "cs": [
+          -3,
+          2,
+          -3,
+          0
+        ],
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": -72,
+        "texto": "−72"
+      }
+    },
+    {
+      "semilla": 46,
+      "entrada": {
+        "idea": "igualdad",
+        "tipo": "nulo",
+        "nivel": 2,
+        "p": 5,
+        "q": 1,
+        "s": -2
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 54,
+      "entrada": {
+        "idea": "operaciones",
+        "tipo": "producto-igual",
+        "nivel": 3,
+        "m": 2,
+        "q": -4,
+        "A": 3
+      },
+      "esperado": {
+        "respuesta": 16,
+        "texto": "16"
+      }
+    },
+    {
+      "semilla": 58,
+      "entrada": {
+        "idea": "valor-numerico",
+        "tipo": "uno-cero",
+        "nivel": 2,
+        "cs": [
+          5,
+          -2,
+          -1,
+          -4
+        ],
+        "mas": true
+      },
+      "esperado": {
+        "respuesta": -6,
+        "texto": "−6"
+      }
+    },
+    {
+      "semilla": 65,
+      "entrada": {
+        "idea": "grados",
+        "tipo": "es-polinomio",
+        "nivel": 2,
+        "p": 4,
+        "q": 6
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 79,
+      "entrada": {
+        "idea": "operaciones",
+        "tipo": "suma-coef",
+        "nivel": 2,
+        "a": 2,
+        "b": -1,
+        "c": 3,
+        "d": -4,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": -1,
+        "texto": "−1"
+      }
+    },
+    {
+      "semilla": 83,
+      "entrada": {
+        "idea": "terminos-semejantes",
+        "tipo": "restar",
+        "nivel": 2,
+        "P": [
+          6,
+          6,
+          6
+        ],
+        "Q": [
+          4,
+          -5,
+          -4
+        ]
+      },
+      "esperado": {
+        "respuesta": "2x² + 11x + 10",
+        "texto": "2x² + 11x + 10"
+      }
+    },
+    {
+      "semilla": 120,
+      "entrada": {
+        "idea": "terminos-semejantes",
+        "tipo": "perimetro",
+        "nivel": 3,
+        "a": 3,
+        "b": 4,
+        "c": 2,
+        "d": 1
+      },
+      "esperado": {
+        "respuesta": "10x + 10 m",
+        "texto": "10x + 10 m"
+      }
+    }
+  ]
+}

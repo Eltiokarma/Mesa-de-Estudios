@@ -683,6 +683,17 @@ const V = {
     if (r.tipo !== 'unico') throw new Error('el ítem supone un óptimo único');
     return { correcta: r.optimoTexto, errores: { 'PL5-vertice-de-mayor-x': e.mayorX.texto, 'PL4-vertice-mas-lejano': e.masLejano.texto, 'PL7-solo-vertices-de-los-ejes': e.soloEjes.texto } }; },
 
+  // pp-01 y pp-02 (reserva, 19 nov, etapa 5 de álgebra: «Polinomios»; las formas ya tienen 10 pares). La plantilla
+  // polinomios-practica no tiene motor: se evalúa aquí, P(1) con la suma de los coeficientes por Horner y P(0) con el
+  // último; el grado absoluto, buscando el n que hace al mayor de los grados igual al dado.
+  'pp-01': d => { const P = x => d.coefs.reduce((a, c) => a * x + c, 0), p1 = P(1), p0 = P(0);
+    return { correcta: p1 + p0, errores: { 'PO-solo-suma-de-coeficientes': p1, 'PO12-p1-como-independiente': 2 * p0, 'PO21-coeficientes-sin-signo': d.coefs.reduce((a, c) => a + Math.abs(c), 0) + p0 } }; },
+  'pp-02': d => { const g = n => d.terminos.map(([p, q]) => n + p + q), cual = n => Math.max(...g(n));
+    let n = 0; while (cual(n) < d.G) n++;
+    if (cual(n) !== d.G) throw new Error('pp-02: ningún n da ese grado');
+    const s = g(0), orden = [...s].sort((a, b) => b - a);
+    return { correcta: n, errores: { 'PO9-grado-del-primer-termino': d.G - s[0], 'PO-grado-de-otro-termino': d.G - orden[1], 'PO11-suma-los-grados': (d.G - s.reduce((a, b) => a + b, 0)) / s.length } }; },
+
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
   // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares;
   // geo-05, de Relaciones métricas, volvió a las formas el 18 nov en el lugar que dejó geo-13).

@@ -216,6 +216,30 @@
     "PL7-solo-vertices-de-los-ejes": {
      "respaldo": "hipotesis",
      "describe": "Evalúa solo los vértices que están en los ejes"
+    },
+    "PO-solo-suma-de-coeficientes": {
+     "respaldo": "hipotesis",
+     "describe": "Da la suma de los coeficientes, P(1), y olvida sumar el término independiente"
+    },
+    "PO12-p1-como-independiente": {
+     "respaldo": "hipotesis",
+     "describe": "Confunde P(1) con P(0): toma el término independiente como la suma de los coeficientes"
+    },
+    "PO21-coeficientes-sin-signo": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los coeficientes sin sus signos"
+    },
+    "PO9-grado-del-primer-termino": {
+     "respaldo": "hipotesis",
+     "describe": "Toma el grado del primer término como el grado absoluto"
+    },
+    "PO-grado-de-otro-termino": {
+     "respaldo": "hipotesis",
+     "describe": "Iguala el grado absoluto al grado de un término que no es el mayor"
+    },
+    "PO11-suma-los-grados": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los grados de todos los términos (trampa de San Marcos 2026-I)"
     }
    },
    "pares": [

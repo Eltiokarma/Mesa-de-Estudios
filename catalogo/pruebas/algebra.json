@@ -219,6 +219,30 @@
     "PL7-solo-vertices-de-los-ejes": {
       "respaldo": "hipotesis",
       "describe": "Evalúa solo los vértices que están en los ejes"
+    },
+    "PO-solo-suma-de-coeficientes": {
+      "respaldo": "hipotesis",
+      "describe": "Da la suma de los coeficientes, P(1), y olvida sumar el término independiente"
+    },
+    "PO12-p1-como-independiente": {
+      "respaldo": "hipotesis",
+      "describe": "Confunde P(1) con P(0): toma el término independiente como la suma de los coeficientes"
+    },
+    "PO21-coeficientes-sin-signo": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los coeficientes sin sus signos"
+    },
+    "PO9-grado-del-primer-termino": {
+      "respaldo": "hipotesis",
+      "describe": "Toma el grado del primer término como el grado absoluto"
+    },
+    "PO-grado-de-otro-termino": {
+      "respaldo": "hipotesis",
+      "describe": "Iguala el grado absoluto al grado de un término que no es el mayor"
+    },
+    "PO11-suma-los-grados": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los grados de todos los términos (trampa de San Marcos 2026-I)"
     }
   },
   "pares": [
@@ -1428,6 +1452,176 @@
           {
             "texto": "(0; 8)",
             "error": "PL7-solo-vertices-de-los-ejes"
+          }
+        ]
+      }
+    },
+    {
+      "par": "pp-01",
+      "plantilla": "polinomios-practica",
+      "unidad": "algebra.polinomios",
+      "mide": "Valor numérico: la suma de los coeficientes es P(1) y el término independiente, P(0)",
+      "A": {
+        "enunciado": "La suma de los coeficientes de P(x) = 2x³ − x² + 4x − 3, más su término independiente, ¿cuánto vale?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              2,
+              -1,
+              4,
+              -3
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "PO-solo-suma-de-coeficientes"
+          },
+          {
+            "texto": "−1",
+            "valor": -1,
+            "correcta": true
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "error": "PO21-coeficientes-sin-signo"
+          },
+          {
+            "texto": "−6",
+            "valor": -6,
+            "error": "PO12-p1-como-independiente"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "La suma de los coeficientes de M(x) = 3x³ + x² − 5x + 4, más su término independiente, ¿cuánto vale?",
+        "datos": {
+          "modelo": {
+            "coefs": [
+              3,
+              1,
+              -5,
+              4
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "PO12-p1-como-independiente"
+          },
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "PO21-coeficientes-sin-signo"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "PO-solo-suma-de-coeficientes"
+          }
+        ]
+      }
+    },
+    {
+      "par": "pp-02",
+      "plantilla": "polinomios-practica",
+      "unidad": "algebra.polinomios",
+      "mide": "Grado absoluto con exponentes que dependen de n: el mayor de los grados de los términos, no su suma (San Marcos 2026-I)",
+      "A": {
+        "enunciado": "Si P(x, y) = 2xⁿ⁺¹y³ − xⁿ⁺⁴y + 5xⁿy⁶ tiene grado absoluto 12, ¿cuánto vale n?",
+        "datos": {
+          "G": 12,
+          "modelo": {
+            "terminos": [
+              [
+                1,
+                3
+              ],
+              [
+                4,
+                1
+              ],
+              [
+                0,
+                6
+              ]
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−1",
+            "valor": -1,
+            "error": "PO11-suma-los-grados"
+          },
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "PO9-grado-del-primer-termino"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "error": "PO-grado-de-otro-termino"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Si Q(x, y) = 4xⁿ⁺²y² + xⁿ⁺⁵y − 3xⁿy⁷ tiene grado absoluto 14, ¿cuánto vale n?",
+        "datos": {
+          "G": 14,
+          "modelo": {
+            "terminos": [
+              [
+                2,
+                2
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                0,
+                7
+              ]
+            ]
+          }
+        },
+        "opciones": [
+          {
+            "texto": "10",
+            "valor": 10,
+            "error": "PO9-grado-del-primer-termino"
+          },
+          {
+            "texto": "7",
+            "valor": 7,
+            "correcta": true
+          },
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "PO-grado-de-otro-termino"
+          },
+          {
+            "texto": "−1",
+            "valor": -1,
+            "error": "PO11-suma-los-grados"
           }
         ]
       }
