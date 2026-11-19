@@ -45,7 +45,7 @@ const AE = { H: -73, Li: -60, C: -122, O: -141, F: -328, Na: -53, P: -72, S: -20
 test('las cuatro ideas en el orden de la propuesta; pasaría el validador con calidad 2 y cada idea estrena sus palabras', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ['radio-atomico-ionico', 'radio-ionico', 'energia-ionizacion', 'electronegatividad']);
   assert.deepEqual(def.ideas.map(i => i.titulo), ['Radio atómico', 'Radio de iones e isoelectrónicos', 'Energía de ionización y afinidad electrónica', 'Electronegatividad y carácter metálico']);
-  assert.equal(def.calidad, undefined, 'la marca la pone la sesión, después del lector en frío y el auditor');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   const cat = require('../../../catalogo/cursos/quimica.json').unidades.find(u => u.id === def.unidad);
   const p = Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas: cat.temas, semillas: 60 });
   assert.deepEqual(p, [], p.join('\n'));
@@ -293,4 +293,55 @@ test('las figuras de quim-tira caben con 4 de margen y sus rótulos no se pisan'
   }
   assert.ok(n > 80, `${n} figuras`);
   assert.deepEqual(mal.slice(0, 20), [], `${mal.length} problemas`);
+});
+
+// ---------- Auditoría y lector en frío (19 nov): cada prueba falla con la versión de antes ----------
+const EI_NIST = { 3: 520, 4: 900, 9: 1681, 11: 496, 12: 738, 13: 578, 14: 787, 15: 1012, 16: 1000, 17: 1251, 19: 419, 20: 590, 31: 579, 32: 762, 35: 1140 };
+const ZN = { litio: 3, berilio: 4, flúor: 9, sodio: 11, magnesio: 12, aluminio: 13, silicio: 14, fósforo: 15, azufre: 16, cloro: 17, potasio: 19, calcio: 20, galio: 31, germanio: 32, bromo: 35 };
+test('auditoría: «Mira» de la idea 2 dibuja átomos e iones en cada paso, no la tira de tarjetas', () => {
+  for (let corte = 0; corte <= I2.mira.pasos.length; corte++) {
+    const s = Kit.piezas['quim-tira'].dibujar(I2.mira.datos, { corte });
+    assert.ok(s.includes('kit-esfera'), `paso ${corte}: sin esferas`);
+  }
+});
+test('auditoría: el par de isoelectrónicos tiene una sola respuesta (sin «el de mayor carga»); el V/F de iones trae los protones que usa', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = I2.ahoraTu.generar(s), q = plano(a.pregunta);
+    assert.ok(!a.opciones.some(o => /mayor carga/.test(o.texto)), `${s}: ${q}`);
+    if (/^Indica verdadero/.test(q)) {
+      const d = a.datos.map(plano).join(' ');
+      for (const [sim, nom] of [['S²⁻', 'azufre'], ['Br⁻', 'bromo'], ['Na⁺', 'sodio'], ['K⁺', 'potasio'], ['Cl⁻', 'cloro'], ['Ca²⁺', 'calcio']]) if (q.includes(sim)) assert.ok(d.includes(nom), `${s}: ${q} sin los protones del ${nom}`);
+    }
+    if (/electrones tiene el ion/.test(q)) for (const o of a.opciones.filter(x => x.error === 'QM-ION-UNO')) assert.ok(!/[⁺⁻]$/.test(q.match(/ion (\S+)\?/)[1].replace(/[²³]/, 'X')) || /[²³]/.test(q), `${s}: QM-ION-UNO con carga 1`);
+  }
+});
+test('auditoría: el carácter metálico no contradice la EI de la unidad (sin Ca–Ga); sin «Grupo 18» por el salto', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = I4.ahoraTu.generar(s), q = plano(a.pregunta), m = q.match(/mayor carácter metálico: el (\S+) o el (\S+)\?/);
+    if (m) { const mas = ZN[a.opciones.find(o => o.correcta).texto.replace('El ', '')], otro = [ZN[m[1]], ZN[m[2]]].find(z => z !== mas); assert.ok(EI_NIST[mas] < EI_NIST[otro], `${q}: EI ${EI_NIST[mas]} y ${EI_NIST[otro]}`); }
+    const b = I3.ahoraTu.generar(s);
+    for (const o of b.opciones.filter(x => x.error === 'QM-SALTO-ANTES')) assert.ok(!/18/.test(o.texto), `${s}: ${o.texto}`);
+  }
+});
+test('lector: palabras llanas en la regla de la idea 3 y en los textos (sin «estrenar» ni «aparear el p»), y nada de «dos bajadas por periodo»', () => {
+  const todo = JSON.stringify([def.ideas.map(i => [i.aprendizaje, i.lee, i.juega.consigna, i.juega.mision, i.mira.pasos, i.regla, i.ejemplos]), def.laboratorio.map(m => m.invitaciones.map(x => x.bien))]);
+  assert.ok(!/estren|aparear/.test(todo), 'jerga');
+  assert.ok(!/dos bajadas por periodo|de cada periodo/.test(todo), 'en los periodos 5 y 6 no hay dos bajadas');
+  assert.ok(/−349 kJ\/mol/.test(plano(I3.regla.ecuacion)), 'la afinidad con un ejemplo y su signo');
+  for (let s = 0; s < 60; s++) if (/dato decide/.test(I3.ahoraTu.voz)) assert.ok(/\d{3}/.test(I3.ahoraTu.generar(s).datos.join(' ')), 'la voz pide un dato que no está');
+});
+test('lector: el juego de la idea 1 se compara en fila, el radio calculado se explica, el «par» es de electrones y la regla de iones dice «del mismo elemento»', () => {
+  assert.ok(!/el de arriba/.test(I1.juega.voz) && !/de arriba abajo/.test(plano(I1.lee.tarjetas.map(t => t.texto))));
+  assert.ok(/nube de electrones/.test(plano(I1.lee.tarjetas.map(t => t.texto))) && /64 pm/.test(plano(I1.lee.tarjetas.map(t => t.texto))));
+  assert.ok(/par de electrones/.test(plano(I4.juega.lectura({ a: '1', b: '17' }))) && I4.juega.leyenda.some(x => x.s === 'par'));
+  assert.ok(/mismo elemento/.test(plano(I2.regla.ecuacion)));
+  assert.ok(/carácter metálico/.test(plano(I4.regla.ecuacion)));
+  assert.ok(!/jala|atrae|atracción/.test(def.glosario.find(g => g.termino === 'carga nuclear').simple), 'el glosario no da la razón de Predice');
+});
+test('lector: tarjetas de ejemplos (radio de X sin número, título del 10 e⁻, EI del periodo 3 sin barras ni valores, tendencias sin el Ca)', () => {
+  const e = t => def.ideas.flatMap(i => i.ejemplos).find(x => x.titulo === t);
+  assert.ok(!/194/.test(plano(e('Un elemento del grupo 2').solucion.map(p => p.ecuacion))));
+  assert.ok(e('Tres cationes con 10 electrones'));
+  assert.ok(!e('El periodo 3 entero').figura && !/1012/.test(plano(e('El periodo 3 entero').datos)));
+  assert.ok(!/\bCa\b/.test(plano(e('Las cuatro tendencias del periodo 4').datos)) && /EN: K/.test(plano(e('Las cuatro tendencias del periodo 4').solucion[0].ecuacion)));
 });

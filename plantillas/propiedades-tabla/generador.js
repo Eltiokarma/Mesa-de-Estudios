@@ -186,7 +186,6 @@
       datos: [protTxt([a, b])],
       errores: [err('QM-ISO-ORDEN', `El ${o}`, `Tiene más protones, cierto. Pero por eso jala más fuerte a los mismos ${n} electrones.`),
         err('QM-ISO-RADIO', 'Miden lo mismo: tienen los mismos electrones', 'Tienen los mismos electrones, cierto. Pero sus núcleos no los jalan igual.'),
-        err('QM-ION-CARGA', 'El de mayor carga, sea cual sea su signo', 'Bien mirar la carga. Pero decide el núcleo: los protones.'),
         err('QM-SIN-LEY', 'No se puede saber sin la tabla de radios', 'Bien dudar. Pero basta comparar sus protones.')],
       solucion: [[`Mismos ${n} electrones: el ${m} tiene menos protones (${ION[m][0]} contra ${ION[o][0]}) y los jala menos.`],
         [`${m} `, v('r', `${P.formatear(ION[m][2], 1)} pm`), ` > ${o} `, v('r', `${P.formatear(ION[o][2], 1)} pm`), '.']] };
@@ -231,7 +230,7 @@
         err('QM-EI-PROTONES', `Al ${N(b)}, porque tiene un protón más`, 'Tiene un protón más, cierto. Pero su último electrón sale más fácil.'),
         err('TP7', 'A los dos por igual: son del mismo periodo', 'Comparten periodo, bien visto. Pero su último electrón es distinto.'),
         err('QM-SIN-LEY', 'No se puede saber sin medirlo', 'Bien dudar de la flecha. Pero la configuración dice qué electrón sale.')],
-      solucion: [[estrena ? `El ${N(b)} estrena un subnivel p, algo más lejos: su electrón sale más fácil.` : `En el ${N(b)} sale un electrón p que ya tenía pareja: se repelen y sale más fácil.`],
+      solucion: [[estrena ? `El ${N(b)} pierde su primer y único electrón p, algo más lejos: sale más fácil.` : `En el ${N(b)} sale un electrón p que ya tenía pareja: se repelen y sale más fácil.`],
         [`${a}: `, v('EI', `${EL[a].ei} kJ/mol`), `; ${b}: `, v('EI', `${EL[b].ei} kJ/mol`), '.']] };
   }
   const PARES_AE = [['Cl', 'Na'], ['F', 'Li'], ['S', 'Na'], ['Br', 'K'], ['O', 'Li'], ['Cl', 'F'], ['C', 'Li'], ['S', 'P'], ['O', 'H'], ['Br', 'S']];
@@ -303,7 +302,8 @@
         err('QM-EN-MITAD', o.medio, 'Bien poner al del medio. Pero los otros dos van en extremos opuestos.')],
       solucion: [['Hacia la derecha en la fila, más; hacia abajo en la columna, menos.'], [v('EN', o.bien), ` (${trio.map(s => `${s} ${f2(EL[s].en)}`).join('; ')}).`]] };
   }
-  const PARES_M = [['Li', 'Na'], ['Na', 'K'], ['Na', 'Cl'], ['Mg', 'S'], ['Be', 'Ca'], ['Al', 'P'], ['K', 'Br'], ['Ca', 'Ga'], ['Si', 'Ge'], ['Li', 'F'], ['B', 'Al'], ['C', 'Si']];
+  // Sin el par Ca–Ga: el Ga tiene menor EI (579) que el Ca (590), y la definición de los datos es «qué tan fácil pierde electrones».
+  const PARES_M = [['Li', 'Na'], ['Na', 'K'], ['Na', 'Cl'], ['Mg', 'S'], ['Be', 'Ca'], ['Al', 'P'], ['K', 'Br'], ['Ca', 'Br'], ['Si', 'Ge'], ['Li', 'F'], ['B', 'Al'], ['C', 'Si']];
   function metalico(rng) {
     const [a, b] = rng.barajar(rng.elegir(PARES_M)), A = EL[a], B = EL[b], m = A.p === B.p ? (A.g < B.g ? a : b) : (A.p > B.p ? a : b), o = m === a ? b : a, N = s => EL[s].nombre;
     return { correcta: `El ${N(m)}`, _datos: { a, b },

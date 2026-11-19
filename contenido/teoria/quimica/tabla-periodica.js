@@ -102,7 +102,8 @@
   const TABLA = (o, estado) => ({ pieza: 'quim-tira', datos: Object.assign({ vista: 'tabla', simbolos: SIMBOLOS118, marcas: MARCAS }, o), estado: estado || {} });
   // Los datos que se repiten (contrato, punto 13: herramientas, no el paso hecho).
   const DT = {
-    nobles: ['Gases nobles (cada uno cierra un periodo): ', Z, ' = 2, 10, 18, 36, 54, 86'],
+    nobles: ['Gases nobles (cada uno cierra un periodo): ', Z, ' = 2, 10, 18, 36, 54, 86 y 118'],
+    filas: 'Periodo: una fila de la tabla. Grupo: una columna',
     largos: 'Elementos por periodo: 2, 8, 8, 18, 18, 32, 32',
     familias: 'Familias: alcalinos, grupo 1 (IA); alcalinotérreos, 2 (IIA); anfígenos, 16 (VIA); halógenos, 17 (VIIA); gases nobles, 18 (VIIIA)',
     despues: ['Después de un gas noble (grupos 1 y 2): grupo = ', Z, ' − ', Z, ' del gas noble'],
@@ -135,7 +136,7 @@
   }
 
   // Ahora tú (seis tipos, del más simple al de examen). Cada uno da sus datos.
-  const Z_FAMILIA = [3, 4, 11, 12, 19, 20, 37, 38, 55, 56, 8, 9, 16, 17, 34, 35, 52, 53];
+  const Z_FAMILIA = [3, 4, 11, 12, 19, 20, 37, 38, 8, 9, 16, 17, 34, 35];
   const ESPEJO = { 1: 17, 2: 16, 16: 2, 17: 1 }, VECINA = { 1: 2, 2: 1, 16: 17, 17: 16 };
   function casoFamilia(r) {
     const z = r.de(Z_FAMILIA), c = cuenta(z), g = c.g;
@@ -146,7 +147,7 @@
         { id: 'c', texto: FAMILIAS[g], correcta: true },
         { id: 'lado', texto: FAMILIAS[ESPEJO[g]], error: 'QM-FAMILIA-LADO', siFuera: `Bien contar ${lug(c.k)} desde un gas noble. Pero va ${c.despues ? 'después' : 'antes'} de él, no ${c.despues ? 'antes' : 'después'}.` },
         { id: 'vecina', texto: FAMILIAS[VECINA[g]], error: 'QM-CUENTA-GRUPO', siFuera: `Bien el lado. Pero está a ${lug(c.k)} de su gas noble, no a ${lug(3 - c.k)}.` },
-        { id: 'noble', texto: FAMILIAS[18], error: 'QM-FILA-COLUMNA', siFuera: 'Tiene un gas noble al lado en número, cierto. Pero eso no los hace de la misma familia.' },
+        { id: 'noble', texto: FAMILIAS[18], error: 'QM-FILA-COLUMNA', siFuera: 'Está cerca de un gas noble, cierto. Pero la familia es la columna, no el vecino de número.' },
       ],
       solucion: { texto: `Está ${lug(c.k)} ${c.despues ? 'después' : 'antes'} del ${nom(c.gas)} (Z = ${c.gas}): grupo ${grupoTxt(g)}.`, ecuacion: c.ecuacion },
     };
@@ -170,7 +171,7 @@
           ecuacion: [Pz(gas2), ` ${c.despues ? '+' : '−'} ${c.k} = `, Pz(zb)] },
     };
   }
-  const Z_PERIODO = [5, 7, 13, 15, 21, 26, 29, 33, 40, 47, 50, 53, 56, 79, 82, 12, 20, 38];
+  const Z_PERIODO = [5, 7, 13, 15, 21, 26, 29, 33, 40, 47, 50, 51, 49, 79, 82, 12, 20, 38];
   function casoPeriodo(r) {
     const z = r.de(Z_PERIODO), p = periodoDe(z), menores = NOBLES.slice(1).filter(g => g < z);
     return {
@@ -243,13 +244,14 @@
     const clave = tres.find(x => !x[1]) || tres[0];
     return {
       pregunta: ['Indica verdadero (V) o falso (F). ', ...tres.map((x, i) => `${ROMANO[i]}. ${x[0]} `)],
-      datos: [DT.orden, DT.largos, DT.familias],
+      datos: [DT.nobles, DT.filas],
       opciones: ops,
       solucion: { texto: `${tres.map((x, i) => `${ROMANO[i]} ${x[1] ? 'V' : 'F'}`).join(', ')}. ${clave[2].replace(/^./, m => m.toUpperCase())}.` },
     };
   }
   // Así se resuelve: periodo, grupo y familia de un elemento (Ahora tú nunca pide las tres cosas juntas).
-  const Z_RESUELVE = [4, 9, 12, 16, 20, 35, 38, 52, 53, 55, 56, 34, 37, 17, 11];
+  // Ningún Z de esta lista sale en «Ahora tú» (lector en frío, 19 nov: el mismo caso en los dos momentos).
+  const Z_RESUELVE = [52, 53, 55, 56, 84, 85, 87, 88];
 
   // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h; molde §3: el dibujo muestra el planteamiento, nunca la
   // respuesta). Cuentas rehechas aparte, sin el código de la unidad (scratchpad, e5-quimica/cuentas-idea1.py): 10 + 1 = 11 ·
@@ -262,7 +264,7 @@
     { nivel: 1, titulo: 'El que sigue al neón',
       enunciado: 'El neón de los letreros (Z = 10) cierra el periodo 2. ¿Qué número atómico tiene el elemento que abre el periodo 3?',
       datos: ['En la tabla, los elementos van en orden de número atómico, uno tras otro'],
-      figura: TIRA({ desde: 3, hasta: 11, porFila: 8, cabeza: true, incognitas: [11], columnas: false, resaltar: [{ Z: 11 }] }),
+      figura: TIRA({ desde: 3, hasta: 11, porFila: 8, cabeza: true, incognitas: [11], columnas: false, resaltar: [{ Z: 11 }], marcas: {} }),
       solucion: [{ texto: 'Después del neón viene el número atómico siguiente, y con él empieza una fila nueva.', ecuacion: [Pz(10), ' + 1 = ', Pz(11)] }],
       respuesta: [Z, ' = ', Pz(11), ': el sodio'] },
     { nivel: 1, titulo: '¿Fila o columna?',
@@ -273,7 +275,7 @@
     { nivel: 1, titulo: 'Los elementos del periodo 3',
       enunciado: 'El periodo 3 empieza en el sodio (Z = 11) y termina en el argón (Z = 18). ¿Cuántos elementos tiene?',
       datos: ['Del primero al último, contando los dos: último − primero + 1'],
-      figura: TIRA({ desde: 11, hasta: 18, porFila: 8, columnas: false }),
+      figura: TIRA({ desde: 11, hasta: 18, porFila: 8, columnas: false, marcas: {} }),
       solucion: [{ texto: 'Cuento del 11 al 18, con los dos incluidos.', ecuacion: [Pz(18), ' − ', Pz(11), ' + 1 = ', Pe(8)] }],
       respuesta: [Pe('8 elementos')] },
     { nivel: 1, titulo: 'La familia del cloro',
@@ -289,7 +291,7 @@
     { nivel: 2, titulo: 'El halógeno del periodo 3',
       enunciado: 'El flúor (Z = 9) es un halógeno: está justo antes del neón (Z = 10). ¿Qué número atómico tiene el halógeno del periodo 3?',
       datos: [DT.nobles, DT.antes, DT.familias],
-      figura: TABLA({ periodos: 3, incognitas: [17], resaltar: [{ Z: 9 }, { Z: 17 }] }),
+      figura: TABLA({ periodos: 3, incognitas: [17], resaltar: [{ Z: 9 }, { Z: 17 }], marcas: {} }),
       solucion: [
         { texto: 'El periodo 3 termina en el tercer gas noble: el argón.', ecuacion: [Z, ' = ', Pz(18)] },
         { texto: 'Halógeno es grupo 17: un lugar antes de su gas noble.', ecuacion: ['18 − 17 = 1', SEP, Pz(18), ' − 1 = ', Pz(17)] },
@@ -322,7 +324,7 @@
     { nivel: 2, titulo: 'El hueco bajo el aluminio',
       enunciado: 'En 1869, Mendeléiev dejó un hueco debajo del aluminio (Z = 13). En la tabla de hoy, ¿qué número atómico tiene el elemento que lo llenó?',
       datos: [DT.nobles, DT.antes, DT.debajo],
-      figura: TABLA({ periodos: 4, incognitas: [31], resaltar: [{ Z: 13 }, { Z: 31 }] }),
+      figura: TABLA({ periodos: 4, incognitas: [31], resaltar: [{ Z: 13 }, { Z: 31 }], marcas: {} }),
       solucion: [
         { texto: 'El aluminio está 5 lugares antes de su gas noble, el argón.', ecuacion: [Pz(18), ' − ', Pz(13), ' = 5'] },
         { texto: 'El de abajo está 5 lugares antes del gas noble siguiente, el kriptón.', ecuacion: [Pz(36), ' − 5 = ', Pz(31)] },
@@ -343,10 +345,10 @@
     { nivel: 3, titulo: 'Verdadero o falso',
       enunciado: 'Indica verdadero (V) o falso (F). I. La tabla actual ordena los elementos por su masa atómica. II. Los elementos de un grupo tienen propiedades químicas parecidas. III. Todos los periodos tienen igual cantidad de elementos.',
       alternativas: ['FVF', 'VVF', 'FFV', 'VFV', 'FVV'],
-      datos: [DT.orden, DT.largos],
+      datos: [DT.nobles, DT.filas],
       solucion: [
         { texto: 'I es falsa: el orden es por número atómico. II es verdadera: es la ley periódica.' },
-        { texto: 'III es falsa: los periodos tienen 2, 8, 8, 18, 18, 32 y 32 elementos.' },
+        { texto: 'III es falsa: el periodo 1 va del 1 al 2 (2 elementos) y el periodo 2, del 3 al 10 (8).', ecuacion: ['2 − 0 = 2', SEP, '10 − 2 = 8'] },
         { texto: ['La ', letra('B'), ' acepta el orden por masa. La ', letra('C'), ' y la ', letra('D'), ' niegan la ley periódica. La ', letra('E'), ' cree que todos los periodos son iguales.'] },
       ],
       respuesta: [letra('A'), ', FVF'] },
@@ -367,7 +369,7 @@
       datos: [DT.despues, 'El elemento que sigue al último de un periodo abre el periodo siguiente'],
       solucion: [
         { texto: 'El 119 sigue al último del periodo 7: abre un periodo nuevo.', ecuacion: ['7 + 1 = ', Pe(8)] },
-        { texto: 'Queda un lugar después del elemento del grupo 18.', ecuacion: ['grupo = ', Pz(119), ' − ', Pz(118), ' = ', Gr(1)] },
+        { texto: 'Va un lugar después del oganesón, que es del grupo 18: abre la fila en el grupo 1.', ecuacion: ['grupo = ', Pz(119), ' − ', Pz(118), ' = ', Gr(1)] },
         { texto: ['La ', letra('A'), ' y la ', letra('C'), ' no cambian de periodo. La ', letra('B'), ' lo deja en el grupo 18, el del oganesón.'] },
         { texto: ['La ', letra('E'), ' cuenta dos lugares después del 118, no uno.'] },
       ],
@@ -473,7 +475,7 @@
     },
     regla: {
       texto: 'Ley periódica: ordenados por Z, los elementos repiten sus propiedades. Cada fila es un periodo (hay 7) y cada columna, un grupo o familia (hay 18) de elementos parecidos.',
-      ecuacion: [{ llave: ['2, 8, 8, 18, 18, 32, 32'], nota: 'elementos por periodo', color: 'c-i' }, SEP, Z, ' = ', { llave: ['2, 10, 18, 36, 54, 86'], nota: 'gases nobles', color: 'c-o' }, SEP,
+      ecuacion: [{ llave: ['2, 8, 8, 18, 18, 32, 32'], nota: 'elementos por periodo', color: 'c-i' }, SEP, Z, ' = ', { llave: ['2, 10, 18, 36, 54, 86, 118'], nota: 'gases nobles', color: 'c-o' }, SEP,
         Gr('grupo 1 (IA)'), ': alcalinos', SEP, Gr('grupo 2 (IIA)'), ': alcalinotérreos', SEP, Gr('grupo 16 (VIA)'), ': anfígenos', SEP, Gr('grupo 17 (VIIA)'), ': halógenos', SEP,
         Gr('grupo 18 (VIIIA)'), ': gases nobles'],
       condicion: 'los elementos se ordenan por número atómico, no por masa.',
@@ -552,6 +554,7 @@
     grupoA: ['Grupos A: los electrones del nivel más alto dan el número romano (IA a VIIIA)'],
     numeros: 'Del romano al número: IA y IIA son 1 y 2; de IIIA a VIIIA, 10 más (13 a 18)',
     lewis: 'Símbolo de Lewis: un punto por cada electrón del nivel más alto',
+    neutro: 'Átomo neutro: Z = número de electrones',
     gas: z => `[${gasDe(z)}]: los ${NOBLES[periodoDe(z) - 1]} electrones del ${nom(NOBLES[periodoDe(z) - 1])}`,
   };
   // Símbolo de Lewis de un átomo (quim-molecula): un punto por electrón de valencia, en violeta; primero uno por lado.
@@ -579,6 +582,8 @@
   const REP20 = [3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20];
   const REP36 = [...REP20, 31, 32, 33, 34, 35];
   const REP86 = [37, 38, 49, 50, 51, 52, 53, 55, 56, 81, 82, 83, 84, 85];
+  // Los de «Así se resuelve» no salen en «Ahora tú» (lector en frío, 19 nov: el silicio en los dos momentos).
+  const RES_UBICA = [5, 6, 8, 14, 16, 32, 34], REP_AT = REP36.filter(z => !RES_UBICA.includes(z));
   // Las opciones de «periodo y grupo» de un representativo, con el error de cada una.
   function opcionesUbicar(z) {
     const p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z), ops = [{ id: 'c', texto: ubTxt(p, grupoAB(g)), correcta: true }], vistos = new Set([ops[0].texto]);
@@ -594,7 +599,7 @@
   const ecuacionUbicar = z => { const p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
     return [Pe(`periodo ${p}`), SEP, ...(g >= 13 ? ['grupo = 10 + ', Ee(v), ' = ', Gr(grupoAB(g))] : ['grupo = ', Ee(v), ' → ', Gr(grupoAB(g))])]; };
   function casoUbicar(r) {
-    const z = r.de(REP36);
+    const z = r.de(REP_AT);
     return {
       pregunta: ['El ', nom(z), ' (', Z, ` = ${z}) tiene la configuración ${confTxt(z)}. ¿En qué periodo y en qué grupo está?`],
       datos: [DU.periodo, DU.grupoA, DU.numeros, DU.gas(z)],
@@ -603,27 +608,27 @@
     };
   }
   function casoLewis(r) {
-    const z = r.de(REP36.filter(x => grupoDe(x) >= 13)), p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
+    const z = r.de(REP_AT.filter(x => grupoDe(x) >= 13)), p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
     return {
       pregunta: `La configuración de un elemento termina en ${ultimoNivelTxt(z)}. ¿Cuántos puntos lleva su símbolo de Lewis?`,
       datos: [DU.lewis],
       opciones: opcionesN(v, [
         { id: 'solo-p', valor: v - 2, error: 'QM-SOLO-P', siFuera: `Bien contar los ${v - 2} electrones p. Pero el nivel ${p} tiene también sus dos electrones s.` },
         { id: 'grupo', valor: g, error: 'QM-LEWIS-GRUPO', siFuera: `Ese es su grupo, bien hallado. Pero los puntos son los electrones del nivel ${p}: 10 menos.` },
-        { id: 'nivel', valor: p === v ? p + 1 : p, error: 'QM-LEWIS-NIVEL', siFuera: 'Bien mirar el nivel más alto. Pero se cuentan sus electrones, no su número.' },
+        { id: 'nivel', valor: p === v ? NaN : p, error: 'QM-LEWIS-NIVEL', siFuera: 'Bien mirar el nivel más alto. Pero se cuentan sus electrones, no su número.' },
       ], x => `${x}`),
       solucion: { texto: `Un punto por cada electrón del nivel ${p}: los s y los p.`, ecuacion: cuentaValencia(z), dibujo: lewis(z, 'X') },
     };
   }
   function casoZ(r) {
-    const z = r.de(REP36), p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
+    const z = r.de(REP_AT), p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
     return {
       pregunta: ['Un elemento está en el periodo ', `${p} y en el grupo ${ROM[g]} de la tabla periódica. ¿Cuál es su número atómico?`],
-      datos: [DU.llenado, DU.caben, DU.periodo, DU.grupoA],
+      datos: [DU.llenado, DU.caben, DU.periodo, DU.grupoA, DU.neutro],
       opciones: opcionesN(z, [
         { id: 'arriba', valor: arriba(z) || z - 8, error: 'QM-PERIODO-ANTERIOR', siFuera: `Bien el grupo. Pero ese llega solo hasta el nivel ${p - 1}: falta llenar un nivel más.` },
         { id: 'abajo', valor: abajo(z), error: 'QM-PERIODO-CUENTA', siFuera: `Bien el grupo. Pero ese ya tiene electrones en el nivel ${p + 1}: se pasó de periodo.` },
-        { id: 'vecino', valor: g >= 13 && v > 3 ? z - 2 : z + 1, error: g >= 13 && v > 3 ? 'QM-SOLO-P' : 'QM-CUENTA-GRUPO', siFuera: g >= 13 && v > 3 ? `Bien el periodo. Pero el romano cuenta los s y los p juntos: son ${v} entre los dos.` : 'Bien el periodo. Pero cuenta de nuevo los electrones del nivel más alto: sobra uno.' },
+        { id: 'vecino', valor: g >= 13 && v > 3 ? z + 2 : z + 1, error: g >= 13 && v > 3 ? 'QM-SOLO-P' : 'QM-CUENTA-GRUPO', siFuera: g >= 13 && v > 3 ? `Bien el periodo. Pero ${ROM[g]} no son ${v} electrones p: son ${v} entre los s y los p.` : 'Bien el periodo. Pero cuenta de nuevo los electrones del nivel más alto: sobra uno.' },
       ], x => `${x}`),
       solucion: { texto: `Su nivel más alto es el ${p}, con ${v} ${v === 1 ? 'electrón' : 'electrones'}: ${confTxt(z)}.`, ecuacion: [`${NOBLES[p - 1]} + ${z - NOBLES[p - 1]} = `, Pz(z)] },
     };
@@ -639,7 +644,7 @@
   }
   function casoFamilia2(r) {
     // Del aluminio al cloro: el de abajo está en el periodo 4, donde hay metales de transición con los mismos electrones tras el argón.
-    const z = r.de([13, 14, 15, 16, 17]), b = abajo(z), g = grupoDe(z), otro = g >= 17 ? b - 2 : b + 1, fila = g >= 17 ? z - 1 : z + 1;
+    const z = r.de([13, 15, 17]), b = abajo(z), g = grupoDe(z), otro = g >= 17 ? b - 2 : b + 1, fila = g >= 17 ? z - 1 : z + 1;
     return {
       pregunta: `¿Cuál de estas configuraciones es de un elemento de la misma familia que el ${nom(z)} (${confTxt(z)})?`,
       datos: [DU.grupoA, DU.gas(b), DU.gas(z)].filter((x, i, l) => l.indexOf(x) === i),
@@ -647,7 +652,7 @@
         { id: 'c', texto: confTxt(b), correcta: true },
         { id: 'fila', texto: confTxt(fila), error: 'QM-FILA-COLUMNA', siFuera: `Ese está en su mismo periodo, cierto. Pero una familia tiene los mismos electrones en el último nivel.` },
         { id: 'cuenta', texto: confTxt(otro), error: 'QM-CUENTA-GRUPO', siFuera: `Bien buscar en el periodo siguiente. Pero su último nivel tiene ${valenciaDe(otro)} electrones, no ${valenciaDe(z)}.` },
-        { id: 'd', texto: confTxt(NOBLES[periodoDe(b) - 1] + 2 + valenciaDe(z)), error: 'QM-D-VALENCIA', siFuera: `Tiene ${valenciaDe(z)} electrones después del gas noble, cierto. Pero termina en d: no es un grupo A.` },
+        { id: 'd', texto: confTxt(NOBLES[periodoDe(b) - 1] + 2 + valenciaDe(z)), error: 'QM-D-VALENCIA', siFuera: `Tiene ${valenciaDe(z)} electrones d, como los de valencia del ${nom(z)}, cierto. Pero termina en d: no es un grupo A.` },
       ],
       solucion: { texto: `El ${nom(z)} tiene ${valenciaDe(z)} electrones en su último nivel (${ultimoNivelTxt(z)}); el de abajo, también: ${ultimoNivelTxt(b)}.`, ecuacion: [Gr(`grupo ${grupoAB(g)}`)] },
     };
@@ -704,10 +709,10 @@
       respuesta: [Z, ' = ', Pz(35), ', ', Gr('grupo 17 (VIIA)'), ': el bromo'] },
     { nivel: 2, titulo: 'Del lugar al número atómico',
       enunciado: 'Un elemento está en el periodo 3 y en el grupo IIIA. ¿Cuál es su número atómico?',
-      datos: [DU.llenado, DU.caben, DU.periodo, DU.grupoA],
+      datos: [DU.llenado, DU.caben, DU.periodo, DU.grupoA, DU.neutro],
       solucion: [
         { texto: 'Periodo 3 y IIIA: tres electrones en el nivel 3. Los niveles 1 y 2 van llenos.', ecuacion: ['1s² 2s² 2p⁶ 3s² 3p¹'] },
-        { texto: 'Sumo los exponentes.', ecuacion: ['2 + 2 + 6 + 2 + 1 = ', Pz(13)] },
+        { texto: 'En el átomo neutro, Z es el total de electrones: sumo los exponentes.', ecuacion: ['2 + 2 + 6 + 2 + 1 = ', Pz(13)] },
       ],
       respuesta: [Z, ' = ', Pz(13), ': el aluminio'] },
     { nivel: 2, titulo: 'El helio, la excepción',
@@ -763,10 +768,10 @@
     { nivel: 3, titulo: 'Dos terminaciones',
       enunciado: 'El elemento X termina su configuración en 3s² 3p⁴ y el elemento Q, en 4s² 3d¹⁰ 4p⁴. ¿Qué afirmación es correcta?',
       alternativas: ['Están en el mismo periodo.', 'Q tiene 16 electrones de valencia.', 'X está en el grupo IVA.', 'Están en el mismo grupo, en periodos seguidos.', 'Q está en el grupo VIB, porque tiene electrones d.'],
-      datos: [DU.periodo, DU.grupoA, 'Electrones de valencia: los del nivel más alto'],
+      datos: [DU.periodo, DU.grupoA, DU.numeros, 'Electrones de valencia: los del nivel más alto'],
       solucion: [
         { texto: 'X: nivel más alto 3, con 2 + 4 = 6 electrones. Q: nivel más alto 4, con 2 + 4 = 6.', ecuacion: [Pe('periodos 3 y 4'), SEP, Ee(6), ' en los dos → ', Gr('grupo 16 (VIA)')] },
-        { texto: ['La ', letra('A'), ' confunde periodo con grupo. La ', letra('B'), ' suma los 3d¹⁰, que son del nivel 3.'] },
+        { texto: ['La ', letra('A'), ' los pone en una misma fila: sus niveles más altos son el 3 y el 4. La ', letra('B'), ' suma los 3d¹⁰, que son del nivel 3.'] },
         { texto: ['La ', letra('C'), ' cuenta solo los 3p. La ', letra('E'), ' olvida que Q termina en p: es un grupo A.'] },
       ],
       respuesta: [letra('D'), ', los dos en el ', Gr('grupo 16 (VIA)')] },
@@ -829,19 +834,19 @@
     },
     predice: {
       pieza: 'quim-tira',
-      pregunta: ['El yodo de la sal yodada tiene ', Z, ' = 53 y su configuración es [Kr] 5s² 4d¹⁰ 5p⁵. ¿En qué periodo y en qué grupo está?'],
+      pregunta: ['El yodo de la sal yodada tiene ', Z, ' = 53 y su configuración es [Kr] 5s² 4d¹⁰ 5p⁵. ¿En qué periodo está y cuántos electrones de valencia tiene?'],
       datos: ['[Kr]: los 36 electrones del kriptón', 'Kriptón: periodo 4'],
       voz: 'Mira qué electrones están en el nivel más alto.',
       opciones: [
-        { id: 'c', texto: 'Periodo 5, grupo 17 (VIIA)', correcta: true },
-        { id: 'anterior', texto: 'Periodo 4, grupo 17 (VIIA)', error: 'QM-PERIODO-ANTERIOR', siFuera: 'El kriptón y los 4d son del nivel 4, cierto. Pero el yodo ya tiene electrones en el nivel 5.' },
-        { id: 'solo-p', texto: 'Periodo 5, grupo 15 (VA)', error: 'QM-SOLO-P', siFuera: 'Contaste los cinco 5p, bien. Pero el nivel 5 tiene también los dos 5s.' },
-        { id: 'cambio', texto: 'Periodo 7, grupo 5 (VB)', error: 'QM-PERIODO-GRUPO', siFuera: 'Bien los números 7 y 5. Pero van al revés: el nivel más alto es el periodo.' },
+        { id: 'c', texto: 'Periodo 5, con 7 electrones de valencia', correcta: true },
+        { id: 'anterior', texto: 'Periodo 4, con 7 electrones de valencia', error: 'QM-PERIODO-ANTERIOR', siFuera: 'Bien los 7 de valencia. Pero el yodo ya tiene electrones en el nivel 5: ese es su periodo.' },
+        { id: 'solo-p', texto: 'Periodo 5, con 5 electrones de valencia', error: 'QM-SOLO-P', siFuera: 'Contaste los cinco 5p, bien. Pero el nivel 5 tiene también los dos 5s.' },
+        { id: 'con-d', texto: 'Periodo 5, con 17 electrones de valencia', error: 'QM-D-VALENCIA', siFuera: 'Bien el periodo. Pero los 4d¹⁰ son del nivel 4, que quedó adentro: no son de valencia.' },
       ],
       dibujo: OBJ([{ que: 'sal', Z: yodo, nombre: 'yodo' }], { rotulo: '[Kr] 5s² 4d¹⁰ 5p⁵' }),
       revelar: TABLA0({ periodos: 5, resaltar: [{ Z: yodo }], fila: { periodo: 5, color: 'i' }, columna: { grupo: 17, color: 'h' }, rotulo: 'I: [Kr] 5s² 4d¹⁰ 5p⁵' }),
-      coincide: 'Coincide: el nivel más alto es el 5, y en él hay 2 + 5 = 7 electrones.',
-      noCoincide: 'El nivel más alto es el 5: periodo 5. En él hay 2 + 5 = 7 electrones: grupo 17 (VIIA).',
+      coincide: 'Coincide: el nivel más alto es el 5, y en él hay 2 + 5 = 7 electrones. Los 4d¹⁰ son del nivel 4.',
+      noCoincide: 'El nivel más alto es el 5: periodo 5. En él hay 2 + 5 = 7 electrones; los 4d¹⁰ son del nivel 4 y no cuentan.',
     },
     mira: {
       pieza: 'quim-tira',
@@ -867,7 +872,7 @@
     resuelve: {
       pieza: 'quim-tira',
       generar(s) {
-        const z = azar(s + 900).de([5, 6, 8, 13, 14, 16, 17, 31, 32, 34]), p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
+        const z = azar(s + 900).de(RES_UBICA), p = periodoDe(z), g = grupoDe(z), v = valenciaDe(z);
         return {
           enunciado: ['Un elemento tiene ', Z, ` = ${z}. ¿En qué periodo y grupo está, y cuántos puntos lleva su símbolo de Lewis?`],
           datos: [DU.llenado, DU.caben, DU.periodo, DU.grupoA, DU.numeros, DU.lewis],
@@ -909,6 +914,8 @@
   const sd = z => { const p = periodoDe(z), x = partes(z); return { p, s: (x.find(([n]) => n === `${p}s`) || [0, 0])[1], d: (x.find(([n]) => n === `${p - 1}d`) || [0, 0])[1] }; };
   const grupoD = z => { const { s, d } = sd(z); return s + d; };
   const losDel = (k, sub) => (k === 1 ? `el electrón del ${sub}` : `los ${k} del ${sub}`);
+  const EXCEPCION = [24, 29, 47, 79];
+  const excepcionTxt = z => { const p = periodoDe(z); return `es una excepción: un electrón del ${p}s pasó al ${p - 1}d`; };
   const DB = {
     bloque: 'Bloque: el subnivel (s, p, d o f) donde cae el último electrón',
     grupoB: ['Bloque d: grupo = electrones ns + electrones (n − 1)d'],
@@ -919,17 +926,18 @@
     const { p, s, d } = sd(z), g = s + d, ops = [{ id: 'c', texto: ubTxt(p, grupoAB(g)), correcta: true }], vistos = new Set([ops[0].texto]);
     const mas = (id, texto, error, siFuera) => { if (ops.length < 4 && !vistos.has(texto)) { vistos.add(texto); ops.push({ id, texto, error, siFuera }); } };
     mas('periodo-d', ubTxt(p - 1, grupoAB(g)), 'QM-PERIODO-D', `Bien el grupo. Pero el periodo es el nivel más alto, el ${p}: el d es del nivel ${p - 1}.`);
-    mas('solo-d', ubTxt(p, grupoAB(d)), 'QM-GRUPO-SOLO-D', `Contaste los ${d} electrones d, bien. Pero en el bloque d también cuentan los ${s === 1 ? 'del s' : 'dos del s'} de afuera.`);
+    mas('solo-d', ubTxt(p, grupoAB(d)), 'QM-GRUPO-SOLO-D', `Contaste ${d === 1 ? 'el electrón d' : `los ${d} electrones d`}, bien. Pero en el bloque d también cuentan los ${s === 1 ? 'del s' : 'dos del s'} de afuera.`);
     mas('solo-s', ubTxt(p, grupoAB(s)), 'QM-GRUPO-SOLO-S', 'Así sería si terminara en s. Pero termina en d: sus electrones d también cuentan.');
     if (g <= 8 || g >= 11) mas('a-b', ubTxt(p, g <= 8 ? `${g + 10} (${ROM[g + 10]})` : `${g - 10} (${ROM[g - 10]})`), 'QM-GRUPO-A-B', 'Bien el periodo. Pero termina en d: es un grupo B, y su número es justo la suma.');
     return ops;
   }
   const ecuacionD = z => { const { p, s, d } = sd(z); return [Pe(`periodo ${p}`), SEP, 'grupo = ', Ee(s), ' + ', Ee(d), ' = ', Gr(grupoAB(s + d))]; };
-  const Z_D = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 39, 40, 47, 48, 79, 80];
+  // Sin los de «Así se resuelve» (21, 24, 29, 39 y 47): el oro queda como la excepción de «Ahora tú».
+  const Z_D = [22, 23, 25, 26, 27, 28, 30, 40, 48, 79, 80];
   function casoUbicarD(r) {
     const z = r.de(Z_D), { p, s, d } = sd(z);
     return {
-      pregunta: ['El ', nom(z), ' (', Z, ` = ${z}) tiene la configuración ${confTxt(z)}. ¿En qué periodo y en qué grupo está?`],
+      pregunta: ['El ', nom(z), ' (', Z, ` = ${z}) tiene la configuración ${EXCEPCION.includes(z) ? `real ${confTxt(z)} (${excepcionTxt(z)})` : confTxt(z)}. ¿En qué periodo y en qué grupo está?`],
       datos: [DU.periodo, DB.grupoB, DB.romanos, DU.gas(z)],
       opciones: opcionesD(z),
       solucion: { texto: `El nivel más alto es el ${p}. Termina en d: suman ${losDel(s, `${p}s`)} y ${losDel(d, `${p - 1}d`)}.`, ecuacion: ecuacionD(z) },
@@ -1042,12 +1050,12 @@
       ],
       respuesta: [Pe('Periodo 4'), ', ', Gr('grupo 7 (VIIB)')] },
     { nivel: 2, titulo: 'El cobre de los cables',
-      enunciado: 'El cobre es una excepción: su configuración es [Ar] 4s¹ 3d¹⁰. ¿En qué periodo y en qué grupo está?',
+      enunciado: 'El cobre es una excepción al orden de llenado: un electrón del 4s pasa al 3d, y su configuración real es [Ar] 4s¹ 3d¹⁰ (no 4s² 3d⁹). ¿En qué periodo y en qué grupo está?',
       datos: [DU.periodo, DB.grupoB, DB.romanos, '[Ar]: los 18 electrones del argón'],
       figura: OBJ([{ que: 'cable', Z: 29, nombre: 'cobre' }]),
       solucion: [
         { texto: 'El nivel más alto es el 4, por el 4s¹.', ecuacion: [Pe('periodo 4')] },
-        { texto: 'La suma se hace con la configuración de verdad: un s y diez d.', ecuacion: ['grupo = ', Ee(1), ' + ', Ee(10), ' = ', Gr('11 (IB)')] },
+        { texto: 'La suma se hace con la configuración real: un s y diez d.', ecuacion: ['grupo = ', Ee(1), ' + ', Ee(10), ' = ', Gr('11 (IB)')] },
       ],
       respuesta: [Pe('Periodo 4'), ', ', Gr('grupo 11 (IB)')] },
     { nivel: 2, titulo: 'Hierro, cobalto y níquel',
@@ -1075,7 +1083,7 @@
       ],
       respuesta: [Z, ' = ', Pz(23), ': el vanadio'] },
     { nivel: 3, titulo: 'La plata y el oro',
-      enunciado: 'La plata es [Kr] 5s¹ 4d¹⁰ y el oro, [Xe] 6s¹ 4f¹⁴ 5d¹⁰. ¿Qué afirmación es correcta?',
+      enunciado: 'La plata y el oro son excepciones al orden de llenado (un electrón del s pasa al d): la plata es [Kr] 5s¹ 4d¹⁰ y el oro, [Xe] 6s¹ 4f¹⁴ 5d¹⁰. ¿Qué afirmación es correcta?',
       alternativas: ['Son de transición interna, porque el oro tiene electrones f.', 'La plata está en el periodo 4 y el oro, en el 5.', 'Están en el grupo IA, porque terminan en s¹.', 'Están en el grupo 11 (IB), en los periodos 5 y 6.', 'Están en el grupo 10 (VIIIB): tienen diez electrones d.'],
       datos: [DU.periodo, DB.bloque, DB.grupoB, DB.romanos, DB.interna, DU.llenado],
       solucion: [
@@ -1099,7 +1107,7 @@
     { nivel: 3, titulo: 'Verdadero o falso de bloques',
       enunciado: 'Indica verdadero (V) o falso (F). I. El escandio, [Ar] 4s² 3d¹, es del bloque s. II. El grupo VIIIB ocupa tres columnas. III. Los elementos de transición interna son del bloque d.',
       alternativas: ['VVF', 'FVV', 'VFV', 'FFF', 'FVF'],
-      datos: [DB.bloque, DB.romanos, DB.interna, DU.llenado],
+      datos: [DB.bloque, DU.llenado, DU.caben],
       solucion: [
         { texto: 'I es falsa: el último electrón del escandio cayó en el 3d. II es verdadera: son las columnas 8, 9 y 10.' },
         { texto: 'III es falsa: los de transición interna son los del bloque f.' },
@@ -1107,13 +1115,13 @@
         { texto: ['La ', letra('C'), ' y la ', letra('D'), ' niegan que VIIIB tenga tres columnas.'] },
       ],
       respuesta: [letra('E'), ', FVF'] },
-    { nivel: 3, titulo: 'El cromo, otra excepción',
-      enunciado: 'El cromo de los aceros inoxidables tiene Z = 24 y su configuración es [Ar] 4s¹ 3d⁵. ¿En qué periodo y en qué grupo está?',
+    { nivel: 3, titulo: 'El cromo, una excepción',
+      enunciado: 'El cromo tiene Z = 24. El orden de llenado daría [Ar] 4s² 3d⁴, pero es una excepción: un 4s pasa al 3d y queda [Ar] 4s¹ 3d⁵. ¿En qué periodo y en qué grupo está?',
       alternativas: ['Periodo 4, grupo 6 (VIB)', 'Periodo 4, grupo 5 (VB)', 'Periodo 3, grupo 6 (VIB)', 'Periodo 4, grupo 1 (IA)', 'Periodo 4, grupo 16 (VIA)'],
       datos: [DU.periodo, DB.grupoB, DB.romanos, '[Ar]: los 18 electrones del argón'],
       solucion: [
         { texto: 'El nivel más alto es el 4, por el 4s¹.', ecuacion: [Pe('periodo 4')] },
-        { texto: 'Sumo con su configuración de verdad: un s y cinco d.', ecuacion: ['grupo = ', Ee(1), ' + ', Ee(5), ' = ', Gr('6 (VIB)')] },
+        { texto: 'Sumo con su configuración real: un s y cinco d. Da lo mismo que con 4s² 3d⁴.', ecuacion: ['grupo = ', Ee(1), ' + ', Ee(5), ' = ', Gr('6 (VIB)')] },
         { texto: ['La ', letra('B'), ' cuenta solo los cinco d. La ', letra('C'), ' toma el periodo del 3d. La ', letra('D'), ' cuenta solo el s.'] },
         { texto: ['La ', letra('E'), ' le pone la letra A, como si terminara en p.'] },
       ],
@@ -1166,12 +1174,12 @@
       ],
       controles: [{ id: 'z', etiqueta: 'Metal (Z)', color: 'c-o', min: 21, max: 30, paso: 1, inicio: 21, decimales: 0 }],
       dibujo: v => TRANS({ resaltar: [{ Z: v.z, color: 'h' }], rotulo: `${S118[v.z - 1]}: ${confTxt(v.z)}` }),
-      lectura: v => { const { s, d } = sd(v.z); return [Pe('Periodo 4'), '. Grupo: ', Ee(`${s} e⁻`), ' + ', Ee(`${d} e⁻`), ' = ', Gr(grupoAB(s + d)), '.']; },
+      lectura: v => { const { s, d } = sd(v.z); return [...(EXCEPCION.includes(v.z) ? ['Excepción: un 4s pasó al 3d. '] : []), Pe('Periodo 4'), '. Grupo: ', Ee(`${s} e⁻`), ' + ', Ee(`${d} e⁻`), ' = ', Gr(grupoAB(s + d)), '.']; },
       minimo: 4,
     },
     predice: {
       pieza: 'quim-tira',
-      pregunta: ['La plata de un anillo tiene ', Z, ' = 47 y su configuración es [Kr] 5s¹ 4d¹⁰. ¿En qué periodo y en qué grupo está?'],
+      pregunta: ['La plata de un anillo tiene ', Z, ' = 47. Es una excepción al orden de llenado: un electrón del 5s pasa al 4d, y su configuración real es [Kr] 5s¹ 4d¹⁰. ¿En qué periodo y en qué grupo está?'],
       datos: ['[Kr]: los 36 electrones del kriptón', 'Kriptón: periodo 4'],
       voz: 'Mira cuál es el nivel de afuera y qué electrones suman.',
       opciones: [
@@ -1190,7 +1198,7 @@
       datos: { simbolos: SIMBOLOS118, marcas: {}, vista: 'transicion', resaltar: [{ Z: 47, color: 'h', desde: 1 }, { Z: 29, color: 'h', desde: 5 }], rotulo: 'Ag: [Kr] 5s¹ 4d¹⁰' },
       voz: 'Sigamos a la plata hasta su columna.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El último electrón de la plata cayó en un d: es del bloque d.', ecuacion: ['[Kr] 5s¹ 4d¹⁰'] },
+        { estado: { corte: 1 }, texto: 'La plata es una excepción; su último electrón está en un d: bloque d.', ecuacion: ['[Kr] 5s¹ 4d¹⁰'] },
         { estado: { corte: 2 }, texto: 'El nivel más alto es el 5, aunque el 4d se llenó después.', ecuacion: [Pe('periodo 5')] },
         { estado: { corte: 3 }, texto: 'En el bloque d suman los s de afuera y los d.', ecuacion: ['grupo = ', Ee(1), ' + ', Ee(10), ' = ', Gr(11)] },
         { estado: { corte: 4 }, texto: 'La columna 11 se escribe IB en el examen.', ecuacion: [Gr('grupo 11 (IB)')] },
@@ -1199,9 +1207,9 @@
       ],
     },
     regla: {
-      texto: 'Bloque: el subnivel del último electrón. En el bloque d, el periodo es el mayor n y el grupo suma los s de afuera y los d.',
-      ecuacion: [Pe('periodo'), ' = mayor n', SEP, Gr('grupo'), ' = ', Ee('e⁻ ns'), ' + ', Ee('e⁻ (n − 1)d'), SEP, Gr('3 a 7'), ': IIIB a VIIB', SEP, Gr('8, 9 y 10'), ': VIIIB', SEP, Gr('11 y 12'), ': IB y IIB'],
-      condicion: 'el elemento es de transición: su configuración termina en d.',
+      texto: 'Bloque: el subnivel del último electrón (s, p, d o f). En el bloque d, el periodo es el mayor n; el grupo suma ns y (n − 1)d.',
+      ecuacion: ['bloque s: columnas 1 y 2', SEP, 'p: 13 a 18', SEP, 'd: 3 a 12', SEP, 'f: las dos filas de abajo', SEP, Pe('periodo'), ' = mayor n', SEP, Gr('grupo'), ' = ', Ee('e⁻ ns'), ' + ', Ee('e⁻ (n − 1)d'), SEP, Gr('3 a 7'), ': IIIB a VIIB', SEP, Gr('8, 9 y 10'), ': VIIIB', SEP, Gr('11 y 12'), ': IB y IIB'],
+      condicion: 'el elemento termina en d. Con el Cr, el Cu, la Ag y el Au (excepciones), se suma su configuración real.',
       voz: 'El periodo, por el nivel de afuera; el grupo, sumando.',
       dibujo: TRANS({}),
     },
@@ -1215,7 +1223,7 @@
           dibujo: TRANS({}),
           pasos: [
             { tipo: 'pide', texto: 'Piden tres cosas: el bloque, el periodo y el grupo.' },
-            { tipo: 'datos', texto: `Después del gas noble tiene ${es} ${es === 1 ? 'electrón' : 'electrones'} en el ${p}s y ${d} en el ${p - 1}d.` },
+            { tipo: 'datos', texto: `Después del gas noble tiene ${es} ${es === 1 ? 'electrón' : 'electrones'} en el ${p}s y ${d} en el ${p - 1}d.${EXCEPCION.includes(z) ? ` El ${nom(z)} ${excepcionTxt(z)}.` : ''}` },
             { tipo: 'regla', texto: 'El bloque lo da el último subnivel en llenarse. El periodo, el nivel más alto. En el bloque d, el grupo suma los s y los d.' },
             { tipo: 'cuentas', texto: `En el orden de llenado, el ${p - 1}d va después del ${p}s: bloque d. El nivel más alto es el ${p}.`, ecuacion: ecuacionD(z),
               dibujo: TRANS({ resaltar: [{ Z: z, color: 'h' }], rotulo: `${S118[z - 1]}: ${confTxt(z)}` }) },
@@ -1230,7 +1238,7 @@
       voz: 'Nivel de afuera para el periodo; s más d para el grupo.',
       generar(sem) {
         const r = azar(sem * 101 + 29), tipo = sem % 5;
-        return tipo === 4 ? vfDe(r, AFIRMA_B, [DB.bloque, DB.romanos, DB.interna, DU.caben]) : [casoUbicarD, casoBloque, casoZD, casoSoloZ][tipo](r);
+        return tipo === 4 ? vfDe(r, AFIRMA_B, [DB.bloque, DU.llenado, DU.caben]) : [casoUbicarD, casoBloque, casoZD, casoSoloZ][tipo](r);
       },
     },
   };
@@ -1261,11 +1269,15 @@
     caracter: 'Carácter metálico: crece hacia la izquierda en un periodo y hacia abajo en un grupo',
     iones: 'Catión: ion positivo (perdió electrones). Anión: ion negativo (los ganó)',
     maleable: 'Maleable: se deja laminar. Dúctil: se deja hilar',
+    toca: 'Semimetal: su casilla está a la derecha de la escalera y la toca',
+    semiProp: 'Semimetal: brilla, pero conduce poco la corriente y se quiebra al golpearlo',
+    clases: 'Metal: brilla, conduce bien y se deja laminar. No metal: no brilla y casi no conduce',
   };
   const lugarTxt = z => `periodo ${periodoDe(z)}, grupo ${grupoDe(z)}`;
   const Nom = z => nom(z).charAt(0).toUpperCase() + nom(z).slice(1);
   // Tríos de una misma fila o una misma columna, para comparar el carácter metálico.
-  const TRIOS = [[11, 13, 16], [12, 14, 17], [19, 31, 35], [3, 11, 19], [4, 12, 20], [9, 17, 35], [13, 31, 49], [37, 50, 53], [20, 33, 34], [6, 14, 50]];
+  // Sin tríos donde la EI del NIST contradiga el orden (Al–Ga, As–Se): la unidad siguiente trae esas EI.
+  const TRIOS = [[11, 13, 16], [12, 14, 17], [19, 31, 35], [3, 11, 19], [4, 12, 20], [9, 17, 35], [12, 20, 38], [37, 50, 53], [7, 15, 33], [6, 14, 50]];
   function casoCaracter(r) {
     const trio = r.de(TRIOS), fila = periodoDe(trio[0]) === periodoDe(trio[1]), mas = trio.reduce(masMetalico), menos = trio.find(z => trio.every(w => w === z || masMetalico(z, w) === w)), medio = trio.find(z => z !== mas && z !== menos);
     return {
@@ -1353,10 +1365,9 @@
       solucion: [{ texto: 'A la derecha de la escalera, y fuera de la lista de semimetales, están los no metales.' }],
       respuesta: 'Un no metal' },
     { nivel: 1, titulo: 'El germanio',
-      enunciado: 'El germanio (periodo 4, grupo 14) está pegado a la escalera de la tabla. ¿Qué clase de elemento es?',
-      datos: [DM.lados, DM.semi],
-      figura: TABLA0({ periodos: 4, escalera: true, resaltar: [{ Z: 32 }] }),
-      solucion: [{ texto: 'Está en la lista de los que van pegados a la escalera: es un semimetal.' }],
+      enunciado: 'Un trozo de germanio brilla como un metal, pero conduce poco la corriente y se quiebra al golpearlo. ¿Qué clase de elemento es?',
+      datos: [DM.semiProp, DM.clases],
+      solucion: [{ texto: 'Brilla como un metal, pero conduce poco y se quiebra: tiene propiedades de los dos lados. Es un semimetal.' }],
       respuesta: 'Un semimetal' },
     { nivel: 1, titulo: 'El sodio pierde un electrón',
       enunciado: 'El sodio es un metal. Al reaccionar con el cloro, cada átomo de sodio pierde un electrón. ¿Qué clase de ion queda?',
@@ -1386,11 +1397,11 @@
       respuesta: ['El potasio: ', Pe('periodo 4')] },
     { nivel: 2, titulo: 'Tres del periodo 3',
       enunciado: 'El magnesio (grupo 2), el silicio (grupo 14) y el azufre (grupo 16) están en el periodo 3. ¿Qué clase de elemento es cada uno?',
-      datos: [DM.lados, DM.semi],
+      datos: [DM.lados, DM.toca],
       figura: TABLA0({ periodos: 3, escalera: true, resaltar: [{ Z: 12 }, { Z: 14 }, { Z: 16 }] }),
       solucion: [
-        { texto: 'El silicio está en la lista de semimetales.' },
-        { texto: 'El magnesio queda a la izquierda de la escalera: metal. El azufre, a la derecha: no metal.' },
+        { texto: 'El silicio está a la derecha de la escalera y la toca: es un semimetal.' },
+        { texto: 'El magnesio queda a la izquierda de la escalera: metal. El azufre, a la derecha y sin tocarla: no metal.' },
       ],
       respuesta: 'Metal, semimetal y no metal, en ese orden' },
     { nivel: 2, titulo: 'La mina del lápiz',
@@ -1422,7 +1433,7 @@
     { nivel: 3, titulo: 'Verdadero o falso de metales',
       enunciado: 'Indica verdadero (V) o falso (F). I. La mayoría de los elementos son metales. II. Todos los metales son sólidos a temperatura ambiente. III. Los no metales tienden a ganar electrones.',
       alternativas: ['VVV', 'FFV', 'VFV', 'VVF', 'FFF'],
-      datos: [DM.lados, DM.iones, 'A temperatura ambiente, el mercurio es un metal líquido'],
+      datos: [DM.lados, DM.iones],
       solucion: [
         { texto: 'I es verdadera: a la izquierda de la escalera queda casi toda la tabla. II es falsa: el mercurio es líquido.' },
         { texto: 'III es verdadera: al ganar electrones quedan como aniones.' },
@@ -1443,7 +1454,7 @@
     { nivel: 3, titulo: 'Un elemento del periodo 3',
       enunciado: 'Un elemento del periodo 3 brilla, conduce poco la corriente y se quiebra al golpearlo. ¿Cuál es?',
       alternativas: ['Silicio (grupo 14)', 'Sodio (grupo 1)', 'Azufre (grupo 16)', 'Aluminio (grupo 13)', 'Argón (grupo 18)'],
-      datos: [DM.lados, DM.semi, DM.maleable],
+      datos: [DM.semiProp, DM.clases, DM.semi],
       solucion: [
         { texto: 'Brilla como un metal pero conduce poco y es quebradizo: propiedades intermedias, de semimetal.' },
         { texto: 'En el periodo 3, el semimetal de la lista es el silicio, Si.' },
@@ -1559,17 +1570,19 @@
     },
     ahoraTu: {
       pieza: 'quim-tira',
-      voz: 'Ubica cada elemento respecto de la escalera.',
+      voz: 'Ubica cada casilla: su lado de la escalera, su fila y su columna.',
       generar(sem) {
         const r = azar(sem * 101 + 31), tipo = sem % 5;
-        return tipo === 4 ? vfDe(r, AFIRMA_M, [DM.lados, DM.semi, DM.iones, DM.caracter]) : [casoCaracter, casoPerfil, casoLugar, casoIon][tipo](r);
+        return tipo === 4 ? vfDe(r, AFIRMA_M, [DM.lados, DM.iones]) : [casoCaracter, casoPerfil, casoLugar, casoIon][tipo](r);
       },
     },
   };
 
   return {
     unidad: 'quimica.tabla-periodica',
-    version: '0.3.0',
+    version: '0.4.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     colores: COLORES,
     // «en orden de Z» no es el «orden de reacción» de Cinética: aquí no se marca.
     glosarioSin: ['orden de reacción'],
@@ -1605,7 +1618,7 @@
       { termino: 'anfígeno', formas: ['anfígeno', 'anfígenos', 'calcógeno', 'calcógenos'], def: 'Elemento de la familia del oxígeno y el azufre: el grupo 16 (VIA).',
         ejemplos: ['El oxígeno del aire (Z = 8).', 'El azufre (Z = 16).', 'El selenio (Z = 34): en otros libros, un calcógeno.'], ver: ['grupo', 'halógeno'] },
       { termino: 'halógeno', formas: ['halógeno', 'halógenos'], def: 'Elemento de la familia del flúor y el cloro: el grupo 17 (VIIA).',
-        ejemplos: ['El flúor (Z = 9), el de la pasta dental.', 'El cloro (Z = 17), el de la lejía.', 'El yodo (Z = 53), el de la sal yodada.'], ver: ['grupo', 'gas noble'] },
+        ejemplos: ['El flúor (Z = 9), el de la pasta dental.', 'El cloro (Z = 17), el de la lejía.', 'El bromo (Z = 35), un líquido rojizo.'], ver: ['grupo', 'gas noble'] },
       { termino: 'metal', formas: ['metal', 'metales'], def: 'Elemento brillante que conduce la corriente y el calor y tiende a perder electrones. Está a la izquierda.',
         ejemplos: ['El cobre de los cables.', 'El hierro de un clavo.', 'El sodio, un metal blando.'], ver: ['no metal', 'semimetal'] },
       { termino: 'no metal', formas: ['no metal', 'no metales'], def: 'Elemento que no conduce bien la corriente y tiende a ganar o compartir electrones. Está a la derecha.',
@@ -1615,7 +1628,7 @@
       { termino: 'electrones de valencia', formas: ['electrones de valencia', 'electrón de valencia', 'de valencia'],
         def: 'Los electrones del nivel más alto de un átomo: los que participan cuando se une con otros.',
         simple: 'Los electrones de más afuera del átomo.',
-        ejemplos: ['El cloro, 3s² 3p⁵, tiene 2 + 5 = 7.', 'El sodio, 3s¹, tiene 1.', 'El carbono, 2s² 2p², tiene 4.'], ver: ['grupo', 'símbolo de Lewis'] },
+        ejemplos: ['El azufre, 3s² 3p⁴, tiene 2 + 4 = 6.', 'El sodio, 3s¹, tiene 1.', 'El carbono, 2s² 2p², tiene 4.'], ver: ['grupo', 'símbolo de Lewis'] },
       { termino: 'símbolo de Lewis', formas: ['símbolo de Lewis', 'símbolos de Lewis', 'puntos de Lewis'],
         def: 'El símbolo del elemento rodeado de un punto por cada electrón de su nivel más alto.',
         simple: 'El símbolo del elemento con sus electrones de afuera dibujados como puntos.',
@@ -1634,8 +1647,8 @@
       { termino: 'transición interna', formas: ['transición interna'], def: 'Nombre de los elementos del bloque f: los que van en las dos filas de abajo de la tabla.',
         simple: 'Los elementos de las dos filas que van aparte, abajo.',
         ejemplos: ['Los lantánidos, que siguen al lantano.', 'El uranio, del bloque f.', 'El hierro no lo es: termina en d.'], ver: ['bloque'] },
-      { termino: 'semimetal', formas: ['semimetal', 'semimetales'], def: 'Elemento junto a la escalera de la tabla, con propiedades intermedias entre metal y no metal.',
-        simple: 'Un elemento a medio camino entre metal y no metal.',
+      { termino: 'semimetal', formas: ['semimetal', 'semimetales'], def: 'Elemento cuya casilla está a la derecha de la escalera y la toca: boro, silicio, germanio, arsénico, antimonio, telurio.',
+        simple: 'Un elemento de la orilla de la escalera de la tabla.',
         ejemplos: ['El boro (B).', 'El germanio (Ge).', 'El arsénico (As).'], ver: ['metal', 'no metal'] },
       { termino: 'carácter metálico', formas: ['carácter metálico'], def: 'Qué tan fácil pierde electrones un elemento. Crece hacia la izquierda y hacia abajo en la tabla.',
         simple: 'Qué tan metal es un elemento.',

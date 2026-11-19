@@ -55,7 +55,7 @@
   // Opciones de una pregunta: la primera es la correcta; las demás, [texto, error, siFuera]. Sin repetidas.
   function ops(correcta, ...malas) {
     const vistos = new Set([correcta]), out = [{ id: 'c', texto: correcta, correcta: true }];
-    malas.forEach(([texto, error, siFuera], k) => { if (!vistos.has(texto)) { vistos.add(texto); out.push({ id: `e${k}`, texto, error, siFuera }); } });
+    malas.forEach(([texto, error, siFuera], k) => { if (texto && !vistos.has(texto)) { vistos.add(texto); out.push({ id: `e${k}`, texto, error, siFuera }); } });
     return out.slice(0, 4);
   }
 
@@ -301,7 +301,7 @@
         'Es mayor que el del magnesio y que el del bromo.', 'Es menor que el del potasio y que el del bromo.'],
       datos: [lugarTxt(12), lugarTxt(35), lugarTxt(19)],
       solucion: [
-        { texto: 'X está debajo del magnesio: un nivel más. Y en el periodo 4 está a la izquierda del bromo.', ecuacion: ['X ', Rr('194 pm'), ' > Mg ', Rr('145 pm'), SEP, 'X > Br ', Rr('94 pm')] },
+        { texto: 'X está debajo del magnesio: un nivel más. Y en el periodo 4 está a la izquierda del bromo.', ecuacion: [Rr('r'), ' (X) > ', Rr('r'), ' (Mg)', SEP, Rr('r'), ' (X) > ', Rr('r'), ' (Br)'] },
         { texto: ['La ', letra('A'), ' y la ', letra('C'), ' olvidan el nivel de más. La ', letra('B'), ' invierte la tendencia del periodo.'] },
         { texto: ['La ', letra('E'), ' acierta con el potasio, que está a su izquierda, pero X es mayor que el bromo.'] },
       ],
@@ -333,8 +333,8 @@
           pieza: 'quim-tira', dibujo: OBJ([{ que: 'cristal', nombre: 'sal de Maras' }]) },
         { titulo: 'Un borde que no existe', texto: 'La nube de electrones no tiene un borde nítido. Por eso el radio atómico, r, se define con dos átomos iguales unidos: la mitad de la distancia entre sus núcleos. También se calcula desde la nube.',
           ecuacion: [Rr('r'), ' = distancia entre núcleos ÷ 2'] },
-        { titulo: 'Muy, muy pequeño', texto: 'Los radios se dan en picómetros (pm): un picómetro es la billonésima parte de un metro. Aquí todos los radios son calculados y vienen de una misma tabla.' },
-        { titulo: 'Qué mirar', texto: 'En el juego eliges una columna de la tabla y ves sus átomos a escala, de arriba abajo, con los protones de cada núcleo. Compara cada círculo con el de arriba.' },
+        { titulo: 'Muy, muy pequeño', texto: 'Los radios van en picómetros (pm): la billonésima parte de un metro. Aquí son calculados desde la nube de electrones del átomo solo. Otros libros traen radios medidos en enlaces, algo mayores (el flúor, unos 64 pm), con las mismas tendencias.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges una columna de la tabla y ves sus átomos a escala, en fila: de izquierda a derecha, del de arriba de la columna al de abajo. Compara cada círculo con el de su izquierda.' },
       ],
     },
     ejemplos: EJEMPLOS_RADIO,
@@ -346,9 +346,9 @@
         logrado: v => v.g === '1',
         bien: 'El potasio: 243 pm, con cuatro niveles de electrones.',
       },
-      voz: 'Compara cada círculo con el de arriba.',
+      voz: 'Compara cada círculo con el de su izquierda: está una fila más abajo.',
       leyenda: [
-        { s: Rr('r'), t: 'radio calculado del átomo' },
+        { s: Rr('r'), t: 'radio del átomo, calculado desde su nube' },
         { s: 'pm', t: 'picómetro: billonésima parte del metro' },
         { s: Pz('p⁺'), t: 'protones del núcleo' },
       ],
@@ -466,7 +466,7 @@
       datos: [protTxt([a, b])],
       opciones: ops(`El ${m}`, [`El ${o}`, 'QM-ISO-ORDEN', `Tiene más protones, cierto. Pero por eso jala más a los mismos ${n} electrones.`],
         ['Miden lo mismo: tienen los mismos electrones', 'QM-ISO-RADIO', 'Tienen los mismos electrones, cierto. Pero sus núcleos no los jalan igual.'],
-        ['El de mayor carga, sea cual sea su signo', 'QM-ION-CARGA', 'La carga sale de contar; lo que decide el tamaño son los protones.']),
+        ['No se puede saber sin la tabla de radios', 'QM-SIN-LEY', 'Bien dudar. Pero basta comparar sus protones: los electrones son los mismos.']),
       solucion: { texto: `Mismos ${n} electrones: el ${m} tiene menos protones (${ION[m][0]} contra ${ION[o][0]}) y los jala menos.`,
         ecuacion: [`${m} `, Rr(`${pmI(ION[m][2])} pm`), ' > ', `${o} `, Rr(`${pmI(ION[o][2])} pm`)] },
     };
@@ -478,7 +478,8 @@
       datos: [`${Nom(z)}: Z = ${z}`, D.carga],
       opciones: ops(`${e}`, [`${z + q}`, 'QM-ION-SIGNO', q > 0 ? 'Bien partir de los protones. Pero un catión perdió electrones: se resta la carga.' : 'Bien partir de los protones. Pero un anión ganó electrones: se suman.'],
         [`${z}`, 'QM-ION-PROTONES', 'Esos son sus protones, que no cambian. Los electrones sí cambiaron.'],
-        [`${Math.abs(q) === 1 ? e + (q > 0 ? -1 : 1) : z - Math.sign(q)}`, 'QM-ION-UNO', 'Bien el sentido. Pero la carga dice cuántos electrones: cuenta todos.']),
+        Math.abs(q) === 1 ? [`${z - 2 * q}`, 'QM-ION-DOBLE', 'Bien el sentido. Pero cambia un solo electrón, no dos: la carga es 1.']
+          : [`${z - Math.sign(q)}`, 'QM-ION-UNO', 'Bien el sentido. Pero la carga dice cuántos electrones cambiaron: cuenta todos.']),
       solucion: { texto: q > 0 ? `Perdió ${q}: se restan de sus ${z}.` : `Ganó ${-q}: se suman a sus ${z}.`, ecuacion: [`${z} ${q > 0 ? '−' : '+'} ${Math.abs(q)} = ${e} e⁻`] },
     };
   }
@@ -551,12 +552,12 @@
         { texto: 'Solo el Mg²⁺ tiene 10. El S²⁻ es de la familia del oxígeno, pero tiene 18.' },
       ],
       respuesta: ['El Mg²⁺: 10 electrones'] },
-    { nivel: 2, titulo: 'Tres cationes del neón',
+    { nivel: 2, titulo: 'Tres cationes con 10 electrones',
       enunciado: 'El Na⁺, el Mg²⁺ y el Al³⁺ tienen 10 electrones cada uno. Ordénalos de mayor a menor radio.',
       datos: [protTxt(['Na⁺', 'Mg²⁺', 'Al³⁺'])],
       solucion: [
         { texto: 'Mismos 10 electrones: el de más protones es el menor.', ecuacion: ['Na⁺ (', Pz('11'), ') > Mg²⁺ (', Pz('12'), ') > Al³⁺ (', Pz('13'), ')'] },
-        { texto: 'La tabla de radios iónicos lo confirma.', ecuacion: ['Na⁺ ', Rr('102'), ' > Mg²⁺ ', Rr('72'), ' > Al³⁺ ', Rr('53,5 pm')] },
+        { texto: 'La tabla de radios iónicos, en pm, lo confirma.', ecuacion: ['Na⁺ ', Rr('102'), ' > Mg²⁺ ', Rr('72'), ' > Al³⁺ ', Rr('53,5')] },
       ],
       respuesta: [Rr('Na⁺ > Mg²⁺ > Al³⁺')] },
     { nivel: 2, titulo: 'Los dos iones de la sal',
@@ -613,7 +614,7 @@
       alternativas: ['El Br⁻ es menor que el átomo de Br, porque tiene carga.', 'El Br⁻ tiene 34 electrones.', 'El Br⁻ y el Kr tienen distinto número de electrones.', 'El Br⁻ es menor que el Cl⁻, que está arriba.', 'El Br⁻ es mayor que el átomo de Br.'],
       datos: ['Bromo: Z = 35; cloro: Z = 17; kriptón: Z = 36', D.carga],
       solucion: [
-        { texto: 'Cuento: ganó un electrón y quedó con 36, como el kriptón. Los mismos 35 protones jalan uno más: la nube crece.', ecuacion: ['Br⁻: 35 + 1 = 36 e⁻'] },
+        { texto: 'Cuento: ganó un electrón y quedó con 36, como el kriptón. Los mismos 35 protones jalan un electrón más: la nube crece.', ecuacion: ['Br⁻: 35 + 1 = 36 e⁻'] },
         { texto: ['La ', letra('A'), ' cree que el anión se achica. La ', letra('B'), ' resta el electrón en vez de sumarlo.'] },
         { texto: ['La ', letra('C'), ' cuenta mal: los dos tienen 36. La ', letra('D'), ' invierte el grupo: el Br⁻, con un nivel más, mide 196 pm y el Cl⁻, 181.'] },
       ],
@@ -642,7 +643,7 @@
       tarjetas: [
         { titulo: 'El salero', texto: 'En la sal del salero no hay átomos de sodio ni de cloro: hay iones. Cada sodio perdió un electrón (Na⁺) y cada cloro ganó uno (Cl⁻). El núcleo de cada uno no cambió.',
           pieza: 'quim-tira', dibujo: OBJ([{ que: 'salero', nombre: 'Na⁺ y Cl⁻' }]) },
-        { titulo: 'Dos tablas', texto: 'El radio de un ion se mide en cristales, como la sal: es el radio iónico. Sale de otra tabla que el radio atómico. Por eso los números de los iones se comparan entre iones.' },
+        { titulo: 'Dos tablas', texto: 'El radio de un ion se mide en cristales, como la sal: es el radio iónico, y sale de otra tabla que el radio atómico. Por eso sus números se comparan solo entre iones; un átomo con su ion, solo en cuál es mayor.' },
         { titulo: 'Mismos electrones', texto: 'De Estructura atómica: dos especies son isoelectrónicas si tienen el mismo número de electrones. El Na⁺ y el neón tienen 10 cada uno.', ecuacion: ['Na⁺: 11 − 1 = 10 e⁻', SEP, 'Ne: 10 e⁻'] },
         { titulo: 'Qué mirar', texto: 'En el juego, cada elemento aparece junto a su ion. Cuenta los protones y los electrones de los dos, y mira cuál círculo es mayor.' },
       ],
@@ -661,7 +662,7 @@
         { s: Pz('p⁺'), t: 'protones: no cambian al formarse el ion' },
         { s: 'e⁻', t: 'electrones' },
         { s: Rr('pm'), t: 'radio, en picómetros' },
-        { s: 'átomo e ion', t: 'radios de dos tablas distintas' },
+        { s: 'átomo e ion', t: 'dos tablas: compara solo cuál es mayor' },
       ],
       controles: [{ id: 'x', etiqueta: 'Elemento', opciones: JUEGO_IONES.map(([x]) => ({ valor: x, texto: x })), inicio: 'Na' }],
       dibujo: v => { const [x, z, q] = JUEGO_IONES.find(e => e[0] === v.x), k = ionDe(x, q); return ESF([atomoE(z, { e: z }), esfIon(k)], { rotulo: `Átomo de ${NOMBRE[z]} e ion ${k}` }); },
@@ -689,8 +690,10 @@
     },
     mira: {
       pieza: 'quim-tira',
-      datos: { vista: 'esferas', simbolos: SIMBOLOS, marcas: {}, max: 250, esferas: [atomoE(11, { e: 11 }), esfIon('Na⁺')],
-        escenas: [{ desde: 2, esferas: [atomoE(17, { e: 17 }), esfIon('Cl⁻')] }, { desde: 3, esferas: SERIES[10].slice(0, 4).map(k => esfIon(k)) }, { desde: 4, esferas: SERIES[18].map(k => esfIon(k)) }] },
+      // Cada escena trae su vista: sin ella, quim-tira dibujaba la tira de tarjetas del He al Ca (auditoría, 19 nov).
+      datos: { vista: 'esferas', simbolos: SIMBOLOS, marcas: {}, max: 250,
+        escenas: [{ desde: 0, esferas: [atomoE(11, { e: 11 }), esfIon('Na⁺')] }, { desde: 2, esferas: [atomoE(17, { e: 17 }), esfIon('Cl⁻')] }, { desde: 3, esferas: SERIES[10].slice(0, 4).map(k => esfIon(k)) },
+          { desde: 4, esferas: SERIES[18].map(k => esfIon(k)) }].map(e => Object.assign({ vista: 'esferas', max: 250 }, e)) },
       voz: 'Primero un catión, después un anión y al final las series.',
       pasos: [
         { estado: { corte: 0 }, texto: 'El Na⁺ perdió su único electrón del nivel 3: le queda un nivel menos.', ecuacion: ['Na: ', Pz('11 p⁺'), ', 11 e⁻', SEP, 'Na⁺: ', Pz('11 p⁺'), ', 10 e⁻'] },
@@ -701,9 +704,9 @@
       ],
     },
     regla: {
-      texto: 'Un catión es menor que su átomo y un anión, mayor. Entre especies isoelectrónicas, con los mismos electrones, es más pequeña la que tiene más protones.',
-      ecuacion: [Rr('r'), ' (catión) < ', Rr('r'), ' (átomo) < ', Rr('r'), ' (anión)', SEP, { llave: ['más ', Zf, ' → menor ', Rr('r')], nota: 'mismos electrones' }],
-      condicion: 'el átomo y su ion se comparan solo en cuál es mayor; los números se comparan entre iones, de una misma tabla.',
+      texto: 'Un catión es menor que el átomo del que sale y un anión, mayor que el suyo. Con los mismos electrones, es más pequeña la especie con más protones.',
+      ecuacion: [{ llave: [Rr('r'), ' (catión) < ', Rr('r'), ' (átomo) < ', Rr('r'), ' (anión)'], nota: 'de un mismo elemento' }, SEP, { llave: ['más ', Zf, ' → menor ', Rr('r')], nota: 'mismos electrones' }],
+      condicion: 'los radios iónicos se comparan con números solo entre iones; un átomo y su ion, solo en cuál es mayor.',
       voz: 'Mismos electrones: decide el núcleo.',
       dibujo: ESF(SERIES[18].map(k => esfIon(k)), { rotulo: '18 electrones: más protones, menor' }),
     },
@@ -732,7 +735,12 @@
       voz: 'Cuenta protones y electrones de cada uno.',
       generar(sem) {
         const r = azar(sem * 89 + 7), tipo = sem % 5;
-        if (tipo === 4) return vfDe(r, AFIRMA_I, ['Protones: cloro 17, argón 18, potasio 19, calcio 20', D.carga]);
+        if (tipo === 4) {
+          // Los datos traen los protones de cada elemento que nombran las tres afirmaciones (antes faltaban el S, el Br y el Na).
+          const v = vfDe(r, AFIRMA_I, []), P_ = { Na: 11, S: 16, Cl: 17, Ar: 18, K: 19, Ca: 20, Br: 35 }, nombra = new Set((JSON.stringify(v.pregunta).match(/\b(Na|S|Cl|Ar|K|Ca|Br)(?=[⁺⁻²\s.])/g) || []));
+          v.datos = [`Protones: ${Object.keys(P_).filter(s => nombra.has(s)).map(s => `${NOMBRE[P_[s]]} ${P_[s]}`).join(', ')}`, D.carga];
+          return v;
+        }
         return [casoAtomoIon, casoParIso, casoElectrones, casoTrioIso][tipo](r);
       },
     },
@@ -761,9 +769,9 @@
     const par = r.de(lista), [a, b] = r.baraja(par), m = EI[a] > EI[b] ? a : b, o = m === a ? b : a;
     const err = { grupo: ['QM-EI-GRUPO', 'Bien mirar su columna. Pero el de abajo tiene su electrón más lejos: sale más fácil.'],
       periodo: ['QM-EI-INVERSA', 'Sería así si la tendencia fuera al revés. Hacia la derecha, más protones lo retienen.'],
-      bajada: ['QM-FLECHA', 'La flecha diría eso, pero este es uno de los saltos: mira qué subnivel estrena o aparea.'] }[clase];
+      bajada: ['QM-FLECHA', 'La flecha diría eso, pero aquí se rompe: mira si sale el primer electrón p o uno apareado.'] }[clase];
     const por = { grupo: `el ${NOMBRE[m]} tiene su último electrón más cerca del núcleo`, periodo: `el ${NOMBRE[m]} tiene más protones jalando el mismo nivel`,
-      bajada: o === 5 || o === 13 || o === 31 ? `el ${NOMBRE[o]} estrena un p, algo más lejos` : `en el ${NOMBRE[o]} sale un electrón apareado` }[clase];
+      bajada: o === 5 || o === 13 || o === 31 ? `el ${NOMBRE[o]} pierde su primer y único electrón p, algo más lejos` : `en el ${NOMBRE[o]} sale un electrón apareado` }[clase];
     return {
       pregunta: `¿A cuál le cuesta más perder un electrón: al ${NOMBRE[a]} o al ${NOMBRE[b]}?`,
       datos: clase === 'bajada' ? [`${Nom(a)}: ${conf(a)}; ${NOMBRE[b]}: ${conf(b)}`, `Los dos, del periodo ${lugar(a).periodo}`] : [lugarTxt(a), lugarTxt(b)],
@@ -783,18 +791,19 @@
     const e = SUCESIVAS[z], c = e.slice(1).map((x, i) => x / e[i]), k = c.indexOf(Math.max(...c)) + 1;
     return { k, grupo: k <= 2 ? k : k + 10, cocientes: c };
   }
-  const listaEI = z => SUCESIVAS[z].map(x => (x >= 10000 ? `${String(x).slice(0, -3)} ${String(x).slice(-3)}` : `${x}`)).join(', ');
+  const miles = x => (x >= 10000 ? `${String(x).slice(0, -3)} ${String(x).slice(-3)}` : `${x}`);
+  const listaEI = z => SUCESIVAS[z].map(miles).join(', ');
   function casoSucesivas(r) {
     const z = r.de(SUC_AHORA), { k, grupo } = grupoSucesivas(z), g = n => (n <= 2 ? n : n + 10);
     return {
       pregunta: `Las energías de ionización sucesivas de un elemento X de los grupos A son, en kJ/mol: ${listaEI(z)}. ¿En qué grupo está X?`,
       datos: ['Cada EI sucesiva arranca un electrón más', D.grupos],
       opciones: ops(`Grupo ${grupoAB(grupo)}`, [`Grupo ${grupoAB(g(k + 1))}`, 'QM-SALTO-DESPUES', 'Bien encontrar el salto. Pero el electrón del salto ya es de un nivel de adentro: no cuenta.'],
-        [`Grupo ${grupoAB(g(k - 1) || 18)}`, 'QM-SALTO-ANTES', 'Bien buscar el salto. Pero cuenta todos los electrones que salen antes de él.'],
+        k > 1 ? [`Grupo ${grupoAB(g(k - 1))}`, 'QM-SALTO-ANTES', 'Bien buscar el salto. Pero cuenta todos los electrones que salen antes de él.'] : ['', '', ''],
         [`Grupo ${grupoAB(g(SUCESIVAS[z].length) > 18 ? 18 : g(SUCESIVAS[z].length))}`, 'QM-SALTO-TOTAL', 'Ese es el número de datos. El grupo lo dice el lugar del salto.'],
         ['Grupo 18 (VIIIA)', 'QM-SALTO-NOBLE', 'Un gas noble casi no suelta electrones; aquí los primeros salen fácil.']),
       solucion: { texto: `El salto grande llega en la EI número ${k + 1}: antes salen ${k} electrones de valencia.`,
-        ecuacion: [`${SUCESIVAS[z][k]} ÷ ${SUCESIVAS[z][k - 1]} ≈ ${f(SUCESIVAS[z][k] / SUCESIVAS[z][k - 1], 1)}`, ' → ', Ei(`grupo ${grupoAB(grupo)}`)] },
+        ecuacion: [`${miles(SUCESIVAS[z][k])} ÷ ${miles(SUCESIVAS[z][k - 1])} ≈ ${f(SUCESIVAS[z][k] / SUCESIVAS[z][k - 1], 1)}`, ' → ', Ei(`grupo ${grupoAB(grupo)}`)] },
     };
   }
   const PARES_AE = [[17, 11], [9, 3], [16, 11], [35, 19], [8, 3], [17, 9], [6, 3], [16, 15]];
@@ -856,8 +865,8 @@
       enunciado: '¿Por qué al boro le cuesta menos perder un electrón que al berilio, si está a su derecha?',
       datos: ['Berilio: 1s² 2s²; boro: 1s² 2s² 2p¹', 'EI: Be 900 kJ/mol; B 801 kJ/mol'],
       solucion: [
-        { texto: 'El boro estrena el subnivel 2p: su electrón está algo más lejos que los 2s y sale más fácil.', ecuacion: ['Be ', Ei('900'), ' > B ', Ei('801 kJ/mol')] },
-        { texto: 'Es la primera de las dos bajadas de cada periodo.' },
+        { texto: 'El boro es el primero con un electrón en el 2p: ese electrón está algo más lejos que los 2s y sale más fácil.', ecuacion: ['Be ', Ei('900'), ' > B ', Ei('801 kJ/mol')] },
+        { texto: 'Es la primera bajada del periodo 2; la otra es la del oxígeno.' },
       ],
       respuesta: ['Su electrón 2p sale más fácil que un 2s'] },
     { nivel: 2, titulo: 'Ordenar tres',
@@ -930,10 +939,9 @@
       enunciado: 'En el periodo 3, del sodio al argón, ¿qué afirmación sobre la energía de ionización es correcta?',
       alternativas: ['Tiende a subir, pero el aluminio pide menos que el magnesio.', 'Sube en cada paso, sin excepciones.', 'Baja, porque el radio disminuye.',
         'El sodio tiene la mayor del periodo.', 'Es la misma en todo el periodo: el nivel es el mismo.'],
-      datos: ['EI (kJ/mol): Na 496, Mg 738, Al 578, Si 787, P 1012, S 1000, Cl 1251, Ar 1521'],
-      figura: BARR([11, 12, 13, 14, 15, 16, 17, 18]),
+      datos: ['Periodo 3, de izquierda a derecha: Na, Mg, Al, Si, P, S, Cl y Ar', 'El 3s se llena en el Na y el Mg; el 3p, del Al al Ar'],
       solucion: [
-        { texto: 'Va de 496 a 1521: tiende a subir. Pero baja dos veces: del Mg al Al y del P al S.' },
+        { texto: 'Hacia la derecha, más protones: tiende a subir. Baja dos veces: en el Al sale el primer 3p y en el S, un 3p apareado.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578'), SEP, 'P ', Ei('1012'), ' > S ', Ei('1000 kJ/mol')] },
         { texto: ['La ', letra('B'), ' olvida las dos bajadas. La ', letra('C'), ' invierte la tendencia: un átomo menor retiene más su electrón.'] },
         { texto: ['La ', letra('D'), ' se equivoca: el sodio tiene la menor. La ', letra('E'), ' olvida que crece la carga nuclear.'] },
       ],
@@ -958,7 +966,7 @@
     pregunta: '¿Cuánto cuesta arrancarle un electrón a un átomo?',
     temas: ['Energía de ionización y afinidad electrónica'],
     pieza: 'quim-tabla',
-    aprendizaje: 'Arrancar un electrón siempre cuesta energía: más hacia la derecha y hacia arriba, con dos bajadas por periodo. La afinidad es la energía al ganarlo.',
+    aprendizaje: 'Arrancar un electrón cuesta más a la derecha y arriba, con bajadas como Be–B y N–O. La afinidad es la energía al ganarlo.',
     actividad: 'Recorrer el periodo 2 y comparar lo que cuesta arrancar cada electrón.',
     lee: {
       tarjetas: [
@@ -977,7 +985,7 @@
       mision: {
         texto: 'En el periodo 2, encuentra uno que cueste menos que su vecino de la izquierda.',
         logrado: v => v.z > 3 && EI[v.z] < EI[v.z - 1],
-        bien: 'Ahí la subida se corta. Mira qué subnivel estrena o completa.',
+        bien: 'Ahí la subida se corta: compara la configuración de los dos vecinos.',
       },
       voz: 'Busca las barras que no siguen la subida.',
       leyenda: [
@@ -1013,7 +1021,7 @@
       voz: 'Recorramos el periodo 3 y bajemos por un grupo.',
       pasos: [
         { estado: { corte: 0 }, texto: 'En cada periodo, la EI sube de izquierda a derecha: el núcleo jala más.', ecuacion: ['Na ', Ei('496'), ' → Ar ', Ei('1521 kJ/mol')] },
-        { estado: { corte: 1 }, texto: 'Primera bajada: el aluminio estrena el 3p, algo más lejos que el 3s.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578')] },
+        { estado: { corte: 1 }, texto: 'Primera bajada: el único 3p del aluminio está más lejos que los 3s.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578')] },
         { estado: { corte: 2 }, texto: 'Segunda bajada: en el azufre, un electrón 3p ya tiene pareja y se repelen.', ecuacion: ['P ', Ei('1012'), ' > S ', Ei('1000')] },
         { estado: { corte: 3 }, texto: 'También lo vas a oír así: el 3p³ del fósforo, semilleno, es estable.', ecuacion: ['P: 3s² 3p³'] },
         { estado: { corte: 4 }, texto: 'Hacia abajo en un grupo baja: el electrón está más lejos del núcleo.', ecuacion: ['Li ', Ei('520'), ' > Na ', Ei('496'), ' > K ', Ei('419')] },
@@ -1022,9 +1030,9 @@
       ],
     },
     regla: {
-      texto: 'La EI sube hacia la derecha y hacia arriba; baja al estrenar el p y al aparear el p. Un salto entre EI sucesivas da el grupo.',
-      ecuacion: [{ llave: ['X(g) → X⁺(g) + e⁻'], nota: 'EI: siempre cuesta' }, SEP, { llave: ['X(g) + e⁻ → X⁻(g)'], nota: 'AE' }],
-      condicion: 'átomos aislados y gaseosos; las flechas son tendencias y el dato decide. La afinidad (AE) es negativa si se libera energía.',
+      texto: 'La EI sube a la derecha y arriba; baja si sale el primer electrón p (Be → B) o uno apareado (N → O). El salto de las sucesivas da el grupo.',
+      ecuacion: [{ llave: ['X(g) → X⁺(g) + e⁻'], nota: 'EI: siempre cuesta' }, SEP, { llave: ['Cl(g) + e⁻ → Cl⁻(g)'], nota: 'AE = −349 kJ/mol: libera' }],
+      condicion: 'átomos aislados y gaseosos; las flechas son tendencias. Una AE negativa dice que el átomo libera energía.',
       voz: 'Ante la duda, mira el dato.',
       dibujo: barrasEI(TODOS),
     },
@@ -1041,7 +1049,7 @@
             { tipo: 'datos', texto: `Hay ${e.length} energías: cada una arranca un electrón más del mismo átomo.` },
             { tipo: 'regla', texto: 'Mientras salen electrones del último nivel, cada EI sube poco; al llegar a un nivel lleno de adentro, sube de golpe. Antes del salto salen los de valencia.' },
             { tipo: 'cuentas', texto: 'Divido cada EI entre la anterior y busco el cociente mayor.',
-              ecuacion: [cocientes.map((c, i) => `${e[i + 1]} ÷ ${e[i]} ≈ ${f(c, 1)}`).join(SEP)] },
+              ecuacion: [cocientes.map((c, i) => `${miles(e[i + 1])} ÷ ${miles(e[i])} ≈ ${f(c, 1)}`).join(SEP)] },
             { tipo: 'sentido', texto: `El salto llega en la EI número ${k + 1}: hay ${k} de valencia, grupo ${grupoAB(grupo)}. En el periodo ${p}, es el ${NOMBRE[z]}.`,
               dibujo: tabla({ periodos: Math.max(2, p), marcadas: [{ Z: z, color: 'h' }] }) },
           ],
@@ -1051,7 +1059,7 @@
     },
     ahoraTu: {
       pieza: 'quim-tabla',
-      voz: 'La flecha orienta; el dato decide.',
+      voz: 'Ubica los dos; si son vecinos de fila, mira su configuración.',
       generar(sem) {
         const r = azar(sem * 83 + 5), tipo = sem % 6;
         if (tipo === 0) return casoParEI(r, 'grupo');
@@ -1078,7 +1086,8 @@
   const PARES_EN = [[1, 8], [6, 7], [1, 9], [11, 8], [6, 16], [14, 8], [1, 16], [19, 35], [15, 9], [12, 17], [5, 7], [13, 9], [6, 9], [1, 6]];
   const PARES_EN_R = [[[1, 17], [1, 9]], [[6, 8], [6, 7]], [[11, 17], [12, 17]], [[1, 8], [1, 7]], [[6, 1], [6, 9]]];
   const TRIOS_EN = [[6, 7, 14], [8, 9, 16], [12, 13, 20], [16, 17, 34], [3, 4, 11], [5, 6, 13], [11, 12, 19]];
-  const PARES_METAL = [[3, 11], [11, 19], [11, 17], [12, 16], [4, 20], [13, 15], [19, 35], [20, 31], [14, 32], [3, 9]];
+  // Sin el par Ca–Ga: la EI del Ga (579) es menor que la del Ca (590) y la definición dice «qué tan fácil pierde electrones».
+  const PARES_METAL = [[3, 11], [11, 19], [11, 17], [12, 16], [4, 20], [13, 15], [19, 35], [20, 35], [14, 32], [3, 9]];
   const DE = { en: 'EN: cuánto jala un átomo el par que comparte en un enlace (escala de Pauling)', metal: 'Carácter metálico: qué tan fácil pierde electrones un elemento' };
   const delta = (a, b) => Math.abs(EN[a] - EN[b]);
   function casoHacia(r) {
@@ -1244,10 +1253,10 @@
       enunciado: 'En el periodo 4, del potasio al bromo, ¿qué afirmación es correcta?',
       alternativas: ['El radio crece hacia el bromo.', 'La electronegatividad crece y el carácter metálico baja hacia el bromo.', 'El potasio es el más electronegativo.',
         'El carácter metálico crece hacia el bromo.', 'La energía de ionización baja hacia el bromo.'],
-      datos: ['K: grupo 1; Ca: grupo 2; Br: grupo 17 (los tres, del periodo 4)'],
+      datos: ['K: grupo 1; Br: grupo 17 (los dos, del periodo 4)', DE.metal],
       solucion: [
-        { texto: 'Hacia la derecha en el periodo: radio y carácter metálico bajan; energía de ionización y electronegatividad suben.', ecuacion: ['K ', Ne('0,82'), ' → Br ', Ne('2,96')] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' invierten dos tendencias que bajan. La ', letra('C'), ' da la mayor al de la izquierda.'] },
+        { texto: 'Hacia la derecha en el periodo: radio y carácter metálico bajan; energía de ionización y electronegatividad suben.', ecuacion: ['EN: K ', Ne('0,82'), ' → Br ', Ne('2,96')] },
+        { texto: ['La ', letra('A'), ' invierte el radio y la ', letra('D'), ', el carácter metálico: los dos bajan. La ', letra('C'), ' da la mayor al de la izquierda.'] },
         { texto: ['La ', letra('E'), ' invierte la energía de ionización: el bromo retiene más su electrón.'] },
       ],
       respuesta: [letra('B'), ', crece la ', Ne('EN'), ' y baja lo metálico'] },
@@ -1283,24 +1292,26 @@
     ejemplos: EJEMPLOS_EN,
     juega: {
       pieza: 'quim-tabla',
-      consigna: 'Elige los dos átomos de un enlace. Las barras son su electronegatividad; la lectura dice hacia quién se corre el par.',
+      consigna: 'Elige los dos átomos de un enlace. Las barras son su electronegatividad; la lectura dice hacia quién se corre el par de electrones que comparten.',
       mision: {
         texto: 'Arma el enlace con la mayor diferencia de electronegatividad que puedas.',
         logrado: v => Math.abs(delta(+v.a, +v.b) - MAXD) < 1e-9,
-        bien: 'K–F: el par se corre casi del todo hacia el flúor.',
+        bien: 'K–F: el par de electrones se corre casi del todo hacia el flúor.',
       },
       voz: 'Mira cuál de los dos tiene la barra más alta.',
       leyenda: [
         { s: ENf, t: 'electronegatividad, en la escala de Pauling' },
         { s: 'ΔEN', t: 'diferencia: el mayor menos el menor' },
         { s: 'barra', t: 'más alta: jala más el par' },
+        { s: 'par', t: 'los dos electrones que comparten los átomos' },
+        { s: 'sin barra', t: 'gas noble: no tiene valor en la escala' },
       ],
       controles: [
         { id: 'a', etiqueta: 'Primer átomo', opciones: JUEGO_A.map(z => ({ valor: String(z), texto: SIMB[z] })), inicio: '1' },
         { id: 'b', etiqueta: 'Segundo átomo', opciones: JUEGO_B.map(z => ({ valor: String(z), texto: SIMB[z] })), inicio: '17' },
       ],
       dibujo: v => barrasEN(TODOS, { marcadas: [{ Z: +v.a, color: 'f' }, { Z: +v.b, color: 'f' }], rotulo: `${SIMB[+v.a]}–${SIMB[+v.b]}: ΔEN = ${f2(delta(+v.a, +v.b))}` }),
-      lectura: v => { const a = +v.a, b = +v.b, m = EN[a] > EN[b] ? a : b, o = m === a ? b : a; return ['ΔEN = ', Ne(enTxt(m)), ' − ', Ne(enTxt(o)), ' = ', Ne(f2(delta(a, b))), `: el par va al ${SIMB[m]}.`]; },
+      lectura: v => { const a = +v.a, b = +v.b, m = EN[a] > EN[b] ? a : b, o = m === a ? b : a; return ['ΔEN = ', Ne(enTxt(m)), ' − ', Ne(enTxt(o)), ' = ', Ne(f2(delta(a, b))), `: el par de electrones va hacia el ${SIMB[m]}.`]; },
       minimo: 4,
     },
     predice: {
@@ -1340,8 +1351,8 @@
       ],
     },
     regla: {
-      texto: 'La electronegatividad dice cuánto jala un átomo el par que comparte en un enlace: crece hacia arriba y a la derecha, hasta el flúor. El carácter metálico crece al revés.',
-      ecuacion: ['ΔEN = ', ENf, ' (mayor) − ', ENf, ' (menor)', SEP, 'el par va al de mayor ', ENf],
+      texto: 'La electronegatividad dice cuánto jala un átomo el par que comparte: crece hacia arriba y a la derecha, hasta el flúor. El carácter metálico crece al revés.',
+      ecuacion: ['ΔEN = ', ENf, ' (mayor) − ', ENf, ' (menor)', SEP, 'el par va al de mayor ', ENf, SEP, 'carácter metálico (qué tan fácil pierde electrones): crece hacia abajo y a la izquierda'],
       condicion: 'una sola escala (Pauling, sin unidades); los gases nobles no tienen valor en ella.',
       voz: 'Electronegativo no es negativo: es quien jala más.',
       dibujo: barrasEN(TODOS),
@@ -1396,7 +1407,9 @@
 
   return {
     unidad: 'quimica.propiedades-periodicas',
-    version: '0.2.0',
+    version: '0.3.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     colores: COLORES,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/quim-tabla.js', '/nucleo/kit/piezas/quim-tira.js', '/nucleo/kit/piezas/quim-molecula.js'],
@@ -1419,7 +1432,7 @@
         simple: 'Una medida tan chica que sirve para átomos.',
         ejemplos: ['1 pm = 0,000 000 000 001 m.', '1 nm = 1000 pm.', 'El flúor mide 42 pm.'], ver: ['radio atómico'] },
       { termino: 'carga nuclear', formas: ['carga nuclear'], def: 'Carga positiva del núcleo, igual a su número de protones: es la que atrae a los electrones.',
-        simple: 'La atracción del núcleo, que crece con sus protones.',
+        simple: 'La carga positiva del núcleo: una por cada protón.',
         ejemplos: ['El sodio tiene carga nuclear +11.', 'El cloro, +17.', 'El potasio tiene más que el sodio y es mayor: tiene un nivel más.'], ver: ['protón', 'radio atómico'] },
       { termino: 'radio iónico', formas: ['radio iónico', 'radios iónicos'], medida: 'pm', def: 'Tamaño de un ion, medido en los cristales donde está. Sale de otra tabla que el radio atómico.',
         simple: 'Lo que mide un ion.',
@@ -1494,7 +1507,7 @@
         invitaciones: [
           { texto: 'En el periodo 3, busca dos vecinos donde la ionización baje hacia la derecha.',
             logrado: v => v.p === 'ei' && v.b === v.a + 1 && lugar(v.a).periodo === 3 && lugar(v.b).periodo === 3 && EI[v.b] < EI[v.a],
-            bien: 'La flecha falla aquí: mira qué subnivel estrena el segundo.' },
+            bien: 'La flecha falla aquí: mira si el segundo pierde su primer electrón p o uno apareado.' },
           { texto: 'Con el radio de fondo, pon el segundo justo debajo del primero, en su grupo.',
             logrado: v => v.p === 'r' && lugar(v.a).grupo === lugar(v.b).grupo && lugar(v.b).periodo === lugar(v.a).periodo + 1,
             bien: 'Un nivel más abajo, un átomo más grande. ¿Pasa en todos los grupos?' },

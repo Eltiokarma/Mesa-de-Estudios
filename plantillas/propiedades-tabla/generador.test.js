@@ -92,3 +92,13 @@ test('casos.json: de 15 a 20 casos verificados aparte, de las cuatro ideas y los
     assert.ok(plano(p.pregunta).length > 5);
   }
 });
+
+// Auditoría (19 nov): cada prueba falla con la versión de antes.
+test('auditoría: el par de isoelectrónicos tiene una sola respuesta, y el carácter metálico sigue la EI de la unidad', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'radio-ionico' });
+    assert.ok(!p.alternativas.some(a => /mayor carga/.test(a.texto)), `${s}: «el de mayor carga» puede ser la correcta`);
+    const q = gen.generar(s, { idea: 'electronegatividad' }), d = q._datos;
+    if (d.tipo === 'metalico') { const E = gen.DATOS.EL, m = q.respuesta.valor.replace('El ', ''), [x, y] = [E[d.a], E[d.b]], mas = x.nombre === m ? x : y, otro = mas === x ? y : x; assert.ok(mas.ei < otro.ei, `${s}: ${mas.s} ${mas.ei}, ${otro.s} ${otro.ei}`); }
+  }
+});

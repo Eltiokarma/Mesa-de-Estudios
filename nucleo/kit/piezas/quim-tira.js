@@ -298,17 +298,18 @@
         if (col >= 0) s += `<rect class="kit-columna${nuevo(c)}" x="${n(P.x0 + col * P.cw - 1)}" y="${n(y0 - 1)}" width="${P.cw + 2}" height="${n(P.y0 + P.P * CH - y0 + 2)}" rx="5" fill="none" stroke="${T.color(c.color || 'h')}" stroke-width="3"/>`;
       }
     }
-    // La escalera: a su izquierda, los metales; a su derecha, los semimetales y los no metales.
+    for (const c of columnasFamilia(d, P)) s += `<rect class="kit-columna" x="${n(c.x - 1)}" y="${n(c.y - 1)}" width="${n(c.w + 2)}" height="${n(c.h + 2)}" rx="6" fill="none" stroke="${T.color('h')}" stroke-width="3"/>`;
+    for (const r of (d.resaltar || []).filter(ve)) {
+      const c = P.cartas.find(x => x.Z === r.Z); if (!c) continue;
+      s += `<rect class="kit-resalta${nuevo(r)}" x="${n(c.x)}" y="${n(c.y)}" width="${n(c.w)}" height="${n(c.h)}" rx="5" fill="none" stroke="${T.color(r.color)}" stroke-width="3"/>`;
+    }
+    // La escalera: a su izquierda, los metales; a su derecha, los semimetales y los no metales. Va encima de los marcos de
+    // las casillas resaltadas, para que el marco del aluminio no la tape (lector en frío, 19 nov).
     if (P.vista === 'tabla' && d.escalera) {
       const X = c => P.x0 + c * P.cw, Y = p => P.y0 + (p - 1) * CH, pts = [[X(3), Y(2)], [X(3), Y(3)], [X(4), Y(3)]];
       if (P.P >= 5) pts.push([X(4), Y(5)], [X(5), Y(5)]); else pts.push([X(4), Y(P.P + 1)]);
       if (P.P >= 6) pts.push([X(5), Y(6)], [X(6), Y(6)], [X(6), Y(Math.min(P.P, 6) + 1)]); else if (P.P === 5) pts.push([X(5), Y(6)]);
       s += `<path class="kit-escalera" d="M${pts.map(p => `${n(p[0])} ${n(p[1])}`).join('L')}" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>`;
-    }
-    for (const c of columnasFamilia(d, P)) s += `<rect class="kit-columna" x="${n(c.x - 1)}" y="${n(c.y - 1)}" width="${n(c.w + 2)}" height="${n(c.h + 2)}" rx="6" fill="none" stroke="${T.color('h')}" stroke-width="3"/>`;
-    for (const r of (d.resaltar || []).filter(ve)) {
-      const c = P.cartas.find(x => x.Z === r.Z); if (!c) continue;
-      s += `<rect class="kit-resalta${nuevo(r)}" x="${n(c.x)}" y="${n(c.y)}" width="${n(c.w)}" height="${n(c.h)}" rx="5" fill="none" stroke="${T.color(r.color)}" stroke-width="3"/>`;
     }
     const pr = probadorEn(d, P);
     if (pr) s += `<g transform="translate(${n(pr.tx)} ${n(pr.ty)}) scale(${PR_ESCALA})">${objeto('probador', 0, 0, d.probador)}</g>`;

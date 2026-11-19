@@ -51,7 +51,7 @@ test('las cuatro ideas en el orden de la propuesta; lo que se compara está en P
   assert.deepEqual(props.ideas.map(i => i.id), ['radio-atomico-ionico', 'radio-ionico', 'energia-ionizacion', 'electronegatividad']);
   assert.deepEqual(props.laboratorio.map(m => m.id), ['tres-propiedades', 'dos-elementos']);
   assert.equal(def.laboratorio, undefined);
-  assert.equal(def.calidad, undefined, 'la unidad no declara calidad 2 hasta cerrar sus cuatro ideas');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   const cat = require('../../../catalogo/cursos/quimica.json').unidades;
   const temas = id => cat.find(u => u.id === id).temas;
   for (const d of [def, props]) {
@@ -238,7 +238,7 @@ test('Así se resuelve: periodo, grupo y familia juntos (Ahora tú nunca los pid
     assert.ok(resp.toLowerCase().includes(FAMILIA[t.g].toLowerCase().replace(/s$/, '').replace(/e$/, '').slice(0, 6)), resp);
     // «Justo encima» (o «justo debajo», si no hay nadie arriba) nombra al elemento que de verdad está ahí en su columna.
     const up = Object.entries(TABLA).find(([x]) => debajo(+x) === z), sentido = plano(r.pasos[4].texto), NOM = { 3: 'litio', 4: 'berilio', 8: 'oxígeno', 9: 'flúor', 11: 'sodio', 12: 'magnesio',
-      16: 'azufre', 17: 'cloro', 19: 'potasio', 20: 'calcio', 34: 'selenio', 35: 'bromo', 37: 'rubidio', 38: 'estroncio' };
+      16: 'azufre', 17: 'cloro', 19: 'potasio', 20: 'calcio', 34: 'selenio', 35: 'bromo', 37: 'rubidio', 38: 'estroncio', 52: 'telurio', 53: 'yodo', 55: 'cesio', 56: 'bario', 84: 'polonio', 85: 'astato' };
     if (up) assert.ok(sentido.includes(`justo encima, está el ${NOM[+up[0]]}.`), sentido);
     else assert.ok(sentido.includes(`justo debajo, está el ${NOM[debajo(z)]}.`), sentido);
     // El dibujo del planteamiento no marca nada; el de las cuentas marca la casilla.
@@ -418,4 +418,79 @@ test('colores en toda la unidad: Z naranja, periodo turquesa, grupo carmín, ele
     for (const f of figuras(i)) assert.ok(!/var\(--c-d\)|var\(--el-/.test(P[f.pieza].dibujar(f.datos, f.estado)), `${i.id}, ${f.donde}: verde o paleta de elementos`);
   }
   assert.deepEqual([...usados].sort(), ['grupo', 'periodo', 'valencia', 'z']);
+});
+
+// ---------- Auditoría y lector en frío (19 nov): cada prueba falla con la versión de antes ----------
+// EI del NIST (kJ/mol), escritas aquí aparte, para los tríos de carácter metálico («qué tan fácil pierde electrones»).
+const EI_NIST = { 3: 520, 4: 900, 6: 1086, 7: 1402, 9: 1681, 11: 496, 12: 738, 13: 578, 14: 787, 15: 1012, 16: 1000, 17: 1251, 19: 419, 20: 590, 31: 579, 32: 762, 33: 944, 34: 941,
+  35: 1140, 37: 403, 38: 550, 49: 558, 50: 709, 51: 834, 53: 1008, 55: 376, 56: 503, 81: 589 };
+const SUPS = '⁰¹²³⁴⁵⁶⁷⁸⁹', exp = t => +[...t].map(c => SUPS.indexOf(c)).join('');
+test('auditoría: «Así se resuelve» nunca usa un elemento que «Ahora tú» pregunta (ideas 1 a 3)', () => {
+  for (const i of def.ideas.slice(0, 3)) {
+    const zs = new Set();
+    for (let s = 0; s < SEMILLAS; s++) { const q = plano(i.ahoraTu.generar(s).pregunta), m = q.match(/Z = (\d+)/); if (m) zs.add(+m[1]);
+      const t = q.match(/termina en (\d[spdf]\S+ \d[spdf]\S+)\./); if (t) zs.add(-1); }
+    for (let s = 0; s < 200; s++) { const z = +plano(i.resuelve.generar(s).enunciado).match(/Z = (\d+)/)[1]; assert.ok(!zs.has(z), `${i.id}: resuelve ${s} usa Z = ${z}, que sale en Ahora tú`); }
+  }
+});
+test('auditoría: los siFuera de la idea 2 dicen la cuenta de su opción (QM-D-VALENCIA, QM-SOLO-P, QM-LEWIS-NIVEL)', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = I2.ahoraTu.generar(s), q = plano(a.pregunta);
+    for (const o of a.opciones.filter(x => x.error === 'QM-D-VALENCIA')) {
+      const d = o.texto.match(/\dd(\S+)$/), n = o.siFuera.match(/Tiene (\d+) electrones d/);
+      assert.ok(d && n && exp(d[1]) === +n[1], `${s}: «${o.siFuera}» para ${o.texto}`);
+      assert.ok(!/después del gas noble/.test(o.siFuera), o.siFuera);
+    }
+    const lug = q.match(/periodo (\d) y en el grupo (\w+) de la tabla/);
+    if (lug) { const z = +a.opciones.find(o => o.correcta).texto, o = a.opciones.find(x => x.error === 'QM-SOLO-P'); if (o) assert.equal(+o.texto, z + 2, `${s}: el que pone ${lug[2]} electrones en el p llega a ${z + 2}`); }
+    const t = q.match(/termina en (.+)\. ¿Cuántos puntos/);
+    if (t) { const nivel = Math.max(...t[1].split(' ').map(x => +x[0])), o = a.opciones.find(x => x.error === 'QM-LEWIS-NIVEL'); if (o) assert.equal(+o.texto, nivel, `${s}: «${o.siFuera}» con ${o.texto}`); }
+  }
+});
+test('lector: Predice de la idea 2 separa al que suma los 4d¹⁰ (otro número que la correcta)', () => {
+  const c = I2.predice.opciones.find(o => o.correcta), d = I2.predice.opciones.find(o => o.error === 'QM-D-VALENCIA');
+  assert.ok(/7 electrones de valencia/.test(c.texto) && d && /17/.test(d.texto) && !/17/.test(c.texto));
+});
+test('lector: el Cr, el Cu, la Ag y el Au se dicen excepción donde se usa su configuración real', () => {
+  const textos = [];
+  for (const i of [I3]) {
+    textos.push(plano(i.predice.pregunta), ...i.ejemplos.map(e => plano([e.enunciado])));
+    for (let s = 0; s < SEMILLAS; s++) textos.push(plano(i.ahoraTu.generar(s).pregunta));
+    for (let s = 0; s < 40; s++) { const r = i.resuelve.generar(s); textos.push(plano([r.enunciado, ...r.pasos.map(p => p.texto)])); }
+  }
+  for (const t of textos.filter(x => /[456]s¹ (4f¹⁴ )?[345]d(⁵|¹⁰)/.test(x) && !/^Indica/.test(x))) assert.ok(/excepci/.test(t), t);
+  assert.ok(/excepci/.test(plano(I3.regla.condicion)));
+});
+test('lector: la regla de la idea 3 nombra y ubica los cuatro bloques; las figuras de los ejemplos de la idea 1 van sin marcas', () => {
+  const r = plano([I3.regla.texto, I3.regla.ecuacion]);
+  for (const x of ['bloque s: columnas 1 y 2', 'p: 13 a 18', 'd: 3 a 12', 'f: las dos filas de abajo']) assert.ok(r.includes(x), x);
+  for (const e of I1.ejemplos.filter(x => x.figura)) assert.deepEqual(e.figura.datos.marcas, {}, e.titulo);
+  assert.ok(/118/.test(plano(I1.regla.ecuacion)), 'la lista de gases nobles llega al oganesón');
+});
+test('auditoría: los datos de los verdadero o falso no dicen la afirmación (ideas 1, 3 y 4)', () => {
+  const prohibidas = /Desde 1913|Elementos por periodo|Familias:|Grupos B: 3 a 7|Transición interna:|Semimetales|Carácter metálico: crece|mercurio/;
+  for (const i of [I1, I3, I4]) {
+    for (let s = 0; s < SEMILLAS; s++) { const a = i.ahoraTu.generar(s); if (/^Indica verdadero/.test(plano(a.pregunta))) for (const d of a.datos) assert.ok(!prohibidas.test(plano(d)), `${i.id} ${s}: ${plano(d)}`); }
+    for (const e of i.ejemplos.filter(x => /^Indica verdadero/.test(x.enunciado))) for (const d of e.datos) assert.ok(!prohibidas.test(plano(d)), `${e.titulo}: ${plano(d)}`);
+  }
+});
+test('auditoría: los tríos de carácter metálico siguen la EI del NIST (sin Al–Ga ni As–Se)', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const a = I4.ahoraTu.generar(s), q = plano(a.pregunta);
+    if (!/mayor carácter metálico/.test(q)) continue;
+    const zs = [...q.matchAll(/(\S+) \(periodo (\d), grupo (\d+)\)/g)].map(m => Object.keys(TABLA).find(z => TABLA[z].p === +m[2] && TABLA[z].g === +m[3]));
+    const ei = zs.map(z => EI_NIST[z]).sort((x, y) => x - y), mas = a.opciones.find(o => o.correcta).texto;
+    assert.ok(ei.every(Boolean), q);
+    const zMas = zs.find(z => EI_NIST[z] === ei[0]);
+    assert.ok(mas.endsWith(plano([q.match(new RegExp(`(\\S+) \\(periodo ${TABLA[zMas].p}, grupo ${TABLA[zMas].g}\\)`))[1]])), `${q} → ${mas}`);
+    const menos = zs.find(z => EI_NIST[z] === ei[2]), inv = a.opciones.find(o => o.error === 'QM-CARACTER-INVERTIDO');
+    assert.ok(inv.texto.endsWith(q.match(new RegExp(`(\\S+) \\(periodo ${TABLA[menos].p}, grupo ${TABLA[menos].g}\\)`))[1]), `${q}: el «menos metálico» no es el de mayor EI`);
+  }
+});
+test('lector: los ejemplos del germanio y de los tres del periodo 3 no traen la lista de semimetales; el 14 dice cómo es un semimetal', () => {
+  const t = x => I4.ejemplos.find(e => e.titulo === x);
+  for (const x of ['El germanio', 'Tres del periodo 3']) assert.ok(!t(x).datos.some(d => /Si, Ge/.test(plano(d))), x);
+  assert.ok(t('Un elemento del periodo 3').datos.some(d => /^Semimetal: brilla, pero conduce poco/.test(plano(d))));
+  assert.ok(!/escalera/i.test(I4.ahoraTu.voz) || /fila/.test(I4.ahoraTu.voz), 'la voz sirve también para comparar en una columna');
+  assert.ok(!/conduc|intermedi|medio camino/i.test([def.glosario.find(g => g.termino === 'semimetal').simple, def.glosario.find(g => g.termino === 'semimetal').def].join(' ')), 'el glosario no dice cómo conduce (Predice)');
 });

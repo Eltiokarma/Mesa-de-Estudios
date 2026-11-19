@@ -187,11 +187,11 @@
     const z = rng.elegir(REP36), p = periodoDe(z), g = grupoDe(z), a = abajo(z), arriba = REP36.find(x => abajo(x) === z);
     return { correcta: `${z}`, _datos: { z },
       enunciado: ['Un elemento está en el ', v('per', `periodo ${p}`), ' y en el ', v('gr', `grupo ${ROM[g]}`), '.'], pregunta: ['¿Cuál es su ', v('Z', 'número atómico'), '?'],
-      datos: [D.llenado, D.caben, D.periodo, D.grupoA],
+      datos: [D.llenado, D.caben, D.periodo, D.grupoA, 'Átomo neutro: Z = número de electrones'],
       errores: [arriba && err('QM-PERIODO-ANTERIOR', `${arriba}`, `Bien el grupo. Pero ese llega solo al nivel ${p - 1}: falta un nivel.`),
         a && err('QM-PERIODO-CUENTA', `${a}`, `Bien el grupo. Pero ese ya tiene electrones en el nivel ${p + 1}.`),
         err('QM-CUENTA-GRUPO', `${z + 1}`, 'Bien el periodo. Pero cuenta de nuevo los electrones del nivel más alto: sobra uno.'),
-        g >= 13 && err('QM-SOLO-P', `${z - 2}`, 'Bien el periodo. Pero el romano cuenta los s y los p juntos.'),
+        g >= 13 && valencia(z) > 3 && err('QM-SOLO-P', `${z + 2}`, `Bien el periodo. Pero ${ROM[g]} no son ${valencia(z)} electrones p: son ${valencia(z)} entre los s y los p.`),
         err('QM-CUENTA-MENOS', `${z - 1}`, 'Bien el periodo. Pero falta un electrón en el nivel más alto.')].filter(e => e && +e.texto > 0),
       solucion: [[`Nivel más alto ${p}, con ${valencia(z)} electrones: ${confTxt(z)}.`], [`${NOBLES[p - 1]} + ${z - NOBLES[p - 1]} = `, v('Z', `${z}`), '.']] };
   }
@@ -201,8 +201,8 @@
       enunciado: ['La configuración de un elemento termina en ', ultimoNivel(z), '.'], pregunta: ['¿Cuántos puntos lleva su símbolo de Lewis?'], datos: [D.lewis],
       errores: [err('QM-SOLO-P', `${val - 2} puntos`, `Bien contar los electrones p. Pero el nivel ${p} tiene también sus dos s.`),
         err('QM-LEWIS-GRUPO', `${g} puntos`, 'Ese es su grupo, bien hallado. Pero los puntos son los electrones del nivel más alto: 10 menos.'),
-        err('QM-LEWIS-NIVEL', `${p === val ? p + 1 : p} puntos`, 'Bien mirar el nivel más alto. Pero se cuentan sus electrones, no su número.'),
-        err('QM-LEWIS-PAR', `${2 * val > 8 ? 8 : 2 * val} puntos`, 'Bien contar los de valencia. Pero cada electrón es un punto, no un par.')].filter(e => e.texto !== `${val} puntos` && !/^-?0 puntos/.test(e.texto)),
+        p !== val && err('QM-LEWIS-NIVEL', `${p} puntos`, 'Bien mirar el nivel más alto. Pero se cuentan sus electrones, no su número.'),
+        err('QM-LEWIS-PAR', `${2 * val > 8 ? 8 : 2 * val} puntos`, 'Bien contar los de valencia. Pero cada electrón es un punto, no un par.')].filter(e => e && e.texto !== `${val} puntos` && !/^-?0 puntos/.test(e.texto)),
       solucion: [[`Un punto por cada electrón del nivel ${p}: los de ${ultimoNivel(z)}.`], [v('e', `${val} puntos`), '.']] };
   }
   const FAM_PARES = [13, 14, 15, 16, 17, 31, 32, 33, 34, 35, 11, 12, 19, 20];
@@ -210,7 +210,8 @@
     const z = rng.elegir(FAM_PARES), b = abajo(z), g = grupoDe(z);
     const fila = g >= 17 ? z - 1 : z + 1, otro = g >= 17 ? b - 2 : b + 1;
     const candidatos = [[b, 'c'], [fila, 'QM-FILA-COLUMNA'], [otro, 'QM-CUENTA-GRUPO']];
-    if (periodoDe(b) >= 4 && g >= 13) candidatos.push([NOBLES[periodoDe(b) - 1] + 2 + valencia(z), 'QM-D-VALENCIA']);
+    // El metal de transición con tantos electrones d como los de valencia de z (sin las excepciones, que tienen otro número de d).
+    if (periodoDe(b) >= 4 && g >= 13 && !ANOMALOS[NOBLES[periodoDe(b) - 1] + 2 + valencia(z)]) candidatos.push([NOBLES[periodoDe(b) - 1] + 2 + valencia(z), 'QM-D-VALENCIA']);
     if (g <= 2) candidatos.push([NOBLES[periodoDe(b)] - (8 - g) < b ? NOBLES[periodoDe(b)] - (18 - g - 10) : b + 10, 'QM-GRUPO-B']);
     const txt = x => confTxt(x);
     return { correcta: txt(b), _datos: { z },
@@ -219,7 +220,7 @@
       errores: candidatos.filter(([x, id]) => id !== 'c' && x !== b && x > 0 && x <= 86).map(([x, id]) => err(id, txt(x),
         id === 'QM-FILA-COLUMNA' ? 'Ese está en su mismo periodo, cierto. Pero una familia es una columna.'
           : id === 'QM-CUENTA-GRUPO' ? `Bien buscar en el periodo siguiente. Pero su nivel más alto tiene ${valencia(x)} electrones, no ${valencia(z)}.`
-            : id === 'QM-D-VALENCIA' ? `Tiene ${valencia(z)} electrones después del gas noble, cierto. Pero termina en d: no es un grupo A.`
+            : id === 'QM-D-VALENCIA' ? `Tiene ${valencia(z)} electrones d, como los de valencia ${el(z).replace(/^el /, 'del ')}, cierto. Pero termina en d: no es un grupo A.`
               : 'Bien el número de electrones de afuera. Pero ese termina en d: es un grupo B.')),
       solucion: [[`El ${NOM[z]} tiene ${valencia(z)} electrones en su nivel más alto (${ultimoNivel(z)}).`], ['El de su familia, también: ', ultimoNivel(b), ` (Z = ${b}, `, v('gr', `grupo ${gTxt(g)}`), ').']] };
   }
@@ -283,7 +284,8 @@
       errores: ['metal', 'no metal', 'semimetal', 'gas'].filter(x => x !== c).map(x => err(SI[x][0], x === 'gas' ? 'Un gas noble' : `Un ${x}`, SI[x][1])),
       solucion: [[c === 'semimetal' ? 'Está pegado a la escalera, en la lista de los seis semimetales.' : c === 'metal' ? 'Está a la izquierda de la escalera: es un metal.' : 'Está a la derecha de la escalera y no es de los seis semimetales: es un no metal.']] };
   }
-  const TRIOS_M = [[11, 12, 13], [3, 11, 19], [12, 20, 38], [13, 31, 49], [19, 20, 31], [37, 50, 53], [6, 14, 50], [14, 15, 16], [55, 56, 81]];
+  // Tríos donde la EI del NIST sigue el orden (sin Mg–Al, Al–Ga, Ca–Ga ni P–S): «qué tan fácil pierde electrones» no se contradice.
+  const TRIOS_M = [[11, 12, 14], [3, 11, 19], [12, 20, 38], [15, 33, 51], [19, 20, 32], [37, 50, 53], [6, 14, 50], [14, 15, 17], [55, 56, 81]];
   const masMetal = (a, b) => (periodoDe(a) === periodoDe(b) ? (grupoDe(a) < grupoDe(b) ? a : b) : (periodoDe(a) > periodoDe(b) ? a : b));
   function masMetalico(rng) {
     const trio = rng.barajar(rng.elegir(TRIOS_M)), m = trio.reduce(masMetal), menos = trio.find(z => trio.every(x => x === z || masMetal(x, z) === x));

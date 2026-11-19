@@ -176,3 +176,8 @@ test('encuadre y rótulos, con números, en las muestras y en toda la unidad', (
   for (const f of figs) { sana(P.dibujar(f.datos, f.estado), f.donde); revisar(P.geometria(f.datos, f.estado), f.donde, mal); }
   assert.deepEqual(mal.slice(0, 20), [], `${mal.length} problemas`);
 });
+
+test('la escalera va encima de los marcos de las casillas (el del aluminio no la tapa; lector en frío, 19 nov)', () => {
+  const s = Kit.piezas['quim-tira'].dibujar({ vista: 'tabla', periodos: 6, escalera: true, simbolos: { 13: 'Al' }, resaltar: [{ Z: 13, color: 'h' }] });
+  assert.ok(s.indexOf('kit-escalera') > s.lastIndexOf('kit-resalta'));
+});
