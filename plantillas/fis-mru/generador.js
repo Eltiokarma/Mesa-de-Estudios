@@ -139,6 +139,9 @@
     carretera: 'En la carretera, + hacia la derecha y − hacia la izquierda.',
     orilla: 'Velocidad desde la orilla = velocidad respecto al agua + velocidad del agua, con su signo.',
     rio: 'Río abajo es el sentido +; la corriente va río abajo.',
+    // Una letra, un significado (cabos de la Etapa 4, 19 nov): u y c son velocidades con signo, como en la regla de la
+    // idea 5 (v = u + c). En los dos viajes, río arriba el bote va con −u; antes la solución escribía «u − c», con u de rapidez.
+    uc: 'u: velocidad del bote respecto al agua, río abajo; río arriba, remando igual, es −u. c: velocidad de la corriente.',
     suelo: 'Las rapideces de la columna y del pastor se miden desde el suelo.',
     placas: 'Este es el sentido +; oeste, el −.',
     cm: '1 m = 100 cm',
@@ -1131,7 +1134,7 @@
           limpio(h) && E('REL-PITAGORAS', h, T => `Bien juntar las dos velocidades. Pero están sobre la misma recta, no en ángulo recto: se suman o restan con su signo; ${T} no es.`),
         ],
         solucion: [
-          ['Río abajo es +: desde la orilla ', Tv(`+${f(V)}`), ' = u + ', Tv(`${f(c)}`), ', con u lo que rema respecto al agua.'],
+          ['Río abajo es +: desde la orilla ', Tv(`+${f(V)}`), ' = u + ', Tv(`${f(c)}`), ', con u la velocidad del bote respecto al agua.'],
           ['u = ', Tv(f(V)), ' − ', Tv(f(c)), ' = ', Tv(MS(u)), '.'],
         ],
         _datos: { sub, u, c },
@@ -1213,30 +1216,30 @@
     if (sub === 'corriente') {
       return {
         enunciado, pregunta: ['¿Con qué rapidez corre el río?'],
-        datos: [D.orilla, D.rio], correcta: c, fmt: MS,
+        datos: [D.orilla, D.rio, D.uc], correcta: c, fmt: MS,
         errores: [
           E('REL-SIN-MITAD', a - b, T => `Bien restar los dos viajes: así se va lo que rema el bote. Pero la corriente se cuenta dos veces, una en cada viaje; sin dividir entre 2 queda ${T}.`),
           E('REL-CRUZA', u, T => `Bien sumar los dos viajes y dividir entre 2. Pero ${T} es lo que rema el bote respecto al agua, no la corriente.`),
           E('REL-SIN-MARCO', b, T => `Bien usar los dos viajes. Pero ${T} es lo que avanza río arriba, visto desde la orilla; la corriente es la mitad de la diferencia.`),
         ],
         solucion: [
-          ['Río abajo: u + c = ', Tv(f(a)), '. Río arriba: u − c = ', Tv(f(b)), '. Restando: 2c = ', `${f(a - b)} m/s.`],
-          ['c = ', Tv(MS(c)), ' (y el bote rema a ', `${f(u)} m/s respecto al agua).`],
+          ['Río abajo: u + c = ', Tv(f(a)), '. Río arriba, hacia el lado −: −u + c = ', Tv(f(-b)), '.'],
+          [`Sumando las dos se va u: 2c = ${f(a)} − ${f(b)} = ${f(a - b)} m/s. `, 'c = ', Tv(MS(c)), ' (y el bote rema a ', `${f(u)} m/s respecto al agua).`],
         ],
         _datos: { sub, u, c },
       };
     }
     return {
       enunciado, pregunta: ['¿Con qué rapidez rema el bote respecto al agua?'],
-      datos: [D.orilla, D.rio], correcta: u, fmt: MS,
+      datos: [D.orilla, D.rio, D.uc], correcta: u, fmt: MS,
       errores: [
         E('REL-SIN-MITAD', a + b, T => `Bien sumar los dos viajes: así se va la corriente. Pero lo que rema el bote se cuenta dos veces; sin dividir entre 2 queda ${T}.`),
         E('REL-CRUZA', c, T => `Bien restar los dos viajes y dividir entre 2. Pero ${T} es la corriente, no lo que rema el bote.`),
         E('REL-SIN-MARCO', a, T => `Bien usar los dos viajes. Pero ${T} es lo que avanza río abajo, visto desde la orilla, con la corriente a favor.`),
       ],
       solucion: [
-        ['Río abajo: u + c = ', Tv(f(a)), '. Río arriba: u − c = ', Tv(f(b)), '. Sumando: 2u = ', `${f(a + b)} m/s.`],
-        ['u = ', Tv(MS(u)), ' (y la corriente va a ', `${f(c)} m/s).`],
+        ['Río abajo: u + c = ', Tv(f(a)), '. Río arriba, hacia el lado −: −u + c = ', Tv(f(-b)), '.'],
+        [`Restando la segunda de la primera se va c: 2u = ${f(a)} + ${f(b)} = ${f(a + b)} m/s. `, 'u = ', Tv(MS(u)), ' (y la corriente va a ', `${f(c)} m/s).`],
       ],
       _datos: { sub, u, c },
     };

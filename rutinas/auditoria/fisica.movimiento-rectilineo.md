@@ -230,3 +230,15 @@ después en `/tmp/claude-0/-home-user/31d0ae9f-8026-5866-a5dc-2c8554ea89bf/scrat
   se lee distinto.
 - La migración `prediccionMRU` vuelve a preguntar también a quien ya había respondido la pregunta nueva antes de la huella.
   Es el costo de no poder distinguirlos.
+
+## Cabos de la Etapa 4 (19 nov)
+
+- **u con dos sentidos (A5), cerrado.** En toda la idea, u es la velocidad del bote respecto al agua y c la de la
+  corriente, las dos con signo (+ río abajo). La línea de la academia va en palabras, como la de A4: «Con rapideces, la
+  academia resta río arriba: «±»» (río abajo las dos cuentas son la misma suma). `DM.uc` define las letras («u: velocidad
+  del bote respecto al agua, río abajo; río arriba, remando igual, es −u. c: velocidad de la corriente»). Los dos viajes
+  (ejemplo 8, «Así se resuelve» impar y fis-mru `dos-viajes`) se plantean u + c = a y −u + c = −b; «Ahora tú» y el
+  ejemplo 11 hacen la cuenta de río arriba con signo (−5 + 3 = −2 m/s: avanza a 2 m/s). En «Así se resuelve», los dos
+  tiempos salen enteros (antes podía salir «46,67 s»). Pruebas nuevas en la unidad y en fis-mru; papel regenerado. v0.6.1.
+- **El pastor sin figura y A5 sin dibujo: ya estaban cerrados** en la ronda 2 del lector (fis-pista con `columna`; las
+  dos combis de fis-ventana en «Así se resuelve» par y «Ahora tú» k = 0 y 1). Comprobado otra vez con capturas.

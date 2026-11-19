@@ -500,7 +500,9 @@ test('A2: las reglas de encuentros y del río son las del eje con signo y traduc
   assert.match(r('encuentro').texto, /academia/);
   assert.match(ec('velocidad-relativa'), /v = u \+ c/);
   assert.ok(!/u − c/.test(ec('velocidad-relativa')), 'río arriba no es otra fórmula: u lleva su signo');
-  assert.match(r('velocidad-relativa').texto, /academia escribe u ± c/);
+  // La línea de la academia va en palabras, sin u (cabos de la Etapa 4, 19 nov): «u ± c» usaba u como rapidez.
+  assert.match(r('velocidad-relativa').texto, /Con rapideces, la academia resta río arriba: «±»/);
+  assert.ok(!/u ± c/.test(r('velocidad-relativa').texto), 'u no se escribe como rapidez');
   assert.match(r('velocidad-relativa').condicion, /signo/);
   // La cuenta con signo da lo mismo que la de la academia, de frente y al alcance, río abajo y río arriba.
   const te = (D, vA, vB) => D / (vA - vB);
@@ -658,3 +660,81 @@ test('ronda 2: ejemplos (x₀ con subíndice, el descanso, la valla con número,
   assert.match(plano(DM_ENCUENTRO()), /tₑ es ese instante/);
 });
 const DM_ENCUENTRO = () => idea('encuentro').ejemplos.find(e => e.titulo === 'En minutos').datos[0];
+
+// ---------- Cabos de la Etapa 4 (19 nov) ----------
+// Una letra, un significado (docs/molde-unidad.md §0.4). En A5, u es la velocidad del bote respecto al agua y c la de la
+// corriente, las dos con signo (+ río abajo), como en la regla v = u + c. Antes, la línea de la academia, `DM.uc` y los
+// resueltos de dos viajes usaban u como rapidez («u ± c», «u − c = 3»): la misma letra con dos sentidos en una idea.
+test('cabos: en A5, u y c tienen un solo significado (velocidades con signo) en la regla, Mira, los ejemplos, «Así se resuelve» y «Ahora tú»', () => {
+  const i = idea('velocidad-relativa');
+  const textos = [];   // [dónde, texto plano]
+  const junta = (donde, ...xs) => xs.forEach(x => { if (x !== undefined && x !== null) textos.push([donde, plano(x)]); });
+  junta('aprendizaje', i.aprendizaje);
+  junta('regla', i.regla.texto, i.regla.ecuacion, i.regla.condicion);
+  i.lee.tarjetas.forEach(t => junta('lee', t.texto));
+  i.mira.pasos.forEach(p => junta('mira', p.texto, p.ecuacion));
+  junta('predice', i.predice.pregunta, i.predice.coincide, ...(i.predice.datos || []), ...i.predice.opciones.map(o => o.siFuera));
+  for (const e of i.ejemplos) junta(`ejemplo «${e.titulo}»`, e.enunciado, ...(e.datos || []), ...e.solucion.map(x => x.texto), ...e.solucion.map(x => x.ecuacion), e.respuesta);
+  for (let s = 0; s < SEMILLAS; s++) {
+    const r = i.resuelve.generar(s), a = i.ahoraTu.generar(s);
+    junta(`resuelve ${s}`, r.enunciado, ...(r.datos || []), ...r.pasos.map(x => x.texto), ...r.pasos.map(x => x.ecuacion), r.respuesta);
+    junta(`ahora tú ${s}`, a.pregunta, ...(a.datos || []), a.solucion.texto, a.solucion.ecuacion, ...a.opciones.map(o => o.siFuera));
+  }
+  for (const [donde, t] of textos) {
+    // u nunca se resta de c ni lleva «±»: río arriba es −u + c (o u negativa), no «u − c».
+    assert.ok(!/\bu − c\b|\bu ± c\b|\bu - c\b/.test(t), `${donde}: «${t}» usa u como rapidez`);
+    // Quien define u o c dice «velocidad», nunca «rapidez».
+    assert.ok(!/\b[uc]: (la )?rapidez/.test(t), `${donde}: «${t}» define la letra como rapidez`);
+  }
+  // Donde aparece la letra u en un ejercicio, sus datos la definen como velocidad, con el viaje río arriba en −u.
+  const usaU = xs => xs.some(x => /(^|[^\p{L}])u([^\p{L}]|$)/u.test(plano(x)));
+  const defineU = ds => (ds || []).some(d => /^u: velocidad del bote respecto al agua, río abajo; río arriba, remando igual, es −u\. c: velocidad de la corriente\.$/.test(plano(d)));
+  let conU = 0;
+  for (const e of i.ejemplos) if (usaU([...e.solucion.map(x => x.texto), ...e.solucion.map(x => x.ecuacion), e.respuesta])) { conU++; assert.ok(defineU(e.datos), `ejemplo «${e.titulo}»: usa u sin definirla en sus datos`); }
+  for (let s = 0; s < 40; s++) {
+    const r = i.resuelve.generar(s);
+    if (usaU([...r.pasos.map(x => x.texto), ...r.pasos.map(x => x.ecuacion)])) { conU++; assert.ok(defineU(r.datos), `resuelve ${s}: usa u sin definirla`); }
+  }
+  assert.ok(conU >= 2, 'hay ejercicios con la letra u (el de dos viajes y «Así se resuelve»)');
+  // La regla y «Mira» la presentan igual, y la línea de la academia sigue, en palabras.
+  assert.match(i.regla.condicion, /cada v con su signo \(\+ río abajo\); u se mide desde el agua y c, desde la orilla/);
+  assert.match(plano(i.mira.pasos[0].texto), /^u: la velocidad del bote respecto al agua/);
+  assert.match(plano(i.mira.pasos[1].texto), /^c: la velocidad de la corriente/);
+  assert.match(i.regla.texto, /academia/);
+  // Los dos viajes, con signo: de u + c = a y −u + c = −b salen la corriente y lo que rema (cuenta aparte).
+  const dos = i.ejemplos.find(e => e.titulo === 'La corriente desde dos viajes');
+  assert.match(plano(dos.solucion[0].ecuacion), /^u \+ c = 7; −u \+ c = −3$/);
+  assert.equal((7 + -3) / 2, 2); assert.equal((7 - -3) / 2, 5);
+  for (let s = 1; s < SEMILLAS; s += 2) {
+    const r = i.resuelve.generar(s), m = plano(r.enunciado).match(/recorre (\d+) m de orilla río abajo en (\d+) s y los mismos \d+ m río arriba en ([\d,]+) s/);
+    assert.ok(m && /^\d+$/.test(m[3]), `resuelve ${s}: los dos tiempos, enteros («${plano(r.enunciado)}»)`);
+    const [L, t1, t2] = m.slice(1).map(Number), a = L / t1, b = -L / t2;
+    const paso = r.pasos.find(p => p.tipo === 'cuentas');
+    assert.equal(plano(paso.texto), `Río abajo: ${L} ÷ ${t1} = ${fmt(a)} m/s. Río arriba, hacia el lado −: −${L} ÷ ${t2} = ${fmt(b)} m/s.`, `resuelve ${s}`);
+    assert.equal(plano(paso.ecuacion), `u + c = ${fmt(a)}; −u + c = ${fmt(b)}`, `resuelve ${s}`);
+    assert.equal(plano(r.respuesta), `La corriente va a ${fmt((a + b) / 2)} m/s`);
+  }
+});
+
+// Cabos de la Etapa 4 (19 nov): los códigos de error (hipótesis) de la unidad están en su informe de docs/investigacion/,
+// que trae la sección «Hipótesis de la Etapa 4 (sin estudio)» con el índice de los que estrenó la etapa.
+test('cabos: todo código de error de la unidad está en su informe, con la sección «Hipótesis de la Etapa 4 (sin estudio)»', () => {
+  const fsI = require('node:fs'), pathI = require('node:path');
+  const leeInforme = n => fsI.readFileSync(pathI.join(__dirname, '..', '..', '..', 'docs', 'investigacion', n), 'utf8');
+  // «GE-TRI6 a GE-TRI8» nombra también GE-TRI7: los rangos se expanden.
+  const expande = t => t.replace(/([A-Z][A-Za-z0-9-]*?[A-Z-])(\d+) a \1(\d+)/g, (m, pre, x, y) => { const l = []; for (let k = +x; k <= +y; k++) l.push(pre + k); return l.join(', '); });
+  const informe = expande(leeInforme('cinematica-ideas-erroneas.md')), transversal = leeInforme('fisica-calculo-transversal-ideas-erroneas.md');
+  const nombra = (t, c) => new RegExp(`(^|[^A-Za-z0-9-])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Za-z0-9-]|$)`).test(t);
+  assert.match(informe, /^## Hipótesis de la Etapa 4 \(sin estudio\)$/m);
+  const seccion = informe.slice(informe.indexOf('## Hipótesis de la Etapa 4 (sin estudio)'));
+  assert.ok(seccion.includes('contenido/teoria/fisica/movimiento-rectilineo.js'), 'la sección nombra esta unidad');
+  assert.ok(!/\(\d{4}\)|et al\.|doi/i.test(seccion.slice(0, seccion.indexOf('\n## ', 5))), 'la sección no trae citas');
+  const codigos = new Set();
+  for (const u of [def]) for (const i of u.ideas) {
+    for (const o of i.predice.opciones) if (o.error) codigos.add(o.error);
+    for (let s = 0; s < 400; s++) for (const o of i.ahoraTu.generar(s).opciones) if (o.error) codigos.add(o.error);
+  }
+  assert.ok(codigos.size >= 30, `${codigos.size} códigos`);
+  const faltan = [...codigos].filter(c => !nombra(informe, c) && !nombra(transversal, c)).sort();
+  assert.deepEqual(faltan, [], `códigos sin describir en cinematica-ideas-erroneas.md: ${faltan.join(', ')}`);
+});

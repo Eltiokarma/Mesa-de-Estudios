@@ -383,3 +383,29 @@ test('medidas posibles por sujeto: ciclista, combi, columna, pastor, bote… con
   }
   assert.deepEqual(malas.slice(0, 5), []);
 });
+
+// Cabos de la Etapa 4 (19 nov): una letra, un significado. En la idea 5, u es la velocidad del bote respecto al agua y c
+// la de la corriente, las dos con signo, como en la regla de la teoría (v = u + c). Los dos viajes se plantean u + c y
+// −u + c; antes la solución escribía «u − c», con u de rapidez.
+test('velocidad relativa: u y c son velocidades con signo; ninguna solución escribe «u − c» y quien usa u la define en sus datos', () => {
+  const tx = x => (Array.isArray(x) ? x.map(tx).join('') : x && typeof x === 'object' ? String(x.t ?? '') : String(x ?? ''));
+  const f = n => String(Math.round(n * 100) / 100).replace('.', ',').replace('-', '−');
+  const DEF = 'u: velocidad del bote respecto al agua, río abajo; río arriba, remando igual, es −u. c: velocidad de la corriente.';
+  let dos = 0;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`uc${s}`, { idea: 'velocidad-relativa' }), d = p._datos;
+    const sol = p.solucion.map(tx).join(' '), todo = [tx(p.enunciado), tx(p.pregunta), sol, ...p.datos, ...p.alternativas.map(a => a.explicacion || '')].join(' ');
+    assert.ok(!/\bu [−-] c\b|\bu ± c\b/.test(todo), `semilla ${s} (${d.tipo}): u como rapidez: «${sol}»`);
+    assert.ok(!/\b[uc]: (la )?rapidez/.test(todo), `semilla ${s}: define la letra como rapidez`);
+    if (d.tipo === 'dos-viajes') {
+      dos++;
+      assert.ok(p.datos.includes(DEF), `semilla ${s}: los dos viajes usan u y c sin definirlas`);
+      const a = d.u + d.c, b = d.u - d.c;
+      assert.ok(sol.includes(`u + c = ${f(a)}. Río arriba, hacia el lado −: −u + c = ${f(-b)}.`), `semilla ${s}: «${sol}»`);
+      // Cuenta aparte: de u + c = a y −u + c = −b salen c = (a − b)/2 y u = (a + b)/2.
+      assert.ok(igual((a + -b) / 2, d.c) && igual((a - -b) / 2, d.u));
+    }
+    if (/(^|[^\p{L}])u = /u.test(sol) && d.tipo !== 'dos-viajes') assert.match(sol, /con u la velocidad del bote respecto al agua/, `semilla ${s} (${d.tipo})`);
+  }
+  assert.ok(dos >= 20, 'salen los dos viajes');
+});

@@ -59,7 +59,8 @@
  *   aviso en «Lee» de A3 (en Vectores, la d con flecha era el desplazamiento en el plano); v_m la velocidad media y la
  *   rapidez media en palabras; x_A, x_B, v_A, v_B de cada móvil (A y B solo en las fórmulas: en un ejercicio con alternativas los
  *   móviles van con nombre, auditoría M4); D la separación; tₑ el instante del encuentro, también del alcance (la regla con
- *   signo de A4 es una sola); v_B/A la velocidad de B vista desde A; u y c el bote respecto al agua y la corriente; L el
+ *   signo de A4 es una sola); v_B/A la velocidad de B vista desde A; u la velocidad del bote respecto al agua y c la de la corriente, las dos
+ *   con signo (+ río abajo) y nunca como rapidez: la línea de la academia va en palabras (cabos, 19 nov); L el
  *   largo de una combi o de una columna (violeta, como toda longitud sobre la recta). Dos móviles en la gráfica x–t: el
  *   mismo violeta, trazo continuo y discontinuo (Gerson, 18 nov).
  */
@@ -508,7 +509,9 @@
     encuentro: 'Dos móviles se encuentran cuando están en la misma posición en el mismo instante; tₑ es ese instante.',
     // La rapidez de acercamiento (auditoría, M9): el resuelto la usa, así que está en los datos y en la regla.
     cierre: 'Cada segundo, la separación cambia la suma de las rapideces si van de frente, y su diferencia si van al mismo lado.',
-    uc: ['u: rapidez del bote respecto al agua; c: rapidez de la corriente. Con rapideces: río abajo, ', Mu, ' + ', Mc, '; río arriba, ', Mu, ' − ', Mc],
+    // Un solo significado por letra en A5 (cabos de la Etapa 4, 19 nov): u y c son velocidades con signo, como en la
+    // regla. En los problemas de dos viajes, u es la del viaje río abajo y la del viaje río arriba, remando igual, es −u.
+    uc: [Mu, ': velocidad del bote respecto al agua, río abajo; río arriba, remando igual, es −', Mu, '. ', Mc, ': velocidad de la corriente.'],
     rel: ['Velocidad de B vista desde A: ', MvBA, ' = ', MvB, ' − ', MvA, ', cada una con su signo'],
     orilla: 'Velocidad desde la orilla = velocidad respecto al agua + velocidad del agua, con su signo.',
     rio: 'Río abajo es el sentido +; la corriente va río abajo.',
@@ -1675,13 +1678,14 @@
     { nivel: 2, titulo: 'La corriente desde dos viajes',
       figura: rio({ sentido: 'abajo', u: '?', c: '?' }),
       enunciado: ['Desde la orilla, un bote avanza a 7 m/s río abajo y a 3 m/s río arriba, remando siempre igual. ¿Cuánto valen su rapidez respecto al agua y la corriente?'],
-      // Solo rapideces (ronda 2: «dice que río abajo es +, pero todo se trabaja sin signo»).
-      datos: [DM.uc],
+      // Con el eje con signo de la regla (cabos de la Etapa 4, 19 nov): u es una velocidad, y río arriba vale −u. Antes
+      // el resuelto usaba u y c como rapideces («u − c = 3»), el otro sentido de la letra.
+      datos: [DM.orilla, DM.rio, DM.uc],
       solucion: [
-        { texto: 'Río abajo se suman y río arriba se restan.', ecuacion: [Mu, ' + ', Mc, ' = ', pv('7'), ';   ', Mu, ' − ', Mc, ' = ', pv('3')] },
-        { texto: 'Sumando las dos, 2u = 10; restándolas, 2c = 4.', ecuacion: [Mu, ' = ', pv('5 m/s'), ';   ', Mc, ' = ', pv('2 m/s')] },
+        { texto: ['Desde la orilla va a 7 m/s río abajo y a −3 m/s río arriba, donde rema con −', Mu, '.'], ecuacion: [Mu, ' + ', Mc, ' = ', pv('7'), ';   −', Mu, ' + ', Mc, ' = ', pv('−3')] },
+        { texto: ['Sumando las dos, 2', Mc, ' = 4; restándolas, 2', Mu, ' = 10.'], ecuacion: [Mu, ' = ', pv('5 m/s'), ';   ', Mc, ' = ', pv('2 m/s')] },
       ],
-      respuesta: [pv('u = 5 m/s'), ' y ', pv('c = 2 m/s')] },
+      respuesta: ['Rema a ', pv('5 m/s'), '; la corriente va a ', pv('2 m/s')] },
     { nivel: 2, titulo: 'Desde la combi rápida',
       figura: ventana({ vA: 12, vB: 8, t: 0, textoB: '?' }),
       enunciado: ['Desde tu combi, que va a 12 m/s, la del carril de al lado parece ir hacia atrás a 4 m/s. ¿Cuál es su velocidad, medida desde la carretera?'],
@@ -1704,9 +1708,9 @@
       figura: rio({ sentido: 'arriba', u: '5 m/s', c: '3 m/s', cota: { de: 0.1, a: 0.9, texto: 'L = 80 m', color: 'f' } }),
       enunciado: ['Un bote rema a 5 m/s respecto al agua en un río que corre a 3 m/s. Sube 80 m río arriba y vuelve. ¿Cuánto dura el viaje?'],
       alternativas: ALT_A5.ida,
-      datos: [DM.orilla, DM.uc, DM.tramo, DM.rio],
+      datos: [DM.orilla, DM.tramo, DM.rio],
       solucion: [
-        { texto: 'Río arriba avanza 5 − 3 = 2 m/s; río abajo, 5 + 3 = 8 m/s.' },
+        { texto: 'Río arriba: −5 + 3 = −2 m/s, avanza a 2 m/s. Río abajo: 5 + 3 = 8 m/s.' },
         { texto: 'El tiempo de cada tramo, y la suma:', ecuacion: [frac(pL('80 m'), pv('2 m/s')), ' + ', frac(pL('80 m'), pv('8 m/s')), ' = ', pt('40 s'), ' + ', pt('10 s'), ' = ', pt('50 s')] },
         { texto: ['La ', letra(ALT_A5.ida, '32 s'), ' ignora la corriente: lo que gana a favor no compensa lo que pierde en contra.'] },
       ],
@@ -1819,8 +1823,8 @@
       pieza: 'fis-rio',
       datos: Object.assign({}, PRED_A5, { total: { texto: '7 m/s', desde: 2 } }),
       pasos: [
-        { estado: { corte: 0 }, texto: 'u: lo que avanza el bote respecto al agua, 5 m cada segundo.', ecuacion: [Mu, ' = ', pv('5 m/s'), ', respecto al agua'] },
-        { estado: { corte: 1 }, texto: 'c: el agua, con todo lo que flota, avanza 2 m cada segundo.', ecuacion: [Mc, ' = ', pv('2 m/s')] },
+        { estado: { corte: 0 }, texto: 'u: la velocidad del bote respecto al agua, 5 m cada segundo.', ecuacion: [Mu, ' = ', pv('5 m/s'), ', respecto al agua'] },
+        { estado: { corte: 1 }, texto: 'c: la velocidad de la corriente: el agua avanza 2 m cada segundo.', ecuacion: [Mc, ' = ', pv('2 m/s')] },
         { estado: { corte: 2 }, texto: 'Desde la orilla se suman: van hacia el mismo lado.', ecuacion: [Mv, ' = ', Mu, ' + ', Mc, ' = ', pv('5'), ' + ', pv('2'), ' = ', pv('7 m/s')] },
         { estado: { corte: 2 }, texto: 'Río arriba, u sería −5 m/s: desde la orilla, −5 + 2.', ecuacion: [Mv, ' = ', pv('−5'), ' + ', pv('2'), ' = ', pv('−3 m/s')] },
         { estado: { corte: 2 }, texto: 'Aquí no va Pitágoras: las dos velocidades están en la misma recta.' },
@@ -1828,9 +1832,12 @@
     },
     regla: {
       // Con el eje con signo de la unidad (auditoría, A2): u y c llevan su signo (+ río abajo) y la suma vale en los dos
-      // sentidos; la academia lo escribe con rapideces, u ± c. El dibujo es río arriba: u hacia −, más larga que u + c.
+      // sentidos. El dibujo es río arriba: u hacia −, más larga que u + c.
       // Ronda 2: «u + c sale más corta que u»: río arriba u es negativa, y la regla lo dice.
-      texto: 'Desde A, B se ve con la diferencia de velocidades; desde la orilla, v = u + c. Río arriba, u es negativa y v se acorta. La academia escribe u ± c.',
+      // Cabos de la Etapa 4 (19 nov): la línea de la academia va en palabras, como la de A4 («suma de frente y resta al
+      // alcance»): río abajo las dos cuentas son la misma suma; río arriba la academia resta. Antes decía «u ± c», con u
+      // como rapidez: la misma letra con dos sentidos en una idea.
+      texto: 'A ve a B con la diferencia de velocidades. Desde la orilla, v = u + c. Río arriba, u es negativa: v se acorta. Con rapideces, la academia resta río arriba: «±».',
       ecuacion: [MvBA, ' = ', MvB, ' − ', MvA, '   ;   ', 'desde la orilla: ', Mv, ' = ', Mu, ' + ', Mc],
       condicion: 'una misma recta, cada v con su signo (+ río abajo); u se mide desde el agua y c, desde la orilla.',
       dibujo: rio({ sentido: 'arriba', u: 'u', c: 'c', total: { texto: 'u + c' } }),
@@ -1857,18 +1864,24 @@
             respuesta: [pv(`${vB} m/s`), ', hacia el mismo lado que tú'],
           };
         }
-        const c = r.ent(1, 3), u = c + r.ent(2, 6 - c), t1 = r.ent(2, 5) * 5, L = (u + c) * t1, t2 = L / (u - c);   // u ≤ 6 m/s: un bote a remo
+        // u ≤ 6 m/s: un bote a remo. Los dos tiempos salen enteros (t1 es múltiplo de u − c): con signo, −L/t2 se lee
+        // exacto (antes podía salir «46,67 s»).
+        const c = r.ent(1, 3), u = c + r.ent(2, 6 - c), t1 = (u - c) * r.ent(2, 5), L = (u + c) * t1, t2 = L / (u - c);
         return {
           enunciado: ['Remando igual, un bote recorre ', pL(`${L} m`), ' de orilla río abajo en ', pt(`${t1} s`), ' y los mismos ', pL(`${L} m`), ' río arriba en ', pt(`${fm(t2)} s`), '. ¿Cuánto vale la corriente?'],
-          datos: [DM.uc, DM.rio, DM.tramo],
+          datos: [DM.orilla, DM.rio, DM.uc, DM.tramo],
           dibujo: rio({ sentido: 'abajo', u: '?', c: '?', cota: { de: 0.1, a: 0.9, texto: `L = ${L} m`, color: 'f' } }),
           pasos: [
-            { tipo: 'pide', texto: ['Piden la rapidez de la corriente, ', Mc, '.'] },
+            { tipo: 'pide', texto: ['Piden ', Mc, ', la velocidad de la corriente.'] },
             { tipo: 'datos', texto: ['Río abajo: ', pL(`${L} m`), ' en ', pt(`${t1} s`), '. Río arriba: lo mismo en ', pt(`${fm(t2)} s`), '.'] },
-            { tipo: 'regla', texto: ['Desde la orilla, río abajo el bote va a ', Mu, ' + ', Mc, ' y río arriba a ', Mu, ' − ', Mc, '.'] },
-            { tipo: 'cuentas', texto: 'Las dos rapideces vistas desde la orilla:', ecuacion: [Mu, ' + ', Mc, ' = ', frac(pL(L), pt(t1)), ' = ', pv(u + c), ';   ', Mu, ' − ', Mc, ' = ', frac(pL(L), pt(fm(t2))), ' = ', pv(u - c)] },
-            { tipo: 'cuentas', texto: 'Restando una de otra, 2c es la diferencia.', ecuacion: [Mc, ' = ', frac([pv(u + c), ' − ', pv(u - c)], '2'), ' = ', pv(`${c} m/s`)] },
-            { tipo: 'sentido', texto: `Comprobación: el bote rema a ${u} m/s; ${u} + ${c} y ${u} − ${c} dan los dos viajes.` },
+            // Con signo, como la regla (cabos de la Etapa 4, 19 nov): río arriba el bote va hacia el lado −, con −u
+            // respecto al agua y con velocidad negativa desde la orilla. Antes: «u − c», con u como rapidez.
+            { tipo: 'regla', texto: ['Desde la orilla, ', Mv, ' = ', Mu, ' + ', Mc, '. Río arriba el bote rema hacia el lado −: ', Mv, ' = −', Mu, ' + ', Mc, '.'] },
+            // Las divisiones van en el texto y la ecuación queda corta: con las dos fracciones se partía a 390 px.
+            { tipo: 'cuentas', texto: ['Río abajo: ', pL(L), ' ÷ ', pt(t1), ' = ', pv(`${u + c} m/s`), '. Río arriba, hacia el lado −: −', pL(L), ' ÷ ', pt(fm(t2)), ' = ', pv(`−${fm(u - c)} m/s`), '.'],
+              ecuacion: [Mu, ' + ', Mc, ' = ', pv(u + c), ';   −', Mu, ' + ', Mc, ' = ', pv(`−${fm(u - c)}`)] },
+            { tipo: 'cuentas', texto: ['Sumando las dos se va ', Mu, ' y queda 2', Mc, '.'], ecuacion: ['2', Mc, ' = ', pv(u + c), ' + (', pv(`−${fm(u - c)}`), ') = ', pv(2 * c), ';   ', Mc, ' = ', pv(`${c} m/s`)] },
+            { tipo: 'sentido', texto: ['Comprobación: con ', Mu, ` = ${u} m/s, ${u} + ${c} = ${u + c} y −${u} + ${c} = −${u - c}: los dos viajes.`] },
           ],
           respuesta: ['La corriente va a ', pv(`${c} m/s`)],
         };
@@ -1925,7 +1938,7 @@
               { id: 'sentido', valor: L / (arriba ? u + c : u - c), error: 'REL-SENTIDO', siFuera: arriba ? 'Río arriba la corriente frena: se resta, no se suma.' : 'Río abajo la corriente ayuda: se suma, no se resta.' },
               { id: 'corriente', valor: L / c, error: 'REL-SOLO-RIO', siFuera: 'Eso sería un bote sin remar, llevado solo por el agua.' },
             ], seg),
-            solucion: { texto: `Desde la orilla, el bote va a ${u} ${arriba ? '−' : '+'} ${c} = ${rap} m/s.`, ecuacion: [Mt, ' = ', frac(pL(`${L} m`), pv(ms(rap))), ' = ', pt(seg(t))] },
+            solucion: { texto: arriba ? `Río arriba, respecto al agua va a −${u} m/s: −${u} + ${c} = −${rap} m/s. Avanza a ${rap} m/s.` : `Desde la orilla, el bote va a ${u} + ${c} = ${rap} m/s.`, ecuacion: [Mt, ' = ', frac(pL(`${L} m`), pv(ms(rap))), ' = ', pt(seg(t))] },
           };
         }
         // Nivel examen: el bote sube un tramo y vuelve (la ida y la vuelta no se compensan).
@@ -1940,7 +1953,7 @@
             { id: 'abajo', valor: 2 * L / (u + c), error: 'REL-SENTIDO', siFuera: 'Río abajo se suma, pero río arriba la corriente resta.' },
             { id: 'vuelta', valor: L / (u + c), error: 'REL-IDA', siFuera: 'Bien la bajada. Falta sumar el tiempo de la subida, contra la corriente.' },
           ], seg),
-          solucion: { texto: `Sube a ${u - c} m/s y baja a ${u + c} m/s.`, ecuacion: [frac(pL(L), pv(u - c)), ' + ', frac(pL(L), pv(u + c)), ' = ', pt(seg(t))] },
+          solucion: { texto: `Sube: −${u} + ${c} = −${u - c} m/s, a ${u - c} m/s. Baja: ${u} + ${c} = ${u + c} m/s.`, ecuacion: [frac(pL(L), pv(u - c)), ' + ', frac(pL(L), pv(u + c)), ' = ', pt(seg(t))] },
         };
       },
     },
@@ -1962,7 +1975,7 @@
 
   return {
     unidad: 'fisica.movimiento-rectilineo',
-    version: '0.6.0',
+    version: '0.6.1',
     estado: 'completa',
     calidad: 2,
     requiere: ['/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-sonido.js', '/nucleo/kit/piezas/fis-xt.js', '/nucleo/kit/piezas/fis-pista.js',
