@@ -221,7 +221,8 @@
     if (rot) ponTexto(textos, 'termino', xA + w / 2, yBase - altoA - 9, [[`${a === 1 ? '' : a}xy`, 'o', 700]], 'middle', 14);
     if (med) {
       ponTexto(textos, 'medida', xA + w / 2, yBase + 15, [['x dm']], 'middle');
-      ponTexto(textos, 'medida', xA - 7, yBase - h / 2 + 4, [['y dm']], 'end');
+      // Junto a cada pieza apilada su propio «y dm»: con uno solo parecía que las dos juntas medían y (lector, 19 nov).
+      for (let i = 0; i < a; i++) ponTexto(textos, 'medida', xA - 7, yBase - i * (h + sep) - h / 2 + 4, [['y dm']], 'end');
     }
     if (b) {
       for (let i = 0; i < b; i++) formas.push({ que: 'girada', x: xB + i * (h + sep), y: yBase - w, w: h, h: w, color: 'i' });
@@ -322,8 +323,11 @@
     const x0 = M + TA.izq, A = a * u;
     filas.forEach((f, k) => {
       const [l, t, c] = f.cuenta, slot = lugares(f, u, aEsc).map((w, j) => Math.max(w, lugares(f, u, a)[j])), ar = areas(f);
-      ponTexto(textos, 'rotulo', x0, y + 12, [[`${f.nombre}: ${polinomio(f.cuenta)}`, f.color, 700]]);
       const base = y + TA.rot + altoPiezas(f, u);
+      // Con dos filas, el rótulo va justo encima de las piezas de su fila (antes quedaba pegado a las de la fila de
+      // arriba y «Q: 2x» se leía como de P; lector, 19 nov). Con una sola fila queda fijo arriba: el juego no lo mueve.
+      const altoReal = Math.max(l || t ? A : 0, c ? Math.min(3, c) * u : 0, u);
+      ponTexto(textos, 'rotulo', x0, filas.length > 1 ? base - altoReal - 6 : y + 12, [[`${f.nombre}: ${polinomio(f.cuenta)}`, f.color, 700]]);
       let x = x0;
       const grupo = (n, w, h, que, j) => {
         const xi = x;
@@ -415,19 +419,21 @@
 
   // 'medidas': cada término como una fila de fichas, una por cada letra que se multiplica (x naranja, y turquesa), y a
   // la derecha su grado (cuántas fichas tiene). Ideas 3 y 4 (homogéneo).
-  //   datos = { objeto: 'medidas', terminos: [[c, a, b], …] (hasta 4), grado: true | '?' | false,
+  //   datos = { objeto: 'medidas', terminos: [[c, a, b, escrito], …] (hasta 4; escrito, opcional, es el término tal
+  //             como lo dice el enunciado, p. ej. «4²x⁵y⁴»), grado: true | '?' | false,
   //             mayor: true | '?' | false (abajo, «Grado del polinomio: …»), resaltar: índice de una fila (marco) }
   const ME = { w: 15, h: 22, sep: 2, alto: 34, xFichas: 82 };
   function geoMedidas(d) {
-    const ts = (Array.isArray(d.terminos) ? d.terminos : []).slice(0, 4).map(t => [Math.trunc(+t[0] || 0) || 1, entero(t[1]), entero(t[2])]);
+    // Un cuarto elemento de texto escribe el término tal cual («4²x⁵y⁴»: un coeficiente con exponente, que no cuenta).
+    const ts = (Array.isArray(d.terminos) ? d.terminos : []).slice(0, 4).map(t => [Math.trunc(+t[0] || 0) || 1, entero(t[1]), entero(t[2]), typeof t[3] === 'string' ? t[3] : null]);
     const objetos = [], textos = [], fichas = [];
     const conMayor = d.mayor === true || d.mayor === '?';
     const alto = ts.length * ME.alto + (conMayor ? 26 : 0);
     let y = Math.max(M + 4, (H - alto) / 2);
     const grados = ts.map(t => t[1] + t[2]);
-    ts.forEach(([c, a, b], k) => {
+    ts.forEach(([c, a, b, escrito], k) => {
       const yc = y + ME.alto / 2;
-      ponTexto(textos, 'termino', ME.xFichas - 10, yc + 5, [[terminoXY(c, a, b), null, 700]], 'end', 14);
+      ponTexto(textos, 'termino', ME.xFichas - 10, yc + 5, [[escrito || terminoXY(c, a, b), null, 700]], 'end', 14);
       let x = ME.xFichas;
       for (let j = 0; j < a + b; j++) {
         const L = j < a ? 'x' : 'y';
@@ -461,7 +467,7 @@
   }
   function altMedidas(d) {
     const g = geoMedidas(d);
-    const filas = g.ts.map(([c, a, b], k) => `${terminoXY(c, a, b)}: ${a} ficha${a === 1 ? '' : 's'} x y ${b} ficha${b === 1 ? '' : 's'} y${d.grado === true ? `, grado ${g.grados[k]}` : ''}`);
+    const filas = g.ts.map(([c, a, b, escrito], k) => `${escrito || terminoXY(c, a, b)}: ${a} ficha${a === 1 ? '' : 's'} x y ${b} ficha${b === 1 ? '' : 's'} y${d.grado === true ? `, grado ${g.grados[k]}` : ''}`);
     return `Cada término, con una ficha por cada letra que se multiplica. ${filas.join('; ')}.${d.mayor === '?' ? ' Se pide el grado del polinomio.' : ''}`;
   }
 
@@ -541,7 +547,8 @@
   // 'piso': un piso rectangular de (p·x + q) por (r·x + s) dm, partido en tramos: cada tramo del largo por cada tramo
   // del ancho es una pieza (loseta, tira o cuadradito). El largo en naranja, el ancho en turquesa (los dos factores).
   //   datos = { objeto: 'piso', largo: [p, q], ancho: [r, s], tope: [P, Q, R, S] (reserva el lugar: nada se corre),
-  //             rotulos: true (los tramos), medidas: true (abajo, «largo: (2x + 1) dm»), piezas: true | '?' }
+  //             rotulos: true (los tramos), medidas: true (abajo, «largo: (2x + 1) dm»), piezas: true | false (solo el borde con
+  //             las marcas de los tramos: en un ejemplo, las piezas son lo que se pide) }
   const PI = { u: 16, x: 3 };
   function geoPiso(d) {
     const [p, q] = (d.largo || [1, 1]).map(entero), [r, s] = (d.ancho || [1, 1]).map(entero);
@@ -555,7 +562,15 @@
     const x0 = M + 34 + Math.max(0, (W - 2 * M - 44 - largoU * u) / 2), y0 = M + 22;
     const objetos = [{ que: 'piso', x0, y0, x1: x0 + w, y1: y0 + h }], textos = [], formas = [];
     let yy = y0;
-    filasT.forEach((hh, i) => {
+    // piezas: false (ejemplos): solo el borde y las marcas de los tramos; las piezas son el producto, lo que se pide.
+    const cortes = [];
+    if (d.piezas === false) {
+      let xx = x0;
+      cols.slice(0, -1).forEach(ww => { xx += ww; cortes.push({ x1: xx, y1: y0, x2: xx, y2: y0 + 7 }); });
+      cols.slice(0, -1).reduce((acc, ww) => { acc += ww; cortes.push({ x1: acc, y1: y0 + h - 7, x2: acc, y2: y0 + h }); return acc; }, x0);
+      filasT.slice(0, -1).reduce((acc, hh) => { acc += hh; cortes.push({ x1: x0, y1: acc, x2: x0 + 7, y2: acc }, { x1: x0 + w - 7, y1: acc, x2: x0 + w, y2: acc }); return acc; }, y0);
+    }
+    if (d.piezas !== false) filasT.forEach((hh, i) => {
       let xx = x0;
       cols.forEach((ww, j) => {
         const que = ww === X && hh === X ? 'loseta' : ww === u && hh === u ? 'cuadradito' : 'tira';
@@ -577,12 +592,13 @@
       ponTexto(textos, 'medida', x0, yM, [['largo: ', null, 400], [`${fac(p, q)} dm`, 'o', 700]], 'start', 12);
       ponTexto(textos, 'medida', x0, yM + 16, [['ancho: ', null, 400], [`${fac(r, s)} dm`, 'i', 700]], 'start', 12);
     }
-    return { W, H, M, d, u, X, p, q, r, s, formas, objetos, textos };
+    return { W, H, M, d, u, X, p, q, r, s, formas, objetos, textos, cortes };
   }
   function dibPiso(datos, estado) {
     const g = geometria(datos, estado);
     let s = '';
     for (const f of g.formas) s += pieza(f.x, f.y, f.w, f.h, null, f.que);
+    for (const c of g.cortes) s += `<path class="alg-corte" d="M${n2(c.x1)} ${n2(c.y1)}L${n2(c.x2)} ${n2(c.y2)}" stroke="currentColor" stroke-width="1.5"/>`;
     const o = g.objetos[0];
     s += `<rect x="${n2(o.x0)}" y="${n2(o.y0)}" width="${n2(o.x1 - o.x0)}" height="${n2(o.y1 - o.y0)}" fill="none" stroke="currentColor" stroke-width="2"/>`;
     for (const t of g.textos) s += texto(t);
@@ -590,6 +606,7 @@
   }
   function altPiso(d) {
     const g = geoPiso(d), c = q => g.formas.filter(f => f.que === q).length;
+    if (d.piezas === false) return `Un piso rectangular de (${g.p === 1 ? '' : g.p}x + ${g.q}) dm de largo por (${g.r === 1 ? '' : g.r}x + ${g.s}) dm de ancho, con marcas en el borde donde termina cada tramo de x dm y de 1 dm. Adentro no se dibujan las piezas.`;
     return `Un piso rectangular de (${g.p === 1 ? '' : g.p}x + ${g.q}) dm de largo por (${g.r === 1 ? '' : g.r}x + ${g.s}) dm de ancho, partido en tramos de x dm y de 1 dm. Cada tramo del largo por cada tramo del ancho da una pieza: ${c('loseta')} losetas, ${c('tira')} tiras y ${c('cuadradito')} cuadraditos.`;
   }
 

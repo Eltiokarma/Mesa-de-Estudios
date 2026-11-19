@@ -8,7 +8,7 @@
  * piezas del depósito y las fichas de letras), 4 «Completo, ordenado y homogéneo» (`completo-ordenado`: el casillero de
  * la tienda), 5 «Polinomios idénticos» (`igualdad`: dos pedidos en el casillero) y 6 «Multiplicar polinomios»
  * (`operaciones`: el piso partido en tramos). Los ids de la ronda 2 no cambian; no hay avance que migrar. La unidad
- * todavía NO declara calidad: 2 (la sesión la marca después del lector en frío y del auditor), pero pasa el validador
+ * lleva calidad: 2 desde el 19 nov (después del lector en frío y del auditor), y pasa el validador
  * con esa marca (polinomios.test.js, última prueba).
  *
  * REGLA DE COLORES DE LA UNIDAD (docs/molde-unidad.md §5b; propuesta §6), en la tabla COLORES (def.colores):
@@ -123,9 +123,10 @@
     sem: 'Términos semejantes: tienen las mismas letras con los mismos exponentes',
     suma: [aa, 'xⁿ + ', bb, 'xⁿ = (', aa, ' + ', bb, ')xⁿ'],
     resta: 'Al restar un polinomio, cambia el signo de cada término: −(p − q) = −p + q, con p, q términos cualesquiera',
-    coef: 'Coeficiente: el número que multiplica a las letras de un término',
+    coef: 'Coeficiente: el número que multiplica a las letras de un término; el término sin letras es su propio coeficiente',
     lit: 'Parte literal: las letras de un término, con sus exponentes',
     uno: 'x = 1x: el coeficiente 1 no se escribe',
+    xx: 'x · x = x²: la x multiplicada por sí misma',
     perim: 'Perímetro de un rectángulo = 2 · largo + 2 · ancho',
     area: 'Área de un rectángulo = largo · ancho',
   };
@@ -256,9 +257,12 @@
       respuesta: 'Coeficiente: −7. Parte literal: x²y' },
     { nivel: 1, titulo: '¿Sumar o multiplicar?',
       enunciado: '¿Es x + x lo mismo que x · x?',
-      datos: [DF.suma, DF.uno],
+      datos: [DF.suma, DF.uno, DF.xx],
       figura: LO({ objeto: 'pedido', columnas: false, filas: [{ nombre: 'x + x', cuenta: [0, 2, 0], rotulo: false }, { nombre: 'x · x', cuenta: [1, 0, 0], rotulo: false }] }),
-      solucion: [{ texto: 'x + x son dos tiras: 1x + 1x = 2x. En cambio, x · x es una loseta: x². Solo valen igual si x es 2 o 0.', ecuacion: ['x + x = ', RES('2x'), ', pero x · x = ', RES('x²')] }],
+      solucion: [
+        { texto: 'x + x son dos tiras: 1x + 1x = 2x. En cambio, x · x es una loseta: x².', ecuacion: ['x + x = ', RES('2x'), ', pero x · x = ', RES('x²')] },
+        { texto: 'Valen igual solo en algunos x: con x = 2 dan 4 y 4, y con x = 0, 0 y 0. Con x = 3 ya no: 6 y 9.', ecuacion: ['2 · 3 = 6,   3 · 3 = 9'] },
+      ],
       respuesta: ['No: x + x = ', RES('2x'), ' y x · x = ', RES('x²')] },
     { nivel: 1, titulo: '¿Cuáles son semejantes?',
       enunciado: '¿Son semejantes 4x³ y 4x²? ¿Y 4x³ y −9x³?',
@@ -453,14 +457,15 @@
         { estado: { paso: 2 }, texto: 'Rubén apuntó 2 y su ayudante, 3. Todas son la misma pieza.', ecuacion: [P1('2xy'), ' + ', P2('3yx')] },
         { estado: { paso: 3 }, texto: 'Son términos semejantes: se suman los coeficientes y la parte literal queda igual.', ecuacion: [P1('2xy'), ' + ', P2('3yx'), ' = (', P1(2), ' + ', P2(3), ')xy = ', RES('5xy')] },
         { estado: { paso: 4 }, texto: 'Una tira y una loseta no son la misma pieza: no se juntan.', ecuacion: [P1('3x'), ' + ', P2('2x²'), ' no es 5x³'] },
+        { estado: { paso: 4 }, texto: 'Restar un polinomio es quitar cada término: el − cambia el signo de todos.', ecuacion: ['(4x² + 3x) − (2x² − x) = 4x² + 3x − 2x² + x = ', RES('2x² + 4x')] },
       ],
     },
     regla: {
       texto: 'Son semejantes los términos con la misma parte literal: las mismas letras con los mismos exponentes, en cualquier orden. Solo ellos se juntan: se suman los coeficientes.',
-      ecuacion: [aa, 'xⁿ + ', bb, 'xⁿ = ', { llave: ['(', aa, ' + ', bb, ')'], nota: 'se suman los coeficientes', color: 'c-f' }, 'xⁿ', SEP,
+      ecuacion: [aa, 'xᵐyⁿ + ', bb, 'xᵐyⁿ = ', { llave: ['(', aa, ' + ', bb, ')'], nota: 'se suman los coeficientes', color: 'c-f' }, 'xᵐyⁿ', SEP,
         '−(2x² − x) = ', { llave: ['−2x² + x'], nota: 'al restar, cambia cada signo', color: 'c-f' }],
       // La app antepone «Vale si».
-      condicion: 'a y b son números cualesquiera, también negativos, y xⁿ es la misma parte literal en los dos términos.',
+      condicion: 'a y b son números cualesquiera, también negativos, y xᵐyⁿ es la misma parte literal en los dos (yx es xy).',
       voz: 'Misma parte literal, mismo montón. Las demás no se mezclan.',
       dibujo: pedido(PED1, [1, 4, 4], { juntos: true, terminos: true, tope: TOPE_J }),
     },
@@ -475,7 +480,8 @@
         return {
           enunciado: ['Rubén hace ', String(k), ' pedidos iguales de ', P1(poli(A)), ' dm² y uno más de ', P2(poli(B)), ' dm². ¿Qué polinomio dice cuánto cubren todos juntos?'],
           datos: [DF.sem, DF.suma],
-          dibujo: LO({ objeto: 'pedido', filas: [{ nombre: `Pedido que se repite ${k} veces`, cuenta: A, color: 'o', rotulo: false }, { nombre: 'Uno más', cuenta: B, color: 'i', rotulo: false }] }),
+          // El pedido que se repite va dibujado k veces (lector A, 19 nov: con una sola fila se contaba una copia).
+          dibujo: LO({ objeto: 'pedido', filas: [...Array.from({ length: k }, (_, i) => ({ nombre: `Pedido igual ${i + 1}`, cuenta: A, color: 'o', rotulo: false })), { nombre: 'Uno más', cuenta: B, color: 'i', rotulo: false }] }),
           pasos: [
             { tipo: 'pide', texto: 'Piden un solo polinomio: lo que cubren todos los pedidos juntos, con cada forma en su montón.' },
             { tipo: 'regla', texto: 'Solo se juntan los términos semejantes: los de x² entre sí, los de x entre sí y los números entre sí. De cada clase se suman los coeficientes.', ecuacion: DF.suma },
@@ -522,9 +528,11 @@
     neg: 'Con un número negativo: (−2)² = 4 y (−2)³ = −8',
     pot: 'x² = x · x;  x³ = x · x · x',
     cubre: 'Una loseta de x dm de lado cubre x² dm²; una tira, x dm²; un cuadradito, 1 dm²',
-    coef: 'Coeficiente: el número que multiplica a las letras de un término',
+    coef: 'Coeficiente: el número que multiplica a las letras de un término; el término sin letras es su propio coeficiente',
     indep: 'Término independiente: el término sin x',
-    desplaza: 'Si se da P(x + h), P(k) sale con el x que cumple x + h = k',
+    desplaza: 'Con P(x + h) dado, P(k) sale del x que cumple x + h = k',
+    suma: 'Suma de coeficientes de P: P(1)',
+    p0: 'Término independiente de P: P(0)',
   };
   // Lo que se escribe al reemplazar: «2 · (−2)³ − 1 · (−2) + 6».
   function reemplazo(cs, k) {
@@ -541,8 +549,8 @@
   const sumaTxt = vs => vs.map((v, i) => (i ? (v < 0 ? ` − ${f(-v)}` : ` + ${f(v)}`) : f(v))).join('');
 
   // Ahora tú 1: evaluar con un número negativo.
-  function casoNegativo(r) {
-    const cs = [r.noCero(-3, 3), r.ent(-4, 4), r.ent(-4, 4), r.ent(-6, 6)], k = r.uno([-1, -2, -3]);
+  function casoNegativo(r, grado = 3) {
+    const cs = [grado === 3 ? r.noCero(-3, 3) : 0, grado === 3 ? r.ent(-4, 4) : r.noCero(-3, 3), r.noCero(-4, 4), r.ent(-6, 6)], k = r.uno([-1, -2, -3]);
     const bien = evaluar(cs, k);
     const parMal = cs.reduce((a, c, i) => { const e = 3 - i; return a + c * (e % 2 === 0 && e > 0 ? -((-k) ** e) : k ** e); }, 0);
     const imparMal = cs.reduce((a, c, i) => { const e = 3 - i; return a + c * (e % 2 === 1 ? (-k) ** e : k ** e); }, 0);
@@ -570,7 +578,7 @@
       opciones: ops([
         { id: 'c', texto: f(bien), correcta: true },
         { id: 'p1', texto: f(p1), error: 'TAL-SOLO-UNO', siFuera: `Bien P(1) = ${f(p1)}. Pero falta ${suma ? 'sumarle' : 'restarle'} P(0) = ${f(p0)}.` },
-        { id: 'cruza', texto: f(suma ? 2 * p0 : p0 - p1), error: 'PO12', siFuera: `Bien P(0) = ${f(p0)}. Pero P(1) no es el término independiente: con x = 1 cuentan todos los coeficientes.` },
+        { id: 'cruza', texto: f(suma ? 2 * p0 : 0), error: 'PO12', siFuera: `Bien P(0) = ${f(p0)}. Pero P(1) no es el término independiente: con x = 1 cuentan todos los coeficientes.` },
         { id: 'abs', texto: f(suma ? abs + p0 : abs - p0), error: 'PO21', siFuera: 'Bien P(0). Pero en P(1) cada coeficiente va con su signo: uno negativo resta.' },
       ]),
       solucion: { texto: 'Con x = 1 cada potencia vale 1; con x = 0 solo queda el término sin x.', ecuacion: [`P(1) = ${f(p1)},  P(0) = ${f(p0)},  `, `${par(p1)} ${suma ? '+' : '−'} ${par(p0)} = `, RES(f(bien))] },
@@ -625,17 +633,17 @@
     const que = pide === 'p1' ? 'la suma de los coeficientes de P' : pide === 'p0' ? 'el término independiente de P' : 'la suma de los coeficientes de P más su término independiente';
     return {
       pregunta: [`Si P(${txtH}) = ${poli([A, B, C])}, ¿cuánto vale ${que}?`],
-      datos: [DV.desplaza, 'Suma de coeficientes de P: P(1).  Término independiente de P: P(0)'],
+      datos: [DV.desplaza, DV.suma, DV.p0],
       opciones: ops([
         { id: 'c', texto: f(bien), correcta: true },
         { id: 'directo', texto: f(mal), error: 'TAL-DESPLAZA', siFuera: `Bien x = 1 o x = 0. Pero lo dado es P(${txtH}): falta despejar ese x.` },
-        { id: 'reves', texto: f(rev), error: 'TAL-DESPLAZA-SIGNO', siFuera: `Bien la idea de cambiar x. Pero ${txtH} = 1 da x = ${f(1 - h)}: despejaste al revés.` },
+        { id: 'reves', texto: f(rev), error: 'TAL-DESPLAZA-SIGNO', siFuera: pide === 'p0' ? `Bien la idea de cambiar x. Pero ${txtH} = 0 da x = ${f(-h)}: despejaste al revés.` : `Bien la idea de cambiar x. Pero ${txtH} = 1 da x = ${f(1 - h)}: despejaste al revés.` },
         pide === 'suma'
           ? { id: 'solo', texto: f(P(1)), error: 'TAL-SOLO-UNO', siFuera: `Bien P(1) = ${f(P(1))}. Pero falta sumarle el término independiente, P(0).` }
           : { id: 'solo', texto: f(pide === 'p1' ? P(0) : P(1)), error: 'PO12', siFuera: 'Ese valor es el otro: la suma de coeficientes es P(1) y el término independiente, P(0).' },
       ]),
       solucion: { texto: `${pide === 'p0' ? 'P(0)' : 'P(1)'} sale con el x que cumple ${txtH} = ${pide === 'p0' ? 0 : 1}.`,
-        ecuacion: [pide === 'p0' ? `x = ${f(-h)}: P(0) = ${f(P(0))}` : pide === 'p1' ? `x = ${f(1 - h)}: P(1) = ${f(P(1))}` : `P(1) = ${f(P(1))},  P(0) = ${f(P(0))},  suma `, RES(f(bien))] },
+        ecuacion: [pide === 'p0' ? `x = ${f(-h)}: P(0) = ` : pide === 'p1' ? `x = ${f(1 - h)}: P(1) = ` : `P(1) = ${f(P(1))},  P(0) = ${f(P(0))},  suma `, RES(f(bien))] },
     };
   }
 
@@ -727,7 +735,7 @@
     { nivel: 3, titulo: 'El argumento desplazado',
       enunciado: 'Si P(x + 1) = x² + 4x + 6, ¿cuánto vale la suma de los coeficientes de P más su término independiente?',
       alternativas: ['17', '6', '3', '29', '9'],
-      datos: [DV.desplaza, 'Suma de coeficientes de P: P(1).  Término independiente de P: P(0)'],
+      datos: [DV.desplaza, DV.suma, DV.p0],
       solucion: [
         { texto: 'P(1) pide x + 1 = 1, o sea x = 0. P(0) pide x + 1 = 0, o sea x = −1.', ecuacion: ['P(1) = 0 + 0 + 6 = 6,   P(0) = 1 − 4 + 6 = 3'] },
         { texto: 'Sumo los dos.', ecuacion: ['6 + 3 = ', RES('9')] },
@@ -749,7 +757,7 @@
     { nivel: 3, titulo: 'Coeficientes sin desarrollar',
       enunciado: 'P(x) = (2x − 1)³ + (x + 2)² − 3. ¿Cuánto vale la suma de sus coeficientes más su término independiente?',
       alternativas: ['0', '1', '9', '7', '14'],
-      datos: [DV.coef, DV.indep, DV.eval],
+      datos: [DV.eval, DV.suma, DV.p0],
       solucion: [
         { texto: 'La suma de los coeficientes es P(1), y el término independiente es P(0): no hace falta desarrollar.', ecuacion: ['P(1) = 1³ + 3² − 3 = 7,   P(0) = (−1)³ + 2² − 3 = 0'] },
         { texto: 'Sumo los dos.', ecuacion: ['7 + 0 = ', RES('7')] },
@@ -801,7 +809,7 @@
       leyenda: [
         { s: VX('x'), t: 'lado de la loseta, en dm' },
         { s: 'P(x)', t: 'lo que cubre el pedido, en dm²' },
-        { s: 'P(4)', t: 'se lee «P de 4»' },
+        { s: 'P(2)', t: 'se lee «P de 2»' },
         { s: RES('dm²'), t: 'lo que cubre, ya calculado' },
       ],
       controles: [{ id: 'a', etiqueta: 'Lado de la loseta, x (dm)', color: 'c-o', min: 2, max: 6, paso: 1, inicio: 2, decimales: 0 }],
@@ -839,8 +847,10 @@
       ],
     },
     regla: {
-      texto: 'Evaluar P(k) es cambiar cada x por k y operar. P(1) suma los coeficientes; P(0), el término independiente. Con P(x + h), x cumple x + h = k.',
-      ecuacion: ['P(x) = ax² + bx + c', SEP, 'P(1) = ', { llave: ['a + b + c'], nota: 'suma de coeficientes', color: 'c-f' }, SEP, 'P(0) = ', { llave: ['c'], nota: 'término independiente', color: 'c-f' }],
+      // P(x + h) con un ejemplo y en su línea (lector A, 19 nov: «x cumple x + h = k» no se entendía).
+      texto: 'Evaluar P(k) es cambiar cada x por k y operar. P(1) suma los coeficientes; P(0) es el término independiente.',
+      ecuacion: ['P(x) = ax² + bx + c', SEP, 'P(1) = ', { llave: ['a + b + c'], nota: 'suma de coeficientes', color: 'c-f' }, SEP, 'P(0) = ', { llave: ['c'], nota: 'término independiente', color: 'c-f' }, SEP,
+        'si te dan P(x + 1): P(1) sale con x = 0, porque 0 + 1 = 1'],
       // La app antepone «Vale si».
       condicion: 'cada x se cambia por el mismo número y un número negativo va entre paréntesis: (−2)² = 4, pero (−2)³ = −8.',
       voz: 'Cada x, el mismo número. Lo que no tiene x, no cambia.',
@@ -862,7 +872,8 @@
             { tipo: 'regla', texto: `Evaluar es cambiar cada x por el mismo número, aquí ${k}, y operar: primero las potencias, después los productos y al final la suma.` },
             { tipo: 'cuentas', texto: `Las losetas cubren ${cs[0]} · ${k}², las tiras ${cs[1]} · ${k} y los cuadraditos ${cs[2]}.`,
               ecuacion: ['P(', VX(k), `) = ${reemplazo(cs, k)} = ${sumaTxt(vs)} = `, RES(f(tot))], dibujo: TAM(cs, k, { areas: true, total: true, ladoMax: 6 }) },
-            { tipo: 'sentido', texto: `Comprueba: los ${cs[2]} cuadraditos cubren ${cs[2]} dm² con cualquier loseta; lo demás crece con el lado. Con losetas de ${k + 1} dm cubriría ${f(evaluar(cs, k + 1))} dm², más que ${f(tot)}.` },
+            { tipo: 'sentido', texto: k < 6 ? `Comprueba: los ${cs[2]} cuadraditos cubren ${cs[2]} dm² con cualquier loseta; lo demás crece con el lado. Con losetas de ${k + 1} dm cubriría ${f(evaluar(cs, k + 1))} dm², más que ${f(tot)}.`
+              : `Comprueba: los ${cs[2]} cuadraditos cubren ${cs[2]} dm² con cualquier loseta; lo demás crece con el lado. Con losetas de 5 dm cubriría ${f(evaluar(cs, 5))} dm², menos que ${f(tot)}.` },
           ],
           respuesta: [RES(f(tot)), ' dm²'],
         };
@@ -872,7 +883,8 @@
       voz: 'Cada x, el mismo número, con su signo.',
       generar(sem) {
         const r = azar(sem + 47), tipo = sem % 5;
-        if (tipo === 0) return conCuatro(casoNegativo, r);
+        // Las dos primeras veces, de grado 2: un negativo al cuadrado antes que al cubo (lector A, 19 nov).
+        if (tipo === 0) return conCuatro(sem < 10 ? function casoNegativo2(q) { return casoNegativo(q, 2); } : casoNegativo, r);
         if (tipo === 1) return conCuatro(casoUnoCero, r);
         if (tipo === 2) return conCuatro(casoFactorizada, r);
         if (tipo === 3) return conCuatro(casoCoeficiente, r);
@@ -901,6 +913,7 @@
   const polXY = ts => ts.map(([c, a, b], i) => tXY(c, a, b, i === 0)).join('');
   const DG = {
     term: 'Grado de un término: la suma de los exponentes de sus letras',
+    coefNo: 'El coeficiente es un número, aunque lleve exponente: no es una letra del término',
     ga: 'Grado absoluto (GA): el mayor de los grados de los términos',
     gr: 'Grado relativo a una letra, GR(x) o GR(y): el mayor exponente de esa letra',
     uno: 'x = x¹: una letra sin exponente lleva 1',
@@ -1059,11 +1072,11 @@
       ],
       respuesta: ['GA = ', RES('6')] },
     { nivel: 2, titulo: '¿Es un polinomio?',
-      enunciado: '¿Cuál de estas expresiones es un polinomio: 3x² − x + 5, 2x⁻¹ + 4 o x^(1/2) + 1?',
-      datos: [DG.poli, 'x⁻¹ = 1/x;  x^(1/2) = √x'],
+      enunciado: ['¿Cuál de estas expresiones es un polinomio: 3x² − x + 5, 2x⁻¹ + 4 o ', { sup: ['x', '1/2'] }, ' + 1?'],
+      datos: [DG.poli, ['x⁻¹ = 1/x;  ', { sup: ['x', '1/2'] }, ' = √x']],
       solucion: [
         { texto: 'En 2x⁻¹ + 4 la x lleva exponente −1: está dividiendo, y eso no vale.', ecuacion: ['2x⁻¹ = 2/x'] },
-        { texto: 'En x^(1/2) + 1 el exponente es 1/2, que no es entero. Solo la primera tiene exponentes enteros y no negativos.', ecuacion: [RES('3x² − x + 5')] },
+        { texto: ['En ', { sup: ['x', '1/2'] }, ' + 1 el exponente es 1/2, que no es entero. Solo la primera tiene exponentes enteros y no negativos.'], ecuacion: [RES('3x² − x + 5')] },
       ],
       respuesta: ['Solo ', RES('3x² − x + 5')] },
     { nivel: 2, titulo: 'Un exponente por hallar',
@@ -1155,7 +1168,9 @@
       pieza: 'alg-losetas',
       consigna: 'P = 3xᵃyᵇ − 2xy³ + 5x². Cada ficha es una letra que se multiplica.',
       mision: {
-        texto: ['Lleva el primer término a grado 8 sin que el exponente de y pase de 3.'],
+        // Una sola respuesta: con los controles de 0 a 5 y la y en 3 o menos, solo 5 + 3 da 8 (lector A, 19 nov: lo
+        // decía sin el tope de 5, y 6 + 2 o 7 + 1 parecían valer).
+        texto: ['Lleva el primer término a grado 8, con x hasta 5 e y hasta 3.'],
         logrado: v => v.a === 5 && v.b === 3,
         bien: 'Listo: el grado del término suma sus exponentes, 5 + 3. El relativo mira una sola letra.',
       },
@@ -1176,16 +1191,18 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Los términos de 3x²y − 2xy³ + 1 tienen grados 3, 4 y 0. ¿Cuál es el grado absoluto del polinomio?',
+      // Sin los grados de los términos (lector A, 19 nov: con 3, 4 y 0 escritos solo quedaba elegir uno): el juego enseñó
+      // el grado de un término; aquí se predice el del polinomio entero.
+      pregunta: '¿Cuál es el grado absoluto de 3x²y − 2xy³ + 1, el grado del polinomio entero?',
       datos: ['En xy³, x lleva exponente 1 e y lleva 3', 'El término 1 no tiene letras'],
       voz: 'Piensa en el polinomio entero, no en un término.',
       opciones: [
         { id: 'c', texto: '4', correcta: true },
-        { id: 'todos', texto: '7', error: 'PO11', siFuera: 'Bien leídos los grados: 3, 4 y 0. Pero sumarlos no da el grado del polinomio.' },
+        { id: 'todos', texto: '7', error: 'PO11', siFuera: 'Bien los grados de los términos: 3, 4 y 0. Pero sumarlos no da el grado del polinomio.' },
         { id: 'primero', texto: '3', error: 'PO9', siFuera: 'Bien el grado del primer término, 3. Pero hay otro término con más letras multiplicadas.' },
         { id: 'relativos', texto: '5', error: 'PO28', siFuera: 'Bien los mayores exponentes, 2 y 3. Pero salen de términos distintos: ninguno tiene grado 5.' },
       ],
-      dibujo: ME(PRED3, { grado: true, mayor: '?' }),
+      dibujo: ME(PRED3, { mayor: '?' }),
       revelar: ME(PRED3, { grado: true, mayor: true, resaltar: 1 }),
       coincide: 'Coincide: el grado absoluto es el mayor grado de los términos, el de −2xy³: 4.',
       noCoincide: 'Revisemos: busca la fila con más fichas. Ese término da el grado del polinomio.',
@@ -1218,12 +1235,13 @@
         const coef = `${neg ? '−' : ''}${base}${sup(e)}`, lit = pot('x', a) + pot('y', b);
         return {
           enunciado: `¿Qué grado tiene el término ${coef}${lit}?`,
-          datos: [DG.term, DG.uno],
-          dibujo: ME([[neg ? -2 : 2, a, b]], { grado: '?' }),
+          datos: [DG.term, DG.coefNo, DG.uno],
+          // El término de la figura es el del enunciado, con su coeficiente elevado (lector A, 19 nov: decía 2x⁵y⁴).
+          dibujo: ME([[neg ? -2 : 2, a, b, `${coef}${lit}`]], { grado: '?' }),
           pasos: [
             { tipo: 'pide', texto: 'Piden el grado de un solo término: cuántas letras se multiplican.' },
             { tipo: 'regla', texto: `El grado suma los exponentes de las letras. ${coef} es el coeficiente, un número: su exponente ${e} no cuenta.` },
-            { tipo: 'cuentas', texto: `La x lleva ${a} y la y lleva ${b}.`, ecuacion: [EX(a), ' + ', EY(b), ' = ', RES(f(a + b))], dibujo: ME([[neg ? -2 : 2, a, b]], { grado: true }) },
+            { tipo: 'cuentas', texto: `La x lleva ${a} y la y lleva ${b}.`, ecuacion: [EX(a), ' + ', EY(b), ' = ', RES(f(a + b))], dibujo: ME([[neg ? -2 : 2, a, b, `${coef}${lit}`]], { grado: true }) },
             { tipo: 'sentido', texto: `Comprueba: ${lit} multiplica x ${a} ${a === 1 ? 'vez' : 'veces'} e y ${b}: ${a + b} letras. Con el ${e} del coeficiente saldría ${a + b + e}, y el número de adelante no cuenta.` },
           ],
           respuesta: ['Grado ', RES(f(a + b))],
@@ -1497,7 +1515,7 @@
       tarjetas: [
         { titulo: 'El casillero de la tienda', texto: 'La tienda guarda cada pieza en su casilla: el bloque, que llena x³; la loseta, x²; la tira, x; y el cuadradito, x⁰. Un pedido se apunta con un número en cada casilla.',
           pieza: 'alg-losetas', dibujo: CAS(3, { 3: 1, 2: 3, 1: 4, 0: -2 }, { iconos: true }) },
-        { titulo: 'Ordenar es elegir un sentido', texto: 'Un polinomio está ordenado si sus exponentes solo bajan, como en 2x³ + x² − x + 4, o solo suben, como en 5 − x + x³.' },
+        { titulo: 'Ordenado y homogéneo', texto: 'Está ordenado si sus exponentes solo bajan, como en 2x³ + x² − x + 4, o solo suben, como en 5 − x + x³. Es homogéneo si sus términos tienen igual grado: en x²y + xy², los dos tienen 3.' },
         { titulo: 'El término sin x', texto: 'x⁰ = 1, así que el término sin x es el de x⁰. Si una casilla no tiene piezas, el pedido no la nombra y la casilla queda vacía.' },
         { titulo: 'Qué mirar al jugar', texto: 'Cambia el pedido y el orden. Mira cuántas casillas tiene el casillero y cuáles quedan vacías.' },
       ],
@@ -1515,7 +1533,7 @@
       leyenda: [
         { s: EX('x³'), t: 'casilla de los bloques' },
         { s: 'x⁰', t: 'casilla de los cuadraditos: el término sin x' },
-        { s: 'casilla punteada', t: 'vacía: ninguna pieza de esa forma' },
+        { s: 'casilla punteada', t: 'vacía, como en el pedido x³ + 7' },
       ],
       controles: [
         { id: 'p', etiqueta: 'Pedido', opciones: Object.keys(POLS4).map(t => ({ valor: t, texto: t })), inicio: MISION4 },
@@ -1565,7 +1583,7 @@
       texto: 'Completo: tiene cada potencia de x, de su grado n a x⁰: n + 1 términos. Ordenado: sus exponentes solo bajan o solo suben. Homogéneo: sus términos tienen igual grado.',
       ecuacion: ['completo de grado n: ', { llave: ['n + 1 términos'], nota: 'con los de coeficiente 0', color: 'c-f' }],
       condicion: 'los términos que faltan se cuentan con coeficiente 0; para ser homogéneo se mira el grado de cada término, no sus exponentes.',
-      voz: 'Ninguna casilla vacía: completo. Todas las filas igual de largas: homogéneo.',
+      voz: 'Ninguna casilla vacía: completo. Todos los términos del mismo grado: homogéneo.',
       dibujo: CAS(5, { 5: 1, 2: -3, 0: 1 }, { ceros: true }),
     },
     // Así se resuelve: completar y ordenar un pedido escrito en desorden (el objeto). «Ahora tú» pide contar términos,
@@ -1583,7 +1601,7 @@
         return {
           enunciado: `Rubén apuntó el pedido ${escribir(desorden)}. ¿Cómo se escribe completo y ordenado de mayor a menor?`,
           datos: [DC.completo, DC.ordenado, DC.cero],
-          dibujo: CAS(n, coefDe(ts), { orden: desorden.map(t => t[1]), iconos: n <= 3 }),
+          dibujo: CAS(n, coefDe(ts), { iconos: n <= 3 }),
           pasos: [
             { tipo: 'pide', texto: 'Piden el mismo pedido con una casilla por potencia, de la mayor a x⁰.' },
             { tipo: 'regla', texto: `El grado es ${n}: el casillero va de x${sup(n)} a x⁰. Cada número va a la casilla de su potencia, y las vacías llevan 0.` },
@@ -1694,7 +1712,7 @@
         malo !== null && malo !== a * b ? { id: 'signo', texto: f(malo), error: 'TAL-SISTEMA-SIGNO', siFuera: `Bien la casilla de x. Pero en el término sin x, b(x − ${q}) da −${q}b.` } : null,
         { id: 'uno', texto: f(a), error: 'TAL-DESPEJA-UNO', siFuera: `Bien a = ${f(a)}. Pero piden a · b.` },
       ].filter(Boolean)),
-      solucion: { texto: `La casilla de x da a + b = ${f(S)}; la del término sin x, ${p}a − ${q}b = ${f(T)}.`, ecuacion: [`a = ${f(a)},  b = ${f(b)},  a · b = `, RES(f(a * b))] },
+      solucion: { texto: `La casilla de x da a + b = ${f(S)}; la del término sin x, ${p === 1 ? '' : p}a − ${q === 1 ? '' : q}b = ${f(T)}.`, ecuacion: [`a = ${f(a)},  b = ${f(b)},  a · b = `, RES(f(a * b))] },
     };
   }
 
@@ -1808,7 +1826,7 @@
       alternativas: ['9', '20', '−85', '25', '29'],
       datos: [DI.ident],
       solucion: [
-        { texto: 'En x²: 2a − b = 3. En x: a + b = 9. Sin x: c = 5.', ecuacion: ['3a = 12  →  a = 4,   b = 5,   c = 5'] },
+        { texto: 'En x²: 2a − b = 3. En x: a + b = 9. Sin x: c = 5. Sumo las dos primeras: −b y b se anulan.', ecuacion: ['3a = 12  →  a = 4,   b = 9 − 4 = 5,   c = 5'] },
         { texto: 'Calculo lo que piden.', ecuacion: ['4 · 5 + 5 = ', RES('25')] },
         { texto: ['La ', letra('A'), ' da a + b. La ', letra('B'), ' da a · b y olvida c. La ', letra('E'), ' toma c = 9, el coeficiente de x.'] },
         { texto: ['La ', letra('C'), ' pierde el signo de −b: con 2a + b = 3 sale a = −6 y b = 15.'] },
@@ -1848,10 +1866,10 @@
     ejemplos: EJEMPLOS_IGUALDAD,
     juega: {
       pieza: 'alg-losetas',
-      consigna: ['El pedido ', P1('P = ax² + (b − 1)x + 3'), ' tiene dos números que se pueden cambiar. El pedido ', P2('Q = 2x² + 5x + 3'), ' está fijo.'],
+      consigna: ['El pedido ', P1('P = mx² + (n − 1)x + 3'), ' tiene dos números que se pueden cambiar. El pedido ', P2('Q = 2x² + 5x + 3'), ' está fijo.'],
       mision: {
-        texto: ['Ajusta a y b hasta que ', P1('P'), ' y ', P2('Q'), ' coincidan en las tres casillas.'],
-        logrado: v => v.a === 2 && v.b === 6,
+        texto: ['Ajusta m y n hasta que ', P1('P'), ' y ', P2('Q'), ' coincidan en las tres casillas.'],
+        logrado: v => v.m === 2 && v.n === 6,
         bien: 'Listo: el mismo coeficiente en cada potencia. Son el mismo polinomio.',
       },
       voz: 'Una casilla a la vez. Las demás no se mueven.',
@@ -1862,19 +1880,19 @@
         { s: '≡', t: 'idéntico: coinciden todas las casillas' },
       ],
       controles: [
-        { id: 'a', etiqueta: 'a', min: -2, max: 5, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
-        { id: 'b', etiqueta: 'b', min: -2, max: 8, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
+        { id: 'm', etiqueta: 'm', min: -2, max: 5, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
+        { id: 'n', etiqueta: 'n', min: -2, max: 8, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
       ],
       // Un coeficiente que el alumno puso en 0 es un número de P (naranja), no una casilla olvidada: va escrito «0».
-      dibujo: v => DOS(2, { 2: v.a || '0', 1: (v.b - 1) || '0', 0: 3 }, { 2: 2, 1: 5, 0: 3 }),
+      dibujo: v => DOS(2, { 2: v.m || '0', 1: (v.n - 1) || '0', 0: 3 }, { 2: 2, 1: 5, 0: 3 }),
       lectura: v => {
-        const k = [v.a, v.b - 1, 3].filter((c, i) => c === Qcs[i]).length;
+        const k = [v.m, v.n - 1, 3].filter((c, i) => c === Qcs[i]).length;
         return [`Coinciden ${k} de 3 casillas`, k === 3 ? ': ' : '', k === 3 ? P1('P') : '', k === 3 ? ' ≡ ' : '', k === 3 ? P2('Q') : ''];
       },
       minimo: 3,
     },
     predice: {
-      pregunta: 'Con losetas de 1 dm, los pedidos x² + 1 y 2x cubren lo mismo: 2 dm². ¿Son el mismo polinomio?',
+      pregunta: 'Con losetas de 1 dm de lado (x = 1), los pedidos x² + 1 y 2x cubren lo mismo: 2 dm². ¿Son el mismo polinomio?',
       datos: ['1² + 1 = 2', '2 · 1 = 2'],
       voz: 'Piensa en otro tamaño de loseta.',
       opciones: [
@@ -1883,7 +1901,7 @@
         { id: 'piezas', texto: 'Sí: los dos tienen 2 piezas', error: 'TAL-CUENTA-PIEZAS', siFuera: 'Bien contadas: 2 piezas en cada pedido. Pero una loseta y un cuadradito no son dos tiras.' },
         { id: 'nose', texto: 'No se sabe sin probar más losetas', error: 'TAL-COEF', siFuera: 'Bien la duda. Pero los coeficientes ya deciden: en x² uno tiene 1 y el otro, 0.' },
       ],
-      dibujo: LO({ objeto: 'tamano', filas: [{ nombre: 'P', cuenta: [1, 0, 1], color: 'o' }, { nombre: 'Q', cuenta: [0, 2, 0], color: 'i' }], lado: 1, ladoMax: 3 }),
+      dibujo: LO({ objeto: 'tamano', filas: [{ nombre: 'P', cuenta: [1, 0, 1], color: 'o' }, { nombre: 'Q', cuenta: [0, 2, 0], color: 'i' }], lado: 1 }),
       revelar: LO({ objeto: 'tamano', filas: [{ nombre: 'P', cuenta: [1, 0, 1], color: 'o' }, { nombre: 'Q', cuenta: [0, 2, 0], color: 'i' }], lado: 3, areas: true }),
       coincide: 'Coincide: con losetas de 3 dm, x² + 1 cubre 10 dm² y 2x cubre 6 dm². Coincidir en un valor de x no basta.',
       noCoincide: 'Revisemos: prueba con losetas de 3 dm. Una loseta y un cuadradito cubren 9 + 1; dos tiras, 3 + 3.',
@@ -1897,7 +1915,7 @@
           { objeto: 'casillero', grado: 2, filas: [{ nombre: 'P', coef: {}, color: 'o' }], ceros: true }] },
       voz: 'Primero con losetas; después, casilla por casilla.',
       pasos: [
-        { estado: { paso: 0 }, texto: 'Con losetas de 1 dm, P = x² + 1 y Q = 2x cubren 2 dm².', ecuacion: [P1('P'), '(1) = 2 = ', P2('Q'), '(1)'] },
+        { estado: { paso: 0 }, texto: 'P(1): lo que cubre P con x = 1. Vale 2, como Q(1).', ecuacion: [P1('P'), '(1) = 2 = ', P2('Q'), '(1)'] },
         { estado: { paso: 1 }, texto: 'Con losetas de 3 dm ya no: la loseta creció más que las tiras.', ecuacion: [P1('P'), '(3) = 10,   ', P2('Q'), '(3) = 6'] },
         { estado: { paso: 2 }, texto: 'No coinciden: en x² hay 1 y 0; en x, 0 y 2.', ecuacion: ['x² + 0x + 1  ≢  0x² + 2x + 0'] },
         { estado: { paso: 3 }, texto: 'Si coinciden todas las casillas, cubren lo mismo con cualquier loseta: son idénticos.', ecuacion: [P1('2x² + x'), ' ≡ ', P2('x + 2x²')] },
@@ -1905,10 +1923,11 @@
       ],
     },
     regla: {
-      texto: 'Dos polinomios son idénticos (≡) si tienen el mismo coeficiente en cada potencia de x: valen igual para todo x. Es idénticamente nulo si sus coeficientes valen 0.',
+      texto: 'Dos polinomios son idénticos (≡) si, juntos sus semejantes, tienen el mismo coeficiente en cada potencia de x: valen igual para todo x. Idénticamente nulo: todos sus coeficientes valen 0.',
       ecuacion: [{ sub: [aa, '2'] }, 'x² + ', { sub: [aa, '1'] }, 'x + ', { sub: [aa, '0'] }, ' ≡ ', { sub: [bb, '2'] }, 'x² + ', { sub: [bb, '1'] }, 'x + ', { sub: [bb, '0'] }, '  →  ',
         { llave: [{ sub: [aa, '2'] }, ' = ', { sub: [bb, '2'] }, ',  ', { sub: [aa, '1'] }, ' = ', { sub: [bb, '1'] }, ',  ', { sub: [aa, '0'] }, ' = ', { sub: [bb, '0'] }], nota: 'casilla por casilla', color: 'c-f' }],
-      condicion: 'se comparan los coeficientes después de juntar los términos semejantes; coincidir en uno o en dos valores de x no basta.',
+      // a₂, a₁ y a₀ dichos en palabras (auditoría y lector B, 19 nov); el tope de la condición es de 22 palabras.
+      condicion: 'a₂, a₁, a₀: coeficientes de x², x y x⁰ en el primero; b₂, b₁, b₀, del segundo. Un valor común no basta.',
       voz: 'Mismo número en cada casilla: mismo polinomio.',
       dibujo: DOS(2, { 2: 2, 1: 5, 0: 3 }, { 2: 2, 1: 5, 0: 3 }),
     },
@@ -1917,8 +1936,10 @@
     resuelve: {
       pieza: 'alg-losetas',
       generar(s) {
-        const r = azar(s + 900), cs = [r.noCero(-5, 6), r.noCero(-6, 6), r.noCero(-7, 7)], iguales = s % 2 === 0;
-        const qs = iguales ? cs.slice() : cs.map((c, k) => (k === r.ent(0, 2) ? c + r.uno([-2, -1, 1, 2]) : c));
+        // Si no son iguales, cambia una sola casilla (antes se sorteaba casilla por casilla y cambiaban dos o tres, con
+        // «una casilla es distinta» en la respuesta, y x = 2 a veces no los separaba; auditoría, 19 nov).
+        const r = azar(s + 900), cs = [r.noCero(-5, 6), r.noCero(-6, 6), r.noCero(-7, 7)], iguales = s % 2 === 0, cambia = r.ent(0, 2);
+        const qs = iguales ? cs.slice() : cs.map((c, k) => (k === cambia ? c + r.uno([-2, -1, 1, 2]) : c));
         const ord = [[qs[2], 0], [qs[0], 2], [qs[1], 1]].filter(t => t[0] !== 0);
         const qtxt = ord.map(([c, e], i) => mono(c, [['x', e]], i === 0)).join('');
         const dif = [2, 1, 0].filter((e, k) => cs[k] !== qs[k]);
@@ -1926,7 +1947,8 @@
         return {
           enunciado: ['¿Son idénticos ', P1(poli(cs)), ' y ', P2(qtxt), '?'],
           datos: [DI.ident],
-          dibujo: DOS(2, cP, cQ, { marcas: false, ceros: true }),
+          // Al empezar, Q con «?»: con las dos filas ya escritas, la figura daba la respuesta (lector B, 19 nov).
+          dibujo: LO({ objeto: 'casillero', grado: 2, filas: [{ nombre: 'P', coef: cP, color: 'o' }, { nombre: 'Q', coef: { 2: '?', 1: '?', 0: '?' }, color: 'i' }] }),
           pasos: [
             { tipo: 'pide', texto: 'Piden si son el mismo polinomio, aunque estén escritos en otro orden.' },
             { tipo: 'regla', texto: 'Son idénticos si cada potencia de x tiene el mismo coeficiente en los dos. Pongo cada coeficiente en su casilla.' },
@@ -1979,9 +2001,9 @@
   const TP = (pc, qc, cortes, estado) => ({ pieza: 'alg-tabla', datos: tablaProducto(pc, qc, cortes), estado: estado || {} });
   const DM = {
     dist: 'Cada término del primer polinomio multiplica a cada término del segundo',
-    pot: 'xᵃ · xᵇ = xᵃ⁺ᵇ',
+    pot: 'xᵐ · xⁿ = xᵐ⁺ⁿ',
     grado: 'Grado de un polinomio de una letra: su mayor exponente de x',
-    gpot: '(xᵃ)ᵏ = xᵃ·ᵏ',
+    gpot: '(xᵐ)ᵏ = xᵐ·ᵏ',
     suma: 'Suma de coeficientes de un polinomio P: P(1)',
     indep: 'Término independiente de P: P(0)',
     semej: 'Después se juntan los términos semejantes',
@@ -2015,7 +2037,7 @@
       opciones: ops([
         { id: 'c', texto: f(bien), correcta: true },
         { id: 'sinpot', texto: f(m + n), error: 'TAL-POT-GRADO', siFuera: `Bien sumar los grados. Pero P${sup(k)} tiene grado ${k} · ${m} = ${k * m}: la potencia multiplica el grado.` },
-        { id: 'mult', texto: f(m * n * k), error: 'PO5', siFuera: 'Los grados de dos factores no se multiplican: xᵃ · xᵇ = xᵃ⁺ᵇ.' },
+        { id: 'mult', texto: f(m * n * k), error: 'PO5', siFuera: 'Los grados de dos factores no se multiplican: xᵐ · xⁿ = xᵐ⁺ⁿ.' },
         { id: 'max', texto: f(Math.max(k * m, n)), error: 'PO23', siFuera: 'Bien el grado de cada factor. Pero quedarse con el mayor es lo que pasa en una suma.' },
         { id: 'suma', texto: f(m + k + n), error: 'TAL-POT-MULT', siFuera: `Bien la idea de sumar. Pero P${sup(k)} no suma ${k} al grado: lo multiplica.` },
       ]),
@@ -2077,7 +2099,7 @@
   // Ejemplos de la idea 6. Cuentas rehechas aparte (e5-algebra/cuentas-fase3.py, multiplicando polinomios en cinco valores
   // de x): 3x · 4x² = 12x³; 2x(x + 5) = 2x² + 10x; (x + 2)(x + 3) = x² + 5x + 6; grado 5; (x − 4)(x + 1) = x² − 3x − 4;
   // (2x + 1)(x² − x + 3) = 2x³ − x² + 5x + 3; coeficiente de x en (x + 3)(x² + 2x − 5): 1; suma 6; (2x + 3)(x + 2) =
-  // 2x² + 7x + 6; grado 6; coeficiente de x² = −3 (errores −4, −6, 9 y −2); suma 16 (errores 5, 12, 9 y 1296); m = 4,
+  // 2x² + 7x + 6; grado 6; coeficiente de x² = −3 (errores −4, −6, 9 y −2); suma 16 (errores 5, 32, 9 y 1296; la B, 32, desde la auditoría del 19 nov); m = 4,
   // n = −2 → 2 (errores −2, −14, −8 y 14); grado 4 + término 15 = 19 (errores 15, 4, 5 y −11); n + 6 = 11 → 5 (errores
   // 6, 9, 11 y 4).
   const EJEMPLOS_PRODUCTO = [
@@ -2089,14 +2111,14 @@
     { nivel: 1, titulo: 'Un tramo por dos',
       enunciado: ['Un piso mide ', P1('2x'), ' dm por ', P2('(x + 5)'), ' dm. ¿Qué polinomio da lo que cubre?'],
       datos: [DM.dist, DM.pot],
-      figura: PISO(2, 0, 1, 5),
+      figura: PISO(2, 0, 1, 5, { piezas: false }),
       solucion: [{ texto: 'El 2x multiplica a cada término del otro: 2x · x = 2x² (dos losetas) y 2x · 5 = 10x (diez tiras).', ecuacion: [P1('2x'), '(', P2('x + 5'), ') = ', RES('2x² + 10x')] }],
       respuesta: [RES('2x² + 10x'), ' dm²'] },
     { nivel: 1, titulo: 'Dos binomios',
       enunciado: ['Desarrolla (', P1('x + 2'), ')(', P2('x + 3'), ').'],
-      datos: [DM.dist, DM.semej],
-      figura: PISO(1, 2, 1, 3),
-      solucion: [{ texto: 'Cuatro productos: x · x, x · 3, 2 · x y 2 · 3. Las dos tiras se juntan: 3x + 2x = 5x.', ecuacion: ['x² + 3x + 2x + 6 = ', RES('x² + 5x + 6')] }],
+      datos: [DM.dist, DM.pot, DM.semej],
+      figura: PISO(1, 2, 1, 3, { piezas: false }),
+      solucion: [{ texto: 'Cuatro productos: x · x, x · 3, 2 · x y 2 · 3. Las tiras de 3x y las de 2x se juntan: 5x.', ecuacion: ['x² + 3x + 2x + 6 = ', RES('x² + 5x + 6')] }],
       respuesta: [RES('x² + 5x + 6')] },
     { nivel: 1, titulo: 'El grado de un producto',
       enunciado: ['¿Qué grado tiene (', P1('x³ + 1'), ')(', P2('x² − x'), ')?'],
@@ -2129,14 +2151,14 @@
       enunciado: ['¿Cuánto suman los coeficientes de (', P1('x + 2'), ')(', P2('3x − 1'), ')?'],
       datos: [DM.suma],
       solucion: [
-        { texto: 'La suma de coeficientes es el valor con x = 1, y el producto se evalúa factor por factor.', ecuacion: ['(1 + 2)(3 − 1) = 3 · 2'] },
+        { texto: 'La suma de coeficientes es el valor con x = 1, y el producto se evalúa factor por factor.', ecuacion: ['(1 + 2)(3 · 1 − 1) = 3 · 2'] },
         { texto: 'Multiplico.', ecuacion: ['3 · 2 = ', RES('6')] },
       ],
       respuesta: [RES('6')] },
     { nivel: 2, titulo: 'El piso de Rubén',
       enunciado: ['El piso mide ', P1('(2x + 3)'), ' dm por ', P2('(x + 2)'), ' dm. ¿Qué polinomio da lo que cubre?'],
       datos: [DM.dist, DM.semej],
-      figura: PISO(2, 3, 1, 2),
+      figura: PISO(2, 3, 1, 2, { piezas: false }),
       solucion: [
         { texto: 'Cada tramo por cada tramo: 2x · x = 2x², 2x · 2 = 4x, 3 · x = 3x y 3 · 2 = 6.', ecuacion: ['2x² + 4x + 3x + 6'] },
         { texto: 'Las tiras se juntan: 4x + 3x = 7x. Son 2 losetas, 7 tiras y 6 cuadraditos.', ecuacion: [RES('2x² + 7x + 6')] },
@@ -2164,12 +2186,12 @@
       respuesta: [letra('A'), ', ', RES('−3')] },
     { nivel: 3, titulo: 'Coeficientes de una potencia',
       enunciado: ['¿Cuánto suman los coeficientes de (', P1('2x − 1'), ')⁴(', P2('x + 3'), ')²?'],
-      alternativas: ['5', '12', '9', '1296', '16'],
+      alternativas: ['5', '32', '9', '1296', '16'],
       datos: [DM.suma],
       solucion: [
         { texto: 'Es el valor con x = 1. Cada factor se evalúa y se eleva.', ecuacion: ['(2 − 1)⁴ · (1 + 3)² = 1⁴ · 4²'] },
         { texto: 'Calculo.', ecuacion: ['1 · 16 = ', RES('16')] },
-        { texto: ['La ', letra('A'), ' suma los números que se ven: 2 − 1 + 1 + 3. La ', letra('B'), ' multiplica por los exponentes en vez de elevar: 1 · 4 + 4 · 2.'] },
+        { texto: ['La ', letra('A'), ' suma los números que se ven: 2 − 1 + 1 + 3. La ', letra('B'), ' multiplica por los exponentes en vez de elevar: (1 · 4) · (4 · 2) = 32.'] },
         { texto: ['La ', letra('C'), ' calcula P(0) = (−1)⁴ · 3², el término independiente. La ', letra('D'), ' pierde el signo: (2 + 1)⁴ · 4².'] },
       ],
       respuesta: [letra('E'), ', ', RES('16')] },
@@ -2220,8 +2242,9 @@
     // Lee: el piso partido en tramos y la cuadrícula. No dice qué grado tiene un producto (es la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'El piso de Rubén', texto: 'Rubén enchapa un piso rectangular de (2x + 1) dm de largo por (x + 3) dm de ancho. Parte el largo en tramos de x dm y de 1 dm, y el ancho también.',
-          pieza: 'alg-losetas', dibujo: PISO(2, 1, 1, 3) },
+        // Otro piso que el de la misión (2x + 1 por x + 3): Lee no puede traerla resuelta (lector B, 19 nov).
+        { titulo: 'El piso de Rubén', texto: 'Rubén enchapa un piso rectangular de (2x + 2) dm de largo por (x + 1) dm de ancho. Parte el largo en tramos de x dm y de 1 dm, y el ancho también.',
+          pieza: 'alg-losetas', dibujo: PISO(2, 2, 1, 1) },
         { titulo: 'Cada tramo por cada tramo', texto: 'Cada tramo del largo por cada tramo del ancho da una pieza: x por x es una loseta, x por 1 es una tira y 1 por 1 es un cuadradito.' },
         { titulo: 'Como en el cuaderno', texto: 'Al multiplicar 23 · 14, cada cifra de un número multiplica a cada cifra del otro. Con polinomios se hace igual, término por término, y al final se juntan los semejantes. Así sale el producto de polinomios.' },
         { titulo: 'Qué mirar al jugar', texto: 'Cambia los tramos de 1 dm del largo y del ancho. Cuenta las piezas de cada forma y mira cuántos términos quedan al juntarlas.' },
@@ -2255,7 +2278,8 @@
     predice: {
       pieza: 'alg-tabla',
       pregunta: 'P tiene grado 2 y Q tiene grado 3. ¿Qué grado tiene P · Q?',
-      datos: [DM.grado],
+      // La ley de los exponentes viene de Exponentes y radicales: es un valor que se usa, no la regla de la idea (lector B).
+      datos: [DM.grado, DM.pot],
       voz: 'Piensa en el término más grande de cada uno.',
       opciones: [
         { id: 'c', texto: '5', correcta: true },
@@ -2281,10 +2305,13 @@
     },
     regla: {
       texto: 'Cada término de un polinomio multiplica a cada término del otro; luego se juntan los semejantes. El grado del producto suma los grados; sus coeficientes suman P(1) · Q(1).',
-      ecuacion: ['grado(', P1('P'), ' · ', P2('Q'), ') = ', { llave: ['grado ', P1('P'), ' + grado ', P2('Q')], nota: 'se suman', color: 'c-f' }, SEP, 'grado(', P1('P'), 'ᵏ) = k · grado ', P1('P')],
+      // Cada línea con su ejemplo (lector B, 19 nov): la potencia y la suma de coeficientes, con el producto del dibujo.
+      ecuacion: ['grado(', P1('P'), ' · ', P2('Q'), ') = ', { llave: ['grado ', P1('P'), ' + grado ', P2('Q')], nota: 'se suman', color: 'c-f' }, SEP,
+        'grado(', P1('P'), 'ᵏ) = k · grado ', P1('P'), SEP, 'por ejemplo, grado de (x² + 1)³ = 3 · 2 = 6', SEP,
+        'suma de coeficientes = ', P1('P'), '(1) · ', P2('Q'), '(1) = 3 · (−1) = −3'],
       condicion: 'P y Q no son el polinomio cero; al juntar los semejantes, un término del medio puede anularse.',
       voz: 'Todos con todos; después, los semejantes juntos.',
-      dibujo: TP(PRODP, PRODQ, { resaltar: [[0, 1], [1, 0]] }),
+      dibujo: TP(PRODP, PRODQ, { resaltar: [[0, 1], [1, 0], [0, 2], [1, 1]] }),
     },
     // Así se resuelve: desarrollar entero (x + a)(x² + bx + c) con la cuadrícula. «Ahora tú» pide un solo coeficiente,
     // grados, la suma de coeficientes, un producto por igualdad o el término independiente.
@@ -2409,7 +2436,7 @@
     dibujo: v => ({ datos: dosLab(v), estado: {} }),
     lectura: v => {
       const k = [v.a, v.b, v.c].filter((c, i) => c === QL[i]).length;
-      return [P, ` = ${f(evaluar([v.a, v.b, v.c], v.t))}, `, Q, ` = ${f(evaluar(QL, v.t))}`, '   ·   ', `casillas: ${k} de 3`];
+      return [P, ` = ${f(evaluar([v.a, v.b, v.c], v.t))}, `, Q, ` = ${f(evaluar(QL, v.t))}; casillas iguales: ${k} de 3`];
     },
     arrastres: [{ id: 'cursor', etiqueta: 'punto de P en la curva', color: 'c-o',
       donde: v => { const g = EJES().geometria(dosLab(v)); return { x: g.X(v.t), y: g.Y(evaluar([v.a, v.b, v.c], v.t)) }; },
@@ -2461,7 +2488,9 @@
 
   return {
     unidad: 'algebra.polinomios',
-    version: '0.3.0',
+    version: '0.4.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-losetas.js'],
     colores: COLORES,
@@ -2502,16 +2531,18 @@
       { termino: 'grado', formas: ['grado', 'grados'], def: 'En un término, la suma de los exponentes de sus letras.',
         simple: 'Cuántas letras se multiplican en un término.', ver: ['grado absoluto', 'grado relativo'],
         ejemplos: ['3x²y⁴ tiene grado 2 + 4 = 6.', '5x tiene grado 1.', 'El número 7 tiene grado 0: no tiene letras.'] },
-      { termino: 'grado absoluto', formas: ['grado absoluto'], simbolo: 'GA', def: 'El mayor de los grados de los términos de un polinomio.',
-        simple: 'El grado del término que tiene más letras multiplicadas.',
-        ejemplos: ['x³y + x²y⁴: los grados son 4 y 6; el absoluto es 6.', '5x³ − 2x + 1 tiene grado absoluto 3.', 'xy + 7 tiene grado absoluto 2.'] },
+      // Sin la clave de la predicción de la idea 3 (que el absoluto es el mayor de los grados, no su suma): el def y los
+      // ejemplos hablan de un polinomio de un solo término o de una sola letra (auditoría, 19 nov). La regla lo dice.
+      { termino: 'grado absoluto', formas: ['grado absoluto'], simbolo: 'GA', def: 'El grado de un polinomio entero, que sale de los grados de todos sus términos.',
+        simple: 'El grado del polinomio entero, no el de un solo término.',
+        ejemplos: ['4x³y², de un solo término, tiene grado absoluto 5.', 'El polinomio 7 tiene grado absoluto 0.', 'En la academia se escribe G.A.'] },
       { termino: 'grado relativo', formas: ['grado relativo', 'grados relativos'], simbolo: 'GR', def: 'El mayor exponente que tiene una letra elegida en el polinomio.',
         simple: 'El mayor exponente de una sola letra.',
         ejemplos: ['En x³y + x²y⁴, respecto a x es 3.', 'En x³y + x²y⁴, respecto a y es 4.', 'En 2x⁵ + 3, respecto a x es 5.'] },
       // Idea 4: completo, ordenado y homogéneo. Ninguno cuenta las casillas de un polinomio de grado 5 (la predicción).
       { termino: 'completo', formas: ['completo', 'completos'], def: 'Así es un polinomio que tiene todas las potencias de la letra, desde su grado hasta x⁰.',
         simple: 'Sin casillas vacías: está cada potencia, hasta la de x⁰.',
-        ejemplos: ['x³ + x − 1 no lo es: falta x².', 'x² + 4x − 3 sí lo es.', 'x³ − 2 se completa como x³ + 0x² + 0x − 2.'] },
+        ejemplos: ['x³ + x − 1 no lo es: falta x².', 'x² + 4x − 3 sí lo es.', 'x³ − 2 no lo es: le faltan x² y x.'] },
       { termino: 'ordenado', formas: ['ordenado', 'ordenados', 'ordenada'], def: 'Así es un polinomio cuyos exponentes solo bajan, o solo suben, de un término al siguiente.',
         simple: 'Con los exponentes en fila, de mayor a menor o de menor a mayor.',
         ejemplos: ['2x³ + x² − x + 4 lo está: los exponentes bajan.', '5 − x + x³ también: suben.', 'x + x³ − 2 no lo está.'] },
@@ -2519,7 +2550,7 @@
         simple: 'Todos sus términos con el mismo número de letras multiplicadas.',
         ejemplos: ['x² + 3xy − y²: grado 2 en cada uno.', 'x³y + y⁴: grado 4 en los dos.', 'x² + y no lo es: grados 2 y 1.'] },
       // Idea 5: idéntico e idénticamente nulo. Ninguno dice si basta un valor común (la predicción).
-      { termino: 'idéntico', formas: ['idéntico', 'idénticos', 'idénticas'], def: 'Dos polinomios lo son si tienen el mismo coeficiente en cada potencia: valen igual para todo x.',
+      { termino: 'idéntico', formas: ['idéntico', 'idénticos', 'idénticas'], def: 'Dos polinomios lo son si son el mismo polinomio, aunque estén escritos en otro orden.',
         simple: 'El mismo pedido, aunque esté escrito en otro orden.',
         ejemplos: ['x + 2x² y 2x² + x lo son.', '3x − 1 y −1 + 3x lo son.', 'x² + 2x y 2x² + x no lo son.'] },
       { termino: 'idénticamente nulo', formas: ['idénticamente nulo', 'idénticamente nulos'], def: 'Polinomio cuyos coeficientes valen 0 en todas las potencias.',

@@ -56,7 +56,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Se multiplica (x + 4)(x² − x + 1). ¿Cuál es el coeficiente de x² en el producto? Datos: Cada término del primer polinomio multiplica a cada término del segundo. xᵃ · xᵇ = xᵃ⁺ᵇ. Alternativas: A) 4   B) −1   C) −5   D) 3   E) −4",
+      "enunciado": "Se multiplica (x + 4)(x² − x + 1). ¿Cuál es el coeficiente de x² en el producto? Datos: Cada término del primer polinomio multiplica a cada término del segundo. xᵐ · xⁿ = xᵐ⁺ⁿ. Alternativas: A) 4   B) −1   C) −5   D) 3   E) −4",
       "respuesta": "D) 3",
       "pasos": [
         "Dos casillas dan x²; se suman sus coeficientes.",

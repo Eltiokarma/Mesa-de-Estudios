@@ -193,3 +193,17 @@ test('la práctica no repite las predicciones de la unidad', () => {
     assert.ok(!/grado 2 y Q tiene grado 3\. ¿Qué grado tiene P · Q/.test(t), t);
   }
 });
+
+// Corrección del 19 nov (auditoría, M2): cuando se pide el término independiente, «despejaste al revés» habla de x + h = 0.
+test('desplazado: la explicación de despejar al revés dice el x de lo que se pide', () => {
+  let vistos = 0;
+  for (let s = 0; s < 2000 && vistos < 30; s++) {
+    const p = gen.generar(s, { idea: 'valor-numerico' });
+    if (p._datos.tipo !== 'desplazado' || !/término independiente de P\?$/.test(plano(p.pregunta))) continue;
+    const a = p.alternativas.find(x => x.error && x.error.id === 'TAL-DESPLAZA-SIGNO');
+    if (!a) continue;
+    vistos++;
+    assert.match(a.error.explicacion, /= 0 da x/, a.error.explicacion);
+  }
+  assert.ok(vistos >= 5, `solo ${vistos} casos`);
+});

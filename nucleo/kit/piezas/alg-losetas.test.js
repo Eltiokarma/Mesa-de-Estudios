@@ -297,3 +297,28 @@ test('piso: cada tramo del largo por cada tramo del ancho es una pieza; con tope
   }
   assert.equal(ref.size, 1, 'la misma escala y el mismo lugar con cualquier tramo');
 });
+
+// ---------- Correcciones del 19 nov (lector en frío y auditoría de Polinomios) ----------
+test('piso con piezas: false: solo el borde y las marcas de los tramos, sin piezas ni cuentas en el texto alternativo', () => {
+  const d = { objeto: 'piso', largo: [2, 3], ancho: [1, 2], piezas: false }, s = P.dibujar(d), g = P.geometria(d);
+  assert.ok(!/alg-pieza/.test(s) && g.formas.length === 0);
+  assert.equal(g.cortes.length, 2 * 4 + 2 * 2, 'una marca arriba y abajo por cada corte del largo, y a los dos lados por cada corte del ancho');
+  assert.ok(!/losetas|tiras|cuadraditos/.test(P.alt(d)));
+  assert.ok(P.cabe(d));
+});
+test('giro: cada pieza apilada lleva su propio «y dm» (con uno solo parecía que las dos juntas medían y)', () => {
+  for (const a of [1, 2, 3]) assert.equal(P.geometria({ objeto: 'giro', a, b: 3 }).textos.filter(t => t.que === 'medida' && t.txt === 'y dm').length, a + 1);
+});
+test('tamaño con dos filas: el rótulo de cada fila queda más cerca de sus piezas que de las de la otra', () => {
+  for (const extra of [{}, { ladoMax: 3 }, { lado: 3, areas: true }]) {
+    const g = P.geometria(Object.assign({ objeto: 'tamano', filas: [{ nombre: 'P', cuenta: [1, 0, 1], color: 'o' }, { nombre: 'Q', cuenta: [0, 2, 0], color: 'i' }], lado: 1 }, extra));
+    const rq = g.textos.find(t => t.que === 'rotulo' && /^Q/.test(t.txt)), deP = g.formas.filter(f => f.fila === 'fila 1'), deQ = g.formas.filter(f => f.fila === 'fila 2');
+    const arribaQ = Math.min(...deQ.map(f => f.y)), abajoP = Math.max(...deP.map(f => f.y + f.h));
+    assert.ok(arribaQ - rq.y1 < rq.y0 - abajoP, JSON.stringify({ arribaQ, rq: [rq.y0, rq.y1], abajoP }));
+  }
+});
+test('medidas: un término se puede escribir tal como lo dice el enunciado («4²x⁵y⁴»), con sus fichas de letras', () => {
+  const g = P.geometria({ objeto: 'medidas', terminos: [[2, 5, 4, '4²x⁵y⁴']], grado: '?' });
+  assert.equal(g.textos.find(t => t.que === 'termino').txt, '4²x⁵y⁴');
+  assert.equal(g.fichas.length, 9);
+});

@@ -120,3 +120,85 @@ Puntos del expediente que se respetaron:
   - topes de texto vigilados por `teoria.test.js`.
 - **Hipótesis:** jugar con la tabla o el diagrama antes de predecir debería bajar los errores de recíproca (TAL-RECIPROCA) y de división entre x (AL15). Se comprobaría comparando la tasa de esos errores en la predicción con la de «Ahora tú» en la medición del piloto.
 - **Conflictos:** ninguno con el skill. El del repo es el error del lector (pedido 1), que impide abrir una idea por su ruta.
+
+## Polinomios, Etapa 5 (19 nov 2026): códigos TAL- de la unidad rehecha
+
+La unidad `algebra.polinomios` se rehízo en la Etapa 5 (`docs/etapa5/propuesta-algebra.md`; auditoría en
+`rutinas/auditoria/algebra.polinomios.md`). Reemplaza los 13 códigos de la tabla de arriba. Todos son hipótesis de
+diseño, sin dato de prevalencia en alumnos peruanos. Cada uno vive junto a la opción que lo usa, con su `siFuera`, en
+`contenido/teoria/algebra/polinomios.js` (T) o en la práctica `plantillas/polinomios-practica/generador.js` (P). El
+análisis agrupa por (unidad, idea, error): TAL-SIGNO, TAL-PIDE y TAL-RESTA tienen otro sentido en otras unidades.
+Los PO (de `plantillas/polinomios/`), AL7, AL16 y las trampas 44 y 45 de San Marcos siguen con su nombre.
+
+| Código | Qué hace el alumno | Ideas | Dónde |
+| --- | --- | --- | --- |
+| TAL-NO-SEMEJ | Junta términos que no son semejantes (3x + 2x² = 5x³) | 1 | T, P |
+| TAL-SUMA-POT | Al sumar semejantes, también suma los exponentes (x² + x² = x⁴) | 1 | T, P |
+| TAL-SUMA-MULT | Multiplica los coeficientes en vez de sumarlos (2xy + 3xy = 6xy) | 1 | T |
+| TAL-ORDEN | Cree que xy y yx son partes literales distintas | 1 | T, P |
+| TAL-EXP-CRUZ | Junta x²y con xy² | 1 | T, P |
+| TAL-SIGNO | Pierde o cambia un signo | 1, 5, 6 | T, P |
+| TAL-RESTA-PRIMERO | Al restar un polinomio, cambia solo el signo del primer término | 1 | T, P |
+| TAL-RESTA-ORDEN | Resta al revés (Q − P por P − Q) | 1 | T, P |
+| TAL-EXP-DIRECTO | Toma el exponente del otro término sin despejar | 1, 4 | T, P |
+| TAL-COEF-SEMEJ | Cree que semejantes pide coeficientes iguales | 1 | T, P |
+| TAL-UN-GRUPO | Junta un solo grupo de semejantes y deja el otro | 1 | P |
+| TAL-PERIM-MITAD | Para el perímetro suma un largo y un ancho | 1 | P |
+| TAL-DOBLE-UNO | Duplica las x del perímetro pero no los números | 1 | P |
+| TAL-AREA | Da el área (largo por ancho) cuando piden el perímetro | 1 | P |
+| TAL-INDEP-FUERA | Deja fuera el término independiente al evaluar en 1 | 2 | T, P |
+| TAL-IMPAR-POS | Toma una potencia impar de un negativo como positiva | 2 | T |
+| TAL-SIGNO-X | Evalúa en el opuesto del valor dado | 2 | T, P |
+| TAL-SOLO-UNO | De dos valores pedidos, da solo uno | 2 | T, P |
+| TAL-SOLO-OTRO | Da solo el otro de los dos valores | 2 | P |
+| TAL-FACTOR-SIGNO | En la forma factorizada, cambia el signo de cada factor | 2 | T, P |
+| TAL-DATO-REPITE | Responde el valor dado en el enunciado | 2 | T, P |
+| TAL-SIN-K | Evalúa sin el término del coeficiente por hallar | 2 | P |
+| TAL-SIN-CUADRADO | No eleva el lado al cuadrado (la loseta cubre k, no k²) | 2 | P |
+| TAL-CAMBIA-TODO | Multiplica también el término sin x por el lado | 2 | P |
+| TAL-PRINCIPAL | Evalúa solo el primer término | 2 | P |
+| TAL-COEF-VISTOS | Usa los coeficientes de P(x + h) como si fueran los de P | 2 | P |
+| TAL-DESPLAZA | Con P(x + h) dado, evalúa como si fuera P(x) | 2 | T, P |
+| TAL-DESPLAZA-SIGNO | Despeja x al revés en x + h = k | 2 | T, P |
+| TAL-GA-GR | Da el grado absoluto por el relativo, o al revés | 3 | T, P |
+| TAL-LETRA | Mira la otra letra en un grado relativo | 3 | T, P |
+| TAL-SUMA-EXP | Suma los exponentes de una letra en vez de tomar el mayor | 3 | T, P |
+| TAL-COEF-GRADO | Cuenta el exponente del coeficiente en el grado | 3 | T (comentario; el «Así se resuelve» lo explica) |
+| TAL-GRADO-OTRO | Iguala el dato al grado de un término que no es el mayor | 3 | T, P |
+| TAL-EXTREMO | Deja fuera un extremo al contar los valores de n | 3 | T, P |
+| TAL-EXTREMOS | Deja fuera los dos extremos | 3 | T, P |
+| TAL-RESTA | Cuenta q − p valores entre p y q, sin el + 1 | 3 | P |
+| TAL-EXP-NEG | Acepta un exponente negativo en un polinomio | 3 | T (comentario) |
+| TAL-PIDE-PROD | Da m · n cuando piden otra cosa | 3 | P |
+| TAL-COMPLETO | Cree que completar es agregar un solo término | 4 | T, P |
+| TAL-FALTAN | Da los términos que faltan cuando piden el total | 4 | T, P |
+| TAL-X0 | Olvida la casilla de x⁰ al contar los que faltan | 4 | T, P |
+| TAL-X0-DOBLE | Cuenta dos veces la casilla de x⁰ | 4 | P |
+| TAL-HOMOG | Da el grado común cuando piden el exponente | 4 | T, P |
+| TAL-HOMOG-EXP | Iguala exponentes en vez de grados | 4 | T, P |
+| TAL-HOMOG-SIGNO | Suma el exponente de y en vez de restarlo | 4 | T, P |
+| TAL-HOMOG-OTRO | Copia el exponente de x de otro término | 4 | P |
+| TAL-ORDEN-INVERSO | Ordena al revés (creciente por decreciente) | 4 | T, P |
+| TAL-UNVALOR | Cree que un valor común basta para ser idénticos | 5 | T |
+| TAL-COEF | No ve que los coeficientes ya deciden la igualdad | 5 | T |
+| TAL-CUENTA-PIEZAS | Compara cuántas piezas hay y no cuáles | 5 | T |
+| TAL-COEF-Q | Da los coeficientes del otro lado sin despejar | 5 | T, P |
+| TAL-DESPEJA-UNO | Despeja una sola de las letras | 5 | T, P |
+| TAL-DESPEJA-OTRO | Despeja la otra letra y deja la primera sin despejar | 5 | P |
+| TAL-SIGNO-B | Toma un coeficiente sin su signo | 5 | P |
+| TAL-NULO | Pone 0 a las letras y no a los coeficientes | 5 | T, P |
+| TAL-SISTEMA-SIGNO | Arma el sistema con un signo cambiado | 5 | T, P |
+| TAL-GRADO-RESTA | Resta los grados, como al dividir | 6 | T |
+| TAL-UNA-CASILLA | Toma una sola de las casillas que dan esa potencia | 6 | T, P |
+| TAL-OTRA-CASILLA | Toma la otra casilla | 6 | T, P |
+| TAL-COEF-MULT | Multiplica dos coeficientes que no dan esa potencia | 6 | T, P |
+| TAL-POT-GRADO | Olvida la potencia al sumar los grados | 6 | T, P |
+| TAL-POT-MULT | Multiplica por el exponente en vez de elevar | 6 | T, P |
+| TAL-SUMA-VISTOS | Suma los coeficientes que se ven en los factores | 6 | T, P |
+| TAL-SUMA-NO-MULT | Suma los valores de los factores en vez de multiplicarlos | 6 | T, P |
+| TAL-INDEP-SUMA | Suma los términos independientes de los factores | 6 | T, P |
+| TAL-OLVIDA-FACTOR | Deja fuera un factor | 6 | T, P |
+| TAL-COEF-PRINCIPAL | Da el coeficiente principal cuando piden el término independiente | 6 | P |
+| TAL-PIDE | Responde otra cosa que la pedida (un dato, un valor intermedio, la suma por el producto) | 1 a 6 | T, P |
+
+Son 68 códigos; la lista se comparó con los dos archivos el 19 nov. TAL-COEF-GRADO y TAL-EXP-NEG están en el comentario de la idea 3, sin opción propia.

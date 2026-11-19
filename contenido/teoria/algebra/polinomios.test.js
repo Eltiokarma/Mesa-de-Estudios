@@ -1,5 +1,5 @@
 // Pruebas propias de «Polinomios» (además del validador común de contenido/teoria/teoria.test.js). Etapa 5, fases 2 y 3
-// (19 nov): seis ideas, todas reescritas contra el contrato. La unidad todavía no declara calidad: 2 (la marca la
+// (19 nov): seis ideas, todas reescritas contra el contrato. La unidad declara calidad: 2 desde el 19 nov (la marcó la
 // sesión después del lector en frío y del auditor); la última prueba corre el validador como si la tuviera. Al final,
 // las pruebas de las ideas 2 a 6. Para la idea 1:
 //   - el orden de las ideas y los ids publicados;
@@ -73,9 +73,9 @@ const vals = s => PUNTOS.map(p => valor(s, p));
 const igual = (a, b) => JSON.stringify(vals(a)) === JSON.stringify(vals(b));
 
 // ---------- La unidad ----------
-test('seis ideas en el orden de la propuesta; los ids publicados se conservan y la unidad aún no declara calidad 2', () => {
+test('seis ideas en el orden de la propuesta; los ids publicados se conservan y la unidad declara calidad 2', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ['terminos-semejantes', 'valor-numerico', 'grados', 'completo-ordenado', 'igualdad', 'operaciones']);
-  assert.equal(def.calidad, undefined, 'calidad: 2 la marca la sesión después del lector en frío y el auditor');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.ok(def.ideas.length <= 6 && def.septimaIdea === undefined);
   const u = require('../../../catalogo/cursos/algebra.json').unidades.find(x => x.id === 'algebra.polinomios');
   assert.deepEqual(Teoria.problemas(def, { temas: u.temas, semillas: 60 }), []);
@@ -229,9 +229,12 @@ test('idea 1: «Mira» y la regla, rehechos aparte', () => {
   for (const k of [0, 1, 3]) { const ps = ecs[k].split(' = '); for (let i = 1; i < ps.length; i++) assert.ok(igual(ps[i - 1], ps[i]), ecs[k]); }
   assert.equal(ecs[4], '3x + 2x² no es 5x³'); assert.ok(!igual('3x + 2x²', '5x³'));
   assert.ok(igual('−(2x² − x)', '−2x² + x') && plano(I1.regla.ecuacion).includes('−(2x² − x) = −2x² + x'));
-  // Cada letra de la regla se dice en palabras (en la regla o en su condición): a, b y xⁿ.
-  for (const s of ['a y b', 'xⁿ']) assert.ok(I1.regla.condicion.includes(s), s);
-  assert.equal(I1.mira.pasos.length, 5);
+  // Cada letra de la regla se dice en palabras (en la regla o en su condición): a, b y xᵐyⁿ, la parte literal con
+  // varias letras (lector A, 19 nov: con xⁿ solo, la regla no decía si valía para xy).
+  for (const s of ['a y b', 'xᵐyⁿ']) assert.ok(I1.regla.condicion.includes(s), s);
+  // El paso 6 (19 nov) presenta la resta antes de la regla (lector A: −(2x² − x) salía de la nada); su igualdad cuadra.
+  assert.equal(I1.mira.pasos.length, 6);
+  { const ps = ecs[5].split(' = '); for (let i = 1; i < ps.length; i++) assert.ok(igual(ps[i - 1], ps[i]), ecs[5]); assert.ok(ecs[5].includes('− (2x² − x)')); }
   // El dibujo de la regla es el juego con la misión cumplida.
   assert.deepEqual(P.geometria(I1.regla.dibujo.datos).total, [3, 7, 5]);
 });
@@ -467,4 +470,112 @@ test('la unidad entera pasaría el validador con calidad 2 (formato y reglas de 
   const q = Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { semillas: 60 });
   assert.deepEqual(q, [], q.join('\n'));
   assert.deepEqual(Teoria.pendientes(Object.assign({}, def, { calidad: 2 })), [], 'una unidad nueva no agrega excepciones');
+});
+
+// ---------- Correcciones del 19 nov (auditoría, rutinas/auditoria/algebra.polinomios.md, y lector en frío A y B) ----------
+// Cada prueba falla con la versión de antes (copia en el scratchpad de la sesión, e5-cierre-alg/antes/).
+const I = id => def.ideas.find(i => i.id === id);
+const tipo = (id, t, n = 400) => { const o = []; for (let s = 0; s < n; s++) if (s % (id === 'completo-ordenado' || id === 'igualdad' ? 4 : 5) === t) o.push(I(id).ahoraTu.generar(s)); return o; };
+const ahora = c => plano(c.pregunta);
+test('A1: el resuelto del argumento desplazado dice el valor de verdad (decía «P(0) = 99» por 9)', () => {
+  for (const c of tipo('valor-numerico', 4)) {
+    const m = ahora(c).match(/^Si P\(x ([+−]) (\d+)\) = (.+), ¿cuánto vale/); assert.ok(m, ahora(c));
+    const h = (m[1] === '+' ? 1 : -1) * Number(m[2]), Pz = z => valor(m[3], { x: z - h });
+    const sol = plano(c.solucion.ecuacion);
+    for (const [, z, v] of sol.matchAll(/P\(([01])\) = (−?\d+)/g)) assert.equal(Number(v.replace('−', '-')), Pz(Number(z)), `${ahora(c)} → ${sol}`);
+    // Y el «despejaste al revés» habla del valor que se pide: x + h = 0 cuando piden P(0).
+    const rev = c.opciones.find(o => o.error === 'TAL-DESPLAZA-SIGNO');
+    if (rev && /término independiente de P\?$/.test(ahora(c))) assert.match(rev.siFuera, /= 0 da x/, rev.siFuera);
+  }
+});
+test('M2: el siFuera de PO12 en P(1) − P(0) dice lo que da su error: P(1) tomado como P(0)', () => {
+  for (const c of tipo('valor-numerico', 1)) {
+    const m = ahora(c).match(/^Si P\(x\) = (.+), ¿cuánto vale P\(1\) ([+−]) P\(0\)\?$/), p0 = valor(m[1], { x: 0 });
+    const o = c.opciones.find(x => x.error === 'PO12');
+    if (o) assert.equal(Number(o.texto.replace('−', '-')), m[2] === '+' ? 2 * p0 : 0, ahora(c));
+  }
+});
+test('M3: «Así se resuelve» de idénticos: una sola casilla distinta, x = 2 los separa y la figura no trae Q escrito', () => {
+  const R = I('igualdad').resuelve;
+  for (let s = 0; s < 200; s++) {
+    const c = R.generar(s), m = plano(c.enunciado).match(/^¿Son idénticos (.+) y (.+)\?$/);
+    const d = [0, 1, 2, -1].map(x => valor(m[1], { x }) - valor(m[2], { x }));
+    const iguales = d.every(v => v === 0);
+    if (!iguales) {
+      // Una casilla distinta: la diferencia es un solo término c·xᵉ (en x = 0, 1, −1 y 2 lo delata).
+      const e = d[0] !== 0 ? 0 : d[1] === d[3] ? 2 : 1;
+      assert.ok(e === 0 ? d[1] === d[0] && d[3] === d[0] : e === 1 ? d[2] === 2 * d[1] && d[3] === -d[1] : d[2] === 4 * d[1], plano(c.enunciado));
+      assert.notEqual(d[2], 0, `x = 2 no los separa: ${plano(c.enunciado)}`);
+    }
+    const q = P.geometria(c.dibujo.datos).textos.filter(t => t.que === 'dentro' && t.y0 > 0).map(t => t.txt);
+    assert.ok(q.filter(t => t === '?').length === 3, `al empezar, Q va con «?»: ${q}`);
+  }
+});
+test('M1: el glosario no dice la clave de una predicción (también con mayúscula y «para todo x»)', () => {
+  const glo = Glosario.porIdea(def), CLAVE = { grados: /el mayor de|más letras/i, igualdad: /para todo x|no basta|un (solo )?valor/i, 'completo-ordenado': /n \+ 1|\+ 0x/ };
+  def.ideas.forEach((i, k) => {
+    if (!CLAVE[i.id]) return;
+    for (const g of glo[k]) for (const t of [g.def, g.simple, ...g.ejemplos]) assert.ok(!CLAVE[i.id].test(t), `${i.id}, «${g.termino}»: ${t}`);
+  });
+});
+test('valor numérico: la leyenda no dice la respuesta de la misión, y P(x + h) va en la regla con un ejemplo', () => {
+  const v = I('valor-numerico');
+  assert.ok(!/\(4\)/.test(plano(v.juega.leyenda.map(l => [l.s, ' ', l.t]))));
+  assert.ok(!/x \+ h = k/.test(v.regla.texto));
+  assert.ok(plano(v.regla.ecuacion).includes('P(x + 1): P(1) sale con x = 0, porque 0 + 1 = 1'));
+  // Las dos primeras veces, «Ahora tú» evalúa un negativo en un polinomio de grado 2 (lector A: el salto a x³).
+  for (const s of [0, 5]) assert.ok(!/x³/.test(ahora(v.ahoraTu.generar(s))), ahora(v.ahoraTu.generar(s)));
+  assert.ok(/x³/.test(ahora(v.ahoraTu.generar(10))));
+  // La comprobación del resuelto no habla de losetas de 7 dm: el juego va de 2 a 6.
+  for (let s = 0; s < 200; s++) assert.ok(!/losetas de 7 dm/.test(v.resuelve.generar(s).pasos.map(p => p.texto).join(' ')));
+});
+test('grados: la misión dice sus topes, la predicción no trae los grados de los términos y el resuelto dibuja su término', () => {
+  const g = I('grados');
+  assert.match(plano(g.juega.mision.texto), /x hasta 5 e y hasta 3/);
+  assert.ok(!/3, 4 y 0/.test(plano(g.predice.pregunta)));
+  assert.equal(P.geometria(g.predice.dibujo.datos).textos.filter(t => t.que === 'grado').length, 0, 'la figura de Predice no escribe el grado de cada término');
+  for (let s = 0; s < 200; s++) {
+    const c = g.resuelve.generar(s), term = plano(c.enunciado).match(/término (.+)\?$/)[1];
+    assert.equal(P.geometria(c.dibujo.datos).textos.find(t => t.que === 'termino').txt, term, 'la figura escribe el término del enunciado');
+    assert.ok(c.datos.some(x => /coeficiente/.test(plano(x))), 'los datos dicen que el coeficiente no es una letra');
+  }
+});
+test('completo y homogéneo: Lee presenta homogéneo con dos letras, Nox no habla de filas, el casillero baja y la leyenda se ve', () => {
+  const e = I('completo-ordenado');
+  assert.ok(e.lee.tarjetas.some(t => /homogéneo/.test(t.texto) && /xy/.test(t.texto)));
+  assert.ok(!/filas/.test(e.regla.voz));
+  for (let s = 0; s < 200; s++) { const ex = P.geometria(e.resuelve.generar(s).dibujo.datos).exps; assert.deepEqual(ex, [...ex].sort((a, b) => b - a)); }
+  const punteada = e.juega.leyenda.find(l => /punteada/.test(plano(l.s)));
+  const pedido = punteada.t.match(/pedido (.+)$/)[1];
+  assert.ok(e.juega.controles[0].opciones.some(o => o.valor === pedido), 'el pedido de la leyenda está en el juego');
+});
+test('idénticos: el juego mueve m y n (a y b son los coeficientes de la regla), y a₂… se dicen en palabras', () => {
+  const i = I('igualdad');
+  assert.deepEqual(i.juega.controles.map(c => c.id), ['m', 'n']);
+  assert.ok(/a₂, a₁, a₀: coeficientes/.test(i.regla.condicion) && /b₂, b₁, b₀/.test(i.regla.condicion));
+  assert.match(plano(i.predice.pregunta), /x = 1/);
+  assert.match(plano(i.mira.pasos[0].texto), /P\(1\): lo que cubre P con x = 1/);
+});
+test('multiplicar: Lee no trae el piso de la misión, Predice da xᵐ · xⁿ, la regla marca todos los semejantes y trae ejemplos', () => {
+  const o = I('operaciones'), lee = o.lee.tarjetas[0].dibujo.datos;
+  assert.notDeepEqual([lee.largo, lee.ancho], [[2, 1], [1, 3]]);
+  assert.ok(o.predice.datos.some(d => plano(d) === 'xᵐ · xⁿ = xᵐ⁺ⁿ'));
+  assert.equal(o.regla.dibujo.datos.resaltes.length, 4);
+  assert.ok(plano(o.regla.ecuacion).includes('grado de (x² + 1)³ = 3 · 2 = 6') && plano(o.regla.ecuacion).includes('(1) = 3 · (−1) = −3'));
+  // Las figuras de piso de los ejemplos traen solo los tramos: las piezas son el producto, lo que se pide.
+  for (const e of o.ejemplos.filter(x => x.figura && x.figura.datos.objeto === 'piso')) assert.ok(!/alg-pieza/.test(P.dibujar(e.figura.datos)), e.titulo);
+});
+test('ejemplos y resueltos que el lector no siguió: datos que faltaban y cuentas que se ven', () => {
+  const ej = (id, t) => I(id).ejemplos.find(e => e.titulo === t), sol = e => e.solucion.map(s => plano([s.texto, ' ', s.ecuacion || ''])).join(' ');
+  assert.ok(ej('terminos-semejantes', '¿Sumar o multiplicar?').datos.some(d => plano(d).startsWith('x · x = x²')));
+  assert.match(sol(ej('terminos-semejantes', '¿Sumar o multiplicar?')), /x = 2 dan 4 y 4/);
+  assert.ok(ej('valor-numerico', 'Coeficientes sin desarrollar').datos.some(d => /Suma de coeficientes de P: P\(1\)/.test(plano(d))));
+  assert.ok(def.ideas.flatMap(i => i.ejemplos).flatMap(e => e.datos).filter(d => /^Coeficiente:/.test(plano(d))).every(d => /sin letras/.test(plano(d))));
+  assert.match(sol(ej('igualdad', 'Coeficientes con dos letras')), /Sumo las dos primeras/);
+  assert.ok(!/Las dos tiras/.test(sol(ej('operaciones', 'Dos binomios'))));
+  assert.match(sol(ej('operaciones', 'Coeficientes de una potencia')), /\(1 · 4\) · \(4 · 2\) = 32/);
+  // El pedido que se repite va dibujado tantas veces como se repite.
+  for (let s = 0; s < 20; s++) { const c = I('terminos-semejantes').resuelve.generar(s), k = Number(plano(c.enunciado).match(/hace (\d) pedidos/)[1]); assert.equal(c.dibujo.datos.filas.length, k + 1); }
+  // Sin «1b» ni «1a» en el sistema de idénticos.
+  for (const c of tipo('igualdad', 3)) assert.ok(!/(^|[^\d])1[ab]\b/.test(plano(c.solucion.texto)), plano(c.solucion.texto));
 });

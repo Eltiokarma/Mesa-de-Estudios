@@ -32,7 +32,7 @@
  * y el de y turquesa (EY, i) (nunca en un mismo problema con P y Q), y el resultado violeta (R, f), solo en la solución.
  * Lo demás va en tinta. Ni carmín ni verde.
  * Datos (contrato, punto 13): las definiciones y propiedades que se usan (semejantes, P(k), grado, completo, idénticos,
- * xᵃ · xᵇ = xᵃ⁺ᵇ, P(1) y P(0)); nunca el paso hecho ni la respuesta.
+ * xᵐ · xⁿ = xᵐ⁺ⁿ, P(1) y P(0)); nunca el paso hecho ni la respuesta.
  * Errores: los códigos de la teoría (PO de plantillas/polinomios/, hipótesis del proyecto; AL16, de
  * docs/investigacion/algebra-funciones-ideas-erroneas.md; los TAL-*, hipótesis de diseño de la teoría). De todos los
  * errores de un problema van 3 o 4, elegidos para que la correcta no sea la central ni, si es un número, un extremo. Cada
@@ -115,8 +115,8 @@
     nulo: 'Idénticamente nulo (≡ 0): todos sus coeficientes valen 0',
     dist: 'k(x + p) = kx + kp, con k y p números',
     prod: 'Cada término del primer polinomio multiplica a cada término del segundo',
-    pot: 'xᵃ · xᵇ = xᵃ⁺ᵇ',
-    gpot: '(xᵃ)ᵏ = xᵃ·ᵏ',
+    pot: 'xᵐ · xⁿ = xᵐ⁺ⁿ',
+    gpot: '(xᵐ)ᵏ = xᵐ·ᵏ',
     grado1: 'Grado de un polinomio de una letra: su mayor exponente de x',
   };
 
@@ -411,7 +411,7 @@
       correcta: bien,
       errores: [
         en('TAL-DESPLAZA', pide === 'p1' ? Qf(1) : pide === 'p0' ? Qf(0) : Qf(0) + Qf(1), t => `Bien x = 1 o x = 0. Pero lo dado es P(${txtH}): sin despejar x sale ${t}.`),
-        en('TAL-DESPLAZA-SIGNO', pide === 'p1' ? Qf(1 + h) : pide === 'p0' ? Qf(h) : Qf(h) + Qf(1 + h), t => `Bien la idea de cambiar x. Pero ${txtH} = 1 da x = ${z(1 - h)}; al revés sale ${t}.`),
+        en('TAL-DESPLAZA-SIGNO', pide === 'p1' ? Qf(1 + h) : pide === 'p0' ? Qf(h) : Qf(h) + Qf(1 + h), t => (pide === 'p0' ? `Bien la idea de cambiar x. Pero ${txtH} = 0 da x = ${z(-h)}; al revés sale ${t}.` : `Bien la idea de cambiar x. Pero ${txtH} = 1 da x = ${z(1 - h)}; al revés sale ${t}.`)),
         pide === 'suma' ? en('TAL-SOLO-UNO', Pf(1), t => `Bien P(1) = ${t}. Pero falta sumarle P(0).`)
           : en('PO12', pide === 'p1' ? Pf(0) : Pf(1), t => `Bien despejado x. Pero ${t} es el otro: la suma de coeficientes es P(1) y el término independiente, P(0).`),
         en('TAL-COEF-VISTOS', pide === 'p0' ? C : A + B + C + (pide === 'suma' ? C : 0), t => `Bien los coeficientes que se ven. Pero son los de P(${txtH}), no los de P; con ellos sale ${t}.`),
