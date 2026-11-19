@@ -10,6 +10,7 @@
  *   TeoriaReglas.aplicar(def, o, T)  → { fallan, pendientes }: los hallazgos sin excepción y los que una excepción cubre
  *   TeoriaReglas.EXCEPCIONES         → faltas reales del contenido existente, con fecha: la lista de pendientes
  *   TeoriaReglas.REGLAS              → { id: descripción corta } de cada regla
+ *   TeoriaReglas.igualdadesDe(txt)   → las igualdades entre números de un texto, evaluadas (regla igualdad-falsa)
  *
  * o.semillas: cuántas semillas de «Ahora tú» se miran (60 por defecto). o.letras: símbolos que se suman a la tabla de
  * letras ({ símbolo: término }); si no se dan, en Node salen solos del glosario de las unidades que la unidad pide.
@@ -34,6 +35,7 @@
     'datos-consejo': 'Una línea de Datos es equivalencia, valor, constante, definición o fórmula: nunca un consejo.',
     'resuelve-repite': '«Así se resuelve» (sus 4 primeros casos) no trae un caso de los 12 primeros de «Ahora tú».',
     'leyenda-visible': 'Toda letra que nombra la leyenda del juego se ve en el juego: en la figura, la lectura, la consigna, la misión o los controles.',
+    'igualdad-falsa': 'Toda igualdad entre números que ve el alumno se cumple, con el redondeo que admiten los decimales del resultado; si es aproximada, va con «≈».',
   };
 
   // Faltas reales encontradas en las unidades con calidad 2 al escribir cada regla. No son permiso: son la lista de
@@ -92,6 +94,11 @@
     { regla: 'resuelve-repite', unidad: 'quimica.materia-y-energia', idea: 'sustancia-mezcla', motivo: 'resuelve semilla 0 es el caso de «Ahora tú» (semilla 5): «Esta es la lupa de una muestra. ¿Cómo se clasifica?»', fecha: '2026-11-19' },
     { regla: 'resuelve-repite', unidad: 'quimica.materia-y-energia', idea: 'vida-media', motivo: 'resuelve semilla 3 es el caso de «Ahora tú» (semilla 8): «Una fuente de cobalto-60 pasa de 48 g a 12 g en 10,6 años. ¿Cuál es su vida media?»', fecha: '2026-11-19' },
     { regla: 'resuelve-repite', unidad: 'razonamiento-matematico.razonamiento-deductivo', idea: 'si-entonces', motivo: 'resuelve semilla 0 es el caso de «Ahora tú» (semilla 1): «Regla: si un número termina en 0, es par. Se sabe que el número es par. ¿Qué se concluye ', fecha: '2026-11-19' },
+    // igualdad-falsa (Etapa 6, 19 nov)
+    { regla: 'igualdad-falsa', unidad: 'algebra.exponentes-y-productos-notables', idea: 'exponente-fraccionario', en: 'ahoraTu', motivo: 'el siFuera de TAL-FRAC-MEDIO (casoValorFrac) escribe el índice 2 como un número delante de la raíz: «Bien la raíz: 2√9 = 3» se lee 2 · √9 = 6 (también 2√4 = 2 y 2√25 = 5). SUPI[2] es \'\' y `SUPI[n] || n` cae en n; va «√9 = 3»', fecha: '2026-11-19' },
+    { regla: 'igualdad-falsa', unidad: 'fisica.movimiento-circular', idea: 'rapidez-constante-acelera', en: 'ejemplo 7 resuelto', motivo: '(2π)² · 0,25 = π² se ve «2π² · 0,25 = π² m/s²»: cuad(pv(\'2π\')) pone el ² sobre «2π» sin paréntesis, y 2π² · 0,25 es π²/2. Va (2π)²', fecha: '2026-11-19' },
+    { regla: 'igualdad-falsa', unidad: 'fisica.movimiento-circular', idea: 'rapidez-constante-acelera', en: 'ejemplo 13 resuelto', motivo: '(40π)² · 0,25 = 400π² se ve «40π² · 0,25 = 400π² m/s²»: el ² va sobre «40π» sin paréntesis (40π² · 0,25 es 10π²). Va (40π)²', fecha: '2026-11-19' },
+    { regla: 'igualdad-falsa', unidad: 'fisica.movimiento-parabolico-y-circular', idea: 'altura-y-alcance', en: 'ejemplo 15 resuelto', motivo: '«R = 5 · 1,73 = 8,66 m»: con el 1,73 que se ve da 8,65 (8,66 sale de √3). Con más semillas pasa lo mismo en «Ahora tú» (61: «5 · 1,73 = 8,66 m»; 77: «10 · 3,46 = 34,64 m») y en «Así se resuelve» (151: «3 · 3 · 12,47 = 112,24 m»): «≈» o la cuenta con lo que se muestra', fecha: '2026-11-19' },
   ];
 
   // ---------- Texto ----------
@@ -249,6 +256,395 @@
       }
     } catch (e) { /* sin catálogo: la tabla queda con lo de la unidad */ }
     return out;
+  }
+
+  // ---------- Igualdades numéricas escritas (regla igualdad-falsa) ----------
+  // El texto de una ecuación tal como se ve, listo para hacer la cuenta: la fracción entre paréntesis, la potencia con
+  // ^( ), la raíz con √( ). Lo que no es un número que se pueda operar (subíndices, rayas, múltiplos, tachados, vectores)
+  // deja una marca ¤ que ensucia el lado donde está. La base de una potencia va tal cual: { sup: ['2π', '2'] } se ve
+  // «2π²», que es 2·π² (sin paréntesis no es (2π)²).
+  function textoCuenta(p) {
+    if (p === null || p === undefined || p === false) return '';
+    if (typeof p === 'string' || typeof p === 'number') return String(p);
+    if (Array.isArray(p)) return p.map(textoCuenta).join('');
+    if (typeof p !== 'object') return '';
+    if ('v' in p) return String(p.t === undefined ? '' : p.t);
+    if (p.frac) return `((${textoCuenta(p.frac[0])})/(${textoCuenta(p.frac[1])}))`;
+    if (p.sup) return `${textoCuenta(p.sup[0])}^(${textoCuenta(p.sup[1])})`;
+    if (p.sub) return `${textoCuenta(p.sub[0])}¤`;
+    if (p.raiz !== undefined) return `${p.indice !== undefined && p.indice !== null && p.indice !== '' ? `[${textoCuenta(p.indice)}]` : ''}√(${textoCuenta(p.raiz)})`;
+    if (p.par !== undefined) return `(${textoCuenta(p.par)})`;
+    if (p.abs !== undefined) return `‖(${textoCuenta(p.abs)})`;
+    if (p.negrita !== undefined) return textoCuenta(p.negrita);
+    if (p.llave !== undefined) return textoCuenta(p.llave);
+    if (p.vec !== undefined || p.raya !== undefined || p.mult !== undefined || p.tacha !== undefined) return '¤';
+    return p.t !== undefined ? String(p.t) : '';
+  }
+
+  const SUP_CIFRA = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-', '⁺': '' };
+  const FRAC_U = { '½': [1, 2], '⅓': [1, 3], '⅔': [2, 3], '¼': [1, 4], '¾': [3, 4], '⅕': [1, 5], '⅛': [1, 8] };
+  // Las unidades de ángulo, en grados: se pasan a grados para comparar (5° = π/36 rad).
+  const ANGULO = { '°': 1, '′': 1 / 60, '″': 1 / 3600, 'ᵍ': 0.9, 'ᵐ': 0.009, 'ˢ': 0.00009, rad: 180 / Math.PI };
+  // Unidades que van tras un número y un espacio (12 m, 3 m/s², 4 kJ/(kg·°C)). Solo se quitan; no se convierten.
+  const BASES = 'm|g|s|L|N|J|W|V|A|C|Pa|Hz|mol|eV|Ω|F|Wb|cal|K';
+  const ATOMO_C = `(?:(?:k|M|G|m|μ|µ|n|c|d|h|da|p)?(?:${BASES})|min|h|atm|mmHg|uma|u|Å|kWh|ppm|°C|°F|t|mT|μT|µT|nT)`;
+  const UNI_C = `${ATOMO_C}(?:[²³]|\\^\\(?\\d\\)?)?(?:\\s?[/·]\\s?\\(?${ATOMO_C}(?:[²³]|\\^\\(?\\d\\)?)?(?:\\s?·\\s?${ATOMO_C}[²³]?)?\\)?)*`;
+  const RE_UNI_C = new RegExp(`^(?:${UNI_C})(?![\\p{L}\\p{N}_])`, 'u');
+  // Palabras que hacen de operación («15 % de 200», «3 por 4», «12 entre 4») o de función («sen 30°», «MCD(12; 18)»):
+  // el número que tocan no es un lado de la igualdad.
+  const OPERA = new Set(('de del por entre mas más menos veces vez elevado elevada al cuadrado cubo raiz raíz mitad doble triple ' +
+    'tercio tercios cuarto cuartos quinto quintos sexto sextos octavo octavos décimo décimos sobre mod módulo ' +
+    'sen cos tan tg cot ctg cotg sec csc cosec log ln lg exp arcsen arccos arctan mcd mcm MCD MCM CA máx mín max min cada x').split(' '));
+  // «a» no: casi siempre es preposición («opuesto a 60° = 8√3»).
+  const CONECTOR = new Set(['y', 'o', 'e', 'u']);
+  // Lo que ensucia el número que toca (una cifra tapada, el subíndice de una base, un «±», un «…»), y la puntuación que,
+  // pegada después de un número, lo deja limpio.
+  const SUCIO = /[¤±∓…|_☐□▢■◻⬜?#!₀-₉₍₎]/u;
+  const SEGURO = /^[,;.:)»”"’'\]}?—–→⇒]$/u;
+  // Una igualdad que alguien dice o cree («Un compañero dice que √((−5)²) = −5») se cita para discutirla: no se mira.
+  const RE_CITA = /(?<![\p{L}])(?:dice|dicen|dijo|cree|creen|crey[oó]|piensa|piensan|afirma|afirman|asegura|aseguran|propone|proponen|seg[uú]n|anot[oó]|escribi[oó]|sostiene|opina)(?![\p{L}])/iu;
+
+  // Las fichas de un texto: num (v, dec), pi, op (o), rel (=, ≈), uni (u), ang (f), pal (w) y corte (lo demás, que
+  // rompe el tramo), con su posición (i, fin) y si hay un espacio antes (esp).
+  function fichasCuenta(s, puntoSepara) {
+    const out = [];
+    let i = 0;
+    const push = (t, largo, extra) => { out.push(Object.assign({ t, i, fin: i + largo, esp: i > 0 && /\s/.test(s[i - 1]) }, extra)); i += largo; };
+    while (i < s.length) {
+      const c = s[i], resto = s.slice(i), prev = out[out.length - 1];
+      const pegado = prev && prev.fin === i;
+      const trasNumero = prev && (prev.t === 'num' || prev.t === 'pi' || (prev.t === 'op' && prev.o === ')'));
+      let m;
+      if (/\s/.test(c)) { i++; continue; }
+      // Un número: 10 000 (miles con espacio), 0,63 (decimales con coma), 1½ (mixto).
+      if ((m = /^\d{1,3}(?:[    ]\d{3})+(?![\d,])|^\d+(?:,\d+)?/.exec(resto))) {
+        const raw = m[0].replace(/[    ]/g, '');
+        let v = Number(raw.replace(',', '.'));
+        const fr = FRAC_U[s[i + m[0].length]];
+        if (fr) { v += fr[0] / fr[1]; push('num', m[0].length + 1, { v, dec: 0, mixto: true }); continue; }
+        push('num', m[0].length, { v, dec: raw.includes(',') ? raw.split(',')[1].length : 0 });
+        continue;
+      }
+      if (c === 'π') { push('pi', 1); continue; }
+      if ((m = /^[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+/.exec(resto))) {
+        const e = Number([...m[0]].map(x => SUP_CIFRA[x]).join(''));
+        if (trasNumero && pegado && Number.isFinite(e)) { out.push({ t: 'op', o: '^', i, fin: i, esp: false }); push('num', m[0].length, { v: e, dec: 0, exp: true }); } else push('corte', m[0].length, { que: 'sup' });
+        continue;
+      }
+      if (FRAC_U[c]) {
+        const [a, b] = FRAC_U[c];
+        out.push({ t: 'op', o: '(', i, fin: i, esp: /\s/.test(s[i - 1] || '') }, { t: 'num', v: a, dec: 0, i, fin: i }, { t: 'op', o: '⁄', i, fin: i }, { t: 'num', v: b, dec: 0, i, fin: i });
+        push('op', 1, { o: ')' }); continue;
+      }
+      if (trasNumero && (m = /^(?:°(?![CF])|′|″|ᵍ|ᵐ|ˢ)/u.exec(resto))) { push('ang', m[0].length, { f: ANGULO[m[0]], u: m[0] }); continue; }
+      if (trasNumero && c === '%') { push('uni', 1, { u: '%' }); continue; }
+      if (trasNumero && !pegado && (m = /^rad(?![\p{L}\p{N}_/])/u.exec(resto))) { push('ang', 3, { f: ANGULO.rad, u: 'rad' }); continue; }
+      if (trasNumero && !pegado && (m = RE_UNI_C.exec(resto))) { push('uni', m[0].length, { u: m[0].replace(/\s/g, '') }); continue; }
+      if (c === '=' || c === '≈') { push('rel', 1, { r: c }); continue; }
+      // «   ·   »: un punto medio con espacios anchos separa dos cuentas, no multiplica.
+      if (c === '·' && (/\s\s$/.test(s.slice(0, i)) && /^\s\s/.test(s.slice(i + 1)) || (puntoSepara && /\s$/.test(s.slice(0, i)) && /^\s/.test(s.slice(i + 1))))) { push('corte', 1, { que: '·' }); continue; }
+      // «4/3» pegado es una fracción: va antes que el «/» con espacios y que ÷ (0,6 / 4/3 = 0,45).
+      if (c === '/' && trasNumero && pegado && /^[\dπ(]/.test(s[i + 1] || '')) { push('op', 1, { o: '⁄' }); continue; }
+      if ('+−-×·⋅∙*÷/^()√‖'.includes(c)) { push('op', 1, { o: { '-': '−', '⋅': '·', '∙': '·', '*': '·' }[c] || c }); continue; }
+      if (c === '∛') { out.push({ t: 'op', o: '[', i, fin: i }, { t: 'num', v: 3, dec: 0, i, fin: i }, { t: 'op', o: ']', i, fin: i }); push('op', 1, { o: '√' }); continue; }
+      if (c === '–' && /\s/.test(s[i - 1] || '') && /\s/.test(s[i + 1] || '')) { push('op', 1, { o: '−' }); continue; }
+      if ((m = /^\[(\d+)\](?=√)/.exec(resto))) { out.push({ t: 'op', o: '[', i, fin: i, esp: /\s/.test(s[i - 1] || '') }, { t: 'num', v: Number(m[1]), dec: 0, i, fin: i }); push('op', m[0].length, { o: ']' }); continue; }
+      if ((m = /^[\p{L}\p{M}_′]+/u.exec(resto))) { push('pal', m[0].length, { w: m[0] }); continue; }
+      push('corte', 1, { que: c });
+    }
+    // La notación científica es un solo número: 4,1 × 10¹⁴ (así 5 × 10⁻² / 4,41 × 10⁻¹⁹ divide lo que se ve).
+    for (let k = 0; k + 3 < out.length; k++) {
+      const [a, x, d, p] = out.slice(k, k + 4);
+      if (a.t !== 'num' || x.t !== 'op' || !'×·'.includes(x.o) || d.t !== 'num' || d.v !== 10 || d.dec || p.t !== 'op' || p.o !== '^') continue;
+      let q = k + 4, par = false, sg = 1;
+      if (out[q] && out[q].t === 'op' && out[q].o === '(') { par = true; q++; }
+      if (out[q] && out[q].t === 'op' && out[q].o === '−') { sg = -1; q++; }
+      const e = out[q];
+      if (!e || e.t !== 'num' || e.dec) continue;
+      q++;
+      if (par) { if (!(out[q] && out[q].t === 'op' && out[q].o === ')')) continue; q++; }
+      const n = sg * e.v;
+      out.splice(k, q - k, Object.assign({}, a, { v: a.v * Math.pow(10, n), escala: Math.pow(10, n), fin: out[q - 1].fin }));
+    }
+    return out;
+  }
+
+  // Evalúa un lado (sus fichas, sin el «=»). modo 0: la multiplicación sin signo (2π, 3√2) se hace antes que × y ÷;
+  // modo 1: al mismo nivel. Devuelve un número, o null si el lado no es una cuenta. cambia: { ficha: valor } para medir
+  // cuánto mueve la cuenta un decimal redondeado.
+  function evaluarCuenta(ts, modo, cambia) {
+    let i = 0;
+    const es = o => ts[i] && ts[i].t === 'op' && ts[i].o === o;
+    const valor = t => (cambia && cambia.has(t) ? cambia.get(t) : t.v);
+    const abre = t => t && (t.t === 'num' || t.t === 'pi' || (t.t === 'op' && '(√[‖'.includes(t.o)));
+    // Sin signo se multiplica 2π, 2(…), 3√2, (2)(3) y (2)3; dos números seguidos (2 3) no.
+    const sigue = () => abre(ts[i]) && !(ts[i].t === 'num' && !(ts[i - 1] && ts[i - 1].t === 'op' && ts[i - 1].o === ')'));
+    function primario() {
+      const t = ts[i];
+      if (!t) throw 0;
+      if (t.t === 'num') { i++; return valor(t); }
+      if (t.t === 'pi') { i++; return Math.PI; }
+      if (es('(')) { i++; const v = suma(); if (!es(')')) throw 0; i++; return v; }
+      if (es('‖')) { i++; return Math.abs(primario()); }
+      if (es('[')) { i++; const n = ts[i]; if (!n || n.t !== 'num') throw 0; i++; if (!es(']')) throw 0; i++; if (!es('√')) throw 0; i++; const x = potencia(); if (x < 0 && n.v % 2 === 0) throw 0; return Math.sign(x) * Math.pow(Math.abs(x), 1 / n.v); }
+      if (es('√')) { i++; const x = potencia(); if (x < 0) throw 0; return Math.sqrt(x); }
+      throw 0;
+    }
+    function potencia() {
+      let b = primario();
+      while (ts[i] && (ts[i].t === 'uni' || ts[i].t === 'ang')) i++;
+      if (es('^')) { i++; b = Math.pow(b, signo()); }
+      return b;
+    }
+    // modo 2: el denominador de una fracción pegada se lleva lo que sigue sin signo (2/3π es 2/(3π)).
+    // modo 3: el exponente de una fracción pegada es de toda la fracción (3/5² es (3/5)²).
+    function fraccion() {
+      let v = modo === 3 ? primario() : potencia(), fr = false;
+      while (es('⁄')) { i++; fr = true; let w = modo === 3 ? primario() : potencia(); if (modo === 2) while (sigue()) w *= potencia(); if (w === 0) throw 0; v /= w; }
+      if (modo === 3) { while (ts[i] && (ts[i].t === 'uni' || ts[i].t === 'ang')) i++; if (es('^')) { i++; v = Math.pow(v, signo()); } else if (!fr) return v; }
+      return v;
+    }
+    function signo() { if (es('−')) { i++; return -signo(); } if (es('+')) { i++; return signo(); } return fraccion(); }
+    function pegado() { let v = signo(); if (modo !== 1) while (sigue()) v *= fraccion(); return v; }
+    function producto() {
+      let v = pegado();
+      for (;;) {
+        if (es('×') || es('·')) { i++; v *= pegado(); continue; }
+        if (es('÷') || es('/')) { i++; const w = pegado(); if (w === 0) throw 0; v /= w; continue; }
+        if (modo === 1 && sigue()) { v *= fraccion(); continue; }
+        return v;
+      }
+    }
+    function suma() { let v = producto(); for (;;) { if (es('+')) { i++; v += producto(); } else if (es('−')) { i++; v -= producto(); } else return v; } }
+    try { const v = suma(); return i === ts.length && Number.isFinite(v) ? v : null; } catch (e) { return null; }
+  }
+
+  // ¿Un lado es un solo número (−2,67π, 25 %, 5,56ᵍ, 4,1 × 10¹⁴, 12,5 m)?
+  const suelto = ts => ts.filter(t => t.t === 'num').length === 1 && ts.every(t => t.t === 'num' || t.t === 'pi' || t.t === 'uni' || t.t === 'ang' || (t.t === 'op' && (t.o === '−' || t.o === '+') && t === ts[0])) && ts.filter(t => t.t === 'pi').length <= 1;
+  // Cuánto puede moverse la cuenta de un lado por sus decimales redondeados: media unidad de la última cifra de cada
+  // número con decimales (en su escala: 4,1 × 10¹⁴ se mueve 0,05 × 10¹⁴).
+  // Un número suelto entero (12 m) también está redondeado a la unidad.
+  function holgura(ts, modo) {
+    const v0 = evaluarCuenta(ts, modo);
+    if (v0 === null) return 0;
+    const unNumero = suelto(ts);
+    let h = 0;
+    for (const t of ts) {
+      if (t.t !== 'num' || t.exp || t.mixto || (!t.dec && !unNumero)) continue;
+      const d = 0.5 * Math.pow(10, -t.dec) * (t.escala || 1);
+      const v1 = evaluarCuenta(ts, modo, new Map([[t, t.v + d]])), v2 = evaluarCuenta(ts, modo, new Map([[t, t.v - d]]));
+      h += Math.max(v1 === null ? 0 : Math.abs(v1 - v0), v2 === null ? 0 : Math.abs(v2 - v0));
+    }
+    return h;
+  }
+  // ¿b es a por 10, 100, 1000… (o entre), con el redondeo de b?
+  const porPotenciaDe10 = (a, b, tol) => { for (let k = -12; k <= 12; k++) if (k && Math.abs(a * Math.pow(10, k) - b) <= tol * (1 + 1e-9) + 1e-9 * Math.abs(b)) return true; return false; };
+
+  // Las igualdades de un texto: [{ texto, a, b, falsa, redondeo }]. a y b son los dos lados; falsa: no se cumplen ni con
+  // el redondeo que admite lo escrito; redondeo: se cumplen solo redondeando.
+  function igualdadesDe(s, puntoSepara) {
+    const t = fichasCuenta(s, puntoSepara), out = [];
+    const enCuenta = x => x.t === 'num' || x.t === 'pi' || x.t === 'op' || x.t === 'uni' || x.t === 'ang' || x.t === 'rel';
+    const BIN = '+×·÷/⁄^';
+    let k = 0;
+    while (k < t.length) {
+      if (!enCuenta(t[k])) { k++; continue; }
+      let z = k;
+      while (z < t.length && enCuenta(t[z])) z++;
+      const tramo = t.slice(k, z), antes = t[k - 1], despues = t[z];
+      const ia = k, iz = z;
+      k = z;
+      if (!tramo.some(x => x.t === 'rel' && x.r === '=')) continue;
+      if (RE_CITA.test(s.slice(0, tramo[0].i).split(/[.;?!¿¡]\s/).pop())) continue;
+      const lados = [[]], rels = [];
+      for (const x of tramo) { if (x.t === 'rel') { rels.push(x.r); lados.push([]); } else lados[lados.length - 1].push(x); }
+      // Lo que va antes del tramo: ¿el primer lado sigue una cuenta que no es de números? («P(0)», «x − 3», «sen 30°»,
+      // «15 % de 200», «2 : 3», «10,5 m + rectángulo 20,4 m»).
+      const sucioIzq = (() => {
+        if (!antes) return false;
+        if (antes.fin === tramo[0].i && antes.t !== 'corte') return true;
+        if (antes.t === 'pal') {
+          let q = ia - 1; const ws = [];
+          while (q >= 0 && t[q].t === 'pal' && ws.length < 4) ws.push(t[q--].w);
+          const pp = t[q];
+          if (pp && pp.t === 'op' && pp.o !== ')') return true;
+          if (pp && ((pp.t === 'num' && ws.every(w => CONECTOR.has(w))) || ((pp.t === 'num' || pp.t === 'uni' || pp.t === 'ang') && ws.some(w => OPERA.has(w))))) return true;
+          const w = antes.w;
+          return OPERA.has(w) || OPERA.has(w.toLowerCase()) || (w.length === 1 && !CONECTOR.has(w)) || /[_′\p{M}]/u.test(w);
+        }
+        if (antes.t === 'corte') {
+          if (SUCIO.test(antes.que)) return true;
+          // Solo la puntuación de una frase deja limpio el lado; un signo propio («2 ★ (−1)», «5 ∗ 3») es otra operación.
+          if (!/^[(«"“¿¡\[{—–→⇒;,:.<>≤≥≠·]$/.test(antes.que)) return true;
+          const pp = t[ia - 2];
+          if (/[.:,]/.test(antes.que) && pp && (pp.t === 'num' || (pp.t === 'op' && pp.o === ')')) && (antes.que === ':' || pp.fin === antes.i)) return true;
+        }
+        return false;
+      })();
+      // Lo que va después: «2x», «8☐», «1054₍₆₎», «= 20 % de 50», «= 400 T», «3 : 4».
+      const sucioDer = (() => {
+        if (!despues) return false;
+        const ult = tramo[tramo.length - 1];
+        if (despues.i === ult.fin) {
+          if (despues.t === 'pal') return true;
+          if (despues.t === 'corte' && !SEGURO.test(despues.que)) return true;
+          if (despues.t === 'corte' && /[.,:]/.test(despues.que)) { const nn = t[iz + 1]; if (nn && nn.t === 'num' && nn.i === despues.fin) return true; }
+        }
+        if (despues.t === 'pal') {
+          let q = iz; const ws = [];
+          while (q < t.length && t[q].t === 'pal' && ws.length < 4) ws.push(t[q++].w);
+          const nn = t[q];
+          if (nn && nn.t === 'op' && BIN.includes(nn.o)) return true;
+          const w = despues.w;
+          if (/^en$/i.test(w) && t[iz + 1] && t[iz + 1].t === 'pal' && /^base/i.test(t[iz + 1].w)) return true; // «1/4 = 0,13 en base 6»
+          return OPERA.has(w) || OPERA.has(w.toLowerCase()) || (w.length === 1 && !CONECTOR.has(w));
+        }
+        if (despues.t === 'corte' && despues.que === ':') { const nn = t[iz + 1]; if (nn && nn.t === 'num') return true; }
+        if (despues.t === 'corte' && !/^[)»”"’'\]},;.:?!—–→⇒<>≤≥≠·]$/.test(despues.que)) return true;
+        return false;
+      })();
+      // Paréntesis: el primer lado puede abrir uno que no cierra («(2 + 3 = 5)»), y el último cerrar uno que no abrió.
+      const balance = ts => ts.reduce((b, x) => b + (x.t === 'op' && x.o === '(' ? 1 : x.t === 'op' && x.o === ')' ? -1 : 0), 0);
+      if (lados[0][0] && lados[0][0].t === 'op' && lados[0][0].o === '(' && balance(lados[0]) > 0) lados[0] = lados[0].slice(1);
+      const u = lados.length - 1, fin = lados[u];
+      if (fin.length && fin[fin.length - 1].t === 'op' && fin[fin.length - 1].o === ')' && balance(fin) < 0) lados[u] = fin.slice(0, -1);
+      const unidadesTramo = new Set(tramo.filter(x => x.t === 'uni').map(x => x.u));
+      const limpio = (ts, j) => {
+        if (!ts.length || !ts.some(x => x.t === 'num' || x.t === 'pi') || balance(ts) !== 0) return false;
+        if (j === 0 && sucioIzq) return false;
+        if (j === u && sucioDer) return false;
+        const a = ts[0], z = ts[ts.length - 1];
+        if (a.t === 'op' && (BIN.includes(a.o) || a.o === ')')) return false;
+        // «a − 1 = 3»: un menos seguido de espacio resta algo que no es número; el signo de un número va pegado (−14).
+        if (a.t === 'op' && a.o === '−' && ts[1] && ts[1].esp) return false;
+        if (z.t === 'op' && z.o !== ')') return false;
+        // Unidades que se cancelan (60° · π/180°): no se sabe qué queda.
+        if (ts.some(x => x.t === 'op' && '/÷⁄'.includes(x.o)) && ts.filter(x => x.t === 'uni' || x.t === 'ang').length >= 2) return false;
+        return true;
+      };
+      for (let j = 0; j < rels.length; j++) {
+        if (rels[j] !== '=') continue;
+        const A = lados[j], B = lados[j + 1];
+        if (!limpio(A, j) || !limpio(B, j + 1)) continue;
+        const uA = new Set(A.filter(x => x.t === 'uni').map(x => x.u)), uB = new Set(B.filter(x => x.t === 'uni').map(x => x.u));
+        const gA = new Set(A.filter(x => x.t === 'ang').map(x => x.f)), gB = new Set(B.filter(x => x.t === 'ang').map(x => x.f));
+        if ((gA.size || gB.size) && (uA.size || uB.size)) continue;
+        if (gA.size > 1 || gB.size > 1) continue;
+        // Dos números sueltos («queda 5 = 9», «360° = 0°», «1 nm = 1000 pm») dicen otra cosa que una cuenta; si son
+        // dos medidas de ángulo en unidades distintas, es una conversión y se mira.
+        if (suelto(A) && suelto(B) && !(gA.size && gB.size && [...gA][0] !== [...gB][0])) continue;
+        // Unidades: las mismas a los dos lados, o una sola en un lado y ninguna en el otro si ese otro es la cuenta
+        // («2 · 3 = 6 m») y el tramo no cambia de unidad («30 m/s = 30 · 3600/1000 = 108 km/h»).
+        const mismas = [...uA].every(x => uB.has(x)) && [...uB].every(x => uA.has(x));
+        const cuenta = ts => ts.some(x => x.t === 'op' && x.o !== '(' && x.o !== ')' && !(x === ts[0] && x.o === '−'));
+        const sinU = uA.size ? B : A;
+        if (!mismas && !((uA.size + uB.size === 1) && cuenta(sinU) && unidadesTramo.size === 1)) continue;
+        // Ángulos: cada lado a grados; un lado sin unidad frente a uno con ella va en radianes si trae π y, si no, en la
+        // unidad del otro lado.
+        let fA = gA.size ? [...gA][0] : 1, fB = gB.size ? [...gB][0] : 1;
+        if (gA.size !== gB.size) { const sin = gA.size ? B : A, f = sin.some(x => x.t === 'pi') ? ANGULO.rad : (gA.size ? fA : fB); if (gA.size) fB = f; else fA = f; }
+        let mejor = null;
+        // «5/15 = 33,33 %» y «16/160 · 100 = 10 %»: el % de un solo lado vale como «entre 100» o como unidad.
+        const pc = (uA.has('%') !== uB.has('%')) ? [1, 100] : [1];
+        for (const modo of [0, 1, 2, 3]) for (const q of pc) {
+          const va = evaluarCuenta(A, modo), vb = evaluarCuenta(B, modo);
+          if (va === null || vb === null) continue;
+          const a = va * fA * (uB.has('%') ? q : 1), b = vb * fB * (uA.has('%') ? q : 1);
+          // El lado de la derecha es el resultado: se redondea con sus decimales. El de la izquierda, si es una cuenta,
+          // se hace con los números tal como se ven (2 · 0,63 es 1,26, aunque 0,63 venga de 0,625).
+          const tol = Math.max(suelto(A) ? holgura(A, modo) * fA * (uB.has('%') ? q : 1) : 0, holgura(B, modo) * fB * (uA.has('%') ? q : 1));
+          const d = Math.abs(a - b), eps = 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+          const r = { a, b, va, vb, tol, modo, falsa: d > tol * (1 + 1e-9) + eps, redondeo: d > eps && d <= tol * (1 + 1e-9) + eps };
+          if (!mejor || (mejor.falsa && !r.falsa) || (mejor.redondeo && !r.falsa && !r.redondeo)) mejor = r;
+        }
+        if (!mejor) continue;
+        // Dos redondeos que no valen con «=» (auditorías de Movimiento circular, M4, y Ángulo trigonométrico, M1): el
+        // coeficiente de π («8π/3 = 2,67π»: si π queda escrita, la fracción también) y el paso de una unidad de ángulo a
+        // otra («5° = 5,56ᵍ»). Van con «≈» o exactos.
+        if (mejor.redondeo) {
+          const piDecimal = ts => suelto(ts) && ts.some(x => x.t === 'pi') && ts.some(x => x.t === 'num' && x.dec > 0);
+          const conversion = gA.size && gB.size && [...gA][0] !== [...gB][0] && suelto(A) && suelto(B);
+          if (piDecimal(B) || (suelto(A) && piDecimal(A)) || conversion) Object.assign(mejor, { falsa: true, redondeo: false, porRedondeo: piDecimal(B) || piDecimal(A) ? 'pi' : 'angulo' });
+        }
+        // La cuenta de la izquierda con un número redondeado (5 · 1,73 = 8,66, con 1,73 por √3): cuadraría con «≈».
+        if (mejor.falsa && !mejor.porRedondeo && !suelto(A) && Math.abs(mejor.a - mejor.b) <= (mejor.tol + holgura(A, mejor.modo) * fA) * (1 + 1e-9)) mejor.porEntrada = A.filter(x => x.t === 'num' && x.dec > 0).map(x => s.slice(x.i, x.fin));
+        // Un factor de 10, 100, 1000… (con un 1 % de holgura) y unidades de por medio es un cambio de prefijo (0,368 mm/s
+        // calculado en m/s): no se sabe en qué unidad va la cuenta.
+        if (mejor.falsa && (uA.size || uB.size || (despues && despues.t === 'pal' && j + 1 === u)) && porPotenciaDe10(mejor.a, mejor.b, Math.max(mejor.tol, 0.01 * Math.abs(mejor.b)))) continue;
+        out.push(Object.assign({ texto: s.slice(A[0].i, B[B.length - 1].fin).trim(), desde: A[0].i, hasta: B[B.length - 1].fin }, mejor));
+      }
+    }
+    // «2² = 4 · 3² = 9 · 5² = 25»: el punto medio separa una lista de igualdades. Si leyéndolo así todas se cumplen,
+    // las que fallaban no cuentan.
+    if (!puntoSepara && out.some(h => h.falsa)) {
+      const otra = igualdadesDe(s, true);
+      return out.filter(h => {
+        if (!h.falsa) return true;
+        const dentro = otra.filter(o => o.desde < h.hasta && h.desde < o.hasta);
+        return dentro.length < 2 || dentro.some(o => o.falsa);
+      });
+    }
+    return out;
+  }
+
+  // El texto de una igualdad para el mensaje, como se ve: 8/3 y no ((8)/(3)), π² y no π^(2).
+  const SUP_DE = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '−': '⁻', '-': '⁻' };
+  function legible(s) {
+    let t = String(s), antes;
+    do { antes = t; t = t.replace(/\(\(([^()]*)\)\/\(([^()]*)\)\)/g, (m, a, b) => `${/[\s+−]/.test(a) ? `(${a})` : a}/${/[\s+−·]/.test(b) ? `(${b})` : b}`); } while (t !== antes);
+    return t.replace(/\^\(([−-]?\d+)\)/g, (m, e) => [...e].map(c => SUP_DE[c]).join('')).replace(/\[3\]√/g, '∛').replace(/\[2\]√/g, '√').replace(/‖\(([^()]*)\)/g, '|$1|').replace(/¤/g, '…');
+  }
+  // Un número para el mensaje: coma decimal, hasta seis cifras.
+  const numTxt = v => String(Number(v.toPrecision(6))).replace('-', '−').replace('.', ',');
+
+  // El mensaje de una igualdad falsa, según de dónde sale el desajuste.
+  function mensajeIgualdad(h) {
+    const t = `«${legible(h.texto)}»`;
+    if (h.porRedondeo === 'pi') return `${t} redondea con «=» el número que acompaña a π: con π escrita va la fracción exacta (8π/3, no 2,67π); si no, «≈»`;
+    if (h.porRedondeo === 'angulo') return `${t} pasa de una unidad de ángulo a otra redondeando: con «=» va el valor exacto; si no, «≈»`;
+    if (h.porEntrada) return `${t} no se cumple con los números que se ven: la cuenta da ${numTxt(h.va)}. ${h.porEntrada.join(', ')} ${h.porEntrada.length > 1 ? 'están redondeados' : 'está redondeado'}: escribe «≈» o haz la cuenta con lo que se muestra`;
+    return `${t} no se cumple tal como se lee: la izquierda da ${numTxt(h.va)} y la derecha, ${numTxt(h.vb)}`;
+  }
+  // Las igualdades falsas de cada texto ya leído: las semillas y los casos del juego repiten muchos textos.
+  const MEMO_IG = new Map();
+  // Junta las igualdades falsas de muchos textos y las da por sitio (la semilla o el caso del juego no separan): una
+  // línea por sitio, con el primer caso y cuántas igualdades falsas más hay ahí.
+  function juntaIgualdades() {
+    const sitios = new Map(), vistas = new Set();
+    return {
+      leer(donde, x) {
+        if (x === undefined || x === null || x === false) return;
+        const s = textoCuenta(x);
+        if (!s.includes('=')) return;
+        const sitio = donde.replace(/ (?:semilla \d+|caso \{.*\})$/, '');
+        if (!MEMO_IG.has(s)) { if (MEMO_IG.size > 50000) MEMO_IG.clear(); MEMO_IG.set(s, igualdadesDe(s).filter(h => h.falsa)); }
+        for (const h of MEMO_IG.get(s)) {
+          if (vistas.has(`${sitio}|${h.texto}`)) continue;
+          vistas.add(`${sitio}|${h.texto}`);
+          if (sitios.has(sitio)) sitios.get(sitio).mas++;
+          else sitios.set(sitio, { donde, h, mas: 0 });
+        }
+      },
+      informar(mal) {
+        for (const { donde, h, mas } of sitios.values()) mal(donde, `${mensajeIgualdad(h)}${mas ? ` (y ${mas} igualdad${mas > 1 ? 'es' : ''} falsa${mas > 1 ? 's' : ''} más en el mismo sitio)` : ''}`);
+      },
+    };
+  }
+  // Lo que se lee en el juego (o en una mesa del laboratorio): su lectura en cada caso de la grilla (hasta 3000 casos;
+  // si son más, uno de cada tantos, parejo), sin repetir textos.
+  function lecturasDe(J, leer, donde, T) {
+    if (!J || typeof J.lectura !== 'function') return;
+    let g = [];
+    try { g = T.grilla(J.controles || []); } catch (e) { return; }
+    const paso = Math.max(1, Math.ceil(g.length / 3000)), vistas = new Set();
+    for (let i = 0; i < g.length; i += paso) {
+      let l;
+      try { l = J.lectura(g[i]); } catch (e) { continue; }
+      const k = textoCuenta(l);
+      if (vistas.has(k)) continue;
+      vistas.add(k);
+      leer(`${donde} caso ${JSON.stringify(g[i])}`, l);
+    }
   }
 
   // ---------- Las reglas ----------
@@ -529,7 +925,66 @@
         }
         if (faltan.length) mal('leyenda-visible', `${d} juega leyenda`, `nombra ${faltan.map(x => `«${x}»`).join(', ')}, que no se ve en el juego (ni en la figura, la lectura, la consigna, la misión o los controles; se miró el inicio, los extremos y una muestra de casos)`);
       }
+
+      // --- igualdad-falsa: toda igualdad entre números que ve el alumno se cumple ---
+      // Lee, el juego (consigna, voz, misión, leyenda y la lectura en toda su grilla), Predice con sus siFuera, Mira, la
+      // regla, los ejemplos (enunciado, datos, alternativas, resuelto y respuesta), y «Así se resuelve» y «Ahora tú» en
+      // las semillas del validador (opciones, siFuera y solución).
+      const ig = juntaIgualdades(), leer = ig.leer;
+      ((idea.lee && idea.lee.tarjetas) || []).forEach((t, i) => { if (t) { leer(`${d} Lee tarjeta ${i + 1}`, t.texto); leer(`${d} Lee tarjeta ${i + 1}`, t.ecuacion); } });
+      leer(`${d} juega`, J.consigna); leer(`${d} juega`, J.voz);
+      if (J.mision) ['texto', 'bien', 'pista'].forEach(k => leer(`${d} misión`, J.mision[k]));
+      (J.leyenda || []).forEach(x => x && leer(`${d} juega leyenda`, x.t));
+      lecturasDe(J, leer, `${d} juega lectura`, T);
+      if (P) {
+        leer(`${d} predice`, P.pregunta);
+        (P.datos || []).forEach(x => leer(`${d} predice datos`, x));
+        (P.opciones || []).forEach(x => { if (x) { leer(`${d} predice opción`, x.texto); leer(`${d} predice siFuera`, x.siFuera); } });
+        leer(`${d} predice`, P.coincide); leer(`${d} predice`, P.noCoincide);
+      }
+      ((idea.mira && idea.mira.pasos) || []).forEach((p, i) => { if (p) { leer(`${d} Mira paso ${i + 1}`, p.texto); leer(`${d} Mira paso ${i + 1}`, p.ecuacion); } });
+      if (idea.regla) ['texto', 'ecuacion', 'condicion'].forEach(k => leer(`${d} regla`, idea.regla[k]));
+      ejemplos.forEach((e, i) => {
+        const de = `${d} ejemplo ${i + 1}`;
+        leer(de, e.enunciado);
+        (e.datos || []).forEach(x => leer(`${de} datos`, x));
+        (Array.isArray(e.alternativas) ? e.alternativas : []).forEach(x => leer(`${de} alternativas`, x));
+        (e.solucion || []).forEach(p => { if (p) { leer(`${de} resuelto`, p.texto); leer(`${de} resuelto`, p.ecuacion); } });
+        leer(`${de} respuesta`, e.respuesta);
+      });
+      const resueltos = casosR.slice();
+      if (idea.resuelve && typeof idea.resuelve.generar === 'function') for (let s = 12; s < N; s++) { try { const c = idea.resuelve.generar(s); if (c && c.enunciado) resueltos.push([s, c]); } catch (e) { /* lo dice el validador */ } }
+      for (const [s, c] of resueltos) {
+        const de = `${d} resuelve semilla ${s}`;
+        leer(de, c.enunciado); (c.datos || []).forEach(x => leer(de, x));
+        (c.pasos || []).forEach(p => { if (p) { leer(de, p.texto); leer(de, p.ecuacion); } });
+        leer(de, c.respuesta);
+      }
+      for (const [s, c] of casosAT) {
+        const de = `${d} ahoraTu semilla ${s}`;
+        leer(de, c.pregunta); (c.datos || []).forEach(x => leer(de, x));
+        c.opciones.forEach(x => { if (x) { leer(de, x.texto); leer(de, x.siFuera); } });
+        if (c.solucion) { leer(de, c.solucion.texto); leer(de, c.solucion.ecuacion); }
+      }
+      ig.informar((donde, que) => mal('igualdad-falsa', donde, que));
     });
+
+    // igualdad-falsa en lo que es de toda la unidad: el glosario y las mesas del laboratorio (sus retos y su lectura).
+    const igU = juntaIgualdades();
+    for (const g of def.glosario || []) {
+      if (!g) continue;
+      const dg = `${def.unidad} glosario «${g.termino}»`;
+      igU.leer(dg, g.def); igU.leer(dg, g.simple);
+      (Glosario ? Glosario.ejemplosDe(g) : g.ejemplos || []).forEach(x => igU.leer(dg, x));
+    }
+    for (const m of def.laboratorio || []) {
+      if (!m) continue;
+      const dm = `${def.unidad} mesa ${m.id}`;
+      igU.leer(dm, m.consigna); igU.leer(dm, m.voz);
+      (m.invitaciones || []).forEach(x => { if (x) { igU.leer(`${dm} reto`, x.texto); igU.leer(`${dm} reto`, x.bien); } });
+      lecturasDe(m, igU.leer, `${dm} lectura`, T);
+    }
+    igU.informar((donde, que) => out.push({ regla: 'igualdad-falsa', idea: '', donde, que }));
 
     // --- (c) letra-repartida, en toda la unidad ---
     const reparto = (casos, que) => {
@@ -577,5 +1032,5 @@
     return EXCEPCIONES.filter(x => x.unidad === def.unidad && !todos.some(h => cubre(x, def, h)));
   }
 
-  return { REGLAS, EXCEPCIONES, revisar, aplicar, sobran, letrasDeRequiere, liso, preparar, simbolosDe, definido, clavesDe, escala };
+  return { REGLAS, EXCEPCIONES, revisar, aplicar, sobran, letrasDeRequiere, liso, preparar, simbolosDe, definido, clavesDe, escala, igualdadesDe, textoCuenta };
 });

@@ -222,3 +222,51 @@ test('cada regla tiene su descripción y cada excepción, su regla, su unidad, s
     assert.match(x.fecha || '', /^\d{4}-\d{2}-\d{2}$/, JSON.stringify(x));
   }
 });
+
+// igualdad-falsa (Etapa 6, 19 nov): las igualdades falsas que más repitieron los auditores de la Etapa 5.
+test('igualdad-falsa: lee una igualdad entre números y dice si se cumple, con el redondeo que admite lo escrito', () => {
+  const falsas = s => R.igualdadesDe(R.textoCuenta(s)).filter(h => h.falsa).map(h => h.texto);
+  // Las que violan (auditorías de Divisibilidad A1, Movimiento circular M4 y M7, Ángulo trigonométrico M1).
+  assert.deepEqual(falsas('Desde las unidades: −14, y −14 + 11 = 8.'), ['−14 + 11 = 8']);
+  assert.deepEqual(falsas('x = 2 · 0,63 = 1,25'), ['2 · 0,63 = 1,25'], 'con el 0,63 que se ve, da 1,26');
+  assert.deepEqual(falsas(['s = ', f('2π/3'), ' · 4 = ', f('2,67π m')]), ['2π/3 · 4 = 2,67π m'], 'con π escrita, el coeficiente va exacto');
+  assert.deepEqual(falsas('θ = 5° = 5,56ᵍ'), ['5° = 5,56ᵍ'], 'pasar de unidad redondeando va con ≈');
+  assert.deepEqual(falsas(['a = ', { sup: ['2π', '2'] }, ' · 0,25 = π² m/s²']), ['2π^(2) · 0,25 = π² m/s²'], 'sin paréntesis, 2π² es 2 · π²');
+  assert.deepEqual(falsas('Bien la raíz: 2√9 = 3.'), ['2√9 = 3']);
+  assert.deepEqual(falsas('180° − 50° = 120°'), ['180° − 50° = 120°']);
+  const entrada = R.igualdadesDe('R = 5 · 1,73 = 8,66 m').find(h => h.falsa);
+  assert.deepEqual(entrada.porEntrada, ['1,73'], 'cuadra solo si 1,73 está redondeado: el mensaje lo dice');
+  // Las que cumplen: el resultado redondeado a sus decimales, ≈, π exacta, unidades, notación científica.
+  for (const s of ['−14 + 22 = 8', '2 · 0,625 = 1,25', 's = 2π/3 · 4 = 8π/3 m', '2π/3 · 4 ≈ 2,67π m', 'a = √(2² + 4²) = 4,47 m/s²',
+    '1 vuelta = 2π rad = 360°', 'θ = 5° ≈ 5,56ᵍ = π/36 rad', 'E = 4,5 × 10⁻³ · 9 × 10¹⁶ = 4,1 × 10¹⁴ J', '3 · 4 m = 12 m', '0,6 / 4/3 = 0,45',
+    '5 ÷ (1 − 3/4) = 5 ÷ 1/4 = 20', '((16)/(160)) · 100 = 10 %', '(5)/(15) = 33,33 %', '((3)/(2)) = 1½', '120° = 2π/3', '7,07 · 1,41 = 10 m']) {
+    assert.deepEqual(falsas(s), [], s);
+  }
+  assert.deepEqual(falsas(['a = ', { sup: [{ par: '2π' }, '2'] }, ' · 0,25 = π² m/s²']), []);
+  // No se leen: un lado con letras o con una operación en palabras, unidades que no coinciden, dos números sueltos, lo
+  // que alguien dice, una lista con «·», bases, cifras tapadas, operadores propios, razones y cambios de prefijo.
+  for (const s of ['x − 3 = 4', 'x = −3: P(0) = 99', '2x + 3 = 7', 'opuesto a 60° = 8√3', '15 % de 200 = 30', 'sen 30° = 0,5', '3 por 4 = 13',
+    '10,5 m + rectángulo 20,4 m = 30,9 m', '1 km = 1000 m', '30 m/s = (30 · 3600)/(1000) = 108 km/h', 'queda 5 = 9', '360° = 0°',
+    'Un compañero dice que √((−5)²) = −5.', '2² = 4 · 3² = 9 · 5² = 25', '250 = 1054₍₆₎', '1/4 = 0,13 en base 6', '36 + 47 = 8☐',
+    '2 ★ (−1) = 0', '2 : 3 = 4 : 6', 'v = 5 / (8,5×10²⁸ · 1,6×10⁻¹⁹ · 10⁻⁶) = 0,368 mm/s', '8000 + 6000 = 400 T', '33   ·   18 + 11 = 29']) {
+    assert.deepEqual(falsas(s), [], s);
+  }
+});
+
+test('igualdad-falsa: en el resuelto, «Ahora tú» en sus semillas, el siFuera y la lectura del juego en su grilla', () => {
+  const at = suma => ({ generar: s => ({ pregunta: `Caso ${s}: ¿cuánto es ${s} + 3?`, opciones: [{ id: 'c', texto: String(s + 3), correcta: true },
+    { id: 'a', texto: String(s + 4), siFuera: `Sumaste uno de más: ${s} + 3 = ${suma(s)}.` }], solucion: { texto: 'Se suma.', ecuacion: [`${s} + 3 = ${s + 3}`] } }) });
+  const juega = lee => ({ consigna: 'Mueve el lado.', controles: [{ id: 'a', etiqueta: 'Lado', min: 1, max: 9, paso: 1, inicio: 2 }], lectura: v => [`Área: ${v.a} · ${v.a} = `, f(`${lee(v.a)} m²`)] });
+  const ej = sol => ({ nivel: 1, titulo: 'Uno', enunciado: 'Un lado mide 4 m. ¿Cuánto mide el área?', datos: ['Área = lado · lado'], solucion: [{ texto: sol }], respuesta: [f('16 m²')] });
+  const con = (suma, lee, sol) => unidad(idea({ ahoraTu: at(suma), juega: juega(lee), ejemplos: [ej(sol)] }));
+  const mal = de('igualdad-falsa', con(s => (s === 7 ? 11 : s + 3), a => (a === 5 ? 24 : a * a), 'Área: 4 · 4 = 15 m².'));
+  assert.equal(mal.length, 3);
+  assert.match(mal.find(h => /ahoraTu/.test(h.donde)).que, /«7 \+ 3 = 11» no se cumple tal como se lee: la izquierda da 10 y la derecha, 11/);
+  assert.match(mal.find(h => /lectura/.test(h.donde)).donde, /juega lectura caso \{"a":5\}/);
+  assert.match(mal.find(h => /ejemplo 1/.test(h.donde)).que, /«4 · 4 = 15 m²»/);
+  assert.deepEqual(de('igualdad-falsa', con(s => s + 3, a => a * a, 'Área: 4 · 4 = 16 m².')), []);
+  // Varias semillas con la misma falta dan una sola línea por sitio, con la cuenta de las demás.
+  const varias = de('igualdad-falsa', con(s => s + 4, a => a * a, 'x'));
+  assert.equal(varias.length, 1);
+  assert.match(varias[0].que, /y 59 igualdades falsas más en el mismo sitio/);
+});

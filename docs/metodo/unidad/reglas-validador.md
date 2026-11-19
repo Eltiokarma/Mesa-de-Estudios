@@ -28,6 +28,7 @@ frío (`rutinas/frio/`) encontraron una y otra vez en las 15 primeras unidades.
 | `datos-consejo` | Una línea de Datos es equivalencia, valor, constante, definición o fórmula. Nunca un consejo. | No empiezan por «Recuerda», «Ojo», «Cuidado», «No olvides», «Ten en cuenta», «Fíjate», «Conviene», «Primero halla…». El aviso de una letra que choca sí va: «Ojo: aquí T es el período…». |
 | `resuelve-repite` | Los 4 primeros casos de «Así se resuelve» no son ninguno de los 12 primeros de «Ahora tú» (mismo enunciado y, si lo llevan, mismo dibujo). | Que `resuelve.generar` y `ahoraTu.generar` saquen sus casos de listas distintas, o de tipos distintos. |
 | `leyenda-visible` | Toda letra y todo color que nombra la leyenda del juego se ve en el juego. | La letra («θ», «v₀», «Δx») está escrita en la figura, la lectura, la consigna, la misión o un control, al abrir o en algún caso del juego. Si la leyenda dice «naranja», algo se pinta con `c-o` (turquesa `c-i`, violeta `c-f`, carmín `c-h`, verde `c-d`). Si la letra no está en el juego, su explicación va donde se usa. |
+| `igualdad-falsa` | Toda igualdad entre números que ve el alumno se cumple: «−14 + 11 = 8», «2 · 0,63 = 1,25» o «2π² · 0,25 = π²» no. El resultado (el lado derecho) puede ir redondeado a los decimales que escribe; la cuenta de la izquierda se hace con los números tal como se ven. | Rehaz la cuenta con lo que se muestra. Si un número viene redondeado («1,73» por √3), el resultado va con «≈». Con π escrita, el número que la acompaña va exacto (8π/3, no 2,67π), y el paso de una unidad de ángulo a otra va exacto o con «≈» («5° ≈ 5,56ᵍ»). Una potencia de algo que no es un solo número lleva paréntesis: (2π)². Ver «Las igualdades que se leen», abajo. |
 
 ### Letra o valor de una alternativa
 
@@ -36,6 +37,39 @@ alternativa por su letra** (decisión de Gerson, `docs/etapa3/decisiones.md`, «
 respuesta y las explicaciones van por el valor («AC = 17 cm», «34 cm es el doble»). Por eso `respuesta-letra` y
 `alternativa-sin-explicar` aceptan las dos formas. El validador no comprueba que una unidad con puntos evite las
 letras: eso lo mira el auditor. La letra de la correcta, para `letra-repartida`, se deduce del valor cuando no se escribe.
+
+### Las igualdades que se leen
+
+`igualdad-falsa` (Etapa 6, 19 nov 2026) sale de la falla que más repitieron los auditores de la Etapa 5: una igualdad
+escrita que es falsa en algunas semillas («−14 + 11 = 8», «8π/3 = 2,67π», «5° = 5,56ᵍ», «P(0) = 99» cuando vale 9). Mira
+las que tienen números a los dos lados; «P(0) = 99» tiene una letra a la izquierda y sigue en la prueba propia de la
+unidad (abajo, «Lo que sigue a mano»).
+
+- **Dónde mira:** todo texto que ve el alumno. En cada idea: las tarjetas de «Lee», la consigna, la voz, la misión y la
+  leyenda del juego, la lectura del juego en su grilla (hasta 3000 casos; si hay más, una muestra pareja), Predice con
+  sus opciones y sus `siFuera`, Mira, la regla y su condición, los ejemplos (enunciado, datos, alternativas, resuelto y
+  respuesta), y «Así se resuelve» y «Ahora tú» en las semillas del validador (60), con sus opciones, `siFuera` y
+  solución. En la unidad: el glosario y las mesas del laboratorio (retos y lectura en su grilla).
+- **Qué lee:** un tramo de números con +, −, ×, ·, ÷, /, potencias (2³ o { sup }), √, ∛, π, %, paréntesis y fracciones
+  (también las de la ecuación, `{ frac }`, `{ sup }`, `{ raiz }`, `{ par }`), con coma decimal, miles con espacio y
+  notación científica (4,1 × 10¹⁴). «4/3» pegado es una fracción (0,6 / 4/3 = 0,45); «2π/3» y «3√2» multiplican sin
+  signo.
+- **Qué no lee:** un lado con una letra (x − 3, P(0), 2x, v₀), con una operación dicha en palabras («15 % de 200»,
+  «3 por 4», «sen 30°», «12 entre 4»), con una cifra tapada (8☐), una base (1054₍₆₎, «en base 6»), un múltiplo (7̊), una
+  raya o un operador propio (2 ★ 3), una razón (2 : 3) o lo que alguien dice o cree («Un compañero dice que…»). Tampoco
+  dos números sueltos («queda 5 = 9», «360° = 0°»), salvo que sean dos medidas de ángulo en unidades distintas.
+- **Unidades:** se quitan si son las mismas a los dos lados, o si un lado es la cuenta sin unidad y el otro el
+  resultado con una sola («2 · 3 = 6 m»). Si la cadena cambia de unidad (m/s y km/h), o el desajuste es justo un factor
+  de 10, 100, 1000 con unidades de por medio (0,368 mm/s calculado en m/s), no se mira. Las de ángulo (°, ′, ″, ᵍ, ᵐ, ˢ,
+  rad) se pasan a grados: «2π rad = 360°» se comprueba. El % de un solo lado vale como «entre 100» o como unidad.
+- **Redondeo:** el lado derecho es el resultado y admite media unidad de su última cifra («√20 = 4,47 m/s²» está bien).
+  El izquierdo, si es una cuenta, se hace con lo que se ve: «5 · 1,73 = 8,66 m» falla porque 5 · 1,73 es 8,65 (el
+  mensaje dice qué número está redondeado). «≈» no se comprueba. Dos redondeos no valen con «=» aunque cuadren: el número
+  que acompaña a π («2,67π») y el paso de una unidad de ángulo a otra («5,56ᵍ»).
+- **Un mensaje por sitio:** si la misma falta sale en varias semillas o casos del juego, va una línea con el primero y
+  cuántas más hay.
+- **Cómo mirar más semillas:** con 60 no salen las faltas raras (la de Divisibilidad salía en 1 de cada 200 semillas).
+  Para una auditoría: `Teoria.problemas(def, { semillas: 200 })`.
 
 ### La tabla de letras
 
@@ -78,7 +112,7 @@ esa unidad. No entran el papel de lectura (formato `lectura`) ni, en `papel-dato
 ## Excepciones: la lista de pendientes
 
 Las faltas reales que estas reglas encontraron en las 15 unidades ya hechas no se corrigieron al escribir las reglas.
-Están en `EXCEPCIONES`, con unidad, idea, motivo y fecha, en `nucleo/teoria-reglas.js` (46 líneas) y en
+Están en `EXCEPCIONES`, con unidad, idea, motivo y fecha, en `nucleo/teoria-reglas.js` (50 líneas) y en
 `herramientas/papel-reglas.js` (10 líneas). Mientras una falta está en la lista, la prueba no falla.
 
 - La lista no es un permiso: es lo que queda por corregir en esas unidades. `Teoria.pendientes(def)` da las de una unidad.
@@ -102,3 +136,6 @@ que estaba bien. Las revisan el lector en frío y el auditor.
 | **Los Datos no dan el método ni el paso hecho** («regala la fórmula»). | Depende de qué practica el ejercicio. Automático solo el caso literal (`datos-respuesta`). |
 | **La explicación de cada distractor da su valor** (rehacer la cuenta del error). | Hace falta el motor de errores de cada unidad. Automático solo que el resuelto nombre cada alternativa, por su letra o su valor (`alternativa-sin-explicar`); la cuenta la rehace la prueba propia de la unidad. |
 | **Datos del mundo con fuente, medidas creíbles, colores por magnitud, rótulos que no se pisan, fidelidad de los ángulos.** | Necesitan tablas o geometría de cada unidad: siguen en la prueba propia de cada unidad y de cada pieza. |
+| **Un resultado redondeado con «=»** («√20 = 4,47 m/s²», «10/3 = 3,33 s»). | `igualdad-falsa` lo deja pasar: en las 25 unidades con calidad 2 hay 76 distintas, casi todas en física, y es como se escribe en el examen. Solo marca los dos redondeos que los auditores pidieron con «≈» (el número que acompaña a π y el paso entre unidades de ángulo). Si se decide que todo redondeo va con «≈», se cambia una línea de la regla. |
+| **Lo que dice el `siFuera` de una alternativa** («da N», «sale N», «queda N»: N es el valor de esa alternativa). | Se probó como regla `siFuera-valor` y no entró: de 205 `siFuera` con «da/sale/queda + número» en las unidades con calidad 2, 127 nombran otro número, y ninguno es una falta. El número es un paso intermedio o lo que debió salir: «busca qué número, al cubo, da 64», «con x = −2 queda −2 − 2», «cada exterior con su interior da 180°». La cuenta del error la rehace la prueba propia de la unidad. |
+| **Una igualdad con letras** («P(0) = 99» cuando P(0) vale 9, «x = −3: P(0) = …»). | Hay que saber qué vale cada letra en ese caso: es la prueba propia de la unidad (`polinomios.test.js` compara cada igualdad con polinomios en varios valores de x). `igualdad-falsa` solo lee números. |
