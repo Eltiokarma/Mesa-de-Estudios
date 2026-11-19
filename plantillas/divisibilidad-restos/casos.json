@@ -57,13 +57,13 @@
         "tipo": "razon",
         "nivel": 3,
         "d": 9,
-        "p": 3,
-        "L": 103,
-        "U": 112
+        "p": 5,
+        "L": 59,
+        "U": 68
       },
       "esperado": {
-        "respuesta": "36",
-        "texto": "36"
+        "respuesta": "35",
+        "texto": "35"
       }
     },
     {

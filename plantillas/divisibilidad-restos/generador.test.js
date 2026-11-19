@@ -137,7 +137,7 @@ test('datos: una lista de líneas cortas, sin la respuesta, con la herramienta d
   const C93 = /Entre 9 y entre 3/, CICLO = /se repiten en ciclo/, PESOS = /peso de su lugar/, EC = /× x \+ \d+ × y = \d+, con x e y enteros/;
   const FORMULA = {
     'es-multiplo': DEF, 'cuantos-hasta': CONTEO, tramo: CONTEO, razon: DEF,
-    suma: PRINC, veces: PRINC, faltan: /N = d̊ − k/, expresion: PRINC, triple: /N = d̊ − k/,
+    suma: PRINC, veces: /k × \(d̊ \+ r\) = d̊ \+ k × r/, faltan: /N = d̊ − rₑ/, expresion: PRINC, triple: /N = d̊ − rₑ/,
     'nueve-tres': C93, ultimas: /Entre (4|8|2)/, 'cifra-9': C93, ocultas: C93,
     primeros: /Cada resto sale de multiplicar/, 'resto-potencia': CICLO, 'ultima-cifra': CICLO, dia: CICLO, 'potencia-mas': CICLO,
     once: PESOS, siete: PESOS, 'boleto-11': PESOS, 'oculta-7-13': PESOS,
@@ -179,4 +179,25 @@ test('papel.json: 8 problemas de las seis ideas, con sus datos al final y su res
   assert.deepEqual([...ideas].sort(), [...IDEAS].sort());
   // Las dos de examen son de San Marcos (2023-II y 2019-I).
   assert.deepEqual([7, 8].map(i => gen.generar(`papel-${i}`)._datos.tipo), ['ocultas', 'razon']);
+});
+
+// Auditoría (19 nov): «3 de cada 9» es «1 de cada 3», y entonces sirven otros totales. p y d van sin factor común, y con
+// la razón reducida sigue habiendo un solo total entre L y U.
+test('razon: p y d sin factor común; un solo total aunque se reduzca la razón (400 semillas)', () => {
+  const mcd = (x, y) => (y ? mcd(y, x % y) : x);
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`r${s}`, { idea: 'filas-de-m' }), d = p._datos;
+    if (d.tipo !== 'razon') continue;
+    assert.equal(mcd(d.p, d.d), 1, JSON.stringify(d));
+    let n = 0; for (let T = d.L + 1; T < d.U; T++) if (T % d.d === 0) n++;
+    assert.equal(n, 1, JSON.stringify(d));
+  }
+});
+// Lector en frío A (19 nov): «le faltan rₑ», no k (k es el entero que multiplica), y el dato de k pedidos iguales.
+test('datos: lo que falta es rₑ, y varios pedidos iguales llevan su propia línea', () => {
+  for (let s = 0; s < 200; s++) {
+    const p = gen.generar(`f${s}`, { idea: 'restos-suman' }), t = p.datos.join('\n');
+    assert.ok(!/faltan k\b|− k\b/.test(t), t);
+    if (['veces', 'triple'].includes(p._datos.tipo)) assert.match(t, /k pedidos iguales/);
+  }
 });

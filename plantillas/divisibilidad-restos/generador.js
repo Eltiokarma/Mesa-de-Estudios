@@ -90,7 +90,8 @@
     resta: `(${MU} + r) − (${MU} + s) = ${MU} + (r − s)`,
     prod: `(${MU} + r) × (${MU} + s) = ${MU} + r × s`,
     empaca: 'Un resto es menor que d: si llega a d, se divide otra vez',
-    falta: `Si a N le faltan k para ser múltiplo de d: N = ${MU} − k`,
+    falta: `Si a N le faltan rₑ para ser múltiplo de d: N = ${MU} − rₑ (rₑ: el resto por exceso)`,
+    veces: `k pedidos iguales: k × (${MU} + r) = ${MU} + k × r`,
     c93: 'Entre 9 y entre 3: N deja el mismo resto que la suma de sus cifras',
     c25: 'Entre 2 y entre 5: N deja el mismo resto que su última cifra',
     c4: 'Entre 4 y entre 25: N deja el mismo resto que el número de sus dos últimas cifras',
@@ -106,7 +107,7 @@
     p7: 'Pesos entre 7, desde las unidades: 1, 3, 2, −1, −3, −2',
     p13: 'Pesos entre 13, desde las unidades: 1, −3, −4, −1, 3, 4',
     negativo: 'Si el total sale negativo, se le suma el divisor hasta que deje de serlo',
-    ec: (p, q, c) => `${p} × x + ${q} × y = ${c}, con x e y enteros que no son negativos`,
+    ec: (p, q, c, unaDeCada) => `${p} × x + ${q} × y = ${c}, con x e y enteros ${unaDeCada ? 'positivos' : 'que no son negativos'}`,
     xy: (a, b) => `x: ${a}; y: ${b}`,
     fila: 'Valor de una fila = lo que vale la moneda × cuántas hay',
   };
@@ -240,7 +241,9 @@
   function razon(rng) {
     const d = rng.entero(5, 9), p = rng.entero(2, d - 2), k = rng.entero(5, 12), T = d * k;
     const L = T - rng.entero(1, d - 1), U = L + d;   // un solo múltiplo de d entre L y U
-    if (T <= L || T >= U) return null;
+    // p y d sin factor común (auditoría del 19 nov): «2 de cada 6» es «1 de cada 3», y entonces sirven otros totales.
+    const mcd = (x, y) => (y ? mcd(y, x % y) : x);
+    if (T <= L || T >= U || mcd(p, d) !== 1) return null;
     return {
       enunciado: [`En una rifa, ${p} de cada `, Ev(d), ` boletos vendidos los compraron alumnos de quinto. Se vendieron más de ${L} y menos de ${U} boletos.`],
       pregunta: ['¿Cuántos boletos compraron los de quinto?'],
@@ -282,7 +285,7 @@
     return {
       enunciado: ['Un pedido deja ', Rv(r), ' sueltos al empacarlo en bolsitas de ', Ev(d), `. Doña Juana prepara ${k} pedidos iguales y los junta.`],
       pregunta: ['¿Cuántos sueltos quedan?'],
-      datos: [D.mu, D.prod, D.empaca],
+      datos: [D.mu, D.veces, D.empaca],
       correcta: ok,
       errores: [
         h('AT-RESTO-MAYOR', b, `Bien juntar ${k} × ${r} = ${b} sueltos. Pero con ${b} se llenan más bolsitas de ${d}.`),
@@ -300,7 +303,7 @@
     return {
       enunciado: ['A un pedido le ', f === 1 ? 'falta 1 caramelo' : `faltan ${f} caramelos`, ' para llenar justo bolsitas de ', Ev(d), '.'],
       pregunta: ['¿Qué resto deja el pedido al dividirlo entre ', Ev(d), '?'],
-      datos: [D.falta, `N = ${MU} + r: al dividir N entre d sobran r`],
+      datos: [D.mu, D.falta, `N = ${MU} + r: al dividir N entre d sobran r`],
       correcta: ok,
       errores: [
         h('AT-EXCESO-IGUAL', f, `Bien ver la última bolsita. Pero ${f} es lo que le falta; el resto es lo que ya tiene.`, f0, TRAMPAS),
@@ -337,7 +340,7 @@
     return {
       enunciado: ['Doña Juana empaca sus caramelos de ', Ev(d), ' en ', Ev(d), ` y le ${f === 1 ? 'falta 1' : `faltan ${f}`} para llenar la última bolsita.`],
       pregunta: [`Si compra ${veces} de caramelos, ¿cuántos sueltos le quedan al empacar de `, Ev(d), ' en ', Ev(d), '?'],
-      datos: [D.falta, D.prod, D.empaca],
+      datos: [D.mu, D.falta, D.veces, D.empaca],
       correcta: ok,
       errores: [
         h('AT-EXCESO-IGUAL', (k * f) % d, `Bien multiplicar por ${k}. Pero «le ${f === 1 ? 'falta 1' : `faltan ${f}`}» no es «${f === 1 ? 'sobra 1' : `sobran ${f}`}»: así salen ${(k * f) % d}.`, f0, TRAMPAS),
@@ -694,7 +697,7 @@
     return {
       enunciado: [`Rosa gasta justo S/ ${c} en bolsas de S/ `, Ev(p), ' y cajas de S/ ', Ev(q), ', y lleva al menos una de cada una.'],
       pregunta: ['Si compra la mayor cantidad posible de cajas, ¿cuántas bolsas lleva?'],
-      datos: [D.ec(p, q, c), D.xy('las bolsas', 'las cajas')],
+      datos: [D.ec(p, q, c, true), D.xy('las bolsas', 'las cajas')],
       correcta: ult[0],
       errores: [
         h('AT-DIOF-PRIMERA', pri[0], `Bien una compra que gasta justo. Pero lleva ${pri[1] === 1 ? '1 caja' : `${pri[1]} cajas`}; se piden las más cajas posibles.`),

@@ -113,3 +113,10 @@ test('las figuras de la teoría que usan las piezas caben y no se pisan', () => 
   assert.deepEqual(mal, []);
   assert.ok(n >= 0);
 });
+
+// Lector en frío B (19 nov): el rótulo de una fila va como la ecuación, primero el valor de la moneda (2 × x).
+test('arit-monedas: el rótulo dice primero lo que vale la moneda', () => {
+  const g = Mo.geometria({ filas: [{ valor: 2, cuantas: 3 }, { valor: 5, cuantas: 2 }] });
+  const r = g.textos.filter(t => /^rótulo/.test(t.que)).map(t => t.txt);
+  assert.deepEqual(r, ['S/ 2 × 3 = S/ 6', 'S/ 5 × 2 = S/ 10']);
+});

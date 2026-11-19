@@ -10,6 +10,8 @@
  * caramelos de doña Juana (pieza arit-puesto, dibujo de prueba), la rifa de la promoción (piezas arit-boletos y
  * arit-boleto, de prueba) y las monedas del mostrador (pieza arit-monedas, de prueba). Práctica por idea:
  * plantillas/divisibilidad-restos (TIPOS_POR_IDEA).
+ * Auditoría y lector en frío (19 nov, v0.4.1): rutinas/auditoria/aritmetica.divisibilidad.md («Correcciones (19 nov)») y
+ * rutinas/frio/aritmetica.divisibilidad.md; las pruebas de cada corrección van al final de divisibilidad.test.js.
  *
  * Letras (propuesta §6; def.letras): N es el número que se estudia (el dividendo, que Las cuatro operaciones llamó D:
  * aquí va N, como en el examen) y d el divisor, lo que lleva una bolsita. El múltiplo de d se escribe con un circulito
@@ -257,7 +259,8 @@
   function casoRazon(r) {
     const d = r.ent(7, 12), k = r.ent(5, 12), p = r.ent(2, d - 2), T = d * k;
     const L = T - r.ent(1, d - 1), U = T + r.ent(1, d - 1);
-    if (2 * p === d) return null;
+    // p y d sin factor común (auditoría del 19 nov): «2 de cada 12» es «1 de cada 6», y entonces sirven otros totales.
+    if (mcd(p, d) !== 1) return null;
     return {
       pregunta: `En una rifa, ${p} de cada ${d} boletos vendidos los compraron alumnos de quinto. Se vendieron más de ${L} y menos de ${U} boletos. ¿Cuántos compraron los de quinto?`,
       datos: [`«${p} de cada ${d}»: por cada grupo de ${d} boletos, ${p}`, DM.def],
@@ -485,13 +488,14 @@
       ],
     },
     regla: {
-      texto: 'N es múltiplo de d si N = d × k, con k entero: no sobra nada. Del 1 al N hay tantos múltiplos de d como el cociente entero.',
+      texto: 'N es múltiplo de d si N = d × k, con k entero: no sobra nada. Del 1 al N hay tantos como el cociente de N ÷ d.',
       // Cada relación en su línea: la definición con la escritura del examen, y cómo se listan los múltiplos.
       // Cada letra, dicha en su llave la primera vez (N, d y k no salen en Lee: allí todo va con números).
       ecuacion: [{ llave: ['N'], nota: 'caramelos' }, ' = ', { llave: [bas('d')], nota: 'por bolsita', color: 'c-i' }, ' × ', { llave: ['k'], nota: 'bolsitas' }, SEP,
-        'se escribe N = ', { llave: [MU('d')], nota: 'múltiplo de d', color: 'c-i' }, SEP, 'múltiplos de ', bas('d'), ': ', bas('d'), ', 2 × ', bas('d'), ', 3 × ', bas('d'), '…'],
+        'se escribe N = ', { llave: [MU('d')], nota: 'con circulito: múltiplo de d', color: 'c-i' }, SEP, 'múltiplos de ', bas('d'), ': ', bas('d'), ', 2 × ', bas('d'), ', 3 × ', bas('d'), '…', SEP,
+        'si sobran: N = ', bas('d'), ' × ', { llave: ['q'], nota: 'bolsitas llenas' }, ' + ', { llave: [sob('r')], nota: 'sueltos', color: 'c-o' }],
       // Se lee después de «Vale si» (captura del 19 nov: «Vale si El 0 es…» no se entendía).
-      condicion: 'd no es 0. El 0 es múltiplo de todos, y todo número lo es de 1 y de sí mismo.',
+      condicion: 'd no es 0. El 0 es múltiplo de todos. En un tramo, se quitan los múltiplos de antes de su comienzo.',
       voz: 'Sin sueltos, es múltiplo. Los múltiplos van de d en d.',
     },
     // Así se resuelve: cuántos premios hay en una plancha que no empieza en el 1 (los múltiplos de un tramo). «Ahora tú»
@@ -552,7 +556,11 @@
     resta: ['(', MU('d'), ' + ', sob('r'), ') − (', MU('d'), ' + ', sob('s'), ') = ', MU('d'), ' + (', sob('r'), ' − ', sob('s'), ')'],
     prod: ['(', MU('d'), ' + ', sob('r'), ') × (', MU('d'), ' + ', sob('s'), ') = ', MU('d'), ' + ', sob('r'), ' × ', sob('s')],
     forma: ['N = ', MU('d'), ' + ', sob('r'), ': al dividir N entre ', bas('d'), ' sobran ', sob('r')],
-    falta: ['Si a N le faltan k para ser múltiplo de ', bas('d'), ': N = ', MU('d'), ' − k'],
+    falta: ['Si a N le faltan ', RE, ' para ser múltiplo de ', bas('d'), ': N = ', MU('d'), ' − ', RE],
+    // El circulito dicho en palabras en los Datos de todo ejercicio que lo usa (lector en frío B, 19 nov).
+    mu: [MU('d'), ' (d con un circulito): un múltiplo de ', bas('d'), ', es decir, ', bas('d'), ' por un entero'],
+    // Varios pedidos iguales: el número de pedidos no es un resto (lector en frío A, 19 nov).
+    veces: ['k pedidos iguales: k × (', MU('d'), ' + ', sob('r'), ') = ', MU('d'), ' + k × ', sob('r')],
     empaca: ['Un resto es menor que ', bas('d'), ': si llega a ', bas('d'), ', se divide otra vez'],
   };
   const REGLA7 = [[['1 bolsita = '], ['7', 'i', 700], [' caramelos']]];
@@ -589,7 +597,7 @@
     if (bruto < d) return null;
     return {
       pregunta: ['Un pedido deja ', sob(rr), ' sueltos al empacarlo en bolsitas de ', bas(d), `. Doña Juana junta ${k} pedidos iguales. ¿Cuántos sueltos quedan?`],
-      datos: [D2.prod, D2.empaca],
+      datos: [D2.mu, D2.veces, D2.empaca],
       opciones: opciones(v, [
         { id: 'mayor', valor: bruto, error: 'AT-RESTO-MAYOR', siFuera: `Multiplicar los sueltos está bien: ${bruto}. Pero con ${bruto} se llenan más bolsitas de ${d}.` },
         { id: 'suma', valor: (k + rr) % d, error: 'AT-RESTO-SUMA', siFuera: `Son ${k} pedidos con ${rr} sueltos cada uno: se multiplica, no se suma.` },
@@ -691,7 +699,7 @@
       respuesta: ['Le faltan ', res(3)] },
     { nivel: 2, titulo: 'El resto de un producto',
       enunciado: 'Un pedido deja 3 sueltos en bolsitas de 5. Doña Juana arma 4 pedidos iguales y los junta. ¿Cuántos sueltos quedan?',
-      datos: [D2.prod, D2.empaca],
+      datos: [D2.veces, D2.empaca],
       solucion: [
         { texto: 'Cada pedido aporta 3 sueltos: son 4 × 3 = 12.', ecuacion: ['4 × ', sob(3), ' = 12'] },
         { texto: 'Con 12 sueltos se llenan 2 bolsitas de 5 y quedan 2.', ecuacion: ['12 = ', bas(5), ' × 2 + ', sob(2)] },
@@ -752,7 +760,7 @@
     { nivel: 3, titulo: 'Le faltaba uno',
       enunciado: 'Doña Juana empaca sus caramelos de 8 en 8 y le falta 1 para llenar la última bolsita. Si compra el triple, ¿cuántos sueltos le quedan al empacar de 8 en 8?',
       alternativas: ['5', '3', '21', '7', '1'],
-      datos: [D2.falta, D2.prod, D2.empaca],
+      datos: [D2.falta, D2.veces, D2.empaca],
       solucion: [
         { texto: 'Si le falta 1, le sobran 8 − 1 = 7.', ecuacion: ['N = ', MU(8), ' − ', res(1), ' = ', MU(8), ' + ', sob(7)] },
         { texto: 'El triple deja 3 × 7 = 21 sueltos, que se vuelven a empacar.', ecuacion: ['21 = ', bas(8), ' × 2 + ', sob(5)] },
@@ -760,15 +768,15 @@
       ],
       respuesta: [letra('A'), ': quedan ', sob(5), ' sueltos'] },
     { nivel: 3, titulo: 'A uno sobra, a otro falta',
-      enunciado: 'El número a deja resto 9 al dividirlo entre 11, y al número b le faltan 4 para ser múltiplo de 11. ¿Qué resto deja a + b entre 11?',
+      enunciado: 'Un pedido deja 9 sueltos en bolsitas de 11, y a otro le faltan 4 para llenar justo bolsitas de 11. Si se juntan, ¿cuántos sueltos quedan?',
       alternativas: ['13', '2', '4', '6', '5'],
       datos: [D2.falta, D2.suma, D2.empaca],
       solucion: [
-        { texto: 'A b le faltan 4: deja 11 − 4 = 7.', ecuacion: ['b = ', MU(11), ' − ', res(4), ' = ', MU(11), ' + ', sob(7)] },
+        { texto: 'Al segundo le faltan 4: le sobran 11 − 4 = 7.', ecuacion: [MU(11), ' − ', res(4), ' = ', MU(11), ' + ', sob(7)] },
         { texto: 'Sumo los restos y vuelvo a empacar.', ecuacion: ['9 + 7 = 16 = ', bas(11), ' + ', sob(5)] },
-        { texto: ['Las trampas: ', letra('A'), ' suma 9 + 4; ', letra('B'), ' además lo reduce; ', letra('C'), ' es lo que le falta a b; ', letra('D'), ', lo que le falta a la suma.'] },
+        { texto: ['Las trampas: ', letra('A'), ' suma 9 + 4; ', letra('B'), ' además lo reduce; ', letra('C'), ' es lo que le falta al segundo; ', letra('D'), ', lo que le falta a la suma.'] },
       ],
-      respuesta: [letra('E'), ': deja resto ', sob(5)] },
+      respuesta: [letra('E'), ': quedan ', sob(5), ' sueltos'] },
     { nivel: 3, titulo: 'Una bolsita que siempre sirve',
       enunciado: 'Un pedido se empaca en bolsitas de 12 sin que sobre ninguno. ¿Con cuál de estas bolsitas tampoco sobrará nunca, sea cual sea el pedido?',
       alternativas: ['de 24', 'de 4', 'de 8', 'de 9', 'de 5'],
@@ -794,7 +802,7 @@
         { titulo: 'Un múltiplo, más lo que sobra', texto: ['Doña Juana empaca 30 caramelos en bolsitas de ', bas(7), ': llena 4 y le quedan 2 sueltos. 30 no es múltiplo de 7: es un múltiplo de 7, más 2. Ese 2 es el resto.'],
           ecuacion: ['30 = ', bas(7), ' × 4 + ', sob(2), '   →   30 = ', MU(7), ' + ', sob(2)],
           pieza: PU, dibujo: { datos: { n: 7, bolsitas: 4, sueltos: 2, regla: 1, colorCifras: false, rotulos: { bolsitas: '4 bolsitas llenas', sueltos: [['2', 'o', 700], [' sueltos']] } }, estado: {} } },
-        { titulo: 'Sobran 2 o faltan 5', texto: 'El mismo pedido se puede contar al revés: a 30 le faltan 5 caramelos para llenar otra bolsita y llegar a 35. Es el resto por exceso. Las dos maneras dicen lo mismo.',
+        { titulo: 'Sobran 2 o faltan 5', texto: 'El mismo pedido se puede contar al revés: a 30 le faltan 5 caramelos para llenar otra bolsita y llegar a 35. Es el resto por exceso, rₑ: lo que falta.',
           ecuacion: ['30 = ', MU(7), ' + ', sob(2), ' = ', MU(7), ' − ', res(5)],
           pieza: PU, dibujo: { datos: { n: 7, bolsitas: 4, incompleta: { de: 7, tiene: 2 }, regla: 1, colorCifras: false, rotulos: { bolsitas: '4 bolsitas llenas', incompleta: [['2', 'o', 700], [' sueltos, faltan '], ['5', 'f', 700]] } }, estado: {} } },
         { titulo: 'Como lo escriben los libros', texto: ['Que 30 y 2 dejan el mismo resto entre 7 también se escribe con el signo ≡, y se lee «30 es congruente con 2, módulo 7». El módulo es el divisor: lo que lleva la bolsita.'],
@@ -856,9 +864,10 @@
     regla: {
       texto: 'Las bolsitas llenas siguen llenas: el resto de una suma, una resta o un producto sale de operar solo los restos y volver a empacar.',
       ecuacion: ['(', MU('d'), ' + ', sob('r'), ') + (', MU('d'), ' + ', sob('s'), ') = ', MU('d'), ' + ', sob('r'), ' + ', sob('s'), SEP,
+        '(', MU('d'), ' + ', sob('r'), ') − (', MU('d'), ' + ', sob('s'), ') = ', MU('d'), ' + ', sob('r'), ' − ', sob('s'), SEP,
         '(', MU('d'), ' + ', sob('r'), ') × (', MU('d'), ' + ', sob('s'), ') = ', MU('d'), ' + ', sob('r'), ' × ', sob('s'), SEP,
-        MU('d'), ' + ', sob('r'), ' = ', MU('d'), ' − ', { llave: [RE], nota: 'lo que falta', color: 'c-f' }],
-      condicion: 'r y s son los restos entre el mismo d. Lo que sobra y lo que falta suman d.',
+        MU('d'), ' + ', sob('r'), ' = ', MU('d'), ' − ', { llave: [RE], nota: 'rₑ: lo que falta', color: 'c-f' }],
+      condicion: 'r y s son restos entre el mismo d. Si r − s es negativo, se suma d. Y r + rₑ = d.',
       voz: 'Opera los restos y vuelve a empacar.',
     },
     // Así se resuelve: tres pedidos que se juntan. «Ahora tú» pide otra cosa: varios pedidos iguales, una resta, «le
@@ -1066,7 +1075,7 @@
     { nivel: 1, titulo: 'La última cifra',
       enunciado: '¿Qué resto deja 3 487 al dividirlo entre 5?',
       datos: [D3.cinco, '10 = 5 × 2'],
-      solucion: [{ texto: 'Las bolsitas de 10 son múltiplos de 5: solo cuentan los 7 sueltos.', ecuacion: ['7 = ', bas(5), ' + ', sob(2)] }],
+      solucion: [{ texto: '3 487 son 348 bolsitas de 10 y 7 sueltos. Cada bolsita de 10 son 2 de 5: no deja nada. Solo cuentan los 7.', ecuacion: ['7 = ', bas(5), ' + ', sob(2)] }],
       respuesta: ['Deja resto ', sob(2)] },
     { nivel: 1, titulo: 'Las dos últimas cifras',
       enunciado: '¿Qué resto deja 5 318 al dividirlo entre 4?',
@@ -1096,7 +1105,7 @@
       respuesta: ['Quedan ', sob(8), ' sueltos'] },
     { nivel: 2, titulo: 'Entre 8',
       enunciado: '¿Qué resto deja 13 124 al dividirlo entre 8?',
-      datos: [D3.ocho, D3.cien],
+      datos: [D3.ocho, '1 000 = 8 × 125'],
       solucion: [
         { texto: 'Un cajón de 1 000 son 125 bolsitas de 8: no deja nada. Quedan las tres últimas cifras, 124.' },
         { texto: 'Divido 124 entre 8.', ecuacion: ['124 = ', bas(8), ' × 15 + ', sob(4)] },
@@ -1142,16 +1151,16 @@
     { nivel: 3, titulo: 'Las tres últimas cifras',
       enunciado: '¿Qué resto deja 251 348 al dividirlo entre 8?',
       alternativas: ['0', '4', '7', '3', '48'],
-      datos: [D3.ocho, D3.cien],
+      datos: [D3.ocho, '1 000 = 8 × 125'],
       solucion: [
         { texto: 'Los millares son múltiplos de 8: quedan las tres últimas cifras, 348.', ecuacion: ['348 = ', bas(8), ' × 43 + ', sob(4)] },
         { texto: ['Las trampas: ', letra('A'), ' mira solo 48; ', letra('C'), ' suma las cifras; ', letra('D'), ' divide 251; ', letra('E'), ' no divide las dos últimas.'] },
       ],
       respuesta: [letra('B'), ': deja resto ', sob(4)] },
     { nivel: 3, titulo: 'Todas las cifras que sirven',
-      enunciado: ['¿Cuánto suman todas las cifras a que hacen de ', ...num4('73a6'), ' un múltiplo de 4?'],
+      enunciado: [...num4('73a6'), ' es múltiplo de 4. ¿Cuánto suman todas las cifras que puede ser a?'],
       alternativas: ['20', '45', '25', '8', '5'],
-      datos: [D3.cuatro, [{ raya: ['73a6'] }, ': numeral de cifras 7, 3, a y 6']],
+      datos: [[{ raya: ['73a6'] }, ': numeral de cifras 7, 3, a y 6'], D3.cuatro],
       solucion: [
         { texto: 'Las dos últimas cifras forman 16, 36, 56, 76 o 96 si a es impar: todos múltiplos de 4. Con a par, no.' },
         { texto: 'Sumo las cifras que sirven.', ecuacion: ['1 + 3 + 5 + 7 + 9 = ', res(25)] },
@@ -1182,9 +1191,9 @@
       tarjetas: [
         { titulo: 'Reempacar de 9 en 9', texto: ['Doña Juana abre una bolsita de 10 caramelos y los pasa a una de ', bas(9), ': le sobra 1. Con una caja de 100 pasa igual: llena 11 bolsitas de 9 y le sobra 1.'],
           ecuacion: ['10 = ', bas(9), ' + ', sob(1), ' ; 100 = ', bas(9), ' × 11 + ', sob(1)],
-          pieza: PU, dibujo: { datos: { n: 10, cajas: 1, bolsitas: 1, sueltos: 0, colorCifras: false, regla: REGLA9, rotulos: { cajas: [['deja '], ['1', 'o', 700]], bolsitas: [['deja '], ['1', 'o', 700]] } }, estado: {} } },
-        { titulo: 'Cada cifra cuenta envases', texto: 'En 243 hay 2 cajas, 4 bolsitas y 3 sueltos: cada cifra dice cuántos envases hay de su tamaño. La suma de cifras de 243 es 2 + 4 + 3.',
-          ecuacion: ['243 = 2 × 100 + 4 × 10 + 3'] },
+          pieza: PU, dibujo: { datos: { n: 10, cajas: 1, bolsitas: 1, sueltos: 0, colorCifras: false, regla: REGLA9, rotulos: { cajas: [['1 caja: deja '], ['1', 'o', 700]], bolsitas: [['1 bolsita: deja '], ['1', 'o', 700]] } }, estado: {} } },
+        { titulo: 'Cada cifra cuenta envases', texto: ['En 243 hay 2 cajas, 4 bolsitas y 3 sueltos: cada cifra cuenta envases. Su suma de cifras es 2 + 4 + 3. Con cifras a, b y c se escribe ', { raya: ['abc'] }, ': la raya dice que son cifras, no a × b × c.'],
+          ecuacion: ['243 = 2 × 100 + 4 × 10 + 3   →   ', { raya: ['abc'] }, ' = a × 100 + b × 10 + c'] },
         { titulo: 'Un criterio', texto: 'Un criterio de divisibilidad dice qué resto deja un número mirando solo sus cifras, sin hacer la división. Sale de lo que deja cada envase: la bolsita de 10, la caja de 100, el cajón de 1 000.' },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a reempacar cajas y bolsitas en bolsitas de 9. Mira cuánto deja cada caja y cada bolsita, y junta todo lo que sobra con los sueltos.' },
       ],
@@ -1227,7 +1236,7 @@
     mira: {
       pieza: PU,
       datos: MIRA_P3,
-      voz: 'La caja no deja nada: cuentan las dos últimas cifras.',
+      voz: 'Mira qué deja cada envase entre 4.',
       pasos: [
         { estado: { paso: 0 }, texto: '237 son 2 cajas, 3 bolsitas y 7 sueltos.', ecuacion: ['237 = 2 × 100 + 3 × 10 + 7'] },
         { estado: { paso: 1 }, texto: 'Cada caja de 100 son 25 bolsitas de 4: no deja nada.', ecuacion: ['100 = ', bas(4), ' × 25'] },
@@ -1238,8 +1247,8 @@
     },
     regla: {
       texto: 'Entre 9 y 3 se suman las cifras: cada envase deja 1. Entre 2 y 5 basta la última cifra; entre 4 y 25, las dos últimas.',
-      ecuacion: [{ llave: [{ raya: ['abc'] }], nota: 'cifras a, b y c' }, ' = ', MU(9), ' + ', sob('a + b + c'), SEP, { raya: ['abc'] }, ' = ', MU(4), ' + ', { raya: ['bc'] }, SEP, { raya: ['abc'] }, ' = ', MU(5), ' + c'],
-      condicion: 'el número está en base 10. Entre 8 valen las tres últimas cifras; entre 6, par y múltiplo de 3.',
+      ecuacion: [{ llave: [{ raya: ['abc'] }], nota: 'la raya: cifras a, b y c' }, ' = ', MU(9), ' + ', sob('a + b + c'), SEP, { raya: ['abc'] }, ' = ', MU(4), ' + ', { raya: ['bc'] }, SEP, { raya: ['abc'] }, ' = ', MU(5), ' + c'],
+      condicion: 'en base 10, cifras de 0 a 9. Entre 8, las tres últimas cifras; entre 6, par y múltiplo de 3.',
       voz: 'Mira qué deja cada envase entre ese divisor.',
     },
     // Así se resuelve: el resto entre 9 de un pedido de cuatro cifras, con la comprobación por la división. «Ahora tú»
@@ -1310,6 +1319,8 @@
   const D4 = {
     ciclo: 'Los restos de las potencias de un número se repiten en ciclo: se calculan hasta que uno se repite',
     sigue: 'Cada resto sale de multiplicar el anterior por la base y volver a dividir',
+    // Una potencia es un producto repetido: sus restos también se multiplican (lector en frío B, tarjeta 12).
+    potN: 'Una potencia es un producto: N⁴⁰ = N × N × … × N, 40 veces',
     lugar: 'Dos potencias cuyos exponentes dejan el mismo resto entre el largo del ciclo dejan el mismo resto',
     ultima: 'La última cifra de un número es su resto entre 10',
     semana: 'La semana se repite cada 7 días',
@@ -1372,7 +1383,7 @@
   // Ahora tú · tipo 3 (nivel examen): una potencia más un número.
   function casoPotMas(r) {
     const b = r.de([2, 3]), d = r.de([5, 7, 11]), n = r.ent(21, 90), c = r.ent(2, d - 1), L = largoDe(b, d), rp = powmod(b, n, d), bruto = rp + c, v = bruto % d;
-    if (bruto < d) return null;
+    if (bruto < d || L > 6) return null;
     return {
       pregunta: ['¿Qué resto deja ', pot(b, n), ` + ${c} al dividirlo entre `, bas(d), '?'],
       datos: [D4.ciclo, D4.lugar, D2.suma, D2.empaca],
@@ -1388,9 +1399,12 @@
   // Ahora tú · tipo 4 (nivel examen): la potencia de un número del que solo se sabe el resto.
   function casoBinomio(r) {
     const d = r.de([7, 9, 11]), rr = r.de([2, 3]), n = r.ent(20, 60), L = largoDe(rr, d), v = powmod(rr, n, d);
+    // Ciclos de 3 a 6 que empiezan en la primera potencia (decisión 15; auditoría del 19 nov: 3 entre 9 daba «ciclo de 1»
+    // y 2 entre 11 un ciclo de 10).
+    if (ciclo(rr, d).ini !== 0 || L < 3 || L > 6) return null;
     return {
       pregunta: ['Un número N es ', MU(d), ' + ', sob(rr), '. ¿Qué resto deja ', { sup: ['N', String(n)] }, ' al dividirlo entre ', bas(d), '?'],
-      datos: [D2.prod, D4.ciclo, D4.lugar],
+      datos: [D2.mu, [`Una potencia es un producto: N${sup(n)} = N × N × … × N, ${n} veces`], D2.prod, D4.ciclo, D4.lugar],
       opciones: opciones(v, [
         { id: 'igual', valor: rr, error: 'AT-RESTO-IGUAL', siFuera: `${rr} deja N. Al multiplicarlo ${n} veces por sí mismo, el resto cambia.` },
         { id: 'producto', valor: (n * rr) % d, error: 'AT-POTENCIA-PRODUCTO', siFuera: `Eso deja ${n} × N. En una potencia los restos se multiplican entre sí.` },
@@ -1418,9 +1432,9 @@
       solucion: [{ texto: 'La potencia siguiente es el doble: los sueltos también se duplican.', ecuacion: ['2 × ', sob(2), ' = ', sob(4)] }],
       respuesta: ['Deja resto ', sob(4)] },
     { nivel: 1, titulo: 'El largo del ciclo',
-      enunciado: 'Los restos de las potencias de 2 entre 7 son 2, 4, 1, 2, 4, 1… ¿Cuánto mide el ciclo?',
-      datos: [D4.ciclo],
-      solucion: [{ texto: 'Después de 2, 4 y 1 vuelve a salir el 2: se repiten de tres en tres.' }],
+      enunciado: '¿Cuánto mide el ciclo de los restos de las potencias de 2 entre 7?',
+      datos: [D4.ciclo, D4.sigue],
+      solucion: [{ texto: '2 deja 2; 2 × 2 = 4 deja 4; 2 × 4 = 8 deja 1; 2 × 1 = 2 deja 2. Vuelve a salir el 2: se repiten de tres en tres.' }],
       respuesta: ['El ciclo mide ', res(3)] },
     { nivel: 1, titulo: 'La última cifra',
       enunciado: ['¿En qué cifra termina ', pot(3, 4), '?'],
@@ -1506,9 +1520,9 @@
     { nivel: 3, titulo: 'Solo se sabe el resto',
       enunciado: ['Un número N es ', MU(9), ' + 2. ¿Qué resto deja ', { sup: ['N', '40'] }, ' al dividirlo entre 9?'],
       alternativas: ['7', '2', '8', '1', '4'],
-      datos: [D2.prod, D4.ciclo, D4.lugar],
+      datos: [D2.mu, D4.potN, D2.prod, D4.ciclo, D4.lugar],
       solucion: [
-        { texto: 'En un producto se multiplican los restos: es el resto de 2 elevado a 40.' },
+        { texto: 'N⁴⁰ es N por sí mismo 40 veces, y en un producto se multiplican los restos: deja lo mismo que 2⁴⁰.' },
         { texto: 'Entre 9, las potencias de 2 dejan 2, 4, 8, 7, 5, 1: el ciclo mide 6. Toca el cuarto.', ecuacion: ['40 = 6 × 6 + 4'] },
         { texto: ['Las trampas: ', letra('B'), ' deja el resto de N; ', letra('C'), ' hace 40 × 2; ', letra('D'), ' cae al final; ', letra('E'), ' es el lugar en el ciclo.'] },
       ],
@@ -1565,7 +1579,7 @@
     predice: {
       pregunta: ['Si sigue duplicando, el día 50 tendrá ', pot(2, 50), ' caramelos. Con bolsitas de ', bas(7), ', ¿cuántos sueltos quedan ese día?'],
       datos: ['1 bolsita = 7 caramelos', 'Sueltos de los días 1 a 6: 2, 4, 1, 2, 4 y 1'],
-      voz: 'No hace falta calcular la potencia.',
+      voz: 'Mira cómo siguen los sueltos de la tabla.',
       opciones: [
         { id: 'c', texto: '4', correcta: true },
         { id: 'lugar', texto: '2', error: 'AT-CICLO-LUGAR', siFuera: '50 entre 3 deja 2: ese es el lugar en el ciclo. En el segundo lugar hay 4 sueltos.' },
@@ -1584,7 +1598,7 @@
       datos: tablaPot(2, 7, 6, true),
       voz: 'Cuando un resto se repite, todo se repite.',
       pasos: [
-        { estado: { paso: 1, fila: 0 }, texto: 'Día 1: 2 caramelos, 2 sueltos.', ecuacion: ['2 = ', sob(2)] },
+        { estado: { paso: 1, fila: 0 }, texto: 'Día 1: 2 caramelos, 2 sueltos.', ecuacion: [pot(2, 1), ' = 2 = ', bas(7), ' × 0 + ', sob(2)] },
         { estado: { paso: 3, fila: 2 }, texto: 'Cada día se duplican los sueltos del anterior: 2, 4, 8.', ecuacion: ['8 = ', bas(7), ' + ', sob(1)] },
         { estado: { paso: 6, fila: [3, 4, 5] }, texto: 'Después de 1 vuelve el 2: el ciclo 2, 4, 1 mide 3.' },
         { estado: { paso: 6, fila: 1 }, texto: 'Divido 50 entre 3: sobran 2. Toca el segundo del ciclo.', ecuacion: ['50 = 3 × 16 + 2'] },
@@ -1593,8 +1607,9 @@
     },
     regla: {
       texto: 'Los restos de las potencias de un número se repiten en ciclo. El exponente se cambia por su resto entre el largo del ciclo; si es 0, vale el último.',
-      ecuacion: ['ciclo de restos: ', { llave: [sob('2, 4, 1')], nota: 'largo 3', color: 'c-o' }, SEP, '50 = 3 × 16 + ', { llave: ['2'], nota: 'lugar en el ciclo' }, SEP, pot(2, 50), ' = ', MU(7), ' + ', sob(4)],
-      condicion: 'el ciclo se halla calculando restos hasta que uno se repite. La última cifra de una potencia es su resto entre 10.',
+      ecuacion: ['ciclo de restos: ', { llave: [sob('2, 4, 1')], nota: 'largo 3', color: 'c-o' }, SEP, '50 = 3 × 16 + ', { llave: ['2'], nota: 'lugar en el ciclo' }, SEP, pot(2, 50), ' = ', { llave: [MU(7)], nota: 'múltiplo de 7', color: 'c-i' }, ' + ', sob(4), SEP,
+        'la última cifra de una potencia = su resto entre 10'],
+      condicion: 'el ciclo se halla calculando restos hasta que uno se repite.',
       voz: 'Busca el ciclo y reduce el exponente.',
     },
     // Así se resuelve: el resto de una potencia de 3, 4 o 5 entre 7, con la tabla del ciclo. «Ahora tú» cambia de base y
@@ -1668,10 +1683,11 @@
       opciones: opciones(v, [
         { id: 'suma', valor: S % 11, error: 'AT-CRITERIO-SUMA-7', siFuera: 'Sumar todas las cifras sirve entre 9. Entre 11 se suman y se restan alternando.' },
         { id: 'signo', valor: mod(-alt, 11), error: 'AT-PESO-SIGNO', siFuera: 'Los signos van al revés: las unidades se suman, las decenas se restan.' },
-        { id: 'negativo', valor: alt < 0 ? -alt : null, error: 'AT-PESO-NEGATIVO', siFuera: `El total es ${menosT(alt)}: faltan ${-alt} para un múltiplo de 11. Lo que sobra es 11 − ${-alt}.` },
+        { id: 'negativo', valor: alt < 0 ? -alt : null, error: 'AT-PESO-NEGATIVO', siFuera: `El total es ${menosT(alt)}: no se le quita el signo. Se le suma 11 hasta que deje de ser negativo.` },
         { id: 'ultima', valor: N % 10, error: 'AT-CRITERIO-ULTIMA', siFuera: 'La última cifra sola sirve entre 2 y 5.' },
       ]),
-      solucion: { texto: `Desde las unidades, sumando y restando: ${menosT(alt)}${alt < 0 ? `, y ${menosT(alt)} + 11 = ${v}` : alt >= 11 ? `, y ${alt} − 11 = ${v}` : ''}.`, ecuacion: [`${f(N, 0)} = `, MU(11), ' + ', sob(v)] },
+      // Un total menor que −11 necesita sumar 22 (auditoría del 19 nov: «−14 + 11 = 8» era falso).
+      solucion: { texto: `Desde las unidades, sumando y restando: ${menosT(alt)}${alt < 0 ? `, y ${menosT(alt)} + ${11 * Math.ceil(-alt / 11)} = ${v}` : alt >= 11 ? `, y ${alt} − 11 = ${v}` : ''}.`, ecuacion: [`${f(N, 0)} = `, MU(11), ' + ', sob(v)] },
     };
   }
   // Ahora tú · tipo 1: el resto entre 7 con los pesos 1, 3 y 2.
@@ -1750,7 +1766,7 @@
     { nivel: 1, titulo: 'Cuando sale negativo',
       enunciado: '¿Qué resto deja 191 al dividirlo entre 11?',
       datos: [D5.regla, D5.once, D5.negativo],
-      solucion: [{ texto: 'La cuenta da −7: a 191 le faltan 7 para ser múltiplo de 11. Entonces le sobran 11 − 7.', ecuacion: ['1 − 9 + 1 = −7 ; −7 + 11 = ', sob(4)] }],
+      solucion: [{ texto: 'Desde las unidades: 1 − 9 + 1 = −7. A 191 le faltan 7 para un múltiplo de 11: le sobran 11 − 7.', ecuacion: ['1 − 9 + 1 = −7 ; −7 + 11 = ', sob(4)] }],
       respuesta: ['Deja resto ', sob(4)] },
     { nivel: 1, titulo: 'Los pesos del 7',
       enunciado: '¿Qué resto deja 46 al dividirlo entre 7, usando los pesos?',
@@ -1767,7 +1783,7 @@
       datos: [D5.regla, D5.siete],
       figura: boleto({ cifras: '523', pesos: ['2', '3', '1'] }),
       solucion: [
-        { texto: 'Cada cifra por el peso de su lugar.', ecuacion: ['3 × 1 + 2 × 3 + 5 × 2 = 19'] },
+        { texto: 'Cada cifra por el peso de su lugar.', ecuacion: ['3 × ', sob('(1)'), ' + 2 × ', sob('(3)'), ' + 5 × ', sob('(2)'), ' = 19'] },
         { texto: '19 pasa de 7: se reduce.', ecuacion: ['19 = ', bas(7), ' × 2 + ', sob(5)] },
       ],
       respuesta: ['Deja resto ', sob(5)] },
@@ -1784,7 +1800,7 @@
       enunciado: '¿Qué resto deja 345 al dividirlo entre 13?',
       datos: [D5.regla, D5.trece, D5.negativo],
       solucion: [
-        { texto: 'La unidad pesa 1; la decena, −3; la centena, −4.', ecuacion: ['5 × 1 − 4 × 3 − 3 × 4 = −19'] },
+        { texto: 'Cada cifra por su peso: la unidad pesa 1; la decena, −3; la centena, −4.', ecuacion: ['5 × ', sob('(1)'), ' + 4 × ', sob('(−3)'), ' + 3 × ', sob('(−4)'), ' = 5 − 12 − 12 = −19'] },
         { texto: 'Sale negativo: le sumo 13 dos veces.', ecuacion: ['−19 + 26 = ', sob(7)] },
       ],
       respuesta: ['Deja resto ', sob(7)] },
@@ -1792,7 +1808,7 @@
       enunciado: '¿Es 6 125 múltiplo de 7?',
       datos: [D5.regla, D5.siete],
       solucion: [
-        { texto: 'Los pesos desde las unidades son 1, 3, 2 y −1.', ecuacion: ['5 × 1 + 2 × 3 + 1 × 2 − 6 × 1 = 7'] },
+        { texto: 'Los pesos desde las unidades son 1, 3, 2 y −1.', ecuacion: ['5 × ', sob('(1)'), ' + 2 × ', sob('(3)'), ' + 1 × ', sob('(2)'), ' + 6 × ', sob('(−1)'), ' = 7'] },
         { texto: '7 es múltiplo de 7: no sobra nada.', ecuacion: ['7 = ', bas(7), ' + ', sob(0)] },
       ],
       respuesta: ['Sí: deja resto ', sob(0)] },
@@ -1829,7 +1845,7 @@
       alternativas: ['9', '2', '4', '5', '0'],
       datos: [D5.regla, D5.trece, [{ raya: ['3a1'] }, ': numeral de cifras 3, a y 1']],
       solucion: [
-        { texto: 'Cada cifra por su peso, desde las unidades.', ecuacion: ['1 × 1 − a × 3 − 3 × 4 = −11 − 3 × a'] },
+        { texto: 'Cada cifra por su peso, desde las unidades.', ecuacion: ['1 × ', sob('(1)'), ' + a × ', sob('(−3)'), ' + 3 × ', sob('(−4)'), ' = −11 − 3 × a'] },
         { texto: 'Con a = 5 da −26, múltiplo de 13.', ecuacion: ['−11 − 3 × ', res(5), ' = −26'] },
         { texto: ['Las trampas: ', letra('A'), ' suma las cifras; ', letra('B'), ' usa los pesos del 7; ', letra('C'), ' alterna signos; ', letra('E'), ' quita los signos.'] },
       ],
@@ -1841,7 +1857,7 @@
       solucion: [
         { texto: 'Por el 5, la última cifra es 0 o 5. No es 0: b = 5.' },
         { texto: 'Entre 11, desde las unidades: 5 − 7 + a − 1 = a − 3. Da 0 con a = 3.', ecuacion: ['a = ', res(3)] },
-        { texto: ['Las trampas: ', letra('A'), ' toma b = 0; ', letra('C'), ' suma las cifras; ', letra('D'), ' es b; ', letra('E'), ' duplica el 3.'] },
+        { texto: ['Las trampas: ', letra('A'), ' toma b = 0; ', letra('C'), ' suma las cifras: 13 + a = 22 da 9; ', letra('D'), ' es b; ', letra('E'), ' duplica el 3.'] },
       ],
       respuesta: [letra('B'), ': a = ', res(3)] },
     { nivel: 3, titulo: 'Un divisor que nunca falla',
@@ -1868,7 +1884,7 @@
     actividad: 'Probar cifras en un boleto borroso hasta que gane el premio.',
     lee: {
       tarjetas: [
-        { titulo: 'Al 10 le falta 1', texto: ['Una bolsita de 10 caramelos no llena ninguna de ', bas(11), ': le falta 1. Una caja de 100 llena 9 bolsitas de 11 y le sobra 1. Entre 11, los lugares se van turnando: sobra 1, falta 1.'],
+        { titulo: 'Al 10 le falta 1', texto: ['Una bolsita de 10 caramelos no llena ninguna de ', bas(11), ': le falta 1. Una caja de 100 llena 9 bolsitas de 11 y le sobra 1. El 11 con circulito es «un múltiplo de 11».'],
           ecuacion: ['10 = ', MU(11), ' − ', res(1), ' ; 100 = ', MU(11), ' + ', sob(1)],
           pieza: BL, dibujo: { datos: { cifras: '583', pesos: pesosT(3, P11) }, estado: {} } },
         { titulo: 'El peso de cada lugar', texto: 'Lo que deja un lugar es su peso, y va debajo de la cifra. El peso de cada lugar puede ser negativo: −1 dice que ahí falta 1. La suma alternada es sumar y restar las cifras, una sí y una no, desde las unidades.',
@@ -1879,7 +1895,7 @@
     ejemplos: EJEMPLOS_PESOS,
     juega: {
       pieza: BL,
-      consigna: 'La lluvia borró una cifra de este boleto de la rifa. Gana si su número es múltiplo de 11.',
+      consigna: 'La lluvia borró la segunda cifra de este boleto de la rifa. Tú pruebas cifras en su lugar. Gana si es múltiplo de 11.',
       mision: {
         // Una sola respuesta: 3 − 7 + x − 4 = x − 8 solo es múltiplo de 11 con x = 8 (4 873 = 11 × 443).
         texto: 'Elige la cifra borrada que hace ganar al boleto.',
@@ -1894,7 +1910,7 @@
       ],
       controles: CTRL_X,
       dibujo: v => ({ datos: boletoJ(v), estado: {} }),
-      lectura: v => { const S = v.x - 8; return ['3 − 7 + ', res(v.x), ` − 4 = ${menosT(S)}`, ...(S === 0 ? [': es múltiplo de 11'] : S < 0 ? [': faltan ', res(-S)] : [': sobra ', sob(S)])]; },
+      lectura: v => { const S = v.x - 8; return ['3 − 7 + ', res(v.x), ` − 4 = ${menosT(S)}`, S === 0 ? ': es múltiplo de 11, gana' : ': no es 0, no gana']; },
       minimo: 3,
     },
     predice: {
@@ -1925,8 +1941,8 @@
     },
     regla: {
       texto: 'Cada lugar pesa lo que deja su potencia de 10. Las cifras se multiplican por su peso, se suman y se reduce.',
-      ecuacion: ['entre ', bas(11), ': ', { llave: [sob('+1, −1, +1, −1…')], nota: 'desde las unidades', color: 'c-o' }, SEP, 'entre ', bas(7), ': ', sob('1, 3, 2, −1, −3, −2'), SEP, 'entre ', bas(13), ': ', sob('1, −3, −4, −1, 3, 4')],
-      condicion: 'los pesos se leen desde las unidades. Un peso negativo es lo que le falta a ese lugar.',
+      ecuacion: ['entre ', bas(11), ': ', { llave: [sob('+1, −1, +1, −1…')], nota: 'desde las unidades', color: 'c-o' }, SEP, 'entre ', bas(7), ': ', { llave: [sob('1, 3, 2, −1, −3, −2')], nota: 'desde las unidades', color: 'c-o' }, SEP, 'entre ', bas(13), ': ', { llave: [sob('1, −3, −4, −1, 3, 4')], nota: 'desde las unidades', color: 'c-o' }],
+      condicion: 'los pesos van desde las unidades, de derecha a izquierda. Un peso negativo es lo que falta: 1 000 = 7 × 143 − 1.',
       voz: 'Cada cifra, por el peso de su lugar.',
     },
     // Así se resuelve: el resto entre 11 de un número de cinco cifras, con la comprobación. «Ahora tú» pide restos entre
@@ -1986,7 +2002,7 @@
   // Todas las maneras de pagar c con monedas de a y de b (x de a, y de b), sin negativos.
   const pagos = (a, b, c) => { const out = []; for (let y = 0; b * y <= c; y++) if ((c - b * y) % a === 0) out.push([(c - b * y) / a, y]); return out; };
   const D6 = {
-    ec: (a, b, c) => [bas(a), ' × ', res('x'), ' + ', bas(b), ' × ', res('y'), ` = ${c}, con `, res('x'), ' e ', res('y'), ' enteros que no son negativos'],
+    ec: (a, b, c, unaDeCada) => [bas(a), ' × ', res('x'), ' + ', bas(b), ' × ', res('y'), ` = ${c}, con `, res('x'), ' e ', res('y'), unaDeCada ? ' enteros positivos' : ' enteros que no son negativos'],
     xy: (qa, qb) => [res('x'), `: ${qa}; `, res('y'), `: ${qb}`],
   };
   // La tabla de «Mira»: con cada cantidad de monedas de S/ 5, lo que falta y si se completa con monedas de S/ 2.
@@ -2065,7 +2081,7 @@
     const ult = ps[ps.length - 1], pri = ps[0];
     return {
       pregunta: `Rosa gasta justo ${soles(c)} en bolsas de ${soles(p)} y cajas de ${soles(q)}, y lleva al menos una de cada una. Si compra la mayor cantidad posible de cajas, ¿cuántas bolsas lleva?`,
-      datos: [D6.ec(p, q, c), D6.xy('las bolsas', 'las cajas')],
+      datos: [D6.ec(p, q, c, true), D6.xy('las bolsas', 'las cajas')],
       opciones: opciones(ult[0], [
         { id: 'primera', valor: pri[0], error: 'AT-DIOF-PRIMERA', siFuera: `Esa compra gasta justo, pero con ${pri[1]} ${pri[1] === 1 ? 'caja' : 'cajas'}. Se piden las más cajas posibles.` },
         { id: 'otra', valor: ult[1], error: 'AT-RESPONDE-OTRA', siFuera: `${ult[1]} son las cajas. Se piden las bolsas.` },
@@ -2129,10 +2145,10 @@
       respuesta: [res(8), ' monedas'] },
     { nivel: 2, titulo: 'Bolsas y cajas',
       enunciado: 'Rosa gasta justo S/ 34 en bolsas de S/ 3 y cajas de S/ 7, y lleva al menos una de cada una. ¿De cuántas maneras puede comprar?',
-      datos: [D6.ec(3, 7, 34), D6.xy('las bolsas', 'las cajas')],
+      datos: [D6.ec(3, 7, 34, true), D6.xy('las bolsas', 'las cajas')],
       solucion: [
-        { texto: 'Pruebo las cajas: con 1 quedan 27 y con 4 quedan 6, múltiplos de 3. Con 2 o 3 quedan 20 o 13: no.' },
-        { texto: 'Salen dos compras.', ecuacion: ['(9, 1), (2, 4)'] },
+        { texto: 'Pruebo de 1 a 4 cajas (5 pasan de S/ 34). Con 1 quedan 27 y con 4 quedan 6: múltiplos de 3. Con 2 o 3, no.' },
+        { texto: 'Salen dos compras, escritas como (bolsas, cajas).', ecuacion: ['(9, 1), (2, 4)'] },
       ],
       respuesta: [res(2), ' maneras'] },
     { nivel: 2, titulo: 'De salto en salto',
@@ -2145,7 +2161,7 @@
       respuesta: [res('9 y 3'), ', o ', res('4 y 5')] },
     { nivel: 2, titulo: 'Con los restos',
       enunciado: 'En 3x + 7y = 40, con x e y enteros positivos, ¿qué valores puede tomar y?',
-      datos: [D6.ec(3, 7, 40), D2.forma],
+      datos: [D6.ec(3, 7, 40, true), D2.forma],
       solucion: [
         { texto: 'Miro los restos entre 3: el término 3x no deja nada; 7y deja lo mismo que y; 40 deja 1. Entonces y deja 1.' },
         { texto: 'Los que dejan 1 entre 3 y caben: 1 y 4. Con 7 ya se pasa.', ecuacion: ['(11, 1), (4, 4)'] },
@@ -2154,7 +2170,7 @@
     { nivel: 3, titulo: 'Con las dos clases',
       enunciado: 'Rosa gasta justo S/ 60 en bolsas de S/ 3 y cajas de S/ 5, y lleva al menos una de cada una. ¿De cuántas maneras puede comprar?',
       alternativas: ['5', '3', '11', '12', '20'],
-      datos: [D6.ec(3, 5, 60), D6.xy('las bolsas', 'las cajas')],
+      datos: [D6.ec(3, 5, 60, true), D6.xy('las bolsas', 'las cajas')],
       solucion: [
         { texto: 'Lo que queda al pagar las cajas tiene que ser múltiplo de 3: las cajas van de 3 en 3.', ecuacion: ['(15, 3), (10, 6), (5, 9)'] },
         { texto: 'Con 0 o con 12 cajas faltaría una de las dos clases: no cuentan.' },
@@ -2164,7 +2180,7 @@
     { nivel: 3, titulo: 'Una sola compra posible',
       enunciado: 'Con S/ 47 justos se compran bolsas de S/ 4 y cajas de S/ 9, al menos una de cada una. ¿Cuántas bolsas se llevan?',
       alternativas: ['3', '11', '2', '8', '5'],
-      datos: [D6.ec(4, 9, 47), D6.xy('las bolsas', 'las cajas')],
+      datos: [D6.ec(4, 9, 47, true), D6.xy('las bolsas', 'las cajas')],
       solucion: [
         { texto: 'Pruebo las cajas: con 1, 2, 4 o 5 quedan 38, 29, 11 o 2, que no son múltiplos de 4.' },
         { texto: 'Con 3 cajas quedan 20: son 5 bolsas.', ecuacion: ['47 − 27 = 20 = ', bas(4), ' × ', res(5)] },
@@ -2205,11 +2221,11 @@
 
   const diofanticas = {
     id: 'diofanticas',
-    titulo: 'Pagar justo con dos monedas',
-    pregunta: '¿Cuándo se puede pagar justo con dos monedas?',
+    titulo: 'Dos clases de monedas, pago justo',
+    pregunta: '¿Cuándo se puede pagar justo con dos clases de monedas?',
     temas: ['Ecuaciones diofánticas lineales'],
     pieza: MO,
-    aprendizaje: 'Una cuenta se paga justo con dos monedas si hay cantidades enteras que la cumplen: se prueba una y la otra sale de un múltiplo.',
+    aprendizaje: 'Con dos clases de monedas se paga justo si hay cantidades enteras que cumplen: se prueba una y la otra sale de un múltiplo.',
     actividad: 'Elegir cuántas monedas de cada clase pagan justo la cuenta.',
     lee: {
       tarjetas: [
@@ -2248,7 +2264,7 @@
       opciones: [
         { id: 'c', texto: '5', correcta: true },
         { id: 'todas', texto: '9', error: 'AT-DIOF-TODAS', siFuera: 'Probar de 0 a 8 de S/ 5 está bien. Pero con 1, 3, 5 o 7 falta un impar.' },
-        { id: 'cero', texto: '3', error: 'AT-DIOF-CERO', siFuera: 'Esas son las maneras que usan las dos monedas. También vale pagar todo con una sola clase.' },
+        { id: 'cero', texto: '3', error: 'AT-DIOF-CERO', siFuera: 'Esas son las maneras que usan las dos clases. También vale pagar todo con una sola clase.' },
         { id: 'divide', texto: '8', error: 'AT-DIOF-DIVIDE', siFuera: 'Con 8 monedas de S/ 5 se paga justo: es una manera. Se pide cuántas maneras hay.' },
       ],
       dibujo: monedas({ cuenta: 40, filas: [{ valor: 2, cuantas: '?' }, { valor: 5, cuantas: '?' }] }),
@@ -2269,9 +2285,9 @@
       ],
     },
     regla: {
-      texto: 'Para pagar justo con dos monedas se prueba una clase y se ve si lo que falta es múltiplo de la otra. Las soluciones van de salto en salto.',
-      ecuacion: [bas(2), ' × ', { llave: [res('x')], nota: 'monedas de S/ 2', color: 'c-f' }, ' + ', bas(5), ' × ', { llave: [res('y')], nota: 'monedas de S/ 5', color: 'c-f' }, ' = 40', SEP, res('y'), ' sube de 2 en 2 y ', res('x'), ' baja de 5 en 5'],
-      condicion: 'x e y son enteros no negativos. Si las monedas son múltiplos de un número y la cuenta no, es imposible.',
+      texto: 'Con dos clases de monedas, se prueba una cantidad de una y se ve si lo que falta es múltiplo de la otra. Las soluciones van de salto en salto.',
+      ecuacion: [bas(2), ' × ', { llave: [res('x')], nota: 'de S/ 2', color: 'c-f' }, ' + ', bas(5), ' × ', { llave: [res('y')], nota: 'de S/ 5', color: 'c-f' }, ' = 40', SEP, res('y'), ' sube de 2 en 2', SEP, res('x'), ' baja de 5 en 5'],
+      condicion: 'x e y son enteros desde 0. Si las dos monedas son múltiplos de un número y la cuenta no, es imposible.',
       voz: 'Prueba una moneda; la otra sale de un múltiplo.',
     },
     // Así se resuelve: todas las compras de bolsas y cajas con un gasto fijo, listadas. «Ahora tú» pide cuántas maneras
@@ -2318,15 +2334,27 @@
   const largo = v => { const c = ciclo(v.b, v.k); return c.xs.length - c.ini; };
   let MAX_L = 0; for (let b0 = 2; b0 <= 12; b0++) for (let k0 = 2; k0 <= 10; k0++) MAX_L = Math.max(MAX_L, largo({ b: b0, k: k0 }));
 
+  // Lector en frío B (19 nov): el circulito se dice en palabras en los Datos de todo ejercicio que lo usa (en su
+  // enunciado, sus datos o su resuelto). Datos de Predice: no (llevan solo valores, y ninguna usa el circulito).
+  const usaMu = x => (Array.isArray(x) ? x.some(usaMu) : !!(x && typeof x === 'object' && (x.mult || Object.values(x).some(usaMu))));
+  const conMu = c => { if (c && Array.isArray(c.datos) && !c.datos.includes(D2.mu) && usaMu([c.enunciado, c.pregunta, c.datos, c.solucion, c.pasos])) c.datos = [D2.mu, ...c.datos]; return c; };
+  for (const idea of [multiplos, teoremas, criterios, potencias, criteriosPesos, diofanticas]) {
+    idea.ejemplos.forEach(conMu);
+    const gA = idea.ahoraTu.generar, gR = idea.resuelve.generar;
+    idea.ahoraTu.generar = s => conMu(gA(s));
+    idea.resuelve.generar = s => conMu(gR(s));
+  }
+
   return {
     unidad: 'aritmetica.divisibilidad',
-    version: '0.4.0',
-    // Sin calidad: 2 todavía: la marca la sesión después del lector en frío y del auditor.
+    version: '0.5.0',
+    // Las seis ideas pasaron el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     // Un color fijo por magnitud (cabecera); lo comprueba divisibilidad.test.js en las seis ideas.
     colores: COLORES,
     // Tabla de letras de la unidad (propuesta §6): las que pueden ir en una línea de Datos sin volver a decirse.
-    letras: { N: 'el número que se estudia', d: 'el divisor: lo que lleva una bolsita', k: 'el entero que multiplica al divisor', q: 'el cociente entero: las bolsitas llenas', r: 'el resto: los sueltos que sobran',
+    letras: { N: 'el número que se estudia', d: 'el divisor: lo que lleva una bolsita', k: 'el entero que multiplica al divisor', q: 'el cociente entero: las bolsitas llenas', r: 'el resto: los sueltos que sobran', r_e: 'el resto por exceso: lo que falta para otra bolsita',
       s: 'el resto del segundo número', a: 'una cifra de un numeral', b: 'una cifra de un numeral', c: 'una cifra de un numeral', x: 'cuántas hay de la primera clase', y: 'cuántas hay de la segunda clase' },
     requiere: ['/nucleo/kit/piezas/arit-puesto.js', '/nucleo/kit/piezas/arit-boletos.js', '/nucleo/kit/piezas/arit-boleto.js', '/nucleo/kit/piezas/arit-monedas.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
     // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). «número primo» se estrena
@@ -2354,7 +2382,7 @@
       { termino: 'criterio de divisibilidad', formas: ['criterio de divisibilidad', 'criterios de divisibilidad'],
         def: 'Regla para saber el resto, o si sobra algo, mirando solo las cifras, sin hacer la división.',
         simple: 'Un atajo que mira las cifras en vez de dividir.', ver: ['suma de cifras', 'cifra'],
-        ejemplos: ['Entre 9: se suman las cifras.', 'Entre 5: basta mirar la última cifra.', 'Entre 4: bastan las dos últimas cifras.'] },
+        ejemplos: ['Entre 9: se suman las cifras.', 'Entre 5: basta mirar la última cifra.', 'Entre 10: basta ver si termina en 0.'] },
       { termino: 'suma de cifras', formas: ['suma de cifras', 'suma de sus cifras', 'suma de las cifras'],
         def: 'Resultado de sumar, una por una, las cifras con que se escribe un número.',
         simple: 'Juntar las cifras de un número, sin importar su lugar.', ver: ['criterio de divisibilidad'],

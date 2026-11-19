@@ -1,8 +1,8 @@
 // Pruebas propias de «Divisibilidad» (además del validador común de contenido/teoria/teoria.test.js). Etapa 5, fases 2 y
 // 3 (19 nov): las seis ideas pasaron por el contrato, con la propuesta docs/etapa5/propuesta-aritmetica.md como guion.
-// La unidad todavía no lleva calidad: 2 (la sesión la marca después del lector en frío y del auditor). Las pruebas de
+// La unidad lleva calidad: 2 desde el 19 nov (lector en frío y auditor). Las pruebas de
 // la idea 1 van primero; las de las ideas 2 a 6, al final, con cuentas aparte propias (BigInt, fuerza bruta).
-//   - seis ideas en el orden de la propuesta, con los id publicados, y sin calidad 2 todavía;
+//   - seis ideas en el orden de la propuesta, con los id publicados, y con calidad 2;
 //   - la notación del examen: { mult } de nucleo/ecuacion.js dibuja el circulito y se lee «múltiplo de 7»;
 //   - idea 1, un color fijo por magnitud (docs/molde-unidad.md §5b; propuesta §7): cada ficha de color dice su magnitud
 //     (m) y lleva el color de def.colores: el envase turquesa, lo que sobra naranja, lo que se busca violeta; nunca
@@ -44,9 +44,9 @@ const cuantos = (d, a, b) => { let c = 0; for (let x = a; x <= b; x++) if (x % d
 const mayorHasta = (d, tope) => { for (let x = tope; x >= 1; x--) if (x % d === 0) return x; };
 const menorDesde = (d, piso) => { for (let x = piso; ; x++) if (x % d === 0) return x; };
 
-test('seis ideas en el orden de la propuesta, con sus id, sin calidad 2 y con las piezas del puesto y de la rifa', () => {
+test('seis ideas en el orden de la propuesta, con sus id, con calidad 2 y con las piezas del puesto y de la rifa', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ID);
-  assert.equal(def.calidad, undefined, 'la unidad está en proceso: calidad 2 se marca al cerrarla');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.equal(def.septimaIdea, undefined);
   assert.equal(I1.pieza, 'arit-puesto');
   assert.ok(def.requiere.includes('/nucleo/kit/piezas/arit-boletos.js') && def.requiere.includes('/nucleo/kit/piezas/arit-puesto.js'));
@@ -584,4 +584,97 @@ test('ideas 2 a 6 y laboratorio · notación: × y nunca «·» para multiplicar
   for (const t of textos) assert.ok(!/\d\s*·\s*\d|[a-zA-Z]\s·\s[a-zA-Z0-9]/.test(t), `«·» como producto: ${t}`);
   // Ni «m» ni «mcd» en los textos: el divisor es d y el MCD es de otra unidad.
   for (const t of textos) assert.ok(!/\bm = |\bmcd\b|≡ r/.test(t), `letra vieja: ${t}`);
+});
+
+// ---------- Auditoría y lectores en frío (19 nov): cada corrección con su prueba (falla con la versión anterior) ----------
+const I = Object.fromEntries(def.ideas.map(x => [x.id, x]));
+const mcdA = (x, y) => (y ? mcdA(y, x % y) : x);
+// Igualdades numéricas de un texto («−14 + 11 = 8» era falsa): se evalúan las sumas y restas de enteros.
+const sumas = t => [...t.replace(/−/g, '-').matchAll(/(-?\d+(?: [+-] \d+)+) = (-?\d+)(?![\d×])/g)]
+  .map(m => [m[0], m[1].split(' ').reduce((a, x, i, xs) => (i === 0 ? +x : xs[i - 1] === '+' ? a + +x : xs[i - 1] === '-' ? a - +x : a), 0), +m[2]]);
+
+test('auditoría · «Ahora tú» del 11: la cuenta del resuelto es cierta también con totales menores que −11', () => {
+  let negativos = 0;
+  for (let s = 0; s < 1000; s += 5) {
+    const c = I['criterios-pesos'].ahoraTu.generar(s), t = plano(c.solucion.texto);
+    if (/−1[2-9]/.test(t)) negativos++;
+    for (const [txt, izq, der] of sumas(t)) assert.equal(izq, der, `${plano(c.pregunta)}: «${txt}» es falsa`);
+    for (const o of c.opciones) assert.ok(!/11 − 1[2-9]/.test(o.siFuera || ''), `${plano(c.pregunta)}: ${o.siFuera}`);
+  }
+  assert.ok(negativos > 0, 'el caso de un total menor que −11 sigue saliendo');
+});
+
+test('auditoría · restos potenciales de «Ahora tú»: ciclos de 3 a 6 que empiezan en la primera potencia (decisión 15)', () => {
+  for (let s = 0; s < 1000; s++) {
+    if (s % 5 < 3) continue;
+    const c = I['restos-potenciales'].ahoraTu.generar(s), t = plano(c.pregunta);
+    const m = t.match(/(?:N es múltiplo de (\d+) \+ (\d+)|deja (\d+) elevado a \d+ \+ \d+)\D.*entre (\d+)/);
+    assert.ok(m, t);
+    const b = Number(m[2] || m[3]), d = Number(m[4]);
+    const xs = []; let x = b % d; while (!xs.includes(x)) { xs.push(x); x = (x * b) % d; }
+    assert.equal(xs.indexOf(x), 0, `${t}: el ciclo no empieza en la primera potencia`);
+    assert.ok(xs.length >= 3 && xs.length <= 6, `${t}: ciclo de ${xs.length}`);
+  }
+});
+
+test('auditoría · «p de cada d» con p y d sin factor común: un solo total posible aunque se reduzca la razón', () => {
+  for (let s = 4; s < 2000; s += 5) {
+    const t = plano(I['filas-de-m'].ahoraTu.generar(s).pregunta), [p, d, L, U] = t.match(/(\d+) de cada (\d+).*más de (\d+) y menos de (\d+)/).slice(1).map(Number);
+    assert.equal(mcdA(p, d), 1, t);
+    let n = 0; for (let T = L + 1; T < U; T++) if (T % (d / mcdA(p, d)) === 0) n++;
+    assert.equal(n, 1, t);
+  }
+});
+
+test('auditoría · el glosario de la idea 3 no dice el criterio del 4, que guarda su predicción', () => {
+  const g = Glosario.porIdea ? Glosario.porIdea(def) : null;
+  const terminos = def.glosario.filter(x => ['criterio de divisibilidad', 'suma de cifras'].includes(x.termino));
+  for (const x of terminos) assert.ok(![x.def, x.simple, ...x.ejemplos].some(e => /[Ee]ntre 4\b|dos últimas/.test(e)), x.termino);
+  assert.ok(g === null || g !== undefined);
+});
+
+test('lector B · el circulito se dice en palabras en los Datos de todo ejercicio que lo usa', () => {
+  const usa = x => (Array.isArray(x) ? x.some(usa) : !!(x && typeof x === 'object' && (x.mult || Object.values(x).some(usa))));
+  const dice = c => c.datos.some(l => /con un circulito\): un múltiplo de/.test(plano(l)));
+  for (const idea of def.ideas) {
+    for (const e of idea.ejemplos) if (usa([e.enunciado, e.datos, e.solucion])) assert.ok(dice(e), `${idea.id}: «${e.titulo}»`);
+    for (let s = 0; s < 60; s++) {
+      const a = idea.ahoraTu.generar(s), r = idea.resuelve.generar(s);
+      if (usa([a.pregunta, a.datos, a.solucion])) assert.ok(dice(a), `${idea.id} «Ahora tú» ${s}`);
+      if (usa([r.enunciado, r.datos, r.pasos])) assert.ok(dice(r), `${idea.id} «Así se resuelve» ${s}`);
+    }
+  }
+  // Y en palabras en Lee de la idea del 11 (donde aparece 11̊ por primera vez en la tarjeta 1).
+  assert.match(plano(I['criterios-pesos'].lee.tarjetas[0].texto), /circulito es «un múltiplo de 11»/);
+});
+
+test('lectores · letras y notación presentadas antes de usarse', () => {
+  // rₑ (no k) para lo que falta; la regla de la idea 1 presenta q y r; la de la idea 2, la resta y rₑ en palabras.
+  for (const idea of def.ideas) for (const e of idea.ejemplos) for (const l of e.datos) assert.ok(!/le faltan k\b|− k$/.test(plano(l)), `${e.titulo}: ${plano(l)}`);
+  assert.ok(I['filas-de-m'].regla.ecuacion.some(x => x && x.llave && plano(x.llave) === 'q'));
+  assert.match(plano(I['filas-de-m'].regla.texto), /cociente de N ÷ d/);
+  assert.match(plano(I['restos-suman'].regla.ecuacion), /\) − \(/);
+  assert.match(plano(I['restos-suman'].regla.ecuacion.find(x => x && x.nota && /falta/.test(x.nota)).nota), /rₑ/);
+  // La raya de a̅b̅c̅ se dice en Lee de la idea 3.
+  assert.match(plano(I.criterios.lee.tarjetas[1].texto), /la raya dice que son cifras/);
+});
+
+test('lectores · el juego del 11 no da la cifra al abrir; Luma no adelanta en Mira ni en Predice', () => {
+  const j = I['criterios-pesos'].juega, t = plano(j.lectura({ x: 0 }));
+  assert.ok(!/faltan|sobra/.test(t), t);
+  assert.ok(!/cuentan las dos últimas/.test(I.criterios.mira.voz));
+  assert.ok(!/No hace falta calcular/.test(I['restos-potenciales'].predice.voz));
+});
+
+test('lector B · «dos clases de monedas»; «al menos una de cada una» va con enteros positivos en los Datos', () => {
+  assert.match(I.diofanticas.titulo, /clases/);
+  assert.ok(I.diofanticas.titulo.split(/\s+/).length <= 6);
+  const casos = I.diofanticas.ejemplos.map(e => [e.enunciado, e.datos]);
+  for (let s = 3; s < 400; s += 4) { const c = I.diofanticas.ahoraTu.generar(s); casos.push([c.pregunta, c.datos]); }
+  for (const [en, da] of casos) if (/al menos una de cada|enteros positivos/.test(plano(en))) assert.ok(da.some(l => /enteros positivos/.test(plano(l))), plano(en));
+});
+
+test('lector B · el ejemplo del largo del ciclo no trae los restos en el enunciado', () => {
+  const e = I['restos-potenciales'].ejemplos.find(x => x.titulo === 'El largo del ciclo');
+  assert.ok(!/2, 4, 1/.test(plano(e.enunciado)), plano(e.enunciado));
 });

@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Un pedido deja 3 sueltos al empacarlo en bolsitas de 7. Doña Juana prepara 6 pedidos iguales y los junta. ¿Cuántos sueltos quedan? Datos: d̊: un múltiplo de d; r y s: los restos de cada número entre d. (d̊ + r) × (d̊ + s) = d̊ + r × s. Un resto es menor que d: si llega a d, se divide otra vez. Alternativas: A) 4   B) No se puede saber   C) 3   D) 18   E) 2",
+      "enunciado": "Un pedido deja 3 sueltos al empacarlo en bolsitas de 7. Doña Juana prepara 6 pedidos iguales y los junta. ¿Cuántos sueltos quedan? Datos: d̊: un múltiplo de d; r y s: los restos de cada número entre d. k pedidos iguales: k × (d̊ + r) = d̊ + k × r. Un resto es menor que d: si llega a d, se divide otra vez. Alternativas: A) 4   B) No se puede saber   C) 3   D) 18   E) 2",
       "respuesta": "A) 4",
       "pasos": [
         "Cada pedido aporta 3 sueltos: son 6 × 3 = 18.",

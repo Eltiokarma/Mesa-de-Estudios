@@ -13,7 +13,7 @@
  *   filas: [{ valor: 2, cuantas: 4 }, { valor: 5, cuantas: 3 }],   una fila por clase de moneda (o billete: clase: 'billete');
  *                                 cuantas: un número, o '?' si se pide
  *   cuenta: 23,                   lo que hay que pagar: va en el cartel («Cuenta: S/ 23»)
- *   total: true,                  el rótulo de cada fila dice lo que vale («4 × S/ 2 = S/ 8»); false: solo cuántas hay
+ *   total: true,                  el rótulo de cada fila dice lo que vale («S/ 2 × 4 = S/ 8»); false: solo cuántas hay
  *   pie: [[texto, color?, peso?], …],   una línea abajo (la relación)
  *   pasos: [{ …datos }, …],
  * }
@@ -61,7 +61,8 @@
       else if (cuantas > ver) tx(`más ${k + 1}`, xFin, cy + 5, [['…']], { tam: 15 });
       const segs = pide ? [['¿cuántas de '], [`S/ ${f.valor}`, 'i', 700], ['?']]
         : d.total === false ? [[String(cuantas), 'f', 700], [` ${nombre({ clase: f.clase, cuantas })} de `], [`S/ ${f.valor}`, 'i', 700]]
-          : [[String(cuantas), 'f', 700], [' × '], [`S/ ${f.valor}`, 'i', 700], [` = S/ ${cuantas * f.valor}`]];
+          // Primero lo que vale la moneda, como en la ecuación (2 × x): lector en frío B, 19 nov.
+          : [[`S/ ${f.valor}`, 'i', 700], [' × '], [String(cuantas), 'f', 700], [` = S/ ${cuantas * f.valor}`]];
       tx(`rótulo ${k + 1}`, 12, y0 + k * FILA + 46, segs);
     });
     const yFin = y0 + filas.length * FILA;
