@@ -127,7 +127,7 @@
   const CI = 'arit-cintas';
   const D1 = {
     comun: 'Un divisor común de A y B divide exacto a los dos: no deja resto en ninguno',
-    mcd: 'MCD(A, B): el mayor divisor común de A y B',
+    mcd: 'MCD⁠(A, B): el mayor divisor común de A y B',
     fac: 'Con primos: el MCD lleva los primos que todos comparten, cada uno con su menor exponente',
     trozos: 'Trozos que salen de una cinta: el largo de la cinta ÷ el largo del trozo',
     tres: 'El MCD de tres números es el mayor que divide exacto a los tres',
@@ -220,7 +220,7 @@
     if (Math.min(e[0], e[1]) < 2 && Math.min(e[2], e[3]) < 2) return null;
     if (e[0] === e[1] && e[2] === e[3]) return null;
     const [x, y] = r.de([[5, 7], [5, 11], [7, 11], [5, 13]]);
-    const A = [[2, e[0]], [3, e[2]], [x, r.ent(1, 2)]], B = [[2, e[1]], [3, e[3]], [y, 1]];
+    const ex = r.ent(1, 2), A = [[2, e[0]], [3, e[2]], [x, ex]], B = [[2, e[1]], [3, e[3]], [y, 1]];
     const min = [[2, Math.min(e[0], e[1])], [3, Math.min(e[2], e[3])]], max = [[2, Math.max(e[0], e[1])], [3, Math.max(e[2], e[3])]];
     const mcdN = 2 ** min[0][1] * 3 ** min[1][1];
     return {
@@ -228,7 +228,7 @@
       datos: [D1.fac, D1.exp],
       opciones: opciones(canonDe(min), [
         { id: 'mayor', valor: canonDe(max), error: 'AT-MCD-MAYOR', siFuera: 'Bien los primos comunes, el 2 y el 3. Pero de cada uno se toma el menor exponente.' },
-        { id: 'todos', valor: canonDe([...min, [x, 1], [y, 1]]), error: 'AT-MCD-TODOS', siFuera: `Bien los menores exponentes. Pero el ${x} y el ${y} no están en los dos: no son comunes.` },
+        { id: 'todos', valor: canonDe([...min, [x, ex], [y, 1]]), error: 'AT-MCD-TODOS', siFuera: `Bien los menores exponentes. Pero el ${x} y el ${y} no están en los dos: no son comunes.` },
         { id: 'sinexp', valor: '2 × 3', error: 'AT-MCD-SIN-EXP', siFuera: 'Bien, el 2 y el 3 son los comunes. Pero entran con su menor exponente, no una sola vez.' },
       ]),
       solucion: { texto: `Comparten el 2 y el 3; el ${x} y el ${y} están en uno solo.`, ecuacion: ['MCD = ', canonDe(min), ' = ', dv(mcdN)] },
@@ -243,6 +243,8 @@
     const escA = A / 10;           // como se lee sin pasar a cm: 1,5 → 15; 2,25 → 225
     const mal = mcd(escA, B);
     if (mal === g) return null;
+    // Ni el par del ejemplo «Metros con decimales» (1,5 m y 2,25 m) ni otro ya usado (auditoría, M2).
+    if (USADOS1.has(par(A, B))) return null;
     const M = mcm(A, B), s = menorPrimo(g);
     return {
       pregunta: `Un rollo de cinta mide ${f(A / 100, 2)} m y otro, ${f(B / 100, 2)} m. Se cortan en trozos iguales, lo más largos posible, sin que sobre nada. ¿Cuánto mide cada trozo?`,
@@ -292,8 +294,8 @@
       respuesta: ['MCD(20, 30) = ', dv(10)] },
     { nivel: 1, titulo: 'Con primos: 40 y 100',
       enunciado: '¿Cuál es el MCD de 40 y 100, con sus primos?',
-      datos: ['40 = 2³ × 5', '100 = 2² × 5²', D1.fac],
-      solucion: [{ texto: 'Los dos tienen el 2 y el 5. Del 2, el menor exponente es 2; del 5, es 1.', ecuacion: ['MCD = 2² × 5 = ', dv(20)] }],
+      datos: [D1.fac, D1.exp],
+      solucion: [{ texto: 'Descompongo los dos en primos.', ecuacion: ['40 = 2³ × 5', SEP, '100 = 2² × 5²'] }, { texto: 'Los dos tienen el 2 y el 5. Del 2, el menor exponente es 2; del 5, es 1.', ecuacion: ['MCD = 2² × 5 = ', dv(20)] }],
       respuesta: ['MCD = ', dv(20)] },
     { nivel: 1, titulo: 'Dos números PESI',
       enunciado: '¿Cuál es el MCD de 8 y 15?',
@@ -430,7 +432,7 @@
       },
       voz: 'Mira lo que sobra en los dos rollos, no solo en uno.',
       leyenda: [
-        { s: dv('trozo'), t: 'el largo de cada trozo' },
+        { s: dv('trozo'), t: 'trozo; si entra en los dos: divisor común' },
         { s: sb('sobra'), t: 'lo que queda, más corto que un trozo' },
       ],
       controles: [
@@ -477,29 +479,29 @@
     regla: {
       texto: 'El MCD de dos números, A y B, o de tres, es el mayor que divide exacto a todos. Con primos: los comunes, cada uno con su menor exponente.',
       ecuacion: ['24 = 2³ × 3', SEP, '36 = 2² × 3²', SEP, { llave: ['MCD(24, 36) = 2² × 3'], nota: 'menor exponente' }, ' = ', dv(12)],
-      condicion: 'enteros positivos. Si no comparten ningún primo (son PESI), el MCD es 1; si A divide a B, el MCD es A.',
+      condicion: 'A y B son enteros positivos. Si son PESI (primos entre sí), el MCD es 1; si A divide a B, A.',
       voz: 'El que entra en todos, y el más grande.',
       dibujo: { pieza: CI, datos: rollos([24, 36], 12), estado: {} },
     },
-    // Así se resuelve: cuántas bolsitas arma doña Juana con dos sabores. «Ahora tú» pide el trozo de dos o de tres rollos,
-    // cuántos trozos salen, el MCD de dos números en primos, largos con decimales y parcelas cuadradas.
+    // Así se resuelve (auditoría, M3): la mayor cantidad de bolsas iguales con dos sabores, que es el MCD, y qué lleva cada
+    // una. «Ahora tú» pide el trozo de dos o de tres rollos, cuántos trozos salen, el MCD de dos números en primos, largos
+    // con decimales y parcelas cuadradas: ninguna de esas es esta pregunta.
     resuelve: {
       generar(s) {
         const r = azar(s + 900), { g, m, n, A, B } = dosConMcd(r, [4, 6, 8, 9, 10, 12]);
-        const cA = String(A), cB = String(B);
         return {
-          enunciado: `Doña Juana tiene ${A} caramelos de fresa y ${B} de limón. Los empaca en bolsitas iguales, sin mezclar sabores, con la mayor cantidad posible en cada una. ¿Cuántas bolsitas arma en total?`,
+          enunciado: `Doña Juana reparte ${A} caramelos de fresa y ${B} de limón en la mayor cantidad posible de bolsas iguales, sin que sobre ninguno. ¿Cuántas bolsas arma y qué lleva cada una?`,
           datos: [D1.comun, D1.mcd, D1.fac],
           pasos: [
-            { tipo: 'pide', texto: 'Piden cuántas bolsitas arma en total, no cuántos caramelos lleva cada una.' },
-            { tipo: 'datos', texto: `Hay ${cA} de fresa y ${cB} de limón. Todas las bolsitas llevan lo mismo y no se mezclan sabores.` },
-            { tipo: 'regla', texto: 'Lo que lleva una bolsita divide exacto a los dos montones: es un divisor común. Como se quiere lo más posible, es el MCD.' },
+            { tipo: 'pide', texto: 'Piden cuántas bolsas arma y cuántos caramelos de cada sabor lleva cada bolsa.' },
+            { tipo: 'datos', texto: `Hay A = ${A} de fresa y B = ${B} de limón. Todas las bolsas llevan lo mismo y no sobra ningún caramelo.` },
+            { tipo: 'regla', texto: 'La cantidad de bolsas divide exacto a los dos montones: es un divisor común. Como se quiere la mayor cantidad, es el MCD.' },
             { tipo: 'cuentas', texto: 'Descompongo en primos y tomo los comunes, cada uno con su menor exponente.',
               ecuacion: [`${A} = ${canon(A)}`, SEP, `${B} = ${canon(B)}`, SEP, `MCD = ${canon(g)}${factores(g).length > 1 || factores(g)[0][1] > 1 ? ` = ${g}` : ''}`] },
-            { tipo: 'cuentas', texto: 'Cuento las bolsitas de cada sabor y las sumo.', ecuacion: [`${A} ÷ ${g} + ${B} ÷ ${g} = ${m} + ${n} = ${m + n}`] },
-            { tipo: 'sentido', texto: `Comprueba: ${m} y ${n} son PESI, así que no hay bolsitas con más caramelos que ${g}.` },
+            { tipo: 'cuentas', texto: `Reparto cada sabor entre las ${g} bolsas.`, ecuacion: [`${A} ÷ ${g} = ${m}`, SEP, `${B} ÷ ${g} = ${n}`] },
+            { tipo: 'sentido', texto: `Comprueba: con más de ${g} bolsas, alguno de los dos montones ya no se reparte exacto.` },
           ],
-          respuesta: `Arma ${m + n} bolsitas de ${g} caramelos.`,
+          respuesta: `${g} bolsas, cada una con ${m} de fresa y ${n} de limón.`,
         };
       },
     },
@@ -527,13 +529,13 @@
   const BO = 'arit-boletos';
   const D2 = {
     comun: 'Un múltiplo común de A y B es múltiplo de los dos: A y B lo dividen exacto',
-    mcm: 'MCM(A, B): el menor múltiplo común de A y B, sin contar el 0',
+    mcm: 'MCM⁠(A, B): el menor múltiplo común de A y B, sin contar el 0',
     fac: 'Con primos: el MCM lleva todos los primos que aparecen, cada uno con su mayor exponente',
     otros: 'Los múltiplos comunes de A y B son los múltiplos de su MCM',
     tres: 'El MCM de tres números es el menor múltiplo de los tres',
     exp: 'El exponente dice cuántas veces entra el primo: 2³ = 2 × 2 × 2',
     hora: '1 h = 60 min',
-    partida: 'Si coinciden al empezar, esa es la primera vez que coinciden',
+    partida: 'Si coinciden al empezar (hoy, o a la hora de partida), esa ya cuenta como la primera vez',
     tomas: 'Tomas de una medicina, contando la primera: las horas ÷ cada cuántas horas, más 1',
   };
   // La plancha con dos premios: caramelo (círculo) cada a, gaseosa (cuadrito) cada b; con los dos, violeta.
@@ -585,8 +587,8 @@
       pregunta: `Tres pastillas se toman cada ${a}, cada ${b} y cada ${c} horas. Hoy a las 6:00 se tomaron las tres juntas. ¿Dentro de cuántas horas vuelven a tomarse juntas?`,
       datos: [D2.comun, D2.fac, D2.tres],
       opciones: opciones(M, [
-        { id: 'producto', valor: a * b * c, error: 'AT-PRODUCTO', siFuera: `Bien: a las ${a * b * c} h coinciden las tres. Pero ya lo hicieron antes, a las ${M} h.` },
-        { id: 'dos', valor: M2, error: 'AT-MCM-DOS', siFuera: `Bien para las dos primeras. Pero a las ${M2} h no toca la de cada ${c} horas.` },
+        { id: 'producto', valor: a * b * c, error: 'AT-PRODUCTO', siFuera: `Bien: a las ${a * b * c} h de empezar coinciden las tres. Pero ya lo hicieron antes, a las ${M} h.` },
+        { id: 'dos', valor: M2, error: 'AT-MCM-DOS', siFuera: `Bien para las dos primeras. Pero a las ${M2} h de empezar no toca la de cada ${c} horas.` },
         { id: 'mcd', valor: mcdL([a, b, c]), error: 'AR13', siFuera: `Pensar en lo común está bien. Pero ${mcdL([a, b, c])} divide a los tres: no es múltiplo de ellos.` },
       ], x => `${x} h`),
       solucion: { texto: `El menor múltiplo de ${a}, ${b} y ${c}.`, ecuacion: [`${a} = ${canon(a)}`, SEP, `${b} = ${canon(b)}`, SEP, `${c} = ${canon(c)}`, SEP, `MCM = ${canon(M)} = `, ml(M)] },
@@ -682,8 +684,8 @@
       respuesta: ['MCM(6, 18) = ', ml(18)] },
     { nivel: 1, titulo: 'Con primos: 12 y 10',
       enunciado: '¿Cuál es el MCM de 12 y 10, con sus primos?',
-      datos: ['12 = 2² × 3', '10 = 2 × 5', D2.fac],
-      solucion: [{ texto: 'Entran el 2, el 3 y el 5. Del 2, el mayor exponente es 2.', ecuacion: ['MCM = 2² × 3 × 5 = ', ml(60)] }],
+      datos: [D2.fac, D2.exp],
+      solucion: [{ texto: 'Descompongo los dos en primos.', ecuacion: ['12 = 2² × 3', SEP, '10 = 2 × 5'] }, { texto: 'Entran el 2, el 3 y el 5. Del 2, el mayor exponente es 2.', ecuacion: ['MCM = 2² × 3 × 5 = ', ml(60)] }],
       respuesta: ['MCM = ', ml(60)] },
     { nivel: 2, titulo: 'Las dos alarmas',
       enunciado: 'Dos alarmas sonaron juntas a las 9:00. Una suena cada 15 minutos y la otra cada 20. ¿A qué hora vuelven a sonar juntas?',
@@ -790,11 +792,11 @@
     // (12 y 18).
     lee: {
       tarjetas: [
-        { titulo: 'Dos premios en la rifa', texto: 'En la rifa de la promoción hay dos premios. Cada boleto múltiplo de 4 gana un caramelo y cada boleto múltiplo de 6, una gaseosa. Algunos boletos ganan los dos.',
+        { titulo: 'Dos premios en la rifa', texto: 'En la rifa de la promoción hay dos premios. Cada boleto múltiplo de 4 gana un caramelo (●) y cada boleto múltiplo de 6, una gaseosa (■). Algunos boletos ganan los dos.',
           pieza: BO, dibujo: { datos: plancha(4, 6, { hasta: 30 }), estado: {} } },
         { titulo: 'Múltiplo común', texto: ['Un múltiplo común de 4 y 6 está en las dos listas: los múltiplos de 4 son 4, 8, 12, 16…, y los de 6, 6, 12, 18… El ', ml(12), ' está en las dos.'],
           ecuacion: ['4, 8, ', ml(12), ', 16, 20, ', ml(24), ', …', SEP, '6, ', ml(12), ', 18, ', ml(24), ', 30, …'] },
-        { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar cada cuántos boletos hay caramelo y cada cuántos hay gaseosa. Busca el primer boleto con los dos premios, y mira cada cuánto se repite.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar cada cuántos boletos hay caramelo y cada cuántos hay gaseosa. Busca el primer boleto con los dos premios, y mira cada cuánto se repite. En esta unidad, el violeta marca los múltiplos comunes y el turquesa, los divisores comunes.' },
       ],
     },
     ejemplos: EJEMPLOS_MCM,
@@ -854,7 +856,7 @@
     regla: {
       texto: 'El MCM de dos números, A y B, es el menor que es múltiplo de los dos: la primera vez que coinciden. Con primos: todos, con su mayor exponente.',
       ecuacion: ['12 = 2² × 3', SEP, '18 = 2 × 3²', SEP, { llave: ['MCM(12, 18) = 2² × 3²'], nota: 'mayor exponente' }, ' = ', ml(36)],
-      condicion: 'sin contar el 0. Los demás múltiplos comunes son múltiplos del MCM. Si coinciden al empezar, esa es la primera vez.',
+      condicion: 'no se cuenta el 0. Los demás múltiplos comunes son del MCM. Si coinciden al empezar, esa ya es la primera vez.',
       voz: 'El primero que está en las dos listas.',
       dibujo: { pieza: BO, datos: plancha(12, 18, { hasta: 40 }), estado: {} },
     },
@@ -871,7 +873,7 @@
             datos: [D2.comun, D2.mcm, D2.fac],
             pasos: [
               { tipo: 'pide', texto: 'Piden el lado del cuadrado más pequeño que se arma con losetas enteras, y cuántas son.' },
-              { tipo: 'datos', texto: `Cada loseta mide ${a} cm por ${b} cm, y todas van en la misma posición.` },
+              { tipo: 'datos', texto: `Cada loseta mide A = ${a} cm por B = ${b} cm, y todas van en la misma posición.` },
               { tipo: 'regla', texto: `El lado es múltiplo de ${a}, para las losetas a lo largo, y de ${b}, a lo ancho: es un múltiplo común, y se quiere el menor.` },
               { tipo: 'cuentas', texto: 'Descompongo en primos y tomo todos, cada uno con su mayor exponente.', ecuacion: [`${a} = ${canon(a)}`, SEP, `${b} = ${canon(b)}`, SEP, `MCM = ${canon(M)} = `, ml(M)] },
               { tipo: 'cuentas', texto: `Caben ${M} ÷ ${a} = ${M / a} a lo largo y ${M} ÷ ${b} = ${M / b} a lo ancho.`, ecuacion: [`${M / a} × ${M / b} = ${(M / a) * (M / b)}`] },
@@ -883,7 +885,7 @@
       },
     },
     ahoraTu: {
-      voz: '¿Se junta o se corta? Si se junta, es el MCM.',
+      voz: 'Busca el primero que es múltiplo de todos: es el MCM.',
       generar(sem) {
         const r = azar(sem + 37), tipo = sem % 6;
         return conCuatro([casoBoleto, casoHora, casoTresP, casoFacM, casoTercera, casoTomas][tipo], r);
@@ -907,8 +909,8 @@
   const TA = 'arit-tabla';
   const D3 = {
     coc: 'A = MCD × p y B = MCD × q: p y q son los cocientes, y son PESI',
-    mcm: 'MCM(A, B) = MCD × p × q',
-    prod: 'Con dos números: MCD(A, B) × MCM(A, B) = A × B',
+    mcm: 'MCM⁠(A, B) = MCD × p × q',
+    prod: 'Con dos números: MCD⁠(A, B) × MCM⁠(A, B) = A × B',
     pesi: 'p y q PESI: no comparten ningún primo (no tienen que ser primos)',
     fac: 'Con primos: el MCD toma el menor exponente de cada primo y el MCM, el mayor',
     raiz: 'Raíz cuadrada: el número positivo que, multiplicado por sí mismo, da el número dado',
@@ -921,8 +923,8 @@
       cintas: [
         { largo: A, rotulo: [[`Rollo A: ${A} m`]], trozo: g, colorTrozo: 'i', marca: true, nota: [['p = '], [String(p), null, 700], [' trozos de '], [`${g} m`, 'i', 700]] },
         { largo: B, rotulo: [[`Rollo B: ${B} m`]], trozo: g, colorTrozo: 'i', marca: true, nota: [['q = '], [String(q), null, 700], [' trozos de '], [`${g} m`, 'i', 700]] },
-        { largo: M, color: 'f', rotulo: [['Cinta del MCM: '], [`${M} m`, 'f', 700]], trozo: A, colorTrozo: null, nota: [[`${plural(q, 'rollo A', 'rollos A')} (q)`]] },
-        { largo: M, color: 'f', rotulo: [['La misma cinta, con rollos B']], trozo: B, colorTrozo: null, nota: [[`${plural(p, 'rollo B', 'rollos B')} (p)`]] },
+        { largo: M, color: 'f', rotulo: [['Cinta del MCM: '], [`${M} m`, 'f', 700]], trozo: A, colorTrozo: null, nota: [[`${plural(q, 'rollo A', 'rollos A')}: tantos como trozos tiene B, q`]] },
+        { largo: M, color: 'f', rotulo: [['La misma cinta, con rollos B']], trozo: B, colorTrozo: null, nota: [[`${plural(p, 'rollo B', 'rollos B')}: tantos como trozos tiene A, p`]] },
       ],
     };
   }
@@ -938,7 +940,9 @@
     cabeza: true, filasMax: 3,
     alt: 'Tabla de exponentes de 4, 6 y 10: una fila por cada primo (2, 3 y 5); al final, el menor exponente de cada fila (MCD) y el mayor (MCM)',
   };
-  const USADOS3 = new Set(['24-40', '12-16', '18-30', '12-20', '8-12', '4-60', '6-24', '6-42', '8-96', '9-36', '9-63', '4-24', '12-24', '24-36', '6-180', '4-144', '15-105', '12-360']);
+  // Casos de las ideas que no son un par (A, B): producto-MCD del ejemplo y MCD-MCM de la misión y de los ejemplos.
+  const USADOS3P = new Set(['864-6', '4-48', '4-24', '4-144']);
+  const USADOS3 = new Set(['16-36', '24-40', '12-16', '18-30', '12-20', '8-12', '4-60', '6-24', '6-42', '8-96', '9-36', '9-63', '4-24', '12-24', '24-36', '6-180', '4-144', '15-105', '12-360']);
 
   // Ahora tú · tipo 0: el otro número, con MCD × MCM = A × B.
   function casoOtro(r) {
@@ -948,7 +952,7 @@
     if (M > 400 || USADOS3.has(par(A, B))) return null;
     return {
       pregunta: `El MCD de dos números es ${g} y su MCM es ${M}. Uno de ellos es ${A}. ¿Cuál es el otro?`,
-      datos: [D3.prod],
+      datos: [D3.prod, D3.coc],
       opciones: opciones(B, [
         { id: 'sinmcd', valor: M / A, error: 'AT-REL-SIN-MCD', siFuera: `Bien dividir entre ${A}. Pero se divide MCD × MCM = ${g * M}; ${M} ÷ ${A} = ${M / A} olvida el MCD.` },
         { id: 'multiplica', valor: g * M, error: 'AT-REL-MULTIPLICA', siFuera: `Bien: MCD × MCM = ${g * M}. Pero eso es A × B: falta dividir entre ${A}.` },
@@ -962,10 +966,11 @@
     const g = r.de([2, 3, 4, 5, 6, 7, 8]), p = r.ent(1, 7), q = r.ent(p + 1, 12);
     if (mcd(p, q) !== 1) return null;
     const P = g * g * p * q, M = g * p * q;
-    if (P > 2000 || p * q < 4) return null;
+    // Ni el caso del ejemplo «El producto y el MCD» (864 y 6) ni pares ya usados (auditoría, M2).
+    if (P > 2000 || p * q < 4 || USADOS3P.has(`${P}-${g}`) || USADOS3.has(par(g * p, g * q))) return null;
     return {
       pregunta: `Dos números multiplicados dan ${f(P, 0)} y su MCD es ${g}. ¿Cuál es su MCM?`,
-      datos: [D3.prod],
+      datos: [D3.prod, D3.coc],
       opciones: opciones(M, [
         { id: 'multiplica', valor: P * g, error: 'AT-REL-MULTIPLICA', siFuera: `Bien usar el producto y el MCD. Pero el MCM sale de dividir: ${f(P * g, 0)} es multiplicar.` },
         { id: 'dos', valor: p * q, error: 'AT-REL-DOS-VECES', siFuera: `Bien dividir entre el MCD, pero una sola vez: dos veces da ${p * q}, que es p × q.` },
@@ -1009,13 +1014,14 @@
         { id: 'coc', valor: p + q, error: 'AT-COC-SIN-MCD', siFuera: `Bien los cocientes ${p} y ${q}. Pero los números son MCD × ${p} y MCD × ${q}.` },
         { id: 'mayor', valor: B, error: 'AT-RESPONDE-OTRA', siFuera: `Bien hallar el ${B}. Pero se pide la suma de los dos números.` },
       ]),
-      solucion: { texto: `Con MCD = ${g}: q − p = ${q - p} y p × q = ${p * q}, así que p = ${p} y q = ${q}.`, ecuacion: [`${A} + ${B} = ${A + B}`] },
+      solucion: { texto: `Solo con MCD = ${g}, un divisor de ${Dd}, salen cocientes PESI: p = ${p} y q = ${q}.`, ecuacion: [`${A} + ${B} = ${A + B}`] },
     };
   }
   // Ahora tú · tipo 4 (nivel examen): cuántos pares tienen un MCD y un MCM dados.
   function casoPares(r) {
     const g = r.de([2, 3, 4, 5, 6]), c = r.de([12, 18, 20, 24, 30, 36, 40, 45, 60, 72]), M = g * c;
-    if (M > 400) return null;
+    // Ni la misión (MCD 4 y MCM 48) ni los ejemplos (MCD 4 con MCM 24 y 144) (auditoría, M2).
+    if (M > 400 || USADOS3P.has(`${g}-${M}`)) return null;
     let pesi = 0, todos = 0;
     for (let p = 1; p * p < c; p++) if (c % p === 0) { todos++; if (mcd(p, c / p) === 1) pesi++; }
     if (todos === pesi) return null;
@@ -1083,7 +1089,7 @@
       enunciado: 'MCD(A, B) = 8 y MCM(A, B) = 96. ¿Cuánto valen el MCD y el MCM de 3 × A y 3 × B?',
       datos: [D3.coc, D3.mcm],
       solucion: [
-        { texto: '3 × A = 24 × p y 3 × B = 24 × q, con los mismos cocientes PESI.' },
+        { texto: '3 × A = 3 × 8 × p = 24 × p y 3 × B = 24 × q, con los mismos cocientes PESI (que no comparten ningún primo).' },
         { texto: 'El MCD y el MCM quedan multiplicados por 3.', ecuacion: ['MCD = 3 × 8 = ', dv(24), SEP, 'MCM = 3 × 96 = ', ml(288)] },
       ],
       respuesta: ['MCD = ', dv(24), ' y MCM = ', ml(288)] },
@@ -1141,7 +1147,7 @@
       datos: [D3.prod, D3.raiz],
       solucion: [
         { texto: 'MCD × MCM = 1080 y MCM = 30 × MCD: MCD × MCD × 30 = 1080, así que MCD × MCD = 36.' },
-        { texto: 'El número que por sí mismo da 36 es 6.', ecuacion: ['6 × 6 = 36', SEP, '6 × 180 = 1080'] },
+        { texto: 'El número que por sí mismo da 36 es 6, y el MCM es 30 × 6 = 180.', ecuacion: ['6 × 6 = 36', SEP, '6 × 180 = 1080'] },
         { texto: ['Las trampas: ', letra('B'), ' olvida sacar la raíz; ', letra('C'), ' es el MCM; ', letra('D'), ' son las veces; ', letra('E'), ' es el producto.'] },
       ],
       respuesta: [letra('A'), ': ', dv(6)] },
@@ -1173,7 +1179,7 @@
           pieza: CI, dibujo: { datos: rollos([18, 30], 6), estado: {} } },
         { titulo: 'Los cocientes no comparten nada', texto: 'Con 18 y 30 el MCD es 6: el rollo de 18 m queda en 3 trozos y el de 30 m, en 5. 3 y 5 son PESI: si compartieran un primo, habría un trozo más largo.',
           ecuacion: ['18 = ', dv(6), ' × 3', SEP, '30 = ', dv(6), ' × 5'] },
-        { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir dos rollos. Mira sus cocientes p y q, su MCD y la cinta del MCM, y compara MCD × MCM con el producto de los dos largos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a elegir dos rollos. Mira sus cocientes, p para el rollo A y q para el B, su MCD y la cinta del MCM, y compara MCD × MCM con el producto de los dos largos.' },
       ],
     },
     ejemplos: EJEMPLOS_REL,
@@ -1229,9 +1235,9 @@
       ],
     },
     regla: {
-      texto: 'Con dos números, A = MCD × p y B = MCD × q, con p y q PESI. Entonces MCM = MCD × p × q, y MCD × MCM = A × B.',
+      texto: 'Con dos números, A = MCD × p y B = MCD × q: p y q son los cocientes, y son PESI. Entonces MCM = MCD × p × q, y MCD × MCM = A × B.',
       ecuacion: ['A = ', dv('MCD'), ' × p', SEP, 'B = ', dv('MCD'), ' × q', SEP, ml('MCM'), ' = ', dv('MCD'), ' × ', { llave: ['p × q'], nota: 'p y q PESI' }, SEP, dv('MCD'), ' × ', ml('MCM'), ' = A × B'],
-      condicion: 'solo con dos números: 4, 6 y 10 son un contraejemplo. p y q no tienen que ser primos, solo PESI.',
+      condicion: 'solo con dos números (4, 6 y 10 son un contraejemplo). p y q no tienen que ser primos: solo PESI.',
       voz: 'Dos números: MCD por MCM es su producto.',
       dibujo: { pieza: CI, datos: cuatroCintas(12, 16), estado: {} },
     },
@@ -1285,8 +1291,8 @@
   const RP = 'arit-reparto';
   const D4 = {
     forma: ['N = ', MU('A'), ' + ', sb('r'), ': al dividir N entre A sobran ', sb('r')],
-    comun: 'Si N − r es múltiplo de A y de B, también es múltiplo de MCM(A, B)',
-    lista: 'Los que dejan resto r con A y con B: MCM(A, B) × k + r, con k = 0, 1, 2…',
+    comun: 'Si N − r es múltiplo de A y de B, también es múltiplo de MCM⁠(A, B)',
+    lista: 'Los que dejan resto r con A y con B: MCM⁠(A, B) × k + r, con k = 0, 1, 2…',
     falta: ['Si a N le faltan ', RE, ' para otro grupo de A: N = ', MU('A'), ' − ', RE],
     resto: 'El resto es menor que el divisor',
     fac: D2.fac,
@@ -1297,7 +1303,7 @@
   // El alto del juego: el de la figura más alta de n = 10 a 60 (así no salta).
   let alto4 = null;
   const altoJuego4 = () => { if (alto4) return alto4; let h = 0; for (let n = 10; n <= 60; n++) h = Math.max(h, Kit.piezas[RP].geometria(empaca(n, [4, 6])).H); return (alto4 = h); };
-  const USADOS4 = new Set(['4-6-1', '4-6-10-1', '2-3-1', '3-5-2', '6-8-5', '4-6-3', '6-9-2', '2-3-5-1', '6-8-9-5', '4-5-6-3', '2-3-4-1', '30-40-5', '8-10-12-7']);
+  const USADOS4 = new Set(['4-6--1', '4-5-6--1', '4-6-1', '4-6-10-1', '2-3-1', '3-5-2', '6-8-5', '4-6-3', '6-9-2', '2-3-5-1', '6-8-9-5', '4-5-6-3', '2-3-4-1', '30-40-5', '8-10-12-7']);
   const clave4 = (ds, r) => `${ds.join('-')}-${r}`;
   const sobranTxt = k => (k === 1 ? 'sobra 1' : `sobran ${k}`);
   const loQue = k => (k === 1 ? 'el caramelo que sobra' : `los ${k} que sobran`);
@@ -1351,7 +1357,7 @@
       datos: [D4.forma, D4.lista, D4.fac, D4.tres],
       opciones: opciones(N, [
         { id: 'cota', valor: M + rr, error: 'AT-COTA-OLVIDA', siFuera: `Bien: ${M + rr} deja resto ${rr} con los tres. Pero no tiene tres cifras.` },
-        { id: 'olvida', valor: sin, error: 'AT-RESTO-OLVIDA', siFuera: `Bien llegar a tres cifras con un múltiplo de ${M}. Pero ${sin} no deja resto: falta sumar ${rr}.` },
+        { id: 'olvida', valor: sin, error: 'AT-RESTO-OLVIDA', siFuera: `Bien usar un múltiplo de ${M}. Pero ${sin} no deja resto: falta sumar ${rr}.` },
         { id: 'producto', valor: P * kp + rr, error: 'AT-RESTO-PRODUCTO', siFuera: `Bien sumar ${rr}. Pero se usan los múltiplos de ${M}, el MCM, no de ${P}.` },
       ]),
       solucion: { texto: `MCM = ${M}; los que dejan ${rr} son ${M} × k + ${rr}. El primero de tres cifras tiene k = ${k}.`, ecuacion: [`${M} × ${k} + ${rr} = ${N}`] },
@@ -1591,31 +1597,33 @@
     regla: {
       texto: 'Si N deja el mismo resto r con A y con B, N − r es múltiplo de su MCM. Si les falta lo mismo, rₑ, N + rₑ lo es.',
       ecuacion: ['N = ', MU('4'), ' + ', sb(1), SEP, 'N = ', MU('6'), ' + ', sb(1), SEP, { llave: ['N = ', MU(ml(12)), ' + ', sb(1)], nota: 'MCM(4, 6) = 12' }, SEP, 'N = ', MU(ml('MCM')), ' − ', RE],
-      condicion: 'el resto es menor que el divisor. Si los restos son distintos y falta lo mismo, se homogeneiza con lo que falta.',
+      condicion: 'el resto es menor que el divisor. Homogeneizar: con 4 sobran 3 y con 6 sobran 5, falta rₑ = 1.',
       voz: 'Sin lo que sobra, es un múltiplo común.',
-      dibujo: { pieza: RP, datos: empaca(61, [4, 6, 10]), estado: {} },
+      dibujo: { pieza: RP, datos: empaca(25, [4, 6]), estado: {} },
     },
-    // Así se resuelve: el mayor de dos cifras con el mismo resto. «Ahora tú» pide el menor con el mismo resto, restos
-    // distintos con lo mismo que falta, el menor y el mayor de tres cifras, y un tercer divisor sin sobrante.
+    // Así se resuelve (auditoría, M3): cuántos números de dos cifras dejan el mismo resto. «Ahora tú» pide el menor con el
+    // mismo resto, restos distintos con lo mismo que falta, el menor y el mayor de tres cifras, y un tercer divisor sin
+    // sobrante: ninguno cuenta cuántos hay.
     resuelve: {
       generar(s) {
         const r = azar(s + 900);
         for (;;) {
           const a = r.ent(3, 8), b = r.ent(a + 1, 12), M = mcm(a, b), rr = r.ent(1, a - 1);
           if (mcd(a, b) === 1 || b % a === 0 || M < 12 || M > 45 || USADOS4.has(clave4([a, b], rr))) continue;
-          const k = Math.floor((99 - rr) / M), N = M * k + rr;
+          let k0 = 0; while (M * k0 + rr < 10) k0++;
+          const k1 = Math.floor((99 - rr) / M), lo = M * k0 + rr, hi = M * k1 + rr, cuantosN = k1 - k0 + 1;
           return conMu({
-            enunciado: `¿Cuál es el mayor número de dos cifras que deja resto ${rr} al dividirlo entre ${a} y entre ${b}?`,
-            datos: [D4.forma, D4.lista, D4.fac],
+            enunciado: `¿Cuántos números de dos cifras dejan resto ${rr} al dividirlos entre ${a} y entre ${b}?`,
+            datos: [D4.forma, D4.lista, D4.fac, 'Los números de dos cifras van del 10 al 99'],
             pasos: [
-              { tipo: 'pide', texto: `Piden el mayor número de dos cifras, es decir, hasta 99, que deja ${rr} con ${a} y con ${b}.` },
+              { tipo: 'pide', texto: `Piden cuántos números del 10 al 99 dejan ${rr} con ${a} y con ${b}.` },
               { tipo: 'datos', texto: `El resto es el mismo, ${rr}, con los dos divisores.` },
               { tipo: 'regla', texto: `Sin el resto, el número es múltiplo de ${a} y de ${b}, y por eso de su MCM: N = MCM × k + ${rr}.` },
               { tipo: 'cuentas', texto: 'Hallo el MCM con primos.', ecuacion: [`${a} = ${canon(a)}`, SEP, `${b} = ${canon(b)}`, SEP, `MCM = ${canon(M)} = `, ml(M)] },
-              { tipo: 'cuentas', texto: `Pruebo el k más grande que no pasa de 99: k = ${k}.`, ecuacion: [`${M} × ${k} + ${rr} = ${N}`, SEP, `${M} × ${k + 1} + ${rr} = ${M * (k + 1) + rr}`] },
-              { tipo: 'sentido', texto: `Comprueba: ${N} = ${a} × ${(N - rr) / a} + ${rr} y ${N} = ${b} × ${(N - rr) / b} + ${rr}.` },
+              { tipo: 'cuentas', texto: `El primero de dos cifras tiene k = ${k0}, y el último que no pasa de 99, k = ${k1}.`, ecuacion: [`${M} × ${k0} + ${rr} = ${lo}`, SEP, `${M} × ${k1} + ${rr} = ${hi}`, SEP, `${M} × ${k1 + 1} + ${rr} = ${M * (k1 + 1) + rr}`] },
+              { tipo: 'sentido', texto: `De k = ${k0} a k = ${k1} hay ${k1} − ${k0} + 1 = ${cuantosN} valores: uno por cada número.` },
             ],
-            respuesta: `El ${N}.`,
+            respuesta: `${cuantosN} números: del ${lo} al ${hi}, de ${M} en ${M}.`,
           });
         }
       },
@@ -1643,7 +1651,7 @@
   // de los tres · AT-OLVIDA-TERCERO deja fuera un número.
   const D5 = {
     cuantos: L => `Del 1 al ${f(L, 0)} hay tantos múltiplos de un número como el cociente entero de ${f(L, 0)} ÷ ese número`,
-    ambos: 'Los múltiplos de A y de B a la vez son los múltiplos de MCM(A, B)',
+    ambos: 'Los múltiplos de A y de B a la vez son los múltiplos de MCM⁠(A, B)',
     ie: 'Múltiplos de A o de B: los de A + los de B − los de los dos',
     ninguno: 'Los que no son de A ni de B: el total menos los de A o de B',
     tramo: 'En un tramo que no empieza en 1, se restan los múltiplos que hay antes del tramo',
@@ -1652,7 +1660,7 @@
   };
   const cuenta = (L, d) => Math.floor(L / d);
   const deUnoU = (L, a, b) => cuenta(L, a) + cuenta(L, b) - cuenta(L, mcm(a, b));
-  const USADOS5 = new Set(['4-6-120', '3-10-60', '4-6-60', '4-6-30', '7-100', '4-6-50', '3-5-30', '5-6-60', '2-3-20', '8-12-200', '4-10-100', '6-9-90', '4-6-50', '6-15-999', '6-10-150', '10-15-240']);
+  const USADOS5 = new Set(['2-3-5-60', '2-3-5-100', '4-6-120', '3-10-60', '4-6-60', '4-6-30', '7-100', '4-6-50', '3-5-30', '5-6-60', '2-3-20', '8-12-200', '4-10-100', '6-9-90', '4-6-50', '6-15-999', '6-10-150', '10-15-240']);
 
   // Ahora tú · tipo 0: múltiplos de A y de B a la vez.
   function casoAmbos(r) {
@@ -1728,7 +1736,7 @@
       pregunta: `¿Cuántos números del ${lo} al ${hi} son múltiplos de ${a} o de ${b}?`,
       datos: [D5.cuantos(hi), D5.ambos, D5.ie, D5.tramo],
       opciones: opciones(bien, [
-        { id: 'desde1', valor: n(hi), error: 'AT-CONTEO-SIN-QUITAR', siFuera: `Bien contar con el MCM. Pero ${n(hi)} cuenta desde el 1: faltan quitar los ${n(lo - 1)} de antes del ${lo}.` },
+        { id: 'desde1', valor: n(hi), error: 'AT-CONTEO-SIN-QUITAR', siFuera: `Bien contar con el MCM. Pero ${n(hi)} cuenta desde el 1: falta quitar los ${n(lo - 1)} de antes del ${lo}.` },
         { id: 'suma', valor: soloA, error: 'AT-IE-SUMA', siFuera: `Bien quitar los de antes del ${lo}. Pero los múltiplos de ${M} se contaron dos veces.` },
         { id: 'ambos', valor: cuenta(hi, M) - cuenta(lo - 1, M), error: 'AT-IE-SOLO-AMBOS', siFuera: `Esos son los de los dos a la vez. También cuentan los que son de uno solo.` },
       ]),
@@ -1861,7 +1869,7 @@
       alternativas: ['26', '29', '74', '3', '33'],
       datos: [D5.cuantos(100), D5.ie, D5.tres, D5.ninguno],
       solucion: [
-        { texto: 'Son de 2, de 3 o de 5: 50 + 33 + 20 − 16 − 10 − 6 + 3 = 74 (de 6, de 10, de 15 y de 30).' },
+        { texto: 'De 2, de 3 y de 5 hay 50, 33 y 20. De 6, de 10 y de 15, 16, 10 y 6. De 30, 3.', ecuacion: ['50 + 33 + 20 − 16 − 10 − 6 + 3 = 74'] },
         { texto: 'No son de ninguno los demás.', ecuacion: ['100 − 74 = 26'] },
         { texto: ['Las trampas: ', letra('B'), ' olvida sumar los 3 de 30; ', letra('C'), ' son los que sí son múltiplos; ', letra('D'), ' son los de 30; ', letra('E'), ' quita solo los de 2 y de 3.'] },
       ],
@@ -1890,7 +1898,7 @@
     // rifa de 120 (la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Premios en la plancha', texto: 'Volvemos a la rifa: caramelo para los múltiplos de 4 y gaseosa para los múltiplos de 6. Ahora la pregunta es otra: cuántos boletos ganan algo.',
+        { titulo: 'Premios en la plancha', texto: 'Volvemos a la rifa: caramelo (●) para los múltiplos de 4 y gaseosa (■) para los múltiplos de 6; con borde violeta, los que ganan los dos. Ahora la pregunta es otra: cuántos boletos ganan algo.',
           pieza: BO, dibujo: { datos: plancha(4, 6, { hasta: 30 }), estado: {} } },
         { titulo: 'Contar los de cada premio', texto: ['Del 1 al 30 hay 7 múltiplos de 4: el cociente entero de 30 ÷ 4. Y hay 5 múltiplos de 6. Pero algunos boletos están en las dos cuentas.'],
           ecuacion: ['30 = 4 × 7 + ', sb(2), SEP, '30 = 6 × 5'] },
@@ -1912,7 +1920,7 @@
       leyenda: [
         { s: '●', t: 'caramelo' },
         { s: '■', t: 'gaseosa' },
-        { s: ml('borde violeta'), t: 'los dos premios: está en las dos cuentas' },
+        { s: ml('borde violeta'), t: 'los dos premios: un múltiplo del MCM' },
       ],
       controles: [
         { id: 'a', etiqueta: 'Caramelo cada', opciones: [3, 4, 5].map(x => ({ valor: x, texto: String(x) })) },
@@ -1951,12 +1959,12 @@
     },
     regla: {
       texto: 'Los múltiplos de A o de B se cuentan así: los de A, más los de B, menos los de los dos, que son los múltiplos del MCM.',
-      ecuacion: [{ llave: ['de A o de B'], nota: 'al menos un premio' }, ' = de A + de B − ', ml('de MCM'), SEP, '30 + 20 − 10 = 40', SEP, 'de A, B o C = cada uno − cada par + los tres'],
-      condicion: 'hasta L, los de A son el cociente entero de L ÷ A. De ninguno: total menos los de A o de B.',
+      ecuacion: [{ llave: ['de A o de B'], nota: 'al menos un premio' }, ' = de A + de B − ', ml('de MCM'), SEP, '30 + 20 − 10 = 40', SEP, 'de A, B o C =', SEP, 'cada uno − cada par + los tres'],
+      condicion: 'se cuenta del 1 al L: los de A son el cociente entero de L ÷ A; los de ninguno, el resto.',
       voz: 'Lo que se cuenta dos veces se resta una vez.',
       dibujo: { pieza: BO, datos: plancha(4, 6, { hasta: 120 }), estado: {} },
     },
-    // Así se resuelve: cuántos números de un tramo desde 1 no son de A ni de B, sin premios de por medio. «Ahora tú» pide
+    // Así se resuelve (auditoría, M3): cuántos son múltiplos de A pero no de B, sin premios de por medio. «Ahora tú» pide
     // los de los dos a la vez, los de uno o de otro, los boletos sin premio, los de un solo premio, un tramo que no
     // empieza en 1 y tachar con tres primos.
     resuelve: {
@@ -1967,22 +1975,22 @@
           if (mcd(a, b) === 1 || b % a === 0 || cuenta(L, M) < 2 || USADOS5.has(`${a}-${b}-${L}`)) continue;
           const cA = cuenta(L, a), cB = cuenta(L, b), cM = cuenta(L, M), al = cA + cB - cM;
           return {
-            enunciado: `¿Cuántos números del 1 al ${L} no son múltiplos de ${a} ni de ${b}?`,
-            datos: [D5.cuantos(L), D5.ambos, D5.ie, D5.ninguno],
+            enunciado: `¿Cuántos números del 1 al ${L} son múltiplos de ${a} pero no de ${b}?`,
+            datos: [D5.cuantos(L), D5.ambos],
             pasos: [
-              { tipo: 'pide', texto: `Piden los números del 1 al ${L} que no son de ${a} ni de ${b}.` },
-              { tipo: 'regla', texto: 'Primero cuento los que son de uno o de otro: los de cada uno, menos los de los dos, que son múltiplos del MCM. Después los resto del total.' },
-              { tipo: 'cuentas', texto: `De ${a} hay ${cA}; de ${b}, ${cB}; de los dos, múltiplos de MCM = ${M}, hay ${cM}.`, ecuacion: [`${cA} + ${cB} − ${cM} = ${al}`] },
-              { tipo: 'cuentas', texto: 'Los que no son de ninguno son los demás.', ecuacion: [`${L} − ${al} = ${L - al}`] },
-              { tipo: 'sentido', texto: `Comprueba: ${L - al} + ${al} = ${L}, todos los números de la lista, cada uno una sola vez.` },
+              { tipo: 'pide', texto: `Piden los múltiplos de ${a} del 1 al ${L} que no son múltiplos de ${b}.` },
+              { tipo: 'regla', texto: `De los múltiplos de ${a} se quitan los que también son de ${b}: los de los dos a la vez, que son múltiplos del MCM.` },
+              { tipo: 'cuentas', texto: `De ${a} hay ${cA}. De los dos, múltiplos de MCM(${a}, ${b}) = ${M}, hay ${cM}.`, ecuacion: [`${L} = ${a} × ${cA} + `, sb(L % a), SEP, `${L} = `, ml(M), ` × ${cM} + `, sb(L % M)] },
+              { tipo: 'cuentas', texto: `Quito los ${cM} que también son de ${b}.`, ecuacion: [`${cA} − ${cM} = ${cA - cM}`] },
+              { tipo: 'sentido', texto: `Comprueba: ${cA - cM} + ${cM} = ${cA}, todos los múltiplos de ${a}, cada uno una sola vez.` },
             ],
-            respuesta: `${L - al} números.`,
+            respuesta: `${cA - cM} números.`,
           };
         }
       },
     },
     ahoraTu: {
-      voz: 'Los que están en las dos cuentas se restan una vez.',
+      voz: 'Cuenta cada premio y mira cuáles están en las dos cuentas.',
       generar(sem) {
         const r = azar(sem + 47), tipo = sem % 6;
         return conCuatro([casoAmbos, casoAlguno, casoNinguno, casoSolo, casoTramo, casoTachar][tipo], r);
@@ -2041,7 +2049,7 @@
       datos: [D6.div, D6.euc, D6.fin, D6.mcm],
       opciones: opciones(g, [
         { id: 'resto', valor: ps[0].r, error: 'AT-EUC-PRIMER-RESTO', siFuera: `Bien empezar dividiendo. Pero ${ps[0].r} es el primer resto: hay que seguir hasta que no sobre nada.` },
-        { id: 'cociente', valor: ps[0].q, error: 'AT-EUC-COCIENTE', siFuera: `Bien la división. Pero el cociente ${ps[0].q} cuenta veces: no entra exacto en los dos.` },
+        { id: 'cociente', valor: ps[0].q, error: 'AT-EUC-COCIENTE', siFuera: `Bien la división. Pero el cociente, ${ps[0].q}, dice cuántas veces entra ${B} en ${A}; el MCD es el último divisor.` },
         { id: 'mcm', valor: mcm(A, B), error: 'AR13', siFuera: `Bien buscar lo común. Pero ${mcm(A, B)} es el MCM: los dos entran en él, no él en ellos.` },
       ]),
       solucion: { texto: `El último divisor, el que deja resto 0, es ${g}.`, ecuacion: ps.flatMap((p, i) => [...(i ? [SEP] : []), `${p.a} = ${p.q} × `, ...(p.r ? [`${p.b} + `, sb(p.r)] : [dv(p.b)])]) },
@@ -2083,6 +2091,8 @@
   // Ahora tú · tipo 3: el valor de una fracción continua de tres términos.
   function casoValor(r) {
     const qs = [r.ent(1, 4), r.ent(1, 4), r.ent(2, 5)];
+    // Ni [2; 1, 3] ni [1; 2, 2], que son ejemplos (auditoría, M2).
+    if (['2-1-3', '1-2-2'].includes(qs.join('-'))) return null;
     const v = valorFC(qs), corta = valorFC(qs.slice(0, 2)), suelta = (() => { const num = qs[0] * qs[1] * qs[2] + qs[2] + qs[1], den = qs[1] * qs[2], g = mcd(num, den); return [num / g, den / g]; })();
     return {
       pregunta: `¿Qué número es la fracción continua ${fcTexto(qs)}?`,
@@ -2098,6 +2108,7 @@
   // Ahora tú · tipo 4 (San Marcos 2027-I): reconstruir los dos números desde los cocientes y el MCD.
   function casoReconstruir(r) {
     const qs = [r.ent(1, 4), r.ent(1, 4), r.ent(2, 5)], d = r.de([2, 3, 4, 5, 6, 7, 8]);
+    if (qs.join('-') === '3-2-4' && d === 6) return null;   // el ejemplo «Reconstruir con los cocientes» (auditoría, M2)
     const atras = (cs, g) => { let x = cs[cs.length - 1] * g, y = g; for (let i = cs.length - 2; i >= 0; i--) [x, y] = [cs[i] * x + y, x]; return [x, y]; };
     const [A, B] = atras(qs, d), [A1, B1] = atras(qs, 1), [Ar, Br] = atras(qs.slice().reverse(), d);
     if (A + B > 400 || Ar + Br === A + B) return null;
@@ -2131,9 +2142,9 @@
       solucion: [{ texto: 'Cada resto pasa a dividir; el último divisor, el que deja resto 0, es el MCD.', ecuacion: ['45 = 3 × 12 + ', sb(9), SEP, '12 = 1 × 9 + ', sb(3), SEP, '9 = 3 × ', dv(3)] }],
       respuesta: ['MCD(45, 12) = ', dv(3)] },
     { nivel: 1, titulo: 'El par que sigue',
-      enunciado: 'Al dividir 64 entre 24 sobran 16. ¿Qué par de números tiene el mismo MCD que 64 y 24?',
+      enunciado: 'Al dividir 64 entre 24 sobran 16. Con el algoritmo de Euclides, ¿qué par de números se divide después, con el mismo MCD que 64 y 24?',
       datos: [D6.euc],
-      solucion: [{ texto: 'El divisor y el resto tienen los mismos divisores comunes que 64 y 24.', ecuacion: ['64 = 2 × 24 + ', sb(16)] }],
+      solucion: [{ texto: 'El divisor pasa a dividirse y el resto, a dividir. El divisor y el resto tienen los mismos divisores comunes que 64 y 24.', ecuacion: ['64 = 2 × 24 + ', sb(16)] }],
       respuesta: ['El par 24 y 16'] },
     { nivel: 1, titulo: 'Cuando divide exacto',
       enunciado: '¿Cuál es el MCD de 84 y 21?',
@@ -2161,11 +2172,11 @@
         { texto: 'Los cocientes, en orden, son 1, 2, 3 y 4.', ecuacion: [{ frac: ['43', '30'] }, ' = ', ...escalera([1, 2, 3, 4])] },
       ],
       respuesta: ['[1; 2, 3, 4]'] },
-    { nivel: 2, titulo: 'El valor de [1; 2, 2]',
+    { nivel: 2, titulo: 'El valor de [1; 2, 2]',
       enunciado: '¿Qué número es la fracción continua [1; 2, 2]?',
       datos: [D6.fcNot, '[1; 2, 2] = 1 + 1/(2 + 1/2)'],
       solucion: [
-        { texto: 'Empiezo por abajo: 2 + 1/2 = 5/2.' },
+        { texto: 'En escalera, empiezo por el escalón de abajo: 2 + 1/2 = 5/2.', ecuacion: ['[1; 2, 2] = ', ...escalera([1, 2, 2])] },
         { texto: 'Después, 1 sobre eso es 2/5, y se suma la parte entera.', ecuacion: ['1 + ', { frac: ['2', '5'] }, ' = ', { frac: ['7', '5'] }] },
       ],
       respuesta: ['7/5'] },
@@ -2216,12 +2227,12 @@
         { texto: ['Las trampas: ', letra('A'), ' pone los restos; ', letra('B'), ' invierte el orden; ', letra('D'), ' olvida el último cociente; ', letra('E'), ' es la de 68/157.'] },
       ],
       respuesta: [letra('C'), ': [2; 3, 4, 5]'] },
-    { nivel: 3, titulo: 'El valor de [2; 1, 3]',
+    { nivel: 3, titulo: 'El valor de [2; 1, 3]',
       enunciado: '¿Qué número es la fracción continua [2; 1, 3]?',
       alternativas: ['10/3', '11/4', '11/3', '4/11', '3'],
       datos: [D6.fcNot, '[2; 1, 3] = 2 + 1/(1 + 1/3)'],
       solucion: [
-        { texto: 'De abajo hacia arriba: 1 + 1/3 = 4/3; 1 sobre eso es 3/4.', ecuacion: ['2 + ', { frac: ['3', '4'] }, ' = ', { frac: ['11', '4'] }] },
+        { texto: 'En escalera, de abajo hacia arriba: 1 + 1/3 = 4/3; 1 sobre eso es 3/4.', ecuacion: ['[2; 1, 3] = ', ...escalera([2, 1, 3]), SEP, '2 + ', { frac: ['3', '4'] }, ' = ', { frac: ['11', '4'] }] },
         { texto: ['Las trampas: ', letra('A'), ' suma 2 + 1 + 1/3 sin escalera; ', letra('C'), ' es la de [3; 1, 2], al revés; ', letra('D'), ' es la fracción invertida; ', letra('E'), ' olvida el 3, [2; 1].'] },
       ],
       respuesta: [letra('B'), ': 11/4'] },
@@ -2303,12 +2314,12 @@
         { estado: { paso: 1 }, texto: 'Lo que entra en 91 y en 35 entra también en lo que sobra.', ecuacion: ['21 = 91 − 2 × 35'] },
         { estado: { paso: 2 }, texto: 'Se sigue con 35 y 21, y después con 21 y 14.', ecuacion: ['35 = 1 × 21 + ', sb(14), SEP, '21 = 1 × 14 + ', sb(7)] },
         { estado: { paso: 3 }, texto: '7 mide a 14 sin sobrante: es el MCD de todos los pares.', ecuacion: ['14 = 2 × ', dv(7), SEP, 'MCD(91, 35) = ', dv(7)] },
-        { estado: { paso: 4 }, texto: 'Los cocientes 2, 1, 1 y 2 arman la fracción continua.', ecuacion: [{ frac: ['91', '35'] }, ' = ', ...escalera([2, 1, 1, 2])] },
+        { estado: { paso: 4 }, texto: 'Los cocientes 2, 1, 1 y 2: fracción continua de 91/35, en escalera.', ecuacion: [{ frac: ['91', '35'] }, ' = ', ...escalera([2, 1, 1, 2])] },
       ],
     },
     regla: {
-      texto: 'Si al dividir A entre B sobra r, MCD(A, B) = MCD(B, r). Se sigue hasta que no sobre nada: el último divisor es el MCD.',
-      ecuacion: ['91 = 2 × 35 + ', sb(21), SEP, 'MCD(91, 35) = MCD(35, 21)', SEP, 'MCD = ', dv(7), SEP, { llave: ['[2; 1, 1, 2]'], nota: 'fracción continua de 91/35' }],
+      texto: 'Si al dividir A entre B sobra r, A y B tienen el mismo MCD que B y r. Se sigue hasta resto 0: el último divisor es el MCD.',
+      ecuacion: ['91 = 2 × 35 + ', sb(21), SEP, 'MCD(91, 35) = MCD(35, 21)', SEP, 'MCD = ', dv(7), SEP, { llave: ['[2; 1, 1, 2]'], nota: 'fracción continua de 91/35' }, ' = ', ...escalera([2, 1, 1, 2])],
       condicion: 'el resto es menor que el divisor. Los cocientes, en orden, son los términos de la fracción continua de A/B.',
       voz: 'Lo que sobra pasa a medir.',
       dibujo: { pieza: CI, datos: filasEuclides(91, 35), estado: {} },
@@ -2515,11 +2526,11 @@
   };
   const mesaCombis = {
     id: 'tres-combis', titulo: 'Tres combis en el paradero', pieza: 'recta',
-    consigna: 'Tres combis salen juntas, cada a, b y c minutos. Arrastra la quinta salida de cada una. ¿Cuándo vuelven a coincidir las tres?',
+    consigna: 'Tres combis salen juntas del paradero, cada una con su periodo. Arrastra la quinta salida de cada una. ¿Cuándo vuelven a coincidir las tres?',
     controles: [
-      { id: 'a', etiqueta: 'a', min: 2, max: 8, paso: 1, inicio: 4, unidad: 'min', decimales: 0 },
-      { id: 'b', etiqueta: 'b', min: 2, max: 8, paso: 1, inicio: 6, unidad: 'min', decimales: 0 },
-      { id: 'c', etiqueta: 'c', min: 2, max: 8, paso: 1, inicio: 5, unidad: 'min', decimales: 0 },
+      { id: 'a', etiqueta: 'Combi 1', min: 2, max: 8, paso: 1, inicio: 4, unidad: 'min', decimales: 0 },
+      { id: 'b', etiqueta: 'Combi 2', min: 2, max: 8, paso: 1, inicio: 6, unidad: 'min', decimales: 0 },
+      { id: 'c', etiqueta: 'Combi 3', min: 2, max: 8, paso: 1, inicio: 5, unidad: 'min', decimales: 0 },
     ],
     dibujo: v => ({ datos: rectaTres(v.a, v.b, v.c), estado: {} }),
     invitaciones: [
@@ -2542,7 +2553,7 @@
       return [`Cada ${v.a}, ${v.b} y ${v.c} min: juntas a los `, ml(`${m} min`), m > 120 ? ', fuera de la recta' : ''];
     },
     arrastres: ['a', 'b', 'c'].map((k, i) => ({
-      id: `salida-${k}`, etiqueta: `quinta salida de la combi ${k}`,
+      id: `salida-${k}`, etiqueta: `quinta salida de la combi ${i + 1}`,
       donde: v => enRecta(rectaTres(v.a, v.b, v.c), 3 - i, 5 * v[k]),
       mover: (pt, v) => ({ [k]: deRecta(rectaTres(v.a, v.b, v.c), pt.x) / 5 }),
     })),
@@ -2577,7 +2588,8 @@
 
   return {
     unidad: 'aritmetica.mcd-y-mcm',
-    version: '0.3.0',
+    version: '0.3.2',
+    calidad: 2,
     estado: 'completa',
     colores: COLORES,
     letras: { A: 'un número dado: un largo, un periodo o una bolsita', B: 'otro número dado', C: 'un tercer número dado',
@@ -2605,7 +2617,7 @@
         simple: 'La primera vez que dos cosas que se repiten coinciden.', ver: ['múltiplo común', 'máximo común divisor'],
         ejemplos: ['MCM(4, 6) = 12.', 'MCM(3, 5) = 15: son PESI.', 'MCM(4, 8) = 8.'] },
       // Idea 3.
-      { termino: 'cocientes PESI', formas: ['cocientes PESI', 'cocientes'], def: 'A ÷ MCD(A, B) y B ÷ MCD(A, B): cuántas veces entra el MCD en cada número. Siempre son PESI.',
+      { termino: 'cocientes PESI', formas: ['cocientes PESI', 'cocientes'], def: 'p = A ÷ MCD y q = B ÷ MCD, que siempre son PESI.',
         simple: 'Cuántos trozos del MCD tiene cada número; nunca comparten primos.', ver: ['máximo común divisor'],
         ejemplos: ['20 y 30, con MCD 10: cocientes 2 y 3.', '9 y 21, con MCD 3: cocientes 3 y 7.', 'Si compartieran un primo, el MCD sería mayor.'] },
       { termino: 'contraejemplo', formas: ['contraejemplo', 'contraejemplos'], def: 'Un caso que cumple las condiciones de una regla pero no su conclusión: muestra que la regla no vale siempre.',

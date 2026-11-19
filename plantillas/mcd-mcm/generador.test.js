@@ -175,3 +175,35 @@ test('cada distractor da el valor de su error (rehecho aquí, en 600 semillas)',
     if (d.tipo === 'mcd') { const r = cocs(d.A, d.B); if (alt('AT-EUC-COCIENTE')) assert.equal(num(alt('AT-EUC-COCIENTE')), r.q[0]); if (alt('AR13')) assert.equal(num(alt('AR13')), LCM(d.A, d.B)); }
   }
 });
+
+// ---------- Cierre (19 nov): auditoría (rutinas/auditoria/aritmetica.mcd-y-mcm.md). Fallan con el generador de antes. ----------
+test('auditoría A1: la explicación del cociente en Euclides es cierta en 400 semillas', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'euclides' }); if (p._datos.tipo !== 'mcd') continue;
+    const a = p.alternativas.find(x => x.error && x.error.id === 'AT-EUC-COCIENTE'); if (!a) continue;
+    const { A, B } = p._datos, q = +a.texto;
+    if (/no entra/.test(a.error.explicacion)) assert.ok(A % q || B % q, `${s}: «${a.error.explicacion}» y ${q} divide a ${A} y a ${B}`);
+  }
+});
+test('auditoría M1: p y q dichos en los Datos de «otro» y «producto», cuyas explicaciones los nombran', () => {
+  for (let s = 0; s < 200; s++) {
+    const p = gen.generar(s, { idea: 'mcd-por-mcm' });
+    const usa = p.alternativas.some(a => a.error && /\bp\b|\bq\b/.test(a.error.explicacion));
+    if (usa) assert.ok(p.datos.some(d => /p y q son los cocientes/.test(String(d))), `${s} (${p._datos.tipo}): p y q sin decir`);
+  }
+});
+test('auditoría M6: «llegar a tres cifras» no se afirma de un múltiplo de dos cifras (semilla 331)', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'mismo-resto' }); if (p._datos.tipo !== 'tres-cifras') continue;
+    const a = p.alternativas.find(x => x.error && x.error.id === 'AT-RESTO-OLVIDA');
+    if (a && /tres cifras/.test(a.error.explicacion)) assert.ok(+a.texto >= 100, `${s}: ${a.texto}`);
+  }
+});
+test('auditoría B5: en «tres», el divisor común que no es el mayor es el mayor de los otros (no siempre 1)', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'mcd-cintas' }); if (p._datos.tipo !== 'tres') continue;
+    const { A, B, C } = p._datos, g = GCD(A, B, C), a = p.alternativas.find(x => x.error && x.error.id === 'AT-NOMAX');
+    let d = g - 1; while (d > 1 && (g % d)) d--;
+    if (a) assert.equal(a.texto, `${d} m`, `${s}`);
+  }
+});

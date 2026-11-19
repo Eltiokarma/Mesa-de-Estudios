@@ -1,7 +1,7 @@
 // Pruebas propias de «MCD y MCM» (además del validador común de contenido/teoria/teoria.test.js).
 // Etapa 7 (19 nov): las seis ideas pasan por el contrato, con la propuesta docs/etapa7/propuesta-aritmetica.md como guion.
 //   - seis ideas en el orden de la propuesta (tres conservan su id con otra Predice; dos son nuevas; la vieja
-//     `fraccion-continua` entró en `euclides`); sin calidad 2 todavía (falta el cierre);
+//     `fraccion-continua` entró en `euclides`); con calidad 2 desde el cierre (lector en frío y auditor);
 //   - un color fijo por magnitud (propuesta §7): cada ficha de color dice su magnitud (m) y lleva el color de def.colores;
 //     nunca verde ni carmín en las figuras de las ideas; letras de alternativa en negrita y sin color;
 //   - cada misión se cumple con un solo caso de la grilla y no al abrir; su «bien» no dice la respuesta de la predicción;
@@ -103,7 +103,7 @@ function textosDe(I, n = SEMILLAS) {
 test('seis ideas en el orden de la propuesta, con sus id; la tabla de letras y los colores', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ID);
   assert.equal(def.septimaIdea, undefined);
-  assert.notEqual(def.calidad, 2, 'la marca la pone el cierre (lector en frío y auditor)');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.colores, { divisor: 'i', multiplo: 'f', sobra: 'o' });
   for (const l of ['A', 'B', 'C', 'N', 'k', 'p', 'q', 'r', 'r_e', 'L']) assert.ok(def.letras[l], `tabla de letras: ${l}`);
 });
@@ -339,8 +339,8 @@ test('«Así se resuelve»: 100 semillas que cuadran con una cuenta aparte y no 
     const R = def.ideas.map(I => I.resuelve.generar(s));
     for (const r of R) if (s < 4) assert.ok(!ahora.has(plano(r.enunciado)), plano(r.enunciado));
     let m;
-    // Idea 1: bolsitas de dos sabores.
-    m = plano(R[0].enunciado).match(/tiene (\d+) caramelos de fresa y (\d+) de limón/); { const g = GCD(+m[1], +m[2]); assert.ok(plano(R[0].respuesta).includes(`${(+m[1] + +m[2]) / g} bolsitas de ${g} caramelos`)); }
+    // Idea 1 (auditoría, M3): la mayor cantidad de bolsas iguales y qué lleva cada una.
+    m = plano(R[0].enunciado).match(/reparte (\d+) caramelos de fresa y (\d+) de limón/); { const [A, B] = [+m[1], +m[2]]; let g = Math.min(A, B); while (A % g || B % g) g--; assert.equal(plano(R[0].respuesta), `${g} bolsas, cada una con ${A / g} de fresa y ${B / g} de limón.`); }
     // Idea 2: losetas.
     m = plano(R[1].enunciado).match(/losetas de (\d+) cm por (\d+) cm/); { const L = LCM(+m[1], +m[2]); assert.ok(sinEsp(plano(R[1].respuesta)).includes(sinEsp(`${L} cm, con ${(L / +m[1]) * (L / +m[2])} losetas`)), plano(R[1].respuesta)); }
     // Idea 3: MCD y MCM, ninguno múltiplo del otro: un solo par.
@@ -348,10 +348,10 @@ test('«Así se resuelve»: 100 semillas que cuadran con una cuenta aparte y no 
       const [g, M] = [+m[1], +m[2]], s2 = new Set(); for (let a = 1; a <= M; a++) for (let b = a + 1; b <= M; b++) if (GCD(a, b) === g && LCM(a, b) === M && b % a) s2.add(a + b);
       assert.equal(s2.size, 1); assert.ok(plano(R[2].respuesta).includes(String([...s2][0])));
     }
-    // Idea 4: el mayor de dos cifras con el mismo resto.
-    m = plano(R[3].enunciado).match(/deja resto (\d+) al dividirlo entre (\d+) y entre (\d+)/); { const [r, a, b] = m.slice(1).map(Number); let n = 99; while (!(n % a === r && n % b === r)) n--; assert.ok(plano(R[3].respuesta).includes(String(n))); }
-    // Idea 5: ni de A ni de B.
-    m = plano(R[4].enunciado).match(/del 1 al (\d+) no son múltiplos de (\d+) ni de (\d+)/); { const [L, a, b] = m.slice(1).map(Number); assert.ok(plano(R[4].respuesta).startsWith(String(cuentaEn(1, L, x => x % a && x % b)))); }
+    // Idea 4 (auditoría, M3): cuántos de dos cifras dejan el mismo resto, contados uno por uno.
+    m = plano(R[3].enunciado).match(/dejan resto (\d+) al dividirlos entre (\d+) y entre (\d+)/); { const [r, a, b] = m.slice(1).map(Number); const xs = []; for (let n = 10; n <= 99; n++) if (n % a === r && n % b === r) xs.push(n); assert.ok(plano(R[3].respuesta).startsWith(`${xs.length} números: del ${xs[0]} al ${xs[xs.length - 1]}`), plano(R[3].respuesta)); }
+    // Idea 5 (auditoría, M3): de A pero no de B.
+    m = plano(R[4].enunciado).match(/del 1 al (\d+) son múltiplos de (\d+) pero no de (\d+)/); { const [L, a, b] = m.slice(1).map(Number); assert.ok(plano(R[4].respuesta).startsWith(String(cuentaEn(1, L, x => x % a === 0 && x % b !== 0)))); }
     // Idea 6: el MCD con divisiones sucesivas.
     m = plano(R[5].enunciado).match(/miden (\d+) cm y (\d+) cm/); assert.ok(plano(R[5].respuesta).startsWith(`${GCD(+m[1], +m[2])} cm`));
   }
@@ -448,7 +448,7 @@ test('ejemplos: 15 por idea, 5 por nivel, con datos; nivel 3 con cinco alternati
     const I = idea(id);
     assert.equal(Object.keys(tabla).length, 15, `${id}: la tabla cubre los 15 ejemplos`);
     for (const [t, v] of Object.entries(tabla)) {
-      const e = I.ejemplos.find(x => x.titulo === t);
+      const e = I.ejemplos.find(x => x.titulo.replace(/\u00a0/g, ' ') === t);   // títulos con espacios que no se parten
       assert.ok(e, `${id}: no hay ejemplo «${t}»`);
       const r = sinEsp(plano(e.respuesta)), val = sinEsp(String(v));
       assert.ok(new RegExp(`(^|[^\\d])${val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^\\d]|$)`).test(r), `${id} «${t}»: ${plano(e.respuesta)} contra ${v}`);
@@ -553,4 +553,91 @@ test('las figuras de la unidad en las piezas nuevas caben y no se pisan (arit-ci
   for (const m of def.laboratorio) if (['arit-cintas', 'arit-reparto'].includes(m.pieza)) for (const v of grilla(m.controles).filter((_, i) => i % 7 === 0)) mira(Object.assign({ pieza: m.pieza }, m.dibujo(v)), `mesa ${m.id}`);
   assert.deepEqual(mal.slice(0, 20), []);
   assert.ok(n > 100, `figuras revisadas: ${n}`);
+});
+
+// ---------- Cierre (19 nov): auditoría (rutinas/auditoria/aritmetica.mcd-y-mcm.md) y lectores en frío ----------
+// Cada prueba falla con la versión de antes de las correcciones.
+const numsEnOrden = t => (sinEsp(t).match(/\d+/g) || []).join('-');
+test('auditoría A1: el siFuera del cociente en Euclides es cierto (no dice que el cociente no divide a los dos)', () => {
+  const I = idea('euclides');
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = I.ahoraTu.generar(s), o = c.opciones.find(x => x.error === 'AT-EUC-COCIENTE');
+    if (!o) continue;
+    const m = plano(c.pregunta).match(/MCD de (\d+) y (\d+)/); if (!m) continue;
+    const [A, B, q] = [+m[1], +m[2], +o.texto];
+    if (/no entra/.test(o.siFuera)) assert.ok(A % q || B % q, `semilla ${s}: «${o.siFuera}» y ${q} divide a ${A} y a ${B}`);
+    assert.ok(o.siFuera.includes(`entra ${B} en ${A}`), o.siFuera);
+  }
+});
+test('auditoría M1: p y q dichos en palabras en la regla, y en los Datos de todo ejercicio que los nombra', () => {
+  const R = idea('mcd-por-mcm').regla;
+  assert.match(R.texto, /p y q son los cocientes/);
+  assert.match(R.condicion, /primos/);
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = idea('mcd-por-mcm').ahoraTu.generar(s);
+    const usa = [...c.opciones.map(o => o.siFuera || ''), plano(c.solucion.texto)].some(t => /\bp\b|\bq\b/.test(t));
+    if (usa) assert.ok(c.datos.some(d => /p y q son los cocientes/.test(plano(d))), `semilla ${s}: usa p o q sin decir qué son`);
+  }
+});
+test('auditoría M2: «Ahora tú» y «Así se resuelve» no repiten los números de un ejemplo ni de la misión', () => {
+  for (const I of def.ideas) {
+    const usados = new Set([...I.ejemplos.map(e => numsEnOrden(plano(e.enunciado))), numsEnOrden(I.juega.mision.texto)]);
+    for (let s = 0; s < SEMILLAS; s++) {
+      const a = numsEnOrden(plano(I.ahoraTu.generar(s).pregunta)), r = numsEnOrden(plano(I.resuelve.generar(s).enunciado));
+      assert.ok(!usados.has(a), `${I.id} «Ahora tú» ${s}: ${plano(I.ahoraTu.generar(s).pregunta)}`);
+      assert.ok(!usados.has(r), `${I.id} «Así se resuelve» ${s}: ${plano(I.resuelve.generar(s).enunciado)}`);
+    }
+  }
+});
+test('auditoría M3: «Así se resuelve» no es la misma pregunta que un tipo de «Ahora tú» (ideas 1, 4 y 5)', () => {
+  const tipos = id => new Set(Array.from({ length: 60 }, (_, s) => plano(idea(id).ahoraTu.generar(s).pregunta).replace(/\d[\d,]*/g, '#').replace(/^.*\. (?=¿)/, '')));
+  for (const id of ['mcd-cintas', 'mismo-resto', 'multiplos-tramo']) {
+    const preg = plano(idea(id).resuelve.generar(3).enunciado).replace(/\d[\d,]*/g, '#').replace(/^.*\. (?=¿)/, '');
+    assert.ok(!tipos(id).has(preg), `${id}: «${preg}»`);
+  }
+  assert.doesNotMatch(plano(idea('mcd-cintas').resuelve.generar(0).enunciado), /en total/);
+  assert.doesNotMatch(plano(idea('mismo-resto').resuelve.generar(0).enunciado), /el mayor número/);
+  assert.doesNotMatch(plano(idea('multiplos-tramo').resuelve.generar(0).enunciado), / ni de /);
+});
+test('auditoría M4: el cambio de colores está dicho (violeta, múltiplos comunes y MCM; turquesa, divisores comunes)', () => {
+  assert.match(plano(idea('mcm-coinciden').lee.tarjetas[2].texto), /violeta marca los múltiplos comunes y el turquesa, los divisores comunes/);
+  assert.match(idea('multiplos-tramo').juega.leyenda.find(l => /violeta/.test(plano(l.s))).t, /MCM/);
+  assert.match(idea('mcd-cintas').juega.leyenda[0].t, /divisor común/);
+});
+test('auditoría M6: ningún siFuera dice «llegar a tres cifras» con un número de dos cifras', () => {
+  for (let s = 0; s < SEMILLAS; s++) {
+    const c = idea('mismo-resto').ahoraTu.generar(s), o = c.opciones.find(x => x.error === 'AT-RESTO-OLVIDA');
+    // El múltiplo puede tener dos cifras (96 con resto 5 da 101; en la práctica, la semilla 331): la frase no lo afirma.
+    if (o) assert.doesNotMatch(o.siFuera, /llegar a tres cifras/, `${s}: ${o.siFuera}`);
+  }
+});
+test('auditoría B1: el distractor «todos los primos» del MCD lleva el exponente con que el primo está en A', () => {
+  for (let s = 3; s < SEMILLAS; s += 6) {
+    const c = idea('mcd-cintas').ahoraTu.generar(s), A = plano(c.pregunta).match(/A = ([^y]+) y/)[1].trim();
+    const o = c.opciones.find(x => x.error === 'AT-MCD-TODOS'); if (!o) continue;
+    const noComun = A.split(' × ').find(t => !/^[23]/.test(t));
+    assert.ok(o.texto.split(' × ').includes(noComun), `${s}: ${A} → ${o.texto}`);
+  }
+});
+test('lectores en frío: condiciones que se leen como frase, letras p y q del dibujo en palabras, fracción continua en escalera', () => {
+  assert.match(idea('mcd-cintas').regla.condicion, /^A y B son enteros positivos/);
+  assert.match(idea('mcd-cintas').regla.condicion, /primos entre sí/);
+  assert.match(idea('mcm-coinciden').regla.condicion, /^no se cuenta el 0/);
+  assert.doesNotMatch(idea('mcm-coinciden').ahoraTu.voz, /corta/);
+  assert.doesNotMatch(idea('multiplos-tramo').ahoraTu.voz, /se restan/);
+  const notas = plano(idea('mcd-por-mcm').regla.dibujo.datos.cintas.slice(2).map(c => c.nota.map(x => x[0]).join('')));
+  assert.match(notas, /tantos como trozos tiene B, q/); assert.match(notas, /tantos como trozos tiene A, p/);
+  assert.ok(JSON.stringify(idea('euclides').regla.ecuacion).includes('"frac"'), 'la regla de Euclides dibuja la escalera');
+  for (const t of ['El valor de [1; 2, 2]', 'El valor de [2; 1, 3]']) {
+    const e = idea('euclides').ejemplos.find(x => x.titulo.replace(/ /g, ' ') === t);
+    assert.ok(JSON.stringify(e.solucion[0].ecuacion || '').includes('"frac"'), `${t}: sin escalera`);
+  }
+  assert.match(idea('euclides').ejemplos.find(x => x.titulo === 'El par que sigue').enunciado, /se divide después/);
+  const R4 = idea('mismo-resto').regla;
+  assert.deepEqual(R4.dibujo.datos.repartos.map(r => r.d), [4, 6]);
+  assert.equal(R4.dibujo.datos.n % 12, 1);
+  assert.ok(!idea('mcd-cintas').ejemplos.find(x => x.titulo === 'Con primos: 40 y 100').datos.some(d => /40 =/.test(plano(d))));
+  assert.match(plano(idea('multiplos-tramo').regla.condicion), /se cuenta del 1 al L/);
+  assert.match(JSON.stringify(idea('multiplos-tramo').regla.ecuacion), /de\\u00a0A|de A/);
+  assert.ok(JSON.stringify(idea('multiplos-tramo').regla.ecuacion).includes('de B'), 'de B sin partir');
 });

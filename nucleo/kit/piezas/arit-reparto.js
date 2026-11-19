@@ -106,7 +106,7 @@
       for (const z of [...f.sueltos, ...f.huecos]) objetos.push({ que: `suelto fila ${k}`, x0: z.cx - R - 1, y0: z.cy - R - 1, x1: z.cx + R + 1, y1: z.cy + R + 1 });
       if (cerrado && f.bolsas.length > 1) { const b = f.bolsas[1]; tx(`signo ${k}`, b.x + b.w / 2, b.y + Math.min(b.h, 22) / 2 + 5, [['× ?', null, 700]], { ancla: 'middle' }); }
       const nota = segsDe(rp.nota) || (cerrado
-        ? (f.nf ? [['faltan '], [String(f.nf), 'o', 700], [` para otra bolsita de ${rp.d}`]] : [['sobran '], [String(f.ns), 'o', 700], [` con bolsitas de ${rp.d}`]])
+        ? (f.nf ? [['faltan '], [String(f.nf), 'o', 700], [` para otra bolsita de ${rp.d}`]] : [[f.ns === 1 ? 'sobra ' : 'sobran '], [String(f.ns), 'o', 700], [` con bolsitas de ${rp.d}`]])
         : [[`${plural(f.nb, 'bolsita', 'bolsitas')}`], f.ns ? [` y ${f.ns === 1 ? 'sobra' : 'sobran'} `] : [', no sobra nada'], ...(f.ns ? [[String(f.ns), 'o', 700]] : [])]);
       tx(`nota ${k}`, XB, y + f.alto + 14, nota);
       f.y = y; f.k = k;
@@ -152,7 +152,7 @@
     const g = geometria(datos, estado);
     if (!g.filas.length) return 'Un paquete de caramelos todavía sin empacar.';
     if (g.cerrado) return 'Un paquete cerrado de caramelos: no se sabe cuántos hay. ' + g.filas.map(f => (f.nf
-      ? `Con bolsitas de ${f.d}, faltan ${f.nf} para otra bolsita.` : `Con bolsitas de ${f.d}, sobran ${f.ns}.`)).join(' ');
+      ? `Con bolsitas de ${f.d}, faltan ${f.nf} para otra bolsita.` : `Con bolsitas de ${f.d}, ${f.ns === 1 ? 'sobra' : 'sobran'} ${f.ns}.`)).join(' ');
     return `${g.d.n} caramelos empacados de ${g.filas.length} formas. ` + g.filas.map(f => `En bolsitas de ${f.d}: ${plural(f.nb, 'bolsita llena', 'bolsitas llenas')}`
       + (f.ns ? ` y ${plural(f.ns, 'caramelo suelto', 'caramelos sueltos')}.` : ', sin sueltos.')).join(' ');
   }

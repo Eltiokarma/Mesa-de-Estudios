@@ -205,7 +205,7 @@
       errores: [
         h('AT-MCD-DOS', d2, `Bien para los rollos de ${A} y ${B} m. Pero en el de ${C} m sobran ${C % d2} m.`, x => `${f0(x)} m`),
         h('AR13', mcmL([A, B, C]), 'Bien buscar algo común. Pero ese número es más largo que los rollos: junta, no corta.', x => `${f0(x)} m`),
-        h('AT-NOMAX', 1, `Bien: 1 m entra exacto en los tres. Pero ${g} m también entra, y es más largo.`, x => `${f0(x)} m`),
+        h('AT-NOMAX', g / menorPrimo(g), `Bien: ${g / menorPrimo(g)} m entra exacto en los tres. Pero ${g} m también entra, y es más largo.`, x => `${f0(x)} m`),
       ],
       solucion: [[`Los tres son ${g} por ${yLista(xs)}, que no tienen un primo en los tres.`], ['Cada trozo mide ', Dv(`${g} m`), '.']],
       _datos: { A, B, C },
@@ -335,7 +335,7 @@
     return {
       enunciado: [`El MCD de dos números es ${g} y su MCM es ${M}. Uno de ellos es ${A}.`],
       pregunta: ['¿Cuál es el otro?'],
-      datos: [D.prod],
+      datos: [D.prod, D.coc],
       correcta: B,
       errores: [
         h('AT-REL-SIN-MCD', M / A, `Bien dividir entre ${A}. Pero se divide MCD × MCM = ${g * M}, no solo el MCM.`),
@@ -354,7 +354,7 @@
     return {
       enunciado: [`Dos números multiplicados dan ${f0(Pp)} y su MCD es ${g}.`],
       pregunta: ['¿Cuál es su MCM?'],
-      datos: [D.prod],
+      datos: [D.prod, D.coc],
       correcta: M,
       errores: [
         h('AT-REL-MULTIPLICA', Pp * g, 'Bien usar el producto y el MCD. Pero el MCM sale de dividir, no de multiplicar.'),
@@ -460,7 +460,7 @@
       correcta: M * k + r,
       errores: [
         h('AT-COTA-OLVIDA', M + r, `Bien: ${M + r} deja resto ${r} con los tres. Pero no tiene tres cifras.`),
-        h('AT-RESTO-OLVIDA', M * k, `Bien llegar a tres cifras con un múltiplo de ${M}. Pero falta sumar ${r}.`),
+        h('AT-RESTO-OLVIDA', M * k, `Bien usar un múltiplo de ${M}. Pero así no sobra nada: falta sumar ${r}.`),
         h('AT-RESTO-PRODUCTO', Pp * kp + r, `Bien sumar ${r}. Pero se usan los múltiplos de ${M}, no de ${Pp}.`),
       ],
       solucion: [['Sirven MCM × k + ', Rv(r), ', con MCM = ', Mv(M), '.'], [`El primero de tres cifras: ${M} × ${k} + ${r} = ${M * k + r}.`]],
@@ -573,7 +573,7 @@
       correcta: g,
       errores: [
         h('AT-EUC-PRIMER-RESTO', ps[0].r, `Bien empezar dividiendo. Pero ${ps[0].r} es el primer resto: hay que seguir.`),
-        h('AT-EUC-COCIENTE', ps[0].q, `Bien la división. Pero el cociente ${ps[0].q} cuenta veces: no entra en los dos.`),
+        h('AT-EUC-COCIENTE', ps[0].q, `Bien la división. Pero el cociente, ${ps[0].q}, dice cuántas veces entra ${B} en ${A}; el MCD es el último divisor.`),
         h('AR13', mcm(A, B), 'Bien buscar lo común. Pero ese es el MCM: los dos entran en él.'),
       ],
       solucion: [[ps.map(p => `${p.a} = ${p.q} × ${p.b}${p.r ? ` + ${p.r}` : ''}`).join('; ') + '.'], ['El último divisor es el MCD: ', Dv(g), '.']],

@@ -84,3 +84,12 @@ test('las figuras de la teoría que usan la pieza caben y no se pisan', () => {
   assert.deepEqual(mal, []);
   assert.ok(n >= 50, `la teoría usa la pieza en ${n} figuras`);
 });
+
+// Lector en frío B (19 nov): con el paquete cerrado, un solo caramelo suelto se dice en singular («sobra 1»).
+test('paquete cerrado: «sobra 1» en singular y «sobran 2» en plural, en la nota y en el alt', () => {
+  const uno = P.dibujar({ cerrado: true, repartos: [{ d: 4, sobran: 1 }] }), dos = P.dibujar({ cerrado: true, repartos: [{ d: 4, sobran: 2 }] });
+  assert.ok(!/sobran <\/tspan><tspan[^>]*>1</.test(uno) && /sobra </.test(uno), 'nota con «sobra 1»');
+  assert.match(P.alt({ cerrado: true, repartos: [{ d: 4, sobran: 1 }] }), /sobra 1\./);
+  assert.match(P.alt({ cerrado: true, repartos: [{ d: 4, sobran: 2 }] }), /sobran 2\./);
+  assert.match(dos, /sobran </);
+});

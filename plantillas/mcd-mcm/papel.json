@@ -26,7 +26,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "El MCD de dos números es 6 y su MCM es 126. Uno de ellos es 18. ¿Cuál es el otro? Datos: Con dos números: MCD(A, B) × MCM(A, B) = A × B. Alternativas: A) 7   B) 756   C) 42   D) 21",
+      "enunciado": "El MCD de dos números es 6 y su MCM es 126. Uno de ellos es 18. ¿Cuál es el otro? Datos: Con dos números: MCD(A, B) × MCM(A, B) = A × B. A = MCD × p y B = MCD × q: p y q son los cocientes, y son PESI. Alternativas: A) 7   B) 756   C) 42   D) 21",
       "respuesta": "C) 42",
       "pasos": [
         "18 × B = 6 × 126 = 756.",
