@@ -806,3 +806,54 @@ test('ronda 2: el piso no se lee como «−0», el pabellón no cambia de tamañ
     if (k > 0 && Array.isArray(en) && en[k - 1] && typeof en[k - 1] === 'object' && /^\d/.test(en[k - 1].t || '')) assert.fail(`${i.id} ${e.titulo}: un coeficiente con color pegado a t`);
   }
 });
+
+// Cabos de la Etapa 4 (19 nov): los códigos de error (hipótesis) de la unidad están en su informe de docs/investigacion/,
+// que trae la sección «Hipótesis de la Etapa 4 (sin estudio)» con el índice de los que estrenó la etapa.
+test('cabos: todo código de error de la unidad está en su informe, con la sección «Hipótesis de la Etapa 4 (sin estudio)»', () => {
+  const fsI = require('node:fs'), pathI = require('node:path');
+  const leeInforme = n => fsI.readFileSync(pathI.join(__dirname, '..', '..', '..', 'docs', 'investigacion', n), 'utf8');
+  // «GE-TRI6 a GE-TRI8» nombra también GE-TRI7: los rangos se expanden.
+  const expande = t => t.replace(/([A-Z][A-Za-z0-9-]*?[A-Z-])(\d+) a \1(\d+)/g, (m, pre, x, y) => { const l = []; for (let k = +x; k <= +y; k++) l.push(pre + k); return l.join(', '); });
+  const informe = expande(leeInforme('cinematica-ideas-erroneas.md')), transversal = leeInforme('fisica-calculo-transversal-ideas-erroneas.md');
+  const nombra = (t, c) => new RegExp(`(^|[^A-Za-z0-9-])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Za-z0-9-]|$)`).test(t);
+  assert.match(informe, /^## Hipótesis de la Etapa 4 \(sin estudio\)$/m);
+  const seccion = informe.slice(informe.indexOf('## Hipótesis de la Etapa 4 (sin estudio)'));
+  assert.ok(seccion.includes('contenido/teoria/fisica/mruv-y-caida-libre.js'), 'la sección nombra esta unidad');
+  assert.ok(!/\(\d{4}\)|et al\.|doi/i.test(seccion.slice(0, seccion.indexOf('\n## ', 5))), 'la sección no trae citas');
+  const codigos = new Set();
+  for (const u of [def]) for (const i of u.ideas) {
+    for (const o of i.predice.opciones) if (o.error) codigos.add(o.error);
+    for (let s = 0; s < 400; s++) for (const o of i.ahoraTu.generar(s).opciones) if (o.error) codigos.add(o.error);
+  }
+  assert.ok(codigos.size >= 30, `${codigos.size} códigos`);
+  const faltan = [...codigos].filter(c => !nombra(informe, c) && !nombra(transversal, c)).sort();
+  assert.deepEqual(faltan, [], `códigos sin describir en cinematica-ideas-erroneas.md: ${faltan.join(', ')}`);
+});
+
+// Cabos de la Etapa 4 (19 nov): el tipo de problema del frenado (contenido/ejercicios/tipos.json) es de esta unidad desde
+// la partición: antes era `movimiento-rectilineo/frenado-distancia`. Su generador y su subtipo existen, es de la idea de
+// las ecuaciones del MRUV, y su ejemplo de juguete lo nombra igual.
+test('cabos: el tipo «frenado-distancia» de tipos.json es de MRUV (fis-mruv, subtipo frenado), no de MRU', () => {
+  const fsT = require('node:fs'), raiz = path.join(__dirname, '..', '..', '..');
+  const tipos = JSON.parse(fsT.readFileSync(path.join(raiz, 'contenido', 'ejercicios', 'tipos.json'), 'utf8')).tipos;
+  assert.ok(!Object.keys(tipos).some(k => k.startsWith('movimiento-rectilineo/')), 'ningún tipo de MRUV queda con el prefijo de MRU');
+  const t = tipos['mruv-y-caida-libre/frenado-distancia'];
+  assert.ok(t, 'el tipo existe con el prefijo de la unidad nueva');
+  assert.equal(t.unidad, def.unidad);
+  assert.equal(t.via, 'generador');
+  const gen = require(path.join(raiz, 'plantillas', t.generador, 'generador.js'));
+  assert.equal(t.generador, 'fis-mruv');
+  assert.ok(gen.TIPOS.includes(t.subtipo), `fis-mruv no tiene el subtipo ${t.subtipo}`);
+  assert.ok(gen.TIPOS_POR_IDEA['ecuaciones-mruv'].includes(t.subtipo), 'el frenado es de la idea de las ecuaciones del MRUV');
+  assert.ok(Kit.piezas[t.pieza], `la pieza ${t.pieza} existe`);
+  const ficha = JSON.parse(fsT.readFileSync(path.join(raiz, 'plantillas', 'fis-mruv', 'plantilla.json'), 'utf8'));
+  assert.ok(ficha.unidades.includes(def.unidad));
+  // El ejemplo de juguete: mismo tipo y misma unidad, y la cuenta del frenado (v² = 2·a·d).
+  const ej = JSON.parse(fsT.readFileSync(path.join(raiz, 'contenido', 'ejercicios', 'ejemplos', 'juguete-oficial-mruv.json'), 'utf8'));
+  assert.equal(ej.tipo, 'mruv-y-caida-libre/frenado-distancia');
+  assert.equal(ej.unidad, def.unidad);
+  assert.equal(ej.respuesta.valor, 20 * 20 / (2 * 4));
+  // Nada más en el repo nombra el tipo con el prefijo viejo.
+  for (const f of ['contenido/ejercicios/LEEME.md', 'docs/ejercicios-7000.md', 'herramientas/validar-ejercicios.js', 'plantillas/fis-mruv/generador.js'])
+    assert.ok(!fsT.readFileSync(path.join(raiz, f), 'utf8').includes('movimiento-rectilineo/frenado-distancia'), `${f} todavía nombra el tipo viejo`);
+});

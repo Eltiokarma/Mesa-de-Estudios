@@ -210,6 +210,36 @@ parten para que dos opciones de una misma pregunta no lleven el mismo código.
 | GE-DT14 a GE-DT16 | Da el menor valor del lado en vez de contar cuántos; en el punto interior (San Marcos 2026-I) olvida el límite de BC y usa solo PB + PC; redondea cada parte del perímetro por separado | Práctica `geo-triangulos`, idea 4 |
 | GE-BIS14 | Interior con exterior: parte A entre cuatro (una mitad por cada bisectriz) | Práctica `geo-triangulos`, idea 6 |
 
+## Hipótesis de la Etapa 4 (sin estudio)
+
+Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)
+y que usan hoy su teoría y su práctica. **Ninguno tiene un estudio detrás**: son hipótesis de diseño, que salen del
+temario, de la forma de las alternativas de examen y de academia o de aplicar mal la regla de la idea. Se confirman o
+se descartan con lo que midan la app y el piloto; aquí no se les agrega ninguna cita. La lista sale del código (los
+`error` de la teoría y los códigos de los generadores), y la descripción de cada uno está en la sección que dice la
+última columna.
+
+No entran en el índice: los que ya estaban en el catálogo de arriba (GE8); los que parten uno de esos códigos y
+heredan su respaldo (GE7-a, GE7-b).
+
+| Dónde se usan | Cuántos | Códigos | Descripción |
+| --- | --- | --- | --- |
+| «Triángulos y líneas notables», teoría (`contenido/teoria/geometria/triangulos.js`) | 82 | GE-ANG1, GE-BIS10, GE-BIS11, GE-BIS12, GE-BIS13, GE-BIS4, GE-BIS5-a, GE-BIS5-b, GE-BIS6, GE-BIS7, GE-BIS8, GE-BIS9, GE-DT1, GE-DT11, GE-DT12, GE-DT2, GE-DT3, GE-DT4, GE-DT5, GE-DT6, GE-DT7, GE-DT8, GE-DT9, GE-EXT1, GE-EXT10, GE-EXT11, GE-EXT12, GE-EXT13, GE-EXT2, GE-EXT3, GE-EXT4, GE-EXT5, GE-EXT6, GE-EXT7, GE-EXT8, GE-EXT9, GE-ISO1, GE-ISO10, GE-ISO11, GE-ISO12, GE-ISO13, GE-ISO14, GE-ISO15, GE-ISO2, GE-ISO3, GE-ISO4, GE-ISO5, GE-ISO6, GE-ISO7, GE-ISO8, GE-ISO9, GE-LN1, GE-LN10, GE-LN11, GE-LN12, GE-LN13, GE-LN2, GE-LN3, GE-LN4, GE-LN5, GE-LN6, GE-LN7, GE-LN8, GE-LN9, GE-RAZ1, GE-RAZ2, GE-TRI10, GE-TRI11, GE-TRI12, GE-TRI13, GE-TRI14, GE-TRI15, GE-TRI16, GE-TRI17, GE-TRI18, GE-TRI19, GE-TRI4, GE-TRI5, GE-TRI6, GE-TRI7, GE-TRI8, GE-TRI9 | «Triángulos (18 nov)» y la tabla de abajo |
+| Práctica (`plantillas/geo-triangulos/generador.js`) | 85 | GE-BIS10, GE-BIS11, GE-BIS12, GE-BIS13, GE-BIS14, GE-BIS4, GE-BIS5-a, GE-BIS5-b, GE-BIS6, GE-BIS7, GE-BIS8, GE-BIS9, GE-DT11, GE-DT12, GE-DT14, GE-DT15, GE-DT16, GE-DT2, GE-DT3, GE-DT4, GE-DT5, GE-DT6, GE-DT7, GE-DT8, GE-DT9, GE-EXT10, GE-EXT11, GE-EXT12, GE-EXT13, GE-EXT14, GE-EXT15, GE-EXT2, GE-EXT4, GE-EXT5, GE-EXT6, GE-EXT7, GE-EXT8, GE-EXT9, GE-ISO1, GE-ISO10, GE-ISO11, GE-ISO12, GE-ISO13, GE-ISO14, GE-ISO15, GE-ISO16, GE-ISO17, GE-ISO18, GE-ISO3, GE-ISO4, GE-ISO5, GE-ISO6, GE-ISO7, GE-ISO8, GE-ISO9, GE-LN1, GE-LN10, GE-LN11, GE-LN12, GE-LN13, GE-LN2, GE-LN3, GE-LN4, GE-LN5, GE-LN6, GE-LN7, GE-LN8, GE-LN9, GE-RAZ1, GE-RAZ2, GE-TRI10, GE-TRI11, GE-TRI12, GE-TRI13, GE-TRI14, GE-TRI15, GE-TRI16, GE-TRI17, GE-TRI18, GE-TRI19, GE-TRI5, GE-TRI6, GE-TRI7, GE-TRI8, GE-TRI9 | «Triángulos (18 nov)» y la tabla de abajo |
+
+Siete códigos que usan la teoría y la práctica de Triángulos no estaban descritos en este informe (los tres primeros
+vienen de Segmentos y ángulos; los otros cuatro, de la propuesta de la unidad). Son hipótesis, como los demás:
+
+| Código | Hipótesis (lo que hace el alumno) | Dónde aparece |
+| --- | --- | --- |
+| GE-ANG1 | Cree que un ángulo crece con el largo de sus lados o con el tamaño de la figura (una cartulina más grande tendría ángulos más grandes). Viene de Segmentos y ángulos, donde es el «error objetivo» de la matriz | Triángulos, idea 1, predicción |
+| GE-RAZ1 | Con los ángulos en razón, da la otra parte de la razón: la medida de otro ángulo y no la del que se pide. Viene de Segmentos y ángulos | Triángulos, idea 1, «Ahora tú»; práctica `geo-triangulos` |
+| GE-RAZ2 | Con los ángulos en razón, se queda en k (lo que vale una parte) y no lo multiplica por las partes del ángulo. Viene de Segmentos y ángulos | Triángulos, idea 1, «Ahora tú»; práctica `geo-triangulos` |
+| GE-DT1 | Toma la suma de los dos lados como el único valor posible del tercero | Triángulos, idea 4, predicción |
+| GE-DT2 | Olvida el límite de abajo: acepta cualquier tercer lado menor que la suma, aunque no pase de la diferencia | Triángulos, idea 4, predicción y «Ahora tú»; práctica `geo-triangulos` |
+| GE-DT3 | Cuenta los extremos (la suma o la diferencia justas), donde los tres puntos quedan alineados y no hay triángulo. Es la trampa de la pregunta de San Marcos 2026-I clasificada en la unidad | Triángulos, idea 4, predicción y «Ahora tú»; práctica `geo-triangulos` |
+| GE-BIS4 | Usa la regla de las dos bisectrices interiores (90° más la mitad de A) donde una es exterior, o la de una interior y una exterior (la mitad de A) donde las dos son interiores | Triángulos, idea 6, predicción y «Ahora tú»; práctica `geo-triangulos` |
+
 ## Fuentes
 
 No pude leer ninguna completa; lo que digo de cada una viene de los resúmenes del buscador web (6 de noviembre de 2026), que citan el texto o las tablas.

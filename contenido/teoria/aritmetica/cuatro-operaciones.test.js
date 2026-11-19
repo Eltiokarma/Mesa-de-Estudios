@@ -476,3 +476,49 @@ test('ninguna división se escribe como igualdad si no es exacta (el cociente en
       assert.equal(num(m[1]) / num(m[2]), num(m[3]), `${i.id} ${donde}: ${m[0]}`);
   }
 });
+
+// Cabos de la Etapa 4 (19 nov): los códigos de error (hipótesis) de la unidad están en su informe de docs/investigacion/,
+// que trae la sección «Hipótesis de la Etapa 4 (sin estudio)» con el índice de los que estrenó la etapa.
+test('cabos: todo código de error de la unidad está en su informe, con la sección «Hipótesis de la Etapa 4 (sin estudio)»', () => {
+  const fsI = require('node:fs'), pathI = require('node:path');
+  const leeInforme = n => fsI.readFileSync(pathI.join(__dirname, '..', '..', '..', 'docs', 'investigacion', n), 'utf8');
+  // «GE-TRI6 a GE-TRI8» nombra también GE-TRI7: los rangos se expanden.
+  const expande = t => t.replace(/([A-Z][A-Za-z0-9-]*?[A-Z-])(\d+) a \1(\d+)/g, (m, pre, x, y) => { const l = []; for (let k = +x; k <= +y; k++) l.push(pre + k); return l.join(', '); });
+  const informe = expande(leeInforme('aritmetica-razonamiento-ideas-erroneas.md')), transversal = leeInforme('fisica-calculo-transversal-ideas-erroneas.md');
+  const nombra = (t, c) => new RegExp(`(^|[^A-Za-z0-9-])${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Za-z0-9-]|$)`).test(t);
+  assert.match(informe, /^## Hipótesis de la Etapa 4 \(sin estudio\)$/m);
+  const seccion = informe.slice(informe.indexOf('## Hipótesis de la Etapa 4 (sin estudio)'));
+  assert.ok(seccion.includes('contenido/teoria/aritmetica/cuatro-operaciones.js'), 'la sección nombra esta unidad');
+  assert.ok(!/\(\d{4}\)|et al\.|doi/i.test(seccion.slice(0, seccion.indexOf('\n## ', 5))), 'la sección no trae citas');
+  const codigos = new Set();
+  for (const u of [def]) for (const i of u.ideas) {
+    for (const o of i.predice.opciones) if (o.error) codigos.add(o.error);
+    for (let s = 0; s < 400; s++) for (const o of i.ahoraTu.generar(s).opciones) if (o.error) codigos.add(o.error);
+  }
+  assert.ok(codigos.size >= 30, `${codigos.size} códigos`);
+  const faltan = [...codigos].filter(c => !nombra(informe, c) && !nombra(transversal, c)).sort();
+  assert.deepEqual(faltan, [], `códigos sin describir en aritmetica-razonamiento-ideas-erroneas.md: ${faltan.join(', ')}`);
+});
+
+// Cabos de la Etapa 4 (19 nov): «llevada» se define una sola vez, aquí, sin `local`; Razonamiento numérico la usa sin
+// definirla y el glosario armado del curso (npm run catalogo) la marca ahí como «Se explica en «Las cuatro operaciones»».
+test('cabos: «llevada» se define solo en Las cuatro operaciones y en Razonamiento numérico queda como «se explica en…»', () => {
+  const fsG = require('node:fs'), pathG = require('node:path');
+  const rn = require('./razonamiento-numerico.js');
+  assert.ok(!rn.glosario.some(g => /^llevadas?$/.test(g.termino)), 'Razonamiento numérico no define «llevada»');
+  assert.ok(!rn.glosario.some(g => g.local && (g.formas || []).concat(g.termino).some(f => /^llevadas?$/.test(f))), 'ni la tapa con una local');
+  const propia = def.glosario.find(g => g.termino === 'llevada');
+  assert.ok(propia && !propia.local && propia.simple && propia.ejemplos.length >= 3);
+  // Ninguna otra unidad de aritmética la define.
+  const dir = __dirname;
+  for (const f of fsG.readdirSync(dir).filter(x => x.endsWith('.js') && !x.endsWith('.test.js') && x !== 'cuatro-operaciones.js'))
+    assert.ok(!(require(pathG.join(dir, f)).glosario || []).some(g => g.termino === 'llevada'), `${f} define «llevada»`);
+  // El glosario armado: una sola entrada, de esta unidad, que aparece también en Razonamiento numérico (ahí el lector
+  // escribe «Se explica en «Las cuatro operaciones»», app/teoria.js).
+  const armado = JSON.parse(fsG.readFileSync(pathG.join(dir, '..', '..', '..', 'app', 'datos', 'glosario', 'aritmetica.json'), 'utf8')).entradas.filter(e => e.termino === 'llevada');
+  assert.equal(armado.length, 1);
+  assert.equal(armado[0].en, 'aritmetica.cuatro-operaciones');
+  assert.equal(armado[0].enNombre, 'Las cuatro operaciones');
+  assert.ok(armado[0].aparece.includes('aritmetica.razonamiento-numerico'), 'Razonamiento numérico usa la palabra');
+  assert.ok(!armado[0].local);
+});

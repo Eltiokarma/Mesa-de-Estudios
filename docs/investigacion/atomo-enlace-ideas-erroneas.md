@@ -331,6 +331,49 @@ solucionario de San Marcos 2026-I (n.º 86) tomó el 4s como último electrón d
 La comparación de radios de los isoelectrónicos (QM-ISO-RADIO, QM-ISO-ORDEN) salió de esta unidad: va a «Radio atómico e
 iónico» de Tabla periódica.
 
+## Hipótesis de la Etapa 4 (sin estudio)
+
+Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)
+y que usan hoy su teoría y su práctica. **Ninguno tiene un estudio detrás**: son hipótesis de diseño, que salen del
+temario, de la forma de las alternativas de examen y de academia o de aplicar mal la regla de la idea. Se confirman o
+se descartan con lo que midan la app y el piloto; aquí no se les agrega ninguna cita. La lista sale del código (los
+`error` de la teoría y los códigos de los generadores), y la descripción de cada uno está en la sección que dice la
+última columna.
+
+No entran en el índice: los que ya estaban en el catálogo de arriba (AT2, AT4, AT5).
+
+| Dónde se usan | Cuántos | Códigos | Descripción |
+| --- | --- | --- | --- |
+| «Estructura atómica», teoría (`contenido/teoria/quimica/estructura-atomica.js`) | 68 | QM-2N, QM-5P-ANTES, QM-ANOMALIA, QM-BOHR-CONTINUO, QM-BOHR-ENTRE, QM-BOHR-SUBE, QM-CARGA-A, QM-CARGA-E, QM-CARGA-N, QM-CARGA-SIGNO, QM-CUENTA, QM-DESAP-RESTA, QM-ESCALA-POCO, QM-ESCALA-UNIDAD, QM-HUND, QM-HUND-TODOS, QM-ION-ELEMENTO-E, QM-ION-ELEMENTO-Q, QM-ION-ISOTOPO, QM-ISO-NEUTRO, QM-ISO-Z, QM-ISOTOPO-A, QM-ISOTOPO-ELEMENTO, QM-ISOTOPO-N, QM-ISOTOPO-REACCIONA, QM-ISOTOPO-UNO, QM-L-CERO, QM-L-DESDE-UNO, QM-L-IGUAL-N, QM-L-MENOR, QM-LLENO-NO-ENTRA, QM-ML-AL-REVES, QM-ML-CERO, QM-ML-POSITIVO, QM-MODELO, QM-MODELO-DALTON, QM-MODELO-THOMSON, QM-MS-AL-REVES, QM-N-L, QM-N-MENOS, QM-NEUTRONES, QM-NIVEL-8, QM-NIVEL-OCUPADO, QM-NUCLIDO-ISOBARO, QM-NUCLIDO-ISOTONO, QM-NUCLIDO-ISOTOPO, QM-NUCLIDO-NADA, QM-OCHO-POR-NIVEL, QM-ORBITAL-ELECTRON, QM-PARA-DIA, QM-PASILLO-NUEVO, QM-PISO-ANTES, QM-REPARTE, QM-S-PRIMERO, QM-SIN-F, QM-SIN-HUND, QM-SOLO-ULTIMO, QM-SUMA-TODO, QM-TODO-3D, QM-TOPE, QM-ULTIMO, QM-ULTIMO-4S, QM-VALENCIA-D, QM-VALENCIA-N, QM-VALENCIA-SUB, QM-VALENCIA-TODO, QM-VF-ACEPTA, QM-VF-NIEGA | «Estructura atómica (18 nov)» |
+| Práctica de la idea 1 (`plantillas/particulas-nucleo/generador.js`) | 22 | QM-CARGA-E, QM-CARGA-SIGNO, QM-ELECTRON-NUCLEO, QM-ISO-NEUTRO, QM-ISO-Z, QM-ISOTOPO-A, QM-ISOTOPO-ELEMENTO, QM-ISOTOPO-N, QM-ISOTOPO-REACCIONA, QM-ISOTOPO-UNO, QM-NEUTRO-NEUTRONES, QM-NEUTRON-AFUERA, QM-NEUTRONES, QM-NUCLIDO-ISOBARO, QM-NUCLIDO-ISOTONO, QM-NUCLIDO-ISOTOPO, QM-NUCLIDO-NADA, QM-NUCLIDO-SIGNO, QM-PARTICULA-CARGA, QM-PARTICULA-MASA, QM-PROTON-AFUERA, QM-SUMA-TODO | «Estructura atómica (18 nov)» |
+| Práctica de la idea 3 (`plantillas/niveles-orbitales/generador.js`) | 14 | QM-2N, QM-CONDICION-IGNORA, QM-L-CERO, QM-L-DESDE-UNO, QM-L-IGUAL-N, QM-L-MENOR, QM-ML-FUERA, QM-ML-POSITIVO, QM-MS-ENTERO, QM-N-L, QM-OCHO-POR-NIVEL, QM-ORBITAL-ELECTRON, QM-SIN-F, QM-SOLO-ULTIMO | «Estructura atómica (18 nov)» |
+
+## Tabla periódica (19 nov)
+
+Códigos de error que usa la idea 1 rehecha de `quimica.tabla-periodica` («Ley periódica: periodos y grupos»,
+`contenido/teoria/quimica/tabla-periodica.js`; propuesta en `docs/etapa5/propuesta-quimica.md`). **Todos son hipótesis**:
+ninguno tiene porcentaje medido. El único con respaldo de examen es el primero.
+
+| Código | Qué hace el alumno | Respaldo |
+| --- | --- | --- |
+| QM-FILA-COLUMNA | Le da al vecino (de fila o de número) lo que es de la columna: cree que el rubidio se parece al kriptón | Trampa que anotan los solucionarios de San Marcos 2019-I («confundir grupo con periodo») y 2019-II («darle a un periodo lo que comparte un grupo»); n.º 26 de `docs/clasificacion/trampas-admision-unmsm/quimica.md` |
+| QM-PROPIEDAD-Z | Cree que cuántos protones tiene un elemento decide cómo se porta («pesado, entonces duro») | — |
+| QM-SIN-LEY | No cree que el lugar en la tabla permita predecir (reemplaza al QM-HUECOS de la versión 0.1.0) | — |
+| QM-FAMILIA-LADO | Cuenta bien los lugares hasta el gas noble, pero del otro lado (alcalino por halógeno) | — |
+| QM-CUENTA-GRUPO | Se corre un lugar al contar desde el gas noble (alcalino por alcalinotérreo) | — |
+| QM-SIEMPRE-OCHO | Cree que todos los periodos tienen 8 elementos: busca al de abajo sumando 8 | Equivale a AQ-familia-sumar-ocho de `configuracion-ubicacion` |
+| QM-LARGO-PERIODO, QM-LARGO-32 | Usa el largo de otro periodo (suma 18 en los periodos 2 y 3, o 32 donde no toca) | — |
+| QM-PERIODO-GAS | Da el periodo del gas noble anterior | Equivale a AQ-periodo-del-gas-noble |
+| QM-PERIODO-CUENTA | Cuenta también el gas noble que viene después | — |
+| QM-LARGO-TOTAL, QM-LARGO-ANTERIOR, QM-CUENTA-EXTREMOS | Para el largo de un periodo da el Z del gas noble que lo cierra, el del anterior, o suma 1 de más | — |
+| QM-VF-NIEGA, QM-VF-ACEPTA | En un verdadero o falso de la ley periódica, marca F una verdadera o V una falsa | San Marcos 2019-I pregunta qué comparten los elementos de un grupo |
+
+Códigos de los esqueletos (ideas todavía sin rehacer; se revisan en la fase 3): QM-PERIODO-D, QM-GRUPO-SOLO-D y
+QM-GRUPO-SOLO-S (hierro: periodo del 3d, solo los d, solo los s; equivalen a AQ-periodo-del-ultimo-subnivel,
+AQ-grupo-solo-ultimo-subnivel y AQ-grupo-solo-s), QM-METAL-BRILLO, QM-DOS-CLASES y QM-CLASE-* (metales), y, en
+`quimica.propiedades-periodicas`, QM-ISO-ORDEN, QM-ISO-RADIO, QM-ION-RADIO y QM-ION-IGUAL (radio de los iones y de los
+isoelectrónicos, que llegó de Estructura atómica).
+
 ## Huecos y siguientes pasos
 
 - **Fuentes en español.** No pude abrir ninguna. Riboldi, Pliego y Odetti (2004, *Enseñanza de las Ciencias*) compara ideas de enlace de ingresantes y universitarios argentinos; según su resumen (leído en un buscador), las de los dos grupos son las mismas en la mayoría de los casos. raco.cat dio 403; ddd.uab.cat, revistas.unam.mx (*Educación Química*), revistas.uam.es y redalyc.org pidieron verificación anti-bots; ensciencias.uab.cat falló por certificado. Si Gerson las descarga desde un navegador, completo las cifras.

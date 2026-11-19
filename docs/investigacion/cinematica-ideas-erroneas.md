@@ -350,6 +350,28 @@ confirman con las opciones que eligen los alumnos en las predicciones, en «Ahor
 | C-ENC-MITAD-H | Supone que se encuentran a la mitad de la altura | B6 | Hipótesis |
 | C-CUARTO | Divide dos veces entre 2 el tiempo de vuelo | B6 | Hipótesis |
 
+## Hipótesis de la Etapa 4 (sin estudio)
+
+Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)
+y que usan hoy su teoría y su práctica. **Ninguno tiene un estudio detrás**: son hipótesis de diseño, que salen del
+temario, de la forma de las alternativas de examen y de academia o de aplicar mal la regla de la idea. Se confirman o
+se descartan con lo que midan la app y el piloto; aquí no se les agrega ninguna cita. La lista sale del código (los
+`error` de la teoría y los códigos de los generadores), y la descripción de cada uno está en la sección que dice la
+última columna.
+
+No entran en el índice: los que ya estaban en el catálogo de arriba (C1, C2, G3, G4, K1, K3, K4); los que parten uno
+de esos códigos y heredan su respaldo (C2-liviano, C2-suave, G2-altura-entre-tiempo, G2-pendiente-es-altura,
+G2-ultimo-punto, G4-medio, G4-tiempo, K1-a, K1-b); los de unidades y proporción, que se describen en
+`fisica-calculo-transversal-ideas-erroneas.md` y llevan un sufijo que dice el caso (PR1-frenado, U1-al-reves,
+U1-inversa, U1-kmh, U1-ms, U2-cm, U2-km, U6-min).
+
+| Dónde se usan | Cuántos | Códigos | Descripción |
+| --- | --- | --- | --- |
+| «Movimiento rectilíneo uniforme», teoría (`contenido/teoria/fisica/movimiento-rectilineo.js`) | 32 | DX-DISTANCIA, DX-IDA, DX-RAPIDEZ, MED-CRUZADO, MED-PROMEDIO, MED-PROMEDIO-MITADES, MED-SUMA, MED-TRAMO, MED-UN-TIEMPO, MRU-CONTEO, MRU-ECUACION, MRU-SIGNO, MRU-SUMA, MRU-X0, REL-IDA, REL-PITAGORAS, REL-SENTIDO, REL-SIGNO, REL-SIN-MARCO, REL-SOLO-A, REL-SOLO-RIO, REL-SUMA, VR-POSICION, VR-RELOJ, VR-RESTA, VR-SUMA, VR-UNO, VR-VENTAJA, XT-INVERSA, XT-LEIDO, XT-SIGNO, XT-SIN-DIVIDIR | «MRU (18 nov)»; los de la idea 1 (MRU-…), también en la cabecera de la unidad |
+| Práctica de MRU (`plantillas/fis-mru/generador.js`) | 57 | DX-DISTANCIA, DX-IDA, DX-RAPIDEZ, DX-SUMA-POSICIONES, DX-VUELTA-ENTERA, ENC-CRUCE, ENC-MITAD, ENC-OTRO, ENC-PRIMERA, ENC-SOLO-S, ENC-UN-LARGO, MED-CRUZADO, MED-PROMEDIO, MED-PROMEDIO-MITADES, MED-SIN-PARADA, MED-SUMA, MED-TRAMO, MED-UN-TIEMPO, MRU-CONTEO, MRU-ECO-DOBLE, MRU-ECO-ESCUCHA, MRU-ECO-MEDIO, MRU-ECO-MITAD, MRU-ECO-QUIETO, MRU-ECO-RESTA, MRU-ECO-SIN-MITAD, MRU-ECO-UNO, MRU-ECUACION, MRU-IDA, MRU-RESTA-V, MRU-SIGNO, MRU-SUMA, MRU-X0, REL-CRUZA, REL-IDA, REL-PITAGORAS, REL-SENTIDO, REL-SIGNO, REL-SIN-MARCO, REL-SIN-MITAD, REL-SOLO-A, REL-SOLO-RIO, REL-SUMA, REL-UN-LARGO, VR-PROMEDIO, VR-RELOJ, VR-RESTA, VR-SUMA, VR-UNO, VR-VENTAJA, XT-CAMBIA, XT-INVERSA, XT-LEIDO, XT-POSICION, XT-PRIMER-PUNTO, XT-SIGNO, XT-SIN-DIVIDIR | «Práctica de MRU (fis-mru, 18 nov)» y «MRU (18 nov)» |
+| «MRUV y caída libre», teoría (`contenido/teoria/fisica/mruv-y-caida-libre.js`) | 56 | C-ALTURA, C-AREA, C-ENC-CAIDA, C-ENC-MITAD, C-ENESIMO, C-JUNTAS, C-LINEAL, C-MEDIO, C-RAIZ, C-RESTA-ALTURAS, C-SIN-SONIDO, C-SOLO-SONIDO, C-SOLTAR, C-SUBIDA, C-TIEMPO, C-VELOCIDAD, C-VUELTA, DX-ALTURA, DX-IDA, DX-INICIAL, DX-RECT, DX-RESTA, DX-SEMI, DX-SUMA, DX-TRAMO, DX-TRIANGULO, G-SENTIDO, K-A0, K-ALC-D, K-ALC-PERSEGUIDOR, K-CUADRADO, K-POR, K-SIGNO, K-SINDIV, K-SUMA, K-TIEMPO, MED-PROMEDIO-A, MED-TRAMO, MRU-X0, MRUV-ACEL, MRUV-DESDE-0, MRUV-DIVIDE, MRUV-FRENO-IGUAL, MRUV-LEE-PUNTO, MRUV-MEDIO, MRUV-MEDIO-A, MRUV-MITAD, MRUV-NUNCA, MRUV-ORIGEN, MRUV-POSICION, MRUV-POSICION-FINAL, MRUV-SIGNO-D, MRUV-SIN-A, MRUV-SOLO-ACELERA, MRUV-TIEMPO, MRUV-VT | «MRUV y caída libre (18 nov)», «En la teoría (B1 a B6)» |
+| Práctica de MRUV (`plantillas/fis-mruv/generador.js`) | 98 | AT-ALTURA, AT-TODO, AT-TRAMO, C-ALTURA, C-ANTERIOR, C-CUADRADO, C-CUARTO, C-ENC-CAIDA, C-ENC-CAIDO, C-ENC-MITAD, C-ENC-MITAD-H, C-ENC-SIN-G, C-ENESIMO, C-IGUAL, C-LINEAL, C-MEDIO, C-MITAD-T, C-OTRO-SEG, C-RAIZ, C-RESTA-ALTURAS, C-SIN-G, C-SIN-SONIDO, C-SIN-V0, C-SOLO-G, C-SOLO-UNA, C-SOLTAR, C-SONIDO-DOBLE, C-SUBIDA, C-SUMA-T, C-TIEMPO, C-VELOCIDAD, C-VUELTA, C-VUELTA-SOLTAR, DX-ALTURA, DX-IDA, DX-INICIAL, DX-MEDIA-V, DX-RECT, DX-RESTA, DX-SEMI, DX-SIGNO, DX-SOLO-TRI, DX-SUMA, DX-TRAMO, DX-TRAPECIO, DX-TRIANGULO, G-SENTIDO, K-ALC-D, K-ALC-PERSEGUIDOR, K-ALC-SIN-D, K-ALC-TIEMPO, K-CUADRADO, K-INVERSA, K-MITAD, K-POR, K-RESTA-T, K-SEP-ALCANCE, K-SEP-MOTO, K-SEP-TIEMPO, K-SIGNO, K-SIN-V0, K-SINDIV, K-SUMA, K-TIEMPO, MED-PROMEDIO-A, MED-SIN-RESTA, MED-SUMA-A, MED-TRAMO, MRU-X0, MRUV-ACEL, MRUV-ANTERIOR, MRUV-DESDE-0, MRUV-DIF-D, MRUV-DISTANCIA, MRUV-DOBLE-TRAMO, MRUV-ENESIMO, MRUV-FRENO-IGUAL, MRUV-MEDIA-V, MRUV-MEDIO, MRUV-MEDIO-A, MRUV-MITAD, MRUV-OTRO-SEG, MRUV-POS-INICIAL, MRUV-POSICION, MRUV-POSICION-FINAL, MRUV-RAIZ, MRUV-RESTA, MRUV-SIGNO-D, MRUV-SIN-A, MRUV-SIN-CUADRADO, MRUV-SIN-DOS, MRUV-SIN-V0, MRUV-SOLO-ACELERA, MRUV-SUMA-RAIZ, MRUV-TIEMPO, MRUV-VEL-N, MRUV-VMAX, MRUV-VT | «MRUV y caída libre (18 nov)», «Nuevos de la práctica (`fis-mruv`)» y «En la teoría (B1 a B6)» |
+
 ## Fuentes
 
 - [Beichner (1994), *Testing student interpretation of kinematics graphs*, American Journal of Physics 62(8), 750–762](https://moodle2.units.it/pluginfile.php/732257/mod_resource/content/1/Testing%20student%20understanding%20kinematics%20graphs.pdf). 895 estudiantes; test TUG-K con porcentajes por objetivo y por pregunta.

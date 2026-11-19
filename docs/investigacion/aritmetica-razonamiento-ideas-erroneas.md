@@ -286,6 +286,59 @@ la práctica (cuántos eligen cada distractor), como en los otros temas. Los có
 
 Los ejemplos con números son casos de la práctica o de la propuesta, recalculados aparte (`plantillas/operaciones-cifras/casos.json`).
 
+## Hipótesis de la Etapa 4 (sin estudio)
+
+Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)
+y que usan hoy su teoría y su práctica. **Ninguno tiene un estudio detrás**: son hipótesis de diseño, que salen del
+temario, de la forma de las alternativas de examen y de academia o de aplicar mal la regla de la idea. Se confirman o
+se descartan con lo que midan la app y el piloto; aquí no se les agrega ninguna cita. La lista sale del código (los
+`error` de la teoría y los códigos de los generadores), y la descripción de cada uno está en la sección que dice la
+última columna.
+
+| Dónde se usan | Cuántos | Códigos | Descripción |
+| --- | --- | --- | --- |
+| «Las cuatro operaciones», teoría (`contenido/teoria/aritmetica/cuatro-operaciones.js`) | 59 | AT-CA-DECIMAL, AT-CA-DIEZ, AT-CA-K, AT-CA-MISMO, AT-CA-SIN-RESTAR, AT-CA9, AT-CADENA, AT-CERO-DIEZ, AT-CERO-QUEDA, AT-COTA-EXPONENTE, AT-COTA-MAX, AT-COTA-MIN, AT-COTA-MULT, AT-COTA-PRODUCTO, AT-COTA-RESTA, AT-COTA-SUMA, AT-COTA-UNA, AT-DECIMAL, AT-DOBLE-DESCUENTO, AT-EXCESO-CAMBIA, AT-EXCESO-DIVISOR, AT-EXCESO-IGUAL, AT-EXCESO-MAS, AT-EXCESO-RESTA, AT-EXCESO-SUMA, AT-LLEVA-CIFRA, AT-LLEVA-DOBLE, AT-LLEVA-FINAL, AT-LLEVA-OLVIDA, AT-LLEVA-TODO, AT-LLEVA-UNO, AT-MEDIO-CERO, AT-MENOR, AT-MENOR-MAYOR, AT-MULTIPLICA, AT-PRESTA-CEROS, AT-PRESTA-COLUMNAS, AT-PRODUCTO-NUEVO, AT-REPARTO-CUENTA, AT-REPARTO-NUEVO, AT-REPARTO-RESTA, AT-REPARTO-SIN-DIVIDIR, AT-REPARTO-SIN-RESTO, AT-REPARTO-TOTAL, AT-RESTA-AUMENTO, AT-RESTO-MAX, AT-RESTO-MITAD, AT-REVERSO-C, AT-REVERSO-CIEN, AT-REVERSO-NOVENTA, AT-REVERSO-ONCE, AT-SIN-DESCONTAR, AT-SUBE-MISMO, AT-SUBE-SOLO, AT-SUFICIENCIA, AT-SUMA-AUMENTO, AT-SUMA-AUMENTOS, AT-SUMA-COLUMNA, AT-SUMA-FACTORES | «Las cuatro operaciones (18 nov)» |
+| Práctica (`plantillas/operaciones-cifras/generador.js`) | 58 | AT-CA-CEROS, AT-CA-DECIMAL, AT-CA-DIEZ, AT-CA-K, AT-CA-SIN-RESTAR, AT-CA9, AT-CADENA, AT-CERO-DIEZ, AT-CERO-QUEDA, AT-COTA-EXPONENTE, AT-COTA-MAX, AT-COTA-MIN, AT-COTA-MULT, AT-COTA-PRODUCTO, AT-COTA-RESTA, AT-COTA-SUMA, AT-COTA-UNA, AT-DECIMAL, AT-DOBLE-DESCUENTO, AT-EXCESO-CAMBIA, AT-EXCESO-DIVISOR, AT-EXCESO-IGUAL, AT-EXCESO-MAS, AT-EXCESO-RESTA, AT-EXCESO-SUMA, AT-LLEVA-CIFRA, AT-LLEVA-DOBLE, AT-LLEVA-FINAL, AT-LLEVA-OLVIDA, AT-LLEVA-TODO, AT-LLEVA-UNO, AT-MEDIO-CERO, AT-MENOR, AT-MENOR-MAYOR, AT-MULTIPLICA, AT-PRESTA-CEROS, AT-PRESTA-COLUMNAS, AT-PRODUCTO-NUEVO, AT-REPARTO-CUENTA, AT-REPARTO-NUEVO, AT-REPARTO-RESTA, AT-REPARTO-SIN-DIVIDIR, AT-REPARTO-SIN-RESTO, AT-REPARTO-TOTAL, AT-RESTA-AUMENTO, AT-RESTA-CUARTO, AT-RESTA-TERCIO, AT-RESTA-TOTAL, AT-RESTO-MAX, AT-RESTO-MITAD, AT-REVERSO-C, AT-SIN-DESCONTAR, AT-SIN-ESQUINA, AT-SUBE-MISMO, AT-SUBE-SOLO, AT-SUFICIENCIA, AT-SUMA-AUMENTO, AT-SUMA-COLUMNA | «Las cuatro operaciones (18 nov)» |
+
+## Divisibilidad (19 nov)
+
+Códigos AT de la unidad `aritmetica.divisibilidad` (teoría `contenido/teoria/aritmetica/divisibilidad.js`; propuesta
+`docs/etapa5/propuesta-aritmetica.md` §4). **Todos son hipótesis**: no encontramos estudios con cifras de errores en
+múltiplos, restos ni criterios, y la matriz del curso marca el error objetivo de la unidad como «hipótesis de diseño». Solo
+la trampa 18 de los solucionarios de San Marcos (resto por exceso leído como por defecto) respalda una de la idea 2. Se
+confirman con las predicciones y la práctica, como en los otros temas. Por ahora la tabla trae la idea 1 (hecha) y la
+predicción de las ideas 2 a 6 (propuestas); las demás se agregan al rehacer cada idea.
+
+| Código | Idea | Qué hace el alumno | Ejemplo (correcto → error) | Respaldo |
+| --- | --- | --- | --- | --- |
+| AT-CONTEO-ARRIBA | 1 | Redondea el cociente hacia arriba: cuenta un grupo que no se completa | múltiplos de 6 del 1 al 50: 8 → 9 | Hipótesis |
+| AT-MULT-PROPIO | 1 | No cuenta al número como múltiplo de sí mismo | → 7 | Hipótesis |
+| AT-MULT-TERMINA | 1 | Toma por múltiplos de d los números que terminan en d | → 5 (6, 16, 26, 36 y 46) | Hipótesis |
+| AT-MULT-VECINO | 1 | Acepta como múltiplo un número que está a 1 de uno | bolsitas de 7: 56 → 57 | Hipótesis |
+| AT-MULT-CIFRAS | 1 | Decide por la suma de las cifras donde no toca | bolsitas de 7: 56 → 43 | Hipótesis |
+| AT-MULT-EXTREMO | 1 | Responde el mayor (o el menor) número de k cifras sin comprobar | mayor múltiplo de 8 de dos cifras: 96 → 99 | Hipótesis |
+| AT-MULT-ANTERIOR, AT-MULT-PASA | 1 | Se queda un múltiplo antes, o se pasa uno | → 88, → 104 | Hipótesis |
+| AT-CONTEO-RESTO | 1 | Responde lo que sobra en vez de cuántos grupos hay | boletos del 1 al 75, de 8 en 8: 9 → 3 | Hipótesis |
+| AT-CONTEO-SIN-QUITAR | 1 | Cuenta desde el 1 cuando el tramo empieza después | múltiplos de 7 de dos cifras: 13 → 14 | Hipótesis |
+| AT-CONTEO-POSTE | 1 | Resta los extremos, divide y no suma 1 (trampa 24 de San Marcos, en otro tema) | → 12 | Hipótesis |
+| AT-CONTEO-QUITA-MAL | 1 | Quita otro tramo (los de una cifra en vez de los de hasta dos) | múltiplos de 7 de tres cifras: 128 → 141 | Hipótesis |
+| AT-RAZON-TOTAL, AT-RAZON-RESTO, AT-RAZON-GRUPOS | 1 | En «p de cada d», responde el total, la otra parte o cuántos grupos hay | 3 de cada 8, entre 50 y 60: 21 → 56, 35 o 7 | Hipótesis (San Marcos 2019-I) |
+| AT-RESTO-MAYOR | 2 | Opera los restos y no vuelve a empacar | 5 pedidos que dejan 4 en bolsitas de 7: 6 → 20 | Hipótesis |
+| AT-RESTO-SUMA | 2 | Suma donde hay que multiplicar | → 2 | Hipótesis |
+| AT-DEPENDE | 2 | Cree que hace falta el número entero, no solo su resto | → «no se puede saber» | Hipótesis |
+| AT-CRITERIO-SUMA | 3 | Usa la suma de cifras con un divisor que no es 3 ni 9 | 237 entre 4: 1 → 0 | Hipótesis |
+| AT-CRITERIO-ULTIMA | 3 | Mira solo la última cifra, como con el 2 y el 5 | → 3 | Hipótesis |
+| AT-CRITERIO-MEZCLA | 3 | Suma las dos últimas cifras en vez de leerlas como un número | → 2 | Hipótesis |
+| AT-CICLO-LUGAR | 4 | Responde el lugar en el ciclo, no el resto que hay en ese lugar | 2⁵⁰ entre 7: 4 → 2 | Hipótesis |
+| AT-CICLO-FIN | 4 | Cree que un exponente grande cae siempre al final del ciclo | → 1 | Hipótesis |
+| AT-POTENCIA-ENTERA | 4 | No usa el ciclo: cree que hay que calcular la potencia | → «no se puede saber» | Hipótesis |
+| AT-CRITERIO-SUMA-7 | 5 | Suma las cifras con el 7, el 11 o el 13 | 415 entre 7: 2 → 3 | Hipótesis |
+| AT-CRITERIO-ALTERNA | 5 | Alterna los signos, como con el 11, con otro divisor | → 1 | Hipótesis |
+| AT-PESO-SIN-REDUCIR | 5 | Pesa bien las cifras y no reduce el total | → 16 | Hipótesis |
+| AT-DIOF-TODAS | 6 | Cuenta toda cantidad de una moneda sin ver si la otra cuadra | pagar S/ 40 con monedas de 2 y de 5: 5 maneras → 9 | Hipótesis |
+| AT-DIOF-CERO | 6 | Deja fuera las maneras con cero monedas de una clase | → 3 | Hipótesis |
+| AT-DIOF-DIVIDE | 6 | Divide el total entre una moneda | → 8 | Hipótesis |
+
 ## Huecos y siguientes pasos
 
 - **Abrir los originales.** En esta sesión no se pudo descargar nada. Las cifras "por confirmar" son las de la tesis de Roa sobre Navarro-Pelayo (37,8 % y 66,6 %), la tabla de Lecoutre (51 %), el 68 % de Clement y el 40 % de la regla del número entero de Resnick. El artículo de 1996 de Navarro-Pelayo y otros está en acceso abierto en la revista *Educación Matemática* y en ugr.es; Jacobs Danan y Gelman (2018) está en PMC; Van Dooren y otros (2005) y De Bock y otros (1998) son de pago.
