@@ -103,8 +103,32 @@
     if (sinHuella(est, 'fisica.estatica', { marca: 'prediccionES', ideas: ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo'] })) cambio = true;
     if (conservaEstudio(est, { de: 'fisica.estatica', a: 'fisica.estatica', estudiada: { marca: 'estudiadaES', fecha: '2026-11-19',
       ideas: ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo', 'polea-movil'] } })) cambio = true;
+    // 19 nov (etapa 6): seis unidades más se rehicieron conservando los ids de sus ideas, con otra Predice. Una predicción
+    // suya sin huella es de la pregunta vieja y se vuelve a preguntar, una vez (cada unidad con su marca). Las que sumaron
+    // ideas (División, Polígonos, Verdades y mentiras, Analogías) le dejan «Ya la estudié» a quien había terminado todas
+    // las de antes; las nuevas le quedan por hacer. Polígonos perdió `trapezoides` (pasó a la idea del trapecio).
+    for (const r of REHECHAS_E6) {
+      if (sinHuella(est, r.u, { marca: r.p, ideas: r.cambian })) cambio = true;
+      if (r.e && conservaEstudio(est, { de: r.u, a: r.u, estudiada: { marca: r.e, fecha: '2026-11-19', ideas: r.antes } })) cambio = true;
+    }
     return cambio;
   }
+  const REHECHAS_E6 = [
+    { u: 'aritmetica.numeros-primos-y-divisores', p: 'prediccionPD',
+      cambian: ['rectangulos', 'criba', 'factorizacion', 'divisores', 'euler', 'fermat-wilson'] },
+    { u: 'algebra.division-de-polinomios', p: 'prediccionDP', e: 'estudiadaDP',
+      cambian: ['algoritmo', 'ruffini', 'divisor-k', 'teorema-resto', 'cocientes-notables'],
+      antes: ['algoritmo', 'ruffini', 'divisor-k', 'teorema-resto', 'cocientes-notables'] },
+    { u: 'geometria.poligonos-y-cuadrilateros', p: 'prediccionPC2', e: 'estudiadaPC2',
+      cambian: ['suma-de-angulos', 'diagonales', 'paralelogramos', 'trapecios'],
+      antes: ['suma-de-angulos', 'diagonales', 'paralelogramos', 'trapecios', 'trapezoides'] },
+    { u: 'trigonometria.longitud-de-arco-y-sector', p: 'prediccionLA',
+      cambian: ['arco', 'sector', 'trapecio-circular', 'faja-y-eje'] },
+    { u: 'razonamiento-matematico.verdades-y-mentiras', p: 'prediccionVM', e: 'estudiadaVM',
+      cambian: ['suposicion', 'negar-bien', 'contradictorias'], antes: ['suposicion', 'contradictorias', 'negar-bien'] },
+    { u: 'razonamiento-verbal.analogias', p: 'prediccionAN', e: 'estudiadaAN',
+      cambian: ['relacion-no-tema', 'clase-y-causa', 'sinonimo-antonimo'], antes: ['relacion-no-tema', 'clase-y-causa', 'sinonimo-antonimo'] },
+  ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.
   function sinHuella(est, de, { marca, ideas }) {

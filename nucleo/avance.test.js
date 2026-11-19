@@ -411,3 +411,24 @@ test('Enlace químico partido: la polaridad, las fuerzas, sus mesas y sus palabr
   assert.equal(nuevo.partidoEN, 1);
   assert.equal((nuevo.teoria || {})[N], undefined);
 });
+
+// 19 nov (etapa 6): seis unidades rehechas con los ids de antes y otra Predice; cuatro sumaron ideas.
+test('Etapa 6, seis unidades rehechas: predicciones viejas sin huella borradas una vez; «Ya la estudié» si sumaron ideas', () => {
+  const U = 'razonamiento-verbal.analogias', P = 'aritmetica.numeros-primos-y-divisores', G = 'geometria.poligonos-y-cuadrilateros';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-12' }, teoria: {
+    [U]: { ideas: { 'relacion-no-tema': { hecha: true, prediccion: 'a' }, 'clase-y-causa': { hecha: true, prediccion: 'b', prediccionDe: 'h2' },
+      'sinonimo-antonimo': { hecha: true } } },
+    [P]: { ideas: { criba: { hecha: true, prediccion: 'c' } } },
+    [G]: { ideas: { 'suma-de-angulos': { hecha: true, prediccion: 'd' } } } } };
+  assert.equal(A.migrar(est), true);
+  for (const m of ['prediccionPD', 'prediccionDP', 'prediccionPC2', 'prediccionLA', 'prediccionVM', 'prediccionAN', 'estudiadaDP', 'estudiadaPC2', 'estudiadaVM', 'estudiadaAN'])
+    assert.equal(est[m], 1, m);
+  assert.equal(est.teoria[U].ideas['relacion-no-tema'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['clase-y-causa'].prediccion, 'b', 'con huella: la revisa la app');
+  assert.equal(est.teoria[P].ideas.criba.prediccion, undefined);
+  assert.equal(est.teoria[P].ideas.criba.hecha, true, 'la idea sigue hecha');
+  // Analogías: terminó las tres de antes → «Ya la estudié» con la fecha de su visita. Polígonos: no terminó las cinco.
+  assert.equal(est.marcadas[U], '2026-11-12');
+  assert.ok(!est.marcadas[G]);
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
