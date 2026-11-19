@@ -399,8 +399,10 @@
         if (!P) { mal(d, `pieza «${id}» no registrada (¿falta en requiere?)`); return null; }
         return P;
       };
+      // La misma regla que app/teoria.js (dibujar): la pieza del dibujo (dib.pieza) si la trae; si no, la del momento o
+      // la de la idea (auditoría de la Etapa 6: Predice y su revelar se validaban con la pieza de la idea).
       const dibuja = (donde, dib, nombre) => {
-        const P = pieza(nombre);
+        const P = pieza((dib && dib.pieza) || nombre);
         if (!P || !dib) { if (!dib) mal(donde, 'sin dibujo'); return; }
         try {
           const svg = P.dibujar(dib.datos, dib.estado || {});
