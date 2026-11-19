@@ -3917,6 +3917,22 @@
     "RMP149-fuera": {
      "respaldo": "hipotesis",
      "describe": "Con «solo uno dice la verdad», le cree a quien está fuera del par que se contradice"
+    },
+    "RM6-favorable": {
+     "respaldo": "hipotesis",
+     "describe": "En certezas, cuenta el caso con buena suerte y no el peor (RM6)"
+    },
+    "RMP31-solo-el-mayor": {
+     "respaldo": "hipotesis",
+     "describe": "En «una de cada», agota solo la clase más grande y no todas menos la más chica"
+    },
+    "RMP34-sin-mas-uno": {
+     "respaldo": "hipotesis",
+     "describe": "Arma el peor caso y olvida la extracción que obliga (+1)"
+    },
+    "RMP30-sin-pareja": {
+     "respaldo": "hipotesis",
+     "describe": "Deja fuera del peor caso lo que no tiene pareja"
     }
    },
    "pares": [

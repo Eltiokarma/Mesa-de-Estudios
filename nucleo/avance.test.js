@@ -489,6 +489,21 @@ test('Etapa 7, Factorización rehecha: predicciones viejas sin huella borradas u
   const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'factor-comun': { hecha: true } } } } };
   A.migrar(otro);
   assert.ok(!(otro.marcadas || {})[U], 'no terminó las cinco: le quedan por hacer');
+// 19 nov (etapa 7): Certezas, rehecha con sus tres ids (palomar y llaves con otros ids de opción) y tres ideas nuevas.
+test('Certezas rehecha (etapa 7): predicciones viejas sin huella de palomar y llaves borradas una vez; «Ya la estudié» conservado', () => {
+  const U = 'razonamiento-matematico.certezas';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-13' }, marcadas: {}, teoria: { [U]: { ideas: {
+    'peor-caso': { hecha: true, prediccion: 'c' }, palomar: { hecha: true, prediccion: 'treintaiseis' }, llaves: { hecha: true, prediccion: 'cien' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionCZ, 1); assert.equal(est.estudiadaCZ, 1);
+  assert.equal(est.teoria[U].ideas['peor-caso'].prediccion, 'c', 'la misma pregunta y los mismos ids: se queda');
+  assert.equal(est.teoria[U].ideas.palomar.prediccion, undefined);
+  assert.equal(est.teoria[U].ideas.llaves.prediccion, undefined);
+  assert.equal(est.teoria[U].ideas.llaves.hecha, true);
+  assert.equal(est.marcadas[U], '2026-11-13', 'terminó las tres de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
 

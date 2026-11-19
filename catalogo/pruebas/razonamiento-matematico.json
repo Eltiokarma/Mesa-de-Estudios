@@ -248,6 +248,22 @@
     "RMP149-fuera": {
       "respaldo": "hipotesis",
       "describe": "Con «solo uno dice la verdad», le cree a quien está fuera del par que se contradice"
+    },
+    "RM6-favorable": {
+      "respaldo": "hipotesis",
+      "describe": "En certezas, cuenta el caso con buena suerte y no el peor (RM6)"
+    },
+    "RMP31-solo-el-mayor": {
+      "respaldo": "hipotesis",
+      "describe": "En «una de cada», agota solo la clase más grande y no todas menos la más chica"
+    },
+    "RMP34-sin-mas-uno": {
+      "respaldo": "hipotesis",
+      "describe": "Arma el peor caso y olvida la extracción que obliga (+1)"
+    },
+    "RMP30-sin-pareja": {
+      "respaldo": "hipotesis",
+      "describe": "Deja fuera del peor caso lo que no tiene pareja"
     }
   },
   "pares": [
@@ -2146,6 +2162,138 @@
           {
             "texto": "En la de Rosa",
             "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-24",
+      "plantilla": "rm-certezas",
+      "unidad": "razonamiento-matematico.certezas",
+      "nombreUnidad": "Certezas",
+      "mide": "Para tener una de cada clase, la peor suerte agota primero las clases más grandes; la más chica llega al final",
+      "A": {
+        "enunciado": "En una caja hay 9 caramelos de fresa, 6 de limón y 4 de menta, todos envueltos igual. ¿Cuántos hay que sacar sin mirar, como mínimo, para tener con certeza uno de cada sabor?",
+        "datos": {
+          "a": 9,
+          "b": 6,
+          "c": 4
+        },
+        "opciones": [
+          {
+            "texto": "10 caramelos",
+            "valor": 10,
+            "error": "RMP31-solo-el-mayor"
+          },
+          {
+            "texto": "3 caramelos",
+            "valor": 3,
+            "error": "RM6-favorable"
+          },
+          {
+            "texto": "16 caramelos",
+            "valor": 16,
+            "correcta": true
+          },
+          {
+            "texto": "15 caramelos",
+            "valor": 15,
+            "error": "RMP34-sin-mas-uno"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una bolsa hay 8 globos rojos, 5 amarillos y 4 blancos, sin inflar. ¿Cuántos hay que sacar sin mirar, como mínimo, para tener con certeza uno de cada color?",
+        "datos": {
+          "a": 8,
+          "b": 5,
+          "c": 4
+        },
+        "opciones": [
+          {
+            "texto": "13 globos",
+            "valor": 13,
+            "error": "RMP34-sin-mas-uno"
+          },
+          {
+            "texto": "14 globos",
+            "valor": 14,
+            "correcta": true
+          },
+          {
+            "texto": "9 globos",
+            "valor": 9,
+            "error": "RMP31-solo-el-mayor"
+          },
+          {
+            "texto": "3 globos",
+            "valor": 3,
+            "error": "RM6-favorable"
+          }
+        ]
+      }
+    },
+    {
+      "par": "rm-25",
+      "plantilla": "rm-certezas",
+      "unidad": "razonamiento-matematico.certezas",
+      "nombreUnidad": "Certezas",
+      "mide": "Para tener dos que sumen un número, la peor suerte saca una de cada pareja y todas las que no tienen pareja",
+      "A": {
+        "enunciado": "En una urna hay 12 fichas numeradas del 1 al 12, una de cada número. ¿Cuántas hay que sacar, como mínimo, para tener con certeza dos cuyos números sumen 15?",
+        "datos": {
+          "N": 12,
+          "S": 15
+        },
+        "opciones": [
+          {
+            "texto": "2 fichas",
+            "valor": 2,
+            "error": "RM6-favorable"
+          },
+          {
+            "texto": "7 fichas",
+            "valor": 7,
+            "error": "RMP34-sin-mas-uno"
+          },
+          {
+            "texto": "6 fichas",
+            "valor": 6,
+            "error": "RMP30-sin-pareja"
+          },
+          {
+            "texto": "8 fichas",
+            "valor": 8,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En una caja hay 14 fichas numeradas del 1 al 14, una de cada número. ¿Cuántas hay que sacar, como mínimo, para tener con certeza dos cuyos números sumen 17?",
+        "datos": {
+          "N": 14,
+          "S": 17
+        },
+        "opciones": [
+          {
+            "texto": "9 fichas",
+            "valor": 9,
+            "correcta": true
+          },
+          {
+            "texto": "7 fichas",
+            "valor": 7,
+            "error": "RMP30-sin-pareja"
+          },
+          {
+            "texto": "2 fichas",
+            "valor": 2,
+            "error": "RM6-favorable"
+          },
+          {
+            "texto": "8 fichas",
+            "valor": 8,
+            "error": "RMP34-sin-mas-uno"
           }
         ]
       }

@@ -256,48 +256,100 @@
   const NUEVOS = ['pareja-color', 'cumpleanos-ya', 'cajas-abrir'];
   const conNuevos = s => (typeof s === 'number' ? s >= 400 : !/^(entrada|salida)-/.test(s));
 
-  function generar(semilla) {
+  // ---- Tipos por idea (fase 5 de «Certezas», 19 nov 2026; los id de las ideas de la teoría) ----
+  // generar(semilla, { idea }) da solo los tipos de esa idea; «colores:…» fija lo que se pide en la urna. Sin idea, todo
+  // sigue como antes (las semillas de casos.json no cambian).
+  const TIPOS_POR_IDEA = {
+    'peor-caso': ['colores:de-color'],
+    palomar: ['colores:mismo', 'cumpleanos', 'cumpleanos-ya', 'suma-cifras'],
+    'una-de-cada': ['colores:uno-de-cada', 'guantes'],
+    condicion: ['divisibilidad', 'paridad', 'primos', 'consecutivos'],
+    parejas: ['pareja-suma', 'pareja-color', 'suma-supera', 'billetes', 'trio-suma', 'diferencia', 'division'],
+    llaves: ['llaves', 'cajas', 'cajas-abrir'],
+  };
+  const UNIDAD = 'razonamiento-matematico.certezas';
+  const TIPOS_POR_UNIDAD = { [UNIDAD]: Object.values(TIPOS_POR_IDEA).flat() };
+
+  function generar(semilla, opciones) {
+    const o = typeof opciones === 'string' ? { unidad: opciones } : opciones || {};
     const rng = Azar.crear(ID + '|' + semilla);
-    let tipo = rng.elegir(TIPOS);
-    // Tipos nuevos (cierre-100): sorteo aparte, para que las semillas ya fijadas en casos.json no cambien.
-    if (conNuevos(semilla)) { const lado = Azar.crear(ID + '+nuevos|' + semilla); if (lado.sig() < 0.3) tipo = lado.elegir(NUEVOS); }
-    for (let intento = 0; intento < 60; intento++) {
-      const p = construir(rng, semilla, tipo);
-      if (p && p.alternativas.length >= 4) return p;
+    let tipo = rng.elegir(TIPOS), forzar = null, idea = null;
+    if (o.idea && TIPOS_POR_IDEA[o.idea]) {
+      idea = o.idea;
+      const t = Azar.crear(ID + '+idea|' + o.idea + '|' + semilla).elegir(TIPOS_POR_IDEA[o.idea]).split(':');
+      tipo = t[0]; forzar = t[1] || null;
+    } else if (conNuevos(semilla)) {
+      // Tipos nuevos (cierre-100): sorteo aparte, para que las semillas ya fijadas en casos.json no cambien.
+      const lado = Azar.crear(ID + '+nuevos|' + semilla); if (lado.sig() < 0.3) tipo = lado.elegir(NUEVOS);
+    }
+    for (let intento = 0; intento < 200; intento++) {
+      const p = construir(rng, semilla, tipo, forzar);
+      if (p && p.alternativas.length >= 4) { if (idea) p._datos = Object.assign({ idea }, p._datos); return p; }
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
+
+  // ---- Recuadro «Datos» (contrato, punto 13; molde §4 y §7): reglas y definiciones, una por línea; nunca la respuesta ----
+  const D_SIN = 'Se saca sin mirar, una por una, y lo que sale no vuelve.';
+  const D_CERT = 'Con certeza: la meta se cumple salga lo que salga, en cualquier orden.';
+  const CASILLA_DATO = { fecha: 'Las fechas posibles son los 365 días del año y el 29 de febrero.', mes: 'Un año tiene 12 meses.',
+    semana: 'La semana tiene 7 días.', 'dia-mes': 'Los días del mes van del 1 al 31.' };
+  function datosDe(d) {
+    switch (d.tipo) {
+      case 'colores': return [D_SIN, D_CERT];
+      case 'guantes': return ['Cada par tiene un izquierdo y un derecho; un par se usa si son del mismo color.', D_SIN];
+      case 'divisibilidad': return [`Múltiplo de ${d.a} o de ${d.b}: de uno de los dos, o de los dos a la vez.`, `Los múltiplos de ${d.a} y de ${d.b} a la vez son los múltiplos de su MCM.`, D_SIN];
+      case 'suma-supera': return [`Mayor que ${d.S}: ${d.S + 1} o más.`, 'Las cartas se voltean sin saber qué número tiene cada una.'];
+      case 'pareja-suma': return [d.copias === 1 ? 'Cada número está una sola vez.' : `Cada número está ${d.copias} veces.`, D_SIN];
+      case 'trio-suma': return ['Las tres fichas deben ser distintas.', D_SIN];
+      case 'consecutivos': return ['Consecutivos: números seguidos, como 4, 5 y 6.', D_SIN];
+      case 'paridad': return [{ 'producto-par': 'Un producto es par si alguno de sus factores es par.', 'suma-impar': 'Una suma de dos es impar si uno es par y el otro, impar.', 'suma-par': 'Una suma de dos es par si los dos son pares o los dos impares.' }[d.pide], D_SIN];
+      case 'diferencia': return ['Diferencia de dos números: el mayor menos el menor.', D_SIN];
+      case 'division': return ['El mayor entre el menor es entero si el menor divide al mayor.', D_SIN];
+      case 'primos': return ['Un primo tiene solo dos divisores, 1 y él mismo; el 1 no es primo.', D_SIN];
+      case 'billetes': return [`Dos billetes suman S/ ${d.M} si sus valores suman ${d.M}.`, D_SIN];
+      case 'cumpleanos': return [CASILLA_DATO[d.casilla], D_CERT];
+      case 'suma-cifras': return ['Suma de cifras: 27 tiene 2 + 7 = 9.', D_SIN];
+      case 'llaves': return ['Cada llave abre una sola cerradura.', 'Un intento: probar una llave en una cerradura.'];
+      case 'cajas': return ['Ningún rótulo dice lo que tiene su caja.', 'Una caja tiene la mezcla de las otras dos cosas.'];
+      case 'pareja-color': return ['Los dos bolos deben ser de distinto color y de distinto número.', D_SIN];
+      case 'cajas-abrir': return ['Todos los rótulos están equivocados.', 'Se elige qué caja abrir según lo que ya se vio.'];
+    }
+    return [D_SIN];
+  }
+  // Paleta de la rama «Lógica» (docs/etapa7/propuesta-razonamiento-matematico.md, §6): el texto del problema va en tinta;
+  // solo lo pedido, ya comprobado, va en violeta (x), al final de la solución.
+  const tinta = x => (Array.isArray(x) ? x.map(tinta) : x && typeof x === 'object' && x.v ? String(x.t) : x);
 
   function cerrar(rng, semilla, o) {
     const unidad = o.unidad || '';
     const alternativas = o.texto
       ? P.armarTexto({ correcta: o.correcta, errores: o.errores, rng })
       : P.armar({ correcta: o.correcta, errores: o.errores, rng, decimales: 0, texto: x => f(x) + (unidad ? ' ' + (x === 1 ? singular(unidad) : unidad) : '') });
-    // Solo las variables que de verdad aparecen (regla 4).
-    const usadas = new Set(), marca = x => { if (Array.isArray(x)) x.forEach(marca); else if (x && typeof x === 'object' && x.v) usadas.add(x.v); };
-    marca(o.enunciado); marca(o.pregunta); marca(o.solucion);
-    const variables = {}; for (const k of Object.keys(o.variables)) if (usadas.has(k)) variables[k] = o.variables[k];
+    const resp = o.texto ? o.correcta.texto : f(o.correcta) + (unidad ? ' ' + (o.correcta === 1 ? singular(unidad) : unidad) : '');
+    const solucion = tinta(o.solucion).concat([['Respuesta: ', v('x', resp), '.']]);
     return {
-      id: `${ID}#${semilla}`, variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
-      alternativas, solucion: o.solucion, respuesta: { valor: o.texto ? o.correcta.clave : o.correcta, unidad }, _datos: o.datos,
+      id: `${ID}#${semilla}`, unidadCatalogo: UNIDAD, variables: { x: { nombre: 'lo pedido, ya comprobado', color: 'f' } },
+      enunciado: tinta(o.enunciado), pregunta: tinta(o.pregunta), datos: datosDe(o.datos),
+      alternativas, solucion, respuesta: { valor: o.texto ? o.correcta.clave : o.correcta, unidad }, _datos: o.datos,
     };
   }
   const masUno = (r, que) => h('RMP34-sin-mas-uno', r - 1, `Armaste bien el peor caso, pero te quedaste ahí: con ${f(r - 1)} todavía puede fallar. Hace falta ${que} más para estar seguro.`);
   const masDos = r => h('RMP34-mas-uno', r + 1, `Sumaste uno de más. Después del peor caso basta una extracción más: con ${f(r)} ya es seguro.`);
 
-  function construir(rng, semilla, tipo) {
+  function construir(rng, semilla, tipo, forzar) {
     const fn = { colores: tColores, guantes: tGuantes, divisibilidad: tDivisibilidad, 'suma-supera': tSumaSupera, 'pareja-suma': tParejaSuma,
       'trio-suma': tTrioSuma, consecutivos: tConsecutivos, paridad: tParidad, diferencia: tDiferencia, division: tDivision, primos: tPrimos,
       billetes: tBilletes, cumpleanos: tCumpleanos, 'suma-cifras': tSumaCifras, llaves: tLlaves, cajas: tCajas,
       'pareja-color': tParejaColor, 'cumpleanos-ya': tCumpleanosYa, 'cajas-abrir': tCajasAbrir }[tipo];
-    return fn(rng, semilla);
+    return fn(rng, semilla, forzar);
   }
 
   // ---------- colores ----------
-  function tColores(rng, semilla) {
+  function tColores(rng, semilla, forzar) {
     const nc = rng.entero(3, 4), cs = rng.barajar(COLORES).slice(0, nc), urna = {};
     for (const c of cs) urna[c] = rng.entero(3, 12);
-    const pide = rng.elegir(['mismo', 'uno-de-cada', 'de-color']);
+    const pide = forzar || rng.elegir(['mismo', 'uno-de-cada', 'de-color']);
     const k = pide === 'mismo' ? rng.entero(2, 5) : pide === 'de-color' ? rng.entero(1, 3) : null;
     const color = pide === 'de-color' ? rng.elegir(cs) : null;
     if (pide === 'mismo' && !cs.some(c => urna[c] >= k)) return null;
@@ -913,5 +965,5 @@
     return cerrar(rng, semilla, { correcta: r, errores, enunciado, pregunta, solucion, variables, datos, unidad: 'cajas' });
   }
 
-  return { id: ID, titulo: 'Sacar a ciegas: ¿cuántas para estar seguro?', generar, calc };
+  return { id: ID, titulo: 'Sacar a ciegas: ¿cuántas para estar seguro?', generar, calc, TIPOS_POR_IDEA, tiposPorUnidad: TIPOS_POR_UNIDAD };
 });

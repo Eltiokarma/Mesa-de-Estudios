@@ -11,7 +11,30 @@
         "Peor caso: de cada color salen 2 (de las verdes salen las 2 que hay): 2 + 2 + 2 = 6 chapitas, y no hay 3 iguales.",
         "La séptima es roja o azul (las verdes se acabaron) y completa 3 de ese color: 6 + 1 = 7."
       ],
-      "verificar": [ { "fn": "colores", "args": [{ "urna": { "rojas": 6, "azules": 4, "verdes": 2 }, "pide": "mismo", "k": 3 }], "espera": { "respuesta": 7 } } ]
+      "verificar": [
+        {
+          "fn": "colores",
+          "args": [
+            {
+              "urna": {
+                "rojas": 6,
+                "azules": 4,
+                "verdes": 2
+              },
+              "pide": "mismo",
+              "k": 3
+            }
+          ],
+          "espera": {
+            "respuesta": 7
+          }
+        }
+      ],
+      "datos": [
+        "Se saca sin mirar, una por una, y lo que sale no vuelve.",
+        "Con certeza: la meta se cumple salga lo que salga."
+      ],
+      "idea": "palomar"
     },
     {
       "id": "p2",
@@ -23,7 +46,28 @@
         "De los grises pueden salir los 3 izquierdos (o los 3 derechos) sin formar par: van 13.",
         "El guante 14 es gris del otro lado y completa el par."
       ],
-      "verificar": [ { "fn": "guantes", "args": [{ "pares": { "negros": 5, "grises": 3 }, "color": "grises" }], "espera": { "respuesta": 14 } } ]
+      "verificar": [
+        {
+          "fn": "guantes",
+          "args": [
+            {
+              "pares": {
+                "negros": 5,
+                "grises": 3
+              },
+              "color": "grises"
+            }
+          ],
+          "espera": {
+            "respuesta": 14
+          }
+        }
+      ],
+      "datos": [
+        "Cada par tiene un izquierdo y un derecho; un par se usa si son del mismo color.",
+        "Se saca sin mirar, una por una, y lo que sale no vuelve."
+      ],
+      "idea": "una-de-cada"
     },
     {
       "id": "p3",
@@ -35,7 +79,28 @@
         "Sirven 16 + 10 − 3 = 23; no sirven 100 − 23 = 77.",
         "Peor caso: salen las 77 que no sirven. La siguiente sirve: 77 + 1 = 78."
       ],
-      "verificar": [ { "fn": "divisibilidad", "args": [{ "N": 100, "a": 6, "b": 10, "k": 1 }], "espera": { "respuesta": 78, "sirven": 23 } } ]
+      "verificar": [
+        {
+          "fn": "divisibilidad",
+          "args": [
+            {
+              "N": 100,
+              "a": 6,
+              "b": 10,
+              "k": 1
+            }
+          ],
+          "espera": {
+            "respuesta": 78,
+            "sirven": 23
+          }
+        }
+      ],
+      "datos": [
+        "Múltiplo de 6 o de 10: de uno de los dos, o de los dos a la vez.",
+        "Los múltiplos de 6 y de 10 a la vez son los múltiplos de 30."
+      ],
+      "idea": "condicion"
     },
     {
       "id": "p4",
@@ -46,7 +111,39 @@
         "Peor caso: salen las más chicas. 1 + 2 + … + 7 = 28, que no pasa de 30.",
         "La octava es por lo menos 8: la suma llega al menos a 36 > 30."
       ],
-      "verificar": [ { "fn": "sumaSupera", "args": [{ "valores": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "S": 30 }], "espera": { "respuesta": 8, "sumaPeor": 28 } } ]
+      "verificar": [
+        {
+          "fn": "sumaSupera",
+          "args": [
+            {
+              "valores": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "S": 30
+            }
+          ],
+          "espera": {
+            "respuesta": 8,
+            "sumaPeor": 28
+          }
+        }
+      ],
+      "datos": [
+        "Mayor que 30: 31 o más.",
+        "Las tarjetas se voltean sin saber qué número tiene cada una."
+      ],
+      "idea": "parejas"
     },
     {
       "id": "p5",
@@ -59,18 +156,68 @@
         "Peor caso: 1, 2, 3, 4 y un número de cada pareja: 4 + 8 = 12.",
         "La ficha 13 completa una pareja."
       ],
-      "verificar": [ { "fn": "parejaSuma", "args": [{ "N": 20, "copias": 1, "S": 25 }], "espera": { "respuesta": 13, "solos": [1, 2, 3, 4] } } ]
+      "verificar": [
+        {
+          "fn": "parejaSuma",
+          "args": [
+            {
+              "N": 20,
+              "copias": 1,
+              "S": 25
+            }
+          ],
+          "espera": {
+            "respuesta": 13,
+            "solos": [
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        }
+      ],
+      "datos": [
+        "Cada número está una sola vez.",
+        "Se saca sin mirar, una por una, y lo que sale no vuelve."
+      ],
+      "idea": "parejas"
     },
     {
       "id": "p6",
-      "nivel": "intermedio",
-      "enunciado": "Del 1 al 20, ¿cuántos números hay que elegir a ciegas como mínimo para estar seguro de tener tres consecutivos?",
-      "respuesta": "15 números.",
-      "pasos": [
-        "Peor caso: dos seguidos y se salta uno: 1, 2, 4, 5, 7, 8, …, 19, 20. Quedan fuera los múltiplos de 3 (6 números): se toman 14.",
-        "En bloques 1-2-3, 4-5-6, …, 16-17-18 hay 6 bloques completos; para no tener tres seguidos falta uno de cada uno. Con 15 ya no alcanza."
+      "nivel": "básico",
+      "idea": "peor-caso",
+      "enunciado": "En la tómbola de la kermés hay 8 bolitas rojas, 6 verdes y 5 negras. ¿Cuántas hay que sacar, como mínimo, para estar seguro de tener 4 verdes?",
+      "datos": [
+        "Se saca sin mirar, una por una, y lo que sale no vuelve.",
+        "Con certeza: la meta se cumple salga lo que salga."
       ],
-      "verificar": [ { "fn": "consecutivos", "args": [{ "N": 20, "k": 3 }], "espera": { "respuesta": 15 } } ]
+      "respuesta": "17 bolitas.",
+      "pasos": [
+        "Lo que no sirve sale primero con la peor suerte: 8 rojas y 5 negras, 13 bolitas.",
+        "Después, 3 verdes: 13 + 3 = 16, y todavía no hay 4.",
+        "La siguiente es verde y obliga: 16 + 1 = 17."
+      ],
+      "verificar": [
+        {
+          "fn": "colores",
+          "args": [
+            {
+              "urna": {
+                "rojas": 8,
+                "verdes": 6,
+                "negras": 5
+              },
+              "pide": "de-color",
+              "k": 4,
+              "color": "verdes"
+            }
+          ],
+          "espera": {
+            "respuesta": 17
+          }
+        }
+      ]
     },
     {
       "id": "p7",
@@ -82,7 +229,24 @@
         "Luego 4, 3, 2 y 1 intentos; el último casillero ya no necesita ninguno.",
         "5 + 4 + 3 + 2 + 1 = 15."
       ],
-      "verificar": [ { "fn": "llaves", "args": [{ "n": 6 }], "espera": { "respuesta": 15 } } ]
+      "verificar": [
+        {
+          "fn": "llaves",
+          "args": [
+            {
+              "n": 6
+            }
+          ],
+          "espera": {
+            "respuesta": 15
+          }
+        }
+      ],
+      "datos": [
+        "Cada llave abre un solo casillero.",
+        "Un intento: probar una llave en un casillero."
+      ],
+      "idea": "llaves"
     },
     {
       "id": "p8",
@@ -95,7 +259,29 @@
         "Peor caso: 2 fichas de cada una de las 10 sumas y la única de suma 11: 20 + 1 = 21.",
         "La ficha 22 repite una suma que ya tiene 2."
       ],
-      "verificar": [ { "fn": "sumaCifras", "args": [{ "desde": 1, "hasta": 30, "k": 3 }], "espera": { "respuesta": 22, "escasas": [11] } } ]
+      "verificar": [
+        {
+          "fn": "sumaCifras",
+          "args": [
+            {
+              "desde": 1,
+              "hasta": 30,
+              "k": 3
+            }
+          ],
+          "espera": {
+            "respuesta": 22,
+            "escasas": [
+              11
+            ]
+          }
+        }
+      ],
+      "datos": [
+        "Suma de cifras: 27 tiene 2 + 7 = 9.",
+        "Se saca sin mirar, una por una, y lo que sale no vuelve."
+      ],
+      "idea": "palomar"
     },
     {
       "id": "p9",
@@ -106,7 +292,26 @@
         "La bolsa «mezcla» no tiene mezcla; salió azúcar, así que tiene solo azúcar.",
         "Quedan solo arroz y la mezcla. La bolsa «arroz» no puede tener arroz: tiene la mezcla, y la bolsa «azúcar» tiene el arroz."
       ],
-      "verificar": [ { "fn": "cajas", "args": [{ "pide": "contenido", "sale": "B", "rotulo": "A" }], "espera": { "respuesta": "mezcla" } } ]
+      "verificar": [
+        {
+          "fn": "cajas",
+          "args": [
+            {
+              "pide": "contenido",
+              "sale": "B",
+              "rotulo": "A"
+            }
+          ],
+          "espera": {
+            "respuesta": "mezcla"
+          }
+        }
+      ],
+      "datos": [
+        "Ningún rótulo dice lo que tiene su bolsa.",
+        "Una bolsa tiene arroz, otra azúcar y otra, los dos."
+      ],
+      "idea": "llaves"
     },
     {
       "id": "p10",
@@ -118,7 +323,26 @@
         "Peor caso: 366 personas, cada una con una fecha distinta. La siguiente repite fecha: hacen falta 367 en total.",
         "Ya están 250: 367 − 250 = 117."
       ],
-      "verificar": [ { "fn": "cumpleanos", "args": [{ "casilla": "fecha", "k": 2, "ya": 250 }], "espera": { "respuesta": 117 } } ]
+      "verificar": [
+        {
+          "fn": "cumpleanos",
+          "args": [
+            {
+              "casilla": "fecha",
+              "k": 2,
+              "ya": 250
+            }
+          ],
+          "espera": {
+            "respuesta": 117
+          }
+        }
+      ],
+      "datos": [
+        "Las fechas posibles son los 365 días del año y el 29 de febrero.",
+        "Con certeza: se cumple sea cual sea el cumpleaños de cada uno."
+      ],
+      "idea": "palomar"
     }
   ]
 }

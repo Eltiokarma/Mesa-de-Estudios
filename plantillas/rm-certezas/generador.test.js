@@ -248,7 +248,7 @@ test('la respuesta nunca es mayor que todo lo que hay (salvo cumpleaños y llave
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
-    const p = gen.generar(c.semilla);
+    const p = gen.generar(c.semilla, c.idea ? { idea: c.idea } : undefined);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
     assert.equal(p.respuesta.valor, c.esperado.respuesta);
   });
@@ -266,3 +266,52 @@ for (const q of papel.problemas) {
     }
   });
 }
+
+// ---------- Práctica por idea de «Certezas» (etapa 7, 19 nov): tipos por idea, recuadro «Datos» y paleta de la rama ----------
+const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+test('tipos por idea: generar(semilla, { idea }) da solo los tipos de esa idea, y el recálculo aparte confirma la respuesta', () => {
+  const T = gen.TIPOS_POR_IDEA;
+  assert.deepEqual(Object.keys(T), ['peor-caso', 'palomar', 'una-de-cada', 'condicion', 'parejas', 'llaves']);
+  const def = require('../../contenido/teoria/razonamiento-matematico/certezas.js');
+  assert.deepEqual(Object.keys(T), def.ideas.map(i => i.id), 'las ideas de la teoría');
+  for (const [idea, tipos] of Object.entries(T)) {
+    const vistos = new Set();
+    for (let s = 0; s < 120; s++) {
+      const p = gen.generar(`i${s}`, { idea }), d = p._datos;
+      const nombre = d.tipo === 'colores' ? `colores:${d.pide}` : d.tipo === 'cumpleanos' && d.ya !== undefined ? 'cumpleanos-ya' : d.tipo;
+      assert.ok(tipos.includes(nombre), `${idea}: ${nombre}`);
+      assert.equal(d.idea, idea);
+      vistos.add(nombre);
+      assert.equal(recalcular(p), p.respuesta.valor, `${idea} i${s} (${nombre})`);
+      assert.equal(p.alternativas.filter(a => a.correcta).length, 1);
+    }
+    assert.equal(vistos.size, tipos.length, `${idea}: salen ${[...vistos].join(', ')}`);
+  }
+});
+
+test('datos: lista de líneas cortas, sin consejos y sin la respuesta escrita como dato (400 semillas, con y sin idea)', () => {
+  const ideas = [undefined, ...Object.keys(gen.TIPOS_POR_IDEA)];
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, ideas[s % ideas.length] ? { idea: ideas[s % ideas.length] } : undefined), dd = `semilla ${s} (${p._datos.tipo})`;
+    assert.ok(Array.isArray(p.datos) && p.datos.length >= 1 && p.datos.length <= 4, dd);
+    for (const l of p.datos) {
+      assert.equal(typeof l, 'string', dd);
+      assert.ok((l.match(/[\p{L}\p{N}]+/gu) || []).length <= 22, `${dd}: «${l}»`);
+      assert.ok(!/^(Recuerda|Ojo|Cuidado|Fíjate|Primero|Conviene)/.test(l), `${dd}: consejo`);
+      assert.ok(!/peor caso/i.test(l), `${dd}: el dato da el método («${l}»)`);
+    }
+  }
+});
+
+test('paleta de la rama: el problema en tinta; solo lo pedido, ya comprobado, en violeta al final de la solución', () => {
+  for (let s = 0; s < 300; s++) {
+    const p = gen.generar(s);
+    assert.deepEqual(p.variables, { x: { nombre: 'lo pedido, ya comprobado', color: 'f' } });
+    assert.ok(!/"v":/.test(JSON.stringify([p.enunciado, p.pregunta])), `semilla ${s}: color en el enunciado`);
+    const ult = p.solucion[p.solucion.length - 1];
+    assert.ok(JSON.stringify(ult).includes('"v":"x"'), `semilla ${s}`);
+    const c = p.alternativas.find(a => a.correcta);
+    assert.ok(plano(ult).includes(c.texto), `semilla ${s}: la respuesta de la solución no es la alternativa correcta («${plano(ult)}» / «${c.texto}»)`);
+    assert.ok(!/"v":"[^x]/.test(JSON.stringify(p.solucion)), `semilla ${s}: otro color en la solución`);
+  }
+});

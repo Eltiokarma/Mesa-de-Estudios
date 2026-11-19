@@ -6592,7 +6592,7 @@
        "deslizar-lados": "Deslizar lados hasta el borde",
        "arcos-que-suman": "Los arcos chicos suman igual"
       },
-      "terminos": 19
+      "terminos": 21
      }
     },
     {
@@ -6637,7 +6637,7 @@
        "orden-circular": "La mesa redonda",
        "mesa-cuadrada": "Frente a frente"
       },
-      "terminos": 32
+      "terminos": 34
      }
     },
     {
@@ -6678,7 +6678,7 @@
        "verdad-y-mentira": "Una verdad y una mentira",
        "cuantos-mienten": "¿Cuántos mienten?"
       },
-      "terminos": 22
+      "terminos": 23
      }
     },
     {
@@ -6717,7 +6717,7 @@
        "torre-que-se-muda": "La torre que se muda",
        "pasar-un-numero": "Pasar un número, mover el doble"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -6837,7 +6837,7 @@
        "dados": "Una cara fija solo su opuesta",
        "cerillas": "Cerillas y cuadrados de todo tamaño"
       },
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -6901,25 +6901,29 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
-     "requiere": [],
+     "requiere": [
+      "razonamiento-matematico.razonamiento-deductivo"
+     ],
      "plantillas": [
-      "orden-informacion",
+      "rm-certezas",
       "rm-deduccion",
-      "rm-certezas"
+      "orden-informacion"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/certezas.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-fichas.js",
-       "/nucleo/kit/piezas/rm-tablero.js"
+       "/nucleo/kit/piezas/rm-certeza.js"
       ],
-      "ideas": 3,
+      "ideas": 6,
       "titulos": {
        "peor-caso": "Prepara la peor suerte",
        "palomar": "Más objetos que casilleros",
-       "llaves": "Identificar llaves en el peor caso"
+       "una-de-cada": "Una de cada clase",
+       "condicion": "Números que cumplen algo",
+       "parejas": "Parejas y sumas",
+       "llaves": "Llaves y candados"
       },
-      "terminos": 16
+      "terminos": 26
      }
     },
     {
@@ -7079,7 +7083,7 @@
        "pesas-en-dos-platillos": "Pesas en los dos platillos",
        "minimo-de-pesadas": "Cada pesada deja un tercio"
       },
-      "terminos": 15
+      "terminos": 17
      }
     },
     {
@@ -7119,7 +7123,7 @@
        "cuadratica": "Dos raíces, una respuesta",
        "cabezas-y-patas": "Cabezas y patas"
       },
-      "terminos": 17
+      "terminos": 18
      }
     },
     {
@@ -7167,7 +7171,7 @@
        "rodamiento": "Lo que recorre el centro",
        "area-barrida": "El área que barre un giro"
       },
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -7215,7 +7219,7 @@
        "rutas-en-el-espacio": "Rutas por las aristas",
        "vistas": "Dos vistas, varias pilas"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -10950,7 +10954,8 @@
    ],
    "rehacer": [
     "razonamiento-matematico.ordenamiento-de-informacion",
-    "razonamiento-matematico.verdades-y-mentiras"
+    "razonamiento-matematico.verdades-y-mentiras",
+    "razonamiento-matematico.certezas"
    ]
   },
   "papel-doblado": {
@@ -11493,11 +11498,19 @@
    "titulo": "Sacar a ciegas: ¿cuántas para estar seguro?",
    "formato": "predicciones",
    "estado": "borrador",
-   "version": "0.2.0",
+   "version": "0.3.0",
    "unidades": [
     "razonamiento-matematico.certezas"
    ],
    "url": "#/practica/rm-certezas",
+   "ideas": [
+    "peor-caso",
+    "palomar",
+    "una-de-cada",
+    "condicion",
+    "parejas",
+    "llaves"
+   ],
    "papel": "/plantillas/rm-certezas/papel.json",
    "archivos": [
     "/plantillas/rm-certezas/generador.js",

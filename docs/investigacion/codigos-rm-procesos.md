@@ -262,3 +262,19 @@ RMP149-fuera, RMP150-una, RMP151-cuenta).
 | RMP149 | Con «solo uno dice la verdad», creerle a quien está fuera del par | ídem |
 | RMP150 | Con «una verdad y una mentira», creerle las dos frases a alguien, su primera frase, o negarle las dos | UNMSM 2026-I p. 29, al revés |
 | RMP151 | Creerle a la frase sobre cuántos mienten sin contar a quien la dice | UNMSM 2024-II p. 19 («suponer que todos mienten sin ver que alguno debe ser veraz») |
+
+## Certezas (teoría de la unidad y `rm-certezas` por idea, etapa 7, 19 nov 2026)
+
+Códigos nuevos de `contenido/teoria/razonamiento-matematico/certezas.js` (propuesta:
+`docs/etapa7/propuesta-razonamiento-matematico.md`, §7). Todos son **hipótesis**: salen de las trampas de los
+solucionarios de San Marcos (30 preguntas de la unidad en `docs/datos/admision-unmsm.csv`) y de la teoría vieja, sin
+dato de alumnos. Reemplazan a los RMT-CER-1 a 8 de la teoría vieja (1 → RMP30; 2 → RMP152; 3, 4 y 8 → RMP34; 5 → RMP153;
+6 → RMP155; 7 → RMP154). Reutilizan RM6 (el caso con suerte), RMP30 a RMP34, RMP77, RMP78 y RMP92. Los ítems rm-24 y
+rm-25 de la reserva de la prueba del curso usan RM6-favorable, RMP30-sin-pareja, RMP31-solo-el-mayor y RMP34-sin-mas-uno.
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP152 | Sacar todo: asegura la meta, pero no es el mínimo | RMT-CER-2 de la teoría vieja |
+| RMP153 | Pedir lo pedido en **cada** casillero (3 por mes: 36 alumnos) y no en alguno | RMT-CER-5 |
+| RMP154 | Probar cada llave en todos los candados, también en los ya abiertos (10 × 10) | RMT-CER-7 |
+| RMP155 | Usar «casilleros + 1» con cualquier meta (13 alumnos para que 3 cumplan el mismo mes) | RMT-CER-6; matriz del curso («el peor caso más uno es un argumento, no una fórmula») |

@@ -8,7 +8,7 @@
     "razonamiento-matematico.certezas",
     "razonamiento-matematico.razonamiento-deductivo"
   ],
-  "rehacer": ["razonamiento-matematico.ordenamiento-de-informacion", "razonamiento-matematico.verdades-y-mentiras"],
+  "rehacer": ["razonamiento-matematico.ordenamiento-de-informacion", "razonamiento-matematico.verdades-y-mentiras", "razonamiento-matematico.certezas"],
   "estado": "borrador",
   "version": "0.1.0",
   "escena": "index.html",

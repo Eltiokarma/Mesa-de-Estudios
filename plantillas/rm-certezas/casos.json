@@ -2,7 +2,7 @@
   "plantilla": "rm-certezas",
   "tolerancia": 0,
   "nota": "La respuesta es el número mínimo de extracciones (o de intentos) para estar seguro: el mayor grupo que se puede sacar sin lograr lo pedido, más 1 (en llaves, la suma de los intentos que fallan en el peor caso). En cajas la respuesta es una clave: 'A', 'B' o 'mezcla' (el contenido o el rótulo de la caja) o 'no-se-sabe'.",
-  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 50 casos resueltos sin ver el generador. Peor caso por búsqueda exhaustiva propia (máximo subconjunto que no cumple, sobre pares y tríos) y enumeración de cantidades por color, lado o billete; cajas por enumeración de las 6 asignaciones; llaves por la suma (n−1)+…+1; fechas con 366 casillas. 50/50 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (conjunto independiente máximo en pareja-color, simulación en cumpleaños con ya, minimax sobre los repartos en cajas-abrir): 8/8 coinciden. Cumpleaños cuenta 366 fechas (la trampa de 365 está entre las alternativas, a propósito).",
+  "verificacion": "Verificación ciega (12 nov 2026, subagente verificador): 50 casos resueltos sin ver el generador. Peor caso por búsqueda exhaustiva propia (máximo subconjunto que no cumple, sobre pares y tríos) y enumeración de cantidades por color, lado o billete; cajas por enumeración de las 6 asignaciones; llaves por la suma (n−1)+…+1; fechas con 366 casillas. 50/50 coinciden. Las correcciones de la revisión no cambiaron ninguna respuesta. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (conjunto independiente máximo en pareja-color, simulación en cumpleaños con ya, minimax sobre los repartos en cajas-abrir): 8/8 coinciden. Cumpleaños cuenta 366 fechas (la trampa de 365 está entre las alternativas, a propósito). Etapa 7 (19 nov 2026): 18 casos nuevos con «idea» (tipos por idea de la teoría), resueltos aparte por fuerza bruta desde su entrada (scratchpad e7-rm/casos.py: todas las cantidades por clase, todos los subconjuntos, conjunto independiente máximo y minimax en cajas-abrir): 18/18 coinciden.",
   "casos": [
     {
       "semilla": "entrada-1",
@@ -800,6 +800,283 @@
         "respuesta": 5
       },
       "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "caso-peor-caso-1",
+      "idea": "peor-caso",
+      "entrada": {
+        "idea": "peor-caso",
+        "tipo": "colores",
+        "urna": {
+          "verdes": 5,
+          "amarillas": 3,
+          "rojas": 7,
+          "blancas": 10
+        },
+        "pide": "de-color",
+        "k": 1,
+        "color": "amarillas"
+      },
+      "esperado": {
+        "respuesta": 23
+      }
+    },
+    {
+      "semilla": "caso-peor-caso-2",
+      "idea": "peor-caso",
+      "entrada": {
+        "idea": "peor-caso",
+        "tipo": "colores",
+        "urna": {
+          "amarillas": 12,
+          "blancas": 10,
+          "negras": 8
+        },
+        "pide": "de-color",
+        "k": 3,
+        "color": "blancas"
+      },
+      "esperado": {
+        "respuesta": 23
+      }
+    },
+    {
+      "semilla": "caso-peor-caso-3",
+      "idea": "peor-caso",
+      "entrada": {
+        "idea": "peor-caso",
+        "tipo": "colores",
+        "urna": {
+          "blancas": 7,
+          "verdes": 12,
+          "rojas": 9,
+          "amarillas": 6
+        },
+        "pide": "de-color",
+        "k": 3,
+        "color": "amarillas"
+      },
+      "esperado": {
+        "respuesta": 31
+      }
+    },
+    {
+      "semilla": "caso-palomar-1",
+      "idea": "palomar",
+      "entrada": {
+        "idea": "palomar",
+        "tipo": "suma-cifras",
+        "desde": 20,
+        "hasta": 56,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 23
+      }
+    },
+    {
+      "semilla": "caso-palomar-2",
+      "idea": "palomar",
+      "entrada": {
+        "idea": "palomar",
+        "tipo": "cumpleanos",
+        "casilla": "semana",
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 15
+      }
+    },
+    {
+      "semilla": "caso-palomar-3",
+      "idea": "palomar",
+      "entrada": {
+        "idea": "palomar",
+        "tipo": "suma-cifras",
+        "desde": 1,
+        "hasta": 30,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 22
+      }
+    },
+    {
+      "semilla": "caso-una-de-cada-1",
+      "idea": "una-de-cada",
+      "entrada": {
+        "idea": "una-de-cada",
+        "tipo": "colores",
+        "urna": {
+          "rojas": 6,
+          "azules": 9,
+          "amarillas": 4,
+          "blancas": 4
+        },
+        "pide": "uno-de-cada",
+        "k": null,
+        "color": null
+      },
+      "esperado": {
+        "respuesta": 20
+      }
+    },
+    {
+      "semilla": "caso-una-de-cada-2",
+      "idea": "una-de-cada",
+      "entrada": {
+        "idea": "una-de-cada",
+        "tipo": "guantes",
+        "pares": {
+          "azules": 3,
+          "blancos": 4,
+          "grises": 8
+        },
+        "color": "azules"
+      },
+      "esperado": {
+        "respuesta": 28
+      }
+    },
+    {
+      "semilla": "caso-una-de-cada-3",
+      "idea": "una-de-cada",
+      "entrada": {
+        "idea": "una-de-cada",
+        "tipo": "colores",
+        "urna": {
+          "blancas": 6,
+          "azules": 11,
+          "amarillas": 4,
+          "rojas": 7
+        },
+        "pide": "uno-de-cada",
+        "k": null,
+        "color": null
+      },
+      "esperado": {
+        "respuesta": 25
+      }
+    },
+    {
+      "semilla": "caso-condicion-1",
+      "idea": "condicion",
+      "entrada": {
+        "idea": "condicion",
+        "tipo": "paridad",
+        "desde": 2,
+        "hasta": 18,
+        "pide": "suma-impar"
+      },
+      "esperado": {
+        "respuesta": 10
+      }
+    },
+    {
+      "semilla": "caso-condicion-2",
+      "idea": "condicion",
+      "entrada": {
+        "idea": "condicion",
+        "tipo": "paridad",
+        "desde": 8,
+        "hasta": 29,
+        "pide": "producto-par"
+      },
+      "esperado": {
+        "respuesta": 12
+      }
+    },
+    {
+      "semilla": "caso-condicion-3",
+      "idea": "condicion",
+      "entrada": {
+        "idea": "condicion",
+        "tipo": "consecutivos",
+        "N": 19,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": 14
+      }
+    },
+    {
+      "semilla": "caso-parejas-1",
+      "idea": "parejas",
+      "entrada": {
+        "idea": "parejas",
+        "tipo": "pareja-color",
+        "N": 8,
+        "S": 8,
+        "colores": [
+          "grises",
+          "marrones"
+        ]
+      },
+      "esperado": {
+        "respuesta": 11
+      }
+    },
+    {
+      "semilla": "caso-parejas-2",
+      "idea": "parejas",
+      "entrada": {
+        "idea": "parejas",
+        "tipo": "trio-suma",
+        "N": 9,
+        "S": 18
+      },
+      "esperado": {
+        "respuesta": 7
+      }
+    },
+    {
+      "semilla": "caso-parejas-3",
+      "idea": "parejas",
+      "entrada": {
+        "idea": "parejas",
+        "tipo": "division",
+        "N": 36
+      },
+      "esperado": {
+        "respuesta": 19
+      }
+    },
+    {
+      "semilla": "caso-llaves-1",
+      "idea": "llaves",
+      "entrada": {
+        "idea": "llaves",
+        "tipo": "llaves",
+        "n": 7
+      },
+      "esperado": {
+        "respuesta": 21
+      }
+    },
+    {
+      "semilla": "caso-llaves-2",
+      "idea": "llaves",
+      "entrada": {
+        "idea": "llaves",
+        "tipo": "cajas-abrir",
+        "c": 5,
+        "y": 5
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    },
+    {
+      "semilla": "caso-llaves-3",
+      "idea": "llaves",
+      "entrada": {
+        "idea": "llaves",
+        "tipo": "llaves",
+        "n": 11
+      },
+      "esperado": {
+        "respuesta": 55
+      }
     }
   ]
 }

@@ -627,6 +627,20 @@ const V = {
     return { correcta: en(r.culpable), errores: { 'RMP49-cree': en(e.creeAlMentiroso), 'RMP149-fuera': en(e.creeAlQueConfiesa) } };
   },
 
+  // rm-24 y rm-25 (reserva, 19 nov, etapa 7: «Certezas»; las formas ya tienen 10 pares). Los resuelve el cálculo de
+  // rm-certezas (calc.colores y calc.parejaSuma); los errores salen de su peor caso: con buena suerte, agotar solo la clase
+  // más grande, olvidar las que no tienen pareja y olvidar la extracción que obliga.
+  'rm-24': d => {
+    const C = require(path.join(__dirname, '..', '..', 'plantillas', 'rm-certezas', 'generador.js')).calc;
+    const urna = { a: d.a, b: d.b, c: d.c }, r = C.colores({ urna, pide: 'uno-de-cada' }).respuesta;
+    return { correcta: r, errores: { 'RM6-favorable': 3, 'RMP31-solo-el-mayor': Math.max(d.a, d.b, d.c) + 1, 'RMP34-sin-mas-uno': r - 1 } };
+  },
+  'rm-25': d => {
+    const C = require(path.join(__dirname, '..', '..', 'plantillas', 'rm-certezas', 'generador.js')).calc;
+    const R = C.parejaSuma({ N: d.N, copias: 1, S: d.S });
+    return { correcta: R.respuesta, errores: { 'RM6-favorable': 2, 'RMP30-sin-pareja': R.parejas.length + (R.mitad ? 1 : 0) + 1, 'RMP34-sin-mas-uno': R.respuesta - 1 } };
+  },
+
   // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
   'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
     return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },

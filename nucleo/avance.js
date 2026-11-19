@@ -140,6 +140,15 @@
     { u: 'algebra.factorizacion', p: 'prediccionFZ', e: 'estudiadaFZ',
       cambian: ['factor-comun', 'aspa-simple', 'aspa-doble', 'teorema-factor'],
       antes: ['factor-comun', 'aspa-simple', 'aspa-doble', 'teorema-factor', 'mcd-mcm'] },
+    // Etapa 7 (19 nov): Certezas conservó sus tres ids y sumó tres ideas (una-de-cada, condicion, parejas). palomar y
+    // llaves cambiaron los ids de sus opciones (la pregunta es la misma); peor-caso conserva pregunta e ids.
+    { u: 'razonamiento-matematico.certezas', p: 'prediccionCZ', e: 'estudiadaCZ',
+      cambian: ['palomar', 'llaves'], antes: ['peor-caso', 'palomar', 'llaves'] },
+    // Etapa 7 (19 nov): Resolución de triángulos rectángulos conservó sus tres ids; un-lado-un-angulo y elevacion-depresion
+    // cambiaron su Predice (angulo-observacion conserva pregunta e ids) y sumó cateto-y-angulo y dos-angulos
+    // (docs/etapa7/propuesta-trigonometria.md, §8).
+    { u: 'trigonometria.triangulos-rectangulos', p: 'prediccionTR', e: 'estudiadaTR',
+      cambian: ['un-lado-un-angulo', 'elevacion-depresion'], antes: ['un-lado-un-angulo', 'elevacion-depresion', 'angulo-observacion'] },
     // Nomenclatura inorgánica (19 nov, etapa 7): tres ideas con otra Predice y una idea nueva (peroxidos-hidruros).
     { u: 'quimica.nomenclatura-inorganica', p: 'prediccionNI', e: 'estudiadaNI',
       cambian: ['estados-oxidacion', 'arbol-funciones', 'sales'],

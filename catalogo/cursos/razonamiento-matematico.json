@@ -136,9 +136,9 @@
       "universidades": {"unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
       "grado": 3,
-      "requiere": [],
-      "plantillas": ["orden-informacion", "rm-deduccion", "rm-certezas"],
-      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
+      "requiere": ["razonamiento-matematico.razonamiento-deductivo"],
+      "plantillas": ["rm-certezas", "rm-deduccion", "orden-informacion"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
     },
     {
       "id": "razonamiento-matematico.frecuencia-de-sucesos",

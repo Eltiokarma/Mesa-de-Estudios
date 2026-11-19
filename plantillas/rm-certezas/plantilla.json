@@ -5,8 +5,13 @@
   "unidades": [
     "razonamiento-matematico.certezas"
   ],
+  "temas": [
+    "Extracción de objetos",
+    "Peor caso",
+    "Identificación de objetos"
+  ],
   "estado": "borrador",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "generador": "generador.js",
   "casos": "casos.json",
   "pruebas": "generador.test.js",
