@@ -217,6 +217,21 @@ Agregados en la etapa 6 (19 nov 2026) para la unidad «Analogías» (`contenido/
 | RVA7 | **Se lee «es uno del grupo» donde la relación es de clase o de parte**: se elige un par de elemento y conjunto. | PÉTALO : FLOR :: oveja : rebaño. | Sin estudio encontrado. | Hipótesis (ligada a RV17) | — |
 | RVA8 | **Se elige por la herramienta, sin la persona**: el par tiene un instrumento, pero no a quien trabaja con él. | CARPINTERO : SERRUCHO :: martillo : clavo. | Sin estudio encontrado; vecino de RV15 (asociación con la segunda palabra). | Hipótesis (ligada a RV15) | — |
 
+### Sentido contextual (códigos RVS, etapa 7)
+
+Agregados en la etapa 7 (19 nov 2026) para la unidad «Precisión léxica y sentido contextual» (`contenido/teoria/razonamiento-verbal/sentido-contextual.js`, propuesta en `docs/etapa7/propuesta-verbal.md`) y su práctica (`plantillas/sentido-contextual/`). Llevan prefijo propio (RVS) para no correr la numeración RV; se usan junto con RV18, RV19, RV20, RV21 y RV23. Reemplazan a los RVL1 a RVL4 que citaba la versión 0.2.0 de la unidad y que nunca se registraron. Ninguno tiene estudio con alumnos: salen de las trampas que anota la clasificación de las 82 preguntas de San Marcos de la unidad (`docs/datos/admision-unmsm.csv`: «elegir sinónimos en vez de antónimos», «pares con matiz más ofensivo», «leer la locución de forma literal», «sentido figurado leído en su sentido literal»).
+
+| # | Idea errónea | Ejemplo tipo examen | Dato | Respaldo | Fuente |
+| --- | --- | --- | --- | --- | --- |
+| RVS1 | **Se elige un sinónimo cuando se pide el antónimo** (o al revés): la palabra va en el mismo sentido que la del texto. | «La explicación fue clara»: antónimo contextual; distractor «sencilla». | Trampa de San Marcos 2023-II, 2026-I y 2026-II («elegir sinónimos en vez de antónimos»). Sin estudio con alumnos. | Hipótesis (ligada a RV21) | — |
+| RVS2 | **El reemplazo describe lo mismo, pero cambia la valoración**: elogia donde el texto critica, o al revés. | «El tío se quejó: don Julio fue tacaño»; distractor «ahorrativo». | Trampa de San Marcos 2024-I y 2025-I (dos vocablos que valoran distinto en textos opuestos). Sin estudio con alumnos. | Hipótesis (ligada a RV19) | — |
+| RVS3 | **El reemplazo valora igual, pero con otra fuerza**: exagera o suaviza. | «El niño está delgado para su edad»; distractor «esquelético». | Trampa de San Marcos 2023-II («pares con matiz más ofensivo»). Sin estudio con alumnos. | Hipótesis (ligada a RVS2) | — |
+| RVS4 | **Se elige un comodín**: la palabra encaja en todo, pero no nombra lo que dice la oración. | «La comisión ___ el reglamento con cuidado antes de aprobarlo»; distractor «vio». | Sin estudio encontrado; criterio de la precisión léxica (CEPRE-UNI, semana 3). | Hipótesis (ligada a RV19) | — |
+| RVS5 | **Se lee en sentido literal una expresión figurada** (metáfora, locución o frase hecha). | «La subida del pasaje fue un balde de agua fría»; distractor «un baño con agua muy helada». | Trampa de unas 12 de las 82 preguntas de San Marcos de la unidad («leer la locución de forma literal», «el sentido literal de lugar físico»). Sin estudio con alumnos. | Hipótesis (ligada a RV18) | — |
+| RVS6 | **Se busca un sentido figurado donde el literal ya encaja.** | «El entrenador infló las pelotas con un inflador»; distractor «exageró su valor». | Sin estudio encontrado; es el error contrario a RVS5. | Hipótesis (ligada a RVS5) | — |
+| RVS7 | **Se toma por significado una idea propia o un detalle cercano** que no habla de la palabra. | «El jarabe es inocuo… Viene en un frasco azul»; distractor «que es de color azul». | Sin estudio encontrado; vecino de RV8 (saber del mundo en lugar del texto). | Hipótesis (ligada a RV8) | — |
+| RVS8 | **Se lee la pista de contraste como si confirmara**: se le da a la palabra el sentido de lo que se le opone. | «Teo es locuaz; en cambio, su hermano casi no habla»; distractor «que casi no habla». | Sin estudio encontrado; vecino de RV24 (lo contracausal leído como causal). | Hipótesis (ligada a RV24) | — |
+
 ## Lo que no tiene respaldo (todavía)
 
 Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada uno se liga a un error con algo de respaldo:

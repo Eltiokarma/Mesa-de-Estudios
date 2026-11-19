@@ -1,0 +1,22 @@
+{
+  "id": "sentido-contextual",
+  "titulo": "Sentido contextual: la acepción, la valoración, la palabra precisa y las pistas",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-verbal.sentido-contextual"
+  ],
+  "temas": [
+    "Denotación y connotación",
+    "Precisión léxica",
+    "Sinónimos en contexto",
+    "Antónimos en contexto",
+    "Sentido literal y figurado",
+    "Inferencias léxicas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

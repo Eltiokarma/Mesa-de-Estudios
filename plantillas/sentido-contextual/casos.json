@@ -1,0 +1,533 @@
+{
+ "descripcion": "Casos de plantillas/sentido-contextual, calculados aparte con un léxico propio (scratchpad e7-rv/gen/casos-gen.js): la correcta y el código de cada incorrecta, escritos mirando la oración.",
+ "casos": [
+  {
+   "semilla": "caso-0",
+   "idea": "acepcion",
+   "entrada": {
+    "tipo": "acepcion",
+    "item": "subio"
+   },
+   "esperado": {
+    "texto": "aumentó",
+    "errores": [
+     [
+      "sumió",
+      "RV20"
+     ],
+     [
+      "inscribió",
+      "RV19"
+     ],
+     [
+      "bajó",
+      "RVS1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-1",
+   "idea": "denota-connota",
+   "entrada": {
+    "tipo": "valor-examen",
+    "item": "modesto"
+   },
+   "esperado": {
+    "texto": "humilde",
+    "errores": [
+     [
+      "acomplejado",
+      "RVS2"
+     ],
+     [
+      "puntual",
+      "RV19"
+     ],
+     [
+      "molesto",
+      "RV20"
+     ],
+     [
+      "santo",
+      "RVS3"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-2",
+   "idea": "palabra-precisa",
+   "entrada": {
+    "tipo": "precisa-examen",
+    "item": "vacuna"
+   },
+   "esperado": {
+    "texto": "desarrolló",
+    "errores": [
+     [
+      "hizo",
+      "RVS4"
+     ],
+     [
+      "abandonó para siempre",
+      "RV23"
+     ],
+     [
+      "desarrugó",
+      "RV20"
+     ],
+     [
+      "aplicó",
+      "RV19"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-3",
+   "idea": "sentido-figurado",
+   "entrada": {
+    "tipo": "figurado-examen",
+    "item": "mano"
+   },
+   "esperado": {
+    "texto": "me ayudó",
+    "errores": [
+     [
+      "me saludó",
+      "RVS7"
+     ],
+     [
+      "me estorbó",
+      "RVS2"
+     ],
+     [
+      "se mudó",
+      "RV19"
+     ],
+     [
+      "me tiró su mano",
+      "RVS5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-4",
+   "idea": "inferir-significado",
+   "entrada": {
+    "tipo": "pistas",
+    "item": "nimio"
+   },
+   "esperado": {
+    "texto": "sin importancia",
+    "errores": [
+     [
+      "hecho con mucho cariño",
+      "RVS7"
+     ],
+     [
+      "mimado",
+      "RV20"
+     ],
+     [
+      "muy importante",
+      "RVS1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-5",
+   "idea": "acepcion",
+   "entrada": {
+    "tipo": "acepcion-examen",
+    "item": "corto"
+   },
+   "esperado": {
+    "texto": "desenvuelto",
+    "errores": [
+     [
+      "largo",
+      "RV18"
+     ],
+     [
+      "tímido",
+      "RVS1"
+     ],
+     [
+      "muy trabajador",
+      "RV21"
+     ],
+     [
+      "cortés",
+      "RV20"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-6",
+   "idea": "denota-connota",
+   "entrada": {
+    "tipo": "valor",
+    "item": "barato"
+   },
+   "esperado": {
+    "texto": "corriente",
+    "errores": [
+     [
+      "húmedo",
+      "RV19"
+     ],
+     [
+      "económico para el bolsillo",
+      "RVS2"
+     ],
+     [
+      "barroso",
+      "RV20"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-7",
+   "idea": "palabra-precisa",
+   "entrada": {
+    "tipo": "precisa",
+    "item": "juez"
+   },
+   "esperado": {
+    "texto": "absolvió",
+    "errores": [
+     [
+      "interrogó",
+      "RV19"
+     ],
+     [
+      "vio",
+      "RVS4"
+     ],
+     [
+      "condenó",
+      "RV23"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-8",
+   "idea": "sentido-figurado",
+   "entrada": {
+    "tipo": "figurado",
+    "item": "nubes"
+   },
+   "esperado": {
+    "texto": "está distraída",
+    "errores": [
+     [
+      "está cansada",
+      "RVS7"
+     ],
+     [
+      "está en el cielo",
+      "RVS5"
+     ],
+     [
+      "está muy concentrada",
+      "RVS2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-9",
+   "idea": "inferir-significado",
+   "entrada": {
+    "tipo": "pistas",
+    "item": "indeleble"
+   },
+   "esperado": {
+    "texto": "que dura para siempre",
+    "errores": [
+     [
+      "que se borra fácil",
+      "RVS1"
+     ],
+     [
+      "que es indigna",
+      "RV20"
+     ],
+     [
+      "que se compra en cualquier librería",
+      "RVS7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-10",
+   "idea": "acepcion",
+   "entrada": {
+    "tipo": "acepcion-examen",
+    "item": "clave"
+   },
+   "esperado": {
+    "texto": "decisivo",
+    "errores": [
+     [
+      "inútil",
+      "RVS1"
+     ],
+     [
+      "clavado",
+      "RV20"
+     ],
+     [
+      "escrito",
+      "RV19"
+     ],
+     [
+      "contraseña",
+      "RV18"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-11",
+   "idea": "denota-connota",
+   "entrada": {
+    "tipo": "valor",
+    "item": "barato"
+   },
+   "esperado": {
+    "texto": "corriente",
+    "errores": [
+     [
+      "húmedo",
+      "RV19"
+     ],
+     [
+      "barroso",
+      "RV20"
+     ],
+     [
+      "económico para el bolsillo",
+      "RVS2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-12",
+   "idea": "palabra-precisa",
+   "entrada": {
+    "tipo": "precisa",
+    "item": "vacuna"
+   },
+   "esperado": {
+    "texto": "desarrolló",
+    "errores": [
+     [
+      "abandonó para siempre",
+      "RV23"
+     ],
+     [
+      "aplicó",
+      "RV19"
+     ],
+     [
+      "desarrugó",
+      "RV20"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-13",
+   "idea": "sentido-figurado",
+   "entrada": {
+    "tipo": "figurado",
+    "item": "pulmon"
+   },
+   "esperado": {
+    "texto": "lo que le da aire limpio",
+    "errores": [
+     [
+      "el centro comercial",
+      "RV19"
+     ],
+     [
+      "un órgano del cuerpo para respirar",
+      "RVS5"
+     ],
+     [
+      "un estorbo",
+      "RVS2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-14",
+   "idea": "inferir-significado",
+   "entrada": {
+    "tipo": "pistas",
+    "item": "hacinados"
+   },
+   "esperado": {
+    "texto": "muy apretados",
+    "errores": [
+     [
+      "hechizados",
+      "RV20"
+     ],
+     [
+      "muy cómodos",
+      "RVS1"
+     ],
+     [
+      "muertos de cansancio",
+      "RVS7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-15",
+   "idea": "acepcion",
+   "entrada": {
+    "tipo": "acepcion-examen",
+    "item": "seco"
+   },
+   "esperado": {
+    "texto": "cordial",
+    "errores": [
+     [
+      "mojado",
+      "RV18"
+     ],
+     [
+      "lento",
+      "RV21"
+     ],
+     [
+      "sexto",
+      "RV20"
+     ],
+     [
+      "cortante",
+      "RVS1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-16",
+   "idea": "denota-connota",
+   "entrada": {
+    "tipo": "valor",
+    "item": "modesto"
+   },
+   "esperado": {
+    "texto": "humilde",
+    "errores": [
+     [
+      "santo",
+      "RVS3"
+     ],
+     [
+      "puntual",
+      "RV19"
+     ],
+     [
+      "acomplejado",
+      "RVS2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-17",
+   "idea": "palabra-precisa",
+   "entrada": {
+    "tipo": "precisa",
+    "item": "libros"
+   },
+   "esperado": {
+    "texto": "recibió",
+    "errores": [
+     [
+      "compró",
+      "RV23"
+     ],
+     [
+      "prestó a los lectores",
+      "RV19"
+     ],
+     [
+      "recicló",
+      "RV20"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-18",
+   "idea": "sentido-figurado",
+   "entrada": {
+    "tipo": "figurado",
+    "item": "pulmon"
+   },
+   "esperado": {
+    "texto": "lo que le da aire limpio",
+    "errores": [
+     [
+      "el centro comercial",
+      "RV19"
+     ],
+     [
+      "un órgano del cuerpo para respirar",
+      "RVS5"
+     ],
+     [
+      "un estorbo",
+      "RVS2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-19",
+   "idea": "inferir-significado",
+   "entrada": {
+    "tipo": "pistas-examen",
+    "item": "prodigo"
+   },
+   "esperado": {
+    "texto": "generoso",
+    "errores": [
+     [
+      "que no regala nada",
+      "RVS8"
+     ],
+     [
+      "prolijo",
+      "RV20"
+     ],
+     [
+      "muy alto",
+      "RV19"
+     ],
+     [
+      "muy trabajador",
+      "RVS7"
+     ]
+    ]
+   }
+  }
+ ]
+}

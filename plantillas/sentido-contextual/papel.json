@@ -1,0 +1,87 @@
+{
+  "titulo": "Sentido contextual: la acepción, la valoración, la palabra precisa y las pistas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Sentido contextual. En «Rosa dio una razón sólida: tenía datos y ejemplos para probarla», ¿qué palabra puede reemplazar a «sólida» sin cambiar lo que dice? Datos: Acepción: cada uno de los significados que puede tener una palabra. Pista: la parte del texto que decide qué acepción usa la palabra. Sinónimo en contexto: dice lo mismo que la palabra, en la acepción que usa el texto. Alternativas: A) firme   B) débil   C) dura   D) discutida",
+      "respuesta": "A) firme",
+      "pasos": [
+        "La pista de la oración elige la acepción de «sólida»; «firme» dice lo mismo en esa acepción.",
+        "Las otras son de otra acepción, del mismo campo, de forma parecida, de otro rasgo o dicen lo opuesto."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Sentido contextual. En «Los vecinos se quejaron de que el municipio usó un cemento barato: la pista se rajó en un mes», ¿qué palabra describe lo mismo que «barato» y lo valora igual? Datos: Denotación: lo que la palabra describe, sin ningún juicio. Connotación: la valoración que la palabra suma a lo que describe: elogio, crítica o ninguna. Otro grado: la palabra valora igual, pero con más o con menos fuerza que la del texto. Alternativas: A) corriente   B) económico para el bolsillo   C) húmedo   D) barroso",
+      "respuesta": "A) corriente",
+      "pasos": [
+        "«corriente» describe lo mismo que «barato» y lo valora igual, con la misma fuerza.",
+        "Las otras cambian la valoración, la exageran, describen otra cosa o solo se parecen por la forma."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Sentido contextual. ¿Qué palabra completa con más precisión la oración «El juez ___ al acusado: lo dejó libre porque no había pruebas»? Datos: Palabra precisa: nombra justo lo que dice la oración y no choca con ninguna de sus partes. Comodín: palabra tan general (hacer, dar, tener, cosa) que encaja en casi todo y dice poco. Choca: la palabra va con una parte de la oración, pero contradice otra. Alternativas: A) vio   B) interrogó   C) condenó   D) absolvió",
+      "respuesta": "D) absolvió",
+      "pasos": [
+        "«absolvió» nombra justo la acción y no choca con ninguna parte de la oración.",
+        "Las otras son un comodín, chocan con la oración, son del mismo campo o solo se parecen por la forma."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Sentido contextual. En «Lucía está en las nubes: no oyó cuando la profesora la llamó dos veces», ¿qué quiere decir «está en las nubes»? Datos: Sentido literal: lo que las palabras nombran tal cual. Sentido figurado: la palabra nombra otra cosa que se le parece. Frase hecha: grupo de palabras con un sentido fijo, que no es la suma de sus palabras. Alternativas: A) está distraída   B) está cansada   C) está en el patio   D) está muy concentrada",
+      "respuesta": "A) está distraída",
+      "pasos": [
+        "Leída tal cual, «está en las nubes» no encaja con el texto: va en sentido figurado; quiere decir «está distraída».",
+        "Las otras la leen mal, son una idea propia, valoran al revés o hablan de otra cosa."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Sentido contextual. En «En el bus iban hacinados: no cabía ni un alfiler y nadie podía moverse», ¿qué significa «hacinados»? Datos: Pista: una explicación, un ejemplo, un contraste o una consecuencia que habla de la palabra. Deducir: sacar del texto algo que no está dicho con esas mismas palabras. Detalle cercano: algo que el texto cuenta junto a la palabra, pero que no dice qué significa. Alternativas: A) muertos de cansancio   B) muy cómodos   C) hechizados   D) muy apretados",
+      "respuesta": "D) muy apretados",
+      "pasos": [
+        "La pista del texto lleva a «muy apretados», y encaja en el lugar de «hacinados».",
+        "Las otras dicen lo contrario, leen el contraste al revés, son una idea propia o se parecen por la forma."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Pregunta del simulacro. En «El profesor respondió con un tono seco: dijo solo «sí» y siguió escribiendo», ¿qué palabra dice lo contrario de «seco»? Datos: Acepción: cada uno de los significados que puede tener una palabra. Pista: la parte del texto que decide qué acepción usa la palabra. Antónimo en contexto: dice lo contrario de la palabra, en la acepción que usa el texto. Alternativas: A) mojado   B) lento   C) sexto   D) cordial   E) cortante",
+      "respuesta": "D) cordial",
+      "pasos": [
+        "La pista de la oración elige la acepción de «seco»; «cordial» dice lo contrario en esa acepción.",
+        "Las otras son de otra acepción, del mismo campo, de forma parecida, de otro rasgo o dicen lo opuesto."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta del simulacro. En «Mi vecino me echó una mano con la mudanza: cargó las cajas toda la tarde», ¿qué quiere decir «me echó una mano»? Datos: Sentido literal: lo que las palabras nombran tal cual. Sentido figurado: la palabra nombra otra cosa que se le parece. Frase hecha: grupo de palabras con un sentido fijo, que no es la suma de sus palabras. Alternativas: A) me saludó   B) me tiró su mano   C) me estorbó   D) se mudó   E) me ayudó",
+      "respuesta": "E) me ayudó",
+      "pasos": [
+        "Leída tal cual, «me echó una mano» no encaja con el texto: va en sentido figurado; quiere decir «me ayudó».",
+        "Las otras la leen mal, son una idea propia, valoran al revés o hablan de otra cosa."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta del simulacro. En «Don Pedro es pródigo con su familia; en cambio, su hermano no regala nada», ¿qué significa «pródigo»? Datos: Pista: una explicación, un ejemplo, un contraste o una consecuencia que habla de la palabra. Deducir: sacar del texto algo que no está dicho con esas mismas palabras. Detalle cercano: algo que el texto cuenta junto a la palabra, pero que no dice qué significa. Alternativas: A) prolijo   B) que no regala nada   C) generoso   D) muy trabajador   E) muy alto",
+      "respuesta": "C) generoso",
+      "pasos": [
+        "La pista del texto lleva a «generoso», y encaja en el lugar de «pródigo».",
+        "Las otras dicen lo contrario, leen el contraste al revés, son una idea propia o se parecen por la forma."
+      ]
+    }
+  ]
+}

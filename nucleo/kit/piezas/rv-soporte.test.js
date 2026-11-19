@@ -240,3 +240,31 @@ test('diccionario: el lema va en negrita al inicio de su entrada, el lomo y los 
   // Una entrada sin lema se dibuja como siempre.
   assert.ok(!/<tspan/.test(P.dibujar(CASOS.mural, {})));
 });
+
+// Etapa 7 (Sentido contextual): oraciones en trozos. Cada renglón es un solo <text> (nada se pisa); la marca de un trozo
+// es su color con un subrayado del trazo de su color; la reserva fija el ancho y el alto no cambia con la palabra.
+test('trozos: la palabra se marca dentro de su renglón, la reserva no mueve nada y todo cabe', () => {
+  const nota = w => ({ soporte: 'mural', lugar: 'Mural del colegio', hojas: [{ id: 'a', titulo: 'Notas', de: '5.º B', para: 'el colegio', oraciones: [
+    { id: 'n1', t: `El cielo de Puno amaneció ${w}, sin una sola nube en toda la mañana del sábado.`, frags: [
+      { id: 'n1a', t: 'El cielo de Puno amaneció' }, { id: 'n1w', t: w, negrita: true, reserva: 'comprensible' }, { id: 'n1b', t: ',' },
+      { id: 'n1p', t: 'sin una sola nube' }, { id: 'n1c', t: 'en toda la mañana del sábado.' }] }] }] });
+  const a = P.disponer(nota('claro')), b = P.disponer(nota('comprensible'));
+  assert.equal(a.alto, b.alto, 'cambiar la palabra no cambia el alto');
+  assert.deepEqual(a.items.filter(i => i.tipo === 'linea').map(i => i.y), b.items.filter(i => i.tipo === 'linea').map(i => i.y));
+  for (const L of [a, b]) for (const it of L.items.filter(i => i.trozos)) {
+    assert.ok(it.x >= 4 && it.x + it.w <= 320 - 4, `«${it.texto}» cabe`);
+    assert.equal(it.texto, it.trozos.map(t => t.pre + t.t).join(''), 'el renglón es la suma de sus trozos');
+    assert.equal(it.estira, false, 'un renglón en trozos no se estira: textLength parte el subrayado');
+  }
+  const s = P.dibujar(nota('despejado'), { marcas: { n1w: 'f', n1p: 'i' }, tachar: ['n1c'] });
+  assert.ok(/<tspan class="rv-trozo rv-sub" fill="var\(--c-f\)" font-weight="700"[^>]*text-decoration:underline dotted[^>]*>despejado<\/tspan>/.test(s), 'la palabra en violeta, negrita, punteado');
+  assert.ok(/fill="var\(--c-i\)"[^>]*underline solid[^>]*>sin una sola nube</.test(s), 'la pista en turquesa, continuo');
+  assert.ok(/class="rv-trozo rv-tacha"[^>]*line-through/.test(s), 'lo tachado, con su raya');
+  assert.ok(!/NaN|undefined/.test(s));
+  const sin = P.dibujar(nota('claro'), {});
+  assert.ok(!/var\(--c-/.test(sin), 'sin estado, sin colores');
+  assert.ok(/<tspan class="rv-trozo" font-weight="700">claro<\/tspan>/.test(sin), 'la palabra por la que se pregunta, en negrita y en tinta');
+  assert.ok(P.alt(nota('claro')).includes('amaneció claro, sin una sola nube'), 'el texto alternativo lee la oración entera');
+  const toque = P.dibujar(Object.assign(nota('claro'), { toques: { n1: 'w1' } }), {});
+  assert.ok(/data-toque="w1"[^>]*><title>Tocar para cambiar esta oración<\/title>/.test(toque), 'la oración entera se toca');
+});

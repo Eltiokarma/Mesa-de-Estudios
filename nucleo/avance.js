@@ -128,6 +128,9 @@
       cambian: ['suposicion', 'negar-bien', 'contradictorias'], antes: ['suposicion', 'contradictorias', 'negar-bien'] },
     { u: 'razonamiento-verbal.analogias', p: 'prediccionAN', e: 'estudiadaAN',
       cambian: ['relacion-no-tema', 'clase-y-causa', 'sinonimo-antonimo'], antes: ['relacion-no-tema', 'clase-y-causa', 'sinonimo-antonimo'] },
+    // Etapa 7 (19 nov): Sentido contextual conservó sus cuatro ids con otra Predice y sumó `sentido-figurado`.
+    { u: 'razonamiento-verbal.sentido-contextual', p: 'prediccionSC', e: 'estudiadaSC',
+      cambian: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'], antes: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

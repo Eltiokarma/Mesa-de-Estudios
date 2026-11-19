@@ -443,5 +443,45 @@
   "nombre": "Se elige por la herramienta, sin la persona",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RVS1": {
+  "nombre": "Se elige un sinónimo cuando se pide el antónimo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS2": {
+  "nombre": "El reemplazo describe lo mismo, pero cambia la valoración",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS3": {
+  "nombre": "El reemplazo valora igual, pero con otra fuerza",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS4": {
+  "nombre": "Se elige un comodín",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS5": {
+  "nombre": "Se lee en sentido literal una expresión figurada",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS6": {
+  "nombre": "Se busca un sentido figurado donde el literal ya encaja",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS7": {
+  "nombre": "Se toma por significado una idea propia o un detalle cercano",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVS8": {
+  "nombre": "Se lee la pista de contraste como si confirmara",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

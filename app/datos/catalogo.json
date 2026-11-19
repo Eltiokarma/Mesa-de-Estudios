@@ -7367,7 +7367,7 @@
        "definicion-defectuosa": "Cuando la definición no define",
        "definicion-en-texto": "La definición dentro del texto"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -7414,7 +7414,7 @@
        "sinonimo-antonimo": "Sinónimos y antónimos en un rasgo",
        "puente-justa": "La oración puente justa"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -7425,6 +7425,7 @@
       "Precisión léxica",
       "Sinónimos en contexto",
       "Antónimos en contexto",
+      "Sentido literal y figurado",
       "Inferencias léxicas"
      ],
      "universidades": {
@@ -7444,24 +7445,27 @@
      "potencial_visual": "bajo",
      "grado": 3,
      "requiere": [
-      "razonamiento-verbal.definiciones"
+      "razonamiento-verbal.definiciones",
+      "razonamiento-verbal.analogias"
      ],
      "plantillas": [
+      "sentido-contextual",
       "lectura-verbal"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-verbal/sentido-contextual.js",
       "requiere": [
-       "/nucleo/kit/piezas/rv-texto.js"
+       "/nucleo/kit/piezas/rv-soporte.js"
       ],
-      "ideas": 4,
+      "ideas": 5,
       "titulos": {
        "acepcion": "La oración elige la acepción",
        "denota-connota": "Lo que dice y cómo valora",
        "palabra-precisa": "La palabra precisa",
+       "sentido-figurado": "Literal o figurado",
        "inferir-significado": "El significado sale de las pistas"
       },
-      "terminos": 18
+      "terminos": 31
      }
     },
     {
@@ -7571,7 +7575,7 @@
        "tiempo-y-causa": "El tiempo y la causa ordenan",
        "analizar-comparar": "Presentar antes de comparar"
       },
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -7662,7 +7666,7 @@
        "normas-textualidad": "Qué hace que algo sea texto",
        "niveles": "Tres niveles de lectura"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -7709,7 +7713,7 @@
        "jerarquia": "Principal y secundarias",
        "alternativas": "Elegir en el examen"
       },
-      "terminos": 27
+      "terminos": 30
      }
     },
     {
@@ -7752,7 +7756,7 @@
        "parafrasis": "Parafrasear no es inferir",
        "sintesis": "Sintetizar sin borrar diferencias"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -7881,7 +7885,7 @@
        "cuatro-casillas": "Dice, deduce, contradice o no sabe",
        "idea-principal": "Chocar con la idea principal"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -8010,7 +8014,7 @@
        "emisor-destinatario": "Quién habla y a quién",
        "misma-frase": "La misma frase, otra acción"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -8045,7 +8049,7 @@
        "texto-cientifico": "Dato, método, explicación y límite",
        "texto-filosofico": "Pregunta, término, tesis y objeción"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -8085,7 +8089,7 @@
        "main-idea": "Main idea y summary",
        "stated-or-not": "Dicho, contradicho o no dicho"
       },
-      "terminos": 20
+      "terminos": 21
      }
     }
    ]
@@ -11735,6 +11739,29 @@
     "/plantillas/segmentos-angulos/index.html",
     "/plantillas/segmentos-angulos/motor.js",
     "/plantillas/segmentos-angulos/papel.json"
+   ]
+  },
+  "sentido-contextual": {
+   "id": "sentido-contextual",
+   "titulo": "Sentido contextual: la acepción, la valoración, la palabra precisa y las pistas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.sentido-contextual"
+   ],
+   "url": "#/practica/sentido-contextual",
+   "ideas": [
+    "acepcion",
+    "denota-connota",
+    "palabra-precisa",
+    "sentido-figurado",
+    "inferir-significado"
+   ],
+   "papel": "/plantillas/sentido-contextual/papel.json",
+   "archivos": [
+    "/plantillas/sentido-contextual/generador.js",
+    "/plantillas/sentido-contextual/papel.json"
    ]
   },
   "simetria": {

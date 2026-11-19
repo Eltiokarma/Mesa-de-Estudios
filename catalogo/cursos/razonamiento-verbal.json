@@ -40,13 +40,14 @@
         "Precisión léxica",
         "Sinónimos en contexto",
         "Antónimos en contexto",
+        "Sentido literal y figurado",
         "Inferencias léxicas"
       ],
       "universidades": {"uni": {"semanas": [3, 4, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "bajo",
       "grado": 3,
-      "requiere": ["razonamiento-verbal.definiciones"],
-      "plantillas": ["lectura-verbal"],
+      "requiere": ["razonamiento-verbal.definiciones", "razonamiento-verbal.analogias"],
+      "plantillas": ["sentido-contextual", "lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

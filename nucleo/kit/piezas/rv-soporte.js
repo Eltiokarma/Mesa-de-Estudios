@@ -84,6 +84,34 @@
     return rs.map((r, k) => { const w = T.ancho(r, tam, peso); return { texto: r, w, estira: k < rs.length - 1 && w >= LLENO * ancho }; });
   }
 
+  // ---------- Etapa 7 (Sentido contextual): oraciones en trozos ----------
+  // Una oración { id, t, frags: [{ id, t, negrita?, reserva? }] } (`t` es la oración entera: el texto alternativo). Cada
+  // renglón sigue siendo un solo <text>, así el navegador pone las letras y nada se pisa; cada trozo va en su <tspan>, y
+  // su marca es el color de la letra con un subrayado del trazo de su color (text-decoration: continuo, a trazos o
+  // punteado). No hace falta medir dónde cae la palabra. `negrita`: la palabra por la que se pregunta. `reserva`: el texto
+  // más largo que puede tomar el trozo (la palabra que se cambia en el juego); fija su ancho al partir los renglones, así
+  // cambiarla no mueve nada. Estos renglones no se estiran (textLength).
+  function trozosDe(o, ancho) {
+    const esp = T.ancho(' ', TAM), out = [];
+    let r = null;
+    for (const f of o.frags) {
+      const peso = f.negrita ? 700 : 400;
+      for (const p of (f.reserva ? [String(f.t)] : String(f.t).split(/\s+/).filter(Boolean))) {
+        const w = Math.max(T.ancho(p, TAM, peso), f.reserva ? T.ancho(f.reserva, TAM, peso) : 0);
+        const pegado = /^[.,;:!?)»]/.test(p);
+        if (r && !pegado && r.w + esp + w > ancho) { out.push(r); r = null; }
+        if (!r) r = { texto: '', w: 0, trozos: [], reserva: false };
+        const sep = r.trozos.length && !pegado ? ' ' : '', ult = r.trozos[r.trozos.length - 1];
+        if (ult && ult.f === f.id) ult.t += sep + p; else r.trozos.push({ f: f.id, t: p, pre: sep, negrita: !!f.negrita });
+        r.texto += sep + p; r.w += (sep ? esp : 0) + w;
+        if (f.reserva) r.reserva = true;
+      }
+    }
+    if (r) out.push(r);
+    // Sin textLength: con él, Chromium parte el subrayado de un trozo en pedazos (se veía como a trazos).
+    return out.map(x => ({ texto: x.texto, w: x.w, trozos: x.trozos, estira: false }));
+  }
+
   // Dónde va el papel de cada hoja según el soporte (x y ancho); el simulacro y el mensaje los ponen ellos.
   const PAPEL = {
     mural: (h) => (h.chica ? { x: 54, w: 252 } : { x: 14, w: 292 }),
@@ -114,6 +142,8 @@
     if (h.ilustracion === 'balsa') { items.push({ tipo: 'balsa', x: tx, y, w: tw, h: 50 }); y += 56; }
     (h.oraciones || []).forEach((o, k) => {
       items.push({ tipo: 'num', id: o.id, x: tx, y: y + 15, w: NUM - 6, texto: `${k + 1}`, tam: 14, peso: 700 });
+      // Etapa 7 (Sentido contextual): una oración en trozos (`frags`), para marcar una palabra o una frase dentro de ella.
+      if (o.frags) { for (const r of trozosDe(o, tw - NUM)) { items.push(Object.assign({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, tam: TAM, peso: 400 }, r)); y += LH; } y += 3; return; }
       // Con `lema` (entrada de diccionario), la palabra va en negrita al inicio del primer renglón: «puente. Construcción…».
       const rs = renglones(o.lema ? `${o.lema}. ${o.t}` : o.t, tw - NUM);
       rs.forEach((r, j) => { items.push(Object.assign({ tipo: 'linea', id: o.id, x: tx + NUM, y: y + 15, tam: TAM, peso: 400 }, r, o.lema && j === 0 ? { lema: `${o.lema}.` } : {})); y += LH; });
@@ -336,10 +366,19 @@
     // veía como un borde claro alrededor de las letras (lector en frío, 17 nov).
     if (L.soporte === 'mensaje' && d.lugar) tinta += T.rotulo(L.marco.x + 46, L.marco.y + 24, d.lugar, { tam: 14, peso: 700, max: L.marco.x + L.marco.w - 14 }).replace('class="kit-txt"', 'class="rv-sin-halo"');
 
+    // Etapa 7: el <tspan> de un trozo, con su marca (color de la letra y subrayado del trazo de su color), su tacha o su
+    // tenue. Sin nada de eso ni negrita, el trozo va suelto. La marca no pone negrita: el renglón no se ensancha.
+    const DECO = { i: 'solid', o: 'dashed', f: 'dotted' };
+    const trozo = tr => {
+      const c = col(tr.f), tch = tachar.has(tr.f), tn = tch || tenue.has(tr.f);
+      if (!c && !tn && !tr.negrita) return T.esc(tr.pre + tr.t);
+      const st = c ? `text-decoration:underline ${DECO[c]};text-decoration-thickness:2.5px;text-underline-offset:4px` : tch ? 'text-decoration:line-through;text-decoration-thickness:2px' : '';
+      return `${T.esc(tr.pre)}<tspan class="rv-trozo${c ? ' rv-sub' : ''}${tch ? ' rv-tacha' : ''}${cl(tr.f)}"${c ? ` fill="${T.color(c)}"` : ''}${tr.negrita ? ' font-weight="700"' : ''}${tn ? ` opacity="${TENUE}"` : ''}${st ? ` style="${st}"` : ''}>${T.esc(tr.t)}</tspan>`;
+    };
     const texto = (it, extra = '') => {
       const largo = it.estira ? ` textLength="${T.n(it.w)}" lengthAdjust="spacing"` : '';
       // El lema de una entrada de diccionario, en negrita, dentro del mismo renglón.
-      const cuerpoT = it.lema && it.texto.startsWith(it.lema) ? `<tspan font-weight="700">${T.esc(it.lema)}</tspan>${T.esc(it.texto.slice(it.lema.length))}` : T.esc(it.texto);
+      const cuerpoT = it.trozos ? it.trozos.map(trozo).join('') : it.lema && it.texto.startsWith(it.lema) ? `<tspan font-weight="700">${T.esc(it.lema)}</tspan>${T.esc(it.texto.slice(it.lema.length))}` : T.esc(it.texto);
       return `<text class="kit-txt" x="${T.n(it.x)}" y="${T.n(it.y)}" fill="currentColor" font-size="${it.tam}"${it.peso !== 400 ? ` font-weight="${it.peso}"` : ''}${extra}${largo}>${cuerpoT}</text>`;
     };
     const marca = (it, c) => {
@@ -411,7 +450,7 @@
       if (!its.length) continue;
       const y0 = Math.min(...its.map(it => it.y - (it.tipo === 'letra' ? 13 : 17))), y1 = Math.max(...its.map(it => it.y + (it.tipo === 'letra' ? 13 : 7)));
       const x0 = Math.min(...its.map(it => it.x - (it.tipo === 'letra' ? 12 : 2))), x1 = Math.max(...its.map(it => (it.tipo === 'letra' ? it.x + 12 : it.x + it.w + 2)));
-      toques += `<rect class="rv-toque" data-toque="${T.esc(ctl)}" x="${T.n(x0)}" y="${T.n(y0)}" width="${T.n(x1 - x0)}" height="${T.n(y1 - y0)}" rx="6" fill="transparent"><title>Alternativa ${T.esc(alt)}: tocar para tachar o dejar</title></rect>`;
+      toques += `<rect class="rv-toque" data-toque="${T.esc(ctl)}" x="${T.n(x0)}" y="${T.n(y0)}" width="${T.n(x1 - x0)}" height="${T.n(y1 - y0)}" rx="6" fill="transparent"><title>${(d.alternativas || []).some(a => a.id === alt) ? `Alternativa ${T.esc(alt)}: tocar para tachar o dejar` : 'Tocar para cambiar esta oración'}</title></rect>`;
     }
     return { s: fondo + tinta + M.encima + encima + toques, alto: L.alto };
   }

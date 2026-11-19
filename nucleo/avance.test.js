@@ -432,3 +432,22 @@ test('Etapa 6, seis unidades rehechas: predicciones viejas sin huella borradas u
   assert.ok(!est.marcadas[G]);
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// 19 nov (etapa 7): Sentido contextual, rehecha con sus cuatro ids y otra Predice, sumó una idea (sentido-figurado).
+test('Etapa 7, Sentido contextual rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cuatro', () => {
+  const U = 'razonamiento-verbal.sentido-contextual';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, teoria: { [U]: { ideas: {
+    acepcion: { hecha: true, prediccion: 'c' }, 'denota-connota': { hecha: true, prediccion: 'e0', prediccionDe: 'h1' },
+    'palabra-precisa': { hecha: true }, 'inferir-significado': { hecha: true, prediccion: 'e1' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionSC, 1);
+  assert.equal(est.estudiadaSC, 1);
+  assert.equal(est.teoria[U].ideas.acepcion.prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['inferir-significado'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['denota-connota'].prediccion, 'e0', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las cuatro de antes');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { acepcion: { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las cuatro: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
