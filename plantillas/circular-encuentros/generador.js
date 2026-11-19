@@ -5,7 +5,7 @@
  * (window.Generadores['circular-encuentros']) y en Node (require). No usa ningún motor.
  *
  * Tipos:
- *   encuentro   dos móviles con rapidez angular constante, en el mismo sentido o en sentidos
+ *   encuentro   dos móviles con velocidad angular constante, en el mismo sentido o en sentidos
  *               contrarios, separados al comienzo (o juntos); tiempo del n-ésimo encuentro
  *   vueltas     el mismo movimiento; cuántas vueltas da A hasta el n-ésimo encuentro
  *   separacion  primer instante en que la separación angular entre los dos es un ángulo dado
@@ -74,7 +74,7 @@
 
   // Una rapidez en el modo del problema: devuelve el dato (para _datos), su texto y vueltas por segundo.
   function rapidez(rng, modo) {
-    if (modo === 'pi') { const c = rng.elegir(COEF); return { dato: c, texto: `gira con rapidez angular constante de ${piDe(c)}`, corto: piDe(c), n: c[0] / c[1] / 2 }; }
+    if (modo === 'pi') { const c = rng.elegir(COEF); return { dato: c, texto: `gira con velocidad angular constante de ${piDe(c)}`, corto: piDe(c), n: c[0] / c[1] / 2 }; }
     if (modo === 'periodo') { const T = rng.elegir(PERIODOS); return { dato: T, texto: `da una vuelta cada ${T} s`, corto: `T = ${T} s`, n: 1 / T }; }
     const N = rng.elegir(RPM); return { dato: N, texto: `gira a ${N} rpm`, corto: `${N} rpm`, n: N / 60 };
   }
@@ -208,7 +208,7 @@
     let TA, TB, datoA, datoB, txtA, txtB;
     if (modo === 'periodo') { TA = rng.elegir(PERIODOS.slice(0, 14)); TB = rng.elegir(PERIODOS.slice(0, 14)); datoA = TA; datoB = TB; txtA = `da una vuelta cada ${TA} s`; txtB = `da una vuelta cada ${TB} s`; }
     else if (modo === 'rpm') { const NA = rng.elegir([2, 3, 4, 5, 6, 10, 12, 15, 20, 30]), NB = rng.elegir([2, 3, 4, 5, 6, 10, 12, 15, 20, 30]); TA = 60 / NA; TB = 60 / NB; datoA = NA; datoB = NB; txtA = `gira a ${NA} rpm`; txtB = `gira a ${NB} rpm`; }
-    else { TA = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); TB = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); const cA = [2 / gcd(2, TA), TA / gcd(2, TA)], cB = [2 / gcd(2, TB), TB / gcd(2, TB)]; datoA = cA; datoB = cB; txtA = `gira con rapidez angular constante de ${piDe(cA)}`; txtB = `gira con rapidez angular constante de ${piDe(cB)}`; }
+    else { TA = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); TB = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]); const cA = [2 / gcd(2, TA), TA / gcd(2, TA)], cB = [2 / gcd(2, TB), TB / gcd(2, TB)]; datoA = cA; datoB = cB; txtA = `gira con velocidad angular constante de ${piDe(cA)}`; txtB = `gira con velocidad angular constante de ${piDe(cB)}`; }
     if (TA === TB || !Number.isInteger(TA) || !Number.isInteger(TB)) return null;
     const L = TA * TB / gcd(TA, TB);
     if (L === Math.max(TA, TB) || L > 600) return null;
@@ -260,7 +260,7 @@
       correcta = 2 * W / A;
       // A no debe sacarle una vuelta entera a B antes de que B lo alcance: la ventaja máxima es W²/(2A) < 2π.
       if (W * W / (2 * A) >= 2 * Math.PI - 1e-9 || !corto(correcta) || correcta > 60) return null;
-      enunciado.push(v('A', 'A'), ` gira con rapidez angular constante de ${piDe(w)}. Justo cuando A pasa por un punto P, `, v('B', 'B'), ` parte del reposo desde P, en el mismo sentido, con aceleración angular constante de ${piDe(al, 'rad/s²')}.`);
+      enunciado.push(v('A', 'A'), ` gira con velocidad angular constante de ${piDe(w)}. Justo cuando A pasa por un punto P, `, v('B', 'B'), ` parte del reposo desde P, en el mismo sentido, con aceleración angular constante de ${piDe(al, 'rad/s²')}.`);
       pregunta = ['¿Al cabo de cuánto tiempo B alcanza a A?'];
       errores = [
         h('CI-misma-rapidez-encuentro', W / A, 'En ese instante B llega a la rapidez de A, pero todavía está detrás: hasta ahí A se le adelantó. B lo alcanza recién cuando los dos han girado el mismo ángulo.'),
@@ -318,10 +318,33 @@
           "Con ω constante: θ = ω · t; 1 vuelta = 2π rad"
       ]
   };
+  // Un color fijo por magnitud, el de la unidad fisica.movimiento-circular (COLORES de su teoría; docs/molde-unidad.md
+  // §5b; auditoría del 19 nov, M2): la velocidad (ω, v, rpm) en naranja, el tiempo (t, T) en turquesa, el giro (θ, vueltas)
+  // en violeta, la aceleración (α, a_T, a_c) en carmín; radios, distancias, latitudes y razones en tinta. Sin verde. Antes
+  // cada problema pintaba por papel (lo que se pide en verde). Una variable de un objeto («móvil A», «rueda B», «lo que se
+  // pide») toma el color de la unidad de lo que escribe.
+  const COLOR_UNIDAD = [[/rad\/s²|m\/s²|vueltas?\/s²/, 'h'], [/rad\/s|rpm|m\/s|km\/h|Hz|por segundo|vueltas?\/s/, 'o'], [/\d\s*(s|ms|min|minutos?|h)\b/, 'i'], [/vueltas?\b|\brad\b|°/, 'f'], [/\d\s*(cm|m|km)\b/, 'tinta']];
+  const COLOR_SIMBOLO = [[/(^|\s)ω/, 'o'], [/(^|\s)α/, 'h'], [/(^|\s)θ/, 'f'], [/^(v|v[A-Z0-9])$/, 'o'], [/^a(cp|T|c|_)/, 'h'], [/^t$/, 'i']];
+  const COLOR_NOMBRE = [[/aceleraci|desaceleraci/, 'h'], [/tiempo|intervalo|periodo|período/, 'i'], [/ángulo|vueltas|posición angular|área|desfase|separación|girado/, 'f'],
+    [/radio|diámetro|distancia/, 'tinta'], [/rapidez|velocidad|giro/, 'o']];
+  const colorDeLista = (lista, t) => (lista.find(([re]) => re.test(t)) || [])[1];
+  function colorPorMagnitud(pr) {
+    const textos = {};
+    const recorrer = x => { if (!x) return; if (Array.isArray(x)) { x.forEach(recorrer); return; } if (typeof x === 'object') { if ('v' in x && 't' in x) (textos[x.v] = textos[x.v] || []).push(String(x.t)); else Object.values(x).forEach(recorrer); } };
+    recorrer([pr.enunciado, pr.pregunta, pr.solucion]);
+    const unidad = pr.respuesta && pr.respuesta.unidad ? `1 ${pr.respuesta.unidad}` : '';
+    for (const [k, va] of Object.entries(pr.variables || {})) {
+      const nom = String(va.nombre || ''), ts = textos[k] || [];
+      va.color = /latitud|razón/.test(nom) ? 'tinta' : /altura/.test(nom) ? 'f' : /aceleraci/.test(nom) ? 'h'
+        : /lo que se pide/.test(nom) ? (colorDeLista(COLOR_UNIDAD, unidad) || 'tinta')
+        : colorDeLista(COLOR_UNIDAD, ts.join(' ')) || colorDeLista(COLOR_NOMBRE, nom) || ts.map(t => colorDeLista(COLOR_SIMBOLO, t)).find(Boolean) || 'tinta';
+    }
+    return pr;
+  }
   const generarConDatos = (semilla, opciones) => {
     const pr = generar(semilla, opciones);
     if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
-    return pr;
+    return colorPorMagnitud(pr);
   };
   return { id: 'circular-encuentros', titulo: 'Dos móviles en la misma circunferencia', generar: generarConDatos, TIPOS_POR_IDEA };
 });

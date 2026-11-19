@@ -133,10 +133,10 @@
 
     let pregunta;
     if (tipo === 'alfa') pregunta = [`¿Cuál es la aceleración angular de la rueda `, X(n - 1), '?'];
-    else if (sentidoA) pregunta = [`¿Con qué rapidez angular, y en qué sentido, gira la rueda `, X(n - 1), '?'];
+    else if (sentidoA) pregunta = [`¿Con qué velocidad angular, y en qué sentido, gira la rueda `, X(n - 1), '?'];
     else if (modoF === 'rpm') pregunta = [`¿A cuántas rpm gira la rueda `, X(n - 1), '?'];
-    else if (pi) pregunta = [`¿Con qué rapidez angular gira la rueda `, X(n - 1), ', en rad/s?'];
-    else pregunta = [`¿Con qué rapidez angular gira la rueda `, X(n - 1), '?'];
+    else if (pi) pregunta = [`¿Con qué velocidad angular gira la rueda `, X(n - 1), ', en rad/s?'];
+    else pregunta = [`¿Con qué velocidad angular gira la rueda `, X(n - 1), '?'];
 
     // Errores, en las unidades de la ω de la primera rueda.
     const hayEje = ruedas.some(q => q.union === 'eje');
@@ -147,8 +147,8 @@
       enLaCadena.push(h('CI-alfa-igual-con-faja', recorrer(ruedas, w1, w => w), 'Tomaste la misma aceleración angular en las ruedas unidas por la faja. Lo que comparten es la aceleración tangencial del borde, aT = α·r: la rueda más chica tiene más α.'));
     } else {
       enLaCadena.push(h('omega-igual-con-faja', recorrer(ruedas, w1, w => w), tipo === 'contacto'
-        ? 'Tomaste la misma rapidez angular en los discos en contacto. Lo que comparten es la rapidez del borde, v = ω·r: el disco más chico gira más rápido.'
-        : 'Tomaste la misma rapidez angular en las ruedas unidas por faja o en contacto. Lo que comparten es la rapidez del borde, v = ω·r: la rueda más chica gira más rápido.'));
+        ? 'Tomaste la misma velocidad angular en los discos en contacto. Lo que comparten es la rapidez del borde, v = ω·r: el disco más chico gira más rápido.'
+        : 'Tomaste la misma velocidad angular en las ruedas unidas por faja o en contacto. Lo que comparten es la rapidez del borde, v = ω·r: la rueda más chica gira más rápido.'));
     }
     if (tipo === 'contacto') {
       enLaCadena.push(h('CI-cadena-directa', recorrer(ruedas, w1, (w, rp, rn) => w * rn / rp), 'Recorriste la cadena como si el disco más grande girara más rápido. En cada contacto se comparte v, así que ω va al revés que el radio: ωfinal = ωA·rA/rúltimo.'));
@@ -239,7 +239,7 @@
     const pregunta = ['¿Con qué rapidez sube el ', v('v', 'bloque'), '?'];
     const errores = [
       h('CI-bloque-radio-equivocado', aRad(w1) * rA / 100, 'Tomaste para el bloque la rapidez de la faja. La cuerda del bloque está enrollada en la otra garganta: su rapidez es ωB por el radio de esa garganta.'),
-      h('omega-igual-con-faja', aRad(w1) * g2 / 100, 'Tomaste la misma rapidez angular en A y en B. La faja hace que sus bordes vayan igual de rápido (misma v), no que giren con la misma ω.'),
+      h('omega-igual-con-faja', aRad(w1) * g2 / 100, 'Tomaste la misma velocidad angular en A y en B. La faja hace que sus bordes vayan igual de rápido (misma v), no que giren con la misma ω.'),
       h('RM5-proporcion-directa', aRad(w1) * g1 / rA * g2 / 100, 'Usaste la razón de radios al revés al pasar por la faja: con la misma v, la polea de mayor radio gira más despacio.', RM),
       h('inversa-en-eje', aRad(w1) * rA / 100 * g1 / g2, 'Pasaste de una garganta a la otra con la razón de radios al revés. En el mismo eje, ω es la misma; la rapidez del borde es mayor en la garganta de mayor radio.'),
     ];
@@ -327,10 +327,33 @@
           "Ruedas en un mismo eje: misma α"
       ]
   };
+  // Un color fijo por magnitud, el de la unidad fisica.movimiento-circular (COLORES de su teoría; docs/molde-unidad.md
+  // §5b; auditoría del 19 nov, M2): la velocidad (ω, v, rpm) en naranja, el tiempo (t, T) en turquesa, el giro (θ, vueltas)
+  // en violeta, la aceleración (α, a_T, a_c) en carmín; radios, distancias, latitudes y razones en tinta. Sin verde. Antes
+  // cada problema pintaba por papel (lo que se pide en verde). Una variable de un objeto («móvil A», «rueda B», «lo que se
+  // pide») toma el color de la unidad de lo que escribe.
+  const COLOR_UNIDAD = [[/rad\/s²|m\/s²|vueltas?\/s²/, 'h'], [/rad\/s|rpm|m\/s|km\/h|Hz|por segundo|vueltas?\/s/, 'o'], [/\d\s*(s|ms|min|minutos?|h)\b/, 'i'], [/vueltas?\b|\brad\b|°/, 'f'], [/\d\s*(cm|m|km)\b/, 'tinta']];
+  const COLOR_SIMBOLO = [[/(^|\s)ω/, 'o'], [/(^|\s)α/, 'h'], [/(^|\s)θ/, 'f'], [/^(v|v[A-Z0-9])$/, 'o'], [/^a(cp|T|c|_)/, 'h'], [/^t$/, 'i']];
+  const COLOR_NOMBRE = [[/aceleraci|desaceleraci/, 'h'], [/tiempo|intervalo|periodo|período/, 'i'], [/ángulo|vueltas|posición angular|área|desfase|separación|girado/, 'f'],
+    [/radio|diámetro|distancia/, 'tinta'], [/rapidez|velocidad|giro/, 'o']];
+  const colorDeLista = (lista, t) => (lista.find(([re]) => re.test(t)) || [])[1];
+  function colorPorMagnitud(pr) {
+    const textos = {};
+    const recorrer = x => { if (!x) return; if (Array.isArray(x)) { x.forEach(recorrer); return; } if (typeof x === 'object') { if ('v' in x && 't' in x) (textos[x.v] = textos[x.v] || []).push(String(x.t)); else Object.values(x).forEach(recorrer); } };
+    recorrer([pr.enunciado, pr.pregunta, pr.solucion]);
+    const unidad = pr.respuesta && pr.respuesta.unidad ? `1 ${pr.respuesta.unidad}` : '';
+    for (const [k, va] of Object.entries(pr.variables || {})) {
+      const nom = String(va.nombre || ''), ts = textos[k] || [];
+      va.color = /latitud|razón/.test(nom) ? 'tinta' : /altura/.test(nom) ? 'f' : /aceleraci/.test(nom) ? 'h'
+        : /lo que se pide/.test(nom) ? (colorDeLista(COLOR_UNIDAD, unidad) || 'tinta')
+        : colorDeLista(COLOR_UNIDAD, ts.join(' ')) || colorDeLista(COLOR_NOMBRE, nom) || ts.map(t => colorDeLista(COLOR_SIMBOLO, t)).find(Boolean) || 'tinta';
+    }
+    return pr;
+  }
   const generarConDatos = (semilla, opciones) => {
     const pr = generar(semilla, opciones);
     if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
-    return pr;
+    return colorPorMagnitud(pr);
   };
   return { id: 'circular-transmision', titulo: 'Ruedas, fajas y poleas', generar: generarConDatos, TIPOS_POR_IDEA };
 });

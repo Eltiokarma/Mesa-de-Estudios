@@ -410,6 +410,54 @@ predicciones, en «Ahora tú» y en la práctica.
 | 2D-SIN-X0 | Olvida la posición inicial en x(t) | práctica A5 | Hipótesis |
 | 2D-TIEMPO | Da el instante en que y = 0 cuando piden la distancia | A5 | Hipótesis |
 
+## Movimiento circular (19 nov)
+
+Códigos de las seis ideas de «Movimiento circular» (`contenido/teoria/fisica/movimiento-circular.js`, ideas B1 a B6 de
+`docs/etapa5/propuesta-fisica.md`), en sus predicciones y en «Ahora tú». K3 y K4 son los del catálogo de arriba; D9
+(«la aceleración apunta hacia afuera») es el de `dinamica-ideas-erroneas.md`; PR1 y U1-kmh, los de
+`fisica-calculo-transversal-ideas-erroneas.md`; K-TIEMPO y K-MITAD vienen de «MRUV y caída libre». La práctica (los nueve
+`plantillas/circular-*`) usa los CI-* del mapa del compendio (`docs/clasificacion/compendio-movimiento-circunferencial.md`)
+y otros propios descritos en cada generador. MC-A0 es la trampa 30 de San Marcos 2020-I (rapidez constante, aceleración
+cero; `docs/clasificacion/trampas-admision-unmsm/fisica.md`), sin porcentaje medido. **Todos los demás son hipótesis de
+diseño, sin dato propio**: salen de la forma de las alternativas de examen y de academia, y se confirman con lo que
+elijan los alumnos.
+
+| Código | Idea errónea (lo que hace el alumno) | Dónde aparece | Respaldo |
+| --- | --- | --- | --- |
+| AN-GRADOS | Usa los grados como si fueran radianes (360 rad la vuelta; s = r · grados) | B1 (Predice), B1, B5 | Hipótesis |
+| AN-MEDIA | Toma π rad como la vuelta entera | B1 (Predice), B1 | Hipótesis |
+| AN-VUELTA | Una vuelta es 1 rad; o deja en vueltas lo que va en radianes | B1 (Predice), B1, B5 | Hipótesis (trampa de San Marcos 2024-II) |
+| AN-SIN-R | Olvida multiplicar por el radio (da θ, ω o α donde piden un largo o una aceleración) | B1, B3, B4, B6 | Hipótesis |
+| AN-POR | Multiplica donde va una división (arco por radio, 60 · rpm, Δω · t) | B1, B2, B5 | Hipótesis |
+| MC-W-PI | Toma π rad por vuelta: olvida el 2 de 2π | B1, B2 | Hipótesis |
+| MC-W-SIN-2PI | Da las vueltas por segundo como ω: olvida el 2π | B2 | Hipótesis |
+| MC-2PI-DE-MAS | Multiplica otra vez por 2π una ω que ya está en rad/s | B3 | Hipótesis |
+| U-cm | No pasa los centímetros a metros | B1 | Hipótesis (familia U2 del informe transversal) |
+| U-MIN | No pasa el minuto a segundos (1/120 s; 2π · rpm) | B2 (Predice), B2 | Hipótesis (familia U6) |
+| MC-T-F | Da la frecuencia (vueltas por segundo) como período, o al revés | B2 (Predice), B2 | Hipótesis |
+| MC-LEE | Da el número del enunciado (las vueltas) como respuesta | B2 (Predice), B2 | Hipótesis |
+| MC-TR-W | Cree que la faja, la cadena o el contacto igualan ω (lo que iguala es v) | B3 (Predice), B3 | Hipótesis |
+| MC-TR-INV | Usa la razón de los radios al revés en una transmisión | B3 (Predice), B3 | Hipótesis |
+| PR-CUADRADO | Eleva al cuadrado una razón que va una sola vez | B3 (Predice), B3, B4, B6 | Hipótesis |
+| PR-INV | Hace bajar lo que sube con la razón (a_c más chica al doble de rapidez o en un óvalo más cerrado) | B4 | Hipótesis |
+| MC-V-IGUAL | Cree que en un mismo disco todos los puntos van igual de rápido | B3 | Hipótesis |
+| MC-V-W | Multiplica la rapidez de un punto por el radio de otro (toma v por ω) | B3 | Hipótesis |
+| MC-VR | Divide v entre r (o da v/r, 2v/r) donde va v²/r | B3, B4, B6 | Hipótesis |
+| MC-V2R | Multiplica por r donde se divide (v² · r; ω²/r) | B4 | Hipótesis |
+| MC-A0 | Rapidez constante, aceleración cero | B4 (Predice), B4 | Trampa 30 de San Marcos 2020-I |
+| MC-ENESIMO | Da lo girado en un solo segundo (el tercero) como lo girado en los tres | B5 (Predice) | Hipótesis |
+| MC-W-ANGULO | Toma la ω (o una suma de ω) como el ángulo girado | B5 (Predice), B5 | Hipótesis |
+| MC-SIN-W0 | Olvida la ω con que ya giraba (da solo α · t) | B5 | Hipótesis |
+| MC-SIN-ALFA | Calcula el giro como si ω no cambiara (solo ω₀ · t) | B5 | Hipótesis |
+| MC-SIN-MEDIO | Olvida el ½ de ½ · α · t², o pone 2r donde va r | B5, B6 | Hipótesis |
+| MC-W-MEDIA | En un frenado usa la ω de antes de frenar, no la media | B5 | Hipótesis |
+| MC-SOLO-AT | Da solo la aceleración tangencial como la total (o cree que es la que queda al girar parejo) | B6 (Predice), B6 | Hipótesis |
+| MC-SOLO-AC | Da solo la centrípeta como la total, cuando la tangencial sigue ahí | B6 | Hipótesis |
+| MC-DOS | Cree que las dos aceleraciones siguen cuando ya no cambia la rapidez | B6 (Predice) | Hipótesis |
+| MC-A0-b | «Va parejo: no tiene aceleración» (MC-A0 partido para que dos predicciones no compartan código) | B6 (Predice) | Hipótesis (como MC-A0) |
+| MC-SUMA | Suma las dos aceleraciones perpendiculares en vez de usar Pitágoras | B6 | Hipótesis |
+| MC-SIN-RAIZ | Da t² (r ÷ a_T) como el instante: olvida la raíz | B6 | Hipótesis |
+
 ## Hipótesis de la Etapa 4 (sin estudio)
 
 Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)

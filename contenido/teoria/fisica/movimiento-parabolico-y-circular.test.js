@@ -42,7 +42,7 @@ test('la unidad conserva su id con el movimiento parabólico; el giro vive en fi
   assert.deepEqual(def.ideas.map(i => i.titulo), ['Tiro horizontal: dos movimientos', 'La velocidad en cada instante', 'Lanzar con ángulo', 'Altura máxima y alcance', 'Ecuaciones del movimiento en el plano']);
   assert.deepEqual(def.laboratorioIdeas, { 'dos-sombras-3d': ['tiro-oblicuo'], 'tiro-libre': ['altura-y-alcance'] });
   assert.deepEqual(def.laboratorio.map(m => m.id), ['dos-sombras-3d', 'tiro-libre']);
-  assert.notEqual(def.calidad, 2, 'calidad 2 es al cerrar la unidad (fase 3)');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   // Ninguna palabra se define en las dos; «altura máxima» sigue siendo de MRUV y caída libre.
   const aqui = new Set(def.glosario.map(g => Glosario.clave(g.termino)));
   for (const g of circular.glosario) assert.ok(!aqui.has(Glosario.clave(g.termino)), `«${g.termino}» en las dos unidades`);
@@ -514,7 +514,7 @@ test('A2 a A5: el juego, Predice y «Mira» cuadran con el vuelo simulado', () =
   cerca2(n1(I('A4').predice.datos[0].match(/llegó a ([\d,]+)/)[1]), R(10, 30), 'A4: el dato de Predice');
   assert.equal(I('A5').predice.opciones.find(o => o.correcta).texto, '50 m'); cerca2(Math.hypot(6 * 5, 8 * 5), 50, 'A5 Predice');
   // Las lecturas del juego.
-  for (const v0 of [5, 12, 20]) cerca2(n1(plano(I('A2').juega.lectura({ v0, t: 0 })).match(/abajo ([\d,]+)/)[1]), -vuelo(v0, 0, 45, { t: 2 }).vy, `A2 lectura ${v0}`);
+  for (const v0 of [5, 12, 20]) cerca2(n1(plano(I('A2').juega.lectura({ v0, t: 0 })).match(/de lado, ([\d,]+) m\/s abajo/)[1]), -vuelo(v0, 0, 45, { t: 2 }).vy, `A2 lectura ${v0}`);
   for (const [v0, a] of [[10, 30], [25, 53], [20, 45]]) cerca2(n1(plano(I('A3').juega.lectura({ v0, ang: a, t: 0 })).match(/Sube con ([\d,]+)/)[1]), v0 * sen(a), `A3 lectura ${v0} ${a}`);
   for (const a of [15, 30, 45, 60, 75]) cerca2(n1(plano(I('A4').juega.lectura({ ang: a })).match(/cae a ([\d,]+)/)[1]), R(10, a), `A4 lectura ${a}`);
   for (const [vx, vy, t] of [[3, 4, 2], [8, 8, 9]]) { const l = plano(I('A5').juega.lectura({ vx, vy, t })), tt = Math.min(t, 80 / Math.max(vx, vy)); cerca2(n1(l.match(/: ([\d,]+) m al este/)[1]), vx * tt, `A5 lectura ${vx} ${vy} ${t}`); }
@@ -622,4 +622,111 @@ test('con calidad: 2 simulada, la unidad pasa todas las reglas del validador', (
   const cat = require('../../../catalogo/cursos/fisica.json');
   const p = Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas: cat.unidades.find(x => x.id === def.unidad).temas, semillas: 60 });
   assert.deepEqual(p, [], p.join('\n'));
+});
+
+// ---------- Auditoría y lectores en frío (19 nov): cada prueba falla con la versión de antes ----------
+const ideaN = k => def.ideas[k - 1];
+const textoDe = d => (d || []).map(plano).join(' | ');
+
+test('auditoría: cada condición dice hacia dónde mide lo vertical (A1 y A2 hacia abajo; desde A3, hacia arriba) y A3 traduce el «±»', () => {
+  assert.match(ideaN(1).regla.condicion, /h se mide hacia abajo/);
+  assert.match(ideaN(2).regla.condicion, /se mide hacia abajo/);
+  for (const k of [3, 4]) assert.match(ideaN(k).regla.condicion, /eje vertical hacia arriba/, `idea ${k}`);
+  assert.match(ideaN(5).regla.condicion, /altura/);
+  assert.match(ideaN(3).regla.condicion, /academia usa ± ½ · g · t²/);
+  // y los datos con la velocidad vertical que baja con g lo dicen también
+  for (const k of [3, 4, 5]) for (let s = 0; s < 120; s++) for (const d of [...(ideaN(k).ahoraTu.generar(s).datos || []), ...(ideaN(k).resuelve.generar(s).datos || [])]) {
+    const t = plano(d); if (/v_y = v_0y −|\(v_y\)|v_y² =|vᵧ² =/.test(t) || /^Velocidad vertical/.test(t)) assert.match(t, /hacia arriba/, `idea ${k}: ${t}`);
+  }
+});
+
+test('auditoría: los ejemplos de examen explican cada alternativa con las herramientas que se dan', () => {
+  const e414 = ideaN(4).ejemplos[13], e512 = ideaN(5).ejemplos[11], e513 = ideaN(5).ejemplos[12];
+  // 4.14: «24 · 4/3 y no divide entre 4» usaba H = R·tan θ/4, que la unidad no presenta; ahora A sale de tomar solo la subida
+  assert.ok(!/divide entre 4/.test(plano(e414.solucion.map(x => x.texto))));
+  { let lo = 1, hi = 80; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (0.6 * m * (0.8 * m / 10) < 24) lo = m; else hi = m; } cerca(numAlt(e414.alternativas[0]), 0.64 * lo * lo / 20, '4.14 A'); }
+  assert.ok(e414.datos.includes(e414.datos.find(d => /altura sobre la salida|eje hacia arriba: y =|y = v_0y/.test(plano(d)))), '4.14: la ecuación de y para el tiempo de vuelo');
+  // 5.12: «lee g = 5» no daba 12,8; ahora D no eleva el tiempo al cuadrado
+  assert.ok(!/lee g = 5/.test(plano(e512.solucion.map(x => x.texto))));
+  cerca(numAlt(e512.alternativas[3]), 8 * 0.8 - 5 * 0.8, '5.12 D');
+  assert.match(plano(e513.solucion.map(x => x.texto)), /no el 5/);
+});
+
+test('auditoría: el chorro dibujado cae donde dice su cota (4.12), y la figura de 2.7 abarca el vuelo', () => {
+  for (const idea of def.ideas) for (const e of idea.ejemplos) {
+    const d = e.figura && e.figura.datos; if (!d || d.plataforma !== 'manguera' || !d.cotaAlcance) continue;
+    cerca(2 * d.vx * d.vy / 10, d.cotaAlcance.hasta, `«${e.titulo}»`);
+  }
+  const d27 = ideaN(2).ejemplos[6].figura.datos; assert.ok(d27.ancho >= d27.v0 * 4, '2.7: cae a 160 m');
+});
+
+test('auditoría: una figura que pide una longitud con «?» y trae otra con número no se dibuja a escala', () => {
+  let vistas = 0;
+  const mira = (fig, donde) => {
+    if (!fig || fig.pieza !== 'fis-tiro' || fig.datos.vista === 'plano') return;
+    const d = fig.datos, q = [d.cotaAlto, d.cotaAlcance, d.cotaH].some(c => c && c.texto === '?'), n = [d.cotaAlto, d.cotaAlcance, d.cotaH].some(c => c && c.texto && c.texto !== '?' && /\d/.test(c.texto));
+    if (!(q && n)) return;
+    vistas++;
+    const g = P.geometria(d, fig.estado || {});
+    assert.ok(g.sinEscala && g.rotulos.some(r => r.texto === 'Dibujo sin escala'), `${donde}: se mediría la respuesta`);
+  };
+  def.ideas.forEach((idea, i) => { idea.ejemplos.forEach(e => mira(e.figura, `idea ${i + 1} «${e.titulo}»`)); for (let s = 0; s < 60; s++) { mira(idea.ahoraTu.generar(s).dibujo, `idea ${i + 1} ahora ${s}`); mira(idea.resuelve.generar(s).dibujo, `idea ${i + 1} resuelve ${s}`); } });
+  assert.ok(vistas >= 20, `hay figuras así: ${vistas}`);
+});
+
+test('lectores en frío: la lectura de A2 dice que es la misión, y la de A5 usa el mismo instante que muestra', () => {
+  assert.match(plano(ideaN(2).juega.lectura({ v0: 8, t: 0.21 })), /^Misión \(2 s\)/);
+  const n1 = x => num(x);
+  for (const t of [0.625, 1.0125, 3.3375, 7.4875]) {
+    const l = plano(ideaN(5).juega.lectura({ vx: 2, vy: 3, t })), m = l.match(/En ([\d,]+) s: ([\d,]+) m al este, ([\d,]+) m al norte/);
+    const tt = n1(m[1]); assert.equal(m[2], Kit.formatear(2 * tt, 2)); assert.equal(m[3], Kit.formatear(3 * tt, 2), l);
+  }
+});
+
+test('lectores en frío: la leyenda dice cuándo aparece lo tenue; A2 nombra v_x y v_y y las rotula en el juego', () => {
+  for (const k of [1, 5]) for (const x of ideaN(k).juega.leyenda.filter(x => /tenue|punto violeta/.test(String(x.s)))) assert.match(x.t, /reloj/, `idea ${k}: ${x.s}`);
+  const ley = ideaN(2).juega.leyenda.map(x => plano(x.s)).join(' ');
+  assert.match(ley, /\bvx\b/); assert.match(ley, /\bvy\b/);
+  const g = P.geometria(ideaN(2).juega.dibujo({ v0: 12, t: 2.2 }).datos);
+  assert.deepEqual(['v_x', 'v_y'].map(t => g.rotulos.some(r => r.texto === t)), [true, true]);
+});
+
+test('lectores en frío: la regla de A5 es la misma en los dos ejes y dice que d es al origen; «Dos drones» no habla del origen', () => {
+  const ec = plano(ideaN(5).regla.ecuacion);
+  assert.match(ec, /½ · ax/); assert.match(ec, /½ · ay/); assert.match(plano(ideaN(5).regla.ecuacion.find(x => x && x.llave)), /d/);
+  assert.match(ideaN(5).regla.condicion, /distancia al origen/);
+  const drones = ideaN(5).ejemplos.find(e => e.titulo === 'Dos drones');
+  assert.ok(!/origen/.test(textoDe(drones.datos)), textoDe(drones.datos));
+  // «Así se resuelve» avisa que la vista cambia (de arriba, en el dron; de costado, en la pelota)
+  for (let s = 0; s < 6; s++) assert.match(plano(ideaN(5).resuelve.generar(s).pasos[1].texto), /de costado/);
+});
+
+test('lectores en frío: los Datos no responden la conceptual (2.14), traen vₓ = v₀ cuando el resuelto la usa (2.12) y presentan p, q y r', () => {
+  const e214 = ideaN(2).ejemplos[13], e212 = ideaN(2).ejemplos[11];
+  assert.ok(!/Aceleración en todo el vuelo/.test(textoDe(e214.datos)));
+  assert.match(textoDe(e212.datos), /vx = v0/);
+  for (const idea of def.ideas) for (const e of idea.ejemplos) for (const d of e.datos || []) if (/p · t²/.test(plano(d))) assert.match(plano(d), /p, q, r/);
+});
+
+test('auditoría: el glosario de A4 no trae la pareja de la misión (30° y 60°) ni el paso de «Mira» (5 m/s en 0,5 s)', () => {
+  const g4 = def.glosario.filter(g => ['tiempo de subida', 'alcance máximo', 'ángulos complementarios'].includes(g.termino));
+  const t = g4.map(g => [g.def, g.simple, ...g.ejemplos].join(' ')).join(' ');
+  assert.ok(!/30° y 60°|30° o a 60°/.test(t), t); assert.ok(!/5 m\/s, llega arriba en medio segundo/.test(t));
+});
+
+test('auditoría: nada se patea a más de 25 m/s (decisión 14) y ninguna altura de «Ahora tú» sale negativa', () => {
+  for (const k of [3, 4]) for (let s = 0; s < 400; s++) for (const c of [ideaN(k).ahoraTu.generar(s), ideaN(k).resuelve.generar(s)]) {
+    const t = plano(c.pregunta || c.enunciado), m = t.match(/(?:patea|pateada|pelota sale del piso|pelota sale)[^.?]*? a ([\d,]+) m\/s/);
+    if (m) assert.ok(num(m[1]) <= 25, `idea ${k}: ${t}`);
+    if (c.opciones && /qué altura/.test(t)) for (const o of c.opciones) assert.ok(!/−/.test(o.texto), `idea ${k} ${s}: ${o.texto}`);
+  }
+  for (const idea of def.ideas) for (const e of idea.ejemplos) { const t = plano(e.enunciado), m = t.match(/(?:patea|pelota)[^.?]*? a ([\d,]+) m\/s/); if (m) assert.ok(num(m[1]) <= 25, `«${e.titulo}»`); }
+});
+
+test('lectores en frío: en las reglas, cada relación va en su renglón (no se parte «v =» ni «sen θ»)', () => {
+  for (const idea of def.ideas) {
+    const ec = idea.regla.ecuacion; if (ec.filter(x => typeof x === 'string' && /^\s{2,}·\s{2,}$/.test(x)).length === 0) assert.fail(`${idea.id}: sin separador de relaciones`);
+    assert.ok(!ec.some(x => typeof x === 'string' && /;\s{2,}/.test(x)), `${idea.id}: «;» en lugar del separador`);
+  }
+  assert.ok(!/sen θ|cos θ/.test(JSON.stringify(ideaN(3).regla.ecuacion)), 'sen y θ con espacio duro');
 });

@@ -55,14 +55,14 @@ const rapidez = (w, r) => arco(r, w * 1e-3) / 1e-3;
 function encuentro(T1, T2, opuesto) { const dt = 1e-4; for (let t = dt; t < 1e5; t += dt) { const d = t / T1 + (opuesto ? t / T2 : -t / T2); if (Math.abs(d) >= 1) return t; } return NaN; }
 
 // ---------- La forma de la unidad ----------
-test('seis ideas en el orden de la propuesta; los ids publicados se conservan; aún sin calidad 2', () => {
+test('seis ideas en el orden de la propuesta; los ids publicados se conservan; con calidad 2', () => {
   assert.equal(def.unidad, 'fisica.movimiento-circular');
   assert.deepEqual(def.ideas.map(i => i.id), ['arco-y-radian', 'periodo-y-frecuencia', 'velocidad-tangencial', 'rapidez-constante-acelera', 'mcuv', 'dos-aceleraciones']);
   assert.deepEqual(def.ideas.map(i => i.titulo), ['El ángulo girado y el arco', 'Período, frecuencia y velocidad angular', 'Velocidad tangencial y transmisión',
     'Aceleración centrípeta', 'MCUV: el giro que acelera', 'Aceleración tangencial y total']);
   assert.deepEqual(def.laboratorio.map(m => m.id), ['rueda', 'giro']);
   assert.deepEqual(def.laboratorioIdeas, { rueda: ['arco-y-radian'], giro: ['rapidez-constante-acelera'] });
-  assert.notEqual(def.calidad, 2, 'calidad 2 la marca la sesión al cerrar');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   for (const i of def.ideas) {
     for (const k of ['aprendizaje', 'actividad', 'pregunta', 'lee', 'resuelve']) assert.ok(i[k], `${i.id}: ${k}`);
     assert.ok(i.juega.mision && i.juega.leyenda && i.juega.resumen, i.id);
@@ -542,4 +542,116 @@ test('la unidad pasa el validador común, y con calidad: 2 simulada pasa todas s
   assert.deepEqual(p, [], p.join('\n'));
   p = Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas, semillas: 60 });
   assert.deepEqual(p, [], p.join('\n'));
+});
+
+// ---------- Correcciones de la auditoría y del lector en frío (19 nov; rutinas/auditoria/fisica.movimiento-circular.md) ----------
+const GEN_CIRC = ['circular-mcu', 'circular-encuentros', 'circular-transmision', 'circular-mcuv', 'circular-enesimo-segundo', 'circular-horaria',
+  'circular-grafica', 'circular-aceleracion-total', 'circular-giro-combinado'].map(id => [id, require(`../../../plantillas/${id}/generador.js`)]);
+const textoCaso = c => plano([c.pregunta || c.enunciado, ' ', ...(c.opciones || []).map(o => [o.texto, ' ', o.siFuera || '', ' ']), c.solucion ? [c.solucion.texto, ' ', c.solucion.ecuacion] : '',
+  ...(c.pasos || []).map(p => [p.texto, ' ', p.ecuacion || '']), ' ', c.respuesta || '']);
+
+test('auditoría M4: los múltiplos de π van con su fracción exacta, nunca un coeficiente redondeado con «=»', () => {
+  for (const i of def.ideas) for (let s = 0; s < 400; s++) for (const c of [i.ahoraTu.generar(s), i.resuelve.generar(s)]) {
+    const t = textoCaso(c);
+    assert.ok(!/\d,\d+π/.test(t), `${i.id} semilla ${s}: «${(t.match(/[^ ]*\d,\d+π[^ ]*/) || [])[0]}»`);
+  }
+});
+
+test('auditoría A1: el glosario no da la clave de las Predice de B4 y B6', () => {
+  const g = Object.fromEntries(def.glosario.map(x => [x.termino, x]));
+  const todo = x => [x.def, x.simple, ...x.ejemplos].join(' ');
+  assert.ok(!/moto|óvalo|siempre/.test(todo(g['aceleración centrípeta'])), 'la centrípeta no usa la moto del óvalo que va siempre a la misma rapidez');
+  assert.ok(!/más rápido o más lento|cambia la rapidez/.test(todo(g['aceleración tangencial'])), 'la tangencial no dice que mide el cambio de rapidez');
+  assert.ok(!/parejo/.test(todo(g['aceleración angular'])), 'α no dice qué pasa si gira parejo');
+});
+
+test('auditoría M5: «Ahora tú» trae siempre 4 opciones distintas', () => {
+  for (const i of def.ideas) for (let s = 0; s < 400; s++) {
+    const o = i.ahoraTu.generar(s).opciones;
+    assert.equal(o.length, 4, `${i.id} semilla ${s}: ${o.map(x => x.texto).join(' | ')}`);
+    assert.equal(new Set(o.map(x => x.texto)).size, 4, `${i.id} semilla ${s}`);
+  }
+});
+
+test('auditoría M6: las explicaciones de los distractores se pueden rehacer con el enunciado', () => {
+  const e414 = idea('rapidez-constante-acelera').ejemplos.find(e => e.titulo === 'En media vuelta');
+  assert.match(plano(e414.enunciado), /20 m de radio/, 'la D (v²/r) necesita el radio del óvalo');
+  const e515 = idea('mcuv').ejemplos.find(e => e.titulo === 'Lo del cuarto segundo');
+  assert.match(plano(e515.solucion.at(-1).texto), /\(4 − 3\)²/, 'la D usa (4 − 3)², no «olvida restar» (eso es la A)');
+  cerca(2 * 14 / (4 - 3) ** 2, num(e515.alternativas[3].replace(/ rad.*/, '')), 'la D');
+});
+
+test('auditoría M7 y lector: Mira no usa la fórmula antes de la regla; R tiene un solo significado; nada sale de la nada', () => {
+  const m5 = idea('mcuv').mira.pasos;
+  for (const p of m5.slice(0, 3)) assert.ok(!/½/.test(plano([p.texto, p.ecuacion])), `B5, Mira: «${plano(p.texto)}» usa θ = ½αt² antes del último paso`);
+  const m6 = plano([idea('dos-aceleraciones').mira.pasos[0].texto, idea('dos-aceleraciones').mira.pasos[0].ecuacion]);
+  assert.match(m6, /= 2 m\/s²/, 'B6, Mira: a_T sale de lo que gana cada segundo'); assert.match(m6, /1 rad\/s²/, 'y α = a_T ÷ r a la vista');
+  assert.ok(!/ o /.test(def.letras.R), 'R: un solo significado');
+  for (const p of idea('velocidad-tangencial').mira.pasos) assert.ok(!/R/.test(plano(p.ecuacion)), 'B3, Mira: el radio del plato es r');
+  assert.ok(!/λ|latitud/.test(idea('velocidad-tangencial').regla.condicion), 'B3: la latitud va en los Datos de sus ejercicios');
+  assert.match(idea('rapidez-constante-acelera').regla.condicion, /ω, la velocidad angular/, 'B4: la regla dice qué es ω');
+  assert.ok(!idea('arco-y-radian').predice.datos.some(d => /6 rad/.test(plano(d))), 'B1: los datos de Predice no dicen hasta dónde llegó el juego');
+  assert.match(plano(idea('arco-y-radian').lee.tarjetas[1].texto), /Si llevaste Trigonometría/, 'B1 no da por sabida una unidad que no pide');
+});
+
+test('auditoría M9: una igualdad por renglón en las reglas; los Datos empiezan por la fórmula', () => {
+  // Las tres que los lectores vieron partidas a 390 px: «; 1 vuelta =» / «2π rad = 360°», «ω = θ/t =» / «2π/T», «a =» / la raíz.
+  for (const id of ['arco-y-radian', 'periodo-y-frecuencia', 'dos-aceleraciones']) assert.ok((plano(idea(id).regla.ecuacion).match(/=/g) || []).length <= 2, `${id}: la regla tiene más de dos «=»`);
+  for (const id of ['rapidez-constante-acelera', 'dos-aceleraciones']) for (const e of idea(id).ejemplos) for (const d of e.datos) {
+    const t = plano(d); if (/centrípeta|total/.test(t) && /=/.test(t)) assert.ok(!/^Aceleración/.test(t), `${id} «${e.titulo}»: «${t}» empieza con un rótulo largo`);
+  }
+});
+
+test('lector en frío: leyendas, consignas y figuras corregidas', () => {
+  assert.match(plano(idea('mcuv').juega.leyenda[0].t), /instante/, 'B5: ω es lo de ese instante');
+  assert.match(idea('periodo-y-frecuencia').juega.consigna, /cronómetro corre solo/, 'B2: para qué es el cronómetro');
+  // B1: el rótulo del radio va afuera de la rueda (los rayos lo tachaban).
+  const g1 = P.geometria(idea('arco-y-radian').juega.dibujo({ th: 1 }).datos);
+  const r8 = g1.rotulos.find(r => r.texto === 'r = 8 m'); assert.ok(r8 && r8.x1 < 150 - 80, 'r = 8 m afuera del aro');
+  // B1, juego: el rótulo del arco no cruza las patas del soporte, en toda la grilla.
+  for (let th = 0.25; th <= 6; th += 0.25) {
+    const d = idea('arco-y-radian').juega.dibujo({ th }).datos, g = P.geometria(d), s = g.rotulos.find(r => /^s = /.test(r.texto));
+    for (const sg of [-1, 1]) { const x1 = 150, y1 = 116 + 24, x2 = 150 + sg * 0.62 * 80, y2 = 116 + 98, k = 40;
+      for (let q = 0; q <= k; q++) { const x = x1 + (x2 - x1) * q / k, y = y1 + (y2 - y1) * q / k; assert.ok(!(x > s.x0 + 1 && x < s.x1 - 1 && y > s.y0 + 1 && y < s.y1 - 1), `th = ${th}: «${s.texto}» sobre la pata`); } }
+  }
+  // B3: «Beto» junto a su caballo, no sobre el eje.
+  for (const t of [0, 2, 3, 6, 9]) { const g = P.geometria(idea('velocidad-tangencial').juega.dibujo({ ra: 3, rb: 1.5, t }).datos), b = g.rotulos.find(r => r.texto === 'Beto');
+    assert.ok(!(b.x0 < 160 + 22 && b.x1 > 160 - 22 && b.y0 < 118 + 22 && b.y1 > 118 - 22), `t = ${t}: «Beto» sobre el eje`); }
+  // B3, «Ahora tú»: el cuerpo que nombra el texto y la flecha en la punta del radio.
+  for (let s = 0; s < 200; s += 4) { const a = idea('velocidad-tangencial').ahoraTu.generar(s), d = a.dibujo.datos, q = plano(a.pregunta);
+    if (/aspa/.test(q)) assert.equal(d.cuerpos[0].tipo, 'ventilador', q);
+    assert.equal(d.flechas[0].ang, d.radios[0].ang, `${q}: la flecha va en la punta del radio dibujado`); }
+  // Tarjetas del lector B.
+  const ej = (id, t) => idea(id).ejemplos.find(e => e.titulo === t);
+  assert.ok(ej('arco-y-radian', 'La punta del minutero').figura.datos.arcos.some(a => a.texto === '?'), '1.08: el reloj marca el camino de 20 min');
+  assert.ok(!ej('arco-y-radian', 'La punta del minutero').datos.some(d => /horario/.test(plano(d))), '1.08: sin el horario que no se usa');
+  assert.ok(ej('velocidad-tangencial', 'El balde y la polea doble').figura.datos.textos.some(t => /soga/.test(t.texto)), '3.14: qué garganta lleva la soga');
+  assert.ok(ej('rapidez-constante-acelera', 'El radio de la curva').figura.datos.flechas.some(f => f.dir === 'centro'), '4.03: a_c con su flecha');
+  for (const t of ['La α con la tangencial', 'Con α y con ω']) assert.equal(ej('dos-aceleraciones', t).figura.datos.cuerpos[0].tipo, 'ventilador', `${t}: dice ventilador y dibuja un ventilador`);
+  // B6: la regla tiene su dibujo, con las dos partes y la total.
+  assert.equal(idea('dos-aceleraciones').regla.dibujo.datos.flechas.filter(f => f.color === 'h').length, 3);
+  // Ningún «ₒ» (letra o) donde va el subíndice 0.
+  assert.ok(!/ₒ/.test(require('node:fs').readFileSync(path.join(__dirname, 'movimiento-circular.js'), 'utf8')));
+});
+
+test('auditoría M2 y M3: la práctica usa los colores y los nombres de la unidad', () => {
+  const PAL = new Set(['o', 'i', 'f', 'h', 'tinta']);
+  for (const [id, G] of GEN_CIRC) for (const ideaId of Object.keys(G.TIPOS_POR_IDEA)) for (let s = 0; s < 200; s++) {
+    const p = G.generar(s, { unidad: def.unidad, idea: ideaId }), t = JSON.stringify([p.enunciado, p.pregunta, p.solucion, p.alternativas, p.datos]);
+    assert.ok(!/rapidez angular/.test(t), `${id} semilla ${s}: «rapidez angular» (la unidad dice velocidad angular)`);
+    for (const [k, v] of Object.entries(p.variables)) {
+      assert.ok(PAL.has(v.color), `${id} semilla ${s}: ${k} (${v.nombre}) en ${v.color}`);
+      const n = v.nombre;
+      if (/^aceleraci/.test(n)) assert.equal(v.color, 'h', `${id}: ${n}`);
+      if (/^(tiempo|intervalo)/.test(n)) assert.equal(v.color, 'i', `${id}: ${n}`);
+      if (/^(ángulo|vueltas|posición angular)/.test(n)) assert.equal(v.color, 'f', `${id}: ${n}`);
+      if (/^velocidad angular/.test(n)) assert.equal(v.color, 'o', `${id}: ${n}`);
+    }
+    if (p._datos.vueltas) assert.ok(p.datos.some(d => /vueltas\/s²/.test(d)), `${id} semilla ${s}: la unidad «vueltas/s²» se dice en los Datos`);
+  }
+  // La escena «El disco y sus flechas» con las variables CSS de la unidad (naranja, turquesa, violeta y carmín).
+  const html = require('node:fs').readFileSync(path.join(__dirname, '..', '..', '..', 'plantillas', 'movimiento-circular', 'index.html'), 'utf8');
+  const claro = Object.fromEntries([...html.match(/:root\{[^}]*\}/)[0].matchAll(/--c-(\w+):(#[0-9a-f]{6})/g)].map(m => [m[1], m[2]]));
+  assert.deepEqual([claro.v, claro.w, claro.t, claro.th, claro.a, claro.at, claro.alfa], ['#a95300', '#a95300', '#07746e', '#6b3dbd', '#c02a5c', '#c02a5c', '#c02a5c']);
+  assert.ok(!/flechas? (ocres?|verdes?|moradas?)|cursor naranja/.test(html), 'la escena no nombra los colores de antes');
 });

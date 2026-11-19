@@ -718,7 +718,7 @@
   // naranja, como toda velocidad; los radios (R, r) y la latitud λ, en tinta (un largo y un ángulo que no gira), sin verde
   // ni carmín. «tinta» se pinta como una variable sin color: negrita y subrayado punteado (clase .var de la app).
   const VAR_LAT = { R: { nombre: 'radio de la Tierra', color: 'tinta' }, lam: { nombre: 'latitud', color: 'tinta' }, r: { nombre: 'radio de giro', color: 'tinta' } };
-  const VAR_LAT_SUB = { rapidez: { x: { nombre: 'rapidez lineal', color: 'o' } }, radio: { x: { nombre: 'radio de giro', color: 'tinta' } } };
+  const VAR_LAT_SUB = { rapidez: { x: { nombre: 'rapidez', color: 'o' } }, radio: { x: { nombre: 'radio de giro', color: 'tinta' } } };
   // Latitudes de ciudades del Perú redondeadas al grado (valores aproximados, con «unos»): Juliaca 15° 30′ S, Arequipa
   // 16° 24′ S, el Cusco 13° 31′ S, Tacna 18° 01′ S, Lima 12° 03′ S. Los cosenos y senos se dan redondeados para la cuenta.
   const LUGARES = [
@@ -760,10 +760,10 @@
     const solucion = [
       ['El lugar gira en su paralelo, de radio ', v('r', 'r'), ' = ', v('R', 'R'), '·cos ', v('lam', 'λ'), ` = ${f(R)}·${f(L.cos)} = ${f(r)} km.`],
       ['En 24 h da una vuelta: ', v('x', 'v'), ` = 2π·r/T = 2·3·${f(r)}/24 = `, v('x', `${f(correcta)} km/h`), '.'],
-      ['Todos los lugares giran con la misma velocidad angular; la rapidez lineal es mayor en el ecuador porque ahí el radio de giro es el mayor.'],
+      ['Todos los lugares giran con la misma velocidad angular; la rapidez es mayor en el ecuador porque ahí el radio de giro es el mayor.'],
     ];
     return cerrar(rng, semilla, { correcta, errores, texto: con('km/h'), unidad: 'km/h', variables: Object.assign({}, VAR_LAT, VAR_LAT_SUB.rapidez), enunciado,
-      pregunta: ['¿Con qué ', v('x', 'rapidez lineal'), ` se mueve ${L.nombre} por la rotación de la Tierra?`], solucion, datos: { tipo: 'latitud', sub, lat: L.lat, lugar: L.nombre } });
+      pregunta: ['¿Con qué ', v('x', 'rapidez'), ` se mueve ${L.nombre} por la rotación de la Tierra?`], solucion, datos: { tipo: 'latitud', sub, lat: L.lat, lugar: L.nombre } });
   }
 
   return { id: 'cinematica-medias', titulo: 'El viaje en tramos', generar, tiposPorUnidad: TIPOS_POR_UNIDAD };

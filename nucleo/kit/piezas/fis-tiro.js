@@ -185,12 +185,12 @@
       calles += `<line x1="${n(X(m))}" y1="${n(YT)}" x2="${n(X(m))}" y2="${n(YB)}" stroke="currentColor" stroke-width="${m ? 1 : 2}" stroke-opacity="${m ? 0.16 : 1}"/>`
         + `<line x1="${XI}" y1="${n(Y(m))}" x2="${n(X(max))}" y2="${n(Y(m))}" stroke="currentColor" stroke-width="${m ? 1 : 2}" stroke-opacity="${m ? 0.16 : 1}"/>`;
       if (Math.abs(m / num - Math.round(m / num)) < 1e-9) {
-        rot.push(caja(X(m), YB + 18, fmt(m), { ancla: 'middle', tipo: 'numero' }));
+        rot.push(caja(X(m), YB + 24, fmt(m), { ancla: 'middle', tipo: 'numero' }));
         if (m) rot.push(caja(XI - 7, Y(m) + 5, fmt(m), { ancla: 'end', tipo: 'numero' }));
       }
     }
     s += `<g class="fis-calles">${calles}</g>`;
-    rot.push(caja(W - M, YB + 36, 'x (m), al este', { ancla: 'end', peso: 700, color: 'f', tipo: 'nombre' }));
+    rot.push(caja(W - M, YB + 42, 'x (m), al este', { ancla: 'end', peso: 700, color: 'f', tipo: 'nombre' }));
     rot.push(caja(M, YT - 12, 'y (m), al norte', { peso: 700, color: 'f', tipo: 'nombre' }));
     // la plaza, en el origen: un cuadrado con su pileta
     s += `<g class="kit-objeto" data-objeto="plaza" data-prueba="si"><rect x="${n(X(0) - 7)}" y="${n(Y(0) - 7)}" width="14" height="14" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="2"/><circle cx="${n(X(0))}" cy="${n(Y(0))}" r="2.5" fill="currentColor"/></g>`;
@@ -228,7 +228,7 @@
       if (d.flechas.v !== false) { s += T.flecha(px, py, px + wx * kv, py - wy * kv, { color: 'o', grosor: 3, clase: 'fis-vel' }); if (tx.v) rot.push(caja(px + wx * kv + 6, py - wy * kv - 4, tx.v, { peso: 700, color: tx.v === '?' ? undefined : 'o', tipo: 'vel' })); }
     }
     if (d.reloj && d.reloj.texto) rot.push(caja(W - M, 20, d.reloj.texto, { ancla: 'end', peso: 700, color: 'i', tipo: 'reloj' }));
-    return { W, M, H: Math.round(YB + 44), s, rotulos: rot, objetos, puntos, sombras, X, Y, k, t, pos: ahora };
+    return { W, M, H: Math.round(YB + 50), s, rotulos: rot, objetos, puntos, sombras, X, Y, k, t, pos: ahora };
   }
 
   function geometria(datos, estado = {}) {
@@ -242,10 +242,18 @@
     const cima = vy0 > 0 ? vy0 * vy0 / (2 * g) : 0, techo = d.techo > 0 ? d.techo : Math.max(alto + cima, 1e-6);
     // el objeto sale un poco delante del borde; si otra piedra se suelta a la vez, esa va pegada a la pared
     const XD = X0 + 9, XL = esPiso ? (d.alturas ? 60 : 28) : d.otra ? X0 + 28 : XD;
-    const k = Math.min((XFIN - XL) / ancho, (d.altoMax > 0 ? d.altoMax : ALTO_MAX) / techo);
+    // Sin escala (auditoría, 19 nov): si la figura pide una longitud con «?» (cota) y trae otra con número, a escala la
+    // pedida se mediría contra la dada (la canica de 80 cm caía a una raya igual de larga). Entonces cada eje lleva su
+    // escala: lo de lado llena el 62 % del piso y la altura mide siempre 110 px, y un rótulo dice «Dibujo sin escala».
+    const conNum = c => c && c.texto && c.texto !== '?' && /\d/.test(c.texto), conQ = c => c && c.texto === '?';
+    const cotas = [d.cotaAlto, d.cotaAlcance, d.cotaH];
+    const sinEscala = d.escala === false || (cotas.some(conQ) && cotas.some(conNum));
+    const k0 = Math.min((XFIN - XL) / ancho, (d.altoMax > 0 ? d.altoMax : ALTO_MAX) / techo);
+    const largo = d.cotaAlcance && d.cotaAlcance.hasta > 0 ? d.cotaAlcance.hasta : ancho * 0.8;
+    const kx = sinEscala ? 0.62 * (XFIN - XL) / largo : k0, ky = sinEscala ? 110 / techo : k0, k = kx;
     // YF: el piso; YL: el nivel de salida; Yh(y): una altura sobre el piso; Y(h): lo que ha bajado desde la salida
-    const YF = Y0 + k * techo, YL = Math.round((YF - k * alto) * 100) / 100;
-    const X = m => XL + k * m, Yh = y => YF - k * y, Y = h => YL + k * h;
+    const YF = Y0 + ky * techo, YL = Math.round((YF - ky * alto) * 100) / 100;
+    const X = m => XL + kx * m, Yh = y => YF - ky * y, Y = h => YL + ky * h;
     const tCae = (vy0 + Math.sqrt(vy0 * vy0 + 2 * g * alto)) / g;
     // si hay una pared enfrente, el vuelo termina en ella
     const tFin = d.pared && vx > 0 && d.pared.en / vx < tCae ? d.pared.en / vx : tCae;
@@ -291,7 +299,7 @@
     const pl = plataforma(tipo, YF, XL, obj === 'agua' ? 6 : Math.round(rr), YL, angSalida);
     s += pl.s; if (pl.caja) objetos.push(pl.caja);
     if (d.pared) {
-      const px = X(d.pared.en), py = Math.max(Y0 - 20, YF - k * (d.pared.alto || alto)), pw = Math.min(26, W - M - px);
+      const px = X(d.pared.en), py = Math.max(Y0 - 20, YF - ky * (d.pared.alto || alto)), pw = Math.min(26, W - M - px);
       let b = `<rect x="${n(px)}" y="${n(py)}" width="${n(pw)}" height="${n(YF - py)}" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="2"/>`;
       for (let y = py + 10; y < YF - 16; y += 22) b += `<rect x="${n(px + 7)}" y="${n(y)}" width="12" height="9" rx="1.5" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="1.2"/>`;
       s += `<g class="kit-objeto" data-objeto="pared" data-prueba="si">${b}</g>`;
@@ -305,7 +313,7 @@
         objetos.push({ nombre: 'planta', x0: bx - 9, x1: bx + 9, y0: YF - 23, y1: YF });
       } else if (d.blanco.tipo === 'arco') {
         // el arco de fútbol, de costado: el poste con su travesaño (alto, en metros) y la red que cae hacia atrás
-        const ya = YF - k * (d.blanco.alto > 0 ? d.blanco.alto : 2.44);
+        const ya = YF - ky * (d.blanco.alto > 0 ? d.blanco.alto : 2.44);
         s += `<g class="kit-objeto" data-objeto="arco" data-prueba="si"><path d="M${n(bx)} ${n(YF)}V${n(ya)}H${n(bx + 5)}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M${n(bx + 5)} ${n(ya)}L${n(bx + 13)} ${n(YF)}" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2"/></g>`;
         objetos.push({ nombre: 'arco', x0: bx - 1, x1: bx + 13, y0: ya - 1, y1: YF });
       } else if (d.blanco.tipo === 'marca') s += `<path class="fis-blanco" d="M${n(bx - 6)} ${n(YF - 6)}L${n(bx + 6)} ${n(YF + 6)}M${n(bx + 6)} ${n(YF - 6)}L${n(bx - 6)} ${n(YF + 6)}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>`;
@@ -317,7 +325,7 @@
           + `<path d="M${n(bx - 12)} ${n(y - 4.7)}v3.6M${n(bx - 4)} ${n(y - 4.5)}v4.3M${n(bx + 4)} ${n(y - 4.5)}v4.3M${n(bx + 12)} ${n(y - 4.7)}v3.6" stroke="currentColor" stroke-width="1.1"/></g>`;
         objetos.push({ nombre: 'balsa', x0: bx - 22, x1: bx + 22, y0: y - 10, y1: y });
       }
-      if (d.blanco.texto) rot.push(caja(bx, YF - (d.blanco.tipo === 'planta' ? 28 : d.blanco.tipo === 'arco' ? k * (d.blanco.alto > 0 ? d.blanco.alto : 2.44) + 8 : 16), d.blanco.texto, { ancla: 'middle', tipo: 'blanco' }));
+      if (d.blanco.texto) rot.push(caja(bx, YF - (d.blanco.tipo === 'planta' ? 28 : d.blanco.tipo === 'arco' ? ky * (d.blanco.alto > 0 ? d.blanco.alto : 2.44) + 8 : 16), d.blanco.texto, { ancla: 'middle', tipo: 'blanco' }));
     }
 
     // ---- las marcas de cada tanto: objetos tenues, sus sombras y sus niveles ----
@@ -379,14 +387,16 @@
       const L = lim(vx * 3, 15, 66), fy = YL - 12, fx = XL - 2;
       salida = { x: fx + L, y: fy, x0: fx, kv: 3 };
       s += T.flecha(fx, fy, fx + L, fy, { color: 'o', grosor: 3, clase: 'fis-salida' });
-      if (d.flecha.texto) rot.push(caja(fx, fy - 9, d.flecha.texto, { peso: 700, color: d.flecha.texto === '?' ? undefined : 'o', tipo: 'flecha' }));
+      // el rótulo, pasando la punta: encima, la manija del juego (13 px de halo) lo tapaba (lector en frío, 19 nov)
+      if (d.flecha.texto) rot.push(caja(fx + L + 16, fy + 5, d.flecha.texto, { peso: 700, color: d.flecha.texto === '?' ? undefined : 'o', tipo: 'flecha' }));
     } else if (d.flecha) {
       // con ángulo: sale del objeto, a lo largo de la velocidad de salida; su rótulo, pasando la punta
-      const ca = Math.cos(angSalida), sa = Math.sin(angSalida), L = lim(Math.hypot(vx, vy0) * 3, 30, 72);
+      // larga, para que la punta (y su manija) quede lejos del rótulo del ángulo; la de la manguera, fija
+      const ca = Math.cos(angSalida), sa = Math.sin(angSalida), L = tipo === 'manguera' ? 72 : lim(30 + 2 * Math.hypot(vx, vy0), 40, 80);
       const x1 = XL + ca * (rr + 3), y1 = YL - sa * (rr + 3), x2 = x1 + ca * L, y2 = y1 - sa * L;
       salida = { x: x2, y: y2, x0: x1, y0: y1 };
       s += T.flecha(x1, y1, x2, y2, { color: 'o', grosor: 3, clase: 'fis-salida' });
-      if (d.flecha.texto) rot.push(caja(x2, Math.max(y2 - 9, M + 12), d.flecha.texto, { ancla: 'middle', peso: 700, color: d.flecha.texto === '?' ? undefined : 'o', tipo: 'flecha' }));
+      if (d.flecha.texto) rot.push(caja(x2 + ca * 22, Math.max(y2 - sa * 22 + 4, M + 12), d.flecha.texto, { ancla: ca > 0.45 ? 'start' : 'middle', peso: 700, color: d.flecha.texto === '?' ? undefined : 'o', tipo: 'flecha' }));
     }
     // el ángulo de lanzamiento, en tinta: su arco desde la horizontal y su rótulo
     if (d.angulo && vy0 > 0) {
@@ -421,16 +431,23 @@
       veces.forEach((q, i) => {
         const p = pos(q), cx = X(p.x) - 14, cy = Y(p.h);
         s += flechaA(cx, cy - 4, cx, cy + 22);
-        if (i === veces.length - 1 && d.gravedad.texto) rot.push(caja(cx - 7, cy + 14, d.gravedad.texto, { ancla: 'end', peso: 700, color: 'h', tipo: 'g' }));
+        // cada flecha carmín con su «g» (lector en frío, 19 nov: con una sola rotulada, la otra se leía como v_y)
+        if (d.gravedad.texto) rot.push(caja(cx - 7, cy + 14, d.gravedad.texto, { ancla: 'end', peso: 700, color: 'h', tipo: 'g' }));
       });
     }
     // ---- cotas de los ejemplos: la altura junto a la pared y lo que avanza bajo el piso ----
+    // La altura va en la vertical de salida (lectores en frío, 19 nov: la raya del alcance empezaba entre la pared y la
+    // cota de la altura, «ni en la pared ni en la línea»): las dos cotas parten del mismo punto, bajo el objeto.
+    const bajoObjeto = YL + Math.max(rr, 3) + 3;
     if (d.cotaAlto) {
-      const cx = tipo === 'avioneta' ? M + 22 : XL + 16, c = d.cotaAlto.texto === '?' ? 'currentColor' : 'var(--c-f)';
+      const cx = XL, c = d.cotaAlto.texto === '?' ? 'currentColor' : 'var(--c-f)';
       // lo que se pide («?») va en tinta y con la línea discontinua, para que no se lea como otra pared
-      s += `<path class="fis-cota" d="M${cx - 5} ${YL}H${cx + 5}M${cx - 5} ${n(YF)}H${cx + 5}" stroke="${c}" stroke-width="2" stroke-linecap="round" fill="none"/>`
-        + `<path class="fis-cota" d="M${cx} ${YL}V${n(YF)}" stroke="${c}" stroke-width="2"${d.cotaAlto.texto === '?' ? ' stroke-dasharray="5 4"' : ' stroke-linecap="round"'} fill="none"/>`;
+      s += `<path class="fis-cota" d="M${n(cx - 5)} ${n(YF)}H${n(cx + 5)}" stroke="${c}" stroke-width="2" stroke-linecap="round" fill="none"/>`
+        + `<path class="fis-cota" d="M${n(cx)} ${n(bajoObjeto)}V${n(YF)}" stroke="${c}" stroke-width="2"${d.cotaAlto.texto === '?' ? ' stroke-dasharray="5 4"' : ' stroke-linecap="round"'} fill="none"/>`;
       rot.push(caja(cx + 8, (YL + YF) / 2 + 5, d.cotaAlto.texto, { peso: 700, color: d.cotaAlto.texto === '?' ? undefined : 'f', tipo: 'cota' }));
+    } else if (!esPiso && (d.cotaAlcance || (d.otra && d.regla))) {
+      // sin cota de altura: la vertical de salida, tenue y punteada, marca desde dónde se mide x (su 0)
+      s += `<path class="fis-vertical" d="M${n(XL)} ${n(bajoObjeto)}V${n(YF)}" stroke="currentColor" stroke-width="1" stroke-dasharray="2 3" stroke-opacity="0.6" fill="none"/>`;
     }
     if (d.cotaAlcance) {
       const x2 = X(d.cotaAlcance.hasta > 0 ? d.cotaAlcance.hasta : ancho * 0.8), cy = YF + 14, c = d.cotaAlcance.texto === '?' ? 'currentColor' : 'var(--c-f)';
@@ -447,8 +464,11 @@
     }
     // el reloj, arriba a la derecha: el instante que se dibuja, en turquesa (el texto lo trae quien llama)
     if (d.reloj && d.reloj.texto) rot.push(caja(W - M, 20, d.reloj.texto, { ancla: 'end', peso: 700, color: 'i', tipo: 'reloj' }));
-    const H = Math.round(YF + (d.regla || d.cotaAlcance ? 46 : 14));
-    return { W, M, H, s, rotulos: rot, objetos, puntos, sombras, X, Y, Yh, k, XL, XD, Y0, YL, YF, RX, t, tFin, tCae, salida };
+    // la nota, abajo a la derecha, debajo de todo lo demás
+    const H0 = Math.round(YF + (d.regla || d.cotaAlcance ? 46 : 14));
+    if (sinEscala) rot.push(caja(W - M, H0 + 8, 'Dibujo sin escala', { ancla: 'end', tam: 12, tipo: 'nota' }));
+    const H = sinEscala ? H0 + 16 : H0;
+    return { W, M, H, s, rotulos: rot, objetos, puntos, sombras, X, Y, Yh, k, kx, ky, sinEscala, XL, XD, Y0, YL, YF, RX, t, tFin, tCae, salida };
   }
 
   // Subíndices de verdad en los rótulos (como en la pieza flechas): «v_x» se dibuja con la x más chica y más abajo.

@@ -31,7 +31,7 @@
   const corto = (x, dec = 2) => Number.isFinite(x) && x > 0 && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-7 && x < 1e5;
   const ORD = ['', 'primer', 'segundo', 'tercer', 'cuarto', 'quinto', 'sexto', 'séptimo', 'octavo', 'noveno', 'décimo', 'undécimo', 'duodécimo'];
   const OBJ = [['Un disco', 'el disco'], ['Una rueda', 'la rueda'], ['Un ventilador', 'el ventilador'], ['Una polea', 'la polea'], ['Un esmeril', 'el esmeril']];
-  const variables = { k: { nombre: 'lo girado en el segundo dato', color: 'o' }, al: { nombre: 'aceleración angular', color: 'i' }, w0: { nombre: 'rapidez angular inicial', color: 'h' }, m: { nombre: 'lo que se pide', color: 'd' } };
+  const variables = { k: { nombre: 'lo girado en el segundo dato', color: 'o' }, al: { nombre: 'aceleración angular', color: 'i' }, w0: { nombre: 'velocidad angular inicial', color: 'h' }, m: { nombre: 'lo que se pide', color: 'd' } };
 
   // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
   // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
@@ -161,10 +161,35 @@
           "El segundo número n va del instante t = n − 1 al instante t = n"
       ]
   };
+  // Un color fijo por magnitud, el de la unidad fisica.movimiento-circular (COLORES de su teoría; docs/molde-unidad.md
+  // §5b; auditoría del 19 nov, M2): la velocidad (ω, v, rpm) en naranja, el tiempo (t, T) en turquesa, el giro (θ, vueltas)
+  // en violeta, la aceleración (α, a_T, a_c) en carmín; radios, distancias, latitudes y razones en tinta. Sin verde. Antes
+  // cada problema pintaba por papel (lo que se pide en verde). Una variable de un objeto («móvil A», «rueda B», «lo que se
+  // pide») toma el color de la unidad de lo que escribe.
+  const COLOR_UNIDAD = [[/rad\/s²|m\/s²|vueltas?\/s²/, 'h'], [/rad\/s|rpm|m\/s|km\/h|Hz|por segundo|vueltas?\/s/, 'o'], [/\d\s*(s|ms|min|minutos?|h)\b/, 'i'], [/vueltas?\b|\brad\b|°/, 'f'], [/\d\s*(cm|m|km)\b/, 'tinta']];
+  const COLOR_SIMBOLO = [[/(^|\s)ω/, 'o'], [/(^|\s)α/, 'h'], [/(^|\s)θ/, 'f'], [/^(v|v[A-Z0-9])$/, 'o'], [/^a(cp|T|c|_)/, 'h'], [/^t$/, 'i']];
+  const COLOR_NOMBRE = [[/aceleraci|desaceleraci/, 'h'], [/tiempo|intervalo|periodo|período/, 'i'], [/ángulo|vueltas|posición angular|área|desfase|separación|girado/, 'f'],
+    [/radio|diámetro|distancia/, 'tinta'], [/rapidez|velocidad|giro/, 'o']];
+  const colorDeLista = (lista, t) => (lista.find(([re]) => re.test(t)) || [])[1];
+  function colorPorMagnitud(pr) {
+    const textos = {};
+    const recorrer = x => { if (!x) return; if (Array.isArray(x)) { x.forEach(recorrer); return; } if (typeof x === 'object') { if ('v' in x && 't' in x) (textos[x.v] = textos[x.v] || []).push(String(x.t)); else Object.values(x).forEach(recorrer); } };
+    recorrer([pr.enunciado, pr.pregunta, pr.solucion]);
+    const unidad = pr.respuesta && pr.respuesta.unidad ? `1 ${pr.respuesta.unidad}` : '';
+    for (const [k, va] of Object.entries(pr.variables || {})) {
+      const nom = String(va.nombre || ''), ts = textos[k] || [];
+      va.color = /latitud|razón/.test(nom) ? 'tinta' : /altura/.test(nom) ? 'f' : /aceleraci/.test(nom) ? 'h'
+        : /lo que se pide/.test(nom) ? (colorDeLista(COLOR_UNIDAD, unidad) || 'tinta')
+        : colorDeLista(COLOR_UNIDAD, ts.join(' ')) || colorDeLista(COLOR_NOMBRE, nom) || ts.map(t => colorDeLista(COLOR_SIMBOLO, t)).find(Boolean) || 'tinta';
+    }
+    return pr;
+  }
   const generarConDatos = (semilla, opciones) => {
     const pr = generar(semilla, opciones);
     if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
-    return pr;
+    // Contado en vueltas, la unidad lo dice (auditoría del 19 nov, M10: «vueltas/s²» no se presenta en la teoría).
+    if (pr._datos.vueltas) pr.datos.push('Contando en vueltas: θ en vueltas, ω en vueltas/s y α en vueltas/s²; 1 vuelta = 2π rad');
+    return colorPorMagnitud(pr);
   };
   return { id: 'circular-enesimo-segundo', titulo: 'Segundo a segundo: lo que gira cada segundo', generar: generarConDatos, TIPOS_POR_IDEA };
 });

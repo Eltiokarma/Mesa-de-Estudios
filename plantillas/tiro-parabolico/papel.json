@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["fisica.movimiento-circular"],
       "nivel": "básico",
       "enunciado": "En un taller, una polea de 10 cm de radio, montada en un motor, gira a 30 rad/s y mueve con una faja (correa) a otra polea de 30 cm de radio. En el mismo eje de esta segunda polea hay una rueda de 50 cm de radio. ¿Con qué velocidad angular gira la polea de 30 cm y a qué rapidez va el borde de la rueda de 50 cm?",
       "respuesta": "La polea de 30 cm gira a 10 rad/s y el borde de la rueda de 50 cm va a 5 m/s.",
@@ -48,6 +49,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["fisica.movimiento-parabolico-y-circular"],
       "nivel": "básico",
       "enunciado": "Desde la azotea de un edificio de 80 m, un niño lanza una pelota en horizontal a 40 m/s hacia la pared de otro edificio que está a 120 m. ¿Llega a la pared antes de tocar el suelo? ¿Cuánto tarda, a qué altura golpea la pared y con qué rapidez?",
       "respuesta": "Sí: tardaría 4 s en llegar al suelo y llega a la pared a los 3 s. La golpea a 35 m de altura, a 50 m/s, inclinada 37° bajo la horizontal.",
@@ -92,6 +94,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["fisica.movimiento-parabolico-y-circular"],
       "nivel": "básico",
       "enunciado": "Un proyectil se lanza desde el suelo con 20 m/s, formando 53° con la horizontal. ¿Cuánto valen las componentes de su velocidad inicial, cuánto tarda en llegar a lo más alto, qué altura máxima alcanza, cuánto tiempo está en el aire y cuál es su alcance?",
       "respuesta": "vx = 12 m/s y v₀y = 16 m/s; sube 1,6 s, llega a 12,8 m, está 3,2 s en el aire y su alcance es 38,4 m.",
@@ -124,6 +127,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["fisica.movimiento-parabolico-y-circular"],
       "nivel": "intermedio",
       "enunciado": "Un futbolista patea la pelota desde el piso con 25 m/s, a 37° sobre la horizontal. ¿A qué distancia cae? En el punto más alto, ¿cuánto vale la velocidad de la pelota y cuánto su aceleración?",
       "respuesta": "Cae a 60 m. En el punto más alto su velocidad es 20 m/s, horizontal, y su aceleración es 10 m/s² hacia abajo.",
@@ -167,6 +171,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["fisica.movimiento-parabolico-y-circular"],
       "nivel": "intermedio",
       "enunciado": "Dos proyectiles salen del suelo con la misma rapidez, 30 m/s: uno a 37° y otro a 53°. ¿Cuál llega más lejos? ¿Cuál sube más alto y cuál está más tiempo en el aire?",
       "respuesta": "Llegan igual de lejos, a 86,4 m. El de 53° sube más (28,8 m contra 16,2 m) y está más tiempo en el aire (4,8 s contra 3,6 s).",
@@ -209,6 +214,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["fisica.movimiento-parabolico-y-circular"],
       "nivel": "intermedio",
       "enunciado": "Una avioneta vuela en horizontal a 40 m/s constantes, a 125 m de altura, y suelta un paquete con víveres. Sin aire, ¿cuánto tarda el paquete en llegar al suelo, a qué distancia horizontal del punto donde lo soltaron cae y dónde está la avioneta en ese momento?",
       "respuesta": "Tarda 5 s y cae a 200 m del punto donde lo soltaron. La avioneta está justo encima del paquete.",
@@ -236,6 +242,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["fisica.movimiento-circular"],
       "nivel": "intermedio",
       "enunciado": "La rueda de una bicicleta, de 0,3 m de radio, da 2 vueltas por segundo. ¿Cuánto valen su periodo, su velocidad angular, la rapidez de un punto del borde y su aceleración centrípeta? Usa π.",
       "respuesta": "T = 0,5 s; ω = 4π rad/s; v = 1,2π m/s (unos 3,8 m/s); ac = 4,8π² m/s² (unos 47 m/s²).",
@@ -265,6 +272,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["fisica.movimiento-circular"],
       "nivel": "intermedio",
       "enunciado": "En una pista circular de 360 m, Ana corre a 7 m/s y Beto a 5 m/s. Salen juntos del mismo punto. a) Si corren en el mismo sentido, ¿cuándo alcanza Ana a Beto por primera vez y a qué distancia de la salida? b) Si corren en sentidos contrarios, ¿cada cuánto tiempo se cruzan?",
       "respuesta": "a) A los 180 s, a 180 m de la salida (Ana corrió 1260 m y Beto 900 m). b) Cada 30 s.",
@@ -311,6 +319,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["fisica.movimiento-parabolico-y-circular"],
       "nivel": "avanzado",
       "enunciado": "Desde la azotea de un edificio de 20 m se lanza una pelota con 25 m/s, a 37° sobre la horizontal. ¿Qué altura máxima alcanza sobre el suelo, cuánto tarda en llegar al suelo, a qué distancia del edificio cae y con qué rapidez llega?",
       "respuesta": "Llega a 31,25 m, cae a los 4 s, a 80 m del edificio, con una rapidez de 5√41 m/s (unos 32 m/s).",
@@ -343,6 +352,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["fisica.movimiento-circular"],
       "nivel": "avanzado",
       "enunciado": "La rueda de una bicicleta, de 40 cm de radio, gira con una frecuencia de 3 vueltas por segundo. El ciclista frena y la rueda se detiene de manera uniforme en 6 s. ¿Cuántas vueltas da hasta detenerse? ¿Cuánto vale su aceleración angular? A los 3 s de empezar a frenar, ¿cuánto valen la aceleración tangencial y la centrípeta de un punto del borde? Usa π.",
       "respuesta": "9 vueltas (18π rad); α = −π rad/s²; a los 3 s, at = −0,4π ≈ −1,26 m/s² y ac = 3,6π² ≈ 35,5 m/s².",

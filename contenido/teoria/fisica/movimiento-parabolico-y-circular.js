@@ -18,7 +18,7 @@
  *      otro ángulo que riegue la planta (60°). Predice: al doble de rapidez, cuatro veces más lejos.
  *   A5 `ecuaciones-en-el-plano` «Ecuaciones del movimiento en el plano» .. el dron sobre las calles, visto desde arriba.
  *      Misión: pasar sobre la antena (3 y 4 m/s o 6 y 8 m/s). Predice: la distancia a la plaza con 6t y 8t (50 m).
- * La unidad todavía NO declara calidad: 2: la marca la sesión después del lector en frío y el auditor (la prueba propia la
+ * La unidad lleva calidad: 2 desde el 19 nov, después del lector en frío y el auditor (la prueba propia la
  * simula y pasa).
  *
  * Ficha de tarea (diseno-y-animacion), idea A1:
@@ -341,8 +341,8 @@
         { s: [Mx], t: 'cuánto avanzó de lado, en metros' },
         { s: [Mh], t: 'cuánto ha caído desde que salió' },
         { s: [Mt], t: 'segundos desde que sale' },
-        { s: 'piedra tenue', t: 'dónde estaba cada medio segundo' },
-        { s: 'punto violeta', t: 'la marca de la piedra en cada regla' },
+        { s: 'piedra tenue', t: 'cada medio segundo, al correr el reloj' },
+        { s: 'punto violeta', t: 'su marca en cada regla, con el reloj' },
         { s: 'balsa', t: 'la balsa de totora, en el agua' },
       ],
       controles: [
@@ -384,8 +384,8 @@
     },
     regla: {
       texto: 'De lado avanza parejo, como un MRU; hacia abajo cae como si la soltaran. El tiempo de caída sale solo de la altura; con él se halla el alcance.',
-      ecuacion: [Mx, ' = ', { llave: [Mv0, ' · ', Mt], nota: 'de lado: parejo', color: 'c-o' }, ';   ', Mh, ' = ', { llave: ['½ · ', Mg, ' · ', Mt2], nota: 'hacia abajo: caída libre', color: 'c-h' }],
-      condicion: 'sale de lado (horizontal), sin aire y con g = 10 m/s². La academia lo llama movimiento semiparabólico.',
+      ecuacion: [Mx, ' = ', { llave: [Mv0, ' · ', Mt], nota: 'de lado: parejo', color: 'c-o' }, '   ·   ', Mh, ' = ', { llave: ['½ · ', Mg, ' · ', Mt2], nota: 'hacia abajo: caída libre', color: 'c-h' }],
+      condicion: 'sale de lado, sin aire, con g = 10 m/s². h se mide hacia abajo. La academia dice semiparabólico.',
     },
     // Así se resuelve: dos preguntas que «Ahora tú» no hace (la altura de la azotea con el alcance, y la canica en cm).
     resuelve: {
@@ -509,19 +509,20 @@
   const DB = {
     vx: ['De lado, la velocidad no cambia: ', Mvx, ' = ', Mv0],
     vy: ['Hacia abajo, desde el reposo: ', Mvy, ' = ', Mg, ' · ', Mt],
+    vxy: ['De lado no cambia, ', Mvx, ' = ', Mv0, '; hacia abajo, desde el reposo, ', Mvy, ' = ', Mg, ' · ', Mt],
     rap: ['Rapidez: ', Mv, ' = ', raiz([cuadrado(Mvx), ' + ', cuadrado(Mvy)])],
     ang: ['Ángulo de la velocidad con la horizontal, θ: tan θ = ', { frac: [Mvy, Mvx] }],
     tan: 'tan 37° = 3/4, tan 45° = 1 y tan 53° = 4/3 (convención del examen)',
-    comp: ['Componentes de la salida: ', Mv0x, ' = ', Mv0, ' · cos θ y ', Mv0y, ' = ', Mv0, ' · sen θ'],
+    comp: ['Componentes de la salida: ', Mv0x, ' = ', Mv0, ' · cos\u00a0θ y ', Mv0y, ' = ', Mv0, ' · sen\u00a0θ'],   // «sen» y «θ», en un renglón
     trig: 'sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5 (convención del examen)',
     trig30: 'sen 30° = cos 60° = 1/2 y cos 30° = sen 60° = √3/2',
     trig45: 'sen 45° = cos 45° = √2/2',
     x: ['De lado avanza parejo: ', Mx, ' = ', Mv0x, ' · ', Mt],
     y: ['Altura, con el eje hacia arriba: ', My, ' = ', Mv0y, ' · ', Mt, ' − ½ · ', Mg, ' · ', Mt2],
-    vyt: ['Velocidad vertical: ', Mvy, ' = ', Mv0y, ' − ', Mg, ' · ', Mt],
+    vyt: ['Velocidad vertical, con el eje hacia arriba: ', Mvy, ' = ', Mv0y, ' − ', Mg, ' · ', Mt],
     H: ['Altura máxima, ', MH, ': la altura del punto donde ', Mvy, ' = 0'],
     R: ['Alcance, ', MR, ': lo que avanzó de lado al volver al piso'],
-    cuadratica: 'Si p · t² + q · t + r = 0: t = (−q ± √(q² − 4pr)) ÷ (2p)',
+    cuadratica: 'Si p · t² + q · t + r = 0 (p, q, r: sus tres números): t = (−q ± √(q² − 4pr)) ÷ (2p)',
     dist: ['Distancia al origen: ', Md, ' = ', raiz([cuadrado(Mx), ' + ', cuadrado(My)])],
     eje: ['En cada eje, con aceleración constante: posición = salida + velocidad · ', Mt, ' + ½ · aceleración · ', Mt2],
   };
@@ -536,7 +537,7 @@
   const PENA2 = { plataforma: 'pena', alto: 45, ancho: 62, altoMax: 200 };
   const REGLA_H2 = { paso: 5, numero: 15, tiempos: true };
   const juegoA2 = val => tiroH(Object.assign({}, PENA2, { v0: val.v0, t: Math.min(val.t, T_A1), cada: 1, camino: 'recorrido', flecha: { texto: `${fm(val.v0)} m/s` },
-    regla: REGLA_X, alturas: REGLA_H2, flechas: { en: [1, 2], kv: 2 } }));
+    regla: REGLA_X, alturas: REGLA_H2, flechas: { en: [1, 2], kv: 2, textos: { vx: 'v_x', vy: 'v_y', v: 'v⃗' } } }));
   // Predice y Mira: sale a 15 m/s; a los 2 s va con 15 m/s de lado y 20 m/s hacia abajo: 25 m/s (3-4-5).
   const MIRA_A2 = Object.assign({}, PENA2, { ancho: 50, v0: 15, cada: 1, camino: 'recorrido', flecha: { texto: '15 m/s' }, alturas: REGLA_H2,
     cortes: [{ t: 0 }, { t: 1, flechas: { en: [1], kv: 2, v: false, textos: { vx: '15 m/s', vy: '10 m/s' } } },
@@ -590,7 +591,7 @@
       ],
       respuesta: ['Llega a ', pv('25 m/s')] },
     { nivel: 2, titulo: '¿Con qué ángulo va?',
-      figura: fig({ plataforma: 'pena', alto: 80, ancho: 130, v0: 40, flecha: { texto: '40 m/s' } }),
+      figura: fig({ plataforma: 'pena', alto: 80, ancho: 170, v0: 40, flecha: { texto: '40 m/s' } }),
       enunciado: ['Con una huaraca (honda) se lanza una piedra de lado a ', pv('40 m/s'), ' desde lo alto de un cerro. ¿Qué ángulo forma su velocidad con la horizontal a los ', pt('3 s'), '?'],
       datos: [DB.vx, DB.vy, DB.ang, DB.tan, DA.g],
       solucion: [
@@ -640,7 +641,7 @@
       figura: fig({ plataforma: 'azotea', objeto: 'piedra', alto: 80, ancho: 130, v0: 30, flecha: { texto: '30 m/s' }, cotaAlto: { texto: '80 m' } }),
       enunciado: ['Desde una torre de ', ph('80 m'), ' se lanza con una huaraca una piedra de lado a ', pv('30 m/s'), '. ¿Con qué rapidez y con qué ángulo bajo la horizontal llega al piso?'],
       alternativas: ['50 m/s y 53°', '50 m/s y 37°', '70 m/s y 53°', '40 m/s y 90°', '30 m/s y 0°'],
-      datos: [DA.cae, DB.vy, DB.rap, DB.ang, DB.tan, DA.g],
+      datos: [DA.cae, DB.vxy, DB.rap, DB.ang, DB.tan, DA.g],
       solucion: [
         { texto: 'Tiempo de vuelo y velocidad hacia abajo al llegar:', ecuacion: [ph('80'), ' = ½ · ', pa('10'), ' · ', Mt2, '   →   ', Mt, ' = ', pt('4 s'), ';   ', Mvy, ' = ', pv('40 m/s')] },
         { texto: 'Rapidez y ángulo, con los 30 m/s de lado:', ecuacion: [Mv, ' = ', raiz([cuadrado(pv('30')), ' + ', cuadrado(pv('40'))]), ' = ', pv('50 m/s'), ';   tan θ = ', { frac: ['40', '30'] }, '   →   θ = 53°'] },
@@ -662,7 +663,8 @@
       figura: fig({ plataforma: 'pena', alto: 45, ancho: 50, v0: 12, flecha: { texto: 'v₀' }, camino: 'entero' }),
       enunciado: ['Una piedra se lanza de lado y vuela sin aire. ¿Cuál de estas afirmaciones es verdadera durante todo el vuelo?'],
       alternativas: ['Su aceleración apunta hacia donde se mueve', 'Su velocidad es tangente a la trayectoria', 'Su rapidez no cambia', 'Su velocidad de lado disminuye', 'Su aceleración crece mientras cae'],
-      datos: [DB.vx, DB.vy, ['Aceleración en todo el vuelo: ', Mg, ', hacia abajo']],
+      // Lector en frío (19 nov): «aceleración: g, hacia abajo» y «vₓ = v₀» en los datos descartaban tres alternativas.
+      datos: [DA.g],
       solucion: [
         { texto: ['La velocidad ', vVec, ' apunta hacia donde va la piedra en ese instante: roza la trayectoria, es tangente a ella.'] },
         { texto: [neg('A'), ' y ', neg('E'), ' fallan: la aceleración es siempre g, hacia abajo. ', neg('C'), ' falla: la rapidez crece al caer. ', neg('D'), ' falla: de lado no cambia.'] },
@@ -719,7 +721,8 @@
       leyenda: [
         { s: [Mv0], t: 'la rapidez con que sale, de lado' },
         { s: 'flecha entera', t: 'la velocidad en ese instante' },
-        { s: 'flecha discontinua', t: 'una componente: de lado o hacia abajo' },
+        { s: [Mvx], t: 'velocidad de lado: la flecha discontinua horizontal' },
+        { s: [Mvy], t: 'velocidad hacia abajo: la flecha discontinua vertical' },
         { s: [Mt], t: 'segundos desde que sale' },
         { s: [Mx], t: 'cuánto avanzó de lado, en metros' },
         { s: [Mh], t: 'cuánto ha caído, en metros' },
@@ -729,8 +732,9 @@
         { id: 't', etiqueta: 'Reloj, t', color: 'c-i', min: 0, max: T_A1 + 0.6, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
       dibujo: juegoA2,
-      // La lectura da las dos componentes a los 2 s; no dice cuánto mide la flecha entera (eso es Predice).
-      lectura: val => ['Tras ', pt('2 s'), ': de lado ', pv(ms(val.v0)), ', abajo ', pv('20 m/s')],
+      // La lectura da las dos componentes a los 2 s, el instante de la misión, y lo dice (lector en frío, 19 nov: «Tras 2 s»
+      // junto a un reloj en 0,21 s se leía como lo de ahora); no dice cuánto mide la flecha entera (eso es Predice).
+      lectura: val => ['Misión (', pt('2 s'), '): ', pv(ms(val.v0)), ' de lado, ', pv('20 m/s'), ' abajo'],
       resumen: { v0: 12, t: 2.2 },
       minimo: 3,
       // Gesto directo: la punta de la flecha de salida se arrastra de lado (3 px por cada m/s, como la dibuja la pieza).
@@ -763,7 +767,7 @@
     },
     regla: {
       texto: 'De lado, la velocidad no cambia; hacia abajo gana 10 m/s cada segundo. Juntas arman la velocidad: su rapidez sale con Pitágoras y es tangente a la trayectoria.',
-      ecuacion: [Mvx, ' = ', Mv0, ';   ', Mvy, ' = ', Mg, ' · ', Mt, ';   ', Mv, ' = ', raiz([cuadrado(Mvx), ' + ', cuadrado(Mvy)])],
+      ecuacion: [Mvx, ' = ', Mv0, '   ·   ', Mvy, ' = ', Mg, ' · ', Mt, '   ·   ', Mv, ' = ', raiz([cuadrado(Mvx), ' + ', cuadrado(Mvy)])],
       condicion: 'tiro horizontal, sin aire; la velocidad vertical se mide hacia abajo. Su ángulo θ con la horizontal: tan θ = abajo ÷ de lado.',
     },
     // Así se resuelve: el ángulo con que llega (con la altura) y el instante de los 45°; «Ahora tú» pregunta otras cosas.
@@ -919,12 +923,15 @@
   ];
   // Predice y Mira: sale a 25 m/s con 53° (15 de lado y 20 hacia arriba): 2 s de subida, 4 s de vuelo y 60 m de alcance.
   const MIRA_A3 = Object.assign({}, CANCHA, { vx: 15, vy: 20, cada: 1, camino: 'recorrido', flecha: false, angulo: { texto: '53°' }, alturas: REGLA_Y,
-    cortes: [{ t: 0, angulo: false, flechas: { en: [0], kv: 2, textos: { vx: '15 m/s', vy: '20 m/s', v: '25 m/s' } } },
-      { t: 1, flechas: { en: [1], kv: 2, v: false, textos: { vx: '15 m/s', vy: '10 m/s' } } },
-      { t: 2, flechas: { en: [2], kv: 2, v: false, textos: { vx: '15 m/s' } } },
-      { t: 2, flechas: { en: [2], kv: 2, vx: false, textos: { v: '15 m/s' } } },
-      { t: 4, flechas: { en: [3], kv: 2, v: false, textos: { vx: '15 m/s', vy: '10 m/s' } } },
-      { t: 4, cotaAlcance: { texto: '60 m', hasta: 60 } }] });
+    // Lector en frío (19 nov): las flechas, en m/s, junto a la regla en metros parecían llegar a y = 10 m. Mientras se
+    // dibujan, la regla de la pared no está (cada flecha tiene su propia escala, y el paso 1 lo dice); la regla vuelve al
+    // final, con la rapidez de salida escrita.
+    cortes: [{ t: 0, angulo: false, alturas: false, flechas: { en: [0], kv: 2, textos: { vx: '15 m/s', vy: '20 m/s', v: '25 m/s' } } },
+      { t: 1, alturas: false, flechas: { en: [1], kv: 2, v: false, textos: { vx: '15 m/s', vy: '10 m/s' } } },
+      { t: 2, alturas: false, flechas: { en: [2], kv: 2, v: false, textos: { vx: '15 m/s' } } },
+      { t: 2, alturas: false, flechas: { en: [2], kv: 2, vx: false, textos: { v: '15 m/s' } } },
+      { t: 4, alturas: false, flechas: { en: [3], kv: 2, v: false, textos: { vx: '15 m/s', vy: '10 m/s' } } },
+      { t: 4, flecha: { texto: '25 m/s' }, cotaAlcance: { texto: '60 m', hasta: 60 } }] });
 
   // Ejemplos resueltos de A3. Cuentas rehechas aparte (scratchpad e5-fisica/cuentas-a2a5.js, 19 nov: simula el vuelo paso
   // a paso con las componentes): 20·4/5; 15·4/5; 12·2; 25 − 10·1,5; 10·1/2; 25·3/5 y 0 = 15t − 5t²; 20·4/5 y 16 − 5;
@@ -1046,9 +1053,10 @@
       alternativas: ['17,89 m/s', '20 m/s', '16 m/s', '24 m/s', '35,78 m/s'],
       datos: [DB.comp, DB.trig, DB.vyt, DB.rap, DA.g],
       solucion: [
-        { texto: 'Las dos partes a los 2 s: de lado sigue igual; hacia arriba ya pasó por cero y baja.', ecuacion: [Mvx, ' = ', pv('16 m/s'), ';   ', Mvy, ' = ', pv('12'), ' − ', pa('10'), ' · ', pt('2'), ' = ', pv('−8 m/s')] },
+        { texto: 'Las dos partes de la salida:', ecuacion: [Mv0x, ' = ', pv('20'), ' · ', { frac: ['4', '5'] }, ' = ', pv('16 m/s'), ';   ', Mv0y, ' = ', pv('20'), ' · ', { frac: ['3', '5'] }, ' = ', pv('12 m/s')] },
+        { texto: 'A los 2 s: de lado sigue igual; hacia arriba ya pasó por cero y baja.', ecuacion: [Mvx, ' = ', pv('16 m/s'), ';   ', Mvy, ' = ', pv('12'), ' − ', pa('10'), ' · ', pt('2'), ' = ', pv('−8 m/s')] },
         { texto: 'Con Pitágoras:', ecuacion: [Mv, ' = ', raiz([cuadrado(pv('16')), ' + ', cuadrado(pv('8'))]), ' = ', raiz('320'), ' ≈ ', pv('17,89 m/s')] },
-        { texto: [neg('B'), ' cree que la rapidez no cambia; ', neg('C'), ' da solo la parte de lado; ', neg('D'), ' suma 16 + 8; ', neg('E'), ' suma los 20 m/s en vez de restarlos.'] },
+        { texto: [neg('B'), ' cree que la rapidez no cambia; ', neg('C'), ' da solo la parte de lado; ', neg('D'), ' suma 16 + 8; ', neg('E'), ' suma g · t = 20 m/s en vez de restarlo.'] },
       ],
       respuesta: [neg('A'), ', ', pv('17,89 m/s')] },
     { nivel: 3, titulo: 'Patada o lanzamiento vertical',
@@ -1100,7 +1108,7 @@
         logrado: val => Math.abs(comp(val.v0, val.ang).vy - 20) < 1e-9,
         bien: 'Lo que sube es 20 m/s: 2 s de subida y 2 s de bajada.',
       },
-      voz: 'Mira el reloj al caer: ¿qué parte de la rapidez lo cambia?',
+      voz: 'Cambia el ángulo y mira el reloj: ¿cuánto dura el vuelo cuando sube con más rapidez?',
       leyenda: [
         { s: [Mv0], t: 'la rapidez con que sale la pelota' },
         { s: 'θ', t: 'el ángulo de la patada, sobre el piso' },
@@ -1136,7 +1144,7 @@
     mira: {
       datos: MIRA_A3,
       pasos: [
-        { estado: { corte: 0 }, texto: 'Sale a 25 m/s con 53°: la flecha se parte en dos.', ecuacion: [Mv0x, ' = ', pv('25'), ' · cos 53° = ', pv('15 m/s'), ';   ', Mv0y, ' = ', pv('25'), ' · sen 53° = ', pv('20 m/s')] },
+        { estado: { corte: 0 }, texto: 'Se parte en dos. Las flechas van en m/s, no en metros.', ecuacion: [Mv0x, ' = ', pv('25'), ' · cos 53° = ', pv('15 m/s'), ';   ', Mv0y, ' = ', pv('25'), ' · sen 53° = ', pv('20 m/s')] },
         { estado: { corte: 1 }, texto: 'Al primer segundo, de lado sigue igual; hacia arriba perdió 10 m/s.', ecuacion: [Mvy, ' = ', pv('20'), ' − ', pa('10'), ' · ', pt('1'), ' = ', pv('10 m/s')] },
         { estado: { corte: 2 }, texto: 'A los 2 s ya no sube: está en lo más alto.', ecuacion: [Mvy, ' = ', pv('20'), ' − ', pa('10'), ' · ', pt('2'), ' = ', pv('0')] },
         { estado: { corte: 3 }, texto: 'Ahí solo le queda la parte de lado.', ecuacion: [Mv, ' = ', Mvx, ' = ', pv('15 m/s')] },
@@ -1146,8 +1154,9 @@
     },
     regla: {
       texto: 'Con ángulo, la rapidez de salida se parte en dos componentes. De lado avanza parejo; hacia arriba es un lanzamiento vertical. Las dos, con el mismo reloj.',
-      ecuacion: [Mv0x, ' = ', Mv0, ' · cos θ;   ', Mv0y, ' = ', Mv0, ' · sen θ;   ', Mx, ' = ', Mv0x, ' · ', Mt, ';   ', My, ' = ', Mv0y, ' · ', Mt, ' − ½ · ', Mg, ' · ', Mt2],
-      condicion: 'sin aire; y es la altura sobre la salida. La velocidad vertical baja 10 m/s cada segundo.',
+      ecuacion: [Mv0x, ' = ', Mv0, ' · cos\u00a0θ', '   ·   ', Mv0y, ' = ', Mv0, ' · sen\u00a0θ', '   ·   ', Mx, ' = ', Mv0x, ' · ', Mt, '   ·   ', My, ' = ', Mv0y, ' · ', Mt, ' − ½ · ', Mg, ' · ', Mt2],
+      // Desde A3 el eje vertical apunta hacia arriba (decisión 13) y la regla traduce el «±» de la academia (propuesta §1).
+      condicion: 'sin aire; eje vertical hacia arriba (al subir, velocidad positiva). La academia usa ± ½ · g · t²; aquí el eje da el signo.',
     },
     // Así se resuelve: desde una azotea (dos raíces) y la rapidez en un instante; «Ahora tú» pregunta otras cosas.
     resuelve: {
@@ -1225,7 +1234,7 @@
             dibujo: figPatada(v0, a),
             opciones: opciones(yy, [
               { id: 'sin-g', valor: c.vy * ti, error: 'TP-SIN-G', siFuera: 'Bien lo que sube por su velocidad. Pero la gravedad le quita ½·g·t².' },
-              { id: 'sin-medio', valor: c.vy * ti - G * ti * ti, error: 'TP-SIN-MEDIO', siFuera: 'Bien restar lo que quita la gravedad. Pero es ½·g·t², con el ½.' },
+              { id: 'sin-medio', valor: c.vy * ti - G * ti * ti > 0 ? c.vy * ti - G * ti * ti : NaN, error: 'TP-SIN-MEDIO', siFuera: 'Bien restar lo que quita la gravedad. Pero es ½·g·t², con el ½.' },
               { id: 'v0', valor: v0 * ti - G * ti * ti / 2, error: 'TP-V0', siFuera: 'Bien la ecuación. Pero hacia arriba solo sube la parte vertical, no la rapidez entera.' },
               { id: 'lado', valor: c.vx * ti - G * ti * ti / 2 > 0 ? c.vx * ti - G * ti * ti / 2 : NaN, error: 'TP-SENCOS', siFuera: 'Bien la ecuación. Pero lo que sube lleva el seno, no el coseno.' },
             ], q => `${fm(q)} m`),
@@ -1257,7 +1266,7 @@
   // suman 90° riegan la misma planta; 45° llega más lejos.
   const sen = a => (SEN[a] !== undefined ? SEN[a] : Math.sin(rad(a))), cos = a => (COS[a] !== undefined ? COS[a] : Math.cos(rad(a)));
   const medidas = (v0, a) => { const vx = v0 * cos(a), vy = v0 * sen(a), ts = vy / G; return { vx, vy, ts, tv: 2 * ts, H: vy * vy / (2 * G), R: vx * 2 * ts }; };
-  DB.v2 = ['Velocidad vertical y altura: ', cuadrado(Mvy), ' = ', cuadrado(Mv0y), ' − 2 · ', Mg, ' · ', My];
+  DB.v2 = ['Velocidad vertical y altura, con el eje hacia arriba: ', cuadrado(Mvy), ' = ', cuadrado(Mv0y), ' − 2 · ', Mg, ' · ', My];
   const V_AGUA = 10, ANGS4 = [15, 30, 45, 60, 75], PLANTA = medidas(V_AGUA, 30).R;   // 8,66 m: donde cae el agua a 30°
   const MANGUERA = { plataforma: 'manguera', objeto: 'agua', ancho: 10.6, techo: 4.8, altoMax: 150 };
   const juegoA4 = val => { const m = medidas(V_AGUA, val.ang);
@@ -1334,7 +1343,8 @@
       datos: [DB.comp, DB.trig45, DB.x, DB.y, DA.g],
       solucion: [
         { texto: 'A 45° las dos partes miden lo mismo:', ecuacion: [Mv0x, ' = ', Mv0y, ' = ', pv('20'), ' · ', { frac: ['√2', '2'] }, ' = ', pv('10√2 m/s')] },
-        { texto: 'Vuela el doble de lo que sube, y de lado avanza:', ecuacion: [Mtv, ' = 2 · ', { frac: [pv('10√2'), pa('10')] }, ' = ', pt('2√2 s'), ';   ', MR, ' = ', pv('10√2'), ' · ', pt('2√2'), ' = ', px('40 m')] },
+        { texto: ['Vuelve al piso cuando ', My, ' = 0:'], ecuacion: ['0 = ', pv('10√2'), ' · ', Mt, ' − 5 · ', Mt2, '   →   ', Mtv, ' = ', { frac: [pv('10√2'), '5'] }, ' = ', pt('2√2 s')] },
+        { texto: 'En ese tiempo, de lado avanza:', ecuacion: [MR, ' = ', pv('10√2'), ' · ', pt('2√2'), ' = ', px('40 m')] },
       ],
       respuesta: [MR, ' = ', px('40 m')] },
     { nivel: 2, titulo: '37° y 53°, la misma rapidez',
@@ -1347,8 +1357,8 @@
       ],
       respuesta: ['También a ', px('60 m'), ': 37° y 53° suman 90°'] },
     { nivel: 2, titulo: 'La rapidez desde el alcance',
-      figura: fig({ plataforma: 'piso', objeto: 'pelota', ancho: 96, vx: 30 * COS[45], vy: 30 * SEN[45], flecha: { texto: '?' }, angulo: { texto: '45°' }, cotaAlcance: { texto: '90 m', hasta: 90 } }),
-      enunciado: ['Una pelota sale del piso con 45° y cae a ', px('90 m'), '. ¿Con qué rapidez salió?'],
+      figura: fig({ plataforma: 'piso', objeto: 'piedra', ancho: 96, vx: 30 * COS[45], vy: 30 * SEN[45], flecha: { texto: '?' }, angulo: { texto: '45°' }, cotaAlcance: { texto: '90 m', hasta: 90 } }),
+      enunciado: ['Con una huaraca se lanza una piedra desde el piso con 45°, y cae a ', px('90 m'), '. ¿Con qué rapidez salió?'],
       datos: [DB.comp, DB.trig45, DB.x, DB.y, DA.g],
       solucion: [
         { texto: ['A 45° las dos partes son iguales, ', Mv0x, ' = ', Mv0y, ' = u. Vuela 2u/10 y avanza u por segundo:'], ecuacion: [px('90'), ' = u · ', { frac: ['2u', pa('10')] }, '   →   u² = 450   →   u = ', pv('15√2 m/s')] },
@@ -1367,7 +1377,8 @@
       ],
       respuesta: [neg('B'), ', ', pv('20 m/s')] },
     { nivel: 3, titulo: 'Al triple de rapidez',
-      figura: fig({ plataforma: 'manguera', objeto: 'agua', ancho: 10, vx: 10 * COS[37], vy: 10 * SEN[37], flecha: { texto: '10 m/s' }, angulo: { texto: 'θ' }, cotaAlcance: { texto: '8 m', hasta: 8 } }),
+      // El ángulo que da 8 m a 10 m/s tiene tan θ = 1/2 (8 = 2 · vₓ · v_y ÷ 10 con vₓ = 2·v_y): el chorro cae justo en la cota.
+      figura: fig({ plataforma: 'manguera', objeto: 'agua', ancho: 10, vx: 20 / Math.sqrt(5), vy: 10 / Math.sqrt(5), flecha: { texto: '10 m/s' }, angulo: { texto: 'θ' }, cotaAlcance: { texto: '8 m', hasta: 8 } }),
       enunciado: ['Con cierto ángulo, el chorro de una manguera sale a ', pv('10 m/s'), ' y cae a ', px('8 m'), '. Con el mismo ángulo y ', pv('30 m/s'), ', ¿a qué distancia cae?'],
       alternativas: ['24 m', '216 m', '8 m', '72 m', '48 m'],
       datos: [DB.comp, DB.x, DB.y, DA.g],
@@ -1391,12 +1402,13 @@
     { nivel: 3, titulo: 'De la distancia a la altura',
       figura: fig({ plataforma: 'piso', objeto: 'pelota', ancho: 27, vx: Math.sqrt(250) * COS[53], vy: Math.sqrt(250) * SEN[53], flecha: { texto: 'v₀' }, angulo: { texto: '53°' }, cotaAlcance: { texto: '24 m', hasta: 24 }, cotaH: { texto: '?' } }),
       enunciado: ['Una pelota sale del piso con 53° y cae a ', px('24 m'), '. ¿Qué altura máxima alcanzó?'],
-      alternativas: ['32 m', '6 m', '12 m', '4,5 m', '8 m'],
-      datos: [DB.comp, DB.trig, DB.x, DB.v2, DA.g],
+      alternativas: ['16 m', '6 m', '12 m', '4,5 m', '8 m'],
+      datos: [DB.comp, DB.trig, DB.x, DB.y, DB.v2, DA.g],
       solucion: [
-        { texto: ['Con la rapidez v₀ sin conocer: avanza con 0,6v₀ y vuela 2 · 0,8v₀/10 = 0,16v₀. Su producto es el alcance:'], ecuacion: [px('24'), ' = 0,6', Mv0, ' · 0,16', Mv0, '   →   ', cuadrado(Mv0), ' = 250'] },
-        { texto: 'La altura sale de lo que sube, 0,8v₀:', ecuacion: [MH, ' = ', { frac: [['0,64 · ', cuadrado(Mv0)], '20'] }, ' = ', { frac: ['0,64 · 250', '20'] }, ' = ', ph('8 m')] },
-        { texto: [neg('A'), ' toma 24 · 4/3 y no divide entre 4; ', neg('B'), ' lo trata como si fuera a 45°; ', neg('C'), ' da la mitad del alcance; ', neg('D'), ' usa 37°.'] },
+        { texto: ['Con la rapidez ', Mv0, ' sin conocer: avanza con 0,6', Mv0, ' y sube con 0,8', Mv0, '. Vuelve al piso cuando ', My, ' = 0:'], ecuacion: ['0 = 0,8', Mv0, ' · ', Mt, ' − 5 · ', Mt2, '   →   ', Mtv, ' = 0,16', Mv0] },
+        { texto: 'Lo de lado por ese tiempo es el alcance:', ecuacion: [px('24'), ' = 0,6', Mv0, ' · 0,16', Mv0, '   →   ', cuadrado(Mv0), ' = 250'] },
+        { texto: ['La altura sale de lo que sube, 0,8', Mv0, ':'], ecuacion: [MH, ' = ', { frac: [['0,64 · ', cuadrado(Mv0)], '20'] }, ' = ', { frac: ['0,64 · 250', '20'] }, ' = ', ph('8 m')] },
+        { texto: [neg('A'), ' toma como vuelo solo la subida, 0,08', Mv0, '; ', neg('B'), ' lo trata como si fuera a 45°; ', neg('C'), ' da la mitad del alcance; ', neg('D'), ' usa 37°.'] },
       ],
       respuesta: [neg('E'), ', ', MH, ' = ', ph('8 m')] },
     { nivel: 3, titulo: 'Más alto no es más lejos',
@@ -1414,9 +1426,11 @@
   // Casos de «Ahora tú» y de «Así se resuelve» (listas distintas; ninguno es el chorro de Predice, 10 y 20 m/s a 30°).
   const TIROS4 = [[10, 37], [15, 37], [20, 37], [25, 37], [10, 53], [15, 53], [20, 53], [25, 53], [20, 30], [12, 30], [20, 60], [10, 60]];
   const COMPLEMENTOS = [15, 30, 37, 53, 60, 75];
-  const T45 = [[1, 10], [2, 20], [3, 30], [1.5, 15], [2.5, 25]];        // [k, v₀]: vuela k√2 s a 45° y sale a v₀ m/s
-  const RAPIDEZ37 = [10, 15, 20, 25, 30];
-  const VECES = [[3, 'el triple'], [1.5, '1,5 veces'], [0.5, 'la mitad']];
+  // [k, v₀]: vuela k√2 s a 45° y sale a v₀ m/s. Sin 2√2 s (es el ejemplo «El ángulo del mayor alcance») y sin patadas de
+  // más de 25 m/s (decisión 14).
+  const T45 = [[1, 10], [1.5, 15], [2.5, 25]];
+  const RAPIDEZ37 = [10, 15, 20, 25];
+  const VECES = [[3, 'el triple de esa rapidez'], [1.5, '1,5 veces esa rapidez'], [0.5, 'la mitad de esa rapidez']];
   const figTiro4 = (v0, a, extra) => { const m = medidas(v0, a); return tiroH(Object.assign({ plataforma: 'piso', objeto: 'pelota', ancho: Math.max(m.R * 1.1, 12), vx: m.vx, vy: m.vy, t: 0, flecha: { texto: ms(v0) }, angulo: { texto: `${a}°` } }, extra)); };
 
   const alcance = {
@@ -1446,7 +1460,7 @@
         logrado: val => val.ang === 60,
         bien: '30° y 60° suman 90°: caen en el mismo sitio, por caminos distintos.',
       },
-      voz: '¿Qué ángulo moja más lejos que la planta?',
+      voz: 'Prueba los ángulos uno por uno: ¿cuál moja justo la planta?',
       leyenda: [
         { s: 'θ', t: 'el ángulo de la boquilla, sobre el piso' },
         { s: [MH], t: 'la altura máxima del chorro' },
@@ -1478,7 +1492,8 @@
     mira: {
       datos: MIRA_A4,
       pasos: [
-        { estado: { corte: 0 }, texto: 'Sube con 5 m/s: llega arriba en 0,5 s.', ecuacion: [Mts, ' = ', { frac: [pv('5'), pa('10')] }, ' = ', pt('0,5 s')] },
+        { estado: { corte: 0 }, texto: 'Sube con 5 m/s; g = 10 m/s² lo frena.',
+          ecuacion: [Mv0y, ' = ', pv('10'), ' · sen 30° = ', pv('5 m/s'), ';   ', Mts, ' = ', { frac: [pv('5'), pa('10')] }, ' = ', pt('0,5 s')] },
         { estado: { corte: 1 }, texto: 'Arriba la velocidad vertical es cero. La altura máxima:', ecuacion: [MH, ' = ', pv('5'), ' · ', pt('0,5'), ' − 5 · ', cuadrado(pt('0,5')), ' = ', ph('1,25 m')] },
         { estado: { corte: 2 }, texto: 'Baja en otros 0,5 s: vuela 1 s, avanzando 8,66 m/s de lado.', ecuacion: [MR, ' = ', pv('8,66'), ' · ', pt('1'), ' = ', px('8,66 m')] },
         { estado: { corte: 3 }, texto: 'Al doble de rapidez, sube con 10 m/s: llega arriba en 1 s.', ecuacion: [Mtv, ' = 2 · ', pt('1 s'), ' = ', pt('2 s')] },
@@ -1488,8 +1503,8 @@
     },
     regla: {
       texto: 'Arriba la velocidad vertical es cero: de ahí salen el tiempo de subida y la altura máxima. El alcance es lo de lado por el vuelo; es máximo a 45°.',
-      ecuacion: [MH, ' = ', { frac: [cuadrado(Mv0y), ['2', Mg]] }, ';   ', MR, ' = ', Mv0x, ' · ', Mtv, ';   ', MR, ' = ', { frac: [[cuadrado(Mv0), ' · sen 2θ'], Mg] }],
-      condicion: 'sale del piso y cae al mismo nivel, sin aire. Dos ángulos complementarios (suman 90°) dan el mismo alcance.',
+      ecuacion: [MH, ' = ', { frac: [cuadrado(Mv0y), ['2', Mg]] }, '   ·   ', MR, ' = ', Mv0x, ' · ', { llave: [Mtv], nota: 'tiempo de vuelo', color: 'c-i' }, '   ·   ', MR, ' = ', { frac: [[cuadrado(Mv0), ' · sen 2θ'], Mg] }],
+      condicion: 'sale del piso y cae al mismo nivel, sin aire; eje vertical hacia arriba. Ángulos complementarios (suman 90°) dan el mismo alcance.',
     },
     // Así se resuelve: la rapidez con el alcance a 37° (y su complementario) y el alcance a otra rapidez.
     resuelve: {
@@ -1514,7 +1529,7 @@
         }
         const [v0, a] = r.de([[10, 53], [20, 37], [12, 30], [10, 60], [20, 53], [15, 37]]), [k, cuanto] = r.de(VECES), m = medidas(v0, a), R2 = m.R * k * k;
         return {
-          enunciado: ['A ', pv(ms(v0)), ' con ', `${a}°`, ', una pelota cae a ', px(`${fm(m.R)} m`), '. Con el mismo ángulo y ', cuanto, ' de esa rapidez, ¿a qué distancia cae?'],
+          enunciado: ['A ', pv(ms(v0)), ' con ', `${a}°`, ', una pelota cae a ', px(`${fm(m.R)} m`), '. Con el mismo ángulo y ', cuanto, ', ¿a qué distancia cae?'],
           datos: [DB.comp, DB.x, DB.y, DA.g],
           dibujo: figTiro4(v0, a, { cotaAlcance: { texto: `${fm(m.R)} m`, hasta: m.R } }),
           pasos: [
@@ -1598,7 +1613,7 @@
   // reloj, que deja un dron tenue cada segundo y sus dos marcas en los ejes · Se reserva: la distancia a la plaza
   // (Predice) · Debe verse: x e y crecen a la vez, cada una con su velocidad.
   const Mx0 = { sub: [Mx, '0'] }, My0 = { sub: [My, '0'] };
-  const May = { sub: [{ v: 'c-h', t: 'a', m: 'aceleración' }, 'y'] };
+  const May = { sub: [{ v: 'c-h', t: 'a', m: 'aceleración' }, 'y'] }, Max = { sub: [{ v: 'c-h', t: 'a', m: 'aceleración' }, 'x'] };
   const CALLES = { vista: 'plano', max: 80, paso: 10, numero: 20 };
   const ANTENA = { x: 30, y: 40, texto: 'antena' };
   const T_DRON = 10.5;
@@ -1645,7 +1660,7 @@
       enunciado: ['Un dron se mueve con ', Mx, ' = 7t (en metros y segundos). ¿Cuántos metros avanza hacia el este en cada segundo?'],
       datos: [DC.x],
       solucion: [{ texto: 'El número que multiplica a t es la velocidad de ese eje:', ecuacion: [Mx, ' = ', Mvx, ' · ', Mt, '   →   ', Mvx, ' = ', pv('7 m/s')] }],
-      respuesta: [pv('7 m'), ' cada segundo: ', Mvx, ' = ', pv('7 m/s')] },
+      respuesta: [px('7 m'), ' cada segundo: ', Mvx, ' = ', pv('7 m/s')] },
     { nivel: 1, titulo: 'La altura en la ecuación',
       figura: fig({ plataforma: 'piso', objeto: 'pelota', ancho: 44, vx: 10, vy: 20, flecha: false, camino: 'entero' }),
       enunciado: ['Una pelota sigue la ecuación ', My, ' = 20t − 5t² (en metros y segundos). ¿A qué altura está a los ', pt('2 s'), '?'],
@@ -1717,12 +1732,12 @@
     { nivel: 3, titulo: 'La altura máxima, de la ecuación',
       figura: fig({ plataforma: 'piso', objeto: 'pelota', ancho: 11, vx: 6, vy: 8, flecha: false, camino: 'entero', cotaH: { texto: '?' } }),
       enunciado: ['Una pelota sigue ', Mx, ' = 6t e ', My, ' = 8t − 5t² (en metros y segundos). ¿Cuál es su altura máxima?'],
-      alternativas: ['3,2 m', '6,4 m', '8 m', '12,8 m', '4,8 m'],
+      alternativas: ['3,2 m', '6,4 m', '8 m', '2,4 m', '4,8 m'],
       datos: [DC.leer, DC.vyt, DB.H],
       solucion: [
         { texto: 'De la ecuación: sube con 8 m/s, y 5 es ½ · g, así que g = 10 m/s². Arriba la velocidad vertical vale cero:', ecuacion: ['0 = ', pv('8'), ' − ', pa('10'), ' · ', Mts, '   →   ', Mts, ' = ', pt('0,8 s')] },
         { texto: 'La altura en ese instante:', ecuacion: [MH, ' = 8 · ', pt('0,8'), ' − 5 · ', cuadrado(pt('0,8')), ' = 6,4 − 3,2 = ', ph('3,2 m')] },
-        { texto: [neg('B'), ' olvida restar lo que quita la gravedad; ', neg('C'), ' toma la velocidad como altura; ', neg('D'), ' lee g = 5; ', neg('E'), ' da lo que avanzó de lado hasta la cima.'] },
+        { texto: [neg('B'), ' olvida restar la gravedad; ', neg('C'), ' toma la velocidad como altura; ', neg('D'), ' no eleva el tiempo al cuadrado; ', neg('E'), ' da lo que avanzó de lado hasta la cima.'] },
       ],
       respuesta: [neg('A'), ', ', MH, ' = ', ph('3,2 m')] },
     { nivel: 3, titulo: 'La ecuación de la trayectoria',
@@ -1733,14 +1748,15 @@
       solucion: [
         { texto: 'Se despeja t de la ecuación de x:', ecuacion: [Mt, ' = ', { frac: [Mx, '5'] }] },
         { texto: 'Se reemplaza en la de y:', ecuacion: [My, ' = 20 · ', { frac: [Mx, '5'] }, ' − 5 · ', cuadrado({ par: [{ frac: [Mx, '5'] }] }), ' = 4', Mx, ' − ', { frac: [cuadrado(Mx), '5'] }] },
-        { texto: [neg('A'), ' pone x en lugar de t; ', neg('B'), ' no divide 5x²/25; ', neg('D'), ' usa t = 5x; ', neg('E'), ' olvida el 5 que multiplica.'] },
+        { texto: [neg('A'), ' pone x en lugar de t; ', neg('B'), ' eleva la x al cuadrado pero no el 5; ', neg('D'), ' usa t = 5x; ', neg('E'), ' olvida el 5 que multiplica.'] },
       ],
       respuesta: [neg('C'), ': ', My, ' = 4', Mx, ' − ', Mx, '²/5'] },
     { nivel: 3, titulo: 'Dos drones',
       figura: fig({ vista: 'plano', max: 30, paso: 5, numero: 10 }),
       enunciado: ['Dos drones salen a la vez de la plaza: uno con ', Mx, ' = 3t hacia el este y otro con ', My, ' = 4t hacia el norte (en metros y segundos). ¿Qué distancia los separa a los ', pt('5 s'), '?'],
       alternativas: ['35 m', '25 m', '5 m', '20 m', '7 m'],
-      datos: [DC.x, DC.y, DC.dist, DC.recto],
+      // Lector en frío (19 nov): «distancia al origen» en los datos, cuando piden la que separa a los dos drones.
+      datos: [DC.x, DC.y, ['Distancia entre dos puntos, uno en cada eje: ', Md, ' = ', raiz([cuadrado(Mx), ' + ', cuadrado(My)])], DC.recto],
       solucion: [
         { texto: 'A los 5 s, uno está a 15 m al este y el otro a 20 m al norte:', ecuacion: [Mx, ' = 3 · ', pt('5'), ' = ', px('15 m'), ';   ', My, ' = 4 · ', pt('5'), ' = ', px('20 m')] },
         { texto: 'La línea que los une es la hipotenusa:', ecuacion: [Md, ' = ', raiz([cuadrado(px('15')), ' + ', cuadrado(px('20'))]), ' = ', px('25 m')] },
@@ -1763,7 +1779,7 @@
   // Casos de «Ahora tú» y de «Así se resuelve» (listas distintas; ninguno es 6t y 8t, el caso de Predice).
   const DRONES = [[3, 4], [4, 3], [5, 12], [12, 5], [8, 6], [9, 12], [8, 15], [15, 8], [7, 24], [2, 3], [5, 2]];
   const TIROS5 = [[15, 20], [10, 20], [12, 16], [20, 15], [8, 30], [6, 10], [9, 12], [16, 12], [20, 25]];
-  // Partículas de nivel examen: x = x₀ + a·t, y = c·t², a los 2 s, con distancia entera.
+  // Partículas de nivel examen: x = x₀ + a·t, y = c·t², a los 2 s (la distancia no siempre es entera).
   const PARTICULAS = [[2, 2, 2], [3, 6, 2], [1, 4, 3], [4, 4, 4], [3, 6, 4], [2, 4, 3], [6, 12, 4], [1, 7, 5], [3, 6, 6], [2, 8, 6]];
   const TRAYECTORIAS = [[10, 20], [5, 10], [10, 30], [20, 20], [15, 30], [5, 20]];
 
@@ -1799,13 +1815,15 @@
         { s: [My], t: 'cuánto avanzó al norte, en metros' },
         { s: [Mt], t: 'segundos desde que salió de la plaza' },
         { s: 'plaza', t: 'de donde sale: x = 0, y = 0' },
-        { s: 'dron tenue', t: 'dónde estaba cada segundo' },
-        { s: 'punto violeta', t: 'su marca en cada eje' },
+        { s: 'dron tenue', t: 'cada segundo, al correr el reloj' },
+        { s: 'punto violeta', t: 'su marca en cada eje, con el reloj' },
       ],
       controles: CTRL_A5,
       dibujo: juegoA5,
       // La lectura dice dónde está; no dice a qué distancia de la plaza (eso es Predice).
-      lectura: val => { const g0 = Kit.piezas['fis-tiro'].geometria(juegoA5(val).datos); return ['En ', pt(`${fm(g0.t)} s`), ': ', px(`${fm(g0.pos.x)} m`), ' al este, ', px(`${fm(g0.pos.y)} m`), ' al norte']; },
+      // Con el instante redondeado que se muestra (lector en frío, 19 nov: «0,63 s: 1,25 m» con 2 m/s).
+      lectura: val => { const g0 = Kit.piezas['fis-tiro'].geometria(juegoA5(val).datos), tt = Math.round(g0.t * 100) / 100;
+        return ['En ', pt(`${fm(tt)} s`), ': ', px(`${fm(val.vx * tt)} m`), ' al este, ', px(`${fm(val.vy * tt)} m`), ' al norte']; },
       resumen: { vx: 4, vy: 3, t: 6 },
       minimo: 3,
     },
@@ -1835,8 +1853,10 @@
     },
     regla: {
       texto: 'Cada coordenada tiene su ecuación, con el mismo reloj. Con x(t) e y(t) se sabe dónde está en cada instante; la distancia al origen sale con Pitágoras.',
-      ecuacion: [Mx, ' = ', Mx0, ' + ', Mv0x, ' · ', Mt, ';   ', My, ' = ', My0, ' + ', Mv0y, ' · ', Mt, ' + ½ · ', May, ' · ', Mt2, ';   ', Md, ' = ', raiz([cuadrado(Mx), ' + ', cuadrado(My)])],
-      condicion: 'aceleración constante en cada eje. En un tiro, y apunta hacia arriba y su aceleración es −g; el dron no acelera.',
+      ecuacion: [Mx, ' = ', Mx0, ' + ', Mv0x, ' · ', Mt, ' + ½ · ', Max, ' · ', Mt2, '   ·   ', My, ' = ', My0, ' + ', Mv0y, ' · ', Mt, ' + ½ · ', May, ' · ', Mt2, '   ·   ', { llave: [Md], nota: 'distancia al origen', color: 'c-f' }, ' = ', raiz([cuadrado(Mx), ' + ', cuadrado(My)])],
+      // Lector en frío, 19 nov: la de x no traía ½·a·t² aunque la condición hablaba de aceleración en cada eje, y d no decía
+      // que es al origen. Y el cambio de y (al norte, en el dron; la altura, en un tiro) se dice aquí.
+      condicion: 'aceleración constante en cada eje (dron: cero); d, distancia al origen. En un tiro de costado, y es la altura: aceleración −g.',
     },
     // Así se resuelve: la ecuación de la trayectoria y leer la salida de las dos ecuaciones; «Ahora tú» pregunta otras cosas.
     resuelve: {
@@ -1848,10 +1868,10 @@
           return {
             enunciado: ['Una pelota sigue ', Mx, ` = ${fm(a)}t e `, My, ` = ${fm(b)}t − 5t²`, ' (en metros y segundos). ¿A qué altura pasa cuando ', Mx, ' = ', px(`${fm(xs)} m`), '?'],
             datos: [DC.leer],
-            dibujo: tiroH({ plataforma: 'piso', objeto: 'pelota', ancho: Math.max(a * tf * 1.1, 12), vx: a, vy: b, t: 0, flecha: false, camino: 'entero' }),
+            dibujo: tiroH({ plataforma: 'piso', objeto: 'pelota', ancho: Math.max(a * tf * 1.1, 12), vx: a, vy: b, t: 0, flecha: false, camino: 'entero', blanco: { en: xs, tipo: 'marca' } }),
             pasos: [
-              { tipo: 'pide', texto: ['Piden la altura ', My, ' en el punto donde ', Mx, ' vale ', px(`${fm(xs)} m`), '.'] },
-              { tipo: 'datos', texto: 'Las dos ecuaciones, con el mismo reloj.', ecuacion: [Mx, ` = ${fm(a)}`, Mt, ';   ', My, ` = ${fm(b)}`, Mt, ' − 5', Mt2] },
+              { tipo: 'pide', texto: ['Piden la altura ', My, ' en el punto donde ', Mx, ' vale ', px(`${fm(xs)} m`), ' (la × del piso).'] },
+              { tipo: 'datos', texto: 'Ahora la pelota se ve de costado: x es lo que avanza e y, la altura. Las dos ecuaciones, con el mismo reloj.', ecuacion: [Mx, ` = ${fm(a)}`, Mt, ';   ', My, ` = ${fm(b)}`, Mt, ' − 5', Mt2] },
               { tipo: 'regla', texto: 'Se despeja t de la ecuación de x y se reemplaza en la de y: queda la ecuación de la trayectoria.', ecuacion: [Mt, ' = ', { frac: [Mx, fm(a)] }] },
               { tipo: 'cuentas', texto: 'Con ese x, primero el tiempo y luego la altura:', ecuacion: [Mt, ' = ', { frac: [px(fm(xs)), fm(a)] }, ' = ', pt(`${fm(ti)} s`), '   →   ', My, ` = ${fm(b)} · `, pt(fm(ti)), ' − 5 · ', cuadrado(pt(fm(ti))), ' = ', ph(`${fm(ys)} m`)] },
               { tipo: 'sentido', texto: 'La altura es positiva: pasa por ese punto todavía en el aire.' },
@@ -1867,7 +1887,7 @@
           dibujo: tiroH({ plataforma: 'piso', objeto: 'pelota', ancho: Math.max(a * 2 * b / G * 1.1, 12), vx: a, vy: b, t: 0, flecha: { texto: '?' }, camino: 'entero' }),
           pasos: [
             { tipo: 'pide', texto: ['Piden la rapidez de salida, ', Mv0, ': el largo de la flecha con que sale.'] },
-            { tipo: 'datos', texto: 'Las dos ecuaciones, una por eje.', ecuacion: [Mx, ` = ${fm(a)}`, Mt, ';   ', My, ` = ${fm(b)}`, Mt, ' − 5', Mt2] },
+            { tipo: 'datos', texto: 'Ahora la pelota se ve de costado: x es lo que avanza e y, la altura. Una ecuación por eje.', ecuacion: [Mx, ` = ${fm(a)}`, Mt, ';   ', My, ` = ${fm(b)}`, Mt, ' − 5', Mt2] },
             { tipo: 'regla', texto: 'Lo que multiplica a t es la velocidad de salida de cada eje; el término con t² es ½ · aceleración.', ecuacion: [Mv0x, ` = ${fm(a)} m/s;   `, Mv0y, ` = ${fm(b)} m/s`] },
             { tipo: 'cuentas', texto: 'Las dos partes se juntan con Pitágoras:', ecuacion: [Mv0, ' = ', raiz([cuadrado(pv(fm(a))), ' + ', cuadrado(pv(fm(b)))]), ' = ', pv(ms(v0))] },
             { tipo: 'sentido', texto: conocido ? `Además, tan θ = ${fm(b)}/${fm(a)}: salió con ${ang}°.` : 'Es mayor que cada parte, como la hipotenusa de un triángulo recto.' },
@@ -2005,7 +2025,9 @@
 
   return {
     unidad: 'fisica.movimiento-parabolico-y-circular',
-    version: '0.4.0',
+    version: '0.5.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     colores: COLORES,
     // En el plano la velocidad es un vector: desde la idea A2 se escribe v⃗, y sus componentes, sin flecha. En A1 solo
@@ -2078,17 +2100,17 @@
       { termino: 'tiempo de subida', simbolo: 't_s', medida: 's', formas: ['tiempo de subida', 'tiempos de subida'],
         def: 'Lo que tarda un lanzamiento en llegar a lo más alto, donde la velocidad vertical vale cero.',
         simple: 'Cuánto tarda en llegar arriba.',
-        ejemplos: ['Una pelota que sube con 20 m/s tarda 2 s en llegar arriba.', 'Lanzada de lado, su tiempo de subida es cero.', 'Si sube con 5 m/s, llega arriba en medio segundo.'],
+        ejemplos: ['Una pelota que sube con 20 m/s tarda 2 s en llegar arriba.', 'Lanzada de lado, su tiempo de subida es cero.', 'Si sube con 15 m/s, llega arriba en 1,5 s.'],
         ver: ['tiempo de vuelo'] },
       { termino: 'alcance máximo', medida: 'm', formas: ['alcance máximo', 'alcances máximos'],
         def: 'El mayor alcance que se logra con una rapidez dada, cambiando solo el ángulo. Sin aire, es a 45°.',
         simple: 'Lo más lejos que puede llegar con esa rapidez.',
-        ejemplos: ['Con la misma rapidez, ningún ángulo llega más lejos que 45°.', 'A 30° o a 60° cae más cerca que a 45°.', 'Un jugador que despeja lejos busca un ángulo cercano a 45°.'],
+        ejemplos: ['Con la misma rapidez, ningún ángulo llega más lejos que 45°.', 'A 40° o a 50° cae un poco más cerca que a 45°.', 'Un jugador que despeja lejos busca un ángulo cercano a 45°.'],
         ver: ['alcance horizontal', 'ángulos complementarios'] },
       { termino: 'ángulos complementarios', formas: ['ángulos complementarios', 'complementarios'],
         def: 'Dos ángulos que suman 90°.',
         simple: 'Dos ángulos que juntos hacen una esquina recta.',
-        ejemplos: ['30° y 60°.', '37° y 53°, los del triángulo 3-4-5.', '15° y 75°.'],
+        ejemplos: ['20° y 70°.', '37° y 53°, los del triángulo 3-4-5.', '15° y 75°.'],
         ver: ['alcance máximo'] },
       // A5: ecuaciones en el plano. Ninguno junta 30 m con 40 m (la predicción de A5 da 50 m).
       { termino: 'coordenada', formas: ['coordenada', 'coordenadas'],

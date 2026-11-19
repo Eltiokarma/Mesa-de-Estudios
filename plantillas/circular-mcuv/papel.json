@@ -17,7 +17,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Un ventilador gira con aceleración angular constante. En el instante t = 1 s su rapidez angular es 7 rad/s, y en t = 3 s es 1 rad/s. ¿Cuál es el módulo de su aceleración angular? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 3 rad/s²   B) 0,5 rad/s²   C) 2 rad/s²   D) 4 rad/s²",
+      "enunciado": "Un ventilador gira con aceleración angular constante. En el instante t = 1 s su velocidad angular es 7 rad/s, y en t = 3 s es 1 rad/s. ¿Cuál es el módulo de su aceleración angular? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 3 rad/s²   B) 0,5 rad/s²   C) 2 rad/s²   D) 4 rad/s²",
       "respuesta": "A) 3 rad/s²",
       "pasos": [
         "El intervalo dura Δt = 3 − 1 = 2 s.",
@@ -27,7 +27,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Una polea gira con aceleración angular constante. En el instante t = 2 s su rapidez angular es 24 rad/s, y en t = 4 s es 39 rad/s. ¿Cuál es el módulo de su aceleración angular? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 31,5 rad/s²   B) 9,75 rad/s²   C) 19,5 rad/s²   D) 3,75 rad/s²   E) 7,5 rad/s²",
+      "enunciado": "Una polea gira con aceleración angular constante. En el instante t = 2 s su velocidad angular es 24 rad/s, y en t = 4 s es 39 rad/s. ¿Cuál es el módulo de su aceleración angular? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 31,5 rad/s²   B) 9,75 rad/s²   C) 19,5 rad/s²   D) 3,75 rad/s²   E) 7,5 rad/s²",
       "respuesta": "E) 7,5 rad/s²",
       "pasos": [
         "El intervalo dura Δt = 4 − 2 = 2 s.",
@@ -59,7 +59,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Un disco gira con aceleración angular constante. En el instante t = 5 s su rapidez angular es 1 rad/s, y en t = 15 s es 10 rad/s. ¿Qué ángulo gira el disco entre t = 5 s y t = 15 s? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 10 rad   B) 55 rad   C) 100 rad   D) 0,9 rad   E) 82,5 rad",
+      "enunciado": "Un disco gira con aceleración angular constante. En el instante t = 5 s su velocidad angular es 1 rad/s, y en t = 15 s es 10 rad/s. ¿Qué ángulo gira el disco entre t = 5 s y t = 15 s? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 10 rad   B) 55 rad   C) 100 rad   D) 0,9 rad   E) 82,5 rad",
       "respuesta": "B) 55 rad",
       "pasos": [
         "El intervalo dura Δt = 15 − 5 = 10 s.",
@@ -69,7 +69,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Una rueda gira con aceleración angular constante. En el instante t = 5 s su rapidez angular es 29 rad/s, y en t = 9 s es 38 rad/s. ¿Cuál es el módulo de su aceleración angular? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 16,75 rad/s²   B) 9,5 rad/s²   C) 2,25 rad/s²   D) 1 rad/s²",
+      "enunciado": "Una rueda gira con aceleración angular constante. En el instante t = 5 s su velocidad angular es 29 rad/s, y en t = 9 s es 38 rad/s. ¿Cuál es el módulo de su aceleración angular? Datos: Con α constante: ω = ω₀ + α · t. Con α constante: θ = ω₀ · t + ½ · α · t². Sin el tiempo: ω² = ω₀² + 2α · θ. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 16,75 rad/s²   B) 9,5 rad/s²   C) 2,25 rad/s²   D) 1 rad/s²",
       "respuesta": "C) 2,25 rad/s²",
       "pasos": [
         "El intervalo dura Δt = 9 − 5 = 4 s.",

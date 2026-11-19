@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>El disco y sus flechas</title>
 <style>
+/* 19 nov 2026 (auditoría de Movimiento circular, M2): los colores de las variables son ahora los de la unidad
+   fisica.movimiento-circular (docs/molde-unidad.md §5b; tabla COLORES de su teoría), un color por magnitud: la velocidad
+   (v y ω) naranja, el tiempo turquesa, el ángulo girado θ violeta y toda aceleración (acp, aT, la total y α) carmín, la
+   total a trazos. Lo que sigue describe la paleta de antes (siete colores) y queda como historia. */
 /* Cáscara acogedora (crema, tarjetas cálidas, esquinas redondas; docs/diseno.md).
    Dentro del dibujo y de las ecuaciones solo mandan los colores de las variables (regla 4). Los que comparte con
    tiro-parabolico conservan su color: v velocidad morado (#8a2aa8 / #ec62e6), acp aceleración centrípeta y a total
@@ -21,7 +25,7 @@
   --bg:#fbf3ec; --card:#fffaf6; --paper:#fdf7f1; --ink:#2d2340; --muted:#716579; --line:#efe3dc; --grid:#f3e8e0;
   --detras:#f6ece4; --acento:#ffd3e2; --acento-ink:#5c1f3d; --ok:#1d7f58; --warn:#c8363b;
   --shadow:0 1px 2px rgba(92,52,110,.05),0 10px 28px rgba(92,52,110,.09);
-  --c-v:#8a2aa8; --c-a:#466d14; --c-t:#a05200; --c-w:#0f766e; --c-at:#4a3b00; --c-alfa:#056db3; --c-th:#13394b;
+  --c-v:#a95300; --c-a:#c02a5c; --c-t:#07746e; --c-w:#a95300; --c-at:#c02a5c; --c-alfa:#c02a5c; --c-th:#6b3dbd;
   --suelo:#d9c8bb; --bloque:#f3e3d3;
   --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,monospace;
@@ -31,13 +35,13 @@
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8; --c-at:#ffde0a; --c-alfa:#10a7f9; --c-th:#8080ff;
+  --c-v:#f0a04a; --c-a:#f17384; --c-t:#3dcdc3; --c-w:#f0a04a; --c-at:#f17384; --c-alfa:#f17384; --c-th:#ab8cf2;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#1d1626; --card:#2a2135; --paper:#241c2e; --ink:#f1ebf7; --muted:#a99cb8; --line:#3a2f48; --grid:#2d2439;
   --detras:#211a2a; --acento:#4c2a40; --acento-ink:#ffe1ec; --ok:#4fd09a; --warn:#ff7b7f;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28);
-  --c-v:#ec62e6; --c-a:#a3d65e; --c-t:#f0a04a; --c-w:#5ed9c8; --c-at:#ffde0a; --c-alfa:#10a7f9; --c-th:#8080ff;
+  --c-v:#f0a04a; --c-a:#f17384; --c-t:#3dcdc3; --c-w:#f0a04a; --c-at:#f17384; --c-alfa:#f17384; --c-th:#ab8cf2;
   --suelo:#4a3d55; --bloque:#5a4868; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -395,7 +399,7 @@ function flecha(ctx, x1, y1, x2, y2, color, w, dash){
   ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - Math.cos(ang - .45)*p, y2 - Math.sin(ang - .45)*p); ctx.lineTo(x2 - Math.cos(ang + .45)*p, y2 - Math.sin(ang + .45)*p);
   ctx.closePath(); ctx.fill(); ctx.restore();
 }
-// Flecha con halo del color del papel: aT (ocre) y las demás no se confunden con el dibujo de abajo.
+// Flecha con halo del color del papel: aT y las demás no se confunden con el dibujo de abajo.
 function flechaHalo(ctx, c, x1, y1, x2, y2, col, w, dash){ flecha(ctx, x1, y1, x2, y2, c.paper, w + 4); flecha(ctx, x1, y1, x2, y2, col, w, dash); }
 // Ángulo matemático (antihorario, desde +x) → punto en pantalla (y hacia abajo).
 const enDisco = (cx, cy, R, a) => [cx + R*Math.cos(a), cy - R*Math.sin(a)];
@@ -689,7 +693,7 @@ const pasos = [
      return `<div class="eqs"><div class="eq">${V('at','aT')} = ${V('alfa','α')}·R = 4π·0,2 = ${V('at','0,8π m/s²')}<span class="note">no depende del tiempo</span></div>
      <div class="eq">${V('a','acp')} = ${V('w','ω²')}·R<span class="note">${V('w','ω')} = ${V('alfa','α')}·${V('t','t')} crece, y acp con su cuadrado</span></div></div>
      <div class="chips">${chip(`a los 0,15 s: acp ≈ ${fmt(a.ac, 2)} m/s²`)}${chip(`a los 0,5 s: acp ≈ ${fmt(b.ac, 1)} m/s²`)}${chip(`aT ≈ ${fmt(a.at, 2)} m/s² siempre`)}</div>
-     <p>Mira el dibujo: la flecha ${V('at','ocre')} no cambia de largo; la ${V('a','verde')} que va al centro se alarga cada vez más rápido. La total, a trazos, se va inclinando hacia el centro.</p>${fuente(HIP)}`; },
+     <p>Mira el dibujo: la flecha ${V('at','aT')}, a lo largo del giro, no cambia de largo; la ${V('a','acp')}, que va al centro, se alarga cada vez más rápido. La total, a trazos, se va inclinando hacia el centro.</p>${fuente(HIP)}`; },
    dibujar:(L, c, E, r) => { const z = zonas(L);
      discoEn(L, c, Object.assign({}, z, { R:z.R*0.88 }), R0, AL0, E.t, { a0:PI, flechas:{ v:true, at:true, acp:true, a:true }, escalaA:z.R*0.8/8, escalaV:z.R*0.6/1.3 });
      reloj(L, c, E.t); },
@@ -709,7 +713,7 @@ const pasos = [
    despues:(E, A) => { const d = M.desdeReposo({ r:E.R, alfa:E.alfa, razon:1 }); E.tFin = d.t; A.animar(2600, f => { E.t = d.t*f; }); },
    exp:() => `<div class="eqs"><div class="eq">${fr(V('a','acp'), V('at','aT'))} = ${fr(V('w','ω') + '²·R', V('alfa','α') + '·R')} = ${fr('2' + V('alfa','α') + V('th','θ'), V('alfa','α'))} = 2${V('th','θ')}<span class="note">desde el reposo, ω² = 2αθ</span></div>
      <div class="eq">acp = aT → 2${V('th','θ')} = 1 → ${V('th','θ = ½ rad')}</div></div>
-     <p>El radio y α se cancelan. Mueve las perillas: con cualquier disco, la flecha ${V('a','verde')} alcanza a la ${V('at','ocre')} cuando el arco ${V('th','azul')} mide medio radián. Con este truco, «¿cuándo acp es el doble de aT?» sale de una línea: 2θ = 2, θ = 1 rad.</p>${fuente(HIP)}`,
+     <p>El radio y α se cancelan. Mueve las perillas: con cualquier disco, la flecha ${V('a','acp')} alcanza a la ${V('at','aT')} cuando el ángulo girado ${V('th','θ')} mide medio radián. Con este truco, «¿cuándo acp es el doble de aT?» sale de una línea: 2θ = 2, θ = 1 rad.</p>${fuente(HIP)}`,
    ctrl:E => `<div class="ctrls">${perilla('p3R', 'Radio R', 'r-m', 0.1, 1, 0.05, E.R)}${perilla('p3a', 'Aceleración angular α', 'r-alfa', 1, 20, 1, Math.round(E.alfa))}</div><div class="chips" id="p3c"></div>`,
    enlazar:(E, A) => {
      const raiz = A.raiz, r = raiz.querySelector('#p3R'), a = raiz.querySelector('#p3a');
@@ -901,7 +905,7 @@ const pasos = [
      <div class="eq">Δ${V('v','v')} = (${fmt(V8.dv.x, 0)}; ${fmt(V8.dv.y, 0)}) m/s</div><div class="eq">|Δ${V('v','v')}| = 3√2 ≈ ${fmt(V8.modDv, 2)} m/s</div>
 </div>
      <p>El desplazamiento de A a B es la cuerda AB = ${fmt(V8.cuerda, 2)} m, no el arco (${fmt(V8.arco, 2)} m), y tarda ${fmt(V8.dt, 2)} s. La velocidad media es Δ${vec('r')}/Δt ≈ ${fmt(V8.modVMedia, 2)} m/s y la aceleración media, Δ${V('v','v')}/Δt ≈ ${fmt(V8.modAMedia, 2)} m/s².</p>
-     <p>Las dos flechas ${V('v','moradas')} viajaron a un mismo origen: así se restan. Δv (a trazos) va de la punta de vA a la de vB. La velocidad media usa la cuerda, no el arco, y las dos medias se dividen entre el tiempo.</p>${fuente(HIP)}`,
+     <p>Las dos flechas ${V('v','de la velocidad')} viajaron a un mismo origen: así se restan. Δv (a trazos) va de la punta de vA a la de vB. La velocidad media usa la cuerda, no el arco, y las dos medias se dividen entre el tiempo.</p>${fuente(HIP)}`,
    dibujar:(L, c, E, r) => {
      const ctx = L.ctx, P = plano(L, c, RANGO, 1.5);
      [[V8.p1, 'A'], [V8.p2, 'B']].forEach(([p, t]) => { flechaHalo(ctx, c, P.X(0), P.Y(0), P.X(p.x), P.Y(p.y), c.ink, 2.4); });
@@ -932,7 +936,7 @@ const pasos = [
    despues:(E, A) => A.animar(3000, f => { E.f = f; }),
    exp:() => `<div class="eqs"><div class="eq">${V('a','acp')} = −${V('w','ω²')}·${vec('r')}<span class="note">ω al cuadrado: el sentido de giro no la cambia</span></div>
      <div class="eq">en A: ${vec('r')} = ${fmt(V9.p1.y, 1)} ĵ m → ${V('a','acp')} = ${fmt(V9.a1.y, 0)} ĵ m/s²</div><div class="eq">en B: ${vec('r')} = ${fmt(V9.p2.x, 1)} î m → ${V('a','acp')} = ${fmt(V9.a2.x, 0)} î m/s²</div></div>
-     <p>Las dos flechas ${V('a','verdes')} miden lo mismo, pero al llevarlas a un mismo origen apuntan distinto: una hacia abajo y otra hacia la izquierda. <b>La aceleración del MCU no es constante</b>: su módulo sí lo es, su dirección gira con el punto. Algunos libros de academia dan por verdadero lo contrario; no lo es.</p>
+     <p>Las dos flechas ${V('a','de la aceleración')} miden lo mismo, pero al llevarlas a un mismo origen apuntan distinto: una hacia abajo y otra hacia la izquierda. <b>La aceleración del MCU no es constante</b>: su módulo sí lo es, su dirección gira con el punto. Algunos libros de academia dan por verdadero lo contrario; no lo es.</p>
      ${fuente('Creer que la aceleración apunta hacia donde se mueve el objeto está reportado, sin porcentaje en lo que leímos (Trowbridge y McDermott, 1981): respaldo parcial. Lo demás es hipótesis nuestra.')}`,
    dibujar:(L, c, E, r) => {
      const ctx = L.ctx, P = plano(L, c, RANGO, 1.5);
@@ -964,7 +968,7 @@ const pasos = [
    despues:(E, A) => A.animar(3800, f => { E.t = 3*f; E.f = f; }),
    exp:() => { const m0 = M.mcuv({ r:1, omega0:6, alfa:-2, t:0 }), m2 = M.mcuv({ r:1, omega0:6, alfa:-2, t:2 });
      return `<div class="eqs"><div class="eq">${V('alfa','α')} = ${fr('Δ' + V('w','ω'), 'Δ' + V('t','t'))} = ${fr(V('w', fmt(m2.omega, 0) + ' k̂') + ' − ' + V('w', fmt(m0.omega, 0) + ' k̂'), V('t','2 s'))} = ${V('alfa','−2 k̂ rad/s²')}<span class="note">frena: contra ω</span></div></div>
-     <p>En el dibujo, la flecha ${V('w','turquesa')} de ω se achica hasta desaparecer, y ${V('alfa','α')} queda hacia abajo todo el tiempo. Si ω cambiara de sentido (la rueda empieza a girar al revés), α se calcula igual, con los vectores: no se restan los módulos.</p>${fuente(HIP)}`; },
+     <p>En el dibujo, la flecha ${V('w','ω')} se achica hasta desaparecer, y ${V('alfa','α')} queda hacia abajo todo el tiempo. Si ω cambiara de sentido (la rueda empieza a girar al revés), α se calcula igual, con los vectores: no se restan los módulos.</p>${fuente(HIP)}`; },
    dibujar:(L, c, E, r) => {
      const ctx = L.ctx, W = L.W, H = L.H, cx = W/2, cy = H*0.6, rx = Math.min(W*0.36, H*0.55), ry = rx*0.32;
      const m = M.mcuv({ r:1, omega0:6, alfa:-2, t:E.t, frena:true }), k = H*0.045;
@@ -1152,7 +1156,7 @@ function sincronizar(){
 }
 pasos.forEach(p => {
   const [tf] = LEE[p.id], dib = p.dibujar;
-  p.ctrl = E => `<div class="ctrls">${perilla('cur3', 'Tiempo (t): arrastra también el cursor naranja', 'r-t', 0, tf, 0.05, E.t)}</div><div class="chips" id="lee3"></div>`;
+  p.ctrl = E => `<div class="ctrls">${perilla('cur3', 'Tiempo (t): arrastra también el cursor turquesa', 'r-t', 0, tf, 0.05, E.t)}</div><div class="chips" id="lee3"></div>`;
   p.enlazar = (E, A) => { const el = A.raiz.querySelector('#cur3'); el.oninput = () => { A.parar(); E.t = +el.value; A.draw(); }; sincronizar(); };
   p.dibujar = (L, c, E, r) => { dib(L, c, E, r); if (r) sincronizar(); };
 });
@@ -1225,7 +1229,7 @@ const pasos = [
    despues:(E, A) => A.animar(3400, f => { E.t = 1.6*f; }),
    exp:() => `<div class="eqs"><div class="eq">${V('at','aT')} = ${V('alfa','αA')}·rA = 6·0,1 = ${V('at', fmt(T17.at1, 1) + ' m/s²')}<span class="note">la misma en los dos bordes</span></div>
      <div class="eq">${V('alfa','αB')} = ${fr(V('at','aT'), 'rB')} = ${fr('0,6', '0,3')} = ${V('alfa', fmt(T17.alfa2, 0) + ' rad/s²')}</div></div>
-     <p>En una faja se conserva lo que pasa en el borde: la misma v en cada instante y, si aceleran, la misma ${V('at','aT')} (las flechas ocres miden igual). En un mismo eje, en cambio, se conservan ω y α.</p>${fuente(HIP)}`,
+     <p>En una faja se conserva lo que pasa en el borde: la misma v en cada instante y, si aceleran, la misma ${V('at','aT')} (las dos flechas ${V('at','aT')} miden igual). En un mismo eje, en cambio, se conservan ω y α.</p>${fuente(HIP)}`,
    dibujar:(L, c, E, r) => {
      const ctx = L.ctx, W = L.W, H = L.H, s = Math.min(W*0.62, H*1.1)/0.8, cy = H*0.5, xA = W/2 - 0.3*s, xB = W/2 + 0.2*s, rA = 0.1*s, rB = 0.3*s;
      const thA = 0.5*6*E.t*E.t, thB = 0.5*T17.alfa2*E.t*E.t;
@@ -1253,7 +1257,7 @@ const pasos = [
    despues:(E, A) => A.animar(3600, f => { E.t = f; }),
    exp:() => `<div class="eqs"><div class="eq">${V('w','ω')} = ${fr(V('v','v'), 'r')} = ${fr('5', '0,3')} ≈ ${V('w', fmt(R18.omega, 1) + ' rad/s')}<span class="note">alrededor del punto de apoyo</span></div>
      <div class="eq">arriba: ${V('w','ω')}·2r = ${V('v', fmt(R18.arriba.modulo, 0) + ' m/s')} · adelante: ${V('w','ω')}·r√2 = ${V('v','5√2 ≈ ' + fmt(R18.adelante.modulo, 1) + ' m/s')} · apoyo: ${V('v','0')}</div></div>
-     <p>En cada instante la rueda gira alrededor del punto que toca el piso (el centro instantáneo). Las líneas a trazos van del apoyo a cada punto: cada flecha ${V('v','morada')} es perpendicular a su línea y mide ω por su largo. Por eso el barro sale disparado desde arriba y la parte de abajo de una llanta casi no se ve borrosa en las fotos.</p>${fuente(HIP)}`,
+     <p>En cada instante la rueda gira alrededor del punto que toca el piso (el centro instantáneo). Las líneas a trazos van del apoyo a cada punto: cada flecha ${V('v','de la velocidad')} es perpendicular a su línea y mide ω por su largo. Por eso el barro sale disparado desde arriba y la parte de abajo de una llanta casi no se ve borrosa en las fotos.</p>${fuente(HIP)}`,
    dibujar:(L, c, E, r) => {
      const ctx = L.ctx, W = L.W, H = L.H, R = Math.min(W*0.2, H*0.26), yS = H*0.8, cy = yS - R, recorre = W*0.3;
      const cx = W*0.32 + recorre*E.t, giro = -(recorre*E.t)/R;

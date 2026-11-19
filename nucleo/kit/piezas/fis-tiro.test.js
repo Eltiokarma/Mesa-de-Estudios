@@ -126,3 +126,47 @@ test('con una pared enfrente, el vuelo termina en la pared', () => {
   assert.equal(g.t, 2);
   assert.ok(Math.abs((p.x0 + p.x1) / 2 - g.X(40)) < 1e-9 && Math.abs((p.y0 + p.y1) / 2 - g.Y(20)) < 1e-9, 'a 40 m de lado y 20 m más abajo');
 });
+
+// ---- Auditoría y lectores en frío (19 nov): cada prueba falla con la versión de antes ----
+test('una longitud pedida con «?» junto a otra con número: cada eje con su escala y «Dibujo sin escala»', () => {
+  const mesa = { plataforma: 'mesa', objeto: 'canica', alto: 0.8, ancho: 1.2, v0: 2, t: 0, flecha: { texto: '2 m/s' }, cotaAlto: { texto: '80 cm' }, cotaAlcance: { texto: '?', hasta: 0.8 } };
+  const g = P.geometria(mesa);
+  assert.ok(g.sinEscala && g.rotulos.some(r => r.texto === 'Dibujo sin escala'));
+  // a escala, la raya «?» (0,8 m) medía lo mismo que la de 80 cm: ahora no
+  const alto = g.YF - g.YL, lado = g.X(0.8) - g.X(0);
+  assert.ok(Math.abs(alto - lado) > 10, `${alto} contra ${lado}`);
+  // sin «?», la figura sigue a escala
+  const g2 = P.geometria(Object.assign({}, mesa, { cotaAlcance: { texto: '80 cm', hasta: 0.8 } }));
+  assert.ok(!g2.sinEscala && Math.abs(g2.X(1) - g2.X(0) - (g2.Yh(0) - g2.Yh(1))) < 1e-9);
+});
+
+test('la cota de la altura va en la vertical de salida: la del alcance empieza en ella', () => {
+  for (const d of [{ plataforma: 'azotea', objeto: 'pelota', alto: 20, ancho: 16, v0: 8, t: 0, cotaAlto: { texto: '?' }, cotaAlcance: { texto: '16 m', hasta: 16 } },
+    { plataforma: 'mesa', objeto: 'canica', alto: 0.8, ancho: 1.2, v0: 2, t: 0, cotaAlto: { texto: '80 cm' }, cotaAlcance: { texto: '?', hasta: 0.8 } }]) {
+    const s = P.dibujar(d), g = P.geometria(d);
+    const vert = [...s.matchAll(/class="fis-cota" d="M([\d.]+) [\d.]+V/g)].map(m => Number(m[1]));
+    assert.ok(vert.length && vert.every(x => Math.abs(x - g.XL) < 0.01), `${vert} contra ${g.XL}`);
+  }
+  // con dos piedras y la regla del agua, la vertical de la lanzada marca el 0
+  const dos = Object.assign({}, PENA, { v0: 10, t: 2, otra: {}, regla: RX, alturas: RH });
+  assert.match(P.dibujar(dos), /class="fis-vertical"/);
+});
+
+test('el rótulo de la flecha de salida queda fuera del halo de su manija (13 px), de lado y con ángulo', () => {
+  for (const d of [juego(7, 0), juego(15, 0), { plataforma: 'piso', objeto: 'pelota', ancho: 64, techo: 24, vx: 12, vy: 9, t: 0, flecha: { texto: '15 m/s' }, angulo: { texto: '37°' } },
+    { plataforma: 'manguera', objeto: 'agua', ancho: 10.6, techo: 4.8, vx: 8.66, vy: 5, t: 0, flecha: { texto: '10 m/s' }, angulo: { texto: '30°' } }]) {
+    const g = P.geometria(d), q = g.salida, halo = { x0: q.x - 13, x1: q.x + 13, y0: q.y - 13, y1: q.y + 13 };
+    for (const r of g.rotulos.filter(r => ['flecha', 'angulo'].includes(r.tipo))) assert.ok(!pisa(r, halo), `«${r.texto}» bajo la manija`);
+  }
+});
+
+test('cada flecha de la gravedad lleva su «g»', () => {
+  const d = Object.assign({}, PENA, { alto: 45, ancho: 50, v0: 15, t: 2, cada: 1, camino: 'recorrido', flechas: { en: [1, 2], kv: 2, vx: false, vy: false }, gravedad: { en: [1, 2], texto: 'g' } });
+  assert.equal(P.geometria(d).rotulos.filter(r => r.tipo === 'g').length, 2);
+});
+
+test('el dron en la plaza no tapa el 0 del eje', () => {
+  const g = P.geometria({ vista: 'plano', max: 80, paso: 10, numero: 20, vx: 6, vy: 8, t: 0 });
+  const dron = g.objetos.find(o => o.nombre === 'dron');
+  for (const r of g.rotulos.filter(r => r.tipo === 'numero')) assert.ok(!pisa(r, dron), `«${r.texto}»`);
+});

@@ -81,9 +81,9 @@
   function omega(rng, semilla) {
     const [Obj, obj] = rng.elegir(OBJ);
     const modo = rng.elegir(['rpm', 'rpm', 'vueltas']);
-    const variables = { f: { nombre: 'rapidez de giro dada', color: 'o' }, t: { nombre: 'tiempo', color: 'i' }, w: { nombre: 'rapidez angular', color: 'd' } };
+    const variables = { f: { nombre: 'rapidez de giro dada', color: 'o' }, t: { nombre: 'tiempo', color: 'i' }, w: { nombre: 'velocidad angular', color: 'd' } };
     const texto = x => piTxt(x, 'rad/s');
-    const pregunta = ['¿Cuál es la ', v('w', 'rapidez angular'), ` ${obj.replace(/^el /, 'del ').replace(/^la /, 'de la ')}, en rad/s?`];
+    const pregunta = ['¿Cuál es la ', v('w', 'velocidad angular'), ` ${obj.replace(/^el /, 'del ').replace(/^la /, 'de la ')}, en rad/s?`];
     if (modo === 'rpm') {
       const N = rng.elegir(RPM);
       const correcta = N * PI / 30;
@@ -114,7 +114,7 @@
       h('vueltas-sin-2pi', PI * n / ts, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad.'),
     ];
     if (enMin) errores.push(h('CI-unidades-sin-convertir', 2 * PI * n / t, 'Usaste los minutos como si fueran segundos. Antes de dividir, hay que pasar el tiempo a segundos.'));
-    errores.push(h('CI-multiplica-por-tiempo', 2 * PI * n * ts, 'Multiplicaste por el tiempo. La rapidez angular es lo girado entre el tiempo que tarda: ω = 2π·n/t.'));
+    errores.push(h('CI-multiplica-por-tiempo', 2 * PI * n * ts, 'Multiplicaste por el tiempo. La velocidad angular es lo girado entre el tiempo que tarda: ω = 2π·n/t.'));
     const solucion = [
       ...(enMin ? [['El tiempo en segundos: ', v('t', `${tTxt} = ${ts} s`), '.']] : []),
       ['Cada vuelta son 2π rad: ', v('w', 'ω'), ` = 2π · ${n}/${ts} = `, v('w', texto(correcta)), '.'],
@@ -169,7 +169,7 @@
   function centripeta(rng, semilla) {
     const sub = rng.elegir(['v', 'v', 'omega']);
     const texto = x => `${f(x)} m/s²`;
-    const variables = { r: { nombre: 'radio', color: 'o' }, vv: { nombre: sub === 'v' ? 'rapidez' : 'rapidez angular', color: 'i' }, a: { nombre: 'aceleración centrípeta', color: 'd' } };
+    const variables = { r: { nombre: 'radio', color: 'o' }, vv: { nombre: sub === 'v' ? 'rapidez' : 'velocidad angular', color: 'i' }, a: { nombre: 'aceleración centrípeta', color: 'd' } };
     const pregunta = ['¿Cuál es el módulo de su ', v('a', 'aceleración centrípeta'), '?'];
     if (sub === 'v') {
       const esc = rng.elegir([
@@ -201,7 +201,7 @@
     const r = rcm / 100, correcta = w * w * r;
     if (!corto(correcta) || correcta > 60) return null;
     const [Obj] = rng.elegir(OBJ.slice(0, 3));
-    const enunciado = [`${Obj} gira con rapidez angular constante de `, v('vv', `${w} rad/s`), '. Una marca está pintada a ', v('r', `${rcm} cm`), ' del eje.'];
+    const enunciado = [`${Obj} gira con velocidad angular constante de `, v('vv', `${w} rad/s`), '. Una marca está pintada a ', v('r', `${rcm} cm`), ' del eje.'];
     const pregunta2 = ['¿Cuál es el módulo de la ', v('a', 'aceleración centrípeta'), ' de la marca?'];
     const errores = [
       h('acp-sin-cuadrado', w * r, 'Multiplicaste ω por el radio sin elevar ω al cuadrado: eso es la rapidez de la marca, en m/s. acp = ω²·r.'),
@@ -228,7 +228,7 @@
       const correcta = k / 2 * 60 * tm;
       const wTxt = P.pi(k * PI, 'rad/s');
       const tTxt = `${tm} ${tm === 1 ? 'minuto' : 'minutos'}`;
-      const enunciado = [`${Obj} gira con rapidez angular constante de `, v('w', wTxt), ' durante ', v('t', tTxt), '.'];
+      const enunciado = [`${Obj} gira con velocidad angular constante de `, v('w', wTxt), ' durante ', v('t', tTxt), '.'];
       const errores = [
         h('CI-unidades-sin-convertir', k / 2 * tm, 'Usaste los minutos como si fueran segundos. ω está en rad por segundo: el tiempo va en segundos.'),
         h('vueltas-sin-2pi', k * 60 * tm, 'Tomaste π rad como una vuelta. Una vuelta son 2π rad: hay que dividir el ángulo entre 2π.'),
@@ -271,7 +271,7 @@
       const correcta = vA * rB / rA;
       if (!corto(correcta) || correcta > 20) return null;
       const texto = x => `${f(x)} m/s`;
-      const enunciado = ['Un disco gira con rapidez angular constante. Una marca ', v('A', 'A'), ', a ', v('d', `${rA} cm`), ' del eje, se mueve a ', v('A', `${f(vA)} m/s`),
+      const enunciado = ['Un disco gira con velocidad angular constante. Una marca ', v('A', 'A'), ', a ', v('d', `${rA} cm`), ' del eje, se mueve a ', v('A', `${f(vA)} m/s`),
         '. Otra marca ', v('B', 'B'), ' está a ', v('d', `${rB} cm`), ' del eje.'];
       const pregunta = ['¿Con qué ', v('x', 'rapidez'), ' se mueve ', v('B', 'B'), '?'];
       const errores = [
@@ -294,7 +294,7 @@
       const rB = R - dB, correcta = R / rB;
       if (!corto(correcta) || correcta === 2) return null;
       const texto = f;
-      const enunciado = ['Un disco de ', v('d', `${R} cm`), ' de radio gira con rapidez angular constante. La marca ', v('A', 'A'), ' está en el borde y la marca ', v('B', 'B'),
+      const enunciado = ['Un disco de ', v('d', `${R} cm`), ' de radio gira con velocidad angular constante. La marca ', v('A', 'A'), ' está en el borde y la marca ', v('B', 'B'),
         ' está a ', v('d', `${dB} cm`), ' del borde, sobre el mismo radio.'];
       const pregunta = ['¿Cuántas veces la ', v('x', 'rapidez de A'), ' es la rapidez de ', v('B', 'B'), '?'];
       const errores = [
@@ -316,9 +316,9 @@
     const vA = w * rA / 100, vB = w * (rA + d) / 100;
     if (!corto(vA) || !corto(vB)) return null;
     const texto = x => `${f(x)} rad/s`;
-    const enunciado = ['Dos marcas, ', v('A', 'A'), ' y ', v('B', 'B'), ', están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas ', v('d', `${d} cm`),
+    const enunciado = ['Dos marcas, ', v('A', 'A'), ' y ', v('B', 'B'), ', están sobre un mismo radio de un disco que gira con velocidad angular constante, separadas ', v('d', `${d} cm`),
       '. ', v('A', 'A'), ' se mueve a ', v('A', `${f(vA)} m/s`), ' y ', v('B', 'B'), ', que está más lejos del eje, a ', v('B', `${f(vB)} m/s`), '.'];
-    const pregunta = ['¿Cuál es la ', v('x', 'rapidez angular'), ' del disco?'];
+    const pregunta = ['¿Cuál es la ', v('x', 'velocidad angular'), ' del disco?'];
     const errores = [
       h('CI-sin-restar', vB / (d / 100), `Dividiste la rapidez de B entre la separación, como si B estuviera a ${d} cm del eje. B está más lejos que eso: los ${d} cm explican solo la diferencia, vB − vA = ω·d.`),
       h('CI-suma-en-vez-de-resta', (vA + vB) / (d / 100), 'Sumaste las rapideces. La separación entre las marcas explica cuánto más rápido va B: vB − vA = ω·d.'),
@@ -398,10 +398,33 @@
           "v = ω · r, con ω = 2π/T"
       ]
   };
+  // Un color fijo por magnitud, el de la unidad fisica.movimiento-circular (COLORES de su teoría; docs/molde-unidad.md
+  // §5b; auditoría del 19 nov, M2): la velocidad (ω, v, rpm) en naranja, el tiempo (t, T) en turquesa, el giro (θ, vueltas)
+  // en violeta, la aceleración (α, a_T, a_c) en carmín; radios, distancias, latitudes y razones en tinta. Sin verde. Antes
+  // cada problema pintaba por papel (lo que se pide en verde). Una variable de un objeto («móvil A», «rueda B», «lo que se
+  // pide») toma el color de la unidad de lo que escribe.
+  const COLOR_UNIDAD = [[/rad\/s²|m\/s²|vueltas?\/s²/, 'h'], [/rad\/s|rpm|m\/s|km\/h|Hz|por segundo|vueltas?\/s/, 'o'], [/\d\s*(s|ms|min|minutos?|h)\b/, 'i'], [/vueltas?\b|\brad\b|°/, 'f'], [/\d\s*(cm|m|km)\b/, 'tinta']];
+  const COLOR_SIMBOLO = [[/(^|\s)ω/, 'o'], [/(^|\s)α/, 'h'], [/(^|\s)θ/, 'f'], [/^(v|v[A-Z0-9])$/, 'o'], [/^a(cp|T|c|_)/, 'h'], [/^t$/, 'i']];
+  const COLOR_NOMBRE = [[/aceleraci|desaceleraci/, 'h'], [/tiempo|intervalo|periodo|período/, 'i'], [/ángulo|vueltas|posición angular|área|desfase|separación|girado/, 'f'],
+    [/radio|diámetro|distancia/, 'tinta'], [/rapidez|velocidad|giro/, 'o']];
+  const colorDeLista = (lista, t) => (lista.find(([re]) => re.test(t)) || [])[1];
+  function colorPorMagnitud(pr) {
+    const textos = {};
+    const recorrer = x => { if (!x) return; if (Array.isArray(x)) { x.forEach(recorrer); return; } if (typeof x === 'object') { if ('v' in x && 't' in x) (textos[x.v] = textos[x.v] || []).push(String(x.t)); else Object.values(x).forEach(recorrer); } };
+    recorrer([pr.enunciado, pr.pregunta, pr.solucion]);
+    const unidad = pr.respuesta && pr.respuesta.unidad ? `1 ${pr.respuesta.unidad}` : '';
+    for (const [k, va] of Object.entries(pr.variables || {})) {
+      const nom = String(va.nombre || ''), ts = textos[k] || [];
+      va.color = /latitud|razón/.test(nom) ? 'tinta' : /altura/.test(nom) ? 'f' : /aceleraci/.test(nom) ? 'h'
+        : /lo que se pide/.test(nom) ? (colorDeLista(COLOR_UNIDAD, unidad) || 'tinta')
+        : colorDeLista(COLOR_UNIDAD, ts.join(' ')) || colorDeLista(COLOR_NOMBRE, nom) || ts.map(t => colorDeLista(COLOR_SIMBOLO, t)).find(Boolean) || 'tinta';
+    }
+    return pr;
+  }
   const generarConDatos = (semilla, opciones) => {
     const pr = generar(semilla, opciones);
     if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
-    return pr;
+    return colorPorMagnitud(pr);
   };
   return { id: 'circular-mcu', titulo: 'Rpm, radianes y puntos que giran juntos', generar: generarConDatos, TIPOS_POR_IDEA };
 });

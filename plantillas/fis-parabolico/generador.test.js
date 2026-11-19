@@ -157,3 +157,23 @@ test('la ficha y el catálogo: la unidad lista esta plantilla primero', () => {
   assert.ok(papel.problemas.length >= 5 && papel.problemas.length <= 10);
   for (const pr of papel.problemas) assert.match(pr.enunciado, /Datos: /);
 });
+
+// ---- Auditoría (19 nov): cada prueba falla con la versión de antes ----
+const planoG = x => (Array.isArray(x) ? x.map(planoG).join('') : x && typeof x === 'object' ? String(x.t) : String(x === undefined ? '' : x));
+test('auditoría: las velocidades de la idea 2 que usan vₓ = v₀ la traen en los datos; las de eje hacia arriba lo dicen', () => {
+  for (let s = 0; s < 300; s++) {
+    const p = gen.generar(s, { idea: 'velocidad-en-vuelo' });
+    if (['llegada', 'angulo-t'].includes(p._datos.tipo)) assert.ok(p.datos.some(d => /v_x = v_0/.test(d)), `${p._datos.tipo}: ${p.datos}`);
+    for (const k of ['tiro-oblicuo', 'altura-y-alcance']) for (const d of gen.generar(s, { idea: k }).datos) if (/v_y² =/.test(d)) assert.match(d, /hacia arriba/);
+  }
+});
+test('auditoría: ninguna pelota se patea a más de 25 m/s, y «veces» se lee bien', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'altura-y-alcance' }), t = planoG(p.enunciado) + ' ' + planoG(p.pregunta);
+    if (p._datos.tipo === 'alcance-45') assert.ok(p._datos.v0 <= 25, t);
+    assert.ok(!/veces de esa|de esa rapidez de esa/.test(t), t);
+  }
+});
+test('auditoría: la ecuación de segundo grado dice qué son p, q y r', () => {
+  for (let s = 0; s < 200; s++) for (const d of gen.generar(s, { idea: 'tiro-oblicuo' }).datos) if (/p · t²/.test(d)) assert.match(d, /p, q, r/);
+});

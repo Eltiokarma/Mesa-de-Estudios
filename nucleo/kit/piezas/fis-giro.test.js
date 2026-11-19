@@ -66,3 +66,21 @@ test('correas: la faja y la cadena van por fuera de las dos ruedas, debajo de el
   const c = revisar('cadena', { alto: 214, cuerpos: [{ tipo: 'engranaje', c: [96, 104], R: 60 }, { tipo: 'engranaje', c: [244, 104], R: 30 }], correas: [{ de: 0, a: 1, tipo: 'cadena' }] }).s;
   assert.match(c, /class="fis-correa"[^>]*stroke-dasharray="4 3"/);
 });
+
+// 19 nov (lector en frío de Movimiento circular): un rótulo evita, si puede, las patas de la rueda de la fortuna, la
+// flecha curva del sentido de giro, el tronco de las flechas y el borde de los cuerpos.
+const cruzaSeg = (b, x1, y1, x2, y2) => { for (let q = 0; q <= 60; q++) { const x = x1 + (x2 - x1) * q / 60, y = y1 + (y2 - y1) * q / 60; if (x > b.x0 + 1 && x < b.x1 - 1 && y > b.y0 + 1 && y < b.y1 - 1) return true; } return false; };
+test('los rótulos no se montan en las patas del soporte ni en la flecha curva del giro', () => {
+  for (let a = 15; a < 345; a += 15) {
+    const g = P.geometria({ alto: 238, cuerpos: [{ tipo: 'rueda', c: [150, 116], R: 80, cabinas: 8, giro: a }], puntos: [{ ang: 270 + a, tipo: 'cabina' }],
+      arcos: [{ de: 270, a: 270 + a, texto: 's = 16 m', afuera: 26 }], radios: [{ ang: 270 }, { ang: 270 + a }] });
+    const s = g.rotulos.find(r => r.texto === 's = 16 m');
+    for (const sg of [-1, 1]) assert.ok(!cruzaSeg(s, 150, 116 + 24, 150 + sg * 0.62 * 80, 116 + 98), `arco de ${a}°: «s» sobre la pata`);
+  }
+  // La «v» de un caballo que gira parejo, junto a la flecha curva del sentido (Predice de B6).
+  const d = { alto: 240, cuerpos: [{ tipo: 'carrusel', c: [160, 118], R: 100 }], puntos: [{ ang: 60, f: 0.9, tipo: 'caballo' }], flechas: [{ ang: 60, f: 0.9, largo: 48, texto: 'v' }],
+    sentido: [{ f: 1.12, de: 90, a: 135 }] };
+  const g = P.geometria(d), v = g.rotulos.find(r => r.texto === 'v'), R = 1.12 * 100;
+  for (let u = 90; u < 135; u += 5) { const x1 = 160 + R * Math.cos(u * Math.PI / 180), y1 = 118 - R * Math.sin(u * Math.PI / 180), x2 = 160 + R * Math.cos((u + 5) * Math.PI / 180), y2 = 118 - R * Math.sin((u + 5) * Math.PI / 180);
+    assert.ok(!cruzaSeg(v, x1, y1, x2, y2), '«v» sobre la flecha curva del giro'); }
+});

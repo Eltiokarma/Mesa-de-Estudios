@@ -89,7 +89,7 @@
     const enCm = rng.moneda();
     const Lcm = rng.elegir([40, 50, 60, 75, 80, 100, 120, 150, 200]), L = Lcm / 100;
     const Ltxt = enCm && Lcm < 100 ? `${Lcm} cm` : `${f(L)} m`;
-    const base = ['Dos discos delgados están fijos a un mismo eje, separados ', v('L', Ltxt), ', y giran juntos con rapidez angular constante. '];
+    const base = ['Dos discos delgados están fijos a un mismo eje, separados ', v('L', Ltxt), ', y giran juntos con velocidad angular constante. '];
     const desf = ['El agujero del segundo disco queda ', v('phi', `${phi}°`), ' detrás del agujero del primero, medidos en el sentido de giro.'];
     if (sub === 'v') {
       const rpm = rng.moneda();
@@ -133,8 +133,8 @@
     const correcta = phi * RAD / t;
     if (!P.pi(correcta) || correcta / PI > 200 || correcta / PI < 2) return null;
     // Con el tiempo en ms no se da la separación: no hace falta.
-    const enunciado = [...(sub === 'ms' ? ['Dos discos delgados están fijos a un mismo eje y giran juntos con rapidez angular constante. '] : base), ...enunBala, ...desf];
-    const pregunta = ['¿Cuál es la menor ', v('x', 'rapidez angular'), ' que pueden tener los discos?'];
+    const enunciado = [...(sub === 'ms' ? ['Dos discos delgados están fijos a un mismo eje y giran juntos con velocidad angular constante. '] : base), ...enunBala, ...desf];
+    const pregunta = ['¿Cuál es la menor ', v('x', 'velocidad angular'), ' que pueden tener los discos?'];
     const errores = erroresAngulo(phi, t);
     if (sub === 'ms') errores.push(h('CI-ms-sin-convertir', correcta / 1000, 'Usaste los milisegundos como si fueran segundos: 1 ms es una milésima de segundo.'));
     if (sub !== 'ms' && enCm && Lcm < 100) errores.push(h('CI-unidades-sin-convertir', correcta / 100, 'Dejaste la distancia en centímetros con la rapidez en m/s: el tiempo te salió 100 veces mayor.'));
@@ -155,11 +155,11 @@
     const vb = rng.elegir([100, 120, 150, 200, 240, 300, 400]);
     const t = 2 * R / vb, correcta = PI / t;
     if (!P.pi(correcta) || correcta / PI > 200) return null;
-    const variables = { R: { nombre: diam ? 'diámetro' : 'radio', color: 'o' }, vb: { nombre: 'rapidez de la bala', color: 'i' }, x: { nombre: 'rapidez angular', color: 'd' } };
+    const variables = { R: { nombre: diam ? 'diámetro' : 'radio', color: 'o' }, vb: { nombre: 'rapidez de la bala', color: 'i' }, x: { nombre: 'velocidad angular', color: 'd' } };
     const med = diam ? (2 * Rcm >= 100 ? `${f(2 * R)} m de diámetro` : `${2 * Rcm} cm de diámetro`) : (Rcm >= 100 ? `${f(R)} m de radio` : `${Rcm} cm de radio`);
-    const enunciado = ['Un cascarón esférico de ', v('R', med), ' gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a ',
+    const enunciado = ['Un cascarón esférico de ', v('R', med), ' gira con velocidad angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a ',
       v('vb', `${vb} m/s`), ', entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró.'];
-    const pregunta = ['¿Cuál es la menor ', v('x', 'rapidez angular'), ' del cascarón?'];
+    const pregunta = ['¿Cuál es la menor ', v('x', 'velocidad angular'), ' del cascarón?'];
     const errores = [
       h('CI-vuelta-entera', 2 * correcta, 'Supusiste que el cascarón tenía que dar una vuelta entera. El agujero de entrada solo tiene que pasar al otro lado: media vuelta.'),
       diam
@@ -192,13 +192,13 @@
     const tSube = conH ? Math.sqrt(2 * H / 10) : v0 / 10;
     const t = 2 * tSube, correcta = phi * RAD / t;
     if (!P.pi(correcta) || !corto(t)) return null;
-    const variables = { v0: { nombre: conH ? 'altura máxima' : 'rapidez de lanzamiento', color: 'o' }, phi: { nombre: 'ángulo que debe girar', color: 'h' }, t: { nombre: 'tiempo de vuelo', color: 'i' }, x: { nombre: 'rapidez angular', color: 'd' } };
-    const enunciado = ['Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba',
+    const variables = { v0: { nombre: conH ? 'altura máxima' : 'rapidez de lanzamiento', color: 'o' }, phi: { nombre: 'ángulo que debe girar', color: 'h' }, t: { nombre: 'tiempo de vuelo', color: 'i' }, x: { nombre: 'velocidad angular', color: 'd' } };
+    const enunciado = ['Una plataforma horizontal gira con velocidad angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba',
       ...(conH ? ['; la bolita llega a ', v('v0', `${f(H)} m`), ' de altura'] : [' a ', v('v0', `${f(v0)} m/s`)]),
       '. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. ',
       ...(misma ? ['Se quiere que caiga sobre la misma marca A.'] : ['Se quiere que caiga sobre la marca B, que está ', v('phi', `${phi}°`), ' detrás de A, medidos en el sentido de giro.']),
       ' Usa g = 10 m/s² y desprecia la resistencia del aire.'];
-    const pregunta = misma ? ['¿Cuál es la menor ', v('x', 'rapidez angular'), ' de la plataforma, distinta de cero?'] : ['¿Cuál es la menor ', v('x', 'rapidez angular'), ' de la plataforma?'];
+    const pregunta = misma ? ['¿Cuál es la menor ', v('x', 'velocidad angular'), ' de la plataforma, distinta de cero?'] : ['¿Cuál es la menor ', v('x', 'velocidad angular'), ' de la plataforma?'];
     const errores = [
       h('CI-solo-subida', 2 * correcta, `Usaste solo el tiempo de subida, ${f(tSube)} s. La bolita también tarda en bajar: el vuelo dura el doble.`),
       ...(misma ? [h('CI-media-vuelta', PI / t, 'Con media vuelta, debajo del tubo estaría el punto opuesto a A. Para que vuelva la misma marca A, la plataforma tiene que dar una vuelta entera.')] : []),
@@ -231,10 +231,33 @@
           "Con ω constante: θ = ω · t; 1 vuelta = 2π rad = 360°"
       ]
   };
+  // Un color fijo por magnitud, el de la unidad fisica.movimiento-circular (COLORES de su teoría; docs/molde-unidad.md
+  // §5b; auditoría del 19 nov, M2): la velocidad (ω, v, rpm) en naranja, el tiempo (t, T) en turquesa, el giro (θ, vueltas)
+  // en violeta, la aceleración (α, a_T, a_c) en carmín; radios, distancias, latitudes y razones en tinta. Sin verde. Antes
+  // cada problema pintaba por papel (lo que se pide en verde). Una variable de un objeto («móvil A», «rueda B», «lo que se
+  // pide») toma el color de la unidad de lo que escribe.
+  const COLOR_UNIDAD = [[/rad\/s²|m\/s²|vueltas?\/s²/, 'h'], [/rad\/s|rpm|m\/s|km\/h|Hz|por segundo|vueltas?\/s/, 'o'], [/\d\s*(s|ms|min|minutos?|h)\b/, 'i'], [/vueltas?\b|\brad\b|°/, 'f'], [/\d\s*(cm|m|km)\b/, 'tinta']];
+  const COLOR_SIMBOLO = [[/(^|\s)ω/, 'o'], [/(^|\s)α/, 'h'], [/(^|\s)θ/, 'f'], [/^(v|v[A-Z0-9])$/, 'o'], [/^a(cp|T|c|_)/, 'h'], [/^t$/, 'i']];
+  const COLOR_NOMBRE = [[/aceleraci|desaceleraci/, 'h'], [/tiempo|intervalo|periodo|período/, 'i'], [/ángulo|vueltas|posición angular|área|desfase|separación|girado/, 'f'],
+    [/radio|diámetro|distancia/, 'tinta'], [/rapidez|velocidad|giro/, 'o']];
+  const colorDeLista = (lista, t) => (lista.find(([re]) => re.test(t)) || [])[1];
+  function colorPorMagnitud(pr) {
+    const textos = {};
+    const recorrer = x => { if (!x) return; if (Array.isArray(x)) { x.forEach(recorrer); return; } if (typeof x === 'object') { if ('v' in x && 't' in x) (textos[x.v] = textos[x.v] || []).push(String(x.t)); else Object.values(x).forEach(recorrer); } };
+    recorrer([pr.enunciado, pr.pregunta, pr.solucion]);
+    const unidad = pr.respuesta && pr.respuesta.unidad ? `1 ${pr.respuesta.unidad}` : '';
+    for (const [k, va] of Object.entries(pr.variables || {})) {
+      const nom = String(va.nombre || ''), ts = textos[k] || [];
+      va.color = /latitud|razón/.test(nom) ? 'tinta' : /altura/.test(nom) ? 'f' : /aceleraci/.test(nom) ? 'h'
+        : /lo que se pide/.test(nom) ? (colorDeLista(COLOR_UNIDAD, unidad) || 'tinta')
+        : colorDeLista(COLOR_UNIDAD, ts.join(' ')) || colorDeLista(COLOR_NOMBRE, nom) || ts.map(t => colorDeLista(COLOR_SIMBOLO, t)).find(Boolean) || 'tinta';
+    }
+    return pr;
+  }
   const generarConDatos = (semilla, opciones) => {
     const pr = generar(semilla, opciones);
     if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
-    return pr;
+    return colorPorMagnitud(pr);
   };
   return { id: 'circular-giro-combinado', titulo: 'Balas, cascarones y plataformas que giran', generar: generarConDatos, TIPOS_POR_IDEA };
 });

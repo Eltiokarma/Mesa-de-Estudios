@@ -87,21 +87,22 @@
     lado: 'De lado avanza parejo: x = v_0 · t',
     cae: 'Hacia abajo cae desde el reposo: h = ½ · g · t²',
     vy: 'Hacia abajo, desde el reposo: v_y = g · t',
+    vx: 'De lado, la velocidad no cambia: v_x = v_0',
     rap: 'Rapidez: v = √(v_x² + v_y²)',
     ang: 'Ángulo θ de la velocidad con la horizontal: tan θ = v_y/v_x',
     tan: 'tan 37° = 3/4, tan 45° = 1 y tan 53° = 4/3 (convención del examen)',
     g: 'g = 10 m/s² (convención del examen); sin resistencia del aire.',
     kmh: '1 km = 1000 m y 1 h = 3600 s',
-    comp: 'Componentes de la salida: v_0x = v_0 · cos θ y v_0y = v_0 · sen θ',
+    comp: 'Componentes de la salida: v_0x = v_0 · cos\u00a0θ y v_0y = v_0 · sen\u00a0θ',
     trig: 'sen 37° = cos 53° = 3/5 y cos 37° = sen 53° = 4/5 (convención del examen)',
     trig30: 'sen 30° = cos 60° = 1/2 y cos 30° = sen 60° = √3/2',
     trig45: 'sen 45° = cos 45° = √2/2',
     x: 'De lado: x = v_0x · t',
     y: 'Altura sobre la salida, eje hacia arriba: y = v_0y · t − ½ · g · t²',
-    v2: 'Velocidad vertical y altura: v_y² = v_0y² − 2 · g · y',
+    v2: 'Velocidad vertical y altura, eje hacia arriba: v_y² = v_0y² − 2 · g · y',
     H: 'Altura máxima H: la altura del punto donde v_y = 0',
     R: 'Alcance R: lo que avanza de lado hasta volver al piso',
-    cuadratica: 'Si p · t² + q · t + r = 0: t = (−q ± √(q² − 4pr)) ÷ (2p)',
+    cuadratica: 'Si p · t² + q · t + r = 0 (p, q, r: sus tres números): t = (−q ± √(q² − 4pr)) ÷ (2p)',
     plano: 'x: lo que avanzó al este; y: al norte, en metros. El este y el norte forman 90°.',
     eje: 'Posición en un eje: salida + velocidad · t + ½ · aceleración · t²',
     dist: 'Distancia al origen: d = √(x² + y²)',
@@ -255,7 +256,7 @@
     const [h, v0] = rng.elegir([[20, 15], [45, 16], [80, 9], [5, 10], [20, 10], [45, 12], [80, 18], [20, 20]]), p = M.proyectil({ vx: v0, vy: 0, y0: h }), vy = -p.vFinal.vy;
     return {
       enunciado: ['Desde una torre de ', X(mt(h)), ' se lanza una pelota de lado a ', V(ms(v0)), '.'], pregunta: ['¿Con qué rapidez llega al piso?'],
-      datos: [D.cae, D.vy, D.rap, D.g], correcta: p.vFinal.modulo, fmt: ms,
+      datos: [D.cae, D.vx, D.vy, D.rap, D.g], correcta: p.vFinal.modulo, fmt: ms,
       errores: [
         e('TP-SOLO-VY', vy, x => `Bien: ${x} es la velocidad hacia abajo al llegar. Falta juntarla con la de lado.`),
         e('TP-SUMA', vy + v0, x => `Bien las dos componentes. Pero forman un ángulo recto: con Pitágoras, no sumando. ${x} no es.`),
@@ -271,7 +272,7 @@
     const tn = { 37: 0.75, 45: 1, 53: 4 / 3 }[ang], t = v0 * tn / G, sn = M.trig(ang).sen;
     return {
       enunciado: ['Una piedra sale de lado a ', V(ms(v0)), ' desde una peña alta.'], pregunta: [`¿En qué instante su velocidad forma ${ang}° con la horizontal?`],
-      datos: [D.vy, D.ang, D.tan, D.g], correcta: t, fmt: sg,
+      datos: [D.vx, D.vy, D.ang, D.tan, D.g], correcta: t, fmt: sg,
       errores: [
         ang !== 45 && e('TP-TAN-INV', v0 / tn / G, x => `Bien usar tan θ. Pero es lo que baja entre lo que avanza, no al revés; así sale ${x}.`),
         e('TP-VY', v0 * tn, x => `Bien: ${x} sería la velocidad hacia abajo que hace falta, en m/s. Falta dividir entre 10.`),
@@ -383,7 +384,8 @@
     };
   }
   function alcance45(rng) {
-    const [k, v0] = rng.elegir([[1, 10], [3, 30], [1.5, 15], [2.5, 25], [4, 40]]), uy = G * k * Math.SQRT2 / 2;
+    // sin patadas de más de 25 m/s (decisión 14 de la propuesta; auditoría, 19 nov: salían a 30 y a 40 m/s)
+    const [k, v0] = rng.elegir([[1, 10], [1.5, 15], [2, 20], [2.5, 25]]), uy = G * k * Math.SQRT2 / 2;
     const tt = k === 1 ? '√2 s' : `${f(k)}√2 s`;
     return {
       enunciado: ['Una pelota se patea con el ángulo que le da el mayor alcance y está ', T(tt), ' en el aire.'], pregunta: ['¿Con qué rapidez salió?'],
@@ -399,11 +401,11 @@
     };
   }
   function veces(rng) {
-    const [v0, a] = rng.elegir([[10, 53], [20, 37], [12, 30], [10, 60], [15, 37], [8, 45]]), [k, cuanto] = rng.elegir([[3, 'el triple'], [2, 'el doble'], [0.5, 'la mitad'], [1.5, '1,5 veces']]);
+    const [v0, a] = rng.elegir([[10, 53], [20, 37], [12, 30], [10, 60], [15, 37], [8, 45]]), [k, cuanto] = rng.elegir([[3, 'el triple de esa rapidez'], [2, 'el doble de esa rapidez'], [0.5, 'la mitad de esa rapidez'], [1.5, '1,5 veces esa rapidez']]);
     const R1 = M.proyectil({ v0, angulo: a }).alcance, R2 = M.proyectil({ v0: k * v0, angulo: a }).alcance;
     if (v0 === 10 && a === 30) return null;   // la predicción de la idea 4
     return {
-      enunciado: ['A ', V(ms(v0)), ` con ${a}°, una pelota cae a `, X(mt(R1)), '.'], pregunta: ['Con el mismo ángulo y ', V(cuanto), ' de esa rapidez, ¿a qué distancia cae?'],
+      enunciado: ['A ', V(ms(v0)), ` con ${a}°, una pelota cae a `, X(mt(R1)), '.'], pregunta: ['Con el mismo ángulo y ', V(cuanto), ', ¿a qué distancia cae?'],
       datos: [D.comp, D.x, D.y, D.g], correcta: R2, fmt: mt,
       errores: [
         e('PR1-alcance', k * R1, x => `Bien que el alcance cambie. Pero no en proporción: también cambia el tiempo de vuelo; ${x} no es.`),

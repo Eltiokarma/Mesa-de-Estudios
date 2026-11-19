@@ -202,6 +202,42 @@
   const RADIO_FIG = { moto: 10, caballo: 11, cabina: 9, punto: 5 };
 
   const pisa = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  // ¿El segmento cruza la caja (achicada 1 px)? Recorte de Liang-Barsky.
+  function cruza(b, x1, y1, x2, y2) {
+    const X0 = b.x0 + 1, X1 = b.x1 - 1, Y0 = b.y0 + 1, Y1 = b.y1 - 1, dx = x2 - x1, dy = y2 - y1;
+    let t0 = 0, t1 = 1;
+    for (const [pp, qq] of [[-dx, x1 - X0], [dx, X1 - x1], [-dy, y1 - Y0], [dy, Y1 - y1]]) {
+      if (Math.abs(pp) < 1e-12) { if (qq < 0) return false; continue; }
+      const r = qq / pp;
+      if (pp < 0) { if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; }
+    }
+    return t0 <= t1;
+  }
+  // Dirección de una flecha (unitaria, en pantalla), la misma que usa geometria() al dibujarla.
+  function dirFlecha(fl) {
+    if (Array.isArray(fl.dir)) { const L = Math.hypot(fl.dir[0], fl.dir[1]) || 1; return [fl.dir[0] / L, fl.dir[1] / L]; }
+    if (fl.dir === 'centro' || fl.dir === 'afuera') { const sg = fl.dir === 'centro' ? -1 : 1; return [sg * Math.cos(rad(fl.ang)), -sg * Math.sin(rad(fl.ang))]; }
+    const sg = fl.horario ? -1 : 1; return [-sg * Math.sin(rad(fl.ang)), -sg * Math.cos(rad(fl.ang))];
+  }
+  function lineasDe(d, cs) {
+    const out = [];
+    for (const cu of cs) if (cu.tipo === 'rueda') {
+      const base = cu.c[1] + cu.R + 18;
+      out.push([cu.c[0], cu.c[1] + cu.R * 0.3, cu.c[0] - 0.62 * cu.R, base], [cu.c[0], cu.c[1] + cu.R * 0.3, cu.c[0] + 0.62 * cu.R, base]);
+    }
+    for (const se of d.sentido || []) {
+      const cu = cs[se.en || 0]; if (!cu) continue;
+      const r = (se.f || 1.16) * cu.R, de = se.de === undefined ? 20 : se.de, a = se.a === undefined ? 70 : se.a, k = 8;
+      for (let i = 0; i < k; i++) { const u = de + (a - de) * i / k, v = de + (a - de) * (i + 1) / k; out.push([cu.c[0] + r * Math.cos(rad(u)), cu.c[1] - r * Math.sin(rad(u)), cu.c[0] + r * Math.cos(rad(v)), cu.c[1] - r * Math.sin(rad(v))]); }
+    }
+    for (const fl of d.flechas || []) {
+      const cu = cs[fl.en || 0], q = fl.desde ? fl.desde : cu ? en(cu, fl.ang, fl.f === undefined ? 1 : fl.f) : null;
+      if (!q) continue;
+      const [ux, uy] = dirFlecha(fl), L = fl.largo || 40;
+      out.push([q[0] + ux * 2, q[1] + uy * 2, q[0] + ux * (L - 2), q[1] + uy * (L - 2)]);
+    }
+    return out;
+  }
   function geometria(datos, estado = {}) {
     const d = datosDe(datos, estado);
     const H = d.alto > 0 ? d.alto : 240;
@@ -212,16 +248,29 @@
     // que nombra prueba su lado preferido y, si se sale del lienzo o pisa otro rótulo o una figura chica (caballo, moto,
     // cabina, punto), gira alrededor de su ancla hasta encontrar un sitio libre.
     const libre = b => b.x0 >= M && b.x1 <= W - M && b.y0 >= M && b.y1 <= H - M && !rot.some(o => pisa(o, b)) && !figs.some(o => pisa(o, b));
+    // Líneas que un rótulo evita si puede (lector en frío, 19 nov: la «s» del arco sobre la pata del soporte, la «v»
+    // sobre la flecha curva del giro, rótulos sobre el tronco de otra flecha): las patas de la rueda de la fortuna, las
+    // flechas curvas del sentido de giro y los troncos de las flechas. Primero se busca un sitio libre de rótulos,
+    // figuras y líneas; si no hay, uno libre de rótulos y figuras, como antes.
+    const lineas = lineasDe(d, cs);
+    // y los bordes de los cuerpos (lector B: «6 m/s» y «a_T» encima del borde del disco), salvo el reloj y la Tierra.
+    const bordes = cs.filter(cu => !['reloj', 'tierra'].includes(cu.tipo)).flatMap(cu => (cu.tipo === 'pista' ? [cu.R - 10, cu.R + 10] : [cu.R]).map(R => [cu.c[0], cu.c[1], R]));
+    const tocaBorde = (b, [cx, cy, R]) => {
+      const dx = Math.max(b.x0 + 1 - cx, 0, cx - b.x1 + 1), dy = Math.max(b.y0 + 1 - cy, 0, cy - b.y1 + 1);
+      const lejos = Math.max(...[[b.x0, b.y0], [b.x1, b.y0], [b.x0, b.y1], [b.x1, b.y1]].map(([x, y]) => Math.hypot(x - cx, y - cy)));
+      return Math.hypot(dx, dy) < R && lejos > R;
+    };
+    const sinLinea = b => !lineas.some(([x1, y1, x2, y2]) => cruza(b, x1, y1, x2, y2)) && !bordes.some(c => tocaBorde(b, c));
     function poner(ax, ay, ux, uy, dist, texto, o = {}) {
       const w = T.ancho(String(texto).replace(/⃗|_/g, ''), TAM, 700), h = TAM, base = Math.atan2(uy, ux);
-      let primero = null;
+      let primero = null, sinRotulo = null;
       for (const da of [0, 25, -25, 50, -50, 80, -80, 115, -115, 150, -150, 180]) for (const dd of [dist, dist + 8, dist + 18]) {
         const a = base + rad(da), cx = Math.cos(a), cy = Math.sin(a), ext = Math.abs(cx) * w / 2 + Math.abs(cy) * h / 2;
         const b = centrado(ax + cx * (dd + ext), ay + cy * (dd + ext), texto, Object.assign({ peso: 700 }, o));
         if (!primero) primero = b;
-        if (libre(b)) { rot.push(b); return b; }
+        if (libre(b)) { if (sinLinea(b)) { rot.push(b); return b; } if (!sinRotulo) sinRotulo = b; }
       }
-      rot.push(primero); return primero;
+      const b = sinRotulo || primero; rot.push(b); return b;
     }
     // las correas van debajo de las ruedas
     for (const co of d.correas || []) {
@@ -301,10 +350,7 @@
       const cu = cs[fl.en || 0];
       const q = fl.desde ? fl.desde.slice() : cu ? en(cu, fl.ang, fl.f === undefined ? 1 : fl.f) : null;
       if (!q) continue;
-      let ux, uy;
-      if (Array.isArray(fl.dir)) { const L = Math.hypot(fl.dir[0], fl.dir[1]) || 1; ux = fl.dir[0] / L; uy = fl.dir[1] / L; }
-      else if (fl.dir === 'centro' || fl.dir === 'afuera') { const sg = fl.dir === 'centro' ? -1 : 1; ux = sg * Math.cos(rad(fl.ang)); uy = -sg * Math.sin(rad(fl.ang)); }
-      else { const sg = fl.horario ? -1 : 1; ux = -sg * Math.sin(rad(fl.ang)); uy = -sg * Math.cos(rad(fl.ang)); }
+      const [ux, uy] = dirFlecha(fl);
       const L = fl.largo || 40, x2 = q[0] + ux * L, y2 = q[1] + uy * L, c = fl.color || 'o';
       s += (fl.abierta || c === 'h') ? abierta(q[0], q[1], x2, y2, c, fl.grosor || 2.5, 'fis-acel', fl.discontinua) : llena(q[0], q[1], x2, y2, c, fl.grosor || 3, 'fis-vel', fl.discontinua);
       flechas.push({ x1: q[0], y1: q[1], x2, y2, color: c, ux, uy, L });

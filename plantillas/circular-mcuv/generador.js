@@ -39,11 +39,11 @@
   const vueltasTxt = x => `${f(x)} ${Math.abs(x - 1) < 1e-9 ? 'vuelta' : 'vueltas'}`;
   const vps = x => `${f(x)} ${Math.abs(x - 1) < 1e-9 ? 'vuelta' : 'vueltas'}/s`;
 
-  // Cómo se escribe una rapidez angular dada en el modo del problema.
+  // Cómo se escribe una velocidad angular dada en el modo del problema.
   const W = (modo, x) => (modo === 'rad' ? `${f(x)} rad/s` : modo === 'rpm' ? `${f(x)} rpm` : `${P.pi(x * Math.PI)} rad/s`);
   // Lo girado, en las unidades en que se pregunta: rad en el modo rad, vueltas en los otros.
   const TH = (modo, x) => (modo === 'rad' ? `${f(x)} rad` : vueltasTxt(x));
-  // Una rapidez angular del modo, pasada a «unidades de ángulo por segundo» del modo
+  // Una velocidad angular del modo, pasada a «unidades de ángulo por segundo» del modo
   // (rad/s en rad; vueltas/s en rpm y en pi).
   const porSeg = (modo, x) => (modo === 'rad' ? x : modo === 'rpm' ? x / 60 : x / 2);
 
@@ -99,7 +99,7 @@
     const correcta = (p1 + p2) / 2 * dt;
     if (!corto(correcta, 1)) return null;
     const acelera = w2 > w1;
-    const variables = { w0: { nombre: 'rapidez angular inicial', color: 'o' }, wf: { nombre: 'rapidez angular final', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
+    const variables = { w0: { nombre: 'velocidad angular inicial', color: 'o' }, wf: { nombre: 'velocidad angular final', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
     const conR = R ? `, de ${f(R)} m de radio,` : '';
     let enunciado;
     if (t1 === 0) {
@@ -107,7 +107,7 @@
         ? [`${Obj}${conR} parte del reposo y acelera de manera uniforme. `, v('t', `${dt} s`), ' después gira a ', v('wf', W(modo, w2)), '.']
         : [`${Obj}${conR} gira a `, v('w0', W(modo, w1)), ` y ${acelera ? 'acelera' : 'frena'} de manera uniforme. `, v('t', `${dt} s`), ' después gira a ', v('wf', W(modo, w2)), '.'];
     } else {
-      enunciado = [`${Obj}${conR} gira con aceleración angular constante. En el instante t = ${t1} s su rapidez angular es `, v('w0', W(modo, w1)), `, y en t = ${t2} s es `, v('wf', W(modo, w2)), '.'];
+      enunciado = [`${Obj}${conR} gira con aceleración angular constante. En el instante t = ${t1} s su velocidad angular es `, v('w0', W(modo, w1)), `, y en t = ${t2} s es `, v('wf', W(modo, w2)), '.'];
     }
     const cuanto = modo === 'rad' ? '¿Qué ángulo gira' : '¿Cuántas vueltas da';
     const pregunta = [t1 === 0 ? `${cuanto} ${obj} en esos ` : `${cuanto} ${obj} entre t = ${t1} s y t = ${t2} s?`, ...(t1 === 0 ? [v('t', `${dt} s`), '?'] : [])];
@@ -141,8 +141,8 @@
     const correcta = pS * ts / 2;
     if (!corto(correcta, 1)) return null;
     const sinFrenar = pS * t - aS * t * t / 2;
-    const variables = { w0: { nombre: 'rapidez angular inicial', color: 'o' }, al: { nombre: 'desaceleración angular', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
-    const enunciado = [`${Obj} gira a `, v('w0', W(modo, w0)), '. Se aplica un freno y su rapidez angular disminuye de manera uniforme a razón de ',
+    const variables = { w0: { nombre: 'velocidad angular inicial', color: 'o' }, al: { nombre: 'desaceleración angular', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
+    const enunciado = [`${Obj} gira a `, v('w0', W(modo, w0)), '. Se aplica un freno y su velocidad angular disminuye de manera uniforme a razón de ',
       v('al', modo === 'rad' ? `${al} rad/s²` : `${P.pi(al * Math.PI)} rad/s²`), '. Cuando se detiene, ya no vuelve a girar.'];
     const pregunta = [`${modo === 'rad' ? '¿Qué ángulo gira' : '¿Cuántas vueltas da'} ${obj} en los primeros `, v('t', `${t} s`), ' desde que empieza a frenar?'];
     const errores = [
@@ -171,7 +171,7 @@
     const p1 = porSeg(modo, w0), p2 = porSeg(modo, w2);
     const th = (p1 + p2) / 2 * t;
     if (!corto(th, 1) || th > 2000) return null;
-    const variables = { w0: { nombre: 'rapidez angular inicial', color: 'o' }, wf: { nombre: 'rapidez angular final', color: 'i' }, th: { nombre: 'ángulo girado', color: 'h' }, t: { nombre: 'tiempo', color: 'd' } };
+    const variables = { w0: { nombre: 'velocidad angular inicial', color: 'o' }, wf: { nombre: 'velocidad angular final', color: 'i' }, th: { nombre: 'ángulo girado', color: 'h' }, t: { nombre: 'tiempo', color: 'd' } };
     const enunciado = w2 === 0
       ? [`${Obj} gira a `, v('w0', W(modo, w0)), ' y frena de manera uniforme hasta detenerse. Mientras frena, ', modo === 'rad' ? 'gira ' : 'da ', v('th', TH(modo, th)), '.']
       : [`${Obj} gira a `, v('w0', W(modo, w0)), ` y ${w2 > w0 ? 'acelera' : 'frena'} de manera uniforme hasta girar a `, v('wf', W(modo, w2)), '. Mientras tanto, ', modo === 'rad' ? 'gira ' : 'da ', v('th', TH(modo, th)), '.'];
@@ -198,7 +198,7 @@
     const sub = rng.elegir(['intervalo', 'intervalo', 'theta']);
     const R = rng.moneda() && obj !== 'el ventilador' && obj !== 'el esmeril' ? rng.elegir([0.5, 2, 3, 4]) : null;
     const conR = R ? `, de ${f(R)} m de radio,` : '';
-    const variables = { w0: { nombre: 'rapidez angular inicial', color: 'o' }, wf: { nombre: 'rapidez angular final', color: 'i' }, t: { nombre: sub === 'theta' ? 'ángulo girado' : 'tiempo', color: 'h' }, al: { nombre: 'aceleración angular', color: 'd' } };
+    const variables = { w0: { nombre: 'velocidad angular inicial', color: 'o' }, wf: { nombre: 'velocidad angular final', color: 'i' }, t: { nombre: sub === 'theta' ? 'ángulo girado' : 'tiempo', color: 'h' }, al: { nombre: 'aceleración angular', color: 'd' } };
     const texto = x => `${f(x)} rad/s²`;
     if (sub === 'intervalo') {
       const w1 = rng.entero(0, 30), w2 = rng.entero(0, 40);
@@ -208,7 +208,7 @@
       if (!corto(correcta, 2)) return null;
       const enunciado = t1 === 0
         ? [`${Obj}${conR} gira a `, v('w0', `${w1} rad/s`), ` y ${w2 > w1 ? 'acelera' : 'frena'} de manera uniforme; `, v('t', `${dt} s`), ' después gira a ', v('wf', `${w2} rad/s`), '.']
-        : [`${Obj}${conR} gira con aceleración angular constante. En el instante t = ${t1} s su rapidez angular es `, v('w0', `${w1} rad/s`), `, y en t = ${t2} s es `, v('wf', `${w2} rad/s`), '.'];
+        : [`${Obj}${conR} gira con aceleración angular constante. En el instante t = ${t1} s su velocidad angular es `, v('w0', `${w1} rad/s`), `, y en t = ${t2} s es `, v('wf', `${w2} rad/s`), '.'];
       if (t1 === 0 && w1 === 0) enunciado.splice(0, 3, `${Obj}${conR} parte del reposo y acelera de manera uniforme; `);
       const pregunta = ['¿Cuál es el módulo de su ', v('al', 'aceleración angular'), '?'];
       const errores = [
@@ -260,7 +260,7 @@
     const wm = a1 * t1, pm = porSeg(modo, wm);
     const correcta = pm * (t1 + 2 * t2 + t3) / 2, T = t1 + t2 + t3;
     if (!corto(correcta, 1)) return null;
-    const variables = { al: { nombre: 'aceleración angular del arranque', color: 'o' }, wm: { nombre: 'rapidez angular máxima', color: 'i' }, t: { nombre: 'tiempos de cada tramo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
+    const variables = { al: { nombre: 'aceleración angular del arranque', color: 'o' }, wm: { nombre: 'velocidad angular máxima', color: 'i' }, t: { nombre: 'tiempos de cada tramo', color: 'h' }, th: { nombre: 'ángulo girado', color: 'd' } };
     const enunciado = [`${Obj} parte del reposo y acelera de manera uniforme con `, v('al', modo === 'rad' ? `${a1} rad/s²` : `${P.pi(a1 * Math.PI)} rad/s²`), ' durante ', v('t', `${t1} s`),
       '; luego gira con rapidez constante durante ', v('t', `${t2} s`), ' y, al final, frena de manera uniforme hasta detenerse en ', v('t', `${t3} s`), '.'];
     const pregunta = [modo === 'rad' ? `¿Qué ángulo gira ${obj} en total?` : `¿Cuántas vueltas da ${obj} en total?`];
@@ -292,10 +292,33 @@
           "1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s"
       ]
   };
+  // Un color fijo por magnitud, el de la unidad fisica.movimiento-circular (COLORES de su teoría; docs/molde-unidad.md
+  // §5b; auditoría del 19 nov, M2): la velocidad (ω, v, rpm) en naranja, el tiempo (t, T) en turquesa, el giro (θ, vueltas)
+  // en violeta, la aceleración (α, a_T, a_c) en carmín; radios, distancias, latitudes y razones en tinta. Sin verde. Antes
+  // cada problema pintaba por papel (lo que se pide en verde). Una variable de un objeto («móvil A», «rueda B», «lo que se
+  // pide») toma el color de la unidad de lo que escribe.
+  const COLOR_UNIDAD = [[/rad\/s²|m\/s²|vueltas?\/s²/, 'h'], [/rad\/s|rpm|m\/s|km\/h|Hz|por segundo|vueltas?\/s/, 'o'], [/\d\s*(s|ms|min|minutos?|h)\b/, 'i'], [/vueltas?\b|\brad\b|°/, 'f'], [/\d\s*(cm|m|km)\b/, 'tinta']];
+  const COLOR_SIMBOLO = [[/(^|\s)ω/, 'o'], [/(^|\s)α/, 'h'], [/(^|\s)θ/, 'f'], [/^(v|v[A-Z0-9])$/, 'o'], [/^a(cp|T|c|_)/, 'h'], [/^t$/, 'i']];
+  const COLOR_NOMBRE = [[/aceleraci|desaceleraci/, 'h'], [/tiempo|intervalo|periodo|período/, 'i'], [/ángulo|vueltas|posición angular|área|desfase|separación|girado/, 'f'],
+    [/radio|diámetro|distancia/, 'tinta'], [/rapidez|velocidad|giro/, 'o']];
+  const colorDeLista = (lista, t) => (lista.find(([re]) => re.test(t)) || [])[1];
+  function colorPorMagnitud(pr) {
+    const textos = {};
+    const recorrer = x => { if (!x) return; if (Array.isArray(x)) { x.forEach(recorrer); return; } if (typeof x === 'object') { if ('v' in x && 't' in x) (textos[x.v] = textos[x.v] || []).push(String(x.t)); else Object.values(x).forEach(recorrer); } };
+    recorrer([pr.enunciado, pr.pregunta, pr.solucion]);
+    const unidad = pr.respuesta && pr.respuesta.unidad ? `1 ${pr.respuesta.unidad}` : '';
+    for (const [k, va] of Object.entries(pr.variables || {})) {
+      const nom = String(va.nombre || ''), ts = textos[k] || [];
+      va.color = /latitud|razón/.test(nom) ? 'tinta' : /altura/.test(nom) ? 'f' : /aceleraci/.test(nom) ? 'h'
+        : /lo que se pide/.test(nom) ? (colorDeLista(COLOR_UNIDAD, unidad) || 'tinta')
+        : colorDeLista(COLOR_UNIDAD, ts.join(' ')) || colorDeLista(COLOR_NOMBRE, nom) || ts.map(t => colorDeLista(COLOR_SIMBOLO, t)).find(Boolean) || 'tinta';
+    }
+    return pr;
+  }
   const generarConDatos = (semilla, opciones) => {
     const pr = generar(semilla, opciones);
     if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
-    return pr;
+    return colorPorMagnitud(pr);
   };
   return { id: 'circular-mcuv', titulo: 'El giro que acelera: tres datos y lo que falta', generar: generarConDatos, TIPOS_POR_IDEA };
 });
