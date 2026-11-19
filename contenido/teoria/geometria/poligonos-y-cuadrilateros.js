@@ -9,8 +9,8 @@
  * Seis ideas: suma-de-angulos, angulos-exteriores (nueva), diagonales, paralelogramos, rectangulo-rombo-cuadrado (nueva)
  * y trapecios; se conservan los id de cuatro ideas de antes, los de sus controles y los de las tres mesas. La idea
  * «trapezoides» salió: el cuadrilátero cualquiera va en la idea 1 y el trapezoide, en la 4 (decisión 2).
- * La práctica es plantillas/geo-poligonos-cuadrilateros (tipos por idea). No lleva calidad: 2 hasta el lector en frío y el
- * auditor (la prueba de la unidad la simula).
+ * La práctica es plantillas/geo-poligonos-cuadrilateros (tipos por idea). Lleva calidad: 2 desde el 19 nov (lector en frío
+ * y auditor).
  * Cuentas de los 90 ejemplos rehechas aparte, sin el código de la unidad (scratchpad e6-geometria/cuentas.py), y las de
  * «Ahora tú» y «Así se resuelve», leyendo el enunciado, en poligonos-y-cuadrilateros.test.js.
  *
@@ -176,6 +176,23 @@
     return rot.every((a, i) => rot.every((b, j) => j <= i || a.caja.x1 + aire <= b.caja.x0 || b.caja.x1 + aire <= a.caja.x0 || a.caja.y1 + aire / 2 <= b.caja.y0 || b.caja.y1 + aire / 2 <= a.caja.y0));
   }
   const cabe = F => PO.escenaCabe(F) && rotulosPropios(F) && rotulosSueltos(F);
+  // (Auditoría, 19 nov: los rótulos de un ángulo exterior se iban junto al vértice siguiente y los de un obtuso, hondo
+  // adentro: «no supe de quién era el 85°», «135° parece de C».) Más estricta: cada rótulo de ángulo queda más cerca de
+  // su vértice que de cualquier otro punto con letra, por un margen (k < 1).
+  function rotulosDeSuVertice(F, k = 0.85) {
+    const { rot, vertice } = PO.rotulos(F), letras = (F.figura.puntos || []).filter(q => q.rotulo).map(q => q.id);
+    return rot.every(z => {
+      const cx = (z.caja.x0 + z.caja.x1) / 2, cy = (z.caja.y0 + z.caja.y1) / 2, d = id => { const v = vertice(id); return Math.hypot(cx - v[0], cy - v[1]); };
+      return letras.every(id => id === z.an.en || d(z.an.en) < k * d(id));
+    });
+  }
+  const cabeBien = (F, k) => cabe(F) && rotulosDeSuVertice(F, k);
+  // De varias figuras, la primera que cabe con sus rótulos junto a su vértice y con el «?» lejos de la respuesta (8° o más);
+  // si ninguna, la que cabe; si ninguna, la primera.
+  function mejor(figs, resp, k) {
+    const lejos = F => resp === undefined || F.figura.angulos.filter(a => a.texto === '?' || a.texto === 'x').every(q => Math.abs(q.mide - resp) >= 8);
+    return figs.find(F => lejos(F) && cabeBien(F, k)) || figs.find(F => lejos(F) && cabeBien(F, 1)) || figs.find(F => lejos(F) && cabe(F)) || figs.find(cabe) || figs[0];
+  }
   // Un polígono convexo de n lados, irregular a propósito (no prototípico) y siempre igual para el mismo n; A abajo a la
   // izquierda y los demás en sentido antihorario.
   const irregular = (n, r = 3, gira = 235) => Array.from({ length: n }, (_, k) => U.polar([0, 0], r * (1 + 0.1 * Math.cos(k * 1.7 + n)), gira + 360 * k / n + 7 * Math.sin(k * 2.3 + n)));
@@ -249,10 +266,15 @@
     const ids = LETRAS.slice(0, n).split('');
     // (Con 6 o más vértices se ensancha: a 390 px, los seis rótulos de adentro quedaban pegados.)
     const k = o.estira || (n >= 6 ? [1.5, 1.3] : [1, 1]);
-    const P = o.P || irregular(n, 3, o.gira === undefined ? 235 : o.gira).map(p => [p[0] * k[0], p[1] * k[1]]);
     const ang = {};
     for (const [v, t] of Object.entries(rot)) ang[v] = t === '?' || /^x/.test(t) && o.xTinta ? { texto: t, radio: 16 } : { texto: t, color: 'h', radio: 16 };
-    return figura([poli(ids.join(''), P, { ang, diag: o.diag, lados: o.lados })], Object.assign({ alto: o.alto || (n >= 6 ? 262 : 240) }, o.sinEscala ? { sinEscala: true } : {}, { alt: o.alt }));
+    const arma = (gira, kk) => figura([poli(ids.join(''), o.P || irregular(n, 3, gira).map(p => [p[0] * kk[0], p[1] * kk[1]]), { ang, diag: o.diag, lados: o.lados })], Object.assign({ alto: o.alto || (n >= 6 ? 262 : 240) }, o.sinEscala ? { sinEscala: true } : {}, { alt: o.alt }));
+    if (o.P || !Object.keys(rot).length) return arma(o.gira === undefined ? 235 : o.gira, k);
+    // (Auditoría: con la forma fija, un rótulo de un obtuso se iba hondo adentro, junto a otro vértice. Se prueban giros y
+    // estiramientos, y se usa la primera con cada rótulo junto a su vértice.)
+    const giros = o.gira === undefined ? [235, 215, 255, 195, 275, 300] : [o.gira];
+    const ks = [k, [k[0] * 0.85, k[1] * 1.1], [k[0] * 1.1, k[1] * 0.9]];
+    return mejor(giros.flatMap(g => ks.map(kk => arma(g, kk))), o.resp, o.k || 0.75);
   }
 
   // Los 15 ejemplos (cuentas rehechas aparte en el scratchpad: cuentas.py, idea 1): 720°; 360°; 10 triángulos; 3240°;
@@ -275,7 +297,7 @@
   EJ1.push({ nivel: 1, titulo: '¿Cuántas parcelas salen?',
     enunciado: 'Un terreno convexo tiene 12 esquinas. Desde una de ellas se tienden cordeles a todas las esquinas que no están junto a ella. ¿En cuántos triángulos queda partido?',
     datos: [D_TRIS],
-    solucion: [{ texto: ['Desde un vértice salen triángulos: ', nO(12), ' − 2.'], ecuacion: junto([nO(12), ' − 2 = ', dF('10')]) }],
+    solucion: [{ texto: ['Desde un vértice, los triángulos son dos menos que los lados:'], ecuacion: junto([nO(12), ' − 2 = ', dF('10')]) }],
     respuesta: [dF('10 triángulos')] });
   EJ1.push({ nivel: 1, titulo: 'Un polígono de veinte lados',
     enunciado: 'Un polígono convexo tiene 20 lados. ¿Cuánto suman sus ángulos interiores?',
@@ -295,7 +317,7 @@
       { texto: 'Se divide entre 180° y se suman 2:', ecuacion: junto(['n − 2 = 7', '   →   ', 'n = ', dF('9')]) }],
     respuesta: [dF('9 lados')] });
   EJ1.push({ nivel: 2, titulo: 'El ángulo que falta',
-    figura: fig(figAngulos(5, { A: '100°', B: '105°', C: '120°', D: '95°', E: '?' }, { sinEscala: true, alt: 'Un pentágono ABCDE con 100° en A, 105° en B, 120° en C y 95° en D; el ángulo en E, con signo de pregunta.' })),
+    figura: fig(figAngulos(5, { A: '100°', B: '105°', C: '120°', D: '95°', E: '?' }, { sinEscala: true, resp: 120, alt: 'Un pentágono ABCDE con 100° en A, 105° en B, 120° en C y 95° en D; el ángulo en E, con signo de pregunta.' })),
     enunciado: `En el pentágono convexo ABCDE, m∠A = 100°, m∠B = 105°, m∠C = 120° y m∠D = 95°. ¿Cuánto mide m∠E?${NO_ESC}`,
     datos: [D_S],
     solucion: [{ texto: ['Los cinco ángulos suman (', nO(5), ' − 2) · 180° = 540°.'] },
@@ -422,7 +444,7 @@
       if (x < 70 || x > 170 || dados.some(v => v >= 175)) continue;
       const ids = LETRAS.slice(0, n), pide = ids[n - 1];
       const rot = Object.fromEntries(dados.map((v, k) => [ids[k], gr(v)])); rot[pide] = '?';
-      const F = figAngulos(n, rot, { sinEscala: true, alt: `Un polígono ${ids} con ${dados.map((v, k) => `${v}° en ${ids[k]}`).join(', ')}; el ángulo en ${pide}, con signo de pregunta.` });
+      const F = figAngulos(n, rot, { sinEscala: true, resp: x, alt: `Un polígono ${ids} con ${dados.map((v, k) => `${v}° en ${ids[k]}`).join(', ')}; el ángulo en ${pide}, con signo de pregunta.` });
       // (Sin escala: el ángulo pedido no se dibuja cerca de su valor.)
       const dib = F.figura.angulos.find(q => q.en === pide).mide;
       if (Math.abs(dib - x) < 8 || !cabe(F)) continue;
@@ -485,7 +507,7 @@
       tarjetas: [
         { titulo: 'Un terreno de lados rectos', texto: 'Visto desde arriba, el terreno de don Julián es un polígono: una figura cerrada de lados rectos. Tiene tantos lados como esquinas, o vértices; ese número se llama n. Sus esquinas no tienen entrantes: es convexo.',
           pieza: GO, dibujo: fig(figTerreno(5, { arcos: false, alt: 'El terreno de don Julián, de 5 lados, con una estaca en cada esquina y dos cordeles desde la estaca A.' })) },
-        { titulo: 'Rincones de adentro', texto: 'En cada esquina hay un ángulo interior: el rincón de adentro, entre dos lados seguidos. En un triángulo, los tres ángulos interiores suman 180°, como se vio en Triángulos.' },
+        { titulo: 'Rincones de adentro', texto: 'En cada esquina hay un ángulo interior: el rincón de adentro, entre dos lados seguidos. En un triángulo, los tres ángulos interiores suman 180°.' },
         { titulo: 'Cordeles desde una esquina', texto: 'Don Julián tiende un cordel de la estaca A a cada esquina que no queda junto a ella: cada cordel es una diagonal. Los cordeles reparten el terreno en parcelas triangulares, sin que se crucen.' },
         { titulo: 'Qué mirar al jugar', texto: ['Cambia el número de esquinas ', dO('n'), ' y cuenta las parcelas cada vez. Compara cuántas salen con ', dO('n'), '.'] },
       ],
@@ -515,7 +537,8 @@
     },
     predice: {
       pregunta: 'Doña Rosa reparte otro terreno de 5 lados de otra manera: clava una estaca O adentro y tiende un cordel de O a cada esquina. Salen 5 parcelas. ¿Cuánto suman los 5 ángulos interiores del terreno?',
-      datos: ['En cada triángulo, los tres ángulos suman 180°.', 'Los ángulos que se juntan alrededor de O forman una vuelta: 360°.'],
+      // (Lector en frío A: «alrededor de O forman una vuelta» casi decía que había que restarla. Queda el valor solo.)
+      datos: ['En cada triángulo, los tres ángulos suman 180°.', 'Una vuelta entera mide 360°.'],
       voz: 'Ojo con los ángulos que quedan en O.',
       opciones: [
         { id: 'c', texto: '540°', correcta: true },
@@ -533,7 +556,7 @@
       datos: ROSA,
       voz: 'Paso a paso: ¿qué ángulos son del terreno y cuáles no?',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Cinco parcelas desde O: sus ángulos suman 5 · 180°.', ecuacion: junto([nO(5), ' · 180° = 900°']) },
+        { estado: { corte: 0 }, texto: 'Cinco parcelas desde O: suman 5 · 180°, pero no todo es del terreno.', ecuacion: junto([nO(5), ' · 180° = 900°']) },
         { estado: { corte: 1 }, texto: 'Los ángulos alrededor de O no son del terreno: forman una vuelta.', ecuacion: junto('900° − 360° = 540°') },
         { estado: { corte: 2 }, texto: 'Desde la esquina A salen dos cordeles y tres parcelas: la misma suma.', ecuacion: junto(['(', nO(5), ' − 2) · 180° = 540°']) },
         { estado: { corte: 3 }, texto: ['Con ', dO('n'), ' lados: ', dO('n'), ' parcelas desde O, menos una vuelta.'], ecuacion: junto([dO('n'), ' · 180° − 360° = (', dO('n'), ' − 2) · 180°']) },
@@ -556,7 +579,7 @@
             const dados = Array.from({ length: 4 }, () => 5 * r.ent(22, 30)), suma = dados.reduce((a, b) => a + b, 0), resto = 720 - suma;
             if ((resto % 2 || resto / 2 < 80 || resto / 2 > 170) && i < 300) continue;
             const x = resto / 2, lista = dados.map((v, k) => `m∠${'ABCD'[k]} = ${v}°`);
-            const F = figAngulos(6, { A: gr(dados[0]), B: gr(dados[1]), C: gr(dados[2]), D: gr(dados[3]), E: 'x', F: 'x' }, { sinEscala: true, xTinta: true, alt: `Un hexágono ABCDEF con ${dados.map((v, k) => `${v}° en ${'ABCD'[k]}`).join(', ')}; los ángulos en E y en F, iguales, rotulados x.` });
+            const F = figAngulos(6, { A: gr(dados[0]), B: gr(dados[1]), C: gr(dados[2]), D: gr(dados[3]), E: 'x', F: 'x' }, { sinEscala: true, xTinta: true, resp: x, alt: `Un hexágono ABCDEF con ${dados.map((v, k) => `${v}° en ${'ABCD'[k]}`).join(', ')}; los ángulos en E y en F, iguales, rotulados x.` });
             if (!cabe(F) && i < 300) continue;
             return {
               enunciado: `En el hexágono convexo ABCDEF, ${lista.join(', ')}; los ángulos E y F miden igual. ¿Cuánto mide cada uno?${NO_ESC}`,
@@ -573,7 +596,9 @@
             };
           }
         }
-        const n = r.de([9, 12, 15, 18, 22]), S = (n - 2) * 180;
+        // (Auditoría: con 9 y 15 lados repetía los ejemplos «Lados desde la suma» y «La suma de un examen», y con 12, un
+        // «Ahora tú». Ninguno de estos está en los ejemplos ni en «Ahora tú».)
+        const n = r.de([19, 21, 23, 25, 26]), S = (n - 2) * 180;
         return {
           enunciado: `Los ángulos interiores de un polígono convexo suman ${gr(S)}. ¿Cuántos lados tiene?`,
           datos: [D_S],
@@ -610,11 +635,11 @@
   const grA = v => (exacto(v) ? gr(v) : `≈ ${gr(v)}`);
   const VP = { x: [-4.7, 4.7], y: [-4.5, 4.5] };
   function figPlaza(n, o = {}) {
-    const ids = LETRAS.slice(0, n).split(''), P = parejo(n), ext = 360 / n, int = 180 - ext;
+    const ids = LETRAS.slice(0, n).split(''), P = parejo(n).map(p => (o.estira ? [p[0] * o.estira[0], p[1] * o.estira[1]] : p)), ext = 360 / n, int = 180 - ext;
     const ang = Object.fromEntries(ids.map(id => [id, { color: 'h', radio: n >= 8 ? 11 : 13 }]));
     if (o.valores !== false) ang.B = { color: 'h', radio: 14, texto: grA(int) };
     const F = figura([poli(ids.join(''), P, { ang, ext: { B: Object.assign({ color: 'i', radio: 16, largo: 0.6 }, o.valores !== false ? { texto: grA(ext) } : {}) } })], {
-      vista: VP, alto: 262, obj: { objeto: 'parcela', tipo: 'plaza', borde: ids, mototaxi: { de: 'A', a: 'B', t: 0.4 } },
+      vista: o.estira ? undefined : VP, alto: 262, sinEscala: !!o.estira, obj: { objeto: 'parcela', tipo: 'plaza', borde: ids, mototaxi: { de: 'A', a: 'B', t: 0.4 } },
       alt: o.alt || `Una plaza de ${n} esquinas iguales vista desde arriba y un mototaxi en la calle AB, que va a doblar en B. Por dentro, cada esquina mide ${f(int)}°; al doblar gira ${f(ext)}°.` });
     return F;
   }
@@ -628,6 +653,9 @@
     ['B', 'C', 'D', 'E'].forEach((v, k) => { ext[v] = { color: 'i', radio: 15, largo: 0.55, texto: gr(GIROS_P[k]) }; });
     ext.A = { radio: 15, largo: 0.55, texto: '?', hasta: 0 };
     const p = poli('ABCDE', P, { ext });
+    // (Lector en frío: en la regla, la punteada de A se iba y el 70° quedaba sin su calle.)
+    p.segmentos.forEach(sg => { if (sg.a === 'xA') delete sg.hasta; });
+    p.puntos.forEach(q => { if (q.id === 'xA') delete q.hasta; });
     p.angulos.push(Object.assign({}, p.angulos.find(a => a.en === 'A'), { texto: gr(QUINTO), color: 'i', desde: 1, hasta: undefined }));
     return figura([p], { vista: { x: [-4.9, 4.9], y: [-4.6, 4.6] }, alto: 262, sinEscala: true, obj: { objeto: 'parcela', tipo: 'plaza', borde: ids, mototaxi: { de: 'D', a: 'E', t: 0.65 } },
       alt: 'Una plaza de 5 esquinas distintas y el mototaxi que la rodea. En B, C, D y E gira 60°, 85°, 70° y 75°; el giro en A lleva signo de pregunta.' });
@@ -640,11 +668,12 @@
     const ext = {}, ang = {};
     for (const [v, t] of Object.entries(rot)) ext[v] = t === '?' ? { texto: '?', radio: 15, largo: 0.5 } : { texto: t, color: 'i', radio: 15, largo: 0.5 };
     for (const [v, t] of Object.entries(o.int || {})) ang[v] = t === '?' ? { texto: '?', radio: 15 } : { texto: t, color: 'h', radio: 15 };
-    const arma = k => figura([poli(ids.join(''), irregular(n, 3, 245).map(p => [p[0] * base[0] * k[0], p[1] * base[1] * k[1]]), { ext, ang })], { alto: o.alto || 250, sinEscala: true, alt: o.alt, mx: 1.3 });
-    if (o.resp === undefined) return arma([1, 1]);
-    const lejos = F => { const q = F.figura.angulos.find(a => a.texto === '?'); return q ? Math.abs(q.mide - o.resp) : 0; };
-    const todas = [[1, 1], [1.3, 1], [1, 1.3], [0.85, 1.15]].map(arma), caben = todas.filter(cabe);
-    return (caben.length ? caben : todas).sort((x, y) => lejos(y) - lejos(x))[0];
+    const arma = (k, gira = 245) => figura([poli(ids.join(''), irregular(n, 3, gira).map(p => [p[0] * base[0] * k[0], p[1] * base[1] * k[1]]), { ext, ang })], { alto: o.alto || (n >= 6 ? 300 : 290), sinEscala: true, alt: o.alt, mx: 1.0 });
+    // (Auditoría y lector en frío, 19 nov: el rótulo de un exterior se iba junto al vértice siguiente: «55° y 60° junto a
+    // E», «C sin arco». Se prueban giros y estiramientos, y se usa la primera con cada rótulo más cerca de su vértice que
+    // de cualquier otro, con el «?» lejos de la respuesta.)
+    const todas = [245, 225, 265, 205, 285, 185].flatMap(g => [[1, 1], [1.3, 1], [1, 1.3], [0.85, 1.15], [1.15, 1.15]].map(k => arma(k, g)));
+    return mejor(todas, o.resp, 0.95);
   }
   // El hexágono equiángulo de San Marcos 2026-II: AB, BC, CD y EF dados; al prolongar AB, CD y EF sale un equilátero.
   // Sin escala: se dibuja con otros lados (que cierran con 120° en cada vértice) para que no se midan DE ni FA.
@@ -667,8 +696,9 @@
   // con 12° de diferencia).
   const EJ2 = [];
   EJ2.push({ nivel: 1, titulo: 'La plaza de ocho esquinas',
-    figura: fig(figPlaza(8, { valores: false, alt: 'Una plaza de 8 esquinas iguales y el mototaxi que la rodea; en la esquina B, el giro va marcado con un arco.' })),
-    enunciado: 'Una plaza tiene 8 esquinas iguales, como la señal de «Pare». Un mototaxi la rodea. ¿Cuánto gira en cada esquina?',
+    // (Auditoría: a escala, el giro en B medía justo 45° con transportador. Va estirada y sin escala.)
+    figura: fig(figPlaza(8, { valores: false, estira: [1.35, 0.85], alt: 'Una plaza de 8 esquinas iguales y el mototaxi que la rodea; en la esquina B, el giro va marcado con un arco. El dibujo no está a escala.' })),
+    enunciado: `Una plaza tiene 8 esquinas iguales, como la señal de «Pare». Un mototaxi la rodea. ¿Cuánto gira en cada esquina?${NO_ESC}`,
     datos: [D_EXT, D_EQUI],
     solucion: [{ texto: 'Los 8 giros suman una vuelta y son iguales:', ecuacion: junto(['360° ÷ ', nO(8), ' = ', dF('45°')]) }],
     respuesta: [dF('45°'), ' en cada esquina'] });
@@ -730,7 +760,7 @@
   // Nivel 3: la correcta en C, D, E, A y B.
   EJ2.push({ nivel: 3, titulo: 'El hexágono equiángulo',
     figura: fig(figHexEq([3, 4, 2, 5])),
-    enunciado: `El hexágono ABCDEF tiene sus seis ángulos iguales: AB = 3 cm, BC = 4 cm, CD = 2 cm y EF = 5 cm. Al prolongar AB, CD y EF sale un triángulo. ¿Cuánto mide su perímetro?${NO_ESC}`,
+    enunciado: `El hexágono ABCDEF es equiángulo: AB = 3 cm, BC = 4 cm, CD = 2 cm y EF = 5 cm. Al prolongar AB, CD y EF sale un triángulo. ¿Cuánto mide el perímetro del hexágono?${NO_ESC}`,
     alternativas: ['14 cm', '24 cm', '17 cm', '19 cm', '8 cm'],
     datos: [D_CADA, D_EQL, D_PER],
     fuente: 'Modelo de San Marcos 2026-II (pregunta 37), con otros números.',
@@ -743,7 +773,7 @@
     enunciado: 'En un polígono equiángulo, cada ángulo interior mide el cuádruple de cada ángulo exterior. ¿Cuántos lados tiene?',
     alternativas: ['5', '36', '8', '10', '144'],
     datos: [D_CADA, D_ADY],
-    solucion: [{ texto: 'Interior y exterior suman 180°: 4e + e = 180°.', ecuacion: junto(['5e = 180°', '   →   ', 'e = 36°']) },
+    solucion: [{ texto: 'Si cada exterior mide e, cada interior mide 4e, y juntos suman 180°:', ecuacion: junto(['4e + e = 180°', '   →   ', 'e = 36°']) },
       { texto: 'Lados:', ecuacion: junto(['n = 360° ÷ 36° = ', dF('10')]) },
       { texto: '36 es el exterior y 144, el interior: son ángulos, no lados. 5 cuenta las partes (4 + 1); 8 duplica el 4.' }],
     respuesta: [dF('10 lados')] });
@@ -756,7 +786,8 @@
       { texto: '20 es x; 40, el exterior; 140, el interior; 18 sale de dividir 360° entre x y no entre el exterior.' }],
     respuesta: [dF('9 lados')] });
   EJ2.push({ nivel: 3, titulo: 'La sexta esquina',
-    figura: fig(figGiros(6, { A: '50°', B: '65°', C: '70°', D: '55°', E: '60°' }, { int: { F: '?' }, resp: 120, alt: 'Un hexágono con sus ángulos exteriores en A, B, C, D y E: 50°, 65°, 70°, 55° y 60°; el ángulo interior de F, con signo de pregunta.' })),
+    figura: fig(/* (Lector en frío: con seis giros rotulados en un hexágono de 320 px, cada número quedaba junto al vértice siguiente y
+    // no se sabía de quién era. Los giros van marcados sin número: el enunciado los da sin decir en qué esquina.) */ figGiros(6, { A: '', B: '', C: '', D: '', E: '' }, { int: { F: '?' }, resp: 120, alt: 'Un hexágono con los giros marcados en A, B, C, D y E, sin sus medidas (el enunciado las da); el ángulo interior de F, con signo de pregunta.' })),
     enunciado: `Un mototaxi rodea una plaza convexa de 6 esquinas. En cinco gira 50°, 65°, 70°, 55° y 60°. ¿Cuánto mide la sexta esquina por dentro?${NO_ESC}`,
     alternativas: ['120°', '420°', '240°', '300°', '60°'],
     datos: [D_EXT, D_ADY],
@@ -814,7 +845,7 @@
           { id: 'r180', valor: con180, entero: true, error: 'GE-POL18', siFuera: 'Sumar y despejar está bien; los exteriores suman una vuelta: 360°.' },
           { id: 'sinc', valor: 360 / sa, entero: true, error: 'GE-POL22', siFuera: `Sumar las x está bien; faltan los números sueltos, que suman ${gr(sc)}.` },
           { id: 'mayor', valor: Math.max(...vals), error: 'GE-CON30', siFuera: `${gr(Math.max(...vals))} es el mayor ángulo; se pide x.` }]), x => f(x)),
-        solucion: { texto: 'Los exteriores suman 360°:', ecuacion: junto([`${sa}x ${sc < 0 ? '−' : '+'} ${Math.abs(sc)}° = 360°`, '   →   ', 'x = ', dF(String(x))]) } };
+        solucion: { texto: 'Los exteriores suman 360°:', ecuacion: junto([`${sc ? `${sa}x ${sc < 0 ? '−' : '+'} ${Math.abs(sc)}°` : `${sa}x`} = 360°`, '   →   ', 'x = ', dF(String(x))]) } };
     }
     throw new Error('casoGirosX sin caso');
   }
@@ -844,7 +875,7 @@
         { id: 'partes', valor: k + 1, error: 'GE-POL26', siFuera: `Ver ${k + 1} partes de 180° está bien; los lados salen de 360° ÷ ${gr(e)}.` },
         { id: 'giro', valor: e, error: 'GE-POL20', siFuera: `${gr(e)} es cada exterior; falta ver cuántos caben en 360°.` },
         { id: 'doble', valor: 2 * k, error: 'GE-POL27', siFuera: `Duplicar está bien; lo que se duplica es ${k} + 1, las partes de 180°.` }]), x => f(x)),
-      solucion: { texto: `Interior más exterior: ${k}e + e = 180°, así que e = ${gr(e)}.`, ecuacion: junto(['n = 360° ÷ ', gr(e), ' = ', dF(String(n))]) } };
+      solucion: { texto: `Si cada exterior mide e, el interior mide ${k}e; juntos, ${k}e + e = 180°, así que e = ${gr(e)}.`, ecuacion: junto(['n = 360° ÷ ', gr(e), ' = ', dF(String(n))]) } };
   }
 
   const exteriores = {
@@ -859,7 +890,7 @@
     // (la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Doblar en una esquina', texto: 'Un mototaxi rodea una plaza. En cada esquina deja la calle que traía y dobla: lo que gira es el ángulo exterior, entre la calle nueva y la prolongación de la vieja, como en Triángulos.',
+        { titulo: 'Doblar en una esquina', texto: 'Un mototaxi rodea una plaza. En cada esquina deja la calle que traía y dobla: lo que gira es el ángulo exterior, entre la calle nueva y la prolongación de la vieja.',
           pieza: GO, dibujo: fig(figPlaza(5, { valores: false, alt: 'Una plaza de 5 esquinas iguales y el mototaxi en la calle AB; en B, el arco turquesa marca lo que gira al doblar.' })) },
         { titulo: 'Adentro y afuera', texto: 'En cada esquina, el ángulo de adentro y el giro quedan sobre una misma recta: juntos forman 180°. Si la esquina es cerrada, el giro es grande; si es abierta, el giro es chico.' },
         { titulo: 'Esquinas iguales', texto: 'Un polígono con todos sus ángulos iguales se llama equiángulo. Si además sus lados miden igual, es regular, como la señal de «Pare», de 8 lados.' },
@@ -881,6 +912,7 @@
         { s: dH('arco carmín'), t: 'la esquina por dentro: ángulo interior' },
         { s: dI('arco turquesa'), t: 'lo que gira: ángulo exterior' },
         { s: 'punteado', t: 'la calle que sigue de largo' },
+        { s: 'franja gris', t: 'las calles alrededor de la plaza' },
       ],
       controles: [{ id: 'n', etiqueta: 'n, el número de esquinas', min: 3, max: 10, paso: 1, inicio: 5, unidad: 'esquinas', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: figPlaza(v.n), estado: {} }),
@@ -915,7 +947,7 @@
       ],
     },
     regla: {
-      texto: 'Los ángulos exteriores de un polígono convexo suman 360°, sea cual sea n. Si son todos iguales, cada uno mide 360° ÷ n, y cada interior, 180° menos eso.',
+      texto: 'Los ángulos exteriores de un polígono convexo suman 360°, sea cual sea n. Si son todos iguales (polígono equiángulo), cada uno mide 360° ÷ n, y cada interior, 180° menos eso.',
       ecuacion: junto([dI('exteriores'), ': 360°', Y, dI('cada exterior'), ' = 360° ÷ ', dO('n')]),
       condicion: 'el polígono es convexo y en cada vértice se cuenta un solo exterior: el giro hacia el lado siguiente.',
       voz: 'Una vuelta entera, repartida entre las esquinas.',
@@ -1004,7 +1036,7 @@
   EJ3.push({ nivel: 1, titulo: 'El octógono',
     enunciado: 'La señal de «Pare» tiene 8 lados. ¿Cuántas diagonales tiene?',
     datos: [D_ND],
-    solucion: [{ texto: ['Con n = ', nO(8), ':'], ecuacion: junto([nO(8), ' · 5 ÷ 2 = 40 ÷ 2 = ', dF('20')]) }],
+    solucion: [{ texto: ['Con n = ', nO(8), ', de cada vértice salen 8 − 3 = 5:'], ecuacion: junto([nO(8), ' · 5 ÷ 2 = 40 ÷ 2 = ', dF('20')]) }],
     respuesta: [dF('20 diagonales')] });
   EJ3.push({ nivel: 1, titulo: 'La estrella de cinco puntas',
     figura: fig(figGeoplano(5, 0, { alt: 'Un geoplano de 5 clavos: del clavo A salen 2 ligas naranjas.' })),
@@ -1184,8 +1216,9 @@
     },
     predice: {
       pregunta: 'Ahora el geoplano tiene 10 clavos. Si pones una liga entre cada par de clavos que no son vecinos, ¿cuántas ligas usas en total?',
-      datos: ['Del clavo A salen 7 ligas, una a cada clavo que no es su vecino.', 'Cada liga une dos clavos.'],
-      voz: '¿La liga de A a E también sale de E?',
+      // (Lector en frío A: «cada liga une dos clavos» y la voz «¿también sale de E?», juntas, decían que había que dividir.)
+      datos: ['Del clavo A salen 7 ligas, una a cada clavo que no es su vecino.'],
+      voz: 'Piensa en las ligas de todos los clavos, no solo de A.',
       opciones: [
         { id: 'c', texto: '35', correcta: true },
         { id: 'doble', texto: '70', error: 'GE-POL4', siFuera: '10 · 7 cuenta lo que sale de cada clavo; pero cada liga sale de sus dos puntas.' },
@@ -1200,7 +1233,7 @@
     mira: {
       pieza: GO,
       datos: GEO10,
-      voz: 'Cuenta puntas de liga, no ligas.',
+      voz: 'Cada liga tiene dos puntas: ¿cuántas veces la cuentas?',
       pasos: [
         { estado: { corte: 0 }, texto: 'Del clavo A salen 7 ligas: a todos menos A y sus dos vecinos.', ecuacion: junto([nO(10), ' − 3 = 7']) },
         { estado: { corte: 1 }, texto: 'Del clavo B salen otras 7. Cada clavo pone 7 puntas.', ecuacion: junto([nO(10), ' · 7 = 70 puntas']) },
@@ -1212,6 +1245,8 @@
       texto: 'De cada vértice salen n − 3 diagonales (a todos menos él y sus vecinos). Cada una tiene dos puntas: el polígono de n lados tiene n(n − 3) ÷ 2.',
       ecuacion: junto([dF('diagonales'), ' = ', dO('n'), ' · (', dO('n'), ' − 3) ÷ 2']),
       condicion: 'n es el número de lados del polígono convexo; un lado, entre vértices vecinos, no es diagonal.',
+      // (Lector en frío A: con las 35 de 10 clavos, la regla era una maraña. Va el geoplano de 6: las 3 de A y las otras 6.)
+      dibujo: { pieza: GO, datos: figGeoplano(6, 0, { todas: 0, alt: 'Un geoplano de 6 clavos con sus 9 ligas entre clavos no vecinos: las 3 del clavo A, en naranja, y las otras 6, en negro.' }), estado: {} },
       voz: 'Multiplica y divide entre 2: cada diagonal se cuenta dos veces.',
     },
     resuelve: {
@@ -1313,8 +1348,10 @@
   function figBisA(lab, o = {}) {
     const a = o.a || 7, b = o.b || 10, t = o.t || 64, P = ptsPara(a, b, t), E = U.mezcla(P[1], P[2], a / b);
     // BC lleva su medida cerca de B; EC, su «?» en su propio tramo, más arriba.
-    const lados = { AB: { texto: lab.AB, color: 'o', dist: 8 }, BC: Object.assign({ texto: lab.BC, color: 'i', dist: 8 }, lab.EC ? { en: 0.28 } : {}) };
-    if (lab.EC) lados.EC = { texto: lab.EC, dist: 8, ref: 'A' };
+    // (Auditoría, lección M10 de Congruencia: la medida de BC quedaba sobre el tramo BE y se leía BE = 12 cm. Ahora dice de
+    // qué lado es: «BC = 12 cm»; lo pedido, «EC = ?».)
+    const lados = { AB: { texto: lab.AB, color: 'o', dist: 8 }, BC: Object.assign({ texto: `BC = ${lab.BC}`, color: 'i', dist: 8 }, lab.EC ? { en: 0.28 } : {}) };
+    if (lab.EC) lados.EC = { texto: `EC = ${lab.EC}`, dist: 8, ref: 'A' };
     return figPara(a, b, t, { sinEscala: true, alt: o.alt, lados, evita: lab.EC ? { E: [-90, -45, 0, 45, 90] } : undefined,
       pts: [{ id: 'E', x: E[0], y: E[1], rotulo: 'E', lado: 0 }], segs: [{ de: 'A', a: 'E', discontinua: true, grosor: 'fino' }],
       angs: [{ en: 'A', de: 'B', a: 'E', color: 'h', rayita: 1, radio: 20 }, { en: 'A', de: 'E', a: 'D', color: 'h', rayita: 1, radio: 20 }] });
@@ -1353,7 +1390,8 @@
     respuesta: [dF('No'), ': es un trapecio'] });
 
   EJ4.push({ nivel: 2, titulo: 'Dos ángulos vecinos con x',
-    figura: fig(figPara(6, 4, 70, { ang: { A: { texto: '2x + 20°', color: 'h', marcas: 1 }, B: { texto: '3x + 10°', color: 'h', marcas: 2 }, C: { texto: '?' } }, sinEscala: true, alt: 'Un paralelogramo ABCD con 2x + 20° en A y 3x + 10° en B; el ángulo en C, con signo de pregunta.' })),
+    // (Auditoría: el «2x + 20°» de A quedaba más cerca de D. De varias formas, la que deja cada rótulo junto a su vértice.)
+    figura: fig(mejor([70, 60, 55, 65, 100, 110, 120].flatMap(t => [[6, 4], [7, 3.5], [6, 3]].map(([a, b]) => figPara(a, b, t, { ang: { A: { texto: '2x + 20°', color: 'h', marcas: 1 }, B: { texto: '3x + 10°', color: 'h', marcas: 2 }, C: { texto: '?' } }, sinEscala: true, alt: 'Un paralelogramo ABCD con 2x + 20° en A y 3x + 10° en B; el ángulo en C, con signo de pregunta.' }))), 80, 0.95)),
     enunciado: `En el paralelogramo ABCD, m∠A = 2x + 20° y m∠B = 3x + 10°. ¿Cuánto mide m∠C?${NO_ESC}`,
     datos: [D_VEC, D_PROP],
     solucion: [{ texto: 'A y B son vecinos: suman 180°.', ecuacion: junto(['5x + 30° = 180°', '   →   ', 'x = 30']) },
@@ -1395,7 +1433,7 @@
       { texto: 'Perímetro:', ecuacion: junto(['5 + 7 + 5 + 7 = ', dF('24 cm')]) },
       { texto: '12 cm es la mitad (un lado de cada clase); 48 cm suma las diagonales dos veces; 14 cm suma solo dos lados de 7; 17 cm, 10 + 7.' }],
     respuesta: [dF('24 cm')] });
-  EJ4.push({ nivel: 3, titulo: 'Dos bisectrices que se cruzan',
+  EJ4.push({ nivel: 3, titulo: 'Dos bisectrices hasta BC',
     enunciado: 'En el paralelogramo ABCD, AB = 6 cm y BC = 15 cm. Las bisectrices de los ángulos A y D cortan BC en E y F. ¿Cuánto mide EF?',
     alternativas: ['9 cm', '6 cm', '12 cm', '3 cm', '15 cm'],
     datos: [D_BIS, D_ALT, D_ISO],
@@ -1404,10 +1442,13 @@
       { texto: '9 cm es EC (15 − 6); 6 cm es BE; 12 cm suma BE y CF; 15 cm es BC entero.' }],
     respuesta: [dF('3 cm')] });
   EJ4.push({ nivel: 3, titulo: 'El ángulo de la bisectriz',
-    figura: fig(figPara(6, 9, 95, { sinEscala: true, ang: { D: { texto: '110°', color: 'h', marcas: 2 } },
-      pts: [{ id: 'E', x: ptsPara(6, 9, 95)[3][0] * 0.62, y: ptsPara(6, 9, 95)[3][1] * 0.62, rotulo: 'E', lado: 180 }],
-      segs: [{ de: 'B', a: 'E', discontinua: true, grosor: 'fino' }], angs: [{ en: 'E', de: 'A', a: 'B', texto: '?', radio: 16 }],
-      alt: 'Un paralelogramo ABCD con 110° en D; la bisectriz del ángulo B corta AD en E, y el ángulo AEB lleva signo de pregunta.' })),
+    // (Auditoría: E va donde la bisectriz dibujada de B corta AD, con AE = AB; de varias formas, la que deja el 110° junto
+    // a D y el «?» junto a E.)
+    figura: fig(mejor([[9, 95], [10, 105], [12, 95], [9, 105], [10, 115], [12, 115]].map(([b, t]) => { const Q = ptsPara(6, b, t)[3];
+      return figPara(6, b, t, { sinEscala: true, ang: { D: { texto: '110°', color: 'h', marcas: 2 } },
+        pts: [{ id: 'E', x: Q[0] * 6 / b, y: Q[1] * 6 / b, rotulo: 'E', lado: 180 }],
+        segs: [{ de: 'B', a: 'E', discontinua: true, grosor: 'fino' }], angs: [{ en: 'E', de: 'A', a: 'B', texto: '?', radio: 16 }],
+        alt: 'Un paralelogramo ABCD con 110° en D; la bisectriz del ángulo B corta AD en E, y el ángulo AEB lleva signo de pregunta.' }); }), 55, 0.95)),
     enunciado: `En el paralelogramo ABCD, m∠D = 110°. La bisectriz del ángulo B corta AD en E. ¿Cuánto mide m∠AEB?${NO_ESC}`,
     alternativas: ['110°', '55°', '70°', '35°', '125°'],
     datos: [D_PROP, D_BIS, D_ALT],
@@ -1429,7 +1470,7 @@
     datos: [D_BIS, D_ALT, D_ISO, D_PER],
     solucion: [{ texto: 'Por los alternos internos, △ABP es isósceles: BP = AB = 9 cm; y △DCP también: PC = CD = 9 cm.', ecuacion: junto('BC = 9 + 9 = 18 cm') },
       { texto: 'Perímetro:', ecuacion: junto(['2 · 9 + 2 · 18 = ', dF('54 cm')]) },
-      { texto: '36 cm toma los cuatro lados de 9; 27 cm suma AB y BC; 45 cm olvida un lado de 9; 72 cm cuenta dos veces BC.' }],
+      { texto: '36 cm toma los cuatro lados de 9; 72 cm, los cuatro de 18; 27 cm suma AB y BC; 45 cm olvida un lado de 9.' }],
     respuesta: [dF('54 cm')] });
 
   // Los puntos medios de un trapezoide (Varignon, sin el nombre): con sus diagonales y el cuadrilátero de adentro.
@@ -1550,7 +1591,7 @@
       pieza: GO,
       consigna: 'Un marco de 60 cm por 40 cm se inclina sin que sus listones cambien de largo.',
       mision: {
-        texto: 'Inclina el marco (arrastra D o usa el control) hasta que la esquina B mida 110°.',
+        texto: 'Inclina el marco hasta que la esquina B, la vecina de A, mida 110°.',
         logrado: v => v.t === 70,
         bien: 'B mide 110° y D también; A y C miden 70°.',
       },
@@ -1588,7 +1629,7 @@
     mira: {
       pieza: GO,
       datos: MARCO_M,
-      voz: 'El cordel parte el marco en dos triángulos.',
+      voz: 'Mira qué pasa cuando un cordel parte el marco en dos triángulos.',
       pasos: [
         { estado: { corte: 0 }, texto: 'Los listones de enfrente van paralelos.', ecuacion: junto([dO('AB'), ' ∥ ', dO('CD'), Y, dI('AD'), ' ∥ ', dI('BC')]) },
         { estado: { corte: 1 }, texto: 'El cordel AC corta las paralelas: los alternos internos miden igual.', ecuacion: junto(['m∠BAC = m∠DCA', Y, 'm∠DAC = m∠BCA']) },
@@ -1652,6 +1693,8 @@
   const D_RECT = 'Rectángulo: paralelogramo con sus cuatro ángulos rectos. Sus diagonales miden igual.';
   const D_ROMBO = 'Rombo: paralelogramo con sus cuatro lados iguales. Sus diagonales son perpendiculares y parten sus ángulos por la mitad.';
   const D_CUADR = 'Cuadrado: es rectángulo y rombo a la vez.';
+  // (Lector en frío: los datos iban de «rectángulo → diagonales iguales» y la pregunta, al revés.)
+  const D_RECIP = 'Al revés: un paralelogramo de diagonales iguales es rectángulo, y uno de diagonales perpendiculares, rombo.';
   const D_PIT = 'En un triángulo rectángulo, catetos de 3k y 4k dan una hipotenusa de 5k (3² + 4² = 5²).';
   const D_N37 = 'Notable de 37° y 53° (convención del examen): catetos 3k (frente a 37°) y 4k; hipotenusa 5k.';
   const VEN = { AB: 80, AD: 60 };
@@ -1693,11 +1736,18 @@
   // o.resp: el valor del ángulo pedido; la esquina A se dibuja (52°, 72° o 100°) donde el pedido quede más lejos de él.
   function figRombo(texA, pide, o = {}) {
     const dib = A => (pide && pide[0] === 'A' ? A / 2 : (180 - A) / 2);
-    const aDib = o.resp === undefined ? 72 : [52, 72, 100].sort((p, q) => Math.abs(dib(q) - o.resp) - Math.abs(dib(p) - o.resp))[0];
-    const P = ptsPara(5, 5, aDib);
-    const angs = pide ? [{ en: pide[0], de: pide[1], a: pide[2], texto: '?', radio: 18 }] : [];
-    return figura([poli('ABCD', P, { ang: { A: { color: 'h', radio: 16, texto: texA } }, lados: { AB: { llave: 1, dist: 8 }, BC: { llave: 1, dist: 8 }, CD: { llave: 1, dist: 8 }, DA: { llave: 1, dist: 8 } },
-      diag: [['B', 'D', { color: 'i', grosor: 'variable' }]].concat(o.ac ? [['A', 'C', { color: 'o', grosor: 'variable' }]] : []), angs })], { alto: 230, sinEscala: true, alt: o.alt });
+    // (Lector en frío: con 64° se dibujaba de 100°, y la «diagonal corta» BD se veía larga. La esquina se dibuja aguda si el
+    // enunciado la da aguda, y obtusa si obtusa, con lo pedido a 8° o más de la respuesta y el rótulo de A junto a A.)
+    const real = parseFloat(String(texA).replace(',', '.')), clase = A => (Number.isFinite(real) ? (A < 90) === (real < 90) : true);
+    const arma = aDib => {
+      const angs = pide ? [{ en: pide[0], de: pide[1], a: pide[2], texto: '?', radio: 18 }] : [];
+      return figura([poli('ABCD', ptsPara(5, 5, aDib), { ang: { A: { color: 'h', radio: 16, texto: texA } }, lados: { AB: { llave: 1, dist: 8 }, BC: { llave: 1, dist: 8 }, CD: { llave: 1, dist: 8 }, DA: { llave: 1, dist: 8 } },
+        diag: [['B', 'D', { color: 'i', grosor: 'variable' }]].concat(o.ac ? [['A', 'C', { color: 'o', grosor: 'variable' }]] : []), angs })], { alto: aDib < 60 ? 250 : 230, mx: aDib < 60 ? 1.1 : undefined, sinEscala: true, alt: o.alt });
+    };
+    if (o.resp === undefined) return arma(clase(72) ? 72 : 108);
+    const lejos = A => Math.abs(dib(A) - o.resp), todos = [52, 64, 72, 80, 46, 44, 40, 36, 100, 112, 124, 136, 144];
+    const buenos = todos.filter(A => clase(A) && lejos(A) >= 8.5 && Math.abs(A - real) >= 8).map(arma);
+    return buenos.find(F => cabeBien(F, 0.95)) || buenos.find(F => cabeBien(F, 1)) || buenos.find(cabe) || todos.filter(clase).sort((p, q) => lejos(q) - lejos(p)).map(arma)[0];
   }
   // Cuadrado ABCD con el equilátero BCE adentro (o afuera): se pide m∠BAE. Sin escala: se estira en vertical.
   function figCuadEq(afuera, o = {}) {
@@ -1707,6 +1757,17 @@
     return figura([poli('ABCD', P, { pts: [{ id: 'E', x: E[0], y: E[1], rotulo: 'E', lado: afuera ? 0 : 180 }],
       segs: [{ de: 'B', a: 'E' }, { de: 'C', a: 'E' }, { de: 'A', a: 'E', discontinua: true, grosor: 'fino' }],
       angs: [{ en: 'A', de: 'B', a: 'E', texto: '?', radio: 20 }] })], { alto: 230, sinEscala: true, alt: o.alt, mx: afuera ? 1.2 : undefined });
+  }
+
+  // Dos cuadrados de alambre encajados (San Marcos 2026-II): el de adentro con un vértice en cada lado del de afuera; el
+  // 37° en una esquina. Sin escala: el vértice de adentro parte el lado en 3 a 1 (no en 3 a 4), así el lado de adentro y el
+  // 37° no se miden. (Lector en frío: sin dibujo no se veía cómo cada lado se parte en 3k y 4k.)
+  function figEncajados(o = {}) {
+    const L = 6, t = 0.75 * L, A = [0, 0], B = [L, 0], C = [L, L], D = [0, L], E = [t, 0], F = [L, t], G = [L - t, L], H = [0, L - t];
+    const pts = [['E', E], ['F', F], ['G', G], ['H', H]].map(([id, q]) => ({ id, x: q[0], y: q[1], sinPunto: true }));
+    return figura([poli('ABCD', [A, B, C, D], { letras: false, lados: { AB: { texto: '14 cm', color: 'o', dist: 8 } }, pts,
+      segs: [{ de: 'E', a: 'F' }, { de: 'F', a: 'G' }, { de: 'G', a: 'H' }, { de: 'H', a: 'E' }],
+      angs: [{ en: 'E', de: 'A', a: 'H', texto: '37°', color: 'h', radio: 16 }] })], { alto: 230, sinEscala: true, alt: o.alt });
   }
 
   // Los 15 ejemplos (cuentas.py, idea 5): 13 cm; 90°; 28 cm; 45°; sí; 26 cm (x = 10); 35°; 58°; 10 cm (6 y 8); 9 cm
@@ -1801,7 +1862,8 @@
       { texto: '72° es m∠AEB; 78°, m∠CED; 60°, el del equilátero; 96° copia el ángulo B.' }],
     respuesta: [junto('m∠AED = '), dF('150°')] });
   EJ5.push({ nivel: 3, titulo: 'Dos cuadrados encajados',
-    enunciado: 'Un cuadrado de alambre de 14 cm de lado lleva adentro otro cuadrado, con un vértice en cada lado del primero. Cada esquina deja un triángulo rectángulo con un ángulo de 37°. ¿Cuánto alambre se usa en los dos?',
+    figura: fig(figEncajados({ alt: 'Un cuadrado de 14 cm de lado con otro cuadrado adentro, que tiene un vértice en cada lado del primero; en una esquina, el triángulo que queda lleva un ángulo de 37°. El dibujo no está a escala.' })),
+    enunciado: `Un cuadrado de alambre de 14 cm de lado lleva adentro otro, con un vértice en cada lado. Cada esquina deja un triángulo con un ángulo de 37°. ¿Cuánto alambre llevan los dos?${NO_ESC}`,
     alternativas: ['56 cm', '96 cm', '40 cm', '112 cm', '84 cm'],
     datos: [D_N37, D_PER],
     fuente: 'Modelo de San Marcos 2026-II (pregunta 38).',
@@ -1833,7 +1895,7 @@
   const MOTIVO = { cuadrado: 'diagonales iguales y perpendiculares a la vez', rectángulo: 'diagonales iguales (ángulos rectos)', rombo: 'diagonales perpendiculares (lados iguales)', paralelogramo: 'solo lados opuestos paralelos, sin más' };
   function casoNombre(r) {
     const c = r.de(CASOS_N);
-    return { pregunta: `${c.que} ¿Cuál es el nombre más preciso de la figura?`, datos: [D_RECT, D_ROMBO, D_CUADR],
+    return { pregunta: `${c.que} ¿Cuál es el nombre más preciso de la figura?`, datos: [D_RECT, D_ROMBO, D_CUADR, D_RECIP],
       opciones: [{ id: 'c', texto: c.bien, correcta: true }].concat(NOMBRES.filter(x => x !== c.bien).map(x => ({ id: x.normalize('NFD').replace(/\p{M}/gu, ''), texto: x,
         error: x === 'paralelogramo' ? 'GE-PC17' : c.bien === 'cuadrado' ? 'GE10' : 'GE-PC18',
         siFuera: x === 'paralelogramo' ? `Lo es, pero se pide el más preciso: ${c.bien}.` : c.bien === 'cuadrado' ? `Es ${x}, sí; pero también cumple lo del otro: es cuadrado.` : `Sería ${x} con ${MOTIVO[x]}.` }))),
@@ -1852,7 +1914,7 @@
           { id: 'x', valor: x, error: 'GE-CON30', siFuera: `x = ${x} está bien; falta reemplazarlo en BD.` },
           { id: 'sinmitad', valor: sinMitad, error: 'GE-PC15', siFuera: 'Igualar está bien; pero AO es la mitad de AC, y AC = BD.' },
           { id: 'doble', valor: 2 * bd, error: 'GE-PC11', siFuera: `BD ya es la diagonal entera: ${cm(bd)}.` }]), cm),
-        solucion: { texto: `BD = AC = 2 · AO: ${exL(3, s)} = 2(${exL(p, q)}), así que x = ${x}.`, ecuacion: junto([`BD = 3 · ${x} ${s < 0 ? '−' : '+'} ${Math.abs(s)} = `, dF(cm(bd))]) } };
+        solucion: { texto: `BD = AC = 2 · AO: ${exL(3, s)} = 2(${exL(p, q)}), así que x = ${x}.`, ecuacion: junto([`BD = 3 · ${x}${s ? ` ${s < 0 ? '−' : '+'} ${Math.abs(s)}` : ''} = `, dF(cm(bd))]) } };
     }
     throw new Error('casoRectX sin caso');
   }
@@ -1925,7 +1987,7 @@
       pieza: GO,
       consigna: 'El marco de una ventana mide 80 cm por 60 cm; el carpintero mide sus dos cordeles en diagonal.',
       mision: {
-        texto: 'Endereza el marco (arrastra D o usa el control) hasta que los cordeles midan igual.',
+        texto: 'Endereza el marco hasta que los dos cordeles midan igual.',
         logrado: v => v.t === 90,
         bien: 'Miden lo mismo: el marco quedó a escuadra, con sus cuatro esquinas de 90°.',
       },
@@ -1974,7 +2036,7 @@
     regla: {
       texto: 'Un rectángulo, con sus cuatro ángulos rectos, tiene diagonales iguales. Un rombo, con sus cuatro lados iguales, tiene diagonales perpendiculares que parten sus ángulos. El cuadrado es las dos cosas.',
       ecuacion: junto(['rectángulo: ', dO('AC'), ' = ', dI('BD'), Y, 'rombo: ', dO('AC'), ' ⟂ ', dI('BD')]),
-      condicion: 'son paralelogramos: también tienen todo lo de la idea anterior, y sus diagonales se cortan en su punto medio.',
+      condicion: 'son paralelogramos (con todo lo de la idea anterior). Al revés también: diagonales iguales, rectángulo; perpendiculares, rombo.',
       voz: 'El cuadrado no pierde ningún nombre: es rectángulo y es rombo.',
     },
     resuelve: {
@@ -2027,6 +2089,9 @@
   const D_MED = 'Mediana del trapecio: el segmento que une los puntos medios de los lados no paralelos.';
   const D_MN = 'La mediana del trapecio es paralela a las bases y mide su semisuma: (base mayor + base menor) ÷ 2.';
   const D_PQ = 'El tramo entre los puntos medios de las diagonales mide la semidiferencia de las bases: (mayor − menor) ÷ 2.';
+  // (Auditoría: el enunciado dice «las diagonales cortan la mediana en P y Q» y los datos hablan de «los puntos medios de
+  // las diagonales»; faltaba lo que los une.)
+  const D_MEDIOS = 'La mediana del trapecio corta cada diagonal en su punto medio.';
   const D_CONJ = 'Conjugados internos entre paralelas: suman 180°.';
   const D_TISO = 'En un trapecio isósceles (lados no paralelos iguales), los dos ángulos de una misma base miden igual.';
   const BOCA = 6, HOND = 2.4;
@@ -2046,9 +2111,10 @@
     const AD = 10, bd = escala ? 4 : 1.6, H = 3.6, A = [0, H], Dp = [AD, H], B = [(AD - bd) / 2, 0], C = [(AD + bd) / 2, 0];
     const M = U.medio(A, B), N = U.medio(Dp, C), P = U.medio(A, C), Q = U.medio(B, Dp);
     const m = o.mira, lados = { AD: { color: 'o', fino: true, texto: mt(10), dist: 7 }, BC: { color: 'i', texto: mt(4), dist: 7 } };
-    if (!m) lados.PQ = { texto: '?', dist: 7, ref: 'B' };
+    // (Auditoría y lector en frío: «?» y «3 m» quedaban en el centro de MN y se leían como MN = 3 m. Dicen de qué tramo son.)
+    if (!m) lados.PQ = { texto: 'PQ = ?', dist: 7, ref: 'B' };
     // (MP y PN van solo en la ecuación del paso: sus rótulos chocaban con los cordeles o las paredes.)
-    else lados.PQ = { texto: mt(3), dist: 6, ref: 'B', desde: 3 };
+    else lados.PQ = { texto: `PQ = ${mt(3)}`, dist: 6, ref: 'B', desde: 3 };
     return figura([poli('ABCD', [A, B, C, Dp], { lados,
       pts: [{ id: 'M', x: M[0], y: M[1], rotulo: 'M', lado: 180 }, { id: 'N', x: N[0], y: N[1], rotulo: 'N', lado: 0 }, { id: 'P', x: P[0], y: P[1], rotulo: 'P', lado: 270 }, { id: 'Q', x: Q[0], y: Q[1], rotulo: 'Q', lado: 270 }],
       segs: [{ de: 'M', a: 'N', grosor: 'variable' }, { de: 'A', a: 'C', grosor: 'fino', discontinua: true }, { de: 'B', a: 'D', grosor: 'fino', discontinua: true, desde: m ? 3 : 0 }] })],
@@ -2061,7 +2127,9 @@
   function figTrap(lab, o = {}) {
     if (o.resp !== undefined) {
       const lejos = F => { const q = F.figura.angulos.find(x => x.texto === '?'); return q ? Math.abs(q.mide - o.resp) : 0; };
-      return (o.sh === 0 ? [0, 0.01] : [-0.9, 1.1, 2.6]).map(sh => figTrap(lab, Object.assign({}, o, { resp: undefined, sh, H: o.sh === 0 ? [4.6, 2.6][sh ? 1 : 0] : o.H }))).sort((x, y) => lejos(y) - lejos(x))[0];
+      const todas = (o.sh === 0 ? [[0, 4.6], [0, 2.6], [0, 3.6], [0, 5.4], [0, 3], [0, 6.2]] : [[-0.9], [1.1], [2.6], [0.4], [1.8]].map(x => [x[0], o.H])).map(([sh, H]) => figTrap(lab, Object.assign({}, o, { resp: undefined, sh, H })));
+      // (Auditoría: de las formas con el «?» a 8° o más, la primera con cada rótulo junto a su vértice.)
+      void lejos; return mejor(todas, o.resp, 0.95);
     }
     const AD = 9, BC = 4.6, H = o.H || 4.6, sh = o.sh === undefined ? 1.1 : o.sh, A = [0, 0], Dp = [AD, 0], B = [(AD - BC) / 2 - sh, H], C = [(AD + BC) / 2 - sh, H];
     const pts = [], segs = [], lados = { AD: Object.assign({ color: 'o', dist: 7 }, lab.AD ? { texto: lab.AD } : {}), BC: Object.assign({ color: 'i', dist: 7 }, lab.BC ? { texto: lab.BC } : {}) };
@@ -2084,8 +2152,9 @@
     solucion: [{ texto: 'Es la semidiferencia de las bases:', ecuacion: junto(['(12 − 6) ÷ 2 = ', dF('3 cm')]) }],
     respuesta: [dF('3 cm')] });
   EJ6.push({ nivel: 1, titulo: 'La base que falta',
-    figura: fig(figTrap({ BC: '5 cm', MN: '9 cm' }, { mn: true, alt: 'Un trapecio ABCD con la base menor BC de 5 cm y la mediana MN de 9 cm; la base mayor AD no tiene medida.' })),
-    enunciado: 'En el trapecio ABCD (BC ∥ AD), la mediana mide 9 cm y la base menor BC, 5 cm. ¿Cuánto mide la base mayor AD?',
+    // (Auditoría: BC y MN iban a escalas distintas sin aviso.)
+    figura: fig(figTrap({ BC: '5 cm', MN: '9 cm' }, { mn: true, sinEscala: true, alt: 'Un trapecio ABCD con la base menor BC de 5 cm y la mediana MN de 9 cm; la base mayor AD no tiene medida. El dibujo no está a escala.' })),
+    enunciado: `En el trapecio ABCD (BC ∥ AD), la mediana mide 9 cm y la base menor BC, 5 cm. ¿Cuánto mide la base mayor AD?${NO_ESC}`,
     datos: [D_MN],
     solucion: [{ texto: 'Las dos bases suman el doble de la mediana:', ecuacion: junto(['AD = 2 · 9 − 5 = ', dF('13 cm')]) }],
     respuesta: [junto('AD = '), dF('13 cm')] });
@@ -2110,8 +2179,8 @@
   EJ6.push({ nivel: 2, titulo: 'Las bases desde MN y PQ',
     enunciado: 'En un trapecio, la mediana mide 10 cm y el tramo entre los puntos medios de las diagonales, 3 cm. ¿Cuánto mide la base menor?',
     datos: [D_MN, D_PQ],
-    solucion: [{ texto: 'Las bases suman 20 cm y se llevan 6 cm.' },
-      { texto: 'La menor es la mitad de lo que queda al quitar la diferencia:', ecuacion: junto(['(20 − 6) ÷ 2 = ', dF('7 cm')]) }],
+    solucion: [{ texto: 'Las bases suman 2 · 10 = 20 cm y se llevan 2 · 3 = 6 cm.' },
+      { texto: 'A la suma se le quita la diferencia y se saca la mitad:', ecuacion: junto(['(20 − 6) ÷ 2 = ', dF('7 cm')]) }],
     respuesta: [dF('7 cm')] });
   EJ6.push({ nivel: 2, titulo: 'Un trapecio isósceles',
     figura: fig(figTrap({}, { sh: 0, sinEscala: true, resp: 115, ang: { A: { texto: '65°', color: 'h' }, C: { texto: '?' } }, alt: 'Un trapecio isósceles ABCD con BC paralela a AD, 65° en A y el ángulo en C con signo de pregunta.' })),
@@ -2122,7 +2191,7 @@
     respuesta: [junto('m∠C = '), dF('115°')] });
   EJ6.push({ nivel: 2, titulo: 'Un pedazo de la mediana',
     enunciado: 'En el trapecio ABCD, BC ∥ AD, BC = 8 cm y AD = 20 cm. La mediana MN corta la diagonal AC en P. ¿Cuánto mide MP?',
-    datos: [D_MED, D_BM],
+    datos: [D_MED, D_MEDIOS, D_BM],
     solucion: [{ texto: 'P es el punto medio de AC, y M el de AB: en △ABC, MP es base media.', ecuacion: junto(['MP = 8 ÷ 2 = ', dF('4 cm')]) }],
     respuesta: [junto('MP = '), dF('4 cm')] });
   EJ6.push({ nivel: 2, titulo: 'La base mayor es el doble',
@@ -2164,14 +2233,14 @@
     enunciado: 'En un trapecio, la mediana mide 15 cm y el tramo entre los puntos medios de las diagonales, 5 cm. ¿Cuánto mide la base mayor?',
     alternativas: ['10 cm', '15 cm', '25 cm', '20 cm', '30 cm'],
     datos: [D_MN, D_PQ],
-    solucion: [{ texto: 'Las bases suman 30 cm y se llevan 10 cm.' },
-      { texto: 'La mayor es la mitad de la suma más la diferencia:', ecuacion: junto(['(30 + 10) ÷ 2 = ', dF('20 cm')]) },
+    solucion: [{ texto: 'La mediana es la semisuma y el tramo, la semidiferencia: las bases suman 2 · 15 = 30 cm y se llevan 2 · 5 = 10 cm.' },
+      { texto: 'Se suman las dos cosas y se saca la mitad:', ecuacion: junto(['(30 + 10) ÷ 2 = ', dF('20 cm')]) },
       { texto: '10 cm es la base menor; 15 cm, la mediana; 25 cm suma 15 + 10; 30 cm, la suma de las dos bases.' }],
     respuesta: [dF('20 cm')] });
   EJ6.push({ nivel: 3, titulo: 'Los extremos de la mediana',
     enunciado: 'En el trapecio ABCD, BC = 6 cm y AD = 14 cm son las bases. Las diagonales cortan la mediana MN en P y Q. ¿Cuánto suman MP y QN?',
     alternativas: ['6 cm', '4 cm', '10 cm', '3 cm', '7 cm'],
-    datos: [D_MED, D_BM, D_MN, D_PQ],
+    datos: [D_MED, D_MEDIOS, D_BM, D_MN, D_PQ],
     solucion: [{ texto: 'MP es base media de △ABC y QN, de △BCD: cada una mide 6 ÷ 2 = 3 cm.', ecuacion: junto(['MP + QN = 3 + 3 = ', dF('6 cm')]) },
       { texto: 'Por otro camino: MN − PQ = 10 − 4 = 6 cm.' },
       { texto: '4 cm es PQ; 10 cm, la mediana; 3 cm, uno solo de los tramos; 7 cm, la mitad de AD.' }],
@@ -2202,7 +2271,7 @@
   function casoPQ(r) {
     const B = r.ent(9, 30), b = r.ent(3, B - 2);
     if ((B - b) % 2 || (B === 12 && b === 6) || (B === 10 && b === 4)) return null;
-    return { pregunta: `En un trapecio de bases ${cm(B)} y ${cm(b)}, las diagonales cortan la mediana en P y Q. ¿Cuánto mide PQ?`, datos: [D_MED, D_PQ],
+    return { pregunta: `En un trapecio de bases ${cm(B)} y ${cm(b)}, las diagonales cortan la mediana en P y Q. ¿Cuánto mide PQ?`, datos: [D_MED, D_MEDIOS, D_PQ],
       opciones: opciones((B - b) / 2, OPS(r, [
         { id: 'mn', valor: (B + b) / 2, error: 'GE-TRP1', siFuera: `${cm((B + b) / 2)} es la mediana entera; PQ es su tramo del medio.` },
         { id: 'resta', valor: B - b, error: 'GE-TRP2', siFuera: 'Restar las bases está bien; PQ es la mitad de esa resta.' },
@@ -2220,7 +2289,7 @@
           { id: 'x', valor: x, error: 'GE-CON30', siFuera: `x = ${x} está bien; falta reemplazarlo en la mediana.` },
           { id: 'mayor', valor: Bv, error: 'GE-TRP8', siFuera: `${cm(Bv)} es la base mayor; se pide la mediana.` },
           { id: 'suma', valor: Bv + bv, error: 'GE-TRP2', siFuera: 'La suma de las bases es el doble de la mediana; falta la mitad.' }]), cm),
-        solucion: { texto: `(${exL(p, q)} + ${exL(1, s)}) ÷ 2 = ${exL(1, c)}, así que x = ${x}.`, ecuacion: junto([`${x} ${c < 0 ? '−' : '+'} ${Math.abs(c)} = `, dF(cm(mn))]) } };
+        solucion: { texto: `(${exL(p, q)} + ${exL(1, s)}) ÷ 2 = ${exL(1, c)}, así que x = ${x}.`, ecuacion: junto([c ? `${x} ${c < 0 ? '−' : '+'} ${Math.abs(c)} = ` : 'mediana = ', dF(cm(mn))]) } };
     }
     throw new Error('casoTrapX sin caso');
   }
@@ -2266,7 +2335,7 @@
         logrado: v => v.b === 3,
         bien: 'Con 3 m de fondo, el agua mide 4,5 m. Córrelo a un lado: sigue igual.',
       },
-      voz: '¿El agua queda más cerca de la boca o del fondo?',
+      voz: '¿El ancho del agua se parece más al de la boca o al del fondo?',
       leyenda: [
         { s: dO('AD'), t: 'la boca del canal' },
         { s: dI('BC'), t: 'el fondo del canal' },
@@ -2274,7 +2343,7 @@
         { s: 'MN', t: 'el borde del agua: la mediana' },
       ],
       controles: [{ id: 'b', etiqueta: 'BC, el fondo', min: 1.5, max: 5, paso: 0.5, inicio: 2, unidad: 'm', decimales: 1, color: 'c-i' },
-        { id: 'd', etiqueta: 'el fondo corrido', min: -1, max: 1, paso: 0.5, inicio: 0, unidad: 'm', decimales: 1 }],
+        { id: 'd', etiqueta: 'el fondo, corrido a un lado', min: -1, max: 1, paso: 0.5, inicio: 0, unidad: 'm', decimales: 1 }],
       dibujo: v => ({ datos: figCanal(v.b, v.d), estado: {} }),
       lectura: v => [junto(`MN = ${mt((BOCA + v.b) / 2)}`), ', entre ', dI(junto(`BC = ${mt(v.b)}`)), ' y ', dO(junto(`AD = ${mt(BOCA)}`))],
       minimo: 4,
@@ -2308,7 +2377,7 @@
     },
     regla: {
       texto: 'La mediana MN une las mitades de los lados no paralelos: es paralela a las bases y mide su semisuma. PQ, entre las mitades de las diagonales, mide su semidiferencia.',
-      ecuacion: junto([dF('MN'), ' = (', dO('AD'), ' + ', dI('BC'), ') ÷ 2', Y, dF('PQ'), ' = (', dO('AD'), ' − ', dI('BC'), ') ÷ 2']),
+      ecuacion: junto(['MN = (', dO('AD'), ' + ', dI('BC'), ') ÷ 2', Y, 'PQ = (', dO('AD'), ' − ', dI('BC'), ') ÷ 2']),
       condicion: 'BC ∥ AD, con AD la base mayor; vale se incline como se incline el trapecio.',
       voz: 'Suma y mitad para MN; resta y mitad para PQ.',
     },
@@ -2459,7 +2528,8 @@
 
   return {
     unidad: 'geometria.poligonos-y-cuadrilateros',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-objeto.js'],
     historia: {

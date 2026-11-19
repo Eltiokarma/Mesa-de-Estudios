@@ -159,3 +159,11 @@ test('papel: 8 problemas del generador, de las seis ideas, con «Datos:» al fin
   });
   assert.equal(ideas.size, 6, 'el papel cubre las seis ideas');
 });
+
+// Auditoría (19 nov, cierre delegado; rutinas/auditoria/geometria.poligonos-y-cuadrilateros.md).
+test('auditoría M7: PQ trae en los datos que la mediana corta cada diagonal en su punto medio (400 semillas)', () => {
+  for (let s = 0; s < 400; s++) { const p = gen.generar(s, { tipo: 'pq' }); assert.ok(p.datos.some(d => /corta cada diagonal en su punto medio/.test(d)), `${s}`); }
+});
+test('auditoría B7: el cuadrado con el equilátero de afuera no trae «la mitad de 15°» (no sale de ningún error)', () => {
+  for (let s = 0; s < 400; s++) { const p = gen.generar(s, { tipo: 'cuad-eq' }); assert.ok(!p.alternativas.some(a => /^7,5°$/.test(a.texto)), `${s}`); }
+});

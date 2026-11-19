@@ -62,6 +62,8 @@
     med: 'Mediana del trapecio: el segmento que une los puntos medios de los lados no paralelos.',
     mn: 'La mediana del trapecio es paralela a las bases y mide su semisuma: (base mayor + base menor) ÷ 2.',
     pq: 'El tramo entre los puntos medios de las diagonales mide la semidiferencia de las bases: (mayor − menor) ÷ 2.',
+    // (Auditoría, 19 nov: el enunciado dice que las diagonales cortan la mediana; faltaba que la cortan en sus puntos medios.)
+    medios: 'La mediana del trapecio corta cada diagonal en su punto medio.',
   };
 
   // =============================== Idea 1: suma de ángulos interiores ===============================
@@ -220,7 +222,8 @@
     const afuera = rng.entero(0, 1) === 1, val = afuera ? 15 : 75;
     return { enunciado: [`${afuera ? 'Fuera' : 'Dentro'} del cuadrado ABCD se dibuja el triángulo equilátero BCE.`], pregunta: ['¿Cuánto mide m∠BAE?'], datos: [D.cuadr, D.eql, D.iso, D.tri], correcta: val, fmt: gr,
       errores: [er('GE-CON35', 60, '60° es del equilátero; en A va un ángulo del triángulo ABE.'),
-        afuera ? er('GE-CON36', val / 2, `Hallar ${gr(val)} en A está bien; no hay que partirlo en dos.`) : er('GE-CON34', 180 - val, `${gr(180 - val)} es el suplemento; en A va el ángulo del triángulo ABE.`),
+        // (Auditoría: afuera, «la mitad de 15°» no salía de ningún error; queda solo el suplemento, adentro.)
+        ...(afuera ? [] : [er('GE-CON34', 180 - val, `${gr(180 - val)} es el suplemento; en A va el ángulo del triángulo ABE.`)]),
         er('GE-PC21', afuera ? 150 : 30, 'Ese es el ángulo en B del triángulo ABE, no en A.'), er('GE-PC22', 45, '45° es el ángulo de la diagonal; AE no es diagonal.'),
         er('GE-PC21', 90 - val, 'Ese es el otro pedazo de la esquina A.')],
       solucion: [[`BA = BE: △ABE es isósceles, con ${afuera ? '150°' : '30°'} en B.`], [`(180° − ${afuera ? 150 : 30}°) ÷ 2 = `, v('x', gr(val)), '.']],
@@ -239,7 +242,7 @@
   function pq(rng) {
     const B = rng.entero(9, 32), b = rng.entero(3, B - 2);
     if ((B - b) % 2) return pq(rng);
-    return { enunciado: [`En un trapecio de bases ${cm(B)} y ${cm(b)}, las diagonales cortan la mediana en P y Q.`], pregunta: ['¿Cuánto mide PQ?'], datos: [D.med, D.pq], correcta: (B - b) / 2, fmt: cm,
+    return { enunciado: [`En un trapecio de bases ${cm(B)} y ${cm(b)}, las diagonales cortan la mediana en P y Q.`], pregunta: ['¿Cuánto mide PQ?'], datos: [D.med, D.medios, D.pq], correcta: (B - b) / 2, fmt: cm,
       errores: [er('GE-TRP1', (B + b) / 2, 'Esa es la mediana entera; PQ es su tramo del medio.'), er('GE-TRP2', B - b, 'Restar las bases está bien; PQ es la mitad.'), er('GE-TRP3', b / 2, 'Esa es MP, la mitad de la base menor.')],
       solucion: [['PQ es la semidiferencia de las bases.'], [`(${B} − ${b}) ÷ 2 = `, v('x', cm((B - b) / 2)), '.']],
       _datos: { tipo: 'pq', idea: 'trapecios', nivel: 1, B, b } };

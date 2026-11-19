@@ -22,6 +22,7 @@ const NO_ESC = 'El dibujo no está a escala.';
 const idea = id => def.ideas.find(i => i.id === id);
 
 test('las seis ideas de la propuesta, en orden; se conservan los id de antes, sus controles y las mesas', () => {
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   assert.deepEqual(def.ideas.map(i => i.id), ['suma-de-angulos', 'angulos-exteriores', 'diagonales', 'paralelogramos', 'rectangulo-rombo-cuadrado', 'trapecios']);
   const ctr = id => idea(id).juega.controles.map(c => c.id);
   assert.deepEqual(ctr('suma-de-angulos'), ['n']);
@@ -344,5 +345,112 @@ test('los dibujos de prueba: el objeto de cada primera pantalla va marcado como 
   for (const i of def.ideas) {
     const ini = Object.fromEntries(i.juega.controles.map(c => [c.id, c.inicio])), s = P.dibujar(i.juega.dibujo(ini).datos, {});
     assert.match(s, new RegExp(`data-objeto="${tipo[i.id]}" data-prueba="si"`), i.id);
+  }
+});
+
+// ---------- Auditoría y lector en frío (19 nov, cierre delegado; rutinas/auditoria/geometria.poligonos-y-cuadrilateros.md) ----------
+const dosD = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+test('auditoría A1: el hexágono pregunta por el perímetro del hexágono (con «su», se leía el del triángulo, 24 cm)', () => {
+  for (const e of def.ideas.flatMap(i => i.ejemplos)) { const t = sinDuros(plano(e.enunciado)); if (/sale un triángulo/.test(t)) assert.match(t, /perímetro del hexágono/, e.titulo); }
+});
+test('auditoría M1 y M2: el rótulo de un lado partido por un punto, o de un tramo dentro de otro trazo, dice de qué lado es («BC = 12 cm», «PQ = ?»)', () => {
+  for (const it of FIGS) {
+    const fg = P.escena(it.datos).fig, g = G.geometria(fg), corte = corteDe(it), S = id => g.S(id);
+    const ve = x => (x.desde || 0) <= corte && !(x.hasta < corte);
+    for (const l of (it.datos.ladosRot || []).filter(x => ve(x) && x.texto)) {
+      const p = S(l.de), q = S(l.a), u = [q[0] - p[0], q[1] - p[1]], L2 = u[0] ** 2 + u[1] ** 2;
+      const sobre = Z => { const t = ((Z[0] - p[0]) * u[0] + (Z[1] - p[1]) * u[1]) / L2, d = Math.abs((Z[0] - p[0]) * u[1] - (Z[1] - p[1]) * u[0]) / Math.sqrt(L2); return { t, d }; };
+      const partido = (fg.puntos || []).some(z => z.rotulo && ve(z) && ![l.de, l.a].includes(z.id) && (({ t, d }) => d < 1.5 && t > 0.05 && t < 0.95)(sobre(S(z.id))));
+      const dentro = (fg.segmentos || []).filter(ve).some(sg => { const a = sobre(S(sg.de)), b = sobre(S(sg.a)); return a.d < 1 && b.d < 1 && Math.min(a.t, b.t) < -0.05 && Math.max(a.t, b.t) > 1.05; });
+      if (partido || dentro) assert.match(sinDuros(l.texto), new RegExp(`^(${l.de}${l.a}|${l.a}${l.de}) = `), `${it.donde}: «${l.texto}» de ${l.de}${l.a}`);
+    }
+  }
+});
+test('auditoría M3: en los ejemplos, «Así se resuelve» y «Ahora tú», cada rótulo de ángulo queda más cerca de su vértice que de otro punto con letra', () => {
+  // Pendiente a propósito (rutinas/auditoria, «Pendiente»): el juego del mototaxi con 6 o más esquinas, el marco del juego y
+  // estos casos, donde ninguna forma probada lo logra.
+  const PEND = /^(paralelogramos ejemplo 13|trapecios ejemplo 8|rectangulo-rombo-cuadrado ahora tú)/;
+  for (const it of FIGS.filter(x => x.ejercicio && !PEND.test(x.donde))) {
+    const { rot, vertice } = P.rotulos(it.datos, corteDe(it)), letras = (P.escena(it.datos).fig.puntos || []).filter(q => q.rotulo).map(q => q.id);
+    for (const z of rot) {
+      const c = [(z.caja.x0 + z.caja.x1) / 2, (z.caja.y0 + z.caja.y1) / 2], dv = dosD(c, vertice(z.an.en));
+      for (const id of letras) if (id !== z.an.en) assert.ok(dv < dosD(c, vertice(id)), `${it.donde}: «${z.an.texto}» de ${z.an.en} queda más cerca de ${id}`);
+    }
+  }
+});
+test('auditoría M4: «Así se resuelve» de la suma no repite un ejemplo (1 260° y 2 340°) ni un «Ahora tú» (400 semillas)', () => {
+  const nums = t => (sinDuros(t).match(/\d+(?: \d{3})*/g) || []).join(' ');
+  const i = idea('suma-de-angulos'), ej = new Set(i.ejemplos.map(e => nums(plano(e.enunciado)))), at = new Set();
+  for (let s = 0; s < SEMILLAS; s++) at.add(sinDuros(plano(i.ahoraTu.generar(s).pregunta)));
+  for (let s = 0; s < SEMILLAS; s++) {
+    const e = sinDuros(plano(i.resuelve.generar(s).enunciado));
+    assert.ok(!at.has(e), `resuelve ${s}: «${e}» es un «Ahora tú»`);
+    if (/suman [\d ]+°\. ¿Cuántos lados/.test(e)) assert.ok(!ej.has(nums(e)), `resuelve ${s}: «${e}» repite un ejemplo`);
+  }
+});
+test('auditoría M5: el rombo se dibuja con su esquina A aguda si el enunciado la da aguda (y obtusa si obtusa)', () => {
+  for (const it of FIGS.filter(x => x.ejercicio && /rombo ABCD, m∠A = \d+°/.test(sinDuros(x.texto)))) {
+    const a = +/m∠A = (\d+)°/.exec(sinDuros(it.texto))[1], an = P.escena(it.datos).fig.angulos.find(q => q.en === 'A' && q.texto);
+    assert.equal(an.mide < 90, a < 90, `${it.donde}: A de ${a}° dibujada de ${an.mide.toFixed(0)}°`);
+  }
+});
+test('auditoría M6 y B1: los dos cuadrados encajados llevan dibujo; «La base que falta» va sin escala (sus rótulos no compartían escala)', () => {
+  const e = idea('rectangulo-rombo-cuadrado').ejemplos.find(x => /encajados/.test(x.titulo));
+  assert.ok(e.figura && e.figura.datos.sinEscala && sinDuros(plano(e.enunciado)).includes(NO_ESC));
+  const b = idea('trapecios').ejemplos.find(x => x.titulo === 'La base que falta');
+  assert.ok(b.figura.datos.sinEscala && sinDuros(plano(b.enunciado)).includes(NO_ESC));
+  // En toda figura a escala de un ejercicio, los largos rotulados van a una sola escala.
+  for (const it of FIGS.filter(x => x.ejercicio && !x.datos.sinEscala)) {
+    const g = G.geometria(P.escena(it.datos).fig), lr = (it.datos.ladosRot || []).filter(l => /^\d+(?:,\d+)? (cm|m)$/.test(sinDuros(l.texto || '')));
+    const esc = lr.map(l => num(sinDuros(l.texto).split(' ')[0]) / dosD(g.P(l.de), g.P(l.a)));
+    if (esc.length > 1) assert.ok(Math.max(...esc) / Math.min(...esc) < 1.05, it.donde);
+  }
+});
+test('auditoría M7: si el enunciado dice que la mediana corta las diagonales, los datos dicen que las corta en sus puntos medios', () => {
+  const casos = [];
+  for (const e of idea('trapecios').ejemplos) casos.push([e.titulo, plano(e.enunciado), e.datos]);
+  for (let s = 0; s < SEMILLAS; s++) { const a = idea('trapecios').ahoraTu.generar(s); casos.push([`ahora tú ${s}`, plano(a.pregunta), a.datos]); }
+  for (const [d, t, datos] of casos) if (/cortan la mediana|mediana MN corta la diagonal|cortan la mediana MN/.test(sinDuros(t))) assert.ok(datos.some(x => /corta cada diagonal en su punto medio/.test(x)), d);
+});
+test('auditoría M8: el nombre más preciso trae la recíproca en los datos y en la condición de la regla', () => {
+  assert.match(idea('rectangulo-rombo-cuadrado').regla.condicion, /Al revés/);
+  for (let s = 3; s < SEMILLAS; s += 5) { const a = idea('rectangulo-rombo-cuadrado').ahoraTu.generar(s); if (/nombre más preciso/.test(plano(a.pregunta))) assert.ok(a.datos.some(x => /^Al revés/.test(x)), `${s}`); }
+});
+test('auditoría M9: los datos y la voz de Predice no dicen el paso de la predicción (restar la vuelta de O, dividir entre 2)', () => {
+  const t1 = sinDuros([...idea('suma-de-angulos').predice.datos, idea('suma-de-angulos').predice.voz].join(' '));
+  assert.ok(!/alrededor de O/.test(t1), t1);
+  const t3 = sinDuros([...idea('diagonales').predice.datos, idea('diagonales').predice.voz].join(' '));
+  assert.ok(!/une dos clavos|también sale/.test(t3), t3);
+});
+test('auditoría M10 y B3: explicaciones que dicen la verdad, y la e del exterior dicha antes de usarse', () => {
+  const todo = def.ideas.flatMap(i => i.ejemplos).map(e => sinDuros(e.solucion.map(x => plano(x.texto)).join(' ')));
+  assert.ok(!todo.some(t => /72 cm cuenta dos veces BC/.test(t)));
+  assert.ok(!todo.some(t => /mitad de la suma más la diferencia/.test(t)));
+  for (const t of todo) if (/\d?e \+ e = 180°/.test(t)) assert.match(t, /cada exterior mide e/, t);
+  for (let s = 4; s < SEMILLAS; s += 5) { const a = idea('angulos-exteriores').ahoraTu.generar(s), t = sinDuros(plano(a.solucion.texto)); if (/e \+ e/.test(t)) assert.match(t, /cada exterior mide e/, t); }
+});
+test('auditoría M11: a escala, ningún ángulo de la figura de un ejercicio mide la respuesta (la plaza de 8 esquinas medía 45°)', () => {
+  for (const it of FIGS.filter(x => x.ejercicio && !x.datos.sinEscala)) {
+    const r = /(\d+(?:,\d+)?)°/.exec(sinDuros(it.respuesta)); if (!r) continue;
+    for (const an of P.escena(it.datos).fig.angulos || []) assert.ok(Math.abs(an.mide - num(r[1])) >= 2, `${it.donde}: un arco mide ${an.mide.toFixed(1)}°`);
+  }
+});
+test('auditoría M12 y M13: la punteada de A sigue en la regla de los exteriores; la regla de las diagonales trae un geoplano que se cuenta', () => {
+  const R = idea('angulos-exteriores').predice.revelar.datos;
+  assert.ok(R.figura.segmentos.some(sg => sg.de === 'A' && sg.a === 'xA' && sg.hasta === undefined));
+  const d = idea('diagonales').regla.dibujo.datos, segs = d.figura.segmentos.filter(sg => !sg.discontinua);
+  assert.ok(d.clavos.length <= 6 && segs.length === d.clavos.length * (d.clavos.length - 3) / 2, `${segs.length}`);
+  assert.ok(!/var\(--c-f\)/.test(JSON.stringify(idea('trapecios').regla.ecuacion)) && !JSON.stringify(idea('trapecios').regla.ecuacion).includes('c-f'), 'MN y PQ en tinta, como en la figura');
+});
+test('lector en frío: Lee no nombra «como en Triángulos»; la leyenda de la plaza dice qué son las franjas grises; el fondo corrido dice a dónde', () => {
+  for (const i of def.ideas) for (const t of i.lee.tarjetas) assert.ok(!/como (se vio )?en Triángulos/.test(plano(t.texto)), i.id);
+  assert.ok(idea('angulos-exteriores').juega.leyenda.some(l => /franja/.test(plano(l.s))));
+  assert.match(idea('trapecios').juega.controles.find(c => c.id === 'd').etiqueta, /a un lado/);
+  assert.match(idea('angulos-exteriores').regla.texto, /equiángulo/);
+});
+test('auditoría B9: ninguna solución de «Ahora tú» escribe «+ 0» (12x + 0° = 360°, 3 · 10 + 0)', () => {
+  for (const i of def.ideas) for (let s = 0; s < SEMILLAS; s++) {
+    const a = i.ahoraTu.generar(s), t = sinDuros(plano([a.solucion.texto, ' ', a.solucion.ecuacion || '']));
+    assert.ok(!/[+−] 0°?(?![,\d])/.test(t), `${i.id} ${s}: «${t}»`);
   }
 });
