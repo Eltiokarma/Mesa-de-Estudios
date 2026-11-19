@@ -4552,6 +4552,30 @@
     "VUEL-DIAMETRO-media-vuelta": {
      "respaldo": "hipotesis",
      "describe": "Divide el camino del centro entre media vuelta, π · r"
+    },
+    "RES-MULTIPLICA-hipotenusa-con-seno": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica el cateto por el seno, como si conociera la hipotenusa: el cable sale más corto que la torre"
+    },
+    "TR9-divide-entre-coseno": {
+     "respaldo": "parcial",
+     "describe": "Divide el cateto opuesto entre el coseno: una razón que no une esos dos lados"
+    },
+    "RES-HIP-da-el-otro-cateto": {
+     "respaldo": "hipotesis",
+     "describe": "Da el otro cateto (con la cotangente) en vez de la hipotenusa"
+    },
+    "DOS-UN-TRIANGULO-avance-como-distancia": {
+     "respaldo": "hipotesis",
+     "describe": "Toma lo que avanzó como la distancia al pie desde el segundo lugar"
+    },
+    "DOS-SUMA-suma-cotangentes": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las dos distancias al pie, que del mismo lado se restan"
+    },
+    "DOS-MULTIPLICA-en-vez-de-dividir": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica lo avanzado por la resta de cotangentes en vez de dividir"
     }
    },
    "pares": [

@@ -64,12 +64,12 @@
     {
       "id": "trigonometria.triangulos-rectangulos",
       "nombre": "Resolución de triángulos rectángulos",
-      "temas": ["Resolver con un lado y un ángulo", "Ángulos de elevación y depresión", "Ángulo de observación"],
+      "temas": ["Resolver con un lado y un ángulo", "Ángulos de elevación y depresión", "Dos ángulos de elevación o depresión", "Ángulo de observación"],
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "alto",
-      "grado": 3,
+      "grado": 5,
       "requiere": ["trigonometria.razones-trigonometricas-agudas"],
-      "plantillas": ["circunferencia-trig", "trig-angulos-verticales"],
+      "plantillas": ["trig-resolucion"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

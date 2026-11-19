@@ -722,27 +722,6 @@ const V = {
     const r = motor('logica').filasFalsas(d.formula), e = r.errores, k = x => x.join('|');
     return { correcta: k(r.falsas), errores: { 'condicional-al-reves': k(e.alReves), 'antecedente-falso-hace-falsa-la-promesa': k(e.ambasFalsas), 'condicional-como-bicondicional': k(e.comoBicondicional) } };
   },
-  'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
-    return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
-  'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;
-    return { correcta: r.cantidad, errores: { 'olvida-el-mas-uno': e.sinMasUno, 'cuenta-desde-1': e.desdeUno, 'raiz-de-la-diferencia': e.raizDiferencia } }; },
-  'ari-21': d => { const r = motor('mezclas').precioMedio([{ cantidad: d.q1, precio: d.p1 }, { cantidad: d.q2, precio: d.p2 }]), e = r.errores;
-    return { correcta: r.precioMedio, errores: { 'AR15-promedio-simple': e.promedioSimple, 'cruza-las-cantidades': e.cantidadesCruzadas, 'suma-los-precios': e.sumaValores } }; },
-  'ari-22': d => { const r = motor('mezclas').aguaPara(d.V, d.g0, d.gf), e = r.errores;
-    if (!r.posible) throw new Error(r.razon);
-    return { correcta: r.agua, errores: { 'aspa-al-reves': e.aspaAlReves, 'resta-grados-como-litros': e.restaGrados, 'da-el-volumen-final': e.volumenFinal } }; },
-  'ari-23': d => { const r = motor('conjuntos').interseccionPorComplemento(d.U, d.nA, d.nB, d.ninguno), e = r.errores;
-    return { correcta: r.respuesta, errores: { 'olvida-a-los-que-no-estan-en-ninguno': e.olvidaLosDeFuera, 'da-los-que-estan-en-al-menos-uno': e.daLaUnion, 'da-los-que-estan-solo-en-el-otro': e.daSoloElOtro } }; },
-  'ari-24': d => { const S = motor('conjuntos'), n = S.conjunto(d.elementos).length, r = S.cuantosSubconjuntos(n), e = r.errores;
-    if (n !== d.elementos.length) throw new Error('el conjunto tiene elementos repetidos');
-    return { correcta: r.subconjuntos, errores: { 'dos-por-cada-elemento': e.dosPorElemento[0], 'olvida-el-vacio': e.sinElVacio[0], 'cuenta-ordenamientos': e.permutaciones[0] } }; },
-  'ari-25': d => { const r = motor('logica').negar(d.formula), e = r.errores;
-    return { correcta: r.texto, errores: { 'niega-las-partes-sin-cambiar-el-conectivo': e.negaPartes, 'niega-solo-la-primera-y-cambia': e.niegaSoloPrimera, 'niega-solo-la-primera': e.niegaPrimeraSinCambiar } }; },
-  'ari-26': d => {
-    // Las filas en que el condicional es falso, como «V F» (p, q) y separadas por «|»; cada error, las filas que da su lectura errada.
-    const r = motor('logica').filasFalsas(d.formula), e = r.errores, k = x => x.join('|');
-    return { correcta: k(r.falsas), errores: { 'condicional-al-reves': k(e.alReves), 'antecedente-falso-hace-falsa-la-promesa': k(e.ambasFalsas), 'condicional-como-bicondicional': k(e.comoBicondicional) } };
-  },
 
   // ari-27 y ari-28: razonamiento-numerico (en "reserva" mientras la plantilla no entre al catálogo).
   'ari-27': d => { const r = motor('razonamiento-numerico').corral(d.total, d.patas), e = r.errores;
@@ -794,6 +773,7 @@ const V = {
   'dp-02': d => { const [c, b] = d.divisor, fila = x0 => d.coefs.reduce((acc, co, i) => [...acc, i ? co + x0 * acc[i - 1] : co], []);
     const bien = fila(-b / c), mal = fila(b / c), suma = l => l.slice(0, -1).reduce((u, w) => u + w, 0);
     return { correcta: suma(bien) / c, errores: { 'PO3-cociente-falso-sin-dividir': suma(bien), 'PO2-numero-con-el-signo-cambiado': suma(mal) / c, 'TAL-RESTO-EN-Q-suma-el-resto': suma(bien) / c + bien[bien.length - 1] } }; },
+
   // fz-01 y fz-02 (reserva, 19 nov, etapa 7 de álgebra: «Factorización»; las formas ya tienen 10 pares). La plantilla
   // factorizacion-practica no tiene motor: se rehace aquí. fz-01: g·x(x² − k²) = g·x(x + k)(x − k), tres factores primos
   // (x, x + k, x − k). fz-02: el número que anula a los dos trinomios se busca por fuerza bruta; M = x − a.
@@ -854,6 +834,13 @@ const V = {
   'tri-12': d => { const t = d.g * PI / 180;
     return { correcta: t * d.r * d.r / 2, errores: { 'TR4-area-con-grados': d.g * d.r * d.r / 2, 'SEC-MITAD-sin-la-mitad': t * d.r * d.r, 'SEC-ARCO-da-el-arco': t * d.r } }; },
   'tri-13': d => ({ correcta: d.k + 1, errores: { 'VUEL-CONTACTO-borde-de-la-fija': d.k, 'VUEL-DENTRO-resta-los-radios': d.k - 1, 'VUEL-DIAMETRO-media-vuelta': 2 * (d.k + 1) } }),
+  // tri-14 y tri-15 (reserva, 19 nov, etapa 7 de trigonometría: «Resolución de triángulos rectángulos»; las formas ya
+  // tienen 10 pares). Cuentas aparte, sin el generador: los lados de los triángulos notables (convención del examen para
+  // 37° y 53°). tri-14: la hipotenusa con el cateto opuesto. tri-15: la altura con dos elevaciones del mismo lado.
+  'tri-14': d => { const L = { 37: [3, 4, 5], 53: [4, 3, 5] }[d.g], k = d.k;
+    return { correcta: k * L[2] / L[0], errores: { 'RES-MULTIPLICA-hipotenusa-con-seno': k * L[0] / L[2], 'TR9-divide-entre-coseno': k * L[2] / L[1], 'RES-HIP-da-el-otro-cateto': k * L[1] / L[0] } }; },
+  'tri-15': d => { const LT = { 37: [3, 4], 45: [1, 1], 53: [4, 3] }, cot = g => LT[g][1] / LT[g][0], tn = g => LT[g][0] / LT[g][1];
+    return { correcta: d.m / (cot(d.a) - cot(d.b)), errores: { 'DOS-SUMA-suma-cotangentes': d.m / (cot(d.a) + cot(d.b)), 'DOS-UN-TRIANGULO-avance-como-distancia': d.m * tn(d.b), 'DOS-MULTIPLICA-en-vez-de-dividir': d.m * (cot(d.a) - cot(d.b)) } }; },
   'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
     if (!r.exacto) throw new Error('la suma debe salir exacta');
     return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },
@@ -913,6 +900,7 @@ const V = {
   'fis-28': d => { const r = motor('estatica').planoRoce({ m: d.m, angulo: d.angulo, mus: d.mus, F: 0 });
     if (!r.quieto) throw new Error('fis-28: la caja debe estar quieta');
     return { correcta: Math.abs(r.roce), errores: { 'E10-estatico-siempre-mu-N': r.fsMax, 'ST-seno-por-coseno': r.N, 'N-MG-el-peso': d.m * 10 } }; },
+
   // fis-29 y fis-30 (reserva, 19 nov, etapa 7 de física: «Dinámica»; las formas ya tienen 10 pares). El motor de la escena
   // dinamica da la tensión de la mesa con polea (mesaPolea) y lo que marca la balanza del ascensor (ascensor, a con signo).
   'fis-29': d => { const r = motor('dinamica').mesaPolea({ m1: d.m1, m2: d.m2 });

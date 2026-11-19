@@ -202,6 +202,30 @@
     "VUEL-DIAMETRO-media-vuelta": {
       "respaldo": "hipotesis",
       "describe": "Divide el camino del centro entre media vuelta, π · r"
+    },
+    "RES-MULTIPLICA-hipotenusa-con-seno": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica el cateto por el seno, como si conociera la hipotenusa: el cable sale más corto que la torre"
+    },
+    "TR9-divide-entre-coseno": {
+      "respaldo": "parcial",
+      "describe": "Divide el cateto opuesto entre el coseno: una razón que no une esos dos lados"
+    },
+    "RES-HIP-da-el-otro-cateto": {
+      "respaldo": "hipotesis",
+      "describe": "Da el otro cateto (con la cotangente) en vez de la hipotenusa"
+    },
+    "DOS-UN-TRIANGULO-avance-como-distancia": {
+      "respaldo": "hipotesis",
+      "describe": "Toma lo que avanzó como la distancia al pie desde el segundo lugar"
+    },
+    "DOS-SUMA-suma-cotangentes": {
+      "respaldo": "hipotesis",
+      "describe": "Suma las dos distancias al pie, que del mismo lado se restan"
+    },
+    "DOS-MULTIPLICA-en-vez-de-dividir": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica lo avanzado por la resta de cotangentes en vez de dividir"
     }
   },
   "pares": [
@@ -1263,6 +1287,136 @@
             "texto": "2 vueltas",
             "valor": 2,
             "error": "VUEL-DENTRO-resta-los-radios"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-14",
+      "plantilla": "trig-resolucion",
+      "unidad": "trigonometria.triangulos-rectangulos",
+      "mide": "Hipotenusa con un cateto y un ángulo: el cateto por la cosecante (o entre el seno), no por el seno",
+      "A": {
+        "enunciado": "Una tirolesa baja en línea recta desde lo alto de una torre de 9 m hasta el suelo, y forma 37° con el suelo. ¿Cuánto mide la tirolesa? (Usa sen 37° = 3/5 y cos 37° = 4/5, convención del examen.)",
+        "datos": {
+          "k": 9,
+          "g": 37
+        },
+        "opciones": [
+          {
+            "texto": "5,4 m",
+            "valor": 5.4,
+            "error": "RES-MULTIPLICA-hipotenusa-con-seno"
+          },
+          {
+            "texto": "12 m",
+            "valor": 12,
+            "error": "RES-HIP-da-el-otro-cateto"
+          },
+          {
+            "texto": "15 m",
+            "valor": 15,
+            "correcta": true
+          },
+          {
+            "texto": "11,25 m",
+            "valor": 11.25,
+            "error": "TR9-divide-entre-coseno"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una tirolesa baja en línea recta desde lo alto de una torre de 12 m hasta el suelo, y forma 53° con el suelo. ¿Cuánto mide la tirolesa? (Usa sen 53° = 4/5 y cos 53° = 3/5, convención del examen.)",
+        "datos": {
+          "k": 12,
+          "g": 53
+        },
+        "opciones": [
+          {
+            "texto": "9,6 m",
+            "valor": 9.6,
+            "error": "RES-MULTIPLICA-hipotenusa-con-seno"
+          },
+          {
+            "texto": "15 m",
+            "valor": 15,
+            "correcta": true
+          },
+          {
+            "texto": "20 m",
+            "valor": 20,
+            "error": "TR9-divide-entre-coseno"
+          },
+          {
+            "texto": "9 m",
+            "valor": 9,
+            "error": "RES-HIP-da-el-otro-cateto"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-15",
+      "plantilla": "trig-resolucion",
+      "unidad": "trigonometria.triangulos-rectangulos",
+      "mide": "Dos elevaciones hacia la misma punta: lo avanzado es la resta de las dos distancias al pie, h · (cot α − cot β)",
+      "A": {
+        "enunciado": "Un niño ve la copa de un eucalipto con 37° de elevación. Camina 14 m hacia el árbol y ahora la ve con 53°. ¿Cuánto mide el eucalipto? (Usa tan 37° = 3/4 y tan 53° = 4/3, convención del examen.)",
+        "datos": {
+          "m": 14,
+          "a": 37,
+          "b": 53
+        },
+        "opciones": [
+          {
+            "texto": "6,72 m",
+            "valor": 6.72,
+            "error": "DOS-SUMA-suma-cotangentes"
+          },
+          {
+            "texto": "18,67 m",
+            "valor": 18.666666666666668,
+            "error": "DOS-UN-TRIANGULO-avance-como-distancia"
+          },
+          {
+            "texto": "24 m",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "8,17 m",
+            "valor": 8.166666666666666,
+            "error": "DOS-MULTIPLICA-en-vez-de-dividir"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un niño ve la copa de un eucalipto con 45° de elevación. Camina 6 m hacia el árbol y ahora la ve con 53°. ¿Cuánto mide el eucalipto? (Usa tan 45° = 1 y tan 53° = 4/3, convención del examen.)",
+        "datos": {
+          "m": 6,
+          "a": 45,
+          "b": 53
+        },
+        "opciones": [
+          {
+            "texto": "3,43 m",
+            "valor": 3.4285714285714284,
+            "error": "DOS-SUMA-suma-cotangentes"
+          },
+          {
+            "texto": "24 m",
+            "valor": 24,
+            "correcta": true
+          },
+          {
+            "texto": "1,5 m",
+            "valor": 1.5,
+            "error": "DOS-MULTIPLICA-en-vez-de-dividir"
+          },
+          {
+            "texto": "8 m",
+            "valor": 8,
+            "error": "DOS-UN-TRIANGULO-avance-como-distancia"
           }
         ]
       }

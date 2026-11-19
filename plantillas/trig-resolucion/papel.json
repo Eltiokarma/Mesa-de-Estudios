@@ -1,0 +1,87 @@
+{
+  "titulo": "Resolución de triángulos rectángulos: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "La hipotenusa de un triángulo rectángulo mide 50 cm y uno de sus ángulos agudos, 16°. ¿Cuánto mide el cateto adyacente a 16°? Datos: Con la hipotenusa: CO = H · sen θ y CA = H · cos θ, con los catetos nombrados desde θ. sen 16° = 7/25, cos 16° = 24/25 y tan 16° = 7/24 (convención del examen). Alternativas: A) 50 cm   B) 14 cm   C) 48 cm   D) ≈ 52,08 cm",
+      "respuesta": "C) 48 cm",
+      "pasos": [
+        "Desde 16°, el lado pedido es el adyacente: la hipotenusa por el coseno.",
+        "CA = 50 · cos 16° = 50 · 24/25 = 48 cm."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un poste de 6 m se sujeta con un cable que va de su punta a una estaca y forma 37° con el suelo. ¿Cuánto mide el cable? Datos: Lado buscado = lado conocido · la razón de θ con el buscado arriba y el conocido abajo. cot θ = CA/CO, sec θ = H/CA y csc θ = H/CO. sen 37° = 3/5, cos 37° = 4/5 y tan 37° = 3/4 (convención del examen). Alternativas: A) 8 m   B) 10 m   C) 7,5 m   D) 3,6 m   E) 14 m",
+      "respuesta": "B) 10 m",
+      "pasos": [
+        "La hipotenusa sobre el cateto conocido: la cosecante de 37°.",
+        "H = 6 · 5/3 = 10 m."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Desde lo alto de un acantilado de 20 m se ve un barco con 60° de depresión. ¿A qué distancia del pie está? Datos: Lo que sube o baja la visual = d · tan θ, con θ medido desde la horizontal del ojo. Entre dos horizontales, la visual forma ángulos alternos internos: miden lo mismo. cot θ = CA/CO, sec θ = H/CA y csc θ = H/CO. sen 60° = √3/2, cos 60° = 1/2 y tan 60° = √3. Alternativas: A) 20 m   B) 20√3 m ≈ 34,64 m   C) 20√3/3 m ≈ 11,55 m   D) 40√3/3 m ≈ 23,09 m",
+      "respuesta": "C) 20√3/3 m ≈ 11,55 m",
+      "pasos": [
+        "La elevación desde abajo también es 60°: la altura es el opuesto y el suelo, el adyacente.",
+        "d = 20 · √3/3 = 20√3/3 m ≈ 11,55 m."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La punta de una torre de 9 m se ve desde un punto del suelo con 30° y, desde otro más cerca, del mismo lado, con 45°. ¿Qué distancia hay entre los dos puntos de observación? Datos: Con la misma altura h: d₁ = h · cot α y d₂ = h · cot β. Del mismo lado del pie, entre los lugares hay d₁ − d₂; de lados opuestos, d₁ + d₂. cot θ = CA/CO, sec θ = H/CA y csc θ = H/CO. sen 30° = 1/2, cos 30° = √3/2 y tan 30° = √3/3. sen 45° = √2/2, cos 45° = √2/2 y tan 45° = 1. Alternativas: A) 9√3 − 9 m ≈ 6,59 m   B) 9 − 3√3 m ≈ 3,8 m   C) 9√3 m ≈ 15,59 m   D) 9 + 9√3 m ≈ 24,59 m   E) 18 m",
+      "respuesta": "A) 9√3 − 9 m ≈ 6,59 m",
+      "pasos": [
+        "Las distancias al pie: 9√3 y 9.",
+        "Se restan: 9√3 − 9 m ≈ 6,59 m."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Una franja pintada en un edificio va de 18 m a 24 m sobre tus ojos. Estás a 24 m del edificio. ¿Cuál es su ángulo de observación? Datos: Ángulo de observación: φ = β − α, con tan α = h₁/d y tan β = h₂/d (alturas sobre los ojos). tan 16° = 7/24, tan 37° = 3/4 y tan 45° = 1 (convención del examen). tan 53° = 4/3 y tan 74° = 24/7 (convención del examen). Alternativas: A) 82°   B) 8°   C) 37°   D) 45°   E) 6°",
+      "respuesta": "B) 8°",
+      "pasos": [
+        "tan β = 24/24 y tan α = 18/24: son 45° y 37°.",
+        "φ = 45° − 37° = 8°."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Un cable va de la punta de un poste de 24 m a una estaca en el suelo y forma 53° con el suelo. ¿Cuánto suman el largo del cable y la distancia de la estaca al pie del poste? Datos: Lado buscado = lado conocido · la razón de θ con el buscado arriba y el conocido abajo. cot θ = CA/CO, sec θ = H/CA y csc θ = H/CO. sen 53° = 4/5, cos 53° = 3/5 y tan 53° = 4/3 (convención del examen). Alternativas: A) 30 m   B) 37,2 m   C) 72 m   D) 51,2 m   E) 48 m",
+      "respuesta": "E) 48 m",
+      "pasos": [
+        "El suelo, con la cotangente: 18. El cable, con la cosecante: 30.",
+        "18 + 30 = 48 m."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Desde una ventana a 12 m del suelo se ve la base de un edificio de enfrente con 53° de depresión y su azotea con 45° de elevación. ¿Cuánto mide ese edificio? Datos: Lo que sube o baja la visual = d · tan θ, con θ medido desde la horizontal del ojo. Entre dos horizontales, la visual forma ángulos alternos internos: miden lo mismo. sen 53° = 4/5, cos 53° = 3/5 y tan 53° = 4/3 (convención del examen). sen 45° = √2/2, cos 45° = √2/2 y tan 45° = 1. Alternativas: A) 9 m   B) 12 + 9√2 m ≈ 24,73 m   C) 21 m   D) 28 m",
+      "respuesta": "C) 21 m",
+      "pasos": [
+        "Con la depresión, la distancia entre los edificios: 12 · cot 53° = 9.",
+        "Arriba: 9 · tan 45° = 9. Con lo de abajo: 21 m."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un dron vuela recto y horizontal, a 4 m/s, hacia un punto P del suelo. Lo ve con 30° de depresión y, 3 s después, con 60°. ¿A qué altura vuela? Datos: Con la misma altura h: d₁ = h · cot α y d₂ = h · cot β. d = v · t: distancia = rapidez · tiempo, si la rapidez no cambia. cot θ = CA/CO, sec θ = H/CA y csc θ = H/CO. sen 30° = 1/2, cos 30° = √3/2 y tan 30° = √3/3. sen 60° = √3/2, cos 60° = 1/2 y tan 60° = √3. Alternativas: A) 12√3 m ≈ 20,78 m   B) 12 m   C) 2√3 m ≈ 3,46 m   D) 6√3 m ≈ 10,39 m   E) 3√3 m ≈ 5,2 m",
+      "respuesta": "D) 6√3 m ≈ 10,39 m",
+      "pasos": [
+        "En 3 s avanza 4 · 3 = 12 m: la resta de las dos distancias a P.",
+        "h = 12 ÷ (2√3/3) = 6√3 m ≈ 10,39 m."
+      ]
+    }
+  ]
+}

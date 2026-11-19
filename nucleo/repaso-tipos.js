@@ -103,7 +103,8 @@
     'sistemas-ecuaciones': { ...todo(AL + 'sistemas-de-ecuaciones', ['vandermonde', 'parametro', 'enteros', 'trabajo']), matriz: AL + 'matrices-y-determinantes',
       ...todo(AL + 'ecuaciones-lineales-y-cuadraticas', ['vieta', 'franja']), 'valor-absoluto': AL + 'valor-absoluto-y-radicales' },
     'soluciones-meq-ppm': todo(Q + 'soluciones', ['meq', 'igualar', 'ppmGas', 'ppmMasa', 'mezcla', 'jarabe', 'preparar', 'precipitacion', 'masa', 'carbonato', 'volumen', 'volumen-pct']),
-    'trig-angulos-verticales': todo(T + 'triangulos-rectangulos', ['entre-edificios', 'mismo-lado', 'puente-simbolico', 'mitad-cima', 'movimiento', 'condicion-angulo', 'ambos-lados', 'objeto-elevado', 'dron-camino']),
+    // 19 nov (etapa 7): trig-angulos-verticales dejó «Resolución de triángulos rectángulos» (trae la tangente de una
+    // diferencia y medios ángulos) y sirve solo a Arcos compuestos: ya no es mixto y su fila sale.
     'trig-extremos': { ...todo(T + 'funciones-trigonometricas', ['cuadratica', 'racional', 'puerta', 'senoide']), 'area-ct': T + 'circunferencia-trigonometrica' },
     'trig-identidades': { ...todo(T + 'arcos-multiples', ['triple-producto', 'reduccion-doble', 'triangulo-doble', 'maximo', 'acotar', 'cadena']),
       ...todo(T + 'arcos-compuestos', ['condicional', 'terreno']), ...todo(T + 'identidades-fundamentales', ['suma-k', 'cofuncion']) },
@@ -133,7 +134,8 @@
     'cinta-radio': { ...lista(T + 'angulo-trigonometrico', ps(1, 2, 4, 10)), ...lista(T + 'longitud-de-arco-y-sector', ps(3, 5, 6, 7, 8, 9)) },
     // p1, p2, p4 y p10 eran de razones-trigonometricas-agudas; esa unidad ya no lista la escena (17 nov, auditoría M7:
     // traía problemas de unidades posteriores): quedan fuera del repaso.
-    'circunferencia-trig': { p3: T + 'triangulos-rectangulos',
+    // p3 era de triangulos-rectangulos; esa unidad ya no lista la escena (19 nov, etapa 7): queda fuera del repaso.
+    'circunferencia-trig': {
       ...lista([T + 'reduccion-al-primer-cuadrante', T + 'angulos-en-posicion-normal'], ps(5, 6)), p7: T + 'funciones-trigonometricas',
       ...lista(T + 'ecuaciones-trigonometricas', ps(8, 9)) },
     'geometria-analitica': { ...lista(G + 'geometria-analitica', ps(1, 2, 3, 9, 10)), ...lista(T + 'recta-en-el-plano', ps(4, 5, 6, 7, 8)) },

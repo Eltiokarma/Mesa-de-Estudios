@@ -132,6 +132,10 @@
       cambian: ['suposicion', 'negar-bien', 'contradictorias'], antes: ['suposicion', 'contradictorias', 'negar-bien'] },
     { u: 'razonamiento-verbal.analogias', p: 'prediccionAN', e: 'estudiadaAN',
       cambian: ['relacion-no-tema', 'clase-y-causa', 'sinonimo-antonimo'], antes: ['relacion-no-tema', 'clase-y-causa', 'sinonimo-antonimo'] },
+    // Nomenclatura inorgánica (19 nov, etapa 7): tres ideas con otra Predice y una idea nueva (peroxidos-hidruros).
+    { u: 'quimica.nomenclatura-inorganica', p: 'prediccionNI', e: 'estudiadaNI',
+      cambian: ['estados-oxidacion', 'arbol-funciones', 'sales'],
+      antes: ['estados-oxidacion', 'tres-nombres', 'arbol-funciones', 'sales', 'sales-acidas-basicas-hidratadas'] },
     // Etapa 7 (19 nov): Sentido contextual conservó sus cuatro ids con otra Predice y sumó `sentido-figurado`.
     { u: 'razonamiento-verbal.sentido-contextual', p: 'prediccionSC', e: 'estudiadaSC',
       cambian: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'], antes: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'] },
@@ -149,10 +153,6 @@
     // (docs/etapa7/propuesta-trigonometria.md, §8).
     { u: 'trigonometria.triangulos-rectangulos', p: 'prediccionTR', e: 'estudiadaTR',
       cambian: ['un-lado-un-angulo', 'elevacion-depresion'], antes: ['un-lado-un-angulo', 'elevacion-depresion', 'angulo-observacion'] },
-    // Nomenclatura inorgánica (19 nov, etapa 7): tres ideas con otra Predice y una idea nueva (peroxidos-hidruros).
-    { u: 'quimica.nomenclatura-inorganica', p: 'prediccionNI', e: 'estudiadaNI',
-      cambian: ['estados-oxidacion', 'arbol-funciones', 'sales'],
-      antes: ['estados-oxidacion', 'tres-nombres', 'arbol-funciones', 'sales', 'sales-acidas-basicas-hidratadas'] },
     // Etapa 7 (19 nov): MCD y MCM conservó cuatro ids con otra Predice, sumó `mismo-resto` y `multiplos-tramo`, y la idea
     // `fraccion-continua` entró en `euclides` (docs/etapa7/propuesta-aritmetica.md).
     { u: 'aritmetica.mcd-y-mcm', p: 'prediccionMM', e: 'estudiadaMM',

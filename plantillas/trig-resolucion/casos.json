@@ -1,0 +1,568 @@
+{
+ "plantilla": "trig-resolucion",
+ "tolerancia": 1e-09,
+ "nota": "Cada esperado se recalculó aparte (casos-verif.py, scratchpad e7-trigonometria) con los lados de los triángulos notables (math.sqrt) y la convención del examen para 37°, 53°, 16° y 74°, sin usar el generador.",
+ "verificacion": "python3 -I casos-verif.py: 30 de 30 coinciden",
+ "casos": [
+  {
+   "semilla": "caso-cateto-1",
+   "opciones": {
+    "tipo": "cateto"
+   },
+   "entrada": {
+    "idea": "un-lado-un-angulo",
+    "tipo": "cateto",
+    "nivel": 1,
+    "obj": "triangulo",
+    "g": 53,
+    "H": 5,
+    "pide": "ad"
+   },
+   "esperado": {
+    "valor": 3.0,
+    "texto": "3 cm"
+   }
+  },
+  {
+   "semilla": "caso-cateto-2",
+   "opciones": {
+    "tipo": "cateto"
+   },
+   "entrada": {
+    "idea": "un-lado-un-angulo",
+    "tipo": "cateto",
+    "nivel": 1,
+    "obj": "cometa",
+    "g": 37,
+    "H": 10,
+    "pide": "ad"
+   },
+   "esperado": {
+    "valor": 8.0,
+    "texto": "8 m"
+   }
+  },
+  {
+   "semilla": "caso-perimetro-1",
+   "opciones": {
+    "tipo": "perimetro"
+   },
+   "entrada": {
+    "idea": "un-lado-un-angulo",
+    "tipo": "perimetro",
+    "nivel": 2,
+    "g": 37,
+    "H": 20
+   },
+   "esperado": {
+    "valor": 48.0,
+    "texto": "48 cm"
+   }
+  },
+  {
+   "semilla": "caso-perimetro-2",
+   "opciones": {
+    "tipo": "perimetro"
+   },
+   "entrada": {
+    "idea": "un-lado-un-angulo",
+    "tipo": "perimetro",
+    "nivel": 2,
+    "g": 37,
+    "H": 20
+   },
+   "esperado": {
+    "valor": 48.0,
+    "texto": "48 cm"
+   }
+  },
+  {
+   "semilla": "caso-altura-hip-1",
+   "opciones": {
+    "tipo": "altura-hip"
+   },
+   "entrada": {
+    "idea": "un-lado-un-angulo",
+    "tipo": "altura-hip",
+    "nivel": 3,
+    "g": 53,
+    "a": 25
+   },
+   "esperado": {
+    "valor": 12.0,
+    "texto": "12 cm"
+   }
+  },
+  {
+   "semilla": "caso-altura-hip-2",
+   "opciones": {
+    "tipo": "altura-hip"
+   },
+   "entrada": {
+    "idea": "un-lado-un-angulo",
+    "tipo": "altura-hip",
+    "nivel": 3,
+    "g": 60,
+    "a": 20
+   },
+   "esperado": {
+    "valor": 8.6602540378,
+    "texto": "5√3 cm ≈ 8,66 cm"
+   }
+  },
+  {
+   "semilla": "caso-otro-cateto-1",
+   "opciones": {
+    "tipo": "otro-cateto"
+   },
+   "entrada": {
+    "idea": "cateto-y-angulo",
+    "tipo": "otro-cateto",
+    "nivel": 1,
+    "obj": "sombra",
+    "g": 74,
+    "k": 7,
+    "tiene": "ad"
+   },
+   "esperado": {
+    "valor": 24.0,
+    "texto": "24 m"
+   }
+  },
+  {
+   "semilla": "caso-otro-cateto-2",
+   "opciones": {
+    "tipo": "otro-cateto"
+   },
+   "entrada": {
+    "idea": "cateto-y-angulo",
+    "tipo": "otro-cateto",
+    "nivel": 1,
+    "obj": "sombra",
+    "g": 30,
+    "k": 6,
+    "tiene": "ad"
+   },
+   "esperado": {
+    "valor": 3.4641016151,
+    "texto": "2√3 m ≈ 3,46 m"
+   }
+  },
+  {
+   "semilla": "caso-hipotenusa-1",
+   "opciones": {
+    "tipo": "hipotenusa"
+   },
+   "entrada": {
+    "idea": "cateto-y-angulo",
+    "tipo": "hipotenusa",
+    "nivel": 2,
+    "obj": "cable",
+    "g": 30,
+    "k": 5
+   },
+   "esperado": {
+    "valor": 10.0,
+    "texto": "10 m"
+   }
+  },
+  {
+   "semilla": "caso-hipotenusa-2",
+   "opciones": {
+    "tipo": "hipotenusa"
+   },
+   "entrada": {
+    "idea": "cateto-y-angulo",
+    "tipo": "hipotenusa",
+    "nivel": 2,
+    "obj": "cable",
+    "g": 53,
+    "k": 12
+   },
+   "esperado": {
+    "valor": 15.0,
+    "texto": "15 m"
+   }
+  },
+  {
+   "semilla": "caso-puente-1",
+   "opciones": {
+    "tipo": "puente"
+   },
+   "entrada": {
+    "idea": "cateto-y-angulo",
+    "tipo": "puente",
+    "nivel": 3,
+    "g": 53,
+    "h": 12
+   },
+   "esperado": {
+    "valor": 24.0,
+    "texto": "24 m"
+   }
+  },
+  {
+   "semilla": "caso-puente-2",
+   "opciones": {
+    "tipo": "puente"
+   },
+   "entrada": {
+    "idea": "cateto-y-angulo",
+    "tipo": "puente",
+    "nivel": 3,
+    "g": 53,
+    "h": 6
+   },
+   "esperado": {
+    "valor": 12.0,
+    "texto": "12 m"
+   }
+  },
+  {
+   "semilla": "caso-elevacion-1",
+   "opciones": {
+    "tipo": "elevacion"
+   },
+   "entrada": {
+    "idea": "elevacion-depresion",
+    "tipo": "elevacion",
+    "nivel": 1,
+    "obj": "árbol",
+    "g": 16,
+    "dv": 48
+   },
+   "esperado": {
+    "valor": 14.0,
+    "texto": "14 m"
+   }
+  },
+  {
+   "semilla": "caso-elevacion-2",
+   "opciones": {
+    "tipo": "elevacion"
+   },
+   "entrada": {
+    "idea": "elevacion-depresion",
+    "tipo": "elevacion",
+    "nivel": 1,
+    "obj": "árbol",
+    "g": 37,
+    "dv": 8
+   },
+   "esperado": {
+    "valor": 6.0,
+    "texto": "6 m"
+   }
+  },
+  {
+   "semilla": "caso-ojos-depresion-1",
+   "opciones": {
+    "tipo": "ojos-depresion"
+   },
+   "entrada": {
+    "idea": "elevacion-depresion",
+    "tipo": "ojos-depresion",
+    "nivel": 2,
+    "sub": "ojos",
+    "g": 30,
+    "dv": 12,
+    "ojo": 1.2
+   },
+   "esperado": {
+    "valor": 8.1282032303,
+    "texto": "4√3 + 1,2 m ≈ 8,13 m"
+   }
+  },
+  {
+   "semilla": "caso-ojos-depresion-2",
+   "opciones": {
+    "tipo": "ojos-depresion"
+   },
+   "entrada": {
+    "idea": "elevacion-depresion",
+    "tipo": "ojos-depresion",
+    "nivel": 2,
+    "sub": "depresion",
+    "g": 53,
+    "h": 12,
+    "obj": "acantilado"
+   },
+   "esperado": {
+    "valor": 9.0,
+    "texto": "9 m"
+   }
+  },
+  {
+   "semilla": "caso-ventana-1",
+   "opciones": {
+    "tipo": "ventana"
+   },
+   "entrada": {
+    "idea": "elevacion-depresion",
+    "tipo": "ventana",
+    "nivel": 3,
+    "h0": 6,
+    "gb": 30,
+    "ga": 60
+   },
+   "esperado": {
+    "valor": 24.0,
+    "texto": "24 m"
+   }
+  },
+  {
+   "semilla": "caso-ventana-2",
+   "opciones": {
+    "tipo": "ventana"
+   },
+   "entrada": {
+    "idea": "elevacion-depresion",
+    "tipo": "ventana",
+    "nivel": 3,
+    "h0": 9,
+    "gb": 37,
+    "ga": 45
+   },
+   "esperado": {
+    "valor": 21.0,
+    "texto": "21 m"
+   }
+  },
+  {
+   "semilla": "caso-separacion-1",
+   "opciones": {
+    "tipo": "separacion"
+   },
+   "entrada": {
+    "idea": "dos-angulos",
+    "tipo": "separacion",
+    "nivel": 1,
+    "ga": 16,
+    "gb": 37,
+    "h": 42,
+    "op": true
+   },
+   "esperado": {
+    "valor": 200.0,
+    "texto": "200 m"
+   }
+  },
+  {
+   "semilla": "caso-separacion-2",
+   "opciones": {
+    "tipo": "separacion"
+   },
+   "entrada": {
+    "idea": "dos-angulos",
+    "tipo": "separacion",
+    "nivel": 1,
+    "ga": 16,
+    "gb": 37,
+    "h": 42,
+    "op": true
+   },
+   "esperado": {
+    "valor": 200.0,
+    "texto": "200 m"
+   }
+  },
+  {
+   "semilla": "caso-altura-dos-1",
+   "opciones": {
+    "tipo": "altura-dos"
+   },
+   "entrada": {
+    "idea": "dos-angulos",
+    "tipo": "altura-dos",
+    "nivel": 2,
+    "ga": 37,
+    "gb": 53,
+    "m": 25,
+    "op": true
+   },
+   "esperado": {
+    "valor": 12.0,
+    "texto": "12 m"
+   }
+  },
+  {
+   "semilla": "caso-altura-dos-2",
+   "opciones": {
+    "tipo": "altura-dos"
+   },
+   "entrada": {
+    "idea": "dos-angulos",
+    "tipo": "altura-dos",
+    "nivel": 2,
+    "ga": 30,
+    "gb": 60,
+    "m": 16,
+    "op": true
+   },
+   "esperado": {
+    "valor": 6.9282032303,
+    "texto": "4√3 m ≈ 6,93 m"
+   }
+  },
+  {
+   "semilla": "caso-movil-1",
+   "opciones": {
+    "tipo": "movil"
+   },
+   "entrada": {
+    "idea": "dos-angulos",
+    "tipo": "movil",
+    "nivel": 3,
+    "sub": "camara",
+    "ga": 45,
+    "gb": 53,
+    "h": 24,
+    "t": 4
+   },
+   "esperado": {
+    "valor": 1.5,
+    "texto": "1,5 m/s"
+   }
+  },
+  {
+   "semilla": "caso-movil-2",
+   "opciones": {
+    "tipo": "movil"
+   },
+   "entrada": {
+    "idea": "dos-angulos",
+    "tipo": "movil",
+    "nivel": 3,
+    "sub": "dron",
+    "ga": 30,
+    "gb": 60,
+    "vv": 4,
+    "t": 4
+   },
+   "esperado": {
+    "valor": 13.8564064606,
+    "texto": "8√3 m ≈ 13,86 m"
+   }
+  },
+  {
+   "semilla": "caso-observacion-1",
+   "opciones": {
+    "tipo": "observacion"
+   },
+   "entrada": {
+    "idea": "angulo-observacion",
+    "tipo": "observacion",
+    "nivel": 1,
+    "d0": 24,
+    "k": 1,
+    "ha": 24,
+    "hb": 32,
+    "aa": 45,
+    "ab": 53
+   },
+   "esperado": {
+    "valor": 8,
+    "texto": "8°"
+   }
+  },
+  {
+   "semilla": "caso-observacion-2",
+   "opciones": {
+    "tipo": "observacion"
+   },
+   "entrada": {
+    "idea": "angulo-observacion",
+    "tipo": "observacion",
+    "nivel": 1,
+    "d0": 12,
+    "k": 1,
+    "ha": 9,
+    "hb": 12,
+    "aa": 37,
+    "ab": 45
+   },
+   "esperado": {
+    "valor": 8,
+    "texto": "8°"
+   }
+  },
+  {
+   "semilla": "caso-largo-1",
+   "opciones": {
+    "tipo": "largo"
+   },
+   "entrada": {
+    "idea": "angulo-observacion",
+    "tipo": "largo",
+    "nivel": 2,
+    "d0": 24,
+    "k": 1,
+    "ga": 16,
+    "gf": 29
+   },
+   "esperado": {
+    "valor": 17.0,
+    "texto": "17 m"
+   }
+  },
+  {
+   "semilla": "caso-largo-2",
+   "opciones": {
+    "tipo": "largo"
+   },
+   "entrada": {
+    "idea": "angulo-observacion",
+    "tipo": "largo",
+    "nivel": 2,
+    "d0": 7,
+    "k": 2,
+    "ga": 45,
+    "gf": 29
+   },
+   "esperado": {
+    "valor": 34.0,
+    "texto": "34 m"
+   }
+  },
+  {
+   "semilla": "caso-ventana-obs-1",
+   "opciones": {
+    "tipo": "ventana-obs"
+   },
+   "entrada": {
+    "idea": "angulo-observacion",
+    "tipo": "ventana-obs",
+    "nivel": 3,
+    "d0": 24,
+    "h0": 24,
+    "arr": 7,
+    "gb": 45,
+    "ga": 16
+   },
+   "esperado": {
+    "valor": 61,
+    "texto": "61°"
+   }
+  },
+  {
+   "semilla": "caso-ventana-obs-2",
+   "opciones": {
+    "tipo": "ventana-obs"
+   },
+   "entrada": {
+    "idea": "angulo-observacion",
+    "tipo": "ventana-obs",
+    "nivel": 3,
+    "d0": 12,
+    "h0": 9,
+    "arr": 12,
+    "gb": 37,
+    "ga": 45
+   },
+   "esperado": {
+    "valor": 82,
+    "texto": "82°"
+   }
+  }
+ ]
+}

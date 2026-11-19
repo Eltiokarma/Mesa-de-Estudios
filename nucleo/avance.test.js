@@ -371,6 +371,8 @@ test('Estática rehecha (19 nov): predicciones viejas sin huella borradas una ve
   const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'diagrama-y-parejas': { hecha: true } } } } };
   A.migrar(otro);
   assert.ok(!(otro.marcadas || {})[U]);
+});
+
 test('Dinámica rehecha (19 nov, etapa 7): las predicciones viejas sin huella se borran una vez; lo demás queda', () => {
   const U = 'fisica.dinamica';
   const est = { avanceV: 1, teoria: { [U]: { ideas: { 'fuerza-neta-acelera': { hecha: true, prediccion: 'v' }, 'masa-y-peso': { prediccion: 'c', prediccionDe: 'h2' }, 'centripeta-es-resultante': { momento: 'mira' } } } } };
@@ -383,8 +385,6 @@ test('Dinámica rehecha (19 nov, etapa 7): las predicciones viejas sin huella se
   est.teoria[U].ideas['fuerza-neta-acelera'].prediccion = 'c';
   A.migrar(est);
   assert.equal(est.teoria[U].ideas['fuerza-neta-acelera'].prediccion, 'c', 'una sola vez');
-});
-
 });
 
 // 19 nov (etapa 6, docs/etapa6/propuesta-quimica.md): «Enlace químico y fuerzas intermoleculares» se parte. La forma y la
@@ -476,6 +476,9 @@ test('Etapa 7, Nomenclatura inorgánica rehecha: predicciones viejas sin huella 
   for (const i of ['estados-oxidacion', 'arbol-funciones', 'sales']) assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i);
   for (const i of ['tres-nombres', 'sales-acidas-basicas-hidratadas']) assert.equal(est.teoria[U].ideas[i].prediccion, 'c', `${i}: la misma pregunta, se queda`);
   assert.equal(est.marcadas[U], '2026-11-13');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
 // 19 nov (etapa 7): Factorización, rehecha con sus cinco ids (cuatro con otra Predice) y una idea nueva (identidades).
 test('Etapa 7, Factorización rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
   const U = 'algebra.factorizacion';
@@ -489,6 +492,9 @@ test('Etapa 7, Factorización rehecha: predicciones viejas sin huella borradas u
   const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'factor-comun': { hecha: true } } } } };
   A.migrar(otro);
   assert.ok(!(otro.marcadas || {})[U], 'no terminó las cinco: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
 // 19 nov (etapa 7): Certezas, rehecha con sus tres ids (palomar y llaves con otros ids de opción) y tres ideas nuevas.
 test('Certezas rehecha (etapa 7): predicciones viejas sin huella de palomar y llaves borradas una vez; «Ya la estudié» conservado', () => {
   const U = 'razonamiento-matematico.certezas';
@@ -501,12 +507,6 @@ test('Certezas rehecha (etapa 7): predicciones viejas sin huella de palomar y ll
   assert.equal(est.teoria[U].ideas.llaves.prediccion, undefined);
   assert.equal(est.teoria[U].ideas.llaves.hecha, true);
   assert.equal(est.marcadas[U], '2026-11-13', 'terminó las tres de antes: conserva «Ya la estudié»');
-  assert.equal(A.migrar(est), false, 'una sola vez');
-});
-
-  assert.equal(A.migrar(est), false, 'una sola vez');
-});
-
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
 
@@ -527,4 +527,23 @@ test('MCD y MCM: las predicciones viejas se vuelven a preguntar y quien terminó
   const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { 'mcd-cintas': { hecha: true, prediccion: 'c' } } } } };
   A.migrar(nuevo);
   assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});
+
+// 19 nov (etapa 7): Resolución de triángulos rectángulos, rehecha con sus tres ids (dos con otra Predice) y dos ideas nuevas.
+test('Etapa 7, Triángulos rectángulos rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las tres', () => {
+  const U = 'trigonometria.triangulos-rectangulos';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-13' }, teoria: { [U]: { ideas: {
+    'un-lado-un-angulo': { hecha: true, prediccion: 'c' }, 'elevacion-depresion': { hecha: true, prediccion: 'vertical', prediccionDe: 'h1' },
+    'angulo-observacion': { hecha: true, prediccion: 'crece' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionTR, 1); assert.equal(est.estudiadaTR, 1);
+  assert.equal(est.teoria[U].ideas['un-lado-un-angulo'].prediccion, undefined, 'otra Predice: se vuelve a preguntar');
+  assert.equal(est.teoria[U].ideas['un-lado-un-angulo'].hecha, true, 'la idea sigue hecha');
+  assert.equal(est.teoria[U].ideas['elevacion-depresion'].prediccion, 'vertical', 'con huella: la revisa la app');
+  assert.equal(est.teoria[U].ideas['angulo-observacion'].prediccion, 'crece', 'misma pregunta y mismas opciones');
+  assert.equal(est.marcadas[U], '2026-11-13', 'terminó las tres de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, teoria: { [U]: { ideas: { 'un-lado-un-angulo': { hecha: true } } } } };
+  A.migrar(nuevo);
+  assert.ok(!(nuevo.marcadas || {})[U], 'sin terminar las de antes no gana «Ya la estudié»');
 });

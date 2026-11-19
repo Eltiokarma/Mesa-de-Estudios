@@ -1,0 +1,20 @@
+{
+  "id": "trig-resolucion",
+  "titulo": "Resolución de triángulos rectángulos",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.triangulos-rectangulos"
+  ],
+  "temas": [
+    "Resolver con un lado y un ángulo",
+    "Ángulos de elevación y depresión",
+    "Dos ángulos de elevación o depresión",
+    "Ángulo de observación"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
