@@ -36,6 +36,7 @@
     'resuelve-repite': '«Así se resuelve» (sus 4 primeros casos) no trae un caso de los 12 primeros de «Ahora tú».',
     'leyenda-visible': 'Toda letra que nombra la leyenda del juego se ve en el juego: en la figura, la lectura, la consigna, la misión o los controles.',
     'igualdad-falsa': 'Toda igualdad entre números que ve el alumno se cumple, con el redondeo que admiten los decimales del resultado; si es aproximada, va con «≈».',
+    'icono-respuesta': 'El ícono de la unidad (app/dibujos/<curso>.js) no escribe la respuesta de ninguna Predice ni de ninguna misión: ni su número (de dos cifras o más) ni su texto (de tres caracteres o más).',
   };
 
   // Faltas reales encontradas en las unidades con calidad 2 al escribir cada regla. No son permiso: son la lista de
@@ -65,6 +66,8 @@
     // glosario-predice
     { regla: 'glosario-predice', unidad: 'fisica.vectores', idea: 'componentes', motivo: '«vector unitario» (ejemplo 1) da la respuesta de Predice «0,6î + 0,8ĵ»: «A⃗ = 6î + 8ĵ: û = 0,6î + 0,8ĵ.»', fecha: '2026-11-19' },
     { regla: 'glosario-predice', unidad: 'trigonometria.razones-trigonometricas-agudas', idea: 'aproximados', motivo: '«ángulo aproximado» (ejemplo 1) da la respuesta de Predice «No: mide unos 36,87°»: «37° del 3-4-5, que mide unos 36,87°.»', fecha: '2026-11-19' },
+    // icono-respuesta
+    { regla: 'icono-respuesta', unidad: 'trigonometria.razones-trigonometricas-agudas', idea: 'aproximados', motivo: 'el ícono (app/dibujos/trigonometria.js: el triángulo 4-3-5 con su 37°) escribe «37°», que la misión dice al lograrse («el transportador marca 37°»); y sus lados 3-4-5 son la estaca que la misión busca (3 m, de una cifra: la regla no la mira)', fecha: '2026-11-19' },
     // letra-repartida
     { regla: 'letra-repartida', unidad: 'algebra.exponentes-y-productos-notables', idea: '', motivo: 'en los ejemplos de nivel 3, la B es la correcta en 8 de 15 (A: 3, B: 8, C: 3, D: 1, E: 0)', fecha: '2026-11-19' },
     { regla: 'letra-repartida', unidad: 'algebra.productos-notables', idea: '', motivo: 'en los ejemplos de nivel 3, la D nunca es la correcta en 25 casos (A: 9, B: 8, C: 8, D: 0, E: 0)', fecha: '2026-11-19' },
@@ -642,6 +645,42 @@
     }
   }
 
+  // ---------- El ícono de la unidad (regla icono-respuesta) ----------
+  // El dibujo de app/dibujos/<curso>.js que se ve en la cabecera de la unidad y en el mapa, antes de predecir. En Node
+  // se cargan los archivos de dibujos como los carga app/app.test.js (vm, con self); en el navegador no hay ícono que
+  // mirar (la app no carga este archivo). Si un archivo de un curso no carga, ese curso se queda sin ícono que revisar.
+  let dibujos;
+  function iconoDe(unidad) {
+    if (dibujos === undefined) {
+      dibujos = null;
+      if (requerir && typeof __dirname === 'string') {
+        try {
+          const fs = requerir('fs'), path = requerir('path'), vm = requerir('vm');
+          const dir = path.join(__dirname, '..', 'app', 'dibujos'), ctx = { self: {} };
+          vm.createContext(ctx);
+          const leer = f => vm.runInContext(fs.readFileSync(path.join(dir, f), 'utf8'), ctx, { filename: f });
+          leer('comun.js');
+          for (const c of ctx.self.Dibujos.CURSOS) { try { leer(`${c}.js`); } catch (e) { /* ese curso queda sin ícono */ } }
+          dibujos = ctx.self.Dibujos;
+        } catch (e) { dibujos = null; }
+      }
+    }
+    if (!dibujos) return '';
+    try { return dibujos.svg(String(unidad || '').split('.')[0], unidad) || ''; } catch (e) { return ''; }
+  }
+  // Los textos de un SVG, uno por <text> (con sus <tspan> pegados: «Fe<tspan>2</tspan>O₃» es «Fe2O₃»).
+  const textosSVG = (svg, T) => (String(svg).match(/<text\b[\s\S]*?<\/text>/g) || [])
+    .map(t => T.textoSVG(t.replace(/<(?!\/?text\b)[^>]*>/g, '')).replace(/\s+/g, ' ').trim()).filter(Boolean);
+  // ¿El texto `hay` trae `aguja` tal cual, como palabra o fórmula entera? Los espacios no cuentan alrededor de los signos
+  // («x+3» es «x + 3»); las mayúsculas sí (Co no es CO).
+  function trae(hay, aguja) {
+    const a = limpio(aguja).normalize('NFC').trim();
+    if (!a) return false;
+    const cuerpo = [...a].map(ch => (/\s/.test(ch) ? '\\s*' : `${/[+−\-=×·÷:/]/.test(ch) ? '\\s*' : ''}${escRe(ch)}${/[+−\-=×·÷:/]/.test(ch) ? '\\s*' : ''}`)).join('').replace(/(\\s\*)+/g, '\\s*');
+    const ini = /^[\p{L}\p{N}]/u.test(a) ? '(?<![\\p{L}\\p{N}])' : '', fin = /[\p{L}\p{N}₀-₉⁰-⁹⁺⁻]$/u.test(a) ? '(?![\\p{L}\\p{N}₀-₉⁰-⁹⁺⁻])' : '';
+    return new RegExp(`${ini}${cuerpo}${fin}`, 'u').test(limpio(hay).normalize('NFC'));
+  }
+
   // ---------- Las reglas ----------
   function revisar(def, o = {}, T) {
     const out = [];
@@ -659,6 +698,10 @@
       Object.entries(def.letras).some(([k, v]) => !clavesDe(k).length || typeof v !== 'string' || !v.trim()))) {
       out.push({ regla: 'letras-datos', idea: '', donde: def.unidad, que: 'letras: la tabla de letras es { letra: «qué es» } (p. ej. { n: «la base», «t_e»: «instante del encuentro» })' });
     }
+    // El ícono de la unidad: sus textos (o.icono, un SVG, lo reemplaza en las pruebas).
+    const icono = o.icono !== undefined ? String(o.icono || '') : iconoDe(def.unidad);
+    const txtIcono = textosSVG(icono, T), todoIcono = txtIcono.join(' · '), numIcono = nums(todoIcono);
+    const archivoIcono = `app/dibujos/${String(def.unidad || '').split('.')[0]}.js`;
     const porIdea = Glosario ? Glosario.porIdea(def) : [];
     const letrasEj = [], letrasAT = [];
     const piezaDe = (dib, porDefecto) => Object.assign({ pieza: porDefecto }, dib);
@@ -731,6 +774,24 @@
         // Si la figura trae también los números de las otras opciones, o el número es una marca de su escala, no la delata.
         const delata = pide.filter(n => fig.has(n) && ![...otras].some(x => fig.has(x) && x !== n) && !escala(txtFig, n));
         if (delata.length) mal('figura-respuesta', `${d} predice`, `el dibujo de Predice escribe ${delata.join(', ')}, que es la respuesta («${limpio(liso(buena.texto))}»)`);
+      }
+
+      // --- icono-respuesta: el ícono, que se ve antes de predecir, no trae la respuesta de Predice ni de la misión ---
+      // Un número de dos cifras o más de la respuesta, o un texto del ícono de tres caracteres o más que está en ella
+      // (o la respuesta entera, si está en un texto del ícono). No cuenta lo que ya dan la pregunta y sus datos, lo que
+      // también dice una opción incorrecta (no distingue la correcta) ni una marca de la escala del ícono (0, 7, 14).
+      // En la misión, la respuesta es su `bien` (lo que se encontró) y lo dado, su texto y su pista.
+      const icRevela = (donde, de_, resp, dados, otras) => {
+        const nDados = nums(dados), nOtras = nums(otras.join(' · ')), largo = x => limpio(x).replace(/\s/g, '').length >= 3;
+        const ns = [...nums(resp)].filter(n => grande(n) && !nDados.has(n) && !nOtras.has(n) && numIcono.has(n) && !escala(todoIcono, n));
+        const ts = txtIcono.filter(t => largo(t) && trae(resp, t) && !trae(dados, t) && !otras.some(x => trae(x, t)));
+        if (largo(resp) && txtIcono.some(t => trae(t, resp)) && !trae(dados, resp) && !ts.includes(limpio(resp).trim())) ts.push(limpio(resp).trim());
+        const q = [...new Set([...ts.map(t => `«${t}»`), ...ns.filter(n => !ts.some(t => nums(t).has(n))).map(n => `«${n}»`)])];
+        if (q.length) mal('icono-respuesta', donde, `el ícono de la unidad (${archivoIcono}) escribe ${q.join(', ')}, que es la respuesta de ${de_} («${limpio(resp).trim()}»): el ícono se ve en la cabecera y en el mapa antes de predecir`);
+      };
+      if (txtIcono.length) {
+        if (buena) icRevela(`${d} predice`, 'Predice', liso(buena.texto), `${liso(P.pregunta)} · ${(P.datos || []).map(liso).join(' · ')}`, P.opciones.filter(x => x && !x.correcta).map(x => liso(x.texto)));
+        if (J.mision && J.mision.bien) icRevela(`${d} misión`, 'la misión', liso(J.mision.bien), `${liso(J.mision.texto)} · ${liso(J.mision.pista || '')}`, []);
       }
 
       // --- (b) letras-datos ---
@@ -1027,5 +1088,5 @@
     return EXCEPCIONES.filter(x => x.unidad === def.unidad && !todos.some(h => cubre(x, def, h)));
   }
 
-  return { REGLAS, EXCEPCIONES, revisar, aplicar, sobran, letrasDeRequiere, liso, preparar, simbolosDe, definido, clavesDe, escala, igualdadesDe, textoCuenta };
+  return { REGLAS, EXCEPCIONES, revisar, aplicar, sobran, letrasDeRequiere, liso, preparar, simbolosDe, definido, clavesDe, escala, igualdadesDe, textoCuenta, iconoDe, trae };
 });

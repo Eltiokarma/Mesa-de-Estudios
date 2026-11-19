@@ -29,6 +29,7 @@ frío (`rutinas/frio/`) encontraron una y otra vez en las 15 primeras unidades.
 | `resuelve-repite` | Los 4 primeros casos de «Así se resuelve» no son ninguno de los 12 primeros de «Ahora tú» (mismo enunciado y, si lo llevan, mismo dibujo). | Que `resuelve.generar` y `ahoraTu.generar` saquen sus casos de listas distintas, o de tipos distintos. |
 | `leyenda-visible` | Toda letra y todo color que nombra la leyenda del juego se ve en el juego. | La letra («θ», «v₀», «Δx») está escrita en la figura, la lectura, la consigna, la misión o un control, al abrir o en algún caso del juego. Si la leyenda dice «naranja», algo se pinta con `c-o` (turquesa `c-i`, violeta `c-f`, carmín `c-h`, verde `c-d`). Si la letra no está en el juego, su explicación va donde se usa. |
 | `igualdad-falsa` | Toda igualdad entre números que ve el alumno se cumple: «−14 + 11 = 8», «2 · 0,63 = 1,25» o «2π² · 0,25 = π²» no. El resultado (el lado derecho) puede ir redondeado a los decimales que escribe; la cuenta de la izquierda se hace con los números tal como se ven. | Rehaz la cuenta con lo que se muestra. Si un número viene redondeado («1,73» por √3), el resultado va con «≈». Con π escrita, el número que la acompaña va exacto (8π/3, no 2,67π), y el paso de una unidad de ángulo a otra va exacto o con «≈» («5° ≈ 5,56ᵍ»). Una potencia de algo que no es un solo número lleva paréntesis: (2π)². Ver «Las igualdades que se leen», abajo. |
+| `icono-respuesta` | El ícono de la unidad (`app/dibujos/<curso>.js`, el que se ve en la cabecera y en el mapa antes de predecir) no escribe la respuesta de ninguna Predice ni de ninguna misión de la unidad: ni su número ni su texto («Fe₂O₃» junto a «Fe³⁺», o un «12» cuando una Predice da 12). | El ícono dice de qué trata la unidad, no lo que el alumno va a descubrir: dibuja el planteamiento («Fe³⁺ + O²⁻», «?») y no el resultado. Se miran los textos de los `<text>` del ícono contra la opción correcta de cada Predice y el `bien` de cada misión: los números de dos cifras o más y los textos de tres caracteres o más (0, 1, 2 o un símbolo suelto no cuentan). No cuenta lo que ya dicen la pregunta y sus datos (o el texto y la pista de la misión), lo que también dice una opción incorrecta, ni una marca de una escala del ícono (0, 7, 14 del pH). |
 
 ### Letra o valor de una alternativa
 
@@ -112,7 +113,7 @@ esa unidad. No entran el papel de lectura (formato `lectura`) ni, en `papel-dato
 ## Excepciones: la lista de pendientes
 
 Las faltas reales que estas reglas encontraron en las 15 unidades ya hechas no se corrigieron al escribir las reglas.
-Están en `EXCEPCIONES`, con unidad, idea, motivo y fecha, en `nucleo/teoria-reglas.js` (50 líneas) y en
+Están en `EXCEPCIONES`, con unidad, idea, motivo y fecha, en `nucleo/teoria-reglas.js` (47 líneas) y en
 `herramientas/papel-reglas.js` (10 líneas). Mientras una falta está en la lista, la prueba no falla.
 
 - La lista no es un permiso: es lo que queda por corregir en esas unidades. `Teoria.pendientes(def)` da las de una unidad.

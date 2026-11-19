@@ -270,3 +270,43 @@ test('igualdad-falsa: en el resuelto, «Ahora tú» en sus semillas, el siFuera 
   assert.equal(varias.length, 1);
   assert.match(varias[0].que, /y 59 igualdades falsas más en el mismo sitio/);
 });
+
+// El ícono de la unidad (app/dibujos/<curso>.js) se ve en la cabecera y en el mapa antes de predecir (revisiones de la
+// Etapa 7): no escribe la respuesta de una Predice ni de una misión. o.icono reemplaza el ícono de verdad.
+test('icono-respuesta: el ícono de la unidad no escribe la respuesta de Predice ni de la misión', () => {
+  const svg = (...ts) => `<svg class="dib" viewBox="0 0 160 120">${ts.map(t => `<text x="1" y="5" font-size="16">${t}</text>`).join('')}</svg>`;
+  const ic = (def, ...ts) => de('icono-respuesta', def, { icono: svg(...ts) });
+  // El texto: «Fe₂O₃» con «Fe³⁺», cuando Predice da Fe₂O₃ (también con la fórmula partida en <tspan>).
+  const oxido = unidad(idea({ predice: predice('El hierro con carga 3+ se une al oxígeno. ¿Qué fórmula sale?', 'Fe₂O₃', ['FeO', 'Fe₃O₂']) }));
+  const mal = ic(oxido, 'Fe³⁺', 'Fe₂O₃');
+  assert.equal(mal.length, 1);
+  assert.match(mal[0].donde, /idea 1 \(uno\) predice/);
+  assert.match(mal[0].que, /el ícono de la unidad \(app\/dibujos\/fisica\.js\) escribe «Fe₂O₃», que es la respuesta de Predice/);
+  assert.equal(ic(oxido, 'Fe<tspan dy="4">₂</tspan>O₃').length, 1, 'con <tspan> también');
+  assert.deepEqual(ic(oxido, 'Fe³⁺', 'O²⁻'), [], 'las cargas de la pregunta no son la respuesta');
+  assert.deepEqual(ic(oxido, 'Fe'), [], 'un símbolo suelto no cuenta');
+  // El número: un «12» cuando la Predice da 12; no uno de una cifra, ni uno que dio la pregunta, ni una marca de escala.
+  const num = (correcta, pregunta = 'Una caja tiene 3 filas de 4 latas. ¿Cuántas latas hay?', otras = ['7 latas', '34 latas']) => unidad(idea({ predice: predice(pregunta, correcta, otras) }));
+  assert.match(ic(num('12 latas'), '12')[0].que, /escribe «12»/);
+  assert.match(ic(num('12 latas'), 'x', '× 12')[0].que, /escribe «12»/, 'dentro de un texto más largo');
+  assert.deepEqual(ic(num('12 latas'), '0', '12', '24', '36'), [], 'el 12 es una marca de la escala');
+  assert.deepEqual(ic(num('12 latas', '¿Cuántas latas hay en 12 cajas de una lata?'), '12'), [], 'el 12 lo dio la pregunta');
+  assert.deepEqual(ic(num('12 latas', undefined, ['12 cajas', '7 latas']), '12'), [], 'una opción incorrecta también dice 12: no distingue la correcta');
+  assert.deepEqual(ic(num('2 latas', 'Una caja tiene 1 fila de 2 latas. ¿Cuántas latas hay?', ['1 lata', '0 latas']), '2', '1', '0'), [], 'números chicos');
+  // La respuesta entera dentro de un texto del ícono, y una palabra que la pregunta ya dijo.
+  const fact = unidad(idea({ predice: predice('¿Qué factor comparten x² + 5x + 6 y x² + 3x?', 'x + 3', ['x + 2', 'x']) }));
+  assert.match(ic(fact, '(x+3)(x+2)')[0].que, /escribe «x \+ 3»/);
+  const pal = unidad(idea({ predice: predice('¿Qué conector va: «Llovió, ___ salimos»?', 'pero', ['porque', 'además']) }));
+  assert.match(ic(pal, 'pero')[0].que, /escribe «pero»/);
+  assert.deepEqual(ic(pal, 'espero'), [], 'solo palabras enteras');
+  // La misión: lo que dice su `bien`, que no estaba en su texto.
+  const mis = bien => unidad(idea({ juega: { consigna: 'Mueve la carga.', mision: { texto: 'Arma la fórmula del hierro con el oxígeno.', bien } } }));
+  assert.match(ic(mis('Quedó Fe₂O₃: seis cargas por lado.'), 'Fe₂O₃')[0].donde, /misión/);
+  assert.deepEqual(ic(mis('Las cargas se cancelan.'), 'Fe₂O₃'), []);
+});
+
+// La regla corre con el ícono de verdad: lo lee de app/dibujos/ en Node.
+test('icono-respuesta: el ícono de una unidad se lee de app/dibujos/<curso>.js', () => {
+  assert.match(R.iconoDe('fisica.vectores'), /^<svg class="dib"[\s\S]*<text[^>]*>R<\/text>/);
+  assert.equal(R.iconoDe('fisica.no-existe'), '');
+});
