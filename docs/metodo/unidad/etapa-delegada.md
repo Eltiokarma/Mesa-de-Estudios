@@ -83,6 +83,16 @@ prueba del curso (a la reserva si las formas ya tienen 10 pares) y una prueba pr
     una copia y muévela al terminar): mientras no carga, `npm run catalogo` falla y las capturas de los demás salen
     con el aviso «No se pudo cargar el catálogo».
 
+## Lo que salió al cerrar la Etapa 7 (también)
+18. **El papel de toda tu ficha.** Con `calidad: 2`, la regla del papel (`herramientas/papel-reglas.js`) revisa todas las
+    plantillas que lista la ficha de tu unidad, también las viejas y compartidas: cada problema de una plantilla de dos
+    unidades o más dice de cuál es (`"unidades"`), y los de tu unidad traen Datos. Compruébalo simulando la marca:
+    `node -e "const P=require('./herramientas/papel-reglas.js');const c=new Set([...P.unidadesCalidad2(),'<UNIDAD>']);for(const x of P.plantillasConPapel()){const r=P.aplicar(x,c);if(r.fallan.length)console.log(x.id,r.fallan.map(h=>h.problema+' '+h.regla))}"`.
+19. **Dos chequeos nuevos.** El validador tiene la regla `icono-respuesta`: el ícono de la unidad (`app/dibujos/<curso>.js`)
+    no escribe la respuesta de una Predice ni lo que revela una misión. Y `herramientas/ecuaciones-ancho.js` marca los
+    renglones que se parten en mal sitio (un paréntesis abierto, un «+» o una flecha al final del renglón): en tu unidad,
+    ninguno de esos (el resultado corto que queda solo después de «=» se arreglará en la app; evítalo si puedes).
+
 ## Mensaje final (texto plano, corto)
 Ideas en una línea cada una (título · objeto · misión · predicción); práctica (tipos por idea); decisiones que Gerson
 debería mirar (máximo 6) y cualquier CONFLICTO CRÍTICO; tests y cuentas recalculadas; lo que saldría del validador con
