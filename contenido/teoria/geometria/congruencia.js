@@ -12,8 +12,8 @@
  * Fase 2 (19 nov): la idea 1 completa (Lee, Juega con misión, Predice, Mira, La regla, Así se resuelve, Ahora tú, 15
  * ejemplos y su glosario). Fase 3 (19 nov): las ideas 2 a 6 completas, con el mismo contrato; las pruebas de la base media
  * y de la mediana a la hipotenusa sin paralelogramo, rectángulo ni circunferencia; cinco mesas, una por idea (salvo la 2).
- * La práctica es plantillas/geo-congruencia (tipos por idea). La unidad NO declara calidad: 2: la marca la sesión después
- * del lector en frío y del auditor (el validador con calidad 2 ya pasa: congruencia.test.js).
+ * La práctica es plantillas/geo-congruencia (tipos por idea). La unidad lleva calidad: 2 desde el 19 nov, después del
+ * lector en frío y del auditor.
  * Cuentas de los 90 ejemplos rehechas aparte, por coordenadas y sin el código de la unidad (scratchpad e5-geometria/
  * cuentas.py y cuentas_fase3.py), y las de «Ahora tú» y «Así se resuelve», leyendo el enunciado, en congruencia.test.js.
  *
@@ -90,8 +90,11 @@
     return ops.slice(0, n);
   }
   // Cuatro opciones siempre en «Ahora tú»: si dos errores coinciden por los números, se arma otro caso con el mismo azar.
-  function conCuatro(caso, r) {
-    for (let i = 0; i < 200; i++) { const c = caso(r); if (c && c.opciones.length >= 4) return c; }
+  // (Auditoría del 19 nov, M3: «Ahora tú» no repite un ejemplo de su idea; vetadas: las firmas de sus ejemplos.)
+  const firmaDe = t => { const q = Kit.plano(t); return `${(q.match(/\d+(?:,\d+)?/g) || []).join(' ')}|${((q.match(/¿[^?]*\?/g) || []).pop() || '').replace(/\d+(?:,\d+)?/g, '#')}`; };
+  const firmasDe = ejs => new Set(ejs.map(e => firmaDe(e.enunciado)));
+  function conCuatro(caso, r, vetadas) {
+    for (let i = 0; i < 200; i++) { const c = caso(r); if (c && c.opciones.length >= 4 && !(vetadas && vetadas.has(firmaDe(c.pregunta)))) return c; }
     throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
   }
 
@@ -172,6 +175,19 @@
     });
   }
   const cabe = F => PO.escenaCabe(F) && rotulosPropios(F);
+  // Sin escala (auditoría del 19 nov, M2): una figura cuyo ángulo pedido se mediría con transportador se estira en
+  // vertical (k), se marca sinEscala y el enunciado lo dice (NO_ESC). Las paralelas y los puntos medios se conservan;
+  // los ángulos, no (a propósito). Los `mide` se rehacen con el dibujo nuevo.
+  const NO_ESC = ' El dibujo no está a escala.';
+  function torcer(F, k = 1.45) {
+    const fg = F.figura, y0 = Math.min(...fg.puntos.map(q => q.y)), sube = y => y0 + (y - y0) * k;
+    fg.puntos.forEach(q => { q.y = sube(q.y); });
+    if (fg.vista) fg.vista = { x: fg.vista.x, y: [sube(fg.vista.y[0]), sube(fg.vista.y[1])] };
+    const pos = Object.fromEntries(fg.puntos.map(q => [q.id, [q.x, q.y]]));
+    (fg.angulos || []).forEach(a => { if (pos[a.en] && pos[a.de] && pos[a.a]) a.mide = U.angulo(pos[a.en], pos[a.de], pos[a.a]); });
+    PO.acomodarLetras(fg, fg.puntos.filter(q => q.rotulo).map(q => q.id));
+    return Object.assign(F, { sinEscala: true });
+  }
   const ARC = { A: 1, B: 2, C: 3, D: 1, E: 2, F: 3 };
   const aH = (v, texto) => Object.assign({ color: 'h', marcas: ARC[v] || 1 }, texto !== undefined ? { texto } : {});
 
@@ -410,7 +426,7 @@
     datos: [D_CRIT, D_COMUN],
     solucion: [{ texto: 'Hay dos parejas de lados iguales a la vista. La tercera es la varilla AC, que es lado de los dos triángulos.', ecuacion: junto('AB = AD,   CB = CD,   AC = AC') },
       { texto: 'Tres lados iguales: lado, lado, lado.' }],
-    respuesta: ['Por ', dF('LLL'), ': AC es de los dos'] });
+    respuesta: ['Por ', dF('LLL'), ', con AC lado de los dos'] });
   EJ1.push({ nivel: 2, titulo: 'Dos sogas que se cruzan',
     figura: fig(figCruce(3, 4, 70, { lados: { OA: '3 m', OD: '3 m', OB: '4 m', OC: '4 m' }, alt: 'Dos sogas, AD y BC, se cruzan en O. OA y OD miden 3 m; OB y OC miden 4 m. Se forman los triángulos AOB y DOC.' })),
     enunciado: 'Dos sogas tensas, AD y BC, se cruzan en O. OA = OD = 3 m y OB = OC = 4 m. ¿Por qué criterio △AOB ≅ △DOC?',
@@ -607,7 +623,8 @@
         { id: 'x', valor: x, error: 'GE-CON30', siFuera: `Hallar x = ${x} está bien; falta reemplazarlo para tener ${n1}.` },
         { id: 'suma', valor: 2 * v, error: 'GE-CON31', siFuera: `Eso suma ${n1} y ${n2}; cada uno mide la mitad.` },
         { id: 'signo', valor: Number.isInteger(xMal) && xMal > 0 ? p * xMal - q : NaN, error: 'GE-TRI15', siFuera: 'Igualar las dos expresiones está bien; al pasar un número al otro lado cambia su signo.' },
-        { id: 'otro', valor: v + p, error: 'GE-TRI15', siFuera: 'Igualar está bien; revisa el despeje: con la x correcta, las dos expresiones dan lo mismo.' },
+        // (Auditoría del 19 nov, M14: el error de verdad, reemplazar x y olvidar el número que se resta.)
+        { id: 'otro', valor: v + q, error: 'GE-TRI15', siFuera: `Reemplazar x = ${x} está bien; falta restar ${q}: ${p} · ${x} − ${q}.` },
       ], cm);
       if (ops.length < 4) continue;
       const P = porLAL(8, 6.2, 54);
@@ -685,7 +702,7 @@
       minimo: 4,
     },
     predice: {
-      pregunta: 'Por teléfono, don Julián dicta tres medidas de otro tijeral: AB = 8 m, m∠A = 30° y BC = 5 m. La viga BC no toca la punta A. ¿Cuántos tijerales distintos se pueden armar con ellas?',
+      pregunta: 'Don Julián dicta por teléfono otro tijeral: AB = 8 m, m∠A = 30° y BC = 5 m. Ahora la viga de 5 m es BC: va de B a la línea punteada. ¿Cuántos tijerales distintos se pueden armar con ellas?',
       datos: ['El ángulo A lo forman la viga AB y la línea punteada, donde irá la viga AC.', 'La punta B queda a 4 m de esa línea.'],
       voz: 'Es la misma viga de 5 m, pero ahora sale de B.',
       opciones: [
@@ -714,10 +731,11 @@
       ],
     },
     regla: {
-      texto: 'Dos triángulos son congruentes si coinciden en LAL (el ángulo entre los dos lados), ALA (el lado entre los dos ángulos) o LLL. Entonces coinciden también sus otras tres medidas.',
+      // (Auditoría del 19 nov, M5: la regla dice el caso del lado fuera de los dos ángulos y por qué LLA y AAA no bastan.)
+      texto: 'Son congruentes si coinciden en LAL (el ángulo entre los dos lados), ALA (el lado entre los dos ángulos) o LLL; con dos ángulos, el tercero sale solo.',
       ecuacion: [junto('LAL, ALA o LLL'), '   ⇒   ', junto('△ABC ≅ △DEF')],
       // El lector la muestra tras «Vale si».
-      condicion: 'cada medida igual está en el mismo lugar en los dos triángulos. LLA y AAA no bastan; dos ángulos fijan el tercero.',
+      condicion: 'cada medida igual, en el mismo lugar; así coinciden las seis. LLA no basta: dos lugares posibles. AAA tampoco: falta el tamaño.',
       voz: 'Antes de nombrar el criterio, mira dónde queda el ángulo.',
       // Dibujo propio (docs/teoria.md 4i): el mismo tijeral tres veces, cada vez con las tres medidas de un criterio.
       dibujo: { pieza: GO, datos: figRegla(), estado: {} },
@@ -736,7 +754,8 @@
             const P = porALA(8, a, b);
             F0 = unT(P, { A: aH('A', gr(a)), C: aH('C', gr(c)) }, { AB: { texto: cm(8), color: 'o' } }, { alt: `Triángulo ABC con AB de 8 cm, un ángulo de ${a}° en A y otro de ${c}° en C. El triángulo DEF tiene esas mismas tres medidas.` });
             F1 = unT(P, { A: aH('A', gr(a)), B: aH('B', gr(b)), C: aH('C', gr(c)) }, { AB: { texto: cm(8), color: 'o' } }, { alt: `Triángulo ABC con AB de 8 cm entre un ángulo de ${a}° en A y otro de ${b}° en B; el ángulo en C mide ${c}°.` });
-            if ((b >= 45 && a !== c && a !== b && b !== c && cabe(F0) && cabe(F1)) || i > 300) break;
+            // (M3: sin el caso del ejemplo «Dos ángulos y otro lado», 50° y 60°.)
+            if ((b >= 45 && a !== c && a !== b && b !== c && !(a === 50 && c === 60) && cabe(F0) && cabe(F1)) || i > 300) break;
           }
           return {
             enunciado: `En △ABC y △DEF: m∠A = m∠D = ${a}°, m∠C = m∠F = ${c}° y AB = DE = 8 cm. ¿Son congruentes? ¿Por qué criterio?`,
@@ -777,7 +796,7 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Ubica primero cada dato: ¿qué lado toca a qué ángulo?',
-      generar(s) { return conCuatro([casoCriterio, casoFalta, casoCuantos, casoComun, casoX][s % 5], azar(s + 7)); },
+      generar(s) { return conCuatro([casoCriterio, casoFalta, casoCuantos, casoComun, casoX][s % 5], azar(s + 7), firmasDe(EJ1)); },
     },
   };
 
@@ -823,6 +842,14 @@
   const MIRA2 = (() => {
     const F = figPred2({ sinAB: true, alt: 'Los dos banderines congruentes. En ABC, el lado de 24 cm queda frente al ángulo C, de tres arcos. En DEF, el ángulo de tres arcos es D y el lado de enfrente, EF, mide también 24 cm.' });
     F.ladosRot = (F.ladosRot || []).concat({ de: 'A', a: 'B', ref: 'C', texto: '24 cm', dist: 6, desde: 1 }, { de: 'E', a: 'F', ref: 'D', texto: '?', dist: 6, desde: 2, hasta: 3 }, { de: 'E', a: 'F', ref: 'D', texto: '24 cm', dist: 6, desde: 4 });
+    return F;
+  })();
+
+  // La regla de la idea: el par del juego (D, E y F con uno, dos y tres arcos, como A, B y C), con AB = DE = 24 cm: la
+  // misma congruencia que escribe la ecuación, △ABC ≅ △DEF.
+  const FIG_REGLA2 = (() => {
+    const F = figBan(150, 'frente', { lados: { AB: { texto: '24 cm', dist: 6 } }, lados2: { DE: { texto: '24 cm', dist: 6 } } });
+    F.figura.alt = 'Los dos banderines del mismo molde, ABC y DEF: A y D con un arco, B y E con dos, C y F con tres. Frente a C, AB mide 24 cm; frente a F, DE también mide 24 cm.';
     return F;
   })();
 
@@ -909,14 +936,18 @@
     for (let i = 0; i < 400; i++) {
       const A = 5 * r.ent(8, 16), B = 5 * r.ent(8, 16), Cg = 180 - A - B;
       if (Cg < 35 || new Set([A, B, Cg]).size < 3) continue;
-      const P = porALA(8, A, B), nom = r.de(PERM6), m = r.de(MOV2), mov = aLaDerecha(P, m), Q = mover(P, mov);
+      const P0 = porALA(8, A, B), nom = r.de(PERM6), m = r.de(MOV2);
+      const val = { A, B, C: Cg }, dados = r.de([['A', 'B'], ['A', 'C'], ['B', 'C']]), k = r.ent(0, 2), V = 'ABC'[k], V2 = nom[k];
+      // (Auditoría del 19 nov, M2: si lo pedido es la pareja del ángulo que no se da, el dibujo va con otros ángulos y sin
+      // escala: si no, se mediría con transportador.)
+      const sinEsc = !dados.includes(V), P = sinEsc ? porALA(8, A <= 70 ? A + 15 : A - 15, B <= 70 ? B + 10 : B - 10) : P0, mov = aLaDerecha(P, m), Q = mover(P, mov);
       const lad = { AB: U.dist(P[0], P[1]), AC: U.dist(P[0], P[2]), BC: U.dist(P[1], P[2]) };
       const orden = Object.keys(lad).sort((x, y) => lad[x] - lad[y]), raya = Object.fromEntries(orden.map((L, k) => [L, k + 1]));
-      const val = { A, B, C: Cg }, dados = r.de([['A', 'B'], ['A', 'C'], ['B', 'C']]), k = r.ent(0, 2), V = 'ABC'[k], V2 = nom[k];
       const L = ['BC', 'AC', 'AB'][k], L2 = parDe(nom, L);
       const ang1 = Object.fromEntries(dados.map(v => [v, { color: 'h', texto: gr(val[v]), radio: 18, marcas: 1 }]));
       const lados1 = Object.fromEntries(Object.keys(raya).map(x => [x, { llave: raya[x] }])), lados2 = Object.fromEntries(Object.keys(raya).map(x => [parDe(nom, x), { llave: raya[x] }]));
       const F = dosTri(P, nom, mov, { ang1, ang2: { [V2]: { texto: '?', radio: 18 } }, lados1, lados2, fig: { alt: `Dos triángulos congruentes en distinta posición, ABC y el otro, con sus lados marcados con una, dos y tres rayitas: lados con las mismas rayitas miden igual. En ABC, ${dados.map(v => `m∠${v} = ${val[v]}°`).join(' y ')}. En el otro, el ángulo ${V2} lleva «?».`, mx: 1.6 } });
+      if (sinEsc) F.sinEscala = true;
       if (!cabe(F)) continue;
       const lugarV = (() => { const L0 = mismoLugar(P, Q, nom, ordenar(L2)); return opuesto(ordenar(L0)); })();
       const resto = ['A', 'B', 'C'].filter(v => v !== V);
@@ -929,7 +960,7 @@
       pon('suple', 180 - val[V], 'GE-CON34', 'Buscar la pareja está bien; pero el ángulo igual mide lo mismo, no lo que le falta para 180°.');
       pon('suma', dados.reduce((s, v) => s + val[v], 0), 'GE-TRI5', 'Sumar está bien para el tercer ángulo; pero falta restarle esa suma a 180°.');
       if (opts.length < 4 || new Set(opts.map(o => o.error).filter(Boolean)).size < 3) continue;
-      return { pregunta: `Los triángulos ABC y ${nom.split('').sort().join('')} son congruentes; las rayitas marcan los lados iguales. En ABC, ${dados.map(v => `m∠${v} = ${val[v]}°`).join(' y ')}. ¿Cuánto mide el ángulo ${V2}?`,
+      return { pregunta: `Los triángulos ABC y ${nom.split('').sort().join('')} son congruentes; las rayitas marcan los lados iguales. En ABC, ${dados.map(v => `m∠${v} = ${val[v]}°`).join(' y ')}. ¿Cuánto mide el ángulo ${V2}?${sinEsc ? NO_ESC : ''}`,
         datos: [D_ARCOS, D_PAR, D_SUMA], dibujo: fig(F), opciones: opts.slice(0, 4),
         solucion: { texto: `${V2} queda frente a ${ordenar(L2)}; su pareja en ABC es ${L}, frente a ${V}.${dados.includes(V) ? '' : ` m∠${V} = 180° − ${dados.map(v => `${val[v]}°`).join(' − ')}.`}`, ecuacion: junto(`m∠${V2} = m∠${V} = ${val[V]}°`) } };
     }
@@ -946,7 +977,8 @@
       const ops = opciones(v, [
         { id: 'x', valor: x, error: 'GE-CON30', siFuera: `Hallar x = ${x} está bien; falta reemplazarlo para tener AB.` },
         { id: 'suma', valor: 2 * v, error: 'GE-CON31', siFuera: 'Eso suma AB y CD; cada uno mide la mitad.' },
-        { id: 'otro', valor: v + p, error: 'GE-TRI15', siFuera: 'Igualar está bien; revisa el despeje: con la x correcta, las dos expresiones dan lo mismo.' },
+        // (Auditoría del 19 nov, M14: el error de verdad, reemplazar x y olvidar el número que se resta.)
+        { id: 'otro', valor: v + q, error: 'GE-TRI15', siFuera: `Reemplazar x = ${x} está bien; falta restar ${q}: ${p} · ${x} − ${q}.` },
         { id: 'signo', valor: p * ((s - q) / (p - 1)) - q, error: 'GE-TRI15', siFuera: 'Igualar está bien; al pasar un número al otro lado cambia su signo.' },
       ].filter(d => Number.isInteger(d.valor)), cm);
       if (ops.length < 4) continue;
@@ -971,7 +1003,8 @@
     for (let i = 0; i < 400; i++) {
       const t = 10 * r.ent(2, 8), x = (180 - t) / 2;
       // A escala: AD = AE con ∠DAE = t. Se toma h = 4 y la base del isósceles más ancha que DE.
-      const h = 4, e = h * Math.tan(t / 2 * RAD), b = e + r.de([1.6, 2.2, 2.8]);
+      // (M2: se dibuja con otro ángulo en A, para que ADE no se mida con transportador.)
+      const h = 4, e = h * Math.tan((t <= 40 ? t + 30 : t - 30) / 2 * RAD), b = e + r.de([1.6, 2.2, 2.8]);
       const F = figIsoDE(b, h, b - e, { ang: [{ en: 'A', de: 'D', a: 'E', texto: gr(t), color: 'h', radio: 26 }, { en: 'D', de: 'E', a: 'A', texto: '?', radio: 20 }],
         alt: `Triángulo isósceles ABC con AB = AC; D y E están en BC, con BD = EC. El ángulo DAE mide ${t}° y el ángulo ADE lleva «?».` });
       if (!cabe(F)) continue;
@@ -982,7 +1015,8 @@
         { id: 'resta', valor: 180 - t, error: 'GE-TRI5', siFuera: `Restar de 180° está bien; ${180 - t}° es lo que suman los dos iguales: falta partirlo.` },
       ], gr);
       if (ops.length < 4) continue;
-      return { pregunta: `En el triángulo ABC, AB = AC. D y E están en BC, con BD = EC. Si m∠DAE = ${t}°, ¿cuánto mide el ángulo ADE?`,
+      F.sinEscala = true;
+      return { pregunta: `En el triángulo ABC, AB = AC. D y E están en BC, con BD = EC. Si m∠DAE = ${t}°, ¿cuánto mide el ángulo ADE?${NO_ESC}`,
         datos: [D_CRIT, D_ISO, D_PAR, D_SUMA], dibujo: fig(F), opciones: ops,
         solucion: { texto: 'Por LAL (AB = AC, m∠B = m∠C, BD = CE), △ABD ≅ △ACE: AD = AE, y △ADE es isósceles.', ecuacion: junto(`m∠ADE = (180° − ${t}°) ÷ 2 = ${gr(x)}`) } };
     }
@@ -1042,7 +1076,7 @@
       { texto: 'Escribo las parejas en el mismo orden.' }],
     respuesta: [dF('△ABC ≅ △FDE')] });
   EJ2.push({ nivel: 2, titulo: 'La cometa',
-    figura: fig((() => { const w = 4, p = 3, q = w * Math.tan((80 - U.grados(Math.atan2(p, w))) * RAD);
+    figura: fig((() => { const w = 4, p = 1.8, q = w * Math.tan((80 - U.grados(Math.atan2(p, w))) * RAD);   // (lector B: con p = 3 parecía un rombo)
       const F = figCometa(w, p, q, { llaves: true, cola: false, alt: 'Una cometa ABCD con su varilla central AC: AB = AD (una rayita) y CB = CD (dos rayitas). El ángulo ABC mide 80° y el ángulo ADC lleva «?».' });
       const B = [-w, 0], A = [0, p], C = [0, -q];
       F.figura.angulos = [{ en: 'B', de: 'A', a: 'C', texto: '80°', color: 'h', radio: 18, holgura: 6, mide: U.angulo(B, A, C) }, { en: 'D', de: 'C', a: 'A', texto: '?', radio: 18, holgura: 6 }];
@@ -1077,10 +1111,10 @@
       { texto: 'Las otras: 5 cm es x; 10 cm es 2x; 15 cm olvida restar 2; 26 cm suma AB y CD.' }],
     respuesta: ['AB = ', dF('13 cm')] });
   EJ2.push({ nivel: 3, titulo: 'Un isósceles dentro de otro',
-    figura: fig((() => { const h = 4, e = h * Math.tan(25 * RAD), b = e + 2.6;
-      return figIsoDE(b, h, b - e, { ang: [{ en: 'A', de: 'D', a: 'E', texto: '50°', color: 'h', radio: 30 }, { en: 'D', de: 'E', a: 'A', texto: '?', radio: 16 }],
-        alt: 'Triángulo isósceles ABC con AB = AC; D y E están en BC, con BD = EC. El ángulo DAE mide 50° y el ángulo ADE lleva «?».' }); })()),
-    enunciado: 'En el triángulo ABC, AB = AC. D y E están en BC, con BD = EC. Si m∠DAE = 50°, ¿cuánto mide el ángulo ADE?',
+    figura: fig((() => { const h = 4, e = h * Math.tan(40 * RAD), b = e + 2.6;
+      return Object.assign(figIsoDE(b, h, b - e, { ang: [{ en: 'A', de: 'D', a: 'E', texto: '50°', color: 'h', radio: 30 }, { en: 'D', de: 'E', a: 'A', texto: '?', radio: 16 }],
+        alt: 'Triángulo isósceles ABC con AB = AC; D y E están en BC, con BD = EC. El ángulo DAE mide 50° y el ángulo ADE lleva «?». El dibujo no está a escala.' }), { sinEscala: true }); })()),
+    enunciado: 'En el triángulo ABC, AB = AC. D y E están en BC, con BD = EC. Si m∠DAE = 50°, ¿cuánto mide el ángulo ADE? El dibujo no está a escala.',
     alternativas: ['65°', '25°', '50°', '115°', '130°'],
     datos: [D_CRIT, D_ISO, D_PAR, D_SUMA],
     solucion: [{ texto: 'AB = AC, m∠B = m∠C (isósceles) y BD = CE: por LAL, △ABD ≅ △ACE.' },
@@ -1137,7 +1171,7 @@
     solucion: [{ texto: 'HA = HB, los ángulos en H son rectos y PH es de los dos: por LAL, △PHA ≅ △PHB.' },
       { texto: 'En △PHA ya hay 90° y 65°.', ecuacion: junto('m∠APH = 180° − 90° − 65° = 25°') },
       { texto: 'Su pareja, el ángulo BPH, mide igual. APB junta los dos.', ecuacion: junto(['m∠APB = 2 · 25° = ', dF('50°')]) },
-      { texto: 'Las otras: 25° es solo la mitad; 65° copia el del piso; 115° y 130° suman o duplican el de 65°.' }],
+      { texto: 'Las otras: 25° es solo la mitad; 65° copia el del piso; 115° es lo que le falta al de 65° para 180°; 130° lo duplica.' }],
     respuesta: ['m∠APB = ', dF('50°')] });
 
   const correspondientes = {
@@ -1180,11 +1214,12 @@
       ],
       dibujo: v => ({ datos: figBan(v.giro, v.cara), estado: {} }),
       // La relación: qué punta de DEF caería sobre cada punta de ABC si se lo pone encima.
-      lectura: v => { const p = encima(v); return [junto(calza(v) ? 'D sobre A, E sobre B, F sobre C: cada arco con su igual' : `Puesto encima: ${p[0]} sobre A, ${p[1]} sobre B, ${p[2]} sobre C`)]; },
+      // (Auditoría del 19 nov, M1: la lectura dice que es lo que pasaría con ese giro, y si calza o no.)
+      lectura: v => { const p = encima(v); return [junto(calza(v) ? 'D sobre A, E sobre B, F sobre C: cada arco con su igual' : `Caería ${p[0]} en A, ${p[1]} en B, ${p[2]} en C: no calza`)]; },
       minimo: 4,
     },
     predice: {
-      pregunta: 'Dos banderines del mismo molde están en distinta posición. En el banderín ABC, el lado de 24 cm queda frente al ángulo de tres arcos. En el banderín DEF, ¿qué lado mide 24 cm?',
+      pregunta: 'Otros dos banderines del mismo molde; en el segundo, las letras quedaron en otro orden. En ABC, el lado de 24 cm queda frente al ángulo de tres arcos. En DEF, ¿qué lado mide 24 cm?',
       datos: ['Los ángulos con la misma cantidad de arcos miden igual.'],
       voz: 'No te fíes de la posición: mira las marcas.',
       opciones: [
@@ -1215,7 +1250,9 @@
       ecuacion: [junto('△ABC ≅ △DEF'), FL, junto('AB = DE,   BC = EF,   AC = DF')],
       condicion: 'los triángulos son congruentes. En △ABC ≅ △DEF, las letras van en orden: A con D, B con E y C con F.',
       voz: 'Primero la pareja de cada ángulo; los lados salen solos.',
-      dibujo: { pieza: GO, datos: MIRA2, estado: { corte: 4 } },
+      // La regla con su propio dibujo, en el orden de su ecuación (auditoría del 19 nov, A2): los banderines del juego,
+      // con D, E y F de uno, dos y tres arcos, y AB = DE = 24 cm.
+      dibujo: { pieza: GO, datos: FIG_REGLA2, estado: {} },
     },
     // Así se resuelve: un ángulo con x en una congruencia escrita en otro orden (se iguala con su pareja y se halla otro
     // ángulo con la suma de 180°). «Ahora tú» pide lados por el orden de las letras, lados y ángulos por las marcas, el
@@ -1247,7 +1284,7 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Busca la pareja de cada parte por sus marcas o por el orden de las letras.',
-      generar(s) { return conCuatro([casoOrden, casoFrente, casoAngulo, casoCruce, casoIso][s % 5], azar(s + 7)); },
+      generar(s) { return conCuatro([casoOrden, casoFrente, casoAngulo, casoCruce, casoIso][s % 5], azar(s + 7), firmasDe(EJ2)); },
     },
   };
 
@@ -1270,7 +1307,7 @@
     const fg = { alt: o.alt || `Mapa con dos caseríos, A y B, a 6 km; la mediatriz de AB va punteada. El pozo P queda a ${kmV(dPA(v))} de A y a ${kmV(dPB(v))} de B${igual(dPA(v), dPB(v)) ? ': sobre la mediatriz' : ''}.`,
       vista: o.vista || VM, alto: o.alto || 280,
       puntos: [{ id: 'A', x: -3, y: 0, rotulo: 'A', lado: 180, lejos: 6, sinPunto: true }, { id: 'B', x: 3, y: 0, rotulo: 'B', lado: 0, lejos: 6, sinPunto: true },
-        { id: 'M', x: 0, y: 0, rotulo: 'M', lado: arriba ? 235 : 125, lejos: 2, sinPunto: true }, { id: 'P', x: P[0], y: P[1], rotulo: 'P', lado: arriba ? 90 : -90, lejos: 6, sinPunto: true },
+        { id: 'M', x: 0, y: 0, rotulo: 'M', lado: arriba ? 235 : 125, lejos: 7, sinPunto: true }, { id: 'P', x: P[0], y: P[1], rotulo: 'P', lado: arriba ? 90 : -90, lejos: 6, sinPunto: true },
         { id: 'Z1', x: 0, y: -4.7, sinPunto: true }, { id: 'Z2', x: 0, y: 4.7, sinPunto: true }],
       segmentos: [{ de: 'A', a: 'B' }, { de: 'Z1', a: 'Z2', discontinua: true, grosor: 'fino' },
         { de: 'P', a: 'A', color: 'o', grosor: 'variable' }, { de: 'P', a: 'B', color: 'i', grosor: 'variable' }],
@@ -1362,11 +1399,11 @@
     PO.acomodarLetras(fg, ['A', 'B', 'P', 'M']);
     return Object.assign({ objeto: 'angulos', figura: fg, llaves: [{ de: 'A', a: 'M', marcas: 1, ref: 'P', dist: 9 }, { de: 'M', a: 'B', marcas: 1, ref: 'P', dist: 9 }] }, o.lados ? { ladosRot: o.lados } : {});
   }
-  const D_MED = 'Mediatriz de AB: la recta perpendicular a AB por su punto medio.';
+  const D_MED = 'Mediatriz de un segmento: la recta perpendicular a él por su punto medio.';
   const D_BIS = 'Bisectriz de un ángulo: la recta que lo parte en dos ángulos iguales.';
   const D_DIST = 'La distancia de un punto a una recta se mide por la perpendicular.';
   const D_PER = 'El perímetro de un triángulo es la suma de sus tres lados.';
-  const D_TEO = 'Todo punto de la mediatriz de AB equidista de A y de B; todo punto de la bisectriz equidista de los lados.';
+  const D_TEO = 'Todo punto de la mediatriz de un segmento equidista de sus extremos; todo punto de la bisectriz, de los lados del ángulo.';
   const D_REC = 'Y al revés: si un punto equidista de A y de B, está en la mediatriz de AB.';
   const D_RECB = 'Y al revés: si un punto del interior del ángulo equidista de sus lados, está en la bisectriz.';
   // La figura de la mediatriz con las dos distancias rotuladas (expresiones): P arriba, a ytop de AB.
@@ -1387,7 +1424,7 @@
       const ops = opciones(v, [
         { id: 'x', valor: x, error: 'GE-CON30', siFuera: `Hallar x = ${x} está bien; falta reemplazarlo en ${D1}.` },
         { id: 'suma', valor: 2 * v, error: 'GE-CON31', siFuera: `Eso suma ${D1} y ${D2}; cada una mide la mitad.` },
-        { id: 'otro', valor: v + Math.abs(a1 - a2), error: 'GE-CON8', siFuera: 'Igualar está bien; revisa el despeje: con la x correcta, las dos expresiones dan lo mismo.' },
+        { id: 'otro', valor: b1 > 0 ? v - b1 : NaN, error: 'GE-CON8', siFuera: `Reemplazar x = ${x} está bien; falta sumar ${b1}: ${a1 === 1 ? '' : a1 + ' · '}${x} + ${b1}.` },
         { id: 'signo', valor: a1 * ((b2 + b1) / (a1 - a2)) + b1, error: 'GE-TRI15', siFuera: 'Igualar está bien; al pasar un número al otro lado cambia su signo.' },
       ].filter(d => Number.isInteger(d.valor)), cm);
       if (ops.length < 4) continue;
@@ -1446,9 +1483,10 @@
   function casoIsoMed(r) {
     for (let i = 0; i < 400; i++) {
       const th = 5 * r.ent(7, 11), v = 180 - 2 * th;
+      // (M2: estirada en vertical y sin escala, para que APB no se mida con transportador.)
       const F = figIsoMed(th, { ang: [{ en: 'A', de: 'B', a: 'P', texto: gr(th), color: 'h' }, { en: 'P', de: 'A', a: 'B', texto: '?', radio: 18 }],
         alt: `P está a la misma distancia de A y de B (PA = PB); M es el punto medio de AB y la mediatriz va punteada. El ángulo PAB mide ${th}° y el ángulo APB lleva «?».` });
-      if (!cabe(F)) continue;
+      if (!cabe(torcer(F, th <= 45 ? 1.5 : 0.7))) continue;
       const ops = opciones(v, [
         { id: 'copia', valor: th, error: 'GE-CON35', siFuera: `Ver el isósceles está bien; ${th}° es un ángulo de la base, no el de P.` },
         { id: 'una', valor: 180 - th, error: 'GE-TRI5', siFuera: `Restar de 180° está bien; falta restar también el ángulo B, que mide ${th}°.` },
@@ -1456,7 +1494,8 @@
         { id: 'doble', valor: 2 * th, error: 'GE-CON34', siFuera: 'Sumar los dos ángulos de la base está bien; el de P es lo que les falta para 180°.' },
       ], gr);
       if (ops.length < 4) continue;
-      return { pregunta: `P equidista de A y de B. Si m∠PAB = ${th}°, ¿cuánto mide el ángulo APB?`,
+      F.sinEscala = true;
+      return { pregunta: `P equidista de A y de B. Si m∠PAB = ${th}°, ¿cuánto mide el ángulo APB?${NO_ESC}`,
         datos: [D_REC, D_ISO, D_SUMA], dibujo: fig(F), opciones: ops,
         solucion: { texto: `PA = PB: △APB es isósceles y m∠PBA = ${th}°.`, ecuacion: junto(`m∠APB = 180° − 2 · ${th}° = ${gr(v)}`) } };
     }
@@ -1520,9 +1559,9 @@
       { texto: 'Piden PH, no x.', ecuacion: junto(['PH = 3 · 4 − 1 = ', dF('11 cm')]) }],
     respuesta: ['PH = ', dF('11 cm')] });
   EJ3.push({ nivel: 2, titulo: 'El isósceles de la mediatriz',
-    figura: fig(figIsoMed(40, { ang: [{ en: 'A', de: 'B', a: 'P', texto: '40°', color: 'h' }, { en: 'P', de: 'A', a: 'B', texto: '?', radio: 18 }],
-      alt: 'P está en la mediatriz de AB, punteada; M es el punto medio de AB. El ángulo PAB mide 40° y el ángulo APB lleva «?».' })),
-    enunciado: 'P está en la mediatriz de AB. Si m∠PAB = 40°, ¿cuánto mide el ángulo APB?',
+    figura: fig(Object.assign(figIsoMed(55, { ang: [{ en: 'A', de: 'B', a: 'P', texto: '40°', color: 'h' }, { en: 'P', de: 'A', a: 'B', texto: '?', radio: 18 }],
+      alt: 'P está en la mediatriz de AB, punteada; M es el punto medio de AB. El ángulo PAB mide 40° y el ángulo APB lleva «?». El dibujo no está a escala.' }), { sinEscala: true })),
+    enunciado: 'P está en la mediatriz de AB. Si m∠PAB = 40°, ¿cuánto mide el ángulo APB? El dibujo no está a escala.',
     datos: [D_TEO, D_ISO, D_SUMA],
     solucion: [{ texto: 'PA = PB: △APB es isósceles y sus ángulos en A y en B miden 40°.' },
       { texto: 'El ángulo de P es lo que falta para 180°.', ecuacion: junto(['m∠APB = 180° − 40° − 40° = ', dF('100°')]) }],
@@ -1568,12 +1607,13 @@
     solucion: [{ texto: 'P está en la bisectriz de B: equidista de AB y de BC. Y en la de C: equidista de BC y de AC.' },
       { texto: 'Entonces las tres distancias son iguales: la de AB es igual a la de AC.', ecuacion: [junto('2x + 1 = x + 4'), FL, junto('x = 3')] },
       { texto: 'La distancia a BC es esa misma medida.', ecuacion: junto(['2 · 3 + 1 = ', dF('7 cm')]) },
-      { texto: 'Las otras: 3 cm es x; 8 cm y 10 cm se equivocan al reemplazar; 14 cm suma dos distancias.' }],
+      { texto: 'Las otras: 3 cm es x; 8 cm hace 2 · (3 + 1), sumando antes de multiplicar; 10 cm suma x y la distancia; 14 cm suma dos distancias.' }],
     respuesta: ['La distancia es ', dF('7 cm')] });
   EJ3.push({ nivel: 3, titulo: 'La mediatriz y el exterior',
-    figura: fig(figTriMed(Math.sqrt(9.5 * 9.5 + 49 - 133 * Math.cos(35 * RAD)), 7, 9.5, { ang: [{ en: 'C', de: 'A', a: 'B', color: 'h', radio: 24 }, { en: 'P', de: 'A', a: 'B', texto: '?', radio: 16 }],
-      alt: 'Triángulo ABC; la mediatriz de AC, punteada, corta BC en P y se traza PA. El ángulo C, de 35°, lleva su arco y el ángulo APB, «?».' }).fig),
-    enunciado: 'En △ABC, la mediatriz de AC corta BC en P y se traza PA. Si m∠C = 35°, ¿cuánto mide el ángulo APB?',
+    // (M2: dibujado con 50° en C, no 35°, y sin escala: así APB no se mide con transportador.)
+    figura: fig(Object.assign(figTriMed(Math.sqrt(9.5 * 9.5 + 49 - 133 * Math.cos(50 * RAD)), 7, 9.5, { ang: [{ en: 'C', de: 'A', a: 'B', color: 'h', radio: 24 }, { en: 'P', de: 'A', a: 'B', texto: '?', radio: 16 }],
+      alt: 'Triángulo ABC; la mediatriz de AC, punteada, corta BC en P y se traza PA. El ángulo C, de 35°, lleva su arco y el ángulo APB, «?». El dibujo no está a escala.' }).fig, { sinEscala: true })),
+    enunciado: 'En △ABC, la mediatriz de AC corta BC en P y se traza PA. Si m∠C = 35°, ¿cuánto mide el ángulo APB? El dibujo no está a escala.',
     alternativas: ['35°', '55°', '110°', '145°', '70°'],
     datos: [D_TEO, D_ISO, 'Un ángulo exterior de un triángulo mide lo que suman los dos interiores que no están a su lado.'],
     solucion: [{ texto: 'P está en la mediatriz de AC: PA = PC. △APC es isósceles: m∠PAC = m∠C = 35°.' },
@@ -1592,14 +1632,14 @@
       const xs = [A, B, C].map(q => q[0]), ys = [A, B, C].map(q => q[1]);
       fg.vista = { x: [Math.min(...xs) - 1.4, Math.max(...xs) + 1.4], y: [-1.2, Math.max(...ys) + 1] };
       PO.acomodarLetras(fg, ['A', 'B', 'C', 'D']);
-      return { objeto: 'angulos', figura: fg, llaves: [{ de: 'B', a: 'D', marcas: 1, ref: 'A', dist: 9 }, { de: 'D', a: 'C', marcas: 1, ref: 'B', dist: 9 }] }; })()),
-    enunciado: 'En △ABC, m∠A = 60°. La bisectriz del ángulo B corta AC en D, y D está en la mediatriz de BC. ¿Cuánto mide el ángulo C?',
+      return torcer({ objeto: 'angulos', figura: fg, llaves: [{ de: 'B', a: 'D', marcas: 1, ref: 'A', dist: 9 }, { de: 'D', a: 'C', marcas: 1, ref: 'B', dist: 9 }] }, 1.5); })()),
+    enunciado: 'En △ABC, m∠A = 60°. La bisectriz del ángulo B corta AC en D, y D está en la mediatriz de BC. ¿Cuánto mide el ángulo C? El dibujo no está a escala.',
     alternativas: ['30°', '40°', '60°', '80°', '120°'],
     datos: [D_BIS, D_TEO, D_ISO, D_SUMA],
     solucion: [{ texto: 'D está en la mediatriz de BC: DB = DC, y △DBC es isósceles: m∠DBC = m∠C.' },
-      { texto: 'La bisectriz parte B en dos iguales: m∠B = 2 · m∠C. Con m∠C = c, los tres ángulos suman 180°.', ecuacion: [junto('60 + 2c + c = 180'), FL, junto('c = 40')] },
+      { texto: 'La bisectriz parte B en dos iguales: m∠B = 2 · m∠C. Con m∠C = x, los tres ángulos suman 180°.', ecuacion: [junto('60 + 2x + x = 180'), FL, junto('x = 40')] },
       { texto: 'Entonces m∠C = 40° y m∠B = 80°.', ecuacion: junto(['m∠C = ', dF('40°')]) },
-      { texto: 'Las otras: 30° reparte 90°; 60° copia el ángulo A; 80° es el ángulo B; 120° suma B y C.' }],
+      { texto: 'Las otras: 30° toma m∠B como el triple de m∠C; 60° copia el ángulo A; 80° es el ángulo B; 120° suma B y C.' }],
     respuesta: ['m∠C = ', dF('40°')] });
   EJ3.push({ nivel: 3, titulo: 'Igual de lejos de dos carreteras',
     figura: fig(figBis(64, 6, { ph: '4 km', pk: '4 km', cortes: { p: 0 }, mapa: true, alt: 'Dos carreteras salen del cruce O formando 64°. La antena P, entre ellas, queda a 4 km de cada una (PH y PK). Se traza OP, punteada; los ángulos OPH y OPK llevan dos arcos.' })),
@@ -1650,7 +1690,7 @@
         { s: 'M', t: 'el punto medio de AB' },
       ],
       controles: [
-        { id: 'dx', etiqueta: 'P a los lados, en km', min: -2.5, max: 2.5, paso: 0.5, inicio: 1.5, unidad: 'km', decimales: 1 },
+        { id: 'dx', etiqueta: 'P a los lados de M, en km', min: -2.5, max: 2.5, paso: 0.5, inicio: 1.5, unidad: 'km', decimales: 1 },
         { id: 'y', etiqueta: 'P a lo alto, sobre AB, en km', min: 1, max: 5, paso: 1, inicio: 2, unidad: 'km', decimales: 0 },
       ],
       dibujo: v => ({ datos: figMapa(v), estado: {} }),
@@ -1683,7 +1723,7 @@
         alt: 'Las carreteras forman 60° en O y la bisectriz las parte en dos de 30°. Los triángulos OHP y OKP tienen 90° en H y en K, 60° en P y el lado OP de los dos: son congruentes, y PK = PH = 2,5 km.' }),
       voz: 'Compara los dos triángulos rectángulos, pieza por pieza.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'La antena está en la bisectriz: las dos mitades del ángulo miden 30°.', ecuacion: junto(['m∠HOP = m∠KOP = ', dH('30°')]) },
+        { estado: { corte: 0 }, texto: 'La antena está en la bisectriz: las dos mitades del ángulo miden 30°.', ecuacion: junto(['60° ÷ 2 = ', dH('30°')]) },
         { estado: { corte: 1 }, texto: 'Los caminos más cortos a cada carretera, PH y PK, llegan en ángulo recto.' },
         { estado: { corte: 2 }, texto: 'En △OHP y △OKP, el tercer ángulo también es igual.', ecuacion: junto(['m∠OPH = m∠OPK = 180° − 90° − 30° = ', dH('60°')]) },
         { estado: { corte: 3 }, texto: 'OP es de los dos, entre 30° y 60°: por ALA, son congruentes.' },
@@ -1693,9 +1733,10 @@
     regla: {
       texto: 'Todo punto de la mediatriz de AB equidista de A y de B. Todo punto de la bisectriz de un ángulo equidista de sus lados, en perpendicular. Y al revés.',
       ecuacion: [{ llave: [dO('PA'), ' = ', dI('PB')], nota: 'en la mediatriz', color: 'c-o' }, Y, { llave: [dO('PH'), ' = ', dI('PK')], nota: 'en la bisectriz', color: 'c-i' }],
-      condicion: 'la distancia a un lado se mide en perpendicular. Al revés: si equidista, está en la mediatriz o en la bisectriz.',
+      condicion: 'al revés, quien equidista de A y B, en la mediatriz; quien equidista de los lados dentro del ángulo, en la bisectriz.',
       voz: 'Equidistar se mide con perpendiculares, no a ojo.',
-      dibujo: { pieza: GO, datos: figBis(60, 5, { ph: '2,5 km', pk: '2,5 km', op: '5 km', mapa: true, alt: 'La antena P sobre la bisectriz del ángulo de 60°: PH = PK = 2,5 km.' }), estado: {} },
+      // (Auditoría del 19 nov, M9: la bisectriz ya tiene su dibujo en «Mira»; la regla muestra la mediatriz, con A, B y P.)
+      dibujo: { pieza: GO, datos: figMapa({ dx: 0, y: 4 }, { manija: false, alt: 'El pozo P sobre la mediatriz de AB, punteada: PA = PB = 5 km.' }), estado: {} },
     },
     // Así se resuelve: los recíprocos (P equidista de los lados: m∠POX es la mitad de O; o P en la mediatriz con el ángulo
     // de P dado: el de la base). «Ahora tú» pide igualar las dos distancias, el perímetro con la mediatriz, la
@@ -1722,9 +1763,9 @@
           };
         }
         let th, F;
-        for (let i = 0; ; i++) { th = 5 * r.ent(7, 11); F = figIsoMed(th, { ang: [{ en: 'P', de: 'A', a: 'B', texto: gr(180 - 2 * th), color: 'h', radio: 18 }, { en: 'A', de: 'B', a: 'P', texto: '?' }], alt: `P está en la mediatriz de AB, punteada. El ángulo APB mide ${180 - 2 * th}° y el ángulo PAB lleva «?».` }); if (cabe(F) || i > 200) break; }
+        for (let i = 0; ; i++) { th = 5 * r.ent(7, 11); F = Object.assign(figIsoMed(th <= 45 ? th + 15 : th - 15, { ang: [{ en: 'P', de: 'A', a: 'B', texto: gr(180 - 2 * th), color: 'h', radio: 18 }, { en: 'A', de: 'B', a: 'P', texto: '?' }], alt: `P está en la mediatriz de AB, punteada. El ángulo APB mide ${180 - 2 * th}° y el ángulo PAB lleva «?». El dibujo no está a escala.` }), { sinEscala: true }); if (cabe(F) || i > 200) break; }
         return {
-          enunciado: `P está en la mediatriz de AB y m∠APB = ${180 - 2 * th}°. ¿Cuánto mide el ángulo PAB?`,
+          enunciado: `P está en la mediatriz de AB y m∠APB = ${180 - 2 * th}°. ¿Cuánto mide el ángulo PAB?${NO_ESC}`,
           datos: [D_TEO, D_ISO, D_SUMA],
           dibujo: fig(F),
           pasos: [
@@ -1741,7 +1782,7 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Primero, ¿qué distancias son iguales? Después, las cuentas.',
-      generar(s) { return conCuatro([r => casoIgualar(r, true), r => casoIgualar(r, false), casoPerimetro, casoPerpBis, casoIsoMed][s % 5], azar(s + 7)); },
+      generar(s) { return conCuatro([r => casoIgualar(r, true), r => casoIgualar(r, false), casoPerimetro, casoPerpBis, casoIsoMed][s % 5], azar(s + 7), firmasDe(EJ3)); },
     },
   };
 
@@ -1844,7 +1885,8 @@
       const ops = opciones(v, [
         { id: 'igual', valor: base, error: 'GE-CON10', siFuera: `Ver que MN y BC son paralelos está bien; pero no miden lo mismo: MN es la mitad.` },
         { id: 'reves', valor: alReves ? mn / 2 : bc * 2, error: 'GE-CON11', siFuera: alReves ? 'Usar la mitad está bien; pero aquí la mitad es MN, y se pide BC: se duplica.' : 'Usar el doble está bien al revés; aquí se pide MN, la mitad de BC.' },
-        { id: 'tercio', valor: alReves ? mn * 3 : bc / 3, error: 'GE-CON21', siFuera: 'Partir BC está bien; pero los puntos medios dan la mitad, no un tercio.' },
+        // (Auditoría del 19 nov, M14: un tercio no salía de ningún paso; partir dos veces sí: la base media de la base media.)
+        { id: 'cuarto', valor: alReves ? mn * 4 : bc / 4, error: 'GE-CON21', siFuera: alReves ? 'Duplicar está bien una vez; BC es el doble de MN, no su cuádruple.' : 'Partir en dos está bien una vez; MN ya es la mitad de BC, no su cuarta parte.' },
         { id: 'resta', valor: alReves ? mn + 2 : bc - 2, error: 'GE-CON44', siFuera: 'Comparar MN con BC está bien; la relación es la mitad, no una resta.' },
       ], cm);
       if (ops.length < 4) continue;
@@ -1870,7 +1912,8 @@
         { id: 'bc', valor: a / 2, error: 'GE-CON10', siFuera: `${cm(a / 2)} sería MN, la mitad de BC; se pide un tramo de AC.` },
       ], cm);
       if (ops.length < 4) continue;
-      return { pregunta: `En △ABC, M es el punto medio de AB y AC = ${cm(b)}. Por M se traza una paralela a BC, que corta AC en N. ¿Cuánto mide ${pideNC ? 'NC' : 'AN'}?`,
+      // (M14: AB va en el enunciado, porque un distractor es su mitad.)
+      return { pregunta: `En △ABC, M es el punto medio de AB, AB = ${cm(c)} y AC = ${cm(b)}. Por M se traza una paralela a BC, que corta AC en N. ¿Cuánto mide ${pideNC ? 'NC' : 'AN'}?`,
         datos: [D_BM, D_RBM], dibujo: fig(F), opciones: ops,
         solucion: { texto: 'La paralela a BC por el punto medio de AB llega al punto medio de AC.', ecuacion: junto(`${pideNC ? 'NC' : 'AN'} = ${b} ÷ 2 = ${cm(v)}`) } };
     }
@@ -1890,7 +1933,7 @@
         { id: 'x', valor: x, error: 'GE-CON30', siFuera: `Hallar x = ${x} está bien; falta reemplazarlo en MN.` },
         { id: 'bc', valor: bc, error: 'GE-CON11', siFuera: `${cm(bc)} es BC; MN es la mitad.` },
         { id: 'igual', valor: Number.isInteger(xMal) ? xMal + p : NaN, error: 'GE-CON10', siFuera: 'Igualar MN con BC olvida que MN es la mitad: se iguala el doble de MN con BC.' },
-        { id: 'signo', valor: mn + 1, error: 'GE-TRI15', siFuera: 'Plantear 2(MN) = BC está bien; revisa el despeje: con la x correcta, 2·MN da BC.' },
+        { id: 'signo', valor: Number.isInteger((s + p) / (q - 2)) ? (s + p) / (q - 2) + p : NaN, error: 'GE-TRI15', siFuera: `Duplicar MN está bien; pero el doble de x + ${p} es 2x + ${2 * p}: el número también se duplica.` },
       ], cm);
       if (ops.length < 4) continue;
       return { pregunta: `En △ABC, M y N son los puntos medios de AB y AC. Si MN = ${e1} y BC = ${e2}, en centímetros, ¿cuánto mide MN?`,
@@ -1963,7 +2006,8 @@
         { id: 'ma', valor: Ag, error: 'GE-CON49', siFuera: `${Ag}° es m∠A; AMN es el ángulo de M.` },
       ], gr);
       if (ops.length < 4) continue;
-      return { pregunta: `En △ABC, M y N son los puntos medios de AB y AC, y m∠B = ${Bg}°. ¿Cuánto mide el ángulo AMN?`,
+      // (M14: m∠C va en el enunciado, porque un distractor es m∠C.)
+      return { pregunta: `En △ABC, m∠B = ${Bg}° y m∠C = ${Cg}°. M y N son los puntos medios de AB y AC. ¿Cuánto mide el ángulo AMN?`,
         datos: [D_BM, D_TBM, D_COR], dibujo: fig(F), opciones: ops,
         solucion: { texto: 'MN es paralela a BC y AB las corta: AMN y ABC son correspondientes.', ecuacion: junto(`m∠AMN = m∠B = ${gr(Bg)}`) } };
     }
@@ -2032,8 +2076,8 @@
     respuesta: ['Perímetro = ', dF('24 cm')] });
   EJ4.push({ nivel: 2, titulo: 'El ángulo de N',
     figura: fig((() => { const B = [0, 0], C = [8, 0], A = U.polar(B, 8 * Math.sin(60 * RAD) / Math.sin(50 * RAD), 70);
-      return figBase(A, B, C, { paralelas: true, segs: [['M', 'N', Object.assign({ paralela: 1 }, MN_O)]], ang: [{ en: 'A', de: 'B', a: 'C', color: 'h' }, { en: 'B', de: 'C', a: 'A', color: 'h', texto: '70°', marcas: 2 }, { en: 'N', de: 'A', a: 'M', texto: '?', radio: 18 }], alt: 'Triángulo ABC con M y N, puntos medios de AB y AC. El ángulo A, de 50°, lleva su arco; el B mide 70°, y el ángulo ANM lleva «?».' }); })()),
-    enunciado: 'En △ABC, m∠A = 50° y m∠B = 70°. M y N son los puntos medios de AB y AC. ¿Cuánto mide el ángulo ANM?',
+      return torcer(figBase(A, B, C, { paralelas: true, segs: [['M', 'N', Object.assign({ paralela: 1 }, MN_O)]], ang: [{ en: 'A', de: 'B', a: 'C', color: 'h' }, { en: 'B', de: 'C', a: 'A', color: 'h', texto: '70°', marcas: 2 }, { en: 'N', de: 'A', a: 'M', texto: '?', radio: 18 }], alt: 'Triángulo ABC con M y N, puntos medios de AB y AC. El ángulo A, de 50°, lleva su arco; el B mide 70°, y el ángulo ANM lleva «?». El dibujo no está a escala.' }), 1.5); })()),
+    enunciado: 'En △ABC, m∠A = 50° y m∠B = 70°. M y N son los puntos medios de AB y AC. ¿Cuánto mide el ángulo ANM? El dibujo no está a escala.',
     datos: [D_SUMA, D_TBM, D_COR],
     solucion: [{ texto: 'Primero el ángulo C, con la suma de 180°.', ecuacion: junto('m∠C = 180° − 50° − 70° = 60°') },
       { texto: 'MN ∥ BC y AC las corta: ANM y ACB son correspondientes.', ecuacion: junto(['m∠ANM = m∠C = ', dF('60°')]) }],
@@ -2089,15 +2133,15 @@
     respuesta: ['HM = ', dF('3 cm')] });
   EJ4.push({ nivel: 3, titulo: 'Los ángulos del triángulo chico',
     figura: fig((() => { const B = [0, 0], C = [9, 0], A = U.polar(B, 9 * Math.sin(70 * RAD) / Math.sin(50 * RAD), 60);
-      return figBase(A, B, C, { medios: ['M', 'N', 'P'], segs: [['M', 'N', MN_O], ['N', 'P', MN_O], ['P', 'M', MN_O]], ang: [{ en: 'A', de: 'B', a: 'C', color: 'h' }, { en: 'B', de: 'C', a: 'A', color: 'h', marcas: 2 }, { en: 'M', de: 'P', a: 'N', texto: '?', radio: 16 }],
-        alt: 'Triángulo ABC con m∠A = 50° (un arco) y m∠B = 60° (dos arcos). M, N y P son los puntos medios de AB, AC y BC; el ángulo NMP del triángulo de los puntos medios lleva «?».' }); })()),
-    enunciado: 'En △ABC, m∠A = 50° y m∠B = 60°. M, N y P son los puntos medios de AB, AC y BC. ¿Cuánto mide el ángulo NMP?',
+      return torcer(figBase(A, B, C, { medios: ['M', 'N', 'P'], segs: [['M', 'N', MN_O], ['N', 'P', MN_O], ['P', 'M', MN_O]], ang: [{ en: 'A', de: 'B', a: 'C', color: 'h' }, { en: 'B', de: 'C', a: 'A', color: 'h', marcas: 2 }, { en: 'M', de: 'P', a: 'N', texto: '?', radio: 16 }],
+        alt: 'Triángulo ABC con m∠A = 50° (un arco) y m∠B = 60° (dos arcos). M, N y P son los puntos medios de AB, AC y BC; el ángulo NMP del triángulo de los puntos medios lleva «?». El dibujo no está a escala.' }), 1.5); })()),
+    enunciado: 'En △ABC, m∠A = 50° y m∠B = 60°. M, N y P son los puntos medios de AB, AC y BC. ¿Cuánto mide el ángulo NMP? El dibujo no está a escala.',
     alternativas: ['50°', '60°', '70°', '110°', '120°'],
     datos: [D_SUMA, D_TBM, D_COR],
     solucion: [{ texto: 'MN ∥ BC, así que m∠AMN = m∠B = 60°. MP ∥ AC, así que m∠BMP = m∠A = 50°.' },
       { texto: 'En M, los tres ángulos juntos forman una recta.', ecuacion: junto(['m∠NMP = 180° − 60° − 50° = ', dF('70°')]) },
       { texto: 'Es igual a m∠C: el triángulo chico copia los ángulos del grande.' },
-      { texto: 'Las otras: 50° y 60° son los ángulos A y B; 110° y 120° restan de 180° uno solo de ellos.' }],
+      { texto: 'Las otras: 50° y 60° son los ángulos A y B; 110° suma A y B; 120° es lo que le falta a B para 180°.' }],
     respuesta: ['m∠NMP = ', dF('70°')] });
   EJ4.push({ nivel: 3, titulo: 'Tres triángulos encajados',
     enunciado: 'Un triángulo tiene 48 cm de perímetro. Los puntos medios de sus lados forman un segundo triángulo, y los puntos medios del segundo, un tercero. ¿Cuánto mide el perímetro del tercero?',
@@ -2124,7 +2168,7 @@
           pieza: GO, dibujo: fig(figListon({ ax: 3, ay: 5 }, { manija: false, lados: [], alt: 'Un tijeral ABC sobre el piso del taller. El listón MN une la mitad de la viga AB con la mitad de la viga AC.' })) },
         { titulo: 'La base media', texto: 'En un triángulo, el segmento que une los puntos medios de dos lados se llama base media. El tercer lado, el que no toca, es el lado con que se compara.' },
         { titulo: 'Las rayitas', texto: 'En las figuras, M y N son puntos medios: AM y MB llevan una rayita (miden igual), y AN y NC, dos. Las flechitas marcan dos segmentos paralelos.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Vas a mover la cumbrera A, arrastrándola o con los controles. M y N la siguen. Mira cuánto mide el listón y hacia dónde apunta.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a mover la cumbrera A, arrastrándola o con los controles. M y N la siguen y quedan a media altura de A. Mira cuánto mide el listón y hacia dónde apunta.' },
       ],
     },
     ejemplos: EJ4,
@@ -2134,7 +2178,7 @@
       mision: {
         texto: 'Mueve la cumbrera A hasta que el listón MN quede a 2 m del piso.',
         logrado: v => v.ay === 4,
-        bien: 'A 2 m del piso, y MN sigue en 4 m: la mitad de BC.',
+        bien: 'MN, a 2 m del piso, sigue en 4 m: la mitad de BC.',
       },
       voz: 'Sube, baja y corre la cumbrera. ¿Qué cambia en el listón?',
       leyenda: [
@@ -2147,13 +2191,14 @@
       ],
       controles: [
         { id: 'ax', etiqueta: 'Cumbrera A a lo ancho, en m', min: 0, max: 8, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
-        { id: 'ay', etiqueta: 'Cumbrera A a lo alto, en m', min: 3, max: 6, paso: 1, inicio: 3, unidad: 'm', decimales: 0 },
+        { id: 'ay', etiqueta: 'Cumbrera A a lo alto, en m', min: 3, max: 6, paso: 1, inicio: 5, unidad: 'm', decimales: 0 },
       ],
       dibujo: v => ({ datos: figListon(v), estado: {} }),
       arrastres: [{ id: 'vertice-a', etiqueta: 'cumbrera A', color: 'c-o',
         donde: v => PO.aPantalla(figListon(v), [v.ax, v.ay]),
         mover: (pt, v) => { const q = PO.aPlano(figListon(v), pt); return { ax: q[0], ay: q[1] }; } }],
-      lectura: v => [junto(`A ${f(v.ay / 2)} m del piso: `), dO('MN'), junto(' = 4 m, la mitad de '), dI('BC')],
+      // (Auditoría del 19 nov, M11: «A 1,5 m del piso» se leía como la altura del punto A.)
+      lectura: v => [dO('MN'), ' = 4 m = ', dI('BC'), junto(` ÷ 2, a ${f(v.ay / 2)} m del piso`)],
       minimo: 3,
     },
     predice: {
@@ -2208,9 +2253,9 @@
             F = figBase(A, B, C, { paralelas: true, segs: [['M', 'N', Object.assign({ paralela: 1 }, MN_O)]], ang: [{ en: 'C', de: 'A', a: 'B', color: 'h', texto: gr(Cg) }, { en: 'N', de: 'M', a: 'C', texto: '?', radio: 18 }], alt: `Triángulo ABC con M y N, puntos medios de AB y AC. El ángulo C mide ${Cg}° y el ángulo MNC lleva «?».` });
             if ((Ag >= 40 && cabe(F)) || i > 200) break; }
           return {
-            enunciado: `En △ABC, M y N son los puntos medios de AB y AC, y m∠C = ${Cg}°. ¿Cuánto mide el ángulo MNC?`,
+            enunciado: `En △ABC, M y N son los puntos medios de AB y AC, y m∠C = ${Cg}°. ¿Cuánto mide el ángulo MNC?${NO_ESC}`,
             datos: [D_TBM, D_CONJ],
-            dibujo: fig(F),
+            dibujo: fig(torcer(F, 1.5)),
             pasos: [
               { tipo: 'pide', texto: 'Piden m∠MNC, el ángulo de N que mira hacia abajo, hacia BC.' },
               { tipo: 'datos', texto: `M y N son puntos medios, y m∠C = ${Cg}°.` },
@@ -2242,7 +2287,7 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Ubica los puntos medios y el lado que no tocan.',
-      generar(s) { return conCuatro([casoMitad, casoReciproco, casoBaseX, casoMedial, casoDosBases, casoAnguloBM][s % 6], azar(s + 7)); },
+      generar(s) { return conCuatro([casoMitad, casoReciproco, casoBaseX, casoMedial, casoDosBases, casoAnguloBM][s % 6], azar(s + 7), firmasDe(EJ4)); },
     },
   };
 
@@ -2279,7 +2324,8 @@
       angulos: [Object.assign({ en: 'C', de: 'F', a: 'W', color: 'h', radio: o.pared && o.pared !== 90 ? 16 : 11, mide: o.pared || 90 }, o.pared && o.pared !== 90 ? { texto: o.angC } : {}),
         ...(mi.recto !== undefined ? [{ en: 'N', de: 'M', a: 'C', radio: 8, desde: mi.recto }] : [])] };
     PO.acomodarLetras(fg, ['C'].concat(mi.N !== undefined ? ['N'] : []), { C: [45] });
-    const lados = [{ de: 'A', a: 'B', texto: o.ab === undefined ? `${f(Math.hypot(A[0] - B[0], A[1] - B[1]))} m` : o.ab, ref: 'C', dist: 14, en: 0.2 }];
+    // (M10: junto a A, «4 m» se leía como la medida de A; el rótulo dice el lado.)
+    const lados = [{ de: 'A', a: 'B', texto: o.ab === undefined ? `AB = ${f(Math.hypot(A[0] - B[0], A[1] - B[1]))} m` : o.ab, ref: 'C', dist: 14, en: o.ab === undefined ? 0.3 : 0.2 }];
     if (o.cm !== undefined) lados.push(Object.assign({ de: 'C', a: 'M', texto: o.cm, color: 'i', ref: o.pared && o.pared > 90 ? 'A' : 'B', dist: 5, en: 0.62 }, o.cmDesde ? { desde: o.cmDesde } : {}));
     if (o.cb !== undefined) lados.push({ de: 'C', a: 'B', texto: o.cb, ref: 'A', dist: 16, en: 0.4 });
     const F = Object.assign({ objeto: 'armazon', tipo: 'escalera', figura: fg, escalera: { de: 'A', a: 'B' }, muros: [{ de: 'C', a: 'W', lado: -1 }, { de: 'C', a: 'F', lado: -1 }],
@@ -2288,7 +2334,14 @@
     const k = F.ladosRot.findIndex(t => t.de === 'C' && t.a === 'M');
     if (k >= 0) acomodarRotulo(F, k, ['B', 'A'], [0.62, 0.75, 0.85, 0.5]);
     const j = F.ladosRot.findIndex(t => t.de === 'C' && t.a === 'B');
-    return j < 0 ? F : acomodarRotulo(F, j, ['A'], [0.4, 0.25, 0.15]);
+    if (j >= 0) acomodarRotulo(F, j, ['A'], [0.4, 0.25, 0.15]);
+    // «AB = 4 m» donde quepa junto a la escalera; si no cabe en ningún lugar, «4 m» junto a A, como antes.
+    if (o.ab === undefined && !PO.escenaCabe(F)) {
+      const t0 = Object.assign({}, F.ladosRot[0]); let ok = false;
+      for (const [en, dist] of [[0.35, 14], [0.3, 20], [0.85, 14], [0.2, 26], [0.4, 26], [0.8, 26], [0.15, 26], [0.9, 26]]) { F.ladosRot[0] = Object.assign({}, t0, { en, dist }); if (PO.escenaCabe(F)) { ok = true; break; } }
+      if (!ok) F.ladosRot[0] = Object.assign({}, t0, { texto: t0.texto.replace('AB = ', ''), en: 0.2 });
+    }
+    return F;
   }
   const figJ5 = (fi, o = {}) => figEscalera([0, puntaA(fi)], [pieB(fi), 0], Object.assign({ cm: '2 m', cb: mV(pieB(fi)),
     alt: `Una escalera de 4 m apoyada en la pared, con el pie a ${mV(pieB(fi))} de la esquina C. M es la mitad de la escalera; CM, de la esquina a esa mitad, mide 2 m.` }, o));
@@ -2309,10 +2362,19 @@
         .concat((o.ang || []).map(x => Object.assign({ radio: 22, holgura: 6, marcas: 1, mide: U.angulo(pos[x.en], pos[x.de], pos[x.a]) }, x))) };
     PO.acomodarLetras(fg, fg.puntos.map(q => q.id));
     // Si se da la medida de AB, va sola debajo de AB (sin las llaves de sus mitades, que la pisaban; M lo dice la letra).
-    const conAB = (o.lados || []).some(t => t.de === 'A' && t.a === 'B'), lados = (o.lados || []).map(t => (t.de === 'A' && t.a === 'B' ? Object.assign({}, t, { dist: 7, en: 0.75 }) : t));
+    const conAB = (o.lados || []).some(t => t.de === 'A' && t.a === 'B'), lados = (o.lados || []).map(t => (t.de === 'A' && t.a === 'B' ? Object.assign({}, t, { dist: 7, en: 0.75 }, /=/.test(String(t.texto)) ? {} : { texto: `AB = ${t.texto}` }) : t));
+    // (Auditoría del 19 nov, M10: junto a MB, «14 cm» se leía como MB; el rótulo dice qué lado mide: «AB = 14 cm».)
     const F = Object.assign({ objeto: 'angulos', figura: fg }, conAB || o.altura ? {} : { llaves: [{ de: 'A', a: 'M', marcas: 1, ref: 'C', dist: 9 }, { de: 'M', a: 'B', marcas: 1, ref: 'C', dist: 9 }] }, lados.length ? { ladosRot: lados } : {}, o.sinEscala ? { sinEscala: true } : {});
     const k = lados.findIndex(t => t.de === 'C' && t.a === 'M');
-    return k < 0 ? F : acomodarRotulo(F, k, ['B', 'A'], [0.5, 0.65, 0.8, 0.35]);
+    if (k >= 0) acomodarRotulo(F, k, ['B', 'A'], [0.5, 0.65, 0.8, 0.35]);
+    // «AB = …» donde quepa a lo largo de AB; si no cabe, la medida sola, como antes.
+    const q = (F.ladosRot || []).findIndex(t => t.de === 'A' && t.a === 'B');
+    if (q >= 0 && !PO.escenaCabe(F)) {
+      const t0 = Object.assign({}, F.ladosRot[q]); let ok = false;
+      for (const en of [0.25, 0.85, 0.15, 0.6, 0.4]) { F.ladosRot[q] = Object.assign({}, t0, { en }); if (PO.escenaCabe(F)) { ok = true; break; } }
+      if (!ok) F.ladosRot[q] = Object.assign({}, t0, { texto: String(t0.texto).replace('AB = ', '') });
+    }
+    return F;
   }
   const D_MEDIANA = 'Mediana: el segmento que va de un vértice al punto medio del lado de enfrente.';
   const D_MH = 'En un triángulo rectángulo, la mediana relativa a la hipotenusa mide la mitad de ella: MA = MB = MC.';
@@ -2329,7 +2391,7 @@
       const ops = opciones(v, [
         { id: 'igual', valor: dado, error: 'GE-CON13', siFuera: 'Ver que CM llega al punto medio está bien; pero no mide lo mismo que AB: es la mitad.' },
         { id: 'reves', valor: alReves ? cmv / 2 : ab * 2, error: 'GE-CON11', siFuera: alReves ? 'Usar la mitad está bien; aquí la mitad es CM, y AB es el doble.' : 'Usar el doble está bien al revés; aquí CM es la mitad de AB.' },
-        { id: 'tercio', valor: alReves ? cmv * 3 : ab / 3, error: 'GE-CON53', siFuera: 'Esa sería la relación del baricentro, de otro tema; con el recto en C, CM es la mitad de AB.' },
+        { id: 'cuarto', valor: alReves ? cmv * 4 : ab / 4, error: 'GE-CON53', siFuera: alReves ? 'Duplicar está bien una vez; AB es el doble de CM, no su cuádruple.' : 'Partir en dos está bien una vez; CM ya es la mitad de AB, no su cuarta parte.' },
         { id: 'resta', valor: alReves ? cmv + 2 : ab - 2, error: 'GE-CON44', siFuera: 'Comparar CM con AB está bien; la relación es la mitad, no una resta.' },
       ], cm);
       if (ops.length < 4) continue;
@@ -2347,7 +2409,8 @@
       const v = pide === 'ACM' ? a : 90 - a, dadoV = conA ? 'A' : 'B', dadoVal = conA ? a : 90 - a;
       const ang = [conA ? { en: 'A', de: 'B', a: 'C', color: 'h', texto: gr(a), radio: 20 } : { en: 'B', de: 'C', a: 'A', color: 'h', texto: gr(90 - a), radio: 20 },
         pide === 'ACM' ? { en: 'C', de: 'A', a: 'M', texto: '?', radio: 24 } : { en: 'C', de: 'M', a: 'B', texto: '?', radio: 24 }];
-      const F = figRect(a, { ang, alt: `Triángulo ABC con el ángulo recto en C y la mediana CM. El ángulo ${dadoV} mide ${dadoVal}° y el ángulo ${pide} lleva «?».` });
+      // (M2: se dibuja con otro ángulo en A, para que lo pedido no se mida con transportador.)
+      const F = figRect(a <= 45 ? a + 14 : a - 14, { sinEscala: true, ang, alt: `Triángulo ABC con el ángulo recto en C y la mediana CM. El ángulo ${dadoV} mide ${dadoVal}° y el ángulo ${pide} lleva «?». El dibujo no está a escala.` });
       if (!cabe(F)) continue;
       const ops = opciones(v, [
         { id: 'comp', valor: 90 - v, error: 'GE-CON54', siFuera: `Ver un isósceles está bien; pero ${pide} copia el ángulo del otro extremo, el de ${pide === 'ACM' ? 'A' : 'B'}.` },
@@ -2356,7 +2419,7 @@
         { id: 'resto', valor: 180 - 2 * v, error: 'GE-CON57', siFuera: 'Eso mide el ángulo de M en el isósceles; se pide el de C.' },
       ].filter(d => d.valor > 0 && d.valor < 180), gr);
       if (ops.length < 4) continue;
-      return { pregunta: `En △ABC, recto en C, M es el punto medio de la hipotenusa AB. Si m∠${dadoV} = ${dadoVal}°, ¿cuánto mide el ángulo ${pide}?`,
+      return { pregunta: `En △ABC, recto en C, M es el punto medio de la hipotenusa AB. Si m∠${dadoV} = ${dadoVal}°, ¿cuánto mide el ángulo ${pide}?${NO_ESC}`,
         datos: [D_MH, D_ISO, D_SUMA], dibujo: fig(F), opciones: ops,
         solucion: { texto: `MC = M${pide[0]}: △${pide[0]}MC es isósceles y copia el ángulo de ${pide[0]}.`, ecuacion: junto(`m∠${pide} = m∠${pide[0]} = ${gr(v)}`) } };
     }
@@ -2375,7 +2438,7 @@
         { id: 'x', valor: x, error: 'GE-CON30', siFuera: `Hallar x = ${x} está bien; falta reemplazarlo en CM.` },
         { id: 'ab', valor: ab, error: 'GE-CON11', siFuera: `${cm(ab)} es AB; CM es la mitad.` },
         { id: 'igual', valor: Number.isInteger(xMal) ? xMal + p : NaN, error: 'GE-CON13', siFuera: 'Igualar CM con AB olvida que CM es la mitad: el doble de CM es AB.' },
-        { id: 'otro', valor: mv + 1, error: 'GE-TRI15', siFuera: 'Plantear 2·CM = AB está bien; revisa el despeje: con la x correcta, 2·CM da AB.' },
+        { id: 'otro', valor: Number.isInteger((s + p) / (q - 2)) ? (s + p) / (q - 2) + p : NaN, error: 'GE-TRI15', siFuera: `Duplicar CM está bien; pero el doble de x + ${p} es 2x + ${2 * p}: el número también se duplica.` },
       ], cm);
       if (ops.length < 4) continue;
       return { pregunta: `En △ABC, recto en C, CM es la mediana relativa a la hipotenusa. Si CM = ${e1} y AB = ${e2}, en centímetros, ¿cuánto mide CM?`,
@@ -2467,8 +2530,8 @@
       { texto: 'Compruebo: CM = 7 cm y AB = 14 cm.' }],
     respuesta: ['x = ', dF('5')] });
   EJ5.push({ nivel: 2, titulo: 'El ángulo en M',
-    figura: fig(figRect(25, { ang: [{ en: 'A', de: 'B', a: 'C', color: 'h', radio: 26 }, { en: 'M', de: 'B', a: 'C', texto: '?', radio: 18 }], alt: 'Triángulo ABC recto en C con la mediana CM. El ángulo A, de 25°, lleva su arco, y el ángulo BMC lleva «?».' })),
-    enunciado: 'En △ABC, recto en C, M es el punto medio de la hipotenusa AB y m∠A = 25°. ¿Cuánto mide el ángulo BMC?',
+    figura: fig(figRect(36, { sinEscala: true, ang: [{ en: 'A', de: 'B', a: 'C', color: 'h', radio: 26 }, { en: 'M', de: 'B', a: 'C', texto: '?', radio: 18 }], alt: 'Triángulo ABC recto en C con la mediana CM. El ángulo A, de 25°, lleva su arco, y el ángulo BMC lleva «?». El dibujo no está a escala.' })),
+    enunciado: 'En △ABC, recto en C, M es el punto medio de la hipotenusa AB y m∠A = 25°. ¿Cuánto mide el ángulo BMC? El dibujo no está a escala.',
     datos: [D_MH, D_ISO, D_EXT],
     solucion: [{ texto: 'MC = MA: en △AMC, m∠ACM = m∠A = 25°.' },
       { texto: 'BMC es exterior de △AMC, junto a M.', ecuacion: junto(['m∠BMC = 25° + 25° = ', dF('50°')]) }],
@@ -2488,10 +2551,10 @@
       { texto: 'Mide siempre la mitad de la escalera.', ecuacion: junto(['CM = 5 ÷ 2 = ', dF('2,5 m')]) }],
     respuesta: ['Siempre a ', dF('2,5 m')] });
   EJ5.push({ nivel: 2, titulo: 'Un ángulo doble que el otro',
-    figura: fig(figRect(30, { ang: [{ en: 'C', de: 'A', a: 'M', color: 'h', radio: 24 }, { en: 'C', de: 'M', a: 'B', color: 'h', marcas: 2, radio: 30 }, { en: 'A', de: 'B', a: 'C', texto: '?', radio: 26 }], alt: 'Triángulo ABC recto en C con la mediana CM, que parte el recto en dos: el ángulo BCM es el doble del ACM. El ángulo A lleva «?».' })),
-    enunciado: 'En △ABC, recto en C, la mediana CM parte el ángulo recto en dos, y m∠BCM es el doble de m∠ACM. ¿Cuánto mide el ángulo A?',
+    figura: fig(figRect(40, { sinEscala: true, ang: [{ en: 'C', de: 'A', a: 'M', color: 'h', radio: 24 }, { en: 'C', de: 'M', a: 'B', color: 'h', marcas: 2, radio: 30 }, { en: 'A', de: 'B', a: 'C', texto: '?', radio: 26 }], alt: 'Triángulo ABC recto en C con la mediana CM, que parte el recto en dos: el ángulo BCM es el doble del ACM. El ángulo A lleva «?». El dibujo no está a escala.' })),
+    enunciado: 'En △ABC, recto en C, la mediana CM parte el ángulo recto en dos, y m∠BCM es el doble de m∠ACM. ¿Cuánto mide el ángulo A? El dibujo no está a escala.',
     datos: [D_MH, D_ISO],
-    solucion: [{ texto: 'Con m∠ACM = a, el recto es a + 2a.', ecuacion: [junto('3a = 90°'), FL, junto('a = 30°')] },
+    solucion: [{ texto: 'Con m∠ACM = x, el recto es x + 2x.', ecuacion: [junto('3x = 90'), FL, junto('x = 30')] },
       { texto: 'MC = MA: el isósceles AMC copia el ángulo de A.', ecuacion: junto(['m∠A = m∠ACM = ', dF('30°')]) }],
     respuesta: ['m∠A = ', dF('30°')] });
 
@@ -2513,7 +2576,7 @@
     solucion: [{ texto: 'La hipotenusa mide el doble de la mediana.', ecuacion: junto('AB = 2 · 5 = 10 cm') },
       { texto: 'AC es un cateto: es menor que la hipotenusa, nunca igual.', ecuacion: junto('AC < 10 cm') },
       { texto: 'El mayor entero menor que 10 es 9.', ecuacion: junto(['AC = ', dF('9 cm')]) },
-      { texto: 'Las otras: 10 cm es el valor límite, AB; 5 cm y 4 cm toman CM como tope; 14 cm suma lados.' }],
+      { texto: 'Las otras: 10 cm es el valor límite, AB; 5 cm y 4 cm toman CM como tope; 14 cm suma el cateto de 9 cm y la mediana.' }],
     respuesta: ['AC = ', dF('9 cm')] });
   EJ5.push({ nivel: 3, titulo: 'Un ángulo con x',
     figura: fig(figRect(39, { ang: [{ en: 'A', de: 'B', a: 'C', color: 'h', radio: 26 }, { en: 'C', de: 'M', a: 'B', color: 'h', marcas: 2, radio: 26 }], alt: 'Triángulo ABC recto en C con la mediana CM. El ángulo A mide 2x + 5° y el ángulo MCB, 3x.' })),
@@ -2606,8 +2669,9 @@
       ],
       dibujo: fig(figEscalera(P110.A, P110.B, { pared: 110, cm: '?', manija: false, vista: { x: [-1.8, 3.6], y: [-0.9, 3.4] }, alt: 'La pared inclinada hacia afuera forma 110° con el piso en la esquina C. La escalera AB, de 4 m, se apoya en los dos; M es su mitad y CM lleva «?».' })),
       revelar: fig(figEscalera(P110.A, P110.B, { pared: 110, cm: `≈ ${f(CM110)} m`, manija: false, vista: { x: [-1.8, 3.6], y: [-0.9, 3.4] }, alt: `Con la pared a 110°, la escalera de 4 m deja la mitad M a unos ${f(CM110)} m de la esquina: menos de 2 m.` })),
-      coincide: `Coincide: con la esquina de 110°, CM mide unos ${f(CM110)} m, menos que la mitad de la escalera.`,
-      noCoincide: `Revisemos: con la esquina de 110°, CM mide unos ${f(CM110)} m. Solo con la esquina recta mide 2 m.`,
+      // (Auditoría del 19 nov, M15: el número es el del dibujo, con el pie a 2 m; con 110°, CM queda bajo 2 m en toda posición.)
+      coincide: `Coincide: en el dibujo, con el pie a 2 m, CM mide unos ${f(CM110)} m, menos que la mitad de la escalera.`,
+      noCoincide: `Revisemos: en el dibujo, con el pie a 2 m, CM mide unos ${f(CM110)} m. Solo con la esquina recta mide 2 m.`,
     },
     mira: {
       pieza: GO,
@@ -2638,9 +2702,10 @@
         const r = azar(s + 900);
         if (s % 2 === 0) {
           let a, F;
-          for (let i = 0; ; i++) { a = r.ent(18, 40); F = figRect(a, { ang: [{ en: 'A', de: 'B', a: 'C', color: 'h', radio: 26 }, { en: 'M', de: 'B', a: 'C', texto: '?', radio: 18 }], alt: `Triángulo ABC recto en C con la mediana CM. El ángulo A, de ${a}°, lleva su arco, y el ángulo BMC lleva «?».` }); if (cabe(F) || i > 200) break; }
+          // (M2: el dibujo, con otro ángulo en A y sin escala; M3: sin el caso del ejemplo «El ángulo en M», de 25°.)
+          for (let i = 0; ; i++) { a = r.ent(18, 40); F = figRect(a + 12, { sinEscala: true, ang: [{ en: 'A', de: 'B', a: 'C', color: 'h', radio: 26 }, { en: 'M', de: 'B', a: 'C', texto: '?', radio: 18 }], alt: `Triángulo ABC recto en C con la mediana CM. El ángulo A, de ${a}°, lleva su arco, y el ángulo BMC lleva «?». El dibujo no está a escala.` }); if ((cabe(F) && a !== 25) || i > 200) break; }
           return {
-            enunciado: `En △ABC, recto en C, M es el punto medio de la hipotenusa AB y m∠A = ${a}°. ¿Cuánto mide el ángulo BMC?`,
+            enunciado: `En △ABC, recto en C, M es el punto medio de la hipotenusa AB y m∠A = ${a}°. ¿Cuánto mide el ángulo BMC?${NO_ESC}`,
             datos: [D_MH, D_ISO, D_EXT],
             dibujo: fig(F),
             pasos: [
@@ -2673,7 +2738,7 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Busca el ángulo recto y el punto medio de la hipotenusa.',
-      generar(s) { return conCuatro([casoMediana, casoIsoAng, casoMedX, casoMedAltura, casoEntero][s % 5], azar(s + 7)); },
+      generar(s) { return conCuatro([casoMediana, casoIsoAng, casoMedX, casoMedAltura, casoEntero][s % 5], azar(s + 7), firmasDe(EJ5)); },
     },
   };
 
@@ -2763,19 +2828,22 @@
   // Tipo 1: el de 37° y 53°, con números enteros (un cable, una rampa, una escalera).
   function casoN37(r) {
     for (let i = 0; i < 400; i++) {
-      const k = r.ent(2, 8), [m, M, h] = [3 * k, 4 * k, 5 * k], cosa = r.de(['cable', 'rampa', 'escalera']), pide = r.de(['alto', 'piso']);
+      const k0 = r.ent(2, 8), cosa = r.de(['cable', 'rampa', 'escalera']), pide = r.de(['alto', 'piso']);
+      // Medidas creíbles (auditoría del 19 nov, M4): escalera de 5 m o 10 m, rampa de hasta 20 m, cable de hasta 40 m.
+      const k = cosa === 'escalera' ? 1 + (k0 % 2) : cosa === 'rampa' ? 1 + (k0 % 4) : k0, [m, M, h] = [3 * k, 4 * k, 5 * k];
       // El ángulo con el piso: 37° (alto = 3k) o 53° (alto = 4k).
       const ang = r.de([37, 53]), alto = ang === 37 ? m : M, piso = ang === 37 ? M : m, v = pide === 'alto' ? alto : piso;
       const otro = pide === 'alto' ? piso : alto;
       const ops = opciones(v, [
         { id: 'otro', valor: otro, error: 'GE-CON63', siFuera: `${otro} m es el otro cateto: frente a 37° va 3k y frente a 53°, 4k.` },
-        { id: 'hip', valor: h, error: 'GE-CON64', siFuera: `${h} m es el largo del ${cosa}, la hipotenusa.` },
+        { id: 'hip', valor: h, error: 'GE-CON64', siFuera: `${h} m es el largo ${cosa === 'cable' ? 'del cable' : cosa === 'rampa' ? 'de la rampa' : 'de la escalera'}, la hipotenusa.` },
         { id: 'mitad', valor: h / 2, error: 'GE-CON14', siFuera: 'La mitad de la hipotenusa vale frente a 30°, no frente a 37° ni 53°.' },
         { id: 'resta', valor: h - otro, error: 'GE-CON65', siFuera: 'Los lados no se restan: guardan la razón 3 : 4 : 5.' },
       ], n => `${f(n)} m`);
       if (ops.length < 4) continue;
-      const sujeto = { cable: 'Un cable tenso va del techo de un poste al piso', rampa: 'Una rampa recta sube desde el piso', escalera: 'Una escalera está apoyada en una pared' }[cosa];
-      return { pregunta: `${sujeto}, mide ${h} m y forma ${ang}° con el piso. ¿A qué ${pide === 'alto' ? 'altura llega' : 'distancia de la base queda su pie'}?`,
+      const sujeto = { cable: 'Un cable tenso va de la punta de un poste al piso', rampa: 'Una rampa recta sube desde el piso', escalera: 'Una escalera está apoyada en una pared' }[cosa];
+      const preg = { cable: ['¿Cuánto mide el poste?', '¿A qué distancia del poste llega al piso?'], rampa: ['¿A qué altura llega?', '¿Cuánto avanza por el piso?'], escalera: ['¿A qué altura de la pared llega?', '¿A qué distancia de la pared queda su pie?'] }[cosa][pide === 'alto' ? 0 : 1];
+      return { pregunta: `${sujeto}, mide ${h} m y forma ${ang}° con el piso. ${preg}`,
         datos: [D_N37, 'El ángulo de 90° está entre el piso y la vertical.'], opciones: ops,
         solucion: { texto: `Es el notable de 37° y 53° con 5k = ${h} m: k = ${k}. Frente a ${pide === 'alto' ? ang : 90 - ang}° va ${v === m ? '3k' : '4k'}.`, ecuacion: junto(`${v === m ? '3' : '4'} · ${k} = ${v} m`) } };
     }
@@ -2895,7 +2963,7 @@
   EJ6.push({ nivel: 2, titulo: 'Desde la hipotenusa',
     figura: fig(figNot('45-45', 4 * S2, { examen: true, textos: ['?', '', '8 cm'], alt: 'Triángulo rectángulo de 45° y 45°, recto en C, con la hipotenusa AB de 8 cm; el cateto CA lleva «?».' })),
     enunciado: 'En un triángulo rectángulo de 45° y 45°, la hipotenusa mide 8 cm. ¿Cuánto mide cada cateto?',
-    datos: [D_N45, 'Dividir entre √2 es multiplicar por √2 y dividir entre 2: 8 ÷ √2 = 8√2 ÷ 2.'],
+    datos: [D_N45, 'Dividir entre √2 es multiplicar por √2 y dividir entre 2.'],
     solucion: [{ texto: 'La hipotenusa es k√2 = 8 cm: el cateto k es la hipotenusa entre √2.', ecuacion: junto('k = 8 ÷ √2 = 8√2 ÷ 2') },
       { texto: 'Simplifico.', ecuacion: junto(['k = ', dF('4√2 cm')]) }],
     respuesta: ['Cada cateto mide ', dF('4√2 cm'), ', unos 5,7 cm'] });
@@ -2909,7 +2977,7 @@
   EJ6.push({ nivel: 2, titulo: 'La cinta del albañil',
     figura: fig(figNot('37-53', 2, { examen: true, sinAng: true, textos: ['6 m', '8 m', '?'], alt: 'La esquina C de una obra: un lado de 6 m y otro de 8 m forman el ángulo recto; la diagonal AB lleva «?».' })),
     enunciado: 'Para sacar una esquina recta, un albañil marca 6 m en una pared y 8 m en la otra. ¿Cuánto debe medir la diagonal entre las dos marcas?',
-    datos: [D_PIT],
+    datos: [D_N37, D_PIT],
     solucion: [{ texto: '6 y 8 son 3k y 4k con k = 2: la hipotenusa es 5k.', ecuacion: junto('5 · 2 = 10') },
       { texto: 'Compruebo con Pitágoras.', ecuacion: junto(['6² + 8² = 36 + 64 = 100 = 10²']) }],
     respuesta: ['La diagonal mide ', dF('10 m')] });
@@ -2934,7 +3002,7 @@
     datos: [D_N37, 'El poste es vertical: forma 90° con el piso.'],
     solucion: [{ texto: 'Poste, piso y cable forman el notable de 37° y 53°. El cable es la hipotenusa: 5k = 15 m, k = 3.' },
       { texto: 'El poste queda frente al ángulo de 37°: le toca 3k.', ecuacion: junto(['CA = 3 · 3 = ', dF('9 m')]) },
-      { texto: 'Las otras: 7,5 m usa la mitad, que es frente a 30°; 12 m es 4k, el piso; 15 m es el cable; 20 m toma 15 m como 3k.' }],
+      { texto: 'Las otras: 7,5 m usa la mitad, que va frente a 30°; 12 m es el piso; 15 m es el cable; 20 m hace 3k = 15.' }],
     respuesta: ['El poste mide ', dF('9 m')] });
   EJ6.push({ nivel: 3, titulo: 'La altura que parte en dos',
     figura: fig(figAltura(45, 37, 12, { alt: 'Triángulo ABC con m∠A = 45° y m∠C = 37°. La altura BH (naranja) mide 12 cm; AC lleva «?».' })),
@@ -2970,7 +3038,7 @@
     solucion: [{ texto: '△DBC es de 45° y 45°: BD = BC = 12 m.' },
       { texto: '△ABC es de 37° y 53°, con BC frente a 37°: BC = 3k = 12, k = 4. AB = 4k.', ecuacion: junto('AB = 4 · 4 = 16 m') },
       { texto: 'AD es lo que le sobra a AB.', ecuacion: junto(['AD = 16 − 12 = ', dF('4 m')]) },
-      { texto: 'Las otras: 16 m es AB entero; 12 m es BD; 9 m pone BC = 4k; 8 m resta la mitad.' }],
+      { texto: 'Las otras: 16 m es AB entero; 12 m es BD; 9 m es AB con BC = 4k, sin restar; 8 m es la mitad de AB.' }],
     respuesta: ['AD = ', dF('4 m')] });
   EJ6.push({ nivel: 3, titulo: 'La mediana del de 30°',
     figura: fig(figRect(30, { lados: [{ de: 'A', a: 'B', texto: '16 cm', ref: 'C', dist: 7 }], ang: [{ en: 'A', de: 'B', a: 'C', color: 'h', radio: 26 }], alt: 'Triángulo ABC recto en C, con el ángulo A de 30° (su arco) y la hipotenusa AB de 16 cm. M es el punto medio de AB y se traza CM.' })),
@@ -2980,26 +3048,29 @@
     solucion: [{ texto: 'CB queda frente a 30°: es k, la mitad de la hipotenusa.', ecuacion: junto('CB = 16 ÷ 2 = 8 cm') },
       { texto: 'CM es la mediana a la hipotenusa y MB es la mitad de AB: los dos miden 8 cm.' },
       { texto: 'Sumo los tres lados de △CMB.', ecuacion: junto(['8 + 8 + 8 = ', dF('24 cm')]) },
-      { texto: 'Las otras: 16 cm olvida un lado; 8√3 cm es el cateto AC; 32 cm suma AB y CB; 20 cm toma CM = 4 cm.' }],
+      { texto: 'Las otras: 16 cm olvida un lado; 8√3 cm es el cateto AC; 32 cm toma CM = 16 cm, la hipotenusa entera; 20 cm toma CM = 4 cm.' }],
     respuesta: ['Perímetro = ', dF('24 cm')] });
 
   // «La regla»: las tres escuadras, cada una con sus lados en k.
   function figRegla6() {
     // Dos filas para que cada escuadra se vea grande a 390 px: arriba la de 45° y la de 30° y 60°; abajo, la de 37° y 53°.
     const partes = [], pos = [[0, 4.4], [4.6, 4.4], [2.1, 0]], tipos = ['45-45', '30-60', '37-53'], esc = [3, 2, 1];
-    const lados = [], escs = [], arcos = [];
+    const lados = [], escs = [], arcos = [], libres = [];
     tipos.forEach((tp, j) => {
       const [m, M] = NOT[tp].lados(esc[j]).map(val), C = pos[j], A = [C[0], C[1] + m], B = [C[0] + M, C[1]], id = x => `${x}${j}`;
       partes.push({ puntos: [{ id: id('A'), x: A[0], y: A[1], sinPunto: true }, { id: id('B'), x: B[0], y: B[1], sinPunto: true }, { id: id('C'), x: C[0], y: C[1], sinPunto: true }],
         segmentos: [{ de: id('C'), a: id('A'), color: 'o', grosor: 'variable' }, { de: id('C'), a: id('B'), color: 'i', grosor: 'variable' }, { de: id('A'), a: id('B') }] });
       arcos.push({ en: id('C'), de: id('B'), a: id('A'), color: 'h', radio: 9, mide: 90 });
+      // (Auditoría del 19 nov, M12: los ángulos de cada escuadra, escritos encima de ella; como arcos con número no caben en
+      // escuadras tan chicas.)
+      libres.push(Object.assign({ dist: 5, texto: { '45-45': '45° y 45°', '30-60': '30° y 60°', '37-53': '37° y 53°' }[tp], color: 'h' }, tp === '37-53' ? { en: id('C'), dir: 270 } : { en: id('A'), dir: 90 }));
       const T = { '45-45': ['k', 'k', 'k√2'], '30-60': ['k', 'k√3', '2k'], '37-53': ['3k', '4k', '5k'] }[tp];
       lados.push({ de: id('C'), a: id('A'), texto: T[0], color: 'o', ref: id('B'), dist: 5 }, { de: id('C'), a: id('B'), texto: T[1], color: 'i', ref: id('A'), dist: 5 }, { de: id('A'), a: id('B'), texto: T[2], ref: id('C'), dist: 5 });
       escs.push({ puntos: [id('A'), id('B'), id('C')] });
     });
     const fg = { alt: 'Las tres escuadras notables, con la esquina recta abajo a la izquierda: la de 45° con lados k, k y k√2; la de 30° y 60° con k, k√3 y 2k; y la de 37° y 53° con 3k, 4k y 5k.', alto: 290,
       vista: { x: [-1.1, 9.1], y: [-1.2, 7.9] }, puntos: partes.flatMap(p => p.puntos), segmentos: partes.flatMap(p => p.segmentos), angulos: arcos };
-    return { objeto: 'armazon', tipo: 'escuadras', figura: fg, escuadras: escs, ladosRot: lados };
+    return { objeto: 'armazon', tipo: 'escuadras', figura: fg, escuadras: escs, ladosRot: lados, libres };
   }
 
   const notables = {
@@ -3014,7 +3085,7 @@
     // (es la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Las escuadras', texto: 'Las escuadras del juego de geometría son triángulos rectángulos con ángulos fijos: 30° y 60° una, 45° y 45° la otra. Por eso se llaman notables: sus lados guardan siempre la misma razón.',
+        { titulo: 'Las escuadras', texto: 'Las escuadras del juego de geometría son triángulos rectángulos con ángulos fijos: 30° y 60° una, 45° y 45° la otra. Hay un tercer notable, de 37° y 53°. Sus lados guardan siempre la misma razón.',
           pieza: GO, dibujo: fig(figNot('30-60', 3, { alt: 'Una escuadra de 30° y 60° del juego de geometría, con la esquina recta en C.' })) },
         { titulo: 'La letra k', texto: 'En un notable, cada lado se escribe como un múltiplo de un mismo número k. Si la escuadra crece al doble, k también: la forma no cambia, solo el tamaño.' },
         { titulo: 'Pitágoras, como dato', texto: 'En todo triángulo rectángulo, el cuadrado de la hipotenusa es la suma de los cuadrados de los catetos: 3² + 4² = 9 + 16 = 25 = 5². Lo verás probado en Relaciones métricas.' },
@@ -3036,7 +3107,7 @@
         { s: dO('CA'), t: 'el borde corto (cateto menor)' },
         { s: dI('CB'), t: 'el otro borde de la esquina' },
         { s: 'AB', t: 'el borde largo (hipotenusa)' },
-        { s: 'k', t: 'el tamaño de la escuadra' },
+        { s: 'k', t: 'el número que multiplica a cada borde' },
       ],
       controles: [
         { id: 'tipo', etiqueta: 'Escuadra', opciones: [{ valor: '37-53', texto: '37° y 53°' }, { valor: '30-60', texto: '30° y 60°' }], inicio: '37-53' },
@@ -3127,7 +3198,7 @@
     ahoraTu: {
       pieza: GO,
       voz: 'Primero los ángulos: ¿qué notable es? Después, el valor de k.',
-      generar(s) { return conCuatro([casoCompletar, casoN37, casoCual, casoIso120, casoAltura][s % 5], azar(s + 7)); },
+      generar(s) { return conCuatro([casoCompletar, casoN37, casoCual, casoIso120, casoAltura][s % 5], azar(s + 7), firmasDe(EJ6)); },
     },
   };
 
@@ -3210,7 +3281,7 @@
     id: 'pozo', titulo: 'El pozo entre dos caseríos', pieza: GO,
     consigna: 'Mueve el pozo P a cualquier lugar. Compara los caminos PA y PB.',
     controles: [
-      { id: 'dx', etiqueta: 'P a los lados, en km', min: -2.5, max: 2.5, paso: 0.5, inicio: -1, unidad: 'km', decimales: 1 },
+      { id: 'dx', etiqueta: 'P a los lados de M, en km', min: -2.5, max: 2.5, paso: 0.5, inicio: -1, unidad: 'km', decimales: 1 },
       { id: 'y', etiqueta: 'P a lo alto, sobre AB, en km', min: 1, max: 5, paso: 1, inicio: 3, unidad: 'km', decimales: 0 },
     ],
     dibujo: v => ({ datos: figMapa(v), estado: {} }),
@@ -3267,7 +3338,8 @@
     const C = [cx, cy], ang = U.angulo(C, [-5, 0], [5, 0]);
     return { alt: `C en (${f(cx)}; ${f(cy)}): ángulo en C de ${f(ang, 0)}° y mediana CM de ${f(Math.hypot(cx, cy))} m`, vista: { x: [-5.8, 5.8], y: [-1.6, 7.6] },
       puntos: [{ id: 'A', x: -5, y: 0, rotulo: 'A', lado: 180 }, { id: 'B', x: 5, y: 0, rotulo: 'B', lado: 0 }, { id: 'M', x: 0, y: 0, rotulo: 'M', lado: -90 }, { id: 'C', x: cx, y: cy, rotulo: 'C', lado: 90 }],
-      arcos: [{ centro: [0, 0], r: 5, de: 0, a: 180, discontinua: true }],
+      // (Auditoría del 19 nov, M13: sin la circunferencia de diámetro AB, que es de Circunferencia; se compara el ángulo en C
+      // con CM.)
       segmentos: [{ de: 'A', a: 'B' }, { de: 'A', a: 'C' }, { de: 'B', a: 'C' }, { de: 'C', a: 'M', color: 'i', grosor: 'variable' }],
       angulos: [{ en: 'C', de: 'A', a: 'B', color: 'h', texto: `${f(ang, 0)}°` }] };
   };
@@ -3277,7 +3349,7 @@
   for (let i = 0; i <= 18; i++) for (let j = 0; j <= 13; j++) C_MAX = Math.max(C_MAX, anguloC({ cx: -4.5 + i / 2, cy: 0.5 + j / 2 }));
   const mesaSemi = {
     id: 'c-libre', titulo: 'La esquina que se abre', pieza: 'geo-figura',
-    consigna: 'Arrastra C. La punteada es la circunferencia de diámetro AB. Compara el ángulo en C con la mediana CM.',
+    consigna: 'Arrastra C, con AB = 10 m fija. Compara el ángulo en C con la mediana CM.',
     controles: [
       { id: 'cx', etiqueta: 'C a lo ancho, en m', min: -4.5, max: 4.5, paso: 0.5, inicio: 3, unidad: 'm', decimales: 1 },
       { id: 'cy', etiqueta: 'C a lo alto, en m', min: 0.5, max: 7, paso: 0.5, inicio: 4, unidad: 'm', decimales: 1 },
@@ -3286,7 +3358,7 @@
     arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i', donde: v => enPantalla(semiLibre(v.cx, v.cy), [v.cx, v.cy]), mover: (pt, v) => { const q = alPlano(semiLibre(v.cx, v.cy), pt); return { cx: q[0], cy: q[1] }; } }],
     lectura: v => [dH(junto(`m∠C = ${f(anguloC(v), 0)}°`)), ' y ', dI(junto(`CM = ${f(medianaCM(v))} m`)), junto('; AB ÷ 2 = 5 m')],
     invitaciones: [
-      { texto: 'Busca otro lugar de C donde la mediana CM mida justo 5 m.', logrado: v => Math.abs(medianaCM(v) - 5) < 1e-9 && !(v.cx === 3 && v.cy === 4), bien: 'CM = 5 m y el ángulo en C vuelve a 90°: van siempre juntos.' },
+      { texto: 'Busca otro lugar de C donde la mediana CM mida justo 5 m.', logrado: v => Math.abs(medianaCM(v) - 5) < 1e-9 && !(v.cx === 3 && v.cy === 4), bien: 'CM = 5 m y m∠C = 90°: C está en la circunferencia de diámetro AB.' },
       { texto: 'Aleja C hasta que el ángulo en C quede agudo.', logrado: v => anguloC(v) < 90 - 1e-9, bien: 'Ángulo agudo y CM mayor que 5 m.' },
       { texto: 'Haz el ángulo en C lo más abierto que permite la mesa.', logrado: v => Math.abs(anguloC(v) - C_MAX) < 1e-9, bien: 'Pegado a AB, el ángulo casi llega a 180° y CM se encoge.' },
       { texto: 'Guarda un caso con CM menor que 5 m y otro mayor. Compara sus ángulos.',
@@ -3313,7 +3385,9 @@
 
   return {
     unidad: 'geometria.congruencia',
-    version: '0.4.0',
+    version: '0.5.0',
+    // Pasó el lector en frío y el auditor (19 nov): calidad 2, y el validador común lo exige.
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-objeto.js'],
     historia: {

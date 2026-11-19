@@ -136,3 +136,28 @@ test('papel: 8 problemas del generador, de las seis ideas, con «Datos:» al fin
   });
   assert.equal(ideas.size, 6, 'el papel cubre las seis ideas');
 });
+
+// ---------- Correcciones de la auditoría (19 nov; rutinas/auditoria/geometria.congruencia.md) ----------
+test('auditoría A1: un caso LLA que responde «no basta» da de verdad dos triángulos (BC entre la distancia de B a la recta y AB)', () => {
+  let n = 0;
+  for (let s = 0; s < 1000; s++) {
+    const p = gen.generar(s, { tipo: 'criterio' }), q = sinDuros(plano(p.enunciado));
+    const m = /AB = DE = (\d+) cm; BC = EF = (\d+) cm; m∠A = m∠D = (\d+)°/.exec(q);
+    if (!m) continue;
+    n++;
+    const c = +m[1], a = +m[2], h = c * Math.sin(+m[3] * RAD);
+    assert.ok(a > h + 1e-9 && a < c - 1e-9, `semilla ${s}: ${q} no da dos triángulos`);
+    assert.equal(p.alternativas.find(x => x.correcta).texto, 'Ninguno: esos datos no bastan');
+  }
+  assert.ok(n > 50, `${n} casos LLA`);
+});
+
+test('auditoría M4: escaleras de 5 m o 10 m y rampas de hasta 20 m; la pregunta dice desde dónde', () => {
+  for (let s = 0; s < 1000; s++) {
+    const p = gen.generar(s, { tipo: 'n37' }), q = sinDuros(plano(p.enunciado) + ' ' + plano(p.pregunta));
+    const m = /^(Una escalera|Una rampa|Un cable)[^,]*, mide (\d+) m/.exec(q);
+    assert.ok(m, q);
+    assert.ok(+m[2] <= { 'Una escalera': 10, 'Una rampa': 20, 'Un cable': 40 }[m[1]], q);
+    assert.doesNotMatch(q, /distancia de la base/);
+  }
+});

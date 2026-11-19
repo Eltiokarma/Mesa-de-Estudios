@@ -29,7 +29,7 @@ test('las seis ideas de la propuesta, en orden; se conservan los id de antes, su
   // Las tres mesas de antes conservan su id; dos nuevas (el pozo y las escuadras). Una por idea, salvo la idea 2.
   assert.deepEqual(def.laboratorio.map(m => m.id), ['compas-lla', 'pozo', 'base-libre', 'c-libre', 'escuadras']);
   assert.ok(def.ideas.every(i => Teoria.palabras(i.titulo) <= 6));
-  assert.notEqual(def.calidad, 2, 'la sesión marca calidad 2 después del lector en frío y el auditor');
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   const p = Teoria.problemas(def, { temas: TEMAS, semillas: SEMILLAS });
   assert.deepEqual(p, [], p.join('\n'));
 });
@@ -379,7 +379,8 @@ test('ideas 2 a 6, fidelidad: cada ángulo mide lo que dice su rótulo (±0,5°)
     // (Una medida con «≈» está redondeada a la décima: su error relativo llega a 0,05 ÷ la medida.)
     for (const [k, t, e] of esc) assert.ok(Math.abs(k / esc[0][0] - 1) < 0.01 + e + esc[0][2], `${it.donde}: «${t}» no va a la escala de «${esc[0][1]}»`);
   }
-  assert.ok(ang > 1000 && lados > 1500, `${ang} ángulos y ${lados} lados comprobados`);
+  // (19 nov, auditoría M2: las figuras cuyo ángulo pedido se mediría van sin escala y salen de esta cuenta.)
+  assert.ok(ang > 600 && lados > 1500, `${ang} ángulos y ${lados} lados comprobados`);
 });
 
 test('ideas 2 a 6, rótulos: caben, no pisan nada y cada rótulo de ángulo queda más cerca de su vértice que de otro', () => {
@@ -456,7 +457,7 @@ function rehacer3(i, c) {
     if ((m = /forman un triángulo de lados (.+)\. ¿Cuánto mide el perímetro de △ABC/.exec(q))) return `${Kit.formatear(2 * [...m[1].matchAll(/(\d+(?:,\d+)?) cm/g)].reduce((s, x) => s + num(x[1]), 0), 2)} cm`;
     if ((m = /tiene lados de (\d+) cm, (\d+) cm y (\d+) cm\. M, N y P/.exec(q))) return `${Kit.formatear((+m[1] + +m[2] + +m[3]) / 2, 2)} cm`;
     if ((m = /BC = (\d+) cm\. M y N son los puntos medios de AB y AC; Q y R/.exec(q))) return `${Kit.formatear(+m[1] / 4, 2)} cm`;
-    if ((m = /m∠B = (\d+)°\. ¿Cuánto mide el ángulo AMN/.exec(q))) return `${m[1]}°`;
+    if ((m = /m∠B = (\d+)°(?: y m∠C = \d+°)?\. (?:M y N son los puntos medios de AB y AC\. )?¿Cuánto mide el ángulo AMN/.exec(q))) return `${m[1]}°`;
   }
   if (i.id === 'mediana-hipotenusa') {
     if ((m = /CM = (\d+(?:,\d+)?) cm\. ¿Cuánto mide AB/.exec(q))) return `${Kit.formatear(2 * num(m[1]), 2)} cm`;
@@ -472,7 +473,7 @@ function rehacer3(i, c) {
       const a = m[1] === '30° y 60°' ? 30 : 45, r = { 'el cateto menor CA': Math.sin(a * RAD), 'el cateto CA': Math.sin(a * RAD), 'el cateto mayor CB': Math.cos(a * RAD), 'el cateto CB': Math.cos(a * RAD), 'la hipotenusa AB': 1 };
       return valorLado(m[3]) / r[m[2]] * r[m[4]];
     }
-    if ((m = /mide (\d+) m y forma (37|53)° con el piso\. ¿A qué (altura|distancia)/.exec(q))) { const h = +m[1], sen = m[2] === '37' ? 3 / 5 : 4 / 5, cos = m[2] === '37' ? 4 / 5 : 3 / 5; return `${h * (m[3] === 'altura' ? sen : cos)} m`; }
+    if ((m = /mide (\d+) m y forma (37|53)° con el piso\. ¿(A qué altura|Cuánto mide el poste|A qué distancia|Cuánto avanza)/.exec(q))) { const h = +m[1], sen = m[2] === '37' ? 3 / 5 : 4 / 5, cos = m[2] === '37' ? 4 / 5 : 3 / 5; return `${h * (/altura|poste/.test(m[3]) ? sen : cos)} m`; }
     if ((m = /tiene lados de (.+), (.+), (.+)\. ¿Qué ángulos agudos/.exec(q))) {
       const [x, y, z] = [m[1], m[2], m[3]].map(valorLado).sort((p, q2) => p - q2);
       const ok = (p, q2) => Math.abs(p - q2) < 1e-9;
@@ -562,4 +563,158 @@ test('glosario de las ideas 2 a 6: de 2 a 4 palabras con su aproximación por id
   assert.ok(!/paralela|llega/.test(txt('base media')), 'base media');
   assert.ok(!/mitad|mediana/.test(txt('hipotenusa') + txt('cateto')), 'hipotenusa');
   assert.ok(!/√2|45/.test(txt('Pitágoras')), 'Pitágoras');
+});
+
+// ---------- Correcciones de la auditoría (19 nov; rutinas/auditoria/geometria.congruencia.md) ----------
+// Cada prueba falla con la versión de antes de corregir.
+const datosDe = F => (F && (F.datos || F)) || null;
+const ptsDe = D => Object.fromEntries(D.figura.puntos.map(q => [q.id, [q.x, q.y]]));
+// La pareja de cada vértice de ABC en el otro triángulo, por las coordenadas (la permutación que deja los lados iguales).
+function parejaPorForma(D) {
+  const p = ptsDe(D), otros = D.figura.puntos.map(q => q.id).filter(x => !'ABC'.includes(x)).slice(0, 3);
+  for (const pr of [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]) {
+    const m = { A: otros[pr[0]], B: otros[pr[1]], C: otros[pr[2]] };
+    if ([['A', 'B'], ['B', 'C'], ['A', 'C']].every(([u, v]) => Math.abs(Math.hypot(p[u][0] - p[v][0], p[u][1] - p[v][1]) - Math.hypot(p[m[u]][0] - p[m[v]][0], p[m[u]][1] - p[m[v]][1])) < 1e-4)) return m;
+  }
+  return null;
+}
+const parejaPorArcos = D => { const mk = Object.fromEntries((D.figura.angulos || []).map(a => [a.en, a.marcas])), otros = D.figura.puntos.map(q => q.id).filter(x => !'ABC'.includes(x)).slice(0, 3); return Object.fromEntries('ABC'.split('').map(v => [v, otros.find(x => mk[x] === mk[v])])); };
+
+test('auditoría A2: en la idea 2, los arcos siguen a la figura, y la regla dibuja la congruencia que escribe (△ABC ≅ △DEF)', () => {
+  const i2 = def.ideas[1];
+  const figs = [['lee', i2.lee.tarjetas[0].dibujo], ['juego inicio', i2.juega.dibujo({ giro: 150, cara: 'frente' })], ['juego misión', i2.juega.dibujo({ giro: 60, cara: 'vuelta' })], ['predice', i2.predice.dibujo], ['regla', i2.regla.dibujo]];
+  for (const [donde, F] of figs) { const D = datosDe(F); assert.deepEqual(parejaPorArcos(D), parejaPorForma(D), `${donde}: los arcos no emparejan como la forma`); }
+  const escrita = /△ABC ≅ △([D-F]{3})/.exec(plano(i2.regla.ecuacion))[1];
+  assert.deepEqual(parejaPorArcos(datosDe(i2.regla.dibujo)), { A: escrita[0], B: escrita[1], C: escrita[2] }, 'la regla dibuja otra congruencia que la que escribe');
+  for (const [donde, F] of figs.slice(0, 3).concat([['regla', i2.regla.dibujo]])) assert.deepEqual(parejaPorArcos(datosDe(F)), { A: 'D', B: 'E', C: 'F' }, `${donde}: D, E y F con otros arcos que en el juego`);
+  assert.match(plano(i2.predice.pregunta), /otro orden/, 'Predice avisa que las letras del segundo banderín van en otro orden');
+});
+
+test('auditoría M1: la lectura del juego de la idea 2 dice que es lo que caería con ese giro, y si calza', () => {
+  const j = def.ideas[1].juega;
+  for (let giro = 0; giro <= 330; giro += 30) for (const cara of ['frente', 'vuelta']) {
+    const l = plano(j.lectura({ giro, cara })), calza = giro === 60 && cara === 'vuelta';
+    assert.ok(calza ? /cada arco con su igual/.test(l) : /^Caería .*: no calza$/.test(l), l);
+  }
+});
+
+// Las figuras de ejercicio de toda la unidad, con lo que se pide y la respuesta.
+function ejercicios(N = 200) {
+  const out = [];
+  const pon = (donde, F, texto, resp) => { const D = datosDe(F); if (D && D.figura) out.push({ donde, D, texto, resp }); };
+  def.ideas.forEach((i, n) => {
+    i.ejemplos.forEach((e, k) => pon(`${i.id} ejemplo ${k + 1}`, e.figura, plano(e.enunciado), plano(e.respuesta)));
+    const nT = [5, 5, 5, 6, 5, 5][n];
+    for (let s = 0; s < N * nT; s++) { const c = i.ahoraTu.generar(s); pon(`${i.id} ahora tú ${s}`, c.dibujo, plano(c.pregunta), plano(c.opciones.find(o => o.correcta).texto)); }
+    for (let s = 0; s < N; s++) { const c = i.resuelve.generar(s); pon(`${i.id} resuelve ${s}`, c.dibujo, plano(c.enunciado), plano(c.respuesta)); }
+  });
+  return out;
+}
+const EJERCICIOS = ejercicios();
+
+test('auditoría M2: en una figura a escala, el ángulo pedido no mide la respuesta, salvo que copie un ángulo dado escrito en la misma figura', () => {
+  const mal = [];
+  for (const it of EJERCICIOS) {
+    if (it.D.sinEscala) { assert.match(it.texto, /El dibujo no está a escala\./, it.donde); continue; }
+    const p = ptsDe(it.D), r = /(\d+(?:,\d+)?)°/.exec(it.resp);
+    if (!r) continue;
+    const v = +r[1].replace(',', '.');
+    for (const a of (it.D.figura.angulos || []).filter(x => x.texto === '?' && p[x.en] && p[x.de] && p[x.a])) {
+      const m = G.util.angulo(p[a.en], p[a.de], p[a.a]);
+      const copia = (it.D.figura.angulos || []).some(x => x.texto === `${r[1]}°`);
+      if (Math.abs(m - v) < 2 && !copia) mal.push(`${it.donde}: ∠${a.de}${a.en}${a.a} mide ${m.toFixed(1)}° en el dibujo`);
+    }
+  }
+  assert.deepEqual([...new Set(mal.map(x => x.replace(/ \d+:/, ':')))].slice(0, 10), []);
+});
+
+test('auditoría M3: «Ahora tú» y «Así se resuelve» no repiten un ejemplo de su idea (mismos números y misma pregunta)', () => {
+  const firma = t => `${(t.match(/\d+(?:,\d+)?/g) || []).join(' ')}|${((t.match(/¿[^?]*\?/g) || []).pop() || '').replace(/\d+(?:,\d+)?/g, '#')}`;
+  def.ideas.forEach((i, n) => {
+    const ejs = new Set(i.ejemplos.map(e => firma(plano(e.enunciado)))), nT = [5, 5, 5, 6, 5, 5][n];
+    for (let s = 0; s < 200 * nT; s++) assert.ok(!ejs.has(firma(plano(i.ahoraTu.generar(s).pregunta))), `${i.id} ahora tú ${s}: es un ejemplo`);
+    for (let s = 0; s < 200; s++) assert.ok(!ejs.has(firma(plano(i.resuelve.generar(s).enunciado))), `${i.id} resuelve ${s}: es un ejemplo`);
+  });
+});
+
+test('auditoría M4: escaleras de 5 m o 10 m y rampas de hasta 20 m', () => {
+  const i6 = def.ideas[5];
+  for (let s = 1; s < 1000; s += 5) {
+    const q = plano(i6.ahoraTu.generar(s).pregunta), m = /^(Una escalera|Una rampa)[^,]*, mide (\d+) m/.exec(q);
+    if (m) assert.ok(+m[2] <= (m[1] === 'Una escalera' ? 10 : 20), q);
+    assert.ok(!/del escalera|techo de un poste/.test(q + plano(i6.ahoraTu.generar(s).opciones.map(o => o.siFuera || '').join(' '))), q);
+  }
+});
+
+test('auditoría M5 y M6: la regla de la idea 1 dice por qué LLA y AAA no bastan y el caso del lado fuera; Predice nombra la viga BC', () => {
+  const r = def.ideas[0].regla, t = plano(r.texto) + ' ' + plano(r.condicion);
+  assert.match(t, /dos lugares/); assert.match(t, /tamaño/); assert.match(t, /el tercero sale solo/);
+  assert.doesNotMatch(t, /no bastan; dos ángulos fijan el tercero/);
+  assert.match(plano(def.ideas[0].predice.pregunta), /la viga de 5 m es BC/);
+});
+
+test('auditoría M7 y B2: las explicaciones de las alternativas corregidas y sin las letras a, b, c como incógnita', () => {
+  const todo = def.ideas.flatMap(i => i.ejemplos.flatMap(e => e.solucion.map(x => plano(x.texto) + ' ' + plano(x.ecuacion || '')))).join(' | ');
+  for (const re of [/restan de 180° uno solo/, /suman o duplican el de 65°/, /32 cm suma AB y CB/, /9 m pone BC = 4k/, /8 m resta la mitad/, /30° reparte 90°/, /se equivocan al reemplazar/, /14 cm suma lados/, /2c \+ c|3a = 90/]) assert.doesNotMatch(todo, re);
+});
+
+test('auditoría M8: los Datos de la mediatriz valen para cualquier segmento (no dicen AB cuando el problema usa AC o BC)', () => {
+  const i3 = def.ideas[2], lineas = [];
+  i3.ejemplos.forEach(e => lineas.push([plano(e.enunciado), (e.datos || []).map(plano)]));
+  for (let s = 0; s < 1000; s++) { const c = i3.ahoraTu.generar(s); lineas.push([plano(c.pregunta), (c.datos || []).map(plano)]); }
+  for (const [q, ds] of lineas) if (/mediatriz de (AC|BC)/.test(q)) assert.ok(!ds.some(d => /mediatriz de AB/.test(d)), q);
+});
+
+test('auditoría M9: idea 3, control desde M, Mira sin K antes de dibujarla, la regla con la mediatriz y el recíproco dentro del ángulo', () => {
+  const i3 = def.ideas[2];
+  assert.match(i3.juega.controles.find(c => c.id === 'dx').etiqueta, /de M/);
+  assert.doesNotMatch(plano(i3.mira.pasos[0].ecuacion), /K/);
+  assert.match(plano(i3.regla.condicion), /dentro del ángulo/);
+  const ids = datosDe(i3.regla.dibujo).figura.puntos.map(q => q.id);
+  assert.ok(ids.includes('A') && ids.includes('B') && ids.includes('P'), 'la regla dibuja la mediatriz de AB');
+});
+
+test('auditoría M10: en la idea 5, el rótulo de AB dice qué lado mide («AB = 4 m», «AB = 14 cm»)', () => {
+  const i5 = def.ideas[4];
+  for (const F of [i5.lee.tarjetas[0].dibujo, i5.juega.dibujo({ fi: 30 }), i5.regla.dibujo]) assert.ok((datosDe(F).ladosRot || []).some(t => t.de === 'A' && t.a === 'B' && /^AB = /.test(t.texto)), 'escalera sin «AB =»');
+  let con = 0, n = 0;
+  for (let s = 0; s < 1000; s += 5) { const D = datosDe(i5.ahoraTu.generar(s).dibujo), t = D && (D.ladosRot || []).find(x => x.de === 'A' && x.a === 'B'); if (t) { n++; if (/^AB = /.test(t.texto)) con++; } }
+  assert.ok(n > 100 && con / n > 0.9, `${con} de ${n}`);
+});
+
+test('auditoría M11 y M12: el listón dice MN (no «A … del piso»); las escuadras con sus ángulos y k que multiplica', () => {
+  const j4 = def.ideas[3].juega;
+  assert.match(plano(j4.lectura({ ax: 2, ay: 3 })), /^MN = 4 m = BC ÷ 2, a 1,5 m del piso$/);
+  assert.notEqual(j4.controles[1].inicio, j4.controles[1].min);
+  assert.match(plano(def.ideas[3].lee.tarjetas[3].texto), /media altura/);
+  const i6 = def.ideas[5], libres = (datosDe(i6.regla.dibujo).libres || []).map(x => x.texto).join(' ');
+  for (const a of ['45° y 45°', '30° y 60°', '37° y 53°']) assert.ok(libres.includes(a), a);
+  assert.match(plano(i6.juega.leyenda.find(x => plano(x.s) === 'k').t), /multiplica/);
+  assert.match(plano(i6.lee.tarjetas[0].texto), /37° y 53°/);
+});
+
+test('auditoría M13 y M15: la mesa de la esquina no dibuja la circunferencia; Predice de la idea 5 dice que el 1,4 m es del dibujo', () => {
+  const mesa = def.laboratorio.find(m => m.id === 'c-libre');
+  assert.ok(!(datosDe(mesa.dibujo({ cx: 3, cy: 4 })).arcos || []).length);
+  assert.doesNotMatch(plano(mesa.consigna), /circunferencia/);
+  assert.match(plano(def.ideas[4].predice.coincide) + plano(def.ideas[4].predice.noCoincide), /en el dibujo, con el pie a 2 m.*en el dibujo, con el pie a 2 m/);
+});
+
+test('auditoría M14: ningún distractor sale de un dato que el ejercicio no da, ni dice «revisa el despeje» o «baricentro»', () => {
+  def.ideas.forEach((i, n) => {
+    const nT = [5, 5, 5, 6, 5, 5][n];
+    for (let s = 0; s < 200 * nT; s++) {
+      const c = i.ahoraTu.generar(s), q = plano(c.pregunta);
+      for (const o of c.opciones) assert.doesNotMatch(plano(o.siFuera || ''), /revisa el despeje|baricentro|de otro tema/, `${i.id} ${s}`);
+      if (c.opciones.some(o => o.error === 'GE-CON20') && /Por M se traza/.test(q)) assert.match(q, /AB = \d+ cm/, q);
+      if (c.opciones.some(o => o.error === 'GE-CON48')) assert.match(q, /m∠C = \d+°/, q);
+    }
+  });
+});
+
+test('auditoría B5 y B6: los Datos no traen la cuenta hecha (8 ÷ √2) y la cinta del albañil trae el notable que usa', () => {
+  const e6 = def.ideas[5].ejemplos;
+  assert.ok(!e6.some(e => (e.datos || []).some(d => /8 ÷ √2/.test(plano(d)))));
+  const cinta = e6.find(e => e.titulo === 'La cinta del albañil');
+  assert.ok(cinta.datos.some(d => /3k/.test(plano(d))));
 });

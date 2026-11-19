@@ -59,10 +59,10 @@
     suma: 'En todo triángulo, los tres ángulos interiores suman 180°.',
     opuestos: 'Opuestos por el vértice: miden igual.',
     iso: 'En un triángulo isósceles, los ángulos de la base miden igual.',
-    med: 'Mediatriz de AB: la recta perpendicular a AB por su punto medio.',
+    med: 'Mediatriz de un segmento: la recta perpendicular a él por su punto medio.',
     bis: 'Bisectriz de un ángulo: la recta que lo parte en dos ángulos iguales.',
     dist: 'La distancia de un punto a una recta se mide por la perpendicular.',
-    teo: 'Todo punto de la mediatriz de AB equidista de A y de B; todo punto de la bisectriz equidista de los lados.',
+    teo: 'Todo punto de la mediatriz de un segmento equidista de sus extremos; todo punto de la bisectriz, de los lados del ángulo.',
     rec: 'Y al revés: si un punto equidista de A y de B, está en la mediatriz de AB.',
     per: 'El perímetro de un triángulo es la suma de sus tres lados.',
     bm: 'Base media: el segmento que une los puntos medios de dos lados de un triángulo.',
@@ -85,7 +85,19 @@
   const CRIT = ['LAL', 'ALA', 'LLL'], NING = 'Ninguno: esos datos no bastan';
   function criterio(rng) {
     const k = rng.elegir(['LAL', 'ALA', 'LLL', 'LLA', 'AAA']);
-    const a = 5 * rng.entero(8, 14), b = 5 * rng.entero(8, 14), c1 = rng.entero(5, 9), c2 = rng.entero(4, 8), c3 = rng.entero(4, 8);
+    let a = 5 * rng.entero(8, 14);
+    const b = 5 * rng.entero(8, 14), c1 = rng.entero(5, 9);
+    let c2 = rng.entero(4, 8);
+    const c3 = rng.entero(4, 8);
+    // LLA es «no basta» solo si salen dos triángulos: BC entre la distancia de B a la recta de AC (AB · sen A) y AB, sin
+    // los extremos (auditoría del 19 nov, A1: con BC ≥ AB sale uno solo, y con BC menor que esa distancia, ninguno).
+    if (k === 'LLA') {
+      const dosDe = (ab, ang) => { const h = ab * Math.sin(ang * RAD), lo = Math.floor(h + 1e-9) + 1, hi = ab - 1; return lo <= hi ? [lo, hi] : null; };
+      if (!(c2 > (c1 + 2) * Math.sin(a * RAD) + 1e-9 && c2 < c1 + 2)) {
+        if (!dosDe(c1 + 2, a)) a = 30;
+        const [lo, hi] = dosDe(c1 + 2, a); c2 = rng.entero(lo, hi);
+      }
+    }
     const datos = { LAL: [`AB = DE = ${cm(c1)}`, `m∠A = m∠D = ${a}°`, `AC = DF = ${cm(c2)}`], ALA: [`m∠A = m∠D = ${a}°`, `AB = DE = ${cm(c1)}`, `m∠B = m∠E = ${b}°`],
       LLL: [`AB = DE = ${cm(c1 + 2)}`, `BC = EF = ${cm(c2)}`, `AC = DF = ${cm(c3)}`], LLA: [`AB = DE = ${cm(c1 + 2)}`, `BC = EF = ${cm(c2)}`, `m∠A = m∠D = ${a}°`],
       AAA: [`m∠A = m∠D = 50°`, `m∠B = m∠E = 60°`, `m∠C = m∠F = 70°`] }[k];
@@ -99,7 +111,7 @@
     const errores = (CRIT.includes(k) ? CRIT.filter(x => x !== k).concat(['no']) : CRIT).map(x => erT(SF[x][0], x === 'no' ? NING : x, SF[x][1]));
     return { enunciado: [`En △ABC y △DEF se sabe: ${datos.join('; ')}.`], pregunta: ['¿Qué criterio asegura que son congruentes?'], datos: [D.crit, D.no],
       texto: { correcta: { clave: bien, texto: bien }, errores },
-      solucion: [[{ LAL: 'El ángulo A queda entre los lados AB y AC: lado, ángulo, lado.', ALA: 'El lado AB va del ángulo A al ángulo B: ángulo, lado, ángulo.', LLL: 'Los tres lados, cada uno con su pareja: lado, lado, lado.', LLA: 'El ángulo A queda frente a BC, no entre AB y BC: es LLA, y no basta.', AAA: 'Tres ángulos y ningún lado: la forma, sí; el tamaño, no.' }[k]], [v('x', bien), '.']],
+      solucion: [[{ LAL: 'El ángulo A queda entre los lados AB y AC: lado, ángulo, lado.', ALA: 'El lado AB va del ángulo A al ángulo B: ángulo, lado, ángulo.', LLL: 'Los tres lados, cada uno con su pareja: lado, lado, lado.', LLA: 'El ángulo A queda frente a BC, no entre AB y BC: es LLA. BC pasa de la distancia de B a la recta y es menor que AB: caben dos triángulos, y no basta.', AAA: 'Tres ángulos y ningún lado: la forma, sí; el tamaño, no.' }[k]], [v('x', bien), '.']],
       _datos: { tipo: 'criterio', idea: 'criterios', nivel: 1, caso: k } };
   }
   function cuantos(rng) {
@@ -350,9 +362,13 @@
       _datos: { tipo: 'n30', idea: 'notables', nivel: 1, k, alReves } };
   }
   function n37(rng) {
-    const k = rng.entero(2, 8), h = 5 * k, cosa = rng.elegir(['Un cable tenso va de la punta de un poste al piso', 'Una rampa recta sube desde el piso', 'Una escalera está apoyada en una pared']), ang = rng.elegir([37, 53]), pide = rng.elegir(['alto', 'piso']);
+    const k0 = rng.entero(2, 8), cosa = rng.elegir(['cable', 'rampa', 'escalera']), ang = rng.elegir([37, 53]), pide = rng.elegir(['alto', 'piso']);
+    // Medidas creíbles (auditoría del 19 nov, M4): una escalera de 5 m o 10 m y una rampa de hasta 20 m; el cable, hasta 40 m.
+    const k = cosa === 'escalera' ? 1 + (k0 % 2) : cosa === 'rampa' ? 1 + (k0 % 4) : k0, h = 5 * k;
     const alto = ang === 37 ? 3 * k : 4 * k, piso = ang === 37 ? 4 * k : 3 * k, val = pide === 'alto' ? alto : piso, otro = pide === 'alto' ? piso : alto;
-    return { enunciado: [`${cosa}, mide ${m(h)} y forma ${ang}° con el piso.`], pregunta: [pide === 'alto' ? '¿A qué altura llega?' : '¿A qué distancia de la base queda su pie?'],
+    const sujeto = { cable: 'Un cable tenso va de la punta de un poste al piso', rampa: 'Una rampa recta sube desde el piso', escalera: 'Una escalera está apoyada en una pared' }[cosa];
+    const preg = { cable: ['¿Cuánto mide el poste?', '¿A qué distancia del poste llega al piso?'], rampa: ['¿A qué altura llega?', '¿Cuánto avanza por el piso?'], escalera: ['¿A qué altura de la pared llega?', '¿A qué distancia de la pared queda su pie?'] }[cosa][pide === 'alto' ? 0 : 1];
+    return { enunciado: [`${sujeto}, mide ${m(h)} y forma ${ang}° con el piso.`], pregunta: [preg],
       datos: [D.n37, D.recto], correcta: val, fmt: m,
       errores: [er('GE-CON63', otro, `${m(otro)} es el otro cateto: frente a 37° va 3k y frente a 53°, 4k.`), er('GE-CON64', h, `${m(h)} es el largo, la hipotenusa.`),
         er('GE-CON14', h / 2, 'La mitad vale frente a 30°, no frente a 37° ni 53°.'), er('GE-CON65', h - otro, 'Los lados no se restan: guardan la razón 3 : 4 : 5.')],

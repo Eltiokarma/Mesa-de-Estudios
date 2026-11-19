@@ -2,7 +2,7 @@
   "plantilla": "geo-congruencia",
   "tolerancia": 1e-06,
   "nota": "enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales); esperado.valor es el número (o el texto, en los tipos de respuesta escrita) y esperado.texto, la alternativa correcta que ve el alumno.",
-  "verificacion": "Script aparte (19 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e5-geometria/casos/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, con coordenadas y trigonometría (el ángulo ADE, el ángulo de P, el punto P de BC que equidista de A y de C por bisección, el pie de la perpendicular a la bisectriz, los ángulos de la mediana y de la altura medidos) y la convención 3-4-5 de 37° y 53°.",
+  "verificacion": "Script aparte (19 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e5-geometria/casos/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, con coordenadas y trigonometría (el ángulo ADE, el ángulo de P, el punto P de BC que equidista de A y de C por bisección, el pie de la perpendicular a la bisectriz, los ángulos de la mediana y de la altura medidos) y la convención 3-4-5 de 37° y 53°. La semilla 122 (n37) se rehízo el 19 nov tras la auditoría (M4: rampa de 20 m, no de 35 m): 53° con el piso, 5k = 20, el piso va frente a 37°, 3k = 12 m.",
   "casos": [
     {
       "semilla": 100,
@@ -251,10 +251,10 @@
       "opciones": {
         "tipo": "n37"
       },
-      "enunciado": "Una rampa recta sube desde el piso, mide 35 m y forma 53° con el piso. ¿A qué distancia de la base queda su pie?",
+      "enunciado": "Una rampa recta sube desde el piso, mide 20 m y forma 53° con el piso. ¿Cuánto avanza por el piso?",
       "esperado": {
-        "valor": 21.0,
-        "texto": "21 m"
+        "valor": 12,
+        "texto": "12 m"
       }
     },
     {

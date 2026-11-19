@@ -56,7 +56,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "En △ABC, AB = 8 cm, BC = 10 cm y AC = 11 cm. La mediatriz de AC corta BC en P. ¿Cuánto mide el perímetro de △ABP? Datos: Mediatriz de AB: la recta perpendicular a AB por su punto medio. Todo punto de la mediatriz de AB equidista de A y de B; todo punto de la bisectriz equidista de los lados. El perímetro de un triángulo es la suma de sus tres lados. Alternativas: A) 10 cm   B) 18,5 cm   C) 29 cm   D) 18 cm   E) 23,5 cm",
+      "enunciado": "En △ABC, AB = 8 cm, BC = 10 cm y AC = 11 cm. La mediatriz de AC corta BC en P. ¿Cuánto mide el perímetro de △ABP? Datos: Mediatriz de un segmento: la recta perpendicular a él por su punto medio. Todo punto de la mediatriz de un segmento equidista de sus extremos; todo punto de la bisectriz, de los lados del ángulo. El perímetro de un triángulo es la suma de sus tres lados. Alternativas: A) 10 cm   B) 18,5 cm   C) 29 cm   D) 18 cm   E) 23,5 cm",
       "respuesta": "D) 18 cm",
       "pasos": [
         "P está en la mediatriz de AC: PA = PC. Así BP + PA = BC.",
