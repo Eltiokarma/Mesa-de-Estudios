@@ -41,6 +41,72 @@
   const reducido = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ICONO_LUPA = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const MAX_CASOS = 4;
+  /*
+   * «Juega»: cuánto falta jugar antes de seguir, dicho para el alumno (pendiente del 18 nov: «Prueba 3 casos distintos:
+   * llevas 1» se confundía, y en aritmética «llevas» se leía como la llevada de la suma). Sin DOM, para probarlo en Node.
+   *   - El caso con que abre el juego no es mérito del alumno: se cuentan los cambios que hizo (minimo − 1).
+   *   - Dice qué hacer con lo que el juego tiene («Cambia un valor», «Elige otra opción») y cuánto falta.
+   *   - Con misión, la misión es la consigna: el contador calla (texto vacío) y lograrla ya deja seguir. Si el alumno
+   *     pulsa «Siguiente» sin haber jugado lo suficiente, `alSeguir` le dice qué falta (el botón nunca se deshabilita).
+   */
+  function avisoJuego({ minimo = 0, probados = 1, mision = false, lograda = false, valores = true, opciones = false } = {}) {
+    const total = Math.max(0, minimo - 1);
+    const faltan = mision && lograda ? 0 : Math.max(0, total - Math.max(0, probados - 1));
+    const que = valores && opciones ? 'Cambia un valor o una opción' : opciones ? 'Elige otra opción' : 'Cambia un valor';
+    const cuanto = faltan === 1 ? 'te falta 1 cambio' : `te faltan ${faltan} cambios`;
+    return {
+      total, faltan, hechos: total - faltan,
+      texto: mision || !total ? '' : faltan ? `${que}: ${cuanto} para seguir.` : 'Listo: ya puedes seguir.',
+      alSeguir: faltan ? `Antes de seguir, ${que.charAt(0).toLowerCase()}${que.slice(1)}: ${cuanto}.` : '',
+    };
+  }
+  /*
+   * Último recurso para un renglón con ecuación que no cabe a lo ancho (19 nov; lo mide herramientas/ecuaciones-ancho.js).
+   * nucleo/ecuacion.js pega con espacios duros los signos de una cuenta (solo se parte después de un «=», y ni eso en una
+   * igualdad corta) y una ficha de color no se parte. Cuando aun así el renglón es más ancho que su caja, la fórmula
+   * quedaba cortada o había que deslizarla sin saberlo. Aquí, y solo en el renglón que no cabe, se afloja de a poco
+   * hasta que quepa: 1.º las fichas de color de varias palabras pueden partir (.var.largo); 2.º se puede partir después
+   * de un «=»; 3.º después de + y −; 4.º después de × ÷ ·. Siempre después del signo, nunca antes (un renglón que
+   * empieza con «− 9» se lee como negativo). Lo que cabe no se toca; una fracción o una llave más ancha que la pantalla
+   * no tiene arreglo aquí: se parte en el contenido. No usa nada de fuera: la prueba la corre dentro de una página.
+   */
+  function partirLargas(raiz) {
+    const SEL = '.te-ec, .te-lectura, p, li, dd';
+    const noCabe = el => el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1;
+    const soltar = (el, signos) => {
+      const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) { const t = n.nodeValue.replace(signos, '$1 '); if (t !== n.nodeValue) n.nodeValue = t; }
+    };
+    const PASOS = [
+      el => el.querySelectorAll('.var:not(.largo)').forEach(v => { if (/\S\s+\S/.test(v.textContent)) v.classList.add('largo'); }),
+      el => soltar(el, /(=) /g),
+      el => soltar(el, /([+\-−]) /g),
+      el => soltar(el, /([×÷·]) /g),
+    ];
+    for (const el of [...(raiz.matches && raiz.matches(SEL) ? [raiz] : []), ...raiz.querySelectorAll(SEL)]) {
+      for (let k = 0; k < PASOS.length && noCabe(el); k++) PASOS[k](el);
+    }
+  }
+  /*
+   * Un texto con términos del glosario, en trozos: texto suelto y { termino, clave, abre, cierra }. El botón del término
+   * es una caja en la línea y el renglón se puede cortar justo antes o después de ella; por eso la puntuación pegada al
+   * término va con él, en un trozo que no se parte (.te-term-nb): la que cierra (si no, la coma quedaba sola al comienzo
+   * de la línea) y la que abre, comillas, paréntesis, ¿ o ¡ (19 nov: la «» quedaba sola al final del renglón y el término
+   * en el siguiente). Sin DOM, para probarlo en Node. ms: [{ inicio, fin, clave }] en orden, como G.marcas.
+   */
+  function trozosTermino(txt, ms) {
+    const out = [];
+    let k = 0;
+    for (const m of ms) {
+      const antes = txt.slice(k, m.inicio), abre = /[«“‘"'(\[¿¡]+$/.exec(antes), cierra = /^[,.;:)\]!?»”’"']+/.exec(txt.slice(m.fin));
+      const a = abre ? abre[0] : '', c = cierra ? cierra[0] : '';
+      if (antes.length > a.length) out.push(antes.slice(0, antes.length - a.length));
+      out.push({ termino: txt.slice(m.inicio, m.fin), clave: m.clave, abre: a, cierra: c });
+      k = m.fin + c.length;
+    }
+    if (k < txt.length) out.push(txt.slice(k));
+    return out;
+  }
   // Datos y fórmulas de un ejercicio (contrato, punto 13): en su recuadro, una por línea. Ecuacion se pasa porque
   // se carga junto con la teoría.
   const datosHTML = (E, ds) => (Array.isArray(ds) && ds.length
@@ -186,14 +252,15 @@
   // ---------- Pantalla ----------
   // La hoja del glosario se abre desde cualquier pantalla de la teoría; la última pantalla pintada dice qué abrir.
   let glosaActual = null;
-  document.addEventListener('click', e => {
+  const enNavegador = typeof document === 'object' && typeof window === 'object';   // en Node (pruebas) no hay página
+  if (enNavegador) document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.te-term,[data-glosa]');
     if (b && glosaActual) { e.preventDefault(); glosaActual(b.dataset.term || b.dataset.glosa, b); return; }
     const capa = document.querySelector('.te-glosa');
     if (capa && !capa.hidden && (e.target.closest('.te-glosa-x') || !e.target.closest('.te-glosa'))) cerrarGlosa();
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarGlosa(); });
-  window.addEventListener('hashchange', () => cerrarGlosa(false));
+  if (enNavegador) document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarGlosa(); });
+  if (enNavegador) window.addEventListener('hashchange', () => cerrarGlosa(false));
   let glosaVuelta = null;
   function cerrarGlosa(devolverFoco = true) {
     const capa = document.querySelector('.te-glosa');
@@ -248,18 +315,14 @@
         const txt = n.nodeValue, ms = G.marcas(txt, aqui, usados, buscadorG);
         if (!ms.length) continue;
         const frag = document.createDocumentFragment();
-        let k = 0;
-        for (const m of ms) {
-          frag.append(txt.slice(k, m.inicio));
+        for (const t of trozosTermino(txt, ms)) {
+          if (typeof t === 'string') { frag.append(t); continue; }
           const b = document.createElement('button');
-          b.type = 'button'; b.className = 'te-term'; b.dataset.term = m.clave; b.setAttribute('aria-haspopup', 'dialog');
-          b.textContent = txt.slice(m.inicio, m.fin);
-          // La puntuación que sigue va pegada al término (si no, la coma quedaba sola al comienzo de la línea).
-          const punt = /^[,.;:)!?»”]+/.exec(txt.slice(m.fin));
-          if (punt) { const nb = document.createElement('span'); nb.className = 'te-term-nb'; nb.append(b, punt[0]); frag.append(nb); k = m.fin + punt[0].length; }
-          else { frag.append(b); k = m.fin; }
+          b.type = 'button'; b.className = 'te-term'; b.dataset.term = t.clave; b.setAttribute('aria-haspopup', 'dialog');
+          b.textContent = t.termino;
+          if (!t.abre && !t.cierra) { frag.append(b); continue; }
+          const nb = document.createElement('span'); nb.className = 'te-term-nb'; nb.append(...[t.abre, b, t.cierra].filter(x => x !== '')); frag.append(nb);
         }
-        frag.append(txt.slice(k));
         n.replaceWith(frag);
       }
       pistaGlosario();
@@ -283,16 +346,20 @@
       const p = document.querySelector('.te-pista-glo'); if (p) p.remove();
     }
     // Lo que se pinta después (pasos de «Mira», preguntas, consignas) también se marca.
+    // Y el renglón con ecuación que no cabe a lo ancho se parte (partirLargas), después de marcar: una palabra marcada
+    // cambia el ancho.
     function vigilar(el) {
-      if (!buscadorG || !el || !window.MutationObserver) return;
+      if (!el) return;
+      const paso = () => { marcarTerminos(el); partirLargas(el); };
+      if (!window.MutationObserver) { paso(); return; }
       const OPC = { childList: true, subtree: true };
       let pend = false;
       const ob = new MutationObserver(() => {
         if (pend) return;
         pend = true;
-        requestAnimationFrame(() => { pend = false; ob.disconnect(); if (el.isConnected) { marcarTerminos(el); ob.observe(el, OPC); } });
+        requestAnimationFrame(() => { pend = false; ob.disconnect(); if (el.isConnected) { paso(); ob.observe(el, OPC); } });
       });
-      marcarTerminos(el); ob.observe(el, OPC);
+      paso(); ob.observe(el, OPC);
     }
     glosaActual = (k, desde) => {
       if (!(ctx.est.prefs || {}).pistaGlo) quitarPistaGlo();
@@ -524,8 +591,8 @@
         alMision: () => evento('mision', {}) });
       sig.textContent = 'Siguiente: Predice ›';
       sig.onclick = () => {
-        const p = juego.probados();
-        if (p < j.minimo) { decir(`Prueba ${j.minimo - p === 1 ? 'un valor más' : `${j.minimo - p} valores más`} antes de seguir: cambia un número.`); (zona.querySelector('input,button') || sig).focus(); return; }
+        const p = juego.probados(), a = juego.aviso();
+        if (a.faltan) { decir(a.alSeguir); (zona.querySelector('input,button') || sig).focus(); return; }
         evento('juego', { casos: p });
         ir('predice');
       };
@@ -1167,6 +1234,8 @@
       if (roFig) roFig.observe(f);
       let tocado = false;
       const tocar = () => { if (!tocado) { tocado = true; o.alTocar(); } };
+      const aviso = () => avisoJuego({ minimo: o.minimo, probados: probados.size, mision: !!mis, lograda: misionHecha(),
+        valores: ctr.some(c => !c.opciones) || !ctr.length, opciones: ctr.some(c => c.opciones) });
       const pintarJ = (contar = true) => {
         const P = Kit.piezas[j.pieza || o.piezaPorDefecto], dib = j.dibujo(vals);
         // Pieza viva (montar, como quim-molecula-3d): se monta una vez y después solo se actualiza; las demás, SVG.
@@ -1193,8 +1262,13 @@
           }
         }
         const cas = z.querySelector('.te-casos');
-        // «Casos probados: 1 de 3» no se entendía (lector en frío, 16 nov): se dice qué cuenta como un caso.
-        if (cas) cas.textContent = probados.size < o.minimo ? `Prueba ${o.minimo} casos distintos (otro valor u otra opción): llevas ${probados.size}.` : `Probaste ${probados.size} casos distintos.`;
+        // «Casos probados: 1 de 3» no se entendía (lector en frío, 16 nov) y «llevas 1» se leía como la llevada (18 nov):
+        // se dice qué hacer y cuántos cambios faltan, con un punto por cambio. Con misión, el contador calla (avisoJuego).
+        if (cas) {
+          const a = aviso();
+          const h = a.texto ? `<span class="te-casos-p${a.faltan ? '' : ' listo'}" aria-hidden="true">${'<i class="on"></i>'.repeat(a.hechos)}${'<i></i>'.repeat(a.faltan)}</span><span>${esc(a.texto)}</span>` : '';
+          if (cas._h !== h) { cas._h = h; cas.innerHTML = h; }
+        }
         for (const c of ctr) {
           const el = z.querySelector(`[data-c="${c.id}"]`);
           if (!el) continue;
@@ -1373,6 +1447,7 @@
       pintarJ();
       return {
         probados: () => probados.size,
+        aviso,
         valores: () => Object.assign({}, vals),
         fijar(v) { for (const c of ctr) if (v && v[c.id] !== undefined) vals[c.id] = T.ajustar(c, v[c.id]); pintarJ(); },
         destruir() {
@@ -1397,8 +1472,10 @@
         <button type="button" class="te-mm" data-paso="1" aria-label="Más ${esc(c.etiqueta)}">+</button>
         <output for="te-c-${esc(c.id)}"></output></div>`;
     }
-    function valorControl(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? ` ${esc(c.unidad)}` : ''}`; }
-    function valorPlano(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? ` ${c.unidad}` : ''}`; }
+    // Los símbolos de ángulo van pegados al número («60°», «45′», «100ᵍ»); las demás unidades, con su espacio («5 m»).
+    const sepUnidad = u => (/^[°′″ᵍᵐˢ]/.test(u) ? '' : ' ');
+    function valorControl(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? `${sepUnidad(c.unidad)}${esc(c.unidad)}` : ''}`; }
+    function valorPlano(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? `${sepUnidad(c.unidad)}${c.unidad}` : ''}`; }
 
     // Botón de lupa de cada figura: amplía lo que se ve en ese momento.
     function conectarLupa(el) {
@@ -1532,5 +1609,7 @@
     if ((tm.entrada || tm.intentos.length) && !(tm.enCurso && (tm.enCurso.i || tm.enCurso.resp.some(Boolean)))) resumen(); else intro();
   }
 
-  window.Teoria = Object.assign(window.Teoria || {}, { vista, entrada });
+  // En Node (pruebas) solo sale lo que no toca el DOM.
+  if (typeof module === 'object' && module.exports) module.exports = { avisoJuego, partirLargas, trozosTermino };
+  else window.Teoria = Object.assign(window.Teoria || {}, { vista, entrada, avisoJuego, partirLargas, trozosTermino });
 })();

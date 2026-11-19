@@ -44,7 +44,7 @@ Una unidad tiene de 2 a 6 **ideas**. Cada idea es una relación que se puede com
 
 | Momento | Qué hace el alumno | Qué bloquea | Personaje |
 | --- | --- | --- | --- |
-| 1. **Juega** | Mueve la figura con controles (− y + o barra; nunca solo arrastre). Ve la lectura en vivo. Debe probar `minimo` casos distintos | «Ya probé, sigo» explica cuántos casos faltan; no se deshabilita | E1 `señala` → E0 `reposo` al primer toque |
+| 1. **Juega** | Mueve la figura con controles (− y + o barra; nunca solo arrastre). Ve la lectura en vivo. Debe probar `minimo` casos distintos (el caso con que abre cuenta: son `minimo` − 1 cambios) | «Ya probé, sigo» explica cuántos cambios faltan; no se deshabilita. Sin misión, un contador lo va diciendo («Cambia un valor: te faltan 2 cambios para seguir.», con un punto por cambio); con misión el contador calla y lograrla ya deja seguir (19 nov, `avisoJuego` en `app/teoria.js`) | E1 `señala` → E0 `reposo` al primer toque |
 | 2. **Predice** | Una pregunta neutra sobre algo que el juego **no** mostró, con el error típico entre las opciones | Sí: es el único bloqueo. Al comprobar, la figura muestra lo que pasa (`revelar`) | E3 `espera`; coincide E7 `celebra`; no coincide E5 `acompaña` |
 | 3. **Mira** | Recorre la explicación como línea de tiempo de la figura (▶, cursor, ← →). Cada paso deja rastro | No | E4 `reposo` |
 | 4. **La regla** | Lee la regla, su ecuación con el hilo de color y **la condición que la hace verdadera** | No | E6 `reposo` |
@@ -263,6 +263,9 @@ glosario: [
   - el término sale subrayado con puntos la primera vez que aparece en cada pantalla: consigna, pasos, regla, preguntas y ficha;
   - al tocarlo se abre una hoja abajo con la definición, el símbolo, la medida, el ejemplo y «Ver también»;
   - no se marca en los títulos, las opciones, las ecuaciones ni la lectura en vivo;
+  - la puntuación pegada al término va con él y el renglón no se corta entre ellos: la que cierra (coma, punto, «»»)
+    y la que abre (comilla, paréntesis, ¿, ¡; 19 nov: «« quedaba sola al final del renglón). `trozosTermino` en
+    `app/teoria.js`, con prueba en `app/teoria.test.js`;
   - no aparece en la prueba del tema ni en el simulacro;
   - el chip «Glosario» de la teoría (`#/unidad/<id>/teoria/glosario`) muestra las palabras en **tarjetas de colores** (fase 2, 15 nov): un buscador arriba, un mazo deslizable por idea con el color de la idea (cada término va en la primera idea donde aparece), un mazo «Más palabras del tema» y otro «Vienen de otros temas». Cada tarjeta trae «Ver ejemplo», «Verla en la teoría» y «Ya me la sé» (`est.glosario[unidad][término]`: `'sabe'` o `'repasa'`). «Repasar con tarjetas» las muestra una a una para voltearlas: primero las marcadas para repasar y después las que no se marcaron. Queda libre, como el laboratorio.
   - Las marcas van a la medición como `glosario-marca` y `glosario-repaso`, con `{ termino, sabe }`.
@@ -329,6 +332,8 @@ juega: {
   - el lector la muestra junto a la consigna, arriba de la figura;
   - se marca con ✓ cuando `logrado` da verdadero, y registra el evento `mision`;
   - no bloquea nada: el único bloqueo sigue siendo la predicción (regla 3);
+  - es la consigna del juego: con misión no se muestra el contador de cambios, y lograrla deja seguir aunque falten
+    cambios para el `minimo` (19 nov; antes pedía «uno más» después de la misión lograda);
   - el validador exige que no esté cumplida al abrir y que alguien la pueda lograr.
 - **`leyenda`:** cada símbolo de la figura y de la lectura, dicho en palabras. Va debajo de la lectura.
   - **La leyenda no da la respuesta de la misión** (18 nov, auditoría de Exponentes y radicales). Es fija y se lee antes de
