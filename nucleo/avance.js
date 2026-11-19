@@ -135,6 +135,11 @@
     // Etapa 7 (19 nov): Sentido contextual conservó sus cuatro ids con otra Predice y sumó `sentido-figurado`.
     { u: 'razonamiento-verbal.sentido-contextual', p: 'prediccionSC', e: 'estudiadaSC',
       cambian: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'], antes: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'] },
+    // Etapa 7 (19 nov): Factorización conservó sus cinco ids; cuatro cambiaron su Predice (la de mcd-mcm es la misma, con
+    // las mismas opciones) y sumó `identidades` (docs/etapa7/propuesta-algebra.md, decisión 10).
+    { u: 'algebra.factorizacion', p: 'prediccionFZ', e: 'estudiadaFZ',
+      cambian: ['factor-comun', 'aspa-simple', 'aspa-doble', 'teorema-factor'],
+      antes: ['factor-comun', 'aspa-simple', 'aspa-doble', 'teorema-factor', 'mcd-mcm'] },
     // Nomenclatura inorgánica (19 nov, etapa 7): tres ideas con otra Predice y una idea nueva (peroxidos-hidruros).
     { u: 'quimica.nomenclatura-inorganica', p: 'prediccionNI', e: 'estudiadaNI',
       cambian: ['estados-oxidacion', 'arbol-funciones', 'sales'],

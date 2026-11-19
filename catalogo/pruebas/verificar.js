@@ -780,6 +780,16 @@ const V = {
   'dp-02': d => { const [c, b] = d.divisor, fila = x0 => d.coefs.reduce((acc, co, i) => [...acc, i ? co + x0 * acc[i - 1] : co], []);
     const bien = fila(-b / c), mal = fila(b / c), suma = l => l.slice(0, -1).reduce((u, w) => u + w, 0);
     return { correcta: suma(bien) / c, errores: { 'PO3-cociente-falso-sin-dividir': suma(bien), 'PO2-numero-con-el-signo-cambiado': suma(mal) / c, 'TAL-RESTO-EN-Q-suma-el-resto': suma(bien) / c + bien[bien.length - 1] } }; },
+  // fz-01 y fz-02 (reserva, 19 nov, etapa 7 de álgebra: «Factorización»; las formas ya tienen 10 pares). La plantilla
+  // factorizacion-practica no tiene motor: se rehace aquí. fz-01: g·x(x² − k²) = g·x(x + k)(x − k), tres factores primos
+  // (x, x + k, x − k). fz-02: el número que anula a los dos trinomios se busca por fuerza bruta; M = x − a.
+  'fz-01': d => { const primos = [0, d.k, -d.k].length;
+    return { correcta: primos, errores: { 'TAL-PRIMO-CONST-cuenta-la-constante': primos + (d.g > 1 ? 1 : 0), 'TAL-INCOMPLETA-se-para-antes': 2, 'TAL-NO-FACTORIZA-cree-que-es-primo': 1 } }; },
+  'fz-02': d => { const ev = (cs, x) => cs.reduce((a, c) => a * x + c, 0), comunes = [];
+    for (let a = -30; a <= 30; a++) if (ev(d.P, a) === 0 && ev(d.Q, a) === 0) comunes.push(a);
+    if (comunes.length !== 1) throw new Error('fz-02: el MCD debe ser un solo binomio');
+    const a = comunes[0];
+    return { correcta: d.k - a, errores: { 'TAL-FACTOR-SIGNO-cambia-el-signo': d.k + a, 'TAL-MCD-SINFACTOR-toma-un-polinomio-entero': ev(d.P, d.k), 'TAL-MCD-MAX-toma-el-otro-polinomio': ev(d.Q, d.k), 'TAL-MCD-PRIMOS-cree-que-no-hay-comun': 1 } }; },
 
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
   // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares;

@@ -6,6 +6,7 @@
     "algebra.factorizacion"
   ],
   "estado": "borrador",
+  "rehacer": true,
   "version": "0.1.0",
   "generador": "generador.js",
   "casos": "casos.json",

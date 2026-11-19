@@ -1,0 +1,87 @@
+{
+  "titulo": "Factorización: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Rubén factoriza 6x⁵ − 3x² con todo su factor común afuera. ¿Cuál es la factorización? Datos: Factor común: el mayor número que divide a todos los coeficientes, y cada letra con su menor exponente. Dentro del paréntesis va cada término dividido entre el factor común. xᵐ ÷ xⁿ = xᵐ⁻ⁿ, y x⁰ = 1. Alternativas: A) x²(6x³)   B) 3x²(2x³)   C) 3x²(2x³ + 1)   D) 3x(2x⁴ − x)   E) 3x²(2x³ − 1)",
+      "respuesta": "E) 3x²(2x³ − 1)",
+      "pasos": [
+        "3x² es un término entero: dividido entre sí mismo deja 1.",
+        "6x⁵ − 3x² = 3x²(2x³ − 1)."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Se factoriza 16x² − 9y². ¿Cuál es la factorización? Datos: a² − b² = (a + b)(a − b), con a y b los dos términos. Alternativas: A) (4x + 3y)²   B) (16x + 9y)(16x − 9y)   C) (4x − 3y)²   D) (4x + 9y)(4x − 9y)   E) (4x + 3y)(4x − 3y)",
+      "respuesta": "E) (4x + 3y)(4x − 3y)",
+      "pasos": [
+        "Es un cuadrado menos otro: (4x)² − (3y)².",
+        "16x² − 9y² = (4x + 3y)(4x − 3y)."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Se factoriza 5x² − 6x − 8 con aspa. ¿Cuál es la factorización? Datos: Aspa: el primer término se parte en dos con x y el último en dos números; cada fila es un factor. Los productos en cruz tienen que sumar el término del medio. Alternativas: A) (5x − 4)(x + 2)   B) (5x + 4)(x − 2)   C) (x + 4)(x − 2)   D) (5x − 2)(x + 4)",
+      "respuesta": "B) (5x + 4)(x − 2)",
+      "pasos": [
+        "5x² = 5x · x y −8 = 4 · (−2); en cruz 5x · (−2) + x · 4 = −6x.",
+        "5x² − 6x − 8 = (5x + 4)(x − 2)."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el aspa doble especial de x⁴ + 6x³ + 3x² − 18x + 5, los extremos se parten en x² · x² y −1 · (−5). ¿Qué término en x² tiene que poner la columna del medio? Datos: Doble especial: lo que falta en x² es el término en x² menos el cruce de los extremos. El polinomio va ordenado: x⁴, x³, x², x y número; un término que falta va con 0. Alternativas: A) −9x²   B) −6x²   C) 9x²   D) −3x²   E) 3x²",
+      "respuesta": "C) 9x²",
+      "pasos": [
+        "Los extremos dan x² · (−5) + (−1) · x² = −6x².",
+        "3x² − (−6x²) = 9x²."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "P(x) = x³ + 7x² + 15x + 12. ¿Cuál de estos binomios divide exactamente a P? Datos: Teorema del factor: si P(a) = 0, entonces x − a es un factor de P. Números por probar: los divisores del término independiente, con + y con −. Ruffini: se baja el primero; cada casilla es el de arriba más a por la anterior (a: el número que se prueba). Alternativas: A) x − 4   B) x − 1   C) x + 4   D) x − 6   E) x + 12",
+      "respuesta": "C) x + 4",
+      "pasos": [
+        "Se prueban los divisores de 12: −4 deja resto 0.",
+        "P(−4) = 0: x + 4 es un factor."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "P = (x − 3)²(x − 4) y Q = (x − 3)(x − 1). ¿Cuál es el MCM de P y Q? Datos: MCD: los factores comunes, cada uno con su menor exponente. MCM: todos los factores, cada uno con su mayor exponente. Alternativas: A) (x − 3)²(x − 4)(x − 1)   B) (x − 3)³(x − 4)(x − 1)   C) (x − 3)(x − 4)(x − 1)   D) x − 3",
+      "respuesta": "A) (x − 3)²(x − 4)(x − 1)",
+      "pasos": [
+        "Van todos: x − 3 con el mayor exponente, 2.",
+        "MCM = (x − 3)²(x − 4)(x − 1)."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "P(x) = 2x³ + 7x² + 2x − 3 tiene un factor de grado 1 que empieza con 2x. ¿Cuál es ese factor? Datos: Teorema del factor: si P(a) = 0, entonces x − a es un factor de P. Números por probar: los divisores del término independiente, con + y con −. Si el coeficiente principal no es 1: también esos divisores entre los divisores del principal. Alternativas: A) x − 2   B) 2x − 1   C) 2x + 1   D) x − 1",
+      "respuesta": "B) 2x − 1",
+      "pasos": [
+        "1/2 anula a P: el binomio con enteros que se anula ahí es 2x − 1.",
+        "2x³ + 7x² + 2x − 3 = (2x − 1)(x² + 4x + 3)."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Sea M el MCD de P(x) = x³ − 4x² − 4x + 16 y Q(x) = x² + x − 2. ¿Cuánto vale M(5)? Datos: Antes, cada polinomio se factoriza del todo. MCD: los factores comunes, cada uno con su menor exponente. Números por probar: los divisores del término independiente, con + y con −. Aspa: el primer término se parte en dos con x y el último en dos números; cada fila es un factor. Alternativas: A) 28   B) 7   C) 3   D) 1",
+      "respuesta": "B) 7",
+      "pasos": [
+        "P = (x + 2)(x − 4)(x − 2) y Q = (x + 2)(x − 1): solo x + 2 es común.",
+        "M(5) = 5 + 2 = 7."
+      ]
+    }
+  ]
+}

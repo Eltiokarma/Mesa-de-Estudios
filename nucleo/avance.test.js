@@ -476,6 +476,22 @@ test('Etapa 7, Nomenclatura inorgánica rehecha: predicciones viejas sin huella 
   for (const i of ['estados-oxidacion', 'arbol-funciones', 'sales']) assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i);
   for (const i of ['tres-nombres', 'sales-acidas-basicas-hidratadas']) assert.equal(est.teoria[U].ideas[i].prediccion, 'c', `${i}: la misma pregunta, se queda`);
   assert.equal(est.marcadas[U], '2026-11-13');
+// 19 nov (etapa 7): Factorización, rehecha con sus cinco ids (cuatro con otra Predice) y una idea nueva (identidades).
+test('Etapa 7, Factorización rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
+  const U = 'algebra.factorizacion';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-15' }, teoria: { [U]: { ideas: Object.fromEntries(['factor-comun', 'aspa-simple', 'aspa-doble', 'teorema-factor', 'mcd-mcm']
+    .map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionFZ, 1); assert.equal(est.estudiadaFZ, 1);
+  for (const i of ['factor-comun', 'aspa-simple', 'aspa-doble', 'teorema-factor']) assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i);
+  assert.equal(est.teoria[U].ideas['mcd-mcm'].prediccion, 'c', 'la misma pregunta, se queda');
+  assert.equal(est.marcadas[U], '2026-11-15');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'factor-comun': { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las cinco: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
 

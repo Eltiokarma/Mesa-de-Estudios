@@ -4,7 +4,6 @@
   "formato": "predicciones",
   "unidades": [
     "algebra.ecuaciones-polinomiales",
-    "algebra.factorizacion",
     "algebra.numeros-complejos"
   ],
   "estado": "borrador",

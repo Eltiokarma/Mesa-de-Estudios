@@ -43,7 +43,9 @@
     // 19 nov (cierre de División de polinomios, rutinas/auditoria/algebra.division-de-polinomios.md): division-polinomios
     // sale de esa unidad (trae MCD y MCM, de Factorización, y la unidad tiene su práctica division-practica). Queda solo
     // para Factorización: ya no es mixto y sale de la tabla.
-    'ecuaciones-polinomiales': { ...todo(AL + 'ecuaciones-polinomiales', ['parametro', 'vieta', 'caja', 'conjugada', 'multiple', 'bicuadrada', 'igualar']), divisores: AL + 'factorizacion' },
+    // 19 nov (etapa 7, docs/etapa7/propuesta-algebra.md, decisión 9): el generador sale de Factorización (daba Cardano-Vieta
+    // y bicuadradas en su examen); su tipo divisores (una raíz racional no entera) es de Ecuaciones polinomiales.
+    'ecuaciones-polinomiales': todo(AL + 'ecuaciones-polinomiales', ['parametro', 'vieta', 'caja', 'conjugada', 'multiple', 'bicuadrada', 'igualar', 'divisores']),
     'estadistica-datos': todo(AR + 'estadistica', ['varianza', 'central', 'medias', 'reconstruir', 'extremo']),
     // El tipo de problema es estequiometría aunque el contexto sea una grasa o una mena.
     'estequiometria-admision': todo(Q + 'estequiometria', ['grasa', 'termo', 'hidroxido', 'mineral', 'redox', 'flotacion', 'atomos']),

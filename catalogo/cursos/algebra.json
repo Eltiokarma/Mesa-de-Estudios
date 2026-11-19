@@ -171,10 +171,10 @@
         "MCD y MCM de polinomios"
       ],
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
-      "potencial_visual": "bajo",
+      "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["algebra.division-de-polinomios", "algebra.productos-notables"],
-      "plantillas": ["cuadrado-crece", "division-polinomios", "ecuaciones-polinomiales"],
+      "plantillas": ["factorizacion-practica", "cuadrado-crece", "division-polinomios"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {

@@ -264,6 +264,34 @@
     "PO11-suma-los-grados": {
      "respaldo": "hipotesis",
      "describe": "Suma los grados de todos los términos (trampa de San Marcos 2026-I)"
+    },
+    "TAL-PRIMO-CONST-cuenta-la-constante": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta el número que sale como factor común entre los factores primos"
+    },
+    "TAL-INCOMPLETA-se-para-antes": {
+     "respaldo": "hipotesis",
+     "describe": "Se para antes de abrir un factor que todavía se factoriza"
+    },
+    "TAL-NO-FACTORIZA-cree-que-es-primo": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que el polinomio no se factoriza"
+    },
+    "TAL-FACTOR-SIGNO-cambia-el-signo": {
+     "respaldo": "hipotesis",
+     "describe": "Copia el signo del número que anula al polinomio en el binomio (x + a por x − a)"
+    },
+    "TAL-MCD-SINFACTOR-toma-un-polinomio-entero": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como MCD uno de los polinomios entero, con un factor que no es común"
+    },
+    "TAL-MCD-MAX-toma-el-otro-polinomio": {
+     "respaldo": "hipotesis",
+     "describe": "Toma como MCD el otro polinomio entero"
+    },
+    "TAL-MCD-PRIMOS-cree-que-no-hay-comun": {
+     "respaldo": "hipotesis",
+     "describe": "No factoriza y cree que los polinomios no tienen nada en común (MCD = 1)"
     }
    },
    "pares": [

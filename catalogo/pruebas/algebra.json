@@ -267,6 +267,34 @@
     "PO11-suma-los-grados": {
       "respaldo": "hipotesis",
       "describe": "Suma los grados de todos los términos (trampa de San Marcos 2026-I)"
+    },
+    "TAL-PRIMO-CONST-cuenta-la-constante": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta el número que sale como factor común entre los factores primos"
+    },
+    "TAL-INCOMPLETA-se-para-antes": {
+      "respaldo": "hipotesis",
+      "describe": "Se para antes de abrir un factor que todavía se factoriza"
+    },
+    "TAL-NO-FACTORIZA-cree-que-es-primo": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que el polinomio no se factoriza"
+    },
+    "TAL-FACTOR-SIGNO-cambia-el-signo": {
+      "respaldo": "hipotesis",
+      "describe": "Copia el signo del número que anula al polinomio en el binomio (x + a por x − a)"
+    },
+    "TAL-MCD-SINFACTOR-toma-un-polinomio-entero": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como MCD uno de los polinomios entero, con un factor que no es común"
+    },
+    "TAL-MCD-MAX-toma-el-otro-polinomio": {
+      "respaldo": "hipotesis",
+      "describe": "Toma como MCD el otro polinomio entero"
+    },
+    "TAL-MCD-PRIMOS-cree-que-no-hay-comun": {
+      "respaldo": "hipotesis",
+      "describe": "No factoriza y cree que los polinomios no tienen nada en común (MCD = 1)"
     }
   },
   "pares": [
@@ -1802,6 +1830,170 @@
             "texto": "6",
             "valor": 6,
             "error": "PO3-cociente-falso-sin-dividir"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fz-01",
+      "plantilla": "factorizacion-practica",
+      "unidad": "algebra.factorizacion",
+      "mide": "Factorización completa: primero el factor común, después la diferencia de cuadrados; los factores primos se cuentan sin la constante",
+      "A": {
+        "enunciado": "¿Cuántos factores primos tiene 2x³ − 32x? (Se cuentan los distintos; un número solo no cuenta.)",
+        "datos": {
+          "modelo": {
+            "g": 2,
+            "k": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "TAL-INCOMPLETA-se-para-antes"
+          },
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "TAL-PRIMO-CONST-cuenta-la-constante"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TAL-NO-FACTORIZA-cree-que-es-primo"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuántos factores primos tiene 2x³ − 50x? (Se cuentan los distintos; un número solo no cuenta.)",
+        "datos": {
+          "modelo": {
+            "g": 2,
+            "k": 5
+          }
+        },
+        "opciones": [
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TAL-NO-FACTORIZA-cree-que-es-primo"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "TAL-PRIMO-CONST-cuenta-la-constante"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "error": "TAL-INCOMPLETA-se-para-antes"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fz-02",
+      "plantilla": "factorizacion-practica",
+      "unidad": "algebra.factorizacion",
+      "mide": "MCD de dos trinomios: se factorizan los dos y se toma solo lo común (San Marcos 2025-II, otros números)",
+      "A": {
+        "enunciado": "Sea M el MCD de x² + x − 12 y x² − 9. ¿Cuánto vale M(5)?",
+        "datos": {
+          "modelo": {
+            "P": [
+              1,
+              1,
+              -12
+            ],
+            "Q": [
+              1,
+              0,
+              -9
+            ],
+            "k": 5
+          }
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "TAL-FACTOR-SIGNO-cambia-el-signo"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "correcta": true
+          },
+          {
+            "texto": "18",
+            "valor": 18,
+            "error": "TAL-MCD-SINFACTOR-toma-un-polinomio-entero"
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TAL-MCD-PRIMOS-cree-que-no-hay-comun"
+          },
+          {
+            "texto": "16",
+            "valor": 16,
+            "error": "TAL-MCD-MAX-toma-el-otro-polinomio"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Sea M el MCD de x² + 2x − 15 y x² − 25. ¿Cuánto vale M(8)?",
+        "datos": {
+          "modelo": {
+            "P": [
+              1,
+              2,
+              -15
+            ],
+            "Q": [
+              1,
+              0,
+              -25
+            ],
+            "k": 8
+          }
+        },
+        "opciones": [
+          {
+            "texto": "65",
+            "valor": 65,
+            "error": "TAL-MCD-SINFACTOR-toma-un-polinomio-entero"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "TAL-FACTOR-SIGNO-cambia-el-signo"
+          },
+          {
+            "texto": "39",
+            "valor": 39,
+            "error": "TAL-MCD-MAX-toma-el-otro-polinomio"
+          },
+          {
+            "texto": "13",
+            "valor": 13,
+            "correcta": true
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TAL-MCD-PRIMOS-cree-que-no-hay-comun"
           }
         ]
       }

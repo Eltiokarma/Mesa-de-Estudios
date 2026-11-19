@@ -245,3 +245,8 @@ test('papel.json: respuestas recalculadas', () => {
   // p10: fila con tantas personas como términos de (x⁶⁰ − y⁹⁰)/(x⁴ − y⁶): 15 términos, delante del central: 7.
   { const Q = cn('mm', 4, 6, 15); assert.equal(Q.length, 15); tiene('p10', '7 personas'); }
 });
+
+test('con la unidad Factorización solo da MCD y MCM (etapa 7, docs/etapa7/propuesta-algebra.md, decisión 9)', () => {
+  for (let s = 0; s < 200; s++) assert.equal(gen.generar(s, { unidad: 'algebra.factorizacion' })._datos.tipo, 'mcdmcm', `semilla ${s}`);
+  assert.ok(Array.from({ length: 60 }, (_, s) => gen.generar(s)._datos.tipo).some(t => t !== 'mcdmcm'), 'sin unidad, como antes');
+});

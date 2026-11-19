@@ -56,7 +56,9 @@ D.registrar('algebra', {
     for (let k = 0; k < 3; k++) s += P.r(70 + k * 13, 14, 13, 44, 'm d', 1);
     for (let k = 0; k < 2; k++) s += P.r(26, 58 + k * 13, 44, 13, 'm d', 1);
     for (let i = 0; i < 2; i++) for (let j = 0; j < 3; j++) s += P.r(70 + j * 13, 58 + i * 13, 13, 13, 'a d', 1);
-    return s + P.r(26, 14, 83, 70, '', 2) + P.t(68, 106, 'x + 3', 17) + P.t(114, 55, 'x + 2', 17, 'start');
+    // 19 nov (etapa 7): los lados dicen x + m y x + n, como en el aspa de la unidad; con números, el ícono escribía la
+    // respuesta de una predicción (x + 3) antes de predecir (regla icono-respuesta).
+    return s + P.r(26, 14, 83, 70, '', 2) + P.t(68, 106, 'x + m', 17) + P.t(114, 55, 'x + n', 17, 'start');
   },
   // Una ecuación de grado 3 tiene hasta tres raíces: tres cortes con el eje.
   'algebra.ecuaciones-polinomiales': P =>

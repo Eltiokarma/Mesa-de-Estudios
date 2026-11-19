@@ -1,0 +1,282 @@
+{
+  "plantilla": "factorizacion-practica",
+  "nota": "Un caso por tipo (25 tipos, seis ideas). entrada: la idea y el tipo que da generar(semilla, { idea }); esperado.texto: el texto de la alternativa correcta.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e7-algebra/scripts/cuentas-practica.py), que no usa el generador ni el núcleo: lee el enunciado que ve el alumno, arma los polinomios con sympy y recalcula (expand, factor_list, rem, gcd, lcm): la correcta da el polinomio, divide a P, cuenta o suma sus factores primos, o da el MCD y el MCM; ningún distractor de una factorización o de un factor es también correcto. Revisó 2408 problemas (400 por idea y los 8 del papel), entre ellos estos 25 casos: todos cuadran.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "factor-comun",
+        "tipo": "comun-dos",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "4xy"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "factor-comun",
+        "tipo": "comun-uno",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "3x³(3x³ − 1)"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "factor-comun",
+        "tipo": "volteado",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "(x − 3)(3x + 7)"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "factor-comun",
+        "tipo": "agrupar",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "x² + x − 8"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "identidades",
+        "tipo": "dif-cuad",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "(4x + 2y)(4x − 2y)"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "identidades",
+        "tipo": "tcp",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "(2x − 7)²"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "identidades",
+        "tipo": "cubos",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "9x² − 6x + 4"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "identidades",
+        "tipo": "primos-ident",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "aspa-simple",
+        "tipo": "aspa-monico",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "x − 4"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "aspa-simple",
+        "tipo": "aspa-coef",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "(5x + 1)(x − 3)"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "aspa-simple",
+        "tipo": "aspa-dos",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "2x − 4y"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "aspa-simple",
+        "tipo": "bicuad",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "x² + 2x + 4"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "aspa-doble",
+        "tipo": "doble-factor",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "2x − y − 3"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "aspa-doble",
+        "tipo": "doble-suma",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "3x + 3y + 3"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "aspa-doble",
+        "tipo": "falta",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "−3x²"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "aspa-doble",
+        "tipo": "especial-primos",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "x² + 2x − 1"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "teorema-factor",
+        "tipo": "factor-signo",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "x + 2"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "teorema-factor",
+        "tipo": "cual-divisor",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "x + 2"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "teorema-factor",
+        "tipo": "suma-cubica",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "3x + 1"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "teorema-factor",
+        "tipo": "principal",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "3x + 2"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "mcd-mcm",
+        "tipo": "mcd",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "x + 3"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "idea": "mcd-mcm",
+        "tipo": "mcm",
+        "nivel": 1
+      },
+      "esperado": {
+        "texto": "(x − 3)³(x + 1)²(x + 2)²"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "mcd-mcm",
+        "tipo": "grado-mcm",
+        "nivel": 2
+      },
+      "esperado": {
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "mcd-mcm",
+        "tipo": "mcd-valor",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "mcd-mcm",
+        "tipo": "mcm-dado",
+        "nivel": 3
+      },
+      "esperado": {
+        "texto": "10"
+      }
+    }
+  ]
+}

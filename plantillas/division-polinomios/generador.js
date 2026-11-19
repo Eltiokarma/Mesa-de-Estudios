@@ -111,9 +111,13 @@
   };
   const LISTA = ['cociente', 'cociente', 'resto2', 'identidad', 'parametros', 'caja', 'mcdmcm', 'mcdmcm'];
 
-  function generar(semilla) {
+  // 19 nov (etapa 7, docs/etapa7/propuesta-algebra.md, decisión 9): el generador solo sirve a Factorización, que tiene su
+  // práctica por idea (factorizacion-practica) y lo deja en «Más mesas del tema». Pedido con la unidad (práctica, examen y
+  // repaso lo piden así), da solo sus tipos de MCD y MCM: la división es de la unidad anterior. Sin unidad, como antes.
+  function generar(semilla, opciones) {
+    const o = typeof opciones === 'string' ? { unidad: opciones } : opciones || {};
     const rng = Azar.crear(`${ID}|` + semilla);
-    const tipo = rng.elegir(LISTA);
+    const tipo = o.unidad === 'algebra.factorizacion' ? (rng.elegir(LISTA), 'mcdmcm') : rng.elegir(LISTA);
     const sub = rng.elegir(TIPOS[tipo]);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);

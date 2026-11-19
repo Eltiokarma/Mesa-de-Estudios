@@ -1,0 +1,21 @@
+{
+  "id": "factorizacion-practica",
+  "titulo": "Factorización",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.factorizacion"
+  ],
+  "temas": [
+    "Factor común e identidades",
+    "Aspa simple, doble y doble especial",
+    "Divisores binómicos",
+    "Teorema del factor",
+    "MCD y MCM de polinomios"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

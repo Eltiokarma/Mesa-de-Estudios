@@ -2720,7 +2720,7 @@
        "radicales-dobles": "Dos números que suman y multiplican",
        "racionalizar": "Racionalizar es multiplicar por uno"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -2919,7 +2919,7 @@
        "igualdad": "Polinomios idénticos",
        "operaciones": "Multiplicar polinomios"
       },
-      "terminos": 40
+      "terminos": 42
      }
     },
     {
@@ -2997,33 +2997,36 @@
        ]
       }
      },
-     "potencial_visual": "bajo",
+     "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
       "algebra.division-de-polinomios",
       "algebra.productos-notables"
      ],
      "plantillas": [
+      "factorizacion-practica",
       "cuadrado-crece",
-      "division-polinomios",
-      "ecuaciones-polinomiales"
+      "division-polinomios"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/algebra/factorizacion.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/alg-baldosas.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-losetas.js",
+       "/nucleo/kit/piezas/alg-reparto.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "factor-comun": "Primero el factor común",
-       "aspa-simple": "El aspa reconstruye el centro",
-       "aspa-doble": "Tres aspas para seis términos",
-       "teorema-factor": "Si P(a) = 0, hay factor",
-       "mcd-mcm": "Menor exponente, mayor exponente"
+       "factor-comun": "Factor común y agrupación",
+       "identidades": "Productos notables al revés",
+       "aspa-simple": "Aspa simple",
+       "aspa-doble": "Aspa doble y doble especial",
+       "teorema-factor": "Divisores binómicos y teorema del factor",
+       "mcd-mcm": "MCD y MCM de polinomios"
       },
-      "terminos": 40
+      "terminos": 49
      }
     },
     {
@@ -3078,7 +3081,7 @@
        "cambio-de-variable": "Un cambio de variable",
        "binomica": "zⁿ = w: un polígono regular"
       },
-      "terminos": 42
+      "terminos": 43
      }
     },
     {
@@ -3132,7 +3135,7 @@
        "traslaciones": "Restar adentro corre a la derecha",
        "polinomial": "Raíces y extremos de un polinomio"
       },
-      "terminos": 36
+      "terminos": 37
      }
     },
     {
@@ -9177,7 +9180,8 @@
    "archivos": [
     "/plantillas/division-polinomios/generador.js",
     "/plantillas/division-polinomios/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "division-practica": {
    "id": "division-practica",
@@ -9233,7 +9237,6 @@
    "version": "0.1.0",
    "unidades": [
     "algebra.ecuaciones-polinomiales",
-    "algebra.factorizacion",
     "algebra.numeros-complejos"
    ],
    "url": "#/practica/ecuaciones-polinomiales",
@@ -9462,6 +9465,30 @@
    "archivos": [
     "/plantillas/exponentes-radicales/generador.js",
     "/plantillas/exponentes-radicales/papel.json"
+   ]
+  },
+  "factorizacion-practica": {
+   "id": "factorizacion-practica",
+   "titulo": "Factorización",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.factorizacion"
+   ],
+   "url": "#/practica/factorizacion-practica",
+   "ideas": [
+    "factor-comun",
+    "identidades",
+    "aspa-simple",
+    "aspa-doble",
+    "teorema-factor",
+    "mcd-mcm"
+   ],
+   "papel": "/plantillas/factorizacion-practica/papel.json",
+   "archivos": [
+    "/plantillas/factorizacion-practica/generador.js",
+    "/plantillas/factorizacion-practica/papel.json"
    ]
   },
   "fis-dinamica": {
