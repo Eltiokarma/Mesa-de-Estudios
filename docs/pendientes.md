@@ -2,6 +2,27 @@
 
 Actualizado el 19 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 19 nov, noche: Etapa 6», después «Estado al 19 nov: Etapa 5», después «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
 
+## Estado al 19 nov, cierre: Etapa 7 cerrada (ocho unidades con calidad 2)
+
+Mismo método que la Etapa 6 (`docs/metodo/unidad/`), con las lecciones 13 a 17 nuevas en `etapa-delegada.md`. Todos
+los agentes en Opus 5.5.
+
+- **Hecho y en main (v305, unas 12 020 pruebas):** Sentido contextual, Nomenclatura inorgánica, Dinámica,
+  Factorización, MCD y MCM, Resolución de triángulos rectángulos, Certezas y Circunferencia, todas con `calidad: 2`.
+  Resumen y decisiones para Gerson en `docs/etapa7/decisiones.md`; informes en `rutinas/auditoria/` y `rutinas/frio/`;
+  tarjetas en la mesa (ronda 13).
+- **Avance:** `REHECHAS_E6` suma Nomenclatura, Sentido contextual, Factorización, MCD y MCM, Certezas, Triángulos
+  rectángulos y Circunferencia; Dinámica con su `sinHuella` propio.
+- **Validador y herramientas:** regla `icono-respuesta` (el ícono de `app/dibujos/` no escribe la respuesta de una
+  Predice ni lo que revela una misión; excepción en Razones trigonométricas, pendiente de corregir); `ecuaciones-ancho.js`
+  marca los cortes de renglón en mal sitio (barrido: 376 en unidades viejas, 324 con el resultado solo después de «=»).
+- **Integración:** cuando una unidad pasa a calidad 2, la regla del papel revisa todas las plantillas que lista su
+  ficha (le pasó a `geo-circunferencia-metrica`): antes de marcarla, correr `node --test herramientas/papel-reglas.test.js`.
+- **Siguiente:**
+  1. Lo que dejó la etapa (`docs/etapa7/decisiones.md`, «Pendientes»), y en `nucleo/ecuacion.js` pegar un resultado
+     corto al «=» (arreglaría casi todos los 324 cortes); el ícono de Razones trigonométricas.
+  2. Etapa 8: la unidad siguiente de cada rama, con el mismo método.
+
 ## Estado al 19 nov, noche: Etapa 6 cerrada (nueve unidades con calidad 2)
 
 Mismo criterio delegado que la Etapa 5. Desde aquí el método vive en `docs/metodo/unidad/`: `etapa-delegada.md` (un
