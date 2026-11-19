@@ -1,0 +1,87 @@
+{
+  "titulo": "Longitud de arco y sector circular: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En una circunferencia de 9 cm de radio, un ángulo central mide 30°. ¿Cuánto mide su arco? Datos: Longitud de arco: s = θ · r, con θ en radianes. π rad = 180°. Alternativas: A) 27π/20 cm   B) 3π cm   C) 27π/4 cm   D) 3π/2 cm",
+      "respuesta": "D) 3π/2 cm",
+      "pasos": [
+        "Primero a radianes: 30° son π/6 rad.",
+        "s = π/6 · 9 = 3π/2 cm."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un terreno con forma de sector circular tiene 6 m de radio y un ángulo central de 60°. ¿Cuánto mide su área? Datos: Área del sector: A = θ · r²/2 = s · r/2, con θ en radianes. π rad = 180°. Alternativas: A) 27π/5 m²   B) 2π m²   C) 12π m²   D) 6π m²",
+      "respuesta": "D) 6π m²",
+      "pasos": [
+        "60° son π/3 rad.",
+        "A = π/3 · 6²/2 = 6π m²."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un trapecio circular tiene un ángulo central de π/6 rad y va desde r₁ = 6 cm hasta r₂ = 8 cm. ¿Cuánto mide su área? Datos: Trapecio circular: A = θ · (r₂² − r₁²)/2, con θ en radianes. Alternativas: A) π/3 cm²   B) 16π/3 cm²   C) 7π/6 cm²   D) 3π cm²   E) 7π/3 cm²",
+      "respuesta": "E) 7π/3 cm²",
+      "pasos": [
+        "Los cuadrados: 64 − 36 = 28.",
+        "A = π/6 · 28/2 = 7π/3 cm²."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "La rueda de una carretilla tiene 0,25 m de radio y avanza 2π m sin deslizar. ¿Cuántas vueltas da? Datos: Al rodar sin deslizar: n = d/(2π · r), con d lo que avanza el centro. Alternativas: A) 2 vueltas   B) 4 vueltas   C) 25,13 vueltas   D) 8 vueltas   E) 12,57 vueltas",
+      "respuesta": "B) 4 vueltas",
+      "pasos": [
+        "Una vuelta avanza 2π · 0,25 = 0,5π m.",
+        "n = 2π ÷ 0,5π = 4 vueltas."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La rueda 1 (r₁ = 12 cm) mueve con una faja a la rueda 2 (r₂ = 6 cm); la rueda 3 (r₃ = 12 cm) va en el eje de la 2. La rueda 1 da 2 vueltas. ¿Cuántas vueltas da la rueda 3? Datos: Faja o cadena: n₁ · r₁ = n₂ · r₂ (los bordes recorren el mismo largo). Eje común: las ruedas dan las mismas vueltas. Alternativas: A) 1 vuelta   B) 2 vueltas   C) 4 vueltas   D) 8 vueltas",
+      "respuesta": "C) 4 vueltas",
+      "pasos": [
+        "Faja: 2 · 12 = n₂ · 6, así que n₂ = 4.",
+        "Eje común: n₃ = n₂ = 4 vueltas."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El perímetro de un sector circular es 2,5 veces su radio. ¿Cuánto mide su ángulo central, en radianes? Datos: Perímetro del sector: dos radios y el arco, 2r + s. Longitud de arco: s = θ · r, con θ en radianes. Alternativas: A) 2,5 rad   B) 4,5 rad   C) 0,25 rad   D) 1,5 rad   E) 0,5 rad",
+      "respuesta": "E) 0,5 rad",
+      "pasos": [
+        "2r + s = 2,5r, así que s = 0,5r.",
+        "Un arco de 0,5 radios: θ = 0,5 rad."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El brazo de un limpiaparabrisas mide 50 cm, y su jebe, de 40 cm, va al final del brazo. El brazo barre 150°. ¿Qué área limpia el jebe? Datos: Trapecio circular: A = θ · (r₂² − r₁²)/2, con θ en radianes. π rad = 180°. Alternativas: A) 2 000π/3 cm²   B) 2 000π cm²   C) 3 125π/3 cm²   D) 1 000π cm²",
+      "respuesta": "D) 1 000π cm²",
+      "pasos": [
+        "El jebe va de 10 cm a 50 cm del eje; 150° son 5π/6 rad.",
+        "A = 5π/6 · (50² − 10²)/2 = 1 000π cm²."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Una manivela gira una rueda de 10 cm que, con una faja, mueve otra de 60 cm; en su eje, un tambor de 5 cm enrolla la soga de un balde. La manivela da 6 vueltas. ¿Cuánto sube el balde? Datos: Faja o cadena: n₁ · r₁ = n₂ · r₂ (los bordes recorren el mismo largo). Eje común: las ruedas dan las mismas vueltas. Largo del borde de una rueda: 2π · r. Alternativas: A) 120π cm   B) 5π cm   C) 60π cm   D) 10π cm",
+      "respuesta": "D) 10π cm",
+      "pasos": [
+        "La segunda rueda y su tambor dan 6 · 10 ÷ 60 = 1 vuelta.",
+        "s = 1 · 2π · 5 = 10π cm."
+      ]
+    }
+  ]
+}

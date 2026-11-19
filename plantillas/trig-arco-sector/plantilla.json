@@ -1,0 +1,20 @@
+{
+  "id": "trig-arco-sector",
+  "titulo": "Longitud de arco y sector circular",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.longitud-de-arco-y-sector"
+  ],
+  "temas": [
+    "Longitud de arco",
+    "Área del sector y del trapecio circular",
+    "Número de vueltas de una rueda",
+    "Ruedas, poleas y engranajes"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

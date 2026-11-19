@@ -5619,28 +5619,29 @@
       }
      },
      "potencial_visual": "alto",
-     "grado": 3,
+     "grado": 5,
      "requiere": [
       "trigonometria.angulo-trigonometrico"
      ],
      "plantillas": [
-      "cinta-radio",
-      "geo-areas-circulares"
+      "trig-arco-sector",
+      "cinta-radio"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/longitud-de-arco-y-sector.js",
       "requiere": [
+       "/nucleo/kit/piezas/trig-arco.js",
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
       "titulos": {
-       "arco": "El arco cuenta radios",
-       "sector": "El área lleva dos radios",
-       "trapecio-circular": "Sector grande menos sector chico",
-       "vueltas-rueda": "La rueda gira lo que avanza",
-       "faja-y-eje": "Mismo borde o mismo ángulo"
+       "arco": "Longitud de arco",
+       "sector": "Área del sector circular",
+       "trapecio-circular": "Trapecio circular",
+       "vueltas-rueda": "Número de vueltas de una rueda",
+       "faja-y-eje": "Ruedas unidas: faja y eje"
       },
-      "terminos": 20
+      "terminos": 30
      }
     },
     {
@@ -8465,7 +8466,8 @@
     "/plantillas/cinta-radio/papel.json"
    ],
    "rehacer": [
-    "trigonometria.angulo-trigonometrico"
+    "trigonometria.angulo-trigonometrico",
+    "trigonometria.longitud-de-arco-y-sector"
    ]
   },
   "circuitos-cc": {
@@ -9685,8 +9687,7 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "geometria.longitud-y-areas-circulares",
-    "trigonometria.longitud-de-arco-y-sector"
+    "geometria.longitud-y-areas-circulares"
    ],
    "url": "#/practica/geo-areas-circulares",
    "papel": "/plantillas/geo-areas-circulares/papel.json",
@@ -12198,6 +12199,29 @@
    "archivos": [
     "/plantillas/trig-angulos-verticales/generador.js",
     "/plantillas/trig-angulos-verticales/papel.json"
+   ]
+  },
+  "trig-arco-sector": {
+   "id": "trig-arco-sector",
+   "titulo": "Longitud de arco y sector circular",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.longitud-de-arco-y-sector"
+   ],
+   "url": "#/practica/trig-arco-sector",
+   "ideas": [
+    "arco",
+    "sector",
+    "trapecio-circular",
+    "vueltas-rueda",
+    "faja-y-eje"
+   ],
+   "papel": "/plantillas/trig-arco-sector/papel.json",
+   "archivos": [
+    "/plantillas/trig-arco-sector/generador.js",
+    "/plantillas/trig-arco-sector/papel.json"
    ]
   },
   "trig-ecuaciones": {

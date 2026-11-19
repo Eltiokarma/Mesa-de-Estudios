@@ -7,7 +7,7 @@
     "trigonometria.longitud-de-arco-y-sector"
   ],
   "estado": "borrador",
-  "rehacer": ["trigonometria.angulo-trigonometrico"],
+  "rehacer": ["trigonometria.angulo-trigonometrico", "trigonometria.longitud-de-arco-y-sector"],
   "version": "0.1.0",
   "escena": "index.html",
   "motor": "motor.js",

@@ -4412,6 +4412,30 @@
     "SCR-K-da-k": {
      "respaldo": "hipotesis",
      "describe": "Halla k y la da como medida del ángulo, sin multiplicar por 9 (SCR-K)"
+    },
+    "TR4-area-con-grados": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el ángulo en grados en A = θ · r²/2"
+    },
+    "SEC-MITAD-sin-la-mitad": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida la mitad en el área del sector"
+    },
+    "SEC-ARCO-da-el-arco": {
+     "respaldo": "hipotesis",
+     "describe": "Da el arco del sector en lugar de su área"
+    },
+    "VUEL-CONTACTO-borde-de-la-fija": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo el borde de la rueda fija que toca, no el camino del centro"
+    },
+    "VUEL-DENTRO-resta-los-radios": {
+     "respaldo": "hipotesis",
+     "describe": "Resta los radios, como si rodara por dentro"
+    },
+    "VUEL-DIAMETRO-media-vuelta": {
+     "respaldo": "hipotesis",
+     "describe": "Divide el camino del centro entre media vuelta, π · r"
     }
    },
    "pares": [

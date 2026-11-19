@@ -1,0 +1,547 @@
+{
+ "plantilla": "trig-arco-sector",
+ "tolerancia": 1e-09,
+ "nota": "Entrada = _datos del generador (opciones.tipo fija el tipo). esperado.valor es el número (el valor real, con π) y esperado.texto, la alternativa correcta que ve el alumno.",
+ "verificacion": "Script aparte (19 nov 2026, python3 -I con fractions y math, en el scratchpad de la sesión: e6-trigonometria/casos-aparte.py), que no usa el generador ni el núcleo: rehace cada respuesta desde los datos con fracciones exactas de π (s = θ·r, A = θ·r²/2, A = θ(r₂² − r₁²)/2, n = d/(2πr), n₁r₁ = n₂r₂) y arma el texto con su propio formato. Los 30 casos cuadran.",
+ "casos": [
+  {
+   "semilla": "caso-arco-1",
+   "opciones": {
+    "tipo": "arco"
+   },
+   "entrada": {
+    "idea": "arco",
+    "tipo": "arco",
+    "nivel": 1,
+    "r": 6,
+    "t": 1.5
+   },
+   "esperado": {
+    "valor": 9.0,
+    "texto": "9 cm"
+   }
+  },
+  {
+   "semilla": "caso-arco-2",
+   "opciones": {
+    "tipo": "arco"
+   },
+   "entrada": {
+    "idea": "arco",
+    "tipo": "arco",
+    "nivel": 1,
+    "r": 9,
+    "t": 2
+   },
+   "esperado": {
+    "valor": 18,
+    "texto": "18 cm"
+   }
+  },
+  {
+   "semilla": "caso-grados-1",
+   "opciones": {
+    "tipo": "grados"
+   },
+   "entrada": {
+    "idea": "arco",
+    "tipo": "grados",
+    "nivel": 2,
+    "sub": "radio",
+    "g": 120,
+    "r": 6
+   },
+   "esperado": {
+    "valor": 6,
+    "texto": "6 cm"
+   }
+  },
+  {
+   "semilla": "caso-grados-2",
+   "opciones": {
+    "tipo": "grados"
+   },
+   "entrada": {
+    "idea": "arco",
+    "tipo": "grados",
+    "nivel": 2,
+    "sub": "radio",
+    "g": 36,
+    "r": 24
+   },
+   "esperado": {
+    "valor": 24,
+    "texto": "24 cm"
+   }
+  },
+  {
+   "semilla": "caso-arco-examen-1",
+   "opciones": {
+    "tipo": "arco-examen"
+   },
+   "entrada": {
+    "idea": "arco",
+    "tipo": "arco-examen",
+    "nivel": 3,
+    "sub": "minutero",
+    "L": 9,
+    "m": 12
+   },
+   "esperado": {
+    "valor": 11.309733552923255,
+    "texto": "18π/5 cm"
+   }
+  },
+  {
+   "semilla": "caso-arco-examen-2",
+   "opciones": {
+    "tipo": "arco-examen"
+   },
+   "entrada": {
+    "idea": "arco",
+    "tipo": "arco-examen",
+    "nivel": 3,
+    "sub": "centesimal",
+    "C": 75,
+    "r": 9
+   },
+   "esperado": {
+    "valor": 10.602875205865551,
+    "texto": "27π/8 cm"
+   }
+  },
+  {
+   "semilla": "caso-area-1",
+   "opciones": {
+    "tipo": "area"
+   },
+   "entrada": {
+    "idea": "sector",
+    "tipo": "area",
+    "nivel": 1,
+    "sub": "arco",
+    "s": 23,
+    "r": 12
+   },
+   "esperado": {
+    "valor": 138.0,
+    "texto": "138 cm²"
+   }
+  },
+  {
+   "semilla": "caso-area-2",
+   "opciones": {
+    "tipo": "area"
+   },
+   "entrada": {
+    "idea": "sector",
+    "tipo": "area",
+    "nivel": 1,
+    "sub": "arco",
+    "s": 22,
+    "r": 11
+   },
+   "esperado": {
+    "valor": 121.0,
+    "texto": "121 cm²"
+   }
+  },
+  {
+   "semilla": "caso-area-grados-1",
+   "opciones": {
+    "tipo": "area-grados"
+   },
+   "entrada": {
+    "idea": "sector",
+    "tipo": "area-grados",
+    "nivel": 2,
+    "sub": "area",
+    "g": 60,
+    "r": 10
+   },
+   "esperado": {
+    "valor": 52.35987755982989,
+    "texto": "50π/3 m²"
+   }
+  },
+  {
+   "semilla": "caso-area-grados-2",
+   "opciones": {
+    "tipo": "area-grados"
+   },
+   "entrada": {
+    "idea": "sector",
+    "tipo": "area-grados",
+    "nivel": 2,
+    "sub": "radio",
+    "g": 36,
+    "r": 12
+   },
+   "esperado": {
+    "valor": 12,
+    "texto": "12 m"
+   }
+  },
+  {
+   "semilla": "caso-perimetro-1",
+   "opciones": {
+    "tipo": "perimetro"
+   },
+   "entrada": {
+    "idea": "sector",
+    "tipo": "perimetro",
+    "nivel": 3,
+    "sub": "veces",
+    "k": 4.5
+   },
+   "esperado": {
+    "valor": 2.5,
+    "texto": "2,5 rad"
+   }
+  },
+  {
+   "semilla": "caso-perimetro-2",
+   "opciones": {
+    "tipo": "perimetro"
+   },
+   "entrada": {
+    "idea": "sector",
+    "tipo": "perimetro",
+    "nivel": 3,
+    "sub": "cerco",
+    "r": 12,
+    "t": 2.5
+   },
+   "esperado": {
+    "valor": 54.0,
+    "texto": "54 m"
+   }
+  },
+  {
+   "semilla": "caso-banda-1",
+   "opciones": {
+    "tipo": "banda"
+   },
+   "entrada": {
+    "idea": "trapecio-circular",
+    "tipo": "banda",
+    "nivel": 1,
+    "t": 3.141592653589793,
+    "r1": 5,
+    "r2": 10
+   },
+   "esperado": {
+    "valor": 117.80972450961724,
+    "texto": "75π/2 cm²"
+   }
+  },
+  {
+   "semilla": "caso-banda-2",
+   "opciones": {
+    "tipo": "banda"
+   },
+   "entrada": {
+    "idea": "trapecio-circular",
+    "tipo": "banda",
+    "nivel": 1,
+    "t": 0.7853981633974483,
+    "r1": 7,
+    "r2": 13
+   },
+   "esperado": {
+    "valor": 47.12388980384689,
+    "texto": "15π cm²"
+   }
+  },
+  {
+   "semilla": "caso-banda-arcos-1",
+   "opciones": {
+    "tipo": "banda-arcos"
+   },
+   "entrada": {
+    "idea": "trapecio-circular",
+    "tipo": "banda-arcos",
+    "nivel": 2,
+    "sub": "angulo",
+    "s1": 8,
+    "s2": 10,
+    "h": 2
+   },
+   "esperado": {
+    "valor": 1.0,
+    "texto": "1 rad"
+   }
+  },
+  {
+   "semilla": "caso-banda-arcos-2",
+   "opciones": {
+    "tipo": "banda-arcos"
+   },
+   "entrada": {
+    "idea": "trapecio-circular",
+    "tipo": "banda-arcos",
+    "nivel": 2,
+    "sub": "angulo",
+    "s1": 2,
+    "s2": 7,
+    "h": 5
+   },
+   "esperado": {
+    "valor": 1.0,
+    "texto": "1 rad"
+   }
+  },
+  {
+   "semilla": "caso-banda-examen-1",
+   "opciones": {
+    "tipo": "banda-examen"
+   },
+   "entrada": {
+    "idea": "trapecio-circular",
+    "tipo": "banda-examen",
+    "nivel": 3,
+    "sub": "razon",
+    "k": 3
+   },
+   "esperado": {
+    "valor": 8,
+    "texto": "8"
+   }
+  },
+  {
+   "semilla": "caso-banda-examen-2",
+   "opciones": {
+    "tipo": "banda-examen"
+   },
+   "entrada": {
+    "idea": "trapecio-circular",
+    "tipo": "banda-examen",
+    "nivel": 3,
+    "sub": "razon",
+    "k": 2
+   },
+   "esperado": {
+    "valor": 3,
+    "texto": "3"
+   }
+  },
+  {
+   "semilla": "caso-vueltas-1",
+   "opciones": {
+    "tipo": "vueltas"
+   },
+   "entrada": {
+    "idea": "vueltas-rueda",
+    "tipo": "vueltas",
+    "nivel": 1,
+    "r": 0.25,
+    "n": 12
+   },
+   "esperado": {
+    "valor": 12,
+    "texto": "12 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-vueltas-2",
+   "opciones": {
+    "tipo": "vueltas"
+   },
+   "entrada": {
+    "idea": "vueltas-rueda",
+    "tipo": "vueltas",
+    "nivel": 1,
+    "r": 0.3,
+    "n": 5
+   },
+   "esperado": {
+    "valor": 5,
+    "texto": "5 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-rodea-1",
+   "opciones": {
+    "tipo": "rodea"
+   },
+   "entrada": {
+    "idea": "vueltas-rueda",
+    "tipo": "rodea",
+    "nivel": 2,
+    "a": 1,
+    "b": 3,
+    "fuera": true
+   },
+   "esperado": {
+    "valor": 4.0,
+    "texto": "4 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-rodea-2",
+   "opciones": {
+    "tipo": "rodea"
+   },
+   "entrada": {
+    "idea": "vueltas-rueda",
+    "tipo": "rodea",
+    "nivel": 2,
+    "a": 1,
+    "b": 2,
+    "fuera": true
+   },
+   "esperado": {
+    "valor": 3.0,
+    "texto": "3 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-dos-ruedas-1",
+   "opciones": {
+    "tipo": "dos-ruedas"
+   },
+   "entrada": {
+    "idea": "vueltas-rueda",
+    "tipo": "dos-ruedas",
+    "nivel": 3,
+    "a": 0.3,
+    "b": 0.5,
+    "D": 5
+   },
+   "esperado": {
+    "valor": 23.561944901923447,
+    "texto": "7,5π m"
+   }
+  },
+  {
+   "semilla": "caso-dos-ruedas-2",
+   "opciones": {
+    "tipo": "dos-ruedas"
+   },
+   "entrada": {
+    "idea": "vueltas-rueda",
+    "tipo": "dos-ruedas",
+    "nivel": 3,
+    "a": 0.3,
+    "b": 0.5,
+    "D": 20
+   },
+   "esperado": {
+    "valor": 94.24777960769379,
+    "texto": "30π m"
+   }
+  },
+  {
+   "semilla": "caso-faja-1",
+   "opciones": {
+    "tipo": "faja"
+   },
+   "entrada": {
+    "idea": "faja-y-eje",
+    "tipo": "faja",
+    "nivel": 1,
+    "r1": 15,
+    "r2": 10,
+    "n1": 10
+   },
+   "esperado": {
+    "valor": 15.0,
+    "texto": "15 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-faja-2",
+   "opciones": {
+    "tipo": "faja"
+   },
+   "entrada": {
+    "idea": "faja-y-eje",
+    "tipo": "faja",
+    "nivel": 1,
+    "r1": 5,
+    "r2": 10,
+    "n1": 12
+   },
+   "esperado": {
+    "valor": 6.0,
+    "texto": "6 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-eje-1",
+   "opciones": {
+    "tipo": "eje"
+   },
+   "entrada": {
+    "idea": "faja-y-eje",
+    "tipo": "eje",
+    "nivel": 2,
+    "r1": 6,
+    "r2": 3,
+    "r3": 20,
+    "n1": 1
+   },
+   "esperado": {
+    "valor": 2.0,
+    "texto": "2 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-eje-2",
+   "opciones": {
+    "tipo": "eje"
+   },
+   "entrada": {
+    "idea": "faja-y-eje",
+    "tipo": "eje",
+    "nivel": 2,
+    "r1": 8,
+    "r2": 4,
+    "r3": 20,
+    "n1": 6
+   },
+   "esperado": {
+    "valor": 12.0,
+    "texto": "12 vueltas"
+   }
+  },
+  {
+   "semilla": "caso-balde-1",
+   "opciones": {
+    "tipo": "balde"
+   },
+   "entrada": {
+    "idea": "faja-y-eje",
+    "tipo": "balde",
+    "nivel": 3,
+    "a": 30,
+    "b": 20,
+    "c": 10,
+    "m": 4
+   },
+   "esperado": {
+    "valor": 376.99111843077515,
+    "texto": "120π cm"
+   }
+  },
+  {
+   "semilla": "caso-balde-2",
+   "opciones": {
+    "tipo": "balde"
+   },
+   "entrada": {
+    "idea": "faja-y-eje",
+    "tipo": "balde",
+    "nivel": 3,
+    "a": 10,
+    "b": 20,
+    "c": 8,
+    "m": 4
+   },
+   "esperado": {
+    "valor": 100.53096491487338,
+    "texto": "32π cm"
+   }
+  }
+ ]
+}

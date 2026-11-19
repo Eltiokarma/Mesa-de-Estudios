@@ -3,8 +3,7 @@
   "titulo": "Coronas, sectores y regiones con arcos",
   "formato": "predicciones",
   "unidades": [
-    "geometria.longitud-y-areas-circulares",
-    "trigonometria.longitud-de-arco-y-sector"
+    "geometria.longitud-y-areas-circulares"
   ],
   "estado": "borrador",
   "version": "0.1.0",

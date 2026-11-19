@@ -14,12 +14,12 @@ D.registrar('trigonometria', {
       + P.ac(P.arco(46, 86, 44, 4, 46)) + P.punta(...sobre(46, 86, 44, 48), -138, 'tn')
       + P.p(P.arco(46, 86, 28, -4, -60), 'g') + P.t(94, 58, '+', 22) + P.t(78, 113, '−', 22) + P.t(132, 32, 'rad', 16);
   },
-  // El arco es el radio por el ángulo: L = θ · r.
+  // El arco es el radio por el ángulo: s = θ · r (la letra del arco es s, como en la teoría; 19 nov).
   'trigonometria.longitud-de-arco-y-sector': P => {
     const [x1, y1] = sobre(34, 96, 104, 8), [x2, y2] = sobre(34, 96, 104, 52);
     return P.p(`M34 96L${P.n(x1)} ${P.n(y1)}${P.arco(34, 96, 104, 8, 52).replace(/^M[^A]+/, '')}Z`, 'm')
       + P.ac(P.arco(34, 96, 104, 8, 52)) + P.l([[34, 96], [x1, y1]], 'd') + P.l([[34, 96], [x2, y2]], 'd')
-      + P.p(P.arco(34, 96, 24, 8, 52), 'd') + P.t(84, 104, 'r', 18) + P.t(146, 50, 'L', 20) + P.t(66, 80, 'θ', 17);
+      + P.p(P.arco(34, 96, 24, 8, 52), 'd') + P.t(84, 104, 'r', 18) + P.t(146, 50, 's', 20) + P.t(66, 80, 'θ', 17);
   },
   // El triángulo notable 3-4-5 y su ángulo de 37°.
   'trigonometria.razones-trigonometricas-agudas': P =>

@@ -776,6 +776,12 @@ const V = {
   // medida es una fracción f de vuelta, S = 360f y C = 400f, y la condición da f.
   'tri-11': d => { const f = d.dato / (2 * 400 - 360), S = 360 * f, C = 400 * f;
     return { correcta: S, errores: { 'SCR-SUMA-dato-como-angulo': d.dato, 'SCR-OTRA-da-C': C, 'SCR-K-da-k': S / 9 } }; },
+  // tri-12 y tri-13 (reserva, 19 nov, etapa 6 de trigonometría: «Longitud de arco y sector»; las formas ya tienen 10
+  // pares). Cuentas aparte, sin el generador: el área del sector con el ángulo pasado a radianes, y la rueda que rodea a
+  // otra fija k veces más grande (su centro recorre una circunferencia de radio (k + 1)r).
+  'tri-12': d => { const t = d.g * PI / 180;
+    return { correcta: t * d.r * d.r / 2, errores: { 'TR4-area-con-grados': d.g * d.r * d.r / 2, 'SEC-MITAD-sin-la-mitad': t * d.r * d.r, 'SEC-ARCO-da-el-arco': t * d.r } }; },
+  'tri-13': d => ({ correcta: d.k + 1, errores: { 'VUEL-CONTACTO-borde-de-la-fija': d.k, 'VUEL-DENTRO-resta-los-radios': d.k - 1, 'VUEL-DIAMETRO-media-vuelta': 2 * (d.k + 1) } }),
   'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
     if (!r.exacto) throw new Error('la suma debe salir exacta');
     return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },

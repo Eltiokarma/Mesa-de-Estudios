@@ -40,9 +40,9 @@
       ],
       "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2]}},
       "potencial_visual": "alto",
-      "grado": 3,
+      "grado": 5,
       "requiere": ["trigonometria.angulo-trigonometrico"],
-      "plantillas": ["cinta-radio", "geo-areas-circulares"],
+      "plantillas": ["trig-arco-sector", "cinta-radio"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

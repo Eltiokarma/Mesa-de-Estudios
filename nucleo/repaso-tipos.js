@@ -50,7 +50,8 @@
     'funciones-dominio-rango': { ...todo(AL + 'funciones', ['racional-simplificable', 'rango-exp-abs', 'dominio-radicales', 'area-entero-abs', 'composicion']),
       ...todo(AL + 'tipos-de-funciones-e-inversa', ['inyectiva-restringir', 'clasificar-verbal', 'costo-recipiente', 'monotonia-vf']),
       ...todo(AL + 'exponenciales-y-logaritmos', ['log-entero', 'logistico', 'dominio-log']) },
-    'geo-areas-circulares': { ...todo(G + 'longitud-y-areas-circulares', ['corona', 'sector', 'cuadrantes', 'lunulas', 'sombreada', 'concentricas']), rueda: T + 'longitud-de-arco-y-sector' },
+    // 19 nov (etapa 6): geo-areas-circulares deja de servir a Longitud de arco (tiene su práctica trig-arco-sector): ya no
+    // es mixto y sale de la tabla.
     'geo-circunferencia-metrica': { ...todo(G + 'circunferencia', ['tangentes-iguales', 'tangente', 'pitot', 'inscriptible', 'poncelet']),
       ...todo(G + 'relaciones-metricas', ['secantes', 'cuerdas', 'arcos-cuerdas']) },
     // 19 nov (etapa 6): geo-poligonos queda solo para Polígonos regulares; Polígonos y cuadriláteros usa

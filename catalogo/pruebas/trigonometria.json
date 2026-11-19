@@ -178,6 +178,30 @@
     "SCR-K-da-k": {
       "respaldo": "hipotesis",
       "describe": "Halla k y la da como medida del ángulo, sin multiplicar por 9 (SCR-K)"
+    },
+    "TR4-area-con-grados": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el ángulo en grados en A = θ · r²/2"
+    },
+    "SEC-MITAD-sin-la-mitad": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida la mitad en el área del sector"
+    },
+    "SEC-ARCO-da-el-arco": {
+      "respaldo": "hipotesis",
+      "describe": "Da el arco del sector en lugar de su área"
+    },
+    "VUEL-CONTACTO-borde-de-la-fija": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo el borde de la rueda fija que toca, no el camino del centro"
+    },
+    "VUEL-DENTRO-resta-los-radios": {
+      "respaldo": "hipotesis",
+      "describe": "Resta los radios, como si rodara por dentro"
+    },
+    "VUEL-DIAMETRO-media-vuelta": {
+      "respaldo": "hipotesis",
+      "describe": "Divide el camino del centro entre media vuelta, π · r"
     }
   },
   "pares": [
@@ -1113,6 +1137,132 @@
             "texto": "8°",
             "valor": 8,
             "error": "SCR-K-da-k"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-12",
+      "plantilla": "trig-arco-sector",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "mide": "Área del sector, A = θ · r²/2, con el ángulo pasado antes a radianes",
+      "A": {
+        "enunciado": "Un abanico de papel, abierto 30°, tiene varillas de 12 cm. ¿Cuánta área cubre su papel?",
+        "datos": {
+          "r": 12,
+          "g": 30
+        },
+        "opciones": [
+          {
+            "texto": "24π cm²",
+            "valor": 75.39822368615503,
+            "error": "SEC-MITAD-sin-la-mitad"
+          },
+          {
+            "texto": "12π cm²",
+            "valor": 37.69911184307752,
+            "correcta": true
+          },
+          {
+            "texto": "2160 cm²",
+            "valor": 2160,
+            "error": "TR4-area-con-grados"
+          },
+          {
+            "texto": "2π cm²",
+            "valor": 6.283185307179586,
+            "error": "SEC-ARCO-da-el-arco"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un abanico de papel, abierto 72°, tiene varillas de 10 cm. ¿Cuánta área cubre su papel?",
+        "datos": {
+          "r": 10,
+          "g": 72
+        },
+        "opciones": [
+          {
+            "texto": "3600 cm²",
+            "valor": 3600,
+            "error": "TR4-area-con-grados"
+          },
+          {
+            "texto": "4π cm²",
+            "valor": 12.566370614359172,
+            "error": "SEC-ARCO-da-el-arco"
+          },
+          {
+            "texto": "20π cm²",
+            "valor": 62.83185307179586,
+            "correcta": true
+          },
+          {
+            "texto": "40π cm²",
+            "valor": 125.66370614359172,
+            "error": "SEC-MITAD-sin-la-mitad"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-13",
+      "plantilla": "trig-arco-sector",
+      "unidad": "trigonometria.longitud-de-arco-y-sector",
+      "mide": "Vueltas de una rueda que rueda por fuera de otra fija: cuenta el camino de su centro, no el borde que toca",
+      "A": {
+        "enunciado": "Una moneda de radio r da toda la vuelta alrededor de otra fija, de radio 2r, rodando pegada a ella sin resbalar. ¿Cuántas veces gira sobre sí misma?",
+        "datos": {
+          "k": 2
+        },
+        "opciones": [
+          {
+            "texto": "2 vueltas",
+            "valor": 2,
+            "error": "VUEL-CONTACTO-borde-de-la-fija"
+          },
+          {
+            "texto": "1 vuelta",
+            "valor": 1,
+            "error": "VUEL-DENTRO-resta-los-radios"
+          },
+          {
+            "texto": "6 vueltas",
+            "valor": 6,
+            "error": "VUEL-DIAMETRO-media-vuelta"
+          },
+          {
+            "texto": "3 vueltas",
+            "valor": 3,
+            "correcta": true
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una moneda de radio r da toda la vuelta alrededor de otra fija, de radio 3r, rodando pegada a ella sin resbalar. ¿Cuántas veces gira sobre sí misma?",
+        "datos": {
+          "k": 3
+        },
+        "opciones": [
+          {
+            "texto": "8 vueltas",
+            "valor": 8,
+            "error": "VUEL-DIAMETRO-media-vuelta"
+          },
+          {
+            "texto": "4 vueltas",
+            "valor": 4,
+            "correcta": true
+          },
+          {
+            "texto": "3 vueltas",
+            "valor": 3,
+            "error": "VUEL-CONTACTO-borde-de-la-fija"
+          },
+          {
+            "texto": "2 vueltas",
+            "valor": 2,
+            "error": "VUEL-DENTRO-resta-los-radios"
           }
         ]
       }
