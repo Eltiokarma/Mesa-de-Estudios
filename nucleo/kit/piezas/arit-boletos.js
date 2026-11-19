@@ -41,6 +41,15 @@
  * de colores de la rama), los que sobran en naranja (o) y, en el letrero o el pie, lo que los datos pidan (violeta para
  * lo que se cuenta). Nunca carmín ni verde. El color no es la única señal: el premiado lleva borde grueso, número en
  * negrita y la esquina sellada; el que sobra, borde punteado. geometria(datos, estado) da las cajas de todo lo dibujado.
+ *
+ *   Bloque de «MCD y MCM» (19 nov; contenido/teoria/aritmetica/mcd-y-mcm.js, ideas 2 y 5). No cambia nada de lo de
+ *   arriba si no se pide:
+ *   premios: [4, 6],            dos premios a la vez: los múltiplos del primero llevan un caramelo (un círculo en la
+ *                               esquina de arriba a la izquierda) y los del segundo, una gaseosa (un cuadrito arriba a la
+ *                               derecha), en tinta; los que llevan los dos, borde grueso y número en violeta (f: un
+ *                               múltiplo común)
+ *   marcarPremios: true | false | 'ambos' | 'a' | 'b',   todos los premios, ninguno (Predice), solo los boletos con
+ *                               los dos, o solo los del primer o del segundo premio (para «Mira»)
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -83,6 +92,9 @@
     const cr = d.criba && typeof d.criba === 'object' ? d.criba : null, crP = cr ? (cr.primos || []).map(entero).filter(x => x > 1) : [];
     const propios = !cr || cr.propios !== false;
     const tachado = num => !!cr && ((num === 1 && !!cr.uno) || crP.some(p => num % p === 0 && (!propios || num !== p)));
+    // Dos premios (bloque de MCD y MCM): los múltiplos de cada uno y los de los dos a la vez.
+    const prs = Array.isArray(d.premios) ? d.premios.map(entero).filter(x => x > 0).slice(0, 2) : [];
+    const mPr = d.marcarPremios === undefined ? true : d.marcarPremios;
     const cw = (X1 - X0 - (cols - 1) * SEP) / cols;
     const letrero = segsDe(d.letrero), pie = segsDe(d.pie);
     // El pie reserva su línea si los datos o algún paso lo traen (el alto no salta en «Mira»).
@@ -107,7 +119,11 @@
         sobra: !!d.sobran && !!premio && num > ultimoPremio,
         tacha: tachado(num), usado: !!cr && propios && crP.includes(num) && !cr.primosQuedan,
         // primosQuedan (Números primos, 19 nov): al final, los primos que tacharon también se marcan como los que quedan.
-        queda: !!cr && !!cr.quedan && !tachado(num) && (num > 1 || !!cr.unoQueda) && (!(propios && crP.includes(num)) || !!cr.primosQuedan) });
+        queda: !!cr && !!cr.quedan && !tachado(num) && (num > 1 || !!cr.unoQueda) && (!(propios && crP.includes(num)) || !!cr.primosQuedan),
+        // MCD y MCM (19 nov): pa, pb: múltiplo del primer y del segundo premio; ambos: de los dos (un múltiplo común).
+        ...(prs.length ? (() => { const a = num % prs[0] === 0, b = prs.length > 1 && num % prs[1] === 0;
+          return { pa: a && (mPr === true || mPr === 'a' || (mPr === 'ambos' && b)), pb: b && (mPr === true || mPr === 'b' || (mPr === 'ambos' && a)),
+            ambos: a && b && (mPr === true || mPr === 'ambos') }; })() : {}) });
     }
     const objetos = [], textos = [];
     for (const c of celdas) objetos.push({ que: `boleto ${c.num}`, x0: c.x, y0: c.y, x1: c.x + c.w, y1: c.y + c.h });
@@ -128,7 +144,7 @@
     const yFin = yG + (filas - 1) * PASO_Y + ALTO;
     if (pie) tx('pie', X0, yFin + 18, pie);
     const H = Math.round(yFin + (conPie ? 26 : 6));
-    return { W, H, M, d, desde: lista ? Math.min(...lista) : desde, hasta: lista ? Math.max(...lista) : hasta, lista, criba: cr, cols, premio, filas, cw, celdas, cuantos, ultimoPremio, sobrantes: premio ? hasta - ultimoPremio : 0, cartel, rot, objetos, textos, yG };
+    return { W, H, M, d, premios: prs, desde: lista ? Math.min(...lista) : desde, hasta: lista ? Math.max(...lista) : hasta, lista, criba: cr, cols, premio, filas, cw, celdas, cuantos, ultimoPremio, sobrantes: premio ? hasta - ultimoPremio : 0, cartel, rot, objetos, textos, yG };
   }
 
   // Un boleto: tarjeta con las dos muescas del troquel a media altura.
@@ -153,7 +169,11 @@
     } else {
       s += `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.1" stroke-opacity="0.6" stroke-linejoin="round"/>`;
     }
-    const fuerte = c.premio || c.usado || c.queda, tinta = c.usado ? 'var(--c-i)' : c.queda ? 'var(--c-f)' : c.premio ? 'var(--c-i)' : c.sobra ? 'var(--c-o)' : 'currentColor';
+    // Dos premios (MCD y MCM): el boleto con los dos, borde violeta; el caramelo (círculo) y la gaseosa (cuadrito), en tinta.
+    if (c.ambos) s += `<path class="bo-ambos" d="${d}" fill="var(--c-f)" fill-opacity="0.16" stroke="var(--c-f)" stroke-width="2.2" stroke-linejoin="round"/>`;
+    if (c.pa) s += `<circle class="bo-caramelo" cx="${n2(x + 4.6)}" cy="${n2(y + 4.6)}" r="2.3" fill="currentColor"/>`;
+    if (c.pb) s += `<rect class="bo-gaseosa" x="${n2(x + w - 7.2)}" y="${n2(y + 2.4)}" width="4.4" height="4.4" rx="0.6" fill="currentColor"/>`;
+    const fuerte = c.premio || c.usado || c.queda || c.ambos, tinta = c.usado ? 'var(--c-i)' : c.queda || c.ambos ? 'var(--c-f)' : c.premio ? 'var(--c-i)' : c.sobra ? 'var(--c-o)' : 'currentColor';
     s += `<text class="kit-txt" x="${n2(x + w / 2)}" y="${n2(y + h / 2 + tam * 0.36)}" font-size="${tam}" text-anchor="middle"${fuerte ? ' font-weight="700"' : ''} fill="${tinta}"${c.tacha ? ' fill-opacity="0.72"' : ''} style="font-variant-numeric:tabular-nums">${T.esc(t)}</text>`;
     // Tachado por la criba: una raya diagonal de esquina a esquina, en tinta y más suave que el número (lector en frío B,
     // 19 nov: con el número al 45 % y la raya entera, el tachado casi no se leía).
@@ -184,6 +204,11 @@
       const lista = xs => (xs.length > 8 ? `${xs.slice(0, 5).join(', ')}… (${xs.length} en total)` : xs.join(', '));
       t += usa.length ? ` Están tachados los múltiplos de ${usa.join(', ')}${g.criba.uno ? ' y el 1' : ''}: ${tch.length ? lista(tch) : 'ninguno'}.` : g.criba.uno ? ' Está tachado el 1.' : ' No hay nada tachado.';
       if (g.criba.quedan) t += qd.length ? ` Quedan marcados ${lista(qd)}.` : ' No queda ninguno marcado.';
+    }
+    if (g.premios.length) {
+      const a = g.celdas.filter(c => c.pa).length, b = g.celdas.filter(c => c.pb).length, am = g.celdas.filter(c => c.ambos).map(c => c.num);
+      t += ` Caramelo para los múltiplos de ${g.premios[0]}${g.premios[1] ? ` y gaseosa para los de ${g.premios[1]}` : ''}`;
+      t += a || b ? `: ${a} con caramelo, ${b} con gaseosa${g.premios[1] ? `; con los dos, ${am.length ? am.join(', ') : 'ninguno'}` : ''}.` : ': todavía no se marca ninguno.';
     }
     if (g.premio) {
       const marcados = g.celdas.filter(c => c.premio).map(c => c.num);

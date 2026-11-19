@@ -47,8 +47,8 @@
     'estadistica-datos': todo(AR + 'estadistica', ['varianza', 'central', 'medias', 'reconstruir', 'extremo']),
     // El tipo de problema es estequiometría aunque el contexto sea una grasa o una mena.
     'estequiometria-admision': todo(Q + 'estequiometria', ['grasa', 'termo', 'hidroxido', 'mineral', 'redox', 'flotacion', 'atomos']),
-    'fracciones-problemas': { ...todo(AR + 'numeros-racionales', ['suma-entera', 'equivalentes', 'periodo', 'trabajo', 'acotada', 'porcentaje', 'formar', 'tipo-decimal', 'diferencia', 'stock']),
-      ...todo(AR + 'mcd-y-mcm', ['pesi', 'euclides', 'pg-mcd']) },
+    // 19 nov (etapa 7, docs/etapa7/propuesta-aritmetica.md): fracciones-problemas deja de servir a MCD y MCM (la unidad
+    // tiene su práctica mcd-mcm, por idea). Queda solo para Números racionales: ya no es mixto y sale de la tabla.
     'funciones-dominio-rango': { ...todo(AL + 'funciones', ['racional-simplificable', 'rango-exp-abs', 'dominio-radicales', 'area-entero-abs', 'composicion']),
       ...todo(AL + 'tipos-de-funciones-e-inversa', ['inyectiva-restringir', 'clasificar-verbal', 'costo-recipiente', 'monotonia-vf']),
       ...todo(AL + 'exponenciales-y-logaritmos', ['log-entero', 'logistico', 'dominio-log']) },

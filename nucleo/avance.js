@@ -135,6 +135,11 @@
     { u: 'quimica.nomenclatura-inorganica', p: 'prediccionNI', e: 'estudiadaNI',
       cambian: ['estados-oxidacion', 'arbol-funciones', 'sales'],
       antes: ['estados-oxidacion', 'tres-nombres', 'arbol-funciones', 'sales', 'sales-acidas-basicas-hidratadas'] },
+    // Etapa 7 (19 nov): MCD y MCM conservó cuatro ids con otra Predice, sumó `mismo-resto` y `multiplos-tramo`, y la idea
+    // `fraccion-continua` entró en `euclides` (docs/etapa7/propuesta-aritmetica.md).
+    { u: 'aritmetica.mcd-y-mcm', p: 'prediccionMM', e: 'estudiadaMM',
+      cambian: ['mcd-cintas', 'mcm-coinciden', 'mcd-por-mcm', 'euclides'],
+      antes: ['mcd-cintas', 'mcm-coinciden', 'euclides', 'mcd-por-mcm', 'fraccion-continua'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

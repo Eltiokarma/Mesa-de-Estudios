@@ -3,8 +3,7 @@
   "titulo": "Fracciones, decimales periódicos y MCD en problemas",
   "formato": "predicciones",
   "unidades": [
-    "aritmetica.numeros-racionales",
-    "aritmetica.mcd-y-mcm"
+    "aritmetica.numeros-racionales"
   ],
   "estado": "borrador",
   "version": "0.2.0",

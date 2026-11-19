@@ -464,3 +464,22 @@ test('Etapa 7, Nomenclatura inorgánica rehecha: predicciones viejas sin huella 
   assert.equal(est.marcadas[U], '2026-11-13');
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// Etapa 7 (19 nov): MCD y MCM conservó cuatro ids con otra Predice, sumó dos ideas y juntó la fracción continua con Euclides.
+test('MCD y MCM: las predicciones viejas se vuelven a preguntar y quien terminó las cinco ideas de antes conserva «Ya la estudié»', () => {
+  const U = 'aritmetica.mcd-y-mcm';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-12' }, marcadas: {}, teoria: { [U]: { ideas: {
+    'mcd-cintas': { hecha: true, prediccion: 'c' }, 'mcm-coinciden': { hecha: true, prediccion: 'mcd' }, euclides: { hecha: true, prediccion: 'c' },
+    'mcd-por-mcm': { hecha: true, prediccion: 'si' }, 'fraccion-continua': { hecha: true, prediccion: 'c' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionMM, 1); assert.equal(est.estudiadaMM, 1);
+  for (const id of ['mcd-cintas', 'mcm-coinciden', 'mcd-por-mcm', 'euclides']) {
+    assert.equal(est.teoria[U].ideas[id].prediccion, undefined, id);
+    assert.equal(est.teoria[U].ideas[id].hecha, true, id);
+  }
+  assert.equal(est.marcadas[U], '2026-11-12', 'terminó las cinco de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { 'mcd-cintas': { hecha: true, prediccion: 'c' } } } } };
+  A.migrar(nuevo);
+  assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});

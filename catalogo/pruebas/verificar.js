@@ -675,6 +675,39 @@ const V = {
     let c = 0, m = 0; for (let k = 1; k < d.N; k++) if (g(k, d.N) === 1) { c++; if (2 * k > d.N) m++; }
     return { correcta: c, errores: { 'cuenta-todas-las-propias': d.N - 1, 'solo-las-mayores-que-un-medio': m, 'cuenta-las-que-se-simplifican': d.N - 1 - c } };
   },
+  // ari-35 y ari-36 (19 nov, etapa 7: «MCD y MCM»; reserva: las formas ya tienen 10 pares). Ítems de la práctica mcd-mcm
+  // (sin motor), verificados aquí por fuerza bruta: el menor número que deja el mismo resto, y contar uno por uno.
+  'ari-35': d => {
+    let n = d.desde + 1; while (!d.ds.every(x => n % x === d.r)) n++;
+    let M = Math.max(...d.ds); while (!d.ds.every(x => M % x === 0)) M++;
+    return { correcta: n, errores: { 'resto-con-el-producto': d.ds[0] * d.ds[1] + d.r, 'olvida-sumar-el-resto': M, 'resta-el-resto': M - d.r } };
+  },
+  'ari-36': d => {
+    let c = 0, a = 0, b = 0, ab = 0;
+    for (let x = 1; x <= d.L; x++) { const ea = x % d.a === 0, eb = x % d.b === 0; if (ea || eb) c++; if (ea) a++; if (eb) b++; if (ea && eb) ab++; }
+    return { correcta: c, errores: { 'no-quita-los-repetidos': a + b, 'quita-dos-veces-los-repetidos': a + b - 2 * ab, 'solo-los-de-los-dos': ab } };
+  },
+  'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
+    return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
+  'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;
+    return { correcta: r.cantidad, errores: { 'olvida-el-mas-uno': e.sinMasUno, 'cuenta-desde-1': e.desdeUno, 'raiz-de-la-diferencia': e.raizDiferencia } }; },
+  'ari-21': d => { const r = motor('mezclas').precioMedio([{ cantidad: d.q1, precio: d.p1 }, { cantidad: d.q2, precio: d.p2 }]), e = r.errores;
+    return { correcta: r.precioMedio, errores: { 'AR15-promedio-simple': e.promedioSimple, 'cruza-las-cantidades': e.cantidadesCruzadas, 'suma-los-precios': e.sumaValores } }; },
+  'ari-22': d => { const r = motor('mezclas').aguaPara(d.V, d.g0, d.gf), e = r.errores;
+    if (!r.posible) throw new Error(r.razon);
+    return { correcta: r.agua, errores: { 'aspa-al-reves': e.aspaAlReves, 'resta-grados-como-litros': e.restaGrados, 'da-el-volumen-final': e.volumenFinal } }; },
+  'ari-23': d => { const r = motor('conjuntos').interseccionPorComplemento(d.U, d.nA, d.nB, d.ninguno), e = r.errores;
+    return { correcta: r.respuesta, errores: { 'olvida-a-los-que-no-estan-en-ninguno': e.olvidaLosDeFuera, 'da-los-que-estan-en-al-menos-uno': e.daLaUnion, 'da-los-que-estan-solo-en-el-otro': e.daSoloElOtro } }; },
+  'ari-24': d => { const S = motor('conjuntos'), n = S.conjunto(d.elementos).length, r = S.cuantosSubconjuntos(n), e = r.errores;
+    if (n !== d.elementos.length) throw new Error('el conjunto tiene elementos repetidos');
+    return { correcta: r.subconjuntos, errores: { 'dos-por-cada-elemento': e.dosPorElemento[0], 'olvida-el-vacio': e.sinElVacio[0], 'cuenta-ordenamientos': e.permutaciones[0] } }; },
+  'ari-25': d => { const r = motor('logica').negar(d.formula), e = r.errores;
+    return { correcta: r.texto, errores: { 'niega-las-partes-sin-cambiar-el-conectivo': e.negaPartes, 'niega-solo-la-primera-y-cambia': e.niegaSoloPrimera, 'niega-solo-la-primera': e.niegaPrimeraSinCambiar } }; },
+  'ari-26': d => {
+    // Las filas en que el condicional es falso, como «V F» (p, q) y separadas por «|»; cada error, las filas que da su lectura errada.
+    const r = motor('logica').filasFalsas(d.formula), e = r.errores, k = x => x.join('|');
+    return { correcta: k(r.falsas), errores: { 'condicional-al-reves': k(e.alReves), 'antecedente-falso-hace-falsa-la-promesa': k(e.ambasFalsas), 'condicional-como-bicondicional': k(e.comoBicondicional) } };
+  },
   'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
     return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
   'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;

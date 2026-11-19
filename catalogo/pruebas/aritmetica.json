@@ -6,7 +6,7 @@
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores.",
+  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores. MCD y MCM (19 nov) tampoco entra: sus dos pares, el mismo resto con dos divisores (ari-35) y los múltiplos de uno o de otro (ari-36), de la práctica mcd-mcm, quedan en la reserva con sus verificadores.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -359,6 +359,30 @@
     "cuenta-las-que-se-simplifican": {
       "respaldo": "hipotesis",
       "describe": "Cuenta las fracciones que sí se simplifican (AT-COND-COMPLEMENTO)"
+    },
+    "resto-con-el-producto": {
+      "respaldo": "hipotesis",
+      "describe": "Usa el producto de los divisores en vez del MCM y suma el resto (AT-RESTO-PRODUCTO; trampa de San Marcos 2024-II)"
+    },
+    "olvida-sumar-el-resto": {
+      "respaldo": "hipotesis",
+      "describe": "Da el MCM sin sumar lo que sobra (AT-RESTO-OLVIDA)"
+    },
+    "resta-el-resto": {
+      "respaldo": "hipotesis",
+      "describe": "Resta lo que sobra en vez de sumarlo (AT-RESTO-RESTA)"
+    },
+    "no-quita-los-repetidos": {
+      "respaldo": "hipotesis",
+      "describe": "Suma los múltiplos de cada número sin quitar los de los dos (AT-IE-SUMA; trampa de San Marcos 2026-II)"
+    },
+    "quita-dos-veces-los-repetidos": {
+      "respaldo": "hipotesis",
+      "describe": "Quita dos veces los múltiplos de los dos (AT-IE-DOBLE)"
+    },
+    "solo-los-de-los-dos": {
+      "respaldo": "hipotesis",
+      "describe": "Cuenta solo los múltiplos de los dos a la vez (AT-IE-SOLO-AMBOS)"
     }
   },
   "pares": [
@@ -2341,6 +2365,146 @@
             "texto": "15",
             "valor": 15,
             "error": "cuenta-las-que-se-simplifican"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-35",
+      "plantilla": "mcd-mcm",
+      "unidad": "aritmetica.mcd-y-mcm",
+      "nombreUnidad": "MCD y MCM",
+      "mide": "El mismo resto con dos divisores: sin lo que sobra, la cantidad es múltiplo de los dos, y por eso de su MCM (MCM + r)",
+      "A": {
+        "enunciado": "Unos alumnos forman filas de 6 y sobran 3; si forman filas de 8, también sobran 3. Son más de 8. ¿Cuántos son, como mínimo?",
+        "datos": {
+          "ds": [
+            6,
+            8
+          ],
+          "r": 3,
+          "desde": 8
+        },
+        "opciones": [
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "olvida-sumar-el-resto"
+          },
+          {
+            "texto": "21",
+            "valor": 21,
+            "error": "resta-el-resto"
+          },
+          {
+            "texto": "27",
+            "valor": 27,
+            "correcta": true
+          },
+          {
+            "texto": "51",
+            "valor": 51,
+            "error": "resto-con-el-producto"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Unos alumnos forman filas de 4 y sobran 3; si forman filas de 10, también sobran 3. Son más de 10. ¿Cuántos son, como mínimo?",
+        "datos": {
+          "ds": [
+            4,
+            10
+          ],
+          "r": 3,
+          "desde": 10
+        },
+        "opciones": [
+          {
+            "texto": "17",
+            "valor": 17,
+            "error": "resta-el-resto"
+          },
+          {
+            "texto": "23",
+            "valor": 23,
+            "correcta": true
+          },
+          {
+            "texto": "43",
+            "valor": 43,
+            "error": "resto-con-el-producto"
+          },
+          {
+            "texto": "20",
+            "valor": 20,
+            "error": "olvida-sumar-el-resto"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-36",
+      "plantilla": "mcd-mcm",
+      "unidad": "aritmetica.mcd-y-mcm",
+      "nombreUnidad": "MCD y MCM",
+      "mide": "Contar los múltiplos de uno o de otro: los de cada uno, menos los de los dos, que son los múltiplos del MCM",
+      "A": {
+        "enunciado": "¿Cuántos números del 1 al 90 son múltiplos de 6 o de 10?",
+        "datos": {
+          "L": 90,
+          "a": 6,
+          "b": 10
+        },
+        "opciones": [
+          {
+            "texto": "21",
+            "valor": 21,
+            "correcta": true
+          },
+          {
+            "texto": "24",
+            "valor": 24,
+            "error": "no-quita-los-repetidos"
+          },
+          {
+            "texto": "18",
+            "valor": 18,
+            "error": "quita-dos-veces-los-repetidos"
+          },
+          {
+            "texto": "3",
+            "valor": 3,
+            "error": "solo-los-de-los-dos"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuántos números del 1 al 120 son múltiplos de 8 o de 12?",
+        "datos": {
+          "L": 120,
+          "a": 8,
+          "b": 12
+        },
+        "opciones": [
+          {
+            "texto": "25",
+            "valor": 25,
+            "error": "no-quita-los-repetidos"
+          },
+          {
+            "texto": "15",
+            "valor": 15,
+            "error": "quita-dos-veces-los-repetidos"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "error": "solo-los-de-los-dos"
+          },
+          {
+            "texto": "20",
+            "valor": 20,
+            "correcta": true
           }
         ]
       }

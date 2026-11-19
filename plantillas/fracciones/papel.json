@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "básico",
       "enunciado": "Efectúa 3/4 + 5/6 y da el resultado como fracción irreducible.",
       "respuesta": "19/12.",
@@ -16,6 +17,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "básico",
       "enunciado": "Ordena de menor a mayor: 0,7; 0,07; 0,675 y 0,71.",
       "respuesta": "0,07 < 0,675 < 0,7 < 0,71.",
@@ -30,6 +32,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "básico",
       "enunciado": "Halla la fracción generatriz de 0,31818… (el 3 no se repite; el bloque 18 se repite sin fin) y simplifícala.",
       "respuesta": "7/22.",
@@ -43,6 +46,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "básico",
       "enunciado": "¿Cuál de estas fracciones da un decimal exacto: 7/12, 9/40 o 5/33? Escribe el decimal de cada una.",
       "respuesta": "Solo 9/40 = 0,225. Además, 7/12 = 0,58333… es periódico mixto y 5/33 = 0,1515… es periódico puro.",
@@ -57,6 +61,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "intermedio",
       "enunciado": "Una persona gasta 1/3 de su sueldo en alquiler y luego 1/4 de lo que le queda en comida. Si le quedan S/ 900, ¿cuál es su sueldo?",
       "respuesta": "S/ 1800.",
@@ -70,6 +75,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["aritmetica.mcd-y-mcm"],
       "nivel": "intermedio",
       "enunciado": "Se quiere cubrir un piso rectangular de 360 cm por 480 cm con losetas cuadradas iguales, enteras y lo más grandes posible. ¿Cuánto mide el lado de cada loseta y cuántas se necesitan?",
       "respuesta": "Lado de 120 cm; se necesitan 12 losetas (3 por 4).",
@@ -83,6 +89,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["aritmetica.mcd-y-mcm"],
       "nivel": "intermedio",
       "enunciado": "Tres alarmas suenan juntas a las 8:00. Después, una suena cada 15 minutos, otra cada 20 y otra cada 36. ¿A qué hora vuelven a sonar juntas por primera vez?",
       "respuesta": "A las 11:00 (180 minutos después).",
@@ -95,6 +102,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["aritmetica.mcd-y-mcm"],
       "nivel": "intermedio",
       "enunciado": "El MCD de dos números es 6 y su MCM es 72. Si uno de ellos es 18, ¿cuál es el otro?",
       "respuesta": "24.",
@@ -107,6 +115,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["aritmetica.estadistica"],
       "nivel": "avanzado",
       "enunciado": "Un ciclista sube una cuesta a 12 km/h y la baja por el mismo camino a 36 km/h. ¿Cuál es su velocidad media en todo el recorrido?",
       "respuesta": "18 km/h.",
@@ -119,6 +128,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["aritmetica.estadistica"],
       "nivel": "avanzado",
       "enunciado": "En un examen, el promedio de los 25 hombres de un aula fue 12 y el de las 15 mujeres fue 16. ¿Cuál fue el promedio de toda el aula?",
       "respuesta": "13,5.",

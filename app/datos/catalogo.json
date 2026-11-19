@@ -3622,7 +3622,7 @@
        "de-morgan": "Equivalente es misma tabla",
        "cuantificadores": "Para todo y existe"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -3668,7 +3668,7 @@
        "potencia": "Cada elemento duplica los subconjuntos",
        "cartesiano": "Pares con orden"
       },
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -3715,7 +3715,7 @@
        "medias": "Tres medias para dos números",
        "serie": "Razones iguales: la suma también"
       },
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -3763,7 +3763,7 @@
        "reparto": "Repartir según pesos",
        "compania": "Capital por tiempo"
       },
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -3906,7 +3906,7 @@
        "alcohol": "Grados: litros de alcohol puro",
        "quilates": "Quilates: oro de cada 24 partes"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -3960,7 +3960,7 @@
        "cuartiles": "Cortar los datos en cuartos",
        "dispersion": "Qué tan lejos de la media"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -4012,7 +4012,7 @@
        "repeticion": "Letras iguales, palabras iguales",
        "combinaciones": "Elegir no es ordenar"
       },
-      "terminos": 15
+      "terminos": 16
      }
     },
     {
@@ -4119,7 +4119,7 @@
        "base-desconocida": "La base que no se ve",
        "conteo-cifras": "Contar cifras por bloques"
       },
-      "terminos": 22
+      "terminos": 24
      }
     },
     {
@@ -4233,7 +4233,7 @@
        "criterios-pesos": "Criterios del 11, 7 y 13",
        "diofanticas": "Dos clases de monedas, pago justo"
       },
-      "terminos": 34
+      "terminos": 36
      }
     },
     {
@@ -4304,6 +4304,8 @@
       "Algoritmo de Euclides",
       "Relación entre MCD y MCM",
       "Fracciones continuas",
+      "Restos con varios divisores",
+      "Conteo de múltiplos",
       "Problemas de aplicación"
      ],
      "universidades": {
@@ -4324,27 +4326,30 @@
       "aritmetica.numeros-primos-y-divisores"
      ],
      "plantillas": [
-      "fracciones",
-      "fracciones-problemas"
+      "mcd-mcm",
+      "fracciones"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/mcd-y-mcm.js",
       "requiere": [
-       "/nucleo/kit/piezas/arit-tiras.js",
-       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-cintas.js",
+       "/nucleo/kit/piezas/arit-boletos.js",
+       "/nucleo/kit/piezas/arit-reparto.js",
        "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/recta.js",
        "/plantillas/fracciones/motor.js",
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "mcd-cintas": "El trozo común más largo",
-       "mcm-coinciden": "La primera vez que coinciden",
-       "euclides": "Euclides: medir con el resto",
-       "mcd-por-mcm": "MCD por MCM, con dos números",
-       "fraccion-continua": "Los cocientes arman una fracción"
+       "mcd-cintas": "MCD: el trozo más largo",
+       "mcm-coinciden": "MCM: la primera coincidencia",
+       "mcd-por-mcm": "MCD, MCM y los cocientes",
+       "mismo-resto": "El mismo resto con varios divisores",
+       "multiplos-tramo": "Múltiplos de uno o de otro",
+       "euclides": "Euclides y la fracción continua"
       },
-      "terminos": 26
+      "terminos": 31
      }
     },
     {
@@ -9617,6 +9622,9 @@
     "/plantillas/fracciones/index.html",
     "/plantillas/fracciones/motor.js",
     "/plantillas/fracciones/papel.json"
+   ],
+   "rehacer": [
+    "aritmetica.mcd-y-mcm"
    ]
   },
   "fracciones-problemas": {
@@ -9626,8 +9634,7 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "aritmetica.numeros-racionales",
-    "aritmetica.mcd-y-mcm"
+    "aritmetica.numeros-racionales"
    ],
    "url": "#/practica/fracciones-problemas",
    "papel": "/plantillas/fracciones-problemas/papel.json",
@@ -10469,6 +10476,30 @@
     "/plantillas/maximos-minimos/index.html",
     "/plantillas/maximos-minimos/motor.js",
     "/plantillas/maximos-minimos/papel.json"
+   ]
+  },
+  "mcd-mcm": {
+   "id": "mcd-mcm",
+   "titulo": "Los rollos y la rifa",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.mcd-y-mcm"
+   ],
+   "url": "#/practica/mcd-mcm",
+   "ideas": [
+    "mcd-cintas",
+    "mcm-coinciden",
+    "mcd-por-mcm",
+    "mismo-resto",
+    "multiplos-tramo",
+    "euclides"
+   ],
+   "papel": "/plantillas/mcd-mcm/papel.json",
+   "archivos": [
+    "/plantillas/mcd-mcm/generador.js",
+    "/plantillas/mcd-mcm/papel.json"
    ]
   },
   "mezclas": {

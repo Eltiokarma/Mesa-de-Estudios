@@ -160,3 +160,31 @@ test('criba: cartel sin cordeles, primosQuedan y tachados legibles', () => {
   assert.equal(g.celdas.filter(c => c.usado).length, 0);
   assert.ok(!/fill-opacity="0.45"/.test(P.dibujar(base)));
 });
+
+// Bloque de «MCD y MCM» (19 nov): dos premios a la vez. Cuenta aparte: caramelo para los múltiplos del primero, gaseosa
+// para los del segundo, y borde violeta para los que tienen los dos; con marcarPremios, solo lo pedido. Nada de esto cambia
+// lo que dibujan Divisibilidad y Números primos (las muestras de arriba siguen igual).
+test('premios: caramelo, gaseosa y los dos; marcarPremios false, ambos, a y b', () => {
+  const mal = [];
+  for (const [d, nombre] of [
+    [{ desde: 1, hasta: 60, premios: [4, 6], cordeles: false, letrero: 'Caramelo cada 4 · gaseosa cada 6' }, 'todos'],
+    [{ desde: 1, hasta: 120, premios: [12, 18], marcarPremios: false }, 'ninguno'],
+    [{ desde: 1, hasta: 40, premios: [12, 18], marcarPremios: 'ambos', pie: 'pie' }, 'ambos'],
+    [{ desde: 1, hasta: 40, premios: [12, 18], marcarPremios: 'a' }, 'a'],
+    [{ desde: 1, hasta: 60, premios: [3, 10], marcarPremios: 'b' }, 'b'],
+  ]) {
+    const g = P.geometria(d), m = d.marcarPremios === undefined ? true : d.marcarPremios, [a, b] = d.premios;
+    for (const c of g.celdas) {
+      const ea = c.num % a === 0, eb = c.num % b === 0;
+      assert.equal(!!c.pa, ea && (m === true || m === 'a' || (m === 'ambos' && eb)), `${nombre}: ${c.num}`);
+      assert.equal(!!c.pb, eb && (m === true || m === 'b' || (m === 'ambos' && ea)), `${nombre}: ${c.num}`);
+      assert.equal(!!c.ambos, ea && eb && (m === true || m === 'ambos'), `${nombre}: ${c.num}`);
+    }
+    revisar(d, {}, nombre, mal);
+    const s = P.dibujar(d);
+    assert.ok(!/NaN|undefined|var\(--c-[hd]\)/.test(s));
+    assert.equal((s.match(/class="bo-ambos"/g) || []).length, g.celdas.filter(c => c.ambos).length);
+  }
+  assert.deepEqual(mal, []);
+  assert.match(P.alt({ desde: 1, hasta: 60, premios: [4, 6] }), /con los dos, 12, 24, 36, 48, 60/);
+});

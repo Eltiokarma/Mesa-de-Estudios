@@ -1,0 +1,24 @@
+{
+  "id": "mcd-mcm",
+  "titulo": "Los rollos y la rifa",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.mcd-y-mcm"
+  ],
+  "temas": [
+    "Máximo común divisor",
+    "Mínimo común múltiplo",
+    "Algoritmo de Euclides",
+    "Relación entre MCD y MCM",
+    "Fracciones continuas",
+    "Restos con varios divisores",
+    "Conteo de múltiplos",
+    "Problemas de aplicación"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

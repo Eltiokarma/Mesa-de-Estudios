@@ -8,6 +8,9 @@
     "aritmetica.estadistica"
   ],
   "estado": "borrador",
+  "rehacer": [
+    "aritmetica.mcd-y-mcm"
+  ],
   "version": "0.1.0",
   "escena": "index.html",
   "motor": "motor.js",

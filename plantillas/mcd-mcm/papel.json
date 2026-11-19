@@ -1,0 +1,87 @@
+{
+  "titulo": "Los rollos y la rifa: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Dos rollos de cinta miden 40 m y 48 m. Se cortan en trozos iguales, lo más largos posible, sin que sobre nada. ¿Cuánto mide cada trozo? Datos: MCD(A, B): el mayor número que divide exacto a A y a B. Con primos: el MCD lleva los primos comunes, cada uno con su menor exponente. Alternativas: A) 240 m   B) 8 m   C) 4 m   D) 40 m",
+      "respuesta": "B) 8 m",
+      "pasos": [
+        "40 = 5 × 8 y 48 = 6 × 8; 5 y 6 son PESI.",
+        "Cada trozo mide 8 m."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una rifa, ganan caramelo los boletos múltiplos de 8 y gaseosa los múltiplos de 12. ¿Cuál es el primer boleto que gana los dos premios? Datos: MCM(A, B): el menor múltiplo común de A y B, sin contar el 0. Con primos: el MCM lleva todos los primos que aparecen, cada uno con su mayor exponente. Alternativas: A) 96   B) 4   C) 20   D) 24",
+      "respuesta": "D) 24",
+      "pasos": [
+        "8 = 2³ y 12 = 2² × 3: todos los primos, con su mayor exponente.",
+        "MCM = 2³ × 3 = 24."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El MCD de dos números es 6 y su MCM es 126. Uno de ellos es 18. ¿Cuál es el otro? Datos: Con dos números: MCD(A, B) × MCM(A, B) = A × B. Alternativas: A) 7   B) 756   C) 42   D) 21",
+      "respuesta": "C) 42",
+      "pasos": [
+        "18 × B = 6 × 126 = 756.",
+        "B = 756 ÷ 18 = 42."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Se cuentan los números del 1 al 100 que son múltiplos de 6 o de 10. ¿Cuántos son? Datos: Del 1 al 100 hay tantos múltiplos de un número como el cociente entero de 100 ÷ ese número. Los múltiplos de A y de B a la vez son los múltiplos de MCM(A, B). Múltiplos de A o de B: los de A + los de B − los de los dos. Alternativas: A) 23   B) 20   C) 3   D) 26",
+      "respuesta": "A) 23",
+      "pasos": [
+        "16 de 6, 10 de 10 y 3 de los dos, múltiplos de MCM = 30.",
+        "16 + 10 − 3 = 23."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Doña Juana empaca un paquete de caramelos: en bolsitas de 6 sobran 4 y de 10 sobran 8. ¿Cuál es la menor cantidad posible? Datos: N = un múltiplo de A + r: al dividir N entre A sobran r. Si a N le faltan rₑ para otro grupo de A: N + rₑ es múltiplo de A. Si N − r es múltiplo de A y de B, también es múltiplo de MCM(A, B). Con primos: el MCM lleva todos los primos que aparecen, cada uno con su mayor exponente. Alternativas: A) 28   B) 58   C) 34   D) 32",
+      "respuesta": "A) 28",
+      "pasos": [
+        "A cada bolsita le falta 2: N + 2 es múltiplo de MCM = 30.",
+        "30 − 2 = 28."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Se escribe 87/26 como fracción continua. ¿Cuál es? Datos: Al dividir A entre B: A = B × cociente + resto, con el resto menor que B. Fracción continua: A/B = cociente + 1/(B/r), y se sigue igual con B/r. Se anota [2; 1, 3]: primero la parte entera y, después, los demás cocientes. Alternativas: A) [3; 2, 1, 8]   B) [3; 2, 1]   C) [3; 9, 8, 1]   D) [8; 1, 2, 3]",
+      "respuesta": "A) [3; 2, 1, 8]",
+      "pasos": [
+        "87 = 3 × 26 + 9; 26 = 2 × 9 + 8; 9 = 1 × 8 + 1; 8 = 8 × 1.",
+        "Los cocientes, en orden: [3; 2, 1, 8]."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Dos camiones de reparto llegan juntos hoy al mercado. Uno llega cada 4 días y el otro cada 10. ¿Dentro de cuántos días llegan juntos por tercera vez, contando la de hoy? Datos: MCM(A, B): el menor múltiplo común de A y B, sin contar el 0. Los múltiplos comunes de A y B son los múltiplos de su MCM. Si coinciden al empezar, esa es la primera vez que coinciden. Alternativas: A) 40 días   B) 80 días   C) 60 días   D) 20 días",
+      "respuesta": "A) 40 días",
+      "pasos": [
+        "Coinciden cada MCM = 20 días; hoy es la primera vez.",
+        "La tercera: 2 × 20 = 40 días."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se busca un número de tres cifras que deje resto 1 al dividirlo entre 3, entre 10 y entre 15. ¿Cuál es el menor posible? Datos: N = un múltiplo de A + r: al dividir N entre A sobran r. Los que dejan resto r con A y con B: MCM(A, B) × k + r, con k = 0, 1, 2…. Con primos: el MCM lleva todos los primos que aparecen, cada uno con su mayor exponente. Los números de tres cifras van del 100 al 999. Alternativas: A) 31   B) 120   C) 121   D) 451",
+      "respuesta": "C) 121",
+      "pasos": [
+        "Sirven MCM × k + 1, con MCM = 30.",
+        "El primero de tres cifras: 30 × 4 + 1 = 121."
+      ]
+    }
+  ]
+}

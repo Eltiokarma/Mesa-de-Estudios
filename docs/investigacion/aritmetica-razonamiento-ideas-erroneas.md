@@ -410,6 +410,84 @@ AT-RESPONDE-OTRA) se reusan con el mismo sentido.
 | AT-WILSON-UNO, AT-WILSON-CERO, AT-WILSON-MENOS-DOS | 6 | Confunde Wilson con Fermat, cree que el producto es múltiplo de p o resta uno de más | 1 × … × 16 + 5 entre 17: 4 → 6 o 5 | Hipótesis |
 | AT-POTENCIA-ENTERA, AT-EXP-DIVISOR, AT-CICLO-LUGAR, AT-RESTO-MAYOR, AT-RESPONDE-OTRA | 1 a 6 | Los de Divisibilidad: calcular la potencia, reducir mal el exponente, dar el exponente que queda, no volver a dividir, responder otra cantidad | — | Hipótesis |
 
+## MCD y MCM (19 nov)
+
+Códigos AT de la unidad `aritmetica.mcd-y-mcm` (teoría `contenido/teoria/aritmetica/mcd-y-mcm.js`; propuesta
+`docs/etapa7/propuesta-aritmetica.md` §4) y de su práctica `plantillas/mcd-mcm/`. El único error con respaldo es AR13
+(se confunde MCD con MCM, «Parcial», arriba). **Todos los AT son hipótesis**: no encontramos estudios con cifras sobre
+el resto con varios divisores, la inclusión y exclusión ni Euclides. Varios se apoyan en trampas que el CSV de San Marcos
+deduce de los solucionarios (se dice en cada fila). Los que vienen de Divisibilidad (AT-RESPONDE-OTRA,
+AT-CONTEO-SIN-QUITAR) se reusan con el mismo sentido.
+
+| Código | Idea | Qué hace el alumno | Ejemplo | Respaldo |
+| --- | --- | --- | --- | --- |
+| AT-NOMAX | 1, 2 | Toma un divisor común que no es el mayor | rollos de 24 y 36: 6 m → 12 m | Hipótesis |
+| AT-MENOR | 1 | Toma el rollo menor como trozo | 24 m (en el de 36 sobran 12) | Hipótesis |
+| AT-PREGUNTA | 1 | Responde el trozo cuando se piden cuántos trozos (o parcelas) | 42 y 56: 14 → 7 | Hipótesis |
+| AT-TROZOS-PRODUCTO | 1 | Multiplica los trozos de cada rollo en vez de sumarlos | 3 y 4 trozos → 12 | Hipótesis |
+| AT-MCD-DOS | 1 | Usa solo dos de los tres números | MCD de dos, y en el tercero sobra | Hipótesis |
+| AT-MCD-MAYOR | 1 | Toma el mayor exponente de los primos comunes | 2³ × 3⁴ por 2² × 3² | Hipótesis |
+| AT-MCD-TODOS | 1 | Mete en el MCD primos que no son comunes | 2² × 3² × 5 × 7 | Hipótesis |
+| AT-MCD-SIN-EXP | 1 | Toma los primos comunes sin exponente | 2 × 3 | Hipótesis |
+| AT-MCD-UNIDAD | 1 | No pasa los dos largos a la misma unidad (San Marcos 2024-II) | 1,5 m y 2,25 m: 15 cm → 75 cm | Hipótesis |
+| AT-PARCELA-SUMA | 1 | Suma las parcelas de cada lado en vez de multiplicarlas | 7 + 5 → 7 × 5 | Hipótesis |
+| AT-ESTACA-BORDE | 1 | Cuenta solo las estacas del borde | 24 → 48 | Hipótesis |
+| AT-ESTACA-UNA | 1 | Pone una estaca de más en un solo lado | 8 × 5 → 8 × 6 | Hipótesis |
+| AT-PRODUCTO | 2, 3, 5 | Multiplica los números en vez de buscar el MCM | 12 y 18: 216 → 36 | Hipótesis |
+| AT-SUMA | 2 | Suma los dos periodos | 12 y 18: 30 | Hipótesis |
+| AT-MCM-DOS | 2 | Deja fuera al tercero | pastillas cada 4, 6 y 8 | Hipótesis |
+| AT-MCM-MENOR | 2 | Toma el menor exponente para el MCM | 2² × 3 por 2³ × 3² | Hipótesis |
+| AT-MCM-COMUNES | 2 | Deja fuera los primos que están en uno solo | sin el 5 ni el 7 | Hipótesis |
+| AT-CUENTA-HOY | 2 | No cuenta la coincidencia de partida: llega a una de más (San Marcos 2026-II) | 9 y 12, tercera vez: 108 → 72 | Hipótesis |
+| AT-PRIMERA | 2 | Da la segunda coincidencia cuando se pide otra | 36 | Hipótesis |
+| AT-SIN-INICIAL | 2 | No cuenta las tomas del comienzo (San Marcos 2025-I) | 26 → 29 | Hipótesis |
+| AT-TRES | 3 | Extiende MCD × MCM = A × B a tres números (el error que nombra la matriz) | 4, 6 y 10: 240 → 120 | Hipótesis |
+| AT-MCM-PRODUCTO | 3 | Toma el producto de los números por MCM | 2 × 240 = 480 | Hipótesis |
+| AT-OLVIDA-TERCERO | 3, 5 | Deja fuera uno de los números | 2 × 12 = 24 | Hipótesis |
+| AT-REL-SIN-MCD | 3 | Divide solo el MCM entre el número conocido | MCM ÷ A | Hipótesis |
+| AT-REL-MULTIPLICA | 3 | Multiplica y no divide al final | MCD × MCM | Hipótesis |
+| AT-REL-COCIENTE | 3 | Da p × q (MCM ÷ MCD) por el otro número | MCM ÷ MCD | Hipótesis |
+| AT-REL-DOS-VECES | 3 | Divide dos veces entre el MCD | P ÷ MCD² | Hipótesis |
+| AT-REL-PRODUCTO | 3 | Responde el producto por el MCM | 864 → 144 | Hipótesis |
+| AT-K-NO-CAMBIA | 3 | Cree que el MCD no cambia al multiplicar los dos números | MCD(3A, 3B) = MCD(A, B) | Hipótesis |
+| AT-K-MCM | 3 | Responde el MCM nuevo cuando se pide el MCD, o al revés | — | Hipótesis |
+| AT-K-DOBLE | 3 | Multiplica dos veces por el factor | k × k × MCD | Hipótesis |
+| AT-COC-SIN-MCD | 3 | Da p + q sin multiplicar por el MCD (San Marcos 2019-II) | 2 + 3 → 60 | Hipótesis |
+| AT-SUMA-DATOS | 3 | Suma los datos (la diferencia y el MCM) | 12 + 72 | Hipótesis |
+| AT-PARES-SIN-PESI | 3 | Cuenta cocientes que no son PESI | MCD 4 y MCM 144: 4 → 2 | Hipótesis |
+| AT-PARES-ORDEN | 3 | Cuenta (A, B) y (B, A) como dos pares | → el doble | Hipótesis |
+| AT-PARES-UNO | 3 | Cuenta solo el par obvio (MCD y MCM) | 1 | Hipótesis |
+| AT-RESTO-PRODUCTO | 4 | Usa el producto de los divisores en vez del MCM (San Marcos 2024-II) | 4, 6 y 10, sobra 1: 241 → 61 | Hipótesis |
+| AT-RESTO-DOS | 4 | Deja fuera un divisor | 13 (con 10 sobran 3) | Hipótesis |
+| AT-RESTO-OLVIDA | 4 | No suma el resto | 60 → 61 | Hipótesis |
+| AT-RESTO-RESTA | 4 | Resta el resto en vez de sumarlo | MCM − r | Hipótesis |
+| AT-RESTO-PRIMERO | 4 | Con restos distintos, usa uno de ellos (San Marcos 2026-II: hay que homogeneizar) | sobran 3 con 4 y 5 con 6: 15 → 11 | Hipótesis |
+| AT-FALTA-SUMA | 4 | Suma lo que falta en vez de restarlo | 12 + 1 → 12 − 1 | Hipótesis |
+| AT-COTA-OLVIDA | 4 | No mira el tramo pedido | 77 no tiene tres cifras | Hipótesis |
+| AT-COTA-PASA | 4 | Se pasa del tramo | 1087 | Hipótesis |
+| AT-TERCERO-OLVIDA | 4 | No prueba el tercer divisor (San Marcos 2023-I) | 13 → 49 | Hipótesis |
+| AT-TERCERO-MULTIPLICA | 4 | Multiplica el MCM por el tercero y suma el resto | 85 | Hipótesis |
+| AT-IE-SUMA | 5 | Suma las dos cuentas sin quitar los repetidos (San Marcos 2026-II) | 120 boletos, 4 y 6: 50 → 40 | Hipótesis |
+| AT-IE-DOBLE | 5 | Quita dos veces los repetidos | 30 | Hipótesis |
+| AT-IE-SOLO-AMBOS | 5 | Responde solo los de los dos | 10 | Hipótesis |
+| AT-NINGUNO-ALGUNO | 5 | Responde los que sí tienen premio (o los que quedan) | — | Hipótesis |
+| AT-SOLO-INCLUYE | 5 | Deja dentro a los de los dos premios cuando se pide uno solo | 35 → 30 | Hipótesis |
+| AT-SOLO-UNO | 5 | Cuenta solo uno de los premios | — | Hipótesis |
+| AT-IE-TRES-OLVIDA | 5 | No suma los múltiplos de los tres | 42 → 44 | Hipótesis |
+| AT-CONTEO-SIN-QUITAR | 5 | Cuenta desde 1 en un tramo (de Divisibilidad) | — | Hipótesis |
+| AT-EUC-COCIENTE | 6 | Cree que el cociente mide a los dos | — | Hipótesis |
+| AT-EUC-ACHICA | 6 | Cree que el MCD baja con los números | — | Hipótesis |
+| AT-EUC-NOSE | 6 | Cree que hay que calcular los dos MCD | — | Hipótesis |
+| AT-EUC-PRIMER-RESTO | 6 | Se queda en el primer resto | — | Hipótesis |
+| AT-EUC-DIVIDENDO | 6 | Conserva el dividendo en la división que sigue | 91 entre 21 | Hipótesis |
+| AT-FC-RESTOS | 6 | Pone los restos como términos | — | Hipótesis |
+| AT-FC-ORDEN | 6 | Invierte el orden de los cocientes | — | Hipótesis |
+| AT-FC-CORTA | 6 | Deja fuera el último cociente | — | Hipótesis |
+| AT-FC-SUMA | 6 | Suma las partes sueltas, sin la escalera | 2 + 1 + 1/3 | Hipótesis |
+| AT-FC-INVIERTE | 6 | Da la fracción al revés | 4/11 | Hipótesis |
+| AT-EUC-SIN-MCD | 6 | Reconstruye los números sin multiplicar por el MCD (San Marcos 2027-I) | 40 → 240 | Hipótesis |
+| AT-RESPONDE-OTRA | 3, 6 | Responde uno de los números cuando se pide otra cosa (de Divisibilidad) | — | Hipótesis |
+
 ## Huecos y siguientes pasos
 
 - **Abrir los originales.** En esta sesión no se pudo descargar nada. Las cifras "por confirmar" son las de la tesis de Roa sobre Navarro-Pelayo (37,8 % y 66,6 %), la tabla de Lecoutre (51 %), el 68 % de Clement y el 40 % de la regla del número entero de Resnick. El artículo de 1996 de Navarro-Pelayo y otros está en acceso abierto en la revista *Educación Matemática* y en ugr.es; Jacobs Danan y Gelman (2018) está en PMC; Van Dooren y otros (2005) y De Bock y otros (1998) son de pago.

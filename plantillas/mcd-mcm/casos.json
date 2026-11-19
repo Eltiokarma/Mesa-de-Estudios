@@ -1,0 +1,407 @@
+{
+  "plantilla": "mcd-mcm",
+  "nota": "entrada es _datos del generador; un caso por tipo (25), con la semilla y la idea con que se generó. respuesta: la clave de la correcta, como texto.",
+  "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo), que no usa el generador ni el núcleo: lee solo los parámetros de cada caso y recalcula por fuerza bruta (math.gcd y math.lcm, conteos uno por uno, divisiones sucesivas, fracciones con Fraction y, para reconstruir, todos los pares hasta 400). Los 25 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": "c0",
+      "idea": "mcd-cintas",
+      "entrada": {
+        "idea": "mcd-cintas",
+        "tipo": "trozo",
+        "nivel": 1,
+        "A": 42,
+        "B": 54
+      },
+      "esperado": {
+        "respuesta": "6 m",
+        "texto": "6 m"
+      }
+    },
+    {
+      "semilla": "c4",
+      "idea": "mcd-cintas",
+      "entrada": {
+        "idea": "mcd-cintas",
+        "tipo": "total",
+        "nivel": 2,
+        "A": 12,
+        "B": 42
+      },
+      "esperado": {
+        "respuesta": "9",
+        "texto": "9"
+      }
+    },
+    {
+      "semilla": "c16",
+      "idea": "mcd-cintas",
+      "entrada": {
+        "idea": "mcd-cintas",
+        "tipo": "tres",
+        "nivel": 2,
+        "A": 36,
+        "B": 12,
+        "C": 33
+      },
+      "esperado": {
+        "respuesta": "3 m",
+        "texto": "3 m"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "mcd-cintas",
+      "entrada": {
+        "idea": "mcd-cintas",
+        "tipo": "decimales",
+        "nivel": 3,
+        "A": 270,
+        "B": 225
+      },
+      "esperado": {
+        "respuesta": "45 cm",
+        "texto": "45 cm"
+      }
+    },
+    {
+      "semilla": "c2",
+      "idea": "mcd-cintas",
+      "entrada": {
+        "idea": "mcd-cintas",
+        "tipo": "estacas",
+        "nivel": 3,
+        "A": 56,
+        "B": 72
+      },
+      "esperado": {
+        "respuesta": "80",
+        "texto": "80"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "mcm-coinciden",
+      "entrada": {
+        "idea": "mcm-coinciden",
+        "tipo": "boleto",
+        "nivel": 1,
+        "a": 6,
+        "b": 14
+      },
+      "esperado": {
+        "respuesta": "42",
+        "texto": "42"
+      }
+    },
+    {
+      "semilla": "c6",
+      "idea": "mcm-coinciden",
+      "entrada": {
+        "idea": "mcm-coinciden",
+        "tipo": "alarmas",
+        "nivel": 2,
+        "a": 15,
+        "b": 20,
+        "h0": 8
+      },
+      "esperado": {
+        "respuesta": "9:00",
+        "texto": "9:00"
+      }
+    },
+    {
+      "semilla": "c15",
+      "idea": "mcm-coinciden",
+      "entrada": {
+        "idea": "mcm-coinciden",
+        "tipo": "tercera",
+        "nivel": 3,
+        "a": 6,
+        "b": 15
+      },
+      "esperado": {
+        "respuesta": "60 días",
+        "texto": "60 días"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "mcm-coinciden",
+      "entrada": {
+        "idea": "mcm-coinciden",
+        "tipo": "tomas",
+        "nivel": 3,
+        "a": 2,
+        "b": 3,
+        "c": 8
+      },
+      "esperado": {
+        "respuesta": "49",
+        "texto": "49"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "mcd-por-mcm",
+      "entrada": {
+        "idea": "mcd-por-mcm",
+        "tipo": "otro",
+        "nivel": 1,
+        "g": 3,
+        "M": 210,
+        "A": 21
+      },
+      "esperado": {
+        "respuesta": "30",
+        "texto": "30"
+      }
+    },
+    {
+      "semilla": "c6",
+      "idea": "mcd-por-mcm",
+      "entrada": {
+        "idea": "mcd-por-mcm",
+        "tipo": "producto",
+        "nivel": 2,
+        "P": 540,
+        "g": 6
+      },
+      "esperado": {
+        "respuesta": "90",
+        "texto": "90"
+      }
+    },
+    {
+      "semilla": "c15",
+      "idea": "mcd-por-mcm",
+      "entrada": {
+        "idea": "mcd-por-mcm",
+        "tipo": "diferencia",
+        "nivel": 3,
+        "D": 4,
+        "M": 120
+      },
+      "esperado": {
+        "respuesta": "44",
+        "texto": "44"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "mcd-por-mcm",
+      "entrada": {
+        "idea": "mcd-por-mcm",
+        "tipo": "pares",
+        "nivel": 3,
+        "g": 2,
+        "M": 40
+      },
+      "esperado": {
+        "respuesta": "2",
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "mismo-resto",
+      "entrada": {
+        "idea": "mismo-resto",
+        "tipo": "mismo",
+        "nivel": 1,
+        "a": 6,
+        "b": 8,
+        "r": 4
+      },
+      "esperado": {
+        "respuesta": "28",
+        "texto": "28"
+      }
+    },
+    {
+      "semilla": "c6",
+      "idea": "mismo-resto",
+      "entrada": {
+        "idea": "mismo-resto",
+        "tipo": "falta",
+        "nivel": 2,
+        "ds": [
+          8,
+          12
+        ],
+        "fa": 1
+      },
+      "esperado": {
+        "respuesta": "23",
+        "texto": "23"
+      }
+    },
+    {
+      "semilla": "c15",
+      "idea": "mismo-resto",
+      "entrada": {
+        "idea": "mismo-resto",
+        "tipo": "tres-cifras",
+        "nivel": 3,
+        "ds": [
+          6,
+          7,
+          14
+        ],
+        "r": 4
+      },
+      "esperado": {
+        "respuesta": "130",
+        "texto": "130"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "mismo-resto",
+      "entrada": {
+        "idea": "mismo-resto",
+        "tipo": "tercero",
+        "nivel": 3,
+        "a": 3,
+        "b": 8,
+        "c": 7
+      },
+      "esperado": {
+        "respuesta": "49",
+        "texto": "49"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "multiplos-tramo",
+      "entrada": {
+        "idea": "multiplos-tramo",
+        "tipo": "ambos",
+        "nivel": 1,
+        "L": 150,
+        "a": 9,
+        "b": 12
+      },
+      "esperado": {
+        "respuesta": "4",
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": "c6",
+      "idea": "multiplos-tramo",
+      "entrada": {
+        "idea": "multiplos-tramo",
+        "tipo": "alguno",
+        "nivel": 2,
+        "L": 200,
+        "a": 4,
+        "b": 10
+      },
+      "esperado": {
+        "respuesta": "60",
+        "texto": "60"
+      }
+    },
+    {
+      "semilla": "c15",
+      "idea": "multiplos-tramo",
+      "entrada": {
+        "idea": "multiplos-tramo",
+        "tipo": "ninguno",
+        "nivel": 2,
+        "L": 120,
+        "a": 8,
+        "b": 10
+      },
+      "esperado": {
+        "respuesta": "96",
+        "texto": "96"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "multiplos-tramo",
+      "entrada": {
+        "idea": "multiplos-tramo",
+        "tipo": "tachar",
+        "nivel": 3,
+        "L": 84,
+        "a": 2,
+        "b": 3,
+        "c": 5
+      },
+      "esperado": {
+        "respuesta": "61",
+        "texto": "61"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "euclides",
+      "entrada": {
+        "idea": "euclides",
+        "tipo": "mcd",
+        "nivel": 1,
+        "A": 42,
+        "B": 24
+      },
+      "esperado": {
+        "respuesta": "6",
+        "texto": "6"
+      }
+    },
+    {
+      "semilla": "c6",
+      "idea": "euclides",
+      "entrada": {
+        "idea": "euclides",
+        "tipo": "fraccion",
+        "nivel": 2,
+        "A": 154,
+        "B": 29
+      },
+      "esperado": {
+        "respuesta": "[5; 3, 4, 2]",
+        "texto": "[5; 3, 4, 2]"
+      }
+    },
+    {
+      "semilla": "c15",
+      "idea": "euclides",
+      "entrada": {
+        "idea": "euclides",
+        "tipo": "valor",
+        "nivel": 2,
+        "qs": [
+          1,
+          3,
+          2
+        ]
+      },
+      "esperado": {
+        "respuesta": "9/7",
+        "texto": "9/7"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "euclides",
+      "entrada": {
+        "idea": "euclides",
+        "tipo": "reconstruir",
+        "nivel": 3,
+        "qs": [
+          1,
+          2,
+          5
+        ],
+        "d": 3
+      },
+      "esperado": {
+        "respuesta": "81",
+        "texto": "81"
+      }
+    }
+  ]
+}

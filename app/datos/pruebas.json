@@ -1039,6 +1039,30 @@
     "cuenta-las-que-se-simplifican": {
      "respaldo": "hipotesis",
      "describe": "Cuenta las fracciones que sí se simplifican (AT-COND-COMPLEMENTO)"
+    },
+    "resto-con-el-producto": {
+     "respaldo": "hipotesis",
+     "describe": "Usa el producto de los divisores en vez del MCM y suma el resto (AT-RESTO-PRODUCTO; trampa de San Marcos 2024-II)"
+    },
+    "olvida-sumar-el-resto": {
+     "respaldo": "hipotesis",
+     "describe": "Da el MCM sin sumar lo que sobra (AT-RESTO-OLVIDA)"
+    },
+    "resta-el-resto": {
+     "respaldo": "hipotesis",
+     "describe": "Resta lo que sobra en vez de sumarlo (AT-RESTO-RESTA)"
+    },
+    "no-quita-los-repetidos": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los múltiplos de cada número sin quitar los de los dos (AT-IE-SUMA; trampa de San Marcos 2026-II)"
+    },
+    "quita-dos-veces-los-repetidos": {
+     "respaldo": "hipotesis",
+     "describe": "Quita dos veces los múltiplos de los dos (AT-IE-DOBLE)"
+    },
+    "solo-los-de-los-dos": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo los múltiplos de los dos a la vez (AT-IE-SOLO-AMBOS)"
     }
    },
    "pares": [

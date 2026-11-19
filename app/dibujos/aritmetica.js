@@ -81,11 +81,12 @@ D.registrar('aritmetica', {
   // 12 fichas se arman en rectángulo; 7 solo en una fila: es primo.
   'aritmetica.numeros-primos-y-divisores': P =>
     rejilla(P, 26, 24, 3, 4, 16, 6, () => 'b') + rejilla(P, 26, 96, 1, 7, 16, 6, () => 'a') + P.t(122, 46, '12', 16, 'start'),
-  // MCM: dos cintas de 4 y de 6 vuelven a coincidir en 12.
+  // MCM: dos cintas de trozos distintos vuelven a coincidir. Sin número (19 nov): el «12» era la respuesta de la
+  // predicción de la idea 1 y se veía antes de predecir.
   'aritmetica.mcd-y-mcm': P =>
     [0, 1, 2].map(k => P.r(16 + k * 40, 30, 40, 22, k % 2 ? 'm' : 'b', 3)).join('')
     + [0, 1].map(k => P.r(16 + k * 60, 66, 60, 22, k % 2 ? 'm' : 'b', 3)).join('')
-    + P.ac('M136 18V100') + P.t(136, 116, '12', 15),
+    + P.ac('M136 18V100'),
   // Fracción: partes iguales de una barra y de una pizza.
   'aritmetica.numeros-racionales': P =>
     P.r(14, 30, 84, 24, 'b', 4) + P.r(14, 30, 63, 24, 'a', 4) + [35, 56, 77].map(x => P.l([[x, 30], [x, 54]], 'd')).join('') + P.r(14, 30, 84, 24, '', 4)

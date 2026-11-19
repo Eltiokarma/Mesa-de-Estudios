@@ -431,6 +431,8 @@
         "Algoritmo de Euclides",
         "Relación entre MCD y MCM",
         "Fracciones continuas",
+        "Restos con varios divisores",
+        "Conteo de múltiplos",
         "Problemas de aplicación"
       ],
       "universidades": {
@@ -448,7 +450,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": ["aritmetica.numeros-primos-y-divisores"],
-      "plantillas": ["fracciones", "fracciones-problemas"],
+      "plantillas": ["mcd-mcm", "fracciones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {
