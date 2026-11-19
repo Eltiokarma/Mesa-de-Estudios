@@ -53,9 +53,18 @@
   // Los coeficientes de π se guardan como fracción [p, q]; el texto lo escribe el núcleo (P.pi).
   const piDe = ([p, q], u = 'rad/s') => P.pi(p / q * Math.PI, u, q);
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'periodo-y-frecuencia': ['encuentro',  'vueltas',  'separacion',  'salida'],
+    'mcuv': ['mcuv'],
+  };
+  const LISTA = ['encuentro', 'encuentro', 'vueltas', 'separacion', 'salida', 'salida', 'mcuv'];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-encuentros|' + semilla);
-    const tipo = rng.elegir(['encuentro', 'encuentro', 'vueltas', 'separacion', 'salida', 'salida', 'mcuv']);
+    const tipo = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t)) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -296,5 +305,23 @@
     return cerrar(rng, semilla, { correcta, errores, texto: segundos, unidad: 's', enunciado, pregunta, solucion, datos });
   }
 
-  return { id: 'circular-encuentros', titulo: 'Dos móviles en la misma circunferencia', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "Con ω constante: θ = ω · t",
+          "ω = 2π/T; 1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto"
+      ],
+      "mcuv": [
+          "Con α constante, desde el reposo: θ = ½ · α · t²",
+          "Con ω constante: θ = ω · t; 1 vuelta = 2π rad"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-encuentros', titulo: 'Dos móviles en la misma circunferencia', generar: generarConDatos, TIPOS_POR_IDEA };
 });

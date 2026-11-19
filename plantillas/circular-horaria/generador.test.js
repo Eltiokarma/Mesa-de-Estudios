@@ -81,3 +81,33 @@ test('los textos contraen «de» con el artículo («del punto») y no dicen «d
     assert.ok(!/\b[Dd]e el\b|\b[Aa] el\b/.test(todo), `semilla ${s}`);
   }
 });
+
+// 19 nov (Movimiento circular, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica por idea.
+test('generar(semilla, { idea }): cada idea de Movimiento circular saca solo sus tipos; sin idea, los de siempre', () => {
+  const gen = require('./generador.js');
+  const IDEAS = ['arco-y-radian', 'periodo-y-frecuencia', 'velocidad-tangencial', 'rapidez-constante-acelera', 'mcuv', 'dos-aceleraciones'];
+  const def = require('../../contenido/teoria/fisica/movimiento-circular.js');
+  assert.deepEqual(def.ideas.map(i => i.id), IDEAS);
+  for (const [idea, tipos] of Object.entries(gen.TIPOS_POR_IDEA)) {
+    assert.ok(IDEAS.includes(idea), `«${idea}» no es una idea de la unidad`);
+    for (let s = 0; s < 60; s++) {
+      const p = gen.generar(s, { unidad: 'fisica.movimiento-circular', idea });
+      assert.ok(tipos.includes(p._datos.tipo), `${idea}, semilla ${s}: tipo ${p._datos.tipo}`);
+    }
+  }
+  for (let s = 0; s < 30; s++) assert.deepEqual(gen.generar(s, { unidad: 'fisica.movimiento-circular' }), gen.generar(s), 'sin idea, el mismo problema de antes');
+});
+
+// 19 nov (contrato, punto 13): cada problema da sus datos, una fórmula o equivalencia por línea, sin la respuesta.
+test('datos en 400 semillas: lista no vacía, líneas de 22 palabras o menos, sin la respuesta', () => {
+  const gen = require('./generador.js');
+  const palabras = t => String(t).trim().split(/\s+/).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s);
+    assert.ok(Array.isArray(p.datos) && p.datos.length >= 1, `semilla ${s}: sin datos`);
+    for (const l of p.datos) assert.ok(typeof l === 'string' && palabras(l) <= 22, `semilla ${s}: «${l}»`);
+    const bien = p.alternativas.find(a => a.correcta).texto, todo = p.datos.join(' ');
+    // 60, 360, 100, 1000 y 3600 son de las equivalencias (1 min = 60 s, 1 vuelta = 360°…), no de la respuesta.
+    for (const n of String(bien).match(/\d+(?:,\d+)?/g) || []) if (n.replace(',', '').length >= 2 && !['60', '360', '100', '1000', '3600'].includes(n)) assert.ok(!new RegExp(`(?<![\\d,])${n}(?![\\d,])`).test(todo), `semilla ${s}: los datos traen ${n}, de la respuesta`);
+  }
+});

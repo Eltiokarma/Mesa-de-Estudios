@@ -41,10 +41,19 @@
   const PART = [['Una partícula', 'la partícula'], ['Una esfera pequeña', 'la esfera'], ['Un punto', 'el punto']];
   const sentido = ' (θ crece en sentido antihorario).';
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'mcuv': ['omega',  'alfa',  'parada',  'girado',  'recorrido'],
+    'dos-aceleraciones': ['acp'],
+  };
+  const LISTA = [['omega'], ['omega'], ['alfa', 'theta'], ['alfa', 's'], ['parada'], ['parada'], ['girado'], ['girado'],
+      ['recorrido', 'recorrido'], ['recorrido', 'recorrido'], ['recorrido', 'neto'], ['acp'], ['acp']];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-horaria|' + semilla);
-    const [tipo, sub] = rng.elegir([['omega'], ['omega'], ['alfa', 'theta'], ['alfa', 's'], ['parada'], ['parada'], ['girado'], ['girado'],
-      ['recorrido', 'recorrido'], ['recorrido', 'recorrido'], ['recorrido', 'neto'], ['acp'], ['acp']]);
+    const [tipo, sub] = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t[0])) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -270,5 +279,24 @@
       datos: { tipo: 'acp', coef: [a, b, c], t, r: R } });
   }
 
-  return { id: 'circular-horaria', titulo: 'De la ecuación al giro', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "MCUV: θ = θ₀ + ω₀ · t + ½ · α · t²",
+          "MCUV: ω = ω₀ + α · t"
+      ],
+      "acp": [
+          "En el arco, con a_T constante: S = S₀ + v₀ · t + ½ · a_T · t²",
+          "Con a_T constante: v = v₀ + a_T · t",
+          "Aceleración centrípeta: a_c = v²/R"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-horaria', titulo: 'De la ecuación al giro', generar: generarConDatos, TIPOS_POR_IDEA };
 });

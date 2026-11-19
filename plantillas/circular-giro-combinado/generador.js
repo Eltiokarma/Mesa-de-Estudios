@@ -38,10 +38,18 @@
   const wTxt = x => P.pi(x, 'rad/s');
   const radTxt = g => P.pi(g * RAD, 'rad');
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'periodo-y-frecuencia': ['discos',  'cascaron',  'plataforma'],
+  };
+  const LISTA = [['discos', 'omega'], ['discos', 'omega'], ['discos', 'ms'], ['discos', 'v'], ['discos', 'v'],
+      ['cascaron'], ['cascaron'], ['plataforma'], ['plataforma'], ['plataforma']];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-giro-combinado|' + semilla);
-    const [tipo, sub] = rng.elegir([['discos', 'omega'], ['discos', 'omega'], ['discos', 'ms'], ['discos', 'v'], ['discos', 'v'],
-      ['cascaron'], ['cascaron'], ['plataforma'], ['plataforma'], ['plataforma']]);
+    const [tipo, sub] = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t[0])) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -209,5 +217,24 @@
       datos: conH ? { tipo: 'plataforma', phi, H } : { tipo: 'plataforma', phi, v0 } });
   }
 
-  return { id: 'circular-giro-combinado', titulo: 'Balas, cascarones y plataformas que giran', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "Con ω constante: θ = ω · t",
+          "La bala va recta y pareja: tiempo = distancia ÷ rapidez",
+          "1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto; 1 s = 1000 ms"
+      ],
+      "plataforma": [
+          "Lanzamiento vertical con g = 10 m/s²: v = v₀ − g · t",
+          "Con ω constante: θ = ω · t; 1 vuelta = 2π rad = 360°"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-giro-combinado', titulo: 'Balas, cascarones y plataformas que giran', generar: generarConDatos, TIPOS_POR_IDEA };
 });

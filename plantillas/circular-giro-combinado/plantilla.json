@@ -3,7 +3,7 @@
   "titulo": "Balas, cascarones y plataformas que giran",
   "formato": "predicciones",
   "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
   ],
   "estado": "borrador",
   "version": "0.1.0",

@@ -47,9 +47,17 @@
   // (rad/s en rad; vueltas/s en rpm y en pi).
   const porSeg = (modo, x) => (modo === 'rad' ? x : modo === 'rpm' ? x / 60 : x / 2);
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'mcuv': ['angulo',  'frenado',  'tiempo',  'alfa',  'tramos'],
+  };
+  const LISTA = ['angulo', 'angulo', 'frenado', 'tiempo', 'tiempo', 'alfa', 'alfa', 'tramos'];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-mcuv|' + semilla);
-    const tipo = rng.elegir(['angulo', 'angulo', 'frenado', 'tiempo', 'tiempo', 'alfa', 'alfa', 'tramos']);
+    const tipo = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t)) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -273,5 +281,21 @@
       datos: { tipo: 'tramos', modo, alfa: a1, t1, t2, t3 } });
   }
 
-  return { id: 'circular-mcuv', titulo: 'El giro que acelera: tres datos y lo que falta', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "Con α constante: ω = ω₀ + α · t",
+          "Con α constante: θ = ω₀ · t + ½ · α · t²",
+          "Sin el tiempo: ω² = ω₀² + 2α · θ",
+          "1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-mcuv', titulo: 'El giro que acelera: tres datos y lo que falta', generar: generarConDatos, TIPOS_POR_IDEA };
 });

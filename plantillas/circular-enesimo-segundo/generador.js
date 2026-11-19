@@ -33,9 +33,17 @@
   const OBJ = [['Un disco', 'el disco'], ['Una rueda', 'la rueda'], ['Un ventilador', 'el ventilador'], ['Una polea', 'la polea'], ['Un esmeril', 'el esmeril']];
   const variables = { k: { nombre: 'lo girado en el segundo dato', color: 'o' }, al: { nombre: 'aceleración angular', color: 'i' }, w0: { nombre: 'rapidez angular inicial', color: 'h' }, m: { nombre: 'lo que se pide', color: 'd' } };
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'mcuv': ['desde-k',  'alfa',  'impares',  'con-omega0'],
+  };
+  const LISTA = ['desde-k', 'desde-k', 'desde-k', 'alfa', 'impares', 'con-omega0', 'con-omega0'];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-enesimo-segundo|' + semilla);
-    const tipo = rng.elegir(['desde-k', 'desde-k', 'desde-k', 'alfa', 'impares', 'con-omega0', 'con-omega0']);
+    const tipo = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t)) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -144,5 +152,19 @@
     };
   }
 
-  return { id: 'circular-enesimo-segundo', titulo: 'Segundo a segundo: lo que gira cada segundo', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "Con α constante: θ = ω₀ · t + ½ · α · t²",
+          "El segundo número n va del instante t = n − 1 al instante t = n"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-enesimo-segundo', titulo: 'Segundo a segundo: lo que gira cada segundo', generar: generarConDatos, TIPOS_POR_IDEA };
 });

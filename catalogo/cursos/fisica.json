@@ -4,7 +4,7 @@
   "area": "ciencias",
   "formato_principal": "escena",
   "ramas": [
-    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.vectores", "fisica.movimiento-rectilineo", "fisica.mruv-y-caida-libre", "fisica.movimiento-parabolico-y-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
+    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.vectores", "fisica.movimiento-rectilineo", "fisica.mruv-y-caida-libre", "fisica.movimiento-parabolico-y-circular", "fisica.movimiento-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
     {"nombre": "Fluidos y calor", "unidades": ["fisica.fluidos", "fisica.temperatura-y-calor", "fisica.termodinamica"]},
     {"nombre": "Electricidad y magnetismo", "unidades": ["fisica.electrostatica", "fisica.corriente-y-circuitos", "fisica.magnetismo", "fisica.induccion-electromagnetica"]},
     {"nombre": "Ondas y luz", "unidades": ["fisica.ondas-mecanicas", "fisica.ondas-electromagneticas", "fisica.optica-geometrica", "fisica.fisica-moderna"]}
@@ -75,10 +75,22 @@
     },
     {
       "id": "fisica.movimiento-parabolico-y-circular",
-      "nombre": "Movimiento parabólico y circular",
+      "nombre": "Movimiento parabólico",
       "temas": [
         "Movimiento en dos dimensiones",
-        "Tiro parabólico",
+        "Tiro parabólico"
+      ],
+      "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
+      "potencial_visual": "alto",
+      "grado": 4,
+      "requiere": ["fisica.mruv-y-caida-libre"],
+      "plantillas": ["fis-parabolico", "tiro-parabolico", "cinematica-medias"],
+      "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
+    },
+    {
+      "id": "fisica.movimiento-circular",
+      "nombre": "Movimiento circular",
+      "temas": [
         "Magnitudes angulares",
         "MCU",
         "MCUV",
@@ -88,7 +100,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["fisica.mruv-y-caida-libre"],
-      "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado", "cinematica-medias"],
+      "plantillas": ["movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado", "tiro-parabolico", "cinematica-medias"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
     {
@@ -141,7 +153,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "requiere": ["fisica.dinamica", "fisica.movimiento-parabolico-y-circular"],
+      "requiere": ["fisica.dinamica", "fisica.movimiento-circular"],
       "plantillas": ["gravitacion", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -193,7 +205,7 @@
       "universidades": {"uni": {"semanas": [8]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "requiere": ["fisica.trabajo-y-energia", "fisica.movimiento-parabolico-y-circular", "trigonometria.funciones-trigonometricas"],
+      "requiere": ["fisica.trabajo-y-energia", "fisica.movimiento-circular", "trigonometria.funciones-trigonometricas"],
       "plantillas": ["mas", "mas-horaria"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -325,7 +337,7 @@
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
-      "requiere": ["fisica.corriente-y-circuitos", "fisica.movimiento-parabolico-y-circular"],
+      "requiere": ["fisica.corriente-y-circuitos", "fisica.movimiento-circular"],
       "plantillas": ["magnetismo", "carga-en-campo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },

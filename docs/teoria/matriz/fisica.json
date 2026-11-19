@@ -310,28 +310,14 @@
    "curso": "Física",
    "curso_id": "fisica",
    "numero": 3,
-   "titulo": "Movimiento parabólico y circular",
+   "titulo": "Movimiento parabólico",
    "grado": 4,
    "temas_catalogo": [
     "Movimiento en dos dimensiones",
-    "Tiro parabólico",
-    "Magnitudes angulares",
-    "MCU",
-    "MCUV",
-    "Aceleración tangencial y centrípeta"
+    "Tiro parabólico"
    ],
    "modulos_actuales": [
     "tiro-parabolico",
-    "movimiento-circular",
-    "circular-transmision",
-    "circular-mcuv",
-    "circular-enesimo-segundo",
-    "circular-encuentros",
-    "circular-mcu",
-    "circular-horaria",
-    "circular-grafica",
-    "circular-aceleracion-total",
-    "circular-giro-combinado",
     "cinematica-medias"
    ],
    "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
@@ -408,7 +394,112 @@
      }
     ],
     "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
-   }
+   },
+   "particion": "Partida en dos el 19 nov 2026 (docs/etapa5/propuesta-fisica.md §9, decisión 1; Gerson delegó el criterio y revisa después): esta ficha queda para «Movimiento parabólico» (conserva el id) y las magnitudes angulares, el MCU, el MCUV y las aceleraciones tangencial y centrípeta pasan a fisica.movimiento-circular. La teoría, las condiciones y la historia de abajo son las de la ficha original: lo del giro (y Huygens) corresponde a la otra unidad."
+  },
+  {
+   "id": "fisica.movimiento-circular",
+   "curso": "Física",
+   "curso_id": "fisica",
+   "numero": 3,
+   "titulo": "Movimiento circular",
+   "grado": 4,
+   "temas_catalogo": [
+    "Magnitudes angulares",
+    "MCU",
+    "MCUV",
+    "Aceleración tangencial y centrípeta"
+   ],
+   "modulos_actuales": [
+    "movimiento-circular",
+    "circular-transmision",
+    "circular-mcuv",
+    "circular-enesimo-segundo",
+    "circular-encuentros",
+    "circular-mcu",
+    "circular-horaria",
+    "circular-grafica",
+    "circular-aceleracion-total",
+    "circular-giro-combinado",
+    "tiro-parabolico",
+    "cinematica-medias"
+   ],
+   "ruta_propuesta": "descubrir, con apoyo de seguir un ejemplo",
+   "teoria": [
+    "El tiro ideal combina x=x0+v0x t e y=y0+v0y t−gt²/2 con un solo reloj.",
+    "En giro: s=rθ, v=rω, at=rα y ac=v²/r; las aceleraciones tangencial y radial son perpendiculares.",
+    "MCU mantiene rapidez, pero cambia dirección de v; MCUV mantiene α, no el vector aceleración total."
+   ],
+   "condiciones": "Ángulos complementarios dan igual alcance solo con misma rapidez inicial, misma altura de salida/llegada y sin aire. Ac=v²/r vale para el componente radial; no sustituye toda a si cambia rapidez.",
+   "prerrequisitos": [
+    "Descomponer vectores",
+    "Resolver MRU y MRUV",
+    "Convertir grados, radianes y revoluciones"
+   ],
+   "desempeno": "Elegir y coordinar dos componentes para predecir posición e identificar la aceleración correcta en una situación nueva.",
+   "escena_propuesta": "Lanzar y congelar estroboscopio con sombras en ambos ejes; girar la rueda y trasladar dos flechas v al mismo origen para construir Δv.",
+   "otra_representacion": "Tabla sincronizada x/y y triángulo de aceleraciones; cambiar ángulo con botones.",
+   "ejemplo": null,
+   "error_objetivo": [
+    "Atribuir aceleración horizontal al proyectil ideal",
+    "Creer que rapidez constante implica a=0",
+    "Usar grados en s=rθ"
+   ],
+   "transferencia": "Comprobar el desempeño indicado con un caso nuevo sin la ayuda de la escena; concretar cada pregunta en el guion de implementación.",
+   "repaso": "Conectar con la fuente existente de la unidad; recuperación posterior sin ayuda antes de ofrecer explicación.",
+   "fuentes": [
+    {
+     "obra": "University Physics 1",
+     "capitulos": "4.3–4.4; 10.1–10.2",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/4-3-projectile-motion",
+     "titulo": "University Physics 1",
+     "localizador": "4.3–4.4; 10.1–10.2"
+    },
+    {
+     "obra": "University Physics 1",
+     "capitulos": "4.4",
+     "url": "https://openstax.org/books/university-physics-volume-1/pages/4-4-uniform-and-nonuniform-circular-motion",
+     "titulo": "University Physics 1",
+     "localizador": "4.4"
+    }
+   ],
+   "estado": "Expediente editorial y propuesta de escena. No implementado ni validado con alumnos.",
+   "historia": {
+    "id": "fisica.movimiento-circular",
+    "numero": 3,
+    "titulo": "Movimiento parabólico y circular",
+    "historia": "Predecir la trayectoria de un proyectil exigía explicar simultáneamente su avance y su caída. En los Discorsi de 1638, Galileo presentó la trayectoria parabólica como composición de movimiento horizontal y caída acelerada bajo condiciones ideales. El movimiento circular planteaba otra dificultad: podía conservar la rapidez y, sin embargo, cambiar continuamente de dirección. Los estudios de Huygens sobre péndulos y giros, expuestos en su Horologium Oscillatorium de 1673, ayudaron a cuantificar esas relaciones. No eran dos trucos aislados, sino problemas que impulsaban una descripción matemática común del movimiento. La descomposición vectorial que usamos hoy permite comparar ambos casos sin atribuir a sus autores nuestra notación moderna.",
+    "puente_escena": "Al soltar una pelota, mantener visibles sus sombras sobre dos ejes y un único reloj. Luego comparar dos instantes de una rueda: trasladar las flechas de velocidad al mismo origen revela su diferencia. El alumno predice la dirección del cambio antes de ver la aceleración.",
+    "ecuaciones": [
+     {
+      "latex": "\\begin{aligned}x(t)&=x_0+v_{0x}t\\\\y(t)&=y_0+v_{0y}t-\\frac12gt^2\\end{aligned}",
+      "lectura": "La trayectoria combina avance horizontal uniforme y movimiento vertical acelerado.",
+      "condiciones": "Gravedad uniforme hacia abajo, aire despreciable y ejes horizontal/vertical."
+     },
+     {
+      "latex": "a_t=r\\alpha,\\qquad a_c=\\frac{v^2}{r}",
+      "lectura": "La aceleración tangencial cambia la rapidez; la centrípeta cambia la dirección.",
+      "condiciones": "Movimiento sobre circunferencia de radio r; componentes perpendiculares."
+     },
+     {
+      "latex": "\\omega=\\omega_0+\\alpha t",
+      "lectura": "La velocidad angular cambia linealmente cuando la aceleración angular es constante.",
+      "condiciones": "α constante; ángulos y unidades coherentes en radianes."
+     }
+    ],
+    "fuentes": [
+     {
+      "titulo": "Museo Galileo — Apparatus to demonstrate the parabolic trajectory of projectiles",
+      "url": "https://catalogue.museogalileo.it/object/ApparatusToDemonstrateParabolicTrajectoryProjectiles.html"
+     },
+     {
+      "titulo": "Universidad de St Andrews, MacTutor — Christiaan Huygens",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Huygens/"
+     }
+    ],
+    "notacion": "Las ecuaciones emplean notación moderna; no reproducen la escritura de los documentos históricos."
+   },
+   "particion": "Nace el 19 nov 2026 de partir fisica.movimiento-parabolico-y-circular (docs/etapa5/propuesta-fisica.md). La teoría y la historia de abajo son las de la ficha original, que se repartirán al rehacer la unidad."
   },
   {
    "id": "fisica.estatica",

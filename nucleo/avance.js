@@ -151,6 +151,25 @@
       // la huella, y pudo responder la pregunta vieja: se borra una vez, con su propia marca (partidoMRU ya corrió para
       // quien entró). Lo demás de la idea (hecha, momento, casos) se queda.
       sinHuella: { marca: 'prediccionMRU', ideas: ['mru', 'desplazamiento-distancia', 'encuentro'] } },
+    // 19 nov: «Movimiento parabólico y circular» → «Movimiento parabólico» (conserva el id) + fisica.movimiento-circular
+    // (docs/etapa5/propuesta-fisica.md §9, decisión 1). Se van las tres ideas del giro, sus dos mesas (la rueda y el giro)
+    // y sus once palabras (con su clave del glosario, sin tildes). La idea que se queda, `un-reloj-dos-ejes`, conserva su
+    // predicción (la soltada contra la lanzada) con los mismos ids de opción: lo guardado sigue valiendo y no se borra.
+    // Quien había terminado las cuatro ideas de antes conserva «Ya la estudié» en las dos unidades (estudiada): con las
+    // ideas nuevas por hacer perdería el nivel y se le cerrarían Gravitación, Oscilaciones y Magnetismo.
+    { marca: 'partidoPC', de: 'fisica.movimiento-parabolico-y-circular', a: 'fisica.movimiento-circular',
+      ideas: ['arco-y-radian', 'rapidez-constante-acelera', 'dos-aceleraciones'], mesas: ['rueda', 'giro'],
+      // Las cuatro últimas son palabras nuevas de Movimiento circular (fase 3): la unidad vieja no las tenía, pero si
+      // alguna quedó marcada con el id viejo (un glosario armado antes de la partición), también se va.
+      glosario: ['radian', 'desplazamiento angular', 'velocidad angular', 'aceleracion angular', 'velocidad tangencial', 'periodo', 'frecuencia',
+        'mcu', 'mcuv', 'aceleracion centripeta', 'aceleracion tangencial', 'arco', 'transmision', 'cambio de velocidad', 'aceleracion total'],
+      estudiada: { marca: 'estudiadaPC', fecha: '2026-11-19',
+        ideas: ['un-reloj-dos-ejes', 'arco-y-radian', 'rapidez-constante-acelera', 'dos-aceleraciones'] },
+      // Fase 3 (19 nov): `arco-y-radian` y `dos-aceleraciones` conservan su id con otra Predice (la vuelta de la cabina y
+      // el carrusel que ya gira parejo). Una predicción suya guardada sin huella es de la pregunta vieja y se borra una vez
+      // (prediccionPC), en la unidad nueva (en: después de partir, las ideas ya están allá). `rapidez-constante-acelera`
+      // conserva su pregunta con los mismos ids de opción: no se toca.
+      sinHuella: { marca: 'prediccionPC', en: 'fisica.movimiento-circular', ideas: ['arco-y-radian', 'dos-aceleraciones'] } },
     // 18 nov: las sumatorias de «Las cuatro operaciones» se mudan a «Sucesiones y series», que ya existía y tenía la misma
     // idea con otro nombre (docs/etapa4/decisiones.md). Es una mudanza, no una partición:
     //   - la idea `sumatorias` pasa a ser `suma-rectangulo` (renombrar); si el alumno ya la tenía allá, se queda la suya;

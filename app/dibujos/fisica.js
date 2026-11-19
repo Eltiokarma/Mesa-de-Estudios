@@ -43,6 +43,14 @@ D.registrar('fisica', {
       + [32, 48, 64, 80, 96, 112, 128].map(x => P.l([[x, y(x) + 6], [x, 96]], 'g') + P.l([[x, 96], [x, 104]], 'd') + P.c(x, y(x), 5, 'b')).join('')
       + P.c(16, 100, 6, 'tn');
   },
+  // En el giro la rapidez puede no cambiar, pero la flecha de la velocidad sí: va de costado, tangente (19 nov, al
+  // partir «Movimiento parabólico y circular»).
+  'fisica.movimiento-circular': P => {
+    const cx = 70, cy = 66, r = 42, q = a => [cx + r * Math.cos(a * Math.PI / 180), cy - r * Math.sin(a * Math.PI / 180)];
+    const [px, py] = q(35), [tx, ty] = [px - 36 * Math.sin(35 * Math.PI / 180), py - 36 * Math.cos(35 * Math.PI / 180)];
+    return P.c(cx, cy, r, 'm') + P.l([[cx, cy], q(0)], 'd') + P.l([[cx, cy], [px, py]], 'd') + P.p(P.arco(cx, cy, r, 0, 35), '')
+      + P.ac(`M${P.n(px)} ${P.n(py)}L${P.n(tx + 4)} ${P.n(ty + 5)}`) + P.punta(tx, ty, ang(px, py, tx, ty)) + P.c(cx, cy, 4, 'tn') + P.c(px, py, 6, 'b');
+  },
   // La barra queda quieta cuando los giros se compensan: lo pesado va cerca del apoyo.
   'fisica.estatica': P =>
     P.l([[8, 104], [152, 104]], 'd') + P.p('M64 78L52 104H76Z', 'tn') + P.r(10, 70, 142, 8, 'a', 3)

@@ -285,3 +285,73 @@ test('Tabla periódica partida: las ideas de propiedades, las mesas y sus palabr
   assert.equal(nuevo.partidoTP, 1);
   assert.equal((nuevo.teoria || {})[N], undefined);
 });
+
+// 19 nov (docs/etapa5/propuesta-fisica.md): «Movimiento parabólico y circular» se partió en «Movimiento parabólico»
+// (conserva el id) y fisica.movimiento-circular.
+test('al partir «Movimiento parabólico y circular», el avance del giro pasa a fisica.movimiento-circular', () => {
+  const V = 'fisica.movimiento-parabolico-y-circular', N = 'fisica.movimiento-circular';
+  const est = { avanceV: 1, vistas: { [V]: '2026-11-15' }, marcadas: {},
+    teoria: { [V]: { idea: 'rapidez-constante-acelera', ideas: { 'un-reloj-dos-ejes': { hecha: true, prediccion: 'soltada' },
+      'arco-y-radian': { hecha: true, prediccion: 'c' }, 'rapidez-constante-acelera': { casos: 2, prediccion: 'cero' } } } },
+    coleccion: [{ id: 'c1', unidad: V, mesa: 'rueda' }, { id: 'c2', unidad: V, mesa: 'giro' }, { id: 'c3', unidad: V, mesa: 'tiro-libre' },
+      { id: 'c4', unidad: V, mesa: 'dos-sombras-3d' }],
+    glosario: { [V]: { 'tiro parabolico': 'sabe', radian: 'sabe', periodo: 'repasa', mcu: 'sabe', 'aceleracion centripeta': 'repasa', 'tiempo de vuelo': 'repasa' } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.partidoPC, 1); assert.equal(est.estudiadaPC, 1); assert.equal(est.prediccionPC, 1);
+  // El tiro se queda con su predicción (la misma pregunta, con los mismos ids); el giro se va con lo suyo, menos la
+  // predicción sin huella de `arco-y-radian`, que cambió de pregunta (prediccionPC).
+  assert.deepEqual(est.teoria[V].ideas, { 'un-reloj-dos-ejes': { hecha: true, prediccion: 'soltada' } });
+  assert.deepEqual(est.teoria[N].ideas, { 'arco-y-radian': { hecha: true }, 'rapidez-constante-acelera': { casos: 2, prediccion: 'cero' } });
+  assert.equal(est.teoria[N].idea, 'rapidez-constante-acelera', 'la idea en curso se va con su unidad');
+  assert.equal(est.teoria[V].idea, undefined);
+  assert.deepEqual(est.coleccion.map(c => c.unidad), [N, N, V, V], 'la rueda y el giro se van; el tiro libre y las dos sombras se quedan');
+  assert.deepEqual(est.glosario[V], { 'tiro parabolico': 'sabe', 'tiempo de vuelo': 'repasa' });
+  assert.deepEqual(est.glosario[N], { radian: 'sabe', periodo: 'repasa', mcu: 'sabe', 'aceleracion centripeta': 'repasa' });
+  assert.equal(est.vistas[N], '2026-11-15');
+  assert.equal(est.marcadas[V], undefined, 'no había terminado las cuatro ideas de antes');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+  // Quien había terminado las cuatro ideas de antes conserva «Ya la estudié» en las dos unidades (estudiadaPC).
+  const hecho = { avanceV: 1, vistas: { [V]: '2026-11-16' }, marcadas: {},
+    teoria: { [V]: { ideas: Object.fromEntries(['un-reloj-dos-ejes', 'arco-y-radian', 'rapidez-constante-acelera', 'dos-aceleraciones'].map(i => [i, { hecha: true }])) } } };
+  assert.equal(A.migrar(hecho), true);
+  assert.equal(hecho.marcadas[V], '2026-11-16');
+  assert.equal(hecho.marcadas[N], '2026-11-16');
+  assert.deepEqual(Object.keys(hecho.teoria[V].ideas), ['un-reloj-dos-ejes']);
+  assert.deepEqual(Object.keys(hecho.teoria[N].ideas), ['arco-y-radian', 'rapidez-constante-acelera', 'dos-aceleraciones']);
+  // Quien nunca abrió la unidad: solo quedan las marcas.
+  const nuevo = { avanceV: 1 };
+  A.migrar(nuevo);
+  assert.equal(nuevo.partidoPC, 1);
+  assert.equal((nuevo.teoria || {})[N], undefined);
+});
+
+// 19 nov, fase 3 de «Movimiento circular»: `arco-y-radian` y `dos-aceleraciones` conservan su id con otra Predice. Sus
+// predicciones guardadas sin huella se borran una vez (prediccionPC), en la unidad nueva; las que traen huella las revisa
+// la app, y `rapidez-constante-acelera` (misma pregunta, mismos ids) no se toca.
+test('Movimiento circular: las predicciones sin huella de las ideas que cambiaron de pregunta se borran una vez (prediccionPC)', () => {
+  const V = 'fisica.movimiento-parabolico-y-circular', N = 'fisica.movimiento-circular';
+  // Quien ya pasó por la partición: sus ideas del giro están en la unidad nueva.
+  const est = { avanceV: 1, partidoV: 1, partidoExp: 1, partidoMRU: 1, prediccionMRU: 1, mudadoSum: 1, estudiadaSum: 1, partidoTP: 1,
+    prediccionTP: 1, estudiadaTP: 1, partidoPC: 1, estudiadaPC: 1,
+    teoria: { [N]: { idea: 'dos-aceleraciones', ideas: {
+      'arco-y-radian': { hecha: true, prediccion: 'grados', momento: 'regla' },
+      'rapidez-constante-acelera': { prediccion: 'cero' },
+      'dos-aceleraciones': { prediccion: 'c', casos: 1 },
+      mcuv: { prediccion: 'c', prediccionDe: 'x1' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionPC, 1);
+  const ideas = est.teoria[N].ideas;
+  assert.deepEqual(ideas['arco-y-radian'], { hecha: true, momento: 'regla' });
+  assert.deepEqual(ideas['dos-aceleraciones'], { casos: 1 }, 'se borra aunque fuera la «c»: la pregunta cambió');
+  assert.deepEqual(ideas['rapidez-constante-acelera'], { prediccion: 'cero' }, 'la misma pregunta: se queda');
+  assert.deepEqual(ideas.mcuv, { prediccion: 'c', prediccionDe: 'x1' });
+  // Una sola vez.
+  ideas['arco-y-radian'].prediccion = 'c';
+  assert.equal(A.migrar(est), false);
+  assert.equal(ideas['arco-y-radian'].prediccion, 'c');
+  // Quien llega de antes de la partición: las dos corren juntas; lo que se queda en Movimiento parabólico no se toca.
+  const viejo = { avanceV: 1, teoria: { [V]: { ideas: { 'un-reloj-dos-ejes': { prediccion: 'soltada' }, 'dos-aceleraciones': { prediccion: 'alfa' } } } } };
+  assert.equal(A.migrar(viejo), true);
+  assert.deepEqual(viejo.teoria[V].ideas, { 'un-reloj-dos-ejes': { prediccion: 'soltada' } });
+  assert.deepEqual(viejo.teoria[N].ideas, { 'dos-aceleraciones': {} });
+});

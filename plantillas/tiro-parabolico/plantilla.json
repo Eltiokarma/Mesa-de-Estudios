@@ -3,9 +3,11 @@
   "titulo": "Tiro parabólico y movimiento circular",
   "formato": "escena",
   "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-parabolico-y-circular",
+    "fisica.movimiento-circular"
   ],
   "estado": "borrador",
+  "rehacer": true,
   "version": "0.2.0",
   "escena": "index.html",
   "motor": "motor.js",

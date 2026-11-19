@@ -3,7 +3,7 @@
   "titulo": "Segundo a segundo: lo que gira cada segundo",
   "formato": "predicciones",
   "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
   ],
   "estado": "borrador",
   "version": "0.1.0",

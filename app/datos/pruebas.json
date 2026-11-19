@@ -1684,6 +1684,66 @@
     "olvida-la-masa": {
      "respaldo": "hipotesis",
      "describe": "Divide entre el radio al cuadrado y se olvida de que el planeta tiene más masa"
+    },
+    "P2-rapidez-de-lado-cambia-la-caida": {
+     "respaldo": "documentado",
+     "describe": "Cree que la rapidez de lado cambia el tiempo de caída: divide la altura entre esa rapidez"
+    },
+    "TP-sin-medio": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el ½ de h = ½ · g · t² al despejar el tiempo"
+    },
+    "TP-t-cuadrado": {
+     "respaldo": "hipotesis",
+     "describe": "Da t² (2h/g) como si fuera el tiempo: falta la raíz"
+    },
+    "2D-suma-coordenadas": {
+     "respaldo": "hipotesis",
+     "describe": "Suma las coordenadas para la distancia al origen en vez de usar Pitágoras"
+    },
+    "2D-solo-la-mayor": {
+     "respaldo": "hipotesis",
+     "describe": "Da solo la coordenada mayor como distancia al origen"
+    },
+    "2D-t-sin-cuadrado": {
+     "respaldo": "hipotesis",
+     "describe": "Reemplaza t en vez de t² en la ecuación de y"
+    },
+    "2D-sin-posicion-inicial": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida la posición inicial de x(t)"
+    },
+    "AN-vueltas-como-radianes": {
+     "respaldo": "hipotesis",
+     "describe": "Usa las vueltas como si fueran radianes: no multiplica por 2π"
+    },
+    "MC-sin-omega-media": {
+     "respaldo": "hipotesis",
+     "describe": "Divide el ángulo entre la ω inicial, como si no frenara: olvida la ω media"
+    },
+    "U-rpm-como-rad-s": {
+     "respaldo": "hipotesis",
+     "describe": "Toma las rpm como si fueran rad/s"
+    },
+    "AN-grados-en-vez-de-radianes": {
+     "respaldo": "hipotesis",
+     "describe": "Pasa las vueltas a grados y las divide entre una ω en rad/s"
+    },
+    "PR1-proporcion-directa": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la aceleración centrípeta crece igual que la rapidez, no con su cuadrado"
+    },
+    "MC-no-cambia-con-la-rapidez": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que en la misma pista la aceleración centrípeta no cambia con la rapidez"
+    },
+    "MC-A0-rapidez-constante": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que con rapidez constante no hay aceleración"
+    },
+    "PR-cubo": {
+     "respaldo": "hipotesis",
+     "describe": "Eleva la razón de rapideces al cubo"
     }
    },
    "pares": [

@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 40 cm. A se mueve a 1,2 m/s y B, que está más lejos del eje, a 4,4 m/s. ¿Cuál es la rapidez angular del disco? Alternativas: A) 14 rad/s   B) 8 rad/s   C) 11 rad/s   D) 0,08 rad/s   E) 3 rad/s",
+      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 40 cm. A se mueve a 1,2 m/s y B, que está más lejos del eje, a 4,4 m/s. ¿Cuál es la rapidez angular del disco? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 14 rad/s   B) 8 rad/s   C) 11 rad/s   D) 0,08 rad/s   E) 3 rad/s",
       "respuesta": "B) 8 rad/s",
       "pasos": [
         "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Una rueda de 40 cm de radio da una vuelta cada 0,25 s. ¿Con qué rapidez se mueve un punto de su borde? Alternativas: A) π/5 m/s   B) 8π/5 m/s   C) 20π m/s   D) 16π/5 m/s   E) 320π m/s",
+      "enunciado": "Una rueda de 40 cm de radio da una vuelta cada 0,25 s. ¿Con qué rapidez se mueve un punto de su borde? Datos: Rapidez de un punto que gira: v = ω · r. ω = 2π/T = 2π · f. 1 rpm = 1 vuelta por minuto; 1 min = 60 s; 1 m = 100 cm. Alternativas: A) π/5 m/s   B) 8π/5 m/s   C) 20π m/s   D) 16π/5 m/s   E) 320π m/s",
       "respuesta": "D) 16π/5 m/s",
       "pasos": [
         "Una vuelta (2π rad) en 0,25 s: ω = 2π/0,25 = 8π rad/s.",
@@ -27,7 +27,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 10 cm. A se mueve a 0,3 m/s y B, que está más lejos del eje, a 0,6 m/s. ¿Cuál es la rapidez angular del disco? Alternativas: A) 6 rad/s   B) 9 rad/s   C) 0,03 rad/s   D) 3 rad/s",
+      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 10 cm. A se mueve a 0,3 m/s y B, que está más lejos del eje, a 0,6 m/s. ¿Cuál es la rapidez angular del disco? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 6 rad/s   B) 9 rad/s   C) 0,03 rad/s   D) 3 rad/s",
       "respuesta": "D) 3 rad/s",
       "pasos": [
         "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
@@ -37,7 +37,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un disco gira con rapidez angular constante. Una marca A, a 20 cm del eje, se mueve a 2,4 m/s. Otra marca B está a 40 cm del eje. ¿Con qué rapidez se mueve B? Alternativas: A) 9,6 m/s   B) 4,8 m/s   C) 1,2 m/s   D) 2,4 m/s   E) 7,2 m/s",
+      "enunciado": "Un disco gira con rapidez angular constante. Una marca A, a 20 cm del eje, se mueve a 2,4 m/s. Otra marca B está a 40 cm del eje. ¿Con qué rapidez se mueve B? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 9,6 m/s   B) 4,8 m/s   C) 1,2 m/s   D) 2,4 m/s   E) 7,2 m/s",
       "respuesta": "B) 4,8 m/s",
       "pasos": [
         "Las dos marcas giran juntas: tienen la misma ω. ω = vA/rA = 2,4/0,2 = 12 rad/s.",
@@ -47,7 +47,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 40 cm. A se mueve a 0,5 m/s y B, que está más lejos del eje, a 2,5 m/s. ¿Cuál es la rapidez angular del disco? Alternativas: A) 6,25 rad/s   B) 0,05 rad/s   C) 1,25 rad/s   D) 7,5 rad/s   E) 5 rad/s",
+      "enunciado": "Dos marcas, A y B, están sobre un mismo radio de un disco que gira con rapidez angular constante, separadas 40 cm. A se mueve a 0,5 m/s y B, que está más lejos del eje, a 2,5 m/s. ¿Cuál es la rapidez angular del disco? Datos: Todos los puntos de un mismo disco giran con la misma ω. Rapidez de un punto que gira: v = ω · r. 1 m = 100 cm. Alternativas: A) 6,25 rad/s   B) 0,05 rad/s   C) 1,25 rad/s   D) 7,5 rad/s   E) 5 rad/s",
       "respuesta": "E) 5 rad/s",
       "pasos": [
         "Misma ω: vB − vA = ω·(rB − rA) = ω·d.",
@@ -57,7 +57,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Una rueda de 50 cm de diámetro da una vuelta cada 0,5 s. ¿Con qué rapidez se mueve un punto de su borde? Alternativas: A) π m/s   B) π/2 m/s   C) π/4 m/s   D) 100π m/s   E) 2π m/s",
+      "enunciado": "Una rueda de 50 cm de diámetro da una vuelta cada 0,5 s. ¿Con qué rapidez se mueve un punto de su borde? Datos: Rapidez de un punto que gira: v = ω · r. ω = 2π/T = 2π · f. 1 rpm = 1 vuelta por minuto; 1 min = 60 s; 1 m = 100 cm. Alternativas: A) π m/s   B) π/2 m/s   C) π/4 m/s   D) 100π m/s   E) 2π m/s",
       "respuesta": "A) π m/s",
       "pasos": [
         "Una vuelta (2π rad) en 0,5 s: ω = 2π/0,5 = 4π rad/s.",
@@ -68,7 +68,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Un esmeril gira a 30 rpm durante 4 s. ¿Cuántas vueltas da el esmeril en ese tiempo? Alternativas: A) 1 vuelta   B) 2 vueltas   C) 4 vueltas   D) 120 vueltas",
+      "enunciado": "Un esmeril gira a 30 rpm durante 4 s. ¿Cuántas vueltas da el esmeril en ese tiempo? Datos: Con ω constante: θ = ω · t. 1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s. Alternativas: A) 1 vuelta   B) 2 vueltas   C) 4 vueltas   D) 120 vueltas",
       "respuesta": "B) 2 vueltas",
       "pasos": [
         "30 rpm son 30 vueltas en 60 s: 0,5 vueltas por segundo.",
@@ -78,7 +78,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Un ventilador de 30 cm de radio gira a 90 rpm. ¿Con qué rapidez se mueve un punto de su borde? Alternativas: A) 10π m/s   B) 90π m/s   C) 54π m/s   D) 9π/10 m/s",
+      "enunciado": "Un ventilador de 30 cm de radio gira a 90 rpm. ¿Con qué rapidez se mueve un punto de su borde? Datos: Rapidez de un punto que gira: v = ω · r. ω = 2π/T = 2π · f. 1 rpm = 1 vuelta por minuto; 1 min = 60 s; 1 m = 100 cm. Alternativas: A) 10π m/s   B) 90π m/s   C) 54π m/s   D) 9π/10 m/s",
       "respuesta": "D) 9π/10 m/s",
       "pasos": [
         "90 rpm = 90 · 2π/60 rad/s = 3π rad/s.",

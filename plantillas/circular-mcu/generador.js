@@ -38,9 +38,20 @@
   const OBJ = [['Un disco', 'el disco'], ['Una rueda', 'la rueda'], ['Una polea', 'la polea'], ['Un ventilador', 'el ventilador'], ['Un esmeril', 'el esmeril']];
   const RPM = [30, 45, 60, 90, 120, 150, 180, 240, 300, 360, 450, 600, 720, 900, 1200];
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'arco-y-radian': ['vueltas'],
+    'periodo-y-frecuencia': ['omega'],
+    'velocidad-tangencial': ['v',  'rigido',  'latitud'],
+    'rapidez-constante-acelera': ['acp'],
+  };
+  const LISTA = ['omega', 'omega', 'v', 'v', 'acp', 'acp', 'vueltas', 'rigido', 'rigido', 'latitud'];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-mcu|' + semilla);
-    const tipo = rng.elegir(['omega', 'omega', 'v', 'v', 'acp', 'acp', 'vueltas', 'rigido', 'rigido', 'latitud']);
+    const tipo = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t)) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -356,5 +367,41 @@
       datos: { tipo: 'latitud', tierra, R, T, lambda: lam } });
   }
 
-  return { id: 'circular-mcu', titulo: 'Rpm, radianes y puntos que giran juntos', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "omega": [
+          "ω = θ/t = 2π · f, con f las vueltas por segundo",
+          "1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s"
+      ],
+      "v": [
+          "Rapidez de un punto que gira: v = ω · r",
+          "ω = 2π/T = 2π · f",
+          "1 rpm = 1 vuelta por minuto; 1 min = 60 s; 1 m = 100 cm"
+      ],
+      "acp": [
+          "Aceleración centrípeta: a_c = v²/r = ω² · r",
+          "El radio es la mitad del diámetro; 1 m = 100 cm"
+      ],
+      "vueltas": [
+          "Con ω constante: θ = ω · t",
+          "1 vuelta = 2π rad; 1 rpm = 1 vuelta por minuto; 1 min = 60 s"
+      ],
+      "rigido": [
+          "Todos los puntos de un mismo disco giran con la misma ω",
+          "Rapidez de un punto que gira: v = ω · r",
+          "1 m = 100 cm"
+      ],
+      "latitud": [
+          "Un lugar de latitud λ gira alrededor del eje con radio r = R · cos λ",
+          "v = ω · r, con ω = 2π/T"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-mcu', titulo: 'Rpm, radianes y puntos que giran juntos', generar: generarConDatos, TIPOS_POR_IDEA };
 });

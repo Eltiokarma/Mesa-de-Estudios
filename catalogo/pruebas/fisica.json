@@ -278,6 +278,66 @@
     "olvida-la-masa": {
       "respaldo": "hipotesis",
       "describe": "Divide entre el radio al cuadrado y se olvida de que el planeta tiene más masa"
+    },
+    "P2-rapidez-de-lado-cambia-la-caida": {
+      "respaldo": "documentado",
+      "describe": "Cree que la rapidez de lado cambia el tiempo de caída: divide la altura entre esa rapidez"
+    },
+    "TP-sin-medio": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida el ½ de h = ½ · g · t² al despejar el tiempo"
+    },
+    "TP-t-cuadrado": {
+      "respaldo": "hipotesis",
+      "describe": "Da t² (2h/g) como si fuera el tiempo: falta la raíz"
+    },
+    "2D-suma-coordenadas": {
+      "respaldo": "hipotesis",
+      "describe": "Suma las coordenadas para la distancia al origen en vez de usar Pitágoras"
+    },
+    "2D-solo-la-mayor": {
+      "respaldo": "hipotesis",
+      "describe": "Da solo la coordenada mayor como distancia al origen"
+    },
+    "2D-t-sin-cuadrado": {
+      "respaldo": "hipotesis",
+      "describe": "Reemplaza t en vez de t² en la ecuación de y"
+    },
+    "2D-sin-posicion-inicial": {
+      "respaldo": "hipotesis",
+      "describe": "Olvida la posición inicial de x(t)"
+    },
+    "AN-vueltas-como-radianes": {
+      "respaldo": "hipotesis",
+      "describe": "Usa las vueltas como si fueran radianes: no multiplica por 2π"
+    },
+    "MC-sin-omega-media": {
+      "respaldo": "hipotesis",
+      "describe": "Divide el ángulo entre la ω inicial, como si no frenara: olvida la ω media"
+    },
+    "U-rpm-como-rad-s": {
+      "respaldo": "hipotesis",
+      "describe": "Toma las rpm como si fueran rad/s"
+    },
+    "AN-grados-en-vez-de-radianes": {
+      "respaldo": "hipotesis",
+      "describe": "Pasa las vueltas a grados y las divide entre una ω en rad/s"
+    },
+    "PR1-proporcion-directa": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que la aceleración centrípeta crece igual que la rapidez, no con su cuadrado"
+    },
+    "MC-no-cambia-con-la-rapidez": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que en la misma pista la aceleración centrípeta no cambia con la rapidez"
+    },
+    "MC-A0-rapidez-constante": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que con rapidez constante no hay aceleración"
+    },
+    "PR-cubo": {
+      "respaldo": "hipotesis",
+      "describe": "Eleva la razón de rapideces al cubo"
     }
   },
   "pares": [
@@ -1779,6 +1839,300 @@
             "texto": "0 J",
             "valor": 0,
             "error": "dU-cero-a-presion-constante"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-23",
+      "plantilla": "tiro-parabolico",
+      "unidad": "fisica.movimiento-parabolico-y-circular",
+      "nombreUnidad": "Movimiento parabólico",
+      "mide": "Lanzado de lado, el tiempo de caída sale solo de la altura: la rapidez de lado no lo cambia (P2)",
+      "A": {
+        "enunciado": "Desde lo alto de un mirador de 45 m, un turista lanza una piedra de lado, a 8 m/s, hacia el lago. Sin resistencia del aire y con g = 10 m/s², ¿cuánto tarda la piedra en llegar al agua?",
+        "datos": {
+          "h": 45,
+          "v0": 8
+        },
+        "opciones": [
+          {
+            "texto": "5,63 s",
+            "valor": 5.625,
+            "error": "P2-rapidez-de-lado-cambia-la-caida"
+          },
+          {
+            "texto": "3 s",
+            "valor": 3,
+            "correcta": true
+          },
+          {
+            "texto": "2,12 s",
+            "valor": 2.12132,
+            "error": "TP-sin-medio"
+          },
+          {
+            "texto": "9 s",
+            "valor": 9,
+            "error": "TP-t-cuadrado"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una canica rueda por una repisa de 1,25 m de alto y sale de lado por el borde a 2 m/s. Sin resistencia del aire y con g = 10 m/s², ¿cuánto tarda en llegar al piso?",
+        "datos": {
+          "h": 1.25,
+          "v0": 2
+        },
+        "opciones": [
+          {
+            "texto": "0,25 s",
+            "valor": 0.25,
+            "error": "TP-t-cuadrado"
+          },
+          {
+            "texto": "0,63 s",
+            "valor": 0.625,
+            "error": "P2-rapidez-de-lado-cambia-la-caida"
+          },
+          {
+            "texto": "0,5 s",
+            "valor": 0.5,
+            "correcta": true
+          },
+          {
+            "texto": "0,35 s",
+            "valor": 0.353553,
+            "error": "TP-sin-medio"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-24",
+      "plantilla": "tiro-parabolico",
+      "unidad": "fisica.movimiento-parabolico-y-circular",
+      "nombreUnidad": "Movimiento parabólico",
+      "mide": "Con x(t) e y(t) se halla dónde está; la distancia al origen sale con Pitágoras, no sumando las coordenadas (San Marcos 2025-I)",
+      "A": {
+        "enunciado": "Una partícula se mueve en el plano con x = 4 + 2t e y = t² (x e y en metros, t en segundos). ¿A qué distancia del origen está a los 4 s?",
+        "datos": {
+          "x0": 4,
+          "a": 2,
+          "t": 4
+        },
+        "opciones": [
+          {
+            "texto": "28 m",
+            "valor": 28,
+            "error": "2D-suma-coordenadas"
+          },
+          {
+            "texto": "16 m",
+            "valor": 16,
+            "error": "2D-solo-la-mayor"
+          },
+          {
+            "texto": "20 m",
+            "valor": 20,
+            "correcta": true
+          },
+          {
+            "texto": "12,65 m",
+            "valor": 12.6491,
+            "error": "2D-t-sin-cuadrado"
+          },
+          {
+            "texto": "17,89 m",
+            "valor": 17.8885,
+            "error": "2D-sin-posicion-inicial"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una partícula se mueve en el plano con x = 3 + 3t e y = t² (x e y en metros, t en segundos). ¿A qué distancia del origen está a los 3 s?",
+        "datos": {
+          "x0": 3,
+          "a": 3,
+          "t": 3
+        },
+        "opciones": [
+          {
+            "texto": "12,37 m",
+            "valor": 12.3693,
+            "error": "2D-t-sin-cuadrado"
+          },
+          {
+            "texto": "15 m",
+            "valor": 15,
+            "correcta": true
+          },
+          {
+            "texto": "21 m",
+            "valor": 21,
+            "error": "2D-suma-coordenadas"
+          },
+          {
+            "texto": "12,73 m",
+            "valor": 12.7279,
+            "error": "2D-sin-posicion-inicial"
+          },
+          {
+            "texto": "12 m",
+            "valor": 12,
+            "error": "2D-solo-la-mayor"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-25",
+      "plantilla": "movimiento-circular",
+      "unidad": "fisica.movimiento-circular",
+      "nombreUnidad": "Movimiento circular",
+      "mide": "Frenado parejo con vueltas: las vueltas se pasan a radianes y se usa la ω media (San Marcos 2024-II)",
+      "A": {
+        "enunciado": "Un ventilador de techo gira a 240 rpm. Al apagarlo, frena de manera uniforme y da 20 vueltas hasta detenerse. ¿Cuánto tarda en detenerse?",
+        "datos": {
+          "rpm": 240,
+          "N": 20
+        },
+        "opciones": [
+          {
+            "texto": "1,59 s",
+            "valor": 1.5915,
+            "error": "AN-vueltas-como-radianes"
+          },
+          {
+            "texto": "10 s",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "5 s",
+            "valor": 5,
+            "error": "MC-sin-omega-media"
+          },
+          {
+            "texto": "1,05 s",
+            "valor": 1.0472,
+            "error": "U-rpm-como-rad-s"
+          },
+          {
+            "texto": "572,96 s",
+            "valor": 572.9578,
+            "error": "AN-grados-en-vez-de-radianes"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una licuadora gira a 300 rpm. Al apagarla, frena de manera uniforme y da 10 vueltas hasta detenerse. ¿Cuánto tarda en detenerse?",
+        "datos": {
+          "rpm": 300,
+          "N": 10
+        },
+        "opciones": [
+          {
+            "texto": "2 s",
+            "valor": 2,
+            "error": "MC-sin-omega-media"
+          },
+          {
+            "texto": "0,64 s",
+            "valor": 0.6366,
+            "error": "AN-vueltas-como-radianes"
+          },
+          {
+            "texto": "229,18 s",
+            "valor": 229.1831,
+            "error": "AN-grados-en-vez-de-radianes"
+          },
+          {
+            "texto": "4 s",
+            "valor": 4,
+            "correcta": true
+          },
+          {
+            "texto": "0,42 s",
+            "valor": 0.4189,
+            "error": "U-rpm-como-rad-s"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-26",
+      "plantilla": "movimiento-circular",
+      "unidad": "fisica.movimiento-circular",
+      "nombreUnidad": "Movimiento circular",
+      "mide": "En la misma pista, la aceleración centrípeta crece con el cuadrado de la rapidez; con rapidez constante, no es cero",
+      "A": {
+        "enunciado": "Un auto da vueltas a una pista circular, siempre a 10 m/s, y su aceleración centrípeta mide 2 m/s². Si da vueltas a la misma pista, siempre a 20 m/s, ¿cuánto mide su aceleración centrípeta?",
+        "datos": {
+          "v1": 10,
+          "a1": 2,
+          "v2": 20
+        },
+        "opciones": [
+          {
+            "texto": "4 m/s²",
+            "valor": 4,
+            "error": "PR1-proporcion-directa"
+          },
+          {
+            "texto": "0 m/s²",
+            "valor": 0,
+            "error": "MC-A0-rapidez-constante"
+          },
+          {
+            "texto": "8 m/s²",
+            "valor": 8,
+            "correcta": true
+          },
+          {
+            "texto": "2 m/s²",
+            "valor": 2,
+            "error": "MC-no-cambia-con-la-rapidez"
+          },
+          {
+            "texto": "16 m/s²",
+            "valor": 16,
+            "error": "PR-cubo"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una moto da vueltas a un óvalo, siempre a 6 m/s, y su aceleración centrípeta mide 3 m/s². Si da vueltas al mismo óvalo, siempre a 18 m/s, ¿cuánto mide su aceleración centrípeta?",
+        "datos": {
+          "v1": 6,
+          "a1": 3,
+          "v2": 18
+        },
+        "opciones": [
+          {
+            "texto": "3 m/s²",
+            "valor": 3,
+            "error": "MC-no-cambia-con-la-rapidez"
+          },
+          {
+            "texto": "27 m/s²",
+            "valor": 27,
+            "correcta": true
+          },
+          {
+            "texto": "9 m/s²",
+            "valor": 9,
+            "error": "PR1-proporcion-directa"
+          },
+          {
+            "texto": "81 m/s²",
+            "valor": 81,
+            "error": "PR-cubo"
+          },
+          {
+            "texto": "0 m/s²",
+            "valor": 0,
+            "error": "MC-A0-rapidez-constante"
           }
         ]
       }

@@ -769,6 +769,24 @@ const V = {
   'qui-19': d => { const dif = Math.abs(d.a - d.b);
     return { correcta: dif, errores: { 'QM-EN-SUMA': d.a + d.b, 'QM-EN-SOLO': Math.max(d.a, d.b), 'QM-EN-MITAD': dif / 2 } }; },
 
+  // fis-23 y fis-24 (reserva, 19 nov, etapa 5 de física: «Movimiento parabólico»). El tiempo de caída lo da el motor de
+  // tiro-parabolico (proyectil); la distancia al origen con x = x₀ + a·t e y = t² se recalcula aquí, con Pitágoras.
+  'fis-23': d => { const g = 10, t = motor('tiro-parabolico').proyectil({ vx: d.v0, vy: 0, y0: d.h }).tVuelo;
+    return { correcta: t, errores: { 'P2-rapidez-de-lado-cambia-la-caida': d.h / d.v0, 'TP-sin-medio': Math.sqrt(d.h / g), 'TP-t-cuadrado': 2 * d.h / g } }; },
+  'fis-24': d => { const X = d.x0 + d.a * d.t, Y = d.t * d.t;
+    return { correcta: Math.hypot(X, Y), errores: { '2D-suma-coordenadas': X + Y, '2D-solo-la-mayor': Math.max(X, Y), '2D-t-sin-cuadrado': Math.hypot(X, d.t),
+      '2D-sin-posicion-inicial': Math.hypot(d.a * d.t, Y) } }; },
+
+  // fis-25 y fis-26 (reserva, 19 nov, etapa 5 de física: «Movimiento circular»; las formas ya tienen 10 pares). El motor
+  // de movimiento-circular resuelve el frenado (mcuvDatos: ω₀ en rpm, ω = 0 y las vueltas) y la aceleración centrípeta
+  // (mcu: el radio sale de la primera vuelta, r = v₁²/a₁, y con él la de la segunda rapidez). Los errores, aparte.
+  'fis-25': d => { const r = motor('movimiento-circular').mcuvDatos({ rpm0: d.rpm, omega: 0, vueltas: d.N }), w0 = 2 * PI * d.rpm / 60;
+    return { correcta: r.t, errores: { 'AN-vueltas-como-radianes': 2 * d.N / w0, 'MC-sin-omega-media': 2 * PI * d.N / w0, 'U-rpm-como-rad-s': 2 * 2 * PI * d.N / d.rpm,
+      'AN-grados-en-vez-de-radianes': 2 * 360 * d.N / w0 } }; },
+  'fis-26': d => { const M = motor('movimiento-circular'), r = d.v1 * d.v1 / d.a1, k = d.v2 / d.v1;
+    if (Math.abs(M.mcu({ r, v: d.v1 }).ac - d.a1) > 1e-9) throw new Error('fis-26: el radio no da la primera aceleración');
+    return { correcta: M.mcu({ r, v: d.v2 }).ac, errores: { 'PR1-proporcion-directa': d.a1 * k, 'MC-no-cambia-con-la-rapidez': d.a1, 'MC-A0-rapidez-constante': 0, 'PR-cubo': d.a1 * k ** 3 } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

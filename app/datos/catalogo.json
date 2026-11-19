@@ -28,6 +28,7 @@
       "fisica.movimiento-rectilineo",
       "fisica.mruv-y-caida-libre",
       "fisica.movimiento-parabolico-y-circular",
+      "fisica.movimiento-circular",
       "fisica.estatica",
       "fisica.dinamica",
       "fisica.trabajo-y-energia",
@@ -167,7 +168,7 @@
        "resultante": "Suma de vectores",
        "productos": "Productos"
       },
-      "terminos": 33
+      "terminos": 35
      }
     },
     {
@@ -273,15 +274,62 @@
        "caida-reposo": "Caída libre desde el reposo",
        "caida-libre": "Lanzamiento vertical"
       },
-      "terminos": 33
+      "terminos": 35
      }
     },
     {
      "id": "fisica.movimiento-parabolico-y-circular",
-     "nombre": "Movimiento parabólico y circular",
+     "nombre": "Movimiento parabólico",
      "temas": [
       "Movimiento en dos dimensiones",
-      "Tiro parabólico",
+      "Tiro parabólico"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        3
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        4
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "grado": 4,
+     "requiere": [
+      "fisica.mruv-y-caida-libre"
+     ],
+     "plantillas": [
+      "fis-parabolico",
+      "tiro-parabolico",
+      "cinematica-medias"
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/movimiento-parabolico-y-circular.js",
+      "requiere": [
+       "/nucleo/kit/piezas/fis-tiro.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/tiro-parabolico/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
+      ],
+      "ideas": 5,
+      "titulos": {
+       "un-reloj-dos-ejes": "Tiro horizontal: dos movimientos",
+       "velocidad-en-vuelo": "La velocidad en cada instante",
+       "tiro-oblicuo": "Lanzar con ángulo",
+       "altura-y-alcance": "Altura máxima y alcance",
+       "ecuaciones-en-el-plano": "Ecuaciones del movimiento en el plano"
+      },
+      "terminos": 35
+     }
+    },
+    {
+     "id": "fisica.movimiento-circular",
+     "nombre": "Movimiento circular",
+     "temas": [
       "Magnitudes angulares",
       "MCU",
       "MCUV",
@@ -305,7 +353,6 @@
       "fisica.mruv-y-caida-libre"
      ],
      "plantillas": [
-      "tiro-parabolico",
       "movimiento-circular",
       "circular-transmision",
       "circular-mcuv",
@@ -316,25 +363,24 @@
       "circular-grafica",
       "circular-aceleracion-total",
       "circular-giro-combinado",
+      "tiro-parabolico",
       "cinematica-medias"
      ],
      "teoria": {
-      "archivo": "/contenido/teoria/fisica/movimiento-parabolico-y-circular.js",
+      "archivo": "/contenido/teoria/fisica/movimiento-circular.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-lienzo.js",
-       "/plantillas/tiro-parabolico/motor.js",
-       "/nucleo/fisica3d.js",
-       "/nucleo/kit/piezas/fis-espacio-3d.js"
+       "/nucleo/kit/piezas/fis-giro.js"
       ],
-      "ideas": 4,
+      "ideas": 6,
       "titulos": {
-       "un-reloj-dos-ejes": "Un reloj, dos movimientos",
-       "arco-y-radian": "El arco mide el ángulo",
-       "rapidez-constante-acelera": "Rapidez constante, velocidad que gira",
-       "dos-aceleraciones": "Dos aceleraciones a la vez"
+       "arco-y-radian": "El ángulo girado y el arco",
+       "periodo-y-frecuencia": "Período, frecuencia y velocidad angular",
+       "velocidad-tangencial": "Velocidad tangencial y transmisión",
+       "rapidez-constante-acelera": "Aceleración centrípeta",
+       "mcuv": "MCUV: el giro que acelera",
+       "dos-aceleraciones": "Aceleración tangencial y total"
       },
-      "terminos": 27
+      "terminos": 32
      }
     },
     {
@@ -437,7 +483,7 @@
        "centripeta-es-resultante": "La centrípeta es una resultante",
        "ascensor-y-marcos": "La balanza del ascensor"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -465,7 +511,7 @@
      "grado": 4,
      "requiere": [
       "fisica.dinamica",
-      "fisica.movimiento-parabolico-y-circular"
+      "fisica.movimiento-circular"
      ],
      "plantillas": [
       "gravitacion",
@@ -534,7 +580,7 @@
        "conservacion-energia": "La suma no cambia sin roce",
        "potencia-y-eficiencia": "Potencia: trabajo por segundo"
       },
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -586,7 +632,7 @@
        "restitucion": "e compara rapideces",
        "centro-masa": "El centro de masa queda"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -615,7 +661,7 @@
      "grado": 5,
      "requiere": [
       "fisica.trabajo-y-energia",
-      "fisica.movimiento-parabolico-y-circular",
+      "fisica.movimiento-circular",
       "trigonometria.funciones-trigonometricas"
      ],
      "plantillas": [
@@ -684,7 +730,7 @@
        "ondas-estacionarias": "Solo caben medias ondas",
        "intensidad-decibeles": "Los decibeles no se suman"
       },
-      "terminos": 30
+      "terminos": 31
      }
     },
     {
@@ -973,7 +1019,7 @@
      "grado": 5,
      "requiere": [
       "fisica.corriente-y-circuitos",
-      "fisica.movimiento-parabolico-y-circular"
+      "fisica.movimiento-circular"
      ],
      "plantillas": [
       "magnetismo",
@@ -8311,7 +8357,8 @@
    "unidades": [
     "fisica.movimiento-rectilineo",
     "fisica.mruv-y-caida-libre",
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-parabolico-y-circular",
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/cinematica-medias",
    "papel": "/plantillas/cinematica-medias/papel.json",
@@ -8414,9 +8461,12 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-aceleracion-total",
+   "ideas": [
+    "dos-aceleraciones"
+   ],
    "papel": "/plantillas/circular-aceleracion-total/papel.json",
    "archivos": [
     "/plantillas/circular-aceleracion-total/generador.js",
@@ -8430,9 +8480,13 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-encuentros",
+   "ideas": [
+    "periodo-y-frecuencia",
+    "mcuv"
+   ],
    "papel": "/plantillas/circular-encuentros/papel.json",
    "archivos": [
     "/plantillas/circular-encuentros/generador.js",
@@ -8446,9 +8500,12 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-enesimo-segundo",
+   "ideas": [
+    "mcuv"
+   ],
    "papel": "/plantillas/circular-enesimo-segundo/papel.json",
    "archivos": [
     "/plantillas/circular-enesimo-segundo/generador.js",
@@ -8462,9 +8519,12 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-giro-combinado",
+   "ideas": [
+    "periodo-y-frecuencia"
+   ],
    "papel": "/plantillas/circular-giro-combinado/papel.json",
    "archivos": [
     "/plantillas/circular-giro-combinado/generador.js",
@@ -8478,9 +8538,12 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-grafica",
+   "ideas": [
+    "mcuv"
+   ],
    "papel": "/plantillas/circular-grafica/papel.json",
    "archivos": [
     "/plantillas/circular-grafica/generador.js",
@@ -8494,9 +8557,13 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-horaria",
+   "ideas": [
+    "mcuv",
+    "dos-aceleraciones"
+   ],
    "papel": "/plantillas/circular-horaria/papel.json",
    "archivos": [
     "/plantillas/circular-horaria/generador.js",
@@ -8510,9 +8577,15 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-mcu",
+   "ideas": [
+    "arco-y-radian",
+    "periodo-y-frecuencia",
+    "velocidad-tangencial",
+    "rapidez-constante-acelera"
+   ],
    "papel": "/plantillas/circular-mcu/papel.json",
    "archivos": [
     "/plantillas/circular-mcu/generador.js",
@@ -8526,9 +8599,12 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-mcuv",
+   "ideas": [
+    "mcuv"
+   ],
    "papel": "/plantillas/circular-mcuv/papel.json",
    "archivos": [
     "/plantillas/circular-mcuv/generador.js",
@@ -8542,9 +8618,13 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "#/practica/circular-transmision",
+   "ideas": [
+    "velocidad-tangencial",
+    "mcuv"
+   ],
    "papel": "/plantillas/circular-transmision/papel.json",
    "archivos": [
     "/plantillas/circular-transmision/generador.js",
@@ -9258,6 +9338,29 @@
    "archivos": [
     "/plantillas/fis-mruv/generador.js",
     "/plantillas/fis-mruv/papel.json"
+   ]
+  },
+  "fis-parabolico": {
+   "id": "fis-parabolico",
+   "titulo": "Movimiento parabólico",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+   ],
+   "url": "#/practica/fis-parabolico",
+   "ideas": [
+    "un-reloj-dos-ejes",
+    "velocidad-en-vuelo",
+    "tiro-oblicuo",
+    "altura-y-alcance",
+    "ecuaciones-en-el-plano"
+   ],
+   "papel": "/plantillas/fis-parabolico/papel.json",
+   "archivos": [
+    "/plantillas/fis-parabolico/generador.js",
+    "/plantillas/fis-parabolico/papel.json"
    ]
   },
   "fisica-moderna": {
@@ -10198,7 +10301,7 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-circular"
    ],
    "url": "/plantillas/movimiento-circular/index.html",
    "papel": "/plantillas/movimiento-circular/papel.json",
@@ -10206,7 +10309,8 @@
     "/plantillas/movimiento-circular/index.html",
     "/plantillas/movimiento-circular/motor.js",
     "/plantillas/movimiento-circular/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "mruv": {
    "id": "mruv",
@@ -11757,7 +11861,8 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "fisica.movimiento-parabolico-y-circular"
+    "fisica.movimiento-parabolico-y-circular",
+    "fisica.movimiento-circular"
    ],
    "url": "/plantillas/tiro-parabolico/index.html",
    "papel": "/plantillas/tiro-parabolico/papel.json",
@@ -11765,7 +11870,8 @@
     "/plantillas/tiro-parabolico/index.html",
     "/plantillas/tiro-parabolico/motor.js",
     "/plantillas/tiro-parabolico/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "traductor-enunciados": {
    "id": "traductor-enunciados",

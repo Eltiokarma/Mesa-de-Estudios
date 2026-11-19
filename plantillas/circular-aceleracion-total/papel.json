@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Un volante parte del reposo y gira con aceleración angular constante de 8 rad/s². Una marca está a 0,1 m del eje. En cierto momento, el volante ha girado 0,5 rad desde que arrancó. En ese momento, ¿cuánto vale la tangente del ángulo que forma la aceleración total de la marca con su velocidad? Alternativas: A) 0,1   B) 8   C) 0,25   D) 1   E) 0,5",
+      "enunciado": "Un volante parte del reposo y gira con aceleración angular constante de 8 rad/s². Una marca está a 0,1 m del eje. En cierto momento, el volante ha girado 0,5 rad desde que arrancó. En ese momento, ¿cuánto vale la tangente del ángulo que forma la aceleración total de la marca con su velocidad? Datos: a_T = α · r y a_c = ω² · r. Desde el reposo, con α constante: ω² = 2α · θ. Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T. Alternativas: A) 0,1   B) 8   C) 0,25   D) 1   E) 0,5",
       "respuesta": "D) 1",
       "pasos": [
         "La tangente del ángulo entre a y v es acp/aT (acp es el cateto opuesto; aT, el adyacente).",
@@ -17,7 +17,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Un auto de juguete recorre una pista circular de 5 m de radio. Pasa por un punto con rapidez de 1 m/s y, desde ahí, aumenta su rapidez con aceleración tangencial constante de 1,5 m/s². ¿Cuál es el módulo de su aceleración total cuando ha recorrido un ángulo de 0,6 rad desde ese punto? Alternativas: A) 2 m/s²   B) 2,5 m/s²   C) 1,7 m/s²   D) 3,5 m/s²",
+      "enunciado": "Un auto de juguete recorre una pista circular de 5 m de radio. Pasa por un punto con rapidez de 1 m/s y, desde ahí, aumenta su rapidez con aceleración tangencial constante de 1,5 m/s². ¿Cuál es el módulo de su aceleración total cuando ha recorrido un ángulo de 0,6 rad desde ese punto? Datos: a_T = α · r y a_c = v²/r = ω² · r. Con α constante: ω = ω₀ + α · t y ω² = ω₀² + 2α · θ. Aceleración total: a = √(a_T² + a_c²). Alternativas: A) 2 m/s²   B) 2,5 m/s²   C) 1,7 m/s²   D) 3,5 m/s²",
       "respuesta": "B) 2,5 m/s²",
       "pasos": [
         "El arco recorrido es s = θ·r = 0,6 · 5 = 3 m.",
@@ -29,7 +29,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Un auto de juguete recorre una pista circular de 4 m de radio. Pasa por un punto con rapidez de 2 m/s y, desde ahí, aumenta su rapidez con aceleración tangencial constante de 2 m/s². ¿Cuál es su aceleración centrípeta cuando ha recorrido un ángulo de 1 rad desde ese punto? Alternativas: A) 5 m/s²   B) 3 m/s²   C) 1 m/s²   D) 2 m/s²",
+      "enunciado": "Un auto de juguete recorre una pista circular de 4 m de radio. Pasa por un punto con rapidez de 2 m/s y, desde ahí, aumenta su rapidez con aceleración tangencial constante de 2 m/s². ¿Cuál es su aceleración centrípeta cuando ha recorrido un ángulo de 1 rad desde ese punto? Datos: a_T = α · r y a_c = v²/r = ω² · r. Con α constante: ω = ω₀ + α · t y ω² = ω₀² + 2α · θ. Aceleración total: a = √(a_T² + a_c²). Alternativas: A) 5 m/s²   B) 3 m/s²   C) 1 m/s²   D) 2 m/s²",
       "respuesta": "A) 5 m/s²",
       "pasos": [
         "El arco recorrido es s = θ·r = 1 · 4 = 4 m.",
@@ -41,7 +41,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un auto recorre una pista circular de 16 m de radio y aumenta su rapidez. En cierto instante va a 4 m/s y su aceleración total forma 45° con su velocidad. ¿Cuál es la aceleración tangencial del auto? Alternativas: A) 1 m/s²   B) √2 m/s²   C) √2/2 m/s²   D) 0,25 m/s²",
+      "enunciado": "Un auto recorre una pista circular de 16 m de radio y aumenta su rapidez. En cierto instante va a 4 m/s y su aceleración total forma 45° con su velocidad. ¿Cuál es la aceleración tangencial del auto? Datos: a_T = α · r y a_c = v²/r = ω² · r. Aceleración total: a = √(a_T² + a_c²). Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T. Alternativas: A) 1 m/s²   B) √2 m/s²   C) √2/2 m/s²   D) 0,25 m/s²",
       "respuesta": "A) 1 m/s²",
       "pasos": [
         "acp = v²/r = 4²/16 = 1 m/s².",
@@ -52,7 +52,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Un disco parte del reposo y gira con aceleración angular constante de 4 rad/s². Una marca está a 0,4 m del eje. ¿Qué ángulo ha girado el disco cuando la aceleración centrípeta de la marca es 6 veces su aceleración tangencial? Alternativas: A) 3 rad   B) 1,2 rad   C) 6 rad   D) 0,75 rad   E) 12 rad",
+      "enunciado": "Un disco parte del reposo y gira con aceleración angular constante de 4 rad/s². Una marca está a 0,4 m del eje. ¿Qué ángulo ha girado el disco cuando la aceleración centrípeta de la marca es 6 veces su aceleración tangencial? Datos: a_T = α · r y a_c = ω² · r. Desde el reposo, con α constante: ω² = 2α · θ. Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T. Alternativas: A) 3 rad   B) 1,2 rad   C) 6 rad   D) 0,75 rad   E) 12 rad",
       "respuesta": "A) 3 rad",
       "pasos": [
         "Desde el reposo, ω² = 2αθ. Entonces acp/aT = ω²r/(αr) = 2θ: no dependen del radio ni de α.",
@@ -62,7 +62,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Un auto recorre una pista circular de 32 m de diámetro y aumenta su rapidez. En cierto instante va a 8 m/s y su aceleración total forma 53° con su velocidad. ¿Cuál es la aceleración tangencial del auto? Alternativas: A) 1,5 m/s²   B) 5 m/s²   C) 3 m/s²   D) 2,4 m/s²",
+      "enunciado": "Un auto recorre una pista circular de 32 m de diámetro y aumenta su rapidez. En cierto instante va a 8 m/s y su aceleración total forma 53° con su velocidad. ¿Cuál es la aceleración tangencial del auto? Datos: a_T = α · r y a_c = v²/r = ω² · r. Aceleración total: a = √(a_T² + a_c²). Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T. Alternativas: A) 1,5 m/s²   B) 5 m/s²   C) 3 m/s²   D) 2,4 m/s²",
       "respuesta": "C) 3 m/s²",
       "pasos": [
         "El radio es la mitad del diámetro: r = 16 m.",
@@ -74,7 +74,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Un auto recorre una pista circular de 3 m de radio y aumenta su rapidez. En cierto instante va a 3 m/s y su aceleración total forma 53° con su velocidad. ¿Cuál es el módulo de la aceleración total del auto? Alternativas: A) 3,75 m/s²   B) 1,25 m/s²   C) 5 m/s²   D) 3 m/s²   E) 5,25 m/s²",
+      "enunciado": "Un auto recorre una pista circular de 3 m de radio y aumenta su rapidez. En cierto instante va a 3 m/s y su aceleración total forma 53° con su velocidad. ¿Cuál es el módulo de la aceleración total del auto? Datos: a_T = α · r y a_c = v²/r = ω² · r. Aceleración total: a = √(a_T² + a_c²). Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T. Alternativas: A) 3,75 m/s²   B) 1,25 m/s²   C) 5 m/s²   D) 3 m/s²   E) 5,25 m/s²",
       "respuesta": "A) 3,75 m/s²",
       "pasos": [
         "acp = v²/r = 3²/3 = 3 m/s².",
@@ -85,7 +85,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Un auto recorre una pista circular de 10 m de radio y aumenta su rapidez. En cierto instante va a 6 m/s y su aceleración total forma 53° con su velocidad. ¿Cuál es la aceleración tangencial del auto? Alternativas: A) 0,45 m/s²   B) 2,16 m/s²   C) 2,7 m/s²   D) 4,5 m/s²   E) 4,8 m/s²",
+      "enunciado": "Un auto recorre una pista circular de 10 m de radio y aumenta su rapidez. En cierto instante va a 6 m/s y su aceleración total forma 53° con su velocidad. ¿Cuál es la aceleración tangencial del auto? Datos: a_T = α · r y a_c = v²/r = ω² · r. Aceleración total: a = √(a_T² + a_c²). Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T. Alternativas: A) 0,45 m/s²   B) 2,16 m/s²   C) 2,7 m/s²   D) 4,5 m/s²   E) 4,8 m/s²",
       "respuesta": "C) 2,7 m/s²",
       "pasos": [
         "acp = v²/r = 6²/10 = 3,6 m/s².",

@@ -211,7 +211,8 @@ test('generar(semilla, { unidad }): cada unidad, solo sus tipos; sin unidad, com
   assert.deepEqual(gen.tiposPorUnidad, {
     'fisica.movimiento-rectilineo': ['media', 'idavuelta'],
     'fisica.mruv-y-caida-libre': ['vt', 'ecuacion'],
-    'fisica.movimiento-parabolico-y-circular': ['xy', 'latitud'],
+    'fisica.movimiento-parabolico-y-circular': ['xy'],
+    'fisica.movimiento-circular': ['latitud'],   // 19 nov: la unidad se partió (docs/etapa5/propuesta-fisica.md)
   });
   const ficha = require('./plantilla.json');
   assert.deepEqual([...ficha.unidades].sort(), Object.keys(gen.tiposPorUnidad).sort());
@@ -315,4 +316,19 @@ test('papel.json: cada problema dice a qué unidad sirve, y desde MRU solo se ve
     for (const u of p.unidades) assert.ok(ficha.unidades.includes(u), `${p.id}: ${u}`);
   }
   assert.deepEqual(papel.problemas.filter(p => p.unidades.includes('fisica.movimiento-rectilineo')).map(p => p.id), ['p1', 'p2', 'p3']);
+});
+
+// 19 nov (Movimiento circular, fase 3): en esa unidad, la latitud con los colores de su tabla `colores` (la rapidez
+// lineal naranja; los radios y la latitud en tinta, sin verde ni carmín) y sus datos con la fórmula del paralelo.
+test('Movimiento circular: la latitud con un color fijo por magnitud y la fórmula del paralelo en los datos', () => {
+  const T = require('../../contenido/teoria/fisica/movimiento-circular.js');
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: 'fisica.movimiento-circular' });
+    assert.equal(p._datos.tipo, 'latitud');
+    for (const [k, v] of Object.entries(p.variables)) {
+      const esperado = k === 'x' && p._datos.sub === 'rapidez' ? T.colores.velocidad : 'tinta';
+      assert.equal(v.color, esperado, `semilla ${s}: ${k} («${v.nombre}») en ${v.color}`);
+    }
+    assert.ok(p.datos.some(l => /r = R · cos λ/.test(l)), `semilla ${s}: sin la fórmula del paralelo`);
+  }
 });

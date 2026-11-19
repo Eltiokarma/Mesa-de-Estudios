@@ -24,7 +24,9 @@
     // 18 nov: «MRU, MRUV y caída libre» se partió (docs/etapa4/decisiones.md): las medias y la ida y vuelta son de
     // Movimiento rectilíneo uniforme; la gráfica v–t y la ecuación horaria, de MRUV y caída libre.
     'cinematica-medias': { vt: F + 'mruv-y-caida-libre', ecuacion: F + 'mruv-y-caida-libre', idavuelta: F + 'movimiento-rectilineo', media: F + 'movimiento-rectilineo',
-      xy: F + 'movimiento-parabolico-y-circular', latitud: F + 'movimiento-parabolico-y-circular' },
+      // 19 nov: «Movimiento parabólico y circular» se partió (docs/etapa5/propuesta-fisica.md): el plano x–y es de
+      // Movimiento parabólico (conserva el id); la latitud, de Movimiento circular.
+      xy: F + 'movimiento-parabolico-y-circular', latitud: F + 'movimiento-circular' },
     'clasificar-reacciones': todo(Q + 'reacciones-y-balance', ['aguaDura', 'redoxSet', 'aLaVez', 'rol', 'vf', 'calor', 'tipoEnergia', 'tipo', 'relacionar', 'dismutacion']),
     // 'vida-media' ya no va a Materia y energía (17 nov: esa unidad tiene su plantilla vida-media y salió de esta ficha);
     // queda sin fila, fuera del repaso, como lo dudoso.
@@ -140,6 +142,9 @@
     // 18 nov: la escena del MRUV sirve a las dos mitades de «MRU, MRUV y caída libre». p1 (encuentro de dos combis) y
     // p6 (pendiente de una recta x–t) son de Movimiento rectilíneo uniforme; los demás, de MRUV y caída libre.
     mruv: { ...lista(F + 'movimiento-rectilineo', ps(1, 6)), ...lista(F + 'mruv-y-caida-libre', ps(2, 3, 4, 5, 7, 8, 9, 10)) },
+    // 19 nov: la escena del tiro sirve a las dos mitades de «Movimiento parabólico y circular». p2 a p6 y p9 (tiros) son de
+    // Movimiento parabólico; p1 (poleas), p7 y p10 (rueda de bicicleta) y p8 (pista circular), de Movimiento circular.
+    'tiro-parabolico': { ...lista(F + 'movimiento-parabolico-y-circular', ps(2, 3, 4, 5, 6, 9)), ...lista(F + 'movimiento-circular', ps(1, 7, 8, 10)) },
     'ondas-electromagneticas': { ...lista(F + 'ondas-electromagneticas', ps(1, 3, 4, 6, 7, 8, 9, 10)), ...lista(F + 'optica-geometrica', ps(11, 12)) },
     // 18 nov (etapa 4, propuesta de Estructura atómica §9): el papel de la escena del átomo y la tabla (p1, p2: partículas;
     // p3, p4 y p10: iones, cuánticos y desapareados; p5 a p9: tabla periódica) y el de configuracion-ubicacion, que dice

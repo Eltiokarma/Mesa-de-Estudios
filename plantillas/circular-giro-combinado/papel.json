@@ -6,7 +6,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Dos discos delgados están fijos a un mismo eje, separados 1,2 m, y giran juntos con rapidez angular constante. Una bala, que viaja paralela al eje a 200 m/s, atraviesa los dos discos. El agujero del segundo disco queda 60° detrás del agujero del primero, medidos en el sentido de giro. ¿Cuál es la menor rapidez angular que pueden tener los discos? Alternativas: A) 500π/9 rad/s   B) 1 000π/3 rad/s   C) 2 500π/9 rad/s   D) 3 500π/9 rad/s",
+      "enunciado": "Dos discos delgados están fijos a un mismo eje, separados 1,2 m, y giran juntos con rapidez angular constante. Una bala, que viaja paralela al eje a 200 m/s, atraviesa los dos discos. El agujero del segundo disco queda 60° detrás del agujero del primero, medidos en el sentido de giro. ¿Cuál es la menor rapidez angular que pueden tener los discos? Datos: Con ω constante: θ = ω · t. La bala va recta y pareja: tiempo = distancia ÷ rapidez. 1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto; 1 s = 1000 ms. Alternativas: A) 500π/9 rad/s   B) 1 000π/3 rad/s   C) 2 500π/9 rad/s   D) 3 500π/9 rad/s",
       "respuesta": "A) 500π/9 rad/s",
       "pasos": [
         "Tiempo de la bala entre los discos: t = L/v = 1,2/200 s.",
@@ -17,7 +17,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba; la bolita llega a 1,25 m de altura. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. Se quiere que caiga sobre la marca B, que está 120° detrás de A, medidos en el sentido de giro. Usa g = 10 m/s² y desprecia la resistencia del aire. ¿Cuál es la menor rapidez angular de la plataforma? Alternativas: A) 8π/3 rad/s   B) 4π/3 rad/s   C) 2π rad/s   D) 2π/3 rad/s",
+      "enunciado": "Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba; la bolita llega a 1,25 m de altura. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. Se quiere que caiga sobre la marca B, que está 120° detrás de A, medidos en el sentido de giro. Usa g = 10 m/s² y desprecia la resistencia del aire. ¿Cuál es la menor rapidez angular de la plataforma? Datos: Lanzamiento vertical con g = 10 m/s²: v = v₀ − g · t. Con ω constante: θ = ω · t; 1 vuelta = 2π rad = 360°. Alternativas: A) 8π/3 rad/s   B) 4π/3 rad/s   C) 2π rad/s   D) 2π/3 rad/s",
       "respuesta": "D) 2π/3 rad/s",
       "pasos": [
         "Tiempo de subida: de H = g·t²/2, t = √(2H/g) = √(2 · 1,25/10) = 0,5 s. Sube y baja: t = 2 · 0,5 = 1 s.",
@@ -28,7 +28,7 @@
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba; la bolita llega a 0,8 m de altura. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. Se quiere que caiga sobre la marca B, que está 60° detrás de A, medidos en el sentido de giro. Usa g = 10 m/s² y desprecia la resistencia del aire. ¿Cuál es la menor rapidez angular de la plataforma? Alternativas: A) 5π/6 rad/s   B) 5π/12 rad/s   C) 25π/12 rad/s   D) 35π/12 rad/s   E) 5π/2 rad/s",
+      "enunciado": "Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba; la bolita llega a 0,8 m de altura. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. Se quiere que caiga sobre la marca B, que está 60° detrás de A, medidos en el sentido de giro. Usa g = 10 m/s² y desprecia la resistencia del aire. ¿Cuál es la menor rapidez angular de la plataforma? Datos: Lanzamiento vertical con g = 10 m/s²: v = v₀ − g · t. Con ω constante: θ = ω · t; 1 vuelta = 2π rad = 360°. Alternativas: A) 5π/6 rad/s   B) 5π/12 rad/s   C) 25π/12 rad/s   D) 35π/12 rad/s   E) 5π/2 rad/s",
       "respuesta": "B) 5π/12 rad/s",
       "pasos": [
         "Tiempo de subida: de H = g·t²/2, t = √(2H/g) = √(2 · 0,8/10) = 0,4 s. Sube y baja: t = 2 · 0,4 = 0,8 s.",
@@ -39,7 +39,7 @@
     {
       "id": "p4",
       "nivel": "intermedio",
-      "enunciado": "Un cascarón esférico de 75 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 100 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Alternativas: A) 400π/3 rad/s   B) 200π/3 rad/s   C) 200π rad/s   D) 2π/3 rad/s   E) 100π/3 rad/s",
+      "enunciado": "Un cascarón esférico de 75 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 100 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Datos: Con ω constante: θ = ω · t. La bala va recta y pareja: tiempo = distancia ÷ rapidez. 1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto; 1 s = 1000 ms. Alternativas: A) 400π/3 rad/s   B) 200π/3 rad/s   C) 200π rad/s   D) 2π/3 rad/s   E) 100π/3 rad/s",
       "respuesta": "B) 200π/3 rad/s",
       "pasos": [
         "La bala recorre un diámetro: 1,5 m. Tarda t = 1,5/100 s.",
@@ -50,7 +50,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba; la bolita llega a 0,8 m de altura. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. Se quiere que caiga sobre la misma marca A. Usa g = 10 m/s² y desprecia la resistencia del aire. ¿Cuál es la menor rapidez angular de la plataforma, distinta de cero? Alternativas: A) 5π rad/s   B) 5π/2 rad/s   C) 25π/4 rad/s   D) 5π/4 rad/s",
+      "enunciado": "Una plataforma horizontal gira con rapidez angular constante. Un tubo fijo, que no gira con la plataforma, está justo encima de su borde. Cuando la marca A del borde pasa debajo del tubo, este dispara una bolita verticalmente hacia arriba; la bolita llega a 0,8 m de altura. La bolita sube y vuelve a caer en el mismo lugar, sobre el borde de la plataforma. Se quiere que caiga sobre la misma marca A. Usa g = 10 m/s² y desprecia la resistencia del aire. ¿Cuál es la menor rapidez angular de la plataforma, distinta de cero? Datos: Lanzamiento vertical con g = 10 m/s²: v = v₀ − g · t. Con ω constante: θ = ω · t; 1 vuelta = 2π rad = 360°. Alternativas: A) 5π rad/s   B) 5π/2 rad/s   C) 25π/4 rad/s   D) 5π/4 rad/s",
       "respuesta": "B) 5π/2 rad/s",
       "pasos": [
         "Tiempo de subida: de H = g·t²/2, t = √(2H/g) = √(2 · 0,8/10) = 0,4 s. Sube y baja: t = 2 · 0,4 = 0,8 s.",
@@ -61,7 +61,7 @@
     {
       "id": "p6",
       "nivel": "intermedio",
-      "enunciado": "Un cascarón esférico de 30 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 120 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Alternativas: A) 200π rad/s   B) 600π rad/s   C) 400π rad/s   D) 100π rad/s   E) 2π rad/s",
+      "enunciado": "Un cascarón esférico de 30 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 120 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Datos: Con ω constante: θ = ω · t. La bala va recta y pareja: tiempo = distancia ÷ rapidez. 1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto; 1 s = 1000 ms. Alternativas: A) 200π rad/s   B) 600π rad/s   C) 400π rad/s   D) 100π rad/s   E) 2π rad/s",
       "respuesta": "A) 200π rad/s",
       "pasos": [
         "La bala recorre un diámetro: 0,6 m. Tarda t = 0,6/120 s.",
@@ -72,7 +72,7 @@
     {
       "id": "p7",
       "nivel": "avanzado",
-      "enunciado": "Un cascarón esférico de 75 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 150 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Alternativas: A) 300π rad/s   B) 200π rad/s   C) 100π rad/s   D) 50π rad/s   E) π rad/s",
+      "enunciado": "Un cascarón esférico de 75 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 150 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Datos: Con ω constante: θ = ω · t. La bala va recta y pareja: tiempo = distancia ÷ rapidez. 1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto; 1 s = 1000 ms. Alternativas: A) 300π rad/s   B) 200π rad/s   C) 100π rad/s   D) 50π rad/s   E) π rad/s",
       "respuesta": "C) 100π rad/s",
       "pasos": [
         "La bala recorre un diámetro: 1,5 m. Tarda t = 1,5/150 s.",
@@ -83,7 +83,7 @@
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Un cascarón esférico de 50 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 150 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Alternativas: A) 75π rad/s   B) 300π rad/s   C) 3π/2 rad/s   D) 450π rad/s   E) 150π rad/s",
+      "enunciado": "Un cascarón esférico de 50 cm de radio gira con rapidez angular constante alrededor de un eje vertical que pasa por su centro. Una bala horizontal, a 150 m/s, entra por un punto del ecuador, cruza la esfera por un diámetro y sale por el mismo agujero por donde entró. ¿Cuál es la menor rapidez angular del cascarón? Datos: Con ω constante: θ = ω · t. La bala va recta y pareja: tiempo = distancia ÷ rapidez. 1 vuelta = 2π rad = 360°; 1 rpm = 1 vuelta por minuto; 1 s = 1000 ms. Alternativas: A) 75π rad/s   B) 300π rad/s   C) 3π/2 rad/s   D) 450π rad/s   E) 150π rad/s",
       "respuesta": "E) 150π rad/s",
       "pasos": [
         "La bala recorre un diámetro: 1 m. Tarda t = 1/150 s.",

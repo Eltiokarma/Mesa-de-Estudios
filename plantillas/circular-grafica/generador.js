@@ -36,9 +36,17 @@
   const corto = x => limpio(x) && x > 0;
   const OBJ = [['un disco', 'el disco', 'del disco'], ['una rueda', 'la rueda', 'de la rueda'], ['un ventilador', 'el ventilador', 'del ventilador'], ['una polea', 'la polea', 'de la polea']];
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'mcuv': ['angulo',  'recorrido',  'neto',  'vueltas'],
+  };
+  const LISTA = ['angulo', 'angulo', 'recorrido', 'recorrido', 'recorrido', 'neto', 'neto', 'vueltas', 'vueltas'];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-grafica|' + semilla);
-    const tipo = rng.elegir(['angulo', 'angulo', 'recorrido', 'recorrido', 'recorrido', 'neto', 'neto', 'vueltas', 'vueltas']);
+    const tipo = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t)) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -181,5 +189,20 @@
     };
   }
 
-  return { id: 'circular-grafica', titulo: 'El área bajo la gráfica ω-t', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "En la gráfica ω–t, el área bajo la línea es el ángulo girado",
+          "Triángulo: base · altura ÷ 2; trapecio: (base mayor + base menor) · altura ÷ 2",
+          "1 vuelta = 2π rad"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-grafica', titulo: 'El área bajo la gráfica ω-t', generar: generarConDatos, TIPOS_POR_IDEA };
 });

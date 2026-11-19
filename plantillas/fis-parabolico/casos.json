@@ -1,0 +1,284 @@
+{
+ "plantilla": "fis-parabolico",
+ "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta, en SI (m, s, m/s); texto: lo que ve el alumno (coma decimal). Un caso por tipo (y sub): las cinco ideas de Movimiento parabólico.",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo), que no usa el generador, el núcleo ni plantillas/tiro-parabolico/motor.js: integra el vuelo paso a paso (pasos de 10 µs, punto medio, eje y hacia arriba, g = 10 m/s²) y busca el instante pedido (cuando toca el piso, cuando deja de subir, cuando la velocidad forma el ángulo pedido); sen y cos de 37° y 53° son 3/5 y 4/5; la rapidez con el ángulo de mayor alcance sale por bisección sobre el vuelo simulado. Escribe el texto con su propio redondeo (la mitad hacia afuera, con Decimal) y su coma decimal. Los 19 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "tiro-oblicuo",
+    "tipo": "azotea",
+    "nivel": 3,
+    "h": 21,
+    "v0": 10,
+    "a": 53
+   },
+   "esperado": {
+    "respuesta": 3.0,
+    "texto": "3 s"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "altura-y-alcance",
+    "tipo": "veces",
+    "nivel": 3,
+    "v0": 8,
+    "a": 45,
+    "k": 2
+   },
+   "esperado": {
+    "respuesta": 25.6,
+    "texto": "25,6 m"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "un-reloj-dos-ejes",
+    "tipo": "alcance-h",
+    "nivel": 2,
+    "h": 20,
+    "v0": 15
+   },
+   "esperado": {
+    "respuesta": 30.0,
+    "texto": "30 m"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "tiro-oblicuo",
+    "tipo": "altura-t",
+    "nivel": 2,
+    "v0": 12,
+    "a": 30,
+    "t": 0.5
+   },
+   "esperado": {
+    "respuesta": 1.75,
+    "texto": "1,75 m"
+   }
+  },
+  {
+   "semilla": 6,
+   "entrada": {
+    "idea": "tiro-oblicuo",
+    "tipo": "componentes",
+    "nivel": 1,
+    "sub": "sube",
+    "v0": 25,
+    "a": 37
+   },
+   "esperado": {
+    "respuesta": 15.0,
+    "texto": "15 m/s"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "un-reloj-dos-ejes",
+    "tipo": "avioneta",
+    "nivel": 3,
+    "k": 180,
+    "h": 80
+   },
+   "esperado": {
+    "respuesta": 200.0,
+    "texto": "200 m"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "ecuaciones-en-el-plano",
+    "tipo": "posicion",
+    "nivel": 1,
+    "a": 5,
+    "b": 2,
+    "t": 3,
+    "sub": "norte"
+   },
+   "esperado": {
+    "respuesta": 6,
+    "texto": "6 m"
+   }
+  },
+  {
+   "semilla": 10,
+   "entrada": {
+    "idea": "altura-y-alcance",
+    "tipo": "alcance",
+    "nivel": 2,
+    "v0": 20,
+    "a": 37
+   },
+   "esperado": {
+    "respuesta": 38.4,
+    "texto": "38,4 m"
+   }
+  },
+  {
+   "semilla": 12,
+   "entrada": {
+    "idea": "velocidad-en-vuelo",
+    "tipo": "vy-t",
+    "nivel": 1,
+    "v0": 4,
+    "t": 4
+   },
+   "esperado": {
+    "respuesta": 40.0,
+    "texto": "40 m/s"
+   }
+  },
+  {
+   "semilla": 14,
+   "entrada": {
+    "idea": "velocidad-en-vuelo",
+    "tipo": "llegada",
+    "nivel": 2,
+    "h": 20,
+    "v0": 15
+   },
+   "esperado": {
+    "respuesta": 25.0,
+    "texto": "25 m/s"
+   }
+  },
+  {
+   "semilla": 23,
+   "entrada": {
+    "idea": "ecuaciones-en-el-plano",
+    "tipo": "particula",
+    "nivel": 3,
+    "x0": 2,
+    "a": 5,
+    "c": 4
+   },
+   "esperado": {
+    "respuesta": 20.0,
+    "texto": "20 m"
+   }
+  },
+  {
+   "semilla": 24,
+   "entrada": {
+    "idea": "tiro-oblicuo",
+    "tipo": "componentes",
+    "nivel": 1,
+    "sub": "lado",
+    "v0": 20,
+    "a": 30
+   },
+   "esperado": {
+    "respuesta": 17.320508,
+    "texto": "17,32 m/s"
+   }
+  },
+  {
+   "semilla": 25,
+   "entrada": {
+    "idea": "tiro-oblicuo",
+    "tipo": "vuelo-avance",
+    "nivel": 3,
+    "v0": 25,
+    "a": 37
+   },
+   "esperado": {
+    "respuesta": 3.0,
+    "texto": "3 s"
+   }
+  },
+  {
+   "semilla": 26,
+   "entrada": {
+    "idea": "ecuaciones-en-el-plano",
+    "tipo": "posicion",
+    "nivel": 1,
+    "a": 12,
+    "b": 5,
+    "t": 3,
+    "sub": "este"
+   },
+   "esperado": {
+    "respuesta": 36,
+    "texto": "36 m"
+   }
+  },
+  {
+   "semilla": 35,
+   "entrada": {
+    "idea": "un-reloj-dos-ejes",
+    "tipo": "caida-t",
+    "nivel": 1,
+    "h": 80,
+    "v0": 6
+   },
+   "esperado": {
+    "respuesta": 4.0,
+    "texto": "4 s"
+   }
+  },
+  {
+   "semilla": 44,
+   "entrada": {
+    "idea": "altura-y-alcance",
+    "tipo": "alcance-45",
+    "nivel": 3,
+    "k": 1.5,
+    "v0": 15
+   },
+   "esperado": {
+    "respuesta": 15.0,
+    "texto": "15 m/s"
+   }
+  },
+  {
+   "semilla": 45,
+   "entrada": {
+    "idea": "velocidad-en-vuelo",
+    "tipo": "angulo-t",
+    "nivel": 3,
+    "v0": 8,
+    "ang": 45
+   },
+   "esperado": {
+    "respuesta": 0.8,
+    "texto": "0,8 s"
+   }
+  },
+  {
+   "semilla": 46,
+   "entrada": {
+    "idea": "ecuaciones-en-el-plano",
+    "tipo": "distancia",
+    "nivel": 2,
+    "a": 8,
+    "b": 15,
+    "t": 2
+   },
+   "esperado": {
+    "respuesta": 34.0,
+    "texto": "34 m"
+   }
+  },
+  {
+   "semilla": 206,
+   "entrada": {
+    "idea": "altura-y-alcance",
+    "tipo": "altura-max",
+    "nivel": 1,
+    "v0": 25,
+    "a": 53
+   },
+   "esperado": {
+    "respuesta": 20.0,
+    "texto": "20 m"
+   }
+  }
+ ]
+}

@@ -47,10 +47,18 @@
   const OBJ = [['Un disco', 'del disco'], ['Una rueda', 'de la rueda'], ['Un volante', 'del volante'], ['Una polea', 'de la polea']];
   const acTxt = x => `${P.radical(x)} m/s²`;
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'dos-aceleraciones': ['radio',  'componentes',  'reposo',  'inicial'],
+  };
+  const LISTA = [['radio'], ['radio'], ['componentes', 'at'], ['componentes', 'a'], ['componentes', 'at'], ['reposo', 'theta'], ['reposo', 'theta'], ['reposo', 'tangente'],
+      ['inicial', 'acp'], ['inicial', 'modulo'], ['inicial', 'instante']];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-aceleracion-total|' + semilla);
-    const [tipo, sub] = rng.elegir([['radio'], ['radio'], ['componentes', 'at'], ['componentes', 'a'], ['componentes', 'at'], ['reposo', 'theta'], ['reposo', 'theta'], ['reposo', 'tangente'],
-      ['inicial', 'acp'], ['inicial', 'modulo'], ['inicial', 'instante']]);
+    const [tipo, sub] = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t[0])) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -262,5 +270,30 @@
       datos: { tipo: 'inicial', sub, r: R, v0, at, theta: th } });
   }
 
-  return { id: 'circular-aceleracion-total', titulo: 'El triángulo de aceleraciones', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "a_T = α · r y a_c = v²/r = ω² · r",
+          "Aceleración total: a = √(a_T² + a_c²)",
+          "Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T"
+      ],
+      "reposo": [
+          "a_T = α · r y a_c = ω² · r",
+          "Desde el reposo, con α constante: ω² = 2α · θ",
+          "Ángulo φ entre a⃗ y v⃗: tan φ = a_c/a_T"
+      ],
+      "inicial": [
+          "a_T = α · r y a_c = v²/r = ω² · r",
+          "Con α constante: ω = ω₀ + α · t y ω² = ω₀² + 2α · θ",
+          "Aceleración total: a = √(a_T² + a_c²)"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-aceleracion-total', titulo: 'El triángulo de aceleraciones', generar: generarConDatos, TIPOS_POR_IDEA };
 });

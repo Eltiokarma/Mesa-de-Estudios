@@ -350,6 +350,66 @@ confirman con las opciones que eligen los alumnos en las predicciones, en «Ahor
 | C-ENC-MITAD-H | Supone que se encuentran a la mitad de la altura | B6 | Hipótesis |
 | C-CUARTO | Divide dos veces entre 2 el tiempo de vuelo | B6 | Hipótesis |
 
+## Movimiento parabólico (19 nov)
+
+Códigos de las cinco ideas de «Movimiento parabólico» (`contenido/teoria/fisica/movimiento-parabolico-y-circular.js`,
+ideas A1 a A5 de `docs/etapa5/propuesta-fisica.md`) y de su práctica (`plantillas/fis-parabolico/generador.js`). P1, P2,
+P4 y P5 son los del catálogo de arriba (Prescott y Mitchelmore 2005; McCloskey 1983) y C2 el de caída libre; C-LINEAL y
+K-TIEMPO vienen de «MRUV y caída libre»; PR1-alcance es PR1 de `fisica-calculo-transversal-ideas-erroneas.md` llevado al
+alcance (trampa 2 de San Marcos) y U1-kmh, el de unidades. **Todos los demás son hipótesis de diseño, sin dato propio**:
+salen de la forma de las alternativas de examen y de academia, y se confirman con lo que elijan los alumnos en las
+predicciones, en «Ahora tú» y en la práctica.
+
+| Código | Idea errónea (lo que hace el alumno) | Dónde aparece | Respaldo |
+| --- | --- | --- | --- |
+| TP-SIN-MEDIO | Olvida el ½ de ½ · g · t² | A1, A2, A3 | Hipótesis |
+| TP-RAIZ | Da t² (o 2h/g) como si fuera el tiempo | A1 | Hipótesis |
+| TP-VT | Divide la altura entre la rapidez de lado para hallar el tiempo de caída (versión de P2) | A1 | Hipótesis |
+| TP-ALTURA | Da la altura como alcance | A1, A4 | Hipótesis |
+| TP-POR | Multiplica la distancia por el tiempo en vez de dividir | A1 | Hipótesis |
+| TP-VY | Da una velocidad (la que gana cayendo o la vertical que hace falta) donde piden otra cosa | A1, A2 | Hipótesis |
+| TP-CAIDA | Da lo que cayó cuando piden la altura del golpe o la velocidad | A1, A2 | Hipótesis |
+| TP-PISO | No compara el tiempo hasta la pared con el tiempo hasta el piso | A1 | Hipótesis |
+| TP-RESTA | Resta una distancia de lado a una altura | A1 | Hipótesis |
+| TP-SUMA | Suma las dos componentes de la velocidad como números | A2 (Predice) | Hipótesis (V1 de Vectores en el plano) |
+| TP-SOLO-VY | Da solo la velocidad vertical como rapidez | A2 (Predice) | Hipótesis |
+| TP-V-CONSTANTE | «Sin aire, la rapidez no cambia» | A2, A3 (Predice) | Hipótesis |
+| TP-RESTA-V | Resta las componentes | A2 | Hipótesis |
+| TP-TAN-INV | Usa lo que avanza entre lo que baja (tan θ al revés) | A2 | Hipótesis |
+| TP-45 | Da el instante o el ángulo de los 45° para otro ángulo | A2, A4 | Hipótesis |
+| TP-SENO | Relaciona las componentes con el seno en vez de la tangente | A2 | Hipótesis |
+| TP-DOBLE-T | Toma 5 m/s por segundo en vez de 10 (duplica el tiempo) | práctica A2 | Hipótesis |
+| TP-CIMA-0 | En la cima la velocidad es cero (lleva la cima del lanzamiento vertical al plano) | A3 (Predice) | Hipótesis |
+| TP-COMPONENTE | Da la parte que sube como si fuera la rapidez | A3 (Predice), A4 | Hipótesis |
+| TP-SENCOS | Cambia el seno y el coseno al partir v₀ | A3, A4 | Hipótesis |
+| TP-V0 | Usa la rapidez entera donde va una componente | A3, A4 | Hipótesis |
+| TP-MITAD | Reparte la rapidez por mitades entre las dos componentes | A3 | Hipótesis |
+| TP-ANGULO | Hace la componente proporcional a los grados | práctica A3 | Hipótesis |
+| TP-SIN-G | Olvida que la gravedad frena la subida | A3 | Hipótesis |
+| TP-SUBIDA | Da el tiempo (o el avance) hasta la cima como si fuera todo el vuelo | A3, A4, A5 | Hipótesis |
+| TP-V0-VUELO | Calcula el vuelo con la rapidez entera hacia arriba | práctica A3 | Hipótesis |
+| TP-VUELVE | Desde una azotea, para el reloj al volver a la altura de salida | práctica A3 | Hipótesis |
+| TP-SOLTAR | Desde una azotea, calcula como si la pelota se soltara | práctica A3 | Hipótesis |
+| TP-MEDIO | Divide entre g en vez de 2g en la altura máxima | A4 | Hipótesis |
+| TP-TIEMPO | Da el tiempo de subida donde piden la altura | A4 | Hipótesis |
+| TP-SOLO-ANGULO | «Si el ángulo no cambia, cae en el mismo sitio» | A4 (Predice) | Hipótesis |
+| PR-CUBO | Eleva al cubo el factor de la rapidez | A4 (Predice) | Hipótesis |
+| PR-DOBLE-K | Multiplica el alcance por 2·k en vez de k² | práctica A4 | Hipótesis |
+| TP-DOBLE | Da el doble del ángulo como el que cae en el mismo sitio | A4 | Hipótesis |
+| TP-SUPLEMENTO | Da el suplemento (suman 180°) en vez del complemento | A4 | Hipótesis |
+| TP-MITAD-ANG | Da la mitad del ángulo como el que cae en el mismo sitio | A4 | Hipótesis |
+| TP-SEN-POR | Multiplica por sen 45° en vez de dividir para la rapidez entera | A4 | Hipótesis |
+| TP-SUBIDA-V0 | Toma todo el vuelo como subida y además divide bien entre sen 45° | A4 | Hipótesis |
+| 2D-SUMA | Suma las coordenadas para la distancia al origen (San Marcos 2025-I) | A5 (Predice) | Hipótesis (V1 de Vectores en el plano) |
+| 2D-UNA | Da solo la coordenada mayor como distancia | A5 (Predice) | Hipótesis |
+| 2D-SIN-T | Usa lo de un segundo (o suma las velocidades) y olvida el tiempo | A5 (Predice) | Hipótesis |
+| 2D-EJE | Reemplaza en la ecuación del otro eje | A5 | Hipótesis |
+| 2D-CUADRADO | Eleva t al cuadrado donde la ecuación tiene t (o al revés) | A5 | Hipótesis |
+| 2D-DIST | Da la distancia al origen cuando piden una coordenada | A5 | Hipótesis |
+| 2D-RESTA | Resta las coordenadas | A5 | Hipótesis |
+| 2D-SIN-X0 | Olvida la posición inicial en x(t) | práctica A5 | Hipótesis |
+| 2D-TIEMPO | Da el instante en que y = 0 cuando piden la distancia | A5 | Hipótesis |
+
 ## Hipótesis de la Etapa 4 (sin estudio)
 
 Índice (19 nov 2026) de los códigos de error que estrenó la Etapa 4 del plan de calidad (`docs/etapa4/decisiones.md`)

@@ -233,9 +233,13 @@
       "id": "p8",
       "nivel": "básico",
       "unidades": [
-        "fisica.movimiento-parabolico-y-circular"
+        "fisica.movimiento-circular"
       ],
       "enunciado": "Toma R = 6400 km, π = 3 y un día de 24 h. Juliaca está a unos 16° de latitud sur (cos 16° = 24/25). ¿Con qué rapidez la lleva la rotación de la Tierra? ¿Y a un punto del ecuador?",
+      "datos": [
+        "Un lugar de latitud λ gira alrededor del eje de la Tierra con radio r = R · cos λ",
+        "Rapidez de un giro parejo: v = 2π · r ÷ T, con T lo que tarda una vuelta"
+      ],
       "respuesta": "Juliaca: 1536 km/h. Ecuador: 1600 km/h.",
       "pasos": [
         "Juliaca gira alrededor del eje de la Tierra en su paralelo, de radio r = R·cos 16° = 6400·24/25 = 6144 km.",

@@ -47,9 +47,18 @@
 
   const corto = (x, dec = 2) => x > 0 && Math.abs(x * 10 ** dec - Math.round(x * 10 ** dec)) < 1e-7 && x < 1e5;
 
-  function generar(semilla) {
+  // Tipos por idea de fisica.movimiento-circular (19 nov, fase 3; docs/etapa5/propuesta-fisica.md §7): la práctica de
+  // una idea pide generar(semilla, { unidad, idea }) y saca solo sus tipos; sin idea (o con otra), todos, como antes: la
+  // misma semilla da el mismo problema.
+  const TIPOS_POR_IDEA = {
+    'velocidad-tangencial': ['tren',  'contacto',  'sentido',  'bloque',  'movil'],
+    'mcuv': ['alfa'],
+  };
+  const LISTA = ['tren', 'tren', 'contacto', 'sentido', 'bloque', 'bloque', 'movil', 'alfa'];
+  function generar(semilla, opciones) {
+    const idea = opciones && typeof opciones === 'object' ? opciones.idea : undefined;
     const rng = Azar.crear('circular-transmision|' + semilla);
-    const tipo = rng.elegir(['tren', 'tren', 'contacto', 'sentido', 'bloque', 'bloque', 'movil', 'alfa']);
+    const tipo = rng.elegir(TIPOS_POR_IDEA[idea] ? LISTA.filter(t => TIPOS_POR_IDEA[idea].includes(t)) : LISTA);
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -293,5 +302,35 @@
     };
   }
 
-  return { id: 'circular-transmision', titulo: 'Ruedas, fajas y poleas', generar };
+  // Datos de cada problema (contrato, punto 13; 19 nov, fase 3 de Movimiento circular): las fórmulas y equivalencias del
+  // tipo, una por línea, sin el paso hecho ni atajos; el papel las lleva al final del enunciado
+  // (herramientas/papel-generador.js). «_» es la lista de los tipos que no tienen una propia.
+  const DATOS_POR_TIPO = {
+      "_": [
+          "Faja, faja cruzada o contacto: ω₁ · r₁ = ω₂ · r₂",
+          "Ruedas en un mismo eje: misma ω",
+          "Faja abierta: mismo sentido; faja cruzada o contacto: sentido contrario",
+          "1 rpm = 1 vuelta por minuto; 1 vuelta = 2π rad"
+      ],
+      "bloque": [
+          "Rapidez del borde: v = ω · r",
+          "Faja: ω₁ · r₁ = ω₂ · r₂; mismo eje: misma ω",
+          "La cuerda avanza con la rapidez del borde donde se enrolla",
+          "1 rpm = 1 vuelta por minuto; 1 m = 100 cm"
+      ],
+      "movil": [
+          "Rapidez del borde: v = ω · r",
+          "Cada cuerda avanza con la rapidez del borde del tambor donde se enrolla"
+      ],
+      "alfa": [
+          "Faja o contacto: α₁ · r₁ = α₂ · r₂ (la misma a_T en el borde)",
+          "Ruedas en un mismo eje: misma α"
+      ]
+  };
+  const generarConDatos = (semilla, opciones) => {
+    const pr = generar(semilla, opciones);
+    if (!Array.isArray(pr.datos) || !pr.datos.length) pr.datos = (DATOS_POR_TIPO[pr._datos.tipo] || DATOS_POR_TIPO._).slice();
+    return pr;
+  };
+  return { id: 'circular-transmision', titulo: 'Ruedas, fajas y poleas', generar: generarConDatos, TIPOS_POR_IDEA };
 });

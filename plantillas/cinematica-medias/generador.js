@@ -58,7 +58,10 @@
   const TIPOS_POR_UNIDAD = {
     'fisica.movimiento-rectilineo': ['media', 'idavuelta'],
     'fisica.mruv-y-caida-libre': ['vt', 'ecuacion'],
-    'fisica.movimiento-parabolico-y-circular': ['xy', 'latitud'],
+    // 19 nov (docs/etapa5/propuesta-fisica.md): «Movimiento parabólico y circular» se partió en dos. El plano x–y es de
+    // Movimiento parabólico (conserva el id); la latitud (el radio del paralelo), de Movimiento circular.
+    'fisica.movimiento-parabolico-y-circular': ['xy'],
+    'fisica.movimiento-circular': ['latitud'],
   };
   function generar(semilla, opciones) {
     const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
@@ -711,7 +714,13 @@
   }
 
   // ================= latitud: el paralelo de cada ciudad =================
-  const VAR_LAT = { R: { nombre: 'radio de la Tierra', color: 'o' }, lam: { nombre: 'latitud', color: 'i' }, r: { nombre: 'radio de giro', color: 'h' }, x: { nombre: 'lo que se pide', color: 'd' } };
+  // 19 nov (Movimiento circular, fase 3): los colores de esa unidad (tabla `colores` de su teoría). La rapidez lineal va en
+  // naranja, como toda velocidad; los radios (R, r) y la latitud λ, en tinta (un largo y un ángulo que no gira), sin verde
+  // ni carmín. «tinta» se pinta como una variable sin color: negrita y subrayado punteado (clase .var de la app).
+  const VAR_LAT = { R: { nombre: 'radio de la Tierra', color: 'tinta' }, lam: { nombre: 'latitud', color: 'tinta' }, r: { nombre: 'radio de giro', color: 'tinta' } };
+  const VAR_LAT_SUB = { rapidez: { x: { nombre: 'rapidez lineal', color: 'o' } }, radio: { x: { nombre: 'radio de giro', color: 'tinta' } } };
+  // Latitudes de ciudades del Perú redondeadas al grado (valores aproximados, con «unos»): Juliaca 15° 30′ S, Arequipa
+  // 16° 24′ S, el Cusco 13° 31′ S, Tacna 18° 01′ S, Lima 12° 03′ S. Los cosenos y senos se dan redondeados para la cuenta.
   const LUGARES = [
     { nombre: 'Juliaca', texto: 'Juliaca, a unos 16° de latitud sur (toma cos 16° = 24/25 y sen 16° = 7/25)', lat: 16, cos: 24 / 25, sen: 7 / 25 },
     { nombre: 'Arequipa', texto: 'Arequipa, a unos 16° de latitud sur (toma cos 16° = 24/25 y sen 16° = 7/25)', lat: 16, cos: 24 / 25, sen: 7 / 25 },
@@ -738,7 +747,7 @@
         ['El lugar gira alrededor del eje de la Tierra, no del centro: describe un paralelo.'],
         ['Su distancia al eje es ', v('r', 'r'), ' = ', v('R', 'R'), '·cos ', v('lam', 'λ'), ` = ${f(R)}·${f(L.cos)} = `, v('x', `${f(r)} km`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta: r, errores, texto: con('km'), unidad: 'km', variables: VAR_LAT, enunciado,
+      return cerrar(rng, semilla, { correcta: r, errores, texto: con('km'), unidad: 'km', variables: Object.assign({}, VAR_LAT, VAR_LAT_SUB.radio), enunciado,
         pregunta: ['¿Cuál es el ', v('x', 'radio de la circunferencia'), ' que describe ese lugar por la rotación de la Tierra?'], solucion, datos: { tipo: 'latitud', sub, lat: L.lat, lugar: L.nombre } });
     }
     const correcta = 2 * 3 * r / 24;
@@ -753,7 +762,7 @@
       ['En 24 h da una vuelta: ', v('x', 'v'), ` = 2π·r/T = 2·3·${f(r)}/24 = `, v('x', `${f(correcta)} km/h`), '.'],
       ['Todos los lugares giran con la misma velocidad angular; la rapidez lineal es mayor en el ecuador porque ahí el radio de giro es el mayor.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, texto: con('km/h'), unidad: 'km/h', variables: VAR_LAT, enunciado,
+    return cerrar(rng, semilla, { correcta, errores, texto: con('km/h'), unidad: 'km/h', variables: Object.assign({}, VAR_LAT, VAR_LAT_SUB.rapidez), enunciado,
       pregunta: ['¿Con qué ', v('x', 'rapidez lineal'), ` se mueve ${L.nombre} por la rotación de la Tierra?`], solucion, datos: { tipo: 'latitud', sub, lat: L.lat, lugar: L.nombre } });
   }
 

@@ -1,0 +1,18 @@
+{
+  "id": "fis-parabolico",
+  "titulo": "Movimiento parabólico",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.movimiento-parabolico-y-circular"
+  ],
+  "temas": [
+    "Movimiento en dos dimensiones",
+    "Tiro parabólico"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
