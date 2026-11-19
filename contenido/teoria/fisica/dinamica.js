@@ -951,11 +951,7 @@
         ejemplo: 'Un ascensor que sube a velocidad constante también lo es.', ver: ['segunda ley de Newton'] },
       { termino: 'peso aparente', medida: 'N', def: 'Lo que marca una balanza: la fuerza con que te sostiene, que cambia si aceleras.',
         ejemplo: '60 kg en un ascensor que acelera 2 m/s² hacia arriba: 720 N.', ver: ['peso', 'ingravidez'] },
-      { termino: 'plano inclinado', formas: ['plano inclinado', 'planos inclinados'],
-        def: 'Superficie plana que forma un ángulo con la horizontal; sin roce, se baja con a = g sen θ.',
-        ejemplo: 'A 30°, sin roce: a = 10 · 0,5 = 5 m/s².', ver: ['peso'] },
-      { termino: 'polea', def: 'Rueda por la que pasa una cuerda; cambia la dirección del jalón y, si es móvil, lo reparte.',
-        ejemplo: 'Polea móvil con 80 N colgados: la mano jala 40 N.', ver: ['tensión'] },
+      // «plano inclinado» y «polea» se definen en Estática, que va antes (19 nov 2026, etapa 6).
       { termino: 'ingravidez', def: 'Estado en que nada te sostiene y caes con g: la balanza marca 0, aunque la masa no cambie.',
         ejemplo: 'Ascensor con el cable cortado: a = −10 m/s² y N = 0.', ver: ['peso aparente', 'caída libre'] },
     ],

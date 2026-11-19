@@ -93,6 +93,13 @@
     // azufre en vez de nitrógeno y oxígeno). Después de la partición partidoTP, una predicción suya sin huella es de la
     // pregunta vieja y se vuelve a preguntar, una vez. Las otras dos ideas que vinieron conservan su pregunta y sus ids.
     if (sinHuella(est, 'quimica.propiedades-periodicas', { marca: 'prediccionTP2', ideas: ['energia-ionizacion'] })) cambio = true;
+    // 19 nov (etapa 6, «Estática»): la unidad se rehizo con seis ideas. Cinco conservan su id con otra Predice: una
+    // predicción suya sin huella es de la pregunta vieja y se vuelve a preguntar, una vez (prediccionES). La idea vieja
+    // `polea-movil` se fue (su contenido pasó a las ideas 2 y 4) y entró `cuerpo-rigido`: quien había terminado las seis
+    // de antes conserva «Ya la estudié» (estudiadaES), y la idea nueva le queda por hacer.
+    if (sinHuella(est, 'fisica.estatica', { marca: 'prediccionES', ideas: ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo'] })) cambio = true;
+    if (conservaEstudio(est, { de: 'fisica.estatica', a: 'fisica.estatica', estudiada: { marca: 'estudiadaES', fecha: '2026-11-19',
+      ideas: ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo', 'polea-movil'] } })) cambio = true;
     return cambio;
   }
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra

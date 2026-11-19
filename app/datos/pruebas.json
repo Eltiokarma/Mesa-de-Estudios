@@ -5,6 +5,30 @@
    "version": "1.4.0",
    "minutos": 15,
    "errores": {
+    "TAL-TK-EXP-segunda-base-con-k": {
+     "respaldo": "hipotesis",
+     "describe": "En el término de lugar k le da a la segunda base el exponente k, no k − 1"
+    },
+    "TAL-CONTEO-termino-siguiente": {
+     "respaldo": "hipotesis",
+     "describe": "Toma el término de al lado del que se pide"
+    },
+    "TAL-GRADO-D-grado-del-dividendo": {
+     "respaldo": "hipotesis",
+     "describe": "Da el grado del dividendo en vez del de un término del cociente"
+    },
+    "PO3-cociente-falso-sin-dividir": {
+     "respaldo": "hipotesis",
+     "describe": "Con divisor cx + b, se queda con el cociente de Ruffini sin dividirlo entre c"
+    },
+    "PO2-numero-con-el-signo-cambiado": {
+     "respaldo": "hipotesis",
+     "describe": "Usa en Ruffini el número del divisor con el signo cambiado"
+    },
+    "TAL-RESTO-EN-Q-suma-el-resto": {
+     "respaldo": "hipotesis",
+     "describe": "Suma el resto a los coeficientes del cociente"
+    },
     "AL28-h-al-reves": {
      "respaldo": "parcial",
      "describe": "Corre la gráfica al revés: (x − h) a la izquierda"
@@ -1768,6 +1792,30 @@
     "PR-cubo": {
      "respaldo": "hipotesis",
      "describe": "Eleva la razón de rapideces al cubo"
+    },
+    "RG-sin-peso-propio": {
+     "respaldo": "hipotesis",
+     "describe": "Olvida el peso propio del tablón o de la viga: reparte solo la carga"
+    },
+    "RG-mitad-de-todo": {
+     "respaldo": "hipotesis",
+     "describe": "Reparte todo el peso por mitades entre los dos apoyos, aunque la carga no esté en el medio"
+    },
+    "RG-un-apoyo-carga-todo": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que el apoyo más cercano carga todo el peso"
+    },
+    "E10-estatico-siempre-mu-N": {
+     "respaldo": "documentado",
+     "describe": "Cree que el rozamiento estático vale siempre su tope μs·N"
+    },
+    "ST-seno-por-coseno": {
+     "respaldo": "hipotesis",
+     "describe": "Cambia seno por coseno al partir el peso en la rampa"
+    },
+    "N-MG-el-peso": {
+     "respaldo": "parcial",
+     "describe": "Iguala la fuerza pedida al peso (trampa 7 de San Marcos, con la normal)"
     }
    },
    "pares": [
@@ -2441,6 +2489,30 @@
     "GE-CON73": {
      "respaldo": "hipotesis",
      "describe": "Cree que la altura parte el lado en dos partes iguales a ella"
+    },
+    "GE-PC12": {
+     "respaldo": "hipotesis",
+     "describe": "En el paralelogramo con la bisectriz de A, da BE (el lado del isósceles) y no EC"
+    },
+    "GE-PC13": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que la bisectriz de A corta BC en su punto medio"
+    },
+    "GE-PC14": {
+     "respaldo": "hipotesis",
+     "describe": "Suma los lados en vez de restar BE de BC"
+    },
+    "GE-TRP1": {
+     "respaldo": "hipotesis",
+     "describe": "Da la mediana entera MN en vez del tramo PQ"
+    },
+    "GE-TRP2": {
+     "respaldo": "hipotesis",
+     "describe": "Resta las bases y no saca la mitad"
+    },
+    "GE-TRP3": {
+     "respaldo": "hipotesis",
+     "describe": "Da MP, la mitad de la base menor, en vez de PQ"
     }
    },
    "pares": [

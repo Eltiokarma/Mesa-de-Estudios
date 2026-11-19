@@ -120,7 +120,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["fisica.vectores"],
-      "plantillas": ["estatica", "dinamica-fuerzas"],
+      "plantillas": ["fis-estatica", "estatica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
     {

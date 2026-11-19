@@ -290,3 +290,41 @@ Verificados con fracciones exactas (`python3 -I` con `fractions.Fraction`). Unid
 - Hardiman, Pollatsek y Well (1986), sobre la balanza en universitarios. El dominio no está permitido en esta sesión.
 - Siegler (1976), sobre las reglas que usan niños y adolescentes en la balanza. Solo la referencia.
 - Barniol y Zavala (2014), *Test of understanding of vectors*, que incluye el producto escalar en el contexto del trabajo. Solo la referencia.
+
+## Estática (19 nov 2026): códigos de la unidad rehecha
+
+Códigos que usan `contenido/teoria/fisica/estatica.js` (Predice, «Ahora tú» y ejemplos) y la práctica
+`plantillas/fis-estatica/`. E1, E7, E8 y E10 tienen el respaldo de arriba; N-MG es la trampa 7 de San Marcos (la normal
+igual al peso con una fuerza oblicua, 5 veces en la admisión real: `docs/clasificacion/trampas-admision-unmsm/fisica.md`).
+Todos los demás son **hipótesis de diseño**, la cara numérica de un error documentado; se confirman con los datos del piloto.
+
+| Código | Error |
+| --- | --- |
+| N-MG | La normal (o lo que marca la balanza) es el peso, aunque otra fuerza empuje o jale (trampa 7; D6) |
+| N-SIGNO | Suma la fuerza que jala hacia arriba, o resta la que empuja hacia abajo |
+| N-F | Da la fuerza aplicada, o solo una parte, como si fuera la normal |
+| N-MASA | Deja la masa en kilos donde va una fuerza en newtons |
+| ES-REACCION | Toma por pareja de una fuerza a otra sobre el mismo cuerpo, la que la equilibra (D11) |
+| ES-OTRA-PAREJA | Da una pareja de verdad, pero de otra fuerza |
+| ES-SIN-PAREJA | Cree que un cuerpo quieto no tiene pareja |
+| ES-SOLO, ES-PILA | En cajas apiladas, olvida la de arriba o suma la de abajo |
+| ES-SUBIR, ES-DOBLE | Cree que subir a velocidad constante pide más fuerza; resta un jalón dos veces |
+| ES-PESO | Iguala la fuerza de una pared al peso |
+| E8-b | Da la tensión del otro cable |
+| ST-P, ST-T, ST-COMP, ST-POR, ST-SENCOS | Cada cable sostiene todo el peso; da la cuerda en vez de su parte; da solo la componente; multiplica por el seno en vez de dividir; cambia seno por coseno |
+| MS-CUERDA, MS-FIJA, MS-SUMA, MS-DOBLE | Polea móvil que no reparte; polea fija que reparte; cuenta tramos de más; la polea agranda la fuerza |
+| RZ-CERO | Si no se mueve, no hay rozamiento |
+| RZ-RESTA | El rozamiento es lo que falta para el tope |
+| RZ-MUK, RZ-MUS, RZ-F | Usa μ_k quieto, μ_s deslizando, o copia el empujón deslizando |
+| RZ-N, RZ-MU, RZ-DOBLE, RZ-MITAD, RZ-SIN-ANG | Da la normal; multiplica μ por la fuerza; dobla o parte el rozamiento; no parte la fuerza inclinada |
+| RS-LARGO | Pone en proporción el largo total, no la deformación |
+| RS-SOLO-X, RS-ENCOGE, RS-PASO | Da solo x; resta x al estirar; suma una sola vez lo de un kilo |
+| RS-INV, RS-POR, RS-DOBLE, RS-POLEA | Divide al revés; multiplica por x; el doble; el resorte de una polea móvil con toda la carga |
+| U-cm | No pasa centímetros a metros |
+| E1-LARGO | Cree que la parte más larga de un cuerpo equilibrado pesa más |
+| TQ-NOSE | Cree que el equilibrio no dice nada de los pesos |
+| TQ-BRAZO, TQ-COS | Toma la distancia al punto de aplicación como brazo; usa el coseno |
+| TQ-DIV, TQ-INV, TQ-MITAD, TQ-SUMA, TQ-SIN-ANG, TQ-DOBLE, TQ-RARO | Divide, invierte, parte, suma o dobla en vez de fuerza por brazo |
+| TQ-IGUAL, TQ-RESTA, TQ-LARGO | Iguala distancias o fuerzas; suma la diferencia de pesos; usa el largo entero como brazo |
+| RG-SIN-PESO | Olvida el peso propio de la barra o del tablón (cercano a E2) |
+| RG-MITAD, RG-TODO, RG-OTRO, RG-PUNTA, RG-BRAZO, RG-NORMAL | Reparte por mitades; un apoyo carga todo; da el otro apoyo; pone el peso en la punta; mide el brazo desde la punta; da la normal del piso en vez del rozamiento |

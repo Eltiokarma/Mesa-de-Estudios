@@ -109,7 +109,7 @@
        "areas-volumenes": "Áreas y volúmenes",
        "homogeneidad": "Análisis dimensional"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -168,7 +168,7 @@
        "resultante": "Suma de vectores",
        "productos": "Productos"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -274,7 +274,7 @@
        "caida-reposo": "Caída libre desde el reposo",
        "caida-libre": "Lanzamiento vertical"
       },
-      "terminos": 35
+      "terminos": 37
      }
     },
     {
@@ -414,25 +414,25 @@
       "fisica.vectores"
      ],
      "plantillas": [
+      "fis-estatica",
       "estatica",
       "dinamica-fuerzas"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/estatica.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-lienzo.js"
+       "/nucleo/kit/piezas/fis-estatica.js"
       ],
       "ideas": 6,
       "titulos": {
-       "diagrama-y-parejas": "Cada fuerza tiene su pareja",
-       "nudo-en-equilibrio": "El nudo que no se mueve",
-       "rozamiento-se-ajusta": "El rozamiento se ajusta",
-       "resorte-proporcional": "El resorte estira en proporción",
-       "torque-y-brazo": "El brazo decide el giro",
-       "polea-movil": "Menos fuerza, más cuerda"
+       "diagrama-y-parejas": "Primera y tercera ley de Newton",
+       "nudo-en-equilibrio": "Equilibrio de una partícula",
+       "rozamiento-se-ajusta": "Rozamiento estático y cinético",
+       "resorte-proporcional": "Fuerza elástica: la ley de Hooke",
+       "torque-y-brazo": "Torque: fuerza por brazo",
+       "cuerpo-rigido": "Equilibrio del cuerpo rígido"
       },
-      "terminos": 26
+      "terminos": 36
      }
     },
     {
@@ -483,7 +483,7 @@
        "centripeta-es-resultante": "La centrípeta es una resultante",
        "ascensor-y-marcos": "La balanza del ascensor"
       },
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -580,7 +580,7 @@
        "conservacion-energia": "La suma no cambia sin roce",
        "potencia-y-eficiencia": "Potencia: trabajo por segundo"
       },
-      "terminos": 29
+      "terminos": 31
      }
     },
     {
@@ -632,7 +632,7 @@
        "restitucion": "e compara rapideces",
        "centro-masa": "El centro de masa queda"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -878,7 +878,7 @@
        "cp-cv": "A presión fija cuesta más",
        "maquina-termica": "Ningún motor gana a Carnot"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -936,7 +936,7 @@
        "serie-paralelo": "En serie, la misma carga",
        "energia-condensador": "Conectado o aislado cambia todo"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -1041,7 +1041,7 @@
        "fuerza-cable": "Solo empuja lo perpendicular",
        "cables-paralelos": "Mismo sentido, se atraen"
       },
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -1095,7 +1095,7 @@
        "generador": "Alterna: pico y eficaz",
        "transformador": "Las vueltas fijan el voltaje"
       },
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -1197,7 +1197,7 @@
        "lente-delgada": "Lentes: todos llegan juntos",
        "fabricante": "Curvatura, índice y dioptrías"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -1250,7 +1250,7 @@
        "relatividad": "Cada reloj mide su tiempo",
        "incertidumbre": "Ubicar más es saber menos"
       },
-      "terminos": 40
+      "terminos": 41
      }
     }
    ]
@@ -2614,7 +2614,7 @@
        "radicales": "La raíz cuadrada es un lado",
        "exponente-fraccionario": "La raíz es un exponente fraccionario"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -2665,7 +2665,7 @@
        "radicales-dobles": "Dos números que suman y multiplican",
        "racionalizar": "Racionalizar es multiplicar por uno"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -2715,7 +2715,7 @@
        "suma-producto": "Suma y producto sin resolver",
        "planteo": "La letra es un número"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -2764,7 +2764,7 @@
        "puntos-criticos": "Raíz impar cambia, raíz par no",
        "fraccionarias": "El denominador nunca entra"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -2864,7 +2864,7 @@
        "igualdad": "Polinomios idénticos",
        "operaciones": "Multiplicar polinomios"
       },
-      "terminos": 39
+      "terminos": 40
      }
     },
     {
@@ -2890,12 +2890,13 @@
        ]
       }
      },
-     "potencial_visual": "bajo",
+     "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
       "algebra.polinomios"
      ],
      "plantillas": [
+      "division-practica",
       "polinomios",
       "division-polinomios"
      ],
@@ -2903,17 +2904,21 @@
       "archivo": "/contenido/teoria/algebra/division-de-polinomios.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-losetas.js",
+       "/nucleo/kit/piezas/alg-reparto.js",
+       "/nucleo/kit/piezas/arit-calculadora.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "algoritmo": "Dividir es buscar D·Q + R",
-       "ruffini": "Bajar, multiplicar y sumar",
-       "divisor-k": "Con kx + b, divide entre k",
-       "teorema-resto": "El resto es P(a)",
-       "cocientes-notables": "Un exponente baja, otro sube"
+       "algoritmo": "Algoritmo de la división",
+       "horner": "División clásica y Horner",
+       "ruffini": "Regla de Ruffini",
+       "divisor-k": "Divisor de la forma cx + b",
+       "teorema-resto": "Teorema del resto",
+       "cocientes-notables": "Cocientes notables"
       },
-      "terminos": 25
+      "terminos": 40
      }
     },
     {
@@ -2964,7 +2969,7 @@
        "teorema-factor": "Si P(a) = 0, hay factor",
        "mcd-mcm": "Menor exponente, mayor exponente"
       },
-      "terminos": 38
+      "terminos": 40
      }
     },
     {
@@ -3019,7 +3024,7 @@
        "cambio-de-variable": "Un cambio de variable",
        "binomica": "zⁿ = w: un polígono regular"
       },
-      "terminos": 41
+      "terminos": 42
      }
     },
     {
@@ -3073,7 +3078,7 @@
        "traslaciones": "Restar adentro corre a la derecha",
        "polinomial": "Raíces y extremos de un polinomio"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -3172,7 +3177,7 @@
        "ecuaciones": "Resolver y revisar el argumento",
        "inecuaciones": "Base menor que 1 invierte"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -3276,7 +3281,7 @@
        "inversa-adjunta": "La inversa deshace a A",
        "rango": "Rango: filas que aportan"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -3426,7 +3431,7 @@
        "telescopica": "Lo de en medio se cancela",
        "serie-geometrica": "La suma infinita es un límite"
       },
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -3474,7 +3479,7 @@
        "exponente-no-natural": "Con exponente no natural, no termina",
        "potencia-trinomio": "Un trinomio también cuenta órdenes"
       },
-      "terminos": 26
+      "terminos": 28
      }
     }
    ]
@@ -4593,7 +4598,7 @@
        "paralelas": "Paralelas cortadas por una secante",
        "quiebre": "El quiebre entre paralelas"
       },
-      "terminos": 36
+      "terminos": 38
      }
     },
     {
@@ -4645,7 +4650,7 @@
        "lineas-notables": "Líneas notables",
        "angulo-de-bisectrices": "Ángulos entre bisectrices"
       },
-      "terminos": 52
+      "terminos": 53
      }
     },
     {
@@ -4696,7 +4701,7 @@
        "mediana-hipotenusa": "Mediana relativa a la hipotenusa",
        "notables": "Triángulos rectángulos notables"
       },
-      "terminos": 60
+      "terminos": 61
      }
     },
     {
@@ -4706,6 +4711,7 @@
       "Suma de ángulos internos y externos",
       "Número de diagonales",
       "Paralelogramos",
+      "Rectángulo, rombo y cuadrado",
       "Trapecios",
       "Trapezoides"
      ],
@@ -4725,26 +4731,28 @@
      "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
-      "geometria.triangulos"
+      "geometria.congruencia"
      ],
      "plantillas": [
-      "poligonos",
-      "geo-poligonos"
+      "geo-poligonos-cuadrilateros",
+      "poligonos"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/poligonos-y-cuadrilateros.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-objeto.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "suma-de-angulos": "Triángulos dentro del polígono",
-       "diagonales": "Cada diagonal se cuenta dos veces",
-       "paralelogramos": "Nombres que se ganan con condiciones",
-       "trapecios": "La mediana del trapecio",
-       "trapezoides": "Puntos medios de cualquier cuadrilátero"
+       "suma-de-angulos": "Suma de ángulos interiores",
+       "angulos-exteriores": "Ángulos exteriores del polígono",
+       "diagonales": "Número de diagonales",
+       "paralelogramos": "El paralelogramo y sus propiedades",
+       "rectangulo-rombo-cuadrado": "Rectángulo, rombo y cuadrado",
+       "trapecios": "El trapecio y su mediana"
       },
-      "terminos": 40
+      "terminos": 57
      }
     },
     {
@@ -4794,7 +4802,7 @@
        "poncelet-pitot": "Tangentes iguales: Pitot y Poncelet",
        "cuadrilatero-inscrito": "Opuestos que suman 180°"
       },
-      "terminos": 47
+      "terminos": 48
      }
     },
     {
@@ -4841,7 +4849,7 @@
        "semejanza": "Emparejar lados por sus ángulos",
        "area-y-escala": "El área crece con k²"
       },
-      "terminos": 45
+      "terminos": 46
      }
     },
     {
@@ -4987,7 +4995,7 @@
        "dos-n-lados": "De n lados a 2n lados",
        "seccion-aurea": "La razón áurea del pentágono"
       },
-      "terminos": 45
+      "terminos": 44
      }
     },
     {
@@ -5228,7 +5236,7 @@
        "euler": "Caras más vértices",
        "regulares": "Solo cinco regulares"
       },
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -5433,7 +5441,7 @@
        "rutas": "Cada esquina suma dos caminos",
        "cubos-ocultos": "Los cubitos que no se ven"
       },
-      "terminos": 23
+      "terminos": 24
      }
     }
    ]
@@ -9024,6 +9032,9 @@
    "archivos": [
     "/plantillas/dinamica-fuerzas/generador.js",
     "/plantillas/dinamica-fuerzas/papel.json"
+   ],
+   "rehacer": [
+    "fisica.estatica"
    ]
   },
   "divisibilidad-restos": {
@@ -9065,6 +9076,30 @@
    "archivos": [
     "/plantillas/division-polinomios/generador.js",
     "/plantillas/division-polinomios/papel.json"
+   ]
+  },
+  "division-practica": {
+   "id": "division-practica",
+   "titulo": "División de polinomios",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.division-de-polinomios"
+   ],
+   "url": "#/practica/division-practica",
+   "ideas": [
+    "algoritmo",
+    "horner",
+    "ruffini",
+    "divisor-k",
+    "teorema-resto",
+    "cocientes-notables"
+   ],
+   "papel": "/plantillas/division-practica/papel.json",
+   "archivos": [
+    "/plantillas/division-practica/generador.js",
+    "/plantillas/division-practica/papel.json"
    ]
   },
   "divisores": {
@@ -9223,7 +9258,8 @@
     "/plantillas/estatica/index.html",
     "/plantillas/estatica/motor.js",
     "/plantillas/estatica/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "estequiometria-admision": {
    "id": "estequiometria-admision",
@@ -9297,6 +9333,30 @@
    "archivos": [
     "/plantillas/exponentes-radicales/generador.js",
     "/plantillas/exponentes-radicales/papel.json"
+   ]
+  },
+  "fis-estatica": {
+   "id": "fis-estatica",
+   "titulo": "Estática",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.estatica"
+   ],
+   "url": "#/practica/fis-estatica",
+   "ideas": [
+    "diagrama-y-parejas",
+    "nudo-en-equilibrio",
+    "rozamiento-se-ajusta",
+    "resorte-proporcional",
+    "torque-y-brazo",
+    "cuerpo-rigido"
+   ],
+   "papel": "/plantillas/fis-estatica/papel.json",
+   "archivos": [
+    "/plantillas/fis-estatica/generador.js",
+    "/plantillas/fis-estatica/papel.json"
    ]
   },
   "fis-mru": {
@@ -9621,7 +9681,6 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "geometria.poligonos-y-cuadrilateros",
     "geometria.poligonos-regulares"
    ],
    "url": "#/practica/geo-poligonos",
@@ -9629,6 +9688,30 @@
    "archivos": [
     "/plantillas/geo-poligonos/generador.js",
     "/plantillas/geo-poligonos/papel.json"
+   ]
+  },
+  "geo-poligonos-cuadrilateros": {
+   "id": "geo-poligonos-cuadrilateros",
+   "titulo": "Polígonos y cuadriláteros",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.poligonos-y-cuadrilateros"
+   ],
+   "url": "#/practica/geo-poligonos-cuadrilateros",
+   "ideas": [
+    "suma-de-angulos",
+    "angulos-exteriores",
+    "diagonales",
+    "paralelogramos",
+    "rectangulo-rombo-cuadrado",
+    "trapecios"
+   ],
+   "papel": "/plantillas/geo-poligonos-cuadrilateros/papel.json",
+   "archivos": [
+    "/plantillas/geo-poligonos-cuadrilateros/generador.js",
+    "/plantillas/geo-poligonos-cuadrilateros/papel.json"
    ]
   },
   "geo-proporcionalidad": {
@@ -10683,6 +10766,9 @@
     "/plantillas/poligonos/index.html",
     "/plantillas/poligonos/motor.js",
     "/plantillas/poligonos/papel.json"
+   ],
+   "rehacer": [
+    "geometria.poligonos-y-cuadrilateros"
    ]
   },
   "polinomios": {
@@ -10704,7 +10790,8 @@
     "/plantillas/polinomios/papel.json"
    ],
    "rehacer": [
-    "algebra.polinomios"
+    "algebra.polinomios",
+    "algebra.division-de-polinomios"
    ]
   },
   "polinomios-practica": {

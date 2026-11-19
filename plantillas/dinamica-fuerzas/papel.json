@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["fisica.dinamica"],
       "nivel": "básico",
       "enunciado": "Un niño se para sobre un juego giratorio del parque que gira con una rapidez angular de 2 rad/s. El coeficiente de rozamiento estático entre sus zapatillas y el piso del juego es 0,4. ¿A qué distancia máxima del eje puede pararse sin resbalar?",
       "respuesta": "A 1 m del eje.",
@@ -16,6 +17,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["fisica.dinamica"],
       "nivel": "básico",
       "enunciado": "Una moto tiene tracción trasera: el motor hace girar solo la rueda de atrás, sobre la que descansa la mitad del peso. El coeficiente de rozamiento estático entre las llantas y la pista es 0,8. Al arrancar sin patinar, ¿hacia dónde apunta el rozamiento del piso sobre la rueda de atrás y cuál es la máxima aceleración posible?",
       "respuesta": "El rozamiento sobre la rueda de atrás apunta hacia adelante, y la aceleración máxima es 4 m/s².",
@@ -29,6 +31,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["fisica.dinamica"],
       "nivel": "intermedio",
       "enunciado": "Una curva de 30 m de radio de la carretera de Arequipa está peraltada 37°. ¿Con qué rapidez debe tomarla un camión para no necesitar nada de rozamiento?",
       "respuesta": "15 m/s.",
@@ -41,6 +44,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["fisica.dinamica"],
       "nivel": "intermedio",
       "enunciado": "Una bolita de 0,2 kg gira sin rozamiento por dentro de un cuenco semiesférico de 0,8 m de radio, en una circunferencia horizontal. El radio del cuenco que llega a la bolita forma 60° con la vertical. ¿Con qué rapidez angular gira y cuánto vale la normal del cuenco?",
       "respuesta": "Gira a 5 rad/s y la normal vale 4 N.",
@@ -57,6 +61,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["fisica.gravitacion"],
       "nivel": "básico",
       "enunciado": "Una astronauta de 80 kg llega a Marte, donde g = 3,7 m/s². Allí empuja un carrito de 16 kg por un riel horizontal sin rozamiento con una fuerza de 40 N. ¿Cuál es su peso en Marte y qué aceleración tiene el carrito? ¿Sería distinta esa aceleración en la Tierra?",
       "respuesta": "Su peso en Marte es 296 N; el carrito acelera 2,5 m/s², lo mismo que en la Tierra.",
@@ -72,6 +77,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["fisica.dinamica"],
       "nivel": "avanzado",
       "enunciado": "Dos bloques, A de 2 kg y B de 3 kg, están unidos por un resorte sobre un piso con coeficiente de rozamiento cinético 0,2. Se tira de A con una fuerza horizontal de 19 N. En cierto instante, los dos avanzan y B acelera 1 m/s². ¿Cuál es la aceleración de A en ese instante?",
       "respuesta": "3 m/s².",
@@ -85,6 +91,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["fisica.dinamica"],
       "nivel": "intermedio",
       "enunciado": "Tres carretillas están en reposo sobre un piso muy liso. A la 1 (4 kg) la empujan con 20 N durante 3 s; a la 2 (10 kg), con 30 N durante 4 s; a la 3 (5 kg), con 50 N durante 1 s. ¿Cuál termina más rápido?",
       "respuesta": "La carretilla 1, con 15 m/s (la 2 llega a 12 m/s y la 3, a 10 m/s).",
@@ -101,6 +108,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["fisica.estatica"],
       "nivel": "avanzado",
       "enunciado": "Una escalera uniforme de 5 m y 20 kg se apoya en una pared lisa y forma 53° con el piso. Un pintor de 60 kg sube hasta la mitad de la escalera. ¿Cuánto rozamiento tiene que dar el piso y qué coeficiente de rozamiento estático mínimo hace falta?",
       "respuesta": "El roce vale 300 N y el coeficiente mínimo es 0,375.",
@@ -114,6 +122,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["fisica.gravitacion"],
       "nivel": "intermedio",
       "enunciado": "Dos esferas de 2 kg y 18 kg tienen sus centros a 2 m. ¿En qué punto entre ellas una bolita no siente fuerza gravitatoria neta?",
       "respuesta": "A 0,5 m de la esfera de 2 kg (y a 1,5 m de la de 18 kg).",

@@ -723,6 +723,16 @@ const V = {
     const s = g(0), orden = [...s].sort((a, b) => b - a);
     return { correcta: n, errores: { 'PO9-grado-del-primer-termino': d.G - s[0], 'PO-grado-de-otro-termino': d.G - orden[1], 'PO11-suma-los-grados': (d.G - s.reduce((a, b) => a + b, 0)) / s.length } }; },
 
+  // dp-01 y dp-02 (reserva, 19 nov, etapa 6 de álgebra: «División de polinomios»; las formas ya tienen 10 pares). La
+  // plantilla division-practica no tiene motor: se rehace aquí. dp-01: el término de lugar k de (x^(pN) − y^(sN)) ÷
+  // (x^p − y^s) es x^(p(N − k)) y^(s(k − 1)). dp-02: Ruffini con x = −b/c y el cociente entre c (fracciones exactas
+  // con números: los coeficientes salen enteros en los dos ítems).
+  'dp-01': d => { const g = k => d.p * (d.N - k) + d.s * (k - 1);
+    return { correcta: g(d.k), errores: { 'TAL-TK-EXP-segunda-base-con-k': d.p * (d.N - d.k) + d.s * d.k, 'TAL-CONTEO-termino-siguiente': g(d.k + 1), 'TAL-GRADO-D-grado-del-dividendo': (d.p + d.s) * d.N } }; },
+  'dp-02': d => { const [c, b] = d.divisor, fila = x0 => d.coefs.reduce((acc, co, i) => [...acc, i ? co + x0 * acc[i - 1] : co], []);
+    const bien = fila(-b / c), mal = fila(b / c), suma = l => l.slice(0, -1).reduce((u, w) => u + w, 0);
+    return { correcta: suma(bien) / c, errores: { 'PO3-cociente-falso-sin-dividir': suma(bien), 'PO2-numero-con-el-signo-cambiado': suma(mal) / c, 'TAL-RESTO-EN-Q-suma-el-resto': suma(bien) / c + bien[bien.length - 1] } }; },
+
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
   // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares;
   // geo-05, de Relaciones métricas, volvió a las formas el 18 nov en el lugar que dejó geo-13).
@@ -740,6 +750,15 @@ const V = {
     return { correcta: d.p * x - d.q, errores: { 'GE-CON30': x, 'GE-CON31': 2 * (d.p * x - d.q), 'GE-TRI15': d.p * xs - d.q } }; },
   'cg-04': d => { const k = d.C === 37 ? d.BH / 3 : d.BH / 4, hc = d.C === 37 ? 4 * k : 3 * k;
     return { correcta: d.BH + hc, errores: { 'GE-CON72': hc, 'GE-CON73': 2 * d.BH, 'GE-CON64': d.BH + 5 * k } }; },
+  // pc-01 y pc-02 (19 nov, etapa 6, Polígonos y cuadriláteros; reserva: las formas ya tienen 10 pares). La práctica
+  // geo-poligonos-cuadrilateros es un generador sin motor: aquí se rehacen aparte, con coordenadas. pc-01: paralelogramo
+  // de lados ab y bc (m∠A = 70°), corte de la bisectriz de A con BC. pc-02: un trapecio de bases B y b; P y Q, puntos
+  // medios de las diagonales, sobre la mediana.
+  'pc-01': d => { const t = 70 * PI / 180, Dd = [d.bc * Math.cos(t), d.bc * Math.sin(t)], C = [d.ab + Dd[0], Dd[1]], k = Math.tan(t / 2), s = d.ab * k / (Dd[1] - Dd[0] * k), E = [d.ab + s * Dd[0], s * Dd[1]];
+    const r = x => Math.round(x * 1e6) / 1e6;
+    return { correcta: r(Math.hypot(C[0] - E[0], C[1] - E[1])), errores: { 'GE-PC12': r(Math.hypot(E[0] - d.ab, E[1])), 'GE-PC13': d.bc / 2, 'GE-PC14': d.ab + d.bc } }; },
+  'pc-02': d => { const A = [0, 0], Dd = [d.B, 0], Bt = [1.5, 3], Ct = [1.5 + d.b, 3], Pp = [(A[0] + Ct[0]) / 2, 1.5], Q = [(Bt[0] + Dd[0]) / 2, 1.5], M = [(A[0] + Bt[0]) / 2, 1.5], N = [(Dd[0] + Ct[0]) / 2, 1.5];
+    return { correcta: Q[0] - Pp[0], errores: { 'GE-TRP1': N[0] - M[0], 'GE-TRP2': d.B - d.b, 'GE-TRP3': Pp[0] - M[0] } }; },
   'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
     return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
   'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;
@@ -798,6 +817,15 @@ const V = {
   'fis-26': d => { const M = motor('movimiento-circular'), r = d.v1 * d.v1 / d.a1, k = d.v2 / d.v1;
     if (Math.abs(M.mcu({ r, v: d.v1 }).ac - d.a1) > 1e-9) throw new Error('fis-26: el radio no da la primera aceleración');
     return { correcta: M.mcu({ r, v: d.v2 }).ac, errores: { 'PR1-proporcion-directa': d.a1 * k, 'MC-no-cambia-con-la-rapidez': d.a1, 'MC-A0-rapidez-constante': 0, 'PR-cubo': d.a1 * k ** 3 } }; },
+
+  // fis-27 y fis-28 (reserva, 19 nov, etapa 6 de física: «Estática»; las formas ya tienen 10 pares). El motor de la escena
+  // estatica da la reacción del apoyo (barra con peso propio) y el rozamiento de la caja quieta en la rampa (planoRoce).
+  'fis-27': d => { const M = motor('estatica'), r = M.barra({ L: d.L, m: d.m, apoyos: [{ x: 0 }, { x: d.L }], cargas: [{ x: d.x, m: d.mp }] });
+    const sin = M.barra({ L: d.L, m: 0, apoyos: [{ x: 0 }, { x: d.L }], cargas: [{ x: d.x, m: d.mp }] });
+    return { correcta: r.R, errores: { 'RG-sin-peso-propio': sin.R, 'RG-mitad-de-todo': (d.m + d.mp) * 10 / 2, 'RG-un-apoyo-carga-todo': (d.m + d.mp) * 10 } }; },
+  'fis-28': d => { const r = motor('estatica').planoRoce({ m: d.m, angulo: d.angulo, mus: d.mus, F: 0 });
+    if (!r.quieto) throw new Error('fis-28: la caja debe estar quieta');
+    return { correcta: Math.abs(r.roce), errores: { 'E10-estatico-siempre-mu-N': r.fsMax, 'ST-seno-por-coseno': r.N, 'N-MG-el-peso': d.m * 10 } }; },
 
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);

@@ -355,3 +355,23 @@ test('Movimiento circular: las predicciones sin huella de las ideas que cambiaro
   assert.deepEqual(viejo.teoria[V].ideas, { 'un-reloj-dos-ejes': { prediccion: 'soltada' } });
   assert.deepEqual(viejo.teoria[N].ideas, { 'dos-aceleraciones': {} });
 });
+
+test('Estática rehecha (19 nov): predicciones viejas sin huella borradas una vez y «Ya la estudié» para quien terminó las seis de antes', () => {
+  const U = 'fisica.estatica', viejas = ['diagrama-y-parejas', 'nudo-en-equilibrio', 'rozamiento-se-ajusta', 'resorte-proporcional', 'torque-y-brazo', 'polea-movil'];
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-10' }, teoria: { [U]: { ideas: Object.fromEntries(viejas.map(id => [id, { hecha: true, prediccion: 'c' }])) } } };
+  est.teoria[U].ideas['torque-y-brazo'].prediccionDe = 'h1';
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionES, 1);
+  assert.equal(est.estudiadaES, 1);
+  assert.equal(est.teoria[U].ideas['diagrama-y-parejas'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['torque-y-brazo'].prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-10');
+  // Una sola vez; y quien no había terminado no gana la marca.
+  assert.equal(A.migrar(est), false);
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'diagrama-y-parejas': { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U]);
+});
+
+// 19 nov (etapa 6, docs/etapa6/propuesta-quimica.md): «Enlace químico y fuerzas intermoleculares» se parte. La forma y la
+// polaridad, las fuerzas entre moléculas, las dos mesas de dipolos y sus palabras pasan a quimica.geometria-molecular.

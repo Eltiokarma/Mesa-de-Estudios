@@ -1,0 +1,24 @@
+{
+  "id": "fis-estatica",
+  "titulo": "Estática",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.estatica"
+  ],
+  "temas": [
+    "Primera y tercera ley de Newton",
+    "Diagrama de cuerpo libre",
+    "Rozamiento estático y cinético",
+    "Fuerza elástica",
+    "Equilibrio de una partícula",
+    "Torque",
+    "Equilibrio del cuerpo rígido",
+    "Máquinas simples"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

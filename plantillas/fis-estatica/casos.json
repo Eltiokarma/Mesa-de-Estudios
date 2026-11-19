@@ -1,0 +1,273 @@
+{
+ "plantilla": "fis-estatica",
+ "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta (N, cm, m o N·m); texto: lo que ve el alumno (coma decimal). Un caso por tipo: las seis ideas de Estática.",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e6-fisica/casos.py), que no usa el generador, el núcleo ni plantillas/estatica/motor.js: resuelve cada equilibrio con eliminación de Gauss sobre la suma de fuerzas por componentes y la suma de torques respecto de un punto; el resorte se estira de a 0,0001 m hasta que su fuerza alcanza la carga; sen y cos de 37° y 53° son 3/5 y 4/5. Escribe el texto con su propio redondeo (la mitad hacia afuera, con Decimal) y su coma decimal. Los 18 casos cuadran con el generador en el valor y en el texto de la alternativa correcta.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "diagrama-y-parejas",
+    "tipo": "pesa",
+    "nivel": 3,
+    "M": 50,
+    "mp": 20
+   },
+   "esperado": {
+    "respuesta": 700.0,
+    "texto": "700 N"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "resorte-proporcional",
+    "tipo": "polea",
+    "nivel": 3,
+    "P": 200,
+    "k": 2000
+   },
+   "esperado": {
+    "respuesta": 5.0,
+    "texto": "5 cm"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "rozamiento-se-ajusta",
+    "tipo": "rampa",
+    "nivel": 2,
+    "m": 5,
+    "a": 30,
+    "pideN": false
+   },
+   "esperado": {
+    "respuesta": 25.0,
+    "texto": "25 N"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "resorte-proporcional",
+    "tipo": "estira",
+    "nivel": 1,
+    "m": 1.5,
+    "k": 200
+   },
+   "esperado": {
+    "respuesta": 7.5,
+    "texto": "7,5 cm"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "nudo-en-equilibrio",
+    "tipo": "simetrico",
+    "nivel": 1,
+    "P": 120,
+    "a": 53
+   },
+   "esperado": {
+    "respuesta": 75.0,
+    "texto": "75 N"
+   }
+  },
+  {
+   "semilla": 6,
+   "entrada": {
+    "idea": "rozamiento-se-ajusta",
+    "tipo": "quieto",
+    "nivel": 1,
+    "m": 50,
+    "mus": 0.3,
+    "F": 75
+   },
+   "esperado": {
+    "respuesta": 75,
+    "texto": "75 N"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "cuerpo-rigido",
+    "tipo": "escalera",
+    "nivel": 3,
+    "L": 5,
+    "Pe": 150,
+    "a": 37,
+    "P": 600,
+    "s": 3.75
+   },
+   "esperado": {
+    "respuesta": 700.0,
+    "texto": "700 N"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "torque-y-brazo",
+    "tipo": "torque",
+    "nivel": 1,
+    "F": 80,
+    "d": 30
+   },
+   "esperado": {
+    "respuesta": 24.0,
+    "texto": "24 N·m"
+   }
+  },
+  {
+   "semilla": 13,
+   "entrada": {
+    "idea": "diagrama-y-parejas",
+    "tipo": "apiladas",
+    "nivel": 2,
+    "a": 6,
+    "b": 10,
+    "entre": false
+   },
+   "esperado": {
+    "respuesta": 160,
+    "texto": "160 N"
+   }
+  },
+  {
+   "semilla": 15,
+   "entrada": {
+    "idea": "torque-y-brazo",
+    "tipo": "inclinada",
+    "nivel": 3,
+    "F": 100,
+    "L": 0.4,
+    "a": 30
+   },
+   "esperado": {
+    "respuesta": 20.0,
+    "texto": "20 N·m"
+   }
+  },
+  {
+   "semilla": 16,
+   "entrada": {
+    "idea": "nudo-en-equilibrio",
+    "tipo": "pared",
+    "nivel": 3,
+    "m": 60,
+    "a": 53
+   },
+   "esperado": {
+    "respuesta": 800.0,
+    "texto": "800 N"
+   }
+  },
+  {
+   "semilla": 17,
+   "entrada": {
+    "idea": "torque-y-brazo",
+    "tipo": "balancin",
+    "nivel": 2,
+    "ma": 36,
+    "da": 1,
+    "mb": 25
+   },
+   "esperado": {
+    "respuesta": 1.44,
+    "texto": "1,44 m"
+   }
+  },
+  {
+   "semilla": 18,
+   "entrada": {
+    "idea": "diagrama-y-parejas",
+    "tipo": "balanza",
+    "nivel": 1,
+    "m": 35,
+    "F": 50,
+    "abajo": true
+   },
+   "esperado": {
+    "respuesta": 400.0,
+    "texto": "400 N"
+   }
+  },
+  {
+   "semilla": 19,
+   "entrada": {
+    "idea": "nudo-en-equilibrio",
+    "tipo": "asimetrico",
+    "nivel": 2,
+    "P": 150,
+    "cual": 37
+   },
+   "esperado": {
+    "respuesta": 90.0,
+    "texto": "90 N"
+   }
+  },
+  {
+   "semilla": 20,
+   "entrada": {
+    "idea": "resorte-proporcional",
+    "tipo": "largo",
+    "nivel": 2,
+    "L0": 15,
+    "m": 1,
+    "k": 200
+   },
+   "esperado": {
+    "respuesta": 20.0,
+    "texto": "20 cm"
+   }
+  },
+  {
+   "semilla": 26,
+   "entrada": {
+    "idea": "cuerpo-rigido",
+    "tipo": "apoyos",
+    "nivel": 2,
+    "Pb": 300,
+    "P": 600,
+    "x": 2.5,
+    "pideB": true
+   },
+   "esperado": {
+    "respuesta": 525.0,
+    "texto": "525 N"
+   }
+  },
+  {
+   "semilla": 28,
+   "entrada": {
+    "idea": "cuerpo-rigido",
+    "tipo": "caballete",
+    "nivel": 2,
+    "L": 6,
+    "m": 20,
+    "a": 1
+   },
+   "esperado": {
+    "respuesta": 400.0,
+    "texto": "400 N"
+   }
+  },
+  {
+   "semilla": 38,
+   "entrada": {
+    "idea": "rozamiento-se-ajusta",
+    "tipo": "oblicua",
+    "nivel": 3,
+    "m": 40,
+    "F": 150,
+    "a": 37
+   },
+   "esperado": {
+    "respuesta": 310.0,
+    "texto": "310 N"
+   }
+  }
+ ]
+}
