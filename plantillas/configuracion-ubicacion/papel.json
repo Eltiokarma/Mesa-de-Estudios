@@ -5,7 +5,7 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Un elemento tiene número atómico 51. ¿En qué periodo y en qué grupo está? Da el grupo de 1 a 18 y en la notación A/B.",
+      "enunciado": "Un elemento tiene número atómico 51. ¿En qué periodo y en qué grupo está? Da el grupo de 1 a 18 y en la notación A/B. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el mayor n de la configuración. Grupo A (termina en s o p): los electrones del último nivel. Grupo B (termina en d): los del último s más los del d. Grupo de 1 a 18: IA y IIA son 1 y 2; de IIIB a IIB, 3 a 12; de IIIA a VIIIA, 13 a 18.",
       "respuesta": "Periodo 5, grupo 15 (VA).",
       "pasos": [
         "Configuración: [Kr] 5s² 4d¹⁰ 5p³.",
@@ -33,7 +33,7 @@
     {
       "id": "p2",
       "nivel": "intermedio",
-      "enunciado": "Un metal tiene Z = 75. Una compañera dice que está en el periodo 5 porque su último subnivel es un 5d. ¿Tiene razón? Ubica el elemento.",
+      "enunciado": "Un metal tiene Z = 75. Una compañera dice que está en el periodo 5 porque su último subnivel es un 5d. ¿Tiene razón? Ubica el elemento. Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el mayor n de la configuración. Grupo A (termina en s o p): los electrones del último nivel. Grupo B (termina en d): los del último s más los del d. Grupo de 1 a 18: IA y IIA son 1 y 2; de IIIB a IIB, 3 a 12; de IIIA a VIIIA, 13 a 18.",
       "respuesta": "No: está en el periodo 6, grupo 7 (VIIB).",
       "pasos": [
         "Configuración: [Xe] 6s² 4f¹⁴ 5d⁵.",
@@ -198,7 +198,7 @@
     {
       "id": "p9",
       "nivel": "intermedio",
-      "enunciado": "De los elementos con Z = 34, Z = 42 y Z = 52, ¿cuáles dos son de la misma familia? ¿Por qué el otro no lo es, si también tiene 6 electrones de valencia?",
+      "enunciado": "De los elementos con Z = 34, Z = 42 y Z = 52, ¿cuáles dos son de la misma familia? ¿Por qué el otro no lo es, si también tiene 6 electrones de valencia? Datos: Orden de llenado: 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p. Caben: 2 en un s, 6 en un p, 10 en un d, 14 en un f. Periodo: el mayor n de la configuración. Grupo A (termina en s o p): los electrones del último nivel. Grupo B (termina en d): los del último s más los del d. Grupo de 1 a 18: IA y IIA son 1 y 2; de IIIB a IIB, 3 a 12; de IIIA a VIIIA, 13 a 18. Familia: el mismo grupo, con la misma letra.",
       "respuesta": "Z = 34 y Z = 52 (grupo VIA). Z = 42 es del grupo VIB.",
       "pasos": [
         "Z = 34: [Ar] 4s² 3d¹⁰ 4p⁴, bloque p, 2 + 4 = 6: grupo VIA (16).",
