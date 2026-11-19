@@ -120,3 +120,14 @@ test('ningún error da la correcta y los casos son posibles', () => {
     if (d.tipo === 'levantar') assert.ok(d.T < d.m * 10, `${d.tipo} ${s}: en la Tierra subiría igual`);
   }
 });
+
+// ---- Auditoría del 19 nov (rutinas/auditoria/fisica.dinamica.md, M6 y B1) ----
+test('auditoría: nada se mueve más rápido de lo creíble y la práctica no repite los ejemplos de la teoría', () => {
+  const VISTOS = { neta: d => d.m === 10 && d.F1 === 70 && d.F2 === 30, mesa: d => d.m1 === 6 && (d.m2 === 2 || d.m2 === 4),
+    aspera: d => d.m1 === 5 && d.m2 === 3 && d.mu === 0.2, balanza: (d, t) => (d.m === 60 && d.a === 2 && /sube y acelera/.test(t)) || (d.m === 70 && d.a === 3 && /baja y frena/.test(t)) };
+  for (const idea of Object.keys(gen.TIPOS_POR_IDEA)) for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea }), d = p._datos, t = p.enunciado.map(x => (typeof x === 'string' ? x : x.t)).join('');
+    if (d.tipo === 'reposo') assert.ok(p.respuesta.valor <= 12, `semilla ${s}: ${p.respuesta.valor} m/s`);
+    if (VISTOS[d.tipo]) assert.ok(!VISTOS[d.tipo](d, t), `${d.tipo} semilla ${s}: repite un ejemplo (${t})`);
+  }
+});

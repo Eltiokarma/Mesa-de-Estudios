@@ -116,8 +116,9 @@
     juntos: 'Los cuerpos unidos por una cuerda tensa tienen la misma aceleración',
     balanza: ['Una balanza marca la fuerza con que sostiene lo que tiene encima: la normal ', N],
     eje: 'Hacia arriba es positivo: a > 0 si la aceleración apunta hacia arriba',
-    ac: 'a_c = v² / r = ω² · r, hacia el centro',
-    centro: [...SF, ' = m · a_c, hacia el centro de la curva'],
+    ac: [sub('a', 'c'), ' = v² / r, hacia el centro; v es la rapidez y r, el radio de la curva'],
+    acw: [sub('a', 'c'), ' = ω² · r, hacia el centro; ω es la rapidez angular, en rad/s, y r, la distancia al eje'],
+    centro: [...SF, ' = m · ', sub('a', 'c'), ', hacia el centro de la curva'],
   };
 
   // ---- Figuras (todas con la pieza fis-estatica) ----
@@ -136,20 +137,27 @@
     const k = Math.min(o.k || 0.12, 56 / grande, (fz.F || fz.T) ? 34 / Math.max(fz.F || 0, fz.T || 0, fz.f || 0, 1) : Infinity);
     const L = (v, t) => largoDe(v, t, k, fijo);
     if (fz.P) fl.push({ de: [cx - 8, cy + h], ang: 270, largo: L(fz.P, fz.tP), color: 'h', texto: fz.tP || `P = ${N_(fz.P)}`, rumbo: String(fz.tP || 'P').length > 6 ? [-0.5, 1] : [-1, 0.4], paso: o.pP });
-    if (fz.N || (fz.tN && fz.tN.includes('?'))) fl.push({ de: [cx - 8, cy - h], ang: 90, largo: L(fz.N || 0, fz.tN), color: 'f', texto: fz.tN || `N = ${N_(fz.N)}`, rumbo: [-1, -0.4], paso: o.pN });
+    // Una fuerza vertical al lado del peso (auditoría, A1): la pista que empuja hacia abajo arriba del rizo (Nabajo) o la
+    // cuerda o las cadenas que jalan hacia arriba o hacia abajo (Tvert: 1 o −1) en una curva vertical.
+    const vertical = (v, t, dir, color) => fl.push({ de: [cx + 12, dir > 0 ? cy - h : cy + h], ang: dir > 0 ? 90 : 270, largo: L(v, t), color, texto: t, rumbo: [1, dir > 0 ? -0.4 : 0.4] });
+    // «N = 0» (la pista ya no empuja) va escrito sobre la caja, sin flecha (lector en frío B, tarjeta 18).
+    const nCero = /^N = 0$/.test(fz.tN || '');
+    if (nCero) { /* sin flecha */ } else if (fz.Nabajo) vertical(fz.N || 0, fz.tN || `N = ${N_(fz.N)}`, -1, 'f');
+    else if (fz.N || (fz.tN && fz.tN.includes('?'))) fl.push({ de: [cx - 8, cy - h], ang: 90, largo: L(fz.N || 0, fz.tN), color: 'f', texto: fz.tN || `N = ${N_(fz.N)}`, rumbo: [-1, -0.4], paso: o.pN });
+    if (fz.Tvert && fz.T) vertical(fz.T, fz.tT || `T = ${N_(fz.T)}`, fz.Tvert, 'o');
     const lado = fz.Fdir || 1, angF = fz.Fang || 0;
-    const tira = fz.F ? { v: fz.F, t: fz.tF || `F = ${N_(fz.F)}` } : fz.T ? { v: fz.T, t: fz.tT || `T = ${N_(fz.T)}` } : null;
+    const tira = fz.F ? { v: fz.F, t: fz.tF || `F = ${N_(fz.F)}` } : fz.T && !fz.Tvert ? { v: fz.T, t: fz.tT || `T = ${N_(fz.T)}` } : null;
     if (tira || (fz.tF && fz.tF.includes('?'))) fl.push({ de: [cx + lado * w / 2, cy - (angF ? 6 : 0)], ang: lado > 0 ? angF : 180 - angF, largo: L(tira ? tira.v : 0, tira ? tira.t : fz.tF), color: 'o', texto: tira ? tira.t : fz.tF, rumbo: [lado * 0.4, -1], paso: o.pF });
     if (fz.F2) fl.push({ de: [cx - lado * w / 2, cy - 6], ang: lado > 0 ? 180 : 0, largo: L(fz.F2, fz.tF2), color: 'o', texto: fz.tF2 || `F = ${N_(fz.F2)}`, rumbo: [-lado * 0.4, -1] });
     const fd = fz.fdir || -lado;
     if (fz.f || (fz.tf && fz.tf.includes('?'))) fl.push({ de: [cx + fd * w / 2, cy + 8], ang: fd > 0 ? 0 : 180, largo: L(fz.f || 0, fz.tf), color: 'i', texto: fz.tf || `f = ${N_(fz.f)}`, rumbo: [fd * 0.3, 1], paso: o.pf });
     if (fz.adir) {
       const ta = fz.ta || 'a⃗';
-      if (fz.avert) fl.push({ de: [cx + 36, fz.adir > 0 ? cy + 14 : cy - 14], ang: fz.adir > 0 ? 90 : 270, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: ta, rumbo: [1, 0], paso: o.pa });
-      else fl.push({ de: [fz.adir > 0 ? cx + 8 : cx + 38, cy + 62], ang: fz.adir > 0 ? 0 : 180, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: ta, rumbo: [fz.adir, 0.3], paso: o.pa });
+      if (fz.avert) fl.push({ de: [cx + 36, fz.adir > 0 ? cy + 14 : cy - 14], ang: fz.adir > 0 ? 90 : 270, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: ta, rumbo: [0, fz.adir > 0 ? -1 : 1], paso: o.pa });
+      else fl.push({ de: [fz.adir > 0 ? cx + 8 : cx + 38, cy + 72], ang: fz.adir > 0 ? 0 : 180, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: ta, rumbo: [fz.adir, 0], paso: o.pa });
     }
     return { obj: [{ tipo: 'caja', fig: true, x: cx, y: cy + h, w, h: 2 * h }], fl,
-      txt: o.sinTitulo ? [] : [{ x: cx, y: 18, texto: o.titulo || 'DCL', ancla: 'middle', peso: 400 }, ...(fijo ? [{ x: cx, y: cy + 92, texto: 'sin escala', ancla: 'middle', peso: 400 }] : [])] };
+      txt: [...(nCero ? [{ x: cx, y: cy - h - 12, texto: 'N = 0', ancla: 'middle', color: 'f' }] : []), ...(o.sinTitulo ? [] : [{ x: cx, y: 18, texto: o.titulo || 'DCL', ancla: 'middle', peso: 400 }, ...(fijo ? [{ x: cx, y: cy + 98, texto: 'sin escala', ancla: 'middle', peso: 400 }] : [])])] };
   }
   // Un cuerpo en el piso, a la izquierda, con quien lo empuja o la cuerda que lo jala; su DCL a la derecha.
   //   o.cosa: el objeto ({ tipo: 'carrito' | 'caja' | 'costal', … }); o.mano: 1 (la persona empuja hacia la derecha, desde
@@ -194,19 +202,19 @@
     alt: 'El carrito va hacia la derecha, pero su aceleración apunta hacia la izquierda, como la fuerza.' });
   // Mira: el carrito de 30 kg sale a 6 m/s hacia la derecha y la mano lo empuja 60 N hacia la izquierda: a = −2 m/s².
   // Un corte por segundo: v = 6 − 2t y lo recorrido, 6t − t² (6 px por metro). a⃗ siempre a la izquierda.
-  const corte1 = tt => {
+  const corte1 = (tt, ta = 'a = 2 m/s²') => {
     const v = 6 - 2 * tt, s = 6 * tt - tt * tt, x = 60 + 6 * s, fl = [];
     if (Math.abs(v) > 1e-9) fl.push({ de: [v > 0 ? x - 16 : x + 16, 136], ang: v > 0 ? 0 : 180, largo: 12 + 4 * Math.abs(v), color: 'tinta', texto: `v = ${f(Math.abs(v))} m/s`, rumbo: [v > 0 ? 1 : -1, -0.2] });
-    fl.push({ de: [x + 15, 104], ang: 180, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: 'a = 2 m/s²', rumbo: [-1, -0.2] });
+    fl.push({ de: [x + 15, 104], ang: 180, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: ta, rumbo: [-1, -0.2] });
     return { objetos: [{ tipo: 'carrito', x, y: 204, w: 74, h: 30, mango: 0, texto: '30 kg' }, { tipo: 'persona', x: x + 71, y: 204, alto: 92, mira: -1, mano: [x + 37, 175] }],
       flechas: fl, textos: [{ x: 8, y: 26, texto: `t = ${tt} s`, ancla: 'start' }, ...(Math.abs(v) < 1e-9 ? [{ x, y: 136, texto: 'v = 0: se detiene', ancla: 'middle', peso: 400 }] : [])] };
   };
-  const MIRA1 = { alto: 226, piso: { y: 204, x0: 8, x1: 312 }, objetos: [], cortes: [0, 1, 2, 3, 4].map(corte1),
+  const MIRA1 = { alto: 226, piso: { y: 204, x0: 8, x1: 312 }, objetos: [], cortes: [corte1(0, 'a⃗'), corte1(0), corte1(1), corte1(3), corte1(4)],
     alt: 'El carrito sale a 6 m/s hacia la derecha; la mano lo empuja a la izquierda. Cada segundo va 2 m/s más lento, se detiene y vuelve.' };
 
   // Ejemplos resueltos de la idea 1. Cuentas rehechas con un script aparte que no usa este archivo (scratchpad
   // e7-fisica/cuentas.js: integra el movimiento paso a paso con la suma de fuerzas): 60/20; 25·2; 90/3; a = 0;
-  // 4000/2000; (70 − 30)/10; 40/8 y 5·3; 30/15 y 2·4²/2; 150·10/5; 60/6; 2·16/4² y 5·2 con cada alternativa; las cinco
+  // 4000/2000; (70 − 30)/10; 16/8 y 2·3 (auditoría, M6: antes 15 m/s); 30/15 y 2·4²/2; 150·10/5; 60/6; 2·16/4² y 5·2 con cada alternativa; las cinco
   // cajas (F·t/m); 60/6 y 2·10 con cada alternativa; 5/0,5; 8²/(2·16) y 400·2 con cada alternativa.
   const caja1 = (o = {}) => figPiso(Object.assign({ cosa: { tipo: 'caja', x: 100, w: 70, h: 44, texto: o.texto } }, o));
   const EJEMPLOS_SEGUNDA = [
@@ -258,18 +266,18 @@
       ],
       respuesta: [neg('4 m/s²'), ', hacia la derecha'] },
     { nivel: 2, titulo: 'Rapidez a los 3 segundos',
-      figura: est(figPiso({ cosa: { x: 100, texto: '8 kg' }, mano: 1, fz: { P: 80, N: 80, F: 40, tP: 'P⃗', tN: 'N⃗', tF: 'F = 40 N', adir: 1 },
-        textos: [{ x: 8, y: 22, texto: 'parte del reposo; v a los 3 s: ?', ancla: 'start', peso: 400 }], alt: 'Un carrito de 8 kg empujado con 40 N desde el reposo.' })),
-      enunciado: ['Un carrito de 8 kg parte del reposo empujado con ', pj('40 N'), ', sobre un piso que casi no frena. ¿Qué rapidez tiene a los 3 s?'],
+      figura: est(figPiso({ cosa: { x: 100, texto: '8 kg' }, mano: 1, fz: { P: 80, N: 80, F: 16, tP: 'P⃗', tN: 'N⃗', tF: 'F = 16 N', adir: 1 },
+        textos: [{ x: 8, y: 22, texto: 'parte del reposo; v a los 3 s: ?', ancla: 'start', peso: 400 }], alt: 'Un carrito de 8 kg empujado con 16 N desde el reposo.' })),
+      enunciado: ['Un carrito de 8 kg parte del reposo empujado con ', pj('16 N'), ', sobre un piso que casi no frena. ¿Qué rapidez tiene a los 3 s?'],
       datos: [D.segunda, D.reposo],
       solucion: [
-        { texto: 'La aceleración:', ecuacion: ['a = ', frac('40', '8'), ' = 5 m/s²'] },
-        { texto: 'Desde el reposo, cada segundo gana 5 m/s:', ecuacion: ['v = 5 · 3 = ', neg('15 m/s')] },
+        { texto: 'La aceleración:', ecuacion: ['a = ', frac('16', '8'), ' = 2 m/s²'] },
+        { texto: 'Desde el reposo, cada segundo gana 2 m/s:', ecuacion: ['v = 2 · 3 = ', neg('6 m/s')] },
       ],
-      respuesta: [neg('v = 15 m/s')] },
+      respuesta: [neg('v = 6 m/s')] },
     { nivel: 2, titulo: 'Distancia en 4 segundos',
       figura: est(caja1({ texto: '15 kg', mano: 1, fz: { P: 150, N: 150, F: 30, tP: 'P⃗', tN: 'N⃗', tF: 'F = 30 N', adir: 1 },
-        textos: [{ x: 8, y: 22, texto: 'del reposo; d en 4 s: ?', ancla: 'start', peso: 400 }], alt: 'Una caja de 15 kg empujada con 30 N desde el reposo, en un piso liso.' })),
+        textos: [{ x: 8, y: 22, texto: 'parte del reposo; d en 4 s: ?', ancla: 'start', peso: 400 }], alt: 'Una caja de 15 kg empujada con 30 N desde el reposo, en un piso liso.' })),
       enunciado: ['Una caja de 15 kg parte del reposo en un piso liso, empujada con ', pj('30 N'), '. ¿Qué distancia recorre en 4 s?'],
       datos: [D.segunda, D.reposo],
       solucion: [
@@ -302,7 +310,7 @@
       respuesta: [neg('a = 10 m/s²')] },
     { nivel: 3, titulo: 'La fuerza que lo hizo recorrer',
       figura: est(caja1({ texto: '5 kg', fz: { P: 50, N: 50, tP: 'P⃗', tN: 'N⃗', tF: 'F = ?', adir: 1 },
-        textos: [{ x: 8, y: 22, texto: 'del reposo: 16 m en 4 s', ancla: 'start', peso: 400 }], alt: 'Una caja de 5 kg que, desde el reposo, recorre 16 m en 4 s empujada por una fuerza.' })),
+        textos: [{ x: 8, y: 22, texto: 'parte del reposo: 16 m en 4 s', ancla: 'start', peso: 400 }], alt: 'Una caja de 5 kg que, desde el reposo, recorre 16 m en 4 s empujada por una fuerza.' })),
       enunciado: ['Una caja de 5 kg parte del reposo en un piso liso y una sola fuerza horizontal constante la hace recorrer 16 m en 4 s. ¿Cuánto vale esa fuerza?'],
       alternativas: ['5 N', '10 N', '20 N', '40 N', '80 N'],
       datos: [D.segunda, D.reposo],
@@ -342,16 +350,16 @@
       ],
       respuesta: [neg('E'), ', ', pn('20 N')] },
     { nivel: 3, titulo: 'En lo más alto del vuelo',
-      figura: est({ alto: 200, piso: { y: 186 }, objetos: [{ tipo: 'persona', x: 70, y: 186, alto: 96, mano: [92, 98] }, { tipo: 'pelota', x: 190, y: 54, r: 12 }],
-        lineas: [{ de: [96, 92], a: [180, 60] }], textos: [{ x: 226, y: 40, texto: 'aquí, v = 0', ancla: 'start', peso: 400 }, { x: 226, y: 62, texto: 'a = ?', ancla: 'start' }],
+      figura: est({ alto: 200, piso: { y: 186 }, objetos: [{ tipo: 'persona', x: 70, y: 186, alto: 96, mano: [92, 98] }, { tipo: 'pelota', x: 92, y: 40, r: 12 }],
+        lineas: [{ de: [92, 88], a: [92, 54], discontinua: true }], textos: [{ x: 114, y: 34, texto: 'aquí, v = 0', ancla: 'start', peso: 400 }, { x: 114, y: 56, texto: 'a = ?', ancla: 'start' }],
         alt: 'Una pelota de 0,5 kg lanzada hacia arriba, en lo más alto de su vuelo.' }),
       enunciado: ['Lanzas una pelota de 0,5 kg hacia arriba. En lo más alto, su velocidad es cero por un instante. Sin contar el aire, ¿cuál es su aceleración en ese instante?'],
-      alternativas: ['10 m/s², hacia abajo', '0: está quieta un instante', '10 m/s², hacia arriba', 'Menos de 10 m/s², hacia abajo', '20 m/s², hacia abajo'],
+      alternativas: ['10 m/s², hacia abajo', '0: está quieta un instante', '10 m/s², hacia arriba', 'Menos de 10 m/s², hacia abajo', '50 m/s², hacia abajo'],
       datos: [D.peso, D.segunda],
       solucion: [
         { texto: 'En lo más alto, solo la jala su peso, hacia abajo:', ecuacion: [P, ' = 0,5 · 10 = ', pp('5 N')] },
         { texto: 'Esa es la fuerza neta:', ecuacion: ['a = ', frac('5', '0,5'), ' = ', neg('10 m/s²'), ', hacia abajo'] },
-        { texto: [neg('B'), ' confunde v = 0 con a = 0; ', neg('C'), ' sigue al movimiento de subida; ', neg('D'), ' cree que la fuerza se gasta; ', neg('E'), ' suma el lanzamiento.'] },
+        { texto: [neg('B'), ' confunde v = 0 con a = 0; ', neg('C'), ' sigue al movimiento de subida; ', neg('D'), ' cree que la fuerza se gasta; ', neg('E'), ' calcula 5 · 10 en vez de 5 ÷ 0,5.'] },
       ],
       respuesta: [neg('A'), ': ', neg('10 m/s²'), ', hacia abajo'] },
     { nivel: 3, titulo: 'El carro de la mina',
@@ -371,7 +379,7 @@
   // Casos de «Ahora tú» y «Así se resuelve», de listas distintas (regla resuelve-repite). Ninguno es el de Predice
   // (30 kg empujado con 60 N) ni el de la misión (2 m/s²).
   const COSAS1_AT = [{ n: 'una caja', cosa: 'caja' }, { n: 'un baúl', cosa: 'caja' }, { n: 'un carrito', cosa: 'carrito' }];
-  const COSAS1_RS = [{ n: 'un trineo de arena', cosa: 'caja' }, { n: 'una carreta', cosa: 'carrito' }];
+  const COSAS1_RS = [{ n: 'una caja de fruta', cosa: 'caja' }, { n: 'una carreta', cosa: 'carrito' }];
   const SITUACIONES1 = [
     { pregunta: 'Lanzas una pelota hacia arriba. Mientras sube, solo la jala su peso. ¿Hacia dónde apunta su aceleración?',
       bien: 'Hacia abajo, como su peso', mov: 'Hacia arriba, como se mueve', cero: 'No tiene: en el aire nada la empuja', otro: 'No tiene: va cada vez más lento' },
@@ -380,7 +388,11 @@
     { pregunta: 'Un trineo de arena baja por una duna hacia la derecha y tú lo jalas con una cuerda hacia la izquierda, con más fuerza que todo lo demás. ¿Hacia dónde apunta su aceleración?',
       bien: 'Hacia la izquierda, como tu jalón', mov: 'Hacia la derecha, como se mueve', cero: 'No tiene: las fuerzas se oponen', otro: 'Hacia abajo, como la duna' },
     { pregunta: 'Arrastras una caja a velocidad constante hacia la derecha; el piso la frena. ¿Hacia dónde apunta su aceleración?',
-      bien: 'No tiene: su velocidad no cambia', mov: 'Hacia la derecha, como se mueve', cero: 'Hacia la izquierda, como el rozamiento', otro: 'Hacia la derecha, porque la jalas' },
+      bien: 'No tiene: su velocidad no cambia', mov: 'Hacia la derecha, como se mueve', cero: 'Hacia la izquierda, como el rozamiento', otro: 'Hacia la derecha, porque la jalas',
+      // aquí la velocidad no cambia: cada error tiene su propia explicación (auditoría, M7)
+      fb: { mov: ['D1', 'Así se mueve, cierto. Pero la aceleración sigue a la fuerza neta, y aquí la neta es cero.'],
+        cero: ['DN-UNA', 'El piso la frena hacia allá, cierto. Pero tu jalón lo iguala: la suma de las fuerzas es cero.'],
+        otro: ['W5', 'Jalas hacia allá, cierto. Pero el piso frena lo mismo: sin fuerza neta no hay aceleración.'] } },
   ];
   const segunda = {
     id: 'fuerza-neta-acelera',
@@ -417,6 +429,7 @@
         { s: [vec('a')], t: 'aceleración, flecha punteada: cuánto cambia v⃗' },
         { s: [vec('v')], t: 'velocidad del carrito' },
         { s: 'm', t: 'masa del carrito con las papas' },
+        { s: 't', t: 'tiempo: con ▶ el juego avanza solo' },
       ],
       controles: [
         { id: 'F', etiqueta: 'Empujón, F', color: 'c-o', min: 0, max: 120, paso: 20, inicio: 40, unidad: 'N', decimales: 0 },
@@ -447,15 +460,15 @@
       datos: MIRA1,
       pasos: [
         { estado: { corte: 0 }, texto: 'El carrito de 30 kg va a 6 m/s hacia la derecha.', ecuacion: [F, ' = ', pj('60 N'), ', hacia la izquierda'] },
-        { estado: { corte: 0 }, texto: 'Tu empujón es la fuerza neta. La aceleración apunta como ella:', ecuacion: ['a = ', frac('60', '30'), ' = 2 m/s², hacia la izquierda'] },
-        { estado: { corte: 1 }, texto: 'Cada segundo pierde 2 m/s: va a 4 m/s.', ecuacion: ['v = 6 − 2 · 1 = 4 m/s'] },
+        { estado: { corte: 1 }, texto: 'Tu empujón es la fuerza neta. La aceleración apunta como ella:', ecuacion: ['a = ', frac('60', '30'), ' = 2 m/s², hacia la izquierda'] },
+        { estado: { corte: 2 }, texto: 'Cada segundo pierde 2 m/s: va a 4 m/s.', ecuacion: ['v = 6 − 2 · 1 = 4 m/s'] },
         { estado: { corte: 3 }, texto: 'A los 3 s se detiene. La aceleración sigue apuntando a la izquierda.', ecuacion: ['v = 6 − 2 · 3 = 0'] },
         { estado: { corte: 4 }, texto: 'Si sigues empujando, vuelve hacia la izquierda, cada vez más rápido.', ecuacion: ['v = 6 − 2 · 4 = −2 m/s'] },
       ],
     },
     regla: {
       texto: 'La fuerza neta, la suma de todas las fuerzas con su sentido, le da al cuerpo una aceleración en su mismo sentido. Con la misma fuerza, más masa acelera menos.',
-      ecuacion: [...SF, ' = m · ', vec('a'), '   ·   a = ', frac('ΣF', 'm')],
+      ecuacion: [...SF, ' = m · ', vec('a'), ';   a = ', frac('ΣF', 'm')],
       condicion: 'las fuerzas se suman con su signo, la masa no cambia y todo se mira desde el piso, que no acelera.',
       dibujo: est(REVELA1),
     },
@@ -471,7 +484,7 @@
             enunciado: [`${mayus(ob.n)} de ${c.m} kg parte del reposo empujad${ob.n.startsWith('una') ? 'a' : 'o'} por una fuerza neta de `, pj(N_(c.Fv)), `. ¿Qué distancia recorre en ${c.t} s?`],
             datos: [D.segunda, D.reposo],
             dibujo: est(figPiso({ cosa: { tipo: ob.cosa, x: 100, texto: `${c.m} kg` }, mano: 1, fz: { P: c.m * G, N: c.m * G, F: c.Fv, tP: 'P⃗', tN: 'N⃗', tF: `F = ${N_(c.Fv)}`, adir: 1 },
-              textos: [{ x: 8, y: 22, texto: `del reposo; d en ${c.t} s: ?`, ancla: 'start', peso: 400 }] })),
+              textos: [{ x: 8, y: 22, texto: `parte del reposo; d en ${c.t} s: ?`, ancla: 'start', peso: 400 }] })),
             pasos: [
               { tipo: 'pide', texto: `Piden la distancia que recorre en ${c.t} s.` },
               { tipo: 'datos', texto: [`Masa: ${c.m} kg. Fuerza neta: `, pj(N_(c.Fv)), '. Parte del reposo.'] },
@@ -482,11 +495,11 @@
             respuesta: [neg(`d = ${f(c.d)} m`)],
           };
         }
-        const c = elegir(() => { const m = r.de([5, 8, 10, 20]), F1 = r.de([30, 50, 70, 90]), F2 = r.de([10, 20, 30]); const a = (F1 - F2) / m; return F1 > F2 && exacto(a) && { m, F1, F2, a }; });
+        const c = elegir(() => { const m = r.de([5, 8, 10, 20]), F1 = r.de([30, 50, 70, 90]), F2 = r.de([10, 20, 30]); const a = (F1 - F2) / m; return F1 > F2 && exacto(a) && !(m === 10 && F1 === 70 && F2 === 30) && { m, F1, F2, a }; });
         return {
-          enunciado: [`Dos amigos jalan ${ob.n} de ${c.m} kg en sentidos opuestos, sobre un piso liso: uno con `, pj(N_(c.F1)), ' hacia la derecha y el otro con ', pj(N_(c.F2)), ' hacia la izquierda. ¿Cuánto acelera?'],
+          enunciado: [`Sobre ${ob.n} de ${c.m} kg, en un piso liso, actúan dos fuerzas horizontales: `, sub(F, '1'), ' = ', pj(N_(c.F1)), ' hacia la derecha y ', sub(F, '2'), ' = ', pj(N_(c.F2)), ' hacia la izquierda. ¿Cuánto acelera?'],
           datos: [D.segunda],
-          dibujo: est(figPiso({ cosa: { tipo: ob.cosa, x: 100, texto: `${c.m} kg` }, fz: { P: c.m * G, N: c.m * G, F: c.F1, F2: c.F2, tP: 'P⃗', tN: 'N⃗', tF: `F = ${N_(c.F1)}`, tF2: N_(c.F2), adir: 1, ta: 'a = ?' } })),
+          dibujo: est(figPiso({ cosa: { tipo: ob.cosa, x: 100, texto: `${c.m} kg` }, fz: { P: c.m * G, N: c.m * G, F: c.F1, F2: c.F2, tP: 'P⃗', tN: 'N⃗', tF: `F_1 = ${N_(c.F1)}`, tF2: `F_2 = ${N_(c.F2)}`, adir: 1, ta: 'a = ?' } })),
           pasos: [
             { tipo: 'pide', texto: 'Piden la aceleración.' },
             { tipo: 'datos', texto: [`Masa: ${c.m} kg. Hacia la derecha, `, pj(N_(c.F1)), '; hacia la izquierda, ', pj(N_(c.F2)), '.'] },
@@ -554,9 +567,9 @@
             pregunta: [s.pregunta],
             datos: [D.segunda],
             opciones: opciones(0, [
-              { id: 'mov', texto: s.mov, error: 'D1', siFuera: 'Así se mueve, cierto. Pero la aceleración sigue a la fuerza neta, no a la velocidad.' },
-              { id: 'cero', texto: s.cero, error: 'D3', siFuera: 'Bien mirar las fuerzas. Pero si su velocidad cambia, hay aceleración.' },
-              { id: 'otro', texto: s.otro, error: 'AC-FRENA', siFuera: 'Bien que algo cambia. Pero la aceleración apunta como la suma de las fuerzas.' },
+              { id: 'mov', texto: s.mov, error: s.fb ? s.fb.mov[0] : 'D1', siFuera: s.fb ? s.fb.mov[1] : 'Así se mueve, cierto. Pero la aceleración sigue a la fuerza neta, no a la velocidad.' },
+              { id: 'cero', texto: s.cero, error: s.fb ? s.fb.cero[0] : 'D3', siFuera: s.fb ? s.fb.cero[1] : 'Bien mirar las fuerzas. Pero si su velocidad cambia, hay aceleración.' },
+              { id: 'otro', texto: s.otro, error: s.fb ? s.fb.otro[0] : 'AC-FRENA', siFuera: s.fb ? s.fb.otro[1] : 'Bien que algo cambia. Pero la aceleración apunta como la suma de las fuerzas.' },
             ], () => '', s.bien),
             solucion: { texto: 'La aceleración apunta como la fuerza neta.', ecuacion: [s.bien] },
           };
@@ -575,11 +588,11 @@
               { id: 'final', valor: 2 * c.m * c.d / c.t, error: 'DN-VFINAL', siFuera: 'Bien: 2d ÷ t es la rapidez final. Pero la fuerza pide la aceleración.' },
               { id: 'pord', valor: c.m * c.d, error: 'DN-POR-D', siFuera: 'Bien usar la masa. Pero va por la aceleración, no por la distancia.' },
             ], N_),
-            solucion: { texto: 'La aceleración sale de d = a · t² / 2:', ecuacion: [`a = 2 · ${f(c.d)} ÷ ${c.t}² = ${c.a} m/s²   ·   F = ${c.m} · ${c.a} = `, pj(N_(c.Fv))] },
+            solucion: { texto: 'La aceleración sale de d = a · t² / 2:', ecuacion: [`a = 2 · ${f(c.d)} ÷ ${c.t}² = ${c.a} m/s²;   F = ${c.m} · ${c.a} = `, pj(N_(c.Fv))] },
           };
         }
         const c = elegir(() => { const m = r.de([2, 4, 5, 8]), Fv = r.de([4, 6, 10, 12, 20]), t = r.de([2, 3, 4, 5]), v = Fv * t / m;
-          return exacto(v) && distintos(v, Fv / m, Fv * t, Fv * t / (2 * m)) && { m, Fv, t, v }; });
+          return exacto(v) && v <= 12 && distintos(v, Fv / m, Fv * t, Fv * t / (2 * m)) && { m, Fv, t, v }; });
         return {
           pregunta: [`Una caja de ${c.m} kg está quieta en un piso liso. La empujas con `, pj(N_(c.Fv)), ` horizontales durante ${c.t} s. ¿Qué rapidez tiene al terminar?`],
           datos: [D.segunda, D.reposo],
@@ -588,7 +601,7 @@
             { id: 'sinm', valor: c.Fv * c.t, error: 'DN-SIN-M', siFuera: 'Bien usar la fuerza y el tiempo. Falta dividir entre la masa.' },
             { id: 'medio', valor: c.Fv * c.t / (2 * c.m), error: 'DN-MEDIO', siFuera: 'Bien la aceleración. Pero el medio es de la distancia: v = a · t.' },
           ], v => `${f(v)} m/s`),
-          solucion: { texto: 'La aceleración por el tiempo:', ecuacion: [`a = ${c.Fv} ÷ ${c.m} = ${f(c.Fv / c.m)} m/s²   ·   v = ${f(c.Fv / c.m)} · ${c.t} = `, neg(`${f(c.v)} m/s`)] },
+          solucion: { texto: 'La aceleración por el tiempo:', ecuacion: [`a = ${c.Fv} ÷ ${c.m} = ${f(c.Fv / c.m)} m/s²;   v = ${f(c.Fv / c.m)} · ${c.t} = `, neg(`${f(c.v)} m/s`)] },
         };
       },
     },
@@ -611,7 +624,7 @@
       { tipo: 'resorte', de: [x, 52], a: [x, y1], vueltas: 9 }, Object.assign({ tipo: 'bolsa', x, y: y1, w: 56, h: 36, texto: o.texto || '' }, o.cosa || {})];
     const fl = [];
     if (o.P !== undefined) fl.push({ de: [x - 12, y1 + 36], ang: 270, largo: LARGO_FIJO, color: 'h', texto: o.tP || `P = ${N_(o.P)}`, rumbo: [-1, 0.2] });
-    if (o.tF) fl.push({ de: [x + 34, y1 + 6], ang: 90, largo: LARGO_FIJO, color: 'o', texto: o.tF, rumbo: [1, 0] });
+    if (o.tF) fl.push({ de: [x + 14, y1], ang: 90, largo: LARGO_FIJO, color: 'o', texto: o.tF, rumbo: [1, 0] });
     return { alto: 240, objetos: objs, flechas: fl, textos: [{ x: 238, y: 46, texto: o.lectura || '', ancla: 'start' }, ...(o.textos || [])], alt: o.alt };
   }
   const juego2 = val => {
@@ -671,7 +684,7 @@
       solucion: [{ texto: 'Con la g de Marte:', ecuacion: [P, ' = 20 · 3,7 = ', pp('74 N')] }],
       respuesta: ['Pesa ', pp('74 N')] },
     { nivel: 2, titulo: 'De la Tierra a la Luna',
-      figura: est(figBalanzaR({ P: 120, tP: 'P = 120 N', texto: 'mochila', lectura: 'marca 120 N', textos: [{ x: 8, y: 22, texto: 'En la Tierra', ancla: 'start' }, { x: 8, y: 220, texto: 'En la Luna: ?', ancla: 'start' }], alt: 'Una mochila que pesa 120 N en la Tierra; su peso en la Luna, con un signo de pregunta.' })),
+      figura: est(figBalanzaR({ P: 120, tP: 'P = 120 N', texto: 'mochila', lectura: 'marca 120 N', textos: [{ x: 8, y: 22, texto: 'En la Tierra', ancla: 'start' }, { x: 312, y: 228, texto: 'En la Luna: ?', ancla: 'end' }], alt: 'Una mochila que pesa 120 N en la Tierra; su peso en la Luna, con un signo de pregunta.' })),
       enunciado: ['Una mochila pesa 120 N en la Tierra. ¿Cuánto pesa en la Luna?'],
       datos: [D2.peso, D2.gs],
       solucion: [
@@ -689,7 +702,7 @@
       ],
       respuesta: [neg('a = 2 m/s²'), ', como en la Tierra'] },
     { nivel: 2, titulo: 'La balanza que viajó a Marte',
-      figura: est(figBalanzaR({ P: 37, tP: 'P = 37 N', texto: '? kg', lectura: 'marca 37 N', textos: [{ x: 8, y: 22, texto: 'En Marte', ancla: 'start' }, { x: 8, y: 220, texto: 'En la Tierra: ?', ancla: 'start' }], alt: 'Una bolsa colgada de una balanza de resorte en Marte: marca 37 N.' })),
+      figura: est(figBalanzaR({ P: 37, tP: 'P = 37 N', texto: '? kg', lectura: 'marca 37 N', textos: [{ x: 8, y: 22, texto: 'En Marte', ancla: 'start' }, { x: 312, y: 228, texto: 'En la Tierra: ?', ancla: 'end' }], alt: 'Una bolsa colgada de una balanza de resorte en Marte: marca 37 N.' })),
       enunciado: ['En Marte, una balanza de resorte marca 37 N con una bolsa colgada y quieta. ¿Cuánto marcaría en la Tierra con la misma bolsa?'],
       datos: [D2.peso, D2.gs, D2.dina],
       solucion: [
@@ -709,7 +722,7 @@
       ],
       respuesta: [neg('a = 2 m/s²'), ', hacia arriba'] },
     { nivel: 2, titulo: 'La g de otro planeta',
-      figura: est(figBalanzaR({ P: 36, tP: 'P = 36 N', texto: '4 kg', lectura: 'marca 36 N', textos: [{ x: 8, y: 22, texto: 'En un planeta: g = ?', ancla: 'start' }], alt: 'Una roca de 4 kg colgada de una balanza de resorte en otro planeta: marca 36 N.' })),
+      figura: est(figBalanzaR({ P: 36, tP: 'P = 36 N', texto: '4 kg', lectura: 'marca 36 N', textos: [{ x: 8, y: 22, texto: 'Otro planeta', ancla: 'start' }], alt: 'Una roca de 4 kg colgada de una balanza de resorte en otro planeta: marca 36 N.' })),
       enunciado: ['En otro planeta, una roca de 4 kg colgada y quieta hace marcar 36 N a una balanza de resorte. ¿Cuánto vale g en ese planeta?'],
       datos: [D2.peso, D2.dina],
       solucion: [{ texto: 'De P = m · g:', ecuacion: [g, ' = ', frac(pp('36'), '4'), ' = ', pp('9 m/s²')] }],
@@ -751,7 +764,7 @@
       ],
       respuesta: [neg('A'), ', ', neg('2 m/s²')] },
     { nivel: 3, titulo: 'Pesar en un planeta lejano',
-      figura: est(figBalanzaR({ P: 30, tP: 'P = 30 N', texto: '2 kg', lectura: 'marca 30 N', textos: [{ x: 8, y: 22, texto: 'En un planeta lejano', ancla: 'start' }, { x: 8, y: 220, texto: 'persona de 60 kg: ?', ancla: 'start' }], alt: 'En un planeta lejano, un objeto de 2 kg colgado de una balanza de resorte: marca 30 N.' })),
+      figura: est(figBalanzaR({ P: 30, tP: 'P = 30 N', texto: '2 kg', lectura: 'marca 30 N', textos: [{ x: 8, y: 22, texto: 'Otro planeta', ancla: 'start' }, { x: 312, y: 228, texto: 'persona de 60 kg: ?', ancla: 'end' }], alt: 'En un planeta lejano, un objeto de 2 kg colgado de una balanza de resorte: marca 30 N.' })),
       enunciado: ['En un planeta lejano, un objeto de 2 kg colgado y quieto hace marcar 30 N a una balanza de resorte. ¿Cuánto pesa allá una persona de 60 kg?'],
       alternativas: ['600 N', '900 N', '400 N', '1800 N', '40 N'],
       datos: [D2.peso, D2.dina],
@@ -792,7 +805,7 @@
         { titulo: 'Dos kilos de papa', texto: 'Cuando pides 2 kg de papa en el mercado, pides masa: cuánta materia hay. La masa mide también la inercia: cuánto cuesta cambiar cómo se mueve algo. El peso es otra cosa: la fuerza con que la Tierra lo jala.' },
         { titulo: 'Cada astro jala distinto', texto: ['La Luna y Marte jalan menos que la Tierra. Cada lugar tiene su g: en la Tierra, 10 m/s²; en Marte, unos 3,7; en la Luna, unos 1,6.'],
           ecuacion: [P, ' = m · ', g] },
-        { titulo: 'Qué mirar al jugar', texto: 'La balanza de resorte, o dinamómetro, mide el peso: cuanto más jalan la bolsa hacia abajo, más se estira su resorte. Cambia la masa y el lugar, y mira cuánto marca.',
+        { titulo: 'Qué mirar al jugar', texto: ['La balanza de resorte, o dinamómetro, mide el peso: cuanto más jalan la bolsa hacia abajo, más se estira su resorte. ', vec(F), ' es lo que el resorte jala la bolsa hacia arriba. Cambia la masa y el lugar.'],
           dibujo: est(figBalanzaR({ P: 30, tP: 'P⃗', tF: 'F⃗', texto: '3 kg', lectura: 'marca 30 N', alt: 'Una bolsa de 3 kg colgada de una balanza de resorte, que marca 30 N.' })) },
       ],
     },
@@ -825,8 +838,8 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'En la Luna, sobre un piso liso, empujas de lado la misma caja de 20 kg con los mismos 40 N. ¿Cuánto acelera?',
-      datos: ['En la Tierra, con esos 40 N de lado, acelera 2 m/s².', [gL, ' (en la Luna): unos 1,6 m/s²']],
+      pregunta: 'En la Luna, sobre un piso liso, empujas de lado una caja de 20 kg con 40 N. ¿Cuánto acelera?',
+      datos: ['La caja tiene 20 kg y la empujas de lado con 40 N.', [gL, ' (en la Luna): unos 1,6 m/s²']],
       opciones: [
         { id: 'c', texto: '2 m/s²', correcta: true },
         { id: 'peso', texto: '12,5 m/s²', error: 'MP-PESO', siFuera: 'Allá pesa menos, cierto. Pero para acelerarla de lado cuenta su masa, que no cambia.' },
@@ -841,7 +854,7 @@
       pieza: 'fis-estatica',
       datos: MIRA2,
       pasos: [
-        { estado: { corte: 0 }, texto: 'En la Tierra, la caja de 20 kg pesa:', ecuacion: [P, ' = 20 · 10 = ', pp('200 N')] },
+        { estado: { corte: 0 }, texto: 'En la Tierra, con g = 10 m/s², la caja de 20 kg pesa:', ecuacion: [P, ' = 20 · 10 = ', pp('200 N')] },
         { estado: { corte: 1 }, texto: 'En la Luna pesa mucho menos:', ecuacion: [P, ' = 20 · 1,6 = ', pp('32 N')] },
         { estado: { corte: 1 }, texto: 'El peso y la normal son verticales: se cancelan en los dos lugares.', ecuacion: [N, ' = ', P] },
         { estado: { corte: 1 }, texto: 'De lado empujas lo mismo, y la masa es la misma.', ecuacion: ['a = ', frac('40', '20'), ' = 2 m/s², en los dos'] },
@@ -849,8 +862,8 @@
       ],
     },
     regla: {
-      texto: 'La masa mide cuánto cuesta acelerar un cuerpo y no cambia de lugar. El peso es lo que el astro lo jala: cambia con la g del lugar.',
-      ecuacion: [P, ' = m · ', g, '   ·   ', ...SF, ' = m · a'],
+      texto: 'La masa mide cuánto cuesta acelerar un cuerpo y no cambia de lugar. El peso es la fuerza con que el astro lo jala: cambia con la g del lugar.',
+      ecuacion: [P, ' = m · ', g, ';   ', ...SF, ' = m · a'],
       condicion: 'g es la del lugar donde está el cuerpo; la masa va en kilos y el peso, en newtons.',
       dibujo: est(REVELA2),
     },
@@ -871,7 +884,7 @@
             pasos: [
               { tipo: 'pide', texto: 'Piden la aceleración hacia arriba.' },
               { tipo: 'datos', texto: [`Masa: ${c.m} kg. La cuerda: `, pj(N_(c.Tv)), '. En Marte, ', gM, ' = 3,7 m/s².'] },
-              { tipo: 'regla', texto: 'El peso se calcula con la g de Marte; la fuerza neta, entre la masa, da la aceleración.', ecuacion: [P, ' = m · ', gM, '   ·   a = ', frac('ΣF', 'm')] },
+              { tipo: 'regla', texto: 'El peso se calcula con la g de Marte; la fuerza neta, entre la masa, da la aceleración.', ecuacion: [P, ' = m · ', gM, ';   a = ', frac('ΣF', 'm')] },
               { tipo: 'cuentas', texto: `P = ${c.m} · 3,7 = ${f(c.m * 3.7)} N, su peso en Marte. Lo que sobra hacia arriba, entre la masa:`, ecuacion: [`a = (${c.Tv} − ${f(c.m * 3.7)}) ÷ ${c.m} = `, neg(A_(c.a))] },
               { tipo: 'sentido', texto: `En la Tierra pesaría ${c.m * 10} N y esa cuerda ${c.Tv > c.m * 10 ? 'la subiría con menos aceleración' : 'no la levantaría'}.` },
             ],
@@ -882,7 +895,7 @@
         return {
           enunciado: [`${mayus(ob)} pesa `, pp(N_(c.PT)), ' en la Tierra. ¿Cuánto pesaría en Marte?'],
           datos: [D2.peso, D2.gs],
-          dibujo: est(figBalanzaR({ P: c.PT, tP: `P = ${N_(c.PT)}`, texto: '', lectura: `marca ${N_(c.PT)}`, textos: [{ x: 8, y: 22, texto: 'En la Tierra', ancla: 'start' }, { x: 8, y: 220, texto: 'En Marte: ?', ancla: 'start' }] })),
+          dibujo: est(figBalanzaR({ P: c.PT, tP: `P = ${N_(c.PT)}`, texto: ob.includes('balde') ? 'balde' : 'maleta', lectura: `marca ${N_(c.PT)}`, textos: [{ x: 8, y: 22, texto: 'En la Tierra', ancla: 'start' }, { x: 312, y: 228, texto: 'En Marte: ?', ancla: 'end' }] })),
           pasos: [
             { tipo: 'pide', texto: 'Piden su peso en Marte.' },
             { tipo: 'datos', texto: ['En la Tierra pesa ', pp(N_(c.PT)), ', con ', g, ' = 10 m/s². En Marte, ', gM, ' = 3,7 m/s².'] },
@@ -903,20 +916,22 @@
           return {
             pregunta: [`${mayus(ob)} pesa `, pp(N_(c.PT)), ` en la Tierra. ¿Cuánto pesa en ${lu.n}?`],
             datos: [D2.peso, D2.gs],
+            dibujo: est(figBalanzaR({ P: c.PT, tP: `P = ${N_(c.PT)}`, texto: ob.split(' ')[1], lectura: `marca ${N_(c.PT)}`, textos: [{ x: 8, y: 22, texto: 'En la Tierra', ancla: 'start' }, { x: 312, y: 228, texto: `En ${lu.n}: ?`, ancla: 'end' }] })),
             opciones: opciones(c.P2, [
               { id: 'igual', valor: c.PT, error: 'MP-IGUAL', siFuera: 'Bien que la masa no cambie. Pero el peso sí: depende de la g del lugar.' },
               { id: 'div', valor: c.PT / lu.g, error: 'MP-DIV', siFuera: 'Bien usar la g del lugar. Pero primero saca la masa: el peso entre 10.' },
               { id: 'por', valor: c.PT * lu.g, error: 'MP-POR', siFuera: 'Bien multiplicar por la nueva g. Pero va la masa, no el peso de la Tierra.' },
               { id: 'masa', valor: c.m, error: 'MP-MASA', siFuera: 'Bien: esa es su masa, en kilos. Falta multiplicarla por la g del lugar.' },
             ], N_),
-            solucion: { texto: `La masa y, con ella, el peso en ${lu.n}:`, ecuacion: [`m = ${c.PT} ÷ 10 = ${f(c.m)} kg   ·   `, P, ` = ${f(c.m)} · ${f(lu.g)} = `, pp(N_(c.P2))] },
+            solucion: { texto: `La masa y, con ella, el peso en ${lu.n}:`, ecuacion: [`m = ${c.PT} ÷ 10 = ${f(c.m)} kg;   `, P, ` = ${f(c.m)} · ${f(lu.g)} = `, pp(N_(c.P2))] },
           };
         }
         if (k === 1) {
-          const c = elegir(() => { const m = r.de([5, 12, 15, 30, 40]), Pv = m * lu.g; return exacto(Pv) && distintos(m, Pv / 10, Pv * lu.g, Pv) && { m, Pv }; });
+          const c = elegir(() => { const m = r.de([5, 12, 15, 30, 40]), Pv = m * lu.g; return exacto(Pv) && !(lu.g === 1.6 && m === 5) && distintos(m, Pv / 10, Pv * lu.g, Pv) && { m, Pv }; });
           return {
             pregunta: [`En ${lu.n}, una balanza de resorte marca `, pp(N_(c.Pv)), ' con una roca colgada y quieta. ¿Cuál es la masa de la roca?'],
             datos: [D2.peso, D2.gs, D2.dina],
+            dibujo: est(figBalanzaR({ P: c.Pv, tP: `P = ${N_(c.Pv)}`, texto: '? kg', lectura: `marca ${N_(c.Pv)}`, textos: [{ x: 8, y: 22, texto: `En ${lu.n}`, ancla: 'start' }] })),
             opciones: opciones(c.m, [
               { id: 'tierra', valor: c.Pv / 10, error: 'MP-G-TIERRA', siFuera: 'Bien dividir el peso entre g. Pero va la g de ese lugar, no la de la Tierra.' },
               { id: 'por', valor: c.Pv * lu.g, error: 'MP-POR', siFuera: 'Bien usar la g del lugar. Pero la masa es el peso entre g, no por g.' },
@@ -931,6 +946,7 @@
           return {
             pregunta: [`En ${lu.n}, sobre hielo liso, una astronauta empuja de lado una caja de ${c.m} kg con `, pj(N_(c.Fv)), '. ¿Cuánto acelera la caja?'],
             datos: [D2.peso, D2.gs, D.segunda],
+            dibujo: est(figLugar({ texto: `${c.m} kg`, lugar: `En ${lu.n}, hielo liso`, fz: { P: c.Pv, N: c.Pv, F: c.Fv, tP: 'P⃗', tN: 'N⃗', tF: `F = ${N_(c.Fv)}`, adir: 1, ta: 'a = ?' } })),
             opciones: opciones(c.a, [
               { id: 'peso', valor: c.Fv / (c.m * lu.g / 10), error: 'MP-PESO', siFuera: 'Allá pesa menos, cierto. Pero de lado cuenta la masa, que no cambia.' },
               { id: 'liviano', valor: c.a * lu.g / 10, error: 'MP-LIVIANO', siFuera: 'Allá la g es menor, cierto. Pero la aceleración de lado no depende de g.' },
@@ -946,13 +962,16 @@
           return {
             pregunta: [`En la Luna levantas con una cuerda una caja de ${c.m} kg: la cuerda la jala hacia arriba con `, pj(N_(c.Tv)), '. ¿Cuánto acelera la caja?'],
             datos: [D2.peso, D2.gs, D.segunda],
+            dibujo: est({ alto: 220, techo: { y: 14, x0: 60, x1: 160 }, objetos: [{ tipo: 'cuerda', de: [110, 14], a: [110, 120] }, { tipo: 'caja', x: 110, y: 164, w: 60, h: 44, texto: `${c.m} kg` }],
+              flechas: [{ de: [124, 120], ang: 90, largo: LARGO_FIJO, color: 'o', texto: `T = ${N_(c.Tv)}`, rumbo: [1, 0] }, { de: [96, 164], ang: 270, largo: LARGO_FIJO, color: 'h', texto: 'P⃗', rumbo: [-1, 0] }],
+              textos: [{ x: 312, y: 30, texto: 'En la Luna; a = ?', ancla: 'end' }] }),
             opciones: opciones(c.a, [
               { id: 'sinpeso', valor: c.Tv / c.m, error: 'MP-SIN-PESO', siFuera: 'Bien dividir entre la masa. Pero el peso también actúa, hacia abajo.' },
               { id: 'tierra', texto: 'No sube', error: 'MP-G-TIERRA', siFuera: 'En la Tierra no subiría, cierto. Pero en la Luna pesa mucho menos.' },
               { id: 'suma', valor: (c.Tv + c.Pv) / c.m, error: 'MP-SUMA-PESO', siFuera: 'Bien contar el peso. Pero apunta hacia abajo: se resta.' },
               { id: 'pesoT', valor: c.Tv / (c.m * G), error: 'MP-DIV', siFuera: 'Bien usar la cuerda. Pero se divide entre la masa, no entre un peso.' },
             ], A_),
-            solucion: { texto: 'El peso lunar se resta; lo que sobra, entre la masa:', ecuacion: [P, ` = ${c.m} · 1,6 = ${f(c.Pv)} N   ·   a = (${c.Tv} − ${f(c.Pv)}) ÷ ${c.m} = `, neg(A_(c.a))] },
+            solucion: { texto: 'El peso lunar se resta; lo que sobra, entre la masa:', ecuacion: [P, ` = ${c.m} · 1,6 = ${f(c.Pv)} N;   a = (${c.Tv} − ${f(c.Pv)}) ÷ ${c.m} = `, neg(A_(c.a))] },
           };
         }
         const m = r.de([60, 75, 90]), PL = m * 1.6, vI = r() < 0.5, vII = r() < 0.5;
@@ -996,7 +1015,7 @@
   // Dos cajas en dos carriles iguales: arriba la de 10 kg, abajo la de 20 kg; salen juntas con la misma rapidez.
   function figDosCajas(o) {
     const x0 = 46, k = 44, cota = (y, d, t) => ({ de: [x0, y], a: [x0 + d * k, y], texto: t, lado: -1, sep: 0 });
-    return { alto: 236, piso: { y: 216, x0: 8, x1: 312 }, objetos: [{ tipo: 'viga', x0: 8, x1: 312, y: 108 },
+    return { alto: 236, objetos: [{ tipo: 'viga', x0: 8, x1: 312, y: 108 }, { tipo: 'viga', x0: 8, x1: 312, y: 224 },
       { tipo: 'caja', x: x0 + (o.d1 || 0) * k, y: 100, w: 46, h: 36, texto: '10 kg' }, { tipo: 'caja', x: x0 + (o.d2 || 0) * k, y: 216, w: 56, h: 44, texto: '20 kg' }],
       flechas: o.v ? [{ de: [x0 - 10, 52], ang: 0, largo: 30, color: 'tinta', texto: 'v⃗', rumbo: [1, -0.4] }, { de: [x0 - 10, 160], ang: 0, largo: 30, color: 'tinta', texto: 'v⃗', rumbo: [1, -0.4] }] : [],
       cotas: [...(o.c1 ? [cota(58, 4, o.c1)] : []), ...(o.c2 ? [cota(166, 4, o.c2)] : [])], textos: o.textos || [], alt: o.alt };
@@ -1048,7 +1067,7 @@
       figura: est(figPiso({ cosa: { tipo: 'caja', x: 100, w: 76, h: 50, texto: '40 kg' }, cuerda: true, largoCuerda: 40, v: 1, fz: { P: 400, N: 400, tP: 'P = 400 N', tN: 'N⃗', tF: 'F = ?', f: 1, tf: 'f⃗_k' },
         textos: [{ x: 8, y: 22, texto: 'siempre a la misma rapidez', ancla: 'start', peso: 400 }], alt: 'Un baúl de 40 kg arrastrado con una cuerda a velocidad constante.' })),
       enunciado: ['Arrastras un baúl de 40 kg con una cuerda horizontal, siempre a la misma rapidez. Entre el baúl y el piso, ', muk, ' = 0,25. ¿Con qué fuerza jalas?'],
-      datos: [D.peso, D.cin, D.primera],
+      datos: [D.peso, D.cin, D.primera, D3.normal],
       solucion: [{ texto: 'A velocidad constante, la fuerza neta es cero: jalas lo mismo que frena el piso.', ecuacion: [F, ' = ', fk, ' = 0,25 · 400 = ', pj('100 N')] }],
       respuesta: [F, ' = ', pj('100 N')] },
     { nivel: 1, titulo: 'Suelta y frena',
@@ -1083,9 +1102,9 @@
       ],
       respuesta: [neg('d = 6 m')] },
     { nivel: 2, titulo: 'Jalar inclinado',
-      figura: est(figPiso({ cosa: { tipo: 'caja', x: 92, w: 70, h: 44, texto: '10 kg' }, cuerda: true, ang: 37, largoCuerda: 50, fz: { P: 100, N: 70, F: 50, Fang: 37, tP: 'P = 100 N', tN: 'N = ?', tF: 'F = 50 N', f: 1, tf: 'f⃗_k' },
+      figura: est(figPiso({ cosa: { tipo: 'caja', x: 92, w: 70, h: 44, texto: '10 kg' }, cuerda: true, ang: 37, largoCuerda: 50, fz: { P: 100, N: 70, F: 50, Fang: 37, tP: 'P = 100 N', tN: 'N = ?', tF: 'F = 50 N' },
         alt: 'Una caja de 10 kg jalada con 50 N por una cuerda inclinada 37° sobre la horizontal.' })),
-      enunciado: ['Jalas una caja de 10 kg con ', pj('50 N'), ' por una cuerda inclinada 37° sobre la horizontal. ¿Con qué fuerza la empuja el piso hacia arriba?'],
+      enunciado: ['Jalas una caja de 10 kg con ', pj('50 N'), ' por una cuerda inclinada 37° sobre la horizontal, en un piso liso. ¿Con qué fuerza la empuja el piso hacia arriba?'],
       datos: [D.peso, D.comp, D.trig, D3.normal],
       solucion: [
         { texto: 'La cuerda también levanta un poco:', ecuacion: ['50 · sen 37° = 50 · ', frac('3', '5'), ' = 30 N, hacia arriba'] },
@@ -1155,7 +1174,8 @@
       datos: [D.peso, D.cin, D.segunda, D.mruv],
       solucion: [
         { texto: 'De v² = v₀² + 2 · a · d, con v = 0:', ecuacion: ['a = ', frac('8²', '2 · 16'), ' = 2 m/s²'] },
-        { texto: 'El rozamiento es la neta: μ_k · m · 10 = m · 2, y la masa se va:', ecuacion: [muk, ' = ', frac('2', '10'), ' = ', neg('0,2')] },
+        { texto: 'El rozamiento es la fuerza neta:', ecuacion: [muk, ' · m · 10 = m · 2'] },
+        { texto: 'La masa se va:', ecuacion: [muk, ' = ', frac('2', '10'), ' = ', neg('0,2')] },
         { texto: [neg('A'), ' olvida el 2; ', neg('B'), ' usa 8 ÷ 16 como aceleración; ', neg('D'), ' da la aceleración; ', neg('E'), ' da 8 ÷ 16.'] },
       ],
       respuesta: [neg('C'), ', ', muk, ' = ', neg('0,2')] },
@@ -1181,11 +1201,11 @@
     pregunta: '¿Una caja más pesada frena antes al deslizar?',
     temas: ['Rozamiento en movimiento'],
     pieza: 'fis-estatica',
-    aprendizaje: 'Mientras desliza, el rozamiento vale μ_k·N y va contra el deslizamiento. Lo que sobra acelera; sin empuje, frena.',
+    aprendizaje: 'Mientras desliza, el rozamiento vale μk · N y va contra el deslizamiento. Lo que sobra acelera; sin empuje, frena.',
     actividad: 'Arrastrar con una cuerda un costal que ya desliza por el piso del almacén.',
     lee: {
       tarjetas: [
-        { titulo: 'El piso frena', texto: ['De Estática: mientras algo desliza, el piso lo frena con el rozamiento cinético, ', fk, ' = ', muk, ' · ', N, '. Un piso de cemento tiene ', muk, ' más grande que uno encerado.'] },
+        { titulo: 'El piso frena', texto: ['Como viste en Estática, mientras algo desliza, el piso lo frena con el rozamiento cinético, ', fk, ' = ', muk, ' · ', N, '. La letra μ se lee «mu». Un piso de cemento tiene ', muk, ' más grande que uno encerado.'] },
         { titulo: 'Jalar inclinado', texto: 'Una cuerda inclinada es una fuerza oblicua: jala de lado y, a la vez, levanta un poco. Por eso el piso empuja menos hacia arriba, y la normal ya no es el peso.' },
         { titulo: 'Qué mirar al jugar', texto: ['El costal ya va deslizando. Jala más o menos fuerte, cambia el piso y mira si la flecha punteada, ', vec('a'), ', apunta hacia adelante, hacia atrás o desaparece.'],
           dibujo: est(figPiso({ cosa: { tipo: 'costal', x: 92, w: 70, h: 52, texto: '20 kg' }, cuerda: true, largoCuerda: 40, v: 1, fz: { P: 200, N: 200, F: 60, tP: 'P⃗', tN: 'N⃗', tF: 'F⃗', f: 40, tf: 'f⃗_k', adir: 1 }, alt: 'El costal jalado con una cuerda; su DCL con el peso, la normal, el jalón y el rozamiento.' })) },
@@ -1209,6 +1229,7 @@
         { s: [vec(N)], t: 'el piso empuja hacia arriba' },
         { s: [muk], t: 'qué tan áspero es el piso' },
         { s: [vec('a')], t: 'aceleración: la flecha punteada' },
+        { s: 't', t: 'tiempo: con ▶ el juego avanza solo' },
       ],
       controles: [
         { id: 'F', etiqueta: 'Jalón, F', color: 'c-o', min: 0, max: 100, paso: 10, inicio: 60, unidad: 'N', decimales: 0 },
@@ -1241,7 +1262,7 @@
       pieza: 'fis-estatica',
       datos: MIRA3,
       pasos: [
-        { estado: { corte: 0 }, texto: ['El piso, con ', muk, ' = 0,2, frena a la de 10 kg:'], ecuacion: [fk, ' = 0,2 · 100 = ', pr('20 N')] },
+        { estado: { corte: 0 }, texto: ['Con ', muk, ' = 0,2 y N = 100 N, su peso, la de 10 kg frena:'], ecuacion: [fk, ' = 0,2 · 100 = ', pr('20 N')] },
         { estado: { corte: 0 }, texto: 'A la de 20 kg la aprieta el doble: el doble de rozamiento.', ecuacion: [fk, ' = 0,2 · 200 = ', pr('40 N')] },
         { estado: { corte: 0 }, texto: 'Pero tiene el doble de masa que frenar:', ecuacion: ['a = 40 ÷ 20 = 2 m/s²'] },
         { estado: { corte: 0 }, texto: 'Las dos frenan igual: la masa se cancela.', ecuacion: ['a = ', muk, ' · ', g, ' = 0,2 · 10 = 2 m/s²'] },
@@ -1249,8 +1270,8 @@
       ],
     },
     regla: {
-      texto: 'Mientras desliza, el rozamiento vale μk · N y va contra el deslizamiento. La normal sale de las fuerzas perpendiculares al piso; lo que sobra a lo largo, acelera.',
-      ecuacion: [fk, ' = ', muk, ' · ', N, '   ·   ', ...SF, ' = m · a'],
+      texto: 'Mientras desliza, el rozamiento vale μk · N y va contra el deslizamiento. Una cuerda inclinada levanta un poco: la normal baja. Lo que sobra acelera.',
+      ecuacion: [fk, ' = ', muk, ' · ', N, ';   ', ...SF, ' = m · a'],
       condicion: 'el cuerpo ya desliza (quieto, vale el rozamiento estático) y μk no depende de la rapidez.',
       dibujo: est(figPiso({ cosa: { tipo: 'caja', x: 92, w: 70, h: 44, texto: 'm' }, cuerda: true, ang: 37, largoCuerda: 50, fz: { P: 100, N: 40, F: 100, Fang: 37, tP: 'P⃗', tN: 'N⃗', tF: 'F⃗', f: 1, tf: 'f⃗_k', adir: 1 },
         alt: 'Un bloque jalado con una cuerda inclinada: la normal es el peso menos lo que levanta la cuerda; el rozamiento frena, y lo que sobra acelera.' })),
@@ -1271,7 +1292,7 @@
             pasos: [
               { tipo: 'pide', texto: 'Piden la distancia hasta detenerse.' },
               { tipo: 'datos', texto: [`Sale a ${c.v0} m/s y nadie ${ob.lo === 'la' ? 'la' : 'lo'} empuja. El piso: `, muk, ` = ${f(c.mu)}. No dan la masa.`] },
-              { tipo: 'regla', texto: 'El rozamiento es la fuerza neta; con la aceleración, la fórmula de MRUV da la distancia.', ecuacion: [fk, ' = ', muk, ' · ', N, '   ·   v² = v₀² + 2 · a · d'] },
+              { tipo: 'regla', texto: 'El rozamiento es la fuerza neta; con la aceleración, la fórmula de MRUV da la distancia.', ecuacion: [fk, ' = ', muk, ' · ', N, ';   v² = v₀² + 2 · a · d'] },
               { tipo: 'cuentas', texto: `a = ${f(c.mu)} · 10 = ${f(c.a)} m/s², porque la masa se cancela. Con v = 0:`, ecuacion: [`d = ${c.v0}² ÷ (2 · ${f(c.a)}) = `, neg(`${f(c.d)} m`)] },
               { tipo: 'sentido', texto: 'Con el doble de rapidez llegaría cuatro veces más lejos: la distancia va con v².' },
             ],
@@ -1286,8 +1307,8 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden la aceleración.' },
             { tipo: 'datos', texto: [`Masa: ${c.m} kg. La cuerda: `, pj(N_(c.Fv)), ', horizontal. El piso: ', muk, ` = ${f(c.mu)}.`] },
-            { tipo: 'regla', texto: 'Lo vertical suma cero (N = P); el rozamiento frena; lo que sobra, entre la masa, acelera.', ecuacion: [fk, ' = ', muk, ' · ', N, '   ·   ', ...SF, ' = m · a'] },
-            { tipo: 'cuentas', texto: `f_k = ${f(c.mu)} · ${c.m * G} = ${f(c.fkv)} N, el rozamiento. Lo que sobra, entre la masa:`, ecuacion: [`a = (${c.Fv} − ${f(c.fkv)}) ÷ ${c.m} = `, neg(A_(c.a))] },
+            { tipo: 'regla', texto: 'Lo vertical suma cero (N = P); el rozamiento frena; lo que sobra, entre la masa, acelera.', ecuacion: [fk, ' = ', muk, ' · ', N, ';   ', ...SF, ' = m · a'] },
+            { tipo: 'cuentas', texto: [fk, ` = ${f(c.mu)} · ${c.m * G} = ${f(c.fkv)} N, el rozamiento. Lo que sobra, entre la masa:`], ecuacion: [`a = (${c.Fv} − ${f(c.fkv)}) ÷ ${c.m} = `, neg(A_(c.a))] },
             { tipo: 'sentido', texto: `Sin rozamiento acelerarían ${f(c.Fv / c.m)} m/s²: el piso le quita una parte.` },
           ],
           respuesta: [neg(A_(c.a))],
@@ -1340,7 +1361,7 @@
               { id: 'tiempo', valor: c.v0 / c.a, error: 'RM-TIEMPO', siFuera: 'Bien: eso es lo que tarda en detenerse, en segundos. Piden la distancia.' },
               { id: 'masa', valor: c.d / c.m, error: 'RM-MASA-FRENA', siFuera: 'Bien la frenada. Pero la masa se cancela: no se vuelve a dividir.' },
             ], v => `${f(v)} m`),
-            solucion: { texto: 'a = μk · g; después, con v = 0:', ecuacion: [`a = ${f(c.mu)} · 10 = ${f(c.a)} m/s²   ·   d = ${c.v0}² ÷ (2 · ${f(c.a)}) = `, neg(`${f(c.d)} m`)] },
+            solucion: { texto: 'a = μk · g; después, con v = 0:', ecuacion: [`a = ${f(c.mu)} · 10 = ${f(c.a)} m/s²;   d = ${c.v0}² ÷ (2 · ${f(c.a)}) = `, neg(`${f(c.d)} m`)] },
           };
         }
         if (k === 2) {
@@ -1356,13 +1377,13 @@
               { id: 'entera', valor: (c.Fv - c.mu * c.Nv) / c.m, error: 'RM-SIN-COS', siFuera: 'Bien la normal. Pero de lado jala solo F · cos 37°.' },
               { id: 'signo', valor: (c.Fv * 0.8 - c.mu * (c.m * G + c.Fv * 0.6)) / c.m, error: 'RM-SIGNO-N', siFuera: 'Bien que la cuerda cambia la normal. Pero jala hacia arriba: se resta.' },
             ], A_),
-            solucion: { texto: 'La normal baja; lo que sobra de lado, entre la masa:', ecuacion: [N, ` = ${c.m * G} − ${f(c.Fv * 0.6)} = ${f(c.Nv)} N   ·   a = (${f(c.Fv * 0.8)} − ${f(c.mu * c.Nv)}) ÷ ${c.m} = `, neg(A_(c.a))] },
+            solucion: { texto: 'La normal baja; lo que sobra de lado, entre la masa:', ecuacion: [N, ` = ${c.m * G} − ${f(c.Fv * 0.6)} = ${f(c.Nv)} N;   a = (${f(c.Fv * 0.8)} − ${f(c.mu * c.Nv)}) ÷ ${c.m} = `, neg(A_(c.a))] },
           };
         }
         // Nivel examen: la rampa áspera. Lo que sube (San Marcos 2027-I: frenan juntos el peso y el rozamiento) o lo que baja.
         const sube = sm % 8 >= 4;
         const c = elegir(() => { const mu = r.de([0.25, 0.5, 0.1]), v0 = r.de([4, 6, 8]), a = sube ? G * (0.6 + 0.8 * mu) : G * (0.6 - 0.8 * mu), d = v0 * v0 / (2 * a);
-          return a > 0 && exacto(a) && (!sube || exacto(d)) && !(sube && mu === 0.5 && v0 === 10) && (sube ? distintos(d, v0 * v0 / (2 * G * (0.6 - 0.8 * mu)), v0 * v0 / (2 * G * 0.6), v0 * v0 / (2 * G * (0.6 + mu)))
+          return a > 0 && exacto(a) && (!sube || exacto(d)) && !(sube && mu === 0.5 && v0 === 10) && !(!sube && mu === 0.5) && (sube ? distintos(d, v0 * v0 / (2 * G * (0.6 - 0.8 * mu)), v0 * v0 / (2 * G * 0.6), v0 * v0 / (2 * G * (0.6 + mu)))
             : distintos(a, G * 0.6, G * (0.6 + 0.8 * mu), G * (0.6 - mu), G * (0.8 - 0.6 * mu))) && { mu, v0, a, d }; });
         if (sube) {
           return {
@@ -1374,7 +1395,7 @@
               { id: 'sin', valor: c.v0 * c.v0 / (2 * G * 0.6), error: 'RM-SIN-ROCE', siFuera: 'Bien la parte del peso. Pero el rozamiento también la frena.' },
               { id: 'mg', valor: c.v0 * c.v0 / (2 * G * (0.6 + c.mu)), error: 'N-MG', siFuera: 'Bien sumar las dos. Pero en la rampa la normal es P · cos 37°, no el peso.' },
             ], v => `${f(v)} m`),
-            solucion: { texto: 'Peso y rozamiento frenan juntos; después, MRUV:', ecuacion: [`a = 10 · (0,6 + ${f(c.mu)} · 0,8) = ${f(c.a)} m/s²   ·   d = ${c.v0}² ÷ (2 · ${f(c.a)}) = `, neg(`${f(c.d)} m`)] },
+            solucion: { texto: 'Peso y rozamiento frenan juntos; después, MRUV:', ecuacion: [`a = 10 · (0,6 + ${f(c.mu)} · 0,8) = ${f(c.a)} m/s²;   d = ${c.v0}² ÷ (2 · ${f(c.a)}) = `, neg(`${f(c.d)} m`)] },
           };
         }
         return {
@@ -1398,8 +1419,12 @@
   // jala la cuerda (Predice) · Debe verse: van juntos; la tensión sale de un solo bloque y no es el peso del balde.
   // Lienzo: la mesa de y = 120 (tablero) a 220 (piso); la polea en la esquina derecha; el balde cuelga en x = 248.
   const XP = 236, YT = 120;
-  function figMesa(o) {
-    const s = o.s || 0, xb = (o.xb || 96) + s, wb = 58, hb = 40, yr = YT - hb / 2, yb = (o.ybalde || 186) + s;
+  function figMesa(o0) {
+    // Si la figura dibuja alguna fuerza, dibuja todas las de los dos cuerpos (auditoría, M2): el costal con su peso, la
+    // normal de la mesa y la cuerda (y el rozamiento si lo hay); el balde con su peso y la cuerda.
+    const o = Object.assign({}, o0), alguna = o.T1 || o.T2 || o.P2 || o.f1;
+    if (alguna && o.todas !== false) { o.T1 = o.T1 || 'T⃗'; o.T2 = o.T2 || 'T⃗'; o.P2 = o.P2 || 'P⃗'; o.N1 = o.N1 || 'N⃗'; o.P1 = o.P1 || 'P⃗'; }
+    const s = o.s || 0, xb = (o.xb || 96) + s, wb = 58, hb = 40, yr = YT - hb / 2, yb = (o.ybalde || 166) + s;
     const objs = [{ tipo: 'viga', x0: 8, x1: XP - 4, y: YT + 8 }, { tipo: 'barra', de: [24, YT + 8], a: [24, 220], grosor: 6 }, { tipo: 'barra', de: [XP - 22, YT + 8], a: [XP - 22, 220], grosor: 6 },
       Object.assign({ tipo: 'caja', x: xb, y: YT, w: wb, h: hb, texto: o.t1 || '' }, o.cosa1 || {}),
       { tipo: 'cuerda', de: [xb + wb / 2, yr], a: [XP, yr] }, { tipo: 'polea', c: [XP, yr + 14], r: 14 }, { tipo: 'cuerda', de: [XP + 14, yr + 14], a: [XP + 14, yb - 30] },
@@ -1411,12 +1436,15 @@
     if (o.f1) fl.push({ de: [xb - wb / 2, YT - 8], ang: 180, largo: LARGO_FIJO, color: 'i', texto: o.f1, rumbo: [-0.2, -1] });
     if (o.T2) fl.push({ de: [XP + 28, yb - 30], ang: 90, largo: LARGO_FIJO, color: 'o', texto: o.T2, rumbo: [1, 0] });
     if (o.P2) fl.push({ de: [XP + 14, yb], ang: 270, largo: LARGO_FIJO, color: 'h', texto: o.P2, rumbo: [1, 0.3] });
-    if (o.a) { fl.push({ de: [xb - 15, 44], ang: 0, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: o.a, rumbo: [1, -0.4] });
+    if (o.a) { fl.push({ de: [xb + 22, 40], ang: 0, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: o.a, rumbo: [1, -0.4] });
       fl.push({ de: [XP - 12, yb - 30], ang: 270, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: o.a2 || '', rumbo: [-1, 0] }); }
     return { alto: 236, piso: { y: 220, x0: 8, x1: 312 }, objetos: objs, flechas: fl, textos: tx, alt: o.alt };
   }
   // La máquina de Atwood: una polea del techo con un bloque a cada lado.
-  function figAtwood(o) {
+  function figAtwood(o0) {
+    // Con los pesos dibujados, también la cuerda que jala a cada bloque (auditoría, M2).
+    const o = Object.assign({}, o0);
+    if (o.P && !o.T) o.T = 'T⃗';
     const c = [160, 46], r = 22, y1 = o.y1 || 150, y2 = o.y2 || 150, fl = [];
     const objs = [{ tipo: 'cuerda', de: [160, 10], a: [160, 24] }, { tipo: 'polea', c, r }, { tipo: 'cuerda', de: [138, 46], a: [138, y1 - 40] }, { tipo: 'cuerda', de: [182, 46], a: [182, y2 - 34] },
       { tipo: 'caja', x: 138, y: y1, w: 46, h: 40, texto: o.t1 || '' }, { tipo: 'caja', x: 182, y: y2, w: 40, h: 34, texto: o.t2 || '' }];
@@ -1442,7 +1470,7 @@
     return { alto: 236, objetos: [{ tipo: 'rampa', x0, y0, largo: L, ang: th }, { tipo: 'caja', x: base[0], y: base[1], w, h, giro: th, texto: o.t1 || '' }, { tipo: 'polea', c: pc, r: 12 },
       { tipo: 'cuerda', de: cuerda, a: [pc[0] - 7, pc[1] - 10] }, { tipo: 'cuerda', de: [pc[0] + 12, pc[1]], a: [pc[0] + 12, 150] }, { tipo: 'balde', x: pc[0] + 12, y: 184, w: 36, h: 30, texto: '' }],
       flechas: o.a ? [{ de: [pc[0] + 40, 150], ang: 270, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: o.a, rumbo: [0, 1] }] : [],
-      angulos: [{ c: [x0, y0], de: 0, a: th, r: 40, texto: '37°' }], textos: [{ x: pc[0] - 6, y: 204, texto: o.t2 || '', ancla: 'end' }, ...(o.textos || [])], alt: o.alt };
+      angulos: [{ c: [x0, y0], de: 0, a: th, r: 40, texto: '37°' }], textos: [{ x: pc[0] + 34, y: 190, texto: o.t2 || '', ancla: 'start' }, ...(o.textos || [])], alt: o.alt };
   }
   const aMesa = (m1, m2, mu = 0) => (m2 * G - mu * m1 * G) / (m1 + m2);
   const juego4 = val => {
@@ -1465,7 +1493,7 @@
   // (30 − 10)/8; 30/(10 − 4); 40/10 y 6·4 con cada alternativa; la Atwood de 6 y 4 kg con √(2·2·1); los tres carritos;
   // (50 − 30)/10 en la rampa; (60 − 10)/10 y 6·5 con cada alternativa.
   const D4 = {
-    sistema: 'Para el sistema: ΣF de afuera = (m₁ + m₂) · a',
+    sistema: 'Para el sistema, a lo largo de la cuerda: lo que lo mueve − lo que lo frena = (m₁ + m₂) · a',
     bloque: 'Para un bloque: ΣF sobre él = m · a',
   };
   const EJEMPLOS_BLOQUES = [
@@ -1564,7 +1592,7 @@
       solucion: [
         { texto: 'El sistema:', ecuacion: ['a = ', frac('60 − 40', '6 + 4'), ' = 2 m/s²'] },
         { texto: 'Desde el reposo, en 1 m:', ecuacion: ['v = ', { raiz: ['2 · 2 · 1'] }, ' = ', neg('2 m/s')] },
-        { texto: [neg('A'), ' usa g como si cayera libre; ', neg('C'), ' divide 2 · 1 entre 2; ', neg('D'), ' olvida la raíz; ', neg('E'), ' olvida el 2.'] },
+        { texto: [neg('A'), ' usa g como si cayera libre; ', neg('C'), ' da la velocidad media, 1 m en 1 s; ', neg('D'), ' olvida la raíz; ', neg('E'), ' olvida el 2.'] },
       ],
       respuesta: [neg('B'), ', ', neg('2 m/s')] },
     { nivel: 3, titulo: 'Tres carritos en fila',
@@ -1636,6 +1664,7 @@
         { s: [vec('a')], t: 'aceleración, flecha punteada: la misma en los dos' },
         { s: [sub('m', '1')], t: 'masa del costal' },
         { s: [sub('m', '2')], t: 'masa del balde' },
+        { s: 't', t: 'tiempo: con ▶ el juego avanza solo' },
       ],
       controles: [
         { id: 'm1', etiqueta: 'Costal, m₁', min: 1, max: 8, paso: 1, inicio: 3, unidad: 'kg', decimales: 0 },
@@ -1674,7 +1703,7 @@
     },
     regla: {
       texto: 'Los cuerpos unidos por una cuerda tensa aceleran juntos. Para la aceleración, mira todo el sistema; para la tensión, el DCL de un solo bloque.',
-      ecuacion: ['a = ', frac('lo que mueve − lo que frena', 'm₁ + m₂'), '   ·   ', ...SF, ' sobre un bloque = m · a'],
+      ecuacion: ['a = ', frac('lo que mueve − lo que frena', 'm₁ + m₂')],
       condicion: 'la cuerda no se estira ni pesa, y la polea no frena: la tensión es la misma de punta a punta.',
       dibujo: est(REVELA4),
     },
@@ -1708,7 +1737,7 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden la tensión de la cuerda.' },
             { tipo: 'datos', texto: `La caja: ${c.m1} kg, sobre la mesa lisa. El balde: ${c.m2} kg, que pesa ${c.m2 * G} N.` },
-            { tipo: 'regla', texto: 'El sistema da la aceleración; el DCL de la caja, la tensión.', ecuacion: ['a = ', frac('lo que mueve', 'masa total'), '   ·   ', T, ' = m · a'] },
+            { tipo: 'regla', texto: 'El sistema da la aceleración; el DCL de la caja, la tensión.', ecuacion: ['a = ', frac('lo que mueve', 'masa total'), ';   ', T, ' = m · a'] },
             { tipo: 'cuentas', texto: `a = ${c.m2 * G} ÷ (${c.m1} + ${c.m2}) = ${f(c.a)} m/s², la del sistema. La caja:`, ecuacion: [T, ` = ${c.m1} · ${f(c.a)} = `, pj(N_(c.Tv))] },
             { tipo: 'sentido', texto: `Jala menos que los ${c.m2 * G} N del balde: por eso el balde baja acelerando.` },
           ],
@@ -1723,7 +1752,7 @@
         if (k === 0) {
           const ob = r.de(COSAS4_AT), pideT = sm % 8 >= 4;
           const c = elegir(() => { const m1 = r.de([2, 4, 6, 8, 12]), m2 = r.de([2, 4, 8]), a = m2 * G / (m1 + m2), Tv = m1 * a;
-            return exacto(a) && exacto(Tv) && !(m1 === 3 && m2 === 2) && !(m1 === 4 * m2) && (pideT ? distintos(Tv, m2 * G, m2 * a, m1 * G) : distintos(a, G, m2 * G / m1, (m1 + m2) * G / m2)) && { m1, m2, a, Tv }; });
+            return exacto(a) && exacto(Tv) && !(m1 === 3 && m2 === 2) && !(m1 === 4 * m2) && !(m1 === 6 && (m2 === 2 || m2 === 4)) && (pideT ? distintos(Tv, m2 * G, m2 * a, m1 * G) : distintos(a, G, m2 * G / m1, (m1 + m2) * G / m2)) && { m1, m2, a, Tv }; });
           const base = [`${mayus(ob)} de ${c.m1} kg está sobre una mesa lisa, unid${ob.startsWith('una') ? 'a' : 'o'} por una cuerda a un balde de ${c.m2} kg que cuelga de una polea. `];
           const dib = est(figMesa({ t1: `${c.m1} kg`, t2: `${c.m2} kg`, T1: pideT ? 'T = ?' : undefined, P2: 'P⃗', a: pideT ? 'a⃗' : 'a = ?', textos: [{ x: 8, y: 22, texto: 'mesa lisa', ancla: 'start', peso: 400 }] }));
           if (pideT) return {
@@ -1733,7 +1762,7 @@
               { id: 'neta', valor: c.m2 * c.a, error: 'PL-NETA', siFuera: 'Bien la aceleración. Pero eso es la fuerza neta del balde, no la cuerda.' },
               { id: 'mesa', valor: c.m1 * G, error: 'PL-PESO-MESA', siFuera: 'Bien mirar lo de la mesa. Pero su peso lo sostiene la mesa: de lado solo jala la cuerda.' },
             ], N_),
-            solucion: { texto: 'El sistema y, después, lo de la mesa:', ecuacion: [`a = ${c.m2 * G} ÷ ${c.m1 + c.m2} = ${f(c.a)} m/s²   ·   `, T, ` = ${c.m1} · ${f(c.a)} = `, pj(N_(c.Tv))] },
+            solucion: { texto: 'El sistema y, después, lo de la mesa:', ecuacion: [`a = ${c.m2 * G} ÷ ${c.m1 + c.m2} = ${f(c.a)} m/s²;   `, T, ` = ${c.m1} · ${f(c.a)} = `, pj(N_(c.Tv))] },
           };
           return {
             pregunta: [...base, '¿Cuánto aceleran?'], datos: [D.peso, D.juntos, D4.sistema], dibujo: dib,
@@ -1758,7 +1787,7 @@
               { id: 'pes', valor: c.m1 * G, error: 'PL-TPESO2', siFuera: 'Bien mirar el pesado. Pero baja acelerando: la cuerda jala menos que su peso.' },
               { id: 'prom', valor: (c.m1 + c.m2) * G / 2, error: 'PL-PROMEDIO', siFuera: 'Bien que está entre los dos pesos. Pero sale del DCL de un bloque, no de un promedio.' },
             ], N_),
-            solucion: { texto: 'La aceleración y el DCL del liviano, que sube:', ecuacion: [`a = ${f(c.a)} m/s²   ·   `, T, ` = ${c.m2} · (10 + ${f(c.a)}) = `, pj(N_(c.Tv))] },
+            solucion: { texto: 'La aceleración y el DCL del liviano, que sube:', ecuacion: [`a = ${f(c.a)} m/s²;   `, T, ` = ${c.m2} · (10 + ${f(c.a)}) = `, pj(N_(c.Tv))] },
           };
           return {
             pregunta: [...base, '¿Cuánto aceleran?'], datos: [D.peso, D.juntos, D4.sistema], dibujo: dib,
@@ -1782,7 +1811,7 @@
               { id: 'mitad', valor: c.Fv / 2, error: 'PL-MITAD', siFuera: 'Bien que es menos que tu jalón. Pero no se reparte por mitades: depende de las masas.' },
               { id: 'delante', valor: c.m1 * c.a, error: 'PL-DELANTE', siFuera: 'Bien la aceleración. Pero la cuerda del medio acelera al de atrás.' },
             ], N_),
-            solucion: { texto: 'Los dos juntos y, después, el de atrás:', ecuacion: [`a = ${c.Fv} ÷ ${c.m1 + c.m2} = ${f(c.a)} m/s²   ·   `, T, ` = ${c.m2} · ${f(c.a)} = `, pj(N_(c.Tv))] },
+            solucion: { texto: 'Los dos juntos y, después, el de atrás:', ecuacion: [`a = ${c.Fv} ÷ ${c.m1 + c.m2} = ${f(c.a)} m/s²;   `, T, ` = ${c.m2} · ${f(c.a)} = `, pj(N_(c.Tv))] },
           };
         }
         // Nivel examen: la mesa áspera (tensión) o la Atwood que llega al piso (San Marcos 2026-I).
@@ -1797,11 +1826,11 @@
               { id: 'raiz', valor: 2 * c.a * c.h, error: 'PL-SIN-RAIZ', siFuera: 'Bien: eso es v². Falta sacar la raíz.' },
               { id: 'dos', valor: Math.sqrt(c.a * c.h), error: 'PL-SIN-DOS', siFuera: 'Bien la aceleración del sistema. Pero en v² = 2 · a · d falta el 2.' },
             ], v => `${f(v)} m/s`),
-            solucion: { texto: 'La aceleración del sistema y, desde el reposo:', ecuacion: [`a = ${f(c.a)} m/s²   ·   v = √(2 · ${f(c.a)} · ${f(c.h)}) = `, neg(`${f(c.v)} m/s`)] },
+            solucion: { texto: 'La aceleración del sistema y, desde el reposo:', ecuacion: [`a = ${f(c.a)} m/s²;   v = √(2 · ${f(c.a)} · ${f(c.h)}) = `, neg(`${f(c.v)} m/s`)] },
           };
         }
         const c = elegir(() => { const m1 = r.de([2, 4, 5, 10]), m2 = r.de([2, 3, 5, 6]), mu = r.de([0.1, 0.2, 0.5]), a = aMesa(m1, m2, mu), Tv = m2 * (G - a);
-          return a > 0 && exacto(a) && exacto(Tv) && distintos(Tv, m2 * G, m1 * a, m2 * (G - m2 * G / (m1 + m2)), (m2 * G - mu * m1 * G)) && !(m1 === 4 && m2 === 6) && { m1, m2, mu, a, Tv }; });
+          return a > 0 && exacto(a) && exacto(Tv) && distintos(Tv, m2 * G, m1 * a, m2 * (G - m2 * G / (m1 + m2)), (m2 * G - mu * m1 * G)) && !(m1 === 4 && m2 === 6) && !(m1 === 5 && m2 === 3 && mu === 0.2) && { m1, m2, mu, a, Tv }; });
         return {
           pregunta: [`Un bloque de ${c.m1} kg desliza sobre una mesa con `, muk, ` = ${f(c.mu)}, unido por una cuerda a otro de ${c.m2} kg que cuelga de una polea. ¿Con qué fuerza jala la cuerda?`],
           datos: [D.peso, D.cin, D.juntos, D4.sistema, D4.bloque],
@@ -1812,7 +1841,7 @@
             { id: 'lisa', valor: c.m2 * (G - c.m2 * G / (c.m1 + c.m2)), error: 'PL-LISA', siFuera: 'Bien el DCL del que cuelga. Pero la aceleración del sistema descuenta el rozamiento.' },
             { id: 'neta', valor: c.m2 * G - c.mu * c.m1 * G, error: 'PL-NETA-SIS', siFuera: 'Bien: esa es la fuerza neta del sistema. La cuerda sale del DCL de un bloque.' },
           ], N_),
-          solucion: { texto: 'El sistema y, después, el que cuelga:', ecuacion: [`a = (${c.m2 * G} − ${f(c.mu * c.m1 * G)}) ÷ ${c.m1 + c.m2} = ${f(c.a)} m/s²   ·   `, T, ` = ${c.m2} · (10 − ${f(c.a)}) = `, pj(N_(c.Tv))] },
+          solucion: { texto: 'El sistema y, después, el que cuelga:', ecuacion: [`a = (${c.m2 * G} − ${f(c.mu * c.m1 * G)}) ÷ ${c.m1 + c.m2} = ${f(c.a)} m/s²;   `, T, ` = ${c.m2} · (10 − ${f(c.a)}) = `, pj(N_(c.Tv))] },
         };
       },
     },
@@ -1908,7 +1937,7 @@
         flechas: [{ de: [150, 130], ang: 90, largo: LARGO_FIJO, color: 'o', texto: 'T = ?', rumbo: [1, 0] }, { de: [112, 180], ang: 270, largo: LARGO_FIJO, color: 'h', texto: 'P⃗', rumbo: [-1, 0] }, { de: [230, 150], ang: 90, largo: LARGO_FIJO, color: 'tinta', discontinua: true, texto: 'a = 0,5 m/s²', rumbo: [0, -1] }],
         alt: 'Una grúa sube con su cable un bloque de cemento de 200 kg que acelera hacia arriba 0,5 m/s².' }),
       enunciado: ['El cable de una grúa sube un bloque de cemento de 200 kg con una aceleración de 0,5 m/s² hacia arriba. ¿Con qué fuerza jala el cable?'],
-      datos: [D.peso, D.segunda, D5.eje],
+      datos: [D.peso, D.segunda, D.eje],
       solucion: [
         { texto: 'Sobre el bloque: el cable hacia arriba y el peso hacia abajo.', ecuacion: [T, ' − 2000 = 200 · 0,5'] },
         { texto: 'Despejando:', ecuacion: [T, ' = 2000 + 100 = ', pj('2100 N')] },
@@ -1957,10 +1986,10 @@
     { nivel: 3, titulo: 'La cuerda de la grúa',
       figura: est({ alto: 220, techo: { y: 12, x0: 60, x1: 200 }, objetos: [{ tipo: 'polea', c: [130, 30], r: 14 }, { tipo: 'cuerda', de: [130, 44], a: [130, 130] }, { tipo: 'caja', x: 130, y: 180, w: 70, h: 50, texto: '80 kg' }],
         flechas: [{ de: [150, 130], ang: 90, largo: LARGO_FIJO, color: 'o', texto: 'T = ?', rumbo: [1, 0] }, { de: [112, 180], ang: 270, largo: LARGO_FIJO, color: 'h', texto: 'P⃗', rumbo: [-1, 0] }],
-        textos: [{ x: 312, y: 200, texto: 'del reposo: 4 m en 2 s', ancla: 'end', peso: 400 }], alt: 'Una grúa sube un bloque de 80 kg que parte del reposo y sube 4 m en 2 s.' }),
+        textos: [{ x: 312, y: 200, texto: 'parte del reposo: 4 m en 2 s', ancla: 'end', peso: 400 }], alt: 'Una grúa sube un bloque de 80 kg que parte del reposo y sube 4 m en 2 s.' }),
       enunciado: ['Una grúa sube un bloque de 80 kg desde el reposo, con aceleración constante: sube 4 m en 2 s. ¿Con qué fuerza jala la cuerda?'],
       alternativas: ['800 N', '640 N', '160 N', '960 N', '1120 N'],
-      datos: [D.peso, D.segunda, D.reposo, D5.eje],
+      datos: [D.peso, D.segunda, D.reposo, D.eje],
       solucion: [
         { texto: 'La aceleración, de d = a · t² / 2:', ecuacion: ['a = ', frac('2 · 4', '2²'), ' = 2 m/s²'] },
         { texto: 'Sobre el bloque:', ecuacion: [T, ' = 80 · (10 + 2) = ', pj('960 N')] },
@@ -2004,7 +2033,7 @@
     actividad: 'Pararte en una balanza dentro de un ascensor que arranca.',
     lee: {
       tarjetas: [
-        { titulo: 'Lo que marca la balanza', texto: ['De Estática: una balanza no mide tu masa, mide cuánto la aprietas. Ella te empuja hacia arriba con esa misma fuerza, la normal ', N, '. A esa lectura se le llama peso aparente.'] },
+        { titulo: 'Lo que marca la balanza', texto: ['Como viste en Estática, una balanza no mide tu masa, mide cuánto la aprietas. Ella te empuja hacia arriba con esa misma fuerza, la normal ', N, '. A esa lectura se le llama peso aparente.'] },
         { titulo: 'Viajar y acelerar', texto: 'En un ascensor hay dos cosas distintas: hacia dónde viaja, que es su velocidad, y si esa velocidad crece o baja, que es su aceleración. Aquí, hacia arriba es positivo.' },
         { titulo: 'Qué mirar al jugar', texto: ['El ascensor arranca hacia arriba. Elige su aceleración y mira cuánto marca la balanza comparado con tu peso, 500 N.'],
           dibujo: est(figAscensor({ lectura: '500 N', masa: '50 kg', fz: { P: 500, N: 500, tP: 'P⃗', tN: 'N⃗' }, alt: 'Una persona de 50 kg sobre la balanza en un ascensor quieto: marca 500 N.' })) },
@@ -2026,6 +2055,7 @@
         { s: [vec('a')], t: 'aceleración del ascensor, flecha punteada' },
         { s: [vec('v')], t: 'velocidad del ascensor' },
         { s: 'pantalla', t: 'lo que marca la balanza: la normal' },
+        { s: 't', t: 'tiempo: con ▶ el juego avanza solo' },
       ],
       controles: [
         { id: 'a', etiqueta: 'Aceleración, a', min: 0, max: 4, paso: 1, inicio: 0, unidad: 'm/s²', decimales: 0 },
@@ -2054,7 +2084,7 @@
       pieza: 'fis-estatica',
       datos: MIRA5,
       pasos: [
-        { estado: { corte: 0 }, texto: 'Sube frenando: la aceleración apunta hacia abajo.', ecuacion: ['a = −2 m/s²'] },
+        { estado: { corte: 0 }, texto: 'Sube frenando: a, de 2 m/s², apunta hacia abajo. Arriba es positivo:', ecuacion: ['a = −2 m/s²'] },
         { estado: { corte: 0 }, texto: 'Sobre ti: la balanza hacia arriba y tu peso hacia abajo.', ecuacion: [N, ' − ', P, ' = m · a'] },
         { estado: { corte: 0 }, texto: 'Con los números, marca menos que tu peso:', ecuacion: [N, ' = 50 · (10 − 2) = ', pn('400 N')] },
         { estado: { corte: 1 }, texto: 'Baja frenando: ahora la aceleración apunta hacia arriba.', ecuacion: [N, ' = 50 · (10 + 2) = ', pn('600 N')] },
@@ -2091,7 +2121,7 @@
             respuesta: [T, ' = ', pj(N_(Tv))],
           };
         }
-        const m = r.de([45, 70, 75]), a = r.de([1, 3]), baja = sm % 4 === 2, Nv = m * (G + a);
+        const baja = sm % 4 === 2, { m, a } = elegir(() => { const m = r.de([45, 70, 75]), a = r.de([1, 3]); return !(baja && m === 70 && a === 3) && { m, a }; }), Nv = m * (G + a);
         return {
           enunciado: [`Una persona de ${m} kg está sobre una balanza en un ascensor que ${baja ? 'baja y frena' : 'sube y acelera'} con ${a} m/s². ¿Cuánto marca la balanza?`],
           datos: [D.peso, D5.vertical, D.balanza, D5.eje],
@@ -2114,7 +2144,7 @@
         const SITU_ARRIBA = ['sube y acelera', 'baja y frena'], SITU_ABAJO = ['sube y frena', 'baja y acelera'];
         if (k === 0 || k === 1) {
           const arriba = k === 0, que = (arriba ? SITU_ARRIBA : SITU_ABAJO)[Math.floor(sm / 4) % 2];
-          const a = elegir(() => { const x = r.de([1, 2, 3, 4]); return !(m === 50 && x === 2) && x; }), Nv = m * (G + (arriba ? a : -a)), Ninv = m * (G + (arriba ? -a : a));
+          const a = elegir(() => { const x = r.de([1, 2, 3, 4]); return !(m === 50 && x === 2) && !(m === 60 && x === 2 && que === 'sube y acelera') && x; }), Nv = m * (G + (arriba ? a : -a)), Ninv = m * (G + (arriba ? -a : a));
           return {
             pregunta: [`Una persona de ${m} kg está sobre una balanza en un ascensor que ${que} con ${a} m/s². ¿Cuánto marca la balanza?`],
             datos: [D.peso, D5.vertical, D.balanza, D5.eje],
@@ -2132,7 +2162,7 @@
           const mc = r.de([50, 120, 150, 300]), a = r.de([0.5, 1, 2, 2.5]), Tv = mc * (G + a);
           return {
             pregunta: [`El cable de una grúa sube un bloque de ${mc} kg con una aceleración de ${f(a)} m/s² hacia arriba. ¿Con qué fuerza jala el cable?`],
-            datos: [D.peso, D.segunda, D5.eje],
+            datos: [D.peso, D.segunda, D.eje],
             opciones: opciones(Tv, [
               { id: 'resta', valor: mc * (G - a), error: 'AS-SIGNO', siFuera: 'Bien usar la aceleración. Pero apunta hacia arriba: el cable jala más que el peso.' },
               { id: 'peso', valor: mc * G, error: 'N-MG', siFuera: 'Así jalaría a velocidad constante. Pero el bloque acelera.' },
@@ -2142,7 +2172,7 @@
           };
         }
         // Nivel examen: de lo que marca, qué hace el ascensor (San Marcos 2023-I).
-        const a = r.de([1, 2, 3, 4]), sube = sm % 8 < 4, Nv = m * (G + (sube ? a : -a));
+        const sube = sm % 8 < 4, a = elegir(() => { const x = r.de([1, 2, 3, 4]); return !(m === 60 && x === 2 && !sube) && x; }), Nv = m * (G + (sube ? a : -a));
         const bien = sube ? `Sube acelerando o baja frenando, con ${a} m/s²` : `Sube frenando o baja acelerando, con ${a} m/s²`;
         return {
           pregunta: [`En un ascensor, la balanza marca `, pn(N_(Nv)), ` bajo una persona de ${m} kg. ¿Qué puede estar haciendo el ascensor?`],
@@ -2168,15 +2198,17 @@
     const cx = 130, loma = o.forma !== 'hondonada', r = 230, c = loma ? [cx, 120 + r] : [cx, 196 - r], yAuto = loma ? 120 : 196;
     const objs = [{ tipo: 'pista', forma: loma ? 'loma' : 'hondonada', c, r, de: loma ? 70 : 250, a: loma ? 110 : 290 }, Object.assign({ tipo: 'auto', x: cx, y: yAuto, w: 78 }, o.auto || {})];
     const fl = [], tx = [...(o.textos || [])];
-    if (o.v) fl.push({ de: [cx - 18, yAuto - 42], ang: 0, largo: o.largoV || 36, color: 'tinta', texto: o.tv || 'v⃗', rumbo: [1, -0.3] });
+    if (o.v) fl.push({ de: [cx - 50, yAuto - 42], ang: 0, largo: o.largoV || 36, color: 'tinta', texto: o.tv || 'v⃗', rumbo: [1, -0.3] });
     const lin = loma ? [{ de: [cx, yAuto + 6], a: [cx, 222] }] : [{ de: [cx, yAuto - 38], a: [cx, 30] }];
     tx.push(loma ? { x: cx - 6, y: 214, texto: o.tr || 'hacia el centro ↓', ancla: 'end', peso: 400 } : { x: cx + 6, y: 40, texto: o.tr || 'hacia el centro ↑', ancla: 'start', peso: 400 });
     const d = o.fz ? dclCaja(o.fz, Object.assign({ cx: 262, cy: 118, titulo: 'DCL del auto' }, o.dcl || {})) : { obj: [], fl: [], txt: [] };
     return { alto: 236, objetos: [...objs, ...d.obj], flechas: [...fl, ...d.fl], lineas: lin, textos: [...d.txt, ...tx], alt: o.alt };
   }
   const N6 = v => M6 * (G - v * v / R6);
-  const juego6 = val => est(figLoma({ textos: [{ x: 8, y: 22, texto: 'r = 20 m', ancla: 'start' }], v: val.v > 0 ? 1 : 0, largoV: 14 + val.v * 2, fz: { P: 10000, N: N6(val.v), tP: 'P⃗', tN: 'N⃗', adir: val.v > 0 ? -1 : 0, avert: true, ta: 'a⃗_c' },
-    alt: `Un auto de 1000 kg en la cima de una loma de 20 m de radio, a ${val.v} m/s: la pista lo empuja con ${f(N6(val.v))} N.` }));
+  // La rapidez que se lee (una cifra decimal): con el control en marcha, la lectura y el dibujo usan esa, no la de la animación.
+  const vVista = v => Math.round(v * 10) / 10;
+  const juego6 = val0 => { const val = { v: vVista(val0.v) }; return est(figLoma({ textos: [{ x: 8, y: 22, texto: 'r = 20 m', ancla: 'start' }], v: val.v > 0 ? 1 : 0, largoV: 14 + val.v * 2, fz: { P: 10000, N: N6(val.v), tP: 'P⃗', tN: 'N⃗', adir: val.v > 0 ? -1 : 0, avert: true, ta: 'a⃗_c' },
+    alt: `Un auto de 1000 kg en la cima de una loma de 20 m de radio, a ${f(val.v, 1)} m/s: la pista lo empuja con ${f(N6(val.v))} N.` })); };
   const PRED6 = figLoma({ forma: 'hondonada', v: 1, tv: 'v = 8 m/s', fz: { P: 10000, N: 1, tP: 'P = 10 000 N', tN: 'N = ?' }, textos: [{ x: 8, y: 22, texto: 'r = 20 m', ancla: 'start' }],
     alt: 'El auto en el fondo de una hondonada de 20 m de radio, a 8 m/s. Lo que lo empuja la pista, con un signo de pregunta.' });
   const REVELA6 = figLoma({ forma: 'hondonada', v: 1, tv: 'v = 8 m/s', fz: { P: 10000, N: 13200, tP: 'P = 10 000 N', tN: 'N = 13 200 N', adir: 1, avert: true, ta: 'a⃗_c' }, textos: [{ x: 8, y: 22, texto: 'r = 20 m', ancla: 'start' }],
@@ -2190,7 +2222,7 @@
     return { alto: 240, objetos: [{ tipo: 'disco', c, r: R }, { tipo: 'caja', x, y: c[1] + 10, w: 22, h: 20, texto: '' }],
       flechas: [...(o.f ? [{ de: [x - 12, c[1]], ang: 180, largo: LARGO_FIJO, color: o.fc || 'i', texto: o.f, rumbo: [0, -1] }] : [])],
       cotas: [{ de: c, a: [x, c[1]], texto: o.r || 'r', lado: 1, sep: 22 }],
-      angulos: [{ c, de: 20, a: 340, r: 110, texto: '' }], textos: [{ x: 236, y: 40, texto: o.w || '', ancla: 'start' }, ...(o.textos || [])], alt: o.alt };
+      textos: [{ x: 236, y: 40, texto: o.w || '', ancla: 'start' }, ...(o.textos || [])], alt: o.alt };
   }
   // El rizo (o el balde que gira en un círculo vertical), con lo que va arriba del todo.
   function figRizo(o) {
@@ -2199,7 +2231,7 @@
     if (o.balde) objs.push({ tipo: 'cuerda', de: c, a: [top[0], top[1] + 4] }, { tipo: 'balde', x: top[0], y: top[1] + 4, w: 30, h: 26, texto: '' });
     else objs.push({ tipo: 'auto', x: top[0], y: top[1] + 2, w: 48, giro: 180 });
     const fl = [];
-    if (o.v) fl.push({ de: [top[0] - 16, top[1] - 34], ang: 0, largo: 32, color: 'tinta', texto: o.tv || 'v⃗', rumbo: [1, -0.4] });
+    if (o.v) fl.push({ de: [top[0] - 44, top[1] - 34], ang: 0, largo: 32, color: 'tinta', texto: o.tv || 'v⃗', rumbo: [1, -0.4] });
     const d = o.fz ? dclCaja(o.fz, Object.assign({ cx: 266, cy: 118, titulo: o.titulo || 'DCL arriba' }, o.dcl || {})) : { obj: [], fl: [], txt: [] };
     return { alto: 236, objetos: [...objs, ...d.obj], flechas: [...fl, ...d.fl], lineas: o.balde ? [] : [{ de: c, a: [top[0], top[1] + 22] }],
       cotas: o.r ? [{ de: [c[0], c[1]], a: [c[0] + R, c[1]], texto: o.r, lado: 1, sep: 10 }] : [], textos: [...d.txt, ...(o.textos || [])], alt: o.alt };
@@ -2215,6 +2247,7 @@
   }
   const D6 = {
     ac: D.ac,
+    acw: D.acw,
     centro: D.centro,
     signos: 'Las fuerzas que apuntan al centro suman; las que se alejan del centro restan',
     loma: 'En la cima de una loma, el centro de la curva está abajo; en el fondo de una hondonada, arriba',
@@ -2256,7 +2289,7 @@
       solucion: [{ texto: 'Con el doble de rapidez, v² se hace cuatro veces mayor:', ecuacion: [...SF, ' = 1000 · ', frac('20²', '50'), ' = ', neg('8000 N')] }],
       respuesta: [neg('8000 N')] },
     { nivel: 2, titulo: 'El columpio en lo más bajo',
-      figura: est(figColumpio({ masa: '30 kg', L: '2 m', v: 1, tv: 'v = 4 m/s', fz: { P: 300, T: 1, tP: 'P = 300 N', tT: 'T = ?' }, dcl: { cx: 266 }, alt: 'Una niña de 30 kg en un columpio de 2 m, en lo más bajo, a 4 m/s.' })),
+      figura: est(figColumpio({ masa: '30 kg', L: '2 m', v: 1, tv: 'v = 4 m/s', fz: { P: 300, T: 1, Tvert: 1, tP: 'P = 300 N', tT: 'T = ?' }, dcl: { cx: 266 }, alt: 'Una niña de 30 kg en un columpio de 2 m, en lo más bajo, a 4 m/s.' })),
       enunciado: ['Una niña de 30 kg se mece en un columpio de cadenas de 2 m. En lo más bajo va a 4 m/s. ¿Con qué fuerza jalan las dos cadenas juntas?'],
       datos: [D.peso, D6.ac, D6.centro, D6.signos],
       solucion: [
@@ -2276,7 +2309,7 @@
     { nivel: 2, titulo: 'El niño en la plataforma',
       figura: est(figDisco({ rpx: 64, r: 'r = 2 m', f: 'f⃗_s', w: 'ω = 1 rad/s', alt: 'Un niño a 2 m del eje de una plataforma que gira a 1 rad/s.' })),
       enunciado: ['Un niño está parado a 2 m del eje de una plataforma que gira a 1 rad/s. ¿Cuál es el menor ', mus, ' que le permite no resbalar?'],
-      datos: [D.peso, D6.ac, D6.centro, D.est],
+      datos: [D.peso, D6.acw, D6.centro, D.est, D.vertical],
       solucion: [
         { texto: 'El rozamiento estático es lo único hacia el centro:', ecuacion: [fs, ' = m · 1² · 2 = m · 2'] },
         { texto: 'Su tope es ', ecuacion: [mus, ' · m · 10 ≥ m · 2   →   ', mus, ' ≥ ', neg('0,2')] },
@@ -2292,7 +2325,7 @@
       ],
       respuesta: [fs, ' = ', pr('2400 N')] },
     { nivel: 2, titulo: 'El balde de agua arriba',
-      figura: est(figRizo({ balde: true, r: 'r = 1 m', v: 1, tv: 'v = 4 m/s', fz: { P: 20, T: 1, tP: 'P = 20 N', tT: 'T = ?', Fdir: 1 }, alt: 'Un balde de 2 kg que gira en un círculo vertical de 1 m, en lo más alto, a 4 m/s.' })),
+      figura: est(figRizo({ balde: true, r: 'r = 1 m', v: 1, tv: 'v = 4 m/s', fz: { P: 20, T: 1, Tvert: -1, tP: 'P = 20 N', tT: 'T = ?' }, alt: 'Un balde de 2 kg que gira en un círculo vertical de 1 m, en lo más alto, a 4 m/s.' })),
       enunciado: ['Haces girar un balde de 2 kg en un círculo vertical de 1 m de radio. En lo más alto va a 4 m/s. ¿Con qué fuerza jala la cuerda?'],
       datos: [D.peso, D6.ac, D6.centro, D6.signos],
       solucion: [
@@ -2301,21 +2334,21 @@
       ],
       respuesta: [T, ' = ', pj('12 N')] },
     { nivel: 3, titulo: 'El carrito arriba del rizo',
-      figura: est(figRizo({ r: 'r = 5 m', v: 1, tv: 'v = 10 m/s', fz: { P: 2000, N: 1, tP: 'P⃗', tN: 'N = ?' }, alt: 'Un carrito de 200 kg en lo alto de un rizo de 5 m de radio, de cabeza, a 10 m/s.' })),
+      figura: est(figRizo({ r: 'r = 5 m', v: 1, tv: 'v = 10 m/s', fz: { P: 2000, N: 1, Nabajo: true, tP: 'P⃗', tN: 'N = ?' }, alt: 'Un carrito de 200 kg en lo alto de un rizo de 5 m de radio, de cabeza, a 10 m/s.' })),
       enunciado: ['Un carrito de 200 kg de la montaña rusa pasa de cabeza por lo alto de un rizo de 5 m de radio, a 10 m/s. ¿Con qué fuerza lo empuja la pista?'],
       alternativas: ['6000 N', '2000 N', '4000 N', '0 N', '400 N'],
       datos: [D.peso, D6.ac, D6.centro, D6.signos],
       solucion: [
         { texto: 'Arriba, el centro está abajo: la pista empuja hacia abajo y el peso también. Los dos suman.', ecuacion: [N, ' + 2000 = 200 · ', frac('10²', '5'), ' = 4000'] },
         { texto: 'Despejando:', ecuacion: [N, ' = 4000 − 2000 = ', pn('2000 N')] },
-        { texto: [neg('A'), ' suma el peso a la centrípeta; ', neg('C'), ' olvida el peso; ', neg('D'), ' cree que arriba nada lo empuja; ', neg('E'), ' olvida el cuadrado de v.'] },
+        { texto: [neg('A'), ' suma el peso a la centrípeta; ', neg('C'), ' olvida el peso; ', neg('D'), ' cree que arriba nada lo empuja; ', neg('E'), ' olvida el cuadrado de v y, además, el peso.'] },
       ],
       respuesta: [neg('B'), ', ', pn('2000 N')] },
     { nivel: 3, titulo: 'El radio máximo en la plataforma',
       figura: est(figDisco({ rpx: 64, r: 'r = ?', f: 'f⃗_s', w: 'ω = 2 rad/s', alt: 'Una persona sobre una plataforma que gira a 2 rad/s; la distancia máxima al eje, con un signo de pregunta.' })),
       enunciado: ['Una plataforma de feria gira a 2 rad/s. Entre los zapatos de una persona y el piso, ', mus, ' = 0,5. ¿A qué distancia máxima del eje puede pararse sin resbalar?'],
       alternativas: ['0,8 m', '2,5 m', '20 m', '0,125 m', '1,25 m'],
-      datos: [D.peso, D6.ac, D6.centro, D.est],
+      datos: [D.peso, D6.acw, D6.centro, D.est],
       solucion: [
         { texto: 'El tope del rozamiento estático hace de centrípeta justo antes de resbalar:', ecuacion: ['0,5 · m · 10 = m · 2² · r'] },
         { texto: 'La masa se va:', ecuacion: ['r = ', frac('0,5 · 10', '2²'), ' = ', neg('1,25 m')] },
@@ -2329,7 +2362,7 @@
         alt: 'Una bolita que gira dentro de un cuenco semiesférico liso, a 37° de la vertical medidos desde el centro de la esfera.' }),
       enunciado: ['Una bolita gira en un círculo horizontal dentro de un cuenco semiesférico liso de 0,5 m de radio. La recta del centro del cuenco a la bolita forma 37° con la vertical. ¿Cuánto vale ω?'],
       alternativas: ['5 rad/s', '3,87 rad/s', '5,77 rad/s', '25 rad/s', '3,54 rad/s'],
-      datos: [D.peso, D6.ac, D.trig, 'La normal del cuenco apunta al centro de la esfera; el círculo de giro tiene radio r = R · sen θ'],
+      datos: [D.peso, D6.acw, D.trig, 'La normal del cuenco apunta al centro de la esfera; el círculo de giro tiene radio r = R · sen θ'],
       solucion: [
         { texto: 'Hacia el centro del giro, de radio 0,5 · sen 37°, se van sen 37° y m:', ecuacion: [N, ' = m · ω² · 0,5'] },
         { texto: 'En la vertical, N · cos 37° es el peso, m · 10:', ecuacion: ['ω² · 0,5 · ', frac('4', '5'), ' = 10   →   ω = ', neg('5 rad/s')] },
@@ -2348,7 +2381,7 @@
       ],
       respuesta: [neg('C'), ', ', neg('10 m/s')] },
     { nivel: 3, titulo: 'El columpio y su cadena',
-      figura: est(figColumpio({ masa: '25 kg', L: '2,5 m', v: 1, tv: 'v = ?', fz: { P: 250, T: 1, tP: 'P = 250 N', tT: 'T = 500 N' }, alt: 'Un niño de 25 kg en un columpio de 2,5 m; las cadenas aguantan 500 N.' })),
+      figura: est(figColumpio({ masa: '25 kg', L: '2,5 m', v: 1, tv: 'v = ?', fz: { P: 250, T: 1, Tvert: 1, tP: 'P = 250 N', tT: 'T = 500 N' }, alt: 'Un niño de 25 kg en un columpio de 2,5 m; las cadenas aguantan 500 N.' })),
       enunciado: ['Un niño de 25 kg se mece en un columpio de 2,5 m. Las dos cadenas juntas aguantan 500 N como máximo. ¿Cuál es su mayor rapidez posible en lo más bajo?'],
       alternativas: ['7,07 m/s', '8,66 m/s', '25 m/s', '5 m/s', '0 m/s'],
       datos: [D.peso, D6.ac, D6.centro, D6.signos],
@@ -2401,7 +2434,7 @@
       ],
       dibujo: juego6,
       // La lectura enuncia la relación entre la normal y el peso.
-      lectura: val => (val.v === 0 ? ['Quieto: la pista empuja ', pn('10 000 N'), ', todo el peso'] : [`A ${f(val.v, 1)} m/s: `, pn(N_(N6(val.v))), ', menos que el peso']),
+      lectura: val0 => { const v = vVista(val0.v); return v === 0 ? ['Quieto: la pista empuja ', pn('10 000 N'), ', todo el peso'] : [`A ${f(v, 1)} m/s: `, pn(N_(N6(v))), ', menos que el peso']; },
       resumen: { v: 6 },
       minimo: 3,
     },
@@ -2412,7 +2445,7 @@
         { id: 'c', texto: '13 200 N', correcta: true },
         { id: 'loma', texto: '6800 N', error: 'DC-LOMA', siFuera: 'Así sería en la cima de una loma. Aquí el centro está arriba: la normal le gana al peso.' },
         { id: 'peso', texto: '10 000 N', error: 'N-MG', siFuera: 'Así sería en un tramo recto. En la curva, la suma tiene que apuntar al centro.' },
-        { id: 'solo', texto: '3200 N', error: 'DC-SOLO', siFuera: 'Bien la cuenta m · a_c. Pero la pista también sostiene el peso del auto.' },
+        { id: 'solo', texto: '3200 N', error: 'DC-SOLO', siFuera: 'Bien la cuenta 1000 · 3,2. Pero la pista también sostiene el peso del auto.' },
       ],
       dibujo: est(PRED6),
       revelar: est(REVELA6),
@@ -2432,7 +2465,7 @@
     regla: {
       texto: 'La suma de las fuerzas hacia el centro vale m · v²/r: suman las que apuntan al centro y restan las que se alejan. Es la fuerza centrípeta.',
       ecuacion: [...SF, ' = m · ', frac('v²', 'r')],
-      condicion: 'se mira desde el suelo, que no gira, con la rapidez de ese punto; la centrípeta no se dibuja aparte.',
+      condicion: 'se mira desde el suelo, que no gira, con la rapidez de ese punto; la flecha punteada es la aceleración.',
       dibujo: est(REVELA6),
     },
     // Así se resuelve: la cima de una loma (otros autos y radios que «Ahora tú») y, en las semillas impares, el columpio
@@ -2446,7 +2479,7 @@
           return {
             enunciado: [`Un niño de ${c.m} kg se mece en un columpio de ${f(c.L)} m. En lo más bajo va a ${c.v} m/s. ¿Con qué fuerza jalan las dos cadenas juntas?`],
             datos: [D.peso, D6.ac, D6.centro, D6.signos],
-            dibujo: est(figColumpio({ masa: `${c.m} kg`, L: `${f(c.L)} m`, v: 1, tv: `v = ${c.v} m/s`, fz: { P: c.m * G, T: 1, tP: `P = ${N_(c.m * G)}`, tT: 'T = ?' } })),
+            dibujo: est(figColumpio({ masa: `${c.m} kg`, L: `${f(c.L)} m`, v: 1, tv: `v = ${c.v} m/s`, fz: { P: c.m * G, T: 1, Tvert: 1, tP: `P = ${N_(c.m * G)}`, tT: 'T = ?' } })),
             pasos: [
               { tipo: 'pide', texto: 'Piden la fuerza de las cadenas en lo más bajo.' },
               { tipo: 'datos', texto: `Masa: ${c.m} kg; peso: ${c.m * G} N. Radio: ${f(c.L)} m. Rapidez: ${c.v} m/s.` },
@@ -2466,7 +2499,7 @@
             { tipo: 'pide', texto: 'Piden la normal de la pista en la cima.' },
             { tipo: 'datos', texto: `Masa: ${c.m} kg; peso: ${N_(c.m * G)}. Radio: ${c.R} m. Rapidez: ${c.v} m/s.` },
             { tipo: 'regla', texto: 'En la cima, el centro está abajo: el peso suma y la normal resta.', ecuacion: [P, ' − ', N, ' = m · ', sub('a', 'c')] },
-            { tipo: 'cuentas', texto: `a_c = ${c.v}² ÷ ${c.R} = ${f(c.ac)} m/s², hacia abajo. La normal:`, ecuacion: [N, ` = ${c.m} · (10 − ${f(c.ac)}) = `, pn(N_(c.Nv))] },
+            { tipo: 'cuentas', texto: [sub('a', 'c'), ` = ${c.v}² ÷ ${c.R} = ${f(c.ac)} m/s², hacia abajo. La normal:`], ecuacion: [N, ` = ${c.m} · (10 − ${f(c.ac)}) = `, pn(N_(c.Nv))] },
             { tipo: 'sentido', texto: 'La pista empuja menos que el peso: lo que sobra del peso lo lleva hacia el centro.' },
           ],
           respuesta: [N, ' = ', pn(N_(c.Nv))],
@@ -2500,7 +2533,7 @@
             const c = elegir(() => { const w = r.de([1, 2, 4]), mu = r.de([0.2, 0.4, 0.8]), R = mu * G / (w * w); return exacto(R) && !(w === 2 && mu === 0.5) && distintos(R, w * w / (mu * G), mu * G / w, mu / (w * w)) && { w, mu, R }; });
             return {
               pregunta: [`Una plataforma gira a ${c.w} rad/s. Entre ${ob.de} y el piso de la plataforma, `, mus, ` = ${f(c.mu)}. ¿A qué distancia máxima del eje se queda sin resbalar?`],
-              datos: [D.peso, D6.ac, D6.centro, D.est],
+              datos: [D.peso, D6.acw, D6.centro, D.est],
               dibujo: est(figDisco({ rpx: 64, r: 'r = ?', f: 'f⃗_s', w: `ω = ${c.w} rad/s` })),
               opciones: opciones(c.R, [
                 { id: 'inv', valor: c.w * c.w / (c.mu * G), error: 'DC-INV', siFuera: 'Bien igualar el tope a la centrípeta. Pero al despejar r, la fracción va al revés.' },
@@ -2513,7 +2546,7 @@
           const c = elegir(() => { const w = r.de([1, 2, 3]), R = r.de([0.5, 1, 1.5, 2]), mu = w * w * R / G; return exacto(mu) && mu <= 1 && distintos(mu, w * w * R, w * R / G, G / (w * w * R)) && { w, R, mu }; });
           return {
             pregunta: [`Una plataforma gira a ${c.w} rad/s y ${ob.n} está a ${f(c.R)} m del eje. ¿Cuál es el menor `, mus, ' que le permite girar sin resbalar?'],
-            datos: [D.peso, D6.ac, D6.centro, D.est],
+            datos: [D.peso, D6.acw, D6.centro, D.est],
             dibujo: est(figDisco({ rpx: 64, r: `r = ${f(c.R)} m`, f: 'f⃗_s', w: `ω = ${c.w} rad/s` })),
             opciones: opciones(c.mu, [
               { id: 'sing', valor: c.w * c.w * c.R, error: 'DC-SIN-G', siFuera: 'Bien la aceleración centrípeta. Pero el tope es μs · m · g: falta dividir entre g.' },
@@ -2542,12 +2575,12 @@
         return {
           pregunta: [`Un carrito de ${c.m} kg de la montaña rusa pasa de cabeza por lo alto de un rizo de ${c.R} m de radio, a ${c.v} m/s. ¿Con qué fuerza lo empuja la pista?`],
           datos: [D.peso, D6.ac, D6.centro, D6.signos],
-          dibujo: est(figRizo({ r: `r = ${c.R} m`, v: 1, tv: `v = ${c.v} m/s`, fz: { P: c.m * G, N: 1, tP: 'P⃗', tN: 'N = ?' } })),
+          dibujo: est(figRizo({ r: `r = ${c.R} m`, v: 1, tv: `v = ${c.v} m/s`, fz: { P: c.m * G, N: 1, Nabajo: true, tP: 'P⃗', tN: 'N = ?' } })),
           opciones: opciones(c.Nv, [
             { id: 'suma', valor: c.m * (c.ac + G), error: 'DC-SUMA', siFuera: 'Bien la parte hacia el centro. Pero arriba el peso también apunta al centro: se resta.' },
             { id: 'solo', valor: c.m * c.ac, error: 'DC-SOLO', siFuera: 'Bien la cuenta m · v²/r. Pero el peso ya pone una parte.' },
             { id: 'peso', valor: c.m * G, error: 'N-MG', siFuera: 'Bien que el peso cuenta. Pero la pista empuja lo que falta para m · v²/r.' },
-            { id: 'cuad', valor: c.m * c.v / c.R, error: 'DC-SIN-CUADRADO', siFuera: 'Bien la idea. Pero la centrípeta va con v², no con v.' },
+            { id: 'cuad', valor: c.m * c.v / c.R, error: 'DC-SIN-CUADRADO', siFuera: 'Bien la idea. Pero la centrípeta va con v², no con v, y el peso también apunta al centro.' },
           ], N_),
           solucion: { texto: 'Arriba, pista y peso apuntan al centro:', ecuacion: [N, ` = ${c.m} · (${f(c.ac)} − 10) = `, pn(N_(c.Nv))] },
         };
@@ -2606,9 +2639,9 @@
     { id: 'loma', titulo: 'El auto en la loma', pieza: 'fis-estatica',
       consigna: 'Un auto de 1000 kg pasa por la cima de una loma de 10 m de radio. Su rapidez cambia sola: mira la normal.',
       controles: [{ id: 'v', etiqueta: 'v', min: 0, max: 10, paso: 2.5, inicio: 5, unidad: 'm/s', decimales: 1, auto: { velocidad: 2.5, modo: 'rebota' } }],
-      dibujo: val => { const Nv = Math.max(0, 1000 * (G - val.v * val.v / 10)); return est(figLoma({ v: val.v > 0 ? 1 : 0, largoV: 14 + val.v * 3, fz: { P: 10000, N: Nv, tP: 'P⃗', tN: Nv > 0 ? 'N⃗' : 'N = 0', adir: val.v > 0 ? -1 : 0, avert: true, ta: 'a⃗_c' },
+      dibujo: val0 => { const val = { v: vVista(val0.v) }, Nv = Math.max(0, 1000 * (G - val.v * val.v / 10)); return est(figLoma({ v: val.v > 0 ? 1 : 0, largoV: 14 + val.v * 3, fz: { P: 10000, N: Nv, tP: 'P⃗', tN: Nv > 0 ? 'N⃗' : 'N = 0', adir: val.v > 0 ? -1 : 0, avert: true, ta: 'a⃗_c' },
         textos: [{ x: 8, y: 22, texto: 'r = 10 m', ancla: 'start' }], alt: `Un auto de 1000 kg en la cima de una loma de 10 m, a ${f(val.v, 1)} m/s: la pista lo empuja con ${f(Nv)} N.` })); },
-      lectura: val => [`A ${f(val.v, 1)} m/s, la pista empuja `, pn(N_(Math.max(0, 1000 * (G - val.v * val.v / 10))))],
+      lectura: val0 => { const v = vVista(val0.v); return [`A ${f(v, 1)} m/s, la pista empuja `, pn(N_(Math.max(0, 1000 * (G - v * v / 10))))]; },
       invitaciones: [
         { texto: 'Busca la rapidez con la que el auto casi se despega.', logrado: val => 1000 * (G - val.v * val.v / 10) < 1e-9, bien: 'Con N = 0, el peso solo hace de centrípeta. ¿Y más rápido?' },
         { texto: 'Haz que la normal valga lo mismo que el peso.', logrado: val => val.v === 0, bien: 'Sin rapidez no hay giro: la normal sostiene todo el peso.' },
@@ -2692,7 +2725,7 @@
   const IDEAS = [segunda, masaPeso, roceMov, planoIdea, ascensorIdea, circular];
 
   // Tabla de letras (propuesta §5): un solo significado en la unidad.
-  const LETRAS = { F: 'fuerza de una mano, un motor o una cuerda que jala; ΣF, la fuerza neta', m: 'masa', m_1: 'masa del primer bloque', m_2: 'masa del segundo bloque',
+  const LETRAS = { F: 'fuerza de una mano, un motor o una cuerda que jala; ΣF, la fuerza neta', F_1: 'la primera de dos fuerzas', F_2: 'la segunda de dos fuerzas', m: 'masa', m_1: 'masa del primer bloque', m_2: 'masa del segundo bloque',
     a: 'aceleración', P: 'peso', g: 'aceleración de la gravedad, 10 m/s² en la Tierra', g_L: 'gravedad de la Luna', g_M: 'gravedad de Marte',
     N: 'fuerza normal; lo que marca una balanza', T: 'tensión', T_1: 'tensión de la primera cuerda', T_2: 'tensión de la segunda cuerda',
     f_k: 'rozamiento cinético', f_s: 'rozamiento estático', 'μ_k': 'coeficiente de rozamiento cinético', 'μ_s': 'coeficiente de rozamiento estático',
@@ -2701,7 +2734,8 @@
 
   return {
     unidad: 'fisica.dinamica',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     colores: COLORES,
     notacion: { vectores: true, motivo: 'Las fuerzas, la velocidad y la aceleración son vectores: llevan flecha (F⃗, a⃗) cuando se habla de la flecha; en las cuentas va su valor, sin flecha.' },

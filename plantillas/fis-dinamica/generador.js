@@ -156,6 +156,7 @@
   function neta(rng) {
     const [cosa, lo] = rng.elegir([['una caja', 'la'], ['un carrito', 'lo'], ['un trineo de arena', 'lo']]), m = rng.elegir([4, 5, 8, 10, 25]), F1 = rng.elegir([40, 50, 70, 90, 120]), F2 = rng.elegir([10, 20, 30]);
     if (m === 30 && F1 - F2 === 60) return null;   // la Predice
+    if (m === 10 && F1 === 70 && F2 === 30) return null;   // el ejemplo 1.6 (auditoría, B1)
     const a = M.resultante([{ F: F1, angulo: 0 }, { F: F2, angulo: 180 }], m).a;
     return {
       enunciado: [`Sobre ${cosa} de ${m} kg, en un piso liso, tú ${lo} empujas con `, Tt(nw(F1)), ' hacia la derecha y tu amigo con ', Tt(nw(F2)), ' hacia la izquierda.'],
@@ -173,6 +174,7 @@
   function reposo(rng) {
     const m = rng.elegir([2, 4, 5, 8]), Fv = rng.elegir([4, 6, 10, 12, 20]), t = rng.elegir([2, 3, 4, 5]);
     const r = M.empujon({ m, F: Fv, dur: t, muk: 0 }), vf = r.v(t);
+    if (vf > 12) return null;   // una caja empujada a mano no pasa de unos 12 m/s (auditoría, M6)
     return {
       enunciado: [`Una caja de ${m} kg está quieta en un piso liso. La empujas con `, Tt(nw(Fv)), ` horizontales durante ${t} s.`],
       pregunta: ['¿Qué rapidez tiene al terminar?'], datos: [D.segunda, D.reposo], correcta: vf, fmt: ms,
@@ -330,6 +332,7 @@
   function mesa(rng) {
     const m1 = rng.elegir([2, 4, 6, 8, 12]), m2 = rng.elegir([2, 4, 8]);
     if ((m1 === 3 && m2 === 2) || m1 === 4 * m2) return null;   // la Predice y la misión
+    if (m1 === 6 && (m2 === 2 || m2 === 4)) return null;   // los ejemplos 4.1 y 4.11 (auditoría, B1)
     const r = M.mesaPolea({ m1, m2 });
     return {
       enunciado: [`Un costal de ${m1} kg está sobre una mesa lisa, unido por una cuerda a un balde de ${m2} kg que cuelga de una polea.`],
@@ -363,7 +366,7 @@
   }
   function aspera(rng) {
     const m1 = rng.elegir([2, 4, 5, 10]), m2 = rng.elegir([2, 3, 5, 6]), mu = rng.elegir([0.1, 0.2, 0.5]);
-    if (m1 === 4 && m2 === 6) return null;   // el ejemplo de examen
+    if ((m1 === 4 && m2 === 6) || (m1 === 5 && m2 === 3 && mu === 0.2)) return null;   // los ejemplos 4.15 y 4.9
     const r = M.mesaPolea({ m1, m2, mus: mu, muk: mu, v0: 1 });
     if (!(r.a > 0)) return null;
     const aLisa = m2 * G / (m1 + m2);
@@ -386,6 +389,7 @@
   function balanza(rng) {
     const [que, s] = rng.elegir(SITU), mm = rng.elegir([45, 55, 60, 70, 80]), a = rng.elegir([1, 2, 3, 4]);
     if (mm === 50 && s < 0 && a === 2) return null;   // la Predice
+    if ((mm === 60 && que === 'sube y acelera' && a === 2) || (mm === 70 && que === 'baja y frena' && a === 3)) return null;   // los ejemplos 5.2 y 5.6
     const Nv = M.ascensor({ m: mm, a: s * a }).N;
     return {
       enunciado: [`Una persona de ${mm} kg está sobre una balanza en un ascensor que ${que} con ${ms2(a)}.`],
@@ -476,7 +480,7 @@
         e('DC-SUMA', mm * (ac + G), x => `Bien la parte hacia el centro. Pero arriba el peso también apunta al centro: se resta; sumando sale ${x}.`),
         e('DC-SOLO', mm * ac, x => `Bien la cuenta m · v²/r, ${x}. Pero el peso ya pone una parte.`),
         e('N-MG', mm * G, x => `Bien que el peso cuenta, ${x}. Pero la pista empuja lo que falta para m · v²/r.`),
-        e('DC-SIN-CUADRADO', mm * vv / R, x => `Bien la idea. Pero la centrípeta va con v², no con v; así sale ${x}.`),
+        e('DC-SIN-CUADRADO', mm * vv / R, x => `Bien la idea. Pero la centrípeta va con v², no con v, y el peso también apunta al centro; así sale ${x}.`),
       ],
       solucion: [[`Arriba, pista y peso apuntan al centro: N + ${mm * G} = ${mm} · ${vv}² ÷ ${R} = ${nw(mm * ac)}.`], ['', Nn(`N = ${nw(r.N)}`), '.']],
       _datos: { m: mm, r: R, v: vv },
