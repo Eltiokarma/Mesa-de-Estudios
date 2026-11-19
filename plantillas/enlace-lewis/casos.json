@@ -1,0 +1,229 @@
+{
+ "plantilla": "enlace-lewis",
+ "nota": "entrada es _datos del generador (idea, tipo, nivel y lo que define el problema). respuesta: el texto de la alternativa correcta. Se genera con generar(semilla, { idea }).",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e6-quimica/casos.py) que no usa el generador ni el núcleo. Tablas propias en Python: electrones de valencia por grupo, EN de Pauling-Allred (CRC), cargas de ion por el octeto, mcd para las fórmulas, carga formal = valencia − libres − enlaces.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "tres-enlaces",
+    "tipo": "tipo-elementos",
+    "nivel": 1,
+    "fo": "Zn",
+    "els": [
+     "Zn"
+    ]
+   },
+   "esperado": {
+    "respuesta": "Metálico"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "tres-enlaces",
+    "tipo": "tipo-propiedades",
+    "nivel": 2,
+    "i": 0
+   },
+   "esperado": {
+    "respuesta": "Iónico"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "tres-enlaces",
+    "tipo": "delta-signo",
+    "nivel": 1,
+    "a": "P",
+    "b": "Cl"
+   },
+   "esperado": {
+    "respuesta": "El cloro"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "tres-enlaces",
+    "tipo": "tipo-den",
+    "nivel": 2,
+    "a": "F",
+    "b": "F"
+   },
+   "esperado": {
+    "respuesta": "Covalente apolar"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "enlace-ionico",
+    "tipo": "carga-ion",
+    "nivel": 1,
+    "s": "Br"
+   },
+   "esperado": {
+    "respuesta": "Br⁻"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "enlace-ionico",
+    "tipo": "electrones-transferidos",
+    "nivel": 3,
+    "m": "Na",
+    "x": "S"
+   },
+   "esperado": {
+    "respuesta": "2"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "enlace-ionico",
+    "tipo": "formula-ionica",
+    "nivel": 2,
+    "m": "Al",
+    "x": "S"
+   },
+   "esperado": {
+    "respuesta": "Al₂S₃"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "lewis-octeto",
+    "tipo": "electrones-repartir",
+    "nivel": 1,
+    "t": "SO₃²⁻",
+    "ats": [
+     "S",
+     "O",
+     "O",
+     "O"
+    ],
+    "q": -2
+   },
+   "esperado": {
+    "respuesta": "26"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "lewis-octeto",
+    "tipo": "orden-enlace",
+    "nivel": 2,
+    "fo": "CO₂",
+    "o": 2
+   },
+   "esperado": {
+    "respuesta": "Doble: dos pares compartidos"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "lewis-octeto",
+    "tipo": "libres-central",
+    "nivel": 2,
+    "fo": "SiH₄",
+    "c": "Si",
+    "n": 4
+   },
+   "esperado": {
+    "respuesta": "0"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "dativo-excepciones",
+    "tipo": "quien-pone",
+    "nivel": 1,
+    "fo": "H₃N–BF₃",
+    "pone": "N"
+   },
+   "esperado": {
+    "respuesta": "El nitrógeno"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "dativo-excepciones",
+    "tipo": "radical",
+    "nivel": 3,
+    "rad": "NO",
+    "no": [
+     "H₂O",
+     "O₂²⁻",
+     "CN⁻"
+    ]
+   },
+   "esperado": {
+    "respuesta": "NO"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "dativo-excepciones",
+    "tipo": "electrones-central",
+    "nivel": 2,
+    "fo": "PCl₃",
+    "n": 3,
+    "l": 1
+   },
+   "esperado": {
+    "respuesta": "8"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "resonancia",
+    "tipo": "cuantas-estructuras",
+    "nivel": 1,
+    "fo": "SO₃",
+    "pos": 3
+   },
+   "esperado": {
+    "respuesta": "3"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "resonancia",
+    "tipo": "carga-formal",
+    "nivel": 3,
+    "va": 6,
+    "li": 6,
+    "en": 1
+   },
+   "esperado": {
+    "respuesta": "−1"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "resonancia",
+    "tipo": "orden-promedio",
+    "nivel": 2,
+    "fo": "CH₃COO⁻",
+    "tot": 3,
+    "pos": 2
+   },
+   "esperado": {
+    "respuesta": "3/2"
+   }
+  }
+ ]
+}

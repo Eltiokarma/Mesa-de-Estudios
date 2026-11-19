@@ -92,6 +92,11 @@
       "nivel": "avanzado",
       "enunciado": "Sobre el enlace y los sólidos: I. El NO₂ tiene un número impar de electrones de valencia. II. El cuarzo (SiO₂) está formado por moléculas de SiO₂ sueltas. III. El KCl fundido conduce la corriente eléctrica.",
       "respuesta": "VFV",
+      "datos": [
+        "Electrones de valencia: N 5; O 6",
+        "Sólido covalente de red: átomos unidos en todas las direcciones, sin moléculas sueltas",
+        "Iónico: conduce fundido o disuelto, no sólido"
+      ],
       "pasos": [
         "I es V: 5 del nitrógeno y 6 de cada oxígeno suman 17; queda un electrón desapareado: el NO₂ es un radical.",
         "II es F: el cuarzo es un sólido covalente de red: cada silicio está unido a cuatro oxígenos y la red no tiene moléculas sueltas.",

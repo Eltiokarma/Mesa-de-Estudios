@@ -4,7 +4,7 @@
   "area": "ciencias",
   "formato_principal": "predicciones",
   "ramas": [
-    {"nombre": "Materia y átomo", "unidades": ["quimica.materia-y-energia", "quimica.estructura-atomica", "quimica.tabla-periodica", "quimica.propiedades-periodicas", "quimica.enlace-quimico", "quimica.nomenclatura-inorganica"]},
+    {"nombre": "Materia y átomo", "unidades": ["quimica.materia-y-energia", "quimica.estructura-atomica", "quimica.tabla-periodica", "quimica.propiedades-periodicas", "quimica.enlace-quimico", "quimica.geometria-molecular", "quimica.nomenclatura-inorganica"]},
     {"nombre": "Cálculos químicos", "unidades": ["quimica.mol-y-composicion", "quimica.reacciones-y-balance", "quimica.estequiometria", "quimica.gases", "quimica.liquidos-y-solidos", "quimica.soluciones"]},
     {"nombre": "Reacciones y equilibrio", "unidades": ["quimica.cinetica-quimica", "quimica.equilibrio-quimico", "quimica.acidos-y-bases", "quimica.electroquimica"]},
     {"nombre": "Química orgánica", "unidades": ["quimica.hidrocarburos", "quimica.funciones-organicas", "quimica.biomoleculas-y-productos-naturales"]},
@@ -133,22 +133,21 @@
     },
     {
       "id": "quimica.enlace-quimico",
-      "nombre": "Enlace químico y fuerzas intermoleculares",
+      "nombre": "Enlace químico",
       "temas": [
-        "Regla del octeto",
-        "Enlace iónico",
-        "Enlace covalente y estructuras de Lewis",
-        "Resonancia",
-        "Hibridación y geometría molecular",
-        "Polaridad",
+        "Tipos de enlace y propiedades",
         "Enlace metálico",
-        "Fuerzas intermoleculares"
+        "Polaridad del enlace",
+        "Enlace iónico",
+        "Regla del octeto",
+        "Enlace covalente y estructuras de Lewis",
+        "Enlace dativo y excepciones al octeto",
+        "Resonancia"
       ],
       "universidades": {
         "uni": {
           "semanas": [
-            5,
-            6
+            5
           ]
         },
         "unmsm": {
@@ -160,7 +159,34 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": ["quimica.propiedades-periodicas"],
-      "plantillas": ["enlace", "quimica-conceptos"],
+      "plantillas": ["enlace-lewis", "quimica-conceptos", "enlace"],
+      "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
+    },
+    {
+      "id": "quimica.geometria-molecular",
+      "nombre": "Geometría molecular y fuerzas intermoleculares",
+      "temas": [
+        "Hibridación y geometría molecular",
+        "Enlaces sigma y pi",
+        "Polaridad",
+        "Fuerzas intermoleculares"
+      ],
+      "universidades": {
+        "uni": {
+          "semanas": [
+            6
+          ]
+        },
+        "unmsm": {
+          "temas": [
+            3
+          ]
+        }
+      },
+      "potencial_visual": "alto",
+      "grado": 3,
+      "requiere": ["quimica.enlace-quimico"],
+      "plantillas": ["geometria-fuerzas", "enlace"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {
@@ -348,7 +374,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
-      "requiere": ["quimica.enlace-quimico", "quimica.gases"],
+      "requiere": ["quimica.geometria-molecular", "quimica.gases"],
       "plantillas": ["liquidos-y-solidos", "quimica-conceptos", "conversiones-quimica"],
       "investigacion": "docs/investigacion/gases-soluciones-ideas-erroneas.md"
     },
@@ -521,7 +547,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 4,
-      "requiere": ["quimica.enlace-quimico"],
+      "requiere": ["quimica.geometria-molecular"],
       "plantillas": ["hidrocarburos", "molecula-grande", "quimica-conceptos", "nombre-polifuncional"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },

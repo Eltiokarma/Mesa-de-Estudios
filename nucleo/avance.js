@@ -93,6 +93,9 @@
     // azufre en vez de nitrógeno y oxígeno). Después de la partición partidoTP, una predicción suya sin huella es de la
     // pregunta vieja y se vuelve a preguntar, una vez. Las otras dos ideas que vinieron conservan su pregunta y sus ids.
     if (sinHuella(est, 'quimica.propiedades-periodicas', { marca: 'prediccionTP2', ideas: ['energia-ionizacion'] })) cambio = true;
+    // 19 nov (etapa 6): en Geometría molecular, `forma-polaridad` conservó su id con otra Predice (el CH₂Cl₂ en vez del CO₂).
+    // Después de la partición partidoEN, una predicción suya sin huella es de la pregunta vieja y se vuelve a preguntar, una vez.
+    if (sinHuella(est, 'quimica.geometria-molecular', { marca: 'prediccionEN2', ideas: ['forma-polaridad'] })) cambio = true;
     // 19 nov (etapa 6, «Estática»): la unidad se rehizo con seis ideas. Cinco conservan su id con otra Predice: una
     // predicción suya sin huella es de la pregunta vieja y se vuelve a preguntar, una vez (prediccionES). La idea vieja
     // `polea-movil` se fue (su contenido pasó a las ideas 2 y 4) y entró `cuerpo-rigido`: quien había terminado las seis
@@ -208,6 +211,18 @@
       sinHuella: { marca: 'prediccionTP', ideas: ['periodos-grupos-bloques'] },
       estudiada: { marca: 'estudiadaTP', fecha: '2026-11-19',
         ideas: ['periodos-grupos-bloques', 'ubicacion-lewis', 'radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad'] } },
+    // 19 nov (etapa 6): «Enlace químico y fuerzas intermoleculares» → «Enlace químico» (conserva el id) +
+    // quimica.geometria-molecular (forma, hibridación, polaridad de la molécula y fuerzas entre moléculas;
+    // docs/etapa6/propuesta-quimica.md §3 y §12). Se van las ideas `forma-polaridad` y `fuerzas-intermoleculares`, las mesas
+    // de la molécula en 3D y de los dos dipolos, y sus palabras (clave del glosario, sin tildes). `tres-enlaces` y
+    // `lewis-octeto` conservan su id con otra Predice (el probador y el N₂): una predicción suya sin huella se borra una vez
+    // (prediccionEN). Quien había terminado las cinco ideas de antes conserva «Ya la estudié» en las dos (estudiadaEN).
+    { marca: 'partidoEN', de: 'quimica.enlace-quimico', a: 'quimica.geometria-molecular',
+      ideas: ['forma-polaridad', 'fuerzas-intermoleculares'], mesas: ['molecula-gira', 'dos-dipolos'],
+      glosario: ['dipolo', 'molecula polar', 'forma molecular', 'region de electrones', 'fuerzas intermoleculares', 'puente de hidrogeno', 'fuerzas de london', 'dipolo-dipolo'],
+      sinHuella: { marca: 'prediccionEN', ideas: ['tres-enlaces', 'lewis-octeto'] },
+      estudiada: { marca: 'estudiadaEN', fecha: '2026-11-19',
+        ideas: ['tres-enlaces', 'lewis-octeto', 'resonancia', 'forma-polaridad', 'fuerzas-intermoleculares'] } },
   ];
   function partir(est, { marca, de, a, ideas, mesas, glosario, renombrar, sinPrediccion, mudanza, reiniciaPrediccion }) {
     if (est[marca] >= 1) return false;

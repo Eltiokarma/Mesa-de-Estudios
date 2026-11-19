@@ -1,0 +1,20 @@
+{
+  "id": "geometria-fuerzas",
+  "titulo": "Forma, hibridación, polaridad y fuerzas entre moléculas",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.geometria-molecular"
+  ],
+  "temas": [
+    "Hibridación y geometría molecular",
+    "Enlaces sigma y pi",
+    "Polaridad",
+    "Fuerzas intermoleculares"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

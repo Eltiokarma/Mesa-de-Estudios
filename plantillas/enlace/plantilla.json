@@ -3,7 +3,8 @@
   "titulo": "La molécula en 3D: enlace, forma y polaridad",
   "formato": "escena",
   "unidades": [
-    "quimica.enlace-quimico"
+    "quimica.enlace-quimico",
+    "quimica.geometria-molecular"
   ],
   "estado": "borrador",
   "version": "0.1.0",
@@ -11,5 +12,6 @@
   "motor": "motor.js",
   "casos": "casos.json",
   "pruebas": "motor.test.js",
-  "papel": "papel.json"
+  "papel": "papel.json",
+  "rehacer": ["quimica.enlace-quimico", "quimica.geometria-molecular"]
 }

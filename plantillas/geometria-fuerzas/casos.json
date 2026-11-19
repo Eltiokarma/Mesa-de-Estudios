@@ -1,0 +1,410 @@
+{
+ "plantilla": "geometria-fuerzas",
+ "nota": "entrada es _datos del generador (idea, tipo, nivel y lo que define el problema). respuesta: el texto de la alternativa correcta. Se genera con generar(semilla, { idea }).",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e6-quimica/casos.py) que no usa el generador ni el núcleo. Tablas propias en Python: enlaces y pares libres del central contados a mano, forma y hibridación por repulsión de pares (OpenStax §7.6), sigma y pi por la fórmula, ebullición a 1 atm (CRC/NIST).",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "regiones",
+    "nivel": 1,
+    "k": "SF₆"
+   },
+   "esperado": {
+    "respuesta": "6"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "angulo",
+    "nivel": 1,
+    "k": "CH₄"
+   },
+   "esperado": {
+    "respuesta": "109,5°"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "forma",
+    "nivel": 2,
+    "k": "SCl₂"
+   },
+   "esperado": {
+    "respuesta": "angular"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "forma-expandida",
+    "nivel": 3,
+    "k": "ClF₃"
+   },
+   "esperado": {
+    "respuesta": "forma de T"
+   }
+  },
+  {
+   "semilla": 80,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "forma-expandida",
+    "nivel": 3,
+    "k": "SF₄"
+   },
+   "esperado": {
+    "respuesta": "balancín"
+   }
+  },
+  {
+   "semilla": 81,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "forma",
+    "nivel": 2,
+    "k": "SCl₂"
+   },
+   "esperado": {
+    "respuesta": "angular"
+   }
+  },
+  {
+   "semilla": 82,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "forma-expandida",
+    "nivel": 3,
+    "k": "SF₄"
+   },
+   "esperado": {
+    "respuesta": "balancín"
+   }
+  },
+  {
+   "semilla": 83,
+   "entrada": {
+    "idea": "forma-repulsion",
+    "tipo": "forma-expandida",
+    "nivel": 3,
+    "k": "BrF₅"
+   },
+   "esperado": {
+    "respuesta": "pirámide cuadrada"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "hib-central",
+    "nivel": 1,
+    "k": "SF₆"
+   },
+   "esperado": {
+    "respuesta": "sp³d²"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "sigma-pi",
+    "nivel": 2,
+    "fo": "H₂C=C=CH₂"
+   },
+   "esperado": {
+    "respuesta": "6 σ y 2 π"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "electrones-pi",
+    "nivel": 2,
+    "fo": "H₂C=CH–CH=CH₂"
+   },
+   "esperado": {
+    "respuesta": "4"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "hib-carbono",
+    "nivel": 3,
+    "fo": "H₂C=C=CH₂",
+    "cual": "el carbono del medio"
+   },
+   "esperado": {
+    "respuesta": "sp"
+   }
+  },
+  {
+   "semilla": 80,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "hib-carbono",
+    "nivel": 3,
+    "fo": "HC≡C–CH₃",
+    "cual": "el carbono del medio"
+   },
+   "esperado": {
+    "respuesta": "sp"
+   }
+  },
+  {
+   "semilla": 81,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "electrones-pi",
+    "nivel": 2,
+    "fo": "N≡N"
+   },
+   "esperado": {
+    "respuesta": "4"
+   }
+  },
+  {
+   "semilla": 82,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "hib-carbono",
+    "nivel": 3,
+    "fo": "CH₃–C≡N",
+    "cual": "el carbono unido al N"
+   },
+   "esperado": {
+    "respuesta": "sp"
+   }
+  },
+  {
+   "semilla": 83,
+   "entrada": {
+    "idea": "hibridacion",
+    "tipo": "hib-carbono",
+    "nivel": 3,
+    "fo": "CH₃–CH₃",
+    "cual": "un carbono"
+   },
+   "esperado": {
+    "respuesta": "sp³"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "forma-polaridad",
+    "tipo": "polar",
+    "nivel": 2,
+    "k": "SF₆"
+   },
+   "esperado": {
+    "respuesta": "Apolar: sus dipolos se anulan"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "forma-polaridad",
+    "tipo": "cual-polar",
+    "nivel": 3,
+    "si": "H₂S",
+    "no": [
+     "SF₆",
+     "PCl₅",
+     "BeCl₂"
+    ]
+   },
+   "esperado": {
+    "respuesta": "H₂S"
+   }
+  },
+  {
+   "semilla": 80,
+   "entrada": {
+    "idea": "forma-polaridad",
+    "tipo": "cual-polar",
+    "nivel": 3,
+    "si": "NH₃",
+    "no": [
+     "BF₃",
+     "CO₂",
+     "SO₃"
+    ]
+   },
+   "esperado": {
+    "respuesta": "NH₃"
+   }
+  },
+  {
+   "semilla": 81,
+   "entrada": {
+    "idea": "forma-polaridad",
+    "tipo": "cual-polar",
+    "nivel": 3,
+    "si": "NH₃",
+    "no": [
+     "BF₃",
+     "SO₃",
+     "BeCl₂"
+    ]
+   },
+   "esperado": {
+    "respuesta": "NH₃"
+   }
+  },
+  {
+   "semilla": 82,
+   "entrada": {
+    "idea": "forma-polaridad",
+    "tipo": "cual-polar",
+    "nivel": 3,
+    "si": "CHCl₃",
+    "no": [
+     "SO₃",
+     "PCl₅",
+     "BF₃"
+    ]
+   },
+   "esperado": {
+    "respuesta": "CHCl₃"
+   }
+  },
+  {
+   "semilla": 83,
+   "entrada": {
+    "idea": "forma-polaridad",
+    "tipo": "cual-polar",
+    "nivel": 3,
+    "si": "HCN",
+    "no": [
+     "CCl₄",
+     "BF₃",
+     "SO₃"
+    ]
+   },
+   "esperado": {
+    "respuesta": "HCN"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "que-fuerza",
+    "nivel": 1,
+    "fo": "CCl₄"
+   },
+   "esperado": {
+    "respuesta": "Solo London"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "cual-hierve",
+    "nivel": 2,
+    "a": "n-pentano",
+    "b": "neopentano"
+   },
+   "esperado": {
+    "respuesta": "El n-pentano: es alargado: más contacto y más London"
+   }
+  },
+  {
+   "semilla": 8,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "puente",
+    "nivel": 2,
+    "si": "HF",
+    "no": [
+     "CH₂O",
+     "H₂S",
+     "CH₃F"
+    ]
+   },
+   "esperado": {
+    "respuesta": "HF"
+   }
+  },
+  {
+   "semilla": 80,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "puente",
+    "nivel": 2,
+    "si": "HF",
+    "no": [
+     "CH₃OCH₃",
+     "CH₄",
+     "CH₂O"
+    ]
+   },
+   "esperado": {
+    "respuesta": "HF"
+   }
+  },
+  {
+   "semilla": 81,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "puente",
+    "nivel": 2,
+    "si": "HF",
+    "no": [
+     "H₂S",
+     "CH₃OCH₃",
+     "HCl"
+    ]
+   },
+   "esperado": {
+    "respuesta": "HF"
+   }
+  },
+  {
+   "semilla": 82,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "puente",
+    "nivel": 2,
+    "si": "H₂O₂",
+    "no": [
+     "HCl",
+     "CH₄",
+     "CH₂O"
+    ]
+   },
+   "esperado": {
+    "respuesta": "H₂O₂"
+   }
+  },
+  {
+   "semilla": 83,
+   "entrada": {
+    "idea": "fuerzas-intermoleculares",
+    "tipo": "puente",
+    "nivel": 2,
+    "si": "CH₃NH₂",
+    "no": [
+     "CH₃F",
+     "CH₂O",
+     "H₂S"
+    ]
+   },
+   "esperado": {
+    "respuesta": "CH₃NH₂"
+   }
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "enlace-lewis",
+  "titulo": "Tipos de enlace, iones y estructuras de Lewis",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.enlace-quimico"
+  ],
+  "temas": [
+    "Tipos de enlace y propiedades",
+    "Enlace metálico",
+    "Polaridad del enlace",
+    "Enlace iónico",
+    "Regla del octeto",
+    "Enlace covalente y estructuras de Lewis",
+    "Enlace dativo y excepciones al octeto",
+    "Resonancia"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

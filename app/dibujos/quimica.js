@@ -41,6 +41,11 @@ D.registrar('quimica', {
     P.c(58, 62, 34, 'b') + P.c(102, 62, 34, 'b') + P.p('M80 35.6A34 34 0 0 1 80 88.4A34 34 0 0 1 80 35.6Z', 'a')
     + P.c(58, 62, 34, '') + P.c(102, 62, 34, '') + P.c(80, 53, 4.5, 'tn') + P.c(80, 71, 4.5, 'tn')
     + P.t(46, 69, 'H', 20) + P.t(114, 69, 'H', 20),
+  // La forma: tres enlaces abajo y un par libre arriba que los empuja (una pirámide, como el NH₃).
+  'quimica.geometria-molecular': P =>
+    P.l([[80, 66], [36, 98]]) + P.l([[80, 66], [124, 98]]) + P.l([[80, 66], [80, 110]], 'd')
+    + P.p('M80 50C64 28 70 12 80 12C90 12 96 28 80 50Z', 'a') + P.c(80, 66, 16, 'b') + P.c(80, 66, 16, '')
+    + [[36, 98], [124, 98], [80, 110]].map(([x, y]) => P.c(x, y, 10, 'b f')).join(''),
   // Las cargas se cruzan y dan el nombre: Fe³⁺ con O²⁻ es Fe₂O₃.
   'quimica.nomenclatura-inorganica': P =>
     P.r(14, 12, 56, 42, 'b', 8) + P.r(90, 12, 56, 42, 'm', 8) + P.t(36, 42, 'Fe', 22) + P.t(58, 30, '3+', 14, 'start')

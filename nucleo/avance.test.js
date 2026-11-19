@@ -375,3 +375,39 @@ test('Estática rehecha (19 nov): predicciones viejas sin huella borradas una ve
 
 // 19 nov (etapa 6, docs/etapa6/propuesta-quimica.md): «Enlace químico y fuerzas intermoleculares» se parte. La forma y la
 // polaridad, las fuerzas entre moléculas, las dos mesas de dipolos y sus palabras pasan a quimica.geometria-molecular.
+test('Enlace químico partido: la polaridad, las fuerzas, sus mesas y sus palabras pasan a Geometría molecular (partidoEN)', () => {
+  const V = 'quimica.enlace-quimico', N = 'quimica.geometria-molecular';
+  const est = { avanceV: 1, vistas: { [V]: '2026-11-14' }, marcadas: {},
+    teoria: { [V]: { idea: 'fuerzas-intermoleculares', ideas: {
+      'tres-enlaces': { hecha: true, prediccion: 'pares' },
+      'lewis-octeto': { hecha: true, prediccion: 'c', prediccionDe: 'h9' },
+      resonancia: { hecha: true, prediccion: 'c' },
+      'forma-polaridad': { hecha: true, prediccion: 'enlaces', momento: 'regla' },
+      'fuerzas-intermoleculares': { prediccion: 'masa', casos: 3 } } } },
+    coleccion: [{ unidad: V, mesa: 'molecula-gira' }, { unidad: V, mesa: 'dos-dipolos' }, { unidad: V, mesa: 'resonancia-libre' }],
+    glosario: { [V]: { dipolo: 'sabe', 'puente de hidrogeno': 'repasa', 'enlace ionico': 'sabe' } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.partidoEN, 1); assert.equal(est.prediccionEN, 1); assert.equal(est.estudiadaEN, 1); assert.equal(est.prediccionEN2, 1);
+  // Las que se quedan: `tres-enlaces` cambió de pregunta (sin huella: se borra); `lewis-octeto` tiene huella (se queda);
+  // `resonancia` conserva su pregunta y sus ids.
+  assert.deepEqual(est.teoria[V].ideas, { 'tres-enlaces': { hecha: true }, 'lewis-octeto': { hecha: true, prediccion: 'c', prediccionDe: 'h9' }, resonancia: { hecha: true, prediccion: 'c' } });
+  assert.equal(est.teoria[V].idea, undefined);
+  // Las que se fueron: `forma-polaridad` cambió de pregunta (del CO₂ al CH₂Cl₂): se borra su predicción sin huella; la de
+  // `fuerzas-intermoleculares` (la misma pregunta, los mismos ids) se queda.
+  assert.deepEqual(est.teoria[N].ideas, { 'forma-polaridad': { hecha: true, momento: 'regla' }, 'fuerzas-intermoleculares': { prediccion: 'masa', casos: 3 } });
+  assert.equal(est.teoria[N].idea, 'fuerzas-intermoleculares');
+  assert.deepEqual(est.coleccion.map(c => c.unidad), [N, N, V]);
+  assert.deepEqual(est.glosario, { [V]: { 'enlace ionico': 'sabe' }, [N]: { dipolo: 'sabe', 'puente de hidrogeno': 'repasa' } });
+  assert.equal(est.vistas[N], '2026-11-14');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+  // Quien había terminado las cinco ideas de antes conserva «Ya la estudié» en las dos unidades (estudiadaEN).
+  const hecho = { avanceV: 1, vistas: { [V]: '2026-11-11' }, marcadas: {},
+    teoria: { [V]: { ideas: Object.fromEntries(['tres-enlaces', 'lewis-octeto', 'resonancia', 'forma-polaridad', 'fuerzas-intermoleculares'].map(i => [i, { hecha: true }])) } } };
+  assert.equal(A.migrar(hecho), true);
+  assert.equal(hecho.marcadas[V], '2026-11-11');
+  assert.equal(hecho.marcadas[N], '2026-11-11');
+  const nuevo = { avanceV: 1 };
+  A.migrar(nuevo);
+  assert.equal(nuevo.partidoEN, 1);
+  assert.equal((nuevo.teoria || {})[N], undefined);
+});

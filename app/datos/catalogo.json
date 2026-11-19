@@ -1269,6 +1269,7 @@
       "quimica.tabla-periodica",
       "quimica.propiedades-periodicas",
       "quimica.enlace-quimico",
+      "quimica.geometria-molecular",
       "quimica.nomenclatura-inorganica"
      ]
     },
@@ -1430,7 +1431,7 @@
        "configuracion-iones": "Configuración de los iones",
        "desapareados-isoelectronicos": "Hund y el último electrón"
       },
-      "terminos": 38
+      "terminos": 40
      }
     },
     {
@@ -1530,22 +1531,21 @@
     },
     {
      "id": "quimica.enlace-quimico",
-     "nombre": "Enlace químico y fuerzas intermoleculares",
+     "nombre": "Enlace químico",
      "temas": [
-      "Regla del octeto",
-      "Enlace iónico",
-      "Enlace covalente y estructuras de Lewis",
-      "Resonancia",
-      "Hibridación y geometría molecular",
-      "Polaridad",
+      "Tipos de enlace y propiedades",
       "Enlace metálico",
-      "Fuerzas intermoleculares"
+      "Polaridad del enlace",
+      "Enlace iónico",
+      "Regla del octeto",
+      "Enlace covalente y estructuras de Lewis",
+      "Enlace dativo y excepciones al octeto",
+      "Resonancia"
      ],
      "universidades": {
       "uni": {
        "semanas": [
-        5,
-        6
+        5
        ]
       },
       "unmsm": {
@@ -1560,28 +1560,78 @@
       "quimica.propiedades-periodicas"
      ],
      "plantillas": [
-      "enlace",
-      "quimica-conceptos"
+      "enlace-lewis",
+      "quimica-conceptos",
+      "enlace"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/enlace-quimico.js",
       "requiere": [
+       "/nucleo/elementos.js",
        "/nucleo/kit/piezas/quim-particulas.js",
        "/nucleo/kit/piezas/quim-molecula.js",
-       "/nucleo/kit/piezas/ejes.js",
-       "/plantillas/enlace/motor.js",
-       "/nucleo/elementos.js",
-       "/nucleo/kit/piezas/quim-molecula-3d.js"
+       "/nucleo/kit/piezas/quim-enlace.js",
+       "/plantillas/enlace/motor.js"
       ],
       "ideas": 5,
       "titulos": {
-       "tres-enlaces": "Tres maneras de unirse",
-       "lewis-octeto": "Primero contar, después dibujar",
-       "resonancia": "Un dibujo no alcanza",
-       "forma-polaridad": "La forma decide la polaridad",
-       "fuerzas-intermoleculares": "Lo que une a las moléculas"
+       "tres-enlaces": "Iónico, covalente y metálico",
+       "enlace-ionico": "Enlace iónico: iones y fórmula",
+       "lewis-octeto": "Estructuras de Lewis y octeto",
+       "dativo-excepciones": "Enlace dativo y excepciones al octeto",
+       "resonancia": "Resonancia"
       },
-      "terminos": 42
+      "terminos": 46
+     }
+    },
+    {
+     "id": "quimica.geometria-molecular",
+     "nombre": "Geometría molecular y fuerzas intermoleculares",
+     "temas": [
+      "Hibridación y geometría molecular",
+      "Enlaces sigma y pi",
+      "Polaridad",
+      "Fuerzas intermoleculares"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        6
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        3
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "grado": 3,
+     "requiere": [
+      "quimica.enlace-quimico"
+     ],
+     "plantillas": [
+      "geometria-fuerzas",
+      "enlace"
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/geometria-molecular.js",
+      "requiere": [
+       "/nucleo/elementos.js",
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/nucleo/kit/piezas/quim-molecula-3d.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/quim-enlace.js",
+       "/plantillas/enlace/motor.js"
+      ],
+      "ideas": 4,
+      "titulos": {
+       "forma-repulsion": "Forma por repulsión de pares",
+       "hibridacion": "Hibridación y enlaces sigma y pi",
+       "forma-polaridad": "Polaridad de la molécula",
+       "fuerzas-intermoleculares": "Fuerzas entre moléculas"
+      },
+      "terminos": 37
      }
     },
     {
@@ -1633,7 +1683,7 @@
        "sales": "Fichas enteras hasta carga cero",
        "sales-acidas-basicas-hidratadas": "Sales con H, OH o agua"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -1844,7 +1894,7 @@
        "graham": "El más liviano escapa primero",
        "gas-de-reaccion": "El gas de una reacción"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -1874,7 +1924,7 @@
      "potencial_visual": "medio",
      "grado": 4,
      "requiere": [
-      "quimica.enlace-quimico",
+      "quimica.geometria-molecular",
       "quimica.gases"
      ],
      "plantillas": [
@@ -1898,7 +1948,7 @@
        "diagrama-fases": "El mapa de las fases",
        "gas-humedo": "Aire húmedo y rocío"
       },
-      "terminos": 30
+      "terminos": 31
      }
     },
     {
@@ -2178,7 +2228,7 @@
      "potencial_visual": "bajo",
      "grado": 4,
      "requiere": [
-      "quimica.enlace-quimico"
+      "quimica.geometria-molecular"
      ],
      "plantillas": [
       "hidrocarburos",
@@ -2203,7 +2253,7 @@
        "cis-trans-optica": "Cis, trans y el espejo",
        "reacciones-organicas": "Qué enlace cambia en la reacción"
       },
-      "terminos": 45
+      "terminos": 46
      }
     },
     {
@@ -2314,7 +2364,7 @@
        "vitaminas-solubilidad": "Vitaminas: en grasa o en agua",
        "productos-naturales": "Familias por estructura, no por origen"
       },
-      "terminos": 36
+      "terminos": 35
      }
     },
     {
@@ -9199,7 +9249,8 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "quimica.enlace-quimico"
+    "quimica.enlace-quimico",
+    "quimica.geometria-molecular"
    ],
    "url": "/plantillas/enlace/index.html",
    "papel": "/plantillas/enlace/papel.json",
@@ -9207,6 +9258,33 @@
     "/plantillas/enlace/index.html",
     "/plantillas/enlace/motor.js",
     "/plantillas/enlace/papel.json"
+   ],
+   "rehacer": [
+    "quimica.enlace-quimico",
+    "quimica.geometria-molecular"
+   ]
+  },
+  "enlace-lewis": {
+   "id": "enlace-lewis",
+   "titulo": "Tipos de enlace, iones y estructuras de Lewis",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.enlace-quimico"
+   ],
+   "url": "#/practica/enlace-lewis",
+   "ideas": [
+    "tres-enlaces",
+    "enlace-ionico",
+    "lewis-octeto",
+    "dativo-excepciones",
+    "resonancia"
+   ],
+   "papel": "/plantillas/enlace-lewis/papel.json",
+   "archivos": [
+    "/plantillas/enlace-lewis/generador.js",
+    "/plantillas/enlace-lewis/papel.json"
    ]
   },
   "equilibrio-quimico": {
@@ -9869,6 +9947,28 @@
     "/plantillas/geometria-espacio/index.html",
     "/plantillas/geometria-espacio/motor.js",
     "/plantillas/geometria-espacio/papel.json"
+   ]
+  },
+  "geometria-fuerzas": {
+   "id": "geometria-fuerzas",
+   "titulo": "Forma, hibridación, polaridad y fuerzas entre moléculas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.geometria-molecular"
+   ],
+   "url": "#/practica/geometria-fuerzas",
+   "ideas": [
+    "forma-repulsion",
+    "hibridacion",
+    "forma-polaridad",
+    "fuerzas-intermoleculares"
+   ],
+   "papel": "/plantillas/geometria-fuerzas/papel.json",
+   "archivos": [
+    "/plantillas/geometria-fuerzas/generador.js",
+    "/plantillas/geometria-fuerzas/papel.json"
    ]
   },
   "grafica-perillas": {

@@ -1,0 +1,83 @@
+{
+  "titulo": "Forma, hibridación, polaridad y fuerzas entre moléculas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El CH₃OCH₃ y el etanol (C₂H₅OH), a 1 atm. ¿Cuál hierve a mayor temperatura? Datos: Atracciones entre moléculas: puente de hidrógeno > dipolo-dipolo > London. Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino. London: la tienen todas; crece con el tamaño y con la superficie de contacto. Alternativas: A) Los dos igual: son parecidos   B) El CH₃OCH₃: sus moléculas se atraen más   C) El CH₃OCH₃: es más pesado   D) El etanol (C₂H₅OH): sus enlaces internos son más fuertes   E) El etanol (C₂H₅OH): forma puentes de hidrógeno",
+      "respuesta": "E) El etanol (C₂H₅OH): forma puentes de hidrógeno",
+      "pasos": [
+        "El etanol (C₂H₅OH) forma puentes de hidrógeno.",
+        "etanol (C₂H₅OH): 78 °C; CH₃OCH₃: −24 °C"
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En el PCl₃, el P forma 3 enlaces y tiene 1 par libre. ¿Qué forma tiene la molécula? Datos: Región de electrones: cada enlace (simple, doble o triple) o par libre del átomo central. Con 2 regiones, lineal; con 3, trigonal plana; con 4, tetraédrica (las regiones; la forma se nombra por los átomos). Alternativas: A) piramidal trigonal   B) trigonal plana   C) angular   D) tetraédrica",
+      "respuesta": "A) piramidal trigonal",
+      "pasos": [
+        "4 regiones: 3 enlaces y 1 par libre.",
+        "piramidal trigonal"
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Las sustancias HCl, H₂S, CH₃NH₂, CH₃F. ¿Cuál forma puentes de hidrógeno entre sus moléculas? Datos: Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino. En las fórmulas, el H escrito junto a O o N (OH, NH) está unido a ese átomo; en CH, al carbono. Alternativas: A) CH₃NH₂   B) H₂S   C) HCl   D) CH₃F",
+      "respuesta": "A) CH₃NH₂",
+      "pasos": [
+        "El CH₃NH₂ tiene un H unido a N."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Las moléculas BeCl₂, CO₂, SO₃, HCN. ¿Cuál es polar? Datos: Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Formas: HCN lineal; CO₂ lineal; SO₃ trigonal plana; BeCl₂ lineal. Alternativas: A) SO₃   B) BeCl₂   C) CO₂   D) HCN",
+      "respuesta": "D) HCN",
+      "pasos": [
+        "El HCN, de forma lineal: sus flechas no se anulan."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El HCl y el F₂, a 1 atm. ¿Cuál hierve a mayor temperatura? Datos: Atracciones entre moléculas: puente de hidrógeno > dipolo-dipolo > London. Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino. London: la tienen todas; crece con el tamaño y con la superficie de contacto. Alternativas: A) El F₂: sus moléculas se atraen más   B) El HCl: sus enlaces internos son más fuertes   C) El F₂: es más pesado   D) Los dos igual: son parecidos   E) El HCl: es polar: tiene dipolo-dipolo",
+      "respuesta": "E) El HCl: es polar: tiene dipolo-dipolo",
+      "pasos": [
+        "El HCl es polar: tiene dipolo-dipolo.",
+        "HCl: −85 °C; F₂: −188 °C"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Las moléculas SO₂, CO₂, BF₃, PCl₅. ¿Cuál es polar? Datos: Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Formas: SO₂ angular; PCl₅ bipirámide trigonal; CO₂ lineal; BF₃ trigonal plana. Alternativas: A) BF₃   B) SO₂   C) CO₂   D) PCl₅",
+      "respuesta": "B) SO₂",
+      "pasos": [
+        "El SO₂, de forma angular: sus flechas no se anulan."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El PCl₃ tiene forma piramidal trigonal y enlaces polares. ¿La molécula es polar? Datos: Dipolo de enlace: flecha hacia el átomo de mayor electronegatividad. Molécula polar: sus dipolos de enlace, sumados en 3D, no dan cero. Alternativas: A) Apolar: sus dipolos se anulan   B) Apolar: sus enlaces no son polares   C) Polar: sus dipolos no se anulan   D) Apolar: sus átomos están en orden",
+      "respuesta": "C) Polar: sus dipolos no se anulan",
+      "pasos": [
+        "La forma no reparte las flechas por igual.",
+        "μ ≠ 0"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Las sustancias CH₂O, HCl, CH₃OCH₃, NH₃. ¿Cuál forma puentes de hidrógeno entre sus moléculas? Datos: Puente de hidrógeno: un H unido a N, O o F atrae un par libre de N, O o F vecino. En las fórmulas, el H escrito junto a O o N (OH, NH) está unido a ese átomo; en CH, al carbono. Alternativas: A) HCl   B) NH₃   C) CH₂O   D) CH₃OCH₃",
+      "respuesta": "B) NH₃",
+      "pasos": [
+        "El NH₃ tiene un H unido a N."
+      ]
+    }
+  ]
+}

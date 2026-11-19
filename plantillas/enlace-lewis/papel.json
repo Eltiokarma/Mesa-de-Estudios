@@ -1,0 +1,82 @@
+{
+  "titulo": "Tipos de enlace, iones y estructuras de Lewis: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En el CO₃²⁻, el doble enlace puede ir en cualquiera de sus 3 enlaces C–O iguales. ¿Cuántas estructuras de resonancia tiene? Datos: CO₃²⁻: un C–O doble en cada dibujo. Alternativas: A) 4   B) 1   C) 6   D) 3",
+      "respuesta": "D) 3",
+      "pasos": [
+        "Un dibujo por cada enlace donde puede ir el doble."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El enlace entre cloro y carbono (Cl–C). ¿Qué tipo de enlace es? Datos: EN: Cl 3,16; C 2,55. ΔEN = EN del mayor − EN del menor. Guía de ΔEN: 1,7 o más suele ser iónico; menos de 1,7, covalente polar; 0, covalente apolar. Alternativas: A) Covalente polar   B) Metálico   C) Covalente apolar   D) Iónico",
+      "respuesta": "A) Covalente polar",
+      "pasos": [
+        "Resto: 3,16 − 2,55.",
+        "ΔEN = 0,61: covalente polar."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En el NO₃⁻, el doble enlace puede ir en cualquiera de sus 3 enlaces N–O iguales. ¿Cuántas estructuras de resonancia tiene? Datos: NO₃⁻: un N–O doble en cada dibujo. Alternativas: A) 1   B) 4   C) 6   D) 3",
+      "respuesta": "D) 3",
+      "pasos": [
+        "Un dibujo por cada enlace donde puede ir el doble."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El SO₃ tiene 3 estructuras de resonancia; en cada una, un S–O es doble. ¿Qué orden tiene cada S–O en la especie real? Datos: Orden de enlace: 1 en un simple, 2 en un doble, 3 en un triple. Orden promedio = pares compartidos en esos enlaces ÷ número de esos enlaces. Alternativas: A) 4/3   B) 3/2   C) 4   D) 2   E) 1",
+      "respuesta": "A) 4/3",
+      "pasos": [
+        "4 pares en 3 enlaces.",
+        "4 ÷ 3 = 4/3"
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Las especies O₂²⁻, NO⁺, H₂O, ClO₂. ¿Cuál es un radical libre? Datos: Electrones de valencia: Cl 7; O 6; N 5; H 1. Electrones a repartir = suma de los de valencia − carga del ion. Radical libre: especie con un electrón sin pareja. Alternativas: A) O₂²⁻   B) H₂O   C) ClO₂   D) NO⁺",
+      "respuesta": "C) ClO₂",
+      "pasos": [
+        "ClO₂: 7 + 6 + 6 = 19, impar."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En el NO₂⁻, el doble enlace puede ir en cualquiera de sus 2 enlaces N–O iguales. ¿Cuántas estructuras de resonancia tiene? Datos: NO₂⁻: un N–O doble en cada dibujo. Alternativas: A) 1   B) 3   C) 4   D) 2",
+      "respuesta": "D) 2",
+      "pasos": [
+        "Un dibujo por cada enlace donde puede ir el doble."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una estructura de Lewis del CO₃²⁻. ¿Qué carga formal tiene el carbono central, con cuatro enlaces y sin pares libres? Datos: Carga formal = valencia − electrones de sus pares libres − enlaces que forma. Alternativas: A) −4   B) 0   C) −2   D) +1",
+      "respuesta": "B) 0",
+      "pasos": [
+        "Valencia menos electrones libres menos enlaces.",
+        "4 − 0 − 4 = 0"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En el N₂, todos los átomos cumplen su octeto (el H, 2). ¿Cómo es el enlace entre los dos nitrógenos? Datos: Electrones de valencia: N 5. Octeto: 8 electrones alrededor de cada átomo (el H, 2). Alternativas: A) Simple: un par compartido   B) Iónico: uno le entrega electrones al otro   C) Doble: dos pares compartidos   D) Triple: tres pares compartidos",
+      "respuesta": "D) Triple: tres pares compartidos",
+      "pasos": [
+        "Con un triple, cada átomo llega a su meta."
+      ]
+    }
+  ]
+}

@@ -20,7 +20,7 @@
  *   enlaces: [{ a, b, orden: 1|2|3, color, dipolo: 'b' | 'a', discontinuo, desde, hasta }],
  *            // dipolo: flecha de enlace (con su cruz en la cola) que apunta hacia el átomo a o b;
  *            // discontinuo: interacción que no es enlace (puente de hidrógeno)
- *   pares:   [{ en: id, ang: grados (0 = derecha, 90 = abajo), desde }], // un par libre = dos puntos
+ *   pares:   [{ en: id, ang: grados (0 = derecha, 90 = abajo), color, desde }], // un par libre = dos puntos
  *   cargas:  [{ en: id, t: 'δ−', ang, color, desde }],
  *   angulos: [{ en: id, de: id, a: id, texto: '104,5°', color, desde }],
  *   resaltos:[{ atomos: [id…], texto, color, desde, hasta }],             // marco redondeado tenue con su nombre
@@ -116,7 +116,9 @@
       const r = Math.max(caja(A).w, 13) + 5, ang = p.ang * Math.PI / 180;
       const cx = g.X(A.x) + r * Math.cos(ang), cy = g.Y(A.y) + r * Math.sin(ang);
       const tx = -Math.sin(ang) * 3.5, ty = Math.cos(ang) * 3.5;
-      s += `<g class="kit-par${nuevo(p)}"><circle cx="${T.n(cx + tx)}" cy="${T.n(cy + ty)}" r="2.2" fill="currentColor"/><circle cx="${T.n(cx - tx)}" cy="${T.n(cy - ty)}" r="2.2" fill="currentColor"/></g>`;
+      // 19 nov (etapa 6, Enlace químico): el par puede llevar el color de su variable (p.color); sin él, tinta, como antes.
+      const pc = p.color ? T.color(p.color) : 'currentColor';
+      s += `<g class="kit-par${nuevo(p)}"><circle cx="${T.n(cx + tx)}" cy="${T.n(cy + ty)}" r="2.2" fill="${pc}"/><circle cx="${T.n(cx - tx)}" cy="${T.n(cy - ty)}" r="2.2" fill="${pc}"/></g>`;
     }
     for (const q of d.cargas || []) {
       const A = por.get(q.en); if (!A || !ve(q) || !ve(A)) continue;

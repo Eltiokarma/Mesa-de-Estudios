@@ -799,6 +799,12 @@ const V = {
   },
   'qui-19': d => { const dif = Math.abs(d.a - d.b);
     return { correcta: dif, errores: { 'QM-EN-SUMA': d.a + d.b, 'QM-EN-SOLO': Math.max(d.a, d.b), 'QM-EN-MITAD': dif / 2 } }; },
+  // qui-20 y qui-21 (reserva, 19 nov, etapa 6 de química: «Enlace químico» y «Geometría molecular»): enlace-lewis y
+  // geometria-fuerzas no tienen motor.js; se recalculan aquí por otro camino: los subíndices con carga total cero (mcm de
+  // las dos cargas) y las regiones como enlaces más pares libres.
+  'qui-20': d => { const mcm = (a, b) => { let m = Math.max(a, b); while (m % a || m % b) m++; return m; }, T = mcm(d.qm, d.qx), at = T / d.qm + T / d.qx;
+    return { correcta: T, errores: { 'QM-TRANSF-UNO': d.qm, 'QM-TRANSF-ATOMOS': at, 'QM-TRANSF-DOBLE': 2 * T } }; },
+  'qui-21': d => ({ correcta: d.n + d.m, errores: { 'QM-FORMA-LIGANDOS': d.n, 'QM-REGION-PARES': d.n + 2 * d.m, 'QM-REGION-ELECTRONES': 2 * (d.n + d.m) } }),
 
   // fis-23 y fis-24 (reserva, 19 nov, etapa 5 de física: «Movimiento parabólico»). El tiempo de caída lo da el motor de
   // tiro-parabolico (proyectil); la distancia al origen con x = x₀ + a·t e y = t² se recalcula aquí, con Pitágoras.

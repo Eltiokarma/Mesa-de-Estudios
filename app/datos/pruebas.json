@@ -2943,6 +2943,30 @@
    "version": "1.2.0",
    "minutos": 16,
    "errores": {
+    "QM-TRANSF-UNO": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los electrones de un solo átomo del metal"
+    },
+    "QM-TRANSF-ATOMOS": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta los átomos de la fórmula en vez de los electrones"
+    },
+    "QM-TRANSF-DOBLE": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta dos veces lo que entrega el metal y recibe el no metal"
+    },
+    "QM-FORMA-LIGANDOS": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta solo los enlaces del átomo central y olvida sus pares libres"
+    },
+    "QM-REGION-PARES": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta cada par libre como dos regiones"
+    },
+    "QM-REGION-ELECTRONES": {
+     "respaldo": "hipotesis",
+     "describe": "Cuenta electrones en vez de regiones"
+    },
     "ES20-menor-cantidad": {
      "respaldo": "documentado",
      "describe": "Toma como limitante al reactivo del que hay menos (moléculas o gramos)"

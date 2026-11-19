@@ -1216,8 +1216,7 @@
         ejemplo: 'Etino o acetileno, C₂H₂: el gas de los sopletes.', ver: ['alqueno'] },
       { termino: 'cicloalcano', def: 'Hidrocarburo de enlaces simples con los carbonos cerrados en anillo: CₙH₂ₙ, dos H menos que el alcano.',
         ejemplo: 'Ciclohexano, C₆H₁₂: misma fórmula que un hexeno.', ver: ['alcano', 'isómero'] },
-      { termino: 'hibridación', def: 'Mezcla de orbitales que fija la forma del carbono: sp³ a 109,5°, sp² a 120°, sp a 180°.',
-        ejemplo: 'En el eteno, cada carbono del doble enlace es sp².', ver: ['orbital'] },
+      // «hibridación» se define desde el 19 nov en Geometría molecular y fuerzas intermoleculares (quimica.geometria-molecular).
       { termino: 'aromático', def: 'Compuesto con un anillo como el del benceno, con enlaces dobles repartidos por todo el anillo.',
         formas: ['aromático', 'aromáticos', 'aromática', 'aromáticas'], ver: ['benceno'] },
       { termino: 'benceno', simbolo: 'C₆H₆', def: 'Anillo de seis carbonos con sus tres enlaces dobles repartidos por igual entre los seis.',

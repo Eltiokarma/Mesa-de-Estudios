@@ -13,6 +13,12 @@
     "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
   ],
   "errores": {
+    "QM-TRANSF-UNO": {"respaldo": "hipotesis", "describe": "Cuenta los electrones de un solo átomo del metal"},
+    "QM-TRANSF-ATOMOS": {"respaldo": "hipotesis", "describe": "Cuenta los átomos de la fórmula en vez de los electrones"},
+    "QM-TRANSF-DOBLE": {"respaldo": "hipotesis", "describe": "Cuenta dos veces lo que entrega el metal y recibe el no metal"},
+    "QM-FORMA-LIGANDOS": {"respaldo": "hipotesis", "describe": "Cuenta solo los enlaces del átomo central y olvida sus pares libres"},
+    "QM-REGION-PARES": {"respaldo": "hipotesis", "describe": "Cuenta cada par libre como dos regiones"},
+    "QM-REGION-ELECTRONES": {"respaldo": "hipotesis", "describe": "Cuenta electrones en vez de regiones"},
     "ES20-menor-cantidad": {
       "respaldo": "documentado",
       "describe": "Toma como limitante al reactivo del que hay menos (moléculas o gramos)"
@@ -1044,7 +1050,7 @@
       "par": "qui-12",
       "plantilla": "enlace",
       "unidad": "quimica.enlace-quimico",
-      "nombreUnidad": "Enlace químico y fuerzas intermoleculares",
+      "nombreUnidad": "Enlace químico",
       "mide": "Electrones de valencia de un anión poliatómico, al revés: la carga del ion entra en la cuenta del Lewis",
       "A": {
         "enunciado": "Al dibujar la estructura de Lewis del ion XO₂⁻ se reparten 18 electrones de valencia en total. ¿Cuántos electrones de valencia aporta el átomo X?",
@@ -1493,6 +1499,60 @@
           { "texto": "3,04", "valor": 3.04, "error": "QM-EN-SOLO" },
           { "texto": "0,84", "valor": 0.84, "correcta": true },
           { "texto": "5,24", "valor": 5.24, "error": "QM-EN-SUMA" }
+        ]
+      }
+    },
+    {
+      "par": "qui-20",
+      "plantilla": "enlace-lewis",
+      "unidad": "quimica.enlace-quimico",
+      "nombreUnidad": "Enlace químico",
+      "mide": "Electrones que pasan del metal al no metal en un compuesto iónico: la fórmula con carga total cero y todos sus átomos",
+      "A": {
+        "enunciado": "El aluminio forma iones de carga +3 y el oxígeno, iones de carga −2. En el compuesto iónico que forman, ¿cuántos electrones pasan en total del aluminio al oxígeno por cada unidad de la fórmula?",
+        "datos": { "qm":  3, "qx":  2 },
+        "opciones": [
+          { "texto":  "3", "valor":  3, "error":  "QM-TRANSF-UNO" },
+          { "texto":  "5", "valor":  5, "error":  "QM-TRANSF-ATOMOS" },
+          { "texto":  "6", "valor":  6, "correcta":  true},
+          { "texto":  "12", "valor":  12, "error":  "QM-TRANSF-DOBLE" }
+        ]
+      },
+      "B": {
+        "enunciado": "El calcio forma iones de carga +2 y el nitrógeno, iones de carga −3. En el compuesto iónico que forman, ¿cuántos electrones pasan en total del calcio al nitrógeno por cada unidad de la fórmula?",
+        "datos": { "qm": 2, "qx": 3 },
+        "opciones": [
+          { "texto": "5", "valor": 5, "error": "QM-TRANSF-ATOMOS" },
+          { "texto": "6", "valor": 6, "correcta": true },
+          { "texto": "2", "valor": 2, "error": "QM-TRANSF-UNO" },
+          { "texto": "12", "valor": 12, "error": "QM-TRANSF-DOBLE" }
+        ]
+      }
+    },
+    {
+      "par": "qui-21",
+      "plantilla": "geometria-fuerzas",
+      "unidad": "quimica.geometria-molecular",
+      "nombreUnidad": "Geometría molecular y fuerzas intermoleculares",
+      "mide": "Regiones de electrones del átomo central con octeto expandido: los enlaces y los pares libres, una región cada uno",
+      "A": {
+        "enunciado": "En el SF₄, el azufre forma 4 enlaces simples y tiene 1 par libre. ¿Cuántas regiones de electrones tiene el azufre?",
+        "datos": { "n":  4, "m":  1 },
+        "opciones": [
+          { "texto":  "4", "valor":  4, "error":  "QM-FORMA-LIGANDOS" },
+          { "texto":  "5", "valor":  5, "correcta":  true},
+          { "texto":  "6", "valor":  6, "error":  "QM-REGION-PARES" },
+          { "texto":  "10", "valor":  10, "error":  "QM-REGION-ELECTRONES" }
+        ]
+      },
+      "B": {
+        "enunciado": "En el ClF₃, el cloro forma 3 enlaces simples y tiene 2 pares libres. ¿Cuántas regiones de electrones tiene el cloro?",
+        "datos": { "n":  3, "m":  2 },
+        "opciones": [
+          { "texto":  "10", "valor":  10, "error":  "QM-REGION-ELECTRONES" },
+          { "texto":  "3", "valor":  3, "error":  "QM-FORMA-LIGANDOS" },
+          { "texto":  "7", "valor":  7, "error":  "QM-REGION-PARES" },
+          { "texto":  "5", "valor":  5, "correcta":  true}
         ]
       }
     }
