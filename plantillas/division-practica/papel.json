@@ -16,7 +16,7 @@
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "Se arma la tabla de Ruffini de x³ − 2x² + 4x + 2 entre x − 3. ¿Qué número va en la segunda casilla de la fila de abajo? Datos: Ruffini: cada casilla nueva de abajo es el coeficiente de arriba más a por la casilla anterior. x − 3 se anula en x = 3. Alternativas: A) −2   B) 2   C) 3   D) 1   E) −5",
+      "enunciado": "Se arma la tabla de Ruffini de x³ − 2x² + 4x + 2 entre x − 3. ¿Qué número va en la segunda casilla de la fila de abajo? Datos: Ruffini: cada casilla nueva de abajo es el de arriba más a por la anterior (a anula al divisor). x − 3 se anula en x = 3. Alternativas: A) −2   B) 2   C) 3   D) 1   E) −5",
       "respuesta": "D) 1",
       "pasos": [
         "El de arriba más a por la casilla anterior.",
@@ -46,7 +46,7 @@
     {
       "id": "p5",
       "nivel": "intermedio",
-      "enunciado": "Se divide −3x³ + 20 entre 3x − 6. ¿Cuál es el cociente? Datos: Para dividir entre cx + b: Ruffini con x = −b/c da el cociente falso q′. Cociente: q = q′ ÷ c. Resto: la última casilla, sin dividir. Ruffini: cada casilla nueva de abajo es el coeficiente de arriba más a por la casilla anterior. Alternativas: A) −x² − 2x − 8   B) −9x² − 18x − 36   C) −3x² − 6x − 12   D) −x² − 2x − 4",
+      "enunciado": "Se divide −3x³ + 20 entre 3x − 6. ¿Cuál es el cociente? Datos: Para dividir entre cx + b: Ruffini con x = −b/c da el cociente falso q′. Cociente: q = q′ ÷ c. Resto: la última casilla, sin dividir. Ruffini con cx + b: cada casilla nueva de abajo es el de arriba más −b/c por la anterior. Alternativas: A) −x² − 2x − 8   B) −9x² − 18x − 36   C) −3x² − 6x − 12   D) −x² − 2x − 4",
       "respuesta": "D) −x² − 2x − 4",
       "pasos": [
         "3x − 6 se anula en x = 2. La tabla da el cociente falso −3x² − 6x − 12.",

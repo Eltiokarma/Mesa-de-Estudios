@@ -35,6 +35,9 @@ test('unidadDe: un generador de una sola unidad, la tabla y p.unidadCatalogo', (
   assert.equal(RT.unidadDe(pl, { _datos: {}, unidadCatalogo: 'fisica.dinamica' }), null); // no es de este generador
   assert.ok(RT.cubre(pl, 'algebra.matrices-y-determinantes'));
   assert.ok(!RT.cubre(cat.plantillas['rm-trasvases'], 'razonamiento-matematico.juegos-recreativos')); // sin filas: no repasa
+  // 19 nov: division-polinomios (MCD y MCM de Factorización) ya no sirve a División de polinomios.
+  assert.ok(!RT.cubre(cat.plantillas['division-polinomios'], 'algebra.division-de-polinomios'));
+  assert.equal(RT.unidadDe(cat.plantillas['division-polinomios'], { _datos: { tipo: 'mcdmcm' } }), 'algebra.factorizacion');
 });
 
 test('cada unidad que la tabla cubre consigue un problema suyo con las semillas del repaso', () => {

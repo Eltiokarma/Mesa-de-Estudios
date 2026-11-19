@@ -157,7 +157,7 @@
       "potencial_visual": "alto",
       "grado": 3,
       "requiere": ["algebra.polinomios"],
-      "plantillas": ["division-practica", "polinomios", "division-polinomios"],
+      "plantillas": ["division-practica", "polinomios"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
     {

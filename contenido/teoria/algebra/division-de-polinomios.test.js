@@ -1,7 +1,7 @@
 // Pruebas propias de «División de polinomios y cocientes notables» (además del validador común de
 // contenido/teoria/teoria.test.js). Etapa 6 (19 nov 2026; docs/etapa6/propuesta-algebra.md): seis ideas reescritas
-// contra el contrato. La unidad todavía no declara calidad: 2 (falta el cierre: lector en frío y auditor); la primera
-// prueba corre el validador como si la tuviera. Lo que se comprueba aquí:
+// contra el contrato. La unidad lleva calidad: 2 desde el 19 nov (lector en frío y auditor);
+// la primera prueba corre además el validador. Lo que se comprueba aquí:
 //   - el orden de las ideas y los ids publicados (los cinco de la ronda 2 se conservan; `horner` es nueva);
 //   - un color fijo por magnitud (cabecera): cada ficha de color dice su magnitud (m) y lleva el color de def.colores;
 //     divisor turquesa, cociente violeta, resto naranja; nunca carmín ni verde, tampoco en las figuras;
@@ -125,7 +125,7 @@ function poliTxt(cs) {
 // ---------- La unidad ----------
 test('seis ideas en el orden de la propuesta; los ids publicados se conservan; pasa el validador con calidad 2 simulada', () => {
   assert.deepEqual(def.ideas.map(i => i.id), ['algoritmo', 'horner', 'ruffini', 'divisor-k', 'teorema-resto', 'cocientes-notables']);
-  assert.ok(def.calidad === undefined || def.calidad === 2);
+  assert.equal(def.calidad, 2, 'cerrada el 19 nov tras el lector en frío y el auditor');
   const u = require('../../../catalogo/cursos/algebra.json').unidades.find(x => x.id === def.unidad);
   assert.deepEqual(Teoria.problemas(Object.assign({}, def, { calidad: 2 }), { temas: u.temas, semillas: 60 }), []);
   assert.deepEqual(Teoria.pendientes(Object.assign({}, def, { calidad: 2 })), [], 'una unidad nueva no agrega excepciones');
@@ -142,7 +142,7 @@ test('cada idea estrena de 2 a 4 palabras con su aproximación y tres ejemplos',
 
 // ---------- Colores ----------
 test('la tabla de colores: divisor turquesa, cociente violeta, resto naranja; sin carmín ni verde', () => {
-  assert.deepEqual(def.colores, { divisor: 'i', 'número del divisor': 'i', cociente: 'f', 'lo que se olvida': 'f', resto: 'o' });
+  assert.deepEqual(def.colores, { divisor: 'i', 'número del divisor': 'i', cociente: 'f', resto: 'o' });
 });
 
 function lecturas(i) {
@@ -296,4 +296,98 @@ test('ejemplos: 15 por idea; en el nivel 3, cinco alternativas distintas y la le
 test('no se adelanta Factorización: ni «factor» ni «raíz» en el texto del alumno', () => {
   const t = Glosario.texto(def);
   assert.ok(!/\bfactor\b|\bfactoriz|\braíz\b|\braíces\b/i.test(t), (t.match(/.{30}(factor|raíz).{30}/i) || [''])[0]);
+});
+
+// ---------- Correcciones del 19 nov (rutinas/auditoria/algebra.division-de-polinomios.md y rutinas/frio/) ----------
+// Cada prueba falla con la versión anterior (copias en el scratchpad de la sesión, e6-cierre-div/antes/).
+const glo = t => def.glosario.find(g => g.termino === t);
+test('A1: lo que el glosario dice de una división («no lo es», «deja N») es cierto', () => {
+  let n = 0;
+  for (const g of def.glosario) for (const ej of g.ejemplos) {
+    const m = ej.match(/^(?:En \()?([^()]*?x[^()]*?)\)? (?:entre|÷) \(?(x[^():]*?)\)?(?:,| no| deja| da|:|$)/);
+    if (!m) continue;
+    const D = leerPoli(m[1]), d = leerPoli(m[2]);
+    if (!D || !d) continue;
+    const r = divide(D, d).r, cero = r.every(c => c[0] === 0);
+    if (/no lo es/.test(ej)) { assert.ok(!cero, `glosario «${g.termino}»: «${ej}» es exacta`); n++; }
+    const dj = ej.match(/deja (−?\d+)\.$/) || ej.match(/sobra (−?\d+)\.$/);
+    if (dj) { assert.equal(poliTxt(r.slice(r.findIndex(c => c[0] !== 0))), dj[1], `glosario «${g.termino}»: ${ej}`); n++; }
+  }
+  assert.ok(n >= 3, `afirmaciones revisadas: ${n}`);
+});
+test('M3: el glosario de las ideas 4, 5 y 6 no dice lo que se predice ni la misión', () => {
+  assert.ok(!/dividir|entre c\b/.test(glo('cociente falso').def), 'cociente falso: no dice que se divide entre c');
+  const tr = glo('teorema del resto'), t = [tr.def, tr.simple, ...tr.ejemplos].join(' | ');
+  assert.ok(!/D\(a\)|evalu|se evalúa en/.test(t), `teorema del resto: ${t}`);
+  const notable = [...glo('término de lugar k').ejemplos, ...idea('cocientes-notables').lee.tarjetas.map(x => plano(x.texto))].join(' | ');
+  assert.ok(!/\+ 2x² \+ 4x \+ 8|x² \+ 2x \+ 4|124/.test(notable), 'nada de las potencias de 2 (la misión es 1248)');
+  assert.ok(!/124/.test(JSON.stringify(idea('cocientes-notables').lee.tarjetas.map(x => x.dibujo || null))), 'la calculadora de Lee no muestra 124');
+});
+test('M1: idea 4, «Ahora tú»: cada distractor de cociente vale lo que da su error', () => {
+  const i = idea('divisor-k');
+  for (let s = 3; s < SEMILLAS; s += 4) {
+    const a = i.ahoraTu.generar(s), m = plano(a.pregunta).match(/dividir (.+?) entre (.+?)\?/);
+    const D = leerPoli(m[1]), d = leerPoli(m[2]), q = divide(D, d).q, c = d[0];
+    for (const o of a.opciones) {
+      if (o.error === 'PO2') assert.fail(`${s}: con x = b/c el cociente no sale con enteros; ese distractor no es lo que da el error`);
+      if (o.error === 'TAL-K-MULT') assert.equal(plano(o.texto), poliTxt(q.map(v => fmul(v, fr(c * c)))), `${s}`);
+    }
+  }
+});
+test('M2 y M16: ningún ejemplo de nivel 2 o 3 repite la división de otro ejemplo de su idea (salvo «Comprobar»)', () => {
+  for (const i of def.ideas) {
+    const vistas = new Map();
+    for (const e of i.ejemplos) {
+      const m = plano(e.enunciado).match(/(?:dividir|Divide|dividir) (\S[^,?]*?x[^,?]*?) entre ([^,?.]+?)(?:,|\?|\.| con| se| salió| la tabla| sin)/);
+      if (!m || /^Comprobar/.test(e.titulo)) continue;
+      const k = `${m[1]} | ${m[2]}`;
+      assert.ok(!vistas.has(k), `${i.id}: «${e.titulo}» repite la división de «${vistas.get(k)}» (${k})`);
+      vistas.set(k, e.titulo);
+    }
+  }
+  const e = idea('horner').ejemplos.find(x => x.titulo === 'El coeficiente de x del resto');
+  const C = plano(e.solucion.map(l => l.texto)).match(/C[^;.]*/)[0];
+  assert.ok(C.includes('21'), `la C vale 21 y su explicación dice: «${C}»`);
+});
+test('M4: los Datos que usan «a» dicen qué es; en la idea 4 el número es −b/c', () => {
+  const lineas = i => [...i.ejemplos.flatMap(e => e.datos || []), ...Array.from({ length: 40 }, (_, s) => [...i.ahoraTu.generar(s).datos, ...i.resuelve.generar(s).datos]).flat()].map(plano);
+  for (const l of lineas(idea('divisor-k'))) assert.ok(!/más a por/.test(l), `divisor-k: «${l}»`);
+  for (const l of lineas(idea('ruffini'))) if (/más a por/.test(l)) assert.ok(/anula/.test(l), `ruffini: «${l}»`);
+});
+test('M5: la regla y Mira de Horner dicen por qué cambia el signo y que se divide entre el primero de d', () => {
+  const i = idea('horner'), r = plano([i.regla.condicion, i.regla.voz]);
+  assert.ok(/signo/.test(r) && /entre el primero de d/.test(r), r);
+  assert.ok(i.mira.pasos.some(p => /signo/.test(p.texto) && /entre 2/.test(p.texto)), 'Mira explica la tabla de Horner');
+  const e = i.ejemplos.find(x => x.titulo === 'La misma cuenta en Horner');
+  assert.ok(e.solucion.filter(l => /productos/.test(plano(l.texto))).length >= 3, 'el resuelto dice adónde va cada producto');
+});
+test('M6: los coeficientes de D, también el 0 de una potencia que falta, van en tinta', () => {
+  for (const i of def.ideas) for (const fg of figuras(i)) {
+    const d = fg.datos || {};
+    for (const c of [...(d.coefs || []), ...((d.filas || [])[0] && d.filas[0].rotulo === 'D' ? d.filas[0].celdas : [])]) assert.ok(!(c && typeof c === 'object' && c.c === 'f'), `${i.id}: un coeficiente de D en violeta`);
+  }
+  for (const i of def.ideas) for (const x of fichas([i.mira.pasos.map(p => p.ecuacion), i.ejemplos.map(e => [e.solucion, e.respuesta])])) assert.ok(!(x.t === '0' && x.v === 'c-f' && x.m === 'lo que se olvida'), i.id);
+});
+test('M7 y M8: las reglas no separan igualdades con «·» y el resto no se escribe r(a)', () => {
+  for (const i of def.ideas) assert.ok(!/ {3}· {3}/.test(plano(i.regla.ecuacion)), `${i.id}: «·» entre dos igualdades`);
+  assert.ok(!/r\(a\)/.test(plano(idea('teorema-resto').regla.ecuacion)));
+  assert.ok(!/abajo/.test(plano([idea('cocientes-notables').regla.texto, idea('cocientes-notables').regla.condicion])));
+});
+test('M15: en el juego 1, lo que sobra va en naranja (el resto) solo cuando ya no alcanza para otro tramo', () => {
+  const j = idea('algoritmo').juega;
+  for (const k of [0, 1, 2]) assert.ok(!fichas(j.lectura({ k })).some(x => x.v === 'c-o'), `k = ${k}`);
+  assert.ok(fichas(j.lectura({ k: 3 })).some(x => x.v === 'c-o'));
+});
+test('M9 a M13: datos y figuras de la idea 4 y de la caja', () => {
+  const k = idea('divisor-k');
+  assert.deepEqual(k.lee.tarjetas[0].dibujo.datos.ancho, [1, 1], 'Lee 1 dibuja el pasadizo de (x + 1) dm que nombra');
+  assert.ok(plano(k.ejemplos.find(e => e.titulo === 'El pasadizo de ancho 3x + 3').datos).includes('cociente falso'));
+  assert.ok(!plano(k.ejemplos.find(e => e.titulo === 'El resto no se divide').datos).includes('Resto: la última casilla'), 'los datos no dicen la respuesta');
+  assert.ok(!/comprimido/.test(k.mira.voz));
+  for (let s = 0; s < 20; s++) assert.ok(/pierde dos cuadrados/.test(plano(idea('teorema-resto').resuelve.generar(s).datos)));
+});
+test('notación: «1m» ni «+ 0» en la ecuación de divisibilidad (400 semillas)', () => {
+  const i = idea('teorema-resto');
+  for (let s = 3; s < SEMILLAS; s += 5) { const e = plano(i.ahoraTu.generar(s).solucion.ecuacion); assert.ok(!/(^|[^\d])1m|\+ 0 =/.test(e), `${s}: ${e}`); }
+  assert.ok(/\(5 \+ 3\)/.test(plano(i.juega.lectura({ x: 5 }))), 'el largo del juego 5 con su cuenta');
 });

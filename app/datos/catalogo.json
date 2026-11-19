@@ -2947,8 +2947,7 @@
      ],
      "plantillas": [
       "division-practica",
-      "polinomios",
-      "division-polinomios"
+      "polinomios"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/algebra/division-de-polinomios.js",
@@ -2968,7 +2967,7 @@
        "teorema-resto": "Teorema del resto",
        "cocientes-notables": "Cocientes notables"
       },
-      "terminos": 40
+      "terminos": 39
      }
     },
     {
@@ -9155,7 +9154,6 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "algebra.division-de-polinomios",
     "algebra.factorizacion"
    ],
    "url": "#/practica/division-polinomios",

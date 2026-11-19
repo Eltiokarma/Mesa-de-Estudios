@@ -14,8 +14,8 @@
  * REGLA DE COLORES DE LA UNIDAD (docs/molde-unidad.md §5b; propuesta §6), en la tabla COLORES (def.colores):
  *   - tinta: el dividendo D (el pedido entero, el total), las letras x e y y lo que se pide con «?»;
  *   - turquesa (c-i): el divisor d (el ancho del pasadizo) y lo que sale de él: a (el número que lo anula), c y b;
- *   - violeta (c-f): el cociente q (el largo), lo que casi siempre se pide, y los 0 de las potencias que faltan (lo que
- *     se olvida, como en Polinomios);
+ *   - violeta (c-f): el cociente q (el largo), lo que casi siempre se pide (los 0 de las potencias que faltan iban en
+ *     violeta; desde la auditoría del 19 nov van en tinta, con el resto de D);
  *   - naranja (c-o): el resto r, lo que sobra (como en «Las cuatro operaciones»);
  *   - ni carmín ni verde (division-de-polinomios.test.js lo comprueba en todas las fichas y figuras).
  * Nada antes de Predice de cada idea (título, Resumen, Lee, glosario, juego) dice su respuesta (prueba propia).
@@ -82,14 +82,17 @@
   const divisorTxt = a => (a < 0 ? `x + ${f(-a)}` : `x − ${f(a)}`);
 
   // ---------- Colores de la unidad: un color fijo por magnitud (cabecera; lo comprueba la prueba propia) ----------
-  const COLORES = { divisor: 'i', 'número del divisor': 'i', cociente: 'f', 'lo que se olvida': 'f', resto: 'o' };
+  const COLORES = { divisor: 'i', 'número del divisor': 'i', cociente: 'f', resto: 'o' };
   const ficha = mg => t => ({ v: `c-${COLORES[mg]}`, t: String(t), m: mg });
-  const DV = ficha('divisor'), NA = ficha('número del divisor'), QC = ficha('cociente'), OLV = ficha('lo que se olvida'), RS = ficha('resto');
+  const DV = ficha('divisor'), NA = ficha('número del divisor'), QC = ficha('cociente'), RS = ficha('resto');
+  // El 0 de una potencia que falta va en tinta, como los demás coeficientes de D (los dos lectores en frío del 19 nov lo
+  // leyeron en violeta como parte del cociente; decidido por la sesión, Gerson revisa después).
+  const OLV = t => String(t);
   const d_ = DV('d'), q_ = QC('q'), r_ = RS('r');
   // La letra de una alternativa, en negrita y en tinta (Gerson, mesa del 17 nov). El U+2060 (invisible) queda para que la
   // letra no se lea como variable.
   const letra = L => ({ negrita: `${L}⁠` });
-  const SEP = '   ·   ';
+  const SEP = ';   ';   // separa dos igualdades (un «·» se leería como producto: molde §2)
   const RP = datos => ({ pieza: 'alg-reparto', datos, estado: {} });
   const LO = datos => ({ pieza: 'alg-losetas', datos, estado: {} });
   const TB = datos => ({ pieza: 'alg-tabla', datos, estado: {} });
@@ -254,7 +257,7 @@
       datos: [DD.ident, DD.cubre, DD.mult],
       figura: RP({ objeto: 'pasadizo', ancho: [1, 2], largo: [2, 3], piezas: false, rotuloLargo: '?', sobran: false }),
       solucion: [
-        { texto: 'Hay 2 losetas, y cada loseta del ancho x pide x de largo: el largo empieza con 2x. Lo escribo 2x + m, con m por hallar.', ecuacion: ['(', DV('x + 2'), ')(', QC('2x + m'), ') = 2x² + (m + 4)x + 2m'] },
+        { texto: 'El ancho x + 2 lleva una loseta por cada x del largo. Para usar las 2 losetas, el largo empieza con 2x: lo escribo 2x + m.', ecuacion: ['(', DV('x + 2'), ')(', QC('2x + m'), ') = 2x² + (m + 4)x + 2m'] },
         { texto: 'Igualo con el pedido: m + 4 = 7 da m = 3, y entonces 2m = 6, justo los cuadraditos. No sobra nada.', ecuacion: ['2x² + 7x + 6 = (', DV('x + 2'), ')(', QC('2x + 3'), ')'] },
       ],
       respuesta: [QC('(2x + 3) dm')] },
@@ -367,14 +370,16 @@
         { s: 'x', t: 'lado de la loseta, en dm' },
         { s: DV('(x + 2) dm'), t: 'ancho del pasadizo: el divisor' },
         { s: QC('(x + 1) dm'), t: 'largo del pasadizo: el cociente' },
-        { s: RS('Sobran'), t: 'piezas que quedan aparte: el resto' },
+        { s: RS('Sobran'), t: 'lo que queda aparte al final: el resto' },
         { s: 'Faltan', t: 'huecos: piezas que el pedido no tiene' },
       ],
       controles: [{ id: 'k', etiqueta: 'Tramos de 1 dm en el largo', color: 'c-f', min: 0, max: 4, paso: 1, inicio: 1, decimales: 0 }],
       dibujo: v => pasadizo(v.k),
       // La relación: ancho por largo, más lo que sobra, es el pedido.
-      lectura: v => (v.k <= 3
-        ? ['(', DV('x + 2'), ') · ', QC(conPar(largoTxt(v.k))), ' + ', RS(conPar(poli(sobraJ(v.k)))), ' = x² + 5x + 7']
+      // Lo que sobra es el resto solo cuando tiene grado menor que d (k = 3): antes va en tinta, porque alcanza para más.
+      lectura: v => (v.k === 3
+        ? ['(', DV('x + 2'), ') · ', QC(conPar(largoTxt(v.k))), ' + ', RS('1'), ' = x² + 5x + 7']
+        : v.k < 3 ? ['(', DV('x + 2'), ') · ', QC(conPar(largoTxt(v.k))), ' + ', conPar(poli(sobraJ(v.k))), ' = x² + 5x + 7']
         : ['(', DV('x + 2'), ') · ', QC(conPar(largoTxt(v.k))), ' = x² + 6x + 8: quedan huecos']),
       minimo: 3,
     },
@@ -406,7 +411,7 @@
       ],
     },
     regla: {
-      texto: 'Dividir D entre d es hallar el cociente q y el resto r que reconstruyen D. El resto tiene grado menor que d: a lo más, uno menos.',
+      texto: 'Dividir D entre d es hallar el cociente q y el resto r que reconstruyen D. El resto tiene grado menor que d: como mucho, un grado menos.',
       ecuacion: ['D = ', { llave: [d_, ' · ', q_], nota: 'divisor por cociente' }, ' + ', { llave: [r_], nota: 'grado menor que d', color: 'c-o' }, SEP,
         'grado de ', q_, ' = grado de D − grado de ', d_],
       condicion: 'el divisor d no es el polinomio 0.',
@@ -454,7 +459,7 @@
   const POTX = e => (e === 0 ? 'x⁰' : e === 1 ? 'x' : `x${sup(e)}`);
   // Un término c·xᵉ con su signo: 3x², −x, 2.
   const termino = (c, e) => `${c < 0 ? '−' : ''}${Math.abs(c) === 1 && e ? '' : f(Math.abs(c))}${pot('x', e)}`;
-  const celD = c => (c === 0 ? { t: '0', c: 'f' } : f(c));   // un coeficiente del dividendo; el 0 que se olvida, en violeta
+  const celD = c => f(c);   // un coeficiente del dividendo, en tinta (también el 0 de una potencia que falta)
   // La división por columnas: la fila de D, y por cada término del cociente, «término · d» y lo que queda.
   function larga(D, d, { cabeza, hasta = 99 } = {}) {
     const n = D.length, filas = [{ rotulo: 'D', celdas: D.map(celD) }], cur = D.slice(), q = [];
@@ -599,7 +604,8 @@
   // x³ + 3x² + 5x + 4 = (x² + x + 1)(x + 2) + 2x + 2; 4x³ + 2x² − 1 = (2x² − 1)(2x + 1) + 2x; x⁴ + 2x³ − x² + 3x − 2 =
   // (x² + x − 1)(x² + x − 1) + 5x − 3; 2x⁴ + 3x² − x + 5 = (x² − x + 2)(2x² + 2x + 1) − 4x + 3; x⁴ + 2x³ + mx + n con
   // x² + x − 1: resto (m − 1)x + (n + 0)…; 3x⁴ + 5x³ − x² + 2x + 1 = (3x² − x + 1)(x² + 2x) + 1; 2x⁵ − x³ + 3x − 4 con
-  // x² − 2: resto 9x − 4; x⁴ − x³ + 2x² + 5 = (x² + 2x − 1)(x² − 3x + 9) − 21x + 14.
+  // x² − 2: resto 9x − 4; x⁴ − x³ + 2x² + 5 = (x² + 2x − 1)(x² − 3x + 9) − 21x + 14; x⁴ + x³ − 2x² + 3 = (x² − x + 1)(x² + 2x − 1) − 3x + 4
+  // (auditoría del 19 nov).
   const EJEMPLOS_HORNER = [
     { nivel: 1, titulo: 'Dividir dos términos',
       enunciado: '¿Cuánto es 8x⁵ entre 2x²?',
@@ -651,9 +657,10 @@
       datos: [DD.ident, DD.horner],
       figura: CU(horner([1, 2, -1, 3, -2], [1, 1, -1], { hasta: 0 })),
       solucion: [
-        { texto: 'A la izquierda van 1 y, con el signo cambiado, −1 y 1. Se baja el 1: es el primer número de q.', ecuacion: ['1 · (−1) = −1,   1 · 1 = 1'] },
-        { texto: 'Columna de x³: 2 − 1 = 1. Columna de x²: −1 + 1 − 1 = −1. Cada uno da sus productos en diagonal.', ecuacion: [q_, ' = ', QC('x² + x − 1')] },
-        { texto: 'Las dos últimas columnas ya no se dividen: 3 + 1 + 1 = 5 y −2 − 1 = −3. Son el resto.', ecuacion: [r_, ' = ', RS('5x − 3')] },
+        { texto: 'A la izquierda van 1 y, con el signo cambiado, −1 y 1. Se baja el 1, el primero de q; sus productos van a x³ y x².', ecuacion: ['1 · (−1) = −1,   1 · 1 = 1'] },
+        { texto: 'Columna de x³: 2 + (−1) = 1, el segundo número de q. Sus productos, −1 y 1, van a las columnas de x² y x.', ecuacion: ['1 · (−1) = −1,   1 · 1 = 1'] },
+        { texto: 'Columna de x²: −1 + 1 + (−1) = −1, el tercero. Sus productos, 1 y −1, van a las columnas de x y x⁰.', ecuacion: [q_, ' = ', QC('x² + x − 1')] },
+        { texto: 'Las dos últimas columnas ya no se dividen: 3 + 1 + 1 = 5 y −2 + (−1) = −3. Son el resto.', ecuacion: [r_, ' = ', RS('5x − 3')] },
       ],
       respuesta: [q_, ' = ', QC('x² + x − 1'), '; ', r_, ' = ', RS('5x − 3')] },
     { nivel: 2, titulo: 'Con una potencia que falta',
@@ -667,13 +674,13 @@
       ],
       respuesta: [q_, ' = ', QC('2x² + 2x + 1'), '; ', r_, ' = ', RS('−4x + 3')] },
     { nivel: 2, titulo: 'El término independiente del cociente',
-      enunciado: ['Al dividir x⁴ − x³ + 2x² + 5 entre ', DV('x² + 2x − 1'), ', ¿cuál es el término independiente del cociente?'],
-      datos: [DD.ident, DD.paso],
+      enunciado: ['Al dividir x⁴ + x³ − 2x² + 3 entre ', DV('x² − x + 1'), ', ¿cuál es el término independiente del cociente?'],
+      datos: [DD.ident, DD.paso, 'Una potencia que falta se escribe con coeficiente 0'],
       solucion: [
-        { texto: 'x⁴ ÷ x² = x²; al restar queda −3x³ + 3x² + 0x + 5. Después, −3x; al restar queda 9x² − 3x + 5.' },
-        { texto: '9x² ÷ x² = 9: es el último término del cociente, el que no tiene x.', ecuacion: [q_, ' = ', QC('x² − 3x + 9')] },
+        { texto: 'x⁴ ÷ x² = x²; al restar x²(x² − x + 1) queda 2x³ − 3x² + 0x + 3. Después, 2x³ ÷ x² = 2x; al restar 2x(x² − x + 1) queda −x² − 2x + 3.' },
+        { texto: '−x² ÷ x² = −1: es el último término del cociente, el que no tiene x.', ecuacion: [q_, ' = ', QC('x² + 2x − 1')] },
       ],
-      respuesta: [QC('9')] },
+      respuesta: [QC('−1')] },
     { nivel: 3, titulo: 'Para que salga exacta',
       enunciado: ['¿Para qué valores de m y n la división de x⁴ + 2x³ + mx + n entre ', DV('x² + x − 1'), ' es exacta? Da m + n.'],
       alternativas: ['−1', '1', '0', '2', '−2'],
@@ -713,10 +720,10 @@
       alternativas: ['14', '−3', '21', '−21', '9'],
       datos: [DD.ident, DD.paso],
       solucion: [
-        { texto: 'El cociente sale x² − 3x + 9. Al restar 9(x² + 2x − 1) de 9x² − 3x + 5, queda la columna de x y la de x⁰.', ecuacion: ['9x² − 3x + 5 − (9x² + 18x − 9) = −21x + 14'] },
-        { texto: 'El coeficiente de x del resto es −21.', ecuacion: [r_, ' = ', RS('−21x + 14')] },
-        { texto: ['La ', letra('A'), ' da el término independiente del resto. La ', letra('B'), ' copia el −3x sin restar. La ', letra('C'), ' suma 18x en vez de restarlo.'] },
-        { texto: ['La ', letra('E'), ' da el término independiente del cociente.'] },
+        { texto: 'x⁴ ÷ x² = x²; al restar x²(x² + 2x − 1) queda −3x³ + 3x² + 0x + 5.', ecuacion: ['x⁴ − x³ + 2x² + 0x + 5 − (x⁴ + 2x³ − x²) = −3x³ + 3x² + 0x + 5'] },
+        { texto: '−3x³ ÷ x² = −3x; al restar −3x(x² + 2x − 1) queda 9x² − 3x + 5.', ecuacion: ['−3x³ + 3x² + 0x + 5 − (−3x³ − 6x² + 3x) = 9x² − 3x + 5'] },
+        { texto: '9x² ÷ x² = 9; al restar 9(x² + 2x − 1) quedan la columna de x y la de x⁰: es el resto.', ecuacion: ['9x² − 3x + 5 − (9x² + 18x − 9) = ', RS('−21x + 14')] },
+        { texto: ['La ', letra('A'), ' da el número del resto; la ', letra('B'), ' copia el −3x sin restar; la ', letra('C'), ' resta al revés: 18x − (−3x) = 21x; la ', letra('E'), ' da el 9 del cociente.'] },
       ],
       respuesta: [letra('D'), ', −21'] },
     { nivel: 3, titulo: 'Exacta con dos letras',
@@ -800,14 +807,15 @@
         { estado: { paso: 2 }, texto: 'Queda −2x³ + 3x² + 4x − 1, todavía de grado 3.', ecuacion: ['−2x³ ÷ ', DV('2x²'), ' = ', QC('−x')] },
         { estado: { paso: 3 }, texto: 'Después de −x, queda 4x² + 3x − 1: entra un 2.', ecuacion: ['4x² ÷ ', DV('2x²'), ' = ', QC('2')] },
         { estado: { paso: 4 }, texto: 'Queda x + 1, de grado 1: es el resto.', ecuacion: [q_, ' = ', QC('3x² − x + 2'), ',   ', r_, ' = ', RS('x + 1')] },
-        { estado: { paso: 5 }, texto: 'Horner hace la misma cuenta y suma, con los signos cambiados.', ecuacion: ['−(x − 1) = ', DV('−x + 1')] },
+        { estado: { paso: 5 }, texto: 'Horner: x − 1 cambia de signo, −1 y 1, para sumar. Abajo, entre 2.',
+          ecuacion: ['6 ÷ ', DV('2'), ' = ', QC('3'), ',   ', QC('3'), ' · ', DV('(−1)'), ' = −3,   ', QC('3'), ' · ', DV('1'), ' = 3'] },
       ],
     },
     regla: {
       texto: 'Cada término de q es el primero de lo que queda entre el primero de d. Se resta d por ese término, hasta bajar del grado de d.',
       ecuacion: ['6x⁴ ÷ ', DV('2x²'), ' = ', { llave: [QC('3x²')], nota: 'un término de q', color: 'c-f' }, SEP, 'queda: D − ', d_, ' · ', QC('3x²')],
-      condicion: 'D y d están ordenados de la potencia mayor a la menor, con 0 en las que faltan.',
-      voz: 'Horner es esta misma cuenta, en una tabla y sumando.',
+      condicion: 'D y d van de mayor a menor potencia, con sus 0; en Horner, d cambia de signo menos el primero.',
+      voz: 'Horner es esta misma cuenta en una tabla: se suma, y cada columna se divide entre el primero de d.',
       dibujo: CU(horner(DP2, dP2)),
     },
     // Así se resuelve: la división completa (cociente y resto). «Ahora tú» pide una parte: el primer término, un
@@ -868,7 +876,7 @@
     return {
       pregunta: ['En la tabla de Ruffini de ', poli(cs), ' entre ', DV(divisorTxt(x)), ', ¿qué número va en la casilla «?» de la fila de abajo?'],
       dibujo: CU(rufTabla(cs, x, { hasta: k, oculta: k, cabeza: cabezaRuf(cs, x) })),
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', `${divisorTxt(x)} = x − ${par(x)}`],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', `${divisorTxt(x)} = x − ${par(x)}`],
       opciones: ops([
         { id: 'c', texto: f(b[k]), correcta: true },
         { id: 'resta', texto: f(cs[k] - x * b[k - 1]), error: 'TAL-RUF-RESTA', siFuera: `Bien el producto ${par(x)} · ${par(b[k - 1])}. Pero se suma al de arriba, no se resta.` },
@@ -887,7 +895,7 @@
     if (poli(cs) === '2x³ − 5x + 1' && x === 2) return null;   // la predicción de la idea
     return {
       pregunta: ['Con la tabla de Ruffini, ¿cuál es el resto de dividir ', poli(cs), ' entre ', DV(divisorTxt(x)), '?'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0', `${divisorTxt(x)} = x − ${par(x)}`],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0', `${divisorTxt(x)} = x − ${par(x)}`],
       opciones: ops([
         { id: 'c', texto: f(b[b.length - 1]), correcta: true },
         { id: 'sin0', texto: f(sin0[sin0.length - 1]), error: 'PO1', siFuera: 'Bien las cuentas. Pero falta la casilla con 0 de la potencia que no está: las columnas se corren.' },
@@ -903,7 +911,7 @@
     const x = r.noCero(-3, 3), b = ruffini(cs, x), bs = ruffini(cs, -x);
     return {
       pregunta: ['Con la tabla de Ruffini, ¿cuál es el cociente de dividir ', poli(cs), ' entre ', DV(divisorTxt(x)), '?'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'La fila de abajo, sin la última casilla: los coeficientes del cociente', `${divisorTxt(x)} = x − ${par(x)}`],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'La fila de abajo, sin la última casilla: los coeficientes del cociente', `${divisorTxt(x)} = x − ${par(x)}`],
       opciones: ops([
         { id: 'c', texto: poli(b.slice(0, -1)), correcta: true },
         { id: 'signo', texto: poli(bs.slice(0, -1)), error: 'PO2', siFuera: `Bien la tabla. Pero ${divisorTxt(x)} se anula en ${f(x)}: a vale ${f(x)}.` },
@@ -919,7 +927,7 @@
     const x = -r.ent(1, 3), b = ruffini(cs, x), sq = b.slice(0, -1).reduce((u, w) => u + w, 0);
     return {
       pregunta: ['Al dividir ', poli(cs), ' entre ', DV(divisorTxt(x)), ', ¿cuánto suman los coeficientes del cociente?'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', `${divisorTxt(x)} = x − ${par(x)}`, 'La fila de abajo, sin la última casilla: los coeficientes del cociente'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', `${divisorTxt(x)} = x − ${par(x)}`, 'La fila de abajo, sin la última casilla: los coeficientes del cociente'],
       opciones: ops([
         { id: 'c', texto: f(sq), correcta: true },
         { id: 'todo', texto: f(sq + b[4]), error: 'TAL-RESTO-EN-Q', siFuera: `Bien la fila de abajo. Pero la última casilla, ${f(b[4])}, es el resto: no va en el cociente.` },
@@ -939,7 +947,7 @@
   const EJEMPLOS_RUFFINI = [
     { nivel: 1, titulo: 'Una casilla de la tabla',
       enunciado: ['En la tabla de Ruffini de 2x² + 5x − 3 entre ', DV('x − 1'), ', ya se bajó el 2. ¿Qué número va en la segunda casilla de abajo?'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor'],
       figura: CU(rufTabla([2, 5, -3], 1, { hasta: 1, oculta: 1, flechas: false })),
       solucion: [{ texto: 'x − 1 se anula en 1: a = 1. El de arriba es 5 y la casilla anterior, 2.', ecuacion: ['5 + ', NA('1'), ' · 2 = ', QC('7')] }],
       respuesta: [QC('7')] },
@@ -962,12 +970,12 @@
       respuesta: [q_, ' = ', QC('x² − x − 2'), '; ', r_, ' = ', RS('0')] },
     { nivel: 1, titulo: 'Una cuenta con a negativo',
       enunciado: ['En una tabla de Ruffini con a = −2, arriba hay −4 y la casilla anterior de abajo es 3. ¿Qué número va en la casilla nueva?'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor'],
       solucion: [{ texto: 'Multiplico la anterior por a y le sumo el de arriba.', ecuacion: ['−4 + ', NA('(−2)'), ' · 3 = −4 − 6 = ', QC('−10')] }],
       respuesta: [QC('−10')] },
     { nivel: 2, titulo: 'Dividir entre x + 2',
       enunciado: ['Divide 2x³ + 3x² − 5 entre ', DV('x + 2'), ' con Ruffini.'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
       figura: CU(rufTabla([2, 3, 0, -5], -2, { hasta: 0 })),
       solucion: [
         { texto: 'x + 2 se anula en −2. Arriba: 2, 3, 0 y −5 (falta x). Se baja el 2.', ecuacion: ['3 + (−2) · 2 = −1,   0 + (−2)(−1) = 2'] },
@@ -976,7 +984,7 @@
       respuesta: [q_, ' = ', QC('2x² − x + 2'), '; ', r_, ' = ', RS('−9')] },
     { nivel: 2, titulo: 'Dos potencias que faltan',
       enunciado: ['Divide x⁴ − 3x + 1 entre ', DV('x − 1'), ' con Ruffini.'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
       figura: CU(rufTabla([1, 0, 0, -3, 1], 1, { hasta: 0 })),
       solucion: [
         { texto: 'Faltan x³ y x²: arriba van 1, 0, 0, −3 y 1. Con a = 1, cada casilla es la de arriba más la anterior.', ecuacion: ['1,   0 + 1 = 1,   0 + 1 = 1,   −3 + 1 = −2,   1 − 2 = −1'] },
@@ -993,7 +1001,7 @@
       respuesta: ['Cuadra: d · q + r = 2x³ + 3x² − 5'] },
     { nivel: 2, titulo: 'Grado 4 entre x + 1',
       enunciado: ['Divide 2x⁴ + x³ − 3x² + x − 4 entre ', DV('x + 1'), ' con Ruffini.'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor'],
       figura: CU(rufTabla([2, 1, -3, 1, -4], -1, { hasta: 0 })),
       solucion: [
         { texto: 'Con a = −1, cada casilla es la de arriba menos la anterior.', ecuacion: ['2,   1 − 2 = −1,   −3 + 1 = −2,   1 + 2 = 3,   −4 − 3 = −7'] },
@@ -1002,7 +1010,7 @@
       respuesta: [q_, ' = ', QC('2x³ − x² − 2x + 3'), '; ', r_, ' = ', RS('−7')] },
     { nivel: 2, titulo: 'Un 0 en medio',
       enunciado: ['¿Cuál es el resto de dividir 3x⁴ − 2x³ + 4x + 1 entre ', DV('x + 1'), '?'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
       solucion: [
         { texto: 'Falta x²: arriba van 3, −2, 0, 4 y 1. Con a = −1:', ecuacion: ['3,   −2 − 3 = −5,   0 + 5 = 5,   4 − 5 = −1,   1 + 1 = 2'] },
         { texto: 'La última casilla es el resto.', ecuacion: [r_, ' = ', RS('2')] },
@@ -1011,7 +1019,7 @@
     { nivel: 3, titulo: 'Un coeficiente por hallar',
       enunciado: ['En la tabla de Ruffini de x³ + mx² − 4x + 6 entre ', DV('x − 2'), ', el resto sale 14. ¿Cuánto vale m?'],
       alternativas: ['−2', '2', '5', '14', '0'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor'],
       solucion: [
         { texto: 'Lleno la tabla con m: se baja 1; después m + 2; después −4 + 2(m + 2) = 2m.', ecuacion: ['resto = 6 + 2 · 2m = 6 + 4m'] },
         { texto: 'Igualo al resto dado y despejo.', ecuacion: ['6 + 4m = 14   →   m = 2'] },
@@ -1022,7 +1030,7 @@
     { nivel: 3, titulo: 'Suma de coeficientes del cociente',
       enunciado: ['Al dividir x⁴ − 2x³ + 3x − 5 entre ', DV('x + 2'), ', ¿cuánto suman los coeficientes del cociente?'],
       alternativas: ['21', '13', '−3', '−8', '4'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
       solucion: [
         { texto: 'Arriba: 1, −2, 0, 3 y −5. Con a = −2:', ecuacion: ['1,   −4,   8,   −13,   21'] },
         { texto: 'El cociente son las cuatro primeras casillas.', ecuacion: ['1 − 4 + 8 − 13 = ', QC('−8')] },
@@ -1033,7 +1041,7 @@
     { nivel: 3, titulo: 'El número a de la tabla',
       enunciado: ['En una tabla de Ruffini de x³ − 7x + 6 entre x − a, la fila de abajo es 1, 2, −3 y 0. ¿Cuánto vale a?'],
       alternativas: ['−2', '0', '6', '1', '2'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
       solucion: [
         { texto: 'Arriba van 1, 0, −7 y 6. La segunda casilla de abajo es 0 + a · 1, y vale 2.', ecuacion: ['0 + ', NA('a'), ' · 1 = 2   →   ', NA('a'), ' = 2'] },
         { texto: 'Compruebo las otras: −7 + 2 · 2 = −3 y 6 + 2 · (−3) = 0. Cuadran.' },
@@ -1044,7 +1052,7 @@
     { nivel: 3, titulo: 'El número sin x del cociente',
       enunciado: ['Al dividir 2x³ − 3x² + 4x − 1 entre ', DV('x − 3'), ', ¿cuál es el término independiente del cociente?'],
       alternativas: ['13', '38', '4', '−1', '31'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor'],
       solucion: [
         { texto: 'Con a = 3:', ecuacion: ['2,   −3 + 6 = 3,   4 + 9 = 13,   −1 + 39 = 38'] },
         { texto: 'El cociente es 2x² + 3x + 13: su término sin x es la tercera casilla.', ecuacion: [QC('13')] },
@@ -1052,10 +1060,10 @@
         { texto: ['La ', letra('E'), ' usa a = −3: la tercera casilla sería 31.'] },
       ],
       respuesta: [letra('A'), ', ', QC('13')] },
-    { nivel: 3, titulo: 'Resto con cuatro ceros posibles',
+    { nivel: 3, titulo: 'Resto con dos potencias que faltan',
       enunciado: ['¿Cuál es el resto de dividir x⁵ + 2x⁴ − x² + 3 entre ', DV('x + 2'), '?'],
       alternativas: ['3', '5', '−1', '63', '1'],
-      datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+      datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
       solucion: [
         { texto: 'Faltan x³ y x: arriba van 1, 2, 0, −1, 0 y 3. Con a = −2:', ecuacion: ['1,   0,   0,   −1,   2,   −1'] },
         { texto: 'La última casilla es el resto.', ecuacion: [r_, ' = ', RS('−1')] },
@@ -1150,7 +1158,7 @@
         const x = -r.ent(1, 3), b = ruffini(cs, x);
         return {
           enunciado: ['Divide ', poli(cs), ' entre ', DV(divisorTxt(x)), ' con Ruffini. ¿Cuáles son el cociente y el resto?'],
-          datos: ['Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior', 'Una potencia que falta se escribe con coeficiente 0'],
+          datos: ['Cada casilla nueva de abajo: el de arriba más a por la anterior, con a el número que anula al divisor', 'Una potencia que falta se escribe con coeficiente 0'],
           dibujo: CU(rufTabla(cs, x, { hasta: 0, cabeza: cabezaRuf(cs, x) })),
           pasos: [
             { tipo: 'pide', texto: ['Piden el cociente ', q_, ' y el resto ', r_, '.'] },
@@ -1192,7 +1200,7 @@
   const DK = {
     falso: 'Para dividir entre cx + b: Ruffini con x = −b/c da el cociente falso q′',
     cociente: 'Cociente: q = q′ ÷ c. Resto: la última casilla, sin dividir',
-    casilla: 'Cada casilla nueva de abajo: el coeficiente de arriba más a por la casilla anterior',
+    casilla: 'Cada casilla nueva de abajo: el coeficiente de arriba más −b/c por la casilla anterior',
   };
   const fr = (num, den) => { const g = (function m(u, w) { return w ? m(w, u % w) : Math.abs(u); })(num, den) || 1; let n = num / g, dd = den / g; if (dd < 0) { n = -n; dd = -dd; } return dd === 1 ? f(n) : `${n < 0 ? '−' : ''}${Math.abs(n)}/${dd}`; };
   const divK = (c, b) => poli([c, b]);
@@ -1265,7 +1273,8 @@
         { id: 'c', texto: poli(Qc), correcta: true },
         { id: 'falso', texto: poli(Qc.map(v => v * c)), error: 'PO3', siFuera: `Bien la tabla con x = ${fr(-b, c)}. Pero falta dividir el cociente falso entre 2.` },
         { id: 'resto', texto: poli(sumar(Qc, [Rr])), error: 'TAL-RESTO-EN-Q', siFuera: `Bien el cociente. Pero el ${f(Rr)} de la última casilla es el resto.` },
-        { id: 'signo', texto: poli(Qc.map((v, i) => (i % 2 ? -v : v))), error: 'PO2', siFuera: `Bien la idea. Pero ${divK(c, b)} se anula en x = ${fr(-b, c)}, no en ${fr(b, c)}.` },
+        // (Usar x = b/c no da un cociente con enteros: el error que va es el de multiplicar por c en vez de dividir.)
+        { id: 'mult', texto: poli(Qc.map(v => v * c * c)), error: 'TAL-K-MULT', siFuera: 'Bien la tabla. Pero el divisor es el doble: el cociente falso se divide entre 2, no se multiplica.' },
       ]),
       solucion: { texto: `Ruffini con x = ${fr(-b, c)} y después se divide entre 2.`, ecuacion: [q_, ' = (', QC(poli(Qc.map(v => v * c))), ') ÷ ', NA(2), ' = ', QC(poli(Qc))] },
     };
@@ -1275,7 +1284,8 @@
   // entre 2x − 1 → 6, 4, 0 → q = 3x + 2; 8x³ − 2x² + 3x + 1 entre 2x − 1 → 8, 2, 4, 3; 4x² + 4x + 1 = (2x + 2) · 2x + 1;
   // 4x² + 8x + 7 entre 2x + 1 → 4, 6, 4; 6x³ − 5x² + 4x − 1 entre 3x − 1 → 6, −3, 3, 0; 6x³ + 7x² + 2x + 4 entre
   // 3x + 2 → 6, 3, 0, 4; 4x⁴ − x² + 2x + 3 entre 2x + 1 → 4, −2, 0, 2, 2; 4x³ − 6x² + 8x − 3 entre 2x − 1 → 4, −4, 6, 0;
-  // 6x³ + x² + x + 3 entre 2x + 1 → q = 3x² − x + 1, r = 2; 6x² + 9x + 4 = (3x + 3)(2x + 1) + 1.
+  // 6x³ + x² + x + 3 entre 2x + 1 → q = 3x² − x + 1, r = 2; 6x² + 9x + 4 = (3x + 3)(2x + 1) + 1; y, desde la auditoría del 19
+  // nov, 6x³ + x² − 4x + 4 entre 2x − 1 → 6, 4, −2, 3; 4x⁴ + 2x³ − 6x + 3 entre 2x + 1 → 4, 0, 0, −6, 6.
   const EJEMPLOS_K = [
     { nivel: 1, titulo: 'El número que anula',
       enunciado: ['¿Qué número va a la izquierda de la tabla de Ruffini para dividir entre ', DV('3x − 2'), '?'],
@@ -1290,8 +1300,8 @@
       respuesta: [q_, ' = ', QC('3x + 2')] },
     { nivel: 1, titulo: 'El resto no se divide',
       enunciado: ['Al dividir 8x³ − 2x² + 3x + 1 entre ', DV('2x − 1'), ', la tabla con x = 1/2 deja abajo 8, 2, 4 y 3. ¿Cuál es el resto?'],
-      datos: [DK.cociente],
-      solucion: [{ texto: 'La última casilla es el resto y no se divide entre 2: solo el cociente se reparte.', ecuacion: [r_, ' = ', RS('3')] }],
+      datos: ['La tabla con x = 1/2 divide entre x − 1/2', '2x − 1 = 2(x − 1/2)', DD.ident],
+      solucion: [{ texto: 'La tabla dice D = (x − 1/2)(8x² + 2x + 4) + 3. Como 2x − 1 = 2(x − 1/2), el 2 pasa al cociente y el 3 queda igual.', ecuacion: ['D = (', DV('2x − 1'), ')(', QC('4x² + x + 2'), ') + ', RS('3')] }],
       respuesta: [r_, ' = ', RS('3')] },
     { nivel: 1, titulo: '¿Cuál es mónico?',
       enunciado: ['¿Cuál de estos divisores es mónico: 2x + 1, x − 5 o 3x − 3?'],
@@ -1346,25 +1356,25 @@
       ],
       respuesta: ['Cuadra: d · q + r = 4x² + 8x + 7'] },
     { nivel: 3, titulo: 'Suma de coeficientes del cociente',
-      enunciado: ['Al dividir 8x³ − 2x² + 3x + 1 entre ', DV('2x − 1'), ', ¿cuánto suman los coeficientes del cociente?'],
-      alternativas: ['14', '17', '7', '10', '7/2'],
+      enunciado: ['Al dividir 6x³ + x² − 4x + 4 entre ', DV('2x − 1'), ', ¿cuánto suman los coeficientes del cociente?'],
+      alternativas: ['8', '11', '4', '7', '2'],
       datos: [DK.falso, DK.cociente, DK.casilla],
       solucion: [
-        { texto: 'Con x = 1/2 la tabla deja 8, 2, 4 y 3. El cociente falso es 8x² + 2x + 4; entre 2:', ecuacion: [q_, ' = ', QC('4x² + x + 2')] },
-        { texto: 'Sumo sus coeficientes.', ecuacion: ['4 + 1 + 2 = ', QC('7')] },
-        { texto: ['La ', letra('A'), ' suma el cociente falso: 14. La ', letra('B'), ' le suma además el resto: 17. La ', letra('D'), ' suma el cociente y el resto: 10.'] },
-        { texto: ['La ', letra('E'), ' divide dos veces entre 2.'] },
+        { texto: 'Con x = 1/2: 6; 1 + 3 = 4; −4 + 2 = −2; 4 − 1 = 3. El cociente falso es 6x² + 4x − 2; entre 2:', ecuacion: [q_, ' = ', QC('3x² + 2x − 1')] },
+        { texto: 'Sumo sus coeficientes.', ecuacion: ['3 + 2 − 1 = ', QC('4')] },
+        { texto: ['La ', letra('A'), ' suma el cociente falso: 6 + 4 − 2 = 8. La ', letra('B'), ' le suma el resto: 8 + 3 = 11. La ', letra('D'), ' suma q y r: 4 + 3 = 7.'] },
+        { texto: ['La ', letra('E'), ' divide dos veces entre 2: 4 ÷ 2 = 2.'] },
       ],
-      respuesta: [letra('C'), ', ', QC('7')] },
+      respuesta: [letra('C'), ', ', QC('4')] },
     { nivel: 3, titulo: 'El cociente con x = 1/2',
       enunciado: ['¿Cuál es el cociente de dividir 4x³ − 6x² + 8x − 3 entre ', DV('2x − 1'), '?'],
-      alternativas: ['2x² − 2x + 3', '4x² − 4x + 6', 'x² − x + 3/2', '2x² − 4x + 6', 'x² − x + 3'],
+      alternativas: ['2x² − 2x + 3', '4x² − 4x + 6', 'x² − x + 3/2', '2x² − 4x + 6', '2x² − 2x + 6'],
       datos: [DK.falso, DK.cociente, DK.casilla],
       solucion: [
         { texto: 'Con x = 1/2: 4; −6 + 2 = −4; 8 − 2 = 6; −3 + 3 = 0. La división es exacta.', ecuacion: ['cociente falso: ', QC('4x² − 4x + 6')] },
         { texto: 'Se divide entre 2.', ecuacion: [q_, ' = ', QC('2x² − 2x + 3')] },
         { texto: ['La ', letra('B'), ' deja el cociente falso. La ', letra('C'), ' divide dos veces entre 2. La ', letra('D'), ' usa x = −1/2.'] },
-        { texto: ['La ', letra('E'), ' divide entre 2 solo los dos primeros términos.'] },
+        { texto: ['La ', letra('E'), ' divide entre 2 solo los dos primeros términos: 2x² − 2x + 6.'] },
       ],
       respuesta: [letra('A'), ', ', q_, ' = ', QC('2x² − 2x + 3')] },
     { nivel: 3, titulo: 'El resto con 2x + 1',
@@ -1381,7 +1391,7 @@
     { nivel: 3, titulo: 'El pasadizo de ancho 3x + 3',
       enunciado: ['Rubén tiene (6x² + 9x + 4) dm² de piezas y un pasadizo de ', DV('(3x + 3) dm'), ' de ancho. Lo arma lo más largo que puede sin huecos. ¿Cuánto mide el largo?'],
       alternativas: ['6x + 3', '2x + 3', 'x + 1', '2x', '2x + 1'],
-      datos: [DD.ident, DD.cubre, DD.mult],
+      datos: [DD.ident, DD.cubre, DK.falso, DK.cociente, DK.casilla],
       figura: RP({ objeto: 'pasadizo', ancho: [3, 3], largo: [2, 1], piezas: false, rotuloLargo: '?', sobran: false }),
       solucion: [
         { texto: '3x + 3 = 3(x + 1). Ruffini con x = −1 deja 6, 3 y 1: el cociente falso es 6x + 3.', ecuacion: ['(6x + 3) ÷ ', NA('3'), ' = ', QC('2x + 1')] },
@@ -1391,16 +1401,16 @@
       ],
       respuesta: [letra('E'), ', ', QC('(2x + 1) dm')] },
     { nivel: 3, titulo: 'Cociente y resto juntos',
-      enunciado: ['Al dividir 4x⁴ − x² + 2x + 3 entre ', DV('2x + 1'), ', ¿cuánto vale la suma de coeficientes del cociente más el resto?'],
-      alternativas: ['3', '4', '6', '2', '8'],
+      enunciado: ['Al dividir 4x⁴ + 2x³ − 6x + 3 entre ', DV('2x + 1'), ', ¿cuánto vale la suma de coeficientes del cociente más el resto?'],
+      alternativas: ['2', '5', '4', '−1', '3'],
       datos: [DK.falso, DK.cociente, DK.casilla, 'Una potencia que falta se escribe con coeficiente 0'],
       solucion: [
-        { texto: 'Con x = −1/2 la tabla deja 4, −2, 0, 2 y 2. El cociente es (4x³ − 2x² + 2) ÷ 2 y el resto, 2.', ecuacion: [q_, ' = ', QC('2x³ − x² + 1'), ',   ', r_, ' = ', RS('2')] },
-        { texto: 'Sumo los coeficientes del cociente y le agrego el resto.', ecuacion: ['(2 − 1 + 1) + 2 = 4'] },
-        { texto: ['La ', letra('A'), ' divide también el resto: 2 + 1. La ', letra('C'), ' usa el cociente falso: 4 + 2. La ', letra('D'), ' olvida el resto.'] },
-        { texto: ['La ', letra('E'), ' suma los coeficientes de D: 4 − 1 + 2 + 3.'] },
+        { texto: 'Falta x²: arriba van 4, 2, 0, −6 y 3. Con x = −1/2 quedan 4, 0, 0, −6 y 6: q = (4x³ − 6) ÷ 2 y r = 6.', ecuacion: [q_, ' = ', QC('2x³ − 3'), ',   ', r_, ' = ', RS('6')] },
+        { texto: 'Sumo los coeficientes del cociente y le agrego el resto.', ecuacion: ['(2 − 3) + 6 = 5'] },
+        { texto: ['La ', letra('A'), ' divide también el resto: −1 + 3 = 2. La ', letra('C'), ' usa el cociente falso: (4 − 6) + 6 = 4. La ', letra('D'), ' olvida el resto: −1.'] },
+        { texto: ['La ', letra('E'), ' suma los coeficientes de D: 4 + 2 − 6 + 3 = 3.'] },
       ],
-      respuesta: [letra('B'), ', 4'] },
+      respuesta: [letra('B'), ', 5'] },
   ];
 
   const divisorK = {
@@ -1416,7 +1426,7 @@
     lee: {
       tarjetas: [
         { titulo: 'Más ancho, más corto', texto: 'Rubén tiene (6x² + 6x + 1) dm² de piezas. Puede armar un pasadizo de (x + 1) dm de ancho, o uno del doble de ancho, (2x + 2) dm, o del triple.',
-          pieza: 'alg-reparto', dibujo: pasadizo4(6) },
+          pieza: 'alg-reparto', dibujo: pasadizo4(1) },
         { titulo: 'El número de la tabla', texto: 'La tabla de Ruffini usa el x que anula al divisor. 2x − 1 vale 0 con x = 1/2, porque 2 · 1/2 − 1 = 0. 2x + 2 vale 0 con x = −1.',
           ecuacion: [DV('2x − 1'), ' = 0   →   x = ', NA('1/2')] },
         { titulo: 'Mónico', texto: 'x − 3 es mónico: su primer coeficiente es 1. 2x − 1 no lo es: su primer coeficiente es 2.' },
@@ -1463,7 +1473,7 @@
       pieza: 'alg-reparto',
       datos: { objeto: 'cuaderno', tipo: 'ruffini', coefs: ['6', '6', '1'], a: { t: '−1', c: 'i' }, medio: ['−6', '0'], abajo: [{ t: '6', c: 'f' }, { t: '0', c: 'f' }, { t: '1', c: 'o' }], cabeza: [lineaD(PED4, [2, 2])],
         pasos: [{ pie: [] }, { pie: [[['q′ = ', null, 400], ['6x', 'f', 700]]] }, { pie: [[['2x + 2 = 2(x + 1)', null, 400]]] }, { pie: [[['q = 6x ÷ 2 = ', null, 400], ['3x', 'f', 700]]] }, { pie: [[['q = ', null, 400], ['3x', 'f', 700], ['    r = ', null, 400], ['1', 'o', 700]]] }] },
-      voz: 'Yo había comprimido un paso. Abrámoslo.',
+      voz: 'Veamos qué hizo la tabla y qué falta.',
       pasos: [
         { estado: { paso: 0 }, texto: '2x + 2 vale 0 con x = −1: la tabla usa −1.', ecuacion: [DV('2x + 2'), ' = 0   →   x = ', NA('−1')] },
         { estado: { paso: 1 }, texto: 'La tabla da 6x y deja 1: es la división entre x + 1.', ecuacion: ['6x² + 6x + 1 = (', DV('x + 1'), ') · ', QC('6x'), ' + ', RS('1')] },
@@ -1609,7 +1619,7 @@
         { id: 'despeje', texto: f(-m), error: 'AL16', siFuera: `Bien la ecuación D(${f(x)}) = 0. Pero al despejar m, el número pasa con el signo cambiado.` },
         { id: 'indep', texto: f(d), error: 'PO27', siFuera: 'Bien leído el término independiente. Pero piden m, que sale de D(a) = 0.' },
       ]),
-      solucion: { texto: `Divisible: D(${f(x)}) = 0.`, ecuacion: [`${f(x ** 3)} + ${f(x * x)}m ${c * x + d < 0 ? '−' : '+'} ${Math.abs(c * x + d)} = 0   →   m = `, f(m)] },
+      solucion: { texto: `Divisible: D(${f(x)}) = 0.`, ecuacion: [`${f(x ** 3)} + ${x * x === 1 ? '' : f(x * x)}m${c * x + d ? ` ${c * x + d < 0 ? '−' : '+'} ${Math.abs(c * x + d)}` : ''} = 0   →   m = `, f(m)] },
     };
   }
   // Ahora tú 5 (nivel examen, como San Marcos 2024-I): el resto entre (x − a)(x − b) a partir de los dos restos.
@@ -1684,7 +1694,7 @@
       respuesta: ['m = −1'] },
     { nivel: 2, titulo: 'Potencias de −2',
       enunciado: ['¿Cuál es el resto de dividir x⁵ + 2x⁴ − x + 3 entre ', DV('x + 2'), '?'],
-      datos: [DT.teo, '(−2)⁵ = −32 y (−2)⁴ = 16'],
+      datos: [DT.teo, DT.neg],
       solucion: [
         { texto: 'x + 2 vale 0 con x = −2. Cada potencia lleva su signo.', ecuacion: ['(−2)⁵ + 2 · (−2)⁴ − (−2) + 3 = −32 + 32 + 2 + 3'] },
         { texto: 'Sumo.', ecuacion: [r_, ' = ', RS('5')] },
@@ -1799,7 +1809,7 @@
       ],
       controles: [{ id: 'x', etiqueta: 'Lado de la loseta, x (dm)', min: 2, max: 6, paso: 0.5, inicio: 5, decimales: 1 }],
       dibujo: v => piso(v.x),
-      lectura: v => ['D(', f(v.x), ') = (', f(v.x), ' − ', NA('2'), ') · ', QC(f(v.x + 3)), ' + ', RS('7'), ` = ${f(D5(v.x))} dm²`],
+      lectura: v => ['D(', f(v.x), ') = (', f(v.x), ' − ', NA('2'), ') · ', QC(`(${f(v.x)} + 3)`), ' + ', RS('7'), ` = ${f(D5(v.x))} dm²`],
       minimo: 3,
     },
     predice: {
@@ -1831,9 +1841,9 @@
     },
     regla: {
       texto: 'El resto de dividir D(x) entre x − a es D(a), porque en x = a el divisor vale 0. Si D(a) = 0, la división es exacta.',
-      ecuacion: ['D(x) = ', d_, ' · ', q_, ' + ', r_, SEP, 'si ', d_, '(', NA('a'), ') = 0:   ', r_, '(', NA('a'), ') = D(', NA('a'), ')'],
+      ecuacion: ['D(x) = ', d_, ' · ', q_, ' + ', r_, SEP, 'en x = ', NA('a'), ':   D(', NA('a'), ') = 0 · ', q_, '(', NA('a'), ') + ', r_, ' = ', r_],
       condicion: 'el divisor vale 0 en x = a; para cx + b, ese número es −b/c.',
-      voz: 'Con un divisor de grado 2 que vale 0 en dos números, el resto mx + n sale de dos cuentas.',
+      voz: 'Si el divisor es de grado 2, el resto es mx + n: vale lo mismo que D donde el divisor vale 0.',
       dibujo: piso(2),
     },
     // Así se resuelve: el resto del volumen de una caja (San Marcos 2021, con otros números). «Ahora tú» pide restos de
@@ -1845,7 +1855,7 @@
         const V = k * (L - 2 * k) * (A - 2 * k);
         return {
           enunciado: [`Se cortan cuadrados de x cm de lado en las esquinas de una cartulina de ${L} cm por ${A} cm y se arma una caja sin tapa. ¿Cuál es el resto de dividir su volumen V(x) entre `, DV(divisorTxt(k)), '?'],
-          datos: [DT.teo, 'Volumen de una caja: largo · ancho · alto'],
+          datos: [DT.teo, 'Volumen de una caja: largo · ancho · alto', 'Al doblar, cada lado de la cartulina pierde dos cuadrados; el alto es x'],
           pasos: [
             { tipo: 'pide', texto: ['Piden el resto ', r_, ` de dividir V(x) entre ${divisorTxt(k)}, sin hacer la división.`] },
             { tipo: 'datos', texto: `Al doblar, el alto es x, el largo ${L} − 2x y el ancho ${A} − 2x: a cada lado se le quitan dos cuadrados.`, ecuacion: [`V(x) = x(${L} − 2x)(${A} − 2x)`] },
@@ -2110,10 +2120,10 @@
     // (la predicción).
     lee: {
       tarjetas: [
-        { titulo: 'Un polinomio con x = 10', texto: 'Con x = 10, el polinomio x² + 2x + 4 vale 100 + 20 + 4 = 124: sus coeficientes se leen como cifras, mientras ninguno pase de 9.' },
+        { titulo: 'Un polinomio con x = 10', texto: 'Con x = 10, el polinomio x² + 3x + 9 vale 100 + 30 + 9 = 139: sus coeficientes se leen como cifras, mientras ninguno pase de 9.' },
         { titulo: 'Divisiones que se repiten', texto: 'Un cociente notable es una división que sale exacta y se escribe sin dividir. En «Productos notables» viste x² − a² = (x + a)(x − a); por eso (x² − a²) ÷ (x − a) = x + a.' },
         { titulo: 'Qué mirar al jugar', texto: 'Con x = 10, (xⁿ − aⁿ) ÷ (x − a) es una división de números. Elige n y a, y mira qué cifras salen en la pantalla y cuántas son.',
-          pieza: 'arit-calculadora', dibujo: calc(3, 2) },
+          pieza: 'arit-calculadora', dibujo: calc(3, 3) },
       ],
     },
     ejemplos: EJEMPLOS_NOTABLES,
@@ -2127,7 +2137,7 @@
       },
       voz: 'Compara las cifras con el número a.',
       leyenda: [
-        { s: 'x = 10', t: 'con x = 10, cada coeficiente es una cifra' },
+        { s: 'x', t: 'vale 10: cada coeficiente es una cifra' },
         { s: 'n', t: 'el exponente de xⁿ − aⁿ' },
         { s: NA('a'), t: 'el número de x − a' },
         { s: QC('pantalla'), t: 'el cociente, escrito como número' },
@@ -2168,9 +2178,9 @@
       ],
     },
     regla: {
-      texto: '(xⁿ − aⁿ) ÷ (x − a) da n términos: x baja desde n − 1 y a sube desde 0. Con x + a abajo, los signos se alternan: +, −, +, …',
+      texto: '(xⁿ − aⁿ) ÷ (x − a) da n términos: x baja desde n − 1 y a sube desde 0. Con x + a en el divisor, los signos se alternan: +, −, +, …',
       ecuacion: [{ sub: ['t', 'k'] }, ' = ', { llave: [{ sup: ['x', 'n − k'] }], nota: 'baja de uno en uno', color: 'c-f' }, ' · ', { llave: [{ sup: [NA('a'), 'k − 1'] }], nota: 'sube desde 0', color: 'c-i' }],
-      condicion: 'la división es exacta: con x + a abajo, eso pide n impar en xⁿ + aⁿ y n par en xⁿ − aⁿ.',
+      condicion: 'la división es exacta. Con x + a de divisor, xⁿ + aⁿ lo es si n es impar; xⁿ − aⁿ, si es par.',
       voz: 'Si x y a vienen con exponente, como x³ y y², cada uno cuenta como una letra.',
       dibujo: CU(rufTabla(P6, 2, { cabeza: cabezaRuf(P6, 2), flechas: false })),
     },
@@ -2294,7 +2304,8 @@
 
   return {
     unidad: 'algebra.division-de-polinomios',
-    version: '0.3.0',
+    version: '0.3.1',
+    calidad: 2,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-losetas.js', '/nucleo/kit/piezas/alg-reparto.js', '/nucleo/kit/piezas/arit-calculadora.js'],
     colores: COLORES,
@@ -2334,7 +2345,7 @@
         ejemplos: ['Para x² + x − 1, a la izquierda van 1, −1 y 1.', 'Sirve con divisores de grado 2 o más.', 'Da el mismo cociente y el mismo resto que la división clásica.'] },
       { termino: 'división exacta', formas: ['división exacta', 'divisiones exactas', 'exacta', 'exactas'], def: 'La división cuyo resto es 0.',
         simple: 'La que se reparte sin que sobre nada.', ver: ['divisible'],
-        ejemplos: ['(x² − 1) ÷ (x − 1) = x + 1, sin resto.', 'x⁴ + 2x³ − x + 0 entre x² + x − 1 no lo es: deja resto.', '17 ÷ 5 no lo es: sobran 2.'] },
+        ejemplos: ['(x² − 1) ÷ (x − 1) = x + 1, sin resto.', 'x² + 3 entre x + 1 no lo es: deja 4.', '17 ÷ 5 no lo es: sobran 2.'] },
       // Idea 3: regla de Ruffini y anular. Ninguno habla de una potencia que falta (la predicción).
       { termino: 'regla de Ruffini', formas: ['regla de Ruffini', 'tabla de Ruffini', 'Ruffini'], def: 'Tabla corta para dividir entre x − a con los coeficientes: bajar, multiplicar por a y sumar.',
         simple: 'Una tabla de tres filas para dividir rápido entre x − a.', ver: ['anular'],
@@ -2343,16 +2354,16 @@
         simple: 'Hacer que algo valga 0.',
         ejemplos: ['x = 3 anula a x − 3.', 'x = −2 anula a x + 2.', 'x = 1/2 anula a 2x − 1.'] },
       // Idea 4: cociente falso y mónico. Ninguno dice qué se hace con el cociente falso (la predicción).
-      { termino: 'cociente falso', formas: ['cociente falso', 'cocientes falsos'], simbolo: 'q′', def: 'Lo que da la tabla de Ruffini con un divisor cx + b, antes de dividirlo entre c.',
+      { termino: 'cociente falso', formas: ['cociente falso', 'cocientes falsos'], simbolo: 'q′', def: 'Lo que deja la tabla de Ruffini cuando el divisor es cx + b, con c distinto de 1.',
         simple: 'Lo que deja la tabla cuando el divisor empieza con 2x o 3x.', ver: ['mónico'],
         ejemplos: ['Con 2x + 2, la tabla usa x = −1.', 'Con 3x − 1, la tabla usa x = 1/3.', 'Con x − 5 no hay cociente falso: el divisor es mónico.'] },
       { termino: 'mónico', formas: ['mónico', 'mónicos', 'mónica'], def: 'Así es un polinomio cuyo primer coeficiente es 1.',
         simple: 'Que empieza con coeficiente 1, como x − 3.',
         ejemplos: ['x² − 3x + 1 lo es.', '2x + 1 no lo es: empieza con 2.', 'x − 5 lo es.'] },
       // Idea 5: teorema del resto y divisible. Ninguno evalúa el polinomio de la predicción.
-      { termino: 'teorema del resto', def: 'Al dividir D(x) entre x − a, lo que sobra es D(a): basta evaluar, sin dividir.',
-        simple: 'Para saber lo que sobra, basta evaluar: no hace falta dividir.', ver: ['resto', 'evaluar'],
-        ejemplos: ['x² + 1 entre x − 2 deja 4 + 1 = 5.', 'x³ − 4x entre x − 1 deja 1 − 4 = −3.', 'Entre x + 3 se evalúa en −3.'] },
+      { termino: 'teorema del resto', def: 'El teorema que da el resto de dividir un polinomio entre x − a sin hacer la división.',
+        simple: 'Una forma de saber lo que sobra sin hacer la cuenta de dividir.', ver: ['resto', 'evaluar'],
+        ejemplos: ['Sirve con divisores como x − 2 o x + 5.', 'Da el mismo resto que la última casilla de la tabla de Ruffini.', 'Se usa cuando el examen pregunta solo por el resto.'] },
       { termino: 'divisible', def: 'Así es un polinomio cuando la división entre otro no deja nada sobrante.',
         simple: 'Que se puede repartir sin que sobre nada.', ver: ['división exacta'],
         ejemplos: ['x² − 9 lo es entre x − 3.', 'x² + 1 no lo es entre x − 1: deja 2.', 'Un polinomio que vale 0 en x = 4 lo es entre x − 4.'] },
@@ -2363,7 +2374,7 @@
         ejemplos: ['(x² − a²) ÷ (x − a) = x + a.', '(x³ − 1) ÷ (x − 1) = x² + x + 1.', '(x³ + 8) ÷ (x + 2) = x² − 2x + 4.'] },
       { termino: 'término de lugar k', formas: ['término de lugar k', 'término de lugar'], simbolo: 't_k', def: 'El término que ocupa el puesto k del cociente, contando desde el primero.',
         simple: 'El que está en el puesto k, contando desde el primero.',
-        ejemplos: ['En x² + x + 1, el de lugar 2 es x.', 'En x³ + 2x² + 4x + 8, el de lugar 1 es x³.', 'El de lugar 3 de x⁴ + x³y + x²y² + … es x²y².'] },
+        ejemplos: ['En x² + x + 1, el de lugar 2 es x.', 'En 5x³ − x + 7, el de lugar 1 es 5x³.', 'En a + b + c, el de lugar 3 es c.'] },
     ],
     historia: {
       texto: 'Ordenar los coeficientes para evaluar y dividir rápido no tiene un solo inventor. El llamado método de Horner tiene antecedentes, y su artículo de 1819 ni siquiera trae el procedimiento moderno, que aparece recién en uno de 1830. Más que el nombre, importa por qué funciona: la división entre x − a junta cociente, resto y el valor P(a) en una sola tabla.',

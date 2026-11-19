@@ -89,3 +89,11 @@ test('el piso que se angosta mide (x − a) por q(x) y con x = a no tiene ancho'
   const altos = new Set(); for (let x = 2; x <= 6; x += 0.5) altos.add(P.geometria({ objeto: 'angosto', x, a: 2, q: [1, 3], r: 7, xMax: 6 }).H);
   assert.equal(altos.size, 1);
 });
+
+// Auditoría del 19 nov (rutinas/auditoria/algebra.division-de-polinomios.md, M14): la casilla «?» medía como el texto
+// «undefined» y su columna salía el doble de ancha; las columnas de arriba quedaban corridas y las últimas, pegadas.
+test('la tabla de Ruffini con una casilla «?»: todas las columnas de números miden lo mismo', () => {
+  const d = { objeto: 'cuaderno', tipo: 'ruffini', coefs: ['−3', '−1', '−3', '−5'], a: cel('−2', 'i'), medio: ['', '', ''], abajo: [cel('−3', 'f'), { hueco: true }, '', ''], flechas: true };
+  const g = P.geometria(d), ws = g.xs.slice(2).map((x, k) => x - g.xs[k + 1]);
+  assert.ok(Math.max(...ws) - Math.min(...ws) < 0.5, `anchos de columna: ${ws.map(w => w.toFixed(1)).join(', ')}`);
+});

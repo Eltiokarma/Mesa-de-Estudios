@@ -40,7 +40,9 @@
     'conversiones-quimica': todo(Q + 'materia-y-energia', ['latente', 'densidad', 'vida', 'delta', 'lectura']),
     'dinamica-fuerzas': { resorte: F + 'dinamica', motriz: F + 'dinamica', peralte: F + 'dinamica', tabla: F + 'dinamica', plataforma: F + 'dinamica',
       escalera: F + 'estatica', astro: F + 'gravitacion', gravitatoria: F + 'gravitacion' },
-    'division-polinomios': { ...todo(AL + 'division-de-polinomios', ['parametros', 'cociente', 'resto2', 'caja', 'identidad']), mcdmcm: AL + 'factorizacion' },
+    // 19 nov (cierre de División de polinomios, rutinas/auditoria/algebra.division-de-polinomios.md): division-polinomios
+    // sale de esa unidad (trae MCD y MCM, de Factorización, y la unidad tiene su práctica division-practica). Queda solo
+    // para Factorización: ya no es mixto y sale de la tabla.
     'ecuaciones-polinomiales': { ...todo(AL + 'ecuaciones-polinomiales', ['parametro', 'vieta', 'caja', 'conjugada', 'multiple', 'bicuadrada', 'igualar']), divisores: AL + 'factorizacion' },
     'estadistica-datos': todo(AR + 'estadistica', ['varianza', 'central', 'medias', 'reconstruir', 'extremo']),
     // El tipo de problema es estequiometría aunque el contexto sea una grasa o una mena.

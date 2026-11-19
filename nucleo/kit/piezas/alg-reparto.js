@@ -257,7 +257,8 @@
     const nc = Math.max(1, ...gr.cel.map(f => f.length), gr.potencias ? gr.potencias.length : 0);
     const rotW = gr.rotulos.some(Boolean) ? Math.max(...gr.rotulos.map(r => (r ? anchoSegs(Array.isArray(r) ? r : [[r]], 12) : 0))) + 10 : 0;
     const anchos = Array(nc).fill(CU.minCol);
-    gr.cel.forEach(f => f.forEach((x, k) => { anchos[k] = Math.max(anchos[k], T.ancho(celda(x).t, CU.tam, 700) + 14); }));
+    // Una casilla por hallar mide como su «?» (antes medía como el texto «undefined» y corría las columnas).
+    gr.cel.forEach(f => f.forEach((x, k) => { const c = celda(x); anchos[k] = Math.max(anchos[k], T.ancho(c.hueco ? '?' : c.t || '', CU.tam, 700) + 14); }));
     if (gr.potencias) gr.potencias.forEach((p, k) => { anchos[k] = Math.max(anchos[k], T.ancho(String(p), 12, 400) + 12); });
     const util = W - 2 * M - CU.izqHoja - 10 - rotW;
     const suma = anchos.reduce((a, b) => a + b, 0), esc = suma > util ? util / suma : 1;

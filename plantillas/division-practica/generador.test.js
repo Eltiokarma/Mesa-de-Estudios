@@ -168,3 +168,20 @@ test('papel.json: 8 problemas de las seis ideas, con sus datos y su respuesta re
   const ideas = new Set(papel.problemas.map((pr, k) => gen.generar(`papel-${k + 1}`)._datos.idea));
   assert.equal(ideas.size, 6);
 });
+
+// Auditoría del 19 nov (rutinas/auditoria/algebra.division-de-polinomios.md, M1 y M4): el distractor «PO2» del cociente
+// con x = −b/c en fracción no era lo que da usar b/c (ese cociente no sale con enteros); y en los tipos de cx + b el dato
+// de Ruffini decía «más a por la anterior» sin que nadie dijera qué es a.
+test('cociente con x = −b/c: cada distractor vale lo que da su error; los datos de cx + b dicen −b/c', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { idea: 'divisor-k' });
+    for (const l of p.datos) assert.ok(!/más a por/.test(l), `${s}: «${l}»`);
+    if (p._datos.tipo !== 'cociente-frac') continue;
+    const m = plano(p.enunciado).match(/Se divide (.+) entre (.+)\.$/), D = leerPoli(m[1]), d = leerPoli(m[2]), q = divide(D, d).q;
+    for (const a of p.alternativas) {
+      if (!a.error) continue;
+      assert.notEqual(a.error.id, 'PO2', `${s}: un PO2 que no es lo que da su error`);
+      if (a.error.id === 'TAL-K-MULT') assert.equal(a.texto, texto(q.map(v => v * d[0] * d[0])), `${s}`);
+    }
+  }
+});

@@ -100,7 +100,8 @@
     paso: 'Término de q: el primero de lo que queda entre el primero de d; luego se resta d por ese término',
     primero: 'El primer término de q: el primer término de D entre el primero de d',
     exacta: 'División exacta: el resto es 0',
-    casilla: 'Ruffini: cada casilla nueva de abajo es el coeficiente de arriba más a por la casilla anterior',
+    casilla: 'Ruffini: cada casilla nueva de abajo es el de arriba más a por la anterior (a anula al divisor)',
+    casillaK: 'Ruffini con cx + b: cada casilla nueva de abajo es el de arriba más −b/c por la anterior',
     cero: 'Una potencia que falta se escribe con coeficiente 0',
     filaQ: 'La fila de abajo, sin la última casilla: los coeficientes del cociente; la última: el resto',
     falso: 'Para dividir entre cx + b: Ruffini con x = −b/c da el cociente falso q′',
@@ -439,7 +440,7 @@
     const k = casoK(rng, rng.entero(0, 2) > 0);
     return {
       enunciado: [`Se divide ${poli(k.Dd)} entre `, Td(poli([k.c, k.b])), '.'], pregunta: ['¿Cuál es el cociente?'],
-      datos: [D.falso, D.cocK, D.casilla], correcta: poli(k.Q),
+      datos: [D.falso, D.cocK, D.casillaK], correcta: poli(k.Q),
       errores: [
         e('PO3', poli(k.Q.map(x => x * k.c)), t => `Bien la tabla con x = ${k.x0}. Pero ${t} es el cociente falso: falta dividirlo entre ${k.c}.`),
         e('TAL-K-MULT', poli(k.Q.map(x => x * k.c * k.c)), t => `Bien la tabla. Pero el cociente falso se divide entre ${k.c}; multiplicarlo da ${t}.`),
@@ -453,7 +454,7 @@
     const k = casoK(rng, false), enC = evaluar(k.Dd, k.c);
     return {
       enunciado: [`Se divide ${poli(k.Dd)} entre `, Td(poli([k.c, k.b])), '.'], pregunta: ['¿Cuál es el resto?'],
-      datos: [D.falso, D.cocK, D.casilla], correcta: k.R,
+      datos: [D.falso, D.cocK, D.casillaK], correcta: k.R,
       errores: [
         en('PO4', k.R % k.c === 0 ? k.R / k.c : NaN, t => `Bien la última casilla, ${z(k.R)}. Pero el resto no se divide entre ${k.c}; dividirlo da ${t}.`),
         en('TAL-EVAL-COEF', Math.abs(enC) > 999 ? NaN : enC, t => `Bien la idea de evaluar. Pero en x = ${k.x0}, que anula al divisor, no en ${k.c}: así sale ${t}.`),
@@ -469,7 +470,7 @@
     if (s === 0) return null;
     return {
       enunciado: [`Se divide ${poli(k.Dd)} entre `, Td(poli([k.c, k.b])), '.'], pregunta: ['¿Cuánto suman los coeficientes del cociente?'],
-      datos: [D.falso, D.cocK, D.casilla], correcta: s,
+      datos: [D.falso, D.cocK, D.casillaK], correcta: s,
       errores: [
         en('PO3', s * k.c, t => `Bien la suma de la tabla. Pero es la del cociente falso, ${t}: falta dividirla entre ${k.c}.`),
         en('TAL-RESTO-EN-Q', s + k.R, t => `Bien el cociente. Pero el resto no es parte de él; con el resto suma ${t}.`),
@@ -486,11 +487,12 @@
     if (Dd[0] === 0) return null;
     return {
       enunciado: [`Se divide ${poli(Dd)} entre `, Td(poli([c, b])), '.'], pregunta: ['¿Cuál es el cociente?'],
-      datos: [D.falso, D.cocK, D.casilla], correcta: poli(Q),
+      datos: [D.falso, D.cocK, D.casillaK], correcta: poli(Q),
       errores: [
         e('PO3', poli(Q.map(x => x * c)), t => `Bien la tabla con x = ${fr(-b, c)}. Pero ${t} es el cociente falso: falta dividir entre 2.`),
         e('TAL-RESTO-EN-Q', poli(sumar(Q, [R])), t => `Bien el cociente. Pero el ${z(R)} es el resto; sumarlo da ${t}.`),
-        e('PO2', poli(Q.map((x, i) => (i % 2 ? -x : x))), t => `Bien la idea. Pero ${poli([c, b])} se anula en ${fr(-b, c)}, no en ${fr(b, c)}: así sale ${t}.`),
+        // (Usar x = b/c no da un cociente con enteros: va el error de multiplicar por c en vez de dividir.)
+        e('TAL-K-MULT', poli(Q.map(x => x * c * c)), t => `Bien la tabla. Pero el divisor es el doble: el cociente falso se divide entre 2; multiplicarlo da ${t}.`),
       ],
       solucion: [[`La tabla con x = ${fr(-b, c)} da ${poli(Q.map(x => x * c))}.`], ['Entre ', Ta('2'), ': q = ', Tq(poli(Q)), '.']],
       _datos: { c, b, Q, R },

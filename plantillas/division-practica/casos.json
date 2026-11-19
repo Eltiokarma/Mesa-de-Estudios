@@ -1,7 +1,7 @@
 {
   "plantilla": "division-practica",
   "nota": "Un caso por tipo (27 tipos, seis ideas). entrada: la idea y el tipo que da generar(semilla, { idea }); esperado.texto: el texto de la alternativa correcta.",
-  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e6-algebra/scripts/casos-practica.py), que no usa el generador ni el núcleo: lee el enunciado que ve el alumno, arma los polinomios con sympy, divide (div), evalúa, resuelve los sistemas de m y n, y escribe la respuesta con su propia tabla de superíndices. Los 27 casos cuadran con el texto de la alternativa correcta.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e6-algebra/scripts/casos-practica.py), que no usa el generador ni el núcleo: lee el enunciado que ve el alumno, arma los polinomios con sympy, divide (div), evalúa, resuelve los sistemas de m y n, y escribe la respuesta con su propia tabla de superíndices. Los 27 casos cuadran con el texto de la alternativa correcta. Auditoría del 19 nov: el caso de cociente-frac (semilla 0) cambió al cambiar sus distractores y se rehízo aparte con sympy (6x⁴ − 9x³ + 9x² − x + 1 entre 2x − 1: q = 3x³ − 3x² + 3x + 1, r = 2).",
   "casos": [
     {
       "semilla": 0,
@@ -154,7 +154,7 @@
         "nivel": 3
       },
       "esperado": {
-        "texto": "−3x³ − x² + x − 3"
+        "texto": "3x³ − 3x² + 3x + 1"
       }
     },
     {
