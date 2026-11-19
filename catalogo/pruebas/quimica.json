@@ -13,6 +13,9 @@
     "docs/investigacion/quimica-ambiente-ideas-erroneas.md"
   ],
   "errores": {
+    "QM-OX-TOTAL": { "respaldo": "hipotesis", "describe": "Da lo que aportan todos los átomos del elemento juntos, sin repartirlo entre ellos" },
+    "QM-OX-SUBINDICE": { "respaldo": "hipotesis", "describe": "Toma el subíndice (el número de átomos) como estado de oxidación" },
+    "QM-OX-SIGNO": { "respaldo": "hipotesis", "describe": "Da el estado de oxidación con el signo cambiado" },
     "QM-TRANSF-UNO": {"respaldo": "hipotesis", "describe": "Cuenta los electrones de un solo átomo del metal"},
     "QM-TRANSF-ATOMOS": {"respaldo": "hipotesis", "describe": "Cuenta los átomos de la fórmula en vez de los electrones"},
     "QM-TRANSF-DOBLE": {"respaldo": "hipotesis", "describe": "Cuenta dos veces lo que entrega el metal y recibe el no metal"},
@@ -1553,6 +1556,33 @@
           { "texto":  "3", "valor":  3, "error":  "QM-FORMA-LIGANDOS" },
           { "texto":  "7", "valor":  7, "error":  "QM-REGION-PARES" },
           { "texto":  "5", "valor":  5, "correcta":  true}
+        ]
+      }
+    },
+    {
+      "par": "qui-22",
+      "plantilla": "nomenclatura-practica",
+      "unidad": "quimica.nomenclatura-inorganica",
+      "nombreUnidad": "Nomenclatura inorgánica",
+      "mide": "Estado de oxidación de un elemento con dos átomos en la fórmula: la suma de los EO da la carga y se reparte entre los átomos",
+      "A": {
+        "enunciado": "El dicromato de potasio, K₂Cr₂O₇, es neutro: tiene 2 átomos de potasio con EO +1, 2 de cromo y 7 de oxígeno con EO −2. ¿Qué estado de oxidación tiene cada cromo?",
+        "datos": { "na":  2, "ea":  1, "n":  2, "no":  7, "eo":  -2 },
+        "opciones": [
+          { "texto":  "+12", "valor":  12, "error":  "QM-OX-TOTAL" },
+          { "texto":  "+6", "valor":  6, "correcta":  true},
+          { "texto":  "+2", "valor":  2, "error":  "QM-OX-SUBINDICE" },
+          { "texto":  "−6", "valor":  -6, "error":  "QM-OX-SIGNO" }
+        ]
+      },
+      "B": {
+        "enunciado": "El ácido pirofosfórico, H₄P₂O₇, es neutro: tiene 4 átomos de hidrógeno con EO +1, 2 de fósforo y 7 de oxígeno con EO −2. ¿Qué estado de oxidación tiene cada fósforo?",
+        "datos": { "na":  4, "ea":  1, "n":  2, "no":  7, "eo":  -2 },
+        "opciones": [
+          { "texto":  "+2", "valor":  2, "error":  "QM-OX-SUBINDICE" },
+          { "texto":  "−5", "valor":  -5, "error":  "QM-OX-SIGNO" },
+          { "texto":  "+5", "valor":  5, "correcta":  true},
+          { "texto":  "+10", "valor":  10, "error":  "QM-OX-TOTAL" }
         ]
       }
     }

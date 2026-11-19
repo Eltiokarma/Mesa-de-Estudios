@@ -550,8 +550,7 @@
         ver: ['reactivo'] },
       { termino: 'coeficiente', def: 'Número delante de una fórmula: cuántas moléculas, o moles, de esa sustancia toman parte.',
         ejemplo: '2 H₂O: dos moléculas de agua, con 4 H y 2 O.', ver: ['subíndice'] },
-      { termino: 'subíndice', def: 'Número pequeño abajo de un símbolo: cuántos átomos de ese elemento hay. Cambiarlo cambia la sustancia.',
-        ejemplo: 'H₂O es agua; H₂O₂ es agua oxigenada.', ver: ['coeficiente'] },
+      // «subíndice» se mudó a Nomenclatura inorgánica (19 nov, etapa 7): es la unidad que lo usa primero.
       { termino: 'oxidación', def: 'Pérdida de electrones: el número que indica la carga aparente del átomo sube.',
         formas: ['oxidación', 'oxidarse', 'se oxida'], ejemplo: 'Zn → Zn²⁺ + 2 e⁻: el zinc va de 0 a +2.', ver: ['reducción', 'redox'] },
       { termino: 'reducción', def: 'Ganancia de electrones: el número que indica la carga aparente del átomo baja.',

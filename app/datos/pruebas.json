@@ -2943,6 +2943,18 @@
    "version": "1.2.0",
    "minutos": 16,
    "errores": {
+    "QM-OX-TOTAL": {
+     "respaldo": "hipotesis",
+     "describe": "Da lo que aportan todos los átomos del elemento juntos, sin repartirlo entre ellos"
+    },
+    "QM-OX-SUBINDICE": {
+     "respaldo": "hipotesis",
+     "describe": "Toma el subíndice (el número de átomos) como estado de oxidación"
+    },
+    "QM-OX-SIGNO": {
+     "respaldo": "hipotesis",
+     "describe": "Da el estado de oxidación con el signo cambiado"
+    },
     "QM-TRANSF-UNO": {
      "respaldo": "hipotesis",
      "describe": "Cuenta los electrones de un solo átomo del metal"

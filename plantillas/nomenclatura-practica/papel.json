@@ -1,0 +1,85 @@
+{
+  "titulo": "Estados de oxidación, nombres y fórmulas: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El ácido selénico, con el Se a EO +6. ¿Cuál es su fórmula? Datos: Oxácido: óxido ácido + H₂O; se suman los átomos y se simplifica si se puede. Su óxido: SeO₃. EO del O: −2; del H: +1. Alternativas: A) H₂SeO₅   B) SeO₃   C) H₂SeO₄   D) HSeO₄",
+      "respuesta": "C) H₂SeO₄",
+      "pasos": [
+        "SeO₃ + H₂O → H₂SeO₄."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "El óxido Au₂O₃. El oro tiene EO +1 y +3. ¿Cuál es su nombre Stock? Datos: EO del O: −2. Stock: «óxido de» + elemento + su EO en romanos entre paréntesis. Romanos: I 1, II 2, III 3, IV 4. Alternativas: A) óxido áurico   B) óxido de oro(III)   C) óxido de oro(II)   D) óxido de oro",
+      "respuesta": "B) óxido de oro(III)",
+      "pasos": [
+        "3 O aportan −6: el oro tiene +3.",
+        "Au₂O₃: óxido de oro(III)"
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "La sal Al₂(SO₃)₃. Su anión, SO₃²⁻, viene del ácido sulfuroso. ¿Cuál es su nombre Stock? Datos: Anión de un ácido: -hídrico → -uro; -oso → -ito; -ico → -ato (hipo- y per- se quedan). Nombre de la sal: el anión + «de» + el catión (con su EO en romanos si tiene dos). Alternativas: A) sulfuroso de aluminio   B) sulfito de aluminio   C) sulfuro de aluminio   D) sulfato de aluminio",
+      "respuesta": "B) sulfito de aluminio",
+      "pasos": [
+        "El anión es sulfito; el catión, aluminio.",
+        "Al₂(SO₃)₃: sulfito de aluminio"
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El bromato de zinc. ¿Cuál es su fórmula? Datos: La sal junta fichas enteras de catión y anión hasta carga 0, con los números más chicos. Un ion de varios átomos va entre paréntesis si se repite. Iones: Zn²⁺ y BrO₃⁻. Alternativas: A) Zn(BrO₃)₂   B) Zn₂BrO₃   C) Zn₂(BrO₃)₄   D) ZnBrO₃₂   E) ZnBrO₃",
+      "respuesta": "A) Zn(BrO₃)₂",
+      "pasos": [
+        "1 Zn y 2 BrO₃⁻ dejan carga 0.",
+        "Zn(BrO₃)₂"
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "El ácido sulfuroso, H₂SO₃, suelta sus H⁺ y deja el anión SO₃²⁻. ¿Cómo se llama ese anión? Datos: Anión de un ácido: -hídrico → -uro; -oso → -ito; -ico → -ato (hipo- y per- se quedan). Alternativas: A) sulfato   B) sulfuroso   C) sulfito   D) sulfuro",
+      "respuesta": "C) sulfito",
+      "pasos": [
+        "ácido sulfuroso: -oso → -ito.",
+        "SO₃²⁻: sulfito"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La sal Ba(OH)Cl. ¿Qué clase de sal es? Datos: Sal ácida: su anión conserva H. Sal básica: lleva OH⁻ además del anión. Sal hidratada: agua tras un punto (·nH₂O). Sal neutra: solo un catión y un anión. Alternativas: A) Sal básica   B) Sal ácida   C) Sal hidratada   D) Sal neutra",
+      "respuesta": "A) Sal básica",
+      "pasos": [
+        "Lleva OH⁻ además del anión."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "El bromato de hierro(II). ¿Cuál es su fórmula? Datos: La sal junta fichas enteras de catión y anión hasta carga 0, con los números más chicos. Un ion de varios átomos va entre paréntesis si se repite. Iones: Fe²⁺ y BrO₃⁻. Alternativas: A) FeBrO₃₂   B) Fe₂BrO₃   C) FeBrO₃   D) Fe(BrO₃)₂   E) Fe₂(BrO₃)₄",
+      "respuesta": "D) Fe(BrO₃)₂",
+      "pasos": [
+        "1 Fe y 2 BrO₃⁻ dejan carga 0.",
+        "Fe(BrO₃)₂"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "El óxido HgO. El mercurio tiene EO +1 y +2. ¿Cuál es su nombre Stock? Datos: EO del O: −2. Stock: «óxido de» + elemento + su EO en romanos entre paréntesis. Romanos: I 1, II 2, III 3, IV 4. Alternativas: A) óxido de mercurio   B) óxido de mercurio(II)   C) óxido de mercurio(I)   D) óxido mercúrico",
+      "respuesta": "B) óxido de mercurio(II)",
+      "pasos": [
+        "1 O aportan −2: el mercurio tiene +2.",
+        "HgO: óxido de mercurio(II)"
+      ]
+    }
+  ]
+}

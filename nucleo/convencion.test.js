@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const C = require('./convencion.js');
 
 test('las convenciones de academia están, con título, examen y universidad', () => {
-  assert.deepEqual(C.ids.sort(), ['azufre-expandido', 'dativos', 'etapa-lenta', 'hibridacion', 'ultimo-electron']);
+  assert.deepEqual(C.ids.sort(), ['azufre-expandido', 'dativos', 'etapa-lenta', 'hibridacion', 'nomenclatura-examen', 'ultimo-electron']);
   for (const id of C.ids) {
     const c = C.LISTA[id];
     for (const k of ['titulo', 'examen', 'universidad']) assert.ok(typeof c[k] === 'string' && c[k].length > 15, `${id}: falta ${k}`);

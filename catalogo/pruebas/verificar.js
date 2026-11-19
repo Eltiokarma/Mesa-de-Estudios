@@ -826,6 +826,9 @@ const V = {
   'qui-20': d => { const mcm = (a, b) => { let m = Math.max(a, b); while (m % a || m % b) m++; return m; }, T = mcm(d.qm, d.qx), at = T / d.qm + T / d.qx;
     return { correcta: T, errores: { 'QM-TRANSF-UNO': d.qm, 'QM-TRANSF-ATOMOS': at, 'QM-TRANSF-DOBLE': 2 * T } }; },
   'qui-21': d => ({ correcta: d.n + d.m, errores: { 'QM-FORMA-LIGANDOS': d.n, 'QM-REGION-PARES': d.n + 2 * d.m, 'QM-REGION-ELECTRONES': 2 * (d.n + d.m) } }),
+  // qui-22 (reserva, 19 nov, etapa 7: «Nomenclatura inorgánica»): nomenclatura-practica no tiene motor.js; se recalcula aquí
+  // con la suma de los EO: los n átomos del elemento compensan a los demás (la especie es neutra), y cada uno, su parte.
+  'qui-22': d => { const eo = -(d.na * d.ea + d.no * d.eo) / d.n; return { correcta: eo, errores: { 'QM-OX-TOTAL': d.n * eo, 'QM-OX-SUBINDICE': d.n, 'QM-OX-SIGNO': -eo } }; },
 
   // fis-23 y fis-24 (reserva, 19 nov, etapa 5 de física: «Movimiento parabólico»). El tiempo de caída lo da el motor de
   // tiro-parabolico (proyectil); la distancia al origen con x = x₀ + a·t e y = t² se recalcula aquí, con Pitágoras.

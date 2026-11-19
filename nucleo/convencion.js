@@ -53,6 +53,13 @@
       examen: 'Las cajas de un subnivel van de mₗ = −ℓ, a la izquierda, a mₗ = +ℓ, a la derecha. Primero se pone una flecha ↑ en cada caja, de izquierda a derecha, con mₛ = +½; después, las flechas ↓, con mₛ = −½. Así, el último electrón del oxígeno (2p⁴) es (2; 1; −1; −½).',
       universidad: 'los signos de mₗ y mₛ son una convención: otros libros llenan de +ℓ a −ℓ o empiezan por −½, y el mismo electrón sale con otros signos. Lo que no depende de la convención es cuántos electrones quedan solos en el subnivel.',
     },
+    // Nomenclatura inorgánica (19 nov 2026, etapa 7): lo que cambia entre el examen y la IUPAC de 2005. En la teoría va como
+    // tarjeta de «Lee» (ideas 2 y 6); en la práctica, en los tipos de nombres de nomenclatura-practica.
+    'nomenclatura-examen': {
+      titulo: 'Nombres de academia y de la IUPAC',
+      examen: 'El examen pide la sistemática (trióxido de dihierro), la Stock (óxido de hierro(III)) o la tradicional (óxido férrico). En la tradicional, un metal con dos EO lleva -oso el menor e -ico el mayor, y el óxido de un no metal se llama anhídrido (SO₃, anhídrido sulfúrico).',
+      universidad: 'las recomendaciones de la IUPAC de 2005 ya no recomiendan -oso e -ico para los metales ni el nombre «anhídrido»: usan la sistemática y la Stock. Conservan los nombres de los oxoácidos y sus aniones (ácido sulfúrico, sulfato) y llaman hidrogenocarbonato al bicarbonato.',
+    },
   };
   const ids = Object.keys(LISTA);
 

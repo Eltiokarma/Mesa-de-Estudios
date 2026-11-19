@@ -10,9 +10,10 @@
  * diferencia y se rotula. Si hay más de 16 cargas de un signo, se dibujan en grupos de 2 (dicho en el rótulo).
  *
  * datos = {
- *   fichas: [{ t: 'Ca²⁺', carga: 2, n: 1, color: 'o', desde, hasta }],  // n copias de la ficha
+ *   fichas: [{ t: 'Ca²⁺', carga: 2, n: 1, color: 'o', desde, hasta, oculta }],  // n copias; oculta: «?» bajo la ficha en vez de su carga
  *   cuenta: true,            // las dos filas de cuadritos y la carga neta (por defecto, sí)
  *   neta: 'carga neta',      // cómo se llama lo que queda («carga del ion», «electrones»)
+ *   serif: true,             // opcional (19 nov, Nomenclatura inorgánica): el texto de las fichas en la letra con serifa de las ecuaciones
  *   alt
  * }
  * estado = { corte }. Alto fijo: 196.
@@ -62,8 +63,8 @@
       if (ve(f)) {
         visibles.push(f);
         let q = T.barra(x, YF, w, HF, { color: f.color, relleno: 0.14 });
-        q += T.rotulo(x + w / 2, YF + HF / 2 + 6, f.t, { ancla: 'middle', peso: 700, color: f.color, tam: esc < 0.85 ? 14 : 16 });
-        q += T.rotulo(x + w / 2, YF + HF + 18, sg(f.carga), { ancla: 'middle', peso: 600, tam: 14, clase: 'kit-num' });
+        q += T.rotulo(x + w / 2, YF + HF / 2 + 6, f.t, { ancla: 'middle', peso: 700, color: f.color, tam: esc < 0.85 ? 14 : 16, familia: d.serif ? T.SERIF : undefined });
+        q += T.rotulo(x + w / 2, YF + HF + 18, f.oculta ? '?' : sg(f.carga), { ancla: 'middle', peso: 600, tam: 14, clase: 'kit-num' });
         s += `<g class="kit-ficha${nuevo(f)}">${q}</g>`;
       }
       x += w + 6 * esc;

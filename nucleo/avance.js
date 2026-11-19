@@ -131,6 +131,10 @@
     // Etapa 7 (19 nov): Sentido contextual conservó sus cuatro ids con otra Predice y sumó `sentido-figurado`.
     { u: 'razonamiento-verbal.sentido-contextual', p: 'prediccionSC', e: 'estudiadaSC',
       cambian: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'], antes: ['acepcion', 'denota-connota', 'palabra-precisa', 'inferir-significado'] },
+    // Nomenclatura inorgánica (19 nov, etapa 7): tres ideas con otra Predice y una idea nueva (peroxidos-hidruros).
+    { u: 'quimica.nomenclatura-inorganica', p: 'prediccionNI', e: 'estudiadaNI',
+      cambian: ['estados-oxidacion', 'arbol-funciones', 'sales'],
+      antes: ['estados-oxidacion', 'tres-nombres', 'arbol-funciones', 'sales', 'sales-acidas-basicas-hidratadas'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

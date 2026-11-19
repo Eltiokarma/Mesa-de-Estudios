@@ -1666,24 +1666,28 @@
       "quimica.enlace-quimico"
      ],
      "plantillas": [
-      "nomenclatura-inorganica",
-      "quimica-conceptos"
+      "nomenclatura-practica",
+      "quimica-conceptos",
+      "nomenclatura-inorganica"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/nomenclatura-inorganica.js",
       "requiere": [
+       "/plantillas/nomenclatura-inorganica/motor.js",
        "/nucleo/kit/piezas/quim-fichas.js",
-       "/nucleo/kit/piezas/quim-cadena.js"
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/quim-nomenclatura.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "estados-oxidacion": "La suma da la carga",
-       "tres-nombres": "Un compuesto, tres nombres",
-       "arbol-funciones": "El árbol de las funciones",
-       "sales": "Fichas enteras hasta carga cero",
-       "sales-acidas-basicas-hidratadas": "Sales con H, OH o agua"
+       "estados-oxidacion": "Estados de oxidación",
+       "tres-nombres": "Óxidos y sus tres nombres",
+       "peroxidos-hidruros": "Peróxidos, hidruros e hidrácidos",
+       "arbol-funciones": "Hidróxidos y oxácidos",
+       "sales": "Sales haloideas y oxisales",
+       "sales-acidas-basicas-hidratadas": "Sales ácidas, básicas e hidratadas"
       },
-      "terminos": 36
+      "terminos": 37
      }
     },
     {
@@ -10607,6 +10611,31 @@
     "/plantillas/nomenclatura-inorganica/index.html",
     "/plantillas/nomenclatura-inorganica/motor.js",
     "/plantillas/nomenclatura-inorganica/papel.json"
+   ],
+   "rehacer": true
+  },
+  "nomenclatura-practica": {
+   "id": "nomenclatura-practica",
+   "titulo": "Estados de oxidación, nombres y fórmulas",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.nomenclatura-inorganica"
+   ],
+   "url": "#/practica/nomenclatura-practica",
+   "ideas": [
+    "estados-oxidacion",
+    "tres-nombres",
+    "peroxidos-hidruros",
+    "arbol-funciones",
+    "sales",
+    "sales-acidas-basicas-hidratadas"
+   ],
+   "papel": "/plantillas/nomenclatura-practica/papel.json",
+   "archivos": [
+    "/plantillas/nomenclatura-practica/generador.js",
+    "/plantillas/nomenclatura-practica/papel.json"
    ]
   },
   "numeracion": {

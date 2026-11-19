@@ -451,3 +451,16 @@ test('Etapa 7, Sentido contextual rehecha: predicciones viejas sin huella borrad
   assert.ok(!(otro.marcadas || {})[U], 'no terminó las cuatro: le quedan por hacer');
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// 19 nov (etapa 7): Nomenclatura inorgánica, rehecha con tres ideas de otra Predice y una idea nueva (peroxidos-hidruros).
+test('Etapa 7, Nomenclatura inorgánica rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
+  const U = 'quimica.nomenclatura-inorganica';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-13' }, teoria: { [U]: { ideas: Object.fromEntries(['estados-oxidacion', 'tres-nombres', 'arbol-funciones', 'sales', 'sales-acidas-basicas-hidratadas']
+    .map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionNI, 1); assert.equal(est.estudiadaNI, 1);
+  for (const i of ['estados-oxidacion', 'arbol-funciones', 'sales']) assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i);
+  for (const i of ['tres-nombres', 'sales-acidas-basicas-hidratadas']) assert.equal(est.teoria[U].ideas[i].prediccion, 'c', `${i}: la misma pregunta, se queda`);
+  assert.equal(est.marcadas[U], '2026-11-13');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});

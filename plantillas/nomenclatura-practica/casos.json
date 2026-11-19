@@ -1,0 +1,242 @@
+{
+ "plantilla": "nomenclatura-practica",
+ "nota": "entrada es _datos del generador (idea, tipo, nivel y lo que define el problema). respuesta: el texto de la alternativa correcta. Se genera con generar(semilla, { idea }).",
+ "verificacion": "Script aparte (19 nov 2026, scratchpad e7-quimica/verif/casos-gen.js): la respuesta sale de tablas propias (EO fijos y la suma, cargas de iones, raíces y la regla de las terminaciones), no del generador. Los nombres de esas tablas se comprobaron con OPSIN 2.8.0 (verif/nombres.py).",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "estados-oxidacion",
+    "tipo": "eo-dos",
+    "nivel": 2,
+    "f": "C2O4^2-",
+    "x": "C"
+   },
+   "esperado": {
+    "respuesta": "+3"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "estados-oxidacion",
+    "tipo": "cual-eo",
+    "nivel": 3,
+    "x": "C",
+    "meta": "CH4",
+    "lista": [
+     "H2CO3",
+     "C2O4^2-",
+     "CH4",
+     "CO"
+    ]
+   },
+   "esperado": {
+    "respuesta": "CH₄"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "estados-oxidacion",
+    "tipo": "eo-ion",
+    "nivel": 2,
+    "f": "BrO3^-",
+    "x": "Br"
+   },
+   "esperado": {
+    "respuesta": "+5"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "estados-oxidacion",
+    "tipo": "eo-neutro",
+    "nivel": 1,
+    "f": "HClO3",
+    "x": "Cl"
+   },
+   "esperado": {
+    "respuesta": "+5"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "tres-nombres",
+    "tipo": "formula-oxido",
+    "nivel": 2,
+    "f": "SnO2"
+   },
+   "esperado": {
+    "respuesta": "SnO₂"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "tres-nombres",
+    "tipo": "trad-oxido",
+    "nivel": 2,
+    "f": "Hg2O"
+   },
+   "esperado": {
+    "respuesta": "óxido mercurioso"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "tres-nombres",
+    "tipo": "stock-oxido",
+    "nivel": 1,
+    "f": "Co2O3"
+   },
+   "esperado": {
+    "respuesta": "óxido de cobalto(III)"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "peroxidos-hidruros",
+    "tipo": "eo-raro",
+    "nivel": 2,
+    "f": "CaO2",
+    "x": "O"
+   },
+   "esperado": {
+    "respuesta": "−1"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "peroxidos-hidruros",
+    "tipo": "hidracido",
+    "nivel": 1,
+    "f": "HI"
+   },
+   "esperado": {
+    "respuesta": "ácido yodhídrico"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "peroxidos-hidruros",
+    "tipo": "formula-peroxido",
+    "nivel": 1,
+    "s": "Li",
+    "q": 1
+   },
+   "esperado": {
+    "respuesta": "Li₂O₂"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "arbol-funciones",
+    "tipo": "nombre-oxacido",
+    "nivel": 3,
+    "f": "HIO3",
+    "w": 5,
+    "e": "I"
+   },
+   "esperado": {
+    "respuesta": "ácido yódico"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "arbol-funciones",
+    "tipo": "formula-oxacido",
+    "nivel": 2,
+    "f": "HIO",
+    "w": 1,
+    "e": "I"
+   },
+   "esperado": {
+    "respuesta": "HIO"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "arbol-funciones",
+    "tipo": "formula-hidroxido",
+    "nivel": 1,
+    "s": "Co",
+    "q": 3
+   },
+   "esperado": {
+    "respuesta": "Co(OH)₃"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "sales",
+    "tipo": "nombre-sal",
+    "nivel": 3,
+    "c": "K",
+    "a": "ClO4^-"
+   },
+   "esperado": {
+    "respuesta": "perclorato de potasio"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "sales",
+    "tipo": "formula-sal",
+    "nivel": 2,
+    "c": "Zn",
+    "a": "ClO2^-"
+   },
+   "esperado": {
+    "respuesta": "Zn(ClO₂)₂"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "sales",
+    "tipo": "anion",
+    "nivel": 1,
+    "a": "SO3^2-"
+   },
+   "esperado": {
+    "respuesta": "sulfito"
+   }
+  },
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "sales-acidas-basicas-hidratadas",
+    "tipo": "oxigenos-hidrato",
+    "nivel": 3,
+    "f": "Na2CO3·10H2O"
+   },
+   "esperado": {
+    "respuesta": "13"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "sales-acidas-basicas-hidratadas",
+    "tipo": "clase-sal",
+    "nivel": 1,
+    "f": "Al(OH)SO4"
+   },
+   "esperado": {
+    "respuesta": "Sal básica"
+   }
+  }
+ ]
+}

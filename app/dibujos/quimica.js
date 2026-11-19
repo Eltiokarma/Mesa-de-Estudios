@@ -46,11 +46,11 @@ D.registrar('quimica', {
     P.l([[80, 66], [36, 98]]) + P.l([[80, 66], [124, 98]]) + P.l([[80, 66], [80, 110]], 'd')
     + P.p('M80 50C64 28 70 12 80 12C90 12 96 28 80 50Z', 'a') + P.c(80, 66, 16, 'b') + P.c(80, 66, 16, '')
     + [[36, 98], [124, 98], [80, 110]].map(([x, y]) => P.c(x, y, 10, 'b f')).join(''),
-  // Las cargas se cruzan y dan el nombre: Fe³⁺ con O²⁻ es Fe₂O₃.
+  // Las cargas se juntan hasta sumar cero: M²⁺ con X⁻ da MX₂ (letras genéricas, 19 nov: con Fe₂O₃ daba la Predice de la idea 1).
   'quimica.nomenclatura-inorganica': P =>
-    P.r(14, 12, 56, 42, 'b', 8) + P.r(90, 12, 56, 42, 'm', 8) + P.t(36, 42, 'Fe', 22) + P.t(58, 30, '3+', 14, 'start')
-    + P.t(112, 42, 'O', 22) + P.t(126, 30, '2−', 14, 'start') + P.ac('M62 60L98 84') + P.ac('M98 60L62 84')
-    + P.t(80, 112, 'Fe₂O₃', 24),
+    P.r(14, 12, 56, 42, 'b', 8) + P.r(90, 12, 56, 42, 'm', 8) + P.t(36, 42, 'M', 22) + P.t(54, 30, '2+', 14, 'start')
+    + P.t(112, 42, 'X', 22) + P.t(126, 30, '−', 14, 'start') + P.ac('M62 60L98 84') + P.ac('M98 60L62 84')
+    + P.t(80, 112, 'MX₂', 24),
   // El mol se cuenta pesando: un montón de partículas equilibra unos gramos.
   'quimica.mol-y-composicion': P =>
     P.l([[64, 104], [96, 104]], 'd') + P.l([[80, 104], [80, 34]]) + P.l([[26, 34], [134, 34]]) + P.c(80, 34, 5, 'tn')

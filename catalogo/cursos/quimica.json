@@ -218,7 +218,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": ["quimica.enlace-quimico"],
-      "plantillas": ["nomenclatura-inorganica", "quimica-conceptos"],
+      "plantillas": ["nomenclatura-practica", "quimica-conceptos", "nomenclatura-inorganica"],
       "investigacion": "docs/investigacion/quimica-materia-nomenclatura-organica-ideas-erroneas.md"
     },
     {

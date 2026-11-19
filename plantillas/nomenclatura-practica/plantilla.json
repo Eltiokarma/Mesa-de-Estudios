@@ -1,0 +1,24 @@
+{
+  "id": "nomenclatura-practica",
+  "titulo": "Estados de oxidación, nombres y fórmulas",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.nomenclatura-inorganica"
+  ],
+  "temas": [
+    "Estados de oxidación",
+    "Tipos de nomenclatura",
+    "Óxidos e hidruros",
+    "Hidróxidos",
+    "Ácidos oxácidos e hidrácidos",
+    "Sales oxisales y haloideas",
+    "Sales ácidas, básicas e hidratadas",
+    "Peróxidos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
