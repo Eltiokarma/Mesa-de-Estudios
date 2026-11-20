@@ -2,6 +2,27 @@
 
 Actualizado el 19 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Estado al 19 nov, noche: Etapa 6», después «Estado al 19 nov: Etapa 5», después «Estado al 18 nov, cierre», después «Estado al 18 nov, noche», después «Estado al 18 nov, tarde», después «Estado al 18 nov, mañana», después «Estado al 18 nov, madrugada», después «Estado al 17 nov, cierre», después «Estado al 17 nov, noche» y después «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
 
+## Estado al 20 nov: Etapa 8 cerrada (ocho unidades con calidad 2)
+
+Mismo método, con las lecciones 18 y 19 nuevas en `etapa-delegada.md`. La sesión revisa la idea 1 de cada unidad en
+capturas y le manda notas al agente mientras sigue escribiendo.
+
+- **Hecho y en main (v313, unas 12 520 pruebas):** Conectores, Ecuaciones polinomiales, Mol y composición, Números
+  racionales, Razonamiento inductivo, Ángulos en posición normal, Trabajo y energía y Proporcionalidad y semejanza,
+  todas con `calidad: 2`. En química, razonamiento matemático, verbal y trigonometría se abrió la segunda rama.
+  Resumen y decisiones para Gerson en `docs/etapa8/decisiones.md`; informes en `rutinas/auditoria/` y `rutinas/frio/`;
+  tarjetas en la mesa (ronda 14).
+- **Integración:** los bloques de archivos compartidos se copian por unidad con dos ayudas del scratchpad
+  (`bin/verblk.py` para `catalogo/pruebas/verificar.js`, `bin/avblk.py` para `nucleo/avance.js` y su prueba); si se
+  pierden, recrearlas: copiar desde el árbol principal solo el bloque de la unidad, comprobar con `node -e require`.
+  Cuando cierran varias unidades juntas, se apilan en un worktree y se corre una sola suite.
+- **Siguiente:**
+  1. Lo que dejó la etapa (`docs/etapa8/decisiones.md`, «Pendientes»): `trig-plano` con el rótulo que esquiva líneas,
+     `balanza` numerada solo con más de una, la letra sin serifa de la app, el resultado corto pegado al «=».
+  2. Etapa 9: la unidad siguiente de cada rama (álgebra: Binomio de Newton; aritmética: Potenciación y radicación;
+     física: Impulso y choques; geometría: Puntos notables; química: Reacciones y balance; RM: Arreglos numéricos;
+     verbal: Cohesión y coherencia; trigonometría: Reducción al primer cuadrante).
+
 ## Estado al 19 nov, cierre: Etapa 7 cerrada (ocho unidades con calidad 2)
 
 Mismo método que la Etapa 6 (`docs/metodo/unidad/`), con las lecciones 13 a 17 nuevas en `etapa-delegada.md`. Todos
