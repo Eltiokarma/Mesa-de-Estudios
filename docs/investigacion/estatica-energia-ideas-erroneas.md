@@ -329,3 +329,47 @@ Todos los demás son **hipótesis de diseño**, la cara numérica de un error do
 | TQ-IGUAL, TQ-RESTA, TQ-LARGO | Iguala distancias o fuerzas; suma la diferencia de pesos; usa el largo entero como brazo |
 | RG-SIN-PESO | Olvida el peso propio de la barra o del tablón (cercano a E2) |
 | RG-MITAD, RG-TODO, RG-OTRO, RG-PUNTA, RG-BRAZO, RG-NORMAL | Reparte por mitades; un apoyo carga todo; da el otro apoyo; pone el peso en la punta; mide el brazo desde la punta; da la normal del piso en vez del rozamiento |
+
+## Trabajo, energía y potencia (19 nov 2026): códigos de la unidad rehecha
+
+Códigos que usan `contenido/teoria/fisica/trabajo-y-energia.js` (Predice, «Ahora tú» y ejemplos) y la práctica
+`plantillas/fis-energia/`. W1, W14 y W15 tienen el respaldo de arriba (W15, parcial); N-MG y N-SUMA son los de Estática;
+DN-VMEDIA y DN-SIN-DOS, los de Dinámica (la velocidad media como aceleración y d = a · t² sin el 2). Todos los demás son
+**hipótesis de diseño**, la cara numérica de un error documentado (W3, W4, W5, W7, W9, W12, W13); se confirman con los
+datos del piloto. Propuesta: `docs/etapa8/propuesta-fisica.md`.
+
+| Código | Error |
+| --- | --- |
+| TR-PERP | Una fuerza perpendicular al camino trabaja F · d (W4: trabajo como esfuerzo) |
+| TR-SIGNO | El signo del trabajo al revés: lo que frena como positivo o lo que ayuda como negativo (W3) |
+| TR-RAPIDEZ, TR-NUM | El trabajo depende de la rapidez; el signo no se sabe sin los números |
+| TR-SIN-COS, TR-SENO, TR-POR-COS | Sin el coseno; con el seno; multiplicar por el coseno al despejar F |
+| TR-SIN-D, TR-SIN-G, TR-SIN-MU | Olvida la distancia, g o el coeficiente |
+| TR-CUERDA | Da el trabajo de la cuerda cuando se pide el del rozamiento |
+| TR-COLLARIN, TR-ANGULO-FIJO | En el collarín: usa lo que corre el collarín, o el ángulo del comienzo en todo el camino |
+| TR-RECT, TR-AREA-SIGNO | En la gráfica F–x: todo como rectángulo; suma sin signo el área bajo el eje |
+| TE-LINEAL | El doble de rapidez pide el doble de trabajo o de energía (W7) |
+| TE-IGUAL, TE-TIEMPO | El mismo carrito pide el mismo trabajo; el trabajo depende del tiempo (W15) |
+| TE-SIN-V0, TE-RESTA-V, TE-SIN-MEDIO | Olvida la energía del comienzo; resta rapideces antes de elevar; olvida el ½ |
+| TE-SIN-RAIZ, TE-SIN-DOS, TE-INVIERTE | Al despejar v: sin la raíz; sin el 2; la fracción al revés |
+| TE-MASA, TE-VMEDIA | La masa no se cancela; usa la rapidez media como final |
+| TE-SIN-ROCE, TE-SUMA-ROCE | Olvida el trabajo del rozamiento; lo suma en vez de restarlo |
+| EP-REF | La energía potencial se mide siempre desde el suelo; con otra referencia, cambia más (W12) |
+| EP-SIGNO, EP-CERO | Bajo la referencia, la energía sube al alejarse; o no cambia |
+| EP-LINEAL, EP-SIN-MEDIO, EP-FUERZA | ½ · k · x sin cuadrado; k · x² sin el ½; da la fuerza k · x como energía |
+| EP-CM, EP-SIN-G, EP-SUMA | La deformación en centímetros; sin g; suma la altura de la referencia |
+| EP-DIF, EP-FINAL, EP-LARGO | Al estirar de x₁ a x₂: ½ · k · (x₂ − x₁)²; solo la final; mide desde 0 y no desde el largo natural |
+| EP-F-K, EP-SIN-RAIZ, EP-INVIERTE, EP-RAIZ | Usa F como si fuera k; despejes de x sin raíz, al revés o con una raíz de más |
+| CE-CAMINO, CE-FORMA | La forma o el largo del camino cambian la rapidez abajo (W1, W9) |
+| CE-SIN-RAIZ, CE-GH, CE-SIN-V0, CE-SUMA-V | Sin raíz; v = g · h; olvida la rapidez que traía; suma rapideces |
+| CE-TIEMPO, CE-EQUILIBRIO | Da el tiempo de subida como altura; el estiramiento de equilibrio como el máximo |
+| CE-ROCE | Aplica la conservación aunque haya rozamiento (W14) |
+| RZ-NORMAL, RZ-NMG | La rampa más larga «empuja más» y por eso llega más rápido; en la rampa, la normal igual al peso |
+| RZ-CALOR | Da lo que se volvió calor como lo que llega |
+| RZ-LINEAL, RZ-UNO, RZ-PIERDE, RZ-TRAMO | Botes: resta el porcentaje del comienzo; un solo bote; lo que pierde; una pérdida por tramo |
+| RZ-UN-TRAMO, RZ-TODO, RZ-LARGO | Dos zonas: olvida la primera; aplica su μ a todo; da el largo de la rampa como altura |
+| PO-EFIC, PO-IGNORA, PO-SUMA, PO-PIERDE | Multiplica por la eficiencia; la ignora; suma lo perdido sobre lo útil; divide entre lo perdido |
+| PO-SIN-G, PO-MIN, PO-HORA, PO-FUERZA | Sin g; tiempo en minutos; divide entre 3600; da la fuerza como potencia (W15) |
+| PO-INVERSA, PO-VMEDIA | Fuerza entre rapidez; usa la rapidez media en P = F · v |
+| PO-SIN-ROCE, PO-SIN-PESO | En la cuesta: olvida el rozamiento o el peso a lo largo |
+| U-KMH | La rapidez en km/h en P = F · v (trampa de unidades) |

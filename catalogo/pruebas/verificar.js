@@ -974,6 +974,17 @@ const V = {
   'fis-30': d => { const r = motor('dinamica').ascensor({ m: d.m, a: d.a });
     return { correcta: r.N, errores: { 'AS-signo-por-el-viaje': r.errores.signoCambiado, 'N-igual-mg-ascensor': r.errores.normalIgualPeso, 'AS-solo-m-por-a': d.m * Math.abs(d.a) } }; },
 
+  // fis-31 y fis-32 (reserva, 19 nov, etapa 8 de física: «Trabajo, energía y potencia»; las formas ya tienen 10 pares). El
+  // motor de la escena dinamica da el rozamiento con la cuerda inclinada (piso, con su normal y sus errores); el de energia,
+  // la rapidez al pie de la rampa áspera (trabajos, con el trabajo del peso y el del rozamiento).
+  'fis-31': d => { const r = motor('dinamica').piso({ m: d.m, F: d.F, angulo: 37, mus: d.mu, muk: d.mu, v0: 1 });
+    if (!(r.Fx > r.fk)) throw new Error('fis-31: la cuerda no alcanza a arrastrarlo');
+    return { correcta: r.fk * d.d, errores: { 'N-MG-normal-igual-peso': d.mu * r.errores.normalIgualPeso * d.d, 'N-SUMA-suma-lo-vertical': d.mu * r.errores.normalSumaFy * d.d,
+      'TR-CUERDA-trabajo-de-la-soga': r.Fx * d.d } }; },
+  'fis-32': d => { const E = motor('energia'), r = E.trabajos({ m: 1, d: d.h / 0.6, angulo: 37, mu: d.mu, sentido: 'abajo', v0: 0 });
+    const sin = E.rapidez(d.h, 0, 0), nmg = Math.sqrt(2 * (E.G * d.h + r.WroceConNmg));
+    return { correcta: r.v, errores: { 'CE-ROCE-sin-rozamiento': sin, 'RZ-NMG-normal-igual-peso': nmg, 'CE-SIN-RAIZ': r.v2 } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },

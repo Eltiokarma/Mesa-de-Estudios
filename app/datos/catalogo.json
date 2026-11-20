@@ -109,7 +109,7 @@
        "areas-volumenes": "Áreas y volúmenes",
        "homogeneidad": "Análisis dimensional"
       },
-      "terminos": 32
+      "terminos": 31
      }
     },
     {
@@ -168,7 +168,7 @@
        "resultante": "Suma de vectores",
        "productos": "Productos"
       },
-      "terminos": 36
+      "terminos": 35
      }
     },
     {
@@ -432,7 +432,7 @@
        "torque-y-brazo": "Torque: fuerza por brazo",
        "cuerpo-rigido": "Equilibrio del cuerpo rígido"
       },
-      "terminos": 38
+      "terminos": 39
      }
     },
     {
@@ -484,7 +484,7 @@
        "ascensor-y-marcos": "Peso aparente en el ascensor",
        "centripeta-es-resultante": "Dinámica circular"
       },
-      "terminos": 46
+      "terminos": 47
      }
     },
     {
@@ -564,24 +564,26 @@
       "fisica.dinamica"
      ],
      "plantillas": [
+      "fis-energia",
       "energia",
       "energia-potencia"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/trabajo-y-energia.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-lienzo.js"
+       "/nucleo/kit/piezas/fis-estatica.js",
+       "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "trabajo-y-angulo": "Solo trabaja lo que acompaña",
-       "trabajo-energia-cinetica": "El trabajo neto se vuelve rapidez",
-       "energia-potencial": "Energía guardada en la posición",
-       "conservacion-energia": "La suma no cambia sin roce",
-       "potencia-y-eficiencia": "Potencia: trabajo por segundo"
+       "trabajo-y-angulo": "Trabajo de una fuerza",
+       "trabajo-energia-cinetica": "Trabajo neto y energía cinética",
+       "energia-potencial": "Energía potencial",
+       "conservacion-energia": "Conservación de la energía mecánica",
+       "energia-y-rozamiento": "Energía con rozamiento",
+       "potencia-y-eficiencia": "Potencia y eficiencia"
       },
-      "terminos": 31
+      "terminos": 52
      }
     },
     {
@@ -683,7 +685,7 @@
        "pendulo": "El péndulo no mira la masa",
        "energia-mas": "La energía se reparte, no cambia"
       },
-      "terminos": 36
+      "terminos": 34
      }
     },
     {
@@ -731,7 +733,7 @@
        "ondas-estacionarias": "Solo caben medias ondas",
        "intensidad-decibeles": "Los decibeles no se suman"
       },
-      "terminos": 32
+      "terminos": 31
      }
     },
     {
@@ -832,7 +834,7 @@
        "dilatacion": "Al calentarse, todo largo crece",
        "transferencia": "Tres caminos del calor"
       },
-      "terminos": 31
+      "terminos": 30
      }
     },
     {
@@ -937,7 +939,7 @@
        "serie-paralelo": "En serie, la misma carga",
        "energia-condensador": "Conectado o aislado cambia todo"
       },
-      "terminos": 27
+      "terminos": 26
      }
     },
     {
@@ -1096,7 +1098,7 @@
        "generador": "Alterna: pico y eficaz",
        "transformador": "Las vueltas fijan el voltaje"
       },
-      "terminos": 35
+      "terminos": 34
      }
     },
     {
@@ -1146,7 +1148,7 @@
        "espectro": "El espectro es una regla",
        "cambio-de-medio": "Al entrar, f se queda"
       },
-      "terminos": 28
+      "terminos": 27
      }
     },
     {
@@ -1198,7 +1200,7 @@
        "lente-delgada": "Lentes: todos llegan juntos",
        "fabricante": "Curvatura, índice y dioptrías"
       },
-      "terminos": 22
+      "terminos": 23
      }
     },
     {
@@ -9364,7 +9366,8 @@
     "/plantillas/energia/index.html",
     "/plantillas/energia/motor.js",
     "/plantillas/energia/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "energia-potencia": {
    "id": "energia-potencia",
@@ -9380,7 +9383,8 @@
    "archivos": [
     "/plantillas/energia-potencia/generador.js",
     "/plantillas/energia-potencia/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "enlace": {
    "id": "enlace",
@@ -9599,6 +9603,30 @@
    "archivos": [
     "/plantillas/fis-dinamica/generador.js",
     "/plantillas/fis-dinamica/papel.json"
+   ]
+  },
+  "fis-energia": {
+   "id": "fis-energia",
+   "titulo": "Trabajo, energía y potencia",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "fisica.trabajo-y-energia"
+   ],
+   "url": "#/practica/fis-energia",
+   "ideas": [
+    "trabajo-y-angulo",
+    "trabajo-energia-cinetica",
+    "energia-potencial",
+    "conservacion-energia",
+    "energia-y-rozamiento",
+    "potencia-y-eficiencia"
+   ],
+   "papel": "/plantillas/fis-energia/papel.json",
+   "archivos": [
+    "/plantillas/fis-energia/generador.js",
+    "/plantillas/fis-energia/papel.json"
    ]
   },
   "fis-estatica": {

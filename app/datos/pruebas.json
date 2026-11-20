@@ -1940,6 +1940,30 @@
     "AS-solo-m-por-a": {
      "respaldo": "hipotesis",
      "describe": "Da solo m · a, sin el peso"
+    },
+    "N-MG-normal-igual-peso": {
+     "respaldo": "hipotesis",
+     "describe": "Con una cuerda inclinada, toma la normal igual al peso"
+    },
+    "N-SUMA-suma-lo-vertical": {
+     "respaldo": "hipotesis",
+     "describe": "Suma lo vertical de la cuerda al peso en vez de restarlo"
+    },
+    "TR-CUERDA-trabajo-de-la-soga": {
+     "respaldo": "hipotesis",
+     "describe": "Da el trabajo de la cuerda cuando se pide el del rozamiento"
+    },
+    "CE-ROCE-sin-rozamiento": {
+     "respaldo": "hipotesis",
+     "describe": "Usa la conservación de la energía aunque haya rozamiento"
+    },
+    "RZ-NMG-normal-igual-peso": {
+     "respaldo": "hipotesis",
+     "describe": "En la rampa, toma la normal igual al peso y no m · g · cos θ"
+    },
+    "CE-SIN-RAIZ": {
+     "respaldo": "hipotesis",
+     "describe": "Da v² en vez de v: no saca la raíz"
     }
    },
    "pares": [

@@ -1,0 +1,334 @@
+{
+ "plantilla": "fis-energia",
+ "nota": "entrada es _datos del generador. respuesta: el valor de la alternativa correcta (J, m, m/s, W o sin unidad, μ_k); texto: lo que ve el alumno (coma decimal). Un caso por tipo, más tres al azar: las seis ideas de Trabajo, energía y potencia.",
+ "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad e8-fisica/casos.py), que no usa el generador, el núcleo ni plantillas/energia/motor.js: fracciones exactas con sen 37° = 3/5 y g = 10, y el balance de energía de la rampa áspera escrito a mano; el texto lleva su propio redondeo y su coma decimal.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "energia-y-rozamiento",
+    "tipo": "botes",
+    "nivel": 2,
+    "H": 2,
+    "p": 20,
+    "n": 2
+   },
+   "esperado": {
+    "respuesta": 1.28,
+    "texto": "1,28 m"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "trabajo-energia-cinetica",
+    "tipo": "frenadoMu",
+    "nivel": 3,
+    "v0": 6,
+    "d": 10
+   },
+   "esperado": {
+    "respuesta": 0.18,
+    "texto": "0,18"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "trabajo-y-angulo",
+    "tipo": "roce",
+    "nivel": 2,
+    "m": 15,
+    "mu": 0.1,
+    "d": 2
+   },
+   "esperado": {
+    "respuesta": 30.0,
+    "texto": "30 J"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "idea": "energia-potencial",
+    "tipo": "epg",
+    "nivel": 1,
+    "m": 2,
+    "h1": 2.4,
+    "h0": 0.5
+   },
+   "esperado": {
+    "respuesta": 38.0,
+    "texto": "38 J"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "energia-potencial",
+    "tipo": "estirar",
+    "nivel": 3,
+    "k": 400,
+    "L0": 15,
+    "a": 10,
+    "b": 25
+   },
+   "esperado": {
+    "respuesta": 10.5,
+    "texto": "10,5 J"
+   }
+  },
+  {
+   "semilla": 10,
+   "entrada": {
+    "idea": "potencia-y-eficiencia",
+    "tipo": "grua",
+    "nivel": 1,
+    "m": 40,
+    "h": 15,
+    "t": 2,
+    "min": true
+   },
+   "esperado": {
+    "respuesta": 50.0,
+    "texto": "50 W"
+   }
+  },
+  {
+   "semilla": 11,
+   "entrada": {
+    "idea": "trabajo-energia-cinetica",
+    "tipo": "empujon",
+    "nivel": 2,
+    "m": 5,
+    "F": 30,
+    "f": 10,
+    "d": 2
+   },
+   "esperado": {
+    "respuesta": 4.0,
+    "texto": "4 m/s"
+   }
+  },
+  {
+   "semilla": 12,
+   "entrada": {
+    "idea": "energia-y-rozamiento",
+    "tipo": "aspera",
+    "nivel": 3,
+    "h": 4.5,
+    "mu": 0.45
+   },
+   "esperado": {
+    "respuesta": 6.0,
+    "texto": "6 m/s"
+   }
+  },
+  {
+   "semilla": 14,
+   "entrada": {
+    "idea": "trabajo-energia-cinetica",
+    "tipo": "delta",
+    "nivel": 1,
+    "m": 40,
+    "v0": 1,
+    "v": 3
+   },
+   "esperado": {
+    "respuesta": 160.0,
+    "texto": "160 J"
+   }
+  },
+  {
+   "semilla": 15,
+   "entrada": {
+    "idea": "trabajo-y-angulo",
+    "tipo": "oblicua",
+    "nivel": 3,
+    "m": 12,
+    "F": 100,
+    "mu": 0.2,
+    "d": 4
+   },
+   "esperado": {
+    "respuesta": 48.0,
+    "texto": "48 J"
+   }
+  },
+  {
+   "semilla": 18,
+   "entrada": {
+    "idea": "energia-y-rozamiento",
+    "tipo": "calor",
+    "nivel": 1,
+    "m": 2,
+    "h": 1.5,
+    "Q": 12
+   },
+   "esperado": {
+    "respuesta": 18.0,
+    "texto": "18 J"
+   }
+  },
+  {
+   "semilla": 19,
+   "entrada": {
+    "idea": "conservacion-energia",
+    "tipo": "vertical",
+    "nivel": 3,
+    "m": 1,
+    "k": 200
+   },
+   "esperado": {
+    "respuesta": 0.1,
+    "texto": "0,1 m"
+   }
+  },
+  {
+   "semilla": 28,
+   "entrada": {
+    "idea": "conservacion-energia",
+    "tipo": "rampa",
+    "nivel": 1,
+    "h": 4.05
+   },
+   "esperado": {
+    "respuesta": 9.0,
+    "texto": "9 m/s"
+   }
+  },
+  {
+   "semilla": 32,
+   "entrada": {
+    "idea": "potencia-y-eficiencia",
+    "tipo": "consumida",
+    "nivel": 2,
+    "Pu": 1200,
+    "ef": 0.6
+   },
+   "esperado": {
+    "respuesta": 2000.0,
+    "texto": "2 000 W"
+   }
+  },
+  {
+   "semilla": 40,
+   "entrada": {
+    "idea": "conservacion-energia",
+    "tipo": "desnivel",
+    "nivel": 2,
+    "v0": 4,
+    "dh": 4.2
+   },
+   "esperado": {
+    "respuesta": 10.0,
+    "texto": "10 m/s"
+   }
+  },
+  {
+   "semilla": 41,
+   "entrada": {
+    "idea": "potencia-y-eficiencia",
+    "tipo": "tractor",
+    "nivel": 3,
+    "m": 1000,
+    "mu": 0.25,
+    "P": 36
+   },
+   "esperado": {
+    "respuesta": 4.5,
+    "texto": "4,5 m/s"
+   }
+  },
+  {
+   "semilla": 42,
+   "entrada": {
+    "idea": "trabajo-y-angulo",
+    "tipo": "inclinada",
+    "nivel": 1,
+    "F": 20,
+    "ang": 53,
+    "d": 2
+   },
+   "esperado": {
+    "respuesta": 24.0,
+    "texto": "24 J"
+   }
+  },
+  {
+   "semilla": 49,
+   "entrada": {
+    "idea": "energia-potencial",
+    "tipo": "epe",
+    "nivel": 2,
+    "k": 200,
+    "xc": 20,
+    "variante": "x"
+   },
+   "esperado": {
+    "respuesta": 20.0,
+    "texto": "20 cm"
+   }
+  },
+  {
+   "semilla": 54,
+   "entrada": {
+    "idea": "energia-potencial",
+    "tipo": "epe",
+    "nivel": 2,
+    "k": 200,
+    "xc": 5,
+    "variante": "E"
+   },
+   "esperado": {
+    "respuesta": 0.25,
+    "texto": "0,25 J"
+   }
+  },
+  {
+   "semilla": 2000,
+   "entrada": {
+    "idea": "energia-potencial",
+    "tipo": "estirar",
+    "nivel": 3,
+    "k": 200,
+    "L0": 15,
+    "a": 5,
+    "b": 25
+   },
+   "esperado": {
+    "respuesta": 6.0,
+    "texto": "6 J"
+   }
+  },
+  {
+   "semilla": 2001,
+   "entrada": {
+    "idea": "trabajo-y-angulo",
+    "tipo": "roce",
+    "nivel": 2,
+    "m": 15,
+    "mu": 0.2,
+    "d": 8
+   },
+   "esperado": {
+    "respuesta": 240.0,
+    "texto": "240 J"
+   }
+  },
+  {
+   "semilla": 2002,
+   "entrada": {
+    "idea": "conservacion-energia",
+    "tipo": "vertical",
+    "nivel": 3,
+    "m": 5,
+    "k": 250
+   },
+   "esperado": {
+    "respuesta": 0.4,
+    "texto": "0,4 m"
+   }
+  }
+ ]
+}

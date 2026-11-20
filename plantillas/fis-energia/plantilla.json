@@ -1,0 +1,21 @@
+{
+  "id": "fis-energia",
+  "titulo": "Trabajo, energía y potencia",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.trabajo-y-energia"
+  ],
+  "temas": [
+    "Trabajo de fuerzas constantes y variables",
+    "Teorema trabajo-energía cinética",
+    "Energía potencial gravitatoria y elástica",
+    "Conservación de la energía mecánica",
+    "Potencia y eficiencia"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

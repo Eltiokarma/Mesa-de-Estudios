@@ -171,7 +171,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["fisica.dinamica"],
-      "plantillas": ["energia", "energia-potencia"],
+      "plantillas": ["fis-energia", "energia", "energia-potencia"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
     {

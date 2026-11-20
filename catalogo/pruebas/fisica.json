@@ -386,6 +386,30 @@
     "AS-solo-m-por-a": {
       "respaldo": "hipotesis",
       "describe": "Da solo m · a, sin el peso"
+    },
+    "N-MG-normal-igual-peso": {
+      "respaldo": "hipotesis",
+      "describe": "Con una cuerda inclinada, toma la normal igual al peso"
+    },
+    "N-SUMA-suma-lo-vertical": {
+      "respaldo": "hipotesis",
+      "describe": "Suma lo vertical de la cuerda al peso en vez de restarlo"
+    },
+    "TR-CUERDA-trabajo-de-la-soga": {
+      "respaldo": "hipotesis",
+      "describe": "Da el trabajo de la cuerda cuando se pide el del rozamiento"
+    },
+    "CE-ROCE-sin-rozamiento": {
+      "respaldo": "hipotesis",
+      "describe": "Usa la conservación de la energía aunque haya rozamiento"
+    },
+    "RZ-NMG-normal-igual-peso": {
+      "respaldo": "hipotesis",
+      "describe": "En la rampa, toma la normal igual al peso y no m · g · cos θ"
+    },
+    "CE-SIN-RAIZ": {
+      "respaldo": "hipotesis",
+      "describe": "Da v² en vez de v: no saca la raíz"
     }
   },
   "pares": [
@@ -2447,6 +2471,140 @@
             "texto": "1040 N",
             "valor": 1040,
             "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-31",
+      "plantilla": "energia",
+      "unidad": "fisica.trabajo-y-energia",
+      "nombreUnidad": "Trabajo, energía y potencia",
+      "mide": "El trabajo del rozamiento con una cuerda inclinada: la normal es el peso menos lo que la cuerda levanta",
+      "A": {
+        "enunciado": "Un costal de 15 kg es arrastrado 5 m por un piso horizontal con una soga que jala con 50 N a 37° sobre la horizontal. Entre el costal y el piso, μk = 0,3. ¿Cuánta energía disipa el rozamiento? (g = 10 m/s²; sen 37° = 0,6; cos 37° = 0,8)",
+        "datos": {
+          "m": 15,
+          "F": 50,
+          "mu": 0.3,
+          "d": 5
+        },
+        "opciones": [
+          {
+            "texto": "225 J",
+            "valor": 225,
+            "error": "N-MG-normal-igual-peso"
+          },
+          {
+            "texto": "180 J",
+            "valor": 180,
+            "correcta": true
+          },
+          {
+            "texto": "200 J",
+            "valor": 200,
+            "error": "TR-CUERDA-trabajo-de-la-soga"
+          },
+          {
+            "texto": "270 J",
+            "valor": 270,
+            "error": "N-SUMA-suma-lo-vertical"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un baúl de 20 kg es arrastrado 5 m por un piso horizontal con una cuerda que jala con 100 N a 37° sobre la horizontal. Entre el baúl y el piso, μk = 0,25. ¿Cuánta energía disipa el rozamiento? (g = 10 m/s²; sen 37° = 0,6; cos 37° = 0,8)",
+        "datos": {
+          "m": 20,
+          "F": 100,
+          "mu": 0.25,
+          "d": 5
+        },
+        "opciones": [
+          {
+            "texto": "400 J",
+            "valor": 400,
+            "error": "TR-CUERDA-trabajo-de-la-soga"
+          },
+          {
+            "texto": "250 J",
+            "valor": 250,
+            "error": "N-MG-normal-igual-peso"
+          },
+          {
+            "texto": "325 J",
+            "valor": 325,
+            "error": "N-SUMA-suma-lo-vertical"
+          },
+          {
+            "texto": "175 J",
+            "valor": 175,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-32",
+      "plantilla": "energia",
+      "unidad": "fisica.trabajo-y-energia",
+      "nombreUnidad": "Trabajo, energía y potencia",
+      "mide": "Con rozamiento, la energía mecánica baja lo que vale el trabajo del rozamiento; en la rampa, la normal es m·g·cos θ",
+      "A": {
+        "enunciado": "Una caja baja desde el reposo por una rampa de 37° y 4 m de alto. Entre la caja y la rampa, μk = 0,15. ¿Con qué rapidez llega abajo? (g = 10 m/s²; sen 37° = 0,6; cos 37° = 0,8)",
+        "datos": {
+          "h": 4,
+          "mu": 0.15
+        },
+        "opciones": [
+          {
+            "texto": "8,9 m/s",
+            "valor": 8.944,
+            "error": "CE-ROCE-sin-rozamiento"
+          },
+          {
+            "texto": "7,7 m/s",
+            "valor": 7.746,
+            "error": "RZ-NMG-normal-igual-peso"
+          },
+          {
+            "texto": "8 m/s",
+            "valor": 8,
+            "correcta": true
+          },
+          {
+            "texto": "64 m/s",
+            "valor": 64,
+            "error": "CE-SIN-RAIZ"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un costal baja desde el reposo por una rampa de 37° y 2,25 m de alto. Entre el costal y la rampa, μk = 0,15. ¿Con qué rapidez llega abajo? (g = 10 m/s²; sen 37° = 0,6; cos 37° = 0,8)",
+        "datos": {
+          "h": 2.25,
+          "mu": 0.15
+        },
+        "opciones": [
+          {
+            "texto": "6 m/s",
+            "valor": 6,
+            "correcta": true
+          },
+          {
+            "texto": "36 m/s",
+            "valor": 36,
+            "error": "CE-SIN-RAIZ"
+          },
+          {
+            "texto": "6,7 m/s",
+            "valor": 6.708,
+            "error": "CE-ROCE-sin-rozamiento"
+          },
+          {
+            "texto": "5,8 m/s",
+            "valor": 5.809,
+            "error": "RZ-NMG-normal-igual-peso"
           }
         ]
       }

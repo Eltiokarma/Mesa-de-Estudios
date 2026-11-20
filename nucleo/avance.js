@@ -193,6 +193,11 @@
     { u: 'trigonometria.angulos-en-posicion-normal', p: 'prediccionPN', e: 'estudiadaPN',
       cambian: ['razones-coordenadas', 'cuadrantales', 'coterminales-negativos'],
       antes: ['razones-coordenadas', 'signos-cuadrante', 'cuadrantales', 'coterminales-negativos'] },
+    // Etapa 8 (19 nov): Trabajo, energía y potencia conservó sus cinco ids, los cinco con otra Predice, y sumó
+    // energia-y-rozamiento (docs/etapa8/propuesta-fisica.md, decisión 9).
+    { u: 'fisica.trabajo-y-energia', p: 'prediccionTE', e: 'estudiadaTE',
+      cambian: ['trabajo-y-angulo', 'trabajo-energia-cinetica', 'energia-potencial', 'conservacion-energia', 'potencia-y-eficiencia'],
+      antes: ['trabajo-y-angulo', 'trabajo-energia-cinetica', 'energia-potencial', 'conservacion-energia', 'potencia-y-eficiencia'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

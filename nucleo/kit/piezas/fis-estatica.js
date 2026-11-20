@@ -151,6 +151,89 @@
     return { s, b, figs };
   }
 
+  // ---- Bloque de Energía (19 nov 2026, etapa 8; docs/etapa8/propuesta-fisica.md, decisión 10) ----
+  //   maleta   { x: centro, y: piso, w, h, asa: grados sobre la horizontal, largo, texto }   la maleta de rueditas con su asa
+  //   barra-e  { x: centro, y: base, w, h: alto en px, color, vacia, abajo }  una barra de energía (vacia: solo el borde
+  //            punteado; abajo: cuelga bajo la base, para un trabajo negativo)
+  //   tobogan  { de: [x, y] arriba, a: [x, y] abajo, forma: 'recta' | 'curva' }   el tobogán con su escalera
+  //   sentado  { x, y: donde se apoya, giro, alto }                       un niño sentado (el que baja por el tobogán)
+  //   maceta   { x, y: base, w }                                           una maceta con su planta
+  //   edificio { x0, x1, y: piso, pisos, hp: alto de un piso }             la fachada, con una losa por piso a la derecha
+  //   motor    { x, y: base, w, h }                                        el motor del montacargas, con su tambor
+  // enTobogan(o, u): el punto del tobogán a la fracción u del camino (0 arriba, 1 abajo) y su pendiente, en grados.
+  function enTobogan(o, u) {
+    const [x0, y0] = o.de, [x1, y1] = o.a, k = lim(u, 0, 1), curva = o.forma === 'curva';
+    const fy = s => (curva ? 1 - (1 - s) * (1 - s) : s), dfy = s => (curva ? 2 * (1 - s) : 1);
+    const x = x0 + (x1 - x0) * k, y = y0 + (y1 - y0) * fy(k);
+    return { x, y, ang: Math.atan2((y1 - y0) * dfy(k), x1 - x0) * 180 / Math.PI };
+  }
+  function objetoEnergia(o, lineas) {
+    let s = '', b = null;
+    const figs = [], t = o.tipo;
+    if (t === 'maleta') {
+      const w = o.w || 40, h = o.h || 54, x0 = o.x - w / 2, y0 = o.y - 6 - h, a = o.asa || 0, L = o.largo || 46;
+      s += `<rect x="${n(x0)}" y="${n(y0)}" width="${n(w)}" height="${n(h)}" rx="6" fill="${ink}" fill-opacity="0.1" stroke="${ink}" stroke-width="2"/>`
+        + raya(x0 + 6, y0 + h * 0.3, x0 + w - 6, y0 + h * 0.3, 1.2) + raya(x0 + 6, y0 + h * 0.7, x0 + w - 6, y0 + h * 0.7, 1.2);
+      for (const xr of [x0 + 7, x0 + w - 7]) s += `<circle cx="${n(xr)}" cy="${n(o.y - 3)}" r="3" fill="var(--card)" stroke="${ink}" stroke-width="1.6"/>`;
+      // el asa sale de la esquina de arriba, del lado hacia donde jala (adelante hasta 90°; atrás si pasa de 90°)
+      const ax = a > 90 ? x0 : x0 + w, ay = y0 + 6, bx = ax + L * Math.cos(rad(a)), by = ay - L * Math.sin(rad(a));
+      s += raya(ax, ay, bx, by, 3) + raya(bx - 4 * Math.sin(rad(a)), by - 4 * Math.cos(rad(a)), bx + 4 * Math.sin(rad(a)), by + 4 * Math.cos(rad(a)), 4);
+      lineas.push([ax, ay, bx, by]);
+      if (o.texto) s += T.rotulo(o.x, y0 + h / 2 + 5, o.texto, { ancla: 'middle', tam: 12, peso: 700, min: -1e4, max: 1e4 });
+      b = cajaDe('maleta', Math.min(x0, bx - 5) - 1, Math.min(y0, by - 5) - 1, Math.max(x0 + w, bx + 5) + 1, o.y + 1);
+    } else if (t === 'barra-e') {
+      // abajo: la barra cuelga bajo la base (un trabajo negativo)
+      const w = o.w || 34, h = Math.max(0, o.h || 0), x0 = o.x - w / 2, c = col(o.color), yt = o.abajo ? o.y : o.y - h;
+      if (o.vacia) s += `<rect x="${n(x0)}" y="${n(yt)}" width="${n(w)}" height="${n(h)}" fill="none" stroke="${c}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+      else if (h > 0.4) s += `<rect x="${n(x0)}" y="${n(yt)}" width="${n(w)}" height="${n(h)}" fill="${c}" fill-opacity="0.32" stroke="${c}" stroke-width="2"/>`;
+      s += raya(x0 - 3, o.y, x0 + w + 3, o.y, 1.5);
+      b = cajaDe('barra-e', x0 - 3, yt - 1, x0 + w + 3, yt + h + 1);
+      figs.push(cajaDe('barra', x0, yt, x0 + w, yt + h, true));
+    } else if (t === 'tobogan') {
+      const [x0, y0] = o.de, [x1, y1] = o.a, k = 16;
+      let d = '';
+      for (let i = 0; i <= k; i++) { const p = enTobogan(o, i / k); d += `${i ? 'L' : 'M'}${n(p.x)} ${n(p.y)}`; if (i) { const q = enTobogan(o, (i - 1) / k); lineas.push([q.x, q.y, p.x, p.y]); } }
+      s += `<path d="${d}L${n(x1 + 14)} ${n(y1)}" fill="none" stroke="${ink}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+      // la escalera, del borde de arriba al piso (y1), y un poste a mitad de camino
+      s += raya(x0 - 4, y0, x0 - 16, y1, 2) + raya(x0 + 6, y0, x0 - 6, y1, 2);
+      for (let i = 1; i < 6; i++) { const u = i / 6, yy = y0 + (y1 - y0) * u; s += raya(x0 - 4 - 12 * u, yy, x0 + 6 - 12 * u, yy, 1.3); }
+      const m = enTobogan(o, 0.45);
+      s += raya(m.x, m.y + 3, m.x, y1, 1.6);
+      b = cajaDe('tobogan', x0 - 17, y0 - 3, x1 + 15, y1 + 2);
+    } else if (t === 'sentado') {
+      const H = o.alto || 30, x = o.x, y = o.y, cab = H * 0.17;
+      let g = `<circle cx="${n(x)}" cy="${n(y - H + cab)}" r="${n(cab)}" fill="var(--card)" stroke="${ink}" stroke-width="2"/>`
+        + raya(x, y - H + 2 * cab, x, y - 3, 2.5) + raya(x, y - 3, x + H * 0.45, y - 3, 2.5) + raya(x + H * 0.45, y - 3, x + H * 0.62, y + 2, 2.5)
+        + raya(x, y - H * 0.55, x + H * 0.35, y - H * 0.4, 2.2);
+      s += o.giro ? `<g transform="rotate(${n(-o.giro)} ${n(x)} ${n(y)})">${g}</g>` : g;
+      const R = H + 2;
+      b = cajaDe('sentado', x - R, y - R, x + R, y + R * 0.5);
+      figs.push(cajaDe('cabeza', x - R, y - R, x + R, y + 2, true));
+    } else if (t === 'maceta') {
+      const w = o.w || 26, h = w * 0.8, x0 = o.x - w / 2, y0 = o.y - h;
+      s += `<path d="M${n(x0)} ${n(y0)}H${n(x0 + w)}L${n(x0 + w * 0.82)} ${n(o.y)}H${n(x0 + w * 0.18)}Z" fill="${ink}" fill-opacity="0.15" stroke="${ink}" stroke-width="2" stroke-linejoin="round"/>`
+        + `<path d="M${n(o.x)} ${n(y0)}Q${n(o.x - w * 0.7)} ${n(y0 - h * 0.4)} ${n(o.x - w * 0.5)} ${n(y0 - h)}M${n(o.x)} ${n(y0)}Q${n(o.x + w * 0.6)} ${n(y0 - h * 0.5)} ${n(o.x + w * 0.45)} ${n(y0 - h * 1.1)}M${n(o.x)} ${n(y0)}V${n(y0 - h * 1.2)}" fill="none" stroke="${ink}" stroke-width="1.8" stroke-linecap="round"/>`;
+      b = cajaDe('maceta', x0 - w * 0.25, y0 - h * 1.25, x0 + w * 1.2, o.y + 1);
+    } else if (t === 'edificio') {
+      const x0 = o.x0, x1 = o.x1, y = o.y, k = o.pisos || 3, hp = o.hp || 40, top = y - k * hp;
+      s += `<rect x="${n(x0)}" y="${n(top)}" width="${n(x1 - x0)}" height="${n(k * hp)}" fill="${ink}" fill-opacity="0.05" stroke="${ink}" stroke-width="2"/>`;
+      for (let i = 0; i < k; i++) {
+        const yb = y - i * hp;
+        if (i) s += raya(x0, yb, x1 + 18, yb, 2.5) + raya(x1 + 18, yb, x1 + 18, yb - 10, 1.5);
+        s += `<rect x="${n(x0 + 10)}" y="${n(yb - hp + 9)}" width="${n(Math.max(8, (x1 - x0) * 0.32))}" height="${n(hp - 18)}" fill="none" stroke="${ink}" stroke-width="1.2" stroke-opacity="0.7"/>`;
+      }
+      s += raya(x0 - 4, top, x1 + 4, top, 3);
+      b = cajaDe('edificio', x0 - 4, top - 2, x1 + 19, y + 1);
+    } else if (t === 'motor') {
+      const w = o.w || 46, h = o.h || 30, x0 = o.x - w / 2, y0 = o.y - h;
+      s += `<rect x="${n(x0)}" y="${n(y0)}" width="${n(w)}" height="${n(h)}" rx="4" fill="${ink}" fill-opacity="0.12" stroke="${ink}" stroke-width="2"/>`
+        + `<circle cx="${n(o.x + w * 0.18)}" cy="${n(y0 + h / 2)}" r="${n(h * 0.32)}" fill="var(--card)" stroke="${ink}" stroke-width="2"/>`
+        + raya(x0 + 6, y0 + 7, x0 + w * 0.42, y0 + 7, 1.4) + raya(x0 + 6, y0 + 13, x0 + w * 0.42, y0 + 13, 1.4);
+      b = cajaDe('motor', x0 - 1, y0 - 1, x0 + w + 1, o.y + 1);
+    }
+    return { s, b, figs };
+  }
+
   // ---- los objetos ----
   function objeto(o, lineas) {
     let s = '', b = null, figs = [];
@@ -281,6 +364,10 @@
     } else if (t === 'carrito' || t === 'ascensor' || t === 'auto' || t === 'pista' || t === 'disco' || t === 'pelota') {
       // Bloque de Dinámica (19 nov 2026, etapa 7; docs/etapa7/propuesta-fisica.md, decisión 10): objetos que se mueven.
       const r = objetoDinamica(o, lineas);
+      s += r.s; b = r.b; figs.push(...r.figs);
+    } else if (['maleta', 'barra-e', 'tobogan', 'sentado', 'maceta', 'edificio', 'motor'].includes(t)) {
+      // Bloque de Energía (19 nov 2026, etapa 8; docs/etapa8/propuesta-fisica.md, decisión 10).
+      const r = objetoEnergia(o, lineas);
       s += r.s; b = r.b; figs.push(...r.figs);
     }
     // Un objeto con fig: true (la caja de un DCL) no deja que un rótulo lo pise.
@@ -421,11 +508,13 @@
     const NOM = { caja: 'una caja', costal: 'un costal', ropero: 'un ropero', letrero: 'un letrero colgado', bolsa: 'una bolsa', balde: 'un balde',
       balanza: 'una balanza de piso', persona: 'una persona', resorte: 'un resorte', polea: 'una polea', rampa: 'una rampa', barra: 'una barra',
       caballete: 'un caballete', escalera: 'una escalera', escoba: 'una escoba', llave: 'una llave de tuercas', gancho: 'una balanza de resorte',
-      carrito: 'un carrito', ascensor: 'un ascensor', auto: 'un auto', pista: 'un tramo de pista curva', disco: 'una plataforma que gira', pelota: 'una pelota' };
+      carrito: 'un carrito', ascensor: 'un ascensor', auto: 'un auto', pista: 'un tramo de pista curva', disco: 'una plataforma que gira', pelota: 'una pelota',
+      maleta: 'una maleta de rueditas', 'barra-e': 'barras de energía', tobogan: 'un tobogán', sentado: 'un niño sentado', maceta: 'una maceta',
+      edificio: 'un edificio', motor: 'un motor' };
     const cs = [...new Set((d.objetos || []).map(o => NOM[o.tipo]).filter(Boolean))];
     const k = (d.flechas || []).length;
     return `Figura con ${cs.join(', ') || 'un cuerpo'}${k ? ` y ${k} ${k === 1 ? 'fuerza dibujada' : 'fuerzas dibujadas'}` : ''}.`;
   }
 
-  return { id: 'fis-estatica', dibujar, alt, geometria, constantes: { W, M } };
+  return { id: 'fis-estatica', dibujar, alt, geometria, enTobogan, constantes: { W, M } };
 });
