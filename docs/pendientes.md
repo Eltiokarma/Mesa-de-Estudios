@@ -12,9 +12,9 @@ capturas y le manda notas al agente mientras sigue escribiendo.
   todas con `calidad: 2`. En química, razonamiento matemático, verbal y trigonometría se abrió la segunda rama.
   Resumen y decisiones para Gerson en `docs/etapa8/decisiones.md`; informes en `rutinas/auditoria/` y `rutinas/frio/`;
   tarjetas en la mesa (ronda 14).
-- **Integración:** los bloques de archivos compartidos se copian por unidad con dos ayudas del scratchpad
-  (`bin/verblk.py` para `catalogo/pruebas/verificar.js`, `bin/avblk.py` para `nucleo/avance.js` y su prueba); si se
-  pierden, recrearlas: copiar desde el árbol principal solo el bloque de la unidad, comprobar con `node -e require`.
+- **Integración:** los bloques de archivos compartidos se copian por unidad con las ayudas de
+  `herramientas/integracion/` (`verblk.py` para `catalogo/pruebas/verificar.js`, `avblk.py` para `nucleo/avance.js` y
+  su prueba; ver su LEEME), y se comprueba con `node -e require`.
   Cuando cierran varias unidades juntas, se apilan en un worktree y se corre una sola suite.
 - **Siguiente:**
   1. Lo que dejó la etapa (`docs/etapa8/decisiones.md`, «Pendientes»): `trig-plano` con el rótulo que esquiva líneas,
