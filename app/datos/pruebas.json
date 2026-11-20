@@ -4017,6 +4017,30 @@
     "RMP30-sin-pareja": {
      "respaldo": "hipotesis",
      "describe": "Deja fuera del peor caso lo que no tiene pareja"
+    },
+    "RMP86-lineal": {
+     "respaldo": "hipotesis",
+     "describe": "Supone que la figura crece siempre lo mismo y suma lo del primer paso"
+    },
+    "RMP166-lugar-al-cuadrado": {
+     "respaldo": "hipotesis",
+     "describe": "Escribe el caso como el lugar por sí mismo (n × n), sin la fila o columna de más"
+    },
+    "RMP161-figura-siguiente": {
+     "respaldo": "hipotesis",
+     "describe": "Corre el lugar en uno: da la figura siguiente"
+    },
+    "RMP171-cociente": {
+     "respaldo": "hipotesis",
+     "describe": "En un ciclo, mira cuántos ciclos completos caben (el cociente) y no lo que sobra"
+    },
+    "RMP27-una-de-mas": {
+     "respaldo": "hipotesis",
+     "describe": "En un ciclo, cuenta una de más después del residuo"
+    },
+    "RMP27-ultima": {
+     "respaldo": "hipotesis",
+     "describe": "En un ciclo, toma la última del ciclo, como si no sobrara nada"
     }
    },
    "pares": [

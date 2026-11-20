@@ -13,5 +13,6 @@
   "motor": "motor.js",
   "casos": "casos.json",
   "pruebas": "motor.test.js",
-  "papel": "papel.json"
+  "papel": "papel.json",
+  "rehacer": ["razonamiento-matematico.razonamiento-inductivo"]
 }

@@ -278,3 +278,29 @@ rm-25 de la reserva de la prueba del curso usan RM6-favorable, RMP30-sin-pareja,
 | RMP153 | Pedir lo pedido en **cada** casillero (3 por mes: 36 alumnos) y no en alguno | RMT-CER-5 |
 | RMP154 | Probar cada llave en todos los candados, también en los ya abiertos (10 × 10) | RMT-CER-7 |
 | RMP155 | Usar «casilleros + 1» con cualquier meta (13 alumnos para que 3 cumplan el mismo mes) | RMT-CER-6; matriz del curso («el peor caso más uno es un argumento, no una fórmula») |
+
+## Razonamiento inductivo (teoría de la unidad y `rm-induccion` por idea, etapa 8, 19 nov 2026)
+
+Códigos nuevos de `contenido/teoria/razonamiento-matematico/razonamiento-inductivo.js` y de la práctica `rm-induccion`
+(propuesta: `docs/etapa8/propuesta-razonamiento-matematico.md`, §7). Todos son **hipótesis**: salen de las trampas de los
+solucionarios de San Marcos (26 preguntas de la unidad en `docs/datos/admision-unmsm.csv`) y de la teoría vieja, sin dato
+de alumnos. Reemplazan a los RMT-IND-1 a 11 de la teoría vieja (1 → RMP160; 2 → RMP161; 3 → RMP162; 4 → RMP163; 5 → RMP170;
+6 → RMP164; 7 → RMP163 y RMP169; 8 → RMP167; 9 → RMP168; 10 → RMP169; 11 → RMP166). Reutilizan RM2 (objeto entero, parcial),
+RMP1, RMP26, RMP27 y RMP86. En la práctica van con un sufijo (RMP161-figura-siguiente, RMP27-una-de-mas…). Los ítems rm-26 y
+rm-27 de la reserva de la prueba del curso usan RMP86-lineal, RMP166-lugar-al-cuadrado, RMP161-figura-siguiente,
+RMP171-cociente y RMP27-una-de-mas.
+
+| Código | Error | Trampa de origen |
+| --- | --- | --- |
+| RMP160 | Contar solo lo que agrega cada paso, sin lo que trae la primera figura (o contar los pasos y no las figuras) | RMT-IND-1 de la teoría vieja |
+| RMP161 | Correr el lugar: dar la figura, la fila o el caso siguiente o el anterior | RMT-IND-2; rm-b («un término más o menos») |
+| RMP162 | Tomar un patrón visto en unos casos como regla probada (o un caso que cumple como contraejemplo) | RMT-IND-3; matriz del curso («tomar una regularidad observada como demostración») |
+| RMP163 | Seguir sumando lo que creció en el último paso | RMT-IND-4 |
+| RMP164 | Usar otra regla que también encaja con los primeros términos, no la que fija el enunciado | RMT-IND-6; matriz («una sucesión finita admite muchas continuaciones») |
+| RMP165 | Confundir «no está probada» con «es falsa» | nueva (teoría, idea 2) |
+| RMP166 | Escribir mal el caso con su lugar: n × n en vez de n × (n + 1), o la mitad del total | RMT-IND-11; UNMSM 2026-II p. 26 («contar solo los cuadrados unitarios») |
+| RMP167 | Olvidar lo que se resta o se divide al final de la cuenta del caso (el − 1 del último impar, el ÷ 2 del triángulo) | RMT-IND-8 |
+| RMP168 | Empezar la fila donde no empieza (sumar los primeros impares, tomar el impar número n como el último de la fila n) | RMT-IND-9; UNMSM 2021 p. 17 («confundir el número de semana con el número de sumandos») |
+| RMP169 | Quedarse con el primer caso: creer que siempre da lo mismo, o tomar el primero del ciclo | RMT-IND-10 |
+| RMP170 | Contar una parte de las cifras del resultado (los nueves, sin el 8 y el 1), o contar las cifras en vez de sumarlas | nueva (cuentas largas) |
+| RMP171 | Mirar el cociente y no el residuo al buscar un lugar en un ciclo | UNMSM 2024-II p. 25 («equivocar el residuo y tomar el bloque completo»), junto a RMP27 |

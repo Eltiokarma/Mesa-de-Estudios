@@ -632,3 +632,19 @@ test('Etapa 8, Números racionales rehecha: predicciones viejas sin huella borra
   A.migrar(nuevo);
   assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
 });
+
+// 19 nov (etapa 8): Razonamiento inductivo, rehecha con dos ids y sus predicciones de siempre, una idea menos y cuatro nuevas.
+test('Razonamiento inductivo rehecha (etapa 8): las predicciones se quedan y quien terminó las tres de antes conserva «Ya la estudié»', () => {
+  const U = 'razonamiento-matematico.razonamiento-inductivo';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, marcadas: {}, teoria: { [U]: { ideas: {
+    'figuras-que-crecen': { hecha: true, prediccion: 'c' }, 'tres-casos-no-prueban': { hecha: true, prediccion: 'doble' }, 'impares-y-cuadrados': { hecha: true, prediccion: 'c' } } } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionRI, 1); assert.equal(est.estudiadaRI, 1);
+  assert.equal(est.teoria[U].ideas['figuras-que-crecen'].prediccion, 'c', 'la misma pregunta y los mismos ids: se queda');
+  assert.equal(est.teoria[U].ideas['tres-casos-no-prueban'].prediccion, 'doble');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las tres de antes: conserva «Ya la estudié»');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'figuras-que-crecen': { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las tres: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});

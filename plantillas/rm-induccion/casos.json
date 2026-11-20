@@ -1,0 +1,292 @@
+{
+  "plantilla": "rm-induccion",
+  "tolerancia": 0,
+  "nota": "Un caso por tipo (18), con la idea de la teoría a la que sirve. La respuesta es un número; en contraejemplo y primer-fallo, la clave «nX» (n = X); en pulsera, la letra del color (R, V, N, B, D, C).",
+  "verificacion": "Etapa 8 (19 nov 2026): los 18 casos se resolvieron aparte desde su entrada, sin el generador (scratchpad e8-rm/casos.py): fósforos como lados de una cuadrícula o de una malla de triángulos, chapitas contadas casilla por casilla, filas escritas número por número, cuentas con los enteros de Python y listas escritas término por término. 18/18 coinciden.",
+  "casos": [
+    {
+      "semilla": "caso-3",
+      "opciones": {
+        "idea": "figuras-que-crecen"
+      },
+      "entrada": {
+        "idea": "figuras-que-crecen",
+        "tipo": "fosforos",
+        "forma": "doble",
+        "k": 43
+      },
+      "esperado": {
+        "respuesta": 217
+      }
+    },
+    {
+      "semilla": "caso-4",
+      "opciones": {
+        "idea": "figuras-que-crecen"
+      },
+      "entrada": {
+        "idea": "figuras-que-crecen",
+        "tipo": "fosforos-inverso",
+        "forma": "doble",
+        "T": 307
+      },
+      "esperado": {
+        "respuesta": 61
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "figuras-que-crecen"
+      },
+      "entrada": {
+        "idea": "figuras-que-crecen",
+        "tipo": "fosforos-diferencia",
+        "forma": "triangulo",
+        "a": 14,
+        "b": 25
+      },
+      "esperado": {
+        "respuesta": 22
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "tres-casos-no-prueban"
+      },
+      "entrada": {
+        "idea": "tres-casos-no-prueban",
+        "tipo": "contraejemplo",
+        "p": 11,
+        "casos": [
+          2,
+          6,
+          7,
+          8
+        ]
+      },
+      "esperado": {
+        "respuesta": "n10"
+      }
+    },
+    {
+      "semilla": "caso-4",
+      "opciones": {
+        "idea": "tres-casos-no-prueban"
+      },
+      "entrada": {
+        "idea": "tres-casos-no-prueban",
+        "tipo": "primer-fallo",
+        "forma": "seis",
+        "p": -1
+      },
+      "esperado": {
+        "respuesta": "n6"
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "tres-casos-no-prueban"
+      },
+      "entrada": {
+        "idea": "tres-casos-no-prueban",
+        "tipo": "dos-reglas",
+        "a": 4,
+        "regla": "doble"
+      },
+      "esperado": {
+        "respuesta": 32
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "cada-caso-con-su-lugar"
+      },
+      "entrada": {
+        "idea": "cada-caso-con-su-lugar",
+        "tipo": "rectangulo",
+        "forma": "n(n+1)",
+        "k": 16
+      },
+      "esperado": {
+        "respuesta": 272
+      }
+    },
+    {
+      "semilla": "caso-3",
+      "opciones": {
+        "idea": "cada-caso-con-su-lugar"
+      },
+      "entrada": {
+        "idea": "cada-caso-con-su-lugar",
+        "tipo": "rectangulo-inverso",
+        "forma": "n(n+2)",
+        "T": 399
+      },
+      "esperado": {
+        "respuesta": 19
+      }
+    },
+    {
+      "semilla": "caso-8",
+      "opciones": {
+        "idea": "cada-caso-con-su-lugar"
+      },
+      "entrada": {
+        "idea": "cada-caso-con-su-lugar",
+        "tipo": "triangular",
+        "k": 24
+      },
+      "esperado": {
+        "respuesta": 300
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "arreglo-triangular"
+      },
+      "entrada": {
+        "idea": "arreglo-triangular",
+        "tipo": "fila-impares",
+        "k": 12
+      },
+      "esperado": {
+        "respuesta": 1728
+      }
+    },
+    {
+      "semilla": "caso-4",
+      "opciones": {
+        "idea": "arreglo-triangular"
+      },
+      "entrada": {
+        "idea": "arreglo-triangular",
+        "tipo": "ultimo-impares",
+        "k": 27
+      },
+      "esperado": {
+        "respuesta": 755
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "arreglo-triangular"
+      },
+      "entrada": {
+        "idea": "arreglo-triangular",
+        "tipo": "fila-pascal",
+        "k": 10
+      },
+      "esperado": {
+        "respuesta": 512
+      }
+    },
+    {
+      "semilla": "caso-2",
+      "opciones": {
+        "idea": "cuenta-larga"
+      },
+      "entrada": {
+        "idea": "cuenta-larga",
+        "tipo": "cifras-cuadrado",
+        "d": 3,
+        "n": 22
+      },
+      "esperado": {
+        "respuesta": 198
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "cuenta-larga"
+      },
+      "entrada": {
+        "idea": "cuenta-larga",
+        "tipo": "cifras-cantidad",
+        "n": 22
+      },
+      "esperado": {
+        "respuesta": 44
+      }
+    },
+    {
+      "semilla": "caso-3",
+      "opciones": {
+        "idea": "cuenta-larga"
+      },
+      "entrada": {
+        "idea": "cuenta-larga",
+        "tipo": "unos-cuadrado",
+        "n": 9
+      },
+      "esperado": {
+        "respuesta": 81
+      }
+    },
+    {
+      "semilla": "caso-5",
+      "opciones": {
+        "idea": "lo-que-se-repite"
+      },
+      "entrada": {
+        "idea": "lo-que-se-repite",
+        "tipo": "pulsera",
+        "ciclo": [
+          "B",
+          "D",
+          "N",
+          "C",
+          "R"
+        ],
+        "k": 267
+      },
+      "esperado": {
+        "respuesta": "D"
+      }
+    },
+    {
+      "semilla": "caso-1",
+      "opciones": {
+        "idea": "lo-que-se-repite"
+      },
+      "entrada": {
+        "idea": "lo-que-se-repite",
+        "tipo": "bloque",
+        "bloque": [
+          6,
+          5,
+          7,
+          1,
+          8
+        ],
+        "pre": [],
+        "k": 189
+      },
+      "esperado": {
+        "respuesta": 1
+      }
+    },
+    {
+      "semilla": "caso-4",
+      "opciones": {
+        "idea": "lo-que-se-repite"
+      },
+      "entrada": {
+        "idea": "lo-que-se-repite",
+        "tipo": "unidades",
+        "a": 8,
+        "b": 7,
+        "N": 138
+      },
+      "esperado": {
+        "respuesta": 4
+      }
+    }
+  ]
+}

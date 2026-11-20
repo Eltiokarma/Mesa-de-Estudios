@@ -1,0 +1,95 @@
+{
+  "titulo": "De los casos chicos a la regla: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El número 99…9 tiene 26 cifras, todas 9, y se multiplica por sí mismo. ¿Cuántas cifras tiene el resultado? Datos: La calculadora del salón muestra hasta 10 cifras. Alternativas: A) 26 cifras   B) 53 cifras   C) 51 cifras   D) 676 cifras   E) 52 cifras",
+      "respuesta": "E) 52 cifras",
+      "pasos": [
+        "81, 9801 y 998 001 tienen 2, 4 y 6 cifras: el doble de los nueves.",
+        "2 × 26 = 52.",
+        "Respuesta: 52 cifras."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En una pirámide de latas, las latas llevan los impares en orden, fila por fila: 1; 3, 5; 7, 9, 11… ¿Cuánto suman las latas de la fila 13? Datos: Los números son los impares en orden: 1, 3, 5, 7…. La fila n tiene n números; la fila 1 es la de arriba. n³ = n × n × n. Alternativas: A) 2 744   B) 169   C) 85   D) 1 728   E) 2 197",
+      "respuesta": "E) 2 197",
+      "pasos": [
+        "Las filas 1, 2 y 3 suman 1, 8 y 27: cada una, su número de fila al cubo.",
+        "13 × 13 × 13 = 2 197.",
+        "Respuesta: 2 197."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "El número 99…9 tiene 17 cifras, todas 9, y se multiplica por sí mismo. ¿Cuántas cifras tiene el resultado? Datos: La calculadora del salón muestra hasta 10 cifras. Alternativas: A) 289 cifras   B) 17 cifras   C) 35 cifras   D) 33 cifras   E) 34 cifras",
+      "respuesta": "E) 34 cifras",
+      "pasos": [
+        "81, 9801 y 998 001 tienen 2, 4 y 6 cifras: el doble de los nueves.",
+        "2 × 17 = 34.",
+        "Respuesta: 34 cifras."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El número 33…3 tiene 13 cifras, todas 3, y se multiplica por sí mismo: 33…3 × 33…3. ¿Cuánto suman las cifras del resultado? Datos: Suma de cifras: se suman los dígitos; la de 2026 es 2 + 0 + 2 + 6 = 10. La calculadora del salón muestra hasta 10 cifras. Alternativas: A) 26   B) 126   C) 117   D) 9   E) 108",
+      "respuesta": "C) 117",
+      "pasos": [
+        "Casos chicos: 3 × 3, 33 × 33 y 333 × 333 dan resultados cuyas cifras suman 9, 18 y 27.",
+        "El resultado tiene unos, un 0, ochos y un 9: cada 1 con un 8 suma 9, como el 0 con el 9.",
+        "Son 9 por cada cifra: 9 × 13 = 117.",
+        "Respuesta: 117."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Se afirma: «n × n + n + 11 es primo para todo n desde 0». ¿Cuál de estos casos es un contraejemplo? Datos: Un número primo tiene solo dos divisores: 1 y él mismo. Contraejemplo: un caso que no cumple lo que se afirma. Alternativas: A) n = 1   B) n = 10   C) n = 5   D) n = 6   E) n = 4",
+      "respuesta": "B) n = 10",
+      "pasos": [
+        "Con n = 10 sale 121 = 11 × 11, que no es primo: no cumple.",
+        "Los demás casos dan números primos: cumplen.",
+        "Respuesta: n = 10."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una sucesión empieza 9, 8. Desde el tercero, cada término es la cifra de las unidades del producto de los dos anteriores: 9, 8, 2, 6, 2, 2, 4, 8… ¿Cuál es el término 101? Datos: Ciclo: lo que se repite igual, siempre en el mismo orden. Residuo: lo que sobra al dividir; 17 entre 5 da 3 y sobran 2. Cifra de las unidades: la última; la de 48 es 8. Alternativas: A) 6   B) 4   C) 8   D) 2",
+      "respuesta": "D) 2",
+      "pasos": [
+        "Antes del ciclo va 1 término; el ciclo tiene 6.",
+        "101 − 1 = 100 = 6 × 16 + 4: toca el término 4 del ciclo.",
+        "Respuesta: 2."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Con fósforos iguales se arma una fila de cuadrados pegados. La figura 1 tiene 4 fósforos; la 2, 7; la 3, 10. Una de las figuras usa 130 fósforos. ¿Cuántos cuadrados tiene? Datos: Figura n: lo de la figura 1 más lo que agrega cada paso, por (n − 1) pasos. Dos cuadrados vecinos comparten un fósforo. Alternativas: A) 42 cuadrados   B) 43 cuadrados   C) 45 cuadrados   D) 41 cuadrados   E) 44 cuadrados",
+      "respuesta": "B) 43 cuadrados",
+      "pasos": [
+        "Sin los 4 de la figura 1 quedan los fósforos de los pasos, de 3 en 3: (130 − 4) ÷ 3 = 42.",
+        "Son 42 pasos después de la figura 1: la figura tiene 42 + 1 = 43.",
+        "Respuesta: 43 cuadrados."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Se afirma: «6 × n − 1 es primo para todo n desde 1». Se revisa con n = 1, 2, 3… ¿Cuál es el primer n que no cumple? Datos: Un número primo tiene solo dos divisores: 1 y él mismo. Contraejemplo: un caso que no cumple lo que se afirma. Alternativas: A) n = 6   B) n = 4   C) Ninguno: siempre da primo   D) n = 5   E) n = 11",
+      "respuesta": "A) n = 6",
+      "pasos": [
+        "Hasta n = 5 todo sale primo; con n = 6 sale 35 = 5 × 7.",
+        "Respuesta: n = 6."
+      ]
+    }
+  ]
+}

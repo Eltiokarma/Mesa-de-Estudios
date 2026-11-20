@@ -6794,25 +6794,28 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
-      "sucesiones",
+      "rm-induccion",
       "rm-ciclos",
-      "rm-fichas"
+      "rm-fichas",
+      "sucesiones"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-inductivo.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-plano.js",
-       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-patrones.js",
        "/plantillas/cubitos-pintados/motor.js",
        "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
-      "ideas": 3,
+      "ideas": 6,
       "titulos": {
-       "figuras-que-crecen": "La regla sale de construir",
+       "figuras-que-crecen": "La figura que crece",
        "tres-casos-no-prueban": "Tres casos no prueban",
-       "impares-y-cuadrados": "Impares que arman cuadrados"
+       "cada-caso-con-su-lugar": "Cada caso con su lugar",
+       "arreglo-triangular": "Filas de un triángulo de números",
+       "cuenta-larga": "Casos chicos de una cuenta larga",
+       "lo-que-se-repite": "Lo que se repite"
       },
-      "terminos": 20
+      "terminos": 32
      }
     },
     {
@@ -6898,7 +6901,7 @@
        "bisiestos": "Cuándo un año es bisiesto",
        "dia-de-la-semana": "Las semanas completas no cuentan"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -6940,7 +6943,7 @@
        "parejas": "Parejas y sumas",
        "llaves": "Llaves y candados"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -7056,7 +7059,7 @@
        "regiones-con-rectas": "Cada recta nueva, más regiones",
        "reflejo": "Reflejar para enderezar el camino"
       },
-      "terminos": 16
+      "terminos": 15
      }
     },
     {
@@ -7188,7 +7191,7 @@
        "rodamiento": "Lo que recorre el centro",
        "area-barrida": "El área que barre un giro"
       },
-      "terminos": 30
+      "terminos": 29
      }
     },
     {
@@ -11782,6 +11785,30 @@
     "/plantillas/rm-fichas/papel.json"
    ]
   },
+  "rm-induccion": {
+   "id": "rm-induccion",
+   "titulo": "De los casos chicos a la regla",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-matematico.razonamiento-inductivo"
+   ],
+   "url": "#/practica/rm-induccion",
+   "ideas": [
+    "figuras-que-crecen",
+    "tres-casos-no-prueban",
+    "cada-caso-con-su-lugar",
+    "arreglo-triangular",
+    "cuenta-larga",
+    "lo-que-se-repite"
+   ],
+   "papel": "/plantillas/rm-induccion/papel.json",
+   "archivos": [
+    "/plantillas/rm-induccion/generador.js",
+    "/plantillas/rm-induccion/papel.json"
+   ]
+  },
   "rm-lectura-palabras": {
    "id": "rm-lectura-palabras",
    "titulo": "Lecturas en un arreglo de letras",
@@ -12144,6 +12171,9 @@
     "/plantillas/sucesiones/index.html",
     "/plantillas/sucesiones/motor.js",
     "/plantillas/sucesiones/papel.json"
+   ],
+   "rehacer": [
+    "razonamiento-matematico.razonamiento-inductivo"
    ]
   },
   "sustancias-mezclas": {

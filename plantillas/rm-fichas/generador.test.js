@@ -310,3 +310,11 @@ test('fibonacci y malla: el error lineal es RMP86 (hipótesis) y «multiplicar p
     }
   }
 });
+
+// Cierre de «Razonamiento inductivo» (20 nov 2026): los exponentes van con superíndice, sin «^».
+test('cierre: los cuadrados de puntos medios no muestran «^» en el texto del alumno', () => {
+  for (let s = 0; s < 400; s++) for (const u of [undefined, 'razonamiento-matematico.razonamiento-inductivo']) {
+    const p = gen.generar(s, u ? { unidad: u } : undefined);
+    assert.ok(!/\^/.test(JSON.stringify([p.solucion, p.alternativas.map(a => a.error && a.error.explicacion)])), `${s}`);
+  }
+});

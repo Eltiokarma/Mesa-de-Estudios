@@ -641,6 +641,21 @@ const V = {
     return { correcta: R.respuesta, errores: { 'RM6-favorable': 2, 'RMP30-sin-pareja': R.parejas.length + (R.mitad ? 1 : 0) + 1, 'RMP34-sin-mas-uno': R.respuesta - 1 } };
   },
 
+  // rm-26 y rm-27 (reserva, 19 nov, etapa 8: «Razonamiento inductivo»; las formas ya tienen 10 pares). Los resuelve el
+  // conteo de filas por columnas y el cálculo de rm-induccion (calc.toca recorre el ciclo); los errores salen de las
+  // mismas cuentas: sumar siempre lo del primer paso, el lugar por sí mismo, la figura siguiente, el cociente, una de más
+  // y la última del ciclo.
+  'rm-26': d => {
+    // El rectángulo n tiene (n + a) filas de (n + b) baldosas: se cuentan casilla por casilla.
+    const f = k => { let c = 0; for (let i = 0; i < k + d.a; i++) for (let j = 0; j < k + d.b; j++) c++; return c; };
+    if (f(1) !== d.f1 || f(2) !== d.f2 || f(3) !== d.f3) throw new Error('rm-26: los rectángulos 1 a 3 del enunciado no son los del modelo');
+    return { correcta: f(d.k), errores: { 'RMP86-lineal': d.f1 + (d.f2 - d.f1) * (d.k - 1), 'RMP166-lugar-al-cuadrado': d.k * d.k, 'RMP161-figura-siguiente': f(d.k + 1) } };
+  },
+  'rm-27': d => {
+    const C = require(path.join(__dirname, '..', '..', 'plantillas', 'rm-induccion', 'generador.js')).calc, L = d.ciclo.length, q = Math.floor(d.k / L);
+    return { correcta: C.toca(d.ciclo, d.k), errores: { 'RMP171-cociente': C.toca(d.ciclo, q === 0 ? L : q), 'RMP27-una-de-mas': C.toca(d.ciclo, d.k + 1), 'RMP27-ultima': d.ciclo[L - 1] } };
+  },
+
   // ari-15 a ari-26: plantillas de aritmética sin ítems en las formas (en "reserva": las formas tienen un tope de 10).
   'ari-15': d => { const r = motor('numeracion').aDecimal(d.numeral, d.b), e = r.errores;
     return { correcta: r.valor, errores: { 'potencias-corridas': e.potenciasCorridas, 'suma-cifras-por-la-base': e.sumaCifrasPorBase, 'lee-como-decimal': e.comoDecimal } }; },

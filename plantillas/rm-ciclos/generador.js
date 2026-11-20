@@ -176,9 +176,26 @@
 
   // ---------------- Generación ----------------
   const TIPOS = ['canciones', 'pista', 'fichas', 'bloque', 'unidades', 'figuras', 'espiral', 'avance'];
-  function generar(semilla) {
-    const rng = Azar.crear(`${ID}|${semilla}`);
-    const tipo = rng.elegir(TIPOS);
+  // ---- Bloque propio de «Razonamiento inductivo» (etapa 8, 19 nov 2026; docs/etapa8/propuesta-razonamiento-matematico.md) ----
+  // Desde esa unidad (generar(semilla, { unidad })) salen solo sus tipos, con su recuadro «Datos» (contrato, punto 13).
+  // Sin unidad, o desde otra, todo sigue como antes (las semillas de casos.json no cambian).
+  const INDUCTIVO = 'razonamiento-matematico.razonamiento-inductivo';
+  const D_CICLO = 'Ciclo: lo que se repite igual, siempre en el mismo orden.';
+  const D_RES = 'Residuo: lo que sobra al dividir; 17 entre 5 da 3 y sobran 2.';
+  const DATOS_INDUCTIVO = {
+    bloque: [D_CICLO, D_RES], figuras: [D_CICLO, D_RES],
+    unidades: [D_CICLO, D_RES, 'Cifra de las unidades: la última; la de 48 es 8.'],
+    espiral: ['Perímetro: la medida del borde de la región sombreada.', 'Cada casilla es un cuadrado de 1 cm de lado.'],
+  };
+  // La espiral pregunta por el perímetro o por un número de una línea: cada una con sus Datos (auditoría del 20 nov).
+  const D_ESPIRAL = ['Los números se escriben en espiral: el 1 al centro, el 2 a su derecha y se sigue en sentido antihorario.'];
+  const datosInductivo = (tipo, d) => (tipo === 'espiral' && d && d.pide === 'rayo' ? D_ESPIRAL : DATOS_INDUCTIVO[tipo]);
+  const TIPOS_POR_UNIDAD = { [INDUCTIVO]: Object.keys(DATOS_INDUCTIVO) };
+  function generar(semilla, opciones) {
+    const op = typeof opciones === 'string' ? { unidad: opciones } : opciones || {};
+    const propia = op.unidad === INDUCTIVO;
+    const rng = Azar.crear(propia ? `${ID}|${INDUCTIVO}|${semilla}` : `${ID}|${semilla}`);
+    const tipo = rng.elegir(propia ? TIPOS_POR_UNIDAD[INDUCTIVO] : TIPOS);
     for (let intento = 0; intento < 500; intento++) {
       const o = CONSTR[tipo](rng);
       if (!o) continue;
@@ -187,7 +204,7 @@
         : P.armar({ correcta: o.correcta, errores: o.errores, rng, negativos: true, texto: o.texto });
       if (alternativas.length < 4) continue;
       const p = {
-        id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+        id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: propia ? datosInductivo(tipo, o.datos) : '',
         alternativas, solucion: o.solucion, respuesta: { valor: o.textos ? o.correcta.clave : o.correcta, unidad: o.unidad || '' }, _datos: o.datos,
       };
       if (o.figura) p.figura = o.figura;
@@ -643,6 +660,7 @@
   };
 
   return {
+    tiposPorUnidad: TIPOS_POR_UNIDAD,
     id: ID, titulo: 'Lo que se repite', generar,
     calc: { resolver, cancion: d => cancion(d), marca, encuentro, cifraEn, sumaCifras, ultimas, cicloUnidades, unidades, figura: d => claveFig(figura(d)), numeroEn, posicionDe, perimetro, rayo, avance, reloj },
   };

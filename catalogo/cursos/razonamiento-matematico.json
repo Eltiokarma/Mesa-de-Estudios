@@ -98,8 +98,8 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["sucesiones", "rm-ciclos", "rm-fichas"],
-      "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
+      "plantillas": ["rm-induccion", "rm-ciclos", "rm-fichas", "sucesiones"],
+      "investigacion": "docs/investigacion/codigos-rm-procesos.md"
     },
     {
       "id": "razonamiento-matematico.juegos-recreativos",

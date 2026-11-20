@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "básico",
       "enunciado": "En la sucesión 5, 9, 13, 17, …, halla el término general tₙ y el término de lugar 40.",
       "respuesta": "tₙ = 4n + 1; el término 40 es 161.",
@@ -54,6 +55,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "básico",
       "enunciado": "¿Cuántos términos tiene la sucesión 8, 15, 22, 29, …, 218?",
       "respuesta": "31 términos.",
@@ -66,13 +68,15 @@
     },
     {
       "id": "p3",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Figura n: lo de la figura 1 más lo que agrega cada paso, por (n − 1) pasos.", "Dos triángulos vecinos comparten un fósforo."],
       "nivel": "básico",
       "enunciado": "Con palitos de fósforo se arma una fila de triángulos, uno con la punta hacia arriba y el siguiente con la punta hacia abajo, uno al lado del otro. Un triángulo usa 3 palitos; dos triángulos, 5; tres triángulos, 7. ¿Cuántos palitos hacen falta para 25 triángulos?",
       "respuesta": "51 palitos.",
       "pasos": [
-        "Cada triángulo nuevo comparte un palito con el anterior, así que solo agrega 2: la sucesión es 3, 5, 7, … con razón 2.",
-        "La fórmula es tₙ = 3 + (n − 1) · 2 = 2n + 1: un palito inicial y 2 por cada triángulo.",
-        "Con n = 25: 2 · 25 + 1 = 51. Contar 3 palitos por triángulo (75) cuenta dos veces los compartidos; y tampoco sirve juntar la figura 12 y la 13 (25 + 27 = 52): cada copia repite el palito inicial."
+        "Cada triángulo nuevo comparte un palito con el anterior, así que solo agrega 2: el primero trae 3 y cada uno de los otros 24, 2.",
+        "Figura n: 3 + 2 × (n − 1), lo del primero más lo que agregan los pasos.",
+        "Con n = 25: 3 + 2 × 24 = 51. Contar 3 palitos por triángulo (75) cuenta dos veces los compartidos; y tampoco sirve juntar la figura 12 y la 13 (25 + 27 = 52): cada copia repite el palito inicial."
       ],
       "verificar": [ { "fn": "figura", "args": ["triangulos", 25], "espera": { "cantidad": 51, "errores.cuentaDoble": 75, "formula.b": 2, "formula.c": 1 } },
                      { "fn": "figura", "args": ["triangulos", 12], "espera": { "cantidad": 25 } }, { "fn": "figura", "args": ["triangulos", 13], "espera": { "cantidad": 27 } } ],
@@ -117,6 +121,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "intermedio",
       "enunciado": "Halla la suma de los 20 primeros términos de 3, 7, 11, 15, …",
       "respuesta": "820.",
@@ -167,6 +172,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "intermedio",
       "enunciado": "En la sucesión 3, 8, 15, 24, …, halla el término de lugar 20.",
       "respuesta": "t₂₀ = 440, con tₙ = n² + 2n.",
@@ -217,6 +223,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "intermedio",
       "enunciado": "En la progresión 2, 6, 18, 54, …, halla el séptimo término y la suma de los siete primeros.",
       "respuesta": "El séptimo término es 1458 y la suma es 2186.",
@@ -268,6 +275,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "intermedio",
       "enunciado": "Calcula la suma infinita 6 + 2 + 2/3 + 2/9 + …",
       "respuesta": "9.",
@@ -309,6 +317,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["algebra.sucesiones-y-series", "aritmetica.sucesiones-y-series"],
       "nivel": "avanzado",
       "enunciado": "Calcula S₁ = 1² + 2² + 3² + … + 12² y S₂ = 1 + 3 + 5 + … + 49. ¿Cuánto vale S₁ − S₂?",
       "respuesta": "S₁ = 650, S₂ = 625 y S₁ − S₂ = 25.",
@@ -360,18 +369,21 @@
     },
     {
       "id": "p9",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["En una analogía numérica, los números de afuera dan el del medio siempre con la misma regla."],
       "nivel": "básico",
       "enunciado": "Halla el número que falta en la analogía numérica: 5 (34) 3; 4 (25) 3; 6 ( ) 1.",
       "respuesta": "El número que falta es 37.",
       "pasos": [
         "Busca una sola regla que cumplan las dos filas completas. Sumar no sirve: 5 + 3 = 8. Multiplicar tampoco: 5 · 3 = 15.",
         "Con los cuadrados: 5² + 3² = 25 + 9 = 34 y 4² + 3² = 16 + 9 = 25. La regla se cumple en las dos filas.",
-        "En la tercera: 6² + 1² = 36 + 1 = 37. Una regla que solo funciona con la primera fila no vale: hay que comprobarla en todas."
+        "En la tercera: 6² + 1² = 36 + 1 = 37. Una regla que solo funciona con la primera fila no vale. Que cumpla las dos filas no la prueba: es la más simple que encaja con todas, y es la que se usa."
       ],
       "verificar": [ { "fn": "regla", "args": [[[5, 3, 34], [4, 3, 25], [6, 1, null]]], "espera": { "valor": 37, "regla": "sumaDeCuadrados" } } ]
     },
     {
       "id": "p10",
+      "unidades": ["aritmetica.sucesiones-y-series"],
       "nivel": "avanzado",
       "enunciado": "En un campeonato de 12 equipos, cada equipo juega una sola vez contra cada uno de los otros. ¿Cuántos partidos se juegan?",
       "respuesta": "66 partidos.",

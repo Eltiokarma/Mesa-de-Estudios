@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["razonamiento-matematico.frecuencia-de-sucesos"],
       "nivel": "básico",
       "enunciado": "En una fiesta de Puno suena sin pausas esta lista, que se repite: Huaino (5 min), Saya (3 min), Morenada (4 min), Tondero (6 min) y Cumbia (2 min). A las 9:00 p. m. el Tondero lleva 2 min sonando. ¿Qué canción suena a las 2:00 a. m.?",
       "respuesta": "El Tondero.",
@@ -17,6 +18,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["razonamiento-matematico.frecuencia-de-sucesos"],
       "nivel": "básico",
       "enunciado": "Una pista circular tiene 16 marcas equidistantes, numeradas del 1 al 16 en sentido horario, con 25 m entre marcas vecinas. Una ciclista parte de la marca 13 y recorre 3025 m en sentido antihorario. ¿En qué marca termina?",
       "respuesta": "En la marca 4.",
@@ -29,6 +31,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["razonamiento-matematico.frecuencia-de-sucesos"],
       "nivel": "intermedio",
       "enunciado": "Un tablero circular tiene 20 casillas numeradas del 1 al 20 en sentido horario. La ficha A está en la casilla 3 y la ficha B en la 15. En cada jugada, A avanza 7 casillas y B avanza 3, las dos en sentido horario. ¿Al final de qué jugada coinciden por primera vez?",
       "respuesta": "Al final de la jugada 3.",
@@ -42,19 +45,23 @@
     },
     {
       "id": "p4",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Ciclo: lo que se repite igual, siempre en el mismo orden.", "Residuo: lo que sobra al dividir; 17 entre 5 da 3 y sobran 2."],
       "nivel": "intermedio",
-      "enunciado": "Se escribe el bloque 31415 una y otra vez, sin espacios: 314153141531415… ¿Cuánto suman las primeras 203 cifras?",
-      "respuesta": "568",
+      "enunciado": "Se escribe el bloque 31415 una y otra vez, sin espacios: 314153141531415… ¿Cuánto suman las primeras 207 cifras?",
+      "respuesta": "578",
       "pasos": [
         "El bloque tiene 5 cifras y suma 3 + 1 + 4 + 1 + 5 = 14.",
-        "203 = 5 × 40 + 3: hay 40 bloques completos y sobran 3 cifras.",
-        "Las 3 cifras que sobran son las primeras del bloque: 3, 1 y 4.",
-        "Suma: 40 × 14 + 3 + 1 + 4 = 568."
+        "207 = 5 × 41 + 2: hay 41 bloques completos y sobran 2 cifras.",
+        "Las 2 cifras que sobran son las primeras del bloque: 3 y 1.",
+        "Suma: 41 × 14 + 3 + 1 = 578."
       ],
-      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "bloque", "bloque": "31415", "pre": "", "pide": "suma", "k": 0, "D": 203 }], "espera": 568 } ]
+      "verificar": [ { "fn": "resolver", "args": [{ "tipo": "bloque", "bloque": "31415", "pre": "", "pide": "suma", "k": 0, "D": 207 }], "espera": 578 } ]
     },
     {
       "id": "p5",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Ciclo: lo que se repite igual, siempre en el mismo orden.", "Residuo: lo que sobra al dividir; 17 entre 5 da 3 y sobran 2."],
       "nivel": "intermedio",
       "enunciado": "Un número empieza con la cifra 5 y sigue con el bloque 2468 repetido: 5246824682468… ¿Qué cifra ocupa el lugar 500?",
       "respuesta": "6",
@@ -67,6 +74,8 @@
     },
     {
       "id": "p6",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Ciclo: lo que se repite igual, siempre en el mismo orden.", "Residuo: lo que sobra al dividir; 17 entre 5 da 3 y sobran 2.", "Cifra de las unidades: la última; la de 48 es 8."],
       "nivel": "avanzado",
       "enunciado": "Una sucesión empieza con 2 y 3, y desde el tercer término cada término es la cifra de las unidades del producto de los dos anteriores. ¿Cuál es el término 100?",
       "respuesta": "8",
@@ -80,18 +89,23 @@
     },
     {
       "id": "p7",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Los números se escriben en espiral: el 1 al centro, el 2 a su derecha y se sigue en sentido antihorario.", "1 + 2 + 3 + … + n = n × (n + 1) ÷ 2"],
       "nivel": "avanzado",
       "enunciado": "Se escriben los números en espiral como en la app: el 1 al centro, el 2 a su derecha y se sigue en sentido antihorario. Debajo del 1 están 8, 23, 46, … ¿Qué número está 25 casillas debajo del 1?",
       "respuesta": "2576",
       "pasos": [
         "Saltos: 23 − 8 = 15 y 46 − 23 = 23. Crecen de 8 en 8, porque cada vuelta de la espiral tiene 8 casillas más.",
-        "Con saltos que crecen de 8 en 8, el número del lugar j es 4j² + bj + c. Con j = 1 da 8 y con j = 2 da 23: b = 3 y c = 1.",
-        "Para j = 25: 4 × 625 + 3 × 25 + 1 = 2576."
+        "Del 8 al número que está 25 casillas abajo hay 24 saltos: 15, 15 + 8, 15 + 8 × 2, …, 15 + 8 × 23.",
+        "Suma de los saltos: 24 × 15 + 8 × (1 + 2 + … + 23) = 360 + 8 × 276 = 2568.",
+        "El número es 8 + 2568 = 2576."
       ],
       "verificar": [ { "fn": "resolver", "args": [{ "tipo": "espiral", "pide": "rayo", "rayo": [0, -1], "m": 25, "N": 0 }], "espera": 2576 } ]
     },
     {
       "id": "p8",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Perímetro: la medida del borde de la región sombreada.", "Cada casilla es un cuadrado de 1 cm de lado."],
       "nivel": "intermedio",
       "enunciado": "En la misma espiral, cada casilla es un cuadrado de 1 cm de lado. Se sombrean las casillas del 1 al 200. ¿Cuál es el perímetro de la región sombreada?",
       "respuesta": "58 cm",
@@ -105,6 +119,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["razonamiento-matematico.frecuencia-de-sucesos"],
       "nivel": "básico",
       "enunciado": "Una lagartija sube por una pared de 30 m. De día sube 7 m y de noche resbala 4 m. Si empieza el día 1 por la mañana desde el suelo, ¿qué día llega arriba?",
       "respuesta": "El día 9.",
@@ -118,6 +133,8 @@
     },
     {
       "id": "p10",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Ciclo: lo que se repite igual, siempre en el mismo orden.", "Residuo: lo que sobra al dividir; 17 entre 5 da 3 y sobran 2."],
       "nivel": "avanzado",
       "enunciado": "En una serie de figuras, un hexágono tiene un punto que salta 2 vértices en sentido horario de una figura a la siguiente, y una flecha en el centro que gira 90° en sentido antihorario. En la figura 1 el punto está en el vértice de arriba y la flecha apunta hacia arriba. ¿Cómo es la figura 200?",
       "respuesta": "Punto abajo a la derecha; flecha hacia la derecha.",

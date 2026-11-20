@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "nivel": "básico",
       "enunciado": "Se tienen 30 fichas iguales con forma de triángulo equilátero de 4 cm de lado. ¿Cuál es el perímetro del mayor triángulo equilátero que se puede armar con algunas de ellas, sin huecos ni superposiciones?",
       "respuesta": "60 cm.",
@@ -16,6 +17,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["razonamiento-matematico.maximos-y-minimos"],
       "nivel": "intermedio",
       "enunciado": "En un tablero de 7 × 7 casillas están tapadas las 9 casillas que quedan en las filas 2, 4 y 6 y en las columnas 2, 4 y 6 (una sí, una no). Se ponen fichas de 5 casillas con forma de U, que se pueden girar, sin superponerse y sin cubrir las tapadas. ¿Cuántas fichas, como máximo, se pueden poner? (Pregunta de UNMSM 2025-I.)",
       "respuesta": "8 fichas.",
@@ -28,6 +30,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["razonamiento-matematico.maximos-y-minimos"],
       "nivel": "avanzado",
       "enunciado": "Hay 20 fichas con forma de triángulo equilátero y 3 con forma de hexágono regular, todas de 2 cm de lado. ¿Cuál es el perímetro del mayor triángulo equilátero que se arma usando fichas de los dos tipos?",
       "respuesta": "36 cm.",
@@ -41,6 +44,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "nivel": "básico",
       "enunciado": "Con 4 fichas de 2 cm por 5 cm se arma una L: tres fichas echadas en fila sobre el piso, unidas por sus lados de 2 cm, y una ficha parada sobre el extremo izquierdo. ¿Cuál es el perímetro de la L?",
       "respuesta": "44 cm.",
@@ -53,6 +57,8 @@
     },
     {
       "id": "p5",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Área de un cuadrado: lado × lado.", "Pitágoras: el cuadrado de la hipotenusa es la suma de los cuadrados de los catetos."],
       "nivel": "intermedio",
       "enunciado": "En un cuadrado de 20 cm de lado se unen los puntos medios de los lados y se forma otro cuadrado; con este se hace lo mismo, y así sucesivamente. Contando el inicial como el primero, ¿cuál es el área del cuarto cuadrado?",
       "respuesta": "50 cm².",
@@ -65,6 +71,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["razonamiento-matematico.maximos-y-minimos"],
       "nivel": "intermedio",
       "enunciado": "Con piezas en forma de L de 4 cuadraditos y piezas en forma de T de 4 cuadraditos (se pueden girar y voltear), ¿cuántos cuadraditos tiene el menor rectángulo que se cubre exactamente usando al menos una pieza de cada tipo?",
       "respuesta": "12 cuadraditos (un rectángulo de 3 × 4).",
@@ -78,6 +85,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "nivel": "básico",
       "enunciado": "Una ficha está formada por tres cuadraditos en forma de L (el de la esquina y uno a cada lado). Una figura es un rectángulo de 3 filas por 4 columnas de cuadraditos del mismo tamaño. Se cuentan todas las posiciones distintas de la ficha dentro del rectángulo, girándola, aunque unas se crucen con otras. ¿Cuántas son? (Basado en UNMSM 2025-II.)",
       "respuesta": "24 fichas.",
@@ -90,6 +98,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["razonamiento-matematico.maximos-y-minimos"],
       "nivel": "intermedio",
       "enunciado": "En una caja de 7 cm por 5 cm de base y 4 cm de alto se guardan barras de 2 cm × 3 cm × 4 cm de pie. ¿Cuántas barras caben como máximo?",
       "respuesta": "5 barras.",
@@ -102,6 +111,8 @@
     },
     {
       "id": "p9",
+      "unidades": ["razonamiento-matematico.razonamiento-inductivo"],
+      "datos": ["Perímetro: la medida del borde de la figura.", "Área de un cuadrado: lado × lado."],
       "nivel": "intermedio",
       "enunciado": "Una sucesión de figuras se arma con cuadrados de lados 1, 1, 2, 3, 5, … cm en espiral: la figura 1 es un cuadrado de 1 cm, la 2 son dos cuadrados de 1 cm juntos (1 × 2), la 3 es un rectángulo de 2 × 3, la 4 de 3 × 5. ¿Cuál es el área de la figura 8?",
       "respuesta": "714 cm².",
@@ -114,6 +125,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["razonamiento-matematico.transformaciones-de-figuras"],
       "nivel": "intermedio",
       "enunciado": "Sobre el lado de arriba de un rectángulo de 12 cm de ancho y 9 cm de alto se apoya una semicircunferencia de 6 cm de radio, y la región incluye ese semicírculo. En las dos esquinas de abajo del rectángulo se quitan cuartos de círculo de 6 cm de radio (con centro en la esquina). ¿Cuál es el área de la región que queda? (Se parece a una pregunta de UNMSM 2025-I.)",
       "respuesta": "108 cm².",

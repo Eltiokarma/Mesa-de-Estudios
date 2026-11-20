@@ -653,6 +653,8 @@
   // =====================================================================
   // Cuadrado n de la sucesión (el 1 es el de lado L): lado L / √2^(n − 1), área L² / 2^(n − 1).
   function medios(L, n) { const lado = L / Math.SQRT2 ** (n - 1); return { lado, area: L * L / 2 ** (n - 1), perimetro: 4 * lado }; }
+  // Exponentes con superíndice en el texto del alumno (auditoría de Razonamiento inductivo, 20 nov: salía «4^2»).
+  const SUP = m => String(m).split("").map(c => "⁰¹²³⁴⁵⁶⁷⁸⁹"[+c]).join("");
   function construirMedios(rng, semilla) {
     for (let intento = 0; intento < 100; intento++) {
       const L = rng.elegir([8, 12, 16, 20, 24, 32, 40]);
@@ -695,7 +697,7 @@
         pa('AR7-mitad', 2 ** m, `Usaste 2 en cada paso: esa es la razón de las áreas. La de los perímetros es √2 por paso.`),
         h('RMP1-pasos', r2 ** n, `Contaste ${pasos(n)}; del cuadrado 1 al ${n} hay ${m}.`),
         h('RMP1-pasos', r2 ** (m - 1), `Contaste ${pasos(m - 1)}; del cuadrado 1 al ${n} hay ${m}.`),
-        pa('AR7-area-como-lado', 4 ** m, `Tomaste que el perímetro se divide entre 4 en cada paso (4^${m}). El lado nuevo es el anterior ÷ √2, así que el perímetro se divide entre √2: la razón es (√2)^${m}.`),
+        pa('AR7-area-como-lado', 4 ** m, `Tomaste que el perímetro se divide entre 4 en cada paso (4${SUP(m)}). El lado nuevo es el anterior ÷ √2, así que el perímetro se divide entre √2: la razón es (√2)${SUP(m)}.`),
       ];
       texto_ = x => P.radical(x);
       pregunta = [`¿Cuál es la razón entre el perímetro del cuadrado 1 y el del cuadrado ${n}?`];
@@ -719,9 +721,9 @@
       solucion: [
         ['El lado del cuadrado nuevo une dos puntos medios: es la mitad de la diagonal del anterior. Lado nuevo = lado ÷ ', v('r', '√2'), ', y el área se reduce a la mitad (el cuadrado nuevo es el anterior menos cuatro triángulos que suman la mitad).'],
         [`Del cuadrado 1 al ${n} hay ${m} pasos (el 1 es el inicial).`],
-        pide === 'area' ? ['Área: ', v('L', `${L}`), `² ÷ 2^${m} = ${A1} ÷ ${2 ** m} = `, v('x', P.radical(correcta) + ' cm²'), '.']
-          : pide === 'perimetro' ? ['Lado del cuadrado ', String(n), ': ', `${L} ÷ (√2)^${m} = ${P.radical(lado(n))} cm. Perímetro: 4 × ${P.radical(lado(n))} = `, v('x', P.radical(correcta) + ' cm'), '.']
-            : ['Cada paso divide el perímetro entre ', v('r', '√2'), `: la razón es (√2)^${m} = `, v('x', P.radical(correcta)), '.'],
+        pide === 'area' ? ['Área: ', v('L', `${L}`), `² ÷ 2${SUP(m)} = ${A1} ÷ ${2 ** m} = `, v('x', P.radical(correcta) + ' cm²'), '.']
+          : pide === 'perimetro' ? ['Lado del cuadrado ', String(n), ': ', `${L} ÷ (√2)${SUP(m)} = ${P.radical(lado(n))} cm. Perímetro: 4 × ${P.radical(lado(n))} = `, v('x', P.radical(correcta) + ' cm'), '.']
+            : ['Cada paso divide el perímetro entre ', v('r', '√2'), `: la razón es (√2)${SUP(m)} = `, v('x', P.radical(correcta)), '.'],
       ],
       respuesta: { valor: correcta, unidad },
       _datos: d,
@@ -1274,7 +1276,26 @@
     lineal: construirLineal, cajas: construirCajas, tablero: construirTablero, fibonacci: construirFibonacci, malla: construirMalla,
     conteo: construirConteo, petalo: construirPetalo };
   const SORTEO = ['semejanza', 'semejanza', 'hexagonos', 'contorno', 'contorno', 'medios', 'rectangulo', 'lineal', 'cajas', 'tablero', 'fibonacci', 'malla'];
-  function generar(semilla) {
+  // ---- Bloque propio de «Razonamiento inductivo» (etapa 8, 19 nov 2026; docs/etapa8/propuesta-razonamiento-matematico.md) ----
+  // Desde esa unidad (generar(semilla, { unidad })) salen solo sus tipos (figuras que crecen), con su recuadro «Datos».
+  // Sin unidad, o desde otra, todo sigue como antes (las semillas de casos.json no cambian).
+  const INDUCTIVO = 'razonamiento-matematico.razonamiento-inductivo';
+  const DATOS_INDUCTIVO = {
+    medios: ['Área de un cuadrado: lado × lado.', 'Pitágoras: el cuadrado de la hipotenusa es la suma de los cuadrados de los catetos.'],
+    fibonacci: ['Perímetro: la medida del borde de la figura.', 'Área de un cuadrado: lado × lado.'],
+    malla: ['Cada segmento mide 1 m y la hormiga tarda lo mismo en cada uno.', 'Pasar por todos los puntos: cada punto, al menos una vez.'],
+  };
+  const TIPOS_POR_UNIDAD = { [INDUCTIVO]: Object.keys(DATOS_INDUCTIVO) };
+  function generar(semilla, opciones) {
+    const op = typeof opciones === 'string' ? { unidad: opciones } : opciones || {};
+    if (op.unidad === INDUCTIVO) {
+      const rp = Azar.crear(`rm-fichas|${INDUCTIVO}|${semilla}`), tp = rp.elegir(TIPOS_POR_UNIDAD[INDUCTIVO]);
+      for (let intento = 0; intento < 20; intento++) {
+        const p = TIPOS[tp](rp, semilla);
+        if (p && p.alternativas.length >= 4) return Object.assign(p, { datos: DATOS_INDUCTIVO[tp] });
+      }
+      throw new Error('No se pudo generar un problema con 4 alternativas distintas');
+    }
     const rng = Azar.crear('rm-fichas|' + semilla);
     let tipo = rng.elegir(SORTEO), grande = false, r2 = null;
     // Cierre de admisión: en parte de las semillas de tablero, cajas y medios salen las variantes nuevas (la semilla de
@@ -1289,7 +1310,7 @@
   }
 
   return {
-    id: 'rm-fichas', titulo: 'Fichas, piezas y figuras que crecen', generar,
+    id: 'rm-fichas', titulo: 'Fichas, piezas y figuras que crecen', generar, tiposPorUnidad: TIPOS_POR_UNIDAD,
     calc: { semejanza, medios, conteo, petalo, giros, posiciones, orientaciones, cotaRectangulo, cotaCajas, cotaTablero, embaldosar, minRectangulo, maxEmpaque, voraz, hmax, hexagonos, contorno, formaFichas, perimetroCon, trapecioTeselado, malla, fib, PIEZAS },
   };
 });

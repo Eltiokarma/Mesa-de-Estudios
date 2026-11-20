@@ -181,6 +181,12 @@
     { u: 'aritmetica.numeros-racionales', p: 'prediccionNR', e: 'estudiadaNR',
       cambian: ['equivalentes', 'orden-recta', 'exacto-periodico', 'generatriz', 'otras-bases'],
       antes: ['equivalentes', 'orden-recta', 'exacto-periodico', 'generatriz', 'otras-bases'] },
+    // Etapa 8 (19 nov): Razonamiento inductivo conservó figuras-que-crecen y tres-casos-no-prueban con la misma pregunta y
+    // los mismos ids de opción (la torta reemplaza al círculo: 6 velitas dan 31, como 6 puntos), perdió impares-y-cuadrados
+    // (es de Aritmética) y sumó cuatro ideas. Ninguna predicción se borra; quien terminó las tres de antes conserva «Ya la
+    // estudié» (docs/etapa8/propuesta-razonamiento-matematico.md, decisión 8).
+    { u: 'razonamiento-matematico.razonamiento-inductivo', p: 'prediccionRI', e: 'estudiadaRI',
+      cambian: [], antes: ['figuras-que-crecen', 'tres-casos-no-prueban', 'impares-y-cuadrados'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

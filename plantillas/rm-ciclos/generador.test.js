@@ -168,3 +168,15 @@ test('figuras: la figura no revela la respuesta (muestra solo las 4 primeras) y 
     assert.ok(p._datos.N >= 20);
   }
 });
+
+// Cierre de «Razonamiento inductivo» (20 nov 2026): los Datos del bloque de la unidad dicen lo que la pregunta usa.
+test('cierre: desde Razonamiento inductivo, la espiral que pregunta un número no trae los Datos del perímetro', () => {
+  const U = 'razonamiento-matematico.razonamiento-inductivo';
+  let rayos = 0;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: U }), t = JSON.stringify(p.datos);
+    assert.ok(!/(^|[^\d])23 entre 4/.test(t), `${s}`);
+    if (p._datos.tipo === 'espiral' && p._datos.pide === 'rayo') { rayos++; assert.ok(!/Perímetro/.test(t), `${s}: ${t}`); }
+  }
+  assert.ok(rayos > 20);
+});
