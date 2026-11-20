@@ -121,6 +121,14 @@
         "En base 10: 4̅0̅₍₅₎ = 20, 5̅0̅₍₆₎ = 30 y 6̅6̅₍₇₎ = 48 horas.",
         "En una hora: 1/20 + 1/30 − 1/48 = (12 + 8 − 5)/240 = 1/16 del tanque. El desagüe se resta, no se suma.",
         "Se llena en 16 h."
+      ],
+      "unidades": [
+        "aritmetica.numeros-racionales"
+      ],
+      "datos": [
+        "En cualquier base, cada cifra es menor que la base, y la primera no es 0",
+        "Si un grifo llena el tanque en A horas, en una hora llena 1/A del tanque",
+        "Un desagüe que vacía el tanque en C horas saca 1/C del tanque en cada hora"
       ]
     },
     {

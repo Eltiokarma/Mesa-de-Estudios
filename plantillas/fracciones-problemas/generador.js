@@ -6,8 +6,8 @@
  * Tipos (entre paréntesis, la fila que cubre, por su campo «falta»):
  *   acotada       fracciones irreducibles n/(n + k) entre dos cotas: cuántas hay
  *                 (condiciones sobre fracciones con parámetro entero y acotación)
- *   pesi          dos números con su diferencia y su MCM: A = d·p, B = d·q con p y q PESI; se pide A + B
- *                 (propiedades MCD·cocientes PESI para reconstruir dos números)
+ *   pesi          dos números con su diferencia y su MCM: A = d × p, B = d × q con p y q PESI; se pide A + B
+ *                 (propiedades MCD × cocientes PESI para reconstruir dos números)
  *   porcentaje    gastos sucesivos en porcentajes periódicos (16,666… %): se pasa a fracción y se
  *                 regresa al inicio (porcentajes con decimales periódicos convertidos a fracción)
  *   stock         ventas sucesivas de fracciones del resto con el stock entre cotas y lo que queda
@@ -66,7 +66,7 @@
   const val = (n, p) => { let k = 0; while (n % p === 0) { n /= p; k++; } return k; };
   const SUP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
   const sup = k => String(k).split('').map(c => SUP[c]).join('');
-  const factorizar = n => { const t = []; for (const p of primos(n)) { const k = val(n, p); t.push(p + (k > 1 ? sup(k) : '')); } return t.join('·') || '1'; };
+  const factorizar = n => { const t = []; for (const p of primos(n)) { const k = val(n, p); t.push(p + (k > 1 ? sup(k) : '')); } return t.join(' × ') || '1'; };
   // Orden de 10 módulo m (m > 1, primo con 10): cifras del periodo de 1/m.
   const orden10 = m => { let x = 10 % m, k = 1; while (x !== 1) { x = x * 10 % m; k++; } return k; };
   // Desarrollo decimal exacto por división larga: parte entera, anteperiodo y periodo.
@@ -76,12 +76,19 @@
     if (r === 0) return { ent, ante: cif, per: '' };
     const i = vistos.get(r); return { ent, ante: cif.slice(0, i), per: cif.slice(i) };
   }
-  const conPuntos = ({ ent, ante, per }) => per ? `${P.formatear(ent)},${ante}${per.repeat(per.length === 1 ? 3 : 2)}…` : (ante ? `${P.formatear(ent)},${ante}` : P.formatear(ent));
+  // Como en la teoría de Números racionales (decisión 8 de docs/etapa8/propuesta-aritmetica.md): un bloque de una o dos
+  // cifras, tres veces; de más, dos (antes, el de dos cifras salía dos veces: 0,2727…; auditoría del cierre, 20 nov).
+  const conPuntos = ({ ent, ante, per }) => per ? `${P.formatear(ent)},${ante}${per.repeat(per.length <= 2 ? 3 : 2)}…` : (ante ? `${P.formatear(ent)},${ante}` : P.formatear(ent));
   const TIPOS = ['acotada', 'pesi', 'porcentaje', 'stock', 'equivalentes', 'trabajo', 'diferencia', 'formar', 'periodo', 'suma-entera', 'tipo-decimal', 'pg-mcd', 'euclides'];
 
-  function generar(semilla) {
+  // 19 nov (etapa 8, docs/etapa8/propuesta-aritmetica.md, decisión 7): la plantilla sirve solo a Números racionales, y
+  // con { unidad } no da los tres tipos de MCD y MCM (pesi, pg-mcd y euclides: los practica plantillas/mcd-mcm). Sin
+  // unidad, todos, como antes.
+  const TIPOS_POR_UNIDAD = { 'aritmetica.numeros-racionales': TIPOS.filter(t => !['pesi', 'pg-mcd', 'euclides'].includes(t)) };
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
     const rng = Azar.crear(ID + '|' + semilla);
-    const tipo = rng.elegir(TIPOS);
+    const tipo = rng.elegir(TIPOS_POR_UNIDAD[unidad] || TIPOS);
     const sub = SUBS[tipo] ? rng.elegir(SUBS[tipo]) : null;
     for (let intento = 0; intento < 5000; intento++) {
       const pr = construir(rng, semilla, tipo, sub);
@@ -97,6 +104,40 @@
     return f(rng, semilla, sub);
   }
 
+  // Bloque de Números racionales (cierre, 20 nov; contrato, punto 13): el recuadro «Datos» de cada tipo de esta unidad,
+  // con las definiciones y fórmulas que usa la solución, nunca el paso hecho. Los tres tipos de MCD y MCM (pesi, pg-mcd,
+  // euclides), que la unidad no pide, siguen sin recuadro.
+  const DR = {
+    irr: 'Una fracción es irreductible si su numerador y su denominador no tienen un divisor común mayor que 1',
+    propia: 'Una fracción es propia si su numerador es menor que su denominador; impropia, si es mayor',
+    cruz: 'a/b < c/d cuando a × d < b × c, con b y d positivos',
+    queda: 'Si de un total se quita a/b, queda 1 − a/b del total',
+    resto: 'Quitar c/d de lo que queda (vender, gastar o perder) es quitar c/d × lo que quedaba',
+    por: '1 % es 1/100',
+    puro: 'Sin cifras antes del bloque: x = el bloque ÷ tantos 9 como cifras tiene el bloque',
+    mixto: 'Con cifras antes del bloque: x = (todo hasta el bloque − lo de antes) ÷ (nueves del bloque y ceros de antes)',
+    k: 'Las fracciones equivalentes a a/b, irreductible, son (a × k)/(b × k), con k = 1, 2, 3…',
+    cifras3: 'Los números de tres cifras van del 100 al 999',
+    cuantos: 'Del primero, p, al último, u, hay u − p + 1 números',
+    lugar: 'En un bloque de L cifras, cada lugar repite al del resto de dividirlo entre L; con resto 0, el último',
+    antes: 'Cifras no periódicas: el mayor exponente de 2 o de 5 del denominador simplificado',
+    bloque: 'Cifras del bloque: tantas como nueves hacen falta para que el denominador, sin sus 2 y sus 5, divida a 99…9',
+    fact: 'El factorial es el producto de los enteros desde 1: 5! = 1 × 2 × 3 × 4 × 5',
+  };
+  function datosDe(d) {
+    const t = d && d.tipo;
+    if (t === 'acotada') return [DR.irr, 'MCD(n, n + k) = MCD(n, k)', DR.cruz];
+    if (t === 'porcentaje') return [DR.por, DR.puro, DR.mixto, DR.queda, DR.resto];
+    if (t === 'stock') return [DR.queda, DR.resto, 'Cada venta tiene que dar un número entero'];
+    if (t === 'equivalentes') return [DR.k, DR.cifras3, DR.cuantos, 'Si q es primo y no divide a a, a × k es múltiplo de q solo cuando k lo es'];
+    if (t === 'trabajo') return ['Si se llena una parte del tanque en t horas, en una hora se llena esa parte ÷ t', 'Disminuir en a/b es quedar con 1 − a/b de lo que era'];
+    if (t === 'diferencia') return [DR.propia, DR.irr];
+    if (t === 'formar') return [DR.propia, DR.irr, 'Al multiplicar fracciones se multiplican los numeradores y los denominadores'];
+    if (t === 'periodo') return d.sub === 'ultimas' ? ['Un periódico puro de L cifras es el bloque ÷ (10 elevado a L, menos 1)', 'La última cifra de un producto sale de multiplicar las últimas cifras'] : [DR.lugar];
+    if (t === 'suma-entera') return [DR.propia, DR.irr, 'a/d + b/d = (a + b)/d'];
+    if (t === 'tipo-decimal') return d.sub === 'factorial' ? [DR.fact, DR.antes, DR.bloque] : [DR.antes, DR.bloque];
+    return '';
+  }
   // Con o.viva, el problema trae además escena, pasos, fantasmas y (si se arrastra) la respuesta ampliada.
   function cerrar(rng, semilla, o) {
     let alternativas, respuesta;
@@ -108,7 +149,7 @@
       alternativas = P.armar({ correcta: o.correcta, errores, rng, texto: o.texto });
       respuesta = { valor: o.correcta, unidad: o.unidad || '' };
     }
-    const pr = { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: '',
+    const pr = { id: `${ID}#${semilla}`, variables: o.variables, enunciado: o.enunciado, pregunta: o.pregunta, datos: datosDe(o.datos),
       alternativas, solucion: o.solucion, respuesta, _datos: o.datos };
     return o.viva ? Object.assign(pr, o.viva(alternativas, respuesta)) : pr;
   }
@@ -124,8 +165,8 @@
     'AR8-tiempo-directo': 'tiempo × fracción', 'AR5-solo-lo-que-falta': 'solo lo que falta',
   };
   const nb = x => (typeof x === 'string' ? x.replace(/ %/g, ' %').replace(/S\/ /g, 'S/ ') : x);
-  // Una cota que puede no ser exacta: entera si lo es; si no, truncada a 2 decimales con «…».
-  const cota = x => (Math.abs(x - Math.round(x)) < 1e-9 ? F(Math.round(x)) : `${P.formatear(Math.floor(x * 100 + 1e-9) / 100, 2)}…`);
+  // (La cota de stock ya no se escribe truncada con «…», que en Números racionales quiere decir que un bloque se repite:
+  // N < 283,5… pasó a N ≤ 283, el mayor entero que cumple; auditoría del cierre, 20 nov.)
   function rango(vals) {
     const lo = Math.min(...vals), hi = Math.max(...vals);
     const paso = [1, 2, 5, 10, 20, 25, 50, 100, 200, 500].find(p => (hi - lo) / p <= 10) || 1000;
@@ -229,7 +270,7 @@
       datos: { tipo: 'acotada', k, cotas: [[p1, q1], [p2, q2]] } });
   }
 
-  // Ternas (d; p; q) con d·(p − q) = D y d·p·q = M; pesi = si se exige MCD(p; q) = 1.
+  // Ternas (d; p; q) con d × (p − q) = D y d × p × q = M; pesi = si se exige MCD(p; q) = 1.
   function ternas(D, M, pesi) {
     const out = [];
     for (let d = 1; d <= D; d++) {
@@ -262,12 +303,12 @@
     if (r * r === disc && (r - D) % 2 === 0) errores.push(e('mcm-como-producto', 2 * ((r - D) / 2) + D, 'Tomaste el MCM como el producto de los números. Eso solo vale si son PESI.'));
     errores.push(e('responde-un-numero-mayor', A, `${A} es el mayor número. Se pide la suma: ${A} + ${B}.`));
     errores.push(e('responde-un-numero-menor', B, `${B} es el menor número. Se pide la suma: ${A} + ${B}.`));
-    errores.push(e('suma-diferencia-y-mcm', D + M, 'Sumaste la diferencia y el MCM, que son datos. Los números son d·p y d·q.'));
+    errores.push(e('suma-diferencia-y-mcm', D + M, 'Sumaste la diferencia y el MCM, que son datos. Los números son d × p y d × q.'));
     const solucion = [
-      ['Números: d·p y d·q, con ', v('d', 'd'), ' el MCD y p, q PESI.'],
-      [v('D', `d(p − q) = ${D}`), ' y ', v('M', `d·p·q = ${M}`), '.'],
-      ['p − q y p·q son PESI: ', v('d', `d = MCD(${D}; ${M}) = ${d}`), '.'],
-      [`p − q = ${p - q} y p·q = ${p * q}: p = ${p}, q = ${q}.`],
+      ['Números: d × p y d × q, con ', v('d', 'd'), ' el MCD y p, q PESI.'],
+      [v('D', `d(p − q) = ${D}`), ' y ', v('M', `d × p × q = ${M}`), '.'],
+      ['p − q y p × q son PESI: ', v('d', `d = MCD(${D}; ${M}) = ${d}`), '.'],
+      [`p − q = ${p - q} y p × q = ${p * q}: p = ${p}, q = ${q}.`],
       [`Los números son ${A} y ${B}: `, v('S', `suma ${A + B}`), '.'],
     ];
     return cerrar(rng, semilla, { correcta: A + B, errores, texto: F, variables, enunciado, pregunta, solucion,
@@ -327,14 +368,14 @@
   function stock(rng, semilla) {
     const [a1, b1] = rng.elegir(FR_STOCK), [a2, b2] = rng.elegir(FR_STOCK);
     const m = b1 * b2 / mcd(b1 - a1, b2);
-    const fn = (b1 - a1) * (b2 - a2), fd = b1 * b2; // queda N·fn/fd
+    const fn = (b1 - a1) * (b2 - a2), fd = b1 * b2; // queda N × fn/fd
     const C = rng.entero(4, 30) * 5;
-    const topeC = Math.floor((C * fd - 1) / fn);     // N·fn < C·fd
+    const topeC = Math.floor((C * fd - 1) / fn);     // N × fn < C × fd
     const Nstar0 = Math.floor(topeC / m) * m;
     if (Nstar0 < 2 * m || Nstar0 > 900) return null;
     const H = Math.ceil((Nstar0 + rng.entero(1, 3) * m + rng.entero(0, m - 1)) / 10) * 10;
     const L = Math.max(10, Math.floor((Nstar0 - rng.entero(2, 5) * m - rng.entero(0, m - 1)) / 10) * 10);
-    // El mayor N de [L; H] múltiplo de paso con N·num < cota (estricto o no).
+    // El mayor N de [L; H] múltiplo de paso con N × num < cota (estricto o no).
     const mayor = (paso, num, den, cotaC, estricto) => { for (let N = Math.floor(H / paso) * paso; N >= L; N -= paso) { const ok = estricto ? N * num < cotaC * den : N * num <= cotaC * den; if (ok) return N; } return NaN; };
     const N = mayor(m, fn, fd, C, true);
     if (N !== Nstar0) return null;
@@ -357,21 +398,21 @@
     const tope = C * fd / fn;
     const solucion = [
       ['Las dos ventas deben dar enteros: ', v('N', 'N'), ` es múltiplo de ${m}.`],
-      [`Le queda ${fracTxt(fn, fd)} del total, menos de `, v('C', `${C}`), ` ⇒ N < ${cota(tope)}.`],
+      [`Le queda ${fracTxt(fn, fd)} del total, menos de `, v('C', `${C}`), ` ⇒ N ≤ ${F(topeC)}.`],
       [`El mayor múltiplo de ${m} que cumple es `, v('N', `${N}`), '.'],
     ];
     const viva = (alts, resp) => escena(alts, resp, {
       variable: 'N', color: 'd', arrastra: true, extra: [L, H, tope],
-      alt: `Recta de N: entre ${L} y ${H}; los múltiplos de ${m}; N < ${cota(tope)}; el mayor que cumple es ${N}`,
+      alt: `Recta de N: entre ${L} y ${H}; los múltiplos de ${m}; N ≤ ${F(topeC)}; el mayor que cumple es ${N}`,
       elementos: [
         { tipo: 'intervalo', a: L, b: H, ca: true, cb: true, color: null, rotulo: `entre ${L} y ${H}`, fila: 2, desde: 0 },
         { tipo: 'enteros', a: L, b: H, cada: m, color: 'o', fila: 0, desde: 1 },
-        { tipo: 'intervalo', a: null, b: tope, cb: false, color: 'h', rotulo: `N < ${cota(tope)}`, fila: 1, desde: 2 },
+        { tipo: 'intervalo', a: null, b: topeC, cb: true, color: 'h', rotulo: `N ≤ ${F(topeC)}`, fila: 1, desde: 2 },
         { tipo: 'punto', x: N, color: 'd', rotulo: `N = ${N}`, fila: 0, desde: 3 },
       ],
       pasos: [
-        paso(1, ['Las dos ventas deben dar enteros: ', v('N', 'N'), ` múltiplo de ${m}.`], [`N = ${m}·t`]),
-        paso(2, [`Le queda ${fracTxt(fn, fd)} del total, menos de `, v('C', `${C}`), '.'], [`N·${fracTxt(fn, fd)} < ${C} → N < ${cota(tope)}`]),
+        paso(1, ['Las dos ventas deben dar enteros: ', v('N', 'N'), ` múltiplo de ${m}.`], [`N = ${m} × t`]),
+        paso(2, [`Le queda ${fracTxt(fn, fd)} del total, menos de `, v('C', `${C}`), '.'], [`N × ${fracTxt(fn, fd)} < ${C} → N ≤ ${F(topeC)}`]),
         paso(3, [`El mayor múltiplo de ${m} que cumple es `, v('N', `${N}`), '.'], [`Vende ${N * a1 / b1} y ${N * (b1 - a1) / b1 * a2 / b2}; quedan ${F(R)} < ${C}`], true),
       ],
     });
@@ -400,7 +441,7 @@
       e('cuenta-las-excluidas', E, `Esas son las que se quitan: las de ${quien} múltiplo de ${q}.`),
       e('poste-sin-sumar-uno', T - 1 - E, `De ${kmin} a ${kmax} hay ${T} valores: se cuentan los dos extremos.`),
     ];
-    if (100 % base) { const k0 = Math.floor(100 / base); errores.push(e('incluye-dos-cifras', kmax - k0 + 1 - multiplos(k0, kmax, q), `Con k = ${k0}, ${base}·${k0} = ${base * k0} tiene dos cifras. Se empieza en k = ${kmin}.`)); }
+    if (100 % base) { const k0 = Math.floor(100 / base); errores.push(e('incluye-dos-cifras', kmax - k0 + 1 - multiplos(k0, kmax, q), `Con k = ${k0}, ${base} × ${k0} = ${base * k0} tiene dos cifras. Se empieza en k = ${kmin}.`)); }
     errores.push(e('resta-entre-q', T - Math.floor(T / q), `Quitaste ${T}/${q} redondeado. Hay que contar los múltiplos de ${q} entre ${kmin} y ${kmax}.`));
     const solucion = [
       ['Equivalentes a ', v('fr', `${a}/${b}`), `: ${a}k/${b}k, con `, v('k', 'k'), ' entero positivo.'],
@@ -417,7 +458,7 @@
     const [p, q] = rng.elegir([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [2, 5], [3, 5], [1, 5]]);
     const t1 = rng.entero(1, 8);
     const [a, b] = rng.elegir([[1, 3], [2, 3], [1, 4], [1, 2], [3, 4], [1, 5], [2, 5]]);
-    // t2 = t1·(1 − p/q)/(p/q) · b/(b − a)
+    // t2 = t1 × (1 − p/q)/(p/q) × b/(b − a)
     const t2 = P.frac(t1 * (q - p) * b, p * (b - a));
     const total = t1 + t2.n / t2.d;
     if (!corto(total) || Math.abs(total * 4 - Math.round(total * 4)) > 1e-9 || total > 40) return null;
@@ -436,7 +477,7 @@
     const T2 = F(t2.n / t2.d), falta = fracTxt(q - p, q);
     const solucion = [
       ['Al inicio: ', v('f', `${p}/${q}`), ' en ', v('t1', `${t1} h`), ` ⇒ ${P.textoFraccion(r1)} ${del} por hora.`],
-      ['Disminuye en ', v('r', `${a}/${b}`), `: ${P.textoFraccion(r1)} · ${b - a}/${b} = ${P.textoFraccion(r2)} por hora.`],
+      ['Disminuye en ', v('r', `${a}/${b}`), `: ${P.textoFraccion(r1)} × ${b - a}/${b} = ${P.textoFraccion(r2)} por hora.`],
       [`Falta ${falta}: ${falta} ÷ ${P.textoFraccion(r2)} = ${T2} h.`],
       [v('T', 'Total'), ` = ${t1} + ${T2} = `, v('T', `${F(total)} h`), '.'],
     ];
@@ -450,7 +491,7 @@
       ],
       pasos: [
         paso(1, ['Al inicio llena ', v('f', `${p}/${q}`), ' en ', v('t1', `${t1} h`), '.'], [`${P.textoFraccion(r1)} ${del} por hora`]),
-        paso(2, ['Con ', v('r', `${a}/${b}`), ` menos de rendimiento, falta ${falta}.`], [`${P.textoFraccion(r1)} · ${b - a}/${b} = ${P.textoFraccion(r2)} por hora → ${T2} h`]),
+        paso(2, ['Con ', v('r', `${a}/${b}`), ` menos de rendimiento, falta ${falta}.`], [`${P.textoFraccion(r1)} × ${b - a}/${b} = ${P.textoFraccion(r2)} por hora → ${T2} h`]),
         paso(3, ['Tiempo total: ', v('T', `${F(total)} h`), '.'], [`${t1} + ${T2} = ${F(total)}`], true),
       ],
     });
@@ -493,7 +534,7 @@
       .map(t => [`Se prueba: ${t.join('; ')}.`]);
     const solucion = [
       sub === 'suma' ? ['Si a + b = ', v('S', `${S}`), ', b − a baja cuando a se acerca a la mitad.']
-        : ['Si a·b = ', v('S', `${S}`), `, conviene a y b cerca de √${S} ≈ ${F(Math.sqrt(S))}.`],
+        : ['Si a × b = ', v('S', `${S}`), `, conviene a y b cerca de √${S} ≈ ${F(Math.sqrt(S))}.`],
       ...prueba,
       ['La primera irreducible es ', v('x', `${a}/${b}`), `, con diferencia ${b - a}.`],
     ];
@@ -542,7 +583,7 @@
       const p = rng.elegir([17, 19, 23, 29, 31, 43, 47, 53, 59, 61, 67, 71, 79, 83, 89, 97]);
       const a = rng.entero(1, Math.min(p - 1, 40));
       const L = orden10(p);
-      const T = (100 - a % 100) % 100;                       // a·(10^L − 1) termina en −a (mod 100)
+      const T = (100 - a % 100) % 100;                       // a × (10^L − 1) termina en −a (mod 100)
       const x = T * inv100(p) % 100;
       const des = desarrollo(a, p);
       const TT = String(T).padStart(2, '0'), xx = String(x).padStart(2, '0');
@@ -551,16 +592,16 @@
       const pregunta = ['Sin dividir, ¿en qué ', v('x', 'dos cifras termina el periodo'), '?'];
       const u = p % 10, Tu = T % 10, uu = x % 10;
       const errores = [
-        et('sin-el-signo', dos(a * inv100(p) % 100), `Buscaste que por ${p} termine en ${String(a).padStart(2, '0')}. Pero ${a}·10${sup(L)} − ${a} termina en ${TT}.`),
+        et('sin-el-signo', dos(a * inv100(p) % 100), `Buscaste que por ${p} termine en ${String(a).padStart(2, '0')}. Pero ${a} × 10${sup(L)} − ${a} termina en ${TT}.`),
         et('primeras-cifras', dos(Number(des.per.slice(0, 2))), 'Esas son las dos primeras cifras del periodo. Se piden las dos últimas.'),
         et('cifras-al-reves', dos(Number(xx.split('').reverse().join(''))), 'Son las cifras correctas, pero al revés.'),
-        a !== 1 ? et('periodo-de-uno-entre-p', dos(99 * inv100(p) % 100), `Esas son las del periodo de 1/${p}. Para ${a}/${p}, periodo·${p} termina en ${TT}.`) : null,
+        a !== 1 ? et('periodo-de-uno-entre-p', dos(99 * inv100(p) % 100), `Esas son las del periodo de 1/${p}. Para ${a}/${p}, periodo × ${p} termina en ${TT}.`) : null,
       ];
       const solucion = [
-        ['Periodo · ', v('fr', `${p}`), ` = ${a}·(10${sup(L)} − 1).`],
-        [`${a}·10${sup(L)} − ${a} termina en ${TT}.`],
-        [`Unidades: u·${u} termina en ${Tu} ⇒ u = ${uu}.`],
-        [`Probando: ${xx}·${p} = ${x * p}, que termina en ${TT}.`],
+        ['Periodo × ', v('fr', `${p}`), ` = ${a} × (10${sup(L)} − 1).`],
+        [`${a} × 10${sup(L)} − ${a} termina en ${TT}.`],
+        [`Unidades: u × ${u} termina en ${Tu} ⇒ u = ${uu}.`],
+        [`Probando: ${xx} × ${p} = ${x * p}, que termina en ${TT}.`],
         ['El periodo termina en ', v('x', xx), '.'],
       ];
       return cerrar(rng, semilla, { textual: true, correcta: dos(x), errores, variables, enunciado, pregunta, solucion,
@@ -588,7 +629,7 @@
     ];
     const solucion = [
       ['El periodo es ', v('L', per), `: ${L} cifras.`],
-      [v('k', `${k}`), ` = ${L}·${Math.floor(k / L)} + ${r}.`],
+      [v('k', `${k}`), ` = ${L} × ${Math.floor(k / L)} + ${r}.`],
       [r === 0 ? `Resto 0: el lugar ${k} es la última cifra del periodo.` : `Resto ${r}: es la cifra ${pos}.ª del periodo.`],
       [`La ${pos}.ª cifra de ${per} es `, v('x', `${cif(pos)}`), '.'],
     ];
@@ -699,9 +740,9 @@
       e('mcm-por-mcd', mcm(a, c), `Ese es el MCM de ${a} y ${c}. Se pide el MCD.`),
     ];
     const solucion = [
-      ['En la progresión a, ', v('m', 'm'), ', c: a·c = m², y el producto es m³.'],
+      ['En la progresión a, ', v('m', 'm'), ', c: a × c = m², y el producto es m³.'],
       [v('m', 'm'), ' = ∛', v('P', P.formatear(Pr)), ' = ', v('m', `${m}`), '.'],
-      ['a + c = ', v('S', `${S}`), ` − ${m} = ${a + c} y a·c = ${m * m}: ${a} y ${c}.`],
+      ['a + c = ', v('S', `${S}`), ` − ${m} = ${a + c} y a × c = ${m * m}: ${a} y ${c}.`],
       [`${a} = ${factorizar(a)} y ${c} = ${factorizar(c)}.`],
       [v('x', 'MCD'), `(${a}; ${c}) = `, v('x', `${mcd(a, c)}`), '.'],
     ];
@@ -711,7 +752,7 @@
 
   // Euclides hacia atrás en unidades del MCD: cocientes q[0..n−1] y signos (+1 defecto, −1 exceso).
   function reconstruir(qs, signos) {
-    // r_{n−1} = 1 (el MCD), r_{n−2} = q_n·1; luego r_{i−2} = q_i·r_{i−1} ± r_i.
+    // r_{n−1} = 1 (el MCD), r_{n−2} = q_n × 1; luego r_{i−2} = q_i × r_{i−1} ± r_i.
     const n = qs.length; const r = new Array(n + 1);
     r[n] = 1; r[n - 1] = qs[n - 1];
     for (let i = n - 2; i >= 0; i--) r[i] = qs[i] * r[i + 1] + signos[i] * r[i + 2];
@@ -743,7 +784,7 @@
     const r1 = qs[2];
     const lin = (i) => {
       const rr = [u.A, u.B, r1, 1];
-      return `${rr[i]}d = ${qs[i]}·${rr[i + 1]}d ${signos[i] > 0 ? '+' : '−'} ${rr[i + 2]}d${signos[i] < 0 ? ' (por exceso)' : ''}`;
+      return `${rr[i]}d = ${qs[i]} × ${rr[i + 1]}d ${signos[i] > 0 ? '+' : '−'} ${rr[i + 2]}d${signos[i] < 0 ? ' (por exceso)' : ''}`;
     };
     const solucion = [
       ['De abajo arriba, en unidades del MCD ', v('d', 'd'), `: el último resto es ${r1}d.`],
@@ -756,5 +797,5 @@
       datos: { tipo: 'euclides', cocientes: qs, exceso: ex + 1, D } });
   }
 
-  return { id: ID, titulo: 'Fracciones, decimales periódicos y MCD en problemas', generar, TIPOS };
+  return { id: ID, tiposPorUnidad: TIPOS_POR_UNIDAD, titulo: 'Fracciones, decimales periódicos y MCD en problemas', generar, TIPOS };
 });

@@ -3726,7 +3726,7 @@
        "medias": "Tres medias para dos números",
        "serie": "Razones iguales: la suma también"
       },
-      "terminos": 30
+      "terminos": 31
      }
     },
     {
@@ -3871,7 +3871,7 @@
        "descuento": "Descuento comercial y racional",
        "vencimiento-comun": "Varias letras, una fecha"
       },
-      "terminos": 28
+      "terminos": 30
      }
     },
     {
@@ -3917,7 +3917,7 @@
        "alcohol": "Grados: litros de alcohol puro",
        "quilates": "Quilates: oro de cada 24 partes"
       },
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -4077,7 +4077,7 @@
        "bayes": "De dónde viene un fallado",
        "esperanza": "El promedio a la larga"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -4130,7 +4130,7 @@
        "base-desconocida": "La base que no se ve",
        "conteo-cifras": "Contar cifras por bloques"
       },
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -4189,7 +4189,7 @@
        "defecto-exceso": "Sobran o faltan para otra bolsita",
        "cifras-producto": "Cifras del producto y del cociente"
       },
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -4244,7 +4244,7 @@
        "criterios-pesos": "Criterios del 11, 7 y 13",
        "diofanticas": "Dos clases de monedas, pago justo"
       },
-      "terminos": 36
+      "terminos": 37
      }
     },
     {
@@ -4360,7 +4360,7 @@
        "multiplos-tramo": "Múltiplos de uno o de otro",
        "euclides": "Euclides y la fracción continua"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -4373,7 +4373,8 @@
       "Orden entre fracciones",
       "Decimales exactos y periódicos",
       "Fracción generatriz",
-      "Números en otras bases"
+      "Números en otras bases",
+      "Operaciones y fracción del resto"
      ],
      "universidades": {
       "uni": {
@@ -4395,26 +4396,30 @@
       "aritmetica.mcd-y-mcm"
      ],
      "plantillas": [
-      "fracciones",
+      "racionales",
       "fracciones-problemas",
-      "numeros-sucesiones"
+      "numeros-sucesiones",
+      "fracciones"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/numeros-racionales.js",
       "requiere": [
+       "/nucleo/kit/piezas/arit-queque.js",
+       "/nucleo/kit/piezas/arit-calculadora.js",
+       "/nucleo/kit/piezas/arit-tabla.js",
        "/nucleo/kit/piezas/arit-tiras.js",
-       "/nucleo/kit/piezas/recta.js",
-       "/nucleo/kit/piezas/arit-tabla.js"
+       "/nucleo/kit/piezas/recta.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "equivalentes": "Partir distinto, misma cantidad",
-       "orden-recta": "Dónde cae la fracción",
-       "exacto-periodico": "Exacto o periódico",
-       "generatriz": "Alinear las colas y restar",
-       "otras-bases": "Exacto según la base"
+       "equivalentes": "Fracciones equivalentes",
+       "orden-recta": "Comparar fracciones",
+       "del-resto": "Partes del total y del resto",
+       "exacto-periodico": "Decimal exacto o periódico",
+       "generatriz": "La fracción generatriz",
+       "otras-bases": "Fracciones en otras bases"
       },
-      "terminos": 33
+      "terminos": 52
      }
     },
     {
@@ -4463,7 +4468,7 @@
        "raiz-entera": "El cuadrado más grande que cabe",
        "aproximadas": "Encerrar la raíz por pasos"
       },
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -9749,7 +9754,8 @@
     "/plantillas/fracciones/papel.json"
    ],
    "rehacer": [
-    "aritmetica.mcd-y-mcm"
+    "aritmetica.mcd-y-mcm",
+    "aritmetica.numeros-racionales"
    ]
   },
   "fracciones-problemas": {
@@ -11414,6 +11420,30 @@
    "archivos": [
     "/plantillas/quimica-conceptos/generador.js",
     "/plantillas/quimica-conceptos/papel.json"
+   ]
+  },
+  "racionales": {
+   "id": "racionales",
+   "titulo": "El queque y la calculadora",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "aritmetica.numeros-racionales"
+   ],
+   "url": "#/practica/racionales",
+   "ideas": [
+    "equivalentes",
+    "orden-recta",
+    "del-resto",
+    "exacto-periodico",
+    "generatriz",
+    "otras-bases"
+   ],
+   "papel": "/plantillas/racionales/papel.json",
+   "archivos": [
+    "/plantillas/racionales/generador.js",
+    "/plantillas/racionales/papel.json"
    ]
   },
   "razonamiento-figuras": {

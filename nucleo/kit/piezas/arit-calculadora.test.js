@@ -111,3 +111,21 @@ test('el «?» de lo que se pide lleva un halo: con casillas pares cae sobre la 
   // Las cifras no llevan halo.
   assert.ok(!/paint-order[^>]*>\d</.test(P.dibujar({ calcs: [{ cuenta: '24 × 7', pantalla: '168' }] })));
 });
+
+// Bloque de «Números racionales» (19 nov, etapa 8): la coma decimal no ocupa casilla y va junto a su cifra.
+test('la coma decimal: no ocupa casilla, va abajo a la derecha de su cifra y cabe en la pantalla', () => {
+  const d = { casillas: 8, calcs: [{ cuenta: '1 ÷ 4', pantalla: '0,25' }, { cuenta: '1 ÷ 3', pantalla: '0,3333333' }] };
+  const g = P.geometria(d), s = P.dibujar(d);
+  assert.ok(!/NaN|undefined/.test(s));
+  for (const c of g.calcs) {
+    const cif = c.items.filter(t => t.que === 'cifra'), coma = c.items.find(t => t.que === 'coma');
+    assert.ok(coma, 'hay coma');
+    const cero = cif[0];
+    assert.ok(coma.x > cero.x && coma.x < cif[1].x, 'entre el 0 y la cifra siguiente');
+  }
+  assert.equal(g.calcs[1].v.cifras.length, 8, 'ocho cifras sin contar la coma');
+  assert.match(P.alt(d), /0,25 \(3 cifras\)/);
+  // Sin coma, nada cambia.
+  const sin = { casillas: 8, calcs: [{ cuenta: '12 × 3', pantalla: '36' }] };
+  assert.ok(!P.geometria(sin).calcs[0].items.some(t => t.que === 'coma'));
+});

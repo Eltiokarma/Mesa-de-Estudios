@@ -1,0 +1,24 @@
+{
+  "id": "racionales",
+  "titulo": "El queque y la calculadora",
+  "formato": "predicciones",
+  "unidades": [
+    "aritmetica.numeros-racionales"
+  ],
+  "temas": [
+    "Racionales como clases de equivalencia",
+    "Racionales e irracionales",
+    "Clases de fracciones",
+    "Orden entre fracciones",
+    "Decimales exactos y periódicos",
+    "Fracción generatriz",
+    "Números en otras bases",
+    "Operaciones y fracción del resto"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

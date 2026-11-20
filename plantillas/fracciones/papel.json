@@ -34,12 +34,12 @@
       "id": "p3",
       "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "básico",
-      "enunciado": "Halla la fracción generatriz de 0,31818… (el 3 no se repite; el bloque 18 se repite sin fin) y simplifícala.",
+      "enunciado": "Halla la fracción generatriz de 0,3181818… (el 3 no se repite; el bloque 18 se repite sin fin) y simplifícala.",
       "respuesta": "7/22.",
       "pasos": [
         "Es un periódico mixto: el 3 no se repite (anteperiodo) y el bloque 18 sí (periodo).",
         "Numerador: el número formado por todas las cifras hasta el final del primer periodo menos el que no se repite: 318 − 3 = 315. Denominador: un 9 por cada cifra del periodo y un 0 por cada cifra del anteperiodo: 990.",
-        "315/990 se simplifica entre 45: 7/22. Control: 7 ÷ 22 = 0,31818…"
+        "315/990 se simplifica entre 45: 7/22. Control: 7 ÷ 22 = 0,3181818…"
       ],
       "verificar": [ { "fn": "generatriz", "args": ["0,3(18)"], "espera": { "texto": "7/22", "sinSimplificar": { "n": 315, "d": 990 } } },
                      { "fn": "decimal", "args": [[7, 22]], "espera": { "texto": "0,3(18)" } } ]
@@ -49,11 +49,11 @@
       "unidades": ["aritmetica.numeros-racionales"],
       "nivel": "básico",
       "enunciado": "¿Cuál de estas fracciones da un decimal exacto: 7/12, 9/40 o 5/33? Escribe el decimal de cada una.",
-      "respuesta": "Solo 9/40 = 0,225. Además, 7/12 = 0,58333… es periódico mixto y 5/33 = 0,1515… es periódico puro.",
+      "respuesta": "Solo 9/40 = 0,225. Además, 7/12 = 0,58333… es periódico mixto y 5/33 = 0,151515… es periódico puro.",
       "pasos": [
-        "Con la fracción irreducible, mira los factores primos del denominador. 40 = 2³·5 solo tiene 2 y 5: el decimal es exacto, porque 9/40 = 225/1000.",
-        "12 = 2²·3 tiene un 2 y un 3: es periódico mixto. 7 ÷ 12 = 0,58333…",
-        "33 = 3·11 no tiene ni 2 ni 5: es periódico puro. 5 ÷ 33 = 0,1515…"
+        "Con la fracción irreducible, mira los factores primos del denominador. 40 = 2³ × 5 solo tiene 2 y 5: el decimal es exacto, porque 9/40 = 225/1000.",
+        "12 = 2² × 3 tiene un 2 y un 3: es periódico mixto. 7 ÷ 12 = 0,58333…",
+        "33 = 3 × 11 no tiene ni 2 ni 5: es periódico puro. 5 ÷ 33 = 0,151515…"
       ],
       "verificar": [ { "fn": "decimal", "args": [[9, 40]], "espera": { "texto": "0,225", "tipo": "exacto", "factoresDen": "2³·5" } },
                      { "fn": "decimal", "args": [[7, 12]], "espera": { "texto": "0,58(3)", "tipo": "periodico-mixto" } },
@@ -66,7 +66,7 @@
       "enunciado": "Una persona gasta 1/3 de su sueldo en alquiler y luego 1/4 de lo que le queda en comida. Si le quedan S/ 900, ¿cuál es su sueldo?",
       "respuesta": "S/ 1800.",
       "pasos": [
-        "Después del alquiler le quedan 2/3 del sueldo. La comida se lleva 1/4 de eso, así que queda 3/4 de 2/3, es decir, (3/4)·(2/3) = 1/2 del sueldo.",
+        "Después del alquiler le quedan 2/3 del sueldo. La comida se lleva 1/4 de eso, así que queda 3/4 de 2/3, es decir, (3/4) × (2/3) = 1/2 del sueldo.",
         "Si la mitad del sueldo son S/ 900, el sueldo es S/ 1800.",
         "Ojo con el «de lo que le queda»: si el 1/4 fuera del sueldo, quedarían 1 − 1/3 − 1/4 = 5/12, otra cuenta. Control: 1800 − 600 = 1200; 1200 − 300 = 900."
       ],

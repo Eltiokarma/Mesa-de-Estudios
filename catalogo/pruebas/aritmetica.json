@@ -6,7 +6,7 @@
   "informes": [
     "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
   ],
-  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores. MCD y MCM (19 nov) tampoco entra: sus dos pares, el mismo resto con dos divisores (ari-35) y los múltiplos de uno o de otro (ari-36), de la práctica mcd-mcm, quedan en la reserva con sus verificadores.",
+  "nota": "Diez pares. Desde el 18 nov (docs/etapa4/decisiones.md, Las cuatro operaciones), dos son de Las cuatro operaciones: la resta con ceros (ari-17, de la escena, que salió de la reserva) y las cifras ocultas en una resta (ari-30, de la práctica operaciones-cifras, como San Marcos 2022 y 2024-I). El resto por exceso (ari-18) y el complemento (ari-29) quedan en la reserva, con sus verificadores. Para quedar en diez, el segundo par de porcentajes (ari-04) y el de MCD y MCM (fr-02) pasaron a la reserva sin cambios; regla de tres y sucesiones conservan sus dos pares. Los precios están fuera de la lista del generador de porcentajes, para que ningún ítem salga igual en la práctica. Divisibilidad (19 nov) no entra en los diez: sus dos pares, el conteo de múltiplos en un tramo (ari-31) y la cifra oculta con 9 (ari-32), de la práctica divisibilidad-restos, quedan en la reserva con sus verificadores. Números primos y divisores (19 nov) tampoco entra: sus dos pares, la cantidad de divisores (ari-33) y las fracciones irreductibles con la función de Euler (ari-34), de la práctica primos-divisores, quedan en la reserva con sus verificadores. MCD y MCM (19 nov) tampoco entra: sus dos pares, el mismo resto con dos divisores (ari-35) y los múltiplos de uno o de otro (ari-36), de la práctica mcd-mcm, quedan en la reserva con sus verificadores. Números racionales (19 nov, etapa 8) tampoco entra (fr-01, la suma de fracciones, ya está en las formas): sus dos pares, lo que queda tras dos ventas (ari-37) y la generatriz de un periódico mixto (ari-38), de la práctica racionales, quedan en la reserva con sus verificadores.",
   "errores": {
     "suma-descuentos": {
       "respaldo": "documentado",
@@ -383,6 +383,30 @@
     "solo-los-de-los-dos": {
       "respaldo": "hipotesis",
       "describe": "Cuenta solo los múltiplos de los dos a la vez (AT-IE-SOLO-AMBOS)"
+    },
+    "segunda-fraccion-del-total": {
+      "respaldo": "hipotesis",
+      "describe": "Toma la segunda fracción sobre el total y no sobre lo que quedó (AT-RESTO-TOTAL)"
+    },
+    "olvida-la-segunda-venta": {
+      "respaldo": "hipotesis",
+      "describe": "Deshace o hace solo una de las dos ventas (AT-DESHACE-UNA)"
+    },
+    "da-lo-vendido-despues": {
+      "respaldo": "hipotesis",
+      "describe": "Responde lo vendido en la segunda venta, no lo que queda (AT-RESPONDE-OTRA)"
+    },
+    "mixto-como-puro": {
+      "respaldo": "hipotesis",
+      "describe": "Trata un periódico mixto como si se repitiera desde la coma (AT-MIXTO-COMO-PURO)"
+    },
+    "corta-el-decimal": {
+      "respaldo": "hipotesis",
+      "describe": "Corta el decimal y lo toma como exacto (AT-CORTAR)"
+    },
+    "olvida-el-cero": {
+      "respaldo": "hipotesis",
+      "describe": "Resta la cifra de antes pero olvida el 0 del denominador (AT-SIN-CERO)"
     }
   },
   "pares": [
@@ -2505,6 +2529,142 @@
             "texto": "20",
             "valor": 20,
             "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-37",
+      "plantilla": "racionales",
+      "unidad": "aritmetica.numeros-racionales",
+      "nombreUnidad": "Números racionales, fracciones y decimales",
+      "mide": "Tomar una fracción de lo que queda, no del total: lo que queda tras dos ventas",
+      "A": {
+        "enunciado": "Un saco tiene 120 kg de arroz. Se vende 1/3 del saco y después 1/4 de lo que quedó. ¿Cuántos kilos quedan?",
+        "datos": {
+          "N": 120,
+          "f1": [
+            1,
+            3
+          ],
+          "f2": [
+            1,
+            4
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "60 kg",
+            "valor": 60,
+            "correcta": true
+          },
+          {
+            "texto": "50 kg",
+            "valor": 50,
+            "error": "segunda-fraccion-del-total"
+          },
+          {
+            "texto": "80 kg",
+            "valor": 80,
+            "error": "olvida-la-segunda-venta"
+          },
+          {
+            "texto": "20 kg",
+            "valor": 20,
+            "error": "da-lo-vendido-despues"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Un saco tiene 150 kg de arroz. Se vende 1/5 del saco y después 1/3 de lo que quedó. ¿Cuántos kilos quedan?",
+        "datos": {
+          "N": 150,
+          "f1": [
+            1,
+            5
+          ],
+          "f2": [
+            1,
+            3
+          ]
+        },
+        "opciones": [
+          {
+            "texto": "70 kg",
+            "valor": 70,
+            "error": "segunda-fraccion-del-total"
+          },
+          {
+            "texto": "80 kg",
+            "valor": 80,
+            "correcta": true
+          },
+          {
+            "texto": "40 kg",
+            "valor": 40,
+            "error": "da-lo-vendido-despues"
+          },
+          {
+            "texto": "120 kg",
+            "valor": 120,
+            "error": "olvida-la-segunda-venta"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ari-38",
+      "plantilla": "racionales",
+      "unidad": "aritmetica.numeros-racionales",
+      "nombreUnidad": "Números racionales, fracciones y decimales",
+      "mide": "Generatriz de un periódico mixto: la cifra de antes se resta y pone un 0 abajo",
+      "A": {
+        "enunciado": "¿Qué fracción irreductible es 0,7333…, en el que el 3 se repite sin fin?",
+        "datos": {
+          "ante": "7",
+          "per": "3"
+        },
+        "opciones": [
+          {
+            "texto": "73/99",
+            "error": "mixto-como-puro"
+          },
+          {
+            "texto": "11/15",
+            "correcta": true
+          },
+          {
+            "texto": "73/100",
+            "error": "corta-el-decimal"
+          },
+          {
+            "texto": "22/3",
+            "error": "olvida-el-cero"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Qué fracción irreductible es 0,2333…, en el que el 3 se repite sin fin?",
+        "datos": {
+          "ante": "2",
+          "per": "3"
+        },
+        "opciones": [
+          {
+            "texto": "7/30",
+            "correcta": true
+          },
+          {
+            "texto": "23/99",
+            "error": "mixto-como-puro"
+          },
+          {
+            "texto": "7/3",
+            "error": "olvida-el-cero"
+          },
+          {
+            "texto": "23/100",
+            "error": "corta-el-decimal"
           }
         ]
       }

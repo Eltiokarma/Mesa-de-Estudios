@@ -463,7 +463,8 @@
         "Orden entre fracciones",
         "Decimales exactos y periódicos",
         "Fracción generatriz",
-        "Números en otras bases"
+        "Números en otras bases",
+        "Operaciones y fracción del resto"
       ],
       "universidades": {
         "uni": {
@@ -482,7 +483,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": ["aritmetica.mcd-y-mcm"],
-      "plantillas": ["fracciones", "fracciones-problemas", "numeros-sucesiones"],
+      "plantillas": ["racionales", "fracciones-problemas", "numeros-sucesiones", "fracciones"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
     {

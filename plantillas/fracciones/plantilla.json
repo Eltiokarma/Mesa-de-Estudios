@@ -9,7 +9,8 @@
   ],
   "estado": "borrador",
   "rehacer": [
-    "aritmetica.mcd-y-mcm"
+    "aritmetica.mcd-y-mcm",
+    "aritmetica.numeros-racionales"
   ],
   "version": "0.1.0",
   "escena": "index.html",

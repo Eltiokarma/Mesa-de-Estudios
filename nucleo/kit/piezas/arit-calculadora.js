@@ -12,6 +12,11 @@
  *     cuenta: '10 000 × 100',                 la cuenta tecleada, arriba de la pantalla (en tinta)
  *     pantalla: '1000000' | '?' | 'E',        las cifras del resultado, desde la casilla de la derecha; '?' (lo que se
  *                                             pide, en tinta y centrado); 'E', o cifras de más, no caben: «E» a la izquierda
+ *                                             Bloque de «Números racionales» (19 nov; contenido/teoria/aritmetica/
+ *                                             numeros-racionales.js, ideas 4 y 5): la pantalla puede traer una coma
+ *                                             decimal ('0,25'). La coma no ocupa casilla: va abajo a la derecha de la
+ *                                             cifra que la precede, como en una calculadora de verdad. Sin coma, nada
+ *                                             cambia.
  *     color: false,                           el resultado en tinta (cuando el violeta delataría); por defecto, violeta
  *     rotulo: 'el menor',                     debajo de la calculadora
  *   }],
@@ -50,8 +55,10 @@
   function vista(c, K) {
     const p = String(c.pantalla === undefined || c.pantalla === null ? '?' : c.pantalla).replace(/\s+/g, '');
     if (p === '?') return { pide: true, cifras: [] };
-    if (p === 'E' || p.length > K) return { error: true, cifras: [] };
-    return { cifras: p.split('') };
+    // La coma (bloque de Números racionales) no ocupa casilla: se anota tras qué cifra va.
+    const coma = p.indexOf(','), cifras = p.replace(',', '').split('');
+    if (p === 'E' || cifras.length > K) return { error: true, cifras: [] };
+    return coma > 0 ? { cifras, coma: coma - 1 } : { cifras };
   }
 
   function mezcla(datos, estado) {
@@ -81,6 +88,8 @@
       else v.cifras.forEach((ch, k) => {
         const cj = casilla(K - v.cifras.length + k), cx = (cj.x0 + cj.x1) / 2, w = T.ancho(ch, TD, 700);
         items.push({ txt: ch, x: cx, y: yD, tam: TD, peso: 700, ancla: 'middle', color: c.color === false ? null : 'f', x0: cx - w / 2, x1: cx + w / 2, que: 'cifra' });
+        // La coma, abajo a la derecha de su cifra, dentro de la misma casilla.
+        if (v.coma === k) { const xc = cj.x1 - 2.6; items.push({ txt: ',', x: xc, y: yD + 2, tam: TD, peso: 700, ancla: 'middle', color: c.color === false ? null : 'f', x0: xc - 1.8, x1: xc + 1.8, que: 'coma' }); }
       });
       if (c.rotulo) {
         const w = T.ancho(String(c.rotulo), TR, 600), cx = (x0 + x1) / 2;
@@ -89,7 +98,7 @@
       for (const t of items) {
         const caja = { que: t.que, txt: t.txt, x0: t.x0, x1: t.x1, y0: t.y - t.tam * 0.8, y1: t.y + t.tam * 0.25 };
         textos.push(caja);
-        if (t.que === 'cifra' || t.que === 'pantalla') cajas.push(Object.assign({ dentro: 'pantalla', calc: i }, caja));
+        if (t.que === 'cifra' || t.que === 'pantalla' || t.que === 'coma') cajas.push(Object.assign({ dentro: 'pantalla', calc: i }, caja));
         if (t.que === 'cuenta') cajas.push(Object.assign({ dentro: 'calculadora', calc: i }, caja));
       }
       return { x0, x1, px0, px1, cw, casilla, v, items, c };
@@ -133,7 +142,8 @@
     const d = mezcla(datos, estado), K = casillasDe(d), cs = calcsDe(d);
     const una = c => {
       const v = vista(c, K), cu = c.cuenta ? `${c.cuenta} = ` : '';
-      const p = v.pide ? '? (lo que se pide)' : v.error ? 'E: no cabe en la pantalla' : `${v.cifras.join('')} (${v.cifras.length} ${v.cifras.length === 1 ? 'cifra' : 'cifras'})`;
+      const leida = v.coma === undefined ? v.cifras.join('') : `${v.cifras.slice(0, v.coma + 1).join('')},${v.cifras.slice(v.coma + 1).join('')}`;
+      const p = v.pide ? '? (lo que se pide)' : v.error ? 'E: no cabe en la pantalla' : `${leida} (${v.cifras.length} ${v.cifras.length === 1 ? 'cifra' : 'cifras'})`;
       return `${c.rotulo ? `${c.rotulo}: ` : ''}${cu}${p}`;
     };
     return `${cs.length === 2 ? 'Dos calculadoras' : 'Calculadora'} de doña Juana, con pantalla de ${K} casillas. ${cs.map(una).join('. ')}.`;

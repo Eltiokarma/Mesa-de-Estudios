@@ -613,8 +613,7 @@
       { termino: 'esperanza', simbolo: 'E[X]', formas: ['esperanza', 'valor esperado'],
         def: 'Promedio a la larga de lo que vale una variable: la suma de cada valor por su probabilidad.',
         ejemplo: 'Dado común: (1 + 2 + 3 + 4 + 5 + 6) ÷ 6 = 3,5.', ver: ['variable aleatoria'] },
-      { termino: 'denominador', def: 'Número de abajo de una fracción: en cuántas partes iguales se partió la unidad.',
-        ejemplo: 'En P = 2/36, el 36 cuenta todos los casos posibles.', ver: ['probabilidad condicional'] },
+      // «denominador» se mudó a Números racionales (19 nov, etapa 8: se estrena ahí, en la rama de entrada).
     ],
     // Laboratorio: juego libre, sin preguntas. Los dados con condición juntan las ideas 1 y 3 (evento y universo a la
     // vez); la fábrica libre deja probar porcentajes de 0 a 50 y una máquina que no falla; la tercera es la ruleta.

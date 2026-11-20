@@ -1115,6 +1115,30 @@
     "solo-los-de-los-dos": {
      "respaldo": "hipotesis",
      "describe": "Cuenta solo los múltiplos de los dos a la vez (AT-IE-SOLO-AMBOS)"
+    },
+    "segunda-fraccion-del-total": {
+     "respaldo": "hipotesis",
+     "describe": "Toma la segunda fracción sobre el total y no sobre lo que quedó (AT-RESTO-TOTAL)"
+    },
+    "olvida-la-segunda-venta": {
+     "respaldo": "hipotesis",
+     "describe": "Deshace o hace solo una de las dos ventas (AT-DESHACE-UNA)"
+    },
+    "da-lo-vendido-despues": {
+     "respaldo": "hipotesis",
+     "describe": "Responde lo vendido en la segunda venta, no lo que queda (AT-RESPONDE-OTRA)"
+    },
+    "mixto-como-puro": {
+     "respaldo": "hipotesis",
+     "describe": "Trata un periódico mixto como si se repitiera desde la coma (AT-MIXTO-COMO-PURO)"
+    },
+    "corta-el-decimal": {
+     "respaldo": "hipotesis",
+     "describe": "Corta el decimal y lo toma como exacto (AT-CORTAR)"
+    },
+    "olvida-el-cero": {
+     "respaldo": "hipotesis",
+     "describe": "Resta la cifra de antes pero olvida el 0 del denominador (AT-SIN-CERO)"
     }
    },
    "pares": [

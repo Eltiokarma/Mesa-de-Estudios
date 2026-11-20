@@ -701,6 +701,22 @@ const V = {
     for (let x = 1; x <= d.L; x++) { const ea = x % d.a === 0, eb = x % d.b === 0; if (ea || eb) c++; if (ea) a++; if (eb) b++; if (ea && eb) ab++; }
     return { correcta: c, errores: { 'no-quita-los-repetidos': a + b, 'quita-dos-veces-los-repetidos': a + b - 2 * ab, 'solo-los-de-los-dos': ab } };
   },
+  // ari-37 y ari-38 (19 nov, etapa 8: «Números racionales»; reserva: las formas ya tienen 10 pares). Ítems de la práctica
+  // racionales (sin motor), verificados aquí: lo que queda contando kilo por kilo, y la generatriz buscando la fracción
+  // cuya división larga da ese decimal.
+  'ari-37': d => {
+    const queda1 = d.N - d.N * d.f1[0] / d.f1[1], vendeTarde = queda1 * d.f2[0] / d.f2[1];
+    return { correcta: queda1 - vendeTarde, errores: { 'segunda-fraccion-del-total': d.N - d.N * d.f1[0] / d.f1[1] - d.N * d.f2[0] / d.f2[1],
+      'olvida-la-segunda-venta': queda1, 'da-lo-vendido-despues': vendeTarde } };
+  },
+  'ari-38': d => {
+    const g = (a, b) => (b ? g(b, a % b) : a), fr = (n, m) => { const k = g(n, m); return m / k === 1 ? String(n / k) : `${n / k}/${m / k}`; };
+    const cifras = (n, m, k) => { let r = n % m, s = ''; for (let i = 0; i < k; i++) { r *= 10; s += Math.floor(r / m); r %= m; } return s; };
+    const meta = (d.ante + d.per.repeat(8)).slice(0, 8);
+    let res = null; for (let m = 2; m <= 1000 && !res; m++) for (let n = 1; n < m && !res; n++) if (g(n, m) === 1 && cifras(n, m, 8) === meta) res = fr(n, m);
+    const todo = Number(d.ante + d.per);
+    return { correcta: res, errores: { 'mixto-como-puro': fr(todo, 99), 'corta-el-decimal': fr(todo, 100), 'olvida-el-cero': fr(todo - Number(d.ante), 9) } };
+  },
   'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
     return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
   'ari-20': d => { const r = motor('potenciacion').cuadradosEntre(d.a, d.b), e = r.errores;

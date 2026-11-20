@@ -488,6 +488,83 @@ AT-CONTEO-SIN-QUITAR) se reusan con el mismo sentido.
 | AT-EUC-SIN-MCD | 6 | Reconstruye los números sin multiplicar por el MCD (San Marcos 2027-I) | 40 → 240 | Hipótesis |
 | AT-RESPONDE-OTRA | 3, 6 | Responde uno de los números cuando se pide otra cosa (de Divisibilidad) | — | Hipótesis |
 
+## Números racionales (19 nov)
+
+Códigos AT de la unidad `aritmetica.numeros-racionales` (teoría `contenido/teoria/aritmetica/numeros-racionales.js`;
+propuesta `docs/etapa8/propuesta-aritmetica.md` §4) y de su práctica `plantillas/racionales/`. Con respaldo: AR12 (sumar
+numeradores y denominadores, documentado, arriba) y AR11 (parcial, su pariente en decimales). **Todos los AT son
+hipótesis**: varios se apoyan en las trampas que el CSV de San Marcos deduce de los solucionarios (se dice en cada fila).
+Los que vienen de unidades anteriores (AT-RESPONDE-OTRA, AT-CONTEO-SIN-QUITAR) se reusan con el mismo sentido.
+
+| Código | Idea | Qué hace el alumno | Ejemplo | Respaldo |
+| --- | --- | --- | --- | --- |
+| AT-SUMA-AMBOS | 1 | Suma (o resta) lo mismo arriba y abajo y cree que no cambia la parte | 3/5 → 5/7 | Hipótesis |
+| AT-SOLO-ABAJO | 1 | Multiplica solo el denominador | 3/5 → 3/25 | Hipótesis |
+| AT-SOLO-ARRIBA | 1 | Multiplica (o divide) solo el numerador | 3/5 → 15/5 | Hipótesis |
+| AT-FACTOR | 1 | Responde el número por el que se multiplica | 2/3 = □/12: 4 | Hipótesis |
+| AT-INVERTIR | 1, 2 | Da la fracción (o el orden) al revés | 18/24 → 4/3 | Hipótesis |
+| AT-NO-MCD | 1 | Divide entre un divisor común que no es el MCD | 84/126 → 42/63 | Hipótesis |
+| AT-RESTA-TERMINO | 1 | Le quita un término a la suma de términos | 4/9 y suma 91: 82 | Hipótesis |
+| AT-SIN-K | 1 | Arma la fracción con la diferencia sin el factor | 5/8, diferencia 27: 5/32 | Hipótesis |
+| AT-SIN-MAS-UNO | 1, 2 | Resta los extremos y no suma 1 | de 15 a 142: 127 | Hipótesis |
+| AT-NUMERADOR | 2 | Elige la fracción de numerador mayor | 5/7 contra 7/9 | Hipótesis |
+| AT-PORCION | 2 | Elige la de porciones más grandes (denominador menor) | 5/7 contra 7/9 | Hipótesis |
+| AT-DIFERENCIA | 2 | Las cree iguales porque a las dos les falta lo mismo | 5/7 y 7/9 | Hipótesis |
+| AT-DISTINTOS | 2 | Cree que con denominadores distintos no se comparan | — | Hipótesis |
+| AT-CLASE | 2 | Confunde propia, impropia y aparente | 9/4 propia | Hipótesis |
+| AT-APARENTE | 2 | Toma una impropia por aparente | 14/4 | Hipótesis |
+| AT-INVIERTE-MIXTO | 2 | Cambia el entero con el resto en el número mixto | 11/4 → 3 y 2/4 | Hipótesis |
+| AT-POR-EXCESO | 2 | Usa el cociente por exceso en el número mixto | 11/4 → 3 y 1/4 | Hipótesis |
+| AT-DENOM-MIXTO | 2 | Pone el resto sobre el numerador | 11/4 → 2 y 3/11 | Hipótesis |
+| AT-ENTRE-TODAS | 2 | Cuenta también las fracciones que se simplifican | entre 1/3 y 3/4, denominador 24: 9 | Hipótesis |
+| AT-ENTRE-EXTREMOS | 2 | Cuenta los extremos | 11 | Hipótesis |
+| AT-UN-PRIMO | 2 | Quita solo los múltiplos de un primo | 5 | Hipótesis |
+| AT-TOTAL | 2 | Elige la bolsa que cuesta menos en total, no por kilo | — | Hipótesis |
+| AT-RESTO-TOTAL | 3 | Toma la segunda fracción sobre el total y no sobre lo que queda (San Marcos 2019-I, 2023-I) | 1/2 y 1/3 del resto: 1/6 | Hipótesis |
+| AT-RESTO-SOLO | 3 | Da lo que queda de lo que quedaba, sin multiplicar | 2/3 | Hipótesis |
+| AT-SUMA-ARRIBA | 3 | Suma los numeradores y multiplica los denominadores | 1/4 + 1/6 = 2/24 | Hipótesis |
+| AT-PRODUCTO-FR | 3 | Multiplica en vez de sumar | 1/4 + 1/6 = 1/24 | Hipótesis |
+| AT-DESHACE-UNA | 3 | Deshace (o hace) solo una de las dos ventas | — | Hipótesis |
+| AT-SUMA-DESAGUE | 3 | Suma el desagüe como si llenara | 4 h, 6 h y desagüe 12 h: 2 h | Hipótesis |
+| AT-OLVIDA-DESAGUE | 3 | Deja el desagüe cerrado | 12/5 h | Hipótesis |
+| AT-SUMA-TIEMPOS | 3 | Suma o promedia las horas | 22 h | Hipótesis |
+| AT-INVIERTE-TIEMPO | 3 | Da lo que se llena en una hora en vez del tiempo | 1/3 h | Hipótesis |
+| AT-OLVIDA-GANANCIA | 3 | Hacia atrás, no quita la ganancia (San Marcos 2023-I) | 180 | Hipótesis |
+| AT-SUMA-GANANCIA | 3 | Hacia atrás, suma la ganancia | 240 | Hipótesis |
+| AT-PAR | 4 | Cree que un denominador par da decimal exacto | 5/24 | Hipótesis |
+| AT-CINCO | 4 | Cree que basta un 5 en el denominador | 4/15 | Hipótesis |
+| AT-DOSYCINCO | 4 | Cree que basta tener el 2 y el 5 | 11/30 | Hipótesis |
+| AT-SUMA-EXP | 4 | Suma los exponentes de 2 y de 5 | 1/800: 7 cifras | Hipótesis |
+| AT-MENOR-EXP | 4 | Toma el menor exponente | 2 | Hipótesis |
+| AT-CIFRAS-DEN | 4 | Cuenta las cifras del denominador | 3 | Hipótesis |
+| AT-CREE-PURO | 4 | Cree que se repite desde la coma | 0 | Hipótesis |
+| AT-BLOQUE | 4 | Da las cifras del bloque cuando se piden las de antes | — | Hipótesis |
+| AT-INFINITO | 4 | Cree que todo decimal infinito es irracional | 0,1212… | Hipótesis |
+| AT-PI | 4 | Cree que 22/7 es π | — | Hipótesis |
+| AT-RAIZ | 4 | Cree que toda raíz es irracional | √36 | Hipótesis |
+| AT-FACT-K | 4 | Cree que a/k! tiene k cifras no periódicas (San Marcos 2026-I) | 1/6!: 6 | Hipótesis |
+| AT-CORRIDO | 4 | Cuenta el lugar corrido en uno (San Marcos 2025-II) | — | Hipótesis |
+| AT-PRIMERA-CIFRA | 4 | Da la primera cifra del bloque | — | Hipótesis |
+| AT-CORTAR | 5, 6 | Toma el decimal cortado como exacto | 0,272727… → 27/100 | Hipótesis |
+| AT-MIXTO | 5 | Usa la regla de las cifras antes del bloque en uno puro | 27/90 | Hipótesis |
+| AT-NUEVES | 5, 6 | Pone un solo 9 (o B − 1) por todo el bloque | 27/9 | Hipótesis |
+| AT-MIXTO-COMO-PURO | 5 | Trata un mixto como si se repitiera desde la coma | 0,8333… → 83/99 | Hipótesis |
+| AT-SIN-CERO | 5 | Olvida el 0 de la cifra de antes | 75/9 | Hipótesis |
+| AT-CEROS | 5 | Pone un cero de más o de menos en un exacto | 0,375 → 375/100 | Hipótesis |
+| AT-NUEVES-EXACTO | 5 | Usa nueves en un decimal que termina | 375/999 | Hipótesis |
+| AT-BASE | 5 | Toma el porcentaje sobre lo que queda (San Marcos 2021) | — | Hipótesis |
+| AT-RESTA-PARTE | 5 | Resta la parte a lo que queda | — | Hipótesis |
+| AT-INVIERTE | 5 | Toma lo que queda como la parte | — | Hipótesis |
+| AT-BLOQUE-MAL | 5 | Toma otro bloque | 2,1363… → 211/99 | Hipótesis |
+| AT-BASE10 | 6 | Lee o escribe como en base 10 | 1/5 en base 6: 0,2 | Hipótesis |
+| AT-SIN-RESTO | 6 | Toma la primera cifra y deja el resto | 0,1 | Hipótesis |
+| AT-NO-BASE | 6 | Cree que una fracción no se escribe en otra base | — | Hipótesis |
+| AT-POSICION | 6 | Pone la segunda cifra sobre B y no sobre B² | — | Hipótesis |
+| AT-POSICION-MAS | 6 | Divide entre una potencia de más | — | Hipótesis |
+| AT-BASE-GRANDE | 6 | Cree que basta una base mayor que el denominador | — | Hipótesis |
+| AT-UN-PRIMO-B | 6 | Mira solo un primo del denominador | — | Hipótesis |
+| AT-BASE-ES-N | 6 | Toma el denominador como base | — | Hipótesis |
+
 ## Huecos y siguientes pasos
 
 - **Abrir los originales.** En esta sesión no se pudo descargar nada. Las cifras "por confirmar" son las de la tesis de Roa sobre Navarro-Pelayo (37,8 % y 66,6 %), la tabla de Lecoutre (51 %), el 68 % de Clement y el 40 % de la regla del número entero de Resnick. El artículo de 1996 de Navarro-Pelayo y otros está en acceso abierto en la revista *Educación Matemática* y en ugr.es; Jacobs Danan y Gelman (2018) está en PMC; Van Dooren y otros (2005) y De Bock y otros (1998) son de pago.

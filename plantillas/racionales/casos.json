@@ -1,0 +1,381 @@
+{
+  "plantilla": "racionales",
+  "nota": "entrada es _datos del generador; un caso por tipo (24), con la semilla y la idea con que se generó. respuesta: la clave de la correcta, como texto.",
+  "verificacion": "Script aparte (19 nov 2026, python3, fuera del repo: scratchpad de la sesión, e8-aritmetica/casos.py), que no usa el generador ni el núcleo: lee solo los parámetros de cada caso y recalcula con fractions.Fraction, divisiones largas propias en base 10 y en base B, y conteos uno por uno. Los 24 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": "c3",
+      "idea": "equivalentes",
+      "entrada": {
+        "idea": "equivalentes",
+        "tipo": "falta",
+        "nivel": 1,
+        "a": 5,
+        "b": 6,
+        "k": 3
+      },
+      "esperado": {
+        "respuesta": "15"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "equivalentes",
+      "entrada": {
+        "idea": "equivalentes",
+        "tipo": "irreductible",
+        "nivel": 1,
+        "N": 90,
+        "D": 144
+      },
+      "esperado": {
+        "respuesta": "5/8"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "equivalentes",
+      "entrada": {
+        "idea": "equivalentes",
+        "tipo": "suma-terminos",
+        "nivel": 3,
+        "a": 5,
+        "b": 8,
+        "S": 117
+      },
+      "esperado": {
+        "respuesta": "72"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "equivalentes",
+      "entrada": {
+        "idea": "equivalentes",
+        "tipo": "tres-cifras",
+        "nivel": 3,
+        "a": 2,
+        "b": 9
+      },
+      "esperado": {
+        "respuesta": "100"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "orden-recta",
+      "entrada": {
+        "idea": "orden-recta",
+        "tipo": "mayor",
+        "nivel": 1,
+        "a": 5,
+        "b": 6,
+        "c": 1,
+        "d": 5
+      },
+      "esperado": {
+        "respuesta": "5/6"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "orden-recta",
+      "entrada": {
+        "idea": "orden-recta",
+        "tipo": "clase",
+        "nivel": 1,
+        "b": 9,
+        "q": 2,
+        "p1": 7,
+        "r": 7,
+        "otra": 13
+      },
+      "esperado": {
+        "respuesta": "18/9"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "orden-recta",
+      "entrada": {
+        "idea": "orden-recta",
+        "tipo": "entre",
+        "nivel": 3,
+        "N": 36,
+        "p": 1,
+        "q": 3,
+        "u": 8,
+        "s": 9
+      },
+      "esperado": {
+        "respuesta": "7"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "orden-recta",
+      "entrada": {
+        "idea": "orden-recta",
+        "tipo": "precio",
+        "nivel": 3,
+        "k1": 5,
+        "P1": 18,
+        "k2": 8,
+        "P2": 26
+      },
+      "esperado": {
+        "respuesta": "La de 8 kg"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "del-resto",
+      "entrada": {
+        "idea": "del-resto",
+        "tipo": "sumar",
+        "nivel": 1,
+        "a": 3,
+        "b": 4,
+        "c": 1,
+        "d": 3
+      },
+      "esperado": {
+        "respuesta": "13/12"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "del-resto",
+      "entrada": {
+        "idea": "del-resto",
+        "tipo": "queda",
+        "nivel": 2,
+        "N": 60,
+        "a": 2,
+        "b": 5,
+        "c": 1,
+        "d": 6
+      },
+      "esperado": {
+        "respuesta": "30 kg"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "del-resto",
+      "entrada": {
+        "idea": "del-resto",
+        "tipo": "atras",
+        "nivel": 3,
+        "a": 2,
+        "b": 5,
+        "c": 2,
+        "d": 5,
+        "Q": 18
+      },
+      "esperado": {
+        "respuesta": "50"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "del-resto",
+      "entrada": {
+        "idea": "del-resto",
+        "tipo": "grifos",
+        "nivel": 3,
+        "A": 8,
+        "B": 12,
+        "C": 24
+      },
+      "esperado": {
+        "respuesta": "6 h"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "exacto-periodico",
+      "entrada": {
+        "idea": "exacto-periodico",
+        "tipo": "exacto",
+        "nivel": 1,
+        "buena": [
+          153,
+          240
+        ],
+        "par": [
+          11,
+          14
+        ],
+        "cinco": [
+          1,
+          15
+        ],
+        "dyc": [
+          13,
+          30
+        ]
+      },
+      "esperado": {
+        "respuesta": "153/240"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "exacto-periodico",
+      "entrada": {
+        "idea": "exacto-periodico",
+        "tipo": "cifras",
+        "nivel": 2,
+        "a": 9,
+        "D": 40
+      },
+      "esperado": {
+        "respuesta": "3"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "exacto-periodico",
+      "entrada": {
+        "idea": "exacto-periodico",
+        "tipo": "factorial",
+        "nivel": 3,
+        "a": 11,
+        "k": 7
+      },
+      "esperado": {
+        "respuesta": "4"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "exacto-periodico",
+      "entrada": {
+        "idea": "exacto-periodico",
+        "tipo": "lugar",
+        "nivel": 3,
+        "a": 9,
+        "q": 13,
+        "n": 118
+      },
+      "esperado": {
+        "respuesta": "3"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "generatriz",
+      "entrada": {
+        "idea": "generatriz",
+        "tipo": "puro",
+        "nivel": 1,
+        "per": "24"
+      },
+      "esperado": {
+        "respuesta": "8/33"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "generatriz",
+      "entrada": {
+        "idea": "generatriz",
+        "tipo": "mixto-g",
+        "nivel": 2,
+        "ante": "4",
+        "per": "8"
+      },
+      "esperado": {
+        "respuesta": "22/45"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "generatriz",
+      "entrada": {
+        "idea": "generatriz",
+        "tipo": "suma-p",
+        "nivel": 2,
+        "p1": 1,
+        "per2": "25"
+      },
+      "esperado": {
+        "respuesta": "4/11"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "generatriz",
+      "entrada": {
+        "idea": "generatriz",
+        "tipo": "porcentaje",
+        "nivel": 3,
+        "pc": "13,333…",
+        "R": 7020
+      },
+      "esperado": {
+        "respuesta": "S/ 8 100"
+      }
+    },
+    {
+      "semilla": "c3",
+      "idea": "otras-bases",
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "a-fraccion",
+        "nivel": 1,
+        "B": 5,
+        "x": 1,
+        "y": 4
+      },
+      "esperado": {
+        "respuesta": "9/25"
+      }
+    },
+    {
+      "semilla": "c0",
+      "idea": "otras-bases",
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "menor-base",
+        "nivel": 2,
+        "a": 35,
+        "n": 36
+      },
+      "esperado": {
+        "respuesta": "Base 6"
+      }
+    },
+    {
+      "semilla": "c1",
+      "idea": "otras-bases",
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "bloque",
+        "nivel": 3,
+        "B": 5,
+        "x": 2,
+        "y": 0
+      },
+      "esperado": {
+        "respuesta": "5/12"
+      }
+    },
+    {
+      "semilla": "c5",
+      "idea": "otras-bases",
+      "entrada": {
+        "idea": "otras-bases",
+        "tipo": "cuantas",
+        "nivel": 3,
+        "a": 19,
+        "n": 20,
+        "L": 36
+      },
+      "esperado": {
+        "respuesta": "3"
+      }
+    }
+  ]
+}

@@ -175,6 +175,12 @@
     { u: 'quimica.mol-y-composicion', p: 'prediccionMC', e: 'estudiadaMC',
       cambian: ['masa-atomica-promedio', 'mol-masa-molar'],
       antes: ['masa-atomica-promedio', 'mol-masa-molar', 'relaciones-en-formula', 'composicion-formula-empirica', 'leyes-ponderales'] },
+    // Etapa 8 (19 nov): Números racionales conservó sus cinco ids y sumó del-resto. Cuatro cambiaron su Predice;
+    // exacto-periodico conserva la pregunta y la correcta, pero cambió dos distractores (docs/etapa8/propuesta-aritmetica.md,
+    // decisión 10): también se vuelve a preguntar.
+    { u: 'aritmetica.numeros-racionales', p: 'prediccionNR', e: 'estudiadaNR',
+      cambian: ['equivalentes', 'orden-recta', 'exacto-periodico', 'generatriz', 'otras-bases'],
+      antes: ['equivalentes', 'orden-recta', 'exacto-periodico', 'generatriz', 'otras-bases'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

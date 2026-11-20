@@ -612,3 +612,23 @@ test('Etapa 8, Mol y composición rehecha: predicciones viejas sin huella borrad
   assert.ok(!(otro.marcadas || {})[U], 'no terminó las cinco: le quedan por hacer');
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// 19 nov (etapa 8): Números racionales conservó sus cinco ids con otra Predice y sumó del-resto.
+test('Etapa 8, Números racionales rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
+  const U = 'aritmetica.numeros-racionales';
+  const ids = ['equivalentes', 'orden-recta', 'exacto-periodico', 'generatriz', 'otras-bases'];
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, marcadas: {}, teoria: { [U]: { ideas: Object.fromEntries(ids.map(id => [id, { hecha: true, prediccion: 'c' }])) } } };
+  est.teoria[U].ideas.generatriz.prediccionDe = 'h9';
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionNR, 1); assert.equal(est.estudiadaNR, 1);
+  for (const id of ids.filter(i => i !== 'generatriz')) {
+    assert.equal(est.teoria[U].ideas[id].prediccion, undefined, id);
+    assert.equal(est.teoria[U].ideas[id].hecha, true, id);
+  }
+  assert.equal(est.teoria[U].ideas.generatriz.prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las cinco de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { equivalentes: { hecha: true, prediccion: 'c' } } } } };
+  A.migrar(nuevo);
+  assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});

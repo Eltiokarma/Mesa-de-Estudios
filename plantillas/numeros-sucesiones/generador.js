@@ -710,6 +710,9 @@
     }
     return l;
   })();
+  const DATOS_GRIFOS = ['En cualquier base, cada cifra es menor que la base, y la primera no es 0',
+    'Si un grifo llena el tanque en A horas, en una hora llena 1/A del tanque',
+    'Un desagüe que vacía el tanque en C horas saca 1/C del tanque en cada hora'];
   function grifos(rng, semilla) {
     const cfg = rng.elegir(CONFIGS);
     const orden = rng.moneda() ? [0, 1] : [1, 0];
@@ -753,7 +756,8 @@
       ['En base 10: ', v('A', `${numTxt(nums[0])} = ${x}`), ', ', v('B', `${numTxt(nums[1])} = ${y}`), ' y ', v('C', `${numTxt(nums[2])} = ${z}`), ' horas.'],
       [`En una hora: 1/${x} + 1/${y} − 1/${z} = 1/${T} del tanque. Se llena en `, v('res', correcta.texto), '.'],
     ];
-    return cerrar(rng, semilla, { claves: true, correcta, errores, variables, enunciado, pregunta, solucion, unidad: 'h',
+    // Bloque de Números racionales (19 nov, etapa 8: grifos es de esa unidad): el recuadro «Datos», como cifras.
+    return cerrar(rng, semilla, { claves: true, correcta, errores, variables, enunciado, pregunta, solucion, unidad: 'h', recuadro: DATOS_GRIFOS,
       datos: { tipo: 'grifos', numerales: nums.map(nm => ({ cifras: nm.c, base: nm.base })) } });
   }
 

@@ -238,16 +238,11 @@ test('papel.json: 5 a 10 problemas con sus campos, y las respuestas se recalcula
   assert.equal(recalcular({ _datos: { tipo: 'acotada', k: 10, cotas: [[1, 2], [4, 5]] } }), 12); con('p3', '12');
   // p4: entre 200 y 300 panes, vende 1/3 y luego 3/4 del resto, quedan menos de 40.
   assert.equal(recalcular({ _datos: { tipo: 'stock', f1: [1, 3], f2: [3, 4], L: 200, H: 300, C: 40 } }), 234); con('p4', '234');
-  // p5: diferencia 36 y MCM 120.
-  assert.equal(recalcular({ _datos: { tipo: 'pesi', D: 36, M: 120 } }), 84); con('p5', '84');
+  // p5, p7 y p9 (MCD y MCM) salieron del papel el 19 nov (etapa 8): son de plantillas/mcd-mcm.
   // p6: 2/5 en 4 h y luego el rendimiento baja en 1/3.
   assert.equal(recalcular({ _datos: { tipo: 'trabajo', f: [2, 5], t1: 4, baja: [1, 3] } }), 13); con('p6', '13');
-  // p7: cocientes 3, 2 y 4, la segunda por exceso, diferencia 216.
-  assert.equal(recalcular({ _datos: { tipo: 'euclides', cocientes: [3, 2, 4], exceso: 2, D: 216 } }), 384); con('p7', '300'); con('p7', '84');
   // p8: las dos últimas cifras del periodo de 3/17.
   assert.equal(recalcular({ _datos: { tipo: 'periodo', sub: 'ultimas', a: 3, p: 17 } }), 'cc:41'); con('p8', '41');
-  // p9: edades en progresión geométrica con producto 1728 y suma 38.
-  assert.equal(recalcular({ _datos: { tipo: 'pg-mcd', producto: 1728, suma: 38 } }), 2); con('p9', '2');
   // p10: con 6, 7, 10 y 21.
   assert.equal(recalcular({ _datos: { tipo: 'formar', numeros: [6, 7, 10, 21] } }), 'num:2/7'); con('p10', '2/7');
 });
@@ -300,6 +295,23 @@ test('escena viva: en stock la respuesta se arrastra; cada opción se alcanza y 
       assert.ok(a.valor >= c.min && a.valor <= c.max, `semilla ${s}: ${a.texto} no cabe`);
       assert.equal(Kit.respuesta.clasificar(Kit.respuesta.ajustar(a.valor, r.paso, c.min, c.max), p.alternativas, r.tolerancia), a);
       if (a.error && ids.filter(i => i === a.error.id).length === 1) assert.equal(p.fantasmas[a.error.id].marca, a.valor);
+    }
+  }
+});
+
+// ---------- Cierre de Números racionales (20 nov, rutinas/auditoria/aritmetica.numeros-racionales.md) ----------
+// Fallan con el generador de antes: sin recuadro «Datos», bloques de dos cifras escritos dos veces, la cota con «…» y «·».
+test('cierre: con la unidad, cada problema trae Datos y escribe los decimales como la teoría', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(`c${s}`, { unidad: 'aritmetica.numeros-racionales' });
+    assert.ok(Array.isArray(p.datos) && p.datos.length > 0, `${p._datos.tipo}: sin Datos`);
+    for (const d of p.datos) assert.ok(d.split(/\s+/).filter(w => /\p{L}/u.test(w)).length <= 22 && !/Recuerda|Ojo|Cuidado/.test(d), d);
+    const t = [p.enunciado, p.pregunta, ...p.solucion, ...(p.pasos || []).map(q => [q.texto, q.ecuacion]), p.escena && p.escena.alt].map(plano).join(' ');
+    assert.ok(!/·/.test(t), `«·» en ${t}`);
+    for (const m of t.matchAll(/\d+,(\d+)…/g)) {
+      const c = m[1], ok = [1, 2, 3, 4, 5, 6, 7, 8].some(L => { const b = c.slice(-L), r = L <= 2 ? 3 : 2; return c.endsWith(b.repeat(r)) && !c.endsWith(b.repeat(r + 1)) && !(c.length > L * r && c[c.length - L * r - 1] === b[b.length - 1]); });
+      assert.ok(ok, `«${m[0]}» no repite su bloque como la teoría (o es un decimal truncado con «…»)`);
     }
   }
 });
