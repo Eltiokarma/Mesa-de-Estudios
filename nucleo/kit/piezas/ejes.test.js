@@ -132,6 +132,23 @@ test('compacto: sin marca, el plano es más bajo y la figura no reserva lugar pa
   assert.ok(!/NaN|undefined/.test(E.dibujar({ ...XT, compacto: true })));
 });
 
+// ajustado (19 nov, Ecuaciones polinomiales; prueba del cierre, 20 nov): sin marca, el mismo plano que siempre, pero el
+// lienzo termina bajo los números y el nombre del eje x; con marca no cambia nada.
+test('ajustado: sin marca, el plano no cambia y el lienzo termina bajo el eje x; con marca, nada cambia', () => {
+  const XY = { x: { min: -3, max: 3, paso: 1, nombre: 'x', decimales: 0 }, y: { min: -8, max: 8, paso: 4, nombre: 'y', decimales: 0 },
+    curvas: [{ puntos: [[-2, -8], [0, 2], [2, 8]], color: null }], puntos: [{ x: 1, y: 0, color: 'f', rotulo: 'doble' }] };
+  const alto = d => +E.dibujar(d).match(/viewBox="0 0 320 ([\d.]+)"/)[1];
+  const g = E.geometria(XY), ga = E.geometria({ ...XY, ajustado: true });
+  assert.equal(ga.PY1, g.PY1, 'mismo plano');
+  assert.equal(alto({ ...XY, ajustado: true }), ga.PY1 + 48);
+  assert.ok(alto({ ...XY, ajustado: true }) < alto(XY) - 50, 'sin el hueco de la marca y del fantasma');
+  assert.equal(alto({ ...ENCUENTRO, ajustado: true }), alto(ENCUENTRO), 'con marca, ajustado no cambia nada');
+  // Todo texto (números y nombre del eje x) queda dentro del lienzo.
+  const svg = E.dibujar({ ...XY, ajustado: true });
+  for (const m of svg.matchAll(/<text[^>]*\sy="([\d.]+)"[^>]*font-size="([\d.]+)"/g)) assert.ok(+m[1] + 0.25 * +m[2] <= alto({ ...XY, ajustado: true }), `texto en y = ${m[1]}`);
+  assert.ok(!/NaN|undefined/.test(svg));
+});
+
 test('geometria trae las inversas: Xi(X(v)) = v e Yi(Y(v)) = v (gesto directo)', () => {
   const d = { x: { min: -2, max: 8 }, y: { min: -5, max: 15 } }, g = E.geometria(d);
   for (const v of [-2, 0, 3.5, 8]) assert.ok(Math.abs(g.Xi(g.X(v)) - v) < 1e-9);

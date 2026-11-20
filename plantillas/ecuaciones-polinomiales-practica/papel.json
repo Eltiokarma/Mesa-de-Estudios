@@ -1,0 +1,87 @@
+{
+  "titulo": "Ecuaciones polinomiales: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "P(x) = (x − 4)(x + 2)²(x² + 16). ¿Cuántas raíces tiene P, contando las repetidas y las no reales? Datos: Un polinomio de grado n tiene n raíces, contando las repetidas y las no reales. Una raíz cuyo factor tiene exponente m se cuenta m veces. Grado de un producto: la suma de los grados de sus factores. Alternativas: A) 3   B) 5   C) 6   D) 2   E) 4",
+      "respuesta": "B) 5",
+      "pasos": [
+        "Cada factor aporta tantas raíces como su grado.",
+        "1 + 2 + 2 = 5."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "La ecuación es 2x³ − 16x² + 34x − 20 = 0. ¿Cuánto vale el producto de sus tres raíces? Datos: En ax³ + bx² + cx + d = 0: x₁ + x₂ + x₃ = −b/a. x₁x₂ + x₁x₃ + x₂x₃ = c/a. x₁x₂x₃ = −d/a. Alternativas: A) 20   B) 17   C) 8   D) −10   E) 10",
+      "respuesta": "E) 10",
+      "pasos": [
+        "El producto es −d/a, con d = −20 y a = 2.",
+        "−(−20)/2 = 10."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "x = −4 es raíz de 2x³ + 5x² − 14x − 8 = 0. ¿Cuáles son las otras dos raíces? Datos: Ruffini: se baja el primero; cada casilla es el de arriba más el número que se prueba por la anterior. Con una raíz x₁, P = (x − x₁) · (la fila de abajo, sin su último número). Producto cero: un producto vale 0 solo si alguno de sus factores vale 0. Alternativas: A) −1/2 y 2   B) 1/2 y −2   C) −2 y 2   D) −1 y 2",
+      "respuesta": "A) −1/2 y 2",
+      "pasos": [
+        "Ruffini con −4 deja un trinomio que se abre con aspa.",
+        "2x³ + 5x² − 14x − 8 = (x + 4)(2x² − 3x − 2): −1/2 y 2."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "−3 − 2√7 es raíz de P, que tiene coeficientes enteros. ¿Qué factor de grado 2 tiene P, seguro? Datos: Con coeficientes enteros, una raíz con √ inexacta trae a su conjugada: 3 + √2 trae a 3 − √2. Dos raíces dan el factor x² − (su suma)x + (su producto). A² − B² = (A + B)(A − B). Alternativas: A) x² + 6x − 19   B) x² + 3x − 19   C) x² + 6x + 19   D) x² + 6x + 37",
+      "respuesta": "A) x² + 6x − 19",
+      "pasos": [
+        "La pareja suma −6 y multiplica −19.",
+        "x² + 6x − 19."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "La ecuación es x⁴ + 9x² + 14 = 0. ¿Cuántas raíces reales tiene? Datos: En ax⁴ + bx² + c = 0 se cambia x² por u: queda au² + bu + c = 0. x² = u da x = ±√u si u > 0; si u < 0, dos raíces no reales. Alternativas: A) 1   B) 3   C) 4   D) 0",
+      "respuesta": "D) 0",
+      "pasos": [
+        "En u: u = −7 y u = −2. u = −7 no da reales; u = −2 no da reales.",
+        "0 reales."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "La ecuación es x³ = 125. ¿Cuánto vale el producto de sus dos raíces no reales? Datos: A³ − B³ = (A − B)(A² + AB + B²). En ax² + bx + c = 0, las dos raíces suman −b/a y multiplican c/a. Alternativas: A) 125   B) −5   C) 5   D) −25   E) 25",
+      "respuesta": "E) 25",
+      "pasos": [
+        "x³ − 125 = (x − 5)(x² + 5x + 25): las no reales son las del trinomio.",
+        "Su producto es c/a = 25."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Una caja mide x dm de largo, (x + 3) dm de ancho y (x + 1) dm de alto, y guarda 560 dm³. ¿Cuánto mide su arista mayor? Datos: Volumen de una caja: largo · ancho · alto. Números por probar: los divisores del término independiente. Una medida es un número positivo. Alternativas: A) 7 dm   B) 11 dm   C) 10 dm   D) 25 dm   E) 8 dm",
+      "respuesta": "C) 10 dm",
+      "pasos": [
+        "Se prueba x = 7: 7 · 10 · 8 = 560. Las otras raíces no son positivas.",
+        "La mayor es 10 dm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "La ecuación x³ − 3x² + kx + 15 = 0 tiene las raíces 1 y 5. ¿Cuánto vale k? Datos: En ax³ + bx² + cx + d = 0: x₁ + x₂ + x₃ = −b/a. x₁x₂ + x₁x₃ + x₂x₃ = c/a. x₁x₂x₃ = −d/a. Alternativas: A) 13   B) −3   C) −15   D) −13   E) 5",
+      "respuesta": "D) −13",
+      "pasos": [
+        "La suma da la tercera raíz: 3 − 1 − 5 = −3.",
+        "k = 1 · 5 + 1 · (−3) + 5 · (−3) = −13."
+      ]
+    }
+  ]
+}

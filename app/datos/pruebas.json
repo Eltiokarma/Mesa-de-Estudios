@@ -292,6 +292,30 @@
     "TAL-MCD-PRIMOS-cree-que-no-hay-comun": {
      "respaldo": "hipotesis",
      "describe": "No factoriza y cree que los polinomios no tienen nada en común (MCD = 1)"
+    },
+    "TAL-PIDE-da-la-tercera-raiz": {
+     "respaldo": "hipotesis",
+     "describe": "Da la tercera raíz en vez del coeficiente que se pide"
+    },
+    "TAL-SIGNO-VIETE-cambia-el-signo": {
+     "respaldo": "hipotesis",
+     "describe": "Cambia el signo de la suma de productos de a dos (c/a se lee sin cambiar el signo)"
+    },
+    "TAL-VIETE-UNA-una-sola-pareja": {
+     "respaldo": "hipotesis",
+     "describe": "Multiplica solo la pareja de raíces dadas y olvida las otras dos parejas"
+    },
+    "TAL-BICUAD-TODAS-cada-u-da-dos-reales": {
+     "respaldo": "hipotesis",
+     "describe": "Cree que cada valor de u = x² da dos raíces reales, también el negativo"
+    },
+    "TAL-BICUAD-POSITIVA-solo-la-positiva": {
+     "respaldo": "hipotesis",
+     "describe": "De x² = u toma solo la raíz positiva"
+    },
+    "TAL-BICUAD-NINGUNA-descarta-todo": {
+     "respaldo": "hipotesis",
+     "describe": "Ve un valor de u negativo y cree que la ecuación no tiene raíces reales"
     }
    },
    "pares": [

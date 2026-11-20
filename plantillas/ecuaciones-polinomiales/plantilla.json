@@ -7,6 +7,9 @@
     "algebra.numeros-complejos"
   ],
   "estado": "borrador",
+  "rehacer": [
+    "algebra.ecuaciones-polinomiales"
+  ],
   "version": "0.1.0",
   "generador": "generador.js",
   "casos": "casos.json",

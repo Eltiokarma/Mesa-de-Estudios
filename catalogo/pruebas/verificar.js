@@ -785,6 +785,18 @@ const V = {
     const a = comunes[0];
     return { correcta: d.k - a, errores: { 'TAL-FACTOR-SIGNO-cambia-el-signo': d.k + a, 'TAL-MCD-SINFACTOR-toma-un-polinomio-entero': ev(d.P, d.k), 'TAL-MCD-MAX-toma-el-otro-polinomio': ev(d.Q, d.k), 'TAL-MCD-PRIMOS-cree-que-no-hay-comun': 1 } }; },
 
+  // ep-01 y ep-02 (reserva, 19 nov, etapa 8 de álgebra: «Ecuaciones polinomiales»; las formas ya tienen 10 pares). La
+  // plantilla ecuaciones-polinomiales-practica no tiene motor: se rehace aquí. ep-01: la tercera raíz sale de la suma S y
+  // se comprueba con el producto V; k es la suma de los productos de a dos. ep-02: u = x² cumple u² + bu + c = 0; cada u
+  // positivo da dos raíces reales.
+  'ep-01': d => { const r3 = d.S - d.r1 - d.r2;
+    if (d.r1 * d.r2 * r3 !== d.V) throw new Error('ep-01: las raíces no dan el término independiente');
+    const k = d.r1 * d.r2 + d.r1 * r3 + d.r2 * r3;
+    return { correcta: k, errores: { 'TAL-PIDE-da-la-tercera-raiz': r3, 'TAL-SIGNO-VIETE-cambia-el-signo': -k, 'TAL-VIETE-UNA-una-sola-pareja': d.r1 * d.r2 } }; },
+  'ep-02': d => { const D = d.b * d.b - 4 * d.c, us = D < 0 ? [] : [(-d.b + Math.sqrt(D)) / 2, (-d.b - Math.sqrt(D)) / 2];
+    const pos = us.filter(u => u > 0).length;
+    return { correcta: 2 * pos, errores: { 'TAL-BICUAD-TODAS-cada-u-da-dos-reales': 2 * us.length, 'TAL-BICUAD-POSITIVA-solo-la-positiva': pos, 'TAL-BICUAD-NINGUNA-descarta-todo': us.some(u => u < 0) ? 0 : 2 * pos } }; },
+
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
   // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares;
   // geo-05, de Relaciones métricas, volvió a las formas el 18 nov en el lugar que dejó geo-13).

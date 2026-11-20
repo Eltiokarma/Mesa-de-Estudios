@@ -582,3 +582,17 @@ test('Etapa 8, Conectores rehecha: predicciones viejas sin huella borradas una v
   assert.ok(!(otro.marcadas || {})[U], 'no terminó las tres: le quedan por hacer');
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// 19 nov (etapa 8): Ecuaciones polinomiales, rehecha con sus seis ids y otra Predice en cada uno; no sumó ideas.
+test('Etapa 8, Ecuaciones polinomiales rehecha: predicciones viejas sin huella borradas una sola vez; las hechas siguen hechas', () => {
+  const U = 'algebra.ecuaciones-polinomiales';
+  const IDS = ['grado-raices', 'viete', 'raices-racionales', 'conjugadas', 'cambio-de-variable', 'binomica'];
+  const est = { avanceV: 1, teoria: { [U]: { ideas: Object.fromEntries(IDS.map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionEP, 1);
+  for (const i of IDS) { assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i); assert.equal(est.teoria[U].ideas[i].hecha, true, i); }
+  const conHuella = { avanceV: 1, teoria: { [U]: { ideas: { viete: { prediccion: 'c', prediccionDe: 'x' } } } } };
+  A.migrar(conHuella);
+  assert.equal(conHuella.teoria[U].ideas.viete.prediccion, 'c', 'con huella la revisa la app');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});

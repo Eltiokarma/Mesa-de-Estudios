@@ -166,6 +166,10 @@
     // varios-espacios (docs/etapa8/propuesta-verbal.md, decisión 10).
     { u: 'razonamiento-verbal.conectores', p: 'prediccionCN', e: 'estudiadaCN',
       cambian: ['relacion-primero', 'clases', 'locuciones'], antes: ['relacion-primero', 'clases', 'locuciones'] },
+    // Etapa 8 (19 nov): Ecuaciones polinomiales conservó sus seis ids, todos con otra Predice, y no sumó ideas
+    // (docs/etapa8/propuesta-algebra.md, decisión 9).
+    { u: 'algebra.ecuaciones-polinomiales', p: 'prediccionEP',
+      cambian: ['grado-raices', 'viete', 'raices-racionales', 'conjugadas', 'cambio-de-variable', 'binomica'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

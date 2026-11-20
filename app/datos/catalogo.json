@@ -2669,7 +2669,7 @@
        "radicales": "La raíz cuadrada es un lado",
        "exponente-fraccionario": "La raíz es un exponente fraccionario"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -2720,7 +2720,7 @@
        "radicales-dobles": "Dos números que suman y multiplican",
        "racionalizar": "Racionalizar es multiplicar por uno"
       },
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -2770,7 +2770,7 @@
        "suma-producto": "Suma y producto sin resolver",
        "planteo": "La letra es un número"
       },
-      "terminos": 32
+      "terminos": 31
      }
     },
     {
@@ -3054,13 +3054,14 @@
        ]
       }
      },
-     "potencial_visual": "medio",
+     "potencial_visual": "alto",
      "grado": 4,
      "requiere": [
       "algebra.factorizacion",
       "algebra.ecuaciones-lineales-y-cuadraticas"
      ],
      "plantillas": [
+      "ecuaciones-polinomiales-practica",
       "polinomios",
       "ecuaciones-polinomiales"
      ],
@@ -3069,19 +3070,21 @@
       "requiere": [
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/recta.js",
-       "/nucleo/kit/piezas/flechas.js"
+       "/nucleo/kit/piezas/alg-caja.js",
+       "/nucleo/kit/piezas/alg-reparto.js",
+       "/nucleo/kit/piezas/alg-objeto.js",
+       "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
       "titulos": {
-       "grado-raices": "Tantas raíces como el grado",
-       "viete": "Los coeficientes delatan las raíces",
-       "raices-racionales": "Candidatas racionales: p entre q",
-       "conjugadas": "La raíz no real viene acompañada",
-       "cambio-de-variable": "Un cambio de variable",
-       "binomica": "zⁿ = w: un polígono regular"
+       "grado-raices": "Raíces y grado",
+       "viete": "Raíces y coeficientes",
+       "raices-racionales": "Raíces racionales",
+       "conjugadas": "Raíces en pareja",
+       "cambio-de-variable": "Bicuadradas y recíprocas",
+       "binomica": "Ecuaciones de dos términos"
       },
-      "terminos": 43
+      "terminos": 60
      }
     },
     {
@@ -3285,7 +3288,7 @@
        "raices": "n raíces en un polígono",
        "regiones": "El módulo mide distancias"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -9281,6 +9284,33 @@
    "archivos": [
     "/plantillas/ecuaciones-polinomiales/generador.js",
     "/plantillas/ecuaciones-polinomiales/papel.json"
+   ],
+   "rehacer": [
+    "algebra.ecuaciones-polinomiales"
+   ]
+  },
+  "ecuaciones-polinomiales-practica": {
+   "id": "ecuaciones-polinomiales-practica",
+   "titulo": "Ecuaciones polinomiales",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "algebra.ecuaciones-polinomiales"
+   ],
+   "url": "#/practica/ecuaciones-polinomiales-practica",
+   "ideas": [
+    "grado-raices",
+    "viete",
+    "raices-racionales",
+    "conjugadas",
+    "cambio-de-variable",
+    "binomica"
+   ],
+   "papel": "/plantillas/ecuaciones-polinomiales-practica/papel.json",
+   "archivos": [
+    "/plantillas/ecuaciones-polinomiales-practica/generador.js",
+    "/plantillas/ecuaciones-polinomiales-practica/papel.json"
    ]
   },
   "electrostatica": {
@@ -11106,7 +11136,8 @@
    ],
    "rehacer": [
     "algebra.polinomios",
-    "algebra.division-de-polinomios"
+    "algebra.division-de-polinomios",
+    "algebra.ecuaciones-polinomiales"
    ]
   },
   "polinomios-practica": {

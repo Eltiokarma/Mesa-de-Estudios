@@ -189,10 +189,10 @@
         "Ecuación binómica"
       ],
       "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
-      "potencial_visual": "medio",
+      "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["algebra.factorizacion", "algebra.ecuaciones-lineales-y-cuadraticas"],
-      "plantillas": ["polinomios", "ecuaciones-polinomiales"],
+      "plantillas": ["ecuaciones-polinomiales-practica", "polinomios", "ecuaciones-polinomiales"],
       "investigacion": null
     },
     {

@@ -10,7 +10,8 @@
   "estado": "borrador",
   "rehacer": [
     "algebra.polinomios",
-    "algebra.division-de-polinomios"
+    "algebra.division-de-polinomios",
+    "algebra.ecuaciones-polinomiales"
   ],
   "version": "0.1.0",
   "escena": "index.html",

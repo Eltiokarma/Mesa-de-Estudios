@@ -1,0 +1,22 @@
+{
+  "id": "ecuaciones-polinomiales-practica",
+  "titulo": "Ecuaciones polinomiales",
+  "formato": "predicciones",
+  "unidades": [
+    "algebra.ecuaciones-polinomiales"
+  ],
+  "temas": [
+    "Teorema fundamental del álgebra",
+    "Relaciones entre raíces y coeficientes",
+    "Raíces racionales",
+    "Paridad de raíces irracionales y complejas",
+    "Ecuaciones bicuadradas y recíprocas",
+    "Ecuación binómica"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

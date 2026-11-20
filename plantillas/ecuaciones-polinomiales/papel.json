@@ -3,7 +3,7 @@
   "indicacion": "Resuélvelos sin la escena, con unos 2 a 3 minutos por problema, como en el examen. Antes de hacer cuentas, pregúntate qué te dan los coeficientes (la suma, la suma de productos de dos en dos y el producto de las raíces, con sus signos y divididos entre el coeficiente principal) y qué te falta.",
   "problemas": [
     {
-      "id": "p1",
+      "id": "p1", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "básico",
       "enunciado": "Sean x₁, x₂ y x₃ las raíces de x³ − 4x² + 2x + 5 = 0. Halla x₁² + x₂² + x₃².",
       "respuesta": "12.",
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "id": "p2",
+      "id": "p2", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "básico",
       "enunciado": "La ecuación 2x³ + mx² + 22x + n = 0, donde m y n son constantes, tiene entre sus raíces a 1 y a 3. Halla la tercera raíz.",
       "respuesta": "2.",
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "p3",
+      "id": "p3", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "básico",
       "enunciado": "Una caja tiene aristas de x cm, (x + 2) cm y (x + 4) cm, y su volumen es 192 cm³. ¿Cuánto mide su arista mayor?",
       "respuesta": "8 cm.",
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "p4",
+      "id": "p4", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "intermedio",
       "enunciado": "De una lámina de cartón de 20 cm por 14 cm se recorta un cuadrado de x cm de lado (x entero) en cada esquina y se arma una caja sin tapa de 288 cm³. ¿Cuántos cm² de cartón tiene la caja?",
       "respuesta": "216 cm².",
@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "p5",
+      "id": "p5", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "intermedio",
       "enunciado": "Una vendedora dice: «Si elevas al cuadrado el precio en soles del kilo de habas y le sumas 144 dividido entre ese cuadrado, obtienes 25». Dos precios cumplen lo que dice. ¿Cuál es la diferencia entre el precio mayor y el menor?",
       "respuesta": "1 sol.",
@@ -59,7 +59,7 @@
       ]
     },
     {
-      "id": "p6",
+      "id": "p6", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "intermedio",
       "enunciado": "Halla la suma de los módulos de las cuatro raíces de x⁴ + 10x² + 9 = 0.",
       "respuesta": "8.",
@@ -70,7 +70,7 @@
       ]
     },
     {
-      "id": "p7",
+      "id": "p7", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "intermedio",
       "enunciado": "El polinomio P(x) = x³ − 7x² + kx − 4 tiene como raíz a x = 1. Halla k y el conjunto de valores de x para los que P(x) = −4.",
       "respuesta": "k = 10; {0; 2; 5}.",
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "id": "p8",
+      "id": "p8", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "avanzado",
       "enunciado": "El polinomio P(x) = x⁴ − 2x³ − 12x² + 40x + m tiene una raíz triple entera. Halla m.",
       "respuesta": "m = −32.",
@@ -93,7 +93,7 @@
       ]
     },
     {
-      "id": "p9",
+      "id": "p9", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "avanzado",
       "enunciado": "La ecuación x³ + mx² + nx − 30 = 0, con m y n enteros, tiene la raíz 1 + 2i. Halla su raíz real.",
       "respuesta": "6.",
@@ -104,7 +104,7 @@
       ]
     },
     {
-      "id": "p10",
+      "id": "p10", "unidades": ["algebra.ecuaciones-polinomiales"],
       "nivel": "avanzado",
       "enunciado": "Factoriza P(x) = 2x³ − 5x² − 4x + 3 y halla la raíz de P(x) = 0 que no es entera.",
       "respuesta": "1/2; P(x) = (x + 1)(x − 3)(2x − 1).",

@@ -578,6 +578,7 @@
     },
     {
       "id": "p9", "unidades": ["algebra.ecuaciones-polinomiales"],
+      "datos": ["Si p/q (reducida) es raíz y los coeficientes son enteros, p divide al término independiente y q al principal", "Ruffini: se baja el primero; cada casilla es el de arriba más el número que se prueba por la anterior"],
       "nivel": "avanzado",
       "enunciado": "Escribe los posibles ceros racionales de P(x) = 3x³ − 4x² − 5x + 2 y factoriza P(x).",
       "respuesta": "Candidatos ±1, ±2, ±1/3, ±2/3 (ocho). P(x) = (x − 2)(x + 1)(3x − 1).",

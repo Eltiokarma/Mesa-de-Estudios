@@ -21,6 +21,7 @@
  *   respuesta: número | null,   // lo que el estado final dibuja con ✓ (en el eje x o en la regla)
  *   prefijo, sufijo, decimales  // cómo se lee la marca («12,5 s», «40 N·s»)
  *   compacto: true              // sin marca: plano de 96 px y sin espacio para fantasmas (va debajo de otra figura)
+ *   ajustado: true              // sin marca: plano de siempre, sin el espacio vacío de la marca y el fantasma
  * }
  * estado = { corte, final, marca, fantasma: null | { marca, rotulo } | { curvas, areas, puntos, rotulo } }
  * El dibujo es una función pura de (datos, estado). Todo número que se ve lo trae el generador.
@@ -55,7 +56,9 @@
     const ceroY = Y(Math.min(d.y.max, Math.max(d.y.min, 0)));
     // Xi, Yi: las inversas de X e Y (de píxel a valor), para el gesto directo de la teoría.
     const Xi = px => d.x.min + (px - PX0) * sx / (PX1 - PX0), Yi = py => d.y.min + (PY1 - py) * sy / (PY1 - PY0);
-    return { PY1, X, Y, Xi, Yi, ceroY, regla, reglaY, manija, fantasma, alto: esCompacto(d) ? PY1 + 48 : fantasma + 16, RX };
+    // ajustado (19 nov, Ecuaciones polinomiales): sin marca, el lienzo termina bajo los números del eje x (sin el espacio
+    // de la marca y del fantasma, que quedaba vacío debajo de la gráfica).
+    return { PY1, X, Y, Xi, Yi, ceroY, regla, reglaY, manija, fantasma, alto: esCompacto(d) || (d.ajustado && !d.marca) ? PY1 + 48 : fantasma + 16, RX };
   }
   const fmt = (d, v) => `${d.prefijo || ''}${Kit.formatear(v, d.decimales === undefined ? 2 : d.decimales)}${d.sufijo || ''}`;
   const lim = (v, a, b) => Math.min(b, Math.max(a, v));

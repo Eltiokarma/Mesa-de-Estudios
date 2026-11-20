@@ -295,6 +295,30 @@
     "TAL-MCD-PRIMOS-cree-que-no-hay-comun": {
       "respaldo": "hipotesis",
       "describe": "No factoriza y cree que los polinomios no tienen nada en común (MCD = 1)"
+    },
+    "TAL-PIDE-da-la-tercera-raiz": {
+      "respaldo": "hipotesis",
+      "describe": "Da la tercera raíz en vez del coeficiente que se pide"
+    },
+    "TAL-SIGNO-VIETE-cambia-el-signo": {
+      "respaldo": "hipotesis",
+      "describe": "Cambia el signo de la suma de productos de a dos (c/a se lee sin cambiar el signo)"
+    },
+    "TAL-VIETE-UNA-una-sola-pareja": {
+      "respaldo": "hipotesis",
+      "describe": "Multiplica solo la pareja de raíces dadas y olvida las otras dos parejas"
+    },
+    "TAL-BICUAD-TODAS-cada-u-da-dos-reales": {
+      "respaldo": "hipotesis",
+      "describe": "Cree que cada valor de u = x² da dos raíces reales, también el negativo"
+    },
+    "TAL-BICUAD-POSITIVA-solo-la-positiva": {
+      "respaldo": "hipotesis",
+      "describe": "De x² = u toma solo la raíz positiva"
+    },
+    "TAL-BICUAD-NINGUNA-descarta-todo": {
+      "respaldo": "hipotesis",
+      "describe": "Ve un valor de u negativo y cree que la ecuación no tiene raíces reales"
     }
   },
   "pares": [
@@ -1994,6 +2018,146 @@
             "texto": "1",
             "valor": 1,
             "error": "TAL-MCD-PRIMOS-cree-que-no-hay-comun"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ep-01",
+      "plantilla": "ecuaciones-polinomiales-practica",
+      "unidad": "algebra.ecuaciones-polinomiales",
+      "mide": "Cardano-Vieta en una cúbica: con dos raíces y la suma se halla la tercera; el coeficiente de x es la suma de los productos de a dos (San Marcos 2027-I, otros números)",
+      "A": {
+        "enunciado": "La ecuación x³ − 10x² + kx − 30 = 0 tiene las raíces 2 y 3. ¿Cuánto vale k?",
+        "datos": {
+          "modelo": {
+            "S": 10,
+            "V": 30,
+            "r1": 2,
+            "r2": 3
+          }
+        },
+        "opciones": [
+          {
+            "texto": "5",
+            "valor": 5,
+            "error": "TAL-PIDE-da-la-tercera-raiz"
+          },
+          {
+            "texto": "31",
+            "valor": 31,
+            "correcta": true
+          },
+          {
+            "texto": "−31",
+            "valor": -31,
+            "error": "TAL-SIGNO-VIETE-cambia-el-signo"
+          },
+          {
+            "texto": "6",
+            "valor": 6,
+            "error": "TAL-VIETE-UNA-una-sola-pareja"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "La ecuación x³ − 11x² + kx − 40 = 0 tiene las raíces 2 y 4. ¿Cuánto vale k?",
+        "datos": {
+          "modelo": {
+            "S": 11,
+            "V": 40,
+            "r1": 2,
+            "r2": 4
+          }
+        },
+        "opciones": [
+          {
+            "texto": "8",
+            "valor": 8,
+            "error": "TAL-VIETE-UNA-una-sola-pareja"
+          },
+          {
+            "texto": "−38",
+            "valor": -38,
+            "error": "TAL-SIGNO-VIETE-cambia-el-signo"
+          },
+          {
+            "texto": "5",
+            "valor": 5,
+            "error": "TAL-PIDE-da-la-tercera-raiz"
+          },
+          {
+            "texto": "38",
+            "valor": 38,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "ep-02",
+      "plantilla": "ecuaciones-polinomiales-practica",
+      "unidad": "algebra.ecuaciones-polinomiales",
+      "mide": "Bicuadrada: con u = x², cada u positivo da dos raíces reales opuestas y un u negativo ninguna real",
+      "A": {
+        "enunciado": "¿Cuántas raíces reales tiene x⁴ + 5x² − 36 = 0?",
+        "datos": {
+          "modelo": {
+            "b": 5,
+            "c": -36
+          }
+        },
+        "opciones": [
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "TAL-BICUAD-TODAS-cada-u-da-dos-reales"
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TAL-BICUAD-POSITIVA-solo-la-positiva"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "correcta": true
+          },
+          {
+            "texto": "0",
+            "valor": 0,
+            "error": "TAL-BICUAD-NINGUNA-descarta-todo"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "¿Cuántas raíces reales tiene x⁴ + 6x² − 7 = 0?",
+        "datos": {
+          "modelo": {
+            "b": 6,
+            "c": -7
+          }
+        },
+        "opciones": [
+          {
+            "texto": "0",
+            "valor": 0,
+            "error": "TAL-BICUAD-NINGUNA-descarta-todo"
+          },
+          {
+            "texto": "2",
+            "valor": 2,
+            "correcta": true
+          },
+          {
+            "texto": "4",
+            "valor": 4,
+            "error": "TAL-BICUAD-TODAS-cada-u-da-dos-reales"
+          },
+          {
+            "texto": "1",
+            "valor": 1,
+            "error": "TAL-BICUAD-POSITIVA-solo-la-positiva"
           }
         ]
       }

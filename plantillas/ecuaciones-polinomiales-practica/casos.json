@@ -1,0 +1,247 @@
+{
+  "plantilla": "ecuaciones-polinomiales-practica",
+  "nota": "Un caso por tipo (24 tipos, seis ideas). entrada: la idea y el tipo que da generar(semilla, { idea }); esperado.texto: el texto de la alternativa correcta.",
+  "verificacion": "Script aparte (19 nov 2026, python3 con sympy, fuera del repo: scratchpad de la sesión, e8-algebra/scripts/cuentas.py con volcar-practica.js), que no usa el generador ni el núcleo: lee la pregunta que ve el alumno, arma el polinomio con sympy y recalcula (roots, real_roots, solve, expand): la correcta vale lo que se pide (raíces, su número, su suma o su producto, el parámetro, el factor de grado 2, los candidatos) y ningún distractor lo vale. Revisó 2400 problemas (400 por idea, entre ellos estos 24 casos): todos cuadran.",
+  "casos": [
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "grado-raices",
+        "tipo": "total"
+      },
+      "esperado": {
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "grado-raices",
+        "tipo": "distintas"
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "grado-raices",
+        "tipo": "no-reales"
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "grado-raices",
+        "tipo": "triple"
+      },
+      "esperado": {
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "viete",
+        "tipo": "suma"
+      },
+      "esperado": {
+        "texto": "−5"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "viete",
+        "tipo": "producto"
+      },
+      "esperado": {
+        "texto": "−12"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "viete",
+        "tipo": "inversos"
+      },
+      "esperado": {
+        "texto": "7/4"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "viete",
+        "tipo": "coef-k"
+      },
+      "esperado": {
+        "texto": "−2"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "raices-racionales",
+        "tipo": "no-puede"
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "raices-racionales",
+        "tipo": "cuantos"
+      },
+      "esperado": {
+        "texto": "8"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "raices-racionales",
+        "tipo": "otras"
+      },
+      "esperado": {
+        "texto": "−1/2 y 1"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "raices-racionales",
+        "tipo": "caja"
+      },
+      "esperado": {
+        "texto": "7 dm"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "conjugadas",
+        "tipo": "companera"
+      },
+      "esperado": {
+        "texto": "2 − i"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "conjugadas",
+        "tipo": "factor2"
+      },
+      "esperado": {
+        "texto": "x² + 4x − 8"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "conjugadas",
+        "tipo": "menor-grado"
+      },
+      "esperado": {
+        "texto": "5"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "conjugadas",
+        "tipo": "raiz-real"
+      },
+      "esperado": {
+        "texto": "−3"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "cambio-de-variable",
+        "tipo": "reales-bicuad"
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "cambio-de-variable",
+        "tipo": "mayor"
+      },
+      "esperado": {
+        "texto": "7"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "cambio-de-variable",
+        "tipo": "en-t"
+      },
+      "esperado": {
+        "texto": "t² − 5t − 1 = 0"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "cambio-de-variable",
+        "tipo": "precio"
+      },
+      "esperado": {
+        "texto": "3 soles"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "binomica",
+        "tipo": "reales-bin"
+      },
+      "esperado": {
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "binomica",
+        "tipo": "no-reales-bin"
+      },
+      "esperado": {
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "binomica",
+        "tipo": "producto-nr"
+      },
+      "esperado": {
+        "texto": "36"
+      }
+    },
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "binomica",
+        "tipo": "producto-todas"
+      },
+      "esperado": {
+        "texto": "−256"
+      }
+    }
+  ]
+}
