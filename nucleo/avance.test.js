@@ -668,3 +668,24 @@ test('Etapa 8, Ángulos en posición normal rehecha: predicciones viejas sin hue
   A.migrar(nuevo);
   assert.ok(!(nuevo.marcadas || {})[U], 'sin terminar las de antes no gana «Ya la estudié»');
 });
+
+// 19 nov (etapa 8): Proporcionalidad y semejanza, rehecha con sus cinco ids (cuatro con otra Predice) y una idea nueva.
+test('Etapa 8, Proporcionalidad rehecha: predicciones viejas sin huella borradas una vez en cuatro ideas; «Ya la estudié» a quien terminó las cinco', () => {
+  const U = 'geometria.proporcionalidad-y-semejanza';
+  const ideas = Object.fromEntries(['thales', 'bisectriz', 'ceva-menelao', 'semejanza', 'area-y-escala'].map(i => [i, { hecha: true, prediccion: 'c' }]));
+  ideas.semejanza.prediccionDe = 'h1';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-12' }, teoria: { [U]: { ideas } } };
+  A.migrar(est);
+  assert.equal(est.prediccionPS, 1); assert.equal(est.estudiadaPS, 1);
+  for (const id of ['thales', 'bisectriz', 'area-y-escala']) {
+    assert.equal(est.teoria[U].ideas[id].prediccion, undefined, id);
+    assert.equal(est.teoria[U].ideas[id].hecha, true, id);
+  }
+  assert.equal(est.teoria[U].ideas.semejanza.prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.teoria[U].ideas['ceva-menelao'].prediccion, 'c', 'misma pregunta y mismas opciones');
+  assert.ok(est.marcadas[U], 'terminó las cinco de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { thales: { hecha: true, prediccion: 'c' } } } } };
+  A.migrar(nuevo);
+  assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});

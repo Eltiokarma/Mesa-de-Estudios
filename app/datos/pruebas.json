@@ -2685,6 +2685,30 @@
     "GE16": {
      "respaldo": "hipotesis",
      "describe": "Resta los arcos de un ángulo exterior pero no divide entre 2"
+    },
+    "GE22": {
+     "respaldo": "parcial",
+     "describe": "Empareja tramos o lados por su posición en el dibujo, o la parte con el todo, en vez de tramo con tramo en el mismo orden"
+    },
+    "GE8": {
+     "respaldo": "parcial",
+     "describe": "Cree que la bisectriz llega al punto medio del lado opuesto, como la mediana"
+    },
+    "GE-THA4": {
+     "respaldo": "hipotesis",
+     "describe": "En Thales reparte el total por la mitad en vez de en la razón de los tramos"
+    },
+    "GE-THA5": {
+     "respaldo": "hipotesis",
+     "describe": "Hace bien el reparto, pero da el otro tramo"
+    },
+    "GE-PIE1": {
+     "respaldo": "hipotesis",
+     "describe": "Pone el tramo largo junto al lado corto: empareja cada tramo con el lado de enfrente"
+    },
+    "GE-PIE3": {
+     "respaldo": "hipotesis",
+     "describe": "Da una sola parte del reparto en vez de las partes del tramo pedido"
     }
    },
    "pares": [

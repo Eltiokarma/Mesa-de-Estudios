@@ -865,6 +865,17 @@ const V = {
     const Q = [1 / T1[0], 0], u = [T1[0] - Q[0], T1[1] - Q[1]], w = [T2[0] - Q[0], T2[1] - Q[1]];
     const ang = Math.round(Math.acos((u[0] * w[0] + u[1] * w[1]) / (Math.hypot(...u) * Math.hypot(...w))) * 180 / PI * 1e6) / 1e6;
     return { correcta: ang, errores: { GE15: d.c / 2, 'GE-ANG2': d.c, GE16: 360 - 2 * d.c } }; },
+  // ps-01 y ps-02 (19 nov, etapa 8, Proporcionalidad y semejanza; reserva: las formas ya tienen 10 pares). geo-semejanza es
+  // un generador sin motor: aquí se rehacen aparte. ps-01: Thales con coordenadas (paralelas horizontales, la segunda
+  // secante corta las mismas alturas) y DE medido. ps-02: el pie de la bisectriz como corte de la bisectriz (suma de los
+  // unitarios de AB y AC) con BC.
+  // (Una sola parte del reparto: BC entre las partes de la razón AB : AC reducida.)
+  'ps-01': d => { const h1 = 0.3 * d.AB, h2 = 0.3 * d.BC, s2 = (h1 + h2) / d.DF, de = h1 / s2;
+    return { correcta: Math.round(de * 1e6) / 1e6, errores: { GE22: d.DF * d.AB / d.BC, 'GE-THA4': d.DF / 2, 'GE-THA5': Math.round((d.DF - de) * 1e6) / 1e6 } }; },
+  'ps-02': d => { const x = (d.AB * d.AB + d.AC * d.AC - d.BC * d.BC) / (2 * d.AB), C = [x, Math.sqrt(d.AC * d.AC - x * x)], B = [d.AB, 0];
+    const u = [B[0] / d.AB + C[0] / d.AC, B[1] / d.AB + C[1] / d.AC], r = [C[0] - B[0], C[1] - B[1]], den = u[0] * r[1] - u[1] * r[0];
+    const t = (B[0] * r[1] - B[1] * r[0]) / den, D = [u[0] * t, u[1] * t], bd = Math.round(Math.hypot(D[0] - B[0], D[1] - B[1]) * 1e6) / 1e6;
+    return { correcta: bd, errores: { GE8: d.BC / 2, 'GE-PIE1': Math.round((d.BC - bd) * 1e6) / 1e6, 'GE-PIE3': d.BC * ((f, a, b) => f(f, a, b))((f, a, b) => (b ? f(f, b, a % b) : a), d.AB, d.AC) / (d.AB + d.AC) } }; },
   'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
     return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
   'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;

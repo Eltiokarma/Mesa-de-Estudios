@@ -247,7 +247,13 @@
     "GE-PIT5": {"respaldo": "hipotesis", "describe": "En Pitot parte AB + CD entre 2, como si fuera el doble del lado pedido"},
     "GE-ANG2": {"respaldo": "hipotesis", "describe": "Cree que el ángulo entre dos tangentes mide lo mismo que el arco cercano (en realidad suman 180°)"},
     "GE15": {"respaldo": "hipotesis", "describe": "Toma la mitad de un solo arco, como si el ángulo fuera inscrito"},
-    "GE16": {"respaldo": "hipotesis", "describe": "Resta los arcos de un ángulo exterior pero no divide entre 2"}
+    "GE16": {"respaldo": "hipotesis", "describe": "Resta los arcos de un ángulo exterior pero no divide entre 2"},
+    "GE22": {"respaldo": "parcial", "describe": "Empareja tramos o lados por su posición en el dibujo, o la parte con el todo, en vez de tramo con tramo en el mismo orden"},
+    "GE8": {"respaldo": "parcial", "describe": "Cree que la bisectriz llega al punto medio del lado opuesto, como la mediana"},
+    "GE-THA4": {"respaldo": "hipotesis", "describe": "En Thales reparte el total por la mitad en vez de en la razón de los tramos"},
+    "GE-THA5": {"respaldo": "hipotesis", "describe": "Hace bien el reparto, pero da el otro tramo"},
+    "GE-PIE1": {"respaldo": "hipotesis", "describe": "Pone el tramo largo junto al lado corto: empareja cada tramo con el lado de enfrente"},
+    "GE-PIE3": {"respaldo": "hipotesis", "describe": "Da una sola parte del reparto en vez de las partes del tramo pedido"}
   },
   "pares": [
     {
@@ -1902,6 +1908,138 @@
             "texto": "52,5°",
             "valor": 52.5,
             "error": "GE15"
+          }
+        ]
+      }
+    },
+    {
+      "par": "ps-01",
+      "plantilla": "geo-semejanza",
+      "unidad": "geometria.proporcionalidad-y-semejanza",
+      "mide": "Thales con la parte y el todo: tres paralelas reparten las dos secantes en la misma razón (DE = DF · AB/(AB + BC))",
+      "A": {
+        "enunciado": "Tres jirones paralelos cortan dos avenidas. En la primera, las cuadras miden AB = 20 m y BC = 30 m. En la segunda, del primer jirón al tercero hay DF = 90 m. ¿Cuánto mide DE, la primera cuadra de la segunda avenida?",
+        "datos": {
+          "AB": 20,
+          "BC": 30,
+          "DF": 90
+        },
+        "opciones": [
+          {
+            "texto": "60 m",
+            "valor": 60,
+            "error": "GE22"
+          },
+          {
+            "texto": "36 m",
+            "valor": 36,
+            "correcta": true
+          },
+          {
+            "texto": "45 m",
+            "valor": 45,
+            "error": "GE-THA4"
+          },
+          {
+            "texto": "54 m",
+            "valor": 54,
+            "error": "GE-THA5"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Tres carreteras paralelas cortan dos caminos rectos. En uno quedan los pueblos A, B y C, con AB = 8 km y BC = 12 km; en el otro, D, E y F, con DF = 45 km. ¿Qué distancia hay de D a E?",
+        "datos": {
+          "AB": 8,
+          "BC": 12,
+          "DF": 45
+        },
+        "opciones": [
+          {
+            "texto": "27 km",
+            "valor": 27,
+            "error": "GE-THA5"
+          },
+          {
+            "texto": "22,5 km",
+            "valor": 22.5,
+            "error": "GE-THA4"
+          },
+          {
+            "texto": "30 km",
+            "valor": 30,
+            "error": "GE22"
+          },
+          {
+            "texto": "18 km",
+            "valor": 18,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "ps-02",
+      "plantilla": "geo-semejanza",
+      "unidad": "geometria.proporcionalidad-y-semejanza",
+      "mide": "Teorema de la bisectriz: la bisectriz parte el lado opuesto en la razón de los lados vecinos (BD/DC = AB/AC), no por la mitad",
+      "A": {
+        "enunciado": "En el triángulo ABC, AB = 14 cm, AC = 21 cm y BC = 25 cm. La bisectriz del ángulo A llega a BC en D. ¿Cuánto mide BD?",
+        "datos": {
+          "AB": 14,
+          "AC": 21,
+          "BC": 25
+        },
+        "opciones": [
+          {
+            "texto": "12,5 cm",
+            "valor": 12.5,
+            "error": "GE8"
+          },
+          {
+            "texto": "15 cm",
+            "valor": 15,
+            "error": "GE-PIE1"
+          },
+          {
+            "texto": "10 cm",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "5 cm",
+            "valor": 5,
+            "error": "GE-PIE3"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "En un terreno con forma de triángulo ABC, una acequia sale de la esquina A y divide su ángulo en dos partes iguales. AB = 12 m, AC = 18 m y BC = 25 m. ¿A qué distancia de B llega la acequia a la cerca BC?",
+        "datos": {
+          "AB": 12,
+          "AC": 18,
+          "BC": 25
+        },
+        "opciones": [
+          {
+            "texto": "10 m",
+            "valor": 10,
+            "correcta": true
+          },
+          {
+            "texto": "15 m",
+            "valor": 15,
+            "error": "GE-PIE1"
+          },
+          {
+            "texto": "5 m",
+            "valor": 5,
+            "error": "GE-PIE3"
+          },
+          {
+            "texto": "12,5 m",
+            "valor": 12.5,
+            "error": "GE8"
           }
         ]
       }

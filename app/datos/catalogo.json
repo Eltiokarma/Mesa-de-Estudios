@@ -4726,7 +4726,7 @@
        "lineas-notables": "Líneas notables",
        "angulo-de-bisectrices": "Ángulos entre bisectrices"
       },
-      "terminos": 53
+      "terminos": 52
      }
     },
     {
@@ -4777,7 +4777,7 @@
        "mediana-hipotenusa": "Mediana relativa a la hipotenusa",
        "notables": "Triángulos rectángulos notables"
       },
-      "terminos": 61
+      "terminos": 60
      }
     },
     {
@@ -4828,7 +4828,7 @@
        "rectangulo-rombo-cuadrado": "Rectángulo, rombo y cuadrado",
        "trapecios": "El trapecio y su mediana"
       },
-      "terminos": 57
+      "terminos": 56
      }
     },
     {
@@ -4888,9 +4888,10 @@
      "nombre": "Proporcionalidad y semejanza",
      "temas": [
       "Teorema de Thales",
-      "Teoremas de la bisectriz y del incentro",
-      "Menelao y Ceva",
-      "Criterios de semejanza de triángulos"
+      "Teorema de la bisectriz interior y exterior",
+      "Criterios de semejanza de triángulos",
+      "Razón de áreas de figuras semejantes",
+      "Menelao y Ceva"
      ],
      "universidades": {
       "uni": {
@@ -4908,26 +4909,29 @@
      "potencial_visual": "alto",
      "grado": 4,
      "requiere": [
-      "geometria.congruencia"
+      "geometria.poligonos-y-cuadrilateros"
      ],
      "plantillas": [
+      "geo-semejanza",
       "ampliadora",
       "geo-proporcionalidad"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/proporcionalidad-y-semejanza.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-objeto.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "thales": "Una paralela corta en proporción",
-       "bisectriz": "La bisectriz copia la razón",
-       "ceva-menelao": "Tres razones cuyo producto es 1",
-       "semejanza": "Emparejar lados por sus ángulos",
-       "area-y-escala": "El área crece con k²"
+       "thales": "Paralelas que cortan dos rectas",
+       "bisectriz": "Teorema de la bisectriz",
+       "semejanza": "Triángulos semejantes",
+       "encajados": "Triángulos encajados y cruzados",
+       "area-y-escala": "Áreas de figuras semejantes",
+       "ceva-menelao": "Teoremas de Ceva y Menelao"
       },
-      "terminos": 46
+      "terminos": 56
      }
     },
     {
@@ -4959,7 +4963,8 @@
      ],
      "plantillas": [
       "triangulo-estira",
-      "geo-triangulos-notables"
+      "geo-triangulos-notables",
+      "geo-proporcionalidad"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/puntos-notables.js",
@@ -4972,7 +4977,7 @@
        "centros": "Cada centro y sus líneas",
        "euler": "Recta y círculo de Euler"
       },
-      "terminos": 49
+      "terminos": 48
      }
     },
     {
@@ -5009,7 +5014,8 @@
       "triangulo-estira",
       "geo-circunferencia-metrica",
       "geo-relaciones-metricas",
-      "geo-triangulos-notables"
+      "geo-triangulos-notables",
+      "geo-proporcionalidad"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/geometria/relaciones-metricas.js",
@@ -5164,7 +5170,7 @@
        "trapecios-y-trapezoides": "Trapecio y cuadrilátero cualquiera",
        "relaciones-cuadrilateros": "Mitades escondidas en cuadriláteros"
       },
-      "terminos": 42
+      "terminos": 41
      }
     },
     {
@@ -5371,7 +5377,7 @@
        "tronco-de-prisma": "Corte oblicuo: el promedio",
        "semejanza-de-solidos": "Escala al cubo"
       },
-      "terminos": 48
+      "terminos": 47
      }
     },
     {
@@ -8179,6 +8185,9 @@
     "/plantillas/ampliadora/index.html",
     "/plantillas/ampliadora/motor.js",
     "/plantillas/ampliadora/papel.json"
+   ],
+   "rehacer": [
+    "geometria.proporcionalidad-y-semejanza"
    ]
   },
   "analisis-dimensional": {
@@ -10042,13 +10051,20 @@
    "version": "0.1.0",
    "unidades": [
     "geometria.proporcionalidad-y-semejanza",
-    "geometria.geometria-del-espacio"
+    "geometria.geometria-del-espacio",
+    "geometria.puntos-notables",
+    "geometria.relaciones-metricas"
    ],
    "url": "#/practica/geo-proporcionalidad",
    "papel": "/plantillas/geo-proporcionalidad/papel.json",
    "archivos": [
     "/plantillas/geo-proporcionalidad/generador.js",
     "/plantillas/geo-proporcionalidad/papel.json"
+   ],
+   "rehacer": [
+    "geometria.proporcionalidad-y-semejanza",
+    "geometria.puntos-notables",
+    "geometria.relaciones-metricas"
    ]
   },
   "geo-relaciones-metricas": {
@@ -10097,6 +10113,30 @@
    "archivos": [
     "/plantillas/geo-segmentos-angulos/generador.js",
     "/plantillas/geo-segmentos-angulos/papel.json"
+   ]
+  },
+  "geo-semejanza": {
+   "id": "geo-semejanza",
+   "titulo": "Proporcionalidad y semejanza",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "geometria.proporcionalidad-y-semejanza"
+   ],
+   "url": "#/practica/geo-semejanza",
+   "ideas": [
+    "thales",
+    "bisectriz",
+    "semejanza",
+    "encajados",
+    "area-y-escala",
+    "ceva-menelao"
+   ],
+   "papel": "/plantillas/geo-semejanza/papel.json",
+   "archivos": [
+    "/plantillas/geo-semejanza/generador.js",
+    "/plantillas/geo-semejanza/papel.json"
    ]
   },
   "geo-triangulos": {

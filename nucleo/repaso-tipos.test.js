@@ -128,3 +128,20 @@ test('química: Estructura atómica repasa con sus generadores y su papel por un
   assert.ok(!cat.plantillas['conversiones-quimica'].unidades.includes(EA));
   assert.equal(RT.unidadDe(cat.plantillas['quimica-conceptos'], { _datos: { tema: 'ion-sodio' } }), TP);
 });
+
+// Cierre de «Proporcionalidad y semejanza» (20 nov): la unidad ya no enseña incentro ni cuerdas; en geo-proporcionalidad
+// esas variantes repasan Puntos notables y Relaciones métricas, y su papel (p6 y p5) dice lo mismo.
+test('geo-proporcionalidad: incentro a Puntos notables y cuerdas a Relaciones métricas', () => {
+  const fs = require('fs');
+  const pl = cat.plantillas['geo-proporcionalidad'], PS = 'geometria.proporcionalidad-y-semejanza';
+  assert.equal(RT.unidadDe(pl, { _datos: { tipo: 'incentro' } }), 'geometria.puntos-notables');
+  assert.equal(RT.unidadDe(pl, { _datos: { tipo: 'cuerdas' } }), 'geometria.relaciones-metricas');
+  for (const t of ['thales', 'bisectriz', 'raices-areas', 'bis-semejanza']) assert.equal(RT.unidadDe(pl, { _datos: { tipo: t } }), PS, t);
+  const papel = JSON.parse(fs.readFileSync(path.join(RAIZ, pl.papel), 'utf8')).problemas;
+  for (const q of papel) {
+    if (/incentro/i.test(q.enunciado)) assert.deepEqual(q.unidades, ['geometria.puntos-notables'], q.id);
+    if (/cuerdas?/i.test(q.enunciado)) assert.deepEqual(q.unidades, ['geometria.relaciones-metricas'], q.id);
+  }
+  // En las dos unidades nuevas la escena va a «Más mesas del tema», como en Proporcionalidad.
+  for (const u of ['geometria.puntos-notables', 'geometria.relaciones-metricas', PS]) assert.ok(pl.rehacer.includes(u), u);
+});

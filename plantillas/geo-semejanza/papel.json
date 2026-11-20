@@ -1,0 +1,87 @@
+{
+  "titulo": "Proporcionalidad y semejanza: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Tres rectas paralelas cortan a dos secantes: la primera en A, B y C; la segunda en D, E y F. AB = 6 m, BC = 2 m y DF = 8 m. ¿Cuánto mide DE? Datos: Thales: tres o más paralelas cortan a dos secantes en tramos proporcionales, en el mismo orden: AB/BC = DE/EF. Un tramo entero es la suma de sus partes: AC = AB + BC. Alternativas: A) 6 m   B) 24 m   C) 4 m   D) 2 m",
+      "respuesta": "A) 6 m",
+      "pasos": [
+        "AB : BC = 3 : 1: DF en 4 partes de 2 m.",
+        "DE = 3 · 2 = 6 m."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Un canal recto parte la esquina A de un terreno triangular ABC en dos ángulos iguales y llega a BC en D. BD = 2 m, DC = 4 m y AB = 3 m. ¿Cuál es el perímetro del terreno? Datos: Teorema de la bisectriz: la bisectriz de A llega a BC en D, y BD/DC = AB/AC. El perímetro de un triángulo es la suma de sus tres lados. Alternativas: A) 9 m   B) 12 m   C) 15 m   D) 10,5 m",
+      "respuesta": "C) 15 m",
+      "pasos": [
+        "2/4 = 3/AC da AC = 6 m; BC = 6 m.",
+        "3 + 6 + 6 = 15 m."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "A la misma hora, un poste proyecta una sombra de 6 m y un palo vertical de 1,6 m proyecta una de 1,5 m. ¿Cuánto mide el poste? Datos: A la misma hora, los rayos del sol llegan paralelos: forman el mismo ángulo con el suelo. AA: si dos triángulos tienen dos ángulos iguales, son semejantes. Semejantes: cada lado se multiplica por el mismo k, en el orden de los vértices. Alternativas: A) 6,4 m   B) 6,1 m   C) 6 m   D) 5,63 m   E) 4 m",
+      "respuesta": "A) 6,4 m",
+      "pasos": [
+        "La sombra del poste es 6 ÷ 1,5 = 4 veces la del palo.",
+        "poste = 4 · 1,6 = 6,4 m."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En el triángulo ABC, AB = 14 cm y AC = 8 cm. D está en AB y E en AC, con AE = 7 cm y m∠ADE = m∠ACB. ¿Cuánto mide AD? Datos: Si dos triángulos comparten un ángulo y tienen otro ángulo igual, son semejantes (AA). Lados homólogos: el lado frente a un ángulo va con el lado frente a su ángulo igual. Semejantes: cada lado se multiplica por el mismo k, en el orden de los vértices. Alternativas: A) 10 cm   B) 4 cm   C) 1 cm   D) 12,25 cm   E) 7 cm",
+      "respuesta": "B) 4 cm",
+      "pasos": [
+        "ADE ∼ ACB: AD va con AC y AE con AB.",
+        "AD = 8 · 7 ÷ 14 = 4 cm."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un terreno triangular de 275 m² se parte con un cerco paralelo a un lado. El triángulo junto al vértice opuesto tiene sus lados en 3/5 de los del terreno. ¿Cuál es el área de ese triángulo? Datos: Áreas de semejantes con razón k: S₂/S₁ = k², con S₂ el área de la grande y S₁ la de la chica. Alternativas: A) 165 m²   B) 176 m²   C) 137,5 m²   D) 99 m²   E) 59,4 m²",
+      "respuesta": "D) 99 m²",
+      "pasos": [
+        "El triángulo: 275 · (3/5)² = 99 m².",
+        "Su área: 99 m²."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Las cevianas AD, BE y CF del triángulo ABC pasan por un punto. AF = 4 cm, FB = 5 cm, BD = 6 cm, DC = 4 cm y EA = 3 cm. ¿Cuánto mide CE? Datos: Ceva: AD, BE y CF concurren si y solo si AF/FB · BD/DC · CE/EA = 1. Alternativas: A) 3,75 cm   B) 3,6 cm   C) 2,5 cm   D) 3 cm   E) 10 cm",
+      "respuesta": "C) 2,5 cm",
+      "pasos": [
+        "(4/5) · (6/4) · (CE/3) = 1.",
+        "CE = 2,5 cm."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En el triángulo ABC, AB = 15 cm, AC = 9 cm y BC = 11 cm. La bisectriz del ángulo exterior en A corta la prolongación de BC en E. ¿Cuánto mide CE? Datos: La bisectriz exterior de A llega a la prolongación de BC en E, y BE/CE = AB/AC. Alternativas: A) 16,5 cm   B) 11 cm   C) 4,13 cm   D) 27,5 cm",
+      "respuesta": "A) 16,5 cm",
+      "pasos": [
+        "(11 + CE)/CE = 15/9.",
+        "CE = 16,5 cm."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un triángulo tiene una base de 28 cm y una altura de 21 cm sobre ella. Un cuadrado se apoya en la base, con sus dos vértices de arriba en los otros lados. ¿Cuánto mide el lado del cuadrado? Datos: Una paralela a un lado de un triángulo forma con los otros dos un triángulo semejante al grande. Semejantes: cada lado se multiplica por el mismo k, en el orden de los vértices. En triángulos semejantes, también las alturas se multiplican por k. Alternativas: A) 7 cm   B) 12 cm   C) 10,5 cm   D) 24,5 cm   E) 49 cm",
+      "respuesta": "B) 12 cm",
+      "pasos": [
+        "x/28 = (21 − x)/21, así que 21x = 588 − 28x.",
+        "x = 12 cm."
+      ]
+    }
+  ]
+}

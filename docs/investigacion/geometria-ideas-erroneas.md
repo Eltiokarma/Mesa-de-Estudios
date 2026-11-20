@@ -375,3 +375,30 @@ medición del piloto.
 | GE-ANG1 a GE-ANG7 | Da el vecino del ángulo interior; iguala el ángulo entre tangentes al arco cercano; resta un arco del ángulo y no de su doble; olvida restar el arco dado; iguala arcos de ángulos opuestos; despeja mal el cercano; usa la mitad del cercano como si Q estuviera en la circunferencia | Idea 5 |
 | GE-CIC1 a GE-CIC3 | Resta de 180° el ángulo que no es el opuesto; cree que la suma sigue en 180° con D dentro; cree que baja | Idea 6 (predicción, D dentro) |
 | GE-CIC4 a GE-CIC10 | Iguala los opuestos (como en el paralelogramo); resta de 360°; da x y no el ángulo; cree que todo cuadrilátero es inscriptible; pide 90°; cree que faltan B y D; da m∠C en vez del ángulo de afuera | Idea 6 |
+
+## Proporcionalidad y semejanza (19 nov)
+
+Códigos de `contenido/teoria/geometria/proporcionalidad-y-semejanza.js` y de la práctica `geo-semejanza` (etapa 8,
+`docs/etapa8/propuesta-geometria.md`). Salvo GE1, GE2, GE8 y GE22 (arriba), **todos son hipótesis** sacadas del temario,
+de las preguntas de San Marcos clasificadas en la unidad y de la práctica de academia; se confirman con la medición del
+piloto. Los de la bisectriz van con el prefijo GE-PIE (pie de la bisectriz) porque GE-BIS ya es de Triángulos.
+
+| Código | Hipótesis (lo que hace el alumno) | Dónde aparece |
+| --- | --- | --- |
+| GE-THA1 a GE-THA3 | Suma la diferencia de los tramos (crecen igual); copia el tramo de la otra secante; cree que basta con que M y N estén en los lados | Idea 1 (Thales), predicción y ejemplos |
+| GE-THA4, GE-THA5 | Reparte el total por la mitad y no en la razón; reparte bien y da el otro tramo (o el total) | Idea 1; prueba del curso (ps-01) |
+| GE-THA6, GE-THA7 | Resuelve x y no arma el lado pedido; cree que faltan datos en el recíproco | Idea 1 |
+| GE-PIE1 a GE-PIE3 | Empareja cada tramo con el lado de enfrente (da el otro tramo); suma la diferencia; da una sola parte del reparto | Idea 2 (bisectriz); prueba del curso (ps-02) |
+| GE-PIE4, GE-PIE5 | Divide BC entre un lado en vez de repartirlo; halla AC y no suma el perímetro | Idea 2 |
+| GE-PIE6, GE-PIE7 | Con la bisectriz exterior: da el tramo de la interior; da BE entero en vez de CE | Idea 2 |
+| GE-SEM1 a GE-SEM3 | Suma la diferencia (todo crece igual); cree que el poste mide lo que su sombra, o da el piso; da k y no multiplica | Idea 3 (semejanza), predicción |
+| GE-SEM4, GE-SEM5 | Cree que los semejantes miden igual; da la mitad de la base sin punto medio | Idea 3 |
+| GE-SEM6, GE-SEM7 | Pide los ángulos cuando LLL alcanza; usa el piso entero en el espejo | Idea 3 |
+| GE-HOM1 a GE-HOM3 | En los triángulos encajados: iguala AD y AE; resta en el lado equivocado; da el puntal por el tramo del piso (o al revés) | Idea 4 (encajados) |
+| GE-HOM4, GE-HOM5 | Promedia AD y AC en vez de AB · AB = AD · AC; no saca la raíz | Idea 4 |
+| GE-ARE1 a GE-ARE4 | Cree que un cerco paralelo parte el área por la mitad; toma k² como 2k; suma k² al área; saca la raíz como mitad | Idea 5 (área y escala) |
+| GE-ARE5, GE-ARE6 | Usa la raíz de un área como lado; hace bien la cuenta y da la otra parte (o el área por el perímetro) | Idea 5 |
+| GE-ARE7, GE-ARE8 | Multiplica el perímetro por k²; suma las áreas de las tres esquinas sin sumar sus raíces | Idea 5 |
+| GE-CEV1, GE-CEV2 | En Menelao reparte CA como si E estuviera adentro; usa −1 con largos sin signo | Idea 6 (Ceva y Menelao) |
+| GE-CEV3 a GE-CEV6 | Escribe una razón al revés; suma tramos en vez de multiplicar razones; supone CE = EA (o da CA); olvida una de las tres razones | Idea 6 |
+| GE-CEV7, GE-CEV8 | Da CE donde se pide EA; con E fuera, suma o resta CA del lado que no es | Idea 6 |

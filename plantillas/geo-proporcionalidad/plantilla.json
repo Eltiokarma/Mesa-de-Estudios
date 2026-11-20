@@ -4,9 +4,12 @@
   "formato": "predicciones",
   "unidades": [
     "geometria.proporcionalidad-y-semejanza",
-    "geometria.geometria-del-espacio"
+    "geometria.geometria-del-espacio",
+    "geometria.puntos-notables",
+    "geometria.relaciones-metricas"
   ],
   "estado": "borrador",
+  "rehacer": ["geometria.proporcionalidad-y-semejanza", "geometria.puntos-notables", "geometria.relaciones-metricas"],
   "version": "0.1.0",
   "generador": "generador.js",
   "casos": "casos.json",

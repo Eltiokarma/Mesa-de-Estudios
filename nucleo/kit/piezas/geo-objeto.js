@@ -67,6 +67,9 @@
  *   redondo    el tanque echado con agua, la bandeja con su plato, dos círculos de luz, la pileta con faroles y fotógrafo,
  *              la plaza redonda con veredas y la figura de examen (tipo: 'tanque' | 'bandeja' | 'luces' | 'pileta' |
  *              'veredas' | 'examen'); el contorno de sus circunferencias y arcos es obstáculo para los rótulos
+ *   Proporcionalidad y semejanza (19 nov, etapa 8; bloque propio), dibujo de prueba sobre una figura de geo-figura:
+ *   semejante  el plano de un barrio con jirones y avenidas, el poste y la persona al sol, la rampa con su puntal, la foto
+ *              y su ampliación, y la figura de examen (tipo: 'calles' | 'sol' | 'rampa' | 'foto' | 'examen'); formato en su función
  *   Comunes a estas y a «angulos»: llaves (marca de igualdad sobre una llave que une las puntas del tramo), ladosRot (la
  *   medida de un lado), libres (un rótulo suelto junto a un punto) y masPuntos, masSegmentos, masAngulos. Lo que escriben
  *   y lo que trazan (llaves, objetos) es obstáculo para los rótulos de los ángulos, y escenaCabe lo revisa; las letras de
@@ -120,7 +123,7 @@
   const LETRA = 162;                              // línea base de las letras de los paraderos
   const NIVEL = { 1: 88, 2: 58, 3: 28, '-1': 182, '-2': 212 };
   const CW = 30, CH = 15;                         // la combi
-  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon', 'parcela', 'redondo'];
+  const OBJETOS = ['carretera', 'recta', 'soga', 'reloj', 'tranquera', 'rieles', 'pasaje', 'cartulina', 'tijeral', 'angulos', 'plaza', 'compas', 'lampara', 'caserio', 'parque', 'armazon', 'parcela', 'redondo', 'semejante'];
   const COLORES_DATO = ['o', 'i', 'd'];
   const n = T.n;
   const f = x => Kit.formatear(x, 2);
@@ -1667,6 +1670,155 @@
     return { fig, deco, extra, ids };
   }
 
+  // ---------- Proporcionalidad y semejanza (19 nov, etapa 8; bloque propio) ----------
+  // Objetos (dibujos de prueba) bajo una figura de geo-figura que arma la teoría: el plano de un barrio con jirones
+  // paralelos y avenidas, el poste y la persona al sol con sus sombras, la rampa apoyada en la pared con su puntal, la foto
+  // y su ampliación, y «examen» (la figura sola). Afirmación: los jirones son las paralelas y las avenidas las secantes; el
+  // poste, la persona y sus sombras, los catetos de dos triángulos con el mismo ángulo de sol; la rampa, el piso y la pared,
+  // un triángulo rectángulo con otro encajado; la foto chica cabe k · k veces en la grande. Fidelidad: la figura va a
+  // escala de geo-figura; el objeto solo se pone debajo, y lo que dibuja (el poste, la persona, el sol, la pared, el piso)
+  // es obstáculo para los rótulos.
+  //   { objeto: 'semejante', tipo: 'calles' | 'sol' | 'rampa' | 'foto' | 'examen', figura: <geo-figura>,
+  //     calles: [[id, id], …],        (calles) un jirón: una franja clara a lo largo de esa recta, de borde a borde
+  //     avenidas: [[id, id], …],      (calles) una avenida: una franja más ancha
+  //     suelo: id,                    (sol, rampa) el piso pasa por ese punto, horizontal, rayado por debajo
+  //     sol: [x, y],                  (sol) el sol, en coordenadas del plano
+  //     postes: [[pie, punta], …],    (sol) un poste de luz: la vara gruesa y su farol arriba
+  //     personas: [[pie, cabeza], …], (sol) una persona de pie, de ese alto
+  //     pared: [pie, tope],           (rampa) la pared: un muro a la derecha de ese tramo
+  //     tablas: [[id, id], …],        (rampa) una tabla gruesa bajo ese tramo (la rampa, el puntal)
+  //     fotos: [{ esquinas: [id × 4], copias }] }   (foto) una foto (abajo a la izquierda, abajo a la derecha, arriba a la
+  //                                   derecha, arriba a la izquierda), con su paisaje; copias: k entero, la foto chica
+  //                                   repetida k · k veces adentro (sus bordes en punteado tenue)
+  //     cotas: [{ de, a, texto, color, ref, dist, en, desde, hasta }]   la medida de un lado entero, en el lomo de una llave
+  //                                   que une sus puntas (para un lado con otro punto encima)
+  //   y lo común: llaves, ladosRot, libres (comunes). Las demás escenas no cambian.
+  function semejante(d) {
+    const f0 = d.figura || { puntos: [] }, tipo = d.tipo || 'examen';
+    const ALT = { calles: 'El plano de un barrio visto desde arriba, con jirones paralelos y avenidas.', sol: 'Un poste y una persona al sol, con sus sombras en el piso.',
+      rampa: 'Una rampa apoyada en una pared, con un puntal.', foto: 'Una foto y su ampliación.', examen: 'Una figura de geometría.' };
+    const fig = Object.assign({}, f0, { alt: f0.alt || d.alt || ALT[tipo] || ALT.examen, puntos: f0.puntos || [] });
+    const ids = fig.puntos.map(q => q.id);
+    const S = (g, r) => (Array.isArray(r) ? g.S(r) : g.S(r));
+    // Una recta p–q recortada al lienzo (con 6 px de borde).
+    const deBorde = (p, q, alto) => {
+      const u = [q[0] - p[0], q[1] - p[1]]; let t0 = -Infinity, t1 = Infinity;
+      for (const [k, hi] of [[0, W], [1, alto]]) {
+        if (Math.abs(u[k]) < 1e-12) continue;
+        let a = (6 - p[k]) / u[k], b = (hi - 6 - p[k]) / u[k]; if (a > b) [a, b] = [b, a];
+        t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+      }
+      return t0 < t1 ? [[p[0] + u[0] * t0, p[1] + u[1] * t0], [p[0] + u[0] * t1, p[1] + u[1] * t1]] : null;
+    };
+    const franja = (g, [a, b], ancho, op) => {
+      const p = S(g, a), q = S(g, b); if (!p || !q) return '';
+      const z = deBorde(p, q, g.alto); if (!z) return '';
+      return `<path d="${rutaPx(z, false)}" fill="none" stroke="currentColor" stroke-opacity="${op}" stroke-width="${ancho}" stroke-linecap="butt"/>`;
+    };
+    const ySuelo = g => { const p = d.suelo !== undefined ? S(g, d.suelo) : null; return p ? p[1] : null; };
+    // El poste: la vara (de pie a punta) y el farol, un brazo corto hacia la izquierda con su lámpara.
+    const poste = (g, [a, b]) => { const p = S(g, a), q = S(g, b); return p && q ? { p, q, brazo: [q, [q[0] - 12, q[1] + 2]], lamp: [q[0] - 13, q[1] + 5] } : null; };
+    // La persona: cabeza, cuerpo, brazos y piernas, del alto de pie a cabeza.
+    const persona = (g, [a, b]) => {
+      const p = S(g, a), q = S(g, b); if (!p || !q) return null;
+      const h = p[1] - q[1], rc = Math.max(2.2, h * 0.11), cab = [q[0], q[1] + rc], cuello = [q[0], q[1] + 2 * rc], cad = [p[0], p[1] - h * 0.47];
+      return { rc, cab, cuello, cad, pies: [[p[0] - h * 0.12, p[1]], [p[0] + h * 0.12, p[1]]], manos: [[q[0] - h * 0.17, q[1] + h * 0.5], [q[0] + h * 0.17, q[1] + h * 0.5]], hombro: [q[0], q[1] + h * 0.27], caja: { x0: p[0] - h * 0.18, x1: p[0] + h * 0.18, y0: q[1], y1: p[1] } };
+    };
+    const solEn = g => (d.sol ? g.S(d.sol) : null);
+    const pared = g => { if (!d.pared) return null; const p = S(g, d.pared[0]), q = S(g, d.pared[1]); return p && q ? { p, q } : null; };
+    const fotoDe = (g, ft) => { const c = (ft.esquinas || []).map(id => S(g, id)); return c.length === 4 && c.every(Boolean) ? c : null; };
+    // El paisaje de una foto (en pantalla): un cerro y un sol chico, adentro del rectángulo c (abajo-izq, abajo-der, arriba-der, arriba-izq).
+    const paisaje = c => {
+      const x0 = c[0][0], x1 = c[1][0], y0 = c[2][1], y1 = c[0][1], w = x1 - x0, h = y1 - y0, P = (u, v) => [x0 + w * u, y1 - h * v];
+      return `<path d="${rutaPx([P(0.06, 0.08), P(0.38, 0.62), P(0.56, 0.34), P(0.72, 0.52), P(0.94, 0.08)])}" fill="currentColor" fill-opacity="0.16"/>`
+        + `<circle cx="${n(x0 + w * 0.8)}" cy="${n(y1 - h * 0.78)}" r="${n(Math.max(1.5, Math.min(w, h) * 0.08))}" fill="currentColor" fill-opacity="0.22"/>`;
+    };
+    const deco = (g, corte) => {
+      let s = '';
+      if (tipo === 'calles') {
+        s += `<rect x="8" y="8" width="${W - 16}" height="${n(g.alto - 16)}" rx="6" fill="currentColor" fill-opacity="0.04"/>`;
+        for (const c of d.avenidas || []) s += franja(g, c, 22, 0.09);
+        for (const c of d.calles || []) s += franja(g, c, 15, 0.07);
+      }
+      const ys = ySuelo(g);
+      if (ys !== null && (tipo === 'sol' || tipo === 'rampa')) {
+        // El piso y sus rayas no pasan bajo las letras de los puntos (una letra no cruza ningún trazo).
+        const cajas = letras(g, fig, Infinity, []).map(c => ({ x0: c.x0 - 3, x1: c.x1 + 3, y0: c.y0 - 3, y1: c.y1 + 3 }));
+        const libre = (p, q) => !cajas.some(c => tocaCaja(p, q, c));
+        const cortes = cajas.filter(c => c.y0 <= ys && c.y1 >= ys).map(c => [c.x0, c.x1]).sort((u, w) => u[0] - w[0]);
+        let x0 = M + 2;
+        for (const [a0, a1] of cortes.concat([[W - M - 2, W - M - 2]])) { if (a0 > x0) s += `<line x1="${n(x0)}" y1="${n(ys)}" x2="${n(a0)}" y2="${n(ys)}" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.4"/>`; x0 = Math.max(x0, a1); }
+        for (let x = M + 8; x < W - M - 4; x += 9) if (libre([x, ys + 2], [x - 6, ys + 8])) s += `<line x1="${n(x)}" y1="${n(ys + 2)}" x2="${n(x - 6)}" y2="${n(ys + 8)}" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>`;
+      }
+      if (tipo === 'sol') {
+        const c = solEn(g);
+        if (c) { s += `<g data-objeto="sol" data-prueba="si"><circle cx="${n(c[0])}" cy="${n(c[1])}" r="9" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.3"/>`;
+          for (let k = 0; k < 8; k++) { const t = k * Math.PI / 4, a = [c[0] + 12 * Math.cos(t), c[1] + 12 * Math.sin(t)], b = [c[0] + 16 * Math.cos(t), c[1] + 16 * Math.sin(t)]; s += `<line x1="${n(a[0])}" y1="${n(a[1])}" x2="${n(b[0])}" y2="${n(b[1])}" stroke="currentColor" stroke-opacity="0.5" stroke-width="1.3" stroke-linecap="round"/>`; }
+          s += '</g>'; }
+        for (const pp of d.postes || []) { const z = poste(g, pp); if (!z) continue;
+          s += `<g data-objeto="poste" data-prueba="si"><line x1="${n(z.p[0])}" y1="${n(z.p[1])}" x2="${n(z.q[0])}" y2="${n(z.q[1])}" stroke="currentColor" stroke-opacity="0.35" stroke-width="7" stroke-linecap="round"/>`
+            + `<path d="${rutaPx(z.brazo, false)}" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="2.4" stroke-linecap="round"/><circle cx="${n(z.lamp[0])}" cy="${n(z.lamp[1])}" r="3" fill="currentColor" fill-opacity="0.45"/></g>`; }
+        for (const pp of d.personas || []) { const z = persona(g, pp); if (!z) continue;
+          const lw = 'stroke="currentColor" stroke-opacity="0.55" stroke-width="2" stroke-linecap="round" fill="none"';
+          s += `<g data-objeto="persona" data-prueba="si"><circle cx="${n(z.cab[0])}" cy="${n(z.cab[1])}" r="${n(z.rc)}" fill="var(--card)" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.6"/>`
+            + `<path d="${rutaPx([z.cuello, z.cad], false)}" ${lw}/><path d="${rutaPx([z.pies[0], z.cad, z.pies[1]], false)}" ${lw}/><path d="${rutaPx([z.manos[0], z.hombro, z.manos[1]], false)}" ${lw}/></g>`; }
+      }
+      if (tipo === 'rampa') {
+        const pw = pared(g);
+        if (pw) s += `<rect data-objeto="pared" data-prueba="si" x="${n(pw.p[0])}" y="${n(pw.q[1] - 8)}" width="${n(Math.min(16, W - M - pw.p[0]))}" height="${n(pw.p[1] - pw.q[1] + 8)}" fill="currentColor" fill-opacity="0.12"/>`;
+        for (const [a, b] of d.tablas || []) { const p = S(g, a), q = S(g, b); if (p && q) s += `<path d="${rutaPx([p, q], false)}" fill="none" stroke="currentColor" stroke-opacity="0.13" stroke-width="9" stroke-linecap="round"/>`; }
+      }
+      if (tipo === 'foto') for (const ft of d.fotos || []) {
+        const c = fotoDe(g, ft); if (!c) continue;
+        s += `<g data-objeto="foto" data-prueba="si"><path d="${rutaPx(c)}" fill="var(--card)" stroke="currentColor" stroke-opacity="0.2" stroke-width="5" stroke-linejoin="round"/>`;
+        const k = Math.max(1, Math.round(ft.copias || 1)), w = (c[1][0] - c[0][0]) / k, h = (c[0][1] - c[3][1]) / k;
+        for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) { const x0 = c[0][0] + i * w, y1 = c[0][1] - j * h; s += paisaje([[x0, y1], [x0 + w, y1], [x0 + w, y1 - h], [x0, y1 - h]]); }
+        for (let i = 1; i < k; i++) { const x = c[0][0] + i * w, y = c[0][1] - i * h;
+          s += `<line x1="${n(x)}" y1="${n(c[0][1])}" x2="${n(x)}" y2="${n(c[3][1])}" stroke="currentColor" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3 3"/>`
+            + `<line x1="${n(c[0][0])}" y1="${n(y)}" x2="${n(c[1][0])}" y2="${n(y)}" stroke="currentColor" stroke-opacity="0.35" stroke-width="1" stroke-dasharray="3 3"/>`; }
+        s += '</g>';
+      }
+      void corte;
+      return s;
+    };
+    // Cotas (cierre de la unidad, 20 nov): la medida de un lado entero sobre una llave que une sus dos puntas, con el texto
+    // en el lomo. Para un lado que tiene otro punto encima (AB con D adentro, en los triángulos encajados): un rótulo suelto
+    // quedaba junto a DB y se leía como su medida.
+    //   cotas: [{ de, a, texto, color, ref, dist (px entre el lado y la llave; 14), en (dónde va el texto, de 0 a 1; 0,5),
+    //            desde, hasta }]
+    const cotas = (g, corte) => {
+      let svg = ''; const lineas = [], cajas = [];
+      for (const t of d.cotas || []) {
+        if (!ve(t, corte)) continue;
+        const p = g.S(t.de), q = g.S(t.a); if (!p || !q) continue;
+        const nv = normalFuera(p, q, t.ref === undefined ? centroDe(g, fig) : g.S(t.ref)), u = unidad(p, q), L = Math.hypot(q[0] - p[0], q[1] - p[1]);
+        const conLetra = id => fig.puntos.some(x => x.id === id && x.rotulo && ve(x, corte));
+        const o = t.dist || 14, e0 = conLetra(t.de) ? Math.min(14, L / 4) : 3, e1 = conLetra(t.a) ? Math.min(14, L / 4) : 3, c = T.color(t.color);
+        const P = (base, k, sl) => [base[0] + u[0] * k + nv[0] * sl, base[1] + u[1] * k + nv[1] * sl];
+        const a0 = P(p, e0, o - 6), a1 = P(p, e0, o), b1 = P(q, -e1, o), b0 = P(q, -e1, o - 6);
+        svg += `<path data-cota="${t.de}${t.a}" d="${rutaPx([a0, a1, b1, b0], false)}" fill="none" stroke="${c}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+        lineas.push([a0, a1], [a1, b1], [b1, b0]);
+        const w = T.ancho(String(t.texto), TAM, 700), dd = o + 4 + soporte(w, ALTO_T, nv), en = t.en === undefined ? 0.5 : t.en, m = [a1[0] + (b1[0] - a1[0]) * en, a1[1] + (b1[1] - a1[1]) * en];
+        const r = rotuloEn(m[0] + nv[0] * (dd - o), m[1] + nv[1] * (dd - o), t.texto, t.color);
+        svg += r.svg; cajas.push(r.caja);
+      }
+      return { svg, lineas, cajas };
+    };
+    const extra = (g, corte) => {
+      const ct = cotas(g, corte), lineas = ct.lineas.slice();
+      const ys = ySuelo(g);
+      if (ys !== null && (tipo === 'sol' || tipo === 'rampa')) lineas.push([[M, ys + 2], [W - M, ys + 2]]);
+      if (tipo === 'sol') {
+        const c = solEn(g); if (c) lineas.push(...bordes([[c[0] - 16, c[1] - 16], [c[0] + 16, c[1] - 16], [c[0] + 16, c[1] + 16], [c[0] - 16, c[1] + 16]]));
+        for (const pp of d.postes || []) { const z = poste(g, pp); if (z) lineas.push([z.p, z.q], [z.brazo[0], z.brazo[1]], ...bordes(circuloPs(z.lamp, 3, 6))); }
+        for (const pp of d.personas || []) { const z = persona(g, pp); if (z) { const b = z.caja; lineas.push(...bordes([[b.x0, b.y0], [b.x1, b.y0], [b.x1, b.y1], [b.x0, b.y1]])); } }
+      }
+      if (tipo === 'rampa') { const pw = pared(g); if (pw) lineas.push([[pw.p[0], pw.q[1] - 8], [pw.p[0], pw.p[1]]]); }
+      return { svg: ct.svg, lineas, cajas: ct.cajas };
+    };
+    return { fig, deco, extra, ids };
+  }
+
   const TAU = 2 * Math.PI, norm = t => ((t % TAU) + TAU) % TAU;
   function prepararAngulos(g, fig, corte = Infinity) {
     const angs = (fig.angulos || []).map(a => Object.assign({}, a));
@@ -1737,7 +1889,7 @@
     return angs;
   }
 
-  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon, parcela, redondo,
+  const ESCENAS = { reloj, tranquera, rieles, pasaje, cartulina, tijeral, plaza, compas, lampara, caserio, parque, armazon, parcela, redondo, semejante,
     angulos: d => ({ fig: d.figura || { puntos: [] }, ls: g => (d.ls || []).map(l => g.S(l.p)), encima: g => (d.ls || []).map(l => { const q = g.S(l.p); return rotuloL(q[0], q[1], l.k); }).join('') }) };
   // manija: el id del punto que el juego arrastra; su letra se aleja 8 px más (la manija, de radio 13, la tapaba).
   const escena = d => {

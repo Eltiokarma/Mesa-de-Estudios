@@ -11,6 +11,7 @@
     "razonamiento-matematico.transformaciones-de-figuras"
   ],
   "estado": "borrador",
+  "rehacer": ["geometria.proporcionalidad-y-semejanza"],
   "version": "0.1.0",
   "escena": "index.html",
   "motor": "motor.js",

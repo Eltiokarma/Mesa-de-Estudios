@@ -21,7 +21,7 @@ así que la etapa abrió la segunda rama.
 | razonamiento-matematico.razonamiento-inductivo | Números y patrones (nueva) | 6 | rm-induccion | calidad 2 |
 | trigonometria.angulos-en-posicion-normal | Ángulos de cualquier medida (nueva) | 5 | trig-posicion-normal | calidad 2 |
 | fisica.trabajo-y-energia | Mecánica | 6 | fis-energia | calidad 2 |
-| geometria.proporcionalidad-y-semejanza | Geometría plana | 6 | geo-semejanza | en cierre |
+| geometria.proporcionalidad-y-semejanza | Geometría plana | 6 | geo-semejanza | calidad 2 |
 
 Informes en `rutinas/auditoria/<unidad>.md` y `rutinas/frio/<unidad>.md`.
 
@@ -37,6 +37,9 @@ Informes en `rutinas/auditoria/<unidad>.md` y `rutinas/frio/<unidad>.md`.
   idea 2; tres explicaciones falsas.
 - **Trabajo y energía:** faltaba g = 10 m/s² en muchos Datos y la parte del peso a lo largo en la cuesta; un μ
   redondeado que no cuadraba.
+- **Proporcionalidad y semejanza:** Menelao enunciado al revés («si el producto vale 1, están alineados», falso con
+  largos sin signo); triángulos de Ceva y Menelao que no existían (376 de 4 800 en la teoría); un LAL imposible; Datos
+  con letras DEF que chocaban con los puntos del problema (en la tarjeta 11 daban 6 en vez de 5).
 - **Ángulos en posición normal:** sin graves; 845 rótulos de ángulo que pisaban ejes, y la idea de los negativos casi
   sin negativos.
 

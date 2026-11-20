@@ -60,7 +60,10 @@
       ...todo(G + 'relaciones-metricas', ['secantes', 'cuerdas', 'arcos-cuerdas']) },
     // 19 nov (etapa 6): geo-poligonos queda solo para Polígonos regulares; Polígonos y cuadriláteros usa
     // geo-poligonos-cuadrilateros (docs/etapa6/propuesta-geometria.md, decisión 13). Ya no es mixto: sale de la tabla.
-    'geo-proporcionalidad': todo(G + 'proporcionalidad-y-semejanza', ['bisectriz', 'raices-areas', 'incentro', 'cuerdas', 'bis-semejanza', 'thales']),
+    // 20 nov (cierre de «Proporcionalidad y semejanza»): esa unidad ya no enseña incentro ni cuerdas. El incentro es de
+    // Puntos notables y las cuerdas que se cortan, de Relaciones métricas (las dos ya están en la ficha de la escena).
+    'geo-proporcionalidad': { ...todo(G + 'proporcionalidad-y-semejanza', ['bisectriz', 'raices-areas', 'bis-semejanza', 'thales']),
+      incentro: G + 'puntos-notables', cuerdas: G + 'relaciones-metricas' },
     // 18 nov (docs/etapa4/decisiones.md): la condición de obtusángulo (x² frente a a² + b²) va a Relaciones métricas, y
     // las bisectrices con 37°/2 y 53°/2, a Puntos notables, igual que TIPOS_POR_UNIDAD del generador.
     'geo-triangulos-notables': { obtusangulo: G + 'relaciones-metricas', ...todo(G + 'puntos-notables', ['ortocentro', 'arco', 'angulos', 'mitades']) },
@@ -70,7 +73,8 @@
     'nombre-polifuncional': todo(Q + 'funciones-organicas', ['oxidacion', 'sufijo', 'nombre', 'cadena', 'ester', 'amina']),
     'numeros-sucesiones': { ...todo(AR + 'sucesiones-y-series', ['fracciones', 'intercalada', 'sumatoria', 'pa-pg', 'comunes']),
       ...todo(AR + 'numeros-primos-y-divisores', ['divisores', 'primos-pa']), grupos: AR + 'divisibilidad',
-      ...todo(AR + 'numeracion', ['grifos', 'cifras']), cubos: AR + 'potenciacion-y-radicacion' },
+      // 19 nov (etapa 8): grifos es de Números racionales (TIPOS_POR_UNIDAD del generador), no de Numeración.
+      cifras: AR + 'numeracion', grifos: AR + 'numeros-racionales', cubos: AR + 'potenciacion-y-radicacion' },
     'porcentajes-planteo': { ...todo(AR + 'porcentajes', ['dimensiones', 'sistema', 'encadenados', 'sobrante', 'tramos', 'doble-entrada', 'partes']),
       conjuntos: AR + 'conjuntos', llegadas: AR + 'razones-y-proporciones', extracciones: AR + 'mezclas-y-aleaciones' },
     'probabilidad-conteo': { ...todo(AR + 'probabilidades', ['bloques-prob', 'bayes', 'exactamente', 'traspaso']), ...todo(AR + 'analisis-combinatorio', ['circular', 'fila']) },

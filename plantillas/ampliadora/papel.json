@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["geometria.proporcionalidad-y-semejanza"],
       "nivel": "básico",
       "enunciado": "Una alfombra cuadrada de 1,5 m de lado cuesta 60 soles. ¿Cuánto costará otra del mismo material y del mismo grosor, también cuadrada, de 3 m de lado?",
       "respuesta": "240 soles.",
@@ -17,6 +18,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["geometria.proporcionalidad-y-semejanza"],
       "nivel": "básico",
       "enunciado": "Un triángulo tiene lados de 5 cm, 12 cm y 13 cm. Se dibuja otro semejante cuyos lados miden el triple. ¿Cuánto miden el perímetro y el área del triángulo grande?",
       "respuesta": "Perímetro 90 cm y área 270 cm².",
@@ -30,6 +32,7 @@
     },
     {
       "id": "p3",
+      "unidades": ["geometria.prisma-y-piramide"],
       "nivel": "básico",
       "enunciado": "Se arma un cubo grande de 4 cm de arista con cubitos de 1 cm de arista. ¿Cuántos cubitos se usan? ¿Cuántos quedan escondidos, sin ninguna cara hacia afuera?",
       "respuesta": "64 cubitos; 8 quedan escondidos.",
@@ -43,6 +46,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["geometria.proporcionalidad-y-semejanza"],
       "nivel": "intermedio",
       "enunciado": "En el plano de una casa, hecho a escala 1 : 200, la sala es un rectángulo de 3 cm por 2,5 cm. ¿Cuánto mide la sala en la realidad y cuál es su área real en metros cuadrados?",
       "respuesta": "6 m por 5 m; 30 m².",
@@ -57,6 +61,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["geometria.solidos-de-revolucion"],
       "nivel": "intermedio",
       "enunciado": "Dos pelotas son esferas de 2 cm y 6 cm de radio. ¿Cuántas veces es mayor la superficie de la grande? ¿Y su volumen?",
       "respuesta": "La superficie es 9 veces mayor y el volumen, 27 veces.",
@@ -69,6 +74,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["geometria.solidos-de-revolucion"],
       "nivel": "intermedio",
       "enunciado": "Un recipiente cónico tiene 6 cm de radio y 10 cm de altura. Un recipiente cilíndrico tiene la misma base y la misma altura. ¿Cuál es el volumen de cada uno? ¿Cuántas veces hay que llenar el cono y vaciarlo en el cilindro para llenarlo?",
       "respuesta": "Cono: 120π cm³ (unos 377 cm³). Cilindro: 360π cm³ (unos 1131 cm³). Hay que vaciar el cono 3 veces.",
@@ -81,6 +87,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["geometria.prisma-y-piramide"],
       "nivel": "intermedio",
       "enunciado": "Una pirámide regular tiene una base cuadrada de 8 cm de lado y una altura de 3 cm. Calcula su volumen y su área lateral.",
       "respuesta": "Volumen 64 cm³; área lateral 80 cm².",
@@ -94,6 +101,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["geometria.solidos-de-revolucion"],
       "nivel": "avanzado",
       "enunciado": "Un vaso tiene forma de cono con la punta hacia abajo. Se llena de jugo hasta la mitad de su altura. ¿Qué fracción del vaso tiene jugo?",
       "respuesta": "Un octavo del vaso (1/8).",
@@ -107,6 +115,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["geometria.prisma-y-piramide"],
       "nivel": "avanzado",
       "enunciado": "Un cubo de madera de 5 cm de arista se pinta por fuera y luego se corta en cubitos de 1 cm de arista. ¿Cuántos cubitos tienen exactamente dos caras pintadas? ¿Cuántos no tienen ninguna?",
       "respuesta": "36 cubitos con dos caras pintadas y 27 sin ninguna.",
@@ -121,6 +130,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["geometria.proporcionalidad-y-semejanza"],
       "nivel": "avanzado",
       "enunciado": "Se quiere dibujar un cuadrado que tenga el triple del área de otro de 4 cm de lado. ¿Cuánto debe medir su lado?",
       "respuesta": "4√3 cm, unos 6,9 cm.",

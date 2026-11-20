@@ -663,9 +663,11 @@
       pregunta: '¿Qué tienen en común nueve puntos tan distintos?',
       fuente: { titulo: 'K. S. Kedlaya, Geometry Unbound, cap. 7', url: 'https://kskedlaya.org/geometryunbound/gu-060118.pdf' },
     },
-    // Glosario: lo que este tema estrena en el curso. Mediana, bisectriz, mediatriz, altura, incentro, circunscrita e
-    // inscrita vienen de unidades anteriores y el lector las marca solas.
+    // Glosario: lo que este tema estrena en el curso. Mediana, bisectriz, mediatriz, altura, circunscrita e inscrita
+    // vienen de unidades anteriores y el lector las marca solas. «incentro» se mudó aquí desde Proporcionalidad y semejanza
+    // (etapa 8, 19 nov: esa unidad ya no lo usa; docs/etapa8/propuesta-geometria.md, decisión 3).
     glosario: [
+      { termino: 'incentro', def: 'Punto donde se cortan las tres bisectrices de un triángulo; es el centro de la circunferencia inscrita.', ver: ['bisectriz', 'circunferencia inscrita'] },
       { termino: 'punto notable', formas: ['puntos notables', 'punto notable'],
         def: 'Punto especial de un triángulo donde se cortan tres líneas del mismo tipo, como las medianas o las alturas.',
         ver: ['baricentro', 'circuncentro', 'ortocentro', 'excentro'] },

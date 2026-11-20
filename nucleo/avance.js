@@ -198,6 +198,11 @@
     { u: 'fisica.trabajo-y-energia', p: 'prediccionTE', e: 'estudiadaTE',
       cambian: ['trabajo-y-angulo', 'trabajo-energia-cinetica', 'energia-potencial', 'conservacion-energia', 'potencia-y-eficiencia'],
       antes: ['trabajo-y-angulo', 'trabajo-energia-cinetica', 'energia-potencial', 'conservacion-energia', 'potencia-y-eficiencia'] },
+    // Etapa 8 (19 nov): Proporcionalidad y semejanza conservó sus cinco ids; cuatro cambiaron su Predice (ceva-menelao
+    // conserva pregunta e ids) y sumó `encajados` (docs/etapa8/propuesta-geometria.md, decisión 2).
+    { u: 'geometria.proporcionalidad-y-semejanza', p: 'prediccionPS', e: 'estudiadaPS',
+      cambian: ['thales', 'bisectriz', 'semejanza', 'area-y-escala'],
+      antes: ['thales', 'bisectriz', 'ceva-menelao', 'semejanza', 'area-y-escala'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

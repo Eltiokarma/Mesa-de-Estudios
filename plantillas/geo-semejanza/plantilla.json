@@ -1,0 +1,21 @@
+{
+  "id": "geo-semejanza",
+  "titulo": "Proporcionalidad y semejanza",
+  "formato": "predicciones",
+  "unidades": [
+    "geometria.proporcionalidad-y-semejanza"
+  ],
+  "temas": [
+    "Teorema de Thales",
+    "Teorema de la bisectriz interior y exterior",
+    "Criterios de semejanza de triángulos",
+    "Razón de áreas de figuras semejantes",
+    "Menelao y Ceva"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

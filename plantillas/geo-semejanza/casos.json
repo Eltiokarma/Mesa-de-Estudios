@@ -1,0 +1,272 @@
+{
+  "plantilla": "geo-semejanza",
+  "tolerancia": 0.000001,
+  "nota": "enunciado = lo que lee el alumno (enunciado y pregunta, con espacios normales); esperado.valor es el número (o la clave) y esperado.texto, la alternativa correcta que ve el alumno.",
+  "verificacion": "Script aparte (19 nov 2026, python3 -I, en el scratchpad de la sesión, fuera del repo: e8-geometria/casos/verificar_casos.py), que no usa el generador ni el núcleo: resuelve cada problema leyendo solo el enunciado, con coordenadas (Thales, la paralela, la bisectriz interior y exterior, las sombras, el espejo, los triángulos cruzados, la antiparalela, Ceva y Menelao), contando áreas de polígonos (el lindero) o probando valores (la x, el lado repetido, el cuadrado). Auditoría (20 nov): los casos que cambiaron (triángulos que no existían) se rehicieron con otro script aparte (scratchpad e8-cierre-ps/aud/resolver.js), que también comprueba que el triángulo exista.",
+  "casos": [
+    {
+      "semilla": 100,
+      "opciones": {
+        "tipo": "tres"
+      },
+      "enunciado": "Tres rectas paralelas cortan a dos secantes: la primera en A, B y C; la segunda en D, E y F. AB = 11 cm, BC = 8 cm y DE = 5,5 cm. ¿Cuánto mide EF?",
+      "esperado": {
+        "valor": 4,
+        "texto": "4 cm"
+      }
+    },
+    {
+      "semilla": 101,
+      "opciones": {
+        "tipo": "total"
+      },
+      "enunciado": "Tres rectas paralelas cortan a dos secantes: la primera en A, B y C; la segunda en D, E y F. AB = 12 m, BC = 4 m y DF = 12 m. ¿Cuánto mide DE?",
+      "esperado": {
+        "valor": 9,
+        "texto": "9 m"
+      }
+    },
+    {
+      "semilla": 102,
+      "opciones": {
+        "tipo": "triangulo"
+      },
+      "enunciado": "En el triángulo ABC, MN es paralela a BC, con M en AB y N en AC. AM = 4 cm, MB = 2 cm y AN = 10 cm. ¿Cuánto mide NC?",
+      "esperado": {
+        "valor": 5,
+        "texto": "5 cm"
+      }
+    },
+    {
+      "semilla": 103,
+      "opciones": {
+        "tipo": "thales-x"
+      },
+      "enunciado": "En el triángulo ABC, MN es paralela a BC (M en AB, N en AC). AM = x, MB = x + 3, AN = 7 y NC = 14, en centímetros. ¿Cuánto mide AB?",
+      "esperado": {
+        "valor": 9,
+        "texto": "9 cm"
+      }
+    },
+    {
+      "semilla": 104,
+      "opciones": {
+        "tipo": "tramo"
+      },
+      "enunciado": "En el triángulo ABC, AB = 30 cm, AC = 18 cm y BC = 16 cm. La bisectriz de A llega a BC en D. ¿Cuánto mide BD?",
+      "esperado": {
+        "valor": 10,
+        "texto": "10 cm"
+      }
+    },
+    {
+      "semilla": 105,
+      "opciones": {
+        "tipo": "lado"
+      },
+      "enunciado": "En el triángulo ABC, la bisectriz de A llega a BC en D, con BD = 12 cm y DC = 20 cm. AB = 21 cm. ¿Cuánto mide AC?",
+      "esperado": {
+        "valor": 35,
+        "texto": "35 cm"
+      }
+    },
+    {
+      "semilla": 106,
+      "opciones": {
+        "tipo": "perimetro"
+      },
+      "enunciado": "Un canal recto parte la esquina A de un terreno triangular ABC en dos ángulos iguales y llega a BC en D. BD = 6 m, DC = 15 m y AB = 12 m. ¿Cuál es el perímetro del terreno?",
+      "esperado": {
+        "valor": 63,
+        "texto": "63 m"
+      }
+    },
+    {
+      "semilla": 107,
+      "opciones": {
+        "tipo": "exterior"
+      },
+      "enunciado": "En el triángulo ABC, AB = 8 cm, AC = 6 cm y BC = 6 cm. La bisectriz del ángulo exterior en A corta la prolongación de BC en E. ¿Cuánto mide CE?",
+      "esperado": {
+        "valor": 18,
+        "texto": "18 cm"
+      }
+    },
+    {
+      "semilla": 108,
+      "opciones": {
+        "tipo": "sombra"
+      },
+      "enunciado": "A la misma hora, un poste proyecta una sombra de 6 m y un palo vertical de 1,6 m proyecta una de 2 m. ¿Cuánto mide el poste?",
+      "esperado": {
+        "valor": 4.8,
+        "texto": "4,8 m"
+      }
+    },
+    {
+      "semilla": 109,
+      "opciones": {
+        "tipo": "base"
+      },
+      "enunciado": "En el triángulo ABC, MN es paralela a BC (M en AB, N en AC). AM = 20 cm, MB = 16 cm y BC = 54 cm. ¿Cuánto mide MN?",
+      "esperado": {
+        "valor": 30,
+        "texto": "30 cm"
+      }
+    },
+    {
+      "semilla": 110,
+      "opciones": {
+        "tipo": "lll"
+      },
+      "enunciado": "Un triángulo tiene lados de 3 cm, 4 cm y 5 cm, y otro, de 6 cm, 8 cm y 11 cm. ¿Son semejantes?",
+      "esperado": {
+        "valor": "no",
+        "texto": "No: 11 ÷ 5 no es 2"
+      }
+    },
+    {
+      "semilla": 111,
+      "opciones": {
+        "tipo": "espejo"
+      },
+      "enunciado": "Un espejo en el piso está a 3 m de un alumno, con los ojos a 1,6 m de altura, y a 15 m de un edificio. Él ve en el espejo lo más alto del edificio. ¿Cuánto mide el edificio?",
+      "esperado": {
+        "valor": 8,
+        "texto": "8 m"
+      }
+    },
+    {
+      "semilla": 112,
+      "opciones": {
+        "tipo": "cruzados"
+      },
+      "enunciado": "Los segmentos AC y BD se cortan en O, con AB paralela a CD. OA = 2 cm, OC = 4 cm y AB = 5 cm. ¿Cuánto mide CD?",
+      "esperado": {
+        "valor": 10,
+        "texto": "10 cm"
+      }
+    },
+    {
+      "semilla": 113,
+      "opciones": {
+        "tipo": "anti"
+      },
+      "enunciado": "En el triángulo ABC, AB = 12 cm y AC = 15 cm. D está en AB y E en AC, con AE = 7 cm y m∠ADE = m∠ACB. ¿Cuánto mide AD?",
+      "esperado": {
+        "valor": 8.75,
+        "texto": "8,75 cm"
+      }
+    },
+    {
+      "semilla": 114,
+      "opciones": {
+        "tipo": "comun"
+      },
+      "enunciado": "En el triángulo ABC, D está en AC, con AD = 9 cm y DC = 16 cm, y m∠ABD = m∠ACB. ¿Cuánto mide AB?",
+      "esperado": {
+        "valor": 15,
+        "texto": "15 cm"
+      }
+    },
+    {
+      "semilla": 115,
+      "opciones": {
+        "tipo": "cuadrado"
+      },
+      "enunciado": "Un triángulo tiene una base de 6 cm y una altura de 12 cm sobre ella. Un cuadrado se apoya en la base, con sus dos vértices de arriba en los otros lados. ¿Cuánto mide el lado del cuadrado?",
+      "esperado": {
+        "valor": 4,
+        "texto": "4 cm"
+      }
+    },
+    {
+      "semilla": 116,
+      "opciones": {
+        "tipo": "area"
+      },
+      "enunciado": "Dos figuras son semejantes, y cada lado de la grande mide 1,5 veces el de la chica. La chica tiene 36 cm² de área. ¿Cuál es el área de la grande?",
+      "esperado": {
+        "valor": 81,
+        "texto": "81 cm²"
+      }
+    },
+    {
+      "semilla": 117,
+      "opciones": {
+        "tipo": "lindero"
+      },
+      "enunciado": "Un terreno triangular de 63 m² se parte con un cerco paralelo a un lado. El triángulo junto al vértice opuesto tiene sus lados en 1/3 de los del terreno. ¿Cuál es el área de ese triángulo?",
+      "esperado": {
+        "valor": 7,
+        "texto": "7 m²"
+      }
+    },
+    {
+      "semilla": 118,
+      "opciones": {
+        "tipo": "per-area"
+      },
+      "enunciado": "Dos triángulos son semejantes con k = 5, del chico al grande. El chico tiene 15 cm de perímetro y 22 cm² de área. ¿Cuánto mide el perímetro del grande?",
+      "esperado": {
+        "valor": 75,
+        "texto": "75 cm"
+      }
+    },
+    {
+      "semilla": 119,
+      "opciones": {
+        "tipo": "raices"
+      },
+      "enunciado": "Por un punto interior de un triángulo se trazan paralelas a sus tres lados. Quedan tres triángulos de 9 cm², 4 cm² y 1 cm². ¿Cuál es el área del triángulo grande?",
+      "esperado": {
+        "valor": 36,
+        "texto": "36 cm²"
+      }
+    },
+    {
+      "semilla": 120,
+      "opciones": {
+        "tipo": "ceva"
+      },
+      "enunciado": "Las cevianas AD, BE y CF del triángulo ABC pasan por un punto. AF = 6 cm, FB = 4 cm, BD = 2 cm, DC = 5 cm y EA = 6 cm. ¿Cuánto mide CE?",
+      "esperado": {
+        "valor": 10,
+        "texto": "10 cm"
+      }
+    },
+    {
+      "semilla": 121,
+      "opciones": {
+        "tipo": "ceva-razon"
+      },
+      "enunciado": "En el triángulo ABC, las cevianas AD, BE y CF pasan por un punto, con BD : DC = 4 : 1 y CE : EA = 2 : 3. ¿En qué razón parte F al lado AB?",
+      "esperado": {
+        "valor": "3 : 8",
+        "texto": "AF : FB = 3 : 8"
+      }
+    },
+    {
+      "semilla": 122,
+      "opciones": {
+        "tipo": "menelao"
+      },
+      "enunciado": "Una recta corta AB en F, BC en D y la prolongación de CA, más allá de A, en E. AF = 2 cm, FB = 4 cm, BD = 4 cm, DC = 6 cm y CA = 6 cm. ¿Cuánto mide EA?",
+      "esperado": {
+        "valor": 3,
+        "texto": "3 cm"
+      }
+    },
+    {
+      "semilla": 123,
+      "opciones": {
+        "tipo": "ceva-x"
+      },
+      "enunciado": "Las cevianas AD, BE y CF del triángulo ABC pasan por un punto. AF = x, FB = 3, BD = 6, DC = 6, CE = 1 y EA = 3, en centímetros. ¿Cuánto mide AB?",
+      "esperado": {
+        "valor": 12,
+        "texto": "12 cm"
+      }
+    }
+  ]
+}

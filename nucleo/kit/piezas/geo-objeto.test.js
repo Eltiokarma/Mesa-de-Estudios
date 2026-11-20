@@ -103,6 +103,9 @@ const ESCENAS = [
   // Circunferencia (19 nov, etapa 7; bloque propio): el redondo en sus seis tipos, sacados de la unidad
   // (contenido/teoria/geometria/circunferencia.js) a geo-objeto-redondo.muestras.json.
   ...require('./geo-objeto-redondo.muestras.json'),
+  // Proporcionalidad y semejanza (19 nov, etapa 8; bloque propio): el semejante en sus tipos (calles, sol, rampa, foto y
+  // examen), sacados de la unidad (contenido/teoria/geometria/proporcionalidad-y-semejanza.js) a geo-objeto-semejante.muestras.json.
+  ...require('./geo-objeto-semejante.muestras.json'),
 ];
 const casos = () => MUESTRAS.map(d => [d, {}]);
 const esEscena = d => P.ESCENAS.includes(d.objeto);
@@ -326,7 +329,8 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus rótulos no
   const toma = (nombre, dib, pieza) => { if (dib && pieza === 'geo-objeto') figs.push([nombre, dib.datos, dib.estado || {}]); };
   // Segmentos y ángulos, y Triángulos (18 nov: la idea 1, con la cartulina, el tijeral y las figuras de examen); Congruencia
   // (19 nov: las ideas 1 y 2, con el armazón y las figuras de examen; las ideas 3 a 6 siguen con geo-figura).
-  const ideas = ['segmentos-y-angulos', 'triangulos', 'congruencia'].flatMap(u => require(path.join(__dirname, `../../../contenido/teoria/geometria/${u}.js`)).ideas);
+  // Proporcionalidad y semejanza (19 nov, etapa 8): todas sus figuras, con el bloque «semejante» y la escena «parcela».
+  const ideas = ['segmentos-y-angulos', 'triangulos', 'congruencia', 'proporcionalidad-y-semejanza'].flatMap(u => require(path.join(__dirname, `../../../contenido/teoria/geometria/${u}.js`)).ideas);
   for (const idea of ideas) {
     const pz = idea.pieza;
     if (idea.juega) {
@@ -410,4 +414,20 @@ test('un recto que se pide o que lleva una expresión va con arco, no con el cua
   assert.ok(cuadradito.test(P.dibujar(base({ texto: '90°', color: 'h' }))), '«90°» lleva el cuadradito');
   assert.ok(cuadradito.test(P.dibujar(base({}))), 'el recto sin rótulo lleva el cuadradito');
   assert.ok(!cuadradito.test(P.dibujar({ objeto: 'parque', b: 45, c: 45, angulos: { A: { arcoRecto: true } } })), 'parque con A recto pedido');
+});
+
+// Bloque «semejante», cotas (cierre de Proporcionalidad y semejanza, 20 nov): la medida de un lado entero sobre una llave
+// que une sus puntas, con el texto en el lomo, del lado contrario a ref; su texto es obstáculo como cualquier rótulo.
+test('semejante: cotas (llave con la medida de un lado entero)', () => {
+  const PO = require('./geo-objeto.js');
+  const fig = { alto: 220, vista: { x: [-4, 4], y: [-4.5, 1] }, puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: 90 }, { id: 'B', x: -2.5, y: -4, rotulo: 'B', lado: 225 }, { id: 'C', x: 2.5, y: -4, rotulo: 'C', lado: 315 }, { id: 'D', x: -1, y: -1.6, rotulo: 'D', lado: 300 }],
+    segmentos: [{ de: 'A', a: 'D' }, { de: 'D', a: 'B' }, { de: 'A', a: 'C' }, { de: 'B', a: 'C' }] };
+  const d = { objeto: 'semejante', tipo: 'examen', figura: fig, cotas: [{ de: 'A', a: 'B', texto: '10 cm', color: 'i', ref: 'C', dist: 30, en: 0.7 }] };
+  const svg = PO.dibujar(d, {});
+  assert.ok(svg.includes('data-cota="AB"') && svg.includes('10 cm'));
+  const R = PO.rotulos(d), b = R.ex.cajas[0], cx = (b.x0 + b.x1) / 2;
+  assert.equal(R.ex.cajas.length, 1);
+  assert.ok(cx < R.g.S('A')[0] && cx < R.g.S('D')[0], 'el texto queda afuera, del lado contrario a C');
+  assert.ok(PO.escenaCabe(d));
+  assert.ok(!PO.dibujar(Object.assign({}, d, { cotas: [] }), {}).includes('data-cota'));
 });

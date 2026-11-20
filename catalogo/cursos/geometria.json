@@ -106,15 +106,16 @@
       "nombre": "Proporcionalidad y semejanza",
       "temas": [
         "Teorema de Thales",
-        "Teoremas de la bisectriz y del incentro",
-        "Menelao y Ceva",
-        "Criterios de semejanza de triángulos"
+        "Teorema de la bisectriz interior y exterior",
+        "Criterios de semejanza de triángulos",
+        "Razón de áreas de figuras semejantes",
+        "Menelao y Ceva"
       ],
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "requiere": ["geometria.congruencia"],
-      "plantillas": ["ampliadora", "geo-proporcionalidad"],
+      "requiere": ["geometria.poligonos-y-cuadrilateros"],
+      "plantillas": ["geo-semejanza", "ampliadora", "geo-proporcionalidad"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -129,7 +130,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["geometria.congruencia", "geometria.circunferencia"],
-      "plantillas": ["triangulo-estira", "geo-triangulos-notables"],
+      "plantillas": ["triangulo-estira", "geo-triangulos-notables", "geo-proporcionalidad"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {
@@ -148,7 +149,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["geometria.proporcionalidad-y-semejanza"],
-      "plantillas": ["triangulo-estira", "geo-circunferencia-metrica", "geo-relaciones-metricas", "geo-triangulos-notables"],
+      "plantillas": ["triangulo-estira", "geo-circunferencia-metrica", "geo-relaciones-metricas", "geo-triangulos-notables", "geo-proporcionalidad"],
       "investigacion": "docs/investigacion/geometria-ideas-erroneas.md"
     },
     {

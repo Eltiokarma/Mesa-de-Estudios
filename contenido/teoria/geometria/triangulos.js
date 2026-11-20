@@ -2300,7 +2300,7 @@
 
   // ---------- Idea 6 (rehecha, 18 nov): ángulos entre bisectrices ----------
   // Objeto de la primera pantalla: un parque triangular con dos caminos que se cruzan en la pileta (geo-objeto, parque;
-  // dibujo de prueba). I y E son cruces de caminos; sus nombres: incentro (Proporcionalidad y semejanza, que lo define en el
+  // dibujo de prueba). I y E son cruces de caminos; sus nombres: incentro (Puntos notables desde la etapa 8; antes, Proporcionalidad, que lo definía en el
   // glosario) y excentro (Puntos notables).
   // Cambia: la esquina A (los ángulos en B y C, de 10° en 10°). · Permanece: la base BC. · Progresa: m∠BIC, que solo
   // sigue a m∠A. · Se reserva: el camino que parte el ángulo exterior en C (la predicción). · Debe verse: con el mismo
@@ -2605,7 +2605,7 @@
           pieza: GO, dibujo: fig({ objeto: 'parque', b: 60, c: 50, angulos: { A: {} } }) },
         { titulo: 'Adentro y afuera', texto: 'Cada esquina tiene dos bisectrices: la bisectriz interior parte el ángulo de adentro, y la bisectriz exterior, el ángulo exterior. Una interior y una exterior se cruzan fuera del parque, en E; las dos exteriores de B y de C, en Q.',
           pieza: GO, dibujo: fig({ objeto: 'parque', b: 70, c: 50, I: false, E: 0, mitades: { B: true, Ce: true }, angulos: { A: {} } }) },
-        { titulo: 'Nombres que vienen después', texto: 'El cruce I se llama incentro y se explica en Proporcionalidad y semejanza. El cruce E de la otra figura se llama excentro y se explica en Puntos notables. Aquí son solo cruces de caminos, con sus ángulos.' },
+        { titulo: 'Nombres que vienen después', texto: 'El cruce I se llama incentro, y el cruce E de la otra figura, excentro: los dos se explican en Puntos notables. Aquí son solo cruces de caminos, con sus ángulos.' },
         { titulo: 'Qué mirar al jugar', texto: 'Arrastra la esquina A, o cambia B y C con los controles. Fíjate en m∠A y en el ángulo BIC de la pileta, y en cómo cambia uno cuando cambia el otro.' },
       ],
     },
@@ -2922,7 +2922,7 @@
     // escaleno, isósceles, equilátero y lado opuesto; la 4, desigualdad triangular y alineados; la 5, altura, mediana,
     // mediatriz y pie; la 6, bisectriz interior y exterior. Ningún simple ni ejemplo dice la respuesta de una predicción
     // (cuánto suman los ángulos o los giros, qué lado del techo queda más inclinado, los límites de AC, dónde cae la
-    // altura con un ángulo obtuso, cuánto mide ∠BEC). «incentro» (Proporcionalidad y semejanza) y «excentro» (Puntos
+    // altura con un ángulo obtuso, cuánto mide ∠BEC). «incentro» (Puntos notables desde la etapa 8) y «excentro» (Puntos
     // notables) no se definen aquí: el lector los marca con «Se explica en…».
     glosario: [
       { termino: 'triángulo', simbolo: '△', def: 'Figura cerrada de tres lados rectos que se juntan de dos en dos en tres vértices.',
