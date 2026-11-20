@@ -483,5 +483,35 @@
   "nombre": "Se lee la pista de contraste como si confirmara",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RVC1": {
+  "nombre": "La causa y la consecuencia al revés",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVC2": {
+  "nombre": "Se marca un contraste donde nada se opone",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVC3": {
+  "nombre": "«Aunque» delante de lo que pasó igual",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVC4": {
+  "nombre": "Se elige la alternativa por un solo espacio",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVC5": {
+  "nombre": "Se suma donde la segunda idea sale de la primera",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVC6": {
+  "nombre": "Se lee causa o consecuencia donde las ideas solo se suman, se repiten o se siguen en el tiempo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }

@@ -564,3 +564,21 @@ test('Etapa 7, Triángulos rectángulos rehecha: predicciones viejas sin huella 
   A.migrar(nuevo);
   assert.ok(!(nuevo.marcadas || {})[U], 'sin terminar las de antes no gana «Ya la estudié»');
 });
+
+// 19 nov (etapa 8): Conectores, rehecha con sus tres ids y otra Predice, sumó dos ideas (causa-consecuencia y varios-espacios).
+test('Etapa 8, Conectores rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las tres', () => {
+  const U = 'razonamiento-verbal.conectores';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-15' }, teoria: { [U]: { ideas: {
+    'relacion-primero': { hecha: true, prediccion: 'c' }, clases: { hecha: true, prediccion: 'e0', prediccionDe: 'h1' }, locuciones: { hecha: true, prediccion: 'e1' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionCN, 1);
+  assert.equal(est.estudiadaCN, 1);
+  assert.equal(est.teoria[U].ideas['relacion-primero'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas.locuciones.prediccion, undefined);
+  assert.equal(est.teoria[U].ideas.clases.prediccion, 'e0', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-15', 'terminó las tres de antes');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'relacion-primero': { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las tres: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});

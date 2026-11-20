@@ -162,6 +162,10 @@
     // cuadrilatero-inscrito conserva la pregunta (B + D con D dentro) y los ids de sus opciones.
     { u: 'geometria.circunferencia', p: 'prediccionCI',
       cambian: ['tangentes', 'poncelet-pitot', 'posiciones', 'inscrito', 'interior-exterior'] },
+    // Etapa 8 (19 nov): Conectores conservó sus tres ids, los tres con otra Predice, y sumó causa-consecuencia y
+    // varios-espacios (docs/etapa8/propuesta-verbal.md, decisión 10).
+    { u: 'razonamiento-verbal.conectores', p: 'prediccionCN', e: 'estudiadaCN',
+      cambian: ['relacion-primero', 'clases', 'locuciones'], antes: ['relacion-primero', 'clases', 'locuciones'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

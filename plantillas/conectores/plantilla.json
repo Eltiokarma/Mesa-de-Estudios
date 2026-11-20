@@ -1,0 +1,19 @@
+{
+  "id": "conectores",
+  "titulo": "Conectores: la relación, la causa, las clases, las locuciones y los textos con varios espacios",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-verbal.conectores"
+  ],
+  "temas": [
+    "Clases de conectores",
+    "Conectores de adición, contraste y causa",
+    "Locuciones conjuntivas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

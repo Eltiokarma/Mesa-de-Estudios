@@ -1,0 +1,545 @@
+{
+ "descripcion": "Casos de plantillas/conectores, calculados aparte (auditoría del cierre, 20 nov; scratchpad e8-cierre-cn/aud/casos-aparte.js): con un léxico propio (la relación de cada conector y lo que pide cada espacio, leído en el texto) y una tabla de códigos escrita desde sus definiciones, la única alternativa que cumple en todos los espacios y el código de cada incorrecta.",
+ "casos": [
+  {
+   "semilla": "caso-0",
+   "idea": "relacion-primero",
+   "entrada": {
+    "tipo": "relacion",
+    "item": "cuadernos"
+   },
+   "esperado": {
+    "texto": "por eso",
+    "errores": [
+     [
+      "sin embargo",
+      "RVC2"
+     ],
+     [
+      "es decir",
+      "RV35"
+     ],
+     [
+      "además",
+      "RVC5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-1",
+   "idea": "causa-consecuencia",
+   "entrada": {
+    "tipo": "causa-examen",
+    "item": "mercado"
+   },
+   "esperado": {
+    "texto": "porque",
+    "errores": [
+     [
+      "pero",
+      "RVC2"
+     ],
+     [
+      "por eso",
+      "RVC1"
+     ],
+     [
+      "es decir",
+      "RV35"
+     ],
+     [
+      "además",
+      "RVC5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-2",
+   "idea": "clases",
+   "entrada": {
+    "tipo": "clases",
+    "item": "liebre"
+   },
+   "esperado": {
+    "texto": "por ejemplo",
+    "errores": [
+     [
+      "por lo tanto",
+      "RVC6"
+     ],
+     [
+      "también",
+      "RVC5"
+     ],
+     [
+      "o sea",
+      "RV35"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-3",
+   "idea": "locuciones",
+   "entrada": {
+    "tipo": "locuciones-examen",
+    "item": "colecta"
+   },
+   "esperado": {
+    "texto": "puesto que",
+    "errores": [
+     [
+      "por ejemplo",
+      "RV35"
+     ],
+     [
+      "así como",
+      "RVC5"
+     ],
+     [
+      "de manera que",
+      "RVC1"
+     ],
+     [
+      "si bien",
+      "RVC2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-4",
+   "idea": "varios-espacios",
+   "entrada": {
+    "tipo": "espacios-examen",
+    "item": "kermes"
+   },
+   "esperado": {
+    "texto": "por eso – sin embargo",
+    "errores": [
+     [
+      "o sea – además",
+      "RV35"
+     ],
+     [
+      "porque – sin embargo",
+      "RVC1"
+     ],
+     [
+      "en cambio – sin embargo",
+      "RVC2"
+     ],
+     [
+      "así que – además",
+      "RVC4"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-5",
+   "idea": "relacion-primero",
+   "entrada": {
+    "tipo": "relacion-examen",
+    "item": "cuadernos"
+   },
+   "esperado": {
+    "texto": "por eso",
+    "errores": [
+     [
+      "sin embargo",
+      "RVC2"
+     ],
+     [
+      "porque",
+      "RVC1"
+     ],
+     [
+      "además",
+      "RVC5"
+     ],
+     [
+      "es decir",
+      "RV35"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-6",
+   "idea": "causa-consecuencia",
+   "entrada": {
+    "tipo": "causa-examen",
+    "item": "bicicleta"
+   },
+   "esperado": {
+    "texto": "por lo tanto",
+    "errores": [
+     [
+      "también",
+      "RVC5"
+     ],
+     [
+      "porque",
+      "RVC1"
+     ],
+     [
+      "en otras palabras",
+      "RV35"
+     ],
+     [
+      "sin embargo",
+      "RVC2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-7",
+   "idea": "clases",
+   "entrada": {
+    "tipo": "clases",
+    "item": "harina"
+   },
+   "esperado": {
+    "texto": "después",
+    "errores": [
+     [
+      "además",
+      "RVC5"
+     ],
+     [
+      "sin embargo",
+      "RVC2"
+     ],
+     [
+      "por eso",
+      "RVC6"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-8",
+   "idea": "locuciones",
+   "entrada": {
+    "tipo": "locuciones",
+    "item": "techo"
+   },
+   "esperado": {
+    "texto": "de manera que",
+    "errores": [
+     [
+      "o sea",
+      "RV35"
+     ],
+     [
+      "así como",
+      "RVC5"
+     ],
+     [
+      "a pesar de que",
+      "RVC2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-9",
+   "idea": "varios-espacios",
+   "entrada": {
+    "tipo": "espacios",
+    "item": "libros"
+   },
+   "esperado": {
+    "texto": "por eso – además",
+    "errores": [
+     [
+      "así que – en cambio",
+      "RVC4"
+     ],
+     [
+      "pero – además",
+      "RVC2"
+     ],
+     [
+      "porque – además",
+      "RVC1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-10",
+   "idea": "relacion-primero",
+   "entrada": {
+    "tipo": "relacion",
+    "item": "piscina"
+   },
+   "esperado": {
+    "texto": "sin embargo",
+    "errores": [
+     [
+      "por consiguiente",
+      "RV24"
+     ],
+     [
+      "es decir",
+      "RV35"
+     ],
+     [
+      "también",
+      "RV26"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-11",
+   "idea": "causa-consecuencia",
+   "entrada": {
+    "tipo": "causa",
+    "item": "muela"
+   },
+   "esperado": {
+    "texto": "porque",
+    "errores": [
+     [
+      "sin embargo",
+      "RVC2"
+     ],
+     [
+      "o sea",
+      "RV35"
+     ],
+     [
+      "así que",
+      "RVC1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-12",
+   "idea": "clases",
+   "entrada": {
+    "tipo": "clases-examen",
+    "item": "frutas"
+   },
+   "esperado": {
+    "texto": "por ejemplo",
+    "errores": [
+     [
+      "en otras palabras",
+      "RV35"
+     ],
+     [
+      "aun así",
+      "RVC2"
+     ],
+     [
+      "así que",
+      "RVC6"
+     ],
+     [
+      "además",
+      "RVC5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-13",
+   "idea": "locuciones",
+   "entrada": {
+    "tipo": "locuciones",
+    "item": "techo"
+   },
+   "esperado": {
+    "texto": "de manera que",
+    "errores": [
+     [
+      "o sea",
+      "RV35"
+     ],
+     [
+      "a pesar de que",
+      "RVC2"
+     ],
+     [
+      "así como",
+      "RVC5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-14",
+   "idea": "varios-espacios",
+   "entrada": {
+    "tipo": "espacios-examen",
+    "item": "libros"
+   },
+   "esperado": {
+    "texto": "por eso – además",
+    "errores": [
+     [
+      "porque – además",
+      "RVC1"
+     ],
+     [
+      "pero – además",
+      "RVC2"
+     ],
+     [
+      "es decir – en cambio",
+      "RV35"
+     ],
+     [
+      "así que – en cambio",
+      "RVC4"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-15",
+   "idea": "relacion-primero",
+   "entrada": {
+    "tipo": "relacion-examen",
+    "item": "carretera"
+   },
+   "esperado": {
+    "texto": "así que",
+    "errores": [
+     [
+      "en cambio",
+      "RVC2"
+     ],
+     [
+      "o sea",
+      "RV35"
+     ],
+     [
+      "porque",
+      "RVC1"
+     ],
+     [
+      "también",
+      "RVC5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-16",
+   "idea": "causa-consecuencia",
+   "entrada": {
+    "tipo": "causa",
+    "item": "muela"
+   },
+   "esperado": {
+    "texto": "porque",
+    "errores": [
+     [
+      "también",
+      "RVC5"
+     ],
+     [
+      "o sea",
+      "RV35"
+     ],
+     [
+      "así que",
+      "RVC1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-17",
+   "idea": "clases",
+   "entrada": {
+    "tipo": "clases-examen",
+    "item": "frutas"
+   },
+   "esperado": {
+    "texto": "por ejemplo",
+    "errores": [
+     [
+      "además",
+      "RVC5"
+     ],
+     [
+      "en otras palabras",
+      "RV35"
+     ],
+     [
+      "así que",
+      "RVC6"
+     ],
+     [
+      "aun así",
+      "RVC2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-18",
+   "idea": "locuciones",
+   "entrada": {
+    "tipo": "locuciones-examen",
+    "item": "techo"
+   },
+   "esperado": {
+    "texto": "de manera que",
+    "errores": [
+     [
+      "puesto que",
+      "RVC1"
+     ],
+     [
+      "o sea",
+      "RV35"
+     ],
+     [
+      "a pesar de que",
+      "RVC2"
+     ],
+     [
+      "así como",
+      "RVC5"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-19",
+   "idea": "varios-espacios",
+   "entrada": {
+    "tipo": "espacios",
+    "item": "kermes"
+   },
+   "esperado": {
+    "texto": "por eso – sin embargo",
+    "errores": [
+     [
+      "en cambio – sin embargo",
+      "RVC2"
+     ],
+     [
+      "porque – sin embargo",
+      "RVC1"
+     ],
+     [
+      "o sea – además",
+      "RV35"
+     ]
+    ]
+   }
+  }
+ ]
+}

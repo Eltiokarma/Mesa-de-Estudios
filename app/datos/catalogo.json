@@ -7389,7 +7389,7 @@
        "definicion-defectuosa": "Cuando la definición no define",
        "definicion-en-texto": "La definición dentro del texto"
       },
-      "terminos": 27
+      "terminos": 29
      }
     },
     {
@@ -7436,7 +7436,7 @@
        "sinonimo-antonimo": "Sinónimos y antónimos en un rasgo",
        "puente-justa": "La oración puente justa"
       },
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -7487,7 +7487,7 @@
        "sentido-figurado": "Literal o figurado",
        "inferir-significado": "El significado sale de las pistas"
       },
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -7509,20 +7509,23 @@
      "grado": 3,
      "requiere": [],
      "plantillas": [
+      "conectores",
       "lectura-verbal"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-verbal/conectores.js",
       "requiere": [
-       "/nucleo/kit/piezas/rv-texto.js"
+       "/nucleo/kit/piezas/rv-soporte.js"
       ],
-      "ideas": 3,
+      "ideas": 5,
       "titulos": {
        "relacion-primero": "Primero la relación, después el conector",
-       "clases": "Cada hueco pide una clase",
-       "locuciones": "Varias palabras, un conector"
+       "causa-consecuencia": "Causa o consecuencia: el orden",
+       "clases": "Cada espacio pide una clase",
+       "locuciones": "Varias palabras, un conector",
+       "varios-espacios": "Varios espacios, una alternativa"
       },
-      "terminos": 15
+      "terminos": 26
      }
     },
     {
@@ -7644,7 +7647,7 @@
        "conocido-y-nuevo": "Lo conocido trae lo nuevo",
        "no-contradiccion": "Conectores no garantizan sentido"
       },
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -7735,7 +7738,7 @@
        "jerarquia": "Principal y secundarias",
        "alternativas": "Elegir en el examen"
       },
-      "terminos": 30
+      "terminos": 32
      }
     },
     {
@@ -7907,7 +7910,7 @@
        "cuatro-casillas": "Dice, deduce, contradice o no sabe",
        "idea-principal": "Chocar con la idea principal"
       },
-      "terminos": 17
+      "terminos": 18
      }
     },
     {
@@ -7949,7 +7952,7 @@
        "condicional": "Si A, entonces B",
        "mundos-posibles": "Qué queda en otro mundo"
       },
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -8811,6 +8814,29 @@
    "archivos": [
     "/plantillas/condensadores/generador.js",
     "/plantillas/condensadores/papel.json"
+   ]
+  },
+  "conectores": {
+   "id": "conectores",
+   "titulo": "Conectores: la relación, la causa, las clases, las locuciones y los textos con varios espacios",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "razonamiento-verbal.conectores"
+   ],
+   "url": "#/practica/conectores",
+   "ideas": [
+    "relacion-primero",
+    "causa-consecuencia",
+    "clases",
+    "locuciones",
+    "varios-espacios"
+   ],
+   "papel": "/plantillas/conectores/papel.json",
+   "archivos": [
+    "/plantillas/conectores/generador.js",
+    "/plantillas/conectores/papel.json"
    ]
   },
   "configuracion-ubicacion": {

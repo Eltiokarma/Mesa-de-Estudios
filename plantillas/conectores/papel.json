@@ -1,0 +1,87 @@
+{
+  "titulo": "Conectores: la relación, la causa, las clases, las locuciones y los textos con varios espacios: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Conectores. En «Ensayamos la danza todo el mes, ¿…? en el concurso nos equivocamos de paso», ¿qué conector va en el espacio? Datos: Lo esperado: lo que la primera idea hace esperar que venga después. Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Contraste: la segunda idea rompe lo esperado o se opone a la primera (pero, sin embargo, aun así, no obstante, en cambio). Resultado: la segunda idea sale de la primera, como se esperaba (por eso, así que, por lo tanto, por consiguiente). Otras palabras: la segunda parte dice lo mismo de otra manera (es decir, o sea, en otras palabras). Alternativas: A) por lo tanto   B) además   C) aun así   D) o sea",
+      "respuesta": "C) aun así",
+      "pasos": [
+        "El espacio pide un choque: «aun así» la marca.",
+        "Las otras marcan otra relación o la ponen al revés."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Conectores. En «Cerraron el mercado temprano, ¿…? se fue la luz en todo el barrio», ¿qué conector va en el espacio? Datos: Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Contraste: la segunda idea rompe lo esperado o se opone a la primera (pero, sin embargo, aun así, no obstante, en cambio). Consecuencia: lo que resulta de la causa; va después de «por eso», «así que» o «por lo tanto». Causa: la razón de que pase lo otro; va justo después de «porque». Alternativas: A) por eso   B) porque   C) además   D) pero",
+      "respuesta": "B) porque",
+      "pasos": [
+        "El espacio pide una razón: «porque» la marca.",
+        "Las otras marcan otra relación o la ponen al revés."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Conectores. En «Algunos animales cambian de color con las estaciones, ¿…? la liebre de las montañas frías», ¿qué conector va en el espacio? Datos: Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Contraste: la segunda idea rompe lo esperado o se opone a la primera (pero, sin embargo, aun así, no obstante, en cambio). Consecuencia: lo que sigue resulta de lo otro (por eso, así que, por lo tanto, de modo que, de manera que). Ejemplificación: la segunda parte da un caso de la primera (por ejemplo). Alternativas: A) por lo tanto   B) también   C) aun así   D) por ejemplo",
+      "respuesta": "D) por ejemplo",
+      "pasos": [
+        "El espacio pide un caso: «por ejemplo» la marca.",
+        "Las otras marcan otra relación o la ponen al revés."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Conectores. En «El ómnibus se malogró a mitad de camino, ¿…? llegamos a Puno de noche», ¿qué conector va en el espacio? Datos: Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Consecuencia: lo que sigue resulta de lo otro (por eso, así que, por lo tanto, de modo que, de manera que). Causa: lo que sigue al conector es la razón de lo otro (porque, ya que, dado que, puesto que, como). Reformulación: la segunda parte dice lo mismo con otras palabras (es decir, o sea, en otras palabras). Alternativas: A) ya que   B) de modo que   C) es decir   D) además de que",
+      "respuesta": "B) de modo que",
+      "pasos": [
+        "El espacio pide un resultado: «de modo que» la marca.",
+        "Las otras marcan otra relación o la ponen al revés."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Conectores. ¿Qué alternativa completa los espacios de «El colegio organizó una kermés, ¿…? (1) juntó dinero para arreglar el techo. ¿…? (2) todavía falta comprar las calaminas»? Datos: Varios espacios: cada espacio pide su propia relación; una alternativa sirve si cada conector suyo va con la de su espacio. Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Contraste: la segunda idea rompe lo esperado o se opone a la primera (pero, sin embargo, aun así, no obstante, en cambio). Consecuencia: lo que sigue resulta de lo otro (por eso, así que, por lo tanto, de modo que, de manera que). Causa: lo que sigue al conector es la razón de lo otro (porque, ya que, dado que, puesto que, como). Alternativas: A) así que – además   B) porque – sin embargo   C) en cambio – sin embargo   D) por eso – sin embargo",
+      "respuesta": "D) por eso – sin embargo",
+      "pasos": [
+        "Cada espacio pide lo suyo: un resultado, un choque; «por eso – sin embargo» cumple en todos.",
+        "Las otras fallan al menos en un espacio, y se descartan enteras."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Pregunta del simulacro. En «Se rompió la tubería del baño, ¿…? el piso quedó lleno de agua», ¿qué conector va en el espacio? Datos: Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Contraste: la segunda idea rompe lo esperado o se opone a la primera (pero, sin embargo, aun así, no obstante, en cambio). Consecuencia: lo que resulta de la causa; va después de «por eso», «así que» o «por lo tanto». Causa: la razón de que pase lo otro; va justo después de «porque». Otras palabras: la segunda parte dice lo mismo de otra manera (es decir, o sea, en otras palabras). Alternativas: A) por eso   B) es decir   C) también   D) porque   E) sin embargo",
+      "respuesta": "A) por eso",
+      "pasos": [
+        "El espacio pide un resultado: «por eso» la marca.",
+        "Las otras marcan otra relación o la ponen al revés."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta del simulacro. En «Los vecinos hicieron una colecta, ¿…? la familia Quispe perdió su casa en un incendio», ¿qué conector va en el espacio? Datos: Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Consecuencia: lo que sigue resulta de lo otro (por eso, así que, por lo tanto, de modo que, de manera que). Causa: lo que sigue al conector es la razón de lo otro (porque, ya que, dado que, puesto que, como). Concesión: se admite un obstáculo que no impide lo que se afirma (aunque, si bien, a pesar de que, aun cuando). Ejemplificación: la segunda parte da un caso de la primera (por ejemplo). El conector de concesión va delante del obstáculo; el de contraste, delante de lo que pasó igual. Alternativas: A) de manera que   B) si bien   C) puesto que   D) por ejemplo   E) así como",
+      "respuesta": "C) puesto que",
+      "pasos": [
+        "El espacio pide una razón: «puesto que» la marca.",
+        "Las otras marcan otra relación o la ponen al revés."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta del simulacro. ¿Qué alternativa completa los espacios de «El parque tiene muchos árboles nativos, ¿…? (1) el queñual y el colle. ¿…? (2) es el lugar con más sombra del barrio»? Datos: Varios espacios: cada espacio pide su propia relación; una alternativa sirve si cada conector suyo va con la de su espacio. Adición: la segunda idea suma otra cosa en la misma dirección (además, también, asimismo, así como, además de que). Contraste: la segunda idea rompe lo esperado o se opone a la primera (pero, sin embargo, aun así, no obstante, en cambio). Consecuencia: lo que sigue resulta de lo otro (por eso, así que, por lo tanto, de modo que, de manera que). Ejemplificación: la segunda parte da un caso de la primera (por ejemplo). Reformulación: la segunda parte dice lo mismo con otras palabras (es decir, o sea, en otras palabras). Alternativas: A) aun así – sin embargo   B) por ejemplo – sin embargo   C) por ejemplo – por eso   D) es decir – así que   E) además – sin embargo",
+      "respuesta": "C) por ejemplo – por eso",
+      "pasos": [
+        "Cada espacio pide lo suyo: un caso, un resultado; «por ejemplo – por eso» cumple en todos.",
+        "Las otras fallan al menos en un espacio, y se descartan enteras."
+      ]
+    }
+  ]
+}

@@ -58,7 +58,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["lectura-verbal"],
+      "plantillas": ["conectores", "lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

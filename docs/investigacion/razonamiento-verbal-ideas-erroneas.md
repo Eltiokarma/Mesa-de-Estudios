@@ -232,6 +232,19 @@ Agregados en la etapa 7 (19 nov 2026) para la unidad «Precisión léxica y sent
 | RVS7 | **Se toma por significado una idea propia o un detalle cercano** que no habla de la palabra. | «El jarabe es inocuo… Viene en un frasco azul»; distractor «que es de color azul». | Sin estudio encontrado; vecino de RV8 (saber del mundo en lugar del texto). | Hipótesis (ligada a RV8) | — |
 | RVS8 | **Se lee la pista de contraste como si confirmara**: se le da a la palabra el sentido de lo que se le opone. | «Teo es locuaz; en cambio, su hermano casi no habla»; distractor «que casi no habla». | Sin estudio encontrado; vecino de RV24 (lo contracausal leído como causal). | Hipótesis (ligada a RV24) | — |
 
+### Conectores (códigos RVC, etapa 8)
+
+Agregados en la etapa 8 (19 nov 2026) para la unidad «Conectores lógico-textuales» (`contenido/teoria/razonamiento-verbal/conectores.js`, propuesta en `docs/etapa8/propuesta-verbal.md`) y su práctica (`plantillas/conectores/`). Llevan prefijo propio (RVC) para no correr la numeración RV; se usan junto con RV23, RV24, RV25, RV26 y RV35. Ninguno tiene estudio con alumnos: San Marcos no pregunta conectores y en el repo no hay examen de verbal de la UNI. RVC1, RVC2 y RVC6 son vecinos de lo que sí está estudiado (la causalidad se procesa «por defecto» y lo contracausal da más errores: Zunino 2016; McClure y Steffensen 1980).
+
+| # | Idea errónea | Ejemplo tipo examen | Dato | Respaldo | Fuente |
+| --- | --- | --- | --- | --- | --- |
+| RVC1 | **La causa y la consecuencia al revés**: «porque» delante del resultado, o «por eso» delante de la razón. | «El colegio se quedó sin luz; por eso suspendieron las clases»; distractor «El colegio se quedó sin luz porque suspendieron las clases». | Sin estudio encontrado; vecino de RV24 (la relación causal se lee, pero sin su dirección). | Hipótesis (ligada a RV24) | — |
+| RVC2 | **Se marca un contraste donde nada se opone**: la segunda idea cumple lo esperado o solo suma. | «El pan se quemó; ___ nadie quiso comerlo»; distractor «pero». | Sin estudio encontrado; es el error contrario a RV24. | Hipótesis (ligada a RV24) | — |
+| RVC3 | **«Aunque» delante de lo que pasó igual** y no del obstáculo: la oración afirma otra cosa. | «Rosa tenía fiebre; aun así, fue al colegio»; distractor «Aunque fue al colegio, Rosa tenía fiebre». | Sin estudio encontrado; vecino de RV25 (los concesivos siguen siendo difíciles en la adolescencia). | Hipótesis (ligada a RV25) | — |
+| RVC4 | **Se elige la alternativa por un solo espacio**, sin probar los demás. | Texto con dos espacios; distractor «por eso – además», que sirve en el primero y falla en el segundo. | Sin estudio encontrado; vecino de RV23 (se completa por lo inmediato). | Hipótesis (ligada a RV23) | — |
+| RVC5 | **Se suma donde la segunda idea sale de la primera**: «además» donde va su resultado, su razón, su caso o su resumen. | «El agua del lago estaba muy fría; ___ nadie quiso nadar»; distractor «también». | Sin estudio encontrado; vecino de RV26 (*and* es el conector más fácil y se usa por defecto). | Hipótesis (ligada a RV26) | — |
+| RVC6 | **Se lee causa o consecuencia donde las ideas solo se suman, se repiten o se siguen en el tiempo.** | «Las ventanas del aula no cierran bien; ___ la puerta tiene la chapa rota»; distractor «por eso». | La causalidad se procesa «por defecto» al leer dos ideas seguidas (Zunino 2016), pero no hay dato de este error en exámenes. | Hipótesis (ligada a RV24) | — |
+
 ## Lo que no tiene respaldo (todavía)
 
 Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada uno se liga a un error con algo de respaldo:
