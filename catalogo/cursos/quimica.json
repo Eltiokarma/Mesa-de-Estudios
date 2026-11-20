@@ -250,7 +250,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["quimica.estructura-atomica", "quimica.nomenclatura-inorganica"],
-      "plantillas": ["mol-composicion"],
+      "plantillas": ["mol-practica", "mol-composicion"],
       "investigacion": "docs/investigacion/estequiometria-ideas-erroneas.md"
     },
     {

@@ -3091,6 +3091,18 @@
      "respaldo": "hipotesis",
      "describe": "Cuenta dos veces lo que entrega el metal y recibe el no metal"
     },
+    "ES14-moles-de-moleculas": {
+     "respaldo": "parcial",
+     "describe": "Da los moles del compuesto como si fueran los moles de átomos del elemento"
+    },
+    "ES6-todos-los-atomos": {
+     "respaldo": "parcial",
+     "describe": "Cuenta todos los átomos de la fórmula en vez de los del elemento pedido"
+    },
+    "ES7-invertida": {
+     "respaldo": "documentado",
+     "describe": "Invierte n = m/M: divide la masa molar entre la masa"
+    },
     "QM-FORMA-LIGANDOS": {
      "respaldo": "hipotesis",
      "describe": "Cuenta solo los enlaces del átomo central y olvida sus pares libres"

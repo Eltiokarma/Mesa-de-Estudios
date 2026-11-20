@@ -1,0 +1,313 @@
+{
+ "plantilla": "mol-practica",
+ "nota": "entrada es _datos del generador (idea, tipo, nivel y lo que define el problema). respuesta: el texto de la alternativa correcta. Se genera con generar(semilla, { idea }).",
+ "verificacion": "Script aparte (20 nov 2026, scratchpad e8-quimica/verif/casos-gen.js): la respuesta sale de un lector de fórmulas propio (por pila) y de sus propias cuentas (masas atómicas redondeadas, Nₐ = 6,02 × 10²³), no del generador.",
+ "casos": [
+  {
+   "semilla": 0,
+   "entrada": {
+    "idea": "masa-atomica-promedio",
+    "tipo": "promedio-tres",
+    "nivel": 2,
+    "masas": [
+     39,
+     40,
+     41
+    ],
+    "abund": [
+     10,
+     55,
+     35
+    ]
+   },
+   "esperado": {
+    "respuesta": "40,25 u"
+   }
+  },
+  {
+   "semilla": 1,
+   "entrada": {
+    "idea": "mol-masa-molar",
+    "tipo": "gramos-moleculas",
+    "nivel": 2,
+    "f": "N2",
+    "m": 84
+   },
+   "esperado": {
+    "respuesta": "1,806 × 10²⁴"
+   }
+  },
+  {
+   "semilla": 2,
+   "entrada": {
+    "idea": "relaciones-en-formula",
+    "tipo": "moles-elemento",
+    "nivel": 1,
+    "f": "Al2(SO4)3",
+    "e": "O",
+    "n": 1.5
+   },
+   "esperado": {
+    "respuesta": "18 mol"
+   }
+  },
+  {
+   "semilla": 3,
+   "entrada": {
+    "idea": "composicion-formula-empirica",
+    "tipo": "masa-elemento",
+    "nivel": 2,
+    "f": "HNO3",
+    "e": "H",
+    "m": 126
+   },
+   "esperado": {
+    "respuesta": "2 g"
+   }
+  },
+  {
+   "semilla": 4,
+   "entrada": {
+    "idea": "formula-empirica-molecular",
+    "tipo": "molecular",
+    "nivel": 2,
+    "emp": "P2O5",
+    "M": 284
+   },
+   "esperado": {
+    "respuesta": "P₄O₁₀"
+   }
+  },
+  {
+   "semilla": 5,
+   "entrada": {
+    "idea": "leyes-ponderales",
+    "tipo": "proust",
+    "nivel": 2,
+    "m1": 10,
+    "x1": 6,
+    "m": 30
+   },
+   "esperado": {
+    "respuesta": "18 g"
+   }
+  },
+  {
+   "semilla": 6,
+   "entrada": {
+    "idea": "masa-atomica-promedio",
+    "tipo": "promedio-dos",
+    "nivel": 1,
+    "masas": [
+     79,
+     80
+    ],
+    "abund": [
+     25,
+     75
+    ]
+   },
+   "esperado": {
+    "respuesta": "79,75 u"
+   }
+  },
+  {
+   "semilla": 7,
+   "entrada": {
+    "idea": "mol-masa-molar",
+    "tipo": "gramos-moles",
+    "nivel": 1,
+    "f": "HNO3",
+    "m": 189
+   },
+   "esperado": {
+    "respuesta": "3 mol"
+   }
+  },
+  {
+   "semilla": 9,
+   "entrada": {
+    "idea": "composicion-formula-empirica",
+    "tipo": "porcentaje",
+    "nivel": 1,
+    "f": "NH4NO3",
+    "e": "O"
+   },
+   "esperado": {
+    "respuesta": "60 %"
+   }
+  },
+  {
+   "semilla": 11,
+   "entrada": {
+    "idea": "leyes-ponderales",
+    "tipo": "lavoisier",
+    "nivel": 1,
+    "a": 56,
+    "b": 32
+   },
+   "esperado": {
+    "respuesta": "88 g"
+   }
+  },
+  {
+   "semilla": 13,
+   "entrada": {
+    "idea": "mol-masa-molar",
+    "tipo": "moles-moleculas",
+    "nivel": 1,
+    "f": "H3PO4",
+    "n": 0.5
+   },
+   "esperado": {
+    "respuesta": "3,01 × 10²³"
+   }
+  },
+  {
+   "semilla": 14,
+   "entrada": {
+    "idea": "relaciones-en-formula",
+    "tipo": "moles-iones",
+    "nivel": 2,
+    "f": "K3PO4",
+    "n": 0.5,
+    "iones": [
+     3,
+     1
+    ]
+   },
+   "esperado": {
+    "respuesta": "2 mol"
+   }
+  },
+  {
+   "semilla": 15,
+   "entrada": {
+    "idea": "composicion-formula-empirica",
+    "tipo": "agua-hidrato",
+    "nivel": 3,
+    "f": "CaSO4·2H2O"
+   },
+   "esperado": {
+    "respuesta": "20,9 %"
+   }
+  },
+  {
+   "semilla": 16,
+   "entrada": {
+    "idea": "formula-empirica-molecular",
+    "tipo": "empirica-medio",
+    "nivel": 3,
+    "pct": {
+     "Mn": 72.1,
+     "O": 27.9
+    }
+   },
+   "esperado": {
+    "respuesta": "Mn₃O₄"
+   }
+  },
+  {
+   "semilla": 22,
+   "entrada": {
+    "idea": "formula-empirica-molecular",
+    "tipo": "empirica-entera",
+    "nivel": 1,
+    "pct": {
+     "K": 83,
+     "O": 17
+    }
+   },
+   "esperado": {
+    "respuesta": "K₂O"
+   }
+  },
+  {
+   "semilla": 23,
+   "entrada": {
+    "idea": "leyes-ponderales",
+    "tipo": "dalton",
+    "nivel": 3,
+    "a": "SnO",
+    "b": "SnO₂",
+    "o1": 16,
+    "o2": 32
+   },
+   "esperado": {
+    "respuesta": "1 : 2"
+   }
+  },
+  {
+   "semilla": 24,
+   "entrada": {
+    "idea": "masa-atomica-promedio",
+    "tipo": "abundancia",
+    "nivel": 3,
+    "masas": [
+     86,
+     88
+    ],
+    "media": 86.5
+   },
+   "esperado": {
+    "respuesta": "75 %"
+   }
+  },
+  {
+   "semilla": 26,
+   "entrada": {
+    "idea": "relaciones-en-formula",
+    "tipo": "gramos-elemento",
+    "nivel": 2,
+    "f": "Zn(NO3)2",
+    "e": "O",
+    "m": 18.900000000000002
+   },
+   "esperado": {
+    "respuesta": "0,6 mol"
+   }
+  },
+  {
+   "semilla": 38,
+   "entrada": {
+    "idea": "relaciones-en-formula",
+    "tipo": "atomos-dosis",
+    "nivel": 3,
+    "f": "C8H9NO2",
+    "mg": 500,
+    "k": 2,
+    "e": "H"
+   },
+   "esperado": {
+    "respuesta": "3,588 × 10²²"
+   }
+  },
+  {
+   "semilla": 43,
+   "entrada": {
+    "idea": "mol-masa-molar",
+    "tipo": "dosis",
+    "nivel": 3,
+    "f": "C13H18O2",
+    "mg": 400
+   },
+   "esperado": {
+    "respuesta": "1,169 × 10²¹"
+   }
+  },
+  {
+   "semilla": 47,
+   "entrada": {
+    "idea": "leyes-ponderales",
+    "tipo": "abierto",
+    "nivel": 2,
+    "vin": 80,
+    "b": 2,
+    "fin": 81
+   },
+   "esperado": {
+    "respuesta": "1 g"
+   }
+  }
+ ]
+}

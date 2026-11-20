@@ -1370,7 +1370,7 @@
        "masa-energia": "Poca masa, muchísima energía",
        "vida-media": "La mitad cada cierto tiempo"
       },
-      "terminos": 46
+      "terminos": 47
      }
     },
     {
@@ -1432,7 +1432,7 @@
        "configuracion-iones": "Configuración de los iones",
        "desapareados-isoelectronicos": "Hund y el último electrón"
       },
-      "terminos": 40
+      "terminos": 41
      }
     },
     {
@@ -1582,7 +1582,7 @@
        "dativo-excepciones": "Enlace dativo y excepciones al octeto",
        "resonancia": "Resonancia"
       },
-      "terminos": 46
+      "terminos": 47
      }
     },
     {
@@ -1724,25 +1724,29 @@
       "quimica.nomenclatura-inorganica"
      ],
      "plantillas": [
+      "mol-practica",
       "mol-composicion"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/mol-y-composicion.js",
       "requiere": [
+       "/plantillas/mol-composicion/motor.js",
+       "/nucleo/elementos.js",
        "/nucleo/kit/piezas/quim-particulas.js",
        "/nucleo/kit/piezas/balanza.js",
-       "/nucleo/kit/piezas/quim-fichas.js",
-       "/nucleo/kit/piezas/quim-composicion.js"
+       "/nucleo/kit/piezas/quim-composicion.js",
+       "/nucleo/kit/piezas/quim-mol.js"
       ],
-      "ideas": 5,
+      "ideas": 6,
       "titulos": {
-       "masa-atomica-promedio": "Masa atómica: un promedio",
-       "mol-masa-molar": "Un mol cuenta, no pesa",
-       "relaciones-en-formula": "Los subíndices son una receta",
-       "composicion-formula-empirica": "De porcentajes a fórmula",
-       "leyes-ponderales": "Lo que la balanza siempre cumple"
+       "masa-atomica-promedio": "Masa atómica promedio",
+       "mol-masa-molar": "Mol y masa molar",
+       "relaciones-en-formula": "Moles de átomos en una fórmula",
+       "composicion-formula-empirica": "Composición centesimal",
+       "formula-empirica-molecular": "Fórmula empírica y molecular",
+       "leyes-ponderales": "Leyes ponderales"
       },
-      "terminos": 29
+      "terminos": 47
      }
     },
     {
@@ -2051,7 +2055,7 @@
        "orden-reaccion": "El orden sale de los datos",
        "vida-media": "La mitad en tiempos iguales"
       },
-      "terminos": 37
+      "terminos": 38
      }
     },
     {
@@ -2099,7 +2103,7 @@
        "grado-reaccion": "El grado de reacción α",
        "le-chatelier": "Le Chatelier: compara Q con K"
       },
-      "terminos": 30
+      "terminos": 31
      }
     },
     {
@@ -2369,7 +2373,7 @@
        "vitaminas-solubilidad": "Vitaminas: en grasa o en agua",
        "productos-naturales": "Familias por estructura, no por origen"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -10679,6 +10683,31 @@
     "/plantillas/mol-composicion/index.html",
     "/plantillas/mol-composicion/motor.js",
     "/plantillas/mol-composicion/papel.json"
+   ],
+   "rehacer": true
+  },
+  "mol-practica": {
+   "id": "mol-practica",
+   "titulo": "Moles, masa molar y composición",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.mol-y-composicion"
+   ],
+   "url": "#/practica/mol-practica",
+   "ideas": [
+    "masa-atomica-promedio",
+    "mol-masa-molar",
+    "relaciones-en-formula",
+    "composicion-formula-empirica",
+    "formula-empirica-molecular",
+    "leyes-ponderales"
+   ],
+   "papel": "/plantillas/mol-practica/papel.json",
+   "archivos": [
+    "/plantillas/mol-practica/generador.js",
+    "/plantillas/mol-practica/papel.json"
    ]
   },
   "molecula-grande": {

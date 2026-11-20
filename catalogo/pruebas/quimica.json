@@ -19,6 +19,9 @@
     "QM-TRANSF-UNO": {"respaldo": "hipotesis", "describe": "Cuenta los electrones de un solo átomo del metal"},
     "QM-TRANSF-ATOMOS": {"respaldo": "hipotesis", "describe": "Cuenta los átomos de la fórmula en vez de los electrones"},
     "QM-TRANSF-DOBLE": {"respaldo": "hipotesis", "describe": "Cuenta dos veces lo que entrega el metal y recibe el no metal"},
+    "ES14-moles-de-moleculas": {"respaldo": "parcial", "describe": "Da los moles del compuesto como si fueran los moles de átomos del elemento"},
+    "ES6-todos-los-atomos": {"respaldo": "parcial", "describe": "Cuenta todos los átomos de la fórmula en vez de los del elemento pedido"},
+    "ES7-invertida": {"respaldo": "documentado", "describe": "Invierte n = m/M: divide la masa molar entre la masa"},
     "QM-FORMA-LIGANDOS": {"respaldo": "hipotesis", "describe": "Cuenta solo los enlaces del átomo central y olvida sus pares libres"},
     "QM-REGION-PARES": {"respaldo": "hipotesis", "describe": "Cuenta cada par libre como dos regiones"},
     "QM-REGION-ELECTRONES": {"respaldo": "hipotesis", "describe": "Cuenta electrones en vez de regiones"},
@@ -1583,6 +1586,33 @@
           { "texto":  "−5", "valor":  -5, "error":  "QM-OX-SIGNO" },
           { "texto":  "+5", "valor":  5, "correcta":  true},
           { "texto":  "+10", "valor":  10, "error":  "QM-OX-TOTAL" }
+        ]
+      }
+    },
+    {
+      "par": "qui-23",
+      "plantilla": "mol-composicion",
+      "unidad": "quimica.mol-y-composicion",
+      "nombreUnidad": "Mol, masa molar y composición",
+      "mide": "Moles de átomos de un elemento en una dosis: se pasa de miligramos a moles del compuesto y se multiplica por los átomos de la fórmula (trampa 2 de San Marcos)",
+      "A": {
+        "enunciado": "Una tableta tiene 500 mg de ácido acetilsalicílico, C₉H₈O₄ (180 g/mol). ¿Cuántos milimoles de átomos de oxígeno tiene?",
+        "datos": { "formula":  "C9H8O4", "mg":  500, "el":  "O" },
+        "opciones": [
+          { "texto":  "2,778 mmol", "valor":  2.778, "error":  "ES14-moles-de-moleculas" },
+          { "texto":  "11,11 mmol", "valor":  11.11, "correcta":  true},
+          { "texto":  "58,33 mmol", "valor":  58.33, "error":  "ES6-todos-los-atomos" },
+          { "texto":  "1,44 mmol", "valor":  1.44, "error":  "ES7-invertida" }
+        ]
+      },
+      "B": {
+        "enunciado": "Una cápsula tiene 400 mg de ibuprofeno, C₁₃H₁₈O₂ (206 g/mol). ¿Cuántos milimoles de átomos de carbono tiene?",
+        "datos": { "formula":  "C13H18O2", "mg":  400, "el":  "C" },
+        "opciones": [
+          { "texto":  "6,695 mmol", "valor":  6.695, "error":  "ES7-invertida" },
+          { "texto":  "1,942 mmol", "valor":  1.942, "error":  "ES14-moles-de-moleculas" },
+          { "texto":  "64,08 mmol", "valor":  64.08, "error":  "ES6-todos-los-atomos" },
+          { "texto":  "25,24 mmol", "valor":  25.24, "correcta":  true}
         ]
       }
     }

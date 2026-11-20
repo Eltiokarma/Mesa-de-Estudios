@@ -896,6 +896,10 @@ const V = {
   // qui-22 (reserva, 19 nov, etapa 7: «Nomenclatura inorgánica»): nomenclatura-practica no tiene motor.js; se recalcula aquí
   // con la suma de los EO: los n átomos del elemento compensan a los demás (la especie es neutra), y cada uno, su parte.
   'qui-22': d => { const eo = -(d.na * d.ea + d.no * d.eo) / d.n; return { correcta: eo, errores: { 'QM-OX-TOTAL': d.n * eo, 'QM-OX-SUBINDICE': d.n, 'QM-OX-SIGNO': -eo } }; },
+  // qui-23 (reserva, 20 nov, etapa 8: «Mol, masa molar y composición»): el motor de mol-composicion da la masa molar y los
+  // átomos de la fórmula; los milimoles salen de mg / M (mg entre g/mol da mmol) por los átomos del elemento pedido.
+  'qui-23': d => { const MM = motor('mol-composicion'), M = MM.masaMolar(d.formula).valor, at = MM.atomos(d.formula), n = d.mg / M;
+    return { correcta: n * at[d.el], errores: { 'ES14-moles-de-moleculas': n, 'ES6-todos-los-atomos': n * MM.totalAtomos(d.formula), 'ES7-invertida': M / d.mg * at[d.el] } }; },
 
   // fis-23 y fis-24 (reserva, 19 nov, etapa 5 de física: «Movimiento parabólico»). El tiempo de caída lo da el motor de
   // tiro-parabolico (proyectil); la distancia al origen con x = x₀ + a·t e y = t² se recalcula aquí, con Pitágoras.

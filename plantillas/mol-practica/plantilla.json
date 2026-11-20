@@ -1,0 +1,23 @@
+{
+  "id": "mol-practica",
+  "titulo": "Moles, masa molar y composición",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.mol-y-composicion"
+  ],
+  "temas": [
+    "Unidad de masa atómica y masa atómica promedio",
+    "Número de Avogadro y mol",
+    "Masa molar",
+    "Relaciones molares en una fórmula",
+    "Composición centesimal",
+    "Fórmula empírica y molecular",
+    "Leyes ponderales"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

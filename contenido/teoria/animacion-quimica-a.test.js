@@ -35,7 +35,12 @@ const SIN_ANIMAR = new Set(['estructura-atomica/nucleo-identidad', 'estructura-a
   // del N en el NH₄⁺, el óxido -oso, el H con −1, el oxácido con un H, la sal sin carga suelta, la sal con OH⁻); con un
   // control que se mueve solo, la misión se cumpliría sin el alumno.
   'nomenclatura-inorganica/estados-oxidacion', 'nomenclatura-inorganica/tres-nombres', 'nomenclatura-inorganica/peroxidos-hidruros',
-  'nomenclatura-inorganica/arbol-funciones', 'nomenclatura-inorganica/sales', 'nomenclatura-inorganica/sales-acidas-basicas-hidratadas']);
+  'nomenclatura-inorganica/arbol-funciones', 'nomenclatura-inorganica/sales', 'nomenclatura-inorganica/sales-acidas-basicas-hidratadas',
+  // Mol y composición (20 nov, etapa 8): las seis misiones piden un valor justo (19 átomos de cloro-35, 5 mol de agua, 2
+  // moléculas de H₂SO₄, el SO₂, el CH₃, 36 g de agua); con un control que se mueve solo, la misión se cumpliría sin el alumno.
+  // Su primera mesa (isótopos) sí se anima.
+  'mol-y-composicion/masa-atomica-promedio', 'mol-y-composicion/mol-masa-molar', 'mol-y-composicion/relaciones-en-formula',
+  'mol-y-composicion/composicion-formula-empirica', 'mol-y-composicion/formula-empirica-molecular', 'mol-y-composicion/leyes-ponderales']);
 // Unidades cuya primera mesa es de elegir entre opciones (sin un valor que recorrer). Enlace químico (etapa 6): sus dos
 // mesas eligen átomos o la posición del doble enlace; la mesa que gira se fue con Geometría molecular.
 // Nomenclatura inorgánica (etapa 7): sus dos mesas arman sales y eligen especies.

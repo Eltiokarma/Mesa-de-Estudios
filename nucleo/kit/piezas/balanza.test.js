@@ -105,3 +105,12 @@ test('alt cuenta la relación', () => {
   assert.equal(B.alt(SUS), '2 balanzas: 1) 1 rombo contra 3 círculos, en equilibrio; 2) 1 cuadrado contra 1 rombo y 1 círculo, en equilibrio');
   assert.equal(B.alt(PES), 'Balanza con 54 kg a la izquierda y nada a la derecha');
 });
+
+// Cierre de Mol y composición (20 nov): datos.numeros === false quita el número gris de cada balanza; por omisión se numera.
+test('balanza: numeros: false no dibuja el «1» suelto; por omisión, sí', () => {
+  const B = require('./balanza.js');
+  const d = { unidad: 'g', balanzas: [{ izq: { saco: 18 }, der: { pesa: 90 }, estado: 'der-baja' }] };
+  const sueltos = svg => [...svg.matchAll(/<text[^>]*>(\d)<\/text>/g)].map(m => m[1]);
+  assert.deepEqual(sueltos(B.dibujar(d, {})), ['1']);
+  assert.deepEqual(sueltos(B.dibujar(Object.assign({ numeros: false }, d), {})), []);
+});

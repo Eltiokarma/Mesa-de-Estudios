@@ -13,6 +13,7 @@
  *                        saco: 54 }                                    // lo que se pesa (saco con su valor)
  * datos = {
  *   unidad: 'kg',
+ *   numeros: false,                            // opcional: sin el número gris de cada balanza (por omisión, 1, 2…)
  *   colores: { circulo: 'o', x: 'i', … },     // color de cada figura o incógnita (regla 4); las pesas van en tinta
  *   incognitas: ['x', 'y'],                    // claves que se dibujan como caja con su letra
  *   pesos: { circulo: 3, … } | null,           // pesos reales, si se conocen: deciden la inclinación (si no, manda estado)
@@ -279,7 +280,9 @@
     (d.balanzas || []).forEach((b, i) => {
       const y0 = i * g.filaH;
       if (usa.has(i)) s += T.resaltado(2, y0 + 2, W - 4, g.filaH - 4, { clase: cls('u' + i, 'kit-aparece') });
-      s += T.rotulo(6, y0 + 18, String(i + 1), { peso: 700, clase: 'kit-tenue' });
+      // datos.numeros === false (Mol y composición, cierre 20 nov): sin el número gris de cada balanza; con una sola, el «1»
+      // suelto no se entendía. Por omisión se numera, como antes.
+      if (d.numeros !== false) s += T.rotulo(6, y0 + 18, String(i + 1), { peso: 700, clase: 'kit-tenue' });
       s += balanzaSVG(d, g, i, b);
       if (rastros[i]) s += fichasSVG(d, rastros[i], CX, y0 + g.filaH - 10, cls('r' + i, 'kit-aparece'));
     });

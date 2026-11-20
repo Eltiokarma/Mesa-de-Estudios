@@ -596,3 +596,19 @@ test('Etapa 8, Ecuaciones polinomiales rehecha: predicciones viejas sin huella b
   assert.equal(conHuella.teoria[U].ideas.viete.prediccion, 'c', 'con huella la revisa la app');
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// 20 nov (etapa 8): Mol y composición, rehecha con dos ideas de otra Predice y una idea nueva (formula-empirica-molecular).
+test('Etapa 8, Mol y composición rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
+  const U = 'quimica.mol-y-composicion';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-12' }, teoria: { [U]: { ideas: Object.fromEntries(['masa-atomica-promedio', 'mol-masa-molar', 'relaciones-en-formula', 'composicion-formula-empirica', 'leyes-ponderales']
+    .map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionMC, 1); assert.equal(est.estudiadaMC, 1);
+  for (const i of ['masa-atomica-promedio', 'mol-masa-molar']) assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i);
+  for (const i of ['relaciones-en-formula', 'composicion-formula-empirica', 'leyes-ponderales']) assert.equal(est.teoria[U].ideas[i].prediccion, 'c', `${i}: la misma pregunta, se queda`);
+  assert.equal(est.marcadas[U], '2026-11-12');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'mol-masa-molar': { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las cinco: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});

@@ -170,6 +170,11 @@
     // (docs/etapa8/propuesta-algebra.md, decisión 9).
     { u: 'algebra.ecuaciones-polinomiales', p: 'prediccionEP',
       cambian: ['grado-raices', 'viete', 'raices-racionales', 'conjugadas', 'cambio-de-variable', 'binomica'] },
+    // Etapa 8 (20 nov): Mol y composición conservó sus cinco ids; masa-atomica-promedio y mol-masa-molar cambiaron su Predice
+    // (las otras tres conservan pregunta e ids) y sumó `formula-empirica-molecular` (docs/etapa8/propuesta-quimica.md).
+    { u: 'quimica.mol-y-composicion', p: 'prediccionMC', e: 'estudiadaMC',
+      cambian: ['masa-atomica-promedio', 'mol-masa-molar'],
+      antes: ['masa-atomica-promedio', 'mol-masa-molar', 'relaciones-en-formula', 'composicion-formula-empirica', 'leyes-ponderales'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

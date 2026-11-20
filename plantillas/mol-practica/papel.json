@@ -1,0 +1,87 @@
+{
+  "titulo": "Moles, masa molar y composición: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Un elemento X tiene dos isótopos: 30 % con número de masa 54 y 70 % con número de masa 56. ¿Cuál es su masa atómica? Datos: La masa de un isótopo, en u, es casi su número de masa. masa atómica = masa₁ × %₁ / 100 + masa₂ × %₂ / 100 (+ … con más isótopos). Alternativas: A) 54,6 u   B) 55 u   C) 56 u   D) 55,4 u   E) 110 u",
+      "respuesta": "D) 55,4 u",
+      "pasos": [
+        "Cada masa por su abundancia entre 100, y se suman.",
+        "0,3 × 54 + 0,7 × 56 = 55,4 u"
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una muestra de 48 g de CH₄. ¿Cuántos moles son? Datos: Masas atómicas redondeadas: C 12; H 1. M: suma de las masas atómicas de la fórmula, cada una por su subíndice. n = m / M (M: la masa molar, en g/mol). Alternativas: A) 3 mol   B) 48 mol   C) 0,333 mol   D) 768 mol",
+      "respuesta": "A) 3 mol",
+      "pasos": [
+        "M(CH₄) = 16 g/mol.",
+        "n = 48 / 16 = 3 mol"
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Una muestra de 3 mol de Ba(OH)₂. ¿Cuántos moles de átomos de hidrógeno tiene? Datos: n(elemento) = n(compuesto) × átomos del elemento por unidad. Un subíndice fuera del paréntesis multiplica todo lo de adentro. Alternativas: A) 12 mol   B) 6 mol   C) 3 mol   D) 2 mol",
+      "respuesta": "B) 6 mol",
+      "pasos": [
+        "Cada unidad de Ba(OH)₂ trae 2 de H.",
+        "n(H) = 3 · 2 = 6 mol"
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Una muestra de 264 g de (NH₄)₂SO₄. ¿Cuántos gramos de nitrógeno tiene? Datos: Masas atómicas redondeadas: N 14; H 1; S 32; O 16. M: suma de las masas atómicas de la fórmula, cada una por su subíndice. % del elemento = 100 · (átomos × masa atómica) / M. masa del elemento en una muestra = % × masa de la muestra / 100. Alternativas: A) 28 g   B) 208 g   C) 56 g   D) 35,2 g",
+      "respuesta": "C) 56 g",
+      "pasos": [
+        "El N es 21,21 % de la masa.",
+        "28 · 264 / 132 = 56 g"
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un compuesto tiene fórmula empírica CH y masa molar 52 g/mol. ¿Cuál es su fórmula molecular? Datos: Masas atómicas redondeadas: C 12; H 1. molecular = k × empírica, con k = M / M(empírica), un entero. Alternativas: A) C₅H₅   B) CH   C) C₄H₄   D) C₄H",
+      "respuesta": "C) C₄H₄",
+      "pasos": [
+        "M(CH) = 13 g/mol: k = 52 / 13 = 4.",
+        "CH × 4 = C₄H₄"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una muestra de 14 g de óxido de calcio tiene 10 g de calcio. ¿Cuánto calcio hay en 7 g del mismo compuesto? Datos: Un compuesto tiene siempre la misma razón entre las masas de sus elementos. Alternativas: A) 9,8 g   B) 2 g   C) 3 g   D) 10 g   E) 5 g",
+      "respuesta": "E) 5 g",
+      "pasos": [
+        "La razón calcio : compuesto no cambia (Proust).",
+        "10 · 7 / 14 = 5 g"
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un sobre de paracetamol, C₈H₉NO₂, tiene 1000 mg. ¿Cuántas moléculas de paracetamol tiene? Datos: Masas atómicas redondeadas: C 12; H 1; N 14; O 16. M: suma de las masas atómicas de la fórmula, cada una por su subíndice. 1 g = 1000 mg. n = m / M (M: la masa molar, en g/mol). N = n · Nₐ (N: número de entidades); Nₐ = 6,02 × 10²³ por mol. Alternativas: A) 3,987 × 10²⁴   B) 1,1 × 10⁻²⁶   C) 1,4 × 10²²   D) 3,987 × 10²¹   E) 9,09 × 10²⁵",
+      "respuesta": "D) 3,987 × 10²¹",
+      "pasos": [
+        "M = 151 g/mol y 1000 mg = 1 g.",
+        "N = 1 / 151 · 6,02 × 10²³ ≈ 3,987 × 10²¹"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Un compuesto tiene 43,7 % de P y 56,3 % de O en masa. ¿Cuál es su fórmula empírica? Datos: Masas atómicas redondeadas: P 31; O 16. En 100 g del compuesto, el % de cada elemento es su masa en gramos. n(elemento) = masa del elemento / masa atómica. Empírica: se dividen los moles entre el menor. Si un cociente termina en ,5, todo por 2; en ,33 o ,67, por 3; en ,25 o ,75, por 4. Alternativas: A) P₂O₅   B) P₄O₁₀   C) PO₂   D) PO   E) P₂O₆",
+      "respuesta": "A) P₂O₅",
+      "pasos": [
+        "Moles en 100 g: P 1,41; O 3,519.",
+        "Entre el menor y por 2: 2 : 5 → P₂O₅"
+      ]
+    }
+  ]
+}
