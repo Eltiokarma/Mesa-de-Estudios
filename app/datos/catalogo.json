@@ -5620,7 +5620,7 @@
        "radian": "El radián: un radio de arco",
        "formula-general": "S, C y R: fórmula general"
       },
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -5667,7 +5667,7 @@
        "vueltas-rueda": "Número de vueltas de una rueda",
        "faja-y-eje": "Ruedas unidas: faja y eje"
       },
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -5833,26 +5833,30 @@
       }
      },
      "potencial_visual": "alto",
-     "grado": 4,
+     "grado": 5,
      "requiere": [
-      "trigonometria.razones-trigonometricas-agudas"
+      "trigonometria.razones-trigonometricas-agudas",
+      "trigonometria.angulo-trigonometrico"
      ],
      "plantillas": [
+      "trig-posicion-normal",
       "circunferencia-trig"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/angulos-en-posicion-normal.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-plano.js"
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/trig-pos.js"
       ],
-      "ideas": 4,
+      "ideas": 5,
       "titulos": {
        "razones-coordenadas": "Las razones salen de P",
        "signos-cuadrante": "El signo sale de x, y",
        "cuadrantales": "Cero no es «no definida»",
-       "coterminales-negativos": "Vueltas iguales, giros reflejados"
+       "giro-horario": "El giro horario va con menos",
+       "coterminales-negativos": "Más vueltas, mismo lado final"
       },
-      "terminos": 30
+      "terminos": 49
      }
     },
     {
@@ -5897,7 +5901,7 @@
        "mayores-negativos": "Primero se quitan las vueltas",
        "suplementarios-vuelta": "Suplementarios y de una vuelta"
       },
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -6134,7 +6138,7 @@
        "cadena-flechas": "Una cadena de flechas",
        "doblar-y-doblar": "Doblar y doblar"
       },
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -6187,7 +6191,7 @@
        "secante-copas": "Copas fuera de la franja",
        "periodo-general": "El periodo depende de la función"
       },
-      "terminos": 37
+      "terminos": 38
      }
     },
     {
@@ -6236,7 +6240,7 @@
        "grafica-reflejo": "La gráfica se refleja",
        "otras-tres": "arccot, arcsec y arccsc"
       },
-      "terminos": 36
+      "terminos": 37
      }
     },
     {
@@ -8796,6 +8800,9 @@
     "/plantillas/circunferencia-trig/index.html",
     "/plantillas/circunferencia-trig/motor.js",
     "/plantillas/circunferencia-trig/papel.json"
+   ],
+   "rehacer": [
+    "trigonometria.angulos-en-posicion-normal"
    ]
   },
   "clasificar-reacciones": {
@@ -12712,6 +12719,29 @@
    "archivos": [
     "/plantillas/trig-polares/generador.js",
     "/plantillas/trig-polares/papel.json"
+   ]
+  },
+  "trig-posicion-normal": {
+   "id": "trig-posicion-normal",
+   "titulo": "Ángulos en posición normal",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "trigonometria.angulos-en-posicion-normal"
+   ],
+   "url": "#/practica/trig-posicion-normal",
+   "ideas": [
+    "razones-coordenadas",
+    "signos-cuadrante",
+    "cuadrantales",
+    "giro-horario",
+    "coterminales-negativos"
+   ],
+   "papel": "/plantillas/trig-posicion-normal/papel.json",
+   "archivos": [
+    "/plantillas/trig-posicion-normal/generador.js",
+    "/plantillas/trig-posicion-normal/papel.json"
    ]
   },
   "trig-resolucion": {

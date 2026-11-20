@@ -4,6 +4,7 @@
   "problemas": [
     {
       "id": "p1",
+      "unidades": ["trigonometria.angulos-en-posicion-normal"],
       "nivel": "básico",
       "enunciado": "En un triángulo rectángulo, los catetos miden 5 cm y 12 cm. Si θ es el ángulo agudo opuesto al cateto de 5 cm, calcula sen θ, cos θ y tan θ.",
       "respuesta": "sen θ = 5/13, cos θ = 12/13 y tan θ = 5/12.",
@@ -105,6 +106,7 @@
     },
     {
       "id": "p2",
+      "unidades": ["trigonometria.angulos-en-posicion-normal"],
       "nivel": "básico",
       "enunciado": "Un triángulo rectángulo tiene catetos de 8 cm y 15 cm. Se dibuja otro con los mismos ángulos, pero con todos sus lados multiplicados por 3. ¿Cuánto vale el seno del ángulo opuesto al cateto menor en el triángulo grande?",
       "respuesta": "8/17, lo mismo que en el triángulo chico.",
@@ -146,19 +148,20 @@
     },
     {
       "id": "p3",
+      "unidades": ["trigonometria.angulos-en-posicion-normal"],
       "nivel": "básico",
-      "enunciado": "Desde un punto del suelo, a 32 m de la base de un edificio, se ve la azotea con un ángulo de elevación de 37°. ¿Qué altura tiene el edificio? Usa la convención del triángulo de 37° y 53°.",
+      "enunciado": "Desde un punto del suelo, a 32 m de la base de un edificio, se ve la azotea con un ángulo de elevación de 37°. ¿Qué altura tiene el edificio? Datos: tan 37° = 3/4 y sen 37° = 3/5 (convención del examen).",
       "respuesta": "24 m.",
       "pasos": [
         "La altura es el cateto opuesto a 37° y la distancia de 32 m es el cateto adyacente: la razón que los une es la tangente.",
-        "tan 37° = 3/4, así que altura = 32 · 3/4 = 24 m.",
-        "Con el seno saldría 32 · 3/5 ≈ 19,2 m: el error de elegir mal la razón. La distancia de 32 m no es la hipotenusa."
+        "tan 37° = 3/4 (convención del examen), así que altura = 32 · 3/4 = 24 m.",
+        "Con el seno saldría 32 · 3/5 = 19,2 m: el error de elegir mal la razón. La distancia de 32 m no es la hipotenusa."
       ],
       "verificar": [ { "fn": "resolverRectangulo", "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }], "espera": { "opuesto": 24, "hipotenusa": 40, "errores.opuestoConSeno": 19.2 } } ],
       "preguntas": [
         {
           "id": "p3a",
-          "enunciado": "Desde un punto del suelo, a 32 m de la base de un edificio, se ve la azotea con un ángulo de elevación de 37°. Usa la convención del triángulo de 37° y 53°.",
+          "enunciado": "Desde un punto del suelo, a 32 m de la base de un edificio, se ve la azotea con un ángulo de elevación de 37°. Datos: tan 37° = 3/4 y sen 37° = 3/5 (convención del examen).",
           "pregunta": "¿Qué altura tiene el edificio?",
           "unidad": "m",
           "decimales": 2,
@@ -197,6 +200,7 @@
     },
     {
       "id": "p4",
+      "unidades": ["trigonometria.angulos-en-posicion-normal"],
       "nivel": "básico",
       "enunciado": "Calcula E = sen 30° + tan 45° + cos 60° · sec 60°.",
       "respuesta": "E = 5/2.",
@@ -210,6 +214,7 @@
     },
     {
       "id": "p5",
+      "unidades": ["trigonometria.reduccion-al-primer-cuadrante"],
       "nivel": "intermedio",
       "enunciado": "Reduce al primer cuadrante y calcula: sen 240°, cos 135° y tan 330°.",
       "respuesta": "sen 240° = −√3/2, cos 135° = −√2/2 y tan 330° = −√3/3.",
@@ -287,6 +292,7 @@
     },
     {
       "id": "p6",
+      "unidades": ["trigonometria.reduccion-al-primer-cuadrante"],
       "nivel": "intermedio",
       "enunciado": "Calcula M = cos(−60°) + sen 750° − sen(−30°).",
       "respuesta": "M = 3/2.",
@@ -301,6 +307,7 @@
     },
     {
       "id": "p7",
+      "unidades": ["trigonometria.funciones-trigonometricas"],
       "nivel": "intermedio",
       "enunciado": "Para la función y = 4 sen 3x + 1, halla la amplitud, el periodo, el valor máximo y el valor mínimo.",
       "respuesta": "Amplitud 4, periodo 2π/3, máximo 5 y mínimo −3.",
@@ -352,6 +359,7 @@
     },
     {
       "id": "p8",
+      "unidades": ["trigonometria.ecuaciones-trigonometricas"],
       "nivel": "intermedio",
       "enunciado": "Resuelve cos x = −1/2 para x en [0°, 360°⟩ y escribe la solución general.",
       "respuesta": "x = 120° y x = 240°; en general, x = 360°·n ± 120°, con n entero.",
@@ -364,6 +372,7 @@
     },
     {
       "id": "p9",
+      "unidades": ["trigonometria.ecuaciones-trigonometricas"],
       "nivel": "avanzado",
       "enunciado": "Resuelve 2 sen x cos x = sen x para x en [0, 2π⟩.",
       "respuesta": "x = 0, π/3, π y 5π/3.",
@@ -413,6 +422,7 @@
     },
     {
       "id": "p10",
+      "unidades": ["trigonometria.funciones-trigonometricas"],
       "nivel": "avanzado",
       "enunciado": "Un compañero dice: «sen 45° + sen 45° = sen 90°». Comprueba si tiene razón.",
       "respuesta": "No: sen 45° + sen 45° = √2 ≈ 1,41, pero sen 90° = 1.",

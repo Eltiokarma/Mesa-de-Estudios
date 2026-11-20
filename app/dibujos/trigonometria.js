@@ -34,12 +34,12 @@ D.registrar('trigonometria', {
   'trigonometria.recta-en-el-plano': P =>
     P.ejes(30, 98) + P.l([[44, 92], [80, 92], [80, 58]], 'g') + P.ac('M22 108L148 14')
     + P.c(44, 92, 5, 'b') + P.c(80, 58, 5, 'b') + P.t(62, 110, 'Δx', 15) + P.t(98, 80, 'Δy', 15),
-  // Un ángulo en posición normal: lado inicial en el eje x, signos por cuadrante.
+  // Un ángulo en posición normal: lado inicial en el eje x, el giro hasta el lado final y su punto P con sus dos
+  // coordenadas punteadas (Etapa 8: sin los signos por cuadrante, que respondían la predicción de la idea 2).
   'trigonometria.angulos-en-posicion-normal': P => {
     const [x, y] = sobre(80, 62, 46, 135);
-    return P.ejes(80, 62, 18, 144, 8, 114) + P.l([[80, 62], [x, y]]) + P.c(x, y, 5, 'a')
-      + P.ac(P.arco(80, 62, 22, 2, 132)) + P.punta(...sobre(80, 62, 22, 134), 136, 'tn')
-      + P.t(122, 36, '+', 20) + P.t(38, 100, '−', 20) + P.t(122, 100, '−', 20) + P.t(38, 36, '+', 20);
+    return P.ejes(80, 62, 18, 144, 8, 114) + P.l([[x, 62], [x, y]], 'g') + P.l([[80, 62], [x, 62]], 'g') + P.l([[80, 62], [x, y]]) + P.c(x, y, 5, 'a')
+      + P.ac(P.arco(80, 62, 22, 2, 132)) + P.punta(...sobre(80, 62, 22, 134), 136, 'tn') + P.t(x - 6, y - 10, 'P', 16);
   },
   // Reducir al primer cuadrante: el ángulo de II se refleja en uno de I.
   'trigonometria.reduccion-al-primer-cuadrante': P => {

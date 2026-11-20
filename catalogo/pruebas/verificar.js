@@ -895,6 +895,14 @@ const V = {
     return { correcta: k * L[2] / L[0], errores: { 'RES-MULTIPLICA-hipotenusa-con-seno': k * L[0] / L[2], 'TR9-divide-entre-coseno': k * L[2] / L[1], 'RES-HIP-da-el-otro-cateto': k * L[1] / L[0] } }; },
   'tri-15': d => { const LT = { 37: [3, 4], 45: [1, 1], 53: [4, 3] }, cot = g => LT[g][1] / LT[g][0], tn = g => LT[g][0] / LT[g][1];
     return { correcta: d.m / (cot(d.a) - cot(d.b)), errores: { 'DOS-SUMA-suma-cotangentes': d.m / (cot(d.a) + cot(d.b)), 'DOS-UN-TRIANGULO-avance-como-distancia': d.m * tn(d.b), 'DOS-MULTIPLICA-en-vez-de-dividir': d.m * (cot(d.a) - cot(d.b)) } }; },
+  // tri-16 y tri-17 (reserva, 19 nov, etapa 8 de trigonometría: «Ángulos en posición normal»; las formas ya tienen 10
+  // pares). Cuentas aparte, sin el generador: tri-16 con el punto (r con Math.hypot); tri-17 arma P con la razón dada y
+  // el signo de cada coordenada en su cuadrante (la que falta sale de Pitágoras).
+  'tri-16': d => { const r = Math.hypot(d.x, d.y);
+    return { correcta: d.x / r, errores: { 'TR12-coseno-sin-signo': Math.abs(d.x) / r, 'TR11-da-el-seno': d.y / r, 'TR7-la-abscisa-como-razon': d.x } }; },
+  'tri-17': d => { const SG = { 1: [1, 1], 2: [-1, 1], 3: [-1, -1], 4: [1, -1] }[d.q], otro = Math.sqrt(d.d * d.d - d.n * d.n);
+    const [x, y] = d.dado === 'sen' ? [SG[0] * otro, d.n] : [d.n, SG[1] * otro], [x2, y2] = d.dado === 'sen' ? [-x, y] : [x, -y], r = d.d;
+    return { correcta: y / x, errores: { 'RN-RAIZ-x-del-otro-cuadrante': y2 / x2, 'TRPN-INVERSA-da-la-cotangente': x / y, 'TR11-cambia-x-por-y': d.dado === 'sen' ? x / r : y / r } }; },
   'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
     if (!r.exacto) throw new Error('la suma debe salir exacta');
     return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },

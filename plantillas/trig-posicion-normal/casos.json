@@ -1,0 +1,609 @@
+{
+ "plantilla": "trig-posicion-normal",
+ "nota": "Entrada = _datos del generador; esperado.texto es la alternativa correcta como la ve el alumno.",
+ "verificacion": "python3 -I casos-verif.py (scratchpad e8-trigonometria, 19 nov 2026): no usa el generador; calcula cada razón con math.cos, math.sin y atan2 del ángulo de verdad o con el punto (x, y), busca de milésima en milésima de grado el ángulo del cuadrante con la razón dada, y escribe el resultado como c√t/d con fracciones. Los casos cuadran con el generador.",
+ "casos": [
+  {
+   "semilla": "caso-razon-punto-1",
+   "opciones": {
+    "tipo": "razon-punto"
+   },
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "razon-punto",
+    "nivel": 1,
+    "x": 6,
+    "y": -8,
+    "fn": "csc"
+   },
+   "esperado": {
+    "texto": "−5/4"
+   }
+  },
+  {
+   "semilla": "caso-razon-punto-2",
+   "opciones": {
+    "tipo": "razon-punto"
+   },
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "razon-punto",
+    "nivel": 1,
+    "x": 7,
+    "y": 24,
+    "fn": "cos"
+   },
+   "esperado": {
+    "texto": "7/25"
+   }
+  },
+  {
+   "semilla": "caso-expresion-1",
+   "opciones": {
+    "tipo": "expresion"
+   },
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "expresion",
+    "nivel": 2,
+    "x": -6,
+    "y": -8,
+    "e": "csc θ − cot θ"
+   },
+   "esperado": {
+    "texto": "−2"
+   }
+  },
+  {
+   "semilla": "caso-expresion-2",
+   "opciones": {
+    "tipo": "expresion"
+   },
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "expresion",
+    "nivel": 2,
+    "x": -24,
+    "y": -7,
+    "e": "csc θ − cot θ"
+   },
+   "esperado": {
+    "texto": "−7"
+   }
+  },
+  {
+   "semilla": "caso-coordenada-falta-1",
+   "opciones": {
+    "tipo": "coordenada-falta"
+   },
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "coordenada-falta",
+    "nivel": 3,
+    "x": 16,
+    "y": 12,
+    "fn": "sen",
+    "falta": "y"
+   },
+   "esperado": {
+    "texto": "3/5"
+   }
+  },
+  {
+   "semilla": "caso-coordenada-falta-2",
+   "opciones": {
+    "tipo": "coordenada-falta"
+   },
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "coordenada-falta",
+    "nivel": 3,
+    "x": 12,
+    "y": 5,
+    "fn": "cos",
+    "falta": "x"
+   },
+   "esperado": {
+    "texto": "12/13"
+   }
+  },
+  {
+   "semilla": "caso-signos-1",
+   "opciones": {
+    "tipo": "signos"
+   },
+   "entrada": {
+    "idea": "signos-cuadrante",
+    "tipo": "signos",
+    "nivel": 1,
+    "g": 150,
+    "a": "sec",
+    "b": "tan"
+   },
+   "esperado": {
+    "texto": "sec −, tan −"
+   }
+  },
+  {
+   "semilla": "caso-signos-2",
+   "opciones": {
+    "tipo": "signos"
+   },
+   "entrada": {
+    "idea": "signos-cuadrante",
+    "tipo": "signos",
+    "nivel": 1,
+    "g": 20,
+    "a": "sen",
+    "b": "tan"
+   },
+   "esperado": {
+    "texto": "sen +, tan +"
+   }
+  },
+  {
+   "semilla": "caso-cuadrante-signos-1",
+   "opciones": {
+    "tipo": "cuadrante-signos"
+   },
+   "entrada": {
+    "idea": "signos-cuadrante",
+    "tipo": "cuadrante-signos",
+    "nivel": 2,
+    "c1": [
+     "tan",
+     1
+    ],
+    "c2": [
+     "sen",
+     -1
+    ]
+   },
+   "esperado": {
+    "texto": "En el III"
+   }
+  },
+  {
+   "semilla": "caso-cuadrante-signos-2",
+   "opciones": {
+    "tipo": "cuadrante-signos"
+   },
+   "entrada": {
+    "idea": "signos-cuadrante",
+    "tipo": "cuadrante-signos",
+    "nivel": 2,
+    "c1": [
+     "cot",
+     -1
+    ],
+    "c2": [
+     "cos",
+     1
+    ]
+   },
+   "esperado": {
+    "texto": "En el IV"
+   }
+  },
+  {
+   "semilla": "caso-razon-cuadrante-1",
+   "opciones": {
+    "tipo": "razon-cuadrante"
+   },
+   "entrada": {
+    "idea": "signos-cuadrante",
+    "tipo": "razon-cuadrante",
+    "nivel": 3,
+    "x": -7,
+    "y": -24,
+    "q": 3,
+    "dado": "sen",
+    "pide": "cos"
+   },
+   "esperado": {
+    "texto": "−7/25"
+   }
+  },
+  {
+   "semilla": "caso-razon-cuadrante-2",
+   "opciones": {
+    "tipo": "razon-cuadrante"
+   },
+   "entrada": {
+    "idea": "signos-cuadrante",
+    "tipo": "razon-cuadrante",
+    "nivel": 3,
+    "x": 4,
+    "y": 3,
+    "q": 1,
+    "dado": "tan",
+    "pide": "csc"
+   },
+   "esperado": {
+    "texto": "5/3"
+   }
+  },
+  {
+   "semilla": "caso-razon-eje-1",
+   "opciones": {
+    "tipo": "razon-eje"
+   },
+   "entrada": {
+    "idea": "cuadrantales",
+    "tipo": "razon-eje",
+    "nivel": 1,
+    "g": 270,
+    "fn": "cot"
+   },
+   "esperado": {
+    "texto": "0"
+   }
+  },
+  {
+   "semilla": "caso-razon-eje-2",
+   "opciones": {
+    "tipo": "razon-eje"
+   },
+   "entrada": {
+    "idea": "cuadrantales",
+    "tipo": "razon-eje",
+    "nivel": 1,
+    "g": 360,
+    "fn": "cot"
+   },
+   "esperado": {
+    "texto": "No está definida"
+   }
+  },
+  {
+   "semilla": "caso-expresion-ejes-1",
+   "opciones": {
+    "tipo": "expresion-ejes"
+   },
+   "entrada": {
+    "idea": "cuadrantales",
+    "tipo": "expresion-ejes",
+    "nivel": 2,
+    "p": 4,
+    "q": 2,
+    "t": 3,
+    "A": 90,
+    "B": 180,
+    "C": 0
+   },
+   "esperado": {
+    "texto": "6"
+   }
+  },
+  {
+   "semilla": "caso-expresion-ejes-2",
+   "opciones": {
+    "tipo": "expresion-ejes"
+   },
+   "entrada": {
+    "idea": "cuadrantales",
+    "tipo": "expresion-ejes",
+    "nivel": 2,
+    "p": 4,
+    "q": 5,
+    "t": 4,
+    "A": 90,
+    "B": 0,
+    "C": 180
+   },
+   "esperado": {
+    "texto": "−1"
+   }
+  },
+  {
+   "semilla": "caso-multiplos-1",
+   "opciones": {
+    "tipo": "multiplos"
+   },
+   "entrada": {
+    "idea": "cuadrantales",
+    "tipo": "multiplos",
+    "nivel": 3,
+    "T": 90,
+    "t1": [
+     1,
+     "sen",
+     1
+    ],
+    "t2": [
+     2,
+     "cos",
+     2
+    ],
+    "t3": [
+     1,
+     "cos",
+     1
+    ],
+    "d": 3
+   },
+   "esperado": {
+    "texto": "−1/3"
+   }
+  },
+  {
+   "semilla": "caso-multiplos-2",
+   "opciones": {
+    "tipo": "multiplos"
+   },
+   "entrada": {
+    "idea": "cuadrantales",
+    "tipo": "multiplos",
+    "nivel": 3,
+    "T": 180,
+    "t1": [
+     3,
+     "cos",
+     1
+    ],
+    "t2": [
+     2,
+     "sen",
+     1.5
+    ],
+    "t3": [
+     2,
+     "sen",
+     1.5
+    ],
+    "d": 1
+   },
+   "esperado": {
+    "texto": "5"
+   }
+  },
+  {
+   "semilla": "caso-cuadrante-negativo-1",
+   "opciones": {
+    "tipo": "cuadrante-negativo"
+   },
+   "entrada": {
+    "idea": "giro-horario",
+    "tipo": "cuadrante-negativo",
+    "nivel": 1,
+    "g": -300
+   },
+   "esperado": {
+    "texto": "En el I"
+   }
+  },
+  {
+   "semilla": "caso-cuadrante-negativo-2",
+   "opciones": {
+    "tipo": "cuadrante-negativo"
+   },
+   "entrada": {
+    "idea": "giro-horario",
+    "tipo": "cuadrante-negativo",
+    "nivel": 1,
+    "g": -250
+   },
+   "esperado": {
+    "texto": "En el II"
+   }
+  },
+  {
+   "semilla": "caso-razon-negativo-1",
+   "opciones": {
+    "tipo": "razon-negativo"
+   },
+   "entrada": {
+    "idea": "giro-horario",
+    "tipo": "razon-negativo",
+    "nivel": 2,
+    "g": -270,
+    "fn": "cos"
+   },
+   "esperado": {
+    "texto": "0"
+   }
+  },
+  {
+   "semilla": "caso-razon-negativo-2",
+   "opciones": {
+    "tipo": "razon-negativo"
+   },
+   "entrada": {
+    "idea": "giro-horario",
+    "tipo": "razon-negativo",
+    "nivel": 2,
+    "g": -180,
+    "fn": "csc"
+   },
+   "esperado": {
+    "texto": "No está definida"
+   }
+  },
+  {
+   "semilla": "caso-cuenta-positivas-1",
+   "opciones": {
+    "tipo": "cuenta-positivas"
+   },
+   "entrada": {
+    "idea": "giro-horario",
+    "tipo": "cuenta-positivas",
+    "nivel": 3,
+    "items": [
+     [
+      "csc",
+      -130
+     ],
+     [
+      "cot",
+      -280
+     ],
+     [
+      "cos",
+      -320
+     ],
+     [
+      "csc",
+      -190
+     ]
+    ]
+   },
+   "esperado": {
+    "texto": "3"
+   }
+  },
+  {
+   "semilla": "caso-cuenta-positivas-2",
+   "opciones": {
+    "tipo": "cuenta-positivas"
+   },
+   "entrada": {
+    "idea": "giro-horario",
+    "tipo": "cuenta-positivas",
+    "nivel": 3,
+    "items": [
+     [
+      "cos",
+      -320
+     ],
+     [
+      "sec",
+      -120
+     ],
+     [
+      "cot",
+      -20
+     ],
+     [
+      "csc",
+      -100
+     ]
+    ]
+   },
+   "esperado": {
+    "texto": "1"
+   }
+  },
+  {
+   "semilla": "caso-coterminal-1",
+   "opciones": {
+    "tipo": "coterminal"
+   },
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "coterminal",
+    "nivel": 1,
+    "g": 710
+   },
+   "esperado": {
+    "texto": "350°"
+   }
+  },
+  {
+   "semilla": "caso-coterminal-2",
+   "opciones": {
+    "tipo": "coterminal"
+   },
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "coterminal",
+    "nivel": 1,
+    "g": 620
+   },
+   "esperado": {
+    "texto": "260°"
+   }
+  },
+  {
+   "semilla": "caso-cual-coterminal-1",
+   "opciones": {
+    "tipo": "cual-coterminal"
+   },
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "cual-coterminal",
+    "nivel": 2,
+    "g": -30,
+    "k": 3
+   },
+   "esperado": {
+    "texto": "1050°"
+   }
+  },
+  {
+   "semilla": "caso-cual-coterminal-2",
+   "opciones": {
+    "tipo": "cual-coterminal"
+   },
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "cual-coterminal",
+    "nivel": 2,
+    "g": -50,
+    "k": 2
+   },
+   "esperado": {
+    "texto": "670°"
+   }
+  },
+  {
+   "semilla": "caso-k-veces-1",
+   "opciones": {
+    "tipo": "k-veces"
+   },
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "k-veces",
+    "nivel": 3,
+    "k": 5,
+    "lo": 40,
+    "hi": 140
+   },
+   "esperado": {
+    "texto": "90°"
+   }
+  },
+  {
+   "semilla": "caso-k-veces-2",
+   "opciones": {
+    "tipo": "k-veces"
+   },
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "k-veces",
+    "nivel": 3,
+    "k": 4,
+    "lo": 180,
+    "hi": 300
+   },
+   "esperado": {
+    "texto": "240°"
+   }
+  },
+  {
+   "semilla": "papel-1",
+   "entrada": {
+    "idea": "razones-coordenadas",
+    "tipo": "razon-punto",
+    "nivel": 1,
+    "x": 24,
+    "y": 7,
+    "fn": "cos"
+   },
+   "esperado": {
+    "texto": "24/25"
+   }
+  },
+  {
+   "semilla": "papel-5",
+   "entrada": {
+    "idea": "coterminales-negativos",
+    "tipo": "coterminal",
+    "nivel": 1,
+    "g": -1000
+   },
+   "esperado": {
+    "texto": "80°"
+   }
+  }
+ ]
+}

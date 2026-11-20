@@ -226,6 +226,30 @@
     "DOS-MULTIPLICA-en-vez-de-dividir": {
       "respaldo": "hipotesis",
       "describe": "Multiplica lo avanzado por la resta de cotangentes en vez de dividir"
+    },
+    "TR12-coseno-sin-signo": {
+      "respaldo": "parcial",
+      "describe": "Divide bien la abscisa entre r, pero sin su signo"
+    },
+    "TR11-da-el-seno": {
+      "respaldo": "parcial",
+      "describe": "Cambia x por y: da el seno en vez del coseno"
+    },
+    "TR7-la-abscisa-como-razon": {
+      "respaldo": "parcial",
+      "describe": "Toma la coordenada misma por la razón, como si fuera una longitud"
+    },
+    "RN-RAIZ-x-del-otro-cuadrante": {
+      "respaldo": "hipotesis",
+      "describe": "Arma el punto con la coordenada que falta del signo de otro cuadrante"
+    },
+    "TRPN-INVERSA-da-la-cotangente": {
+      "respaldo": "hipotesis",
+      "describe": "Divide al revés: da la cotangente en vez de la tangente"
+    },
+    "TR11-cambia-x-por-y": {
+      "respaldo": "parcial",
+      "describe": "Cambia x por y: con el punto bien armado, da la otra razón que usa r"
     }
   },
   "pares": [
@@ -1417,6 +1441,142 @@
             "texto": "8 m",
             "valor": 8,
             "error": "DOS-UN-TRIANGULO-avance-como-distancia"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-16",
+      "plantilla": "trig-posicion-normal",
+      "unidad": "trigonometria.angulos-en-posicion-normal",
+      "mide": "El coseno con un punto del lado final: la abscisa con su signo entre r (no la coordenada sola, no el seno, no sin signo)",
+      "A": {
+        "enunciado": "El lado final de un ángulo θ en posición normal pasa por P(−8, 15). ¿Cuánto vale cos θ? (cos θ = x/r, con r = √(x² + y²).)",
+        "datos": {
+          "x": -8,
+          "y": 15
+        },
+        "opciones": [
+          {
+            "texto": "8/17",
+            "valor": 0.47058823529411764,
+            "error": "TR12-coseno-sin-signo"
+          },
+          {
+            "texto": "−8/17",
+            "valor": -0.47058823529411764,
+            "correcta": true
+          },
+          {
+            "texto": "15/17",
+            "valor": 0.8823529411764706,
+            "error": "TR11-da-el-seno"
+          },
+          {
+            "texto": "−8",
+            "valor": -8,
+            "error": "TR7-la-abscisa-como-razon"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "El lado final de un ángulo θ en posición normal pasa por P(−20, 21). ¿Cuánto vale cos θ? (cos θ = x/r, con r = √(x² + y²).)",
+        "datos": {
+          "x": -20,
+          "y": 21
+        },
+        "opciones": [
+          {
+            "texto": "21/29",
+            "valor": 0.7241379310344828,
+            "error": "TR11-da-el-seno"
+          },
+          {
+            "texto": "−20/29",
+            "valor": -0.6896551724137931,
+            "correcta": true
+          },
+          {
+            "texto": "−20",
+            "valor": -20,
+            "error": "TR7-la-abscisa-como-razon"
+          },
+          {
+            "texto": "20/29",
+            "valor": 0.6896551724137931,
+            "error": "TR12-coseno-sin-signo"
+          }
+        ]
+      }
+    },
+    {
+      "par": "tri-17",
+      "plantilla": "trig-posicion-normal",
+      "unidad": "trigonometria.angulos-en-posicion-normal",
+      "mide": "Una razón y el cuadrante dan las demás: la coordenada que falta lleva el signo de su cuadrante",
+      "A": {
+        "enunciado": "θ está en el cuadrante II y sen θ = 3/5. ¿Cuánto vale tan θ? (sen θ = y/r, tan θ = y/x y r = √(x² + y²); en el II, x < 0 e y > 0.)",
+        "datos": {
+          "n": 3,
+          "d": 5,
+          "modelo": {
+            "q": 2,
+            "dado": "sen"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "3/4",
+            "valor": 0.75,
+            "error": "RN-RAIZ-x-del-otro-cuadrante"
+          },
+          {
+            "texto": "−4/3",
+            "valor": -1.3333333333333333,
+            "error": "TRPN-INVERSA-da-la-cotangente"
+          },
+          {
+            "texto": "−3/4",
+            "valor": -0.75,
+            "correcta": true
+          },
+          {
+            "texto": "−4/5",
+            "valor": -0.8,
+            "error": "TR11-cambia-x-por-y"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "θ está en el cuadrante IV y cos θ = 5/13. ¿Cuánto vale tan θ? (cos θ = x/r, tan θ = y/x y r = √(x² + y²); en el IV, x > 0 e y < 0.)",
+        "datos": {
+          "n": 5,
+          "d": 13,
+          "modelo": {
+            "q": 4,
+            "dado": "cos"
+          }
+        },
+        "opciones": [
+          {
+            "texto": "−12/5",
+            "valor": -2.4,
+            "correcta": true
+          },
+          {
+            "texto": "12/5",
+            "valor": 2.4,
+            "error": "RN-RAIZ-x-del-otro-cuadrante"
+          },
+          {
+            "texto": "−5/12",
+            "valor": -0.4166666666666667,
+            "error": "TRPN-INVERSA-da-la-cotangente"
+          },
+          {
+            "texto": "−12/13",
+            "valor": -0.9230769230769231,
+            "error": "TR11-cambia-x-por-y"
           }
         ]
       }

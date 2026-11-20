@@ -1,0 +1,87 @@
+{
+  "titulo": "Ángulos en posición normal: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "El lado final de θ pasa por P(24, 7). ¿Cuánto vale cos θ? Datos: Con P(x, y) en el lado final: sen θ = y/r, cos θ = x/r y tan θ = y/x. r = √(x² + y²): la distancia de P al origen, siempre positiva. Alternativas: A) 7/25   B) 24/25   C) 24   D) 25/24",
+      "respuesta": "B) 24/25",
+      "pasos": [
+        "r = 25.",
+        "cos θ = x/r = 24/25"
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "θ = 330° está en posición normal. ¿Qué signos tienen sec θ y tan θ? Datos: Con P(x, y) en el lado final: sen θ = y/r, cos θ = x/r y tan θ = y/x. cot θ = x/y, sec θ = r/x y csc θ = r/y. Cuadrantes: I (x > 0, y > 0), II (x < 0, y > 0), III (x < 0, y < 0) y IV (x > 0, y < 0). Alternativas: A) sec −, tan −   B) sec +, tan −   C) sec −, tan +   D) sec +, tan +",
+      "respuesta": "B) sec +, tan −",
+      "pasos": [
+        "330° está en el cuadrante IV: x + e y −.",
+        "sec +, tan −"
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "θ = 270° está en posición normal. ¿Cuánto vale csc θ? Datos: Con P(x, y) en el lado final: sen θ = y/r, cos θ = x/r y tan θ = y/x. cot θ = x/y, sec θ = r/x y csc θ = r/y. Sobre los ejes, con r = a: 0° da (a, 0); 90°, (0, a); 180°, (−a, 0); 270°, (0, −a). Entre 0 no se divide: a/0 no da ningún número. Alternativas: A) −1   B) 1   C) 0   D) No está definida",
+      "respuesta": "A) −1",
+      "pasos": [
+        "270° cae sobre un eje. csc θ = r/y, con r = a.",
+        "csc 270° = −1"
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "θ = −300° está en posición normal. ¿En qué cuadrante termina su lado final? Datos: Un ángulo negativo gira en sentido horario desde el eje x positivo. Cuadrantes: I (x > 0, y > 0), II (x < 0, y > 0), III (x < 0, y < 0) y IV (x > 0, y < 0). Una vuelta mide 360°. Alternativas: A) En el IV   B) En el II   C) En el I   D) En el III",
+      "respuesta": "C) En el I",
+      "pasos": [
+        "Horario: IV, III, II y I, un cuarto de vuelta cada uno.",
+        "Cuadrante I"
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un giro de −1000°. ¿Qué ángulo entre 0° y 360° es coterminal con él? Datos: Coterminales: α − β = 360° · n, con n entero. Una vuelta mide 360°. Alternativas: A) 80°   B) 280°   C) 260°   D) 440°",
+      "respuesta": "A) 80°",
+      "pasos": [
+        "−1000° = 80° + 360° · (−3).",
+        "80°"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "El lado final de θ pasa por P(20, a), con a negativo, y su radio vector mide 29. ¿Cuánto vale sen θ? Datos: Con P(x, y) en el lado final: sen θ = y/r, cos θ = x/r y tan θ = y/x. r = √(x² + y²): la distancia de P al origen, siempre positiva. Alternativas: A) 21/29   B) −29/21   C) −21/29   D) 20/29",
+      "respuesta": "C) −21/29",
+      "pasos": [
+        "a² = 841 − 400; con su signo, a = −21.",
+        "sen θ = y/r = −21/29"
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "θ está en el cuadrante IV y cos θ = 4/5. ¿Cuánto vale csc θ? Datos: Con P(x, y) en el lado final: sen θ = y/r, cos θ = x/r y tan θ = y/x. cot θ = x/y, sec θ = r/x y csc θ = r/y. r = √(x² + y²): la distancia de P al origen, siempre positiva. Cuadrantes: I (x > 0, y > 0), II (x < 0, y > 0), III (x < 0, y < 0) y IV (x > 0, y < 0). Alternativas: A) 5/3   B) −3/5   C) 5/4   D) −5/3",
+      "respuesta": "D) −5/3",
+      "pasos": [
+        "Con cos θ y los signos del IV: P(12, −9) y r = 15.",
+        "csc θ = r/y = −5/3"
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "α y β son coterminales, α = 7β, y β está entre 270° y 330°. ¿Cuánto mide β? Datos: Coterminales: α − β = 360° · n, con n entero. Alternativas: A) 240°   B) 360°   C) 300°   D) ≈ 257,14°",
+      "respuesta": "C) 300°",
+      "pasos": [
+        "7β − β = 6β = 360° · n, así que β = 60° · n; en el intervalo, n = 5.",
+        "β = 300°"
+      ]
+    }
+  ]
+}

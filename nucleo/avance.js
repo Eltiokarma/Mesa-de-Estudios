@@ -187,6 +187,12 @@
     // estudié» (docs/etapa8/propuesta-razonamiento-matematico.md, decisión 8).
     { u: 'razonamiento-matematico.razonamiento-inductivo', p: 'prediccionRI', e: 'estudiadaRI',
       cambian: [], antes: ['figuras-que-crecen', 'tres-casos-no-prueban', 'impares-y-cuadrados'] },
+    // Etapa 8 (19 nov): Ángulos en posición normal conservó sus cuatro ids y sumó giro-horario. razones-coordenadas,
+    // cuadrantales y coterminales-negativos cambiaron su Predice; signos-cuadrante conserva la pregunta y los ids de sus
+    // opciones (docs/etapa8/propuesta-trigonometria.md, §8).
+    { u: 'trigonometria.angulos-en-posicion-normal', p: 'prediccionPN', e: 'estudiadaPN',
+      cambian: ['razones-coordenadas', 'cuadrantales', 'coterminales-negativos'],
+      antes: ['razones-coordenadas', 'signos-cuadrante', 'cuadrantales', 'coterminales-negativos'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.

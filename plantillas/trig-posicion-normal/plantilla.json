@@ -1,0 +1,21 @@
+{
+  "id": "trig-posicion-normal",
+  "titulo": "Ángulos en posición normal",
+  "formato": "predicciones",
+  "unidades": [
+    "trigonometria.angulos-en-posicion-normal"
+  ],
+  "temas": [
+    "Razones de un ángulo en posición normal",
+    "Signos por cuadrante",
+    "Ángulos coterminales",
+    "Ángulos cuadrantales",
+    "Ángulos negativos"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

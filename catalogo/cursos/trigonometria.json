@@ -102,9 +102,9 @@
       ],
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
-      "grado": 4,
-      "requiere": ["trigonometria.razones-trigonometricas-agudas"],
-      "plantillas": ["circunferencia-trig"],
+      "grado": 5,
+      "requiere": ["trigonometria.razones-trigonometricas-agudas", "trigonometria.angulo-trigonometrico"],
+      "plantillas": ["trig-posicion-normal", "circunferencia-trig"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
     {

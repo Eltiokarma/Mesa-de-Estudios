@@ -4684,6 +4684,30 @@
     "DOS-MULTIPLICA-en-vez-de-dividir": {
      "respaldo": "hipotesis",
      "describe": "Multiplica lo avanzado por la resta de cotangentes en vez de dividir"
+    },
+    "TR12-coseno-sin-signo": {
+     "respaldo": "parcial",
+     "describe": "Divide bien la abscisa entre r, pero sin su signo"
+    },
+    "TR11-da-el-seno": {
+     "respaldo": "parcial",
+     "describe": "Cambia x por y: da el seno en vez del coseno"
+    },
+    "TR7-la-abscisa-como-razon": {
+     "respaldo": "parcial",
+     "describe": "Toma la coordenada misma por la razón, como si fuera una longitud"
+    },
+    "RN-RAIZ-x-del-otro-cuadrante": {
+     "respaldo": "hipotesis",
+     "describe": "Arma el punto con la coordenada que falta del signo de otro cuadrante"
+    },
+    "TRPN-INVERSA-da-la-cotangente": {
+     "respaldo": "hipotesis",
+     "describe": "Divide al revés: da la cotangente en vez de la tangente"
+    },
+    "TR11-cambia-x-por-y": {
+     "respaldo": "parcial",
+     "describe": "Cambia x por y: con el punto bien armado, da la otra razón que usa r"
     }
    },
    "pares": [

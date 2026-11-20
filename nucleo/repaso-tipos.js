@@ -136,8 +136,10 @@
     // p1, p2, p4 y p10 eran de razones-trigonometricas-agudas; esa unidad ya no lista la escena (17 nov, auditoría M7:
     // traía problemas de unidades posteriores): quedan fuera del repaso.
     // p3 era de triangulos-rectangulos; esa unidad ya no lista la escena (19 nov, etapa 7): queda fuera del repaso.
+    // 20 nov (cierre de «Ángulos en posición normal»): p5 (reducir al primer cuadrante) y p6 (la paridad) son de
+    // «Reducción»; esa unidad no enseña el ángulo de referencia ni sen(−θ) = −sen θ: quedan solo para «Reducción».
     'circunferencia-trig': {
-      ...lista([T + 'reduccion-al-primer-cuadrante', T + 'angulos-en-posicion-normal'], ps(5, 6)), p7: T + 'funciones-trigonometricas',
+      ...lista(T + 'reduccion-al-primer-cuadrante', ps(5, 6)), p7: T + 'funciones-trigonometricas',
       ...lista(T + 'ecuaciones-trigonometricas', ps(8, 9)) },
     'geometria-analitica': { ...lista(G + 'geometria-analitica', ps(1, 2, 3, 9, 10)), ...lista(T + 'recta-en-el-plano', ps(4, 5, 6, 7, 8)) },
     conicas: lista(T + 'conicas', ps(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)),

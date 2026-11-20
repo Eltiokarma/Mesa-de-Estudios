@@ -648,3 +648,23 @@ test('Razonamiento inductivo rehecha (etapa 8): las predicciones se quedan y qui
   assert.ok(!(otro.marcadas || {})[U], 'no terminó las tres: le quedan por hacer');
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
+
+// 19 nov (etapa 8): Ángulos en posición normal, rehecha con sus cuatro ids (tres con otra Predice) y una idea nueva.
+test('Etapa 8, Ángulos en posición normal rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cuatro', () => {
+  const U = 'trigonometria.angulos-en-posicion-normal';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, teoria: { [U]: { ideas: {
+    'razones-coordenadas': { hecha: true, prediccion: 'doble' }, 'signos-cuadrante': { hecha: true, prediccion: 'c' },
+    cuadrantales: { hecha: true, prediccion: 'cero', prediccionDe: 'h1' }, 'coterminales-negativos': { hecha: true, prediccion: 'igual' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionPN, 1); assert.equal(est.estudiadaPN, 1);
+  assert.equal(est.teoria[U].ideas['razones-coordenadas'].prediccion, undefined, 'otra Predice: se vuelve a preguntar');
+  assert.equal(est.teoria[U].ideas['coterminales-negativos'].prediccion, undefined, 'otra Predice: se vuelve a preguntar');
+  assert.equal(est.teoria[U].ideas['razones-coordenadas'].hecha, true, 'la idea sigue hecha');
+  assert.equal(est.teoria[U].ideas['signos-cuadrante'].prediccion, 'c', 'misma pregunta y mismos ids: se queda');
+  assert.equal(est.teoria[U].ideas.cuadrantales.prediccion, 'cero', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las cuatro de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, teoria: { [U]: { ideas: { 'razones-coordenadas': { hecha: true } } } } };
+  A.migrar(nuevo);
+  assert.ok(!(nuevo.marcadas || {})[U], 'sin terminar las de antes no gana «Ya la estudié»');
+});
