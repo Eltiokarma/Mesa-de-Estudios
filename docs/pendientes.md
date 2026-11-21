@@ -25,6 +25,7 @@ capturas y le manda notas al agente mientras sigue escribiendo.
      física: Impulso y choques; geometría: Puntos notables; química: Reacciones y balance; RM: Arreglos numéricos;
      verbal: Cohesión y coherencia; trigonometría: Reducción al primer cuadrante).
      Hay investigación previa de ChatGPT, por verificar, para las ocho: `docs/investigacion/etapa9/` (léase su LEEME).
+     Para las etapas 10 a 12 también hay (una versión más corta por unidad): `docs/investigacion/etapa10/` a `etapa12/`.
 
 ## Cómo arrancar una sesión nueva
 

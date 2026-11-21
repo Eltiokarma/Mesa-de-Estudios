@@ -31,5 +31,10 @@ final la escribe el agente; de aquí toma lo que sirva y dice qué descartó y p
   pregunta; no se copia nada de ellos (regla 5 de `CLAUDE.md`). Las preguntas oficiales de admisión se pueden usar
   citando universidad y periodo.
 
+`breve/` trae una segunda versión, más corta (unos 11 KB), de las mismas ocho unidades: sale del documento de ChatGPT
+de las 32 unidades (`docs/investigacion/etapas-9-12/`), hecho en otra conversación. Manda la versión larga de esta
+carpeta; la breve sirve para contrastar (dos investigaciones independientes que coinciden pesan más, y donde difieren
+hay que mirar la fuente).
+
 `originales/` guarda los HTML tal como llegaron (los `.md` de aquí salen de ellos con pandoc, sin estilos). No hace
 falta leerlos.
