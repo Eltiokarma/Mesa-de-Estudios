@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Propuesta de teoría de cohesión y coherencia para una app peruana de preparación universitaria. Investigación, seis ideas didácticas y fuentes.">
+<title>Cohesión y coherencia · Propuesta de teoría</title>
+<style>
+:root{--ink:#23303d;--muted:#596879;--paper:#faf8f3;--card:#fff;--blue:#153e59;--teal:#126b67;--line:#dbe3e6;--soft:#eef5f5;--orange:#9a4a28;--warm:#fff3e9}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:1.5rem}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 Georgia,"Times New Roman",serif}a{color:var(--teal);text-underline-offset:3px;overflow-wrap:anywhere}a:hover{color:var(--orange)}header{background:var(--blue);color:white;padding:60px max(24px,calc((100vw - 1120px)/2)) 48px}.eyebrow,.meta,h1,h2,h3,h4,nav,th,.tag,.step,.small,.kicker{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.eyebrow{font-size:13px;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:#b8e1da}h1{font-size:clamp(2.25rem,5vw,3.8rem);line-height:1.1;letter-spacing:-.04em;margin:16px 0 20px;max-width:900px}.lead{font-size:21px;line-height:1.5;max-width:850px;color:#edf4f7}.meta{font-size:13px;color:#c9dce6;margin-top:26px}.wrap{max-width:1176px;margin:auto;padding:30px 28px 70px}nav{background:white;border:1px solid var(--line);border-radius:14px;padding:22px 26px;margin-bottom:40px}nav ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 38px;margin:0;padding-left:21px;font-size:14px}section{margin:0 0 58px}h2{font-size:28px;line-height:1.25;letter-spacing:-.025em;border-top:2px solid var(--blue);padding-top:22px;margin:0 0 22px;color:var(--blue)}h3{font-size:23px;line-height:1.3;color:var(--blue);margin:28px 0 16px}h4{font-size:17px;line-height:1.35;margin:22px 0 10px}p{margin:0 0 16px}ul,ol{padding-left:25px;margin:8px 0 20px}li{margin:6px 0}.notice{padding:18px 22px;background:var(--soft);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;margin:20px 0}.warm{background:var(--warm);border-color:var(--orange)}.small{font-size:13px;line-height:1.6;color:var(--muted)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:16px 0 22px}table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.5;background:white}th{text-align:left;background:#eaf0f3;color:var(--blue);font-size:13px;letter-spacing:.015em}th,td{padding:13px 15px;vertical-align:top;border-bottom:1px solid var(--line)}tr:last-child td{border-bottom:0}td p{margin:0 0 9px}td ul{margin:0;padding-left:18px}.wide{min-width:880px}.tag{display:inline-block;font-size:11px;letter-spacing:.02em;font-weight:750;border-radius:4px;padding:3px 7px;line-height:1.3;background:#edf3f6;color:var(--blue)}.doc{background:#e4f3ed;color:#17553b}.hyp{background:#fff0de;color:#885021}.idea{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px;margin:26px 0 40px}.idea>h3{font-size:28px;margin-top:8px}.kicker{font-size:12px;font-weight:750;color:var(--teal);text-transform:uppercase;letter-spacing:.08em}.question{font-size:21px;color:var(--blue);margin:8px 0 12px}.scene{background:#f4f0e8;padding:16px 20px;border-radius:10px}.step{font-size:18px;color:var(--teal);border-bottom:1px solid var(--line);padding-bottom:7px;margin:28px 0 14px;font-weight:750}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:15px 0}.card{padding:16px;background:#f5f8fa;border-radius:10px;border:1px solid #e7edf0}.card .tag{margin-bottom:8px}.card p{font-size:16px;margin:0}.excerpt{padding:17px 22px;border:1px solid #cbd9df;background:#fcfdfd;border-radius:10px;font-size:18px;margin:14px 0}.rule{background:#edf6f3;border-radius:10px;padding:20px 24px;margin:15px 0}.rule p:last-child{margin-bottom:0}details{border:1px solid var(--line);border-radius:8px;padding:12px 17px;margin:14px 0}summary{font-family:system-ui,sans-serif;font-size:14px;font-weight:700;cursor:pointer;color:var(--blue)}details[open] summary{margin-bottom:12px}.vocab td:first-child{width:18%;font-weight:700}.vocab td:nth-child(2){width:29%}.source{font-size:14px;color:var(--muted)}.summary-five{list-style:none;counter-reset:line;padding:0}.summary-five li{counter-increment:line;border-bottom:1px solid var(--line);padding:10px 0 10px 42px;position:relative}.summary-five li:before{content:counter(line,decimal-leading-zero);position:absolute;left:0;color:var(--teal);font:700 14px system-ui,sans-serif;top:15px}.sources li{padding:8px 0 12px;border-bottom:1px solid var(--line);font-size:15px}.sources strong{color:var(--blue)}.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.route a{display:block;background:var(--blue);color:white;text-decoration:none;border-radius:8px;padding:14px;font:600 14px/1.4 system-ui,sans-serif}footer{border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:13px}.back{font:13px system-ui,sans-serif}.nowrap{white-space:nowrap}
+@media(max-width:700px){body{font-size:16px}header{padding:36px 20px 30px}.lead{font-size:18px}.wrap{padding:22px 16px 45px}nav{padding:18px}nav ol{grid-template-columns:1fr;gap:8px}h2{font-size:24px}.idea{padding:20px 16px;border-radius:12px}.idea>h3{font-size:25px}.cards,.route{grid-template-columns:1fr}.table-wrap table{font-size:14px}th,td{padding:10px}.vocab{min-width:590px}.question{font-size:19px}}
+@media print{html{scroll-behavior:auto}body{font-size:10.5pt;background:white}header{padding:22px;background:white;color:var(--blue);border-bottom:2px solid var(--blue)}header p,header .eyebrow,header .meta{color:var(--ink)}h1{font-size:30pt}.wrap{max-width:none;padding:20px 0}nav,.back{display:none}section{margin-bottom:24px}h2{font-size:20pt}.idea{padding:17px;break-before:page}.step,h3,h4{break-after:avoid}.cards{grid-template-columns:1fr 1fr}.card,.notice,.rule{break-inside:avoid}.table-wrap{overflow:visible}.wide,.vocab{min-width:0}table{font-size:9pt}th,td{padding:7px}.source{font-size:9pt}details{display:block}a{color:inherit}.sources li{break-inside:avoid}@page{size:A4;margin:17mm}}
+</style>
+</head>
+<body>
+<header id="inicio">
+<div class="eyebrow">Razonamiento verbal · Diseño pedagógico</div>
+<h1>Cohesión y coherencia</h1>
+<p class="lead">Aprender a seguir un mensaje, reconocer sus relaciones y justificar por qué una oración encaja, sobra o debe ir en otro lugar.</p>
+<div class="meta">PROPUESTA DE TEORÍA · 5.º DE SECUNDARIA Y PREUNIVERSITARIO · PERÚ<br>Documento para el equipo de contenido y desarrollo · Investigación revisada el 21 de noviembre de 2026</div>
+</header>
+<main class="wrap">
+<nav aria-label="Índice del documento"><ol>
+<li><a href="#s1">Resumen en cinco líneas</a></li><li><a href="#s2">Qué se pregunta en los exámenes</a></li><li><a href="#s3">Errores típicos</a></li><li><a href="#s4">Lo que se da por sabido</a></li><li><a href="#s5">Las seis ideas, en orden</a></li><li><a href="#s6">Letras y símbolos</a></li><li><a href="#s7">Otras formas de explicarla</a></li><li><a href="#s8">Datos del mundo</a></li><li><a href="#s9">Dudas y decisiones</a></li><li><a href="#s10">Fuentes</a></li>
+</ol></nav>
+
+<section id="s1"><h2>1. Resumen en cinco líneas</h2>
+<ol class="summary-five">
+<li>La unidad enseña a distinguir el sentido global de un texto de las señales que enlazan sus partes.</li>
+<li>El alumno aprende a recuperar referentes, interpretar conectores y seguir el desarrollo de la información.</li>
+<li>Después usa esas pistas para ordenar, eliminar e incorporar enunciados sin alterar el mensaje.</li>
+<li>La mayor dificultad es decidir con el texto completo: una palabra conocida o una unión que suena bien pueden engañar.</li>
+<li>La práctica avanza desde avisos y objetos cotidianos hasta tareas de la UNI y comprensión integrada de San Marcos.</li>
+</ol>
+<div class="notice"><strong>Alcance del entregable.</strong> Este HTML es una propuesta editorial, no una app funcional. Contiene situaciones, tarjetas y microejemplos originales; las misiones describen comportamientos que otro equipo implementará. Las claves de las predicciones son para ese equipo y solo deben revelarse al alumno en «Mira». No se incluye un banco final de ejercicios.</div>
+</section>
+
+<section id="s2"><h2>2. Qué se pregunta en los exámenes</h2>
+<p><strong>Cómo se investigó.</strong> Se revisaron las secciones pertinentes de los solucionarios institucionales UNI 2019-2 y 2021-1; el cuadernillo UNMSM 2025-II, área D, en una reproducción alojada por un tercero; el sílabo CEPREUNI 2023-2 y material del Centro Preuniversitario de San Marcos de 2024-I. Los conteos siguientes son propios y describen únicamente esos documentos. No son una estimación de lo que saldrá en la próxima admisión. <a href="#f01">[F01]</a> <a href="#f02">[F02]</a> <a href="#f03">[F03]</a> <a href="#f04">[F04]</a> <a href="#f06">[F06]</a></p>
+<p class="small">Dificultad: valoración de diseño, no estadística oficial. «Media» exige combinar pistas; «alta» exige sostener varias restricciones o distinguir alternativas muy próximas. Una mención en el temario acredita cobertura, no frecuencia.</p>
+<div class="table-wrap"><table class="wide"><thead><tr><th>Tipo de pregunta</th><th>Universidad o centro</th><th>Dificultad y exigencia</th><th>Frecuencia comprobada</th><th>Fuente y localización</th></tr></thead><tbody>
+<tr><td>Ordenar enunciados por sus relaciones textuales.</td><td>UNI</td><td>Media–alta. Recuperar referencias y conservar la continuidad del conjunto.</td><td>2019-2: 6, preguntas 63–68.<br>2021-1: 2, preguntas 13 y 24.</td><td><a href="#f01">UNI, 2019, pp. 13–14 [F01]</a>; <a href="#f02">UNI, 2021, pp. 9 y 13 [F02]</a>.</td></tr>
+<tr><td>Plan de redacción: organizar una exposición.</td><td>UNI</td><td>Media–alta. Relacionar presentación, desarrollo y detalles; no basta ordenar fechas.</td><td>2019-2: 5, preguntas 53–57.<br>2021-1: 1, pregunta 17.</td><td><a href="#f01">[F01], pp. 11–12</a>; <a href="#f02">[F02], p. 10</a>.</td></tr>
+<tr><td>Completar uno o varios espacios con conectores.</td><td>UNI</td><td>Media–alta. Combinar significado, construcción gramatical y puntuación.</td><td>2019-2: 3, preguntas 46–48.<br>2021-1: 1, pregunta 22.</td><td><a href="#f01">[F01], p. 10</a>; <a href="#f02">[F02], p. 12</a>.</td></tr>
+<tr><td>Información eliminada.</td><td>UNI</td><td>Media–alta. Detectar una idea ajena, redundante o incompatible según la consigna.</td><td>2019-2: 4, preguntas 49–52.<br>2021-1: 2, preguntas 16 y 23.</td><td><a href="#f01">[F01], pp. 10–11</a>; <a href="#f02">[F02], pp. 10 y 12</a>.</td></tr>
+<tr><td>Incluir el enunciado que completa el texto.</td><td>UNI</td><td>Alta. Comprobar el enlace con lo anterior, lo posterior y el propósito global.</td><td>2019-2: 5, preguntas 58–62.<br>2021-1: 1, pregunta 25.</td><td><a href="#f01">[F01], pp. 12–13</a>; <a href="#f02">[F02], p. 13</a>.</td></tr>
+<tr><td>Identificar el tema global en texto con gráfico o en dos textos.</td><td>UNMSM, 2025-II, área D</td><td>Media–alta. Distinguir asunto central y detalle; integrar las piezas de lectura.</td><td>2 de las 7 preguntas en castellano revisadas: 11 y 14.</td><td><a href="#f04">UNMSM, 2025, habilidades, pp. 2–3 [F04]</a>. Copia del cuadernillo; no se usa su solucionario añadido.</td></tr>
+<tr><td>Reconocer una afirmación incompatible.</td><td>UNMSM, misma muestra</td><td>Media–alta. Contrastar el alcance de una afirmación con el texto.</td><td>1 de 7: pregunta 13.</td><td><a href="#f04">[F04], habilidades, p. 2</a>.</td></tr>
+<tr><td>Relacionar una afirmación o un efecto con la postura de un texto.</td><td>UNMSM, misma muestra</td><td>Media–alta. Conservar quién sostiene qué, sin mezclar voces.</td><td>3 de 7: preguntas 15–17. La pregunta 12 restante plantea una proyección inferencial.</td><td><a href="#f04">[F04], habilidades, pp. 2–3</a>. Agrupación analítica propia.</td></tr>
+<tr><td>Repetición, sustitución, elipsis, anáfora, catáfora, conectores, progresión e inclusión.</td><td>CEPREUNI, ciclo básico 2023-2</td><td>Desde base hasta aplicación integrada.</td><td>Presencia explícita en el sílabo. No permite contar preguntas de examen.</td><td><a href="#f03">CEPREUNI, 2023, Razonamiento Verbal, pp. 17–18 del PDF [F03]</a>.</td></tr>
+<tr><td>Jerarquía textual, ausencia de contradicción y progresión temática.</td><td>CEPREUNMSM, 2024-I, semana 5</td><td>Base–media en actividades; integrada en lectura.</td><td>Presencia en material de enseñanza. No equivale a frecuencia de admisión.</td><td><a href="#f06">CEPREUNMSM, 2024, pp. 1–3 [F06]</a>. Reproducción externa del material institucional.</td></tr>
+<tr><td>Tema e idea principal; cohesión, coherencia, compatibilidad e inferencia.</td><td>UNMSM, temario 2026-II</td><td>Aplicación en comprensión lectora.</td><td>Cobertura declarada. Sin recuento adicional.</td><td><a href="#f05">Reglamento 2026-II, p. 94 [F05]</a>. Contenido recuperado del índice de búsqueda; acceso completo al PDF bloqueado.</td></tr>
+<tr><td>No se asignan tipos ni frecuencias sin lectura suficiente.</td><td>UNA Puno, UNSA y UNSAAC</td><td>No estimada.</td><td>No confirmada en un corpus utilizable para este informe.</td><td>Se localizaron portales y documentos de UNSA y UNSAAC, pero no se recuperó su contenido con suficiente fiabilidad: <a href="#f24">[F24]</a>, <a href="#f25">[F25]</a>. Para UNA Puno solo se hallaron referencias externas insuficientes.</td></tr>
+</tbody></table></div>
+<div class="notice"><strong>Qué predomina en la muestra.</strong> En la UNI, al reunir plan de redacción y ordenación textual, hay <strong>14 tareas de orden</strong>, frente a 6 de inclusión, 6 de eliminación y 4 de conectores. Se sumaron las preguntas identificadas en la tabla, sin duplicarlas. En San Marcos, la muestra trabaja estas habilidades dentro de lecturas; no contiene una serie independiente de ordenación o conectores. La prioridad propuesta es practicar ambas formas, sin convertir este pequeño recuento histórico en una predicción de frecuencia nacional.</div>
+<p><strong>Consecuencia didáctica.</strong> La ruta común termina en interpretación e integración. El conjunto de práctica puede presentar, después, énfasis UNI —orden, inclusión y eliminación— o énfasis San Marcos —sentido global, compatibilidad y postura de cada texto—. El análisis de gráficos, la lectura en inglés y la inferencia avanzada necesitan sus propias unidades.</p>
+</section>
+
+<section id="s3"><h2>3. Errores típicos</h2>
+<p><strong>Qué significa cada estado.</strong> <span class="tag doc">DOCUMENTADO</span> identifica una conducta observada en el estudio original leído, incluso cuando se consultó una reproducción íntegra. <span class="tag">DE SEGUNDA MANO</span> se reservaría para resúmenes o citas indirectas; ninguno se usa aquí para sostener un error. <span class="tag hyp">HIPÓTESIS</span> identifica una dificultad plausible que debe comprobarse con alumnos.</p>
+<p class="small">Los estudios de escritura no prueban cómo se eligen alternativas en admisión. Las opciones de esta propuesta son originales: unas adaptan conductas documentadas y otras exploran hipótesis. No se presentan como distractores ya validados. Las explicaciones causales de los autores se distinguen de resultados observados.</p>
+<div class="table-wrap"><table class="wide"><thead><tr><th>Código</th><th>Qué hace el alumno</th><th>Por qué: evidencia o interpretación</th><th>Estado</th><th>Fuente original y alcance</th></tr></thead><tbody>
+<tr id="e01"><td>E01</td><td>Distribuye desordenadamente ideas relacionadas.</td><td>El informe propone dificultades de planificación; no demuestra una causa única.</td><td><span class="tag doc">Documentado</span></td><td>Llanos, Gildemeister y Urbina (2006), pp. 110–112. Textos de secundaria peruana. <a href="#f07">[F07]</a></td></tr>
+<tr id="e02"><td>E02</td><td>Reitera información sin hacer avanzar el mensaje.</td><td>El informe relaciona algunas reiteraciones con la mala distribución.</td><td><span class="tag doc">Documentado</span></td><td>Llanos y cols. (2006), pp. 111–114. <a href="#f07">[F07]</a></td></tr>
+<tr id="e03"><td>E03</td><td>Deja contradicciones aparentes, vacíos o ideas aisladas.</td><td>Faltan aclaraciones que permitan reconstruir la posición del autor.</td><td><span class="tag doc">Documentado</span></td><td>Llanos y cols. (2006), pp. 115–119. <a href="#f07">[F07]</a></td></tr>
+<tr id="e04"><td>E04</td><td>Usa un conector que expresa otra relación.</td><td>Los autores proponen elección por sonoridad y desconocimiento funcional como causas posibles.</td><td><span class="tag doc">Documentado</span></td><td>Llanos y cols. (2006), pp. 120–124. <a href="#f07">[F07]</a></td></tr>
+<tr id="e05"><td>E05</td><td>Omite un enlace causal donde la argumentación necesita explicitarlo.</td><td>Montero y Ferreira plantean dificultades para manejar las formas causales; su estudio descriptivo no aísla causalidad educativa.</td><td><span class="tag doc">Documentado</span></td><td>Montero y Ferreira (2025), § 4.2 y tabla III; estudiantes de secundaria del Biobío, Chile. <a href="#f08">[F08]</a></td></tr>
+<tr id="e06"><td>E06</td><td>Encadena ideas con «y», sustituyendo relaciones más precisas y signos de puntuación.</td><td>Ferreira lo interpreta como repertorio cohesivo limitado; no significa que usar «y» sea, por sí mismo, incorrecto.</td><td><span class="tag doc">Documentado</span></td><td>Ferreira (2025), § 4.2.3; escritura de segundo medio en Chile. <a href="#f09">[F09]</a></td></tr>
+<tr id="e07"><td>E07</td><td>Repite excesivamente los mismos nombres y utiliza pocos recursos alternativos.</td><td>Los autores relacionan el patrón con un manejo limitado de sustitución y vocabulario. La repetición útil sigue siendo válida.</td><td><span class="tag doc">Documentado</span></td><td>Bolívar, Arnáez, Villegas y Hernández (2010), resultados y conclusiones; 27 textos de estudiantes de 15–20 años en Maracay, Venezuela. <a href="#f10">[F10]</a></td></tr>
+<tr id="e08"><td>E08</td><td>Omite o usa mal comas y puntos que delimitan las ideas.</td><td>La causa individual no fue establecida; no se atribuye automáticamente a falta de lectura.</td><td><span class="tag doc">Documentado</span></td><td>Ferreira (2025), § 4.2.1 y tabla 8. <a href="#f09">[F09]</a></td></tr>
+<tr id="h01"><td>H01</td><td>Decide la pertinencia solo porque se repite una palabra del tema.</td><td>Hipótesis: usa una coincidencia fácil en lugar de reconstruir qué se afirma.</td><td><span class="tag hyp">Hipótesis</span></td><td>Propuesta de diagnóstico. Sin estudio original específico localizado sobre esta elección en admisión.</td></tr>
+<tr id="h02"><td>H02</td><td>Asigna cada referente al sustantivo más cercano.</td><td>Hipótesis: transforma la cercanía en una regla automática.</td><td><span class="tag hyp">Hipótesis</span></td><td>Propuesta de diagnóstico. La proximidad puede ayudar, pero no decide por sí sola.</td></tr>
+<tr id="h03"><td>H03</td><td>Busca siempre hacia atrás y rechaza una referencia hacia delante.</td><td>Hipótesis: generaliza ejemplos iniciales de anáfora.</td><td><span class="tag hyp">Hipótesis</span></td><td>No se halló evidencia directa para esta población.</td></tr>
+<tr id="h04"><td>H04</td><td>Cree que una referencia solo puede señalar una persona u objeto nombrado.</td><td>Hipótesis: no considera que «esto» pueda recoger un hecho o una indicación completa.</td><td><span class="tag hyp">Hipótesis</span></td><td>Propuesta de diagnóstico, no prevalencia demostrada.</td></tr>
+<tr id="h05"><td>H05</td><td>Da por coherente un texto porque está bien escrito o contiene palabras de enlace.</td><td>Hipótesis: confunde una señal formal con la consistencia del mensaje completo.</td><td><span class="tag hyp">Hipótesis</span></td><td>Debe contrastarse con explicación oral del alumno.</td></tr>
+<tr id="h06"><td>H06</td><td>Aplica un orden fijo a todos los textos.</td><td>Hipótesis: convierte «cronológico» o «general a particular» en receta universal.</td><td><span class="tag hyp">Hipótesis</span></td><td>Sin fuente empírica específica localizada.</td></tr>
+<tr id="h07"><td>H07</td><td>Acepta una opción por un solo enlace y deja de revisar el resto.</td><td>Hipótesis: una coincidencia local produce una sensación prematura de solución.</td><td><span class="tag hyp">Hipótesis</span></td><td>Aplicable a ordenación e inclusión; pendiente de validación.</td></tr>
+<tr id="h08"><td>H08</td><td>Confunde repetición de palabras con repetición de información.</td><td>Hipótesis: cree que cambiar palabras siempre añade una idea o que repetir un nombre siempre sobra.</td><td><span class="tag hyp">Hipótesis</span></td><td>Distinto de E07: aquí se propone un error de juicio lector.</td></tr>
+<tr id="h09"><td>H09</td><td>Confunde lo que un personaje cree con un hecho confirmado.</td><td>Hipótesis: omite expresiones como «pensó que» al comparar afirmaciones.</td><td><span class="tag hyp">Hipótesis</span></td><td>Propuesta para lectura con distintas voces.</td></tr>
+</tbody></table></div>
+<div class="notice warm"><strong>Límite de la evidencia.</strong> El informe peruano se publicó en 2006 a partir de la evaluación de 2004. Los estudios chilenos y venezolano documentan escritura, no rendimiento de postulantes peruanos actuales. Se usan para orientar el diseño; no se trasladan sus porcentajes a la app.</div>
+</section>
+
+<section id="s4"><h2>4. Lo que la unidad da por sabido</h2>
+<div class="table-wrap"><table><thead><tr><th>Base necesaria</th><th>Qué debe poder hacer</th><th>Apoyo si falta</th></tr></thead><tbody>
+<tr><td>Lectura literal de un enunciado.</td><td>Reconocer quién realiza una acción y qué ocurre; distinguir afirmación de negación.</td><td>Microactividad con dos frases y un objeto. Leer en voz alta es opcional; la información siempre queda escrita.</td></tr>
+<tr><td>Oración, párrafo y límites básicos.</td><td>Reconocer una oración y el punto que separa enunciados.</td><td>Mostrar un aviso dividido en oraciones, sin exigir análisis sintáctico completo.</td></tr>
+<tr><td>Género y número gramaticales.</td><td>Distinguir singular/plural y reconocer concordancias sencillas.</td><td>Ejemplos con caja/cajas, libro/libros. Aclarar que el género gramatical no describe necesariamente personas.</td></tr>
+<tr><td>Vocabulario cotidiano y relaciones sencillas.</td><td>Entender que un cuaderno es un objeto y que dos expresiones pueden nombrar lo mismo en un contexto.</td><td>Glosa junto a palabras menos conocidas; no exigir memorizar listas de sinónimos.</td></tr>
+<tr><td>Tiempo, cantidad y alcance.</td><td>Distinguir antes/después, todos/algunos/ninguno y un mismo hecho de dos hechos diferentes.</td><td>Comparación de avisos. Es imprescindible para no confundir cambio temporal con contradicción.</td></tr>
+<tr><td>Instrucciones de elección.</td><td>Entender «elige», «ordena», «conserva», «elimina» y «según el texto».</td><td>Una demostración mecánica sin contenido evaluado. Las etiquetas romanas se explican al aparecer.</td></tr>
+</tbody></table></div>
+<p>No se presupone conocer anáfora, catáfora, elipsis ni clases de conectores. Tampoco se necesita dominar los temas históricos o científicos de las futuras lecturas: cada ejercicio debe entregar la información necesaria y aclarar el vocabulario que no sea el objeto de evaluación.</p>
+</section>
+
+<section id="s5"><h2>5. Las ideas, en orden</h2>
+<div class="route"><a href="#idea1">1 · Un mensaje con sentido</a><a href="#idea2">2 · Seguir el referente</a><a href="#idea3">3 · Precisar la relación</a><a href="#idea4">4 · Dar un orden</a><a href="#idea5">5 · Conservar lo pertinente</a><a href="#idea6">6 · Completar el conjunto</a></div>
+<div class="notice"><strong>Reglas comunes de la experiencia.</strong> Cada idea conserva el orden Lee → Juega → Predice → Mira → La regla → Así se resuelve → Ahora tú. Aquí la flecha se lee «después viene». El primer contacto es un objeto, no un esquema. En «Ahora tú» permanecen disponibles el texto, las glosas y una ficha con los criterios ya aprendidos: en razonamiento verbal no corresponde inventar una fórmula numérica. Se evalúa la decisión y la evidencia que la sostiene.</div>
+<p class="small">Todos los nombres, avisos, horarios, encargos y situaciones de las seis ideas son ficción didáctica, salvo los datos señalados expresamente con fuente. Las misiones usan opciones finitas para que puedan comprobarse sin juzgar libremente la prosa del alumno. No debe indicarse la respuesta mediante colores, tamaño de piezas o forma de los bordes.</p>
+
+<article class="idea" id="idea1">
+<div class="kicker">Idea 1 · Base del sentido global</div>
+<h3>Un mensaje con sentido</h3>
+<p class="question">¿Qué hace que varias oraciones formen un mensaje comprensible?</p>
+<p><strong>Aprendizaje.</strong> El alumno distingue de qué trata un texto, qué dice sobre ese asunto y si sus afirmaciones pueden sostenerse juntas.</p>
+<div class="scene"><strong>Primera pantalla.</strong> La puerta de una biblioteca de barrio, un pequeño estante de libros y un cartel de atención. Se parece a los avisos de un colegio o local comunitario. El texto permanece legible; la decoración no contiene la respuesta.</div>
+<h4 class="step">1. Lee</h4>
+<div class="cards">
+<div class="card"><span class="tag">Tarjeta 1</span><p>Un cartel ayuda a alguien a decidir qué hacer. En esta biblioteca, el aviso informa sobre una actividad de lectura.</p></div>
+<div class="card"><span class="tag">Tarjeta 2</span><p>El tema es el asunto del mensaje. La idea principal dice lo más importante que se comunica sobre ese asunto.</p></div>
+<div class="card"><span class="tag">Tarjeta 3</span><p>Llamamos coherencia al sentido que construimos al entender el mensaje completo y su situación.</p></div>
+<div class="card"><span class="tag">Tarjeta 4</span><p>Llamamos cohesión a las señales del lenguaje que relacionan las partes del texto. Las examinaremos poco a poco.</p></div>
+</div>
+<h4 class="step">2. Juega</h4>
+<p><strong>Situación y misión.</strong> En la mesa de la encargada hay una ficha: «Actividad: lectura de cuentos. Lugar: sala del fondo». El alumno coloca dos tiras en un cartel con los espacios «Actividad» y «Lugar». Hay cuatro tiras: «Lectura de cuentos», «Partido de vóley», «Sala del fondo» y «Patio de juegos».</p>
+<p><strong>Meta comprobable.</strong> El cartel debe comunicar los dos datos de la ficha en sus espacios correspondientes. Se valida la coincidencia con ambos datos, no una preferencia de redacción. Al terminar, un visitante sigue el aviso y llega a la actividad indicada. El juego no presenta contradicciones entre dos oraciones ni enseña a resolverlas.</p>
+<h4 class="step">3. Predice</h4>
+<p><strong>Cambio todavía no mostrado.</strong> Ahora hay un aviso completo con dos afirmaciones sobre los mismos días de una misma semana:</p>
+<div class="excerpt">La biblioteca abrirá únicamente el sábado. El domingo también atenderá.</div>
+<p><strong>Pregunta.</strong> Antes de publicar el aviso, ¿qué decisión permite que el lector sepa cuándo ir?</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Respuesta propuesta</th></tr></thead><tbody>
+<tr><td>A</td><td>Publicarlo: las dos oraciones hablan de la biblioteca.</td></tr>
+<tr><td>B</td><td>Publicarlo: las oraciones están completas y tienen punto.</td></tr>
+<tr><td>C</td><td>Revisar los días: «únicamente el sábado» no coincide con atender también el domingo.</td></tr>
+<tr><td>D</td><td>Cambiar «también» por «además» para que desaparezca el problema.</td></tr>
+</tbody></table></div>
+<details open><summary>Clave editorial y origen de los distractores</summary><p><strong>Correcta: C.</strong> A explora <a href="#h01">H01</a>: compartir un tema no evita afirmaciones incompatibles. B explora <a href="#h05">H05</a>: la puntuación no resuelve el sentido. D adapta <a href="#e04">E04</a>: cambiar una expresión de enlace sin comprobar la relación. La contradicción del aviso se vincula con la conducta observada en <a href="#e03">E03</a>.</p></details>
+<h4 class="step">4. Mira</h4>
+<p>El sistema muestra dos visitantes leyendo el mismo aviso: uno descarta el domingo y otro planea ir ese día. Resalta «únicamente» y «domingo también». No inventa cuál era el horario verdadero: muestra que hay que consultar la ficha y corregir uno de los datos. Cambiar «también» por «además» mantiene el conflicto.</p>
+<h4 class="step">5. La regla</h4>
+<div class="rule">
+<p>Un texto es coherente cuando sus ideas permiten construir un sentido global acorde con la situación. Hay que reconocer su tema, el mensaje principal y la relación entre sus afirmaciones. Hablar del mismo asunto no basta.</p>
+<p>Existe contradicción si se afirma y se niega lo mismo acerca del mismo referente, momento y condiciones. Un horario que cambia, dos opiniones atribuidas a personas distintas o una historia de ficción no son incoherentes por ese solo hecho.</p>
+<p>La cohesión ofrece señales para relacionar partes del texto; no garantiza que el contenido sea coherente. La idea principal tampoco tiene que ser la primera oración ni contener la palabra más repetida. Se elige porque recoge lo central sin añadir información ajena.</p>
+</div>
+<p class="source">Base conceptual: <a href="#f15">Instituto Cervantes, «Coherencia» [F15]</a>, <a href="#f16">«Cohesión» [F16]</a> e <a href="#f20">INTEF, «La coherencia» [F20]</a>. Las situaciones y las decisiones didácticas son propias.</p>
+<h4>Palabras nuevas</h4>
+<div class="table-wrap"><table class="vocab"><thead><tr><th>Palabra</th><th>En palabras de todos los días</th><th>Tres ejemplos originales</th></tr></thead><tbody>
+<tr><td>Tema</td><td>El asunto del que se habla.</td><td>El préstamo de libros; el cuidado de una mochila; la reparación de una bicicleta.</td></tr>
+<tr><td>Idea principal</td><td>Lo esencial que se dice sobre ese asunto.</td><td>La biblioteca amplió su atención; la mochila necesita una costura; la bicicleta quedó lista para usar.</td></tr>
+<tr><td>Coherencia</td><td>El sentido que se sostiene al leer el conjunto.</td><td>Un aviso indica un único lugar de recojo; un relato explica un cambio de fecha; una opinión distingue una ventaja de una limitación.</td></tr>
+<tr><td>Cohesión</td><td>Las pistas del escrito que permiten relacionar sus partes.</td><td>«Llegó una caja. La caja tenía libros»; «Marta llegó. Ella abrió»; «Llovió. Por eso se mojó el patio». En este punto solo se observan; sus mecanismos se estudian después.</td></tr>
+</tbody></table></div>
+<h4 class="step">6. Así se resuelve</h4>
+<p><strong>Microejemplo resuelto.</strong> «La biblioteca recibió nuevos libros. Los libros estarán disponibles desde el lunes. Antes del lunes, los libros permanecerán en revisión». Se pide formular el mensaje principal.</p>
+<ol><li>Se reconoce el asunto: los libros recién recibidos.</li><li>Se separa el dato central de su preparación: podrán usarse a partir del lunes; antes se revisan.</li><li>Se comprueba que ambas etapas se refieren a momentos distintos. No hay contradicción.</li><li>Se formula: «Los nuevos libros estarán disponibles desde el lunes». No se añade que podrán llevarse a casa, porque el texto no lo dice.</li></ol>
+<h4 class="step">7. Ahora tú</h4>
+<ol><li><strong>Inicial:</strong> emparejar un aviso con su propósito y reconocer su tema.</li><li><strong>Intermedio:</strong> distinguir un detalle de una idea que recoge todo el mensaje.</li><li><strong>Intermedio alto:</strong> separar contradicción real de cambio temporal o diferencia de opiniones identificadas.</li><li><strong>Nivel admisión:</strong> elegir el tema o la idea central de un texto breve; descartar opciones demasiado amplias, parciales o ajenas. Se exige señalar el fragmento de apoyo.</li></ol>
+</article>
+
+<article class="idea" id="idea2">
+<div class="kicker">Idea 2 · Usa el sentido global de la idea 1</div>
+<h3>Seguir el referente</h3>
+<p class="question">¿De quién, de qué objeto o de qué hecho se sigue hablando?</p>
+<p><strong>Aprendizaje.</strong> El alumno recupera lo aludido por una expresión o por una parte omitida, y reconoce cuándo la referencia resulta ambigua.</p>
+<div class="scene"><strong>Primera pantalla.</strong> Una mochila abierta, un cuaderno, un libro y una caja de útiles sobre una mesa escolar. Cada objeto lleva su nombre escrito, de modo que reconocerlo no dependa del dibujo.</div>
+<h4 class="step">1. Lee</h4>
+<div class="cards">
+<div class="card"><span class="tag">Tarjeta 1</span><p>Un recado puede hablar varias veces de la misma cosa. La persona, objeto o hecho aludido es el referente.</p></div>
+<div class="card"><span class="tag">Tarjeta 2</span><p>Un mensaje no siempre repite un nombre completo. También usa expresiones breves y partes que el lector puede recuperar.</p></div>
+<div class="card"><span class="tag">Tarjeta 3</span><p>Para preparar este encargo, lee el recado completo. Todos los objetos y personas necesarios están identificados en la escena.</p></div>
+</div>
+<h4 class="step">2. Juega</h4>
+<p><strong>Recado visible.</strong> «Coloca el cuaderno en la mochila. Deja la caja de útiles en la mesa. Ciérrala». El contexto y las etiquetas indican que se está preparando la caja, pero «ciérrala» también puede entenderse como la mochila. En esta primera misión no se premia adivinar.</p>
+<p><strong>Manipulación.</strong> El alumno coloca el cuaderno y la caja en los sitios indicados y luego arrastra una de tres etiquetas al último mandato: «cierra la caja», «cierra todo» o «ciérrala». La ficha del encargo dice explícitamente: «Al terminar, la caja debe quedar cerrada; la mochila, abierta».</p>
+<p><strong>Meta comprobable.</strong> Cuaderno dentro de la mochila, caja sobre la mesa, caja cerrada, mochila abierta y recado final inequívoco «cierra la caja». Se comprueban esas cinco condiciones. La comparación entre acción y mensaje hace visible la necesidad de una referencia clara. Todavía no se muestra una referencia que anuncie una información posterior.</p>
+<h4 class="step">3. Predice</h4>
+<div class="excerpt">La encargada pidió esto: colocar cada cuaderno en su caja.</div>
+<p><strong>Pregunta.</strong> ¿Qué permite saber qué pidió la encargada con la palabra «esto»?</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Respuesta propuesta</th></tr></thead><tbody>
+<tr><td>A</td><td>La encargada, porque es el sustantivo más cercano a «esto».</td></tr>
+<tr><td>B</td><td>La indicación completa que aparece después de los dos puntos.</td></tr>
+<tr><td>C</td><td>No se puede saber: el referente tendría que aparecer antes.</td></tr>
+<tr><td>D</td><td>Debe ser un objeto masculino singular, nunca una acción.</td></tr>
+</tbody></table></div>
+<details open><summary>Clave editorial y origen de los distractores</summary><p><strong>Correcta: B.</strong> A corresponde a <a href="#h02">H02</a>; C, a <a href="#h03">H03</a>; D, a <a href="#h04">H04</a>. Los tres son hipótesis de elección lectora. No se atribuyen a los estudios de escritura.</p></details>
+<h4 class="step">4. Mira</h4>
+<p>La escena destaca «esto» y luego encuadra toda la indicación posterior. El lector puede desarrollar el mensaje como «La encargada pidió colocar cada cuaderno en su caja». Se muestra la acción, no únicamente una caja. Así se hace visible que la información puede estar después y abarcar más que un nombre.</p>
+<h4 class="step">5. La regla</h4>
+<div class="rule">
+<p>Para recuperar un referente se lee el contexto, se comprueba qué interpretación tiene sentido y, cuando corresponde, la concordancia de género y número. La cercanía es una pista; no una prueba suficiente. Si quedan dos interpretaciones razonables, el texto es ambiguo y se necesita una aclaración.</p>
+<p>La <strong>anáfora</strong> recupera información anterior; la <strong>catáfora</strong> anuncia información posterior. Una expresión puede remitir a una persona, un objeto o una idea completa. «Esto» no exige un sustantivo masculino. <a href="#f11">[F11]</a> <a href="#f12">[F12]</a></p>
+<p>La <strong>elipsis</strong> omite una parte que puede recuperarse del contexto y de la construcción. Omitir información indispensable no es una elipsis bien resuelta. Al reconstruirla hay que respetar persona, número y tiempo verbal. <a href="#f13">[F13]</a></p>
+<p>La cohesión también puede mantenerse repitiendo un nombre, usando una expresión equivalente en ese contexto o una categoría más general: «un cuaderno / este material». No cualquier sinónimo conserva la precisión, y repetir un nombre puede evitar confusiones. <a href="#f19">[F19]</a> Cuando el referente depende de algo externo —«aquí», acompañado de un lugar señalado—, la escena debe proporcionar ese contexto.</p>
+</div>
+<h4>Palabras nuevas</h4>
+<div class="table-wrap"><table class="vocab"><thead><tr><th>Palabra</th><th>En palabras de todos los días</th><th>Tres ejemplos originales</th></tr></thead><tbody>
+<tr><td>Referente</td><td>Aquello de lo que realmente habla una expresión.</td><td>«La caja está llena. Pésala»: la caja; «Luis llegó. Él abrió»: Luis; «Se canceló el taller. Eso nos sorprendió»: la cancelación.</td></tr>
+<tr><td>Anáfora</td><td>Una pista que nos hace recuperar algo ya presentado.</td><td>«Llegó Rosa. Ella trajo libros»; «Encontré el cuaderno y lo guardé»; «Cambiaron la fecha. Eso permitió participar a Ana».</td></tr>
+<tr><td>Catáfora</td><td>Una pista cuyo contenido se aclara más adelante.</td><td>«Anunciaron esto: el local reabrirá»; «Compramos lo siguiente: cinta y papel»; «Solo falta una cosa: registrar la entrega».</td></tr>
+<tr><td>Elipsis</td><td>Una parte que no se escribe porque se puede recuperar.</td><td>«Ana lleva cuentos; Luis, revistas» —se recupera «lleva»—; «Yo iré el lunes; tú, el martes» —«irás»—; «Necesitamos la caja grande, no la pequeña» —«caja»—.</td></tr>
+</tbody></table></div>
+<h4 class="step">6. Así se resuelve</h4>
+<p><strong>Microejemplo resuelto.</strong> «Inés llevó un cuaderno a la biblioteca. Lo dejó en recepción. Mateo llevó dos». Se pide recuperar «lo» y la información omitida al final.</p>
+<ol><li>Se localizan las entidades: Inés, un cuaderno, la biblioteca, recepción y Mateo.</li><li>«Lo» se interpreta como el cuaderno: mantiene el sentido de la acción y corresponde al masculino singular. No señala automáticamente el lugar más cercano.</li><li>En «Mateo llevó dos» se recupera «cuadernos», con el plural exigido por «dos».</li><li>Se relee: Inés dejó un cuaderno; Mateo llevó dos cuadernos. La reconstrucción mantiene la información original.</li></ol>
+<h4 class="step">7. Ahora tú</h4>
+<ol><li><strong>Inicial:</strong> relacionar un nombre y una expresión que lo recupera en dos oraciones.</li><li><strong>Intermedio:</strong> reconstruir una elipsis y comprobar concordancia; señalar una referencia hacia delante.</li><li><strong>Intermedio alto:</strong> distinguir un referente nominal de un hecho completo, o detectar una ambigüedad real.</li><li><strong>Nivel admisión:</strong> seguir una cadena de referencias entre varios enunciados; elegir una sustitución que conserve sentido y precisión. Estos enlaces se reutilizan en ordenación e inclusión desde las ideas 4 y 6.</li></ol>
+</article>
+
+<article class="idea" id="idea3">
+<div class="kicker">Idea 3 · Usa sentido global y referentes</div>
+<h3>Precisar la relación</h3>
+<p class="question">¿Qué relación afirma el texto entre dos ideas?</p>
+<p><strong>Aprendizaje.</strong> El alumno reconoce primero la relación de significado y luego elige una expresión que la comunique con una construcción correcta.</p>
+<div class="scene"><strong>Primera pantalla.</strong> Una combi detenida junto a un aviso de desvío y un cartel del conductor. Se muestra una situación de transporte familiar en el Perú, sin atribuir la ruta ni la tarifa a una empresa real.</div>
+<h4 class="step">1. Lee</h4>
+<div class="cards">
+<div class="card"><span class="tag">Tarjeta 1</span><p>El conductor necesita explicar a los pasajeros un cambio de recorrido. La ficha de la escena contiene lo ocurrido.</p></div>
+<div class="card"><span class="tag">Tarjeta 2</span><p>La causa es lo que explica un hecho. La consecuencia es el resultado que se presenta a partir de él.</p></div>
+<div class="card"><span class="tag">Tarjeta 3</span><p>Un conector es una palabra o expresión que orienta la relación entre ideas. El aviso debe conservar lo que dice la ficha.</p></div>
+</div>
+<h4 class="step">2. Juega</h4>
+<p><strong>Datos del caso.</strong> «La calle habitual quedó cerrada por obras. Ese cierre obligó al conductor a tomar otra calle». El alumno mueve la combi por el desvío disponible y completa el cartel «Tomamos otra calle porque…» arrastrando una de estas tiras: «la calle habitual está cerrada», «el conductor conoce a los pasajeros» o «la combi tiene asientos».</p>
+<p><strong>Meta comprobable.</strong> La combi sigue la vía abierta y el cartel expresa el motivo especificado en la ficha. La meta exige ambas decisiones: mover el objeto sin producir un mensaje correcto no basta. El juego solo trabaja una causa dada; no presenta aún un resultado contrario a una expectativa.</p>
+<h4 class="step">3. Predice</h4>
+<p><strong>Nuevo caso.</strong> Se compara lo que se esperaba con lo que ocurrió en una feria escolar:</p>
+<div class="excerpt">Se esperaba poca asistencia por la lluvia; _____, llegaron todos los inscritos.</div>
+<p><strong>Pregunta.</strong> ¿Qué expresión muestra mejor la relación entre esa expectativa y el resultado?</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Expresión</th></tr></thead><tbody>
+<tr><td>A</td><td>Por lo tanto.</td></tr><tr><td>B</td><td>Es decir.</td></tr><tr><td>C</td><td>Además.</td></tr><tr><td>D</td><td>Sin embargo.</td></tr>
+</tbody></table></div>
+<details open><summary>Clave editorial y origen de los distractores</summary><p><strong>Correcta: D.</strong> A adapta <a href="#e04">E04</a>: convierte una expectativa incumplida en consecuencia. B adapta E04: presenta como reformulación dos afirmaciones distintas. C adapta <a href="#e06">E06</a>: expresa mera adición y pierde la oposición que la consigna pide destacar. «Además» puede conectar gramaticalmente otras enumeraciones; aquí no expresa la relación solicitada. Las formas exactas de estos distractores requieren validación con alumnos.</p></details>
+<h4 class="step">4. Mira</h4>
+<p>Dos tarjetas muestran «expectativa: poca asistencia» y «resultado: todos los inscritos». Se completa el aviso con «sin embargo» y se explica el contraste. Después se prueban las otras expresiones sobre las mismas tarjetas y se señala qué relación anunciarían. El sistema no modifica los hechos para hacer que una opción funcione.</p>
+<h4 class="step">5. La regla</h4>
+<div class="rule"><p>Primero se determina qué relación permite el contexto. Después se comprueba que el conector elegido expresa esa relación, encaja en la oración y respeta la puntuación. Una lista de conectores sirve como consulta; no sustituye la lectura. Una misma expresión puede tener usos distintos, y dos expresiones de una familia no siempre se intercambian sin modificar la construcción. <a href="#f17">[F17]</a></p></div>
+<div class="table-wrap"><table><thead><tr><th>Relación</th><th>Qué comunica</th><th>Expresiones para consultar</th><th>Ejemplo original</th></tr></thead><tbody>
+<tr><td>Adición</td><td>Añade información.</td><td>y, además, asimismo</td><td>El local presta libros. Además, organiza lecturas.</td></tr>
+<tr><td>Causa</td><td>Explica por qué ocurre un hecho o en qué se apoya una afirmación.</td><td>porque, ya que, debido a que</td><td>El taller se trasladó porque la sala estaba ocupada.</td></tr>
+<tr><td>Consecuencia</td><td>Presenta un resultado o conclusión.</td><td>por eso, por lo tanto, en consecuencia</td><td>La sala estaba ocupada; por eso, el taller se trasladó.</td></tr>
+<tr><td>Contraste</td><td>Enfrenta diferencias u orientaciones.</td><td>pero, en cambio, sin embargo</td><td>Ana eligió un cuento; en cambio, Luis prefirió una crónica.</td></tr>
+<tr><td>Concesión</td><td>Admite una dificultad que no impide lo principal.</td><td>aunque, a pesar de que, si bien</td><td>Aunque llovía, el taller continuó bajo techo.</td></tr>
+<tr><td>Condición</td><td>Indica qué debe cumplirse para que se dé otra cosa.</td><td>si, siempre que, a condición de que</td><td>Si llega la autorización, se abrirá el salón.</td></tr>
+<tr><td>Finalidad</td><td>Expresa un objetivo, no un logro garantizado.</td><td>para que, a fin de que, para</td><td>Colocaron un aviso para que los vecinos conocieran el cambio.</td></tr>
+<tr><td>Tiempo u orden de exposición</td><td>Ubica hechos o guía el recorrido del mensaje.</td><td>antes, después, mientras; primero, finalmente</td><td>Primero se registra el libro; después se entrega. «Primero» también puede ordenar argumentos, no fechas.</td></tr>
+<tr><td>Reformulación</td><td>Dice lo anterior de otro modo o lo precisa.</td><td>es decir, o sea, en otras palabras</td><td>El préstamo es semanal; es decir, dura siete días en este aviso.</td></tr>
+<tr><td>Ejemplificación</td><td>Introduce un caso de lo que se acaba de afirmar.</td><td>por ejemplo, como</td><td>Hay materiales de consulta; por ejemplo, diccionarios.</td></tr>
+<tr><td>Alternativa y exclusión negativa</td><td>Presenta opciones o suma negaciones.</td><td>o, o bien; ni</td><td>Puedes escoger cuento o crónica. Hoy no habrá préstamo ni devolución.</td></tr>
+<tr><td>Rectificación</td><td>Reemplaza una afirmación negada por otra.</td><td>no… sino…, no… sino que…</td><td>No cambió el lugar, sino el horario.</td></tr>
+</tbody></table></div>
+<p><strong>Construcción y signos.</strong> «Porque llovió» contiene un verbo; «debido a la lluvia» contiene un grupo nominal. No se sustituyen palabras ignorando esa diferencia. Al inicio de un enunciado, expresiones como «sin embargo» y «por lo tanto» suelen aislarse con coma; en posición intercalada se delimitan con comas. El punto y el punto y coma pueden separar enunciados relacionados. No se enseña «coma después de cualquier conector». <a href="#f14">RAE y ASALE, DPD, «coma», §§ 2.2.4, 2.4.6 y 2.5 [F14]</a>.</p>
+<p><strong>Límites necesarios.</strong> Que algo ocurra después no demuestra que sea causado por lo anterior. Una condición no afirma que ya se haya cumplido. Una finalidad no prueba que el objetivo se alcanzara. No es obligatorio insertar un conector en cada unión: si la relación ya se entiende, añadir uno puede ser innecesario o cambiar el mensaje.</p>
+<h4>Palabras nuevas</h4>
+<div class="table-wrap"><table class="vocab"><thead><tr><th>Palabra</th><th>En palabras de todos los días</th><th>Tres ejemplos originales</th></tr></thead><tbody>
+<tr><td>Conector</td><td>Una expresión que indica cómo leer juntas dos ideas.</td><td>«pero» marca una oposición; «por eso» presenta un resultado; «por ejemplo» abre un caso concreto.</td></tr>
+<tr><td>Causa</td><td>El motivo que el texto da para explicar algo.</td><td>El candado impidió abrir la puerta; la sala ocupada motivó el traslado; una ausencia llevó a cambiar el turno. En los tres casos, esa relación debe estar dada.</td></tr>
+<tr><td>Consecuencia</td><td>Lo que resulta del hecho presentado.</td><td>El traslado tras encontrar la sala ocupada; la reprogramación por la ausencia; la devolución del paquete al detectarse la dirección equivocada.</td></tr>
+<tr><td>Concesión</td><td>Una dificultad admitida que no impide lo demás.</td><td>Aunque llegó tarde, participó; a pesar del ruido, escuchó el aviso; si bien había poco espacio, se acomodaron.</td></tr>
+</tbody></table></div>
+<h4 class="step">6. Así se resuelve</h4>
+<p><strong>Microejemplo resuelto.</strong> «La sala estaba ocupada; _____, el club leyó en el patio». La ficha del caso aclara: «La ocupación de la sala motivó el cambio».</p>
+<ol><li>Se identifica el hecho inicial y su resultado: sala ocupada y traslado de la lectura.</li><li>Se busca una expresión de consecuencia. «Por eso» comunica la relación dada.</li><li>Se comprueba la construcción: «La sala estaba ocupada; por eso, el club leyó en el patio».</li><li>Se descarta «sin embargo»: la ficha no presenta el traslado como una oposición, sino como resultado del problema.</li></ol>
+<h4 class="step">7. Ahora tú</h4>
+<ol><li><strong>Inicial:</strong> distinguir adición, explicación causal y contraste en pares de frases con contexto suficiente.</li><li><strong>Intermedio:</strong> elegir un conector y justificar la relación sin recurrir a «suena mejor».</li><li><strong>Intermedio alto:</strong> diferenciar causa, resultado, condición y finalidad; mantener la relación al reformular la construcción.</li><li><strong>Nivel admisión:</strong> completar varios espacios en un mismo texto. Comprobar el conjunto de opciones, la estructura de cada hueco y los signos ya impresos. La ficha de relaciones permanece disponible.</li></ol>
+</article>
+
+<article class="idea" id="idea4">
+<div class="kicker">Idea 4 · Integra las ideas 1, 2 y 3</div>
+<h3>Dar un orden</h3>
+<p class="question">¿Qué necesita saber el lector para entender lo que viene después?</p>
+<p><strong>Aprendizaje.</strong> El alumno construye un orden defendible mediante el desarrollo del tema, las referencias y las relaciones entre hechos.</p>
+<div class="scene"><strong>Primera pantalla.</strong> Una bicicleta en un taller de barrio y tres fotos de una revisión sencilla. El mecánico debe dejar un recado comprensible a quien recogerá la bicicleta. No se pide saber repararla.</div>
+<h4 class="step">1. Lee</h4>
+<div class="cards">
+<div class="card"><span class="tag">Tarjeta 1</span><p>Un relato puede contar lo ocurrido; una explicación puede describir cómo funciona algo. Los dos necesitan un recorrido que el lector pueda seguir.</p></div>
+<div class="card"><span class="tag">Tarjeta 2</span><p>Una secuencia es un orden. La progresión temática es el avance de la información a lo largo de un mensaje.</p></div>
+<div class="card"><span class="tag">Tarjeta 3</span><p>Al leer, algunas cosas ya se han presentado y otras aparecen por primera vez. Las llamaremos información conocida e información nueva dentro de ese texto.</p></div>
+</div>
+<h4 class="step">2. Juega</h4>
+<p><strong>Datos visibles.</strong> El parte del taller declara: «La revisión ocurrió antes del ajuste. La comprobación final ocurrió después del ajuste». Tres fotos llevan los textos «Se revisó la bicicleta», «Se ajustó el freno» y «Se comprobó el resultado del ajuste».</p>
+<p><strong>Manipulación y meta.</strong> El alumno mueve las fotos a una tira de tres espacios para reconstruir lo sucedido. La misión se cumple cuando el orden respeta las dos relaciones temporales del parte. La tira final se reproduce como un breve relato. La comprobación se apoya en datos entregados, no en conocimientos de mecánica. Aún no se muestra una explicación sin fechas ni una cadena de referencias de varias oraciones.</p>
+<h4 class="step">3. Predice</h4>
+<p><strong>Nuevo caso.</strong> Una biblioteca necesita explicar primero la función de su catálogo y luego cómo se usa. Las etiquetas <strong>I, II, III y IV</strong> se leen «enunciado uno, dos, tres y cuatro»; identifican piezas, no su posición correcta.</p>
+<div class="excerpt"><p><strong>I.</strong> Al escribir el título, aparece la ficha del libro.</p><p><strong>II.</strong> La biblioteca instaló un catálogo digital.</p><p><strong>III.</strong> En esa ficha se indica dónde está guardado el ejemplar.</p><p><strong>IV.</strong> Este catálogo permite buscar un libro por su título.</p></div>
+<p><strong>Pregunta.</strong> ¿Qué orden presenta el catálogo, explica su función y permite seguir la consulta?</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Secuencia</th></tr></thead><tbody>
+<tr><td>A</td><td>I–III–II–IV</td></tr><tr><td>B</td><td>II–IV–I–III</td></tr><tr><td>C</td><td>II–I–III–IV</td></tr><tr><td>D</td><td>II–IV–III–I</td></tr>
+</tbody></table></div>
+<details open><summary>Clave editorial y origen de los distractores</summary><p><strong>Correcta: B.</strong> A explora <a href="#h06">H06</a>: comenzar por la acción como si todo fuera un relato cronológico. C explora <a href="#h07">H07</a>: encuentra enlaces posibles, pero incumple la petición de explicar la función antes de mostrar la consulta. D también explora H07: comprueba «catálogo / este catálogo», pero sitúa la consulta de la ficha antes del paso que la hace aparecer, contra el recorrido solicitado. C podría servir para otra organización; se descarta por la consigna concreta, no por una supuesta prohibición universal. El descarte de D tampoco establece que toda referencia hacia delante sea incorrecta.</p></details>
+<h4 class="step">4. Mira</h4>
+<p>Se despliega la secuencia elegida y se acompaña con una consulta al catálogo: se presenta la herramienta, se explica la búsqueda, se escribe el título y se consulta la ficha. El alumno ve dos pruebas diferentes: el cumplimiento del propósito y la continuidad de las referencias. No se presenta «la definición siempre va primero» como regla.</p>
+<h4 class="step">5. La regla</h4>
+<div class="rule"><p>Ordenar un texto consiste en encontrar un recorrido que desarrolle su asunto y respete las dependencias entre sus partes. La información conocida y la nueva se relacionan para que el mensaje avance. El orden cronológico es una posibilidad; también hay exposiciones por partes, comparaciones o explicaciones de un problema y una respuesta. <a href="#f18">[F18]</a> <a href="#f03">[F03]</a></p>
+<p>Se lee todo, se reconoce el propósito, se detectan grupos que deben permanecer unidos y se comprueba el orden completo. Una referencia hacia delante puede ser intencional, como ya mostró la catáfora; no se rechaza mecánicamente todo inicio con un pronombre. Tampoco se fuerza una introducción, un desarrollo y una conclusión separados cuando el texto no los necesita.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Organización posible</th><th>Pista que permite defenderla</th><th>Riesgo que debe evitarse</th></tr></thead><tbody>
+<tr><td>Cronológica o de un procedimiento.</td><td>Fechas, etapas o condiciones explícitas que habilitan un paso posterior.</td><td>Suponer que cualquier texto cuenta hechos en el orden en que ocurrieron.</td></tr>
+<tr><td>Presentación y desarrollo por partes.</td><td>Una entidad o categoría se presenta y después se describen sus partes o casos.</td><td>Creer que la frase más general tiene que ocupar siempre el primer lugar.</td></tr>
+<tr><td>Causa y consecuencia; problema y respuesta.</td><td>Una relación expresada en el texto, no inventada por el lector.</td><td>Confundir causa con el hecho que aparece primero.</td></tr>
+<tr><td>Comparación.</td><td>Los mismos aspectos se examinan en dos elementos.</td><td>Mezclar una propiedad de un elemento con la del otro.</td></tr>
+</tbody></table></div>
+<p><strong>Comprobación para examen.</strong> Un título orienta, pero no resuelve. Dos enunciados bien enlazados no garantizan que la alternativa completa funcione. Si dos secuencias satisfacen por igual todas las condiciones, el ejercicio debe admitirlas o ser revisado antes de publicarse.</p>
+<h4>Palabras nuevas</h4>
+<div class="table-wrap"><table class="vocab"><thead><tr><th>Palabra</th><th>En palabras de todos los días</th><th>Tres ejemplos originales</th></tr></thead><tbody>
+<tr><td>Progresión temática</td><td>El avance de lo que se cuenta sobre un asunto.</td><td>Presentar una biblioteca y describir sus servicios; explicar un problema y su solución; describir una mochila y luego sus compartimentos.</td></tr>
+<tr><td>Secuencia</td><td>El orden que siguen las piezas.</td><td>Recepción, revisión y registro; presentación de dos opciones y comparación; explicación de un cambio y aviso de sus efectos.</td></tr>
+<tr><td>Información conocida</td><td>Lo que el texto o la situación ya permiten reconocer.</td><td>«La caja» tras presentar una caja; «ese cambio» tras explicar un traslado; «el segundo» después de enumerar dos libros.</td></tr>
+<tr><td>Información nueva</td><td>Lo que una parte del mensaje añade en ese momento.</td><td>El horario recién anunciado; la ubicación de un libro en su ficha; una nueva razón para ampliar un taller.</td></tr>
+</tbody></table></div>
+<h4 class="step">6. Así se resuelve</h4>
+<p><strong>Microejemplo resuelto.</strong> Se debe explicar un procedimiento, respetando el orden dado por sus propias expresiones:</p>
+<div class="excerpt"><p><strong>I.</strong> Después de ese registro, cada caja recibió una etiqueta.</p><p><strong>II.</strong> Las cajas donadas llegaron a recepción.</p><p><strong>III.</strong> Allí se registró el contenido de cada caja.</p><p><strong>IV.</strong> Con esas etiquetas, el equipo pudo ubicarlas en el depósito.</p></div>
+<ol><li>Se identifica qué se cuenta: el tratamiento de las cajas recibidas.</li><li>II presenta las cajas y recepción; III retoma ese lugar con «allí».</li><li>I debe seguir al registro por «después de ese registro»; IV necesita las etiquetas introducidas en I.</li><li>Se relee II–III–I–IV. Todas las referencias y etapas se sostienen. La justificación está en el texto, no en memorizar un patrón.</li></ol>
+<h4 class="step">7. Ahora tú</h4>
+<ol><li><strong>Inicial:</strong> ordenar tres momentos con relaciones temporales explícitas.</li><li><strong>Intermedio:</strong> ordenar una explicación breve mediante referentes y relación entre entidad, parte y ejemplo.</li><li><strong>Intermedio alto:</strong> agrupar subtemas y resolver una comparación o un problema con respuesta.</li><li><strong>Nivel admisión:</strong> elegir entre secuencias de cinco enunciados; justificar dos enlaces decisivos y releer el conjunto. Incluir casos en que una alternativa conserva un par correcto, pero falla en otra unión.</li></ol>
+</article>
+
+<article class="idea" id="idea5">
+<div class="kicker">Idea 5 · Usa el propósito, los referentes y el desarrollo</div>
+<h3>Conservar lo pertinente</h3>
+<p class="question">¿Qué información ayuda a este mensaje y cuál debe retirarse?</p>
+<p><strong>Aprendizaje.</strong> El alumno distingue una idea ajena, una repetición innecesaria y una contradicción, sin eliminar automáticamente ejemplos o palabras repetidas.</p>
+<div class="scene"><strong>Primera pantalla.</strong> Un periódico mural escolar con chinches y tiras de papel. El espacio disponible obliga a publicar un aviso concreto sobre la entrega de libros.</div>
+<h4 class="step">1. Lee</h4>
+<div class="cards">
+<div class="card"><span class="tag">Tarjeta 1</span><p>El mural debe servir a quien llevará un libro. La consigna indica qué información necesita ese lector.</p></div>
+<div class="card"><span class="tag">Tarjeta 2</span><p>La pertinencia es la relación útil de una información con ese propósito. Un dato puede ser verdadero y no servir en este aviso.</p></div>
+<div class="card"><span class="tag">Tarjeta 3</span><p>Al revisar un texto también observamos cuánto aporta cada parte. Todavía no sabemos qué ocurrirá si dos tiras dicen algo parecido.</p></div>
+</div>
+<h4 class="step">2. Juega</h4>
+<p><strong>Encargo.</strong> «Publica únicamente el día, el lugar y la condición de los libros que se recibirán». Hay cuatro tiras: «Recepción: viernes», «Lugar: puerta del colegio», «Se reciben libros completos y legibles» y «El patio tiene un árbol grande».</p>
+<p><strong>Manipulación y meta.</strong> El alumno mueve tres tiras al aviso y deja una en la mesa. La misión se cumple si el aviso conserva los tres datos solicitados y excluye el dato del árbol. Los hechos están dados; no se decide si el árbol existe. El juego no incluye dos oraciones equivalentes, por lo que todavía no demuestra la redundancia de información.</p>
+<h4 class="step">3. Predice</h4>
+<p><strong>Nuevo encargo.</strong> Se quiere un aviso breve, sin recapitulaciones. Se debe conservar <strong>la primera mención de cada dato</strong> y retirar una repetición que no añada información.</p>
+<div class="excerpt"><p><strong>I.</strong> El préstamo dura siete días.</p><p><strong>II.</strong> Cada lector puede retirar un libro.</p><p><strong>III.</strong> El plazo de préstamo es de una semana.</p><p><strong>IV.</strong> La devolución se registra en recepción.</p></div>
+<p><strong>Pregunta.</strong> ¿Qué decisión cumple exactamente ese encargo?</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Respuesta propuesta</th></tr></thead><tbody>
+<tr><td>A</td><td>Eliminar II: contiene «libro» en lugar de «préstamo».</td></tr>
+<tr><td>B</td><td>Eliminar III: vuelve a expresar el plazo que ya indicó I.</td></tr>
+<tr><td>C</td><td>Eliminar IV: la devolución no tiene relación con el préstamo.</td></tr>
+<tr><td>D</td><td>No eliminar nada: I y III usan palabras diferentes.</td></tr>
+</tbody></table></div>
+<details open><summary>Clave editorial y origen de los distractores</summary><p><strong>Correcta: B.</strong> A y C exploran <a href="#h01">H01</a>: juzgar el tema por vocablos aislados o por una frontera demasiado estrecha. D explora <a href="#h08">H08</a>: confundir palabras distintas con información nueva. La repetición innecesaria se apoya en <a href="#e02">E02</a>. La condición de conservar la primera mención hace que no haya dos eliminaciones equivalentes entre I y III.</p></details>
+<h4 class="step">4. Mira</h4>
+<p>El sistema destaca los dos plazos y muestra su equivalencia en el aviso. Al retirar III, el lector conserva duración, cantidad permitida y lugar de devolución. Se aclara que una recapitulación puede ser útil en otro género, pero el encargo de este aviso la excluye. No aparece la regla falsa «toda repetición es mala».</p>
+<h4 class="step">5. La regla</h4>
+<div class="rule"><p>Antes de eliminar una oración se reconstruyen el tema preciso y el propósito. Se comprueba después si la oración se aparta de ellos, repite una información sin función en ese contexto o afirma algo incompatible con el resto. Son problemas diferentes; la consigna determina cuál debe buscarse. <a href="#f03">[F03]</a></p>
+<p>La repetición de una palabra puede mantener un referente. La redundancia de información puede aparecer con palabras distintas. Un ejemplo, una explicación y un cierre no sobran solo porque retomen lo anterior: pueden cumplir una función necesaria.</p>
+<p>Una contradicción exige comparar el mismo referente, tiempo y condiciones. Presentar una objeción atribuida a otra persona no equivale a que el autor se contradiga. Después de eliminar, se relee el texto: no deben quedar referencias sin apoyo ni perderse un paso imprescindible.</p></div>
+<p><strong>Procedimiento visible.</strong> Precisar el asunto → explicar qué aporta cada oración → aplicar el criterio pedido → releer el resultado. Aquí la flecha se lee «pasar al siguiente paso»; no representa una operación matemática. Si dos oraciones redundantes pueden eliminarse con el mismo resultado y no hay una restricción adicional, hay dos soluciones defendibles.</p>
+<h4>Palabras nuevas</h4>
+<div class="table-wrap"><table class="vocab"><thead><tr><th>Palabra</th><th>En palabras de todos los días</th><th>Tres ejemplos originales</th></tr></thead><tbody>
+<tr><td>Pertinencia</td><td>Que una información sirva para lo que ese texto quiere comunicar.</td><td>El lugar de recojo en un aviso; la fecha en una invitación; un ejemplo de uso en una explicación.</td></tr>
+<tr><td>Redundancia</td><td>Volver a decir una información sin una función que lo justifique en ese caso.</td><td>Repetir «gratis» como «sin costo» en un aviso que pide un solo dato; reiterar un mismo plazo con otra expresión; volver a indicar una dirección ya completa sin agregar una orientación.</td></tr>
+<tr><td>Contradicción</td><td>Afirmaciones que no pueden sostenerse juntas bajo las mismas condiciones.</td><td>«Todos los libros están completos» y «uno está incompleto»; «hoy no abrimos» y «hoy sí abrimos», sin cambio anunciado; «la entrega es gratuita» y «esa misma entrega exige un pago obligatorio».</td></tr>
+</tbody></table></div>
+<h4 class="step">6. Así se resuelve</h4>
+<p><strong>Microejemplo resuelto.</strong> El aviso debe indicar cómo entregar libros: «I. Se reciben el viernes. II. La entrega se realiza en recepción. III. Mi novela favorita tiene un final inesperado. IV. Cada donante debe dejar su nombre».</p>
+<ol><li>Se precisa el propósito: orientar la entrega, no comentar lecturas.</li><li>I aporta el día; II, el lugar; IV, un requisito. III comunica un gusto personal.</li><li>Se retira III por falta de pertinencia. La decisión no depende de comprobar si la novela tiene ese final.</li><li>Se relee I–II–IV: siguen presentes los datos necesarios y no queda una referencia sin explicación.</li></ol>
+<h4 class="step">7. Ahora tú</h4>
+<ol><li><strong>Inicial:</strong> separar una información claramente ajena a un aviso de propósito explícito.</li><li><strong>Intermedio:</strong> distinguir repetición de vocabulario y repetición de información, con paráfrasis sencillas.</li><li><strong>Intermedio alto:</strong> diferenciar contradicción, ejemplo pertinente y cambio de condiciones; detectar qué información quedaría perdida al eliminar.</li><li><strong>Nivel admisión:</strong> elegir la oración eliminable en un conjunto de cinco enunciados y nombrar el criterio. Incluir distractores relacionados con el tema amplio, pero ajenos al subtema concreto.</li></ol>
+</article>
+
+<article class="idea" id="idea6">
+<div class="kicker">Idea 6 · Integra las cinco ideas anteriores</div>
+<h3>Completar el conjunto</h3>
+<p class="question">¿Qué enunciado encaja con lo anterior, lo siguiente y el mensaje completo?</p>
+<p><strong>Aprendizaje.</strong> El alumno elige una inclusión con apoyo textual y distingue entre contradicción, falta de información y diferencia de puntos de vista.</p>
+<div class="scene"><strong>Primera pantalla.</strong> Un celular recibe el borrador de una nota para el periódico escolar; al lado hay una caja de libros donados. Falta una tira del mensaje. La caja y el destinatario dan un propósito concreto a la lectura.</div>
+<h4 class="step">1. Lee</h4>
+<div class="cards">
+<div class="card"><span class="tag">Tarjeta 1</span><p>El equipo prepara una noticia breve sobre la biblioteca escolar. Un fragmento del borrador se perdió al copiarlo.</p></div>
+<div class="card"><span class="tag">Tarjeta 2</span><p>La inclusión consiste en incorporar un enunciado. El nuevo fragmento pasará a formar parte del mensaje que recibirá el lector.</p></div>
+<div class="card"><span class="tag">Tarjeta 3</span><p>Ya conoces herramientas para revisar el sentido, los referentes, las relaciones, el orden y la pertinencia. Ahora se usarán en una misma decisión.</p></div>
+</div>
+<h4 class="step">2. Juega</h4>
+<div class="excerpt">Llegaron cajas con libros donados. [Espacio por completar]. Después de esa revisión, se registraron los títulos.</div>
+<p><strong>Manipulación.</strong> El alumno arrastra al espacio una de tres tiras: «Primero, el equipo revisó el estado de los libros», «El patio del colegio tiene bancas» o «Se registraron los títulos antes de revisar los libros».</p>
+<p><strong>Meta comprobable.</strong> Se acepta la primera tira porque introduce la revisión retomada después y mantiene el orden explícito. La escena acompaña la lectura mostrando revisión y registro de la caja. El programa verifica la opción y los dos apoyos que el alumno señala: «libros» y «esa revisión». No se ha presentado aún una discrepancia entre una expectativa personal y un hecho comprobado.</p>
+<h4 class="step">3. Predice</h4>
+<p><strong>Nuevo caso.</strong> El texto distingue lo que una persona supuso de lo que se comprobó después.</p>
+<div class="excerpt"><p>El colegio recibió libros para su biblioteca. [Espacio por completar]. Sin embargo, al revisarlos, se comprobó que solo una parte de esos ejemplares necesitaba reparación. Los demás se colocaron directamente en los estantes.</p></div>
+<p><strong>Pregunta.</strong> ¿Qué enunciado completa mejor la nota sin convertir una suposición en un hecho?</p>
+<div class="table-wrap"><table><thead><tr><th>Opción</th><th>Enunciado propuesto</th></tr></thead><tbody>
+<tr><td>A</td><td>Al ver las cajas, una voluntaria pensó que todos los libros necesitaban reparación.</td></tr>
+<tr><td>B</td><td>Todos los libros necesitaban reparación.</td></tr>
+<tr><td>C</td><td>El colegio organizó también un campeonato de ajedrez.</td></tr>
+<tr><td>D</td><td>Los libros recibidos eran ejemplares destinados a la biblioteca.</td></tr>
+</tbody></table></div>
+<details open><summary>Clave editorial y origen de los distractores</summary><p><strong>Correcta: A.</strong> «Pensó que» atribuye una suposición; el resultado posterior la corrige parcialmente. B explora <a href="#h09">H09</a>: al retirar esa marca, «todos» y «solo una parte» chocan. C explora <a href="#h01">H01</a>: comparte el escenario escolar, pero abandona el asunto. D explora <a href="#h07">H07</a>: parece encajar por «libros / ejemplares», pero repite la presentación y no proporciona la expectativa que «sin embargo» necesita en este caso. D también permite observar <a href="#h08">H08</a>.</p></details>
+<h4 class="step">4. Mira</h4>
+<p>Se lee la nota completa. Se separan visualmente «lo que pensó la voluntaria» y «lo que reveló la revisión». A mantiene ambas voces sin atribuir al narrador dos hechos incompatibles. B se compara palabra por palabra con «solo una parte». C se enfrenta al asunto global. D conserva vocabulario, pero no construye el contraste anunciado. Las etiquetas escritas acompañan cualquier color.</p>
+<h4 class="step">5. La regla</h4>
+<div class="rule"><p>Una inclusión adecuada debe cumplir cinco condiciones: conservar el tema y el propósito; mantener referentes identificables; expresar relaciones apropiadas; aportar la información necesaria en ese punto; y no introducir contradicciones ni datos ajenos al apoyo disponible. Se comprueban tanto el enlace anterior como el posterior y, al final, todo el párrafo. Esta pauta es una síntesis didáctica de las ideas anteriores, ajustada al formato de inclusión observado en la UNI. <a href="#f01">[F01]</a> <a href="#f02">[F02]</a></p>
+<p>Inferir es obtener una conclusión apoyada en pistas, no completar el mensaje con lo que a uno le gustaría que dijera. En lectura, una opción apoyada por el texto debe poder justificarse; una incompatible se opone a lo expresado o a lo que se desprende de ello. «No mencionado» no significa automáticamente «falso»: puede ser una información que el texto no permite decidir.</p>
+<p>Si hay distintas voces, se conserva quién afirma qué. Las marcas «según», «cree», «supuso» o «se comprobó» cambian el compromiso del texto con lo dicho. No se mezclan afirmaciones de dos autores como si fueran una sola postura.</p></div>
+<p><strong>Prueba de decisión.</strong> Para cada candidata, el alumno debe completar: «encaja antes por…», «encaja después por…» y «aporta al conjunto…». Al comparar alternativas, basta mostrar el primer incumplimiento decisivo, pero la candidata ganadora se revisa completa. Si ninguna satisface las condiciones, se corrige el ejercicio.</p>
+<h4>Palabras nuevas</h4>
+<div class="table-wrap"><table class="vocab"><thead><tr><th>Palabra</th><th>En palabras de todos los días</th><th>Tres ejemplos originales</th></tr></thead><tbody>
+<tr><td>Inclusión</td><td>La incorporación de una pieza que falta en el mensaje.</td><td>Añadir una explicación antes de su ejemplo; presentar una revisión que se menciona después; incorporar una expectativa antes de un resultado que la corrige.</td></tr>
+<tr><td>Inferencia</td><td>Una conclusión que puedes sostener con pistas.</td><td>De «todos los lectores inscritos devolvieron su libro» y «Ana estaba inscrita», concluir que Ana lo devolvió; de «ninguna caja llegó vacía», concluir que cada caja recibida traía algo; de «el acto se trasladó al patio», concluir que cambió de lugar.</td></tr>
+<tr><td>Compatibilidad</td><td>Que una afirmación pueda sostenerse sin chocar con lo que dice el texto.</td><td>«Algunos libros estaban dañados» admite otros en buen estado; «Rosa cree que abrirán» no asegura la apertura; «antes cerraba temprano» puede convivir con un horario actual más amplio. Para elegir una respuesta «según el texto» se exige, además, apoyo textual.</td></tr>
+</tbody></table></div>
+<h4 class="step">6. Así se resuelve</h4>
+<p><strong>Microejemplo resuelto.</strong> «El colegio recibió una donación de libros. [Espacio por completar]. Esos ejemplares se colocaron en un estante separado para ser reparados». Se comparan «La biblioteca tenía ventanas amplias», «Durante la revisión se apartaron los libros con páginas sueltas» y «Todos los libros estaban en perfecto estado».</p>
+<ol><li>Se fija el asunto: el tratamiento de los libros donados.</li><li>La oración siguiente necesita un grupo de ejemplares que requiera reparación.</li><li>La revisión y el apartado de los libros con páginas sueltas proporcionan ese grupo y explican su destino. Las ventanas no lo hacen; el perfecto estado contradice el tratamiento descrito, en este caso sin otro motivo.</li><li>Se incorpora «Durante la revisión se apartaron los libros con páginas sueltas» y se relee el conjunto. El referente de «esos ejemplares» queda identificado y el desarrollo avanza.</li></ol>
+<h4 class="step">7. Ahora tú</h4>
+<ol><li><strong>Inicial:</strong> elegir el enunciado que presenta el referente recuperado después.</li><li><strong>Intermedio:</strong> completar causa, explicación o ejemplo con apoyo en ambos lados del espacio.</li><li><strong>Intermedio alto:</strong> distinguir inclusión pertinente de paráfrasis redundante; conservar el alcance de «todos», «algunos» y de las marcas de opinión.</li><li><strong>Nivel UNI:</strong> resolver inclusión en un texto de varios enunciados, con alternativas del mismo tema y diferencias en función, referencia o relación.</li><li><strong>Nivel San Marcos:</strong> leer dos posturas breves y un texto continuo original; identificar tema compartido y afirmación compatible o incompatible con cada voz. Los gráficos y las inferencias complejas se trabajan en unidades específicas.</li></ol>
+</article>
+</section>
+<section id="s6"><h2>6. Tabla de letras y símbolos de la unidad</h2>
+<p>Esta unidad no utiliza variables algebraicas ni magnitudes físicas. La columna «unidad» se mantiene para dejarlo explícito. Las expresiones lingüísticas se explican en palabras; no se transforman en fórmulas que el alumno deba memorizar.</p>
+<div class="table-wrap"><table><thead><tr><th>Letra o símbolo</th><th>Significado y lectura</th><th>Unidad</th><th>Posible choque y decisión</th></tr></thead><tbody>
+<tr><td>A, B, C, D; E</td><td>Etiquetas de alternativas. A–D en las predicciones; E puede añadirse en práctica de formato de admisión.</td><td>No aplica.</td><td>No nombrar con estas letras a hablantes ni a textos de la app. Usar nombres o «Postura 1 / Postura 2».</td></tr>
+<tr><td>I, II, III, IV, V</td><td>Números romanos que identifican enunciados. Se leen uno, dos, tres, cuatro y cinco.</td><td>No aplica.</td><td>I no es intensidad ni una variable. Las etiquetas identifican las piezas antes de ordenarlas.</td></tr>
+<tr><td>II–IV–I–III</td><td>Una propuesta de orden: segundo enunciado, cuarto, primero y tercero.</td><td>No aplica.</td><td>La raya corta entre etiquetas separa posiciones; no indica una resta.</td></tr>
+<tr><td>→</td><td>«Después viene» o «pasar al siguiente paso» en el recorrido de trabajo.</td><td>No aplica.</td><td>No expresa una implicación lógica formal ni una relación causal automática.</td></tr>
+<tr><td>_____ / [Espacio por completar]</td><td>Un fragmento ausente que el alumno debe completar. El texto entre corchetes es una indicación editorial.</td><td>No aplica.</td><td>No equivale a una elipsis gramatical válida: el hueco del ejercicio sí requiere una respuesta.</td></tr>
+<tr><td>« »</td><td>Comillas que delimitan una expresión citada, una tarjeta o un microtexto.</td><td>No aplica.</td><td>Un fragmento entre comillas no se vuelve verdadero por estar citado.</td></tr>
+<tr><td>., ;, :</td><td>Punto, punto y coma, y dos puntos. Separan o introducen partes según la construcción.</td><td>No aplica.</td><td>Los signos forman parte del texto; no son decoraciones intercambiables. La unidad practica los casos que usa y no sustituye una unidad completa de puntuación.</td></tr>
+<tr><td>E01–E08; H01–H09; F01–F25</td><td>Códigos de errores observados, hipótesis y fuentes de este documento.</td><td>No aplica.</td><td>Metadatos del equipo. No son letras que el alumno deba aprender. Las fuentes ausentes de una pantalla pueden quedar en la ficha editorial.</td></tr>
+</tbody></table></div>
+<p><strong>Notación que se evita.</strong> No se usa el símbolo de conjunto vacío para marcar elipsis: la recuperación se explica con palabras. Tampoco se asigna una letra a «coherencia» y la misma a «causa». Las flechas de seguimiento, si se implementan, deben acompañarse de «se refiere a», para no confundir referencia y causalidad.</p>
+</section>
+
+<section id="s7"><h2>7. Otras formas de explicarla y sus riesgos</h2>
+<p>Se distingue una actividad publicada de una adaptación propia. Una analogía ayuda a mirar una relación; no demuestra por sí sola que mejore el aprendizaje. No se identificó un simulador validado específicamente para esta unidad y esta población.</p>
+<div class="table-wrap"><table class="wide"><thead><tr><th>Forma de explicación</th><th>Procedencia y uso recomendado</th><th>Qué permite observar</th><th>Idea falsa que puede dejar y cómo evitarla</th></tr></thead><tbody>
+<tr><td>Dados con elementos para construir una historia.</td><td><strong>Actividad publicada.</strong> INTEF incorpora <em>Story cubes</em>, de Fernando Martí, en «La coherencia». Conviene como exploración opcional de la idea 1. <a href="#f20">[F20]</a></td><td>Que varios objetos pueden integrarse si se construye una relación entre ellos.</td><td>Puede sugerir que cualquier sucesión es igual de coherente. La versión libre necesita revisión humana; no se propone como misión de respuesta única.</td></tr>
+<tr><td>Buscar mecanismos en un texto y mostrar qué parte se recupera.</td><td><strong>Actividad publicada; adaptación propia.</strong> INTEF pide localizar recursos; la RAE muestra cómo recuperar contenido omitido. En la idea 2 se adapta a etiquetas que señalan expresiones del recado. <a href="#f19">[F19]</a> <a href="#f13">[F13]</a></td><td>La continuidad entre nombres, expresiones y omisiones.</td><td>Puede convertir la actividad en identificar colores. Se pide explicar el referente; el color aparece después y siempre con etiquetas.</td></tr>
+<tr><td>Un tejido y el dibujo que forma.</td><td><strong>Analogía propia.</strong> Para las ideas 1 y 6: las uniones entre hilos ayudan a representar cohesión; el diseño reconocible ayuda a representar sentido global. Taquile aporta un contexto documentado, no una prueba pedagógica. <a href="#f21">[F21]</a></td><td>La diferencia entre enlaces locales y una organización del conjunto.</td><td>Puede sugerir que todo hilo debe tocar al siguiente o que basta un tejido firme para un buen mensaje. Explicitar que las referencias pueden saltar oraciones y que el sentido depende del contexto.</td></tr>
+<tr><td>Un aviso del conductor sobre un desvío.</td><td><strong>Diseño propio.</strong> Idea 3; parte de una relación causal dada por la ficha.</td><td>Que cambiar «porque» por una expresión de resultado o contraste modifica la explicación.</td><td>Puede sugerir una equivalencia fija entre un conector y una sola relación. Volver a leer el contexto y mostrar usos distintos en la práctica posterior.</td></tr>
+<tr><td>Tira de fotos de un proceso y una explicación sin fotos.</td><td><strong>Diseño propio.</strong> Idea 4; el contraste entre ambos casos obliga a transferir el criterio.</td><td>La diferencia entre orden temporal y orden de exposición.</td><td>Puede enseñar que todo texto es una receta. Añadir comparaciones y exposiciones que admitan otra organización defendible.</td></tr>
+<tr><td>Editor de un periódico mural.</td><td><strong>Diseño propio.</strong> Idea 5; el propósito y el destinatario son visibles.</td><td>La utilidad de cada pieza de información dentro de un encargo.</td><td>Puede enseñar que lo más breve siempre es mejor. Proteger explicaciones, ejemplos y repeticiones funcionales.</td></tr>
+<tr><td>Prueba de cambiar o retirar una palabra de enlace.</td><td><strong>Experimento de lectura propio.</strong> Ideas 1, 3 y 6; se mantienen fijos los hechos y se compara la interpretación.</td><td>Que una señal puede orientar una relación, mantenerla implícita o imponer una lectura equivocada.</td><td>Puede sugerir que siempre sobra un conector o que el programa «demuestra» una interpretación universal. Usar casos controlados y admitir variaciones justificadas.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="s8"><h2>8. Datos del mundo, con fuente</h2>
+<p>En razonamiento verbal, un lugar, oficio o relación cultural puede aportar más que una medida. Se seleccionan pocos datos verificables y se evita llenar las lecturas de cifras que no ayudan a razonar. Cuando se utilicen, el ejercicio debe incluirlos: conocerlos de antemano no será una ventaja necesaria.</p>
+<div class="table-wrap"><table><thead><tr><th>Dato comprobable</th><th>Fuente y fecha</th><th>Uso posible en un texto original</th><th>Límite de uso</th></tr></thead><tbody>
+<tr><td>Taquile está en el lago Titicaca, en el altiplano peruano.</td><td>UNESCO, expediente del arte textil de Taquile, s. f. <a href="#f21">[F21]</a></td><td>Presentar «la isla» y recuperar después ese referente, o distinguir ubicación y actividad cultural.</td><td>No exigir ubicarla en un mapa ni afirmar que pertenece a una zona protegida concreta sin otra fuente.</td></tr>
+<tr><td>El arte textil de Taquile fue inscrito en la Lista Representativa en 2008; la proclamación original fue en 2005.</td><td>UNESCO, ficha del elemento 00166. <a href="#f21">[F21]</a></td><td>Mostrar que dos fechas diferentes no se contradicen si describen actos distintos.</td><td>Nombrar exactamente cada acto; no presentar ambas fechas como dos versiones de una misma inscripción.</td></tr>
+<tr><td>La práctica textil de Taquile involucra a hombres y mujeres; el chullo y el cinturón-calendario figuran entre sus prendas características.</td><td>UNESCO, descripción del elemento. <a href="#f21">[F21]</a></td><td>Organizar una exposición entre actividad, participantes y ejemplos de prendas.</td><td>No asignar tareas exclusivas por sexo ni inventar significados de diseños concretos.</td></tr>
+<tr><td>La Reserva Nacional del Titicaca se ubica en Puno y Huancané; la totora es una planta destacada en su descripción institucional.</td><td>SERNANP, 1 de enero de 2019. <a href="#f22">[F22]</a></td><td>Trabajar la referencia «esta planta» y la diferencia entre la reserva, el lago y la vegetación.</td><td>No intercambiar «reserva» y «lago» como si fueran términos equivalentes.</td></tr>
+<tr><td>La BNP ofrece acceso virtual a documentos digitalizados, entre ellos libros, manuscritos, periódicos, fotografías y mapas.</td><td>Biblioteca Nacional del Perú, página de servicio, s. f. <a href="#f23">[F23]</a></td><td>Explicar una categoría general mediante varios ejemplos y mantener una cadena de referencias.</td><td>No convertir los plazos ficticios de los juegos en condiciones de un servicio real de la BNP. Se omite el tamaño variable de la colección.</td></tr>
+</tbody></table></div>
+<p class="small">Transparencia de consulta: para estas páginas institucionales se recuperó el contenido mediante el índice de búsqueda; algunas aperturas directas devolvieron protección de acceso. Los enlaces permiten rastrear cada dato. Antes de reutilizar una condición operativa cambiante, el equipo debe consultar su versión vigente. Los datos culturales y de ubicación aquí seleccionados no son horarios ni tarifas.</p>
+</section>
+
+<section id="s9"><h2>9. Dudas y decisiones</h2>
+<h3>Qué no quedó confirmado</h3>
+<ul>
+<li><strong>Frecuencia nacional y actualidad.</strong> Dos pruebas históricas de la UNI y una muestra de San Marcos no permiten establecer porcentajes de aparición futura ni comparar todas las áreas y modalidades. La tabla conserva los periodos y las preguntas contadas.</li>
+<li><strong>Otras universidades.</strong> No se obtuvo un corpus legible suficiente de UNA Puno, UNSA o UNSAAC para asignar frecuencias. El temario UNSAAC enlazado desde su portal corresponde a 2025; el PDF UNSA localizado corresponde a 2027. Su localización no equivale a verificar sus contenidos. No se extrapolan resultados de la UNI a estas universidades.</li>
+<li><strong>Acceso a fuentes.</strong> Los documentos de UNI y CEPREUNI se leyeron en su dominio institucional. El cuadernillo UNMSM, el material CEPREUNMSM y el informe peruano se consultaron en reproducciones externas; se identifica la procedencia original y el lugar de consulta. En las entradas de Cervantes y ciertas páginas institucionales se usó contenido indexado cuando la apertura directa falló.</li>
+<li><strong>Causas de error.</strong> Una producción escrita permite observar un problema, pero no revela por sí sola el razonamiento que lo causó. Las explicaciones de los autores y las hipótesis del diseño no se presentan como causas experimentales demostradas.</li>
+<li><strong>Datos cuantitativos de investigación.</strong> Se conservan hallazgos cualitativos. En particular, la tabla 10 de Ferreira (2025) presenta inconsistencias entre cantidades, porcentajes y total; no se trasladan esas cifras. Esto no impide identificar los ejemplos cualitativos de uso repetitivo de «y». <a href="#f09">[F09]</a></li>
+<li><strong>Interpretación y programación.</strong> No se presume que una máquina pueda decidir automáticamente la coherencia de cualquier texto libre. Cada misión cerrada requiere revisar sus opciones, sus interpretaciones razonables y su explicación de éxito.</li>
+</ul>
+<h3>Decisiones adoptadas para esta propuesta</h3>
+<div class="table-wrap"><table><thead><tr><th>Decisión</th><th>Motivo</th></tr></thead><tbody>
+<tr><td>Seis ideas; mecanismos antes que formatos integrados.</td><td>Ordenar, eliminar e incluir dependen de entender sentido, referencia y relación.</td></tr>
+<tr><td>HTML con navegación, tablas y lectura sin conexión.</td><td>Se sigue la petición explícita de HTML frente a la plantilla general que menciona Markdown. El contenido no depende de fuentes web, scripts ni imágenes externas para leerse.</td></tr>
+<tr><td>Microejemplos resueltos, pero sin banco final.</td><td>El flujo exige «Así se resuelve»; sus casos muestran el método. «Ahora tú» describe familias de ejercicios que el equipo elaborará y revisará.</td></tr>
+<tr><td>Cuatro alternativas en todas las predicciones.</td><td>Es el formato solicitado. En práctica de admisión podrán usarse cinco, como en los cuadernillos revisados, manteniendo criterios visibles.</td></tr>
+<tr><td>Cohesión y coherencia se distinguen sin separarlas por completo.</td><td>La misma decisión puede requerir enlaces locales y una interpretación global. Un texto no necesita exhibir un conector en cada unión.</td></tr>
+<tr><td>No se enseña una receta única de orden ni una eliminación por longitud.</td><td>La justificación depende del propósito y de las relaciones concretas. Una alternativa se descarta por una condición incumplida.</td></tr>
+<tr><td>Se evitan terminologías que no se usarán para decidir.</td><td>La clasificación técnica de tema/rema, las taxonomías exhaustivas de marcadores y el análisis sintáctico completo quedan fuera del núcleo. Pueden ampliarse si el temario específico lo exige.</td></tr>
+<tr><td>Se conserva la dignidad de las variedades del español.</td><td>La unidad enseña a interpretar textos y escribir para una situación. No identifica el habla regional, bilingüe o coloquial con falta de coherencia.</td></tr>
+</tbody></table></div>
+<h3>Qué debería decidir el dueño del proyecto</h3>
+<ul>
+<li><strong>Énfasis de la práctica.</strong> Propuesta por defecto: núcleo común y conjuntos de práctica diferenciados para UNI y San Marcos; ampliar a otras universidades cuando se verifiquen sus fuentes.</li>
+<li><strong>Cantidad de apoyos.</strong> Propuesta por defecto: glosas y criterios visibles siempre; subrayado automático solo después del intento. El criterio no debe convertirse en una tarea de memoria.</li>
+<li><strong>Validación de distractores.</strong> Propuesta por defecto: realizar un piloto con alumnos de 5.º y preuniversitario, pedir que expliquen su elección y reemplazar opciones que nadie interprete como se esperaba. Una marca aislada no basta para diagnosticar un error.</li>
+<li><strong>Respuesta abierta.</strong> Propuesta por defecto: selección finita y elección de evidencias en la ruta principal. La redacción libre puede añadirse con una revisión apropiada, sin fingir exactitud automática.</li>
+<li><strong>Variedad de contextos.</strong> Propuesta por defecto: mantener los casos escolares para introducir criterios y alternar luego textos culturales, cotidianos, científicos y sociales originales; evitar que el acierto dependa de experiencia urbana o de datos regionales no explicados.</li>
+</ul>
+<h3>Revisión de dependencias y predicciones</h3>
+<div class="table-wrap"><table><thead><tr><th>Idea</th><th>Solo necesita</th><th>Qué no mostró el juego</th><th>Clave y errores de las tres incorrectas</th></tr></thead><tbody>
+<tr><td>1. Sentido</td><td>Lectura literal y negación.</td><td>Dos afirmaciones incompatibles con buena presentación.</td><td>C. A: H01; B: H05; D: E04.</td></tr>
+<tr><td>2. Referencia</td><td>Idea 1 y concordancia básica.</td><td>Una referencia que anuncia una indicación posterior.</td><td>B. A: H02; C: H03; D: H04.</td></tr>
+<tr><td>3. Relación</td><td>Ideas 1–2.</td><td>El contraste entre expectativa y resultado.</td><td>D. A: E04; B: E04; C: E06.</td></tr>
+<tr><td>4. Orden</td><td>Ideas 1–3.</td><td>Una explicación organizada por función y consulta, no una secuencia de fotos.</td><td>B. A: H06; C: H07; D: H07.</td></tr>
+<tr><td>5. Pertinencia</td><td>Ideas 1–4.</td><td>Dos formulaciones diferentes de un mismo dato.</td><td>B. A: H01; C: H01; D: H08.</td></tr>
+<tr><td>6. Inclusión</td><td>Ideas 1–5.</td><td>La diferencia entre una suposición atribuida y un hecho posterior.</td><td>A. B: H09; C: H01; D: H07, con apoyo de H08.</td></tr>
+</tbody></table></div>
+<p><strong>Resultado de la revisión editorial.</strong> Las seis ideas tienen entre tres y cuatro tarjetas de «Lee», una misión con condiciones explícitas, cuatro alternativas de predicción, explicación en «Mira», regla, vocabulario con tres ejemplos por término, microejemplo resuelto y progresión hacia admisión. Las hipótesis están identificadas; no se asegura que sus distractores estén validados. Las respuestas y las razones quedan reservadas para después de la predicción en la futura app.</p>
+</section>
+
+<section id="s10"><h2>10. Fuentes</h2>
+<p class="small">Fecha de consulta: 21 de noviembre de 2026. «s. f.» significa que no se confirmó una fecha de publicación de la página. Los años de exámenes, estudios e inscripciones se distinguen de fechas de carga o rastreo. Los enlaces externos llevan a fuentes; los enlaces [F…] dentro del documento remiten a esta lista.</p>
+<ol class="sources">
+<li id="f01"><strong>F01 · Universidad Nacional de Ingeniería, OCAD. (2019).</strong> <em>Solucionario del examen de admisión 2019-2</em>. Primera prueba, pp. 10–14; preguntas 46–68. Documento institucional leído directamente. <a href="https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario20192.pdf">PDF institucional</a>.</li>
+<li id="f02"><strong>F02 · Universidad Nacional de Ingeniería. (2021).</strong> <em>Solucionario de admisión 2021-1</em>. Razonamiento verbal, pp. 9–13 y claves p. 36. Documento institucional leído directamente. <a href="https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario2021.pdf">PDF institucional</a>.</li>
+<li id="f03"><strong>F03 · Centro Preuniversitario de la Universidad Nacional de Ingeniería. (2023).</strong> <em>Ciclo básico: sílabo 2023-2</em>. Razonamiento Verbal, páginas 17–18 del PDF. <a href="https://www.cepre.uni.edu.pe/assets/archivos/comunicados/Syl_Bas_PS_2023-2.pdf">Sílabo institucional</a>.</li>
+<li id="f04"><strong>F04 · Universidad Nacional Mayor de San Marcos, Oficina Central de Admisión. (2025).</strong> <em>Examen General de Admisión 2025-II, área D</em>, 1 de marzo de 2025. Sección Habilidades, preguntas 11–17. Se leyó el contenido del cuadernillo reproducido en un sitio externo; no se adoptaron las claves añadidas ni se reprodujeron sus lecturas. <a href="https://es.scribd.com/document/835316426/Examen-Unmsm-2025-II-Area-d-Claves">Reproducción consultada</a>.</li>
+<li id="f05"><strong>F05 · Universidad Nacional Mayor de San Marcos. (2025).</strong> <em>Reglamento de Admisión 2026-II</em>. Temario de Habilidad Verbal, p. 94. Aprobado mediante Resolución Rectoral 014918-2025. Se recuperó el apartado mediante el índice de búsqueda; el PDF completo devolvió acceso bloqueado. <a href="https://d36c8ndzr707gc.cloudfront.net/prospecto/REGLAMENTO_OFICIAL_UNMSM_2026-II.pdf">Copia del reglamento</a>; <a href="https://www.gob.pe/institucion/unmsm/normas-legales/7585348-014918-2025-r-unmsm">registro institucional de aprobación</a>.</li>
+<li id="f06"><strong>F06 · Centro Preuniversitario de la Universidad Nacional Mayor de San Marcos. (2024).</strong> <em>Habilidad Verbal, semana 5, ciclo ordinario 2024-I</em>. Apartados de jerarquía textual y principios textuales, pp. 1–3. Material institucional consultado en reproducción externa. <a href="https://es.scribd.com/document/732625307/MPE-SEMANA-N-05-CICLO-ORDINARIO-2024-I">Material consultado</a>.</li>
+<li id="f07"><strong>F07 · Llanos Masciotti, Fernando; Gildemeister Flores, Rosario; Urbina Keller, Ximena; Ministerio de Educación del Perú, UMC. (2006).</strong> <em>Evaluación Nacional del Rendimiento Estudiantil 2004. Informe pedagógico de resultados: producción de textos escritos. Tercer grado de secundaria, quinto grado de secundaria</em>. Se leyeron los análisis originales de coherencia y cohesión, especialmente pp. 110–124. <a href="https://repositorio.minedu.gob.pe/handle/20.500.12799/9118">Registro institucional</a>; <a href="https://www.academia.edu/6146039/Evaluaci%C3%B3n_Nacional_del_Rendimiento_Estudiantil_2004">reproducción íntegra consultada</a>.</li>
+<li id="f08"><strong>F08 · Montero, Catalina; Ferreira, Anita. (2025).</strong> <em>Los conectores causales en textos argumentativos: estudio de un corpus textual de estudiantes de educación secundaria</em>. <em>RLA. Revista de Lingüística Teórica y Aplicada</em>, 63(1), § 4.2. DOI: 10.29393/rla63-6atca20006. <a href="https://www.scielo.cl/scielo.php?pid=S0718-48832025000100159&amp;script=sci_arttext">Artículo original completo</a>.</li>
+<li id="f09"><strong>F09 · Ferreira, Anita. (2025).</strong> <em>Problemáticas no resueltas en la escritura de estudiantes secundarios chilenos: tendencias para un mejoramiento</em>. <em>Perspectiva Educacional</em>, 64(2), §§ 4.2.1 y 4.2.3. DOI: 10.4151/07189729-vol.64-iss.2-art.1594. <a href="https://www.scielo.cl/scielo.php?pid=S0718-97292025000200125&amp;script=sci_arttext">Artículo original completo</a>.</li>
+<li id="f10"><strong>F10 · Bolívar, Ana; Arnáez, Pablo; Villegas, Margarita; Hernández, Yngrid. (2010).</strong> <em>Recursos de cohesión en textos académicos: un estudio comparativo</em>. <em>Paradígma</em>, 31(2). Secciones de resultados y conclusiones. <a href="https://ve.scielo.org/scielo.php?pid=S1011-22512010000200010&amp;script=sci_arttext">Artículo original completo</a>.</li>
+<li id="f11"><strong>F11 · Real Academia Española y Asociación de Academias de la Lengua Española. (2019; versión en línea).</strong> <em>Glosario de términos gramaticales</em>, entrada «anáfora». <a href="https://www.rae.es/gtg/an%C3%A1fora">Entrada consultada</a>.</li>
+<li id="f12"><strong>F12 · Real Academia Española y Asociación de Academias de la Lengua Española. (2019; versión en línea).</strong> <em>Glosario de términos gramaticales</em>, entrada «catáfora». <a href="https://www.rae.es/gtg/cat%C3%A1fora">Entrada consultada</a>.</li>
+<li id="f13"><strong>F13 · Real Academia Española y Asociación de Academias de la Lengua Española. (2019; versión en línea).</strong> <em>Glosario de términos gramaticales</em>, entrada «elipsis». <a href="https://www.rae.es/gtg/elipsis">Entrada consultada</a>.</li>
+<li id="f14"><strong>F14 · Real Academia Española y Asociación de Academias de la Lengua Española. (s. f.).</strong> <em>Diccionario panhispánico de dudas</em>, 2.ª edición en línea, entrada «coma», §§ 2.2.4, 2.4.6 y 2.5. <a href="https://www.rae.es/dpd/coma">Entrada canónica</a>; <a href="https://temporalweb.asale.org/dpd/coma">versión de ASALE leída</a>.</li>
+<li id="f15"><strong>F15 · Instituto Cervantes. (s. f.).</strong> <em>Diccionario de términos clave de ELE</em>, «Coherencia». Contenido recuperado del índice; la apertura directa redirigió a mantenimiento. <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm">Entrada institucional</a>.</li>
+<li id="f16"><strong>F16 · Instituto Cervantes. (s. f.).</strong> <em>Diccionario de términos clave de ELE</em>, «Cohesión». Consulta del contenido indexado; acceso directo en mantenimiento. <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/cohesion.htm">Entrada institucional</a>.</li>
+<li id="f17"><strong>F17 · Instituto Cervantes. (s. f.).</strong> <em>Diccionario de términos clave de ELE</em>, «Conexión». Consulta del contenido indexado. Apoya la atención a la relación y al contexto de uso. <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/conexion.htm">Entrada institucional</a>.</li>
+<li id="f18"><strong>F18 · Instituto Cervantes. (s. f.).</strong> <em>Diccionario de términos clave de ELE</em>, «Progresión temática». Consulta del contenido indexado. <a href="https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/progresiontematica.htm">Entrada institucional</a>.</li>
+<li id="f19"><strong>F19 · Instituto Nacional de Tecnologías Educativas y de Formación del Profesorado, INTEF. (s. f.).</strong> <em>La comunicación oral y escrita: La cohesión</em>. Recurso educativo con actividad de identificación de mecanismos. Se toma la actividad como referencia, no se copia su texto. <a href="https://descargas.intef.es/recursos_educativos/It_didac/Leng_ESO/1/06/La_comunicacion_oral_y_escrita/la_cohesin.html">Recurso completo</a>.</li>
+<li id="f20"><strong>F20 · INTEF. (s. f.).</strong> <em>La comunicación oral y escrita: La coherencia</em>. Incluye un recurso de Alberto Corpas Martos y la actividad <em>Story cubes</em> de Fernando Martí. <a href="https://descargas.intef.es/recursos_educativos/It_didac/Leng_ESO/1/06/La_comunicacion_oral_y_escrita/la_coherencia.html">Recurso completo</a>.</li>
+<li id="f21"><strong>F21 · UNESCO. (s. f.).</strong> <em>El arte textil de Taquile</em>, elemento 00166 de Patrimonio Cultural Inmaterial. Ficha de la inscripción de 2008 y descripción cultural; contenido institucional recuperado del índice. <a href="https://ich.unesco.org/es/RL/el-arte-textil-de-taquile-00166?RL=00166">Ficha institucional</a>.</li>
+<li id="f22"><strong>F22 · Servicio Nacional de Áreas Naturales Protegidas por el Estado, SERNANP. (2019).</strong> <em>Reserva Nacional del Titicaca</em>, 1 de enero. Apartados de ubicación y vegetación; contenido recuperado del índice. <a href="https://www.gob.pe/institucion/sernanp/informes-publicaciones/1749491-reserva-nacional-del-titicaca">Artículo institucional</a>.</li>
+<li id="f23"><strong>F23 · Biblioteca Nacional del Perú. (s. f.).</strong> <em>Acceder a documentos digitalizados de la Biblioteca Nacional del Perú</em>. Página de servicio; contenido recuperado del índice. <a href="https://www.gob.pe/institucion/bnp/pages/23677-acceder-a-documentos-digitalizados-de-la-biblioteca-nacional-del-peru">Página institucional</a>.</li>
+<li id="f24"><strong>F24 · Universidad Nacional de San Agustín de Arequipa. (2026).</strong> <em>RCU 0028: aprobación de temario y matriz de admisión 2027</em>. Documento localizado, sin extracción legible suficiente; se cita únicamente para documentar el límite de acceso, no para afirmar contenidos. <a href="https://admision.unsa.edu.pe/wp-content/uploads/2026/03/RCU-0028-Aprobacion-de-TEMARIO-y-MATRIZ-ADMISION-2027.pdf">PDF institucional localizado</a>.</li>
+<li id="f25"><strong>F25 · Universidad Nacional de San Antonio Abad del Cusco. (2024).</strong> <em>CU-575-2024-UNSAAC: temario de conocimientos por asignaturas para la prueba de admisión 2025</em>. Se identificó el documento enlazado, pero no se leyó su contenido completo. <a href="https://admision.unsaac.edu.pe/temario/">Portal institucional de procedencia</a>; <a href="https://drive.google.com/file/d/1RX31SM-sxh4TgWRhkyuBDjtlmXK7EICQ/view">documento enlazado</a>.</li>
+</ol>
+<p><a class="back" href="#inicio">Volver al inicio</a></p>
+</section>
+<footer>Propuesta editorial original para una app peruana de preparación universitaria. Las fuentes se usan para investigar contenidos, formatos y dificultades; las escenas, predicciones y microejemplos de enseñanza fueron redactados para esta propuesta.</footer>
+</main></body></html>

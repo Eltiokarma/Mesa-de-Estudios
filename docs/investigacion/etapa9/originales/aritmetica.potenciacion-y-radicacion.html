@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Propuesta de teoría investigada para una app peruana de preparación universitaria: potenciación y radicación, seis ideas, errores documentados y fuentes verificables.">
+<title>Aritmética · Potenciación y radicación · Propuesta de teoría</title>
+<style>
+:root{--ink:#202b39;--muted:#526170;--paper:#fff;--bg:#f3f5f6;--line:#d9e1e6;--brand:#155e63;--pale:#eaf5f3;--gold:#956321;--warm:#fff5e5;--red:#8c3438;--redpale:#fff0f0;--blue:#245b8e;--bluepale:#eef5fd}
+*{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:1120px;margin:32px auto 72px;padding:0 30px}header.hero{background:#173e46;color:#fff;padding:48px;border-radius:18px;margin-bottom:24px}.eyebrow{font-size:.79rem;letter-spacing:.13em;text-transform:uppercase;font-weight:750;color:#a9dcda}h1{font-size:clamp(2rem,5vw,3.3rem);line-height:1.12;margin:12px 0 18px;max-width:850px}header p{max-width:780px;color:#dfeded}.meta{font-size:.86rem;color:#c0d6da;margin-top:25px}h2{font-size:1.65rem;line-height:1.25;margin:0 0 20px;color:#173e46}h3{font-size:1.25rem;line-height:1.35;margin:28px 0 12px}h4{font-size:1rem;margin:22px 0 10px}p{margin:10px 0 16px}a{color:#126a7b;text-underline-offset:3px}a:hover{color:#093d49}section.chapter{background:var(--paper);padding:32px;border:1px solid var(--line);border-radius:14px;margin:24px 0;scroll-margin-top:20px}nav{padding:24px 28px;background:white;border:1px solid var(--line);border-radius:14px}nav ol{display:grid;grid-template-columns:1fr 1fr;gap:8px 30px;margin:0;padding-left:24px}nav a{text-decoration:none}.small,small{font-size:.88rem;color:var(--muted)}.note,.decision,.warning{padding:16px 20px;border-left:4px solid var(--brand);background:var(--pale);border-radius:0 8px 8px 0;margin:20px 0}.warning{background:var(--warm);border-color:var(--gold)}.decision{background:var(--bluepale);border-color:var(--blue)}.tag{display:inline-block;font-size:.72rem;line-height:1.35;font-weight:750;letter-spacing:.035em;border-radius:5px;padding:4px 7px;background:var(--pale);color:var(--brand)}.tag.secondary{background:var(--warm);color:var(--gold)}.tag.hyp{background:var(--bluepale);color:var(--blue)}.table-wrap{overflow-x:auto;margin:18px 0 24px;border:1px solid var(--line);border-radius:8px}table{border-collapse:collapse;width:100%;font-size:.9rem;line-height:1.5}th,td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line)}th{background:#eaf0f3;font-weight:750}tr:last-child td{border-bottom:0}td p{margin:0 0 8px}caption{text-align:left;padding:12px 14px;background:#f7f9fa;font-weight:650}.wide{min-width:800px}.errors{min-width:850px}.errors td:first-child{white-space:nowrap}.source{font-size:.83rem;white-space:nowrap}.five-lines{list-style:none;padding:0;margin:0;counter-reset:line}.five-lines li{counter-increment:line;padding:13px 0 13px 44px;position:relative;border-bottom:1px solid var(--line)}.five-lines li:before{content:counter(line,decimal-leading-zero);position:absolute;left:0;font-size:.8rem;font-weight:750;color:var(--brand);top:16px}.five-lines li:last-child{border:0}.sequence{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;list-style:none;padding:0}.sequence li{padding:14px;background:var(--pale);border-radius:8px;font-size:.9rem}.sequence b{display:block}.idea{margin:36px 0 0;padding-top:30px;border-top:3px solid var(--brand);scroll-margin-top:20px}.idea:first-of-type{margin-top:25px}.idea-title{display:flex;align-items:flex-start;gap:14px}.number{background:var(--brand);color:white;border-radius:8px;font-weight:800;min-width:42px;text-align:center;padding:5px}.idea-title h3{margin:1px 0 8px;font-size:1.5rem}.learn{font-size:1.08rem;color:#285b60}.stage{margin:25px 0}.stage h4{color:#155e63;border-bottom:1px solid var(--line);padding-bottom:7px}.stage-index{font-size:.73rem;background:var(--pale);border-radius:5px;padding:4px 6px;margin-right:7px}.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#f6f8fa;padding:15px 17px;border:1px solid var(--line);border-radius:8px}.card .label{display:block;color:var(--muted);font-size:.73rem;text-transform:uppercase;font-weight:700;letter-spacing:.04em;margin-bottom:5px}.card p{margin:0}.mission{background:var(--bluepale);border-radius:9px;padding:18px 20px}.mission p:last-child{margin-bottom:0}.prediction{padding:18px 20px;background:#faf8f2;border:1px solid #e9e1ce;border-radius:9px}.prediction ol{list-style:upper-alpha;padding-left:26px}.prediction li{padding:7px 0}.correct{font-weight:700;color:var(--brand)}.rationale{display:block;font-size:.85rem;color:var(--muted);font-weight:400}.formula{padding:14px 18px;border-radius:8px;background:#f3f6f8;margin:14px 0;font-family:"Cambria Math",Cambria,"Times New Roman",serif;font-size:1.12rem;overflow-x:auto;line-height:1.9}.formula p{margin:2px 0}.math{font-family:"Cambria Math",Cambria,"Times New Roman",serif;white-space:nowrap}sup,sub{font-size:.73em}sup{vertical-align:super}sub{vertical-align:sub}.glossary{font-size:.9rem}.glossary td:first-child{width:20%;font-weight:650}.steps{padding-left:24px}.steps li{padding:4px 0 7px}.exercise-types li{margin:9px 0}.rule-list>li{margin:12px 0}.code{font-size:.78rem;font-weight:750;color:#254c70;white-space:nowrap}.audit td:first-child{width:16%}.sources{padding-left:28px}.sources li{margin:18px 0;scroll-margin-top:25px;overflow-wrap:anywhere}.sources .access{display:block;font-size:.84rem;color:var(--muted)}footer{text-align:center;color:var(--muted);font-size:.83rem;margin-top:30px}li{padding-left:2px}strong{font-weight:720}section:target,.idea:target{outline:2px solid #83babb;outline-offset:5px}math{font-size:1.12em}a:focus-visible{outline:3px solid #c9871c;outline-offset:3px}.print-note{display:none}
+@media(max-width:720px){body{font-size:15px}main{padding:0 13px;margin-top:13px}header.hero{padding:28px 23px;border-radius:12px}section.chapter{padding:23px 18px}nav{padding:20px}nav ol{grid-template-columns:1fr;gap:7px}.cards{grid-template-columns:1fr}.sequence{grid-template-columns:1fr 1fr}.formula{padding:12px;font-size:1.04rem}th,td{padding:11px}.idea-title h3{font-size:1.3rem}.table-wrap{margin-left:-2px;margin-right:-2px}h2{font-size:1.4rem}}
+@media print{body{background:white;font-size:10.5pt;line-height:1.45}main{max-width:none;margin:0;padding:0}header.hero{border-radius:0;padding:25px;background:white;color:#173e46;border-bottom:3px solid #173e46}header p,.meta,.eyebrow{color:#34545b}h1{font-size:28pt}section.chapter{border:0;padding:18px 0;margin:10px 0;break-before:page}nav{display:none}.table-wrap{overflow:visible;border-radius:0}.wide,.errors{min-width:0}table{font-size:8.7pt}th,td{padding:7px}tr,.card,.prediction,.mission{break-inside:avoid}h2,h3,h4{break-after:avoid}.idea{break-before:page}a{color:inherit;text-decoration:none}.sources a{text-decoration:underline}.formula{overflow:visible}.print-note{display:block}.stage{margin:18px 0}.note,.warning,.decision{padding:10px 14px}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<div class="eyebrow">Aritmética · Diseño pedagógico basado en fuentes</div>
+<h1>Potenciación<br>y radicación</h1>
+<p>Propuesta de teoría para una app peruana de preparación universitaria. Seis ideas para comprender las operaciones, elegir relaciones válidas y llegar a problemas de admisión.</p>
+<div class="meta">Público: 5.º de secundaria y preuniversitario · Revisión documental: 21 de noviembre de 2026 · Documento para diseño y producción</div>
+</header>
+<nav aria-label="Índice del documento"><ol>
+<li><a href="#resumen">Resumen en cinco líneas</a></li><li><a href="#examenes">Qué se pregunta en los exámenes</a></li>
+<li><a href="#errores">Errores típicos</a></li><li><a href="#previos">Lo que se da por sabido</a></li>
+<li><a href="#ideas">Las seis ideas y sus siete momentos</a></li><li><a href="#simbolos">Letras, símbolos y unidades</a></li>
+<li><a href="#representaciones">Otras formas de explicarla</a></li><li><a href="#mundo">Datos del mundo real</a></li>
+<li><a href="#decisiones">Dudas, decisiones y revisión</a></li><li><a href="#fuentes">Fuentes completas</a></li>
+</ol></nav>
+
+<section class="chapter" id="resumen">
+<h2>1. Resumen en cinco líneas</h2>
+<ol class="five-lines">
+<li>La unidad enseña a interpretar una potencia, transformar expresiones sin cambiar su valor y reconocer las condiciones de cada transformación.</li>
+<li>Presenta las raíces como operaciones que deshacen potencias y distingue la raíz principal, las soluciones de una ecuación y la raíz entera.</li>
+<li>Desarrolla cuadrados y cubos perfectos, residuos, conteo de potencias perfectas y aproximaciones con un error controlado.</li>
+<li>Las dificultades documentadas incluyen confundir operaciones, perder el alcance de un signo y extender propiedades a casos en los que no valen.</li>
+<li>La propuesta parte de objetos, exige predicciones antes de dar reglas y reserva la frecuencia de examen como una pregunta todavía no resuelta por el corpus consultado.</li>
+</ol>
+<p class="small">Las fuentes y sus límites se detallan en las secciones 2 y 3. Las escenas, misiones, opciones y ejemplos de enseñanza son diseños originales. Los pocos cálculos que aparecen son ejemplos didácticos; no constituyen un banco final de ejercicios.</p>
+</section>
+
+<section class="chapter" id="examenes">
+<h2>2. Qué se pregunta en los exámenes</h2>
+<p>Se contrastaron temarios institucionales, documentos originales de centros preuniversitarios y preguntas identificables de admisión. Un temario acredita <strong>presencia curricular</strong>; un reactivo acredita una <strong>aparición concreta</strong>. Ninguno, por sí solo, acredita frecuencia.</p>
+<div class="warning"><strong>No es posible establecer cuáles son los tipos más frecuentes.</strong> La revisión es exploratoria y no dispone de una serie completa y comparable de exámenes por universidad, periodo y área. «Un reactivo localizado» significa eso; no significa «uno de cada examen» ni «solo existe uno». Las dificultades de la tabla son estimaciones de diseño, no resultados psicométricos.</div>
+<div class="table-wrap"><table class="wide">
+<caption>Tipos acreditados y límites de la evidencia</caption>
+<thead><tr><th>Tipo de pregunta o contenido</th><th>Universidad y evidencia</th><th>Dificultad estimada</th><th>Frecuencia verificable</th><th>Fuente y localizador</th></tr></thead>
+<tbody>
+<tr><td>Decidir si un entero es cuadrado o cubo perfecto; aplicar criterios de inclusión y exclusión.</td><td>UNI: temario CEPRE, ciclo 2023-2.</td><td>Media; alta si combina restricciones.</td><td>Contenido explícito. No hay tasa de aparición.</td><td><a href="#f01">[1]</a>, p. 3 del PDF, «Potenciación».</td></tr>
+<tr><td>Reconstruir un radicando a partir de su raíz entera y residuos; aproximar una raíz con una tolerancia dada.</td><td>UNI: temario CEPRE, ciclo 2023-2.</td><td>Media–alta: exige relacionar cantidades, no solo extraer una raíz.</td><td>Contenido explícito. No hay tasa de aparición.</td><td><a href="#f01">[1]</a>, p. 3 del PDF, «Radicación».</td></tr>
+<tr><td>Relacionar raíz cuadrada entera, residuo y número original mediante condiciones adicionales.</td><td>San Marcos: práctica de CEPREUNMSM, semana 4, 2022-II; no es un examen de admisión.</td><td>Media–alta.</td><td>Un ejercicio de práctica localizado; no mide frecuencia de admisión.</td><td><a href="#f02">[2]</a>, teoría de Aritmética y ejercicio de clase 10. Documento institucional alojado en un espejo.</td></tr>
+<tr><td>Contar cuadrados perfectos dentro de un intervalo de enteros.</td><td>San Marcos 2026-II, pregunta 33, según reproducción de Trilce. No se confirmó el área con el cuadernillo oficial.</td><td>Media: traducir los extremos del intervalo a límites para las bases.</td><td>Un reactivo localizado en una reproducción editorial. Sin tasa y sin cotejo oficial.</td><td><a href="#f05">[5]</a>, pregunta 33 de Aritmética.</td></tr>
+<tr><td>Deshacer una cadena de operaciones que incluye una cuarta potencia.</td><td>UNI 2019-1, primera prueba, pregunta 18 de Razonamiento Matemático.</td><td>Media: invertir operaciones en orden contrario y elegir la raíz compatible con el contexto.</td><td>Un reactivo oficial localizado. Sin tasa.</td><td><a href="#f03">[3]</a>, pregunta 18.</td></tr>
+<tr><td>Reconocer cuadrados perfectos dentro de un problema de otra unidad.</td><td>UNI 2019-1, primera prueba, pregunta 17; integración con probabilidad.</td><td>Media, condicionada por el requisito de probabilidad.</td><td>Una aparición transversal; no se cuenta como pregunta pura de esta unidad.</td><td><a href="#f03">[3]</a>, pregunta 17.</td></tr>
+<tr><td>Transformar una suma de fracciones con radicales mediante conjugados y cancelación de términos.</td><td>UNI 2021-1, segunda prueba, pregunta 9 de Álgebra.</td><td>Alta para esta unidad.</td><td>Un reactivo oficial localizado. Su clasificación es Álgebra.</td><td><a href="#f04">[4]</a>, pregunta 9; desarrollo en la sección de soluciones de Álgebra.</td></tr>
+<tr><td>Potenciación y radicación de números naturales.</td><td>UNSA: temario aprobado para Admisión 2027.</td><td>El temario no determina dificultad; se propone cubrir el tramo básico–medio.</td><td>Presencia curricular, sin preguntas contabilizadas.</td><td><a href="#f06">[6]</a>, Matemática, Aritmética, apartado II.</td></tr>
+<tr><td>No se asigna un tipo específico con la evidencia disponible.</td><td>UNSAAC: se localizó la página oficial y su adjunto de temario 2025, pero no se verificó el contenido del adjunto.</td><td>No determinada.</td><td>No estimable.</td><td><a href="#f07">[7]</a>. Evidencia incompleta.</td></tr>
+<tr><td>No se asigna un tipo específico con la evidencia disponible.</td><td>UNA Puno: se localizó la ruta institucional de temario, sin recuperar contenido suficiente para contrastar esta unidad.</td><td>No determinada.</td><td>No estimable.</td><td><a href="#f08">[8]</a>. Evidencia incompleta.</td></tr>
+</tbody></table></div>
+<p><strong>Prioridad propuesta:</strong> significado y condiciones de las operaciones como base; potencias perfectas, raíz entera y residuos como núcleo de Aritmética de admisión; transformaciones extensas con radicales como puente a Álgebra. La coincidencia curricular entre CEPRE UNI y CEPREUNMSM justifica cubrir el núcleo, pero no permite llamarlo «lo más frecuente».</p>
+<p class="small">Para estimar frecuencia habrá que fijar una ventana de años, reunir todos los cuadernillos disponibles, registrar ausencias, separar áreas y clasificar cada pregunta por contenido principal y contenido incidental. La frecuencia deberá mostrar numerador y denominador, no solo una etiqueta «alta» o «baja».</p>
+</section>
+
+<section class="chapter" id="errores">
+<h2>3. Errores típicos de los alumnos</h2>
+<p><span class="tag">DOCUMENTADO</span> La conducta se leyó en el estudio original, aunque alguna copia esté alojada fuera de la institución. <span class="tag secondary">DE SEGUNDA MANO</span> Solo se leyó una referencia de otro autor. <span class="tag hyp">HIPÓTESIS</span> Se propone comprobarla con alumnos.</p>
+<p>El estado califica la <strong>conducta observada</strong>, no una causa demostrada. «Por qué» distingue explicaciones de los autores de interpretaciones de diseño. Los estudios no permiten trasladar porcentajes a postulantes peruanos. Tampoco una alternativa elegida basta para diagnosticar una concepción: debe pedirse una justificación breve después de «Mira».</p>
+<div class="table-wrap"><table class="errors">
+<thead><tr><th>Código</th><th>Qué hace el alumno</th><th>Por qué: alcance de la explicación</th><th>Estado</th><th>Fuente original o consultada</th></tr></thead>
+<tbody>
+<tr id="e-mul"><td><span class="code">E-MUL</span></td><td>Multiplica la base por el exponente.</td><td>Martínez recoge una justificación por semejanza con un ejercicio anterior. No demuestra una causa universal.</td><td>Documentado</td><td>Martínez Lobo, 2010, pp. 60–61 <a href="#f09">[9]</a>; Bejarano, 2022, pp. 80–81 <a href="#f10">[10]</a>.</td></tr>
+<tr id="e-sum"><td><span class="code">E-SUM</span></td><td>Suma base y exponente.</td><td>Interpreta la escritura como una operación familiar; interpretación apoyada en la respuesta descrita, no explicación general probada.</td><td>Documentado</td><td>Martínez Lobo, 2010, pp. 60–61 <a href="#f09">[9]</a>.</td></tr>
+<tr id="e-par"><td><span class="code">E-PAR</span></td><td>No distingue el signo incluido en la base del signo que queda fuera de la potencia.</td><td>Los autores analizan dificultades para interpretar paréntesis y alcance del signo.</td><td>Documentado</td><td>Martínez Lobo, 2010, pp. 56–58 <a href="#f09">[9]</a>; Cangelosi et al., manuscrito 2011, §5.3.4 <a href="#f13">[13]</a>.</td></tr>
+<tr id="e-dist"><td><span class="code">E-DIST</span></td><td>Eleva cada sumando por separado y conserva la suma.</td><td>Los autores clasifican una aplicación indebida de propiedades.</td><td>Documentado</td><td>Gamboa Araya, Castillo Sánchez e Hidalgo Mora, 2019, §4, tabla 7 <a href="#f11">[11]</a>.</td></tr>
+<tr id="e-add"><td><span class="code">E-ADD</span></td><td>Suma exponentes al sumar términos, como si estuviera multiplicando potencias.</td><td>Traslada una regla de una operación a otra; clasificación del estudio, no prueba causal.</td><td>Documentado</td><td>Gamboa Araya et al., 2019, tabla 7 <a href="#f11">[11]</a>.</td></tr>
+<tr id="e-cero"><td><span class="code">E-CERO</span></td><td>Asigna cero o la propia base a una potencia de exponente cero.</td><td>Posible transferencia de propiedades del cero; explicación interpretativa de los autores.</td><td>Documentado</td><td>Abrate, Pochulu y Vargas, 2006, pp. 93 y 108–109 <a href="#f12">[12]</a>.</td></tr>
+<tr id="e-neg"><td><span class="code">E-NEG</span></td><td>Convierte un exponente negativo en un resultado negativo o traslada el signo a la base.</td><td>Cangelosi et al. proponen dificultades con los inversos y los usos del signo; no una causalidad experimental.</td><td>Documentado</td><td>Cangelosi et al., manuscrito 2011, §5.3.5 y §6; artículo publicado en 2013 <a href="#f13">[13]</a>.</td></tr>
+<tr id="e-omit"><td><span class="code">E-OMIT</span></td><td>Calcula como si el exponente negativo fuera positivo.</td><td>Omite el signo; el mecanismo individual requiere entrevista.</td><td>Documentado</td><td>Abrate et al., 2006, pp. 63–64 <a href="#f12">[12]</a>.</td></tr>
+<tr id="e-rec"><td><span class="code">E-REC</span></td><td>Intenta «invertir», pero coloca el exponente sobre la base u otra fracción incorrecta.</td><td>Reconoce parcialmente la idea de inverso, sin identificar qué cantidad debe invertir.</td><td>Documentado</td><td>Cangelosi et al., manuscrito 2011, §5.3.5 <a href="#f13">[13]</a>.</td></tr>
+<tr id="e-rdiv"><td><span class="code">E-RDIV</span></td><td>Divide el radicando entre el índice.</td><td>La tesis interpreta confusión entre operaciones. No entrevistó a los estudiantes para confirmar sus razones.</td><td>Documentado</td><td>Bejarano Sánchez, 2022, pp. 83 y 85 <a href="#f10">[10]</a>.</td></tr>
+<tr id="e-rsign"><td><span class="code">E-RSIGN</span></td><td>Ignora el signo negativo dentro del radical.</td><td>Puede desatender el signo o el alcance del radical; mecanismos no comprobados mediante entrevista.</td><td>Documentado</td><td>Bejarano Sánchez, 2022, pp. 79–80 y 84–85 <a href="#f10">[10]</a>.</td></tr>
+<tr id="e-ind"><td><span class="code">E-IND</span></td><td>Afirma que una raíz cuadrada escrita sin el dos «no tiene índice».</td><td>Identifica el elemento solo cuando aparece impreso.</td><td>Documentado</td><td>Bejarano Sánchez, 2022, pp. 73–75 <a href="#f10">[10]</a>.</td></tr>
+<tr id="e-doble"><td><span class="code">E-DOBLE</span></td><td>Da dos signos a una raíz que tiene un único valor; el estudio incluye raíces cúbicas negativas.</td><td>Los autores señalan reglas aplicadas fuera de contexto.</td><td>Documentado</td><td>Abrate et al., 2006, pp. 109 y 129 <a href="#f12">[12]</a>.</td></tr>
+<tr id="e-impar"><td><span class="code">E-IMPAR</span></td><td>Niega la existencia real de una raíz impar de un número negativo.</td><td>Extiende la restricción de las raíces pares.</td><td>Documentado</td><td>Abrate et al., 2006, pp. 109 y 129 <a href="#f12">[12]</a>.</td></tr>
+<tr id="e-rsuma"><td><span class="code">E-RSUMA</span></td><td>Distribuye la raíz sobre una suma o una resta.</td><td>Extiende una transformación a operaciones distintas.</td><td>Documentado</td><td>Abrate et al., 2006, pp. 99 y 113–114 <a href="#f12">[12]</a>.</td></tr>
+<tr id="e-lex"><td><span class="code">E-LEX</span></td><td>Interpreta el signo menos únicamente como resta entre dos números.</td><td>La interpretación limitada puede dificultar leer un número negativo.</td><td>De segunda mano</td><td>Vlassis, 2002 y 2004, citado en Cangelosi et al., manuscrito 2011, §2.2 <a href="#f13">[13]</a>. No se consultaron esos originales.</td></tr>
+<tr id="h-res"><td><span class="code">H-RES</span></td><td>Escribe el residuo de una raíz entera como si fueran sus cifras decimales.</td><td>Hipótesis: confunde «lo que sobra» con «la parte decimal».</td><td>Hipótesis</td><td>No se halló evidencia específica suficiente en los originales revisados.</td></tr>
+<tr id="h-term"><td><span class="code">H-TERM</span></td><td>Decide que un número es cuadrado perfecto solo por su última cifra.</td><td>Hipótesis: convierte una condición necesaria en suficiente.</td><td>Hipótesis</td><td>Pendiente de prueba con alumnos de la población objetivo.</td></tr>
+<tr id="h-red"><td><span class="code">H-RED</span></td><td>Redondea al entero más cercano cuando le piden raíz entera por defecto.</td><td>Hipótesis: mezcla dos instrucciones de aproximación.</td><td>Hipótesis</td><td>Pendiente de prueba con alumnos de la población objetivo.</td></tr>
+</tbody></table></div>
+<div class="note"><strong>Alcance local.</strong> Se encontró una tesis peruana sobre materiales didácticos para esta unidad, de Villalobos Vilchez (2024), en Huancavelica. Se leyó la ficha y el resumen, pero no el texto íntegro. No se usa para atribuir errores particulares ni para asegurar que estas escenas mejorarán el aprendizaje <a href="#f14">[14]</a>. La Universidad Nacional del estudio de Gamboa y colegas está en Costa Rica; no es la UNA Puno.</div>
+<p class="small">Los distractores de esta propuesta son adaptaciones originales de patrones documentados. Su redacción y sus números no son respuestas transcritas de los estudios. Los tres códigos de hipótesis no se usan para justificar las predicciones.</p>
+</section>
+
+<section class="chapter" id="previos">
+<h2>4. Lo que la unidad da por sabido</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Requisito</th><th>Qué debe poder hacer el alumno</th><th>Dónde se necesita</th><th>Recuperación si falta</th></tr></thead>
+<tbody>
+<tr><td>Multiplicación y división.</td><td>Leer grupos iguales, multiplicar factores y comprobar una división.</td><td>Desde la idea 1.</td><td>Reagrupar fichas y contrastar suma repetida con multiplicación.</td></tr>
+<tr><td>Enteros, regla de signos y valor absoluto.</td><td>Interpretar un número negativo, multiplicar factores negativos y reconocer la distancia al cero: |−3| = 3, |3| = 3, |0| = 0. Las barras se leen «valor absoluto».</td><td>Signos desde la idea 1; valor absoluto en la idea 4.</td><td>Microlección previa de números con signo. No fingir que existen cantidades negativas de cajas.</td></tr>
+<tr><td>Paréntesis, jerarquía y distributividad.</td><td>Reconocer qué operación se aplica a una expresión completa; expandir un producto sobre una suma.</td><td>Ideas 1 y 2.</td><td>Colorear el alcance del paréntesis y construir un rectángulo con dos partes.</td></tr>
+<tr><td>Fracciones y decimales.</td><td>Multiplicar y dividir fracciones con denominador distinto de cero; comparar decimales.</td><td>Ideas 2, 3, 5 y 6.</td><td>Fracciones de una misma unidad; productos y cocientes con apoyo visual.</td></tr>
+<tr><td>Igualdad, desigualdad y sustitución.</td><td>Comprobar una igualdad y decidir cuál de dos cantidades es menor.</td><td>Desde la idea 2; esencial en la 6.</td><td>Comparar cantidades concretas antes de introducir las letras.</td></tr>
+<tr><td>Área y volumen elementales.</td><td>Contar casillas en filas y columnas, y cubitos por capas; distinguir longitud, área y volumen.</td><td>Ideas 2, 4 y 5.</td><td>Construcción breve con unidades cuadradas y cúbicas. No exigir fórmulas de otras figuras.</td></tr>
+<tr><td>Primos, divisibilidad y descomposición.</td><td>Expresar un entero positivo como producto de factores primos.</td><td>Tramo de potencias perfectas de la idea 6.</td><td>Refuerzo previo a ese tramo; no frenar las primeras cinco ideas.</td></tr>
+</tbody></table></div>
+<p>No se presuponen logaritmos, números complejos, ecuaciones cuadráticas generales ni memorización de tablas extensas de potencias. Se trabaja con números reales, es decir, los números que se usan para representar cantidades y posiciones en la recta numérica. La unidad presenta las convenciones nuevas cuando hacen falta.</p>
+<div class="decision"><strong>Contrato de los ejercicios.</strong> En «Así se resuelve» y «Ahora tú» se entregan los datos y un repertorio breve de fórmulas ya estudiadas, con sus condiciones. El alumno debe elegir, justificar y comprobar. En «Predice» se entrega la información previa necesaria, pero se reserva la relación nueva que se está investigando.</div>
+</section>
+
+<section class="chapter" id="ideas">
+<h2>5. Las ideas, en orden</h2>
+<p>Las seis ideas son bloques conceptuales; no equivalen a seis pantallas ni a seis sesiones de igual duración. Cada una respeta la misma secuencia. Las tablas de opciones, las claves y las notas de diseño son para el equipo: al alumno no se le muestran la clave ni los códigos antes de «Mira».</p>
+<ol class="sequence"><li><b>1 · Qué se repite</b>Significado, base y signo.</li><li><b>2 · Agrupar sin cambiar</b>Propiedades y límites.</li><li><b>3 · Volver y reducir</b>Cero y exponentes negativos.</li><li><b>4 · Deshacer una potencia</b>Raíces y existencia.</li><li><b>5 · Transformar raíces</b>Radicales y exponentes racionales.</li><li><b>6 · La raíz y lo que sobra</b>Raíz entera, criterios y cotas.</li></ol>
+<p class="small">Todas las cantidades de las misiones son datos de diseño, salvo donde se cita expresamente una ficha real. El programa debe verificar la condición final, aceptar soluciones equivalentes y permitir reiniciar. La escena puede realizarse en 2D; no necesita conexión ni una simulación física compleja.</p>
+
+<article class="idea" id="idea1" data-idea="1">
+<div class="idea-title"><span class="number">1</span><div><h3>Qué se repite</h3><p><strong>Pregunta que responde:</strong> ¿Qué indica realmente el exponente y hasta dónde llega la base?</p></div></div>
+<p class="learn">El alumno interpreta una potencia como un producto de factores iguales y distingue un signo incluido en la base de otro situado fuera.</p>
+<p><strong>Objeto de la primera pantalla:</strong> un mostrador de bodega con cajas, paquetes y sobres de infusión. Permite reconocer agrupaciones antes de ver símbolos; no se atribuye este embalaje a una marca real.</p>
+<div class="stage" data-stage="lee"><h4><span class="stage-index">1</span>Lee · Cuatro tarjetas</h4><div class="cards">
+<div class="card"><span class="label">Tarjeta 1</span><p>En esta bodega se cuentan sobres por paquetes y paquetes por cajas. Cada nivel puede reunir grupos iguales.</p></div>
+<div class="card"><span class="label">Tarjeta 2</span><p>Un factor es cada número que participa en una multiplicación. El signo × se lee «por».</p></div>
+<div class="card"><span class="label">Tarjeta 3</span><p>En 4<sup>2</sup>, que se lee «cuatro elevado a dos», 4 es la base y 2 es el exponente. El número pequeño está escrito arriba.</p></div>
+<div class="card"><span class="label">Tarjeta 4</span><p>Los paréntesis agrupan lo que se toma como una sola base. Un signo menos puede quedar dentro o fuera de ellos.</p></div>
+</div></div>
+<div class="stage" data-stage="juega"><h4><span class="stage-index">2</span>Juega · Completar un pedido</h4><div class="mission">
+<p><strong>Acción:</strong> arrastrar cuatro sobres a cada paquete y cuatro paquetes a una caja. Solo se permiten agrupaciones positivas.</p>
+<p><strong>Misión:</strong> entregar exactamente 16 sobres usando una caja con cuatro paquetes iguales, sin sobres sueltos.</p>
+<p><strong>Comprobación:</strong> hay cuatro paquetes, cada uno contiene cuatro sobres y el total es 16. La respuesta visual abre los paquetes para permitir contar; no presenta reglas de signos.</p>
+</div><p class="small">Queda sin mostrar qué ocurre al usar una base negativa. El conteo de objetos no se extenderá literalmente a cantidades negativas.</p></div>
+<div class="stage" data-stage="predice"><h4><span class="stage-index">3</span>Predice · Una base con signo</h4><div class="prediction">
+<p>La etiqueta matemática cambia a <span class="math">(−3)<sup>2</sup></span>, «menos tres, todo entre paréntesis, elevado a dos». ¿Qué valor tendrá?</p>
+<ol class="options">
+<li data-error="E-PAR">−9.<span class="rationale"><a href="#e-par">E-PAR</a>: conserva el menos por fuera aunque está dentro de la base.</span></li>
+<li data-correct="true" class="correct">9.<span class="rationale">Opción correcta; la comprobación se reserva para «Mira».</span></li>
+<li data-error="E-MUL">−6.<span class="rationale"><a href="#e-mul">E-MUL</a>: multiplica la base por el exponente.</span></li>
+<li data-error="E-SUM">−1.<span class="rationale"><a href="#e-sum">E-SUM</a>: suma base y exponente.</span></li>
+</ol></div></div>
+<div class="stage" data-stage="mira"><h4><span class="stage-index">4</span>Mira · Abrir la escritura</h4>
+<p>Se despliega <span class="math">(−3) × (−3)</span>. Se aplica la multiplicación de números con signo que ya se conoce. Luego se compara con <span class="math">−(3 × 3)</span>: el signo exterior cambia el resultado de la potencia completa. Se pide señalar cuál de estas dos escrituras representa la etiqueta original.</p></div>
+<div class="stage" data-stage="regla"><h4><span class="stage-index">5</span>La regla · Contar factores, no sumar ni multiplicar el exponente</h4>
+<p>La letra <i>a</i> representa la base, un número real; la letra <i>n</i> representa aquí un exponente entero positivo. <span class="math">a<sup>n</sup></span> se lee «a elevado a ene» y es el producto de <i>n</i> factores iguales a <i>a</i>. El símbolo = se lee «es igual a».</p>
+<div class="formula"><p><i>a</i><sup><i>n</i></sup> = <i>a</i> × <i>a</i> × … × <i>a</i> &nbsp; (hay <i>n</i> factores)</p><p><i>a</i><sup>1</sup> = <i>a</i> &nbsp; · &nbsp; 0<sup><i>n</i></sup> = 0 si <i>n</i> es positivo.</p></div>
+<p>Los puntos suspensivos, …, indican que se continúa el mismo patrón. Una base negativa da resultado positivo con exponente par y negativo con exponente impar: cada pareja de factores negativos produce un factor positivo. Para <span class="math">−a<sup>n</sup></span>, se calcula primero la potencia y luego se toma su opuesto. Los paréntesis fijan la base completa; no son un adorno.</p>
+<p>«Al cuadrado» significa exponente dos y «al cubo», exponente tres. Esta interpretación como producto repetido se limita por ahora a exponentes enteros positivos. El exponente cero y los negativos se justificarán en la idea 3.</p>
+<div class="table-wrap"><table class="glossary"><thead><tr><th>Palabra nueva</th><th>Explicación cotidiana</th><th>Tres ejemplos</th></tr></thead><tbody>
+<tr data-term="base"><td>Base</td><td>El número completo que vuelve a aparecer como factor.</td><td>En 5<sup>3</sup>: 5; en (−2)<sup>4</sup>: −2; en (1/2)<sup>3</sup>: 1/2.</td></tr>
+<tr data-term="exponente"><td>Exponente</td><td>En este primer tramo, cuenta cuántos factores iguales se usan.</td><td>En 7<sup>2</sup>: dos factores; en 3<sup>4</sup>: cuatro; en 8<sup>1</sup>: uno.</td></tr>
+<tr data-term="potencia"><td>Potencia</td><td>La escritura compacta del producto y el número que se obtiene al calcularlo.</td><td>2<sup>3</sup>; (−5)<sup>2</sup>; (3/4)<sup>2</sup>.</td></tr>
+<tr data-term="factor"><td>Factor</td><td>Cada pieza numérica de una multiplicación.</td><td>El 6 de 6 × 2; cada 3 de 3 × 3 × 3; cada −2 de (−2) × (−2).</td></tr>
+</tbody></table></div></div>
+<div class="stage" data-stage="resuelve"><h4><span class="stage-index">6</span>Así se resuelve · El alcance del signo</h4>
+<p><strong>Ejemplo propio:</strong> comparar <span class="math">(−2)<sup>4</sup></span> y <span class="math">−2<sup>4</sup></span>. Se entrega la definición de potencia y la regla de signos.</p>
+<ol class="steps"><li>Se identifica la base: −2 en la primera expresión y 2 en la segunda.</li><li>Se desarrolla la primera como cuatro factores −2. Se agrupan por parejas y se obtiene 16.</li><li>Se desarrolla la potencia de la segunda como cuatro factores 2; el signo exterior convierte 16 en −16.</li><li>Se comprueba que el cambio provino de los paréntesis, no de una regla distinta de multiplicación.</li></ol>
+</div>
+<div class="stage" data-stage="ahora"><h4><span class="stage-index">7</span>Ahora tú · Progresión de ejercicios</h4><ol class="exercise-types">
+<li><strong>Inicial:</strong> relacionar agrupaciones, producto desarrollado y potencia; identificar la base completa.</li><li><strong>Intermedio:</strong> comparar expresiones que solo cambian en paréntesis o signo y explicar la diferencia.</li><li><strong>Intermedio:</strong> decidir el signo de una potencia usando la paridad, sin calcular su magnitud.</li><li><strong>Puente a admisión:</strong> evaluar afirmaciones sobre potencias de enteros con exponentes positivos; justificar un contraejemplo. No se asegura que este formato tenga una frecuencia específica.</li>
+</ol></div>
+</article>
+
+<article class="idea" id="idea2" data-idea="2">
+<div class="idea-title"><span class="number">2</span><div><h3>Agrupar sin cambiar</h3><p><strong>Pregunta que responde:</strong> ¿Cuándo se pueden juntar exponentes y cuándo no?</p></div></div>
+<p class="learn">El alumno deriva las propiedades contando factores y decide qué operación permite aplicarlas.</p>
+<p><strong>Objeto de la primera pantalla:</strong> bandejas con panes sobre la mesa de una panadería. Se parte de la organización del pedido; después se representa la agrupación con números.</p>
+<div class="stage" data-stage="lee"><h4><span class="stage-index">1</span>Lee · Cuatro tarjetas</h4><div class="cards">
+<div class="card"><span class="label">Tarjeta 1</span><p>Un mismo pedido puede acomodarse en grupos de diferentes tamaños sin cambiar la cantidad de panes.</p></div>
+<div class="card"><span class="label">Tarjeta 2</span><p>El producto es lo que se obtiene al multiplicar. El cociente es lo que se obtiene al dividir.</p></div>
+<div class="card"><span class="label">Tarjeta 3</span><p>Una potencia puede estar dentro de otra. En (2<sup>2</sup>)<sup>3</sup>, el paréntesis agrupa la potencia interior.</p></div>
+<div class="card"><span class="label">Tarjeta 4</span><p>Dos expresiones equivalentes tienen el mismo valor. Los signos de operación y los paréntesis indican cómo comprobarlo.</p></div>
+</div></div>
+<div class="stage" data-stage="juega"><h4><span class="stage-index">2</span>Juega · Reorganizar un pedido</h4><div class="mission">
+<p><strong>Acción:</strong> mover 16 panes entre una disposición de cuatro bandejas con cuatro panes y otra de dos grupos, cada uno con dos bandejas de cuatro panes.</p>
+<p><strong>Misión:</strong> completar las dos disposiciones con los mismos panes y asociar cada una a su producto de factores.</p>
+<p><strong>Comprobación:</strong> se conservan las 16 piezas, se cumplen las capacidades y la escritura coincide con los niveles de agrupación. Solo se muestran productos; no se eleva una suma.</p>
+</div></div>
+<div class="stage" data-stage="predice"><h4><span class="stage-index">3</span>Predice · Una suma dentro de la base</h4><div class="prediction">
+<p>En una nueva plantilla cuadrada, cada lado tendrá dos tramos de 2 y 3 casillas. El número de casillas será <span class="math">(2 + 3)<sup>2</sup></span>, «la suma de dos y tres, toda elevada al cuadrado». ¿Cuántas habrá?</p>
+<ol class="options">
+<li data-error="E-DIST">13.<span class="rationale"><a href="#e-dist">E-DIST</a>: suma los cuadrados de los dos tramos y omite las partes rectangulares.</span></li>
+<li data-error="E-MUL">10.<span class="rationale"><a href="#e-mul">E-MUL</a>: multiplica la suma por el exponente.</span></li>
+<li data-correct="true" class="correct">25.<span class="rationale">Opción correcta.</span></li>
+<li data-error="E-SUM">7.<span class="rationale"><a href="#e-sum">E-SUM</a>: suma la base total y el exponente.</span></li>
+</ol></div></div>
+<div class="stage" data-stage="mira"><h4><span class="stage-index">4</span>Mira · Las piezas que faltaban</h4>
+<p>La plantilla muestra cinco filas de cinco casillas. Se colorean cuatro partes: un cuadrado de lado dos, otro de lado tres y dos rectángulos de lados dos y tres. Al elegir 13, quedan sin contar los dos rectángulos. La comprobación explica por qué no se puede trasladar una propiedad del producto a una suma.</p></div>
+<div class="stage" data-stage="regla"><h4><span class="stage-index">5</span>La regla · Primero identificar la operación</h4>
+<p><i>a</i> y <i>b</i> son bases reales; <i>m</i> y <i>n</i> son exponentes enteros positivos. El signo · también se lee «por»; la barra / se lee «dividido entre». El signo ≠ significa «distinto de» y &gt; significa «mayor que».</p>
+<div class="formula">
+<p><i>a</i><sup><i>m</i></sup> · <i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>+<i>n</i></sup></p>
+<p><i>a</i><sup><i>m</i></sup> / <i>a</i><sup><i>n</i></sup> = <i>a</i><sup><i>m</i>−<i>n</i></sup> &nbsp; si <i>a</i> ≠ 0 y <i>m</i> &gt; <i>n</i>.</p>
+<p>(<i>a</i><sup><i>m</i></sup>)<sup><i>n</i></sup> = <i>a</i><sup><i>m</i>·<i>n</i></sup></p>
+<p>(<i>a</i>·<i>b</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup>·<i>b</i><sup><i>n</i></sup> &nbsp; · &nbsp; (<i>a</i>/<i>b</i>)<sup><i>n</i></sup> = <i>a</i><sup><i>n</i></sup>/<i>b</i><sup><i>n</i></sup> si <i>b</i> ≠ 0.</p>
+</div>
+<p>La primera relación junta listas de factores iguales; la segunda cancela factores comunes no nulos; la tercera repite una lista completa. Las dos últimas reordenan los factores de un producto. Por eso hay que comprobar <strong>la misma base</strong> o <strong>el mismo exponente</strong>, según la propiedad elegida. Esta etapa restringe el cociente a <i>m</i> mayor que <i>n</i>; la idea 3 completará los demás casos.</p>
+<p>Ni sumar potencias permite sumar exponentes ni elevar una suma permite elevar por separado sus términos. Aplicando la distributividad se obtienen, con <i>a</i> y <i>b</i> reales:</p>
+<div class="formula"><p>(<i>a</i> + <i>b</i>)<sup>2</sup> = <i>a</i><sup>2</sup> + 2<i>a</i><i>b</i> + <i>b</i><sup>2</sup></p><p>(<i>a</i> − <i>b</i>)(<i>a</i> + <i>b</i>) = <i>a</i><sup>2</sup> − <i>b</i><sup>2</sup>.</p></div>
+<p>La escritura <span class="math">2ab</span> significa dos por <i>a</i> por <i>b</i>. En la segunda identidad, los dos productos cruzados tienen signos opuestos y se cancelan. Ambas identidades se entregan con su desarrollo; no se exigen como lemas memorizados.</p>
+<div class="table-wrap"><table class="glossary"><thead><tr><th>Palabra nueva</th><th>Explicación cotidiana</th><th>Tres ejemplos</th></tr></thead><tbody>
+<tr data-term="producto"><td>Producto</td><td>El resultado de juntar cantidades mediante multiplicación.</td><td>3 × 5; 2<sup>2</sup> × 2<sup>3</sup>; (−2) × 7.</td></tr>
+<tr data-term="cociente"><td>Cociente</td><td>El resultado de repartir o comparar mediante una división.</td><td>12/3; 5<sup>4</sup>/5<sup>2</sup>; (1/2)/3.</td></tr>
+<tr data-term="potencia-potencia"><td>Potencia de una potencia</td><td>Una agrupación completa que vuelve a repetirse como factor.</td><td>(2<sup>3</sup>)<sup>2</sup>; (5<sup>2</sup>)<sup>3</sup>; ((−3)<sup>2</sup>)<sup>2</sup>.</td></tr>
+<tr data-term="equivalentes"><td>Expresiones equivalentes</td><td>Dos escrituras que conservan el mismo valor bajo las condiciones indicadas.</td><td>2<sup>2</sup>·2<sup>3</sup> y 2<sup>5</sup>; (3<sup>2</sup>)<sup>2</sup> y 3<sup>4</sup>; (2·5)<sup>3</sup> y 2<sup>3</sup>·5<sup>3</sup>.</td></tr>
+</tbody></table></div></div>
+<div class="stage" data-stage="resuelve"><h4><span class="stage-index">6</span>Así se resuelve · Elegir antes de calcular</h4>
+<p><strong>Ejemplo propio:</strong> simplificar <span class="math">(2<sup>3</sup>·2<sup>4</sup>)/2<sup>2</sup></span>. Se entregan las propiedades anteriores.</p>
+<ol class="steps"><li>Se identifica un producto de potencias con base común en el numerador.</li><li>Se juntan sus factores: queda 2<sup>7</sup>.</li><li>Se verifica que la base del denominador no es cero y que el exponente de arriba es mayor. Al cancelar dos factores, queda 2<sup>5</sup>.</li><li>La comprobación desarrolla los factores que permanecen. No es necesario convertir la respuesta en un entero para demostrar equivalencia.</li></ol>
+</div>
+<div class="stage" data-stage="ahora"><h4><span class="stage-index">7</span>Ahora tú · Progresión de ejercicios</h4><ol class="exercise-types">
+<li><strong>Inicial:</strong> escoger una propiedad y señalar qué condición permite usarla.</li><li><strong>Intermedio:</strong> simplificar productos, cocientes y potencias anidadas de exponentes positivos.</li><li><strong>Intermedio:</strong> detectar una transformación inválida que confunde suma con producto y corregirla mediante factores.</li><li><strong>Puente a admisión:</strong> comparar expresiones extensas sin desarrollarlas por completo, conservando signos y paréntesis; explicar por qué dos caminos producen lo mismo.</li>
+</ol></div>
+</article>
+
+<article class="idea" id="idea3" data-idea="3">
+<div class="idea-title"><span class="number">3</span><div><h3>Volver y reducir</h3><p><strong>Pregunta que responde:</strong> ¿Qué deben significar los exponentes cero y negativos para conservar las propiedades?</p></div></div>
+<p class="learn">El alumno justifica el exponente cero y los negativos mediante cocientes y operaciones inversas, sin convertir un signo menos en una regla de signos de la base.</p>
+<p><strong>Objeto de la primera pantalla:</strong> una fotocopiadora de un negocio cercano a un colegio y un pequeño volante cuadrado de 4 cm de lado. El control modifica longitudes; se aclara que el área cambia de otra manera.</p>
+<div class="stage" data-stage="lee"><h4><span class="stage-index">1</span>Lee · Cuatro tarjetas</h4><div class="cards">
+<div class="card"><span class="label">Tarjeta 1</span><p>La copia puede ampliar o reducir el volante. Se sigue la longitud de su lado, medida en centímetros.</p></div>
+<div class="card"><span class="label">Tarjeta 2</span><p>Un factor de escala compara una longitud nueva con la original. El volante conserva su forma.</p></div>
+<div class="card"><span class="label">Tarjeta 3</span><p>Una secuencia puede avanzar y después deshacer sus pasos. La comparación siempre usa el mismo volante original.</p></div>
+<div class="card"><span class="label">Tarjeta 4</span><p>También se escriben exponentes cero y negativos. 2<sup>−3</sup> se lee «dos elevado a menos tres»; el menos está en el exponente.</p></div>
+</div></div>
+<div class="stage" data-stage="juega"><h4><span class="stage-index">2</span>Juega · Recuperar el tamaño original</h4><div class="mission">
+<p><strong>Acción:</strong> aplicar dos ampliaciones sucesivas que duplican cada lado y luego elegir reducciones que dividan cada lado entre dos.</p>
+<p><strong>Misión:</strong> volver exactamente al volante de 4 cm de lado, tras haber alcanzado el de 16 cm.</p>
+<p><strong>Comprobación:</strong> el lado vuelve a 4 cm y la copia se superpone al original. El registro muestra operaciones y medidas, todavía sin asignar una regla a los exponentes nuevos.</p>
+</div><p class="small">El juego no muestra tres reducciones sucesivas desde el original. Las medidas caben en una hoja corriente; no se simulan copias de tamaños imposibles.</p></div>
+<div class="stage" data-stage="predice"><h4><span class="stage-index">3</span>Predice · Extender la escritura</h4><div class="prediction">
+<p>Ahora se necesita extender la notación de potencias para describir más pasos de reducción. ¿Qué valor debería tener <span class="math">2<sup>−3</sup></span> para que las propiedades ya estudiadas sigan siendo coherentes?</p>
+<ol class="options">
+<li data-error="E-NEG">−8.<span class="rationale"><a href="#e-neg">E-NEG</a>: traslada el signo del exponente al valor o a la base.</span></li>
+<li data-error="E-OMIT">8.<span class="rationale"><a href="#e-omit">E-OMIT</a>: omite el signo del exponente.</span></li>
+<li data-error="E-REC">3/2.<span class="rationale"><a href="#e-rec">E-REC</a>: construye un cociente con exponente y base en lugar de invertir la potencia.</span></li>
+<li data-correct="true" class="correct">1/8.<span class="rationale">Opción correcta.</span></li>
+</ol></div></div>
+<div class="stage" data-stage="mira"><h4><span class="stage-index">4</span>Mira · Un paso menos</h4>
+<p>Se parte de 2<sup>3</sup>, 2<sup>2</sup> y 2<sup>1</sup>. En cada paso se reduce el exponente en uno y se divide el valor entre dos. La continuidad lleva al exponente cero y después a −1, −2 y −3. La copia acompaña solo los factores positivos: se reduce, nunca obtiene una longitud negativa.</p></div>
+<div class="stage" data-stage="regla"><h4><span class="stage-index">5</span>La regla · Conservar los cocientes</h4>
+<p>Para una base <i>a</i> distinta de cero, dividir una potencia entre sí produce uno. Esa coherencia determina el exponente cero. Continuar cancelando factores cuando faltan en el numerador determina los exponentes negativos:</p>
+<div class="formula"><p><i>a</i><sup>0</sup> = 1 si <i>a</i> ≠ 0.</p><p><i>a</i><sup>−<i>n</i></sup> = 1/<i>a</i><sup><i>n</i></sup> si <i>a</i> ≠ 0 y <i>n</i> es entero positivo.</p><p>(<i>a</i>/<i>b</i>)<sup>−<i>n</i></sup> = (<i>b</i>/<i>a</i>)<sup><i>n</i></sup> si <i>a</i> ≠ 0 y <i>b</i> ≠ 0.</p></div>
+<p>El recíproco de un número no nulo es el que, multiplicado por él, da uno. Un exponente negativo exige el recíproco de la potencia completa; no un cambio automático del signo del resultado. El recíproco de una cantidad negativa sigue siendo negativo.</p>
+<p>Ahora <i>m</i> y <i>n</i> pueden ser exponentes enteros positivos, cero o negativos. Las propiedades de la idea 2 se mantienen para bases no nulas; en particular, el cociente <span class="math">a<sup>m</sup>/a<sup>n</sup> = a<sup>m−n</sup></span> ya no exige que <i>m</i> sea mayor. Toda división sigue exigiendo denominador distinto de cero.</p>
+<p><strong>El cero requiere atención:</strong> 0 elevado a un entero positivo vale 0; 0<sup>0</sup> no se define en esta unidad; 0 elevado a un entero negativo no está definido porque obligaría a dividir entre cero. No se ofrece el exponente cero como una regla sin condición.</p>
+<p>Una potencia no siempre aumenta la base. Si la base positiva es menor que uno, multiplicar por ella reduce el valor. Si es uno, lo conserva. Para bases negativas, además hay que atender a la paridad del exponente.</p>
+<div class="table-wrap"><table class="glossary"><thead><tr><th>Palabra nueva</th><th>Explicación cotidiana</th><th>Tres ejemplos</th></tr></thead><tbody>
+<tr data-term="reciproco"><td>Recíproco</td><td>El compañero que deja el producto en uno.</td><td>4 y 1/4; 2/3 y 3/2; −5 y −1/5.</td></tr>
+<tr data-term="exponente-cero"><td>Exponente cero</td><td>La escritura que conserva el valor uno en la cadena de cocientes de una base no nula.</td><td>7<sup>0</sup>; (−3)<sup>0</sup>; (2/5)<sup>0</sup>.</td></tr>
+<tr data-term="exponente-negativo"><td>Exponente negativo</td><td>Una indicación de invertir la potencia correspondiente de exponente positivo.</td><td>2<sup>−4</sup>; 10<sup>−2</sup>; (3/2)<sup>−3</sup>.</td></tr>
+<tr data-term="factor-escala"><td>Factor de escala</td><td>Cuántas veces mide una longitud nueva respecto de la original.</td><td>2 duplica un lado; 1 lo conserva; 1/2 lo reduce a la mitad.</td></tr>
+</tbody></table></div></div>
+<div class="stage" data-stage="resuelve"><h4><span class="stage-index">6</span>Así se resuelve · Invertir la cantidad correcta</h4>
+<p><strong>Ejemplo propio:</strong> transformar <span class="math">(2/3)<sup>−2</sup></span>. Se entregan la definición de exponente negativo y la potencia de un cociente.</p>
+<ol class="steps"><li>Se identifica la base completa: la fracción 2/3, distinta de cero.</li><li>Se escribe el recíproco de su cuadrado: <span class="math">1/(2/3)<sup>2</sup></span>.</li><li>Se invierte la fracción completa y queda <span class="math">(3/2)<sup>2</sup> = 9/4</span>.</li><li>Se comprueba multiplicando el resultado por <span class="math">(2/3)<sup>2</sup></span>: el producto es uno. Ese es el criterio de recíproco.</li></ol>
+</div>
+<div class="stage" data-stage="ahora"><h4><span class="stage-index">7</span>Ahora tú · Progresión de ejercicios</h4><ol class="exercise-types">
+<li><strong>Inicial:</strong> completar cadenas de potencias y explicar por qué el exponente cero no produce cero.</li><li><strong>Intermedio:</strong> transformar exponentes negativos de bases enteras y fraccionarias, manteniendo los paréntesis.</li><li><strong>Intermedio:</strong> distinguir una expresión definida de otra que exige dividir entre cero.</li><li><strong>Puente a admisión:</strong> simplificar cocientes con exponentes enteros, comparar valores sin grandes cálculos y justificar si aumentar el exponente aumenta o reduce la cantidad.</li>
+</ol></div>
+</article>
+
+<article class="idea" id="idea4" data-idea="4">
+<div class="idea-title"><span class="number">4</span><div><h3>Deshacer una potencia</h3><p><strong>Pregunta que responde:</strong> ¿Qué número produjo esta potencia y qué valor representa el radical?</p></div></div>
+<p class="learn">El alumno reconoce la raíz principal, comprueba su existencia en los reales y la distingue de las soluciones de una ecuación.</p>
+<p><strong>Objeto de la primera pantalla:</strong> cerámicos cuadrados junto a un albañil que prepara una superficie. Se usan piezas enteras iguales y se cuenta el lado en piezas, sin atribuir al modelo juntas ni medidas de una instalación real.</p>
+<div class="stage" data-stage="lee"><h4><span class="stage-index">1</span>Lee · Cuatro tarjetas</h4><div class="cards">
+<div class="card"><span class="label">Tarjeta 1</span><p>Un cuadrado tiene tantas filas de piezas como piezas tiene cada fila. Conocer el total puede ayudar a recuperar el lado.</p></div>
+<div class="card"><span class="label">Tarjeta 2</span><p>La raíz busca un número a partir de una potencia conocida. El número escrito dentro del radical se llama radicando.</p></div>
+<div class="card"><span class="label">Tarjeta 3</span><p>√25 se lee «raíz cuadrada de veinticinco». ∛27 se lee «raíz cúbica de veintisiete». El índice indica qué potencia se está deshaciendo.</p></div>
+<div class="card"><span class="label">Tarjeta 4</span><p>El radical representa una raíz principal. Hallar ese valor y buscar todas las soluciones de una ecuación son instrucciones diferentes.</p></div>
+</div></div>
+<div class="stage" data-stage="juega"><h4><span class="stage-index">2</span>Juega · Un cuadrado sin sobrantes</h4><div class="mission">
+<p><strong>Acción:</strong> arrastrar filas o ajustar un control entero del número de piezas por lado.</p>
+<p><strong>Misión:</strong> acomodar 25 piezas en un solo cuadrado completo, sin piezas sueltas ni huecos.</p>
+<p><strong>Comprobación:</strong> todas las filas tienen la misma longitud, el número de filas coincide con esa longitud y se usan las 25 piezas.</p>
+</div><p class="small">El juego muestra una raíz cuadrada de una cantidad positiva. No muestra raíces de números negativos ni decide casos de índice impar.</p></div>
+<div class="stage" data-stage="predice"><h4><span class="stage-index">3</span>Predice · Un caso que el piso no representa</h4><div class="prediction">
+<p>Fuera del modelo de piezas, se pide <span class="math">∛(−64)</span>, «raíz cúbica de menos sesenta y cuatro». ¿Cuál será su valor en los números reales?</p>
+<ol class="options">
+<li data-error="E-IMPAR">No existe un valor real.<span class="rationale"><a href="#e-impar">E-IMPAR</a>: extiende a una raíz impar una restricción de las raíces pares.</span></li>
+<li data-error="E-RSIGN">4.<span class="rationale"><a href="#e-rsign">E-RSIGN</a>: ignora el signo del radicando. Se adapta el patrón a este caso impar.</span></li>
+<li data-correct="true" class="correct">−4.<span class="rationale">Opción correcta.</span></li>
+<li data-error="E-DOBLE">4 y −4.<span class="rationale"><a href="#e-doble">E-DOBLE</a>: atribuye dos valores al radical.</span></li>
+</ol></div></div>
+<div class="stage" data-stage="mira"><h4><span class="stage-index">4</span>Mira · Comprobar con la potencia</h4>
+<p>Se prueban los candidatos elevándolos al cubo. Tres factores −4 producen −64; tres factores 4 producen 64. La comparación usa signos y paridad ya estudiados. Se explica que un radicando negativo es un número legítimo, aunque no represente una cantidad negativa de cerámicos ni un volumen físico negativo.</p></div>
+<div class="stage" data-stage="regla"><h4><span class="stage-index">5</span>La regla · Un símbolo, un valor principal</h4>
+<p><i>A</i>, «a mayúscula», es el radicando; <i>q</i>, «cu», es un índice entero de dos o más; <i>x</i>, «equis», es el número buscado. Se lee «raíz de índice cu de a mayúscula». El signo ≥ significa «mayor o igual que» y el signo &lt; significa «menor que».</p>
+<div class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mroot><mi>A</mi><mi>q</mi></mroot><mo>=</mo><mi>x</mi></mrow></math> significa que <i>x</i><sup><i>q</i></sup> = <i>A</i>, con las condiciones que siguen.</div>
+<ul class="rule-list">
+<li><strong>Índice par:</strong> se exige <i>A</i> ≥ 0 y el radical representa el único <i>x</i> ≥ 0 que cumple la potencia. Si <i>A</i> &lt; 0, no existe esa raíz en los reales.</li>
+<li><strong>Índice impar:</strong> cualquier radicando real tiene una única raíz real. Su signo coincide con el del radicando.</li>
+<li><strong>Índice dos:</strong> se omite por convenio. √<i>A</i> significa raíz cuadrada, no una raíz «sin índice».</li>
+<li><strong>Radicando cero:</strong> su raíz es cero para cualquier índice admitido. No es necesario que el radicando sea estrictamente positivo para que exista una raíz par.</li>
+</ul>
+<p>El símbolo <span class="math">|a|</span> se lee «valor absoluto de a»: la distancia de ese número al cero, siempre no negativa. Para índice par, la raíz principal de <i>a</i> elevado al índice es <span class="math">|a|</span>; para índice impar es <i>a</i>. En particular, <span class="math">√(a<sup>2</sup>) = |a|</span>, no siempre <i>a</i>.</p>
+<p><strong>Radical y ecuación:</strong> √9 representa 3. La ecuación <span class="math">x<sup>2</sup> = 9</span> tiene dos soluciones: 3 y −3. La escritura <span class="math">x = ±3</span> se lee «equis es más o menos tres» y resume esas dos soluciones; no redefine √9. En general, una ecuación de potencia par con radicando positivo tiene dos soluciones reales opuestas; con radicando cero tiene una; con radicando negativo no tiene soluciones reales. Con potencia impar tiene una solución real.</p>
+<p>Un entero no negativo es una potencia perfecta de un índice dado cuando se obtiene elevando un entero no negativo a ese índice. Se incluyen cero y uno en esta convención. «Cuadrado perfecto» y «cubo perfecto» se refieren a los índices dos y tres.</p>
+<p>En el modelo geométrico, <i>ℓ</i>, «ele», es la longitud del lado; <i>S</i>, «ese», es el área; <i>V</i>, «uve», es el volumen. Así, <span class="math">S = ℓ<sup>2</sup></span> y <span class="math">V = ℓ<sup>3</sup></span>; recuperar una longitud exige la raíz correspondiente. Un área en centímetros cuadrados da una longitud en centímetros, y un volumen en centímetros cúbicos también. Un índice cuatro no requiere imaginar un objeto físico de cuatro dimensiones.</p>
+<div class="table-wrap"><table class="glossary"><thead><tr><th>Palabra nueva</th><th>Explicación cotidiana</th><th>Tres ejemplos</th></tr></thead><tbody>
+<tr data-term="radicando"><td>Radicando</td><td>La cantidad de partida que está dentro del signo de raíz.</td><td>25 en √25; −8 en ∛(−8); 16 en la raíz cuarta de 16.</td></tr>
+<tr data-term="indice"><td>Índice</td><td>Indica qué potencia se intenta deshacer.</td><td>2 en √36, aunque no se imprima; 3 en ∛27; 4 en la raíz cuarta de 81.</td></tr>
+<tr data-term="raiz-principal"><td>Raíz principal</td><td>El único valor que corresponde al radical según su convenio de signo.</td><td>√16 = 4; ∛(−27) = −3; la raíz cuarta de 0 es 0.</td></tr>
+<tr data-term="potencia-perfecta"><td>Potencia perfecta</td><td>Un entero que se arma exactamente con una potencia de otro entero.</td><td>49 es un cuadrado perfecto; 125 es un cubo perfecto; 81 es una cuarta potencia perfecta.</td></tr>
+</tbody></table></div></div>
+<div class="stage" data-stage="resuelve"><h4><span class="stage-index">6</span>Así se resuelve · No borrar el convenio</h4>
+<p><strong>Ejemplo propio:</strong> evaluar <span class="math">√((−6)<sup>2</sup>)</span> y compararlo con las soluciones de <span class="math">x<sup>2</sup> = 36</span>. Se entregan la definición de raíz principal y la condición del índice par.</p>
+<ol class="steps"><li>El radicando de la primera expresión es (−6)<sup>2</sup>, que vale 36.</li><li>La raíz cuadrada principal debe ser no negativa: el resultado es 6.</li><li>En la ecuación se prueban ambos signos: 6 y −6 producen 36 al cuadrado.</li><li>La respuesta depende de la instrucción: un radical tiene un valor; la ecuación pide todos los números que la cumplen.</li></ol>
+</div>
+<div class="stage" data-stage="ahora"><h4><span class="stage-index">7</span>Ahora tú · Progresión de ejercicios</h4><ol class="exercise-types">
+<li><strong>Inicial:</strong> emparejar una potencia y su raíz, indicando radicando e índice.</li><li><strong>Intermedio:</strong> decidir existencia y signo de una raíz real; contrastar índices pares e impares.</li><li><strong>Intermedio:</strong> distinguir una raíz principal de las soluciones de una ecuación de potencia y elegir la solución compatible con una longitud o un conteo.</li><li><strong>Nivel de admisión:</strong> deshacer una cadena de operaciones, con una potencia en el interior, verificando dominio y sentido del contexto. El tipo tiene antecedente oficial UNI 2019-1, pregunta 18 <a href="#f03">[3]</a>; se crearán enunciados nuevos.</li></ol></div>
+</article>
+
+<article class="idea" id="idea5" data-idea="5">
+<div class="idea-title"><span class="number">5</span><div><h3>Transformar raíces con criterio</h3><p><strong>Pregunta que responde:</strong> ¿Qué transformaciones conservan una raíz y cuáles cambian su valor?</p></div></div>
+<p class="learn">El alumno elige propiedades válidas de radicales, conecta exponentes racionales con raíces y justifica cada transformación por su operación y su dominio.</p>
+<p><strong>Objeto de la primera pantalla:</strong> una mesa de carpintería con pequeñas plantillas cuadradas de cartón que representan cortes de madera. Se usa cartón para permitir reacomodar sin fingir que un corte de sierra no consume material.</p>
+<div class="stage" data-stage="lee"><h4><span class="stage-index">1</span>Lee · Cuatro tarjetas</h4><div class="cards">
+<div class="card"><span class="label">Tarjeta 1</span><p>Varias plantillas cuadradas pueden formar un cuadrado mayor. La cantidad de superficie y la longitud de su lado son datos diferentes.</p></div>
+<div class="card"><span class="label">Tarjeta 2</span><p>El radical permite conservar una medida exacta aunque todavía no la escribamos con decimales.</p></div>
+<div class="card"><span class="label">Tarjeta 3</span><p>Al sumar medidas hay que identificar qué representa cada número. Los paréntesis y el signo de raíz delimitan la cantidad que se transforma.</p></div>
+<div class="card"><span class="label">Tarjeta 4</span><p>Una expresión puede cambiar de escritura y conservar su valor. Para comprobarlo se usan las potencias y las condiciones de las raíces.</p></div>
+</div></div>
+<div class="stage" data-stage="juega"><h4><span class="stage-index">2</span>Juega · Armar una plantilla mayor</h4><div class="mission">
+<p><strong>Acción:</strong> trasladar cuatro plantillas iguales, cada una de 5 cm de lado, sin superponerlas.</p>
+<p><strong>Misión:</strong> formar un solo cuadrado de 10 cm de lado, usando las cuatro piezas completas.</p>
+<p><strong>Comprobación:</strong> el contorno es cuadrado, no hay huecos ni superposiciones y se conserva toda el área. La respuesta visual compara lados y áreas del arreglo.</p>
+</div><p class="small">El juego solo reúne cuatro piezas iguales. No muestra qué ocurre al sumar las áreas de dos cuadrados de tamaños diferentes.</p></div>
+<div class="stage" data-stage="predice"><h4><span class="stage-index">3</span>Predice · Juntar áreas no es juntar lados</h4><div class="prediction">
+<p>Se dibujará una nueva plantilla cuadrada cuya área sea la suma de 9 cm² y 16 cm². «Centímetros cuadrados» es una medida de área. ¿Cuánto medirá su lado? No se está afirmando que las dos piezas originales formen el nuevo cuadrado sin cortes.</p>
+<ol class="options">
+<li data-error="E-RSUMA">7 cm.<span class="rationale"><a href="#e-rsuma">E-RSUMA</a>: suma las raíces de las dos áreas como si la raíz se distribuyera sobre la suma.</span></li>
+<li data-correct="true" class="correct">5 cm.<span class="rationale">Opción correcta.</span></li>
+<li data-error="E-RDIV">12,5 cm.<span class="rationale"><a href="#e-rdiv">E-RDIV</a>: divide el área total entre el índice dos; además pierde el sentido de la unidad.</span></li>
+<li data-error="E-DOBLE">5 cm o −5 cm.<span class="rationale"><a href="#e-doble">E-DOBLE</a>: atribuye dos valores al radical y traslada un signo imposible a una longitud. Es una adaptación contextual del patrón documentado.</span></li>
+</ol></div></div>
+<div class="stage" data-stage="mira"><h4><span class="stage-index">4</span>Mira · Comprobar el área de cada propuesta</h4>
+<p>La nueva plantilla se llena con 25 unidades cuadradas. El lado de cinco unidades forma exactamente esa superficie. Se prueba también el lado de siete: construye un cuadrado de área distinta. Se mantiene a la vista que sumar áreas no equivale a sumar lados.</p></div>
+<div class="stage" data-stage="regla" id="regla5"><h4><span class="stage-index">5</span>La regla · Operación y condiciones antes de transformar</h4>
+<p><i>A</i> y <i>B</i> son radicandos reales; <i>q</i> conserva su significado de índice. Antes de transformar, se comprueba con qué valores la escritura tiene sentido.</p>
+<ol class="rule-list">
+<li><strong>Producto y cociente de raíces del mismo índice.</strong> La raíz de un producto es el producto de las raíces cuando estas existen bajo las condiciones siguientes. Si el índice es par, se exige <i>A</i> ≥ 0 y <i>B</i> ≥ 0; en el cociente, <i>B</i> debe ser mayor que cero. Si es impar, los radicandos pueden ser negativos; en el cociente, <i>B</i> debe ser distinto de cero.
+<div class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mroot><mrow><mi>A</mi><mi>B</mi></mrow><mi>q</mi></mroot><mo>=</mo><mroot><mi>A</mi><mi>q</mi></mroot><mo>·</mo><mroot><mi>B</mi><mi>q</mi></mroot><mspace width="1em"/><mroot><mfrac><mi>A</mi><mi>B</mi></mfrac><mi>q</mi></mroot><mo>=</mo><mfrac><mroot><mi>A</mi><mi>q</mi></mroot><mroot><mi>B</mi><mi>q</mi></mroot></mfrac></mrow></math></div>
+No basta con que exista la raíz del producto: cada raíz del lado derecho debe existir también. Por ejemplo, no se separa una raíz cuadrada de un producto de dos negativos en raíces reales individuales.</li>
+<li><strong>Extraer e introducir factores.</strong> Se separa una potencia perfecta y se respeta la raíz principal. Para raíces cuadradas, <span class="math">√(a<sup>2</sup>A) = |a|√A</span> cuando <i>A</i> ≥ 0. Para índice par se obtiene igualmente el valor absoluto del factor extraído; para índice impar se conserva su signo. Introducir un factor no negativo en una raíz cuadrada exige elevarlo al cuadrado; un signo negativo exterior se deja fuera. No se elimina el valor absoluto por costumbre.</li>
+<li><strong>Sumar o restar radicales.</strong> Primero se simplifican. Solo se combinan como términos semejantes cuando tienen el mismo índice y el mismo radicando. Las letras <i>c</i> y <i>d</i> son coeficientes reales, es decir, los números que multiplican al radical.
+<div class="formula"><i>c</i>√<i>A</i> + <i>d</i>√<i>A</i> = (<i>c</i> + <i>d</i>)√<i>A</i>, para <i>A</i> ≥ 0.</div>
+La misma idea sirve con otro índice cuando las raíces existen. No hay una propiedad general que reparta una raíz entre los términos de una suma o resta.</li>
+<li><strong>Raíz de una raíz.</strong> Para radicando no negativo, los índices se multiplican. La letra <i>s</i>, «ese minúscula», representa el segundo índice entero, también de dos o más. Esta propuesta restringe los ejercicios de raíces anidadas a radicandos no negativos.
+<div class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mroot><mroot><mi>A</mi><mi>s</mi></mroot><mi>q</mi></mroot><mo>=</mo><mroot><mi>A</mi><mrow><mi>q</mi><mi>s</mi></mrow></mroot></mrow></math>, para <i>A</i> ≥ 0.</div></li>
+<li><strong>Exponente racional.</strong> Primero se reduce la fracción del exponente: si resulta un entero, se aplican las reglas anteriores. Para un exponente no entero, con <i>a</i> &gt; 0, <i>p</i> entero y <i>q</i> entero de dos o más, la fracción reducida <i>p</i>/<i>q</i> se interpreta mediante una raíz y una potencia. <i>p</i>, «pe», es su numerador; <i>q</i> sigue designando el orden de la raíz.
+<div class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msup><mi>a</mi><mfrac><mi>p</mi><mi>q</mi></mfrac></msup><mo>=</mo><msup><mrow><mo>(</mo><mroot><mi>a</mi><mi>q</mi></mroot><mo>)</mo></mrow><mi>p</mi></msup><mo>=</mo><mroot><msup><mi>a</mi><mi>p</mi></msup><mi>q</mi></mroot></mrow></math></div>
+Si <i>p</i> es negativo se aplica el recíproco. Si el exponente inicial se reduce a cero, ya se sabe que el resultado es uno porque la base es no nula. Para base cero se admite únicamente un exponente racional positivo. Los ejercicios con exponentes racionales de base negativa quedan fuera del alcance; las raíces impares de negativos ya se trabajan como radicales en la idea 4. Para bases positivas, las propiedades de potencias se extienden a exponentes racionales; cada cociente debe seguir teniendo denominador no nulo.</li>
+<li><strong>Racionalizar un denominador sencillo.</strong> Consiste en multiplicar numerador y denominador por la misma expresión no nula para obtener una fracción equivalente sin radical en el denominador. No aumenta la exactitud: cambia la escritura. En el caso de una sola raíz cuadrada:
+<div class="formula"><i>c</i>/(<i>d</i>√<i>A</i>) = <i>c</i>√<i>A</i>/(<i>dA</i>), para <i>A</i> &gt; 0 y <i>d</i> ≠ 0.</div>
+Para una raíz de índice mayor con radicando positivo, se completa una potencia de ese índice multiplicando arriba y abajo por el factor radical que falta. Se comprueba después el producto; no se memoriza una receta distinta por cada índice.</li>
+<li><strong>Puente opcional a Álgebra: conjugados.</strong> Dos expresiones como <span class="math">√A + √B</span> y <span class="math">√A − √B</span> cambian solo el signo entre términos. Su producto usa la diferencia de cuadrados derivada en la idea 2.
+<div class="formula">1/(√<i>A</i> + √<i>B</i>) = (√<i>A</i> − √<i>B</i>)/(<i>A</i> − <i>B</i>), para <i>A</i>, <i>B</i> ≥ 0 y <i>A</i> ≠ <i>B</i>.</div>
+La condición de diferencia no nula es esencial. Si los radicandos son iguales y positivos, primero se reúnen los radicales del denominador; si ambos son cero, la fracción inicial no existe. Una suma finita de fracciones transformadas puede cancelar términos consecutivos: se muestra esa cancelación, no se la ofrece como truco.</li>
+</ol>
+<p class="small">La separación entre operaciones con exponentes y con radicales se puede contrastar en OpenStax <a href="#f15">[15]</a><a href="#f16">[16]</a>. Las condiciones, demostraciones breves y ejemplos de esta propuesta se redactan para el alcance aquí definido.</p>
+<div class="table-wrap"><table class="glossary"><thead><tr><th>Palabra nueva</th><th>Explicación cotidiana</th><th>Tres ejemplos</th></tr></thead><tbody>
+<tr data-term="semejantes"><td>Radicales semejantes</td><td>Piezas del mismo tipo que pueden reunirse contando cuántas hay.</td><td>2√3 y 5√3; √8 y √2 después de simplificar; 3∛5 y −∛5.</td></tr>
+<tr data-term="exponente-racional"><td>Exponente racional</td><td>Un exponente escrito como fracción que conecta una raíz con una potencia.</td><td>16<sup>1/2</sup>; 27<sup>2/3</sup>; 4<sup>−1/2</sup>.</td></tr>
+<tr data-term="racionalizar"><td>Racionalizar</td><td>Reescribir una fracción equivalente para quitar el radical de su denominador.</td><td>1/√2; 3/(2√5); 1/(√7 + √3).</td></tr>
+<tr data-term="conjugados"><td>Conjugados</td><td>Una pareja que mantiene los términos y cambia el signo que los une.</td><td>√5 + 1 y √5 − 1; 2 + √3 y 2 − √3; √7 + √2 y √7 − √2.</td></tr>
+</tbody></table></div></div>
+<div class="stage" data-stage="resuelve"><h4><span class="stage-index">6</span>Así se resuelve · Simplificar antes de sumar</h4>
+<p><strong>Ejemplo propio:</strong> simplificar <span class="math">√12 + √27</span>. Se entregan producto de raíces, extracción de un cuadrado y combinación de términos semejantes.</p>
+<ol class="steps"><li>Se identifican factores cuadrados: 12 se escribe como 4 × 3 y 27 como 9 × 3.</li><li>Se verifica que los radicandos son no negativos y se extraen las raíces de los factores cuadrados: quedan 2√3 y 3√3.</li><li>Ahora el radical es el mismo; se suman los coeficientes y se obtiene 5√3.</li><li>Se rechaza unir 12 y 27 dentro de una sola raíz: esa operación no aparece en las propiedades válidas de la suma.</li></ol>
+<p><strong>Modelo breve del tramo opcional:</strong> en <span class="math">1/(√5 + √2)</span>, se multiplica arriba y abajo por <span class="math">√5 − √2</span>. El denominador es <span class="math">5 − 2</span>; queda <span class="math">(√5 − √2)/3</span>. Multiplicar de nuevo por el denominador inicial comprueba que el resultado equivale al original.</p>
+</div>
+<div class="stage" data-stage="ahora"><h4><span class="stage-index">7</span>Ahora tú · Progresión de ejercicios</h4><ol class="exercise-types">
+<li><strong>Inicial:</strong> separar productos válidos y extraer potencias perfectas, indicando condiciones.</li><li><strong>Intermedio:</strong> reunir radicales después de simplificarlos; detectar raíces que no son semejantes.</li><li><strong>Intermedio:</strong> pasar de radicales a exponentes racionales y comparar dos caminos de cálculo, con base positiva.</li><li><strong>Admisión, tramo de enlace:</strong> simplificar expresiones combinadas y racionalizar denominadores monomios, sin ignorar restricciones.</li><li><strong>Extensión UNI en Álgebra:</strong> racionalizar con conjugados y demostrar la cancelación en una suma finita. El tipo se acredita en UNI 2021-1, segunda prueba, pregunta 9 <a href="#f04">[4]</a>; no se trasladan su expresión ni su solución.</li>
+</ol></div>
+</article>
+
+<article class="idea" id="idea6" data-idea="6">
+<div class="idea-title"><span class="number">6</span><div><h3>La raíz y lo que sobra</h3><p><strong>Pregunta que responde:</strong> ¿Qué se puede asegurar cuando la raíz no es un entero?</p></div></div>
+<p class="learn">El alumno delimita una raíz entre potencias consecutivas, interpreta residuos y usa criterios completos para reconocer y contar potencias perfectas.</p>
+<p><strong>Objeto de la primera pantalla:</strong> un albañil con cerámicos sueltos y una zona de trabajo cuadrada. El tamaño se cuenta en piezas por lado, sin necesidad de usar el tamaño físico de una marca.</p>
+<div class="stage" data-stage="lee"><h4><span class="stage-index">1</span>Lee · Cuatro tarjetas</h4><div class="cards">
+<div class="card"><span class="label">Tarjeta 1</span><p>No cualquier cantidad de piezas llena exactamente un cuadrado. A veces quedan piezas en la pila.</p></div>
+<div class="card"><span class="label">Tarjeta 2</span><p>La raíz entera busca un lado entero. En esta escena no se permite cortar piezas para completar una fila.</p></div>
+<div class="card"><span class="label">Tarjeta 3</span><p>El residuo por defecto cuenta lo que sobra. El residuo por exceso cuenta lo que faltaría para alcanzar el siguiente cuadrado completo cuando el actual no usa todas las piezas.</p></div>
+<div class="card"><span class="label">Tarjeta 4</span><p>Una cota es un límite que permite encerrar una cantidad entre valores conocidos. Se puede justificar con potencias que ya sabemos comparar.</p></div>
+</div></div>
+<div class="stage" data-stage="juega"><h4><span class="stage-index">2</span>Juega · El cuadrado más grande posible</h4><div class="mission">
+<p><strong>Acción:</strong> ajustar el número entero de piezas por lado y mover las sobrantes a una pila.</p>
+<p><strong>Misión:</strong> formar con 35 piezas el mayor cuadrado completo posible, sin cortar ni superponer piezas.</p>
+<p><strong>Comprobación:</strong> el cuadrado elegido cabe en las 35 piezas y el de lado entero inmediatamente mayor ya no cabe. La respuesta visual cuenta las piezas usadas y las sobrantes.</p>
+</div><p class="small">El juego no muestra el nuevo pedido de la predicción ni cómo combinar dos existencias separadas. La regla general y las identidades de residuos aparecen después.</p></div>
+<div class="stage" data-stage="predice"><h4><span class="stage-index">3</span>Predice · Dos existencias, un solo cuadrado</h4><div class="prediction">
+<p>Llegan dos grupos de 64 y 25 piezas iguales: ahora hay 89. Se quiere el mayor cuadrado completo posible. ¿Qué plan es válido?</p>
+<ol class="options">
+<li data-correct="true" class="correct">Formar un cuadrado de 9 por 9 y comprobar que uno de 10 por 10 requiere más piezas de las disponibles.<span class="rationale">Opción correcta.</span></li>
+<li data-error="E-RSUMA">Sumar los lados de los cuadrados que se podrían hacer con cada grupo por separado y usar esa suma como lado.<span class="rationale"><a href="#e-rsuma">E-RSUMA</a>: trata la raíz de la suma como suma de raíces.</span></li>
+<li data-error="E-RDIV">Dividir 89 entre 2 y tomar la parte entera del resultado como número de piezas por lado.<span class="rationale"><a href="#e-rdiv">E-RDIV</a>: confunde la raíz de índice dos con dividir entre dos.</span></li>
+<li data-error="E-DOBLE">Aceptar indistintamente lados de 9 o −9, porque ambos producen 81 al elevarlos al cuadrado.<span class="rationale"><a href="#e-doble">E-DOBLE</a>: traslada la confusión de signos a una raíz entera y a una longitud. Es una adaptación, no una respuesta literal del estudio.</span></li>
+</ol></div></div>
+<div class="stage" data-stage="mira"><h4><span class="stage-index">4</span>Mira · Usadas, sobrantes y faltantes</h4>
+<p>Se construye el cuadrado de lado nueve, que utiliza 81 piezas; quedan ocho. Se intenta ampliarlo hasta lado diez: se necesitarían 100 piezas, de modo que faltan once. La animación coloca una fila y una columna nuevas, contando una sola vez la esquina compartida. El residuo no se escribe como una parte decimal del lado.</p></div>
+<div class="stage" data-stage="regla"><h4><span class="stage-index">5</span>La regla · Encerrar, comprobar y reconstruir</h4>
+<p><i>N</i>, «ene mayúscula», es un radicando entero no negativo; <i>q</i> sigue siendo el índice; <i>k</i>, «ka», es su raíz entera por defecto. El signo ≤ significa «menor o igual que».</p>
+<div class="formula"><i>k</i><sup><i>q</i></sup> ≤ <i>N</i> &lt; (<i>k</i> + 1)<sup><i>q</i></sup>, con <i>k</i> entero no negativo.</div>
+<p>Se lee: «ka elevado a cu es menor o igual que ene mayúscula, y ene mayúscula es menor que ka más uno, todo elevado a cu». Esta condición define el mayor entero cuya potencia no supera el radicando. Si la primera igualdad es exacta, la raíz ya es entera.</p>
+<h4>Residuos y reconstrucción del radicando</h4>
+<p><span class="math">R<sub>d</sub></span>, «erre subíndice de», es el residuo por defecto; <span class="math">R<sub>e</sub></span>, «erre subíndice e», es el residuo por exceso. Las letras pequeñas de los subíndices abrevian «defecto» y «exceso».</p>
+<div class="formula"><p><i>R</i><sub>d</sub> = <i>N</i> − <i>k</i><sup><i>q</i></sup> &nbsp; y &nbsp; <i>N</i> = <i>k</i><sup><i>q</i></sup> + <i>R</i><sub>d</sub>.</p><p>0 ≤ <i>R</i><sub>d</sub> ≤ (<i>k</i> + 1)<sup><i>q</i></sup> − <i>k</i><sup><i>q</i></sup> − 1.</p></div>
+<p>La última resta de uno se debe a que <i>N</i> es entero y todavía debe quedar por debajo de la siguiente potencia. <strong>Si la raíz es inexacta</strong>, la raíz entera por exceso es <i>k</i> + 1 y se cumple:</p>
+<div class="formula"><p><i>R</i><sub>e</sub> = (<i>k</i> + 1)<sup><i>q</i></sup> − <i>N</i> &nbsp; y &nbsp; <i>N</i> = (<i>k</i> + 1)<sup><i>q</i></sup> − <i>R</i><sub>e</sub>.</p><p><i>R</i><sub>d</sub> + <i>R</i><sub>e</sub> = (<i>k</i> + 1)<sup><i>q</i></sup> − <i>k</i><sup><i>q</i></sup>.</p></div>
+<p><strong>Si la raíz es exacta</strong>, se adopta como raíz por exceso el mismo entero <i>k</i> y ambos residuos valen cero. La identidad de la suma anterior se usa exclusivamente en el caso inexacto. Si un material llama «residuo por exceso» a la distancia hasta la siguiente potencia incluso en el caso exacto, su convenio deberá traducirse antes de mezclar fórmulas.</p>
+<div class="table-wrap"><table><thead><tr><th>Índice</th><th>Distancia entre potencias consecutivas</th><th>Residuo por defecto máximo</th></tr></thead><tbody>
+<tr><td>Cuadrado, <i>q</i> = 2.</td><td>(<i>k</i> + 1)<sup>2</sup> − <i>k</i><sup>2</sup> = 2<i>k</i> + 1.</td><td>2<i>k</i>.</td></tr>
+<tr><td>Cubo, <i>q</i> = 3.</td><td>(<i>k</i> + 1)<sup>3</sup> − <i>k</i><sup>3</sup> = 3<i>k</i><sup>2</sup> + 3<i>k</i> + 1.</td><td>3<i>k</i><sup>2</sup> + 3<i>k</i>.</td></tr>
+</tbody></table></div>
+<p>La primera diferencia se obtiene al agregar una fila, una columna y la esquina faltante a un cuadrado. La segunda se obtiene desarrollando el producto de tres factores <span class="math">(k + 1)</span>, o contando las capas nuevas del cubo sin duplicar aristas ni esquinas. Las expresiones se proporcionan junto con esa derivación.</p>
+<h4>Decidir si una potencia es perfecta</h4>
+<p>Para <i>N</i> mayor que uno, se descompone en factores primos. Es una potencia perfecta de índice <i>q</i> <strong>si y solo si</strong> el exponente de cada primo es múltiplo de <i>q</i>. «Si y solo si» significa que la condición sirve en ambas direcciones: permite confirmar y también descartar. La razón es que todos los factores primos deben poder repartirse en <i>q</i> grupos idénticos.</p>
+<p>Para volver perfecta una potencia mediante el menor multiplicador entero positivo, se completa cada exponente hasta el múltiplo de <i>q</i> inmediatamente superior, o se deja intacto si ya lo es. Para obtener una potencia perfecta mediante el menor divisor entero positivo, se retira de cada exponente su resto al dividirlo entre <i>q</i>. En ambos casos se justifica la minimalidad primo por primo. Cero y uno se revisan aparte: no requieren esa factorización y cumplen la convención de potencias perfectas no negativas.</p>
+<p>Un cuadrado perfecto escrito en base diez solo puede terminar en 0, 1, 4, 5, 6 o 9. Se deriva elevando al cuadrado las diez posibilidades de cifra final. Es un <strong>filtro de exclusión</strong>, no una prueba suficiente: terminar en una de esas cifras no garantiza ser cuadrado. Para los cubos, todas las cifras finales son posibles; el mismo filtro no sirve.</p>
+<h4>Contar potencias perfectas y aproximar con garantía</h4>
+<p>Para contar potencias perfectas en un intervalo cerrado de enteros no negativos, se encuentran la primera y la última base entera cuyas potencias caen dentro del intervalo. Si existen, la cantidad es «última base menos primera base más uno»; si no existe ninguna, es cero. Se comprueban ambos extremos, pues un intervalo cerrado incluye los dos.</p>
+<p>Para aproximar una raíz no negativa, <i>u</i>, «u», representa su límite inferior y <i>v</i>, «uve minúscula», su límite superior. Se buscan valores <i>u</i> y <i>v</i> tales que <span class="math">u<sup>q</sup> ≤ N &lt; v<sup>q</sup></span>. Entonces la raíz queda desde <i>u</i>, incluido, hasta <i>v</i>, excluido. Se refinan décimas, centésimas o fracciones hasta que el intervalo sea lo bastante estrecho. La letra griega <i>ε</i>, «épsilon», representa una tolerancia de error positiva.</p>
+<div class="formula">Si <i>v</i> − <i>u</i> &lt; <i>ε</i>, la distancia entre <i>u</i> y la raíz exacta es menor que <i>ε</i>.</div>
+<p>La garantía proviene de las dos potencias que encierran el radicando, no de las cifras mostradas por una calculadora. Un residuo de piezas pertenece al radicando; no es automáticamente una parte decimal del lado.</p>
+<div class="table-wrap"><table class="glossary"><thead><tr><th>Palabra nueva</th><th>Explicación cotidiana</th><th>Tres ejemplos</th></tr></thead><tbody>
+<tr data-term="raiz-entera"><td>Raíz entera</td><td>El mayor número entero que cabe como base sin que su potencia se pase.</td><td>Para √20: 4; para ∛30: 3; para √49: 7.</td></tr>
+<tr data-term="residuo-defecto"><td>Residuo por defecto</td><td>Lo que sobra después de usar la mayor potencia entera que cabe.</td><td>20 − 4<sup>2</sup>; 30 − 3<sup>3</sup>; 49 − 7<sup>2</sup>.</td></tr>
+<tr data-term="residuo-exceso"><td>Residuo por exceso</td><td>Lo que falta para alcanzar la potencia de la raíz entera por exceso.</td><td>Para √20: 5<sup>2</sup> − 20; para ∛30: 4<sup>3</sup> − 30; para √49: 0, porque ya es exacta.</td></tr>
+<tr data-term="cota"><td>Cota</td><td>Un límite comprobado que encierra el valor buscado.</td><td>4 ≤ √20 &lt; 5; 3 ≤ ∛30 &lt; 4; 1,4 ≤ √2 &lt; 1,5.</td></tr>
+</tbody></table></div></div>
+<div class="stage" data-stage="resuelve"><h4><span class="stage-index">6</span>Así se resuelve · Reconstruir y comprobar</h4>
+<p><strong>Ejemplo propio:</strong> hallar raíz cuadrada entera y residuos de 70. Se entregan la desigualdad entre cuadrados consecutivos y las fórmulas de ambos residuos.</p>
+<ol class="steps"><li>Se localizan los cuadrados vecinos: 8<sup>2</sup> = 64 y 9<sup>2</sup> = 81. El número 70 queda entre ellos.</li><li>La raíz entera por defecto es 8. El residuo por defecto se obtiene con 70 − 64 y vale 6.</li><li>Como la raíz es inexacta, la raíz por exceso es 9. El residuo por exceso es 81 − 70 y vale 11.</li><li>Se reconstruye el mismo radicando por las dos vías: 64 + 6 y 81 − 11. Además, 6 + 11 coincide con 2 × 8 + 1. La comprobación usa una relación distinta del cálculo inicial.</li></ol>
+<p><strong>Modelo del criterio de perfección:</strong> en <span class="math">2<sup>3</sup>·3<sup>2</sup></span>, formar dos grupos iguales exige completar un factor 2; formar tres grupos iguales exige completar un factor 3. Se comprueban los exponentes resultantes. Este ejemplo muestra cómo elegir el multiplicador, sin convertirlo en una regla de terminaciones.</p>
+</div>
+<div class="stage" data-stage="ahora"><h4><span class="stage-index">7</span>Ahora tú · Progresión de ejercicios</h4><ol class="exercise-types">
+<li><strong>Inicial:</strong> ubicar una raíz entre potencias consecutivas y distinguir raíz exacta de raíz entera por defecto.</li><li><strong>Intermedio:</strong> calcular o reconstruir radicandos a partir de raíz y residuo; detectar datos incompatibles con el residuo máximo.</li><li><strong>Admisión:</strong> relacionar residuos por defecto y exceso, o estudiar cómo cambian al modificar el radicando. Se proporcionan todas las relaciones y se exige elegir las válidas.</li><li><strong>Admisión:</strong> reconocer cuadrados o cubos perfectos mediante factorización y buscar el menor multiplicador o divisor que complete los grupos.</li><li><strong>Admisión:</strong> contar potencias perfectas en intervalos, atendiendo a extremos incluidos o excluidos. El conteo de cuadrados tiene el antecedente San Marcos descrito en la sección 2.</li><li><strong>Admisión, tramo de precisión:</strong> obtener una aproximación cuyo error sea menor que una tolerancia dada y certificarla con dos potencias. Si hay numeración en otra base, esa unidad debe haberse estudiado antes.</li>
+</ol></div>
+</article>
+</section>
+
+<section class="chapter" id="simbolos">
+<h2>6. Tabla de letras y símbolos de la unidad</h2>
+<p>Las letras mantienen el mismo papel. Un radicando puede tener medidas en un modelo geométrico; en los ejercicios puramente aritméticos es un número sin unidad física. Se evita usar una letra distinta para ocultar que dos fórmulas describen la misma cantidad.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Letra o escritura</th><th>Lectura y significado fijo</th><th>Unidad o condición</th><th>Posible choque y decisión</th></tr></thead><tbody>
+<tr><td><i>a</i>, <i>b</i></td><td>«a», «be»: bases reales de potencias.</td><td>Sin unidad en las identidades aritméticas.</td><td>No se usan para cifras de un numeral, lados ni tolerancias.</td></tr>
+<tr><td><i>m</i>, <i>n</i></td><td>«eme», «ene»: exponentes enteros.</td><td>Sin unidad; positivos en ideas 1–2, enteros en idea 3.</td><td><i>m</i> en cursiva es exponente; m recta tras una medida significa metro.</td></tr>
+<tr><td><i>p</i>/<i>q</i></td><td>«pe sobre cu»: exponente racional; <i>p</i> es el numerador y <i>q</i> determina el índice de la raíz.</td><td>Sin unidad; fracción reducida, <i>q</i> ≥ 2.</td><td><i>p</i> no se utiliza para «número primo». El denominador <i>q</i> y el índice expresan el mismo orden.</td></tr>
+<tr><td><i>q</i>, <i>s</i></td><td>«cu», «ese minúscula»: primer y segundo índice de raíz.</td><td>Enteros de dos o más.</td><td><i>s</i> no representa segundos. Se reserva para raíces anidadas.</td></tr>
+<tr><td><i>A</i>, <i>B</i></td><td>«a mayúscula», «be mayúscula»: radicandos reales.</td><td>Según el contexto; no negativos cuando lo requiere un índice par.</td><td>No representan áreas ni opciones de respuesta dentro de fórmulas.</td></tr>
+<tr><td><i>N</i></td><td>«ene mayúscula»: radicando entero no negativo, que puede ser el total de piezas del modelo.</td><td>Número puro o conteo de piezas.</td><td>No es newton. No aparece ninguna fuerza en esta unidad.</td></tr>
+<tr><td><i>x</i></td><td>«equis»: número desconocido de una ecuación de potencia.</td><td>La que corresponda al número buscado.</td><td>Se usa ×, no la letra x, para el signo de multiplicación.</td></tr>
+<tr><td><i>k</i></td><td>«ka»: raíz entera por defecto de <i>N</i>.</td><td>Entero no negativo; en un mosaico, piezas por lado.</td><td>No se utiliza como constante genérica ni como prefijo kilo.</td></tr>
+<tr><td><i>c</i>, <i>d</i></td><td>«ce», «de»: coeficientes reales que multiplican radicales.</td><td>Sin unidad en las identidades; <i>d</i> ≠ 0 si está en un denominador.</td><td>No representan cifras ni distancias. El subíndice d de un residuo es una etiqueta, no este coeficiente.</td></tr>
+<tr><td><i>R</i><sub>d</sub>, <i>R</i><sub>e</sub></td><td>«erre subíndice de», «erre subíndice e»: residuos por defecto y por exceso.</td><td>Misma unidad o conteo que <i>N</i>.</td><td>No son partes decimales de la raíz. Los subíndices se leen como nombres, no como factores.</td></tr>
+<tr><td><i>u</i>, <i>v</i></td><td>«u», «uve minúscula»: límite inferior y superior de un intervalo.</td><td>Misma unidad que la cantidad que limitan.</td><td>Se reservan para los límites de la raíz aproximada; los extremos de los intervalos de conteo se expresan con palabras.</td></tr>
+<tr><td><i>ε</i></td><td>«épsilon»: máxima distancia tolerada entre aproximación y valor exacto.</td><td>Positiva; misma unidad que la raíz aproximada.</td><td>No se representa con una e latina.</td></tr>
+<tr><td><i>ℓ</i>, <i>S</i>, <i>V</i></td><td>«ele»: lado; «ese mayúscula»: área; «uve mayúscula»: volumen.</td><td>Longitud, longitud al cuadrado y longitud al cubo.</td><td>ℓ evita confundir el lado con el litro L. <i>S</i> no significa soles; se usa S/ cuando se habla de dinero. <i>V</i> no es el límite <i>v</i>.</td></tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Símbolo</th><th>Cómo se dice y qué significa</th><th>Convención</th></tr></thead><tbody>
+<tr><td>+, −</td><td>«Más», «menos»; el menos también indica un número negativo o el opuesto de una expresión.</td><td>El alcance se determina con paréntesis y jerarquía.</td></tr>
+<tr><td>×, ·, /, barra de fracción</td><td>«Por», «dividido entre»; multiplicación y división.</td><td>La yuxtaposición, como 2<i>ab</i>, también indica producto. Ningún denominador puede ser cero.</td></tr>
+<tr><td>=, ≠</td><td>«Igual a», «distinto de».</td><td>Se distinguen igualdad exacta y mera aproximación; no se usa = para redondeos.</td></tr>
+<tr><td>&lt;, &gt;, ≤, ≥</td><td>«Menor que», «mayor que», «menor o igual que», «mayor o igual que».</td><td>El signo estricto excluye la igualdad; los otros dos la admiten.</td></tr>
+<tr><td>( ), superíndice</td><td>«Todo entre paréntesis», «elevado a…».</td><td>Un exponente fraccionario completo debe mantenerse en el superíndice.</td></tr>
+<tr><td>√, ∛, raíz con índice</td><td>«Raíz cuadrada», «raíz cúbica», «raíz de índice…».</td><td>La barra del radical debe abarcar todo el radicando. No sustituirla por una raíz que parezca afectar solo al primer término.</td></tr>
+<tr><td>| |, ±, …</td><td>«Valor absoluto», «más o menos», «continúa el patrón».</td><td>± resume dos alternativas cuando corresponda; no significa que todo radical tenga dos valores.</td></tr>
+<tr><td>mm, cm, m; mm², cm², m²; cm³, m³</td><td>Milímetros, centímetros, metros; unidades cuadradas y cúbicas.</td><td>Las unidades se escriben rectas, con espacio entre número y unidad. El exponente también afecta la unidad.</td></tr>
+<tr><td>L, mL; S/</td><td>Litro, mililitro; símbolo del sol peruano.</td><td>L en mayúscula para distinguirlo del lado ℓ; S/ no es la variable de área.</td></tr>
+</tbody></table></div>
+<p class="small">Las páginas de teoría deben presentar la lectura verbal antes de usar cada símbolo nuevo. Esta tabla sirve para mantener coherencia editorial; no sustituye esa presentación. En las pantallas para el alumno se evita concentrar todas las letras de la unidad en un solo ejercicio.</p>
+</section>
+
+<section class="chapter" id="representaciones">
+<h2>7. Otras formas de explicarla y sus riesgos</h2>
+<p>Se distingue lo que hace una fuente de la adaptación que aquí se propone. Una representación puede ser útil sin que exista un estudio que demuestre la eficacia de esta versión concreta.</p>
+<div class="table-wrap"><table class="wide">
+<thead><tr><th>Representación y fuente</th><th>Idea y uso propuesto</th><th>Qué permite observar</th><th>Riesgo y corrección</th></tr></thead><tbody>
+<tr><td>Productos desarrollados y cocientes antes de extender exponentes. OpenStax, §1.2 <a href="#f15">[15]</a>.</td><td>Ideas 1–3. Asociar grupos de bodega con listas de factores; cancelar factores antes de formular propiedades.</td><td>De dónde salen la suma, resta y multiplicación de exponentes en operaciones diferentes.</td><td>«Potencia es siempre multiplicar muchas veces» deja sin sentido exponentes cero, negativos o fraccionarios. Se declara el alcance inicial y se justifican después las extensiones.</td></tr>
+<tr><td>Cuadrículas que se construyen con un objetivo de área. PhET, <i>Area Builder: Tips for Teachers</i> <a href="#f17">[17]</a>.</td><td>Ideas 2, 4 y 6. Adaptar la construcción de superficies al piso de cerámicos, con condición adicional de ser cuadrado.</td><td>Diferencia entre contar superficie, contar lado y comprobar si quedan piezas.</td><td>La misma área admite muchas formas. El objetivo debe comprobar el contorno cuadrado y no solo el total. El área no es el perímetro.</td></tr>
+<tr><td>Modelo cúbico del litro y material de base diez. NIST, <i>SI Units – Volume</i> <a href="#f19">[19]</a>.</td><td>Idea 4. Construir un cubo por capas para relacionar lado, volumen y raíz cúbica.</td><td>La tercera potencia como tres factores de longitud; la raíz recupera una longitud.</td><td>El modelo podría sugerir que todo recipiente es un cubo o que toda raíz tiene una interpretación física. Se presenta como un recipiente modelo y se separa el cálculo abstracto.</td></tr>
+<tr><td>Escala de una copia impresa. Adaptación original de las propiedades de potencias; no se atribuye a un estudio de eficacia.</td><td>Idea 3. Ampliar y reducir el lado de un volante, fijando siempre el mismo original.</td><td>El uno como factor que conserva el tamaño y el recíproco como operación que deshace.</td><td>Duplicar un lado no duplica el área: la cuadruplica. También hay riesgo de cambiar inadvertidamente la referencia de comparación; se mantiene el original visible.</td></tr>
+<tr><td>Comparar una raíz principal con las soluciones de una ecuación. OpenStax, §1.3 <a href="#f16">[16]</a>.</td><td>Idea 4. Probar candidatos mediante la potencia antes de decidir qué instrucción se está resolviendo.</td><td>Por qué un radical y una ecuación pueden producir respuestas de distinta forma.</td><td>Una regla abreviada «poner ± al sacar raíz» confunde objetos diferentes. Se muestra la instrucción completa y se verifica cada candidato.</td></tr>
+<tr><td>Problemas de estimación, intervalos y patrones. NRICH, <i>Powers and Roots: Short Problems, Age 11–16</i> <a href="#f18">[18]</a>.</td><td>Idea 6. Crear desafíos propios que encierren una raíz entre potencias o cuenten bases posibles.</td><td>Una respuesta puede justificarse por límites sin calcular muchos decimales.</td><td>Una tabla finita de casos no demuestra por sí sola una regla universal. Se exige una explicación por factores, unidades o potencias consecutivas.</td></tr>
+<tr><td>Piezas semejantes para combinar radicales. Diseño original apoyado en la distributividad.</td><td>Idea 5. Representar cada √3 como una misma longitud exacta y reunir varias copias.</td><td>Se suman cantidades de la misma pieza; no se suman sus radicandos.</td><td>Colores iguales podrían sugerir semejanza aunque cambie el índice. La etiqueta matemática completa acompaña siempre a cada pieza.</td></tr>
+</tbody></table></div>
+<p><strong>Decisión transversal:</strong> primero se presenta el objeto reconocible; después, su esquema y su escritura. La aplicación debe permitir ocultar el dibujo para comprobar que el alumno puede decidir también con números. No se exige que todos los objetos expliquen todo el dominio: los conteos y las longitudes solo representan cantidades no negativas.</p>
+</section>
+
+<section class="chapter" id="mundo">
+<h2>8. Datos del mundo real para ejemplos</h2>
+<p>Estos son datos verificables, no afirmaciones sobre la vida de un alumno concreto. Las escenas de bodega, panadería, copiado y carpintería son elecciones de contexto; sus cantidades se presentan como datos inventados de cada misión.</p>
+<div class="table-wrap"><table class="wide">
+<thead><tr><th>Objeto y dato comprobado</th><th>Fuente exacta</th><th>Uso pedagógico</th><th>Precaución de modelado</th></tr></thead><tbody>
+<tr><td>Celima, piso Terre Marfil, referencia 110016215: formato comercial 45 × 45; la ficha declara dimensiones de 451 mm × 451 mm × 7,0 mm.</td><td>Celima–Trébol, ficha técnica, s. f., apartado de dimensiones <a href="#f20">[20]</a>.</td><td>En la idea 4, convertir una foto de piezas reales en un modelo de filas y columnas. Si se calcula área de una pieza, usar la dimensión declarada y elevar también la unidad.</td><td>«45 × 45» es el nombre comercial: no se lo transforma en 450 mm exactos. Un piso instalado incluye juntas y cortes; la ficha no permite inventar esas medidas.</td></tr>
+<tr><td>La moneda de S/ 1 de José de La Mar y Cortázar, emitida en 2023, tiene diámetro de 25,50 mm y masa de 7,32 g.</td><td>Banco Central de Reserva del Perú, nota informativa del 19 de septiembre de 2023 <a href="#f21">[21]</a>.</td><td>Referencia visual de escala junto a una pieza pequeña. No requiere usar el área del círculo ni convertir esta unidad en una lección de geometría.</td><td>Son características de esa emisión, no una afirmación sobre todas las monedas peruanas. El diámetro no es el radio.</td></tr>
+<tr><td>La emisión de esa moneda se anunció en 10 millones de unidades.</td><td>BCRP, misma nota, característica «Emisión» <a href="#f21">[21]</a>.</td><td>Aplicación opcional de potencias de diez: escribir el conteo como 10<sup>7</sup> y comprobarlo desarrollando la potencia. Esta equivalencia es un cálculo didáctico, no una cita del banco.</td><td>Emisión anunciada no significa monedas disponibles actualmente en un lugar ni personas que las poseen.</td></tr>
+<tr><td>Un litro equivale al volumen de un cubo de 10 cm de lado: 1 L = 1 dm³ = 1000 cm³. Un mililitro equivale a 1 cm³.</td><td>National Institute of Standards and Technology, <i>SI Units – Volume</i> <a href="#f19">[19]</a>.</td><td>Idea 4: recipiente transparente modelo que permite contar capas y recuperar el lado mediante una raíz cúbica. Son equivalencias de unidades aplicables también en Perú.</td><td>Las longitudes son interiores y el recipiente es ideal. El grosor de la pared y el volumen útil de un envase comercial no se deducen de su tamaño exterior.</td></tr>
+</tbody></table></div>
+<p class="small">Las unidades g y dm, usadas solo en esta tabla de datos, se leen «gramo» y «decímetro»; no son letras de variables. Los ejemplos finales deben declarar si su medida es nominal, exacta por definición o aproximada por fabricación. No se incorporan datos decorativos que añadan cálculo sin ayudar a decidir una propiedad.</p>
+</section>
+
+<section class="chapter" id="decisiones">
+<h2>9. Dudas y decisiones</h2>
+<h3>Lo que no se pudo confirmar</h3>
+<ul>
+<li><strong>Frecuencia comparativa.</strong> No se obtuvo un corpus completo que permita ordenar tipos por frecuencia en San Marcos, UNI u otras universidades. Las apariciones localizadas se identifican individualmente.</li>
+<li><strong>Actualización curricular integral.</strong> El sílabo CEPRE UNI consultado corresponde a 2023-2 y el boletín CEPREUNMSM a 2022-II. No se los presenta como planes actuales de todos sus ciclos. El documento de UNSA se identifica expresamente como Admisión 2027.</li>
+<li><strong>San Marcos 2026-II.</strong> La pregunta de conteo se leyó en una reproducción de Trilce. Falta cotejarla con el cuadernillo oficial y confirmar su área antes de usarla como cita institucional directa.</li>
+<li><strong>UNA Puno y UNSAAC.</strong> Las rutas oficiales localizadas no aportaron contenido íntegro verificable en esta revisión. No se completaron sus filas con afirmaciones de memoria o con recopilaciones sin cotejo.</li>
+<li><strong>Errores en postulantes peruanos.</strong> Los estudios originales revisados aportan patrones, pero sus poblaciones no equivalen a la población objetivo de la app. La tesis peruana localizada no se leyó íntegra. No se asignan prevalencias locales.</li>
+<li><strong>Causas individuales.</strong> Los patrones observados no establecen por qué un alumno concreto responde de esa manera. La elección de un distractor debe abrir una comprobación, no una etiqueta permanente.</li>
+</ul>
+<h3>Decisiones adoptadas para esta propuesta</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Decisión</th><th>Motivo y consecuencia</th></tr></thead><tbody>
+<tr><td>Seis ideas; algunas con más de un tramo de práctica.</td><td>La dependencia conceptual queda visible. La idea 5 contiene operaciones con radicales y una extensión de Álgebra; la 6 concentra la raíz entera y los criterios de Aritmética. Pueden ocupar varias sesiones sin alterar el orden de momentos.</td></tr>
+<tr><td>Potencias de exponente positivo antes de cero, negativos y racionales.</td><td>La multiplicación repetida explica el primer caso. Los otros se justifican como extensiones coherentes; no se fuerza una analogía que deje de funcionar.</td></tr>
+<tr><td>Raíces en los reales; exponentes racionales con base positiva.</td><td>Se controlan signos y condiciones sin abrir una segunda unidad sobre números complejos o convenciones de potencias racionales de base negativa. Sí se incluyen raíces impares de negativos como radicales.</td></tr>
+<tr><td>Raíz entera y residuos dentro del núcleo.</td><td>Figuran en el temario CEPRE UNI y en material de CEPREUNMSM. Omitirlos dejaría incompleta la orientación de Aritmética de admisión.</td></tr>
+<tr><td>Racionalización con conjugados como extensión identificada.</td><td>El antecedente oficial localizado está en Álgebra de la UNI. Se prepara el enlace sin presentarlo como prueba de frecuencia en Aritmética.</td></tr>
+<tr><td>Residuo por exceso cero cuando la raíz es exacta.</td><td>Se toma la raíz entera por exceso como el menor entero cuya potencia alcanza o supera el radicando. En casos inexactos es <i>k</i> + 1; en exactos es <i>k</i>. Las identidades se rotulan con sus condiciones para evitar mezclar convenios.</td></tr>
+<tr><td>No enseñar como núcleo el algoritmo manual de extracción por cifras.</td><td>La propuesta prioriza relaciones, factorización y cotas. Si se exige ese procedimiento en un examen o en el currículo elegido, necesita un desarrollo propio y una comprobación de cobertura; no se sustituye con un atajo sin explicación.</td></tr>
+<tr><td>Ejemplos resueltos breves, banco final sin calcular.</td><td>El equipo recibe modelos del momento «Así se resuelve» y tipos de práctica graduados. Los ejemplos y predicciones se recalcularán independientemente antes de publicar.</td></tr>
+<tr><td>Fórmulas disponibles durante la práctica.</td><td>La evaluación principal es elegir una relación válida, atender a condiciones y comprobar resultados. Un futuro modo de simulacro deberá declarar por separado si reproduce las condiciones reales de acceso a fórmulas.</td></tr>
+</tbody></table></div>
+<h3>Decisiones que debe tomar el dueño del proyecto</h3>
+<ol>
+<li><strong>Destino del tramo de conjugados:</strong> mantenerlo como extensión de esta unidad o trasladarlo a Álgebra. Si se traslada, se conserva el enlace y se evita duplicar la teoría.</li>
+<li><strong>Cobertura por universidad:</strong> decidir si se publicará una base común con complementos o una ruta distinta por examen. Las prioridades no deben etiquetarse como «frecuentes» hasta contar con evidencia.</li>
+<li><strong>Profundidad de la idea 6:</strong> confirmar si la aproximación con tolerancia y los criterios de potencias perfectas se habilitan para todos o como tramo de preparación avanzada. El núcleo de raíz entera y residuos permanece.</li>
+<li><strong>Validación con alumnos:</strong> probar comprensión de instrucciones, justificaciones y errores de los distractores con la población objetivo, incluyendo estudiantes con vacíos de base. Confirmar especialmente las hipótesis H-RES, H-TERM y H-RED antes de convertirlas en categorías de diagnóstico.</li>
+</ol>
+<h3>Revisión de dependencias y de predicciones</h3>
+<div class="table-wrap"><table class="audit">
+<thead><tr><th>Idea</th><th>Usa únicamente</th><th>Lo nuevo que el juego reserva</th><th>Distractores con código</th></tr></thead><tbody>
+<tr><td>1. Qué se repite.</td><td>Operaciones, signos y paréntesis previos.</td><td>El alcance del signo en una potencia de base negativa.</td><td>E-PAR, E-MUL, E-SUM.</td></tr>
+<tr><td>2. Agrupar sin cambiar.</td><td>Idea 1; distributividad y área por casillas como requisitos.</td><td>Qué ocurre al elevar una suma completa.</td><td>E-DIST, E-MUL, E-SUM.</td></tr>
+<tr><td>3. Volver y reducir.</td><td>Ideas 1–2 y fracciones.</td><td>El valor coherente de una potencia de exponente negativo.</td><td>E-NEG, E-OMIT, E-REC.</td></tr>
+<tr><td>4. Deshacer una potencia.</td><td>Potencias, signos y valor absoluto previo.</td><td>Una raíz de índice impar con radicando negativo.</td><td>E-IMPAR, E-RSIGN, E-DOBLE.</td></tr>
+<tr><td>5. Transformar raíces.</td><td>Ideas 1–4, incluidos recíprocos y diferencia de cuadrados.</td><td>La raíz de la suma de dos áreas diferentes.</td><td>E-RSUMA, E-RDIV, E-DOBLE.</td></tr>
+<tr><td>6. La raíz y lo que sobra.</td><td>Ideas 1–5; factorización prima previa para el tramo de perfección.</td><td>La comprobación de un cuadrado máximo con dos existencias reunidas.</td><td>E-RSUMA, E-RDIV, E-DOBLE.</td></tr>
+</tbody></table></div>
+<p><strong>Resultado de la revisión editorial:</strong> seis ideas ordenadas, siete momentos por idea, cuatro tarjetas de «Lee» por idea y cuatro opciones por predicción. Cada opción incorrecta tiene un código documentado. Las adaptaciones contextuales se señalan como tales; las hipótesis quedan fuera de estas claves.</p>
+<p><strong>Verificación pendiente de producción:</strong> recalcular todos los valores; comprobar dominios y el caso exacto de los residuos; probar las condiciones de éxito con soluciones alternativas; revisar locuciones y legibilidad en celular. Se debe comprobar que el alumno no recibe la clave ni la regla nueva antes de responder la predicción.</p>
+</section>
+
+<section class="chapter" id="fuentes">
+<h2>10. Fuentes</h2>
+<p class="small">Consulta documental: 21 de noviembre de 2026. «s. f.» significa que no se verificó una fecha editorial. Las páginas citadas de tesis y libros corresponden a su numeración impresa cuando está disponible; un visor puede añadir páginas preliminares. Se identifica expresamente el acceso a originales, copias, resúmenes y páginas cuyo adjunto no pudo verificarse.</p>
+<ol class="sources">
+<li id="f01"><strong>Centro de Estudios Preuniversitarios de la Universidad Nacional de Ingeniería (CEPRE UNI). (2023).</strong> <i>Guía y sílabo: Ciclo Preuniversitario y Preselección 2023-2.</i> <a href="https://www.cepre.uni.edu.pe/assets/archivos/comunicados/Syl_Pre_PS_2023-2.pdf">PDF institucional</a>.<span class="access">Original consultado. Aritmética, p. 3 del PDF, apartados «Potenciación» y «Radicación»; el documento diferencia también los contenidos de Álgebra.</span></li>
+<li id="f02"><strong>Centro Preuniversitario de la Universidad Nacional Mayor de San Marcos. (2022).</strong> <i>Boletín de la semana 4, ciclo 2022-II.</i> <a href="https://pdfpresanmarcos.com/wp-content/uploads/2024/02/Boletin-Semana-4-Pre-San-Marcos-2022-II-UNMSM-PDF.pdf">Copia del boletín</a>.<span class="access">Documento de autoría institucional leído en un alojamiento no oficial. Aritmética, teoría y ejercicio de clase 10; se usa como evidencia de preparación, no como examen ni como confirmación del temario actual.</span></li>
+<li id="f03"><strong>Universidad Nacional de Ingeniería. (2019).</strong> <i>Solucionario: Admisión UNI 2019-1.</i> <a href="https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario2019.pdf">PDF institucional</a>.<span class="access">Original consultado. Primera prueba, Razonamiento Matemático, preguntas 17 y 18. El año del directorio de subida no cambia el periodo del examen.</span></li>
+<li id="f04"><strong>Universidad Nacional de Ingeniería. (2021).</strong> <i>Solucionario: Admisión UNI 2021-1.</i> <a href="https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario2021.pdf">PDF institucional</a>.<span class="access">Original consultado. Segunda prueba, Álgebra, pregunta 9; solución en el apartado de Álgebra.</span></li>
+<li id="f05"><strong>Trilce. (2026).</strong> <i>Solucionario del examen de admisión San Marcos 2026-II.</i> <a href="https://www.trilce.edu.pe/storage/static/upload/85d4b370-4960-11f1-a5a9-c3f4fa3bb77a.pdf">Reproducción editorial</a>.<span class="access">Pregunta 33 de Aritmética. No es un cuadernillo oficial de la UNMSM; falta cotejo institucional y confirmación del área. No se copia su enunciado ni su solución.</span></li>
+<li id="f06"><strong>Universidad Nacional de San Agustín de Arequipa. (2026).</strong> <i>Resolución de Consejo Universitario N.º 0028: aprobación del temario y matriz de Admisión 2027.</i> <a href="https://admision.unsa.edu.pe/wp-content/uploads/2026/03/RCU-0028-Aprobacion-de-TEMARIO-y-MATRIZ-ADMISION-2027.pdf">PDF institucional</a>.<span class="access">Original consultado. Matemática, Aritmética, apartado II: números naturales.</span></li>
+<li id="f07"><strong>Universidad Nacional de San Antonio Abad del Cusco. (s. f.).</strong> <i>Temario.</i> <a href="https://admision.unsaac.edu.pe/temario/">Página oficial</a>.<span class="access">Se consultó la página que enlaza el temario 2025, asociado a CU-575-2024. No se recuperó el contenido íntegro del adjunto; no sustenta afirmaciones temáticas específicas.</span></li>
+<li id="f08"><strong>Universidad Nacional del Altiplano. (s. f.).</strong> <i>Admisión: temario.</i> <a href="https://sictransparencia.unap.edu.pe/admision/temario">Ruta institucional localizada</a>.<span class="access">La consulta no recuperó contenido suficiente. Se incluye para documentar la limitación y el punto de continuación, no como prueba de los contenidos de la unidad.</span></li>
+<li id="f09"><strong>Martínez Lobo, Danny Samuel. (2010).</strong> <i>Identificación de los errores en la aplicación de las propiedades de la potenciación.</i> Universidad Industrial de Santander, Colombia. <a href="https://noesis.uis.edu.co/server/api/core/bitstreams/f3069795-8118-4374-aa4a-b593c03dc79a/content">Tesis en el repositorio institucional</a>.<span class="access">Texto original consultado. Análisis de producciones y entrevistas, pp. 56–61. Se usa para documentar respuestas y explicaciones particulares, no prevalencias peruanas.</span></li>
+<li id="f10"><strong>Bejarano Sánchez, Sergio Yesid. (2022).</strong> <i>Identificación de errores en la realización de las operaciones potenciación y radicación en ℤ.</i> Universidad Pedagógica Nacional, Colombia. <a href="https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1312288/Bejarano2022Identificacion.pdf">Texto completo en Funes</a>.<span class="access">Original consultado. El símbolo ℤ del título se refiere a los números enteros. Resultados, pp. 73–85. Se emplean sus observaciones empíricas; no se adopta como autoridad para formular las condiciones matemáticas de los radicales. El propio texto informa la ausencia de entrevistas para confirmar las razones de las respuestas.</span></li>
+<li id="f11"><strong>Gamboa Araya, Ronny; Castillo Sánchez, Mario; Hidalgo Mora, Randall. (2019).</strong> <i>Errores matemáticos de estudiantes que ingresan a la universidad.</i> Actualidades Investigativas en Educación, 19(1), 1–31. <a href="https://doi.org/10.15517/aie.v19i1.35278">DOI</a> · <a href="https://revistas.ucr.ac.cr/index.php/raie/article/download/15280/27040/84146?inline=1">Texto consultado</a>.<span class="access">Original consultado. Apartado de resultados y tabla 7. Estudio de la Universidad Nacional de Costa Rica.</span></li>
+<li id="f12"><strong>Abrate, Raquel S.; Pochulu, Marcel D.; Vargas, José M. (2006).</strong> <i>Errores y dificultades en matemática: análisis de causas y sugerencias de trabajo.</i> Universidad Nacional de Villa María, Argentina. <a href="https://www.academia.edu/26468683/ERRORES_Y_DIFICULTADES_EN_MATEM%C3%81TICA_An%C3%A1lisis_de_causas_y_sugerencias_de_trabajo">Copia del texto original</a>.<span class="access">Se leyó el texto de los autores alojado en un espejo, no solo una cita bibliográfica. Localizadores usados: pp. 63–64, 93, 99, 108–109, 113–114 y 129. La accesibilidad del alojamiento puede variar.</span></li>
+<li id="f13"><strong>Cangelosi, Richard; Madrid, Silvia; Cooper, Sandra; Olson, Jo; Hartter, Beverly. (2013).</strong> <i>The negative sign and exponential expressions: Unveiling students’ persistent errors and misconceptions.</i> The Journal of Mathematical Behavior, 32(1), 69–82. <a href="https://doi.org/10.1016/j.jmathb.2012.10.002">DOI del artículo</a> · <a href="https://mathedseminar.pbworks.com/w/file/fetch/45027027/Exponents_2011_0901.pdf">Manuscrito original consultado, versión de 2011</a>.<span class="access">Los localizadores §2.2, §5.3.4, §5.3.5 y §6 corresponden al manuscrito, no a una paginación inventada de la edición final. El orden de firmas de la versión previa difiere del artículo publicado. Las referencias a Vlassis (2002, 2004) se conocen a través de este texto; sus originales no se consultaron. El servidor del manuscrito presentó respuestas intermitentes de acceso denegado.</span></li>
+<li id="f14"><strong>Villalobos Vilchez, Betty Magaly. (2024).</strong> <i>Materiales didácticos en el aprendizaje de la potenciación y radicación en el primer grado de secundaria de la Institución Educativa San Francisco de Paucarbamba, Huancavelica, 2021.</i> Universidad Nacional de Educación Enrique Guzmán y Valle, Perú. <a href="https://repositorio.une.edu.pe/entities/publication/9b057eec-3323-4299-95fe-0121d2313e9e">Registro institucional</a>.<span class="access">Solo ficha y resumen consultados; texto completo no recuperado. No se usa para documentar errores específicos ni para atribuir eficacia a la presente propuesta.</span></li>
+<li id="f15"><strong>Abramson, Jay. (2021).</strong> <i>College Algebra 2e</i>, §1.2, «Exponents and Scientific Notation». OpenStax. <a href="https://openstax.org/books/college-algebra-2e/pages/1-2-exponents-and-scientific-notation">Sección original</a>.<span class="access">Referencia de contraste para la organización de propiedades de exponentes, el exponente cero y los exponentes negativos. No se reproducen ejemplos ni enunciados del libro.</span></li>
+<li id="f16"><strong>Abramson, Jay. (2021).</strong> <i>College Algebra 2e</i>, §1.3, «Radicals and Rational Exponents». OpenStax. <a href="https://openstax.org/books/college-algebra-2e/pages/1-3-radicals-and-rational-exponents">Sección original</a>.<span class="access">Referencia de contraste para raíz principal, radicales y exponentes racionales. La propuesta delimita por separado las condiciones de los ejercicios que incluirá.</span></li>
+<li id="f17"><strong>PhET Interactive Simulations; McGarry. (2017).</strong> <i>Area Builder: Tips for Teachers.</i> University of Colorado Boulder. <a href="https://phet.colorado.edu/files/teachers-guide/area-builder-html-guide.pdf">Guía original</a>.<span class="access">Guía fechada en junio de 2017. Sustenta la descripción de la herramienta y sus tareas de construcción de áreas; no demuestra el efecto pedagógico de la adaptación a esta unidad.</span></li>
+<li id="f18"><strong>NRICH, University of Cambridge. (s. f.).</strong> <i>Powers and Roots: Short Problems, Age 11–16.</i> <a href="https://nrich.maths.org/short-problems/powers-and-roots-age-11-16">Colección original</a>.<span class="access">Se consultó para identificar enfoques de estimación, comparación y patrones. No se copian sus problemas.</span></li>
+<li id="f19"><strong>National Institute of Standards and Technology. (s. f.).</strong> <i>SI Units – Volume.</i> <a href="https://www.nist.gov/pml/owm/si-units-volume">Página institucional</a>.<span class="access">Fuente del modelo cúbico del litro y de las equivalencias de volumen. No se atribuye una fecha de publicación que no se verificó.</span></li>
+<li id="f20"><strong>Celima–Trébol. (s. f.).</strong> <i>Ficha técnica: Piso Terre Marfil, referencia 110016215.</i> <a href="https://celima-trebol.com/wp-content/uploads/2025/07/110016215_PISO_TERRE_MARFIL_CEMENTO_MATE_45X45.pdf">Ficha del fabricante</a>.<span class="access">Formato comercial y dimensiones declaradas. La fecha del directorio de la URL no se toma como fecha editorial de la ficha.</span></li>
+<li id="f21"><strong>Banco Central de Reserva del Perú. (2023, 19 de septiembre).</strong> <i>Nota informativa sobre la moneda de la serie «Constructores de la República – Bicentenario 1821–2021», alusiva a José de La Mar y Cortázar.</i> <a href="https://www.bcrp.gob.pe/docs/Transparencia/Notas-Informativas/2023/nota-informativa-2023-09-19.pdf">Nota oficial</a>.<span class="access">Fuente de la denominación, diámetro, masa y emisión anunciada. El título se describe para identificar el documento; no se presenta como una cita textual.</span></li>
+</ol>
+</section>
+<footer>Propuesta de teoría · Aritmética: Potenciación y radicación · Contenidos y situaciones de enseñanza originales, con trazabilidad documental.</footer>
+</main>
+</body>
+</html>

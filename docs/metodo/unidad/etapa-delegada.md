@@ -30,7 +30,8 @@ Trabajas en `/home/user/mesa-de-estudios`. Español neutro para el alumno.
 Lee `CLAUDE.md`, `docs/plan-calidad.md` §3, `docs/molde-unidad.md`, `docs/metodo/unidad/LEEME.md`, `1-ideas.md`,
 `2-ejemplos.md`, `3-practica.md`, `reglas-validador.md`, y las decisiones de `docs/etapa2/` a `docs/etapa5/`. Modelo de
 formato y profundidad: la propuesta de tu curso en `docs/etapa5/`; modelo de unidad terminada: la unidad con `calidad: 2`
-anterior de tu rama, con su auditoría y su informe del lector (lee qué se corrigió para no repetirlo). Lee lo que hoy
+anterior de tu rama, con su auditoría y su informe del lector (lee qué se corrigió para no repetirlo). Si hay investigación previa de tu unidad en `docs/investigacion/etapa<N>/` (ChatGPT, por verificar; su LEEME dice
+cómo se usa), léela por secciones. Lee lo que hoy
 tiene tu unidad, su ficha en `catalogo/cursos/<CURSO>.json`, sus plantillas, el informe de `docs/investigacion/`, el
 temario, los ítems de `catalogo/pruebas/<CURSO>.json` y las preguntas de San Marcos (`docs/datos/admision-unmsm.csv`).
 Revisa las unidades vecinas de la rama para no repetir ni adelantar. Los modelos se leen con medida: de la propuesta de
