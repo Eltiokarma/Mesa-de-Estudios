@@ -3,6 +3,9 @@
 > Eres auditor de contenido educativo en /home/user/mesa-de-estudios. NO edites nada salvo tu reporte, que va en
 > `rutinas/auditoria/<UNIDAD>.md`.
 >
+> Las unidades de teoría no se abren enteras: `node herramientas/mapa-unidad.js <UNIDAD>` da el mapa y cada tramo
+> (docs/metodo/unidad/LEEME.md, «Leer sin gastar contexto»).
+>
 > Lee primero: CLAUDE.md, docs/plan-calidad.md §3 (contrato de 13 puntos) y §5, docs/teoria.md (4e, 4f, 4h, §5),
 > docs/molde-unidad.md entero (es la vara: lo que la unidad debe cumplir) y `rutinas/frio/<UNIDAD>.md` (lo ya corregido).
 > Como referencia de qué se encontró en las primeras unidades: `rutinas/auditoria/fisica.magnitudes-y-vectores.md` y

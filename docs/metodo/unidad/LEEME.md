@@ -38,10 +38,39 @@ Reglas de la orquestación (aprendidas en estas dos unidades):
 - Antes de cada encargo de dibujo, se cargan los skills `arte-generativo-svg` y `arte-vectorial`; para colores,
   `teoria-del-color`; para pantallas, `diseno-y-animacion` y `multimedia-learning`.
 
+## Leer sin gastar contexto (21 nov)
+
+Una unidad terminada pesa entre 150 y 340 KB: abrirla entera se come medio contexto de un agente. Se lee por tramos:
+
+| Para qué | Comando |
+| --- | --- |
+| Mapa: ideas, momentos y sus líneas | `node herramientas/mapa-unidad.js <UNIDAD>` |
+| Código de una idea o de un momento, con números de línea | `node herramientas/mapa-unidad.js <UNIDAD> <idea> [lee\|juega\|predice\|mira\|regla\|resuelve\|ahoraTu]` |
+| Lo que ve el alumno en una idea (textos ya armados, figuras resumidas en su `alt`) | `node herramientas/mapa-unidad.js <UNIDAD> <idea> --texto [momento]` |
+| Un ejemplo ya armado | `node herramientas/mapa-unidad.js <UNIDAD> <idea> --ejemplo <n>` |
+
+`<idea>` es su id o su número. El mapa dice también dónde están las ayudas de cada idea («antes») y a qué constante
+apunta un momento (`ejemplos → EJ1 en L373`); esos tramos se leen con Read y sus líneas.
+
+Qué lee cada quien, además de `CLAUDE.md` (cada encargo lo repite; aquí está junto para no leer de más):
+
+| Fase | `plan-calidad.md` | `molde-unidad.md` | `teoria.md` | Otros |
+| --- | --- | --- | --- | --- |
+| 1 a 3, ideas | §3 | entero | 4e, 4f, 4h y §5 | — |
+| 4, ejemplos | §3 | §3, §4, §5, §5b, §6 | 4h | — |
+| 5, práctica | §3 | §4, §5, §5b, §7 | — | `arquitectura.md`, solo el formato «predicciones» |
+| 6, lector en frío | — | — | — | solo las capturas: no lee código ni documentos |
+| 7, auditor | §3 y §5 | entero | 4e, 4f, 4h y §5 | `reglas-validador.md`, `rutinas/frio/<UNIDAD>.md` |
+| 8, correcciones | §3 | entero | 4h | los dos informes de su unidad, enteros |
+
+Quien audita o corrige revisa todo el contenido de la unidad, pero idea por idea: `--texto` y `--ejemplo` para leer lo
+que ve el alumno, y el código solo donde hay que comprobar o cambiar algo. Lo que no se recorta nunca: rehacer las
+cuentas aparte y mirar las capturas.
+
 ## Fase 0: preparar (la sesión)
 
 1. `npm test` en verde y servidor local (`node herramientas/servidor.js`).
-2. Leer `<ARCHIVO>` si existe, la entrada de la unidad en `catalogo/cursos/<CURSO>.json`, sus plantillas
+2. Leer `<ARCHIVO>` si existe (por tramos, con su mapa: «Leer sin gastar contexto»), la entrada de la unidad en `catalogo/cursos/<CURSO>.json`, sus plantillas
    (`plantillas/*/plantilla.json` con `<UNIDAD>` en `unidades`) y `docs/investigacion/` del tema (errores típicos).
 3. Capturas del estado actual: `node herramientas/capturas-teoria.js <UNIDAD> <SCRATCH>/antes --oscuro`.
 4. Anotar qué falta contra la lista de verificación de `docs/molde-unidad.md` §10.

@@ -18,6 +18,9 @@ Gerson aprueba o corrige. Nada se escribe hasta ese visto bueno.
 
 ## B. Encargo para escribir una idea
 
+> Las unidades de teoría no se abren enteras: `node herramientas/mapa-unidad.js <UNIDAD>` da el mapa y cada tramo
+> (docs/metodo/unidad/LEEME.md, «Leer sin gastar contexto»).
+>
 > Trabajas en /home/user/mesa-de-estudios. Lee CLAUDE.md, docs/plan-calidad.md §3 (contrato de 13 puntos),
 > docs/teoria.md (formato de los momentos: 4e, 4f, 4h y §5 de topes) y docs/molde-unidad.md entero. Carga los skills
 > `multimedia-learning`, `diseno-y-animacion`, `arte-generativo-svg` y `arte-vectorial`. Español neutro para alumnos. NO

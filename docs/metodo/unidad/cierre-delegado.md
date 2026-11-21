@@ -5,6 +5,9 @@ escribiste. Mismas reglas de convivencia que siempre: otros agentes trabajan a l
 stash/checkout/reset; no corras `npm test` completo; servidor propio con tu PORT, cerrado por su PID; nunca `pkill`;
 un solo navegador a la vez. Toca solo los archivos de tu unidad, su práctica y sus piezas.
 
+Para leer la unidad sin abrir el archivo entero: `node herramientas/mapa-unidad.js <UNIDAD>` (`LEEME.md`, «Leer sin
+gastar contexto»). Revisas todo el contenido, pero idea por idea.
+
 ## Paso 1: capturas para el lector en frío (primero, para que la sesión lance a los lectores en paralelo)
 `MESA_URL=http://localhost:<PORT> node herramientas/capturas-teoria.js <UNIDAD> <SCRATCH>/lector momentos,ejemplos --entera --lector`
 (si se cae por tiempo, copia la herramienta a tu SCRATCH con más espera). Comprueba que hay capturas de todas las

@@ -1,5 +1,8 @@
 # Fase 5: práctica (generadores y lápiz y papel)
 
+> Las unidades de teoría no se abren enteras: `node herramientas/mapa-unidad.js <UNIDAD>` da el mapa y cada tramo
+> (docs/metodo/unidad/LEEME.md, «Leer sin gastar contexto»).
+>
 > Trabajas en /home/user/mesa-de-estudios. Lee CLAUDE.md (reglas 1, 2 y 6), docs/arquitectura.md (formato
 > «predicciones»), docs/plan-calidad.md §3 y docs/molde-unidad.md (§4, §5, §5b, §7). Toma como modelo
 > `plantillas/conversion-unidades/`, `plantillas/areas-volumenes/` y `plantillas/vectores-ley-cosenos/`. Español neutro.

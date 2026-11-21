@@ -1,5 +1,8 @@
 # Fase 8: correcciones
 
+> Las unidades de teoría no se abren enteras: `node herramientas/mapa-unidad.js <UNIDAD>` da el mapa y cada tramo
+> (docs/metodo/unidad/LEEME.md, «Leer sin gastar contexto»).
+>
 > Trabajas en /home/user/mesa-de-estudios. Lee CLAUDE.md, docs/plan-calidad.md §3, docs/teoria.md 4h y
 > docs/molde-unidad.md. Español neutro para alumnos. NO hagas commits.
 >

@@ -16,9 +16,12 @@ Trabajas en `/home/user/mesa-de-estudios`. Español neutro para el alumno.
   `contenido/teoria/teoria.test.js` (si falla por otra unidad, ignóralo y dilo) y los tests comunes que toques.
   `npm run -s catalogo` sí. Para que la salida sea corta (solo fallas y totales):
   `npm run -s test:corto -- contenido/teoria/teoria.test.js 'plantillas/<id>/*.test.js'`.
-- **No leas enteros los archivos grandes** (tu unidad en `contenido/teoria/` puede pasar de 300 KB; `app/teoria.js`,
-  `nucleo/teoria.js`, `catalogo/pruebas/verificar.js`, `nucleo/avance.js`): ubica con grep la idea o el bloque y lee
-  ese tramo. Tampoco leas propuestas ni informes de otras unidades (`docs/etapa*/`, `rutinas/frio/`, `rutinas/auditoria/`).
+- **No leas enteros los archivos grandes** (una unidad en `contenido/teoria/` puede pasar de 300 KB; `app/teoria.js`,
+  `nucleo/teoria.js`, `catalogo/pruebas/verificar.js`, `nucleo/avance.js`). Para una unidad, empieza por su mapa:
+  `node herramientas/mapa-unidad.js <UNIDAD>` da las líneas de cada idea y de cada momento; con `<idea> [momento]`
+  imprime ese tramo del código, y con `<idea> --texto` o `--ejemplo <n>`, lo que ve el alumno (`LEEME.md`, «Leer sin
+  gastar contexto»). En los demás, ubica el bloque con grep y lee ese tramo. No leas propuestas ni informes de otras
+  unidades (`docs/etapa*/`, `rutinas/frio/`, `rutinas/auditoria/`) fuera de los que tu encargo nombra.
 - Servidor propio: `PORT=<PORT> node herramientas/servidor.js &`, guarda el PID, ciérralo con `kill <PID>`. Nunca `pkill`.
   Un solo navegador a la vez. Capturas: `MESA_URL=http://localhost:<PORT> node herramientas/capturas-teoria.js ...`; si se
   cae por tiempo, una copia en SCRATCH limitada a la idea que revisas y con más espera.
@@ -30,7 +33,11 @@ formato y profundidad: la propuesta de tu curso en `docs/etapa5/`; modelo de uni
 anterior de tu rama, con su auditoría y su informe del lector (lee qué se corrigió para no repetirlo). Lee lo que hoy
 tiene tu unidad, su ficha en `catalogo/cursos/<CURSO>.json`, sus plantillas, el informe de `docs/investigacion/`, el
 temario, los ítems de `catalogo/pruebas/<CURSO>.json` y las preguntas de San Marcos (`docs/datos/admision-unmsm.csv`).
-Revisa las unidades vecinas de la rama para no repetir ni adelantar. Escribe la propuesta con las secciones de siempre y
+Revisa las unidades vecinas de la rama para no repetir ni adelantar. Los modelos se leen con medida: de la propuesta de
+`docs/etapa5/`, los títulos de sus secciones y una idea seguida en cada sección, no el documento entero; de la unidad
+modelo, su mapa (`node herramientas/mapa-unidad.js`), una idea completa en código con sus ayudas y las demás con
+`--texto`; de las vecinas, el mapa y `--texto` de lo que haga falta. Tu propia unidad sí la lees completa, por tramos.
+Escribe la propuesta con las secciones de siempre y
 termina en **«Decisiones tomadas (Gerson revisa después)»**: cada duda con la opción elegida, el motivo y la descartada.
 Solo un choque grave con algo publicado o con una decisión escrita de Gerson va arriba como «CONFLICTO CRÍTICO», sin
 resolverlo. Más de 6 ideas: parte la unidad (la primera conserva el `id`; migración del avance en `nucleo/avance.js`,

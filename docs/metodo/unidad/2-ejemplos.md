@@ -1,5 +1,8 @@
 # Fase 4: ejemplos resueltos (pestaña «Ejemplos»)
 
+> Las unidades de teoría no se abren enteras: `node herramientas/mapa-unidad.js <UNIDAD>` da el mapa y cada tramo
+> (docs/metodo/unidad/LEEME.md, «Leer sin gastar contexto»).
+>
 > Trabajas en /home/user/mesa-de-estudios. Lee CLAUDE.md, docs/plan-calidad.md §3, docs/teoria.md 4h y
 > docs/molde-unidad.md (§3 ejemplos, §4 datos, §5 notación, §5b colores, §6 dibujos). Mira cómo están hechos los
 > ejemplos de `contenido/teoria/fisica/magnitudes-y-vectores.js` (constantes `EJEMPLOS_*`, ayudantes de color) y de
