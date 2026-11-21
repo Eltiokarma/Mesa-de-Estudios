@@ -5,18 +5,20 @@ Propuestas de teoría que Gerson encargó a ChatGPT con el encargo de investigac
 
 | Unidad | Archivo |
 | --- | --- |
+| Álgebra · Binomio de Newton | `algebra.binomio-de-newton.md` |
 | Aritmética · Potenciación y radicación | `aritmetica.potenciacion-y-radicacion.md` |
 | Física · Impulso, cantidad de movimiento y choques | `fisica.impulso-y-choques.md` |
+| Geometría · Puntos notables del triángulo | `geometria.puntos-notables.md` |
 | Química · Reacciones químicas y balance | `quimica.reacciones-y-balance.md` |
 | Razonamiento matemático · Arreglos numéricos y cuadrados mágicos | `razonamiento-matematico.arreglos-numericos.md` |
 | Razonamiento verbal · Cohesión y coherencia textual | `razonamiento-verbal.cohesion-y-coherencia.md` |
+| Trigonometría · Reducción al primer cuadrante | `trigonometria.reduccion-al-primer-cuadrante.md` |
 
-Faltan Álgebra (Binomio de Newton), Geometría (Puntos notables del triángulo) y Trigonometría (Reducción al primer
-cuadrante).
+Están las ocho unidades de la etapa.
 
 Cada archivo trae las mismas secciones: resumen, qué se pregunta en los exámenes, errores típicos (con su estado:
 documentado, de segunda mano o hipótesis), lo que se da por sabido, las ideas con sus siete momentos, tabla de letras,
-otras formas de explicarla, datos del mundo, dudas y decisiones, y fuentes. Pesan unos 80 KB: se lee la sección que
+otras formas de explicarla, datos del mundo, dudas y decisiones, y fuentes. Pesan entre 70 y 85 KB: se lee la sección que
 toca (`grep -n '^#'` da el índice).
 
 **Cómo se usa en la Etapa 9.** El agente de cada unidad lee su archivo en la fase 1 junto con lo de siempre

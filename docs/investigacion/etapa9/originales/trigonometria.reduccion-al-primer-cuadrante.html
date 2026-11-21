@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reducción al primer cuadrante · Propuesta de teoría</title>
+<style>
+:root{--ink:#172b3b;--muted:#526473;--teal:#096f6b;--pale:#eaf5f2;--line:#d7e1e4;--gold:#a15b13;--paper:#fff;--bg:#f3f6f7}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:#123747;color:#fff;padding:52px max(24px,calc((100vw - 1060px)/2)) 44px}header p{max-width:800px;color:#d7e9ec}h1{font-size:clamp(2rem,5vw,3.3rem);line-height:1.13;margin:15px 0 20px;max-width:850px}.eyebrow{font-size:.8rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase}
+main{max-width:1110px;margin:auto;padding:26px 25px 70px}h2{font-size:1.7rem;line-height:1.25;margin:0 0 23px}h3{font-size:1.4rem;line-height:1.35;margin:0 0 12px}h4{font-size:1.05rem;margin:24px 0 8px;color:var(--teal)}p{margin:10px 0 16px}section{margin:30px 0 44px;scroll-margin-top:20px}a{color:#09657c;text-underline-offset:3px}header a{color:#caefeb}.nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}.nav a{background:#fff;border:1px solid var(--line);padding:6px 11px;border-radius:6px;text-decoration:none;font-size:.87rem}
+.panel,.idea{background:var(--paper);padding:30px;border:1px solid var(--line);border-radius:12px}.idea{margin:24px 0 36px;border-top:5px solid var(--teal)}.idea .intro{font-size:1.1rem;color:var(--muted)}.tag{display:inline-block;font-size:.73rem;font-weight:750;letter-spacing:.04em;padding:3px 8px;border-radius:4px;background:var(--pale);color:var(--teal)}
+.note{padding:15px 19px;margin:18px 0;border-left:4px solid var(--teal);background:var(--pale)}.caution{border-color:#c98629;background:#fff6e8}.small,caption{font-size:.88rem;color:var(--muted)}.source{font-size:.84rem;color:var(--muted)}.source a{white-space:nowrap}
+.table-wrap{overflow-x:auto;margin:15px 0 20px;border:1px solid var(--line);border-radius:7px}table{border-collapse:collapse;width:100%;font-size:.91rem;background:#fff}caption{text-align:left;padding:10px 13px;background:#f5f8f9}th{background:#e9f0f3;text-align:left;font-size:.84rem;line-height:1.4}td,th{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}td:first-child{font-weight:600}table.wide{min-width:850px}.compact td,.compact th{padding:9px 11px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 18px}.card{background:#f5f8f8;border:1px solid var(--line);border-radius:7px;padding:16px}.card p{margin:6px 0;font-size:.96rem}.step{color:var(--teal);font-weight:750;font-size:.8rem}.mission{background:#edf6fa;padding:18px 21px;border-radius:8px}.math{font-family:Cambria,"Times New Roman",serif;font-size:1.14rem;line-height:1.7;background:#f4f7f9;padding:13px 18px;margin:12px 0;overflow-x:auto}.math p{margin:4px 0}.formula{font-family:Cambria,"Times New Roman",serif;white-space:nowrap;font-size:1.07em}.opts{list-style:none;padding:0;counter-reset:option}.opts li{margin:8px 0;padding:10px 13px;border:1px solid var(--line);border-radius:6px}.opts .correct{border-color:#5a9c87;background:#edf7f1}.opts strong{display:inline-block;min-width:22px}.reason{display:block;font-size:.86rem;color:var(--muted)}
+ol,ul{padding-left:24px}li{margin:8px 0}dl{margin:14px 0}dt{font-weight:750;margin-top:13px}dd{margin:2px 0 10px}.vocab{border-top:1px dashed var(--line);margin-top:20px;padding-top:4px}.summary-lines p{margin:6px 0}.bibliography li{margin:20px 0;overflow-wrap:anywhere}.audit td:first-child{white-space:nowrap}footer{border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:.83rem}
+@media(max-width:700px){body{font-size:16px}header{padding:35px 20px}main{padding:22px 14px 45px}.panel,.idea{padding:21px 17px}.cards{grid-template-columns:1fr}h2{font-size:1.45rem}h3{font-size:1.25rem}td,th{padding:10px}.math{padding:10px;font-size:1.07rem}.nav{gap:6px}.nav a{font-size:.8rem}}
+@media print{body{background:#fff;font-size:10.5pt}header{background:#fff;color:#172b3b;padding:0 0 18px;border-bottom:2px solid #096f6b}header p{color:#526473}main{max-width:none;padding:16px 0}h1{font-size:28pt}.nav{display:none}.panel,.idea{border-radius:0;padding:15px;break-inside:auto}h2,h3,h4{break-after:avoid}.card,.mission,.note,.opts li{break-inside:avoid}.table-wrap{overflow:visible;border-radius:0}table.wide{min-width:0;font-size:8.5pt}tr{break-inside:avoid}a{color:#154f62}section{margin:22px 0}.math{white-space:normal}.source a{white-space:normal}}
+</style>
+</head>
+<body>
+<header>
+<div class="eyebrow">Trigonometría · Diseño pedagógico · Perú</div>
+<h1>Reducción al primer cuadrante</h1>
+<p>Propuesta de teoría para 5.º de secundaria y preparación preuniversitaria. Cinco ideas para comprender de dónde salen los signos y las equivalencias, y elegir una ruta de resolución.</p>
+<div class="eyebrow">Documento para el equipo · Investigación consultada el 21 de noviembre de 2026</div>
+</header>
+<main>
+<nav class="nav" aria-label="Índice">
+<a href="#resumen">1. Resumen</a><a href="#examenes">2. Exámenes</a><a href="#errores">3. Errores</a><a href="#previos">4. Saberes previos</a><a href="#ideas">5. Ideas</a><a href="#simbolos">6. Símbolos</a><a href="#otras">7. Representaciones</a><a href="#mundo">8. Datos reales</a><a href="#decisiones">9. Decisiones</a><a href="#fuentes">10. Fuentes</a>
+</nav>
+<div class="note"><strong>Alcance del entregable.</strong> Es una propuesta editorial y pedagógica en HTML, no una aplicación. Incluye textos de «Lee», misiones verificables, predicciones, revelaciones, reglas y ejemplos mínimos resueltos. «Ahora tú» especifica tipos de ejercicio: el equipo elaborará y recalculará el banco final. Todas las escenas, tarjetas y predicciones son de creación propia.</div>
+
+<section id="resumen" class="panel">
+<h2>1. Resumen en 5 líneas</h2>
+<div class="summary-lines">
+<p>1. La unidad reduce razones a ángulos agudos conservando valor y signo, y trata por separado los ángulos sobre los ejes.</p>
+<p>2. Primero separa cuánto se giró, en qué sentido se giró y dónde terminó el giro.</p>
+<p>3. Después conecta los signos con coordenadas y distingue el ángulo original del ángulo de referencia.</p>
+<p>4. Explica por qué a veces se conserva la razón y otras veces se cambia a su cofunción.</p>
+<p>5. Lo más exigente es coordinar giro, unidad, referencia, signo y restricciones sin aplicar una tabla de memoria.</p>
+</div>
+</section>
+
+<section id="examenes">
+<h2>2. Qué se pregunta en los exámenes</h2>
+<p><strong>La evidencia permite identificar formatos, pero no ordenar su frecuencia estadística.</strong> No se reunió una serie completa y comparable de convocatorias y áreas. En los materiales revisados se repiten la evaluación de expresiones y la elección de signo y equivalencia; se proponen como prioridad didáctica, sin afirmar que sean «los más frecuentes» en todos los exámenes.</p>
+<p>La dificultad de la tabla es una estimación de esta propuesta: <strong>básica</strong>, una decisión principal; <strong>media</strong>, varias reducciones o una condición; <strong>alta</strong>, combinación con álgebra, geometría u otras identidades. «Presencia curricular» no significa que una pregunta haya aparecido en admisión.</p>
+<div class="table-wrap"><table class="wide">
+<thead><tr><th>Tipo de pregunta</th><th>Universidad y evidencia</th><th>Dificultad</th><th>Frecuencia que puede afirmarse</th><th>Fuente y alcance</th></tr></thead>
+<tbody>
+<tr><td>Evaluar una expresión con varias razones de ángulos no agudos, incluidos recíprocos.</td><td>UNI 2025-I, Matemática, pregunta 36.</td><td>Media: coordinar signos y operaciones.</td><td>Un caso localizado; tasa general no estimable.</td><td><a href="#f3">[F3]</a>, p. 5 del PDF, reproducción de Pitágoras. Se verificó visualmente el enunciado; no se copia su solución.</td></tr>
+<tr><td>Reducir ángulos relacionados y usar una razón dada de un ángulo agudo; puede intervenir valor absoluto.</td><td>San Marcos 2024-I, área D, pregunta 42.</td><td>Media: reducción, cofunción y recíproco.</td><td>Un caso localizado; no permite un ranking.</td><td><a href="#f4">[F4]</a>, pregunta 42. Copia de solucionario de academia alojada en Studocu; falta cotejo con el cuadernillo oficial.</td></tr>
+<tr><td>Reducir un ángulo expresado en grados, minutos y segundos.</td><td>UNI 2026-2, atribución de un banco externo.</td><td>Básica en concepto; media en resta sexagesimal.</td><td>Un caso atribuido, pendiente de corroboración oficial.</td><td><a href="#f5">[F5]</a>, «Pregunta 1». Se usa como indicio de formato, no para contar frecuencia confirmada.</td></tr>
+<tr><td>Deducir el cuadrante o los signos a partir de condiciones y valores absolutos.</td><td>UNI 2021-I, segunda prueba, pregunta 17.</td><td>Media–alta; combina signos con identidades.</td><td>Un caso oficial localizado.</td><td><a href="#f6">[F6]</a>, pp. 21 y 44. Es un contenido cercano que requiere la base de esta unidad.</td></tr>
+<tr><td>Interpretar una figura y relacionar ángulos suplementarios.</td><td>UNI 2021-I, segunda prueba, pregunta 18.</td><td>Alta si además exige transformaciones trigonométricas.</td><td>Un caso oficial localizado; la reducción es un paso, no todo el problema.</td><td><a href="#f6">[F6]</a>, pp. 21 y 45. El problema completo excede esta unidad.</td></tr>
+<tr><td>Reducir ángulos positivos, negativos y mayores de una vuelta; relacionar ángulos suplementarios.</td><td>CEPRE-UNI, ciclo preuniversitario 2026-2.</td><td>Básica → media.</td><td>Presencia curricular explícita; no frecuencia de examen.</td><td><a href="#f1">[F1]</a>, p. impresa 42, apartados S4.2 y S5.1.</td></tr>
+<tr><td>Reconocer referencia; trabajar con cuartos de vuelta, vueltas completas, ángulos sobre ejes y expresiones con condiciones.</td><td>Centro Preuniversitario UNMSM, 2023-I, semana 6.</td><td>Básica → alta según la combinación.</td><td>Contenido central de una semana; no tasa de admisión.</td><td><a href="#f2">[F2]</a>, pp. 47–51. Documento institucional consultado en una copia externa.</td></tr>
+<tr><td>Reducir mediante ángulo de referencia y complementariedad.</td><td>CEPREUNA, compendio histórico, sección 3.1.9.</td><td>Básica → media.</td><td>Presencia histórica; vigencia curricular actual no confirmada.</td><td><a href="#f7">[F7]</a>, pp. 107–108, copia titulada «COMPENDIO 2011–2012».</td></tr>
+<tr><td>Formatos propios y recurrencia reciente.</td><td>UNSA y UNSAAC.</td><td>No asignada sin muestra de ítems.</td><td>No confirmada en esta revisión.</td><td>Se localizaron referencias curriculares, pero no una muestra suficientemente verificada para atribuirles tipos o frecuencias particulares.</td></tr>
+</tbody></table></div>
+<p class="note"><strong>Prioridad propuesta:</strong> dominar primero reducción directa, signos y equivalencias con una razón dada; después combinar varias razones, condiciones y unidades. La geometría y las identidades de ángulos compuestos se dejan para transferencia posterior. La prioridad responde a dependencias conceptuales y a formatos observados, no a porcentajes inventados.</p>
+</section>
+
+<section id="errores">
+<h2>3. Errores típicos de los alumnos</h2>
+<p><strong>DOCUMENTADO</strong> significa que se consultó el estudio original. <strong>DE SEGUNDA MANO</strong> indica que solo se leyó una atribución en otro trabajo. <strong>HIPÓTESIS</strong> identifica una dificultad plausible aún sin evidencia específica localizada. Las causas propuestas por esta revisión se marcan como inferencias, aunque la conducta sí esté documentada.</p>
+<p>Los distractores son redacciones nuevas basadas en estas categorías. Un error observado en México, Chile o Indonesia no demuestra su prevalencia entre postulantes peruanos. Se localizó una tesis peruana, pero su texto completo no pudo consultarse; no se le atribuyen resultados <a href="#r5">[R5]</a>.</p>
+<div class="table-wrap"><table class="wide">
+<thead><tr><th>Código</th><th>Qué hace o cree</th><th>Por qué puede ocurrir</th><th>Estado</th><th>Fuente original o cadena</th></tr></thead>
+<tbody>
+<tr><td>E-GIR</td><td>Decide si un ángulo es negativo por estar a la izquierda o por «abrirse» hacia ese lado.</td><td>Los autores encuentran criterios espaciales distintos de la convención del sentido de giro; señalan diferencias en el discurso de los textos.</td><td>DOCUMENTADO</td><td>Martínez Tecolapa y Martínez Sierra, 2007, pp. 588–589 <a href="#r1">[R1]</a>.</td></tr>
+<tr><td>E-LIM</td><td>Desconoce o rechaza ángulos negativos y mayores de una vuelta.</td><td>No ha construido una interpretación de giro que permita continuar o invertir el recorrido.</td><td>DOCUMENTADO; la explicación es síntesis interpretativa.</td><td>Martínez Tecolapa y Martínez Sierra, 2007, p. 588 <a href="#r1">[R1]</a>.</td></tr>
+<tr><td>E-RAD</td><td>Trata el número pi como si valiera ciento ochenta en trigonometría; convierte unidades sin comprender la equivalencia.</td><td>Confunde una igualdad entre medidas angulares con una igualdad entre números.</td><td>DOCUMENTADO</td><td>Maknun, Rosjanuardi y Jupri, 2022, pp. 15–16; entrevistas a dos estudiantes <a href="#r2">[R2]</a>.</td></tr>
+<tr><td>E-COO</td><td>No conecta la coordenada horizontal con coseno y la vertical con seno.</td><td>La relación entre triángulo, círculo y coordenadas queda fragmentada; esta causa es una inferencia de diseño.</td><td>DOCUMENTADO</td><td>Díaz Landaverde y Hernández Garciadiego, 2025, resultados, figura 9 <a href="#r3">[R3]</a>.</td></tr>
+<tr><td>E-REF</td><td>Confunde el ángulo en posición normal con su ángulo de referencia.</td><td>No distingue el giro acumulado del ángulo agudo medido hacia la horizontal; interpretación didáctica.</td><td>DOCUMENTADO</td><td>Díaz Landaverde y Hernández Garciadiego, 2025, resultados, figuras 10–11 <a href="#r3">[R3]</a>.</td></tr>
+<tr><td>E-MEM</td><td>Recita signos por cuadrante, pero no puede explicar de dónde salen.</td><td>Ha retenido una tabla sin relacionarla con coordenadas; las entrevistas muestran esa falta de justificación.</td><td>DOCUMENTADO</td><td>Maknun, Rosjanuardi y Jupri, 2022, pp. 16–17 <a href="#r2">[R2]</a>.</td></tr>
+<tr><td>E-DIS</td><td>Reparte el seno o el coseno entre los términos de una suma o una resta.</td><td>Posible traslado indebido de reglas algebraicas a una función; el estudio documenta la transformación falsa.</td><td>DOCUMENTADO; mecanismo causal inferido.</td><td>Castro y Cárcamo, 2023, §4.1, figura 3 <a href="#r4">[R4]</a>.</td></tr>
+<tr><td>E-NOT</td><td>Asigna a una razón un valor notable que corresponde a otra razón o a otro ángulo.</td><td>Recuperación incompleta de valores aprendidos. Dar la tabla permite concentrar la evaluación en la elección.</td><td>DOCUMENTADO</td><td>Castro y Cárcamo, 2023, §4.2, figura 4 <a href="#r4">[R4]</a>.</td></tr>
+<tr><td>E-PER</td><td>No comprende el período o no considera ángulos en distintos cuadrantes al resolver ecuaciones.</td><td>Explicación reportada en una investigación citada por otra; no se comprobó aquí su instrumento original.</td><td>DE SEGUNDA MANO</td><td>Fahrudin y Pramudya, 2019, citados por Castro y Cárcamo, 2023, §1 <a href="#r4">[R4]</a>. No se usa como prueba directa de un distractor.</td></tr>
+<tr><td>E-LON</td><td>Hace positivas todas las razones porque «las longitudes no son negativas».</td><td>Extiende las longitudes del triángulo agudo a coordenadas que sí tienen signo.</td><td>HIPÓTESIS</td><td>Sin estudio específico verificado para esta formulación.</td></tr>
+<tr><td>E-SIG</td><td>Asigna el mismo signo a todas las razones o decide el signo solo por el signo del ángulo.</td><td>Confunde el giro, la ubicación del punto y el signo de un cociente.</td><td>HIPÓTESIS</td><td>E-MEM motiva revisar signos, pero no prueba estas respuestas exactas.</td></tr>
+<tr><td>E-COF</td><td>Conserva siempre el nombre de la razón, o lo cambia sin revisar desde qué eje se mide.</td><td>Usa una regla verbal de cuartos de vuelta sin entender el intercambio de los catetos.</td><td>HIPÓTESIS</td><td>Sin evidencia específica localizada sobre esta variante de reducción.</td></tr>
+<tr><td>E-CAN</td><td>Cancela un factor y extiende la igualdad a un ángulo que anulaba el denominador original.</td><td>Considera solo el aspecto de la expresión simplificada.</td><td>HIPÓTESIS</td><td>Sin fuente empírica específica verificada para esta unidad.</td></tr>
+<tr><td>E-CER</td><td>Da cero a un cociente porque el numerador es cero, aunque también lo sea el denominador.</td><td>Aplica una regla válida para denominador no nulo y omite esa condición.</td><td>HIPÓTESIS</td><td>Sin fuente empírica específica verificada para esta formulación.</td></tr>
+<tr><td>E-SEX</td><td>Resta minutos y segundos como si cada grupo tuviera cien unidades.</td><td>Traslada el sistema decimal al sexagesimal.</td><td>HIPÓTESIS</td><td>Se incluye por el formato atribuido a UNI 2026-2; el ítem no prueba que los alumnos cometan ese error.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="previos" class="panel">
+<h2>4. Lo que la unidad da por sabido</h2>
+<ul>
+<li><strong>Ángulos y círculo:</strong> centro, radio, recto, agudo, media vuelta y vuelta completa. El símbolo <strong>°</strong> se lee «grados». Un ángulo agudo mide más de cero y menos de noventa grados.</li>
+<li><strong>Dos unidades de ángulo:</strong> «rad» significa radianes. El símbolo <strong>π</strong> se lee «pi» y representa un número constante. La igualdad <span class="formula">π rad = 180°</span> expresa la misma media vuelta; no dice que el número pi sea ciento ochenta. La unidad debe aparecer en el dato o en la cabecera de la actividad.</li>
+<li><strong>Triángulo rectángulo:</strong> cateto opuesto, cateto adyacente e hipotenusa respecto de un ángulo elegido. Reconocer seno, coseno y tangente como cocientes; no memorizar sus valores notables.</li>
+<li><strong>Coordenadas básicas:</strong> derecha/izquierda y arriba/abajo respecto de un origen; números positivos, negativos y cero. La ampliación de las razones a los cuatro cuadrantes se construye aquí.</li>
+<li><strong>Aritmética y álgebra:</strong> fracciones, signos de un cociente, paréntesis, cuadrados, raíz cuadrada y valor absoluto. Saber que no se puede dividir entre cero.</li>
+<li><strong>Para la extensión UNI:</strong> <span class="formula">1° = 60′</span> y <span class="formula">1′ = 60″</span>; las marcas prima y doble prima significan minuto y segundo angulares. No son minutos ni segundos de tiempo. Repasar el préstamo sexagesimal antes de ese tipo de ejercicio.</li>
+</ul>
+<p><strong>Puerta de entrada:</strong> comprobar que el alumno reconoce un triángulo rectángulo girado, ubica un punto con dos signos y distingue una misma medida angular escrita en grados o radianes. Si falla, abrir una recuperación breve con objeto y explicación; no exigir que deduzca a la vez un prerrequisito y la nueva regla.</p>
+<p class="source">Base matemática: <a href="#t1">[T1]</a>, <a href="#t2">[T2]</a>, <a href="#t3">[T3]</a>. No se presupone conocer cofunciones, reglas de reducción, identidades de suma de ángulos ni funciones inversas.</p>
+</section>
+
+<section id="ideas">
+<h2>5. Las ideas, en orden</h2>
+<p><strong>Ruta:</strong> orientar el giro → interpretar signos → obtener una referencia aguda → cambiar de razón cuando corresponde → resolver y comprobar expresiones. Las respuestas correctas y los códigos que siguen son anotaciones para el equipo: se ocultan al alumno hasta «Mira».</p>
+<div class="note"><strong>Contrato común.</strong> Cada idea empieza mostrando el objeto completo. Las guías, medidas y símbolos aparecen después. «Juega» tiene un rango limitado para reservar un caso nuevo para «Predice». Cada ejercicio de «Así se resuelve» y «Ahora tú» lleva su propia ficha con datos, unidad, condiciones y fórmulas disponibles, incluidas opciones pertinentes y otras que no hacen falta. No se premia recordar una tabla. Las comparaciones son geométricas o exactas; una lectura decimal de pantalla no demuestra una identidad.</div>
+
+<article class="idea" id="idea1">
+<span class="tag">IDEA 1 · ORIENTACIÓN</span>
+<h3>La posición final no cuenta todas las vueltas</h3>
+<p class="intro"><strong>Pregunta que responde:</strong> ¿Cómo pueden dos giros distintos terminar apuntando al mismo lugar?</p>
+<p><strong>Aprende:</strong> a separar el sentido y la cantidad de giro de la orientación final.</p>
+<p><strong>Primera pantalla:</strong> una bicicleta en un taller de barrio, con la rueda delantera levantada y una cinta sobre la válvula. Se reconoce el objeto completo y se entiende que puede girar sin avanzar. La válvula empieza a la derecha del centro. No aparecen ejes en la apertura.</p>
+<h4>1 · Lee</h4>
+<div class="cards">
+<div class="card"><span class="step">Tarjeta 1</span><p>La rueda está levantada. Su centro permanece quieto mientras la válvula recorre el borde.</p></div>
+<div class="card"><span class="step">Tarjeta 2</span><p>Podemos girarla como avanzan las agujas de un reloj o en el sentido contrario. El sentido forma parte de la descripción del giro.</p></div>
+<div class="card"><span class="step">Tarjeta 3</span><p>Un contador registra cuánto giró la rueda. La orientación indica hacia dónde apunta la válvula cuando la detenemos.</p></div>
+</div>
+<h4>2 · Juega</h4>
+<div class="mission"><strong>Misión:</strong> llevar la válvula, primero, a una guía arriba a la derecha y, después de reiniciar, a otra abajo a la derecha. El alumno arrastra la rueda y elige el sentido. Cada recorrido se limita a menos de una vuelta. La aplicación comprueba la coincidencia con cada guía y el sentido usado; la válvula se ajusta a la guía al soltarla. No se ensayan todavía giros completos ni giros mayores de una vuelta.</div>
+<h4>3 · Predice</h4>
+<p>La válvula vuelve a empezar a la derecha. La rueda gira <strong>420° en sentido horario</strong>, un recorrido que el juego aún no permitió. ¿Dónde termina la válvula?</p>
+<ul class="opts">
+<li><strong>A.</strong> Arriba a la derecha.<span class="reason">Incorrecta · E-GIR: se interpreta el recorrido como antihorario.</span></li>
+<li class="correct"><strong>B.</strong> Abajo a la derecha.<span class="reason">Correcta · completa una vuelta y continúa sesenta grados en sentido horario.</span></li>
+<li><strong>C.</strong> Abajo a la izquierda.<span class="reason">Incorrecta · E-GIR: se asocia un giro negativo con quedar a la izquierda.</span></li>
+<li><strong>D.</strong> Ese giro no puede existir porque supera una vuelta.<span class="reason">Incorrecta · E-LIM.</span></li>
+</ul>
+<h4>4 · Mira</h4>
+<p>La animación hace una vuelta horaria completa, se detiene brevemente en el punto de partida y recorre el tramo restante. Dos rastros distinguibles muestran «recorrido total» y «orientación final». Un segundo giro, corto y horario, alcanza la misma posición. No se presenta la igualdad de los ángulos: se destaca la igualdad de sus lados finales.</p>
+<h4>5 · La regla</h4>
+<p>En posición normal se parte de la horizontal hacia la derecha. El giro antihorario es positivo y el horario es negativo. <strong>θ</strong>, «theta», nombra la medida del giro original; <strong>β</strong>, «beta», su representante entre cero incluido y una vuelta excluida. <strong>n</strong>, «ene», indica cuántas vueltas enteras se suman a beta para reconstruir theta. El símbolo <strong>ℤ</strong> representa el conjunto de los enteros; <strong>∈</strong> se lee «pertenece a».</p>
+<div class="math">
+<p>En grados: θ = β + 360° · n, &nbsp; 0° ≤ β &lt; 360°, &nbsp; n ∈ ℤ.</p>
+<p>En radianes: θ = β + 2π rad · n, &nbsp; 0 rad ≤ β &lt; 2π rad.</p>
+</div>
+<p>Los puntos centrados indican multiplicación; los signos «≤» y «&lt;» significan «menor o igual que» y «menor que». Dos ángulos son <strong>coterminales</strong> si comparten lado inicial y lado final: sus medidas difieren en vueltas enteras. Para encontrar beta, se suman o restan vueltas completas hasta entrar en el intervalo indicado. Los giros negativos también se admiten. Una vuelta completa se representa con beta igual a cero.</p>
+<p class="source">Fundamento: <a href="#t1">[T1]</a>. La distinción recorrido/orientación y la escena son elaboración propia.</p>
+<h4>6 · Así se resuelve</h4>
+<p><strong>Ejemplo propio:</strong> localizar el representante de <span class="formula">θ = −410°</span>. La ficha da la equivalencia de una vuelta y la relación anterior.</p>
+<ol>
+<li>El signo negativo indica recorrido horario; no decide por sí solo en qué lado termina.</li>
+<li>Sumar una vuelta: <span class="formula">−410° + 360° = −50°</span>. Aún no está en el intervalo elegido.</li>
+<li>Sumar otra vuelta: <span class="formula">−50° + 360° = 310°</span>. Por tanto, <span class="formula">β = 310°</span>.</li>
+<li>Comprobar reconstruyendo el giro: <span class="formula">−410° = 310° + 360° · (−2)</span>. Se conserva la orientación, aunque el recorrido total es distinto.</li>
+</ol>
+<h4>7 · Ahora tú</h4>
+<ol>
+<li>Elegir el sentido que corresponde a un giro dibujado y a su descripción verbal.</li>
+<li>Encontrar un representante entre cero y una vuelta, primero en grados y luego en radianes.</li>
+<li>Decidir si dos recorridos son coterminales comprobando su diferencia en vueltas.</li>
+<li><strong>Nivel de admisión:</strong> combinar una relación entre medidas coterminales con un intervalo permitido. Debe declararse si se pide el giro original o su representante; no se introducen todavía razones trigonométricas.</li>
+</ol>
+<div class="vocab"><h4>Palabras nuevas</h4><dl>
+<dt>Orientación</dt><dd>Hacia dónde queda apuntando algo al detenerse. Ejemplos: válvula hacia arriba; aguja hacia la izquierda; marca de un disco hacia abajo.</dd>
+<dt>Lado terminal</dt><dd>La dirección desde el centro hasta la marca cuando acaba el giro. Ejemplos: centro–válvula; centro–punta de una aguja; centro–marca del borde.</dd>
+<dt>Coterminal</dt><dd>Otro giro que empieza y termina en las mismas direcciones. Ejemplos: 20° y 380°; −70° y 290°; 0° y 720°.</dd>
+</dl></div>
+</article>
+
+<article class="idea" id="idea2">
+<span class="tag">IDEA 2 · SIGNOS Y EJES</span>
+<h3>El signo dice dónde está la marca</h3>
+<p class="intro"><strong>Pregunta que responde:</strong> ¿Por qué una razón trigonométrica puede ser negativa?</p>
+<p><strong>Aprende:</strong> a justificar el signo de las seis razones mediante la posición horizontal y vertical de un punto.</p>
+<p><strong>Primera pantalla:</strong> la misma rueda levantada, con válvula visible y una regla apoyada detrás del centro. El alumno reconoce el taller antes de ver las guías horizontal y vertical. La altura se medirá desde el centro, no desde el suelo.</p>
+<h4>1 · Lee</h4>
+<div class="cards">
+<div class="card"><span class="step">Tarjeta 1</span><p>Una regla puede marcar posiciones a ambos lados de su cero. Estar a la izquierda no significa tener una longitud negativa.</p></div>
+<div class="card"><span class="step">Tarjeta 2</span><p>Para ubicar la válvula usaremos dos lecturas: una horizontal y otra vertical. Ambas parten del centro de la rueda.</p></div>
+<div class="card"><span class="step">Tarjeta 3</span><p>El radio es la distancia del centro al borde. Aunque la válvula cambie de lugar, esa distancia se mantiene.</p></div>
+</div>
+<h4>2 · Juega</h4>
+<div class="mission"><strong>Misión:</strong> colocar la válvula en dos marcas situadas a la misma altura, una a cada lado del centro. Solo se habilita la mitad superior. El alumno mueve la rueda y ajusta dos cursores de lectura a las proyecciones de la válvula. Se comprueban ambas posiciones y que los cursores correspondan al punto. Se muestran lecturas con signo, pero no valores ni tablas de razones trigonométricas.</div>
+<h4>3 · Predice</h4>
+<p>Ahora se permitirá llevar la válvula <strong>abajo y a la derecha</strong>, una zona no explorada. Para el ángulo medido desde la derecha, ¿qué signos tendrán, en este orden, <strong>seno, coseno y tangente</strong>?</p>
+<ul class="opts">
+<li><strong>A.</strong> Positivo, positivo, positivo.<span class="reason">Incorrecta · E-LON: se usan solamente longitudes positivas.</span></li>
+<li><strong>B.</strong> Negativo, negativo, negativo.<span class="reason">Incorrecta · E-SIG: se da un único signo a todas las razones.</span></li>
+<li class="correct"><strong>C.</strong> Negativo, positivo, negativo.<span class="reason">Correcta · posición vertical negativa, horizontal positiva y cociente de signos distintos.</span></li>
+<li><strong>D.</strong> Positivo, negativo, negativo.<span class="reason">Incorrecta · E-COO: se intercambian las lecturas de seno y coseno.</span></li>
+</ul>
+<h4>4 · Mira</h4>
+<p>La marca baja a esa zona. Se iluminan primero la lectura vertical negativa y después la horizontal positiva. Tres cocientes se construyen con esas lecturas y con el radio. El rótulo «menos» se liga al lado del centro, no al tamaño de la rueda.</p>
+<h4>5 · La regla</h4>
+<p><strong>O</strong>, «o mayúscula», será el centro. <strong>P</strong>, «pe», será el punto marcado en el borde. <strong>x</strong>, «equis», es su coordenada horizontal y <strong>y</strong>, «ye», la vertical, ambas con signo; <strong>r</strong>, «erre», es el radio positivo. Se escribe <span class="formula">P(x; y)</span>, primero horizontal y luego vertical. El punto y coma separa coordenadas y evita confundirlas con la coma decimal.</p>
+<div class="math">
+<p>r = √(x² + y²) &gt; 0.</p>
+<p>sen θ = y/r &nbsp; · &nbsp; cos θ = x/r &nbsp; · &nbsp; tan θ = y/x, si x ≠ 0.</p>
+<p>csc θ = r/y, si y ≠ 0 &nbsp; · &nbsp; sec θ = r/x, si x ≠ 0 &nbsp; · &nbsp; cot θ = x/y, si y ≠ 0.</p>
+</div>
+<p>«sen» se lee seno; «cos», coseno; «tan», tangente; «csc», cosecante; «sec», secante; «cot», cotangente. La barra indica división, el superíndice dos indica cuadrado, «√» indica raíz cuadrada y «≠» significa «distinto de». Las razones no tienen unidad: se dividen longitudes expresadas en la misma unidad. Normalizar una rueda significa tomar su radio como una unidad, no afirmar que mida un centímetro.</p>
+<p>Las dos guías dividen el plano en <strong>cuatro cuadrantes</strong>. Se numeran desde arriba a la derecha y en sentido antihorario. En cada cuadrante los signos se obtienen de los cocientes, con radio siempre positivo:</p>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Cuadrante</th><th>Ubicación</th><th>Signos de x e y</th><th>sen y csc</th><th>cos y sec</th><th>tan y cot</th></tr></thead>
+<tbody>
+<tr><td>I</td><td>Arriba, derecha</td><td>(+; +)</td><td>+</td><td>+</td><td>+</td></tr>
+<tr><td>II</td><td>Arriba, izquierda</td><td>(−; +)</td><td>+</td><td>−</td><td>−</td></tr>
+<tr><td>III</td><td>Abajo, izquierda</td><td>(−; −)</td><td>−</td><td>−</td><td>+</td></tr>
+<tr><td>IV</td><td>Abajo, derecha</td><td>(+; −)</td><td>−</td><td>+</td><td>−</td></tr>
+</tbody></table></div>
+<p>Sobre una guía, el ángulo es <strong>cuadrantal</strong> y no pertenece a ningún cuadrante. Se sustituyen sus coordenadas directamente. «ND» significa «no definida» como número real; no significa cero ni infinito.</p>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>β</th><th>P en radio unidad</th><th>sen</th><th>cos</th><th>tan</th><th>cot</th><th>sec</th><th>csc</th></tr></thead>
+<tbody>
+<tr><td>0° / 0 rad</td><td>(1; 0)</td><td>0</td><td>1</td><td>0</td><td>ND</td><td>1</td><td>ND</td></tr>
+<tr><td>90° / π/2 rad</td><td>(0; 1)</td><td>1</td><td>0</td><td>ND</td><td>0</td><td>ND</td><td>1</td></tr>
+<tr><td>180° / π rad</td><td>(−1; 0)</td><td>0</td><td>−1</td><td>0</td><td>ND</td><td>−1</td><td>ND</td></tr>
+<tr><td>270° / 3π/2 rad</td><td>(0; −1)</td><td>−1</td><td>0</td><td>ND</td><td>0</td><td>ND</td><td>−1</td></tr>
+</tbody></table></div>
+<p>La cosecante es el recíproco del seno y la secante, del coseno, cuando esos denominadores no son cero. La cotangente se define como coseno dividido entre seno. Solo puede escribirse como uno dividido entre tangente cuando la tangente existe y no es cero: esta precaución permite entender la cotangente de un ángulo recto.</p>
+<p class="source">Base de las definiciones y sus restricciones: <a href="#t2">[T2]</a>, <a href="#t3">[T3]</a>. Tabla obtenida por sustitución directa en los cocientes.</p>
+<h4>6 · Así se resuelve</h4>
+<p><strong>Ejemplo propio:</strong> en una rueda de modelo, el punto está 18 cm a la izquierda y 24 cm arriba del centro. Se pide seno, coseno y tangente. Son medidas didácticas, no datos de una marca comercial.</p>
+<ol>
+<li>Traducir posiciones: <span class="formula">x = −18 cm</span>, <span class="formula">y = 24 cm</span>. El punto está en el segundo cuadrante.</li>
+<li>Con Pitágoras, dado en la ficha: <span class="formula">r = √(18² + 24²) cm = 30 cm</span>. El radio se toma positivo.</li>
+<li>Elegir los cocientes: <span class="formula">sen θ = 24/30 = 4/5</span>; <span class="formula">cos θ = −18/30 = −3/5</span>; <span class="formula">tan θ = 24/(−18) = −4/3</span>.</li>
+<li>Comprobar que los signos concuerdan con arriba/izquierda y que los denominadores usados no son cero.</li>
+</ol>
+<h4>7 · Ahora tú</h4>
+<ol>
+<li>Ubicar una marca y justificar los signos de seno y coseno sin calcular el ángulo.</li>
+<li>Obtener las seis razones a partir de coordenadas y radio, o solo sus signos.</li>
+<li>Distinguir cero de razón no definida en posiciones sobre los ejes.</li>
+<li><strong>Nivel de admisión:</strong> elegir los cuadrantes compatibles con dos condiciones de signo o de valor absoluto. La ficha explica que el valor absoluto conserva un número no negativo y cambia el signo de uno negativo.</li>
+</ol>
+<div class="vocab"><h4>Palabras nuevas</h4><dl>
+<dt>Coordenada</dt><dd>Una lectura que indica cuánto y hacia qué lado se encuentra un punto respecto del cero. Ejemplos: tres centímetros a la derecha; dos centímetros abajo; cero de separación horizontal.</dd>
+<dt>Cuadrante</dt><dd>Una de las cuatro zonas abiertas que dejan las dos guías cruzadas. Ejemplos: arriba/derecha es I; arriba/izquierda es II; abajo/derecha es IV.</dd>
+<dt>Cuadrantal</dt><dd>Un giro que termina exactamente sobre una de las guías. Ejemplos: 0°; 90°; 270°.</dd>
+<dt>Recíproco</dt><dd>El número que, multiplicado por otro no nulo, da uno. Ejemplos: 2 y 1/2; −3 y −1/3; 4/5 y 5/4.</dd>
+</dl></div>
+</article>
+
+<article class="idea" id="idea3">
+<span class="tag">IDEA 3 · REFERENCIA AGUDA</span>
+<h3>La misma razón, con el signo que corresponde</h3>
+<p class="intro"><strong>Pregunta que responde:</strong> ¿Cómo usar un ángulo agudo para calcular una razón de un ángulo que no es agudo?</p>
+<p><strong>Aprende:</strong> a encontrar el ángulo de referencia respecto de la horizontal y conservar la razón, cambiando únicamente el signo que exija el cuadrante.</p>
+<p><strong>Primera pantalla:</strong> una rueda de bicicleta con una tira transparente sujeta en el centro y alineada con la válvula. Dos cintas horizontales sirven de guía. Se ve primero el instrumento casero completo; luego se resaltan las posiciones y sus medidas.</p>
+<h4>1 · Lee</h4>
+<div class="cards">
+<div class="card"><span class="step">Tarjeta 1</span><p>El contador sigue mostrando el giro desde la derecha. Además, podemos observar la pequeña apertura entre la tira y la horizontal.</p></div>
+<div class="card"><span class="step">Tarjeta 2</span><p>Una figura reflejada cambia de posición, pero conserva sus tamaños. Podemos comparar sus separaciones sin mover el centro.</p></div>
+<div class="card"><span class="step">Tarjeta 3</span><p>Las tablas de ángulos agudos pueden servir para otras posiciones de la rueda. Para usarlas habrá que conservar también la información del lado en que termina la marca.</p></div>
+</div>
+<h4>2 · Juega</h4>
+<div class="mission"><strong>Misión:</strong> copiar en la zona superior derecha la inclinación de dos tiras objetivo: una termina arriba a la izquierda y otra abajo a la derecha. Se mueve una copia transparente y se la refleja sobre las guías. El programa comprueba que coincidan el radio y las magnitudes de ambas separaciones respecto del centro. Solo se trabajan los cuadrantes II y IV y sus imágenes en I; no se habilita todavía el III.</div>
+<h4>3 · Predice</h4>
+<p>La rueda gira ahora <strong>220°</strong>, hasta el tercer cuadrante, que aún no se comparó. ¿Qué expresión conserva el valor de su <strong>coseno</strong> usando un ángulo agudo?</p>
+<ul class="opts">
+<li><strong>A.</strong> cos 40°.<span class="reason">Incorrecta · E-LON: se pierde el signo de la coordenada horizontal.</span></li>
+<li class="correct"><strong>B.</strong> −cos 40°.<span class="reason">Correcta · la referencia se mide desde la horizontal izquierda y el coseno es negativo.</span></li>
+<li><strong>C.</strong> −cos 50°.<span class="reason">Incorrecta · E-REF: se toma la apertura hasta la vertical como si fuera la referencia horizontal.</span></li>
+<li><strong>D.</strong> −sen 40°.<span class="reason">Incorrecta · E-COF: se cambia el nombre de la razón sin haber cambiado la referencia horizontal.</span></li>
+</ul>
+<h4>4 · Mira</h4>
+<p>La tira supera media vuelta y se detiene cuarenta grados después. Un reflejo lleva el pequeño triángulo al primer cuadrante. Su ancho se conserva en magnitud, pero la lectura horizontal del punto original sigue siendo negativa. La escena une esa lectura con el coseno antes de mostrar la equivalencia.</p>
+<h4>5 · La regla</h4>
+<p><strong>α</strong>, «alfa», será siempre el <strong>ángulo de referencia</strong>: el ángulo agudo entre el lado terminal y la horizontal más cercana. Primero se encuentra beta, el representante de theta de la idea 1. Si beta queda sobre un eje, se utiliza la tabla de la idea 2; en esta unidad no se llama agudo a un ángulo de cero o noventa grados.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Ubicación de β</th><th>Referencia α en grados</th><th>Referencia α en radianes</th></tr></thead>
+<tbody>
+<tr><td>I: entre 0° y 90°</td><td>α = β</td><td>α = β</td></tr>
+<tr><td>II: entre 90° y 180°</td><td>α = 180° − β</td><td>α = π rad − β</td></tr>
+<tr><td>III: entre 180° y 270°</td><td>α = β − 180°</td><td>α = β − π rad</td></tr>
+<tr><td>IV: entre 270° y 360°</td><td>α = 360° − β</td><td>α = 2π rad − β</td></tr>
+</tbody></table></div>
+<p>Todos esos intervalos son abiertos. La razón del ángulo original tiene la <strong>misma magnitud que la misma razón de alfa</strong>. El signo se decide en el cuadrante original. Esto funciona para seno, coseno, tangente, cotangente, secante y cosecante. No se cambia de razón al usar la referencia horizontal.</p>
+<p>La justificación es geométrica: los reflejos conservan las magnitudes horizontal y vertical y mantienen el radio. Por eso conservan las magnitudes de los cocientes de la idea 2. Una vuelta completa devuelve exactamente el mismo punto y conserva las seis razones cuando están definidas.</p>
+<p><strong>Giros opuestos.</strong> Al reflejar respecto de la horizontal se conserva la coordenada horizontal y cambia el signo de la vertical. Por tanto:</p>
+<div class="math">
+<p>sen(−θ) = −sen θ &nbsp; · &nbsp; cos(−θ) = cos θ &nbsp; · &nbsp; tan(−θ) = −tan θ.</p>
+<p>csc(−θ) = −csc θ &nbsp; · &nbsp; sec(−θ) = sec θ &nbsp; · &nbsp; cot(−θ) = −cot θ.</p>
+</div>
+<p><strong>Media vuelta.</strong> Cambian de signo ambas coordenadas. Seno, coseno, secante y cosecante cambian de signo; tangente y cotangente conservan su valor porque numerador y denominador cambian juntos. De aquí salen sus períodos mínimos: una vuelta para las cuatro primeras y media vuelta para las dos últimas. Todas estas igualdades se usan donde las razones existen.</p>
+<p class="source">Definición contrastada en <a href="#t2">[T2]</a> y lecciones 25–26 de <a href="#t5">[T5]</a>; giros opuestos en <a href="#t3">[T3]</a>. Demostración y secuencia de reflejos redactadas para esta propuesta.</p>
+<h4>6 · Así se resuelve</h4>
+<p><strong>Ejemplo propio:</strong> reducir <span class="formula">cos(−585°)</span> y usar el valor agudo de la tabla. La ficha ofrece la regla de vueltas, la tabla de signos y <span class="formula">cos 45° = √2/2</span>.</p>
+<ol>
+<li>Encontrar el representante: <span class="formula">−585° + 2 · 360° = 135°</span>. Así, <span class="formula">β = 135°</span>.</li>
+<li>Ubicarlo en el segundo cuadrante y elegir la referencia: <span class="formula">α = 180° − 135° = 45°</span>.</li>
+<li>Conservar el coseno y poner el signo de la coordenada horizontal: <span class="formula">cos(−585°) = −cos 45°</span>.</li>
+<li>Usar el dato proporcionado: <span class="formula">−√2/2</span>. Comprobar que es negativo y está entre menos uno y uno.</li>
+</ol>
+<h4>7 · Ahora tú</h4>
+<ol>
+<li>Señalar la referencia horizontal sin confundirla con el giro completo ni con la abertura hacia la vertical.</li>
+<li>Reducir una sola razón en cada cuadrante; obtener su valor solo si la ficha lo proporciona.</li>
+<li>Combinar vueltas completas, signo del giro y unidad en grados o radianes.</li>
+<li>Comparar una razón en un giro, su opuesto y otro separado por media vuelta, justificando qué conserva el cociente.</li>
+<li><strong>Nivel de admisión:</strong> evaluar expresiones cortas con razones y recíprocos de distintos cuadrantes; o reducir un ángulo con minutos y segundos usando el formulario sexagesimal.</li>
+</ol>
+<div class="vocab"><h4>Palabras nuevas</h4><dl>
+<dt>Ángulo de referencia</dt><dd>La abertura aguda que conecta la dirección final con la horizontal más cercana. Ejemplos: 140° tiene referencia 40°; 230°, referencia 50°; 320°, referencia 40°.</dd>
+<dt>Reducción</dt><dd>Reescribir una razón usando un ángulo más sencillo sin cambiar su valor. Ejemplos: sen 140° = sen 40°; cos 230° = −cos 50°; tan 320° = −tan 40°.</dd>
+<dt>Período</dt><dd>Un aumento fijo del ángulo que hace repetir el valor de una función en todos los casos admitidos. Ejemplos: 360° para seno; 360° para coseno; 180° para tangente. Una coincidencia aislada entre dos valores no basta para demostrar un período.</dd>
+</dl></div>
+</article>
+
+<article class="idea" id="idea4">
+<span class="tag">IDEA 4 · COFUNCIONES</span>
+<h3>Medir desde la vertical cambia la comparación</h3>
+<p class="intro"><strong>Pregunta que responde:</strong> ¿Por qué al reducir a veces aparece coseno donde antes había seno?</p>
+<p><strong>Aprende:</strong> a explicar el intercambio entre razones mediante los catetos y a separar ese intercambio del signo.</p>
+<p><strong>Primera pantalla:</strong> una escuadra triangular de carpintería sobre una mesa de taller, junto a una tabla. Se ven sus dos bordes perpendiculares antes de añadir un ángulo o una proyección. La escuadra es una representación rígida: sus lados no cambian de tamaño al girarla.</p>
+<h4>1 · Lee</h4>
+<div class="cards">
+<div class="card"><span class="step">Tarjeta 1</span><p>Una misma escuadra puede apoyarse sobre cualquiera de sus dos bordes perpendiculares. Sigue siendo la misma pieza.</p></div>
+<div class="card"><span class="step">Tarjeta 2</span><p>Los nombres «opuesto» y «adyacente» dependen del ángulo que estemos mirando. Un lado no lleva ese nombre para siempre.</p></div>
+<div class="card"><span class="step">Tarjeta 3</span><p>En una figura podemos señalar el ángulo respecto de una horizontal o respecto de una vertical. Antes de calcular, hay que identificar desde dónde se lo está midiendo.</p></div>
+</div>
+<h4>2 · Juega</h4>
+<div class="mission"><strong>Misión:</strong> encajar la escuadra en dos plantillas, primero sobre un cateto y después sobre el otro, y señalar en cada una el borde que queda frente al ángulo agudo marcado. El alumno gira y traslada la pieza; el programa comprueba la coincidencia de los tres vértices y la elección del borde. Solo se comparan los dos ángulos interiores agudos. No se muestran razones de ángulos exteriores ni la equivalencia de la predicción.</div>
+<h4>3 · Predice</h4>
+<p>Una dirección forma <strong>20° más que un ángulo recto</strong> desde la horizontal derecha. ¿Qué expresión de un ángulo agudo tiene el mismo valor que <strong>cos 110°</strong>?</p>
+<ul class="opts">
+<li><strong>A.</strong> −cos 20°.<span class="reason">Incorrecta · E-COF: conserva el nombre de la razón al usar el ángulo contado desde la vertical.</span></li>
+<li><strong>B.</strong> sen 20°.<span class="reason">Incorrecta · E-SIG: intercambia la razón, pero pierde el signo horizontal del segundo cuadrante.</span></li>
+<li><strong>C.</strong> cos 90° + cos 20°.<span class="reason">Incorrecta · E-DIS: reparte el coseno entre los sumandos.</span></li>
+<li class="correct"><strong>D.</strong> −sen 20°.<span class="reason">Correcta · cambia la comparación y conserva el signo de la posición original.</span></li>
+</ul>
+<h4>4 · Mira</h4>
+<p>Se muestra una copia de la escuadra orientada veinte grados y después girada noventa grados alrededor de su vértice. La separación que antes era vertical se convierte en una separación horizontal hacia la izquierda. En paralelo, la ruta de la idea 3 obtiene una referencia horizontal de setenta grados. Las dos rutas coinciden: el coseno de setenta grados y el seno de veinte grados comparan los mismos lados.</p>
+<h4>5 · La regla</h4>
+<p><strong>φ</strong>, «fi», será un ángulo auxiliar: el que aparece junto a un cuarto de vuelta, media vuelta o una vuelta. No se confunde con alfa, reservado para la referencia horizontal. En la primera construcción, fi es agudo. Los dos ángulos agudos de un triángulo rectángulo suman noventa grados; al cambiar de uno al otro, los catetos intercambian su papel.</p>
+<div class="math">
+<p>sen(90° − φ) = cos φ &nbsp; · &nbsp; cos(90° − φ) = sen φ.</p>
+<p>tan(90° − φ) = cot φ &nbsp; · &nbsp; cot(90° − φ) = tan φ.</p>
+<p>sec(90° − φ) = csc φ &nbsp; · &nbsp; csc(90° − φ) = sec φ.</p>
+</div>
+<p>Estas parejas se llaman <strong>cofunciones</strong>. Al partir de la vertical se intercambian las separaciones que se comparan; al partir de la horizontal, se mantienen. El signo se obtiene de la posición completa del ángulo, nunca de la palabra «cambio».</p>
+<p>Para justificar una fila, basta seguir el punto: un giro antihorario de noventa grados transforma una posición horizontal y vertical en otra cuya horizontal es la vertical anterior con signo contrario, y cuya vertical es la horizontal anterior. Por eso <span class="formula">cos(90° + φ) = −sen φ</span>. Los demás cocientes se obtienen de la misma posición, sin aprender seis reglas desconectadas.</p>
+<div class="table-wrap"><table class="wide compact">
+<caption>Formulario de consulta. Las filas se construyen con reflejos y giros; no se exige memorizarlas.</caption>
+<thead><tr><th>Ángulo completo</th><th>sen</th><th>cos</th><th>tan</th><th>cot</th><th>sec</th><th>csc</th></tr></thead>
+<tbody>
+<tr><td>90° − φ</td><td>cos φ</td><td>sen φ</td><td>cot φ</td><td>tan φ</td><td>csc φ</td><td>sec φ</td></tr>
+<tr><td>90° + φ</td><td>cos φ</td><td>−sen φ</td><td>−cot φ</td><td>−tan φ</td><td>−csc φ</td><td>sec φ</td></tr>
+<tr><td>180° − φ</td><td>sen φ</td><td>−cos φ</td><td>−tan φ</td><td>−cot φ</td><td>−sec φ</td><td>csc φ</td></tr>
+<tr><td>180° + φ</td><td>−sen φ</td><td>−cos φ</td><td>tan φ</td><td>cot φ</td><td>−sec φ</td><td>−csc φ</td></tr>
+<tr><td>270° − φ</td><td>−cos φ</td><td>−sen φ</td><td>cot φ</td><td>tan φ</td><td>−csc φ</td><td>−sec φ</td></tr>
+<tr><td>270° + φ</td><td>−cos φ</td><td>sen φ</td><td>−cot φ</td><td>−tan φ</td><td>csc φ</td><td>−sec φ</td></tr>
+<tr><td>360° − φ</td><td>−sen φ</td><td>cos φ</td><td>−tan φ</td><td>−cot φ</td><td>sec φ</td><td>−csc φ</td></tr>
+<tr><td>360° + φ</td><td>sen φ</td><td>cos φ</td><td>tan φ</td><td>cot φ</td><td>sec φ</td><td>csc φ</td></tr>
+</tbody></table></div>
+<p><strong>Condiciones:</strong> para localizar el cuadrante de cada fila por simple inspección se supone <span class="formula">0° &lt; φ &lt; 90°</span>. Las igualdades son válidas también para otros valores de fi siempre que existan ambos lados, pero en tal caso la razón de fi puede ser negativa y todavía necesitar reducción. No se puede decidir el cuadrante de <span class="formula">90° + φ</span> sin saber algo sobre fi.</p>
+<p>En radianes, se reemplaza noventa grados por <span class="formula">(π/2) rad</span>, ciento ochenta por <span class="formula">π rad</span>, doscientos setenta por <span class="formula">(3π/2) rad</span> y trescientos sesenta por <span class="formula">2π rad</span>. Las vueltas enteras adicionales se tratan con la idea 1. No se suma un número de grados a otro de radianes sin convertirlos antes.</p>
+<p class="source">Complementariedad: <a href="#t7">[T7]</a>; alcance curricular de las familias: <a href="#f2">[F2]</a>. La tabla se reconstruye algebraicamente con las razones de la idea 2.</p>
+<h4>6 · Así se resuelve</h4>
+<p><strong>Ejemplo propio:</strong> expresar <span class="formula">csc(270° − φ)</span> en una razón de fi, sabiendo que fi es agudo. Se entrega el formulario de esta idea y las definiciones recíprocas.</p>
+<ol>
+<li>El ángulo completo está entre ciento ochenta y doscientos setenta grados: es del tercer cuadrante.</li>
+<li>La cosecante tiene el signo del seno, por lo que es negativa.</li>
+<li>El ángulo auxiliar se mide desde la vertical; su cofunción es la secante.</li>
+<li>Resultado: <span class="formula">csc(270° − φ) = −sec φ</span>. Verificación independiente: el seno del ángulo completo es menos el coseno de fi, y su recíproco produce la misma expresión.</li>
+</ol>
+<h4>7 · Ahora tú</h4>
+<ol>
+<li>Emparejar razones de ángulos complementarios identificando los lados comparados.</li>
+<li>Reducir por separado las familias de media vuelta y las de cuarto de vuelta; elegir signo y nombre de razón en pasos distintos.</li>
+<li>Expresar una razón con la razón de otro ángulo agudo cuyo valor se da, aunque ese segundo ángulo no sea la referencia horizontal.</li>
+<li><strong>Nivel de admisión:</strong> combinar grados, radianes, vueltas y cofunciones en una expresión, con las conversiones disponibles.</li>
+<li><strong>Transferencia:</strong> dar un intervalo de fi que no sea agudo y pedir decidir si la expresión obtenida ya está reducida o si debe continuarse con la idea 3.</li>
+</ol>
+<div class="vocab"><h4>Palabras nuevas</h4><dl>
+<dt>Complementarios</dt><dd>Dos ángulos que, juntos, completan un ángulo recto. Ejemplos: 20° y 70°; 35° y 55°; 40° y 50°.</dd>
+<dt>Cofunción</dt><dd>La pareja que aparece al comparar los mismos lados desde el otro ángulo agudo. Ejemplos: seno con coseno; tangente con cotangente; secante con cosecante.</dd>
+<dt>Identidad</dt><dd>Una igualdad que funciona para todos los valores que admite, no solo para un ejemplo. Ejemplos: seno del complementario igual a coseno; coseno de un giro opuesto igual a coseno del original; seno que se repite tras una vuelta.</dd>
+</dl></div>
+</article>
+
+<article class="idea" id="idea5">
+<span class="tag">IDEA 5 · ELECCIÓN Y COMPROBACIÓN</span>
+<h3>Una expresión necesita una ruta y sus condiciones</h3>
+<p class="intro"><strong>Pregunta que responde:</strong> ¿Cómo combinar reducciones sin perder signos ni admitir divisiones imposibles?</p>
+<p><strong>Aprende:</strong> a elegir entre referencia horizontal y cofunciones, operar con las razones y conservar las restricciones de la expresión original.</p>
+<p><strong>Primera pantalla:</strong> una rueda levantada junto a una calculadora sobre la mesa del taller. Una tira móvil fija la dirección y la pantalla didáctica combina lecturas de esa posición. No se presenta la fórmula como una ley física de la bicicleta: es un instrumento de comparación matemática.</p>
+<h4>1 · Lee</h4>
+<div class="cards">
+<div class="card"><span class="step">Tarjeta 1</span><p>La calculadora puede combinar varias lecturas de una misma posición. El recorrido de la rueda sigue siendo el punto de partida.</p></div>
+<div class="card"><span class="step">Tarjeta 2</span><p>Dos pantallas pueden mostrar el mismo resultado con expresiones escritas de manera diferente. Cada paso necesita una razón que lo justifique.</p></div>
+<div class="card"><span class="step">Tarjeta 3</span><p>El panel indicará qué giros se probaron. Después se comprobará una posición nueva para decidir si el procedimiento también sirve allí.</p></div>
+</div>
+<h4>2 · Juega</h4>
+<div class="mission"><strong>Misión:</strong> mover la rueda a tres posiciones interiores señaladas y elegir una expresión breve que reproduzca el cociente «coseno de noventa grados más fi, dividido entre seno de fi». Fi es el ángulo auxiliar, medido en grados. El rango permite valores entre diez y setenta grados; no permite cero. La aplicación valida la equivalencia exacta de la opción y que se hayan visitado las tres guías. Las fórmulas de las ideas anteriores están disponibles; las lecturas decimales solo ilustran el resultado.</div>
+<h4>3 · Predice</h4>
+<p>Se habilita ahora la posición <strong>φ = 0°</strong>, no visitada en el juego. ¿Qué debe mostrar el cálculo original <strong>cos(90° + φ) dividido entre sen φ</strong>?</p>
+<ul class="opts">
+<li><strong>A.</strong> −1, igual que en las posiciones anteriores.<span class="reason">Incorrecta · E-CAN: se extiende una cancelación a un caso que anulaba el denominador.</span></li>
+<li><strong>B.</strong> 0, porque el numerador es cero.<span class="reason">Incorrecta · E-CER: no se revisa que el denominador también sea cero.</span></li>
+<li class="correct"><strong>C.</strong> No está definida.<span class="reason">Correcta · la expresión original exige dividir cero entre cero.</span></li>
+<li><strong>D.</strong> +1, porque se pueden borrar los factores y el signo de la reducción.<span class="reason">Incorrecta · E-CAN y E-SIG: cancelación fuera de sus condiciones y pérdida del signo.</span></li>
+</ul>
+<h4>4 · Mira</h4>
+<p>La rueda llega a la vertical superior. Se muestran por separado el numerador cero y el denominador cero, con la leyenda «división no definida». La expresión breve que funcionó en el interior conserva al lado su condición de uso. La pantalla no simula un salto a infinito ni adjudica un valor al cociente.</p>
+<h4>5 · La regla</h4>
+<p>Antes de simplificar se registran las condiciones de la expresión original. Tangente y secante exigen coseno distinto de cero; cotangente y cosecante exigen seno distinto de cero. Además, todo denominador de la expresión completa debe ser distinto de cero. Una cancelación no elimina esas condiciones.</p>
+<ol>
+<li><strong>Leer:</strong> identificar la unidad, el intervalo de los ángulos y qué resultado se pide.</li>
+<li><strong>Revisar existencia:</strong> anotar restricciones de razones y cocientes antes de operar.</li>
+<li><strong>Elegir ruta:</strong> usar beta y alfa cuando se conoce el giro completo; usar el ángulo auxiliar y cofunciones cuando la forma del dato lo favorece.</li>
+<li><strong>Reducir:</strong> escribir cada equivalencia con su signo y solo después combinarla con las demás.</li>
+<li><strong>Operar:</strong> respetar paréntesis, potencias, recíprocos y valor absoluto. El seno de una suma no es la suma de los senos.</li>
+<li><strong>Comprobar:</strong> revisar existencia y signo; seno y coseno están entre menos uno y uno. La expresión completa puede estar fuera de ese intervalo.</li>
+</ol>
+<p>Si un problema proporciona una razón y exige obtener otra, puede utilizarse la identidad pitagórica, derivada de la relación entre coordenadas y radio de la idea 2:</p>
+<div class="math">
+<p>sen² θ + cos² θ = 1.</p>
+<p>cos θ = ±√(1 − sen² θ), con el signo elegido por la posición del ángulo.</p>
+</div>
+<p>«sen² θ» se lee «el cuadrado del seno de theta»; no es seno de theta al cuadrado. El símbolo «±» indica las dos posibilidades algebraicas de signo, que el cuadrante permite decidir cuando la información es suficiente. En los ejes se conserva el valor cero. Si el dato y las condiciones no eligen un único signo, no debe inventarse una respuesta única.</p>
+<p>El valor absoluto se escribe entre barras verticales y expresa la magnitud no negativa. Una forma exacta con raíz o fracción puede ser la respuesta final; aproximar se hace únicamente cuando el enunciado lo pide, al final, con la precisión declarada. Cada ficha proporciona los valores notables necesarios.</p>
+<p class="source">Restricciones y cocientes: <a href="#t3">[T3]</a>. Identidad pitagórica y equivalencia: <a href="#t4">[T4]</a>. El protocolo de decisión es propio.</p>
+<h4>6 · Así se resuelve</h4>
+<p><strong>Ejemplo propio:</strong> simplificar el cociente <strong>cos(450° + φ) dividido entre sen(180° − φ)</strong>, sabiendo que <span class="formula">0° &lt; φ &lt; 90°</span>. La ficha entrega las equivalencias de vuelta y las identidades correspondientes.</p>
+<ol>
+<li>Revisar la condición: en ese intervalo el seno de fi es positivo, por lo que el denominador no se anula.</li>
+<li>Retirar una vuelta del ángulo del numerador: su coseno es <span class="formula">cos(90° + φ)</span>.</li>
+<li>Reducir por separado: el numerador es <span class="formula">−sen φ</span> y el denominador es <span class="formula">sen φ</span>.</li>
+<li>Dividir y cancelar el factor no nulo: el valor es <span class="formula">−1</span> para el intervalo dado.</li>
+<li>Comprobar: numerador negativo y denominador positivo. La conclusión no habilita fi igual a cero, que estaba excluido desde el inicio.</li>
+</ol>
+<h4>7 · Ahora tú</h4>
+<ol>
+<li>Elegir una ruta y detectar un paso con signo o cofunción equivocados.</li>
+<li>Reducir expresiones con varias razones, potencias y recíprocos, usando una tabla de valores incluida en el ejercicio.</li>
+<li>Usar una razón dada de un ángulo no notable y relaciones entre ángulos para obtener otra expresión, sin buscar una medida angular que no se necesita.</li>
+<li><strong>Nivel de admisión:</strong> combinar reducciones en diferentes cuadrantes con un valor absoluto, una condición de signo o un intervalo.</li>
+<li><strong>Nivel de admisión:</strong> convertir primero a una unidad común y reducir una expresión simbólica con vueltas enteras y cuartos de vuelta.</li>
+<li><strong>Control conceptual:</strong> comparar una expresión original con su forma simplificada y decidir en qué posiciones son equivalentes. La respuesta debe incluir las restricciones pertinentes.</li>
+</ol>
+<p class="small">Los casos que exijan identidades de ángulo doble, transformaciones de suma a producto o funciones inversas pertenecen a unidades posteriores. Pueden mencionarse como destino, pero no evaluarse aquí sin enseñar antes esos contenidos.</p>
+<div class="vocab"><h4>Palabras nuevas</h4><dl>
+<dt>Dominio</dt><dd>Los valores de entrada con los que una expresión se puede calcular. Ejemplos: una tangente exige coseno no nulo; una cosecante exige seno no nulo; un cociente exige denominador no nulo.</dd>
+<dt>Cancelación</dt><dd>Quitar un mismo factor no nulo del numerador y del denominador sin cambiar el cociente. Ejemplos: 6/3 = 2; (2 · sen φ)/(sen φ) = 2 si el seno no es cero; (3 · cos φ)/(cos φ) = 3 si el coseno no es cero.</dd>
+<dt>Valor exacto</dt><dd>Una escritura que conserva el valor completo, sin redondearlo. Ejemplos: 1/3; √2/2; −√3/2.</dd>
+</dl></div>
+</article>
+</section>
+
+<section id="simbolos">
+<h2>6. Tabla de letras y símbolos de la unidad</h2>
+<p>Se conserva la misma notación en tarjetas, escenas, retroalimentación y ejercicios. Las letras griegas se leen en voz o en texto en su primera aparición. En la propuesta, las medidas angulares se declaran siempre en grados o radianes; el banco final no debe alternarlos de manera implícita.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Letra o símbolo</th><th>Significado único</th><th>Unidad o advertencia</th></tr></thead>
+<tbody>
+<tr><td>θ · theta</td><td>Medida del ángulo o giro original.</td><td>° o rad, declarados. No representa tiempo.</td></tr>
+<tr><td>β · beta</td><td>Representante coterminal de theta entre cero incluido y una vuelta excluida.</td><td>La misma unidad que theta. No se usa como un segundo ángulo libre.</td></tr>
+<tr><td>α · alfa</td><td>Referencia aguda de theta, respecto de la horizontal.</td><td>° o rad. No se define como aguda para los casos sobre los ejes.</td></tr>
+<tr><td>φ · fi</td><td>Ángulo auxiliar que aparece junto a un cuarto de vuelta, media vuelta o vuelta.</td><td>° o rad. Solo se supone agudo cuando el dato lo dice; no siempre coincide con alfa.</td></tr>
+<tr><td>n · ene</td><td>Entero que multiplica una vuelta en una relación de coterminalidad.</td><td>Sin unidad; puede ser negativo o cero. No es «número de lados».</td></tr>
+<tr><td>O / P</td><td>Centro / punto marcado en la circunferencia.</td><td>No son magnitudes; O no es el dígito cero.</td></tr>
+<tr><td>x / y</td><td>Coordenada horizontal / coordenada vertical de P respecto de O.</td><td>Misma unidad de longitud que r; pueden tener signo. <strong>Choque habitual:</strong> muchos libros usan x como ángulo; aquí se reserva para coordenada.</td></tr>
+<tr><td>r · erre</td><td>Radio, siempre positivo.</td><td>cm o mm en modelos físicos; una unidad de radio en el modelo normalizado.</td></tr>
+<tr><td>π · pi</td><td>Número constante pi.</td><td>Sin unidad por sí solo. π rad representa media vuelta; π no es 180.</td></tr>
+<tr><td>sen, cos, tan, cot, sec, csc</td><td>Las seis razones trigonométricas.</td><td>Sin unidad. Se leen completas al introducirlas. «sin» equivale a «sen»; «tg» a «tan»; «ctg» a «cot»; «cosec» a «csc». Las variantes se muestran en un glosario de lectura, no se alternan en una actividad.</td></tr>
+<tr><td>°, rad, ′, ″</td><td>Grado, radián, minuto angular, segundo angular.</td><td>No confundir la prima angular con el minuto de tiempo ni las comillas tipográficas con el símbolo doble prima.</td></tr>
+<tr><td>I, II, III, IV</td><td>Numeración de los cuadrantes.</td><td>Sin unidad. Las fronteras no pertenecen a los cuadrantes.</td></tr>
+<tr><td>+, −, ·, /</td><td>Adición o signo positivo; sustracción o signo negativo; multiplicación; división.</td><td>Paréntesis obligatorios cuando evitan ambigüedad de signo o denominador.</td></tr>
+<tr><td>=, ≠, &lt;, &gt;, ≤</td><td>Igual, distinto, menor, mayor, menor o igual.</td><td>Relaciones entre cantidades compatibles.</td></tr>
+<tr><td>ℤ, ∈</td><td>Enteros; pertenencia a un conjunto.</td><td>Se usan para explicitar las vueltas permitidas.</td></tr>
+<tr><td>², √, ±</td><td>Cuadrado, raíz cuadrada no negativa, más o menos.</td><td>La raíz no elige por sí sola el signo de una razón.</td></tr>
+<tr><td>Barras verticales</td><td>Valor absoluto o magnitud no negativa.</td><td>No convierten automáticamente cada término interior en positivo.</td></tr>
+<tr><td>ND</td><td>Razón no definida como número real.</td><td>Etiqueta explicativa del documento; en una respuesta se escribe «no definida».</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="otras">
+<h2>7. Otras formas de explicarla y su riesgo</h2>
+<div class="table-wrap"><table class="wide">
+<thead><tr><th>Representación y procedencia</th><th>Para qué idea conviene</th><th>Qué aporta</th><th>Riesgo y corrección</th></tr></thead>
+<tbody>
+<tr><td>Rueda que gira alrededor de un centro fijo. OpenStax introduce el círculo con una rueda panorámica <a href="#t2">[T2]</a>; aquí se propone una bicicleta levantada.</td><td>1–3.</td><td>Separa recorrido, dirección final y proyecciones, con un objeto visible.</td><td>Una rueda que avanza introduce traslación y una trayectoria distinta. Mantener fijo el centro; nunca deducir avance de la bicicleta a partir de esta escena.</td></tr>
+<tr><td>Círculo y punto móvil con lecturas coordinadas. Propuesta de Díaz Landaverde y Hernández Garciadiego <a href="#r3">[R3]</a>.</td><td>2–3.</td><td>Permite comparar coordenadas y detectar cuándo se cruza una guía.</td><td>Arrastrar y mirar cifras puede convertirse en ensayo sin explicación. Pedir justificar con posiciones y ocultar el nuevo caso hasta la predicción. El estudio no garantiza eficacia en esta app.</td></tr>
+<tr><td>Simulador <em>Trig Tour</em>, PhET, Universidad de Colorado Boulder <a href="#t6">[T6]</a>.</td><td>1–3; apoyo para comparar grados y radianes.</td><td>Referencia de exploración del círculo unitario y signos; se consultó su descripción oficial.</td><td>La pantalla del simulador comienza en una representación matemática. En la app se llega a ella desde la rueda. No se afirma haber validado aquí su accesibilidad ni su desempeño sin conexión.</td></tr>
+<tr><td>Escuadra y cambio del ángulo observado; complementariedad del triángulo rectángulo.</td><td>4.</td><td>Hace visible por qué opuesto y adyacente intercambian su papel.</td><td>Podría sugerir que todos los ángulos de la unidad son interiores de un triángulo. Conservar aparte el giro completo; el triángulo solo explica el ángulo agudo auxiliar. Desarrollo propio, coherente con <a href="#t7">[T7]</a>.</td></tr>
+<tr><td>Transparencia que se refleja sobre la horizontal o la vertical.</td><td>3.</td><td>Conserva tamaños mientras cambia signos de coordenadas.</td><td>Reflejar la figura no convierte el ángulo original en otro de igual medida. Mantener visible el contador original y presentar la igualdad de razones, no de ángulos. Adaptación propia de la simetría del círculo.</td></tr>
+<tr><td>Reloj analógico, con referencia local en la Torre del Reloj del Parque Universitario <a href="#d2">[D2]</a>.</td><td>1, como alternativa al taller.</td><td>Da un sentido horario reconocible y permite imaginar varias vueltas.</td><td>El reloj usual parte arriba y avanza en sentido horario; la convención trigonométrica parte a la derecha y considera positivo el sentido contrario. Mostrar ambos marcos y luego elegir explícitamente el de la unidad.</td></tr>
+<tr><td>Moneda peruana vista desde arriba, con una marca virtual en el borde <a href="#d1">[D1]</a>.</td><td>2–3, como opción de mesa.</td><td>Permite construir un modelo circular con una medida real pequeña.</td><td>El número monetario no representa el radio. Tampoco se supone que el dibujo de la moneda indique un ángulo. Usar el centro geométrico y una marca añadida, sin copiar el diseño como instrumento de medición.</td></tr>
+</tbody></table></div>
+<p><strong>Elección recomendada:</strong> una rueda fija como hilo visual, la escuadra para explicar el cambio de razón y la calculadora como lugar de comprobación. La moneda y el reloj son alternativas, no escenas adicionales obligatorias. Ninguna necesita un modelo tridimensional para cumplir su función pedagógica.</p>
+</section>
+
+<section id="mundo">
+<h2>8. Datos del mundo, con fuente</h2>
+<p>Se distinguen <strong>datos comprobados</strong> de <strong>parámetros didácticos</strong>. El realismo no exige convertir cada razón en un supuesto salario, pH o tamaño de edificio. Cuando el objetivo es comparar expresiones, se plantea como comparación matemática.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Dato comprobable</th><th>Fuente exacta</th><th>Uso posible y límite</th></tr></thead>
+<tbody>
+<tr><td>La moneda de un sol alusiva a José de la Mar y Cortázar, acuñada en 2023, tiene diámetro de 25,50 mm.</td><td>BCRP, Circular 0017-2023-BCRP, artículo 1; publicada el 19 de septiembre de 2023 <a href="#d1">[D1]</a>.</td><td>Modelo de círculo sobre una mesa. El equipo obtiene el radio dividiendo el diámetro entre dos; no lo confunde con la denominación monetaria. Se identifica esta moneda concreta, no todas las monedas de un sol.</td></tr>
+<tr><td>El anverso de esa moneda incluye un polígono inscrito de ocho lados.</td><td>La misma circular, descripción del anverso <a href="#d1">[D1]</a>.</td><td>Puede ayudar a reconocer el objeto. La fuente no afirma aquí que sus vértices sean marcas calibradas: no se toman como lecturas angulares exactas.</td></tr>
+<tr><td>La Torre del Reloj está en el Parque Universitario de Lima; el boletín de Serpost da su inauguración el 10 de julio de 1923 y una altura de 29 m.</td><td>Serpost, <em>La Torre del Reloj del Parque Universitario</em>, p. 2 <a href="#d2">[D2]</a>.</td><td>Contextualizar una imagen de reloj. La altura de la torre no es el radio de su carátula ni la longitud de una aguja; esas dimensiones no se han verificado.</td></tr>
+<tr><td>En el ejemplo de la idea 2 se adopta radio de 30 cm y coordenadas −18 cm y 24 cm.</td><td><strong>Parámetro didáctico propio, no dato de campo.</strong></td><td>Es una rueda ideal de tamaño plausible. Se comprueba con Pitágoras que el punto pertenece al círculo. No se atribuye el tamaño a un aro comercial ni a una bicicleta determinada.</td></tr>
+</tbody></table></div>
+<p class="small">Las guías y posiciones del resto de escenas también son condiciones elegidas para enseñar. No se inventan velocidades de giro, tamaños de máquinas ni necesidades técnicas de un taller. En una actividad física, basta una rueda quieta o un disco de cartón; no se requiere manipular maquinaria en marcha.</p>
+</section>
+
+<section id="decisiones" class="panel">
+<h2>9. Dudas y decisiones</h2>
+<h3>Lo que no se pudo confirmar</h3>
+<ul>
+<li><strong>Frecuencia de examen.</strong> Los casos localizados no constituyen un censo por convocatoria y área. No se asignan porcentajes, probabilidades ni rangos de «más preguntado». Haría falta acordar un periodo y clasificar todos sus cuadernillos con el mismo criterio.</li>
+<li><strong>San Marcos.</strong> El formato de 2024-I se constató en una copia de academia, pero no en el cuadernillo oficial. El boletín preuniversitario de 2023 también se leyó en un repositorio externo. Ambos están identificados como tales.</li>
+<li><strong>UNI 2026-2.</strong> La pregunta sexagesimal tiene atribución en un banco externo; falta cotejo oficial. Se incluye como extensión útil, sin convertirla en prueba de frecuencia.</li>
+<li><strong>Universidades regionales.</strong> Se obtuvo evidencia histórica de CEPREUNA, no de su frecuencia actual. No se verificó una muestra suficiente de UNSA o UNSAAC para hacer afirmaciones específicas sobre sus ítems. Una referencia curricular general no se cuenta como pregunta de examen.</li>
+<li><strong>Investigación peruana.</strong> La tesis de Vilchez Guizado se localizó en PUCP y ALICIA, pero no se accedió al texto completo. No se trasladan a ella hallazgos de otros autores. La evidencia empírica utilizada proviene de México, Chile e Indonesia, con alcances distintos.</li>
+<li><strong>Eficacia de la propuesta.</strong> Las cinco escenas, su secuencia y los distractores nuevos aún no han sido probados con postulantes. No se les atribuyen mejoras porcentuales ni efectos medidos.</li>
+</ul>
+<h3>Decisiones tomadas para esta versión</h3>
+<ul>
+<li><strong>HTML como formato final.</strong> Se prioriza la petición inicial de HTML y se conserva el orden de las diez secciones solicitado en el cuerpo del encargo.</li>
+<li><strong>Cinco ideas.</strong> Los ejes se explican junto con las razones para evitar una definición incompleta; la última idea integra y comprueba, sin introducir ángulos compuestos.</li>
+<li><strong>Un centro fijo.</strong> La rueda se eleva y no avanza. Se separa la distancia al centro de una coordenada con signo.</li>
+<li><strong>Dos rutas legítimas.</strong> La referencia horizontal mantiene el nombre de la razón; la complementariedad permite cambiarlo. Se explican ambas antes de ofrecer un formulario.</li>
+<li><strong>Seis razones y condiciones explícitas.</strong> El alcance incluye cotangente, secante y cosecante, ángulos negativos, varias vueltas, radianes y casos sobre ejes.</li>
+<li><strong>Valores dados.</strong> Los ejercicios entregan fórmulas, conversiones y valores notables necesarios. La exigencia aumenta por las decisiones que se combinan, no por retirar ayudas de memoria.</li>
+<li><strong>Predicciones con cuatro opciones.</strong> Las claves no se muestran antes de «Mira». Los errores con estado de hipótesis se etiquetan para validar su utilidad durante el piloto.</li>
+<li><strong>Ejemplos mínimos resueltos.</strong> Se incluyen para fijar el método. El equipo comprobará independientemente signos, dominios y cálculos antes de publicar, y elaborará aparte los ejercicios finales.</li>
+</ul>
+<h3>Lo que debe decidir el dueño del proyecto</h3>
+<p>Definir cuántos ejercicios tendrá cada nivel, si la extensión de minutos y segundos será obligatoria para la ruta UNI, y qué periodo de exámenes se auditará para una futura priorización estadística. También conviene decidir si las tarjetas se acompañarán de locución. Ninguna de estas decisiones obliga a cambiar el orden conceptual propuesto.</p>
+<h3>Revisión de dependencias y predicciones</h3>
+<div class="table-wrap"><table class="wide audit">
+<thead><tr><th>Idea</th><th>Usa únicamente</th><th>Caso nuevo reservado a «Predice»</th><th>Claves y errores comprobados</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Giros, unidades y aritmética previa.</td><td>Un recorrido horario mayor de una vuelta.</td><td>B correcta; A y C → E-GIR; D → E-LIM.</td></tr>
+<tr><td>2</td><td>Orientación de la idea 1 y cocientes previos.</td><td>Signos de tres razones en la zona inferior derecha.</td><td>C correcta; A → E-LON; B → E-SIG; D → E-COO.</td></tr>
+<tr><td>3</td><td>Vueltas, coordenadas, signos y ejes de 1–2.</td><td>Reducción del coseno de un ángulo del tercer cuadrante.</td><td>B correcta; A → E-LON; C → E-REF; D → E-COF.</td></tr>
+<tr><td>4</td><td>Referencias y signos de 1–3; triángulo rectángulo previo.</td><td>Coseno de una dirección más allá de la vertical superior.</td><td>D correcta; A → E-COF; B → E-SIG; C → E-DIS.</td></tr>
+<tr><td>5</td><td>Las dos rutas de reducción de 1–4 y álgebra previa.</td><td>La expresión original en un límite que anula su denominador.</td><td>C correcta; A → E-CAN; B → E-CER; D → E-CAN y E-SIG.</td></tr>
+</tbody></table></div>
+<p><strong>Control editorial final:</strong> las cinco aperturas tienen objeto; cada «Lee» consta de tres tarjetas declarativas; las misiones describen acción y criterio de logro; las preguntas reservan un resultado nuevo; todos los distractores remiten a códigos existentes. No se usan cofunciones antes de la idea 4 ni identidades de ángulos compuestos. Se mantienen separados ángulo original, representante de una vuelta, referencia aguda y ángulo auxiliar.</p>
+<p><strong>Qué observar en el piloto:</strong> pedir a algunos alumnos que expliquen por qué eligieron un distractor; no inferir su creencia solo por la alternativa marcada. En particular, comprobar si el error de referencia viene de medir hacia la vertical, si el error de signo viene de usar longitudes, y si el caso no definido se confunde con cero. Ajustar los distractores que nadie interpreta del modo previsto.</p>
+</section>
+
+<section id="fuentes">
+<h2>10. Fuentes</h2>
+<p>Fecha de consulta: <strong>21 de noviembre de 2026</strong>. «s. f.» significa sin fecha editorial verificada. Las referencias de examen sirven para describir formatos; no se reproducen sus problemas, soluciones ni figuras. Las reglas, ejemplos y escenas se redactaron de forma propia.</p>
+<h3>Temarios y evaluación</h3>
+<ol class="bibliography">
+<li id="f1"><strong>[F1] Centro Preuniversitario de la Universidad Nacional de Ingeniería (2026).</strong> <em>Guía del Estudiante – Ciclo Preuniversitario, Admisión 2026-2.</em> P. impresa 42 (p. 44 del archivo), S4.2 y S5.1. Fuente institucional.<br><a href="https://www.cepre.uni.edu.pe/assets/archivos/comunicados/PREUNIVERSITARIO-GUIADELESTUDIANTE-2026-2.pdf">Abrir guía oficial de CEPRE-UNI</a>.</li>
+<li id="f2"><strong>[F2] Universidad Nacional Mayor de San Marcos, Centro Preuniversitario (2023).</strong> <em>Boletín de la semana 6, ciclo 2023-I.</em> Trigonometría, pp. 47–51. Documento institucional en copia de un sitio externo; no se verificó el archivo en el dominio universitario.<br><a href="https://pdfpresanmarcos.com/wp-content/uploads/2024/02/Boletin-Semana-6-Pre-San-Marcos-2023-I-UNMSM-PDF.pdf">Abrir copia del boletín</a>.</li>
+<li id="f3"><strong>[F3] Academia Preuniversitaria Pitágoras (2025).</strong> <em>Examen de admisión UNI 2025-I: prueba de Matemáticas y respuestas.</em> Pregunta 36, p. 5 del archivo. Reproducción de academia; fuente secundaria para la atribución del ítem.<br><a href="https://academia.pitagoras.edu.pe/wp-content/uploads/2025/04/UNI-2025-I-EXAMEN-Y-RESPUESTAS-DE-MATEMATICAS.pdf">Abrir reproducción de UNI 2025-I</a>.</li>
+<li id="f4"><strong>[F4] Autoría académica no identificada en el texto extraído (2023).</strong> <em>Solucionario San Marcos, Admisión 2024-I, sábado 2 de diciembre, áreas D y E.</em> Pregunta 42 del área D. Copia alojada en Studocu por Miguel Villafuerte. La etiqueta del sitio no equivale a una publicación oficial de UNMSM.<br><a href="https://www.studocu.com/pe/document/universidad-nacional-mayor-de-san-marcos/razonamiento-matematico/solucionario-sabado-2-dicembre/80990155">Abrir copia consultada</a>.</li>
+<li id="f5"><strong>[F5] Academia Virtual (s. f.).</strong> <em>Reducción al primer cuadrante: clases y preguntas.</em> «Pregunta 1», atribuida a UNI 2026-2; «Pregunta 2», atribuida a UNI 2025-I. Banco externo; solo se usa como indicio y contraste.<br><a href="https://academiavirtual.pe/cursos/trigonometria/reduccion-al-primer-cuadrante">Abrir banco temático</a>.</li>
+<li id="f6"><strong>[F6] Universidad Nacional de Ingeniería, Dirección de Admisión (2021).</strong> <em>Solucionario Admisión UNI 2021-1.</em> Segunda prueba, preguntas 17 y 18; enunciados p. 21 y resoluciones pp. 44–45. Archivo distribuido por la institución.<br><a href="https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario2021.pdf">Abrir solucionario oficial</a>.</li>
+<li id="f7"><strong>[F7] Centro Preuniversitario de la Universidad Nacional del Altiplano, Puno (s. f.; copia titulada «COMPENDIO 2011–2012»).</strong> <em>Compendio Académico, Matemática II.</em> §3.1.9, pp. 107–108. Reproducción externa; evidencia histórica, sin validación de vigencia.<br><a href="https://es.scribd.com/document/398323734/COMPENDIO-2011-2012">Abrir copia del compendio</a>.</li>
+</ol>
+<h3>Investigación sobre aprendizaje</h3>
+<ol class="bibliography">
+<li id="r1"><strong>[R1] Martínez Tecolapa, Jorge, y Martínez Sierra, Gustavo (2007).</strong> <em>La didáctica y la cognición de los ángulos negativos y mayores a 360º y sus funciones trigonométricas: un estudio en el nivel medio superior.</em> Acta Latinoamericana de Matemática Educativa, 20, 585–589. México. Texto original consultado; «Análisis cognitivo», pp. 587–588, y conclusiones.<br><a href="https://funes.uniandes.edu.co/wp-content/uploads/tainacan-items/32454/1214333/Mart25C325ADnezLadid25C325A1cticaALME2007.pdf">Abrir artículo en FUNES</a>.</li>
+<li id="r2"><strong>[R2] Maknun, Churun Lu’lu’il; Rosjanuardi, Rizky; y Jupri, Al (2022).</strong> <em>Epistemological Obstacle in Learning Trigonometry.</em> Mathematics Teaching Research Journal, 14(2), 5–25. Indonesia. Texto original consultado; entrevistas y discusión sobre radianes y signos, pp. 15–17.<br><a href="https://files.eric.ed.gov/fulltext/EJ1350528.pdf">Abrir artículo completo</a>.</li>
+<li id="r3"><strong>[R3] Díaz Landaverde, Florencia, y Hernández Garciadiego, Cecilia (2025).</strong> <em>Implementación de una propuesta didáctica de trigonometría diseñada en GeoGebra.</em> PädiUAQ, 8(15), 1–14. México. Texto original consultado; resultados, figuras 9–11 y observaciones de la interacción.<br><a href="https://padi.uaq.mx/index.php/padi/article/view/1444">Ficha y fecha editorial</a> · <a href="https://padi.uaq.mx/index.php/padi/article/download/1444/1942?inline=1">Texto completo en HTML</a> · <a href="https://doi.org/10.61820/puaq.v7i15.1444">DOI</a>.</li>
+<li id="r4"><strong>[R4] Castro, Teresa, y Cárcamo, Andrea (2023).</strong> <em>Errores en la Resolución de Ecuaciones Trigonométricas: un Estudio Exploratorio con Estudiantes de Primer Año de Ingeniería.</em> Bolema, 37(75). Chile. Se consultaron los resultados originales de §§4.1–4.2. La mención a Fahrudin y Pramudya (2019) procede de §1 y se declara de segunda mano; no se atribuye a Castro y Cárcamo como hallazgo propio.<br><a href="https://www.scielo.br/j/bolema/a/YjNnLWWKfbN9ByDFHzCvwWH/?format=html&amp;lang=es">Abrir artículo original</a> · <a href="https://doi.org/10.1590/1980-4415v37n75a16">DOI</a>.</li>
+<li id="r5"><strong>[R5] Vilchez Guizado, Jesús (2005 según ALICIA; ficha del repositorio fechada en 2011).</strong> <em>La enseñanza de las funciones trigonométricas en el quinto grado de educación secundaria.</em> Tesis de maestría, Pontificia Universidad Católica del Perú. <strong>Consulta limitada a metadatos y resumen:</strong> no se usó como evidencia de errores, pues el texto completo no estuvo accesible en esta revisión.<br><a href="https://tesis.pucp.edu.pe/items/f3750211-4e68-428c-a939-0405a24e7678">Ficha PUCP</a> · <a href="https://alicia.concytec.gob.pe/vufind/Record/PUCP_f4e5f33968593f90738ba8808c3a7b40/Details">Metadatos ALICIA</a>.</li>
+</ol>
+<h3>Definiciones matemáticas y representaciones</h3>
+<ol class="bibliography">
+<li id="t1"><strong>[T1] Abramson, Jay (2021).</strong> <em>Algebra and Trigonometry 2e</em>, OpenStax, §7.1, «Angles». Posición normal, sentido, unidades y ángulos coterminales.<br><a href="https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-1-angles">Abrir sección 7.1</a>.</li>
+<li id="t2"><strong>[T2] Abramson, Jay (2021).</strong> <em>Algebra and Trigonometry 2e</em>, OpenStax, §7.3, «Unit Circle». Coordenadas, ángulos de referencia y representación mediante una rueda.<br><a href="https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-3-unit-circle">Abrir sección 7.3</a>.</li>
+<li id="t3"><strong>[T3] Abramson, Jay (2021).</strong> <em>Precalculus 2e</em>, OpenStax, §5.3, «The Other Trigonometric Functions». Cocientes, recíprocos, restricciones y funciones pares e impares.<br><a href="https://openstax.org/books/precalculus-2e/pages/5-3-the-other-trigonometric-functions">Abrir sección 5.3</a>.</li>
+<li id="t4"><strong>[T4] Abramson, Jay (2021).</strong> <em>Precalculus 2e</em>, OpenStax, §7.1, «Simplifying and Verifying Trigonometric Identities». Identidades fundamentales y simplificación.<br><a href="https://openstax.org/books/precalculus-2e/pages/7-1-simplifying-and-verifying-trigonometric-identities">Abrir sección 7.1</a>.</li>
+<li id="t5"><strong>[T5] Baena Giraldo, John Bayron, y otros (2015).</strong> <em>Trigonometría y geometría analítica: guías de clase para 90 lecciones.</em> Gobernación de Antioquia, Sociedad Colombiana de Matemáticas y Universidad Nacional de Colombia, sede Medellín. Lecciones 25–26. Se accedió desde la biblioteca de CEPRE-UNI: ese alojamiento no convierte al libro colombiano en un temario peruano.<br><a href="https://www.cepre.uni.edu.pe/assets/archivos/biblioteca/Trigonometr%C3%ADa%20y%20Geometr%C3%ADa%20Anal%C3%ADtica%20-%20Gu%C3%ADas%20de%20clase%20para%2090%20lecciones.pdf">Abrir libro</a>.</li>
+<li id="t6"><strong>[T6] PhET Interactive Simulations, University of Colorado Boulder (s. f.).</strong> <em>Trig Tour.</em> Descripción oficial del simulador de círculo unitario, razones y signos. Consulta descriptiva, no prueba de funcionamiento.<br><a href="https://phet.colorado.edu/en/simulations/trig-tour">Abrir ficha del simulador</a>.</li>
+<li id="t7"><strong>[T7] Abramson, Jay (2021).</strong> <em>Precalculus 2e</em>, OpenStax, §5.4, «Right Triangle Trigonometry». Apartado sobre cofunciones de ángulos complementarios.<br><a href="https://openstax.org/books/precalculus-2e/pages/5-4-right-triangle-trigonometry">Abrir sección 5.4</a>.</li>
+</ol>
+<h3>Datos peruanos</h3>
+<ol class="bibliography">
+<li id="d1"><strong>[D1] Banco Central de Reserva del Perú (2023).</strong> <em>Circular N.º 0017-2023-BCRP: moneda alusiva a José de la Mar y Cortázar.</em> Artículo 1. Diario Oficial El Peruano, publicación del 19 de septiembre de 2023. Diámetro, denominación y descripción del anverso.<br><a href="https://busquedas.elperuano.pe/dispositivo/NL/2216320-1">Abrir publicación oficial</a>.</li>
+<li id="d2"><strong>[D2] Serpost (s. f.).</strong> <em>Hoja souvenir «La Torre del Reloj del Parque Universitario».</em> P. 2; reseña y características del monumento. No se toma el año de rastreo del buscador como fecha editorial.<br><a href="https://www.serpost.com.pe/assets/pdf/Boletines/15_Torrereloj.pdf">Abrir boletín de Serpost</a>.</li>
+</ol>
+</section>
+<footer>Propuesta autónoma de teoría · Trigonometría · Reducción al primer cuadrante · Edición del 21 de noviembre de 2026. Las claves y notas de diseño son para el equipo; no deben mostrarse al alumno antes del momento indicado.</footer>
+</main>
+</body>
+</html>
+

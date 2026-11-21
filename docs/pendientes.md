@@ -24,8 +24,7 @@ capturas y le manda notas al agente mientras sigue escribiendo.
   2. Etapa 9: la unidad siguiente de cada rama (álgebra: Binomio de Newton; aritmética: Potenciación y radicación;
      física: Impulso y choques; geometría: Puntos notables; química: Reacciones y balance; RM: Arreglos numéricos;
      verbal: Cohesión y coherencia; trigonometría: Reducción al primer cuadrante).
-     Hay investigación previa de ChatGPT, por verificar, para cinco de las ocho (todas menos álgebra, geometría y
-     trigonometría): `docs/investigacion/etapa9/` (léase su LEEME).
+     Hay investigación previa de ChatGPT, por verificar, para las ocho: `docs/investigacion/etapa9/` (léase su LEEME).
 
 ## Cómo arrancar una sesión nueva
 
