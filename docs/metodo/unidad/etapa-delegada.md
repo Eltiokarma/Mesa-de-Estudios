@@ -14,7 +14,11 @@ Trabajas en `/home/user/mesa-de-estudios`. Español neutro para el alumno.
 - No toques `app/sw.js`, `docs/pendientes.md`, `CLAUDE.md` ni `docs/molde-unidad.md`.
 - **No hagas commits ni `git stash`/`checkout`/`reset`.** No corras `npm test` completo: `node --test` sobre tus archivos,
   `contenido/teoria/teoria.test.js` (si falla por otra unidad, ignóralo y dilo) y los tests comunes que toques.
-  `npm run -s catalogo` sí.
+  `npm run -s catalogo` sí. Para que la salida sea corta (solo fallas y totales):
+  `npm run -s test:corto -- contenido/teoria/teoria.test.js 'plantillas/<id>/*.test.js'`.
+- **No leas enteros los archivos grandes** (tu unidad en `contenido/teoria/` puede pasar de 300 KB; `app/teoria.js`,
+  `nucleo/teoria.js`, `catalogo/pruebas/verificar.js`, `nucleo/avance.js`): ubica con grep la idea o el bloque y lee
+  ese tramo. Tampoco leas propuestas ni informes de otras unidades (`docs/etapa*/`, `rutinas/frio/`, `rutinas/auditoria/`).
 - Servidor propio: `PORT=<PORT> node herramientas/servidor.js &`, guarda el PID, ciérralo con `kill <PID>`. Nunca `pkill`.
   Un solo navegador a la vez. Capturas: `MESA_URL=http://localhost:<PORT> node herramientas/capturas-teoria.js ...`; si se
   cae por tiempo, una copia en SCRATCH limitada a la idea que revisas y con más espera.

@@ -10,6 +10,9 @@ bloque de esa unidad. Estas ayudas hacen esa copia (MAIN es el árbol principal 
   (`nucleo/avance.js`) y su prueba de `nucleo/avance.test.js` (desde el comentario que contiene la marca hasta `});`).
 - `bloque.py MAIN WT INICIO [FIN|TEST]`: copia un bloque genérico, delimitado por una línea de inicio.
 
+Estos archivos compartidos son grandes (`verificar.js` pasa de 95 KB): no se leen enteros; se ubica el bloque con
+grep y se lee ese tramo.
+
 Después de cada copia, comprobar que el archivo carga: `node -e "require('./catalogo/pruebas/verificar.js')"`, y
 mirar `git diff --stat`. Si una ayuda falla por un ancla repetida, copiar el bloque a mano. El resto del método está en
 `docs/pendientes.md` («Integración»).

@@ -55,4 +55,5 @@ Reglas de la orquestación (aprendidas en estas dos unidades):
 | Auditoría de colores (contraste y daltonismo) | `python3 herramientas/auditar-colores.py` (funciones `contraste`, `dist`, `simular`) |
 | Papel de los generadores | `node herramientas/papel-generador.js` y `--revisar` |
 | Validador de la teoría | `node --test contenido/teoria/teoria.test.js` |
+| Pruebas con salida corta (solo fallas y totales) | `npm run test:corto` (todo) o `npm run -s test:corto -- <archivos o 'glob'>` |
 | Reglas de calidad 2 del papel (lista los hallazgos) | `node herramientas/papel-reglas.js`; las reglas, en `reglas-validador.md` |

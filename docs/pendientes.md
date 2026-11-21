@@ -28,10 +28,10 @@ capturas y le manda notas al agente mientras sigue escribiendo.
 ## Cómo arrancar una sesión nueva
 
 ```bash
-npm test
+npm run test:corto
 ```
 
-Deben pasar todas (unas 12 520 al 20 nov). El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
+Deben pasar todas (unas 12 520 al 20 nov; tarda unos 8 minutos). Son las mismas de `npm test`, pero solo imprime las fallas y los totales. Las reglas de lectura medida (qué archivos y carpetas no se leen enteros) están en `CLAUDE.md`, «Cómo se trabaja». El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
