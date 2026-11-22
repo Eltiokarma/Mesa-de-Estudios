@@ -2,6 +2,9 @@
   "id": "velocidad-relativa",
   "titulo": "La combi y el río",
   "formato": "predicciones",
+  "rehacer": [
+    "fisica.impulso-y-choques"
+  ],
   "unidades": [
     "fisica.movimiento-rectilineo",
     "fisica.vectores",
