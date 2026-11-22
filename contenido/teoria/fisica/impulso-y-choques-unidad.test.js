@@ -32,6 +32,15 @@ test('Impulso y choques: simula el contrato de calidad 2 en cuatrocientas semill
   assert.deepEqual(problemas, []);
 });
 
+test('Impulso y choques: el papel de toda la ficha cumple calidad 2 sin excepciones', () => {
+  const papel = require('../../../herramientas/papel-reglas.js');
+  const c2 = new Set([def.unidad]);
+  const fichas = papel.plantillasConPapel().filter(x => x.ficha.unidades.includes(def.unidad));
+  assert.equal(fichas.length, 4, 'plantilla nueva y tres mesas anteriores');
+  assert.ok(fichas.some(x => x.id === 'fis-impulso-choques'));
+  for (const ficha of fichas) assert.deepEqual(papel.revisar(ficha, c2), [], ficha.id);
+});
+
 function figuras() {
   const todas = [];
   function agregar(nombre, f, pieza) {
