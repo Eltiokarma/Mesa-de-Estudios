@@ -613,7 +613,7 @@ Para seleccionar una fórmula se identifica primero qué longitud está dada y a
 | \(\sin,\cos,\tan,\cot\) | Seno, coseno, tangente y cotangente | Razones sin unidad |
 | \(\perp\) | Perpendicularidad | Ángulo recto |
 | ° | Grado sexagesimal | Unidad angular |
-| \(|b-c|\) | Valor absoluto de la diferencia de lados | Longitud no negativa |
+| \(\lvert b-c\rvert\) | Valor absoluto de la diferencia de lados | Longitud no negativa |
 | \(\sqrt{\phantom{x}}\) | Raíz cuadrada no negativa | La unidad depende del radicando |
 
 La notación distingue área \(S\) de semiperímetro \(s\), y circunradio \(R\) de inradio \(r\). Si un examen utiliza otras letras, el alumno debe construir una correspondencia antes de sustituir. No se cambia el significado de una letra a mitad de un ejercicio.
