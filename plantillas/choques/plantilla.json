@@ -2,6 +2,7 @@
   "id": "choques",
   "titulo": "Choques: impulso y cantidad de movimiento",
   "formato": "escena",
+  "rehacer": true,
   "unidades": [
     "fisica.impulso-y-choques"
   ],
