@@ -510,14 +510,379 @@
     ],
   };
 
+function construirGr1(Kit) {
+  'use strict';
+  const G = 6.67e-11;
+  const f = x => Kit.formatear(Math.abs(x) < 1e-10 ? 0 : x, 3);
+  const exacto = x => Number.isFinite(x) && Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-7;
+  const superindice = x => String(x).split('').map(c => ({ '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' })[c]).join('');
+  const numero = x => {
+    if (x !== 0 && (Math.abs(x) >= 1e6 || Math.abs(x) < 0.001)) {
+      const e = Math.floor(Math.log10(Math.abs(x)));
+      return `${f(x / 10 ** e)} × 10${superindice(e)}`;
+    }
+    return f(x);
+  };
+  const n = x => x < 0 || numero(x).includes('×') ? `(${numero(x)})` : numero(x);
+  const q = (color, t) => ({ v: `c-${color}`, t: String(t) });
+  const sub = (a, b) => ({ sub: [a, b] });
+  const M = q('f', 'M'), m = q('f', 'm'), r = q('i', 'r'), F = q('h', 'F'), Fx = sub(F, 'x');
+  const Fr = sub(F, 'ref'), Fn = sub(F, 'nueva'), mr = sub(m, 'ref'), mn = sub(m, 'nueva');
+  const leyRazones = [{ frac: [Fn, Fr] }, ' = ', { frac: [sub(M, 'nueva'), sub(M, 'ref')] }, ' · ', { frac: [mn, mr] }, ' · ', { sup: [{ par: [{ frac: [sub(r, 'ref'), sub(r, 'nuevo')] }] }, '2'] }];
+  const lit = (color, x) => q(color, numero(x));
+  const cuadrado = (color, x) => ({ sup: [{ par: [lit(color, x)] }, '2'] });
+  const valor = (x, unidad, color) => q(color, `${numero(x)}${unidad ? ` ${unidad}` : ''}`);
+  const textoValor = (x, unidad, aprox) => `${aprox || !exacto(x) ? '≈ ' : ''}${numero(x)}${unidad ? ` ${unidad}` : ''}`;
+  const factor = x => `${numero(x)} ${x === 1 ? 'vez' : 'veces'}`;
+  const dm = c => c.gramos == null ? c.m : c.gramos / 1000;
+  const dr = c => c.rKm == null ? c.r : c.rKm * 1000;
+  const datoG = 'G ≈ 6,67 × 10⁻¹¹ N·m²/kg²: valor aproximado para este ejercicio.';
+  const ley = [F, ' = G · ', M, ' · ', m, ' / ', r, '²'];
+  const modelo = 'Las fuentes son esféricas con distribución radial de masa; el cuerpo estudiado está fuera de ellas.';
+  const ref = { M: 6e24, m: 600, r: 12e6 }, fuerza = (fuente, prueba, distancia) => G * fuente * prueba / distancia ** 2;
+  const Fref = fuerza(ref.M, ref.m, ref.r);
+
+  function figura(c, revelar = false) {
+    const tipo = c.tipo, paneles = [], notas = [];
+    const esSuma = tipo === 'superposicion' || tipo === 'equilibrio';
+    const resultado = c.resultado;
+    if (esSuma) {
+      const fuera = tipo === 'superposicion' && c.x < 0;
+      const origenA = fuera ? 2 : 0, origenB = 6;
+      const sonda = tipo === 'equilibrio' ? 3 : fuera ? 0 : 2.5;
+      const planetas = [{ c: [origenA, 0], R: 0.48, rotulo: 'A', colorRotulo: 'f' }, { c: [origenB, 0], R: 0.48, rotulo: 'B', colorRotulo: 'f' }];
+      notas.push({ texto: `M_A = ${numero(c.MA)} kg`, color: 'f' }, { texto: `M_B = ${numero(c.MB)} kg`, color: 'f' });
+      if (c.m != null) notas.push({ texto: `m = ${numero(c.m)} kg`, color: 'f' });
+      notas.push({ texto: 'Derecha positiva. Esquema sin escala.' });
+      if (revelar) notas.push({ texto: `${tipo === 'equilibrio' ? 'r_A' : 'F_x'} ${c.aproximado ? '≈' : '='} ${numero(resultado)} ${c.unidad}`, color: tipo === 'equilibrio' ? 'i' : 'h' });
+      paneles.push({ titulo: tipo === 'equilibrio' ? 'La ubicación está por hallar' : 'Dos fuentes y una sonda', modo: 'radial', planetas,
+        satelite: { c: [sonda, 0], rotulo: 'm', colorRotulo: 'f', tam: 9 },
+        cotas: [{ de: [origenA, 0], a: [origenB, 0], texto: `D = ${numero(c.D / 1000)} km`, color: 'i' },
+          { de: [origenA, 0], a: [sonda, 0], texto: tipo === 'equilibrio' ? 'r_A = ?' : `r_A = ${numero(Math.abs(c.x) / 1000)} km`, color: 'i' }], notas });
+    } else {
+      const masasConocidas = c.M != null || c.m != null || c.gramos != null;
+      if (c.M != null) notas.push({ texto: `M = ${numero(c.M)} kg`, color: 'f' });
+      if (c.m != null || c.gramos != null) notas.push({ texto: `m = ${numero(c.gramos == null ? c.m : c.gramos)} ${c.gramos == null ? 'kg' : 'g'}`, color: 'f' });
+      if (c.F != null) notas.push({ texto: `F = ${numero(c.F)} N`, color: 'h' });
+      if (c.F0 != null) notas.push({ texto: `F_ref = ${numero(c.F0)} N`, color: 'h' });
+      if (tipo === 'mutua') notas.push({ texto: `M_A = ${numero(c.ma)} kg; M_B = ${numero(c.mb)} kg`, color: 'f' });
+      if (c.kM != null) notas.push({ texto: `M_nueva = ${numero(c.kM)} · M_ref`, color: 'f' });
+      if (c.km != null) notas.push({ texto: `m_nueva = ${numero(c.km)} · m_ref`, color: 'f' });
+      notas.push({ texto: 'Esquema sin escala de distancias.' });
+      if (revelar) notas.push({ texto: `${c.simboloTexto || 'F'} ${c.aproximado ? '≈' : '='} ${numero(resultado)} ${c.unidad}`, color: c.color || 'h' });
+      paneles.push({ titulo: masasConocidas ? 'Planeta y sonda' : 'Comparación de ensayos', modo: 'radial',
+        planeta: { c: [0, 0], R: 0.7, rotulo: tipo === 'mutua' ? 'A' : 'M', colorRotulo: 'f' },
+        satelite: { c: [4, 0], rotulo: tipo === 'mutua' ? 'B' : 'm', colorRotulo: 'f', tam: 9 },
+        cotas: [{ de: [0, 0], a: [4, 0], texto: c.r != null || c.rKm != null ? `r = ${numero(dr(c) / 1000)} km` : c.kr != null ? `r_nuevo = ${numero(c.kr)} · r_ref` : 'r = ?', color: 'i' }], notas });
+    }
+    return { pieza: 'fis-gravitacion', datos: { vista: { x0: -1.25, x1: 7, y0: -1.4, y1: 1.4 }, altoGrafico: 132, paneles,
+      alt: esSuma ? 'Dos fuentes A y B y una sonda. Las cotas y notas muestran los datos; el esquema no está a escala y la respuesta no aparece.' : 'Un planeta y una sonda con paneles solares. Las notas muestran los datos conocidos; la separación une sus centros. Esquema sin escala.' }, estado: {} };
+  }
+
+  function figuraJuego(k, mostrar = true) {
+    const ensayos = [{ titulo: 'Referencia', k: 1 }, { titulo: 'Ensayo elegido', k }];
+    return { pieza: 'fis-gravitacion', datos: { vista: { x0: -1.3, x1: 7, y0: -1.4, y1: 1.4 }, altoGrafico: 128, escalas: { F: 40 / Fref },
+      paneles: ensayos.map(e => { const distancia = ref.r * e.k, fz = fuerza(ref.M, ref.m, distancia); return {
+        titulo: e.titulo, modo: 'radial', planeta: { c: [0, 0], R: 0.65, rotulo: 'M', colorRotulo: 'f' },
+        satelite: { c: [2 * e.k, 0], rotulo: 'm', colorRotulo: 'f', tam: 9 },
+        cotas: [{ de: [0, 0], a: [2 * e.k, 0], texto: `r ${exacto(distancia / 1000) ? '=' : '≈'} ${numero(distancia / 1000)} km`, color: 'i' }],
+        flechas: mostrar ? [{ de: [2 * e.k, 0], d: [-fz, 0], familia: 'F', color: 'h', rotulo: 'F' }] : [],
+        notas: [{ texto: 'M = 6 × 10²⁴ kg; m = 600 kg', color: 'f' },
+          { texto: mostrar ? `F ≈ ${numero(fz)} N` : 'La fuerza está por medir.', color: mostrar ? 'h' : 'tinta' },
+          { texto: 'Separaciones a escala.' }],
+      }; }), alt: 'Un planeta y una sonda en dos ensayos. Las masas son las mismas; cambia la separación entre centros. Se comparan dos ensayos didácticos.' }, estado: {} };
+  }
+
+  function caso(c) {
+    let resultado, unidad = 'N', color = 'h', simbolo = F, simboloTexto = 'F', enunciado;
+    const datos = [], solucion = [], errores = [];
+    const aproximadoG = c.G != null;
+    const error = (id, valorError, causa) => errores.push({ id, valor: valorError, causa });
+    const masas = ['El planeta tiene ', valor(c.M, 'kg', 'f'), ' y la sonda, ', valor(c.gramos == null ? c.m : c.gramos, c.gramos == null ? 'kg' : 'g', 'f'), '. '];
+    const descR = c.rKm != null ? valor(c.rKm, 'km', 'i') : valor(c.r, 'm', 'i');
+    const eq = (s, cuenta, respuesta, u = unidad, col = color, aprox = aproximadoG || !exacto(respuesta)) => [s, aprox ? ' ≈ ' : ' = ', cuenta, aprox ? ' ≈ ' : ' = ', valor(respuesta, u, col)];
+    if (['directa', 'masa', 'distancia'].includes(c.tipo)) {
+      const distancia = dr(c), masa = dm(c);
+      datos.push(modelo, datoG, ley);
+      if (c.rKm != null || c.gramos != null) datos.push('1 km = 1000 m; 1 kg = 1000 g.');
+      if (c.rKm != null) solucion.push({ texto: 'La separación entre centros se expresa en metros.', ecuacion: [r, ` = ${numero(c.rKm)} · 1000 = ${numero(distancia)} m`] });
+      if (c.gramos != null) solucion.push({ texto: 'La masa de la sonda se expresa en kilogramos.', ecuacion: [m, ` = ${numero(c.gramos)} ÷ 1000 = ${numero(masa)} kg`] });
+      if (c.tipo === 'directa') {
+        resultado = c.G * c.M * masa / distancia ** 2;
+        enunciado = [...masas, 'La separación entre centros es ', descR, '. ¿Cuál es el módulo de la fuerza gravitatoria sobre la sonda?'];
+        solucion.push({ texto: 'Sustituimos las dos masas y la separación entre centros en la ley de gravitación.', ecuacion: eq(F, { frac: [[numero(c.G), ' · ', lit('f', c.M), ' · ', lit('f', masa)], cuadrado('i', distancia)] }, resultado) });
+        error('lineal', c.G * c.M * masa / distancia, 'Bien incluir la distancia; faltó elevarla al cuadrado.');
+        error('sin-sonda', c.G * c.M / distancia ** 2, 'Bien usar la fuente; omitiste la masa de la sonda.');
+        error('doble', 2 * resultado, 'Bien calcular una fuerza; sumaste las dos fuerzas mutuas.');
+        error('signo', -resultado, 'Bien el tamaño; diste signo negativo a un módulo.');
+        error('mitad', resultado / 2, 'Bien hallar la atracción; repartiste su módulo entre ambos cuerpos.');
+        error('distancia-doble', resultado / 4, 'Bien cuadrar la distancia; antes duplicaste la separación dada.');
+        if (c.gramos != null) error('sin-gramos', resultado * 1000, 'Bien convertir la distancia; dejaste la masa en gramos.');
+        if (c.rKm != null) error('sin-km', resultado * 1e6, 'Bien usar ambas masas; trataste kilómetros como metros.');
+      } else if (c.tipo === 'masa') {
+        resultado = c.F * distancia ** 2 / (c.G * c.M); unidad = 'kg'; color = 'f'; simbolo = m; simboloTexto = 'm';
+        enunciado = ['Una sonda está a ', descR, ' del centro de un planeta de ', valor(c.M, 'kg', 'f'), '. La atracción vale ', valor(c.F, 'N', 'h'), '. ¿Qué masa tiene la sonda?'];
+        solucion.push({ texto: 'Multiplicamos la fuerza por el cuadrado de la distancia y dividimos entre G por M.', ecuacion: eq(m, { frac: [[lit('h', c.F), ' · ', cuadrado('i', distancia)], [numero(c.G), ' · ', lit('f', c.M)]] }, resultado) });
+        error('lineal', c.F * distancia / (c.G * c.M), 'Bien despejar la masa; usaste la distancia sin cuadrar.');
+        error('inversa', (c.G * c.M) / (c.F * distancia ** 2), 'Bien reunir los datos; invertiste el cociente completo.');
+        error('doble', 2 * resultado, 'Bien despejar; contaste dos veces la fuerza dada.');
+        error('mitad', resultado / 2, 'Bien usar el módulo; repartiste la fuerza entre dos.');
+        error('signo', -resultado, 'Bien el tamaño; una masa no lleva signo negativo.');
+      } else {
+        resultado = Math.sqrt(c.G * c.M * masa / c.F) / 1000; unidad = 'km'; color = 'i'; simbolo = r; simboloTexto = 'r';
+        enunciado = [...masas, 'La atracción tiene módulo ', valor(c.F, 'N', 'h'), '. ¿Cuál es la separación entre centros, en kilómetros?'];
+        datos.push('1 km = 1000 m.');
+        solucion.push({ texto: 'Despejamos el cuadrado de la separación. La raíz positiva da una distancia.', ecuacion: eq(r, [{ raiz: [{ frac: [[numero(c.G), ' · ', lit('f', c.M), ' · ', lit('f', masa)], lit('h', c.F)] }] }, ' ÷ 1000'], resultado) });
+        error('sin-raiz', (c.G * c.M * masa / c.F) / 1000, 'Bien despejar el cuadrado; faltó sacar la raíz.');
+        error('sin-km', resultado * 1000, 'Bien hallar metros; faltó convertirlos a kilómetros.');
+        error('doble', 2 * resultado, 'Bien hallar la separación; la confundiste con un diámetro.');
+        error('mitad', resultado / 2, 'Bien la raíz; dividiste otra vez entre dos.');
+        error('signo', -resultado, 'Bien el tamaño; una separación no es negativa.');
+      }
+    } else if (c.tipo === 'mutua') {
+      resultado = c.F0;
+      enunciado = ['Un planeta A tiene ', valor(c.ma, 'kg', 'f'), ' y una sonda B, ', valor(c.mb, 'kg', 'f'), '. A atrae a B con ', valor(c.F0, 'N', 'h'), '. ¿Con qué módulo de fuerza B atrae a A?'];
+      datos.push('Las fuerzas gravitatorias mutuas tienen igual módulo y sentidos opuestos; actúan sobre cuerpos distintos.');
+      solucion.push({ texto: 'La tercera ley de Newton iguala los módulos de estas dos fuerzas, aunque las masas sean distintas.', ecuacion: [sub(F, 'sobre A'), ' = ', sub(F, 'sobre B'), ` = ${numero(resultado)} N`] });
+      error('por-masas', c.F0 * c.mb / c.ma, 'Bien comparar masas; aumentaste una de las fuerzas mutuas.');
+      error('inversa-masas', c.F0 * c.ma / c.mb, 'Bien distinguir cuerpos; redujiste una de las fuerzas mutuas.');
+      error('doble', 2 * c.F0, 'Bien reconocer dos fuerzas; sumaste sus módulos.');
+      error('cero', 0, 'Bien notar sentidos opuestos; cancelaste fuerzas sobre cuerpos distintos.');
+      error('mitad', c.F0 / 2, 'Bien reconocer dos cuerpos; repartiste la fuerza entre ambos.');
+      error('signo', -c.F0, 'Bien invertir el sentido; un módulo no es negativo.');
+    } else if (['razon', 'masa-razon', 'distancia-razon'].includes(c.tipo)) {
+      datos.push('Los subíndices ref y nuevo distinguen el ensayo de referencia del ensayo modificado.', leyRazones);
+      if (c.tipo === 'razon') {
+        resultado = c.F0 * c.kM * c.km / c.kr ** 2;
+        enunciado = ['La atracción de referencia es ', valor(c.F0, 'N', 'h'), '. La masa fuente pasa a ', q('f', factor(c.kM)), ', la masa atraída a ', q('f', factor(c.km)), ' y la separación a ', q('i', factor(c.kr)), ' sus valores originales. ¿Cuál es la nueva fuerza?'];
+        solucion.push({ texto: 'Las dos masas multiplican la fuerza; el factor de separación aparece elevado al cuadrado.', ecuacion: eq(Fn, [lit('h', c.F0), ' · ', lit('f', c.kM), ' · ', lit('f', c.km), ' ÷ ', cuadrado('i', c.kr)], resultado) });
+        error('lineal', c.F0 * c.kM * c.km / c.kr, 'Bien cambiar las masas; dividiste solo una vez por distancia.');
+        error('sin-distancia', c.F0 * c.kM * c.km, 'Bien multiplicar las masas; omitiste el cambio de separación.');
+        error('sin-masas', c.F0 / c.kr ** 2, 'Bien cuadrar la separación; omitiste los cambios de masa.');
+        error('sin-fuente', c.F0 * c.km / c.kr ** 2, 'Bien cambiar la sonda; omitiste la masa fuente.');
+        error('sin-sonda', c.F0 * c.kM / c.kr ** 2, 'Bien cambiar la fuente; omitiste la otra masa.');
+        error('multiplica-distancia', c.F0 * c.kM * c.km * c.kr ** 2, 'Bien cuadrar la separación; multiplicaste en vez de dividir.');
+        error('signo', -resultado, 'Bien el tamaño; un módulo de fuerza no es negativo.');
+      } else if (c.tipo === 'masa-razon') {
+        resultado = c.F1 / c.F0 * c.kr ** 2 / c.km; unidad = 'veces'; color = 'f'; simbolo = [sub(M, 'nueva'), '/', sub(M, 'ref')]; simboloTexto = 'M_nueva/M_ref';
+        enunciado = ['La atracción pasa de ', valor(c.F0, 'N', 'h'), ' a ', valor(c.F1, 'N', 'h'), '. La masa atraída pasa a ', q('f', factor(c.km)), ' y la separación a ', q('i', factor(c.kr)), ' las originales. ¿Por qué factor cambió la masa fuente?'];
+        solucion.push({ texto: 'Aislamos el factor de masa fuente; compensamos el cambio de la otra masa y de la separación.', ecuacion: eq(simbolo, [{ frac: [lit('h', c.F1), lit('h', c.F0)] }, ' · ', cuadrado('i', c.kr), ' ÷ ', lit('f', c.km)], resultado) });
+        error('lineal', c.F1 / c.F0 * c.kr / c.km, 'Bien comparar fuerzas; compensaste la distancia sin cuadrar.');
+        error('sin-distancia', c.F1 / c.F0 / c.km, 'Bien comparar masas; omitiste el cambio de separación.');
+        error('inversa', 1 / resultado, 'Bien reunir factores; invertiste el cociente pedido.');
+        error('multiplica-sonda', c.F1 / c.F0 * c.kr ** 2 * c.km, 'Bien cuadrar la distancia; multiplicaste el factor de sonda.');
+        error('doble', 2 * resultado, 'Bien aislar el factor; duplicaste el resultado.');
+      } else {
+        resultado = Math.sqrt(c.F0 * c.kM * c.km / c.F1); unidad = 'veces'; color = 'i'; simbolo = [sub(r, 'nuevo'), '/', sub(r, 'ref')]; simboloTexto = 'r_nuevo/r_ref';
+        enunciado = ['La atracción pasa de ', valor(c.F0, 'N', 'h'), ' a ', valor(c.F1, 'N', 'h'), '. La fuente pasa a ', q('f', factor(c.kM)), ' su masa y la sonda a ', q('f', factor(c.km)), '. ¿Por qué factor cambió la separación?'];
+        solucion.push({ texto: 'El balance de factores da el cuadrado del factor de distancia; tomamos su raíz positiva.', ecuacion: eq(simbolo, { raiz: [{ frac: [[lit('h', c.F0), ' · ', lit('f', c.kM), ' · ', lit('f', c.km)], lit('h', c.F1)] }] }, resultado) });
+        error('sin-raiz', resultado ** 2, 'Bien hallar el cuadrado; faltó sacar la raíz.');
+        error('inversa', 1 / resultado, 'Bien sacar una raíz; invertiste el factor pedido.');
+        error('sin-masas', Math.sqrt(c.F0 / c.F1), 'Bien comparar fuerzas; omitiste los cambios de masa.');
+        error('sin-sonda', Math.sqrt(c.F0 * c.kM / c.F1), 'Bien cambiar la fuente; omitiste la masa de la sonda.');
+        error('doble', 2 * resultado, 'Bien despejar la distancia; duplicaste el factor hallado.');
+      }
+    } else if (c.tipo === 'superposicion') {
+      const a = c.G * c.MA * c.m / c.x ** 2, b = c.G * c.MB * c.m / (c.D - c.x) ** 2;
+      const sa = Math.sign(-c.x), sb = Math.sign(c.D - c.x);
+      resultado = sa * a + sb * b; simbolo = Fx; simboloTexto = 'F_x';
+      enunciado = ['A y B tienen ', valor(c.MA, 'kg', 'f'), ' y ', valor(c.MB, 'kg', 'f'), '. Sus centros están separados ', valor(c.D / 1000, 'km', 'i'), '. Una sonda de ', valor(c.m, 'kg', 'f'), ' está ', valor(Math.abs(c.x) / 1000, 'km', 'i'), c.x < 0 ? ' a la izquierda de A.' : ' a la derecha de A, entre ambas.', ' ¿Cuál es la fuerza horizontal neta?'];
+      datos.push(modelo, datoG, 'A está a la izquierda de B. Derecha positiva; r_A y r_B son separaciones entre centros.',
+        'F_A = G·M_A·m/r_A²; F_B = G·M_B·m/r_B². Cada fuerza apunta hacia su fuente.',
+        '1 km = 1000 m. La componente neta es la suma de componentes de las dos fuerzas.');
+      solucion.push({ texto: 'Determinamos las dos separaciones; cada atracción apunta desde la sonda hacia su fuente.', ecuacion: [sub(r, 'A'), ` = ${numero(Math.abs(c.x))} m; `, sub(r, 'B'), ` = ${numero(c.D - c.x)} m`] });
+      solucion.push({ texto: 'Calculamos por separado los módulos de las fuerzas gravitatorias.', ecuacion: [sub(F, 'A'), ` ≈ ${numero(a)} N; `, sub(F, 'B'), ` ≈ ${numero(b)} N`] });
+      solucion.push({ texto: 'Sumamos sus componentes sin redondear los valores intermedios. El signo identifica el sentido.', ecuacion: [Fx, ' = ', `${sa < 0 ? '−' : ''}F_A ${sb < 0 ? '−' : '+'} F_B ≈ `, valor(resultado, 'N', 'h')] });
+      error('modulos', a + b, 'Bien hallar ambas fuerzas; sumaste módulos sin sus sentidos.');
+      error('signo', -resultado, 'Bien combinar fuerzas; invertiste el sentido resultante.');
+      error('solo-a', sa * a, 'Bien calcular A; omitiste la atracción de B.');
+      error('solo-b', sb * b, 'Bien calcular B; omitiste la atracción de A.');
+      error('resta-modulos', a - b, 'Bien hallar módulos; restaste sin identificar los sentidos.');
+      error('doble', 2 * resultado, 'Bien sumar componentes; contaste dos veces la resultante.');
+    } else if (c.tipo === 'equilibrio') {
+      resultado = c.D * Math.sqrt(c.MA) / (Math.sqrt(c.MA) + Math.sqrt(c.MB)) / 1000;
+      unidad = 'km'; color = 'i'; simbolo = sub(r, 'A'); simboloTexto = 'r_A';
+      enunciado = ['Dos fuentes A y B tienen masas ', valor(c.MA, 'kg', 'f'), ' y ', valor(c.MB, 'kg', 'f'), ', separadas ', valor(c.D / 1000, 'km', 'i'), '. Entre sus centros, ¿a qué distancia de A se anula la fuerza neta sobre una sonda?'];
+      datos.push(modelo, 'Entre las fuentes, las atracciones tienen sentidos opuestos; la fuerza neta nula exige módulos iguales.',
+        'F_A = G·M_A·m/r_A²; F_B = G·M_B·m/r_B²; r_A + r_B = D.', '1 km = 1000 m. D es la separación entre los centros de A y B.');
+      const razon = Math.sqrt(c.MB / c.MA);
+      solucion.push({ texto: 'Igualamos los módulos. La constante G y la masa de la sonda se cancelan.', ecuacion: [{ frac: [sub(r, 'B'), sub(r, 'A')] }, ' = ', { raiz: [{ frac: [lit('f', c.MB), lit('f', c.MA)] }] }, exacto(razon) ? ' = ' : ' ≈ ', numero(razon)] });
+      solucion.push({ texto: 'Las dos separaciones suman D; despejamos la distancia desde A.', ecuacion: eq(simbolo, { frac: [lit('i', c.D / 1000), ['1 + ', { raiz: [{ frac: [lit('f', c.MB), lit('f', c.MA)] }] }]] }, resultado) });
+      error('mitad', c.D / 2000, 'Bien buscar entre ambas; supusiste masas iguales.');
+      error('lineal', c.D * c.MA / (c.MA + c.MB) / 1000, 'Bien comparar masas; usaste la proporción sin raíz.');
+      error('desde-b', c.D / 1000 - resultado, 'Bien hallar el punto; mediste desde B en vez de A.');
+      error('sin-suma', c.D * Math.sqrt(c.MA / c.MB) / 1000, 'Bien obtener una razón; omitiste sumar las dos separaciones.');
+      error('doble', 2 * resultado, 'Bien ubicar el punto; duplicaste la distancia desde A.');
+    } else throw new Error(`Tipo desconocido en ley universal: ${c.tipo}`);
+    const aproximado = aproximadoG || !exacto(resultado);
+    const vistos = new Set([textoValor(resultado, unidad, aproximadoG)]);
+    const distintos = errores.filter(e => {
+      if (!Number.isFinite(e.valor)) return false;
+      const k = textoValor(e.valor, unidad, aproximadoG);
+      if (vistos.has(k)) return false; vistos.add(k); return true;
+    }).sort((a, b) => {
+      const prioridad = e => Math.abs(e.valor / resultado) >= 0.05 && Math.abs(e.valor / resultado) <= 20 ? 0 : 1;
+      return prioridad(a) - prioridad(b);
+    }).map(e => ({ ...e, texto: textoValor(e.valor, unidad, aproximadoG), error: `GR1-${e.id.toUpperCase()}`, siFuera: `${e.causa} Así sale ${textoValor(e.valor, unidad, aproximadoG)}.` }));
+    return { enunciado, datos, solucion, resultado, unidad, color, simbolo, aproximado, errores: distintos,
+      respuesta: [simbolo, aproximado ? ' ≈ ' : ' = ', valor(resultado, unidad, color)],
+      dibujo: figura({ ...c, resultado, unidad, color, simboloTexto, aproximado }),
+      verificacion: { ...c, respuesta: { valor: resultado, unidad, aproximado }, errores: distintos.map(e => ({ id: e.id, valor: e.valor })) } };
+  }
+
+  const casosEjemplo = [
+    { tipo: 'razon', nivel: 1, titulo: 'Cambia una masa', F0: 54, kM: 3, km: 1, kr: 1 },
+    { tipo: 'razon', nivel: 1, titulo: 'Cambia la separación', F0: 81, kM: 1, km: 1, kr: 3 },
+    { tipo: 'directa', nivel: 1, titulo: 'La atracción sobre una sonda', G, M: 4e24, m: 500, r: 1e7 },
+    { tipo: 'directa', nivel: 1, titulo: 'Una sonda más lejana', G, M: 8e24, m: 300, r: 2e7 },
+    { tipo: 'mutua', nivel: 1, titulo: 'La fuerza sobre el otro cuerpo', F0: 75, ma: 2e24, mb: 500 },
+    { tipo: 'directa', nivel: 2, titulo: 'Gramos y kilómetros', G, M: 3e24, gramos: 75000, rKm: 9000 },
+    { tipo: 'directa', nivel: 2, titulo: 'Todas las magnitudes en el SI', G, M: 5e24, gramos: 160000, rKm: 20000 },
+    { tipo: 'masa', nivel: 2, titulo: 'La masa desconocida', G, M: 4e24, F: 667, r: 1e7 },
+    { tipo: 'distancia', nivel: 2, titulo: 'Una separación en kilómetros', G, M: 6e24, m: 800, F: 800.4 },
+    { tipo: 'masa-razon', nivel: 2, titulo: 'Reconstruir el cambio de masa', F0: 32, F1: 72, km: 1, kr: 2 },
+    { tipo: 'razon', nivel: 3, titulo: 'Tres cambios en un mismo ensayo', F0: 450, kM: 3, km: 0.5, kr: 1.5 },
+    { tipo: 'distancia-razon', nivel: 3, titulo: 'La separación que explica el resultado', F0: 180, F1: 80, kM: 2, km: 2 },
+    { tipo: 'superposicion', nivel: 3, titulo: 'Una sonda entre dos fuentes', G, MA: 2e24, MB: 3e24, m: 100, D: 1e7, x: 4e6 },
+    { tipo: 'equilibrio', nivel: 3, titulo: 'El punto de fuerza nula', MA: 16e24, MB: 9e24, D: 1e7 },
+    { tipo: 'superposicion', nivel: 3, titulo: 'La sonda queda a la izquierda', G, MA: 4e24, MB: 2e24, m: 120, D: 9e6, x: -3e6 },
+  ];
+  const causasCortas = {
+    lineal: 'usa la distancia sin elevarla al cuadrado', 'sin-distancia': 'omite la separación', 'sin-masas': 'omite las masas',
+    'sin-fuente': 'omite la fuente', 'sin-sonda': 'omite la sonda', 'multiplica-distancia': 'multiplica por distancia cuadrada',
+    signo: 'invierte el signo', 'sin-raiz': 'omite la raíz', inversa: 'invierte el cociente',
+    doble: 'duplica el resultado', modulos: 'suma módulos', 'solo-a': 'solo cuenta A', 'solo-b': 'solo cuenta B',
+    'resta-modulos': 'resta módulos', mitad: 'supone masas iguales', 'desde-b': 'mide desde B', 'sin-suma': 'omite sumar separaciones',
+  };
+  let indiceLetra = 0;
+  const ejemplos = casosEjemplo.map(c => {
+    const b = caso(c), e = { nivel: c.nivel, titulo: c.titulo, enunciado: b.enunciado, datos: b.datos, figura: b.dibujo,
+      solucion: b.solucion.slice(), respuesta: b.respuesta, verificacion: b.verificacion };
+    if (c.nivel === 3) {
+      const incorrectas = b.errores.slice(0, 4);
+      if (incorrectas.length !== 4) throw new Error(`Faltan errores distintos en ${c.titulo}`);
+      e.alternativas = incorrectas.map(x => x.texto);
+      e.alternativas.splice(indiceLetra++, 0, textoValor(b.resultado, b.unidad, c.G != null));
+      e.solucion.push({ texto: incorrectas.map(x => `${textoValor(x.valor, '', c.G != null)}: ${causasCortas[x.id]}.`).join(' ') });
+    }
+    return e;
+  });
+
+  function entrada(semilla, resuelto) {
+    const s = Math.abs(Math.trunc(semilla));
+    const tipos = ['razon', 'directa', 'masa', 'distancia', 'masa-razon', 'superposicion', 'equilibrio', 'mutua', 'distancia-razon'];
+    const tipo = tipos[s % tipos.length], k = 1 + Math.floor(s / tipos.length) % 9, z = Math.floor(s / 81) % 8;
+    const fuente = (resuelto ? 12 + z : 2 + z) * 1e24;
+    if (tipo === 'razon') return { tipo, F0: (resuelto ? 810 : 310) + 10 * k + z, kM: 2 + z % 3, km: 1 + (k % 3) / 2, kr: 1.5 + (k % 3) / 2 };
+    if (tipo === 'directa') return { tipo, G, M: fuente, m: (resuelto ? 410 : 110) + 10 * k, r: (7 + k) * 1e6 };
+    if (tipo === 'masa') { const radio = resuelto ? 2e7 : 1e7, masa = (resuelto ? 400 : 80) + 40 * k; return { tipo, G, M: fuente, r: radio, F: Math.round(G * fuente * masa / radio ** 2 * 1000) / 1000 }; }
+    if (tipo === 'distancia') { const masa = (500 + 20 * z) * k ** 2, radio = (resuelto ? 2e7 : 1e7) * k; return { tipo, G, M: fuente, m: masa, F: Math.round(G * fuente * masa / radio ** 2 * 1000) / 1000 }; }
+    if (tipo === 'masa-razon') return { tipo, F0: resuelto ? 420 + 10 * z : 210 + 10 * z, F1: (resuelto ? 180 : 90) + 6 * k, km: 1.5, kr: 2 + z % 2 };
+    if (tipo === 'mutua') return { tipo, F0: (resuelto ? 220 : 95) + 7 * k + 5 * z, ma: (resuelto ? 10 + z : 1 + z) * 2e24, mb: (resuelto ? 1600 : 1000) + 50 * k };
+    if (tipo === 'distancia-razon') {
+      const F0 = (resuelto ? 36000 : 3600) + 3600 * z, kM = 2 + k % 3, km = 1 + k % 2, kr = 2 + k % 4;
+      return { tipo, F0, F1: F0 * kM * km / kr ** 2, kM, km };
+    }
+    if (tipo === 'superposicion') return { tipo, G, MA: (resuelto ? 5 : 3) * 1e24, MB: (2 + z) * 1e24, m: (resuelto ? 45 : 15) + 5 * k, D: 12e6, x: (resuelto ? -1 : 1) * (2 + k % 3) * 1e6 };
+    return { tipo, MA: (resuelto ? 2.25 : 4) * 1e24, MB: (k + 3) ** 2 * 1e24, D: (9 + z) * 1e6 };
+  }
+  function generar(semilla, resuelto) {
+    const b = caso(entrada(semilla, resuelto));
+    if (b.errores.length < 3) throw new Error(`Faltan alternativas en semilla ${semilla}: ${b.verificacion.tipo}`);
+    if (resuelto) return { enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: b.verificacion,
+      pasos: [{ tipo: 'pide', texto: 'Identificamos la magnitud pedida y a qué cuerpo o separación pertenece.' },
+        { tipo: 'regla', texto: b.verificacion.tipo === 'superposicion' ? 'Calculamos cada fuerza y sumamos sus componentes sobre la misma sonda.' : 'La ley usa ambas masas y la separación entre centros al cuadrado.' },
+        ...b.solucion.map(x => ({ tipo: 'cuentas', ...x })),
+        { tipo: 'sentido', texto: b.verificacion.tipo === 'superposicion' ? 'El signo señala el sentido de la fuerza neta sobre la sonda.' : 'Comprobamos la unidad pedida. Los módulos, las masas y las separaciones son no negativos.' }] };
+    return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: b.verificacion,
+      opciones: [{ id: 'c', texto: textoValor(b.resultado, b.unidad, b.verificacion.G != null), correcta: true }, ...b.errores.slice(0, 3).map(x => ({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera }))],
+      solucion: { texto: b.verificacion.tipo === 'superposicion' ? 'Cada atracción apunta hacia su fuente. Sumamos las componentes sin redondear los pasos intermedios.' : 'Aplicamos la ley a las mismas masas y separaciones que da el problema.', ecuacion: b.solucion.at(-1).ecuacion } };
+  }
+  const pred = { tipo: 'razon', F0: 160, kM: 2, km: 3, kr: 2 };
+  const predCaso = caso(pred);
+  const predErrores = ['lineal', 'sin-distancia', 'sin-masas'].map(id => predCaso.errores.find(e => e.id === id));
+  const idea = {
+    id: 'cuadrado-inverso', titulo: 'Ley de gravitación universal',
+    pregunta: '¿Cómo cambia la atracción cuando cambian las masas y la separación?',
+    aprendizaje: 'Calculas la atracción entre cuerpos y distingues el efecto de cada masa y de la distancia entre centros.',
+    actividad: 'Comparar dos ensayos con las mismas masas y distinta separación entre centros.',
+    temas: ['Ley de gravitación universal'], pieza: 'fis-gravitacion',
+    lee: { tarjetas: [
+      { titulo: 'Un planeta y una sonda', texto: ['La ley de gravitación universal describe una atracción entre cuerpos con masa. En estos ensayos didácticos comparamos un planeta y una sonda con paneles solares. La fuerza sobre la sonda apunta hacia el planeta.'], dibujo: figuraJuego(1.5, false) },
+      { titulo: 'De centro a centro', texto: ['La distancia entre centros se escribe ', r, '. La cota une el centro del planeta con el centro de la sonda. No mide desde la superficie. Las masas se escriben ', M, ' y ', m, ', en kilogramos.'] },
+      { titulo: 'Qué medimos en cada ensayo', texto: ['El módulo de la fuerza ', F, ' se mide en newtons. La constante de gravitación universal se escribe G. Usaremos G ≈ 6,67 × 10⁻¹¹ N·m²/kg². El subíndice ref identifica el ensayo de referencia.'] },
+    ] },
+    juega: {
+      consigna: 'Compara ensayos con las mismas masas. Cambia la separación entre centros y observa cómo cambia la atracción sobre la sonda.',
+      voz: 'La referencia queda fija. El ensayo elegido cambia de separación.',
+      controles: [{ id: 'k', etiqueta: 'Separación respecto de la referencia', min: 1, max: 3, paso: 0.5, inicio: 1, unidad: 'veces', decimales: 1, color: 'c-i', auto: { velocidad: 0.25, modo: 'rebota' } }],
+      mision: { texto: 'Haz que la fuerza sea la cuarta parte de la referencia.',
+        logrado: a => Math.abs(fuerza(ref.M, ref.m, ref.r * a.k) / Fref - 0.25) < 1e-10,
+        testigo: [{ k: 2 }], bien: 'La fuerza del ensayo coincide con la fracción que buscabas.' },
+      dibujo: a => figuraJuego(a.k),
+      lectura: a => { const proporcion = fuerza(ref.M, ref.m, ref.r * a.k) / Fref; return a.k === 1 ? 'Ahora atrae lo mismo que en la referencia.' : ['Ahora atrae ', q('h', `${exacto(proporcion) ? '' : '≈ '}${numero(proporcion)}`), ' veces lo que atraía en la referencia.']; },
+      leyenda: [{ s: M, t: 'masa de la fuente, en kilogramos' }, { s: m, t: 'masa de la sonda, en kilogramos' },
+        { s: r, t: 'distancia entre centros, en kilómetros en la figura' }, { s: F, t: 'módulo de fuerza gravitatoria, en newtons' }], minimo: 2,
+    },
+    predice: {
+      pregunta: 'Ahora cambian las dos masas y la separación. ¿Cuál es el nuevo módulo de la fuerza gravitatoria?',
+      datos: ['La fuerza de referencia es 160 N.', 'La masa fuente se duplica y la masa de la sonda se triplica.', 'La separación entre centros también se duplica.'],
+      dibujo: figura(pred), revelar: figura({ ...pred, resultado: predCaso.resultado, unidad: 'N', color: 'h', simboloTexto: 'F_nueva', aproximado: false }, true),
+      opciones: [{ id: 'c', texto: textoValor(predCaso.resultado, 'N', false), correcta: true }, ...predErrores.map(e => ({ id: e.id, texto: e.texto, error: e.error, siFuera: e.siFuera }))],
+      coincide: 'Las dos masas aumentan la atracción; la mayor separación la reduce. Hay que combinar los tres cambios.',
+      verificacion: predCaso.verificacion,
+    },
+    mira: {
+      pieza: 'fis-gravitacion', datos: { ...figura(pred).datos, cortes: [figura(pred).datos, figura({ ...pred, resultado: predCaso.resultado, unidad: 'N', color: 'h', simboloTexto: 'F_nueva' }, true).datos] },
+      pasos: [
+        { estado: { corte: 0 }, texto: 'Comparamos con la referencia: G es la misma constante en ambos ensayos.', ecuacion: leyRazones },
+        { estado: { corte: 0 }, texto: 'Las dos masas multiplican juntas el numerador.', ecuacion: ['Factor de masas = 2 · 3 = 6'] },
+        { estado: { corte: 0 }, texto: 'La separación duplicada aparece al cuadrado en el denominador.', ecuacion: ['Factor de separación = 2² = 4'] },
+        { estado: { corte: 1 }, texto: 'Multiplicamos la fuerza de referencia por el factor combinado.', ecuacion: [Fn, ` = 160 · 6 ÷ 4 = ${numero(predCaso.resultado)} N`] },
+      ],
+    },
+    regla: {
+      texto: 'La atracción depende de ambas masas y del cuadrado de su separación. Las fuerzas mutuas tienen igual módulo y sentidos opuestos; actúan sobre cuerpos distintos.',
+      ecuacion: [F, ' = ', { frac: [['G · ', M, ' · ', m], { sup: [r, '2'] }] }],
+      condicion: 'Cuerpos puntuales o fuentes esféricas con distribución radial; se evalúa fuera de ellas y se mide desde sus centros.',
+      voz: 'Con varias fuentes, calcula cada atracción y suma sus componentes sobre el mismo cuerpo.',
+      dibujo: figura({ tipo: 'directa', M: 5e24, m: 200, r: 1.5e7, G }),
+    },
+    ejemplos,
+    resuelve: { pieza: 'fis-gravitacion', generar: s => generar(s, true) },
+    ahoraTu: { pieza: 'fis-gravitacion', generar: s => generar(s, false) },
+  };
+  const glosario = [
+    { termino: 'ley de gravitación universal', simple: 'La descripción de la atracción entre cuerpos con masa.',
+      def: 'Ley que relaciona la atracción entre cuerpos con sus masas y la separación entre sus centros.',
+      ejemplos: ['La Tierra atrae una sonda.', 'Una sonda también atrae a la Tierra.', 'Dos esferas con masa se atraen aunque no se toquen.'] },
+    { termino: 'distancia entre centros', simbolo: 'r', medida: 'm', simple: 'La longitud que une los centros de los dos cuerpos.',
+      def: 'Longitud del segmento entre los centros de los cuerpos; no empieza en la superficie del planeta.',
+      ejemplos: ['La cota puede partir del centro dibujado de un planeta.', 'La distancia entre dos centros se expresa en metros.', 'La altura sobre una superficie y la distancia entre centros son medidas distintas.'] },
+    { termino: 'constante de gravitación universal', simbolo: 'G', medida: 'N·m²/kg²', simple: 'Una constante medida que aparece en la ley de gravitación.',
+      def: 'Constante medida experimentalmente que relaciona masas, separación y fuerza en la ley gravitacional.',
+      ejemplos: ['G se distingue de una masa.', 'El ejercicio indica qué aproximación de G utiliza.', 'Cambiar la sonda no significa cambiar G.'] },
+  ];
+  const letras = { G: 'constante de gravitación universal', M: 'masa de la fuente', m: 'masa del cuerpo atraído',
+    r: 'distancia entre centros', F: 'módulo de fuerza gravitatoria', F_x: 'componente horizontal de fuerza gravitatoria',
+    k: 'factor de separación respecto de la referencia', A: 'primera fuente o primer cuerpo', B: 'segunda fuente o segundo cuerpo',
+    D: 'distancia entre los centros de las fuentes A y B', x: 'coordenada horizontal de la sonda medida desde A',
+    r_A: 'separación entre A y la sonda', r_B: 'separación entre B y la sonda',
+    F_ref: 'fuerza de referencia', F_nueva: 'fuerza del ensayo modificado', M_ref: 'masa fuente de referencia', M_nueva: 'masa fuente modificada',
+    m_ref: 'masa de la sonda de referencia', m_nueva: 'masa de la sonda modificada', r_ref: 'separación de referencia', r_nuevo: 'separación modificada' };
+  return { idea, glosario, letras };
+}
+
+  const gr1 = construirGr1(Kit);
   return {
     unidad: 'fisica.gravitacion',
-    version: '0.2.0',
+    version: '0.3.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/fis-lienzo.js', '/plantillas/gravitacion/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
+    letras: gr1.letras,
+    requiere: ['/nucleo/kit/piezas/fis-gravitacion.js', '/nucleo/kit/piezas/fis-lienzo.js', '/plantillas/gravitacion/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Período, MCU y
     // aceleración centrípeta vienen del movimiento circular; fuerza centrípeta, de dinámica.
-    glosario: [
+    glosario: [...gr1.glosario, ...[
       { termino: 'ley de gravitación universal', def: 'Dos masas se atraen con una fuerza proporcional a ellas e inversa al cuadrado de su distancia.',
         ejemplo: 'A doble distancia del centro, la cuarta parte: 800 N pasan a 200 N.', ver: ['constante de gravitación universal', 'campo gravitatorio'] },
       { termino: 'constante de gravitación universal', simbolo: 'G', medida: 'N·m²/kg²',
@@ -544,7 +909,7 @@
         ejemplo: 'Con e = 0,4, cerca del Sol va 1,4 / 0,6 ≈ 2,33 veces más rápido.', ver: ['primera ley de Kepler'] },
       { termino: 'tercera ley de Kepler', def: 'El período al cuadrado es proporcional al cubo del semieje mayor, igual para todo lo que gira al mismo astro.',
         ejemplo: 'A 4 UA: T² = 4³ = 64, así que T = 8 años.', ver: ['semieje mayor', 'período'] },
-    ],
+    ].filter(g => !gr1.glosario.some(n => n.termino === g.termino))],
     // Laboratorio: juego libre, sin preguntas. Dos órbitas a la vez para comparar (la idea muestra una sola); la
     // elipse libre deja cualquier excentricidad de 0 a 0,75 y cuenta cuánto más lento va lejos del Sol.
     laboratorio: [
@@ -625,6 +990,6 @@
       'elipse-libre': ['leyes-de-kepler'],
       'atraccion': ['cuadrado-inverso'],
     },
-    ideas: [inversa, campoIdea, orbitaIdea, keplerIdea],
+    ideas: [gr1.idea, campoIdea, orbitaIdea, keplerIdea],
   };
 });
