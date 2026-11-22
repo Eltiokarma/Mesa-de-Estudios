@@ -4,17 +4,17 @@ Actualizado: 22 de noviembre de 2026, fecha de referencia de Perú.
 
 Alcance: 32 unidades. Se termina y revisa una unidad antes de comenzar la siguiente. Cada documento terminado se publica directamente en el repositorio junto con este estado.
 
-**Completas: 7 de 32. Pendientes: 25.**
+**Completas: 8 de 32. Pendientes: 24.**
 
 La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
 
 | Etapa | Completas | Pendientes |
 |---|---|---|
-| 17 | 7 | 1 |
+| 17 | 8 | 0 |
 | 18 | 0 | 8 |
 | 19 | 0 | 8 |
 | 20 | 0 | 8 |
-| Total | 7 | 25 |
+| Total | 8 | 24 |
 
 ## Unidades y orden de continuación
 
@@ -27,8 +27,8 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | 5 | 17 | Química | Electroquímica | quimica.electroquimica.md | COMPLETA |
 | 6 | 17 | Razonamiento matemático | Diagramas de flujo y operadores | razonamiento-matematico.diagramas-de-flujo.md | COMPLETA |
 | 7 | 17 | Razonamiento verbal | Textos discontinuos e infografías | razonamiento-verbal.textos-discontinuos.md | COMPLETA |
-| 8 | 17 | Trigonometría | Transformaciones y series trigonométricas | trigonometria.transformaciones-trigonometricas.md | PENDIENTE · Siguiente |
-| 9 | 18 | Álgebra | Números reales e intervalos | algebra.numeros-reales.md | PENDIENTE |
+| 8 | 17 | Trigonometría | Transformaciones y series trigonométricas | trigonometria.transformaciones-trigonometricas.md | COMPLETA |
+| 9 | 18 | Álgebra | Números reales e intervalos | algebra.numeros-reales.md | PENDIENTE · Siguiente |
 | 10 | 18 | Aritmética | Conjuntos | aritmetica.conjuntos.md | PENDIENTE |
 | 11 | 18 | Física | Inducción electromagnética | fisica.induccion-electromagnetica.md | PENDIENTE |
 | 12 | 18 | Geometría | Prisma y pirámide | geometria.prisma-y-piramide.md | PENDIENTE |
@@ -64,9 +64,10 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | quimica.electroquimica.md | 59957 bytes | 9318 | 6 |
 | razonamiento-matematico.diagramas-de-flujo.md | 53396 bytes | 8611 | 6 |
 | razonamiento-verbal.textos-discontinuos.md | 55648 bytes | 8485 | 5 |
+| trigonometria.transformaciones-trigonometricas.md | 59946 bytes | 9284 | 6 |
 
 Se revisan diez secciones, entre tres y seis ideas, cuatro opciones por predicción, correspondencia de distractores y errores, vocabulario, fuentes y continuidad conceptual. La frecuencia de examen se declara desconocida cuando la muestra no la permite.
 
 ## Continuación
 
-La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `trigonometria.transformaciones-trigonometricas.md`.
+La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `algebra.numeros-reales.md`.
