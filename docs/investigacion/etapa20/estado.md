@@ -2,15 +2,15 @@
 
 Actualizado: 22 de noviembre de 2026, hora de referencia de Perú.
 
-**Unidades completas: 3 de 8. Pendientes: 5.**
+**Unidades completas: 4 de 8. Pendientes: 4.**
 
 | Orden | Curso | Unidad | Archivo | Estado |
 |---|---|---|---|---|
 | 1 | Álgebra | Tipos de funciones y función inversa | algebra.tipos-de-funciones-e-inversa.md | Completa y revisada |
 | 2 | Aritmética | Análisis combinatorio | aritmetica.analisis-combinatorio.md | Completa y revisada |
 | 3 | Física | Ondas electromagnéticas | fisica.ondas-electromagneticas.md | Completa y revisada |
-| 4 | Geometría | Geometría analítica | geometria.geometria-analitica.md | Pendiente; siguiente unidad |
-| 5 | Química | Biomoléculas y productos naturales | quimica.biomoleculas-y-productos-naturales.md | Pendiente |
+| 4 | Geometría | Geometría analítica | geometria.geometria-analitica.md | Completa y revisada |
+| 5 | Química | Biomoléculas y productos naturales | quimica.biomoleculas-y-productos-naturales.md | Pendiente; siguiente unidad |
 | 6 | Razonamiento matemático | Traslados y puntos cardinales | razonamiento-matematico.traslados-y-puntos-cardinales.md | Pendiente |
 | 7 | Razonamiento verbal | Textos filosóficos y científicos | razonamiento-verbal.textos-filosoficos-y-cientificos.md | Pendiente |
 | 8 | Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | Pendiente |
