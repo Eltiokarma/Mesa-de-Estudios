@@ -4,15 +4,15 @@ Actualizado: 22 de noviembre de 2026, fecha de referencia de Perú.
 
 Alcance vigente: 16 unidades de las etapas 17 y 18. Por indicación del usuario, las dieciséis unidades de las etapas 19 y 20 se realizarán en otros chats; ninguna se había publicado al cambiar el alcance. Se conserva la carpeta histórica etapas-17-20.
 
-**Completas: 15 de 16. Pendientes: 1.**
+**Completas: 16 de 16. Pendientes: 0.**
 
 Se termina, revisa y publica cada unidad antes de iniciar la siguiente. La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
 
 | Etapa | Completas | Pendientes de esta tanda |
 |---|---|---|
 | 17 | 8 | 0 |
-| 18 | 7 | 1 |
-| Total vigente | 15 | 1 |
+| 18 | 8 | 0 |
+| Total vigente | 16 | 0 |
 
 ## Unidades y orden de continuación
 
@@ -33,7 +33,7 @@ Se termina, revisa y publica cada unidad antes de iniciar la siguiente. La propu
 | 13 | 18 | Química | Química orgánica: hidrocarburos | quimica.hidrocarburos.md | COMPLETA |
 | 14 | 18 | Razonamiento matemático | Trazos de figuras y perímetros | razonamiento-matematico.trazos-y-perimetros.md | COMPLETA |
 | 15 | 18 | Razonamiento verbal | Texto y contexto | razonamiento-verbal.texto-y-contexto.md | COMPLETA |
-| 16 | 18 | Trigonometría | Resolución de triángulos oblicuángulos | trigonometria.triangulos-oblicuangulos.md | PENDIENTE · Siguiente |
+| 16 | 18 | Trigonometría | Resolución de triángulos oblicuángulos | trigonometria.triangulos-oblicuangulos.md | COMPLETA |
 
 ## Etapas 19 y 20 · Reservadas para otros chats
 
@@ -77,9 +77,10 @@ Estas dieciséis unidades quedan fuera de las pendientes de esta tanda. No se de
 | quimica.hidrocarburos.md | 59987 bytes | 8717 | 6 |
 | razonamiento-matematico.trazos-y-perimetros.md | 59858 bytes | 9601 | 5 |
 | razonamiento-verbal.texto-y-contexto.md | 58156 bytes | 8844 | 5 |
+| trigonometria.triangulos-oblicuangulos.md | 58996 bytes | 9580 | 6 |
 
 Se revisan diez secciones, entre tres y seis ideas, cuatro opciones por predicción, correspondencia de distractores y errores, vocabulario, fuentes y continuidad conceptual. La frecuencia de examen se declara desconocida cuando la muestra no la permite.
 
 ## Continuación
 
-La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `trigonometria.triangulos-oblicuangulos.md`.
+La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. El conjunto está completo: **0 pendientes**.

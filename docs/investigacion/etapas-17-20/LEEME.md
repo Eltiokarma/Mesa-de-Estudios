@@ -1,9 +1,11 @@
-# Propuestas de teoría · Etapas 17 a 20
+# Propuestas de teoría · Etapas 17 y 18
 
-Investigación y diseño pedagógico solicitados por Gerson. El alcance reúne 32 unidades, desarrolladas una por una. [estado.md](estado.md) identifica las terminadas y la siguiente pendiente.
+Investigación y diseño pedagógico solicitados por Gerson. El alcance vigente de esta tanda comprende **16 unidades completas y 0 pendientes**. Las etapas 19 y 20 se reservan para otros chats por indicación del usuario; no se declaran realizadas. Se conserva la ruta histórica de la carpeta para mantener los enlaces existentes.
 
-Cada archivo de unidad es autónomo: demanda de admisión, errores con nivel de evidencia, prerrequisitos, secuencia de ideas, notación, recursos, datos reales, decisiones y bibliografía. Las escenas y predicciones son originales. El estado «completa» se refiere al documento de propuesta, no a una unidad implementada, validada con alumnos o publicada en la app.
+[estado.md](estado.md) enumera las unidades completadas, sus extensiones y las unidades reservadas para otros chats. Cada archivo es autónomo e incluye demanda de admisión, errores con nivel de evidencia, prerrequisitos, secuencia de ideas, notación, recursos, datos del mundo, decisiones y bibliografía.
 
-El equipo de producción debe construir las escenas, recalcular sus ejercicios y aplicar las revisiones del proyecto. Esta carpeta no modifica catálogo, motores ni contenido ejecutable. Las fuentes de cada afirmación se encuentran dentro del documento correspondiente; una presencia en temario no se cuenta como frecuencia de examen.
+El estado «completa» corresponde a la propuesta documental, no a contenido implementado o validado con alumnos. El equipo de producción debe construir las escenas, recalcular los ejercicios y aplicar las revisiones del proyecto. Esta carpeta no modifica catálogo, motores ni contenido ejecutable.
 
-Entregas: 01, Álgebra y Aritmética de la etapa 17; 02, continuación con Magnetismo y Poliedros conforme se completan. El registro exacto es estado.md.
+Las escenas y predicciones son originales. La presencia de un tema en un programa preuniversitario no se presenta como frecuencia estadística de examen. Las fuentes y sus límites se identifican dentro de cada documento.
+
+Entrega acumulada: ocho unidades de la etapa 17 y ocho de la etapa 18. Actualización: 22 de noviembre de 2026, fecha de referencia de Perú.
