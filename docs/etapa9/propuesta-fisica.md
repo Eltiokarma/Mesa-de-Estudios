@@ -56,9 +56,9 @@ Se reusa `fis-estatica` para la primera idea, con carritos y rótulos propios. S
 | --- | --- | --- | --- |
 | 1 | Iguala la cantidad de movimiento de A usando una masa distinta. | Masa B: 1–4 kg; rapidez B: 1–4 m/s, pasos enteros. Reloj animado. | A: 2 kg a 3 m/s hacia la derecha. Testigo B: 3 kg a 2 m/s. Ambos en el mismo sentido. |
 | 2 | Detén la pelota con el pulso disponible. | Fuerza neta de un dispositivo y reloj; se ven el cambio y el movimiento. | Pelota de 0,5 kg, llegada 4 m/s y duración fija 0,5 s. Testigo F_x=−4 N. La comparación de duraciones queda para Predice. |
-| 3 | Haz que el carrito B salga a 2 m/s. | Compresión de un resorte: 0,1; 0,2 o 0,3 m, con salidas calculadas por energía y balance. | Ambos carritos tienen 2 kg; resorte ideal de 400 N/m y total inicial cero. Testigo: 0,2 m. Las masas distintas quedan para Predice. |
-| 4 | Consigue que los carritos unidos avancen a la velocidad indicada. | Masa del receptor o velocidad de llegada. | Acople, mismo eje y ausencia de impulso externo horizontal apreciable. |
-| 5 | Haz que el rebote alcance la marca. | e en un intervalo entre 0 y 1. | Altura de caída, piso fijo y aire despreciable; h=e²H. |
+| 3 | Consigue que ambos carritos salgan con rapidez de 2 m/s. | Compresión de un resorte: 0,1; 0,2 o 0,3 m, con salidas calculadas por energía y balance. | Ambos carritos tienen 2 kg; resorte ideal de masa despreciable, constante de 400 N/m y total inicial cero. Testigo: 0,2 m. Las masas distintas quedan para Predice. |
+| 4 | Consigue que los carritos unidos avancen a 3 m/s. | Masa del receptor o velocidad de llegada. | Acople, mismo eje y ausencia de impulso externo horizontal apreciable. Testigo: receptor de 2 kg y llegada a 6 m/s. |
+| 5 | Haz que el rebote alcance 2,25 m. | e en un intervalo entre 0 y 1. | Caída de 4 m, piso fijo y aire despreciable; h=e²H. Testigo: e=0,75. |
 | 6 | Coloca el centro de masa en la marca de 4 m. | Masa o posición del segundo carrito. | Primera masa de 2 kg en el origen. Testigo: segundo carrito de 4 kg en 6 m. |
 
 Las misiones se implementan con motores determinísticos y testigos comprobados. Las dos primeras comparaciones se ajustaron al revisar la secuencia: duración fija en el juego de impulso y masas iguales en el juego del resorte. Así, Predice plantea un cambio que todavía no se observó. La animación mueve el objeto; no cambia sola la masa que el alumno necesita elegir.
