@@ -410,6 +410,38 @@
     "CE-SIN-RAIZ": {
       "respaldo": "hipotesis",
       "describe": "Da v² en vez de v: no saca la raíz"
+    },
+    "IC9-ignora-rebote": {
+      "respaldo": "hipotesis",
+      "describe": "Calcula solo el frenado hasta reposo e ignora la velocidad de salida opuesta."
+    },
+    "IC9-omite-sentido-salida": {
+      "respaldo": "hipotesis",
+      "describe": "Resta las rapideces sin asignar signo negativo a la velocidad de salida."
+    },
+    "IC9-resta-invertida": {
+      "respaldo": "hipotesis",
+      "describe": "Resta la velocidad final de la inicial e invierte el impulso y la fuerza media."
+    },
+    "IC9-impulso-como-fuerza": {
+      "respaldo": "hipotesis",
+      "describe": "Calcula el impulso pero no lo divide entre la duración para obtener fuerza media."
+    },
+    "IC9-centro-sin-avance": {
+      "respaldo": "hipotesis",
+      "describe": "Entrega la posición inicial del centro de masa y omite su desplazamiento posterior."
+    },
+    "IC9-posicion-promedio-simple": {
+      "respaldo": "hipotesis",
+      "describe": "Promedia las posiciones iniciales sin ponderar sus masas; después suma el avance correcto."
+    },
+    "IC9-velocidad-promedio-simple": {
+      "respaldo": "hipotesis",
+      "describe": "Promedia las velocidades sin ponderar sus masas al calcular el avance del centro."
+    },
+    "IC9-velocidades-sin-signo": {
+      "respaldo": "hipotesis",
+      "describe": "Suma las rapideces como si ambos carritos avanzaran en el mismo sentido."
     }
   },
   "pares": [
@@ -2605,6 +2637,170 @@
             "texto": "5,8 m/s",
             "valor": 5.809,
             "error": "RZ-NMG-normal-igual-peso"
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-33",
+      "plantilla": "fis-impulso-choques",
+      "unidad": "fisica.impulso-y-choques",
+      "nombreUnidad": "Impulso, cantidad de movimiento y choques",
+      "mide": "Obtener fuerza neta media con velocidades de sentidos opuestos y unidades convertidas.",
+      "A": {
+        "enunciado": "Una pelota de ensayo de 375 g llega a una paleta por una guía horizontal a 8 m/s hacia la derecha y sale a 4 m/s hacia la izquierda. El contacto dura 30 ms. Con derecha positiva, ¿cuál es la componente horizontal de la fuerza neta media? Equivalencias: 1 kg = 1000 g; 1 s = 1000 ms. Fórmula: fuerza media = masa × (velocidad final − velocidad inicial) / duración.",
+        "datos": {
+          "masaG": 375,
+          "rapidezLlegada": 8,
+          "rapidezSalida": 4,
+          "duracionMs": 30
+        },
+        "opciones": [
+          {
+            "texto": "−100 N",
+            "valor": -100,
+            "error": "IC9-ignora-rebote"
+          },
+          {
+            "texto": "150 N",
+            "valor": 150,
+            "error": "IC9-resta-invertida"
+          },
+          {
+            "texto": "−150 N",
+            "valor": -150,
+            "correcta": true
+          },
+          {
+            "texto": "−4,5 N",
+            "valor": -4.5,
+            "error": "IC9-impulso-como-fuerza"
+          },
+          {
+            "texto": "−50 N",
+            "valor": -50,
+            "error": "IC9-omite-sentido-salida"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Una pelota de ensayo de 625 g llega a una paleta por una guía horizontal a 6 m/s hacia la derecha y sale a 2 m/s hacia la izquierda. El contacto dura 40 ms. Con derecha positiva, ¿cuál es la componente horizontal de la fuerza neta media? Equivalencias: 1 kg = 1000 g; 1 s = 1000 ms. Fórmula: fuerza media = masa × (velocidad final − velocidad inicial) / duración.",
+        "datos": {
+          "masaG": 625,
+          "rapidezLlegada": 6,
+          "rapidezSalida": 2,
+          "duracionMs": 40
+        },
+        "opciones": [
+          {
+            "texto": "125 N",
+            "valor": 125,
+            "error": "IC9-resta-invertida"
+          },
+          {
+            "texto": "−5 N",
+            "valor": -5,
+            "error": "IC9-impulso-como-fuerza"
+          },
+          {
+            "texto": "−62,5 N",
+            "valor": -62.5,
+            "error": "IC9-omite-sentido-salida"
+          },
+          {
+            "texto": "−93,75 N",
+            "valor": -93.75,
+            "error": "IC9-ignora-rebote"
+          },
+          {
+            "texto": "−125 N",
+            "valor": -125,
+            "correcta": true
+          }
+        ]
+      }
+    },
+    {
+      "par": "fis-34",
+      "plantilla": "fis-impulso-choques",
+      "unidad": "fisica.impulso-y-choques",
+      "nombreUnidad": "Impulso, cantidad de movimiento y choques",
+      "mide": "Ponderar las posiciones futuras por las masas y distinguir posición inicial y posterior del centro.",
+      "A": {
+        "enunciado": "Dos carritos avanzan por pistas paralelas con velocidades constantes. Usan un origen común y derecha positiva. Al iniciar el reloj, A tiene 1,5 kg, está en 1 m y avanza a 0,6 m/s a la derecha. B tiene 2,5 kg, está en 5 m y avanza a 0,2 m/s a la izquierda. ¿Dónde está su centro de masa después de 2 s? Fórmulas: posición final = posición inicial + velocidad × tiempo; centro de masa = suma(masa × posición final) / masa total.",
+        "datos": {
+          "mA": 1.5,
+          "mB": 2.5,
+          "xA": 1,
+          "xB": 5,
+          "rapidezA": 0.6,
+          "rapidezB": 0.2,
+          "t": 2
+        },
+        "opciones": [
+          {
+            "texto": "3,2 m",
+            "valor": 3.2,
+            "error": "IC9-posicion-promedio-simple"
+          },
+          {
+            "texto": "3,7 m",
+            "valor": 3.7,
+            "correcta": true
+          },
+          {
+            "texto": "4,2 m",
+            "valor": 4.2,
+            "error": "IC9-velocidades-sin-signo"
+          },
+          {
+            "texto": "3,5 m",
+            "valor": 3.5,
+            "error": "IC9-centro-sin-avance"
+          },
+          {
+            "texto": "3,9 m",
+            "valor": 3.9,
+            "error": "IC9-velocidad-promedio-simple"
+          }
+        ]
+      },
+      "B": {
+        "enunciado": "Dos carritos avanzan por pistas paralelas con velocidades constantes. Usan un origen común y derecha positiva. Al iniciar el reloj, A tiene 2,25 kg, está en 2 m y avanza a 0,8 m/s a la derecha. B tiene 3,75 kg, está en 6 m y avanza a 0,4 m/s a la izquierda. ¿Dónde está su centro de masa después de 3 s? Fórmulas: posición final = posición inicial + velocidad × tiempo; centro de masa = suma(masa × posición final) / masa total.",
+        "datos": {
+          "mA": 2.25,
+          "mB": 3.75,
+          "xA": 2,
+          "xB": 6,
+          "rapidezA": 0.8,
+          "rapidezB": 0.4,
+          "t": 3
+        },
+        "opciones": [
+          {
+            "texto": "4,65 m",
+            "valor": 4.65,
+            "correcta": true
+          },
+          {
+            "texto": "6,15 m",
+            "valor": 6.15,
+            "error": "IC9-velocidades-sin-signo"
+          },
+          {
+            "texto": "4,5 m",
+            "valor": 4.5,
+            "error": "IC9-centro-sin-avance"
+          },
+          {
+            "texto": "5,1 m",
+            "valor": 5.1,
+            "error": "IC9-velocidad-promedio-simple"
+          },
+          {
+            "texto": "4,15 m",
+            "valor": 4.15,
+            "error": "IC9-posicion-promedio-simple"
           }
         ]
       }
