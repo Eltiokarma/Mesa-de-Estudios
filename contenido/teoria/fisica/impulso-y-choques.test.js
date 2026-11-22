@@ -123,15 +123,51 @@ function sinTextoRoto(caso) {
     assert.doesNotMatch(plano(caso[k]), /NaN|undefined|\[object Object\]|Infinity/, 'Texto roto en ' + k);
   }
 }
+function evaluarNumeros(texto) {
+  const s = texto.replace(/\s/g, '').replace(/[·×]/g, '*').replace(/÷/g, '/');
+  const tokens = s.match(/\d+(?:\.\d+)?|[()+\-*/^|]/g) || [];
+  assert.equal(tokens.join(''), s, 'Notación numérica desconocida: ' + texto);
+  let i = 0;
+  function atom() {
+    const t = tokens[i++];
+    if (t === '(' || t === '|') {
+      const v = sum(), cierre = t === '(' ? ')' : '|';
+      assert.equal(tokens[i++], cierre, 'Agrupación sin cerrar: ' + texto);
+      return t === '|' ? Math.abs(v) : v;
+    }
+    assert.match(t || '', /^\d+(?:\.\d+)?$/, 'Falta un número: ' + texto);
+    return Number(t);
+  }
+  function potencia() { const a = atom(); if (tokens[i] !== '^') return a; i++; return a ** unario(); }
+  function unario() { if (tokens[i] === '+') { i++; return unario(); } if (tokens[i] === '-') { i++; return -unario(); } return potencia(); }
+  function producto() {
+    let a = unario();
+    while (tokens[i] === '*' || tokens[i] === '/') { const op = tokens[i++], b = unario(); a = op === '*' ? a * b : a / b; }
+    return a;
+  }
+  function sum() {
+    let a = producto();
+    while (tokens[i] === '+' || tokens[i] === '-') { const op = tokens[i++], b = producto(); a = op === '+' ? a + b : a - b; }
+    return a;
+  }
+  const valor = sum();
+  assert.equal(i, tokens.length, 'Quedan símbolos fuera de la cuenta: ' + texto);
+  assert.ok(Number.isFinite(valor), 'Cuenta no finita: ' + texto);
+  return valor;
+}
 function igualdadesNumericas(x) {
-  const t = plano(x).replace(/−/g, '-').replace(/,/g, '.');
-  // Sólo expresiones cerradas de números: no sustituye letras ni evalúa texto libre.
-  const re = /((?:\(?-?\d+(?:\.\d+)?\)?\s*[+\-·×*/÷]\s*)+\(?-?\d+(?:\.\d+)?\)?)\s*=\s*(-?\d+(?:\.\d+)?)/g;
-  for (const z of t.matchAll(re)) {
-    const izquierda = z[1].replace(/[·×]/g, '*').replace(/÷/g, '/');
-    assert.match(izquierda, /^[\d\s.+\-*/()]+$/);
-    const v = Function('return (' + izquierda + ')')();
-    cerca(v, Number(z[2]), 'Igualdad falsa ' + z[0]);
+  const t = plano(x).replace(/−/g, '-').replace(/(\d)[ \u00a0\u202f](?=\d{3}(?:\D|$))/g, '$1').replace(/,/g, '.').replace(/²/g, '^2').replace(/³/g, '^3');
+  // Recupera la expresión numérica ENTERA a ambos lados: conserva todos los
+  // paréntesis. Una letra o una unidad delimita el tramo; no se sustituye ninguna.
+  const aritmetico = ch => ch !== undefined && /[\d.\s()+\-·×*/÷^|]/.test(ch);
+  for (let k = 0; k < t.length; k++) if (t[k] === '=') {
+    let inicio = k, fin = k + 1;
+    while (inicio > 0 && aritmetico(t[inicio - 1])) inicio--;
+    while (fin < t.length && aritmetico(t[fin])) fin++;
+    const izquierda = t.slice(inicio, k).trim().replace(/^\.\s+/, '');
+    const derecha = t.slice(k + 1, fin).trim().replace(/\.$/, '');
+    if (!/\d/.test(izquierda) || !/\d/.test(derecha)) continue;
+    cerca(evaluarNumeros(izquierda), evaluarNumeros(derecha), 'Igualdad falsa ' + izquierda + ' = ' + derecha);
   }
 }
 
@@ -161,11 +197,13 @@ test('cantidad de movimiento: quince ejemplos, niveles y respuestas por oráculo
 
 test('cantidad de movimiento: 400 semillas, respuestas y cada distractor recalculados aparte', () => {
   const vistos = { resuelve: new Set(), ahoraTu: new Set() };
+  const firma = c => JSON.stringify(['tipo', 'm', 'vx', 'g', 'kmh', 'px', 'mc', 'ml', 'ma', 'va', 'mb', 'salidaKmh'].map(k => [k, c[k]]));
+  const ejemplos = new Set(idea.ejemplos.map(e => firma(e.verificacion)));
   for (let semilla = 0; semilla < 400; semilla++) {
     for (const momento of ['resuelve', 'ahoraTu']) {
       const c = idea[momento].generar(semilla), datos = c.verificacion;
       assert.ok(datos && datos.tipo, momento + ': faltan entradas del caso');
-      vistos[momento].add(JSON.stringify(datos));
+      vistos[momento].add(firma(datos));
       sinTextoRoto(c);
       assert.ok(Array.isArray(c.datos) && c.datos.length);
       igualdadesNumericas(c.solucion);
@@ -175,6 +213,7 @@ test('cantidad de movimiento: 400 semillas, respuestas y cada distractor recalcu
         continue;
       }
       const esperadoBien = esperado(datos).valor, opciones = c.opciones;
+      assert.ok(!ejemplos.has(firma(datos)), 'Ahora tú repite un ejemplo');
       assert.ok(opciones.length >= 3);
       const ns = opciones.map(o => numeroRespuesta(o.texto));
       assert.equal(new Set(ns).size, ns.length, 'Alternativas numéricas repetidas');
@@ -232,3 +271,4 @@ test('cantidad de movimiento: la predicción distingue módulo y sentido', () =>
   assert.equal(calculado, -6);
   assert.equal(Math.abs(calculado), n(mult(2, 3)));
 });
+
