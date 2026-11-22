@@ -4,17 +4,17 @@ Actualizado: 22 de noviembre de 2026, fecha de referencia de Perú.
 
 Alcance: 32 unidades. Se termina y revisa una unidad antes de comenzar la siguiente. Cada documento terminado se publica directamente en el repositorio junto con este estado.
 
-**Completas: 10 de 32. Pendientes: 22.**
+**Completas: 11 de 32. Pendientes: 21.**
 
 La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
 
 | Etapa | Completas | Pendientes |
 |---|---|---|
 | 17 | 8 | 0 |
-| 18 | 2 | 6 |
+| 18 | 3 | 5 |
 | 19 | 0 | 8 |
 | 20 | 0 | 8 |
-| Total | 10 | 22 |
+| Total | 11 | 21 |
 
 ## Unidades y orden de continuación
 
@@ -30,8 +30,8 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | 8 | 17 | Trigonometría | Transformaciones y series trigonométricas | trigonometria.transformaciones-trigonometricas.md | COMPLETA |
 | 9 | 18 | Álgebra | Números reales e intervalos | algebra.numeros-reales.md | COMPLETA |
 | 10 | 18 | Aritmética | Conjuntos | aritmetica.conjuntos.md | COMPLETA |
-| 11 | 18 | Física | Inducción electromagnética | fisica.induccion-electromagnetica.md | PENDIENTE · Siguiente |
-| 12 | 18 | Geometría | Prisma y pirámide | geometria.prisma-y-piramide.md | PENDIENTE |
+| 11 | 18 | Física | Inducción electromagnética | fisica.induccion-electromagnetica.md | COMPLETA |
+| 12 | 18 | Geometría | Prisma y pirámide | geometria.prisma-y-piramide.md | PENDIENTE · Siguiente |
 | 13 | 18 | Química | Química orgánica: hidrocarburos | quimica.hidrocarburos.md | PENDIENTE |
 | 14 | 18 | Razonamiento matemático | Trazos de figuras y perímetros | razonamiento-matematico.trazos-y-perimetros.md | PENDIENTE |
 | 15 | 18 | Razonamiento verbal | Texto y contexto | razonamiento-verbal.texto-y-contexto.md | PENDIENTE |
@@ -67,9 +67,10 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | trigonometria.transformaciones-trigonometricas.md | 59946 bytes | 9284 | 6 |
 | algebra.numeros-reales.md | 55638 bytes | 9067 | 5 |
 | aritmetica.conjuntos.md | 59930 bytes | 9527 | 6 |
+| fisica.induccion-electromagnetica.md | 59990 bytes | 9225 | 6 |
 
 Se revisan diez secciones, entre tres y seis ideas, cuatro opciones por predicción, correspondencia de distractores y errores, vocabulario, fuentes y continuidad conceptual. La frecuencia de examen se declara desconocida cuando la muestra no la permite.
 
 ## Continuación
 
-La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `fisica.induccion-electromagnetica.md`.
+La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `geometria.prisma-y-piramide.md`.
