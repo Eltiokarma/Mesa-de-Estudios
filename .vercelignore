@@ -9,3 +9,5 @@
 /*.png
 /plantillas/**/*.py
 /servidor
+# Banco Cuzcano (108 MB, regla 5): la app todavía no lo lee. Quitar esta línea cuando exista la vista del banco.
+/contenido/ejercicios/cuzcano

@@ -9,10 +9,29 @@ Aquí se define cómo entra al repo cada ejercicio que manda Gerson (de academia
 
 ## Dónde viven los 7000
 
-**Los ejercicios de academia no se versionan** (regla 5): sus enunciados y números no pueden entrar al repo. Van a `fuentes/ejercicios/<lote>/`, que hay que agregar a `.gitignore` antes de recibir la tanda. Al repo solo llegan:
-- los conteos (tablas de `--contar`);
-- los tipos de `tipos.json`, con nombres nuestros;
-- los ejercicios oficiales y los propios, en `contenido/ejercicios/<lote>/`.
+**Todo lo ajeno entra al repo con su cita** (regla 5, decisión de Gerson del 13 nov 2026). En `contenido/ejercicios/<lote>/` viven:
+- los ejercicios de libros de preparación (`origen.tipo: "libro"`), con `origen.cita` y la ficha de procedencia en `banco`;
+- los oficiales (`"oficial"`), con universidad, periodo y `cita`;
+- los propios (`"propio"`).
+
+Solo se queda fuera, en `fuentes/ejercicios/<lote>/` (no se versiona), lo que llega sin una fuente que se pueda citar (`origen.tipo: "academia"`). Tampoco se versionan los escaneos ni los PDF.
+
+### El banco Cuzcano (`contenido/ejercicios/cuzcano/`)
+
+Lo trae `herramientas/importar-cuzcano.js` desde el traspaso de D: (`fuentes/ocr-local/cuzcano/traspaso-claude/`), un tema a la vez:
+
+```sh
+node herramientas/importar-cuzcano.js --tema algebra.polinomios-y-grados [--limite 5] [--seco]
+node herramientas/validar-ejercicios.js --validar contenido/ejercicios/cuzcano
+```
+
+- Un archivo por tema: `cuzcano/<curso>/<tema>.jsonl`, un ejercicio por línea, ordenado por `id`.
+- El `id` sale del `uid` de la ficha (`cz-<libro>-<tipo>-<número>`), así que repetir la importación reemplaza la línea y no duplica. `banco.uid` guarda el `uid` tal cual.
+- `banco.ficha` es la ficha original completa (pasos, condiciones, verificación, campos de piloto). Nada se pierde al importar.
+- `banco.revisar_antes_de_integrar` y `banco.requiere_aclaracion` vienen del manifiesto. Lo que se decida al revisarla va en `banco.revision`, que la importación respeta.
+- Los SVG propios de las fichas se copian a `cuzcano/figuras/<id>.svg`.
+- El tema del banco se lleva a una unidad del catálogo con `contenido/ejercicios/cuzcano/temas.json`. Si el tema no está ahí, el ejercicio entra sin `unidad`.
+- **Subtemas unificados (13 nov 2026).** Las etiquetas de subtema del banco venían sin normalizar (3 357 distintas, 1 642 fichas sin ninguna). `contenido/ejercicios/cuzcano/subtemas.json` las reduce a un vocabulario corto por tema (1 004 subtemas en los 123 temas) y dice a qué unidad del catálogo va cada uno. En cada ficha, `banco.subtema` es el nombre unificado y `banco.subtema_fuente` guarda la etiqueta tal como vino. La `unidad` de la ficha es la de su subtema, aunque sea de otro curso (decisión de Gerson, 13 nov 2026: `curso` es el del libro y `unidad`, donde se estudia; un libro de razonamiento matemático trae probabilidades, que viven en aritmética); si el subtema no trae unidad, la principal del tema (`temas.json`). El validador ya no exige que sean del mismo curso. Encima de eso, `revision-unidades.json` trae la unidad revisada ficha por ficha y manda sobre la del subtema: son las 894 fichas que antes quedaban sin unidad, revisadas por un modelo leyendo enunciado y solución (815 correctas, 32 cambiadas y 47 dudosas con la alternativa del modelo). Cada una lleva `banco.revision_unidad` con quién la revisó (`por: modelo`), el veredicto y el estado (`revisada-por-modelo` o `por-revisar`). Cuando una persona la revise, el estado pasa a `revisada`. Una ficha puede servir además en otras unidades: `unidades_tambien` (en el subtema, campo `tambien`). Por ahora solo edades y móviles (100 fichas de razonamiento matemático), que también van a aritmética · razonamiento numérico (decisión de Gerson, 13 nov 2026). Lo aplica `node herramientas/unificar-subtemas.js` (repetirlo no cambia nada) y la importación lo hace sola. Una etiqueta nueva que no esté en el vocabulario se deja como vino y el comando la lista.
 
 ## Un archivo, uno o muchos ejercicios
 
@@ -28,8 +47,10 @@ El validador lee, recursivamente, cualquier carpeta:
 | --- | --- | --- |
 | `id` | crudo | Estable: no se cambia ni se reutiliza. `<lote>-<número>`: `of-unmsm-2025-I-0012`, `ac-vectores-0347`, `pr-…` |
 | `estado` | crudo | `crudo` → `clasificado` → `mapeado` → `verificado` → `publicado` |
-| `origen` | crudo | `{ tipo: "oficial", universidad, periodo }` (con `area`, `numero` y `fecha` si se saben), `{ tipo: "academia", fuente }` (referencia interna, nunca se muestra) o `{ tipo: "propio" }` |
+| `origen` | crudo | `{ tipo: "oficial", universidad, periodo, cita }` (con `area`, `numero` y `fecha` si se saben), `{ tipo: "libro", fuente, libro, autor, editorial, problema, pagina, cita }` (con `universidad` y `periodo` si el libro dice de qué examen salió), `{ tipo: "propio" }` o `{ tipo: "academia", fuente }` (sin cita posible: no se versiona) |
+| `banco` | crudo, solo `libro` | Procedencia en el banco de origen: `uid`, `tema`, `subtema`, `titulo`, `estado_ficha`, `revisar_antes_de_integrar`, `requiere_aclaracion`, `ficha_ruta`, `figura`, `revision` y la `ficha` original completa |
 | `enunciado`, `pregunta` | crudo | Texto con marcadores `{clave}` que apuntan a `datos`, o lista de segmentos como en los generadores (`"texto"` o `{ v, t }`) |
+| `expresion` | crudo, si la fuente la separa | `{ latex, texto }`: la expresión que el enunciado nombra sin escribir («el siguiente polinomio»). Se muestra bajo el enunciado |
 | `datos` | crudo, si se puede | `{ clave: { valor, unidad, texto, color, nombre } }`. Son los datos con color (regla 4): no cuentan para el presupuesto |
 | `respuesta` | crudo, si la fuente la trae | `{ valor, unidad }` y, si se manipula, `tipo`, `control` y `tolerancia` (contrato, sección 4) |
 | `clave_fuente`, `alternativas_fuente` | crudo | La letra y las alternativas tal como vienen. Solo sirven para clasificar y verificar |
@@ -46,10 +67,10 @@ El validador lee, recursivamente, cualquier carpeta:
 3. **mapeado.** Su tipo, o su propio `mapeo`, dice cómo llega a la app:
    - `generador`: ya existe en `plantillas/<id>/`, con el `subtipo` de su `_datos.tipo`;
    - `pieza`: hay pieza del kit, pero falta el generador;
-   - `instancia`: un ejercicio fijo, con su escena y sus pasos escritos aquí. Solo para oficiales o propios;
+   - `instancia`: un ejercicio fijo, con su escena y sus pasos escritos aquí. Para oficiales, de libro (citados) o propios;
    - `nuevo`: no hay nada. Es **huérfano**, como el tipo sin mapeo.
 4. **verificado.** `respuesta.valor` recalculado por código (`verificacion.coincide: true`). Si es instancia fija, trae `escena`, `pasos` y `alternativas`, y cumple el presupuesto de texto.
-5. **publicado.** Está en la app. **Un ejercicio de academia nunca llega aquí**: su tipo se publica a través de un generador con números nuestros.
+5. **publicado.** Está en la app. Si es oficial o de libro, se muestra con su `origen.cita`. Uno de academia sin cita nunca llega aquí: su tipo se publica a través de un generador con números nuestros.
 
 ## Relación con el formato vivo (`docs/escena-viva.md`, sección 4)
 
@@ -64,11 +85,11 @@ El validador lee, recursivamente, cualquier carpeta:
 ## Presupuesto de texto (contrato, regla 3.1)
 
 Una palabra es un trozo separado por espacios que tiene al menos una letra. Los números, los signos y los datos con color (`{clave}` o `{ v, t }`) no cuentan. Los límites:
-- enunciado y pregunta juntos, 40 palabras como máximo, salvo las preguntas oficiales, que van tal cual;
+- enunciado y pregunta juntos, 40 palabras como máximo, salvo las preguntas oficiales y las de libro, que van tal cual, con su cita;
 - cada paso, 14;
 - cada explicación de error, 20.
 
-El presupuesto no se aplica a los de academia, que no se publican. Antes de `verificado` es un aviso; desde `verificado`, un error.
+El presupuesto no se aplica a los de academia, que no se publican. Los pasos y las explicaciones de error sí lo pagan siempre, aunque el ejercicio sea de libro, porque los escribimos nosotros. Antes de `verificado` es un aviso; desde `verificado`, un error.
 
 ## Comandos
 
