@@ -2,7 +2,7 @@
 
 Actualizado: 22 de noviembre de 2026, hora de referencia de Perú.
 
-**Unidades completas: 6 de 8. Pendientes: 2.**
+**Unidades completas: 7 de 8. Pendientes: 1.**
 
 | Orden | Curso | Unidad | Archivo | Estado |
 |---|---|---|---|---|
@@ -12,8 +12,8 @@ Actualizado: 22 de noviembre de 2026, hora de referencia de Perú.
 | 4 | Geometría | Geometría analítica | geometria.geometria-analitica.md | Completa y revisada |
 | 5 | Química | Biomoléculas y productos naturales | quimica.biomoleculas-y-productos-naturales.md | Completa y revisada |
 | 6 | Razonamiento matemático | Traslados y puntos cardinales | razonamiento-matematico.traslados-y-puntos-cardinales.md | Completa y revisada |
-| 7 | Razonamiento verbal | Textos filosóficos y científicos | razonamiento-verbal.textos-filosoficos-y-cientificos.md | Pendiente; siguiente unidad |
-| 8 | Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | Pendiente |
+| 7 | Razonamiento verbal | Textos filosóficos y científicos | razonamiento-verbal.textos-filosoficos-y-cientificos.md | Completa y revisada |
+| 8 | Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | Pendiente; siguiente unidad |
 
 ## Alcance y revisión
 
