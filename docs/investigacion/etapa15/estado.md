@@ -3,7 +3,7 @@
 Actualizado: 22 de noviembre de 2026 (Perú).
 Destino: docs/investigacion/etapa15/ en la rama main de Eltiokarma/Mesa-de-Estudios.
 
-**Completadas: 5 de 8. Pendientes: 3.**
+**Completadas: 6 de 8. Pendientes: 2.**
 
 | Orden | Curso | Unidad | Archivo | Estado |
 |---|---|---|---|---|
@@ -12,18 +12,18 @@ Destino: docs/investigacion/etapa15/ en la rama main de Eltiokarma/Mesa-de-Estud
 | 3 | Física | Electrostática | [fisica.electrostatica.md](fisica.electrostatica.md) | COMPLETA |
 | 4 | Geometría | Simetría en el plano y en el espacio | [geometria.simetria.md](geometria.simetria.md) | COMPLETA |
 | 5 | Química | Equilibrio químico | [quimica.equilibrio-quimico.md](quimica.equilibrio-quimico.md) | COMPLETA |
-| 6 | Razonamiento matemático | Frecuencia de sucesos | razonamiento-matematico.frecuencia-de-sucesos.md | PENDIENTE |
+| 6 | Razonamiento matemático | Frecuencia de sucesos | [razonamiento-matematico.frecuencia-de-sucesos.md](razonamiento-matematico.frecuencia-de-sucesos.md) | COMPLETA |
 | 7 | Razonamiento verbal | Compatibilidad e incompatibilidad | razonamiento-verbal.compatibilidad.md | PENDIENTE |
 | 8 | Trigonometría | Suma y diferencia de ángulos | trigonometria.arcos-compuestos.md | PENDIENTE |
 
 ## Entrega y revisión
 
-Álgebra, Aritmética, Física, Geometría y Química: cada unidad tiene seis ideas, diez secciones, fuentes consultadas en la web, 3 tarjetas de Lee por idea y 6 predicciones con 18 distractores codificados. Extensión dentro de 30–60 KB en UTF-8. Revisión de orden conceptual, notación, condiciones de las reglas y separación entre observación documental e hipótesis.
+Álgebra, Aritmética, Física, Geometría, Química y Razonamiento matemático: cada unidad tiene seis ideas, diez secciones, fuentes consultadas en la web, 3 tarjetas de Lee por idea y 6 predicciones con 18 distractores codificados. Extensión dentro de 30–60 KB en UTF-8. Revisión de orden conceptual, notación, condiciones de las reglas y separación entre observación documental e hipótesis.
 
 Los tipos de examen se presentan con su grado de verificación. No se inventan frecuencias ni se atribuyen al Perú prevalencias de estudios extranjeros. Las escenas y consignas son originales. Los guiones de resolución describen métodos; la implementación deberá recalcular datos y validar los ejercicios finales.
 
 ## Continuación
 
-Siguiente pendiente: **razonamiento-matematico.frecuencia-de-sucesos**. Continuar de forma ininterrumpida: terminar y subir una unidad antes de comenzar la siguiente. Conservar 30–60 KB por archivo. Publicar únicamente dentro de esta carpeta. No modificar otras etapas ni documentos compartidos.
+Siguiente pendiente: **razonamiento-verbal.compatibilidad**. Continuar de forma ininterrumpida: terminar y subir una unidad antes de comenzar la siguiente. Conservar 30–60 KB por archivo. Publicar únicamente dentro de esta carpeta. No modificar otras etapas ni documentos compartidos.
 
 Esta etapa solo se considerará cerrada cuando las ocho unidades estén completas y este archivo indique **0 pendientes**.
