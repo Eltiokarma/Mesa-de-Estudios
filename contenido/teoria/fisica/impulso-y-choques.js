@@ -48,7 +48,293 @@
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
   const PZ = id => Kit.piezas[id];
 
-  // ---------- Idea 1: el área de F–t es el impulso ----------
+
+  // Etapa 9, entrega parcial: cantidad de movimiento antes de estudiar su cambio.
+  // Colores fijos de esta idea: masa f, velocidad o, cantidad de movimiento i.
+  // Las otras cinco ideas conservan su versión anterior hasta la revisión de Gerson.
+  const cmFmt = n => Kit.formatear(n, 3);
+  const cmN = n => n < 0 ? `(${cmFmt(n)})` : cmFmt(n);
+  const cmQ = (color, texto) => ({ v: `c-${color}`, t: String(texto) });
+  const cmM = cmQ('f', 'm'), cmV = cmQ('o', 'v'), cmP = cmQ('i', 'p');
+  const cmSub = (a, b) => ({ sub: [a, b] });
+  const cmVX = cmSub(cmV, 'x'), cmPX = cmSub(cmP, 'x');
+  const cmVec = a => ({ vec: [a] });
+  const cmDatos = [
+    [cmVec(cmP), ' = ', cmM, ' · ', cmVec(cmV)],
+    [cmPX, ' = ', cmM, ' · ', cmVX],
+    [cmP, ' = |', cmPX, '|; el módulo no lleva signo.'],
+    'El eje x es horizontal; la derecha es positiva. La masa incluye el carrito y su carga.',
+  ];
+  const cmMS = 'm/s', cmPS = 'kg·m/s';
+  const cmExacto = x => Number.isFinite(x) && Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-7;
+  const cmRed = x => Math.round(x * 1e9) / 1e9;
+  const cmPar = (m, vx) => ({ m, vx, px: cmRed(m * vx) });
+  function cmFigura(filas, revelar = false, reloj = 0) {
+    const objetos = [], flechas = [], textos = [], lineas = [];
+    const maxV = Math.max(4, ...filas.map(a => Math.abs(a.vx || 0)));
+    const maxP = Math.max(16, ...filas.map(a => Math.abs(a.px || 0)));
+    filas.forEach((a, k) => {
+      const y = k * 160, x = 210 + (a.animar ? 6 * a.vx * reloj : 0);
+      objetos.push({ tipo: 'carrito', x, y: y + 140, w: 70, h: 24, texto: a.nombre || 'Carrito', mango: 0 });
+      textos.push({ x: 12, y: y + 18, texto: a.m == null ? 'm = ?' : `m = ${cmFmt(a.m)} kg`, color: a.m == null ? 'tinta' : 'f' });
+      textos.push({ x: 308, y: y + 18, texto: a.nombre || 'Carrito', ancla: 'end' });
+      textos.push({ x: 12, y: y + 42, texto: a.vx == null ? 'v_x = ?' : `v_x = ${cmFmt(a.vx)} m/s`, color: a.vx == null ? 'tinta' : 'o' });
+      if (a.vx) flechas.push({ de: [x, y + 60], ang: a.vx > 0 ? 0 : 180, largo: 80 * Math.abs(a.vx) / maxV, color: 'o' });
+      const verP = (revelar || a.dadoP) && a.px != null;
+      textos.push({ x: 12, y: y + 86, texto: verP ? `p_x = ${cmFmt(a.px)} kg·m/s` : 'p⃗ = ?', color: verP ? 'i' : 'tinta' });
+      if (verP && a.px) flechas.push({ de: [x, y + 103], ang: a.px > 0 ? 0 : 180, largo: 80 * Math.abs(a.px) / maxP, color: 'i', discontinua: true });
+      lineas.push({ de: [160, y + 145], a: [308, y + 145] });
+      textos.push({ x: 12, y: y + 151, texto: 'Derecha: +', tam: 11 });
+    });
+    return { pieza: 'fis-estatica', datos: { alto: Math.max(180, filas.length * 160), objetos, flechas, textos, lineas,
+      alt: filas.map(a => `${a.nombre || 'Carrito de laboratorio'}; ${a.m == null ? 'masa por hallar' : `masa ${cmFmt(a.m)} kg`}; ${a.vx == null ? 'velocidad por hallar' : `velocidad ${cmFmt(a.vx)} m/s`}; ${(revelar || a.dadoP) && a.px != null ? `componente de cantidad de movimiento ${cmFmt(a.px)} kg·m/s` : 'cantidad de movimiento por hallar'}.`).join(' ') }, estado: {} };
+  }
+  // Cada error registra la operación errónea; no se inventa una opción por proximidad.
+  function cantidadCaso(c) {
+    let m = c.m, vx = c.vx, px = c.px, resultado, unidad = cmPS, color = 'i', simbolo = cmPX;
+    let enunciado, solucion = [], errores = [], filas;
+    const datos = cmDatos.slice();
+    const add = (id, valor, frase) => errores.push({ id, valor: cmRed(valor), error: `CM-${id.toUpperCase()}`, siFuera: `${frase} Así sale ${cmFmt(valor)} ${unidad}.` });
+    const tipo = c.tipo;
+    if (['gramos', 'modulo'].includes(tipo)) { m = c.g / 1000; datos.push('1 kg = 1000 g.'); }
+    if (['kmh', 'carga', 'modulo'].includes(tipo)) { vx = cmRed(c.kmh / 3.6); datos.push('1 km = 1000 m; 1 h = 3600 s.'); }
+    if (tipo === 'carga') { m = c.mc + c.ml; datos.push([cmM, ' = ', cmSub(cmM, 'c'), ' + ', cmSub(cmM, 'L'), ' (carrito más carga).']); }
+    if (['velocidad', 'velocidad-kmh'].includes(tipo)) {
+      vx = px / m;
+      const factor = tipo === 'velocidad-kmh' ? 3.6 : 1;
+      resultado = cmRed(vx * factor); unidad = factor === 1 ? cmMS : 'km/h'; color = 'o'; simbolo = cmVX;
+      if (factor !== 1) datos.push('1 km = 1000 m; 1 h = 3600 s.');
+      enunciado = ['Un carrito de laboratorio de ', cmQ('f', `${cmFmt(m)} kg`), ' tiene ', cmPX, ' = ', cmQ('i', `${cmFmt(px)} kg·m/s`), '. ¿Cuál es su componente de velocidad ', cmVX, ` en ${unidad}?`];
+      solucion.push({ texto: 'Despejamos la velocidad: la cantidad de movimiento se divide entre la masa.', ecuacion: [cmVX, ` = ${cmN(px)} ÷ ${cmFmt(m)} = `, cmQ('o', `${cmFmt(vx)} m/s`)] });
+      if (factor !== 1) solucion.push({ texto: 'Convertimos metros por segundo a kilómetros por hora.', ecuacion: [cmVX, ` = ${cmN(vx)} · 3600 ÷ 1000 = `, cmQ('o', `${cmFmt(resultado)} km/h`)] });
+      filas = [{ nombre: 'Carrito', m, vx: null, px, dadoP: true }];
+      add('producto', px * m * factor, 'Bien usar la masa; multiplicaste en vez de dividir.');
+      add('signo', -resultado, 'Bien el módulo; invertiste el sentido.');
+      add('masa-doble', px / (2 * m) * factor, 'Bien dividir; contaste dos veces la masa.');
+      add('sin-dividir', px * factor, 'Bien convertir; falta dividir entre la masa.');
+    } else if (tipo === 'masa') {
+      m = px / vx; resultado = cmRed(m); unidad = 'kg'; color = 'f'; simbolo = cmM;
+      enunciado = ['Un carrito tiene ', cmPX, ' = ', cmQ('i', `${cmFmt(px)} kg·m/s`), ' y ', cmVX, ' = ', cmQ('o', `${cmFmt(vx)} m/s`), '. ¿Cuál es su masa total?'];
+      solucion.push({ texto: 'La masa se obtiene dividiendo la componente de cantidad de movimiento entre la componente de velocidad.', ecuacion: [cmM, ` = ${cmN(px)} ÷ ${cmN(vx)} = `, cmQ('f', `${cmFmt(m)} kg`)] });
+      filas = [{ nombre: 'Carrito', m: null, vx, px, dadoP: true }];
+      add('producto', px * vx, 'Bien usar la velocidad; multiplicaste en vez de dividir.');
+      add('signo', -m, 'Bien el cociente; añadiste un signo negativo a la masa.');
+      add('cuadrado', px / (vx * vx), 'Bien dividir; elevaste la velocidad al cuadrado.');
+      add('sin-velocidad', Math.abs(px), 'Bien tomar el módulo; falta dividir entre la rapidez.');
+    } else if (tipo === 'igualar') {
+      const pa = cmRed(c.ma * c.va), vb = pa / c.mb, factor = c.salidaKmh ? 3.6 : 1;
+      resultado = cmRed(vb * factor); unidad = factor === 1 ? cmMS : 'km/h'; color = 'o'; simbolo = cmSub(cmV, 'B,x');
+      datos.push('A y B nombran los carritos; sus masas totales son m_A y m_B.');
+      if (factor !== 1) datos.push('1 km = 1000 m; 1 h = 3600 s.');
+      enunciado = ['El carrito A tiene ', cmQ('f', `${cmFmt(c.ma)} kg`), ' y ', cmVX, ' = ', cmQ('o', `${cmFmt(c.va)} m/s`), '. B tiene ', cmQ('f', `${cmFmt(c.mb)} kg`), '. ¿Qué componente de velocidad necesita B, ', `en ${unidad}, para tener igual cantidad de movimiento vectorial?`];
+      solucion.push({ texto: 'Primero calculamos la componente de cantidad de movimiento de A.', ecuacion: [cmSub(cmP, 'A,x'), ` = ${cmFmt(c.ma)} · ${cmN(c.va)} = `, cmQ('i', `${cmFmt(pa)} kg·m/s`)] });
+      solucion.push({ texto: 'B debe tener esa misma componente; dividimos entre su masa.', ecuacion: [cmSub(cmV, 'B,x'), ` = ${cmN(pa)} ÷ ${cmFmt(c.mb)} = `, cmQ('o', `${cmFmt(vb)} m/s`)] });
+      if (factor !== 1) solucion.push({ texto: 'Expresamos el resultado en la unidad pedida.', ecuacion: [cmSub(cmV, 'B,x'), ` = ${cmN(vb)} · 3600 ÷ 1000 = `, cmQ('o', `${cmFmt(resultado)} km/h`)] });
+      filas = [{ nombre: 'A', ...cmPar(c.ma, c.va) }, { nombre: 'B', m: c.mb, vx: null }];
+      add('misma', c.va * factor, 'Bien conservar el sentido; copiaste la velocidad con masas distintas.');
+      add('inversa', c.va * c.mb / c.ma * factor, 'Bien comparar masas; invertiste su razón.');
+      add('signo', -resultado, 'Bien el módulo; el vector necesita también el mismo sentido.');
+      add('sin-dividir', c.ma * c.va * factor, 'Bien hallar la cantidad de movimiento; falta dividir entre la masa de B.');
+      if (factor !== 1) add('sin-convertir', vb, 'Bien la velocidad en m/s; falta convertir a km/h.');
+    } else {
+      px = cmRed(m * vx); resultado = tipo === 'modulo' ? Math.abs(px) : px;
+      if (tipo === 'modulo') simbolo = cmP;
+      if (tipo === 'carga') enunciado = ['Un carrito vacío de ', cmQ('f', `${cmFmt(c.mc)} kg`), ' transporta ', cmQ('f', `${cmFmt(c.ml)} kg`), ' de carga con ', cmVX, ' = ', cmQ('o', `${cmFmt(c.kmh)} km/h`), '. ¿Cuál es ', cmPX, ' del conjunto?'];
+      else enunciado = ['Un carrito de laboratorio tiene una masa total de ', cmQ('f', `${cmFmt(c.g == null ? m : c.g)} ${c.g == null ? 'kg' : 'g'}`), ' y ', cmVX, ' = ', cmQ('o', `${cmFmt(c.kmh == null ? vx : c.kmh)} ${c.kmh == null ? 'm/s' : 'km/h'}`), '. ¿Cuál es ', tipo === 'modulo' ? ['el módulo ', cmP] : ['su componente ', cmPX], '?'];
+      if (tipo === 'carga') solucion.push({ texto: 'La masa total incluye el carrito y la carga.', ecuacion: [cmM, ` = ${cmFmt(c.mc)} + ${cmFmt(c.ml)} = `, cmQ('f', `${cmFmt(m)} kg`)] });
+      if (c.g != null) solucion.push({ texto: 'Expresamos la masa en kilogramos.', ecuacion: [cmM, ` = ${cmFmt(c.g)} ÷ 1000 = `, cmQ('f', `${cmFmt(m)} kg`)] });
+      if (c.kmh != null) solucion.push({ texto: 'Convertimos kilómetros por hora a metros por segundo, manteniendo el signo.', ecuacion: [cmVX, ` = ${cmN(c.kmh)} · 1000 ÷ 3600 = `, cmQ('o', `${cmFmt(vx)} m/s`)] });
+      solucion.push({ texto: tipo === 'modulo' ? 'El módulo usa la rapidez, sin signo: no cambia por ir hacia la izquierda.' : 'Multiplicamos la masa por la componente de velocidad. El signo indica el sentido.',
+        ecuacion: [simbolo, ` = ${cmFmt(m)} · ${cmN(tipo === 'modulo' ? Math.abs(vx) : vx)} = `, cmQ('i', `${cmFmt(resultado)} kg·m/s`)] });
+      filas = [{ nombre: 'Carrito', m: c.g == null && tipo !== 'carga' ? m : null, vx: c.kmh == null ? vx : null }];
+      // En ejemplos con conversiones, la figura no adelanta sus resultados: rótulos originales se agregan abajo.
+      if (tipo === 'carga') {
+        add('sin-carga', c.mc * vx, 'Bien la velocidad; dejaste fuera la carga.');
+        add('sin-carro', c.ml * vx, 'Bien la carga; falta la masa del carrito.');
+      }
+      if (tipo === 'gramos') add('sin-convertir', c.g * vx, 'Bien multiplicar; usaste gramos como si fueran kilogramos.');
+      if (['kmh', 'carga', 'modulo'].includes(tipo)) add('sin-convertir', m * (tipo === 'modulo' ? Math.abs(c.kmh) : c.kmh), 'Bien la masa; falta convertir km/h a m/s.');
+      if (tipo === 'modulo') add('sin-gramos', c.g * Math.abs(vx), 'Bien convertir la velocidad; falta convertir gramos a kilogramos.');
+      add('signo', tipo === 'modulo' ? px : -px, tipo === 'modulo' ? 'Bien la componente; el módulo no lleva signo.' : 'Bien el módulo; invertiste el sentido.');
+      add('sin-masa', tipo === 'modulo' ? Math.abs(vx) : vx, 'Bien leer la velocidad; falta multiplicar por la masa.');
+      add('suma', m + (tipo === 'modulo' ? Math.abs(vx) : vx), 'Bien elegir los datos; sumaste sus números en vez de multiplicarlos.');
+      add('cuadrado', m * vx * vx, 'Bien usar masa y velocidad; elevaste la velocidad al cuadrado.');
+      add('doble', 2 * px, 'Bien multiplicar; contaste dos veces la masa.');
+    }
+    const dibujo = cmFigura(filas);
+    if (c.g != null || c.kmh != null || tipo === 'carga') {
+      const tx = dibujo.datos.textos;
+      if (c.g != null) { tx[0].texto = `m = ${cmFmt(c.g)} g`; tx[0].color = 'f'; }
+      if (tipo === 'carga') { tx[0].texto = `m_c = ${cmFmt(c.mc)} kg`; tx[0].color = 'f'; tx.push({ x: 12, y: 178, texto: `m_L = ${cmFmt(c.ml)} kg`, color: 'f' }); dibujo.datos.alto = 200; }
+      if (c.kmh != null) { tx[2].texto = `v_x = ${cmFmt(c.kmh)} km/h`; tx[2].color = 'o'; }
+      dibujo.datos.alt = 'Carrito de laboratorio con los datos originales de masa y velocidad indicados en el enunciado; la cantidad de movimiento está por hallar.';
+    }
+    const vistos = new Set([cmFmt(resultado)]);
+    errores = errores.filter(e => {
+      if (!cmExacto(e.valor) || vistos.has(cmFmt(e.valor))) return false;
+      vistos.add(cmFmt(e.valor)); return true;
+    });
+    return { enunciado, datos, dibujo, solucion, resultado, unidad, color, errores,
+      respuesta: [simbolo, ' = ', cmQ(color, `${cmFmt(resultado)} ${unidad}`)], verificacion: { ...c } };
+  }
+  const CASOS_EJEMPLOS_CANTIDAD = [
+    { nivel: 1, titulo: 'El carrito hacia la derecha', tipo: 'directo', m: 3, vx: 4 },
+    { nivel: 1, titulo: 'El carrito hacia la izquierda', tipo: 'directo', m: 5, vx: -2 },
+    { nivel: 1, titulo: 'El carrito detenido', tipo: 'directo', m: 4, vx: 0 },
+    { nivel: 1, titulo: 'La velocidad que falta', tipo: 'velocidad', m: 6, px: -24 },
+    { nivel: 1, titulo: 'La masa que falta', tipo: 'masa', px: 35, vx: 5 },
+    { nivel: 2, titulo: 'Masa medida en gramos', tipo: 'gramos', g: 2500, vx: 3 },
+    { nivel: 2, titulo: 'Gramos y movimiento hacia atrás', tipo: 'gramos', g: 3200, vx: -2.5 },
+    { nivel: 2, titulo: 'La rapidez del medidor', tipo: 'kmh', m: 3, kmh: 18 },
+    { nivel: 2, titulo: 'La conversión conserva el sentido', tipo: 'kmh', m: 2.5, kmh: -14.4 },
+    { nivel: 2, titulo: 'La velocidad en otra unidad', tipo: 'velocidad-kmh', m: 6, px: -15 },
+    { nivel: 3, titulo: 'El carrito lleva una carga', tipo: 'carga', mc: 3, ml: 5, kmh: 10.8, posicionCorrecta: 0 },
+    { nivel: 3, titulo: 'Igual cantidad, masas distintas', tipo: 'igualar', ma: 6, va: -3, mb: 4, posicionCorrecta: 1 },
+    { nivel: 3, titulo: 'El módulo con dos conversiones', tipo: 'modulo', g: 7500, kmh: -25.2, posicionCorrecta: 2 },
+    { nivel: 3, titulo: 'La carga viaja hacia atrás', tipo: 'carga', mc: 2.5, ml: 7.5, kmh: -21.6, posicionCorrecta: 3 },
+    { nivel: 3, titulo: 'Igualar y convertir la velocidad', tipo: 'igualar', ma: 8, va: 3.5, mb: 4, salidaKmh: true, posicionCorrecta: 4 },
+  ];
+  // Cuentas contrastadas por separado: conversión racional 5/18 y 18/5; ver prueba propia de la unidad.
+  function erroresExamenCantidad(c) {
+    if (c.tipo === 'carga') {
+      const m = c.mc + c.ml, u = c.kmh / 3.6;
+      return [{ valor: c.ml * u, causa: 'omite el carrito' }, { valor: c.mc * u, causa: 'omite la carga' }, { valor: m * c.kmh, causa: 'no convierte km/h' }, c.kmh < 0 ? { valor: Math.abs(m * u), causa: 'borra el signo' } : { valor: m, causa: 'omite la velocidad' }];
+    }
+    if (c.tipo === 'modulo') {
+      const m = c.g / 1000, u = c.kmh / 3.6;
+      return [{ valor: m * u, causa: 'confunde módulo y componente' }, { valor: m * Math.abs(c.kmh), causa: 'no convierte km/h' }, { valor: c.g * Math.abs(u), causa: 'no convierte gramos' }, { valor: Math.abs(u), causa: 'omite la masa' }];
+    }
+    const u = c.ma * c.va / c.mb;
+    if (c.salidaKmh) return [{ valor: u, causa: 'no convierte a km/h' }, { valor: c.va * 3.6, causa: 'copia la velocidad inicial' }, { valor: c.ma * c.va * 3.6, causa: 'omite dividir entre masa' }, { valor: c.va * c.mb / c.ma * 3.6, causa: 'invierte la razón' }];
+    return [{ valor: Math.abs(u), causa: 'borra el signo' }, { valor: c.va, causa: 'copia la velocidad inicial' }, { valor: c.va * c.mb / c.ma, causa: 'invierte la razón' }, { valor: c.ma * c.va, causa: 'omite dividir entre masa' }];
+  }
+  const EJEMPLOS_CANTIDAD = CASOS_EJEMPLOS_CANTIDAD.map(c => {
+    const b = cantidadCaso(c);
+    const e = { nivel: c.nivel, titulo: c.titulo, enunciado: b.enunciado, datos: b.datos, figura: b.dibujo, solucion: b.solucion.slice(), respuesta: b.respuesta, verificacion: c };
+    if (c.nivel === 3) {
+      const errores = erroresExamenCantidad(c), valores = errores.map(x => x.valor);
+      valores.splice(c.posicionCorrecta, 0, b.resultado);
+      e.alternativas = valores.map(x => `${cmFmt(x)} ${b.unidad}`);
+      if (new Set(e.alternativas).size !== 5) throw new Error(`Alternativas repetidas: ${c.titulo}`);
+      e.solucion.push({ texto: errores.map(x => `${cmFmt(x.valor)}: ${x.causa}.`).join(' ') });
+    }
+    return e;
+  });
+  // Familias separadas: resuelve usa masas 9/11/13, Ahora tú 2/4/6/8.
+  function cmGenerar(s, resuelto) {
+    const r = azar(s + (resuelto ? 1900 : 5100)), k = ((s % 6) + 6) % 6;
+    let c, b;
+    for (let intento = 0; intento < 100; intento++) {
+      const m = r.de(resuelto ? [9, 11, 13] : [2, 4, 6, 8]), u = r.de([-5, -4, -3, 2, 3, 4, 5]);
+      if (k === 0) c = { tipo: 'directo', m, vx: u };
+      if (k === 1) c = { tipo: 'gramos', g: m * 1000 + (resuelto ? 250 : 500), vx: u };
+      if (k === 2) c = { tipo: 'velocidad-kmh', m, px: m * u };
+      if (k === 3) c = { tipo: 'carga', mc: m, ml: resuelto ? 2.25 : 1.25, kmh: cmRed(u * 3.6) };
+      if (k === 4) c = { tipo: 'igualar', ma: m, va: u, mb: m / 2, salidaKmh: true };
+      if (k === 5) c = { tipo: 'modulo', g: (m + (resuelto ? 0.25 : 0.5)) * 1000, kmh: cmRed(-Math.abs(u) * 3.6) };
+      b = cantidadCaso(c);
+      const repite = CASOS_EJEMPLOS_CANTIDAD.some(e => e.tipo === c.tipo && Object.keys(c).every(a => c[a] === e[a]));
+      if (b.errores.length >= 3 && !repite && cmExacto(b.resultado)) break;
+    }
+    if (!b || b.errores.length < 3) throw new Error('Cantidad de movimiento: faltan errores distintos.');
+    if (resuelto) return {
+      enunciado: b.enunciado, datos: b.datos, dibujo: b.dibujo, respuesta: b.respuesta, verificacion: c,
+      pasos: [
+        { tipo: 'pide', texto: 'Piden una magnitud del carrito, con su unidad y el signo cuando corresponde.' },
+        { tipo: 'regla', texto: 'La cantidad de movimiento es masa por velocidad; al despejar mantenemos el sentido del eje.', ecuacion: [cmPX, ' = ', cmM, ' · ', cmVX] },
+        ...b.solucion.map(paso => ({ tipo: 'cuentas', ...paso })),
+        { tipo: 'sentido', texto: ['El signo ubica el sentido sobre el eje. La masa y el módulo de la cantidad de movimiento son no negativos.'] },
+      ],
+    };
+    const ult = b.solucion[b.solucion.length - 1];
+    let cuenta = ult.ecuacion;
+    const fin = cmQ(b.color, `${cmFmt(b.resultado)} ${b.unidad}`);
+    if (c.tipo === 'gramos') cuenta = [cmPX, ` = (${cmFmt(c.g)} ÷ 1000) · ${cmN(c.vx)} = `, fin];
+    if (c.tipo === 'velocidad-kmh') cuenta = [cmVX, ` = (${cmN(c.px)} ÷ ${cmFmt(c.m)}) · 3,6 = `, fin];
+    if (c.tipo === 'carga') cuenta = [cmPX, ` = (${cmFmt(c.mc)} + ${cmFmt(c.ml)}) · (${cmN(c.kmh)} ÷ 3,6) = `, fin];
+    if (c.tipo === 'igualar') cuenta = [cmSub(cmV, 'B,x'), ` = (${cmFmt(c.ma)} · ${cmN(c.va)} ÷ ${cmFmt(c.mb)}) · 3,6 = `, fin];
+    if (c.tipo === 'modulo') cuenta = [cmP, ` = (${cmFmt(c.g)} ÷ 1000) · (${cmFmt(Math.abs(c.kmh))} ÷ 3,6) = `, fin];
+    return { pregunta: b.enunciado, datos: b.datos, dibujo: b.dibujo, verificacion: c,
+      opciones: [{ id: 'c', texto: `${cmFmt(b.resultado)} ${b.unidad}`, correcta: true }, ...b.errores.slice(0, 3).map(e => ({ id: e.id, texto: `${cmFmt(e.valor)} ${b.unidad}`, error: e.error, siFuera: e.siFuera }))],
+      solucion: { texto: 'Convertimos las unidades y usamos masa por velocidad. Para hallar una velocidad, despejamos antes de convertir el resultado.', ecuacion: cuenta },
+    };
+  }
+  const cmReferencia = cmPar(2, 3), cmPredicho = cmPar(4, -1.5);
+  const cmPredTexto = x => `${cmFmt(Math.abs(x))} kg·m/s hacia la ${x < 0 ? 'izquierda' : 'derecha'}`;
+  const cantidad = {
+    id: 'cantidad-movimiento', titulo: 'Cantidad de movimiento',
+    pregunta: '¿Basta con la rapidez para comparar cómo se mueven dos carritos?',
+    aprendizaje: 'La masa y la rapidez influyen juntas; carritos con distintas masas pueden tener igual cantidad de movimiento.',
+    actividad: 'Comparar dos carritos y ajustar la masa y la rapidez del segundo.',
+    temas: ['Cantidad de movimiento'], pieza: 'fis-estatica',
+    lee: { tarjetas: [
+      { titulo: 'Carrito y carga', texto: ['Estos son carritos de laboratorio. La masa ', cmM, ' incluye el carrito y su carga. Los números son datos de un ensayo ideal, vistos desde el suelo.'],
+        dibujo: cmFigura([{ nombre: 'A', m: 2, vx: 3 }, { nombre: 'B', m: 1, vx: 1 }]) },
+      { titulo: 'Rapidez y sentido', texto: ['La velocidad lleva una flecha: ', cmVec(cmV), '. En esta pista usamos su componente ', cmVX, ': positiva hacia la derecha y negativa hacia la izquierda. La rapidez es su módulo, sin signo.'] },
+      { titulo: 'Otra forma de describir movimiento', texto: ['La cantidad de movimiento se escribe ', cmVec(cmP), '. La medimos en kilogramos metro por segundo (kg·m/s). En el juego compararás su indicador al cambiar la masa y la rapidez.'] },
+    ] },
+    ejemplos: EJEMPLOS_CANTIDAD,
+    juega: {
+      consigna: 'Dos carritos avanzan por pistas paralelas. A mantiene su masa y rapidez; tú eliges las de B.',
+      voz: 'Prueba distintas masas y rapideces. Los indicadores cambian junto al carrito.',
+      controles: [
+        { id: 'mB', etiqueta: 'Masa total de B', color: 'c-f', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
+        { id: 'vB', etiqueta: 'Rapidez de B hacia la derecha', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'm/s', decimales: 0 },
+        { id: 't', etiqueta: 'Reloj del ensayo; se repite', min: 0, max: 1, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } },
+      ],
+      mision: { texto: 'Iguala la cantidad de movimiento de A usando una masa distinta.',
+        logrado: a => a.mB !== cmReferencia.m && a.mB * a.vB === cmReferencia.px,
+        testigo: [{ mB: 3, vB: 2, t: 0 }],
+        bien: 'Los indicadores coinciden aunque las masas y las rapideces son distintas.' },
+      dibujo: a => cmFigura([{ nombre: 'A', ...cmReferencia, animar: true }, { nombre: 'B', ...cmPar(a.mB, a.vB), animar: true }], true, a.t),
+      lectura: a => ['A: ', cmQ('i', `${cmFmt(cmReferencia.px)} kg·m/s`), '; B: ', cmQ('i', `${cmFmt(a.mB * a.vB)} kg·m/s`), '. ', a.mB * a.vB === cmReferencia.px ? 'Coinciden.' : 'Todavía difieren.'],
+      leyenda: [
+        { s: cmM, t: 'masa total del carrito, en kilogramos' },
+        { s: cmVX, t: 'componente horizontal de velocidad; derecha positiva' },
+        { s: cmPX, t: 'componente horizontal de cantidad de movimiento' },
+        { s: 'flechas', t: 'una escala para cada magnitud' },
+        { s: 'kg·m/s', t: 'kilogramo metro por segundo' },
+      ], minimo: 2,
+    },
+    predice: {
+      pregunta: 'A avanza hacia la derecha. B tiene el doble de masa, la mitad de rapidez y va a la izquierda. ¿Cuál es la cantidad de movimiento de B?',
+      datos: ['A: 2 kg y 3 m/s hacia la derecha.', 'B: 4 kg y 1,5 m/s hacia la izquierda.'],
+      dibujo: cmFigura([{ nombre: 'A', ...cmReferencia }, { nombre: 'B', ...cmPredicho }]),
+      revelar: cmFigura([{ nombre: 'A', ...cmReferencia }, { nombre: 'B', ...cmPredicho }], true),
+      opciones: [
+        { id: 'c', texto: cmPredTexto(cmPredicho.px), correcta: true },
+        { id: 'ignora-sentido', texto: cmPredTexto(-cmPredicho.px), error: 'CM-VECTOR', siFuera: 'Bien el módulo; mantuviste el sentido de A, pero B se mueve hacia la izquierda.' },
+        { id: 'solo-masa', texto: cmPredTexto(-2 * cmReferencia.px), error: 'CM-MASA', siFuera: `Bien duplicar la masa; ignoraste la menor rapidez. Así obtienes ${cmFmt(2 * cmReferencia.px)} kg·m/s.` },
+        { id: 'solo-rapidez', texto: cmPredTexto(-cmReferencia.px / 2), error: 'CM-RAPIDEZ', siFuera: `Bien reducir la rapidez; ignoraste la mayor masa. Así obtienes ${cmFmt(cmReferencia.px / 2)} kg·m/s.` },
+      ],
+      coincide: 'Los módulos coinciden, pero los sentidos son opuestos. Las cantidades de movimiento vectoriales son distintas.',
+    },
+    mira: {
+      pieza: 'fis-estatica',
+      datos: { alto: 320, cortes: [
+        cmFigura([{ nombre: 'A', ...cmReferencia }, { nombre: 'B', ...cmPredicho }]).datos,
+        cmFigura([{ nombre: 'A', ...cmReferencia, dadoP: true }, { nombre: 'B', ...cmPredicho }]).datos,
+        cmFigura([{ nombre: 'A', ...cmReferencia }, { nombre: 'B', ...cmPredicho }], true).datos,
+      ], alt: 'Dos carritos con sentidos de movimiento opuestos.' },
+      pasos: [
+        { estado: { corte: 0 }, texto: 'Elegimos derecha positiva: la velocidad de B lleva signo negativo.', ecuacion: [cmSub(cmV, 'B,x'), ' = −1,5 m/s'] },
+        { estado: { corte: 1 }, texto: 'Multiplicamos masa por velocidad para describir el movimiento de A.', ecuacion: [cmSub(cmP, 'A,x'), ` = 2 · 3 = ${cmFmt(cmReferencia.px)} kg·m/s`] },
+        { estado: { corte: 2 }, texto: 'Para B, la masa es positiva y la velocidad negativa.', ecuacion: [cmSub(cmP, 'B,x'), ` = 4 · (−1,5) = ${cmFmt(cmPredicho.px)} kg·m/s`] },
+        { estado: { corte: 2 }, texto: 'Igual tamaño no significa igual vector: aquí los sentidos son opuestos.', ecuacion: [cmP, ` = |${cmFmt(cmPredicho.px)}| = ${cmFmt(Math.abs(cmPredicho.px))} kg·m/s`] },
+      ],
+    },
+    regla: {
+      texto: 'Multiplica la masa total por la velocidad. En una recta, la componente conserva el signo; el módulo no. Puedes despejar masa o velocidad, usando unidades compatibles.',
+      ecuacion: [cmVec(cmP), ' = ', cmM, ' · ', cmVec(cmV)],
+      condicion: 'La masa es positiva; pₓ = m·vₓ y p = |pₓ|. Todas las velocidades se miden desde el mismo observador.',
+      voz: 'Primero identifica el cuerpo completo, las unidades y el sentido del movimiento.',
+      dibujo: cmFigura([{ nombre: 'Carrito', ...cmPar(3, -2) }], true),
+    },
+    resuelve: { pieza: 'fis-estatica', generar: s => cmGenerar(s, true) },
+    ahoraTu: { pieza: 'fis-estatica', generar: s => cmGenerar(s, false) },
+  };
+
+  // ---------- Idea antigua 1: el área de F–t es el impulso ----------
   // Cambia: el pico de la fuerza y su duración · Permanece: la pelota de 0,5 kg, en reposo al inicio ·
   // Progresa: el área bajo la curva, que se pinta · Se reserva: dos golpes de distinta forma con la misma área ·
   // Debe verse: que lo que cambia la velocidad es el área, no el pico.
@@ -617,15 +903,23 @@
 
   return {
     unidad: 'fisica.impulso-y-choques',
-    version: '0.2.0',
+    version: '0.3.0',
+    // Entrega parcial: idea cantidad-movimiento rehecha; las cinco siguientes esperan revisión.
+    letras: { m: 'masa total', m_c: 'masa del carrito vacío', m_L: 'masa de la carga', m_A: 'masa de A', m_B: 'masa de B', v: 'rapidez', v_x: 'componente horizontal de velocidad', v_A: 'velocidad de A', v_B: 'velocidad de B', p: 'módulo de cantidad de movimiento', p_x: 'componente horizontal de cantidad de movimiento', p_A: 'cantidad de movimiento de A', p_B: 'cantidad de movimiento de B', A: 'carrito A', B: 'carrito B', x: 'eje horizontal', t: 'instante del ensayo' },
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-riel.js', '/nucleo/kit/piezas/torre.js', '/nucleo/kit/piezas/recta.js'],
+    requiere: ['/nucleo/kit/piezas/fis-estatica.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-riel.js', '/nucleo/kit/piezas/torre.js', '/nucleo/kit/piezas/recta.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
     glosario: [
       { termino: 'impulso', simbolo: 'J', medida: 'N·s', def: 'Efecto de una fuerza que actúa durante un tiempo: el área bajo la gráfica F–t.',
         ejemplo: 'Golpe triangular de 40 N que dura 0,3 s: J = ½ · 40 · 0,3 = 6 N·s.', ver: ['cantidad de movimiento'] },
-      { termino: 'cantidad de movimiento', simbolo: 'p', medida: 'kg·m/s', def: 'Masa por velocidad de un cuerpo; apunta hacia donde va. El impulso neto la cambia.',
-        ejemplo: '2 kg a 4 m/s: p = 2 · 4 = 8 kg·m/s.', ver: ['impulso', 'velocidad'] },
+      { termino: 'cantidad de movimiento', simbolo: 'p⃗', medida: 'kg·m/s',
+        def: 'Magnitud vectorial que permite comparar el movimiento de cuerpos considerando su masa y su velocidad.',
+        simple: 'Una forma de describir el movimiento teniendo en cuenta lo que se mueve.',
+        ejemplos: ['Se estudia en carritos con distintas cargas.', 'Se registra para una pelota que viaja por el aire.', 'Se expresa en kilogramos metro por segundo.'], ver: ['velocidad'] },
+      { termino: 'kilogramo metro por segundo', simbolo: 'kg·m/s', formas: ['kilogramo metro por segundo', 'kilogramos metro por segundo'],
+        def: 'Unidad del Sistema Internacional para expresar la cantidad de movimiento.',
+        simple: 'La unidad que acompaña al valor de la cantidad de movimiento.',
+        ejemplos: ['El módulo puede registrarse como 22 kg·m/s.', 'Una componente puede registrarse como −15 kg·m/s.', 'La unidad acompaña también a un valor de 0 kg·m/s.'] },
       { termino: 'sistema aislado', def: 'Grupo de cuerpos sobre el que nada de afuera influye: solo actúan entre ellos.',
         ver: ['fuerza externa', 'cantidad de movimiento'] },
       { termino: 'fuerza interna', formas: ['fuerza interna', 'fuerzas internas'], def: 'Fuerza que un cuerpo del grupo hace sobre otro del mismo grupo. No cambia la cantidad de movimiento total.',
@@ -772,6 +1066,7 @@
       'choque-libre': ['elastico-inelastico'],
       'centro-libre': ['centro-masa'],
     },
-    ideas: [impulso, conservacion, elastico, restitucion, centro],
+    ideas: [cantidad, impulso, conservacion, elastico, restitucion, centro],
   };
 });
+
