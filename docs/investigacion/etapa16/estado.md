@@ -2,7 +2,7 @@
 
 Actualizado: 22 de noviembre de 2026 (Perú).
 
-**Unidades completas: 7 de 8. Pendientes: 1.**
+**Unidades completas: 8 de 8. Pendientes: 0.**
 
 | Orden | Curso | Unidad | Archivo | Estado |
 | --- | --- | --- | --- | --- |
@@ -13,12 +13,13 @@ Actualizado: 22 de noviembre de 2026 (Perú).
 | 5 | Química | Ácidos y bases | [quimica.acidos-y-bases.md](quimica.acidos-y-bases.md) | COMPLETA |
 | 6 | Razonamiento matemático | Tablas, gráficos y suficiencia de datos | [razonamiento-matematico.tablas-graficos-y-suficiencia.md](razonamiento-matematico.tablas-graficos-y-suficiencia.md) | COMPLETA |
 | 7 | Razonamiento verbal | Extrapolación y lectura crítica | [razonamiento-verbal.extrapolacion.md](razonamiento-verbal.extrapolacion.md) | COMPLETA |
-| 8 | Trigonometría | Ángulo doble, mitad y triple | trigonometria.arcos-multiples.md | PENDIENTE |
+| 8 | Trigonometría | Ángulo doble, mitad y triple | [trigonometria.arcos-multiples.md](trigonometria.arcos-multiples.md) | COMPLETA |
 
 Cada unidad completa tiene diez secciones, seis ideas, siete momentos por idea, fuentes y distractores vinculados a errores. Los archivos tienen entre 30 y 60 KB. Se verifican estructura, notación, condiciones, dependencias y referencias antes de subir cada unidad. El equipo que implementa recalcula sus datos numéricos.
 
-**Siguiente unidad: Trigonometría · Ángulo doble, mitad y triple.**
+**Etapa 16 terminada: 0 pendientes.**
 
-Instrucción vigente: trabajar de forma ininterrumpida, una unidad a la vez, y subir cada una al terminar. No esperar «sigue» entre unidades. La etapa termina cuando este archivo registra **0 pendientes**.
+Las ocho propuestas se completaron una por una y se subieron a la rama main al terminar cada unidad. Se verificó el contenido publicado. Los ocho archivos suman 476 937 bytes; cada uno está dentro del intervalo de 30 a 60 KB.
 
 Solo se modifican archivos de `docs/investigacion/etapa16/`. La frecuencia no verificable y las hipótesis didácticas se declaran expresamente. «COMPLETA» describe la propuesta, no programación ni validación con alumnos.
+
