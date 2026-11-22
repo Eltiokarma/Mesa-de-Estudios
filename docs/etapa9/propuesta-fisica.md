@@ -26,7 +26,7 @@ La unidad modelo es Trabajo y energía, inmediatamente anterior en Mecánica y c
 
 | # | id | Título | Aprendizaje |
 | --- | --- | --- | --- |
-| 1 | cantidad-movimiento (nueva) | Cantidad de movimiento | La cantidad de movimiento combina masa y velocidad; igual módulo no significa igual vector si cambia el sentido. |
+| 1 | cantidad-movimiento (nueva) | Cantidad de movimiento | La masa y la rapidez influyen juntas; carritos con distintas masas pueden tener igual cantidad de movimiento. |
 | 2 | impulso | Impulso y fuerza media | El impulso neto es el cambio de cantidad de movimiento; el área con signo de F–t permite calcularlo. |
 | 3 | conservacion | Sistema y conservación | El total del sistema se conserva cuando el impulso externo es nulo o despreciable; cada cuerpo puede cambiar. |
 | 4 | elastico-inelastico | Choques y energía cinética | En un choque aislado se conserva la cantidad de movimiento total; la energía cinética depende del tipo de choque. |
@@ -158,3 +158,4 @@ Se conserva `requiere: fisica.trabajo-y-energia`. Su cadena incluye Dinámica, E
 | ¿Distractor sobre fuerza? | Cambiarlo por H-RAPIDEZ, calculable y sin anticipación del glosario. | «La fuerza desaparece y p se anula»: introduce un concepto distinto y puede delatarse con el glosario. |
 | ¿Afirmar fuerza máxima? | Fuerza media con igual Δp y distinta duración; máxima solo con forma conocida. | Deducir máxima de duración: no se sigue de esos datos. |
 | ¿Terminar toda la unidad ahora? | Detenerse tras la idea 1 y sus comprobaciones; Gerson revisa antes de seguir. | Aplicar la continuación automática del documento interno contra la instrucción explícita de esta sesión. |
+
