@@ -1,36 +1,25 @@
 # Estado · Etapa 21
 
-**4 unidades terminadas · 3 pendientes.**
+**5 unidades terminadas · 2 pendientes.**
 
-Entrega 02: Óptica geométrica y Petróleo y recursos naturales. Este ZIP contiene ambas propuestas completas y este estado. Las dos propuestas de la entrega 01 también están publicadas en el repositorio.
+Actualizado el 22 de noviembre de 2026. Se continúa sin interrupciones, publicando cada propuesta completa y revisada antes de comenzar la siguiente.
 
 | Curso | Unidad | Archivo | Estado |
 |---|---|---|---|
-| Álgebra | Exponenciales y logaritmos | algebra.exponenciales-y-logaritmos.md | Terminada, entrega 01 y GitHub. |
-| Aritmética | Probabilidades | aritmetica.probabilidades.md | Terminada, entrega 01 y GitHub. |
-| Física | Óptica geométrica | fisica.optica-geometrica.md | Terminada, entrega 02 y GitHub. |
-| Química | Petróleo y recursos naturales | quimica.recursos-naturales.md | Terminada, entrega 02 y GitHub. |
-| Razonamiento matemático | Rutas y visualización espacial | razonamiento-matematico.rutas-y-visualizacion-espacial.md | Pendiente; siguiente unidad. |
-| Razonamiento verbal | Lectura en inglés | razonamiento-verbal.lectura-en-ingles.md | Pendiente. |
+| Álgebra | Exponenciales y logaritmos | algebra.exponenciales-y-logaritmos.md | Terminada; GitHub y entrega 01. |
+| Aritmética | Probabilidades | aritmetica.probabilidades.md | Terminada; GitHub y entrega 01. |
+| Física | Óptica geométrica | fisica.optica-geometrica.md | Terminada; GitHub y entrega 02. |
+| Química | Petróleo y recursos naturales | quimica.recursos-naturales.md | Terminada; GitHub y entrega 02. |
+| Razonamiento matemático | Rutas y visualización espacial | razonamiento-matematico.rutas-y-visualizacion-espacial.md | Terminada; GitHub, prevista en entrega 03 acumulada. |
+| Razonamiento verbal | Lectura en inglés | razonamiento-verbal.lectura-en-ingles.md | Pendiente; siguiente unidad. |
 | Trigonometría | Lugar geométrico y cónicas | trigonometria.conicas.md | Pendiente. |
 
-## Publicación
+## Publicación y alcance
 
-[Propuestas de la etapa 21 en Mesa-de-Estudios](https://github.com/Eltiokarma/Mesa-de-Estudios/tree/main/docs/investigacion/etapa21).
+[Carpeta de propuestas](https://github.com/Eltiokarma/Mesa-de-Estudios/tree/main/docs/investigacion/etapa21). Rama main; ruta docs/investigacion/etapa21/.
 
-Ruta: docs/investigacion/etapa21/. Publicación autorizada por el usuario en la rama main. Este estado corresponde a propuestas de teoría; no certifica implementación ni calidad de las unidades de la app.
+Son propuestas de teoría, no implementaciones certificadas. Cada documento terminado contiene diez secciones, seis ideas, fuentes y límites de evidencia. Se revisaron dependencias y las dieciocho opciones incorrectas de sus seis predicciones. El equipo debe calcular y validar los datos del banco final.
 
-## Revisión de esta entrega
+La entrega 03 será acumulada con las siete unidades y este estado final. La teoría de Lectura en inglés será en español; sus textos y preguntas de práctica, en inglés.
 
-| Archivo | Bytes UTF-8 | Ideas | Opciones de predicción |
-|---|---|---|---|
-| fisica.optica-geometrica.md | 59972 | 6 | 24: 6 correctas y 18 incorrectas con código de error. |
-| quimica.recursos-naturales.md | 59848 | 6 | 24: 6 correctas y 18 incorrectas con código de error. |
-
-Ambas incluyen las diez secciones solicitadas, fuentes, límites de la evidencia, reglas, vocabulario con ejemplos, misiones comprobables y progresión de ejercicios. Se revisaron dependencias entre ideas, distractores, tablas y notación. Los datos finales del banco de ejercicios deben calcularse y validarse durante la implementación.
-
-## Continuación
-
-Al recibir «sigue» o «continúa», investigar primero Rutas y visualización espacial. Terminar y revisar esa unidad antes de iniciar Lectura en inglés. Mantener teoría en español y textos y preguntas de práctica en inglés para esa unidad. Después corresponde Lugar geométrico y cónicas.
-
-**Pendientes: 3.**
+**Pendientes: 2.**
