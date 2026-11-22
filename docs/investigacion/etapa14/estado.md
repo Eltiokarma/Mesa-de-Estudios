@@ -2,7 +2,7 @@
 
 Actualizado: 22 de noviembre de 2026.
 
-**Completadas: 6 de 8. Pendientes: 2.**
+**Completadas: 7 de 8. Pendientes: 1.**
 
 Esta carpeta contiene propuestas autónomas en Markdown. Una unidad se marca completada después de terminar investigación, redacción y revisión pedagógica; los temas pendientes no se contabilizan como entregados. El estado describe únicamente esta carpeta, sin alterar entregas de otras etapas.
 
@@ -14,7 +14,7 @@ Esta carpeta contiene propuestas autónomas en Markdown. Una unidad se marca com
 | 4 | Geometría | Razonamiento con figuras | [geometria.razonamiento-con-figuras.md](geometria.razonamiento-con-figuras.md) | COMPLETADA |
 | 5 | Química | Cinética química | [quimica.cinetica-quimica.md](quimica.cinetica-quimica.md) | COMPLETADA |
 | 6 | Razonamiento matemático | Relojes y calendarios | [razonamiento-matematico.cronometria-y-calendarios.md](razonamiento-matematico.cronometria-y-calendarios.md) | COMPLETADA |
-| 7 | Razonamiento verbal | Inferencias | razonamiento-verbal.inferencias.md | PENDIENTE |
+| 7 | Razonamiento verbal | Inferencias | [razonamiento-verbal.inferencias.md](razonamiento-verbal.inferencias.md) | COMPLETADA |
 | 8 | Trigonometría | Identidades trigonométricas fundamentales | trigonometria.identidades-fundamentales.md | PENDIENTE |
 
 ## Control de las unidades terminadas
@@ -27,7 +27,8 @@ Esta carpeta contiene propuestas autónomas en Markdown. Una unidad se marca com
 | geometria.razonamiento-con-figuras.md | 59982 bytes | 9328 | 6 | Diez secciones; siete momentos; 18 distractores codificados; conteos, condiciones espaciales y fuentes revisados. |
 | quimica.cinetica-quimica.md | 59964 bytes | 8857 | 6 | Diez secciones; siete momentos; 18 distractores codificados; leyes, condiciones y fuentes revisadas. |
 | razonamiento-matematico.cronometria-y-calendarios.md | 59760 bytes | 9437 | 6 | Diez secciones; siete momentos; 18 distractores codificados; intervalos, tasas, calendarios y fuentes revisados. |
+| razonamiento-verbal.inferencias.md | 59998 bytes | 9177 | 5 | Diez secciones; siete momentos; 15 distractores codificados; textos propios, evidencia, alcance y fuentes revisados. |
 
 Las frecuencias no confirmadas y las hipótesis de errores se identifican dentro de cada propuesta. Los modelos de resolución describen el procedimiento; el equipo de producción recalculará los ejemplos numéricos finales.
 
-**Siguiente unidad:** razonamiento-verbal.inferencias.
+**Siguiente unidad:** trigonometria.identidades-fundamentales.
