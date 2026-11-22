@@ -27,8 +27,8 @@ capturas y le manda notas al agente mientras sigue escribiendo.
      Hay investigación previa de ChatGPT, por verificar, para las ocho: `docs/investigacion/etapa9/` (léase su LEEME).
      Para las etapas 10 a 12 también hay (una versión más corta por unidad): `docs/investigacion/etapa10/` a `etapa12/`.
      Etapas 13 a 22 (22 nov): investigación larga en `docs/investigacion/etapa13/` a `etapa16/`, `etapas-17-20/`
-     (17 y 18), `etapa19/` a `etapa22/`, cada una con su `estado.md`. Con esto tienen investigación todas las unidades
-     por rehacer menos cuatro de la 13 (Soluciones, Juegos recreativos, Resumen y síntesis, Ecuaciones trigonométricas).
+     (17 y 18), `etapa19/` a `etapa22/`, cada una con su `estado.md`. Con esto tienen investigación las 108 unidades
+     por rehacer.
      Las etapas 10 a 12 solo tienen la versión breve (unos 11 KB por unidad).
 
 ## Cómo arrancar una sesión nueva

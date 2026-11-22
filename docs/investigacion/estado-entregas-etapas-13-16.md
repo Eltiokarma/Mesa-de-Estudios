@@ -1,5 +1,8 @@
 # Propuestas de teoría · Etapas 13–16
 
+> Nota de la sesión (22 nov): este es el estado de la primera entrega. Las 32 unidades ya están: la Etapa 13 en
+> `etapa13/` (segunda entrega) y las etapas 14 a 16 en `etapa14/` a `etapa16/`, con su `estado.md`.
+
 Entrega parcial 01. Fecha: 21 de noviembre de 2026. Alcance solicitado: las cuatro etapas, 32 unidades en total. Estado de esta entrega: **4 unidades completas y 28 pendientes**. No contiene propuestas abreviadas ni archivos vacíos para las unidades pendientes.
 
 ## Archivos completos incluidos
