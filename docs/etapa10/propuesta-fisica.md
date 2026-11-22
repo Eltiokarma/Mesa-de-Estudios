@@ -69,9 +69,9 @@ Los seis testigos y las respuestas de Predice se recalcularon en un script tempo
 | --- | --- | --- |
 | 1 | Una fuerza de referencia de 160 N; se duplica M, triplica m y duplica r. El juego solo cambió r. | 240 N. Errores: 480 N al dividir por r una vez; 960 N al omitir la distancia; 40 N al omitir las masas. |
 | 2 | Otro planeta tiene g superficial de 18 N/kg; la sonda está a altura 2R. | 2 N/kg. Errores: 4,5 al usar h; 6 al dividir por la separación sin elevarla; 18 al mantener el campo superficial. |
-| 3 | Una sonda de 300 kg pasa de 10 000 a 20 000 km, con GM=4×10¹⁴ m³/s². Se pregunta el cambio de energía. | +6 GJ. Errores de orden de resta, signo y conservación indebida del valor inicial. |
+| 3 | Una sonda de 300 kg pasa de 10 000 a 20 000 km, con GM=4×10¹⁴ m³/s². Se pregunta el cambio de energía. | +6 GJ. Errores: −6 GJ al invertir la resta; −18 GJ al sumar los extremos; +12 GJ al tomar el módulo de la energía inicial. |
 | 4 | Dos órbitas circulares exteriores alrededor del mismo astro: la segunda tiene cuatro veces el radio; la primera rapidez es 8 km/s. | 4 km/s. Errores: proporcionalidad directa, ausencia de cambio y omisión de raíz. |
-| 5 | Alrededor de la misma fuente dominante: período A de 3 años y semieje de 2 UA; B tiene semieje de 8 UA. | 24 años. Errores: 12 por relación lineal, 6 por raíz simple y 48 por cuadrado. |
+| 5 | Dos órbitas circulares alrededor de la misma fuente dominante: período A de 3 años y semieje de 2 UA; B tiene semieje de 8 UA. En un círculo, el semieje coincide con el radio. | 24 años. Errores: 12 por relación lineal, 6 por raíz simple y 48 por cuadrado. La predicción se puede deducir desde la idea 4; Mira generaliza a las elipses. |
 | 6 | La rapidez de escape desde R es 10 km/s. Se lanza radialmente hacia afuera desde 4R. | 5 km/s. Errores: 10 sin cambio, 2,5 por inversa lineal y 20 por proporcionalidad directa de raíz. |
 
 Los Datos de Predice dan valores, equivalencias y condiciones, nunca la fórmula que se predice. Los glosarios y juegos no usan esos mismos casos ni anuncian su resultado. Cada opción y cada siFuera se calcularán, con una única correcta comprobada por fuerza bruta.
@@ -93,7 +93,7 @@ NGCI documenta dificultades con la distancia desde la superficie, la potencia de
 | G | Constante de gravitación; se distingue de g. | Tinta. |
 | a, b | Semiejes mayor y menor de la elipse, ambos longitudes. | Turquesa i. |
 | e | Excentricidad geométrica, sin unidad y entre cero y uno para la elipse. | Tinta. |
-| A, A_total | Área barrida y área total de la elipse. | Tinta. |
+| S, S_barrida, S_total | Área, área barrida y área total de la elipse. | Tinta. |
 | r_p, r_a, v_p, v_a | Distancias y rapideces en los extremos cercano y lejano. | Según distancia o rapidez. |
 
 La aceleración centrípeta se escribe como v²/r o se nombra con palabras; no se usa a como aceleración y semieje a la vez. No se introduce otro símbolo para potencial por kilogramo. GM es el producto de G y M, que puede darse directamente. Los factores de comparación se definen en cada caso. Se mantiene la notación energética de Trabajo y energía.
@@ -123,6 +123,7 @@ Fuentes contrastadas el 22 de noviembre de 2026:
 
 - OpenStax: [ley universal](https://openstax.org/books/university-physics-volume-1/pages/13-1-newtons-law-of-universal-gravitation), [campo](https://openstax.org/books/university-physics-volume-1/pages/13-2-gravitation-near-earths-surface), [energía](https://openstax.org/books/university-physics-volume-1/pages/13-3-gravitational-potential-energy-and-total-energy), [órbitas](https://openstax.org/books/university-physics-volume-1/pages/13-4-satellite-orbits-and-energy) y [Kepler](https://openstax.org/books/university-physics-volume-1/pages/13-5-keplers-laws-of-planetary-motion). Se verifican condiciones; no se copian problemas ni figuras.
 - [NASA Earth Fact Sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html): parámetros terrestres; radio medio y ecuatorial no se mezclan.
+- JPL: [parámetros astronómicos](https://ssd.jpl.nasa.gov/astro_par.html), para la unidad astronómica exacta; [elementos y posiciones orbitales](https://ssd.jpl.nasa.gov/planets/approx_pos.html), para contrastar la ecuación de Kepler del modelo animado. No se copian efemérides ni se presenta el modelo como la órbita de un objeto real.
 - [NIST, CODATA 2022, mayo de 2024](https://physics.nist.gov/cuu/pdf/wall_2022.pdf): G es una constante medida, no exacta. En ejercicios se dará el valor aproximado elegido.
 - [Williamson, Willoughby y Prather, 2013](https://istardb.org/wp-content/uploads/tainacan-items/1018/17957/Williamson-et-al_2013_Development-of-the-Newtonian-Gravity-Concept-Inventory-1.pdf): dificultades sobre masas, distancia, gravedad y atmósfera. No se trasladan porcentajes a postulantes peruanos.
 
@@ -138,5 +139,5 @@ Se conservan Dinámica y Movimiento circular como requisitos y se añade Trabajo
 | ¿Una idea aparte de elipses? | Presentar forma, áreas y período juntos en Kepler, con límites claros y ejemplos progresivos. | Una séptima idea o eliminar el tratamiento explícito de energía. |
 | ¿Qué misión de campo? | Alcanzar una fuerza cambiando masa a radio fijo: tiene un testigo único. | Cambiar F/m con ese mismo control: sería constante y la misión no funcionaría. |
 | ¿Cómo animar la órbita? | Movimiento circular solo cuando la rapidez cumple la condición; Kepler con tiempo físico, no ángulo uniforme. | Dibujar cualquier rapidez como un círculo o afirmar que siempre produce una elipse cerrada. |
-| ¿Qué constantes usar? | Modelos didácticos explícitos y una aplicación NASA separada; calcular siempre desde los mismos datos. | Mezclar g0, R, GM y períodos redondeados de modelos distintos. |
+| ¿Qué constantes y referencias usar? | Modelos didácticos explícitos y una aplicación NASA separada. Dos entradas locales del glosario distinguen la referencia general de energía del modelo mgh cercano a la superficie. | Mezclar g0, R, GM y períodos redondeados; usar un tooltip de campo constante para todo el campo gravitatorio. |
 | ¿Qué conservar de la evidencia? | Dificultades documentadas como contexto y operaciones nuevas como hipótesis verificables. | Presentar distractores propios como diagnósticos validados o inventar frecuencia de admisión. |
