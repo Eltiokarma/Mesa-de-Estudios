@@ -1,20 +1,19 @@
-# Estado · Propuestas de teoría de las etapas 17 a 20
+# Estado · Propuestas de teoría de las etapas 17 a 19
 
 Actualizado: 22 de noviembre de 2026, fecha de referencia de Perú.
 
-Alcance: 32 unidades. Se termina y revisa una unidad antes de comenzar la siguiente. Cada documento terminado se publica directamente en el repositorio junto con este estado.
+Alcance vigente: 24 unidades de las etapas 17, 18 y 19. Por indicación del usuario, las ocho unidades de la etapa 20 se realizarán en otro chat; ninguna se había publicado al cambiar el alcance. Se conserva la carpeta histórica etapas-17-20.
 
-**Completas: 11 de 32. Pendientes: 21.**
+**Completas: 12 de 24. Pendientes: 12.**
 
-La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
+Se termina, revisa y publica cada unidad antes de iniciar la siguiente. La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
 
-| Etapa | Completas | Pendientes |
+| Etapa | Completas | Pendientes de esta tanda |
 |---|---|---|
 | 17 | 8 | 0 |
-| 18 | 3 | 5 |
+| 18 | 4 | 4 |
 | 19 | 0 | 8 |
-| 20 | 0 | 8 |
-| Total | 11 | 21 |
+| Total vigente | 12 | 12 |
 
 ## Unidades y orden de continuación
 
@@ -31,8 +30,8 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | 9 | 18 | Álgebra | Números reales e intervalos | algebra.numeros-reales.md | COMPLETA |
 | 10 | 18 | Aritmética | Conjuntos | aritmetica.conjuntos.md | COMPLETA |
 | 11 | 18 | Física | Inducción electromagnética | fisica.induccion-electromagnetica.md | COMPLETA |
-| 12 | 18 | Geometría | Prisma y pirámide | geometria.prisma-y-piramide.md | PENDIENTE · Siguiente |
-| 13 | 18 | Química | Química orgánica: hidrocarburos | quimica.hidrocarburos.md | PENDIENTE |
+| 12 | 18 | Geometría | Prisma y pirámide | geometria.prisma-y-piramide.md | COMPLETA |
+| 13 | 18 | Química | Química orgánica: hidrocarburos | quimica.hidrocarburos.md | PENDIENTE · Siguiente |
 | 14 | 18 | Razonamiento matemático | Trazos de figuras y perímetros | razonamiento-matematico.trazos-y-perimetros.md | PENDIENTE |
 | 15 | 18 | Razonamiento verbal | Texto y contexto | razonamiento-verbal.texto-y-contexto.md | PENDIENTE |
 | 16 | 18 | Trigonometría | Resolución de triángulos oblicuángulos | trigonometria.triangulos-oblicuangulos.md | PENDIENTE |
@@ -44,14 +43,21 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | 22 | 19 | Razonamiento matemático | Movimiento y comparación de figuras | razonamiento-matematico.transformaciones-de-figuras.md | PENDIENTE |
 | 23 | 19 | Razonamiento verbal | Textos argumentativos, dialécticos y debate | razonamiento-verbal.textos-argumentativos-y-dialecticos.md | PENDIENTE |
 | 24 | 19 | Trigonometría | Áreas y líneas notables con trigonometría | trigonometria.areas-y-lineas-notables.md | PENDIENTE |
-| 25 | 20 | Álgebra | Tipos de funciones y función inversa | algebra.tipos-de-funciones-e-inversa.md | PENDIENTE |
-| 26 | 20 | Aritmética | Análisis combinatorio | aritmetica.analisis-combinatorio.md | PENDIENTE |
-| 27 | 20 | Física | Ondas electromagnéticas | fisica.ondas-electromagneticas.md | PENDIENTE |
-| 28 | 20 | Geometría | Geometría analítica | geometria.geometria-analitica.md | PENDIENTE |
-| 29 | 20 | Química | Biomoléculas y productos naturales | quimica.biomoleculas-y-productos-naturales.md | PENDIENTE |
-| 30 | 20 | Razonamiento matemático | Traslados y puntos cardinales | razonamiento-matematico.traslados-y-puntos-cardinales.md | PENDIENTE |
-| 31 | 20 | Razonamiento verbal | Textos filosóficos y científicos | razonamiento-verbal.textos-filosoficos-y-cientificos.md | PENDIENTE |
-| 32 | 20 | Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | PENDIENTE |
+
+## Etapa 20 · Reservada para otro chat
+
+Estas ocho unidades quedan fuera de las pendientes de esta tanda. No se declaran completas.
+
+| Curso | Unidad | Archivo previsto | Estado |
+|---|---|---|---|
+| Álgebra | Tipos de funciones y función inversa | algebra.tipos-de-funciones-e-inversa.md | OTRO CHAT · No publicada en esta tanda |
+| Aritmética | Análisis combinatorio | aritmetica.analisis-combinatorio.md | OTRO CHAT · No publicada en esta tanda |
+| Física | Ondas electromagnéticas | fisica.ondas-electromagneticas.md | OTRO CHAT · No publicada en esta tanda |
+| Geometría | Geometría analítica | geometria.geometria-analitica.md | OTRO CHAT · No publicada en esta tanda |
+| Química | Biomoléculas y productos naturales | quimica.biomoleculas-y-productos-naturales.md | OTRO CHAT · No publicada en esta tanda |
+| Razonamiento matemático | Traslados y puntos cardinales | razonamiento-matematico.traslados-y-puntos-cardinales.md | OTRO CHAT · No publicada en esta tanda |
+| Razonamiento verbal | Textos filosóficos y científicos | razonamiento-verbal.textos-filosoficos-y-cientificos.md | OTRO CHAT · No publicada en esta tanda |
+| Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | OTRO CHAT · No publicada en esta tanda |
 
 ## Archivos completados y revisión
 
@@ -68,9 +74,10 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | algebra.numeros-reales.md | 55638 bytes | 9067 | 5 |
 | aritmetica.conjuntos.md | 59930 bytes | 9527 | 6 |
 | fisica.induccion-electromagnetica.md | 59990 bytes | 9225 | 6 |
+| geometria.prisma-y-piramide.md | 59980 bytes | 9365 | 6 |
 
 Se revisan diez secciones, entre tres y seis ideas, cuatro opciones por predicción, correspondencia de distractores y errores, vocabulario, fuentes y continuidad conceptual. La frecuencia de examen se declara desconocida cuando la muestra no la permite.
 
 ## Continuación
 
-La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `geometria.prisma-y-piramide.md`.
+La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `quimica.hidrocarburos.md`.
