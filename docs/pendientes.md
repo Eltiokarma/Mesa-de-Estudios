@@ -29,7 +29,8 @@ capturas y le manda notas al agente mientras sigue escribiendo.
      Etapas 13 a 22 (22 nov): investigación larga en `docs/investigacion/etapa13/` a `etapa16/`, `etapas-17-20/`
      (17 y 18), `etapa19/` a `etapa22/`, cada una con su `estado.md`. Con esto tienen investigación las 108 unidades
      por rehacer.
-     Las etapas 10 a 12 solo tienen la versión breve (unos 11 KB por unidad).
+     Las etapas 10 a 12 tienen la versión breve en `etapa10/breve/` a `etapa12/breve/` (unos 11 KB por unidad); la
+     larga llega a la raíz de cada carpeta.
 
 ## Cómo arrancar una sesión nueva
 

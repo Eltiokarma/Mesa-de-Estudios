@@ -4,7 +4,7 @@
 sin cambios en el texto, en:
 
 - `docs/investigacion/etapa9/breve/` (segunda versión de la Etapa 9; manda la larga de `etapa9/`),
-- `docs/investigacion/etapa10/`, `etapa11/` y `etapa12/`.
+- `docs/investigacion/etapa10/breve/`, `etapa11/breve/` y `etapa12/breve/`.
 
 `como-leer.md` es su introducción: alcance de la evidencia de admisión, qué significa «documentado», «de segunda mano»
 e «hipótesis», y el contrato común de escenas, fórmulas y lectura en celular. Cada archivo partido remite a ella.
