@@ -4,17 +4,17 @@ Actualizado: 22 de noviembre de 2026, fecha de referencia de Perú.
 
 Alcance: 32 unidades. Se termina y revisa una unidad antes de comenzar la siguiente. Cada documento terminado se publica directamente en el repositorio junto con este estado.
 
-**Completas: 9 de 32. Pendientes: 23.**
+**Completas: 10 de 32. Pendientes: 22.**
 
 La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
 
 | Etapa | Completas | Pendientes |
 |---|---|---|
 | 17 | 8 | 0 |
-| 18 | 1 | 7 |
+| 18 | 2 | 6 |
 | 19 | 0 | 8 |
 | 20 | 0 | 8 |
-| Total | 9 | 23 |
+| Total | 10 | 22 |
 
 ## Unidades y orden de continuación
 
@@ -29,8 +29,8 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | 7 | 17 | Razonamiento verbal | Textos discontinuos e infografías | razonamiento-verbal.textos-discontinuos.md | COMPLETA |
 | 8 | 17 | Trigonometría | Transformaciones y series trigonométricas | trigonometria.transformaciones-trigonometricas.md | COMPLETA |
 | 9 | 18 | Álgebra | Números reales e intervalos | algebra.numeros-reales.md | COMPLETA |
-| 10 | 18 | Aritmética | Conjuntos | aritmetica.conjuntos.md | PENDIENTE · Siguiente |
-| 11 | 18 | Física | Inducción electromagnética | fisica.induccion-electromagnetica.md | PENDIENTE |
+| 10 | 18 | Aritmética | Conjuntos | aritmetica.conjuntos.md | COMPLETA |
+| 11 | 18 | Física | Inducción electromagnética | fisica.induccion-electromagnetica.md | PENDIENTE · Siguiente |
 | 12 | 18 | Geometría | Prisma y pirámide | geometria.prisma-y-piramide.md | PENDIENTE |
 | 13 | 18 | Química | Química orgánica: hidrocarburos | quimica.hidrocarburos.md | PENDIENTE |
 | 14 | 18 | Razonamiento matemático | Trazos de figuras y perímetros | razonamiento-matematico.trazos-y-perimetros.md | PENDIENTE |
@@ -66,9 +66,10 @@ La propuesta completa no equivale a contenido implementado ni validado con alumn
 | razonamiento-verbal.textos-discontinuos.md | 55648 bytes | 8485 | 5 |
 | trigonometria.transformaciones-trigonometricas.md | 59946 bytes | 9284 | 6 |
 | algebra.numeros-reales.md | 55638 bytes | 9067 | 5 |
+| aritmetica.conjuntos.md | 59930 bytes | 9527 | 6 |
 
 Se revisan diez secciones, entre tres y seis ideas, cuatro opciones por predicción, correspondencia de distractores y errores, vocabulario, fuentes y continuidad conceptual. La frecuencia de examen se declara desconocida cuando la muestra no la permite.
 
 ## Continuación
 
-La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `aritmetica.conjuntos.md`.
+La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `fisica.induccion-electromagnetica.md`.
