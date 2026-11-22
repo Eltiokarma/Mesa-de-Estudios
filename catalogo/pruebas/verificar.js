@@ -996,6 +996,23 @@ const V = {
     const sin = E.rapidez(d.h, 0, 0), nmg = Math.sqrt(2 * (E.G * d.h + r.WroceConNmg));
     return { correcta: r.v, errores: { 'CE-ROCE-sin-rozamiento': sin, 'RZ-NMG-normal-igual-peso': nmg, 'CE-SIN-RAIZ': r.v2 } }; },
 
+  // grav-01 y grav-02 (reserva, 22 nov, etapa 10): períodos del mismo planeta y lanzamiento radial exterior.
+  // Las escalas son las potencias de diez y la conversión de km/s a m/s que se leen en los datos de cada forma.
+  'grav-01': d => {
+    if (!(d.TA > 0 && d.aA > 0 && d.aB > 0)) throw new Error('grav-01: período y semiejes deben ser positivos');
+    const k = d.aB / d.aA;
+    return { correcta: Math.sqrt(d.TA ** 2 * d.aB ** 3 / d.aA ** 3), errores: {
+      'GV-K-LINEAL': d.TA * k, 'GV-K-RAIZ': d.TA * Math.sqrt(k), 'GV-K-CUADRADO': d.TA * k ** 2 } };
+  },
+  'grav-02': d => {
+    const GM = d.GM * d.escalaGM, r0 = d.r0 * d.escalaRadio, R = d.R * d.escalaRadio, v0 = d.v0 * d.escalaRapidez;
+    if (!(GM > 0 && R > 0 && r0 >= R && v0 > 0)) throw new Error('grav-02: el lanzamiento debe ser exterior');
+    const escape = Math.sqrt(2 * GM / r0), final2 = v0 ** 2 - escape ** 2;
+    if (!(final2 > 0)) throw new Error('grav-02: la sonda debe llegar al infinito con rapidez positiva');
+    return { correcta: Math.sqrt(final2) / d.escalaRapidez, errores: {
+      'GV-E-RESTA': (v0 - escape) / d.escalaRapidez, 'GV-E-SIN-GRAVEDAD': d.v0, 'GV-E-UMBRAL': escape / d.escalaRapidez } };
+  },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
