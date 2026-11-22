@@ -1,0 +1,22 @@
+{
+  "id": "fis-impulso-choques",
+  "titulo": "Impulso, cantidad de movimiento y choques",
+  "formato": "predicciones",
+  "unidades": [
+    "fisica.impulso-y-choques"
+  ],
+  "temas": [
+    "Impulso",
+    "Cantidad de movimiento",
+    "Conservación de la cantidad de movimiento",
+    "Centro de masa",
+    "Choques elásticos e inelásticos",
+    "Coeficiente de restitución"
+  ],
+  "estado": "probada",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
