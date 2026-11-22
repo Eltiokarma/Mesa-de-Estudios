@@ -2,9 +2,9 @@
 
 Unidad: `fisica.impulso-y-choques`. Curso: Física. Etapa 9. Fecha: 22 de noviembre de 2026.
 Rama exclusiva: `codex/etapa9-fisica-impulso-y-choques`, creada desde main `94f40db7ee81125c144f8bbbe2eca328d757f8ea`.
-Alcance de esta entrega: propuesta de la unidad y primera idea completa. La instrucción de Gerson exige detenerse después de la idea 1; prevalece sobre el «sigue sin esperar» del encargo interno.
+Estado de la tarea: la primera entrega cerró las fases 1 y 2. El 22 de noviembre Gerson autorizó continuar las fases 3 a 5 y dejó sus notas para después.
 
-No se detectó un conflicto crítico con una decisión escrita. Las diferencias con la investigación son decisiones de implementación explicadas al final. Esta propuesta no declara terminadas las fases 3 a 5.
+No se detectó un conflicto crítico con una decisión escrita. Las diferencias con la investigación son decisiones de implementación explicadas al final. Las decisiones siguientes se mantienen sujetas a la revisión posterior de Gerson.
 
 ## Qué se pregunta y qué respalda el alcance
 
@@ -14,9 +14,9 @@ La física se contrasta con OpenStax, capítulo 9, y MIT OCW, clase 6. Singh y R
 
 ## 0. Diagnóstico de lo publicado
 
-La versión actual tiene cinco ideas: impulso, conservación, elástico/inelástico, restitución y centro de masa. No tiene una idea inicial que construya cantidad de movimiento; la define al mismo tiempo que impulso. Sus primeras pantallas usan una gráfica F–t o una recta sin un objeto reconocible. Faltan Lee, misiones, ejemplos y Datos en muchos ejercicios. Los nombres son frases y no temas.
+La versión recibida al iniciar tenía cinco ideas: impulso, conservación, elástico/inelástico, restitución y centro de masa. No tenía una idea inicial que construyera cantidad de movimiento; la definía al mismo tiempo que impulso. Sus primeras pantallas usaban una gráfica F–t o una recta sin un objeto reconocible. Faltaban Lee, misiones, ejemplos y Datos en muchos ejercicios. Los nombres eran frases y no temas. Ese diagnóstico motivó la reescritura completa que ahora contiene la rama.
 
-Hay un error físico concreto: la predicción de impulso atribuye menor fuerza máxima a un frenado más largo con el mismo cambio de velocidad. De esos datos solo se deduce una menor magnitud de la fuerza media; la máxima necesita la forma temporal. En fase 3 se reemplazará esa predicción. El estado antiguo permanece identificable mientras se revisa esta entrega parcial.
+Hay un error físico concreto: la predicción de impulso atribuye menor fuerza máxima a un frenado más largo con el mismo cambio de velocidad. De esos datos solo se deduce una menor magnitud de la fuerza media; la máxima necesita la forma temporal. Se reemplazó esa predicción por una comparación de fuerzas netas medias y duraciones.
 
 También se mezclan p como vector, módulo y número con signo; J como impulso y unidad de energía; K para energía pese a la decisión de etapa 8 de usar E_C. El juego de choques emplea e antes de enseñarlo. La declaración «e nunca pasa de 1» necesita delimitar choques pasivos del modelo.
 
@@ -33,7 +33,7 @@ La unidad modelo es Trabajo y energía, inmediatamente anterior en Mecánica y c
 | 5 | restitucion | Coeficiente de restitución | La restitución compara velocidades relativas de separación y acercamiento en la línea del impacto. |
 | 6 | centro-masa | Centro de masa | El centro de masa pondera las posiciones por sus masas; su velocidad se relaciona con la cantidad de movimiento total. |
 
-Se conservan los cinco ids publicados. La idea 1 se antepone. La migración del avance se hará con el bloque mínimo de esta unidad antes de cerrar las fases 3 a 5: conservar «Ya la estudié» y renovar predicciones antiguas sin huella. En esta entrega parcial no se publica a main ni se declara calidad 2.
+Se conservan los cinco ids publicados. La idea 1 se antepone. La migración usa un bloque propio de esta unidad: conserva «Ya la estudié» y renueva las predicciones antiguas sin huella. La nueva idea queda pendiente. La entrega se publica solo en la rama indicada y no declara calidad 2.
 
 Los problemas por etapas no desaparecen: adhesión y subida, vuelo posterior y frenado se distribuyen entre los ejercicios de examen de las ideas 4 y 5, con los intervalos separados. Centro de masa conserva una idea propia porque el catálogo lo exige y reducirlo a una definición dejaría sin práctica su posición y su velocidad.
 
@@ -55,13 +55,13 @@ Se reusa `fis-estatica` para la primera idea, con carritos y rótulos propios. S
 | Idea | Misión prevista | Qué cambia | Qué queda fijo y testigo |
 | --- | --- | --- | --- |
 | 1 | Iguala la cantidad de movimiento de A usando una masa distinta. | Masa B: 1–4 kg; rapidez B: 1–4 m/s, pasos enteros. Reloj animado. | A: 2 kg a 3 m/s hacia la derecha. Testigo B: 3 kg a 2 m/s. Ambos en el mismo sentido. |
-| 2 | Detén la pelota con el pulso disponible. | Duración y fuerza del pulso; se ven área y movimiento. | Masa, llegada e intervalo positivo. Meta determinada por I_x=−m·v_x inicial. |
-| 3 | Haz que el carrito B salga a la rapidez indicada. | Masas y energía inicial del resorte, con casos discretos. | Total inicial cero, impulso externo horizontal despreciable. El motor determina ambas salidas. |
+| 2 | Detén la pelota con el pulso disponible. | Fuerza neta de un dispositivo y reloj; se ven el cambio y el movimiento. | Pelota de 0,5 kg, llegada 4 m/s y duración fija 0,5 s. Testigo F_x=−4 N. La comparación de duraciones queda para Predice. |
+| 3 | Haz que el carrito B salga a 2 m/s. | Compresión de un resorte: 0,1; 0,2 o 0,3 m, con salidas calculadas por energía y balance. | Ambos carritos tienen 2 kg; resorte ideal de 400 N/m y total inicial cero. Testigo: 0,2 m. Las masas distintas quedan para Predice. |
 | 4 | Consigue que los carritos unidos avancen a la velocidad indicada. | Masa del receptor o velocidad de llegada. | Acople, mismo eje y ausencia de impulso externo horizontal apreciable. |
 | 5 | Haz que el rebote alcance la marca. | e en un intervalo entre 0 y 1. | Altura de caída, piso fijo y aire despreciable; h=e²H. |
-| 6 | Coloca el centro de masa en la marca. | Masa o posición del segundo carrito. | Primera posición, masa positiva y origen común. Testigo recalculado al implementar. |
+| 6 | Coloca el centro de masa en la marca de 4 m. | Masa o posición del segundo carrito. | Primera masa de 2 kg en el origen. Testigo: segundo carrito de 4 kg en 6 m. |
 
-Las misiones de 2–6 son diseño de fase 1; sus valores finales se elegirán y verificarán al programarlas. No se presentan todavía como motores terminados. La animación mueve el objeto; no cambia sola la masa que el alumno necesita elegir.
+Las misiones se implementan con motores determinísticos y testigos comprobados. Las dos primeras comparaciones se ajustaron al revisar la secuencia: duración fija en el juego de impulso y masas iguales en el juego del resorte. Así, Predice plantea un cambio que todavía no se observó. La animación mueve el objeto; no cambia sola la masa que el alumno necesita elegir.
 
 ## 4. Predicciones y errores
 
@@ -74,7 +74,7 @@ Las misiones de 2–6 son diseño de fase 1; sus valores finales se elegirán y 
 | 5 | Cambiar el piso fijo por otro cuerpo que ya se mueve. | e usa velocidades relativas, no la velocidad aislada de una pelota; sentidos y orden de resta importan. |
 | 6 | Ambos carritos ya tienen el mismo movimiento antes de separarse. | El centro de masa sigue avanzando con velocidad constante, no necesariamente permanece quieto. |
 
-La primera predicción se recalcula en código; las otras quedan sujetas al motor en fase 3. En ningún caso Lee, glosario, leyenda o Datos anticiparán el caso reservado. En la idea 1 no se ofrece el sentido contrario en el juego. Los Datos de Predice solo especifican masas, rapideces y sentidos, sin p=m·v.
+Las seis predicciones se recalculan en código y se contrastan con cuentas independientes. En ningún caso Lee, glosario, leyenda o Datos anticiparán el caso reservado. En la idea 1 no se ofrece el sentido contrario en el juego. Los Datos de Predice solo especifican masas, rapideces y sentidos, sin p=m·v.
 
 E-VEC se inspira en la dificultad vectorial documentada por Singh y Rosengrant. Los códigos H-MASA, H-RAPIDEZ y los errores aritméticos que se creen son hipótesis de diseño. Cada explicación incorrecta debe describir exactamente la operación que produce su número.
 
@@ -94,12 +94,13 @@ E-VEC se inspira en la dificultad vectorial documentada por Singh y Rosengrant. 
 | E_C, E_PG, E_M | Energías cinética, potencial gravitatoria y mecánica. | Notación acordada en etapa 8. |
 | e | Coeficiente de restitución. | Modelo de impacto frontal pasivo: 0≤e≤1. |
 | x_A, x_B, x_CM | Posiciones del cuerpo o centro de masa. | Un mismo origen. |
+| c | Compresión del resorte en el juego de conservación. | Metros; se distingue de las posiciones x. |
 | v_CM,x | Componente de velocidad del centro de masa. | Total horizontal dividido por masa total. |
 | h, H, g | Altura, altura inicial y magnitud de gravedad. | Mismo nivel de referencia; g como aproximación dada. |
 | m_c, m_L | Masa del carrito vacío y de su carga. | m=m_c+m_L en los ejemplos que preguntan masa total. |
 | r_m, r_v | Factores de cambio de masa y rapidez. | Solo en ejercicios de comparación que los definen. |
 
-Los subíndices se renderizan con el formato de ecuación del proyecto. En la primera idea se implementa únicamente la parte de esta tabla que utiliza.
+Los subíndices se renderizan con el formato de ecuación del proyecto. Cada idea incorpora las letras que utiliza, con su significado en el campo letras.
 
 ## 6. Mapa de colores
 
@@ -127,15 +128,26 @@ Situación actual: `choques` es una escena; `velocidad-relativa` es compartida y
 | 5 | Restitución con velocidades relativas, pared fija y rebote por alturas; combinación con cinemática. |
 | 6 | Posición de dos/tres cuerpos, velocidad del centro y evolución con total no nulo. |
 
-En fase 4 se construirá un generador propio con `TIPOS_POR_IDEA`, casos calculados aparte y papel con Datos; se revisarán las plantillas de toda la ficha y se marcarán las escenas antiguas con `rehacer`. Se agregará hasta dos ítems a la reserva del curso si sus formas ya tienen diez pares.
+La fase 4 implementa `plantillas/fis-impulso-choques`, con tres familias por idea seleccionables mediante `TIPOS_POR_IDEA`:
 
-Primera idea: 15 ejemplos (5 por nivel). Nivel 1: producto y despejes directos con sentido explícito. Nivel 2: conversiones y lectura de componente frente a módulo. Nivel 3: masa de carrito más carga, comparación simultánea de masa y velocidad, conversión doble y despejes con un requisito de comparación. Los últimos no serán solo productos con números grandes. Las cinco letras A–E se repartirán entre los cinco ejemplos de examen. Cada figura presenta datos y oculta p si se pregunta por p.
+| Idea | Tipos implementados, de menor a mayor dificultad |
+| --- | --- |
+| cantidad-movimiento | componente, conversiones, despeje-carga |
+| impulso | fuerza-constante, rebote-media, tramos-velocidad |
+| conservacion | adhesion, retroceso, balance-externo |
+| elastico-inelastico | elastico-frontal, energia-transformada, adhesion-rampa |
+| restitucion | rapidez-relativa, alturas, rebote-tiempo |
+| centro-masa | dos-cuerpos, tres-cuerpos, evolucion |
+
+La plantilla cuenta con 18 casos calculados por un oráculo independiente y ocho problemas de papel con Datos, que cubren las seis ideas. Las plantillas anteriores `choques` e `impulso-grafica` pasan a «Más mesas del tema» mediante `rehacer`. En `velocidad-relativa`, que también usan otras unidades, la marca se limita a `fisica.impulso-y-choques`. Se agregan dos pares A/B (`fis-33` y `fis-34`) a la reserva del curso, porque las formas activas ya tienen diez pares. Sus fórmulas previas aparecen en el enunciado visible.
+
+Cada idea contiene 15 ejemplos (5 por nivel); la unidad suma 90. En la primera idea, el nivel 1 incluye producto y despejes directos con sentido explícito. Nivel 2: conversiones y lectura de componente frente a módulo. Nivel 3: masa de carrito más carga, comparación simultánea de masa y velocidad, conversión doble y despejes con un requisito de comparación. Los últimos no serán solo productos con números grandes. Las cinco letras A–E se repartirán entre los cinco ejemplos de examen. Cada figura presenta datos y oculta p si se pregunta por p.
 
 «Así se resuelve» y «Ahora tú» tendrán familias comparables con listas de casos distintas, al menos tres enunciados resueltos y 400 semillas de verificación. No se reutilizan misión, predicción ni ejemplos como Ahora tú.
 
 ## 8. Datos del mundo y fuentes
 
-Para la primera entrega se usan únicamente datos didácticos explícitos de carritos de laboratorio. No hace falta añadir una cifra comercial para justificar masas plausibles. Una variante posterior puede usar el intervalo de 410–450 g del balón de fútbol (IFAB, regla 2.1); la velocidad seguirá siendo un dato del ejercicio. No se usarán tiempos de contacto, fuerzas máximas ni coeficientes supuestamente medidos sin fuente.
+La unidad usa datos didácticos explícitos de carritos, pelotas y dispositivos de laboratorio. No hace falta añadir una cifra comercial para justificar masas plausibles. Una variante posterior puede usar el intervalo de 410–450 g del balón de fútbol (IFAB, regla 2.1); la velocidad seguirá siendo un dato del ejercicio. No se usarán tiempos de contacto, fuerzas máximas ni coeficientes supuestamente medidos sin fuente.
 
 Fuentes físicas y de errores consultadas el 22-11-2026:
 
@@ -157,5 +169,5 @@ Se conserva `requiere: fisica.trabajo-y-energia`. Su cadena incluye Dinámica, E
 | ¿Notación con signo? | p⃗ vector, p módulo, p_x componente; lo mismo para v. | p negativo sin aclaración: mezcla módulo y componente. |
 | ¿Distractor sobre fuerza? | Cambiarlo por H-RAPIDEZ, calculable y sin anticipación del glosario. | «La fuerza desaparece y p se anula»: introduce un concepto distinto y puede delatarse con el glosario. |
 | ¿Afirmar fuerza máxima? | Fuerza media con igual Δp y distinta duración; máxima solo con forma conocida. | Deducir máxima de duración: no se sigue de esos datos. |
-| ¿Terminar toda la unidad ahora? | Detenerse tras la idea 1 y sus comprobaciones; Gerson revisa antes de seguir. | Aplicar la continuación automática del documento interno contra la instrucción explícita de esta sesión. |
+| ¿Esperar las notas de la primera idea? | Continuar hasta cerrar las fases 3 a 5: Gerson lo autorizó y pospuso sus notas. | Mantener la pausa de la entrega anterior después de recibir la nueva autorización. |
 
