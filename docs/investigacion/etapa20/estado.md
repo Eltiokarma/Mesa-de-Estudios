@@ -2,7 +2,7 @@
 
 Actualizado: 22 de noviembre de 2026, hora de referencia de Perú.
 
-**Unidades completas: 7 de 8. Pendientes: 1.**
+**Unidades completas: 8 de 8. Pendientes: 0.**
 
 | Orden | Curso | Unidad | Archivo | Estado |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Actualizado: 22 de noviembre de 2026, hora de referencia de Perú.
 | 5 | Química | Biomoléculas y productos naturales | quimica.biomoleculas-y-productos-naturales.md | Completa y revisada |
 | 6 | Razonamiento matemático | Traslados y puntos cardinales | razonamiento-matematico.traslados-y-puntos-cardinales.md | Completa y revisada |
 | 7 | Razonamiento verbal | Textos filosóficos y científicos | razonamiento-verbal.textos-filosoficos-y-cientificos.md | Completa y revisada |
-| 8 | Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | Pendiente; siguiente unidad |
+| 8 | Trigonometría | Plano cartesiano y la recta | trigonometria.recta-en-el-plano.md | Completa y revisada |
 
 ## Alcance y revisión
 
@@ -25,4 +25,4 @@ La evidencia de exámenes se limita a las muestras declaradas en cada documento.
 
 Destino exclusivo: `docs/investigacion/etapa20/`. La carpeta `docs/investigacion/etapas-17-20/` y las otras etapas quedan fuera de este trabajo.
 
-La entrega es parcial; no debe considerarse la etapa terminada mientras existan pendientes. Al continuar, se mantiene el orden de la tabla y la misma profundidad.
+Etapa 20 completa. Las ocho unidades se terminaron y subieron de forma secuencial. No quedan unidades pendientes.
