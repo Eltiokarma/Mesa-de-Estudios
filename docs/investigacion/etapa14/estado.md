@@ -2,7 +2,7 @@
 
 Actualizado: 22 de noviembre de 2026.
 
-**Completadas: 2 de 8. Pendientes: 6.**
+**Completadas: 3 de 8. Pendientes: 5.**
 
 Esta carpeta contiene propuestas autónomas en Markdown. Una unidad se marca completada después de terminar investigación, redacción y revisión pedagógica; los temas pendientes no se contabilizan como entregados. El estado describe únicamente esta carpeta, sin alterar entregas de otras etapas.
 
@@ -10,7 +10,7 @@ Esta carpeta contiene propuestas autónomas en Markdown. Una unidad se marca com
 |---|---|---|---|---|
 | 1 | Álgebra | Matrices y determinantes | [algebra.matrices-y-determinantes.md](algebra.matrices-y-determinantes.md) | COMPLETADA |
 | 2 | Aritmética | Tanto por ciento y operaciones comerciales | [aritmetica.porcentajes.md](aritmetica.porcentajes.md) | COMPLETADA |
-| 3 | Física | Termodinámica | fisica.termodinamica.md | PENDIENTE |
+| 3 | Física | Termodinámica | [fisica.termodinamica.md](fisica.termodinamica.md) | COMPLETADA |
 | 4 | Geometría | Razonamiento con figuras | geometria.razonamiento-con-figuras.md | PENDIENTE |
 | 5 | Química | Cinética química | quimica.cinetica-quimica.md | PENDIENTE |
 | 6 | Razonamiento matemático | Relojes y calendarios | razonamiento-matematico.cronometria-y-calendarios.md | PENDIENTE |
@@ -23,7 +23,8 @@ Esta carpeta contiene propuestas autónomas en Markdown. Una unidad se marca com
 |---|---|---|---|---|
 | algebra.matrices-y-determinantes.md | 59 654 bytes | 8 990 | 6 | Diez secciones; siete momentos por idea; tres distractores codificados por predicción; dependencia conceptual y fuentes revisadas. |
 | aritmetica.porcentajes.md | 59 865 bytes | 9 367 | 6 | Diez secciones; siete momentos por idea; tres distractores codificados por predicción; bases, restricciones, dependencias y fuentes revisadas. |
+| fisica.termodinamica.md | 59996 bytes | 8963 | 6 | Diez secciones; siete momentos; 18 distractores codificados; modelos, signos y fuentes revisados. |
 
 Las frecuencias no confirmadas y las hipótesis de errores se identifican dentro de cada propuesta. Los modelos de resolución describen el procedimiento; el equipo de producción recalculará los ejemplos numéricos finales.
 
-**Siguiente unidad:** fisica.termodinamica.
+**Siguiente unidad:** geometria.razonamiento-con-figuras.
