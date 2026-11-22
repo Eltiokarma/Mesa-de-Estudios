@@ -2,13 +2,13 @@
 
 Actualizado: 22 de noviembre de 2026 (Perú).
 
-**Completadas: 1 de 8. Pendientes: 7.**
+**Completadas: 2 de 8. Pendientes: 6.**
 
 | Orden | Curso | Unidad | Archivo | Estado |
 | --- | --- | --- | --- | --- |
 | 1 | Álgebra | Inecuaciones | [algebra.inecuaciones.md](algebra.inecuaciones.md) | Completa: investigación nueva y revisión documental. |
-| 2 | Aritmética | Problemas de razonamiento numérico | aritmetica.razonamiento-numerico.md | Pendiente. Siguiente unidad. |
-| 3 | Física | Movimiento armónico simple | fisica.oscilaciones.md | Pendiente. |
+| 2 | Aritmética | Problemas de razonamiento numérico | [aritmetica.razonamiento-numerico.md](aritmetica.razonamiento-numerico.md) | Completa: investigación nueva y revisión documental. |
+| 3 | Física | Movimiento armónico simple | fisica.oscilaciones.md | Pendiente. Siguiente unidad. |
 | 4 | Geometría | Polígonos regulares | geometria.poligonos-regulares.md | Pendiente. |
 | 5 | Química | Estado gaseoso | quimica.gases.md | Pendiente. |
 | 6 | Razonamiento matemático | Máximos y mínimos | razonamiento-matematico.maximos-y-minimos.md | Pendiente. |
@@ -24,5 +24,6 @@ Un archivo Markdown por unidad, con diez secciones, de 30 a 60 KB y de tres a se
 ## Registro
 
 - Inecuaciones: seis ideas, aproximadamente 59,9 KB UTF-8; fuentes institucionales, estudios originales y una tesis peruana accesible solo por resumen, etiquetada de segunda mano. No se afirma frecuencia sin corpus suficiente.
+- Problemas de razonamiento numérico: seis ideas, aproximadamente 59,8 KB UTF-8 y dieciséis referencias; se distinguen temarios, preguntas oficiales, estudios originales e hipótesis de diseño. No se extrapolan frecuencias ni resultados históricos a los postulantes actuales.
 - Trabajo secuencial: no se utilizó la versión breve como base.
 - Solo se escriben archivos directamente en docs/investigacion/etapa11/. Se preservan breve/, LEEME.md y las demás carpetas de investigación.
