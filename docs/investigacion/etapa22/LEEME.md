@@ -1,12 +1,13 @@
 # Propuestas de teoría · Etapa 22
 
-Investigación y diseño pedagógico solicitados por Gerson. El alcance comprende cinco unidades; [estado.md](estado.md) registra las completadas y las pendientes.
-
-Primera entrega:
+Investigación y diseño pedagógico para estudiantes de 5.º de secundaria y postulantes peruanos. **Cinco propuestas completas; cero pendientes.** Consulte [estado.md](estado.md) para extensión y controles de revisión.
 
 - [Álgebra · Sucesiones y series](algebra.sucesiones-y-series.md).
 - [Física · Física moderna](fisica.fisica-moderna.md).
+- [Química · Contaminación ambiental y química aplicada](quimica.ambiente-y-quimica-aplicada.md).
+- [Razonamiento matemático · Ruedas, poleas y engranajes](razonamiento-matematico.ruedas-poleas-engranajes.md).
+- [Trigonometría · Coordenadas polares y números complejos](trigonometria.coordenadas-polares-y-complejos.md).
 
-Cada documento es autónomo y contiene diez secciones, seis ideas, los siete momentos de aprendizaje, errores con nivel de evidencia y fuentes. «Completa» significa que la propuesta documental está terminada; la implementación y las revisiones pedagógicas del proyecto siguen siendo tareas del equipo de producción.
+Cada documento es autónomo: diez secciones, seis ideas y los siete momentos de aprendizaje, con errores clasificados por evidencia y bibliografía enlazada. «Completa» significa que la propuesta documental está terminada; la implementación, el cálculo del banco final y la validación con alumnos corresponden al equipo de producción.
 
-Los archivos de unidad y estado conservan el contenido de `Etapa_22_Entrega_01.zip`. La siguiente unidad pendiente es Química · Contaminación ambiental y química aplicada, seguida de Ruedas, poleas y engranajes y de Coordenadas polares y números complejos.
+La entrega acumulativa `Etapa_22_Completa_Entrega_02.zip` contiene las cinco unidades y `estado.md`. La entrega 01 contenía Álgebra y Física; la entrega 02 añade Química, Razonamiento matemático y Trigonometría.
