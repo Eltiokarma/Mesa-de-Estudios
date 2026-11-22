@@ -8,7 +8,7 @@
     "fisica.gravitacion"
   ],
   "estado": "borrador",
-  "rehacer": ["fisica.estatica", "fisica.dinamica"],
+  "rehacer": ["fisica.estatica", "fisica.dinamica", "fisica.gravitacion"],
   "version": "0.1.0",
   "generador": "generador.js",
   "casos": "casos.json",

@@ -148,13 +148,16 @@
         "Leyes de Kepler",
         "Ley de gravitación universal",
         "Campo gravitatorio",
-        "Variación de g con la altura"
+        "Variación de g con la altura",
+        "Energía gravitatoria",
+        "Órbitas circulares",
+        "Rapidez de escape"
       ],
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 4,
-      "requiere": ["fisica.dinamica", "fisica.movimiento-circular"],
-      "plantillas": ["gravitacion", "dinamica-fuerzas"],
+      "requiere": ["fisica.dinamica", "fisica.movimiento-circular", "fisica.trabajo-y-energia"],
+      "plantillas": ["fis-gravitacion", "gravitacion", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
