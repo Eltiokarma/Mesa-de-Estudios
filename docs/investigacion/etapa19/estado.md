@@ -2,18 +2,18 @@
 
 Actualizado: 22 de noviembre de 2026 (Perú).
 
-- Unidades completas: 3 de 8.
-- Unidades pendientes: 5.
+- Unidades completas: 4 de 8.
+- Unidades pendientes: 4.
 - Trabajo continuo: cada unidad se sube al terminar su revisión.
 - Destino exclusivo: docs/investigacion/etapa19/.
-- Siguiente unidad: geometria.solidos-de-revolucion.md.
+- Siguiente unidad: quimica.funciones-organicas.md.
 
 | Identificador | Curso | Unidad | Estado |
 |---|---|---|---|
 | [algebra.funciones](algebra.funciones.md) | Álgebra | Funciones y sus gráficas | COMPLETA |
 | [aritmetica.estadistica](aritmetica.estadistica.md) | Aritmética | Estadística descriptiva | COMPLETA |
 | [fisica.ondas-mecanicas](fisica.ondas-mecanicas.md) | Física | Ondas mecánicas y sonido | COMPLETA |
-| [geometria.solidos-de-revolucion](geometria.solidos-de-revolucion.md) | Geometría | Cilindro, cono y esfera | PENDIENTE |
+| [geometria.solidos-de-revolucion](geometria.solidos-de-revolucion.md) | Geometría | Cilindro, cono y esfera | COMPLETA |
 | [quimica.funciones-organicas](quimica.funciones-organicas.md) | Química | Funciones orgánicas oxigenadas y nitrogenadas | PENDIENTE |
 | [razonamiento-matematico.transformaciones-de-figuras](razonamiento-matematico.transformaciones-de-figuras.md) | Razonamiento matemático | Movimiento y comparación de figuras | PENDIENTE |
 | [razonamiento-verbal.textos-argumentativos-y-dialecticos](razonamiento-verbal.textos-argumentativos-y-dialecticos.md) | Razonamiento verbal | Textos argumentativos, dialécticos y debate | PENDIENTE |
