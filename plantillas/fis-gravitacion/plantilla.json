@@ -1,0 +1,13 @@
+{
+  "id": "fis-gravitacion",
+  "titulo": "Gravitación, órbitas y escape",
+  "formato": "predicciones",
+  "unidades": ["fisica.gravitacion"],
+  "temas": ["Ley de gravitación universal", "Campo gravitatorio", "Variación de g con la altura", "Energía gravitatoria", "Órbitas circulares", "Leyes de Kepler", "Rapidez de escape"],
+  "estado": "probada",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}
