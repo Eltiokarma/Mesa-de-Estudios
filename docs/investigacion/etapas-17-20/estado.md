@@ -4,17 +4,17 @@ Actualizado: 21 de noviembre de 2026, fecha de referencia de Perú. Actualizaci�
 
 Alcance confirmado: las 32 unidades de las etapas 17, 18, 19 y 20. Se trabaja por unidad completa, en el orden de esta tabla. Una entrega parcial no marca como terminadas las unidades restantes.
 
-**Completas: 3 de 32. Pendientes: 29.** El proyecto todavía no está terminado.
+**Completas: 4 de 32. Pendientes: 28.** El proyecto todavía no está terminado.
 
 Esta carpeta reúne las propuestas Markdown completas de las entregas 01 y 02 y su estado actualizado. Cada propuesta tiene diez secciones, seis ideas con su recorrido pedagógico, errores etiquetados y fuentes enlazadas. No contiene código de la app ni un banco de ejercicios finales calculados.
 
 | Etapa | Completas | Pendientes |
 |---|---|---|
-| 17 | 3 | 5 |
+| 17 | 4 | 4 |
 | 18 | 0 | 8 |
 | 19 | 0 | 8 |
 | 20 | 0 | 8 |
-| Total | 3 | 29 |
+| Total | 4 | 28 |
 
 ## Unidades y orden de continuación
 
@@ -23,8 +23,8 @@ Esta carpeta reúne las propuestas Markdown completas de las entregas 01 y 02 y 
 | 1 | 17 | Álgebra | Lógica, conjuntos y juegos lógicos | algebra.logica-y-conjuntos.md | COMPLETA · Entrega 01 |
 | 2 | 17 | Aritmética | Lógica proposicional | aritmetica.logica-proposicional.md | COMPLETA · Entrega 01 |
 | 3 | 17 | Física | Campo y fuerza magnética | fisica.magnetismo.md | COMPLETA · Entrega 02 |
-| 4 | 17 | Geometría | Poliedros | geometria.poliedros.md | PENDIENTE · Siguiente |
-| 5 | 17 | Química | Electroquímica | quimica.electroquimica.md | PENDIENTE |
+| 4 | 17 | Geometría | Poliedros | geometria.poliedros.md | COMPLETA · Entrega 02 |
+| 5 | 17 | Química | Electroquímica | quimica.electroquimica.md | PENDIENTE · Siguiente |
 | 6 | 17 | Razonamiento matemático | Diagramas de flujo y operadores | razonamiento-matematico.diagramas-de-flujo.md | PENDIENTE |
 | 7 | 17 | Razonamiento verbal | Textos discontinuos e infografías | razonamiento-verbal.textos-discontinuos.md | PENDIENTE |
 | 8 | 17 | Trigonometría | Transformaciones y series trigonométricas | trigonometria.transformaciones-trigonometricas.md | PENDIENTE |
@@ -60,11 +60,12 @@ Esta carpeta reúne las propuestas Markdown completas de las entregas 01 y 02 y 
 | algebra.logica-y-conjuntos.md | 59800 bytes | 9609 | 6 |
 | aritmetica.logica-proposicional.md | 59768 bytes | 9370 | 6 |
 | fisica.magnetismo.md | 59672 bytes | 9483 | 6 |
+| geometria.poliedros.md | 59973 bytes | 9552 | 6 |
 
 Se revisaron el orden de conceptos, la reserva de un caso nuevo para cada predicción, las cuatro opciones y su relación con los códigos de error, las tarjetas de Lee, el vocabulario con ejemplos, las referencias y la estructura de tablas. Se distinguen preguntas observadas, temarios y estimaciones pedagógicas. La muestra disponible no permite establecer frecuencias de examen.
 
 ## Cómo continuar
 
-Al recibir «sigue» o «continúa», seguir con **Geometría · Poliedros**, identificador `geometria.poliedros`. Terminar cada unidad antes de empezar la siguiente, manteniendo profundidad y fuentes específicas. Las pendientes no son propuestas completadas.
+Al recibir «sigue» o «continúa», seguir con **Química · Electroquímica**, identificador `quimica.electroquimica`. Terminar cada unidad antes de empezar la siguiente, manteniendo profundidad y fuentes específicas. Las pendientes no son propuestas completadas.
 
 Las siguientes entregas deben incluir sus unidades completas y un `estado.md` actualizado. El cierre del conjunto solo corresponde cuando el estado indique **0 pendientes**.
