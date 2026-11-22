@@ -1,31 +1,31 @@
 # Estado · Propuestas de teoría de las etapas 17 a 20
 
-Actualizado: 21 de noviembre de 2026, fecha de referencia de Perú. Actualización de la entrega 02.
+Actualizado: 22 de noviembre de 2026, fecha de referencia de Perú.
 
-Alcance confirmado: las 32 unidades de las etapas 17, 18, 19 y 20. Se trabaja por unidad completa, en el orden de esta tabla. Una entrega parcial no marca como terminadas las unidades restantes.
+Alcance: 32 unidades. Se termina y revisa una unidad antes de comenzar la siguiente. Cada documento terminado se publica directamente en el repositorio junto con este estado.
 
-**Completas: 4 de 32. Pendientes: 28.** El proyecto todavía no está terminado.
+**Completas: 5 de 32. Pendientes: 27.**
 
-Esta carpeta reúne las propuestas Markdown completas de las entregas 01 y 02 y su estado actualizado. Cada propuesta tiene diez secciones, seis ideas con su recorrido pedagógico, errores etiquetados y fuentes enlazadas. No contiene código de la app ni un banco de ejercicios finales calculados.
+La propuesta completa no equivale a contenido implementado ni validado con alumnos. Los documentos no contienen código de la app ni un banco final de ejercicios calculados.
 
 | Etapa | Completas | Pendientes |
 |---|---|---|
-| 17 | 4 | 4 |
+| 17 | 5 | 3 |
 | 18 | 0 | 8 |
 | 19 | 0 | 8 |
 | 20 | 0 | 8 |
-| Total | 4 | 28 |
+| Total | 5 | 27 |
 
 ## Unidades y orden de continuación
 
 | Orden | Etapa | Curso | Unidad | Archivo previsto | Estado |
 |---|---|---|---|---|---|
-| 1 | 17 | Álgebra | Lógica, conjuntos y juegos lógicos | algebra.logica-y-conjuntos.md | COMPLETA · Entrega 01 |
-| 2 | 17 | Aritmética | Lógica proposicional | aritmetica.logica-proposicional.md | COMPLETA · Entrega 01 |
-| 3 | 17 | Física | Campo y fuerza magnética | fisica.magnetismo.md | COMPLETA · Entrega 02 |
-| 4 | 17 | Geometría | Poliedros | geometria.poliedros.md | COMPLETA · Entrega 02 |
-| 5 | 17 | Química | Electroquímica | quimica.electroquimica.md | PENDIENTE · Siguiente |
-| 6 | 17 | Razonamiento matemático | Diagramas de flujo y operadores | razonamiento-matematico.diagramas-de-flujo.md | PENDIENTE |
+| 1 | 17 | Álgebra | Lógica, conjuntos y juegos lógicos | algebra.logica-y-conjuntos.md | COMPLETA |
+| 2 | 17 | Aritmética | Lógica proposicional | aritmetica.logica-proposicional.md | COMPLETA |
+| 3 | 17 | Física | Campo y fuerza magnética | fisica.magnetismo.md | COMPLETA |
+| 4 | 17 | Geometría | Poliedros | geometria.poliedros.md | COMPLETA |
+| 5 | 17 | Química | Electroquímica | quimica.electroquimica.md | COMPLETA |
+| 6 | 17 | Razonamiento matemático | Diagramas de flujo y operadores | razonamiento-matematico.diagramas-de-flujo.md | PENDIENTE · Siguiente |
 | 7 | 17 | Razonamiento verbal | Textos discontinuos e infografías | razonamiento-verbal.textos-discontinuos.md | PENDIENTE |
 | 8 | 17 | Trigonometría | Transformaciones y series trigonométricas | trigonometria.transformaciones-trigonometricas.md | PENDIENTE |
 | 9 | 18 | Álgebra | Números reales e intervalos | algebra.numeros-reales.md | PENDIENTE |
@@ -61,11 +61,10 @@ Esta carpeta reúne las propuestas Markdown completas de las entregas 01 y 02 y 
 | aritmetica.logica-proposicional.md | 59768 bytes | 9370 | 6 |
 | fisica.magnetismo.md | 59672 bytes | 9483 | 6 |
 | geometria.poliedros.md | 59973 bytes | 9552 | 6 |
+| quimica.electroquimica.md | 59957 bytes | 9318 | 6 |
 
-Se revisaron el orden de conceptos, la reserva de un caso nuevo para cada predicción, las cuatro opciones y su relación con los códigos de error, las tarjetas de Lee, el vocabulario con ejemplos, las referencias y la estructura de tablas. Se distinguen preguntas observadas, temarios y estimaciones pedagógicas. La muestra disponible no permite establecer frecuencias de examen.
+Se revisan diez secciones, entre tres y seis ideas, cuatro opciones por predicción, correspondencia de distractores y errores, vocabulario, fuentes y continuidad conceptual. La frecuencia de examen se declara desconocida cuando la muestra no la permite.
 
-## Cómo continuar
+## Continuación
 
-Al recibir «sigue» o «continúa», seguir con **Química · Electroquímica**, identificador `quimica.electroquimica`. Terminar cada unidad antes de empezar la siguiente, manteniendo profundidad y fuentes específicas. Las pendientes no son propuestas completadas.
-
-Las siguientes entregas deben incluir sus unidades completas y un `estado.md` actualizado. El cierre del conjunto solo corresponde cuando el estado indique **0 pendientes**.
+La instrucción vigente es continuar todas las pendientes sin pedir «sigue» y publicar cada unidad al terminarla. Siguiente: `razonamiento-matematico.diagramas-de-flujo.md`.
