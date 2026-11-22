@@ -189,7 +189,7 @@
       "potencial_visual": "alto",
       "grado": 4,
       "requiere": ["fisica.trabajo-y-energia"],
-      "plantillas": ["choques", "velocidad-relativa", "impulso-grafica"],
+      "plantillas": ["fis-impulso-choques", "choques", "velocidad-relativa", "impulso-grafica"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
     {
@@ -414,3 +414,4 @@
     }
   ]
 }
+
