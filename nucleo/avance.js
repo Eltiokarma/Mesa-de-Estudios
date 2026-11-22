@@ -115,6 +115,13 @@
       if (sinHuella(est, r.u, { marca: r.p, ideas: r.cambian })) cambio = true;
       if (r.e && conservaEstudio(est, { de: r.u, a: r.u, estudiada: { marca: r.e, fecha: '2026-11-19', ideas: r.antes } })) cambio = true;
     }
+    // Etapa 9 (22 nov): Impulso y choques conserva cinco ids con otra Predice y añade cantidad-movimiento.
+    // Quien terminó las cinco conserva «Ya la estudié»; la nueva idea queda pendiente.
+    if (sinHuella(est, 'fisica.impulso-y-choques', { marca: 'prediccionIC9',
+      ideas: ['impulso', 'conservacion', 'elastico-inelastico', 'restitucion', 'centro-masa'] })) cambio = true;
+    if (conservaEstudio(est, { de: 'fisica.impulso-y-choques', a: 'fisica.impulso-y-choques',
+      estudiada: { marca: 'estudiadaIC9', fecha: '2026-11-22',
+        ideas: ['impulso', 'conservacion', 'elastico-inelastico', 'restitucion', 'centro-masa'] } })) cambio = true;
     return cambio;
   }
   const REHECHAS_E6 = [
