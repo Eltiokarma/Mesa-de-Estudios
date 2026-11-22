@@ -1,0 +1,413 @@
+{
+  "plantilla": "fis-gravitacion",
+  "nota": "Veinte casos reproducibles: uno por cada tipo y dos casos adicionales de escape radial, residual y retorno. Usar generar(semilla, opciones). entrada conserva todos los datos originales; esperado contiene valor, unidad y texto.",
+  "verificacion": "Oráculo independiente en oraculo.test.js: fracciones BigInt, integración de fuerza con cambio de variable, bisección para raíces y retorno, y balances físicos. El script temporal casos-practica-independientes.cjs solo leyó _datos del generador; no leyó respuesta.valor ni alternativas. El redondeo y formato del texto también se calculan aparte.",
+  "casos": [
+    {
+      "semilla": 0,
+      "opciones": {
+        "tipo": "fuerza"
+      },
+      "entrada": {
+        "idea": "cuadrado-inverso",
+        "tipo": "fuerza",
+        "nivel": 1,
+        "variante": "base",
+        "G": 6.67e-11,
+        "M": 6.299999999999999e+24,
+        "m": 130,
+        "r": 11500000
+      },
+      "esperado": {
+        "respuesta": 413.0608695652173,
+        "unidad": "N",
+        "texto": "≈ 413,061 N"
+      }
+    },
+    {
+      "semilla": 1,
+      "opciones": {
+        "tipo": "factores-fuerza"
+      },
+      "entrada": {
+        "idea": "cuadrado-inverso",
+        "tipo": "factores-fuerza",
+        "nivel": 2,
+        "variante": "base",
+        "F0": 63,
+        "kM": 5,
+        "km": 4,
+        "kr": 3
+      },
+      "esperado": {
+        "respuesta": 140,
+        "unidad": "N",
+        "texto": "140 N"
+      }
+    },
+    {
+      "semilla": 2,
+      "opciones": {
+        "tipo": "superposicion"
+      },
+      "entrada": {
+        "idea": "cuadrado-inverso",
+        "tipo": "superposicion",
+        "nivel": 3,
+        "variante": "base",
+        "G": 6.67e-11,
+        "MA": 4.999999999999999e+24,
+        "MB": 4e+24,
+        "m": 530,
+        "D": 12000000,
+        "x": 3000000
+      },
+      "esperado": {
+        "respuesta": -17893.71604938271,
+        "unidad": "N",
+        "texto": "≈ −17 893,716 N"
+      }
+    },
+    {
+      "semilla": 3,
+      "opciones": {
+        "tipo": "campo"
+      },
+      "entrada": {
+        "idea": "campo-gravitatorio",
+        "tipo": "campo",
+        "nivel": 1,
+        "variante": "base",
+        "GM": 670000000000000,
+        "r": 7500000
+      },
+      "esperado": {
+        "respuesta": 11.911111111111111,
+        "unidad": "N/kg",
+        "texto": "≈ 11,911 N/kg"
+      }
+    },
+    {
+      "semilla": 4,
+      "opciones": {
+        "tipo": "peso-altura"
+      },
+      "entrada": {
+        "idea": "campo-gravitatorio",
+        "tipo": "peso-altura",
+        "nivel": 2,
+        "variante": "base",
+        "GM": 509999999999999.94,
+        "R": 4000000,
+        "h": 1500000,
+        "gramos": 63000
+      },
+      "esperado": {
+        "respuesta": 1062.1487603305784,
+        "unidad": "N",
+        "texto": "≈ 1 062,149 N"
+      }
+    },
+    {
+      "semilla": 5,
+      "opciones": {
+        "tipo": "campo-nulo"
+      },
+      "entrada": {
+        "idea": "campo-gravitatorio",
+        "tipo": "campo-nulo",
+        "nivel": 3,
+        "variante": "base",
+        "MA": 4e+24,
+        "MB": 4.9e+25,
+        "D": 13000000
+      },
+      "esperado": {
+        "respuesta": 2888.888888888889,
+        "unidad": "km",
+        "texto": "≈ 2 888,889 km"
+      }
+    },
+    {
+      "semilla": 6,
+      "opciones": {
+        "tipo": "potencial"
+      },
+      "entrada": {
+        "idea": "energia-gravitatoria",
+        "tipo": "potencial",
+        "nivel": 1,
+        "variante": "base",
+        "GM": 430000000000000,
+        "m": 370,
+        "r": 7500000
+      },
+      "esperado": {
+        "respuesta": -21213.333333333332,
+        "unidad": "MJ",
+        "texto": "≈ −21 213,333 MJ"
+      }
+    },
+    {
+      "semilla": 7,
+      "opciones": {
+        "tipo": "trabajo-radial"
+      },
+      "entrada": {
+        "idea": "energia-gravitatoria",
+        "tipo": "trabajo-radial",
+        "nivel": 2,
+        "variante": "base",
+        "GM": 509999999999999.94,
+        "m": 230,
+        "ri": 13000000,
+        "rf": 6500000
+      },
+      "esperado": {
+        "respuesta": 9023.076923076922,
+        "unidad": "MJ",
+        "texto": "≈ 9 023,077 MJ"
+      }
+    },
+    {
+      "semilla": 8,
+      "opciones": {
+        "tipo": "rapidez-energia"
+      },
+      "entrada": {
+        "idea": "energia-gravitatoria",
+        "tipo": "rapidez-energia",
+        "nivel": 3,
+        "variante": "base",
+        "GM": 370000000000000,
+        "ri": 12000000,
+        "rf": 18000000,
+        "vi": 13000
+      },
+      "esperado": {
+        "respuesta": 12.18377792166471,
+        "unidad": "km/s",
+        "texto": "≈ 12,184 km/s"
+      }
+    },
+    {
+      "semilla": 9,
+      "opciones": {
+        "tipo": "circular"
+      },
+      "entrada": {
+        "idea": "orbita-circular",
+        "tipo": "circular",
+        "nivel": 1,
+        "variante": "base",
+        "GM": 430000000000000,
+        "r": 15500000
+      },
+      "esperado": {
+        "respuesta": 5.267061370809246,
+        "unidad": "km/s",
+        "texto": "≈ 5,267 km/s"
+      }
+    },
+    {
+      "semilla": 10,
+      "opciones": {
+        "tipo": "periodo-altura"
+      },
+      "entrada": {
+        "idea": "orbita-circular",
+        "tipo": "periodo-altura",
+        "nivel": 2,
+        "variante": "base",
+        "GM": 370000000000000,
+        "R": 5500000,
+        "h": 3000000
+      },
+      "esperado": {
+        "respuesta": 2.2485621407282816,
+        "unidad": "h",
+        "texto": "≈ 2,249 h"
+      }
+    },
+    {
+      "semilla": 11,
+      "opciones": {
+        "tipo": "altura-otra-orbita"
+      },
+      "entrada": {
+        "idea": "orbita-circular",
+        "tipo": "altura-otra-orbita",
+        "nivel": 3,
+        "variante": "base",
+        "R": 3500000,
+        "r1": 13000000,
+        "T1": 11000,
+        "T2": 33000
+      },
+      "esperado": {
+        "respuesta": 23541.089699674754,
+        "unidad": "km",
+        "texto": "≈ 23 541,09 km"
+      }
+    },
+    {
+      "semilla": 12,
+      "opciones": {
+        "tipo": "semieje"
+      },
+      "entrada": {
+        "idea": "leyes-de-kepler",
+        "tipo": "semieje",
+        "nivel": 1,
+        "variante": "base",
+        "rp": 7000000,
+        "ra": 14000000
+      },
+      "esperado": {
+        "respuesta": 10500,
+        "unidad": "km",
+        "texto": "10 500 km"
+      }
+    },
+    {
+      "semilla": 13,
+      "opciones": {
+        "tipo": "sector-tiempo"
+      },
+      "entrada": {
+        "idea": "leyes-de-kepler",
+        "tipo": "sector-tiempo",
+        "nivel": 2,
+        "variante": "base",
+        "T": 61200,
+        "S_total": 2000000000000000,
+        "S_barrida": 500000000000000
+      },
+      "esperado": {
+        "respuesta": 15300,
+        "unidad": "s",
+        "texto": "15 300 s"
+      }
+    },
+    {
+      "semilla": 14,
+      "opciones": {
+        "tipo": "kepler-extremos"
+      },
+      "entrada": {
+        "idea": "leyes-de-kepler",
+        "tipo": "kepler-extremos",
+        "nivel": 3,
+        "variante": "base",
+        "T1": 39600,
+        "a1": 10000000,
+        "rp": 9000000,
+        "ra": 27000000
+      },
+      "esperado": {
+        "respuesta": 95632.15526171101,
+        "unidad": "s",
+        "texto": "≈ 95 632,155 s"
+      }
+    },
+    {
+      "semilla": 15,
+      "opciones": {
+        "tipo": "escape"
+      },
+      "entrada": {
+        "idea": "escape",
+        "tipo": "escape",
+        "nivel": 1,
+        "variante": "base",
+        "GM": 670000000000000,
+        "r0": 13500000
+      },
+      "esperado": {
+        "respuesta": 9.962894120648842,
+        "unidad": "km/s",
+        "texto": "≈ 9,963 km/s"
+      }
+    },
+    {
+      "semilla": 16,
+      "opciones": {
+        "tipo": "escape-superficie"
+      },
+      "entrada": {
+        "idea": "escape",
+        "tipo": "escape-superficie",
+        "nivel": 2,
+        "variante": "base",
+        "g0": 13,
+        "R": 4500000,
+        "h": 2000000
+      },
+      "esperado": {
+        "respuesta": 9,
+        "unidad": "km/s",
+        "texto": "9 km/s"
+      }
+    },
+    {
+      "semilla": 17,
+      "opciones": {
+        "tipo": "escape-radial"
+      },
+      "entrada": {
+        "idea": "escape",
+        "tipo": "escape-radial",
+        "nivel": 3,
+        "variante": "residual",
+        "GM": 370000000000000,
+        "r0": 13500000,
+        "v0": 16000
+      },
+      "esperado": {
+        "respuesta": 14.183976353095954,
+        "unidad": "km/s",
+        "texto": "≈ 14,184 km/s"
+      }
+    },
+    {
+      "semilla": 1000,
+      "opciones": {
+        "tipo": "escape-radial"
+      },
+      "entrada": {
+        "idea": "escape",
+        "tipo": "escape-radial",
+        "nivel": 3,
+        "variante": "residual",
+        "GM": 509999999999999.94,
+        "r0": 13500000,
+        "v0": 18000
+      },
+      "esperado": {
+        "respuesta": 15.762120556715853,
+        "unidad": "km/s",
+        "texto": "≈ 15,762 km/s"
+      }
+    },
+    {
+      "semilla": 1004,
+      "opciones": {
+        "tipo": "escape-radial"
+      },
+      "entrada": {
+        "idea": "escape",
+        "tipo": "escape-radial",
+        "nivel": 3,
+        "variante": "retorno",
+        "GM": 509999999999999.94,
+        "r0": 15500000,
+        "v0": 4000
+      },
+      "esperado": {
+        "respuesta": 20479.274611398963,
+        "unidad": "km",
+        "texto": "≈ 20 479,275 km"
+      }
+    }
+  ]
+}
