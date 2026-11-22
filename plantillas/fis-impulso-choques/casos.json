@@ -1,0 +1,305 @@
+{
+  "plantilla": "fis-impulso-choques",
+  "nota": "Una entrada por cada uno de los 18 tipos. Cada semilla se reproduce con generar(semilla, {tipo: entrada.tipo}). Las velocidades son componentes con signo.",
+  "verificacion": "Cálculo aparte del motor: oráculo racional BigInt de oraculo.test.js; eliminación de ecuaciones para choques, integración geométrica para impulso y promedio de posiciones finales para evolución del centro. Los esperados y su formato se escribieron con work/etapa9/casos-practica-independientes.cjs, sin leer respuesta.valor ni alternativas.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "idea": "cantidad-movimiento",
+        "tipo": "componente",
+        "nivel": 1,
+        "m": 0.5,
+        "u": -4,
+        "pide": "modulo"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2 kg·m/s"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "idea": "cantidad-movimiento",
+        "tipo": "conversiones",
+        "nivel": 2,
+        "g": 750,
+        "kmh": -7.2,
+        "pide": "modulo"
+      },
+      "esperado": {
+        "respuesta": 1.5,
+        "texto": "1,5 kg·m/s"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "idea": "cantidad-movimiento",
+        "tipo": "despeje-carga",
+        "nivel": 3,
+        "mc": 3,
+        "ml": 1,
+        "p": -24,
+        "unidadSalida": "km/h"
+      },
+      "esperado": {
+        "respuesta": -21.6,
+        "texto": "−21,6 km/h"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "idea": "impulso",
+        "tipo": "fuerza-constante",
+        "nivel": 1,
+        "F": 8,
+        "dt": 1.5
+      },
+      "esperado": {
+        "respuesta": 12,
+        "texto": "12 N·s"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "idea": "impulso",
+        "tipo": "rebote-media",
+        "nivel": 2,
+        "m": 0.2,
+        "u": 2,
+        "w": -3,
+        "dt": 0.5
+      },
+      "esperado": {
+        "respuesta": -2,
+        "texto": "−2 N"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "idea": "impulso",
+        "tipo": "tramos-velocidad",
+        "nivel": 3,
+        "m": 2,
+        "u": -2,
+        "F1": 20,
+        "t1": 0.6,
+        "F2": -5,
+        "t2": 0.5
+      },
+      "esperado": {
+        "respuesta": -0.25,
+        "texto": "−0,25 m/s"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "idea": "conservacion",
+        "tipo": "adhesion",
+        "nivel": 1,
+        "m1": 1,
+        "m2": 1,
+        "u1": 5,
+        "u2": -3
+      },
+      "esperado": {
+        "respuesta": 1,
+        "texto": "1 m/s"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "idea": "conservacion",
+        "tipo": "retroceso",
+        "nivel": 2,
+        "m1": 4,
+        "m2": 2,
+        "V": -1,
+        "w2": 10
+      },
+      "esperado": {
+        "respuesta": -6.5,
+        "texto": "−6,5 m/s"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "idea": "conservacion",
+        "tipo": "balance-externo",
+        "nivel": 3,
+        "m1": 4,
+        "m2": 6,
+        "u1": 5,
+        "u2": 0,
+        "I": -8,
+        "w2": -2
+      },
+      "esperado": {
+        "respuesta": 6,
+        "texto": "6 m/s"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "idea": "elastico-inelastico",
+        "tipo": "elastico-frontal",
+        "nivel": 1,
+        "m1": 6,
+        "m2": 4,
+        "u1": 10,
+        "u2": -2,
+        "pide": "v2"
+      },
+      "esperado": {
+        "respuesta": 12.4,
+        "texto": "12,4 m/s"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "idea": "elastico-inelastico",
+        "tipo": "energia-transformada",
+        "nivel": 2,
+        "m1": 2,
+        "m2": 1,
+        "u1": 5,
+        "u2": 2
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3 J"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "idea": "elastico-inelastico",
+        "tipo": "adhesion-rampa",
+        "nivel": 3,
+        "m1": 6,
+        "m2": 4,
+        "u1": 10,
+        "u2": -3,
+        "g": 10,
+        "mu": 0.5,
+        "pide": "distancia"
+      },
+      "esperado": {
+        "respuesta": 2.304,
+        "texto": "2,304 m"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "idea": "restitucion",
+        "tipo": "rapidez-relativa",
+        "nivel": 1,
+        "u1": 4,
+        "u2": 2,
+        "w1": 2.2,
+        "w2": 3.2
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "texto": "0,5"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "idea": "restitucion",
+        "tipo": "alturas",
+        "nivel": 2,
+        "h0": 5,
+        "h1": 3.2
+      },
+      "esperado": {
+        "respuesta": 0.8,
+        "texto": "0,8"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "idea": "restitucion",
+        "tipo": "rebote-tiempo",
+        "nivel": 3,
+        "h0": 1.8,
+        "e": 0.25,
+        "g": 10
+      },
+      "esperado": {
+        "respuesta": 0.3,
+        "texto": "0,3 s"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "idea": "centro-masa",
+        "tipo": "dos-cuerpos",
+        "nivel": 1,
+        "m1": 3,
+        "x1": -1,
+        "m2": 2,
+        "x2": 6
+      },
+      "esperado": {
+        "respuesta": 1.8,
+        "texto": "1,8 m"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "idea": "centro-masa",
+        "tipo": "tres-cuerpos",
+        "nivel": 2,
+        "masas": [
+          3,
+          4,
+          5
+        ],
+        "posiciones": [
+          -3,
+          0,
+          6
+        ]
+      },
+      "esperado": {
+        "respuesta": 1.75,
+        "texto": "1,75 m"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "idea": "centro-masa",
+        "tipo": "evolucion",
+        "nivel": 3,
+        "m1": 2,
+        "m2": 2,
+        "u1": 3,
+        "u2": 1,
+        "x1": -2,
+        "x2": 1,
+        "t": 0.5
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "texto": "0,5 m"
+      }
+    }
+  ]
+}
