@@ -13,7 +13,7 @@ Cada fila completa corresponde a una propuesta extensa investigada desde cero, c
 | 3 | Física | Fluidos | fisica.fluidos.md | PENDIENTE |
 | 4 | Geometría | Áreas de regiones triangulares y cuadrangulares | geometria.areas-poligonales.md | PENDIENTE |
 | 5 | Química | Líquidos, sólidos y cambios de estado | quimica.liquidos-y-solidos.md | PENDIENTE |
-| 6 | Razonamiento matemático | Máximos y mínimos | razonamiento-matematico.cortes-y-pesadas.md | PENDIENTE |
+| 6 | Razonamiento matemático | Cortes, pesadas y balanzas | razonamiento-matematico.cortes-y-pesadas.md | PENDIENTE |
 | 7 | Razonamiento verbal | El texto y sus tipos | razonamiento-verbal.tipologia-textual.md | PENDIENTE |
 | 8 | Trigonometría | Funciones trigonométricas inversas | trigonometria.funciones-trigonometricas-inversas.md | PENDIENTE |
 
@@ -28,6 +28,6 @@ Cada fila completa corresponde a una propuesta extensa investigada desde cero, c
 
 Siguiente unidad: Física · Fluidos. Terminarla y publicarla antes de iniciar Geometría. Mantener el orden de la tabla, la profundidad de 30–60 KB por unidad y la investigación web independiente.
 
-El identificador de Máximos y mínimos se conserva exactamente como fue encargado, aunque contenga “cortes-y-pesadas”. Su alcance deberá explicarse en la sección de decisiones de esa unidad.
+Nota de la sesión (24 nov): la unidad 6 es «Cortes, pesadas y balanzas» (identificador del catálogo `razonamiento-matematico.cortes-y-pesadas`); Máximos y mínimos pertenece a la Etapa 11 (`etapa11/`). La tabla decía mal el nombre.
 
 Destino exclusivo: raíz de docs/investigacion/etapa12/. No modificar breve/, LEEME.md ni otras carpetas de investigación.
