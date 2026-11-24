@@ -19,7 +19,7 @@ Se revisaron temarios de UNMSM, CEPREUNI y CEPREUNA, y preguntas del solucionari
 | Interpretar cantidades, cambios y relaciones; traducir a operaciones o ecuaciones. | UNMSM: temario de habilidad lógico-matemática. | Básica a alta según relaciones. | Presencia curricular; no frecuencia de examen. | [F1], bloques de cantidad e interpretación/simbolización. |
 | Resolver situaciones mediante cuatro operaciones y planteo de ecuaciones, incluyendo mezclas. | CEPREUNA: semana 05. | Media. | Tema programado, no preguntas contadas. | [F4]. |
 | Aplicar falsa suposición o método regresivo. | CEPREUNI: contenido explícito. | Media a alta. | Presencia curricular. | [F2]. |
-| Comparar producción al cambiar trabajadores, horas o días; evaluar proposiciones. | UNI: primer parcial de ingreso directo CEPRE 2015-1, pregunta 41. | Media por coordinación de factores. | Un ítem localizado en esa modalidad. | [F3], página impresa 125. |
+| Comparar producción al cambiar trabajadores, horas o días; evaluar proposiciones. | UNI: primer parcial de ingreso directo CEPRE 2015-1, pregunta 41. | Media por coordinación de factores. | Un ítem localizado en esa modalidad. | [F3], página impresa 126. |
 | Relacionar edades en tiempos distintos y una suma. | UNI: mismo parcial CEPRE, pregunta 42; CEPREUNA programa edades. | Media por referencia temporal. | Un ítem y presencia curricular. | [F3]; [F4], semana 06. |
 | Interpretar frecuencias, media y cambios de valores. | UNI: examen ordinario 2015-1, tercer examen, pregunta 75. | Media a alta. | Un ítem localizado. | [F3]. |
 | Decidir suficiencia de datos. | UNI: formato en preguntas 65–67 del ordinario 2015-1, con contenidos diversos; también en CEPREUNI. | Alta por exigencia de unicidad. | Formato verificado; sin frecuencia específica de esta unidad. | [F2, F3]. |
@@ -326,7 +326,7 @@ Como extensión posterior, un pedido de producción pide comparar dos planes de 
 #### 1. Lee
 
 1. **Un lugar por huevo.** Esta bandeja tiene una cantidad fija de espacios. El caso no permite apilar huevos sobre otros.
-2. **Completa y parcial.** Una bandeja puede estar llena o contener solo algunos huevos. Ambas son objetos enteros.
+2. **Completa y parcial.** Una bandeja puede estar llena o contener solo algunos huevos.
 3. **Fuera de las bandejas.** Los huevos que todavía están en la mesa siguen formando parte del pedido.
 
 #### 2. Juega
@@ -466,7 +466,7 @@ Para combinar medias de grupos se necesita conocer cuántas observaciones repres
 1. Obtener el costo de cada lote multiplicando masa por costo unitario.
 2. Sumar esos costos y, por separado, sumar las masas.
 3. Dividir el costo total entre la masa total. El resultado resuelto en letras es \(\bar p=(p_1Q_1+p_2Q_2)/(Q_1+Q_2)\); al sustituir, las unidades son soles por kilogramo.
-4. Comprobar que la media esté entre los costos de origen y más próxima al del lote de mayor masa cuando son distintos.
+4. Comprobar que la media esté entre los costos de origen y, cuando las masas y los costos son distintos, más próxima al del lote de mayor masa.
 5. Mostrar que trasladar parte de una mezcla homogénea sin pérdidas no cambia su costo medio global. No se aplica esa conclusión a retirar selectivamente un lote de composición diferente.
 
 #### 7. Ahora tú
@@ -646,3 +646,12 @@ Escenas y secuencia propias. «s.f.»: año no confirmado. Consulta: 22 de novie
 - **[F14] Tottus Perú (s.f.; consulta de 2026).** Catálogo de huevos. [Página del vendedor](https://www.tottus.com.pe/tottus-pe/seleccion/promhuevos?sid=HO_SU_HUEV_FRES_01-10_S40).
 - **[F15] Epson (s.f.).** *Tipos de papel compatibles*, soporte XP-2101. [Tabla del fabricante](https://files.support.epson.com/docid/cpd5/cpd56925/source/printers/source/paper_loading/reference/xp2101/paper_compatibility_latin_xp2101.html).
 - **[F16] Mathematics Hub, Education Services Australia (s.f.).** *Mathematical modelling: Word problems*. [Recurso didáctico](https://www.mathematicshub.edu.au/plan-teach-and-assess/teaching/lesson-plans/mathematical-modelling-word-problems/).
+
+## 11. Auditoría (Claude, 24 nov 2026)
+
+- **Qué se comprobó.** Se rehicieron las cuentas de las seis predicciones (idea 1: 24 − 7 = 17, distractores 31 y 168; idea 2: queda 1/4; idea 3: con \(F>0\), \(F+2pQ\) queda entre \(F+pQ\) y \(2(F+pQ)\); idea 4: 94 huevos piden 4 bandejas; idea 5: (2·4 + 6·8)/8 = S/7 por kilogramo; idea 6: (18 + 6)/2 = 12, distractores 15, 6 y 48). La opción correcta lo es y cada distractor da un valor distinto. Se revisaron las reglas y condiciones de dominio (fracciones sucesivas, \(C=F+pQ\), \(N=bq+r\), media ponderada, falsa suposición y su intervalo), los códigos de error usados (todos existen en la sección 3), la tabla de símbolos y el orden Juega → Predice → Mira.
+- **Corrección 1 (sección 2, fila de trabajadores).** Las preguntas 41 y 42 del primer parcial de ingreso directo 2015-1 están en la página impresa 126 del solucionario [F3], no en la 125. Se comprobó que la 41 evalúa proposiciones sobre obreros, horas y días, y la 42 trata edades con suma 45; también que las preguntas 65 a 67 de la tercera prueba ordinaria son de suficiencia de datos y la 75 trata una tabla de notas con promedio y cambios de valores.
+- **Corrección 2 (idea 4, Lee, tarjeta 2).** Se quitó «Ambas son objetos enteros»: anticipaba la clave de la predicción (la bandeja parcial cuenta como recipiente completo) y descartaba de antemano el distractor RN-FRAC.
+- **Corrección 3 (idea 5, Así se resuelve, paso 4).** «Más próxima al lote de mayor masa cuando son distintos» era falso si las masas son iguales y los costos distintos (la media queda a igual distancia). Se precisó la condición.
+- **Dudoso sin resolver.** En la idea 2, la opción A («la mitad del inicial») encaja mal con RN-REF tal como lo define la sección 3: describe más bien omitir el segundo retiro; conviene un código propio (hipótesis) o reformular el distractor. Las filas RN-CLAVE, RN-TODO y RN-CALC figuran como DOCUMENTADO con [F5] y [F6], que no se pudieron abrir: quedan sin verificar. Las páginas 37–38 de [F5] y el título completo de [F6] no se comprobaron.
+- **Fuentes.** 17 enlaces de 16 fuentes. Se abrieron y coinciden en título o contenido 13 enlaces: [F1] (temario de habilidad lógico-matemática, bloques de cantidad e interpretación/simbolización), [F2] (falsa suposición, método regresivo, suficiencia de datos), [F3], [F4] (semanas 05 y 06), [F7], [F8], [F9] (en la compilación ERIC ED410308, con los casos de buses fraccionarios), [F10], [F11], [F12], [F14] (bandejas de 30 unidades), [F15] (S041117, A4, 100 hojas) y [F16]. Fallaron: [F5] y [F6] (umc.minedu.gob.pe no respondió en 60 s, tampoco la copia del archivo web) y los dos enlaces de [F13] (el BCRP devuelve una página antibots en lugar del PDF; las monedas de S/1 y S/2 existen, pero las fichas no se pudieron abrir). No hay enlaces a Scribd ni a copias de material de academia.
