@@ -14,12 +14,12 @@ Consulta: 22 de noviembre de 2026. Se revisaron documentos oficiales, una prueba
 
 | Tipo de pregunta | Universidad | Dificultad | Frecuencia | Fuente |
 | --- | --- | --- | --- | --- |
-| Resolver igualdad de dos módulos y usar las soluciones en otra expresión. | UNMSM 2024-I, áreas B-C, pregunta 39 según reproducción de academia. | Media. | Un caso secundario; no permite estimar incidencia. | [F4]; tipo coherente con [F3]. |
+| Resolver igualdad de dos módulos y usar las soluciones en otra expresión. | UNMSM 2024-I, áreas B-C, pregunta 39 según reproducción de academia (no verificada: el enlace responde 403 y su título habla de un espejo, no de módulos). | Media. | Un caso secundario sin confirmar; no permite estimar incidencia. | [F4]; tipo coherente con [F3]. |
 | Interpretar valor absoluto, orden e intervalos. | UNMSM, temario oficial 2023-I. | Básica–media. | Cobertura curricular, no frecuencia de examen. | [F1], p. 39. |
 | Resolver módulos con segundo miembro constante o variable. | CEPRE-UNMSM 2023-II, semana 4. | Media. | Tipo de preparación confirmado. | [F3], pp. 33–34; copia externa. |
-| Relacionar distancia, ecuaciones e inecuaciones con valor absoluto. | CEPRE-UNI 2026-2, semana 5. | Básica–alta. | Presencia explícita en programa. | [F2], p. impresa 33. |
+| Relacionar distancia, ecuaciones e inecuaciones con valor absoluto. | CEPRE-UNI 2026-2, semana 4 (junto con radicales). | Básica–alta. | Presencia explícita en programa. | [F2], p. impresa 33. |
 | Establecer existencia de radicales y resolver ecuaciones. | CEPRE-UNI 2026-2, semana 4. | Media–alta. | Presencia explícita en programa. | [F2]. |
-| Contar soluciones positivas con raíces en denominadores. | UNI 2021-1, segunda prueba, Álgebra, pregunta 6. | Alta. | Un ítem oficial inspeccionado; sin extrapolación. | [F5], p. 18. |
+| Usar condiciones con valor absoluto (\(\lvert\tan\theta\rvert=-\tan\theta\), \(\lvert\cos\theta\rvert=\cos\theta\)) para fijar signos antes de calcular. | UNI 2021-1, segunda prueba, Trigonometría, pregunta 17. | Alta. | Un ítem oficial inspeccionado; el módulo es requisito, no tema central. | [F5], p. impresa 21. |
 | Simplificar una expresión radical mediante identidades o racionalización. | UNI 2021-1, pregunta 9. | Media–alta. | Un ítem; pertenece a la frontera con operaciones algebraicas. | [F5], p. 19. |
 | Resolver inecuaciones radicales. | CEPRE-UNI 2026-2, semana 4. | Alta. | Cobertura curricular. | [F2]; ampliación fuera del núcleo de esta propuesta. |
 
@@ -48,9 +48,10 @@ La etiqueta corresponde al comportamiento observado, no a una causa psicológica
 | RA-CAN | Cancela el cuadrado con la raíz par sin considerar el signo. | Las operaciones se manejan por parecido visual, sin atender a sus condiciones. | DOCUMENTADO | Özkan y Özkan, 2012, sección 2.1.3 [F9]. |
 | RA-SUM | Convierte una raíz de suma en suma de raíces. | Extiende incorrectamente a una suma una propiedad válida bajo condiciones para productos. | DOCUMENTADO | Özkan y Özkan, 2012, sección 2.1.4 [F9]. |
 | RA-IND | Trata una raíz cúbica o de otro índice como una raíz cuadrada. | No incorpora el índice al significado de la operación. | DOCUMENTADO | Özkan y Özkan, 2012, sección 2.1.2 [F9]. |
+| RA-NEG | Cree que la raíz par no existe porque apareció un número negativo antes del radicando, aunque el radicando efectivo sea no negativo. | Hipótesis: mira el signo del dato inicial y no el del número que queda dentro de la raíz. | HIPÓTESIS | Distractor propio; requiere validación con alumnos. |
 | RA-PM | Asigna dos valores a un símbolo de raíz cuadrada. | Hipótesis: confunde evaluar una raíz principal con resolver una ecuación cuadrática. | HIPÓTESIS | La distinción matemática está respaldada por [F11]; no se presenta como hallazgo empírico propio. |
 | RA-DOM | Acepta un valor que vuelve negativo un radicando par o anula un denominador. | Hipótesis: comprueba la ecuación transformada y olvida dónde estaba definida la original. | HIPÓTESIS | Se propone como diagnóstico; [F12] respalda la necesidad matemática de restricciones, no una frecuencia local. |
-| RA-EXT | Acepta todos los candidatos obtenidos después de elevar al cuadrado. | No distingue consecuencia de equivalencia. | DOCUMENTADO | SciMathMN, s. f., guía docente, apartados de errores y notas [F12]. Es observación pedagógica, no estudio con muestra declarada. |
+| RA-EXT | Acepta todos los candidatos obtenidos después de elevar al cuadrado. | No distingue consecuencia de equivalencia. | HIPÓTESIS | [F12] advierte, en su viñeta docente, que cuadrar no siempre da una ecuación equivalente; su lista de errores comunes no registra esta conducta de alumnos. |
 | RA-BIN | Al elevar una suma al cuadrado omite el término de producto. | Aplica una distribución inexistente de la potencia sobre la suma. | DOCUMENTADO | SciMathMN, s. f., sección de errores comunes [F12]. |
 | RA-MAG | Atribuye unidades de área a la longitud obtenida mediante raíz cuadrada. | Hipótesis: transporta la unidad sin interpretar la magnitud. | HIPÓTESIS | Distractor propio; requiere validación local. |
 
@@ -249,7 +250,7 @@ La lectura no muestra aún la raíz de un cuadrado de número negativo ni resuel
 | --- | --- | --- |
 | A | El mismo número negativo del inicio. | RA-CAN: cancela raíz y cuadrado sin atender al signo. |
 | B | Dos salidas, una positiva y otra negativa. | RA-PM: atribuye dos valores al radical principal. |
-| C | No existe una salida real porque el número inicial era negativo. | RA-DOM: analiza el signo antes del cuadrado en vez del radicando efectivo. |
+| C | No existe una salida real porque el número inicial era negativo. | RA-NEG: analiza el signo antes del cuadrado en vez del radicando efectivo. |
 | D, correcta | El opuesto positivo del número inicial. | Reconoce que el radicando es positivo y la raíz principal es no negativa. |
 
 **Mira.** El registro conserva tres casillas: número inicial, su cuadrado y la raíz principal del cuadrado. Aparecen dos entradas opuestas que producen el mismo cuadrado, pero solo una salida elegida por el símbolo de raíz. No se representa un lado negativo de una loseta.
@@ -491,3 +492,14 @@ Consulta: 22 de noviembre de 2026. “s. f.” indica año editorial no confirma
 - **[F15] Abramson, Jay y colaboradores (2021).** *College Algebra 2e*, sección 2.7, “Linear Inequalities and Absolute Value Inequalities”. OpenStax. [Sección](https://openstax.org/books/college-algebra-2e/pages/2-7-linear-inequalities-and-absolute-value-inequalities).
 - **[F16] University of Colorado Boulder, PhET Interactive Simulations (s. f.).** *Number Line: Distance*. [Simulador](https://phet.colorado.edu/en/simulations/number-line-distance).
 - **[F17] Cerámica Lima S. A., CELIMA (s. f.; archivo alojado en 2021).** *Hoja técnica y ficha comercial: Concreto Gris 45 × 45, código 110006224*. [Ficha](https://celima-trebol.com/wp-content/uploads/2021/10/FICHA-TECNICA-110006224-CONCRETO-GRIS-45X45.pdf).
+
+## 11. Auditoría (Claude, 24 nov 2026)
+
+- **Qué se comprobó.** Todas las reglas de las ideas 1 a 6 (casos de \(|U|=k\), \(|U|=V\), \(|U|\lessgtr k\) y \(|U|\lessgtr V\), suma de dos módulos, raíz principal, \(\sqrt{u^2}=|u|\), producto y cociente de raíces, \(\sqrt U=V\)); las seis predicciones (correcta y distractores con valores distintos: idea 1, 5 m frente a −5, 1 y 3 m; idea 6, \((\sqrt5+\sqrt7)^2=12+2\sqrt{35}\) frente a 12 y 35); el ejemplo de la idea 6, rehecho en forma simbólica y con números en Node (verifica \(x=b+(k^2+a-b)^2/(4k^2)\) y la condición \(k^2\ge b-a\)). No se halló error de cuenta ni de condición. Juega antes de Predice y la novedad de cada predicción se cumplen.
+- **Corrección 1 (sección 2, fila UNI 2021-1 pregunta 6).** La pregunta 6 de la segunda prueba es un verdadero/falso sobre polinomios; no hay en el solucionario un ítem de «contar soluciones positivas con raíces en denominadores». Se reemplazó por la pregunta 17 (Trigonometría), que sí usa condiciones con valor absoluto (p. impresa 21). La pregunta 9 (p. impresa 19) se confirmó.
+- **Corrección 2 (sección 2, CEPRE-UNI).** Valor absoluto figura en la semana 4, junto con radicales (p. impresa 33); la semana 5 es teoría de polinomios.
+- **Corrección 3 (sección 2, UNMSM 2024-I).** La reproducción [F4] no se pudo abrir (403) y el título del enlace no corresponde a módulos: la fila queda como no verificada.
+- **Corrección 4 (idea 4, opción C).** Se marcaba RA-DOM, que describe aceptar un valor inválido; la opción rechaza un valor válido. Se creó el código RA-NEG (hipótesis) en la sección 3 y se reasignó.
+- **Corrección 5 (sección 3, RA-EXT).** Pasó de DOCUMENTADO a HIPÓTESIS: [F12] enseña que cuadrar puede dar soluciones extrañas, pero no registra la conducta en alumnos. RA-BIN sí está en su lista de errores, con \((\sqrt t+5)^2=t+25\).
+- **Dudoso sin resolver.** Las páginas y apartados citados de [F7] (el texto completo está detrás de una verificación antibots) y de [F9] (ResearchGate, 403): los metadatos de ambos sí coinciden con Crossref. El dato de SENAMHI [F14] no se pudo leer (el sitio cortó la conexión). [F6] figura en fuentes, pero el texto no lo cita.
+- **Fuentes.** 22 enlaces comprobados: 19 responden 200; fallan coursehero [F4] (403), ResearchGate [F9] (403; su DOI funciona) y SENAMHI [F14] (sin respuesta). Se confirmaron [F1] p. 39, [F2] p. 33, [F3] pp. 33–34, [F5] pp. 19 y 21, [F8] pp. 600–601 (Gagatsis y Panaoura, ecuaciones imposibles), [F12] y [F17] (Concreto Gris 45×45, Punta Hermosa). Títulos y autores de [F6], [F7], [F9] y [F10] coinciden con Crossref. [F3] (pdfpresanmarcos) y [F4] (coursehero) son copias de material de academia o del centro preuniversitario: solo sirven para saber qué se pregunta; no se halló contenido copiado de ellas en las escenas ni en los ejemplos.
