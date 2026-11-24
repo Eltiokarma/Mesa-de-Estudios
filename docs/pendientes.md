@@ -31,6 +31,10 @@ capturas y le manda notas al agente mientras sigue escribiendo.
      por rehacer.
      Las etapas 10 a 12 tienen la versión breve en `etapa10/breve/` a `etapa12/breve/` (unos 11 KB por unidad); la
      larga llega a la raíz de cada carpeta.
+     Al 24 nov llegaron y se auditaron las largas de álgebra y aritmética de las etapas 10, 11 y 12 (sección 11 de cada
+     archivo: cuentas bien; se corrigieron tarjetas Lee que adelantaban la predicción, códigos de error mal puestos y una
+     pregunta UNI inventada). ChatGPT sigue con física a trigonometría: encargos en
+     `docs/investigacion/encargos-chatgpt-24nov.md`.
 
 ## Cómo arrancar una sesión nueva
 

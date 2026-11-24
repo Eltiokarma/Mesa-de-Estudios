@@ -21,3 +21,8 @@ medida que llegue. Cuando esté, manda la larga y la breve sirve para contrastar
 (`docs/investigacion/etapa9/LEEME.md`, «Cómo se usa»): el agente de la unidad lo lee en la fase 1, toma lo que sirva y
 dice qué descartó; toda cuenta se rehace aparte, una hipótesis sigue siendo hipótesis y no se copia nada de material
 de academia.
+
+**Auditoría (Claude, 24 nov 2026).** Las versiones largas que llegaron el 22 nov se revisaron una por una: cuentas
+rehechas aparte, contrato de las escenas, códigos de error y fuentes abiertas con curl. Cada archivo trae al final su
+sección «11. Auditoría» con lo corregido y lo que quedó dudoso; léela antes de usar una cita marcada «documentado».
+Los encargos de lo que falta están en `docs/investigacion/encargos-chatgpt-24nov.md`.
