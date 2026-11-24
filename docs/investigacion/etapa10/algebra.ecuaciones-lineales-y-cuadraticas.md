@@ -42,8 +42,9 @@ Lo más difícil es justificar cada transformación, conservar todas las raíces
 | FIJO | Cree que retirar una pesa cambia la masa de cada paquete cerrado | Hipótesis: confunde la incógnita del objeto con el total visible del plato | HIPÓTESIS | Diseño propio |
 | CERO | De una identidad deduce que la incógnita vale cero o un único número visible | Hipótesis: entiende «resolver» como producir siempre un número | HIPÓTESIS | Diseño propio; no se atribuye este caso preciso a IG-OP |
 | NING | Considera que la desaparición de la incógnita significa siempre que no hay solución | Hipótesis: no distingue una igualdad verdadera de una contradicción | HIPÓTESIS | Diseño propio |
-| CUAD | Completa un cuadrado agregando la mitad del coeficiente, sin elevarla al cuadrado, o sin compensar el otro miembro | Hipótesis: retiene una parte verbal del procedimiento y omite la estructura del producto | HIPÓTESIS | Diseño propio; contraste matemático [F09] |
-| DISC | Confunde cero del discriminante con ausencia de raíces, o interpreta discriminante positivo como raíces positivas | Hipótesis: traslada el signo de una cantidad auxiliar al signo de las soluciones | HIPÓTESIS | Diseño propio |
+| CUAD | Completa un cuadrado agregando la mitad del coeficiente sin elevarla al cuadrado, elevando al cuadrado el coeficiente completo en lugar de su mitad, o sin compensar el otro miembro | Hipótesis: retiene una parte verbal del procedimiento y omite la estructura del producto | HIPÓTESIS | Diseño propio; contraste matemático [F09] |
+| DISC | Confunde cero del discriminante con ausencia de raíces, supone que toda cuadrática tiene dos raíces distintas, o interpreta discriminante positivo como raíces positivas | Hipótesis: traslada el signo de una cantidad auxiliar al signo de las soluciones | HIPÓTESIS | Diseño propio |
+| IDEN | Trata una condición que solo cumplen algunos valores como si se cumpliera para todos | Hipótesis: confunde un dato que no cambia (el perímetro) con una igualdad que vale siempre | HIPÓTESIS | Diseño propio |
 | SUMA | Usa la suma de raíces como valor de cada raíz, o cambia el signo de la relación suma-coeficientes | Hipótesis: no distingue una condición conjunta de dos valores individuales | HIPÓTESIS | Diseño propio |
 | PROD | Cambia el signo del producto de las raíces o lo confunde con la suma | Hipótesis: aplica una fórmula recordada sin reconstruir el producto de factores | HIPÓTESIS | Diseño propio |
 | DOM | Acepta un candidato que anula un denominador o una longitud negativa como respuesta del problema | Hipótesis: verifica la última ecuación, pero no la condición inicial | HIPÓTESIS | Diseño propio |
@@ -96,8 +97,8 @@ Se llama miembro a cada expresión a un lado del igual. Dos ecuaciones son equiv
 
 **Así se resuelve.** Ejemplo propio: una bolsa y una pesa de 150 g equilibran una carga de 650 g.
 
-1. Se declara que (x) es la masa numérica de la bolsa en gramos; no el número de bolsas.
-2. Se escribe (x+150=650), leyendo cada miembro completo.
+1. Se declara que $x$ es la masa numérica de la bolsa en gramos; no el número de bolsas.
+2. Se escribe $x+150=650$, leyendo cada miembro completo.
 3. Se resta 150 a ambos miembros. La línea conserva las dos restas antes de simplificar.
 4. Se evalúa la diferencia y se expresa la respuesta con gramos.
 5. Se sustituye el valor obtenido en la igualdad inicial y se comparan los totales.
@@ -242,7 +243,7 @@ Un trinomio factorizable puede reconstruirse multiplicando los binomios propuest
 | A. 4 cm² | Incorrecta | CUAD: usa la longitud de la esquina como área |
 | B. 8 cm² | Incorrecta | CU-LIN: reemplaza el cuadrado de una longitud por su doble |
 | C. 16 cm² | Correcta | El hueco tiene ambos lados de 4 cm |
-| D. 64 cm² | Incorrecta | CUAD: suma anchos antes de formar el cuadrado de la esquina |
+| D. 64 cm² | Incorrecta | CUAD: suma los dos anchos (eleva al cuadrado el coeficiente completo, no su mitad) |
 
 **Mira.** La esquina se cubre con pequeños cuadrados de un centímetro de lado; se distinguen las dos medidas antes del área. Aparece el material agregado en una lista al lado de la maqueta. Después se explica que una ecuación necesita compensar la misma cantidad en el otro miembro. La animación no hace «desaparecer» material para producir la identidad buscada.
 
@@ -309,7 +310,7 @@ La fórmula exige $a\ne0$. Si falta un término, su coeficiente es cero; no se d
 | A. Ninguno, porque al juntarse las dos posibilidades desaparecen las soluciones | Incorrecta | DISC: interpreta la coincidencia como ausencia |
 | B. Dos valores distintos, porque cualquier cuadrática debe tenerlos | Incorrecta | DISC: omite el caso de raíz repetida |
 | C. Un valor, porque las dos configuraciones coinciden en el cuadrado | Correcta | Distingue dos ramas del cálculo y un único valor distinto |
-| D. Todos los valores, porque el perímetro no cambia | Incorrecta | CERO: convierte una condición específica en identidad |
+| D. Todos los valores, porque el perímetro no cambia | Incorrecta | IDEN: convierte una condición específica en identidad |
 
 **Mira.** Se comparan el marco cuadrado y dos marcos de lados desiguales con el mismo perímetro. Se mide el área sin confundir superficie con contorno. Después se muestra la condición algebraica y el cuadrado completado. La evidencia decisiva es que un cuadrado de una expresión solo vale cero cuando esa expresión es cero. El gráfico de una parábola puede añadirse después, si se explica qué representa cada eje; no es un prerrequisito oculto.
 
@@ -471,7 +472,7 @@ Los tableros, bolsas, cotizaciones y marcos de las ideas usan **datos didáctico
 Todas las consultas corresponden al 22 de noviembre de 2026. «s. f.» significa que no se verificó una fecha editorial. No se confunde la fecha de rastreo web con la de publicación.
 
 - **[F01] Universidad Nacional de Ingeniería, Dirección de Admisión (2021).** *Solucionario del examen de admisión 2021-1*. Segunda prueba, pregunta 7, p. 18. [Documento oficial](https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario2021.pdf).
-- **[F02] UNMSM, Oficina Central de Admisión (2022).** *Reglamento de Admisión 2022-II*. Contenidos de Álgebra, p. 54. [Documento oficial](https://viceacademico.unmsm.edu.pe/wp-content/uploads/2022/01/REGLAMENTO-DE-ADMISI%C3%93N-2022-II.pdf).
+- **[F02] UNMSM, Oficina Central de Admisión (2022).** *Reglamento de Admisión 2022-II*. Contenidos de Álgebra, p. 54. [Documento oficial](https://viceacademico.unmsm.edu.pe/wp-content/uploads/2022/01/REGLAMENTO-DE-ADMISI%C3%93N-2022-II.pdf). **No comprobado al 24 nov 2026:** el servidor falla por certificado; existe copia en web.archive.org (29 mar 2022), que no se pudo descargar. Los apartados 15.1 y 17.13 quedan sin confirmar.
 - **[F03] UNMSM, Centro Preuniversitario (2023).** *Boletín de la semana 3, ciclo 2023-II*. Álgebra, p. 44. [Copia en espejo](https://pdfpresanmarcos.com/wp-content/uploads/2024/02/Boletin-Semana-3-Pre-San-Marcos-2023-II-UNMSM-PDF-1.pdf). Solo se describen demandas.
 - **[F04] CEPREUNI (2026).** *Bases y temario del concurso docente 2026-2*. Tema 17, p. 29. [PDF institucional](https://www.cepre.uni.edu.pe/assets/archivos/BASES-CONCURSO-DE-DOCENTES-CEPREUNI-2026-2.pdf).
 - **[F05] Knuth, E. J.; Stephens, A. C.; McNeil, N. M.; Alibali, M. W. (2006).** *Does Understanding the Equal Sign Matter? Evidence from Solving Equations*. Journal for Research in Mathematics Education, 37(4), 297–312. [Texto original](https://alibali.psych.wisc.edu/wp-content/uploads/sites/371/2018/02/KnuthStephensMcNeilAlibali2006.pdf).
@@ -485,4 +486,26 @@ Todas las consultas corresponden al 22 de noviembre de 2026. «s. f.» significa
 - **[F13] Correa Restrepo, B. E.; Muñoz Sierra, L. E.; Villegas de Arias, C. (2015).** *Álgebra: guías de clase para 90 lecciones*. Gobernación de Antioquia y entidades colaboradoras. [Libro alojado por CEPREUNI](https://www.cepre.uni.edu.pe/assets/archivos/biblioteca/%C3%81lgebra%20-%20Gu%C3%ADas%20de%20clase%20para%2090%20lecciones.pdf).
 - **[F14] University of Colorado Boulder, PhET Interactive Simulations (s. f.).** *Equality Explorer*. [Simulador](https://phet.colorado.edu/en/simulations/equality-explorer).
 - **[F15] Banco Central de Reserva del Perú (s. f.).** *Museo Numismático del Perú*. Folleto, p. 21. [PDF institucional](https://www.bcrp.gob.pe/docs/Proyeccion-Institucional/Museo/Museo-Numismatico-del-Peru.pdf). Datos de las monedas descritas, no catálogo actualizado de circulación.
-- **[F16] FIFA (2020).** *Reglas de Juego del Futsal 2020/21*. Regla 1, p. 12. [PDF oficial](https://img.fifa.com/image/upload/evc2ypwa41mka4tk4nxa.pdf).
+- **[F16] FIFA (2020).** *Reglas de Juego del Futsal 2020/21*. Regla 1, p. 12. [PDF oficial](https://img.fifa.com/image/upload/evc2ypwa41mka4tk4nxa.pdf). **Enlace caído al 24 nov 2026:** redirige a la página general de documentos de FIFA; los rangos de la sección 8 no se pudieron recomprobar en esta edición.
+
+## 11. Auditoría (Claude, 24 nov 2026)
+
+**Qué se comprobó.** Se rehicieron todas las cuentas y opciones: idea 1 ($x+150=650$, retiro de 100 g en ambos platillos); idea 2 ($2(x+3)=2x+6$ es identidad; $3(x+2)+4=2x+18$ da un único valor, con coeficiente 1 no nulo); idea 3 ($(x-4)(x+2)=0$ da 4 y −2; $2x^2-10x=0$ da 0 y 5); idea 4 (esquina de 4 × 4 = 16 cm²; distractores 4, 8 y 64 distintos; $x^2+6x=10$ lleva a $(x+3)^2=19$; derivación de la fórmula general y de $\Delta/(4a^2)$); idea 5 (perímetro 40 y área 100 dan $x(20-x)=100$, raíz doble $x=10$; $x^2-8x+k$ tiene valor crítico $k=16$); idea 6 ($x^2-9x+14$: raíces 2 y 7, $S=9$, $P=14$; identidades $S^2-2P$, $S/P$, $S^2-4P$; condiciones de signo). Todo es correcto. Juega no muestra lo que pregunta Predice y Lee no adelanta la respuesta en ninguna idea.
+
+**Correcciones.**
+
+- Sección 3, nuevo código IDEN (hipótesis) y opción D de la idea 5: estaba codificada como CERO, que describe otra conducta (dar un número único a partir de una identidad); el distractor «todos los valores» necesitaba un código propio.
+- Sección 3, código DISC: se amplió la definición para incluir «toda cuadrática tiene dos raíces distintas», que es el error que codifica la opción B de la idea 5 y no figuraba en la tabla.
+- Sección 3, código CUAD, y opción D de la idea 4: 64 cm² sale de elevar al cuadrado el ancho sumado (el coeficiente completo, no su mitad); la definición no cubría ese error.
+- Idea 1, «Así se resuelve»: la notación `(x)` y `(x+150=650)` (restos de conversión) pasó a fórmula, como en el resto.
+- [F16]: enlace caído (redirige a la página general de documentos de FIFA). [F02]: no se pudo abrir (error de certificado del servidor); se anotó en cada fuente.
+
+**Dudoso sin resolver.**
+
+- [F02]: los apartados 15.1 y 17.13 y la p. 54 no se confirmaron; la versión breve cita el reglamento 2023-I con contenido parecido, lo que lo hace verosímil.
+- [F08]: título, autores, volumen 36 y páginas 151–176 confirmados en Crossref; el texto completo no abrió (página de verificación de Springer), así que los errores PN, FACT-SIG y MET-UNO, y la «figura 8», quedan como de segunda mano hasta leerlo.
+- [F15]: el PDF del BCRP está tras una protección antirobots; las masas y diámetros de las monedas coinciden con las especificaciones conocidas, pero la p. 21 no se vio.
+- En la idea 4, el distractor A (4 cm²) es también el área del hueco que el alumno vio en Juega con tiras de 2 cm; sirve para detectar que copió el juego, pero la producción debe saberlo.
+- Lee trae cuatro tarjetas por idea; `como-leer.md` habla de tres. No es un error matemático; lo decide el molde.
+
+**Fuentes.** 16 enlaces probados. Responden y coinciden en título o autor: F01 (pregunta 7 en la p. 18 impresa), F03, F04 (tema 17 en la p. 29), F05, F06 (respalda CU-LIN y RA-UNA), F09, F10, F12, F13, F14; F07 y F08 confirmados por DOI. No se pudo comprobar: F02 (certificado), F07 en orbilu (sin respuesta), F11 (verificación antirobots), F15 (antirobots). Caído: F16. [F03] es un boletín del CEPRE-UNMSM («prohibida su reproducción») alojado en pdfpresanmarcos.com, una copia de terceros: vale como referencia de qué se pregunta (ejercicios 5 y 6 de la p. 44 confirmados) y nada de su contenido está copiado aquí.
