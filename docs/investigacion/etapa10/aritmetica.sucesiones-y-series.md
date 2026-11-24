@@ -34,14 +34,14 @@ DOCUMENTADO significa leído en el trabajo original, sin atribuirlo a todos los 
 | --- | --- | --- | --- | --- |
 | GEN | Da por demostrada una regla que funciona en pocos casos | Confunde comprobación empírica y justificación general | DOCUMENTADO | Lannin, 2003 [F05], discusión de justificaciones |
 | PRO | Duplica una figura al duplicar su posición aunque tenga piezas fijas | Usa proporcionalidad y vuelve a contar bordes o uniones | DOCUMENTADO | Lannin, 2003 [F05], estrategia del objeto completo |
-| EST | Escribe una expresión sin representar todas las partes | Pierde la relación entre posición, grupos y elementos fijos | DOCUMENTADO | Radford, 2006 [F06], actividad de generalización |
+| EST | Escribe una expresión sin representar todas las partes | Pierde la relación entre posición, grupos y elementos fijos | HIPÓTESIS | Radford, 2006 [F06] documenta reglas halladas por tanteo («inducción ingenua»), más cercanas a GEN; no describe ni mide este error |
 | REC | Continúa localmente, pero no expresa una regla para cualquier posición | Una estrategia recursiva no se transforma automáticamente en explícita; continuar correctamente no es un error | DE SEGUNDA MANO | Vilca Sánchez y Gonzales Hernández, 2023 [F07], al citar a Becker y Rivera, 2005; original no consultado |
 | POS | Confunde posición y valor del término | A veces coinciden en ejemplos iniciales; interpretación propuesta | HIPÓTESIS | Sin estudio específico suficiente en la revisión |
 | PAS | Cuenta tantos cambios como términos o confunde interiores e intervalos | Cuenta el estado inicial como cambio | HIPÓTESIS | Diagnóstico propuesto con posiciones y objetos |
 | ADI | Aplica una resta o suma fija a un cambio porcentual | Interpreta «aumenta igual» como cantidad absoluta constante | HIPÓTESIS | No se adjudica a estudios de patrones una medición de este error |
 | COC | Invierte el cociente de la razón o divide por cero | No relaciona el cociente con el paso de anterior a siguiente | HIPÓTESIS | Requiere contraste con alumnos |
 | ACU | Responde con un término cuando se pide el acumulado | No distingue aportes y totales | HIPÓTESIS | Esta confusión finita no se atribuye como hallazgo a [F08] |
-| PAR | Forma dos copias de una suma y pierde el factor dos | Sigue parejas, pero olvida qué total representan | HIPÓTESIS | Error previsto para el juego de emparejamiento |
+| PAR | Forma dos copias de una suma y pierde el factor dos, o arrastra ese factor dos a una suma donde no hay copias | Sigue parejas, pero olvida qué total representan | HIPÓTESIS | Error previsto para el juego de emparejamiento |
 | BOR | Cancela también los extremos de una suma telescópica | No conserva términos sin pareja | HIPÓTESIS | No se halló estudio específico suficiente |
 | INF | Ve la serie como lista interminable sin organizar sus sumas parciales | No coordina añadir términos con la sucesión de totales | DOCUMENTADO | Martínez-Planell y colaboradores, 2011 [F08], entrevistas universitarias |
 | AGR | Agrupa una serie oscilante para asignarle una suma ordinaria | Extiende operaciones finitas sin revisar sumas parciales | DOCUMENTADO | Bagni, 2005 [F09], estudiantes italianos |
@@ -55,7 +55,7 @@ Una elección aislada necesita contraste con otra situación y una explicación.
 
 ## 4. Lo que la unidad da por sabido
 
-Se requieren operaciones con enteros y fracciones, potencias naturales, igualdad, letras como cantidades y unidades de medida. Para los ejercicios finales se necesita despejar incógnitas, resolver ecuaciones lineales y cuadráticas sencillas y verificar candidatos. No se presuponen sumatorias, progresiones ni límites.
+Se requieren operaciones con enteros y fracciones, potencias naturales, raíces cuadradas y cúbicas exactas (las usa la idea 3), igualdad, letras como cantidades y unidades de medida. Para los ejercicios finales se necesita despejar incógnitas, resolver ecuaciones lineales y cuadráticas sencillas y verificar candidatos. No se presuponen sumatorias, progresiones ni límites.
 
 El diagnóstico distingue etiqueta y contenido, unidades y factores mediante casilleros con fichas y recortes medidos. Si hace falta, se reparan esas bases. Fórmulas y símbolos permanecen consultables.
 
@@ -79,7 +79,7 @@ Cada idea sigue Lee → Juega → Predice → Mira → La regla → Así se resu
 1. «El encargado registra varios montajes del salón. Cada montaje ocupa un lugar numerado en su libreta».
 2. «El número del montaje dice dónde mirar. La cantidad de sillas dice qué hay en ese lugar».
 3. «Una instrucción de armado explica cómo producir cada montaje. Una fotografía solo muestra un montaje ya hecho».
-4. «La libreta puede contener pocos registros. Para hablar de los siguientes necesitamos saber qué instrucciones se mantienen».
+4. «La libreta puede contener pocos registros. Cada registro anota un montaje que ya se armó».
 
 **Juega.** El alumno coloca paquetes de tres sillas para formar filas y deja las dos sillas de la entrada en posiciones fijas. Solo están disponibles los montajes de una, dos y tres filas. Misión: completar esos tres montajes respetando la instrucción visual y asociar a cada uno su etiqueta de posición y su cantidad total. El programa comprueba el número de filas, las sillas fijas y la correspondencia entre etiqueta y objeto; no basta que coincida una cantidad total mal organizada. No muestra una expresión general ni permite avanzar a seis filas.
 
@@ -225,7 +225,7 @@ Para decidir si un valor dado pertenece a una PA no constante, se despeja su ín
 
 1. «La ficha del taller indica cómo preparar cada cinta a partir de la anterior».
 2. «Conservar una fracción de una longitud es multiplicar esa longitud por un factor».
-3. «Una cinta más corta necesita menos material. Eso no significa que la cantidad retirada sea siempre la misma».
+3. «Una cinta más corta necesita menos material para la plantilla».
 4. «La etiqueta cuenta cintas preparadas; la regla de corte describe las transformaciones entre ellas».
 
 **Juega.** El alumno elige entre plantillas que conservan la mitad, las dos terceras partes o las tres cuartas partes. Misión: reproducir tres cintas objetivo a partir de una primera cinta de 80 centímetros, conservando en cada paso las tres cuartas partes. El programa verifica las longitudes y que se use una sola plantilla; no acepta sustituirla por una resta fija que solo coincida en un paso. No muestra la quinta cinta ni una fórmula con exponentes.
@@ -391,7 +391,7 @@ La fórmula cuenta el primer incremento repetido y el crecimiento aritmético de
 
 1. «Las bandejas de este pedido siguen una instrucción de duplicación. El pedido tiene un número definido de bandejas».
 2. «El encargado puede representar el mismo total de otra manera para compararlo».
-3. «Las tarjetas de existencias registran cambios entre un estado y el siguiente. Un estado intermedio aparece al cerrar un cambio y al iniciar el próximo».
+3. «Las tarjetas de existencias registran cambios entre un estado y el siguiente».
 
 **Juega.** El alumno ordena tres bandejas con 3, 6 y 12 fichas y prepara una copia del pedido en la que cada cantidad se duplica. Misión: alinear cada bandeja de la copia con la bandeja equivalente del pedido original. El programa comprueba las coincidencias; quedan un extremo pequeño sin pareja en el original y uno grande en la copia. No presenta aún una fórmula ni una suma telescópica.
 
@@ -612,7 +612,7 @@ Las cantidades del taller y la feria son datos didácticos originales, no observ
 
 Consulta: 22 de noviembre de 2026. «s. f.» indica año de edición no confirmado.
 
-- **F01. UNMSM (2022).** *Reglamento de Admisión 2022-II*, aritmética 6.6–6.8. [PDF oficial](https://viceacademico.unmsm.edu.pe/wp-content/uploads/2022/01/REGLAMENTO-DE-ADMISI%C3%93N-2022-II.pdf).
+- **F01. UNMSM (2022).** *Reglamento de Admisión 2022-II*, aritmética 6.6–6.8. [PDF oficial](https://viceacademico.unmsm.edu.pe/wp-content/uploads/2022/01/REGLAMENTO-DE-ADMISI%C3%93N-2022-II.pdf) (sin respuesta el 24 nov 2026). La misma numeración 6.6–6.8 se comprobó en el [Reglamento de Admisión 2023-I](https://medicina.unmsm.edu.pe/wp-content/uploads/2023/02/Reglamento-de-Admision-2023-I.pdf).
 - **F02. UNI (2016).** *Solucionario del examen de admisión 2016-2*, segundo examen, pregunta 19. [PDF oficial](https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario20162.pdf).
 - **F03. UNMSM, examen atribuido a 2024-II (2024).** *Examen UNMSM 2024-II, área C*. Reproducción externa, página 9; sin cotejo institucional. [Copia consultada](https://es.scribd.com/document/714306569/Examen-Unmsm-2024-II-Area-c).
 - **F04. CEPREUNI (2026).** *Bases y temario del concurso docente 2026-2*. [PDF institucional](https://www.cepre.uni.edu.pe/assets/archivos/BASES-CONCURSO-DE-DOCENTES-CEPREUNI-2026-2.pdf).
@@ -628,3 +628,36 @@ Consulta: 22 de noviembre de 2026. «s. f.» indica año de edición no confirma
 - **F14. Strang, Gilbert, y Herman, Edwin «Jed» / OpenStax (2016).** *Calculus, Volume 2*, 5.2: *Infinite Series*. [Libro](https://openstax.org/books/calculus-volume-2/pages/5-2-infinite-series).
 - **F15. Línea 1 del Metro de Lima (2023).** *Guía de pasajeros*, mapa, páginas impresas 34–35. [PDF del operador](https://www.lineauno.pe/wp-content/uploads/2023/08/GUIA-DE-PASAJEROS-12082023-16mb_compressed.pdf).
 - **F16. Banco Central de Reserva del Perú (s. f.).** *Museo Numismático del Perú*, fichas de monedas. [Publicación institucional](https://www.bcrp.gob.pe/docs/Proyeccion-Institucional/Museo/Museo-Numismatico-del-Peru.pdf).
+
+## 11. Auditoría (Claude, 24 nov 2026)
+
+**Qué se comprobó.** Se rehicieron con cálculo exacto las fórmulas de PA, PG, sumas parciales, sumas notables, segundas diferencias, suma telescópica, serie geométrica y resto $R_n$, y el argumento de bloques de la serie armónica: todo es correcto. En las seis predicciones la opción marcada es correcta y los distractores dan valores o respuestas distintas entre sí (idea 1: 20, 22 y 6 sillas; idea 6: 0, ½ y 1 sol). Todos los códigos usados en las predicciones existen en la tabla de la sección 3. Los símbolos coinciden con la tabla de la sección 6.
+
+**Correcciones.**
+
+1. Sección 3, PAR: en la idea 5 la opción C («el doble de la diferencia») arrastra un factor dos indebido, que es lo contrario de «perder el factor dos». Se amplió la descripción del código para que cubra ambos sentidos.
+2. Sección 3, EST: estaba marcado como DOCUMENTADO con Radford (2006). El texto de Radford documenta reglas halladas por tanteo («inducción ingenua»), pero no este error. Pasa a HIPÓTESIS.
+3. Idea 1, tarjeta Lee 4: decía que hacen falta instrucciones para hablar de los registros siguientes, que es la respuesta correcta de la predicción. Se cambió por una frase neutra.
+4. Idea 3, tarjeta Lee 3: refutaba de antemano el distractor A (ADI). Se dejó solo la primera frase.
+5. Idea 5, tarjeta Lee 3: la segunda frase anticipaba la cancelación de los estados intermedios, que es lo que revela Mira. Se suprimió.
+6. Sección 4: faltaban las raíces cuadradas y cúbicas exactas que usa la idea 3. Se agregaron.
+7. F01: el enlace no responde. Se añadió el Reglamento 2023-I, donde se comprobó la misma numeración (aritmética 6.6 a 6.8).
+
+**Dudoso, sin resolver.**
+
+- F07 no se pudo verificar: ResearchGate devuelve 403, la página de la PUCP es genérica y no respondió, y no se halló el título en bases abiertas. El nombre «Yoniln» parece una errata. La fila REC, que depende de esta fuente, queda como DE SEGUNDA MANO sin confirmar.
+- F04: el PDF enlazado es un temario de 21 páginas titulado «Guía preuniversitario», con metadatos de 2023. Que corresponda al concurso docente 2026-2 se deduce solo del nombre del archivo. El temario sí incluye secuencias numéricas, series de figuras y el bloque de sucesiones y series.
+- Idea 3, tarjeta Lee 4: distingue cintas de transformaciones y puede insinuar la diferencia entre las opciones C y D.
+- La predicción de la idea 5 (existencias) no guarda relación con el juego de la misma idea (copia duplicada de bandejas).
+- Hay solapamiento con `algebra.sucesiones-y-series`, cuyo temario cubre límites, convergencia, series telescópicas, Fibonacci y serie geométrica. Conviene que aritmética se quede con PA, PG, cantidad de términos, sumas notables, segundas diferencias y la suma geométrica infinita como resultado. La definición de límite con tolerancia, el resto $R_n$, la serie armónica y la condición necesaria (idea 6) y las telescópicas (idea 5) encajan mejor en álgebra, que ya declara esta unidad como requisito.
+- La versión breve cita además una suma de radicales con cancelación (UNI 2021-1, Matemática 9) y el temario CEPREUNA 2026. Esta versión no los recoge.
+
+**Fuentes.** Se comprobaron los 17 enlaces de las 16 referencias:
+
+- 14 responden.
+- F01 (UNMSM) y el registro PUCP de F07 no responden; ResearchGate (F07) devuelve 403.
+- F02 se cotejó: la segunda prueba, pregunta 19, pide la razón de una PG creciente con suma 21 y producto 216.
+- Lannin (F05), Radford (F06), Martínez-Planell y colaboradores (F08) y Bagni (F09) coinciden en título y autor. Bagni documenta las respuestas 0 (29 %) y ½ (5 %) para la serie de Grandi, lo que sostiene AGR y PROI.
+- F15 (Línea 1) responde, pero su texto no se puede extraer, así que el conteo de estaciones no se cotejó en el PDF. Coincide con el dato conocido de 26 estaciones.
+- F16 (BCRP) devuelve una página de verificación antibots en lugar del PDF. Las masas y diámetros de las monedas coinciden con los valores conocidos, pero no se cotejaron en el documento.
+- F03 es una copia en Scribd: sirve solo como referencia de qué se pregunta (regla 5). No se halló contenido copiado de ella.
