@@ -37,7 +37,7 @@ Las etiquetas distinguen lectura del original, acceso por resumen e hipótesis p
 | E-SIGNO | Divide por un número negativo y conserva el sentido. | Atiende a despejar, sin comprobar el orden. | DOCUMENTADO | Garrote, Hidalgo y Blanco (2004), discusión de los ítems 4 y 6 [F4]. |
 | E-ENTERO | Considera que un intervalo contiene únicamente enteros. | Restringe las letras a números familiares. | DOCUMENTADO | Garrote, Hidalgo y Blanco (2004), conclusiones sobre intervalos y letras [F4]. |
 | E-LECTURA | No reconoce que «mayor que» puede escribirse invirtiendo el orden de los miembros. | Trata el signo como separador, no como relación. | DOCUMENTADO | Garrote, Hidalgo y Blanco (2004), conclusiones [F4]. |
-| E-CUADRADO | Deduce el orden de dos números a partir del orden de sus cuadrados sin revisar signos. | Extiende una operación fuera del conjunto donde conserva el orden. | DOCUMENTADO | Garrote, Hidalgo y Blanco (2004), análisis del ítem 6 [F4]. |
+| E-CUADRADO | Deduce el orden de dos números a partir del orden de sus cuadrados sin revisar signos. | Extiende una operación fuera del conjunto donde conserva el orden. | DOCUMENTADO | Garrote, Hidalgo y Blanco (2004), comentario del ítem 9 (si $a^2>b^2$, entonces $a>b$) [F4]. |
 | E-DOS | Resuelve solo una de dos restricciones simultáneas. | Los autores señalan dificultades con las técnicas de resolución; no prueban una causa individual. | DOCUMENTADO | Moreno, Socas y Hernández (2017), resultados, pp. 239–240 [F5]. |
 | E-TRAD | Confunde una comparación por diferencia con una por cociente al traducir. | Cambia la relación entre cantidades al pasar de palabras a símbolos. | DOCUMENTADO | Moreno, Socas y Hernández (2017), resultados, pp. 239–240 [F5]. |
 | E-INTERVALO | Escribe un intervalo con los extremos en orden invertido. | No coordina la expresión algebraica con la recta. | DOCUMENTADO | Moreno, Socas y Hernández (2017), resultados, pp. 239–240 [F5]. |
@@ -48,6 +48,7 @@ Las etiquetas distinguen lectura del original, acceso por resumen e hipótesis p
 | H-PROD | Decide el signo de un producto mirando un factor o exigiendo que todos sean positivos. | Podría trasladar el orden de una suma al producto. | HIPÓTESIS | Elaboración propia; se contrastará mediante explicaciones de alumnos. |
 | H-DOM | Acepta un denominador nulo o recupera un valor prohibido después de simplificar. | Podría confundir expresión simplificada con expresión original en todos los números. | HIPÓTESIS | Elaboración propia; [F7] explica la restricción matemática, pero no es un estudio de prevalencia. |
 | H-ABS | Reemplaza una distancia por una resta con signo o conserva solo un lado del centro. | Podría confundir desplazamiento con separación. | HIPÓTESIS | Elaboración propia; [F8] es referencia matemática, no evidencia de alumnos. |
+| H-EXT | Confunde la región interior («a lo más a cierta distancia») con la exterior («al menos a cierta distancia»). | Podría negar la condición al pasar de la distancia a los extremos. | HIPÓTESIS | Elaboración propia para la idea 6; no se atribuye a [F4]–[F6]. |
 | H-TOTAL | Confunde gasto total y costo por unidad. | Podría conservar el importe visible e ignorar entre cuántas unidades se reparte. | HIPÓTESIS | Elaboración propia para la idea 5. |
 | H-LARGO | Supone que aumentar un lado de un rectángulo siempre aumenta su área. | Podría ignorar que el otro lado también cambia. | HIPÓTESIS | Elaboración propia para contrastar una dependencia cuadrática. |
 | H-PERIM | Supone que igual perímetro implica igual área. | Podría confundir la cantidad de cerco con el terreno encerrado. | HIPÓTESIS | Elaboración propia; no se asigna una prevalencia. |
@@ -80,7 +81,7 @@ Los precios, cupos y tolerancias creados para las escenas se rotulan «datos fic
 **Lee, tres tarjetas, sin preguntas.**
 
 1. «En este mostrador se pesa la caja completa. El aviso indica qué masas se aceptan. Los números de este ejemplo son ficticios».
-2. «Una masa puede escribirse con decimales. Una caja de 2,5 kg no se convierte en una caja de 2 kg por estar entre dos marcas».
+2. «Cada caja tiene una sola lectura en la balanza. El aviso se compara con esa lectura, no con la cantidad de paquetes».
 3. «Una condición puede admitir varias cajas diferentes. Conservaremos una lista de las que probamos y una descripción de todas las que podrían admitirse».
 
 **Juega.** El aviso dice «menos de 5 kg». Solo se pueden producir masas de 1, 2, 3, 4 o 6 kg. Misión: «Prepara tres cajas de masas distintas aceptadas y una rechazada». Se comprueban los cuatro registros; el embalaje está incluido. Se reservan 5 kg y las masas decimales para la predicción, sin mostrar aún todo el conjunto.
@@ -149,7 +150,7 @@ Multiplicar por cero destruye información: dos expresiones distintas pasan a ce
 
 Una inecuación lineal se reduce a $bx+c<0$ o a una de las otras tres comparaciones, donde $b$ es el coeficiente lineal y $c$ el término constante. Si $b>0$, se resta $c$ y se divide sin invertir; si $b<0$, se invierte al dividir. Si $b=0$, no se divide: se decide si la comparación constante resultante es verdadera o falsa. En el primer caso se acepta todo $D$; en el segundo, nada. Con un parámetro, los casos se separan antes de dividir. No basta decir «el número pasa dividiendo» porque esa frase oculta la condición decisiva.
 
-**Así se resuelve.** Se propone una compra ficticia con presupuesto, gasto fijo y precio positivo por cuaderno. Primero se define el número de cuadernos y su condición de entero no negativo. Luego se escribe gasto fijo más precio por cantidad no mayor que presupuesto. Se resta el gasto fijo en ambos miembros; se divide por el precio, que es positivo; se conserva el sentido; se seleccionan enteros compatibles y se comprueba el último candidato permitido y el siguiente. En una segunda pantalla se resuelve la forma simbólica $-3x+7\le c$: restar 7 en ambos miembros, dividir por −3 invirtiendo, y contrastar por sustitución. Se concluye $x\ge(7-c)/3$, con $c$ constante. El banco final se calcula aparte.
+**Así se resuelve.** Se propone una compra ficticia con presupuesto, gasto fijo y precio positivo por cuaderno. Primero se define el número de cuadernos y su condición de entero no negativo. Luego se escribe gasto fijo más precio por cantidad no mayor que presupuesto. Se resta el gasto fijo en ambos miembros; se divide por el precio, que es positivo; se conserva el sentido; se seleccionan enteros compatibles y se comprueba el último candidato permitido y el siguiente. En una segunda pantalla se resuelve la forma simbólica $-3x+c\le0$: restar $c$ en ambos miembros, dividir por −3 invirtiendo, y contrastar por sustitución. Se concluye $x\ge c/3$, con $c$ término constante. El banco final se calcula aparte.
 
 **Palabras nuevas.**
 
@@ -329,7 +330,7 @@ Cancelar un factor común produce una expresión equivalente únicamente donde l
 | --- | --- | --- |
 | A | Todas las posiciones entre 40 cm y 60 cm, incluyendo ambos extremos. | Correcta: no corresponde a un error. |
 | B | Solo las posiciones entre 50 cm y 60 cm. | H-ABS: conserva únicamente un lado de la referencia. |
-| C | Las posiciones por debajo de 40 cm o por encima de 60 cm. | H-O: escoge las alternativas exteriores en lugar de las restricciones simultáneas. |
+| C | Las posiciones por debajo de 40 cm o por encima de 60 cm. | H-EXT: escoge la región exterior en lugar de la interior. |
 | D | Únicamente la marca de 50 cm. | E-UNA: cambia una tolerancia por coincidencia exacta. |
 
 **Mira.** Se comparan posiciones simétricas y ambas fronteras: igual separación, aunque las restas tengan signos opuestos. Aparece la banda continua y después el símbolo de valor absoluto, explicado en palabras.
@@ -427,7 +428,7 @@ Los demás valores son didácticos. Los límites reglamentarios, tarifas y toler
 
 **Dependencias revisadas.** La idea 1 introduce soluciones y fronteras; la 2, equivalencias; la 3, unión e intersección; la 4, signos por tramos; la 5, dominio racional y radicales; la 6, módulo e integración. Los prerrequisitos opcionales están declarados. No se usa una regla de una idea posterior.
 
-**Predicciones revisadas.** Hay cuatro opciones y tres códigos de error en cada una. El juego reserva el caso preguntado: fronteras y decimales; opuestos negativos; segunda restricción; ancho posterior a la mitad del perímetro; tiraje nulo; lado izquierdo de la tolerancia. Las misiones tienen metas comprobables.
+**Predicciones revisadas.** Hay cuatro opciones y tres distractores con código en cada una; en la idea 5 dos distractores comparten H-DOM. El juego reserva el caso preguntado: fronteras y decimales; opuestos negativos; segunda restricción; ancho mayor que el del cerco cuadrado (6 m); tiraje nulo; lado izquierdo de la tolerancia. Las misiones tienen metas comprobables.
 
 **Validación pendiente de implementación.** Recalcular ejemplos y bancos, incluidos coeficientes cero, raíces repetidas, huecos, fronteras y umbrales negativos. Pedir a alumnos que expliquen sus elecciones: acertar después de una animación no demuestra por sí solo comprensión. Esta propuesta no constituye una validación con estudiantes.
 
@@ -448,3 +449,18 @@ Las fechas corresponden al documento o a la edición, no a la fecha de indexaci�
 - **[F11] Epson (s. f.).** *Papeles Epson compatibles*, documentación XP-2101. Tabla de tamaños A4 y Carta. [Documento del fabricante](https://files.support.epson.com/docid/cpd5/cpd56925/source/printers/source/paper_loading/reference/xp2101/paper_compatibility_latin_xp2101.html).
 - **[F12] Universidad Nacional de San Agustín de Arequipa (2026).** *Aprobación de temario y matriz de admisión 2027*, RCU 0028, bloque Álgebra, IX. [PDF institucional](https://admision.unsa.edu.pe/wp-content/uploads/2026/03/RCU-0028-Aprobacion-de-TEMARIO-y-MATRIZ-ADMISION-2027.pdf).
 - **[F13] Universidad Nacional Mayor de San Marcos, Oficina Central de Admisión (2026).** *Admisión 2026-II*. Página consultada; descarga no accesible. No sustenta el temario. [Página oficial](https://admision.unmsm.edu.pe/portal/admision2026-ii/).
+
+## 11. Auditoría (Claude, 24 nov 2026)
+
+**Qué se comprobó.** Se rehicieron las cuentas de las seis ideas: huerto $x(12-x)\ge27\Rightarrow3\le x\le9$ (anchos 4, 5 y 6 cumplen; 10 × 2 = 20 m² no cumple); $\frac{(x-2)(x+4)}{(x-2)(x-6)}\ge0\Rightarrow x\le-4$ o $x>6$; $\lvert bx+c\rvert\le r$ con $b<0$ da $(r-c)/b\le x\le(-r-c)/b$; criterios de radicales, de positividad universal, de umbral $r\le0$ y la forma completada del cuadrado. Las seis opciones marcadas como correctas lo son y los distractores dan respuestas distintas de la correcta. Se cotejaron con los PDF las citas de [F1], [F2], [F3], [F4], [F5] y [F12].
+
+**Correcciones.**
+- Sección 3, E-CUADRADO: [F4] comenta el error «$a^2>b^2\Rightarrow a>b$» en el ítem 9, no en el 6. Se corrigió la cita.
+- Sección 3: se añadió H-EXT (hipótesis). En la idea 6, la opción C (región exterior) estaba codificada como H-O, pero tomar la región exterior niega la condición y no equivale a cambiar «y» por «o» (eso daría todos los reales). Ahora apunta a H-EXT.
+- Idea 1, tarjeta Lee 2: decía que una masa de 2,5 kg es válida, lo que adelantaba la parte de la respuesta sobre los decimales que el juego reserva para la predicción. Se reemplazó por una tarjeta neutra.
+- Idea 2, «Así se resuelve»: $-3x+7\le c$ usaba $c$ como segundo miembro, en contra del significado único de la tabla 6 («término constante»). Pasó a $-3x+c\le0\Rightarrow x\ge c/3$.
+- Sección 9: «ancho posterior a la mitad del perímetro» era falso (la mitad es 12 m; lo reservado son anchos mayores que 6 m). También decía «tres códigos en cada una», pero en la idea 5 se repite H-DOM.
+
+**Dudoso, sin resolver.** La idea 2 trae cuatro tarjetas Lee y el contrato común pide tres. La tarjeta Lee 2 de la idea 6 («no es lo mismo que decir hacia qué lado se movió») insinúa ambos lados antes de la predicción: conviene revisarla. La opción C de la idea 4 (E-UNA) es poco verosímil como error.
+
+**Fuentes.** 14 enlaces comprobados; 12 responden 200 con título o autor coincidentes. Fallan dos. El de [F10] (BCRP) devuelve una página antibots, no el PDF, así que los datos 25,50 mm y 7,32 g no se pudieron cotejar. El de [F6] (hdl.handle.net) da 403 a curl, aunque el registro ALICIA confirma la tesis, el autor y el resumen. [F12] es un escaneo: el apartado «IX. Inecuaciones» se comprobó a mano en la imagen. No hay enlaces a copias de academia ni contenido copiado de ellas.
