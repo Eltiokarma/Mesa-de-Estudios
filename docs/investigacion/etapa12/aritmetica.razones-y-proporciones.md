@@ -424,7 +424,7 @@ La segunda tarjeta presenta el nuevo objeto sin proporcionar un procedimiento. C
 | A | 6 centímetros | Correcta |
 | B | 6,5 centímetros | RP-MED: promedia las longitudes sin atender a la superficie |
 | C | 36 centímetros | RP-RAIZ: confunde el producto de las medidas con el lado buscado |
-| D | 5 centímetros | RP-ADI: usa la diferencia entre los lados como nueva medida |
+| D | 5 centímetros | RP-ADI: reemplaza la relación multiplicativa (el producto) por una aditiva y toma la diferencia entre los lados como medida |
 
 Las dimensiones corresponden a un modelo pequeño de cartón. No se muestran fórmulas; el área es un prerrequisito declarado.
 
@@ -653,15 +653,39 @@ Fichas, cintas y cartones son escenarios sintéticos, aunque se ambienten en Jul
 
 Consultadas el 22 de noviembre de 2026. “s. f.”: año de publicación no verificado.
 
-- **[F1] CEPRE-UNI (2026).** *Guía del estudiante, ciclo preuniversitario 2026-2*. Sílabo de Aritmética, semanas 00–02. [PDF oficial](https://www.cepre.uni.edu.pe/assets/archivos/comunicados/PREUNIVERSITARIO-GUIADELESTUDIANTE-2026-2.pdf).
+- **[F1] CEPRE-UNI (2026).** *Guía del estudiante, ciclo preuniversitario 2026-2*. Sílabo de Aritmética, semanas 00–01 (la semana 02 corresponde a regla de tres y reparto proporcional). [PDF oficial](https://www.cepre.uni.edu.pe/assets/archivos/comunicados/PREUNIVERSITARIO-GUIADELESTUDIANTE-2026-2.pdf).
 - **[F2] Universidad Nacional Mayor de San Marcos (2023).** *Reglamento de admisión 2023-I*. Temario de Aritmética, sección 6; edición histórica. [PDF institucional](https://medicina.unmsm.edu.pe/wp-content/uploads/2023/02/Reglamento-de-Admision-2023-I.pdf).
 - **[F3] Academia Virtual (s. f.).** *Razones y proporciones*. Recopilación secundaria utilizada solo para formatos y atribuciones, sin copiar problemas. [Página](https://academiavirtual.pe/cursos/aritmetica/razones-y-proporciones).
 - **[F4] Universidad Nacional de Ingeniería (2020).** *Solucionario del examen de admisión 2020-1*. Segunda prueba, preguntas 6–7, página impresa 24. [PDF oficial](https://admision.uni.edu.pe/wp-content/uploads/2022/11/solucionario2020.pdf).
 - **[F5] I, Ji Yeong; Martinez, Ricardo; Dougherty, Barbara (2018 en línea; 2020 en volumen).** *Misconceptions on part-part-whole proportional relationships using proportional division problems*. Investigations in Mathematics Learning, 12(2), 67–81. Manuscrito original consultado. [Texto](https://www.academia.edu/68196909/Misconceptions_on_part_part_whole_proportional_relationships_using_proportional_division_problems). [DOI 10.1080/19477503.2018.1548222](https://doi.org/10.1080/19477503.2018.1548222).
-- **[F6] Fernández Verdú, Ceneida; Llinares Ciscar, Salvador (2012).** *Características del desarrollo del razonamiento proporcional en la educación primaria y secundaria*. Enseñanza de las Ciencias, 30(1), 129–142. Resultados y discusión originales consultados. [Texto](https://www.academia.edu/6055590/Caracter%C3%ADsticas_del_desarrollo_del_razonamiento_proporcional_en_la_educaci%C3%B3n_primaria_y_secundaria).
+- **[F6] Fernández Verdú, Ceneida; Llinares Ciscar, Salvador (2012).** *Características del desarrollo del razonamiento proporcional en la educación primaria y secundaria*. Enseñanza de las Ciencias, 30(1), 129–142. Resultados y discusión originales consultados. [Texto](https://www.academia.edu/6055590/Caracter%C3%ADsticas_del_desarrollo_del_razonamiento_proporcional_en_la_educaci%C3%B3n_primaria_y_secundaria). [PDF en acceso abierto (UAB)](https://ddd.uab.cat/pub/edlc/edlc_a2012v30n1/edlc_a2012v30n1p129.pdf). [DOI 10.5565/rev/ec/v30n1.596](https://doi.org/10.5565/rev/ec/v30n1.596).
 - **[F7] OpenStax (s. f., segunda edición).** *Prealgebra 2e*, sección 6.5, *Solve Proportions and their Applications*. Referencia matemática y didáctica, no estudio de prevalencia. [Capítulo](https://openstax.org/books/prealgebra-2e/pages/6-5-solve-proportions-and-their-applications).
 - **[F8] Valencia Gutiérrez, Miguel Eduardo (2023).** *Errores y dificultades en el aprendizaje de la proporcionalidad en los estudiantes del VII ciclo de la institución educativa Enrique Pestalozzi - Carabayllo (2022)*. Universidad Inca Garcilaso de la Vega. Solo ficha y resumen consultados. [ALICIA](https://alicia.concytec.gob.pe/vufind/Record/UIGV_e8b2bcec30e8c5d72aa0b945532c8b66).
 - **[F9] Academia Premium (2020, fecha del archivo alojado).** *Aritmética: razones, proporciones y promedios*, tema 07. Contraste de nomenclatura local; sin copia de ejercicios. [PDF](https://colegiopremium.edu.pe/wp-content/uploads/2020/09/TEMA-07-DE-ARITMETICA-RAZ-PROPOR-Y-PROMEDIOS.pdf).
 - **[F10] University of Colorado Boulder, Human Computer Relationships @Work for Learning (s. f.).** *Ratio and Proportion PhET Simulation*. Descripción institucional. [Página](https://www.colorado.edu/project/human-computer-relationships/ratio-and-proportion-phet-simulation).
 - **[F11] Congreso de la República del Perú (2025).** *Ley 32251: Ley que unifica y armoniza la regulación de los símbolos de la patria, símbolos del Estado y emblemas nacionales*. El Peruano, 19 de enero de 2025, artículos 4–5. [Texto oficial](https://busquedas.elperuano.pe/dispositivo/NL/2363369-4).
 - **[F12] Instituto Geográfico Nacional del Perú (s. f.).** *Servicios WMS: mapas base ráster*. [Página institucional](https://www.idep.gob.pe/wms/wms_ign.html).
+
+## 11. Auditoría (Claude, 24 nov 2026)
+
+**Qué se comprobó.**
+
+- Cuentas y reglas rehechas aparte: razones aritmética y geométrica, productos cruzados, \(a=pk\), \(b=qk\), reparto con total y con diferencia (incluido el caso \(p=q\) y la integridad de \(k\) con \(p:q\) coprimos), propiedades de la serie de razones iguales (suma, diferencia, potencias), razón conjunta \(pr:qr:qs\), las tres medias y la cadena \(M_H\le M_G\le M_A\) con \(M_HM_A=M_G^2\), terceros y cuartos términos (armónico: \(c=ab/(2a-b)\), \(d=abc/(ab+ac-bc)\)), \((a+h)/(b+h)=1+(a-b)/(b+h)\) y el despeje \(k=(r-s)h/(sp-rq)\) de la idea 6. Todo es correcto.
+- Las seis predicciones: la correcta lo es (100 a 60; mitad; 2 de 7 partes; 4:6:5; 6 cm; diferencia igual y cociente hacia uno) y los tres distractores de cada una dan valores o afirmaciones distintos de la correcta y remiten a códigos existentes en la sección 3.
+- Contrato: en las seis ideas Juega va antes de Predice, el juego no muestra el caso que se predice (unidades mezcladas, reducción no entera, partes ocultas, tercera categoría, superficie, adición externa) y las tarjetas Lee no adelantan respuestas. Los símbolos se usan como dice la sección 6 y las dependencias de la sección 4 son coherentes.
+- Exámenes: el solucionario oficial UNI 2020-1 trae en la página impresa 24 las preguntas 6 (magnitudes directa e inversamente proporcionales, respuesta B, disminuye 44 %) y 7 (precio medio ponderado, 41 soles). Las atribuciones de [F3] (UNMSM 2026-II Medicina Humana; UNI 2025-1 Matemática) figuran así en esa página, que es secundaria. No se inventan frecuencias.
+
+**Correcciones.**
+
+1. Idea 5, opción D: el rótulo decía que RP-ADI «usa la diferencia entre los lados», lo que no coincide con la definición del código (conservar una diferencia en lugar de un cociente). Se reescribió para que el distractor exprese lo que el código describe: reemplazar la relación multiplicativa por una aditiva.
+2. [F1]: decía «semanas 00–02»; la semana 02 del sílabo es regla de tres y reparto proporcional (otra unidad). Se corrigió a semanas 00–01.
+3. [F6]: el enlace de academia.edu responde 403 a consultas automáticas; se añadieron el PDF en acceso abierto del repositorio de la UAB y el DOI. En ese PDF se confirmaron los perfiles que aplican proporciones a problemas aditivos (RP-TODO) y el efecto de razones enteras o no enteras (RP-ENTER).
+
+**Dudoso, sin resolver.**
+
+- [F5]: no se pudo abrir el «manuscrito original» de academia.edu (403) ni el artículo (cerrado). El resumen indexado (Crossref, Semantic Scholar) sí respalda las tres ideas erróneas «ratio as a number», razonamiento aditivo y confusión sobre el todo; la correspondencia fina con RP-FIJO queda como interpretación del documento.
+- Opción D de la idea 5 (5 cm): es un distractor de diseño sin evidencia de que los alumnos lo elijan.
+- El sílabo [F1] incluye «razón armónica»; la idea 1 solo presenta las razones aritmética y geométrica, y la armónica aparece en la idea 5 solo como proporción.
+- **Frontera con `aritmetica.magnitudes-proporcionales` (Etapa 13).** El documento invade poco y lo marca: la fila de la sección 2 sobre la pregunta 6 de UNI 2020-1 es de esa unidad. Hay que vigilar tres roces: la idea 3 llama «reparto» a la razón con total (reparto en dos partes; el reparto proporcional directo, inverso y compuesto debe quedarse en la Etapa 13), el ejemplo de tasas de la idea 5 (tiempo = cantidad/tasa, que es proporcionalidad inversa) y el cobro con parte fija de la idea 6. Ninguno desarrolla magnitudes directa o inversamente proporcionales ni regla de tres.
+
+**Fuentes.** 12 enlaces comprobados con curl más el DOI. Responden 200: [F1], [F2], [F3], [F4], [F7], [F8], [F10], [F11], [F12]; [F9] respondió 200 en el segundo intento (el primero agotó el tiempo). Responden 403 (bloqueo a consultas automáticas, no enlace muerto): los dos de academia.edu ([F5], [F6]) y el DOI de [F5]; los metadatos de ambos artículos se confirmaron en Crossref. Contenido comprobado: el sílabo CEPRE-UNI 2026-2 (semanas 00–01), la sección 6 del reglamento UNMSM 2023-I, el solucionario UNI 2020-1, la Ley 32251 (art. 4: bandera de tres de largo por dos de alto; art. 5: blasón de cuatro de alto por tres de ancho; publicada el 19 ene 2025), las escalas 1:100 000, 1:50 000 y 1:25 000 del IGN y el título de la tesis de [F8]. Material de academia: [F3] (academiavirtual.pe) y [F9] (Academia Premium); sirven solo como referencia de qué se pregunta y de la nomenclatura, y no se encontró contenido copiado de ellos. La sección 8 no trae precios ni datos que haya que marcar como supuestos.
