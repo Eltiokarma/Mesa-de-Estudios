@@ -43,3 +43,4 @@ contra los límites semanales de los planes.
 | aritmetica.potenciacion-y-radicacion | redactor (Escribidor Escribano) | 356 377 | 61 min | 68 herramientas |
 | razonamiento-matematico.arreglos-numericos | lector en frío A (tarjetas y 3 momentos: capturas rotas) | 112 080 | 2 min | 22 herramientas |
 | quimica.materia-y-energia | redactor, unidad ya cerrada | 400 393 | 58 min | 125 herramientas |
+| trigonometria.reduccion-al-primer-cuadrante | auditoría y correcciones (cierre) | 350 180 | 40 min 35 s | 145 herramientas |
