@@ -207,13 +207,13 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 
 | Pieza · objeto | Veredicto | Qué se ve (y qué falta) | Captura | Después |
 |---|---|---|---|---|
-| trig-arco · abanico | a medias | abanico: sector con varillas; se lee a medias (falta el plisado y el mango) | [ver](capturas/trig-arco--abanico.webp) |  |
-| trig-arco · bici | a medias | plato y piñón con cadena: se leen como engranajes, no como bicicleta | [ver](capturas/trig-arco--bici.webp) |  |
+| trig-arco · abanico | a medias | abanico: sector con varillas; se lee a medias (falta el plisado y el mango) | [ver](capturas/trig-arco--abanico.webp) | redibujado: plisado con paños alternados y mango con borla ([antes y después](antes-despues/trig-arco--abanico.webp)) |
+| trig-arco · bici | a medias | plato y piñón con cadena: se leen como engranajes, no como bicicleta | [ver](capturas/trig-arco--bici.webp) | redibujado: cuadro de bicicleta (triángulo de atrás) y asiento, tenues debajo de las ruedas ([antes y después](antes-despues/trig-arco--bici.webp)) |
 | trig-arco · columpio | no se reconoce | columpio: dos rayas en A, una línea naranja y un palito; no se reconoce (caso de Gerson) | [ver](capturas/trig-arco--columpio.webp) | redibujado: armazón de madera en perspectiva con travesaño, dos cadenas con eslabones, asiento de tabla y pasto ([antes y después](antes-despues/trig-arco--columpio.webp)) |
 | trig-arco · engranajes | se reconoce | dos engranajes con su marca | [ver](capturas/trig-arco--engranajes.webp) |  |
 | trig-arco · figura | se reconoce | sector de examen (diagrama propio) | [ver](capturas/trig-arco--figura.webp) |  |
-| trig-arco · limpia | a medias | limpiaparabrisas: el parabrisas se adivina; el brazo es una raya gruesa sin pivote ni jebe | [ver](capturas/trig-arco--limpia.webp) |  |
-| trig-arco · monedas | a medias | dos círculos lisos; sin canto ni cara no dicen monedas | [ver](capturas/trig-arco--monedas.webp) |  |
+| trig-arco · limpia | a medias | limpiaparabrisas: el parabrisas se adivina; el brazo es una raya gruesa sin pivote ni jebe | [ver](capturas/trig-arco--limpia.webp) | redibujado: espejo retrovisor arriba y grapas del jebe; se lee como parabrisas ([antes y después](antes-despues/trig-arco--limpia.webp)) |
+| trig-arco · monedas | a medias | dos círculos lisos; sin canto ni cara no dicen monedas | [ver](capturas/trig-arco--monedas.webp) | redibujado: anillo y canto estriado en cada moneda ([antes y después](antes-despues/trig-arco--monedas.webp)) |
 | trig-arco · rueda | a medias | rueda chica con rayos: se lee rueda, no bicicleta; la huella es una raya | [ver](capturas/trig-arco--rueda.webp) |  |
 | trig-giro · llave | a medias | llave de cruz: una cruz con bolitas; se reconoce solo si uno ya la conoce | [ver](capturas/trig-giro--llave.webp) |  |
 | trig-giro · rayos | se reconoce | dos rayos con ángulo (diagrama propio) | [ver](capturas/trig-giro--rayos.webp) |  |

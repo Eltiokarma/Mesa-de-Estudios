@@ -199,6 +199,11 @@
     // Los pliegues del papel: rayas finas cada pocos grados.
     const k = Math.max(4, Math.round(g / 12));
     for (let i = 1; i < k; i++) s += linea(pt(CA, 8, a0 + g * i / k), pt(CA, R - 2, a0 + g * i / k), tinta(1, i % 2 ? 0.35 : 0.2));
+    // 26 nov (dibujos reconocibles): el plisado, un paño sí y otro no un poco más oscuro, y el mango con su borla debajo
+    // del remache: sin eso el abanico se leía como un sector con rayas.
+    for (let i = 0; i < k; i += 2) s += poli([CA, ...arcoPs(CA, R - 2, a0 + g * i / k, a0 + g * (i + 1) / k)], 'fill="currentColor" fill-opacity="0.07" stroke="none"');
+    s += rect(CA[0] - 4, CA[1], 8, 11, 3, 'fill="var(--card)" stroke="currentColor" stroke-width="2"');
+    s += `<path d="M${CA[0]} ${CA[1] + 11}L${CA[0]} ${CA[1] + 15}M${CA[0] - 4} ${CA[1] + 22}L${CA[0]} ${CA[1] + 15}L${CA[0] + 4} ${CA[1] + 22}M${CA[0]} ${CA[1] + 15}L${CA[0]} ${CA[1] + 23}" ${tinta(1.5, 0.7)}/>`;
     s += poli(arcoPs(CA, R, a0, a1), trazo('i', 4), false);
     s += linea(CA, pt(CA, R + 4, a0), trazo('o', 4)) + linea(CA, pt(CA, R + 4, a1), trazo('o', 4));
     s += circulo(CA, 5, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5"');
@@ -229,6 +234,9 @@
     const q = (p0, c, p1) => Array.from({ length: 9 }, (_, i) => { const t = i / 8; return [(1 - t) ** 2 * p0[0] + 2 * t * (1 - t) * c[0] + t * t * p1[0], (1 - t) ** 2 * p0[1] + 2 * t * (1 - t) * c[1] + t * t * p1[1]]; });
     const vidrio = [].concat(q([30, 287], [160, 294], [290, 287]), q([290, 287], [306, 286], [304, 271]), q([276, 46], [273, 30], [258, 31]), q([258, 31], [160, 20], [62, 31]), q([62, 31], [47, 30], [44, 46]), q([16, 271], [14, 286], [30, 287]));
     let s = poli(vidrio, 'fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-width="2" stroke-opacity="0.45" stroke-linejoin="round"');
+    // 26 nov (dibujos reconocibles): el espejo retrovisor colgado arriba al centro, para que el vidrio se lea como el
+    // parabrisas de un carro.
+    s += linea([160, 24], [160, 31], tinta(2.5, 0.5)) + rect(140, 31, 40, 12, 5, 'fill="var(--card)" stroke="currentColor" stroke-width="2" stroke-opacity="0.55"');
     s += sector(CL, R1, R2, a0, a1);
     s += poli(arcoPs(CL, R1, a0, a1), trazo('i', 3.5), false) + poli(arcoPs(CL, R2, a0, a1), trazo('i', 3.5), false);
     // Donde empieza (a la derecha), punteado; el brazo, al final del barrido, en naranja, con el jebe negro al final.
@@ -236,6 +244,8 @@
     s += linea(CL, pt(CL, R1, a0), trazo('o', 3));
     s += linea(CL, pt(CL, R2, a1), trazo('o', 3.5));
     s += linea(pt(CL, R1, a1), pt(CL, R2, a1), tinta(7));
+    // Las grapas que sujetan el jebe al brazo.
+    for (const f of [0.25, 0.75]) { const q = pt(CL, R1 + (R2 - R1) * f, a1), u = dir(a1 + 90); s += linea([q[0] - u[0] * 6, q[1] - u[1] * 6], [q[0] + u[0] * 6, q[1] + u[1] * 6], tinta(2)); }
     s += circulo(CL, 6, 'fill="var(--card)" stroke="currentColor" stroke-width="2.5"');
     s += arcoAngulo(CL, 26, a0, a1);
     // r₂ es el brazo entero: una cota naranja, paralela al brazo y por fuera, del eje a la punta (cierre, 19 nov: el
@@ -295,13 +305,15 @@
   const CM = [160, 150], RMON = 40;
   function monedas(d, e) {
     const pos = [].concat(enPaso(d.pos, e) === undefined ? [0] : enPaso(d.pos, e)), ro = rots(d, e), cajas = [];
-    let s = circulo(CM, RMON, 'fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="2.5"');
+    // 26 nov (dibujos reconocibles): cada moneda con su anillo y el canto estriado, para que no sean dos círculos lisos.
+    const canto = (c, op) => { let r = circulo(c, RMON - 7, `fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity="${op}"`); for (let k = 0; k < 36; k++) r += linea(pt(c, RMON - 4, k * 10), pt(c, RMON - 1, k * 10), tinta(1, op)); return r; };
+    let s = circulo(CM, RMON, 'fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="2.5"') + canto(CM, 0.4);
     if (enPaso(d.camino, e)) s += circulo(CM, 2 * RMON, trazo('i', 2.5, PUNTOS));
     pos.forEach((p, k) => {
       const c = pt(CM, 2 * RMON, p), ultima = k === pos.length - 1;
       // La marca apunta hacia afuera al empezar (p = 0); al rodar sin deslizar gira el doble de lo que avanza.
       const m = pt(c, RMON - 4, 2 * p);
-      s += circulo(c, RMON, ultima ? tinta(2.5) : tinta(1.5, 0.45) + PUNTOS);
+      s += circulo(c, RMON, ultima ? tinta(2.5) : tinta(1.5, 0.45) + PUNTOS) + (ultima ? canto(c, 0.4) : '');
       s += linea(c, m, trazo('o', ultima ? 3 : 2, ultima ? '' : ' stroke-opacity="0.55"'));
       s += circulo(m, 4, `fill="var(--c-o)" stroke="none"${ultima ? '' : ' fill-opacity="0.55"'}`);
     });
@@ -321,6 +333,11 @@
     const K = conRueda ? 2.9 : 4.2, c1 = [conRueda ? 52 : 82, conRueda ? 150 : 138], c2 = [conRueda ? 212 : 236, c1[1]], R1 = r1 * K, R2 = r2 * K, R3 = r3 * K;
     const g1 = -n1 * 360, g2 = -n1 * r1 / r2 * 360;             // pedaleando hacia adelante: sentido horario
     let s = '';
+    // 26 nov (dibujos reconocibles): el cuadro de la bicicleta (el tubo del asiento, la vaina de abajo y el tirante que
+    // baja al eje de atrás) con su asiento, tenue y debajo de las ruedas: sin él, plato y piñón se leían como engranajes.
+    const sillin = [Math.min(c1[0] + 58, (c1[0] + c2[0]) / 2 - 20), conRueda ? 36 : 28];
+    s += `<path d="M${n(c1[0])} ${n(c1[1])}L${n(sillin[0])} ${n(sillin[1] + 8)}L${n(c2[0])} ${n(c2[1])}Z" fill="none" stroke="currentColor" stroke-width="5" stroke-opacity="0.18" stroke-linejoin="round"/>`;
+    s += `<path d="M${n(sillin[0] - 16)} ${n(sillin[1] + 2)}L${n(sillin[0] + 12)} ${n(sillin[1])}L${n(sillin[0] + 14)} ${n(sillin[1] + 6)}L${n(sillin[0] - 12)} ${n(sillin[1] + 8)}Z" fill="currentColor" fill-opacity="0.45" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>`;
     if (conRueda) {
       s += circulo(c2, R3, conRueda === 'punteada' ? tinta(2, 0.6) + PUNTOS : 'fill="none" stroke="currentColor" stroke-width="6" stroke-opacity="0.3"') + (conRueda === 'punteada' ? '' : circulo(c2, R3 + 3, tinta(2)));
       for (let k = 0; k < 8; k++) s += linea(pt(c2, R2 + 4, g2 + 22.5 + k * 45), pt(c2, R3 - 3, g2 + 22.5 + k * 45), tinta(1, 0.35));
