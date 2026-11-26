@@ -651,6 +651,21 @@ const V = {
     if (f(1) !== d.f1 || f(2) !== d.f2 || f(3) !== d.f3) throw new Error('rm-26: los rectángulos 1 a 3 del enunciado no son los del modelo');
     return { correcta: f(d.k), errores: { 'RMP86-lineal': d.f1 + (d.f2 - d.f1) * (d.k - 1), 'RMP166-lugar-al-cuadrado': d.k * d.k, 'RMP161-figura-siguiente': f(d.k + 1) } };
   },
+  // rm-28 y rm-29 (reserva, 26 nov, etapa 9: «Arreglos numéricos»; las formas ya tienen 10 pares). La cruz se resuelve con
+  // el cálculo de rm-arreglos-ideas (calc.cruz prueba las parejas de la fila); el centro del multiplicativo, probando
+  // enteros uno por uno. Los errores salen de las mismas cuentas.
+  'rm-28': d => {
+    const nums = []; for (let x = d.desde; x <= d.hasta; x += d.paso) nums.push(x);
+    const C = require(path.join(__dirname, '..', '..', 'plantillas', 'rm-arreglos-ideas', 'generador.js')).calc, T = nums.reduce((a, b) => a + b, 0);
+    const S = C.cruz(nums, d.c);
+    if (S === null) throw new Error('rm-28: con ese centro no se arma la cruz');
+    return { correcta: S, errores: { 'RMP1-sin-centro': T / 2, 'RMP183-el-centro': d.c, 'RMP61-las-dos': T + d.c } };
+  },
+  'rm-29': d => {
+    let c = 0; for (let k = 1; k <= 100; k++) if (k * k * k === d.P) c = k;
+    if (!c) throw new Error('rm-29: el producto no es un número por sí mismo tres veces');
+    return { correcta: c, errores: { 'RMP188-entre-cuatro': d.P / 4, 'RMP194-dos-veces': c * c, 'RMP65-suma': 3 * c } };
+  },
   'rm-27': d => {
     const C = require(path.join(__dirname, '..', '..', 'plantillas', 'rm-induccion', 'generador.js')).calc, L = d.ciclo.length, q = Math.floor(d.k / L);
     return { correcta: C.toca(d.ciclo, d.k), errores: { 'RMP171-cociente': C.toca(d.ciclo, q === 0 ? L : q), 'RMP27-una-de-mas': C.toca(d.ciclo, d.k + 1), 'RMP27-ultima': d.ciclo[L - 1] } };
@@ -731,6 +746,19 @@ const V = {
     let res = null; for (let m = 2; m <= 1000 && !res; m++) for (let n = 1; n < m && !res; n++) if (g(n, m) === 1 && cifras(n, m, 8) === meta) res = fr(n, m);
     const todo = Number(d.ante + d.per);
     return { correcta: res, errores: { 'mixto-como-puro': fr(todo, 99), 'corta-el-decimal': fr(todo, 100), 'olvida-el-cero': fr(todo - Number(d.ante), 9) } };
+  },
+  // ari-39 y ari-40 (26 nov, etapa 9: «Potenciación y radicación»; reserva: las formas ya tienen 10 pares). Ítems de la
+  // práctica potencias-raices (sin motor), verificados aquí por fuerza bruta: la raíz entera, número por número.
+  'ari-39': d => {
+    const raiz = N => { let k = 0; while ((k + 1) * (k + 1) <= N) k++; return k; };
+    let N = d.k * d.k; while (raiz(N + 1) === d.k) N++;
+    return { correcta: N, errores: { 'suma-2k-mas-1': N + 1, 'suma-una-fila': d.k * d.k + d.k, 'olvida-el-residuo': d.k * d.k } };
+  },
+  'ari-40': d => {
+    const raiz = N => { let k = 0; while ((k + 1) * (k + 1) <= N) k++; return k; };
+    let N = 1; for (;; N++) { const k = raiz(N); if (N - k * k === d.r && (k + 1) * (k + 1) - N === d.re) break; }
+    const k = raiz(N);
+    return { correcta: N, errores: { 'suma-los-residuos': d.r + d.re, 'da-la-raiz': k, 'residuo-sobre-el-siguiente': (k + 1) * (k + 1) + d.r } };
   },
   'ari-19': d => { const r = motor('potenciacion').menorMultiplicador(d.N, 3), e = r.errores;
     return { correcta: r.m, errores: { 'lo-hace-cuadrado-no-cubo': e.loHaceCuadrado, 'multiplica-por-lo-que-sobra': e.copiaExponente, 'multiplica-por-todos-los-primos': e.todosLosPrimos } }; },
@@ -828,6 +856,18 @@ const V = {
     const pos = us.filter(u => u > 0).length;
     return { correcta: 2 * pos, errores: { 'TAL-BICUAD-TODAS-cada-u-da-dos-reales': 2 * us.length, 'TAL-BICUAD-POSITIVA-solo-la-positiva': pos, 'TAL-BICUAD-NINGUNA-descarta-todo': us.some(u => u < 0) ? 0 : 2 * pos } }; },
 
+  // bn-01 y bn-02 (reserva, 26 nov, etapa 9 de álgebra: «Binomio de Newton»; las formas ya tienen 10 pares). La plantilla
+  // binomio-practica no tiene motor: se rehace aquí, desarrollando el binomio término a término. bn-01: el coeficiente de
+  // xᵐ en (x − q)ⁿ. bn-02: el término independiente de (xᵖ + c/x^q)ⁿ, buscando el k cuyo exponente de x es 0.
+  'bn-01': d => { const comb = (n, k) => { let r = 1; for (let i = 0; i < k; i++) r = r * (n - i) / (i + 1); return Math.round(r); };
+    const t = k => comb(d.n, k) * (-d.q) ** k, k = d.n - d.m;
+    return { correcta: t(k), errores: { 'SIG-pierde-el-signo': -t(k), 'BLO-no-eleva-el-numero': comb(d.n, k) * -d.q, 'IDX-usa-k-mas-uno': t(k + 1) } }; },
+  'bn-02': d => { const comb = (n, k) => { let r = 1; for (let i = 0; i < k; i++) r = r * (n - i) / (i + 1); return Math.round(r); };
+    const ks = []; for (let k = 0; k <= d.n; k++) if (d.p * (d.n - k) - d.q * k === 0) ks.push(k);
+    if (ks.length !== 1) throw new Error('bn-02: el binomio debe tener un solo término sin x');
+    const k = ks[0];
+    return { correcta: comb(d.n, k) * d.c ** k, errores: { 'TAL-BN-SINC-olvida-el-numero-de-b': comb(d.n, k), 'BLO-no-eleva-el-numero': comb(d.n, k) * d.c, 'IDX-usa-k-menos-uno': comb(d.n, k - 1) * d.c ** (k - 1) } }; },
+
   // ---------------- Reserva de geometría (rutina de matemática C) ----------------
   // cg-01 a si-02: congruencia, segmentos-angulos y simetria (en "reserva": las formas de geometría ya tienen 10 pares;
   // geo-05, de Relaciones métricas, volvió a las formas el 18 nov en el lugar que dejó geo-13).
@@ -876,6 +916,16 @@ const V = {
     const u = [B[0] / d.AB + C[0] / d.AC, B[1] / d.AB + C[1] / d.AC], r = [C[0] - B[0], C[1] - B[1]], den = u[0] * r[1] - u[1] * r[0];
     const t = (B[0] * r[1] - B[1] * r[0]) / den, D = [u[0] * t, u[1] * t], bd = Math.round(Math.hypot(D[0] - B[0], D[1] - B[1]) * 1e6) / 1e6;
     return { correcta: bd, errores: { GE8: d.BC / 2, 'GE-PIE1': Math.round((d.BC - bd) * 1e6) / 1e6, 'GE-PIE3': d.BC * ((f, a, b) => f(f, a, b))((f, a, b) => (b ? f(f, b, a % b) : a), d.AB, d.AC) / (d.AB + d.AC) } }; },
+  // pn-01 y pn-02 (26 nov, etapa 9, Puntos notables; reserva: las formas ya tienen 10 pares). geo-puntos-notables es un
+  // generador sin motor: aquí se rehacen aparte. pn-01: el baricentro como promedio de los vértices en un triángulo con su
+  // mediana AM medida y escalada. pn-02: el incentro con pesos en los lados y el pie de su perpendicular sobre AB.
+  'pn-01': d => { const A = [2, 7], M = [4.5, 0], G = [11 / 3, 7 / 3], k = d.AM / Math.hypot(A[0] - M[0], A[1] - M[1]);
+    const ag = Math.round(Math.hypot(A[0] - G[0], A[1] - G[1]) * k * 1e6) / 1e6;
+    return { correcta: ag, errores: { 'GE-PN2': d.AM / 2, 'GE-PN3': Math.round((d.AM - ag) * 1e6) / 1e6, 'GE-PN4': 3 * d.AM / 4 } }; },
+  'pn-02': d => { const x = (d.AB * d.AB + d.AC * d.AC - d.BC * d.BC) / (2 * d.AB), A = [0, 0], B = [d.AB, 0], C = [x, Math.sqrt(d.AC * d.AC - x * x)];
+    const s = d.AB + d.AC + d.BC, I = [(d.BC * A[0] + d.AC * B[0] + d.AB * C[0]) / s, (d.BC * A[1] + d.AC * B[1] + d.AB * C[1]) / s];
+    const af = Math.round(I[0] * 1e6) / 1e6;
+    return { correcta: af, errores: { 'GE-IN1': d.AB / 2, 'GE-IN2': s / 2 - d.AC, 'GE-IN3': s / 2 } }; },
   'sa-01': d => { const r = motor('segmentos-angulos').ecuacionPar('alternos internos', [d.a1, d.b1], [d.a2, d.b2]), e = r.errores;
     return { correcta: r.x, errores: { 'GE17-suplementa-alternos': e.otraRelacion.x, 'despeje-signo': e.despejeSigno, 'da-el-angulo-y-no-x': e.xEsElAngulo } }; },
   'sa-02': d => { const r = motor('segmentos-angulos').solapados({ AC: d.AC, BD: d.BD, AD: d.AD }), e = r.errores;
@@ -914,6 +964,12 @@ const V = {
   'tri-17': d => { const SG = { 1: [1, 1], 2: [-1, 1], 3: [-1, -1], 4: [1, -1] }[d.q], otro = Math.sqrt(d.d * d.d - d.n * d.n);
     const [x, y] = d.dado === 'sen' ? [SG[0] * otro, d.n] : [d.n, SG[1] * otro], [x2, y2] = d.dado === 'sen' ? [-x, y] : [x, -y], r = d.d;
     return { correcta: y / x, errores: { 'RN-RAIZ-x-del-otro-cuadrante': y2 / x2, 'TRPN-INVERSA-da-la-cotangente': x / y, 'TR11-cambia-x-por-y': d.dado === 'sen' ? x / r : y / r } }; },
+  // tri-18 y tri-19 (reserva, 26 nov, etapa 9: «Reducción al primer cuadrante»). Cuentas aparte, con Math y el ángulo de
+  // verdad: tri-18, sen(−g) y sus errores con el coseno; tri-19, tan(90° + φ) con φ = atan t.
+  'tri-18': d => { const R = d.g * Math.PI / 180, v = -Math.sin(R), cof = Math.sign(v) * Math.abs(Math.cos(R));
+    return { correcta: v, errores: { 'TR15-olvida-el-menos-de-menos-theta': -v, 'TR14-cambia-a-coseno': cof, 'TR14-TR15-coseno-sin-el-menos': -cof } }; },
+  'tri-19': d => { const f = Math.atan(d.t), v = Math.tan(Math.PI / 2 + f);
+    return { correcta: v, errores: { 'TR14-conserva-la-tangente': -Math.tan(f), 'TR12-sin-signo': -v, 'TR14-TR12-conserva-y-sin-signo': Math.tan(f) } }; },
   'tt-01': d => { const r = motor('transformaciones-trig').sumaAProducto({ fn: 'sen', op: '+', A: d.A, B: d.B }), e = r.errores;
     if (!r.exacto) throw new Error('la suma debe salir exacta');
     return { correcta: r.valor, errores: { 'TR16-suma-de-senos-lineal': e.lineal.valor, 'TT2-semidiferencia-por-semisuma': e.intercambia.valor, 'TT1-olvida-el-2': e.sinDos.valor } }; },
@@ -950,6 +1006,12 @@ const V = {
   // átomos de la fórmula; los milimoles salen de mg / M (mg entre g/mol da mmol) por los átomos del elemento pedido.
   'qui-23': d => { const MM = motor('mol-composicion'), M = MM.masaMolar(d.formula).valor, at = MM.atomos(d.formula), n = d.mg / M;
     return { correcta: n * at[d.el], errores: { 'ES14-moles-de-moleculas': n, 'ES6-todos-los-atomos': n * MM.totalAtomos(d.formula), 'ES7-invertida': M / d.mg * at[d.el] } }; },
+  // qui-24 (reserva, 26 nov, etapa 9: «Reacciones químicas y balance»): el motor de balance-reacciones balancea por
+  // ion-electrón en medio ácido; los errores salen de sus otros caminos (sumar sin igualar electrones, contar los electrones
+  // por átomo de cromo) y del coeficiente del H⁺. Se lee el coeficiente del reductor en cada texto del motor.
+  'qui-24': d => { const x = motor('balance-reacciones').ionElectron(d.ox, d.red, 'acido');
+    const coef = (t, f) => { for (const l of t.split(' -> ')) for (const y of l.split(' + ')) { const m = y.match(/^([\d.]*)(.*)$/); if (m[2] === f) return m[1] ? +m[1] : 1; } return 0; };
+    return { correcta: x.coef(d.ox[0]), errores: { 'IE-POR-ATOMO': coef(x.errores.porAtomo.texto, d.ox[0]), 'IE-SIN-IGUALAR': coef(x.errores.sinIgualar.texto, d.ox[0]), 'IE-COEF-H': x.coef('H^+') } }; },
 
   // fis-23 y fis-24 (reserva, 19 nov, etapa 5 de física: «Movimiento parabólico»). El tiempo de caída lo da el motor de
   // tiro-parabolico (proyectil); la distancia al origen con x = x₀ + a·t e y = t² se recalcula aquí, con Pitágoras.

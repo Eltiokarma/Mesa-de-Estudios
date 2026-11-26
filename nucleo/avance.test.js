@@ -613,6 +613,22 @@ test('Etapa 8, Mol y composición rehecha: predicciones viejas sin huella borrad
   assert.equal(A.migrar(est), false, 'una sola vez');
 });
 
+// 26 nov (etapa 9): Reacciones y balance, rehecha con tres ideas de otra Predice y una idea nueva (cambio-eo).
+test('Etapa 9, Reacciones y balance rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
+  const U = 'quimica.reacciones-y-balance';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-12' }, teoria: { [U]: { ideas: Object.fromEntries(['indicios', 'clasificar', 'tanteo', 'oxida-reduce', 'ion-electron']
+    .map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionRQ, 1); assert.equal(est.estudiadaRQ, 1);
+  for (const i of ['indicios', 'clasificar', 'ion-electron']) assert.equal(est.teoria[U].ideas[i].prediccion, undefined, i);
+  for (const i of ['tanteo', 'oxida-reduce']) assert.equal(est.teoria[U].ideas[i].prediccion, 'c', `${i}: la misma pregunta, se queda`);
+  assert.equal(est.marcadas[U], '2026-11-12');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { tanteo: { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las cinco: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
 // 19 nov (etapa 8): Números racionales conservó sus cinco ids con otra Predice y sumó del-resto.
 test('Etapa 8, Números racionales rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cinco', () => {
   const U = 'aritmetica.numeros-racionales';
@@ -631,6 +647,22 @@ test('Etapa 8, Números racionales rehecha: predicciones viejas sin huella borra
   const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { equivalentes: { hecha: true, prediccion: 'c' } } } } };
   A.migrar(nuevo);
   assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});
+
+// 26 nov (etapa 9): Potenciación y radicación conservó cuatro ids (tres con otra Predice) y sumó dos ideas.
+test('Etapa 9, Potenciación y radicación rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cuatro', () => {
+  const U = 'aritmetica.potenciacion-y-radicacion';
+  const ids = ['perfectos', 'exclusion', 'raiz-entera', 'aproximadas'];
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, marcadas: {}, teoria: { [U]: { ideas: Object.fromEntries(ids.map(id => [id, { hecha: true, prediccion: 'c' }])) } } };
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionPR, 1); assert.equal(est.estudiadaPR, 1);
+  for (const id of ['perfectos', 'exclusion', 'raiz-entera']) assert.equal(est.teoria[U].ideas[id].prediccion, undefined, id);
+  assert.equal(est.teoria[U].ideas.aproximadas.prediccion, 'c', 'la misma pregunta y los mismos ids: se queda');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las cuatro de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { perfectos: { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las cuatro: le quedan por hacer');
 });
 
 // 19 nov (etapa 8): Razonamiento inductivo, rehecha con dos ids y sus predicciones de siempre, una idea menos y cuatro nuevas.
@@ -688,4 +720,97 @@ test('Etapa 8, Proporcionalidad rehecha: predicciones viejas sin huella borradas
   const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { thales: { hecha: true, prediccion: 'c' } } } } };
   A.migrar(nuevo);
   assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});
+
+// 26 nov (etapa 9): Reducción al primer cuadrante, rehecha con tres ids (otra Predice), una idea menos y dos nuevas.
+test('Etapa 9, Reducción rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cuatro', () => {
+  const U = 'trigonometria.reduccion-al-primer-cuadrante';
+  const antes = ['angulo-referencia', 'cofuncion', 'mayores-negativos', 'suplementarios-vuelta'];
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, teoria: { [U]: { ideas: Object.fromEntries(antes.map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  est.teoria[U].ideas.cofuncion.prediccionDe = 'h1';
+  A.migrar(est);
+  assert.equal(est.prediccionRP, 1); assert.equal(est.estudiadaRP, 1);
+  assert.equal(est.teoria[U].ideas['angulo-referencia'].prediccion, undefined, 'otra Predice: se vuelve a preguntar');
+  assert.equal(est.teoria[U].ideas['mayores-negativos'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['angulo-referencia'].hecha, true, 'la idea sigue hecha');
+  assert.equal(est.teoria[U].ideas.cofuncion.prediccion, 'c', 'con huella: la revisa la app');
+  assert.ok(est.marcadas[U], 'terminó las cuatro de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, teoria: { [U]: { ideas: { 'angulo-referencia': { hecha: true } } } } };
+  A.migrar(nuevo);
+  assert.ok(!(nuevo.marcadas || {})[U], 'sin terminar las de antes no gana «Ya la estudié»');
+});
+
+// 26 nov (etapa 9): Binomio de Newton conservó sus cuatro ids con otra Predice y sumó termino-buscado y suma-coeficientes.
+test('Etapa 9, Binomio de Newton rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cuatro', () => {
+  const U = 'algebra.binomio-de-newton';
+  const ids = ['pascal-elecciones', 'termino-general', 'exponente-no-natural', 'potencia-trinomio'];
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-15' }, marcadas: {}, teoria: { [U]: { ideas: Object.fromEntries(ids.map(id => [id, { hecha: true, prediccion: 'c' }])) } } };
+  est.teoria[U].ideas['termino-general'].prediccionDe = 'h1';
+  assert.equal(A.migrar(est), true);
+  assert.equal(est.prediccionBN, 1); assert.equal(est.estudiadaBN, 1);
+  for (const id of ids.filter(i => i !== 'termino-general')) {
+    assert.equal(est.teoria[U].ideas[id].prediccion, undefined, id);
+    assert.equal(est.teoria[U].ideas[id].hecha, true, id);
+  }
+  assert.equal(est.teoria[U].ideas['termino-general'].prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-15', 'terminó las cuatro de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const nuevo = { avanceV: 1, vistas: {}, marcadas: {}, teoria: { [U]: { ideas: { 'pascal-elecciones': { hecha: true, prediccion: 'c' } } } } };
+  A.migrar(nuevo);
+  assert.equal(nuevo.marcadas[U], undefined, 'sin terminar las de antes no gana «Ya la estudié»');
+});
+
+// 26 nov (etapa 9): Cohesión y coherencia, rehecha con sus cuatro ids y otra Predice en cada uno; sumó incluir.
+test('Etapa 9, Cohesión y coherencia rehecha: predicciones viejas sin huella borradas una vez; «Ya la estudié» a quien terminó las cuatro', () => {
+  const U = 'razonamiento-verbal.cohesion-y-coherencia';
+  const IDS = ['referente', 'repetir-sustituir-callar', 'conocido-y-nuevo', 'no-contradiccion'];
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, teoria: { [U]: { ideas: Object.fromEntries(IDS.map(i => [i, { hecha: true, prediccion: 'c' }])) } } };
+  est.teoria[U].ideas.referente.prediccionDe = 'h1';
+  A.migrar(est);
+  assert.equal(est.prediccionCH, 1);
+  assert.equal(est.estudiadaCH, 1);
+  assert.equal(est.teoria[U].ideas['no-contradiccion'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas['conocido-y-nuevo'].prediccion, undefined);
+  assert.equal(est.teoria[U].ideas.referente.prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las cuatro de antes');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { referente: { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las cuatro: le quedan por hacer');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+});
+
+// 26 nov (etapa 9): Arreglos numéricos, rehecha: vertices-dos-veces con otra Predice; reparto-parejo y suma-magica la conservan.
+test('Etapa 9, Arreglos numéricos rehecha: la predicción vieja de vertices-dos-veces se borra una vez; «Ya la estudié» a quien terminó las tres', () => {
+  const U = 'razonamiento-matematico.arreglos-numericos';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, teoria: { [U]: { ideas: {
+    'suma-magica': { hecha: true, prediccion: 'c' }, 'vertices-dos-veces': { hecha: true, prediccion: 'tope' }, 'reparto-parejo': { hecha: true, prediccion: 'si' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionAR2, 1); assert.equal(est.estudiadaAR2, 1);
+  assert.equal(est.teoria[U].ideas['vertices-dos-veces'].prediccion, undefined, 'otra Predice: se vuelve a preguntar');
+  assert.equal(est.teoria[U].ideas['vertices-dos-veces'].hecha, true, 'la idea sigue hecha');
+  assert.equal(est.teoria[U].ideas['suma-magica'].prediccion, 'c', 'misma pregunta y mismos ids: se queda');
+  assert.equal(est.teoria[U].ideas['reparto-parejo'].prediccion, 'si');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las tres de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { 'suma-magica': { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las tres: le quedan por hacer');
+});
+
+// 26 nov (etapa 9): Puntos notables, rehecha: baricentro y euler con otra Predice; centros se fue y entraron cuatro ideas.
+test('Etapa 9, Puntos notables rehecha: predicciones viejas de baricentro y euler borradas una vez; «Ya la estudié» a quien terminó las tres', () => {
+  const U = 'geometria.puntos-notables';
+  const est = { avanceV: 1, vistas: { [U]: '2026-11-14' }, teoria: { [U]: { ideas: {
+    baricentro: { hecha: true, prediccion: 'c' }, centros: { hecha: true, prediccion: 'c' }, euler: { hecha: true, prediccion: 'c', prediccionDe: 'h1' } } } } };
+  A.migrar(est);
+  assert.equal(est.prediccionPNT, 1); assert.equal(est.estudiadaPNT, 1);
+  assert.equal(est.teoria[U].ideas.baricentro.prediccion, undefined, 'otra Predice: se vuelve a preguntar');
+  assert.equal(est.teoria[U].ideas.baricentro.hecha, true, 'la idea sigue hecha');
+  assert.equal(est.teoria[U].ideas.euler.prediccion, 'c', 'con huella: la revisa la app');
+  assert.equal(est.marcadas[U], '2026-11-14', 'terminó las tres de antes: conserva «Ya la estudié»');
+  assert.equal(A.migrar(est), false, 'una sola vez');
+  const otro = { avanceV: 1, teoria: { [U]: { ideas: { baricentro: { hecha: true } } } } };
+  A.migrar(otro);
+  assert.ok(!(otro.marcadas || {})[U], 'no terminó las tres: le quedan por hacer');
 });

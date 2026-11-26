@@ -132,6 +132,11 @@
     return cambio;
   }
   const REHECHAS_E6 = [
+    // Etapa 9 (26 nov): Arreglos numéricos conservó reparto-parejo y suma-magica con la misma pregunta y los mismos ids
+    // de opción; vertices-dos-veces cambió su Predice (la de antes pasó a mayor-suma) y sumó mayor-suma, producto-magico y
+    // piramide-de-sumas (docs/etapa9/propuesta-razonamiento-matematico.md, decisión 3).
+    { u: 'razonamiento-matematico.arreglos-numericos', p: 'prediccionAR2', e: 'estudiadaAR2',
+      cambian: ['vertices-dos-veces'], antes: ['suma-magica', 'vertices-dos-veces', 'reparto-parejo'] },
     { u: 'aritmetica.numeros-primos-y-divisores', p: 'prediccionPD',
       cambian: ['rectangulos', 'criba', 'factorizacion', 'divisores', 'euler', 'fermat-wilson'] },
     { u: 'algebra.division-de-polinomios', p: 'prediccionDP', e: 'estudiadaDP',
@@ -189,6 +194,11 @@
     { u: 'quimica.mol-y-composicion', p: 'prediccionMC', e: 'estudiadaMC',
       cambian: ['masa-atomica-promedio', 'mol-masa-molar'],
       antes: ['masa-atomica-promedio', 'mol-masa-molar', 'relaciones-en-formula', 'composicion-formula-empirica', 'leyes-ponderales'] },
+    // Etapa 9 (26 nov): Reacciones y balance conservó sus cinco ids; indicios, clasificar e ion-electron cambiaron su Predice
+    // (tanteo y oxida-reduce conservan pregunta e ids) y sumó `cambio-eo` (docs/etapa9/propuesta-quimica.md, decisión 3).
+    { u: 'quimica.reacciones-y-balance', p: 'prediccionRQ', e: 'estudiadaRQ',
+      cambian: ['indicios', 'clasificar', 'ion-electron'],
+      antes: ['indicios', 'clasificar', 'tanteo', 'oxida-reduce', 'ion-electron'] },
     // Etapa 8 (19 nov): Números racionales conservó sus cinco ids y sumó del-resto. Cuatro cambiaron su Predice;
     // exacto-periodico conserva la pregunta y la correcta, pero cambió dos distractores (docs/etapa8/propuesta-aritmetica.md,
     // decisión 10): también se vuelve a preguntar.
@@ -217,6 +227,31 @@
     { u: 'geometria.proporcionalidad-y-semejanza', p: 'prediccionPS', e: 'estudiadaPS',
       cambian: ['thales', 'bisectriz', 'semejanza', 'area-y-escala'],
       antes: ['thales', 'bisectriz', 'ceva-menelao', 'semejanza', 'area-y-escala'] },
+    // Etapa 9 (26 nov): Potenciación y radicación conservó cuatro ids; perfectos, exclusion y raiz-entera cambiaron su
+    // Predice (aproximadas conserva pregunta e ids) y sumó raiz-cubica y contar (docs/etapa9/propuesta-aritmetica.md,
+    // decisión 9).
+    { u: 'aritmetica.potenciacion-y-radicacion', p: 'prediccionPR', e: 'estudiadaPR',
+      cambian: ['perfectos', 'exclusion', 'raiz-entera'], antes: ['perfectos', 'exclusion', 'raiz-entera', 'aproximadas'] },
+    // Etapa 9 (26 nov): Cohesión y coherencia conservó sus cuatro ids, los cuatro con otra Predice, y sumó incluir
+    // (docs/etapa9/propuesta-verbal.md, decisión 8).
+    { u: 'razonamiento-verbal.cohesion-y-coherencia', p: 'prediccionCH', e: 'estudiadaCH',
+      cambian: ['no-contradiccion', 'referente', 'repetir-sustituir-callar', 'conocido-y-nuevo'],
+      antes: ['referente', 'repetir-sustituir-callar', 'conocido-y-nuevo', 'no-contradiccion'] },
+    // Etapa 9 (26 nov): Reducción al primer cuadrante conservó tres ids con otra Predice (angulo-referencia,
+    // mayores-negativos, cofuncion), perdió suplementarios-vuelta (pasó a las ideas 1 y 2) y sumó misma-razon y opuestos
+    // (docs/etapa9/propuesta-trigonometria.md, §8).
+    { u: 'trigonometria.reduccion-al-primer-cuadrante', p: 'prediccionRP', e: 'estudiadaRP',
+      cambian: ['angulo-referencia', 'mayores-negativos', 'cofuncion'],
+      antes: ['angulo-referencia', 'cofuncion', 'mayores-negativos', 'suplementarios-vuelta'] },
+    // Etapa 9 (26 nov): Binomio de Newton conservó sus cuatro ids, los cuatro con otra Predice, y sumó termino-buscado y
+    // suma-coeficientes (docs/etapa9/propuesta-algebra.md, decisión 9).
+    { u: 'algebra.binomio-de-newton', p: 'prediccionBN', e: 'estudiadaBN',
+      cambian: ['pascal-elecciones', 'termino-general', 'exponente-no-natural', 'potencia-trinomio'],
+      antes: ['pascal-elecciones', 'termino-general', 'exponente-no-natural', 'potencia-trinomio'] },
+    // Etapa 9 (26 nov): Puntos notables conservó baricentro y euler con otra Predice, perdió centros (repartida en
+    // circuncentro, incentro, ortocentro y excentro, nuevas) (docs/etapa9/propuesta-geometria.md, decisión 3).
+    { u: 'geometria.puntos-notables', p: 'prediccionPNT', e: 'estudiadaPNT',
+      cambian: ['baricentro', 'euler'], antes: ['baricentro', 'centros', 'euler'] },
   ];
   // Borra, una sola vez (su marca), las predicciones guardadas sin huella de las ideas que se rehicieron con otra
   // predicción y conservaron su id. Las que traen huella (prediccionDe) las revisa la app al abrir la idea.
