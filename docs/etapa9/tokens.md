@@ -48,3 +48,5 @@ contra los límites semanales de los planes.
 | algebra.binomio-de-newton | lector en frío B (ideas 4–6) | 126 043 | 2 min 14 s | 33 herramientas |
 | algebra.binomio-de-newton | lector en frío A (ideas 1–3) | 127 141 | 2 min 28 s | 34 herramientas |
 | razonamiento-matematico.arreglos-numericos | lectores A y B, parte 1 rehecha (retomados) | +41 814 y +36 765 | 2 min cada uno | total A 148 894, B 148 845 |
+| aritmetica.potenciacion-y-radicacion | lector en frío A (ideas 1–3) | 124 974 | 2 min 6 s | 33 herramientas |
+| aritmetica.potenciacion-y-radicacion | lector en frío B (ideas 4–6) | 125 429 | 2 min 11 s | 33 herramientas |
