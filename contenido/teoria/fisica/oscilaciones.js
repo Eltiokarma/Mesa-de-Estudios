@@ -863,6 +863,253 @@
     };
   })();
 
+  // 4. Período de resortes ideales: las conexiones se deducen de fuerzas y alargamientos.
+  const idea4 = (() => {
+    const K = sub(S.k, 'eq'), K1 = sub(S.k, '1'), K2 = sub(S.k, '2');
+    const D = sub(S.delta, 'eq'), D0 = sub(S.delta, '0');
+    const red = n => Math.round(n * 1e9) / 1e9;
+    const exacto = (n, d = 3) => Math.abs(n - Math.round(n * 10 ** d) / 10 ** d) < 1e-9;
+    const textoValor = (n, unidad, pi = false) => {
+      const q = pi ? n / Math.PI : n;
+      return `${exacto(q) ? '' : '≈ '}${f(q, 3)}${pi ? 'π' : ''} ${unidad}`;
+    };
+    const numero = (clave, n, unidad, pi = false) => V(clave, textoValor(n, unidad, pi));
+    const periodo = (m, k) => 2 * Math.PI * Math.sqrt(m / k);
+    const eqPeriodo = rigidez => [S.T, ' = 2π', raiz(frac(S.m, rigidez))];
+    const eqT = (m, k) => [S.T, ' = 2π', raiz(frac(Q('m', m, 'kg', 3), Q('k', k, 'N/m', 3))), ' = ', numero('T', periodo(m, k), 's', true)];
+    const datosBase = ['Los resortes son ideales y su masa es despreciable.', 'No hay rozamiento ni pérdida de amplitud.'];
+    function figura(p, tipo) {
+      if (tipo.startsWith('vertical')) {
+        // La referencia natural es conocida; el equilibrio se omite si debe calcularse.
+        const natural = 92, d = p.sCm === undefined ? p.yCm : p.sCm, y = natural + 4 * d;
+        const textos = [{ x: 12, y: 22, texto: `m = ${f(p.m, 3)} kg`, color: 'f' },
+          { x: 300, y: 22, texto: `g = ${f(p.g)} m/s²`, color: 'h', ancla: 'end' },
+          { x: 12, y: 54, texto: p.k === undefined ? 'Resorte' : `k = ${f(p.k, 3)} N/m`, color: 'f' },
+          { x: 306, y: natural - 10, texto: 'Longitud natural', ancla: 'end' },
+          { x: 260, y: Math.max(natural + 28, (natural + y) / 2 + 4), texto: `δ = ${f(d)} cm`, color: 'i', ancla: 'middle' }];
+        return est({ alto: Math.max(270, y + 64), techo: { y: 38, x0: 112, x1: 164 },
+          objetos: [{ tipo: 'resorte', de: [138, 38], a: [138, y - 18], vueltas: 10, ancho: 8 },
+            { tipo: 'caja', x: 138, y: y + 18, w: 36, h: 36 }],
+          lineas: [{ de: [162, natural], a: [216, natural], discontinua: true }],
+          cotas: [{ de: [216, natural], a: [216, y], color: 'i', lado: 1, sep: 16 }],
+          textos, alt: 'Un resorte vertical sostiene un bloque. La cota mide el alargamiento desde la longitud natural; no es la amplitud.' });
+      }
+      const serie = tipo.startsWith('serie'), paralelo = tipo.startsWith('paralelo');
+      if (serie || paralelo) {
+        const x = 252, objetos = [{ tipo: 'caja', x, y: 176, w: 40, h: paralelo ? 84 : 40 }];
+        if (serie) objetos.push({ tipo: 'resorte', de: [24, 156], a: [126, 156], vueltas: 7, ancho: 7 }, { tipo: 'resorte', de: [126, 156], a: [232, 156], vueltas: 7, ancho: 7 });
+        else for (const y of [108, 152]) objetos.push({ tipo: 'resorte', de: [24, y], a: [232, y], vueltas: 10, ancho: 7 });
+        const k1 = p.k1 === undefined ? 'k_1: por determinar' : `k_1 = ${f(p.k1, 3)} N/m`;
+        const k2 = p.k2 === undefined ? 'k_2: por determinar' : `k_2 = ${f(p.k2, 3)} N/m`;
+        return est({ alto: 248, paredes: [{ x: 24, y0: 86, y1: 176, lado: -1 }], piso: { y: 176, x0: 12, x1: 308 }, objetos,
+          textos: [{ x: 12, y: 22, texto: serie ? 'Resortes en serie' : 'Resortes en paralelo' },
+            { x: 12, y: 48, texto: `m = ${f(p.m, 3)} kg`, color: 'f' },
+            { x: serie ? 76 : 128, y: serie ? 72 : 88, texto: k1, color: 'f', ancla: 'middle' },
+            { x: serie ? 202 : 128, y: serie ? 116 : 136, texto: k2, color: 'f', ancla: 'middle' },
+            { x: 160, y: 218, texto: 'Esquema de la conexión; bloque en equilibrio.', ancla: 'middle' }],
+          alt: serie ? 'Dos resortes consecutivos unen la pared y el bloque en equilibrio.' : 'Dos resortes unen la misma pared y el mismo bloque en equilibrio.' });
+      }
+      const ts = [{ x: 12, y: 48, texto: p.m === undefined ? 'm: por determinar' : `m = ${f(p.m, 3)} kg`, color: 'f' },
+        { x: 308, y: 48, texto: p.k === undefined ? 'k: por determinar' : `k = ${f(p.k, 3)} N/m`, color: 'f', ancla: 'end' }];
+      return est(carrito(0, { rotuloX: false, textos: ts, alt: 'Un bloque unido a un resorte horizontal se representa en equilibrio.' }));
+    }
+    function caso(tipo, p) {
+      let valor, unidad = 's', clave = 'T', pi = true, enunciado, regla, cuentas, sentido;
+      let m = p.m, k = p.k, keq, errores = [], dibujoP = { ...p }, datos = datosBase.slice();
+      const err = (id, n, causa, breve) => errores.push({ id, valor: n, causa, breve });
+      const erroresT = () => {
+        err('medio', valor / 2, 'contar medio ciclo', 'medio ciclo');
+        err('doble', 2 * valor, 'contar dos ciclos', 'dos ciclos');
+        err('masa-doble', valor * Math.sqrt(2), 'duplicar la masa', 'masa duplicada');
+        err('rigidez-doble', valor / Math.sqrt(2), 'duplicar la rigidez', 'rigidez duplicada');
+      };
+      if (tipo === 'periodo' || tipo === 'periodo-gramos') {
+        if (tipo === 'periodo-gramos') { m = p.gramos / 1000; dibujoP.m = m; datos.push('1 kg = 1000 g.'); }
+        valor = periodo(m, k);
+        enunciado = ['Un bloque de ', Q('m', tipo === 'periodo-gramos' ? p.gramos : m, tipo === 'periodo-gramos' ? 'g' : 'kg', 3), ' oscila horizontalmente con un resorte de ', Q('k', k, 'N/m'), '. ¿Cuál es su período?'];
+        regla = paso('El período se obtiene con la masa y la rigidez.', eqPeriodo(S.k));
+        cuentas = [];
+        if (tipo === 'periodo-gramos') cuentas.push(paso('Expresamos la masa en kilogramos.', [S.m, ' = ', frac(Q('m', p.gramos, 'g'), '1000 g/kg'), ' = ', Q('m', m, 'kg', 3)]));
+        cuentas.push(paso('Reemplazamos los datos y dejamos π exacto.', eqT(m, k)));
+        sentido = 'El período mide una ida y vuelta completa del bloque.'; erroresT();
+      } else if (tipo === 'razon-masa' || tipo === 'razon-rigidez') {
+        pi = false;
+        const masa = tipo === 'razon-masa', cociente = masa ? p.m1 / p.m0 : p.k0 / p.k1;
+        valor = p.T0 * Math.sqrt(cociente);
+        enunciado = masa ? ['Con el mismo resorte, la masa pasa de ', Q('m', p.m0, 'kg'), ' a ', Q('m', p.m1, 'kg'), '. El período inicial es ', Q('T', p.T0, 's'), '. ¿Cuál será el nuevo período?'] :
+          ['La masa no cambia. La rigidez pasa de ', Q('k', p.k0, 'N/m'), ' a ', Q('k', p.k1, 'N/m'), '; el período inicial es ', Q('T', p.T0, 's'), '. ¿Cuál será el nuevo período?'];
+        const q0 = sub(masa ? S.m : S.k, '0'), q1 = sub(masa ? S.m : S.k, '1');
+        regla = paso(masa ? 'La rigidez común se cancela al comparar períodos.' : 'La masa común se cancela al comparar períodos.',
+          [frac(sub(S.T, '1'), sub(S.T, '0')), ' = ', raiz(masa ? frac(q1, q0) : frac(q0, q1))]);
+        cuentas = [paso('Multiplicamos el período inicial por la razón calculada.', [sub(S.T, '1'), ' = ', Q('T', p.T0, 's'), ' · ', raiz(masa ? frac(Q('m', p.m1, 'kg'), Q('m', p.m0, 'kg')) : frac(Q('k', p.k0, 'N/m'), Q('k', p.k1, 'N/m'))), ' = ', numero('T', valor, 's')])];
+        sentido = masa ? 'Más masa hace más lento este oscilador, aunque conserve el mismo resorte.' : 'Un resorte más rígido reduce el período cuando la masa se conserva.';
+        dibujoP = masa ? { m: p.m1 } : { k: p.k1 };
+        err('sin-raiz', p.T0 * cociente, 'omitir la raíz', 'sin raíz'); err('sin-cambio', p.T0, 'ignorar el cambio', 'sin cambio');
+        err('inversa', p.T0 / Math.sqrt(cociente), 'invertir la razón', 'razón invertida'); err('doble', 2 * valor, 'contar dos ciclos', 'dos ciclos');
+        err('masa-doble', valor * Math.sqrt(2), 'duplicar además la masa', 'masa duplicada');
+      } else if (tipo === 'masa-periodo' || tipo === 'rigidez-periodo') {
+        const masa = tipo === 'masa-periodo'; pi = false; unidad = masa ? 'kg' : 'N/m'; clave = masa ? 'm' : 'k';
+        valor = masa ? k * (p.q / 2) ** 2 : m * (2 / p.q) ** 2;
+        enunciado = masa ? ['Un resorte de ', Q('k', k, 'N/m'), ' completa cada ciclo en ', numero('T', p.q * Math.PI, 's', true), '. ¿Qué masa tiene el bloque?'] :
+          ['Un bloque de ', Q('m', m, 'kg'), ' tiene un período de ', numero('T', p.q * Math.PI, 's', true), '. ¿Cuál es la rigidez del resorte?'];
+        regla = paso('Elevamos al cuadrado antes de despejar la incógnita.', [sup(S.T), ' · ', S.k, ' = 4π² · ', S.m]);
+        cuentas = [paso(masa ? 'Dividimos entre 4π² para dejar sola la masa.' : 'Dividimos entre el período al cuadrado para dejar sola la rigidez.',
+          masa ? [S.m, ' = ', frac([S.k, ' · ', sup(S.T)], '4π²'), ' = ', frac([Q('k', k, 'N/m'), ' · ', sup(['(', numero('T', p.q * Math.PI, 's', true), ')'])], '4π²'), ' = ', numero('m', valor, unidad)] :
+            [S.k, ' = ', frac(['4π² · ', S.m], sup(S.T)), ' = ', frac(['4π² · ', Q('m', m, 'kg')], sup(['(', numero('T', p.q * Math.PI, 's', true), ')'])), ' = ', numero('k', valor, unidad)])];
+        sentido = masa ? 'La masa obtenida es positiva y reproduce el período dado.' : 'La rigidez relaciona la fuerza del resorte con su deformación.';
+        err('factor-cuatro', 4 * valor, masa ? 'duplicar el período' : 'reducir el período a la mitad', masa ? 'período duplicado' : 'período reducido'); err('cuarto', valor / 4, masa ? 'reducir el período a la mitad' : 'duplicar el período', masa ? 'período reducido' : 'período duplicado');
+        err('doble', 2 * valor, 'duplicar el resultado', 'resultado duplicado'); err('mitad', valor / 2, 'dividir otra vez entre dos', 'división extra');
+      } else if (tipo === 'vertical-periodo') {
+        k = p.m * p.g / (p.sCm / 100); valor = periodo(p.m, k);
+        datos.push('El alargamiento dado corresponde al equilibrio.', '1 m = 100 cm.');
+        enunciado = ['Al colgar ', Q('m', p.m, 'kg'), ', un resorte se alarga ', Q('delta', p.sCm, 'cm'), '. Con ', S.g, ' = ', Q('g', p.g, 'm/s²'), ', ¿qué período tendrá al oscilar verticalmente?'];
+        regla = paso('En equilibrio, la fuerza del resorte iguala al peso.', [S.k, ' · ', D, ' = ', S.m, ' · ', S.g, '; ', S.k, ' = ', frac([S.m, ' · ', S.g], D)]);
+        cuentas = [paso('Convertimos el alargamiento y calculamos la rigidez.', [S.k, ' = ', frac([Q('m', p.m, 'kg'), ' · ', Q('g', p.g, 'm/s²')], Q('delta', p.sCm / 100, 'm', 3)), ' = ', Q('k', k, 'N/m')]),
+          paso('El bloque oscila alrededor del equilibrio desplazado.', eqT(p.m, k))];
+        sentido = 'La amplitud se mide desde el nuevo equilibrio, no desde la longitud natural.'; erroresT();
+      } else if (tipo === 'vertical-amplitud' || tipo === 'vertical-desde-periodo') {
+        pi = false; unidad = 'cm'; clave = 'A';
+        const desdeT = tipo === 'vertical-desde-periodo'; if (desdeT) k = p.m * (2 / p.q) ** 2;
+        const deq = p.m * p.g / k; valor = Math.abs(p.yCm / 100 - deq) * 100;
+        datos.push('El bloque se suelta desde el reposo.', 'Los alargamientos se miden desde la longitud natural.');
+        enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' cuelga de un resorte ', ...(desdeT ? ['con período ', numero('T', p.q * Math.PI, 's', true)] : ['de ', Q('k', k, 'N/m')]), '. Se suelta con alargamiento ', Q('delta', p.yCm, 'cm'), '. Para ', S.g, ' = ', Q('g', p.g, 'm/s²'), ', ¿cuál es la amplitud?'];
+        regla = desdeT ? paso('De la relación cuadrática, dividimos entre el período al cuadrado.', [sup(S.T), ' · ', S.k, ' = 4π² · ', S.m, '; ', S.k, ' = ', frac(['4π² · ', S.m], sup(S.T)), ' = ', Q('k', k, 'N/m')]) :
+          paso('Despejamos el alargamiento que equilibra el peso.', [S.k, ' · ', D, ' = ', S.m, ' · ', S.g, '; ', D, ' = ', frac([S.m, ' · ', S.g], S.k)]);
+        cuentas = [paso('Ubicamos el equilibrio desde la longitud natural.', [D, ' = ', frac([Q('m', p.m, 'kg'), ' · ', Q('g', p.g, 'm/s²')], Q('k', k, 'N/m')), ' = ', Q('delta', deq, 'm', 3), ' = ', Q('delta', deq * 100, 'cm')]),
+          paso('La distancia entre el punto de liberación y el equilibrio es la amplitud.', [S.A, ' = |', D0, ' − ', D, '| = |', Q('delta', p.yCm, 'cm'), ' − ', Q('delta', deq * 100, 'cm'), '| = ', numero('A', valor, 'cm')])];
+        sentido = 'Soltar desde el reposo convierte esa posición en un extremo de la oscilación.';
+        err('natural', p.yCm, 'medir desde la longitud natural', 'referencia natural'); err('equilibrio', deq * 100, 'dar el alargamiento de equilibrio', 'alargamiento estático');
+        err('suma', p.yCm + deq * 100, 'sumar ambos alargamientos', 'suma'); err('doble', 2 * valor, 'medir entre extremos', 'entre extremos');
+        err('signo-alargamiento', deq * 100 - p.yCm, 'conservar una diferencia negativa', 'diferencia negativa'); err('recorrido', 4 * valor, 'dar el recorrido de un ciclo', 'recorrido completo');
+      } else if (tipo === 'paralelo-periodo' || tipo === 'serie-periodo' || tipo === 'paralelo-estatico' || tipo === 'serie-estatico') {
+        const serie = tipo.startsWith('serie'), estatico = tipo.endsWith('estatico');
+        const k1 = estatico ? p.mc * p.g / (p.sCm / 100) : p.k1, k2 = p.k2;
+        keq = serie ? k1 * k2 / (k1 + k2) : k1 + k2; valor = periodo(p.m, keq);
+        if (estatico) {
+          datos.push('La masa de calibración se retira antes de conectar.', 'El alargamiento de calibración corresponde al equilibrio.');
+          enunciado = ['Una masa de ', Q('m', p.mc, 'kg'), ' alarga el primer resorte ', Q('delta', p.sCm, 'cm'), '. Se conecta ', serie ? 'en serie' : 'en paralelo', ' con otro de ', Q('k', k2, 'N/m'), '. Para ', S.m, ' = ', Q('m', p.m, 'kg'), ' y ', S.g, ' = ', Q('g', p.g, 'm/s²'), ', halla el período horizontal.'];
+          regla = paso('El equilibrio de calibración permite despejar la primera rigidez.', [K1, ' = ', frac([sub(S.m, 'c'), ' · ', S.g], D), ' = ', frac([Q('m', p.mc, 'kg'), ' · ', Q('g', p.g, 'm/s²')], Q('delta', p.sCm / 100, 'm', 3)), ' = ', Q('k', k1, 'N/m')]);
+        } else {
+          enunciado = ['Dos resortes de ', Q('k', k1, 'N/m'), ' y ', Q('k', k2, 'N/m'), ' sostienen horizontalmente un bloque de ', Q('m', p.m, 'kg'), ', conectados ', serie ? 'en serie' : 'en paralelo', '. ¿Cuál es el período?'];
+          regla = serie ? paso('La misma fuerza alarga ambos resortes; sus alargamientos se suman.', [frac('1', K), ' = ', frac('1', K1), ' + ', frac('1', K2), '; ', K, ' = ', frac([K1, ' · ', K2], [K1, ' + ', K2])]) :
+            paso('Ambos resortes se deforman igual y sus fuerzas se suman.', [K, ' = ', K1, ' + ', K2]);
+        }
+        cuentas = [paso(serie ? 'Sumamos los inversos de las rigideces y luego invertimos el resultado.' : 'Sumamos las rigideces de los resortes en paralelo.', serie ? [K, ' = ', frac([Q('k', k1, 'N/m'), ' · ', Q('k', k2, 'N/m')], [Q('k', k1, 'N/m'), ' + ', Q('k', k2, 'N/m')]), ' = ', Q('k', keq, 'N/m')] :
+          [K, ' = ', Q('k', k1, 'N/m'), ' + ', Q('k', k2, 'N/m'), ' = ', Q('k', keq, 'N/m')]), paso('Usamos la rigidez del conjunto para calcular el período.', eqT(p.m, keq))];
+        sentido = serie ? 'En serie, el conjunto resulta menos rígido que cualquiera de sus resortes.' : 'En paralelo, el conjunto resulta más rígido que cada resorte por separado.';
+        err('otra-conexion', periodo(p.m, serie ? k1 + k2 : k1 * k2 / (k1 + k2)), 'usar la otra conexión', 'otra conexión');
+        err('solo-primero', periodo(p.m, k1), 'usar solo el primer resorte', 'solo primero'); err('medio', valor / 2, 'contar medio ciclo', 'medio ciclo'); err('doble', 2 * valor, 'contar dos ciclos', 'dos ciclos');
+        err('masa-doble', periodo(2 * p.m, keq), 'duplicar la masa del bloque', 'masa duplicada'); err('rigidez-doble', periodo(p.m, 2 * keq), 'duplicar la rigidez del conjunto', 'rigidez duplicada');
+      } else if (tipo === 'paralelo-inversa' || tipo === 'serie-inversa') {
+        const serie = tipo.startsWith('serie'); pi = false; clave = 'k'; unidad = 'N/m';
+        keq = p.m * (2 / p.q) ** 2; valor = serie ? keq * p.k1 / (p.k1 - keq) : keq - p.k1;
+        enunciado = ['Un bloque de ', Q('m', p.m, 'kg'), ' oscila con dos resortes ', serie ? 'en serie' : 'en paralelo', '. Uno tiene rigidez ', Q('k', p.k1, 'N/m'), ' y el período es ', numero('T', p.q * Math.PI, 's', true), '. ¿Cuál es la otra rigidez?'];
+        regla = paso('Elevamos el período al cuadrado para despejar la rigidez del conjunto.', [sup(S.T), ' · ', K, ' = 4π² · ', S.m]);
+        cuentas = [paso('Dividimos entre el período al cuadrado.', [K, ' = ', frac(['4π² · ', S.m], sup(S.T)), ' = ', frac(['4π² · ', Q('m', p.m, 'kg')], sup(['(', numero('T', p.q * Math.PI, 's', true), ')'])), ' = ', Q('k', keq, 'N/m')]),
+          serie ? paso('Restamos el primer inverso y despejamos la segunda rigidez.', [frac('1', K2), ' = ', frac('1', K), ' − ', frac('1', K1), '; ', K2, ' = ', frac([Q('k', keq, 'N/m'), ' · ', Q('k', p.k1, 'N/m')], [Q('k', p.k1, 'N/m'), ' − ', Q('k', keq, 'N/m')]), ' = ', numero('k', valor, unidad)]) :
+            paso('Despejamos la segunda rigidez restando la primera.', [K, ' = ', K1, ' + ', K2, '; ', K2, ' = ', Q('k', keq, 'N/m'), ' − ', Q('k', p.k1, 'N/m'), ' = ', numero('k', valor, unidad)])];
+        sentido = serie ? 'La rigidez equivalente debe ser menor que las dos rigideces individuales.' : 'La suma de las dos rigideces reproduce la del conjunto.';
+        err('suma', keq + p.k1, 'sumar las rigideces conocidas', 'suma'); err('conjunto', keq, 'dar la rigidez del conjunto', 'conjunto');
+        err('primero', p.k1, 'repetir la primera rigidez', 'primer resorte'); err('diferencia-inversa', serie ? keq - p.k1 : p.k1 - keq, 'restar en orden incorrecto', 'resta invertida');
+      } else throw new Error(`Familia de resortes desconocida: ${tipo}`);
+      const fmt = n => textoValor(n, unidad, pi), vistos = new Set([fmt(valor)]);
+      errores = errores.filter(e => { const t = fmt(e.valor); if (vistos.has(t)) return false; vistos.add(t); return true; });
+      if (errores.length < 4) throw new Error(`Faltan errores conceptuales distintos: ${tipo}`);
+      errores = errores.slice(0, 4);
+      const ops = opciones(valor, errores.map(e => ({ valor: e.valor, error: `RES-${e.id}`, siFuera: `Bien usas los datos; ${e.causa} da ${fmt(e.valor)}.` })), fmt);
+      return { enunciado, datos, dibujo: figura(dibujoP, tipo), pide: `Buscamos ${clave === 'T' ? 'el período de una oscilación' : clave === 'm' ? 'la masa del bloque' : clave === 'A' ? 'la amplitud desde el equilibrio' : 'la rigidez pedida'}.`,
+        tengo: 'Las cantidades y condiciones necesarias aparecen en el enunciado y en los Datos.', regla, cuentas, sentido,
+        respuesta: [clave === 'k' && tipo.includes('inversa') ? K2 : S[clave], ' = ', numero(clave, valor, unidad, pi)], opciones: ops,
+        caso: { tipo, ...p, valor, unidad, pi, errores: errores.map(e => ({ id: e.id, valor: e.valor })) },
+        erroresEjemplo: errores.map(e => `${fmt(e.valor)}: ${e.breve}`).join('; ') + '.' };
+    }
+    const lista = [
+      ['periodo', { m: 0.8, k: 20 }, 1, 'Un período con π'],
+      ['razon-masa', { T0: 0.8, m0: 0.5, m1: 4.5 }, 1, 'Cambia la masa'],
+      ['razon-rigidez', { T0: 1.2, k0: 20, k1: 80 }, 1, 'Cambia el resorte'],
+      ['masa-periodo', { q: 0.4, k: 50 }, 1, 'Buscamos la masa'],
+      ['rigidez-periodo', { q: 0.2, m: 0.8 }, 1, 'Buscamos la rigidez'],
+      ['periodo-gramos', { gramos: 200, k: 80 }, 2, 'La masa estaba en gramos'],
+      ['vertical-periodo', { m: 0.4, g: 10, sCm: 10 }, 2, 'El alargamiento permite medir'],
+      ['vertical-amplitud', { m: 0.4, k: 20, g: 10, yCm: 32 }, 2, 'Dos referencias distintas'],
+      ['paralelo-periodo', { m: 0.6, k1: 40, k2: 20 }, 2, 'Resortes lado a lado'],
+      ['serie-periodo', { m: 0.8, k1: 40, k2: 40 }, 2, 'Resortes uno tras otro'],
+      ['paralelo-estatico', { mc: 0.4, g: 10, sCm: 5, k2: 20, m: 1 }, 3, 'Calibrar y conectar en paralelo'],
+      ['serie-estatico', { mc: 0.5, g: 10, sCm: 5, k2: 100, m: 0.5 }, 3, 'Calibrar y conectar en serie'],
+      ['paralelo-inversa', { q: 0.2, m: 0.6, k1: 20 }, 3, 'Una rigidez en paralelo desconocida'],
+      ['serie-inversa', { q: 0.4, m: 0.8, k1: 60 }, 3, 'Una rigidez en serie desconocida'],
+      ['vertical-desde-periodo', { q: 0.2, m: 0.5, g: 10, yCm: 22 }, 3, 'Del período a la amplitud'],
+    ];
+    const ejemplos = lista.map(([tipo, p, nivel, titulo], n) => ejemplo(caso(tipo, p), nivel, titulo, n >= 10 ? (15 - n) % 5 : 0));
+    const tiempo = val => red(Math.round(Number(val.t || 0) * 100) / 100);
+    const tJuego = val => periodo(0.5, Number(val.k));
+    const xJuego = val => 8 * Math.cos(2 * Math.PI * tiempo(val) / tJuego(val));
+    const juego = val => carrito(xJuego(val), { A: 8, textos: [
+      { x: 12, y: 48, texto: 'm = 0,5 kg', color: 'f' }, { x: 308, y: 48, texto: `k = ${f(Number(val.k))} N/m`, color: 'f', ancla: 'end' },
+      { x: 308, y: 208, texto: `T ≈ ${f(tJuego(val))} s`, color: 'h', ancla: 'end' }], alt: 'El bloque oscila horizontalmente con masa y amplitud fijas; solo se cambia la rigidez del resorte.' });
+    const antes = est(carrito(8, { A: 8, rotuloX: false, textos: [{ x: 12, y: 48, texto: 'Mismo resorte', color: 'f' }, { x: 308, y: 48, texto: 'Masa nueva: cuatro veces', color: 'f', ancla: 'end' }] }));
+    const despues = est(carrito(8, { A: 8, rotuloX: false, textos: [{ x: 12, y: 48, texto: 'Mismo resorte', color: 'f' }, { x: 308, y: 48, texto: 'T = 1,2 s', color: 'h', ancla: 'end' }] }));
+    glosario.push(
+      { termino: 'rigidez equivalente', formas: ['rigidez equivalente'], simple: 'La rigidez del conjunto de resortes.', def: 'Rigidez de un solo resorte que produce la misma fuerza que el conjunto ante el mismo desplazamiento del bloque.', ejemplos: ['Dos resortes pueden representarse por una rigidez del conjunto.', 'La conexión cambia cómo se combinan las rigideces.', 'El bloque responde a la fuerza total de los resortes.'] },
+      { termino: 'resortes en serie', formas: ['resortes en serie'], simple: 'Resortes conectados uno después de otro.', def: 'Conexión de resortes ideales consecutivos: transmiten la misma fuerza y sus alargamientos se suman.', ejemplos: ['Una pared, dos resortes consecutivos y un bloque forman una conexión en serie.', 'La unión entre los resortes tiene masa despreciable.', 'El desplazamiento del bloque reúne los alargamientos de ambos resortes.'] },
+      { termino: 'resortes en paralelo', formas: ['resortes en paralelo'], simple: 'Resortes que sostienen juntos el mismo bloque.', def: 'Conexión en la que los resortes comparten el desplazamiento del bloque y sus fuerzas se suman.', ejemplos: ['Dos resortes unen una misma pared y un mismo bloque.', 'Los dos extremos unidos al bloque se desplazan la misma distancia.', 'La fuerza total sobre el bloque incluye la de cada resorte.'] },
+    );
+    return {
+      id: 'periodo-resorte', titulo: 'El ritmo del bloque', pregunta: '¿Cómo influyen el bloque y el resorte en la duración del vaivén?', temas: ['Masa-resorte horizontal y vertical'], pieza: 'fis-estatica',
+      aprendizaje: 'Calculo el período con masa y rigidez; ubico el equilibrio vertical y distingo conexiones de dos resortes.', actividad: 'Cambiar el resorte y observar cuánto tarda el mismo bloque en completar un ciclo.',
+      lee: { tarjetas: [
+        { titulo: 'El mismo bloque', texto: ['El bloque tiene masa ', S.m, '. La rigidez ', S.k, ' identifica cuánto se opone el resorte a deformarse. El reloj mide un ciclo completo. Compara resortes sin cambiar la masa.'], dibujo: est(juego({ k: 12.5, t: 0 })) },
+        { titulo: 'Colgado de un soporte', texto: ['En vertical, el peso estira el resorte hasta un equilibrio. La posición ', S.x, ' se mide desde ese equilibrio; el alargamiento ', S.delta, ' se mide desde la longitud natural.'] },
+        { titulo: 'Dos resortes y un bloque', texto: 'Los resortes en serie van uno después de otro. Los resortes en paralelo actúan juntos sobre el bloque. La rigidez equivalente describe el conjunto. Primero observa un solo resorte.' },
+      ] },
+      juega: { pieza: 'fis-estatica', consigna: 'Cambia la rigidez del resorte. Conserva el bloque y la amplitud; usa el reloj para seguir una ida y vuelta.', voz: 'Mira cuánto tarda en regresar al mismo extremo.',
+        mision: { texto: 'Consigue un período que, redondeado a dos decimales, sea 0,63 s.', logrado: val => Math.round(tJuego(val) * 100) === 63, bien: 'Ese resorte completa cada ciclo en aproximadamente 0,63 s.' },
+        leyenda: [{ s: S.m, t: 'masa fija del bloque' }, { s: S.k, t: 'rigidez del resorte elegido' }, { s: S.A, t: 'distancia fija del equilibrio a un extremo' }, { s: S.x, t: 'posición desde el equilibrio' }, { s: S.T, t: 'tiempo de un ciclo completo' }, { s: S.t, t: 'tiempo desde el extremo derecho' }],
+        controles: [{ id: 'k', etiqueta: 'Rigidez, k', inicio: 12.5, unidad: 'N/m', color: 'c-f', opciones: [12.5, 50, 112.5, 200].map(valor => ({ valor, texto: `${f(valor)} N/m` })) },
+          { id: 't', etiqueta: 'Tiempo, t', min: 0, max: 2, paso: 0.01, inicio: 0, unidad: 's', decimales: 2, color: 'c-h', auto: { velocidad: 0.25 } }],
+        dibujo: val => est(juego(val)), lectura: val => [S.T, ' ≈ ', Q('T', tJuego(val), 's'), '; ', S.t, ' = ', Q('t', tiempo(val), 's')], resumen: { k: 50, t: 0 }, minimo: 3 },
+      predice: { pregunta: 'Con el mismo resorte, se cuadruplica la masa. Si antes el período era 0,6 s, ¿cuánto dura ahora cada ciclo?', datos: datosBase, dibujo: antes, revelar: despues,
+        opciones: opciones(0.6 * Math.sqrt(4), [
+          { valor: 0.6 / Math.sqrt(4), error: 'RES-INV-MASA', siFuera: 'Bien comparas las masas; invertir su razón daría 0,3 s, como si más masa acortara el ciclo.' },
+          { valor: 0.6, error: 'RES-IGNORA-MASA', siFuera: 'Conservar 0,6 s supone que cambiar la masa no modifica la duración del ciclo.' },
+          { valor: 0.6 * 4, error: 'RES-LINEAL-MASA', siFuera: 'Bien usas el factor cuatro; multiplicar directamente el período por él daría 2,4 s.' },
+        ], n => `${f(n)} s`), coincide: 'La raíz de cuatro es dos: el ciclo tarda el doble.' },
+      mira: { pieza: 'fis-estatica', datos: despues.datos, pasos: [
+        paso('La masa y la rigidez fijan el período del resorte ideal.', eqPeriodo(S.k)),
+        paso('Con la misma rigidez, comparamos los períodos mediante la raíz de las masas.', [frac(sub(S.T, '1'), sub(S.T, '0')), ' = ', raiz(frac(sub(S.m, '1'), sub(S.m, '0'))), ' = √4 = 2']),
+        paso('El período nuevo es el doble del inicial.', [sub(S.T, '1'), ' = ', Q('T', 0.6, 's'), ' · 2 = ', Q('T', 1.2, 's')]),
+        paso('En vertical, primero ubicamos el equilibrio; después medimos desde allí.', [S.k, ' · ', D, ' = ', S.m, ' · ', S.g, '; ', D, ' = ', frac([S.m, ' · ', S.g], S.k)]),
+        paso('En paralelo, las deformaciones coinciden y las fuerzas se suman.', [K, ' = ', K1, ' + ', K2]),
+        paso('En serie, la fuerza coincide y los alargamientos se suman.', [frac('1', K), ' = ', frac('1', K1), ' + ', frac('1', K2)]),
+      ] },
+      regla: { texto: 'El período depende de masa y rigidez equivalente. En vertical, la gravedad desplaza el equilibrio. En serie se suman alargamientos; en paralelo, fuerzas.', ecuacion: eqPeriodo(K),
+        condicion: 'resortes ideales de masa despreciable, oscilaciones sin rozamiento y posiciones medidas desde el equilibrio.', dibujo: figura({ m: 0.6, k1: 40, k2: 20 }, 'paralelo-periodo') },
+      ejemplos,
+      resuelve: { pieza: 'fis-estatica', generar(s) {
+        const n = 1 + Math.floor(s / 4) % 19;
+        switch (s % 4) {
+          case 0: return resuelto(caso('masa-periodo', { k: 12 + 4 * n, q: 0.6 }));
+          case 1: { const sCm = [2.5, 22.5, 40][n % 3]; return resuelto(caso('vertical-periodo', { m: red(sCm * (20 + 4 * n) / 1000), g: 10, sCm })); }
+          case 2: return resuelto(caso('serie-periodo', { m: red((12 + 4 * n) * 0.08), k1: 12 + 4 * n, k2: 12 + 4 * n }));
+          default: return resuelto(caso('paralelo-inversa', { m: red((30 + 10 * n) * 0.04), q: 0.4, k1: 10 + 5 * n }));
+        }
+      } },
+      ahoraTu: { pieza: 'fis-estatica', generar(s) {
+        const n = 1 + Math.floor(s / 8) % 23;
+        switch (s % 8) {
+          case 0: return pregunta(caso('periodo', { m: red((18 + 6 * n) * 0.04), k: 18 + 6 * n }));
+          case 1: return pregunta(caso('razon-masa', { T0: red(0.3 + 0.1 * n), m0: red(0.2 + 0.04 * n), m1: red((0.2 + 0.04 * n) * 6.25) }));
+          case 2: return pregunta(caso('razon-rigidez', { T0: red(0.4 + 0.2 * n), k0: 12 + 4 * n, k1: 9 * (12 + 4 * n) }));
+          case 3: return pregunta(caso('rigidez-periodo', { m: red(0.3 + 0.1 * n), q: 0.5 }));
+          case 4: return pregunta(caso('vertical-amplitud', { m: red(0.24 + 0.02 * n), k: red((0.24 + 0.02 * n) * 50), g: 10, yCm: 22 + n / 2 }));
+          case 5: return pregunta(caso('paralelo-periodo', { m: red((24 + 6 * n) * 0.04), k1: 8 + 2 * n, k2: 16 + 4 * n }));
+          case 6: return pregunta(caso('serie-inversa', { m: red((10 + 5 * n) * 0.09), q: 0.6, k1: 3 * (10 + 5 * n) }));
+          default: return pregunta(caso('vertical-desde-periodo', { m: red(0.3 + 0.02 * n), q: 0.2, g: 10, yCm: 15 + n / 2 }));
+        }
+      } },
+    };
+  })();
+
   return {
     unidad: 'fisica.oscilaciones', version: '1.0.0', estado: 'borrador',
     colores: COLORES,
@@ -875,6 +1122,6 @@
       pregunta: '¿Qué tendría que conservar un péndulo para que su reloj mida bien?',
       fuente: {titulo:'APS: Huygens y el primer reloj de péndulo',url:'https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock'},
     },
-    ideas: [idea1, idea2, idea3],
+    ideas: [idea1, idea2, idea3, idea4],
   };
 });
