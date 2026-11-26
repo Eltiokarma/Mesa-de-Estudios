@@ -45,3 +45,4 @@ contra los límites semanales de los planes.
 | quimica.materia-y-energia | redactor, unidad ya cerrada | 400 393 | 58 min | 125 herramientas |
 | trigonometria.reduccion-al-primer-cuadrante | auditoría y correcciones (cierre) | 350 180 | 40 min 35 s | 145 herramientas |
 | quimica.reacciones-y-balance | auditoría y correcciones (cierre) | 335 564 | 31 min 24 s | 150 herramientas |
+| algebra.binomio-de-newton | lector en frío B (ideas 4–6) | 126 043 | 2 min 14 s | 33 herramientas |
