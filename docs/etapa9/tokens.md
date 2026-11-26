@@ -41,4 +41,4 @@ contra los límites semanales de los planes.
 | algebra.binomio-de-newton | redactor (Escribidor Escribano) | 454 718 | 53 min | 102 herramientas |
 | razonamiento-matematico.arreglos-numericos | lector en frío B (solo tarjetas: capturas de momentos rotas) | 107 338 | 1 min 25 s | 17 herramientas |
 | aritmetica.potenciacion-y-radicacion | redactor (Escribidor Escribano) | 356 377 | 61 min | 68 herramientas |
-| razonamiento-matematico.arreglos-numericos | lector en frío A (tarjetas y 3 momentos: capturas rotas) | ver notificación | — | — |
+| razonamiento-matematico.arreglos-numericos | lector en frío A (tarjetas y 3 momentos: capturas rotas) | 112 080 | 2 min | 22 herramientas |
