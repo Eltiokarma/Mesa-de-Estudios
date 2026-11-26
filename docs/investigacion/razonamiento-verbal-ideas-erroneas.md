@@ -245,6 +245,31 @@ Agregados en la etapa 8 (19 nov 2026) para la unidad «Conectores lógico-textua
 | RVC5 | **Se suma donde la segunda idea sale de la primera**: «además» donde va su resultado, su razón, su caso o su resumen. | «El agua del lago estaba muy fría; ___ nadie quiso nadar»; distractor «también». | Sin estudio encontrado; vecino de RV26 (*and* es el conector más fácil y se usa por defecto). | Hipótesis (ligada a RV26) | — |
 | RVC6 | **Se lee causa o consecuencia donde las ideas solo se suman, se repiten o se siguen en el tiempo.** | «Las ventanas del aula no cierran bien; ___ la puerta tiene la chapa rota»; distractor «por eso». | La causalidad se procesa «por defecto» al leer dos ideas seguidas (Zunino 2016), pero no hay dato de este error en exámenes. | Hipótesis (ligada a RV24) | — |
 
+### Cohesión y coherencia (códigos RVK, etapa 9)
+
+Agregados en la etapa 9 (26 nov 2026) para la unidad «Cohesión y coherencia textual» (`contenido/teoria/razonamiento-verbal/cohesion-y-coherencia.js`, propuesta en `docs/etapa9/propuesta-verbal.md`) y su práctica (`plantillas/cohesion-coherencia/`). Llevan prefijo propio (RVK) para no correr la numeración RV; se usan junto con RV9, RV27 y RV28. Ninguno tiene estudio con postulantes: salen de las hipótesis H01 a H09 de `docs/investigacion/etapa9/razonamiento-verbal.cohesion-y-coherencia.md` y de las predicciones de la unidad.
+
+| Código | Idea errónea | Ejemplo | Dato | Respaldo | Fuente |
+| --- | --- | --- | --- | --- | --- |
+| RVK1 | **Un conector bien puesto o una oración bien escrita se toma como prueba de sentido.** | «El pozo se secó en julio. Por eso, en julio, sacaron agua del pozo»; distractor «No se contradice: "por eso" une bien». | Sin estudio con postulantes; la investigación de la etapa 9 lo propone como H05 (confundir una señal formal con la consistencia del mensaje). | Hipótesis (H05) | — |
+| RVK2 | **Se ve contradicción donde cambia el tiempo, la persona que lo dice o la parte de la que se habla.** | «Hasta marzo abrió solo los sábados. Desde abril abre también los domingos»; distractor «Sí se contradice». | Sin estudio encontrado. | Hipótesis | — |
+| RVK3 | **Basta que dos oraciones hablen de lo mismo para que encajen o no choquen.** | Distractor «No se contradice: las dos hablan de la biblioteca». | La investigación de la etapa 9 lo propone como H01. | Hipótesis (H01) | — |
+| RVK4 | **La referencia solo mira atrás: se rechaza la que anuncia lo que viene.** | «La directora pidió esto: …»; distractor «A algo que se dijo antes». | La investigación de la etapa 9 lo propone como H03. | Hipótesis (H03) | — |
+| RVK5 | **El referente solo puede ser un nombre, no un pedido o un hecho entero.** | «Eso molestó a los comerciantes»; distractor «Al mercado». | La investigación de la etapa 9 lo propone como H04. | Hipótesis (H04) | — |
+| RVK6 | **Se acepta un referente que concuerda aunque no tenga sentido.** | «Lo pones en la canasta»; distractor «el horno». | Vecino de RV27 (la concordancia sin la lectura del sentido). | Hipótesis (ligada a RV27) | — |
+| RVK7 | **Lo callado o lo sustituido se recupera con otra palabra o con otra persona del texto.** | «Mi tía vende papa; mi mamá, chuño»; distractor «se calló "papa"». | Sin estudio encontrado. | Hipótesis | — |
+| RVK8 | **La elipsis o la sustitución se toman por una falta o por algo nuevo.** | Distractor «Ninguna: la oración está incompleta». | Sin estudio encontrado. | Hipótesis | — |
+| RVK9 | **Se exige que cada oración retome lo nuevo de la anterior: una sola forma de hilo.** | Texto que vuelve siempre a «la quinua»; distractor «Se corta: la 2 no retoma lo nuevo de la 1». | La investigación de la etapa 9 lo propone como H06 (orden fijo como receta). | Hipótesis (H06) | — |
+| RVK10 | **Se cree que volver al tema del inicio, o repetir un nombre, corta el hilo.** | Distractor «La 2 corta el hilo» cuando la 2 repite «biblioteca». | La investigación de la etapa 9 lo propone como H08. | Hipótesis (H08) | — |
+| RVK11 | **Se elige la oración que falta por un solo enlace, sin probar el otro lado.** | Candidata que retoma lo de antes y no presenta «esa revisión». | La investigación de la etapa 9 lo propone como H07. | Hipótesis (H07) | — |
+| RVK12 | **Se elige la oración que repite palabras del texto sin preparar lo que sigue.** | «Los libros donados eran para la biblioteca» antes de un «sin embargo». | La investigación de la etapa 9 lo propone como H08. | Hipótesis (H08) | — |
+| RVK13 | **Lo que alguien creyó o supuso se toma como un hecho del texto.** | «Todos los libros necesitaban arreglo» antes de «sin embargo, solo una parte…». | La investigación de la etapa 9 lo propone como H09. | Hipótesis (H09) | — |
+| RVK14 | **Se elige un referente que no concuerda en género o número.** | «Esta planta» con «las aguas del lago». | Sin estudio encontrado. | Hipótesis | — |
+| RVK15 | **Se lee hacia adelante una palabra que retoma lo ya dicho.** | «Después, la cosechó en mayo»; distractor «A lo que viene después: mayo». | Inverso de RVK4. | Hipótesis | — |
+| RVK16 | **Se calla a alguien cuando el lector recuperaría a otra persona.** | «Don Pedro saludó al alcalde. Después, le regaló un queso»; se quería que regalara el alcalde. | Sin estudio encontrado. | Hipótesis | — |
+| RVK17 | **Se sustituye por una expresión que no le corresponde.** | «La quinua… Esta fruta…». | Sin estudio encontrado. | Hipótesis | — |
+| RVK18 | **Se inventa un cambio de tiempo, de persona o de parte que el texto no dice, para no ver un choque o para explicar por qué no lo hay.** | «Ningún socio faltó en enero. Tres socios no fueron en enero»; distractor «No: son de dos momentos». | Vecino de RV9 (la incompatibilidad no se ve). | Hipótesis (ligada a RV9) | — |
+
 ## Lo que no tiene respaldo (todavía)
 
 Errores que suponemos en los ítems de academia, sin estudio que los mida. Cada uno se liga a un error con algo de respaldo:

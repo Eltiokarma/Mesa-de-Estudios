@@ -1,0 +1,21 @@
+{
+  "id": "cohesion-coherencia",
+  "titulo": "Cohesión y coherencia: la contradicción, el referente, repetir o callar, el hilo y la oración que falta",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-verbal.cohesion-y-coherencia"
+  ],
+  "temas": [
+    "Principio de no contradicción",
+    "Anáfora y catáfora",
+    "Repetición, sustitución y elipsis",
+    "Progresión temática: tópico y comento",
+    "Inclusión de enunciado"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

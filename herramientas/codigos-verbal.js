@@ -22,7 +22,8 @@ function construir(md = fs.readFileSync(INFORME, 'utf8')) {
   // RVn y, desde la etapa 5, RVDn (los de la unidad «Definiciones»: van después de los RV); desde la etapa 6, RVAn
   // (los de «Analogías», después de los RVD); desde la etapa 7, RVSn (los de «Sentido contextual», después de los RVA);
   // desde la etapa 8, RVCn (los de «Conectores», después de los RVS).
-  const filas = [...md.matchAll(/^\| (RV[DASC]?\d+) \|(.*)\|\s*$/gm)];
+  // Desde la etapa 9, RVKn (los de «Cohesión y coherencia», después de los RVC).
+  const filas = [...md.matchAll(/^\| (RV[DASCK]?\d+) \|(.*)\|\s*$/gm)];
   const out = {};
   for (const [, id, resto] of filas) {
     const celdas = resto.split(' | ').map(x => x.trim());
@@ -33,7 +34,7 @@ function construir(md = fs.readFileSync(INFORME, 'utf8')) {
     const nombre = (negrita ? negrita[1] : idea).replace(/\.$/, '').trim();
     out[id] = { nombre, respaldo: normalizarRespaldo(resp), por_verificar: /por verificar/i.test(resp) };
   }
-  const clave = k => (k.startsWith('RVD') ? 10000 : k.startsWith('RVA') ? 20000 : k.startsWith('RVS') ? 30000 : k.startsWith('RVC') ? 40000 : 0) + Number(k.replace(/^RV[DASC]?/, ''));
+  const clave = k => (k.startsWith('RVD') ? 10000 : k.startsWith('RVA') ? 20000 : k.startsWith('RVS') ? 30000 : k.startsWith('RVC') ? 40000 : k.startsWith('RVK') ? 50000 : 0) + Number(k.replace(/^RV[DASCK]?/, ''));
   const orden = Object.keys(out).sort((a, b) => clave(a) - clave(b));
   return Object.fromEntries(orden.map(k => [k, out[k]]));
 }

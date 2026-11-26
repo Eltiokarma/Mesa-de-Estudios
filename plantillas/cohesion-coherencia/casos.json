@@ -1,0 +1,553 @@
+{
+ "descripcion": "Casos de plantillas/cohesion-coherencia, calculados aparte (etapa 9, 26 nov; rehechos por la auditoría con la tabla del juez de generador.test.js, scratchpad cierre-verbal/aud/casos.js): la correcta sale de una tabla escrita leyendo cada texto del banco (qué afirma cada oración, cuándo y quién; qué concuerda y tiene sentido; qué se calló; de qué parte cada oración; qué retoma y qué presenta cada candidata), sin las funciones del generador, y el código de cada incorrecta, de una tabla escrita desde las definiciones del informe.",
+ "casos": [
+  {
+   "semilla": "caso-0",
+   "idea": "no-contradiccion",
+   "entrada": {
+    "tipo": "contradice-examen",
+    "item": "chompa"
+   },
+   "esperado": {
+    "texto": "No: cada una habla de una parte distinta",
+    "errores": [
+     [
+      "Sí: les falta un conector que las una",
+      "RVK1"
+     ],
+     [
+      "No: las dos hablan de lo mismo, sin pelear",
+      "RVK3"
+     ],
+     [
+      "No: cada una habla de un tiempo distinto",
+      "RVK18"
+     ],
+     [
+      "Sí: dicen cosas opuestas",
+      "RVK2"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-1",
+   "idea": "referente",
+   "entrada": {
+    "tipo": "referente-examen",
+    "item": "aviso"
+   },
+   "esperado": {
+    "texto": "Al corte de agua del lunes en la mañana",
+    "errores": [
+     [
+      "Al agua de la ciudad",
+      "RVK7"
+     ],
+     [
+      "Al lunes, una palabra que viene",
+      "RVK5"
+     ],
+     [
+      "Al alcalde, que lo dice",
+      "RVK6"
+     ],
+     [
+      "A algo que el alcalde dijo antes, en otro aviso",
+      "RVK4"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-2",
+   "idea": "repetir-sustituir-callar",
+   "entrada": {
+    "tipo": "recursos",
+    "item": "yo"
+   },
+   "esperado": {
+    "texto": "llevas",
+    "errores": [
+     [
+      "llevo",
+      "RVK16"
+     ],
+     [
+      "nada: la oración está incompleta",
+      "RVK8"
+     ],
+     [
+      "las sillas",
+      "RVK7"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-3",
+   "idea": "conocido-y-nuevo",
+   "entrada": {
+    "tipo": "hilo-examen",
+    "item": "bici"
+   },
+   "esperado": {
+    "texto": "La 4",
+    "errores": [
+     [
+      "La 2",
+      "RVK10"
+     ],
+     [
+      "La 1",
+      "RV28"
+     ],
+     [
+      "Ninguna",
+      "RVK3"
+     ],
+     [
+      "La 3",
+      "RVK9"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-4",
+   "idea": "incluir",
+   "entrada": {
+    "tipo": "incluir-examen",
+    "item": "pozo"
+   },
+   "esperado": {
+    "texto": "El pozo da agua limpia todo el año.",
+    "errores": [
+     [
+      "El pozo se secó a la semana de abrirlo.",
+      "RV9"
+     ],
+     [
+      "Los niños juegan fútbol en la plaza.",
+      "RVK3"
+     ],
+     [
+      "El pozo tiene un brocal de piedra.",
+      "RVK12"
+     ],
+     [
+      "El agua de lluvia se junta en baldes.",
+      "RVK11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-5",
+   "idea": "no-contradiccion",
+   "entrada": {
+    "tipo": "contradice-examen",
+    "item": "pasaje"
+   },
+   "esperado": {
+    "texto": "No: cada una habla de un tiempo distinto",
+    "errores": [
+     [
+      "No: cada una dice lo que cree otra persona",
+      "RVK18"
+     ],
+     [
+      "Sí: dicen cosas opuestas",
+      "RVK2"
+     ],
+     [
+      "Sí: les falta un conector que las una",
+      "RVK1"
+     ],
+     [
+      "No: las dos hablan de lo mismo, sin pelear",
+      "RVK3"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-6",
+   "idea": "referente",
+   "entrada": {
+    "tipo": "referente",
+    "item": "pelota"
+   },
+   "esperado": {
+    "texto": "A la mochila",
+    "errores": [
+     [
+      "A la pelota",
+      "RVK6"
+     ],
+     [
+      "A algo que viene después",
+      "RVK15"
+     ],
+     [
+      "A Luis",
+      "RVK14"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-7",
+   "idea": "repetir-sustituir-callar",
+   "entrada": {
+    "tipo": "recursos-examen",
+    "item": "colca"
+   },
+   "esperado": {
+    "texto": "Este cañón",
+    "errores": [
+     [
+      "Esta laguna",
+      "RVK17"
+     ],
+     [
+      "Ellas",
+      "RVK14"
+     ],
+     [
+      "Arequipa",
+      "RVK7"
+     ],
+     [
+      "Este animal",
+      "RVK6"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-8",
+   "idea": "conocido-y-nuevo",
+   "entrada": {
+    "tipo": "hilo",
+    "item": "huerto"
+   },
+   "esperado": {
+    "texto": "La 5",
+    "errores": [
+     [
+      "Ninguna",
+      "RVK3"
+     ],
+     [
+      "La 1",
+      "RV28"
+     ],
+     [
+      "La 2",
+      "RVK10"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-9",
+   "idea": "incluir",
+   "entrada": {
+    "tipo": "incluir",
+    "item": "pozo"
+   },
+   "esperado": {
+    "texto": "El pozo da agua limpia todo el año.",
+    "errores": [
+     [
+      "El pozo se secó a la semana de abrirlo.",
+      "RV9"
+     ],
+     [
+      "El pozo tiene un brocal de piedra.",
+      "RVK12"
+     ],
+     [
+      "El agua de lluvia se junta en baldes.",
+      "RVK11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-10",
+   "idea": "no-contradiccion",
+   "entrada": {
+    "tipo": "contradice-examen",
+    "item": "ninguno"
+   },
+   "esperado": {
+    "texto": "Sí: afirman y niegan lo mismo a la vez",
+    "errores": [
+     [
+      "Sí: les falta un conector que las una",
+      "RVK1"
+     ],
+     [
+      "Sí: las dos oraciones hablan de la misma cosa",
+      "RVK3"
+     ],
+     [
+      "No: la segunda solo cuenta una excepción",
+      "RV9"
+     ],
+     [
+      "No: son de dos momentos",
+      "RVK18"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-11",
+   "idea": "referente",
+   "entrada": {
+    "tipo": "referente-examen",
+    "item": "robo"
+   },
+   "esperado": {
+    "texto": "A que rompieran el candado",
+    "errores": [
+     [
+      "Al candado",
+      "RVK5"
+     ],
+     [
+      "A lo que viene después",
+      "RVK15"
+     ],
+     [
+      "A los vecinos",
+      "RVK6"
+     ],
+     [
+      "Al quiosco, el último nombre",
+      "RV27"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-12",
+   "idea": "repetir-sustituir-callar",
+   "entrada": {
+    "tipo": "recursos-examen",
+    "item": "trucha"
+   },
+   "esperado": {
+    "texto": "Este pescado",
+    "errores": [
+     [
+      "Esta fruta",
+      "RVK6"
+     ],
+     [
+      "El lago",
+      "RVK7"
+     ],
+     [
+      "Ellas",
+      "RVK14"
+     ],
+     [
+      "Este animal de carga",
+      "RVK17"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-13",
+   "idea": "conocido-y-nuevo",
+   "entrada": {
+    "tipo": "hilo",
+    "item": "charango"
+   },
+   "esperado": {
+    "texto": "La 5",
+    "errores": [
+     [
+      "La 2",
+      "RVK10"
+     ],
+     [
+      "La 1",
+      "RV28"
+     ],
+     [
+      "La 4",
+      "RVK9"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-14",
+   "idea": "incluir",
+   "entrada": {
+    "tipo": "incluir-examen",
+    "item": "tejedoras"
+   },
+   "esperado": {
+    "texto": "Con la lana hacen chullos, fajas y chalecos.",
+    "errores": [
+     [
+      "Nadie en la isla sabe tejer prendas.",
+      "RV9"
+     ],
+     [
+      "Las familias de la isla son numerosas.",
+      "RVK12"
+     ],
+     [
+      "El bus a Juliaca sale a las seis.",
+      "RVK3"
+     ],
+     [
+      "Las prendas de algodón se lavan fácil y se secan rápido.",
+      "RVK11"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-15",
+   "idea": "no-contradiccion",
+   "entrada": {
+    "tipo": "contradice-examen",
+    "item": "casa"
+   },
+   "esperado": {
+    "texto": "No: cada una habla de una parte distinta",
+    "errores": [
+     [
+      "No: las dos hablan de lo mismo, sin pelear",
+      "RVK3"
+     ],
+     [
+      "No: cada una habla de un tiempo distinto",
+      "RVK18"
+     ],
+     [
+      "Sí: dicen cosas opuestas",
+      "RVK2"
+     ],
+     [
+      "Sí: les falta un conector que las una",
+      "RVK1"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-16",
+   "idea": "referente",
+   "entrada": {
+    "tipo": "referente-examen",
+    "item": "robo"
+   },
+   "esperado": {
+    "texto": "A que rompieran el candado",
+    "errores": [
+     [
+      "Al quiosco, el último nombre",
+      "RV27"
+     ],
+     [
+      "Al candado",
+      "RVK5"
+     ],
+     [
+      "A los vecinos",
+      "RVK6"
+     ],
+     [
+      "A lo que viene después",
+      "RVK15"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-17",
+   "idea": "repetir-sustituir-callar",
+   "entrada": {
+    "tipo": "recursos",
+    "item": "colca"
+   },
+   "esperado": {
+    "texto": "Este cañón",
+    "errores": [
+     [
+      "Esta laguna",
+      "RVK17"
+     ],
+     [
+      "Ellas",
+      "RVK14"
+     ],
+     [
+      "Este animal",
+      "RVK6"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-18",
+   "idea": "conocido-y-nuevo",
+   "entrada": {
+    "tipo": "hilo",
+    "item": "charango"
+   },
+   "esperado": {
+    "texto": "La 5",
+    "errores": [
+     [
+      "La 1",
+      "RV28"
+     ],
+     [
+      "Ninguna",
+      "RVK3"
+     ],
+     [
+      "La 2",
+      "RVK10"
+     ]
+    ]
+   }
+  },
+  {
+   "semilla": "caso-19",
+   "idea": "incluir",
+   "entrada": {
+    "tipo": "incluir",
+    "item": "cancha"
+   },
+   "esperado": {
+    "texto": "Antes, si llovía, no había partido.",
+    "errores": [
+     [
+      "La biblioteca tiene libros nuevos.",
+      "RVK3"
+     ],
+     [
+      "La cancha sigue sin techo hasta hoy.",
+      "RV9"
+     ],
+     [
+      "Los partidos de vóley son los viernes.",
+      "RVK11"
+     ]
+    ]
+   }
+  }
+ ]
+}

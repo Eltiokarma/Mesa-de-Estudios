@@ -102,7 +102,7 @@
       "potencial_visual": "bajo",
       "grado": 3,
       "requiere": ["razonamiento-verbal.conectores"],
-      "plantillas": ["lectura-verbal"],
+      "plantillas": ["cohesion-coherencia", "lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
     {

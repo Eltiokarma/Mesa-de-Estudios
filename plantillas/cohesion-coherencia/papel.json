@@ -1,0 +1,87 @@
+{
+  "titulo": "Cohesión y coherencia: la contradicción, el referente, repetir o callar, el hilo y la oración que falta: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Coherencia. «Para Mario, la película fue aburrida. Para Sonia, fue muy entretenida.» ¿Se contradicen las dos oraciones? Datos: Contradicción: dos afirmaciones que no pueden ser verdad a la vez. Hay contradicción si se afirma y se niega lo mismo, de lo mismo y en el mismo momento. Lo que una persona cree o dice se le atribuye a ella, no al texto. «Todos» y «ninguno» hablan de cada uno del grupo, sin excepción. Alternativas: A) No: las dos hablan de lo mismo, sin pelear   B) Sí: dicen cosas opuestas   C) No: cada una habla de un tiempo distinto   D) No: cada una dice lo que cree otra persona",
+      "respuesta": "D) No: cada una dice lo que cree otra persona",
+      "pasos": [
+        "Primero se mira si las dos oraciones hablan de lo mismo y de la misma parte, del mismo momento y en boca de la misma persona.",
+        "Aquí no chocan, porque cada oración cuenta lo que cree o dice una persona distinta."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Referentes. En «Carmen llevó a su perro al veterinario. Él le puso una vacuna.», ¿a qué se refiere «Él»? Datos: Referente: aquello que nombra un pronombre como «lo», «ella» o «esto». Concordancia: el pronombre y su referente tienen el mismo género y el mismo número. Con el referente puesto en lugar del pronombre, la oración tiene que tener sentido. Anáfora: retoma algo dicho antes. Catáfora: anuncia algo que se dice después. Alternativas: A) A la vacuna, que viene después   B) A su perro   C) Al veterinario   D) A Carmen",
+      "respuesta": "C) Al veterinario",
+      "pasos": [
+        "«Él» pide un referente del mismo género y número, y con ese referente en su lugar la oración tiene que tener sentido.",
+        "Cumple «Al veterinario»: concuerda con «Él» y, puesto en su lugar, da sentido a la oración."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Cohesión. «La enfermera tomó la presión de don Julio. Después, le dio una pastilla.» ¿Quién le dio la pastilla? Datos: Repetición: se vuelve a nombrar algo con la misma palabra. Sustitución: se nombra con un pronombre, con otro nombre o con uno más general. Elipsis: se calla algo ya dicho; el lector lo recupera de lo dicho justo antes. Alternativas: A) La enfermera   B) Nadie: falta quién se la dio   C) Don Julio   D) La presión",
+      "respuesta": "A) La enfermera",
+      "pasos": [
+        "Lo callado se recupera de lo dicho justo antes, y el verbo va en la persona y el número de quien hace la acción.",
+        "Lo que se recupera es «La enfermera»."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "El hilo del texto. 1. El colegio organizó una feria de ciencias. 2. En la feria hubo veinte proyectos. 3. Esos proyectos los hicieron alumnos de todos los grados. 4. El colegio entregó diplomas a cada grupo. 5. Las ovejas del tío se escaparon del corral. ¿Qué oración corta el hilo del texto? Datos: Tópico: lo ya conocido de lo que parte una oración. Comento: lo nuevo que la oración dice sobre su tópico. El tópico puede ser lo nuevo de la oración anterior o el tema del inicio. Si el tópico no se presentó antes, el lector no sabe de qué se habla. Alternativas: A) La 1   B) Ninguna   C) La 4   D) La 5",
+      "respuesta": "D) La 5",
+      "pasos": [
+        "Cada oración parte de algo ya dicho: de lo nuevo de la anterior o del tema del inicio.",
+        "La 5 corta el hilo, porque parte de algo que nadie presentó antes."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Inclusión. 1. El colegio techó su cancha deportiva. 2. ¿…? 3. Por eso, ahora los partidos se juegan aunque llueva. ¿Qué oración va en el espacio? Datos: Encaja antes: la oración retoma algo de la oración anterior. Encaja después: presenta lo que la siguiente nombra o lo que anuncia su conector. Encaja en el texto: no lo contradice ni cambia de tema. Lo que alguien cree o piensa no es un hecho del texto. Alternativas: A) La biblioteca tiene libros nuevos.   B) Antes, si llovía, no había partido.   C) Los partidos de vóley son los viernes.   D) La cancha mide treinta metros de largo.",
+      "respuesta": "B) Antes, si llovía, no había partido.",
+      "pasos": [
+        "La oración que falta retoma lo de antes, prepara lo de después y no choca con el texto.",
+        "La única que pasa las tres pruebas es «Antes, si llovía, no había partido.»"
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Pregunta del simulacro. En «Alguien rompió el candado del quiosco. Eso asustó a los vecinos.», ¿a qué se refiere «Eso»? Datos: Referente: aquello que nombra un pronombre como «lo», «ella» o «esto». Concordancia: el pronombre y su referente tienen el mismo género y el mismo número. Con el referente puesto en lugar del pronombre, la oración tiene que tener sentido. Anáfora: retoma algo dicho antes. Catáfora: anuncia algo que se dice después. Alternativas: A) Al quiosco, el último nombre   B) A que rompieran el candado   C) Al candado   D) A los vecinos   E) A lo que viene después",
+      "respuesta": "B) A que rompieran el candado",
+      "pasos": [
+        "«Eso» pide una idea entera, y con esa idea en su lugar la oración tiene que tener sentido.",
+        "Cumple «A que rompieran el candado»: recoge la idea entera, y la oración tiene sentido."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta del simulacro. 1. Mi hermano compró un charango. 2. El charango tiene diez cuerdas. 3. Esas cuerdas son de nailon. 4. Mi hermano lo toca en las fiestas. 5. Los premios eran de plata. ¿Qué oración corta el hilo del texto? Datos: Tópico: lo ya conocido de lo que parte una oración. Comento: lo nuevo que la oración dice sobre su tópico. El tópico puede ser lo nuevo de la oración anterior o el tema del inicio. Si el tópico no se presentó antes, el lector no sabe de qué se habla. Alternativas: A) La 2   B) La 5   C) Ninguna   D) La 4   E) La 1",
+      "respuesta": "B) La 5",
+      "pasos": [
+        "Cada oración parte de algo ya dicho: de lo nuevo de la anterior o del tema del inicio.",
+        "La 5 corta el hilo, porque parte de algo que nadie presentó antes."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Pregunta del simulacro. 1. La comunidad cavó un pozo nuevo en junio. 2. ¿…? 3. Con esa agua riegan las chacras en la época seca. ¿Qué oración va en el espacio? Datos: Encaja antes: la oración retoma algo de la oración anterior. Encaja después: presenta lo que la siguiente nombra o lo que anuncia su conector. Encaja en el texto: no lo contradice ni cambia de tema. Lo que alguien cree o piensa no es un hecho del texto. Alternativas: A) El pozo se secó a la semana de abrirlo.   B) Los niños juegan fútbol en la plaza.   C) El agua de lluvia se junta en baldes.   D) El pozo tiene un brocal de piedra.   E) El pozo da agua limpia todo el año.",
+      "respuesta": "E) El pozo da agua limpia todo el año.",
+      "pasos": [
+        "La oración que falta retoma lo de antes, prepara lo de después y no choca con el texto.",
+        "La única que pasa las tres pruebas es «El pozo da agua limpia todo el año.»"
+      ]
+    }
+  ]
+}

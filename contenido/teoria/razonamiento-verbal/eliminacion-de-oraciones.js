@@ -341,9 +341,7 @@
         ejemplo: '«La laguna se secó en 2024» y «ese verano estuvo llena».', ver: ['contradicción', 'compatible'] },
       { termino: 'compatible', def: 'Dicho de dos ideas: que pueden ser ciertas a la vez, aunque se opongan en algo.',
         ejemplo: '«Se secó la laguna; sin embargo, los pozos tenían agua.»', ver: ['incompatibilidad'] },
-      { termino: 'contradicción', formas: ['contradicción', 'contradicciones'],
-        def: 'Choque entre dos afirmaciones que no pueden ser verdaderas al mismo tiempo.',
-        ejemplo: '«Estaba seca» y «estaba llena», la misma laguna, el mismo verano.', ver: ['incompatibilidad'] },
+      // «contradicción» se estrena en Cohesión y coherencia (etapa 9): en la rama va antes que esta unidad.
       { termino: 'dato nuevo', formas: ['dato nuevo', 'datos nuevos'],
         def: 'Información del tema que ninguna otra oración había dado; por eso la oración que la trae se conserva.',
         ejemplo: '«Criarlo cuesta poco»: nadie había hablado del costo.', ver: ['redundancia'] },

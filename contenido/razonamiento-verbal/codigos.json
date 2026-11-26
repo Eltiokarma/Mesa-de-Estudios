@@ -513,5 +513,95 @@
   "nombre": "Se lee causa o consecuencia donde las ideas solo se suman, se repiten o se siguen en el tiempo",
   "respaldo": "hipotesis",
   "por_verificar": false
+ },
+ "RVK1": {
+  "nombre": "Un conector bien puesto o una oración bien escrita se toma como prueba de sentido",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK2": {
+  "nombre": "Se ve contradicción donde cambia el tiempo, la persona que lo dice o la parte de la que se habla",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK3": {
+  "nombre": "Basta que dos oraciones hablen de lo mismo para que encajen o no choquen",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK4": {
+  "nombre": "La referencia solo mira atrás: se rechaza la que anuncia lo que viene",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK5": {
+  "nombre": "El referente solo puede ser un nombre, no un pedido o un hecho entero",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK6": {
+  "nombre": "Se acepta un referente que concuerda aunque no tenga sentido",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK7": {
+  "nombre": "Lo callado o lo sustituido se recupera con otra palabra o con otra persona del texto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK8": {
+  "nombre": "La elipsis o la sustitución se toman por una falta o por algo nuevo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK9": {
+  "nombre": "Se exige que cada oración retome lo nuevo de la anterior: una sola forma de hilo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK10": {
+  "nombre": "Se cree que volver al tema del inicio, o repetir un nombre, corta el hilo",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK11": {
+  "nombre": "Se elige la oración que falta por un solo enlace, sin probar el otro lado",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK12": {
+  "nombre": "Se elige la oración que repite palabras del texto sin preparar lo que sigue",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK13": {
+  "nombre": "Lo que alguien creyó o supuso se toma como un hecho del texto",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK14": {
+  "nombre": "Se elige un referente que no concuerda en género o número",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK15": {
+  "nombre": "Se lee hacia adelante una palabra que retoma lo ya dicho",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK16": {
+  "nombre": "Se calla a alguien cuando el lector recuperaría a otra persona",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK17": {
+  "nombre": "Se sustituye por una expresión que no le corresponde",
+  "respaldo": "hipotesis",
+  "por_verificar": false
+ },
+ "RVK18": {
+  "nombre": "Se inventa un cambio de tiempo, de persona o de parte que el texto no dice, para no ver un choque o para explicar por qué no lo hay",
+  "respaldo": "hipotesis",
+  "por_verificar": false
  }
 }
