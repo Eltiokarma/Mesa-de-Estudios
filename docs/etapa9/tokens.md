@@ -37,3 +37,4 @@ contra los límites semanales de los planes.
 | quimica.estructura-atomica | redactor, unidad ya cerrada | 487 368 | 46 min | 101 herramientas |
 | geometria.puntos-notables | lector en frío B (ideas 4–6) | 126 209 | 2 min 23 s | 33 herramientas |
 | geometria.puntos-notables | lector en frío A (ideas 1–3) | 127 549 | 2 min 43 s | 33 herramientas |
+| quimica.propiedades-periodicas | redactor, unidad ya cerrada | 311 699 | 53 min | 66 herramientas |
