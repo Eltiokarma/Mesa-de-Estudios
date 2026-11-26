@@ -305,7 +305,7 @@ const idea1 = (() => {
       {ref:'tanque',fila:2,texto:'Exterior: aire de referencia',color:'i'}],
     alt:'La tapa horizontal del fondo tiene líquido en su cara superior y aire exterior en la inferior.'});
   return {
-    id:'presion-profundidad',titulo:'Un líquido y una superficie',pregunta:'¿Cómo relacionas una fuerza, una superficie y la presión de un líquido?',
+    id: 'presion-profundidad',titulo:'Un líquido y una superficie',pregunta:'¿Cómo relacionas una fuerza, una superficie y la presión de un líquido?',
     temas:['Densidad y presión','Presión hidrostática y atmosférica'],pieza:'fis-fluidos-e12',
     aprendizaje:'Distingo fuerza y presión; calculo la densidad y uso una referencia para interpretar la presión de un líquido quieto.',
     actividad:'Aplicar una fuerza normal a un pistón y leer la presión que añade al líquido.',
@@ -339,7 +339,8 @@ const idea1 = (() => {
       ecuacion:[S.p,' = ',frac(S.F,S.A),'   ·   ',pa,' = ',ps,' + ',S.rho,' · ',S.g,' · ',S.h],
       condicion:'Líquido homogéneo en reposo, gravedad uniforme; referencia superficial conocida. Sobre una cara horizontal, la presión es uniforme.',
       voz:'La densidad es masa entre volumen. Una presión absoluta y una manométrica usan ceros distintos.',dibujo:columna},
-    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
+    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},
+    ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
   };
 })();
 
@@ -937,7 +938,7 @@ const idea3 = (() => {
     {termino:'ventaja mecánica',simple:'Una comparación entre la fuerza útil de salida y la fuerza de entrada.',def:'Razón entre la magnitud de la fuerza útil que entrega una máquina y la fuerza aplicada a su entrada.',ejemplos:['Una máquina puede recibir 10 N y transmitir 20 N.','Dos máquinas se comparan usando la misma definición de entrada y salida.','La ventaja mecánica no se mide en newtons ni en pascales.']}
   );
   return {
-    id:'prensa-hidraulica',titulo:'Dos pistones conectados',pregunta:'¿Cómo se relacionan las fuerzas y los recorridos de una prensa hidráulica?',temas:['Principio de Pascal'],pieza:'fis-fluidos-e12',
+    id: 'prensa-hidraulica',titulo:'Dos pistones conectados',pregunta:'¿Cómo se relacionan las fuerzas y los recorridos de una prensa hidráulica?',temas:['Principio de Pascal'],pieza:'fis-fluidos-e12',
     aprendizaje:'Relaciono fuerzas, áreas y recorridos; distingo presión transmitida de fuerza y compruebo qué conserva una prensa ideal.',
     actividad:'Ajustar la fuerza de entrada y comparar la fuerza que puede equilibrar la salida.',
     lee:{tarjetas:[
@@ -969,7 +970,8 @@ const idea3 = (() => {
     regla:{texto:'Iguala presiones medias a igual altura y conserva el volumen. En el modelo horizontal ideal se transmite el mismo trabajo. Con desnivel, incorpora la diferencia hidrostática.',
       ecuacion:[...leyF,' (igual altura)   ;   ',...leyV,'   ;   ',...leyW,'   ;   ',S.A,' = π',sup(S.r),'   ;   ',S.d,' = 2',S.r,'   ;   ',p2,' = ',p1,' - ',S.rho,' × ',S.g,' × ',S.h,' (salida más alta, equilibrio)'],
       condicion:'Líquido incompresible; sin fugas ni rozamiento; pistones sin masa, presión exterior común. Igual trabajo: montaje horizontal sin cambio gravitatorio.',dibujo:revela},
-    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
+    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},
+    ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
   };
 })();
 
@@ -1205,7 +1207,7 @@ const idea4 = (() => {
     {termino:'volumen desplazado',simbolo:'V',medida:'m³',formas:['volumen desplazado','líquido desplazado'],simple:'Espacio del líquido que pasa a ocupar la parte introducida del cuerpo.',def:'Volumen del espacio que ocuparía el líquido si no estuviera la parte sumergida del cuerpo.',ejemplos:['Un bloque puede entrar solo parcialmente en una tina.','El nivel puede subir sin que se derrame líquido.','La parte del bloque que permanece fuera no ocupa espacio dentro del líquido.']}
   );
   return {
-    id:'empuje',titulo:'Un bloque dentro del líquido',pregunta:'¿Qué sostiene al cuerpo cuando una parte o todo su volumen entra en el líquido?',temas:['Principio de Arquímedes'],pieza:'fis-fluidos-e12',
+    id: 'empuje',titulo:'Un bloque dentro del líquido',pregunta:'¿Qué sostiene al cuerpo cuando una parte o todo su volumen entra en el líquido?',temas:['Principio de Arquímedes'],pieza:'fis-fluidos-e12',
     aprendizaje:'Calculo el empuje con el volumen sumergido y equilibro las fuerzas para interpretar flotación y lecturas de suspensión.',actividad:'Introducir un bloque sostenido y reconocer qué volumen ocupa dentro del líquido.',
     lee:{tarjetas:[
       {titulo:'Un cuerpo sostenido sobre una tina',texto:'El mecanismo sostiene un bloque rígido. Puedes introducir una parte o todo el bloque sin soltarlo. El líquido no sale de la tina: su nivel cambia mientras el cuerpo entra.',dibujo:juego({Vs:0})},
@@ -1231,7 +1233,8 @@ const idea4 = (() => {
       condicion:'Cuerpo rígido; líquido quieto y homogéneo por capa; sin contacto con el recipiente ni efectos superficiales.',
       voz:'Completamente sumergido en el mismo líquido uniforme, el cuerpo rígido desplaza igual volumen a cualquier profundidad.',dibujo:capas},
     ejemplos:muestras.map(([t,e,titulo],i)=>ejemplo(construir(t,e),Math.floor(i/5)+1,titulo,i-10)),
-    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
+    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},
+    ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
   };
 })();
 
@@ -1434,7 +1437,8 @@ const idea5 = (() => {
   );
   const pred={gamma:.03,Lcm:12,n:2},Fp=pred.n*pred.gamma*pred.Lcm/100;
   const filmMira=pelicula(pred,Fp).datos,capMira=capilar({}).datos,datosMira={...filmMira,cortes:[filmMira,capMira]};
-  return {id:'tension-superficial',titulo:'La superficie también tira',pregunta:'¿Cuánta fuerza puede ejercer una superficie líquida?',
+  return {
+    id: 'tension-superficial',titulo:'La superficie también tira',pregunta:'¿Cuánta fuerza puede ejercer una superficie líquida?',
     temas:['Tensión superficial'],pieza:'fis-estatica',aprendizaje:'Distingo fuerza y tensión superficial; cuento las caras de una película y explico el ascenso capilar mediante un balance de fuerzas.',actividad:'Cambiar el coeficiente de una película y observar la fuerza que mantiene quieto su alambre.',
     lee:{tarjetas:[
       {titulo:'Un alambre sobre una película',texto:'Una película líquida ocupa un marco y toca un alambre móvil. La película está debajo del alambre. Un sostén hacia arriba lo mantiene quieto.',dibujo:pelicula({Lcm:6,n:2,gamma:.02})},
@@ -1466,7 +1470,8 @@ const idea5 = (() => {
       condicion:'Equilibrio sin rozamiento. Capilar circular vertical: θ = 0, líquido homogéneo, depósito grande y volumen del menisco despreciable.',
       voz:'El menisco es la superficie curva del líquido. El empuje y la tensión superficial pueden actuar juntos.',dibujo:capilar({})},
     ejemplos:muestras.map(([tipo,e,titulo],i)=>ejemplo(caso(tipo,e,i>=10),Math.floor(i/5)+1,titulo,i-10)),
-    resuelve:{pieza:'fis-estatica',generar:s=>generar(s,false)},ahoraTu:{pieza:'fis-estatica',generar:s=>generar(s,true)}
+    resuelve:{pieza:'fis-estatica',generar:s=>generar(s,false)},
+    ahoraTu:{pieza:'fis-estatica',generar:s=>generar(s,true)}
   };
 })();
 
@@ -1640,7 +1645,8 @@ const idea6 = (() => {
   const pred={area1:6,area2:3,v1:2},vPred=pred.v1*pred.area1/pred.area2;
   const antes=tubo(pred,false,true),despues=tubo({...pred,v2:vPred},false,true);
   const depositoMira=deposito({h:1.25});
-  return {id:'bernoulli',titulo:'Seguir el líquido que pasa',pregunta:'¿Cómo relacionas el volumen que pasa, la rapidez, la presión y la altura?',
+  return {
+    id: 'bernoulli',titulo:'Seguir el líquido que pasa',pregunta:'¿Cómo relacionas el volumen que pasa, la rapidez, la presión y la altura?',
     temas:['Caudal, continuidad y Bernoulli (solo San Marcos)'],pieza:'fis-fluidos-e12',aprendizaje:'Calculo caudal, conservo el volumen que circula y comparo presión, rapidez y altura bajo condiciones explícitas.',actividad:'Cambiar la rapidez del líquido que atraviesa una sección fija y observar el volumen transportado.',
     lee:{tarjetas:[{titulo:'Contar el líquido que pasa',texto:'El caudal indica cuánto volumen atraviesa una sección por unidad de tiempo. Puedes medirlo recogiendo líquido y tomando el tiempo. El juego muestra lo que pasa durante un segundo.'},
       {titulo:'Seguir dos secciones',texto:'Entrada y salida son dos lugares del mismo conducto lleno. El líquido es incompresible: no cambia de volumen al avanzar. No entra ni sale líquido por las paredes.'},
@@ -1666,7 +1672,8 @@ const idea6 = (() => {
     regla:{texto:'El caudal relaciona volumen y tiempo. Continuidad conserva el caudal; Bernoulli relaciona presión, rapidez y altura. Torricelli describe la salida instantánea desde un depósito grande.',
       ecuacion:[S.Q,' = ',frac(S.V,S.t),' = ',S.A,' · ',S.v,'   ·   ',...bern],
       condicion:'Continuidad: líquido incompresible, sin fugas. Bernoulli: flujo estacionario, sin bombas ni pérdidas, sobre una línea de corriente.',voz:'Compara alturas antes de concluir cómo cambia la presión.',dibujo:despues},
-    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
+    resuelve:{pieza:'fis-fluidos-e12',generar:s=>generar(s,false)},
+    ahoraTu:{pieza:'fis-fluidos-e12',generar:s=>generar(s,true)}
   };
 })();
 const labPresion = (() => {

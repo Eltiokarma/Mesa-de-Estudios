@@ -115,6 +115,9 @@
       if (sinHuella(est, r.u, { marca: r.p, ideas: r.cambian })) cambio = true;
       if (r.e && conservaEstudio(est, { de: r.u, a: r.u, estudiada: { marca: r.e, fecha: '2026-11-19', ideas: r.antes } })) cambio = true;
     }
+    // 26 nov (etapa 12, Fluidos): las seis ideas conservan sus ids con otra Predice. Solo se reinician
+    // predicciones antiguas sin huella; estudio, cartas, repaso y respuestas permanecen intactos.
+    if (sinHuella(est, 'fisica.fluidos', { marca: 'prediccionFL', ideas: ['presion-profundidad', 'vasos-comunicantes', 'prensa-hidraulica', 'empuje', 'tension-superficial', 'bernoulli'] })) cambio = true;
     return cambio;
   }
   const REHECHAS_E6 = [

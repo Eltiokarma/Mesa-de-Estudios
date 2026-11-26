@@ -996,6 +996,15 @@ const V = {
     const sin = E.rapidez(d.h, 0, 0), nmg = Math.sqrt(2 * (E.G * d.h + r.WroceConNmg));
     return { correcta: r.v, errores: { 'CE-ROCE-sin-rozamiento': sin, 'RZ-NMG-normal-igual-peso': nmg, 'CE-SIN-RAIZ': r.v2 } }; },
 
+  // ---------------- Fluidos, etapa 12: dos pares de reserva ----------------
+  // Cuentas propias; se contrastan con balances independientes en fluidos-integracion.test.js.
+  'flu-01': d => { const P = d.m * d.g, E = (d.rhoSup * d.Vsup + d.rhoInf * d.Vinf) * 1e-6 * d.g;
+    return { correcta: P - E, errores: { 'FL12-C-PESO': P,
+      'FL12-C-DENSIDAD-INFERIOR': P - d.rhoInf * (d.Vsup + d.Vinf) * 1e-6 * d.g, 'FL12-C-EMPUJE': E } }; },
+  'flu-02': d => { const v2 = d.v1 * d.A1 / d.A2, cin = d.rho * (v2 * v2 - d.v1 * d.v1) / 2000, altura = d.rho * d.g * d.descenso / 1000;
+    return { correcta: d.p1 - cin + altura, errores: { 'FL12-C-SIN-ALTURA': d.p1 - cin,
+      'FL12-C-ALTURA-INVERTIDA': d.p1 - cin - altura, 'FL12-C-SIN-CINETICA': d.p1 + altura } }; },
+
   // ---------------- Aritmética (cuentas exactas, ver arriba) ----------------
   'ari-01': d => { const f = (1 - d.a / 100) * (1 - d.b / 100);
     return { correcta: d.P * f, errores: { 'suma-descuentos': d.P * (1 - (d.a + d.b) / 100), 'monto-descuento': d.P * (1 - f), 'un-solo-descuento': d.P * (1 - Math.max(d.a, d.b) / 100) } }; },
