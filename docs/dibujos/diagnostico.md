@@ -15,6 +15,14 @@ se marcan «se reconoce» si se leen como lo que son: no prometen un objeto del 
 **Totales: 185 objetos; 122 se reconocen, 56 a medias, 7 no se reconocen.**
 La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = pieza que no se toca en este encargo.
 
+**Después del redibujo (paso 3, 26 nov):** 17 objetos redibujados (trigonometría 8, física 6, química 3), cada uno con su
+antes y después en `antes-despues/` (arriba claro, abajo oscuro; izquierda antes). De esos, 3 mejoran solo a medias y
+quedan también para un diseñador (la manguera y la mesa de `fis-tiro`, el nudo de `fis-fuerzas`). Se probaron y se
+revirtieron 3 que no mejoraban: la tómbola (`rm-certeza`), el queque (`arit-queque`) y la mesa (`alg-objeto`): los tres
+piden cambiar la composición, no vestir el objeto. Quedan 25 «a medias» sin tocar (pendientes) y 18 de la Etapa 9
+(solo diagnóstico). Se empezó por las unidades con `calidad: 2` y los objetos con más usos (columpio, cometa, pelota y
+peña, poste y rampa).
+
 ## Álgebra
 
 | Pieza · objeto | Veredicto | Qué se ve (y qué falta) | Captura | Después |
@@ -22,24 +30,24 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | alg-caja · (sin objeto) | se reconoce | caja con alto, largo y ancho | [ver](capturas/alg-caja--sin-objeto.webp) |  |
 | alg-caja · caja | se reconoce | caja parada | [ver](capturas/alg-caja--caja.webp) |  |
 | alg-losetas · (sin objeto) | se reconoce | losetas de álgebra (material, no objeto real): se reconocen como fichas | [ver](capturas/alg-losetas--sin-objeto.webp) |  |
-| alg-losetas · casillero | a medias | cubito, cuadrado, tira y puntito sobre casillas: el casillero no se ve como mueble; vale como tabla | [ver](capturas/alg-losetas--casillero.webp) |  |
+| alg-losetas · casillero | a medias | cubito, cuadrado, tira y puntito sobre casillas: el casillero no se ve como mueble; vale como tabla | [ver](capturas/alg-losetas--casillero.webp) | pendiente: no entró en esta pasada |
 | alg-losetas · deposito | se reconoce | varilla, plancha y bloque | [ver](capturas/alg-losetas--deposito.webp) |  |
 | alg-losetas · giro | se reconoce | losetas de colores | [ver](capturas/alg-losetas--giro.webp) |  |
-| alg-losetas · lote | a medias | terreno: solo un rectángulo con rayas; falta cerco o pasto que diga «terreno» | [ver](capturas/alg-losetas--lote.webp) |  |
+| alg-losetas · lote | a medias | terreno: solo un rectángulo con rayas; falta cerco o pasto que diga «terreno» | [ver](capturas/alg-losetas--lote.webp) | pendiente: no entró en esta pasada |
 | alg-losetas · medidas | se reconoce | fichas de letras (diagrama) | [ver](capturas/alg-losetas--medidas.webp) |  |
 | alg-losetas · pedido | se reconoce | losetas | [ver](capturas/alg-losetas--pedido.webp) |  |
 | alg-losetas · piezas | se reconoce | losetas | [ver](capturas/alg-losetas--piezas.webp) |  |
 | alg-losetas · piso | se reconoce | piso armado con losetas | [ver](capturas/alg-losetas--piso.webp) |  |
 | alg-losetas · tamano | se reconoce | losetas | [ver](capturas/alg-losetas--tamano.webp) |  |
-| alg-objeto · (sin objeto) | a medias | hoja doblada por la mitad: la hoja rayada se ve; el «una capa» de lado es una raya suelta | [ver](capturas/alg-objeto--sin-objeto.webp) |  |
+| alg-objeto · (sin objeto) | a medias | hoja doblada por la mitad: la hoja rayada se ve; el «una capa» de lado es una raya suelta | [ver](capturas/alg-objeto--sin-objeto.webp) | pendiente: no entró en esta pasada |
 | alg-objeto · caja | se reconoce | caja de cartón con cinta, rotulada | [ver](capturas/alg-objeto--caja.webp) |  |
 | alg-objeto · cometa | se reconoce | cometa con cola de lazos | [ver](capturas/alg-objeto--cometa.webp) |  |
-| alg-objeto · hoja | a medias | hoja doblada: la vista de lado de 4 capas se entiende a medias | [ver](capturas/alg-objeto--hoja.webp) |  |
-| alg-objeto · huertos | a medias | huerto: cuadro con «v» y cerco; sin plantas ni surcos no dice huerto | [ver](capturas/alg-objeto--huertos.webp) |  |
-| alg-objeto · mesa | no se reconoce | mesa dividida en cuatro: es un cuadrado partido; nada dice mesa | [ver](capturas/alg-objeto--mesa.webp) |  |
-| alg-objeto · taco | a medias | taco de papel: cubo rayado; se lee como cubo, no como taco de notas | [ver](capturas/alg-objeto--taco.webp) |  |
+| alg-objeto · hoja | a medias | hoja doblada: la vista de lado de 4 capas se entiende a medias | [ver](capturas/alg-objeto--hoja.webp) | pendiente: no entró en esta pasada |
+| alg-objeto · huertos | a medias | huerto: cuadro con «v» y cerco; sin plantas ni surcos no dice huerto | [ver](capturas/alg-objeto--huertos.webp) | pendiente: no entró en esta pasada |
+| alg-objeto · mesa | no se reconoce | mesa dividida en cuatro: es un cuadrado partido; nada dice mesa | [ver](capturas/alg-objeto--mesa.webp) | para diseñador: se probó canto del tablero y veta y no mejoró (vista desde arriba es un cuadrado; una mesa en perspectiva deforma las planchas que se miden) |
+| alg-objeto · taco | a medias | taco de papel: cubo rayado; se lee como cubo, no como taco de notas | [ver](capturas/alg-objeto--taco.webp) | pendiente: no entró en esta pasada |
 | alg-objeto · terreno | se reconoce | terreno con cerco y casita | [ver](capturas/alg-objeto--terreno.webp) |  |
-| alg-objeto · triplay | a medias | plancha de triplay: rectángulo rayado; falta veta o canto de madera | [ver](capturas/alg-objeto--triplay.webp) |  |
+| alg-objeto · triplay | a medias | plancha de triplay: rectángulo rayado; falta veta o canto de madera | [ver](capturas/alg-objeto--triplay.webp) | pendiente: no entró en esta pasada |
 | alg-reparto · (sin objeto) | se reconoce | diagrama de losetas (material) | [ver](capturas/alg-reparto--sin-objeto.webp) |  |
 | alg-reparto · angosto | se reconoce | diagrama de losetas | [ver](capturas/alg-reparto--angosto.webp) |  |
 | alg-reparto · cuaderno | se reconoce | cuaderno anillado | [ver](capturas/alg-reparto--cuaderno.webp) |  |
@@ -55,11 +63,11 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | arit-boletos · (sin objeto) | se reconoce | talonario de boletos numerados | [ver](capturas/arit-boletos--sin-objeto.webp) |  |
 | arit-calculadora · (sin objeto) | a medias | calculadora: carcasa, pantalla y teclas sin números; se adivina | [ver](capturas/arit-calculadora--sin-objeto.webp) | Etapa 9 |
 | arit-calculadora · cuaderno | a medias | calculadora (ídem; Etapa 9) | [ver](capturas/arit-calculadora--cuaderno.webp) | Etapa 9 |
-| arit-cintas · (sin objeto) | a medias | rollo de cinta: dos tiras con corte; no se ve el rollo | [ver](capturas/arit-cintas--sin-objeto.webp) |  |
+| arit-cintas · (sin objeto) | a medias | rollo de cinta: dos tiras con corte; no se ve el rollo | [ver](capturas/arit-cintas--sin-objeto.webp) | pendiente: no entró en esta pasada |
 | arit-monedas · (sin objeto) | se reconoce | monedas con su valor | [ver](capturas/arit-monedas--sin-objeto.webp) |  |
 | arit-puesto · (sin objeto) | se reconoce | puesto con toldo, bolsitas y caramelos | [ver](capturas/arit-puesto--sin-objeto.webp) |  |
 | arit-queque · (sin objeto) | a medias | queque: bandeja marrón partida; se lee como barra o chocolate, falta el bizcocho (corteza, molde) | [ver](capturas/arit-queque--sin-objeto.webp) | para diseñador: se probó miga y cobertura chorreada y no mejoró (visto desde arriba sigue siendo un rectángulo; una vista con volumen cambia la grilla de porciones) |
-| arit-reparto · (sin objeto) | a medias | bolsitas de caramelo en íconos muy chicos | [ver](capturas/arit-reparto--sin-objeto.webp) |  |
+| arit-reparto · (sin objeto) | a medias | bolsitas de caramelo en íconos muy chicos | [ver](capturas/arit-reparto--sin-objeto.webp) | pendiente: no entró en esta pasada |
 | arit-talonario · (sin objeto) | se reconoce | talonario de rifa y último boleto | [ver](capturas/arit-talonario--sin-objeto.webp) |  |
 
 ## Física
@@ -67,18 +75,18 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | Pieza · objeto | Veredicto | Qué se ve (y qué falta) | Captura | Después |
 |---|---|---|---|---|
 | fis-combi · (sin objeto) | se reconoce | combi en la pista con paradero | [ver](capturas/fis-combi--sin-objeto.webp) |  |
-| fis-dron · (sin objeto) | a medias | mapa con la plaza y la escala: el mapa se lee, pero el dron no aparece | [ver](capturas/fis-dron--sin-objeto.webp) |  |
+| fis-dron · (sin objeto) | a medias | mapa con la plaza y la escala: el mapa se lee, pero el dron no aparece | [ver](capturas/fis-dron--sin-objeto.webp) | pendiente: no entró en esta pasada |
 | fis-estatica · (sin objeto) | a medias | persona de palitos jalando un carrito de papas | [ver](capturas/fis-estatica--sin-objeto.webp) | Etapa 9 |
 | fis-fuerzas · avion | se reconoce | avioncito con sus componentes | [ver](capturas/fis-fuerzas--avion.webp) |  |
 | fis-fuerzas · bote | a medias | bote: pentágono con una raya; se lee como lápiz o flecha | [ver](capturas/fis-fuerzas--bote.webp) | redibujado: bote de remos visto desde arriba: casco curvo, borda, dos bancas y remos ([antes y después](antes-despues/fis-fuerzas--bote.webp)) |
 | fis-fuerzas · caja | se reconoce | caja en el piso | [ver](capturas/fis-fuerzas--caja.webp) |  |
 | fis-fuerzas · carretilla | se reconoce | carretilla con mango y rueda | [ver](capturas/fis-fuerzas--carretilla.webp) |  |
-| fis-fuerzas · cuadras | a medias | cuadras: franja gris; falta la calle con veredas o manzanas | [ver](capturas/fis-fuerzas--cuadras.webp) |  |
+| fis-fuerzas · cuadras | a medias | cuadras: franja gris; falta la calle con veredas o manzanas | [ver](capturas/fis-fuerzas--cuadras.webp) | pendiente: no entró en esta pasada |
 | fis-fuerzas · nudo | no se reconoce | nudo: un circulito con dos flechas; no hay sogas | [ver](capturas/fis-fuerzas--nudo.webp) | redibujado: dos lazadas cruzadas y soga con hebras en las puntas; mejora a medias (el nudo mide 16 px), para diseñador ([antes y después](antes-despues/fis-fuerzas--nudo.webp)) |
 | fis-giro · (sin objeto) | se reconoce | rueda de la fortuna con cabinas | [ver](capturas/fis-giro--sin-objeto.webp) |  |
 | fis-mruv · (sin objeto) | se reconoce | pista con corredor y gráfica v–t | [ver](capturas/fis-mruv--sin-objeto.webp) |  |
 | fis-objeto · atleta | se reconoce | atleta, pista y cronómetro | [ver](capturas/fis-objeto--atleta.webp) |  |
-| fis-objeto · bebe | a medias | bebé en balanza: la balanza se lee; el bebé es una cabeza sobre un óvalo | [ver](capturas/fis-objeto--bebe.webp) |  |
+| fis-objeto · bebe | a medias | bebé en balanza: la balanza se lee; el bebé es una cabeza sobre un óvalo | [ver](capturas/fis-objeto--bebe.webp) | pendiente: no entró en esta pasada |
 | fis-objeto · bloque | se reconoce | bloque de hielo con brillos | [ver](capturas/fis-objeto--bloque.webp) |  |
 | fis-objeto · botella | se reconoce | botella de jarabe con su nivel | [ver](capturas/fis-objeto--botella.webp) |  |
 | fis-objeto · cabello | se reconoce | cabello bajo la lupa | [ver](capturas/fis-objeto--cabello.webp) |  |
@@ -87,7 +95,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | fis-objeto · cancha | se reconoce | cancha de fútbol | [ver](capturas/fis-objeto--cancha.webp) |  |
 | fis-objeto · cano | se reconoce | caño llenando un balde | [ver](capturas/fis-objeto--cano.webp) |  |
 | fis-objeto · caracol | se reconoce | caracol sobre una regla | [ver](capturas/fis-objeto--caracol.webp) |  |
-| fis-objeto · comparar | a medias | tres rapideces: solo una tabla; el guepardo, el auto y el caballo no aparecen | [ver](capturas/fis-objeto--comparar.webp) |  |
+| fis-objeto · comparar | a medias | tres rapideces: solo una tabla; el guepardo, el auto y el caballo no aparecen | [ver](capturas/fis-objeto--comparar.webp) | pendiente: no entró en esta pasada |
 | fis-objeto · corazon | se reconoce | corazón con su latido | [ver](capturas/fis-objeto--corazon.webp) |  |
 | fis-objeto · deposito | se reconoce | depósito con agua y profundidad | [ver](capturas/fis-objeto--deposito.webp) |  |
 | fis-objeto · hoja | se reconoce | hoja A4 rayada | [ver](capturas/fis-objeto--hoja.webp) |  |
@@ -96,7 +104,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | fis-objeto · pendulo | se reconoce | péndulo colgado | [ver](capturas/fis-objeto--pendulo.webp) |  |
 | fis-objeto · piscina | se reconoce | piscina con andarivel | [ver](capturas/fis-objeto--piscina.webp) |  |
 | fis-objeto · piso | se reconoce | piso con losetas | [ver](capturas/fis-objeto--piso.webp) |  |
-| fis-objeto · planetas | a medias | dos esferas: la de la raya verde pasa por planeta; la otra es un círculo gris sin rasgo | [ver](capturas/fis-objeto--planetas.webp) |  |
+| fis-objeto · planetas | a medias | dos esferas: la de la raya verde pasa por planeta; la otra es un círculo gris sin rasgo | [ver](capturas/fis-objeto--planetas.webp) | pendiente: no entró en esta pasada |
 | fis-objeto · plano | se reconoce | plano de un cuarto con puerta y cama | [ver](capturas/fis-objeto--plano.webp) |  |
 | fis-objeto · presion | se reconoce | bloque apoyado en el piso | [ver](capturas/fis-objeto--presion.webp) |  |
 | fis-objeto · reloj | se reconoce | reloj de agujas | [ver](capturas/fis-objeto--reloj.webp) |  |
@@ -153,12 +161,12 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | quim-enlace · limpiador | se reconoce | botella de limpiador con etiqueta | [ver](capturas/quim-enlace--limpiador.webp) |  |
 | quim-enlace · olla | se reconoce | olla con agua hirviendo | [ver](capturas/quim-enlace--olla.webp) |  |
 | quim-enlace · probador | se reconoce | pila, foco y vaso con cables | [ver](capturas/quim-enlace--probador.webp) |  |
-| quim-enlace · sal | a medias | sal en una cuchara: los cuadraditos se leen; la cuchara es una media luna con palito | [ver](capturas/quim-enlace--sal.webp) |  |
+| quim-enlace · sal | a medias | sal en una cuchara: los cuadraditos se leen; la cuchara es una media luna con palito | [ver](capturas/quim-enlace--sal.webp) | pendiente: no entró en esta pasada |
 | quim-enlace · soplete | no se reconoce | soplete: un bloque con una hoja; no se reconoce | [ver](capturas/quim-enlace--soplete.webp) | redibujado: balón de gas con válvula y perilla, tubo, boquilla y llama con su cono ([antes y después](antes-despues/quim-enlace--soplete.webp)) |
 | quim-enlace · tiza | se reconoce | tiza y pizarra con un garabato | [ver](capturas/quim-enlace--tiza.webp) |  |
-| quim-enlace · ventana | a medias | ventana con moléculas: el marco se lee como cuadro partido | [ver](capturas/quim-enlace--ventana.webp) |  |
+| quim-enlace · ventana | a medias | ventana con moléculas: el marco se lee como cuadro partido | [ver](capturas/quim-enlace--ventana.webp) | pendiente: no entró en esta pasada |
 | quim-hotel · (sin objeto) | se reconoce | hotel del electrón (diagrama propio del tema) | [ver](capturas/quim-hotel--sin-objeto.webp) |  |
-| quim-lamina · (sin objeto) | a medias | retablo y pan de oro a medias; la «fuente de alfas» es una barra sin rasgo | [ver](capturas/quim-lamina--sin-objeto.webp) |  |
+| quim-lamina · (sin objeto) | a medias | retablo y pan de oro a medias; la «fuente de alfas» es una barra sin rasgo | [ver](capturas/quim-lamina--sin-objeto.webp) | pendiente: no entró en esta pasada |
 | quim-mol · (sin objeto) | se reconoce | tabla de masa molar (diagrama propio) | [ver](capturas/quim-mol--sin-objeto.webp) |  |
 | quim-mol · balanza | se reconoce | vaso de agua en la balanza | [ver](capturas/quim-mol--balanza.webp) |  |
 | quim-mol · frasco | se reconoce | frasco en la balanza | [ver](capturas/quim-mol--frasco.webp) |  |
@@ -174,7 +182,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | quim-nomenclatura · permanganato | se reconoce | frasco de permanganato | [ver](capturas/quim-nomenclatura--permanganato.webp) |  |
 | quim-nomenclatura · salero | se reconoce | salero y saco de abono | [ver](capturas/quim-nomenclatura--salero.webp) |  |
 | quim-objeto · (sin objeto) | se reconoce | hueso de llama y átomos | [ver](capturas/quim-objeto--sin-objeto.webp) |  |
-| quim-objeto · combi | a medias | combi vista desde arriba: rectángulo con casillas; se lee como tablero, no como combi | [ver](capturas/quim-objeto--combi.webp) |  |
+| quim-objeto · combi | a medias | combi vista desde arriba: rectángulo con casillas; se lee como tablero, no como combi | [ver](capturas/quim-objeto--combi.webp) | pendiente: no entró en esta pasada |
 | quim-objeto · frasco | se reconoce | gotero de sulfato ferroso | [ver](capturas/quim-objeto--frasco.webp) |  |
 | quim-objeto · hueso | se reconoce | hueso de llama | [ver](capturas/quim-objeto--hueso.webp) |  |
 | quim-objeto · salero | se reconoce | salero | [ver](capturas/quim-objeto--salero.webp) |  |
@@ -193,7 +201,7 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | rm-orden · (sin objeto) | se reconoce | cola de alumnos y banca numerada | [ver](capturas/rm-orden--sin-objeto.webp) |  |
 | rm-patrones · (sin objeto) | se reconoce | figuras de palitos (diagrama propio) | [ver](capturas/rm-patrones--sin-objeto.webp) |  |
 | rm-veraz · (sin objeto) | se reconoce | alumnos con globos de diálogo | [ver](capturas/rm-veraz--sin-objeto.webp) |  |
-| rm-veraz · caja | a medias | cajas: tres rectángulos con tapa; sin cartón ni cinta se leen como ventanas | [ver](capturas/rm-veraz--caja.webp) |  |
+| rm-veraz · caja | a medias | cajas: tres rectángulos con tapa; sin cartón ni cinta se leen como ventanas | [ver](capturas/rm-veraz--caja.webp) | pendiente: no entró en esta pasada |
 
 ## Razonamiento verbal
 
@@ -214,22 +222,22 @@ La columna «Después» dice qué pasó en el paso 3 (redibujo); «Etapa 9» = p
 | trig-arco · figura | se reconoce | sector de examen (diagrama propio) | [ver](capturas/trig-arco--figura.webp) |  |
 | trig-arco · limpia | a medias | limpiaparabrisas: el parabrisas se adivina; el brazo es una raya gruesa sin pivote ni jebe | [ver](capturas/trig-arco--limpia.webp) | redibujado: espejo retrovisor arriba y grapas del jebe; se lee como parabrisas ([antes y después](antes-despues/trig-arco--limpia.webp)) |
 | trig-arco · monedas | a medias | dos círculos lisos; sin canto ni cara no dicen monedas | [ver](capturas/trig-arco--monedas.webp) | redibujado: anillo y canto estriado en cada moneda ([antes y después](antes-despues/trig-arco--monedas.webp)) |
-| trig-arco · rueda | a medias | rueda chica con rayos: se lee rueda, no bicicleta; la huella es una raya | [ver](capturas/trig-arco--rueda.webp) |  |
-| trig-giro · llave | a medias | llave de cruz: una cruz con bolitas; se reconoce solo si uno ya la conoce | [ver](capturas/trig-giro--llave.webp) |  |
+| trig-arco · rueda | a medias | rueda chica con rayos: se lee rueda, no bicicleta; la huella es una raya | [ver](capturas/trig-arco--rueda.webp) | pendiente: no entró en esta pasada |
+| trig-giro · llave | a medias | llave de cruz: una cruz con bolitas; se reconoce solo si uno ya la conoce | [ver](capturas/trig-giro--llave.webp) | pendiente: no entró en esta pasada |
 | trig-giro · rayos | se reconoce | dos rayos con ángulo (diagrama propio) | [ver](capturas/trig-giro--rayos.webp) |  |
 | trig-giro · reloj | se reconoce | reloj de pared | [ver](capturas/trig-giro--reloj.webp) |  |
-| trig-giro · tapa | a medias | tapa de botella desde arriba: círculo con estrías; se lee como perilla | [ver](capturas/trig-giro--tapa.webp) |  |
+| trig-giro · tapa | a medias | tapa de botella desde arriba: círculo con estrías; se lee como perilla | [ver](capturas/trig-giro--tapa.webp) | pendiente: no entró en esta pasada |
 | trig-giro · timon | se reconoce | timón | [ver](capturas/trig-giro--timon.webp) |  |
 | trig-giro · transportador | se reconoce | transportador circular | [ver](capturas/trig-giro--transportador.webp) |  |
 | trig-medida · calculadora | se reconoce | calculadora con DEG, GRA y RAD | [ver](capturas/trig-medida--calculadora.webp) |  |
 | trig-medida · lupa | se reconoce | lupa sobre una escala | [ver](capturas/trig-medida--lupa.webp) |  |
 | trig-medida · rueda | se reconoce | rueda de bicicleta con rayos | [ver](capturas/trig-medida--rueda.webp) |  |
-| trig-objeto · chacra | a medias | chacra: triángulo con estacas; se adivina el cerco, falta cultivo | [ver](capturas/trig-objeto--chacra.webp) |  |
-| trig-objeto · cuerda | a medias | cuerda en triángulo con transportador: los nudos se ven; la cuerda es una raya | [ver](capturas/trig-objeto--cuerda.webp) |  |
+| trig-objeto · chacra | a medias | chacra: triángulo con estacas; se adivina el cerco, falta cultivo | [ver](capturas/trig-objeto--chacra.webp) | pendiente: no entró en esta pasada |
+| trig-objeto · cuerda | a medias | cuerda en triángulo con transportador: los nudos se ven; la cuerda es una raya | [ver](capturas/trig-objeto--cuerda.webp) | pendiente: no entró en esta pasada |
 | trig-objeto · escalera | se reconoce | escalera apoyada en una pared de ladrillos | [ver](capturas/trig-objeto--escalera.webp) |  |
 | trig-objeto · escuadras | se reconoce | juego de escuadras | [ver](capturas/trig-objeto--escuadras.webp) |  |
 | trig-objeto · figura | se reconoce | rectángulo de examen (diagrama propio) | [ver](capturas/trig-objeto--figura.webp) |  |
-| trig-objeto · loseta | a medias | loseta: cuadrado con diagonal; se lee como figura de examen | [ver](capturas/trig-objeto--loseta.webp) |  |
+| trig-objeto · loseta | a medias | loseta: cuadrado con diagonal; se lee como figura de examen | [ver](capturas/trig-objeto--loseta.webp) | pendiente: no entró en esta pasada |
 | trig-objeto · poste | a medias | poste con su cable: el poste es una barrita; falta la base, el travesaño y el anclaje | [ver](capturas/trig-objeto--poste.webp) | redibujado: aisladores en la cruceta, cables que se van, veta del palo y base de concreto; se lee como poste de luz ([antes y después](antes-despues/trig-objeto--poste.webp)) |
 | trig-objeto · rampa | a medias | rampa: triángulo sombreado; falta superficie de rampa (baranda, piso) | [ver](capturas/trig-objeto--rampa.webp) | redibujado: baranda con parantes paralela a la rampa y sardinel de la vereda; el rótulo de la rampa sube sobre la baranda ([antes y después](antes-despues/trig-objeto--rampa.webp)) |
 | trig-objeto · repisa | se reconoce | repisa con soporte en una pared | [ver](capturas/trig-objeto--repisa.webp) |  |
