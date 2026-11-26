@@ -1569,6 +1569,30 @@
    "version": "1.3.0",
    "minutos": 16,
    "errores": {
+    "FL12-C-PESO": {
+     "respaldo": "hipotesis",
+     "describe": "Da el peso del cuerpo como lectura y omite el empuje de ambos líquidos."
+    },
+    "FL12-C-DENSIDAD-INFERIOR": {
+     "respaldo": "hipotesis",
+     "describe": "Calcula todo el empuje con la densidad del líquido inferior, aunque parte del cuerpo desplaza líquido superior."
+    },
+    "FL12-C-EMPUJE": {
+     "respaldo": "hipotesis",
+     "describe": "Da el empuje como lectura del dinamómetro, sin completar el balance vertical del cuerpo."
+    },
+    "FL12-C-SIN-ALTURA": {
+     "respaldo": "hipotesis",
+     "describe": "Usa continuidad pero omite el aporte del descenso al balance de energía del líquido."
+    },
+    "FL12-C-ALTURA-INVERTIDA": {
+     "respaldo": "hipotesis",
+     "describe": "Usa continuidad pero resta el aporte del descenso como si el líquido ascendiera."
+    },
+    "FL12-C-SIN-CINETICA": {
+     "respaldo": "hipotesis",
+     "describe": "Conserva el aporte de altura pero omite el cambio de energía cinética asociado a las dos rapideces."
+    },
     "G2-altura-entre-tiempo": {
      "respaldo": "documentado",
      "describe": "Divide la altura del punto entre el tiempo, como si la recta pasara por el origen"

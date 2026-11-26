@@ -168,7 +168,7 @@
        "resultante": "Suma de vectores",
        "productos": "Productos"
       },
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -432,7 +432,7 @@
        "torque-y-brazo": "Torque: fuerza por brazo",
        "cuerpo-rigido": "Equilibrio del cuerpo rígido"
       },
-      "terminos": 39
+      "terminos": 40
      }
     },
     {
@@ -484,7 +484,7 @@
        "ascensor-y-marcos": "Peso aparente en el ascensor",
        "centripeta-es-resultante": "Dinámica circular"
       },
-      "terminos": 47
+      "terminos": 48
      }
     },
     {
@@ -763,28 +763,31 @@
      "potencial_visual": "alto",
      "grado": 4,
      "requiere": [
-      "fisica.estatica"
+      "fisica.estatica",
+      "fisica.trabajo-y-energia"
      ],
      "plantillas": [
+      "fis-fluidos",
       "fluidos",
       "fluidos-hidrodinamica"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/fisica/fluidos.js",
       "requiere": [
-       "/nucleo/kit/piezas/fis-vasos.js",
+       "/nucleo/kit/piezas/fis-fluidos-e12.js",
+       "/nucleo/kit/piezas/fis-estatica.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
       "titulos": {
-       "presion-profundidad": "Igual profundidad, igual presión",
-       "vasos-comunicantes": "Misma altura, misma presión",
-       "prensa-hidraulica": "La prensa multiplica la fuerza",
-       "empuje": "El empuje es el líquido desalojado",
-       "tension-superficial": "La superficie tira como una piel",
-       "bernoulli": "Más rápido, menos presión"
+       "presion-profundidad": "Un líquido y una superficie",
+       "vasos-comunicantes": "Leer columnas de líquido",
+       "prensa-hidraulica": "Dos pistones conectados",
+       "empuje": "Un bloque dentro del líquido",
+       "tension-superficial": "La superficie también tira",
+       "bernoulli": "Seguir el líquido que pasa"
       },
-      "terminos": 29
+      "terminos": 55
      }
     },
     {
@@ -834,7 +837,7 @@
        "dilatacion": "Al calentarse, todo largo crece",
        "transferencia": "Tres caminos del calor"
       },
-      "terminos": 30
+      "terminos": 29
      }
     },
     {
@@ -9662,6 +9665,30 @@
     "/plantillas/fis-estatica/papel.json"
    ]
   },
+  "fis-fluidos": {
+   "id": "fis-fluidos",
+   "titulo": "Fluidos: presión, empuje y flujo",
+   "formato": "predicciones",
+   "estado": "probada",
+   "version": "1.0.0",
+   "unidades": [
+    "fisica.fluidos"
+   ],
+   "url": "#/practica/fis-fluidos",
+   "ideas": [
+    "presion-profundidad",
+    "vasos-comunicantes",
+    "prensa-hidraulica",
+    "empuje",
+    "tension-superficial",
+    "bernoulli"
+   ],
+   "papel": "/plantillas/fis-fluidos/papel.json",
+   "archivos": [
+    "/plantillas/fis-fluidos/generador.js",
+    "/plantillas/fis-fluidos/papel.json"
+   ]
+  },
   "fis-mru": {
    "id": "fis-mru",
    "titulo": "La combi, la gráfica y el río",
@@ -9764,7 +9791,8 @@
     "/plantillas/fluidos/index.html",
     "/plantillas/fluidos/motor.js",
     "/plantillas/fluidos/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "fluidos-hidrodinamica": {
    "id": "fluidos-hidrodinamica",
@@ -9780,7 +9808,8 @@
    "archivos": [
     "/plantillas/fluidos-hidrodinamica/generador.js",
     "/plantillas/fluidos-hidrodinamica/papel.json"
-   ]
+   ],
+   "rehacer": true
   },
   "fracciones": {
    "id": "fracciones",
