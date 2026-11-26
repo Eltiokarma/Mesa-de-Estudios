@@ -46,3 +46,4 @@ contra los límites semanales de los planes.
 | trigonometria.reduccion-al-primer-cuadrante | auditoría y correcciones (cierre) | 350 180 | 40 min 35 s | 145 herramientas |
 | quimica.reacciones-y-balance | auditoría y correcciones (cierre) | 335 564 | 31 min 24 s | 150 herramientas |
 | algebra.binomio-de-newton | lector en frío B (ideas 4–6) | 126 043 | 2 min 14 s | 33 herramientas |
+| algebra.binomio-de-newton | lector en frío A (ideas 1–3) | 127 141 | 2 min 28 s | 34 herramientas |
