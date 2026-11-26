@@ -1110,6 +1110,223 @@
     };
   })();
 
+  // 5. Péndulo pequeño: la gravedad declarada y la linealización son aproximaciones.
+  const idea5 = (() => {
+    const periodo = (L, g) => 2 * Math.PI * Math.sqrt(L / g);
+    const T1 = sub(S.T, '1'), T2 = sub(S.T, '2'), L1 = sub(S.L, '1'), L2 = sub(S.L, '2');
+    const g1 = sub(S.g, '1'), g2 = sub(S.g, '2');
+    const FORMULA = [S.T, ' ≈ 2π · ', raiz(frac(S.L, S.g))];
+    const RAZON = [frac(T2, T1), ' ≈ ', raiz(frac([L2, ' · ', g1], [L1, ' · ', g2]))];
+    // 150 px/m para ambos ensayos. La cuerda y la cota llegan al centro de la pesa.
+    function figura(items, o = {}) {
+      const d = { alto: 296, objetos: [], lineas: [], cotas: [], textos: [], angulos: [],
+        alt: o.esquema ? 'Péndulo simple al soltarlo desde una inclinación pequeña. Esquema sin escala.' : `${items.length === 1 ? 'Un péndulo pequeño' : 'Dos péndulos pequeños'}. La longitud se mide del apoyo al centro de cada pesa, con la misma escala.` };
+      items.forEach((p, j) => {
+        const cx = items.length === 1 ? 160 : 80 + 160 * j, y = 58;
+        const largo = o.esquema ? 132 : 150 * p.L;
+        const theta = p.theta === undefined ? 8 : p.theta;
+        const bob = [cx + largo * Math.sin(theta * Math.PI / 180), y + largo * Math.cos(theta * Math.PI / 180)];
+        const radio = p.m >= 0.08 ? 8 : 5;
+        d.objetos.push({ tipo: 'viga', x0: cx - 32, x1: cx, y }, { tipo: 'cuerda', de: [cx, y], a: bob }, { tipo: 'pelota', x: bob[0], y: bob[1], r: radio });
+        d.lineas.push({ de: [cx, y + 2], a: [cx, y + largo + 4], discontinua: true });
+        d.textos.push({ x: cx, y: 20, texto: p.titulo || 'Péndulo simple', ancla: 'middle' });
+        if (p.m !== undefined) d.textos.push({ x: cx, y: 242, texto: `m = ${f(p.m * 1000)} g`, color: 'f', ancla: 'middle' });
+        d.cotas.push({ de: [cx, y], a: bob, lado: items.length === 2 && j === 0 ? -1 : 1, sep: 27, color: 'i' });
+        d.textos.push({ x: cx, y: 226, texto: p.ocultarL ? 'L = ?' : `L = ${f(p.L * 100)} cm`, color: 'i', ancla: 'middle' });
+        if (p.T !== undefined) d.textos.push({ x: cx, y: 268, texto: `T ≈ ${f(p.T)} s`, color: 'h', ancla: 'middle' });
+        d.textos.push({ x: cx, y: 42, texto: `θ ≈ ${f(theta)}°`, color: 'h', ancla: 'middle' });
+      });
+      if (o.esquema) d.textos.push({ x: 160, y: 286, texto: 'Esquema sin escala', ancla: 'middle' });
+      return est(d);
+    }
+    function caso(tipo, p) {
+      let valor, unidad = 's', clave = 'T', enunciado, formula = FORMULA, cuentas, sentido, malos;
+      const err = (valor, id, corta, siFuera) => ({ valor, id, corta, siFuera: `Bien identificar los datos; ${siFuera}` });
+      let datos = ['Péndulo simple: hilo inextensible de masa despreciable, apoyo fijo y sin rozamiento.', 'Amplitud angular de 8°; modelo aproximado de ángulo pequeño.'];
+      const calcT = L => periodo(L, p.g);
+      if (p.g !== undefined) datos.push([S.g, ' ≈ ', Q('g', p.g, 'm/s²'), ', valor usado para el cálculo.']);
+      switch (tipo) {
+        case 'longitud-centro':
+          valor = p.hilo + p.radio; unidad = 'cm'; clave = 'L';
+          enunciado = ['El hilo libre mide ', Q('L', p.hilo, 'cm'), ' y la pesa esférica tiene radio ', Q('L', p.radio, 'cm'), '. ¿Qué longitud llega del apoyo al centro de la pesa?'];
+          formula = [S.L, ' = longitud del hilo + radio de la pesa'];
+          cuentas = [paso('La longitud incluye el tramo hasta el centro de la pesa.', [S.L, ' = ', Q('L', p.hilo), ' + ', Q('L', p.radio), ' = ', Q('L', valor, unidad)])];
+          sentido = 'La pesa se aproxima por una masa puntual situada en su centro.';
+          malos = [err(p.hilo, 'solo-hilo', 'solo hilo', 'tomaste solo el hilo.'), err(p.hilo - p.radio, 'resta-radio', 'resta radio', 'restaste el radio.'), err(p.hilo + 2 * p.radio, 'diametro', 'suma diámetro', 'sumaste el diámetro en vez del radio.'), err(2 * p.hilo + p.radio, 'doble-hilo', 'duplica hilo', 'contaste dos veces el hilo.')]; break;
+        case 'periodo': case 'periodo-cm': {
+          const L = tipo === 'periodo' ? p.L : p.Lcm / 100;
+          valor = calcT(L);
+          enunciado = ['Un péndulo tiene longitud ', Q('L', tipo === 'periodo' ? p.L : p.Lcm, tipo === 'periodo' ? 'm' : 'cm'), '. ¿Cuál es su período aproximado?'];
+          cuentas = [];
+          if (tipo === 'periodo-cm') { datos.push('1 m = 100 cm.'); cuentas.push(paso('Pasamos la longitud a metros.', [S.L, ' = ', Q('L', p.Lcm), ' ÷ 100 = ', Q('L', L, 'm')])); }
+          cuentas.push(paso('Reemplazamos longitud y gravedad en el modelo pequeño.', [S.T, ' ≈ 2π · ', raiz(frac(Q('L', L), Q('g', p.g))), ' ≈ ', Q('T', valor, 's')]));
+          sentido = 'El resultado es el tiempo aproximado de una ida y vuelta completa.';
+          malos = [err(valor / 2, 'medio-ciclo', 'medio ciclo', 'calculaste medio ciclo.'), err(valor / (2 * Math.PI), 'sin-2pi', 'omite 2π', 'omitiste el factor 2π.'), err(2 * Math.PI * L / p.g, 'sin-raiz', 'omite raíz', 'no extrajiste la raíz.'), err(1 / valor, 'frecuencia', 'da frecuencia', 'invertiste el período y obtuviste la frecuencia.')]; break;
+        }
+        case 'masa':
+          valor = p.T; enunciado = ['Un péndulo tarda aproximadamente ', Q('T', p.T, 's'), ' por ciclo. Cambiamos la pesa de ', Q('m', p.m1, 'g'), ' por otra de ', Q('m', p.m2, 'g'), ', conservando longitud y gravedad. ¿Cuál será el período?'];
+          formula = [T2, ' ≈ ', T1, ' si no cambian L ni g'];
+          cuentas = [paso('La masa no aparece en el período del péndulo simple.', [T2, ' ≈ ', Q('T', valor, 's')])];
+          sentido = 'Ambas pesas completan aproximadamente el ciclo en el mismo tiempo.';
+          malos = [err(valor * Math.sqrt(p.m2 / p.m1), 'raiz-masa', 'incluye raíz de masas', 'multiplicaste por la raíz de la razón de masas.'), err(valor * p.m2 / p.m1, 'masa-directa', 'incluye masas', 'multiplicaste por la razón de masas.'), err(valor / Math.sqrt(p.m2 / p.m1), 'raiz-inversa-masa', 'divide por raíz', 'dividiste por la raíz de la razón de masas.'), err(valor * p.m1 / p.m2, 'masa-inversa', 'divide por masas', 'dividiste por la razón de masas.')]; break;
+        case 'frecuencia':
+          valor = 1 / p.T; unidad = 'Hz'; clave = 'f';
+          enunciado = ['El período aproximado de un péndulo es ', Q('T', p.T, 's'), '. ¿Cuál es su frecuencia?'];
+          formula = [S.f, ' = ', frac('1', S.T)];
+          cuentas = [paso('La frecuencia cuenta cuántos ciclos caben en un segundo.', [S.f, ' ≈ ', frac('1', Q('T', p.T)), ' = ', Q('f', valor, 'Hz')])];
+          sentido = 'La frecuencia se expresa en ciclos por segundo, es decir, hertz.';
+          malos = [err(p.T, 'periodo', 'da período', 'copiaste el período.'), err(2 / p.T, 'medios', 'cuenta medios ciclos', 'contaste cada ida como ciclo completo.'), err(1 / (2 * p.T), 'dobles', 'junta dos ciclos', 'juntaste dos ciclos en uno.'), err(1 / (p.T * p.T), 'cuadrado', 'eleva período', 'elevaste el período al cuadrado.')]; break;
+        case 'razon': {
+          valor = Math.sqrt(p.L2 * p.g1 / (p.L1 * p.g2)); unidad = ''; clave = 'T'; formula = RAZON;
+          enunciado = ['Dos péndulos tienen longitudes ', Q('L', p.L1, 'm'), ' y ', Q('L', p.L2, 'm'), '. ¿Cuál es la razón de períodos segundo/primero?'];
+          datos.push([g1, ' ≈ ', Q('g', p.g1, 'm/s²'), '; ', g2, ' ≈ ', Q('g', p.g2, 'm/s²'), '.'], ['Masas respectivas: ', Q('m', p.m1, 'g'), ' y ', Q('m', p.m2, 'g'), '.']);
+          cuentas = [paso('Se cancelan los factores comunes 2π al dividir los períodos.', [frac(T2, T1), ' ≈ ', raiz(frac([Q('L', p.L2), ' · ', Q('g', p.g1)], [Q('L', p.L1), ' · ', Q('g', p.g2)])), ' ≈ ', Q('T', valor)])];
+          sentido = valor > 1 ? 'La razón mayor que uno indica que el segundo ciclo tarda más.' : 'La razón menor que uno indica que el segundo ciclo tarda menos.';
+          malos = [err(valor * valor, 'sin-raiz', 'omite raíz', 'no extrajiste la raíz.'), err(1 / valor, 'invierte', 'invierte comparación', 'intercambiaste el primero y el segundo.'), err(valor * Math.sqrt(p.m2 / p.m1), 'incluye-masa', 'incluye masas', 'añadiste la raíz de la razón de masas.'), err(valor / Math.sqrt(p.m2 / p.m1), 'divide-masa', 'divide por masas', 'dividiste entre la raíz de la razón de masas.')]; break;
+        }
+        case 'longitud': case 'longitud-ciclos': {
+          const T = tipo === 'longitud' ? p.T : p.dt / p.N;
+          valor = p.g * (T / (2 * Math.PI)) ** 2; unidad = 'm'; clave = 'L';
+          enunciado = tipo === 'longitud' ? ['Un péndulo tiene período aproximado de ', Q('T', p.T, 's'), '. ¿Qué longitud corresponde a ese período?'] : ['Un péndulo completa ', Q('N', p.N), ' oscilaciones en ', Q('t', p.dt, 's'), '. ¿Cuál es su longitud aproximada?'];
+          cuentas = [paso(tipo === 'longitud' ? 'Elevamos al cuadrado y despejamos la longitud.' : 'Hallamos el período y despejamos la longitud del modelo.', tipo === 'longitud' ? [S.L, ' ≈ ', S.g, ' · ', sup(frac(S.T, '2π'))] : [S.T, ' = ', frac(Q('t', p.dt), Q('N', p.N)), ' = ', Q('T', T, 's'), '; ', S.L, ' ≈ ', S.g, ' · ', sup(frac(S.T, '2π'))]), paso('Usamos el período de un solo ciclo.', [S.L, ' ≈ ', Q('g', p.g), ' · ', sup(frac(Q('T', T), '2π')), ' ≈ ', Q('L', valor, 'm')])];
+          sentido = 'La longitud se mide siempre desde el apoyo hasta el centro de la pesa.';
+          malos = [err(valor * 4, 'sin-dos', 'omite el dos', 'omitiste el dos del factor 2π.'), err(valor / 4, 'medio-periodo', 'usa medio período', 'usaste medio período antes de elevar al cuadrado.'), err(p.g * T / (4 * Math.PI ** 2), 'sin-cuadrado', 'omite cuadrado', 'no elevaste el período al cuadrado.'), err(valor * 4 * Math.PI ** 2, 'sin-2pi', 'omite 2π', 'omitiste el factor 2π completo.')]; break;
+        }
+        case 'duracion':
+          valor = p.N * calcT(p.L); clave = 't';
+          enunciado = ['Un péndulo de ', Q('L', p.L, 'm'), ' completa ', Q('N', p.N), ' oscilaciones. ¿Cuánto tarda aproximadamente?'];
+          cuentas = [paso('Cada ciclo tiene el período calculado con longitud y gravedad.', [S.T, ' ≈ 2π · ', raiz(frac(Q('L', p.L), Q('g', p.g)))]), paso('Sumamos los tiempos de los ciclos, sin redondear el período intermedio.', [S.t, ' = ', S.N, ' · ', S.T, ' ≈ ', Q('N', p.N), ' · 2π · ', raiz(frac(Q('L', p.L), Q('g', p.g))), ' ≈ ', Q('t', valor, 's')])];
+          sentido = 'El tiempo total incluye todos los ciclos completos contados.';
+          malos = [err(calcT(p.L), 'un-ciclo', 'solo un ciclo', 'contaste solo un ciclo.'), err(valor / 2, 'medios', 'cuenta medios ciclos', 'asignaste medio período a cada ciclo.'), err(p.N / calcT(p.L), 'divide', 'divide por período', 'dividiste entre el período.'), err(p.N * valor, 'doble-conteo', 'cuenta ciclos dos veces', 'multiplicaste dos veces por el número de ciclos.')]; break;
+        case 'gravedad':
+          valor = 4 * Math.PI ** 2 * p.L / p.T ** 2; unidad = 'm/s²'; clave = 'g';
+          enunciado = ['Un péndulo de ', Q('L', p.L, 'm'), ' tiene período ', Q('T', p.T, 's'), '. ¿Qué gravedad local aproximada corresponde al modelo?'];
+          cuentas = [paso('Elevamos al cuadrado y aislamos la gravedad.', [S.g, ' ≈ ', frac(['4π² · ', S.L], sup(S.T))]), paso('Reemplazamos la longitud y el período.', [S.g, ' ≈ ', frac(['4π² · ', Q('L', p.L)], sup(Q('T', p.T))), ' ≈ ', Q('g', valor, unidad)])];
+          sentido = 'Es una estimación del modelo, no una medición atribuida a una ciudad.';
+          malos = [err(valor / (4 * Math.PI ** 2), 'sin-2pi', 'omite 2π', 'omitiste el factor 2π antes de elevar al cuadrado.'), err(4 * Math.PI ** 2 * p.L / p.T, 'sin-cuadrado', 'omite cuadrado', 'dividiste entre el período sin elevarlo al cuadrado.'), err(1 / valor, 'invierte', 'invierte cociente', 'invertiste el cociente final.'), err(valor / 4, 'sin-dos', 'omite el dos', 'usaste π en vez de 2π.')]; break;
+        case 'longitud-razon': {
+          const q = p.T2 / p.T1; valor = p.L1 * q * q; unidad = 'm'; clave = 'L';
+          enunciado = ['Un péndulo de ', Q('L', p.L1, 'm'), ' tarda ', Q('T', p.T1, 's'), ' por ciclo. En el mismo lugar, ¿qué longitud permite un período de ', Q('T', p.T2, 's'), '?'];
+          formula = [frac(T2, T1), ' ≈ ', raiz(frac(L2, L1))];
+          cuentas = [paso('Elevamos la razón al cuadrado y despejamos la nueva longitud.', [L2, ' ≈ ', L1, ' · ', sup(frac(T2, T1))]), paso('Reemplazamos la razón de períodos en el orden pedido.', [L2, ' ≈ ', Q('L', p.L1), ' · ', sup(frac(Q('T', p.T2), Q('T', p.T1))), ' ≈ ', Q('L', valor, 'm')])];
+          sentido = 'La longitud cambia con el cuadrado de la razón de períodos.';
+          malos = [err(p.L1 * q, 'lineal', 'razón sin cuadrado', 'no elevaste la razón al cuadrado.'), err(p.L1 / (q * q), 'invierte', 'invierte razón', 'invertiste la razón de períodos.'), err(p.L1 * Math.sqrt(q), 'raiz', 'extrae otra raíz', 'extrajiste una raíz en vez de elevar al cuadrado.'), err(p.L1 * q ** 3, 'cubo', 'eleva al cubo', 'elevaste la razón al cubo.')]; break;
+        }
+        case 'duracion-otro': {
+          const T = p.dt / p.N1, q = Math.sqrt(p.g1 / p.g2); valor = p.N2 * T * q; clave = 't';
+          enunciado = ['Un péndulo completa ', Q('N', p.N1), ' ciclos en ', Q('t', p.dt, 's'), '. Sin cambiar su longitud, ¿cuánto tardarán ', Q('N', p.N2), ' ciclos en otro entorno?'];
+          datos.push([g1, ' ≈ ', Q('g', p.g1, 'm/s²'), '; ', g2, ' ≈ ', Q('g', p.g2, 'm/s²'), '.']);
+          formula = [frac(T2, T1), ' ≈ ', raiz(frac(g1, g2))];
+          cuentas = [paso('Calculamos el período inicial y adaptamos el segundo a la gravedad.', [T1, ' = ', frac(Q('t', p.dt), Q('N', p.N1)), ' = ', Q('T', T, 's'), '; ', T2, ' ≈ ', T1, ' · ', raiz(frac(g1, g2))]), paso('Multiplicamos el nuevo período por la cantidad de ciclos.', [S.t, ' ≈ ', Q('N', p.N2), ' · ', Q('T', T), ' · ', raiz(frac(Q('g', p.g1), Q('g', p.g2))), ' ≈ ', Q('t', valor, 's')])];
+          sentido = p.g2 < p.g1 ? 'Con la misma longitud y menor gravedad, cada ciclo tarda más.' : 'Con la misma longitud y mayor gravedad, cada ciclo tarda menos.';
+          malos = [err(p.N2 * T / q, 'invierte-g', 'invierte gravedad', 'invertiste la razón de gravedades.'), err(p.N2 * T * q * q, 'sin-raiz', 'omite raíz', 'usaste la razón sin extraer raíz.'), err(p.N2 * T, 'sin-cambio', 'ignora gravedad', 'conservaste el período anterior.'), err(T * q, 'un-ciclo', 'solo un ciclo', 'calculaste solo un ciclo nuevo.')]; break;
+        }
+        case 'alargar': {
+          const L = p.hilo + p.radio; valor = L * (p.factor * p.factor - 1); unidad = 'cm'; clave = 'L';
+          enunciado = ['El hilo libre mide ', Q('L', p.hilo, 'cm'), ' y el radio de la pesa ', Q('L', p.radio, 'cm'), '. ¿Cuánto hilo añadimos para multiplicar el período por ', Q('T', p.factor), '?'];
+          datos.push('La gravedad y la pesa no cambian.'); formula = [frac(T2, T1), ' ≈ ', raiz(frac(L2, L1))];
+          cuentas = [paso('Sumamos hasta el centro; la nueva longitud usa la razón al cuadrado.', [L1, ' = ', Q('L', p.hilo), ' + ', Q('L', p.radio), ' = ', Q('L', L, 'cm'), '; ', L2, ' ≈ ', L1, ' · ', sup(Q('T', p.factor))]), paso('Alargamos solo la diferencia entre las longitudes completas.', ['hilo añadido ≈ ', Q('L', L), ' · (', sup(Q('T', p.factor)), ' − 1) = ', Q('L', valor, 'cm')])];
+          sentido = 'La pesa conserva su radio; por eso el aumento corresponde al hilo.';
+          malos = [err(L * p.factor ** 2, 'longitud-total', 'da longitud total', 'diste la longitud total nueva.'), err(L * (p.factor - 1), 'lineal', 'razón lineal', 'usaste una razón lineal para la longitud.'), err(p.hilo * (p.factor ** 2 - 1), 'solo-hilo', 'excluye radio', 'omitiste el radio de la pesa al formar la longitud.'), err(L / p.factor ** 2, 'inversa', 'invierte razón', 'invertiste la razón y diste una longitud total.')]; break;
+        }
+        case 'gravedad-razon': {
+          const t1 = p.dt1 / p.N1, t2 = p.dt2 / p.N2, q = t1 / t2, r = p.L2 / p.L1;
+          valor = r * q * q; unidad = ''; clave = 'g';
+          enunciado = ['Dos péndulos miden ', Q('L', p.L1, 'm'), ' y ', Q('L', p.L2, 'm'), '. ¿Cuál es la razón de gravedades segundo/primero?'];
+          datos.push(['Primero: ', Q('N', p.N1), ' ciclos en ', Q('t', p.dt1, 's'), '.'], ['Segundo: ', Q('N', p.N2), ' ciclos en ', Q('t', p.dt2, 's'), '.']);
+          formula = [frac(g2, g1), ' ≈ ', frac(L2, L1), ' · ', sup(frac(T1, T2))];
+          cuentas = [paso('Obtenemos cada período dividiendo el tiempo entre sus ciclos.', [T1, ' = ', frac(Q('t', p.dt1), Q('N', p.N1)), ' = ', Q('T', t1, 's'), '; ', T2, ' = ', frac(Q('t', p.dt2), Q('N', p.N2)), ' = ', Q('T', t2, 's')]), paso('La gravedad despejada es proporcional a la longitud dividida entre el período al cuadrado.', [frac(g2, g1), ' ≈ ', frac(Q('L', p.L2), Q('L', p.L1)), ' · ', sup(frac(Q('T', t1), Q('T', t2))), ' ≈ ', Q('g', valor)])];
+          sentido = 'Comparamos las gravedades después de separar longitud y duración de cada ciclo.';
+          malos = [err(r / (q * q), 'invierte-tiempo', 'invierte períodos', 'invertiste la razón de períodos.'), err(r * q, 'sin-cuadrado', 'omite cuadrado', 'no elevaste la razón de períodos al cuadrado.'), err(q * q, 'sin-longitud', 'omite longitudes', 'omitiste la razón de longitudes.'), err(r, 'sin-periodo', 'omite períodos', 'comparaste solo las longitudes.')]; break;
+        }
+        default: throw new Error('Péndulo: familia desconocida ' + tipo);
+      }
+      const aproximado = tipo !== 'longitud-centro', fmt = n => `${aproximado ? '≈ ' : ''}${f(n)}${unidad ? ' ' + unidad : ''}`;
+      const ops = opciones(valor, malos.map(e => ({ valor: e.valor, error: `OS-PEN-${e.id}`, siFuera: e.siFuera })), fmt);
+      const Lfig = p.L || p.L1 || (p.Lcm ? p.Lcm / 100 : 0.6);
+      const tengo = tipo === 'duracion' ? ['Conozco la longitud ', Q('L', p.L, 'm'), ', la gravedad aproximada ', Q('g', p.g, 'm/s²'), ' y ', Q('N', p.N), ' ciclos completos.']
+        : tipo === 'longitud' ? ['Conozco el período ', Q('T', p.T, 's'), ' y la gravedad aproximada ', Q('g', p.g, 'm/s²'), '.']
+          : tipo === 'gravedad' ? ['Conozco la longitud ', Q('L', p.L, 'm'), ' y el período ', Q('T', p.T, 's'), '.']
+            : 'Comparo las longitudes, gravedades y masas indicadas de los dos péndulos.';
+      const pedida = tipo === 'razon' ? 'la razón de períodos segundo/primero' : tipo === 'gravedad-razon' ? 'la razón de gravedades segundo/primero' : { T: 'el período', L: 'la longitud', t: 'el tiempo total de los ciclos', f: 'la frecuencia', g: 'la gravedad local aproximada' }[clave];
+      return { enunciado, datos, dibujo: figura([{ L: Lfig, ocultarL: clave === 'L' || (p.L === undefined && p.L1 === undefined && p.Lcm === undefined), m: p.m1 ? p.m1 / 1000 : undefined }], { esquema: true }),
+        pide: `Se pide ${pedida}.`, tengo,
+        regla: paso('Relacionamos longitud, gravedad y duración del ciclo.', formula), cuentas, sentido,
+        respuesta: [aproximado ? '≈ ' : '', Q(clave, valor, unidad)], opciones: ops,
+        caso: { tipo, ...p, valor, unidad, aproximado, errores: malos.map(e => ({ id: e.id, valor: e.valor })) },
+        erroresEjemplo: malos.map(e => `${fmt(e.valor)}: ${e.corta}.`).join(' ') };
+    }
+    const lista = [
+      ['longitud-centro', { hilo: 47, radio: 3 }, 'Del apoyo al centro'],
+      ['periodo', { L: 0.64, g: 10 }, 'Un ciclo pequeño'],
+      ['masa', { T: 1.8, m1: 20, m2: 180 }, 'Otra pesa'],
+      ['razon', { L1: 0.2, L2: 0.8, g1: 10, g2: 10, m1: 25, m2: 225 }, 'Comparar longitudes'],
+      ['frecuencia', { T: 2.5 }, 'Ciclos en un segundo'],
+      ['periodo-cm', { Lcm: 36, g: 10 }, 'Longitud en centímetros'],
+      ['longitud', { T: 1.2, g: 10 }, 'Elegir la longitud'],
+      ['duracion', { L: 0.81, g: 10, N: 12 }, 'Doce oscilaciones completas'],
+      ['razon', { L1: 0.6, L2: 0.9, g1: 10, g2: 6, m1: 20, m2: 80 }, 'Dos entornos'],
+      ['gravedad', { L: 0.5, T: 1.5 }, 'Estimar la gravedad'],
+      ['longitud-ciclos', { dt: 50, N: 25, g: 10 }, 'Longitud desde varios ciclos'],
+      ['longitud-razon', { L1: 0.45, T1: 1.5, T2: 2.1 }, 'Cambiar el ritmo'],
+      ['duracion-otro', { N1: 20, dt: 30, N2: 30, g1: 10, g2: 5 }, 'Contar en otro entorno'],
+      ['alargar', { hilo: 47, radio: 3, factor: 2 }, 'Añadir hilo'],
+      ['gravedad-razon', { L1: 0.4, L2: 0.63, N1: 10, dt1: 20, N2: 20, dt2: 24 }, 'Comparar dos gravedades'],
+    ];
+    const ejemplos = lista.map(([t, p, titulo], i) => ejemplo(caso(t, p), 1 + Math.floor(i / 5), titulo, (5 - (i - 10)) % 5));
+    const tiempo = v => Number(v.t.toFixed(2));
+    function ensayos(v) {
+      const ref = { L: 0.25, m: 0.04, g: 10 }, otro = v.experimento === 0 ? { ...ref, m: v.caso === 0 ? 0.04 : 0.08 } : { ...ref, L: v.caso === 0 ? 0.25 : 1 };
+      return [ref, otro].map((p, j) => ({ ...p, titulo: j ? 'Ensayo' : 'Referencia', T: periodo(p.L, p.g), theta: 8 * Math.cos(Math.sqrt(p.g / p.L) * tiempo(v)) }));
+    }
+    const vista = v => figura(ensayos(v));
+    const pred = { L1: 0.4, L2: 0.9, g1: 10, g2: 10, m1: 30, m2: 120 };
+    const cp = caso('razon', pred), rp = cp.caso.valor;
+    const predFigura = figura([{ L: pred.L1, m: pred.m1 / 1000, titulo: 'Inicial' }, { L: pred.L2, m: pred.m2 / 1000, titulo: 'Nuevo' }]);
+    glosario.push(
+      { termino: 'péndulo simple', formas: ['péndulo simple', 'péndulos simples'], simple: 'Una pesa pequeña colgada de un hilo ideal.', def: 'Modelo de una masa puntual suspendida de un apoyo fijo mediante un hilo inextensible y de masa despreciable.', ejemplos: ['La longitud llega desde el apoyo hasta el centro de la pesa.', 'El hilo permanece tenso mientras la pesa se mueve.', 'Una pesa pequeña puede aproximarse por un punto situado en su centro.'] },
+      { termino: 'aproximación de ángulo pequeño', formas: ['aproximación de ángulo pequeño', 'ángulo pequeño'], simple: 'Un modelo para inclinaciones cercanas a la vertical.', def: 'Simplificación que permite describir el vaivén del péndulo aproximadamente como un movimiento armónico cuando su inclinación es pequeña.', ejemplos: ['Una amplitud angular de 5° queda cerca de la vertical.', 'La aproximación pierde precisión al aumentar mucho la inclinación.', 'El ángulo se mide entre el hilo y la vertical.'] },
+    );
+    return { id: 'pendulo', titulo: 'El péndulo simple', pregunta: '¿Qué determina el tiempo de una pesa que va y vuelve?', temas: ['Péndulo simple'], pieza: 'fis-estatica',
+      aprendizaje: 'Elijo la longitud hasta el centro de la pesa y estimo el período del péndulo con un modelo de ángulo pequeño.', actividad: 'Comparar dos pesas y dos longitudes en experimentos separados.', ejemplos,
+      lee: { tarjetas: [
+        { titulo: 'Una pesa colgada', texto: 'Un péndulo simple representa una pesa pequeña colgada de un hilo ligero que no se estira. El apoyo permanece fijo y despreciamos el rozamiento.', dibujo: figura([{ L: 0.75, m: 0.04 }]) },
+        { titulo: 'La longitud del modelo', texto: ['La longitud ', S.L, ' llega del apoyo al centro de la pesa. La inclinación ', S.theta, ' se mide desde la vertical. Trabajaremos con la aproximación de ángulo pequeño, usando una amplitud angular de 8°.'] },
+        { titulo: 'Dos comparaciones distintas', texto: ['El período ', S.T, ' cuenta una ida y vuelta completa. Primero cambiaremos la masa ', S.m, '; luego, la longitud. Conservaremos ', S.g, ' ≈ ', Q('g', 10, 'm/s²'), ' como aproximación de cálculo.'] },
+      ] },
+      juega: { pieza: 'fis-estatica', consigna: 'Dos péndulos parten con la misma inclinación pequeña. Compara un cambio de masa y un cambio de longitud por separado.',
+        mision: { texto: 'Compara masas distintas con la misma longitud y el mismo período aproximado.', logrado: v => v.experimento === 0 && v.caso === 1, bien: 'Las pesas son distintas y completan el ciclo aproximadamente al mismo tiempo.' },
+        voz: 'Mira la referencia junto al ensayo: solo cambia una propiedad.',
+        leyenda: [{ s: S.L, t: 'longitud del apoyo al centro' }, { s: S.m, t: 'masa de cada pesa' }, { s: S.T, t: 'duración aproximada de un ciclo' }, { s: S.theta, t: 'inclinación respecto de la vertical' }, { s: S.t, t: 'tiempo desde que soltamos las pesas' }],
+        controles: [{ id: 'experimento', etiqueta: 'Qué comparamos', opciones: [{ valor: 0, texto: 'Cambiar masa' }, { valor: 1, texto: 'Cambiar longitud' }], inicio: 0 },
+          { id: 'caso', etiqueta: 'Ensayo', opciones: [{ valor: 0, texto: 'Igual a la referencia' }, { valor: 1, texto: 'Cambiar la propiedad elegida' }], inicio: 0 },
+          { id: 't', etiqueta: 'Tiempo, t', min: 0, max: 4, paso: 0.05, decimales: 2, inicio: 0, unidad: 's', color: 'c-h', auto: { velocidad: 0.3 } }],
+        dibujo: vista, lectura: v => { const [a, b] = ensayos(v); return [S.T, ' del ensayo ≈ ', Q('T', b.T / a.T), ' veces el de referencia.']; }, minimo: 3 },
+      predice: { pregunta: ['La longitud cambia de ', Q('L', 40, 'cm'), ' a ', Q('L', 90, 'cm'), ', y la masa de ', Q('m', 30, 'g'), ' a ', Q('m', 120, 'g'), '. ¿Cuál es la razón de períodos nuevo/inicial?'],
+        datos: ['Ambos ensayos tienen la misma gravedad y amplitud angular de 8°.', [S.g, ' ≈ ', Q('g', 10, 'm/s²'), ', valor usado para el cálculo.'], 'La longitud llega del apoyo al centro de la pesa.'], dibujo: predFigura,
+        revelar: figura([{ L: pred.L1, m: pred.m1 / 1000, T: periodo(pred.L1, pred.g1), titulo: 'Inicial' }, { L: pred.L2, m: pred.m2 / 1000, T: periodo(pred.L2, pred.g2), titulo: 'Nuevo' }]),
+        opciones: cp.opciones.filter((o, i) => i !== 2), caso: { tipo: 'razon', ...pred, valor: rp },
+        coincide: 'La comparación combina cambios que antes observaste por separado.' },
+      mira: { pieza: 'fis-estatica', datos: predFigura.datos, pasos: [
+        paso('El modelo pequeño relaciona el período con la longitud y la gravedad.', FORMULA),
+        paso('Dividimos los períodos; los factores 2π y la misma gravedad se cancelan.', [frac(T2, T1), ' ≈ ', raiz(frac(L2, L1))]),
+        paso('Reemplazamos longitudes en la misma unidad.', [frac(T2, T1), ' ≈ ', raiz(frac(Q('L', pred.L2 * 100), Q('L', pred.L1 * 100))), ' = ', Q('T', rp)]),
+        paso('La masa no aparece en esta relación del péndulo simple.'),
+        paso('En el punto inferior se anula la aceleración tangencial, no necesariamente la total.'),
+        paso('Para despejar longitud o gravedad, elevamos al cuadrado la relación del período.', [S.L, ' ≈ ', S.g, ' · ', sup(frac(S.T, '2π')), '; ', S.g, ' ≈ ', frac(['4π² · ', S.L], sup(S.T))]),
+      ] },
+      regla: { texto: 'El período del péndulo pequeño depende de su longitud y de la gravedad. La masa no interviene. Para varios ciclos, se suma el tiempo de cada ciclo.', ecuacion: FORMULA,
+        condicion: 'pesa puntual, hilo inextensible sin masa, apoyo fijo, gravedad constante, sin rozamiento e inclinaciones pequeñas.', dibujo: figura([{ L: 0.75, m: 0.04, T: periodo(0.75, 10) }]) },
+      resuelve: { pieza: 'fis-estatica', generar(s) { const z = Math.floor(s / 4) % 31; const tipos = ['duracion', 'longitud', 'razon', 'gravedad']; const p = [
+        { L: 0.42 + z * 0.01, g: 10, N: 5 + z }, { T: 1.31 + z * 0.01, g: 10 },
+        { L1: 0.31 + z * 0.01, L2: 0.72 + z * 0.01, g1: 10, g2: 8, m1: 20, m2: 180 }, { L: 0.55 + z * 0.01, T: 1.71 + z * 0.01 } ]; return resuelto(caso(tipos[s % 4], p[s % 4])); } },
+      ahoraTu: { pieza: 'fis-estatica', generar(s) { const z = Math.floor(s / 6) % 31, j = s % 6; const tipos = ['periodo-cm', 'longitud-ciclos', 'longitud-razon', 'duracion-otro', 'alargar', 'gravedad-razon']; const p = [
+        { Lcm: 51 + z, g: 10 }, { N: 11 + z, dt: (11 + z) * 1.7, g: 10 }, { L1: 0.32 + z * 0.01, T1: 1.4, T2: 1.96 },
+        { N1: 8 + z, dt: (8 + z) * 1.4, N2: 15 + z, g1: 10, g2: 4 }, { hilo: 31 + z, radio: 2, factor: 1.5 },
+        { L1: 0.31 + z * 0.01, L2: 0.74 + z * 0.01, N1: 8 + z, dt1: 2.2 * (8 + z), N2: 12 + z, dt2: 1.6 * (12 + z) } ]; return pregunta(caso(tipos[j], p[j])); } },
+    };
+  })();
+
   return {
     unidad: 'fisica.oscilaciones', version: '1.0.0', estado: 'borrador',
     colores: COLORES,
@@ -1122,6 +1339,6 @@
       pregunta: '¿Qué tendría que conservar un péndulo para que su reloj mida bien?',
       fuente: {titulo:'APS: Huygens y el primer reloj de péndulo',url:'https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock'},
     },
-    ideas: [idea1, idea2, idea3, idea4],
+    ideas: [idea1, idea2, idea3, idea4, idea5],
   };
 });
