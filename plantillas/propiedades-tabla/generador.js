@@ -117,25 +117,25 @@
       enunciado: ['Compara dos átomos por su ', v('r', 'radio atómico'), '.'], pregunta: [`¿Cuál tiene mayor radio: el de ${N(a)} o el de ${N(b)}?`],
       datos: [lugarTxt(a), lugarTxt(b)],
       errores: [
-        err(sub === 'grupo' ? 'QM-RADIO-GRUPO' : 'TP4', `El de ${N(o)}`, sub === 'grupo' ? `Bien mirar su columna. Pero el ${N(m)}, más abajo, tiene un nivel más: es el mayor.` : `El ${N(o)} tiene más electrones, cierto. Pero van al mismo nivel y más protones los jalan.`),
-        err('QM-RADIO-NIVEL', 'Miden lo mismo', sub === 'grupo' ? 'Son de la misma familia, cierto. Pero uno tiene un nivel más de electrones.' : 'Tienen los mismos niveles, cierto. Pero sus núcleos jalan distinto.'),
-        err('QM-SIN-LEY', 'No se puede saber sin medirlos', 'Bien dudar de una regla. Pero su lugar en la tabla ya dice cuál es mayor.'),
-        err('QM-RADIO-Z', 'El de mayor número atómico', 'Bien mirar el núcleo. Pero en un grupo gana el que tiene más niveles y en un periodo, el de menos protones.'),
+        err(sub === 'grupo' ? 'QM-RADIO-GRUPO' : 'TP4', `El de ${N(o)}`, sub === 'grupo' ? `Mirar su columna está bien, pero el ${N(m)}, más abajo, tiene un nivel más de electrones, así que es el mayor.` : `El ${N(o)} tiene más electrones, pero van al mismo nivel, y su núcleo, con más protones, los jala más cerca.`),
+        err('QM-RADIO-NIVEL', 'Miden lo mismo', sub === 'grupo' ? 'Son de la misma familia, pero el de abajo tiene un nivel más de electrones, así que es mayor.' : 'Tienen los mismos niveles, pero el de la derecha tiene más protones, que los jalan más.'),
+        err('QM-SIN-LEY', 'No se puede saber sin medirlos', 'Dudar de una regla está bien, pero el radio sigue una tendencia, y su lugar en la tabla ya dice cuál es mayor.'),
+        err('QM-RADIO-Z', 'El de mayor número atómico', 'Mirar el núcleo está bien, pero en un periodo el mayor es el de menos protones, porque los dos tienen los mismos niveles.'),
       ].filter(e => !(sub === 'grupo' && e.id === 'QM-RADIO-Z')),
-      solucion: [[sub === 'grupo' ? `Misma columna: el ${N(m)} está más abajo, con un nivel más.` : `Mismo periodo: el ${N(o)} tiene más protones jalando el mismo nivel.`],
+      solucion: [[sub === 'grupo' ? `Están en la misma columna, y el ${N(m)}, más abajo, tiene un nivel más de electrones: es el mayor.` : `Están en el mismo periodo, y el ${N(o)}, a la derecha, tiene más protones que jalan el mismo nivel: es el menor.`],
         [`${m}: `, v('r', `${EL[m].r} pm`), `; ${o}: `, v('r', `${EL[o].r} pm`), '.']] };
   }
   const ordenes = ([p, gr, ch], s = x => x) => { const t = l => l.map(s).join(' > '); return { bien: t([gr, p, ch]), inversa: t([ch, p, gr]), grupo: t([p, gr, ch]), periodo: t([gr, ch, p]), medio: t([p, ch, gr]) }; };
   function radioOrden(rng) {
     const trio = rng.elegir(TRIOS), o = ordenes(trio), lista = rng.barajar(trio);
     return { correcta: o.bien, _datos: { trio },
-      enunciado: ['Tres átomos de los grupos A.'], pregunta: ['Ordénalos de mayor a menor ', v('r', 'radio atómico'), `: ${lista.join(', ')}.`],
+      enunciado: ['Los tres átomos son de los grupos A.'], pregunta: ['Ordénalos de mayor a menor ', v('r', 'radio atómico'), `: ${lista.join(', ')}.`],
       datos: lista.map(lugarTxt),
-      errores: [err('QM-RADIO-INVERSO', o.inversa, 'Bien ordenar los tres por su lugar. Pero el radio crece hacia abajo y hacia la izquierda: va al revés.'),
-        err('QM-RADIO-GRUPO', o.grupo, 'Bien el del periodo. Pero en un grupo, el de abajo tiene un nivel más: es el mayor.'),
-        err('TP4', o.periodo, 'Bien el del grupo. Pero en un periodo, más protones jalan el mismo nivel: a la derecha, menor.'),
-        err('QM-RADIO-MITAD', o.medio, 'Bien poner al del medio. Pero el de abajo y el de la derecha van en los extremos opuestos.')],
-      solucion: [['Abajo en la columna, mayor; a la derecha en la fila, menor.'], [v('r', o.bien), ` (${trio.map(s => `${s} ${EL[s].r}`).join(', ')} pm).`]] };
+      errores: [err('QM-RADIO-INVERSO', o.inversa, 'Ordenarlos por su lugar está bien, pero el radio crece hacia abajo y hacia la izquierda, así que el orden va al revés.'),
+        err('QM-RADIO-GRUPO', o.grupo, 'El paso del periodo está bien, pero en un grupo el de abajo tiene un nivel más de electrones, así que es el mayor.'),
+        err('TP4', o.periodo, 'El paso del grupo está bien, pero en un periodo más protones jalan el mismo nivel, así que el de la derecha es menor.'),
+        err('QM-RADIO-MITAD', o.medio, 'El del medio está bien puesto, pero el de abajo y el de la derecha van en los extremos opuestos.')],
+      solucion: [['En una columna, el de abajo es el mayor; en una fila, el de la derecha es el menor.'], [v('r', o.bien), ` (${trio.map(s => `${s} ${EL[s].r}`).join(', ')} pm).`]] };
   }
   function radioZ(rng) {
     const trio = rng.elegir(TRIOS), L = Object.fromEntries(rng.barajar(['X', 'Q', 'R']).map((x, i) => [trio[i], x])), s = x => L[x], o = ordenes(trio, s), lista = rng.barajar(trio);
@@ -144,39 +144,39 @@
         ...lista.flatMap((x, i) => [i ? (i === 2 ? ' y ' : ', ') : '', `${L[x]} (`, v('Z', `Z = ${EL[x].z}`), ')']), ' son de los grupos A.'],
       pregunta: ['¿Cuál es el orden de sus ', v('r', 'radios atómicos'), ', de mayor a menor?'],
       datos: [D.gases, D.grupos],
-      errores: [err('QM-RADIO-INVERSO', o.inversa, 'Bien ubicarlos. Pero el radio crece hacia abajo y hacia la izquierda: va al revés.'),
-        err('QM-RADIO-GRUPO', o.grupo, 'Bien el del periodo. Pero en un grupo, el de abajo tiene un nivel más.'),
-        err('TP4', o.periodo, 'Bien el del grupo. Pero en un periodo, más protones jalan el mismo nivel: a la derecha, menor.'),
-        err('QM-RADIO-Z', [...trio].sort((a, b) => EL[b].z - EL[a].z).map(s).join(' > '), 'Bien ubicarlos. Pero el radio no crece con Z: en un periodo baja.'),
-        err('QM-RADIO-MITAD', o.medio, 'Bien poner al del medio. Pero el de abajo y el de la derecha van en los extremos opuestos.')],
+      errores: [err('QM-RADIO-INVERSO', o.inversa, 'Ubicarlos está bien, pero el radio crece hacia abajo y hacia la izquierda, así que el orden va al revés.'),
+        err('QM-RADIO-GRUPO', o.grupo, 'El paso del periodo está bien, pero en un grupo el de abajo tiene un nivel más de electrones y es el mayor.'),
+        err('TP4', o.periodo, 'El paso del grupo está bien, pero en un periodo más protones jalan el mismo nivel, así que el de la derecha es menor.'),
+        err('QM-RADIO-Z', [...trio].sort((a, b) => EL[b].z - EL[a].z).map(s).join(' > '), 'Ubicarlos está bien, pero el radio no crece con Z: en un periodo baja, porque más protones jalan el mismo nivel.'),
+        err('QM-RADIO-MITAD', o.medio, 'El del medio está bien puesto, pero el de abajo y el de la derecha van en los extremos opuestos.')],
       solucion: [['Los ubico contando desde los gases nobles: ', trio.map(x => `${L[x]} = ${x} (periodo ${EL[x].p}, grupo ${EL[x].g})`).join('; '), '.'],
-        ['Abajo, mayor; a la derecha, menor: ', v('r', o.bien), '.']] };
+        ['En una columna, el de abajo es mayor; en una fila, el de la derecha es menor: ', v('r', o.bien), '.']] };
   }
 
   // ---- Idea 2: radio de iones e isoelectrónicos ----
   const IONES_SUELTOS = Object.keys(ION).filter(k => NOMBRE_Z[ION[k][0]]);
   function ionElectrones(rng) {
     const k = rng.elegir(IONES_SUELTOS), [z, q] = ION[k], e = z - q;
-    const errores = [err('QM-ION-SIGNO', `${z + q}`, q > 0 ? 'Bien partir de los protones. Pero un catión perdió electrones: la carga se resta.' : 'Bien partir de los protones. Pero un anión ganó electrones: la carga se suma.'),
-      err('QM-ION-PROTONES', `${z}`, 'Esos son sus protones, bien contados. Pero el ion ya no tiene la misma cantidad de electrones.'),
-      err('QM-ION-UNO', `${q > 0 ? z - 1 : z + 1}`, 'Bien el sentido de la carga. Pero la carga dice cuántos electrones cambiaron: cuenta todos.'),
-      err('QM-ION-DOBLE', `${q > 0 ? z - 2 * q : z - 2 * q}`, 'Bien cambiar los electrones. Pero solo cambian tantos como dice la carga, una vez.')];
+    const errores = [err('QM-ION-SIGNO', `${z + q}`, q > 0 ? 'Partir de los protones está bien, pero un catión perdió electrones, así que la carga se resta.' : 'Partir de los protones está bien, pero un anión ganó electrones, así que la carga se suma.'),
+      err('QM-ION-PROTONES', `${z}`, 'Ese es su número de protones, bien contado, pero el ion ya no tiene la misma cantidad de electrones que protones.'),
+      err('QM-ION-UNO', `${q > 0 ? z - 1 : z + 1}`, 'El sentido de la carga está bien, pero la carga dice cuántos electrones cambiaron, y aquí son más de uno.'),
+      err('QM-ION-DOBLE', `${q > 0 ? z - 2 * q : z - 2 * q}`, 'Cambiar los electrones está bien, pero cambian solo tantos como dice la carga, una sola vez.')];
     return { correcta: `${e}`, _datos: { ion: k },
       enunciado: [`El ${NOMBRE_Z[z]} tiene `, v('Z', `Z = ${z}`), `. Forma el ion ${k}.`], pregunta: [`¿Cuántos electrones tiene el ion ${k}?`],
       datos: [D.carga, `${NOMBRE_Z[z].replace(/^./, c => c.toUpperCase())}: ${z} protones`],
       errores: errores.filter(x => +x.texto >= 0),
-      solucion: [[q > 0 ? `Perdió ${q}: ${z} − ${q} = ${e} electrones.` : `Ganó ${-q}: ${z} + ${-q} = ${e} electrones.`]] };
+      solucion: [[q > 0 ? `El ion perdió ${q} ${q === 1 ? 'electrón' : 'electrones'}: ${z} − ${q} = ${e} electrones.` : `El ion ganó ${-q} ${q === -1 ? 'electrón' : 'electrones'}: ${z} + ${-q} = ${e} electrones.`]] };
   }
   function ionAtomo(rng) {
     const k = rng.elegir(IONES_SUELTOS), [z, q] = ION[k], an = q < 0, N = NOMBRE_Z[z];
     return { correcta: an ? `El ion ${k}` : `El átomo de ${N}`, _datos: { ion: k },
       enunciado: [`El ${N} (`, v('Z', `Z = ${z}`), `) forma el ion ${k}.`], pregunta: ['¿Qué es más grande: el átomo de ', N, ` o el ion ${k}?`],
       datos: [D.carga, `El ion ${k} tiene ${z - q} electrones`],
-      errores: [err('QM-ION-RADIO', an ? `El átomo de ${N}` : `El ion ${k}`, an ? 'Bien pensar en los electrones. Pero el anión los ganó: se repelen más y la nube crece.' : 'Bien pensar en los electrones. Pero el catión los perdió: los que quedan, más jalados.'),
-        err('QM-ION-IGUAL', 'Miden lo mismo: tienen el mismo núcleo', 'El núcleo es el mismo, cierto. Pero cambió el número de electrones que jala.'),
-        err('QM-SIN-LEY', 'No se puede saber sin la tabla de radios', 'Bien dudar. Pero basta contar los electrones: el núcleo es el mismo.'),
-        err('QM-ION-CARGA', 'El que tiene carga, siempre', 'Bien notar la carga. Pero un catión se achica y un anión crece: depende del signo.')],
-      solucion: [[an ? `Ganó ${-q === 1 ? 'un electrón' : `${-q} electrones`}: los mismos ${z} protones para más electrones; la nube crece.` : `Perdió ${q === 1 ? 'un electrón' : `${q} electrones`}: los mismos ${z} protones jalan a menos; se achica.`]] };
+      errores: [err('QM-ION-RADIO', an ? `El átomo de ${N}` : `El ion ${k}`, an ? 'Pensar en los electrones está bien, pero el anión los ganó: se repelen más y la nube crece.' : 'Pensar en los electrones está bien, pero el catión los perdió, y el mismo núcleo jala más fuerte a los que quedan.'),
+        err('QM-ION-IGUAL', 'Miden lo mismo: tienen el mismo núcleo', 'El núcleo es el mismo, pero el ion tiene otro número de electrones, y eso cambia su tamaño.'),
+        err('QM-SIN-LEY', 'No se puede saber sin la tabla de radios', 'Dudar está bien, pero no hace falta la tabla: el núcleo es el mismo, así que basta contar los electrones.'),
+        err('QM-ION-CARGA', 'El que tiene carga, siempre', 'Notar la carga está bien, pero un catión se achica y un anión crece: depende del signo de la carga.')],
+      solucion: [[an ? `Ganó ${-q === 1 ? 'un electrón' : `${-q} electrones`}: los mismos ${z} protones tienen más electrones, que se repelen, y la nube crece.` : `Perdió ${q === 1 ? 'un electrón' : `${q} electrones`}: los mismos ${z} protones jalan a menos electrones, y el ion se achica.`]] };
   }
   const porRadioIon = ks => ks.slice().sort((a, b) => ION[b][2] - ION[a][2]);
   function isoPar(rng) {
@@ -184,10 +184,10 @@
     return { correcta: `El ${m}`, _datos: { n: +n, a, b },
       enunciado: [`El ${a} y el ${b} tienen ${n} electrones cada uno.`], pregunta: ['¿Cuál tiene mayor ', v('r', 'radio'), '?'],
       datos: [protTxt([a, b])],
-      errores: [err('QM-ISO-ORDEN', `El ${o}`, `Tiene más protones, cierto. Pero por eso jala más fuerte a los mismos ${n} electrones.`),
-        err('QM-ISO-RADIO', 'Miden lo mismo: tienen los mismos electrones', 'Tienen los mismos electrones, cierto. Pero sus núcleos no los jalan igual.'),
-        err('QM-SIN-LEY', 'No se puede saber sin la tabla de radios', 'Bien dudar. Pero basta comparar sus protones.')],
-      solucion: [[`Mismos ${n} electrones: el ${m} tiene menos protones (${ION[m][0]} contra ${ION[o][0]}) y los jala menos.`],
+      errores: [err('QM-ISO-ORDEN', `El ${o}`, `Tiene más protones, pero justamente por eso jala más fuerte a los mismos ${n} electrones y es menor.`),
+        err('QM-ISO-RADIO', 'Miden lo mismo: tienen los mismos electrones', 'Tienen los mismos electrones, pero no los mismos protones, así que sus núcleos no los jalan igual.'),
+        err('QM-SIN-LEY', 'No se puede saber sin la tabla de radios', 'Dudar está bien, pero no hace falta la tabla: como los electrones son los mismos, basta comparar sus protones.')],
+      solucion: [[`Los dos tienen ${n} electrones, pero el ${m} tiene menos protones (${ION[m][0]} contra ${ION[o][0]}): los jala menos y es más grande.`],
         [`${m} `, v('r', `${P.formatear(ION[m][2], 1)} pm`), ` > ${o} `, v('r', `${P.formatear(ION[o][2], 1)} pm`), '.']] };
   }
   function isoOrden(rng) {
@@ -195,12 +195,12 @@
         return { correcta: t(bien), _datos: { n: +n, lista },
       enunciado: [`El ${lista.slice(0, 3).join(', el ')} y el ${lista[3]} tienen ${n} electrones cada uno.`], pregunta: ['Ordénalos de mayor a menor ', v('r', 'radio'), '.'],
       datos: [protTxt(lista), D.carga],
-      errores: [err('QM-ISO-ORDEN', t(bien.slice().reverse()), 'Bien ordenar por los protones. Pero más protones jalan más: el de más protones es el menor.'),
-        err('QM-ION-RADIO', t([bien[2], bien[3], bien[0], bien[1]]), 'Bien ordenar cada pareja. Pero los cationes, que perdieron electrones, son los menores.'),
-        err('QM-ISO-PARES', t([bien[1], bien[0], bien[3], bien[2]]), 'Bien poner los aniones antes que los cationes. Pero dentro de cada pareja, más protones dan menor radio.'),
-        err('QM-ISO-MEDIO', t([bien[1], bien[0], bien[2], bien[3]]), 'Bien los dos menores. Pero entre los aniones, el de menos protones es el mayor.'),
-        err('QM-ISO-CATION', t([bien[0], bien[1], bien[3], bien[2]]), 'Bien los dos mayores. Pero entre los cationes, el de más protones es el menor.')],
-      solucion: [['Mismos electrones: el radio baja cuando suben los protones.'], [cuatro.map(k => `${k}: ${ION[k][0]} p⁺`).join('; '), '.'], [v('r', t(bien)), '.']] };
+      errores: [err('QM-ISO-ORDEN', t(bien.slice().reverse()), 'Ordenar por los protones está bien, pero más protones jalan más fuerte, así que el de más protones es el menor.'),
+        err('QM-ION-RADIO', t([bien[2], bien[3], bien[0], bien[1]]), 'Cada pareja está bien ordenada, pero los cationes, que tienen más protones para los mismos electrones, son los menores.'),
+        err('QM-ISO-PARES', t([bien[1], bien[0], bien[3], bien[2]]), 'Los aniones van antes que los cationes, bien, pero dentro de cada pareja, el de más protones tiene el menor radio.'),
+        err('QM-ISO-MEDIO', t([bien[1], bien[0], bien[2], bien[3]]), 'Los dos menores están bien, pero entre los aniones, el de menos protones es el mayor.'),
+        err('QM-ISO-CATION', t([bien[0], bien[1], bien[3], bien[2]]), 'Los dos mayores están bien, pero entre los cationes, el de más protones es el menor.')],
+      solucion: [['Como los cuatro tienen los mismos electrones, el radio baja cuando suben los protones.'], [cuatro.map(k => `${k}: ${ION[k][0]} p⁺`).join('; '), '.'], [v('r', t(bien)), '.']] };
   }
 
   // ---- Idea 3: energía de ionización y afinidad ----
@@ -214,23 +214,23 @@
     return { correcta: `Al ${N(m)}`, _datos: { sub, a, b },
       enunciado: ['Compara lo que cuesta quitarle un electrón a cada átomo: su ', v('EI', 'energía de ionización'), '.'], pregunta: [`¿A cuál le cuesta más: al ${N(a)} o al ${N(b)}?`],
       datos: [lugarTxt(a), lugarTxt(b)],
-      errores: [err(sub === 'grupo' ? 'QM-EI-GRUPO' : 'QM-EI-INVERSA', `Al ${N(o)}`, sub === 'grupo' ? 'Bien mirar su columna. Pero el de abajo tiene su electrón más lejos: sale más fácil.' : 'Bien mirar su fila. Pero hacia la derecha, más protones retienen el electrón.'),
-        err('TP7', 'A los dos por igual', 'Comparten fila o columna, cierto. Pero su carga nuclear y su último electrón no son iguales.'),
-        err('QM-SIN-LEY', 'No se puede saber sin medirlo', 'Bien dudar. Pero su lugar en la tabla ya lo dice.'),
-        err('QM-EI-ELECTRONES', 'Al que tiene más electrones, sea cual sea su lugar', 'Bien pensar en los electrones. Pero decide qué tan cerca y qué tan jalado está el de afuera.')],
-      solucion: [[sub === 'grupo' ? `El ${N(m)} está más arriba: su último electrón está más cerca del núcleo.` : `El ${N(m)} está más a la derecha: más protones jalan el mismo nivel.`],
+      errores: [err(sub === 'grupo' ? 'QM-EI-GRUPO' : 'QM-EI-INVERSA', `Al ${N(o)}`, sub === 'grupo' ? 'Mirar su columna está bien, pero el de abajo tiene su electrón de afuera más lejos del núcleo, y sale más fácil.' : 'Mirar su fila está bien, pero hacia la derecha hay más protones, que retienen el electrón con más fuerza.'),
+        err('TP7', 'A los dos por igual', 'Comparten fila o columna, pero su carga nuclear y su electrón de afuera son distintos, y su EI también.'),
+        err('QM-SIN-LEY', 'No se puede saber sin medirlo', 'Dudar está bien, pero la EI sigue una tendencia, y su lugar en la tabla ya dice a cuál le cuesta más.'),
+        err('QM-EI-ELECTRONES', 'Al que tiene más electrones, sea cual sea su lugar', 'Pensar en los electrones está bien, pero lo que decide es qué tan cerca del núcleo y qué tan jalado está el de afuera.')],
+      solucion: [[sub === 'grupo' ? `El ${N(m)} está más arriba, así que su último electrón está más cerca del núcleo y cuesta más.` : `El ${N(m)} está más a la derecha, así que más protones jalan el mismo nivel y cuesta más.`],
         [`${m}: `, v('EI', `${EL[m].ei} kJ/mol`), `; ${o}: `, v('EI', `${EL[o].ei} kJ/mol`), '.']] };
   }
   function eiBajada(rng) {
     const [a, b] = rng.elegir(PARES_BAJ), estrena = ['B', 'Al', 'Ga'].includes(b), N = s => EL[s].nombre;
     return { correcta: `Al ${N(a)}`, _datos: { a, b },
-      enunciado: [`El ${N(b)} está a la derecha del ${N(a)}, en el periodo ${EL[a].p}.`], pregunta: ['¿A cuál le cuesta más perder un electrón, su ', v('EI', 'energía de ionización'), '?'],
+      enunciado: [`El ${N(b)} está a la derecha del ${N(a)}, en el periodo ${EL[a].p}.`], pregunta: ['¿A cuál le cuesta más perder un electrón? Es decir, ¿cuál tiene mayor ', v('EI', 'energía de ionización'), '?'],
       datos: [`${EL[a].nombre.replace(/^./, c => c.toUpperCase())}: ${CONF[a]}; ${N(b)}: ${CONF[b]}`],
-      errores: [err('QM-FLECHA', `Al ${N(b)}, porque está más a la derecha`, 'La tendencia sube hacia la derecha, cierto. Pero aquí se rompe: mira el subnivel del último electrón.'),
-        err('QM-EI-PROTONES', `Al ${N(b)}, porque tiene un protón más`, 'Tiene un protón más, cierto. Pero su último electrón sale más fácil.'),
-        err('TP7', 'A los dos por igual: son del mismo periodo', 'Comparten periodo, bien visto. Pero su último electrón es distinto.'),
-        err('QM-SIN-LEY', 'No se puede saber sin medirlo', 'Bien dudar de la flecha. Pero la configuración dice qué electrón sale.')],
-      solucion: [[estrena ? `El ${N(b)} pierde su primer y único electrón p, algo más lejos: sale más fácil.` : `En el ${N(b)} sale un electrón p que ya tenía pareja: se repelen y sale más fácil.`],
+      errores: [err('QM-FLECHA', `Al ${N(b)}, porque está más a la derecha`, 'La EI suele subir hacia la derecha, pero aquí la tendencia se rompe: mira el subnivel del último electrón.'),
+        err('QM-EI-PROTONES', `Al ${N(b)}, porque tiene un protón más`, 'Tiene un protón más, pero su último electrón sale más fácil, y eso pesa más aquí.'),
+        err('TP7', 'A los dos por igual: son del mismo periodo', 'Comparten periodo, bien visto, pero su último electrón es distinto, y su EI también.'),
+        err('QM-SIN-LEY', 'No se puede saber sin medirlo', 'Dudar de la tendencia está bien, pero la configuración ya dice qué electrón sale y cuál cuesta más.')],
+      solucion: [[estrena ? `El ${N(b)} pierde su único electrón p, que está algo más lejos del núcleo y sale más fácil.` : `En el ${N(b)} sale un electrón p que comparte orbital con otro: se repelen y sale más fácil.`],
         [`${a}: `, v('EI', `${EL[a].ei} kJ/mol`), `; ${b}: `, v('EI', `${EL[b].ei} kJ/mol`), '.']] };
   }
   const PARES_AE = [['Cl', 'Na'], ['F', 'Li'], ['S', 'Na'], ['Br', 'K'], ['O', 'Li'], ['Cl', 'F'], ['C', 'Li'], ['S', 'P'], ['O', 'H'], ['Br', 'S']];
@@ -240,28 +240,28 @@
       enunciado: ['Al ganar un electrón, un átomo gaseoso libera o gasta energía: su ', v('EI', 'afinidad electrónica'), ', AE.'],
       pregunta: [`¿Cuál libera más energía al ganar un electrón: un átomo de ${N(a)} o uno de ${N(b)}?`],
       datos: [`AE: ${N(a)} ${neg(AE[a])} kJ/mol; ${N(b)} ${neg(AE[b])} kJ/mol`, D.ae],
-      errores: [err('QM-AE-ORDEN', `El de ${N(o)}`, 'Bien leer las dos. Pero libera más la de mayor valor sin el signo.'),
-        err('QM-AE-COSTO', 'Ninguno: ganar un electrón siempre cuesta energía', 'Eso pasa al perderlo. Aquí las dos AE son negativas: los dos liberan.'),
-        err('QM-AE-IGUAL', 'Los dos liberan lo mismo', 'Los dos liberan, cierto. Pero no la misma cantidad: compara los números.'),
-        err('QM-EI-AFINIDAD', 'El que tenga mayor energía de ionización', 'Bien buscar al que retiene más. Pero la ionización es otro proceso: aquí se gana un electrón.')],
-      solucion: [['Las dos son negativas: los dos liberan energía.'], [`Libera más el ${N(m)}: |${neg(AE[m])}| > |${neg(AE[o])}|.`]] };
+      errores: [err('QM-AE-ORDEN', `El de ${N(o)}`, 'Leíste bien las dos, pero libera más el átomo cuya AE tiene el mayor valor sin el signo.'),
+        err('QM-AE-COSTO', 'Ninguno: ganar un electrón siempre cuesta energía', 'Lo que siempre cuesta es perder un electrón. Aquí las dos AE son negativas, así que los dos liberan energía.'),
+        err('QM-AE-IGUAL', 'Los dos liberan lo mismo', 'Los dos liberan energía, pero no la misma cantidad: sus números son distintos.'),
+        err('QM-EI-AFINIDAD', 'El que tenga mayor energía de ionización', 'Buscar al que retiene más está bien, pero la ionización es otro proceso: aquí el átomo gana un electrón.')],
+      solucion: [['Las dos AE son negativas, así que los dos átomos liberan energía.'], [`Libera más el ${N(m)}: |${neg(AE[m])}| > |${neg(AE[o])}|.`]] };
   }
   const salto = e => { const c = e.slice(1).map((x, i) => x / e[i]); return c.indexOf(Math.max(...c)) + 1; };
   const gdeK = k => (k <= 2 ? k : k + 10);
   const miles = x => P.formatear(x, 0);
   function sucesivas(rng) {
     const s = rng.elegir(Object.keys(SUCESIVAS)), e = SUCESIVAS[s], k = salto(e), g = gdeK(k);
-    const malos = [[k + 1, 'QM-SALTO-DESPUES', 'Bien encontrar el salto. Pero el electrón del salto ya es de un nivel de adentro: no cuenta.'],
-      [k - 1, 'QM-SALTO-ANTES', 'Bien buscar el salto. Pero cuenta todos los electrones que salen antes de él.'],
-      [e.length, 'QM-SALTO-TOTAL', 'Ese es el número de datos. El grupo lo dice el lugar del salto.']].filter(([x]) => x >= 1 && x <= 8 && gdeK(x) !== g);
+    const malos = [[k + 1, 'QM-SALTO-DESPUES', 'El salto está bien ubicado, pero el electrón del salto ya sale de un nivel de adentro y no es de valencia.'],
+      [k - 1, 'QM-SALTO-ANTES', 'Buscar el salto está bien, pero hay que contar todos los electrones que salen antes de él.'],
+      [e.length, 'QM-SALTO-TOTAL', 'Ese número cuenta los datos de la lista. El grupo no sale de ahí, sino de cuántos electrones salen antes del salto.']].filter(([x]) => x >= 1 && x <= 8 && gdeK(x) !== g);
     return { correcta: `Grupo ${gTxt(g)}`, _datos: { elemento: s },
       enunciado: [`Un elemento X de los grupos A, del periodo ${EL[s].p}, tiene estas `, v('EI', 'energías de ionización sucesivas'), `, en kJ/mol: ${e.map(miles).join('; ')}.`],
       pregunta: ['¿En qué grupo está X?'], datos: [D.sucesivas, D.grupos],
       errores: [...malos.map(([x, id, ex]) => err(id, `Grupo ${gTxt(gdeK(x))}`, ex)),
-        err('QM-SALTO-NOBLE', 'Grupo 18 (VIIIA)', 'Un gas noble casi no suelta electrones; aquí los primeros salen fácil.'),
-        ...(k <= 2 ? [err('QM-SALTO-B', `Grupo ${k + 10} (${k === 1 ? 'IB' : 'IIB'})`, 'Bien contar los electrones antes del salto. Pero en los grupos A no se suma 10 a 1 y 2.')] : [])]
+        err('QM-SALTO-NOBLE', 'Grupo 18 (VIIIA)', 'Un gas noble casi no suelta electrones, y aquí los primeros salen con poca energía.'),
+        ...(k <= 2 ? [err('QM-SALTO-B', `Grupo ${k + 10} (${k === 1 ? 'IB' : 'IIB'})`, 'Contar los electrones antes del salto está bien, pero en los grupos A, a los grupos 1 y 2 no se les suma 10.')] : [])]
         .filter(x => x.texto !== `Grupo ${gTxt(g)}`),
-      solucion: [[`Divido cada una entre la anterior: el cociente mayor está entre la ${k}.ª y la ${k + 1}.ª.`],
+      solucion: [[`Divido cada energía entre la anterior: el cociente mayor está entre la ${k}.ª y la ${k + 1}.ª.`],
         [`Antes del salto salen ${k} ${k === 1 ? 'electrón' : 'electrones'} de valencia: `, v('EI', `grupo ${gTxt(g)}`), `. Es el ${EL[s].nombre}.`]] };
   }
 
@@ -272,10 +272,10 @@
     return { correcta: f2(d), _datos: { a, b },
       enunciado: [`En el enlace ${a}–${b}, cada átomo jala el par compartido según su `, v('EN', 'electronegatividad'), '.'], pregunta: ['¿Cuánto vale ', v('EN', 'ΔEN'), '?'],
       datos: [`EN: ${a} ${f2(EL[a].en)}; ${b} ${f2(EL[b].en)}`, D.delta],
-      errores: [err('QM-EN-SUMA', f2(EL[a].en + EL[b].en), 'Bien usar los dos valores. Pero la diferencia resta el menor del mayor.'),
-        err('QM-EN-SOLO', f2(EL[m].en), 'Bien elegir al que jala más. Pero falta restarle el otro.'),
-        err('QM-EN-MITAD', f2(d / 2), 'Bien restar. Pero la diferencia va entera, sin dividirla.'),
-        err('QM-EN-PROMEDIO', f2((EL[a].en + EL[b].en) / 2), 'Bien juntar los dos. Pero ΔEN es la diferencia, no el promedio.')],
+      errores: [err('QM-EN-SUMA', f2(EL[a].en + EL[b].en), 'Usar los dos valores está bien, pero ΔEN es una diferencia: al mayor se le resta el menor.'),
+        err('QM-EN-SOLO', f2(EL[m].en), 'Elegir al que jala más está bien, pero falta restarle el valor del otro.'),
+        err('QM-EN-MITAD', f2(d / 2), 'La resta está bien, pero después no se divide entre 2: ΔEN es la diferencia entera.'),
+        err('QM-EN-PROMEDIO', f2((EL[a].en + EL[b].en) / 2), 'Usar los dos valores está bien, pero ΔEN es la diferencia entre ellos, no su promedio.')],
       solucion: [['ΔEN = ', v('EN', f2(EL[m].en)), ' − ', v('EN', f2(EL[o].en)), ' = ', v('EN', f2(d)), '.']] };
   }
   function haciaPar(rng) {
@@ -283,24 +283,24 @@
     return { correcta: `Hacia el ${m}`, _datos: { a, b },
       enunciado: [`En el enlace ${a}–${b} hay un par de electrones compartido.`], pregunta: ['¿Hacia qué átomo se corre el par?'],
       datos: [`EN: ${a} ${f2(EL[a].en)}; ${b} ${f2(EL[b].en)}`, D.en],
-      errores: [err('QM-EN-ORDEN', `Hacia el ${o}`, 'Bien mirar los dos valores. Pero el par va hacia el que jala más, el de mayor EN.'),
-        err('QM-EN-MEDIO', 'Queda justo en el medio', 'Bien pensar en el par compartido. Pero solo queda al medio si los dos jalan igual.'),
-        err('QM-EN-RADIO', 'Hacia el átomo más grande', 'Bien pensar en los átomos. Pero el tamaño no decide: decide la electronegatividad.'),
-        err('TP8', 'Hacia el que ya tiene carga negativa', 'Bien pensar en cargas. Pero los dos átomos son neutros: la δ− aparece por el enlace.')],
-      solucion: [[`Jala más el ${m}: `, v('EN', f2(EL[m].en)), ' contra ', v('EN', f2(EL[o].en)), '. Hacia él se corre el par.']] };
+      errores: [err('QM-EN-ORDEN', `Hacia el ${o}`, 'Mirar los dos valores está bien, pero el par va hacia el que jala más, que es el de mayor EN.'),
+        err('QM-EN-MEDIO', 'Queda justo en el medio', 'Pensar en el par compartido está bien, pero solo queda en el medio si los dos átomos jalan igual.'),
+        err('QM-EN-RADIO', 'Hacia el átomo más grande', 'Pensar en los átomos está bien, pero el tamaño no decide: decide cuál tiene mayor electronegatividad.'),
+        err('TP8', 'Hacia el que ya tiene carga negativa', 'Pensar en cargas está bien, pero los dos átomos son neutros: la carga parcial δ− aparece por el enlace.')],
+      solucion: [[`El ${m} jala más: su electronegatividad es `, v('EN', f2(EL[m].en)), ', contra ', v('EN', f2(EL[o].en)), '. Por eso el par se corre hacia él.']] };
   }
   // Tríos [pivote, el de la derecha o el de arriba (mayor EN), el de abajo o el de la izquierda (menor)].
   const TRIOS_EN = [['C', 'N', 'Si'], ['O', 'F', 'S'], ['Mg', 'Al', 'Ca'], ['S', 'Cl', 'Se'], ['Li', 'Be', 'Na'], ['B', 'C', 'Al'], ['Na', 'Mg', 'K'], ['N', 'O', 'P']];
   function enOrden(rng) {
     const trio = rng.elegir(TRIOS_EN), o = ordenes(trio), lista = rng.barajar(trio), N = s => EL[s].nombre;
     return { correcta: o.bien, _datos: { trio },
-      enunciado: ['Tres elementos de los grupos A.'], pregunta: ['Ordénalos de mayor a menor ', v('EN', 'electronegatividad'), `: ${lista.map(N).join(', ')}.`],
+      enunciado: ['Los tres elementos son de los grupos A.'], pregunta: ['Ordénalos de mayor a menor ', v('EN', 'electronegatividad'), `: ${lista.map(N).join(', ')}.`],
       datos: [...lista.map(lugarTxt), D.en],
-      errores: [err('QM-EN-INVERSA', o.inversa, 'Bien ordenar por su lugar. Pero la electronegatividad crece hacia arriba y a la derecha: va al revés.'),
-        err('QM-EN-PERIODO', o.grupo, 'Bien el del grupo. Pero en un periodo, hacia la derecha jala más.'),
-        err('QM-EN-GRUPO', o.periodo, 'Bien el del periodo. Pero en un grupo, el de arriba jala más.'),
-        err('QM-EN-MITAD', o.medio, 'Bien poner al del medio. Pero los otros dos van en extremos opuestos.')],
-      solucion: [['Hacia la derecha en la fila, más; hacia abajo en la columna, menos.'], [v('EN', o.bien), ` (${trio.map(s => `${s} ${f2(EL[s].en)}`).join('; ')}).`]] };
+      errores: [err('QM-EN-INVERSA', o.inversa, 'Ordenarlos por su lugar está bien, pero la electronegatividad crece hacia arriba y a la derecha, así que va al revés.'),
+        err('QM-EN-PERIODO', o.grupo, 'El paso del grupo está bien, pero en un periodo el átomo de la derecha jala más el par.'),
+        err('QM-EN-GRUPO', o.periodo, 'El paso del periodo está bien, pero en un grupo el átomo de arriba jala más el par.'),
+        err('QM-EN-MITAD', o.medio, 'El del medio está bien puesto, pero los otros dos van en los extremos opuestos.')],
+      solucion: [['En una fila, el de la derecha jala más; en una columna, el de abajo jala menos.'], [v('EN', o.bien), ` (${trio.map(s => `${s} ${f2(EL[s].en)}`).join('; ')}).`]] };
   }
   // Sin el par Ca–Ga: el Ga tiene menor EI (579) que el Ca (590), y la definición de los datos es «qué tan fácil pierde electrones».
   const PARES_M = [['Li', 'Na'], ['Na', 'K'], ['Na', 'Cl'], ['Mg', 'S'], ['Be', 'Ca'], ['Al', 'P'], ['K', 'Br'], ['Ca', 'Br'], ['Si', 'Ge'], ['Li', 'F'], ['B', 'Al'], ['C', 'Si']];
@@ -309,35 +309,35 @@
     return { correcta: `El ${N(m)}`, _datos: { a, b },
       enunciado: ['Compara el carácter metálico de dos elementos.'], pregunta: [`¿Cuál es más metálico: el ${N(a)} o el ${N(b)}?`],
       datos: [lugarTxt(a), lugarTxt(b), D.metal],
-      errores: [err('QM-METAL-INVERSO', `El ${N(o)}`, 'Bien mirar su lugar. Pero el carácter metálico crece hacia abajo y hacia la izquierda.'),
-        err('QM-METAL-IGUAL', 'Los dos por igual', 'Comparten fila o columna, cierto. Pero no pierden electrones con la misma facilidad.'),
-        err('QM-SIN-LEY', 'No se puede saber sin probarlos', 'Bien dudar. Pero su lugar en la tabla ya lo dice.'),
-        err('QM-METAL-EN', 'El de mayor electronegatividad', 'Bien relacionar las dos. Pero van al revés: el que jala más electrones es el menos metálico.')],
-      solucion: [[`El ${N(m)} está más ${A.p === B.p ? 'a la izquierda' : 'abajo'}: pierde electrones con más facilidad.`]] };
+      errores: [err('QM-METAL-INVERSO', `El ${N(o)}`, 'Mirar su lugar está bien, pero el carácter metálico crece hacia abajo y hacia la izquierda.'),
+        err('QM-METAL-IGUAL', 'Los dos por igual', 'Comparten fila o columna, pero uno suelta su electrón de afuera más fácil que el otro.'),
+        err('QM-SIN-LEY', 'No se puede saber sin probarlos', 'Dudar está bien, pero el carácter metálico sigue una tendencia, y su lugar en la tabla ya lo dice.'),
+        err('QM-METAL-EN', 'El de mayor electronegatividad', 'Relacionar las dos está bien, pero van al revés: el que jala más los electrones es el menos metálico.')],
+      solucion: [[`El ${N(m)} está más ${A.p === B.p ? 'a la izquierda' : 'abajo'}, así que pierde electrones con más facilidad y es más metálico.`]] };
   }
   function tendencias(rng) {
     const sub = rng.elegir(['periodo', 'grupo']);
     if (sub === 'periodo') {
       const [a, b] = rng.elegir([['Na', 'Cl'], ['Li', 'F'], ['K', 'Br']]), N = s => EL[s].nombre;
       return { correcta: 'El radio baja y la electronegatividad sube', _datos: { sub, a, b },
-        enunciado: [`En el periodo ${EL[a].p}, del ${N(a)} (grupo 1) al ${N(b)} (grupo 17).`], pregunta: ['¿Qué afirmación es correcta?'],
+        enunciado: [`Recorre el periodo ${EL[a].p} de izquierda a derecha, del ${N(a)} (grupo 1) al ${N(b)} (grupo 17).`], pregunta: ['¿Qué afirmación es correcta?'],
         datos: [lugarTxt(a), lugarTxt(b)],
-        errores: [err('QM-RADIO-INVERSO', 'El radio sube y la electronegatividad sube', 'Bien la electronegatividad. Pero el radio baja: más protones jalan el mismo nivel.'),
-          err('QM-EN-INVERSA', 'El radio baja y la electronegatividad baja', 'Bien el radio. Pero la electronegatividad sube hacia la derecha.'),
-          err('QM-METAL-INVERSO', 'El carácter metálico sube', 'Bien mirar la fila. Pero lo metálico está a la izquierda: baja.'),
-          err('QM-EI-INVERSA', 'La energía de ionización baja', 'Bien mirar la fila. Pero hacia la derecha cuesta más arrancar un electrón.')],
-        solucion: [['Hacia la derecha, más protones jalan el mismo nivel: el radio y el carácter metálico bajan; la EI y la EN suben.'],
+        errores: [err('QM-RADIO-INVERSO', 'El radio sube y la electronegatividad sube', 'La electronegatividad está bien, pero el radio baja, porque más protones jalan el mismo nivel.'),
+          err('QM-EN-INVERSA', 'El radio baja y la electronegatividad baja', 'El radio está bien, pero la electronegatividad sube hacia la derecha.'),
+          err('QM-METAL-INVERSO', 'El carácter metálico sube', 'Mirar la fila está bien, pero los más metálicos están a la izquierda, así que hacia la derecha el carácter metálico baja.'),
+          err('QM-EI-INVERSA', 'La energía de ionización baja', 'Mirar la fila está bien, pero hacia la derecha cuesta más arrancar un electrón, así que la EI sube.')],
+        solucion: [['Hacia la derecha, más protones jalan el mismo nivel, así que el radio y el carácter metálico bajan, mientras la EI y la EN suben.'],
           [`${a} `, v('r', `${EL[a].r} pm`), ` → ${b} `, v('r', `${EL[b].r} pm`), SEP, `${a} `, v('EN', f2(EL[a].en)), ` → ${b} `, v('EN', f2(EL[b].en))]] };
     }
     const [a, b] = rng.elegir([['Li', 'K'], ['F', 'Br'], ['Be', 'Ca'], ['O', 'Se']]), N = s => EL[s].nombre;
     return { correcta: 'El radio sube y la energía de ionización baja', _datos: { sub, a, b },
-      enunciado: [`En el grupo ${gTxt(EL[a].g)}, del ${N(a)} (periodo ${EL[a].p}) hacia abajo, hasta el ${N(b)} (periodo ${EL[b].p}).`], pregunta: ['¿Qué afirmación es correcta?'],
+      enunciado: [`Baja por el grupo ${gTxt(EL[a].g)}, del ${N(a)} (periodo ${EL[a].p}) al ${N(b)} (periodo ${EL[b].p}).`], pregunta: ['¿Qué afirmación es correcta?'],
       datos: [lugarTxt(a), lugarTxt(b)],
-      errores: [err('QM-RADIO-GRUPO', 'El radio baja y la energía de ionización baja', 'Bien la energía de ionización. Pero el radio crece: cada fila suma un nivel.'),
-        err('QM-EI-GRUPO', 'El radio sube y la energía de ionización sube', 'Bien el radio. Pero el electrón de afuera queda más lejos: cuesta menos.'),
-        err('QM-EN-GRUPO', 'La electronegatividad sube', 'Bien mirar la columna. Pero hacia abajo el par queda más lejos: jala menos.'),
-        err('QM-METAL-INVERSO', 'El carácter metálico baja', 'Bien mirar la columna. Pero hacia abajo pierde electrones más fácil: sube.')],
-      solucion: [['Hacia abajo, cada fila suma un nivel: el radio y el carácter metálico suben; la EI y la EN bajan.'],
+      errores: [err('QM-RADIO-GRUPO', 'El radio baja y la energía de ionización baja', 'La energía de ionización está bien, pero el radio crece, porque cada fila suma un nivel.'),
+        err('QM-EI-GRUPO', 'El radio sube y la energía de ionización sube', 'El radio está bien, pero el electrón de afuera queda más lejos del núcleo, así que arrancarlo cuesta menos.'),
+        err('QM-EN-GRUPO', 'La electronegatividad sube', 'Mirar la columna está bien, pero hacia abajo el par queda más lejos del núcleo, así que el átomo lo jala menos.'),
+        err('QM-METAL-INVERSO', 'El carácter metálico baja', 'Mirar la columna está bien, pero hacia abajo los átomos pierden electrones más fácil, así que el carácter metálico sube.')],
+      solucion: [['Hacia abajo, cada fila suma un nivel, así que el radio y el carácter metálico suben, mientras la EI y la EN bajan.'],
         [`${a} `, v('r', `${EL[a].r} pm`), ` → ${b} `, v('r', `${EL[b].r} pm`), SEP, `${a} `, v('EI', `${EL[a].ei} kJ/mol`), ` → ${b} `, v('EI', `${EL[b].ei} kJ/mol`)]] };
   }
   const SEP = '   ·   ';

@@ -6,30 +6,30 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "En el periodo 2, del litio (grupo 1) al flúor (grupo 17). ¿Qué afirmación es correcta? Datos: Litio (Li): periodo 2, grupo 1 (IA). Flúor (F): periodo 2, grupo 17 (VIIA). Alternativas: A) La energía de ionización baja   B) El radio sube y la electronegatividad sube   C) El radio baja y la electronegatividad sube   D) El carácter metálico sube",
+      "enunciado": "Recorre el periodo 2 de izquierda a derecha, del litio (grupo 1) al flúor (grupo 17). ¿Qué afirmación es correcta? Datos: Litio (Li): periodo 2, grupo 1 (IA). Flúor (F): periodo 2, grupo 17 (VIIA). Alternativas: A) La energía de ionización baja   B) El radio sube y la electronegatividad sube   C) El radio baja y la electronegatividad sube   D) El carácter metálico sube",
       "respuesta": "C) El radio baja y la electronegatividad sube",
       "pasos": [
-        "Hacia la derecha, más protones jalan el mismo nivel: el radio y el carácter metálico bajan; la EI y la EN suben.",
+        "Hacia la derecha, más protones jalan el mismo nivel, así que el radio y el carácter metálico bajan, mientras la EI y la EN suben.",
         "Li 167 pm → F 42 pm   ·   Li 0,98 → F 3,98"
       ]
     },
     {
       "id": "p2",
       "nivel": "básico",
-      "enunciado": "El oxígeno está a la derecha del nitrógeno, en el periodo 2. ¿A cuál le cuesta más perder un electrón, su energía de ionización? Datos: Nitrógeno: 1s² 2s² 2p³; oxígeno: 1s² 2s² 2p⁴. Alternativas: A) No se puede saber sin medirlo   B) Al oxígeno, porque tiene un protón más   C) A los dos por igual: son del mismo periodo   D) Al oxígeno, porque está más a la derecha   E) Al nitrógeno",
+      "enunciado": "El oxígeno está a la derecha del nitrógeno, en el periodo 2. ¿A cuál le cuesta más perder un electrón? Es decir, ¿cuál tiene mayor energía de ionización? Datos: Nitrógeno: 1s² 2s² 2p³; oxígeno: 1s² 2s² 2p⁴. Alternativas: A) No se puede saber sin medirlo   B) Al oxígeno, porque tiene un protón más   C) A los dos por igual: son del mismo periodo   D) Al oxígeno, porque está más a la derecha   E) Al nitrógeno",
       "respuesta": "E) Al nitrógeno",
       "pasos": [
-        "En el oxígeno sale un electrón p que ya tenía pareja: se repelen y sale más fácil.",
+        "En el oxígeno sale un electrón p que comparte orbital con otro: se repelen y sale más fácil.",
         "N: 1402 kJ/mol; O: 1314 kJ/mol."
       ]
     },
     {
       "id": "p3",
       "nivel": "básico",
-      "enunciado": "Tres elementos de los grupos A. Ordénalos de mayor a menor electronegatividad: boro, aluminio, carbono. Datos: Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). Carbono (C): periodo 2, grupo 14 (IVA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) Al > B > C   C) B > Al > C   D) C > B > Al   E) B > C > Al",
+      "enunciado": "Los tres elementos son de los grupos A. Ordénalos de mayor a menor electronegatividad: boro, aluminio, carbono. Datos: Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). Carbono (C): periodo 2, grupo 14 (IVA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) Al > B > C   C) B > Al > C   D) C > B > Al   E) B > C > Al",
       "respuesta": "D) C > B > Al",
       "pasos": [
-        "Hacia la derecha en la fila, más; hacia abajo en la columna, menos.",
+        "En una fila, el de la derecha jala más; en una columna, el de abajo jala menos.",
         "C > B > Al (B 2,04; C 2,55; Al 1,61)."
       ]
     },
@@ -39,7 +39,7 @@
       "enunciado": "El cloro tiene Z = 17. Forma el ion Cl⁻. ¿Cuántos electrones tiene el ion Cl⁻? Datos: Carga de un ion = protones − electrones. Cloro: 17 protones. Alternativas: A) 19   B) 17   C) 18   D) 16",
       "respuesta": "C) 18",
       "pasos": [
-        "Ganó 1: 17 + 1 = 18 electrones."
+        "El ion ganó 1 electrón: 17 + 1 = 18 electrones."
       ]
     },
     {
@@ -57,7 +57,7 @@
       "enunciado": "El estroncio (Z = 38) forma el ion Sr²⁺. ¿Qué es más grande: el átomo de estroncio o el ion Sr²⁺? Datos: Carga de un ion = protones − electrones. El ion Sr²⁺ tiene 36 electrones. Alternativas: A) El átomo de estroncio   B) Miden lo mismo: tienen el mismo núcleo   C) No se puede saber sin la tabla de radios   D) El ion Sr²⁺   E) El que tiene carga, siempre",
       "respuesta": "A) El átomo de estroncio",
       "pasos": [
-        "Perdió 2 electrones: los mismos 38 protones jalan a menos; se achica."
+        "Perdió 2 electrones: los mismos 38 protones jalan a menos electrones, y el ion se achica."
       ]
     },
     {
@@ -67,16 +67,16 @@
       "respuesta": "B) X > Q > R",
       "pasos": [
         "Los ubico contando desde los gases nobles: Q = Na (periodo 3, grupo 1); X = K (periodo 4, grupo 1); R = Mg (periodo 3, grupo 2).",
-        "Abajo, mayor; a la derecha, menor: X > Q > R."
+        "En una columna, el de abajo es mayor; en una fila, el de la derecha es menor: X > Q > R."
       ]
     },
     {
       "id": "p8",
       "nivel": "avanzado",
-      "enunciado": "Tres elementos de los grupos A. Ordénalos de mayor a menor electronegatividad: carbono, boro, aluminio. Datos: Carbono (C): periodo 2, grupo 14 (IVA). Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) C > B > Al   C) B > Al > C   D) B > C > Al   E) Al > B > C",
+      "enunciado": "Los tres elementos son de los grupos A. Ordénalos de mayor a menor electronegatividad: carbono, boro, aluminio. Datos: Carbono (C): periodo 2, grupo 14 (IVA). Boro (B): periodo 2, grupo 13 (IIIA). Aluminio (Al): periodo 3, grupo 13 (IIIA). EN: cuánto jala un átomo el par que comparte en un enlace. Alternativas: A) C > Al > B   B) C > B > Al   C) B > Al > C   D) B > C > Al   E) Al > B > C",
       "respuesta": "B) C > B > Al",
       "pasos": [
-        "Hacia la derecha en la fila, más; hacia abajo en la columna, menos.",
+        "En una fila, el de la derecha jala más; en una columna, el de abajo jala menos.",
         "C > B > Al (B 2,04; C 2,55; Al 1,61)."
       ]
     }

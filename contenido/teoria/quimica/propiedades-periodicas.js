@@ -123,10 +123,10 @@
   function vfDe(r, banco, datos) {
     const tres = r.baraja(banco.map((_, i) => i)).slice(0, 3).sort((a, b) => a - b).map(i => banco[i]), bien = tres.map(x => x[1]);
     const o = [{ id: 'c', texto: vf(bien), correcta: true }];
-    tres.forEach((x, i) => { const otra = bien.slice(); otra[i] = !otra[i]; o.push({ id: `vf${i}`, texto: vf(otra), error: x[1] ? 'QM-VF-NIEGA' : 'QM-VF-ACEPTA', siFuera: `Bien las otras dos. La ${ROMANO[i]} es ${x[1] ? 'verdadera' : 'falsa'}: ${x[2]}.` }); });
-    const clave = tres.find(x => !x[1]) || tres[0];
+    tres.forEach((x, i) => { const otra = bien.slice(); otra[i] = !otra[i]; o.push({ id: `vf${i}`, texto: vf(otra), error: x[1] ? 'QM-VF-NIEGA' : 'QM-VF-ACEPTA', siFuera: `Las otras dos están bien. La ${ROMANO[i]} es ${x[1] ? 'verdadera' : 'falsa'}: ${x[2]}.` }); });
+    const clave = tres.find(x => !x[1]) || tres[0], ic = tres.indexOf(clave);
     return { pregunta: ['Indica verdadero (V) o falso (F). ', ...tres.map((x, i) => `${ROMANO[i]}. ${x[0]} `)], datos, opciones: o,
-      solucion: { texto: `${tres.map((x, i) => `${ROMANO[i]} ${x[1] ? 'V' : 'F'}`).join(', ')}. ${clave[2].replace(/^./, m => m.toUpperCase())}.` } };
+      solucion: { texto: `${tres.map((x, i) => `${ROMANO[i]} ${x[1] ? 'V' : 'F'}`).join(', ')}. La ${ROMANO[ic]} es ${clave[1] ? 'verdadera' : 'falsa'}: ${clave[2]}.` } };
   }
 
   // ---------- Idea 1 (rehecha, 19 nov): radio atómico ----------
@@ -154,10 +154,10 @@
       datos: [lugarTxt(a), lugarTxt(b)],
       dibujo: tabla({ marcadas: [{ Z: a, color: 'i' }, { Z: b, color: 'i' }] }),
       opciones: ops(`El de ${NOMBRE[m]}`,
-        [`El de ${NOMBRE[o]}`, grupo ? 'QM-RADIO-GRUPO' : 'TP4', grupo ? 'Bien mirar su columna. Pero el de abajo tiene un nivel más de electrones: es mayor.' : 'Tiene más electrones, cierto. Pero van al mismo nivel y más protones los jalan.'],
-        ['Miden lo mismo', 'QM-RADIO-NIVEL', grupo ? 'Son de la misma familia, cierto. Pero uno tiene un nivel más.' : 'Tienen los mismos niveles, cierto. Pero sus núcleos jalan distinto.'],
-        ['No se puede saber sin medirlos', 'QM-SIN-LEY', 'Su lugar en la tabla ya lo dice: el radio sigue una tendencia.']),
-      solucion: { texto: grupo ? `Misma columna: el ${NOMBRE[m]} está más abajo, con un nivel más.` : `Mismo periodo: el ${NOMBRE[o]} tiene más protones jalando el mismo nivel.`,
+        [`El de ${NOMBRE[o]}`, grupo ? 'QM-RADIO-GRUPO' : 'TP4', grupo ? 'Sería así si el de arriba tuviera más niveles. En una columna, el de abajo tiene un nivel más de electrones, así que es el mayor.' : 'Sería así si sus electrones de más abrieran un nivel nuevo. Van al mismo nivel, y su núcleo, con más protones, los jala más cerca.'],
+        ['Miden lo mismo', 'QM-RADIO-NIVEL', grupo ? 'Serían iguales si tuvieran los mismos niveles. Son de la misma familia, pero el de abajo tiene un nivel más de electrones.' : 'Serían iguales si sus núcleos tuvieran la misma carga. Tienen los mismos niveles, pero el de la derecha tiene más protones y jala más.'],
+        ['No se puede saber sin medirlos', 'QM-SIN-LEY', 'No hace falta medir: el radio sigue una tendencia en la tabla, y el lugar de cada átomo basta para compararlos.']),
+      solucion: { texto: grupo ? `Están en la misma columna, y el ${NOMBRE[m]}, más abajo, tiene un nivel más de electrones: es el mayor.` : `Están en el mismo periodo, y el ${NOMBRE[o]}, a la derecha, tiene más protones que jalan el mismo nivel: es el menor.`,
         ecuacion: [`${SIMB[m]} `, Rr(`${RADIO[m]} pm`), ' > ', `${SIMB[o]} `, Rr(`${RADIO[o]} pm`)] },
     };
   }
@@ -170,13 +170,13 @@
     const trio = r.de(TRIOS_A), [p, gr, ch] = trio, L = conZ ? Object.fromEntries(r.baraja(['X', 'Q', 'R']).map((x, i) => [trio[i], x])) : null;
     const s = z => (conZ ? L[z] : SIMB[z]), o = ordenesTrio(trio, s), lista = r.baraja(trio);
     return {
-      pregunta: conZ ? `Los elementos ${lista.map(z => `${L[z]} (Z = ${z})`).join(', ')} son de los grupos A. ¿Cuál es el orden de sus radios atómicos, de mayor a menor?`
+      pregunta: conZ ? `Los elementos ${lista.slice(0, 2).map(z => `${L[z]} (Z = ${z})`).join(', ')} y ${L[lista[2]]} (Z = ${lista[2]}) son de los grupos A. ¿Cuál es el orden de sus radios atómicos, de mayor a menor?`
         : `Ordena de mayor a menor radio atómico: ${lista.map(z => NOMBRE[z]).join(', ')}.`,
       datos: conZ ? [D.gases, D.grupos] : lista.map(lugarTxt),
-      opciones: ops(o.bien, [o.inversa, 'QM-RADIO-INVERSO', 'Bien ordenar los tres. Pero el radio crece hacia abajo y hacia la izquierda: va al revés.'],
-        [o.grupo, 'QM-RADIO-GRUPO', `Bien el del periodo. Pero el de abajo tiene un nivel más: es el mayor.`],
-        [o.periodo, 'TP4', 'Bien el del grupo. Pero en un periodo, más protones jalan el mismo nivel: hacia la derecha, menor.']),
-      solucion: { texto: conZ ? `Son ${trio.map(z => `${s(z)} = ${SIMB[z]}`).join(', ')}. Abajo, mayor; a la derecha, menor.` : 'Abajo en la columna, mayor; a la derecha en la fila, menor.',
+      opciones: ops(o.bien, [o.inversa, 'QM-RADIO-INVERSO', 'Ese orden sería cierto si el radio creciera hacia arriba y hacia la derecha. Crece hacia abajo y hacia la izquierda, así que el orden va al revés.'],
+        [o.grupo, 'QM-RADIO-GRUPO', 'El paso del periodo está bien. Pero el que está más abajo en la columna tiene un nivel más de electrones: es el mayor de los tres.'],
+        [o.periodo, 'TP4', 'El paso del grupo está bien. Pero en un periodo, el de la derecha tiene más protones que jalan el mismo nivel, así que es el menor.']),
+      solucion: { texto: conZ ? `Son ${trio.map(z => `${s(z)} = ${SIMB[z]}`).join(', ')}. En la columna, el de abajo es mayor; en la fila, el de la derecha es menor.` : 'En una columna, el de abajo es el mayor; en una fila, el de la derecha es el menor.',
         ecuacion: [Rr(o.bien.replace(/ > /g, ' > '))] },
     };
   }
@@ -185,10 +185,10 @@
     return {
       pregunta: `Dos átomos iguales de un elemento X están unidos y sus núcleos quedan a ${d} pm. ¿Cuál es el radio atómico de X?`,
       datos: [DR.def],
-      opciones: ops(`${d / 2} pm`, [`${d} pm`, 'QM-RADIO-DIST', 'Bien leer la distancia. Pero el radio va del núcleo al borde de un solo átomo: la mitad.'],
-        [`${2 * d} pm`, 'QM-RADIO-DOBLE', 'Bien usar la distancia. Pero el radio no la duplica: se toma la mitad.'],
-        [`${d / 4} pm`, 'QM-RADIO-CUARTO', 'Bien dividir. Pero entre los dos núcleos caben dos radios, no cuatro.']),
-      solucion: { texto: 'Entre los dos núcleos caben dos radios.', ecuacion: [Rr('r'), ` = ${d} ÷ 2 = `, Rr(`${d / 2} pm`)] },
+      opciones: ops(`${d / 2} pm`, [`${d} pm`, 'QM-RADIO-DIST', 'Sería así si el radio midiera de núcleo a núcleo. El radio es de un solo átomo, así que es la mitad de esa distancia.'],
+        [`${2 * d} pm`, 'QM-RADIO-DOBLE', 'Duplicar la distancia daría el ancho de los dos átomos juntos. Entre los dos núcleos caben dos radios, así que se divide entre 2.'],
+        [`${d / 4} pm`, 'QM-RADIO-CUARTO', 'Dividir entre 4 serviría si entre los núcleos cupieran cuatro radios. Caben solo dos, uno de cada átomo, así que se divide entre 2.']),
+      solucion: { texto: 'Entre los dos núcleos caben dos radios, uno de cada átomo, así que el radio es la mitad de la distancia.', ecuacion: [Rr('r'), ` = ${d} ÷ 2 = `, Rr(`${d / 2} pm`)] },
     };
   }
 
@@ -206,7 +206,7 @@
     { nivel: 1, titulo: 'Picómetros en un nanómetro',
       enunciado: '¿Cuántos picómetros (pm) hay en un nanómetro (nm)?',
       datos: [DR.pm, '1 nm = 10⁻⁹ m (un nanómetro)'],
-      solucion: [{ texto: 'Divido las dos medidas en metros: se restan los exponentes.', ecuacion: ['10⁻⁹ ÷ 10⁻¹² = 10³ = ', Rr('1000')] }],
+      solucion: [{ texto: 'Divido las dos medidas, escritas en metros; al dividir potencias de 10, los exponentes se restan.', ecuacion: ['10⁻⁹ ÷ 10⁻¹² = 10³ = ', Rr('1000')] }],
       respuesta: ['1 nm = ', Rr('1000 pm')] },
     { nivel: 1, titulo: 'Bajando por el grupo 1',
       enunciado: '¿Qué átomo es más grande: el de litio o el de sodio?',
@@ -221,14 +221,14 @@
     { nivel: 1, titulo: 'Cuánto más mide el calcio',
       enunciado: 'En la tabla de radios, el magnesio mide 145 pm y el calcio, 194 pm. ¿Cuántos picómetros más mide el calcio?',
       datos: ['r (Mg) = 145 pm; r (Ca) = 194 pm'],
-      solucion: [{ texto: 'Resto los dos radios.', ecuacion: [Rr('194 pm'), ' − ', Rr('145 pm'), ' = ', Rr('49 pm')] }],
+      solucion: [{ texto: 'La diferencia entre los dos radios dice cuánto más mide el calcio.', ecuacion: [Rr('194 pm'), ' − ', Rr('145 pm'), ' = ', Rr('49 pm')] }],
       respuesta: [Rr('49 pm'), ' más'] },
     { nivel: 2, titulo: 'Tres halógenos',
       enunciado: 'Ordena de mayor a menor radio atómico: cloro, flúor y bromo.',
       datos: [lugarTxt(9), lugarTxt(17), lugarTxt(35)],
       solucion: [
-        { texto: 'Los tres están en el grupo 17: hacia abajo, cada fila suma un nivel.', ecuacion: ['Br (periodo 4) > Cl (3) > F (2)'] },
-        { texto: 'La tabla de radios lo confirma.', ecuacion: ['Br ', Rr('94'), ' > Cl ', Rr('79'), ' > F ', Rr('42 pm')] },
+        { texto: 'Los tres están en el grupo 17: hacia abajo, cada fila suma un nivel, así que el de más abajo es el mayor.', ecuacion: ['Br (periodo 4) > Cl (3) > F (2)'] },
+        { texto: 'Los valores de la tabla de radios confirman ese orden.', ecuacion: ['Br ', Rr('94'), ' > Cl ', Rr('79'), ' > F ', Rr('42 pm')] },
       ],
       respuesta: [Rr('Br > Cl > F')] },
     { nivel: 2, titulo: 'Cuántas veces más ancho',
@@ -236,7 +236,7 @@
       datos: ['r (Na) = 190 pm; r (Cl) = 79 pm', 'Ancho de un átomo = 2 × r'],
       solucion: [
         { texto: 'Divido los dos anchos: el 2 de arriba y el de abajo se cancelan.', ecuacion: ['(2 × 190) ÷ (2 × 79) = 190 ÷ 79 ≈ ', Rr('2,4')] },
-        { texto: 'Tiene sentido: los dos son del periodo 3 y el sodio va primero, a la izquierda.' },
+        { texto: 'El resultado tiene sentido: los dos son del periodo 3, y el sodio, a la izquierda, tiene menos protones jalando el mismo nivel.' },
       ],
       respuesta: ['Unas ', Rr('2,4 veces')] },
     { nivel: 2, titulo: 'Del número atómico al tamaño',
@@ -244,7 +244,7 @@
       datos: [D.gases, D.grupos],
       solucion: [
         { texto: 'Cuento desde los gases nobles: 12 es el segundo después del neón; 16 está dos antes del argón.', ecuacion: [Pz('Z = 12'), ': periodo 3, grupo 2', SEP, Pz('Z = 16'), ': periodo 3, grupo 16'] },
-        { texto: 'En el mismo periodo, el de la izquierda es el mayor.', ecuacion: ['Mg ', Rr('145 pm'), ' > S ', Rr('88 pm')] },
+        { texto: 'En el mismo periodo, el de la izquierda es el mayor, porque tiene menos protones jalando el mismo nivel.', ecuacion: ['Mg ', Rr('145 pm'), ' > S ', Rr('88 pm')] },
       ],
       respuesta: ['El de ', Pz('Z = 12'), ', el magnesio'] },
     { nivel: 2, titulo: 'Los protones de más',
@@ -252,7 +252,7 @@
       datos: ['Z: número de protones del núcleo'],
       solucion: [
         { texto: 'Resto los dos números atómicos.', ecuacion: ['17 − 11 = ', Pz('6 protones')] },
-        { texto: 'Los mismos 3 niveles, jalados por 6 protones más: el cloro es el menor.', ecuacion: ['Cl ', Rr('79 pm'), ' < Na ', Rr('190 pm')] },
+        { texto: 'El cloro tiene los mismos 3 niveles, pero jalados por 6 protones más, así que es el menor.', ecuacion: ['Cl ', Rr('79 pm'), ' < Na ', Rr('190 pm')] },
       ],
       respuesta: [Pz('6 protones'), ' más; menor, el ', Rr('cloro')] },
     { nivel: 2, titulo: 'Un nivel más',
@@ -268,9 +268,9 @@
       alternativas: ['K > Na > Mg > Cl', 'Cl > Mg > Na > K', 'Na > K > Mg > Cl', 'K > Mg > Na > Cl', 'Mg > Na > K > Cl'],
       datos: ['Na, Mg y Cl: periodo 3 (grupos 1, 2 y 17)', 'K: periodo 4, grupo 1'],
       solucion: [
-        { texto: 'Na, Mg y Cl están en el periodo 3: de izquierda a derecha, el radio baja. El K está bajo el Na: es el mayor.', ecuacion: [Rr('K > Na > Mg > Cl')] },
+        { texto: 'Na, Mg y Cl están en el periodo 3, donde el radio baja de izquierda a derecha. El K está debajo del Na, con un nivel más: es el mayor.', ecuacion: [Rr('K > Na > Mg > Cl')] },
         { texto: ['La ', letra('B'), ' invierte las dos tendencias. La ', letra('C'), ' cree que en un grupo el de arriba es mayor.'] },
-        { texto: ['La ', letra('D'), ' cree que el Mg, con un electrón más, crece. La ', letra('E'), ' pone al K por debajo del Na y del Mg.'] },
+        { texto: ['La ', letra('D'), ' cree que el Mg, con un electrón más, es mayor que el Na. La ', letra('E'), ' pone al K por debajo del Na y del Mg.'] },
       ],
       respuesta: [letra('A'), ', ', Rr('K > Na > Mg > Cl')] },
     { nivel: 3, titulo: 'Así cambia el periodo 3',
@@ -280,8 +280,8 @@
       datos: ['Sodio: Z = 11; cloro: Z = 17', 'Del sodio al cloro, los electrones llegan al nivel 3'],
       solucion: [
         { texto: 'Los electrones nuevos van al nivel 3 y los protones nuevos jalan a todos: el radio baja.', ecuacion: ['Na ', Rr('190 pm'), ' → Cl ', Rr('79 pm')] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' dan vuelta la tendencia: más electrones o más Z no agrandan el átomo.'] },
-        { texto: ['La ', letra('C'), ' olvida la carga nuclear. La ', letra('E'), ' acierta en que baja, pero todos tienen 3 niveles.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' invierten la tendencia: ni el electrón de más ni el Z mayor agrandan el átomo, porque el nivel es el mismo.'] },
+        { texto: ['La ', letra('C'), ' olvida que la carga nuclear crece. La ', letra('E'), ' acierta en que el radio baja, pero no en la causa: todos tienen 3 niveles.'] },
       ],
       respuesta: [letra('B'), ', disminuye por la ', Pz('carga nuclear')] },
     { nivel: 3, titulo: 'Tres elementos sin nombre',
@@ -289,10 +289,10 @@
       alternativas: ['X > Q > R', 'Q > R > X', 'R > Q > X', 'R > X > Q', 'Q > X > R'],
       datos: [D.gases, D.grupos],
       solucion: [
-        { texto: 'Los ubico contando desde los gases nobles.', ecuacion: [Pz('9'), ': periodo 2, grupo 17', SEP, Pz('17'), ': periodo 3, grupo 17', SEP, Pz('19'), ': periodo 4, grupo 1'] },
+        { texto: 'Ubico cada uno en la tabla contando desde los gases nobles.', ecuacion: [Pz('9'), ': periodo 2, grupo 17', SEP, Pz('17'), ': periodo 3, grupo 17', SEP, Pz('19'), ': periodo 4, grupo 1'] },
         { texto: 'X y Q son de la misma columna: Q, más abajo, es mayor. R está más abajo y a la izquierda: es el mayor.', ecuacion: [Rr('R > Q > X')] },
         { texto: ['La ', letra('A'), ' invierte el orden. La ', letra('B'), ' pone a R por debajo de Q.'] },
-        { texto: ['La ', letra('D'), ' pone a X sobre Q, aunque Q tiene un nivel más. La ', letra('E'), ' se equivoca en los dos.'] },
+        { texto: ['La ', letra('D'), ' pone a X sobre Q, aunque Q tiene un nivel más. La ', letra('E'), ' pone a R al final, aunque es el mayor.'] },
       ],
       respuesta: [letra('C'), ', ', Rr('R > Q > X')] },
     { nivel: 3, titulo: 'Un elemento del grupo 2',
@@ -301,7 +301,7 @@
         'Es mayor que el del magnesio y que el del bromo.', 'Es menor que el del potasio y que el del bromo.'],
       datos: [lugarTxt(12), lugarTxt(35), lugarTxt(19)],
       solucion: [
-        { texto: 'X está debajo del magnesio: un nivel más. Y en el periodo 4 está a la izquierda del bromo.', ecuacion: [Rr('r'), ' (X) > ', Rr('r'), ' (Mg)', SEP, Rr('r'), ' (X) > ', Rr('r'), ' (Br)'] },
+        { texto: 'X está debajo del magnesio, con un nivel más, y en el periodo 4 está a la izquierda del bromo, con menos protones.', ecuacion: [Rr('r'), ' (X) > ', Rr('r'), ' (Mg)', SEP, Rr('r'), ' (X) > ', Rr('r'), ' (Br)'] },
         { texto: ['La ', letra('A'), ' y la ', letra('C'), ' olvidan el nivel de más. La ', letra('B'), ' invierte la tendencia del periodo.'] },
         { texto: ['La ', letra('E'), ' acierta con el potasio, que está a su izquierda, pero X es mayor que el bromo.'] },
       ],
@@ -313,7 +313,7 @@
       datos: ['K: grupo 1; Ca: grupo 2; Br: grupo 17 (los tres, del periodo 4)', lugarTxt(11)],
       solucion: [
         { texto: 'En el periodo 4, de izquierda a derecha la carga nuclear crece y el nivel es el mismo: el radio baja.', ecuacion: ['K ', Rr('243'), ' > Ca ', Rr('194'), ' > Br ', Rr('94 pm')] },
-        { texto: ['La ', letra('A'), ' cree que los electrones agrandan. La ', letra('B'), ' invierte el periodo.'] },
+        { texto: ['La ', letra('A'), ' cree que más electrones agrandan el átomo. La ', letra('B'), ' invierte el periodo.'] },
         { texto: ['La ', letra('C'), ' olvida la carga nuclear. La ', letra('D'), ' invierte el grupo: el K, más abajo, es mayor.'] },
       ],
       respuesta: [letra('E'), ', el ', Rr('potasio'), ' es el mayor'] },
@@ -329,11 +329,11 @@
     actividad: 'Recorrer las columnas de la tabla y comparar el tamaño de sus átomos.',
     lee: {
       tarjetas: [
-        { titulo: 'Sal de Maras bajo la lupa', texto: 'Un grano de sal de Maras parece liso, pero es un cristal: sus partículas están en filas, con los núcleos vecinos a una distancia fija. Esa distancia sirve para medir átomos.',
+        { titulo: 'Sal de Maras bajo la lupa', texto: 'Un grano de sal de Maras parece liso, pero es un cristal: sus partículas están en filas, con los núcleos vecinos a una distancia fija. Esa distancia fija sirve para medir el tamaño de los átomos.',
           pieza: 'quim-tira', dibujo: OBJ([{ que: 'cristal', nombre: 'sal de Maras' }]) },
-        { titulo: 'Un borde que no existe', texto: 'La nube de electrones no tiene un borde nítido. Por eso el radio atómico, r, se define con dos átomos iguales unidos: la mitad de la distancia entre sus núcleos. También se calcula desde la nube.',
+        { titulo: 'Un borde que no existe', texto: 'Como la nube de electrones no tiene un borde nítido, el radio atómico, r, se define con dos átomos iguales unidos: es la mitad de la distancia entre sus núcleos. También se puede calcular desde la nube.',
           ecuacion: [Rr('r'), ' = distancia entre núcleos ÷ 2'] },
-        { titulo: 'Muy, muy pequeño', texto: 'Los radios van en picómetros (pm): la billonésima parte de un metro. Aquí son calculados desde la nube de electrones del átomo solo. Otros libros traen radios medidos en enlaces, algo mayores (el flúor, unos 64 pm), con las mismas tendencias.' },
+        { titulo: 'Muy, muy pequeño', texto: 'Los radios se miden en picómetros (pm), la billonésima parte de un metro. Los de esta unidad se calcularon desde la nube del átomo aislado. Otros libros usan radios medidos en enlaces, algo mayores (el flúor, unos 64 pm), con las mismas tendencias.' },
         { titulo: 'Qué mirar', texto: 'En el juego eliges una columna de la tabla y ves sus átomos a escala, en fila: de izquierda a derecha, del de arriba de la columna al de abajo. Compara cada círculo con el de su izquierda.' },
       ],
     },
@@ -344,7 +344,7 @@
       mision: {
         texto: 'Busca la columna donde está el átomo más grande de toda la tabla.',
         logrado: v => v.g === '1',
-        bien: 'El potasio: 243 pm, con cuatro niveles de electrones.',
+        bien: 'Es el potasio, de 243 pm: tiene cuatro niveles de electrones.',
       },
       voz: 'Compara cada círculo con el de su izquierda: está una fila más abajo.',
       leyenda: [
@@ -354,7 +354,7 @@
       ],
       controles: [{ id: 'g', etiqueta: 'Grupo', opciones: Object.keys(COL).map(g => ({ valor: g, texto: `Grupo ${g}` })), inicio: '17' }],
       dibujo: v => ESF(COL[v.g].map(z => atomoE(z)), { rotulo: `Grupo ${grupoAB(+v.g)}` }),
-      lectura: v => { const c = COL[v.g], a = c[0], b = c[c.length - 1]; return [`${SIMB[a]} `, Rr(`${RADIO[a]} pm`), ` → ${SIMB[b]} `, Rr(`${RADIO[b]} pm`), ': un nivel más por fila.']; },
+      lectura: v => { const c = COL[v.g], a = c[0], b = c[c.length - 1]; return [`${SIMB[a]} `, Rr(`${RADIO[a]} pm`), ` → ${SIMB[b]} `, Rr(`${RADIO[b]} pm`), ': cada fila suma un nivel.']; },
       minimo: 4,
     },
     predice: {
@@ -364,13 +364,13 @@
       voz: 'Piensa en el núcleo y en el nivel que se llena.',
       opciones: [
         { id: 'c', texto: 'Baja: el núcleo, con más protones, jala más fuerte el mismo nivel', correcta: true },
-        { id: 'sube', texto: 'Sube: cada uno tiene un electrón más que ocupa lugar', error: 'TP4', siFuera: 'Hay más electrones, cierto. Pero van al mismo nivel, y la carga del núcleo crece más.' },
-        { id: 'igual', texto: 'No cambia: todos tienen tres niveles', error: 'QM-RADIO-NIVEL', siFuera: 'Tienen tres niveles, bien visto. Pero el núcleo de cada uno jala distinto.' },
-        { id: 'mitad', texto: 'Sube hasta la mitad del periodo y después baja', error: 'QM-RADIO-MITAD', siFuera: 'Sería así si algo cambiara a la mitad. Del Na al Cl, el radio baja en cada paso.' },
+        { id: 'sube', texto: 'Sube: cada uno tiene un electrón más que ocupa lugar', error: 'TP4', siFuera: 'Sería así si cada electrón nuevo abriera un nivel. Aquí todos van al mismo nivel 3, y los protones nuevos del núcleo los jalan más fuerte.' },
+        { id: 'igual', texto: 'No cambia: todos tienen tres niveles', error: 'QM-RADIO-NIVEL', siFuera: 'Sería así si solo contaran los niveles. Los tres niveles se repiten, pero cada núcleo tiene un protón más que el anterior y jala con más fuerza.' },
+        { id: 'mitad', texto: 'Sube hasta la mitad del periodo y después baja', error: 'QM-RADIO-MITAD', siFuera: 'Sería así si a mitad del periodo cambiara el nivel que se llena. Del Na al Cl todos llenan el nivel 3, y el radio baja en cada paso.' },
       ],
       dibujo: ESF([atomoE(11, { oculto: true }), atomoE(17, { oculto: true })], { rotulo: 'Periodo 3' }),
       revelar: ESF([11, 13, 15, 17].map(z => atomoE(z)), { rotulo: 'Na 190 pm → Cl 79 pm' }),
-      coincide: 'Coincide: de 190 pm (Na) a 79 pm (Cl). Más protones, el mismo nivel.',
+      coincide: 'Coincide: el radio baja de 190 pm (Na) a 79 pm (Cl), porque más protones jalan el mismo nivel.',
       noCoincide: 'El radio baja de 190 pm (Na) a 79 pm (Cl): más protones jalan el mismo nivel.',
     },
     mira: {
@@ -378,17 +378,17 @@
       datos: tabla({ propiedad: { valores: valores(RADIO, TODOS), max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)' }, marcadas: [{ Z: 19, color: 'i', desde: 2 }, { Z: 9, color: 'i', desde: 3 }], rotulo: 'r: radio calculado (pm)' }).datos,
       voz: 'Miremos toda la tabla: dos tendencias a la vez.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Hacia abajo en un grupo, el radio crece: cada fila suma un nivel.', ecuacion: ['Li ', Rr('167'), ' → Na ', Rr('190'), ' → K ', Rr('243 pm')] },
-        { estado: { corte: 1 }, texto: 'Hacia la derecha en un periodo, el radio baja.', ecuacion: ['Na ', Rr('190 pm'), ' → Cl ', Rr('79 pm')] },
-        { estado: { corte: 1 }, texto: 'Los electrones nuevos van al mismo nivel; los protones nuevos jalan a todos.', ecuacion: [Pz('11 p⁺'), ' → ', Pz('17 p⁺'), ': más carga nuclear'] },
-        { estado: { corte: 2 }, texto: 'El más grande de esta tabla: el potasio, abajo a la izquierda.', ecuacion: ['K: ', Rr('243 pm')] },
-        { estado: { corte: 3 }, texto: 'Arriba a la derecha están los más pequeños, como el flúor.', ecuacion: ['F: ', Rr('42 pm')] },
+        { estado: { corte: 0 }, texto: 'Hacia abajo en un grupo, el radio crece, porque cada fila suma un nivel de electrones.', ecuacion: ['Li ', Rr('167'), ' → Na ', Rr('190'), ' → K ', Rr('243 pm')] },
+        { estado: { corte: 1 }, texto: 'Hacia la derecha en un periodo, el radio baja, aunque cada átomo tenga un electrón más que el anterior.', ecuacion: ['Na ', Rr('190 pm'), ' → Cl ', Rr('79 pm')] },
+        { estado: { corte: 1 }, texto: 'La razón es que los electrones nuevos entran al mismo nivel, mientras los protones nuevos del núcleo jalan a todos con más fuerza.', ecuacion: [Pz('11 p⁺'), ' → ', Pz('17 p⁺'), ': más carga nuclear'] },
+        { estado: { corte: 2 }, texto: 'Por eso el átomo más grande de esta tabla es el potasio, que está abajo a la izquierda.', ecuacion: ['K: ', Rr('243 pm')] },
+        { estado: { corte: 3 }, texto: 'Arriba a la derecha están los más pequeños: el flúor mide 42 pm, y el helio y el neón, todavía menos.', ecuacion: ['F: ', Rr('42 pm')] },
       ],
     },
     regla: {
       texto: 'El radio atómico crece hacia abajo en un grupo, porque hay un nivel más, y baja hacia la derecha en un periodo, porque más protones jalan el mismo nivel.',
       ecuacion: [Rr('r'), ': ↓ en un grupo, crece', SEP, Rr('r'), ': → en un periodo, baja'],
-      condicion: 'se comparan radios de una misma tabla, en los grupos A (columnas 1, 2 y 13 a 18).',
+      condicion: 'los radios salen de una misma tabla y los átomos están en los grupos A (columnas 1, 2 y 13 a 18).',
       voz: 'Niveles hacia abajo, protones hacia la derecha.',
       dibujo: tabla({ propiedad: { valores: valores(RADIO, TODOS), max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)' }, rotulo: 'r: radio calculado (pm)' }),
     },
@@ -409,7 +409,7 @@
             { tipo: 'cuentas', texto: `El ${NOMBRE[p]} queda en el medio: el ${NOMBRE[gr]} es mayor que él y el ${NOMBRE[ch]}, menor.`,
               ecuacion: [`${SIMB[gr]} `, Rr(`${RADIO[gr]}`), ` > ${SIMB[p]} `, Rr(`${RADIO[p]}`), ` > ${SIMB[ch]} `, Rr(`${RADIO[ch]} pm`)],
               dibujo: tabla({ propiedad: { valores: valores(RADIO, trio), max: 245, forma: 'circulo', color: 'i' }, marcadas: trio.map(Z => ({ Z, color: 'i' })) }) },
-            { tipo: 'sentido', texto: 'Los radios de la tabla confirman el orden que dio la regla, sin medir nada.' },
+            { tipo: 'sentido', texto: 'Los valores de la tabla confirman el orden que dio la regla, y para llegar a él no hizo falta medir nada.' },
           ],
           respuesta: [Rr(`${SIMB[gr]} > ${SIMB[p]} > ${SIMB[ch]}`)],
         };
@@ -452,10 +452,10 @@
       pregunta: `¿Qué es más grande: ${at} o el ion ${k}?`,
       datos: [`${Nom(z)}: ${z} protones`, `El ion ${k} tiene ${z - q} electrones`],
       opciones: ops(an ? `El ion ${k}` : `El átomo de ${NOMBRE[z]}`,
-        [an ? `El átomo de ${NOMBRE[z]}` : `El ion ${k}`, 'QM-ION-RADIO', an ? 'Sería así si el anión perdiera electrones. Los ganó: se repelen más y la nube crece.' : 'Sería así si el catión ganara electrones. Los perdió: los que quedan, más jalados.'],
-        ['Miden lo mismo: tienen el mismo núcleo', 'QM-ION-IGUAL', 'El núcleo es el mismo, cierto. Pero cambió el número de electrones que jala.'],
-        ['No se puede saber sin la tabla de radios', 'QM-SIN-LEY', 'Basta contar electrones: el núcleo es el mismo.']),
-      solucion: { texto: an ? `Ganó ${-q === 1 ? 'un electrón' : `${-q} electrones`}: con los mismos ${z} protones, la nube crece.` : `Perdió ${q === 1 ? 'un electrón' : `${q} electrones`}: los mismos ${z} protones jalan a menos.`,
+        [an ? `El átomo de ${NOMBRE[z]}` : `El ion ${k}`, 'QM-ION-RADIO', an ? 'Sería así si el anión hubiera perdido electrones. Los ganó, así que sus electrones se repelen más y la nube crece.' : 'Sería así si el catión hubiera ganado electrones. Los perdió, y el mismo núcleo jala más fuerte a los que quedan.'],
+        ['Miden lo mismo: tienen el mismo núcleo', 'QM-ION-IGUAL', 'Serían iguales si también tuvieran los mismos electrones. El núcleo es el mismo, pero el ion tiene otro número de electrones.'],
+        ['No se puede saber sin la tabla de radios', 'QM-SIN-LEY', 'No hace falta la tabla: el núcleo es el mismo, así que basta ver si el ion ganó o perdió electrones.']),
+      solucion: { texto: an ? `Ganó ${-q === 1 ? 'un electrón' : `${-q} electrones`}: con los mismos ${z} protones, sus electrones se repelen más y la nube crece.` : `Perdió ${q === 1 ? 'un electrón' : `${q} electrones`}: los mismos ${z} protones jalan a menos electrones, así que el ion es menor.`,
         ecuacion: an ? [Rr(`r (${k})`), ' > ', Rr(`r (${SIMB[z]})`)] : [Rr(`r (${k})`), ' < ', Rr(`r (${SIMB[z]})`)] },
     };
   }
@@ -464,10 +464,10 @@
     return {
       pregunta: `El ${a} y el ${b} tienen ${n} electrones cada uno. ¿Cuál es más grande?`,
       datos: [protTxt([a, b])],
-      opciones: ops(`El ${m}`, [`El ${o}`, 'QM-ISO-ORDEN', `Tiene más protones, cierto. Pero por eso jala más a los mismos ${n} electrones.`],
-        ['Miden lo mismo: tienen los mismos electrones', 'QM-ISO-RADIO', 'Tienen los mismos electrones, cierto. Pero sus núcleos no los jalan igual.'],
-        ['No se puede saber sin la tabla de radios', 'QM-SIN-LEY', 'Bien dudar. Pero basta comparar sus protones: los electrones son los mismos.']),
-      solucion: { texto: `Mismos ${n} electrones: el ${m} tiene menos protones (${ION[m][0]} contra ${ION[o][0]}) y los jala menos.`,
+      opciones: ops(`El ${m}`, [`El ${o}`, 'QM-ISO-ORDEN', `Sería así si más protones agrandaran la nube. Con los mismos ${n} electrones, más protones jalan más fuerte y achican la especie.`],
+        ['Miden lo mismo: tienen los mismos electrones', 'QM-ISO-RADIO', 'Serían iguales si también tuvieran los mismos protones. Tienen los mismos electrones, pero sus núcleos no los jalan igual.'],
+        ['No se puede saber sin la tabla de radios', 'QM-SIN-LEY', 'No hace falta la tabla: como los electrones son los mismos, basta comparar sus protones.']),
+      solucion: { texto: `Los dos tienen ${n} electrones, pero el ${m} tiene menos protones (${ION[m][0]} contra ${ION[o][0]}): los jala menos y es más grande.`,
         ecuacion: [`${m} `, Rr(`${pmI(ION[m][2])} pm`), ' > ', `${o} `, Rr(`${pmI(ION[o][2])} pm`)] },
     };
   }
@@ -476,11 +476,11 @@
     return {
       pregunta: `¿Cuántos electrones tiene el ion ${k}?`,
       datos: [`${Nom(z)}: Z = ${z}`, D.carga],
-      opciones: ops(`${e}`, [`${z + q}`, 'QM-ION-SIGNO', q > 0 ? 'Bien partir de los protones. Pero un catión perdió electrones: se resta la carga.' : 'Bien partir de los protones. Pero un anión ganó electrones: se suman.'],
-        [`${z}`, 'QM-ION-PROTONES', 'Esos son sus protones, que no cambian. Los electrones sí cambiaron.'],
-        Math.abs(q) === 1 ? [`${z - 2 * q}`, 'QM-ION-DOBLE', 'Bien el sentido. Pero cambia un solo electrón, no dos: la carga es 1.']
-          : [`${z - Math.sign(q)}`, 'QM-ION-UNO', 'Bien el sentido. Pero la carga dice cuántos electrones cambiaron: cuenta todos.']),
-      solucion: { texto: q > 0 ? `Perdió ${q}: se restan de sus ${z}.` : `Ganó ${-q}: se suman a sus ${z}.`, ecuacion: [`${z} ${q > 0 ? '−' : '+'} ${Math.abs(q)} = ${e} e⁻`] },
+      opciones: ops(`${e}`, [`${z + q}`, 'QM-ION-SIGNO', q > 0 ? 'Se suma solo en un anión, que ganó electrones. Este es un catión: perdió electrones, así que la carga se resta de los protones.' : 'Se resta solo en un catión, que perdió electrones. Este es un anión: ganó electrones, así que la carga se suma a los protones.'],
+        [`${z}`, 'QM-ION-PROTONES', 'Ese es el número de protones, que no cambia al formarse el ion. Los electrones sí cambian: tantos como dice la carga.'],
+        Math.abs(q) === 1 ? [`${z - 2 * q}`, 'QM-ION-DOBLE', 'El sentido está bien, pero la carga es 1: cambió un solo electrón, no dos.']
+          : [`${z - Math.sign(q)}`, 'QM-ION-UNO', 'El sentido está bien, pero la carga dice cuántos electrones cambiaron, y aquí son más de uno.']),
+      solucion: { texto: q > 0 ? `Perdió ${q} ${q === 1 ? 'electrón, que se resta' : 'electrones, que se restan'} de los ${z} que tenía el átomo.` : `Ganó ${-q} ${q === -1 ? 'electrón, que se suma' : 'electrones, que se suman'} a los ${z} que tenía el átomo.`, ecuacion: [`${z} ${q > 0 ? '−' : '+'} ${Math.abs(q)} = ${e} e⁻`] },
     };
   }
   function casoTrioIso(r) {
@@ -488,19 +488,19 @@
     return {
       pregunta: `El ${tres[0]}, el ${tres[1]} y el ${tres[2]} tienen ${n} electrones cada uno. ¿Cuál es el más pequeño?`,
       datos: [protTxt(tres)],
-      opciones: ops(`El ${menor}`, [`El ${orden[0]}`, 'QM-ISO-ORDEN', 'Ese tiene menos protones: jala menos a sus electrones y es el mayor.'],
-        [`El ${orden[1]}`, 'QM-ISO-MEDIO', 'Bien descartar el mayor. Pero hay otro con más protones todavía.'],
-        ['Los tres miden igual', 'QM-ISO-RADIO', 'Tienen los mismos electrones, cierto. Pero sus núcleos no los jalan igual.']),
+      opciones: ops(`El ${menor}`, [`El ${orden[0]}`, 'QM-ISO-ORDEN', 'Ese es el mayor de los tres: tiene menos protones, así que jala menos a sus electrones.'],
+        [`El ${orden[1]}`, 'QM-ISO-MEDIO', 'Ese no es el mayor, pero tampoco el menor: hay otra especie con más protones todavía.'],
+        ['Los tres miden igual', 'QM-ISO-RADIO', 'Serían iguales si también tuvieran los mismos protones. Tienen los mismos electrones, pero sus núcleos no los jalan igual.']),
       solucion: { texto: `Con los mismos ${n} electrones, el de más protones es el menor.`, ecuacion: [Rr(orden.join(' > '))] },
     };
   }
   const AFIRMA_I = [
     ['El Na⁺ es menor que el átomo de Na.', true, 'perdió su único electrón del nivel 3'],
-    ['El Cl⁻ es menor que el átomo de Cl.', false, 'ganó un electrón: es mayor'],
-    ['El K⁺ es mayor que el Cl⁻.', false, 'tienen 18 electrones y el K⁺ tiene más protones'],
-    ['El S²⁻ es mayor que el Cl⁻.', true, 'tienen 18 electrones y el S²⁻ tiene menos protones'],
+    ['El Cl⁻ es menor que el átomo de Cl.', false, 'ganó un electrón, así que es mayor'],
+    ['El K⁺ es mayor que el Cl⁻.', false, 'tienen 18 electrones y el K⁺ tiene más protones, así que es menor'],
+    ['El S²⁻ es mayor que el Cl⁻.', true, 'tienen 18 electrones y el S²⁻ tiene menos protones, así que es mayor'],
     ['El Ca²⁺ y el Ar tienen el mismo número de electrones.', true, 'los dos tienen 18'],
-    ['El Br⁻ es menor que el Cl⁻.', false, 'el Br⁻ tiene un nivel más'],
+    ['El Br⁻ es menor que el Cl⁻.', false, 'el Br⁻ tiene un nivel más, así que es mayor'],
     ['Un catión tiene más protones que electrones.', true, 'perdió electrones y sus protones no cambian'],
   ];
 
@@ -528,20 +528,20 @@
     { nivel: 1, titulo: '¿Son isoelectrónicos?',
       enunciado: '¿Tienen el mismo número de electrones el ion F⁻ y el ion Na⁺?',
       datos: ['Flúor: Z = 9; sodio: Z = 11', D.carga],
-      solucion: [{ texto: 'Cuento los electrones de cada uno.', ecuacion: ['F⁻: 9 + 1 = 10', SEP, 'Na⁺: 11 − 1 = 10'] }],
+      solucion: [{ texto: 'Cuento los electrones de cada uno con sus protones y su carga.', ecuacion: ['F⁻: 9 + 1 = 10', SEP, 'Na⁺: 11 − 1 = 10'] }],
       respuesta: ['Sí: 10 electrones cada uno'] },
     { nivel: 1, titulo: 'Leer la tabla de iones',
       enunciado: 'En la tabla de radios iónicos, el Cl⁻ mide 181 pm y el Br⁻, 196 pm. ¿Cuántos picómetros más mide el Br⁻?',
       datos: ['r (Cl⁻) = 181 pm; r (Br⁻) = 196 pm'],
-      solucion: [{ texto: 'Resto los dos radios.', ecuacion: [Rr('196 pm'), ' − ', Rr('181 pm'), ' = ', Rr('15 pm')] }],
+      solucion: [{ texto: 'La diferencia entre los dos radios dice cuánto más mide el Br⁻.', ecuacion: [Rr('196 pm'), ' − ', Rr('181 pm'), ' = ', Rr('15 pm')] }],
       respuesta: [Rr('15 pm'), ' más'] },
     { nivel: 2, titulo: 'El más pequeño de tres',
       enunciado: 'El S²⁻, el K⁺ y el Ca²⁺ tienen 18 electrones cada uno. ¿Cuál es el más pequeño?',
       datos: [protTxt(['S²⁻', 'K⁺', 'Ca²⁺'])],
       figura: ESF(['S²⁻', 'K⁺', 'Ca²⁺'].map(k => esfIon(k, { oculto: true }))),
       solucion: [
-        { texto: 'Los electrones son los mismos: decide el núcleo.', ecuacion: ['S²⁻: ', Pz('16 p⁺'), SEP, 'K⁺: ', Pz('19 p⁺'), SEP, 'Ca²⁺: ', Pz('20 p⁺')] },
-        { texto: 'El Ca²⁺, con 20 protones, jala más fuerte a sus 18 electrones.', ecuacion: ['Ca²⁺ ', Rr('100'), ' < K⁺ ', Rr('138'), ' < S²⁻ ', Rr('184 pm')] },
+        { texto: 'Como los tres tienen los mismos electrones, decide el núcleo.', ecuacion: ['S²⁻: ', Pz('16 p⁺'), SEP, 'K⁺: ', Pz('19 p⁺'), SEP, 'Ca²⁺: ', Pz('20 p⁺')] },
+        { texto: 'El Ca²⁺, con 20 protones, jala más fuerte a sus 18 electrones: es el más pequeño.', ecuacion: ['Ca²⁺ ', Rr('100'), ' < K⁺ ', Rr('138'), ' < S²⁻ ', Rr('184 pm')] },
       ],
       respuesta: ['El ', Rr('Ca²⁺')] },
     { nivel: 2, titulo: 'Busca al compañero',
@@ -549,14 +549,14 @@
       datos: ['Protones: oxígeno 8, magnesio 12, azufre 16, cloro 17', D.carga],
       solucion: [
         { texto: 'Cuento los electrones de cada una.', ecuacion: ['O²⁻: 8 + 2 = 10', SEP, 'Mg²⁺: 12 − 2 = 10', SEP, 'S²⁻: 18', SEP, 'Cl⁻: 18'] },
-        { texto: 'Solo el Mg²⁺ tiene 10. El S²⁻ es de la familia del oxígeno, pero tiene 18.' },
+        { texto: 'Solo el Mg²⁺ tiene 10. El S²⁻ es de la familia del oxígeno, pero tiene 18 electrones, porque el azufre tiene un nivel más.' },
       ],
       respuesta: ['El Mg²⁺: 10 electrones'] },
     { nivel: 2, titulo: 'Tres cationes con 10 electrones',
       enunciado: 'El Na⁺, el Mg²⁺ y el Al³⁺ tienen 10 electrones cada uno. Ordénalos de mayor a menor radio.',
       datos: [protTxt(['Na⁺', 'Mg²⁺', 'Al³⁺'])],
       solucion: [
-        { texto: 'Mismos 10 electrones: el de más protones es el menor.', ecuacion: ['Na⁺ (', Pz('11'), ') > Mg²⁺ (', Pz('12'), ') > Al³⁺ (', Pz('13'), ')'] },
+        { texto: 'Los tres tienen 10 electrones, así que el de más protones es el menor.', ecuacion: ['Na⁺ (', Pz('11'), ') > Mg²⁺ (', Pz('12'), ') > Al³⁺ (', Pz('13'), ')'] },
         { texto: 'La tabla de radios iónicos, en pm, lo confirma.', ecuacion: ['Na⁺ ', Rr('102'), ' > Mg²⁺ ', Rr('72'), ' > Al³⁺ ', Rr('53,5')] },
       ],
       respuesta: [Rr('Na⁺ > Mg²⁺ > Al³⁺')] },
@@ -565,7 +565,7 @@
       datos: ['Sodio: Z = 11; cloro: Z = 17', D.carga],
       figura: OBJ([{ que: 'salero', nombre: 'Na⁺ y Cl⁻' }]),
       solucion: [
-        { texto: 'Cuento: el Na⁺ perdió uno y el Cl⁻ ganó uno.', ecuacion: ['Na⁺: 10 e⁻, en 2 niveles', SEP, 'Cl⁻: 18 e⁻, en 3 niveles'] },
+        { texto: 'El Na⁺ perdió un electrón y el Cl⁻ ganó uno.', ecuacion: ['Na⁺: 10 e⁻, en 2 niveles', SEP, 'Cl⁻: 18 e⁻, en 3 niveles'] },
         { texto: 'El Cl⁻ tiene un nivel más lleno de electrones: es el mayor.', ecuacion: ['Cl⁻ ', Rr('181 pm'), ' > Na⁺ ', Rr('102 pm')] },
       ],
       respuesta: ['10 y 18; mayor, el ', Rr('Cl⁻')] },
@@ -604,9 +604,9 @@
       datos: [D.carga],
       solucion: [
         { texto: 'Saco los protones de cada una: los electrones más la carga.', ecuacion: ['X: 36 − 2 = ', Pz('34'), SEP, 'Q: 36 + 1 = ', Pz('37'), SEP, 'R: 36 + 2 = ', Pz('38')] },
-        { texto: 'Mismos electrones: más protones, menor radio.', ecuacion: [Rr('X²⁻ > Q⁺ > R²⁺')] },
-        { texto: ['La ', letra('A'), ' invierte la serie. La ', letra('B'), ' pone al catión primero. La ', letra('C'), ' olvida los núcleos.'] },
-        { texto: ['La ', letra('E'), ' cree que la carga 2+ jala menos que la 1+: tiene un protón más.'] },
+        { texto: 'Con los mismos electrones, la de más protones tiene el menor radio.', ecuacion: [Rr('X²⁻ > Q⁺ > R²⁺')] },
+        { texto: ['La ', letra('A'), ' invierte la serie. La ', letra('B'), ' pone al Q⁺ por delante del X²⁻. La ', letra('C'), ' olvida los núcleos.'] },
+        { texto: ['La ', letra('E'), ' pone al R²⁺ por delante del Q⁺, aunque el R tiene un protón más.'] },
       ],
       respuesta: [letra('D'), ', ', Rr('X²⁻ > Q⁺ > R²⁺')] },
     { nivel: 3, titulo: 'El anión de un halógeno',
@@ -614,7 +614,7 @@
       alternativas: ['El Br⁻ es menor que el átomo de Br, porque tiene carga.', 'El Br⁻ tiene 34 electrones.', 'El Br⁻ y el Kr tienen distinto número de electrones.', 'El Br⁻ es menor que el Cl⁻, que está arriba.', 'El Br⁻ es mayor que el átomo de Br.'],
       datos: ['Bromo: Z = 35; cloro: Z = 17; kriptón: Z = 36', D.carga],
       solucion: [
-        { texto: 'Cuento: ganó un electrón y quedó con 36, como el kriptón. Los mismos 35 protones jalan un electrón más: la nube crece.', ecuacion: ['Br⁻: 35 + 1 = 36 e⁻'] },
+        { texto: 'El bromo ganó un electrón y quedó con 36, como el kriptón. Los mismos 35 protones jalan un electrón más: la nube crece.', ecuacion: ['Br⁻: 35 + 1 = 36 e⁻'] },
         { texto: ['La ', letra('A'), ' cree que el anión se achica. La ', letra('B'), ' resta el electrón en vez de sumarlo.'] },
         { texto: ['La ', letra('C'), ' cuenta mal: los dos tienen 36. La ', letra('D'), ' invierte el grupo: el Br⁻, con un nivel más, mide 196 pm y el Cl⁻, 181.'] },
       ],
@@ -624,9 +624,9 @@
       alternativas: ['Mg²⁺', 'Ca²⁺', 'S²⁻', 'K⁺', 'Cl⁻'],
       datos: ['Protones: magnesio 12, azufre 16, cloro 17, potasio 19, calcio 20', D.carga],
       solucion: [
-        { texto: 'Cuento electrones: el K⁺, el Ca²⁺, el Cl⁻ y el S²⁻ tienen 18; el Mg²⁺, solo 10. Le falta un nivel entero.', ecuacion: ['Mg²⁺ ', Rr('72 pm'), ' < Ca²⁺ ', Rr('100 pm')] },
+        { texto: 'Cuento electrones: el K⁺, el Ca²⁺, el Cl⁻ y el S²⁻ tienen 18, y el Mg²⁺, solo 10, así que tiene un nivel menos.', ecuacion: ['Mg²⁺ ', Rr('72 pm'), ' < Ca²⁺ ', Rr('100 pm')] },
         { texto: ['La ', letra('B'), ' es la menor de las que tienen 18 electrones, pero el Mg²⁺ tiene un nivel menos.'] },
-        { texto: ['La ', letra('C'), ' y la ', letra('E'), ' son aniones, más grandes. La ', letra('D'), ' tiene menos protones que el Ca²⁺.'] },
+        { texto: ['La ', letra('C'), ' y la ', letra('E'), ' son aniones, que son más grandes. El K⁺ de la ', letra('D'), ' tiene menos protones que el Ca²⁺, así que es mayor.'] },
       ],
       respuesta: [letra('A'), ', el ', Rr('Mg²⁺')] },
   ];
@@ -643,8 +643,8 @@
       tarjetas: [
         { titulo: 'El salero', texto: 'En la sal del salero no hay átomos de sodio ni de cloro: hay iones. Cada sodio perdió un electrón (Na⁺) y cada cloro ganó uno (Cl⁻). El núcleo de cada uno no cambió.',
           pieza: 'quim-tira', dibujo: OBJ([{ que: 'salero', nombre: 'Na⁺ y Cl⁻' }]) },
-        { titulo: 'Dos tablas', texto: 'El radio de un ion se mide en cristales, como la sal: es el radio iónico, y sale de otra tabla que el radio atómico. Por eso sus números se comparan solo entre iones; un átomo con su ion, solo en cuál es mayor.' },
-        { titulo: 'Mismos electrones', texto: 'De Estructura atómica: dos especies son isoelectrónicas si tienen el mismo número de electrones. El Na⁺ y el neón tienen 10 cada uno.', ecuacion: ['Na⁺: 11 − 1 = 10 e⁻', SEP, 'Ne: 10 e⁻'] },
+        { titulo: 'Dos tablas', texto: 'El radio iónico, el de un ion, se mide en cristales y viene de una tabla distinta a la de los radios atómicos. Por eso sus números se comparan solo entre iones; de un átomo y su ion solo se dice cuál es mayor.' },
+        { titulo: 'Mismos electrones', texto: 'Como viste en Estructura atómica, dos especies son isoelectrónicas si tienen el mismo número de electrones: el Na⁺ y el neón tienen 10 cada uno.', ecuacion: ['Na⁺: 11 − 1 = 10 e⁻', SEP, 'Ne: 10 e⁻'] },
         { titulo: 'Qué mirar', texto: 'En el juego, cada elemento aparece junto a su ion. Cuenta los protones y los electrones de los dos, y mira cuál círculo es mayor.' },
       ],
     },
@@ -655,7 +655,7 @@
       mision: {
         texto: 'Busca el ion más grande de la lista.',
         logrado: v => v.x === 'Br',
-        bien: 'El Br⁻: 196 pm. Ganó un electrón y tiene cuatro niveles.',
+        bien: 'Es el Br⁻, de 196 pm: ganó un electrón y tiene cuatro niveles.',
       },
       voz: 'El núcleo no cambia: mira los electrones.',
       leyenda: [
@@ -668,7 +668,7 @@
       dibujo: v => { const [x, z, q] = JUEGO_IONES.find(e => e[0] === v.x), k = ionDe(x, q); return ESF([atomoE(z, { e: z }), esfIon(k)], { rotulo: `Átomo de ${NOMBRE[z]} e ion ${k}` }); },
       lectura: v => {
         const [x, z, q] = JUEGO_IONES.find(e => e[0] === v.x), k = ionDe(x, q), n = Math.abs(q);
-        return q > 0 ? [`${k}: perdió ${n} e⁻; `, Pz(`${z} p⁺`), ` jalan ${z - q} e⁻: menor.`] : [`${k}: ganó ${n} e⁻; `, Pz(`${z} p⁺`), ` para ${z - q} e⁻: mayor.`];
+        return q > 0 ? [`${k}: perdió ${n} e⁻ y `, Pz(`${z} p⁺`), ` jalan ${z - q} e⁻: es menor.`] : [`${k}: ganó ${n} e⁻ y `, Pz(`${z} p⁺`), ` jalan ${z - q} e⁻: es mayor.`];
       },
       minimo: 4,
     },
@@ -679,9 +679,9 @@
       voz: 'Los electrones son los mismos: mira los núcleos.',
       opciones: [
         { id: 'c', texto: 'El O²⁻: tiene menos protones para los mismos electrones', correcta: true },
-        { id: 'orden', texto: 'El Mg²⁺: tiene más protones', error: 'QM-ISO-ORDEN', siFuera: 'Tiene más protones, cierto. Pero más protones jalan con más fuerza a los mismos 10 electrones.' },
-        { id: 'igual', texto: 'Los cuatro miden igual: tienen los mismos electrones', error: 'QM-ISO-RADIO', siFuera: 'Tienen los mismos electrones, cierto. Pero sus núcleos no los jalan igual.' },
-        { id: 'cation', texto: 'El Na⁺: los cationes son más grandes que los aniones', error: 'QM-ION-RADIO', siFuera: 'Al revés: un catión perdió electrones y un anión los ganó. Compara los núcleos.' },
+        { id: 'orden', texto: 'El Mg²⁺: tiene más protones', error: 'QM-ISO-ORDEN', siFuera: 'Sería así si los protones agrandaran la nube. Con los mismos 10 electrones, el núcleo del Mg²⁺ es el que más jala, así que es el más pequeño.' },
+        { id: 'igual', texto: 'Los cuatro miden igual: tienen los mismos electrones', error: 'QM-ISO-RADIO', siFuera: 'Serían iguales si también tuvieran los mismos protones. Tienen 10 electrones cada uno, pero sus núcleos tienen de 8 a 12 protones y no los jalan igual.' },
+        { id: 'cation', texto: 'El Na⁺: los cationes son más grandes que los aniones', error: 'QM-ION-RADIO', siFuera: 'Un catión es menor que su propio átomo, no mayor. Aquí los cuatro tienen 10 electrones, así que decide el núcleo y no el signo de la carga.' },
       ],
       dibujo: ESF(SERIES[10].slice(0, 4).map(k => esfIon(k, { oculto: true })), { rotulo: 'Los cuatro, con 10 electrones' }),
       revelar: ESF(SERIES[10].slice(0, 4).map(k => esfIon(k)), { rotulo: 'O²⁻ > F⁻ > Na⁺ > Mg²⁺' }),
@@ -698,15 +698,15 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'El Na⁺ perdió su único electrón del nivel 3: le queda un nivel menos.', ecuacion: ['Na: ', Pz('11 p⁺'), ', 11 e⁻', SEP, 'Na⁺: ', Pz('11 p⁺'), ', 10 e⁻'] },
         { estado: { corte: 1 }, texto: 'Los mismos 11 protones jalan ahora 10 electrones: el catión es menor.', ecuacion: [Rr('r (Na⁺)'), ' < ', Rr('r (Na)')] },
-        { estado: { corte: 2 }, texto: 'El Cl⁻ ganó un electrón: los electrones se repelen más y la nube crece.', ecuacion: [Rr('r (Cl⁻)'), ' > ', Rr('r (Cl)')] },
-        { estado: { corte: 3 }, texto: 'Con los mismos 10 electrones, decide el núcleo: más protones, especie más pequeña.', ecuacion: ['O²⁻ ', Rr('140'), ' > F⁻ ', Rr('133'), ' > Na⁺ ', Rr('102'), ' > Mg²⁺ ', Rr('72 pm')] },
-        { estado: { corte: 4 }, texto: 'Pasa lo mismo con los 18 electrones de la serie del argón.', ecuacion: ['S²⁻ ', Rr('184'), ' > Cl⁻ ', Rr('181'), ' > K⁺ ', Rr('138'), ' > Ca²⁺ ', Rr('100 pm')] },
+        { estado: { corte: 2 }, texto: 'El Cl⁻ ganó un electrón: con los mismos 17 protones, sus electrones se repelen más y la nube crece.', ecuacion: [Rr('r (Cl⁻)'), ' > ', Rr('r (Cl)')] },
+        { estado: { corte: 3 }, texto: 'Cuando hay los mismos 10 electrones, decide el núcleo: la especie con más protones es la más pequeña.', ecuacion: ['O²⁻ ', Rr('140'), ' > F⁻ ', Rr('133'), ' > Na⁺ ', Rr('102'), ' > Mg²⁺ ', Rr('72 pm')] },
+        { estado: { corte: 4 }, texto: 'Pasa lo mismo con las especies de 18 electrones, que tienen tantos como el argón.', ecuacion: ['S²⁻ ', Rr('184'), ' > Cl⁻ ', Rr('181'), ' > K⁺ ', Rr('138'), ' > Ca²⁺ ', Rr('100 pm')] },
       ],
     },
     regla: {
       texto: 'Un catión es menor que el átomo del que sale y un anión, mayor que el suyo. Con los mismos electrones, es más pequeña la especie con más protones.',
       ecuacion: [{ llave: [Rr('r'), ' (catión) < ', Rr('r'), ' (átomo) < ', Rr('r'), ' (anión)'], nota: 'de un mismo elemento' }, SEP, { llave: ['más ', Zf, ' → menor ', Rr('r')], nota: 'mismos electrones' }],
-      condicion: 'los radios iónicos se comparan con números solo entre iones; un átomo y su ion, solo en cuál es mayor.',
+      condicion: 'los números se comparan solo entre iones, y de un átomo y su ion solo se dice cuál es mayor, porque sus radios vienen de tablas distintas.',
       voz: 'Mismos electrones: decide el núcleo.',
       dibujo: ESF(SERIES[18].map(k => esfIon(k)), { rotulo: '18 electrones: más protones, menor' }),
     },
@@ -767,18 +767,18 @@
   function casoParEI(r, clase) {
     const lista = clase === 'grupo' ? PARES_EI_GRUPO : clase === 'periodo' ? PARES_EI_PERIODO : PARES_BAJADA;
     const par = r.de(lista), [a, b] = r.baraja(par), m = EI[a] > EI[b] ? a : b, o = m === a ? b : a;
-    const err = { grupo: ['QM-EI-GRUPO', 'Bien mirar su columna. Pero el de abajo tiene su electrón más lejos: sale más fácil.'],
-      periodo: ['QM-EI-INVERSA', 'Sería así si la tendencia fuera al revés. Hacia la derecha, más protones lo retienen.'],
-      bajada: ['QM-FLECHA', 'La flecha diría eso, pero aquí se rompe: mira si sale el primer electrón p o uno apareado.'] }[clase];
-    const por = { grupo: `el ${NOMBRE[m]} tiene su último electrón más cerca del núcleo`, periodo: `el ${NOMBRE[m]} tiene más protones jalando el mismo nivel`,
-      bajada: o === 5 || o === 13 || o === 31 ? `el ${NOMBRE[o]} pierde su primer y único electrón p, algo más lejos` : `en el ${NOMBRE[o]} sale un electrón apareado` }[clase];
+    const err = { grupo: ['QM-EI-GRUPO', 'Sería así si el de abajo retuviera mejor su electrón. Tiene un nivel más, así que su electrón de afuera está más lejos del núcleo y sale más fácil.'],
+      periodo: ['QM-EI-INVERSA', 'Sería así si la EI bajara hacia la derecha. En un periodo, el de la derecha tiene más protones, que retienen su electrón con más fuerza.'],
+      bajada: ['QM-FLECHA', 'Eso diría la tendencia, pero aquí se rompe: el de la derecha pierde su primer electrón p o uno apareado, y en los dos casos ese electrón sale más fácil.'] }[clase];
+    const por = { grupo: `, que tiene su último electrón más cerca del núcleo`, periodo: `, que tiene más protones jalando el mismo nivel`,
+      bajada: o === 5 || o === 13 || o === 31 ? `: el ${NOMBRE[o]} pierde su único electrón p, que está algo más lejos del núcleo` : `: en el ${NOMBRE[o]} sale un electrón apareado, que su pareja repele` }[clase];
     return {
       pregunta: `¿A cuál le cuesta más perder un electrón: al ${NOMBRE[a]} o al ${NOMBRE[b]}?`,
       datos: clase === 'bajada' ? [`${Nom(a)}: ${conf(a)}; ${NOMBRE[b]}: ${conf(b)}`, `Los dos, del periodo ${lugar(a).periodo}`] : [lugarTxt(a), lugarTxt(b)],
       dibujo: tabla({ marcadas: [{ Z: a, color: 'h' }, { Z: b, color: 'h' }] }),
-      opciones: ops(`Al ${NOMBRE[m]}`, [`Al ${NOMBRE[o]}`, err[0], err[1]], ['A los dos por igual', 'TP7', 'Comparten fila o columna, pero su carga nuclear y su último electrón no son iguales.'],
-        ['No se puede saber sin medirlo', 'QM-SIN-LEY', 'Su lugar y su configuración ya lo dicen; el dato lo confirma.']),
-      solucion: { texto: `Le cuesta más al ${NOMBRE[m]}: ${por}.`, ecuacion: [`${SIMB[m]} `, Ei(`${EI[m]}`), ` > ${SIMB[o]} `, Ei(`${EI[o]} kJ/mol`)],
+      opciones: ops(`Al ${NOMBRE[m]}`, [`Al ${NOMBRE[o]}`, err[0], err[1]], ['A los dos por igual', 'TP7', 'Sería así si tuvieran el mismo núcleo y el mismo último electrón. Comparten fila o columna, pero su carga nuclear y su electrón de afuera son distintos.'],
+        ['No se puede saber sin medirlo', 'QM-SIN-LEY', 'No hace falta medir: su lugar en la tabla y su configuración ya dicen cuál retiene más su electrón, y el dato lo confirma.']),
+      solucion: { texto: `Le cuesta más al ${NOMBRE[m]}${por}.`, ecuacion: [`${SIMB[m]} `, Ei(`${EI[m]}`), ` > ${SIMB[o]} `, Ei(`${EI[o]} kJ/mol`)],
         dibujo: barrasEI([a, b], { marcadas: [{ Z: a, color: 'h' }, { Z: b, color: 'h' }], rotulo: `${SIMB[a]} ${EI[a]} · ${SIMB[b]} ${EI[b]} kJ/mol` }) },
     };
   }
@@ -798,11 +798,11 @@
     return {
       pregunta: `Las energías de ionización sucesivas de un elemento X de los grupos A son, en kJ/mol: ${listaEI(z)}. ¿En qué grupo está X?`,
       datos: ['Cada EI sucesiva arranca un electrón más', D.grupos],
-      opciones: ops(`Grupo ${grupoAB(grupo)}`, [`Grupo ${grupoAB(g(k + 1))}`, 'QM-SALTO-DESPUES', 'Bien encontrar el salto. Pero el electrón del salto ya es de un nivel de adentro: no cuenta.'],
-        k > 1 ? [`Grupo ${grupoAB(g(k - 1))}`, 'QM-SALTO-ANTES', 'Bien buscar el salto. Pero cuenta todos los electrones que salen antes de él.'] : ['', '', ''],
-        [`Grupo ${grupoAB(g(SUCESIVAS[z].length) > 18 ? 18 : g(SUCESIVAS[z].length))}`, 'QM-SALTO-TOTAL', 'Ese es el número de datos. El grupo lo dice el lugar del salto.'],
-        ['Grupo 18 (VIIIA)', 'QM-SALTO-NOBLE', 'Un gas noble casi no suelta electrones; aquí los primeros salen fácil.']),
-      solucion: { texto: `El salto grande llega en la EI número ${k + 1}: antes salen ${k} electrones de valencia.`,
+      opciones: ops(`Grupo ${grupoAB(grupo)}`, [`Grupo ${grupoAB(g(k + 1))}`, 'QM-SALTO-DESPUES', 'El salto está bien ubicado, pero el electrón del salto ya sale de un nivel de adentro: no es de valencia y no se cuenta.'],
+        k > 1 ? [`Grupo ${grupoAB(g(k - 1))}`, 'QM-SALTO-ANTES', 'Buscar el salto está bien, pero hay que contar todos los electrones que salen antes de él, y aquí falta uno.'] : ['', '', ''],
+        [`Grupo ${grupoAB(g(SUCESIVAS[z].length) > 18 ? 18 : g(SUCESIVAS[z].length))}`, 'QM-SALTO-TOTAL', 'Ese número cuenta todos los datos de la lista. El grupo no sale de ahí, sino de cuántos electrones salen antes del salto.'],
+        ['Grupo 18 (VIIIA)', 'QM-SALTO-NOBLE', 'Sería así si el primer electrón costara muchísimo. Un gas noble casi no suelta electrones, y aquí los primeros salen con poca energía.']),
+      solucion: { texto: `El salto grande llega en la EI número ${k + 1}, así que antes ${k === 1 ? 'sale 1 electrón: ese es el' : `salen ${k} electrones: esos son los`} de valencia.`,
         ecuacion: [`${miles(SUCESIVAS[z][k])} ÷ ${miles(SUCESIVAS[z][k - 1])} ≈ ${f(SUCESIVAS[z][k] / SUCESIVAS[z][k - 1], 1)}`, ' → ', Ei(`grupo ${grupoAB(grupo)}`)] },
     };
   }
@@ -812,10 +812,10 @@
     return {
       pregunta: `¿Cuál libera más energía al ganar un electrón: un átomo de ${NOMBRE[a]} o uno de ${NOMBRE[b]}?`,
       datos: [`AE: ${NOMBRE[a]} ${AE[a]} kJ/mol; ${NOMBRE[b]} ${AE[b]} kJ/mol`.replace(/-/g, '−'), D.ae],
-      opciones: ops(`El de ${NOMBRE[m]}`, [`El de ${NOMBRE[o]}`, 'QM-AE-ORDEN', 'Bien leer las dos. Pero libera más la de mayor valor sin el signo.'],
-        ['Ninguno: ganar un electrón siempre cuesta energía', 'QM-AE-COSTO', 'Eso pasa al perderlo. Aquí las dos AE son negativas: los dos liberan.'],
-        ['Los dos liberan lo mismo', 'QM-AE-IGUAL', 'Los dos liberan, cierto. Pero no la misma cantidad: compara los números.']),
-      solucion: { texto: `Las dos son negativas: los dos liberan. Libera más el ${NOMBRE[m]}.`, ecuacion: [`|${AE[m]}| > |${AE[o]}|`.replace(/-/g, '−')] },
+      opciones: ops(`El de ${NOMBRE[m]}`, [`El de ${NOMBRE[o]}`, 'QM-AE-ORDEN', 'Leíste bien las dos, pero libera más energía el átomo cuya AE tiene el mayor valor sin el signo.'],
+        ['Ninguno: ganar un electrón siempre cuesta energía', 'QM-AE-COSTO', 'Lo que siempre cuesta energía es perder un electrón. Aquí las dos AE son negativas, así que los dos átomos liberan energía al ganarlo.'],
+        ['Los dos liberan lo mismo', 'QM-AE-IGUAL', 'Serían iguales si sus AE tuvieran el mismo valor. Los dos liberan energía, pero sus números son distintos.']),
+      solucion: { texto: `Las dos AE son negativas, así que los dos liberan energía; libera más el ${NOMBRE[m]}, cuyo valor sin el signo es mayor.`, ecuacion: [`|${AE[m]}| > |${AE[o]}|`.replace(/-/g, '−')] },
     };
   }
   function casoEcuacionEI(r) {
@@ -823,10 +823,10 @@
     return {
       pregunta: `¿Qué ecuación representa la primera energía de ionización del ${NOMBRE[SIMB.indexOf(x)]}?`,
       datos: ['(g): en estado gaseoso; (s): sólido', DI.ei],
-      opciones: ops(`${x}(g) → ${x}⁺(g) + e⁻`, [`${x}(g) + e⁻ → ${x}⁻(g)`, 'QM-EI-AFINIDAD', 'Esa es la afinidad: el átomo gana un electrón. La ionización lo quita.'],
-        [`${x}(s) → ${x}⁺(s) + e⁻`, 'QM-EI-GAS', 'Bien quitar el electrón. Pero se mide con el átomo aislado, en gas.'],
-        [`${x}⁺(g) → ${x}²⁺(g) + e⁻`, 'QM-EI-SEGUNDA', 'Esa es la segunda: parte del ion. La primera parte del átomo neutro.']),
-      solucion: { texto: 'El átomo neutro y gaseoso pierde un electrón.', ecuacion: [`${x}(g) + `, EIf, ` → ${x}⁺(g) + e⁻`] },
+      opciones: ops(`${x}(g) → ${x}⁺(g) + e⁻`, [`${x}(g) + e⁻ → ${x}⁻(g)`, 'QM-EI-AFINIDAD', 'Esa ecuación es la de la afinidad electrónica, en la que el átomo gana un electrón. En la ionización, el átomo lo pierde.'],
+        [`${x}(s) → ${x}⁺(s) + e⁻`, 'QM-EI-GAS', 'Quitar el electrón está bien, pero la EI se mide con el átomo aislado, en estado gaseoso, y no en el sólido.'],
+        [`${x}⁺(g) → ${x}²⁺(g) + e⁻`, 'QM-EI-SEGUNDA', 'Esa es la segunda EI, porque parte de un ion que ya perdió un electrón. La primera parte del átomo neutro.']),
+      solucion: { texto: 'En la primera EI, el átomo neutro y gaseoso pierde un electrón y queda como catión.', ecuacion: [`${x}(g) + `, EIf, ` → ${x}⁺(g) + e⁻`] },
     };
   }
 
@@ -854,12 +854,12 @@
     { nivel: 1, titulo: 'La afinidad del cloro',
       enunciado: 'Al ganar un electrón, un átomo de cloro gaseoso libera 349 kJ/mol. ¿Cuánto vale su afinidad electrónica, con su signo?',
       datos: [D.ae],
-      solucion: [{ texto: 'Libera energía: la afinidad va con signo negativo.', ecuacion: ['Cl(g) + e⁻ → Cl⁻(g)', SEP, 'AE = ', Ei('−349 kJ/mol')] }],
+      solucion: [{ texto: 'Como el átomo libera energía, la afinidad se escribe con signo negativo.', ecuacion: ['Cl(g) + e⁻ → Cl⁻(g)', SEP, 'AE = ', Ei('−349 kJ/mol')] }],
       respuesta: ['AE = ', Ei('−349 kJ/mol')] },
     { nivel: 1, titulo: 'Cuánto más pide el neón',
       enunciado: 'El neón pide 2081 kJ/mol para perder un electrón y el litio, 520 kJ/mol. ¿Cuántos kJ/mol más pide el neón?',
       datos: ['EI (Ne) = 2081 kJ/mol; EI (Li) = 520 kJ/mol'],
-      solucion: [{ texto: 'Resto las dos energías.', ecuacion: [Ei('2081'), ' − ', Ei('520'), ' = ', Ei('1561 kJ/mol')] }],
+      solucion: [{ texto: 'La diferencia entre las dos energías dice cuánto más pide el neón.', ecuacion: [Ei('2081'), ' − ', Ei('520'), ' = ', Ei('1561 kJ/mol')] }],
       respuesta: [Ei('1561 kJ/mol'), ' más'] },
     { nivel: 2, titulo: 'La bajada del boro',
       enunciado: '¿Por qué al boro le cuesta menos perder un electrón que al berilio, si está a su derecha?',
@@ -874,15 +874,15 @@
       datos: [lugarTxt(11), lugarTxt(12), lugarTxt(19)],
       solucion: [
         { texto: 'El Mg está a la derecha del Na: pide más. El K está debajo del Na: pide menos.', ecuacion: ['Mg > Na > K'] },
-        { texto: 'Los datos lo confirman.', ecuacion: ['Mg ', Ei('738'), ' > Na ', Ei('496'), ' > K ', Ei('419 kJ/mol')] },
+        { texto: 'Los datos de la tabla confirman ese orden.', ecuacion: ['Mg ', Ei('738'), ' > Na ', Ei('496'), ' > K ', Ei('419 kJ/mol')] },
       ],
       respuesta: [Ei('Mg > Na > K')] },
     { nivel: 2, titulo: 'El salto del sodio',
       enunciado: 'Las energías de ionización sucesivas del sodio son 496, 4562 y 6910 kJ/mol. ¿Entre cuáles está el salto grande y por qué?',
       datos: ['Sodio: 1s² 2s² 2p⁶ 3s¹'],
       solucion: [
-        { texto: 'Divido cada una entre la anterior.', ecuacion: ['4562 ÷ 496 ≈ 9,2', SEP, '6910 ÷ 4562 ≈ 1,5'] },
-        { texto: 'El salto está entre la primera y la segunda: el segundo electrón ya sale del nivel 2, lleno y cercano.' },
+        { texto: 'Divido cada energía entre la anterior para ver dónde está el salto.', ecuacion: ['4562 ÷ 496 ≈ 9,2', SEP, '6910 ÷ 4562 ≈ 1,5'] },
+        { texto: 'El salto está entre la primera y la segunda: el segundo electrón ya sale del nivel 2, que está lleno y más cerca del núcleo.' },
       ],
       respuesta: ['Entre la 1.ª y la 2.ª: 1 electrón de valencia'] },
     { nivel: 2, titulo: 'Quién libera más',
@@ -890,7 +890,7 @@
       datos: ['AE: azufre −200 kJ/mol; sodio −53 kJ/mol', D.ae],
       solucion: [
         { texto: 'Las dos afinidades son negativas: los dos liberan energía.' },
-        { texto: 'Libera más el de mayor valor sin el signo.', ecuacion: ['|−200| > |−53|'] },
+        { texto: 'Libera más el átomo cuya afinidad tiene el mayor valor sin el signo.', ecuacion: ['|−200| > |−53|'] },
       ],
       respuesta: ['El de ', Ei('azufre')] },
     { nivel: 2, titulo: 'El menor del periodo 2',
@@ -909,7 +909,7 @@
       datos: ['Nitrógeno: Z = 7; oxígeno: Z = 8', 'EI: N 1402 kJ/mol; O 1314 kJ/mol'],
       solucion: [
         { texto: 'El cuarto electrón 2p del oxígeno comparte orbital con otro: se repelen y sale más fácil.', ecuacion: ['N ', Ei('1402'), ' > O ', Ei('1314 kJ/mol')] },
-        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' aplican la flecha como ley. La ', letra('B'), ' olvida que sus núcleos son distintos.'] },
+        { texto: ['La ', letra('A'), ' y la ', letra('D'), ' toman la tendencia como una ley sin excepciones. La ', letra('B'), ' olvida que sus núcleos son distintos.'] },
         { texto: ['La ', letra('E'), ' se equivoca: dos elementos de un mismo periodo sí se comparan.'] },
       ],
       respuesta: [letra('C'), ', el ', Ei('nitrógeno')] },
@@ -932,7 +932,7 @@
       solucion: [
         { texto: 'Las tres son negativas: las tres liberan. Libera más el cloro; el flúor, muy pequeño, repele algo al electrón que llega.', ecuacion: ['|−349| > |−328| > |−53|'] },
         { texto: ['La ', letra('A'), ' contradice los signos. La ', letra('B'), ' confunde ganar un electrón con perderlo.'] },
-        { texto: ['La ', letra('C'), ' aplica la flecha hacia el flúor. La ', letra('D'), ' invierte los valores.'] },
+        { texto: ['La ', letra('C'), ' sigue la tendencia hacia el flúor sin mirar los datos. La ', letra('D'), ' invierte los valores.'] },
       ],
       respuesta: [letra('E'), ', el ', Ei('cloro')] },
     { nivel: 3, titulo: 'El periodo 3 entero',
@@ -941,7 +941,7 @@
         'El sodio tiene la mayor del periodo.', 'Es la misma en todo el periodo: el nivel es el mismo.'],
       datos: ['Periodo 3, de izquierda a derecha: Na, Mg, Al, Si, P, S, Cl y Ar', 'El 3s se llena en el Na y el Mg; el 3p, del Al al Ar'],
       solucion: [
-        { texto: 'Hacia la derecha, más protones: tiende a subir. Baja dos veces: en el Al sale el primer 3p y en el S, un 3p apareado.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578'), SEP, 'P ', Ei('1012'), ' > S ', Ei('1000 kJ/mol')] },
+        { texto: 'Hacia la derecha hay más protones, así que tiende a subir. Baja dos veces: en el Al sale el primer electrón 3p y en el S, un 3p apareado.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578'), SEP, 'P ', Ei('1012'), ' > S ', Ei('1000 kJ/mol')] },
         { texto: ['La ', letra('B'), ' olvida las dos bajadas. La ', letra('C'), ' invierte la tendencia: un átomo menor retiene más su electrón.'] },
         { texto: ['La ', letra('D'), ' se equivoca: el sodio tiene la menor. La ', letra('E'), ' olvida que crece la carga nuclear.'] },
       ],
@@ -952,8 +952,8 @@
         'Los dos son del grupo 12.', 'Tienen la misma primera EI, porque son de una misma familia.'],
       datos: [D.gases, 'Primera EI: X 738 kJ/mol; Q 590 kJ/mol'],
       solucion: [
-        { texto: 'Los ubico: X en el periodo 3 y Q en el 4. El salto tras la segunda: 2 de valencia, grupo 2.', ecuacion: [Pz('Z = 12'), ': periodo 3', SEP, Pz('Z = 20'), ': periodo 4'] },
-        { texto: 'X está arriba: su electrón está más cerca y pide más.', ecuacion: ['X ', Ei('738'), ' > Q ', Ei('590 kJ/mol')] },
+        { texto: 'X está en el periodo 3 y Q en el 4. Como el salto llega después de la segunda EI, los dos tienen 2 electrones de valencia: grupo 2.', ecuacion: [Pz('Z = 12'), ': periodo 3', SEP, Pz('Z = 20'), ': periodo 4'] },
+        { texto: 'X está arriba de Q: su electrón de afuera está más cerca del núcleo y pide más energía.', ecuacion: ['X ', Ei('738'), ' > Q ', Ei('590 kJ/mol')] },
         { texto: ['La ', letra('A'), ' confunde grupo con periodo. La ', letra('C'), ' olvida el nivel de más de Q.'] },
         { texto: ['La ', letra('D'), ' suma 10, como en los grupos B. La ', letra('E'), ' cree que una familia tiene una sola EI.'] },
       ],
@@ -972,9 +972,9 @@
       tarjetas: [
         { titulo: 'La romana del mercado', texto: 'En el mercado, la romana cuelga de un gancho y marca cuánto jala su resorte. Imagina una que jala el electrón de más afuera de un átomo: cuanto más marca, más cuesta arrancarlo.',
           pieza: 'quim-tira', dibujo: OBJ([{ que: 'romana', nombre: 'romana' }]) },
-        { titulo: 'Lo que mide', texto: 'Esa energía es la energía de ionización, EI: la que se necesita para quitarle un electrón a un átomo aislado, en estado gaseoso. El átomo queda como catión.',
+        { titulo: 'Lo que mide', texto: 'Esa energía es la energía de ionización, EI: la que se necesita para quitarle un electrón a un átomo aislado, en estado gaseoso. Al perderlo, el átomo queda como catión.',
           ecuacion: ['X(g) + ', EIf, ' → X⁺(g) + e⁻'] },
-        { titulo: 'El límite de la romana', texto: 'Es solo una comparación: el electrón no cuelga de nada. La EI se da en kilojulios por cada mol de átomos (kJ/mol); un mol son 6,02 × 10²³ átomos y se estudia más adelante.' },
+        { titulo: 'El límite de la romana', texto: 'La romana es solo una comparación, porque el electrón no cuelga de nada. La EI se da en kilojulios por cada mol de átomos (kJ/mol); un mol son 6,02 × 10²³ átomos, y se estudia más adelante.' },
         { titulo: 'Qué mirar', texto: 'En el juego recorres el periodo 2, del litio al neón. Compara cada barra con la de su vecino de la izquierda: ¿siempre sube?' },
       ],
     },
@@ -996,7 +996,7 @@
       controles: [{ id: 'z', etiqueta: 'Elemento (Z)', color: 'c-o', min: 3, max: 10, paso: 1, inicio: 3, decimales: 0 }],
       dibujo: v => BARR(P2, [v.z], { rotulo: `EI en kJ/mol · ${NOMBRE[v.z]} marcado` }),
       lectura: v => (v.z === 3 ? ['Li: ', EIf, ' = ', Ei('520 kJ/mol'), ', la más baja del periodo 2.']
-        : [`${SIMB[v.z]}: `, EIf, ' = ', Ei(`${EI[v.z]} kJ/mol`), `; ${SIMB[v.z - 1]}: `, Ei(`${EI[v.z - 1]}`), `. ${EI[v.z] > EI[v.z - 1] ? 'Sube' : 'Baja'}.`]),
+        : [`${SIMB[v.z]}: `, EIf, ' = ', Ei(`${EI[v.z]} kJ/mol`), `; ${SIMB[v.z - 1]}: `, Ei(`${EI[v.z - 1]}`), `. ${EI[v.z] > EI[v.z - 1] ? 'Aquí sube' : 'Aquí baja'}.`]),
       minimo: 4,
     },
     predice: {
@@ -1006,13 +1006,13 @@
       voz: 'La flecha general no lo decide todo.',
       opciones: [
         { id: 'c', texto: 'El fósforo: en el azufre sale un electrón apareado, que se repele', correcta: true },
-        { id: 'protones', texto: 'El azufre: tiene un protón más', error: 'QM-EI-PROTONES', siFuera: 'Tiene un protón más, cierto. Pero su cuarto electrón 3p comparte orbital y sale más fácil.' },
-        { id: 'flecha', texto: 'El azufre: está más a la derecha y la EI siempre sube', error: 'QM-FLECHA', siFuera: 'La tendencia sube hacia la derecha, cierto. Pero es una tendencia: aquí se rompe.' },
-        { id: 'igual', texto: 'Los dos igual: están en el mismo periodo', error: 'TP7', siFuera: 'Comparten periodo, bien visto. Pero sus núcleos y su último electrón son distintos.' },
+        { id: 'protones', texto: 'El azufre: tiene un protón más', error: 'QM-EI-PROTONES', siFuera: 'Sería así si solo contaran los protones. El azufre tiene uno más, pero su cuarto electrón 3p comparte orbital con otro, se repelen y sale más fácil.' },
+        { id: 'flecha', texto: 'El azufre: está más a la derecha y la EI siempre sube', error: 'QM-FLECHA', siFuera: 'Sería así si la tendencia no tuviera excepciones. La EI suele subir hacia la derecha, pero entre el fósforo y el azufre se rompe.' },
+        { id: 'igual', texto: 'Los dos igual: están en el mismo periodo', error: 'TP7', siFuera: 'Sería así si estar en el mismo periodo bastara. Comparten periodo, pero sus núcleos y su último electrón son distintos, y su EI también.' },
       ],
       dibujo: (b => { b.datos.barras.forEach(x => { if (x.s === 'P' || x.s === 'S') x.oculto = true; }); return b; })(BARR([11, 12, 13, 14, 15, 16, 17, 18], [15, 16], { rotulo: 'Periodo 3: ¿P o S?' })),
       revelar: BARR([11, 12, 13, 14, 15, 16, 17, 18], [15, 16], { rotulo: 'P 1012 · S 1000 kJ/mol' }),
-      coincide: 'Coincide: 1012 kJ/mol del fósforo frente a 1000 del azufre.',
+      coincide: 'Coincide: el fósforo pide 1012 kJ/mol y el azufre, 1000.',
       noCoincide: 'El fósforo pide 1012 kJ/mol y el azufre, 1000: el electrón apareado sale más fácil.',
     },
     mira: {
@@ -1020,19 +1020,19 @@
       datos: barrasEI(TODOS, { marcadas: [{ Z: 13, color: 'h', desde: 1 }, { Z: 16, color: 'h', desde: 2 }, { Z: 19, color: 'h', desde: 4 }, { Z: 12, color: 'h', desde: 5 }] }).datos,
       voz: 'Recorramos el periodo 3 y bajemos por un grupo.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'En cada periodo, la EI sube de izquierda a derecha: el núcleo jala más.', ecuacion: ['Na ', Ei('496'), ' → Ar ', Ei('1521 kJ/mol')] },
-        { estado: { corte: 1 }, texto: 'Primera bajada: el único 3p del aluminio está más lejos que los 3s.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578')] },
-        { estado: { corte: 2 }, texto: 'Segunda bajada: en el azufre, un electrón 3p ya tiene pareja y se repelen.', ecuacion: ['P ', Ei('1012'), ' > S ', Ei('1000')] },
+        { estado: { corte: 0 }, texto: 'En cada periodo, la EI sube de izquierda a derecha, porque el núcleo, con más protones, jala más el mismo nivel.', ecuacion: ['Na ', Ei('496'), ' → Ar ', Ei('1521 kJ/mol')] },
+        { estado: { corte: 1 }, texto: 'Primera bajada: el único electrón 3p del aluminio está más lejos del núcleo que los 3s, y sale más fácil.', ecuacion: ['Mg ', Ei('738'), ' > Al ', Ei('578')] },
+        { estado: { corte: 2 }, texto: 'Segunda bajada: en el azufre, un electrón 3p comparte orbital con otro; los dos se repelen y uno sale más fácil.', ecuacion: ['P ', Ei('1012'), ' > S ', Ei('1000')] },
         { estado: { corte: 3 }, texto: 'También lo vas a oír así: el 3p³ del fósforo, semilleno, es estable.', ecuacion: ['P: 3s² 3p³'] },
-        { estado: { corte: 4 }, texto: 'Hacia abajo en un grupo baja: el electrón está más lejos del núcleo.', ecuacion: ['Li ', Ei('520'), ' > Na ', Ei('496'), ' > K ', Ei('419')] },
-        { estado: { corte: 5 }, texto: 'Las EI sucesivas del magnesio saltan después de dos: es del grupo 2.', ecuacion: ['738 → 1451 → ', Ei('7733 kJ/mol')] },
-        { estado: { corte: 5 }, texto: 'La afinidad electrónica es otro proceso: la energía al ganar un electrón.', ecuacion: ['Cl(g) + e⁻ → Cl⁻(g)', SEP, 'AE = ', Ei('−349 kJ/mol')] },
+        { estado: { corte: 4 }, texto: 'Hacia abajo en un grupo, la EI baja: con un nivel más, el electrón de afuera está más lejos del núcleo.', ecuacion: ['Li ', Ei('520'), ' > Na ', Ei('496'), ' > K ', Ei('419')] },
+        { estado: { corte: 5 }, texto: 'Las EI sucesivas del magnesio dan un salto después de la segunda: tiene dos electrones de valencia y es del grupo 2.', ecuacion: ['738 → 1451 → ', Ei('7733 kJ/mol')] },
+        { estado: { corte: 5 }, texto: 'La afinidad electrónica, AE, es otro proceso: la energía en juego cuando un átomo gaseoso gana un electrón.', ecuacion: ['Cl(g) + e⁻ → Cl⁻(g)', SEP, 'AE = ', Ei('−349 kJ/mol')] },
       ],
     },
     regla: {
-      texto: 'La EI sube a la derecha y arriba; baja si sale el primer electrón p (Be → B) o uno apareado (N → O). El salto de las sucesivas da el grupo.',
+      texto: 'La EI sube hacia la derecha y hacia arriba, pero baja cuando sale el primer electrón p (de Be a B) o uno apareado (de N a O). En las EI sucesivas, el salto grande dice el grupo.',
       ecuacion: [{ llave: ['X(g) → X⁺(g) + e⁻'], nota: 'EI: siempre cuesta' }, SEP, { llave: ['Cl(g) + e⁻ → Cl⁻(g)'], nota: 'AE = −349 kJ/mol: libera' }],
-      condicion: 'átomos aislados y gaseosos; las flechas son tendencias. Una AE negativa dice que el átomo libera energía.',
+      condicion: 'se miden átomos aislados y gaseosos, y las flechas se leen como tendencias. Una AE negativa indica que el átomo libera energía.',
       voz: 'Ante la duda, mira el dato.',
       dibujo: barrasEI(TODOS),
     },
@@ -1047,10 +1047,10 @@
           pasos: [
             { tipo: 'pide', texto: 'Piden el grupo y el elemento, a partir de lo que cuesta arrancar cada electrón.' },
             { tipo: 'datos', texto: `Hay ${e.length} energías: cada una arranca un electrón más del mismo átomo.` },
-            { tipo: 'regla', texto: 'Mientras salen electrones del último nivel, cada EI sube poco; al llegar a un nivel lleno de adentro, sube de golpe. Antes del salto salen los de valencia.' },
+            { tipo: 'regla', texto: 'Mientras salen electrones del último nivel, cada EI sube poco; al llegar a un nivel lleno de adentro, sube de golpe. Los electrones que salen antes del salto son los de valencia.' },
             { tipo: 'cuentas', texto: 'Divido cada EI entre la anterior y busco el cociente mayor.',
               ecuacion: [cocientes.map((c, i) => `${miles(e[i + 1])} ÷ ${miles(e[i])} ≈ ${f(c, 1)}`).join(SEP)] },
-            { tipo: 'sentido', texto: `El salto llega en la EI número ${k + 1}: hay ${k} de valencia, grupo ${grupoAB(grupo)}. En el periodo ${p}, es el ${NOMBRE[z]}.`,
+            { tipo: 'sentido', texto: `El salto llega en la EI número ${k + 1}, así que hay ${k} ${k === 1 ? 'electrón' : 'electrones'} de valencia y el elemento es del grupo ${grupoAB(grupo)}; en el periodo ${p}, es el ${NOMBRE[z]}.`,
               dibujo: tabla({ periodos: Math.max(2, p), marcadas: [{ Z: z, color: 'h' }] }) },
           ],
           respuesta: [Ei(`Grupo ${grupoAB(grupo)}`), `: el ${NOMBRE[z]}`],
@@ -1096,10 +1096,10 @@
       pregunta: `En el enlace ${SIMB[a]}–${SIMB[b]}, ¿hacia qué átomo se corre el par de electrones compartido?`,
       datos: [`EN: ${SIMB[a]} ${enTxt(a)}; ${SIMB[b]} ${enTxt(b)}`],
       dibujo: tabla({ marcadas: [{ Z: a, color: 'f' }, { Z: b, color: 'f' }] }),
-      opciones: ops(`Hacia el ${SIMB[m]}`, [`Hacia el ${SIMB[o]}`, 'QM-EN-ORDEN', 'Sería así si el otro tuviera mayor electronegatividad: compara los dos valores.'],
-        ['Queda justo en el medio', 'QM-EN-MEDIO', 'Solo queda en el medio si los dos átomos jalan igual; aquí no.'],
-        ['Hacia el átomo más grande', 'QM-EN-RADIO', 'El tamaño no decide: decide cuál jala más el par, su electronegatividad.']),
-      solucion: { texto: `Jala más el ${SIMB[m]}: ${enTxt(m)} contra ${enTxt(o)}.`, ecuacion: [Ne(`EN (${SIMB[m]})`), ' > ', Ne(`EN (${SIMB[o]})`)],
+      opciones: ops(`Hacia el ${SIMB[m]}`, [`Hacia el ${SIMB[o]}`, 'QM-EN-ORDEN', `Sería así si el ${SIMB[o]} tuviera mayor electronegatividad. Compara los dos valores: el ${SIMB[m]} jala más, y el par se corre hacia él.`],
+        ['Queda justo en el medio', 'QM-EN-MEDIO', 'El par queda en el medio solo si los dos átomos tienen la misma electronegatividad, y aquí sus valores son distintos.'],
+        ['Hacia el átomo más grande', 'QM-EN-RADIO', 'Sería así si decidiera el tamaño. Lo que decide es cuál de los dos jala más el par, y eso lo dice su electronegatividad.']),
+      solucion: { texto: `El par se corre hacia el ${SIMB[m]}, que jala más: su electronegatividad es ${enTxt(m)}, contra ${enTxt(o)}.`, ecuacion: [Ne(`EN (${SIMB[m]})`), ' > ', Ne(`EN (${SIMB[o]})`)],
         dibujo: barrasEN([a, b], { marcadas: [{ Z: a, color: 'f' }, { Z: b, color: 'f' }] }) },
     };
   }
@@ -1108,10 +1108,10 @@
     return {
       pregunta: ['¿Cuánto vale ΔEN en el enlace ', `${SIMB[a]}–${SIMB[b]}?`],
       datos: [`EN: ${SIMB[a]} ${enTxt(a)}; ${SIMB[b]} ${enTxt(b)}`, D.delta],
-      opciones: ops(f2(d), [f2(EN[a] + EN[b]), 'QM-EN-SUMA', 'Eso suma las dos. La diferencia resta la menor de la mayor.'],
-        [f2(EN[m]), 'QM-EN-SOLO', 'Ese es solo el valor del que jala más; falta restarle el otro.'],
-        [f2(d / 2), 'QM-EN-MITAD', 'Bien restar. Pero la diferencia va entera, sin dividirla.']),
-      solucion: { texto: 'Se resta el menor del mayor.', ecuacion: ['ΔEN = ', Ne(enTxt(m)), ' − ', Ne(enTxt(o)), ' = ', Ne(f2(d))] },
+      opciones: ops(f2(d), [f2(EN[a] + EN[b]), 'QM-EN-SUMA', 'Ese valor es la suma de las dos. ΔEN es una diferencia: a la mayor se le resta la menor.'],
+        [f2(EN[m]), 'QM-EN-SOLO', 'Ese es solo el valor del átomo que jala más; falta restarle el valor del otro.'],
+        [f2(d / 2), 'QM-EN-MITAD', 'La resta está bien, pero después no se divide entre 2: ΔEN es la diferencia entera.']),
+      solucion: { texto: 'A la electronegatividad mayor se le resta la menor.', ecuacion: ['ΔEN = ', Ne(enTxt(m)), ' − ', Ne(enTxt(o)), ' = ', Ne(f2(d))] },
     };
   }
   function casoTrioEN(r) {
@@ -1119,10 +1119,10 @@
     return {
       pregunta: `Ordena de mayor a menor electronegatividad: ${lista.map(z => NOMBRE[z]).join(', ')}.`,
       datos: [...lista.map(lugarTxt), DE.en],
-      opciones: ops(t([de, p, ab]), [t([ab, p, de]), 'QM-EN-INVERSA', 'Bien ordenar los tres. Pero la electronegatividad crece hacia arriba y a la derecha: va al revés.'],
-        [t([p, de, ab]), 'QM-EN-PERIODO', 'Bien el del grupo. Pero en un periodo, hacia la derecha jala más.'],
-        [t([de, ab, p]), 'QM-EN-GRUPO', 'Bien el del periodo. Pero en un grupo, el de arriba jala más.']),
-      solucion: { texto: 'Hacia la derecha en la fila, más; hacia abajo en la columna, menos.', ecuacion: [Ne(t([de, p, ab]))] },
+      opciones: ops(t([de, p, ab]), [t([ab, p, de]), 'QM-EN-INVERSA', 'Ese orden sería cierto si la electronegatividad creciera hacia abajo y a la izquierda. Crece hacia arriba y a la derecha, así que va al revés.'],
+        [t([p, de, ab]), 'QM-EN-PERIODO', 'El paso del grupo está bien. Pero en un periodo, el átomo de la derecha jala más el par, así que va antes que el de su izquierda.'],
+        [t([de, ab, p]), 'QM-EN-GRUPO', 'El paso del periodo está bien. Pero en un grupo, el de arriba jala más el par, así que va antes que el de abajo.']),
+      solucion: { texto: 'En la fila, el de la derecha jala más; en la columna, el de abajo jala menos.', ecuacion: [Ne(t([de, p, ab]))] },
     };
   }
   function casoMetal(r) {
@@ -1131,20 +1131,20 @@
     return {
       pregunta: `¿Cuál tiene mayor carácter metálico: el ${NOMBRE[a]} o el ${NOMBRE[b]}?`,
       datos: [lugarTxt(a), lugarTxt(b), DE.metal],
-      opciones: ops(`El ${NOMBRE[m]}`, [`El ${NOMBRE[o]}`, 'QM-METAL-INVERSO', 'Va al revés: el carácter metálico crece hacia abajo y a la izquierda.'],
-        ['Los dos tienen el mismo', 'QM-METAL-IGUAL', 'Comparten fila o columna, pero no pierden electrones con la misma facilidad.'],
-        ['No se puede saber sin probarlos', 'QM-SIN-LEY', 'Su lugar en la tabla ya lo dice: es una tendencia.']),
-      solucion: { texto: `El ${NOMBRE[m]} está más ${la.periodo === lb.periodo ? 'a la izquierda' : 'abajo'}: pierde electrones con más facilidad.` },
+      opciones: ops(`El ${NOMBRE[m]}`, [`El ${NOMBRE[o]}`, 'QM-METAL-INVERSO', 'Sería así si el carácter metálico creciera hacia arriba y a la derecha. Crece al revés: hacia abajo y hacia la izquierda.'],
+        ['Los dos tienen el mismo', 'QM-METAL-IGUAL', 'Serían iguales si perdieran electrones con la misma facilidad. Comparten fila o columna, pero uno suelta su electrón de afuera más fácil que el otro.'],
+        ['No se puede saber sin probarlos', 'QM-SIN-LEY', 'No hace falta probarlos: el carácter metálico sigue una tendencia, y el lugar de cada uno en la tabla basta para compararlos.']),
+      solucion: { texto: `El ${NOMBRE[m]} está más ${la.periodo === lb.periodo ? 'a la izquierda' : 'abajo'}, así que pierde electrones con más facilidad y es más metálico.` },
     };
   }
   const AFIRMA_E = [
     ['Del sodio al cloro, el radio atómico baja.', true, 'más protones jalan el mismo nivel'],
-    ['En el grupo 1, la EI crece hacia abajo.', false, 'baja: el electrón está más lejos'],
-    ['El flúor es el elemento más electronegativo.', true, 'tiene 3,98, el mayor de la escala'],
-    ['El potasio es menos metálico que el bromo.', false, 'el potasio, a la izquierda, es el más metálico'],
-    ['La electronegatividad crece hacia abajo en un grupo.', false, 'crece hacia arriba'],
-    ['El carácter metálico crece hacia abajo en un grupo.', true, 'el electrón de afuera sale más fácil'],
-    ['El cesio es más metálico que el sodio.', true, 'está más abajo en el grupo 1'],
+    ['En el grupo 1, la EI crece hacia abajo.', false, 'baja, porque el electrón de afuera está más lejos del núcleo'],
+    ['El flúor es el elemento más electronegativo.', true, 'su valor, 3,98, es el mayor de la escala'],
+    ['El potasio es menos metálico que el bromo.', false, 'el potasio, a la izquierda del bromo, es más metálico'],
+    ['La electronegatividad crece hacia abajo en un grupo.', false, 'crece hacia arriba, no hacia abajo'],
+    ['El carácter metálico crece hacia abajo en un grupo.', true, 'hacia abajo, el electrón de afuera sale más fácil'],
+    ['El potasio es más metálico que el sodio.', true, 'el potasio está debajo del sodio en el grupo 1'],
   ];
 
   // Ejemplos de la idea 4. Cuentas rehechas aparte (cuentas-b.py): O–H 3,44 − 2,20 = 1,24 · Cl 3,16 > H 2,20 · F > O > N ·
@@ -1155,7 +1155,7 @@
     { nivel: 1, titulo: 'La diferencia en el agua',
       enunciado: 'En el enlace O–H del agua, ¿cuánto vale ΔEN?',
       datos: ['EN: O 3,44; H 2,20', D.delta],
-      solucion: [{ texto: 'Resto la menor de la mayor.', ecuacion: ['ΔEN = ', Ne('3,44'), ' − ', Ne('2,20'), ' = ', Ne('1,24')] }],
+      solucion: [{ texto: 'A la electronegatividad mayor le resto la menor.', ecuacion: ['ΔEN = ', Ne('3,44'), ' − ', Ne('2,20'), ' = ', Ne('1,24')] }],
       respuesta: ['ΔEN = ', Ne('1,24')] },
     { nivel: 1, titulo: 'Hacia dónde va el par',
       enunciado: 'En el enlace H–Cl, ¿hacia qué átomo se corre el par de electrones compartido?',
@@ -1175,14 +1175,14 @@
     { nivel: 1, titulo: 'La diferencia en la sal',
       enunciado: 'Entre el sodio y el cloro de la sal, ¿cuánto vale ΔEN?',
       datos: ['EN: Na 0,93; Cl 3,16', D.delta],
-      solucion: [{ texto: 'Resto la menor de la mayor.', ecuacion: ['ΔEN = ', Ne('3,16'), ' − ', Ne('0,93'), ' = ', Ne('2,23')] }],
+      solucion: [{ texto: 'A la electronegatividad mayor le resto la menor.', ecuacion: ['ΔEN = ', Ne('3,16'), ' − ', Ne('0,93'), ' = ', Ne('2,23')] }],
       respuesta: ['ΔEN = ', Ne('2,23')] },
     { nivel: 2, titulo: 'Dos enlaces del hidrógeno',
       enunciado: '¿En cuál enlace se corre más el par compartido: en H–F o en H–Cl?',
       datos: ['EN: H 2,20; F 3,98; Cl 3,16', D.delta],
       solucion: [
         { texto: 'Calculo las dos diferencias.', ecuacion: ['H–F: 3,98 − 2,20 = ', Ne('1,78'), SEP, 'H–Cl: 3,16 − 2,20 = ', Ne('0,96')] },
-        { texto: 'Con más diferencia, el par se corre más hacia el que jala.' },
+        { texto: 'Cuanto mayor es la diferencia, más se corre el par hacia el que jala más: en H–F, hacia el flúor.' },
       ],
       respuesta: ['En ', Ne('H–F'), ': ΔEN = 1,78'] },
     { nivel: 2, titulo: 'Dos anfígenos y un halógeno',
@@ -1190,23 +1190,23 @@
       datos: [lugarTxt(16), lugarTxt(34), lugarTxt(17)],
       solucion: [
         { texto: 'El cloro está a la derecha del azufre: jala más. El selenio está debajo del azufre: jala menos.' },
-        { texto: 'Los valores lo confirman.', ecuacion: ['Cl ', Ne('3,16'), ' > S ', Ne('2,58'), ' > Se ', Ne('2,55')] },
+        { texto: 'Los valores de la escala confirman ese orden.', ecuacion: ['Cl ', Ne('3,16'), ' > S ', Ne('2,58'), ' > Se ', Ne('2,55')] },
       ],
       respuesta: [Ne('Cl > S > Se')] },
     { nivel: 2, titulo: 'El enlace C–H',
       enunciado: 'En el enlace C–H del metano, ¿hacia qué átomo se corre el par y cuánto vale ΔEN?',
       datos: ['EN: C 2,55; H 2,20', D.delta],
       solucion: [
-        { texto: 'Jala un poco más el carbono.', ecuacion: ['ΔEN = ', Ne('2,55'), ' − ', Ne('2,20'), ' = ', Ne('0,35')] },
+        { texto: 'El carbono jala un poco más que el hidrógeno.', ecuacion: ['ΔEN = ', Ne('2,55'), ' − ', Ne('2,20'), ' = ', Ne('0,35')] },
         { texto: 'Con una diferencia tan chica, el par casi queda en el medio.' },
       ],
-      respuesta: ['Hacia el carbono; ΔEN = ', Ne('0,35')] },
+      respuesta: ['ΔEN = ', Ne('0,35'), ', hacia el carbono'] },
     { nivel: 2, titulo: 'El enlace de mayor diferencia',
       enunciado: 'De los átomos H, Na, K, F y Cl, ¿qué par da la mayor ΔEN y cuánto vale?',
       datos: ['EN: H 2,20; Na 0,93; K 0,82; F 3,98; Cl 3,16', D.delta],
       solucion: [
-        { texto: 'La mayor diferencia sale del que más jala con el que menos jala.', ecuacion: ['F: ', Ne('3,98'), SEP, 'K: ', Ne('0,82')] },
-        { texto: 'Resto.', ecuacion: ['ΔEN = 3,98 − 0,82 = ', Ne('3,16')] },
+        { texto: 'La mayor diferencia sale de juntar al que más jala con el que menos jala.', ecuacion: ['F: ', Ne('3,98'), SEP, 'K: ', Ne('0,82')] },
+        { texto: 'A la electronegatividad mayor le resto la menor.', ecuacion: ['ΔEN = 3,98 − 0,82 = ', Ne('3,16')] },
       ],
       respuesta: ['K y F: ΔEN = ', Ne('3,16')] },
     { nivel: 2, titulo: 'Los dos extremos del periodo 4',
@@ -1223,8 +1223,8 @@
         'El flúor es el más electronegativo y el bromo, el menos.', 'El flúor tiene carga negativa por ser el más electronegativo.'],
       datos: ['EN: F 3,98; Cl 3,16; Br 2,96'],
       solucion: [
-        { texto: 'Hacia abajo en el grupo, el par queda más lejos del núcleo: jala menos.', ecuacion: ['F ', Ne('3,98'), ' > Cl ', Ne('3,16'), ' > Br ', Ne('2,96')] },
-        { texto: ['La ', letra('A'), ' invierte el grupo. La ', letra('B'), ' olvida que tienen distinto número de niveles. La ', letra('C'), ' se queda en el medio.'] },
+        { texto: 'Hacia abajo en el grupo, el par compartido queda más lejos del núcleo, así que el átomo lo jala menos.', ecuacion: ['F ', Ne('3,98'), ' > Cl ', Ne('3,16'), ' > Br ', Ne('2,96')] },
+        { texto: ['La ', letra('A'), ' invierte el grupo. La ', letra('B'), ' olvida que tienen distinto número de niveles. La ', letra('C'), ' elige al del medio.'] },
         { texto: ['La ', letra('E'), ' confunde electronegativo con negativo: el átomo de F es neutro.'] },
       ],
       respuesta: [letra('D'), ', el ', Ne('flúor'), ' jala más'] },
@@ -1244,9 +1244,9 @@
         'El cesio es más electronegativo: tiene más protones.', 'Al unirse, el par queda en el medio.'],
       datos: ['EN: Cs 0,79; F 3,98', DE.metal],
       solucion: [
-        { texto: 'El cesio está abajo a la izquierda: el más metálico. El flúor, arriba a la derecha: el que más jala.' },
+        { texto: 'El cesio está abajo a la izquierda, así que es el más metálico; el flúor está arriba a la derecha y es el que más jala.' },
         { texto: ['La ', letra('B'), ' invierte el carácter metálico. La ', letra('C'), ' olvida que están en extremos opuestos.'] },
-        { texto: ['La ', letra('D'), ' cree que más protones jalan más, aunque el par queda lejos. La ', letra('E'), ' olvida la diferencia: 3,19.'] },
+        { texto: ['La ', letra('D'), ' cree que más protones jalan más, aunque el par queda lejos. La ', letra('E'), ' olvida que la diferencia es grande: 3,19.'] },
       ],
       respuesta: [letra('A'), ', cesio metálico y ', Ne('flúor'), ' electronegativo'] },
     { nivel: 3, titulo: 'Las cuatro tendencias del periodo 4',
@@ -1256,7 +1256,7 @@
       datos: ['K: grupo 1; Br: grupo 17 (los dos, del periodo 4)', DE.metal],
       solucion: [
         { texto: 'Hacia la derecha en el periodo: radio y carácter metálico bajan; energía de ionización y electronegatividad suben.', ecuacion: ['EN: K ', Ne('0,82'), ' → Br ', Ne('2,96')] },
-        { texto: ['La ', letra('A'), ' invierte el radio y la ', letra('D'), ', el carácter metálico: los dos bajan. La ', letra('C'), ' da la mayor al de la izquierda.'] },
+        { texto: ['La ', letra('A'), ' invierte el radio y la ', letra('D'), ', el carácter metálico: los dos bajan. La ', letra('C'), ' le da la mayor electronegatividad al de la izquierda.'] },
         { texto: ['La ', letra('E'), ' invierte la energía de ionización: el bromo retiene más su electrón.'] },
       ],
       respuesta: [letra('B'), ', crece la ', Ne('EN'), ' y baja lo metálico'] },
@@ -1282,11 +1282,11 @@
     actividad: 'Armar enlaces de dos átomos y ver hacia cuál se corre el par.',
     lee: {
       tarjetas: [
-        { titulo: 'Dos que jalan una soga', texto: 'Dos personas jalan una soga con un nudo al medio. Si una jala más fuerte, el nudo se le acerca. Con dos átomos unidos pasa algo parecido.',
+        { titulo: 'Dos que jalan una soga', texto: 'Dos personas jalan una soga que tiene un nudo al medio, y si una jala más fuerte, el nudo se acerca a ella. Algo parecido pasa entre dos átomos unidos.',
           pieza: 'quim-tira', dibujo: OBJ([{ que: 'soga', nombre: 'el nudo, al medio' }]) },
         { titulo: 'El par compartido', texto: 'Cuando dos átomos se unen compartiendo electrones, queda un par de electrones entre los dos: es el nudo de la soga. En cada molécula de agua, cada hidrógeno comparte un par con el oxígeno.' },
-        { titulo: 'Una escala de números', texto: 'La electronegatividad, EN, dice cuánto jala cada átomo ese par. Linus Pauling la puso en números en 1932; no tiene unidades. La soga es solo una comparación: nadie jala con las manos.' },
-        { titulo: 'Qué mirar', texto: 'En el juego eliges dos átomos. La barra más alta es la del que jala más; la diferencia, ΔEN, dice cuánto se corre el par.', ecuacion: ['ΔEN = mayor − menor'] },
+        { titulo: 'Una escala de números', texto: 'La electronegatividad, EN, dice cuánto jala cada átomo ese par. Linus Pauling la puso en una escala de números en 1932, sin unidades. La soga es solo una comparación, porque los átomos no tienen manos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges dos átomos. La barra más alta es la del que jala más, y la diferencia entre las dos, ΔEN, dice cuánto se corre el par.', ecuacion: ['ΔEN = mayor − menor'] },
       ],
     },
     ejemplos: EJEMPLOS_EN,
@@ -1296,7 +1296,7 @@
       mision: {
         texto: 'Arma el enlace con la mayor diferencia de electronegatividad que puedas.',
         logrado: v => Math.abs(delta(+v.a, +v.b) - MAXD) < 1e-9,
-        bien: 'K–F: el par de electrones se corre casi del todo hacia el flúor.',
+        bien: 'En el enlace K–F, el par se corre casi del todo hacia el flúor.',
       },
       voz: 'Mira cuál de los dos tiene la barra más alta.',
       leyenda: [
@@ -1322,8 +1322,8 @@
       opciones: [
         { id: 'c', texto: 'Nada por sí solo: solo cuenta cuando forma un enlace', correcta: true },
         { id: 'carga', texto: 'Que tiene carga negativa', error: 'TP8', siFuera: 'Sería cierto si fuera el ion F⁻. El átomo aislado es neutro: 9 protones y 9 electrones.' },
-        { id: 'mas-e', texto: 'Que tiene más electrones que protones', error: 'TP8-E', siFuera: 'Eso describe a un anión. La electronegatividad habla de los electrones que se comparten.' },
-        { id: 'afinidad', texto: 'Que libera mucha energía al ganar un electrón', error: 'QM-EN-AFINIDAD', siFuera: 'Eso es la afinidad electrónica, medida en kJ/mol; la electronegatividad no tiene unidades.' },
+        { id: 'mas-e', texto: 'Que tiene más electrones que protones', error: 'TP8-E', siFuera: 'Sería cierto si fuera un anión, como el F⁻. La electronegatividad no cuenta electrones de más: habla del par que se comparte en un enlace.' },
+        { id: 'afinidad', texto: 'Que libera mucha energía al ganar un electrón', error: 'QM-EN-AFINIDAD', siFuera: 'Eso describe la afinidad electrónica, que se mide en kJ/mol con el átomo solo. La electronegatividad no tiene unidades y habla de un enlace.' },
       ],
       dibujo: tabla({ marcadas: [{ Z: 9, color: 'f' }] }),
       revelar: barrasEN(TODOS, { marcadas: [{ Z: 9, color: 'f' }], rotulo: 'F: 3,98, el mayor; sin dato en He, Ne, Ar, Kr' }),
@@ -1342,18 +1342,18 @@
       },
       voz: 'Veamos qué hace la diferencia dentro de un enlace.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El H y el Cl comparten un par, como dos que jalan una soga.', ecuacion: [Ne('EN (H) = 2,20'), SEP, Ne('EN (Cl) = 3,16')] },
-        { estado: { corte: 2 }, texto: 'El Cl jala más: el par se le acerca y queda con carga δ−.', ecuacion: ['ΔEN = 3,16 − 2,20 = ', Ne('0,96')] },
+        { estado: { corte: 1 }, texto: 'El H y el Cl comparten un par de electrones, como las dos personas que jalan la soga.', ecuacion: [Ne('EN (H) = 2,20'), SEP, Ne('EN (Cl) = 3,16')] },
+        { estado: { corte: 2 }, texto: 'El Cl jala más, así que el par se le acerca y el cloro queda con una carga parcial negativa, δ−.', ecuacion: ['ΔEN = 3,16 − 2,20 = ', Ne('0,96')] },
         { estado: { corte: 2 }, texto: 'El cloro suelto no tiene carga: la δ− aparece solo dentro del enlace.', ecuacion: ['Cl aislado: 17 p⁺, 17 e⁻'] },
         { estado: { corte: 2 }, texto: 'La electronegatividad crece hacia arriba y a la derecha, hasta el flúor.', ecuacion: ['F: ', Ne('3,98'), ', la mayor'] },
-        { estado: { corte: 2 }, texto: 'El carácter metálico crece al revés: hacia abajo y a la izquierda.', ecuacion: ['K más metálico que Na; Na más que Cl'] },
-        { estado: { corte: 2 }, texto: 'Las tendencias periódicas juntas: radio y carácter metálico, hacia abajo a la izquierda.', ecuacion: ['EI y ', ENf, ': hacia arriba a la derecha'] },
+        { estado: { corte: 2 }, texto: 'El carácter metálico, qué tan fácil pierde electrones un elemento, crece al revés: hacia abajo y a la izquierda.', ecuacion: ['K más metálico que Na; Na más que Cl'] },
+        { estado: { corte: 2 }, texto: 'Juntas, las tendencias periódicas quedan así: el radio y el carácter metálico crecen hacia abajo y a la izquierda.', ecuacion: ['EI y ', ENf, ': hacia arriba a la derecha'] },
       ],
     },
     regla: {
-      texto: 'La electronegatividad dice cuánto jala un átomo el par que comparte: crece hacia arriba y a la derecha, hasta el flúor. El carácter metálico crece al revés.',
-      ecuacion: ['ΔEN = ', ENf, ' (mayor) − ', ENf, ' (menor)', SEP, 'el par va al de mayor ', ENf, SEP, 'carácter metálico (qué tan fácil pierde electrones): crece hacia abajo y a la izquierda'],
-      condicion: 'una sola escala (Pauling, sin unidades); los gases nobles no tienen valor en ella.',
+      texto: 'La electronegatividad dice cuánto jala un átomo el par que comparte: crece hacia arriba y a la derecha, hasta el flúor. El carácter metálico, que dice qué tan fácil pierde electrones un elemento, crece al revés.',
+      ecuacion: ['ΔEN = ', ENf, ' (mayor) − ', ENf, ' (menor)', SEP, 'el par va al de mayor ', ENf, SEP, 'carácter metálico: crece hacia abajo y a la izquierda'],
+      condicion: 'se usa una sola escala, la de Pauling, que no tiene unidades; en ella, los gases nobles no tienen valor.',
       voz: 'Electronegativo no es negativo: es quien jala más.',
       dibujo: barrasEN(TODOS),
     },
@@ -1372,8 +1372,8 @@
             { tipo: 'pide', texto: 'Piden comparar dos enlaces: en cuál se corre más el par y hacia qué átomo.' },
             { tipo: 'datos', texto: 'Tengo la electronegatividad de cada átomo, en la escala de Pauling.' },
             { tipo: 'regla', texto: 'El par se corre hacia el de mayor electronegatividad; cuanto mayor es ΔEN, más se corre.' },
-            { tipo: 'cuentas', texto: 'Calculo las dos diferencias.', ecuacion: [...cuenta(a, b), SEP, ...cuenta(c, d)] },
-            { tipo: 'sentido', texto: `Gana ${tx(...gana)}, con ΔEN = ${f2(Math.max(d1, d2))}: su par se corre hacia el ${SIMB[ms(...gana)[0]]}, la barra más alta.` },
+            { tipo: 'cuentas', texto: 'Calculo la diferencia de cada enlace: el valor mayor menos el menor.', ecuacion: [...cuenta(a, b), SEP, ...cuenta(c, d)] },
+            { tipo: 'sentido', texto: `Se corre más el par del enlace ${tx(...gana)}, que tiene ΔEN = ${f2(Math.max(d1, d2))}, y se corre hacia el ${SIMB[ms(...gana)[0]]}, el de la barra más alta.` },
           ],
           respuesta: ['En ', Ne(tx(...gana)), `, hacia el ${SIMB[ms(...gana)[0]]}`],
         };
@@ -1434,7 +1434,7 @@
       { termino: 'carga nuclear', formas: ['carga nuclear'], def: 'Carga positiva del núcleo, igual a su número de protones: es la que atrae a los electrones.',
         simple: 'La carga positiva del núcleo: una por cada protón.',
         ejemplos: ['El sodio tiene carga nuclear +11.', 'El cloro, +17.', 'El potasio tiene más que el sodio y es mayor: tiene un nivel más.'], ver: ['protón', 'radio atómico'] },
-      { termino: 'radio iónico', formas: ['radio iónico', 'radios iónicos'], medida: 'pm', def: 'Tamaño de un ion, medido en los cristales donde está. Sale de otra tabla que el radio atómico.',
+      { termino: 'radio iónico', formas: ['radio iónico', 'radios iónicos'], medida: 'pm', def: 'Tamaño de un ion, medido en cristales; sus valores vienen de una tabla distinta a la de los radios atómicos.',
         simple: 'Lo que mide un ion.',
         ejemplos: ['Na⁺: 102 pm.', 'Cl⁻: 181 pm.', 'K⁺: 138 pm.'], ver: ['radio atómico', 'catión', 'anión'] },
       { termino: 'serie isoelectrónica', formas: ['serie isoelectrónica', 'series isoelectrónicas', 'serie del argón', 'serie del neón'],
@@ -1482,9 +1482,9 @@
           donde: v => enCasilla(zr(v).z),
           mover: (pt, v) => ({ z: zBajo(pt, zr(v).z) }) }],
         invitaciones: [
-          { texto: 'Busca el átomo más grande de toda la tabla.', logrado: v => RADIO[v.z] === MAYOR.r, bien: 'Abajo y a la izquierda: muchos niveles y poca carga nuclear por electrón.' },
+          { texto: 'Busca el átomo más grande de toda la tabla.', logrado: v => RADIO[v.z] === MAYOR.r, bien: 'Abajo y a la izquierda: tiene más niveles, y su electrón de afuera queda lejos.' },
           { texto: 'Con la ionización de fondo, ve al elemento al que más cuesta arrancarle un electrón.', logrado: v => v.p === 'ei' && EI[v.z] === MAYOR.ei, bien: 'Arriba a la derecha: el helio guarda sus dos electrones muy cerca del núcleo.' },
-          { texto: 'Busca el átomo más pequeño del periodo 4.', logrado: v => lugar(v.z).periodo === 4 && RADIO[v.z] === MENOR4, bien: 'Al final del periodo: mismo nivel, más protones jalando.' },
+          { texto: 'Busca el átomo más pequeño del periodo 4.', logrado: v => lugar(v.z).periodo === 4 && RADIO[v.z] === MENOR4, bien: 'Está al final del periodo: el mismo nivel, jalado por más protones.' },
           { texto: 'Guarda dos elementos del mismo grupo, en periodos distintos.',
             logrado: (v, guardados) => guardados.some(a => guardados.some(b => lugar(a.z).grupo === lugar(b.z).grupo && lugar(a.z).periodo !== lugar(b.z).periodo)),
             bien: 'Compara sus radios: ¿el de abajo siempre es más grande?' },
@@ -1507,7 +1507,7 @@
         invitaciones: [
           { texto: 'En el periodo 3, busca dos vecinos donde la ionización baje hacia la derecha.',
             logrado: v => v.p === 'ei' && v.b === v.a + 1 && lugar(v.a).periodo === 3 && lugar(v.b).periodo === 3 && EI[v.b] < EI[v.a],
-            bien: 'La flecha falla aquí: mira si el segundo pierde su primer electrón p o uno apareado.' },
+            bien: 'Aquí la tendencia falla: mira si el segundo pierde su primer electrón p o uno apareado.' },
           { texto: 'Con el radio de fondo, pon el segundo justo debajo del primero, en su grupo.',
             logrado: v => v.p === 'r' && lugar(v.a).grupo === lugar(v.b).grupo && lugar(v.b).periodo === lugar(v.a).periodo + 1,
             bien: 'Un nivel más abajo, un átomo más grande. ¿Pasa en todos los grupos?' },

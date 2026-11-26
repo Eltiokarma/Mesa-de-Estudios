@@ -188,7 +188,7 @@ function esperado(a) {
   if (/^Indica verdadero/.test(q)) {
     const VERDAD = [[/Na⁺ es menor/, 'V'], [/Cl⁻ es menor/, 'F'], [/K⁺ es mayor/, 'F'], [/S²⁻ es mayor/, 'V'], [/Ca²⁺ y el Ar/, 'V'], [/Br⁻ es menor/, 'F'], [/catión tiene más protones/, 'V'],
       [/radio atómico baja/, 'V'], [/EI crece hacia abajo/, 'F'], [/flúor es el elemento más/, 'V'], [/potasio es menos metálico/, 'F'], [/electronegatividad crece hacia abajo/, 'F'],
-      [/carácter metálico crece hacia abajo/, 'V'], [/cesio es más metálico/, 'V']];
+      [/carácter metálico crece hacia abajo/, 'V'], [/potasio es más metálico que el sodio/, 'V']];
     const partes = q.split(/\b(?:III|II|I)\. /).slice(1);
     assert.equal(partes.length, 3, q);
     return partes.map(t => VERDAD.find(([re]) => re.test(t))[1]).join('');
@@ -344,4 +344,32 @@ test('lector: tarjetas de ejemplos (radio de X sin número, título del 10 e⁻,
   assert.ok(e('Tres cationes con 10 electrones'));
   assert.ok(!e('El periodo 3 entero').figura && !/1012/.test(plano(e('El periodo 3 entero').datos)));
   assert.ok(!/\bCa\b/.test(plano(e('Las cuatro tendencias del periodo 4').datos)) && /EN: K/.test(plano(e('Las cuatro tendencias del periodo 4').solucion[0].ecuacion)));
+});
+
+// Verificación de cierre (26 nov).
+test('verdadero o falso: ningún elemento fuera de la tabla de 36 (el cesio) sale sin decir dónde está', () => {
+  const t = x => (typeof x === 'string' ? x : Array.isArray(x) ? x.map(t).join('') : x && typeof x === 'object' ? Object.values(x).map(t).join('') : String(x ?? ''));
+  let vf = 0;
+  for (const I of def.ideas) for (let s = 0; s < SEMILLAS; s++) for (const g of [I.ahoraTu, I.resuelve]) {
+    if (!g) continue;
+    const a = g.generar(s), p = t(a.pregunta || a.enunciado);
+    if (!/^Indica verdadero/.test(p)) continue;
+    vf++;
+    if (/cesio/.test(p)) assert.match(t(a.datos), /cesio/i, `semilla ${s}: ${p}`);
+  }
+  assert.ok(vf > 0);
+});
+
+test('Mira de la idea 1 no deja al flúor como el más pequeño (el helio y el neón miden menos), y el laboratorio no usa la carga nuclear efectiva', () => {
+  const ult = I1.mira.pasos[I1.mira.pasos.length - 1].texto;
+  assert.match(ult, /helio/, ult);
+  for (const m of def.laboratorio || []) for (const inv of m.invitaciones || []) assert.ok(!/carga nuclear por electrón/.test(inv.bien), inv.bien);
+});
+
+test('EI, la tendencia que se rompe: la explicación dice que el electrón sale más fácil en los dos casos', () => {
+  let vistos = 0;
+  for (let s = 0; s < SEMILLAS; s++) for (const o of I3.ahoraTu.generar(s).opciones || []) if (o.error === 'QM-FLECHA' && /Eso diría la tendencia/.test(o.siFuera)) {
+    vistos++; assert.ok(!/los dos salen/.test(o.siFuera), o.siFuera);
+  }
+  assert.ok(vistos > 0);
 });
